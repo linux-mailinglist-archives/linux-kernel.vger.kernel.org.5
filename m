@@ -2,86 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4EBE77C059
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1421B77C05D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231936AbjHNTGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 15:06:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48098 "EHLO
+        id S231946AbjHNTHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 15:07:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231920AbjHNTG0 (ORCPT
+        with ESMTP id S231911AbjHNTG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 15:06:26 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C30D10F7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:06:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Pv/oJkWDSXTVoPVR7KmdoJv2HB07fea1hw76M762x3k=; b=m6hGr6cdg4oW3bNsImeckK9GLj
-        Ve6uDVbHHzBTj44X52+cNApSIVJMg3GUMoUHFdksGMIo/ZpIDD2bdVGXiFMBbe/gIyEeLedQYiwRW
-        zaPomdWFsWK7dul0BCFzQBvG1T5O4xq0IoYUWr7++Ug2fsez79fMhltiYTSNcA3HiAwqy8pDId0P9
-        7l/I6bib0vfxGbSKyO/RxuIOjea2rDmE7OQ1+uTL2GiwDeyeKmW2N5EkR2q4Uaxt028Fmfb2pULPB
-        Qf9qLq7WcxSMsO6Sro9ZqFB6HffJBmAXLuojwOcrpOaaLLmEeM3UjzLTh9ucnYdsxuiEDQlLO1L1G
-        ulxMhamg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qVctI-003iSn-R4; Mon, 14 Aug 2023 19:06:12 +0000
-Date:   Mon, 14 Aug 2023 20:06:12 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Zach O'Keefe <zokeefe@google.com>
-Cc:     Saurabh Singh Sengar <ssengar@microsoft.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Yang Shi <shy828301@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [EXTERNAL] [PATCH] mm/thp: fix "mm: thp: kill
- __transhuge_page_enabled()"
-Message-ID: <ZNp7JDaPhT3Se4de@casper.infradead.org>
-References: <20230812210053.2325091-1-zokeefe@google.com>
- <PUZP153MB06358FF02518EF3B279F5DD4BE16A@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
- <CAAa6QmSrwe2m4MjS9mGO+DeGNGSv=B2uZ72EAxnZk2jsDh39rQ@mail.gmail.com>
+        Mon, 14 Aug 2023 15:06:29 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C346310F2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:06:28 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so6185193a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:06:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692039987; x=1692644787;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=T5HtRk7v9N5XEliCZizIOYoda+POCp5Lvz3Wvapa2NQ=;
+        b=rDeKbTEZJKLZ9FP1roXmnxVr4jyE26Xz426JSxZdrzFWLD5ynNP3xL8sNjLcZU/yaL
+         56uzL+AXlE3EnhrMYYJZN356xVRsL+DBftaWVa5MdwnNPtTB/06e8PaKrxHHpwMVfRfM
+         Dsp69t/qPIE2on4qrEYQZfSRtWSPiRVAM5a887sF+w+hBCVqnycbtdnYngB+lHxLLy46
+         QaSiAGaZeqwj0iZ2S/TTfBYlt+kgL/KVZOr09/XGuys4tU09IOhFHylGoMYHVXxrB+IS
+         6IUxT0Z2anepZ/wN3DbVMWHvkX/h95uHAqig2E2Nmj97puU6DWSdv2Q7TercqwaTXKrk
+         e26w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692039987; x=1692644787;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=T5HtRk7v9N5XEliCZizIOYoda+POCp5Lvz3Wvapa2NQ=;
+        b=ZCjRgU2OD8dqmOhqd+5bQZxcmqYYAnDC0gnmjHLfFu4fnuHl/HbBiSO//ocGrvdOZE
+         4gIVABzUfQqZS8QPpIzihwFmat96arRkOmAOoKxV+ft2dgqf2YI+lq2XQjyDnVrTit7r
+         dqJ7K1ovJegGMG4gcRB3JJ3XcCaLxOZSnsgkBz8yHOpCjg/+KxxxNVLWotRQcs6EFatY
+         dTE6ok+f8n9pRSe/6QA1spBbZdGpSji6lEU0fiJTHh0+y5J1UGM563jb5imwuA0K/ba8
+         luqkcL0Vco/6qShJYXayOdVzJfGTO/mMtFptNHw6WEzQHiFDq4W5vRmGUCADC+n9KnIZ
+         wDZg==
+X-Gm-Message-State: AOJu0YygaNi2SCDve24FXmNnI9IB+0f6kp02tb+IlDgSaIj5n1DJQ+Uf
+        bIAJ7/+V16q7xWDlgWpO5l+l3Q==
+X-Google-Smtp-Source: AGHT+IFHiepWq3vTDb+HRBkxRdAsLmYtndO/QQpUJgvVSY+3A1b+srlVoCwN0ixgeEioddUXasf1pA==
+X-Received: by 2002:a05:6402:792:b0:51d:fa7c:c330 with SMTP id d18-20020a056402079200b0051dfa7cc330mr8460833edy.26.1692039987311;
+        Mon, 14 Aug 2023 12:06:27 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id t8-20020a056402020800b005236b47116asm5862939edv.70.2023.08.14.12.06.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Aug 2023 12:06:26 -0700 (PDT)
+Message-ID: <fae2d136-28e3-d3a1-c789-8552e8f59a15@linaro.org>
+Date:   Mon, 14 Aug 2023 21:06:24 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAa6QmSrwe2m4MjS9mGO+DeGNGSv=B2uZ72EAxnZk2jsDh39rQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 2/5] dt-bindings: mfd: syscon: Add compatibles for
+ Loongson-1 syscon
+To:     Keguang Zhang <keguang.zhang@gmail.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+References: <20230812151135.1028780-1-keguang.zhang@gmail.com>
+ <20230812151135.1028780-3-keguang.zhang@gmail.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230812151135.1028780-3-keguang.zhang@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 11:47:50AM -0700, Zach O'Keefe wrote:
-> Willy -- I'm not up-to-date on what is happening on the THP-fs front.
-> Should we be checking for a ->huge_fault handler here?
+On 12/08/2023 17:11, Keguang Zhang wrote:
+> Add Loongson LS1B and LS1C compatibles for system controller.
+> 
+> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/mfd/syscon.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
+> index 8103154bbb52..c77d7b155a4c 100644
+> --- a/Documentation/devicetree/bindings/mfd/syscon.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+> @@ -49,6 +49,8 @@ properties:
+>                - hisilicon,peri-subctrl
+>                - hpe,gxp-sysreg
+>                - intel,lgm-syscon
+> +              - loongson,ls1b-syscon
+> +              - loongson,ls1c-syscon
 
-Oh, thank goodness, I thought you were cc'ing me to ask a DAX question ...
+It seems each SoC has multiple syscons so using the same compatible is
+wrong. Different devices should have different compatibles.
 
-From a large folios perspective, filesystems do not implement a special
-handler.  They call filemap_fault() (directly or indirectly) from their
-->fault handler.  If there is already a folio in the page cache which
-satisfies this fault, we insert it into the page tables (no matter what
-size it is).  If there is no folio, we call readahead to populate that
-index in the page cache, and probably some other indices around it.
-That's do_sync_mmap_readahead().
+Best regards,
+Krzysztof
 
-If you look at that, you'll see that we check the VM_HUGEPAGE flag, and
-if set we align to a PMD boundary and read two PMD-size pages (so that we
-can do async readahead for the second page, if we're doing a linear scan).
-If the VM_HUGEPAGE flag isn't set, we'll use the readahead algorithm to
-decide how large the folio should be that we're reading into; if it's a
-random read workload, we'll stick to order-0 pages, but if we're getting
-good hit rate from the linear scan, we'll increase the size (although
-we won't go past PMD size)
-
-There's also the ->map_pages() optimisation which handles page faults
-locklessly, and will fail back to ->fault() if there's even a light
-breeze.  I don't think that's of any particular use in answering your
-question, so I'm not going into details about it.
-
-I'm not sure I understand the code that's being modified well enough to
-be able to give you a straight answer to your question, but hopefully
-this is helpful to you.
