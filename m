@@ -2,157 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BBE77B223
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5642277B226
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234039AbjHNHMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 03:12:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47510 "EHLO
+        id S232459AbjHNHON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 03:14:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234108AbjHNHLv (ORCPT
+        with ESMTP id S230292AbjHNHNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 03:11:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD61E71;
-        Mon, 14 Aug 2023 00:11:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691997107; x=1723533107;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=5sM6DJTWLycTUGGe9xX3afJEUXb/a6vzz3ZM1xTgFVI=;
-  b=hnTBwD5zqkF6UQ/aVoCIph1UvmhFnSCANKJyzZhym45PbHIWEki7IAPP
-   PQHBpxSAEaqCsbTIkFJXtixi1PkPailRSq78wD/FqcztY2SpFZO3/4bvX
-   pYmaQTK/L9sdaP8ItREjyjm91E9QeJWFvIdVLGg13dcm/AbjThrn+wkFM
-   4L9vQUb276+5EjBjzCj7o+vnI5af7r7vKaWrW3XhYCIHwCXhj3VGX2gqt
-   KKIpd2LAGx+FRswsg5fuQOkuDcm1bn+UuGEzDD4BTbPVS0hEKcsPTHKIB
-   wQ27dO31Hgk4wabf33pjZl3xeEEzevdLJAS79OrKFyY0oTqCKDDKelQOj
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="362129920"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="362129920"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 00:11:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="762852526"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="762852526"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.51.71])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 00:11:45 -0700
-Message-ID: <b2332dd5-e01e-dc61-e19c-55cf9a684ca2@intel.com>
-Date:   Mon, 14 Aug 2023 10:11:40 +0300
+        Mon, 14 Aug 2023 03:13:45 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80885E73
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 00:13:44 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-79a31d66002so954583241.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 00:13:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1691997223; x=1692602023;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CSIK9vN5r70ncmMdebOkMIKtWkePzDpm57uyC3G4UH8=;
+        b=iaNG1cJrOV0dzhsepgxiEcxg4nIGEmzMvQWlyAMw+GvnJBZkqVE30Sui1FcKGawgdJ
+         J6XrlLwi/GIA+x2ohuuNNRNoxixM0yjMyHdIQjP79xYEyEPhDhki9PmeT1O51anBhs7F
+         YS0tz4o8t9TWtOqDzEyxlPv+D1paaJadb+uevRkBbbXs+jbTreY1Eqw0bQ7tMo1THDfC
+         h7L1ks1s4YhgH3/xVYRisMyGV0cblz6J4UdrO3E0E+1tqaea+kS4rOxmSoQez3hnNe3W
+         x/1WO4BeLM76QTMIzManhDLHTvh2jFyHdGRNFdTCIYJ3IgIzE4IwCWBgMhGKyQo1I9n2
+         PTTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691997223; x=1692602023;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CSIK9vN5r70ncmMdebOkMIKtWkePzDpm57uyC3G4UH8=;
+        b=RFlHI6SbH89M1j/PBrZzEh+TnYmcIBQ+FhrytpgC2BPzb7gVpnZd9RqaVWnXTYaZhD
+         BzogFN3CdtP6kfH1vtX8c/HLfCVYWvZZhCLXUs+nj/a8FkQgxmMX/p7Z8n6X9n3DDM1M
+         KmOALeiCntllMTwr73mOrWOF6DSEk+8v9adWt5MYH1/rRER2sOiRUocdYiBpM7r09kDn
+         CzBp48rxdUPIJJvPbQTNrtFTObsCZcT/1R2jH5YRoF6brsYkUJRrqjkGGa9VQJVOuOq8
+         A2jB0JFivHrZgy3JPm2P8rmyOeWrRfyx8QJGWe8G+X3zVR2jKIyvLIbqOOi0UgKv79GX
+         Vzxw==
+X-Gm-Message-State: AOJu0YwqpvuV4vhuRxtkDYA4xytd8aJ0RUspcuoLm0XJ95YqgAylXBIe
+        PPwfcInwktx+lEGYMUHoXK5IdenHuchZDcAC67TQVA==
+X-Google-Smtp-Source: AGHT+IFkXkHNqkqt6aq7tslsKJBIm6XGqaxq7BjVjeT9wmj8RKndPrn/a8I+WF4tzv2E+MB9LhW+S1vEb+e86iTbpPE=
+X-Received: by 2002:a67:e28d:0:b0:447:4665:b465 with SMTP id
+ g13-20020a67e28d000000b004474665b465mr8850474vsf.19.1691997223159; Mon, 14
+ Aug 2023 00:13:43 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.14.0
-Subject: Re: [PATCH] perf tools: Handle old data in PERF_RECORD_ATTR
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-References: <20230807061652.2492167-1-namhyung@kernel.org>
-Content-Language: en-US
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20230807061652.2492167-1-namhyung@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230812194457.6432-1-brgl@bgdev.pl> <20230812194457.6432-4-brgl@bgdev.pl>
+ <ZNl9Ok0JsI+S0Apx@yury-ThinkPad>
+In-Reply-To: <ZNl9Ok0JsI+S0Apx@yury-ThinkPad>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 14 Aug 2023 09:13:32 +0200
+Message-ID: <CAMRc=MeGXHj2bMsbqS=AK_R2V5EttPw016TO1ZU3HXhEV-tqXQ@mail.gmail.com>
+Subject: Re: [PATCH 3/4] bitmap: define a cleanup function for bitmaps
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/08/23 09:16, Namhyung Kim wrote:
-> The PERF_RECORD_ATTR is used for a pipe mode to describe an event with
-> attribute and IDs.  The ID table comes after the attr and it calculate
-> size of the table using the total record size and the attr size.
-> 
->   n_ids = (total_record_size - end_of_the_attr_field) / sizeof(u64)
-> 
-> This is fine for most use cases, but sometimes it saves the pipe output
-> in a file and then process it later.  And it becomes a problem if there
-> is a change in attr size between the record and report.
-> 
->   $ perf record -o- > perf-pipe.data  # old version
->   $ perf report -i- < perf-pipe.data  # new version
-> 
-> For example, if the attr size is 128 and it has 4 IDs, then it would
-> save them in 168 byte like below:
-> 
->    8 byte: perf event header { .type = PERF_RECORD_ATTR, .size = 168 },
->  128 byte: perf event attr { .size = 128, ... },
->   32 byte: event IDs [] = { 1234, 1235, 1236, 1237 },
-> 
-> But when report later, it thinks the attr size is 136 then it only read
-> the last 3 entries as ID.
-> 
->    8 byte: perf event header { .type = PERF_RECORD_ATTR, .size = 168 },
->  136 byte: perf event attr { .size = 136, ... },
->   24 byte: event IDs [] = { 1235, 1236, 1237 },  // 1234 is missing
-> 
-> So it should use the recorded version of the attr.  The attr has the
-> size field already then it should honor the size when reading data.
-> 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/util/header.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-> index 52fbf526fe74..f89321cbfdee 100644
-> --- a/tools/perf/util/header.c
-> +++ b/tools/perf/util/header.c
-> @@ -4381,7 +4381,8 @@ int perf_event__process_attr(struct perf_tool *tool __maybe_unused,
->  			     union perf_event *event,
->  			     struct evlist **pevlist)
->  {
-> -	u32 i, ids, n_ids;
-> +	u32 i, n_ids;
-> +	u64 *ids;
->  	struct evsel *evsel;
->  	struct evlist *evlist = *pevlist;
->  
-> @@ -4397,9 +4398,8 @@ int perf_event__process_attr(struct perf_tool *tool __maybe_unused,
->  
->  	evlist__add(evlist, evsel);
->  
-> -	ids = event->header.size;
-> -	ids -= (void *)&event->attr.id - (void *)event;
-> -	n_ids = ids / sizeof(u64);
-> +	n_ids = event->header.size - sizeof(event->header) - event->attr.attr.size;
-> +	n_ids = n_ids / sizeof(u64);
->  	/*
->  	 * We don't have the cpu and thread maps on the header, so
->  	 * for allocating the perf_sample_id table we fake 1 cpu and
-> @@ -4408,8 +4408,9 @@ int perf_event__process_attr(struct perf_tool *tool __maybe_unused,
->  	if (perf_evsel__alloc_id(&evsel->core, 1, n_ids))
->  		return -ENOMEM;
->  
-> +	ids = (void *)&event->attr.attr + event->attr.attr.size;
->  	for (i = 0; i < n_ids; i++) {
-> -		perf_evlist__id_add(&evlist->core, &evsel->core, 0, i, event->attr.id[i]);
-> +		perf_evlist__id_add(&evlist->core, &evsel->core, 0, i, ids[i]);
->  	}
->  
->  	return 0;
+On Mon, Aug 14, 2023 at 3:02=E2=80=AFAM Yury Norov <yury.norov@gmail.com> w=
+rote:
+>
+> On Sat, Aug 12, 2023 at 09:44:56PM +0200, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > Add support for autopointers for bitmaps allocated with bitmap_alloc()
+> > et al.
+> >
+> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > ---
+> >  include/linux/bitmap.h | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+> > index 03644237e1ef..6709807ebb59 100644
+> > --- a/include/linux/bitmap.h
+> > +++ b/include/linux/bitmap.h
+> > @@ -6,6 +6,7 @@
+> >
+> >  #include <linux/align.h>
+> >  #include <linux/bitops.h>
+> > +#include <linux/cleanup.h>
+> >  #include <linux/find.h>
+> >  #include <linux/limits.h>
+> >  #include <linux/string.h>
+> > @@ -125,6 +126,8 @@ unsigned long *bitmap_alloc_node(unsigned int nbits=
+, gfp_t flags, int node);
+> >  unsigned long *bitmap_zalloc_node(unsigned int nbits, gfp_t flags, int=
+ node);
+> >  void bitmap_free(const unsigned long *bitmap);
+> >
+> > +DEFINE_FREE(bitmap, unsigned long *, if (_T) bitmap_free(_T))
+>
+> bitmap_free() is a wrapper around kfree(), and kfree() checks against
+> NULL, and returns immediately. Why this tests again?
 
-This is a good catch!
+I don't see any kernel docs making it a contract though. :)
 
-It looks like perf_event__hdr_swap() might also have this problem.
+It's a good question however. I carried it over from the kfree()'s
+DEFINE_FREE() itself. I can't find any discussion about it in the
+thread under Peter Zijlstra's patches.
 
-I wonder if we should remove 'id' from struct perf_record_header_attr
-since the position is not guaranteed?
+May be worth revisiting it for free() functions that handle NULL.
 
-Probably could use a comment there either way.
-
-Also perhaps a fixes tag and cc stable
-
+Bart
