@@ -2,118 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2557777C206
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 23:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94EBF77C208
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 23:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232628AbjHNVCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 17:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38628 "EHLO
+        id S232666AbjHNVDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 17:03:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232879AbjHNVBk (ORCPT
+        with ESMTP id S232704AbjHNVCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 17:01:40 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0BCE199F
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:01:13 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-26b4cf4f7b9so1019381a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:01:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20221208.gappssmtp.com; s=20221208; t=1692046873; x=1692651673;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RnOqfXebl5dRNUljflWYEjtYdatKhTnC4hi2EDyy3rE=;
-        b=f+mEmzgNuQSxLlf1UxAtmo6Xr2Chh74/KT2SGtB4Uyic5HM7yZZU1RBC10Kl8xqQ/W
-         02J31pTYLLLGXokaE7rm/p7zFgPiBbeXCfyrNz8Jna9t2q9JeLKRFoK53nF241hyOkoo
-         0ckUDmz5DEwchQ+H5W4az68Ntwo/6ZvAPVhTPHVedPrVYIF6g5ZykgeS8IsgvPInsL6N
-         Yfte/JwM7v0eODQ/sucspVhNQbDL/F6r/HywLGUEiKXCOdOAvCfmEkAs+ptoQUSCoDoP
-         U2/B0a/Kq+5r/Yom0IqKkkVvB8pdgl6JMsV/fExMwTYhdsGmQs1ahycGJl2W/EX0C7Ue
-         z6FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692046873; x=1692651673;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RnOqfXebl5dRNUljflWYEjtYdatKhTnC4hi2EDyy3rE=;
-        b=Bn/C2MJss+FbqQqXpDLlyZEF96J5676xrpWCRQOD8r8pk5e87fVFzCEr+gWdGNJ18Q
-         yHHzAOFg94nLRisdLXV9f8voATEIL/SYeCj7ViNG164giP1g7nifLv7ZEfFaXIvpwy2y
-         wnXc+In8mXU5epBMgzUv4av8aiyG7CRdBI6ev1dfDR0tYNEUksyOzA8/E/tLC4Qnc/+w
-         cTczHQq6h4UcU7Q5VpRweYI4LXSYWgBRS9rPbuQQASa45EralULlO/I5RXI9THSyJZix
-         2I9LhHbQxJ+Qd/Yoq/6Lw87MVB1irWRCcWL7rWAanAVQtihg2wb+ufTYgPaR4iFzmBkA
-         BkCw==
-X-Gm-Message-State: AOJu0Ywdw86eXJsvva+Ec6a5nFzDGt55EHoJd1yhzAR+Z/jdpscIf1D+
-        RWFiF/S1jWcZz3P01eAXYkhP7g==
-X-Google-Smtp-Source: AGHT+IHKNceQUmeAFhyH23LTGWMQK0GUOJmI4GMnK7wvaQ5bf2A5drLHyKcLWNJ7Ia+S/WbNSTQ+Yw==
-X-Received: by 2002:a17:90a:e584:b0:267:f758:15d4 with SMTP id g4-20020a17090ae58400b00267f75815d4mr6835511pjz.48.1692046872860;
-        Mon, 14 Aug 2023 14:01:12 -0700 (PDT)
-Received: from hermes.local (204-195-127-207.wavecable.com. [204.195.127.207])
-        by smtp.gmail.com with ESMTPSA id gk18-20020a17090b119200b00263ba6a248bsm10469478pjb.1.2023.08.14.14.01.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 14:01:12 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 14:01:10 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     =?UTF-8?B?RnJhbsOnb2lz?= Michel <francois.michel@uclouvain.be>
-Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 2/3] [PATCH 2/3] netem: allow using a seeded
- PRNG for generating random losses
-Message-ID: <20230814140110.0b35eb8b@hermes.local>
-In-Reply-To: <dffa41e5-cde3-5b88-9539-9c03d9e10807@uclouvain.be>
-References: <20230814023147.1389074-1-francois.michel@uclouvain.be>
-        <20230814023147.1389074-3-francois.michel@uclouvain.be>
-        <20230814084907.18c339c2@hermes.local>
-        <dffa41e5-cde3-5b88-9539-9c03d9e10807@uclouvain.be>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Mon, 14 Aug 2023 17:02:53 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D8EC3;
+        Mon, 14 Aug 2023 14:02:47 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 757A73200920;
+        Mon, 14 Aug 2023 17:02:46 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Mon, 14 Aug 2023 17:02:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1692046965; x=1692133365; bh=PK
+        wgtqkR2y/xbPvM4PfA1+c92fw2z23WvdUcv3+4Y6A=; b=Vksnh44SXZxKX91cKi
+        ZZB0JmenLJqM0l0EmOQ9ye965AMryOOEiBSIZC7Ewlqyq+SKXvZgTIjIlp/T5sGc
+        JVfoTKnuWboSv974qal5XQ5p9F+ThdiWJPZutwkp4qvedYIrejHmMQjzCQUFZkxt
+        46n+SEo88aKmd3J3AlT8xv+7/D/vG++TVh6iF+A/n5K1yKTXnrYw+andkOeUI35Z
+        qhOv7wCUUCUIQ42BetaHUhZf1EMokaTD4z+X1ltHh18TMr8U5hSmGk1T5kFl5paX
+        GHfvD+vfVkZs8G1tNpS3QoC6CFzzYjQP+W0fWfGKCoNH4B9/im9f4JQrwK8ONGnr
+        gVgw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1692046965; x=1692133365; bh=PKwgtqkR2y/xb
+        PvM4PfA1+c92fw2z23WvdUcv3+4Y6A=; b=g51ohYsBF1oxGw9oHbUkfFQjtr2ow
+        AE9TDgZlLnL8FusKBIhMEw/lUbyqapPjR7KPzXczFDgmY4XEASq3nN9QucksGrLG
+        VaEf2/LfqdbXYG0hW5+GlNzpDXI75Mq4/zOzKs5xwWSFMq98QLtYKw+ipZUjXSzD
+        RL55kk73RE4JYzO8ncuBlxb1YBdQKfQc+aDfVQrZAyZN+K9CoXsRB8Tzo8ECa54G
+        1Ox+f0G4yWUQuQsDRLOL2p08UHw56sYGcB2NFJctcPnQuXOfp6NcZvU0/iBHd7h3
+        4HO8EvAe7NJC2LhAPY0NDIIctLtaUr/WTcKl3TPbhoHK0KhurqvCpAXmw==
+X-ME-Sender: <xms:dZbaZOiYIvJnT0qpkl1KrH1lIasxqseprJGSvC00I7OtpZ76FD1WBQ>
+    <xme:dZbaZPCm8ZtPk_OijwGUY4KxPz8l1_tBN9Gjp3SpQ4Be-gwrUDhhtIqAYo7AtQrAp
+    9_uxEQ1Ug3KO5Q5quQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddthedgvdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:dZbaZGEMgH4ALgY_bQB3Ww5zg-bo48p1Oem-2KG4SGDBDflK1Uzq2w>
+    <xmx:dZbaZHTX87NyuY-Cl-M8nI8ABqvr_QUZJJq-DXUPjBr1I5m2Hjao5w>
+    <xmx:dZbaZLy4mCWfnjj_B8dipMa4hbDg3fQhuaoEzKurKquScc-Etl41pg>
+    <xmx:dZbaZCkIiLQYDVxM_oNacOwAECa8PjXRMA9ZiGl9Cb6mCVhswOPp6g>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 69108B6008D; Mon, 14 Aug 2023 17:02:45 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
+Mime-Version: 1.0
+Message-Id: <b29731ef-0a72-402c-846a-b37d86712641@app.fastmail.com>
+In-Reply-To: <9a6b2c18b599e5c2e7cea99fec84a4ecb5092da5.camel@sipsolutions.net>
+References: <20230616090343.2454061-1-arnd@kernel.org>
+ <9a6b2c18b599e5c2e7cea99fec84a4ecb5092da5.camel@sipsolutions.net>
+Date:   Mon, 14 Aug 2023 23:02:19 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Johannes Berg" <johannes@sipsolutions.net>,
+        "Arnd Bergmann" <arnd@kernel.org>,
+        "Gregory Greenman" <gregory.greenman@intel.com>,
+        "Kalle Valo" <kvalo@kernel.org>,
+        "Luca Coelho" <luciano.coelho@intel.com>,
+        "Shahar S Matityahu" <shahar.s.matityahu@intel.com>
+Cc:     "Mukesh Sisodiya" <mukesh.sisodiya@intel.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iwlwifi: dbg_ini: fix structure packing
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,T_SPF_TEMPERROR
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Aug 2023 22:14:53 +0200
-Fran=C3=A7ois Michel <francois.michel@uclouvain.be> wrote:
+On Mon, Aug 14, 2023, at 20:28, Johannes Berg wrote:
+> On Fri, 2023-06-16 at 11:03 +0200, Arnd Bergmann wrote:
+>> 
+>> As the original intention was apparently to make the entire structure
+>> unaligned, mark the innermost members the same way so the union
+>> becomes packed as well.
+>
+> Hm. Not sure exactly what you mean by that, but shouldn't we make that
+> "union { ... } __packed"?
 
-> Thank you very much for your comment.
->=20
-> I do not use prandom_u32_state() directly in order to ensure
-> that the original netem behaviour is preserved when no seed is specified.
->=20
-> But I agree that it would be cleaner to directly use prandom_u32_state()=
-=20
-> instead of get_random_u32(), if we are sure that we won't have problems=20
-> (e.g. short prng cycles) with the randomly generated seeds when no seed=20
-> is explicitly provided. If it is okay, then
-> I don't see a reason to not use prandom_u32_state() directly.
->=20
-> I'll make an update of the patch taking these comments into account and=20
-> simplifying the patch.
->=20
-> Thank you !
->=20
-> Fran=C3=A7ois
+Up to you, the effect is the same, as the other two members are already
+packed. I generally try to keep the packing to the members that are
+actually unaligned, to make the code more efficient, but in this case
+the entire structure is unaligned, so it doesn't matter.
 
-Older versions of netem had prandom_u32_state() equivalent built inside.
-The code was split out later to be usable in other places.
-Over time, get_random_u32() was added because it was more random and
-there were calls to unify random number usage.
-
-The prandom was based on Tausworthe to have good long simulation cycles
-and reasonable performance.
-
-Going back to prandom always is good idea, since get_random_u32()
-has addition locking and batched entropy which netem really doesn't need/wa=
-nt.
-
-
-
+      Arnd
