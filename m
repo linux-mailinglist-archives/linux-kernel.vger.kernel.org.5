@@ -2,67 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D0777BF1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 19:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 494EC77BF1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 19:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbjHNRhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 13:37:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39250 "EHLO
+        id S231192AbjHNRiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 13:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231477AbjHNRh0 (ORCPT
+        with ESMTP id S231158AbjHNRhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 13:37:26 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02926172A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 10:37:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
- s=s31663417; t=1692034632; x=1692639432; i=j.neuschaefer@gmx.net;
- bh=jGenBMxga4rsDnHEFrI1uwBNqH4WYg0F7v+WcEBMdpQ=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
- b=jABlkrhtwSCw8IfLNwPdEF+/aY4BsZ21gjWVf88kg+pCCoDQmycZYmx/cwGUTHzCGC9K+BD
- P1RgENN2BOQoAeJdPLD4t4A/hG4yRS8abKjUXgNhrodhhZsIiy2CgR3hFZWY4YC+7ZDxd1wVw
- T06dFlrXPwNdWsw4Ua/Fq3HvtR6eQXSQX9YgAGqTkG84SxIlza2F5Rmzow821JAI9nn/8pS5e
- BAGvNRGNhkaAIktUZYsy185KeVEfBCXvQ5QQZ8l/IqJSzbGpJ3aytjUR0B5miP3768x9UCuM1
- Gd74txD/mEQ6RcRZ5wduR9SzoRoKQVj0NA7hTd0GtPO7XMn6peYw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from probook ([151.216.154.44]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MSKuA-1qKVfs08gS-00Sj1T; Mon, 14
- Aug 2023 19:37:12 +0200
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] bitmap: Fix a typo ("identify map")
-Date:   Mon, 14 Aug 2023 19:37:08 +0200
-Message-Id: <20230814173708.1746905-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.40.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Mon, 14 Aug 2023 13:37:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F1F6170B;
+        Mon, 14 Aug 2023 10:37:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A61BF64141;
+        Mon, 14 Aug 2023 17:37:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75A4EC433C8;
+        Mon, 14 Aug 2023 17:37:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692034645;
+        bh=LHvuxUi4RS4zNS43gxo6HisRbG6Z81b+jiNk7yx4v18=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lRsS6jInqQYknu3yxKOTH7xPoDGz80KcRLcnoP5+qinRRAotvoNURx0u3kcTg+RtN
+         x2n9cbhBWo68IGoBQh/w98jCLPnScCjtVoCzcUDh/nms9JoWwXt8d1eH5Cx6xIJf9e
+         +SxV1DvElnB6K9xnRcUkMoYZ5WFz4PtVwVQhEGbiEc0W6jSRrRnUvb7UZsyJ/+3VZQ
+         GwFu57ibzvQvQMGd6E4CP9wX+Q+DPndgWNoHArRRQp5kasV+RSQVgS/LvRK4kQtUll
+         0tSDqS684FY2F22aw4OnvxylLBJAgp8+57WYn/ohFh2krUVWSRNj4tzCKpXbNL3PHq
+         lnPox45IE+Xow==
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:I5I78qM0YnrUELdYt+c9dlWuHk0TDo0FTgkCXtShnJwBxjsGNgP
- KArdOyMDMfY4hKDcLWntGPloxVbxCmJ/sh0QBIoZNGAzPE5ozlltoQWoIGouqLIbe15064X
- oxzB2BWe7HsjBJbXRbKFRsDpevBU5ZHK9RYrywPBLvMWC3JhebKabD/yVUp/fa1A6n2VPLE
- tl8RM7l//C61wjo78Os1A==
-UI-OutboundReport: notjunk:1;M01:P0:2UrpGbG0gjw=;O44wm2LTiwV3PJ3kYl+ReuxNCTK
- 1bEfarOd4aIUsAGwykSl6wTk77lUgIYXHipyoUcruXRNDdoGVLPnUT1DE0iQLww3g/4TNgXYv
- /dzRemZ8IW+P8TqiLEq+voo5f7zHwGQPf6iYH1yqgvo2xISAcwQMKJpMpGKf0plHG1/tSCfaw
- W4SVFwu3yJmbt1+pKw3KvNYz9SbLrjsYZOzZfa/AbH3i3ul7opSNHzCxQi5lJHJRFU6fz8w4+
- K8RH41Y/yrW/9oVHwd2yxmLUBQmNF0Abz0en8Lh2yl1mUZKws9JCkLHbH5tu/JETibByWihOB
- VNiQ2IsLGcNiArR8sP1i8VmfwkIcUNLZefNxOxUDpiGq4MBYpSe+zQVbXQxciR5aOwW6PEyXO
- IPR5vyZdQl34Y3VzHAsbKGttaiUC7Qpge4RiICbhVyg+6orGtFCQlzaxDDiUSvcQhQNQQ764/
- KjWVOyqwM0N3POgAI7QVTG4UP2gVDCO84SPwgpIKeVnebQJH8wkLd+MS9wGINwbg+m8NFxbiT
- jffY9iRlw2Td5ODdFBCX+iFdJp+MoPsrr39lW8/qAv6mhb+l/NcYiQ9WmhP+FUpyyTP73uMTY
- 36ula9x40o234cpm8rVJcGjQMGTbM4q5/4X0nVaLWLPAA9UIwRIVYom8yTEXBkJca0viu6lv4
- cl1R6z0FEWTUNujf4PgyVBXv5DSYKcf/8hiYDjExYIs3v96Mg1Kp3+gwCIek6FvQLOjEGqt/W
- 2zOUH7NDjbmyGindu/qAnukE+24hrQituKTIrcZ2DfEM2/fMP+aZjAIK4L2M/bq2nbfNqnMNx
- mPz0ubzlfQ6cYvY3c3PVQ7bnh7vqE/JYN0xgPyF5gZQLuidXoXv9jnCLxC/5dr6Sdg6hNy3N7
- icYVGpJjO5pm1VdpEJ/N2wpe1c5ePLN7v45S9gVQC+pNfEG74GS/kFJEBgAomsap5ndOIi3ny
- 2kRg6fm4J4n1M72mKrIQlUm61OI=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 14 Aug 2023 20:37:21 +0300
+Message-Id: <CUSG7ZDGZ5N4.37KMXB8BFPWKI@suppilovahvero>
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Nayna Jain" <nayna@linux.ibm.com>,
+        <linux-integrity@vger.kernel.org>
+Cc:     "Mimi Zohar" <zohar@linux.ibm.com>,
+        "Eric Snowberg" <eric.snowberg@oracle.com>,
+        "Paul Moore" <paul@paul-moore.com>,
+        <linux-security-module@vger.kernel.org>,
+        "linuxppc-dev" <linuxppc-dev@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/6] integrity: PowerVM support for loading CA keys
+ on machine keyring
+X-Mailer: aerc 0.14.0
+References: <20230813021531.1382815-1-nayna@linux.ibm.com>
+ <20230813021531.1382815-2-nayna@linux.ibm.com>
+In-Reply-To: <20230813021531.1382815-2-nayna@linux.ibm.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,42 +62,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A map in which each element is mapped to itself is called an "identity
-map".
+On Sun Aug 13, 2023 at 5:15 AM EEST, Nayna Jain wrote:
+> Keys that derive their trust from an entity such as a security officer,
+> administrator, system owner, or machine owner are said to have "imputed
+> trust". CA keys with imputed trust can be loaded onto the machine keyring=
+.
+> The mechanism for loading these keys onto the machine keyring is platform
+> dependent.
+>
+> Load keys stored in the variable trustedcadb onto the .machine keyring
+> on PowerVM platform.
+>
+> Signed-off-by: Nayna Jain <nayna@linux.ibm.com>
+> Reviewed-and-tested-by: Mimi Zohar <zohar@linux.ibm.com>
+> ---
+>  .../integrity/platform_certs/keyring_handler.c  |  8 ++++++++
+>  .../integrity/platform_certs/keyring_handler.h  |  5 +++++
+>  .../integrity/platform_certs/load_powerpc.c     | 17 +++++++++++++++++
+>  3 files changed, 30 insertions(+)
+>
+> diff --git a/security/integrity/platform_certs/keyring_handler.c b/securi=
+ty/integrity/platform_certs/keyring_handler.c
+> index 8a1124e4d769..1649d047e3b8 100644
+> --- a/security/integrity/platform_certs/keyring_handler.c
+> +++ b/security/integrity/platform_certs/keyring_handler.c
+> @@ -69,6 +69,14 @@ __init efi_element_handler_t get_handler_for_mok(const=
+ efi_guid_t *sig_type)
+>  	return NULL;
+>  }
+> =20
+> +__init efi_element_handler_t get_handler_for_ca_keys(const efi_guid_t *s=
+ig_type)
+> +{
+> +	if (efi_guidcmp(*sig_type, efi_cert_x509_guid) =3D=3D 0)
+> +		return add_to_machine_keyring;
+> +
+> +	return NULL;
+> +}
+> +
+>  /*
+>   * Return the appropriate handler for particular signature list types fo=
+und in
+>   * the UEFI dbx and MokListXRT tables.
+> diff --git a/security/integrity/platform_certs/keyring_handler.h b/securi=
+ty/integrity/platform_certs/keyring_handler.h
+> index 212d894a8c0c..6f15bb4cc8dc 100644
+> --- a/security/integrity/platform_certs/keyring_handler.h
+> +++ b/security/integrity/platform_certs/keyring_handler.h
+> @@ -29,6 +29,11 @@ efi_element_handler_t get_handler_for_db(const efi_gui=
+d_t *sig_type);
+>   */
+>  efi_element_handler_t get_handler_for_mok(const efi_guid_t *sig_type);
+> =20
+> +/*
+> + * Return the handler for particular signature list types for CA keys.
+> + */
+> +efi_element_handler_t get_handler_for_ca_keys(const efi_guid_t *sig_type=
+);
+> +
+>  /*
+>   * Return the handler for particular signature list types found in the d=
+bx.
+>   */
+> diff --git a/security/integrity/platform_certs/load_powerpc.c b/security/=
+integrity/platform_certs/load_powerpc.c
+> index 170789dc63d2..6263ce3b3f1e 100644
+> --- a/security/integrity/platform_certs/load_powerpc.c
+> +++ b/security/integrity/platform_certs/load_powerpc.c
+> @@ -59,6 +59,7 @@ static __init void *get_cert_list(u8 *key, unsigned lon=
+g keylen, u64 *size)
+>  static int __init load_powerpc_certs(void)
+>  {
+>  	void *db =3D NULL, *dbx =3D NULL, *data =3D NULL;
+> +	void *trustedca =3D NULL;
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-=2D--
+Could this be just "void *trustedca;" ?
 
-v2:
-- Add R-b
-=2D--
- lib/bitmap.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+>  	u64 dsize =3D 0;
+>  	u64 offset =3D 0;
+>  	int rc =3D 0;
+> @@ -120,6 +121,22 @@ static int __init load_powerpc_certs(void)
+>  		kfree(data);
+>  	}
+> =20
+> +	data =3D get_cert_list("trustedcadb", 12,  &dsize);
+> +	if (!data) {
+> +		pr_info("Couldn't get trustedcadb list from firmware\n");
+> +	} else if (IS_ERR(data)) {
+> +		rc =3D PTR_ERR(data);
+> +		pr_err("Error reading trustedcadb from firmware: %d\n", rc);
+> +	} else {
+> +		extract_esl(trustedca, data, dsize, offset);
+> +
+> +		rc =3D parse_efi_signature_list("powerpc:trustedca", trustedca, dsize,
+> +					      get_handler_for_ca_keys);
+> +		if (rc)
+> +			pr_err("Couldn't parse trustedcadb signatures: %d\n", rc);
+> +		kfree(data);
+> +	}
+> +
+>  	return rc;
+>  }
+>  late_initcall(load_powerpc_certs);
+> --=20
+> 2.31.1
 
-diff --git a/lib/bitmap.c b/lib/bitmap.c
-index ddb31015e38ae..24284caadbcc6 100644
-=2D-- a/lib/bitmap.c
-+++ b/lib/bitmap.c
-@@ -988,7 +988,7 @@ static int bitmap_pos_to_ord(const unsigned long *buf,=
- unsigned int pos, unsigne
-  * to @dst.
-  *
-  * The positions of unset bits in @old are mapped to themselves
-- * (the identify map).
-+ * (the identity map).
-  *
-  * Apply the above specified mapping to @src, placing the result in
-  * @dst, clearing any bits previously set in @dst.
-@@ -1037,7 +1037,7 @@ EXPORT_SYMBOL(bitmap_remap);
-  * the position of the m-th set bit in @new, where m =3D=3D n % w.
-  *
-  * The positions of unset bits in @old are mapped to themselves
-- * (the identify map).
-+ * (the identity map).
-  *
-  * Apply the above specified mapping to bit position @oldbit, returning
-  * the new bit position.
-=2D-
-2.40.1
-
+BR, Jarkko
