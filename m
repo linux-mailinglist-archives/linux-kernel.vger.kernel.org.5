@@ -2,129 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0818077AF3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 03:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE6F77AF43
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 03:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231491AbjHNBrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 21:47:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36852 "EHLO
+        id S230431AbjHNB5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 21:57:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232318AbjHNBqk (ORCPT
+        with ESMTP id S229472AbjHNB4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 21:46:40 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF4CE63;
-        Sun, 13 Aug 2023 18:46:37 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RPHLd6kLgz4f3lY2;
-        Mon, 14 Aug 2023 09:46:33 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP4 (Coremail) with SMTP id gCh0CgDnwqV5h9lkUqyjAg--.38273S2;
-        Mon, 14 Aug 2023 09:46:34 +0800 (CST)
-Subject: Re: [PATCH] kunit: replace KUNIT_TRIGGER_STATIC_STUB maro with
- KUNIT_STATIC_STUB_REDIRECT
-To:     David Gow <davidgow@google.com>
-Cc:     brendan.higgins@linux.dev, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org
-References: <20230725172051.2142641-1-shikemeng@huaweicloud.com>
- <CABVgOSn_k=TV4Y7pKTw5LY3su6r0TYi_ci95MKw7-wRHA1+MdA@mail.gmail.com>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <915f6336-fc33-c87e-01ac-a80550abbf61@huaweicloud.com>
-Date:   Mon, 14 Aug 2023 09:44:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        Sun, 13 Aug 2023 21:56:44 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2F1E54
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 18:56:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691978203; x=1723514203;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=F+QMvzi81yh+mFu9IZknTHoIchA90XpBkgqOg23VMWs=;
+  b=i248xEe0NoK/E0wi4l11X22Mje6dtH7+5l3fPQVlENHkTBUZZ171tVAw
+   +ANz25Ozt/a/w8xkZIi/zCnK7QJaxikVbUVdePhm+ZSVlRPElXMwm2f2Y
+   PbDgs87bATOXVImRQlSWZhzLdhuvANPbDYPT6/KrA2JFan5P4y8BY8zTr
+   6WShV7lmzcG/gOatM47lln+ARg8L5GnZ/Ma9HSuufCWnfJT8lHp7GgkC8
+   PoxaBl8bDzxNhJ6tMmJ9e8KhBYE3ca+8CEOA1xKUTZDSr8sChffW51Y7i
+   p2jPLBbZXACvq6ZQqteS8594VeasggbtKkKZR7kC1q9GnpvAzyyXGBOaV
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="351544224"
+X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
+   d="scan'208";a="351544224"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2023 18:56:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="733290602"
+X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
+   d="scan'208";a="733290602"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 13 Aug 2023 18:56:37 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qVMou-0009JE-1P;
+        Mon, 14 Aug 2023 01:56:36 +0000
+Date:   Mon, 14 Aug 2023 09:56:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>, perex@perex.cz,
+        tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
+        zhangyiqun@phytium.com.cn, peter.ujfalusi@linux.intel.com,
+        broonie@kernel.org, chenhuacai@kernel.org,
+        cezary.rojewski@intel.com, siyanteng@loongson.cn,
+        amadeuszx.slawinski@linux.intel.com, evan.quan@amd.com,
+        jasontao@glenfly.com, kai.vehmanen@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, mkumard@nvidia.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, CobeChen@zhaoxin.com,
+        TimGuo@zhaoxin.com, LeoLiu-oc@zhaoxin.com
+Subject: Re: [PATCH] ALSA: hda: Zhaoxin: Add HDAC PCI IDs and HDMI Codec
+ Vendor IDs
+Message-ID: <202308140952.khPgynBT-lkp@intel.com>
+References: <20230731055932.4336-1-TonyWWang-oc@zhaoxin.com>
 MIME-Version: 1.0
-In-Reply-To: <CABVgOSn_k=TV4Y7pKTw5LY3su6r0TYi_ci95MKw7-wRHA1+MdA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: gCh0CgDnwqV5h9lkUqyjAg--.38273S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWw48Aw47AF4DArWrAF18Xwb_yoW5Ww1xpa
-        93C3WUur1UJFs2kFyIvFW0qr1akws5Jr4Utr13Ww4Sqa13Wr1xKa1DKr1rK3yUW3ykJa90
-        vasIvFy5KayDArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1wL05UUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731055932.4336-1-TonyWWang-oc@zhaoxin.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Tony,
 
+kernel test robot noticed the following build warnings:
 
-on 8/12/2023 3:48 PM, David Gow wrote:
-> On Tue, 25 Jul 2023 at 17:20, Kemeng Shi <shikemeng@huaweicloud.com> wrote:
->>
->> We mix up KUNIT_TRIGGER_STATIC_STUB and KUNIT_STATIC_STUB_REDIRECT in
->> static_stub header. Just correct KUNIT_TRIGGER_STATIC_STUB to
->> KUNIT_STATIC_STUB_REDIRECT which is documented.
->>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->> ---
-> 
-> Thanks for catching this!
-> 
-> Only minor note is that there's a typo in the subject ("maro","macro").
-> 
-> Fixes: e047c5eaa763 ("kunit: Expose 'static stub' API to redirect functions")
-> Reviewed-by: David Gow <davidgow@google.com>
-> Thanks for the feedback, I will fix it in next version.
-> Cheers,
-> -- David
-> 
->>  include/kunit/static_stub.h | 6 +++---
->>  1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/include/kunit/static_stub.h b/include/kunit/static_stub.h
->> index 9b80150a5d62..85315c80b303 100644
->> --- a/include/kunit/static_stub.h
->> +++ b/include/kunit/static_stub.h
->> @@ -11,7 +11,7 @@
->>  #if !IS_ENABLED(CONFIG_KUNIT)
->>
->>  /* If CONFIG_KUNIT is not enabled, these stubs quietly disappear. */
->> -#define KUNIT_TRIGGER_STATIC_STUB(real_fn_name, args...) do {} while (0)
->> +#define KUNIT_STATIC_STUB_REDIRECT(real_fn_name, args...) do {} while (0)
->>
->>  #else
->>
->> @@ -30,7 +30,7 @@
->>   * This is a function prologue which is used to allow calls to the current
->>   * function to be redirected by a KUnit test. KUnit tests can call
->>   * kunit_activate_static_stub() to pass a replacement function in. The
->> - * replacement function will be called by KUNIT_TRIGGER_STATIC_STUB(), which
->> + * replacement function will be called by KUNIT_STATIC_STUB_REDIRECT(), which
->>   * will then return from the function. If the caller is not in a KUnit context,
->>   * the function will continue execution as normal.
->>   *
->> @@ -87,7 +87,7 @@ void __kunit_activate_static_stub(struct kunit *test,
->>   * When activated, calls to real_fn_addr from within this test (even if called
->>   * indirectly) will instead call replacement_addr. The function pointed to by
->>   * real_fn_addr must begin with the static stub prologue in
->> - * KUNIT_TRIGGER_STATIC_STUB() for this to work. real_fn_addr and
->> + * KUNIT_STATIC_STUB_REDIRECT() for this to work. real_fn_addr and
->>   * replacement_addr must have the same type.
->>   *
->>   * The redirection can be disabled again with kunit_deactivate_static_stub().
->> --
->> 2.30.0
->>
->> --
->> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
->> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
->> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20230725172051.2142641-1-shikemeng%40huaweicloud.com.
+[auto build test WARNING on tiwai-sound/for-next]
+[also build test WARNING on next-20230809]
+[cannot apply to tiwai-sound/for-linus linus/master v6.5-rc6]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Tony-W-Wang-oc/ALSA-hda-Zhaoxin-Add-HDAC-PCI-IDs-and-HDMI-Codec-Vendor-IDs/20230731-140118
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
+patch link:    https://lore.kernel.org/r/20230731055932.4336-1-TonyWWang-oc%40zhaoxin.com
+patch subject: [PATCH] ALSA: hda: Zhaoxin: Add HDAC PCI IDs and HDMI Codec Vendor IDs
+config: mips-randconfig-r073-20230814 (https://download.01.org/0day-ci/archive/20230814/202308140952.khPgynBT-lkp@intel.com/config)
+compiler: mips64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230814/202308140952.khPgynBT-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308140952.khPgynBT-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+   sound/pci/hda/hda_controller.c:1051:38: sparse: sparse: cast removes address space '__iomem' of expression
+>> sound/pci/hda/hda_controller.c:1051:66: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *mem @@     got char * @@
+   sound/pci/hda/hda_controller.c:1051:66: sparse:     expected void volatile [noderef] __iomem *mem
+   sound/pci/hda/hda_controller.c:1051:66: sparse:     got char *
+   sound/pci/hda/hda_controller.c:1053:44: sparse: sparse: cast removes address space '__iomem' of expression
+   sound/pci/hda/hda_controller.c:1053:72: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *mem @@     got char * @@
+   sound/pci/hda/hda_controller.c:1053:72: sparse:     expected void volatile [noderef] __iomem *mem
+   sound/pci/hda/hda_controller.c:1053:72: sparse:     got char *
+
+vim +1051 sound/pci/hda/hda_controller.c
+
+  1046	
+  1047	static void azx_rirb_zxdelay(struct azx *chip, int enable)
+  1048	{
+  1049		if (chip->remap_diu_addr) {
+  1050			if (!enable)
+> 1051				writel(0x0, (char *)chip->remap_diu_addr + 0x490a8);
+  1052			else
+  1053				writel(0x1000000, (char *)chip->remap_diu_addr + 0x490a8);
+  1054		}
+  1055	}
+  1056	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
