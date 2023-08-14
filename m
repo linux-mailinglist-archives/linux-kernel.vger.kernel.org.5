@@ -2,422 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B3177C1AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 303BE77C1AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231778AbjHNUqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 16:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38030 "EHLO
+        id S231970AbjHNUqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 16:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbjHNUpi (ORCPT
+        with ESMTP id S231321AbjHNUpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 16:45:38 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D061FD1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:45:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692045936; x=1723581936;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=uHHsKQ8gm/oUCXZtuCz3RCA1lsNEF652TlTyiHjWPjA=;
-  b=gpAxcQtDfBaPkjSXUzdRDYNkXr639bLvq0WPrssZchVYCocwSKOK7wq8
-   /Td1UzMI1mAW2le3aaBVv7cpGh09W54+j5tSeaU5prhNtrBvv7mtNWt8Y
-   +wZS7ebU0abUUqQWLsd2t3tO+7UTIBFlcMh011QqXkHjlIg46yFlXo67Z
-   Mgj7xq0KKpE+/Qpm+sxY2VvUNvG/Kf1/x1E9RrwHnDhtBbUAzru8IoP4O
-   9yEw0JLjyb/AEVBUft82QtCbV8hCJN7pPFd7SEEfnhmHjPzW7HyQRoiyg
-   FwTYn7xyf7ryDqnhTs3goEz0u5D0XcI32+VSn6x5PQqKaauMseTrY1cID
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="372130633"
-X-IronPort-AV: E=Sophos;i="6.01,173,1684825200"; 
-   d="scan'208";a="372130633"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 13:45:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="803584014"
-X-IronPort-AV: E=Sophos;i="6.01,173,1684825200"; 
-   d="scan'208";a="803584014"
-Received: from lkp-server02.sh.intel.com (HELO b5fb8d9e1ffc) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 14 Aug 2023 13:45:34 -0700
-Received: from kbuild by b5fb8d9e1ffc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qVeRR-0000PP-2n;
-        Mon, 14 Aug 2023 20:45:33 +0000
-Date:   Tue, 15 Aug 2023 04:45:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Christoph =?iso-8859-1?Q?B=F6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: drivers/block/drbd/drbd_receiver.c:416:7: warning: expression result
- unused
-Message-ID: <202308150414.eG2nMDlx-lkp@intel.com>
+        Mon, 14 Aug 2023 16:45:45 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7A4D1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:45:44 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6bca5d6dcedso4067380a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:45:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692045943; x=1692650743;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KoN76bPFfkcsnM64HQUZ7HA4CiGkKnsbkX3yxcOBzao=;
+        b=P3Vv56zYPMYpNQkPIs5DNZZixW9X1/AuRrkQkqJ9jqmPPCE/grxV5s2bNpk1/tqD5H
+         +XLNX9oVDfdYhVqmR9xV02lYtO5ow8OreUI8l35uaS0RFQ0mchcYanxAs91YrX4ND6Fq
+         m2xjjYA675jlb0xdhF92IJTpsx37rlsw4xTKM+sbuQKlM2uLtH553raVrcjibWjA6mm+
+         kEw71deG8w23okTtVraUUSYKEY1or9aDnyh6a+fHGTiiRxQdcVRiGydlMnQo2MCikpkd
+         kOp35TqNNovOiO/wzIQqFBNhvw7Fk2bthSiHixEKXn2dJrbkwvQot92s4/xf/HEsKFE6
+         Q0AA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692045943; x=1692650743;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KoN76bPFfkcsnM64HQUZ7HA4CiGkKnsbkX3yxcOBzao=;
+        b=i31sjaQCLpt+FIhu6El88qFIY3wlKo8D3mjh0pt4oSF7YmSjBzUf96vEae/TdnN8GE
+         DiRk4DzwQ+g3KvPPUYivMrJ8EYHLW6EBFtnou+DU5ghrYdjmMb7MTZYcKpoPcXr1wWtj
+         FXSMQxDCOl+quEUZYUzJeNJow8K9WrFkk3gBPUsfZFPNLI8Z6SrIb/z8GNEmsMQzicdE
+         /j2UTPYpq8bpOYLeafjon1Iffl1MJNvKTY4KIYXxzU47AhYl8+iw1wmx8l+l0VY/z6Gg
+         OrRSnQfBIe/vFLaucjOeSOoCDIduvMdfiBnVv1+zUS0j4TAKj09nnS/pWVq090Xjowni
+         sXIQ==
+X-Gm-Message-State: AOJu0YyU2hbsKK/z30+1yiUD/K9J3D/Qb3JJBYlM+luaT3vMqv5RQ7s7
+        a1Z7jVtGfZ3DHqL9Su3+ZuTn6JFdFkA=
+X-Google-Smtp-Source: AGHT+IHAXd+LBCaNv/IYE44G8+TOcYmb5ZuZn/zSHdH3gF3525nKD6VvDyCq0uPuvmz2MDHS4ZucMQ==
+X-Received: by 2002:a05:6830:16d0:b0:6b9:a8e0:deca with SMTP id l16-20020a05683016d000b006b9a8e0decamr9750468otr.22.1692045943384;
+        Mon, 14 Aug 2023 13:45:43 -0700 (PDT)
+Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:86d6:7871:f7e9:8a15:865a])
+        by smtp.gmail.com with ESMTPSA id n22-20020a9d6f16000000b006b8af3a2599sm4609239otq.73.2023.08.14.13.45.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 13:45:43 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 17:45:38 -0300
+From:   Alexon Oliveira <alexondunkan@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH] staging: vme_user: fix check unnecessary parentheses
+Message-ID: <ZNqScudJFGCkje+S@alolivei-thinkpadt480s.gru.csb>
+References: <ZNqJs126kA+KvSTC@alolivei-thinkpadt480s.gru.csb>
+ <2023081438-kennel-regress-a76d@gregkh>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2023081438-kennel-regress-a76d@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+On Mon, Aug 14, 2023 at 10:16:03PM +0200, Greg KH wrote:
+> On Mon, Aug 14, 2023 at 05:08:19PM -0300, Alexon Oliveira wrote:
+> > Fixed all CHECK: Unnecessary parentheses around
+> > as reported by checkpatch to adhere to the Linux kernel
+> > coding-style guidelines.
+> > 
+> > Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
+> > ---
+> >  drivers/staging/vme_user/vme.c | 18 +++++++++---------
+> >  1 file changed, 9 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
+> > index c7c50406c199..6f08bb21369d 100644
+> > --- a/drivers/staging/vme_user/vme.c
+> > +++ b/drivers/staging/vme_user/vme.c
+> > @@ -307,7 +307,7 @@ struct vme_resource *vme_slave_request(struct vme_dev *vdev, u32 address,
+> >  		mutex_lock(&slave_image->mtx);
+> >  		if (((slave_image->address_attr & address) == address) &&
+> >  		    ((slave_image->cycle_attr & cycle) == cycle) &&
+> > -		    (slave_image->locked == 0)) {
+> > +		    slave_image->locked == 0) {
+> >  			slave_image->locked = 1;
+> >  			mutex_unlock(&slave_image->mtx);
+> >  			allocated_image = slave_image;
+> > @@ -508,7 +508,7 @@ struct vme_resource *vme_master_request(struct vme_dev *vdev, u32 address,
+> >  		if (((master_image->address_attr & address) == address) &&
+> >  		    ((master_image->cycle_attr & cycle) == cycle) &&
+> >  		    ((master_image->width_attr & dwidth) == dwidth) &&
+> > -		    (master_image->locked == 0)) {
+> > +		    master_image->locked == 0) {
+> >  			master_image->locked = 1;
+> >  			spin_unlock(&master_image->lock);
+> >  			allocated_image = master_image;
+> > @@ -882,7 +882,7 @@ struct vme_resource *vme_dma_request(struct vme_dev *vdev, u32 route)
+> >  		/* Find an unlocked and compatible controller */
+> >  		mutex_lock(&dma_ctrlr->mtx);
+> >  		if (((dma_ctrlr->route_attr & route) == route) &&
+> > -		    (dma_ctrlr->locked == 0)) {
+> > +		    dma_ctrlr->locked == 0) {
+> >  			dma_ctrlr->locked = 1;
+> >  			mutex_unlock(&dma_ctrlr->mtx);
+> >  			allocated_ctrlr = dma_ctrlr;
+> > @@ -1248,9 +1248,9 @@ void vme_bus_error_handler(struct vme_bridge *bridge,
+> >  	list_for_each(handler_pos, &bridge->vme_error_handlers) {
+> >  		handler = list_entry(handler_pos, struct vme_error_handler,
+> >  				     list);
+> > -		if ((aspace == handler->aspace) &&
+> > -		    (address >= handler->start) &&
+> > -		    (address < handler->end)) {
+> > +		if (aspace == handler->aspace &&
+> > +		    address >= handler->start &&
+> > +		    address < handler->end) {
+> >  			if (!handler->num_errors)
+> >  				handler->first_error = address;
+> >  			if (handler->num_errors != UINT_MAX)
+> > @@ -1337,7 +1337,7 @@ int vme_irq_request(struct vme_dev *vdev, int level, int statid,
+> >  		return -EINVAL;
+> >  	}
+> >  
+> > -	if ((level < 1) || (level > 7)) {
+> > +	if (level < 1 || level > 7) {
+> >  		printk(KERN_ERR "Invalid interrupt level\n");
+> >  		return -EINVAL;
+> >  	}
+> > @@ -1386,7 +1386,7 @@ void vme_irq_free(struct vme_dev *vdev, int level, int statid)
+> >  		return;
+> >  	}
+> >  
+> > -	if ((level < 1) || (level > 7)) {
+> > +	if (level < 1 || level > 7) {
+> >  		printk(KERN_ERR "Invalid interrupt level\n");
+> >  		return;
+> >  	}
+> > @@ -1433,7 +1433,7 @@ int vme_irq_generate(struct vme_dev *vdev, int level, int statid)
+> >  		return -EINVAL;
+> >  	}
+> >  
+> > -	if ((level < 1) || (level > 7)) {
+> > +	if (level < 1 || level > 7) {
+> >  		printk(KERN_WARNING "Invalid interrupt level\n");
+> >  		return -EINVAL;
+> >  	}
+> > -- 
+> > 2.41.0
+> > 
+> > 
+> 
+> Hi,
+> 
+> This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+> a patch that has triggered this response.  He used to manually respond
+> to these common problems, but in order to save his sanity (he kept
+> writing the same thing over and over, yet to different people), I was
+> created.  Hopefully you will not take offence and will fix the problem
+> in your patch and resubmit it so that it can be accepted into the Linux
+> kernel tree.
+> 
+> You are receiving this message because of the following common error(s)
+> as indicated below:
+> 
+> - You sent a patch that has been sent multiple times in the past few
+>   days, and is the same type to ones that has been recently rejected.
+>   Please always look at the mailing list traffic to determine if you are
+>   duplicating other people's work.
+> 
+> If you wish to discuss this problem further, or you have questions about
+> how to resolve this issue, please feel free to respond to this email and
+> Greg will reply once he has dug out from the pending patches received
+> from other developers.
+> 
 
-FYI, the error/warning still remains.
+Hi Greg,
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   2ccdd1b13c591d306f0401d98dedc4bdcd02b421
-commit: aa034695971124f673d4ccdd39cd7f269904ea86 drbd: introduce dynamic debug
-date:   9 months ago
-config: i386-randconfig-r033-20230815 (https://download.01.org/0day-ci/archive/20230815/202308150414.eG2nMDlx-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20230815/202308150414.eG2nMDlx-lkp@intel.com/reproduce)
+I've read other email threads for other patches where you convey the
+idea that this can be a false positive and that you don't see a problem
+with using extra parentheses either, and also that this sometimes can
+confuse developers.
+Did I understand it correctly? If so, should I discard this commit then?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308150414.eG2nMDlx-lkp@intel.com/
+> thanks,
+> 
+> greg k-h's patch email bot
 
-All warnings (new ones prefixed by >>):
+Thank you.
 
->> drivers/block/drbd/drbd_receiver.c:416:7: warning: expression result unused [-Wunused-value]
-           if (!expect(!(peer_req->flags & EE_CALL_AL_COMPLETE_IO))) {
-           ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/block/drbd/drbd_polymorph_printk.h:128:4: note: expanded from macro 'expect'
-                           drbd_err(device, "ASSERTION %s FAILED in %s\n",         \
-                           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:104:2: note: expanded from macro 'drbd_err'
-           drbd_printk(KERN_ERR, device, fmt, ## args)
-           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:65:4: note: expanded from macro 'drbd_printk'
-             __drbd_printk_if_same_type(obj, drbd_device, level, fmt, ## args), \
-             ^
-   drivers/block/drbd/drbd_polymorph_printk.h:55:47: note: expanded from macro '__drbd_printk_if_same_type'
-           __drbd_printk_choose_cond(obj, struct_name), \
-                                                        ^
-   include/linux/compiler.h:56:47: note: expanded from macro 'if'
-   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
-                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:58:52: note: expanded from macro '__trace_if_var'
-   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
-                                                      ^~~~
->> drivers/block/drbd/drbd_receiver.c:416:7: warning: expression result unused [-Wunused-value]
-           if (!expect(!(peer_req->flags & EE_CALL_AL_COMPLETE_IO))) {
-           ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/block/drbd/drbd_polymorph_printk.h:128:4: note: expanded from macro 'expect'
-                           drbd_err(device, "ASSERTION %s FAILED in %s\n",         \
-                           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:104:2: note: expanded from macro 'drbd_err'
-           drbd_printk(KERN_ERR, device, fmt, ## args)
-           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:65:4: note: expanded from macro 'drbd_printk'
-             __drbd_printk_if_same_type(obj, drbd_device, level, fmt, ## args), \
-             ^
-   note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler.h:56:47: note: expanded from macro 'if'
-   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
-                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:58:86: note: expanded from macro '__trace_if_var'
-   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
-                                                                       ~~~~~~~~~~~~~~~~~^~~~~
-   include/linux/compiler.h:69:3: note: expanded from macro '__trace_if_value'
-           (cond) ?                                        \
-            ^~~~
-   drivers/block/drbd/drbd_receiver.c:1876:8: warning: expression result unused [-Wunused-value]
-                   if (!expect(data_size == 0))
-                   ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
-   drivers/block/drbd/drbd_polymorph_printk.h:128:4: note: expanded from macro 'expect'
-                           drbd_err(device, "ASSERTION %s FAILED in %s\n",         \
-                           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:104:2: note: expanded from macro 'drbd_err'
-           drbd_printk(KERN_ERR, device, fmt, ## args)
-           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:65:4: note: expanded from macro 'drbd_printk'
-             __drbd_printk_if_same_type(obj, drbd_device, level, fmt, ## args), \
-             ^
-   drivers/block/drbd/drbd_polymorph_printk.h:55:47: note: expanded from macro '__drbd_printk_if_same_type'
-           __drbd_printk_choose_cond(obj, struct_name), \
-                                                        ^
-   include/linux/compiler.h:56:47: note: expanded from macro 'if'
-   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
-                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:58:52: note: expanded from macro '__trace_if_var'
-   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
-                                                      ^~~~
-   drivers/block/drbd/drbd_receiver.c:1876:8: warning: expression result unused [-Wunused-value]
-                   if (!expect(data_size == 0))
-                   ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
-   drivers/block/drbd/drbd_polymorph_printk.h:128:4: note: expanded from macro 'expect'
-                           drbd_err(device, "ASSERTION %s FAILED in %s\n",         \
-                           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:104:2: note: expanded from macro 'drbd_err'
-           drbd_printk(KERN_ERR, device, fmt, ## args)
-           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:65:4: note: expanded from macro 'drbd_printk'
-             __drbd_printk_if_same_type(obj, drbd_device, level, fmt, ## args), \
-             ^
-   note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler.h:56:47: note: expanded from macro 'if'
-   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
-                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:58:86: note: expanded from macro '__trace_if_var'
-   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
-                                                                       ~~~~~~~~~~~~~~~~~^~~~~
-   include/linux/compiler.h:69:3: note: expanded from macro '__trace_if_value'
-           (cond) ?                                        \
-            ^~~~
-   drivers/block/drbd/drbd_receiver.c:1880:8: warning: expression result unused [-Wunused-value]
-                   if (!expect(data_size == 0))
-                   ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
-   drivers/block/drbd/drbd_polymorph_printk.h:128:4: note: expanded from macro 'expect'
-                           drbd_err(device, "ASSERTION %s FAILED in %s\n",         \
-                           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:104:2: note: expanded from macro 'drbd_err'
-           drbd_printk(KERN_ERR, device, fmt, ## args)
-           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:65:4: note: expanded from macro 'drbd_printk'
-             __drbd_printk_if_same_type(obj, drbd_device, level, fmt, ## args), \
-             ^
-   drivers/block/drbd/drbd_polymorph_printk.h:55:47: note: expanded from macro '__drbd_printk_if_same_type'
-           __drbd_printk_choose_cond(obj, struct_name), \
-                                                        ^
-   include/linux/compiler.h:56:47: note: expanded from macro 'if'
-   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
-                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:58:52: note: expanded from macro '__trace_if_var'
-   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
-                                                      ^~~~
-   drivers/block/drbd/drbd_receiver.c:1880:8: warning: expression result unused [-Wunused-value]
-                   if (!expect(data_size == 0))
-                   ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
-   drivers/block/drbd/drbd_polymorph_printk.h:128:4: note: expanded from macro 'expect'
-                           drbd_err(device, "ASSERTION %s FAILED in %s\n",         \
-                           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:104:2: note: expanded from macro 'drbd_err'
-           drbd_printk(KERN_ERR, device, fmt, ## args)
-           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:65:4: note: expanded from macro 'drbd_printk'
-             __drbd_printk_if_same_type(obj, drbd_device, level, fmt, ## args), \
-             ^
-   note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler.h:56:47: note: expanded from macro 'if'
-   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
---
-   In file included from drivers/block/drbd/drbd_nl.c:78:
-   include/linux/genl_magic_func.h:212:13: warning: no previous prototype for function 'drbd_genl_cmd_to_str' [-Wmissing-prototypes]
-   const char *CONCAT_(GENL_MAGIC_FAMILY, _genl_cmd_to_str)(__u8 cmd)
-               ^
-   include/linux/genl_magic_struct.h:21:22: note: expanded from macro 'CONCAT_'
-   #define CONCAT_(a,b)    CONCAT__(a,b)
-                           ^
-   include/linux/genl_magic_struct.h:20:23: note: expanded from macro 'CONCAT__'
-   #define CONCAT__(a,b)   a ## b
-                           ^
-   <scratch space>:148:1: note: expanded from here
-   drbd_genl_cmd_to_str
-   ^
-   include/linux/genl_magic_func.h:212:7: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   const char *CONCAT_(GENL_MAGIC_FAMILY, _genl_cmd_to_str)(__u8 cmd)
-         ^
-         static 
->> drivers/block/drbd/drbd_nl.c:1546:7: warning: expression result unused [-Wunused-value]
-           if (!expect(new_disk_conf->resync_rate >= 1))
-           ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/block/drbd/drbd_polymorph_printk.h:128:4: note: expanded from macro 'expect'
-                           drbd_err(device, "ASSERTION %s FAILED in %s\n",         \
-                           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:104:2: note: expanded from macro 'drbd_err'
-           drbd_printk(KERN_ERR, device, fmt, ## args)
-           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:65:4: note: expanded from macro 'drbd_printk'
-             __drbd_printk_if_same_type(obj, drbd_device, level, fmt, ## args), \
-             ^
-   drivers/block/drbd/drbd_polymorph_printk.h:55:47: note: expanded from macro '__drbd_printk_if_same_type'
-           __drbd_printk_choose_cond(obj, struct_name), \
-                                                        ^
-   include/linux/compiler.h:56:47: note: expanded from macro 'if'
-   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
-                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:58:52: note: expanded from macro '__trace_if_var'
-   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
-                                                      ^~~~
->> drivers/block/drbd/drbd_nl.c:1546:7: warning: expression result unused [-Wunused-value]
-           if (!expect(new_disk_conf->resync_rate >= 1))
-           ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/block/drbd/drbd_polymorph_printk.h:128:4: note: expanded from macro 'expect'
-                           drbd_err(device, "ASSERTION %s FAILED in %s\n",         \
-                           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:104:2: note: expanded from macro 'drbd_err'
-           drbd_printk(KERN_ERR, device, fmt, ## args)
-           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:65:4: note: expanded from macro 'drbd_printk'
-             __drbd_printk_if_same_type(obj, drbd_device, level, fmt, ## args), \
-             ^
-   note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler.h:56:47: note: expanded from macro 'if'
-   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
-                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:58:86: note: expanded from macro '__trace_if_var'
-   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
-                                                                       ~~~~~~~~~~~~~~~~~^~~~~
-   include/linux/compiler.h:69:3: note: expanded from macro '__trace_if_value'
-           (cond) ?                                        \
-            ^~~~
-   3 warnings generated.
---
->> drivers/block/drbd/drbd_bitmap.c:451:7: warning: expression result unused [-Wunused-value]
-           if (!expect(device->bitmap))
-           ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
-   drivers/block/drbd/drbd_polymorph_printk.h:128:4: note: expanded from macro 'expect'
-                           drbd_err(device, "ASSERTION %s FAILED in %s\n",         \
-                           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:104:2: note: expanded from macro 'drbd_err'
-           drbd_printk(KERN_ERR, device, fmt, ## args)
-           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:65:4: note: expanded from macro 'drbd_printk'
-             __drbd_printk_if_same_type(obj, drbd_device, level, fmt, ## args), \
-             ^
-   drivers/block/drbd/drbd_polymorph_printk.h:55:47: note: expanded from macro '__drbd_printk_if_same_type'
-           __drbd_printk_choose_cond(obj, struct_name), \
-                                                        ^
-   include/linux/compiler.h:56:47: note: expanded from macro 'if'
-   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
-                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:58:52: note: expanded from macro '__trace_if_var'
-   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
-                                                      ^~~~
->> drivers/block/drbd/drbd_bitmap.c:451:7: warning: expression result unused [-Wunused-value]
-           if (!expect(device->bitmap))
-           ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
-   drivers/block/drbd/drbd_polymorph_printk.h:128:4: note: expanded from macro 'expect'
-                           drbd_err(device, "ASSERTION %s FAILED in %s\n",         \
-                           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:104:2: note: expanded from macro 'drbd_err'
-           drbd_printk(KERN_ERR, device, fmt, ## args)
-           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:65:4: note: expanded from macro 'drbd_printk'
-             __drbd_printk_if_same_type(obj, drbd_device, level, fmt, ## args), \
-             ^
-   note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler.h:56:47: note: expanded from macro 'if'
-   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
-                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:58:86: note: expanded from macro '__trace_if_var'
-   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
-                                                                       ~~~~~~~~~~~~~~~~~^~~~~
-   include/linux/compiler.h:69:3: note: expanded from macro '__trace_if_value'
-           (cond) ?                                        \
-            ^~~~
-   drivers/block/drbd/drbd_bitmap.c:460:7: warning: expression result unused [-Wunused-value]
-           if (!expect(device->bitmap))
-           ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
-   drivers/block/drbd/drbd_polymorph_printk.h:128:4: note: expanded from macro 'expect'
-                           drbd_err(device, "ASSERTION %s FAILED in %s\n",         \
-                           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:104:2: note: expanded from macro 'drbd_err'
-           drbd_printk(KERN_ERR, device, fmt, ## args)
-           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:65:4: note: expanded from macro 'drbd_printk'
-             __drbd_printk_if_same_type(obj, drbd_device, level, fmt, ## args), \
-             ^
-   drivers/block/drbd/drbd_polymorph_printk.h:55:47: note: expanded from macro '__drbd_printk_if_same_type'
-           __drbd_printk_choose_cond(obj, struct_name), \
-                                                        ^
-   include/linux/compiler.h:56:47: note: expanded from macro 'if'
-   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
-                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:58:52: note: expanded from macro '__trace_if_var'
-   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
-                                                      ^~~~
-   drivers/block/drbd/drbd_bitmap.c:460:7: warning: expression result unused [-Wunused-value]
-           if (!expect(device->bitmap))
-           ~~~~~^~~~~~~~~~~~~~~~~~~~~~~
-   drivers/block/drbd/drbd_polymorph_printk.h:128:4: note: expanded from macro 'expect'
-                           drbd_err(device, "ASSERTION %s FAILED in %s\n",         \
-                           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:104:2: note: expanded from macro 'drbd_err'
-           drbd_printk(KERN_ERR, device, fmt, ## args)
-           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:65:4: note: expanded from macro 'drbd_printk'
-             __drbd_printk_if_same_type(obj, drbd_device, level, fmt, ## args), \
-             ^
-   note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler.h:56:47: note: expanded from macro 'if'
-   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
-                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:58:86: note: expanded from macro '__trace_if_var'
-   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
-                                                                       ~~~~~~~~~~~~~~~~~^~~~~
-   include/linux/compiler.h:69:3: note: expanded from macro '__trace_if_value'
-           (cond) ?                                        \
-            ^~~~
-   drivers/block/drbd/drbd_bitmap.c:639:7: warning: expression result unused [-Wunused-value]
-           if (!expect(b))
-           ~~~~~^~~~~~~~~~
-   drivers/block/drbd/drbd_polymorph_printk.h:128:4: note: expanded from macro 'expect'
-                           drbd_err(device, "ASSERTION %s FAILED in %s\n",         \
-                           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:104:2: note: expanded from macro 'drbd_err'
-           drbd_printk(KERN_ERR, device, fmt, ## args)
-           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:65:4: note: expanded from macro 'drbd_printk'
-             __drbd_printk_if_same_type(obj, drbd_device, level, fmt, ## args), \
-             ^
-   drivers/block/drbd/drbd_polymorph_printk.h:55:47: note: expanded from macro '__drbd_printk_if_same_type'
-           __drbd_printk_choose_cond(obj, struct_name), \
-                                                        ^
-   include/linux/compiler.h:56:47: note: expanded from macro 'if'
-   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
-                              ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/compiler.h:58:52: note: expanded from macro '__trace_if_var'
-   #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
-                                                      ^~~~
-   drivers/block/drbd/drbd_bitmap.c:639:7: warning: expression result unused [-Wunused-value]
-           if (!expect(b))
-           ~~~~~^~~~~~~~~~
-   drivers/block/drbd/drbd_polymorph_printk.h:128:4: note: expanded from macro 'expect'
-                           drbd_err(device, "ASSERTION %s FAILED in %s\n",         \
-                           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:104:2: note: expanded from macro 'drbd_err'
-           drbd_printk(KERN_ERR, device, fmt, ## args)
-           ^
-   drivers/block/drbd/drbd_polymorph_printk.h:65:4: note: expanded from macro 'drbd_printk'
-             __drbd_printk_if_same_type(obj, drbd_device, level, fmt, ## args), \
-             ^
-   note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
-   include/linux/compiler.h:56:47: note: expanded from macro 'if'
-   #define if(cond, ...) if ( __trace_if_var( !!(cond , ## __VA_ARGS__) ) )
-..
-
-
-vim +416 drivers/block/drbd/drbd_receiver.c
-
-b411b3637fa71f Philipp Reisner     2009-09-25  406  
-b30ab7913b0a7b Andreas Gruenbacher 2011-07-03  407  void __drbd_free_peer_req(struct drbd_device *device, struct drbd_peer_request *peer_req,
-f6ffca9f429025 Andreas Gruenbacher 2011-02-04  408  		       int is_net)
-b411b3637fa71f Philipp Reisner     2009-09-25  409  {
-21ae5d7f95aa1a Lars Ellenberg      2014-05-05  410  	might_sleep();
-db830c464b69e2 Andreas Gruenbacher 2011-02-04  411  	if (peer_req->flags & EE_HAS_DIGEST)
-db830c464b69e2 Andreas Gruenbacher 2011-02-04  412  		kfree(peer_req->digest);
-b30ab7913b0a7b Andreas Gruenbacher 2011-07-03  413  	drbd_free_pages(device, peer_req->pages, is_net);
-0b0ba1efc7b887 Andreas Gruenbacher 2011-06-27  414  	D_ASSERT(device, atomic_read(&peer_req->pending_bios) == 0);
-0b0ba1efc7b887 Andreas Gruenbacher 2011-06-27  415  	D_ASSERT(device, drbd_interval_empty(&peer_req->i));
-21ae5d7f95aa1a Lars Ellenberg      2014-05-05 @416  	if (!expect(!(peer_req->flags & EE_CALL_AL_COMPLETE_IO))) {
-21ae5d7f95aa1a Lars Ellenberg      2014-05-05  417  		peer_req->flags &= ~EE_CALL_AL_COMPLETE_IO;
-21ae5d7f95aa1a Lars Ellenberg      2014-05-05  418  		drbd_al_complete_io(device, &peer_req->i);
-21ae5d7f95aa1a Lars Ellenberg      2014-05-05  419  	}
-0892fac8719f06 Kent Overstreet     2018-05-20  420  	mempool_free(peer_req, &drbd_ee_mempool);
-b411b3637fa71f Philipp Reisner     2009-09-25  421  }
-b411b3637fa71f Philipp Reisner     2009-09-25  422  
-
-:::::: The code at line 416 was first introduced by commit
-:::::: 21ae5d7f95aa1a64f35b03c91f8714ced3ab61a9 drbd: track timing details of peer_requests
-
-:::::: TO: Lars Ellenberg <lars.ellenberg@linbit.com>
-:::::: CC: Philipp Reisner <philipp.reisner@linbit.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Alexon Oliveira
