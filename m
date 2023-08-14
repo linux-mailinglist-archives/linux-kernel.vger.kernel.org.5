@@ -2,144 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0040D77C3A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9921077C3A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233385AbjHNWrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 18:47:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
+        id S233401AbjHNWww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 18:52:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233387AbjHNWrr (ORCPT
+        with ESMTP id S233399AbjHNWws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 18:47:47 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5717BA2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 15:47:45 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11E411063;
-        Mon, 14 Aug 2023 15:48:27 -0700 (PDT)
-Received: from [10.57.90.230] (unknown [10.57.90.230])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 008533F6C4;
-        Mon, 14 Aug 2023 15:47:42 -0700 (PDT)
-Message-ID: <2b69bd4e-5ef4-16c7-f908-7c70187e12b6@arm.com>
-Date:   Mon, 14 Aug 2023 23:47:41 +0100
+        Mon, 14 Aug 2023 18:52:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B3E12D;
+        Mon, 14 Aug 2023 15:52:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=N+FDtRfvMDT6hVxzXu0XfcRPzq1+yZ03REJLjq8HX4g=; b=R+MiMl2LJBYZulPd4n0uNnZqli
+        8lTwRuKFU2IYuIXXGSNLbGX0/l0x5+0iuJh8w2SCySZqGy+nrrVzIIhQqS05HVp0KXP/k/1m558YZ
+        yXTGLM7Cq6P6FjL2IdmgmAMyxwg3nKy0ODuYOorEv5DXC4bsPKUxBNgVb5eiIPcsY8e6pyASOd+Hm
+        VHyosJARJ1SlyYmWjrScsGZbfUuT9/VLxWLXxvE6w18NgXtVwQ2uYCfLjs4kMd82L/f5QScUMJPU4
+        h4g2sP64xqPOh6SYEXS/hOh/omtyiRg1Zk5sY+LTIF8AgX7pyqAGP+/SFRZUvNHoIFAzk2XOGcrXc
+        POGqiiRQ==;
+Received: from [2601:1c2:980:9ec0::577]
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qVgQS-004h23-MP; Mon, 14 Aug 2023 22:52:41 +0000
+Message-ID: <af8f2613-5a74-3c2e-f076-345f725aaa5a@infradead.org>
+Date:   Mon, 14 Aug 2023 15:52:36 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH 2/2] coresight: core: Fix multiple free TRBE platform data
- resource
-To:     Junhao He <hejunhao3@huawei.com>, mike.leach@linaro.org,
-        leo.yan@linaro.org, anshuman.khandual@arm.com,
-        jonathan.cameron@huawei.com, James Clark <james.clark@arm.com>
-Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        yangyicong@huawei.com, prime.zeng@hisilicon.com
-References: <20230814093813.19152-1-hejunhao3@huawei.com>
- <20230814093813.19152-3-hejunhao3@huawei.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20230814093813.19152-3-hejunhao3@huawei.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 3/3] Documentation: devices.txt: Fix minors for ttyCPM*
+Content-Language: en-US
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <b5deb1222eb92017f0efe5b5cae127ac11983b3d.1691992627.git.christophe.leroy@csgroup.eu>
+ <27d7124cf86157e2a27c2b039e769041994d3f22.1691992627.git.christophe.leroy@csgroup.eu>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <27d7124cf86157e2a27c2b039e769041994d3f22.1691992627.git.christophe.leroy@csgroup.eu>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ James Clark
+Hi,
 
-On 14/08/2023 10:38, Junhao He wrote:
-> Current the TRBE driver supports matching TRBE platform device through
-> id_table. The ACPI created a dummy TRBE platform device inside
-> drivers/perf/arm_pmu_acpi.c. So the TRBE platform driver will probe only
-> once and allocate just one TRBE platform data resource.
+On 8/13/23 23:02, Christophe Leroy wrote:
+> ttyCPM* devices belong to CPM_UART driver at the first place
+> and that driver provides 6 ports.
 > 
-> If the system supports the TRBE feature, Each CPU in the systems can
-> have at least one TRBE present, and the coresight_unregister gets called
-> multiple times, once for each of them.
-> Therefore, when unregister TRBE coresight devices, the TRBE platform data
-> resource will multiple free in function coresight_unregister.
-> 
-> root@localhost:# insmod coresight-trbe.ko
-> root@localhost:# rmmod coresight-trbe.ko
-> [  423.455932] ------------[ cut here ]------------
-> [  423.461987] WARNING: CPU: 1 PID: 0 at drivers/base/devres.c:1064 devm_kfree+0x88/0x98
-> [  423.483821] CPU: 1 PID: 0 Comm: swapper/1 Tainted: G           O       6.5.0-rc4+ #1
-> [  423.505842] pstate: 614000c9 (nZCv daIF +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
-> ...
-> [  423.601301] Call trace:
-> [  423.604202]  devm_kfree+0x88/0x98
-> [  423.608369]  coresight_release_platform_data+0xb8/0xe0 [coresight]
-> [  423.616589]  coresight_unregister+0x120/0x170 [coresight]
-> [  423.623533]  arm_trbe_remove_coresight_cpu+0x70/0xa0 [coresight_trbe]
-> [  423.631082]  __flush_smp_call_function_queue+0x1e4/0x4e0
-> [  423.637471]  generic_smp_call_function_single_interrupt+0x1c/0x30
-> [  423.644796]  ipi_handler+0x90/0x278
-> [  423.648992]  handle_percpu_devid_irq+0x90/0x250
-> [  423.654636]  generic_handle_domain_irq+0x34/0x58
-> [  423.659786]  gic_handle_irq+0x12c/0x270
-> [  423.664039]  call_on_irq_stack+0x24/0x30
-> [  423.668452]  do_interrupt_handler+0x88/0x98
-> [  423.673027]  el1_interrupt+0x48/0xe8
-> [  423.677413]  el1h_64_irq_handler+0x18/0x28
-> [  423.681781]  el1h_64_irq+0x78/0x80
-> [  423.685550]  default_idle_call+0x5c/0x180
-> [  423.689855]  do_idle+0x25c/0x2c0
-> [  423.694196]  cpu_startup_entry+0x2c/0x40
-> [  423.698373]  secondary_start_kernel+0x144/0x188
-> [  423.703920]  __secondary_switched+0xb8/0xc0
-> [  423.708972] ---[ end trace 0000000000000000 ]---
-> [  423.729209] ------------[ cut here ]------------
-> ...
-> [  423.735217] WARNING: CPU: 2 PID: 40 at drivers/base/devres.c:1064 devm_kfree+0x88/0x98
-> ...
-> [  424.012385] WARNING: CPU: 3 PID: 0 at drivers/base/devres.c:1064 devm_kfree+0x88/0x98
-> ...
-> 
-> This patch does the following:
-> 1.TRBE coresight devices do not need regular connections information, We
->    can free connections resource when the nr_conns is valid.
-> 2.And we can ignore the free platform data resource, it will be
->    automatically free in platform_driver_unregister().
+> Fixes: e29c3f81eb89 ("Documentation: devices.txt: reconcile serial/ucc_uart minor numers")
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-Do we need a Fixes tag here ?
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-> 
-> Signed-off-by: Junhao He <hejunhao3@huawei.com>
+I had this on my todo list. Thanks for getting to it before I did.
+
 > ---
->   drivers/hwtracing/coresight/coresight-core.c | 7 ++++---
->   1 file changed, 4 insertions(+), 3 deletions(-)
+>   Documentation/admin-guide/devices.txt | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
-> index 118fcf27854d..c6f7889d1b4d 100644
-> --- a/drivers/hwtracing/coresight/coresight-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-core.c
-> @@ -1555,9 +1555,10 @@ void coresight_release_platform_data(struct coresight_device *csdev,
->   		conns[i]->dest_fwnode = NULL;
->   		devm_kfree(dev, conns[i]);
->   	}
-> -	devm_kfree(dev, pdata->out_conns);
-> -	devm_kfree(dev, pdata->in_conns);
-> -	devm_kfree(dev, pdata);
-> +	if (pdata->nr_outconns)
-> +		devm_kfree(dev, pdata->out_conns);
-> +	if (pdata->nr_inconns)
-> +		devm_kfree(dev, pdata->in_conns);
-
-These allocations are made on the parent device and that
-may never get unregistered (e.g., AMBA device, platform device,
-stay forever, even when the "coresight" modules are unloaded).
-Thus the memory will be left unused, literally leaking.
-This specific devm_kfree() was added to fix that. May be we should fix
-this in the TRBE driver to use separate pdata for the TRBE device
-instances.
-
-Suzuki
-
->   	if (csdev)
->   		coresight_remove_conns_sysfs_group(csdev);
->   }
-
+> diff --git a/Documentation/admin-guide/devices.txt b/Documentation/admin-guide/devices.txt
+> index 1ba5b7c4973c..839054923530 100644
+> --- a/Documentation/admin-guide/devices.txt
+> +++ b/Documentation/admin-guide/devices.txt
+> @@ -2691,7 +2691,7 @@
+>   		 45 = /dev/ttyMM1		Marvell MPSC - port 1 (obsolete unused)
+>   		 46 = /dev/ttyCPM0		PPC CPM (SCC or SMC) - port 0
+>   		    ...
+> -		 49 = /dev/ttyCPM5		PPC CPM (SCC or SMC) - port 3
+> +		 51 = /dev/ttyCPM5		PPC CPM (SCC or SMC) - port 5
+>   		 82 = /dev/ttyVR0		NEC VR4100 series SIU
+>   		 83 = /dev/ttyVR1		NEC VR4100 series DSIU
+>   		 148 = /dev/ttyPSC0		PPC PSC - port 0
+> @@ -2752,7 +2752,7 @@
+>   		 43 = /dev/ttycusmx2		Callout device for ttySMX2
+>   		 46 = /dev/cucpm0		Callout device for ttyCPM0
+>   		    ...
+> -		 49 = /dev/cucpm5		Callout device for ttyCPM5
+> +		 51 = /dev/cucpm5		Callout device for ttyCPM5
+>   		 82 = /dev/cuvr0		Callout device for ttyVR0
+>   		 83 = /dev/cuvr1		Callout device for ttyVR1
+>   
