@@ -2,97 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6441077C255
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 23:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1685A77C258
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 23:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232848AbjHNVVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 17:21:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43854 "EHLO
+        id S232869AbjHNVXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 17:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232849AbjHNVVI (ORCPT
+        with ESMTP id S232948AbjHNVWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 17:21:08 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B09FE65
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:21:04 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1bc0d39b52cso29247835ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:21:04 -0700 (PDT)
+        Mon, 14 Aug 2023 17:22:43 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B3DE73
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:22:42 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fe1e44fd2bso13615e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:22:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692048063; x=1692652863;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TKt05EEMg3Rcx/T53g2GOp/3O7eMZHA3B2gge5/oHMQ=;
-        b=ffVG/c/Uz1fJMDcJvQH20RgsYjzBW4nqH+6Bhn2+OBIjFRZOW3LzEM+kYYpCJE6U21
-         EA/uN0fL3W70pRRAFfcCQKGs7xJWbiKlpPw6vpGQAepafXdoJkMJcAJSsoafS1TrJvyj
-         8aC7ksH1EnBUZpTBSCNnIUuUhafAYHafnOe5s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692048063; x=1692652863;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20221208; t=1692048161; x=1692652961;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TKt05EEMg3Rcx/T53g2GOp/3O7eMZHA3B2gge5/oHMQ=;
-        b=aIGGHdLxZiFT8kP+YhfTXvVBYk7RO6io9mM5jwI60Nag2vCQX9KURTnGkOtaQskWW2
-         gDY7TdSL8xjlPMHX7yM8NkMSbiyYOm8pCgsDfAnTGIgxim511pEHEzYRGO1E+1Ixs0xn
-         LSHSmkpPN63Lv6lDzrQfr+JBM1Y8gcWQT6NXOLjm9HBttgGeC28WR0OiqNlvOH67CCL2
-         63qyTDUUdg2/LUmR+a4EezKUx1ynICIsuk7b7oo4VnC9qwFuovn18SNfVHUTdq8CLirj
-         pyb/MnKaZd19hWRWLX3S3IhpryUFkwanWpKoUHvJ3HK3aSMXdpmyE6bz5et7ujdS89sn
-         G0bA==
-X-Gm-Message-State: AOJu0YyixQK0GE2hGZNEmR5CtdS504UpdCnd51Je/ymBBNFZszoIkKV7
-        2jn+1Y8Ata6MGvvNy4LexoGk+Q==
-X-Google-Smtp-Source: AGHT+IFnPcI+QTY+11WBw5BA4VlM8K0fy4QjU2D6lstMH08xwMRz6/PBbWJ1Oi4PzuNJRgmUmLMXOA==
-X-Received: by 2002:a17:902:b907:b0:1bb:1523:b2d7 with SMTP id bf7-20020a170902b90700b001bb1523b2d7mr9179919plb.14.1692048063563;
-        Mon, 14 Aug 2023 14:21:03 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id jc3-20020a17090325c300b001b86492d724sm9920974plb.223.2023.08.14.14.21.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 14:21:03 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 14:21:02 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-        'Christoph Hellwig' <hch@infradead.org>,
-        "'Jason A. Donenfeld'" <Jason@zx2c4.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH next v3 0/5] minmax: Relax type checks in min() and max().
-Message-ID: <202308141416.89AC5C2@keescook>
-References: <01e3e09005e9434b8f558a893a47c053@AcuMS.aculab.com>
+        bh=gL0AM1Je6e5fBP6gbPX83S7jRl54DBoHaRHEKtf7HH8=;
+        b=of0DjEEwmYxilK4o4yzt2UbCzOJrcQEaB5PQ0IncGy/5eVK4gRp37L3F/SWoqzSlt6
+         vCtVzBQKEmw/NCZ9PnHfJ0bnTlMdyo09OKI9HA5UU8pN4+efwnXvO6GuoKWiqG3m8VcF
+         xj1Cqc4BLOa1nuzf8B0r8v409e7pBkV+Tw6zxXDm/CMeVNBvCgRvFZqa4T9v0M8ARiGw
+         +sXkLjZ2/qeQTLR62P1z/zBGy9tRnuRQ2yv1x8mad+U7bhP9o5Nb/RV0tCWR25Xndbf+
+         SnvcUkAR6dy/v7h62LyqcyDMagE/PULla0IT3tEpgDIZ052T+SxUlfvDUJGGTcw4juRr
+         Hrqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692048161; x=1692652961;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gL0AM1Je6e5fBP6gbPX83S7jRl54DBoHaRHEKtf7HH8=;
+        b=cLImZ2l5a6rYOsgUKRxcrf97vTnCbqaJIZ4x//UN3eK6SkRtToF4WBnM16m3SF7xv9
+         UeKUG14la+chTTvb8d04KVBmF4eqbQmFSfbxlCDdmeSiHMdVNy6OBJnnnfwllici4Z8/
+         dTNLku5tEbaOKWPSNvnWFEMPV/CbW28iISMsqFiXxQnCpGa6pTknMIH2eVGvBXsNl9Nn
+         zDvh2ornJR1zwpKGcq8u+uQ4vbd70YHLguK8/3u7PKrPBI5yqF+aShz3y8kY2ZYr6slY
+         jwvkwvwWl4T1CCZlcfbYVsCe9pJOfMYiUaXsZkHHZ5EWaXozKeYT7AzgPAI8HfYZ9jeR
+         lS+g==
+X-Gm-Message-State: AOJu0YxaH5gvbQ2+hpktCGICchmaZDlYcdvlPLMsgcNi81Q9lSyEqbUZ
+        cv63Tl+yghHebRvuyOP/SIi2rPkATLRxJxNMYcFPMA==
+X-Google-Smtp-Source: AGHT+IHul3sJIyCib/1PCvISVtSSIkVP4Pk9tk4L5J1YA2h/KC+U0UX04u2MNGToWdfc1d1QtDDHtjZ8I3flmd4y/ps=
+X-Received: by 2002:a05:600c:2146:b0:3fd:e15:6d5 with SMTP id
+ v6-20020a05600c214600b003fd0e1506d5mr341439wml.2.1692048160762; Mon, 14 Aug
+ 2023 14:22:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <01e3e09005e9434b8f558a893a47c053@AcuMS.aculab.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230724183157.3939892-1-Liam.Howlett@oracle.com>
+ <20230724183157.3939892-16-Liam.Howlett@oracle.com> <CAG48ez09ELhVYZftGtcxrvUaW6pF+k9RzwFtjRs-pcRx1aUweQ@mail.gmail.com>
+ <20230814191835.jzj7ryvhi6dqwruy@revolver>
+In-Reply-To: <20230814191835.jzj7ryvhi6dqwruy@revolver>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 14 Aug 2023 23:22:04 +0200
+Message-ID: <CAG48ez2UbpFb41gfcwyoA73ado=+YEiRtU2KmKt560_M_B7JUw@mail.gmail.com>
+Subject: Re: [PATCH v3 15/15] mm/mmap: Change vma iteration order in do_vmi_align_munmap()
+To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Jann Horn <jannh@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 10:50:59AM +0000, David Laight wrote:
-> [...]
-> I also suspect that many of the min_t(u16, ...) are actually wrong.
-> For example copy_data() in printk_ringbuffer.c contains:
->         data_size = min_t(u16, buf_size, len);
-> Here buf_size is 'unsigned int' and len 'u16', pass a 64k buffer
-> (can you prove that doesn't happen?) and no data is returned.
+On Mon, Aug 14, 2023 at 10:32=E2=80=AFPM Liam R. Howlett
+<Liam.Howlett@oracle.com> wrote:
+> * Jann Horn <jannh@google.com> [230814 11:44]:
+> > @akpm
+> >
+> > On Mon, Jul 24, 2023 at 8:31=E2=80=AFPM Liam R. Howlett <Liam.Howlett@o=
+racle.com> wrote:
+> > > Since prev will be set later in the function, it is better to reverse
+> > > the splitting direction of the start VMA (modify the new_below argume=
+nt
+> > > to __split_vma).
+> >
+> > It might be a good idea to reorder "mm: always lock new vma before
+> > inserting into vma tree" before this patch.
+> >
+> > If you apply this patch without "mm: always lock new vma before
+> > inserting into vma tree", I think move_vma(), when called with a start
+> > address in the middle of a VMA, will behave like this:
+> >
+> >  - vma_start_write() [lock the VMA to be moved]
+> >  - move_page_tables() [moves page table entries]
+> >  - do_vmi_munmap()
+> >    - do_vmi_align_munmap()
+> >      - __split_vma()
+> >        - creates a new VMA **covering the moved range** that is **not l=
+ocked**
+> >        - stores the new VMA in the VMA tree **without locking it** [1]
+> >      - new VMA is locked and removed again [2]
+> > [...]
+> >
+> > So after the page tables in the region have already been moved, I
+> > believe there will be a brief window (between [1] and [2]) where page
+> > faults in the region can happen again, which could probably cause new
+> > page tables and PTEs to be created in the region again in that window.
+> > (This can't happen in Linus' current tree because the new VMA created
+> > by __split_vma() only covers the range that is not being moved.)
+>
+> Ah, so my reversing of which VMA to keep to the first split call opens a
+> window where the VMA being removed is not locked.  Good catch.
+>
+> >
+> > Though I guess that's not going to lead to anything bad, since
+> > do_vmi_munmap() anyway cleans up PTEs and page tables in the region?
+> > So maybe it's not that important.
+>
+> do_vmi_munmap() will clean up PTEs from the end of the previous VMA to
+> the start of the next
 
-Stars aligning... this exact bug (as you saw in the other thread[1]) got
-hit. And in the analysis, I came to the same conclusion: min_t() is a
-serious foot-gun, and we should be able to make min() Just Work in the
-most common situations.
+Alright, I guess no action is needed here then.
 
-It seems like the existing type_max/type_min macros could be used to
-figure out that the args are safe to appropriately automatically cast,
-etc. e.g. type_max(u16) <= type_max(unsigned int) && type_min(u16) >=
-type_min(unsigned int) ...
+> I don't have any objections in the ordering or see an issue resulting
+> from having it this way... Except for maybe lockdep, so maybe we should
+> change the ordering of the patch sets just to be safe?
+>
+> In fact, should we add another check somewhere to ensure we do generate
+> the warning?  Perhaps to remove_mt() to avoid the exit path hitting it?
 
--Kees
-
-[1] https://lore.kernel.org/all/20230811054528.never.165-kees@kernel.org/
-
--- 
-Kees Cook
+I'm not sure which lockdep check you mean. do_vmi_align_munmap() is
+going to lock the VMAs again before it operates on them; I guess the
+only checks that would catch this would be the page table validation
+logic or the RSS counter checks on exit?
