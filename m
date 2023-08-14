@@ -2,131 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB90077B4AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20CF477B4AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233162AbjHNIwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 04:52:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50128 "EHLO
+        id S233521AbjHNIwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 04:52:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233316AbjHNIvv (ORCPT
+        with ESMTP id S233448AbjHNIvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 04:51:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B065C10C
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:51:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692003062;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a3gcnZKLEd0/sP/frTnZUie+RYs1JML9llgGix/2OeI=;
-        b=BDtudxCKoiSlWOVtjtB8I12pknLBKC+/VnW7YL1eVTlPDM8IKQUAF19oNUM1oQG/7+KWeI
-        Eb5sqFUP0SSVzfJJoKMMVNZwtOM3hINgen/VICc81GCbJAC3qL7HhOoEMj0lANRrVnK67P
-        sshURZATSvpKON/6vJHdzKk12/N5me0=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-561-iCgkn7bDOQCe4i0Zf9EFKQ-1; Mon, 14 Aug 2023 04:51:00 -0400
-X-MC-Unique: iCgkn7bDOQCe4i0Zf9EFKQ-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-99bcf6ae8e1so251787166b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:51:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692003059; x=1692607859;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a3gcnZKLEd0/sP/frTnZUie+RYs1JML9llgGix/2OeI=;
-        b=hVFdkJQoWK1Qsjq36Vpt5gAUu6RADuQ0k/nlpIWwraJPsb6OdQjojjctBPGc2wQSPZ
-         kDu9kck2oql75Hr1cn8jlzEg2egab57dDy0sKHaU9Ec0HKdJwtpgkQZ9EAXUbWSYasWI
-         3b2Ok6yjjINinhrtmiGHjnf4gI9xzXd+jmVJnEsgdhBBRgImJlNEjC/FccDTrwMMy9zj
-         IVngay5pcKS+AreVsCWlpiLFnWbPfRKy8JOXF86UOqIX68MxJKStXbv2eYDqM+TLZlw7
-         VDLB7dNGcFBH/pA1bqbrP4SM6NrHwQ12XrKLfiX0Nt9YS44vrKDvqZZeu2m9lrhDn+fe
-         vNtQ==
-X-Gm-Message-State: AOJu0YwRw5HHwDURFjpxSSGacr/SLWZSpXeyxRLUSbibhfM45+NMpRA0
-        Cd1B3UwESHCkP+1vLUczJzoe7ps2ELcMl9lcilt/4zoONzY5Zg+g33tkd2G0EQKBKQ/iXA7uCSQ
-        B5SZrGm8A4B1upFkevCkUpjxY
-X-Received: by 2002:a17:906:1daa:b0:988:a986:b11c with SMTP id u10-20020a1709061daa00b00988a986b11cmr6559170ejh.29.1692003059412;
-        Mon, 14 Aug 2023 01:50:59 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IETTCjSXNj0S0mhYm5hz+lr/D6808KX57i2K5b+YUbNVOxibyLYE1n7UQOJHnQKm4MQyNw7Rg==
-X-Received: by 2002:a17:906:1daa:b0:988:a986:b11c with SMTP id u10-20020a1709061daa00b00988a986b11cmr6559162ejh.29.1692003059152;
-        Mon, 14 Aug 2023 01:50:59 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id os5-20020a170906af6500b00993a37aebc5sm5399887ejb.50.2023.08.14.01.50.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 01:50:58 -0700 (PDT)
-Message-ID: <672725bc-6ebf-0a35-96ab-8862be7de193@redhat.com>
-Date:   Mon, 14 Aug 2023 10:50:58 +0200
+        Mon, 14 Aug 2023 04:51:54 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 568DB91
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:51:51 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RPSjy3111z2BdHv;
+        Mon, 14 Aug 2023 16:48:54 +0800 (CST)
+Received: from [10.67.102.169] (10.67.102.169) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 14 Aug 2023 16:51:49 +0800
+CC:     <yangyicong@hisilicon.com>, Liang Li <liliang6@email.cn>,
+        <will@kernel.org>, <mark.rutland@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <jonathan.cameron@huawei.com>,
+        <linuxarm@huawei.com>
+Subject: Re: [PATCH] perf/smmuv3: Add platform id table for module auto
+ loading
+To:     Barry Song <21cnbao@gmail.com>
+References: <20230807122233.28563-1-yangyicong@huawei.com>
+ <ZNL9s92HjLy+MZTw@localhost>
+ <CAGsJ_4z5kYWOa2L+BHypM4S6W_UhUfUe3wo2rwiy0u7Hf1Q5pw@mail.gmail.com>
+ <23fe3d9a-cb4d-3479-0581-eefec193bc72@huawei.com>
+ <ZNOCgX8yniu+IuUG@localhost>
+ <f6edb51e-ae79-5eaa-f337-fb4971aec575@huawei.com>
+ <CAGsJ_4wivZ186D9JgyL-46zRuBDboST+c-ODx0FEbXdy5Tt3NA@mail.gmail.com>
+ <CAGsJ_4wxJvmsa3iVcgqeQEx5Ur3vq1aupE=FJKxOc-fCxy57SQ@mail.gmail.com>
+From:   Yicong Yang <yangyicong@huawei.com>
+Message-ID: <d23826de-f2a4-4e68-bbd9-014cc24966b8@huawei.com>
+Date:   Mon, 14 Aug 2023 16:51:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] watchdog: simatic: add PCI dependency
-Content-Language: en-US, nl
-To:     Arnd Bergmann <arnd@arndb.de>, "xingtong.wu" <xingtong_wu@163.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Andy Shevchenko <andy@kernel.org>
-Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Haeussler, Gerd" <gerd.haeussler.ext@siemens.com>,
-        "Schaffner, Tobias" <tobias.schaffner@siemens.com>,
-        "xingtong.wu" <XingTong.Wu@siemens.com>
-References: <20230814073924.1066390-1-arnd@kernel.org>
- <a6c2f193-ef7c-54a0-dfbb-13915be259a1@163.com>
- <1834eee9-3fbd-4bea-9e22-960ca993303c@app.fastmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <1834eee9-3fbd-4bea-9e22-960ca993303c@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAGsJ_4wxJvmsa3iVcgqeQEx5Ur3vq1aupE=FJKxOc-fCxy57SQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.102.169]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 8/14/23 10:48, Arnd Bergmann wrote:
-> On Mon, Aug 14, 2023, at 10:27, xingtong.wu wrote:
-> 
->>>  
->>>  config SIEMENS_SIMATIC_IPC_WDT
->>>  	tristate "Siemens Simatic IPC Watchdog"
->>> -	depends on SIEMENS_SIMATIC_IPC
->>> +	depends on SIEMENS_SIMATIC_IPC && PCI
+On 2023/8/12 13:31, Barry Song wrote:
+> On Sat, Aug 12, 2023 at 1:24 PM Barry Song <21cnbao@gmail.com> wrote:
 >>
->> The SIEMENS_SIMATIC_IPC_WDT does not depends on PCI directly,
->> it should depends on P2SB, then P2SB depends on PCI
+>> On Fri, Aug 11, 2023 at 6:14 PM Yicong Yang <yangyicong@huawei.com> wrote:
+>>>
+>>> On 2023/8/9 20:11, Liang Li wrote:
+>>>> Hi Yicong,
+>>>>
+>>>> Thanks for your reply,
+>>>>
+>>>> On 2023-08-09 14:31, Yicong Yang <yangyicong@huawei.com> wrote:
+>>>>> Hi Barry, Liang,
+>>>>>
+>>>>> On 2023/8/9 13:47, Barry Song wrote:
+>>>>>> On Wed, Aug 9, 2023 at 1:01 PM Liang Li <liliang6@email.cn> wrote:
+>>>>>>>
+>>>>>>> On 2023-08-07 20:22, Yicong Yang <yangyicong@huawei.com> wrote:
+>>>>>>>> From: Yicong Yang <yangyicong@hisilicon.com>
+>>>>>>>>
+>>>>>>>> On ACPI based system the device is probed by the name directly. If the
+>>>>>>>> driver is configured as module it can only be loaded manually. Add the
+>>>>>>>> platform id table as well as the module alias then the driver will be
+>>>>>>>> loaded automatically by the udev or others once the device added.
+>>>>>>>>
+>>>>>>>
+>>>>>>> Please consider revise the long log to clearly express the purpose of the
+>>>>>>> changes in this patch:
+>>>>>>>
+>>>>>>> - What's the exact issue the patch is addressing
+>>>>>>> - Why the changes in this patch can fix the issue or make something working
+>>>>>>> - Consider impact of the changes introduced by this patch
+>>>>>>>
+>>>>>>> These info may help reviewers and maintainers .. and yourself on code merge.
+>>>>>>
+>>>>>> years ago, i found a good doc regarding this,
+>>>>>> https://wiki.archlinux.org/title/Modalias
+>>>>>>
+>>>>>> guess it is because /lib/modules/$(uname -r)/modules.alias fails to contain smmu
+>>>>>> driver without the MODULE_DEVICE_TABLE, isn't it, yicong？
+>>>>>
+>>>>> Yes I think it's the reason. I didn't find summary in kernel docs for the modalias
+>>>>> as well as the uevent mechanism. Arch wiki has a well illustration for the modalias
+>>>>> and suse[1] describes how this is used by the udev for module auto loading.
+>>>>>
+>>>>> For my case I'm using a ACPI based arm64 server and after booting the arm_smmuv3_pmu.ko
+>>>>> is not auto loaded by the udevd since we aren't providing this information. In order
+>>>>> to support this we need to provide this MODULE_DEVICE_TABLE() when the smmu pmu added
+>>>>> as a platform device, then the userspace udev can know which module to load after the
+>>>>> device is added.
+>>>>>
+>>>>
+>>>> Then what's the purpose of the added '.id_table = ...' line in the previous
+>>>> patch ?
+>>>> <We lost the patch context in this thread.>
+>>>>
+>>>> Based on above clarification, the updated DEVICE_TABLE would update modalias
+>>>> as expected, right ?
+>>>
+>>> ok, it's lack of illustration in the commit. If we're going to use MODULE_DEVICE_TABLE we need
+>>> a platform id table. So I add it and I found it weired if we have a id table but not use it for
+>>> probing, so I also initialize .id_table.
+>>>
+>>> I found there's also an another way to implement this by used MODULE_ALIAS(), and no need to add
+>>> an id table. Maybe this way is less controversial.
 >>
->>>  	default y
->>>  	select WATCHDOG_CORE
->>>  	select P2SB
+>> right, how is your driver matching with your device?
 >>
->> You can replace the "select" to "depends on" instead.
-> 
-> That would also work, but it's generally best not to mix
-> 'depends on' and 'select' for the same symbol. Changing
-> all three 'select P2SB' to 'depends on P2SB', or removing
-> the prompt to turn P2SB itself into a hidden symbol is
-> probably a good follow-up patch, but I'd keep that separate
-> from the regression fix.
-
-Right P2SB would benefit from being changed into a hidden
-symbol.
-
-Andy, any comments on making P2SB a hidden symbol ?
-
-Regards,
-
-Hans
-
-
-> 
->      Arnd
+>> acpi_driver_match_device()  or strcmp(pdev->name, drv->name) == 0 ?
 > 
 
+The latter. The smmu pmu platform device is created when parsing the IORT so probed by matching the
+device and driver name directly.
+
+> btw, those drivers supporting acpi probe usually have a acpi table
+> 
+> #if IS_ENABLED(CONFIG_ACPI)
+> static const struct acpi_device_id hidma_acpi_ids[] = {
+> {"QCOM8061"},
+> {"QCOM8062", HIDMA_MSI_CAP},
+> {"QCOM8063", (HIDMA_MSI_CAP | HIDMA_IDENTITY_CAP)},
+> {},
+> };
+> MODULE_DEVICE_TABLE(acpi, hidma_acpi_ids);
+> #endif
+> 
+>>
+>> static int platform_match(struct device *dev, struct device_driver *drv)
+>> {
+>>         struct platform_device *pdev = to_platform_device(dev);
+>>         struct platform_driver *pdrv = to_platform_driver(drv);
+>>
+>>         /* When driver_override is set, only bind to the matching driver */
+>>         if (pdev->driver_override)
+>>                 return !strcmp(pdev->driver_override, drv->name);
+>>
+>>         /* Attempt an OF style match first */
+>>         if (of_driver_match_device(dev, drv))
+>>                 return 1;
+>>
+>>         /* Then try ACPI style match */
+>>         if (acpi_driver_match_device(dev, drv))
+>>                 return 1;
+>>
+>>         /* Then try to match against the id table */
+>>         if (pdrv->id_table)
+>>                 return platform_match_id(pdrv->id_table, pdev) != NULL;
+>>
+>>         /* fall-back to driver name match */
+>>         return (strcmp(pdev->name, drv->name) == 0);
+>> }
+>>
+>> In both cases, it seems we don't need id_table. id_table can support
+>> two or above device names, so that one driver can support
+>> multiple device IDs usually with different specific device data.
+>>
+
+yes I think you're right. For my case use MODULE_ALIAS is enough. Will respin
+a v2.
+
+Thanks!
+
+>>>
+>>> diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
+>>> index 25a269d431e4..4c32b6dbfe76 100644
+>>> --- a/drivers/perf/arm_smmuv3_pmu.c
+>>> +++ b/drivers/perf/arm_smmuv3_pmu.c
+>>> @@ -984,6 +984,7 @@ static void __exit arm_smmu_pmu_exit(void)
+>>>
+>>>  module_exit(arm_smmu_pmu_exit);
+>>>
+>>> +MODULE_ALIAS("platform:arm-smmu-v3-pmcg");
+>>>  MODULE_DESCRIPTION("PMU driver for ARM SMMUv3 Performance Monitors Extension");
+>>>  MODULE_AUTHOR("Neil Leeder <nleeder@codeaurora.org>");
+>>>  MODULE_AUTHOR("Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>");
+>>>
+>>
+>> Thanks
+>> Barry
+> .
+> 
