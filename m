@@ -2,166 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3144277B0CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 07:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B586777B0CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 07:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233310AbjHNFcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 01:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38428 "EHLO
+        id S233327AbjHNFcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 01:32:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233304AbjHNFbx (ORCPT
+        with ESMTP id S233385AbjHNFch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 01:31:53 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D97E77;
-        Sun, 13 Aug 2023 22:31:49 -0700 (PDT)
-Received: from [192.168.164.158] (unknown [116.71.172.205])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id E9CBB660705E;
-        Mon, 14 Aug 2023 06:31:43 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1691991106;
-        bh=ANCniHg7REILr/QGUi9unlaj0a75Pe7ScZ5Fehdxbrk=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=KRkI9fAXgtzqN89AZyap4JhadnYJIvcuTIjEOdwSi0LG14TJMV0Vi9ixQcs5MbhcU
-         bsFbe/XBpzrtCsyzJdAE2voWc/izY+aAN2xE8elmGp9vNpXOCaU+N62IE3N38zigu2
-         ueM3bH+qU1h8kGkIDwnjuGg25sjIt5hQE6Dj/a8gVvyCWtXV7MfC0Py0KDlqNhLGOd
-         QPE4aVrb9D85+h9s27ppNCc3qwBWBEwGPxGspiTpXo0/Z6kzzLSNJshmw6a6moMxGB
-         Crb+tkO1hGE7x2Rb+3q5lHwATBbWxuKRNzjTJSq+Ndu+SgnGEkmy7w/9IAVNm0AiRE
-         YgSgz2YDmEXBw==
-Message-ID: <4637f58c-1cf3-0691-4fc1-6fbc38ec47ce@collabora.com>
-Date:   Mon, 14 Aug 2023 10:31:38 +0500
+        Mon, 14 Aug 2023 01:32:37 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C05F10D7;
+        Sun, 13 Aug 2023 22:32:36 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6bca38a6618so3434059a34.3;
+        Sun, 13 Aug 2023 22:32:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691991156; x=1692595956;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HT+wJFz4od+UUfh/YvtmtCts/VmDgx7cr4C4A9Q7jmg=;
+        b=EwaQFnf2fcDIRzLEbQGAEVFsxezZDz6nc57hFH7REtP1oB9L0AlxJiYL1+nQM1z+NI
+         NifqZjgsRL95cnTnLKIPnAFyMYJRSCHF0csdUBdL2WThR8vx1Hm318GxLvPyAUSstMf8
+         Z52JKjGAPrzEPz7X+89kfKvySoweEebA5u/569A74HKI+19C9TKe+ELhYRuDDqwzMLx+
+         BmkTdufKzwKkJWBOuiKWdEWuL6ueuXUGMC+hA8FiNJNRkD8/I/CmCyXc5new/ThWKZJc
+         H47wSZv11ldPpwc3Ltg5e55kh8JmXXNKkE221Ujtcd43ktSUrpxH5K/0ad6Q9TUQrcfG
+         S2MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691991156; x=1692595956;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HT+wJFz4od+UUfh/YvtmtCts/VmDgx7cr4C4A9Q7jmg=;
+        b=Pz+0kKXt/ij0+kJGuOXf0QlCuY2LqjmGF01ErDELBpkQ6CmlWmgnMRrZpoIbFOkcHc
+         VXSYJhw0USJcMLO4mx15Ya1uZ0t2w+gx4WjWvjkW0QRMpz7ZCizL+TCh5LJRO8PDPW3n
+         fZ1P63igiJ6W3gvlMjnf4ODOi4vJ6UU9WQ8OqQgcB9AHLCFqC9KAnJIsZSrR8hqrFpQw
+         AQ1Roj+s4PJNYluz/un3vXuMoLZXl16xvFvc4EWZ4PD/DPo6t5Cnbd5TbXMOdKmjSWVD
+         mImKoVX+hrtUCVcq7QvsJn9bFYVmEyBltH0N3Db7aybYz8vBb4SOme6GjzgURwomSn1r
+         plwA==
+X-Gm-Message-State: AOJu0Yw+FmNnJHXiixfHcOSwkRW41DK5G3VftmznR5aLn0VSsCkoK+GH
+        1N1O+zBz6Au4XW2kvdHu0Cg=
+X-Google-Smtp-Source: AGHT+IE0oT92e/iIz5YUsgN+ZDehbjY0Tt9twn9bkhTYZyq7jC+7Z/jGjA/owrcK2AaZQ2Np7Ytv2g==
+X-Received: by 2002:a9d:6e87:0:b0:6bd:9fa:34ff with SMTP id a7-20020a9d6e87000000b006bd09fa34ffmr8198558otr.9.1691991155831;
+        Sun, 13 Aug 2023 22:32:35 -0700 (PDT)
+Received: from debian.me ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id p14-20020a17090adf8e00b0026971450601sm7120844pjv.7.2023.08.13.22.32.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 13 Aug 2023 22:32:35 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id E5C5A81A9BC4; Mon, 14 Aug 2023 12:32:30 +0700 (WIB)
+Date:   Mon, 14 Aug 2023 12:32:30 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 6.4 000/206] 6.4.11-rc1 review
+Message-ID: <ZNm8bm-jNi_nVRfL@debian.me>
+References: <20230813211724.969019629@linuxfoundation.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stable <stable@vger.kernel.org>,
-        regressions@lists.linux.dev, Baokun Li <libaokun1@huawei.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>
-Subject: Re: [v6.1] kernel BUG in ext4_writepages
-To:     syzbot <syzbot+a8068dd81edde0186829@syzkaller.appspotmail.com>,
-        syzkaller-lts-bugs@googlegroups.com
-References: <00000000000081f8c905f6c24e0d@google.com>
- <87dcdf62-8a74-1fbf-5f10-f4f3231f774f@collabora.com>
-Content-Language: en-US
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <87dcdf62-8a74-1fbf-5f10-f4f3231f774f@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5wtxyPoyzPwSJrdw"
+Content-Disposition: inline
+In-Reply-To: <20230813211724.969019629@linuxfoundation.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/23 3:49 PM, Muhammad Usama Anjum wrote:
-> Hi,
-> 
-> Syzbot has reporting hitting this bug on 6.1.18 and 5.15.101 LTS kernels
-> and provided reproducer as well.
-> 
-> 	BUG_ON(ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA));
-> 
-> I've copied the same config and reproduced the bug on 6.1.18, 6.1.44 and
-> next-20230809.
-> 
-> This part of code hasn't been changed from the time it was introduced
-> 4e7ea81db53465 ("ext4: restructure writeback path"). I'm not sure why the
-> inlined data is being destroyed before copying it somewhere else.
-> 
-> Please consider this a report.
-> 
-> Regards,
-> Muhammad Usama Anjum
-> 
-> 
-> On 3/13/23 11:34 AM, syzbot wrote:
->> syzbot has found a reproducer for the following issue on:
->>
->> HEAD commit: 1cc3fcf63192 Linux 6.1.18
->> git tree: linux-6.1.y
->> console output: https://syzkaller.appspot.com/x/log.txt?x=10d4b342c80000
->> kernel config: https://syzkaller.appspot.com/x/.config?x=157296d36f92ea19
-> ^ Kernel config
-> 
->> dashboard link: https://syzkaller.appspot.com/bug?extid=a8068dd81edde0186829
->> compiler: Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
->> userspace arch: arm64
->> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=13512ec6c80000
->> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=15ca0ff4c80000
-> ^ reproducers. C reproducer reproduces the bug easily.
-> 
->>
->> Downloadable assets:
->> disk image: https://storage.googleapis.com/syzbot-assets/0e4c0d43698b/disk-1cc3fcf6.raw.xz
->> vmlinux: https://storage.googleapis.com/syzbot-assets/a4de39d735de/vmlinux-1cc3fcf6.xz
->> kernel image: https://storage.googleapis.com/syzbot-assets/82bab928f6e3/Image-1cc3fcf6.gz.xz
->> mounted in repro: https://storage.googleapis.com/syzbot-assets/bf2e21b96210/mount_0.gz
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+a8068dd81edde0186829@syzkaller.appspotmail.com
->>
->> ------------[ cut here ]------------
->> kernel BUG at fs/ext4/inode.c:2746!
->> Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
->> Modules linked in:
->> CPU: 0 PID: 11 Comm: kworker/u4:1 Not tainted 6.1.18-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/02/2023
->> Workqueue: writeback wb_workfn (flush-7:0)
->> pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
->> pc : ext4_writepages+0x35f4/0x35f8 fs/ext4/inode.c:2745
->> lr : ext4_writepages+0x35f4/0x35f8 fs/ext4/inode.c:2745
->> sp : ffff800019d16d40
->> x29: ffff800019d17120 x28: ffff800008e691e4 x27: dfff800000000000
->> x26: ffff0000de1f3ee0 x25: ffff800019d17590 x24: ffff800019d17020
->> x23: ffff0000dd616000 x22: ffff800019d16f40 x21: ffff0000de1f4108
->> x20: 0000008410000000 x19: 0000000000000001 x18: ffff800019d16a20
->> x17: ffff80001572d000 x16: ffff8000083099b4 x15: 000000000000ba31
->> x14: 00000000ffffffff x13: dfff800000000000 x12: 0000000000000001
->> x11: ff80800008e6c7d8 x10: 0000000000000000 x9 : ffff800008e6c7d8
->> x8 : ffff0000c099b680 x7 : 0000000000000000 x6 : 0000000000000000
->> x5 : 0000000000000080 x4 : 0000000000000000 x3 : 0000000000000001
->> x2 : 0000000000000000 x1 : 0000008000000000 x0 : 0000000000000000
->> Call trace:
->> ext4_writepages+0x35f4/0x35f8 fs/ext4/inode.c:2745
->> do_writepages+0x2e8/0x56c mm/page-writeback.c:2469
->> __writeback_single_inode+0x228/0x1ec8 fs/fs-writeback.c:1587
->> writeback_sb_inodes+0x9c0/0x1844 fs/fs-writeback.c:1878
->> wb_writeback+0x4f8/0x1580 fs/fs-writeback.c:2052
->> wb_do_writeback fs/fs-writeback.c:2195 [inline]
->> wb_workfn+0x460/0x11b8 fs/fs-writeback.c:2235
->> process_one_work+0x868/0x16f4 kernel/workqueue.c:2289
->> worker_thread+0x8e4/0xfec kernel/workqueue.c:2436
->> kthread+0x24c/0x2d4 kernel/kthread.c:376
->> ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
->> Code: d4210000 97da5cfa d4210000 97da5cf8 (d4210000)
->> ---[ end trace 0000000000000000 ]---
->>
->>
 
-The last refactoring was done by 4e7ea81db53465 on this code in 2013. The
-code segment in question is present from even before that. It means that
-this bug is present for several years. 4.14 is the most old kernel being
-maintained today. So it affects all current LTS and mainline kernels. I'll
-report 4e7ea81db53465 with regzbot for proper tracking. Thus probably the
-bug report will get associated with all LTS kernels as well.
+--5wtxyPoyzPwSJrdw
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-#regzbot title: Race condition between buffer write and page_mkwrite
+On Sun, Aug 13, 2023 at 11:16:10PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.4.11 release.
+> There are 206 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
 
-#regzbot introduced: 4e7ea81db53465
+Successfully compiled and installed bindeb-pkgs on my computer (Acer
+Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
 
-#regzbot monitor:
-https://lore.kernel.org/all/20230530134405.322194-1-libaokun1@huawei.com
+Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
--- 
-BR,
-Muhammad Usama Anjum
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--5wtxyPoyzPwSJrdw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZNm8aQAKCRD2uYlJVVFO
+oxe3AP0Tpvt2lDrzyp0f73DoiSP+zPulKQ5fNMfbF2wJF1eiTwD/cw3g//u8xx71
+16eyW3q2ydg5pb9rIcdLIIHJwwzZKg0=
+=J+65
+-----END PGP SIGNATURE-----
+
+--5wtxyPoyzPwSJrdw--
