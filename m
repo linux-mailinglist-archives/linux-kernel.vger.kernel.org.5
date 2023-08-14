@@ -2,60 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B69A977B034
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 05:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C7977B048
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 05:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233004AbjHNDju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 23:39:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43434 "EHLO
+        id S233020AbjHNDwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 23:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232987AbjHNDjQ (ORCPT
+        with ESMTP id S231678AbjHNDwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 23:39:16 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 75795E75;
-        Sun, 13 Aug 2023 20:39:14 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.201])
-        by gateway (Coremail) with SMTP id _____8AxlPDhodlk8OMXAA--.49462S3;
-        Mon, 14 Aug 2023 11:39:13 +0800 (CST)
-Received: from [10.20.42.201] (unknown [10.20.42.201])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx7yPgodlkB01ZAA--.48709S3;
-        Mon, 14 Aug 2023 11:39:12 +0800 (CST)
-Subject: Re: [PATCH v3 1/2] gpio: dt-bindings: add parsing of loongson gpio
- offset
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Conor Dooley <conor@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        loongson-kernel@lists.loongnix.cn, zhuyinbo@loongson.cn
-References: <20230807074043.31288-1-zhuyinbo@loongson.cn>
- <20230807074043.31288-2-zhuyinbo@loongson.cn>
- <20230808-amount-urban-9a6eb09852ca@spud>
- <536a9062-65b2-5518-5c50-1a61e23870ee@loongson.cn>
- <20230809-circus-photo-6911d2e18f96@spud>
- <d4e16768-bed0-beda-42c3-f0a01b7e96cc@loongson.cn>
- <CAMRc=Mc00yy6DxdEos_w7HAkAwH7j0HBvkbQbaQiA_wTXiwFUg@mail.gmail.com>
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-Message-ID: <80325b72-e7b3-08cc-f726-513de75de94c@loongson.cn>
-Date:   Mon, 14 Aug 2023 11:39:12 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Sun, 13 Aug 2023 23:52:24 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52AD5E53
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 20:52:22 -0700 (PDT)
+Received: from kwepemm600004.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RPL4N4jCBz2Bd1V;
+        Mon, 14 Aug 2023 11:49:24 +0800 (CST)
+Received: from [10.67.103.231] (10.67.103.231) by
+ kwepemm600004.china.huawei.com (7.193.23.242) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 14 Aug 2023 11:52:19 +0800
+Message-ID: <15dc4582-de74-ec5b-7d18-e1bf4a238257@huawei.com>
+Date:   Mon, 14 Aug 2023 11:52:18 +0800
 MIME-Version: 1.0
-In-Reply-To: <CAMRc=Mc00yy6DxdEos_w7HAkAwH7j0HBvkbQbaQiA_wTXiwFUg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] soc: kunpeng_hccs: fix size_t format string
+To:     Wei Xu <xuwei5@hisilicon.com>, Arnd Bergmann <arnd@kernel.org>
+CC:     Arnd Bergmann <arnd@arndb.de>, <linux-kernel@vger.kernel.org>
+References: <20230812172116.3477379-1-arnd@kernel.org>
+ <64D97BA6.3030609@hisilicon.com>
+From:   "lihuisong (C)" <lihuisong@huawei.com>
+In-Reply-To: <64D97BA6.3030609@hisilicon.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Cx7yPgodlkB01ZAA--.48709S3
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-        nUUI43ZEXa7xR_UUUUUUUUU==
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Originating-IP: [10.67.103.231]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600004.china.huawei.com (7.193.23.242)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,57 +49,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks Arnd,
 
+Acked-by: Huisong Li <lihuisong@huawei.com>
 
-在 2023/8/11 下午10:25, Bartosz Golaszewski 写道:
-> On Thu, Aug 10, 2023 at 8:19 AM Yinbo Zhu <zhuyinbo@loongson.cn> wrote:
+在 2023/8/14 8:56, Wei Xu 写道:
+> Hi Arnd,
+>
+> On 2023/8/13 1:21, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
 >>
+>> Printing a size_t using the %lu format string causes a warning on
+>> architectures that define the type as 'unsigned int':
 >>
+>> In file included from include/linux/device.h:15,
+>>                   from include/linux/acpi.h:14,
+>>                   from drivers/soc/hisilicon/kunpeng_hccs.c:25:
+>> drivers/soc/hisilicon/kunpeng_hccs.c: In function 'hccs_get_bd_info':
+>> drivers/soc/hisilicon/kunpeng_hccs.c:441:25: error: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'size_t' {aka 'unsigned int'} [-Werror=format=]
 >>
->> 在 2023/8/9 下午11:39, Conor Dooley 写道:
->>> On Wed, Aug 09, 2023 at 03:47:55PM +0800, Yinbo Zhu wrote:
->>>> 在 2023/8/8 下午8:05, Conor Dooley 写道:
->>>>> On Mon, Aug 07, 2023 at 03:40:42PM +0800, Yinbo Zhu wrote:
->>>
->>>>>> +  loongson,gpio-ctrl-mode:
->>>>>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>>>>> +    description:
->>>>>> +      This option indicate this GPIO control mode, where '0' represents
->>>>>> +      bit control mode and '1' represents byte control mode.
->>>>>
->>>>> How is one supposed to know which of these modes to use?
->>>>
->>>>
->>>> Byte mode is to access by byte, such as gpio3, the base address of the
->>>> gpio controller is offset by 3 bytes as the access address of gpio3.
->>>>
->>>> The bit mode is the normal mode that like other platform gpio and it is
->>>> to access by bit.
->>>>
->>>> If both modes are supported, it is recommended to prioritize using byte
->>>> mode that according to spec.
->>>
->>> So, sounds like this property should instead be a boolean that notes
->>> whether the hardware supports the mode or not, rather than the current
->>> enum used to determine software policy.
+>> Use the correct %zu format instead.
 >>
+>> Fixes: 886bdf9c883bc ("soc: hisilicon: Support HCCS driver on Kunpeng SoC")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>> ---
+>> I've already applied this one on top of the soc/drivers branch after I
+>> merged the branch with the new driver and noticed the regression.
 >>
->> okay, I got it, I will use boolean,
+>>   drivers/soc/hisilicon/kunpeng_hccs.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
 >>
-> 
-> Why do you want to put it into device-tree so badly? This is not the
-> first driver that would have of_match_data for different variants
-> where you can have a structure that would keep offsets for different
-> models. It's not like you will have hundreds of "compatible" chips
-> anyway, most likely just a few?
-
-
-Using this ways that put offset property into device-tree that can be
-compatible with future GPIO chips without the need to modify drivers,
-such as more 2K chips in the future, but use of_match_data and data
-field of_device_id, which every time a new SoC is released, the GPIO
-driver needs to be modified once, which is not friendly to us.
-
-Thanks,
-Yinbo
-
+>> diff --git a/drivers/soc/hisilicon/kunpeng_hccs.c b/drivers/soc/hisilicon/kunpeng_hccs.c
+>> index 6864d203c6782..0d6f6bacd3f62 100644
+>> --- a/drivers/soc/hisilicon/kunpeng_hccs.c
+>> +++ b/drivers/soc/hisilicon/kunpeng_hccs.c
+>> @@ -438,7 +438,7 @@ static int hccs_get_bd_info(struct hccs_dev *hdev, u8 opcode,
+>>   	head = &rsp->rsp_head;
+>>   	if (head->data_len > buf_len) {
+>>   		dev_err(hdev->dev,
+>> -			"buffer overflow (buf_len = %lu, data_len = %u)!\n",
+>> +			"buffer overflow (buf_len = %zu, data_len = %u)!\n",
+>>   			buf_len, head->data_len);
+>>   		return -ENOMEM;
+>>   	}
+>>
+> Thanks!
+>
+> Best Regards,
+> Wei
+> .
