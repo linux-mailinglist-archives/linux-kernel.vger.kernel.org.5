@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE1877B55D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 11:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88DF977B55A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 11:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235770AbjHNJZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 05:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32912 "EHLO
+        id S235710AbjHNJY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 05:24:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235544AbjHNJYb (ORCPT
+        with ESMTP id S235536AbjHNJYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Aug 2023 05:24:31 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15FF195;
-        Mon, 14 Aug 2023 02:24:27 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-523d2ef19e4so3420341a12.2;
-        Mon, 14 Aug 2023 02:24:27 -0700 (PDT)
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222EF113;
+        Mon, 14 Aug 2023 02:24:29 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fe8c16c1b4so6202757e87.2;
+        Mon, 14 Aug 2023 02:24:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692005066; x=1692609866;
+        d=gmail.com; s=20221208; t=1692005067; x=1692609867;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lnynnLmMvxPnvZnTfxfc/vyXL47Nk6SlcQBCAb2F7Qo=;
-        b=DIrcZ3zkZ3hm8QLbBF5Rm6IJveMhJNoBcoXlN8aQ8WvhnxOfoxtcFnVAoZl8zWcbIG
-         Sed0PXO407QvD7yk/hDdHspQA5Zxj6KaufF4ZrbLxWoH5Og2LSPv3N0uh0fddZbauocH
-         BFSFWOa5s2UfacEIQU3MwgIa7WHzPPsh9YlGXSxTj8aUm3tjN4RdLko4FmAfRX1L0uXk
-         0fKlWaUwRBmkq5LoDPAKAuSo3IFlCGFqsnEvDq140arMbba4fE4sfOZalZXismPpEa5U
-         DqR+fpXCFc8PBprwnNidWM5qnY/6Bl5BLhiOzEfZJiN2+mEUDGgRzzSoorD6VFSNIVa/
-         KiIA==
+        bh=A2m3J5YuXv3z/VvSeyWTquGoeXd8RIuDyRxPA7kzxTo=;
+        b=IY0ohCBws1qO/0dWq5lbWz8IJakewuiiPV3XgvHOJOmIRxUW8XhHARQggnhkrm4g+E
+         2baMLNKzAo1uudnt/Vxsu1r3fFvlqhuNQvaTlPgDb+oo7YIg0s4X4Wzu/DHPDpjYlMjx
+         bZVWon88ywi6UdespsG+KuzmmlkHKs7GnrsufzLuAt1P2vjrQpAxzGbcxwN5/F4Ycjoe
+         SSRaY7PHZAmz8cJ31HcOxJzT7SBj7FMaVTXrKzhTppmpmZ0O4Iq//avOXIWrQDMT3UKR
+         gN6GnssguIW8HXRp7UtPvhw3uNcfbRmC3JSrsB/atzN/MnfAjErwHDEOoTzXoi2vyHEv
+         1bFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692005066; x=1692609866;
+        d=1e100.net; s=20221208; t=1692005067; x=1692609867;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lnynnLmMvxPnvZnTfxfc/vyXL47Nk6SlcQBCAb2F7Qo=;
-        b=M4XG8DSZbdkBHzcfLmSeVkT1Wkpd0JPyOrS8uYJNyRUEBatk0EB+sCUEqCe9H9EeIx
-         WFwibf1YY9AYKPotzg6t0w1zk/zGcGLR7Fu7lROWN7ANHoq2o82PJzXTdVYd13n5rsit
-         UAheHveMLUQ1WjJIR5aha3HhLHcO7IJSWcuSGzCjF/T8Yx45zCNCWyJxU88F2n/GfkY+
-         WZ+cvd6CmZzsH31QQTVzp1HOKCcKsycF0HU1ExsjUTY6kewkxyMMnQgNHOKiDv5Ofu2/
-         M7o/ysDC3+ORY2b6nwibAfAY6FJxz3SouMYo389mHimZaQKThe2WO0Lcq9LqatFYpC9u
-         +0wQ==
-X-Gm-Message-State: AOJu0YwrAtYQCmYtJ31Q418rPnZd9NHPNOAJvUDxEkVHY2V4L2y8diAg
-        pDVl18jknnBDWoL1XrZ4A3c=
-X-Google-Smtp-Source: AGHT+IFoInFMO6NO0FitlqZ6yish3B1EXsGjzmsVmoK+dw3boW+PxKJpXUY7ElDmIiG12gS4VmVdHQ==
-X-Received: by 2002:aa7:d4c4:0:b0:525:689d:670d with SMTP id t4-20020aa7d4c4000000b00525689d670dmr1044218edr.17.1692005065703;
-        Mon, 14 Aug 2023 02:24:25 -0700 (PDT)
+        bh=A2m3J5YuXv3z/VvSeyWTquGoeXd8RIuDyRxPA7kzxTo=;
+        b=AHZEz2apILJ+4bX8wv5Q03Bq59a2Ilby51UhFlBaT+OObOChywv0yDRLeqN9N4RQcW
+         86Fme/VdMi8hif9gRPM8ere9TcB/Dcz4MMZbhVnHOtKsgaaM8JjYN9QCLzYUn9EP3NTF
+         CPmhleZDoXkoSqneBDeoJ0O2ga77XeCrrP2dLgq9g6LKvfXTJJ60JnB67+8+CItY4B6f
+         uxM3Vry0//Hf/9yLL68mVTABPsry4MwIP8B19kTChaPNWNivxfULDefaxZkb5xIhQ7Xb
+         QODBB0OSnsWv+1gFHq0jl2RgOVpKmw44IoPcGFOuKrOX0ZHeoM2LHlkju90k94MKiNH4
+         uZ1w==
+X-Gm-Message-State: AOJu0Yz/7SdtZ1XQdjDKug1xZDggr+YuTxycnk5EEuThE48O1XsuXBcm
+        McLk2mHCvMPYl0SuRzlC8Uk=
+X-Google-Smtp-Source: AGHT+IHMaHmrq3gyGiJvzqu2VUdj1mHeSLKz1xAh6HxtD/w3kror0wHO5eRjKZQp5IB5tf7U3RHLIw==
+X-Received: by 2002:a05:6512:3090:b0:4fd:fadb:e6e4 with SMTP id z16-20020a056512309000b004fdfadbe6e4mr6890880lfd.69.1692005067116;
+        Mon, 14 Aug 2023 02:24:27 -0700 (PDT)
 Received: from micheledallerive.home ([2a02:1210:6051:ec00:61e9:3767:83a6:9bd9])
-        by smtp.gmail.com with ESMTPSA id b5-20020aa7c6c5000000b005224d960e66sm5314879eds.96.2023.08.14.02.24.24
+        by smtp.gmail.com with ESMTPSA id b5-20020aa7c6c5000000b005224d960e66sm5314879eds.96.2023.08.14.02.24.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 02:24:25 -0700 (PDT)
+        Mon, 14 Aug 2023 02:24:26 -0700 (PDT)
 From:   Michele Dalle Rive <dallerivemichele@gmail.com>
 To:     Miguel Ojeda <ojeda@kernel.org>,
         Alex Gaynor <alex.gaynor@gmail.com>,
@@ -66,9 +66,9 @@ Cc:     Eric Dumazet <edumazet@google.com>,
         rust-for-linux@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, patches@lists.linux.dev,
         Michele Dalle Rive <dallerivemichele@gmail.com>
-Subject: [RFC PATCH 2/7] rust: net: add ip and socket address bindings.
-Date:   Mon, 14 Aug 2023 11:22:57 +0200
-Message-ID: <20230814092302.1903203-3-dallerivemichele@gmail.com>
+Subject: [RFC PATCH 3/7] rust: net: add socket-related flags and flagset.
+Date:   Mon, 14 Aug 2023 11:22:58 +0200
+Message-ID: <20230814092302.1903203-4-dallerivemichele@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230814092302.1903203-1-dallerivemichele@gmail.com>
 References: <20230814092302.1903203-1-dallerivemichele@gmail.com>
@@ -84,1273 +84,508 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create structures to handle addresses: `Ipv4Addr`, `Ipv6Addr`,
-`SocketAddr`, `SocketAddrV4` and `SocketAddrV6`.
+Add enums representing flags related to sockets:
+- `ReceiveFlag` to modify the behaviour of the socket receive operation.
+- `SendFlag` to modify the behaviour of the socket send operation.
+- `MessageFlag` to represent the flags in a `msghdr`.
+- `SocketFlag` to represent the flags in the `socket` struct.
 
-These structures are meant to be as similar as possible to the ones in
-Rust `std::net`, while, at the same time, providing functionalities
-available in the kernel.
-
-Some extra structures are added, compared to `std`:
-- `SocketAddrStorage`: wraps `struct sockaddr_storage` and is used to
-  interact with the kernel functions when the type of socket address is
-  unknown. Since it is only used for FFI, it is crate-public.
-- `GenericSocketAddr`: trait that defines shared functions and traits
-  amont all socket addresses.
+Introduce a `FlagSet` structure to offer a convenient way to handle the
+flags.
+Having an abstraction over the "raw" numerical value of the flags offers
+many advantages:
+- A `FlagSet` can be created in different ways: from an `IntoIterator`,
+  a value, a single flag or using the defined macro `flag_set!(...)`.
+- Custom operations can be defined, such as the bitwise or.
+- Flags in the set can be set, tested, unset through functions instead
+  of using bitwise operations.
+- FlagSet implements the IntoIterator trait, allowing for iteration over
+  the flags contained.
 
 Signed-off-by: Michele Dalle Rive <dallerivemichele@gmail.com>
 ---
-A few questions here:
-- Should `SocketAddrStorage` be crate-public or public? My reasoning is
-  that modules should be using `SocketAddr` for an "unspecified" socket
-  address type; however, having `SocketAddrStorage` available could give
-  the freedom of eventually using bindings directly to do more complex
-  tasks.
-- Is `GenericSocketAddr` useful? I thought it could be convenient
-  to have a socket address trait, as a sort of "superclass" for all
-  socket addresses. However, I think it has no particular use, since
-  there is `SocketAddr`.
-- Should the addresses be divided in two files, one for ip addresses and
-  one for socket addresses? Or everything together works?
+Opinions on FlagSet? I think it might be a convenient structure, for any
+kind of "bitmask flag", not necessarily limited to the socket ones,
+since it provides methods to easily create and access the flags.
+However, it might be cumbersome to use to just obtain the same result of
+a simple bitwise OR.
 
- rust/kernel/net.rs      |    2 +
- rust/kernel/net/addr.rs | 1215 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 1217 insertions(+)
- create mode 100644 rust/kernel/net/addr.rs
+ rust/kernel/net/socket/flags.rs | 467 ++++++++++++++++++++++++++++++++
+ 1 file changed, 467 insertions(+)
+ create mode 100644 rust/kernel/net/socket/flags.rs
 
-diff --git a/rust/kernel/net.rs b/rust/kernel/net.rs
-index 1eda336b48e4..346e7374e614 100644
---- a/rust/kernel/net.rs
-+++ b/rust/kernel/net.rs
-@@ -9,6 +9,8 @@
- 
- use crate::error::{code, Error};
- use core::cell::UnsafeCell;
-+
-+pub mod addr;
- pub mod ip;
- 
- /// The address family.
-diff --git a/rust/kernel/net/addr.rs b/rust/kernel/net/addr.rs
+diff --git a/rust/kernel/net/socket/flags.rs b/rust/kernel/net/socket/flags.rs
 new file mode 100644
-index 000000000000..e6b1ba7320db
+index 000000000000..fe98e09a8d46
 --- /dev/null
-+++ b/rust/kernel/net/addr.rs
-@@ -0,0 +1,1215 @@
++++ b/rust/kernel/net/socket/flags.rs
+@@ -0,0 +1,467 @@
 +// SPDX-License-Identifier: GPL-2.0
 +
-+//! Network address types.
-+//!
-+//! This module contains the types and APIs related to network addresses.
-+//! The methods and types of this API are inspired by the [Rust standard library's `std::net` module](https://doc.rust-lang.org/std/net/index.html),
-+//! but have been ported to use the kernel's C APIs.
++//! Socket-related flags and utilities.
++use crate::bindings;
++use core::fmt::Debug;
++use core::ops::{BitOr, BitOrAssign};
 +
-+use crate::error::{code, Error, Result};
-+use crate::net::{init_net, AddressFamily, Namespace};
-+use crate::str::{CStr, CString};
-+use crate::{c_str, fmt};
-+use core::cmp::Ordering;
-+use core::fmt::{Debug, Display, Formatter};
-+use core::hash::{Hash, Hasher};
-+use core::mem::MaybeUninit;
-+use core::ptr;
-+use core::str::FromStr;
-+
-+/// An IPv4 address.
++/// Generic socket flag trait.
 +///
-+/// Wraps a `struct in_addr`.
-+#[derive(Default, Copy, Clone)]
-+#[repr(transparent)]
-+pub struct Ipv4Addr(pub(crate) bindings::in_addr);
-+
-+impl Ipv4Addr {
-+    /// The maximum length of an IPv4 address string.
-+    ///
-+    /// This is the length of the string representation of the address.
-+    /// It does not include the null terminator.
-+    pub const MAX_STRING_LEN: usize = 15;
-+
-+    /// Create a new IPv4 address from four 8-bit integers.
-+    ///
-+    /// The IP address will be `a.b.c.d`.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::Ipv4Addr;
-+    ///
-+    /// let addr = Ipv4Addr::new(192, 168, 0, 1);
-+    /// ```
-+    pub const fn new(a: u8, b: u8, c: u8, d: u8) -> Self {
-+        Self::from_bits(u32::from_be_bytes([a, b, c, d]))
-+    }
-+
-+    /// Get the octets of the address.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::Ipv4Addr;
-+    ///
-+    /// let addr = Ipv4Addr::new(192, 168, 0, 1);
-+    /// let expected = [192, 168, 0, 1];
-+    /// assert_eq!(addr.octets(), &expected);
-+    /// ```
-+    pub const fn octets(&self) -> &[u8; 4] {
-+        // SAFETY: The s_addr field is a 32-bit integer, which is the same size as the array.
-+        unsafe { &*(&self.0.s_addr as *const _ as *const [u8; 4]) }
-+    }
-+
-+    /// Create a new IPv4 address from a 32-bit integer.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::Ipv4Addr;
-+    ///
-+    /// let addr = Ipv4Addr::from_bits(0xc0a80001);
-+    /// assert_eq!(addr, Ipv4Addr::new(192, 168, 0, 1));
-+    /// ```
-+    pub const fn from_bits(bits: u32) -> Self {
-+        Ipv4Addr(bindings::in_addr {
-+            s_addr: bits.to_be(),
-+        })
-+    }
-+
-+    /// Get the 32-bit integer representation of the address.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::Ipv4Addr;
-+    ///
-+    /// let addr = Ipv4Addr::new(192, 168, 0, 1);
-+    /// assert_eq!(addr.to_bits(), 0xc0a80001);
-+    /// ```
-+    pub const fn to_bits(&self) -> u32 {
-+        u32::from_be(self.0.s_addr)
-+    }
-+
-+    /// The broadcast address: `255.255.255.255`
-+    ///
-+    /// Used to send a message to all hosts on the network.
-+    pub const BROADCAST: Self = Self::new(255, 255, 255, 255);
-+
-+    /// "None" address
-+    ///
-+    /// Can be used as return value to indicate an error.
-+    pub const NONE: Self = Self::new(255, 255, 255, 255);
-+
-+    /// The "any" address: `0.0.0.0`
-+    /// Used to accept any incoming message.
-+    pub const UNSPECIFIED: Self = Self::new(0, 0, 0, 0);
-+
-+    /// A dummy address: `192.0.0.8`
-+    /// Used as ICMP reply source if no address is set.
-+    pub const DUMMY: Self = Self::new(192, 0, 0, 8);
-+
-+    /// The loopback address: `127.0.0.1`
-+    /// Used to send a message to the local host.
-+    pub const LOOPBACK: Self = Self::new(127, 0, 0, 1);
-+}
-+
-+impl From<[u8; 4]> for Ipv4Addr {
-+    /// Create a new IPv4 address from an array of 8-bit integers.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::Ipv4Addr;
-+    ///
-+    /// let addr = Ipv4Addr::from([192, 168, 0, 1]);
-+    /// assert_eq!(addr, Ipv4Addr::new(192, 168, 0, 1));
-+    /// ```
-+    fn from(octets: [u8; 4]) -> Self {
-+        Self::new(octets[0], octets[1], octets[2], octets[3])
-+    }
-+}
-+
-+impl From<Ipv4Addr> for u32 {
-+    /// Get the 32-bit integer representation of the address.
-+    ///
-+    /// This is the same as calling [`Ipv4Addr::to_bits`].
-+    fn from(addr: Ipv4Addr) -> Self {
-+        addr.to_bits()
-+    }
-+}
-+
-+impl From<u32> for Ipv4Addr {
-+    /// Create a new IPv4 address from a 32-bit integer.
-+    ///
-+    /// This is the same as calling [`Ipv4Addr::from_bits`].
-+    fn from(bits: u32) -> Self {
-+        Self::from_bits(bits)
-+    }
-+}
-+
-+impl PartialEq<Ipv4Addr> for Ipv4Addr {
-+    /// Compare two IPv4 addresses.
-+    ///
-+    /// Returns `true` if the addresses are made up of the same bytes.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::Ipv4Addr;
-+    ///
-+    /// let addr1 = Ipv4Addr::new(192, 168, 0, 1);
-+    /// let addr2 = Ipv4Addr::new(192, 168, 0, 1);
-+    /// assert_eq!(addr1, addr2);
-+    ///
-+    /// let addr3 = Ipv4Addr::new(192, 168, 0, 2);
-+    /// assert_ne!(addr1, addr3);
-+    /// ```
-+    fn eq(&self, other: &Ipv4Addr) -> bool {
-+        self.to_bits() == other.to_bits()
-+    }
-+}
-+
-+impl Eq for Ipv4Addr {}
-+
-+impl Hash for Ipv4Addr {
-+    /// Hash an IPv4 address.
-+    ///
-+    /// The trait cannot be derived because the `in_addr` struct does not implement `Hash`.
-+    fn hash<H: Hasher>(&self, state: &mut H) {
-+        self.to_bits().hash(state)
-+    }
-+}
-+
-+impl PartialOrd for Ipv4Addr {
-+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-+        self.to_bits().partial_cmp(&other.to_bits())
-+    }
-+}
-+
-+impl Ord for Ipv4Addr {
-+    fn cmp(&self, other: &Self) -> Ordering {
-+        self.to_bits().cmp(&other.to_bits())
-+    }
-+}
-+
-+/// An IPv6 address.
-+///
-+/// Wraps a `struct in6_addr`.
-+#[derive(Default, Copy, Clone)]
-+#[repr(transparent)]
-+pub struct Ipv6Addr(pub(crate) bindings::in6_addr);
-+
-+impl Ipv6Addr {
-+    /// The maximum length of an IPv6 address string.
-+    ///
-+    /// This is the length of the string representation of the address.
-+    /// It does not include the null terminator.
-+    pub const MAX_STRING_LEN: usize = 45;
-+
-+    /// Create a new IPv6 address from eight 16-bit integers.
-+    ///
-+    /// The 16-bit integers are transformed in network order.
-+    ///
-+    /// The IP address will be `a:b:c:d:e:f:g:h`.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::Ipv6Addr;
-+    ///
-+    /// let addr = Ipv6Addr::new(0x2001, 0x0db8, 0x85a3, 0x0000, 0x0000, 0x8a2e, 0x0370, 0x7334);
-+    /// ```
-+    #[allow(clippy::too_many_arguments)]
-+    pub const fn new(a: u16, b: u16, c: u16, d: u16, e: u16, f: u16, g: u16, h: u16) -> Self {
-+        Self(bindings::in6_addr {
-+            in6_u: bindings::in6_addr__bindgen_ty_1 {
-+                u6_addr16: [
-+                    a.to_be(),
-+                    b.to_be(),
-+                    c.to_be(),
-+                    d.to_be(),
-+                    e.to_be(),
-+                    f.to_be(),
-+                    g.to_be(),
-+                    h.to_be(),
-+                ],
-+            },
-+        })
-+    }
-+
-+    /// Get the octets of the address.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::Ipv6Addr;
-+    ///
-+    /// let addr = Ipv6Addr::new(0x2001, 0x0db8, 0x85a3, 0x0000, 0x0000, 0x8a2e, 0x0370, 0x7334);
-+    /// let expected = [0x20, 0x01, 0x0d, 0xb8, 0x85, 0xa3, 0x00, 0x00, 0x00, 0x00, 0x8a, 0x2e, 0x03, 0x70, 0x73, 0x34];
-+    /// assert_eq!(addr.octets(), &expected);
-+    /// ```
-+    pub const fn octets(&self) -> &[u8; 16] {
-+        // SAFETY: The u6_addr8 field is a [u8; 16] array.
-+        unsafe { &self.0.in6_u.u6_addr8 }
-+    }
-+
-+    /// Get the segments of the address.
-+    ///
-+    /// A segment is a 16-bit integer.
-+    /// The segments are in network order.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::Ipv6Addr;
-+    ///
-+    /// let addr = Ipv6Addr::new(0x2001, 0x0db8, 0x85a3, 0x0000, 0x0000, 0x8a2e, 0x0370, 0x7334);
-+    /// let expected = [0x2001, 0x0db8, 0x85a3, 0x0000, 0x0000, 0x8a2e, 0x0370, 0x7334];
-+    /// assert_eq!(addr.segments(), &expected);
-+    /// ```
-+    pub const fn segments(&self) -> &[u16; 8] {
-+        // SAFETY: The u6_addr16 field is a [u16; 8] array.
-+        unsafe { &self.0.in6_u.u6_addr16 }
-+    }
-+
-+    /// Create a 128-bit integer representation of the address.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::Ipv6Addr;
-+    ///
-+    /// let addr = Ipv6Addr::new(0x2001, 0x0db8, 0x85a3, 0x0000, 0x0000, 0x8a2e, 0x0370, 0x7334);
-+    /// assert_eq!(addr.to_bits(), 0x20010db885a3000000008a2e03707334);
-+    /// ```
-+    pub fn to_bits(&self) -> u128 {
-+        u128::from_be_bytes(*self.octets() as _)
-+    }
-+
-+    /// Create a new IPv6 address from a 128-bit integer.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::Ipv6Addr;
-+    ///
-+    /// let addr = Ipv6Addr::from_bits(0x20010db885a3000000008a2e03707334);
-+    /// assert_eq!(addr, Ipv6Addr::new(0x2001, 0x0db8, 0x85a3, 0x0000, 0x0000, 0x8a2e, 0x0370, 0x7334));
-+    /// ```
-+    pub const fn from_bits(bits: u128) -> Self {
-+        Ipv6Addr(bindings::in6_addr {
-+            in6_u: bindings::in6_addr__bindgen_ty_1 {
-+                u6_addr8: bits.to_be_bytes() as _,
-+            },
-+        })
-+    }
-+
-+    /// The "any" address: `::`
-+    ///
-+    /// Used to accept any incoming message.
-+    /// Should not be used as a destination address.
-+    pub const ANY: Self = Self::new(0, 0, 0, 0, 0, 0, 0, 0);
-+
-+    /// The loopback address: `::1`
-+    ///
-+    /// Used to send a message to the local host.
-+    pub const LOOPBACK: Self = Self::new(0, 0, 0, 0, 0, 0, 0, 1);
-+}
-+
-+impl From<[u16; 8]> for Ipv6Addr {
-+    fn from(value: [u16; 8]) -> Self {
-+        Self(bindings::in6_addr {
-+            in6_u: bindings::in6_addr__bindgen_ty_1 { u6_addr16: value },
-+        })
-+    }
-+}
-+
-+impl From<[u8; 16]> for Ipv6Addr {
-+    fn from(value: [u8; 16]) -> Self {
-+        Self(bindings::in6_addr {
-+            in6_u: bindings::in6_addr__bindgen_ty_1 { u6_addr8: value },
-+        })
-+    }
-+}
-+
-+impl From<Ipv6Addr> for u128 {
-+    fn from(addr: Ipv6Addr) -> Self {
-+        addr.to_bits()
-+    }
-+}
-+
-+impl From<u128> for Ipv6Addr {
-+    fn from(bits: u128) -> Self {
-+        Self::from_bits(bits)
-+    }
-+}
-+
-+impl PartialEq for Ipv6Addr {
-+    fn eq(&self, other: &Self) -> bool {
-+        self.to_bits() == other.to_bits()
-+    }
-+}
-+
-+impl Eq for Ipv6Addr {}
-+
-+impl Hash for Ipv6Addr {
-+    fn hash<H: Hasher>(&self, state: &mut H) {
-+        self.to_bits().hash(state)
-+    }
-+}
-+
-+impl PartialOrd for Ipv6Addr {
-+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-+        self.to_bits().partial_cmp(&other.to_bits())
-+    }
-+}
-+
-+impl Ord for Ipv6Addr {
-+    fn cmp(&self, other: &Self) -> Ordering {
-+        self.to_bits().cmp(&other.to_bits())
-+    }
-+}
-+
-+/// A wrapper for a generic socket address.
-+///
-+/// Wraps a C `struct sockaddr_storage`.
-+/// Unlike [`SocketAddr`], this struct is meant to be used internally only,
-+/// as a parameter for kernel function calls.
-+#[repr(transparent)]
-+#[derive(Copy, Clone, Default)]
-+pub(crate) struct SocketAddrStorage(pub(crate) bindings::__kernel_sockaddr_storage);
-+
-+impl SocketAddrStorage {
-+    /// Returns the family of the address.
-+    pub(crate) fn family(&self) -> Result<AddressFamily, Error> {
-+        // SAFETY: The union access is safe because the `ss_family` field is always valid.
-+        let val: isize = unsafe { self.0.__bindgen_anon_1.__bindgen_anon_1.ss_family as _ };
-+        AddressFamily::try_from(val)
-+    }
-+
-+    pub(crate) fn into<T: GenericSocketAddr>(self) -> T {
-+        // SAFETY: The `self.0` field is a `struct sockaddr_storage` which is guaranteed to be large enough to hold any socket address.
-+        unsafe { *(&self.0 as *const _ as *const T) }
-+    }
-+}
-+
-+/// A generic Socket Address. Acts like a `struct sockaddr_storage`.
-+/// `sockaddr_storage` is used instead of `sockaddr` because it is guaranteed to be large enough to hold any socket address.
-+///
-+/// The purpose of this enum is to be used as a generic parameter for functions that can take any type of address.
-+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-+pub enum SocketAddr {
-+    /// An IPv4 address.
-+    V4(SocketAddrV4),
-+    /// An IPv6 address.
-+    V6(SocketAddrV6),
-+}
-+
-+impl SocketAddr {
-+    /// Returns the size in bytes of the concrete address contained.
-+    ///
-+    /// Used in the kernel functions that take a parameter with the size of the socket address.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::{Ipv4Addr, SocketAddr, SocketAddrV4};
-+    /// assert_eq!(SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::new(192, 168, 0, 1), 80)).size(),
-+    ///           core::mem::size_of::<SocketAddrV4>());
-+    pub fn size(&self) -> usize {
-+        match self {
-+            SocketAddr::V4(_) => SocketAddrV4::size(),
-+            SocketAddr::V6(_) => SocketAddrV6::size(),
-+        }
-+    }
-+
-+    /// Returns the address family of the concrete address contained.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::{Ipv4Addr, SocketAddr, SocketAddrV4};
-+    /// use kernel::net::AddressFamily;
-+    /// assert_eq!(SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::new(192, 168, 0, 1), 80)).family(),
-+    ///          AddressFamily::Inet);
-+    /// ```
-+    pub fn family(&self) -> AddressFamily {
-+        match self {
-+            SocketAddr::V4(_) => AddressFamily::Inet,
-+            SocketAddr::V6(_) => AddressFamily::Inet6,
-+        }
-+    }
-+
-+    /// Returns a pointer to the C `struct sockaddr_storage` contained.
-+    /// Used in the kernel functions that take a pointer to a socket address.
-+    pub(crate) fn as_ptr(&self) -> *const SocketAddrStorage {
-+        match self {
-+            SocketAddr::V4(addr) => addr as *const _ as _,
-+            SocketAddr::V6(addr) => addr as *const _ as _,
-+        }
-+    }
-+
-+    /// Creates a `SocketAddr` from a C `struct sockaddr_storage`.
-+    /// The function consumes the `struct sockaddr_storage`.
-+    /// Used in the kernel functions that return a socket address.
-+    ///
-+    /// # Panics
-+    /// Panics if the address family of the `struct sockaddr_storage` is invalid.
-+    /// This should never happen.
-+    /// If it does, it is likely because of an invalid pointer.
-+    pub(crate) fn try_from_raw(sockaddr: SocketAddrStorage) -> Result<Self> {
-+        match sockaddr.family()? {
-+            AddressFamily::Inet => Ok(SocketAddr::V4(sockaddr.into())),
-+            AddressFamily::Inet6 => Ok(SocketAddr::V6(sockaddr.into())),
-+            _ => Err(code::EINVAL),
-+        }
-+    }
-+}
-+
-+impl From<SocketAddrV4> for SocketAddr {
-+    fn from(value: SocketAddrV4) -> Self {
-+        SocketAddr::V4(value)
-+    }
-+}
-+
-+impl From<SocketAddrV6> for SocketAddr {
-+    fn from(value: SocketAddrV6) -> Self {
-+        SocketAddr::V6(value)
-+    }
-+}
-+
-+impl TryFrom<SocketAddr> for SocketAddrV4 {
-+    type Error = Error;
-+
-+    fn try_from(value: SocketAddr) -> core::result::Result<Self, Self::Error> {
-+        match value {
-+            SocketAddr::V4(addr) => Ok(addr),
-+            _ => Err(Error::from_errno(bindings::EAFNOSUPPORT as _)),
-+        }
-+    }
-+}
-+
-+impl TryFrom<SocketAddr> for SocketAddrV6 {
-+    type Error = Error;
-+
-+    fn try_from(value: SocketAddr) -> core::result::Result<Self, Self::Error> {
-+        match value {
-+            SocketAddr::V6(addr) => Ok(addr),
-+            _ => Err(Error::from_errno(bindings::EAFNOSUPPORT as _)),
-+        }
-+    }
-+}
-+
-+/// Generic trait for socket addresses.
-+///
-+/// The purpose of this trait is:
-+/// - To force all socket addresses to have a size and an address family.
-+/// - Force all socket addresses to implement specific built-in traits.
-+pub trait GenericSocketAddr:
-+    Sized + Copy + Clone + PartialEq + Eq + PartialOrd + Ord + Hash + Display
++/// This trait represents any kind of flag with "bitmask" values (i.e. 0x1, 0x2, 0x4, 0x8, etc.)
++pub trait Flag:
++    Into<isize> + TryFrom<isize> + Debug + Copy + Clone + Send + Sync + 'static
 +{
-+    /// Returns the size in bytes of the concrete address.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::bindings;
-+    /// use kernel::net::addr::{GenericSocketAddr, Ipv4Addr, SocketAddr, SocketAddrV4};
-+    /// assert_eq!(SocketAddrV4::size(), core::mem::size_of::<bindings::sockaddr_in>());
-+    /// ```
-+    fn size() -> usize
-+    where
-+        Self: Sized,
-+    {
-+        core::mem::size_of::<Self>()
-+    }
-+
-+    /// Returns the address family of the concrete address.
-+    ///
-+    /// # Examples
-+    ///
-+    /// ```rust
-+    /// use kernel::net::addr::{GenericSocketAddr, SocketAddrV4};
-+    /// use kernel::net::AddressFamily;
-+    /// assert_eq!(SocketAddrV4::family(), AddressFamily::Inet);
-+    /// ```
-+    fn family() -> AddressFamily;
 +}
 +
-+/// IPv4 socket address.
++/// Socket send operation flags.
 +///
-+/// Wraps a C `struct sockaddr_in`.
++/// See <https://linux.die.net/man/2/sendmsg> for more.
++#[derive(Debug, Copy, Clone)]
++pub enum SendFlag {
++    /// Got a successful reply.
++    ///
++    /// Only valid for datagram and raw sockets.
++    /// Only valid for IPv4 and IPv6.
++    Confirm = bindings::MSG_CONFIRM as isize,
++
++    /// Don't use a gateway to send out the packet.
++    DontRoute = bindings::MSG_DONTROUTE as isize,
++
++    /// Enables nonblocking operation.
++    ///
++    /// If the operation would block, return immediately with an error.
++    DontWait = bindings::MSG_DONTWAIT as isize,
++
++    /// Terminates a record.
++    EOR = bindings::MSG_EOR as isize,
++
++    /// More data will be sent.
++    ///
++    /// Only valid for TCP and UDP sockets.
++    More = bindings::MSG_MORE as isize,
++
++    /// Don't send SIGPIPE error if the socket is shut down.
++    NoSignal = bindings::MSG_NOSIGNAL as isize,
++
++    /// Send out-of-band data on supported sockets.
++    OOB = bindings::MSG_OOB as isize,
++}
++
++impl From<SendFlag> for isize {
++    fn from(value: SendFlag) -> Self {
++        value as isize
++    }
++}
++
++impl TryFrom<isize> for SendFlag {
++    type Error = ();
++
++    fn try_from(value: isize) -> Result<SendFlag, Self::Error> {
++        let val = value as u32;
++        match val {
++            bindings::MSG_CONFIRM => Ok(SendFlag::Confirm),
++            bindings::MSG_DONTROUTE => Ok(SendFlag::DontRoute),
++            bindings::MSG_DONTWAIT => Ok(SendFlag::DontWait),
++            bindings::MSG_EOR => Ok(SendFlag::EOR),
++            bindings::MSG_MORE => Ok(SendFlag::More),
++            bindings::MSG_NOSIGNAL => Ok(SendFlag::NoSignal),
++            bindings::MSG_OOB => Ok(SendFlag::OOB),
++            _ => Err(()),
++        }
++    }
++}
++
++impl Flag for SendFlag {}
++
++/// Socket receive operation flags.
 +///
-+/// # Examples
-+/// ```rust
-+/// use kernel::bindings;
-+/// use kernel::net::addr::{GenericSocketAddr, Ipv4Addr, SocketAddr, SocketAddrV4};
-+/// let addr = SocketAddrV4::new(Ipv4Addr::new(192, 168, 0, 1), 80);
-+/// assert_eq!(addr.ip(), &Ipv4Addr::new(192, 168, 0, 1));
-+/// assert_eq!(SocketAddrV4::size(), core::mem::size_of::<bindings::sockaddr_in>());
++/// See <https://linux.die.net/man/2/recvmsg> for more.
++#[derive(Debug, Copy, Clone)]
++pub enum ReceiveFlag {
++    /// Enables nonblocking operation.
++    ///
++    /// If the operation would block, return immediately with an error.
++    DontWait = bindings::MSG_DONTWAIT as isize,
++
++    /// Specifies that queued errors should be received from the socket error queue.
++    ErrQueue = bindings::MSG_ERRQUEUE as isize,
++
++    /// Enables out-of-band reception.
++    OOB = bindings::MSG_OOB as isize,
++
++    /// Peeks at an incoming message.
++    ///
++    /// The data is treated as unread and the next recv() or similar function shall still return this data.
++    Peek = bindings::MSG_PEEK as isize,
++
++    /// Returns the real length of the packet, even when it was longer than the passed buffer.
++    ///
++    /// Only valid for raw, datagram, netlink and UNIX datagram sockets.
++    Trunc = bindings::MSG_TRUNC as isize,
++
++    /// Waits for the full request to be satisfied.
++    WaitAll = bindings::MSG_WAITALL as isize,
++}
++
++impl From<ReceiveFlag> for isize {
++    fn from(value: ReceiveFlag) -> Self {
++        value as isize
++    }
++}
++
++impl TryFrom<isize> for ReceiveFlag {
++    type Error = ();
++
++    fn try_from(value: isize) -> Result<Self, Self::Error> {
++        let val = value as u32;
++        match val {
++            bindings::MSG_DONTWAIT => Ok(ReceiveFlag::DontWait),
++            bindings::MSG_ERRQUEUE => Ok(ReceiveFlag::ErrQueue),
++            bindings::MSG_OOB => Ok(ReceiveFlag::OOB),
++            bindings::MSG_PEEK => Ok(ReceiveFlag::Peek),
++            bindings::MSG_TRUNC => Ok(ReceiveFlag::Trunc),
++            bindings::MSG_WAITALL => Ok(ReceiveFlag::WaitAll),
++            _ => Err(()),
++        }
++    }
++}
++
++impl Flag for ReceiveFlag {}
++
++/// Socket `flags` field flags.
++///
++/// These flags are used internally by the kernel.
++/// However, they are exposed here for completeness.
++///
++/// This enum does not implement the `Flag` trait, since it is not actually a flag.
++/// Flags are often defined as a mask that can be used to retrieve the flag value; the socket flags,
++/// instead, are defined as the index of the bit that they occupy in the `flags` field.
++/// This means that they cannot be used as a mask, just like all the other flags that implement `Flag` do.
++///
++/// For example, SOCK_PASSCRED has value 3, meaning that it is represented by the 3rd bit of the `flags` field;
++/// a normal flag would represent it as a mask, i.e. 1 << 3 = 0b1000.
++///
++/// See [include/linux/net.h](../../../../include/linux/net.h) for more.
++pub enum SocketFlag {
++    /// Undocumented.
++    NoSpace = bindings::SOCK_NOSPACE as isize,
++    /// Undocumented.
++    PassCred = bindings::SOCK_PASSCRED as isize,
++    /// Undocumented.
++    PassSecurity = bindings::SOCK_PASSSEC as isize,
++    /// Undocumented.
++    SupportZeroCopy = bindings::SOCK_SUPPORT_ZC as isize,
++    /// Undocumented.
++    CustomSockOpt = bindings::SOCK_CUSTOM_SOCKOPT as isize,
++    /// Undocumented.
++    PassPidFd = bindings::SOCK_PASSPIDFD as isize,
++}
++
++impl From<SocketFlag> for isize {
++    fn from(value: SocketFlag) -> Self {
++        value as isize
++    }
++}
++
++impl TryFrom<isize> for SocketFlag {
++    type Error = ();
++
++    fn try_from(value: isize) -> Result<Self, Self::Error> {
++        let val = value as u32;
++        match val {
++            bindings::SOCK_NOSPACE => Ok(SocketFlag::NoSpace),
++            bindings::SOCK_PASSCRED => Ok(SocketFlag::PassCred),
++            bindings::SOCK_PASSSEC => Ok(SocketFlag::PassSecurity),
++            bindings::SOCK_SUPPORT_ZC => Ok(SocketFlag::SupportZeroCopy),
++            bindings::SOCK_CUSTOM_SOCKOPT => Ok(SocketFlag::CustomSockOpt),
++            bindings::SOCK_PASSPIDFD => Ok(SocketFlag::PassPidFd),
++            _ => Err(()),
++        }
++    }
++}
++
++/// Flags associated with a received message.
++///
++/// Represents the flag contained in the `msg_flags` field of a `msghdr` struct.
++#[derive(Debug, Copy, Clone)]
++pub enum MessageFlag {
++    /// End of record.
++    Eor = bindings::MSG_EOR as isize,
++    /// Trailing portion of the message is discarded.
++    Trunc = bindings::MSG_TRUNC as isize,
++    /// Control data was discarded due to lack of space.
++    Ctrunc = bindings::MSG_CTRUNC as isize,
++    /// Out-of-band data was received.
++    Oob = bindings::MSG_OOB as isize,
++    /// An error was received instead of data.
++    ErrQueue = bindings::MSG_ERRQUEUE as isize,
++}
++
++impl From<MessageFlag> for isize {
++    fn from(value: MessageFlag) -> Self {
++        value as isize
++    }
++}
++
++impl TryFrom<isize> for MessageFlag {
++    type Error = ();
++
++    fn try_from(value: isize) -> Result<Self, Self::Error> {
++        let val = value as u32;
++        match val {
++            bindings::MSG_EOR => Ok(MessageFlag::Eor),
++            bindings::MSG_TRUNC => Ok(MessageFlag::Trunc),
++            bindings::MSG_CTRUNC => Ok(MessageFlag::Ctrunc),
++            bindings::MSG_OOB => Ok(MessageFlag::Oob),
++            bindings::MSG_ERRQUEUE => Ok(MessageFlag::ErrQueue),
++            _ => Err(()),
++        }
++    }
++}
++
++impl Flag for MessageFlag {}
++
++/// Structure representing a set of flags.
++///
++/// This structure is used to represent a set of flags, such as the flags passed to `send` or `recv`.
++/// It is generic over the type of flag that it contains.
++///
++/// # Invariants
++/// The value of the flags must be a valid combination of the flags that it contains.
++///
++/// This means that the value must be the bitwise OR of the values of the flags, and that it
++/// must be possible to retrieve the value of the flags from the value.
++///
++/// # Example
 +/// ```
-+#[repr(transparent)]
-+#[derive(Copy, Clone)]
-+pub struct SocketAddrV4(pub(crate) bindings::sockaddr_in);
-+
-+impl SocketAddrV4 {
-+    /// The maximum length of a IPv4 socket address string representation.
-+    ///
-+    /// This is the length of the string representation of the address.
-+    /// It does not include the null terminator.
-+    pub const MAX_STRING_LEN: usize = 21;
-+
-+    /// Creates a new IPv4 socket address from an IP address and a port.
-+    ///
-+    /// The port does not need to be in network byte order.
-+    pub const fn new(addr: Ipv4Addr, port: u16) -> Self {
-+        Self(bindings::sockaddr_in {
-+            sin_family: AddressFamily::Inet as _,
-+            sin_port: port.to_be(),
-+            sin_addr: addr.0,
-+            __pad: [0; 8],
-+        })
-+    }
-+
-+    /// Returns a reference to the IP address contained.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::{Ipv4Addr, SocketAddrV4};
-+    ///
-+    /// let ip = Ipv4Addr::new(192, 168, 0, 1);
-+    /// let addr = SocketAddrV4::new(ip, 80);
-+    /// assert_eq!(addr.ip(), &ip);
-+    /// ```
-+    pub const fn ip(&self) -> &Ipv4Addr {
-+        // SAFETY: The [Ipv4Addr] is a transparent representation of the C `struct in_addr`,
-+        // which is the type of `sin_addr`. Therefore, the conversion is safe.
-+        unsafe { &*(&self.0.sin_addr as *const _ as *const Ipv4Addr) }
-+    }
-+
-+    /// Change the IP address contained.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::{Ipv4Addr, SocketAddrV4};
-+    ///
-+    /// let mut addr = SocketAddrV4::new(Ipv4Addr::new(192, 168, 0, 1), 80);
-+    /// addr.set_ip(Ipv4Addr::new(192, 168, 0, 2));
-+    /// assert_eq!(addr.ip(), &Ipv4Addr::new(192, 168, 0, 2));
-+    /// ```
-+    pub fn set_ip(&mut self, ip: Ipv4Addr) {
-+        self.0.sin_addr = ip.0;
-+    }
-+
-+    /// Returns the port contained.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::{Ipv4Addr, SocketAddrV4};
-+    ///
-+    /// let addr = SocketAddrV4::new(Ipv4Addr::new(192, 168, 0, 1), 80);
-+    /// assert_eq!(addr.port(), 81);
-+    /// ```
-+    pub const fn port(&self) -> u16 {
-+        self.0.sin_port.to_be()
-+    }
-+
-+    /// Change the port contained.
-+    ///
-+    /// The port does not need to be in network byte order.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::{Ipv4Addr, SocketAddrV4};
-+    ///
-+    /// let mut addr = SocketAddrV4::new(Ipv4Addr::new(192, 168, 0, 1), 80);
-+    /// addr.set_port(81);
-+    /// assert_eq!(addr.port(), 81);
-+    /// ```
-+    pub fn set_port(&mut self, port: u16) {
-+        self.0.sin_port = port.to_be();
-+    }
-+}
-+
-+impl GenericSocketAddr for SocketAddrV4 {
-+    /// Returns the family of the address.
-+    ///
-+    /// # Invariants
-+    /// The family is always [AddressFamily::Inet].
-+    fn family() -> AddressFamily {
-+        AddressFamily::Inet
-+    }
-+}
-+
-+impl PartialEq<SocketAddrV4> for SocketAddrV4 {
-+    fn eq(&self, other: &SocketAddrV4) -> bool {
-+        self.ip() == other.ip() && self.port() == other.port()
-+    }
-+}
-+
-+impl Eq for SocketAddrV4 {}
-+
-+impl Hash for SocketAddrV4 {
-+    fn hash<H: Hasher>(&self, state: &mut H) {
-+        (self.ip(), self.port()).hash(state)
-+    }
-+}
-+
-+impl PartialOrd for SocketAddrV4 {
-+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-+        Some(self.cmp(other))
-+    }
-+}
-+
-+impl Ord for SocketAddrV4 {
-+    fn cmp(&self, other: &Self) -> Ordering {
-+        (self.ip(), self.port()).cmp(&(other.ip(), other.port()))
-+    }
-+}
-+
-+/// IPv6 socket address.
++/// use kernel::net::socket::flags::{SendFlag, FlagSet};
 +///
-+/// Wraps a C `struct sockaddr_in6`.
++/// let mut flags = FlagSet::<SendFlag>::empty();
++/// flags.insert(SendFlag::DontWait);
++/// flags.insert(SendFlag::More);
++/// assert!(flags.contains(SendFlag::DontWait));
++/// assert!(flags.contains(SendFlag::More));
++/// flags.clear();
++/// assert_eq!(flags.value(), 0);
 +///
-+/// # Examples
-+/// ```rust
-+/// use kernel::bindings;
-+/// use kernel::net::addr::{GenericSocketAddr, Ipv6Addr, SocketAddr, SocketAddrV6};
-+///
-+/// let addr = SocketAddrV6::new(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1), 80, 0, 0);
-+/// assert_eq!(addr.ip(), &Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1));
-+/// assert_eq!(SocketAddrV6::size(), core::mem::size_of::<bindings::sockaddr_in6>());
-+#[repr(transparent)]
-+#[derive(Copy, Clone)]
-+pub struct SocketAddrV6(pub(crate) bindings::sockaddr_in6);
++/// flags = FlagSet::<SendFlag>::from(SendFlag::More);
++/// flags |= SendFlag::DontWait;
++/// assert!(flags.contains(SendFlag::DontWait));
++/// ```
++#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
++pub struct FlagSet<T: Flag> {
++    value: isize,
++    _phantom: core::marker::PhantomData<T>,
++}
 +
-+impl SocketAddrV6 {
-+    /// The maximum length of a IPv6 socket address string representation.
++impl<T: Flag> FlagSet<T> {
++    /// Create a new empty set of flags.
 +    ///
-+    /// This is the length of the string representation of the address.
-+    /// It does not include the null terminator.
-+    pub const MAX_STRING_LEN: usize = 74;
-+
-+    /// Creates a new IPv6 socket address from an IP address, a port, a flowinfo and a scope_id.
-+    /// The port does not need to be in network byte order.
-+    pub const fn new(addr: Ipv6Addr, port: u16, flowinfo: u32, scope_id: u32) -> Self {
-+        Self(bindings::sockaddr_in6 {
-+            sin6_family: AddressFamily::Inet6 as _,
-+            sin6_port: port.to_be(),
-+            sin6_flowinfo: flowinfo,
-+            sin6_addr: addr.0,
-+            sin6_scope_id: scope_id,
-+        })
++    /// # Example
++    /// ```
++    /// use kernel::net::socket::flags::{SendFlag, FlagSet};
++    ///
++    /// let flags = FlagSet::<SendFlag>::empty();
++    /// assert_eq!(flags.value(), 0);
++    /// ```
++    pub fn empty() -> Self {
++        FlagSet {
++            value: 0,
++            _phantom: core::marker::PhantomData,
++        }
 +    }
 +
-+    /// Returns a reference to the IP address contained.
++    /// Clear all the flags set.
 +    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::{Ipv6Addr, SocketAddrV6};
-+    ///
-+    /// let ip = Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1);
-+    /// let addr = SocketAddrV6::new(ip, 80, 0, 0);
-+    /// assert_eq!(addr.ip(), &ip);
++    /// # Example
 +    /// ```
-+    pub const fn ip(&self) -> &Ipv6Addr {
-+        // SAFETY: The [Ipv6Addr] is a transparent representation of the C `struct in6_addr`,
-+        // which is the type of `sin6_addr`. Therefore, the conversion is safe.
-+        unsafe { &*(&self.0.sin6_addr as *const _ as *const Ipv6Addr) }
++    /// use kernel::net::socket::flags::{SendFlag, FlagSet};
++    ///
++    /// let mut flags = FlagSet::<SendFlag>::from(SendFlag::More);
++    /// assert!(flags.contains(SendFlag::More));
++    /// flags.clear();
++    /// assert_eq!(flags.value(), 0);
++    /// ```
++    pub fn clear(&mut self) {
++        self.value = 0;
 +    }
 +
-+    /// Change the IP address contained.
++    /// Add a flag to the set.
 +    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::{Ipv6Addr, SocketAddrV6};
-+    ///
-+    /// let ip1 = Ipv6Addr::LOOPBACK;
-+    /// let ip2 = Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 2);
-+    /// let mut addr = SocketAddrV6::new(ip1, 80, 0, 0);
-+    /// addr.set_ip(ip2);
-+    /// assert_eq!(addr.ip(), &ip2);
++    /// # Example
 +    /// ```
-+    pub fn set_ip(&mut self, addr: Ipv6Addr) {
-+        self.0.sin6_addr = addr.0;
++    /// use kernel::net::socket::flags::{SendFlag, FlagSet};
++    ///
++    /// let mut flags = FlagSet::<SendFlag>::empty();
++    /// assert!(!flags.contains(SendFlag::DontWait));
++    /// flags.insert(SendFlag::DontWait);
++    /// assert!(flags.contains(SendFlag::DontWait));
++    /// ```
++    pub fn insert(&mut self, flag: T) {
++        self.value |= flag.into();
 +    }
 +
-+    /// Returns the port contained.
++    /// Remove a flag from the set.
 +    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::{Ipv6Addr, SocketAddrV6};
-+    ///
-+    /// let addr = SocketAddrV6::new(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1), 80, 0, 0);
-+    /// assert_eq!(addr.port(), 80);
++    /// # Example
 +    /// ```
-+    pub const fn port(&self) -> u16 {
-+        self.0.sin6_port.to_be()
++    /// use kernel::net::socket::flags::{SendFlag, FlagSet};
++    ///
++    /// let mut flags = FlagSet::<SendFlag>::from(SendFlag::DontWait);
++    /// assert!(flags.contains(SendFlag::DontWait));
++    /// flags.remove(SendFlag::DontWait);
++    /// assert!(!flags.contains(SendFlag::DontWait));
++    /// ```
++    pub fn remove(&mut self, flag: T) {
++        self.value &= !flag.into();
 +    }
 +
-+    /// Change the port contained.
++    /// Check if a flag is set.
 +    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::{Ipv6Addr, SocketAddrV6};
-+    ///
-+    /// let mut addr = SocketAddrV6::new(Ipv6Addr::LOOPBACK, 80, 0, 0);
-+    /// addr.set_port(443);
-+    /// assert_eq!(addr.port(), 443);
++    /// # Example
 +    /// ```
-+    pub fn set_port(&mut self, port: u16) {
-+        self.0.sin6_port = port.to_be();
++    /// use kernel::net::socket::flags::{SendFlag, FlagSet};
++    ///
++    /// let mut flags = FlagSet::<SendFlag>::from(SendFlag::DontWait);
++    /// assert!(flags.contains(SendFlag::DontWait));
++    /// ```
++    pub fn contains(&self, flag: T) -> bool {
++        self.value & flag.into() != 0
 +    }
 +
-+    /// Returns the flowinfo contained.
++    /// Get the integer value of the flags set.
 +    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::{Ipv6Addr, SocketAddrV6};
-+    ///
-+    /// let addr = SocketAddrV6::new(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1), 80, 0, 0);
-+    /// assert_eq!(addr.flowinfo(), 0);
++    /// # Example
 +    /// ```
-+    pub const fn flowinfo(&self) -> u32 {
-+        self.0.sin6_flowinfo as _
-+    }
-+
-+    /// Change the flowinfo contained.
++    /// use kernel::net::socket::flags::{SendFlag, FlagSet};
 +    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::{Ipv6Addr, SocketAddrV6};
-+    ///
-+    /// let mut addr = SocketAddrV6::new(Ipv6Addr::LOOPBACK, 80, 0, 0);
-+    /// addr.set_flowinfo(1);
-+    /// assert_eq!(addr.flowinfo(), 1);
++    /// let flags = FlagSet::<SendFlag>::from(SendFlag::DontWait);
++    /// assert_eq!(flags.value(), SendFlag::DontWait as isize);
 +    /// ```
-+    pub fn set_flowinfo(&mut self, flowinfo: u32) {
-+        self.0.sin6_flowinfo = flowinfo;
-+    }
-+
-+    /// Returns the scope_id contained.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::{Ipv6Addr, SocketAddrV6};
-+    ///
-+    /// let addr = SocketAddrV6::new(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 1), 80, 0, 1);
-+    /// assert_eq!(addr.scope_id(), 1);
-+    /// ```
-+    pub const fn scope_id(&self) -> u32 {
-+        self.0.sin6_scope_id as _
-+    }
-+
-+    /// Change the scope_id contained.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::{Ipv6Addr, SocketAddrV6};
-+    ///
-+    /// let mut addr = SocketAddrV6::new(Ipv6Addr::LOOPBACK, 80, 0, 0);
-+    /// addr.set_scope_id(1);
-+    /// assert_eq!(addr.scope_id(), 1);
-+    /// ```
-+    pub fn set_scope_id(&mut self, scope_id: u32) {
-+        self.0.sin6_scope_id = scope_id;
++    pub fn value(&self) -> isize {
++        self.value
 +    }
 +}
 +
-+impl GenericSocketAddr for SocketAddrV6 {
-+    /// Returns the family of the address.
-+    ///
-+    /// # Invariants
-+    /// The family is always [AddressFamily::Inet6].
-+    fn family() -> AddressFamily {
-+        AddressFamily::Inet6
++impl<T: Flag> BitOr<T> for FlagSet<T> {
++    type Output = FlagSet<T>;
++
++    fn bitor(self, rhs: T) -> Self::Output {
++        FlagSet {
++            value: self.value | rhs.into(),
++            _phantom: core::marker::PhantomData,
++        }
 +    }
 +}
 +
-+impl PartialEq<SocketAddrV6> for SocketAddrV6 {
-+    fn eq(&self, other: &SocketAddrV6) -> bool {
-+        self.ip() == other.ip()
-+            && self.port() == other.port()
-+            && self.flowinfo() == other.flowinfo()
-+            && self.scope_id() == other.scope_id()
++impl<T: Flag> BitOrAssign<T> for FlagSet<T> {
++    fn bitor_assign(&mut self, rhs: T) {
++        self.value |= rhs.into();
 +    }
 +}
 +
-+impl Eq for SocketAddrV6 {}
-+
-+impl Hash for SocketAddrV6 {
-+    fn hash<H: Hasher>(&self, state: &mut H) {
-+        (self.ip(), self.port(), self.flowinfo(), self.scope_id()).hash(state)
++// impl from isize for any flags<T>
++impl<T: Flag> From<isize> for FlagSet<T> {
++    fn from(value: isize) -> Self {
++        FlagSet {
++            value,
++            _phantom: core::marker::PhantomData,
++        }
 +    }
 +}
 +
-+impl PartialOrd for SocketAddrV6 {
-+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-+        Some(self.cmp(other))
++impl<T: Flag> From<T> for FlagSet<T> {
++    fn from(value: T) -> Self {
++        Self::from(value.into())
 +    }
 +}
 +
-+impl Ord for SocketAddrV6 {
-+    fn cmp(&self, other: &Self) -> Ordering {
-+        (self.ip(), self.port(), self.flowinfo(), self.scope_id()).cmp(&(
-+            other.ip(),
-+            other.port(),
-+            other.flowinfo(),
-+            other.scope_id(),
-+        ))
++impl<T: Flag> FromIterator<T> for FlagSet<T> {
++    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
++        let mut flags = FlagSet::empty();
++        for flag in iter {
++            flags.insert(flag);
++        }
++        flags
 +    }
 +}
 +
-+/// Create a Socket address from a string.
++impl<T: Flag> From<FlagSet<T>> for isize {
++    fn from(value: FlagSet<T>) -> Self {
++        value.value
++    }
++}
++
++impl<T: Flag> IntoIterator for FlagSet<T> {
++    type Item = T;
++    type IntoIter = FlagSetIterator<T>;
++
++    fn into_iter(self) -> Self::IntoIter {
++        FlagSetIterator {
++            flags: self,
++            current: 0,
++        }
++    }
++}
++
++/// Iterator over the flags in a set.
 +///
-+/// This method is a wrapper for the `inet_pton_with_scope` C function, which transforms a string
-+/// to the specified sockaddr* structure.
-+fn address_from_string<T: GenericSocketAddr>(src: &str, port: &str, net: &Namespace) -> Result<T> {
-+    let src = CString::try_from_fmt(fmt!("{}", src))?;
-+    let port = CString::try_from_fmt(fmt!("{}", port))?;
-+    let mut addr = MaybeUninit::<T>::zeroed();
++/// This iterator iterates over the flags in a set, in order of increasing value.
++///
++/// # Example
++/// ```
++/// use kernel::net::socket::flags::{SendFlag, FlagSet};
++///
++/// let mut flags = FlagSet::from_iter([SendFlag::DontWait, SendFlag::More]);
++/// for flag in flags.into_iter() {
++///    println!("Flag: {:?}", flag);
++/// }
++/// ```
++pub struct FlagSetIterator<T: Flag> {
++    flags: FlagSet<T>,
++    current: usize,
++}
 +
-+    // SAFETY: FFI call, all pointers are valid for the duration of the call.
-+    //         The address family matches the address structure.
-+    match unsafe {
-+        bindings::inet_pton_with_scope(
-+            net as *const _ as *mut bindings::net as _,
-+            T::family() as _,
-+            src.as_ptr() as _,
-+            port.as_ptr() as _,
-+            addr.as_mut_ptr() as _,
-+        )
-+    } {
-+        // SAFETY: The address was initialized by the C function.
-+        //         Whatever was not initialized, e.g. flow info or scope id for ipv6, are zeroed.
-+        0 => Ok(unsafe { addr.assume_init() }),
-+        errno => Err(Error::from_errno(errno as _)),
++impl<T: Flag> Iterator for FlagSetIterator<T> {
++    type Item = T;
++
++    fn next(&mut self) -> Option<Self::Item> {
++        let mut value = 1 << self.current;
++        while value <= self.flags.value {
++            self.current += 1;
++            if self.flags.value & value != 0 {
++                if let Ok(flag) = T::try_from(value) {
++                    return Some(flag);
++                }
++            }
++            value = 1 << self.current;
++        }
++        None
 +    }
 +}
 +
-+/// Write the string representation of the `T` address to the formatter.
++/// Create a set of flags from a list of flags.
 +///
-+/// This function is used to implement the `Display` trait for each address.
++/// This macro provides a compact way to create empty sets and sets from a list of flags.
 +///
-+/// The `cfmt` parameter is the C string format used to format the address.
-+/// For example, the format for an IPv4 address is `"%pI4"`.
++/// # Example
++/// ```
++/// use kernel::net::socket::flags::SendFlag;
++/// use kernel::flag_set;
 +///
-+/// The `BUF_LEN` parameter is the size of the buffer used to format the address, including the null terminator.
++/// let mut flags = flag_set!(SendFlag::DontWait, SendFlag::More);
++/// assert!(flags.contains(SendFlag::DontWait));
++/// assert!(flags.contains(SendFlag::More));
 +///
-+/// # Safety
-+/// In order to have a correct output, the `cfmt` parameter must be a valid C string format for the `T` address.
-+/// Also, the `BUF_LEN` parameter must be at least the length of the string representation of the address.
-+unsafe fn write_addr<const BUF_LEN: usize, T: Sized>(
-+    formatter: &mut Formatter<'_>,
-+    cfmt: &CStr,
-+    addr: &T,
-+) -> core::fmt::Result {
-+    let mut buff = [0u8; BUF_LEN];
-+    // SAFETY: the buffer is big enough to contain the string representation of the address.
-+    //         The format is valid for the address.
-+    let s = match unsafe {
-+        bindings::snprintf(
-+            buff.as_mut_ptr() as _,
-+            BUF_LEN as _,
-+            cfmt.as_ptr() as _,
-+            addr as *const T,
-+        )
-+    } {
-+        n if n < 0 => Err(()),
-+
-+        // the buffer is probably bigger than the actual string: truncate at the first null byte
-+        _ => buff
-+            .iter()
-+            .position(|&c| c == 0)
-+            // SAFETY: the buffer contains a UTF-8 valid string and contains a single null terminator.
-+            .map(|i| unsafe { core::str::from_utf8_unchecked(&buff[..i]) })
-+            .ok_or(()),
++/// let mut empty_flags = flag_set!();
++/// assert_eq!(empty_flags.value(), 0);
++/// ```
++#[macro_export]
++macro_rules! flag_set {
++    () => {
++        $crate::net::socket::flags::FlagSet::empty()
 +    };
-+    match s {
-+        Ok(s) => write!(formatter, "{}", s),
-+        Err(_) => Err(core::fmt::Error),
-+    }
-+}
-+
-+impl Display for Ipv4Addr {
-+    /// Display the address as a string.
-+    /// The bytes are in network order.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::Ipv4Addr;
-+    /// use kernel::pr_info;
-+    ///
-+    /// let addr = Ipv4Addr::new(192, 168, 0, 1);
-+    /// pr_info!("{}", addr); // prints "192.168.0.1"
-+    /// ```
-+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
-+        // SAFETY: MAX_STRING_LEN is the length of 255.255.255.255, the biggest Ipv4Addr string.
-+        //         +1 for the null terminator.
-+        unsafe {
-+            write_addr::<{ Ipv4Addr::MAX_STRING_LEN + 1 }, Ipv4Addr>(f, c_str!("%pI4"), self)
-+                .map_err(|_| core::fmt::Error)
-+        }
-+    }
-+}
-+
-+impl Debug for Ipv4Addr {
-+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
-+        write!(f, "Ipv4Addr({})", self)
-+    }
-+}
-+
-+impl FromStr for Ipv4Addr {
-+    type Err = ();
-+
-+    /// Create a new IPv4 address from a string.
-+    /// The string must be in the format `a.b.c.d`, where `a`, `b`, `c` and `d` are 8-bit integers.
-+    ///
-+    /// # Examples
-+    /// Valid addresses:
-+    /// ```rust
-+    /// use core::str::FromStr;
-+    /// use kernel::net::addr::Ipv4Addr;
-+    ///
-+    /// let addr = Ipv4Addr::from_str("192.168.0.1");
-+    /// assert_eq!(addr, Ok(Ipv4Addr::new(192, 168, 0, 1)));
-+    /// ```
-+    ///
-+    /// Invalid addresses:
-+    /// ```rust
-+    /// use core::str::FromStr;
-+    /// use kernel::net::addr::Ipv4Addr;
-+    ///
-+    /// let mut addr = Ipv4Addr::from_str("invalid");
-+    /// assert_eq!(addr, Err(()));
-+    ///
-+    /// addr = Ipv4Addr::from_str("280.168.0.1");
-+    /// assert_eq!(addr, Err(()));
-+    ///
-+    /// addr = Ipv4Addr::from_str("0.0.0.0.0");
-+    /// assert_eq!(addr, Err(()));
-+    /// ```
-+    fn from_str(s: &str) -> Result<Self, Self::Err> {
-+        let mut buffer = [0u8; 4];
-+        // SAFETY: FFI call,
-+        //         there is no need to construct a NULL-terminated string, as the length is passed.
-+        match unsafe {
-+            bindings::in4_pton(
-+                s.as_ptr() as *const _,
-+                s.len() as _,
-+                buffer.as_mut_ptr() as _,
-+                -1,
-+                ptr::null_mut(),
-+            )
-+        } {
-+            1 => Ok(Ipv4Addr::from(buffer)),
-+            _ => Err(()),
-+        }
-+    }
-+}
-+
-+impl Display for Ipv6Addr {
-+    /// Display the address as a string.
-+    /// The bytes are in network order.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::Ipv6Addr;
-+    /// use kernel::pr_info;
-+    ///
-+    /// let addr = Ipv6Addr::new(0x2001, 0x0db8, 0x85a3, 0x0000, 0x0000, 0x8a2e, 0x0370, 0x7334);
-+    /// pr_info!("{}", addr); // prints "2001:db8:85a3::8a2e:370:7334"
-+    /// ```
-+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
-+        // SAFETY: MAX_STRING_LEN is the length of ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff, the biggest Ipv6Addr string.
-+        unsafe {
-+            write_addr::<{ Ipv6Addr::MAX_STRING_LEN + 1 }, Ipv6Addr>(f, c_str!("%pI6c"), self)
-+        }
-+    }
-+}
-+
-+impl Debug for Ipv6Addr {
-+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
-+        write!(f, "Ipv6Addr({})", self)
-+    }
-+}
-+
-+impl FromStr for Ipv6Addr {
-+    type Err = ();
-+
-+    /// Create a new IPv6 address from a string.
-+    ///
-+    /// The address must follow the format described in [RFC 4291](https://tools.ietf.org/html/rfc4291#section-2.2).
-+    ///
-+    /// # Examples
-+    /// Valid addresses:
-+    /// ```rust
-+    /// use core::str::FromStr;
-+    /// use kernel::net::addr::Ipv6Addr;
-+    ///
-+    /// let addr = Ipv6Addr::from_str("2001:db8:85a3:0:0:8a2e:370:7334").unwrap();
-+    /// assert_eq!(addr, Ipv6Addr::new(0x2001, 0x0db8, 0x85a3, 0x0000, 0x0000, 0x8a2e, 0x0370, 0x7334));
-+    /// ```
-+    ///
-+    /// Invalid addresses:
-+    /// ```rust
-+    /// use core::str::FromStr;
-+    /// use kernel::net::addr::Ipv6Addr;
-+    ///
-+    /// let mut addr = Ipv6Addr::from_str("invalid");
-+    /// assert_eq!(addr, Err(()));
-+    ///
-+    /// addr = Ipv6Addr::from_str("2001:db8:85a3:0:0:8a2e:370:7334:1234");
-+    /// assert_eq!(addr, Err(()));
-+    /// ```
-+    fn from_str(s: &str) -> Result<Self, Self::Err> {
-+        let mut buffer = [0u8; 16];
-+        // SAFETY: FFI call,
-+        //         there is no need to construct a NULL-terminated string, as the length is passed.
-+        match unsafe {
-+            bindings::in6_pton(
-+                s.as_ptr() as _,
-+                s.len() as _,
-+                buffer.as_mut_ptr() as _,
-+                -1,
-+                ptr::null_mut(),
-+            )
-+        } {
-+            1 => Ok(Ipv6Addr::from(buffer)),
-+            _ => Err(()),
-+        }
-+    }
-+}
-+
-+impl Display for SocketAddr {
-+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
-+        match self {
-+            SocketAddr::V4(addr) => Display::fmt(addr, f),
-+            SocketAddr::V6(addr) => Display::fmt(addr, f),
-+        }
-+    }
-+}
-+
-+impl Debug for SocketAddr {
-+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
-+        write!(f, "SocketAddr({})", self)
-+    }
-+}
-+
-+impl FromStr for SocketAddr {
-+    type Err = Error;
-+
-+    fn from_str(s: &str) -> core::result::Result<Self, Self::Err> {
-+        let funcs = [
-+            |s| SocketAddrV4::from_str(s).map(SocketAddr::V4),
-+            |s| SocketAddrV6::from_str(s).map(SocketAddr::V6),
-+        ];
-+
-+        funcs.iter().find_map(|f| f(s).ok()).ok_or(code::EINVAL)
-+    }
-+}
-+
-+impl Display for SocketAddrV4 {
-+    /// Display the address as a string.
-+    ///
-+    /// The output is of the form `address:port`, where `address` is the IP address in dotted
-+    /// decimal notation, and `port` is the port number.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::SocketAddrV4;
-+    /// use kernel::pr_info;
-+    ///
-+    /// let addr = SocketAddrV4::from_str("1.2.3.4:5678").unwrap();
-+    /// pr_info!("{}", addr); // prints "1.2.3.4:5678"
-+    /// ```
-+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
-+        // SAFETY: MAX_STRING_LEN is the length of 255.255.255.255:12345, the biggest SocketAddrV4 string.
-+        unsafe {
-+            write_addr::<{ SocketAddrV4::MAX_STRING_LEN + 1 }, SocketAddrV4>(
-+                f,
-+                c_str!("%pISpc"),
-+                self,
-+            )
-+        }
-+    }
-+}
-+
-+impl Debug for SocketAddrV4 {
-+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
-+        write!(f, "SocketAddrV4({})", self)
-+    }
-+}
-+
-+impl FromStr for SocketAddrV4 {
-+    type Err = Error;
-+
-+    /// Parses a string as an IPv4 socket address.
-+    ///
-+    /// The string must be in the form `a.b.c.d:p`, where `a`, `b`, `c`, `d` are the four
-+    /// components of the IPv4 address, and `p` is the port.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::{Ipv4Addr, SocketAddrV4};
-+    ///
-+    /// // valid
-+    /// let addr = SocketAddrV4::from_str("192.168.1.0:80").unwrap();
-+    /// assert_eq!(addr.ip(), &Ipv4Addr::new(192, 168, 1, 0));
-+    /// assert_eq!(addr.port(), 80);
-+    ///
-+    /// // invalid
-+    /// assert!(SocketAddrV4::from_str("192.168:800:80").is_err());
-+    /// ```
-+    fn from_str(s: &str) -> Result<Self, Self::Err> {
-+        let (addr, port) = s.split_once(':').ok_or(code::EINVAL)?;
-+        address_from_string(addr, port, init_net())
-+    }
-+}
-+
-+impl Display for SocketAddrV6 {
-+    /// Display the address as a string.
-+    ///
-+    /// The output string is of the form `[addr]:port`, where `addr` is an IPv6 address and `port`
-+    /// is a port number.
-+    ///
-+    /// Flow info and scope ID are not supported and are excluded from the output.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::{Ipv6Addr, SocketAddrV6};
-+    ///
-+    /// let addr = SocketAddrV6::from_str("[::1]:80").unwrap();
-+    /// pr_info!("{}", addr);  // prints "[::1]:80"
-+    /// ```
-+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
-+        // SAFETY: MAX_STRING_LEN is big enough to hold the biggest SocketAddrV6 string.
-+        unsafe {
-+            write_addr::<{ SocketAddrV6::MAX_STRING_LEN + 1 }, SocketAddrV6>(
-+                f,
-+                c_str!("%pISpc"),
-+                self,
-+            )
-+        }
-+    }
-+}
-+
-+impl Debug for SocketAddrV6 {
-+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
-+        write!(f, "SocketAddrV6({})", self)
-+    }
-+}
-+
-+impl FromStr for SocketAddrV6 {
-+    type Err = Error;
-+
-+    /// Parses a string as an IPv6 socket address.
-+    ///
-+    /// The given string must be of the form `[addr]:port`, where `addr` is an IPv6 address and
-+    /// `port` is a port number.
-+    ///
-+    /// Flow info and scope ID are not supported.
-+    ///
-+    /// # Examples
-+    /// ```rust
-+    /// use kernel::net::addr::{Ipv6Addr, SocketAddrV6};
-+    ///
-+    /// // valid
-+    /// let addr = SocketAddrV6::from_str("[2001:db8:85a3::8a2e:370:7334]:80").unwrap();
-+    /// assert_eq!(addr.ip(), &Ipv6Addr::new(0x2001, 0x0db8, 0x85a3, 0x0000, 0x0000, 0x8a2e, 0x0370, 0x7334));
-+    /// assert_eq!(addr.port(), 80);
-+    /// ```
-+    fn from_str(s: &str) -> Result<Self, Self::Err> {
-+        let (addr, port) = s.rsplit_once(':').ok_or(code::EINVAL)?;
-+        let address = addr.trim_start_matches('[').trim_end_matches(']');
-+        address_from_string(address, port, init_net())
-+    }
++    ($($flag:expr),+) => {
++        $crate::net::socket::flags::FlagSet::from_iter([$($flag),+])
++    };
 +}
 -- 
 2.41.0
