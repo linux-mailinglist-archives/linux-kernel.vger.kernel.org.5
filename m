@@ -2,76 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C34C77C18F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4D577C19B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232089AbjHNUfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 16:35:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44580 "EHLO
+        id S232437AbjHNUh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 16:37:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232506AbjHNUfk (ORCPT
+        with ESMTP id S232421AbjHNUhc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 16:35:40 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599A11703;
-        Mon, 14 Aug 2023 13:35:39 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bdeb022738so6655595ad.0;
-        Mon, 14 Aug 2023 13:35:39 -0700 (PDT)
+        Mon, 14 Aug 2023 16:37:32 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFEF11703
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:37:30 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe2a116565so5245e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:37:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692045339; x=1692650139;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4Dpn0LXIHN37LlwYOQkWgoOoiUYJkZj+9sfdGrW9oSE=;
-        b=CxSBv9sizW4p72ywQxQr4bL7KPusbMfLNXDcgwXsEBbZrDAa3Oyh8JTCqEkZb2H3Tc
-         ovpATqnEgZSBs9QqQNNDWyWh1H2GFYnEPE7plBQ2P4C/RNbelcjQydZkenhFREn/7tu1
-         UadB6AH11vlqhDfzIOSxULRVlTWsF1Wz6Z2zQPQDkAKP18OyRN3wqUzlAo+el3HOcGnl
-         vlSAFZuuAmXZ6aTVDo8/RHzxrBNViz4trszkdeQWoVCHDbXPouUIcqAx7GxwX3/l8db3
-         i2TEsbzrDyI+nZmVK8Ye0ETckp+O9AHJBJ1CxNpDy3jaB+rNnhjX2280O1zJ2D1zmPrh
-         H55Q==
+        d=google.com; s=20221208; t=1692045449; x=1692650249;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=l+mxKdG4Ol6Hz2Wq+bm6V6z9RGpAReV66kl1RzPgk0E=;
+        b=oalxsU2+jQ9cT3fVTCpQGRdbwbKK8Iu2ZWjEcVM1oP5kJ7aiO8qRjI77CcsEp34vs5
+         D/3+Bahr/IxNTnF9PxktVwP681DXpx2+4epAQ/GMckJ7kfBw7+I/x6VMoOAez1iH3ECx
+         g8JsOfEm9AgJwB02FQMj5ChH4S+sTA7BP8cGDtCxx+6BA7b8jqxZGrPSa3lAkIJmAGtd
+         MNDs55nI89EW+QG955q50VDQZxpMoap8/iQlOB4LCzCg4TmkqMqRKUHgP4Wc6pwJtIOZ
+         rsvsNDxdH23CjHJRa9AyKrWBuHoMorqIlJ/kmR9KwbAsyQnB39g7+BgM4HGsB+JlVxkA
+         1Olg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692045339; x=1692650139;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4Dpn0LXIHN37LlwYOQkWgoOoiUYJkZj+9sfdGrW9oSE=;
-        b=Md6A5JpYfrSjvJ7gXL/d77yxw8SdFdKtj0uh8OZH+hlk/5jtNibmglGcO7JJgrxCRy
-         xvUr0EDpTB8OOQBbdQtU6YQ1q+iDSpmxRgdsCoco7s4I4t6LPjzuA4v7ubzUthwgKIvM
-         r410iHoWTnGRjfNXx99g1w0EeCSZUzbRP6hUg1wjcmy+Wi5TGN//cKU4Rso0jGsBO/fa
-         S+glDycbeS3xxK0ik6KENB5OXDWBhVId3iySoTnfzctikVt1hYVdZfmBgYWCwIi8ZPPb
-         H1a4LBbTOu9p8IQpp8xxQZ3D251C09HCWxMpBSf0j2afgTxRYnRnvgebtnEP7Um+r8ry
-         nM5g==
-X-Gm-Message-State: AOJu0Yy+OerBXNSRCOoei7/VyUDMtpSFoiHILbES9S8q7cLbrPDNaiYV
-        Pu7+n2mnwuNS3JIdkuGX5kI=
-X-Google-Smtp-Source: AGHT+IHIA+m4NLfJbD0pwljJ4yob89pyeJn1LijeuHhvbV3eu3maw12j/bZrI5voybejoIPe7GOu0A==
-X-Received: by 2002:a17:90a:7486:b0:26b:374f:97c2 with SMTP id p6-20020a17090a748600b0026b374f97c2mr75282pjk.6.1692045338647;
-        Mon, 14 Aug 2023 13:35:38 -0700 (PDT)
-Received: from localhost ([192.55.55.51])
-        by smtp.gmail.com with ESMTPSA id jg22-20020a17090326d600b001bdea189261sm2003751plb.229.2023.08.14.13.35.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 13:35:38 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 13:35:36 -0700
-From:   Isaku Yamahata <isaku.yamahata@gmail.com>
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com
-Subject: Re: [RFC PATCH v4 13/16] KVM: x86/tdp_mmu: Try to merge pages into a
- large page
-Message-ID: <20230814203536.GB2257301@ls.amr.corp.intel.com>
-References: <cover.1690323516.git.isaku.yamahata@intel.com>
- <d649f4294d95803a46aaaf3ddd87c7e2f8ff501d.1690323516.git.isaku.yamahata@intel.com>
+        d=1e100.net; s=20221208; t=1692045449; x=1692650249;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=l+mxKdG4Ol6Hz2Wq+bm6V6z9RGpAReV66kl1RzPgk0E=;
+        b=i7vRRxfn63FeaRWg/Czapw2ub63VzL+0suiID1P7APRVOoFWsPgZ19aoH+jaWrJHUq
+         CCTWjEFVHc/rP9CejiC52qV9u63AKK+PZf+mA6i+nY+NuiNPfHySY9XavN2haJGnv8dk
+         tV5E9KJ3NKzhkrBTCwsfSJb44tH7PCGTMYRg1SV0FY95wWgy9zXth1WQc1mUJ7U+pY7p
+         XM8WblxAz43Bb8/x9E1vjEMfnWAEH1eGRanoI9CoaOTAABTu+uGtC+3T5m9fZVZ0Cvtd
+         xViydppe8mSKFMsZ7rTFS1rM5po3dkJ1Z0nwAWe2swxmo7hl2Pjz+QY9UnCFLJlAXaD3
+         Lcfw==
+X-Gm-Message-State: AOJu0Yzlo/y41Bc4qLNrTviKGfYBhl52UhyMS9/XUn12YRPCy9Bs6SPO
+        Dn5ypceH8SQvuhA+ly39bgUOg0wJqbprPzKUOIJWJw==
+X-Google-Smtp-Source: AGHT+IEY8CT3hvyBTRx7jwSfo+JZaL1VNgCRnMYjtExHKr4rSNymxxb98FGC0EJOHSC7Q9QsgOcS+iPtfxuWDLbfWZI=
+X-Received: by 2002:a1c:7901:0:b0:3fc:75d:8f85 with SMTP id
+ l1-20020a1c7901000000b003fc075d8f85mr338604wme.6.1692045449258; Mon, 14 Aug
+ 2023 13:37:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <d649f4294d95803a46aaaf3ddd87c7e2f8ff501d.1690323516.git.isaku.yamahata@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <7cd843a9-aa80-14f-5eb2-33427363c20@google.com> <b53be6a4-7715-51f9-aad-f1347dcb7c4@google.com>
+In-Reply-To: <b53be6a4-7715-51f9-aad-f1347dcb7c4@google.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 14 Aug 2023 22:36:52 +0200
+Message-ID: <CAG48ez0FxiRC4d3VTu_a9h=rg5FW-kYD5Rg5xo_RDBM0LTTqZQ@mail.gmail.com>
+Subject: [BUG] Re: [PATCH v3 10/13] mm/khugepaged: collapse_pte_mapped_thp()
+ with mmap_read_lock()
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Xu <peterx@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Steven Price <steven.price@arm.com>,
+        SeongJae Park <sj@kernel.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Zack Rusin <zackr@vmware.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Song Liu <song@kernel.org>,
+        Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vishal Moola <vishal.moola@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Zi Yan <ziy@nvidia.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        sparclinux@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: multipart/mixed; boundary="000000000000f33d7f0602e8077a"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,265 +116,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 03:23:59PM -0700,
-isaku.yamahata@intel.com wrote:
+--000000000000f33d7f0602e8077a
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
-> 
-> When a large page is passed to the KVM page fault handler and some of sub
-> pages are already populated, try to merge sub pages into a large page.
-> This situation can happen when the guest converts small pages into shared
-> and convert it back into private.
-> 
-> When a large page is passed to KVM mmu page fault handler and the spte
-> corresponding to the page is non-leaf (one or more of sub pages are already
-> populated at lower page level), the current kvm mmu zaps non-leaf spte at a
-> large page level, and populate a leaf spte at that level.  Thus small pages
-> are converted into a large page.  However, it doesn't work for TDX because
-> zapping and re-populating results in zeroing page content.  Instead,
-> populate all small pages and merge them into a large page.
-> 
-> Merging pages into a large page can fail when some sub pages are accepted
-> and some are not.  In such case, with the assumption that guest tries to
-> accept at large page size for performance when possible, don't try to be
-> smart to identify which page is still pending, map all pages at lower page
-> level, and let vcpu re-execute.
-> 
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->  arch/x86/include/asm/kvm-x86-ops.h |   2 +
->  arch/x86/include/asm/kvm_host.h    |   4 +
->  arch/x86/kvm/mmu/tdp_iter.c        |  37 +++++--
->  arch/x86/kvm/mmu/tdp_iter.h        |   2 +
->  arch/x86/kvm/mmu/tdp_mmu.c         | 163 ++++++++++++++++++++++++++++-
->  5 files changed, 198 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index c3963002722c..612fcaac600d 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -1242,6 +1242,167 @@ void kvm_tdp_mmu_invalidate_all_roots(struct kvm *kvm, bool skip_private)
->  	rcu_read_unlock();
->  }
->  
-> +static void tdp_mmu_iter_step_side(int i, struct tdp_iter *iter)
-> +{
-> +	/*
-> +	 * if i = SPTE_ENT_PER_PAGE - 1, tdp_iter_step_side() results
-> +	 * in reading the entry beyond the last entry.
-> +	 */
-> +	if (i < SPTE_ENT_PER_PAGE)
-> +		tdp_iter_step_side(iter);
-> +}
-> +
-> +static int tdp_mmu_merge_private_spt(struct kvm_vcpu *vcpu,
-> +				     struct kvm_page_fault *fault,
-> +				     struct tdp_iter *iter, u64 new_spte)
-> +{
-> +	u64 *sptep = rcu_dereference(iter->sptep);
-> +	struct kvm_mmu_page *child_sp;
-> +	struct kvm *kvm = vcpu->kvm;
-> +	struct tdp_iter child_iter;
-> +	bool ret_pf_retry = false;
-> +	int level = iter->level;
-> +	gfn_t gfn = iter->gfn;
-> +	u64 old_spte = *sptep;
-> +	tdp_ptep_t child_pt;
-> +	u64 child_spte;
-> +	int ret = 0;
-> +	int i;
-> +
-> +	/*
-> +	 * TDX KVM supports only 2MB large page.  It's not supported to merge
-> +	 * 2MB pages into 1GB page at the moment.
-> +	 */
-> +	WARN_ON_ONCE(fault->goal_level != PG_LEVEL_2M);
-> +	WARN_ON_ONCE(iter->level != PG_LEVEL_2M);
-> +	WARN_ON_ONCE(!is_large_pte(new_spte));
-> +
-> +	/* Freeze the spte to prevent other threads from working spte. */
-> +	if (!try_cmpxchg64(sptep, &iter->old_spte, REMOVED_SPTE))
-> +		return -EBUSY;
-> +
-> +	/*
-> +	 * Step down to the child spte.  Because tdp_iter_next() assumes the
-> +	 * parent spte isn't freezed, do it manually.
-> +	 */
-> +	child_pt = spte_to_child_pt(iter->old_spte, iter->level);
-> +	child_sp = sptep_to_sp(child_pt);
-> +	WARN_ON_ONCE(child_sp->role.level != PG_LEVEL_4K);
-> +	WARN_ON_ONCE(!kvm_mmu_page_role_is_private(child_sp->role));
-> +
-> +	/* Don't modify iter as the caller will use iter after this function. */
-> +	child_iter = *iter;
-> +	/* Adjust the target gfn to the head gfn of the large page. */
-> +	child_iter.next_last_level_gfn &= -KVM_PAGES_PER_HPAGE(level);
-> +	tdp_iter_step_down(&child_iter, child_pt);
-> +
-> +	/*
-> +	 * All child pages are required to be populated for merging them into a
-> +	 * large page.  Populate all child spte.
-> +	 */
-> +	for (i = 0; i < SPTE_ENT_PER_PAGE; i++, tdp_mmu_iter_step_side(i, &child_iter)) {
-> +		WARN_ON_ONCE(child_iter.level != PG_LEVEL_4K);
-> +		if (is_shadow_present_pte(child_iter.old_spte)) {
-> +			/* TODO: relocate page for huge page. */
-> +			if (WARN_ON_ONCE(spte_to_pfn(child_iter.old_spte) !=
-> +					 spte_to_pfn(new_spte) + i)) {
-> +				ret = -EAGAIN;
-> +				ret_pf_retry = true;
-> +			}
-> +			/*
-> +			 * When SEPT_VE_DISABLE=true and the page state is
-> +			 * pending, this case can happen.  Just resume the vcpu
-> +			 * again with the expectation for other vcpu to accept
-> +			 * this page.
-> +			 */
-> +			if (child_iter.gfn == fault->gfn) {
-> +				ret = -EAGAIN;
-> +				ret_pf_retry = true;
-> +				break;
-> +			}
-> +			continue;
-> +		}
-> +
-> +		WARN_ON_ONCE(spte_to_pfn(child_iter.old_spte) != spte_to_pfn(new_spte) + i);
-> +		child_spte = make_huge_page_split_spte(kvm, new_spte, child_sp->role, i);
-> +		/*
-> +		 * Because other thread may have started to operate on this spte
-> +		 * before freezing the parent spte,  Use atomic version to
-> +		 * prevent race.
-> +		 */
-> +		ret = tdp_mmu_set_spte_atomic(vcpu->kvm, &child_iter, child_spte);
-> +		if (ret == -EBUSY || ret == -EAGAIN)
-> +			/*
-> +			 * There was a race condition.  Populate remaining 4K
-> +			 * spte to resolve fault->gfn to guarantee the forward
-> +			 * progress.
-> +			 */
-> +			ret_pf_retry = true;
-> +		else if (ret)
-> +			goto out;
-> +
-> +	}
-> +	if (ret_pf_retry)
-> +		goto out;
-> +
-> +	/* Prevent the Secure-EPT entry from being used. */
-> +	ret = static_call(kvm_x86_zap_private_spte)(kvm, gfn, level);
-> +	if (ret)
-> +		goto out;
-> +	kvm_flush_remote_tlbs_range(kvm, gfn & KVM_HPAGE_GFN_MASK(level),
-> +				    KVM_PAGES_PER_HPAGE(level));
-> +
-> +	/* Merge pages into a large page. */
-> +	ret = static_call(kvm_x86_merge_private_spt)(kvm, gfn, level,
-> +						     kvm_mmu_private_spt(child_sp));
-> +	/*
-> +	 * Failed to merge pages because some pages are accepted and some are
-> +	 * pending.  Since the child page was mapped above, let vcpu run.
-> +	 */
-> +	if (ret) {
-> +		if (static_call(kvm_x86_unzap_private_spte)(kvm, gfn, level))
-> +			old_spte = SHADOW_NONPRESENT_VALUE |
-> +				(spte_to_pfn(old_spte) << PAGE_SHIFT) |
-> +				PT_PAGE_SIZE_MASK;
-> +		goto out;
-> +	}
-> +
-> +	/* Unfreeze spte. */
-> +	__kvm_tdp_mmu_write_spte(sptep, new_spte);
-> +
-> +	/*
-> +	 * Free unused child sp.  Secure-EPT page was already freed at TDX level
-> +	 * by kvm_x86_merge_private_spt().
-> +	 */
-> +	tdp_unaccount_mmu_page(kvm, child_sp);
-> +	tdp_mmu_free_sp(child_sp);
-> +	return -EAGAIN;
-> +
-> +out:
-> +	__kvm_tdp_mmu_write_spte(sptep, old_spte);
-> +	return ret;
-> +}
-> +
-> +static int __tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
-> +					     struct kvm_page_fault *fault,
-> +					     struct tdp_iter *iter, u64 new_spte)
-> +{
-> +	/*
-> +	 * The private page has smaller-size pages.  For example, the child
-> +	 * pages was converted from shared to page, and now it can be mapped as
-> +	 * a large page.  Try to merge small pages into a large page.
-> +	 */
-> +	if (fault->slot &&
-> +	    kvm_gfn_shared_mask(vcpu->kvm) &&
-> +	    iter->level > PG_LEVEL_4K &&
-> +	    kvm_is_private_gpa(vcpu->kvm, fault->addr) &&
-> +	    is_shadow_present_pte(iter->old_spte) &&
-> +	    !is_large_pte(iter->old_spte))
-> +		return tdp_mmu_merge_private_spt(vcpu, fault, iter, new_spte);
-> +
-> +	return tdp_mmu_set_spte_atomic(vcpu->kvm, iter, new_spte);
-> +}
-> +
->  /*
->   * Installs a last-level SPTE to handle a TDP page fault.
->   * (NPT/EPT violation/misconfiguration)
-> @@ -1276,7 +1437,7 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
->  
->  	if (new_spte == iter->old_spte)
->  		ret = RET_PF_SPURIOUS;
-> -	else if (tdp_mmu_set_spte_atomic(vcpu->kvm, iter, new_spte))
-> +	else if (__tdp_mmu_map_handle_target_level(vcpu, fault, iter, new_spte))
->  		return RET_PF_RETRY;
->  	else if (is_shadow_present_pte(iter->old_spte) &&
->  		 !is_last_spte(iter->old_spte, iter->level))
-> -- 
-> 2.25.1
-> 
+On Wed, Jul 12, 2023 at 6:42=E2=80=AFAM Hugh Dickins <hughd@google.com> wro=
+te:
+> Bring collapse_and_free_pmd() back into collapse_pte_mapped_thp().
+> It does need mmap_read_lock(), but it does not need mmap_write_lock(),
+> nor vma_start_write() nor i_mmap lock nor anon_vma lock.  All racing
+> paths are relying on pte_offset_map_lock() and pmd_lock(), so use those.
+
+We can still have a racing userfaultfd operation at the "/* step 4:
+remove page table */" point that installs a new PTE before the page
+table is removed.
+
+To reproduce, patch a delay into the kernel like this:
 
 
-I missed the race condition and had a wrong WARN_ON_ONCE().  I think it's hard
-to hit it because
-- In most cases, we hit if (is_shadow_present_pte()) because map it with large
-  page, split the page on mapgpa(to-shared), merge the page on
-  mapgpa(to-private-again).
-  We need independent mapgpa sequence on a different GPA, but within same 2M
-  range.
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 9a6e0d507759..27cc8dfbf3a7 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -20,6 +20,7 @@
+ #include <linux/swapops.h>
+ #include <linux/shmem_fs.h>
+ #include <linux/ksm.h>
++#include <linux/delay.h>
 
-- To hit removed case, we need a race with 2 vcpus in addition to the above.
+ #include <asm/tlb.h>
+ #include <asm/pgalloc.h>
+@@ -1617,6 +1618,11 @@ int collapse_pte_mapped_thp(struct mm_struct
+*mm, unsigned long addr,
+        }
 
-Anyway this will be included in the next respin.
+        /* step 4: remove page table */
++       if (strcmp(current->comm, "DELAYME") =3D=3D 0) {
++               pr_warn("%s: BEGIN DELAY INJECTION\n", __func__);
++               mdelay(5000);
++               pr_warn("%s: END DELAY INJECTION\n", __func__);
++       }
 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 70051dd863a8..4ccfbd04fb27 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -1306,6 +1306,13 @@ static int tdp_mmu_merge_private_spt(struct kvm_vcpu *vcpu,
- 	 */
- 	for (i = 0; i < SPTE_ENT_PER_PAGE; i = tdp_mmu_iter_step_side(i, &child_iter)) {
- 		WARN_ON_ONCE(child_iter.level != PG_LEVEL_4K);
-+
-+		if (is_removed_spte(child_iter.old_spte)) {
-+			ret = -EAGAIN;
-+			ret_pf_retry = true;
-+			continue;
-+		}
-+
- 		if (is_shadow_present_pte(child_iter.old_spte)) {
- 			/* TODO: relocate page for huge page. */
- 			if (WARN_ON_ONCE(spte_to_pfn(child_iter.old_spte) !=
-@@ -1327,7 +1334,6 @@ static int tdp_mmu_merge_private_spt(struct kvm_vcpu *vcpu,
- 			continue;
- 		}
- 
--		WARN_ON_ONCE(spte_to_pfn(child_iter.old_spte) != spte_to_pfn(new_spte) + i);
- 		child_spte = make_huge_page_split_spte(kvm, new_spte, child_sp->role, i);
- 		/*
- 		 * Because other thread may have started to operate on this spte
--- 
-2.25.1
+        /* Huge page lock is still held, so page table must remain empty */
+        pml =3D pmd_lock(mm, pmd);
 
--- 
-Isaku Yamahata <isaku.yamahata@gmail.com>
+
+And then run the attached reproducer against mm/mm-everything. You
+should get this in dmesg:
+
+[  206.578096] BUG: Bad rss-counter state mm:000000000942ebea
+type:MM_ANONPAGES val:1
+
+--000000000000f33d7f0602e8077a
+Content-Type: text/x-csrc; charset="US-ASCII"; name="khugepaged-vs-uffd.c"
+Content-Disposition: attachment; filename="khugepaged-vs-uffd.c"
+Content-Transfer-Encoding: base64
+Content-ID: <f_llbc3mq60>
+X-Attachment-Id: f_llbc3mq60
+
+Ly8gY29tcGlsZSB3aXRoICJnY2MgLW8ga2h1Z2VwYWdlZC12cy11ZmZkIGtodWdlcGFnZWQtdnMt
+dWZmZC5jIC1wdGhyZWFkIgojZGVmaW5lIF9HTlVfU09VUkNFCiNpbmNsdWRlIDxwdGhyZWFkLmg+
+CiNpbmNsdWRlIDxlcnIuaD4KI2luY2x1ZGUgPHNjaGVkLmg+CiNpbmNsdWRlIDxzdGRpby5oPgoj
+aW5jbHVkZSA8c3RyaW5nLmg+CiNpbmNsdWRlIDxmY250bC5oPgojaW5jbHVkZSA8c2lnbmFsLmg+
+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPHVuaXN0ZC5oPgojaW5jbHVkZSA8c3lzL3N5
+c2NhbGwuaD4KI2luY2x1ZGUgPHN5cy9zdGF0Lmg+CiNpbmNsdWRlIDxzeXMvcHJjdGwuaD4KI2lu
+Y2x1ZGUgPHN5cy9tb3VudC5oPgojaW5jbHVkZSA8c3lzL21tYW4uaD4KI2luY2x1ZGUgPHN5cy9p
+b2N0bC5oPgojaW5jbHVkZSA8bGludXgvdXNlcmZhdWx0ZmQuaD4KCiNpZm5kZWYgTUFEVl9DT0xM
+QVBTRQojZGVmaW5lIE1BRFZfQ09MTEFQU0UgMjUKI2VuZGlmCgojaWZuZGVmIFVGRkRfVVNFUl9N
+T0RFX09OTFkKI2RlZmluZSBVRkZEX1VTRVJfTU9ERV9PTkxZIDEKI2VuZGlmCgojZGVmaW5lIFNZ
+U0NISyh4KSAoeyAgICAgICAgICBcCiAgdHlwZW9mKHgpIF9fcmVzID0gKHgpOyAgICAgIFwKICBp
+ZiAoX19yZXMgPT0gKHR5cGVvZih4KSktMSkgXAogICAgZXJyKDEsICJTWVNDSEsoIiAjeCAiKSIp
+OyBcCiAgX19yZXM7ICAgICAgICAgICAgICAgICAgICAgIFwKfSkKCnN0YXRpYyB2b2lkIHdyaXRl
+X2ZpbGUoY2hhciAqbmFtZSwgY2hhciAqYnVmKSB7CiAgaW50IGZkID0gU1lTQ0hLKG9wZW4obmFt
+ZSwgT19XUk9OTFkpKTsKICBpZiAod3JpdGUoZmQsIGJ1Ziwgc3RybGVuKGJ1ZikpICE9IHN0cmxl
+bihidWYpKQogICAgZXJyKDEsICJ3cml0ZSAlcyIsIG5hbWUpOwogIGNsb3NlKGZkKTsKfQoKc3Rh
+dGljIHZvaWQgd3JpdGVfbWFwKGNoYXIgKm5hbWUsIGludCBvdXRlcl9pZCkgewogIGNoYXIgYnVm
+WzEwMF07CiAgc3ByaW50ZihidWYsICIwICVkIDEiLCBvdXRlcl9pZCk7CiAgd3JpdGVfZmlsZShu
+YW1lLCBidWYpOwp9CgpzdGF0aWMgdm9pZCAqdGhyZWFkX2ZuKHZvaWQgKmR1bW15KSB7CiAgc3lz
+dGVtKCJoZWFkIC1uNTAgL3Byb2MvJFBQSUQvc21hcHM7ZWNobztlY2hvIik7CiAgU1lTQ0hLKHBy
+Y3RsKFBSX1NFVF9OQU1FLCAiREVMQVlNRSIpKTsKICBTWVNDSEsobWFkdmlzZSgodm9pZCopMHgy
+MDAwMDBVTCwgMHgyMDAwMDAsIE1BRFZfQ09MTEFQU0UpKTsKICBTWVNDSEsocHJjdGwoUFJfU0VU
+X05BTUUsICJ0aHJlYWQiKSk7CiAgc3lzdGVtKCJoZWFkIC1uNTAgL3Byb2MvJFBQSUQvc21hcHMi
+KTsKICByZXR1cm4gTlVMTDsKfQoKaW50IG1haW4odm9pZCkgewogIGludCBvdXRlcl91aWQgPSBn
+ZXR1aWQoKTsKICBpbnQgb3V0ZXJfZ2lkID0gZ2V0Z2lkKCk7CiAgU1lTQ0hLKHVuc2hhcmUoQ0xP
+TkVfTkVXTlN8Q0xPTkVfTkVXVVNFUikpOwogIFNZU0NISyhtb3VudChOVUxMLCAiLyIsIE5VTEws
+IE1TX1BSSVZBVEV8TVNfUkVDLCBOVUxMKSk7CiAgd3JpdGVfZmlsZSgiL3Byb2Mvc2VsZi9zZXRn
+cm91cHMiLCAiZGVueSIpOwogIHdyaXRlX21hcCgiL3Byb2Mvc2VsZi91aWRfbWFwIiwgb3V0ZXJf
+dWlkKTsKICB3cml0ZV9tYXAoIi9wcm9jL3NlbGYvZ2lkX21hcCIsIG91dGVyX2dpZCk7CgogIFNZ
+U0NISyhtb3VudCgibm9uZSIsICIvdG1wIiwgInRtcGZzIiwgTVNfTk9TVUlEfE1TX05PREVWLCAi
+aHVnZT1hbHdheXMiKSk7CiAgaW50IGZkID0gU1lTQ0hLKG9wZW4oIi90bXAvYSIsIE9fUkRXUnxP
+X0NSRUFULCAwNjAwKSk7CiAgU1lTQ0hLKGZ0cnVuY2F0ZShmZCwgMHgyMDAwMDApKTsKICB2b2lk
+ICpwdHIgPSBTWVNDSEsobW1hcCgodm9pZCopMHgyMDAwMDBVTCwgMHgxMDAwMDAsIFBST1RfUkVB
+RHxQUk9UX1dSSVRFLCBNQVBfUFJJVkFURXxNQVBfRklYRURfTk9SRVBMQUNFLCBmZCwgMCkpOwog
+ICoodm9sYXRpbGUgY2hhciAqKXB0cjsKICBTWVNDSEsobW1hcCgodm9pZCopMHgzMDAwMDBVTCwg
+MHgxMDAwMDAsIFBST1RfUkVBRHxQUk9UX1dSSVRFLCBNQVBfUFJJVkFURXxNQVBfRklYRURfTk9S
+RVBMQUNFLCBmZCwgMHgxMDAwMDApKTsKICBmb3IgKGludCBpPTA7IGk8NTEyOyBpKyspCiAgICAq
+KHZvbGF0aWxlIGNoYXIgKikoMHgyMDAwMDBVTCArIDB4MTAwMCAqIGkpOwoKICBpbnQgdWZmZCA9
+IFNZU0NISyhzeXNjYWxsKF9fTlJfdXNlcmZhdWx0ZmQsIFVGRkRfVVNFUl9NT0RFX09OTFkpKTsK
+CiAgc3RydWN0IHVmZmRpb19hcGkgYXBpID0geyAuYXBpID0gVUZGRF9BUEksIC5mZWF0dXJlcyA9
+IDAgfTsKICBTWVNDSEsoaW9jdGwodWZmZCwgVUZGRElPX0FQSSwgJmFwaSkpOwoKICBzdHJ1Y3Qg
+dWZmZGlvX3JlZ2lzdGVyIHJlZyA9IHsKICAgIC5yYW5nZSA9IHsgLnN0YXJ0ID0gMHgyMDAwMDAs
+IC5sZW4gPSAweDIwMDAwMCB9LAogICAgLm1vZGUgPSBVRkZESU9fUkVHSVNURVJfTU9ERV9NSVNT
+SU5HCiAgfTsKICBTWVNDSEsoaW9jdGwodWZmZCwgVUZGRElPX1JFR0lTVEVSLCAmcmVnKSk7Cgog
+IHB0aHJlYWRfdCB0aHJlYWQ7CiAgaWYgKHB0aHJlYWRfY3JlYXRlKCZ0aHJlYWQsIE5VTEwsIHRo
+cmVhZF9mbiwgTlVMTCkpCiAgICBlcnJ4KDEsICJwdGhyZWFkX2NyZWF0ZSIpOwoKICBzbGVlcCgx
+KTsKCiAgdW5zaWduZWQgY2hhciBkdW1teV9wYWdlWzB4MTAwMF0gPSB7MX07CiAgc3RydWN0IHVm
+ZmRpb19jb3B5IGNvcHkgPSB7CiAgICAuZHN0ID0gMHgyMDEwMDAsCiAgICAuc3JjID0gKHVuc2ln
+bmVkIGxvbmcpZHVtbXlfcGFnZSwKICAgIC5sZW4gPSAweDEwMDAsCiAgICAubW9kZSA9IDAKICB9
+OwogIFNZU0NISyhpb2N0bCh1ZmZkLCBVRkZESU9fQ09QWSwgJmNvcHkpKTsKCiAgaWYgKHB0aHJl
+YWRfam9pbih0aHJlYWQsIE5VTEwpKQogICAgZXJyeCgxLCAicHRocmVhZF9qb2luIik7CgogIC8v
+c3lzdGVtKCJjYXQgL3Byb2MvJFBQSUQvc21hcHMiKTsKfQo=
+--000000000000f33d7f0602e8077a--
