@@ -2,192 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9F077B3DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B54077B3D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbjHNIUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 04:20:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38244 "EHLO
+        id S234666AbjHNIUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 04:20:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234586AbjHNIUO (ORCPT
+        with ESMTP id S234456AbjHNIUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 04:20:14 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481CEA6;
-        Mon, 14 Aug 2023 01:20:13 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 6DAED5C0114;
-        Mon, 14 Aug 2023 04:20:12 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Mon, 14 Aug 2023 04:20:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1692001212; x=1692087612; bh=B51Onwh3iWBAAPtdsNjfOqvNOpKIaP2W3tR
-        msFA0aKE=; b=TMH+OHpgzNCd4Six7k9m/+K7EdFcOikfRALEuZrd/RvwI0OVLFF
-        vx/PNfza3P6C452k1Iz+k2BxPQH7WkLH+4jt37cmZIgfB9peL/4fg5ebNAaYvxfb
-        kbM0cK3pQ/cmBi1oXKj/vi341jAR0rHUe50LCBdizobNlC0T0MyxX4rMrYwFR993
-        xCw1KndzQlg/4e2FVGDyzA1s3ip+GU+JjDq5kdRsNoY46a6o8qaq207GywGpS7Ms
-        th5ZvtLzAwroyCZcmEEmF9GuQBLTnzXAutfM7dB9QDUG94MnvwlqZqRP2YwHEkCU
-        lCGkBLJjTNTAzBTFO058sowVJ3ZGu7ZxRdQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1692001212; x=1692087612; bh=B51Onwh3iWBAAPtdsNjfOqvNOpKIaP2W3tR
-        msFA0aKE=; b=MJkvaMv0Ijx/vjESlu3NDBeAKtTKYM/jAgwOhIBurbT7jBxo38e
-        Qo+kVTfavZImHEFdvhcShCxgznhcdDFjPrQQiWerFxLyGUqQ0/5YGJy/jxrOBPTP
-        SonEY5TfhdDnVncCgrpMcCFUbI/cbOonlA/ZXsVzg5Sk37IuEIGoNHxkS0XcU42g
-        GSy6OFI+C41MJbC4oWCg/geQvFWoog5p6ee+YMjHtQ7X4CimNLgVDYb8G/IrLlci
-        00jtuzjrWfMY+CbqxVUEEjPblzXIaeEaNPFGPMG0oxRyUfp+EeYJqe2ujgiaQgco
-        jNUBtWeeG0cbxZ6cdctD6m+WuR3k88zm2uw==
-X-ME-Sender: <xms:u-PZZK6Vv_mMrP4elr-XUPlX1OEQt4BoQTl1mBsuQZ4ZiKjZveYG2g>
-    <xme:u-PZZD4ra58VdJIjnH9x-dN_fwI-4PbtOibrUPPi2JwD1y9TilC_mrc5oWjxEbsAN
-    _XtW-w29lrqHsl1lWU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddtgedgtdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeettedttdefhfekueduvedutdejudetgfekgfegfefhjeejteegveehtdeh
-    veejgfenucffohhmrghinhepghhithhhuhgsrdgtohhmpdhlihhnuhigqdhmihhpshdroh
-    hrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegr
-    rhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:u-PZZJd1A8KNHsZsQV6ydlMx6A41uEN6W268ArxUt2kjybCeiCDFlg>
-    <xmx:u-PZZHInNlWjmB3NQwLTiQX9NVBzi4BwJgXV0AZ6IHvg-O5iQ5rU9g>
-    <xmx:u-PZZOL72mS2HRU-guEhimaq_Tyhk6StEFW-7Izd07mqXATvBYv7Jw>
-    <xmx:vOPZZJZ0ucCZ5qCMB0aL-BRyEFaODwgEbRPKP2u42lrXDwJ8lBS5nQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 6D7CFB60089; Mon, 14 Aug 2023 04:20:11 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
-Mime-Version: 1.0
-Message-Id: <19feb595-e22a-4304-9b88-b5cb55949cd8@app.fastmail.com>
-In-Reply-To: <0616585d-1459-b6ef-375b-890426004e01@loongson.cn>
-References: <20230803063703.5659-1-zhuyinbo@loongson.cn>
- <20230803063703.5659-2-zhuyinbo@loongson.cn>
- <193f9138-57e0-4d4b-8225-54d38be9bfbc@app.fastmail.com>
- <8efeac46-ebb7-fa05-3d88-7c21acd59c8b@loongson.cn>
- <6d7335b4-63e2-4a7e-9620-8a0012558dfd@app.fastmail.com>
- <0616585d-1459-b6ef-375b-890426004e01@loongson.cn>
+        Mon, 14 Aug 2023 04:20:05 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B29AC
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:20:03 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3178dd81ac4so3492568f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:20:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692001201; x=1692606001;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=esPHR8O6X5bh9IoLHOiOHIU3krlV6rNwOrRUOA+gIUo=;
+        b=QdyRM+tSjIUNtVGG3bdjEietP8Q2d1h3KJuEHViTr4USevxwefNxmxfgjWp+Fqi4m+
+         GJpixORRA94GzU5axi/iYDFVzlFBizCg/1nfFWeEGT0MP11vdKtdA91uuyIB2+PLtaWh
+         d9wqLtply0g2s5GIEGXzSVx5wa3jwKlh/ssjiq2d4w50GRf7IonlF/qpqOwP2/t1DCZk
+         AXXPs8jD0++owPBFfZ4Pxg3ymrExTABb5jWa8tq557dZw/rJZjsWRY5//tbvQ1h9+srP
+         XQH18q/5zB5pcP9D0DPSLGZ2X/FCUZXJMJv65ixmOm6H1Ke9B50G2/YFap2kvrubKTtd
+         /rDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692001201; x=1692606001;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=esPHR8O6X5bh9IoLHOiOHIU3krlV6rNwOrRUOA+gIUo=;
+        b=N1/O9wjmwr7O+NgQ0ov0FnyUUtEQ2MbYu4IJNfIP2MWwTuR/f3J9zQSJ9EgApoO2rU
+         QN8jdHeD0znFdY8JS3FPxCkOGNjNQfbIUTFhdIlA+i5DjDw20bHielJLwPCSut3SntCt
+         OhNVIxMrl1j3N74gL6DfFUTKlssKqRzIausB7NKnNHDu9O2XTpWn46s2+e7MhpwuJviV
+         EJ0PWglQgbcPI3J0L2hRR1akc2/8Kat8r9NgfZlzGuHs2XgGoG7YBblVl1Egw2IKuw/e
+         2p5aXKpL3uEU0hCYlblm9NTbpkYJJuenCB0BKrfFGBWIELj56dP3/DmYxm2+33L2RP6T
+         qqHw==
+X-Gm-Message-State: AOJu0YzLZZSfV9QsuiDL0SY0NBUzNP288rBRuKepfgix/Yccu7XaofIZ
+        E8uXqN4SKFl2IduPpQcq4IcRTA==
+X-Google-Smtp-Source: AGHT+IEgmRsds34cslKDbyzCn7RIbp/IVD36Gq4bcl6RY6FcYmeCaeZR6THT0cmNsrr98F8PwaJJvA==
+X-Received: by 2002:a5d:525b:0:b0:314:1a09:6e71 with SMTP id k27-20020a5d525b000000b003141a096e71mr6992068wrc.53.1692001201484;
+        Mon, 14 Aug 2023 01:20:01 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id f18-20020a5d6652000000b003143ba62cf4sm13661259wrw.86.2023.08.14.01.20.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 01:20:00 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Subject: [PATCH v3 0/3] ARM: oxnas support removal
 Date:   Mon, 14 Aug 2023 10:19:51 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Yinbo Zhu" <zhuyinbo@loongson.cn>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Conor Dooley" <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        soc@kernel.org, "Ulf Hansson" <ulf.hansson@linaro.org>
-Cc:     "Jianmin Lv" <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        "Liu Peibao" <liupeibao@loongson.cn>,
-        loongson-kernel@lists.loongnix.cn, loongarch@lists.linux.dev,
-        "Liu Yun" <liuyun@loongson.cn>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v6 1/2] soc: dt-bindings: add loongson-2 pm
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <20230814-topic-oxnas-upstream-remove-v3-0-e2ba579a49d3@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKfj2WQC/43OwQ7CIBAE0F8xnF1TIFbryf8wHpayWJIWmqUSj
+ em/S3sxXozHmcObeYlE7CmJ0+YlmLJPPoYS9HYj2g7DjcDbkoWqlK60ljDF0bcQHwET3Mc0MeE
+ ATEPMBFgramxTOyISRTCYCAxjaLtihHvfl3Jkcv6xTl6uJXc+TZGf64Msl/a/sSyhgr2x+6Oz0
+ lrpzr0PyHEX+SYWOKsPVuvqN6YK5kyNRlvC46H9wuZ5fgMPKRwuKQEAAA==
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Conor Dooley <conor.dooley@microchip.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2085;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=BV4eCveGpLmDCBGhcN3GoiI5PrQx89zH76D6FcS4Be0=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBk2eOuqaVY1uku6v+pz5LuDuN5iAslAyooWobVLTOr
+ tZzgElGJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZNnjrgAKCRB33NvayMhJ0ZHaD/
+ 9gVyNvGWHyD2raAARWC5plh8EM5pfDj1qNzgaIRKz6CbVcEvw2brHkhAGGpK+gpmKVTRt+WCidx3la
+ 4GHMEDOBYbg66XJCbAUTuEcNxz63tmbD+1ZIuI9w1G3W6NAPb92w8ZNRZyK699YQdzJ0Hks0fWrmGz
+ yq7Qy5iJVFo3AjKqbp7RAWrhJsqYqEHp79DXlygA9gwzZdgNDw0TyawPi7Qxm21pzWDly4nf7AQcoG
+ wwjSzV+s7pVvkljNECGghf8Tx/5Ej50/ZhDPu0Xo/ge0RQlKqY3gUDUnCrMqh0T1zCSFQTH4xph3JY
+ 9kDCva0LLx32A3VWsXnEQ3Anpq5oAjbk5koTTlzIaaw8wUPXXzZFok5BStUD1z1Y//Be9kxHZy8cgi
+ dmFpR8Vdk9x1F3iiSTvGJTLYHsEbmRbE75zRbXSTKSW7d4EYuv99A8t71u6yimKdZLxbzeOhe28PoQ
+ fqCJ9AF8ZBJSm21rKhi0QE4UjS3L8FlrCHJEUVntiX6qhV91RRJH8rqqU7POv2epBBmI36SFGyoXLX
+ IDgLQvoy8JvIuB/IlLkZ8mgHZf+K7XetdUJ/pK8ImTvWpMEC3IWG5s2pJpIsAE9H1gCobXVIBl8nFc
+ KpiHd3CZ/37k1+q4gUbF5+iQO3Fzx/0/20o5z//R3ZqnRaTOUcznU8Fd1RQQ==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023, at 09:57, Yinbo Zhu wrote:
-> =E5=9C=A8 2023/8/12 =E4=B8=8B=E5=8D=888:25, Arnd Bergmann =E5=86=99=E9=
-=81=93:
->> On Fri, Aug 4, 2023, at 04:54, Yinbo Zhu wrote:
->>> =E5=9C=A8 2023/8/3 =E4=B8=8B=E5=8D=883:44, Arnd Bergmann =E5=86=99=E9=
-=81=93:
->>>> On Thu, Aug 3, 2023, at 08:37, Yinbo Zhu wrote:
->>>
->>>> Is this some SRAM that needs to execute the suspend logic
->>>> in order to shut down memory and cache controllers?
->>>
->>>
->>> Yes, The suspend-to-ram after into pmon firmware code and set
->>> self-refresh mode in memory controller and ensure that memory data is
->>> not lost then shut down memory controller.
->>=20
->> I'm sorry I missed your reply earlier, getting back to the
->> thread now. So it's clear that this code needs to run in a
->> special memory from your description, but I'm still trying
->> to understand the details better.
->>=20
->> I found https://github.com/loongson-community/pmon source
->> code, and a reference to its origin at LSI Logic at
->> https://www.linux-mips.org/wiki/PMON but otherwise have
->> no idea about what this actually is, or how it relates
->> to your UEFI firmware. Did you add UEFI support to PMON,
->> or do you use it as a first stage loader that loads
->> the actual UEFI implementation (EDK2 or u-boot, I guess)?
->
->
-> Pmon and uefi are two different firmware, and there is no connection
-> between them.
+With [1] removing MPCore SMP support, this makes the OX820 barely usable,
+associated with a clear lack of maintainance, development and migration to
+dt-schema it's clear that Linux support for OX810 and OX820 should be removed.
 
-It sounds like we still have problems with terminology.
+In addition, the OX810 hasn't been booted for years and isn't even present
+in an ARM config file.
 
-I don't think categorizing UEFI as a firmware is correct,
-it's the interface used by various firmware implementations
-to load the operating system. As far as I understand,
-loongarch currently mandates the use of UEFI in whichever
-firmware is used, so if you have Pmon installed in ROM,
-and Pmon does not itself implement UEFI, it would have
-to load some other firmware such as u-boot in order to
-load a kernel through the UEFI protocol, right?
+For the OX820, lack of USB and SATA support makes the platform not usable
+in the current Linux support and relies on off-tree drivers hacked from the
+vendor (defunct for years) sources.
 
-Has the assumption that loongarch requires UEFI changed?
+The last users are in the OpenWRT distribution, and today's removal means
+support will still be in stable 6.1 LTS kernel until end of 2026.
 
->>>> Or is
->>>> this a runtime firmware interface similar to how UEFI handles
->>>> its runtime services to keep the implementation out of
->>>> the kernel?
->>>
->>>
->>> No, The main cpu and other cpu will offline that after into firmware=
- and
->>> finished Corresponding operations, the pmon firmware will not run.
->>=20
->> I'm still trying to understand your explanations here.
->> You say that pmon no longer runs, but that seems to contradict
->> what you said earlier about branching into pmon firmware code
->> for suspend.
->
->
-> It's not contradictory.  The suspend-to-ram is that from kernel goto to
-> pmon firmware code, then pmon finished corresponding operations, which
-> was to set self-refresh mode in memory controller, then memory HW will
-> maintain its own data and no longer requires software processing, pmon
-> firmware will not run.
+If someone wants to take over the development even with lack of SMP, I'll
+be happy to hand off maintainance.
 
-That is what I mean with a "runtime firmware interface", i.e. you
-jump into firmware in order to request services from it. Clearly the
-firmware itself does not run while the OS is executing code, but it is
-still there and waiting to be called here, which is similar to
-things like UEFI runtime services, PowerPC RTAS, Arm EL3/trustzone
-based firmware or x86 SMM firmware, except that this is much less
-formalized and only consists of an entry point with undocument
-calling conventions.
+It has been a fun time adding support for this architecture, but it's time
+to get over!
 
->> Is this executing directly from ROM then?
->
-> Yes.
+I'll send the remaining patches in a final PR.
 
-Is this the only runtime call into the firmware, or are there
-others that are either already called from mainline kernels
-or in your downsteam implementation?
+---
+Changes in v3:
+- Removed applied patches
+- Moved net & pinctrl to a separate patchset
+- Added Andy's tags
+- Link to v2: https://lore.kernel.org/r/20230630-topic-oxnas-upstream-remove-v2-0-fb6ab3dea87c@linaro.org
 
-How do you ensure that the DTB matches the actual ROM code
-after rebuilding Pmon? Does Pmon itself fill that field with
-the correct address, or do you rely on it being a hardcoded
-constant?
+Changes in v2:
+- s/maintainance/maintenance/
+- added acked/review tags
+- dropped already applied patches
+- drop RFC
+- Link to v1: https://lore.kernel.org/r/20230331-topic-oxnas-upstream-remove-v1-0-5bd58fd1dd1f@linaro.org
 
-     Arnd
+---
+Neil Armstrong (3):
+      irqchip: irq-versatile-fpga: remove obsolete oxnas compatible
+      dt-bindings: interrupt-controller: arm,versatile-fpga-irq: mark oxnas compatible as deprecated
+      MAINTAINERS: remove OXNAS entry
+
+ .../bindings/interrupt-controller/arm,versatile-fpga-irq.txt   |  4 +++-
+ MAINTAINERS                                                    | 10 ----------
+ drivers/irqchip/irq-versatile-fpga.c                           |  1 -
+ 3 files changed, 3 insertions(+), 12 deletions(-)
+---
+base-commit: 21ef7b1e17d039053edaeaf41142423810572741
+change-id: 20230331-topic-oxnas-upstream-remove-a62e9d96feee
+
+Best regards,
+-- 
+Neil Armstrong <neil.armstrong@linaro.org>
+
