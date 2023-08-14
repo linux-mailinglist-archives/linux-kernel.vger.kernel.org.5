@@ -2,207 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC0D77B8DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D7C77B8E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbjHNMnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 08:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60702 "EHLO
+        id S230127AbjHNMne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 08:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjHNMme (ORCPT
+        with ESMTP id S230063AbjHNMnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 08:42:34 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E23E4A;
-        Mon, 14 Aug 2023 05:42:32 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RPYsz3rLbzrSLV;
-        Mon, 14 Aug 2023 20:41:11 +0800 (CST)
-Received: from localhost.localdomain (10.50.163.32) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 14 Aug 2023 20:42:29 +0800
-From:   Yicong Yang <yangyicong@huawei.com>
-To:     <will@kernel.org>, <catalin.marinas@arm.com>,
-        <lpieralisi@kernel.org>, <mark.rutland@arm.com>,
-        <robin.murphy@arm.com>, <guohanjun@huawei.com>, <corbet@lwn.net>,
-        <rafael@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-doc@vger.kernel.org>, <linux-acpi@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jonathan.cameron@huawei.com>,
-        <shameerali.kolothum.thodi@huawei.com>, <hejunhao3@huawei.com>,
-        <linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
-        <yangyicong@hisilicon.com>, <zhurui3@huawei.com>
-Subject: [PATCH v2] perf/smmuv3: Enable HiSilicon Erratum 162001900 quirk for HIP08/09
-Date:   Mon, 14 Aug 2023 20:40:12 +0800
-Message-ID: <20230814124012.58013-1-yangyicong@huawei.com>
-X-Mailer: git-send-email 2.31.0
+        Mon, 14 Aug 2023 08:43:02 -0400
+Received: from mail-pg1-f206.google.com (mail-pg1-f206.google.com [209.85.215.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F884E5E
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:43:00 -0700 (PDT)
+Received: by mail-pg1-f206.google.com with SMTP id 41be03b00d2f7-56521b40146so4612542a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:43:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692016980; x=1692621780;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=s66UEJ3FnW1sRqt3mtQxYx1xMdeoNhCsvPvucrN4BdI=;
+        b=Suw3T3BXZsSC7qNZSwZgH0kleOtwtVchfiQLJNzhiWlLb8U3Y4oibdpxClJRLKrXnA
+         b0GcvMlXM2e9+vmXOaLu5t5FnZn+Dqn4fBMqA9q7hl0fwkP34h1BpGXNEaQh7rCEgrJy
+         LAvuYaIyUjy4tKbYe3nP7TF9w3tg9Pj2vrOM1rhel2LA4Ewm4K7xtxAkNZkbi3wDUSM9
+         AJ2GtWvKLiO6R8BYtc3GqZLxd0XcID8lo6uKFYZh0gZpQ+d3cqzIZ9bCWvt1IkPzllpR
+         5ejILY8kqCha87ywYtoev6a4H24K2yjU135lrz1NrrN0H4Xj1wbY2CuoesWdHuMPdybi
+         iDZw==
+X-Gm-Message-State: AOJu0YyWmyxWinHl8jTBHYuoWxBsETiUyanYIgGvI+m/Hc38zlPKXFne
+        9snQzB1wFeMjC+VBsmDg48jeMzBtJSWiYAak8NGCaWZHwsp7
+X-Google-Smtp-Source: AGHT+IF+0WsJMEX8EUGbR3mA0k/wCKQ+X+6InwHWSWMsHIknVL3uIRwiQqs7xaYmfBjC7vbXpCgHlYznoJbTnC9lo4757K0Jid5P
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.50.163.32]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a63:954e:0:b0:565:58b6:70b9 with SMTP id
+ t14-20020a63954e000000b0056558b670b9mr1552559pgn.11.1692016979907; Mon, 14
+ Aug 2023 05:42:59 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 05:42:59 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000a9c9e0602e167e8@google.com>
+Subject: [syzbot] [ext4?] possible deadlock in __ext4_mark_inode_dirty (2)
+From:   syzbot <syzbot+1422c4a798761a48ea4f@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yicong Yang <yangyicong@hisilicon.com>
+Hello,
 
-Some HiSilicon SMMU PMCG suffers the erratum 162001900 that the PMU
-disable control sometimes fail to disable the counters. This will lead
-to error or inaccurate data since before we enable the counters the
-counter's still counting for the event used in last perf session.
+syzbot found the following issue on:
 
-This patch tries to fix this by hardening the global disable process.
-Before disable the PMU, writing an invalid event type (0xffff) to
-focibly stop the counters. Correspondingly restore each events on
-pmu::pmu_enable().
+HEAD commit:    374a7f47bf40 Merge tag '6.5-rc5-ksmbd-server' of git://git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15c292d7a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3e670757e16affb
+dashboard link: https://syzkaller.appspot.com/bug?extid=1422c4a798761a48ea4f
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
 
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-374a7f47.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/3ea517da243c/vmlinux-374a7f47.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/443cf2c4cd8a/bzImage-374a7f47.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1422c4a798761a48ea4f@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.5.0-rc5-syzkaller-00063-g374a7f47bf40 #0 Not tainted
+------------------------------------------------------
+syz-executor.0/10326 is trying to acquire lock:
+ffffffff8cb0c720 (fs_reclaim){+.+.}-{0:0}, at: might_alloc include/linux/sched/mm.h:303 [inline]
+ffffffff8cb0c720 (fs_reclaim){+.+.}-{0:0}, at: slab_pre_alloc_hook mm/slab.h:709 [inline]
+ffffffff8cb0c720 (fs_reclaim){+.+.}-{0:0}, at: slab_alloc_node mm/slub.c:3452 [inline]
+ffffffff8cb0c720 (fs_reclaim){+.+.}-{0:0}, at: __kmem_cache_alloc_node+0x51/0x350 mm/slub.c:3509
+
+but task is already holding lock:
+ffff88802057dac8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_trylock_xattr fs/ext4/xattr.h:162 [inline]
+ffff88802057dac8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_to_expand_extra_isize fs/ext4/inode.c:5809 [inline]
+ffff88802057dac8 (&ei->xattr_sem){++++}-{3:3}, at: __ext4_mark_inode_dirty+0x4a1/0x800 fs/ext4/inode.c:5890
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #3 (&ei->xattr_sem){++++}-{3:3}:
+       down_write+0x93/0x200 kernel/locking/rwsem.c:1573
+       ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
+       ext4_xattr_set_handle+0x167/0x14c0 fs/ext4/xattr.c:2371
+       __ext4_set_acl+0x362/0x5d0 fs/ext4/acl.c:217
+       ext4_set_acl+0x2c8/0x620 fs/ext4/acl.c:259
+       set_posix_acl+0x259/0x320 fs/posix_acl.c:956
+       vfs_remove_acl+0x2cd/0x620 fs/posix_acl.c:1243
+       ovl_do_remove_acl fs/overlayfs/overlayfs.h:300 [inline]
+       ovl_workdir_create+0x4a1/0x820 fs/overlayfs/super.c:331
+       ovl_make_workdir fs/overlayfs/super.c:711 [inline]
+       ovl_get_workdir fs/overlayfs/super.c:864 [inline]
+       ovl_fill_super+0xdab/0x6180 fs/overlayfs/super.c:1400
+       vfs_get_super+0xf9/0x290 fs/super.c:1152
+       vfs_get_tree+0x88/0x350 fs/super.c:1519
+       do_new_mount fs/namespace.c:3335 [inline]
+       path_mount+0x1492/0x1ed0 fs/namespace.c:3662
+       do_mount fs/namespace.c:3675 [inline]
+       __do_sys_mount fs/namespace.c:3884 [inline]
+       __se_sys_mount fs/namespace.c:3861 [inline]
+       __ia32_sys_mount+0x291/0x310 fs/namespace.c:3861
+       do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+       __do_fast_syscall_32+0x61/0xe0 arch/x86/entry/common.c:178
+       do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
+       entry_SYSENTER_compat_after_hwframe+0x70/0x82
+
+-> #2 (jbd2_handle){++++}-{0:0}:
+       start_this_handle+0x1116/0x1600 fs/jbd2/transaction.c:463
+       jbd2__journal_start+0x391/0x690 fs/jbd2/transaction.c:520
+       __ext4_journal_start_sb+0x40f/0x5c0 fs/ext4/ext4_jbd2.c:111
+       ext4_sample_last_mounted fs/ext4/file.c:863 [inline]
+       ext4_file_open+0x632/0xc80 fs/ext4/file.c:892
+       do_dentry_open+0x88b/0x1780 fs/open.c:914
+       do_open fs/namei.c:3636 [inline]
+       path_openat+0x19af/0x29c0 fs/namei.c:3793
+       do_filp_open+0x1de/0x430 fs/namei.c:3820
+       do_sys_openat2+0x176/0x1e0 fs/open.c:1407
+       do_sys_open fs/open.c:1422 [inline]
+       __do_sys_openat fs/open.c:1438 [inline]
+       __se_sys_openat fs/open.c:1433 [inline]
+       __x64_sys_openat+0x175/0x210 fs/open.c:1433
+       do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+       do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+       entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+-> #1 (sb_internal){.+.+}-{0:0}:
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1494 [inline]
+       sb_start_intwrite include/linux/fs.h:1616 [inline]
+       ext4_evict_inode+0xe55/0x1a30 fs/ext4/inode.c:212
+       evict+0x2ed/0x6b0 fs/inode.c:665
+       iput_final fs/inode.c:1791 [inline]
+       iput.part.0+0x55e/0x7a0 fs/inode.c:1817
+       iput+0x5c/0x80 fs/inode.c:1807
+       dentry_unlink_inode+0x292/0x430 fs/dcache.c:401
+       __dentry_kill+0x3b8/0x640 fs/dcache.c:607
+       dentry_kill fs/dcache.c:745 [inline]
+       dput+0x703/0xfd0 fs/dcache.c:913
+       ovl_stack_put fs/overlayfs/util.c:105 [inline]
+       ovl_free_entry+0x8e/0xd0 fs/overlayfs/util.c:127
+       ovl_destroy_inode+0x6a/0x110 fs/overlayfs/super.c:176
+       destroy_inode+0xc4/0x1b0 fs/inode.c:310
+       iput_final fs/inode.c:1791 [inline]
+       iput.part.0+0x55e/0x7a0 fs/inode.c:1817
+       iput+0x5c/0x80 fs/inode.c:1807
+       dentry_unlink_inode+0x292/0x430 fs/dcache.c:401
+       __dentry_kill+0x3b8/0x640 fs/dcache.c:607
+       shrink_dentry_list+0x235/0x7e0 fs/dcache.c:1201
+       prune_dcache_sb+0xeb/0x150 fs/dcache.c:1282
+       super_cache_scan+0x332/0x560 fs/super.c:104
+       do_shrink_slab+0x422/0xaa0 mm/vmscan.c:900
+       shrink_slab_memcg mm/vmscan.c:969 [inline]
+       shrink_slab+0x48b/0x6e0 mm/vmscan.c:1048
+       shrink_one+0x4f7/0x700 mm/vmscan.c:5403
+       shrink_many mm/vmscan.c:5453 [inline]
+       lru_gen_shrink_node mm/vmscan.c:5570 [inline]
+       shrink_node+0x20c2/0x3730 mm/vmscan.c:6510
+       kswapd_shrink_node mm/vmscan.c:7315 [inline]
+       balance_pgdat+0xa37/0x1b90 mm/vmscan.c:7505
+       kswapd+0x5be/0xbf0 mm/vmscan.c:7765
+       kthread+0x33a/0x430 kernel/kthread.c:389
+       ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
+       ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+-> #0 (fs_reclaim){+.+.}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3142 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3261 [inline]
+       validate_chain kernel/locking/lockdep.c:3876 [inline]
+       __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5144
+       lock_acquire kernel/locking/lockdep.c:5761 [inline]
+       lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
+       __fs_reclaim_acquire mm/page_alloc.c:3602 [inline]
+       fs_reclaim_acquire+0x11d/0x160 mm/page_alloc.c:3616
+       might_alloc include/linux/sched/mm.h:303 [inline]
+       slab_pre_alloc_hook mm/slab.h:709 [inline]
+       slab_alloc_node mm/slub.c:3452 [inline]
+       __kmem_cache_alloc_node+0x51/0x350 mm/slub.c:3509
+       __do_kmalloc_node mm/slab_common.c:984 [inline]
+       __kmalloc_node+0x4f/0x100 mm/slab_common.c:992
+       kmalloc_node include/linux/slab.h:602 [inline]
+       kvmalloc_node+0x99/0x1a0 mm/util.c:604
+       kvmalloc include/linux/slab.h:720 [inline]
+       ext4_xattr_inode_cache_find fs/ext4/xattr.c:1535 [inline]
+       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1577 [inline]
+       ext4_xattr_set_entry+0x1c3d/0x3c70 fs/ext4/xattr.c:1719
+       ext4_xattr_block_set+0x678/0x30e0 fs/ext4/xattr.c:1970
+       ext4_xattr_move_to_block fs/ext4/xattr.c:2667 [inline]
+       ext4_xattr_make_inode_space fs/ext4/xattr.c:2742 [inline]
+       ext4_expand_extra_isize_ea+0x1306/0x1b20 fs/ext4/xattr.c:2834
+       __ext4_expand_extra_isize+0x342/0x470 fs/ext4/inode.c:5769
+       ext4_try_to_expand_extra_isize fs/ext4/inode.c:5812 [inline]
+       __ext4_mark_inode_dirty+0x52b/0x800 fs/ext4/inode.c:5890
+       __ext4_unlink+0x65e/0xcd0 fs/ext4/namei.c:3290
+       ext4_unlink+0x40b/0x580 fs/ext4/namei.c:3319
+       vfs_unlink+0x2f1/0x900 fs/namei.c:4329
+       do_unlinkat+0x3da/0x6d0 fs/namei.c:4395
+       __do_sys_unlinkat fs/namei.c:4438 [inline]
+       __se_sys_unlinkat fs/namei.c:4431 [inline]
+       __ia32_sys_unlinkat+0xc1/0x130 fs/namei.c:4431
+       do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+       __do_fast_syscall_32+0x61/0xe0 arch/x86/entry/common.c:178
+       do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
+       entry_SYSENTER_compat_after_hwframe+0x70/0x82
+
+other info that might help us debug this:
+
+Chain exists of:
+  fs_reclaim --> jbd2_handle --> &ei->xattr_sem
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ei->xattr_sem);
+                               lock(jbd2_handle);
+                               lock(&ei->xattr_sem);
+  lock(fs_reclaim);
+
+ *** DEADLOCK ***
+
+4 locks held by syz-executor.0/10326:
+ #0: ffff88806fdf2410 (sb_writers#4){.+.+}-{0:0}, at: do_unlinkat+0x1ca/0x6d0 fs/namei.c:4376
+ #1: ffff888062214000 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:806 [inline]
+ #1: ffff888062214000 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: do_unlinkat+0x27c/0x6d0 fs/namei.c:4380
+ #2: ffff88802057de00 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: inode_lock include/linux/fs.h:771 [inline]
+ #2: ffff88802057de00 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: vfs_unlink+0xd3/0x900 fs/namei.c:4318
+ #3: ffff88802057dac8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_trylock_xattr fs/ext4/xattr.h:162 [inline]
+ #3: ffff88802057dac8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_to_expand_extra_isize fs/ext4/inode.c:5809 [inline]
+ #3: ffff88802057dac8 (&ei->xattr_sem){++++}-{3:3}, at: __ext4_mark_inode_dirty+0x4a1/0x800 fs/ext4/inode.c:5890
+
+stack backtrace:
+CPU: 0 PID: 10326 Comm: syz-executor.0 Not tainted 6.5.0-rc5-syzkaller-00063-g374a7f47bf40 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ check_noncircular+0x311/0x3f0 kernel/locking/lockdep.c:2195
+ check_prev_add kernel/locking/lockdep.c:3142 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3261 [inline]
+ validate_chain kernel/locking/lockdep.c:3876 [inline]
+ __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5144
+ lock_acquire kernel/locking/lockdep.c:5761 [inline]
+ lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
+ __fs_reclaim_acquire mm/page_alloc.c:3602 [inline]
+ fs_reclaim_acquire+0x11d/0x160 mm/page_alloc.c:3616
+ might_alloc include/linux/sched/mm.h:303 [inline]
+ slab_pre_alloc_hook mm/slab.h:709 [inline]
+ slab_alloc_node mm/slub.c:3452 [inline]
+ __kmem_cache_alloc_node+0x51/0x350 mm/slub.c:3509
+ __do_kmalloc_node mm/slab_common.c:984 [inline]
+ __kmalloc_node+0x4f/0x100 mm/slab_common.c:992
+ kmalloc_node include/linux/slab.h:602 [inline]
+ kvmalloc_node+0x99/0x1a0 mm/util.c:604
+ kvmalloc include/linux/slab.h:720 [inline]
+ ext4_xattr_inode_cache_find fs/ext4/xattr.c:1535 [inline]
+ ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1577 [inline]
+ ext4_xattr_set_entry+0x1c3d/0x3c70 fs/ext4/xattr.c:1719
+ ext4_xattr_block_set+0x678/0x30e0 fs/ext4/xattr.c:1970
+ ext4_xattr_move_to_block fs/ext4/xattr.c:2667 [inline]
+ ext4_xattr_make_inode_space fs/ext4/xattr.c:2742 [inline]
+ ext4_expand_extra_isize_ea+0x1306/0x1b20 fs/ext4/xattr.c:2834
+ __ext4_expand_extra_isize+0x342/0x470 fs/ext4/inode.c:5769
+ ext4_try_to_expand_extra_isize fs/ext4/inode.c:5812 [inline]
+ __ext4_mark_inode_dirty+0x52b/0x800 fs/ext4/inode.c:5890
+ __ext4_unlink+0x65e/0xcd0 fs/ext4/namei.c:3290
+ ext4_unlink+0x40b/0x580 fs/ext4/namei.c:3319
+ vfs_unlink+0x2f1/0x900 fs/namei.c:4329
+ do_unlinkat+0x3da/0x6d0 fs/namei.c:4395
+ __do_sys_unlinkat fs/namei.c:4438 [inline]
+ __se_sys_unlinkat fs/namei.c:4431 [inline]
+ __ia32_sys_unlinkat+0xc1/0x130 fs/namei.c:4431
+ do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+ __do_fast_syscall_32+0x61/0xe0 arch/x86/entry/common.c:178
+ do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
+ entry_SYSENTER_compat_after_hwframe+0x70/0x82
+RIP: 0023:0xf7f1e579
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f7f195ac EFLAGS: 00000292 ORIG_RAX: 000000000000012d
+RAX: ffffffffffffffda RBX: 00000000ffffff9c RCX: 00000000200003c0
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+----------------
+Code disassembly (best guess), 2 bytes skipped:
+   0:	10 06                	adc    %al,(%rsi)
+   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
+   6:	10 07                	adc    %al,(%rdi)
+   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
+   c:	10 08                	adc    %cl,(%rax)
+   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
+  1e:	00 51 52             	add    %dl,0x52(%rcx)
+  21:	55                   	push   %rbp
+  22:	89 e5                	mov    %esp,%ebp
+  24:	0f 34                	sysenter
+  26:	cd 80                	int    $0x80
+* 28:	5d                   	pop    %rbp <-- trapping instruction
+  29:	5a                   	pop    %rdx
+  2a:	59                   	pop    %rcx
+  2b:	c3                   	ret
+  2c:	90                   	nop
+  2d:	90                   	nop
+  2e:	90                   	nop
+  2f:	90                   	nop
+  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+
+
 ---
-Change since v1:
-- Tail call smmu_pmu_{enable, disable}() in quirk handler to avoid duplication
-Link: https://lore.kernel.org/all/20230809100654.32036-1-yangyicong@huawei.com/
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
- Documentation/arch/arm64/silicon-errata.rst |  3 ++
- drivers/acpi/arm64/iort.c                   |  5 ++-
- drivers/perf/arm_smmuv3_pmu.c               | 46 ++++++++++++++++++++-
- include/linux/acpi_iort.h                   |  1 +
- 4 files changed, 53 insertions(+), 2 deletions(-)
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-diff --git a/Documentation/arch/arm64/silicon-errata.rst b/Documentation/arch/arm64/silicon-errata.rst
-index bedd3a1d7b42..0ac452333eb4 100644
---- a/Documentation/arch/arm64/silicon-errata.rst
-+++ b/Documentation/arch/arm64/silicon-errata.rst
-@@ -198,6 +198,9 @@ stable kernels.
- +----------------+-----------------+-----------------+-----------------------------+
- | Hisilicon      | Hip08 SMMU PMCG | #162001800      | N/A                         |
- +----------------+-----------------+-----------------+-----------------------------+
-+| Hisilicon      | Hip08 SMMU PMCG | #162001900      | N/A                         |
-+|                | Hip09 SMMU PMCG |                 |                             |
-++----------------+-----------------+-----------------+-----------------------------+
- +----------------+-----------------+-----------------+-----------------------------+
- | Qualcomm Tech. | Kryo/Falkor v1  | E1003           | QCOM_FALKOR_ERRATUM_1003    |
- +----------------+-----------------+-----------------+-----------------------------+
-diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
-index 56d887323ae5..6496ff5a6ba2 100644
---- a/drivers/acpi/arm64/iort.c
-+++ b/drivers/acpi/arm64/iort.c
-@@ -1708,7 +1708,10 @@ static void __init arm_smmu_v3_pmcg_init_resources(struct resource *res,
- static struct acpi_platform_list pmcg_plat_info[] __initdata = {
- 	/* HiSilicon Hip08 Platform */
- 	{"HISI  ", "HIP08   ", 0, ACPI_SIG_IORT, greater_than_or_equal,
--	 "Erratum #162001800", IORT_SMMU_V3_PMCG_HISI_HIP08},
-+	 "Erratum #162001800, Erratum #162001900", IORT_SMMU_V3_PMCG_HISI_HIP08},
-+	/* HiSilicon Hip09 Platform */
-+	{"HISI  ", "HIP09   ", 0, ACPI_SIG_IORT, greater_than_or_equal,
-+	 "Erratum #162001900", IORT_SMMU_V3_PMCG_HISI_HIP09},
- 	{ }
- };
- 
-diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
-index 25a269d431e4..0e17c57ddb87 100644
---- a/drivers/perf/arm_smmuv3_pmu.c
-+++ b/drivers/perf/arm_smmuv3_pmu.c
-@@ -115,6 +115,7 @@
- #define SMMU_PMCG_PA_SHIFT              12
- 
- #define SMMU_PMCG_EVCNTR_RDONLY         BIT(0)
-+#define SMMU_PMCG_HARDEN_DISABLE        BIT(1)
- 
- static int cpuhp_state_num;
- 
-@@ -159,6 +160,20 @@ static inline void smmu_pmu_enable(struct pmu *pmu)
- 	writel(SMMU_PMCG_CR_ENABLE, smmu_pmu->reg_base + SMMU_PMCG_CR);
- }
- 
-+static int smmu_pmu_apply_event_filter(struct smmu_pmu *smmu_pmu,
-+				       struct perf_event *event, int idx);
-+
-+static inline void smmu_pmu_enable_quirk_hip08_09(struct pmu *pmu)
-+{
-+	struct smmu_pmu *smmu_pmu = to_smmu_pmu(pmu);
-+	unsigned int idx;
-+
-+	for_each_set_bit(idx, smmu_pmu->used_counters, smmu_pmu->num_counters)
-+		smmu_pmu_apply_event_filter(smmu_pmu, smmu_pmu->events[idx], idx);
-+
-+	smmu_pmu_enable(pmu);
-+}
-+
- static inline void smmu_pmu_disable(struct pmu *pmu)
- {
- 	struct smmu_pmu *smmu_pmu = to_smmu_pmu(pmu);
-@@ -167,6 +182,22 @@ static inline void smmu_pmu_disable(struct pmu *pmu)
- 	writel(0, smmu_pmu->reg_base + SMMU_PMCG_IRQ_CTRL);
- }
- 
-+static inline void smmu_pmu_disable_quirk_hip08_09(struct pmu *pmu)
-+{
-+	struct smmu_pmu *smmu_pmu = to_smmu_pmu(pmu);
-+	unsigned int idx;
-+
-+	/*
-+	 * The global disable of PMU sometimes fail to stop the counting.
-+	 * Harden this by writing an invalid event type to each used counter
-+	 * to forcibly stop counting.
-+	 */
-+	for_each_set_bit(idx, smmu_pmu->used_counters, smmu_pmu->num_counters)
-+		writel(0xffff, smmu_pmu->reg_base + SMMU_PMCG_EVTYPER(idx));
-+
-+	smmu_pmu_disable(pmu);
-+}
-+
- static inline void smmu_pmu_counter_set_value(struct smmu_pmu *smmu_pmu,
- 					      u32 idx, u64 value)
- {
-@@ -765,7 +796,10 @@ static void smmu_pmu_get_acpi_options(struct smmu_pmu *smmu_pmu)
- 	switch (model) {
- 	case IORT_SMMU_V3_PMCG_HISI_HIP08:
- 		/* HiSilicon Erratum 162001800 */
--		smmu_pmu->options |= SMMU_PMCG_EVCNTR_RDONLY;
-+		smmu_pmu->options |= SMMU_PMCG_EVCNTR_RDONLY | SMMU_PMCG_HARDEN_DISABLE;
-+		break;
-+	case IORT_SMMU_V3_PMCG_HISI_HIP09:
-+		smmu_pmu->options |= SMMU_PMCG_HARDEN_DISABLE;
- 		break;
- 	}
- 
-@@ -890,6 +924,16 @@ static int smmu_pmu_probe(struct platform_device *pdev)
- 	if (!dev->of_node)
- 		smmu_pmu_get_acpi_options(smmu_pmu);
- 
-+	/*
-+	 * For platforms suffer this quirk, the PMU disable sometimes fails to
-+	 * stop the counters. This will leads to inaccurate or error counting.
-+	 * Forcibly disable the counters with these quirk handler.
-+	 */
-+	if (smmu_pmu->options & SMMU_PMCG_HARDEN_DISABLE) {
-+		smmu_pmu->pmu.pmu_enable = smmu_pmu_enable_quirk_hip08_09;
-+		smmu_pmu->pmu.pmu_disable = smmu_pmu_disable_quirk_hip08_09;
-+	}
-+
- 	/* Pick one CPU to be the preferred one to use */
- 	smmu_pmu->on_cpu = raw_smp_processor_id();
- 	WARN_ON(irq_set_affinity(smmu_pmu->irq, cpumask_of(smmu_pmu->on_cpu)));
-diff --git a/include/linux/acpi_iort.h b/include/linux/acpi_iort.h
-index ee7cb6aaff71..1cb65592c95d 100644
---- a/include/linux/acpi_iort.h
-+++ b/include/linux/acpi_iort.h
-@@ -21,6 +21,7 @@
-  */
- #define IORT_SMMU_V3_PMCG_GENERIC        0x00000000 /* Generic SMMUv3 PMCG */
- #define IORT_SMMU_V3_PMCG_HISI_HIP08     0x00000001 /* HiSilicon HIP08 PMCG */
-+#define IORT_SMMU_V3_PMCG_HISI_HIP09     0x00000002 /* HiSilicon HIP09 PMCG */
- 
- int iort_register_domain_token(int trans_id, phys_addr_t base,
- 			       struct fwnode_handle *fw_node);
--- 
-2.24.0
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
