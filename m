@@ -2,136 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D53077B482
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F9877B486
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234872AbjHNIod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 04:44:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
+        id S233368AbjHNIph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 04:45:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235059AbjHNIoN (ORCPT
+        with ESMTP id S235016AbjHNIpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 04:44:13 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03F291739
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:43:54 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RPSX33x3Lz2BdG3;
-        Mon, 14 Aug 2023 16:40:19 +0800 (CST)
-Received: from [10.67.102.169] (10.67.102.169) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 14 Aug 2023 16:43:14 +0800
-Subject: Re: [PATCH 3/4] sched: fix sched_numa_find_nth_cpu() in CPU-less case
-To:     Yury Norov <yury.norov@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>
-CC:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Lafreniere <peter@n8pjl.ca>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        <shiju.jose@huawei.com>, <jonathan.cameron@huawei.com>,
-        <prime.zeng@huawei.com>, <yangyicong@hisilicon.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Guenter Roeck <linux@roeck-us.net>
-References: <20230810162442.9863-1-yury.norov@gmail.com>
- <20230810162442.9863-4-yury.norov@gmail.com>
-From:   Yicong Yang <yangyicong@huawei.com>
-Message-ID: <7c24e857-fe86-4c2a-68bc-58152bac1f39@huawei.com>
-Date:   Mon, 14 Aug 2023 16:43:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Mon, 14 Aug 2023 04:45:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B8810E5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:44:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692002653;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZnSmpMtBnju2Es/eNnXEAlLkCISBszhY2/ZRBT0PYVI=;
+        b=c9gThx0Aa3JjvyodfKE/M3f69x5C3KHwZ7XOki/dBVm4ffppDKfhTrqrpGu3O5ZNEx8qLN
+        hrtcEPT7lWHOR1A3xXzKojipaDddkdkZIkdp/ZGTOhpR1ok+U979XY8zNGap5Xr+8gMBRK
+        8s9hvY3krRDhx8V9j45BQmk0tZNImBE=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-613-kWTwFTMgNuC2TXwUE5BFLA-1; Mon, 14 Aug 2023 04:44:12 -0400
+X-MC-Unique: kWTwFTMgNuC2TXwUE5BFLA-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-4fe08579d93so3809342e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:44:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692002651; x=1692607451;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZnSmpMtBnju2Es/eNnXEAlLkCISBszhY2/ZRBT0PYVI=;
+        b=i7QF3yvV4n8wCjv7BKP4NO1x0Bb4qRYEAjrvyMt+jljxV7CcVZdINmbrOc+rDyyhL7
+         3JEIdpflLyPBux/G8bcLAlDmWn49gLXFpQovCSFToLegLKQKkSs63esXaqZsKZ5hKeqQ
+         0bJB5VSU2gL4NKCFNsNfTT0Q8z42yTuMntXEqyA2DlHNlNu9PtK+Ig6T2pCAOWYAZ+Wz
+         xsAZy1o+kdPTAAtwr5hthrglbzEtnPKyl/nmZGee/7xOyU84bypn4wa9OEs+Gg63/gww
+         aNge4vGTPMbQNF2ykWyImCE7r6cjOQhgcbbZvkUgJPP9O9yWo72uwD7SPV8xnZSYgRH5
+         UFPg==
+X-Gm-Message-State: AOJu0YxyGFLl+bqJYcTQnm+wDCfhZqXFACYEyVcrgFn+8cUxjTLPGFgd
+        jnN7+YiGlQTz3PtjmFHtx7itF/z5NR502b5YTnJNwIqS3J73WygqYzl5Rc17EoP/DfNLmg9b5Xx
+        QQuHb8xUV/RsxY4wsCQ/OiTQh
+X-Received: by 2002:a05:6512:b95:b0:4fb:9f24:bba9 with SMTP id b21-20020a0565120b9500b004fb9f24bba9mr7721373lfv.5.1692002650950;
+        Mon, 14 Aug 2023 01:44:10 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFWuGv18XCUJgMHhVarBxXjgbCqo+qcGaxWZJveWkq9lThhn9826Bwg+3yptDSMj29CcqAg3Q==
+X-Received: by 2002:a05:6512:b95:b0:4fb:9f24:bba9 with SMTP id b21-20020a0565120b9500b004fb9f24bba9mr7721355lfv.5.1692002650560;
+        Mon, 14 Aug 2023 01:44:10 -0700 (PDT)
+Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id c21-20020aa7c995000000b005234011bb44sm5312241edt.11.2023.08.14.01.44.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Aug 2023 01:44:10 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <88793701-f37e-000f-f659-6428ad03b345@redhat.com>
+Date:   Mon, 14 Aug 2023 10:44:08 +0200
 MIME-Version: 1.0
-In-Reply-To: <20230810162442.9863-4-yury.norov@gmail.com>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc:     brouer@redhat.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, hawk@kernel.org,
+        alexander.duyck@gmail.com, ilias.apalodimas@linaro.org,
+        linyunsheng@huawei.com,
+        Alexander Lobakin <aleksander.lobakin@intel.com>
+Subject: Re: [PATCH net-next] page_pool: Set page pool size.
+Content-Language: en-US
+To:     Ratheesh Kannoth <rkannoth@marvell.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230809021920.913324-1-rkannoth@marvell.com>
+In-Reply-To: <20230809021920.913324-1-rkannoth@marvell.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.169]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yury,
 
-On 2023/8/11 0:24, Yury Norov wrote:
-> When the node provided by user is CPU-less, corresponding record in
-> sched_domains_numa_masks is not set. Trying to dereference it in the
-> following code leads to kernel crash.
+On 09/08/2023 04.19, Ratheesh Kannoth wrote:
+> https://lore.kernel.org/netdev/
+> 	15d32b22-22b0-64e3-a49e-88d780c24616@kernel.org/T/
 > 
-> To avoid it, start searching from the nearest node with CPUs.
-> 
-> Fixes: cd7f55359c90 ("sched: add sched_numa_find_nth_cpu()")
-> Reported-by: Yicong Yang <yangyicong@hisilicon.com>
-> Closes: https://lore.kernel.org/lkml/CAAH8bW8C5humYnfpW3y5ypwx0E-09A3QxFE1JFzR66v+mO4XfA@mail.gmail.com/T/
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Closes: https://lore.kernel.org/lkml/ZMHSNQfv39HN068m@yury-ThinkPad/T/#mf6431cb0b7f6f05193c41adeee444bc95bf2b1c4
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+
+For the record I like this code change better than changing page_pool
+core code. I like and agree with Olek's (Alexander Lobakin) suggestion.
+
+But the commit message need to be improved as it is too thin.
+(And link is getting split in two lines for some reason)
+
+> Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
 > ---
+>   drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> This has been discovered and fixed by Yicong Yang:
-> 
-> https://lore.kernel.org/lkml/CAAH8bW8C5humYnfpW3y5ypwx0E-09A3QxFE1JFzR66v+mO4XfA@mail.gmail.com/T/
-> 
-> When discovering Guenter's failure report for sparc64, I found it's due to
-> the same problem. And while fixing, I found an opportunity to generalize
-> nearest NUMA node search and avoid code duplication.
-> 
-> Yicong, if you like this approach, please feel free to add your co-developed-by
-> or any appropriate tags.
-> 
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+> index 8336cea16aff..2986e238104e 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+> @@ -1434,7 +1434,8 @@ int otx2_pool_init(struct otx2_nic *pfvf, u16 pool_id,
+>   	}
+>   
+>   	pp_params.flags = PP_FLAG_PAGE_FRAG | PP_FLAG_DMA_MAP;
+> -	pp_params.pool_size = numptrs;
+> +#define OTX2_PAGE_POOL_SIZE 2048
+> +	pp_params.pool_size = OTX2_PAGE_POOL_SIZE;
+>   	pp_params.nid = NUMA_NO_NODE;
+>   	pp_params.dev = pfvf->dev;
+>   	pp_params.dma_dir = DMA_FROM_DEVICE;
 
-Looks fine to me. One nit below.
-
-Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
-
->  kernel/sched/topology.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index d3a3b2646ec4..66b387172b6f 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -2113,10 +2113,14 @@ static int hop_cmp(const void *a, const void *b)
->   */
->  int sched_numa_find_nth_cpu(const struct cpumask *cpus, int cpu, int node)
->  {
-> -	struct __cmp_key k = { .cpus = cpus, .node = node, .cpu = cpu };
-> +	struct __cmp_key k = { .cpus = cpus, .cpu = cpu };
->  	struct cpumask ***hop_masks;
->  	int hop, ret = nr_cpu_ids;
->  
-> +	/* CPU-less node entries are uninitialized in sched_domains_numa_masks */
-> +	node = numa_nearest_node(node, N_CPU);
-> +	k.node = node;
-> +
-
-We may also have problem if node == NUMA_NO_NODE, is it better to mention this
-in the function comment or check it before we going on? Currently this function
-is only used in cpumask_local_spread() and the caller has already checked it, but
-considering this is an export function so somebody may use it directly.
-
-I wondering whether we should put this block within the protection of rcu_read_lock()
-for some issues like hotplug or not. Is it possible if @node become CPU-less subsequently?
-
->  	rcu_read_lock();
->  
->  	k.masks = rcu_dereference(sched_domains_numa_masks);
-> 
