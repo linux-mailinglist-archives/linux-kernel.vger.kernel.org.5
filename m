@@ -2,120 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80FBB77B708
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7870677B70C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233584AbjHNKqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 06:46:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36866 "EHLO
+        id S233780AbjHNKsm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Aug 2023 06:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233529AbjHNKqC (ORCPT
+        with ESMTP id S232908AbjHNKsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 06:46:02 -0400
-Received: from out203-205-251-53.mail.qq.com (out203-205-251-53.mail.qq.com [203.205.251.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A93DD2;
-        Mon, 14 Aug 2023 03:45:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1692009955;
-        bh=umFsdvDAuvz1J8EoJo1lr2CqjYOfjh1XPn/9tPSiG4Y=;
-        h=From:To:Cc:Subject:Date;
-        b=xFJ6BehuCpx83twfFIAQ7Or3PYxyyNfZYb3G6zlD9PTD3iEamNckUK/PAS/BKBbUo
-         PgicPDmem6m6eOhXkD2LU72EZ7its13ndR7/0QO909DIOngj1YnuerfYZ+wNXwwNmL
-         TOoYCP0NOkxIbMg2mGngdDjoD3Ldrd3x+VCCyUmE=
-Received: from localhost.localdomain ([39.156.73.12])
-        by newxmesmtplogicsvrszb1-0.qq.com (NewEsmtp) with SMTP
-        id B74184DB; Mon, 14 Aug 2023 18:45:52 +0800
-X-QQ-mid: xmsmtpt1692009952t89pqxxic
-Message-ID: <tencent_64FC724AC5F05568F41BD1C68058E83CEB05@qq.com>
-X-QQ-XMAILINFO: N+tZcXNNUKPOOU6mrYt7eWO5IlTUiooyQVOdfe5Xk6wjeGjCYen6UhWbYnGIdH
-         /nqtCJeRFxzlETRA6KlREZfPDs2OcddzVgoJrlkvjg2wH46gEDwy8kGxKWRu6/nx0WfLHmqAdGly
-         w5WWWEaQbY8uTZjoPFXYBGlgM8mjtZPj3xN5o4Wm2abicfRQ1dF9NUCbTjDklWgj38rwfJJgzjsd
-         uPSK6mGYpqe99cJUJheEx2aaz+5lea04tzsa3QuCthHpwYp5MTHeD1yECBuLdJksPt2HW/i/8YRd
-         qBMwyOylGGNdQ7o2B2fQ26/ocNR768d4I32hgLjX4z35FE0OQZE7uUipppqE6pkgXmrmcdDv/Oi4
-         rTELURsWNdmfXJHlN24ga8PeJscUoXbxlX31kJfKKpGwqO60R2TB3IEC4uvL+CzAsPBLHr3Xh5hU
-         TINsI3DBwAWW2Eo47/v/3WCYiKI+w8MNRzyRQST6YG4UMPIqgjHGJEIx0CYLvZMQyrsqZPo/2rnt
-         W/OgTuYeyn0BaBRLcm0FB+LhjPFwkM7CLxlv8u+08qKRqca9qKrFtCXXuqlhcZ31J4hhAOSqr117
-         qS1NyFr2IiP10tKDBg8lme9IqqYS2fRCgDr8LEBw6GujUjZLoGVZ6baaE56nNZVEZfp1RQhUufDN
-         eCeRLTJ392h+vIqmZtUrVLaXV+FZTPJowV0MBhvRw6jgXM0GQfQ51d71+a2V5ujvKLcIRDQJifjg
-         IuCQMfYtYW3JbHil2So4IY6kslGk39llFx+pmPlZQz0DZTpXDQfZx6tcUm1d20rQXV9Z2K7KQOTU
-         9f+IAuDvr5IsclD5j0ywsoIJPKUBv7Y+MWp51TnvGSjnQgl1MqqKkgFet3arDLze4lTeclDS8Zxu
-         jAAFzqeBpQlfdiCDfrnHAbKOMYwkSwX6NRv9XQxDWYaeoDU7wjPqDa/tsm+9Ee4SfCdISbwwgwFN
-         ipUB6Wt7iZ4KAFUBYdK88FTVbUylGkgb52LC7tFEzw/qvzQWhWQpAikCikxBywJjXpzojpG9TcC9
-         CFOWZzzA==
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
-From:   Rong Tao <rtoax@foxmail.com>
-To:     akpm@linux-foundation.org
-Cc:     rongtao@cestc.cn, rtoax@foxmail.com, Shuah Khan <shuah@kernel.org>,
-        linux-mm@kvack.org (open list:MEMORY MANAGEMENT),
-        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] selftests/mm: fix uffd-stress help information
-Date:   Mon, 14 Aug 2023 18:45:50 +0800
-X-OQ-MSGID: <20230814104550.62846-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.39.3
+        Mon, 14 Aug 2023 06:48:12 -0400
+Received: from m-r1.th.seeweb.it (m-r1.th.seeweb.it [5.144.164.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55C8DD
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:48:09 -0700 (PDT)
+Received: from [192.168.2.144] (bband-dyn221.178-41-211.t-com.sk [178.41.211.221])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id BEB661F54D;
+        Mon, 14 Aug 2023 12:48:05 +0200 (CEST)
+Date:   Mon, 14 Aug 2023 12:47:59 +0200
+From:   Martin Botka <martin.botka@somainline.org>
+Subject: Re: [PATCH v4 4/4] arm64: dts: allwinner: h616: Add BigTreeTech Pi
+ support
+To:     Jernej =?iso-8859-2?q?=A9krabec?= <jernej.skrabec@gmail.com>
+Cc:     Martin Botka <martin.botka1@gmail.com>,
+        Martin Botka <martin@biqu3d.com>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Jami Kettunen <jamipkettunen@somainline.org>,
+        Paul Bouchara <paul.bouchara@somainline.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Martin Botka <martin@biqu3d.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Ludwig Kormann <ludwig.kormann@ict42.de>,
+        Andrew Lunn <andrew@lunn.ch>, Icenowy Zheng <uwu@icenowy.me>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Message-Id: <ZBNDZR.IENEPBA0KL4D2@somainline.org>
+In-Reply-To: <9148039.CDJkKcVGEf@jernej-laptop>
+References: <20230807145349.2220490-1-martin@biqu3d.com>
+        <10318766.nUPlyArG6x@jernej-laptop> <168CZR.KVQVUV8KXJ5Y1@somainline.org>
+        <9148039.CDJkKcVGEf@jernej-laptop>
+X-Mailer: geary/43.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
 
-commit 686a8bb72349("selftests/mm: split uffd tests into uffd-stress and
-uffd-unit-tests") split uffd tests into uffd-stress and uffd-unit-tests,
-obviously we need to modify the help information synchronously.
 
-Also modify code indentation.
+On Mon, Aug 14 2023 at 12:26:07 PM +02:00:00, Jernej ©krabec 
+<jernej.skrabec@gmail.com> wrote:
+> Dne nedelja, 13. avgust 2023 ob 18:22:49 CEST je Martin Botka 
+> napisal(a):
+>>  On Sun, Aug 13 2023 at 05:55:35 PM +02:00:00, Jernej ©krabec
+>> 
+>>  <jernej.skrabec@gmail.com> wrote:
+>>  > Dne ponedeljek, 07. avgust 2023 ob 16:53:24 CEST je Martin Botka
+>>  >
+>>  > napisal(a):
+>>  >>  The BigTreeTech Pi is an H616 based board based on CB1.
+>>  >>  Just in Rpi format board.
+>>  >>
+>>  >>  It features the same internals as BTT CB1 but adds:
+>>  >>      - Fan port
+>>  >>      - IR receiver
+>>  >>      - ADXL345 Accelerometer connector via SPI
+>>  >>      - 24V DC power supply via terminal plugs
+>>  >>      - USB to CAN module connector (The actual USB to CAN 
+>> happens on
+>>  >>
+>>  >> the
+>>  >>
+>>  >>  external module)
+>>  >>
+>>  >>  List of currently working things is same as BTT CB1 but also:
+>>  >>      - IR receiver
+>>  >>      - ADXL345 connector
+>>  >>
+>>  >>  Signed-off-by: Martin Botka <martin@biqu3d.com>
+>>  >>  Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+>>  >>  ---
+>>  >>
+>>  >>  Changes in V2:
+>>  >>      - Add UART alongside aliases and chosen for it
+>>  >>      - Add model string
+>>  >>      - Enable IR receiver
+>>  >>      - Enable SPI0 for ADXL345 connector
+>>  >>
+>>  >>  Changes in V3:
+>>  >>      - Add missing semicolons
+>>  >>      - Add pinctrl for SPI0
+>>  >>
+>>  >>   arch/arm64/boot/dts/allwinner/Makefile        |  1 +
+>>  >>   .../allwinner/sun50i-h616-bigtreetech-pi.dts  | 70
+>>  >>
+>>  >> +++++++++++++++++++
+>>  >>
+>>  >>   2 files changed, 71 insertions(+)
+>>  >>   create mode 100644
+>>  >>
+>>  >>  arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+>>  >>
+>>  >>  diff --git a/arch/arm64/boot/dts/allwinner/Makefile
+>>  >>  b/arch/arm64/boot/dts/allwinner/Makefile index
+>>  >>
+>>  >> 7b386428510b..0b6232a7f328
+>>  >>
+>>  >>  100644
+>>  >>  --- a/arch/arm64/boot/dts/allwinner/Makefile
+>>  >>  +++ b/arch/arm64/boot/dts/allwinner/Makefile
+>>  >>  @@ -39,5 +39,6 @@ dtb-$(CONFIG_ARCH_SUNXI) +=
+>>  >>
+>>  >> sun50i-h6-pine-h64-model-b.dtb
+>>  >>
+>>  >>  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6.dtb
+>>  >>
+>>  >>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
+>>  >>   dtb-$(CONFIG_ARCH_SUNXI) += 
+>> sun50i-h616-bigtreetech-cb1-manta.dtb
+>>  >>
+>>  >>  +dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-pi.dtb
+>>  >>
+>>  >>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
+>>  >>   dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
+>>  >>
+>>  >>  diff --git
+>>  >>
+>>  >> a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+>>  >>
+>>  >>  b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts 
+>> new
+>>  >>
+>>  >> file
+>>  >>
+>>  >>  mode 100644
+>>  >>  index 000000000000..b0d0386e8f13
+>>  >>  --- /dev/null
+>>  >>  +++ 
+>> b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-pi.dts
+>>  >>  @@ -0,0 +1,70 @@
+>>  >>  +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
+>>  >>  +/*
+>>  >>  + * Copyright (C) 2023 Martin Botka <martin@biqu3d.com>.
+>>  >>  + */
+>>  >>  +
+>>  >>  +/dts-v1/;
+>>  >>  +
+>>  >>  +#include "sun50i-h616-bigtreetech-cb1.dtsi"
+>>  >>  +
+>>  >>  +/ {
+>>  >>  +	model = "BigTreeTech Pi";
+>>  >>  +	compatible = "bigtreetech,pi", "allwinner,sun50i-h616";
+>>  >>  +
+>>  >>  +	aliases {
+>>  >>  +		serial0 = &uart0;
+>>  >>  +	};
+>>  >>  +
+>>  >>  +	chosen {
+>>  >>  +		stdout-path = "serial0:115200n8";
+>>  >>  +	};
+>>  >>  +};
+>>  >>  +
+>>  >>  +&ehci0 {
+>>  >>  +	status = "okay";
+>>  >>  +};
+>>  >>  +
+>>  >>  +&ehci1 {
+>>  >>  +	status = "okay";
+>>  >>  +};
+>>  >>  +
+>>  >>  +&ehci2 {
+>>  >>  +	status = "okay";
+>>  >>  +};
+>>  >>  +
+>>  >>  +&ehci3 {
+>>  >>  +	status = "okay";
+>>  >>  +};
+>>  >>  +
+>>  >>  +&ir {
+>>  >>  +	status = "okay";
+>>  >>  +};
+>>  >>  +
+>>  >>  +&ohci0 {
+>>  >>  +	status = "okay";
+>>  >>  +};
+>>  >>  +
+>>  >>  +&ohci1 {
+>>  >>  +	status = "okay";
+>>  >>  +};
+>>  >>  +
+>>  >>  +&ohci2 {
+>>  >>  +	status = "okay";
+>>  >>  +};
+>>  >>  +
+>>  >>  +&ohci3 {
+>>  >>  +	status = "okay";
+>>  >>  +};
+>>  >>  +
+>>  >>  +&spi0 {
+>>  >>  +	/* SPI connection for onboard connector for ADXL345 
+>> accelerometer
+>>  >
+>>  > */
+>>  >
+>>  >>  +	status = "okay";
+>>  >>  +	pinctrl-names = "default";
+>>  >>  +	pinctrl-0 = <&spi0_pins>, <&spi0_cs0_pin>;
+>>  >
+>>  > Driver and compatible for ADXL345 already exists, why don't you 
+>> add
+>>  > child node
+>>  > for it?
+>>  >
+>>  > Best regards,
+>>  > Jernej
+>> 
+>>  Ah. So the ADXL345 actually wont be driven by kernel.
+> 
+> DT is hardware description, it's not concerned what is done on 
+> software side,
+> either kernel or user space.
+Im aware. But this is not a device that is on the board. Its simply a 
+connector for the device.
+Like Rpi has connectors for camera module :)
+> 
+>>  The SPI connection is enabled so that klipper (3d printer firmware) 
+>> can
+>>  be told to look for ADXL345 at this SPI and use it on its own.
+>> 
+>>  Klipper will initialize and communicate with the ADXL on its own.
+> 
+> What do you mean by firmware? User space app? In this case I suppose 
+> you'll use
+> direct SPI commands from user space? AFAIK that's less and less 
+> supported by
+> kernel (in contrast to I2C).
+Firmware as in 3d printer firmware. Klipper runs on the board (CB1 or 
+BTT Pi) and is indeed an userspace app.
+And indeed uses direct SPI commands to the device.
 
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
----
- tools/testing/selftests/mm/uffd-stress.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+The reason for this is the flexibility.
+If Klipper read the values from kernel or well from the files the ADXL 
+driver would create
+then it would be unable to communicate with ADXL that is on toolhead 
+board. Or would have to have
+direct initialization either way for those. Thus it just controls the 
+ADXL itself :)
 
-diff --git a/tools/testing/selftests/mm/uffd-stress.c b/tools/testing/selftests/mm/uffd-stress.c
-index 995ff13e74c7..e40b6d7d2c0e 100644
---- a/tools/testing/selftests/mm/uffd-stress.c
-+++ b/tools/testing/selftests/mm/uffd-stress.c
-@@ -53,21 +53,21 @@ pthread_attr_t attr;
- 	do { typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
- 
- const char *examples =
--    "# Run anonymous memory test on 100MiB region with 99999 bounces:\n"
--    "./userfaultfd anon 100 99999\n\n"
--    "# Run share memory test on 1GiB region with 99 bounces:\n"
--    "./userfaultfd shmem 1000 99\n\n"
--    "# Run hugetlb memory test on 256MiB region with 50 bounces:\n"
--    "./userfaultfd hugetlb 256 50\n\n"
--    "# Run the same hugetlb test but using private file:\n"
--    "./userfaultfd hugetlb-private 256 50\n\n"
--    "# 10MiB-~6GiB 999 bounces anonymous test, "
--    "continue forever unless an error triggers\n"
--    "while ./userfaultfd anon $[RANDOM % 6000 + 10] 999; do true; done\n\n";
-+	"# Run anonymous memory test on 100MiB region with 99999 bounces:\n"
-+	"./uffd-stress anon 100 99999\n\n"
-+	"# Run share memory test on 1GiB region with 99 bounces:\n"
-+	"./uffd-stress shmem 1000 99\n\n"
-+	"# Run hugetlb memory test on 256MiB region with 50 bounces:\n"
-+	"./uffd-stress hugetlb 256 50\n\n"
-+	"# Run the same hugetlb test but using private file:\n"
-+	"./uffd-stress hugetlb-private 256 50\n\n"
-+	"# 10MiB-~6GiB 999 bounces anonymous test, "
-+	"continue forever unless an error triggers\n"
-+	"while ./uffd-stress anon $[RANDOM % 6000 + 10] 999; do true; done\n\n";
- 
- static void usage(void)
- {
--	fprintf(stderr, "\nUsage: ./userfaultfd <test type> <MiB> <bounces>\n\n");
-+	fprintf(stderr, "\nUsage: ./uffd-stress <test type> <MiB> <bounces>\n\n");
- 	fprintf(stderr, "Supported <test type>: anon, hugetlb, "
- 		"hugetlb-private, shmem, shmem-private\n\n");
- 	fprintf(stderr, "Examples:\n\n");
--- 
-2.39.3
+I understand that this may be bit confusing. If there is still 
+something not clear im more then happy to explain in
+full detail how the userspace and 3D printer communicate :)
+
+Cheers,
+Martin.
+> 
+> Best regards,
+> Jernej
+> 
+>> 
+>>  >>  +};
+>>  >>  +
+>>  >>  +&uart0 {
+>>  >>  +	pinctrl-names = "default";
+>>  >>  +	pinctrl-0 = <&uart0_ph_pins>;
+>>  >>  +	status = "okay";
+>>  >>  +};
+> 
+> 
+> 
+> 
+
 
