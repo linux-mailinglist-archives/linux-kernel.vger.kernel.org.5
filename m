@@ -2,80 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D577277BE84
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAE877BE8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbjHNQ5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 12:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59236 "EHLO
+        id S229834AbjHNQ7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 12:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231678AbjHNQ5S (ORCPT
+        with ESMTP id S232906AbjHNQ6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 12:57:18 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA27199F;
-        Mon, 14 Aug 2023 09:56:57 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-56dfe5ce871so1542176eaf.2;
-        Mon, 14 Aug 2023 09:56:57 -0700 (PDT)
+        Mon, 14 Aug 2023 12:58:41 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EECC11BF1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:58:22 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-40c72caec5cso11281cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:58:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692032166; x=1692636966;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f9O7uVavugQIWG4+/30ol/uNZ+vUipg1yWncf1HB7Z8=;
-        b=SXLBBu9oNOxnHeWHA3EzDEcQx4zuwk/WnRawLjvMOoFNw7dpzT1cc0Zh3imGGu5biH
-         hF3gj0fRHQ72e59mu7XzFNFxxtuLAL6ZFxOgG2j4wOX+YZAVs3TkYanLQVFe+jZctHSn
-         gRxqqBRQ64EUwLZkoQs6MhwsohiAS+iuZrEPX6LlKTe7wKlVSVqQ5ZUWMS2XWnv3ukdN
-         xlx8rrlrQqId4/tGMozDD2l5xfvpRrFWtivaal0jSX3deLqfh+C3I6DXAEvX5W8/UQJ5
-         CNDQmsfU8Esw1uGGrTs5LBHBGY5zVpcRKJdL/zTQ7JbJGkTBRoprtkOUNrZbBBQ1Hqzm
-         u1xA==
+        d=google.com; s=20221208; t=1692032302; x=1692637102;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=m/WoweT55sLO5fRn6kufHuPlBBPxo8HUXjSRuA4Mczg=;
+        b=Q0fc8BLqD7wyXCOAOk3IPDV9Cp5h/LQhx8w5FeDc/Oq4xCCNjGiU5lj7eVG2UDAi6G
+         gGKMMSEj7LdqNHelfpKXokpTmkEFBPK6JYd8ld6zO95MjKEBiP6fI8HxhvZrtBzgcmlR
+         cugbBFjd5mmw+vkHfF9Cm9YLJ67TZrAHPcKCcqrOKlonZr3F12NeFub35TIFi/dEdUzu
+         FNpHd4c4rMjTr4IK7AohAigfWCtG8EEekRBSyf7hUiUQzQ56cgtAZIOj0lS+Ne46ZzAn
+         UXrIAr2vFref6NqwfEAmWNR/V498cbQ97SQq1LESFt1XuCEnzpFOHNjIO9u4Ve6lkj6A
+         1tpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692032166; x=1692636966;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f9O7uVavugQIWG4+/30ol/uNZ+vUipg1yWncf1HB7Z8=;
-        b=CJ7eDssTBGXb/bdDoe+U+BeEtGUEnRw5bZIoXuQ7k+rRcjidn5a+RaMpoIdkCAx21x
-         pNdPwbfR620dSoVDkA5xIAR7pq8oTz0D4LhXP2cXCNXLxWlb+m4L5O2aL8cs9qhJlQ8b
-         qQhF0X5wy0rUswqY3o8Pn7MxiEg4179t+xZguqyizr6duc67ifapgcRVrt9Xi/XUb4iA
-         KyErwI9hMhYwpcpEo95k6cE8sAs/ckWwWpvMpt2W6cpS3HWIpQCBNOPNIgi2s+9BRipV
-         gwxk+nUlFNe5DWWY2AvUua9AEejMr5NKxg2WsyhHnzLv3VW9QR+V7wiIal/OLU6MJ2AE
-         oSLw==
-X-Gm-Message-State: AOJu0YzIl60tqzkn4qfEO/zGmM8hBaKMmXvqTBedwG/lSbY+LGIIMj4Y
-        Xxr4Cmb3ZjYBwY8Ur+fzgdKagOXaNX3qZVJysSQ=
-X-Google-Smtp-Source: AGHT+IGRiUAbrBbY9Vni9Tn8QSBhVGIX9TfUXofBqPCsNnEmk1YYklY4fqhqnWDK5MhusbsyCSnQmJcr7FbUisha/AQ=
-X-Received: by 2002:a05:6358:9212:b0:134:e952:16a8 with SMTP id
- d18-20020a056358921200b00134e95216a8mr6760283rwb.24.1692032165879; Mon, 14
- Aug 2023 09:56:05 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692032302; x=1692637102;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m/WoweT55sLO5fRn6kufHuPlBBPxo8HUXjSRuA4Mczg=;
+        b=j/Ys/DRG69xo2yoMBsmkwps6Jwsblq9xdzA1rh+v1sOV/c7/xkmQP+RU+n2+JzpEu1
+         uCEcYWtihfbbNhS/MVYy/00bWUOJGXaMa9drh48IxGYCPR2zmBFgOPk5HL6rFVOcEkRi
+         egofu1aP/62nDk5Dd214LjxwrMxPKc5NREx79MblAUFz2LwXzAqQNPXENXXS+6VQr2g7
+         y396nnOdGVSEONpvT9DpsATUyDfS0mfeSFflHO0K1FFfLghigK+87NAPTz49Wla08fPF
+         QuyXjxNJApp+waBt4A7ZJXd2G/6OrLXGytqnuqrs42L+FZxWmYu5RezsUMlF1LC+KudK
+         cB1Q==
+X-Gm-Message-State: AOJu0Ywdcjk9ouXMC8TO2zqWYgO3SZOb4u7rSXR7LOMP593Qv35avO97
+        p5BYi2xcnd+Ojx1+BpvteqD+NH9/RZwqtZyuBhog8Q==
+X-Google-Smtp-Source: AGHT+IH+ZEsxASbuHJbtYOaL4jiCGRwyq9SBYfbwVUTjbFILjWP+xu+p/05rzPYZrbX5Rmv6vLcEDwCgX13wDicyzFU=
+X-Received: by 2002:ac8:4e55:0:b0:40f:ec54:973 with SMTP id
+ e21-20020ac84e55000000b0040fec540973mr684272qtw.22.1692032301951; Mon, 14 Aug
+ 2023 09:58:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <CGME20230811105627epcas5p1aa1ef0e58bcd0fc05a072c8b40dcfb96@epcas5p1.samsung.com>
- <20230811105300.15889-1-nj.shetty@samsung.com> <2cc56fb5-ddba-b6d0-f66b-aa8fffa42af0@acm.org>
-In-Reply-To: <2cc56fb5-ddba-b6d0-f66b-aa8fffa42af0@acm.org>
-From:   Nitesh Shetty <nitheshshetty@gmail.com>
-Date:   Mon, 14 Aug 2023 22:25:54 +0530
-Message-ID: <CAOSviJ1b5ySAugzKExa_ZQgOzvQAOWB3D-ZRMQeGmNpQbaoBSQ@mail.gmail.com>
-Subject: Re: [dm-devel] [PATCH v14 00/11] Implement copy offload support
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Nitesh Shetty <nj.shetty@samsung.com>,
-        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        martin.petersen@oracle.com, linux-doc@vger.kernel.org,
-        gost.dev@samsung.com, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
-        mcgrof@kernel.org, dlemoal@kernel.org,
-        linux-fsdevel@vger.kernel.org
+References: <169199898909.1782217.10899362240465838600.stgit@dwillia2-xfh.jf.intel.com>
+ <169199900677.1782217.12516417657696965559.stgit@dwillia2-xfh.jf.intel.com>
+In-Reply-To: <169199900677.1782217.12516417657696965559.stgit@dwillia2-xfh.jf.intel.com>
+From:   Dionna Amalie Glaze <dionnaglaze@google.com>
+Date:   Mon, 14 Aug 2023 09:58:10 -0700
+Message-ID: <CAAH4kHbRkFdmdQyPHjOjnnyuYXPLT2GKmQTE8fU9aDFMtri8ew@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] virt: sevguest: Prep for kernel internal {get, get_ext}_report()
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-coco@lists.linux.dev, Borislav Petkov <bp@alien8.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, peterz@infradead.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,49 +71,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 12, 2023 at 3:42=E2=80=AFAM Bart Van Assche <bvanassche@acm.org=
-> wrote:
 >
-> On 8/11/23 03:52, Nitesh Shetty wrote:
-> > We achieve copy offload by sending 2 bio's with source and destination
-> > info and merge them to form a request. This request is sent to driver.
-> > So this design works only for request based storage drivers.
->
-> [ ... ]
->
-> > Overall series supports:
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> >       1. Driver
-> >               - NVMe Copy command (single NS, TP 4065), including suppo=
-rt
-> >               in nvme-target (for block and file back end).
-> >
-> >       2. Block layer
-> >               - Block-generic copy (REQ_OP_COPY_DST/SRC), operation wit=
-h
-> >                    interface accommodating two block-devs
-> >                  - Merging copy requests in request layer
-> >               - Emulation, for in-kernel user when offload is natively
-> >                  absent
-> >               - dm-linear support (for cases not requiring split)
-> >
-> >       3. User-interface
-> >               - copy_file_range
->
-> Is this sufficient? The combination of dm-crypt, dm-linear and the NVMe
-> driver is very common. What is the plan for supporting dm-crypt?
+>         switch (ioctl) {
+>         case SNP_GET_REPORT:
+> -               ret = get_report(snp_dev, &input);
+> +               ret = get_report(snp_dev, &input, SNP_UARG);
+>                 break;
+>         case SNP_GET_DERIVED_KEY:
+>                 ret = get_derived_key(snp_dev, &input);
+>                 break;
 
-Plan is to add offload support for other dm targets as part of subsequent
-series once current patchset merges, dm targets can use emulation to
-achieve the same at present.
+Do we have an agreement around the continued existence of sev-guest
+for supporting derived keys, is that similarly slated for the chopping
+block, or is it left undecided?
+It appears your choice to not include the uarg/karg extension here is
+deliberate.
 
-> Shouldn't bio splitting be supported for dm-linear?
-Handling split is tricky in this case, if we allow splitting, there is
-no easy way
-to match/merge different src/dst bio's. Once we have multi range support th=
-en
-we feel at least src bio's can be split. But this series split won't work.
+>         case SNP_GET_EXT_REPORT:
+> -               ret = get_ext_report(snp_dev, &input);
+> +               ret = get_ext_report(snp_dev, &input, SNP_UARG);
+>                 break;
+>         default:
+>                 break;
+>
 
-Thank you,
-Nitesh Shetty
+Reviewed-by: Dionna Glaze <dionnaglaze@google.com>
+
+-- 
+-Dionna Glaze, PhD (she/her)
