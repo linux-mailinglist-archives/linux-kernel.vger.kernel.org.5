@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F1A77B1B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 08:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E2477B1BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 08:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233316AbjHNGiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 02:38:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38680 "EHLO
+        id S233830AbjHNGi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 02:38:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231425AbjHNGiY (ORCPT
+        with ESMTP id S231376AbjHNGiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 14 Aug 2023 02:38:24 -0400
-Received: from relay05.th.seeweb.it (relay05.th.seeweb.it [IPv6:2001:4b7a:2000:18::166])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C110B5
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 23:38:21 -0700 (PDT)
+Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [5.144.164.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4C8C3;
+        Sun, 13 Aug 2023 23:38:21 -0700 (PDT)
 Received: from [192.168.2.137] (bband-dyn221.178-41-211.t-com.sk [178.41.211.221])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 8E21D3EBDB;
-        Mon, 14 Aug 2023 08:38:18 +0200 (CEST)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 262A13EBDC;
+        Mon, 14 Aug 2023 08:38:19 +0200 (CEST)
 From:   Martin Botka <martin.botka@somainline.org>
-Date:   Mon, 14 Aug 2023 08:38:10 +0200
-Subject: [PATCH v2 1/2] dt-bindings: nvmem: SID: Add binding for H616 SID
- controller
+Date:   Mon, 14 Aug 2023 08:38:11 +0200
+Subject: [PATCH v2 2/2] arm64: dts: allwinner: h616: Add SID controller
+ node
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230814-sid-h616-v2-1-0267749b4471@somainline.org>
+Message-Id: <20230814-sid-h616-v2-2-0267749b4471@somainline.org>
 References: <20230814-sid-h616-v2-0-0267749b4471@somainline.org>
 In-Reply-To: <20230814-sid-h616-v2-0-0267749b4471@somainline.org>
 To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
@@ -49,11 +49,11 @@ Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Konrad Dybcio <konrad.dybcio@somainline.org>,
         Martin Botka <martin.botka@somainline.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1691995097; l=826;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691995097; l=864;
  i=martin.botka@somainline.org; s=20230811; h=from:subject:message-id;
- bh=UNrJIzFYMiFBJT0dhRHON+UeOYIjcjf6t1SJcZFXSVI=;
- b=ogt8neio2NlBqyquNtpDHcrO+trwsum4Q9IP4AuAAlqA8oMqRLfK0KP/3FqVZKbdcBBBokQJd
- queD82Bz0ESCUzapwCXZpU/ww7LuboDpQx6oYKXtR0vRiPleQ1GT+8a
+ bh=q8Z3frbl92CnDSxzHRzs0CQF73K+Zv6PV4C5pSkxRc8=;
+ b=jRKm1OBlKfkJYm1mrQQkjhF+MB0uew5IbHFuh7QGVphZY7vhGXUBJBFTJVy67nzyv4WiFSjjM
+ 1TsBswmpDgYDYrWK4jzHeF9K6rukviQm3Xx54t6TXb6uOxX5+kYuwgZ
 X-Developer-Key: i=martin.botka@somainline.org; a=ed25519;
  pk=aTCd3jmwU8GrJidWg3DSKLpdVMcpFzXzCSLXLR6NtWU=
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -65,25 +65,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add binding for the SID controller found in H616 SoC
+Add node for the H616 SID controller
 
 Signed-off-by: Martin Botka <martin.botka@somainline.org>
 ---
- Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml b/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml
-index 296001e7f498..2ec0a1b8f803 100644
---- a/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml
-+++ b/Documentation/devicetree/bindings/nvmem/allwinner,sun4i-a10-sid.yaml
-@@ -27,6 +27,7 @@ properties:
-           - const: allwinner,sun50i-a64-sid
-       - const: allwinner,sun50i-h5-sid
-       - const: allwinner,sun50i-h6-sid
-+      - const: allwinner,sun50i-h616-sid
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
+index 74aed0d232a9..d549d277d972 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
+@@ -133,6 +133,13 @@ ccu: clock@3001000 {
+ 			#reset-cells = <1>;
+ 		};
  
-   reg:
-     maxItems: 1
++		sid: efuse@3006000 {
++			compatible = "allwinner,sun50i-h616-sid", "allwinner,sun50i-a64-sid";
++			reg = <0x03006000 0x1000>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++		};
++
+ 		watchdog: watchdog@30090a0 {
+ 			compatible = "allwinner,sun50i-h616-wdt",
+ 				     "allwinner,sun6i-a31-wdt";
 
 -- 
 2.41.0
