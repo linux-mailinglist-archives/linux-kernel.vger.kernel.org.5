@@ -2,306 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A12F77AF88
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 04:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC0777AF91
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 04:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232452AbjHNC3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 22:29:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59926 "EHLO
+        id S232492AbjHNCeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 22:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231848AbjHNC3G (ORCPT
+        with ESMTP id S232041AbjHNCdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 22:29:06 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55AC18F;
-        Sun, 13 Aug 2023 19:29:04 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-522dd6b6438so4760771a12.0;
-        Sun, 13 Aug 2023 19:29:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691980143; x=1692584943;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yvpYYiAYu1ac8b8p2kq6uk7MdUFJjCnkQ744MsBnp7Y=;
-        b=f2HyYn6/frOnX4Q8/+GhKmfLA4Ha2vgMQJ4j6wDTj4o2dHAOxWt08DLIdh/RJjW3gz
-         xN6zjeR2XOvf0tdfXSAVxQ0pXwEC+1jQ/x+WW5LemZddrdBHz6Y5unLGAFH+TmP3dbQe
-         6kQQBWGCi4xQp5FrdeMboe+tkOt7eyaoYXZTTswQrAidDtU4o0lAVHBmg11T3h+xFhKC
-         10Je9oLVKFBAdqASntzqK3eW3sSea6XtWJvMh6O59kJfMBBmP8zpgsDPBYgEq2HMfjJQ
-         zE/Ma9mIKePqd2AB095cyvBD0KWCMaqS1QvawFHah/8RIgRwCWCHHIdt4xYyARbM90aY
-         Ez4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691980143; x=1692584943;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yvpYYiAYu1ac8b8p2kq6uk7MdUFJjCnkQ744MsBnp7Y=;
-        b=lLv82SrAT0w40xib3KXuTIDZ05D78jPc8Oa1myjrIb4w21DVxpOx7lyVyyAhWlEV+k
-         TI8ypjEfjeSpgo1QeSWZpjeMvq5NV1D7Q0sC1Wmn98CyEeRNfFM8RfgKbN0j5kKx3/mK
-         i4zoTRUywyd6g6rCJWtcdldZXL/5DKlCM2tdbE+pnS8iCduTI9BP0H4QpkLg2KMnqOK3
-         kPJIQTP7ayeGjpurjDzO1rkSSEnYunzfU2UwHHY0Wbzjax4azL8nCOAue9gcAGQbdhK8
-         V/aevVmbdIsj6g+OXrvdyzZ35ec0UiImtoXAMvGNl6EA+Dwws9/+i3RvOkXtRa7CWKN6
-         bu7w==
-X-Gm-Message-State: AOJu0Yy+XBuTU82y6u/6l3TAfFB0zXFkEDD8ED2SWX6YqRC16Ani7MX6
-        12nDLxZ2PQE7YSRMqWpKvqTDej/xQYofpek6h503SVVvZxOWtg==
-X-Google-Smtp-Source: AGHT+IHUsz7OSC6723JEBZPfbvLjnYW+ZxHERoC0DSuaibary1V55BQ41fqJ5z4xjmZncaGm0oaM5x0cAD239BXKDIU=
-X-Received: by 2002:a05:6402:799:b0:523:2847:fb5a with SMTP id
- d25-20020a056402079900b005232847fb5amr5070264edy.40.1691980142883; Sun, 13
- Aug 2023 19:29:02 -0700 (PDT)
+        Sun, 13 Aug 2023 22:33:43 -0400
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2137.outbound.protection.outlook.com [40.107.249.137])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1DCAE5C;
+        Sun, 13 Aug 2023 19:33:40 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fDEY3eKgaJDp6DaV0JjsgttMqHFQxm2YDBt2QUznpAyd7tjw/0TRpowAGp9JNJDGtvkFQQd3LnlFFxz5NYXZRzsMj9mpYYhJP+XycYHSO/OHGX0FDd9f0NrB82xTUGa8G+mS/ZwytVFp7O6CMIQpwcDGnQHT3S+Gn78HU2UOEm/MggT+EWei08LyWrOpIrkMQb957kX4ETk74AFegvux4uNFYcKyhhxMjzrHeC/WXbHvLuEuq1h5hEZYlMw6Z8VtOKHpzfh5NjTz+6KPX5SYdwWlafJ0UqN8bk9w8e769UfkIT/JLFdAC+GuEbgVLZobVIbbFD+2jTGxscyupWVDNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BjkszKRacM11YlIxhmX/KT0erpTPSiRH3AqZG33Pneg=;
+ b=b0U300LJCC6bYZmsE2o9ktATzho41kElsW+EEr7ziRgIP+TyGr7//CEZqsSZ92AVLJ3X2hYJHxEPHUZE1ljYFhS3JwWF6o7TvJCSNgnRW1NyL7d9d/8YtYUBh0vqgHOoOT3CWAbG7N8I48qu4hJyxMtQMuRBlPR/khCAxfInR9U6jB2JmWuxjGBuoCrc51rI2rHdzCIykEm0zN3dYAfLdoohBjEcjEyMSi70B2uHhlL/EB5P98z3A5lMhRx1x+4zcm2iyjXLcl2fnJn76PSVSGN3rIu3PGi4OxKEf0174VQ4EagdRxSMF3m39DZ0tr5xN7St/yiDYQDHAJtprqQoog==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=uclouvain.be; dmarc=pass action=none header.from=uclouvain.be;
+ dkim=pass header.d=uclouvain.be; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uclouvain.be;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BjkszKRacM11YlIxhmX/KT0erpTPSiRH3AqZG33Pneg=;
+ b=PxXDYS2ziF0neeun0STeNxDlBXH3iCZwug234jhmDos3tiloUM9IVfTe1o3hFGuzQIAIIfppAOX4CoFfkGk3oRsv2wi+ZOjwFKbjCESG9RhU63JdF2ygHFNMUjticMaNua1tzrD0BlI6dAkH80EH4VNH6C5Qcg/zUIRX3lSsg0DONc0Liwirn+wTL9mFV9nsUO4Eb+IpQBozc7zB+VZv1pD316CSZV5E9KufnW39ROGmC0CAcD/JBHwTsKTbMvzsncEPL2t/6d78b/hi4BXnfR3TQzWuFIwPfD1XjbXIf65JloVf227wnEH9EkeB8Rh2sP7TBlN3JKS9n/UWgkynDg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=uclouvain.be;
+Received: from DB9PR03MB7689.eurprd03.prod.outlook.com (2603:10a6:10:2c2::11)
+ by AM7PR03MB6401.eurprd03.prod.outlook.com (2603:10a6:20b:1c3::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.24; Mon, 14 Aug
+ 2023 02:33:38 +0000
+Received: from DB9PR03MB7689.eurprd03.prod.outlook.com
+ ([fe80::8303:13bd:7736:34cf]) by DB9PR03MB7689.eurprd03.prod.outlook.com
+ ([fe80::8303:13bd:7736:34cf%4]) with mapi id 15.20.6678.022; Mon, 14 Aug 2023
+ 02:33:38 +0000
+From:   Francois Michel <francois.michel@uclouvain.be>
+Cc:     Francois Michel <francois.michel@uclouvain.be>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/3] netem: allow using seeded PRNG for loss and corruption events
+Date:   Mon, 14 Aug 2023 04:31:37 +0200
+Message-ID: <20230814023147.1389074-1-francois.michel@uclouvain.be>
+X-Mailer: git-send-email 2.41.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MR1P264CA0034.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:501:2f::21) To DB9PR03MB7689.eurprd03.prod.outlook.com
+ (2603:10a6:10:2c2::11)
 MIME-Version: 1.0
-References: <20230803234122.19b3d3a4@rorschach.local.home> <20230810055023.67529-2-zegao@tencent.com>
- <20230811132811.28b9b766@gandalf.local.home>
-In-Reply-To: <20230811132811.28b9b766@gandalf.local.home>
-From:   Ze Gao <zegao2021@gmail.com>
-Date:   Mon, 14 Aug 2023 10:28:51 +0800
-Message-ID: <CAD8CoPDqZrd2HOUCVkrOq9JgJEQwQnqBn9zD1A3M4aKLZ4mLvg@mail.gmail.com>
-Subject: Re: [PATCH] perf sched: parse task state from tracepoint print format
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     acme@kernel.org, adrian.hunter@intel.com,
-        alexander.shishkin@linux.intel.com, irogers@google.com,
-        jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, mark.rutland@arm.com,
-        mhiramat@kernel.org, mingo@redhat.com, namhyung@kernel.org,
-        peterz@infradead.org, zegao@tencent.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB9PR03MB7689:EE_|AM7PR03MB6401:EE_
+X-MS-Office365-Filtering-Correlation-Id: ef8fb7e4-dff4-4e94-c830-08db9c6edd6a
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SNWBtmy6OfKUju1PDeRhfMfToDYLQGF+jEbW4PTz1pma8PZp24CGy9yo4HDdwiZB7DE/VUG0IjkuXRGcuTIUDOZTuv3rulqulrXIaZVeyun6Y0DqwyjUUML2H3mdTmxyBEv6G9cvWUfNz9RSlgvFEkEkSl9vU8rklhwfwCLYckskyKbSHs4uzSRoMcmtls6wC0wULzlBMmyZJwnZhrQB5W+DIih0Id4b3ZcMY8GVEo+GRW+nYKbHVEjJ1B33kDpbYrBfZXSXg2X64KLHmhorASGyR2Rl6r8BXnVr+cyyHjdsMDdQUisnKC5hrcKtxVOolsTsde5DLr365jLir95rCUYJgUswIHR8QEDynodwafkrhzeVjnuapyTz7jVncLEvdv73EnZ0zXaOnpgxRP6fTNYDoVz94A3HMBIOFlKCKJ3N/BupFfeWmNAnkK66++9ajZVuVpl5pGbj5BKBMtaLhg7g5Rj15unnj81Mxcn/i62LCyH5M3718I8z7YDiE/O0J9+thSP9xc6rGCNXtwPlZu5ufpSvy50ebjrRsgJ42Faymxfb4E/UD22QFtT+UbAWzlQhXrZVjV0nkNlKYok2pulI+BwVLstAk0jAi+wDFA8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR03MB7689.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(346002)(39850400004)(396003)(366004)(376002)(109986019)(451199021)(186006)(1800799006)(38100700002)(52116002)(54906003)(6486002)(478600001)(7416002)(5660300002)(2906002)(36756003)(86362001)(44832011)(4326008)(66476007)(66556008)(66946007)(41300700001)(8936002)(316002)(786003)(8676002)(83380400001)(66574015)(2616005)(6506007)(1076003)(6512007)(266003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UnZjQ0RYeXhaTFBaWlByYWUyMXZ5V1ZkRzh4TnhOU1VaOC9EV1FQMGlmNWlH?=
+ =?utf-8?B?Z3RYMW4ydS9iMG1STzhCZW1RNFBCaEhRMDRsdVhGMFZCMFVndVJkRWQ5REMx?=
+ =?utf-8?B?VXZkWDVHYkRlNGtia2dtL0lIRHJHbDJaSWtLRGNYSjYyZTZIVFZpRm1RZFRE?=
+ =?utf-8?B?eURRYlBBcUdtRjdoNGdaOHAyVHRHRjRLSTNzamxVN0hSY081OHNEbXhyWHlp?=
+ =?utf-8?B?VnpVTlovNUppK2JwMWo1RVNnaS9wYWhvYnpXUWp0VkFmZXlvWS9Tc0tXeVl2?=
+ =?utf-8?B?VU5KSVJMSDFpYW9rQmZTZ2ZQNU9Bc05jcUl3b3M2RUJQaitWbUljVytNODhU?=
+ =?utf-8?B?SklPUjU3cUF0UHozbXVzcUxpT1Z6N2dTcFlXdXE5QnJjSFQxSVN4ZFJQQ3dT?=
+ =?utf-8?B?RVM3K20zY09QT1JhV3ByRC80VWZFTGswQzNRZjBDRUxPYzZtdVJrYjFlOWFU?=
+ =?utf-8?B?S3FiVjZvTEdkc1NIUFYwNWdGV1RKZzhlTGtlZytGK2MzSUVydnFyVmtYTlVP?=
+ =?utf-8?B?Vk1BTHBnaWZRc1BWRk5zb0loK0NvRDZrUWgvUXhQOERXNDhrY1BlZElOeGEz?=
+ =?utf-8?B?OGZTbjFTVlBtMFJWZFY5a3JaWWNBTmpwblk0dS9vKytTT05nQkRvbW5abDh3?=
+ =?utf-8?B?ZEZzY3lSTk52TkZVZG1Td0lvbDZpUUNhUHA1ZVFQWUpJbTdPSHc3c2kxWVRW?=
+ =?utf-8?B?ZzBBTjJlcUF4aUdocTNub2lTSDE5cUZmMlpDTjlYTDFEQlNUZERzWDdsM0Vw?=
+ =?utf-8?B?VWRkYStHYk5Bb1Vyc0E5Vnk0T1BzNDYzanBrb3pJM1E4MXVOdVR3QTQ4dUNM?=
+ =?utf-8?B?WnRnVFUxZllydzI1Z2JyVUhqa013MURFb1U4K0J5SDRLN1ZYbHdhdDRJdklt?=
+ =?utf-8?B?YmxxZHIwb1JRak9aKzVMV3RTa0RhZWQxaXltSXprVmRtczZ1V2E3R3dkc1Zi?=
+ =?utf-8?B?NHhjRXJmRm5kczJZdzRtUDJwdDhlNjRKZ3kwNHRaNVZHNXdMQnBNbDlOYVNP?=
+ =?utf-8?B?cVdNVkZNalNlb0ltTnRUMGFEWmExbGJrVkFPZE1SMlc1WjVsN0c2NHVGajdB?=
+ =?utf-8?B?MU14OUVnWnRGcFpQbXVndVh1K1lyTnFkRnd4WUF5RE9KOHBwb2s3YzlUc3dS?=
+ =?utf-8?B?Qk9ieXFXZm5mSDNaRXhVSk5YUCtwK2xaTG5uZ2Z3ZHovRm4zd2lvMm15NHhy?=
+ =?utf-8?B?QzhuRmdiQlVvbkhueGx0N1VRcHZYdURabm4ybWJva2ZEMGhTQkh5T09lck11?=
+ =?utf-8?B?QVdHZ2pGamQ3NjUxYk1id3Q2cGN2eENXYlJkV2VHcGM2b3p3czl5MHUvcHFn?=
+ =?utf-8?B?R1VoMWcxbW0wWkpZcFdoQjA1azhGQWVlREZxTzduZFhMc3NjWHlybEw0ckdz?=
+ =?utf-8?B?ZmQxYmNvQ0lIOGhwclhGclJ0YnhRVGc1MGhmRVJuc1BuQno0QTZ0WCtRTXgx?=
+ =?utf-8?B?MVMva00zc3JZMk9kaHJzZml0d0VOYlVKajE4VnZHVmtxK1doV1NCbTJINE1M?=
+ =?utf-8?B?enFMZlJFZkVjU2N3NWc5dEI2RlduYkxCZzEza2ZMSTBrM0RudjdHSHZ3ejVn?=
+ =?utf-8?B?QkI0TlJhVHRHdGVldTFSUE9WMUtFZVl6MVdzNjZFdFA3VklieHRzclJ1NDhU?=
+ =?utf-8?B?TGRqVXhEVS9RUFVnczVyV2lHdzBSUDRpMG4rNjUxb2JvVHBVTmdnNVBhbFha?=
+ =?utf-8?B?Nnh1WEdPWk5uVXNQSVRRK25OYzEyeDJzMzlWY1N4RFlnTlBUWHlrcEFxek1h?=
+ =?utf-8?B?WGNKVmZQQXdBQjVHM3pZbC9Lc3c2NXI2MTNvUGk1Q3pmM20zNG5Na05mT3ZS?=
+ =?utf-8?B?WEg2aTR0cVluclhnb2F6aFRaL29IanEvbGZqRUdYOEppQ1grYjNUV2ZURWZK?=
+ =?utf-8?B?Z2E2Mk8ydlVGWGVxSGtlTGYycXo2VStnQTk0RjI3dEpOWTVUcUdZdnNjZDFj?=
+ =?utf-8?B?dkcyeHVoeTdsTlhjUDZlYzdVT2RvRnBvWnA2cTQ5RWJ0YVFUR04xcDFsdGFX?=
+ =?utf-8?B?ZFhleEFWV09Melp6K1pUWTJLb09tdEFuZU1lNzF1RGlPRUVvL3I5K1JsWmJz?=
+ =?utf-8?B?SXlrVXhPZTFXRkpiVGs0dzhQNWlvMnROWXVrWFV0Wk9ONnRMY2g5S2FlUE5x?=
+ =?utf-8?B?b1JJcnRKN25LcWpqcnk5d0h2bVFKcDVJR0E3MUpUQjFMZXdNRklVM29BMkht?=
+ =?utf-8?Q?sTpREaFCV95/NvjGc+z8ktmW4lix+Y6VZ7ig1c2w7uCW?=
+X-OriginatorOrg: uclouvain.be
+X-MS-Exchange-CrossTenant-Network-Message-Id: ef8fb7e4-dff4-4e94-c830-08db9c6edd6a
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR03MB7689.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 02:33:37.9953
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 7ab090d4-fa2e-4ecf-bc7c-4127b4d582ec
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Q9ZXN0f9WvAXhyg1LookQ7AeO+EyDqoq4KKvraYIerY0Shxf9ZngU60rHk3MTGVh3Iwn6jLbl0JLsfBECvTDV9YLjMGY9Z8eZ2mW7sK4EF0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR03MB6401
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 12, 2023 at 1:28=E2=80=AFAM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
->
-> On Thu, 10 Aug 2023 01:50:24 -0400
-> Ze Gao <zegao2021@gmail.com> wrote:
->
-> > Hi Steven,
-> >
-> > I managed to build task state char map dynamically by parsing
-> > the tracepoint print format from data recorded by perf. And
-> > likewise for libtraceevent.
-> >
-> > FYI, I tried TEP_PRINT_INFO but no shot. It turns out TEP_PRINT_INFO
-> > stills relies on libtraceevent (i.e., sched_switch_handler() in
-> > plugin_sched_switch.c) and we need to parse the print format on our own=
-.
->
-> There is a way to unload plugins:
->
->         tep_unload_plugins(t->plugin_list, tep);
->
-> Hmm, I should add:
->
->         tep_unload_plugin(tep, t->plugin_list, "plugin-name");
->
-> To unload a single plugin.
->
-> I it can also just override what the plugin does by calling:
->
-> static int sched_switch_handler(struct trace_seq *s,
->                                 struct tep_record *record,
->                                 struct tep_event *event, void *context)
-> {
->         // do whatever you want.
-> }
->
->         tep_register_event_handler(tep, -1, "sched", "sched_switch",
->                                    sched_switch_handler, NULL);
->
-Yes,  I chose to fix libtraceevent in a similar way, to not break
-users of this plugin,
-like perf script, I decided to build state char mapping dynamically
-for both instead
-of overriding sched_switch_handler in libtraceevent. Here is the patch:
+From: François Michel <francois.michel@uclouvain.be>
 
-From e4fae23d9538e60e75a9776fa7938102e7c26bbb Mon Sep 17 00:00:00 2001
-From: Ze Gao <zegao@tencent.com>
-Date: Wed, 2 Aug 2023 07:20:46 -0400
-Subject: [PATCH] libtraceevent: parse task state from tracepoint print form=
-at
+In order to reproduce bugs or performance evaluation of
+network protocols and applications, it is useful to have
+reproducible test suites and tools. This patch adds
+a way to specify a PRNG seed for generating netem
+loss and corruption events. Initializing the qdisc
+with the same seed leads to the exact same loss
+and corruption patterns. If no seed is specified, the 
+qdisc adopts the classical behaviour, i.e. using the
+unseeded get_random_u32() for generating these events.
 
-As of this writing, we use prev_state to report task state, which
-relies on both the task state macros and TASK_STATE_TO_CHAR_STR
-copied from the kernel to interpret its actual meaning. In this way,
-libtraceevent gets broken literally each time TASK_STATE_TO_CHAR_STR
-changes as the kernel evolves. Counting on hardcoded
-TASK_STATE_TO_CHAR_STR gurantees no backward compatibilty.
+This patch can be and has been tested using tc from
+the following iproute2-next fork:
+git@github.com:francoismichel/iproute2-next.git
 
-To fix this, we build the state char map from the print format
-parsed from date recorded on the fly and removes dependencies on
-these internal kernel definitions.
+For instance, setting the seed 42424242 on the loopback
+with a loss rate of 10% will systematically drop the 5th,
+12th and 24th packet when sending 25 packets.
 
-Signed-off-by: Ze Gao <zegao@tencent.com>
----
- plugins/plugin_sched_switch.c | 103 ++++++++++++++++++++++++++++------
- 1 file changed, 87 insertions(+), 16 deletions(-)
+François Michel (3):
+  netem: add prng attribute to netem_sched_data
+  netem: allow using a seeded PRNG for generating random losses
+  netem: allow using seeded PRNG for correlated loss events
 
-diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
-index 8752cae..a0df138 100644
---- a/plugins/plugin_sched_switch.c
-+++ b/plugins/plugin_sched_switch.c
-@@ -6,28 +6,25 @@
- #include <stdlib.h>
- #include <string.h>
+ include/uapi/linux/pkt_sched.h |  1 +
+ net/sched/sch_netem.c          | 62 ++++++++++++++++++++++++++--------
+ 2 files changed, 48 insertions(+), 15 deletions(-)
 
-+#include "event-utils.h"
- #include "event-parse.h"
- #include "trace-seq.h"
 
--static void write_state(struct trace_seq *s, int val)
--{
--       const char states[] =3D "SDTtZXxW";
--       int found =3D 0;
--       int i;
-+#define TASK_STATE_MAX 16
-
--       for (i =3D 0; i < (sizeof(states) - 1); i++) {
--               if (!(val & (1 << i)))
--                       continue;
-+static char state_to_char[TASK_STATE_MAX];
-+static unsigned int num_sleeping_states =3D 0;
-
--               if (found)
--                       trace_seq_putc(s, '|');
-
--               found =3D 1;
--               trace_seq_putc(s, states[i]);
--       }
-+static void write_state(struct trace_seq *s, int val)
-+{
-+       unsigned int bit =3D val ? ffs(val) : 0;
-+       char state;
-
--       if (!found)
--               trace_seq_putc(s, 'R');
-+       state =3D (!bit || bit > num_sleeping_states) ? 'R' : state_to_char=
-[bit];
-+       trace_seq_putc(s, state);
-+       if(bit > num_sleeping_states)
-+               trace_seq_putc(s, '+');
- }
-
- static void write_and_save_comm(struct tep_format_field *field,
-@@ -79,6 +76,76 @@ static int sched_wakeup_handler(struct trace_seq *s,
-        return 0;
- }
-
-+static const struct tep_print_arg* task_state_print_flag(const struct
-tep_event *event) {
-+
-+       struct tep_print_arg* args;
-+
-+       if (!event)
-+               goto out;
-+
-+       args =3D event->print_fmt.args;
-+       while(args)
-+       {
-+               if (args->type =3D=3D TEP_PRINT_FLAGS)
-+                       return args;
-+               if (args->type =3D=3D TEP_PRINT_OP) {
-+                       args =3D args->op.right;
-+                       args =3D args->op.left;
-+                       continue;
-+               }
-+               args =3D args->next;
-+       }
-+out:
-+       return NULL;
-+}
-+
-+static int parse_task_state_arr(const char *value, const char *str)
-+{
-+       long val;
-+       unsigned int bit;
-+
-+       if (!value || !str)
-+               return -1;
-+
-+       val =3D strtol(value, NULL, 0);
-+       bit =3D val ? ffs(val) : 0;
-+       state_to_char[bit] =3D str[0];
-+       num_sleeping_states++;
-+       if (num_sleeping_states > TASK_STATE_MAX - 1) {
-+               tep_warning("too many states parsed, possibly bad format\n"=
-);
-+               return -1;
-+       }
-+       return 0;
-+}
-+
-+static void parse_print_flag(const struct tep_print_flag_sym* field,
-+                            int (*parser)(const char *value, const char *s=
-tr))
-+{
-+       int err;
-+
-+       if (!field || !parser)
-+               return;
-+       err =3D parser(field->value, field->str);
-+       if (err){
-+               tep_warning("parsing print flag failed, possibly bad format=
-\n");
-+               return;
-+       }
-+       if (field->next)
-+               parse_print_flag(field->next, parser);
-+
-+}
-+
-+static void build_task_state_arr(const struct tep_event *event)
-+{
-+       const struct tep_print_arg* args;
-+
-+       args =3D task_state_print_flag(event);
-+       if (!args)
-+               tep_warning("print flag not found, possibly bad format\n");
-+       else
-+               parse_print_flag(args->flags.flags, parse_task_state_arr);
-+}
-+
- static int sched_switch_handler(struct trace_seq *s,
-                                struct tep_record *record,
-                                struct tep_event *event, void *context)
-@@ -99,8 +166,12 @@ static int sched_switch_handler(struct trace_seq *s,
-        if (tep_get_field_val(s, event, "prev_prio", record, &val, 1) =3D=
-=3D 0)
-                trace_seq_printf(s, "[%d] ", (int) val);
-
--       if (tep_get_field_val(s,  event, "prev_state", record, &val, 1) =3D=
-=3D 0)
-+
-+       if (tep_get_field_val(s,  event, "prev_state", record, &val, 1) =3D=
-=3D 0) {
-+               if (!num_sleeping_states)
-+                       build_task_state_arr(event);
-                write_state(s, val);
-+       }
-
-        trace_seq_puts(s, " =3D=3D> ");
-
---
+base-commit: f614a29d6ca6962139b0eb36b985e3dda80258a6
+-- 
 2.41.0
 
-
-
-> > Anyway, it works now and I've tested on some perf.data in old formats
-> > but not cover all the kernel releases.
-> >
-> > Thoughts?
->
-> I don't maintain the perf code. You'll have to talk with the perf
-> maintainers.
-
-Roger that! Thank you very much!
-
-Regards,
-Ze
-
-> -- Steve
