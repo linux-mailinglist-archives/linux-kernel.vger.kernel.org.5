@@ -2,112 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D46777B8C6
+	by mail.lfdr.de (Postfix) with ESMTP id 6694E77B8C7
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbjHNMhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 08:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48186 "EHLO
+        id S229954AbjHNMhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 08:37:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbjHNMhK (ORCPT
+        with ESMTP id S230063AbjHNMhW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 08:37:10 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D41AE5B;
-        Mon, 14 Aug 2023 05:37:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1692016627;
-        bh=sJ1XfdJ8koVOpLPFh5lgGOWx8nQ+9eqY27+qcXXvzaM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=AyQtOYZ0fJ2oyt3zcRf92PdYESgUvJqcbG7m4mh6cpaXYGCmf5P0Wli7vr8PB3Ybw
-         5g8Uvmu+S0YIo2KQMSTHPdjnod3sCd3Lbs8Ao2exiIqAq7fcy3/nrvCr48CdTGqXRw
-         qMbFT6gCgpljE4unS9Hsb4k1rhL76Qb/7Cuu3lbgE0Dz7LzfA8gWTDTXEHkolTVPSN
-         4HX9tj+fsr50VXJ6nAAsPLbTSAPM28CxTHpp3aC1fe5A1YxZY7CW1Xv9hToSYy386C
-         1fqMx1xtKpA9oAaE/nww8WtYJwEyZzDEmZsIy7Y/EPVNyANuZ2jlMumSFYoAWgM/vS
-         DwlQminVcd0Jw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Mon, 14 Aug 2023 08:37:22 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D203E4A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:37:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=VmbUR9tUP0TcTP+lPR92EBnfGUDP6/2qUwJVhdNUHNs=; b=rHFIPdQCNKT6dKcmT7hnfDKxtb
+        sPjTomS5yXHNPdbBfSsv5p8eanIcFFMpdZq7KX3YDJ59RXoZnrzTIGxaMA9ANElpW8vXRKMlIVoAa
+        XbOhpWp3ahvz2WGghZT8eOGC9Q+8Jj/rmIddaEoVUAa9ZlU+mmDKWxqCJ/VEc3VB9X6FxdoxVUrqF
+        ELBfU9SvyTd5PxUEyJfLDlIFys74+ljtqn/vSPAe6iZPSMMBkoQjr6iFyBZbK1F1656opUQ+YQqBa
+        uo9QnijZnqZsDjDKt3a2FDlh6448YhQiXYhToSI8in7gOdWOVL2tNDbGKLRMB9stgVdCYuZZTzChu
+        2Ep/8muA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qVWor-00Aac3-2R;
+        Mon, 14 Aug 2023 12:37:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RPYnH5xwHz4wZJ;
-        Mon, 14 Aug 2023 22:37:07 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH] powerpc: Make virt_to_pfn() a static inline
-In-Reply-To: <20230809-virt-to-phys-powerpc-v1-1-12e912a7d439@linaro.org>
-References: <20230809-virt-to-phys-powerpc-v1-1-12e912a7d439@linaro.org>
-Date:   Mon, 14 Aug 2023 22:37:07 +1000
-Message-ID: <87a5uter64.fsf@mail.lhotse>
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6946F300137;
+        Mon, 14 Aug 2023 14:37:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 51F0420C1700F; Mon, 14 Aug 2023 14:37:13 +0200 (CEST)
+Date:   Mon, 14 Aug 2023 14:37:13 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        x86@kernel.org
+Subject: Re: [regression/bisected] Add IBPB decreases performance in two times
+Message-ID: <20230814123713.GI776869@hirez.programming.kicks-ass.net>
+References: <CABXGCsNTaNw3q1OciYq111vdr+-ouaRVmwVqVJH4iT0NqxFAcQ@mail.gmail.com>
+ <20230813082413.GAZNiTLaOxUNUHPvlf@fat_crate.local>
+ <CABXGCsNoNaGLsuvHLRA7aG9FCckQpnXaXWoUGvRwzfRKNB4xzA@mail.gmail.com>
+ <20230813093502.GBZNijxgueFxBTxWwG@fat_crate.local>
+ <CABXGCsMrNz2SPYN=zLZTT7jU4axSi-XLm4bTm7K3NuWnc=yr9g@mail.gmail.com>
+ <20230813111425.GEZNi7EXyHOLQTNzFg@fat_crate.local>
+ <CABXGCsO5=tEB29apcnPRF92yLQR-LD--vSGYPfLWAm0Z+++HRw@mail.gmail.com>
+ <20230813141945.GFZNjmgZbHvMhLYtJl@fat_crate.local>
+ <CABXGCsNSZD8GG1ZbpeNg54rjnsa9HQ3MumTgprLo8n5WE2VCoQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABXGCsNSZD8GG1ZbpeNg54rjnsa9HQ3MumTgprLo8n5WE2VCoQ@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Walleij <linus.walleij@linaro.org> writes:
-> Making virt_to_pfn() a static inline taking a strongly typed
-> (const void *) makes the contract of a passing a pointer of that
-> type to the function explicit and exposes any misuse of the
-> macro virt_to_pfn() acting polymorphic and accepting many types
-> such as (void *), (unitptr_t) or (unsigned long) as arguments
-> without warnings.
-...
-> diff --git a/arch/powerpc/include/asm/page.h b/arch/powerpc/include/asm/page.h
-> index f2b6bf5687d0..9ee4b6d4a82a 100644
-> --- a/arch/powerpc/include/asm/page.h
-> +++ b/arch/powerpc/include/asm/page.h
-> @@ -9,6 +9,7 @@
->  #ifndef __ASSEMBLY__
->  #include <linux/types.h>
->  #include <linux/kernel.h>
-> +#include <linux/bug.h>
->  #else
->  #include <asm/types.h>
->  #endif
-> @@ -119,16 +120,6 @@ extern long long virt_phys_offset;
->  #define ARCH_PFN_OFFSET		((unsigned long)(MEMORY_START >> PAGE_SHIFT))
->  #endif
->  
-> -#define virt_to_pfn(kaddr)	(__pa(kaddr) >> PAGE_SHIFT)
-> -#define virt_to_page(kaddr)	pfn_to_page(virt_to_pfn(kaddr))
-> -#define pfn_to_kaddr(pfn)	__va((pfn) << PAGE_SHIFT)
-> -
-> -#define virt_addr_valid(vaddr)	({					\
-> -	unsigned long _addr = (unsigned long)vaddr;			\
-> -	_addr >= PAGE_OFFSET && _addr < (unsigned long)high_memory &&	\
-> -	pfn_valid(virt_to_pfn(_addr));					\
-> -})
-> -
->  /*
->   * On Book-E parts we need __va to parse the device tree and we can't
->   * determine MEMORY_START until then.  However we can determine PHYSICAL_START
-> @@ -233,6 +224,25 @@ extern long long virt_phys_offset;
->  #endif
->  #endif
->  
-> +#ifndef __ASSEMBLY__
-> +static inline unsigned long virt_to_pfn(const void *kaddr)
-> +{
-> +	return __pa(kaddr) >> PAGE_SHIFT;
-> +}
-> +
-> +static inline const void *pfn_to_kaddr(unsigned long pfn)
-> +{
-> +	return (const void *)(((unsigned long)__va(pfn)) << PAGE_SHIFT);
+On Mon, Aug 14, 2023 at 03:30:51AM +0500, Mikhail Gavrilov wrote:
+> On Sun, Aug 13, 2023 at 7:19 PM Borislav Petkov <bp@alien8.de> wrote:
+> > Nah, most people search the net and usually find the documentation, as
+> > past experience shows. In this case, they will find:
+> >
+> > https://kernel.org/doc/html/latest/admin-guide/hw-vuln/srso.html
+> >
+> > It will be there next week but here's the source:
+> >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/admin-guide/hw-vuln/srso.rst
+> >
+> > --
+> > Regards/Gruss,
+> >     Boris.
+> >
+> > https://people.kernel.org/tglx/notes-about-netiquette
+> 
+> I am figure out why I noticed lage impact of safe RET on my system.
+> safe-ret + KASAN = decrease performance for 50% in all scenarios
+> I use KASAN on a daily basis to catch bugs.
+> Is it possible for systems with KASAN to make a more optimal approach of SRSO?
 
-Any reason to do it this way rather than:
-
-+       return __va(pfn << PAGE_SHIFT);
-
-Seems to be equivalent and much cleaner?
-
-cheers
+Why do you care about speculation things on a dev box?
