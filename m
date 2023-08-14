@@ -2,159 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B5677BF51
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 19:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4D477BF56
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 19:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbjHNRwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 13:52:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
+        id S231428AbjHNRwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 13:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231688AbjHNRv6 (ORCPT
+        with ESMTP id S231356AbjHNRwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 13:51:58 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E82894
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 10:51:58 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3a76cbd4bbfso4367771b6e.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 10:51:58 -0700 (PDT)
+        Mon, 14 Aug 2023 13:52:07 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935CF124
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 10:52:06 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-4103393a459so30873001cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 10:52:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692035517; x=1692640317;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HIBMc1Pc73jtTeqexlKEiDPeJffujSakc49ekoQBfEw=;
-        b=X0GzjxNkFGdsC2FAJ0D0BeFPlg+0QkEZzweKtNqg/6IpcR6A5qVnbDZ7ykD+TV3iNd
-         DxOGLsXpcrRQqI4uqKBxBkK9mSnlO6Jem1upRzZgaHX3y1iV+bxfijkDp3c3Ls0OAwLa
-         eNPNIzbaoXxiOBRP1V7ZHkBkR4GRqhiHoH6T4QOG65szHCi4+0FSal6iGsbR2yUJhaW7
-         V3R+9sQu5AiPrdrnx9LhOA4jVUHS1cGOpH0IsVHGw/JZnr1eUsjyMJdu3o0atm2j1fEE
-         z7SYvdSF3cpcUxyJ0jYj/DIbea7BtKhumoYnhgsi9uWasa9UmcNzRSvRpdCu0J1gWvuq
-         PwiA==
+        d=ziepe.ca; s=google; t=1692035525; x=1692640325;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=t1hvwKn0H2/PSZbR/GuIJU8CyNs4zCnJXFN0bPnDDdo=;
+        b=WqkPJVkEzuJiuWpVE0xvrcozBY6JRrVXbB15phXMk0uV2pBPmu5MxooBqyy4BoTlZe
+         F1guXaemacE9gvxE2gszsGmpQ0/9y+xXNY8lmigpX73Ev797+3wjgFcciGhpUIrhtg5a
+         EdsWWn5R0nyka0voliDSW35s6leLT93sIhtjsfMZKBH+bW48AMzarHiVDi/dMd4W9c+N
+         ZFXbBCt7swL8urtEBQLlIpm/qmW3nEYHGPamzgpZH0+SmsXKweJ4yDZwtdvc/KIwbpOz
+         qDTSe1T5c2S7YXCoqgRXJ03L82/rQM6kshsuAc7lc36XK+kDptFa55Inz33tG/Y26yAW
+         aDxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692035517; x=1692640317;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HIBMc1Pc73jtTeqexlKEiDPeJffujSakc49ekoQBfEw=;
-        b=T+YwW1DTOf6E44SBmi7Jdy/b+XPALV/k5PgCYSQxF4UucIvMaCExS31cPvfQc1P9Nm
-         qeCRX+FJVC4+shhQ4PwU69xPdC1jfm3B3yW5B24Ebp8n8VEDkOoeRrtu4grYYdhjIY8r
-         wLSHjLO3H/FyF9A/vgK0PAZClWvZ6qQIXFS6nuah+RFtklsYtOECxCaig8k0kyxvDfKc
-         862RD2IyYp19BjC1BKOtFL0xS6w1pizeR/KSKpoC4yZb4zMBR+s6mz2wK14Va6d45Nbk
-         E1GeNZgeYWw/zKLKAi04Ot5jRJRFESPddRciXDuaujcXvmuzsHYvemmP4Ofvd8rosEUh
-         yqNQ==
-X-Gm-Message-State: AOJu0YxjGlXJ250I1I5dhULupVNy7O1TPTBn/VUow7T3Id0p0do0WDoQ
-        8ETQqkgIbR/PF2GwAyCR2tschmngkBJPtNA4v7E=
-X-Google-Smtp-Source: AGHT+IESEwrsFUbztJaxvtJi++NMkNad4w1FKUijFhYl0d8tpjrbfjvVvQgcHh1aXZsKt+AHt+JbeThdt46h0wcJr2o=
-X-Received: by 2002:a05:6808:1316:b0:39a:bd0e:43d with SMTP id
- y22-20020a056808131600b0039abd0e043dmr14466780oiv.36.1692035517491; Mon, 14
- Aug 2023 10:51:57 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692035525; x=1692640325;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t1hvwKn0H2/PSZbR/GuIJU8CyNs4zCnJXFN0bPnDDdo=;
+        b=S7jemDf23wpevmZCnqcz8g+YNb4XokU0Ib0wB125Evh8Am/6/XWtK3AV6/e1EPUbXL
+         Thsx1nqMwzPhccHo2iAm5ngHFXdlsiTyIeoZhTfpCI497sTgFxHsLKFQTPCxEDwcwphj
+         +vUyfXB3LRolCTBdhrP8B2NEjhe4Ah/N8fNS05gxHBtKTBuNMtgze6oWILTZIKWqjt73
+         rzqfg/ZQqualBAtXIJr0plHRscXqPVNiH+6/K0EQX8OEpdFDzaFkfG9VNxdhSf3lG0pI
+         joiQkVNL04BG0dKJ4XxiCVWqZ/26e6u3ic8KHPJlF9jqwiBVQbhUWfNHe/fWwQcWs09i
+         krlw==
+X-Gm-Message-State: AOJu0YxrRKFvcBhZAzp6SAuh0jUNgNoKyGyVwe9zPzul5sGUvgbOlzaD
+        6NIc4zDm3DPD7wzRi92I6dkQ3A==
+X-Google-Smtp-Source: AGHT+IHtvhyjY1M4UiRth3J5O18+VLDvzJc4L+UzfAki1qDfw/nksYwiXhRbm5fSVj+QoTS+yY0ZQA==
+X-Received: by 2002:a05:622a:552:b0:40f:fe6b:6b5b with SMTP id m18-20020a05622a055200b0040ffe6b6b5bmr15011085qtx.66.1692035525779;
+        Mon, 14 Aug 2023 10:52:05 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id pc5-20020a05620a840500b0076d0312b8basm3147781qkn.131.2023.08.14.10.52.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 10:52:05 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qVbjY-0070E4-Di;
+        Mon, 14 Aug 2023 14:52:04 -0300
+Date:   Mon, 14 Aug 2023 14:52:04 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Stefan Hajnoczi <stefanha@redhat.com>
+Cc:     kvm@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: Re: [PATCH 3/4] vfio: use __aligned_u64 in struct
+ vfio_iommu_type1_info
+Message-ID: <ZNppxC7HRLgd9hyk@ziepe.ca>
+References: <20230809210248.2898981-1-stefanha@redhat.com>
+ <20230809210248.2898981-4-stefanha@redhat.com>
 MIME-Version: 1.0
-References: <20230731092108.3162-1-sunran001@208suo.com>
-In-Reply-To: <20230731092108.3162-1-sunran001@208suo.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 14 Aug 2023 13:51:46 -0400
-Message-ID: <CADnq5_P0L5Np9U5N11EKXKW1K7K8S7GGiBRJDU1Hh3a0Bmts4w@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm: Clean up errors in smu_v11_0_pptable.h
-To:     Ran Sun <sunran001@208suo.com>
-Cc:     alexander.deucher@amd.com, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230809210248.2898981-4-stefanha@redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
-
-On Mon, Jul 31, 2023 at 5:22=E2=80=AFAM Ran Sun <sunran001@208suo.com> wrot=
-e:
->
-> Fix the following errors reported by checkpatch:
->
-> ERROR: trailing whitespace
-> ERROR: open brace '{' following struct go on the same line
-> ERROR: code indent should use tabs where possible
->
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
+On Wed, Aug 09, 2023 at 05:02:47PM -0400, Stefan Hajnoczi wrote:
+> The memory layout of struct vfio_iommu_type1_info is
+> architecture-dependent due to a u64 field and a struct size that is not
+> a multiple of 8 bytes:
+> - On x86_64 the struct size is padded to a multiple of 8 bytes.
+> - On x32 the struct size is only a multiple of 4 bytes, not 8.
+> - Other architectures may vary.
+> 
+> Use __aligned_u64 to make memory layout consistent. This reduces the
+> chance of holes that result in an information leak and the chance that
+> 32-bit userspace on a 64-bit kernel breakage.
+> 
+> This patch increases the struct size on x32 but this is safe because of
+> the struct's argsz field. The kernel may grow the struct as long as it
+> still supports smaller argsz values from userspace (e.g. applications
+> compiled against older kernel headers).
+> 
+> Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
+> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
 > ---
->  .../gpu/drm/amd/pm/swsmu/inc/smu_v11_0_pptable.h  | 15 ++++++---------
->  1 file changed, 6 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/inc/smu_v11_0_pptable.h b/drive=
-rs/gpu/drm/amd/pm/swsmu/inc/smu_v11_0_pptable.h
-> index 0116e3d04fad..df7430876e0c 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/inc/smu_v11_0_pptable.h
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/inc/smu_v11_0_pptable.h
-> @@ -101,8 +101,7 @@ enum SMU_11_0_ODSETTING_ID {
->  };
->  #define SMU_11_0_MAX_ODSETTING    32          //Maximum Number of ODSett=
-ings
->
-> -struct smu_11_0_overdrive_table
-> -{
-> +struct smu_11_0_overdrive_table {
->      uint8_t  revision;                                        //Revision=
- =3D SMU_11_0_PP_OVERDRIVE_VERSION
->      uint8_t  reserve[3];                                      //Zero fil=
-led field reserved for future use
->      uint32_t feature_count;                                   //Total nu=
-mber of supported features
-> @@ -127,8 +126,7 @@ enum SMU_11_0_PPCLOCK_ID {
->  };
->  #define SMU_11_0_MAX_PPCLOCK      16          //Maximum Number of PP Clo=
-cks
->
-> -struct smu_11_0_power_saving_clock_table
-> -{
-> +struct smu_11_0_power_saving_clock_table {
->      uint8_t  revision;                                        //Revision=
- =3D SMU_11_0_PP_POWERSAVINGCLOCK_VERSION
->      uint8_t  reserve[3];                                      //Zero fil=
-led field reserved for future use
->      uint32_t count;                                           //power_sa=
-ving_clock_count =3D SMU_11_0_PPCLOCK_COUNT
-> @@ -136,8 +134,7 @@ struct smu_11_0_power_saving_clock_table
->      uint32_t min[SMU_11_0_MAX_PPCLOCK];                       //PowerSav=
-ingClock Mode Clock Minimum array In MHz
->  };
->
-> -struct smu_11_0_powerplay_table
-> -{
-> +struct smu_11_0_powerplay_table {
->        struct atom_common_table_header header;
->        uint8_t  table_revision;
->        uint16_t table_size;                          //Driver portion tab=
-le size. The offset to smc_pptable including header size
-> @@ -145,14 +142,14 @@ struct smu_11_0_powerplay_table
->        uint32_t golden_revision;
->        uint16_t format_id;
->        uint32_t platform_caps;                       //POWERPLAYABLE::ulP=
-latformCaps
-> -
-> +
->        uint8_t  thermal_controller_type;             //one of SMU_11_0_PP=
-_THERMALCONTROLLER
->
->        uint16_t small_power_limit1;
->        uint16_t small_power_limit2;
->        uint16_t boost_power_limit;
-> -      uint16_t od_turbo_power_limit;                //Power limit settin=
-g for Turbo mode in Performance UI Tuning.
-> -      uint16_t od_power_save_power_limit;           //Power limit settin=
-g for PowerSave/Optimal mode in Performance UI Tuning.
-> +      uint16_t od_turbo_power_limit;                //Power limit settin=
-g for Turbo mode in Performance UI Tuning.
-> +      uint16_t od_power_save_power_limit;           //Power limit settin=
-g for PowerSave/Optimal mode in Performance UI Tuning.
->        uint16_t software_shutdown_temp;
->
->        uint16_t reserve[6];                          //Zero filled field =
-reserved for future use
-> --
-> 2.17.1
->
+>  include/uapi/linux/vfio.h       |  3 ++-
+>  drivers/vfio/vfio_iommu_type1.c | 11 ++---------
+>  2 files changed, 4 insertions(+), 10 deletions(-)
+
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+
+Jason
