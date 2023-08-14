@@ -2,105 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE6877B75F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 707B677B768
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233441AbjHNLQ0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Aug 2023 07:16:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56754 "EHLO
+        id S233737AbjHNLQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 07:16:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233000AbjHNLQI (ORCPT
+        with ESMTP id S233575AbjHNLQd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 07:16:08 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35552FA
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 04:16:05 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-129-2x1Vd_nCORSXjSBBMiHBAA-1; Mon, 14 Aug 2023 12:16:03 +0100
-X-MC-Unique: 2x1Vd_nCORSXjSBBMiHBAA-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 14 Aug
- 2023 12:15:51 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 14 Aug 2023 12:15:51 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Zhangjin Wu' <falcon@tinylab.org>, "w@1wt.eu" <w@1wt.eu>
-CC:     "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "thomas@t-8ch.de" <thomas@t-8ch.de>
-Subject: RE: [PATCH v5] tools/nolibc: fix up size inflate regression
-Thread-Topic: [PATCH v5] tools/nolibc: fix up size inflate regression
-Thread-Index: AQHZzpwIMKbqPe7hTkqs7/1zyBEHW6/pnUhg
-Date:   Mon, 14 Aug 2023 11:15:51 +0000
-Message-ID: <6fef903020954515abdcee7261918903@AcuMS.aculab.com>
-References: <20230814082224.GA16761@1wt.eu>
- <20230814104226.7094-1-falcon@tinylab.org>
-In-Reply-To: <20230814104226.7094-1-falcon@tinylab.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 14 Aug 2023 07:16:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF0BFE58
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 04:16:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692011792; x=1723547792;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KxFiqcFpllOBBtd1j20+T+HjiwbOVSrGhU2e86jRQK8=;
+  b=QpVU1tY/4K7I5UAsNKtJQ4/s3Co2VCsF9/Q6c2BJZZ3GYg2ROizqi6OL
+   WX5gxls90UB78sQujdtuOuhb+Mmlm3hqwhWqqx1J9ZZuNtmheHohQi3kC
+   yQjhqXeEwgR6Kg1OgPJRmgY5eaEqUV4myWNUYiA4i8hXo1AuQvnmLv7ek
+   6pjkhSGfxVWilWb424qxSYwLZnJS+xO8OBLurHDhxkL1m5ugWvYlH+xj9
+   q9v3hlyqFG+zD13FmKsOpUzkgmp7klCpXwQQ6+PtDFLSXiFcP7H3jgMmj
+   pqWENmdjoG8Qs3AxPxf8Mh1TN6sHhlCBPO9XTJ5IL7DpQ+0vHnJiDeO7D
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="375721912"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="375721912"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 04:16:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="733416210"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="733416210"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga002.jf.intel.com with ESMTP; 14 Aug 2023 04:16:14 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qVVYS-0021iT-2B;
+        Mon, 14 Aug 2023 14:16:12 +0300
+Date:   Mon, 14 Aug 2023 14:16:12 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Petr Mladek <pmladek@suse.com>, Marco Elver <elver@google.com>,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2 2/3] lib/vsprintf: Split out sprintf() and friends
+Message-ID: <ZNoM/LUhjG2/NHl1@smile.fi.intel.com>
+References: <ZNEJQkDV81KHsJq/@smile.fi.intel.com>
+ <ZNEJm3Mv0QqIv43y@smile.fi.intel.com>
+ <ZNEKNWJGnksCNJnZ@smile.fi.intel.com>
+ <ZNHjrW8y_FXfA7N_@alley>
+ <ZNI5f+5Akd0nwssv@smile.fi.intel.com>
+ <ZNScla_5FXc28k32@alley>
+ <67ddbcec-b96f-582c-a38c-259234c3f301@rasmusvillemoes.dk>
+ <ZNTjbtNhWts5i8Q0@smile.fi.intel.com>
+ <37faa9c7-94a3-3ea1-f116-6ff5cdf021cd@rasmusvillemoes.dk>
+ <20230811152817.010e1da3@gandalf.local.home>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811152817.010e1da3@gandalf.local.home>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhangjin Wu
-> Sent: 14 August 2023 11:42
-...
-> [...]
-> > > > Sure it's not pretty, and I'd rather just go back to SET_ERRNO() to be
-> > > > honest, because we're there just because of the temptation to remove
-> > > > lines that were not causing any difficulties :-/
-> > > >
-> > > > I think we can do something in-between and deal only with signed returns,
-> > > > and explicitly place the test for MAX_ERRNO on the two unsigned ones
-> > > > (brk and mmap). It should look approximately like this:
-> > > >
-> > > >  #define __sysret(arg)                                                \
-> > > >  ({                                                                   \
-> > > >  	__typeof__(arg) __sysret_arg = (arg);                           \
-> > > >  	(__sysret_arg < 0) ? ({           /* error ? */                 \
-> > > >  		SET_ERRNO(-__sysret_arg); /* yes: errno != -ret */      \
-> > > >  		((__typeof__(arg)) -1);   /*      return -1 */          \
+On Fri, Aug 11, 2023 at 03:28:17PM -0400, Steven Rostedt wrote:
+> On Thu, 10 Aug 2023 16:17:57 +0200
+> Rasmus Villemoes <linux@rasmusvillemoes.dk> wrote:
+> 
+> > > Btw, it's easy to enforce IIUC, i.e. by dropping
+> > > 
+> > >   #ifndef _FOO_H
+> > >   #define _FOO_H
+> > >   #endif
+> > > 
+> > > mantra from the headers.
+> > 
+> > No, you can't do that, because some headers legitimately include other
+> > headers, often for type definitions. Say some struct definition where
+> > one of the members is another struct (struct list_head being an obvious
+> > example). Or a static inline function.
+> > 
+> > We _also_ don't want to force everybody who includes a.h to ensure that
+> > they first include b.h because something in a.h needs stuff from b.h.
+> > 
+> > So include guards must be used. They are a so well-known idiom that gcc
+> > even has special code for handling them: If everything in a foo.h file
+> > except comments is inside an ifndef/define/endif, gcc remembers that
+> > that foo.h file has such an include guard, so when gcc then encounters
+> > some #include directive that would again resolve to that same foo.h, and
+> > the include guard hasn't been #undef'ed, it doesn't even do the syscalls
+> > to open/read/close the file again.
+> 
+> I hope Andy was just joking with that recommendation.
 
-I'm pretty sure you don't need the explicit cast.
-(It would be needed for a pointer type.)
-Can you use __arg < ? SET_ERRNO(-__arg), -1 : __arg
+Too radical to be true to implement. But it's always good to have a rationale
+(thanks Rasmus) behind existing approach.
 
-Thinking, maybe it should be:
+-- 
+With Best Regards,
+Andy Shevchenko
 
-#define __sysret(syscall_fn_args)
-({
-	__typeof__(syscall_fn_args) __rval = syscall_fn_args;
-	__rval >= 0 ? __rval : SET_ERRNO(-__rval), -1;
-})
-
-Since, IIRC, the usage is return __sysret(sycall_fn(args));
-
-I'm not sure how public SET_ERRO() is.
-But it could include the negate have the value of -1 cast to its argument type?
-I think:
-	error = -(int)(long)(arg + 0u);
-will avoid any sign extension - the (int) might not even be needed.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
 
