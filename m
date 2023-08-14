@@ -2,67 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9359277B022
+	by mail.lfdr.de (Postfix) with ESMTP id DCAD277B023
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 05:26:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232934AbjHNDZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 23:25:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49676 "EHLO
+        id S232946AbjHNDZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 23:25:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232756AbjHNDZK (ORCPT
+        with ESMTP id S232763AbjHNDZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 23:25:10 -0400
+        Sun, 13 Aug 2023 23:25:11 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EA3110;
-        Sun, 13 Aug 2023 20:25:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B409E6D;
+        Sun, 13 Aug 2023 20:25:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A5996627FA;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F893628D1;
+        Mon, 14 Aug 2023 03:25:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A4ECC433CD;
         Mon, 14 Aug 2023 03:25:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61E32C433D9;
-        Mon, 14 Aug 2023 03:25:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691983509;
-        bh=gydjJyUCO/5hN3ZK6M7GS4n9Rqgo6EY8zQTaNi5iMRA=;
+        s=k20201202; t=1691983510;
+        bh=MDxcmIqRnZAwUCJ0nlbAwb5XYys3Rn1XAlOYQktn/uA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lpk8jvFjXD9GDqAOfWP63nus5HXu8IUdnL26enLEdQlVcNxw18mn6RJt8a3MjlFdx
-         yxM5SrWe9G5cGmFcr02YhnO6pTF+nOsNjNY+sLot73CPAQ7zyuAfcRpovYQehkeY6O
-         X4Yo/J2TT/pdg2m+cQVM3OKytqwt33rJ6AJMP3C89pjBuJM0w/+CushykAopJHygnL
-         Wis0/FJtNKAm0xS23MZbvnw2ecKB4+Zcawr09rN7ZXa62y2VfXfLdpyCWnK+bHpgCW
-         31aNocKb6ArgoAtBk+N2TFRzIh/atnwagHD6FWu2s8zOYKW2t7617u0xKlgE0htJnE
-         isO5n9pXqANKQ==
+        b=DaNoaWaQALZbje26swZ2x4X3SIeYM/CVzjZxOZlOw5buzslFKoEQ84Pc5FLbF01O6
+         7Akt8fg0NT5F7AiN/dMUkEYfJxhBkDDuig2A0VZn7HR97LT+8hUc7SiugW8nrbwH3o
+         OUMiufd6AguPfvHFstbhi8hXKT65zFx06SD5CtI2MwENWewUp01vvkmChOGRom9R47
+         xZJAWgk0XQ22W+AGp7YpAaILpNziAQNo8v9uf3x3RHFUNqnjMshWhptdEWhdu+3F7H
+         cFG6OayAmu+D2k7kQT7m6QCJQHyrIOQ7hqFLMd1D7+LqYY8pvXffyWlEMFHW1lxlCg
+         twJ0d65zo2bDA==
 From:   Bjorn Andersson <andersson@kernel.org>
-To:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+To:     cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        Imran Khan <kimran@codeaurora.org>,
-        Rajendra Nayak <quic_rjendra@quicinc.com>,
-        Joonwoo Park <joonwoop@codeaurora.org>,
-        Jeffrey Hugo <quic_jhugo@quicinc.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
+        Nikita Travkin <nikita@trvn.ru>
+Cc:     David Wronek <davidwronek@gmail.com>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: (subset) [PATCH v3 0/6] MMCC MSM8998 fixes
-Date:   Sun, 13 Aug 2023 20:27:38 -0700
-Message-ID: <169198364310.2443702.11310037157299492335.b4-ty@kernel.org>
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Split up TF-A related PSCI configuration
+Date:   Sun, 13 Aug 2023 20:27:39 -0700
+Message-ID: <169198364318.2443702.2186962304407432621.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230531-topic-8998_mmssclk-v3-0-ba1b1fd9ee75@linaro.org>
-References: <20230531-topic-8998_mmssclk-v3-0-ba1b1fd9ee75@linaro.org>
+In-Reply-To: <20230808-sc7180-tfa-fw-v1-1-666d5d8467e5@trvn.ru>
+References: <20230808-sc7180-tfa-fw-v1-1-666d5d8467e5@trvn.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -76,22 +63,25 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Wed, 09 Aug 2023 21:20:23 +0200, Konrad Dybcio wrote:
-> 8998 has a couple of issues related to its clock controllers. This series
-> attemps to fix some of them.
+On Tue, 08 Aug 2023 15:10:13 +0500, Nikita Travkin wrote:
+> When initially submitted, the sc7180 support only targeted CROS devices
+> that make use of alternative TF-A firmware and not the official Qualcomm
+> firmware. The PSCI implementations in those firmwares differ however so
+> devices that use qcom firmware, like WoA laptops such as aspire1 need
+> different setup.
 > 
-> The DT patch should go in first for bisectability, otherwise
-> clk/pd_ignore_unused will need to be used, as the SMMU GDSC is no longer
-> considered always-on.
+> This commit adjusts the SoC dtsi to the OSI mode PSCI setup, common to
+> the Qualcomm firmware and introduces new sc7180-firmware-tfa.dtsi that
+> overrides the PSCI setup for the PC mode and uses TF-A specific
+> psci-suspend-param. This dtsi is added to all boards that appear to use
+> TF-A.
 > 
 > [...]
 
 Applied, thanks!
 
-[3/6] clk: qcom: gcc-msm8998: Don't check halt bit on some branch clks
-      commit: a6f1e8623836bb6ce64c347d110ecb6259ae73c4
-[4/6] clk: qcom: mmcc-msm8998: Don't check halt bit on some branch clks
-      (no commit info)
+[1/1] arm64: dts: qcom: sc7180: Split up TF-A related PSCI configuration
+      commit: 4fb40b22e97ecea2d18a0c450c24388909e5b44c
 
 Best regards,
 -- 
