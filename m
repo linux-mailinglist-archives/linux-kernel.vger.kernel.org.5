@@ -2,224 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE28877C40F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 01:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B1C77C411
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 01:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233529AbjHNXuY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Aug 2023 19:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45238 "EHLO
+        id S232153AbjHNXv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 19:51:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233526AbjHNXt4 (ORCPT
+        with ESMTP id S233099AbjHNXvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 19:49:56 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1941720
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 16:49:54 -0700 (PDT)
-Received: from hamburger.collabora.co.uk (hamburger.collabora.co.uk [IPv6:2a01:4f8:1c1c:f269::1])
-        by madras.collabora.co.uk (Postfix) with ESMTP id 28BD26607090;
-        Tue, 15 Aug 2023 00:49:52 +0100 (BST)
-From:   "Helen Mae Koike Fornazier" <helen.koike@collabora.com>
-In-Reply-To: <ZNqn3I4fE6dCwslc@ginger>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-Date:   Tue, 15 Aug 2023 00:49:51 +0100
-Cc:     airlied@redhat.com, airlied@gmail.com, daniel.vetter@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
-        david.heidelberg@collabora.com, daniels@collabora.com,
-        emma@anholt.net, robclark@freedesktop.org,
-        gustavo.padovan@collabora.com, robdclark@google.com,
-        anholt@google.comairlied
-To:     "Helen Koike" <helen.koike@collabora.com>
+        Mon, 14 Aug 2023 19:51:14 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB1F10C8;
+        Mon, 14 Aug 2023 16:51:13 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-686f8614ce5so4595608b3a.3;
+        Mon, 14 Aug 2023 16:51:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692057072; x=1692661872;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FJF1PG0CUa9p8j/7vKNB9TVHClkbYuczT+7ZndNAthc=;
+        b=mrVz934cfEPwxddStWant3PHW5IfM1rNw8G55C49SmHBKNt2+/9tUzAG1kDQ7tHa4D
+         HBy/yeyKzIeALvA5eeIfTnhy4JurY1XNHR0cJ+SUGAbU103Tq6PO16JoY9J+CQCWcZla
+         L2M0qPO16v4DCUbRj79WekWILUAVAMAWZKQ5b5cWNi4hniUwiOA6YLKCq7kQauAyuIbv
+         a2KOUra5aCC06gHTSxM1dYq1WAj2n6kUtCXRPm6pOcj5sOA72iu0zPPJGmFkcSJcuOWo
+         uvGYLz8PeKxs6zZGJYTlslScsjgi7uAyAWRgN9UUpev2cQnzQkhfcu08JwgRtEMdieab
+         IPmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692057072; x=1692661872;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FJF1PG0CUa9p8j/7vKNB9TVHClkbYuczT+7ZndNAthc=;
+        b=hMMX0f2MsNz7JZN8RMYRaQ8xPaRoAoCJjfv/ES41BEtqC5p5QF55UNWrehpIjPRFOg
+         CouUwhSCcGOZN9+x8sbC93QjRiLWwZMq6Wn0igLWgaUgeP+4rhRD0EpBTsUQMYMqkiiT
+         yR+F9dBXe4H7GY7/NngVJOFPMb2jMHBKflUyAoCeReBphCXwJ5p5qBEpeZBA9/ApgxZA
+         LERo/8Z4Ux4GSOnSTgpmKv7tVftq4s+PhARV86zjdxU1Xgyvn5vJCkRkU/Qwvg8O4HZw
+         i4UnDEeC28KAwC4fB08c0LRbAr89DAXXNiKQIG8yZt5Yi96GqEWw7KDLgA+tRDD1UziS
+         qVyQ==
+X-Gm-Message-State: AOJu0Yy4GhfoE+zFyuQw89E78qnuAhHHuDJrko/I+pfewFEC+tqmkcgu
+        V1TMNQgKG6zVgprX/F3vBYM=
+X-Google-Smtp-Source: AGHT+IH8i/jC+/MIEdsbdK3cJ8dmc9n58nECATIOzGuMTd5fZFP9hrrStQVXIWf43OBWbSmOWS/ZsQ==
+X-Received: by 2002:a05:6a00:816:b0:686:2fde:4d6 with SMTP id m22-20020a056a00081600b006862fde04d6mr14806032pfk.6.1692057072558;
+        Mon, 14 Aug 2023 16:51:12 -0700 (PDT)
+Received: from localhost ([192.55.55.51])
+        by smtp.gmail.com with ESMTPSA id s11-20020aa78d4b000000b006878f50d071sm8330655pfe.203.2023.08.14.16.51.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 16:51:12 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 16:51:11 -0700
+From:   Isaku Yamahata <isaku.yamahata@gmail.com>
+To:     Jinrong Liang <ljr.kernel@gmail.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Jinrong Liang <cloudliang@tencent.com>,
+        linux-kselftest@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com
+Subject: Re: [PATCH v6 4/6] KVM: selftests: Add test cases for unsupported
+ PMU event filter input values
+Message-ID: <20230814235111.GE2257301@ls.amr.corp.intel.com>
+References: <20230810090945.16053-1-cloudliang@tencent.com>
+ <20230810090945.16053-5-cloudliang@tencent.com>
 MIME-Version: 1.0
-Message-ID: <7988-64dabd80-3-79f10400@207763561>
-Subject: =?utf-8?q?Re=3A?= [PULL] drm-misc-next
-User-Agent: SOGoMail 5.8.4
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230810090945.16053-5-cloudliang@tencent.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, August 14, 2023 19:17 -03, Helen Koike <helen.koike@collabora.com> wrote:
+On Thu, Aug 10, 2023 at 05:09:43PM +0800,
+Jinrong Liang <ljr.kernel@gmail.com> wrote:
 
-> The following changes since commit f5d8f9c0d8b4bc8ad7e7b23a9f4d116e99202dd3:
+> From: Jinrong Liang <cloudliang@tencent.com>
 > 
->   drm/panel: JDI LT070ME05000 simplify with dev_err_probe() (2023-08-14 14:44:30 +0200)
+> Add test cases to verify the handling of unsupported input values for the
+> PMU event filter. The tests cover unsupported "action" values, unsupported
+> "flags" values, and unsupported "nevents" values. All these cases should
+> return an error, as they are currently not supported by the filter.
+> Furthermore, the tests also cover the case where setting non-existent
+> fixed counters in the fixed bitmap does not fail.
 > 
-> are available in the Git repository at:
+> Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
+> ---
+>  .../kvm/x86_64/pmu_event_filter_test.c        | 26 +++++++++++++++++++
+>  1 file changed, 26 insertions(+)
 > 
->   git@gitlab.freedesktop.org:helen.fornazier/linux.git tags/drm-ci-v12-drm-misc
-> 
-> for you to fetch changes up to cf50bc174149379c712a396ae556e2e908ee88e0:
-> 
->   drm: Add initial ci/ subdirectory (2023-08-14 18:36:14 -0300)
-> 
-> ----------------------------------------------------------------
-> drm-ci for drm-misc-next
-> 
-> Here is the patch that adds a ci/ subdirectory to drm and allows
-> developers to easily execute tests.
-> 
-> Developers can easily execute several tests on different devices
-> by just pushing their branch to their fork in a repository hosted
-> on gitlab.freedesktop.org which has an infrastructure to run jobs
-> in several runners and farms with different devices.
-> 
-> The patch was acked and tested by others.
-> 
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
-> 
-> ----------------------------------------------------------------
-> Tomeu Vizoso (1):
->       drm: Add initial ci/ subdirectory
-> 
->  Documentation/gpu/automated_testing.rst            |  144 +
->  Documentation/gpu/index.rst                        |    1 +
->  MAINTAINERS                                        |    8 +
->  drivers/gpu/drm/ci/arm.config                      |   69 +
->  drivers/gpu/drm/ci/arm64.config                    |  199 ++
->  drivers/gpu/drm/ci/build-igt.sh                    |   35 +
->  drivers/gpu/drm/ci/build.sh                        |  157 ++
->  drivers/gpu/drm/ci/build.yml                       |  110 +
->  drivers/gpu/drm/ci/check-patch.py                  |   57 +
->  drivers/gpu/drm/ci/container.yml                   |   65 +
->  drivers/gpu/drm/ci/gitlab-ci.yml                   |  251 ++
->  drivers/gpu/drm/ci/igt_runner.sh                   |   77 +
->  drivers/gpu/drm/ci/image-tags.yml                  |   15 +
->  drivers/gpu/drm/ci/lava-submit.sh                  |   57 +
->  drivers/gpu/drm/ci/static-checks.yml               |   12 +
->  drivers/gpu/drm/ci/test.yml                        |  335 +++
->  drivers/gpu/drm/ci/testlist.txt                    | 2912 ++++++++++++++++++++
->  drivers/gpu/drm/ci/x86_64.config                   |  111 +
->  drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt  |   19 +
->  drivers/gpu/drm/ci/xfails/amdgpu-stoney-flakes.txt |   21 +
->  drivers/gpu/drm/ci/xfails/amdgpu-stoney-skips.txt  |    2 +
->  drivers/gpu/drm/ci/xfails/i915-amly-fails.txt      |   17 +
->  drivers/gpu/drm/ci/xfails/i915-amly-flakes.txt     |   32 +
->  drivers/gpu/drm/ci/xfails/i915-amly-skips.txt      |    4 +
->  drivers/gpu/drm/ci/xfails/i915-apl-fails.txt       |   58 +
->  drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt      |    1 +
->  drivers/gpu/drm/ci/xfails/i915-apl-skips.txt       |    6 +
->  drivers/gpu/drm/ci/xfails/i915-cml-fails.txt       |   18 +
->  drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt      |   38 +
->  drivers/gpu/drm/ci/xfails/i915-cml-skips.txt       |    2 +
->  drivers/gpu/drm/ci/xfails/i915-glk-fails.txt       |   19 +
->  drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt      |   41 +
->  drivers/gpu/drm/ci/xfails/i915-glk-skips.txt       |    5 +
->  drivers/gpu/drm/ci/xfails/i915-kbl-fails.txt       |   25 +
->  drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt      |   26 +
->  drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt       |    5 +
->  drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt       |   37 +
->  drivers/gpu/drm/ci/xfails/i915-tgl-flakes.txt      |    5 +
->  drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt       |   11 +
->  drivers/gpu/drm/ci/xfails/i915-whl-fails.txt       |   48 +
->  drivers/gpu/drm/ci/xfails/i915-whl-flakes.txt      |    1 +
->  drivers/gpu/drm/ci/xfails/i915-whl-skips.txt       |    2 +
->  .../gpu/drm/ci/xfails/mediatek-mt8173-fails.txt    |   29 +
->  .../gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt   |    0
->  .../gpu/drm/ci/xfails/mediatek-mt8183-fails.txt    |   10 +
->  .../gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt   |   14 +
->  drivers/gpu/drm/ci/xfails/meson-g12b-fails.txt     |   12 +
->  drivers/gpu/drm/ci/xfails/meson-g12b-flakes.txt    |    4 +
->  drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt    |   15 +
->  drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt   |    4 +
->  drivers/gpu/drm/ci/xfails/msm-apq8096-fails.txt    |    2 +
->  drivers/gpu/drm/ci/xfails/msm-apq8096-flakes.txt   |    4 +
->  drivers/gpu/drm/ci/xfails/msm-apq8096-skips.txt    |    2 +
->  drivers/gpu/drm/ci/xfails/msm-sc7180-fails.txt     |   25 +
->  drivers/gpu/drm/ci/xfails/msm-sc7180-flakes.txt    |    7 +
->  drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt     |   23 +
->  drivers/gpu/drm/ci/xfails/msm-sdm845-fails.txt     |   68 +
->  drivers/gpu/drm/ci/xfails/msm-sdm845-flakes.txt    |   11 +
->  drivers/gpu/drm/ci/xfails/msm-sdm845-skips.txt     |    2 +
->  .../gpu/drm/ci/xfails/rockchip-rk3288-fails.txt    |   48 +
->  .../gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt   |    9 +
->  .../gpu/drm/ci/xfails/rockchip-rk3288-skips.txt    |   52 +
->  .../gpu/drm/ci/xfails/rockchip-rk3399-fails.txt    |   36 +
->  .../gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt   |   24 +
->  .../gpu/drm/ci/xfails/rockchip-rk3399-skips.txt    |    5 +
->  .../gpu/drm/ci/xfails/virtio_gpu-none-fails.txt    |   38 +
->  .../gpu/drm/ci/xfails/virtio_gpu-none-flakes.txt   |    0
->  .../gpu/drm/ci/xfails/virtio_gpu-none-skips.txt    |    6 +
->  test                                               |    0
->  69 files changed, 5508 insertions(+)
->  create mode 100644 Documentation/gpu/automated_testing.rst
->  create mode 100644 drivers/gpu/drm/ci/arm.config
->  create mode 100644 drivers/gpu/drm/ci/arm64.config
->  create mode 100644 drivers/gpu/drm/ci/build-igt.sh
->  create mode 100644 drivers/gpu/drm/ci/build.sh
->  create mode 100644 drivers/gpu/drm/ci/build.yml
->  create mode 100755 drivers/gpu/drm/ci/check-patch.py
->  create mode 100644 drivers/gpu/drm/ci/container.yml
->  create mode 100644 drivers/gpu/drm/ci/gitlab-ci.yml
->  create mode 100755 drivers/gpu/drm/ci/igt_runner.sh
->  create mode 100644 drivers/gpu/drm/ci/image-tags.yml
->  create mode 100755 drivers/gpu/drm/ci/lava-submit.sh
->  create mode 100644 drivers/gpu/drm/ci/static-checks.yml
->  create mode 100644 drivers/gpu/drm/ci/test.yml
->  create mode 100644 drivers/gpu/drm/ci/testlist.txt
->  create mode 100644 drivers/gpu/drm/ci/x86_64.config
->  create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-skips.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-flakes.txt
->  create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-skips.txt
->  create mode 100644 test
+> diff --git a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+> index 94f5a89aac40..8b8bfee11016 100644
+> --- a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+> +++ b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+> @@ -32,6 +32,10 @@
+>  #define MAX_FILTER_EVENTS		300
+>  #define MAX_TEST_EVENTS		10
+>  
+> +#define PMU_EVENT_FILTER_INVALID_ACTION		(KVM_PMU_EVENT_DENY + 1)
+> +#define PMU_EVENT_FILTER_INVALID_FLAGS			(KVM_PMU_EVENT_FLAGS_VALID_MASK << 1)
+> +#define PMU_EVENT_FILTER_INVALID_NEVENTS		(MAX_FILTER_EVENTS + 1)
+> +
+>  /*
+>   * This is how the event selector and unit mask are stored in an AMD
+>   * core performance event-select register. Intel's format is similar,
+> @@ -760,6 +764,8 @@ static int set_pmu_single_event_filter(struct kvm_vcpu *vcpu, uint64_t event,
+>  
+>  static void test_filter_ioctl(struct kvm_vcpu *vcpu)
+>  {
+> +	uint8_t nr_fixed_counters = kvm_cpu_property(X86_PROPERTY_PMU_NR_FIXED_COUNTERS);
+> +	struct __kvm_pmu_event_filter f;
+>  	uint64_t e = ~0ul;
+>  	int r;
+>  
+> @@ -780,6 +786,26 @@ static void test_filter_ioctl(struct kvm_vcpu *vcpu)
+>  					KVM_PMU_EVENT_FLAG_MASKED_EVENTS,
+>  					KVM_PMU_EVENT_ALLOW);
+>  	TEST_ASSERT(r == 0, "Valid PMU Event Filter is failing");
+> +
+> +	f = base_event_filter;
+> +	f.action = PMU_EVENT_FILTER_INVALID_ACTION;
+> +	r = do_vcpu_set_pmu_event_filter(vcpu, &f);
+> +	TEST_ASSERT(r, "Set invalid action is expected to fail");
+> +
+> +	f = base_event_filter;
+> +	f.flags = PMU_EVENT_FILTER_INVALID_FLAGS;
+> +	r = do_vcpu_set_pmu_event_filter(vcpu, &f);
+> +	TEST_ASSERT(r, "Set invalid flags is expected to fail");
+> +
+> +	f = base_event_filter;
+> +	f.nevents = PMU_EVENT_FILTER_INVALID_NEVENTS;
+> +	r = do_vcpu_set_pmu_event_filter(vcpu, &f);
+> +	TEST_ASSERT(r, "Exceeding the max number of filter events should fail");
+> +
+> +	f = base_event_filter;
+> +	f.fixed_counter_bitmap = ~GENMASK_ULL(nr_fixed_counters, 0);
+> +	r = do_vcpu_set_pmu_event_filter(vcpu, &f);
+> +	TEST_ASSERT(!r, "Masking non-existent fixed counters should be allowed");
+>  }
+>  
+>  int main(int argc, char *argv[])
+> -- 
+> 2.39.3
 > 
 
-
-Please, disconsider this PR, I accidentally added this 'test' file to the commit, I'll send another PR.
-Sorry for the noise.
-
-Regards,
-Helen
-
+Reviewed-by: Isaku Yamahata <isaku.yamahata@intel.com>
+-- 
+Isaku Yamahata <isaku.yamahata@gmail.com>
