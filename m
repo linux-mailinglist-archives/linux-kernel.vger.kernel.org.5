@@ -2,72 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1376377BCBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7C677BC96
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbjHNPN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 11:13:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49800 "EHLO
+        id S232733AbjHNPMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 11:12:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232796AbjHNPMy (ORCPT
+        with ESMTP id S232844AbjHNPMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:12:54 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C5CDE6E
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:12:53 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fe1e1142caso43992185e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:12:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692025971; x=1692630771;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ocJS1nXGrg9KUDSz6ydfTmzG4q/9Tzxynl3mXG6FazY=;
-        b=VhoDoCLhtMXQbjvsXylJsc8VzXIflgqWEyOBYhB3z14NdZsOEdtFdl0gju0b/pMwtK
-         JIlGy5gVKsOnHp0ZYGYyBL6XKejmeobJ3SZynFOMuAXIo6H79mO2NBARyhYKwKmTVj7H
-         LD1UZDmUxfSWFb2K07PytjgKIAMhz1CaDfK/J75nh2zYwD6CmJm4rNowyU6vmlknuS7r
-         e3/zGHrceyuhKY9UP3DukNu81xGbluhDbIegNJxgldlnRnY4ub9HRzn6aXwRFH2i5GBM
-         E53ApoAHP1p7dJWUXkFdlgqGZuphT8qd8PKbf+xABvOhH0plotYAmNa+p5Iqx4RsaAvc
-         I0HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692025971; x=1692630771;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ocJS1nXGrg9KUDSz6ydfTmzG4q/9Tzxynl3mXG6FazY=;
-        b=bpIotNmJpMb7Kql1OeaNd/3r3OiXzL5YAlWhRD5BmnKBuEVtp7INt+owg5SeDnewdm
-         wWuScT97QR2UmxfjGNM4cAt79VZ3cUuC3k47QHOEKrXODtzv3HeomfHWeIvL4Wqtc82S
-         4NILRUteP4XxFUyVJQZkffq8ghhbAnGcpOOykJRGtKZzSVNxpFRS1ke9bsD54xNWDq1u
-         JL8owo3AqIrDQ0BiAk6qC+IyE51S51RyEvvTwmnN+yiEZg+BxkWSBzgZ05tH50WhcBrq
-         cf+WKY+B5cNAGBdHHr9rkKSe+9mv4f/2HqDp0DwHAcgQNKX4Tmw1IiQNPdy0w21XHXqv
-         gGUA==
-X-Gm-Message-State: AOJu0Ywe5WHhmG/ENqTDuos3//moYYfLLPx00qF3qHSN6e+NGONp+dpI
-        lcTQAgndw9OnDxi2LuHicSpOww==
-X-Google-Smtp-Source: AGHT+IHp0adq2Own21y+ewG89R+AmYf6CoxJPbeODa60h8OfL8WzJ18WT6WiFvnee4adaPrJUO3zbw==
-X-Received: by 2002:a7b:cc8d:0:b0:3f4:d18f:b2fb with SMTP id p13-20020a7bcc8d000000b003f4d18fb2fbmr7922350wma.8.1692025971785;
-        Mon, 14 Aug 2023 08:12:51 -0700 (PDT)
-Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id 17-20020a05600c021100b003fe1c332810sm17644572wmi.33.2023.08.14.08.12.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 08:12:51 -0700 (PDT)
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To:     rfoss@kernel.org, todor.too@gmail.com, bryan.odonoghue@linaro.org,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v0 04/13] media: qcom: camss: Pass icc bandwidth table as a platform parameter
-Date:   Mon, 14 Aug 2023 16:12:34 +0100
-Message-ID: <20230814151243.3801456-5-bryan.odonoghue@linaro.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230814151243.3801456-1-bryan.odonoghue@linaro.org>
-References: <20230814151243.3801456-1-bryan.odonoghue@linaro.org>
+        Mon, 14 Aug 2023 11:12:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE7D10C0;
+        Mon, 14 Aug 2023 08:12:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A4C163D0A;
+        Mon, 14 Aug 2023 15:12:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B3EDC433C8;
+        Mon, 14 Aug 2023 15:12:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692025956;
+        bh=TqP1n036qOsgClnEkkjJbC7+SYLXwrxn2SdLyPtbu8w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PNcvsOVKoBl+rjTqlej9mUt5dvNE3hGDZcLgTBBHjGFxdXvkz94ED7jzb0AKNP0Y+
+         TqT8lPIAlb6Ss9a1m9vZpGOjrXYdVvAKIlVevIRO7XPpl+iU/Owup+c9BPL+pIpgIQ
+         LIpdj84J2ezJ55Hprt87VyzWQn9OTAXo24OWiI7VSEPl2noFMTnUky/cls8tW8qx5R
+         4iAqtZmm+3Id0tmRwYocoHKfLniZocjra+cIZ7Ccr6aT3pUqKGjX3eR0UzG8zBoHvg
+         pkRc91fnSWQiMJBlacjtDJIzmbKOsinIfE2yOSV2OFNeGohCfGBD4C+Xjz2orJ3hp3
+         nUKYTTva0DMgw==
+Date:   Mon, 14 Aug 2023 17:12:34 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Andi Shyti <andi.shyti@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
+        Michal Simek <michal.simek@amd.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: i2c: cadence: Describe power-domains
+ property
+Message-ID: <ZNpEYgo9EUzXsXnQ@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>, linux-kernel@vger.kernel.org,
+        monstr@monstr.eu, git@xilinx.com,
+        Michal Simek <michal.simek@amd.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org
+References: <8774dba53cae5508f9f7aa173fbaf814d97898b1.1691047405.git.michal.simek@amd.com>
+ <169119887100.1781235.4441400054342220300.b4-ty@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="BJwiAtzYNkwpw9eK"
+Content-Disposition: inline
+In-Reply-To: <169119887100.1781235.4441400054342220300.b4-ty@kernel.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,111 +69,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pass the bandwidth table as a platform parameter not if/else derived
-pointer to the static table.
 
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
----
- drivers/media/platform/qcom/camss/camss.c | 29 +++++++----------------
- drivers/media/platform/qcom/camss/camss.h |  3 ++-
- 2 files changed, 11 insertions(+), 21 deletions(-)
+--BJwiAtzYNkwpw9eK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
-index 68eb45b2c0aaa..1a195eb4298a5 100644
---- a/drivers/media/platform/qcom/camss/camss.c
-+++ b/drivers/media/platform/qcom/camss/camss.c
-@@ -1484,21 +1484,15 @@ static int camss_configure_pd(struct camss *camss)
- static int camss_icc_get(struct camss *camss)
- {
- 	const struct resources_icc *icc_res;
--	int nbr_icc_paths = 0;
- 	int i;
- 
--	if (camss->version == CAMSS_8250) {
--		icc_res = &icc_res_sm8250[0];
--		nbr_icc_paths =	ICC_SM8250_COUNT;
--	}
-+	icc_res = camss->res->icc_res;
- 
--	for (i = 0; i < nbr_icc_paths; i++) {
-+	for (i = 0; i < camss->res->icc_path_num; i++) {
- 		camss->icc_path[i] = devm_of_icc_get(camss->dev,
- 						     icc_res[i].name);
- 		if (IS_ERR(camss->icc_path[i]))
- 			return PTR_ERR(camss->icc_path[i]);
--
--		camss->icc_bw_tbl[i] = icc_res[i].icc_bw_tbl;
- 	}
- 
- 	return 0;
-@@ -1736,6 +1730,8 @@ static const struct camss_resources sm8250_resources = {
- 	.csiphy_res = csiphy_res_8250,
- 	.csid_res = csid_res_8250,
- 	.vfe_res = vfe_res_8250,
-+	.icc_res = icc_res_sm8250,
-+	.icc_path_num = ARRAY_SIZE(icc_res_sm8250),
- };
- 
- static const struct of_device_id camss_dt_match[] = {
-@@ -1752,14 +1748,10 @@ MODULE_DEVICE_TABLE(of, camss_dt_match);
- static int __maybe_unused camss_runtime_suspend(struct device *dev)
- {
- 	struct camss *camss = dev_get_drvdata(dev);
--	int nbr_icc_paths = 0;
- 	int i;
- 	int ret;
- 
--	if (camss->version == CAMSS_8250)
--		nbr_icc_paths =	ICC_SM8250_COUNT;
--
--	for (i = 0; i < nbr_icc_paths; i++) {
-+	for (i = 0; i < camss->res->icc_path_num; i++) {
- 		ret = icc_set_bw(camss->icc_path[i], 0, 0);
- 		if (ret)
- 			return ret;
-@@ -1771,17 +1763,14 @@ static int __maybe_unused camss_runtime_suspend(struct device *dev)
- static int __maybe_unused camss_runtime_resume(struct device *dev)
- {
- 	struct camss *camss = dev_get_drvdata(dev);
--	int nbr_icc_paths = 0;
-+	const struct resources_icc *icc_res = camss->res->icc_res;
- 	int i;
- 	int ret;
- 
--	if (camss->version == CAMSS_8250)
--		nbr_icc_paths =	ICC_SM8250_COUNT;
--
--	for (i = 0; i < nbr_icc_paths; i++) {
-+	for (i = 0; i < camss->res->icc_path_num; i++) {
- 		ret = icc_set_bw(camss->icc_path[i],
--				 camss->icc_bw_tbl[i].avg,
--				 camss->icc_bw_tbl[i].peak);
-+				 icc_res[i].icc_bw_tbl.avg,
-+				 icc_res[i].icc_bw_tbl.peak);
- 		if (ret)
- 			return ret;
- 	}
-diff --git a/drivers/media/platform/qcom/camss/camss.h b/drivers/media/platform/qcom/camss/camss.h
-index f632ee49ad83e..988c313b63551 100644
---- a/drivers/media/platform/qcom/camss/camss.h
-+++ b/drivers/media/platform/qcom/camss/camss.h
-@@ -84,6 +84,8 @@ struct camss_resources {
- 	const struct resources *csid_res;
- 	const struct resources *ispif_res;
- 	const struct resources *vfe_res;
-+	const struct resources_icc *icc_res;
-+	const int icc_path_num;
- };
- 
- struct camss {
-@@ -105,7 +107,6 @@ struct camss {
- 	struct device **genpd;
- 	struct device_link **genpd_link;
- 	struct icc_path *icc_path[ICC_SM8250_COUNT];
--	struct icc_bw_tbl icc_bw_tbl[ICC_SM8250_COUNT];
- 	const struct camss_resources *res;
- };
- 
--- 
-2.41.0
+On Sat, Aug 05, 2023 at 03:29:11AM +0200, Andi Shyti wrote:
+> Hi
+>=20
+> On Thu, 03 Aug 2023 09:23:31 +0200, Michal Simek wrote:
+> > ZynqMP Cadence I2c IP core has own power domain that's why describe it =
+as
+> > optional property.
+> >=20
+> >=20
+>=20
+> Applied to i2c/andi-for-next on
 
+Applied to for-next (via Andi's branch), thanks!
+
+
+--BJwiAtzYNkwpw9eK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmTaRGEACgkQFA3kzBSg
+KbZoxQ//XdMF1no/Td0duw+OJ+eF/oxZbCWsHMiJSFQTLb2PvfogAA3M+GpboRda
+JIcs0ji9Ub5RleWFo3f9JlASUhqOqipDL+yLkkWttIR6kU1PAZxAUZNYAuKgf9jC
+GFklXxIhkOv5jy1NaJBuU0UThPgpvrf8lsNBMyh6xmaHBYi1CjWDC1CBtx8GCgXO
+G5oNdcg+UHn+p3WR5wvo6xMWCfgBtaHoLB/qHp1TnuxoS+dZ1Vsy7sVWxEUE8ODB
+s2YEq6tEybg7o1hYGOmfi0/wcur7d1PitdyY/Qroe9Y6OIsA172rK2Mc3U1Lnuy/
+UwQrg+BubQv+L2G3+susS5sD9w7wzQJgErGCB6gv8Hv62bP+nydQEXFKL+uljoxe
+oyxa4YSuGaZoqgmWERjcEWZCBwOlgtq79EU0C1DBrAVoDDAKr0ntiw44nWngoycs
+F2uaW/ZXvpm0vIzUF884jb0csczWe0ctYKzhQbG8eVliCrzEZlDJSCkH26pL/9yQ
+BFvkmKyFGr5vfPomsQMEjLMfODlG2yGsZd4JKm007b3yFK2naHQaMcXFvr4TW7i+
+8u4eDymjOt4xgpKEhXdrFy19y+7oSAic0gQEfzW+RLZ7/coYltwNk9T22qsmCKlR
+YmknRtj/rp6BT5+OxWCSfeuroT/VZn5E6R5D4ZxnIdYTw5q56T0=
+=Y86j
+-----END PGP SIGNATURE-----
+
+--BJwiAtzYNkwpw9eK--
