@@ -2,150 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A26AC77B6E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B2177B6FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235078AbjHNKhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 06:37:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36510 "EHLO
+        id S233173AbjHNKmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 06:42:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234944AbjHNKhW (ORCPT
+        with ESMTP id S233826AbjHNKmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 06:37:22 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2082.outbound.protection.outlook.com [40.107.21.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3927FFB;
-        Mon, 14 Aug 2023 03:37:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=afd9/GcM9zeuJezVqdkDL7Kp7KcXljSKjZ2SzQcrPDKXOFex59biG9+kVDkydu9WuO/jMLORxkbSTNDLAdvPE7pFi8NOTDjKFuY4+0jn2D4rJ3TqG04vWYBrQdDiBN5JtkFh/2jJMRdgqiMWr5/0r6ldHB6yOQ7id4HQYbgT8PUxsRMXOaJQ/81SkTsysUj8NxXbkbjvgi0bO9QraGo5++HJHzOJuCk6h3mHVFgH1030hVOUDi/HQU15JPOMWuZNQCq6XcR2eWigeJutDygIaI+7TelslhuiOA66QO3CAhwAaNdSTVnUp7Ujz9AqMThbjaYV01Th4uIaU4aK+aE6/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=z6eZg2SXpnwBey6uGP5mOAlS2QAU13HzikrGZ4cybSU=;
- b=mG/R+dFvUjYklPeqMGohwuj24Z+9hLua1r7I3T1D7eFXbIQXKXEW+RFu6rpuOMCfB+QHZAOdAqV0VnxgqSt2eS9BOJPvTmNDe3jz6lay3rlOhzwx5FnYeBixVrWBV/gQCdlRw4excmDv/Xg+aUmhn2WeCCLAg5L6rpe9yJmu2XUiWvp4wHE4a/1CjuXW/cJ1N67ylEAhlyzFlAReMb9rDQMcvwE9FO47NJpyvI0WtR7o0Hv8bCJEgWA3XePXIQxlWpTBu1zHXMJ7raxbNlzp2IT/rI0GT2FZoyg+HDFjwnwUMs3xbQGlm1sW2Bk8aRj0G5nPnjea9wRwTdb86iucAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z6eZg2SXpnwBey6uGP5mOAlS2QAU13HzikrGZ4cybSU=;
- b=chpBoZ7c0SX0mXqorfoXl3rOw8ARC9tQyRTKST7khB//BJMTJJdKVH6aY2aqauQaM/Flwpyqv4ovAjvzYirM52GDULb5ZhEjN3rSi/CKo3SB+VdnWvbYV4amDxcRwMIAvgQ/v0AszKWVOVLn8traLFs/+GhMAtfgUL3KIpPLOmQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by VE1PR04MB7216.eurprd04.prod.outlook.com (2603:10a6:800:1b0::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.24; Mon, 14 Aug
- 2023 10:37:18 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::2b3:d8de:95c8:b28b]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::2b3:d8de:95c8:b28b%3]) with mapi id 15.20.6678.022; Mon, 14 Aug 2023
- 10:37:18 +0000
-From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-To:     ulf.hansson@linaro.org, shawnguo@kernel.org, s.hauer@pengutronix.de
-Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, Dong Aisheng <aisheng.dong@nxp.com>,
-        Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH V4 8/8] genpd: imx: scu-pd: change init level to subsys_initcall
-Date:   Mon, 14 Aug 2023 18:41:27 +0800
-Message-Id: <20230814104127.1929-9-peng.fan@oss.nxp.com>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20230814104127.1929-1-peng.fan@oss.nxp.com>
-References: <20230814104127.1929-1-peng.fan@oss.nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SG2PR02CA0011.apcprd02.prod.outlook.com
- (2603:1096:3:17::23) To DU0PR04MB9417.eurprd04.prod.outlook.com
- (2603:10a6:10:358::11)
+        Mon, 14 Aug 2023 06:42:20 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CFE711A;
+        Mon, 14 Aug 2023 03:42:18 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37EAfurr085836;
+        Mon, 14 Aug 2023 05:41:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1692009716;
+        bh=Lz356dlYT0Q7fdpMmgsrqqZokIAx9+np94XnpNO5Wt4=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=Kk9N6XcN5y6wkTH+BugUixyqNL4LzPx5i3PfOKafcOnesY3N5nAun95wz73+8ZA8O
+         a3mjIRJ3DHq9POKbLqHsSX1cJjxv1G0z+X9dsD3u7veUejTinXUUb/QgIXOfV1WpIV
+         uf/wtOY80VCE2S/hciOzf3BzfkF1dGI9ir1gB3i0=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37EAfuk6012941
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 14 Aug 2023 05:41:56 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 14
+ Aug 2023 05:41:56 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 14 Aug 2023 05:41:56 -0500
+Received: from [172.24.227.132] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37EAfnDv018660;
+        Mon, 14 Aug 2023 05:41:49 -0500
+Message-ID: <8fd9c745-cb42-8d4d-8307-e428a491bfe1@ti.com>
+Date:   Mon, 14 Aug 2023 16:11:48 +0530
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|VE1PR04MB7216:EE_
-X-MS-Office365-Filtering-Correlation-Id: cf200120-b06e-430a-83c5-08db9cb26ef1
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DvSVuvishrQOEYV5bK58SHTBstcg/ELd+j+UgpNfT5H1+FCfhFdtFJCZo8+aXBC2MrEgMC78ERWT9biZSvApmZjjOy+8N7EjlHPxcnNKtYQoS1f3CuT1Y5S+7WgoV/sMWOT2Go/AG82BXCoQ9cnBjTTRiM8zX/mk5N9JCFzApbO/1pUc9yB4oZgC5VUbZHdDiCT/sUT5GF3QFDhJ7ke4hr0cTiP0LAbTPfedWpggJoKe7c50jQP2+CWmvayM7bjVbj2H1LVG7sa2HgHy8XWAsvuS07mEw3PWDeNOrQGrVghFwdarJ7uCwssfPLkw5f3dYmXIVnUMqsMx7fy3jl2QRPFKKCZ4dPnQE8CU98swcmut+4Y3AfpQ24Kc9e7QDldQU9BxHYM1+Ff54Eb6C2006zVPc8O77XAzaKGTV+fBBNsAggHAyoM/+aeGB4hDI0hZfShbth606BFMtAk8y8rDen+Ynxwg9bQ9sPUiTcMAFRrIBfQgjzJo9+Eo0AGG7qYw2Ng6h9S2XkniGBfuxYut3EfVN2sFLp6lZCu5oRrNzkq1V9Q2iPnF0neQbQX9vEdZMhpIP4v5LzNZS6hgh5ZpsyRkzGOuf5E+CGNeb2Fn62QpSTV8spwlCf3YMYcPkit4
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(396003)(346002)(136003)(39860400002)(366004)(1800799006)(186006)(451199021)(478600001)(6486002)(6666004)(6506007)(26005)(1076003)(52116002)(6512007)(2616005)(4744005)(66946007)(66556008)(54906003)(66476007)(8676002)(316002)(4326008)(8936002)(41300700001)(5660300002)(38100700002)(38350700002)(86362001)(83380400001)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?V9tQDGADz9iLVfqeHM345Ff6GK7ggBVyPKULdTaDiAd3ZWxBeqK1rb9jCQR3?=
- =?us-ascii?Q?b6c6vfbOvIEt1djzU0LWpxZTiSnvF6zTqn1dqWe6DC6k+44mFi7KPE1oZVpY?=
- =?us-ascii?Q?9Axf8av+JP7GR52q2IY0mtslzOb1aI5Z7W9MUwLjFTgYls7YMbZItlUZE+Vg?=
- =?us-ascii?Q?XtQX9NqJsP+bNzr8Tu/GhkGOCr7R57rTG7jN+PTTybR0/8rcLx+4hvIL0OC5?=
- =?us-ascii?Q?+3Qt5/aek8wUQk6/YZtFDB0qkIQhUQ4ksB7yZNpI+0Y9qXh4Nezb3lpjyLfZ?=
- =?us-ascii?Q?e3foMrM3VhbgieDt96xLUFwzYbcnwRJS+6ZpbSrs2+SWXpQ3xk2SQa/8SQ1o?=
- =?us-ascii?Q?kz2bka2d3c5mGpsyCwtN6IW2uzirQ86PITKdwwihh6O/D7UY9pUHCD83EVe2?=
- =?us-ascii?Q?MiqH0FT+o07kI37na+gP2urSwAMRY28p7mrOCpb548o40aJ+OjkPU6lkkyvM?=
- =?us-ascii?Q?QsCx5I5aqRBKhDTqU7BudHInrjkkIGf73aolt5tTf78NsCwSSJ+7cclvKYHN?=
- =?us-ascii?Q?0aXrxoIGLzd/Fe00R02VOo/hhNzadTyIkfRgSw8uBQucSRxsRQKqWJs3t6KA?=
- =?us-ascii?Q?MD/9uZI+rH9joO0W/M/B34kQ1N7NJSUAmYkjRZATujtSmJ0qmjBFE3qYK4ND?=
- =?us-ascii?Q?ol3LUxD/hn/40BZV8N65Kl4583FOO1K0ISSFeT9hBFE+YwuxZLMsywS05Jr5?=
- =?us-ascii?Q?BtJMNEworRp91uuMC3tUxJnH2iIkGCR4LqOBJltmr3eBr1qEcZFEIYzgPoNK?=
- =?us-ascii?Q?hLRn5n5ZK//FpQtN7/1YrNIOq0GkwpnfD3WQ5K4rirE2sPwLS2VsL8sL+QUr?=
- =?us-ascii?Q?Y2OAp/m3boTqkMQORIEeQA2K+B7iPoN4vVcGfSEViSDXqkhqYdwg+cQ3D2k3?=
- =?us-ascii?Q?L3AQ23pvZ4Lk8m5AA2ZHf2FH8BEqVFHayXhAe8R16/+bbvu+78rf1HITu+Bp?=
- =?us-ascii?Q?AP1XWw0AYF1y7jEKpiTAqyh97X5Fha9qvecw2iNfNui6wvoWp/mhi2NUFjcR?=
- =?us-ascii?Q?510kKoqi/oPTOsvXF1LZq6+99Ns/J7S3B9lWeEuCcTRHguvZXiOlYaVHz7It?=
- =?us-ascii?Q?/RqYfonSlVzIAnJqXqcYCwVS2XmdZFNEVIa3rIhLrdtgF4EmaTmvyCKMAZvJ?=
- =?us-ascii?Q?DbBfxpxPNxofD9CMXON/r15hSRCCRH3YdiqBysxR8T8LAjVB0SJyFhMVGp2h?=
- =?us-ascii?Q?Gx6g2Puh4m/sEiFSaz2ADsqqXkSL4I4EjhrZ7IGuY4kOlIxoSn4hwaI0ZnUP?=
- =?us-ascii?Q?8aOZP7g93KW5XnvI4VLVscuPQ8dJ7dqqaurjGDLshMOFblhKfTzjcQG2BOcD?=
- =?us-ascii?Q?Wok41pv1ytcq9Ih7LCLC6/IHtX71K+76BgF6h+pFa7yeyzuo9+r82vco0ozt?=
- =?us-ascii?Q?HfYfFXm0rirG3STcXzjyEN82KuD8vbs/neCVyZwUr/deez3NLGr6YxY9Ey7F?=
- =?us-ascii?Q?WhfEmnEBqLE8HyUt9jTfwAASR2wPcf6SSmsydfWOoMxK4crjBhsTEgalPY4V?=
- =?us-ascii?Q?UDaR4N2r4rfPARG7iR2S0R/p39iZNmTBqTIzSYeKeEj2sK9FK3jPCJELs8TN?=
- =?us-ascii?Q?vpIODi1DjH9sBvKx0i7y4/YoBYT8QxTsi2VRVg/b?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cf200120-b06e-430a-83c5-08db9cb26ef1
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 10:37:18.5630
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hgodOTTgttqra7XFToHWeE+HEdNxc50+LW5LpAtvIBo/waPCJxPlsLmFi66UYU0h/8GYV7+RlKaaA7sTib1ZPw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7216
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v5 0/6] arm64: ti: k3-am62: Add display support
+To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Francesco Dolcini <francesco@dolcini.it>
+CC:     Devicetree List <devicetree@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Linux ARM Kernel List <linux-arm-kernel@lists.infradead.org>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Rahul T R <r-ravikumar@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Jai Luthra <j-luthra@ti.com>,
+        Jayesh Choudhary <j-choudhary@ti.com>
+References: <20230809084559.17322-1-a-bhatia1@ti.com>
+ <169179274928.1340235.2380026214492639228.b4-ty@ti.com>
+Content-Language: en-US
+From:   Aradhya Bhatia <a-bhatia1@ti.com>
+In-Reply-To: <169179274928.1340235.2380026214492639228.b4-ty@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dong Aisheng <aisheng.dong@nxp.com>
 
-Change power domain init level to subsys_initcall to ensure it's probed
-before most devices to avoid unnecessary defer probe.
 
-Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- drivers/genpd/imx/scu-pd.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+On 12-Aug-23 04:02, Nishanth Menon wrote:
+> Hi Aradhya Bhatia,
+> 
+> On Wed, 09 Aug 2023 14:15:53 +0530, Aradhya Bhatia wrote:
+>> The patch series adds DT nodes for Display SubSystem (DSS) and other
+>> peripherals required to enable the HDMI audio and video on the AM625 SK,
+>> AM62-LP SK, as well as the AM625 based Beagle-Play platforms. An HDMI
+>> monitor can be connected to the boards for the audio/video outputs.
+>>
+>> The series adding the compatible and basic driver support[0] is in the
+>> drm-misc-next and linux-next queues and is expected to be in the
+>> mainline by v6.6-rc1. Patch 5/6 also requires Nishanth Menon's patch[1]
+>> that introduces debounce select mux macros. This patch too is not in
+>> v6.5-rc1 but has been picked up in ti-next[2] and hence, is present in
+>> linux-next.
+>>
+>> [...]
+> 
+> NOTE: This series creates checkpatch warnings against v6.5-rc1 and
+> complains that it cannot find ti,am625-dss which has been merged in
+> drm tree for next. This is clean in linux-next for a few weeks now.
+> Given the number of people who would really like to see it in v6.6-rc1
+> to keep the display support working in the tree without carried
+> patches and work on next set of features on display and graphics, and
+> given the real low risk of this NOT making to linus-master, we are
+> making an specific exception here for this time around. So, please
+> keep a watch on drm-next and if for any reason the support is dropped
+> going to linus's tre in the merge window or before, let this chain
+> know with appropriate maintainers so that we can take corrective
+> actions. PS: Thanks Arnd for taking time to give me some private
+> guidance. Fingers crossed that this will go through smooth.
 
-diff --git a/drivers/genpd/imx/scu-pd.c b/drivers/genpd/imx/scu-pd.c
-index 30da101119eb..0cda0999a1f2 100644
---- a/drivers/genpd/imx/scu-pd.c
-+++ b/drivers/genpd/imx/scu-pd.c
-@@ -587,7 +587,12 @@ static struct platform_driver imx_sc_pd_driver = {
- 	},
- 	.probe = imx_sc_pd_probe,
- };
--builtin_platform_driver(imx_sc_pd_driver);
-+
-+static int __init imx_sc_pd_driver_init(void)
-+{
-+	return platform_driver_register(&imx_sc_pd_driver);
-+}
-+subsys_initcall(imx_sc_pd_driver_init);
- 
- MODULE_AUTHOR("Dong Aisheng <aisheng.dong@nxp.com>");
- MODULE_DESCRIPTION("IMX SCU Power Domain driver");
--- 
-2.37.1
+Nishanth, Vignesh, Arnd,
+
+Thank you for making an exception here, and allowing these patches in!
+=)
+
+I will keep an eye on drm-next and will make sure to let you all know if
+the AM62 base DSS support patches get dropped for any reason.
+
+Regards
+Aradhya
+
+> 
+> Thank you!
+> 
+> I have applied the following to branch ti-k3-dts-next on [1]:
+> 
+> [1/6] arm64: dts: ti: k3-am62x-sk-common: Update main-i2c1 frequency
+>       commit: 73387da70f9c26b6fba4f62371d013cce14663d9
+> [2/6] arm64: dts: ti: k3-am62-main: Add node for DSS
+>       commit: 8ccc1073c7bb2ae9654529a75f85ef23b7215c9b
+> [3/6] arm64: dts: ti: k3-am62x-sk-common: Add HDMI support
+>       commit: db6e8237cf5435e972ea47632e5d8ac3e356f210
+> [4/6] arm64: dts: ti: am62x-sk: Add overlay for HDMI audio
+>       commit: b50ccab9e07ca19d49a0d629dfbe184e6975be22
+> [5/6] arm64: dts: ti: k3-am625-beagleplay: Add HDMI support
+>       commit: 1f7226a5e52cb8b90771cefc29077f9ce13a3c90
+> 
+> I have applied the following to branch ti-k3-config-next on [1]:
+> 
+> [6/6] arm64: defconfig: Enable ITE_IT66121 HDMI transmitter
+>       commit: d5c988b43746de250bed33c17116e879f032ff12
+> 
+> All being well this means that it will be integrated into the linux-next
+> tree (usually sometime in the next 24 hours) and sent up the chain during
+> the next merge window (or sooner if it is a relevant bug fix), however if
+> problems are discovered then the patch may be dropped or reverted.
+> 
+> You may get further e-mails resulting from automated or manual testing
+> and review of the tree, please engage with people reporting problems and
+> send followup patches addressing any issues that are reported if needed.
+> 
+> If any updates are required or you are submitting further changes they
+> should be sent as incremental updates against current git, existing
+> patches will not be replaced.
+> 
+> Please add any relevant lists and maintainers to the CCs when replying
+> to this mail.
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
 
