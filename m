@@ -2,131 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E064677B9AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 609B377B9CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbjHNNVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 09:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55322 "EHLO
+        id S230195AbjHNNXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 09:23:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231307AbjHNNUh (ORCPT
+        with ESMTP id S230163AbjHNNWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 09:20:37 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454EB10DD;
-        Mon, 14 Aug 2023 06:20:36 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RPZlL582Tz4f3lgD;
-        Mon, 14 Aug 2023 21:20:30 +0800 (CST)
-Received: from [10.174.179.247] (unknown [10.174.179.247])
-        by APP4 (Coremail) with SMTP id gCh0CgAXp6kcKtpkJ5fJAg--.21834S3;
-        Mon, 14 Aug 2023 21:20:31 +0800 (CST)
-Message-ID: <977879af-8603-82ae-07ad-38be3a27194d@huaweicloud.com>
-Date:   Mon, 14 Aug 2023 21:20:28 +0800
+        Mon, 14 Aug 2023 09:22:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3B93F5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:21:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692019300;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lrFQ1Piu7kOD9w6iKIQkZ8h3C5VVMWcr3aHpTSKZPi0=;
+        b=TyxHk3EPLYb2xGFWR5URHCq7r3t6bPq+RlOJJqWOpWTbwpvTdam68y2lWZ9u+RJJut71Kn
+        y4loUZ6E+UA4eEpB83bhh3iCa43SejhXi+cZcVnh3Tu5/seVzf2gWX46U2GSy2lcNfBSB5
+        hfzbEE27w1lsHRLHEhFU1JMCfC3KaeU=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-107-PXYjbQvYPpCo2pWxCD1h_A-1; Mon, 14 Aug 2023 09:21:35 -0400
+X-MC-Unique: PXYjbQvYPpCo2pWxCD1h_A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 214F285CBEB;
+        Mon, 14 Aug 2023 13:21:25 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.27])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 53E9F2166B25;
+        Mon, 14 Aug 2023 13:21:22 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 14 Aug 2023 15:20:42 +0200 (CEST)
+Date:   Mon, 14 Aug 2023 15:20:39 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     David Rheinsberg <david@readahead.eu>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Kees Cook <keescook@chromium.org>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Luca Boccassi <bluca@debian.org>
+Subject: Re: [PATCH] pid: allow pidfds for reaped tasks
+Message-ID: <20230814132039.GA17738@redhat.com>
+References: <20230807085203.819772-1-david@readahead.eu>
+ <20230807-porzellan-rehkitz-9fde1b94dd6b@brauner>
+ <20230811112911.GA22566@redhat.com>
+ <20230811-perplex-installieren-899f5925534d@brauner>
+ <20230811115710.GA21779@redhat.com>
+ <6feef7e0-ea72-412d-837e-34b6fdd3b869@app.fastmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH] scsi: ata: Fix a race condition between scsi error
- handler and ahci interrupt
-To:     Damien Le Moal <dlemoal@kernel.org>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linan122@huawei.com, yukuai3@huawei.com, yi.zhang@huawei.com,
-        houtao1@huawei.com, yangerkun@huawei.com, jianghong011@huawei.com,
-        zhangcheng75@huawei.com
-References: <20230810014848.2148316-1-linan666@huaweicloud.com>
- <25c1aca7-d885-0fff-2639-bb68a7dff44f@kernel.org>
- <c2ae28b7-a105-9cd6-bf2e-63051a4000b0@huaweicloud.com>
- <eb135aff-dc33-d559-1826-9284a22c095a@kernel.org>
-From:   Li Nan <linan666@huaweicloud.com>
-In-Reply-To: <eb135aff-dc33-d559-1826-9284a22c095a@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAXp6kcKtpkJ5fJAg--.21834S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7ArWDGrWUCrWfArWfWrWxJFb_yoW5JFy5pa
-        yrKan0kF4DKr4vyFyIvr18Za48KrsayayUGryft3y2v34DKFyFqFW7KryUua48urnY934j
-        qrWUGrZ3CFW5ZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9Sb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487
-        Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aV
-        AFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E
-        8cxan2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4I
-        kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
-        WwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
-        0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWr
-        Zr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
-        1UYxBIdaVFxhVjvjDU0xZFpf9x07UCXd8UUUUU=
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6feef7e0-ea72-412d-837e-34b6fdd3b869@app.fastmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 08/14, David Rheinsberg wrote:
+>
+> Hi Oleg,
+>
+> On Fri, Aug 11, 2023, at 1:57 PM, Oleg Nesterov wrote:
+> >> What code do we need to allow userspace to open a pidfd to a leader pid
+> >> even if it has already been exited and reaped (without also accidently
+> >> allowing to open non-lead pid pidfds)?
+> >
+> > I'll try to think more, but can you also explain why do we need this?
+> >
+> > See my another email. Can't we simply shift the pid_has_task(PIDTYPE_TGID)
+> > check from pidfd_prepare() to pidfd_create() ? (and then we can kill
+> > pidfd_prepare and rename __pidfd_prepare to pidfd_prepare).
+>
+> Yes, the easiest solution would be to use `__pidfd_prepare()` and ensure
+> that the caller only ever calls this on tg-leaders. This would work just
+> fine, imo. And this was my initial approach.
 
-在 2023/8/14 15:50, Damien Le Moal 写道:
-> On 8/14/23 15:41, Li Nan wrote:
->>> This is definitely not correct because EH may have been scheduled for a non
->>> fatal action like a device revalidate or to get sense data for successful
->>> commands. With this change, the port will NOT be frozen when a hard error IRQ
->>> comes while EH is waiting to start, that is, while EH waits for all commands to
->>> complete first.
->>>
->>
->> Yeah, we should find a better way to fix it. Do you have any suggesstions?
->>
->>> Furthermore, if you get an IRQ that requires the port to be frozen, it means
->>> that you had a failed command. In that case, the drive is in error state per
->>> ATA specs and stops all communication until a read log 10h command is issued.
->>> So you should never ever see 2 error IRQs one after the other. If you do, it
->>> very likely means that you have buggy hardware.
->>>
->>> How do you get into this situation ? What adapter and disk are you using ?
->>>
->>
->>   > How do you get into this situation ?
->> The first IRQ is io error, the second IRQ is disk link flash break.
-> 
-> What does "link flash break" mean ?
-> 
->>
->>   > What adapter and disk are you using ?
->> It is a disk developed by our company, but we think the same issue
->> exists when using other disks.
-> 
-> As I said, I find this situation highly suspect because if the first IRQ was to
-> signal an IO error that the drive reported, then per ATA specifications, the
-> drive should be in error mode and should NOT have transmitted any other FIS
-> after the SDB FIS that signaled the error. Nothing at all should come after that
-> error SDB FIS, until the host issues a read log 10h to get thee drive out of
-> error state.
-> 
-> If this is a prototype device, I would recommend that you take an ATA bus trace
-> and verify the FIS traffic. Something fishy is going on with the drive in my
-> opinion.
-> 
+Great,
 
-Thank you for your patient explanation. I'm sorry I didn't explain the
-problem clearly before. After discussing with my colleagues who know
-more about dirvers, Let me re-describe the problem.
+> I think Christian preferred an explicit assertion that ensures we do not
+> accidentally hand out pidfds for non-tg-leaders. The question is thus whether
+> there is an easy way to assert this even for reaped tasks?
+> Or whether there is a simple way to flag a pid that was used as tg-leader?
 
-The problem`s situation is the SATA link is quickly disconnected and 
-connected. For example, when an I/O error is processed in error handling 
-thread, the disk is manually removed and inserted, and the AHCI chip 
-reports a hot plug interrupt.
+I do not see how can we check if a detached pid was a leader pid, and I don't
+think it makes sense to add a new member into struct pid...
 
-This scenario is not just an NCQ error, but a disk is removed and 
-quickly inserted before the error processing is completed. For the error 
-handling process, the disk status needs to be restored after the error 
-handling is complete.
+> Or, ultimately, whether this has limited use and we should just use
+> `__pidfd_prepare()`?
 
--- 
-Thanks,
-Nan
+Well, if you confirm that sk->sk_peer_pid and scm->pid are always initialized with
+task_tgid(current), I'd certainly prefer this approach unless Christian objects.
+
+Oleg.
 
