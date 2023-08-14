@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5715577BABE
+	by mail.lfdr.de (Postfix) with ESMTP id A0B6277BABF
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbjHNN44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 09:56:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58682 "EHLO
+        id S231708AbjHNN45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 09:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231650AbjHNN4e (ORCPT
+        with ESMTP id S231734AbjHNN4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 09:56:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA0110D5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:56:32 -0700 (PDT)
+        Mon, 14 Aug 2023 09:56:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB4BDE7D
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:56:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7316D61B36
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:56:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 852F1C433C8;
-        Mon, 14 Aug 2023 13:56:31 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 49CA4614E1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:56:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BB09C433C7;
+        Mon, 14 Aug 2023 13:56:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692021391;
-        bh=x4pLT4i5FibUotLimiVEBeM0gsJhjBOcMTmrY0w2qmc=;
+        s=k20201202; t=1692021394;
+        bh=KCNRKYbOYvcCK2lDhLtKnqx5BWVVyZgtzNzIZsf31hw=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=aculld8D7BcKHRQygtDTdI3aSfkcwfGFlmh0hRuWcM/e/Gl4IpVhlTFRuraPDqxdn
-         o5v5trXZj8+1OuC0B3JAJzmy0xialXb/NZfONnmFjITHtxn5HWszITCMyinrwCTRiR
-         AZsnIw7WW4OwO7j3WYLbvgk18akYcJQy22ubo0p1+bQuB+QK0KlDpzud5Tlckvck/x
-         SndbnjQdte8kP8quANc3A79vJiri35z4PSc2xTk7L20x8/n6n9M8NXy4CLSJpysdi8
-         vHgVVAd/m0uAhQcFiAIlX6h+IRDm7h4BghhgXt28v7cgnfdBrIKL4w23M3ZTCzFuJy
-         yyMEtLVCfYLsg==
+        b=oLanxg81h8wzxSFfjiMBt1yoiSu8YSvc9srjoFWe0LfBiHGqoHmhc5pKZ3SopmXuF
+         r91joWrWfmZmsdkZjrPNFOi6MA0MsgGMHDruwZlS3PZ6ZvsfsjY7VsHx6XM2U+WY0e
+         iHx+csgQTr51bFy8mbt056mEhbfU1qRPjwAwm15cOIz7N8iSu5dLO/y5tOUwJbTZg8
+         o/980R/wAJ5kZ0OV2JxU4nyaRFhZ6ippQc7nVfPYz0vCMyrJgbL9NcW8C6Hykq5KWW
+         hh/IPz1YUUNUvxpoulM8FhO81PTt2qDHdCC3ppdngbyA7uMpNTICbNM0oaAqUqlCGt
+         wTl545/ZmlGkQ==
 From:   Maxime Ripard <mripard@kernel.org>
-Date:   Mon, 14 Aug 2023 15:56:14 +0200
-Subject: [PATCH RFC 02/13] drm/connector: hdmi: Create a custom state
+Date:   Mon, 14 Aug 2023 15:56:15 +0200
+Subject: [PATCH RFC 03/13] drm/connector: hdmi: Add Broadcast RGB property
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230814-kms-hdmi-connector-state-v1-2-048054df3654@kernel.org>
+Message-Id: <20230814-kms-hdmi-connector-state-v1-3-048054df3654@kernel.org>
 References: <20230814-kms-hdmi-connector-state-v1-0-048054df3654@kernel.org>
 In-Reply-To: <20230814-kms-hdmi-connector-state-v1-0-048054df3654@kernel.org>
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -49,234 +49,342 @@ To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
 Cc:     Hans Verkuil <hverkuil@xs4all.nl>, linux-kernel@vger.kernel.org,
         dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8341; i=mripard@kernel.org;
- h=from:subject:message-id; bh=x4pLT4i5FibUotLimiVEBeM0gsJhjBOcMTmrY0w2qmc=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDCm3jNoMNy5+vEWst8j9w/31qV8va57LZdJb/TMi36xmR
- mMN3+E3HaUsDGJcDLJiiiwxwuZL4k7Net3JxjcPZg4rE8gQBi5OAZjI1mZGhmcTttSI7lv+wWGz
- 21ee9Q++Nk677/80hPvK6lUbF1+JdFzNyDBhdcgfjvthnBLbVm9Yayx9U3Jd5UT7Q0cnWRXzNf7
- ilmcHAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=11678; i=mripard@kernel.org;
+ h=from:subject:message-id; bh=KCNRKYbOYvcCK2lDhLtKnqx5BWVVyZgtzNzIZsf31hw=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDCm3jNreOuz1d1po68Ete/mWSVJyx+dD610/LE+x7rj4J
+ tfk03H9jlIWBjEuBlkxRZYYYfMlcadmve5k45sHM4eVCWQIAxenAEykzpaR4ckiEdmovKn7Vj36
+ 1HFh7eXNzJOf9cSUPtWadyCb/6DRrAWMDC/FeDOW/1Q/YrDmW5/1HXNhm4i1GSa7ll3Z82fmzb7
+ 3v/kA
 X-Developer-Key: i=mripard@kernel.org; a=openpgp;
  fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The next features we will need to share across drivers will need to
-store some parameters for drivers to use, such as the selected output
-format.
+The i915 driver has a property to force the RGB range of an HDMI output.
+The vc4 driver then implemented the same property with the same
+semantics. KWin has support for it, and a PR for mutter is also there to
+support it.
 
-Let's create a new connector state dedicated to HDMI controllers, that
-will eventually store everything we need.
+Both drivers implementing the same property with the same semantics,
+plus the userspace having support for it, is proof enough that it's
+pretty much a de-facto standard now and we can provide helpers for it.
+
+Let's plumb it into the newly created HDMI connector.
 
 Signed-off-by: Maxime Ripard <mripard@kernel.org>
 ---
- drivers/gpu/drm/drm_hdmi_connector.c | 145 +++++++++++++++++++++++++++++++++++
- include/drm/drm_connector.h          |  26 +++++++
- 2 files changed, 171 insertions(+)
+ drivers/gpu/drm/drm_hdmi_connector.c | 167 +++++++++++++++++++++++++++++++++++
+ include/drm/drm_connector.h          |  49 ++++++++++
+ 2 files changed, 216 insertions(+)
 
 diff --git a/drivers/gpu/drm/drm_hdmi_connector.c b/drivers/gpu/drm/drm_hdmi_connector.c
-index 62f01dd2e6df..ff825c053b27 100644
+index ff825c053b27..2b6b9d444774 100644
 --- a/drivers/gpu/drm/drm_hdmi_connector.c
 +++ b/drivers/gpu/drm/drm_hdmi_connector.c
-@@ -1,10 +1,155 @@
+@@ -1,8 +1,11 @@
  // SPDX-License-Identifier: GPL-2.0+
  
-+#include <drm/drm_atomic_state_helper.h>
++#include <drm/drm_atomic.h>
+ #include <drm/drm_atomic_state_helper.h>
  #include <drm/drm_connector.h>
++#include <drm/drm_crtc.h>
  #include <drm/drm_mode.h>
++#include <drm/drm_print.h>
  
  #include <linux/export.h>
  
-+/**
-+ * __drm_atomic_helper_hdmi_connector_reset() - Initializes all @drm_hdmi_connector_state resources
-+ * @hdmi_connector: the connector this state refers to
-+ * @new_hdmi_state: the HDMI connector state to initialize
-+ *
-+ * Initializes all relevant resources from a @drm_hdmi_connector_state
-+ * without actually allocating it. This is useful for drivers that
-+ * subclass @drm_hdmi_connector_state.
-+ */
-+void __drm_atomic_helper_hdmi_connector_reset(struct drm_hdmi_connector *hdmi_connector,
-+					      struct drm_hdmi_connector_state *new_hdmi_state)
-+{
-+	struct drm_connector *connector = &hdmi_connector->base;
+@@ -21,6 +24,8 @@ void __drm_atomic_helper_hdmi_connector_reset(struct drm_hdmi_connector *hdmi_co
+ 	struct drm_connector *connector = &hdmi_connector->base;
+ 
+ 	__drm_atomic_helper_connector_reset(connector, &new_hdmi_state->base);
 +
-+	__drm_atomic_helper_connector_reset(connector, &new_hdmi_state->base);
-+}
-+EXPORT_SYMBOL(__drm_atomic_helper_hdmi_connector_reset);
-+
-+/**
-+ * drm_atomic_helper_hdmi_connector_reset() - Create a @drm_hdmi_connector_state object
-+ * @connector: the parent connector
-+ *
-+ * This helper is meant to be the default &drm_connector_funcs.reset
-+ * implementation for @drm_hdmi_connector that don't subclass
-+ * @drm_hdmi_connector_state.
-+ */
-+void drm_atomic_helper_hdmi_connector_reset(struct drm_connector *connector)
-+{
-+	struct drm_hdmi_connector *hdmi_connector =
-+		connector_to_hdmi_connector(connector);
++	new_hdmi_state->broadcast_rgb = DRM_HDMI_BROADCAST_RGB_AUTO;
+ }
+ EXPORT_SYMBOL(__drm_atomic_helper_hdmi_connector_reset);
+ 
+@@ -68,7 +73,11 @@ __drm_atomic_helper_hdmi_connector_duplicate_state(struct drm_hdmi_connector *hd
+ 						   struct drm_hdmi_connector_state *new_hdmi_state)
+ {
+ 	struct drm_connector *connector = &hdmi_connector->base;
 +	struct drm_connector_state *old_state = connector->state;
 +	struct drm_hdmi_connector_state *old_hdmi_state =
 +		connector_state_to_hdmi_connector_state(old_state);
-+	struct drm_hdmi_connector_state *new_hdmi_state;
-+
-+	if (old_state)
-+		__drm_atomic_helper_connector_destroy_state(old_state);
-+
-+	kfree(old_hdmi_state);
-+
-+	new_hdmi_state = kzalloc(sizeof(*new_hdmi_state), GFP_KERNEL);
-+	if (!new_hdmi_state)
-+		return;
-+
-+	__drm_atomic_helper_hdmi_connector_reset(hdmi_connector, new_hdmi_state);
-+}
-+EXPORT_SYMBOL(drm_atomic_helper_hdmi_connector_reset);
-+
+ 
++	new_hdmi_state->broadcast_rgb = old_hdmi_state->broadcast_rgb;
+ 	__drm_atomic_helper_connector_duplicate_state(connector, &new_hdmi_state->base);
+ }
+ EXPORT_SYMBOL(__drm_atomic_helper_hdmi_connector_duplicate_state);
+@@ -136,6 +145,143 @@ void drm_atomic_helper_hdmi_connector_destroy_state(struct drm_connector *connec
+ }
+ EXPORT_SYMBOL(drm_atomic_helper_hdmi_connector_destroy_state);
+ 
 +/**
-+ * __drm_atomic_helper_hdmi_connector_duplicate_state() - Copies all @drm_hdmi_connector_state resources
-+ * @hdmi_connector: the connector this state refers to
-+ * @new_hdmi_state: the HDMI connector state to copy to
-+ *
-+ * Copies all relevant resources from a @drm_hdmi_connector_state to a
-+ * new one without actually allocating it. This is useful for drivers
-+ * that subclass @drm_hdmi_connector_state.
-+ */
-+void
-+__drm_atomic_helper_hdmi_connector_duplicate_state(struct drm_hdmi_connector *hdmi_connector,
-+						   struct drm_hdmi_connector_state *new_hdmi_state)
-+{
-+	struct drm_connector *connector = &hdmi_connector->base;
-+
-+	__drm_atomic_helper_connector_duplicate_state(connector, &new_hdmi_state->base);
-+}
-+EXPORT_SYMBOL(__drm_atomic_helper_hdmi_connector_duplicate_state);
-+
-+/**
-+ * drm_atomic_helper_hdmi_connector_duplicate_state() - Duplicate a @drm_hdmi_connector_state object
-+ * @connector: the parent connector this state refers to
-+ *
-+ * This helper is meant to be the default
-+ * &drm_connector_funcs.atomic_duplicate_state implementation for
-+ * @drm_hdmi_connector that don't subclass @drm_hdmi_connector_state.
-+ */
-+struct drm_connector_state *
-+drm_atomic_helper_hdmi_connector_duplicate_state(struct drm_connector *connector)
-+{
-+	struct drm_hdmi_connector *hdmi_connector =
-+		connector_to_hdmi_connector(connector);
-+	struct drm_hdmi_connector_state *new_hdmi_state;
-+
-+	new_hdmi_state = kzalloc(sizeof(*new_hdmi_state), GFP_KERNEL);
-+	if (!new_hdmi_state)
-+		return NULL;
-+
-+	__drm_atomic_helper_hdmi_connector_duplicate_state(hdmi_connector, new_hdmi_state);
-+
-+	return &new_hdmi_state->base;
-+}
-+EXPORT_SYMBOL(drm_atomic_helper_hdmi_connector_duplicate_state);
-+
-+/**
-+ * __drm_atomic_helper_hdmi_connector_destroy_state() - Releases all @drm_hdmi_connector_state resources
-+ * @hdmi_state: the HDMI connector state to release
-+ *
-+ * Release all resources stored in @drm_hdmi_connector_state without
-+ * actually freeing it. This is useful for drivers that subclass
-+ * @drm_hdmi_connector_state.
-+ */
-+void __drm_atomic_helper_hdmi_connector_destroy_state(struct drm_hdmi_connector_state *hdmi_state)
-+{
-+	__drm_atomic_helper_connector_destroy_state(&hdmi_state->base);
-+}
-+EXPORT_SYMBOL(__drm_atomic_helper_hdmi_connector_destroy_state);
-+
-+/**
-+ * drm_atomic_helper_hdmi_connector_destroy_state() - Destroy a @drm_hdmi_connector_state object
++ * drm_atomic_helper_hdmi_connector_get_property() - Reads out HDMI connector properties
 + * @connector: the parent connector this state refers to
 + * @state: the parent connector state to destroy
++ * @property: Property instance being queried
++ * @val: Raw value of the property to read into
 + *
-+ * Destroys an HDMI connector state previously created by
-+ * &drm_atomic_helper_hdmi_connector_reset() or
-+ * &drm_atomic_helper_hdmi_connector_duplicate_state().
++ * Read out a @drm_connector_state property value.
 + *
 + * This helper is meant to be the default
-+ * &drm_connector_funcs.atomic_destroy_state implementation for
-+ * @drm_hdmi_connector that don't subclass @drm_hdmi_connector_state.
++ * &drm_connector_funcs.atomic_get_property implementation for
++ * @drm_hdmi_connector.
 + */
-+void drm_atomic_helper_hdmi_connector_destroy_state(struct drm_connector *connector,
-+						    struct drm_connector_state *state)
++int drm_atomic_helper_hdmi_connector_get_property(struct drm_connector *connector,
++						  const struct drm_connector_state *state,
++						  struct drm_property *property,
++						  uint64_t *val)
 +{
-+	struct drm_hdmi_connector_state *hdmi_state =
++	const struct drm_hdmi_connector *hdmi_connector =
++		connector_to_hdmi_connector(connector);
++	const struct drm_hdmi_connector_state *hdmi_state =
 +		connector_state_to_hdmi_connector_state(state);
++	struct drm_device *drm = connector->dev;
 +
-+	__drm_atomic_helper_hdmi_connector_destroy_state(hdmi_state);
-+	kfree(hdmi_state);
++	if (property == hdmi_connector->broadcast_rgb_property) {
++		*val = hdmi_state->broadcast_rgb;
++	} else {
++		drm_dbg(drm, "Unknown property [PROP:%d:%s]\n",
++			property->base.id, property->name);
++		return -EINVAL;
++	}
++
++	return 0;
 +}
-+EXPORT_SYMBOL(drm_atomic_helper_hdmi_connector_destroy_state);
++EXPORT_SYMBOL(drm_atomic_helper_hdmi_connector_get_property);
 +
 +/**
-+ * drm_atomic_helper_hdmi_connector_print_state - Prints a @drm_hdmi_connector_state
-+ * @p: output printer
-+ * @state: Connector state to print
++ * drm_atomic_helper_hdmi_connector_set_property() - Decodes HDMI connector properties
++ * @connector: the parent connector this state refers to
++ * @state: the parent connector state to destroy
++ * @property: Property instance being queried
++ * @val: Raw value of the property to decode
 + *
-+ * Default implementation of @drm_connector_funcs.atomic_print_state for
-+ * a @drm_hdmi_connector_state.
++ * Decodes a property into an @drm_connector_state.
++ *
++ * This helper is meant to be the default
++ * &drm_connector_funcs.atomic_set_property implementation for
++ * @drm_hdmi_connector.
 + */
-+void drm_atomic_helper_hdmi_connector_print_state(struct drm_printer *p,
-+						  const struct drm_connector_state *state)
++int drm_atomic_helper_hdmi_connector_set_property(struct drm_connector *connector,
++						  struct drm_connector_state *state,
++						  struct drm_property *property,
++						  uint64_t val)
 +{
++	const struct drm_hdmi_connector *hdmi_connector =
++		connector_to_hdmi_connector(connector);
++	struct drm_hdmi_connector_state *hdmi_state =
++		connector_state_to_hdmi_connector_state(state);
++	struct drm_device *drm = connector->dev;
++
++	if (property == hdmi_connector->broadcast_rgb_property) {
++		hdmi_state->broadcast_rgb = val;
++	} else {
++		drm_dbg(drm, "Unknown property [PROP:%d:%s]\n",
++			property->base.id, property->name);
++		return -EINVAL;
++	}
++
++	return 0;
 +}
-+EXPORT_SYMBOL(drm_atomic_helper_hdmi_connector_print_state);
++EXPORT_SYMBOL(drm_atomic_helper_hdmi_connector_set_property);
++
++/**
++ * drm_atomic_helper_hdmi_connector_atomic_check() - Helper to check HDMI connector atomic state
++ * @connector: the parent connector this state refers to
++ * @state: the parent connector state to check
++ *
++ * Provides a default connector state check handler for HDMI connectors.
++ * Checks that a desired connector update is valid, and updates various
++ * fields of derived state.
++ *
++ * Drivers that subclass @drm_hdmi_connector_state may still wish to
++ * call this function to avoid duplication of error checking code.
++ *
++ * RETURNS:
++ * Zero on success, or an errno code otherwise.
++ */
++int drm_atomic_helper_hdmi_connector_atomic_check(struct drm_connector *connector,
++						  struct drm_atomic_state *state)
++{
++	struct drm_connector_state *old_state =
++		drm_atomic_get_old_connector_state(state, connector);
++	struct drm_hdmi_connector_state *old_hdmi_state =
++		connector_state_to_hdmi_connector_state(old_state);
++	struct drm_connector_state *new_state =
++		drm_atomic_get_new_connector_state(state, connector);
++	struct drm_hdmi_connector_state *new_hdmi_state =
++		connector_state_to_hdmi_connector_state(new_state);
++
++	if (old_hdmi_state->broadcast_rgb != new_hdmi_state->broadcast_rgb) {
++		struct drm_crtc *crtc = new_state->crtc;
++		struct drm_crtc_state *crtc_state;
++
++		crtc_state = drm_atomic_get_crtc_state(state, crtc);
++		if (IS_ERR(crtc_state))
++			return PTR_ERR(crtc_state);
++
++		crtc_state->mode_changed = true;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL(drm_atomic_helper_hdmi_connector_atomic_check);
++
++static const struct drm_prop_enum_list broadcast_rgb_names[] = {
++	{ DRM_HDMI_BROADCAST_RGB_AUTO, "Automatic" },
++	{ DRM_HDMI_BROADCAST_RGB_FULL, "Full" },
++	{ DRM_HDMI_BROADCAST_RGB_LIMITED, "Limited 16:235" },
++};
++
++/*
++ * drm_hdmi_connector_get_broadcast_rgb_name - Return a string for HDMI connector RGB broadcast selection
++ * @broadcast_rgb: Broadcast RGB selection to compute name of
++ *
++ * Returns: the name of the Broadcast RGB selection, or NULL if the type
++ * is not valid.
++ */
++const char *
++drm_hdmi_connector_get_broadcast_rgb_name(enum drm_hdmi_broadcast_rgb broadcast_rgb)
++{
++	if (broadcast_rgb > DRM_HDMI_BROADCAST_RGB_LIMITED)
++		return NULL;
++
++	return broadcast_rgb_names[broadcast_rgb].name;
++}
++EXPORT_SYMBOL(drm_hdmi_connector_get_broadcast_rgb_name);
 +
  /**
-  * drmm_hdmi_connector_init - Init a preallocated HDMI connector
-  * @dev: DRM device
+  * drm_atomic_helper_hdmi_connector_print_state - Prints a @drm_hdmi_connector_state
+  * @p: output printer
+@@ -147,6 +293,11 @@ EXPORT_SYMBOL(drm_atomic_helper_hdmi_connector_destroy_state);
+ void drm_atomic_helper_hdmi_connector_print_state(struct drm_printer *p,
+ 						  const struct drm_connector_state *state)
+ {
++	const struct drm_hdmi_connector_state *hdmi_state =
++		connector_state_to_hdmi_connector_state(state);
++
++	drm_printf(p, "\tbroadcast_rgb=%s\n",
++		   drm_hdmi_connector_get_broadcast_rgb_name(hdmi_state->broadcast_rgb));
+ }
+ EXPORT_SYMBOL(drm_atomic_helper_hdmi_connector_print_state);
+ 
+@@ -175,6 +326,7 @@ int drmm_hdmi_connector_init(struct drm_device *dev,
+ 			     struct i2c_adapter *ddc)
+ {
+ 	struct drm_connector *connector = &hdmi_connector->base;
++	struct drm_property *prop;
+ 	int ret;
+ 
+ 	if (connector_type != DRM_MODE_CONNECTOR_HDMIA ||
+@@ -185,6 +337,21 @@ int drmm_hdmi_connector_init(struct drm_device *dev,
+ 	if (ret)
+ 		return ret;
+ 
++	prop = hdmi_connector->broadcast_rgb_property;
++	if (!prop) {
++		prop = drm_property_create_enum(dev, DRM_MODE_PROP_ENUM,
++						"Broadcast RGB",
++						broadcast_rgb_names,
++						ARRAY_SIZE(broadcast_rgb_names));
++		if (!prop)
++			return -EINVAL;
++
++		hdmi_connector->broadcast_rgb_property = prop;
++	}
++
++	drm_object_attach_property(&connector->base, prop,
++				   DRM_HDMI_BROADCAST_RGB_AUTO);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL(drmm_hdmi_connector_init);
 diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-index 1859b74083f5..0aa662e0a6ea 100644
+index 0aa662e0a6ea..24a0d33e5148 100644
 --- a/include/drm/drm_connector.h
 +++ b/include/drm/drm_connector.h
-@@ -2042,6 +2042,32 @@ void drm_connector_attach_privacy_screen_provider(
+@@ -2042,11 +2042,44 @@ void drm_connector_attach_privacy_screen_provider(
  	struct drm_connector *connector, struct drm_privacy_screen *priv);
  void drm_connector_update_privacy_screen(const struct drm_connector_state *connector_state);
  
-+struct drm_hdmi_connector_state {
++/**
++ * enum drm_hdmi_broadcast_rgb - Broadcast RGB Selection for a @drm_hdmi_connector
++ *
++ * This enum is used to track broadcast RGB selection. There are no
++ * separate #defines for the uapi!
++ */
++enum drm_hdmi_broadcast_rgb {
 +	/**
-+	 * @base: Base Connector State
++	 * @DRM_HDMI_BROADCAST_RGB_AUTO: The RGB range is selected
++	 * automatically based on the mode.
 +	 */
-+	struct drm_connector_state base;
++	DRM_HDMI_BROADCAST_RGB_AUTO,
++
++	/**
++	 * @DRM_HDMI_BROADCAST_RGB_FULL: Full range RGB is forced.
++	 */
++	DRM_HDMI_BROADCAST_RGB_FULL,
++
++	/**
++	 * @DRM_HDMI_BROADCAST_RGB_FULL: Limited range RGB is forced.
++	 */
++	DRM_HDMI_BROADCAST_RGB_LIMITED,
 +};
 +
-+#define connector_state_to_hdmi_connector_state(state) \
-+	container_of_const(state, struct drm_hdmi_connector_state, base)
++const char *
++drm_hdmi_connector_get_broadcast_rgb_name(enum drm_hdmi_broadcast_rgb broadcast_rgb);
 +
-+struct drm_hdmi_connector;
-+
-+void __drm_atomic_helper_hdmi_connector_reset(struct drm_hdmi_connector *hdmi_connector,
-+					      struct drm_hdmi_connector_state *new_hdmi_state);
-+void drm_atomic_helper_hdmi_connector_reset(struct drm_connector *connector);
-+void
-+__drm_atomic_helper_hdmi_connector_duplicate_state(struct drm_hdmi_connector *hdmi_connector,
-+						   struct drm_hdmi_connector_state *new_hdmi_state);
-+struct drm_connector_state *
-+drm_atomic_helper_hdmi_connector_duplicate_state(struct drm_connector *connector);
-+void __drm_atomic_helper_hdmi_connector_destroy_state(struct drm_hdmi_connector_state *hdmi_state);
-+void drm_atomic_helper_hdmi_connector_destroy_state(struct drm_connector *connector,
-+						    struct drm_connector_state *state);
-+void drm_atomic_helper_hdmi_connector_print_state(struct drm_printer *p,
-+						  const struct drm_connector_state *state);
-+
- struct drm_hdmi_connector {
+ struct drm_hdmi_connector_state {
  	/**
+ 	 * @base: Base Connector State
+ 	 */
+ 	struct drm_connector_state base;
++
++	/**
++	 * @broadcast_rgb: Connector property to pass the Broadcast RGB
++	 * selection value.
++	 */
++	enum drm_hdmi_broadcast_rgb broadcast_rgb;
+ };
+ 
+ #define connector_state_to_hdmi_connector_state(state) \
+@@ -2065,6 +2098,16 @@ drm_atomic_helper_hdmi_connector_duplicate_state(struct drm_connector *connector
+ void __drm_atomic_helper_hdmi_connector_destroy_state(struct drm_hdmi_connector_state *hdmi_state);
+ void drm_atomic_helper_hdmi_connector_destroy_state(struct drm_connector *connector,
+ 						    struct drm_connector_state *state);
++int drm_atomic_helper_hdmi_connector_get_property(struct drm_connector *connector,
++						  const struct drm_connector_state *state,
++						  struct drm_property *property,
++						  uint64_t *val);
++int drm_atomic_helper_hdmi_connector_set_property(struct drm_connector *connector,
++						  struct drm_connector_state *state,
++						  struct drm_property *property,
++						  uint64_t val);
++int drm_atomic_helper_hdmi_connector_atomic_check(struct drm_connector *connector,
++						  struct drm_atomic_state *state);
+ void drm_atomic_helper_hdmi_connector_print_state(struct drm_printer *p,
+ 						  const struct drm_connector_state *state);
+ 
+@@ -2073,6 +2116,12 @@ struct drm_hdmi_connector {
  	 * @base: Base Connector
+ 	 */
+ 	struct drm_connector base;
++
++	/**
++	 * @broadcast_rgb_property: Connector property to set the
++	 * Broadcast RGB selection to output with.
++	 */
++	struct drm_property *broadcast_rgb_property;
+ };
+ 
+ #define connector_to_hdmi_connector(connector) \
 
 -- 
 2.41.0
