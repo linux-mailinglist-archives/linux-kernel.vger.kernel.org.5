@@ -2,420 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A0C77BBC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D27F77BBCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbjHNOec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 10:34:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51798 "EHLO
+        id S230500AbjHNOfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 10:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbjHNOeF (ORCPT
+        with ESMTP id S230436AbjHNOfF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 10:34:05 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB3AE4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:34:04 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6bcb5df95c5so3644141a34.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:34:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692023643; x=1692628443;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VMCYSTnI0EaprvPrU8AJ07Nk7OqdkIqQaqivREr/cT8=;
-        b=QRd3C0YnJaysian8xt/KxSBaqAEuHPSaeFv3ixRchVmcK0PySTPYp5hTqK86LfyoCI
-         b259L7WTVX1D4ciGHvnNgXKrNHldN1ir7dcGWXptL6A6iMrwYq4fUaL6jbEf4tyzwsDy
-         QS+yUfW0E+6a35PN3oihVshMJcPGAZRrAJy5s6000+wdTlEZI02gpDFrUQdRhX0Nqqu8
-         zaIy4Y89WMiIeYpjozBYBa3ylUGEcSrVqzpwNRqxU5uasZa9JKwVPgTXlGiH3ncdgxUM
-         JgnSW9e+YFprma05b5tTQZqQDT4+n3PcTdkKnMHCtDjXQ+J9KgiFSJT1RyoS4vfmPPI8
-         vzsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692023643; x=1692628443;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VMCYSTnI0EaprvPrU8AJ07Nk7OqdkIqQaqivREr/cT8=;
-        b=eOrunpeeclgs8ZLJb55VN6iQXi+QO8rqfho1QdipuBbhBKrjpMuEtqAjhwnXA5OZi3
-         BLvC3jrSbFaohxemn0eSFibHxSN8J48a1ABuwUUFxWslj0vre8yDQdvfrGTWZTGzAz8s
-         YTKKXVr8oFWamqY6cKY4ZdiOvBYX9j2eu8eeI5k7jeF5D0NC9XJnhj2I4/iGI65DR6Pq
-         +7/mZc2FOyg0FYAIeyPNRPJw/bCQ4+63r5SX33lmfgcmanZ5ZUkk8hbpHeRcd6TIRQOk
-         tL/9i3yC7vEFJ589wakcFUZdro9fKQTppc3UJyMxhLjI9KBQbE7DpILR/1hAEAFQQ2d9
-         B0nQ==
-X-Gm-Message-State: AOJu0YyPBNLXT0Q7BVrL4GtrIIIec+SmDYaUZ8MVTC55ofbwAXotqbZY
-        Ncb84Ga+np+2Zh56mbSqzeB/hui9J6bgtND72RZZ7koJFEQ=
-X-Google-Smtp-Source: AGHT+IGBnw15mEd8LCUpANzlvT1pKn1oKCqBOba0YRURUjQhSKCMPqrZVG3jdyFGkT+kCkNQv89nkEcisSZIw6yZoVQ=
-X-Received: by 2002:a05:6870:b01a:b0:17f:7388:4c69 with SMTP id
- y26-20020a056870b01a00b0017f73884c69mr10778590oae.30.1692023642423; Mon, 14
- Aug 2023 07:34:02 -0700 (PDT)
+        Mon, 14 Aug 2023 10:35:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5AE8E4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:35:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692023704; x=1723559704;
+  h=date:from:to:cc:subject:message-id:reply-to:references:
+   mime-version:in-reply-to;
+  bh=gRZPy6mHGf74LzmsrxabP7mm6fPg22EAQVGoqIlfHfk=;
+  b=GpAFxk16Rs7qVsfDbJ/LaQIsh+H1fIP3y3V9b/PIUwag95EjzLpzwzrW
+   AESBpntk21uVmbtlgwVozjos4AfceT0Xlz9c0qVaDI/VDb1V7Nb40rg+u
+   UEXLocaLWKKW4Xp+If0B0/nZ4LMaEiThYL9W9XND+bd4BUoiB/zL9vuJY
+   lIBrbipqkMramJVspWB7ixwFKmqE74mRXzv1cYRy9CReEiW97zpd597/F
+   Sp7h6+vh7+4oEdogRnaSLZl8nRCcLFhYgd3yOkLpy0BFTMNmiJ4MrsOH5
+   TfGi/r98xgVjrO/oNohJFY4tw2jzjVq6Fx4x+hTEn6XiWoowPYSPl28H4
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="372045328"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="372045328"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 07:35:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="907259022"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="907259022"
+Received: from ideak-desk.fi.intel.com ([10.237.72.78])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 07:35:00 -0700
+Date:   Mon, 14 Aug 2023 17:35:13 +0300
+From:   Imre Deak <imre.deak@intel.com>
+To:     Linux regressions mailing list <regressions@lists.linux.dev>,
+        Jani Nikula <jani.nikula@intel.com>
+Cc:     Mikhail Rudenko <mike.rudenko@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [REGRESSION] HDMI connector detection broken in 6.3 on Intel(R)
+ Celeron(R) N3060 integrated graphics
+Message-ID: <ZNo7oXeH0JK+4GPG@ideak-desk.fi.intel.com>
+Reply-To: imre.deak@intel.com
+References: <87v8dmr6ty.fsf@gmail.com>
+ <f32b4636-969c-3b9e-6802-5991f511739e@leemhuis.info>
+ <87il9l2ymf.fsf@gmail.com>
+ <3df95e6d-8237-1c43-e220-a9bdb5d6e044@leemhuis.info>
 MIME-Version: 1.0
-References: <20230814073438.10682-1-Arvind.Yadav@amd.com> <20230814073438.10682-2-Arvind.Yadav@amd.com>
-In-Reply-To: <20230814073438.10682-2-Arvind.Yadav@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 14 Aug 2023 10:33:51 -0400
-Message-ID: <CADnq5_N2YzOv4naA_etwQ_C5NkNYwV-PtBAJ3UKEXp6RbdQojQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] drm/amdgpu: Add new api to switch on/off power
- profile mode
-To:     Arvind Yadav <Arvind.Yadav@amd.com>
-Cc:     Christian.Koenig@amd.com, alexander.deucher@amd.com,
-        shashank.sharma@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3df95e6d-8237-1c43-e220-a9bdb5d6e044@leemhuis.info>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 3:35=E2=80=AFAM Arvind Yadav <Arvind.Yadav@amd.com>=
- wrote:
->
-> This patch adds a function which will allow to
-> change the GPU power profile based on a submitted job.
-> This can optimize the power performance when the
-> workload is on.
+On Sun, Aug 13, 2023 at 03:41:30PM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
+Hi,
 
-A few minor comments inline below.  One thing to double check is that
-we properly cancel this work before a suspend or driver unload.  We
-need to make sure this is taken care of before we take down the SMU.
+> On 11.08.23 20:10, Mikhail Rudenko wrote:
+> > On 2023-08-11 at 08:45 +02, Thorsten Leemhuis <regressions@leemhuis.info> wrote:
+> >> On 10.08.23 21:33, Mikhail Rudenko wrote:
+> >>> The following is a copy an issue I posted to drm/i915 gitlab [1] two
+> >>> months ago. I repost it to the mailing lists in hope that it will help
+> >>> the right people pay attention to it.
+> >>
+> >> Thx for your report. Wonder why Dmitry (who authored a4e771729a51) or
+> >> Thomas (who committed it) it didn't look into this, but maybe the i915
+> >> devs didn't forward the report to them.
+> 
+> For the record: they did, and Jani mentioned already. Sorry, should have
+> phrased this differently.
+> 
+> >> Let's see if these mails help. Just wondering: does reverting
+> >> a4e771729a51 from 6.5-rc5 or drm-tip help as well?
+> > 
+> > I've redone my tests with 6.5-rc5, and here are the results:
+> > (1) 6.5-rc5 -> still affected
+> > (2) 6.5-rc5 + revert a4e771729a51 -> not affected
+> > (3) 6.5-rc5 + two patches [1][2] suggested on i915 gitlab by @ideak -> not affected (!)
+> > 
+> > Should we somehow tell regzbot about (3)?
+> 
+> That's good to know, thx. But the more important things are:
+> 
+> * When will those be merged? They are not yet in next yet afaics, so it
+> might take some time to mainline them, especially at this point of the
+> devel cycle. Imre, could you try to prod the right people so that these
+> are ideally upstreamed rather sooner than later, as they fix a regression?
 
-Alex
+I think the patches ([1] and [2]) could be merged via the drm-intel-next
+(drm-intel-fixes) tree Cc'ing also stable. Jani, is this ok?
 
->
-> Cc: Shashank Sharma <shashank.sharma@amd.com>
-> Cc: Christian Koenig <christian.koenig@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
-> ---
->  drivers/gpu/drm/amd/amdgpu/Makefile           |   2 +-
->  drivers/gpu/drm/amd/amdgpu/amdgpu.h           |   3 +
->  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |   2 +
->  drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c  | 156 ++++++++++++++++++
->  drivers/gpu/drm/amd/include/amdgpu_workload.h |  44 +++++
->  5 files changed, 206 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
->  create mode 100644 drivers/gpu/drm/amd/include/amdgpu_workload.h
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/Makefile b/drivers/gpu/drm/amd/am=
-dgpu/Makefile
-> index 415a7fa395c4..6a9e187d61e1 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/Makefile
-> +++ b/drivers/gpu/drm/amd/amdgpu/Makefile
-> @@ -60,7 +60,7 @@ amdgpu-y +=3D amdgpu_device.o amdgpu_kms.o \
->         amdgpu_umc.o smu_v11_0_i2c.o amdgpu_fru_eeprom.o amdgpu_rap.o \
->         amdgpu_fw_attestation.o amdgpu_securedisplay.o \
->         amdgpu_eeprom.o amdgpu_mca.o amdgpu_psp_ta.o amdgpu_lsdma.o \
-> -       amdgpu_ring_mux.o
-> +       amdgpu_ring_mux.o amdgpu_workload.o
->
->  amdgpu-$(CONFIG_PROC_FS) +=3D amdgpu_fdinfo.o
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/am=
-dgpu/amdgpu.h
-> index 02b827785e39..1939fa1af8a6 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> @@ -107,6 +107,7 @@
->  #include "amdgpu_fdinfo.h"
->  #include "amdgpu_mca.h"
->  #include "amdgpu_ras.h"
-> +#include "amdgpu_workload.h"
->
->  #define MAX_GPU_INSTANCE               16
->
-> @@ -1050,6 +1051,8 @@ struct amdgpu_device {
->
->         bool                            job_hang;
->         bool                            dc_enabled;
-> +
-> +       struct amdgpu_smu_workload      smu_workload;
->  };
->
->  static inline struct amdgpu_device *drm_to_adev(struct drm_device *ddev)
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm=
-/amd/amdgpu/amdgpu_device.c
-> index 5c7d40873ee2..0ec18b8fe29f 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> @@ -3672,6 +3672,8 @@ int amdgpu_device_init(struct amdgpu_device *adev,
->
->         INIT_WORK(&adev->xgmi_reset_work, amdgpu_device_xgmi_reset_func);
->
-> +       amdgpu_smu_workload_init(adev);
-> +
->         adev->gfx.gfx_off_req_count =3D 1;
->         adev->gfx.gfx_off_residency =3D 0;
->         adev->gfx.gfx_off_entrycount =3D 0;
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c b/drivers/gpu/d=
-rm/amd/amdgpu/amdgpu_workload.c
-> new file mode 100644
-> index 000000000000..ce0339d75c12
-> --- /dev/null
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
-> @@ -0,0 +1,156 @@
-> +// SPDX-License-Identifier: MIT
-> +/*
-> + * Copyright 2023 Advanced Micro Devices, Inc.
-> + *
-> + * Permission is hereby granted, free of charge, to any person obtaining=
- a
-> + * copy of this software and associated documentation files (the "Softwa=
-re"),
-> + * to deal in the Software without restriction, including without limita=
-tion
-> + * the rights to use, copy, modify, merge, publish, distribute, sublicen=
-se,
-> + * and/or sell copies of the Software, and to permit persons to whom the
-> + * Software is furnished to do so, subject to the following conditions:
-> + *
-> + * The above copyright notice and this permission notice shall be includ=
-ed in
-> + * all copies or substantial portions of the Software.
-> + *
-> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRE=
-SS OR
-> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILI=
-TY,
-> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SH=
-ALL
-> + * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES=
- OR
-> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-> + * OTHER DEALINGS IN THE SOFTWARE.
-> + *
-> + */
-> +
-> +#include "amdgpu.h"
-> +
-> +/* 100 millsecond timeout */
-> +#define SMU_IDLE_TIMEOUT       msecs_to_jiffies(100)
-> +
-> +static enum PP_SMC_POWER_PROFILE
-> +ring_to_power_profile(uint32_t ring_type)
-> +{
-> +       switch (ring_type) {
-> +       case AMDGPU_RING_TYPE_GFX:
-> +               return PP_SMC_POWER_PROFILE_FULLSCREEN3D;
-> +       case AMDGPU_RING_TYPE_COMPUTE:
-> +               return PP_SMC_POWER_PROFILE_COMPUTE;
-> +       case AMDGPU_RING_TYPE_UVD:
-> +       case AMDGPU_RING_TYPE_VCE:
-> +       case AMDGPU_RING_TYPE_UVD_ENC:
-> +       case AMDGPU_RING_TYPE_VCN_DEC:
-> +       case AMDGPU_RING_TYPE_VCN_ENC:
-> +       case AMDGPU_RING_TYPE_VCN_JPEG:
-> +               return PP_SMC_POWER_PROFILE_VIDEO;
-> +       default:
-> +               return PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT;
-> +       }
-> +}
-> +
-> +static void
-> +amdgpu_power_profile_set(struct amdgpu_device *adev,
-> +                        enum PP_SMC_POWER_PROFILE profile)
-> +{
-> +       int ret =3D amdgpu_dpm_switch_power_profile(adev, profile, true);
-> +
-> +       if (ret =3D=3D 0) {
-> +               /* Set the bit for the submitted workload profile */
-> +               adev->smu_workload.submit_workload_status |=3D (1 << prof=
-ile);
-> +               atomic_inc(&adev->smu_workload.power_profile_ref[profile]=
-);
-> +       } else {
-> +               DRM_ERROR("Failed to set power profile, error %d\n", ret)=
-;
-> +       }
-> +
-> +}
-> +
-> +static void
-> +amdgpu_power_profile_clear(struct amdgpu_device *adev,
-> +                          enum PP_SMC_POWER_PROFILE profile)
-> +{
-> +       int ret =3D amdgpu_dpm_switch_power_profile(adev, profile, false)=
-;
-> +
-> +       if (ret =3D=3D 0) {
-> +                /* Clear the bit for the submitted workload profile */
-> +               adev->smu_workload.submit_workload_status &=3D ~(1 << pro=
-file);
-> +       } else
-> +               DRM_ERROR("Failed to clear power profile, error %d\n", re=
-t);
-> +
-> +}
-> +
-> +static void amdgpu_smu_idle_work_handler(struct work_struct *work)
-
-How about amdgpu_power_profile_idle_work_handler() for consistency?
-
-> +{
-> +
-> +       struct amdgpu_smu_workload *wl =3D container_of(work,
-> +                                                     struct amdgpu_smu_w=
-orkload,
-> +                                                     smu_delayed_work.wo=
-rk);
-> +       struct amdgpu_device *adev =3D wl->adev;
-> +       bool reschedule =3D false;
-> +
-> +       mutex_lock(&adev->smu_workload.workload_lock);
-> +       for (int index  =3D fls(adev->smu_workload.submit_workload_status=
-);
-> +            index >=3D 0; index--) {
-> +               if (!atomic_read(&adev->smu_workload.power_profile_ref[in=
-dex]) &&
-> +                   adev->smu_workload.submit_workload_status & (1 << ind=
-ex)) {
-> +                       amdgpu_power_profile_clear(adev, index);
-> +               } else if (atomic_read(&adev->smu_workload.power_profile_=
-ref[index]))
-> +                       reschedule =3D true;
-> +       }
-> +
-> +       if (reschedule)
-> +               schedule_delayed_work(&adev->smu_workload.smu_delayed_wor=
-k,
-> +                                     SMU_IDLE_TIMEOUT);
-> +
-> +       mutex_unlock(&adev->smu_workload.workload_lock);
-> +}
-> +
-> +void amdgpu_put_workload_profile(struct amdgpu_device *adev,
-
-amdgpu_workload_profile_put() for consistency.
-
-> +                                uint32_t ring_type)
-> +{
-> +
-> +       enum PP_SMC_POWER_PROFILE profile =3D ring_to_power_profile(ring_=
-type);
-> +
-> +       if (profile =3D=3D PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT)
-> +               return;
-> +
-> +       mutex_lock(&adev->smu_workload.workload_lock);
-> +       atomic_dec(&adev->smu_workload.power_profile_ref[profile]);
-> +       schedule_delayed_work(&adev->smu_workload.smu_delayed_work, SMU_I=
-DLE_TIMEOUT);
-> +       mutex_unlock(&adev->smu_workload.workload_lock);
-> +}
-> +
-> +void amdgpu_set_workload_profile(struct amdgpu_device *adev,
-> +                                uint32_t ring_type)
-
-amdgpu_workload_profile_set() for consistency.
-
-> +{
-> +       enum PP_SMC_POWER_PROFILE profile =3D ring_to_power_profile(ring_=
-type);
-> +
-> +       if (profile =3D=3D PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT)
-> +               return;
-> +
-> +       mutex_lock(&adev->smu_workload.workload_lock);
-> +       cancel_delayed_work_sync(&adev->smu_workload.smu_delayed_work);
-> +
-> +       amdgpu_power_profile_set(adev, profile);
-> +
-> +       /* Clear the already finished jobs of higher power profile*/
-> +       for (int index =3D fls(adev->smu_workload.submit_workload_status)=
-;
-> +            index > profile; index--) {
-> +               if (!atomic_read(&adev->smu_workload.power_profile_ref[in=
-dex]) &&
-> +                   adev->smu_workload.submit_workload_status & (1 << ind=
-ex)) {
-> +                       amdgpu_power_profile_clear(adev, index);
-> +               }
-> +       }
-> +
-> +       mutex_unlock(&adev->smu_workload.workload_lock);
-> +}
-> +
-> +void amdgpu_smu_workload_init(struct amdgpu_device *adev)
-
-amdgpu_workload_profile_init() for consistency.
-
-> +{
-> +       struct amdgpu_smu_workload wl;
-> +
-> +       wl.adev =3D adev;
-> +       wl.submit_workload_status =3D 0;
-> +       adev->smu_workload =3D wl;
-> +
-> +       mutex_init(&adev->smu_workload.workload_lock);
-> +       INIT_DELAYED_WORK(&adev->smu_workload.smu_delayed_work, amdgpu_sm=
-u_idle_work_handler);
-> +}
-> diff --git a/drivers/gpu/drm/amd/include/amdgpu_workload.h b/drivers/gpu/=
-drm/amd/include/amdgpu_workload.h
-> new file mode 100644
-> index 000000000000..09804c3d2869
-> --- /dev/null
-> +++ b/drivers/gpu/drm/amd/include/amdgpu_workload.h
-> @@ -0,0 +1,44 @@
-> +/* SPDX-License-Identifier: MIT */
-> +/*
-> + * Copyright 2023 Advanced Micro Devices, Inc.
-> + *
-> + * Permission is hereby granted, free of charge, to any person obtaining=
- a
-> + * copy of this software and associated documentation files (the "Softwa=
-re"),
-> + * to deal in the Software without restriction, including without limita=
-tion
-> + * the rights to use, copy, modify, merge, publish, distribute, sublicen=
-se,
-> + * and/or sell copies of the Software, and to permit persons to whom the
-> + * Software is furnished to do so, subject to the following conditions:
-> + *
-> + * The above copyright notice and this permission notice shall be includ=
-ed in
-> + * all copies or substantial portions of the Software.
-> + *
-> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRE=
-SS OR
-> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILI=
-TY,
-> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SH=
-ALL
-> + * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES=
- OR
-> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-> + * OTHER DEALINGS IN THE SOFTWARE.
-> + *
-> + */
-> +
-> +#ifndef _AMDGPU_WORKLOAD_H_
-> +#define _AMDGPU_WORKLOAD_H_
-> +
-> +struct amdgpu_smu_workload {
-> +       struct amdgpu_device    *adev;
-> +       struct mutex            workload_lock;
-> +       struct delayed_work     smu_delayed_work;
-> +       uint32_t                submit_workload_status;
-> +       atomic_t                power_profile_ref[PP_SMC_POWER_PROFILE_CO=
-UNT];
-> +};
-> +
-> +void amdgpu_set_workload_profile(struct amdgpu_device *adev,
-> +                                uint32_t ring_type);
-> +
-> +void amdgpu_put_workload_profile(struct amdgpu_device *adev,
-> +                                uint32_t ring_type);
-> +
-> +void amdgpu_smu_workload_init(struct amdgpu_device *adev);
-> +
-> +#endif
+> * They if possible ideally should be tagged for backporting to 6.4, as
+> this is a regression from the 6.3 cycle.
+> 
+> But yes, let's tell regzbot that fixes are available, too:
+> 
+> #regzbot fix: drm/i915: Fix HPD polling, reenabling the output poll work
+> as needed
+> 
+> (for the record: that's the second of two patches apparently needed)
+> 
+> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
 > --
-> 2.34.1
->
+> Everything you wanna know about Linux kernel regression tracking:
+> https://linux-regtracking.leemhuis.info/about/#tldr
+> If I did something stupid, please tell me, as explained on that page.
+> 
+> >> BTW, there was an earlier report about a problem with a4e771729a51 that
+> >> afaics was never addressed, but it might be unrelated.
+> >> https://lore.kernel.org/all/20230328023129.3596968-1-zhouzongmin@kylinos.cn/
+> > [1] https://patchwork.freedesktop.org/patch/548590/?series=121050&rev=1
+> > [2] https://patchwork.freedesktop.org/patch/548591/?series=121050&rev=1
+> 
