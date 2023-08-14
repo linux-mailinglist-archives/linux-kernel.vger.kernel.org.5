@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 852A777BC83
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1149977BC8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232827AbjHNPIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 11:08:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52694 "EHLO
+        id S232598AbjHNPLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 11:11:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232693AbjHNPIO (ORCPT
+        with ESMTP id S232881AbjHNPLS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:08:14 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2ED410C8;
-        Mon, 14 Aug 2023 08:08:09 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 15:08:07 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692025688;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YqjiB9b9W31Axoru4v2fACC/gOxJ7s3KyJ0ZqfuVUqA=;
-        b=QCn9wF87dFadGwJJ5okww0tNYqH4y+VTIN6/bOBGSnDG7N1pDWodly2O4/SJYBFtX7m8sX
-        +XX9T4PzMScE4/ftlXNK3UU17gmaqfIxBGB1AsVGy1aBIOBN/9g/o6ZW+4AfK9x5wZ3k8K
-        fSTGzBhaHoef9esB/0YO80xbtTfTmlCg3FmQgZqCmLXwgbAIDCMI3A2AJZW0/htx+LFyKA
-        LMVlOxbllhNip+DSZMEfc93o1k63yznmBkAMIwxoaSG61XNxydXUL+NB4R14w/DHe7iG07
-        1K5crwUSKJH+jFHBT5DMACsQRLxthI5qK+OX6mlGuyqu7un1Jj83E00uBD+0Gw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692025688;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YqjiB9b9W31Axoru4v2fACC/gOxJ7s3KyJ0ZqfuVUqA=;
-        b=tTSEcl06DpfwEY6Po6Q7lmgTxRo5W5y1/zI3p+y3ycwx5rRZcPhMqnc/TJteiPRfNlFuoE
-        7fMn1+7ti3P1Q0DQ==
-From:   "tip-bot2 for Cyril Hrubis" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/rt: Fix sysctl_sched_rr_timeslice intial value
-Cc:     Cyril Hrubis <chrubis@suse.cz>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Petr Vorel <pvorel@suse.cz>, Mel Gorman <mgorman@suse.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230802151906.25258-2-chrubis@suse.cz>
-References: <20230802151906.25258-2-chrubis@suse.cz>
+        Mon, 14 Aug 2023 11:11:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97293E77
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:11:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 24AD062C37
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 15:11:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF095C433C9;
+        Mon, 14 Aug 2023 15:11:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692025876;
+        bh=2vONX/zuKVfdFQtNVXMZ91+HTgjrSQBXcGDwBf4sKIM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AbAnHrbL9Sc3SG+ekCyhNFPWAAzr8RvsCa5UYE96rzEMztgEdlQmv4vL2nE6Aig/G
+         ZSzfhxitC8XyPTfw+hIWogtp+vbwzP1i0wwJ3x1q5rb5LkkO3pPOe6XpumVoE4cjuX
+         wBdzzWlQQqYfomnwsGhGPGESr//2Axz5MPs8829p7MRfvlLwWZnvFKi5vuU/rYYyO7
+         bUp6ykWNgcGw2YKVW9mkxsF9jJH6f0CPHpVaLwi+AZpL4dMu+Jb6UImb0gAjAN9eNr
+         GZ3kH1Vlpb3I+qjKnF1P9QYkHpmR3jnEhz1GTpkzgXKrHKSz3jaU3nGfCl+IeBoz2O
+         VQ5ZyhYPdZqBg==
+Date:   Mon, 14 Aug 2023 17:11:09 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     David Rheinsberg <david@readahead.eu>,
+        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Kees Cook <keescook@chromium.org>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Luca Boccassi <bluca@debian.org>
+Subject: Re: [PATCH] pid: allow pidfds for reaped tasks
+Message-ID: <20230814-rangieren-gastarbeiter-bb0bf10152c2@brauner>
+References: <20230807085203.819772-1-david@readahead.eu>
+ <20230807-porzellan-rehkitz-9fde1b94dd6b@brauner>
+ <20230811112911.GA22566@redhat.com>
+ <20230811-perplex-installieren-899f5925534d@brauner>
+ <20230811115710.GA21779@redhat.com>
+ <6feef7e0-ea72-412d-837e-34b6fdd3b869@app.fastmail.com>
+ <20230814132039.GA17738@redhat.com>
 MIME-Version: 1.0
-Message-ID: <169202568796.27769.5144994079483945988.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230814132039.GA17738@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,76 +63,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+On Mon, Aug 14, 2023 at 03:20:39PM +0200, Oleg Nesterov wrote:
+> On 08/14, David Rheinsberg wrote:
+> >
+> > Hi Oleg,
+> >
+> > On Fri, Aug 11, 2023, at 1:57 PM, Oleg Nesterov wrote:
+> > >> What code do we need to allow userspace to open a pidfd to a leader pid
+> > >> even if it has already been exited and reaped (without also accidently
+> > >> allowing to open non-lead pid pidfds)?
+> > >
+> > > I'll try to think more, but can you also explain why do we need this?
+> > >
+> > > See my another email. Can't we simply shift the pid_has_task(PIDTYPE_TGID)
+> > > check from pidfd_prepare() to pidfd_create() ? (and then we can kill
+> > > pidfd_prepare and rename __pidfd_prepare to pidfd_prepare).
+> >
+> > Yes, the easiest solution would be to use `__pidfd_prepare()` and ensure
+> > that the caller only ever calls this on tg-leaders. This would work just
+> > fine, imo. And this was my initial approach.
+> 
+> Great,
+> 
+> > I think Christian preferred an explicit assertion that ensures we do not
+> > accidentally hand out pidfds for non-tg-leaders. The question is thus whether
+> > there is an easy way to assert this even for reaped tasks?
+> > Or whether there is a simple way to flag a pid that was used as tg-leader?
+> 
+> I do not see how can we check if a detached pid was a leader pid, and I don't
+> think it makes sense to add a new member into struct pid...
+> 
+> > Or, ultimately, whether this has limited use and we should just use
+> > `__pidfd_prepare()`?
+> 
+> Well, if you confirm that sk->sk_peer_pid and scm->pid are always initialized with
+> task_tgid(current), I'd certainly prefer this approach unless Christian objects.
 
-Commit-ID:     c7fcb99877f9f542c918509b2801065adcaf46fa
-Gitweb:        https://git.kernel.org/tip/c7fcb99877f9f542c918509b2801065adcaf46fa
-Author:        Cyril Hrubis <chrubis@suse.cz>
-AuthorDate:    Wed, 02 Aug 2023 17:19:05 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Mon, 14 Aug 2023 17:01:23 +02:00
-
-sched/rt: Fix sysctl_sched_rr_timeslice intial value
-
-There is a 10% rounding error in the intial value of the
-sysctl_sched_rr_timeslice with CONFIG_HZ_300=y.
-
-This was found with LTP test sched_rr_get_interval01:
-
-sched_rr_get_interval01.c:57: TPASS: sched_rr_get_interval() passed
-sched_rr_get_interval01.c:64: TPASS: Time quantum 0s 99999990ns
-sched_rr_get_interval01.c:72: TFAIL: /proc/sys/kernel/sched_rr_timeslice_ms != 100 got 90
-sched_rr_get_interval01.c:57: TPASS: sched_rr_get_interval() passed
-sched_rr_get_interval01.c:64: TPASS: Time quantum 0s 99999990ns
-sched_rr_get_interval01.c:72: TFAIL: /proc/sys/kernel/sched_rr_timeslice_ms != 100 got 90
-
-What this test does is to compare the return value from the
-sched_rr_get_interval() and the sched_rr_timeslice_ms sysctl file and
-fails if they do not match.
-
-The problem it found is the intial sysctl file value which was computed as:
-
-static int sysctl_sched_rr_timeslice = (MSEC_PER_SEC / HZ) * RR_TIMESLICE;
-
-which works fine as long as MSEC_PER_SEC is multiple of HZ, however it
-introduces 10% rounding error for CONFIG_HZ_300:
-
-(MSEC_PER_SEC / HZ) * (100 * HZ / 1000)
-
-(1000 / 300) * (100 * 300 / 1000)
-
-3 * 30 = 90
-
-This can be easily fixed by reversing the order of the multiplication
-and division. After this fix we get:
-
-(MSEC_PER_SEC * (100 * HZ / 1000)) / HZ
-
-(1000 * (100 * 300 / 1000)) / 300
-
-(1000 * 30) / 300 = 100
-
-Fixes: 975e155ed873 ("sched/rt: Show the 'sched_rr_timeslice' SCHED_RR timeslice tuning knob in milliseconds")
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Acked-by: Mel Gorman <mgorman@suse.de>
-Tested-by: Petr Vorel <pvorel@suse.cz>
-Link: https://lore.kernel.org/r/20230802151906.25258-2-chrubis@suse.cz
----
- kernel/sched/rt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 00e0e50..185d3d7 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -25,7 +25,7 @@ unsigned int sysctl_sched_rt_period = 1000000;
- int sysctl_sched_rt_runtime = 950000;
- 
- #ifdef CONFIG_SYSCTL
--static int sysctl_sched_rr_timeslice = (MSEC_PER_SEC / HZ) * RR_TIMESLICE;
-+static int sysctl_sched_rr_timeslice = (MSEC_PER_SEC * RR_TIMESLICE) / HZ;
- static int sched_rt_handler(struct ctl_table *table, int write, void *buffer,
- 		size_t *lenp, loff_t *ppos);
- static int sched_rr_handler(struct ctl_table *table, int write, void *buffer,
+No no, I'm absolutely not objecting. I specifically want you to take the
+opinionated lead here. :) Thanks for chiming in!
