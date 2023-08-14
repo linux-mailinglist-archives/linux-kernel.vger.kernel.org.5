@@ -2,174 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F316077B355
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C78577B360
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234441AbjHNIHM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Aug 2023 04:07:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36960 "EHLO
+        id S233281AbjHNIHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 04:07:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234333AbjHNIGb (ORCPT
+        with ESMTP id S234445AbjHNIHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 04:06:31 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064EB10F0;
-        Mon, 14 Aug 2023 01:06:23 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id A1D7E24E225;
-        Mon, 14 Aug 2023 16:06:22 +0800 (CST)
-Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 14 Aug
- 2023 16:06:22 +0800
-Received: from ubuntu.localdomain (183.27.98.20) by EXMBX172.cuchost.com
- (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 14 Aug
- 2023 16:06:21 +0800
-From:   Hal Feng <hal.feng@starfivetech.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Claudiu Beznea" <claudiu.beznea@microchip.com>,
-        Rob Herring <robh+dt@kernel.org>,
+        Mon, 14 Aug 2023 04:07:13 -0400
+Received: from relay01.th.seeweb.it (relay01.th.seeweb.it [5.144.164.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C4E0CC
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:07:09 -0700 (PDT)
+Received: from [192.168.2.137] (bband-dyn221.178-41-211.t-com.sk [178.41.211.221])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 079CD1F4BE;
+        Mon, 14 Aug 2023 10:07:07 +0200 (CEST)
+From:   Martin Botka <martin.botka@somainline.org>
+Subject: [PATCH v5 0/4] Add BigTreeTech CB1 SoM & Boards
+Date:   Mon, 14 Aug 2023 10:07:02 +0200
+Message-Id: <20230814-b4-cb1-v5-0-92135086dee4@somainline.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKbg2WQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyTHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDC0MT3SQT3eQkQ12TJEMLCwPD1OQ0s1QloOKCotS0zAqwQdGxtbUA//C
+ wfVgAAAA=
+To:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Walker Chen <walker.chen@starfivetech.com>,
-        Xingyu Wu <xingyu.wu@starfivetech.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Hal Feng <hal.feng@starfivetech.com>
-CC:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 3/3] riscv: dts: starfive: Add JH7110 PWM-DAC support
-Date:   Mon, 14 Aug 2023 16:06:18 +0800
-Message-ID: <20230814080618.10036-4-hal.feng@starfivetech.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20230814080618.10036-1-hal.feng@starfivetech.com>
-References: <20230814080618.10036-1-hal.feng@starfivetech.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [183.27.98.20]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX172.cuchost.com
- (172.16.6.92)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev,
+        Andre Przywara <andre.przywara@arm.com>,
+        Alan Ma <tech@biqu3d.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin@biqu3d.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Martin Botka <martin.botka@somainline.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692000426; l=2344;
+ i=martin.botka@somainline.org; s=20230811; h=from:subject:message-id;
+ bh=uEwP4jo6TH+QjVJWQT6L+L8biQbJRkXmuxPK/nnlFmg=;
+ b=DYCatsWExNs5EGXFDh+qr9uVmxU1YRJVyvRDCFfCAyJsalTAmvU6g6vqSzUWwjR/HeUXjUfhh
+ KwlCJ4Tt5jpDTXc+uSm06k2rZRbPL9N44PuadpaqZ3ZWAwRmw9+VK5h
+X-Developer-Key: i=martin.botka@somainline.org; a=ed25519;
+ pk=aTCd3jmwU8GrJidWg3DSKLpdVMcpFzXzCSLXLR6NtWU=
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PWM-DAC support for StarFive JH7110 SoC.
+Hello,
+This series adds a vendor prefix for BigTreeTech and adds BigTreeTech CB1,
+Manta board and BigTreeTech Pi.
 
-Reviewed-by: Walker Chen <walker.chen@starfivetech.com>
-Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
+CB1 is just an SoM thats based on AllWinner H616.
+BigTreeTech Manta boards are expander boards for CB1 and BigTreeTech Pi
+is an CB1 in Rpi style with few additional things like IR receiver and fan port
+on GPIO.
+
+This work started before I was hired by BigTreeTech and thus majority of the
+patches are from SoMainline email and few are from my work email.
+
+This series depends on commit https://lkml.org/lkml/2023/8/2/801
+"dt-bindings: mfd: x-powers,axp152: make interrupt optional for more chips".
+
+Due to the threading issues v5 is sent via my SoMainline email.
+
+Cheers,
+Martin
+
+Signed-off-by: Martin Botka <martin.botka@somainline.org>
 ---
- .../jh7110-starfive-visionfive-2.dtsi         | 49 +++++++++++++++++++
- arch/riscv/boot/dts/starfive/jh7110.dtsi      | 13 +++++
- 2 files changed, 62 insertions(+)
+Changes in v4:
+- Extend the range of vcc-dram to 1.5V (Max of 1.35V caused issues with booting up)
 
-diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-index d2f3b9eb859b..0e98fcba3203 100644
---- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-@@ -38,6 +38,33 @@ gpio-restart {
- 		gpios = <&sysgpio 35 GPIO_ACTIVE_HIGH>;
- 		priority = <224>;
- 	};
-+
-+	pwmdac_codec: pwmdac-codec {
-+		compatible = "linux,spdif-dit";
-+		#sound-dai-cells = <0>;
-+	};
-+
-+	sound-pwmdac {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "StarFive-PWMDAC-Sound-Card";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		simple-audio-card,dai-link@0 {
-+			reg = <0>;
-+			format = "left_j";
-+			bitclock-master = <&sndcpu0>;
-+			frame-master = <&sndcpu0>;
-+
-+			sndcpu0: cpu {
-+				sound-dai = <&pwmdac>;
-+			};
-+
-+			codec {
-+				sound-dai = <&pwmdac_codec>;
-+			};
-+		};
-+	};
- };
- 
- &dvp_clk {
-@@ -185,6 +212,12 @@ &i2c6 {
- 	status = "okay";
- };
- 
-+&pwmdac {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pwmdac_pins>;
-+	status = "okay";
-+};
-+
- &qspi {
- 	#address-cells = <1>;
- 	#size-cells = <0>;
-@@ -290,6 +323,22 @@ GPOEN_SYS_I2C6_DATA,
- 		};
- 	};
- 
-+	pwmdac_pins: pwmdac-0 {
-+		pwmdac-pins {
-+			pinmux = <GPIOMUX(33, GPOUT_SYS_PWMDAC_LEFT,
-+					      GPOEN_ENABLE,
-+					      GPI_NONE)>,
-+				 <GPIOMUX(34, GPOUT_SYS_PWMDAC_RIGHT,
-+					      GPOEN_ENABLE,
-+					      GPI_NONE)>;
-+			bias-disable;
-+			drive-strength = <2>;
-+			input-disable;
-+			input-schmitt-disable;
-+			slew-rate = <0>;
-+		};
-+	};
-+
- 	spi0_pins: spi0-0 {
- 		mosi-pins {
- 			pinmux = <GPIOMUX(52, GPOUT_SYS_SPI0_TXD,
-diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-index a608433200e8..d3437a2cce3f 100644
---- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-@@ -512,6 +512,19 @@ tdm: tdm@10090000 {
- 			status = "disabled";
- 		};
- 
-+		pwmdac: pwmdac@100b0000 {
-+			compatible = "starfive,jh7110-pwmdac";
-+			reg = <0x0 0x100b0000 0x0 0x1000>;
-+			clocks = <&syscrg JH7110_SYSCLK_PWMDAC_APB>,
-+				 <&syscrg JH7110_SYSCLK_PWMDAC_CORE>;
-+			clock-names = "apb", "core";
-+			resets = <&syscrg JH7110_SYSRST_PWMDAC_APB>;
-+			dmas = <&dma 22>;
-+			dma-names = "tx";
-+			#sound-dai-cells = <0>;
-+			status = "disabled";
-+		};
-+
- 		usb0: usb@10100000 {
- 			compatible = "starfive,jh7110-usb";
- 			ranges = <0x0 0x0 0x10100000 0x100000>;
+Changes in v3:
+- Add missed semicolons
+- Move model string from dtsi to board dts
+- Add cb1 compatible to manta
+- Remove extra empty lines
+- Add pinctrl for SPI0
+
+Changes in v2:
+- Fix alphabetical order in vendor prefixes
+- Remove CB1 SoM from bindings (Its not standalone)
+- Fixed whitespace errors
+- Move UART into carrier boards and BTT Pi
+- Remove usb1-vbus regulator
+- Fix ranges and naming of AXP313A rails
+- Add comment why broken-cb in mmc0 is needed
+- Rename sdio_wifi to wifi
+- Add model string to BTT Pi
+- Enable IR receiver for BTT Pi
+- Enable SPI0
+
+---
+Martin Botka (4):
+      dt-bindings: vendor-prefixes: Add BigTreeTech
+      dt-bindings: arm: sunxi: Add BigTreeTech boards
+      arm64: dts: allwinner: h616: Add BigTreeTech CB1 SoM & boards support
+      arm64: dts: allwinner: h616: Add BigTreeTech Pi support
+
+ Documentation/devicetree/bindings/arm/sunxi.yaml   |  11 ++
+ .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
+ arch/arm64/boot/dts/allwinner/Makefile             |   2 +
+ .../sun50i-h616-bigtreetech-cb1-manta.dts          |  35 ++++++
+ .../dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi | 138 +++++++++++++++++++++
+ .../dts/allwinner/sun50i-h616-bigtreetech-pi.dts   |  70 +++++++++++
+ 6 files changed, 258 insertions(+)
+---
+base-commit: 7935746bb793571417f832f0f1c8852cfdfccc06
+change-id: 20230814-b4-cb1-4b18801ecf6e
+
+Best regards,
 -- 
-2.38.1
+Martin Botka <martin.botka@somainline.org>
 
