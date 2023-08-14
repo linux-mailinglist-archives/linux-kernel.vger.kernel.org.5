@@ -2,116 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C5577B654
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C1BF77B663
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236681AbjHNKOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 06:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48848 "EHLO
+        id S236746AbjHNKQv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Aug 2023 06:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236705AbjHNKO2 (ORCPT
+        with ESMTP id S236776AbjHNKQV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 06:14:28 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4F010D0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:14:26 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so64590131fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:14:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1692008065; x=1692612865;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I83KyFDhUVnCPx9y366vR3xpO/5sGGkMxv/PQ7v8Fw0=;
-        b=rO2zGjR9Va+S5MUXy6gxgaDEzcGHw9OuD6aMVa1xPlHQBpgF3GuCn9VpyJTDONmG2u
-         UOf71K5log6TLInqx8u72GbDaAYyM0Tk8/ftOi9cvdal8R21w7/nCGu+ag+QgE5K8ucw
-         Ix5/8fvA5YW+FyY7lWGDJ6UUzNEXifq6fIs3T01Ou5kFgIgUWwIJ9PYCFbQF//g6Xa0v
-         K0p4rLBvySrf3lgBkTSFQ29223fuuyONzolRtVe9qwpJyuu3sI1xSC7exemn3PcrJhsY
-         Yr8yz3NzwitFgrs/Lk8AacFyoJRUrWUDS+QQisoH2F4xQwbK6Ij5bKc49If8yuPl6rzj
-         Fqyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692008065; x=1692612865;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I83KyFDhUVnCPx9y366vR3xpO/5sGGkMxv/PQ7v8Fw0=;
-        b=N6qmNtw9V64FqnCe6T1wWoQPKLtlPYBihRpZfVTNL/jnGQRvjefcLXuh8aY99dZzdo
-         i8lh7QKqxjIj6NpgplePuE8EhJtO07vfQOvR51EBD8MapYU1ejUwd7GQ1JBn6AVQtFhE
-         Ie8hJlhhQS083N6KDE/E2HuNBFVkScPnU5RAzVhUyx2Hk+fD3ShxfV/GryyEsxEBAK4H
-         dwJuXejKWN9OvFjvfWlsTMG6x90U0Er0F5bPmPA+cfzsRSsAi4Krj8GauBnwzKBELP85
-         /6gN6jAlhgyrNMUv+tXYyqFmA8+8HcMJeDHWoRd4dU0GGYhQKnLLUhc7SKr9dS1XY5DY
-         pQTA==
-X-Gm-Message-State: AOJu0YxV6ADITuyYrDkULypGHHN/gmrIPPydonnuoio40grR4u8vD8Qe
-        DA+KBrWLIlMYNZXyJMNiE+YtXQ==
-X-Google-Smtp-Source: AGHT+IE+cNjSLZKnX1joMZVDOUeJz9XLWS7JFmYF2fGu2r3hV8E8pwivCDMNZ9yIdROEghBe2azAmw==
-X-Received: by 2002:a2e:808f:0:b0:2b9:ec57:c330 with SMTP id i15-20020a2e808f000000b002b9ec57c330mr6261247ljg.7.1692008065036;
-        Mon, 14 Aug 2023 03:14:25 -0700 (PDT)
-Received: from otso.luca.vpn.lucaweiss.eu (212095005216.public.telering.at. [212.95.5.216])
-        by smtp.gmail.com with ESMTPSA id os5-20020a170906af6500b00993a37aebc5sm5472870ejb.50.2023.08.14.03.14.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 03:14:24 -0700 (PDT)
-From:   Luca Weiss <luca.weiss@fairphone.com>
-Date:   Mon, 14 Aug 2023 12:14:16 +0200
-Subject: [PATCH v6 4/4] dt-bindings: crypto: ice: Document sm8450 inline
- crypto engine
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230814-dt-binding-ufs-v6-4-fd94845adeda@fairphone.com>
-References: <20230814-dt-binding-ufs-v6-0-fd94845adeda@fairphone.com>
-In-Reply-To: <20230814-dt-binding-ufs-v6-0-fd94845adeda@fairphone.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Rob Herring <robh+dt@kernel.org>,
+        Mon, 14 Aug 2023 06:16:21 -0400
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BC810E3;
+        Mon, 14 Aug 2023 03:16:06 -0700 (PDT)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 9F0A081EA;
+        Mon, 14 Aug 2023 18:16:04 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 14 Aug
+ 2023 18:16:04 +0800
+Received: from localhost.localdomain (183.27.98.20) by EXMBX061.cuchost.com
+ (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 14 Aug
+ 2023 18:16:03 +0800
+From:   Xingyu Wu <xingyu.wu@starfivetech.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>
+CC:     <linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Iskren Chernev <me@iskren.info>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        Luca Weiss <luca.weiss@fairphone.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Xingyu Wu <xingyu.wu@starfivetech.com>,
+        Samin Guo <samin.guo@starfivetech.com>,
+        <linux-kernel@vger.kernel.org>, Conor Dooley <conor@kernel.org>
+Subject: [PATCH v4 0/3] Add timer driver for StarFive JH7110 RISC-V SoC
+Date:   Mon, 14 Aug 2023 18:16:00 +0800
+Message-ID: <20230814101603.166951-1-xingyu.wu@starfivetech.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [183.27.98.20]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX061.cuchost.com
+ (172.16.6.61)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the compatible used for the inline crypto engine found on
-SM8450.
+This patch serises are to add timer driver for the StarFive JH7110
+RISC-V SoC. The first patch adds documentation to describe device
+tree bindings. The subsequent patch adds timer driver and support
+JH7110 SoC. The last patch adds device node about timer in JH7110
+dts.
 
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- Documentation/devicetree/bindings/crypto/qcom,inline-crypto-engine.yaml | 1 +
- 1 file changed, 1 insertion(+)
+This timer has four free-running 32 bit counters and runs in 24MHz
+clock on StarFive JH7110 SoC. And each channel(counter) triggers
+an interrupt when timeout. They support one-shot mode and 
+continuous-run mode.
 
-diff --git a/Documentation/devicetree/bindings/crypto/qcom,inline-crypto-engine.yaml b/Documentation/devicetree/bindings/crypto/qcom,inline-crypto-engine.yaml
-index 92e1d76e29ee..7da9aa82d837 100644
---- a/Documentation/devicetree/bindings/crypto/qcom,inline-crypto-engine.yaml
-+++ b/Documentation/devicetree/bindings/crypto/qcom,inline-crypto-engine.yaml
-@@ -13,6 +13,7 @@ properties:
-   compatible:
-     items:
-       - enum:
-+          - qcom,sm8450-inline-crypto-engine
-           - qcom,sm8550-inline-crypto-engine
-       - const: qcom,inline-crypto-engine
- 
+Changes since v3:
+- Rebased on 6.5-rc6
+- Dropped the useless enum names like 'JH7110_TIMER_CH_0'.
+- Dropped the platform data about JH7110 and used the register offsets
+  directly.
+- Drroped the useless functions of clk_disable_unprepare().
+
+v3: https://lore.kernel.org/all/20230627055313.252519-1-xingyu.wu@starfivetech.com/
+
+Changes since v2: 
+- Rebased on 6.4-rc7.
+- Merged the header file into the c file.
+- Renamed the functions from 'starfive_' to 'jh7110_'
+- Used function 'clocksource_register_hz' instead of
+  'clocksource_mmio_init'.
+
+v2: https://lore.kernel.org/all/20230320135433.144832-1-xingyu.wu@starfivetech.com/
+
+Changes since v1: 
+- Added description about timer and modified properties' description
+  in dt-bindings.
+- Dropped the 'interrupt-names' and 'clock-frequency' in dt-bindings.
+- Renamed the functions and added 'starfive_'
+- Modified that the driver probe by platform bus.
+
+v1: https://lore.kernel.org/all/20221223094801.181315-1-xingyu.wu@starfivetech.com/
+
+Xingyu Wu (3):
+  dt-bindings: timer: Add timer for StarFive JH7110 SoC
+  clocksource: Add JH7110 timer driver
+  riscv: dts: jh7110: starfive: Add timer node
+
+ .../bindings/timer/starfive,jh7110-timer.yaml |  96 ++++
+ MAINTAINERS                                   |   7 +
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      |  20 +
+ drivers/clocksource/Kconfig                   |  11 +
+ drivers/clocksource/Makefile                  |   1 +
+ drivers/clocksource/timer-jh7110.c            | 415 ++++++++++++++++++
+ 6 files changed, 550 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/timer/starfive,jh7110-timer.yaml
+ create mode 100644 drivers/clocksource/timer-jh7110.c
 
 -- 
-2.41.0
+2.25.1
 
