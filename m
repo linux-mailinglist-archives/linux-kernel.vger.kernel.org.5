@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1818577BC92
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C36F377BCB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232670AbjHNPMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 11:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48380 "EHLO
+        id S232842AbjHNPNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 11:13:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232790AbjHNPMa (ORCPT
+        with ESMTP id S232748AbjHNPMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:12:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08D910D1;
-        Mon, 14 Aug 2023 08:12:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8FB3463763;
-        Mon, 14 Aug 2023 15:12:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74862C433C8;
-        Mon, 14 Aug 2023 15:12:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692025944;
-        bh=S4zyki7PFmZ2cBORKIxO1VFOjZKURBWF9rTlNDun9pM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Yc2OS+OTzaM+C2zzmWrAmmuioDm4pRZBMfrHMAq0G5S0vuvQCACesO3XuTRnFLCId
-         ehMZ83+72mLSyJb/do38gnSmpon17lzKMWw/QRDA6HBTbX/+eLh9lYf4zpcg9ih1f6
-         3x5rmzpzKXh8snL+JJCwQYEJuSLDArmHYxfHZD5hKRl+npTrJkS+uv6p2vJxJbs5pd
-         5YErktFtdjZiD8x+La4Kz0f4FO/6XagSapaof7Shvm6j/xi/SX1cjbg8kHggMddypS
-         6JO2Ulx2Kxr1Cqd4Sqjrgqr96mTT7jKpLe2TVHzwEyi5rrGkMI9mMgD82ZCW0CeZjn
-         TBMkTelLVMICg==
-Date:   Mon, 14 Aug 2023 17:12:21 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Andi Shyti <andi.shyti@kernel.org>
-Cc:     Peter Rosin <peda@axentia.se>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: i2c: nxp,pca9541: convert to DT
- schema
-Message-ID: <ZNpEVV3fRDVaEyya@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Doug Anderson <dianders@chromium.org>, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Conor Dooley <conor.dooley@microchip.com>
-References: <20230731163833.319258-1-krzysztof.kozlowski@linaro.org>
- <169100562788.1919254.3881890120063393214.b4-ty@kernel.org>
+        Mon, 14 Aug 2023 11:12:49 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCED01B5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:12:47 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fe1d462762so40935835e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:12:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692025966; x=1692630766;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RL8uW/i+vD2pJKOZ8MhjURQoVYYBJH2Wn25O5mxE3sc=;
+        b=W8sSGddp3Db1uk2FUMTNriElEU8D3HcGTFl7rl8i+0hlJlD3CzmGogjI/BP1Z6wNTi
+         txd4E13/vQqJJzXoVf0qde/UHdikHRGvLI1T7GsABcFfNeOlc3B7SSTA5wTPtzwBrGCC
+         HaBSppcnEJPfFOFPs8tuY/TXDlDMzhvoJPA13lgGIPZ1/c56ESx7AhQZ5pw1u6HoriXG
+         Md1orUzCfWpgZuZZt4Ldk8OkusX7k6y0vJwlFkQbsUeeCS7cGxtliSTD7yNaQ4HixjQR
+         0TL9CwVP3MPSWtulwZAEG5x0LSsRp3HYUf3t5s1AW5x9wqW9OfgcNx5XVDn6nc43uig8
+         CaXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692025966; x=1692630766;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RL8uW/i+vD2pJKOZ8MhjURQoVYYBJH2Wn25O5mxE3sc=;
+        b=KYpJCrBE606ttioDJbc/tw8xxdziUZVn9bcVtwRi2nFNKSJf+gwCWOuoegE0lzX/xc
+         R9gSQOUKs52zu0r5ZSnJ6v3XmA1aF1g+U9HPm7RhIfWS01drLrmTXNcRoPdwftRlpa0M
+         7g4csn7Z647LoYsaPs67VQ5BvTaWhDPTUyK5bsIYCUPg3St9ZBUttxV/K7B+M+dnLfQJ
+         XOSK1GG4sJLx7nQhyVqB5CQHOwZDJKORa5y37TsQaU7Q99JCys3xEkQTSKCx0ndmTahE
+         3QqOYyYORDhh8cdtHRhWQd1V9J91m2vBt4zYAdnn9OoocVWJGvM+2URin9bUrCLTd05P
+         Iheg==
+X-Gm-Message-State: AOJu0YyuLsr++ei6Y8GNwRnOfwqZnw/5d3I6X2V5kFjVr++uAQHUKXhn
+        ELAIu5qW8vmd9tmhYma2g+kK8w==
+X-Google-Smtp-Source: AGHT+IGrWi8yDMGvnyI/h/pnxgHlDDJk4q/bcPsOgY+08reUDpTPRq24qQX5JfjBEfXa12qO5HYr/g==
+X-Received: by 2002:adf:e685:0:b0:316:f25c:d0c0 with SMTP id r5-20020adfe685000000b00316f25cd0c0mr7714740wrm.16.1692025966328;
+        Mon, 14 Aug 2023 08:12:46 -0700 (PDT)
+Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id 17-20020a05600c021100b003fe1c332810sm17644572wmi.33.2023.08.14.08.12.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 08:12:45 -0700 (PDT)
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+To:     rfoss@kernel.org, todor.too@gmail.com, bryan.odonoghue@linaro.org,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
+        andrey.konovalov@linaro.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v0 00/13] media: qcom: camss: Add parameter passing to remove several outstanding bugs
+Date:   Mon, 14 Aug 2023 16:12:30 +0100
+Message-ID: <20230814151243.3801456-1-bryan.odonoghue@linaro.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="aGK2mMw4XGLmgIjx"
-Content-Disposition: inline
-In-Reply-To: <169100562788.1919254.3881890120063393214.b4-ty@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,44 +72,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This second series of bugfixes stacks ontop of the Fixes series sent earlier.
 
---aGK2mMw4XGLmgIjx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Link: https://lore.kernel.org/linux-arm-msm/20230814141007.3721197-1-bryan.odonoghue@linaro.org/T/#t
 
-On Wed, Aug 02, 2023 at 10:10:33PM +0200, Andi Shyti wrote:
-> Hi
->=20
-> On Mon, 31 Jul 2023 18:38:32 +0200, Krzysztof Kozlowski wrote:
-> > Convert the bindings for NXP PCA9541 I2C bus master selector to DT
-> > schema.
-> >=20
-> >=20
->=20
-> Applied to i2c/andi-for-next on
+Rather than send both series as one giant series, I opted to send a pure
+Fixes series above, with this second series a non-backport series i.e. no
+Fixes tags in this series.
 
-Applied to for-next (via Andi's branch), thanks!
+The existing CAMSS code relies on some hard-coded parameters buried inside
+of the driver, instead of passed via compat .data as arguably ought to be
+the case.
 
+This brittle model is an extending morass of spaghetti code. More than that
+in CAMSS Video Front Ends (VFEs) and the number of Raw Data Interfaces
+(RDIs) per VFE can vary from SoC to SoC. Indeed sm8250 has VFE and VFE Lite
+blocks which have a different number of RDIs per block.
 
---aGK2mMw4XGLmgIjx
-Content-Type: application/pgp-signature; name="signature.asc"
+The use of defines as opposed to per-compat parameters inside of ISRs leads
+to either under-polling or over-polling the number of RDIs.
 
------BEGIN PGP SIGNATURE-----
+On top of all of that we have some hard-coded statements for clock names
+which breaks easily.
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmTaRFUACgkQFA3kzBSg
-KbaMRA//ROA0SC/R9jc9TvyvJuUT8D/GydARldGXju/36hrEaBAPGBW3sX2T4grb
-/z9kBYJaPlqLJylCoseSeW2D7wxl+/CMfaA2+phe395PGA/q2W9RZI93ddMcXq2R
-pnh7p0qSGSDRhS3PxEgdxFoElUDlAg8tqYdySBd3KCvgc94TLzRPW+k0huz4UlmE
-sOGKunktaLPIxyRQQSnNbWWgPb9sEOuC9IEZbtmVxmDtcidnLm5pCy1CDtPASWEV
-GJwz4lsY4OgtzgRxKZiejKmsmueI/BLp0AfWxEv1OpZ/zAgnpcUAKWS7Pt2PfD7O
-V7K3A9SN1L/8YWDRnGE6e0YMKFufMm/QaDLmeJOsS8ARB7LaXD5JmL0pnBA4C5T6
-1u1X4xWVeu+9Edfx09zWomVQ9IEWvveEgrmFAqKrLpybnm+SeKTM9uWKTvCrkm3o
-IgzLy0a6zZWtnrdDYTHoSyElPQCxtn5eZQfTWuhBzoGOS5MCJBOcbbRn/bUsCewC
-nsa83ZcSp7V8yJDStZp2rF+yHPNo+jCUxtFqardIRcF25Qd6d4mjWNog9/mv48j0
-WhK+QCtuIOVfMD3ArGtiSBleUgxPXjQgnO29ZW4BAMGY635Vnb2c/HFa8XDE78Nk
-kDdIFwEJA5XybyH3qYjZYQ+oG3i1RnqPQTcRHq672iyeGaafekA=
-=QGqD
------END PGP SIGNATURE-----
+We can solve the under/over polling loop problem by transitioning loop
+controls from macros to parameters passed via probe().
 
---aGK2mMw4XGLmgIjx--
+Similarly and unsurprisingly we can also solve the hard-coded clock problem
+by adding some string processing routines that take passed arguments.
+
+There is still some additional maintenance work to be done in this driver
+but before adding one more SoC the code needs to be made more extensible
+and less brittle.
+
+Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/commits/dc346c7f46c0680bcfb84fded6db97497fffe49a
+
+Bryan O'Donoghue (13):
+  media: qcom: camss: Amalgamate struct resource with struct
+    resource_ispif
+  media: qcom: camss: Start to move to module compat matched resources
+  media: qcom: camss: Drop useless NULL assignment for ispif resources
+  media: qcom: camss: Pass icc bandwidth table as a platform parameter
+  media: qcom: camss: Pass remainder of variables as resources
+  media: qcom: camss: Pass line_num from compat resources
+  media: qcom: camss: Assign the correct number of RDIs per VFE
+  media: qcom: camss: Use >= CAMSS_SDM845 for vfe_get/vfe_put
+  media: qcom: camss: Untangle if/else spaghetti in camss
+  media: qcom: camss: Improve error printout on icc_get fail
+  media: qcom: camss: Allow clocks vfeN vfe_liteN or vfe_lite
+  media: qcom: camss: Functionally decompose CSIPHY clock lookups
+  media: qcom: camss: Add support for setting CSIPHY clock name csiphyX
+
+ .../media/platform/qcom/camss/camss-csid.c    |  24 +-
+ .../qcom/camss/camss-csiphy-3ph-1-0.c         |   8 +-
+ .../media/platform/qcom/camss/camss-csiphy.c  |  67 ++--
+ .../media/platform/qcom/camss/camss-ispif.c   |  32 +-
+ .../media/platform/qcom/camss/camss-ispif.h   |   4 +-
+ .../media/platform/qcom/camss/camss-vfe-170.c |   6 +-
+ .../media/platform/qcom/camss/camss-vfe-4-1.c |   2 -
+ .../media/platform/qcom/camss/camss-vfe-4-7.c |   2 -
+ .../media/platform/qcom/camss/camss-vfe-4-8.c |   2 -
+ .../media/platform/qcom/camss/camss-vfe-480.c |   5 +-
+ drivers/media/platform/qcom/camss/camss-vfe.c |  78 +++--
+ .../media/platform/qcom/camss/camss-video.c   |  16 +-
+ drivers/media/platform/qcom/camss/camss.c     | 292 +++++++++---------
+ drivers/media/platform/qcom/camss/camss.h     |  31 +-
+ 14 files changed, 315 insertions(+), 254 deletions(-)
+
+-- 
+2.41.0
+
