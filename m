@@ -2,104 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA89E77B478
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA9A77B47B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234905AbjHNIma convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Aug 2023 04:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45192 "EHLO
+        id S234881AbjHNIoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 04:44:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234860AbjHNImL (ORCPT
+        with ESMTP id S235045AbjHNIns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 04:42:11 -0400
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B83A10B;
-        Mon, 14 Aug 2023 01:42:11 -0700 (PDT)
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-d62bdd1a97dso4176400276.3;
-        Mon, 14 Aug 2023 01:42:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692002530; x=1692607330;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QZne+Le5QqxdXNtZ7brJGNgIF3GQo0uhPPT5CceibE0=;
-        b=VbdNN1LK56aJpOfZagHrZM2p8L+MfzU+S0MYhwmRHcZ1RtInzxV+GXP4tBYPpjvZYc
-         KezZu/16u+KIFVI6AfNDXVqhLhdIxbzlTvBk5tfjAr8Fzg1M9Mhdlb2/0ccjIrto6n7/
-         WOxZlK9yeE7zLftHKuOduLrG8aXlpxyxm1lmDM3RSHDwkdJY+OP9VG80KwbTpPN/9+Z5
-         jDRfhtRVq4xZxWsPAg+mQzgc7YptwcJMlyt7STmcAnvgfDVhVhNki1lYmc+NyKgfzOAb
-         jaAm93mA96QJZGmirTimd7fmXREVAClTHsrCIbdB95fJs3o0cJ7VcLoCECZAQBks5gOZ
-         tMNw==
-X-Gm-Message-State: AOJu0YzTvmHcE/w9JPNmTBV14zDvQC3PDf4w1x4seoVzA0xBv9N0qK1M
-        z+17jlDD2CGL1MNhnORbdafFhS4BP7Cbpw==
-X-Google-Smtp-Source: AGHT+IGHz08kCZ+x3KT3qgo8LrWOjc0+TXxiP/8W2wpiWgfw+/gmS42Zj5VsOklA3QDe0iff+yCruA==
-X-Received: by 2002:a81:a54e:0:b0:586:a684:e7ba with SMTP id v14-20020a81a54e000000b00586a684e7bamr9625810ywg.39.1692002529781;
-        Mon, 14 Aug 2023 01:42:09 -0700 (PDT)
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
-        by smtp.gmail.com with ESMTPSA id w13-20020a81a20d000000b005840bd271c5sm2596830ywg.100.2023.08.14.01.42.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 01:42:08 -0700 (PDT)
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-d62bdd1a97dso4176371276.3;
-        Mon, 14 Aug 2023 01:42:08 -0700 (PDT)
-X-Received: by 2002:a25:dc04:0:b0:d13:5ab9:827e with SMTP id
- y4-20020a25dc04000000b00d135ab9827emr9522737ybe.16.1692002528140; Mon, 14 Aug
- 2023 01:42:08 -0700 (PDT)
+        Mon, 14 Aug 2023 04:43:48 -0400
+Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2077.outbound.protection.outlook.com [40.107.9.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C54172D
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:43:18 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oYErWLZYVvhLB+b7xxwux5idECyALhf1fuECjxiiVIZalZT/gU2KX9vCaSmhA/yWgsfX5C/pKIN1CnbNO+FZ9gWI0XO9gUQNJLMYpI12kP6ImsXdK9nr75Gdi3P9WZmz9KO6qhT4g93ON/Oib7Ar8KLgXMXSZguVAngPK0z0urBTw/oN/EwERu8pyKENe150cKZP7+JhZs6h6aetFljcZG9flTngylZkRP/L+qL1ciJz8Gchk+sWSw5EISNq3ZWZXN9C3qdvML2Uo+lMwRuKFhezy5HJ1sbbLZ04N6OnGYkeq4c6U4JsUpnACHoAiqFAUWaYucU9iHCZUbHNPkjGOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kwixmo+GqZArYzDmpWGS1l/Aq/M9l6Y1TO7wkBRFt1E=;
+ b=TLuwLrQdSVFbjD965BHeva//+eLnoJveSEQPTEHeeD1n5PB821qqfI5zjq+MIAwsrR+oYg5M6yT5TlelCtHW4nZ+ewrSK+oDKEIDyZFGm4XwdQ7uEvDiILLCi19qmdWi3m/cS8RWQanTeKPqrJQNwWQVz+1bXZNaYG97QGg1hVzuzRo1mYD6dS1gFKvjeKT9Ick4cXWpEl/YLatqP3gQkoPUJiXg79GJ6nNgcpXDbnm+NrjjlITjg27sdaW8TzF7ofVArGq+yeyOY35YQ3pJnLwwVf8dEDMMIZlqUcWDzfu4zSIW5j4STyTQz3lb8jX74zpavvgxgHSrWhy+iptYSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kwixmo+GqZArYzDmpWGS1l/Aq/M9l6Y1TO7wkBRFt1E=;
+ b=DNqtJ99YnEI3fJg5i6ptGETsspMtjdksVmvXYU17tyGtCXOFrb1kJ75DWW90Fz20RlWCoImqHQu9uvvJSceCSSYeqUkH1mEcNgRxE69Ue6IlV28wlZDHnwyMvScYd7tIaLbBTT4+2h4RqUYC//+D/HyXCckrWKuH9LWYVs5vkV10imdkUgVR2QuWuU+GObyalwz/VD2/8pW86ElTHDI6PhyziKuvlStAYECR5e+G/Lh8//3N8FQrKcRJ9E6LWQbPqY9jLRE5GY34xWCmVt+QPRsx9z6ysMHHz3JzYlOdlhNyDFnzVVZM+WK4LNsyreKGcVfxj2S8+P12xMtNUAjiRQ==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by PR0P264MB2469.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1e0::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.24; Mon, 14 Aug
+ 2023 08:43:07 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::2820:d3a6:1cdf:c60e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::2820:d3a6:1cdf:c60e%7]) with mapi id 15.20.6678.022; Mon, 14 Aug 2023
+ 08:43:07 +0000
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] powerpc/radix: Move some functions into #ifdef
+ CONFIG_KVM_BOOK3S_HV_POSSIBLE
+Thread-Topic: [PATCH] powerpc/radix: Move some functions into #ifdef
+ CONFIG_KVM_BOOK3S_HV_POSSIBLE
+Thread-Index: AQHZypfJoKZq1ICbikuaiu2MTJYX2K/pWrWAgAAmyQA=
+Date:   Mon, 14 Aug 2023 08:43:06 +0000
+Message-ID: <253aea00-d60d-377e-d696-cad83896b53e@csgroup.eu>
+References: <3d72efd39f986ee939d068af69fdce28bd600766.1691568093.git.christophe.leroy@csgroup.eu>
+ <CUS1WM4XRDIT.2GTHPR1FHQKS2@wheely>
+In-Reply-To: <CUS1WM4XRDIT.2GTHPR1FHQKS2@wheely>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR0P264MB2469:EE_
+x-ms-office365-filtering-correlation-id: 49705d9c-cb69-405e-9b44-08db9ca27b4f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: st0lZfd0HIjhOu2LbE5eceDk0QSX7hTz7MTqvBEXRhDJ6SgmTAM6+Ix1AskrdGrl5rVSnl4No8ob/6ii0HScdUhYDyUEAYGiNb3gKQ4h+nT4A3a3S1kQOY1VXxSLeB+iuUHfU4A6+g1yEoXe/RHk8z6CMu6L1paso6U0mbATqkCYeaGp4GHUj8xuDmdXBDC/DPD5QC1NZgqdNUind0EZnKcVd3VY9sp+tUwwir2EAtQAX0NYYU75wCSoudJIWvC1w0Ygk54b2yGfdB8YDrOh8e/LeGlzCiiF4pNIogg6yghGjJuvMZ1xrn6QA5xXOkPjpNewQaTLWA5byAV4u/nyRK3o7RWNmM5GFbouWmr4mw+MX6gw5AQHFxPIQT85AF+O4U8sGNypWJzupY3Nnds6kGPfVEyRVCr4Fk5shPLE+kASDNyenApiWI2wGhLDnYYV9GNWBTGT47Pajn6u46VnTE2MHHi8JXj/tCFqnc/FE3TWF1fU95izOrUdn00iKtA48Exc6B7ZRYIyXZFCyVGO0nT1ea/QlEwjMxvu14psIezXS62lI+Acwgo+IfkFOZfufoLWFQVFhHTzC43LEWpW66HKSENG8OUNyCj/S38jMq5ZyeZ7bt9Nb+PNnb65MsU65fVBgRv8b3XG40BmBAmtRpQcB2aZv3ek7Sy978k3BDx919BgkPiuDr3I4U4+92U3
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230028)(39850400004)(346002)(366004)(136003)(396003)(376002)(1800799006)(186006)(451199021)(26005)(6506007)(41300700001)(8936002)(64756008)(91956017)(76116006)(66446008)(66476007)(66556008)(66946007)(316002)(8676002)(6512007)(31686004)(2616005)(83380400001)(66574015)(71200400001)(6486002)(122000001)(478600001)(110136005)(38100700002)(54906003)(44832011)(31696002)(36756003)(86362001)(4326008)(5660300002)(2906002)(38070700005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TkpPeExCbE5ra2JacGhjMjF6ZGNWcDZWbnFsTi9yRkVXNnBRc0Iybkd3bS9M?=
+ =?utf-8?B?VTMrWnNBcWRoTVovYjVuQWFKVXRqMk9EM0JUSURwbk1RcCs5TDJkUFNCdllG?=
+ =?utf-8?B?cWsxWHFwY0dqNDhzTDJCblpkblg4UnJlNFY0VWNieEQxcUpHSnpuMi85L0o4?=
+ =?utf-8?B?UlpKNjN1TXhkd3YzY2JCNS9KVTc5Zk1qdTFjQW95M2ZqaEZhbkhvWFhJZnpz?=
+ =?utf-8?B?QjRrVmViTWI4cFpvUkdVcFJ5K2RON21aY3hJaEdoM3lSYVBCVVBENXZ3MDZl?=
+ =?utf-8?B?VS9VUVl0Zm1LNHY2VGhleFhVb0NlaXJYY0txcVYwRXNLNS9ad1lGNG5XR1li?=
+ =?utf-8?B?VEM1ZGk5eHdYKzc4Y1dRYSs1ODFjaWVEcFZoNUQyYUpOQlVRU0hucTlqcU9s?=
+ =?utf-8?B?U0h6WDdwalF3WWlIMGRoVDUzM3FmZktOc2JMK3JzZFZnczB3M04xb2dHWU5B?=
+ =?utf-8?B?VnB1NDlEcHJuVlo3b1dpdzQ3SnN4amhNRjQxUUVqUndEZWhBTHNIVG8zaXNj?=
+ =?utf-8?B?QTBNY3ZkWThkT0gxMEtHa0ZGaHIyMUV1akJFaVhRQ2F2eGtQZE80UnFXK3M4?=
+ =?utf-8?B?L0dhU1BQazdsQ0NyMWpZYUcwQ29PVlh0NzJmbExkaDd5d0I1L1lBdFdzSWN4?=
+ =?utf-8?B?QlF4dnc2VFdxMytUY1pnYUxCQnVXNC9jSWhObzZmT29YV2tpRGxsUFdpUzhy?=
+ =?utf-8?B?NFdoUFhCeEt1cXA4amQvTy8ydjFSNkZiTStGNmNaekxOS0RaYjlCcE9BZXZO?=
+ =?utf-8?B?S3dIS20yVGd6b1hoRFpPVW9PZENKZndmN1hkNE9JNkZsL0tERVgyQ2FuT1l5?=
+ =?utf-8?B?Z0JrUmxsb2lkMzhCUkdCUzZPRkRKdFVxUHM3Z0pDaTk4K2YrVXlwVFQvdEdw?=
+ =?utf-8?B?cVdUQVJkUDRJT1ovTm9ZNkFyR0JWMXdjV09seUhGWWlOb1FBRjNqRjE2T3Mz?=
+ =?utf-8?B?eWVWOWN2U21xbTFuTVd5TzNGZ3FDMmdxNCtNQmYxVXF3RnQ0T3Z6cmhPSXN5?=
+ =?utf-8?B?VlJickQ1YkVhZnIrZGlabUEwVVVCWUl3Wm9xSWVyekVzWFRjQUtleGhHVnhq?=
+ =?utf-8?B?T01JOCtHSjRKSGxTOGtWdHZzV05hZUx1SCtjeXQ0aXlzVHBqUUZBbHEyOW9H?=
+ =?utf-8?B?ZEJRRzlZbDNIUWc1ZjJGWkNncHM5cDRldVZ5ODJZVzFiK0JlRkFCRksrSHhT?=
+ =?utf-8?B?QjFRL1R0L0tiaG5HZERrL2FUcjFNcDZmaERydVF6aGFiYThyc2FWNm1pNGtH?=
+ =?utf-8?B?UFo5bUtQUE8xYWVvSW0rbDk5SlI3VmdvaDZXWEhBbjB5aWczaThzSS8yU1Q4?=
+ =?utf-8?B?blk3K1NHb2VMYzAzSmJvU0w3R3Z3SFZCVzFzSk84cjBORDhDZlhJZWdWMHdr?=
+ =?utf-8?B?TFVrb2ttMkJhdDNvZVM4c0s3aVdJZU50emZtQjBjTDhjV0h0SnhUQmtZYUhm?=
+ =?utf-8?B?ZHZmQk16Mm42SHJyWFJWY3d5QVpFNkV4S3NwckszbVB0VzJvQmh4YVhNb0ZW?=
+ =?utf-8?B?UXI1aDNEK0ZLQ2p5bjFKbkRVekdUdk5ZMUIzTVFjL1M0OXpncTZrOHpaWXQw?=
+ =?utf-8?B?RTZPVndkZGxnckYzZkIzMkxRU3ZENzUwSXlNZGxwb3ZFQTNod0d1S3ovYkpN?=
+ =?utf-8?B?Wkp1RVQ0NkhBK3JVMkFVUXlIMW9wYjNFR0t0dGxvbDJjdWpSVFpwTTRSbm9V?=
+ =?utf-8?B?Z2xxTk01dDhDSlJ2L0lYSmVqek5WUVlQS0t3OEVCVnN2TlNuS2NsSzlRbExr?=
+ =?utf-8?B?T2dsSnFjQTUvNjRHd0JkaUs5cjVFQ2JQT3NoaTlEOXlHczg5M2syTzZRelVX?=
+ =?utf-8?B?ZTRqMHlmOGFORmNZeExrVSs0U2trQTVHTk50ZGFrVjdWaGdGM2hxajJCRzYw?=
+ =?utf-8?B?TEUyNHV2TEVEczlORE1DMjBDN2hLUzh2UVA2RVAwelpKZXdXM3Q2K2xhWjRr?=
+ =?utf-8?B?Tm1Wck1teE1OMDBaQVd1ZDJ2UnNGUDVtRGV6Uzd5RkFNNURqV2ovRkRvMjZO?=
+ =?utf-8?B?T3IzQklZdUdHN0NLRjJFMkFnLytDU2ZYcGxqWkt6SXpCemdxc1BWcmp6WU52?=
+ =?utf-8?B?Wi9ZdVlLSG5MbnBlUWQ4QkM1eUhkL01uak0vcFd2eHZDc2NsaHBVd0RHMzFm?=
+ =?utf-8?Q?174s8SfOI14TSiGmukgo4qxY6?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <7E0E07AE17E52A4885A877CE74498E7B@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20230802033737.9738-1-duoming@zju.edu.cn>
-In-Reply-To: <20230802033737.9738-1-duoming@zju.edu.cn>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 14 Aug 2023 10:41:56 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWq4d7FJp6X_3=BQU-1=xvK1_jFJuq_7mTOaBJNXr1gEQ@mail.gmail.com>
-Message-ID: <CAMuHMdWq4d7FJp6X_3=BQU-1=xvK1_jFJuq_7mTOaBJNXr1gEQ@mail.gmail.com>
-Subject: Re: [PATCH] sh: push-switch: reorder cleanup operations to avoid UAF bug
-To:     Duoming Zhou <duoming@zju.edu.cn>
-Cc:     ysato@users.sourceforge.jp, dalias@libc.org,
-        glaubitz@physik.fu-berlin.de, kvalo@kernel.org, pavel@ucw.cz,
-        pabeni@redhat.com, rostedt@goodmis.org, linux-sh@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 49705d9c-cb69-405e-9b44-08db9ca27b4f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Aug 2023 08:43:07.0247
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4EmhHNYreB8GtNRbx32uvOlISU1jOKi1bE4y5MWciqtLCLkQibUdcmGfBH6N6SoWAaTx3oRciVljxD5VTCGDj34y/qBOs/VSJKimiQqskII=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB2469
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 5:46 AM Duoming Zhou <duoming@zju.edu.cn> wrote:
-> The original code puts flush_work() before timer_shutdown_sync()
-> in switch_drv_remove(). Although we use flush_work() to stop
-> the worker, it could be re-scheduled in switch_timer. As a result,
-> the UAF bug will happen. The detail is shown below:
->
->       (cpu 0)                    |      (cpu 1)
-> switch_drv_remove()              |
->  flush_work()                    |
->   ...                            |  switch_timer //timer
->                                  |   schedule_work(&psw->work)
->  timer_shutdown_sync()           |
->  ...                             |  switch_work_handler //worker
->  kfree(psw) //free               |
->                                  |   psw->state = 0 //use
->
-> This patch puts timer_shutdown_sync() before flush_work() to
-> mitigate the bugs. As a result, the worker and timer could
-> be stopped safely before the deallocate operations.
->
-> Fixes: 9f5e8eee5cfe ("sh: generic push-switch framework.")
-> Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+DQoNCkxlIDE0LzA4LzIwMjMgw6AgMDg6MjQsIE5pY2hvbGFzIFBpZ2dpbiBhIMOpY3JpdMKgOg0K
+PiBPbiBXZWQgQXVnIDksIDIwMjMgYXQgNjowMSBQTSBBRVNULCBDaHJpc3RvcGhlIExlcm95IHdy
+b3RlOg0KPj4gV2l0aCBza2lib290X2RlZmNvbmZpZywgQ2xhbmcgcmVwb3J0czoNCj4+DQo+PiAg
+ICBDQyAgICAgIGFyY2gvcG93ZXJwYy9tbS9ib29rM3M2NC9yYWRpeF90bGIubw0KPj4gYXJjaC9w
+b3dlcnBjL21tL2Jvb2szczY0L3JhZGl4X3RsYi5jOjQxOToyMDogZXJyb3I6IHVudXNlZCBmdW5j
+dGlvbiAnX3RsYmllX3BpZF9scGlkJyBbLVdlcnJvciwtV3VudXNlZC1mdW5jdGlvbl0NCj4+IHN0
+YXRpYyBpbmxpbmUgdm9pZCBfdGxiaWVfcGlkX2xwaWQodW5zaWduZWQgbG9uZyBwaWQsIHVuc2ln
+bmVkIGxvbmcgbHBpZCwNCj4+ICAgICAgICAgICAgICAgICAgICAgXg0KPj4gYXJjaC9wb3dlcnBj
+L21tL2Jvb2szczY0L3JhZGl4X3RsYi5jOjY2MzoyMDogZXJyb3I6IHVudXNlZCBmdW5jdGlvbiAn
+X3RsYmllX3ZhX3JhbmdlX2xwaWQnIFstV2Vycm9yLC1XdW51c2VkLWZ1bmN0aW9uXQ0KPj4gc3Rh
+dGljIGlubGluZSB2b2lkIF90bGJpZV92YV9yYW5nZV9scGlkKHVuc2lnbmVkIGxvbmcgc3RhcnQs
+IHVuc2lnbmVkIGxvbmcgZW5kLA0KPj4gICAgICAgICAgICAgICAgICAgICBeDQo+Pg0KPj4gVGhp
+cyBpcyBiZWNhdXNlIHRob3NlIGZ1bmN0aW9ucyBhcmUgb25seSBjYWxsZWQgZnJvbSBmdW5jdGlv
+bnMNCj4+IGVuY2xvc2VkIGluIGEgI2lmZGVmIENPTkZJR19LVk1fQk9PSzNTX0hWX1BPU1NJQkxF
+DQo+Pg0KPj4gTW92ZSBiZWxvdyBmdW5jdGlvbnMgaW5zaWRlIHRoYXQgI2lmZGVmDQo+PiAqIF9f
+dGxiaWVfcGlkX2xwaWQodW5zaWduZWQgbG9uZyBwaWQsDQo+PiAqIF9fdGxiaWVfdmFfbHBpZCh1
+bnNpZ25lZCBsb25nIHZhLCB1bnNpZ25lZCBsb25nIHBpZCwNCj4+ICogZml4dXBfdGxiaWVfcGlk
+X2xwaWQodW5zaWduZWQgbG9uZyBwaWQsIHVuc2lnbmVkIGxvbmcgbHBpZCkNCj4+ICogX3RsYmll
+X3BpZF9scGlkKHVuc2lnbmVkIGxvbmcgcGlkLCB1bnNpZ25lZCBsb25nIGxwaWQsDQo+PiAqIGZp
+eHVwX3RsYmllX3ZhX3JhbmdlX2xwaWQodW5zaWduZWQgbG9uZyB2YSwNCj4+ICogX190bGJpZV92
+YV9yYW5nZV9scGlkKHVuc2lnbmVkIGxvbmcgc3RhcnQsIHVuc2lnbmVkIGxvbmcgZW5kLA0KPj4g
+KiBfdGxiaWVfdmFfcmFuZ2VfbHBpZCh1bnNpZ25lZCBsb25nIHN0YXJ0LCB1bnNpZ25lZCBsb25n
+IGVuZCwNCj4gDQo+IFRoYW5rcyBmb3IgZG9pbmcgdGhpcy4gRnVuY3Rpb25zIHZhZ3VlbHkgYmVs
+b25nIHdoZXJlIHRoZXkgYXJlLCB3aGljaA0KPiBtYWtlcyBpdCBzbGlnaHRseSBhbm5veWluZyB0
+byBtb3ZlIHRoZW0uIElzIGl0IGFsc28gYW5ub3lpbmcgdG8gYWRkDQo+IGlmZGVmcyBmb3IgZWFj
+aCBvbmUgd2hlcmUgdGhleSBhcmU/DQoNCkxvb2tpbmcgYXQgaXQgb25jZSBtb3JlLCB3ZSBjYW4g
+ZXZlbiBtb3ZlIGFsbCB0aG9zZSBmdW5jdGlvbnMgb3V0IGluIGEgDQpzZXBhcmF0ZSBmaWxlIHRo
+YXQgd291bGQgb25seSBiZSBidWlsdCB3aGVuIA0KQ09ORklHX0tWTV9CT09LM1NfSFZfUE9TU0lC
+TEUgaXMgc2VsZWN0ZWQuIFRoZSBvbmx5IGRlcGVuZGVuY3kgd2l0aCANCm90aGVyIHBhcnQgb2Yg
+dGhlIGZpbGUgaXMgdGhlIHN0YXRpYyB0bGJfc2luZ2xlX3BhZ2VfZmx1c2hfY2VpbGluZywgDQp3
+aGljaCBjYW4gZWFzaWx5IGJlIG1hZGUgZ2xvYmFsLg0KDQpJbiBwcmluY2lwbGUgd2UgdHJ5IHRv
+IGF2b2lkICNpZmRlZnMgaW4gQy1maWxlcy4NCg0KV2h5IHdvdWxkIHdlIHdhbnQgdG8ga2VlcCB0
+aG9zZSBmdW5jdGlvbnMgYXQgdGhlIGN1cnJlbnQgcGxhY2UgYW5kIA0Kc3ByZWF0IHNldmVyYWwg
+bW9yZSAjaWZkZWZzIGluc2lkZSB0aGUgZmlsZSA/DQoNCkNocmlzdG9waGUNCg==
