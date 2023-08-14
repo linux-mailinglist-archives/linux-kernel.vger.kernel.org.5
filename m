@@ -2,180 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 253A277BDD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D695A77BDD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbjHNQVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 12:21:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
+        id S231993AbjHNQVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 12:21:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjHNQUc (ORCPT
+        with ESMTP id S230348AbjHNQVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 12:20:32 -0400
+        Mon, 14 Aug 2023 12:21:04 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F94127;
-        Mon, 14 Aug 2023 09:20:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2290CF1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:21:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 018F161538;
-        Mon, 14 Aug 2023 16:20:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39144C433C7;
-        Mon, 14 Aug 2023 16:20:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692030030;
-        bh=Lp5NQoRVJVYBTk1cBJi4eKGlFprUMKj5hMwOdNNo6ow=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=eeAsAIkFPMH+kEjmqNPcPblqMWg2Ts9xgNK61GUnTB3tgJTInuIqg5T5tcS9Box2Z
-         f7JRtsnAVlwrbEwnkwlmaRuw2vOGtnfbjD4YdUqjZW+hvRjng/jxeURysEe2ciW9Rb
-         t4r94xuf/hGLhMm8vJLcywT5LuxXYxWCuhZjnpPV+jlujkp2MK494V/jei5XujytG1
-         yYLbuM5YBkLreu8EeHEaR6H2g0D8+o7EJ4oM1nQpcAG/xGZcS4SIXpCGQhOANgd2NW
-         9iUknpfBwcCjiBMYFbV6RR62NuYOcM/+R8+uw3Vbj67XELNj7E8Ndh1vL1Cmi8puvW
-         USD+TWdnIT8vQ==
-Date:   Mon, 14 Aug 2023 11:20:28 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     deloptes <emanoil.kotsev@deloptes.org>
-Cc:     linux-pci@vger.kernel.org,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B4823621AB
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 16:21:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E82DC433C7;
+        Mon, 14 Aug 2023 16:21:00 +0000 (UTC)
+Date:   Mon, 14 Aug 2023 17:20:58 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     wang xiaolei <xiaolei.wang@windriver.com>,
+        akpm@linux-foundation.org, glider@google.com, andreyknvl@gmail.com,
+        zhaoyang.huang@unisoc.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: SSD SATA 3.3 and Broadcom / LSI SAS1068E PCI-Express Fusion-MPT
- SAS
-Message-ID: <20230814162028.GA176555@bhelgaas>
+Subject: Re: [PATCH 2/2] mm/kmemleak: No need to check kmemleak_initialized
+ in set_track_prepare()
+Message-ID: <ZNpUal2iJZXqpMN3@arm.com>
+References: <20230810074704.2042664-1-xiaolei.wang@windriver.com>
+ <20230810074704.2042664-3-xiaolei.wang@windriver.com>
+ <37397d75-c95c-8730-cf22-79e283e0bd6c@suse.cz>
+ <79deae0c-eeef-2370-9d8a-b2746389d38c@suse.cz>
+ <e401350a-1e23-dae9-97be-fe659665e22d@windriver.com>
+ <dbffe403-3419-58b3-cf94-ea4119c1c00d@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <uba6vj$10n6$1@ciao.gmane.io>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <dbffe403-3419-58b3-cf94-ea4119c1c00d@suse.cz>
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc mptsas folks]
+On Fri, Aug 11, 2023 at 10:09:08AM +0200, Vlastimil Babka wrote:
+> On 8/11/23 04:03, wang xiaolei wrote:
+> > On 8/10/23 9:16 PM, Vlastimil Babka wrote:
+> >> Looking closer, I think what you want could be achieved by kmemleak_init()
+> >> setting a variable that is checked in kmemleak_initialized() instead of the
+> >> kmemleak_initialized that's set too late.
+> >>
+> >> I think this should work because:
+> >> - I assume kmemleak can't record anything before kmemleak_init()
+> >> - stack depot early init is requested one way or the other
+> >> - mm_core_init() calls stack_depot_early_init() before kmemleak_init()
+> >>
+> >> But I also wonder how kmemleak can even reach set_track_prepare() before
+> >> kmemleak_init(), maybe that's the issue?
+> > 
+> > Before kmemleak_init, many places also need to allocate kmemleak_object,
+> > 
+> > and also need to save stack in advance, but kmemleak_object is allocated
+> > 
+> > in the form of an array, after kmemleak_init 'object_cache = 
+> > KMEM_CACHE(kmemleak_object, SLAB_NOLEAKTRACE);'
+> 
+> Hm I see, kmemleak has this static mempool so it really can record some
+> objects very early.
 
-On Sun, Aug 13, 2023 at 11:15:31AM +0200, deloptes wrote:
-> I hope I am in the right news group. If not please point me to a place where
-> someone can give me an advice in which direction I could look for an
-> answer.
+Indeed, otherwise we'd get a lot of false positives.
 
-Thanks for your question.  I added the mptsas maintainers and related
-mailing lists.
+> > I think there is still some memory not recorded on the backtrace before
+> > 
+> > stack_depot_early_init(), does anyone have a better suggestion?
+> 
+> No we can't record the backtrace earlier. But I don't think it's a problem
+> in practice. AFAIU kmemleak needs to record these very early allocations so
+> if they point to further objects, those are not suspected as orphans. But
+> the early allocations themselves also are very unlikely to be leaks, so does
+> it really matter that we don't have a backtrace for their allocation?
+> Because the backtrace is the only thing that's missing - the object is
+> otherwise recorded even if set_track_prepare() returns 0.
 
-> I've been using the below mentioned board (see dmidecode) with the below
-> mentioned SAS controllers (see lspci) for many years with normal
-> (rotating/spinning) disk drives.
-> I now bought 2 SSD disks to replace 2 of the spinning once and I was
-> surprised to find out that the older disks are using 3Gb/s transfer rate
-> while the SSDs are using 1.5Gb/s. The SSDs are reporting SATA 3.3 (see
-> below)
-> 
-> In the mptsas driver I see 3 and 6 but no 3.3 or similar. 
-> 
-> https://github.com/torvalds/linux/blob/ae545c3283dc673f7e748065efa46ba95f678ef2/drivers/message/fusion/mptsas.c#L3087C1-L3111C3
-> 
-> If I understand correctly the rate is negotiated by the controller and the
-> mobo. I am wondering where could be the problem. Is it really matter of
-> negotiation i.e. the driver does not understand 3.3 or a technical
-> constrains/incompatibility at 3Gb/s?
+It's not a functional problem, just a reporting one. There are
+rare early leaks (usually false positives) so identifying them would
+help. That said, I think set_track_prepare() is too conservative in
+waiting for kmemleak_initialized to be set in kmemleak_late_init().
+That's a late_initcall() meant for the scanning thread etc. not the core
+kmemleak functionality (which is on from early boot).
 
-It looks like your SSDs support SATA r3.3 and are capable of 6.0 Gb/s,
-and the SAS1068E SAS controller is limited to 3.0 Gb/s [1].  I would
-expect them to negotiate 3.0 Gb/s (as your older drives did) and
-you're only seeing 1.5 Gb/s.  Sorry, I guess I just restated your
-whole question ;)
+We can instead use a different variable to check in set_track_prepare(),
+e.g. object_cache. stack_depot_early_init() is called prior to
+kmemleak_init(), so it should be fine.
 
-I don't know why that would be.  Are there any hints in the dmesg log?
-Can you collect the complete dmesg log with the old drives and again
-with the new SSDs so we can compare them?  I assume you have good
-cables?  I assume the same cables worked at 3.0 Gb/s with the old
-drives.
+If "kmemleak_initialized" is confusing, we could rename it to
+"kmemleak_late_initialized" or "kmemleak_fully_initialized". I'm not too
+fussed about this as long as we add some comment on why we check
+object_cache instead of kmemleak_initialized.
 
-I would *expect* that SATA r3.3 would be completely backwards
-compatible, so since mptsas worked just fine at 3.0 Gb/s with the old
-SATA r3.0 drives, it should also work just fine at 3.0 Gb/s with the
-new SATA r3.3 drives.  But I have no actual knowledge about that.
-
-[1] https://docs.broadcom.com/doc/12352180
-
-> Last question: If I would have to replace the controllers, what controller
-> would be recommended?
-> 
-> Thank you in advance
-> 
-> BR
-> 
-> 
-> # lspci
-> 01:00.0 SCSI storage controller: Broadcom / LSI SAS1068E PCI-Express
-> Fusion-MPT SAS (rev 08)
-> 08:00.0 SCSI storage controller: Broadcom / LSI SAS1068E PCI-Express
-> Fusion-MPT SAS (rev 08)
-> 
-> # dmidecode
-> 
-> Handle 0x0002, DMI type 2, 15 bytes
-> Base Board Information
->         Manufacturer: ASUSTeK COMPUTER INC.
->         Product Name: M5A97 EVO R2.0
->         Version: Rev 1.xx
-> 
-> Handle 0x0028, DMI type 9, 17 bytes
-> System Slot Information
->         Designation: PCIEX16_2
->         Type: x16 PCI Express
->         Current Usage: Available
->         Length: Short
->         ID: 3
->         Characteristics:
->                 3.3 V is provided
->                 Opening is shared
->                 PME signal is supported
->         Bus Address: 0000:00:1c.5
-> 
-> 
-> 
-> # smartctl
-> 
-> === START OF INFORMATION SECTION ===
-> Model Family:     WD Blue / Red / Green SSDs
-> Device Model:     WDC  WDS200T1R0A-68A4W0
-> ...
-> Firmware Version: 411010WR
-> User Capacity:    2,000,398,934,016 bytes [2.00 TB]
-> Sector Size:      512 bytes logical/physical
-> Rotation Rate:    Solid State Device
-> Form Factor:      2.5 inches
-> TRIM Command:     Available, deterministic, zeroed
-> Device is:        In smartctl database [for details use: -P show]
-> ATA Version is:   ACS-4 T13/BSR INCITS 529 revision 5
-> SATA Version is:  SATA 3.3, 6.0 Gb/s (current: 1.5 Gb/s) <<<<<<<<<<<< HERE
-> Local Time is:    Sun Aug 13 10:38:11 2023 CEST
-> SMART support is: Available - device has SMART capability.
-> SMART support is: Enabled
-> 
-> === START OF INFORMATION SECTION ===
-> Model Family:     Western Digital Red
-> Device Model:     WDC WD20EFRX-68EUZN0
-> ...
-> Firmware Version: 82.00A82
-> User Capacity:    2,000,398,934,016 bytes [2.00 TB]
-> Sector Sizes:     512 bytes logical, 4096 bytes physical
-> Rotation Rate:    5400 rpm
-> Device is:        In smartctl database [for details use: -P show]
-> ATA Version is:   ACS-2 (minor revision not indicated)
-> SATA Version is:  SATA 3.0, 6.0 Gb/s (current: 3.0 Gb/s) <<<<<<<<<<<< HERE
-> Local Time is:    Sun Aug 13 10:38:11 2023 CEST
-> SMART support is: Available - device has SMART capability.
-> SMART support is: Enabled
-> 
-> -- 
-> FCD6 3719 0FFB F1BF 38EA 4727 5348 5F1F DCFE BCB0
-> 
+-- 
+Catalin
