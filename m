@@ -2,92 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF1177B6CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9CAB77B74B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233883AbjHNKfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 06:35:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37514 "EHLO
+        id S233089AbjHNLE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 07:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232710AbjHNKev (ORCPT
+        with ESMTP id S231387AbjHNLEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 06:34:51 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 824EBFB
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:34:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=n/5fur1O7HmezLAB1D08kXCllPEF6sWoE3meSxj3Rn4=; b=bklOlH07ynK64pEaHS88zLq1IS
-        i/qiUuqn+txNvZDv5Qef9vDhw6UQ/rfkNEO5cRGGEFCZ8LOiEh6NfXX22H4XE1Uspiie8XzHTlBHd
-        vyQoJZdxEa1sVjvgYkCuVsg3o4Oq+JxDY4szfDU8HhQH8bSp7m7fZ3qm8LVQYbdcA/KUacB8B4qnI
-        nGU1z7fGaYRxtyHT0hyKVCKBMo9Vkq6HXASb3h9B79lOvf4zd4HIa+Di9tmYYTPy3dUwEopfZjUuu
-        NBKFd9yQcD0yjGF76a6PQ98OaVDYwINu0UcDahLdYAhgEnNhrkZdPEIYFNyAaMMEkiiiaIuNLfRlU
-        TiCCQ8SA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qVUuE-00AW74-07;
-        Mon, 14 Aug 2023 10:34:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8A17A30020B;
-        Mon, 14 Aug 2023 12:34:37 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6B96A20C1700F; Mon, 14 Aug 2023 12:34:37 +0200 (CEST)
-Date:   Mon, 14 Aug 2023 12:34:37 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andrew.Cooper3@citrix.com
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
-        gregkh@linuxfoundation.org
-Subject: Re: [RFC][PATCH 12/17] x86/cpu: Rename original retbleed return thunk
-Message-ID: <20230814103437.GC776869@hirez.programming.kicks-ass.net>
-References: <20230809071218.000335006@infradead.org>
- <20230809072201.259675763@infradead.org>
- <20230809142031.jkj4pa2mhccrdmmd@treble>
- <20230809142255.GQ212435@hirez.programming.kicks-ass.net>
- <c4c1c9b8-9ced-7282-718e-48e14375e9f1@citrix.com>
- <20230810130229.GA212435@hirez.programming.kicks-ass.net>
- <bd670c70-47f6-efc7-6ad2-cd833b414ec1@citrix.com>
+        Mon, 14 Aug 2023 07:04:50 -0400
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 707B718F
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 04:04:49 -0700 (PDT)
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20230814110447epoutp04e458004bd15c2d11244c99be2c091770~7Ox6vkjXz2442124421epoutp04R
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 11:04:47 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20230814110447epoutp04e458004bd15c2d11244c99be2c091770~7Ox6vkjXz2442124421epoutp04R
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1692011088;
+        bh=MpU5sg64Rtz0wgAz4NAZ93T3v5OyDdjEZ/irGTT+4ow=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oLkfbfpCgv+Jr4yhM1GpSQMl3BOS784wQWuq0A9PdlVZLI8EM7CGoWX+a11G0dxfh
+         Jq572gIsL94mXckbKtny1oR739QLKIpPzWhCdjFipfX3p/2DK0da4kwFNtN+udV4G1
+         o+QEksRxl+W8mf43fadi2/CJHJdziYi/+zzxhStI=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20230814110447epcas5p490379260eb7de32348ca4fc4b8d3cfc2~7Ox6IFwcC2024420244epcas5p4m;
+        Mon, 14 Aug 2023 11:04:47 +0000 (GMT)
+Received: from epsmges5p2new.samsung.com (unknown [182.195.38.183]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4RPWkj4Rfpz4x9Pr; Mon, 14 Aug
+        2023 11:04:45 +0000 (GMT)
+Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        88.39.44250.D4A0AD46; Mon, 14 Aug 2023 20:04:45 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20230814103824epcas5p2e5155c861ab70bb8cca3e76bdd927a81~7Oa4VdjhG0954109541epcas5p2F;
+        Mon, 14 Aug 2023 10:38:24 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230814103824epsmtrp1d65eec6dba8f8ada46fd5bd57ce2d5ee~7Oa4Ub3752451324513epsmtrp12;
+        Mon, 14 Aug 2023 10:38:24 +0000 (GMT)
+X-AuditID: b6c32a4a-c4fff7000000acda-9a-64da0a4d2535
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        83.B3.64355.0240AD46; Mon, 14 Aug 2023 19:38:24 +0900 (KST)
+Received: from green245 (unknown [107.99.41.245]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20230814103821epsmtip27238edf5915e73a70212847347f4b676~7Oa1Opylv1721117211epsmtip2Q;
+        Mon, 14 Aug 2023 10:38:21 +0000 (GMT)
+Date:   Mon, 14 Aug 2023 16:05:05 +0530
+From:   Nitesh Shetty <nj.shetty@samsung.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Kanchan Joshi <joshi.k@samsung.com>,
+        martin.petersen@oracle.com, linux-doc@vger.kernel.org,
+        gost.dev@samsung.com, Anuj Gupta <anuj20.g@samsung.com>,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, mcgrof@kernel.org, dlemoal@kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [dm-devel] [PATCH v14 01/11] block: Introduce queue limits and
+ sysfs for copy-offload support
+Message-ID: <20230814103505.rjcv4esakiqpndnl@green245>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bd670c70-47f6-efc7-6ad2-cd833b414ec1@citrix.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <170b68ca-b24c-0723-cc54-7fcdc9004bcc@acm.org>
+User-Agent: NeoMutt/20171215
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTdxTH9+u9vbTEkrsC+hOQ1RocYAotlnpRq0t8cINbIMFtCZkpld6U
+        jtI2fQz1HxkMESIC4xFXGDJEy2MroTinPITgGFLmWFd5deBwFDIHCOI7DlhLgfjf53zP7/s7
+        OefkMBD2Ba8AhkKlp7QqqZKLeaM37oSF8z7ydsj4k4vbiCbrLwiRVbSEEI3jhRgxc2cREOUL
+        rxHC2ZULiInOg0TH4wo6Mdp1i0bUN/bQiJ6VOYz4unsIEFODRhrR4dhFfHeuFiXaO/pQwt5a
+        iRGXr015EabeZRoxUjQFCPPMPErcdQQSA0u99A+2kPb7x8iBB80oab9nIC0NeRjZUnuWbBvN
+        xMgrF0voZEH2Y4x8MuVAyfnbgxh58XoDIJ9agkmLc46WwEpK259KSWWUlkOpUtQyhUou5h5L
+        lBySRIv4Ap4ghtjD5aik6ZSYe/jDBN5RhdLVOJfzhVRpcEkJUp2OG3lgv1Zt0FOcVLVOL+ZS
+        GplSI9RE6KTpOoNKHqGi9HsFfH5UtOthclpq12Qf0IxipzprHF6ZYJSeDxgMiAvhq9ygfODN
+        YONtAPbN9tA9wSKAL7NzwEZQPNiy4egeXtNvATj2vBh162x8GsDy2HzAZKB4CGyZKfdyyxi+
+        C/avMNyyHx4KX0yYULcVwW/TYaF5CXEnfHElrCttx9zMwkXQbi5BPPwu7PvGibqZie+DZaOL
+        q+yPB8FLV58j7o8gfoUJLQ4nzZ2A+GE41Jbr5WFf+G/v9TUOgI8Kz61xBqwvrcM85q8ANA4b
+        gSdxEOZYC1crI3gqzJpeWdO3wTKrmebRfWDBm/ViLHizap13wO+bqjEPb4VDL79cYxKWnX+C
+        eaa1AGBV0RxaBN4zvtWd8a16Ht4L8xay6EbX9BA8EJqWGR4Mg02tkdWA3gC2UhpdupzSRWui
+        VFTGxr5T1OkWsHoW4XE3wcOJhYhuQGOAbgAZCNeP5YgdkrFZMunpM5RWLdEalJSuG0S7tlWM
+        BPinqF13pdJLBMIYvlAkEgljdosE3C2smZxvZWxcLtVTaRSlobTrPhqDGZBJkwtP88HAm+XL
+        xY2tIX0/ODifcEvif7SfjVu6MR1aNfH6xMIf88HRf+/cd21ZFW6zXcpoaXpHHDcb72Tjr1oU
+        /Sa/IluFYNJin5IcKTA9MolrZvPCP8upffEgXmKLLL9ad//TKF6BbCT2zKGInyL+rBn7a+Q/
+        6dHPmZVlysphOfP3Z9VFm6wlY4GHksYvhHTsEIdod2tO9rd1Jq9YBZyk5YJ/alOCHyZXBBXc
+        zQ31PcLTGk4ossz+85tL32+qrB8wa+lZonwLes+htbN/c9jabYUjrRW/2jGrT+KpZ+cDTvIU
+        2WHHnbWyxP6cPdvDjm/Cu4xjPk97D4wHNTfDnR//vHmSi+pSpYJwRKuT/g9IngSjnwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNIsWRmVeSWpSXmKPExsWy7bCSvK4Cy60Ug8MndSzWnzrGbNE04S+z
+        xeq7/WwWrw9/YrSY9uEns8WTA+2MFg/221vsfTeb1eLmgZ1MFitXH2WyOPr/LZvFpEPXGC2e
+        Xp3FZLH3lrbFwrYlLBZ79p5ksbi8aw6bxfxlT9ktlh//x2RxY8JTRot1r9+zWJy4JW1x/u9x
+        Vgdxj8tXvD3O39vI4nH5bKnHplWdbB6bl9R77L7ZwOaxuG8yq0dv8zs2j49Pb7F4vN93lc2j
+        b8sqRo/Pm+Q8Nj15yxTAG8Vlk5Kak1mWWqRvl8CV8eHDWuaCbpaKb9OWMDcwLmXuYuTgkBAw
+        kTh0nbGLkYtDSGA7o8SKzoesXYycQHFJiWV/jzBD2MISK/89Z4coesIoceToDSaQBIuAqsTm
+        19PYQQaxCWhLnP7PARIWEdCQ+PZgOQtIPbPAEVaJKY1PWEASwgI5Eium7GEDsXkFzCQur5vM
+        DDH0A6PEwckr2CESghInZ0I0MAMVzdv8EOxSZgFpieX/wBZwClhLTL35CaxEVEBGYsbSr8wT
+        GAVnIemehaR7FkL3AkbmVYyiqQXFuem5yQWGesWJucWleel6yfm5mxjB8a0VtINx2fq/eocY
+        mTgYDzFKcDArifDecr+WIsSbklhZlVqUH19UmpNafIhRmoNFSZxXOaczRUggPbEkNTs1tSC1
+        CCbLxMEp1cDE55XF06k678cOKYMt5Wt8I3o7Zx7jDNiosGSR4Syb3s8rs/un7vr702Jl2of+
+        3ooWlqVX/iitPelgtffR5/12i6XemiV+O2mt2XMwQnZ3YdlHwwS17L7zNW8SjPtkmnaeevuM
+        uzSj8VL1+4cqIqeTxRYtL/ppKXrqbvLNI8b3927Mc1Hnc+4Ml2NOn8l0sXDHpfy2tynffDk7
+        bIXF9J9O3GVjl3NBPHCCRpay6ESLIhuFi0xxmSfiDZ/vzRb6VpP17q1YqO0Ch1PWN/7y6R7Z
+        uUVQyD7w4TlXP9vDG97G1YRlpyR/yEg6yjqtsGBuE8dGa76jj/a8PCF2tVlxsqH2zkLZ2LMJ
+        R3c07Qm/6K7EUpyRaKjFXFScCABloun2XgMAAA==
+X-CMS-MailID: 20230814103824epcas5p2e5155c861ab70bb8cca3e76bdd927a81
+X-Msg-Generator: CA
+Content-Type: multipart/mixed;
+        boundary="----Ax27aEWlRRTyCTKvLJGz44CsYuK4yEI58Kfkn8Ic_yMAot59=_545b7_"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230811105638epcas5p4db95584b6a432ea4b8b93e060a95e5f1
+References: <20230811105300.15889-1-nj.shetty@samsung.com>
+        <CGME20230811105638epcas5p4db95584b6a432ea4b8b93e060a95e5f1@epcas5p4.samsung.com>
+        <20230811105300.15889-2-nj.shetty@samsung.com>
+        <170b68ca-b24c-0723-cc54-7fcdc9004bcc@acm.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 13, 2023 at 04:23:27PM +0100, Andrew.Cooper3@citrix.com wrote:
-> On 10/08/2023 2:02 pm, Peter Zijlstra wrote:
+------Ax27aEWlRRTyCTKvLJGz44CsYuK4yEI58Kfkn8Ic_yMAot59=_545b7_
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Disposition: inline
 
-> > So BTC as a whole is the fact that AMD predicts the type of an
-> > instruction and then picks a predictor to predict the target of that
-> > instruction, no?
-> 
-> No.
-> 
-> "Branch Type Confusion" is the technical name AMD gave last year's
-> issue.  Hence the name of the whitepaper about it,
-> https://www.amd.com/system/files/documents/technical-guidance-for-mitigating-branch-type-confusion.pdf
+On 23/08/11 02:56PM, Bart Van Assche wrote:
+>On 8/11/23 03:52, Nitesh Shetty wrote:
+>>+/* maximum copy offload length, this is set to 128MB based on current testing */
+>>+#define COPY_MAX_BYTES		(1 << 27)
+>
+>Since the COPY_MAX_BYTES constant is only used in source file
+>block/blk-settings.c it should be moved into that file. If you really
+>want to keep it in include/linux/blkdev.h, a BLK_ prefix should
+>be added.
+>
+We are using this in other files. So we will add a prefix BLK_.
 
-Bah, then what do we call the actual underlying issue that the AMD
-branch predictor starts by predicting the next instruction type --
-before it has been decoded -- meaning it can predict it wrong, which
-then leads to a tons of other issues, including but not limited to:
+Thank you,
+Nitesh Shetty
 
- SLS through JMP (or pretty much anything else)
- RET from BTB
+------Ax27aEWlRRTyCTKvLJGz44CsYuK4yEI58Kfkn8Ic_yMAot59=_545b7_
+Content-Type: text/plain; charset="utf-8"
 
-?
 
-Calling *THAT* branch-type-confusion makes a heap more sense to me.
-
+------Ax27aEWlRRTyCTKvLJGz44CsYuK4yEI58Kfkn8Ic_yMAot59=_545b7_--
