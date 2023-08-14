@@ -2,122 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD3677B2D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A22C77B2DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232704AbjHNHpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 03:45:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40822 "EHLO
+        id S234122AbjHNHq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 03:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234441AbjHNHpl (ORCPT
+        with ESMTP id S234348AbjHNHqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 03:45:41 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73DA210C0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 00:45:24 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bed101b70so545836566b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 00:45:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691999123; x=1692603923;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=i0RzompxTvywufBTvryBAp+xHgguon69NM49gXVj2tY=;
-        b=YU/OXGa3oNljg0ndQEhTRYyn7MKCIiEGORXQvQTmuL+1L7+uL0Qu3Ep7Pis9Az4L5i
-         lgHyZNsED0f6S5fGxgn2lFZuORLXAKvW4QRson98YbYnfkGyk4aga/ypBfFxlK/Tyoma
-         cW5jJtCp44+I8ty9JeRv3jZgG3s0Hv8h8TL8I4P4xhAhsqpNq8BOjW4QhRdxIDr8wz6L
-         g66xq8VwJPsRF/vXvJD9oe+eVhda9TEbOwLb/sl+jNJ4q6yjFNyB33vQUK+fyo7DsjzY
-         wOHb2jDzTHkGtBstgQt6ti1KCBXcNTo6g2K1XxMf+k+GZCuiWJ3AAcW+50v6wxrfAufC
-         WbPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691999123; x=1692603923;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i0RzompxTvywufBTvryBAp+xHgguon69NM49gXVj2tY=;
-        b=N05NFxsGnEf5jMSRMTPL2KxW0qPl9sEfDeLI0vg3cNj4qQsXF0pqgG/ez9Z+KU1wwF
-         PV7q5Od7+p6dHlJwFEvv+f8iSaSW53JfdJHAoHRjqPryNppRgX/7J687PArcrFMZtSlB
-         0Ns+JM8E4vCO3GFA4RpmUfuYHQpqwm9fJ/1IxCx7uutFPfheiVx51TYLS7duuSfDSqX7
-         ZdmpTqV/++ni5nugQkDltmjhFH0opewNfYsvhlUffzB5Z92xXM02xRNFtFn6L1KqcHK5
-         GUBW80yJuzKwFVkZvaSZMt/cqCNdDoxKQvOLHBQMaz0rt807liRCNvL10PJ8679r2VAo
-         xCJg==
-X-Gm-Message-State: AOJu0YybjpwkBZUUMOrUq9MH5oRXykf9NC4gojeOJFyfbhLO44CIfEJi
-        vpmOVsCy+q7ZTAxiHXZSMg4tWA==
-X-Google-Smtp-Source: AGHT+IHWdwKpTqcFMWzaLZxzjqDug8Tt6bFNAgMUiArQu9WAUJbthnZRqnuQi/uOsAjWPq2c70hVWQ==
-X-Received: by 2002:a17:906:1041:b0:99c:ae35:8cd with SMTP id j1-20020a170906104100b0099cae3508cdmr7472922ejj.43.1691999122978;
-        Mon, 14 Aug 2023 00:45:22 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id kk9-20020a170907766900b0099cc36c4681sm5360241ejc.157.2023.08.14.00.45.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 00:45:22 -0700 (PDT)
-Message-ID: <8b41456e-3394-9b5d-1f94-a257a443dfd6@linaro.org>
-Date:   Mon, 14 Aug 2023 09:45:18 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH net-next] phy: amlogic: meson-g12a-usb2: fix
- Wvoid-pointer-to-enum-cast warning
+        Mon, 14 Aug 2023 03:46:14 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2066.outbound.protection.outlook.com [40.107.223.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF4094;
+        Mon, 14 Aug 2023 00:46:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BbIwKUmcAtGGgGu/6+gb9X/6IsYPPqjR0rpDbGLNn746+fWRQ3Z8IbfhJ553xfkTQogacZsInmNatI03kZMM5UWwcvLC3aMUAS4sJCMKvxskyzNzVYi5zuM9A9/3LSShKM9/rMk2bBOFseFxlGxcQULVPOc+YkFQ+JrKzERrqqEre587g3qS73rD13yC5iTZJ0pXoqT9S36964h3tZ8ldt6+gGvr/8uWyE6VLrm0+2zhjnwmSowgrbMO7TPICw0QUDaTBUjA7xYdzmeSF1LWwUPWU7DqF6kNJP0KHmZdzfEJkqE81qScX+C6Si4Tv4nNTOQKPkRWr9Mt19ssDAKcfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JdFvQyk693fVqmIOaAwwFy/qgIKoizkoOGNT6QJXr9E=;
+ b=YMv89hGJ8MDdfhsU40Bjn9WokzUOduQm756naeAESnV9kR0OSby1Xsc1bYa8jL46JZx/0ReLa7hPA+H2b2I/6P9BC476bKVxOoM2464cDpjxv9K8LLNlAUW8twlJqzS+lRZAjHxbO69DYTHPXQnxuYBCxV+vDcFkT8b6PUsHY8D7N8hX2FRGTOEywQnp2wDT+191x4EY7Xogp5befXxqiLDtGyj2i7XiRL2BCkqvAF/9G08/34lxboqGt6CetDk/oRGAb8rUX3VAhlPtqhUdbXwcZLkCkphB7Tgy7I+gfk9/nPWAn3Sst2RVOXZz7xroAgli0V8PgbuV+hSRxrAZqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JdFvQyk693fVqmIOaAwwFy/qgIKoizkoOGNT6QJXr9E=;
+ b=c4+ebAWDg/+bv7cZRAE5VXirB04ZeyZahf/aQhWMfhTYf+ghiC43YgiPYMkAcTcBVj8dCeP37EBlsYZLCdnlbA3mAs5AetLpUrAqZGj01SLBsYmOes2bOJkmOIeisoeVCbLiJoeWJlrkdV0Vxo1jZAJ3DYuipwsh+kheXrTWLWI=
+Received: from DM6PR12MB2619.namprd12.prod.outlook.com (2603:10b6:5:45::18) by
+ DM4PR12MB7694.namprd12.prod.outlook.com (2603:10b6:8:102::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6678.24; Mon, 14 Aug 2023 07:46:11 +0000
+Received: from DM6PR12MB2619.namprd12.prod.outlook.com
+ ([fe80::ed2a:4807:1825:170f]) by DM6PR12MB2619.namprd12.prod.outlook.com
+ ([fe80::ed2a:4807:1825:170f%5]) with mapi id 15.20.6678.022; Mon, 14 Aug 2023
+ 07:46:10 +0000
+From:   "Quan, Evan" <Evan.Quan@amd.com>
+To:     Simon Horman <horms@kernel.org>
+CC:     "rafael@kernel.org" <rafael@kernel.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
+        "mdaenzer@redhat.com" <mdaenzer@redhat.com>,
+        "maarten.lankhorst@linux.intel.com" 
+        <maarten.lankhorst@linux.intel.com>,
+        "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        "hdegoede@redhat.com" <hdegoede@redhat.com>,
+        "jingyuwang_vip@163.com" <jingyuwang_vip@163.com>,
+        "Lazar, Lijo" <Lijo.Lazar@amd.com>,
+        "jim.cromie@gmail.com" <jim.cromie@gmail.com>,
+        "bellosilicio@gmail.com" <bellosilicio@gmail.com>,
+        "andrealmeid@igalia.com" <andrealmeid@igalia.com>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "jsg@jsg.id.au" <jsg@jsg.id.au>, "arnd@arndb.de" <arnd@arndb.de>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: RE: [PATCH V8 2/9] drivers core: add ACPI based WBRF mechanism
+ introduced by AMD
+Thread-Topic: [PATCH V8 2/9] drivers core: add ACPI based WBRF mechanism
+ introduced by AMD
+Thread-Index: AQHZy13cCCFdkuqP4kWyz/74g5zCw6/k2DIAgASXm2A=
+Date:   Mon, 14 Aug 2023 07:46:10 +0000
+Message-ID: <DM6PR12MB26197EFD7E9F1ACC6F52C40AE417A@DM6PR12MB2619.namprd12.prod.outlook.com>
+References: <20230810073803.1643451-1-evan.quan@amd.com>
+ <20230810073803.1643451-3-evan.quan@amd.com> <ZNYBYuUSaio66vLN@vergenet.net>
+In-Reply-To: <ZNYBYuUSaio66vLN@vergenet.net>
+Accept-Language: en-US, zh-CN
 Content-Language: en-US
-To:     neil.armstrong@linaro.org, Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-phy@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Andi Shyti <andi.shyti@kernel.org>
-References: <20230810091310.70231-1-krzysztof.kozlowski@linaro.org>
- <13491021-d849-da84-f1a2-a94401118de6@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <13491021-d849-da84-f1a2-a94401118de6@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;
+ MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2023-08-14T07:46:07Z;
+ MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;
+ MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;
+ MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+ MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=3e316eeb-438d-4aa2-b94f-4442fa998ea8;
+ MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=1
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR12MB2619:EE_|DM4PR12MB7694:EE_
+x-ms-office365-filtering-correlation-id: f303e7c8-1a2b-4d4a-9d37-08db9c9a86fa
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8GFLli7fZetMbMiR3j1ooqzc7r+Rx4K0zgrD7IeJGBNBZ2BC2EtcIh+uQLqzdlq+deSH48U7bhNdOMxGDYVjPrABs/usrxZfgPfm/hOC3foAnov2Dg7+qvS2SsFYhiNxdmjggPaSTP6V3iPZllOHxmnlJfpWqHjoeInfJedNWlSaGWtoQmNaAl6FKIcRiXRx3Xf/0nH9X2RiP7zfryKvex1Z9gNyqfd/Y27XsL1ezQzoS/8WqO0X/sMbtY/mvgXaiWbqRHqqv5SIMa8GwHz9bpfifKcKkbRPtYb5pTeSdKD9iu2lUA0KuJZrmvwznRoXH67j+dGRRz06qH4OO1587cAG88BfthxGyTLjJnC71UXjuoYdlIq7ZkwhSVcFOIaGXzP0AUBh4gEhHGf4nUHPrlih7NTHJhHZpGRJhA2j1X3MvOR/Gb6S/+NbFk337PLC5pgCBFeLSpMqag5p7dQbGBR1oJvM2xW9DORZBQZwCQqstCiPtlE2X2RHljephgCCBvKPy9ISb+9AOwJL5qo1Vk3OISxuj9uiD0I2JdG7EwPc6sVwQiutVzpixXc7ujY7DSiUoy1nR+zPPjg9rmxeg3ZSFfk0XzOhPgUF4Afzu+0lEJXWzTEsA6MQZw2l00Je
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB2619.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(136003)(396003)(366004)(376002)(39860400002)(1800799006)(186006)(451199021)(6506007)(53546011)(26005)(8936002)(41300700001)(64756008)(66446008)(66476007)(66556008)(66946007)(76116006)(8676002)(316002)(9686003)(83380400001)(71200400001)(7696005)(122000001)(478600001)(38100700002)(55016003)(54906003)(33656002)(86362001)(6916009)(4326008)(5660300002)(2906002)(7416002)(38070700005)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?T8ydrTOgW3G3EhajlAuvLaRhdCZ67Og7EOvIRl++EsZb0Txj0ga6pr48gC55?=
+ =?us-ascii?Q?wu1dtmM8Rk4mdoVU+kmEDiDpPrGQdeOjBm+AIHFq4+kHYVhEPa+2sGK1FaNY?=
+ =?us-ascii?Q?mTjAplBWUxq8Pf1jiu8CYr9lO+ER+zkal153L3vIVn1wUZioyIvk3ZSWwEoo?=
+ =?us-ascii?Q?LCkLTql+V19G59YO7+aTAGC1HLPVmkp+9l/7buNjr+mYEVA+MIqsKK9XIwGM?=
+ =?us-ascii?Q?dbk9SqTlTUNVZTLqcfuic36RPy36rRKe7p1X1N2XVu3rcVFJyZwl/smLz94i?=
+ =?us-ascii?Q?90OyP726tXYU31dnFEeDjj5Oil/mFxpAyp4IsKCDhVn/vq+UjsbhDqLwEIrs?=
+ =?us-ascii?Q?/jsB++QwxS9TbdgiRzNw493Kbn5jk7IdJTNmy4WmiWP2teikCUDc3onnPaVa?=
+ =?us-ascii?Q?jAwbcn962Otn1r2GsbbgmMTRg5+UK4bCQCLOjNMkng0dk5ik5iirUorvpzg+?=
+ =?us-ascii?Q?cA4oTJ57Nku6ZEDZtgSlJaUhz3WRWNb7klixDWFKz/uzQRTspyi1OiRUhRdk?=
+ =?us-ascii?Q?5afQ3FQf1Ua3+rtdjTlPKBT3PCKfAJ6UYyDqkdb6ZneBuXj+qhA451Y9Xo61?=
+ =?us-ascii?Q?v5BV1oPeyvI3fgzeGUQzkFYUoOitrLMX+0O8V0Wp37nQGtKRrv8yVLQB1QT1?=
+ =?us-ascii?Q?b7sgcT2RRL9pmLE+HiEVBUEPFbC00fqAsDgETCmS/6ESz9i20Rs/Yr9158/8?=
+ =?us-ascii?Q?MIiQA/BPIsOowJv1pb4fkDFuI2z/TDpozNlnPQouUL0WrzImmqhSiNREWGl4?=
+ =?us-ascii?Q?E4EcMmbfExHkJ4aov58hbGqjefOfgBnjwW7GDm0O7NgpMRCKCDWYNAw09Lcs?=
+ =?us-ascii?Q?xsGsaeHe25cYfCrGacVTb0ck9DYQ9JbHDVsvSKZjmg5EJgwyawdwIKg41u4E?=
+ =?us-ascii?Q?DeK+X3xUpP/GAuhSr6otI3Rgmna9RWy7/ESJC4bs8YTzANTREsUL//AP8CI2?=
+ =?us-ascii?Q?ulwfxUo2wjHYl8TW60Ukh0OCyuZaHz16ZBrnO+TLL5ATT2rFi4S3KpTNYqBr?=
+ =?us-ascii?Q?Q/iuQQGeTzUCiy3C25VyDQePLn1XYZDxcxmuET0G3siPi/rNDWtQe0gJwAv5?=
+ =?us-ascii?Q?EblfAVSgSzdSlhsCBlM735bUBlI1Pu9iE8NCosJSEoKdMQfy0DIVLVx0yBpd?=
+ =?us-ascii?Q?uLjOJpDmk5oIQ6LRLU04fQAFhlmJf1DuK/VbZcZWNH7YGgHPUSfRhL+Zs/aV?=
+ =?us-ascii?Q?0WPS6aPvBZPIm+WWbm2CCdxAwkr4rrV08h/jsacqZiTO4hCx7l3WOcMpFtNs?=
+ =?us-ascii?Q?9FcxwYwIwD9iAZPrHjijhoxOIMZWZthwqylOrX0EVaBQrDZISP/DJv7A8X15?=
+ =?us-ascii?Q?NVKBpRiOvdcsH1V4K+r0OA8/GHfQtzcH78Sk3nhY6jEV2TwI6w0qNj6jFrSV?=
+ =?us-ascii?Q?elNtJZHo0WIWtL3D61kquFDM3TCy4tJxqRnB3lSTVe8LBxVVSxKcw5rWAJjY?=
+ =?us-ascii?Q?o+8TwnjLZ0Bf3p3ryfQbyJiTTOw2LUlXG5IoD7EJ0UCsLufsu69UBkThu4Wt?=
+ =?us-ascii?Q?P2QKj+gi8oaApaPn382YnHqDWb7SkdfnKu/CSyB3epp9RvXnvUJundwvqC7L?=
+ =?us-ascii?Q?mY7c0LI4dgwDModjSwI=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB2619.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f303e7c8-1a2b-4d4a-9d37-08db9c9a86fa
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Aug 2023 07:46:10.6428
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3qDDNDPjlC8m0GfXSN+AYeI09M2nwDasViMuZ+4+NYqtHq8/YRykSAe7x9lN4SRE
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7694
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/08/2023 09:43, Neil Armstrong wrote:
-> On 10/08/2023 11:13, Krzysztof Kozlowski wrote:
->> 'soc_id' is an enum, thus cast of pointer on 64-bit compile test with
->> W=1 causes:
->>
->>    phy-meson-g12a-usb2.c:322:17: error: cast to smaller integer type 'enum meson_soc_id' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> ---
->>   drivers/phy/amlogic/phy-meson-g12a-usb2.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/phy/amlogic/phy-meson-g12a-usb2.c b/drivers/phy/amlogic/phy-meson-g12a-usb2.c
->> index a628c59e5cf0..0e0b5c00b676 100644
->> --- a/drivers/phy/amlogic/phy-meson-g12a-usb2.c
->> +++ b/drivers/phy/amlogic/phy-meson-g12a-usb2.c
->> @@ -319,7 +319,7 @@ static int phy_meson_g12a_usb2_probe(struct platform_device *pdev)
->>   	if (IS_ERR(base))
->>   		return PTR_ERR(base);
->>   
->> -	priv->soc_id = (enum meson_soc_id)of_device_get_match_data(&pdev->dev);
->> +	priv->soc_id = (uintptr_t)of_device_get_match_data(&pdev->dev);
->>   
->>   	priv->regmap = devm_regmap_init_mmio(dev, base,
->>   					     &phy_meson_g12a_usb2_regmap_conf);
-> 
-> I believe the net-next is wrong here, but whatever:
+[AMD Official Use Only - General]
 
-Yes, it's a history-copy-paste mistake.
 
-> 
-> Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 
-Thanks.
+> -----Original Message-----
+> From: Simon Horman <horms@kernel.org>
+> Sent: Friday, August 11, 2023 5:38 PM
+> To: Quan, Evan <Evan.Quan@amd.com>
+> Cc: rafael@kernel.org; lenb@kernel.org; Deucher, Alexander
+> <Alexander.Deucher@amd.com>; Koenig, Christian
+> <Christian.Koenig@amd.com>; Pan, Xinhui <Xinhui.Pan@amd.com>;
+> airlied@gmail.com; daniel@ffwll.ch; johannes@sipsolutions.net;
+> davem@davemloft.net; edumazet@google.com; kuba@kernel.org;
+> pabeni@redhat.com; Limonciello, Mario <Mario.Limonciello@amd.com>;
+> mdaenzer@redhat.com; maarten.lankhorst@linux.intel.com;
+> tzimmermann@suse.de; hdegoede@redhat.com; jingyuwang_vip@163.com;
+> Lazar, Lijo <Lijo.Lazar@amd.com>; jim.cromie@gmail.com;
+> bellosilicio@gmail.com; andrealmeid@igalia.com; trix@redhat.com;
+> jsg@jsg.id.au; arnd@arndb.de; andrew@lunn.ch; linux-
+> kernel@vger.kernel.org; linux-acpi@vger.kernel.org; amd-
+> gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; linux-
+> wireless@vger.kernel.org; netdev@vger.kernel.org
+> Subject: Re: [PATCH V8 2/9] drivers core: add ACPI based WBRF mechanism
+> introduced by AMD
+>=20
+> On Thu, Aug 10, 2023 at 03:37:56PM +0800, Evan Quan wrote:
+> > AMD has introduced an ACPI based mechanism to support WBRF for some
+> > platforms with AMD dGPU + WLAN. This needs support from BIOS equipped
+> > with necessary AML implementations and dGPU firmwares.
+> >
+> > For those systems without the ACPI mechanism and developing solutions,
+> > user can use/fall-back the generic WBRF solution for diagnosing potenti=
+al
+> > interference issues.
+> >
+> > And for the platform which does not equip with the necessary AMD ACPI
+> > implementations but with CONFIG_WBRF_AMD_ACPI built as 'y', it will
+> > fall back to generic WBRF solution if the `wbrf` is set as "on".
+> >
+> > Co-developed-by: Mario Limonciello <mario.limonciello@amd.com>
+> > Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> > Co-developed-by: Evan Quan <evan.quan@amd.com>
+> > Signed-off-by: Evan Quan <evan.quan@amd.com>
+>=20
+> ...
+>=20
+> > diff --git a/drivers/acpi/amd_wbrf.c b/drivers/acpi/amd_wbrf.c
+>=20
+> ...
+>=20
+> > +static bool check_acpi_wbrf(acpi_handle handle, u64 rev, u64 funcs)
+> > +{
+> > +	int i;
+> > +	u64 mask =3D 0;
+> > +	union acpi_object *obj;
+> > +
+> > +	if (funcs =3D=3D 0)
+> > +		return false;
+> > +
+> > +	obj =3D acpi_evaluate_wbrf(handle, rev, 0);
+> > +	if (!obj)
+> > +		return false;
+> > +
+> > +	if (obj->type !=3D ACPI_TYPE_BUFFER)
+> > +		return false;
+> > +
+> > +	/*
+> > +	 * Bit vector providing supported functions information.
+> > +	 * Each bit marks support for one specific function of the WBRF
+> method.
+> > +	 */
+> > +	for (i =3D 0; i < obj->buffer.length && i < 8; i++)
+> > +		mask |=3D (((u64)obj->buffer.pointer[i]) << (i * 8));
+> > +
+> > +	ACPI_FREE(obj);
+> > +
+> > +	if ((mask & BIT(WBRF_ENABLED)) &&
+> > +	     (mask & funcs) =3D=3D funcs)
+>=20
+> Hi Evan,
+>=20
+> a minor nit from my side: the indentation of the line above seems odd.
+Thanks. Will update this.
 
-Best regards,
-Krzysztof
-
+Evan
+>=20
+> 	if ((mask & BIT(WBRF_ENABLED)) &&
+> 	    (mask & funcs) =3D=3D funcs)
+>=20
+> > +		return true;
+> > +
+> > +	return false;
+> > +}
+>=20
+> ...=
