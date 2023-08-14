@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF0877B4DA
+	by mail.lfdr.de (Postfix) with ESMTP id 5682C77B4D9
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235441AbjHNI4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 04:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37328 "EHLO
+        id S235530AbjHNI42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 04:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235273AbjHNIyc (ORCPT
+        with ESMTP id S235277AbjHNIye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 04:54:32 -0400
+        Mon, 14 Aug 2023 04:54:34 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C435F10C
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:54:27 -0700 (PDT)
-Message-ID: <20230814085114.002953361@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6CB114
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:54:29 -0700 (PDT)
+Message-ID: <20230814085114.062718574@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692003266;
+        s=2020; t=1692003268;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=/DmRw+WfLZvgCDxn8Hw1HKZNr4tPuD3Da23+jG0TmgU=;
-        b=PLFOD5RNw7Oaj4rdp2LrSaV+euaSNDDzZiandRFexPEG70Tv2zJlUgW6OYvqxtpr9hjqYI
-        um1iQGrVXIDN/JXp5PhhlGrbQTY/QKegZ1uW5uWqPx7jeQCRdlq8oD2hfP7kjw+WLALP6H
-        HLYYXODeBv3NHpkAk+2FfxCGFxhkSZj3npFng51GEF8DEie0LIv7Xnt4xCCabSMTj45Z6b
-        ed/IC+EMderH4IpLvIjNFEjsMw4umwQg9k3X+hEQzxZ+UVOl4anmo+QjCPyqyFiqfZvek1
-        5cK/bqmOLsA6mqeNaBQLH7+Q2uvwPJrn9oePICJ8pu0pxjs2zgow8gL+XJdxSQ==
+         references:references; bh=TZQh4GdgAVO71UPF3MwAzfKDzqETmHDeaWIT8GR27GY=;
+        b=OsyTjsqEGBzSJzvlS+DYnbj1n2K+UYm+tVS7lWVjKODKsFRKr4zynVHHQ4xx+kiA8PGYK5
+        Svh+jry8PNQCEz1ymwkmcTjH2TxR1Dz3nJAaJgnI4AbW4v+7HrwsBFU1q1fKC5aGXUXjVO
+        19YjEieug2sEn/5QIbU38cK48Q297jrqyxDTQ3Sno0zXONYwzKjYzcOX9CZuCRaTRnbYUY
+        9mQrbImwHrJfYd34Yt1wgYtUj4pFhAO2y/KQoBCePd5z27A0JB26UCMhaa9yE5+XsQh5rq
+        6PZHr1rQquA8Cz0e0UytjQ9YWHYpcJeylcExY26ws2pAIUMMjezzD8m3mIFddw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692003266;
+        s=2020e; t=1692003268;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=/DmRw+WfLZvgCDxn8Hw1HKZNr4tPuD3Da23+jG0TmgU=;
-        b=hNzkPZAi1myY4lTjSXPOCSEAi/9ytCcFDv5p7CGG8y0tLpIuU4iU78fTdywNwA9nenWUIX
-        3hUNMx68bx+TQrCg==
+         references:references; bh=TZQh4GdgAVO71UPF3MwAzfKDzqETmHDeaWIT8GR27GY=;
+        b=Bxs/eVeVBR3e1zaWtypiaOd4U75shmGnzCELG5ifYRJzr4APj+54mvDMfafA3zdjjWoseB
+        NZDzyKoU5ICFzGBA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
@@ -44,11 +44,11 @@ Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
         Wei Liu <wei.liu@kernel.org>, Pu Wen <puwen@hygon.cn>,
         Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
         Sohil Mehta <sohil.mehta@intel.com>
-Subject: [patch V4 33/41] x86/cpu: Use common topology code for AMD
+Subject: [patch V4 34/41] x86/cpu: Use common topology code for HYGON
 References: <20230814085006.593997112@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 14 Aug 2023 10:54:25 +0200 (CEST)
+Date:   Mon, 14 Aug 2023 10:54:27 +0200 (CEST)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -58,8 +58,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch it over to the new topology evaluation mechanism and remove the
-random bits and pieces which are sprinkled all over the place.
+Switch it over to use the consolidated topology evaluation and remove the
+temporary safe guards which are not longer needed.
 
 No functional change intended.
 
@@ -69,83 +69,73 @@ Tested-by: Sohil Mehta <sohil.mehta@intel.com>
 Tested-by: Michael Kelley <mikelley@microsoft.com>
 
 ---
- arch/x86/include/asm/processor.h      |    2 
- arch/x86/include/asm/topology.h       |    5 +
- arch/x86/kernel/cpu/amd.c             |  146 ----------------------------------
- arch/x86/kernel/cpu/mce/inject.c      |    3 
- arch/x86/kernel/cpu/topology_common.c |    5 -
- 5 files changed, 10 insertions(+), 151 deletions(-)
+V4: Remove the stale define - Pu
+---
+ arch/x86/kernel/cpu/common.c          |    5 -
+ arch/x86/kernel/cpu/cpu.h             |    1 
+ arch/x86/kernel/cpu/hygon.c           |  129 ----------------------------------
+ arch/x86/kernel/cpu/topology.h        |    1 
+ arch/x86/kernel/cpu/topology_common.c |   22 +----
+ 5 files changed, 4 insertions(+), 154 deletions(-)
 
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -705,10 +705,8 @@ static inline u32 per_cpu_l2c_id(unsigne
- }
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1740,11 +1740,6 @@ static void identify_cpu(struct cpuinfo_
+ 	/* Clear/Set all flags overridden by options, after probe */
+ 	apply_forced_caps(c);
  
- #ifdef CONFIG_CPU_SUP_AMD
--extern u32 amd_get_nodes_per_socket(void);
- extern u32 amd_get_highest_perf(void);
- #else
--static inline u32 amd_get_nodes_per_socket(void)	{ return 0; }
- static inline u32 amd_get_highest_perf(void)		{ return 0; }
- #endif
+-#ifdef CONFIG_X86_64
+-	if (!topo_is_converted(c))
+-		c->topo.apicid = apic->phys_pkg_id(c->topo.initial_apicid, 0);
+-#endif
+-
+ 	/*
+ 	 * Vendor-specific initialization.  In this section we
+ 	 * canonicalize the feature flags, meaning if there are
+--- a/arch/x86/kernel/cpu/cpu.h
++++ b/arch/x86/kernel/cpu/cpu.h
+@@ -76,7 +76,6 @@ extern void init_intel_cacheinfo(struct
+ extern void init_amd_cacheinfo(struct cpuinfo_x86 *c);
+ extern void init_hygon_cacheinfo(struct cpuinfo_x86 *c);
  
---- a/arch/x86/include/asm/topology.h
-+++ b/arch/x86/include/asm/topology.h
-@@ -121,6 +121,11 @@ struct x86_topology_system {
+-extern int detect_extended_topology(struct cpuinfo_x86 *c);
+ extern void check_null_seg_clears_base(struct cpuinfo_x86 *c);
  
- extern struct x86_topology_system x86_topo_system;
+ void cacheinfo_amd_init_llc_id(struct cpuinfo_x86 *c, u16 die_id);
+--- a/arch/x86/kernel/cpu/hygon.c
++++ b/arch/x86/kernel/cpu/hygon.c
+@@ -18,14 +18,6 @@
  
-+static inline unsigned int topology_get_domain_size(enum x86_topology_domains dom)
-+{
-+	return x86_topo_system.dom_size[dom];
-+}
-+
- extern const struct cpumask *cpu_coregroup_mask(int cpu);
- extern const struct cpumask *cpu_clustergroup_mask(int cpu);
- 
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -28,13 +28,6 @@
  #include "cpu.h"
  
- /*
+-#define APICID_SOCKET_ID_BIT 6
+-
+-/*
 - * nodes_per_socket: Stores the number of nodes per socket.
-- * Refer to Fam15h Models 00-0fh BKDG - CPUID Fn8000_001E_ECX
-- * Node Identifiers[10:8]
+- * Refer to CPUID Fn8000_001E_ECX Node Identifiers[10:8]
 - */
 -static u32 nodes_per_socket = 1;
 -
--/*
-  * AMD errata checking
-  *
-  * Errata are defined as arrays of ints using the AMD_LEGACY_ERRATUM() or
-@@ -372,97 +365,6 @@ static int nearby_node(int apicid)
+ #ifdef CONFIG_NUMA
+ /*
+  * To workaround broken NUMA config.  Read the comment in
+@@ -49,80 +41,6 @@ static int nearby_node(int apicid)
  }
  #endif
  
--/*
-- * Fix up topo::core_id for pre-F17h systems to be in the
-- * [0 .. cores_per_node - 1] range. Not really needed but
-- * kept so as not to break existing setups.
-- */
--static void legacy_fixup_core_id(struct cpuinfo_x86 *c)
+-static void hygon_get_topology_early(struct cpuinfo_x86 *c)
 -{
--	u32 cus_per_node;
--
--	if (c->x86 >= 0x17)
--		return;
--
--	cus_per_node = c->x86_max_cores / nodes_per_socket;
--	c->topo.core_id %= cus_per_node;
+-	if (cpu_has(c, X86_FEATURE_TOPOEXT))
+-		smp_num_siblings = ((cpuid_ebx(0x8000001e) >> 8) & 0xff) + 1;
 -}
 -
 -/*
 - * Fixup core topology information for
-- * (1) AMD multi-node processors
+- * (1) Hygon multi-node processors
 - *     Assumption: Number of cores in each internal node is the same.
-- * (2) AMD processors supporting compute units
+- * (2) Hygon processors supporting compute units
 - */
--static void amd_get_topology(struct cpuinfo_x86 *c)
+-static void hygon_get_topology(struct cpuinfo_x86 *c)
 -{
 -	/* get information required for multi-node processors */
 -	if (boot_cpu_has(X86_FEATURE_TOPOEXT)) {
@@ -156,15 +146,10 @@ Tested-by: Michael Kelley <mikelley@microsoft.com>
 -
 -		c->topo.die_id  = ecx & 0xff;
 -
--		if (c->x86 == 0x15)
--			c->topo.cu_id = ebx & 0xff;
+-		c->topo.core_id = ebx & 0xff;
 -
--		if (c->x86 >= 0x17) {
--			c->topo.core_id = ebx & 0xff;
--
--			if (smp_num_siblings > 1)
--				c->x86_max_cores /= smp_num_siblings;
--		}
+-		if (smp_num_siblings > 1)
+-			c->x86_max_cores /= smp_num_siblings;
 -
 -		/*
 -		 * In case leaf B is available, use it to derive
@@ -174,8 +159,14 @@ Tested-by: Michael Kelley <mikelley@microsoft.com>
 -		if (!err)
 -			c->x86_coreid_bits = get_count_order(c->x86_max_cores);
 -
--		cacheinfo_amd_init_llc_id(c, c->topo.die_id);
+-		/*
+-		 * Socket ID is ApicId[6] for the processors with model <= 0x3
+-		 * when running on host.
+-		 */
+-		if (!boot_cpu_has(X86_FEATURE_HYPERVISOR) && c->x86_model <= 0x3)
+-			c->topo.pkg_id = c->topo.apicid >> APICID_SOCKET_ID_BIT;
 -
+-		cacheinfo_hygon_init_llc_id(c);
 -	} else if (cpu_has(c, X86_FEATURE_NODEID_MSR)) {
 -		u64 value;
 -
@@ -185,46 +176,38 @@ Tested-by: Michael Kelley <mikelley@microsoft.com>
 -	} else
 -		return;
 -
--	if (nodes_per_socket > 1) {
+-	if (nodes_per_socket > 1)
 -		set_cpu_cap(c, X86_FEATURE_AMD_DCM);
--		legacy_fixup_core_id(c);
--	}
 -}
 -
 -/*
-- * On a AMD dual core setup the lower bits of the APIC id distinguish the cores.
+- * On Hygon setup the lower bits of the APIC id distinguish the cores.
 - * Assumes number of cores is a power of two.
 - */
--static void amd_detect_cmp(struct cpuinfo_x86 *c)
+-static void hygon_detect_cmp(struct cpuinfo_x86 *c)
 -{
--	unsigned bits;
+-	unsigned int bits;
 -
 -	bits = c->x86_coreid_bits;
 -	/* Low order bits define the core id (index of core in socket) */
 -	c->topo.core_id = c->topo.initial_apicid & ((1 << bits)-1);
 -	/* Convert the initial APIC ID into the socket ID */
 -	c->topo.pkg_id = c->topo.initial_apicid >> bits;
--	/* use socket ID also for last level cache */
+-	/* Use package ID also for last level cache */
 -	c->topo.llc_id = c->topo.die_id = c->topo.pkg_id;
 -}
--
--u32 amd_get_nodes_per_socket(void)
--{
--	return nodes_per_socket;
--}
--EXPORT_SYMBOL_GPL(amd_get_nodes_per_socket);
 -
  static void srat_detect_node(struct cpuinfo_x86 *c)
  {
  #ifdef CONFIG_NUMA
-@@ -514,32 +416,6 @@ static void srat_detect_node(struct cpui
+@@ -173,32 +91,6 @@ static void srat_detect_node(struct cpui
  #endif
  }
  
--static void early_init_amd_mc(struct cpuinfo_x86 *c)
+-static void early_init_hygon_mc(struct cpuinfo_x86 *c)
 -{
 -#ifdef CONFIG_SMP
--	unsigned bits, ecx;
+-	unsigned int bits, ecx;
 -
 -	/* Multi core CPU? */
 -	if (c->extended_cpuid_level < 0x80000008)
@@ -247,10 +230,10 @@ Tested-by: Michael Kelley <mikelley@microsoft.com>
 -#endif
 -}
 -
- static void bsp_init_amd(struct cpuinfo_x86 *c)
+ static void bsp_init_hygon(struct cpuinfo_x86 *c)
  {
  	if (cpu_has(c, X86_FEATURE_CONSTANT_TSC)) {
-@@ -572,18 +448,6 @@ static void bsp_init_amd(struct cpuinfo_
+@@ -212,18 +104,6 @@ static void bsp_init_hygon(struct cpuinf
  	if (cpu_has(c, X86_FEATURE_MWAITX))
  		use_mwaitx_delay();
  
@@ -267,79 +250,107 @@ Tested-by: Michael Kelley <mikelley@microsoft.com>
 -	}
 -
  	if (!boot_cpu_has(X86_FEATURE_AMD_SSBD) &&
- 	    !boot_cpu_has(X86_FEATURE_VIRT_SSBD) &&
- 	    c->x86 >= 0x15 && c->x86 <= 0x17) {
-@@ -665,8 +529,6 @@ static void early_init_amd(struct cpuinf
- 	u64 value;
+ 	    !boot_cpu_has(X86_FEATURE_VIRT_SSBD)) {
+ 		/*
+@@ -242,8 +122,6 @@ static void early_init_hygon(struct cpui
+ {
  	u32 dummy;
  
--	early_init_amd_mc(c);
+-	early_init_hygon_mc(c);
 -
- 	if (c->x86 >= 0xf)
- 		set_cpu_cap(c, X86_FEATURE_K8);
+ 	set_cpu_cap(c, X86_FEATURE_K8);
  
-@@ -754,9 +616,6 @@ static void early_init_amd(struct cpuinf
- 			}
- 		}
- 	}
+ 	rdmsr_safe(MSR_AMD64_PATCH_LEVEL, &c->microcode, &dummy);
+@@ -284,8 +162,6 @@ static void early_init_hygon(struct cpui
+ 	 * we can set it unconditionally.
+ 	 */
+ 	set_cpu_cap(c, X86_FEATURE_VMMCALL);
 -
--	if (cpu_has(c, X86_FEATURE_TOPOEXT))
--		smp_num_siblings = ((cpuid_ebx(0x8000001e) >> 8) & 0xff) + 1;
+-	hygon_get_topology_early(c);
  }
  
- static void init_amd_k8(struct cpuinfo_x86 *c)
-@@ -1037,9 +896,6 @@ static void init_amd(struct cpuinfo_x86
- 	if (cpu_has(c, X86_FEATURE_FSRM))
- 		set_cpu_cap(c, X86_FEATURE_FSRS);
+ static void init_hygon(struct cpuinfo_x86 *c)
+@@ -300,9 +176,6 @@ static void init_hygon(struct cpuinfo_x8
+ 
+ 	set_cpu_cap(c, X86_FEATURE_REP_GOOD);
  
 -	/* get apicid instead of initial apic id from cpuid */
 -	c->topo.apicid = read_apic_id();
 -
- 	/* K6s reports MCEs but don't actually have all the MSRs */
- 	if (c->x86 < 6)
- 		clear_cpu_cap(c, X86_FEATURE_MCE);
-@@ -1067,8 +923,6 @@ static void init_amd(struct cpuinfo_x86
+ 	/*
+ 	 * XXX someone from Hygon needs to confirm this DTRT
+ 	 *
+@@ -314,8 +187,6 @@ static void init_hygon(struct cpuinfo_x8
  
  	cpu_detect_cache_sizes(c);
  
--	amd_detect_cmp(c);
--	amd_get_topology(c);
+-	hygon_detect_cmp(c);
+-	hygon_get_topology(c);
  	srat_detect_node(c);
  
- 	init_amd_cacheinfo(c);
---- a/arch/x86/kernel/cpu/mce/inject.c
-+++ b/arch/x86/kernel/cpu/mce/inject.c
-@@ -433,8 +433,7 @@ static u32 get_nbc_for_node(int node_id)
- 	struct cpuinfo_x86 *c = &boot_cpu_data;
- 	u32 cores_per_node;
+ 	init_hygon_cacheinfo(c);
+--- a/arch/x86/kernel/cpu/topology.h
++++ b/arch/x86/kernel/cpu/topology.h
+@@ -15,7 +15,6 @@ struct topo_scan {
+ 	u16			amd_node_id;
+ };
  
--	cores_per_node = (c->x86_max_cores * smp_num_siblings) / amd_get_nodes_per_socket();
--
-+	cores_per_node = (c->x86_max_cores * smp_num_siblings) / topology_amd_nodes_per_pkg();
- 	return cores_per_node * node_id;
- }
- 
+-bool topo_is_converted(struct cpuinfo_x86 *c);
+ void cpu_init_topology(struct cpuinfo_x86 *c);
+ void cpu_parse_topology(struct cpuinfo_x86 *c);
+ void topology_set_dom(struct topo_scan *tscan, enum x86_topology_domains dom,
 --- a/arch/x86/kernel/cpu/topology_common.c
 +++ b/arch/x86/kernel/cpu/topology_common.c
-@@ -72,7 +72,6 @@ bool topo_is_converted(struct cpuinfo_x8
- {
- 	/* Temporary until everything is converted over. */
- 	switch (boot_cpu_data.x86_vendor) {
--	case X86_VENDOR_AMD:
- 	case X86_VENDOR_HYGON:
- 		return false;
- 	default:
-@@ -133,6 +132,10 @@ static void parse_topology(struct topo_s
- 	tscan->ebx1_nproc_shift = get_count_order(ebx.nproc);
+@@ -68,18 +68,6 @@ static void parse_legacy(struct topo_sca
+ 	topology_set_dom(tscan, TOPO_CORE_DOMAIN, core_shift, cores);
+ }
  
- 	switch (c->x86_vendor) {
-+	case X86_VENDOR_AMD:
-+		if (IS_ENABLED(CONFIG_CPU_SUP_AMD))
+-bool topo_is_converted(struct cpuinfo_x86 *c)
+-{
+-	/* Temporary until everything is converted over. */
+-	switch (boot_cpu_data.x86_vendor) {
+-	case X86_VENDOR_HYGON:
+-		return false;
+-	default:
+-		/* Let all UP systems use the below */
+-		return true;
+-	}
+-}
+-
+ static bool fake_topology(struct topo_scan *tscan)
+ {
+ 	/*
+@@ -144,6 +132,10 @@ static void parse_topology(struct topo_s
+ 		if (!IS_ENABLED(CONFIG_CPU_SUP_INTEL) || !cpu_parse_topology_ext(tscan))
+ 			parse_legacy(tscan);
+ 		break;
++	case X86_VENDOR_HYGON:
++		if (IS_ENABLED(CONFIG_CPU_SUP_HYGON))
 +			cpu_parse_topology_amd(tscan);
 +		break;
- 	case X86_VENDOR_CENTAUR:
- 	case X86_VENDOR_ZHAOXIN:
- 		parse_legacy(tscan);
+ 	}
+ }
+ 
+@@ -187,9 +179,6 @@ void cpu_parse_topology(struct cpuinfo_x
+ 
+ 	parse_topology(&tscan, false);
+ 
+-	if (!topo_is_converted(c))
+-		return;
+-
+ 	for (dom = TOPO_SMT_DOMAIN; dom < TOPO_MAX_DOMAIN; dom++) {
+ 		if (tscan.dom_shifts[dom] == x86_topo_system.dom_shifts[dom])
+ 			continue;
+@@ -218,9 +207,6 @@ void __init cpu_init_topology(struct cpu
+ 
+ 	parse_topology(&tscan, true);
+ 
+-	if (!topo_is_converted(c))
+-		return;
+-
+ 	/* Copy the shift values and calculate the unit sizes. */
+ 	memcpy(x86_topo_system.dom_shifts, tscan.dom_shifts, sizeof(x86_topo_system.dom_shifts));
+ 
 
 
 
