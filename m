@@ -2,68 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 721B877BD0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8802077BD15
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbjHNPaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 11:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40242 "EHLO
+        id S231652AbjHNPbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 11:31:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233106AbjHNP35 (ORCPT
+        with ESMTP id S233151AbjHNPa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:29:57 -0400
+        Mon, 14 Aug 2023 11:30:58 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A59F10D5;
-        Mon, 14 Aug 2023 08:29:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9CF9130;
+        Mon, 14 Aug 2023 08:30:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EA3F261E74;
-        Mon, 14 Aug 2023 15:29:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C2F0C433C8;
-        Mon, 14 Aug 2023 15:29:54 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5F3EE617E6;
+        Mon, 14 Aug 2023 15:30:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72158C433C8;
+        Mon, 14 Aug 2023 15:30:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692026995;
-        bh=vCRlrdZqjMH67x3gjEky9BrHKTd04af3vMzFdJBho+o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UOKVLKXeqzrDG/Ysv9MCmP6d8Mjn6EYJLo22aw/neCTYsz34ZLEAf5gqnuYcYKz9o
-         dF5UNOjCJRdzxhFOoo4ajc1kYg2Iq56mGtRGnYZR6pnyj1j2vtYWx8qCC4iSwPq57/
-         APQ0Pn55+wZA4U4OjJdy5uHZwcPyx6y04s1dgAvyMqraCqvkO4ua7AVpTgRhhSGbxT
-         Szx1hfl4fn72hCZBMQgVDIsdTRC8Er+Ggaj0K9cZTx9bbafkWxWWJDWfJN/yQ401zs
-         vnwlZra/r9sxe1s2PBzgdiCm1PP84FvCXuM0lGOny0RFRk1NCkJVwYkk0eFz1kJe/H
-         6iLPVvsKlMKPw==
-Date:   Mon, 14 Aug 2023 08:29:53 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     "Pandey, Radhey Shyam" <radhey.shyam.pandey@amd.com>
-Cc:     "vkoul@kernel.org" <vkoul@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "Simek, Michal" <michal.simek@amd.com>,
+        s=k20201202; t=1692027055;
+        bh=2rIEWfvHTOoSstRDPlbGbijXKFOFaVhDleRh7kzY/Nk=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=oEW0uiYDHaRlmmgqTvVPajItZrcTtOaWeO45t41ZMxtGRw5nYYlBpxSWnvVi23+Fd
+         5rJHEPGBPBy011+dagnqxertDN2FutdBw2v6Uuw2CitsPF52hC+4jmkDHkmUMuBlbZ
+         dPuZuO3TmNaE2wCJji8lWFZurij1/MiwTj8otDvdPOQ7y+vHBGcFKyHo+7O++fnqPt
+         Twyf2WFWF/g+QvI02gIy3XJGoSUc+748XnKTemZEUZkau2U8a7TkEzpkqDRsox7Ckh
+         XB05KIifX20S5PatYI2vTT0aAek07SD5GfzVwFMShDDhHuGNNaf+kzk5WawjHOmtxe
+         j8mxiUX3//vwQ==
+Message-ID: <7c9421cc4b92dee76cc7560c50a4a0ab3fb1ef0d.camel@kernel.org>
+Subject: Re: [PATCH] sunrpc: account for xdr->page_base in xdr_alloc_bvec
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Trond Myklebust <trondmy@hammerspace.com>,
         "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
+        "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
         "pabeni@redhat.com" <pabeni@redhat.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tom@talpey.com" <tom@talpey.com>,
+        "anna@kernel.org" <anna@kernel.org>,
+        "kolga@netapp.com" <kolga@netapp.com>,
+        "Dai.Ngo@oracle.com" <Dai.Ngo@oracle.com>,
+        "neilb@suse.de" <neilb@suse.de>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>
+Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "git (AMD-Xilinx)" <git@amd.com>
-Subject: Re: [PATCH net-next v5 10/10] net: axienet: Introduce dmaengine
- support
-Message-ID: <20230814082953.747791ff@kernel.org>
-In-Reply-To: <MN0PR12MB5953A9FEC556D07494DB8E37B711A@MN0PR12MB5953.namprd12.prod.outlook.com>
-References: <1691387509-2113129-1-git-send-email-radhey.shyam.pandey@amd.com>
-        <1691387509-2113129-11-git-send-email-radhey.shyam.pandey@amd.com>
-        <20230808154853.0fafa7fc@kernel.org>
-        <MN0PR12MB5953A9FEC556D07494DB8E37B711A@MN0PR12MB5953.namprd12.prod.outlook.com>
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Mon, 14 Aug 2023 11:30:53 -0400
+In-Reply-To: <40adb882f4c809b8a404e167c05bbbc9a1de6fa0.camel@hammerspace.com>
+References: <20230814-sendpage-v1-1-d551b0d7f870@kernel.org>
+         <40adb882f4c809b8a404e167c05bbbc9a1de6fa0.camel@hammerspace.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -73,44 +68,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 12 Aug 2023 15:27:19 +0000 Pandey, Radhey Shyam wrote:
-> > Drop on error, you're not stopping the queue correctly, just drop, return OK
-> > and avoid bugs.  
-> 
-> As I understand NETDEV_TX_OK returns means driver took care of packet.
-> So inline with non-dmaengine xmit (axienet_start_xmit_legacy) should
-> we stop the queue and return TX_BUSY?
+On Mon, 2023-08-14 at 14:51 +0000, Trond Myklebust wrote:
+> On Mon, 2023-08-14 at 10:32 -0400, Jeff Layton wrote:
+> > I've been seeing a regression in mainline (v6.5-rc) kernels where
+> > unaligned reads were returning corrupt data.
+> >=20
+> > 9d96acbc7f37 added a routine to allocate and populate a bvec array
+> > that
+> > can be used to back an iov_iter. When it does this, it always sets
+> > the
+> > offset in the first bvec to zero, even when the xdr->page_base is
+> > non-zero.
+> >=20
+> > The old code in svc_tcp_sendmsg used to account for this, as it was
+> > sending the pages one at a time anyway, but now that we just hand the
+> > iov to the network layer, we need to ensure that the bvecs are
+> > properly
+> > initialized.
+> >=20
+> > Fix xdr_alloc_bvec to set the offset in the first bvec to the offset
+> > indicated by xdr->page_base, and then 0 in all subsequent bvecs.
+> >=20
+> > Fixes: 9d96acbc7f37 ("SUNRPC: Add a bvec array to struct xdr_buf for
+> > use with iovec_iter()")
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> > NB: This is only lightly tested so far, but it seems to fix the pynfs
+> > regressions I've been seeing.
+> > ---
+> > =A0net/sunrpc/xdr.c | 4 +++-
+> > =A01 file changed, 3 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/net/sunrpc/xdr.c b/net/sunrpc/xdr.c
+> > index 2a22e78af116..d0f5fc8605b8 100644
+> > --- a/net/sunrpc/xdr.c
+> > +++ b/net/sunrpc/xdr.c
+> > @@ -144,6 +144,7 @@ int
+> > =A0xdr_alloc_bvec(struct xdr_buf *buf, gfp_t gfp)
+> > =A0{
+> > =A0=A0=A0=A0=A0=A0=A0=A0size_t i, n =3D xdr_buf_pagecount(buf);
+> > +=A0=A0=A0=A0=A0=A0=A0unsigned int offset =3D offset_in_page(buf->page_=
+base);
+> > =A0
+> > =A0=A0=A0=A0=A0=A0=A0=A0if (n !=3D 0 && buf->bvec =3D=3D NULL) {
+> > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0buf->bvec =3D kmalloc_a=
+rray(n, sizeof(buf->bvec[0]),
+> > gfp);
+> > @@ -151,7 +152,8 @@ xdr_alloc_bvec(struct xdr_buf *buf, gfp_t gfp)
+> > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0return -ENOMEM;
+> > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0for (i =3D 0; i < n; i+=
++) {
+> > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0bvec_set_page(&buf->bvec[i], buf->pages[i],
+> > PAGE_SIZE,
+> > -=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0);
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 offset);
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0o=
+ffset =3D 0;
+>=20
+> NACK. That's going to break the client.
+>=20
 
-You should only return BUSY if there is no space. All other errors
-should lead to drops, and increment of tx_error. Otherwise problem
-with handling a single packet may stall the NIC forever.
-It is somewhat confusing that we return TX_OK in that case but it
-is what it is.
+<rant>
+What's the point of setting up a bvec array that doesn't actually
+describe the usable data?
+</rant>
 
-> > Why create a cache ?
-> > Isn't it cleaner to create a fake ring buffer of sgl? Most packets will not have
-> > MAX_SKB_FRAGS of memory. On a ring buffer you can use only as many sg
-> > entries as the packet requires. Also no need to alloc/free.  
-> 
-> The kmem_cache is used with intent to use slab cache interface and
-> make use of reusing objects in the kernel. slab cache maintains a 
-> cache of objects. When we free an object, instead of
-> deallocating it, it give it back to the cache. Next time, if we
-> want to create a new object, slab cache gives us one object from the
-> slab cache.
-> 
-> If we maintain custom circular buffer (struct circ_buf) ring buffer 
-> we have to create two such ring buffers one for TX and other for RX.
-> For multichannel this will multiply to * no of queues. Also we have to
-> ensure proper occupancy checks and head/tail pointer updates.
-> 
-> With kmem_cache pool we are offloading queue maintenance ops to
-> framework with a benefit of optimized alloc/dealloc. Let me know if it 
-> looks functionally fine and can retain it for this baseline dmaengine 
-> support version?
+Sigh, ok...I suppose we'll need to fix this in the svc callers instead.
 
-The kmemcache is not the worst possible option but note that the
-objects you're allocating (with zeroing) are 512+ bytes. That's
-pretty large, when most packets will not have full 16 fragments.
-Ring buffer would allow to better match the allocation size to 
-the packets. Not to mention that it can be done fully locklessly.
+> > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0}
+> > =A0=A0=A0=A0=A0=A0=A0=A0}
+> > =A0=A0=A0=A0=A0=A0=A0=A0return 0;
+> >=20
+> > ---
+> > base-commit: 2ccdd1b13c591d306f0401d98dedc4bdcd02b421
+> > change-id: 20230814-sendpage-b04874eed249
+> >=20
+> > Best regards,
+>=20
+
+--=20
+Jeff Layton <jlayton@kernel.org>
