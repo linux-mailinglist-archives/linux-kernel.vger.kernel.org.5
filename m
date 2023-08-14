@@ -2,93 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0701877AF12
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 02:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4432277AF15
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 03:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbjHNA4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 20:56:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39818 "EHLO
+        id S231644AbjHNBCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 21:02:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjHNA4N (ORCPT
+        with ESMTP id S231642AbjHNBC1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 20:56:13 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52EE1E71
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 17:56:10 -0700 (PDT)
-Received: from kwepemi500011.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RPGB51ZbRzTmRs;
-        Mon, 14 Aug 2023 08:54:05 +0800 (CST)
-Received: from [10.67.103.39] (10.67.103.39) by kwepemi500011.china.huawei.com
- (7.221.188.124) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 14 Aug
- 2023 08:56:06 +0800
-Message-ID: <64D97BA6.3030609@hisilicon.com>
-Date:   Mon, 14 Aug 2023 08:56:06 +0800
-From:   Wei Xu <xuwei5@hisilicon.com>
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:24.0) Gecko/20100101 Thunderbird/24.2.0
+        Sun, 13 Aug 2023 21:02:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B659C;
+        Sun, 13 Aug 2023 18:02:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A343761DBC;
+        Mon, 14 Aug 2023 01:02:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02487C433C9;
+        Mon, 14 Aug 2023 01:02:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691974946;
+        bh=JEEY10hBYz8RwhXPPVD6zF4+YQYQsXCRSg8FIpcrlVY=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=FOB/qY/PpdgHCtif2jsnF7NTFxHEmFbrI3NnLit3qzbbEwG0sHPOCAfEhTpS58s2i
+         7zrZcLz9cA8dfipUEWmWoJb6euJQ4aIjWtG1Sof3Ho+0SREVOR0PINgxS/mhpwuPQI
+         rE5ggXMCOD/e6KwTLUByfD0d6tLgZ+JNkip6wF1jenLYVMO7zXpSYFKgeqZ2z8nFEg
+         2wKesPUUbsPrtaP76RRB4nZrB5W+FPUgMAWNBgl6zoeZ8fWe9NnL5aLs0q6auiTwEL
+         IbWzHcbEyKtJXyDyigng30ra7xZpMpckRBQtSebqarla6TJdx/pJrXvn2S1g7kRRbn
+         0Y9UEJMKiA5dg==
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-1c4cd0f6cb2so738516fac.0;
+        Sun, 13 Aug 2023 18:02:25 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwtpBxBPp5+d99YnB001BMoegYaIm93UgtDKBUfxZHAJ0LxdQab
+        nuxHiO5CCdDg1vmT7lAN4qdLucsquQGhuADIsOU=
+X-Google-Smtp-Source: AGHT+IEZBAOsoH5R9sMuTJ0tT6LAbfT4e8g0Coz08nyYUPTnQN4yEKjF5zsRrsRYGnMLm7X+87vqmfeDUsDdJWyaSG8=
+X-Received: by 2002:a05:6870:e985:b0:19f:e5a8:7525 with SMTP id
+ r5-20020a056870e98500b0019fe5a87525mr7150030oao.12.1691974945110; Sun, 13 Aug
+ 2023 18:02:25 -0700 (PDT)
 MIME-Version: 1.0
-To:     Arnd Bergmann <arnd@kernel.org>, Huisong Li <lihuisong@huawei.com>
-CC:     Arnd Bergmann <arnd@arndb.de>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] soc: kunpeng_hccs: fix size_t format string
-References: <20230812172116.3477379-1-arnd@kernel.org>
-In-Reply-To: <20230812172116.3477379-1-arnd@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.103.39]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500011.china.huawei.com (7.221.188.124)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a8a:14c:0:b0:4e8:f6ff:2aab with HTTP; Sun, 13 Aug 2023
+ 18:02:24 -0700 (PDT)
+In-Reply-To: <20230813055948.12513-1-ghandatmanas@gmail.com>
+References: <20230813055948.12513-1-ghandatmanas@gmail.com>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Mon, 14 Aug 2023 10:02:24 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd8A9+Zcg=8wLV0h4fdcvybp=BB-a0yRKSTHmk0sQi26_A@mail.gmail.com>
+Message-ID: <CAKYAXd8A9+Zcg=8wLV0h4fdcvybp=BB-a0yRKSTHmk0sQi26_A@mail.gmail.com>
+Subject: Re: [PATCH v4] ntfs : fix shift-out-of-bounds in ntfs_iget
+To:     Manas Ghandat <ghandatmanas@gmail.com>, anton@tuxera.com
+Cc:     gregkh@linuxfoundation.org,
+        Linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ntfs-dev@lists.sourceforge.net,
+        syzbot+4768a8f039aa677897d0@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
-
-On 2023/8/13 1:21, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Printing a size_t using the %lu format string causes a warning on
-> architectures that define the type as 'unsigned int':
-> 
-> In file included from include/linux/device.h:15,
->                  from include/linux/acpi.h:14,
->                  from drivers/soc/hisilicon/kunpeng_hccs.c:25:
-> drivers/soc/hisilicon/kunpeng_hccs.c: In function 'hccs_get_bd_info':
-> drivers/soc/hisilicon/kunpeng_hccs.c:441:25: error: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'size_t' {aka 'unsigned int'} [-Werror=format=]
-> 
-> Use the correct %zu format instead.
-> 
-> Fixes: 886bdf9c883bc ("soc: hisilicon: Support HCCS driver on Kunpeng SoC")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+2023-08-13 14:59 GMT+09:00, Manas Ghandat <ghandatmanas@gmail.com>:
+Hi,
+> Currently there is not check for ni->itype.compressed.block_size when
+> a->data.non_resident.compression_unit is present and NInoSparse(ni) is
+> true. Added the required check to calculation of block size.
+>
+> Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
+> Reported-by: syzbot+4768a8f039aa677897d0@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=4768a8f039aa677897d0
+> Fix-commit-ID: upstream f40ddce88593482919761f74910f42f4b84c004b
 > ---
-> I've already applied this one on top of the soc/drivers branch after I
-> merged the branch with the new driver and noticed the regression.
-> 
->  drivers/soc/hisilicon/kunpeng_hccs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/soc/hisilicon/kunpeng_hccs.c b/drivers/soc/hisilicon/kunpeng_hccs.c
-> index 6864d203c6782..0d6f6bacd3f62 100644
-> --- a/drivers/soc/hisilicon/kunpeng_hccs.c
-> +++ b/drivers/soc/hisilicon/kunpeng_hccs.c
-> @@ -438,7 +438,7 @@ static int hccs_get_bd_info(struct hccs_dev *hdev, u8 opcode,
->  	head = &rsp->rsp_head;
->  	if (head->data_len > buf_len) {
->  		dev_err(hdev->dev,
-> -			"buffer overflow (buf_len = %lu, data_len = %u)!\n",
-> +			"buffer overflow (buf_len = %zu, data_len = %u)!\n",
->  			buf_len, head->data_len);
->  		return -ENOMEM;
->  	}
-> 
+> V3 -> V4: Fix description
+> V2 -> V3: Fix patching issue.
+> V1 -> V2: Cleaned up coding style.
+>
+>  fs/ntfs/inode.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
+> index 6c3f38d66579..a657322874ed 100644
+> --- a/fs/ntfs/inode.c
+> +++ b/fs/ntfs/inode.c
+> @@ -1077,6 +1077,15 @@ static int ntfs_read_locked_inode(struct inode *vi)
+>  					goto unm_err_out;
+>  				}
+>  				if (a->data.non_resident.compression_unit) {
+> +					if (a->data.non_resident.compression_unit +
+> +					vol->cluster_size_bits > 32) {
+> +						ntfs_error(vi->i_sb,
+> +						"Found non-standard compression unit (%u).   Cannot handle this.",
+> +						a->data.non_resident.compression_unit
+> +						);
+> +						err = -EOPNOTSUPP;
+> +						goto unm_err_out;
+> +					}
+compression_unit seems to be used when the ntfs inode is compressed.
+And it should be either 0 or 4 value. So, I think we can set related
+compression block variables of ntfs inode only when ni is
+NInoCompressed like this... Anton, Am I missing something ?
 
-Thanks!
+diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
+index efe0602b4e51..e5a7d81d575b 100644
+--- a/fs/ntfs/inode.c
++++ b/fs/ntfs/inode.c
+@@ -1076,7 +1076,8 @@ static int ntfs_read_locked_inode(struct inode *vi)
+                                        err = -EOPNOTSUPP;
+                                        goto unm_err_out;
+                                }
+-                               if (a->data.non_resident.compression_unit) {
++                               if (NInoCompressed(ni) &&
++                                   a->data.non_resident.compression_unit) {
+                                        ni->itype.compressed.block_size = 1U <<
+                                                        (a->data.non_resident.
+                                                        compression_unit +
 
-Best Regards,
-Wei
+>  					ni->itype.compressed.block_size = 1U <<
+>  							(a->data.non_resident.
+>  							compression_unit +
+> --
+> 2.37.2
+>
+>
