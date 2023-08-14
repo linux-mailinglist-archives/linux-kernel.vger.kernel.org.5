@@ -2,88 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E2C77BCEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F4077BCF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232924AbjHNPYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 11:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
+        id S232938AbjHNPZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 11:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjHNPYm (ORCPT
+        with ESMTP id S233018AbjHNPZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:24:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF49FE7E
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:24:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5559963478
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 15:24:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6043CC433C7;
-        Mon, 14 Aug 2023 15:24:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1692026680;
-        bh=qs1SjNIypkGp+C7wohPlxBLFU3leZyt0yoMJ9I6/Pj4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DWdF6Uzi1H8JnmoxAQCcvD5vAoM0wCDqkDzFxD18CDOzVV4cn1VdiaOfKrJQJSuwI
-         GvdEEKCOU7wBzarwljNNld9jPrdTUm8MmGR18ccn4CkkqlyyPW6SM3cyYIgol6ZriR
-         qE5+C3p23gu3/pJ1iEOm1ZdgCCB1iKaxHHNxjCeQ=
-Date:   Mon, 14 Aug 2023 17:24:37 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Yikebaer Aizezi <yikebaer61@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, tj@kernel.org
-Subject: Re: WARNING in kernfs_remove_by_name_ns
-Message-ID: <2023081404-stuffy-relic-d126@gregkh>
-References: <CALcu4rbCwMHyi3w7Ruv=eRw-nq7+cxz8fJ+WCoN932mDjg-vBg@mail.gmail.com>
+        Mon, 14 Aug 2023 11:25:29 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD54C10E2;
+        Mon, 14 Aug 2023 08:25:27 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe0e34f498so7066297e87.2;
+        Mon, 14 Aug 2023 08:25:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692026726; x=1692631526;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=R8YILAp3/EDICXZPGCGGCjADGpVxhYGATqQ8GeXwGKE=;
+        b=XOamVmaEUyVJSKBWvI30lLqNFH84CtHogAwMWMsoEyYzCJnRmTj16CBXkEOc66Nwm4
+         vekvdEJd9RIgcCXs69Du9pbZAMlJs7GJ949wSKxh2zj00hb+VlPISzyJCKlnl8Vey1RN
+         7AKTHH8+cQY40/m79Jq5oViEyjeQYJlAsbheqWKdBoUbrflBuB637Q7LpGiOBJKsx86+
+         851sWzuFFFgrRxVgOlbDjYgNomGaGHyMvxdQL+nAjiZEn+wZq9GrUtvvYgIl9ip3zOZS
+         sDhVhBjbqt2aDd2fhz88HWiUB1LqPYhlFsuo1MqZaCD8K/PH+6mYFxG0FcQihk7lQfxT
+         Kyiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692026726; x=1692631526;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=R8YILAp3/EDICXZPGCGGCjADGpVxhYGATqQ8GeXwGKE=;
+        b=WvJbqIx8jFNwxU5zGFs8XqX555iwlFyyerAd9TWIbmwVVGi51hRC+O9F1SKU/ELmfJ
+         1T2Dr68lUqs93nLZ/Qw8wlLEkRSkKlHr4HST/xXO5QqOh00du917g5TnOkwO12lff/kt
+         ipdQBu4HUNEs9TXNQgaSQdHxyLiwS0neBLix7JYCOulfVKxqCST3+CPM5QnFaPmipJ4k
+         LysvBbmikqEgabyD9Lz1CwRZGhgFj5WBAgOhMn+Ye0dTW2hIA7PRw68LhoBMfauqD2bG
+         bpUMwFAq/rDtt8Tc6Ryx3KQIriGBppOGXq0zTXhURu7YlqZSdIg4657yEDtT32mDaNkA
+         RFjA==
+X-Gm-Message-State: AOJu0YwKtPR4vX6ciQ/CMQphg7iOpsTDiicVSmdkuLA+b5kvY7eRjaWr
+        vM/POsvGZQAqeuIHalPYy+M=
+X-Google-Smtp-Source: AGHT+IHhqfehopCy/2TywU8IbidZWFUIqwvUKLZ1oTB/azd9a0hwX8l1Pdk+Clx+wqeoZIx3pw9Pew==
+X-Received: by 2002:ac2:514f:0:b0:4fd:d08c:fa3e with SMTP id q15-20020ac2514f000000b004fdd08cfa3emr6235024lfd.42.1692026725707;
+        Mon, 14 Aug 2023 08:25:25 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-150-127.dynamic.spd-mgts.ru. [109.252.150.127])
+        by smtp.googlemail.com with ESMTPSA id c27-20020ac244bb000000b004fb85ffc82csm1999232lfm.10.2023.08.14.08.25.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Aug 2023 08:25:25 -0700 (PDT)
+Message-ID: <5594f66d-1aec-ee2f-d3d1-1185ca9cb06f@gmail.com>
+Date:   Mon, 14 Aug 2023 18:25:24 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALcu4rbCwMHyi3w7Ruv=eRw-nq7+cxz8fJ+WCoN932mDjg-vBg@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH] i2c: tegra: Fix i2c-tegra DMA config option processing
+To:     Andi Shyti <andi.shyti@kernel.org>,
+        Parker Newman <pnewman@connecttech.com>
+Cc:     Laxman Dewangan <ldewangan@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <fcfcf9b3-c8c4-9b34-2ff8-cd60a3d490bd@connecttech.com>
+ <20230804214902.entkn6xkklz5lh3h@intel.intel>
+Content-Language: en-US
+From:   Dmitry Osipenko <digetx@gmail.com>
+In-Reply-To: <20230804214902.entkn6xkklz5lh3h@intel.intel>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 02:49:47PM +0800, Yikebaer Aizezi wrote:
-> Hello,
+05.08.2023 00:49, Andi Shyti пишет:
+> Hi Laxman and/or Dmitry,
 > 
-> When using Healer to fuzz the Linux-6.5-rc5,  the following crash
-> was triggered.
+> On Thu, Aug 03, 2023 at 05:10:02PM +0000, Parker Newman wrote:
+>>
+>> This patch fixes the Tegra DMA config option processing in the
+>> i2c-tegra driver.
+>>
+>> Tegra processors prior to Tegra186 used APB DMA for I2C requiring
+>> CONFIG_TEGRA20_APB_DMA=y while Tegra186 and later use GPC DMA requiring
+>> CONFIG_TEGRA186_GPC_DMA=y.
+>>
+>> The check for if the processor uses APB DMA is inverted and so the wrong
+>> DMA config options are checked.
+>>
+>> This means if CONFIG_TEGRA20_APB_DMA=y but CONFIG_TEGRA186_GPC_DMA=n
+>> with a Tegra186 or later processor the driver will incorrectly think DMA is
+>> enabled and attempt to request DMA channels that will never be availible,
+>> leaving the driver in a perpetual EPROBE_DEFER state.
+>>
+>> Signed-off-by: Parker Newman <pnewman@connecttech.com>
+>> ---
+>>  drivers/i2c/busses/i2c-tegra.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.c
+>> index bcbbf23aa530..dc6ed3a8d69e 100644
+>> --- a/drivers/i2c/busses/i2c-tegra.c
+>> +++ b/drivers/i2c/busses/i2c-tegra.c
+>> @@ -442,7 +442,7 @@ static int tegra_i2c_init_dma(struct tegra_i2c_dev *i2c_dev)
+>>     if (IS_VI(i2c_dev))
+>>         return 0;
+>>
+>> -   if (!i2c_dev->hw->has_apb_dma) {
+>> +   if (i2c_dev->hw->has_apb_dma) {
+>>         if (!IS_ENABLED(CONFIG_TEGRA20_APB_DMA)) {
+>>             dev_dbg(i2c_dev->dev, "APB DMA support not enabled\n");
+>>             return 0;
 > 
-> HEAD commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f (tag: v6.5-rc5)
-> git tree: upstream
-> 
-> And I also tried to reproduce this crash on Latest Linux-6.5-rc6, it
-> still exist.
+> Can I have your opinion here, please?
 
-Great, can you work with the proper subsystem maintainers to resolve
-this (hint, look at the traceback, it's not a sysfs issue...)
+The patch looks good, thanks Parker for fixing it. I'll be able to test
+it only sometime later and let you all know if there will be any
+problem. Previously I haven't noticed any Tegra I2C regressions, maybe
+we should change that dev_dbg to dev_warn.
 
-Wait:
-
-> memfd_create() without MFD_EXEC nor MFD_NOEXEC_SEAL, pid=8437 'syz-executor'
-> loop1: detected capacity change from 0 to 32768
-> BTRFS: device fsid 84eb0a0b-d357-4bc1-8741-9d3223c15974 devid 1
-> transid 7 /dev/loop1 scanned by syz-executor (8437)
-> BTRFS info (device loop1): using xxhash64 (xxhash64-generic) checksum algorithm
-> BTRFS info (device loop1): disk space caching is enabled
-> BTRFS info (device loop1): enabling ssd optimizations
-> BTRFS info (device loop1): auto enabling async discard
-> FAULT_INJECTION: forcing a failure.
-
-You forced a failure, and look, things failed!
-
-Success!
-
-Why is this an issue, don't force failures, and then all should be good,
-right?
-
-thanks,
-
-greg k-h
