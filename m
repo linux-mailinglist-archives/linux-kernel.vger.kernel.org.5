@@ -2,83 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9FD77B445
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A27B77B46A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234064AbjHNIgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 04:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
+        id S234822AbjHNImE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 04:42:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232346AbjHNIfw (ORCPT
+        with ESMTP id S234849AbjHNIlg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 04:35:52 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71E19C;
-        Mon, 14 Aug 2023 01:35:51 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37E8Dlfo014154;
-        Mon, 14 Aug 2023 08:35:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=qwGYKRRRJZy7n3umlavxW3NBP3HkUrUEnBJxfTTq5Mc=;
- b=eqmEe3xSGlfUQFPs7o1HW5VsB2Jmd37g/ylM8wjaj/W6Hh+ArlJ3pluPLlPZvIff9TKl
- vOOKTDpbVoRY6QvuGw48f1qltR+1e1ZKvo0TDRfW+l6dBmf20FcUnEt3fezYacfTxTnj
- GfaWaMTMvGvge9ccpN+kOuFz8hyImqaO26OeGLESlC1+4gJOIxDzgYlyCaBFnoD3ktgv
- CRtZKkMS4xkb5UaKfYa2QZ8lTgVMXImElPXBCVffyPxcW7VpT3tGILIFPxNZjBVBFvJx
- QrjPvMg7a5gSH3M+2sxxuEXdlKQs5jG7CdRNZG04iRktnjEjhRlg9a+/Wq+oDmo/T+9l 1A== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sffxt83k3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Aug 2023 08:35:15 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37E8ZEjU000903
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Aug 2023 08:35:14 GMT
-Received: from varda-linux.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 14 Aug 2023 01:35:07 -0700
-Date:   Mon, 14 Aug 2023 14:05:04 +0530
-From:   Varadarajan Narayanan <quic_varada@quicinc.com>
-To:     Vinod Koul <vkoul@kernel.org>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <kishon@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <p.zabel@pengutronix.de>, <arnd@arndb.de>,
-        <geert+renesas@glider.be>, <nfraprado@collabora.com>,
-        <rafal@milecki.pl>, <peng.fan@nxp.com>,
-        <quic_srichara@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v7 2/5] phy: qcom-m31: Introduce qcom,m31 USB phy driver
-Message-ID: <20230814083503.GA3490@varda-linux.qualcomm.com>
-References: <cover.1691660905.git.quic_varada@quicinc.com>
- <b17b55b2ff2277bb9bfa99acdb2f98ed420dfb6e.1691660905.git.quic_varada@quicinc.com>
- <ZNXxja5HvVOtgliL@matsya>
+        Mon, 14 Aug 2023 04:41:36 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED2612D;
+        Mon, 14 Aug 2023 01:41:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+ s=s31663417; t=1692002431; x=1692607231; i=j.neuschaefer@gmx.net;
+ bh=2K/XkJrgpN3vuj+6RdSORsI1BXDQCSMHXV1Szx8sgmk=;
+ h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+ b=WF5s2Thc7cvYs7GNHS7wJfbaaeZ4iTHsjp3zY4bMtT+mSF6xxMwQcm9C122oY1YUC+aXmF1
+ mKl1U0S8qh+XcgrXMR34WGA1zNciM8AKRBXrV1MdMPswvlxMj/pgO1Y+3N8OCSCRimIzZg2GD
+ L4NhcMMNqMGfjTcjLoKnVSM1bKfwYCDEcCqeISpHH22jryOolpBJYGjg20qgBBi5IFY3l3xCL
+ klMx8phTW2c1gHZFZ93NDNfogOrhf8ydqB43vnsnEO9LfUx9+rZcCh9ybgv4Rieq8PyqSbyEH
+ /lPv5VSDsHXfAgvsnolIoKs5O+rn0pqbUJhkbt43G6rgGDZgkd+w==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from probook ([151.216.154.44]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MS3mt-1qKdSm0XvP-00TYkC; Mon, 14
+ Aug 2023 10:40:31 +0200
+Date:   Mon, 14 Aug 2023 10:40:24 +0200
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Brad Larson <blarson@amd.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-spi@vger.kernel.org,
+        adrian.hunter@intel.com, alcooperx@gmail.com,
+        andy.shevchenko@gmail.com, arnd@arndb.de,
+        brendan.higgins@linux.dev, briannorris@chromium.org,
+        catalin.marinas@arm.com, conor+dt@kernel.org, davidgow@google.com,
+        gsomlo@gmail.com, gerg@linux-m68k.org, hal.feng@starfivetech.com,
+        hasegawa-hitomi@fujitsu.com, j.neuschaefer@gmx.net, joel@jms.id.au,
+        kernel@esmil.dk, krzk@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, lee@kernel.org,
+        lee.jones@linaro.org, broonie@kernel.org, p.zabel@pengutronix.de,
+        rdunlap@infradead.org, robh+dt@kernel.org, samuel@sholland.org,
+        fancer.lancer@gmail.com, skhan@linuxfoundation.org,
+        suravee.suthikulpanit@amd.com, thomas.lendacky@amd.com,
+        tonyhuang.sunplus@gmail.com, ulf.hansson@linaro.org,
+        vaishnav.a@ti.com, walker.chen@starfivetech.com, will@kernel.org,
+        zhuyinbo@loongson.cn, devicetree@vger.kernel.org
+Subject: Re: [PATCH v15 4/6] arm64: Add config for AMD Pensando SoC platforms
+Message-ID: <ZNnoeAG8MevNTjtV@probook>
+References: <20230811180519.29644-1-blarson@amd.com>
+ <20230811180519.29644-5-blarson@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="XYsAN1UlC/mQ0xME"
 Content-Disposition: inline
-In-Reply-To: <ZNXxja5HvVOtgliL@matsya>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: DZ06qSZka_sIK-LlSDnwfR2sZa7D37gN
-X-Proofpoint-GUID: DZ06qSZka_sIK-LlSDnwfR2sZa7D37gN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-14_03,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=899 spamscore=0
- malwarescore=0 clxscore=1015 suspectscore=0 adultscore=0 bulkscore=0
- mlxscore=0 priorityscore=1501 impostorscore=0 lowpriorityscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308140079
+In-Reply-To: <20230811180519.29644-5-blarson@amd.com>
+X-Provags-ID: V03:K1:lwjMjHcgCwopMPNO3RHBqMhBTQVVrX6Y1pvovSF3ruOUwvmVFIr
+ 8ZOvvrhwjCsc6HqxCKe101L3rmQ4SNB20EkR9qOQqa3VIXZ4iZbgaP5TH/b5bCvdcG2vnV9
+ Ux6m+ZmDWudbwKCZ5lyurc3vIqu+Go9R+gXdBNmlJwaQkWlXQVp4iXZuJ5kvPAVZRaRS2TK
+ 99LtsSfUGwaxfTIOej7Fw==
+UI-OutboundReport: notjunk:1;M01:P0:/qYxMKe3OHg=;PaOznS2Z5KXlxz5twqP1LAmE2SI
+ MtCcUFvIllQHP0w1Mz+MytTE9pEpibQEyGaQwUzs8vEmdanwYr5hpDNsSlg8Q7Zj5DmvWDAFq
+ ehw/mdwibGw4wlt4o7YzJpUbEX9tEb1Y7guWqzpG/65va57axiYRxjg3DqKxndETliO37PUqZ
+ QR3stsumcFxnttJW4Z4/BKjMHMoMFTvfO0fMPMLSY5aflPvDRxvJFB4Exs7jpg4YBbiUxM4XR
+ 192r5zaPMoAdRcowuciR6vaT/ToQhf+BjNYGJD/GayxBitptERDXlAu0WXHhljASBw/ZcQ35x
+ tbpCL7BVcd1Yyk7qNLMmMcEHS49Y0JiwPh8XsctLqE59/FqbyNxRsZg0w9n+bf0+5jKIJ+SG7
+ 0LYladW1HoZvSUGppc1ZXM/L8y1JUlU5/Vs1AvGoUgLKmyDy5UBNnHIyKCU1pJucrQ9d7tEK4
+ SYHQIgPrNUZsBb+Oz6bqq4kFcauVevb9Itmw4ot6i13Yb0rf+GCgvpQ3jeA1beH5wykYtAOAX
+ mGOiozNIGqAbUdl/XjaHTEKOHv0bFU/hUBCKXc2q0pKDRikAGqHpBkXKiH4MTQVUHbh1RnByl
+ L+pdyoWiIF4wmol0sM5ahhYoygsu58jfbx1YCfXFOjqn/8Xx//XrBgUWqXTFg6WkIKUBSP146
+ e1qR4olUUeizlS+qCIYKxW1ie8Y0jmAX3AFLhDGH42c0bFod7qbZGKrBIvqQsET3/AkbQuERq
+ 1/Qx2A9qKYbLdU2YWe5Ftjmr1peWtZSf62YR7Y55yzXrLqzUFodSTyndd/ewHOJGIU30W0p/v
+ grcGphBY6qYDl7RRqYyGNaz8aUbSq6QOIJ5OAP4kv408/c0iddVqm9NkSgJW0jf3HERqBMlYG
+ pWr31rNTWgONMgHMT4NaJrCWb73Ic1mo/QTd5fxQiA2pQTadlzik5KpaAhZNwEt1LNd3zRDDW
+ ow7ydA==
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,56 +86,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 09:30:05AM +0100, Vinod Koul wrote:
-> On 10-08-23, 15:26, Varadarajan Narayanan wrote:
-> > Add the M31 USB2 phy driver.
->	.
->	.
->	.
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/of_platform.h>
-> > +#include <linux/of.h>
->
-> do you need both headers..?
->
->	.
->	.
->	.
-> > + #define FREQ_24MHZ			(GENMASK(6, 6) | GENMASK(4, 4))
->
-> why not use bit :-)
->	.
->	.
->	.
-> > +struct m31_phy_regs m31_ipq5332_regs[] = {
-> > +	{ USB_PHY_CFG0, UTMI_PHY_OVERRIDE_EN, 0 },
-> > +	{ USB_PHY_UTMI_CTRL5, POR_EN, 15 },
-> > +	{ USB_PHY_FSEL_SEL, FREQ_SEL, 0 },
-> > +	{ USB_PHY_HS_PHY_CTRL_COMMON0, COMMONONN | FREQ_24MHZ | RETENABLEN, 0 },
-> > +	{ USB_PHY_UTMI_CTRL5, POR_EN, 0 },
-> > +	{ USB_PHY_HS_PHY_CTRL2, USB2_SUSPEND_N_SEL | USB2_SUSPEND_N | USB2_UTMI_CLK_EN, 0 },
-> > +	{ USB2PHY_USB_PHY_M31_XCFGI_11, XCFG_COARSE_TUNE_NUM  | XCFG_FINE_TUNE_NUM, 0 },
-> > +	{ USB2PHY_USB_PHY_M31_XCFGI_4, HSTX_SLEW_RATE_565PS | PLL_CHARGING_PUMP_CURRENT_35UA |
-> > +				       ODT_VALUE_38_02_OHM, 0 },
-> > +	{ USB2PHY_USB_PHY_M31_XCFGI_1, USB2_0_TX_ENABLE, 0 },
-> > +	{ USB2PHY_USB_PHY_M31_XCFGI_5, ODT_VALUE_45_02_OHM | HSTX_PRE_EMPHASIS_LEVEL_0_55MA, 4 },
-> > +	{ USB_PHY_UTMI_CTRL5, 0x0, 0 },
-> > +	{ USB_PHY_HS_PHY_CTRL2, USB2_SUSPEND_N | USB2_UTMI_CLK_EN, 0 },
->
-> More readable way to code
->                 USB_PHY_CFG0,
->                 UTMI_PHY_OVERRIDE_EN,
->                 0
->
-> and so on, makes a better read and check for errors, one line for off,
-> one for val and one for delay
->
-> --
-> `~Vinod
 
-Have posted a new version addressing these (and Konrad's and Bjorn's) issues.
-Please review.
+--XYsAN1UlC/mQ0xME
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks
-Varada
+On Fri, Aug 11, 2023 at 11:05:17AM -0700, Brad Larson wrote:
+> Add ARCH_PENSANDO configuration option for AMD Pensando SoC
+> based platforms.
+>=20
+> Signed-off-by: Brad Larson <blarson@amd.com>
+> ---
+[...]
+> +config ARCH_PENSANDO
+> +	bool "AMD Pensando Platforms"
+> +	help
+> +	  This enables support for the ARMv8 based AMD Pensando SoC
+> +	  family to include the Elba SoC.
+> +
+> +	  AMD Pensando SoCs support a range of Distributed Services
+> +	  Cards in PCIe format installed into servers.  The Elba
+> +	  SoC includes 16 A-72 CPU cores, 144 programmable P4
+> +	  cores for a minimal latency/jitter datapath, and network
+
+Out of curiosity, what are A-72 and P4?
+
+A-72 sounds like Arm Cortex A-72, P4 seems to refer to the P4
+programming language (https://opennetworking.org/p4/).
+
+Perhaps something like:
+
++	  Cards in PCIe format installed into servers.  The Elba
++	  SoC includes 16 Cortex A-72 CPU cores, 144 P4-programmable
++	  cores for a minimal latency/jitter datapath, and network
+
+
+Best regards,
+Jonathan
+
+--XYsAN1UlC/mQ0xME
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmTZ6FAACgkQCDBEmo7z
+X9sKFhAAmdVFgdeCmbbPCdJBBh7ERbEnmD9Rno2fvPOgRXkpxsqfIYdArVSs9wZk
+t5g50oR3atllgAwMgB8RJTuWOJ0vJEvi5mMSlWyH/MmyFMRRSTvGj6SW6YzZN7cK
+gN221BWvCXiTMWhWoeNmKEAlCLJdhmuLcZEJFfxWDLEs9sKNVfuL0lIQ2gKNkfar
+JqEo+4AuioCApIbvl5ICQVYQTxkrjLIc+mkVAzsSY2CiznkPGJbewvEtO0IZ5p/0
+wA4A1bdzS/Pzc0+EPPnOva4tPIq834OXvpxbZrAuwTI0TnwpN5Tnonwtkpkq4UFB
+qYBfpq73lshpboICe63vGiSTD4SmOWmwgx5xQVuWmIjMT1/JC9rQGGbXPUmF68/t
+l8E33x1VqL8duagQTnSohmP5XSpYHM2EYLlezaeDYkl57+NHg+reCuMwqeqtdiHK
+iWYQfV+teJXhHJVwUjzA6SEYB+gHifpB0wfNydzMr2dCmC7/yLIyA+0tgCxE1f/1
+cxLYAX4+oUIwTc0dw2JQScSN/oCNRH+PXSmfFEfpLlfQCLQXJtdgVVCY84DMiN6I
+n3tajQ1oHp3qeMQ3y13ek418dUDjLDjufdulmKFdgeC5tDgagXzPUPeYxEY4JhX5
+0k0MKwKIxo4VT5L3Tg3f5O6OCTpdQWB2SL/G3xBtKF3JPzAp0Bc=
+=MOKU
+-----END PGP SIGNATURE-----
+
+--XYsAN1UlC/mQ0xME--
