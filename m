@@ -2,51 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EAE177B228
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FCB977B232
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232950AbjHNHPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 03:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57548 "EHLO
+        id S233826AbjHNHQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 03:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234044AbjHNHO4 (ORCPT
+        with ESMTP id S234071AbjHNHQl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 03:14:56 -0400
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com [209.85.210.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8449F10DB
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 00:14:54 -0700 (PDT)
-Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-6870778be4eso4610812b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 00:14:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691997294; x=1692602094;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lC2gQOraUwfoS2nHVDA3KS2M30uEGw2VHu3Zs2YQ3/8=;
-        b=ZMj6IcIdISUXlJGCK0qBC0BXkT/fHhPA2DCszvdztnX41kZIN125lPjB4nBmiAnEbZ
-         4QYUMOlxnqw15a9BtBzRBnH6P01Be52k3uw93YYrCeMv1eGYHUmhtPbLX+hhisqWy5b4
-         O0N98aEwoKVhQF7OJJDvIuzmjmCUAlQy3QQZCz5RDi3B4VPSU9kqgkfhFTyRzN6e+8dM
-         ZJoFsGGi8jNJYyy8nvBZ6S1IwjNf0Ol8MIsmjogh1qeLZtokstBmBW+rFX5bNckfgZ/H
-         r+3rpmi+X+2VDi1ETsCKCjTkn4hP3pGaFdPtzNnzMQcA/Mnh0M69IjkDUL0gyt8uzch6
-         D0eQ==
-X-Gm-Message-State: AOJu0YzfzMUGu+Lhq6ODtevTKkjU9VXPppbXvSfKyiwa4ywkG/iTDdzL
-        cm44c3cT7fgTjbuMA3u1gJn5A9/J3L3umXXPGe96sK3+l0Ht
-X-Google-Smtp-Source: AGHT+IGVHwOMsauJJrqmCTz5cTRrF8tOu3mXzUJ9PYlW9V8lEt5zwSOi/EautbgPe6RXfGDgRNysWm98RZFDI4LabLJ0ChLkKUMa
+        Mon, 14 Aug 2023 03:16:41 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 45B3FE71;
+        Mon, 14 Aug 2023 00:16:34 -0700 (PDT)
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 37E7GLEA016686;
+        Mon, 14 Aug 2023 09:16:21 +0200
+Date:   Mon, 14 Aug 2023 09:16:21 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Zhangjin Wu <falcon@tinylab.org>
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        tanyuan@tinylab.org, thomas@t-8ch.de
+Subject: Re: [PATCH v2 5/7] selftests/nolibc: customize CROSS_COMPILE for all
+ architectures
+Message-ID: <20230814071621.GB14322@1wt.eu>
+References: <20230813091625.GG8237@1wt.eu>
+ <20230813101805.10885-1-falcon@tinylab.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:1395:b0:687:3aa0:9010 with SMTP id
- t21-20020a056a00139500b006873aa09010mr4230339pfg.5.1691997294054; Mon, 14 Aug
- 2023 00:14:54 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 00:14:53 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ac55750602dcd1dc@google.com>
-Subject: [syzbot] Monthly input report (Aug 2023)
-From:   syzbot <syzbot+list95268cf486723e423a02@syzkaller.appspotmail.com>
-To:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230813101805.10885-1-falcon@tinylab.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=0.3 required=5.0 tests=BAYES_00,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,T_SPF_TEMPERROR autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,34 +42,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello input maintainers/developers,
+On Sun, Aug 13, 2023 at 06:18:05PM +0800, Zhangjin Wu wrote:
+> > Given that we don't support mips64, I'd suggest to ust mips-linux-
+> > instead here for now. That doesn't seem right to ask users to
+> > download a toolchain for a different architecture than the one
+> > supported just because we can adapt to it.
+> >
+> 
+> Agree very much, and the one below from patch 7/7 [1]:
+> 
+>     +CROSS_COMPILE_arm64     ?= aarch64-linux- aarch64-linux-gnu-
+>     +CROSS_COMPILE_arm       ?= arm-linux-gnueabi- arm-none-eabi-
+>     +CROSS_COMPILE_mips      ?= mips64-linux- mips64el-linux-gnuabi64-
+> 
+> It should be:
+> 
+>     +CROSS_COMPILE_mips      ?= mips-linux- mips-linux-gnu-gcc
+> 
+> And if necessary, the mips64-linux- line in the commit message of [1] should be
+> corrected too.
 
-This is a 31-day syzbot report for the input subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/input
+I just did that (and fixed mips-linux-gnu- instead of mips-linux-gnu-gcc
+above).
 
-During the period, 1 new issues were detected and 0 were fixed.
-In total, 12 issues are still open and 48 have been fixed so far.
-
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 2957    Yes   WARNING in input_mt_init_slots
-                  https://syzkaller.appspot.com/bug?extid=0122fa359a69694395d5
-<2> 102     Yes   WARNING in cm109_urb_irq_callback/usb_submit_urb
-                  https://syzkaller.appspot.com/bug?extid=2d6d691af5ab4b7e66df
-<3> 25      Yes   INFO: task hung in uhid_char_release
-                  https://syzkaller.appspot.com/bug?extid=8fe2d362af0e1cba8735
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Thanks,
+Willy
