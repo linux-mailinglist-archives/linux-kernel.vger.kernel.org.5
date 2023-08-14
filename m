@@ -2,74 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD3F77B9E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D56977B9E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbjHNNYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 09:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42442 "EHLO
+        id S229668AbjHNNYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 09:24:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230498AbjHNNXk (ORCPT
+        with ESMTP id S230435AbjHNNXy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 09:23:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA6212D;
-        Mon, 14 Aug 2023 06:23:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=T8Pbi+AtdsCBMxSWZKRpPW1Wq89VMiXjiZzvJl2OWrg=; b=ZAzrCQUwDaAiLY4rZgSiHtfOqx
-        IW4PK1p+wQl0ChvH7y0wpWHWR1LYToASBwSu0e0rdS9Xca7PHdv361bc0zWtqxALBw2YbZE8gTIzw
-        13sjIAlCgdMAwDNFKrSkxr9EgUQKWPHkeNvYBf8QbDUyMjHiTJLz1zL0NHqF32I0riLKJ51lf4FaP
-        WXfc4pqsB+rzHH9681o5Kp/D8rqmKoSAfEFvs97UULXP66FtphZ0I3Hq6RhsECX25jD1y3TKWr1aY
-        lyGixDvt6jM913leiyLRLYy667PvsQDGi2bPZnuVG0g3Qk20/qMhJAdDhUc5bligeE0bPItFzdYq3
-        NbVRDT0g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qVXXc-002BRU-Pq; Mon, 14 Aug 2023 13:23:28 +0000
-Date:   Mon, 14 Aug 2023 14:23:28 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        jlayton@kernel.org, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] iov_iter: Convert iterate*() to inline funcs
-Message-ID: <ZNoq0PNpFM8l8vAe@casper.infradead.org>
-References: <3710261.1691764329@warthog.procyon.org.uk>
+        Mon, 14 Aug 2023 09:23:54 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA0B10C6;
+        Mon, 14 Aug 2023 06:23:54 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6bb140cd5a5so3455720a34.3;
+        Mon, 14 Aug 2023 06:23:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692019433; x=1692624233;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DrPNQERrOv3TUTMR4WcWsfPPW9clyc64cY5xGbhYQfU=;
+        b=qRMXV3ux3UEznrhbp/FNBxNre5mDfXcdXEgxRffHEVNISfrJvmgkVGvEIdcBgpiz7B
+         eYw19fAMKPMUvrlKUsdlfcUaRjDwz+CSvsJOW7Uz2vv88Jos+K2c/WDk6MZsf1BizKLo
+         5pf55lrnaW8WDphjg90V9c2JZAVeH0qfpXrekjo+a1xH59KK1ajTPuGTBz2yix9btarh
+         ETtGjq/Jy5R6rzZUqMqGFjJoJSLPud4Ak2T70Brb/VJooBuNARe+A6M0zHBixc8a2Z8X
+         DJuD/CHJvMPttngCAMDfi83GTBCEH1SBWl11ba89qjBJpo8hreXjvTCxR1u4c4qCIC+9
+         CHew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692019433; x=1692624233;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DrPNQERrOv3TUTMR4WcWsfPPW9clyc64cY5xGbhYQfU=;
+        b=RrXUYhamYAG4c14hhMajPV7LtcvtebHzdZourjf3c3g8tIPESETLW4+n4w4+pgB3+y
+         vd6UTOkGOk6JPUUzfQuyl744DAyB+WDH5t9kYm9QrPqEyk8iejf8H1v2cV6W/oTC22em
+         h0p2ZBHSJCRZlLp/MOf4yfYWrVti6qGayouXHFsO9FWE16HULd9u6PGG78n0oeugIM88
+         /0y0JrWkINPJqppZ5iUANd7DLi4sY39L0jnw08dFq/n+w6fBoKF3NpZhUQWADW41fm0a
+         XMBCP+wtM0m1E4L49MAOYKjmR9ZWRu3evn0ww172ZBa59c2KPrz+fBjaa5kXaV2g2mQg
+         AdVA==
+X-Gm-Message-State: AOJu0Yxl+F938WKnlzXRsbJ3+I4To8OcYAbW0kaDHEU6pX1YmBEC6wHZ
+        KuYEoe3hhdrL2MX22w82V2HkLws9An3Bu42Mt2M=
+X-Google-Smtp-Source: AGHT+IFnyrKGUBSBRzYP9MZWbLPYVlvyCpffBIQq5VQjXF3tzYzUHmgGqPhYE+0g0sf0xcHWlAf7JP3fXn3i6xo0t1Y=
+X-Received: by 2002:a05:6870:440e:b0:1bb:b172:4bd5 with SMTP id
+ u14-20020a056870440e00b001bbb1724bd5mr11409614oah.18.1692019433185; Mon, 14
+ Aug 2023 06:23:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3710261.1691764329@warthog.procyon.org.uk>
+References: <20230813160936.1082758-1-sashal@kernel.org> <20230813160936.1082758-22-sashal@kernel.org>
+In-Reply-To: <20230813160936.1082758-22-sashal@kernel.org>
+From:   Ilya Dryomov <idryomov@gmail.com>
+Date:   Mon, 14 Aug 2023 15:23:41 +0200
+Message-ID: <CAOi1vP-+xfmQBNWL4iKC+bB-T+yjPh=zF0nBqGMeXCdvpf7+zg@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 5.10 22/25] rbd: make get_lock_owner_info() return
+ a single locker or NULL
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>, axboe@kernel.dk,
+        ceph-devel@vger.kernel.org, linux-block@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 03:32:09PM +0100, David Howells wrote:
-> @@ -578,10 +683,11 @@ size_t copy_page_from_iter_atomic(struct page *page, unsigned offset, size_t byt
->  		kunmap_atomic(kaddr);
->  		return 0;
->  	}
-> -	iterate_and_advance(i, bytes, base, len, off,
-> -		copyin(p + off, base, len),
-> -		memcpy_from_iter(i, p + off, base, len)
-> -	)
-> +
-> +	bytes = iterate_and_advance(i, bytes, p,
-> +				    copy_from_user_iter,
-> +				    iov_iter_is_copy_mc(i) ?
-> +				    memcpy_from_iter_mc : memcpy_from_iter);
->  	kunmap_atomic(kaddr);
->  	return bytes;
->  }
+On Sun, Aug 13, 2023 at 6:11=E2=80=AFPM Sasha Levin <sashal@kernel.org> wro=
+te:
+>
+> From: Ilya Dryomov <idryomov@gmail.com>
+>
+> [ Upstream commit f38cb9d9c2045dad16eead4a2e1aedfddd94603b ]
+>
+> Make the "num_lockers can be only 0 or 1" assumption explicit and
+> simplify the API by getting rid of output parameters in preparation
+> for calling get_lock_owner_info() twice before blocklisting.
+>
+> Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+> Reviewed-by: Dongsheng Yang <dongsheng.yang@easystack.cn>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Please work against linux-next; this function is completely rewritten
-there.
+Hi Sasha,
+
+This is a prerequisite patch, it doesn't make sense to backport it
+without also backporting "rbd: harden get_lock_owner_info() a bit" and
+"rbd: retrieve and check lock owner twice before blocklisting".
+
+Please drop it.
+
+Thanks,
+
+                Ilya
