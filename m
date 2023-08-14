@@ -2,172 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 144C577C398
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D87DD77C39E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233372AbjHNWlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 18:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43204 "EHLO
+        id S233140AbjHNWn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 18:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233310AbjHNWkz (ORCPT
+        with ESMTP id S233105AbjHNWnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 18:40:55 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD15EAB;
-        Mon, 14 Aug 2023 15:40:52 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d6b1025fc7aso1433888276.3;
-        Mon, 14 Aug 2023 15:40:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692052852; x=1692657652;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ST9EDbMOZFXnqi0vd0YF7UvQtOruYHigj9crRoWalvM=;
-        b=D7mNCMah/yau6g6kumYNQvMPHpBreLI/ewr1wb8zCKLZASymha+E57jdh0RvNUFNhn
-         jCVbDnpGmsO72u42u4H50tSbbuEprScRweO+JhyWz25t9l5lY2uVbj8vGjJCYS6fLClq
-         UdWT6ShQfn1DDmkbjfQCqE90OEczjdNvjufEk7KwoMOjqZGp055QnUQbgL3ofEqh3re+
-         a6IFwge0eZN3JM3wxKPh2M59Crnio9UM21RmQu85xegsj9wX6v5jdv9Ew8niPypYs0BN
-         MIA9a16gxYEBRM4RUTFbt52sj+jImGKpE33SM7zYWQwNhyTNVWoi8eKk72VQR/+At7ll
-         6lPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692052852; x=1692657652;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ST9EDbMOZFXnqi0vd0YF7UvQtOruYHigj9crRoWalvM=;
-        b=k/25ulfFDGELds4dJh7UB5jbABXyRNq3D+SS/BQmnCJivYPSeRhgXmb+sOkeJY0tCU
-         TdCUMtLgMeE3PZnrxowtgKGMYqJbWN9o/OQM/5FNdnx9ya6phVaJblphr4Rsom0VsUzB
-         +zCLYbhvItvB2Dd/zYw/wntUjQ3OukQ2Q1MsPGf7wbLyi2ltsDBG6HULyjXOIv65slku
-         2PnYiXRXwP6ptZdIXgvUBPZnZXDm3JcWs0Ev3ciK/n2eukP0XpNFnQSAMMhqunb18aZG
-         kgdiJgr+mIqfBNImlxagBHbHkcFXl1fV/hZVxnmRNIYMrTSLjZNVmgH9vyHn4JmK13ph
-         wIPg==
-X-Gm-Message-State: AOJu0Yz+KuBl8rEP8x+CYcq24VZBdQ4AK0kziZNpa9y6C7fcjqg9W2LR
-        ik9xC3KOk+QTF4/I/RwkY4egoYncbZbuW/1SoA0=
-X-Google-Smtp-Source: AGHT+IFBu2vNjExAtBSX0HHSL9CHjFV7NRbjoamH5RTWuOApwfEkFSQnkFsv7Ky9xYSdSsFW0Da05PSwTr9sCVQugVs=
-X-Received: by 2002:a5b:24e:0:b0:d0a:353b:b939 with SMTP id
- g14-20020a5b024e000000b00d0a353bb939mr11876763ybp.52.1692052851891; Mon, 14
- Aug 2023 15:40:51 -0700 (PDT)
+        Mon, 14 Aug 2023 18:43:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E41198;
+        Mon, 14 Aug 2023 15:43:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=so+nIMogsDEjvaVSmTA1TkKUt0VqeGL8iPbeGxQGV44=; b=V9laNy1dvw7FVJMjSINjPje0wq
+        jiL3SO5WjjPgzr9qyzrbQd/GFauY5VmOSLeBaOBfqnEYlPNJMkpiXDSJpgdMOEhGYMXMZRI1me5K3
+        atQIr0hEulDUXTNEEVncS57V2Yry8hA4lwBuqO3QsCLe0wLhP2LASSdDSC/IaESiPWpe1D8qJoMha
+        v72RmhMzR1CVrzs4OjyO9i9qv2nKxYvdgcX3YvDY+lM0OWAYsvBiEc84SSFxiDAb5fMEy1YXNQ3MK
+        S/T+zdsRO5t0uX+9ZV2CVIxHULwdiQe6DnCBdQ/z7frYtQuVt0ilZn0ppAFWZXvD1w42htLE/hwca
+        c+4a+I+A==;
+Received: from [2601:1c2:980:9ec0::577]
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qVgGn-004eME-OR; Mon, 14 Aug 2023 22:42:42 +0000
+Message-ID: <479a9c1f-9db7-61c8-3485-9b330f777930@infradead.org>
+Date:   Mon, 14 Aug 2023 15:42:34 -0700
 MIME-Version: 1.0
-References: <20230729220317.416771-1-ojeda@kernel.org>
-In-Reply-To: <20230729220317.416771-1-ojeda@kernel.org>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 15 Aug 2023 00:40:40 +0200
-Message-ID: <CANiq72mrzALO3J2VvDntscXwt7Z9KzT4+S8sc_HGc8u8izjyLw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] rust: upgrade to Rust 1.71.0
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH net-next v6 5/6] page_pool: update document about frag API
+Content-Language: en-US
+To:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-doc@vger.kernel.org, bpf@vger.kernel.org
+References: <20230814125643.59334-1-linyunsheng@huawei.com>
+ <20230814125643.59334-6-linyunsheng@huawei.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230814125643.59334-6-linyunsheng@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 30, 2023 at 12:04=E2=80=AFAM Miguel Ojeda <ojeda@kernel.org> wr=
-ote:
->
-> This is the second upgrade to the Rust toolchain, from 1.68.2 to 1.71.0
-> (i.e. the latest).
->
-> See the upgrade policy [1] and the comments on the first upgrade in
-> commit 3ed03f4da06e ("rust: upgrade to Rust 1.68.2").
->
-> # Unstable features
->
-> No unstable features (that we use) were stabilized.
->
-> Therefore, the only unstable feature allowed to be used outside
-> the `kernel` crate is still `new_uninit`, though other code to be
-> upstreamed may increase the list.
->
-> Please see [2] for details.
->
-> # Required changes
->
-> For the upgrade, this patch requires the following changes:
->
->   - Removal of the `__rust_*` allocator functions, together with
->     the addition of the `__rust_no_alloc_shim_is_unstable` static.
->     See [3] for details.
->
->   - Some more compiler builtins added due to `<f{32,64}>::midpoint()`
->     that got added in Rust 1.71 [4].
->
-> # `alloc` upgrade and reviewing
->
-> The vast majority of changes are due to our `alloc` fork being upgraded
-> at once.
->
-> There are two kinds of changes to be aware of: the ones coming from
-> upstream, which we should follow as closely as possible, and the updates
-> needed in our added fallible APIs to keep them matching the newer
-> infallible APIs coming from upstream.
->
-> Instead of taking a look at the diff of this patch, an alternative
-> approach is reviewing a diff of the changes between upstream `alloc` and
-> the kernel's. This allows to easily inspect the kernel additions only,
-> especially to check if the fallible methods we already have still match
-> the infallible ones in the new version coming from upstream.
->
-> Another approach is reviewing the changes introduced in the additions in
-> the kernel fork between the two versions. This is useful to spot
-> potentially unintended changes to our additions.
->
-> To apply these approaches, one may follow steps similar to the following
-> to generate a pair of patches that show the differences between upstream
-> Rust and the kernel (for the subset of `alloc` we use) before and after
-> applying this patch:
->
->     # Get the difference with respect to the old version.
->     git -C rust checkout $(linux/scripts/min-tool-version.sh rustc)
->     git -C linux ls-tree -r --name-only HEAD -- rust/alloc |
->         cut -d/ -f3- |
->         grep -Fv README.md |
->         xargs -IPATH cp rust/library/alloc/src/PATH linux/rust/alloc/PATH
->     git -C linux diff --patch-with-stat --summary -R > old.patch
->     git -C linux restore rust/alloc
->
->     # Apply this patch.
->     git -C linux am rust-upgrade.patch
->
->     # Get the difference with respect to the new version.
->     git -C rust checkout $(linux/scripts/min-tool-version.sh rustc)
->     git -C linux ls-tree -r --name-only HEAD -- rust/alloc |
->         cut -d/ -f3- |
->         grep -Fv README.md |
->         xargs -IPATH cp rust/library/alloc/src/PATH linux/rust/alloc/PATH
->     git -C linux diff --patch-with-stat --summary -R > new.patch
->     git -C linux restore rust/alloc
->
-> Now one may check the `new.patch` to take a look at the additions (first
-> approach) or at the difference between those two patches (second
-> approach). For the latter, a side-by-side tool is recommended.
->
-> Link: https://rust-for-linux.com/rust-version-policy [1]
-> Link: https://github.com/Rust-for-Linux/linux/issues/2 [2]
-> Link: https://github.com/rust-lang/rust/pull/86844 [3]
-> Link: https://github.com/rust-lang/rust/pull/92048 [4]
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+Hi--
 
-Applied to `rust-next` -- thanks everyone!
+On 8/14/23 05:56, Yunsheng Lin wrote:
+> As more drivers begin to use the frag API, update the
+> document about how to decide which API to use for the
+> driver author.
+> 
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> CC: Lorenzo Bianconi <lorenzo@kernel.org>
+> CC: Alexander Duyck <alexander.duyck@gmail.com>
+> CC: Liang Chen <liangchen.linux@gmail.com>
+> CC: Alexander Lobakin <aleksander.lobakin@intel.com>
+> ---
+>   Documentation/networking/page_pool.rst |  4 +-
+>   include/net/page_pool/helpers.h        | 58 +++++++++++++++++++++++---
+>   2 files changed, 55 insertions(+), 7 deletions(-)
+> 
 
-As mentioned earlier, I have moved to 1.71.1 instead that got released
-meanwhile, since it does not require any changes w.r.t. this one
-except the obvious ones and it is likely the one that people would
-like to use/have (so less warnings).
+> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
+> index b920224f6584..0f1eaa2986f9 100644
+> --- a/include/net/page_pool/helpers.h
+> +++ b/include/net/page_pool/helpers.h
+> @@ -8,13 +8,28 @@
+>   /**
+>    * DOC: page_pool allocator
+>    *
+> - * The page_pool allocator is optimized for the XDP mode that
+> - * uses one frame per-page, but it can fallback on the
+> - * regular page allocator APIs.
+> + * The page_pool allocator is optimized for recycling page or page frag used by
+> + * skb packet and xdp frame.
+>    *
+> - * Basic use involves replacing alloc_pages() calls with the
+> - * page_pool_alloc_pages() call.  Drivers should use
+> - * page_pool_dev_alloc_pages() replacing dev_alloc_pages().
+> + * Basic use involves replacing napi_alloc_frag() and alloc_pages() calls with
+> + * page_pool_cache_alloc() and page_pool_alloc(), which allocate memory with or
+> + * without page splitting depending on the requested memory size.
+> + *
+> + * If the driver knows that it always requires full pages or its allocates are
 
-Cheers,
-Miguel
+                                                              allocations
+
+> + * always smaller than half a page, it can use one of the more specific API
+> + * calls:
+> + *
+> + * 1. page_pool_alloc_pages(): allocate memory without page splitting when
+> + * driver knows that the memory it need is always bigger than half of the page
+> + * allocated from page pool. There is no cache line dirtying for 'struct page'
+> + * when a page is recycled back to the page pool.
+> + *
+> + * 2. page_pool_alloc_frag(): allocate memory with page splitting when driver
+> + * knows that the memory it need is always smaller than or equal to half of the
+> + * page allocated from page pool. Page splitting enables memory saving and thus
+> + * avoid TLB/cache miss for data access, but there also is some cost to
+
+       avoids
+
+> + * implement page splitting, mainly some cache line dirtying/bouncing for
+> + * 'struct page' and atomic operation for page->pp_frag_count.
+>    *
+>    * API keeps track of in-flight pages, in order to let API user know
+>    * when it is safe to free a page_pool object.  Thus, API users
+> @@ -100,6 +115,14 @@ static inline struct page *page_pool_alloc_frag(struct page_pool *pool,
+>   	return __page_pool_alloc_frag(pool, offset, size, gfp);
+>   }
+>   
+> +/**
+> + * page_pool_dev_alloc_frag() - allocate a page frag.
+> + * @pool[in]	pool from which to allocate
+> + * @offset[out]	offset to the allocated page
+> + * @size[in]	requested size
+
+Please use kernel-doc syntax/notation here.
+
+> + *
+> + * Get a page frag from the page allocator or page_pool caches.
+> + */
+>   static inline struct page *page_pool_dev_alloc_frag(struct page_pool *pool,
+>   						    unsigned int *offset,
+>   						    unsigned int size)
+> @@ -143,6 +166,14 @@ static inline struct page *page_pool_alloc(struct page_pool *pool,
+>   	return page;
+>   }
+>   
+> +/**
+> + * page_pool_dev_alloc() - allocate a page or a page frag.
+> + * @pool[in]:		pool from which to allocate
+> + * @offset[out]:	offset to the allocated page
+> + * @size[in, out]:	in as the requested size, out as the allocated size
+
+and here.
+
+> + *
+> + * Get a page or a page frag from the page allocator or page_pool caches.
+> + */
+>   static inline struct page *page_pool_dev_alloc(struct page_pool *pool,
+>   					       unsigned int *offset,
+>   					       unsigned int *size)
+> @@ -165,6 +196,13 @@ static inline void *page_pool_cache_alloc(struct page_pool *pool,
+>   	return page_address(page) + offset;
+>   }
+>   
+> +/**
+> + * page_pool_dev_cache_alloc() - allocate a cache.
+> + * @pool[in]:		pool from which to allocate
+> + * @size[in, out]:	in as the requested size, out as the allocated size
+
+and here.
+
+> + *
+> + * Get a cache from the page allocator or page_pool caches.
+> + */
+>   static inline void *page_pool_dev_cache_alloc(struct page_pool *pool,
+>   					      unsigned int *size)
+>   {
+> @@ -316,6 +354,14 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
+>   	page_pool_put_full_page(pool, page, true);
+>   }
+>   
+> +/**
+> + * page_pool_cache_free() - free a cache into the page_pool
+> + * @pool[in]:		pool from which cache was allocated
+> + * @data[in]:		cache to free
+> + * @allow_direct[in]:	freed by the consumer, allow lockless caching
+
+and here.
+
+> + *
+> + * Free a cache allocated from page_pool_dev_cache_alloc().
+> + */
+>   static inline void page_pool_cache_free(struct page_pool *pool, void *data,
+>   					bool allow_direct)
+>   {
+
+Thanks.
+
