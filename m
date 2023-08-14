@@ -2,78 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B8F77C092
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0091A77C095
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232140AbjHNTQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 15:16:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
+        id S232158AbjHNTRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 15:17:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232246AbjHNTQa (ORCPT
+        with ESMTP id S232206AbjHNTRA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 15:16:30 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4486AA8;
-        Mon, 14 Aug 2023 12:16:29 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37EIoKLj004821;
-        Mon, 14 Aug 2023 19:16:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=ttNyqbFJz9aBBw1DYEEJ4T8HU+r0O/Q0SAe6cStAHAc=;
- b=Mv+JA4KGfoFSVXnahVzk9mIIMbmGkXxEGvfTmUyFgB3XPhm6PzoRbIUZmvO9PD3G/5sH
- WAY+kCBWYwYzxj4FQ1K9slcTRltOa3AMsMguvOhsOo+qZ23oIQSM613MghQMoysg2OV2
- fMXwBwyTO7S0LYTxnT3tyAChnb/WO87I53IvDaek7AQqtjECHFi+41fZ6QhQYXC/SgkG
- lrCZzOoKFLfO38+JU1JUqDBhn0RhEJwbYIHO87imh465kMa2bNKBox9BgGIvmECBRGgh
- gzy24m5QCyT0+YZ0sC4MBKiNsBMXMxIuuGVp2I1LUu6Qjkf0Kvfy3MxvGUthvRL+dX+i WQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3se40rmkr2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Aug 2023 19:16:24 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37EJFu1h006669
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Aug 2023 19:15:56 GMT
-Received: from [10.50.35.106] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 14 Aug
- 2023 12:15:52 -0700
-Message-ID: <8d5b117e-4743-c006-7e7b-a15bd3866e6d@quicinc.com>
-Date:   Tue, 15 Aug 2023 00:45:49 +0530
+        Mon, 14 Aug 2023 15:17:00 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B6FA8
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:16:56 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fe4cdb727cso47625955e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:16:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692040614; x=1692645414;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Zk52dSLQXvnZfsG9cL2HfOVudu1/6ehfGHh58zQ7WKc=;
+        b=WzK+v8D9fBfcGt2l2zHWaJQVsWPb5h+54DMm28xTsegwHgkSeTRz6GpZZld8gZNFpJ
+         bz8bhG4r0P0kbyyt1Fv8mToIOohdCD1qPxpbVI511WA25ZcOK9h/TxiW31/KtTy4vVl9
+         jLNSz794VBldh4CAUXtaEdaxYKUHhvnKln5SABRePzS1MRgFJu3LG8ZpC1ZICvQvuwBq
+         DBOkMklhjN06SmZh2LWKaeULJ3lOpcWPxqgMZVSkUAlcSsNI+coIPF/Ncwm5C7BrGv7g
+         YMhU5Dj4rv1Igg0cy4fQTn4vsPV2G8IuuOF+oPqmtI/3iYjckh5aLzXGnBjHt2CH8FJp
+         kw2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692040614; x=1692645414;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zk52dSLQXvnZfsG9cL2HfOVudu1/6ehfGHh58zQ7WKc=;
+        b=adJJ7TmtDaOFIoWrJW+goTxCPhpE4WE9wH1xrQNgTtUPXD/gTQLq7WQOsdEVZZ/dEQ
+         n/fZf66j6bdpsHshNBl78RrtBvRXTgGDde7s5eOez30hox02RoHcyy2p21mdHslbRhW3
+         ZglstTVqI+HJQlpEqrmIAJPzAlWjyJ8xUJqsROVFdZIyfALEclGOrdnoruNl5wySiWfL
+         HKbajMItAjUdxvR0A7QUItVlA+Pjh0oSimLzhJiBTRTtlPGlAq3DNWD/Cns/DpJIhKUn
+         9UEYoGlwzFsjplcbDr/SvNi8xTHNtr4hmG/y+Fg1PQP43geyff6gDBSCgQow1LxW/vW4
+         27Ww==
+X-Gm-Message-State: AOJu0Yxzqa6Gd30CWiuWrdKzqQrqcYwX6qUgRCMMeHK6wHeMvTVRAn0m
+        K9l5uM16q3sLSIca0sNlzmRPAg==
+X-Google-Smtp-Source: AGHT+IHjDcPCnZSFZ3J95HmdbzIaL2PJhovvSQpmTT7VnaTH2iV8HA5WTvsuus5E6GYRLw8+/p7wFQ==
+X-Received: by 2002:a7b:ca52:0:b0:3fe:2e0d:b715 with SMTP id m18-20020a7bca52000000b003fe2e0db715mr8105986wml.18.1692040614620;
+        Mon, 14 Aug 2023 12:16:54 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id 20-20020a05600c025400b003fa98908014sm18330895wmj.8.2023.08.14.12.16.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Aug 2023 12:16:54 -0700 (PDT)
+Message-ID: <a24a0b8a-ee97-e440-c67a-df315027075c@linaro.org>
+Date:   Mon, 14 Aug 2023 21:16:52 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 10/33] iris: vidc: add helper functions
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 5/5] MAINTAINERS: Add entry for Loongson-1 DWMAC
 Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
-        <andersson@kernel.org>, <mchehab@kernel.org>,
-        <hans.verkuil@cisco.com>, <linux-kernel@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
-References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
- <1690550624-14642-11-git-send-email-quic_vgarodia@quicinc.com>
- <7a727add-6aa6-fe3d-b2bd-7e0bd2f93579@linaro.org>
-From:   Dikshita Agarwal <quic_dikshita@quicinc.com>
-In-Reply-To: <7a727add-6aa6-fe3d-b2bd-7e0bd2f93579@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     Keguang Zhang <keguang.zhang@gmail.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+References: <20230812151135.1028780-1-keguang.zhang@gmail.com>
+ <20230812151135.1028780-6-keguang.zhang@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230812151135.1028780-6-keguang.zhang@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: mHSt4AP8k7IGPWxGT76IlqAZOrLgqUU5
-X-Proofpoint-GUID: mHSt4AP8k7IGPWxGT76IlqAZOrLgqUU5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-14_16,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 impostorscore=0 priorityscore=1501 spamscore=0 bulkscore=0
- mlxlogscore=853 suspectscore=0 clxscore=1015 adultscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308140179
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -84,92 +88,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/08/2023 17:11, Keguang Zhang wrote:
+> Update MAINTAINERS to add Loongson-1 DWMAC entry.
+> 
+> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> ---
+>  MAINTAINERS | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 02a3192195af..3f47f2a43b41 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14309,9 +14309,11 @@ MIPS/LOONGSON1 ARCHITECTURE
+>  M:	Keguang Zhang <keguang.zhang@gmail.com>
+>  L:	linux-mips@vger.kernel.org
+>  S:	Maintained
+> +F:	Documentation/devicetree/bindings/*/loongson,ls1x-*.yaml
+>  F:	arch/mips/include/asm/mach-loongson32/
+>  F:	arch/mips/loongson32/
+>  F:	drivers/*/*loongson1*
+> +F:	drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
 
+Since you do not add dedicated entry, just squash each part with commit
+adding this file.
 
-On 7/28/2023 11:11 PM, Konrad Dybcio wrote:
-> On 28.07.2023 15:23, Vikash Garodia wrote:
->> This implements common helper functions for v4l2 to vidc and
->> vice versa conversion for different enums.
->> Add helpers for state checks, buffer management, locks etc.
->>
->> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
->> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
->> ---
-> [...]
-> 
->> +
->> +#define is_odd(val) ((val) % 2 == 1)
->> +#define in_range(val, min, max) (((min) <= (val)) && ((val) <= (max)))
->> +#define COUNT_BITS(a, out) {       \
-> hweight.* functions?
-> 
-> [...]
-> 
-sure, will replace with hweight.
->> +
->> +const char *cap_name(enum msm_vidc_inst_capability_type cap_id)
->> +{
->> +	const char *name = "UNKNOWN CAP";
-> Perhaps it'd be worth to include the unknown cap id here
-> 
-could you please elaborate more on this.
->> +
->> +	if (cap_id >= ARRAY_SIZE(cap_name_arr))
->> +		goto exit;
->> +
->> +	name = cap_name_arr[cap_id];
->> +
->> +exit:
->> +	return name;
->> +}
-> [...]
-> 
->> +
->> +const char *buf_name(enum msm_vidc_buffer_type type)
->> +{
->> +	const char *name = "UNKNOWN BUF";
-> Similarly here
-> 
-could you please elaborate more on this.
->> +
->> +	if (type >= ARRAY_SIZE(buf_type_name_arr))
->> +		goto exit;
->> +
->> +	name = buf_type_name_arr[type];
->> +
->> +exit:
->> +	return name;
->> +}
-> [...]
-> 
->> +const char *v4l2_type_name(u32 port)
->> +{
->> +	switch (port) {
-> switch-case seems a bit excessive here.
-> 
->> +	case INPUT_MPLANE:      return "INPUT";
->> +	case OUTPUT_MPLANE:     return "OUTPUT";
->> +	}
->> +
->> +	return "UNKNOWN";
->> +}
-that's right, will fix in next version
-> [...]
-> 
-> There's some more stuff I'd comment on, but 4500 lines in a single patch
-> is way too much to logically follow.
-> 
-> Couple more style suggestions:
-> - use Reverse-Christmas-tree sorting for variable declarations
-> - some oneliner functions could possibly become preprocessor macros
-> - when printing giant debug messages, you may want to use loops
-> - make sure your indentation is in order, 100 chars per line is
->   totally fine
-> - generally inline magic hex values are discouraged, but if they're
->   necessary, the hex should be lowercase
-Nice suggestions! will take care of these comments in next version.
+Best regards,
+Krzysztof
 
-Thanks,
-Dikshita
-> 
-> Konrad
