@@ -2,101 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E088477C081
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CDBD77C0A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232088AbjHNTOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 15:14:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48516 "EHLO
+        id S231812AbjHNTUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 15:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232130AbjHNTNl (ORCPT
+        with ESMTP id S232160AbjHNTTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 15:13:41 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B611737;
-        Mon, 14 Aug 2023 12:13:23 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37EIIOwi028498;
-        Mon, 14 Aug 2023 19:13:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=nnrdZ3r7J/HzU8H3E8+H8HQ5qzDNb6HRXyZLVsbiG9M=;
- b=lTdR2BCwkn5h37dcWJUa7JubLahQuns5ISL3RqnYsO7fLs6jNPjkigHo4sOtfrpNRqPB
- vONA1qJosK5o4NdXZyOZoFo6/Xo/wahrLJ0cmP4K+HrNj+Po3Jr+nHZARL4OsTR+dyWA
- tzLGsFjUYlxeDNgQJnzSfS5jL5G1N+gPoFA5RakEFyqgxtME8oO4G5qYRpSvzeBJgzaA
- 33pdg6TCwgodpL4hmuwyx5CBkkKo0cx2UbYnoRa6a4ybMCfxo3WzPXY9OboeIc1zFk0q
- C7ZyL6xYELtrNyWnE2zBEOQUHLJ6C46oBMsl/LOVObyhTjPo4yMUe/uJjZGLMwa/Gksb 6g== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3se3j94p8r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Aug 2023 19:13:19 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37EJDIqp024074
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Aug 2023 19:13:18 GMT
-Received: from [10.50.35.106] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 14 Aug
- 2023 12:13:15 -0700
-Message-ID: <84d00a78-9a07-e0e0-bc79-cbc144083734@quicinc.com>
-Date:   Tue, 15 Aug 2023 00:43:12 +0530
+        Mon, 14 Aug 2023 15:19:47 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64CE110D0;
+        Mon, 14 Aug 2023 12:19:45 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id DB2F91F383;
+        Mon, 14 Aug 2023 19:19:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1692040783;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uWt0n5Bz0xrgGTrlj+tin8YxwC6XtAxbAwDMLF6l0Sk=;
+        b=UyIwWXyUGs3CYMnhuj7D292BIRvdFVGADTFTTH1zGs0SH8HEcvraGX7hpKcPq0AE1F/OzK
+        OE0IUcX3CG7E6WxpmtsO9N+NzCp7kGADQN8Gt7lGSpRAGPzEXGmGyKnu468lLUIhKMCwS/
+        WO4hi/jqVALJaIn754z25HosgujczAU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1692040783;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uWt0n5Bz0xrgGTrlj+tin8YxwC6XtAxbAwDMLF6l0Sk=;
+        b=QlMupPRral3SJlFUoI2qObeMewUcogwhC6OxgrOaJG0DBX8XIGe2/EB2JWT2y2vSQPM1+5
+        JyfuJsVymeI06cAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8B2EB138EE;
+        Mon, 14 Aug 2023 19:19:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id l9dKIE9+2mTOegAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Mon, 14 Aug 2023 19:19:43 +0000
+Date:   Mon, 14 Aug 2023 21:13:16 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Yikebaer Aizezi <yikebaer61@gmail.com>, clm@fb.com,
+        dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: kernel BUG in set_state_bits
+Message-ID: <20230814191316.GE2420@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <CALcu4rZGym6uSKJqgMJpSmGgiGX=8sHRrukqR85VCiEPDFddkA@mail.gmail.com>
+ <2ffff901-81fc-476e-9bcd-8d351b25e07c@gmx.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 08/33] iris: vidc: add video decoder files
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
-        <andersson@kernel.org>, <mchehab@kernel.org>,
-        <hans.verkuil@cisco.com>, <linux-kernel@vger.kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
-References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
- <1690550624-14642-9-git-send-email-quic_vgarodia@quicinc.com>
- <1dd53227-4c44-da6c-ab05-9cfaddf58dc1@linaro.org>
-From:   Dikshita Agarwal <quic_dikshita@quicinc.com>
-In-Reply-To: <1dd53227-4c44-da6c-ab05-9cfaddf58dc1@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: pzGGvLMFsCJ73CfmVJWw55loW8LfmTAx
-X-Proofpoint-GUID: pzGGvLMFsCJ73CfmVJWw55loW8LfmTAx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-14_16,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
- priorityscore=1501 mlxscore=0 adultscore=0 mlxlogscore=601 suspectscore=0
- lowpriorityscore=0 bulkscore=0 impostorscore=0 clxscore=1015 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308140178
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2ffff901-81fc-476e-9bcd-8d351b25e07c@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/28/2023 10:51 PM, Konrad Dybcio wrote:
-> On 28.07.2023 15:23, Vikash Garodia wrote:
->> This implements decoder functionalities of the driver.
->>
->> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
->> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
->> ---
-> I see a whole bunch of shifts, ANDs, etc.
+On Mon, Aug 14, 2023 at 05:31:41PM +0800, Qu Wenruo wrote:
+> On 2023/8/14 14:23, Yikebaer Aizezi wrote:
+> > Hello,
+> >
+> > When using Healer to fuzz the Linux-6.5-rc5,  the following crash
+> > was triggered.
+> >
+> > HEAD commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f (tag: v6.5-rc5)
+> > git tree: upstream
+> >
+> > console output:
+> > https://drive.google.com/file/d/1KuE7x7TW_pt_aNWWr2GAdehfYixsgeOO/view?usp=drive_link
+> > kernel config:https://drive.google.com/file/d/1b_em6R2Zl98np83b818BzE1FrxbiaGuh/view?usp=drive_link
+> > C reproducer:https://drive.google.com/file/d/1HlzFbWr3wqzlLi8I2_ZCQumS71WDLXj1/view?usp=drive_link
+> > Syzlang reproducer:
+> > https://drive.google.com/file/d/1Bu70LrWxOzsbkilELLuxo8VnjcAFiH1Y/view?usp=drive_link
+> >
+> > If you fix this issue, please add the following tag to the commit:
+> > Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
+> >
+> >
+> > memfd_create() without MFD_EXEC nor MFD_NOEXEC_SEAL, pid=8428 'syz-executor'
+> > loop1: detected capacity change from 0 to 32768
+> > BTRFS: device fsid 84eb0a0b-d357-4bc1-8741-9d3223c15974 devid 1
+> > transid 7 /dev/loop1 scanned by syz-executor (8428)
+> > BTRFS info (device loop1): using xxhash64 (xxhash64-generic) checksum algorithm
+> > BTRFS info (device loop1): disk space caching is enabled
+> > BTRFS info (device loop1): enabling ssd optimizations
+> > BTRFS info (device loop1): auto enabling async discard
+> > FAULT_INJECTION: forcing a failure.
+> > name failslab, interval 1, probability 0, space 0, times 1
+> > CPU: 0 PID: 8428 Comm: syz-executor Not tainted 6.5.0-rc5 #1
+> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> > rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> > Call Trace:
+> >   <TASK>
+> >   __dump_stack lib/dump_stack.c:88 [inline]
+> >   dump_stack_lvl+0x132/0x150 lib/dump_stack.c:106
+> >   fail_dump lib/fault-inject.c:52 [inline]
+> >   should_fail_ex+0x49f/0x5b0 lib/fault-inject.c:153
+> >   should_failslab+0x5/0x10 mm/slab_common.c:1471
+> >   slab_pre_alloc_hook mm/slab.h:711 [inline]
+> >   slab_alloc_node mm/slub.c:3452 [inline]
+> >   __kmem_cache_alloc_node+0x61/0x350 mm/slub.c:3509
+> >   kmalloc_trace+0x22/0xd0 mm/slab_common.c:1076
+> >   kmalloc include/linux/slab.h:582 [inline]
+> >   ulist_add_merge fs/btrfs/ulist.c:210 [inline]
+> >   ulist_add_merge+0x16f/0x660 fs/btrfs/ulist.c:198
+> >   add_extent_changeset fs/btrfs/extent-io-tree.c:191 [inline]
 > 
-> Please convert that to GENMASK + FIELD_PREP/FIELD_GET
+> If you checked the call site, it is doing GFP_ATOMIC allocation inside a
+> critical section.
 > 
-Sure, will explore more on this.
+> Doing such error injection without any clue is not really helping here.
+> You can even inject error to NOFAIL call sites, and everyone would not
+> really treat it serious.
+> 
+> IIRC even syzbot is no longer reporting errors with blind error
+> injection anymore.
 
-> Konrad
+Error injection makes sense for realistic errors that are hard to hit,
+the memory allocation failure injected in this case is possible but not
+realistic. Fixing it is desirable but otherwise has low priority.
