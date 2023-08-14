@@ -2,106 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD08577BD64
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A83877BD67
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbjHNPrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 11:47:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60378 "EHLO
+        id S230109AbjHNPtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 11:49:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbjHNPre (ORCPT
+        with ESMTP id S229620AbjHNPtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:47:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73F3210E3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:47:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 08EA6634DE
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 15:47:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3AA0C433C7;
-        Mon, 14 Aug 2023 15:47:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692028052;
-        bh=t1R8otRM3E6EZ1Itt7NVpdWmmwTSamBHRUIDFtKrf0k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q/ndevMRJb5n5ncJkJ3CYnQYNdkZV0xZH25Y/IgZp7pjuX9n8HoAGDXd76z9630mC
-         uAYYgjI8Eiwzx48ahKOAc1kGVfLcLQPBDUz11ZkPEIrnIVRuaYk9S28lA3/NIBaayn
-         R0sbNwHn2V5H/zFmRe8gMiMqeY5Uu89wbSM9Vl5cgsErf2Xg4zylY4zS6nP/JOk3/f
-         ciVqZp+KUbnJ5pVVyk1cEZUmxRq+z+1ShDl46yOsW9HRQa8FqFbk9C3BOk87+8WNP1
-         mAfwj1+ZvWWZIpUaHe02+FKGB0J0oANBaHDrtFV5jlkjq/H83j+SzrSLI02pdtUYKg
-         8PCWesEzXvi1Q==
-Date:   Mon, 14 Aug 2023 08:47:30 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Peter Xu <peterx@redhat.com>, lkp@intel.com
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        "Huang, Ying" <ying.huang@intel.com>
-Subject: Re: Cannot find symbol for section 69: .text.arch_max_swapfile_size.
-Message-ID: <20230814154730.GA3072@dev-arch.thelio-3990X>
-References: <202308120906.Efohswpa-lkp@intel.com>
- <ZNpKaiweCbf9i5QS@x1n>
+        Mon, 14 Aug 2023 11:49:11 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA46DDD
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:49:10 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-686daaa5f1fso3001933b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:49:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20221208.gappssmtp.com; s=20221208; t=1692028150; x=1692632950;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MYiTF3LUp//kvce+GMZR6GgGsS/cIG7u9YAsbVgnE+s=;
+        b=FoBT58iuObS+7FtaiTCVYKf0gb58OCOL9TQyNx59olDICau3OkAaiZU3R11DH8AgqS
+         WY5Z38rWUcf6/SrYBiQiDZ61rdcYGQwl3hJSHu//WPlfKoq4w8iJJbdMElqGbrG3CTmv
+         ZwdTCCcv30/xj3GL5qzO6V50yEhhPKbmVI7jmOtqDUEnDtWvRY1I1F6WI2S2TdJTDPdb
+         ijBLvH1T3EysM8lHMQknd56GY02j9mJo0At4XDe6rI76hAMhKldgwwcSzL/XKKlvcLhR
+         LaYBbrftKSEkz9EsS2FCgItLbXecNjouDuYzTtVEUSIQqQIbJUdgeHZHB39x/6g7u58q
+         xXWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692028150; x=1692632950;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MYiTF3LUp//kvce+GMZR6GgGsS/cIG7u9YAsbVgnE+s=;
+        b=Br0HJ+kXPOSsiKFJNJtWHK9LYllyfqzv+fHIh9xthf1LZCERg/n/sVCU0Z1TEshXlo
+         FHiTvw2J7GC1+XX4HbXXjy7NOn1oP4c+wB0hbnIC4oAd1LNIak9nT+XrIJnqDvotscCx
+         /lJ7L3BNdcAdstTXJQAqiNKlLdkpJ53tMYWwY8/1mnm1gBR59ww2/pZllW4QEhyewUHP
+         UmRrImwhSbyphBuHZij72R4t7X/ItpJ1YAfkLL2cZX+0l6sXWX+N8qqLQy+0rGWhScwT
+         GSWrdhGdynRjoBhVmhTr+mO+IaP0ZFK6ZnAIdt04AdQR76MS9stftQ+x9tACnh6w6g2e
+         szGA==
+X-Gm-Message-State: AOJu0YwUe7nT+C2v+jrh6q1JIuhV/Y4nh80KV9OdDkD2DG4FlBmmGXkZ
+        FdfPQ57P+KH01qvo9+VAOsiXQw==
+X-Google-Smtp-Source: AGHT+IHDRkUwKePnso/znzWYdzs8w4Ckkub/nNx11D5ZuAZF7ZXCNDr91URmH2E26oA10zI+aZPFCQ==
+X-Received: by 2002:a05:6a20:8406:b0:140:ef2a:9b75 with SMTP id c6-20020a056a20840600b00140ef2a9b75mr11090240pzd.61.1692028150113;
+        Mon, 14 Aug 2023 08:49:10 -0700 (PDT)
+Received: from hermes.local (204-195-127-207.wavecable.com. [204.195.127.207])
+        by smtp.gmail.com with ESMTPSA id l4-20020a639844000000b00565b8e0798csm2462389pgo.57.2023.08.14.08.49.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 08:49:09 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 08:49:07 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Francois Michel <francois.michel@uclouvain.be>
+Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 2/3] [PATCH 2/3] netem: allow using a seeded
+ PRNG for generating random losses
+Message-ID: <20230814084907.18c339c2@hermes.local>
+In-Reply-To: <20230814023147.1389074-3-francois.michel@uclouvain.be>
+References: <20230814023147.1389074-1-francois.michel@uclouvain.be>
+        <20230814023147.1389074-3-francois.michel@uclouvain.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNpKaiweCbf9i5QS@x1n>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 11:38:18AM -0400, Peter Xu wrote:
-> On Sat, Aug 12, 2023 at 09:11:33AM +0800, kernel test robot wrote:
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > head:   190bf7b14b0cf3df19c059061be032bd8994a597
-> > commit: be45a4902c7caa717fee6b2f671e59b396ed395c mm/swap: cache maximum swapfile size when init swap
-> > date:   11 months ago
-> > config: mips-randconfig-r014-20230811 (https://download.01.org/0day-ci/archive/20230812/202308120906.Efohswpa-lkp@intel.com/config)
-> > compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-> > reproduce: (https://download.01.org/0day-ci/archive/20230812/202308120906.Efohswpa-lkp@intel.com/reproduce)
-> > 
-> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> > the same patch/commit), kindly add following tags
-> > | Reported-by: kernel test robot <lkp@intel.com>
-> > | Closes: https://lore.kernel.org/oe-kbuild-all/202308120906.Efohswpa-lkp@intel.com/
-> > 
-> > All errors (new ones prefixed by >>):
-> > 
-> > >> Cannot find symbol for section 69: .text.arch_max_swapfile_size.
-> >    mm/swapfile.o: failed
-> 
-> Hmm.. I don't really know what's the issue here, neither can I reproduce
-> this locally - the cross build seems to all work with the reproducer and I
-> can see mm/swapfile.o correctly generated.
+On Mon, 14 Aug 2023 04:31:39 +0200
+Francois Michel <francois.michel@uclouvain.be> wrote:
 
-This is https://github.com/ClangBuiltLinux/linux/issues/1830 and
-https://github.com/ClangBuiltLinux/linux/issues/981, which is a bug in
-recordmcount with regards to section symbols that occurs when building
-with clang's integrated assembler. It happens when the there are only
-weak symbols in a .text section, which occurs more often with MIPS due
-to LD_DEAD_CODE_DATA_ELIMINATION implying -ffunction-sections (i.e., any
-__weak symbol will trigger this) and I can see this randconfig setting
-it.
+> +/* netem_get_random_u32 - polls a new random 32-bits integer from
+> + * the prng.
+> + * Uses a deterministic seeded prng if p->deterministic_rng is true.
+> + * Uses get_random_u32() underneath if p is NULL or if p->deterministic_=
+rng
+> + * is false.
+> + */
+> +static u32 netem_get_random_u32(struct prng *p)
 
-Unfortunately, the robot seems to have tripped over this a lot over the
-weekend :/ Intel folks, can this type of warning please be added to your
-filter for at least MIPS + LD_DEAD_CODE_DATA_ELIMINATION so that people
-don't get bothered?
+Overall I am fine with this patch, but the function name is getting excessi=
+vely
+long. It is a local function, so no need for netem_ prefix.
 
-https://lore.kernel.org/202308121810.APAJIBxn-lkp@intel.com/
-https://lore.kernel.org/202308121535.otQuZept-lkp@intel.com/
-https://lore.kernel.org/202308121810.APAJIBxn-lkp@intel.com/
-https://lore.kernel.org/202308121246.0TYkHC1K-lkp@intel.com/
-https://lore.kernel.org/202308120553.IRzzfaXL-lkp@intel.com/
-https://lore.kernel.org/202308111956.QRc8XJVr-lkp@intel.com/
+Checking for p =3D=3D NULL is redundant, all callers are passing a valid po=
+inter.
 
-Cheers,
-Nathan
+For logical consistency, put the new wrapper before init_crandom() and afte=
+r netem_skb_cb().
+
+Since this is not security related, the change could also be simplified to =
+just
+always prandom_u32_state() and initialize the state on first use with eithe=
+r=20
+get_random or provided seed.  This would also simplify the code around stor=
+ing
+original seed and boolean.
+
+Reminds me of the quote attributed to Mark Twain:
+=E2=80=9CI apologize for such a long letter - I didn't have time to write a=
+ short one.=E2=80=9D
