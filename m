@@ -2,308 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 406AA77BF97
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 20:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DF1677BF9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 20:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbjHNSNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 14:13:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58092 "EHLO
+        id S230441AbjHNSNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 14:13:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231360AbjHNSM4 (ORCPT
+        with ESMTP id S230508AbjHNSN0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 14:12:56 -0400
-Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20F31BD
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 11:12:54 -0700 (PDT)
-Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1a1fa977667so3619223fac.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 11:12:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692036773; x=1692641573;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8y7m8mVXPBvCJUohO0isZKMbqlhr4Ta+xAXjRe1GD4k=;
-        b=Wh2gNTiViCBPcsHehCRxnz7D8RH+7zJoFSJD5jWU4hEe7ejoAyai/y6w9iWjRjNwq1
-         0+wVSOTGtM2g7jE5BBu0KU50QuVbmj7lIbLu+cy4Yv6tNZ79ISXQBGu1/P1X8mxMobLj
-         ewn3ivb+cjfymslohz2Brhz9/FZ0lF8gMvjOx+PK/tGyGS94AnLufR6qGHpoTGEZPZKG
-         tcB2bTP86vk5CUhlUpguMX/QUvoLOkbOButCyCK1z7o3xgRRvJtzq7Q/Bz8XMXN+W3ct
-         UnE9I/vLEAQjk7roa9g1sru09leD+5WNxVfxbXi7MTiVrqKgAuh0LrryeL9gdoRjf54e
-         tGtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692036773; x=1692641573;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8y7m8mVXPBvCJUohO0isZKMbqlhr4Ta+xAXjRe1GD4k=;
-        b=G8kFHi76Wddls+3KB1OXG9ihwPVSgjXOXc3fXcEaLMFVczeZ3DDy9g9KQikD6vPToh
-         yi7EYkiF+NyHMtzSguM8K55LPZdoMJByJn8jH3iWeruIBZwu+W+stV8DEYFpwP01j0br
-         giMSuop6o5UplbtbU80jteA9gooizjT547g7VpXbDJt5GyBrTgcbFJWWR1p57Ltyplqc
-         isKuIucTgIK5WqeoqnJWsVF4xousoct95vPRvWeYOgHXeEs6X7v/RMQA+/LIpumMZTKt
-         mm9TFHcj4CRu/etdIjZzGIwS2MbwAr+42Ast+DNnrKmP9fFT5LKZNC7PPkNHtYRCnrsq
-         qBbA==
-X-Gm-Message-State: AOJu0YyA7la+brduOKhZ6TP3LY6RlJjkoBJmtZcL2iRuYRL9zp/HavPO
-        rkM+GqinqP2Iq2HTbZF9PJyZzw==
-X-Google-Smtp-Source: AGHT+IEE3lvLDiYiLhU5iKzgoVQEt2R66USH/QzAbUEpFRMhW8/U8wI1VGJfr7Ca/08zzbqYkmddIg==
-X-Received: by 2002:a05:6871:821:b0:1b0:293e:f8f3 with SMTP id q33-20020a056871082100b001b0293ef8f3mr12692158oap.53.1692036773399;
-        Mon, 14 Aug 2023 11:12:53 -0700 (PDT)
-Received: from [192.168.17.16] ([149.19.169.25])
-        by smtp.gmail.com with ESMTPSA id z4-20020a0568301da400b006b8c277be12sm4507898oti.8.2023.08.14.11.12.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 11:12:52 -0700 (PDT)
-Message-ID: <b2145971-5417-e1b1-40b4-f971e247e1ea@linaro.org>
-Date:   Mon, 14 Aug 2023 12:12:50 -0600
+        Mon, 14 Aug 2023 14:13:26 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371651BD;
+        Mon, 14 Aug 2023 11:13:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nSRsOmC6aS/6u6USMcK1kDadLx1k5DSlyOXPmv47ydRt2dzId5olpYp6EnfxxyI57S4EPbzq7HRzjVVb3GY+0HAABS4MwVAYtPP/uq07zZCfSBLy8bzijdfguKq3TDinCqT049CysxcPVsx0zGcOvyTES+EsuD6k57a8dFnZ1MV5Gw1YwwSYgreLDdouqRwHRVK0nT8fZHhy8b/p0iNL4NVYLOxMPZXZReqQ3jZ+zSVmH+DJQ+/WREOKmlP1Avv4nAPr2tgA7DRNkeuL3e60Y8Y+IJiOIvqRTSe5o7JO9cdzyeSKYzokJRzrlaRb5cGRzlcYRPiSiwcDpt7xT0vhDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bmx3mmqYHk3Tlh7R9QgMjHV+nPHbGYE+uKpySGyffz4=;
+ b=iXe2Ri3pEoRH1pvq5HvC0Dey9Z5t6bZwNkJ2eAfjQVV73zDjEmc2J277ociPfRW+D9l82V52JsmbjUg4zAW39RXyPVOJHa8r9XNwPDLlzi7p9tYhsctbWgiG7B6HnKybmCKv+N+F7bgPebr66qvHTgPSK4gzbGTzz5NT9UNMziSAJ/8fe32PpZt00dmS0QrQGM0FpShqJFJ7hZxfKEsFkA7SQQCcxMcufJh5JJpsnRVMPkpezM82X9N+LRBaMjPNHrsmQACPW+lSX49XzNNipWLoIC//R0assxG4thL4z4hDUStMU2UmEZ+zFPGUPO5oJgPLaslW+raAzE0nUmlzRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bmx3mmqYHk3Tlh7R9QgMjHV+nPHbGYE+uKpySGyffz4=;
+ b=drfKPC2X7PX4U5gbq921OeHlsbOldTzOQ+bWmmDqXo3a2X4Qy0x0NW6S1lsM1CMIgtHExsr9UPQqhmyEe79/1djRBQVTOUYAQl4L5HYijNFexsH+5TKaQuChd5IEoa5Gibjf+XXZ0/DJAk3N79UllUyjj+nZmkGCQbq0xfhE64zqHgmIhmATqCUgaJc22yLKykZTld3z6dAvP78vgjpsST9vTlqA/fd+jc5yDny4tIVUEpY0FXv+dhmCODh4VHVeuMGuDPAOprkPCm5mNvNHuUjqVRcPPI0C6yl8y6H3nHmd3e2x4dQ9sfWUokRvjkuACD+Drby45XAlJtFtCOB4WA==
+Received: from MW4P223CA0014.NAMP223.PROD.OUTLOOK.COM (2603:10b6:303:80::19)
+ by DM4PR12MB5963.namprd12.prod.outlook.com (2603:10b6:8:6a::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6678.26; Mon, 14 Aug 2023 18:13:23 +0000
+Received: from CO1PEPF000042AC.namprd03.prod.outlook.com
+ (2603:10b6:303:80:cafe::c0) by MW4P223CA0014.outlook.office365.com
+ (2603:10b6:303:80::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.33 via Frontend
+ Transport; Mon, 14 Aug 2023 18:13:22 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ CO1PEPF000042AC.mail.protection.outlook.com (10.167.243.41) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.12 via Frontend Transport; Mon, 14 Aug 2023 18:13:22 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Mon, 14 Aug 2023
+ 11:13:08 -0700
+Received: from [10.41.21.79] (10.126.231.37) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Mon, 14 Aug
+ 2023 11:13:05 -0700
+Message-ID: <17b11665-874a-5b06-bc97-70f5202f238b@nvidia.com>
+Date:   Mon, 14 Aug 2023 23:43:02 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 6.4 000/206] 6.4.11-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        nathan@kernel.org, peterz@infradead.org
-References: <20230813211724.969019629@linuxfoundation.org>
+ Thunderbird/102.11.0
+Subject: Re: [Patch] cpufreq: tegra194: remove opp table in exit hook
 Content-Language: en-US
-From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-In-Reply-To: <20230813211724.969019629@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <rafael@kernel.org>, <treding@nvidia.com>, <jonathanh@nvidia.com>,
+        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bbasu@nvidia.com>,
+        Sumit Gupta <sumitg@nvidia.com>
+References: <20230809153455.29056-1-sumitg@nvidia.com>
+ <20230810053127.y4wmumlggkro7r66@vireshk-i7>
+From:   Sumit Gupta <sumitg@nvidia.com>
+In-Reply-To: <20230810053127.y4wmumlggkro7r66@vireshk-i7>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.126.231.37]
+X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000042AC:EE_|DM4PR12MB5963:EE_
+X-MS-Office365-Filtering-Correlation-Id: a52a14df-c6d0-4e6d-7646-08db9cf22558
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QQyG6/Yo2rPOFXVVhTMaHeDlyYb3s8Ds4/dCbttuRKoiimrs7WUhsoSHjTmhnn0qSl/6mZolpQbfOem06XOAo1O1wykpA4ze+C7Ipg+eogZmYSG+92e3nYYB0EXevFwFqqYxaEzUvKxawIW2NyDYcxHl6aI8DFaRcXj2+FJ0gVrSnSMHreFmCqaXHg71wMdzrH9DYM9JKCG4Vj96SijDIMe/bfgN+7KByrNeSBPd5ldR/cA8RtIVCIiHT+czrCe1vQ403OgwPHhCibUO+dj2sLG5ki58BjFONuMIh3TEOz8PAnUwj4GRqIjxVr052Bsey/Ldnb64xadjbHjexyh5Dk+TfBX5Au+2wcaZKAmd0XuNoDRaF5KHRefZFoTOEiz8MvPk+T7BRlmBRd/mhofIgcAmm4aByma9K7Aro8MtZgje8mtWG0Hba1yoVvPV4FYTJrBD5UbwVmBIjL5n4ihD++Kb1k3jVU3r7gWcM9OTTFOapjXR56uW2SKjmJ8mCwT5JTt+RlpXokjhIacb/fZIrzvmSm7tQZoXpLiDQWhxoABVvpoTkdLirD9STn9Ihby1DeY1kYB/g7VS/kmMUGFVYZuO17H5ZZh3pjuoWXU87BCoX0bpz913aQdQiUUMDF/81ukHiCxVCr123zBQ2fcierNsyB8o0PC0qa9cHN2QAUh3LD0YO/TL+1WeZzC/TwmWeOyON/tTtETSnQhtsIsM6QuunVhqZ7Pe9kyvFp5vRzaPZPpHxTLQxi/rppyvszLoZxQHQ7iXJ5AJ8CYT0yeiOg==
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(396003)(376002)(39860400002)(1800799006)(186006)(82310400008)(451199021)(46966006)(40470700004)(36840700001)(107886003)(16526019)(53546011)(26005)(336012)(8936002)(41300700001)(70206006)(70586007)(8676002)(316002)(16576012)(36860700001)(31686004)(2616005)(47076005)(426003)(83380400001)(40460700003)(478600001)(40480700001)(54906003)(31696002)(36756003)(6666004)(86362001)(6916009)(4326008)(82740400003)(7636003)(356005)(5660300002)(2906002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 18:13:22.4692
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a52a14df-c6d0-4e6d-7646-08db9cf22558
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000042AC.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5963
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-We see this warning on x86 (real machine and Qemu) with Clang:
-
------8<-----
-   [    1.364590] ------------[ cut here ]------------
-   [    1.364685] missing return thunk: __ret+0x5/0x7e-__ret+0x0/0x7e: e9 f6 ff ff ff
-   [    1.364691] WARNING: CPU: 0 PID: 0 at arch/x86/kernel/alternative.c:630 apply_returns+0x2c9/0x420
-   [    1.366684] Modules linked in:
-   [    1.367685] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.4.11-rc1 #1
-   [    1.368684] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS 2.0b 07/27/2017
-   [    1.369685] RIP: 0010:apply_returns+0x2c9/0x420
-   [    1.370685] Code: ff ff 0f 0b e9 b5 fd ff ff c6 05 a8 97 fa 01 01 48 c7 c7 e6 b5 9f a7 4c 89 ee 4c 89 e2 b9 05 00 00 00 4d 89 e8 e8 57 c2 11 00 <0f> 0b e9 8d fd ff ff 4d 85 e4 0f 84 1f ff ff ff 48 c7 c7 bf 44 98
-   [    1.371684] RSP: 0000:ffffffffa7c03e00 EFLAGS: 00010246
-   [    1.372684] RAX: 8bcba40230adee00 RBX: ffffffffa8150ba4 RCX: ffffffffa7c72440
-   [    1.373684] RDX: ffffffffa7c03c88 RSI: 00000000ffffdfff RDI: 0000000000000001
-   [    1.374684] RBP: ffffffffa7c03ed8 R08: 0000000000001fff R09: ffffffffa7c726d0
-   [    1.375684] R10: 0000000000005ffd R11: 0000000000000004 R12: ffffffffa7182140
-   [    1.376684] R13: ffffffffa7182145 R14: ffffffffa8150b9c R15: ffffffffa71821f0
-   [    1.377684] FS:  0000000000000000(0000) GS:ffff8adb1fc00000(0000) knlGS:0000000000000000
-   [    1.378684] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-   [    1.379684] CR2: ffff8ad8b7001000 CR3: 00000001f6640001 CR4: 00000000003706f0
-   [    1.380684] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-   [    1.381684] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-   [    1.382684] Call Trace:
-   [    1.383685]  <TASK>
-   [    1.384685]  ? show_regs+0x61/0x70
-   [    1.385685]  ? __warn+0xce/0x1d0
-   [    1.386684]  ? apply_returns+0x2c9/0x420
-   [    1.387685]  ? report_bug+0x160/0x210
-   [    1.388685]  ? handle_bug+0x41/0x70
-   [    1.389684]  ? exc_invalid_op+0x1f/0x50
-   [    1.390685]  ? asm_exc_invalid_op+0x1f/0x30
-   [    1.391684]  ? srso_safe_ret+0x30/0x30
-   [    1.392685]  ? __ret+0x5/0x7e
-   [    1.393684]  ? zen_untrain_ret+0x1/0x1
-   [    1.394685]  ? apply_returns+0x2c9/0x420
-   [    1.395685]  ? __ret+0x5/0x7e
-   [    1.396684]  ? __ret+0x14/0x7e
-   [    1.397684]  ? __ret+0xa/0x7e
-   [    1.398685]  alternative_instructions+0x50/0x120
-   [    1.399685]  arch_cpu_finalize_init+0x30/0x60
-   [    1.400684]  start_kernel+0x30e/0x3e0
-   [    1.401685]  x86_64_start_reservations+0x28/0x30
-   [    1.402684]  x86_64_start_kernel+0xaf/0xc0
-   [    1.403685]  secondary_startup_64_no_verify+0x107/0x10b
-   [    1.404685]  </TASK>
-   [    1.405685] ---[ end trace 0000000000000000 ]---
------8>-----
-
-Full log here of one of those instances:
-   https://lkft.validation.linaro.org/scheduler/job/6664660#L671
-
-There is a ClangBuiltLinux issue addressing this [1]. Nathan refers Peter's second patch [2] in his series fixes this problem.
-
-This was introduced in v6.4.9 (which we did not review). Clang builds failed for v6.4.10 [3][4] and are now fixed, so this is the first time we're seeing this warning.
-
-Rest of the report as follows:
-
-## Build
-* kernel: 6.4.11-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.4.y
-* git commit: 427a3a47257b870ef6dce995a40bb7aca1bfc6ec
-* git describe: v6.4.10-207-g427a3a47257b
-* test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.4.y/build/v6.4.10-207-g427a3a47257b
-
-## Test Regressions (compared to v6.4.10)
-* x86, log-parser-boot
-   - check-kernel-warning
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## No metric regressions (compared to v6.4.10)
-
-## Test Fixes (compared to v6.4.10)
-* x86_64, build
-   - clang-17-allmodconfig
-   - clang-17-lkftconfig
-   - clang-17-lkftconfig-compat
-   - clang-17-lkftconfig-kcsan
-   - clang-17-lkftconfig-no-kselftest-frag
-   - clang-17-x86_64_defconfig
-   - clang-lkftconfig
-   - clang-nightly-lkftconfig
-   - clang-nightly-lkftconfig-kselftest
-   - clang-nightly-x86_64_defconfig
-
-## No metric fixes (compared to v6.4.10)
-
-## Test result summary
-total: 172870, pass: 149103, fail: 3038, skip: 20556, xfail: 173
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 145 total, 144 passed, 1 failed
-* arm64: 54 total, 52 passed, 2 failed
-* i386: 41 total, 40 passed, 1 failed
-* mips: 30 total, 28 passed, 2 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 38 total, 36 passed, 2 failed
-* riscv: 26 total, 24 passed, 2 failed
-* s390: 16 total, 14 passed, 2 failed
-* sh: 14 total, 12 passed, 2 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 46 total, 45 passed, 1 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
 
 
-Greetings!
+On 10/08/23 11:01, Viresh Kumar wrote:
+> External email: Use caution opening links or attachments
+> 
+> 
+> On 09-08-23, 21:04, Sumit Gupta wrote:
+>> Add exit hook and remove OPP table when all the CPU's in a policy
+>> are offlined. It will fix the below error messages when onlining
+>> first CPU from a policy whose all CPU's were previously offlined.
+>>
+>>   debugfs: File 'cpu5' in directory 'opp' already present!
+>>   debugfs: File 'cpu6' in directory 'opp' already present!
+>>   debugfs: File 'cpu7' in directory 'opp' already present!
+>>
+>> Fixes: f41e1442ac5b ("cpufreq: tegra194: add OPP support and set bandwidth")
+>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+>> ---
+>>   drivers/cpufreq/tegra194-cpufreq.c | 13 +++++++++++++
+>>   1 file changed, 13 insertions(+)
+>>
+>> diff --git a/drivers/cpufreq/tegra194-cpufreq.c b/drivers/cpufreq/tegra194-cpufreq.c
+>> index c90b30469165..66a9c23544db 100644
+>> --- a/drivers/cpufreq/tegra194-cpufreq.c
+>> +++ b/drivers/cpufreq/tegra194-cpufreq.c
+>> @@ -454,6 +454,8 @@ static int tegra_cpufreq_init_cpufreq_table(struct cpufreq_policy *policy,
+>>                if (ret < 0)
+>>                        return ret;
+>>
+>> +             dev_pm_opp_put(opp);
+>> +
+>>                freq_table[j].driver_data = pos->driver_data;
+>>                freq_table[j].frequency = pos->frequency;
+>>                j++;
+>> @@ -508,6 +510,16 @@ static int tegra194_cpufreq_init(struct cpufreq_policy *policy)
+>>        return 0;
+>>   }
+>>
+>> +static int tegra194_cpufreq_exit(struct cpufreq_policy *policy)
+>> +{
+>> +     struct device *cpu_dev = get_cpu_device(policy->cpu);
+>> +
+>> +     dev_pm_opp_remove_all_dynamic(cpu_dev);
+>> +     dev_pm_opp_of_cpumask_remove_table(policy->related_cpus);
+>> +
+>> +     return 0;
+>> +}
+>> +
+>>   static int tegra194_cpufreq_set_target(struct cpufreq_policy *policy,
+>>                                       unsigned int index)
+>>   {
+>> @@ -535,6 +547,7 @@ static struct cpufreq_driver tegra194_cpufreq_driver = {
+>>        .target_index = tegra194_cpufreq_set_target,
+>>        .get = tegra194_get_speed,
+>>        .init = tegra194_cpufreq_init,
+>> +     .exit = tegra194_cpufreq_exit,
+>>        .attr = cpufreq_generic_attr,
+>>   };
+> 
+> If it is only about hotplugging of the CPUs, then you can also do this I guess.
+> 
+> commit 263abfe74b5f ("cpufreq: dt: Implement online/offline() callbacks")
+> 
+> But since your driver is capable of being built as a module, I suggest you try
+> to build it as one and insert remove it multiple times. It must cause you some
+> trouble as you don't implement an .exit() before this patch.
+> 
+> Eventually, I think you need to do both, what this patch and 263abfe74b5f do.
+> Just that the reasons need to be correct for both the changes.
+> 
+> --
+> viresh
 
-Daniel Díaz
-daniel.diaz@linaro.org
+Hi Viresh,
+I got the same message on inserting and removing the module multiple 
+times as you suggested. After applying this change, the message is not 
+coming. So, the current change is resolving both scenarios as 
+__cpufreq_offline() calls either exit() or offline().
+I can update the commit message to mention both scenarios and keep 
+change as it is?
 
-[1] https://github.com/ClangBuiltLinux/linux/issues/1911
-[2] https://lore.kernel.org/20230809072200.543939260@infradead.org/
-[3] https://lore.kernel.org/stable/CA+G9fYuoajK0n7RNhSqm-ycO6Md3W4ah_Sc=b_KVAQwY=Rt6YQ@mail.gmail.com/
-[4] https://github.com/ClangBuiltLinux/linux/issues/1907
+   cpufreq_remove_dev
+   |-__cpufreq_offline
+   |--tegra194_cpufreq_exit
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
+   cpuhp_cpufreq_offline
+   |-__cpufreq_offline
+   |--tegra194_cpufreq_exit
+
+Thank you,
+Sumit Gupta
