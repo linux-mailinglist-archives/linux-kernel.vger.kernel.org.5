@@ -2,220 +2,408 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A298E77AFEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 05:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 611ED77AFF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 05:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231786AbjHNDPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 23:15:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
+        id S232724AbjHNDXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 23:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232758AbjHNDO6 (ORCPT
+        with ESMTP id S231410AbjHNDWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 23:14:58 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A05E73
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 20:14:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691982897; x=1723518897;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=R1X3m98LDPGIuqulDEzV8AyKx5iz1WzdA+/v284QvUg=;
-  b=DE6VyMXu7qfN/c9Qswtzzu+Y4bTCUr7cD85FHOgpW+vxxL5441O98fJC
-   tERjabZW2ayd148nzktc53/4s4pb9B8IpCssAoY78iO1aSLaT4g/VipTE
-   GPolUy5+8OW/w015X10JCHJr1JoD9o5Wyzdh9rHAcOhgb6FITthXeTA0D
-   1vvKMgEeJ7l6BvPBFljCpS69NAixro2nku3QzP8Eam96YN6MCW1VsZg2M
-   bql4CLtVs5QFn9si5wckwh4E54I/XFX9hJImE9cFuZYPfbhhOte0zwEPK
-   sUAvXF7C+wYJL//Y3IrCPjiwfj/wKVBU1IjsI3Nw3olD3X9iQqGpGJtN8
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="370852344"
-X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
-   d="scan'208";a="370852344"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2023 20:14:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="803314209"
-X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
-   d="scan'208";a="803314209"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga004.fm.intel.com with ESMTP; 13 Aug 2023 20:14:47 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+        Sun, 13 Aug 2023 23:22:43 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4943EA6;
+        Sun, 13 Aug 2023 20:22:40 -0700 (PDT)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RPKR76ByJzVk0d;
+        Mon, 14 Aug 2023 11:20:35 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sun, 13 Aug 2023 20:14:47 -0700
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Sun, 13 Aug 2023 20:14:46 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Sun, 13 Aug 2023 20:14:46 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.174)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Sun, 13 Aug 2023 20:14:46 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XZC1rryfN4Xhz7muYBmxYtuaD+yzz/N8F0BGz61pxiCjIt7WOJqJQAfm5Sn5xNbtEe+jGyo+om6kuMie6TyTF89W9URXb/mYpsZ8xOF9Fc0oInhkI6/Vseimo03IDh/2zmxH8OzPLyAVL4dH/4nV2jO5PdrwOUQ4BOPQgRn3VyvWUc6GxXZHB081cX35Pv6dWsCAUSGHxLUBl+zogJEQ0AERFDB5hGbbeE3DiNo6IovxZ8sjINRMTi6dCXeZmY2LyWynSMlV9h4JCesaeA/grwZ0ty35eWcsQ72TgaAEBM/cS6rKPsCJQmEsyQEb4f6RhoY9sKvK8nxpHZ/CfbRi6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3LjRtnqxYT/Xtjq6//cL/ZO4DD5X2cDzEcRBKAcFinY=;
- b=Qw0ZEULa02RBmDxZo1BB3bWXhk/RPAg4Bcpco85ouf7JicyKp4kYrCk+3FDKXM9CReRY7IT52qeLeFX/4eYYGcFPTLrWHoCPNKKekGh0Qr4LszZTxy2lxLMK2a3i3OaEaO6CzglpgVXnGRTf4Wpkhg+r+lR8Is1g8AFnWrKX78WWOLkfwhQe28qgmLuAuixmfe/0H4CsN9f2eGbbG9Njr7J17Aaa4dxqH3TsodPP9f5W/1YwotYgXptYmPWVrP4lnrP1SblX/VvYSQoAnJOzf34H+KOi4Bj3jvIFw2MV9y8RMJ+ujB/pT414V6KVshgo7MgCiFj4+HI2K0pzQPFc+w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BYAPR11MB3062.namprd11.prod.outlook.com (2603:10b6:a03:92::18)
- by CH3PR11MB8364.namprd11.prod.outlook.com (2603:10b6:610:174::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.24; Mon, 14 Aug
- 2023 03:14:44 +0000
-Received: from BYAPR11MB3062.namprd11.prod.outlook.com
- ([fe80::9a8d:9d34:4af2:f2e5]) by BYAPR11MB3062.namprd11.prod.outlook.com
- ([fe80::9a8d:9d34:4af2:f2e5%6]) with mapi id 15.20.6678.022; Mon, 14 Aug 2023
- 03:14:44 +0000
-Date:   Mon, 14 Aug 2023 11:14:32 +0800
-From:   Aaron Lu <aaron.lu@intel.com>
-To:     Zhang Rui <rui.zhang@intel.com>
-CC:     <mingo@redhat.com>, <peterz@infradead.org>,
-        <vincent.guittot@linaro.org>, <linux-kernel@vger.kernel.org>,
-        <tj@kernel.org>, <srinivas.pandruvada@intel.com>
-Subject: Re: [PATCH] sched/fair: Skip cpus with no sched domain attached
- during NOHZ idle balance
-Message-ID: <20230814031432.GA574314@ziqianlu-dell>
-References: <20230804090858.7605-1-rui.zhang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230804090858.7605-1-rui.zhang@intel.com>
-X-ClientProxiedBy: SI1PR02CA0025.apcprd02.prod.outlook.com
- (2603:1096:4:1f4::13) To BYAPR11MB3062.namprd11.prod.outlook.com
- (2603:10b6:a03:92::18)
+ 15.1.2507.31; Mon, 14 Aug 2023 11:22:37 +0800
+Message-ID: <d5a1fcfa-24b6-5c18-c899-1de19292d3bb@huawei.com>
+Date:   Mon, 14 Aug 2023 11:22:37 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3062:EE_|CH3PR11MB8364:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1a764ceb-9d50-4407-c299-08db9c749b17
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TEY5QkEKyJ9yGWQhL0dNs1/qu212BBMDP0TTFYH/nAnMfrfZ1CZaXIdZTw9NN5n6+6/2ovbH+0b2kqMbLBGNBvspiF2Rbd3kMeoLGudqLahRK+QIXYyBvQWTuU+b2z6LlVc1tcZiAdHT++Vw+s9MepQvwVkKJkh5VFD4gtulRLAp3sPiD6ioXhgcbjM9wgjNbQWCvwlMlg3HyyyWcXBnLvmlVltIMxQA4ytMLoIYLyFT99jTiRhvzKEtgw2kv6vR1RzPKM1AQ3YVucBdXaxF5ROWWlgDYjmrhSMoeeR2I0u9ZIHZOg1X6HS0ykb28Lb0H2cyuKdkwxpfw5/MmFBkf9f2zAckBFQE7/2jUBepdH/SUXxzX1YKarvqT2af/xeX9YASBsiScBuhvaLoOOtoYyyFgTBN0+bGeR8mHRNXo8hg/2RWkUwkTrApplkWtYRUJh8Bl15A00AoR0cxGyuByqkydZYzOBjCghBBV5IwZuJk0+NqZAE9Kv5GVHQ68ypNalbPo8dn4geZpCXg4VAffA2U5g1Q98u7lmAmFihFYR9xL1fo9sz9Mq0YPhty4eI/
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3062.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(376002)(366004)(39860400002)(346002)(396003)(136003)(451199021)(186006)(1800799006)(86362001)(9686003)(6512007)(107886003)(6666004)(6486002)(6506007)(38100700002)(33656002)(33716001)(82960400001)(26005)(1076003)(83380400001)(6636002)(66946007)(2906002)(8676002)(8936002)(41300700001)(4326008)(6862004)(316002)(5660300002)(66476007)(66556008)(44832011)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xblB2yaUIndIUjDB3LMpT+tV8yodCtU14hQFVzcP5/462tF3tnqewW7euAHv?=
- =?us-ascii?Q?CJTbGIteKgJzp/k524DG4Kft3W/l9uA8Bq4fRbhKgOq/bV1cDrBXk/yAn164?=
- =?us-ascii?Q?vFGMnGycCYmM9FjvMVFQi0kJfs25wqybMXmbOrxJEIIGkdwtDIY9nrCsuBJt?=
- =?us-ascii?Q?BxAigga22zwFE0Kgk5sOQLQmofJ3FCssjZRkWChMGy8JaBUWVXoxdGgBN4hA?=
- =?us-ascii?Q?1dOCTJ8+4jWkCxmpQSJT7gg4+CI3w+oj/qBMYBWXgeI0LKIOv4zFJ/GFVpra?=
- =?us-ascii?Q?2c1bRz5/PQK7EjsWoPboixWBwxRBKAuIMi8oNfaeTGIds+iTGIDSkGoLyjWz?=
- =?us-ascii?Q?qFCMYsRuICly5FjzO29UcI7QT+lHZZWrEtqhJ+vvGPjdMTDt4r91qR73cEfs?=
- =?us-ascii?Q?fEcc4lOuy7meBHQdIjH2hc9bN0p3GBEDpkLJLzUZiQT+S/z/mpk+HBcsDJaN?=
- =?us-ascii?Q?woES4I3d/yk90bAZFvYKrsfdFORKg9XdQb4HAlZ+dhsIhtEVyflp0t9RsnXj?=
- =?us-ascii?Q?4uEa0QZHfJ1l57hLXdLUhtM6Hj9/6h6Dct3f1eCG84Q+LnRXNMXkYoYdnROQ?=
- =?us-ascii?Q?mIl25uMVnqn7arJKWq1vvechuTh5s00aLw7VMSvplkl9ShVnN+GCBqw5Kxl3?=
- =?us-ascii?Q?yG4Eph4KU+bzJs2CbEC+LSj9wh/x5jVaTKBpt5V/AvIKsCcI2MPRWOAgKnBZ?=
- =?us-ascii?Q?Hdqka5WsJXtwq6L6sAumgkT/smUGHople18iXkBer+K4KU4WaQVchCfrkMSP?=
- =?us-ascii?Q?kj5obKTk3Q/uWeaaTD6rKEYKAkbZYpH7gws2obZdZ99yd6oiBw17kmtOYaI+?=
- =?us-ascii?Q?urpXm6GxPqJYt7JuMvkTYd3MiSlIeD0cOWWSbrCbGq4b/NFFko6A7HWY/+JU?=
- =?us-ascii?Q?9UzqJIx4n6UFA+nwqXihS0GOcnVE8+IjVK0DK2X7p1YKcbXaqENG5yYzmJjc?=
- =?us-ascii?Q?+/7e9S8C+yfbz9wZkdyvrW09AJF4rkMcBDX+txwazpyLdpbPNy54IrIraF3M?=
- =?us-ascii?Q?7mn42N24PUdkJVG+oMm0vPVzdAVYM4iH9vm8rBwoylGP7yUEuQzJfckBjzKh?=
- =?us-ascii?Q?mTmuyYa2n+EcrjA/qffa5kHHHUfwf48YmFCuljg3pZG5OkCDIDJhMC0IrKfT?=
- =?us-ascii?Q?IGVnZpo2Hv/DUyErn+C5m6/mrh0acFhByVex3cVQymfqaKPt3cklSJJopdAZ?=
- =?us-ascii?Q?cmqY5EWPpz/0OCTFUYW+iXwstg/5MpT8WRDsZdre6wyXmzc/6moYK9RClOkU?=
- =?us-ascii?Q?Vzco3JenLA1pqADnojLWGF5FerN8ri4/L1IMX48Ti7eqxxMLMaEQgT5B9air?=
- =?us-ascii?Q?ECG73tHnWtWUseJTwLSGOWA5FIKIt5PpbWuGbImPyErVYN1Vh2bPBjveEO19?=
- =?us-ascii?Q?cjNmYZb6GzRbtT7FTRx6ZuasEayPKMb0JE1NIBIfhiNUWC64Pxn/Ou/A0snA?=
- =?us-ascii?Q?IwdXav40G0mHYGDxfHITnAC+8zk+p+29H534l/IehYZ87/gf/9vIEN3QAUBg?=
- =?us-ascii?Q?R1Q+WOP1IflUYGXJ1g7Tbc9eLDwgetl5JO+EwhZj8aj7fE2wMG2ppvi8Bpxz?=
- =?us-ascii?Q?cOccNOUWG1GYk+Eh6/9o5lMSRUvjrI3PJKy25rZk?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a764ceb-9d50-4407-c299-08db9c749b17
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3062.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 03:14:43.9571
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: J9yG8xf4LjDR9BIXAo3gV72yQaYikrbE2YGq0gNv05gfBk6MeBYLCWChxxjpDSs3OfLd8sai6eDGlN4bwND51Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8364
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: KASAN: slab-use-after-free Read in ext4_es_insert_extent
+Content-Language: en-US
+To:     Yikebaer Aizezi <yikebaer61@gmail.com>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <tytso@mit.edu>
+CC:     <linux-kernel@vger.kernel.org>, Baokun Li <libaokun1@huawei.com>
+References: <CALcu4raD4h9coiyEBL4Bm0zjDwxC2CyPiTwsP3zFuhot6y9Beg@mail.gmail.com>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <CALcu4raD4h9coiyEBL4Bm0zjDwxC2CyPiTwsP3zFuhot6y9Beg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rui,
+Hello!
 
-On Fri, Aug 04, 2023 at 05:08:58PM +0800, Zhang Rui wrote:
-> Problem statement
-> -----------------
-> When using cgroup isolated partition to isolate cpus including cpu0, it
-> is observed that cpu0 is woken up frequenctly but doing nothing. This is
-> not good for power efficiency.
-> 
-> <idle>-0     [000]   616.491602: hrtimer_cancel:       hrtimer=0xffff8e8fdf623c10
-> <idle>-0     [000]   616.491608: hrtimer_start:        hrtimer=0xffff8e8fdf623c10 function=tick_sched_timer/0x0 expires=615996000000 softexpires=615996000000
-> <idle>-0     [000]   616.491616: rcu_utilization:      Start context switch
-> <idle>-0     [000]   616.491618: rcu_utilization:      End context switch
-> <idle>-0     [000]   616.491637: tick_stop:            success=1 dependency=NONE
-> <idle>-0     [000]   616.491637: hrtimer_cancel:       hrtimer=0xffff8e8fdf623c10
-> <idle>-0     [000]   616.491638: hrtimer_start:        hrtimer=0xffff8e8fdf623c10 function=tick_sched_timer/0x0 expires=616420000000 softexpires=616420000000
-> 
-> The above pattern repeats every one or multiple ticks, results in total
-> 2000+ wakeups on cpu0 in 60 seconds, when running workload on the
-> cpus that are not in the isolated partition.
-> 
-> Rootcause
-> ---------
-> In NOHZ mode, an active cpu either sends an IPI or touches the idle
-> cpu's polling flag to wake it up, so that the idle cpu can pull tasks
-> from the busy cpu. The logic for selecting the target cpu is to use the
-> first idle cpu that presents in both nohz.idle_cpus_mask and
-> housekeeping_cpumask.
-> 
-> In the above scenario, when cpu0 is in the cgroup isolated partition,
-> its sched domain is deteched, but it is still available in both of the
-> above cpumasks. As a result, cpu0
+On 2023/8/14 9:59, Yikebaer Aizezi wrote:
+> Hello,
+>
+> When using Healer to fuzz the Linux-6.5-rc5,  the following crash
+> was triggered.
+>
+> HEAD commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f (tag: v6.5-rc5)
+> git tree: upstream
+>
+> console output:
+> https://drive.google.com/file/d/1yKtvQct90Q7xY09N28iIwqAUSjq2KQPs/view?usp=drive_link
+> kernel config:https://drive.google.com/file/d/1hClF9kiDlmdnocuMCe1WZezKlhuOCq9A/view?usp=drive_link
+> C reproducer:https://drive.google.com/file/d/1yfIE42YP4YKIeJ3VxJTRMLZn3b83cs8A/view?usp=drive_link
+> Syzlang reproducer:https://drive.google.com/file/d/1afZPMtWGcZMvSR8AfleA-lDn_bj-aWm1/view?usp=drive_link
+>
+>
+> If you fix this issue, please add the following tag to the commit:
+> Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
+>
+>
+> FAULT_INJECTION: forcing a failure.
+> name failslab, interval 1, probability 0, space 0, times 0
+> CPU: 1 PID: 8438 Comm: syz-executor Not tainted 6.5.0-rc5 #1
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> Call Trace:
+>   <TASK>
+>   __dump_stack lib/dump_stack.c:88 [inline]
+>   dump_stack_lvl+0x132/0x150 lib/dump_stack.c:106
+>   fail_dump lib/fault-inject.c:52 [inline]
+>   should_fail_ex+0x49f/0x5b0 lib/fault-inject.c:153
+>   should_failslab+0x5/0x10 mm/slab_common.c:1471
+>   slab_pre_alloc_hook mm/slab.h:711 [inline]
+>   slab_alloc_node mm/slub.c:3452 [inline]
+>   slab_alloc mm/slub.c:3478 [inline]
+>   __kmem_cache_alloc_lru mm/slub.c:3485 [inline]
+>   kmem_cache_alloc+0x5e/0x390 mm/slub.c:3494
+>   __es_alloc_extent fs/ext4/extents_status.c:467 [inline]
+>   __es_alloc_extent fs/ext4/extents_status.c:464 [inline]
+>   __es_insert_extent+0xde9/0x1440 fs/ext4/extents_status.c:815
+>   __es_remove_extent+0x73b/0x16f0 fs/ext4/extents_status.c:1383
+>   ext4_es_insert_extent+0x2a1/0xcb0 fs/ext4/extents_status.c:878
+>   ext4_map_blocks+0x92a/0x16f0 fs/ext4/inode.c:680
+>   ext4_alloc_file_blocks.isra.0+0x2df/0xb70 fs/ext4/extents.c:4462
+>   ext4_zero_range fs/ext4/extents.c:4622 [inline]
+>   ext4_fallocate+0x251c/0x3ce0 fs/ext4/extents.c:4721
+>   vfs_fallocate+0x492/0xed0 fs/open.c:324
+>   ksys_fallocate fs/open.c:347 [inline]
+>   __do_sys_fallocate fs/open.c:355 [inline]
+>   __se_sys_fallocate fs/open.c:353 [inline]
+>   __x64_sys_fallocate+0xce/0x140 fs/open.c:353
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x47959d
+> Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08
+> RSP: 002b:00007fbdfe383068 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
+> RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 000000000047959d
+> RDX: 000000000000000f RSI: 0000000000000010 RDI: 0000000000000003
+> RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000008000 R11: 0000000000000246 R12: 000000000059c0ac
+> R13: 000000000000000b R14: 0000000000437250 R15: 00007fbdfe363000
+>   </TASK>
+> ==================================================================
+> BUG: KASAN: slab-use-after-free in ext4_es_insert_extent+0xc68/0xcb0
+> fs/ext4/extents_status.c:894
+> Read of size 4 at addr ffff888112ecc1a4 by task syz-executor/8438
+>
+> CPU: 1 PID: 8438 Comm: syz-executor Not tainted 6.5.0-rc5 #1
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> Call Trace:
+>   <TASK>
+>   __dump_stack lib/dump_stack.c:88 [inline]
+>   dump_stack_lvl+0xd5/0x150 lib/dump_stack.c:106
+>   print_address_description mm/kasan/report.c:364 [inline]
+>   print_report+0xc1/0x5e0 mm/kasan/report.c:475
+>   kasan_report+0xba/0xf0 mm/kasan/report.c:588
+>   ext4_es_insert_extent+0xc68/0xcb0 fs/ext4/extents_status.c:894
+>   ext4_map_blocks+0x92a/0x16f0 fs/ext4/inode.c:680
+>   ext4_alloc_file_blocks.isra.0+0x2df/0xb70 fs/ext4/extents.c:4462
+>   ext4_zero_range fs/ext4/extents.c:4622 [inline]
+>   ext4_fallocate+0x251c/0x3ce0 fs/ext4/extents.c:4721
+>   vfs_fallocate+0x492/0xed0 fs/open.c:324
+>   ksys_fallocate fs/open.c:347 [inline]
+>   __do_sys_fallocate fs/open.c:355 [inline]
+>   __se_sys_fallocate fs/open.c:353 [inline]
+>   __x64_sys_fallocate+0xce/0x140 fs/open.c:353
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x47959d
+> Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08
+> RSP: 002b:00007fbdfe383068 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
+> RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 000000000047959d
+> RDX: 000000000000000f RSI: 0000000000000010 RDI: 0000000000000003
+> RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000008000 R11: 0000000000000246 R12: 000000000059c0ac
+> R13: 000000000000000b R14: 0000000000437250 R15: 00007fbdfe363000
+>   </TASK>
+>
+> Allocated by task 8438:
+>   kasan_save_stack+0x1e/0x40 mm/kasan/common.c:45
+>   kasan_set_track+0x21/0x30 mm/kasan/common.c:52
+>   __kasan_slab_alloc+0x7b/0x80 mm/kasan/common.c:328
+>   kasan_slab_alloc include/linux/kasan.h:186 [inline]
+>   slab_post_alloc_hook mm/slab.h:762 [inline]
+>   slab_alloc_node mm/slub.c:3470 [inline]
+>   slab_alloc mm/slub.c:3478 [inline]
+>   __kmem_cache_alloc_lru mm/slub.c:3485 [inline]
+>   kmem_cache_alloc+0x16b/0x390 mm/slub.c:3494
+>   kmem_cache_zalloc include/linux/slab.h:693 [inline]
+>   __es_alloc_extent fs/ext4/extents_status.c:469 [inline]
+>   ext4_es_insert_extent+0x672/0xcb0 fs/ext4/extents_status.c:873
+>   ext4_map_blocks+0x92a/0x16f0 fs/ext4/inode.c:680
+>   ext4_alloc_file_blocks.isra.0+0x2df/0xb70 fs/ext4/extents.c:4462
+>   ext4_zero_range fs/ext4/extents.c:4622 [inline]
+>   ext4_fallocate+0x251c/0x3ce0 fs/ext4/extents.c:4721
+>   vfs_fallocate+0x492/0xed0 fs/open.c:324
+>   ksys_fallocate fs/open.c:347 [inline]
+>   __do_sys_fallocate fs/open.c:355 [inline]
+>   __se_sys_fallocate fs/open.c:353 [inline]
+>   __x64_sys_fallocate+0xce/0x140 fs/open.c:353
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+> Freed by task 8438:
+>   kasan_save_stack+0x1e/0x40 mm/kasan/common.c:45
+>   kasan_set_track+0x21/0x30 mm/kasan/common.c:52
+>   kasan_save_free_info+0x27/0x40 mm/kasan/generic.c:522
+>   ____kasan_slab_free mm/kasan/common.c:236 [inline]
+>   ____kasan_slab_free+0x161/0x1c0 mm/kasan/common.c:200
+>   kasan_slab_free include/linux/kasan.h:162 [inline]
+>   slab_free_hook mm/slub.c:1792 [inline]
+>   slab_free_freelist_hook+0x89/0x1c0 mm/slub.c:1818
+>   slab_free mm/slub.c:3801 [inline]
+>   kmem_cache_free+0xec/0x490 mm/slub.c:3823
+>   ext4_es_try_to_merge_right fs/ext4/extents_status.c:593 [inline]
+>   __es_insert_extent+0x9f4/0x1440 fs/ext4/extents_status.c:802
+>   ext4_es_insert_extent+0x2ca/0xcb0 fs/ext4/extents_status.c:882
+>   ext4_map_blocks+0x92a/0x16f0 fs/ext4/inode.c:680
+>   ext4_alloc_file_blocks.isra.0+0x2df/0xb70 fs/ext4/extents.c:4462
+>   ext4_zero_range fs/ext4/extents.c:4622 [inline]
+>   ext4_fallocate+0x251c/0x3ce0 fs/ext4/extents.c:4721
+>   vfs_fallocate+0x492/0xed0 fs/open.c:324
+>   ksys_fallocate fs/open.c:347 [inline]
+>   __do_sys_fallocate fs/open.c:355 [inline]
+>   __se_sys_fallocate fs/open.c:353 [inline]
+>   __x64_sys_fallocate+0xce/0x140 fs/open.c:353
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+> The buggy address belongs to the object at ffff888112ecc188
+>   which belongs to the cache extent_status of size 40
+> The buggy address is located 28 bytes inside of
+>   freed 40-byte region [ffff888112ecc188, ffff888112ecc1b0)
+>
+> The buggy address belongs to the physical page:
+> page:ffffea00044bb300 refcount:1 mapcount:0 mapping:0000000000000000
+> index:0x0 pfn:0x112ecc
+> flags: 0x57ff00000000200(slab|node=1|zone=2|lastcpupid=0x7ff)
+> page_type: 0xffffffff()
+> raw: 057ff00000000200 ffff888014391500 dead000000000122 0000000000000000
+> raw: 0000000000000000 0000000080490049 00000001ffffffff 0000000000000000
+> page dumped because: kasan: bad access detected
+> page_owner tracks the page as allocated
+> page last allocated via order 0, migratetype Reclaimable, gfp_mask
+> 0x12830(GFP_ATOMIC|__GFP_NOWARN|__GFP_NORETRY|__GFP_RECLAIM
+>   prep_new_page mm/page_alloc.c:1577 [inline]
+>   get_page_from_freelist+0xfe0/0x2b80 mm/page_alloc.c:3221
+>   __alloc_pages+0x1c7/0x490 mm/page_alloc.c:4477
+>   alloc_pages+0x1a6/0x270 mm/mempolicy.c:2292
+>   alloc_slab_page mm/slub.c:1862 [inline]
+>   allocate_slab+0x25f/0x390 mm/slub.c:2009
+>   new_slab mm/slub.c:2062 [inline]
+>   ___slab_alloc+0xbc6/0x15c0 mm/slub.c:3215
+>   __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3314
+>   __slab_alloc_node mm/slub.c:3367 [inline]
+>   slab_alloc_node mm/slub.c:3460 [inline]
+>   slab_alloc mm/slub.c:3478 [inline]
+>   __kmem_cache_alloc_lru mm/slub.c:3485 [inline]
+>   kmem_cache_alloc+0x369/0x390 mm/slub.c:3494
+>   __es_alloc_extent fs/ext4/extents_status.c:467 [inline]
+>   __es_alloc_extent fs/ext4/extents_status.c:464 [inline]
+>   __es_insert_extent+0xde9/0x1440 fs/ext4/extents_status.c:815
+>   ext4_es_cache_extent+0x2cb/0x480 fs/ext4/extents_status.c:937
+>   ext4_cache_extents+0x13e/0x2d0 fs/ext4/extents.c:541
+>   ext4_find_extent+0xac0/0xd20 fs/ext4/extents.c:925
+>   ext4_ext_map_blocks+0x241/0x5980 fs/ext4/extents.c:4101
+>   ext4_map_blocks+0xa27/0x16f0 fs/ext4/inode.c:548
+>   ext4_mpage_readpages+0xd7d/0x1970 fs/ext4/readpage.c:297
+>   ext4_readahead+0x102/0x140 fs/ext4/inode.c:3104
+>   read_pages+0x1a2/0xd40 mm/readahead.c:160
+> page_owner free stack trace missing
+>
+> Memory state around the buggy address:
+>   ffff888112ecc080: 00 00 00 fc fc 00 00 00 00 00 fc fc 00 00 00 00
+>   ffff888112ecc100: 00 fc fc 00 00 00 00 00 fc fc 00 00 00 00 00 fc
+>> ffff888112ecc180: fc fa fb fb fb fb fc fc 00 00 00 00 00 fc fc 00
+>                                 ^
+>   ffff888112ecc200: 00 00 00 00 fc fc 00 00 00 00 00 fc fc 00 00 00
+>   ffff888112ecc280: 00 00 fc fc 00 00 00 00 00 fc fc 00 00 00 00 00
+> ==================================================================
+>
+>   ext4_es_try_to_merge_right fs/ext4/extents_status.c:593 [inline]
+>   __es_insert_extent+0x9f4/0x1440 fs/ext4/extents_status.c:802
+>   ext4_es_insert_extent+0x2ca/0xcb0 fs/ext4/extents_status.c:882
+>   ext4_map_blocks+0x92a/0x16f0 fs/ext4/inode.c:680
+>   ext4_alloc_file_blocks.isra.0+0x2df/0xb70 fs/ext4/extents.c:4462
+>   ext4_zero_range fs/ext4/extents.c:4622 [inline]
+>   ext4_fallocate+0x251c/0x3ce0 fs/ext4/extents.c:4721
+>   vfs_fallocate+0x492/0xed0 fs/open.c:324
+>   ksys_fallocate fs/open.c:347 [inline]
+>   __do_sys_fallocate fs/open.c:355 [inline]
+>   __se_sys_fallocate fs/open.c:353 [inline]
+>   __x64_sys_fallocate+0xce/0x140 fs/open.c:353
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>
+> The buggy address belongs to the object at ffff888112ecc188
+>   which belongs to the cache extent_status of size 40
+> The buggy address is located 28 bytes inside of
+>   freed 40-byte region [ffff888112ecc188, ffff888112ecc1b0)
+>
+> The buggy address belongs to the physical page:
+> page:ffffea00044bb300 refcount:1 mapcount:0 mapping:0000000000000000
+> index:0x0 pfn:0x112ecc
+> flags: 0x57ff00000000200(slab|node=1|zone=2|lastcpupid=0x7ff)
+> page_type: 0xffffffff()
+> raw: 057ff00000000200 ffff888014391500 dead000000000122 0000000000000000
+> raw: 0000000000000000 0000000080490049 00000001ffffffff 0000000000000000
+> page dumped because: kasan: bad access detected
+> page_owner tracks the page as allocated
+> page last allocated via order 0, migratetype Reclaimable, gfp_mask
+> 0x12830(GFP_ATOMIC|__GFP_NOWARN|__GFP_NORETRY|__GFP_RECLAIM
+>   prep_new_page mm/page_alloc.c:1577 [inline]
+>   get_page_from_freelist+0xfe0/0x2b80 mm/page_alloc.c:3221
+>   __alloc_pages+0x1c7/0x490 mm/page_alloc.c:4477
+>   alloc_pages+0x1a6/0x270 mm/mempolicy.c:2292
+>   alloc_slab_page mm/slub.c:1862 [inline]
+>   allocate_slab+0x25f/0x390 mm/slub.c:2009
+>   new_slab mm/slub.c:2062 [inline]
+>   ___slab_alloc+0xbc6/0x15c0 mm/slub.c:3215
+>   __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3314
+>   __slab_alloc_node mm/slub.c:3367 [inline]
+>   slab_alloc_node mm/slub.c:3460 [inline]
+>   slab_alloc mm/slub.c:3478 [inline]
+>   __kmem_cache_alloc_lru mm/slub.c:3485 [inline]
+>   kmem_cache_alloc+0x369/0x390 mm/slub.c:3494
+>   __es_alloc_extent fs/ext4/extents_status.c:467 [inline]
+>   __es_alloc_extent fs/ext4/extents_status.c:464 [inline]
+>   __es_insert_extent+0xde9/0x1440 fs/ext4/extents_status.c:815
+>   ext4_es_cache_extent+0x2cb/0x480 fs/ext4/extents_status.c:937
+>   ext4_cache_extents+0x13e/0x2d0 fs/ext4/extents.c:541
+>   ext4_find_extent+0xac0/0xd20 fs/ext4/extents.c:925
+>   ext4_ext_map_blocks+0x241/0x5980 fs/ext4/extents.c:4101
+>   ext4_map_blocks+0xa27/0x16f0 fs/ext4/inode.c:548
+>   ext4_mpage_readpages+0xd7d/0x1970 fs/ext4/readpage.c:297
+>   ext4_readahead+0x102/0x140 fs/ext4/inode.c:3104
+>   read_pages+0x1a2/0xd40 mm/readahead.c:160
+> page_owner free stack trace missing
+>
+> Memory state around the buggy address:
+>   ffff888112ecc080: 00 00 00 fc fc 00 00 00 00 00 fc fc 00 00 00 00
+>   ffff888112ecc100: 00 fc fc 00 00 00 00 00 fc fc 00 00 00 00 00 fc
+>> ffff888112ecc180: fc fa fb fb fb fb fc fc 00 00 00 00 00 fc fc 00
+>                                 ^
+>   ffff888112ecc200: 00 00 00 00 fc fc 00 00 00 00 00 fc fc 00 00 00
+>   ffff888112ecc280: 00 00 fc fc 00 00 00 00 00 fc fc 00 00 00 00 00
+> ==================================================================
+> Kernel panic - not syncing: KASAN: panic_on_warn set ...
+> CPU: 1 PID: 8438 Comm: syz-executor Not tainted 6.5.0-rc5 #1
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> Call Trace:
+>   <TASK>
+>   __dump_stack lib/dump_stack.c:88 [inline]
+>   dump_stack_lvl+0xd5/0x150 lib/dump_stack.c:106
+>   panic+0x67e/0x730 kernel/panic.c:340
+>   check_panic_on_warn+0xad/0xb0 kernel/panic.c:236
+>   end_report+0x108/0x150 mm/kasan/report.c:225
+>   kasan_report+0xca/0xf0 mm/kasan/report.c:590
+>   ext4_es_insert_extent+0xc68/0xcb0 fs/ext4/extents_status.c:894
+>   ext4_map_blocks+0x92a/0x16f0 fs/ext4/inode.c:680
+>   ext4_alloc_file_blocks.isra.0+0x2df/0xb70 fs/ext4/extents.c:4462
+>   ext4_zero_range fs/ext4/extents.c:4622 [inline]
+>   ext4_fallocate+0x251c/0x3ce0 fs/ext4/extents.c:4721
+>   vfs_fallocate+0x492/0xed0 fs/open.c:324
+>   ksys_fallocate fs/open.c:347 [inline]
+>   __do_sys_fallocate fs/open.c:355 [inline]
+>   __se_sys_fallocate fs/open.c:353 [inline]
+>   __x64_sys_fallocate+0xce/0x140 fs/open.c:353
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x47959d
+> Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08
+> RSP: 002b:00007fbdfe383068 EFLAGS: 00000246 ORIG_RAX: 000000000000011d
+> RAX: ffffffffffffffda RBX: 000000000059c0a0 RCX: 000000000047959d
+> RDX: 000000000000000f RSI: 0000000000000010 RDI: 0000000000000003
+> RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000008000 R11: 0000000000000246 R12: 000000000059c0ac
+> R13: 000000000000000b R14: 0000000000437250 R15: 00007fbdfe363000
+>   </TASK>
+> Dumping ftrace buffer:
+>     (ftrace buffer empty)
+> Kernel Offset: disabled
+> Rebooting in 1 seconds..
+I'm very sorry that
+     2a69c450083d ("ext4: using nofail preallocation in 
+ext4_es_insert_extent()")
+introduced this issue. The flow of issue triggering is as follows:
 
-I saw in nohz_balance_enter_idle(), if a cpu is isolated, it will not
-set itself in nohz.idle_cpus_mask and thus should not be chosen as
-ilb_cpu. I wonder what's stopping this from working?
+1. the raw es to update
+|------------------------|
 
-> 1. is always selected when kicking idle load balance
-> 2. is woken up from the idle loop
-> 3. calls __schedule() but cannot find any task to pull because it is not
->    in any sched_domain, thus it does nothing and reenters idle.
-> 
-> Solution
-> --------
-> Fix the problem by skipping cpus with no sched domain attached during
-> NOHZ idle balance.
-> 
-> Signed-off-by: Zhang Rui <rui.zhang@intel.com>
-> ---
->  kernel/sched/fair.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index b3e25be58e2b..ea3185a46962 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -11340,6 +11340,9 @@ static inline int find_new_ilb(void)
->  		if (ilb == smp_processor_id())
->  			continue;
->  
-> +		if (unlikely(on_null_domain(cpu_rq(ilb))))
-> +			continue;
-> +
->  		if (idle_cpu(ilb))
->  			return ilb;
->  	}
-> -- 
-> 2.34.1
-> 
+2. remove
+   es    toremove     es1
+|----|------------|------|
+
+3. insert
+   es     newes       es1
+|----|------------|------|
+
+es merges with newes, then merges with es1, frees es1, then determines
+if es1->es_len is 0 and triggers a UAF.
+
+The code flow is as follows:
+ext4_es_insert_extent
+   es1 = __es_alloc_extent(true);
+   es2 = __es_alloc_extent(true);
+   __es_remove_extent(inode, lblk, end, NULL, es1)
+     __es_insert_extent(inode, &newes, es1) ---> insert es1 to es tree
+   __es_insert_extent(inode, &newes, es2)
+     ext4_es_try_to_merge_right
+       ext4_es_free_extent(inode, es1) --->  es1 is freed
+   if (es1 && !es1->es_len)
+     // Trigger UAF by determining if es1 is used.
+
+What's strange here is why the extent status is exactly the same before
+and after ext4_es_insert_extent() is executed, and we still call
+ext4_es_insert_extent() to perform the update.
+
+But the problem is obvious and I will send a patch later.
+
+With Best Regards,
+-- 
+Baokun Li
+.
