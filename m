@@ -2,127 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E60F377BC29
+	by mail.lfdr.de (Postfix) with ESMTP id 48FF677BC27
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232570AbjHNOzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 10:55:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51302 "EHLO
+        id S232505AbjHNOy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 10:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232590AbjHNOyk (ORCPT
+        with ESMTP id S232616AbjHNOyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 10:54:40 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26094E73
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:54:39 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe2a116565so110875e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:54:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692024877; x=1692629677;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sKON9RDaScjGyJlMzY6Qx826LRT8/zffIKtU7zyiPnc=;
-        b=t9ssYAID4AzcztXn9fRIzHlvvbCvKGdLjqI4eYoG5qE2tV7hGAxmD5R3IcF8ne0e7q
-         d2cFuSJg/VSNLxwrrjJNm0gRRsrd/WXYoXra3rwlzOjVVZtVB5DQwBwkmZPScWgjiS72
-         CzyzpSQ+d2WVilgK8MVuxzu8sHHY8vy6tirE2Iqt6IeFc50jyoHyLNNbzZPqBECpFdWc
-         UzM1h54YjUzG6oNDEotDRXtV/T7+V5yGwvq8Upi4G38AU/20v/SGbrDQNCidXhXy3b48
-         p4hCaqgSlX70G/RN9Iu8Rk3lF/d32n+PiPnuDZyQQuS9i3eUs9r+Iw3a7XkSQAIBm3np
-         5i5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692024877; x=1692629677;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sKON9RDaScjGyJlMzY6Qx826LRT8/zffIKtU7zyiPnc=;
-        b=NGm/FIt3x1S8BK5vgtLXh2cN68FgYodzvx2jfB7DvfT4Rp246MBawgoKxuZUxm+hlU
-         2RPWdwfyQr9ehHl3LPksWtgtVWIepvZT0IEkoASWMyHq0/2XE4ZMG3djsS0r1126VpK3
-         PJ4GpeHSSWo8W/VaElAkkgGlmi+HvkRGB31oPMfUwVvzPaWX7CGEXB3z1LXJKM0IBLku
-         8S5NzQGcMHObE9V0fbeWcbSoKq7HjH1dRx5FFXOs53m9fJTDu8FKgPIUrQlETHnswwMo
-         Y/RHAif8SZsC/LnCd35x0riBWnDV3IIy62oTwlG8r9muWKq9xbddrkUFjSK1dJNqbBzX
-         R4nA==
-X-Gm-Message-State: AOJu0Yz4UVawtctCU1CdPsDhr6wyxsbZtGfWDNdJ029LVRIL+u8vVvP0
-        e7SATd3Iqu/7gSlI2PIIaKkq9/7zLbL7nfdY+EOLUw==
-X-Google-Smtp-Source: AGHT+IE4tx6o8syIvoDqdJLVxHW3S88gMW5FwmcDjIQBdeuYWnxrmLjIue+8/doww4aFJWiCZhNpOFtYDMG9lfLWWF4=
-X-Received: by 2002:a05:600c:3ba2:b0:3f7:3e85:36a with SMTP id
- n34-20020a05600c3ba200b003f73e85036amr268017wms.7.1692024877559; Mon, 14 Aug
- 2023 07:54:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230804152724.3090321-1-surenb@google.com> <20230804152724.3090321-6-surenb@google.com>
-In-Reply-To: <20230804152724.3090321-6-surenb@google.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 14 Aug 2023 16:54:01 +0200
-Message-ID: <CAG48ez0XCXoXbSR6dyX7GUQYJKRFKQsHuye5q-PLU3-gR5of5A@mail.gmail.com>
-Subject: Re: [PATCH v4 5/6] mm: always lock new vma before inserting into vma tree
-To:     akpm@linux-foundation.org, Suren Baghdasaryan <surenb@google.com>
-Cc:     torvalds@linux-foundation.org, willy@infradead.org,
-        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
-        ldufour@linux.ibm.com, vbabka@suse.cz, michel@lespinasse.org,
-        jglisse@google.com, mhocko@suse.com, hannes@cmpxchg.org,
-        dave@stgolabs.net, hughd@google.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 14 Aug 2023 10:54:44 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2079.outbound.protection.outlook.com [40.107.244.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA681705;
+        Mon, 14 Aug 2023 07:54:40 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L+PdU4ZJnXRHL+b2c4do4kevVARNhxDSV2ZDFb9u4RenFH17jXxkvw374kDNA9FrXqvm/7XaGuLwkG3lc8Pls2Qo1gFWG5Ga/syCHnFfUk5NZdYj22/GetX/NjLHFQJjVZ1inxNds0vVlUJ2lc0t/QIMWXkBcMA+1LmOLVj/gJQhV7bULCTLSRoNTGt6wGa3RGkwOsuvdIo4sHgzjB+RJFqJVqwaTJnTUwJGHLGX4gk86RiIutMeq8LcVfBOB1hHR+1pyUnAfpFFyiiZjtqU3vrDAJ+aAfKHg1NlKHbNS/eiaQXGLESycY/xvMbEV84JZSHfTeAMAHKTM1wU5nsozw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nv5FsHNfDLHb4PVSDWFebY2tuNCQExev6CcpMKeUDHk=;
+ b=JEubg43PTqoe4eoerZkEUnApEqlbyLz9KH1XX0ueEFHkrJFHVl8+79rJUuzmjP4aySn9cgEuihUmABNXIXrzL2kPwQbB3RwJzUWAY0WRULjPKXuvxUBouMrxr5qGCT/nezRR/fU4kkFGkzVKjUofrh0gt0NDzP6v1FgIeeZCy0Yv6Y1m1tJSE2Wn7KzFNTZwJOz0yeJQd0/VbIGNZKEr//KyZrfA2XscEAIVSfj6+PwG/KeFdW1kMymEQPrIVJjXmAIoS1OZmcsbBtGZkHWQrpmsg2Y92koLuj5PvYtsdUY66p/0gyzaQ/7fHDg9ToQWQsO+NOvEUnzjY6EMz5I7AA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nv5FsHNfDLHb4PVSDWFebY2tuNCQExev6CcpMKeUDHk=;
+ b=aFtxVm2s9bLFhaOHpw5GLDR1J112eJIDZWJ9P+b1/bie9zO30g7AjYQ4OBoTK7e5+d4kxkB5YeQH4VZZQrdhwgvQuB1i4doOoPKJfkI8x0IqNLj1HBENR3DMVrsJPCa875gjcUYnQKW2p4pBjlabYSYS+uMUpHiThuWltaYwYjW5MUK/tSXhcKnmMx/ZnqYgOEJInNY1tGIvCYO4Kii50vByJ4HaYVB4z7vy1k9VGPGwVqqwWfF8z0ExC2y+nfloFSPSNVfYqvTXUXla9gtkkN04Kouj9/1XrSUwqJj6K67XReIXRB6fw5a71Ib5BAL5Sb5s2GVurVHuCpW+nPPhmA==
+Received: from SN6PR16CA0039.namprd16.prod.outlook.com (2603:10b6:805:ca::16)
+ by BL1PR12MB5030.namprd12.prod.outlook.com (2603:10b6:208:313::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Mon, 14 Aug
+ 2023 14:54:38 +0000
+Received: from SN1PEPF0002636C.namprd02.prod.outlook.com
+ (2603:10b6:805:ca:cafe::4d) by SN6PR16CA0039.outlook.office365.com
+ (2603:10b6:805:ca::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.33 via Frontend
+ Transport; Mon, 14 Aug 2023 14:54:38 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ SN1PEPF0002636C.mail.protection.outlook.com (10.167.241.137) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.12 via Frontend Transport; Mon, 14 Aug 2023 14:54:37 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Mon, 14 Aug 2023
+ 07:54:27 -0700
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.37; Mon, 14 Aug 2023 07:54:27 -0700
+Received: from orome.fritz.box (10.127.8.12) by mail.nvidia.com
+ (10.126.190.182) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Mon, 14 Aug 2023 07:54:24 -0700
+From:   Thierry Reding <treding@nvidia.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <stable@vger.kernel.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
+        <rwarsow@gmx.de>, <conor@kernel.org>, <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH 4.14 00/26] 4.14.323-rc1 review
+In-Reply-To: <20230813211702.980427106@linuxfoundation.org>
+References: <20230813211702.980427106@linuxfoundation.org>
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+Message-ID: <413147d4-f8ee-4773-92f7-c6d2beffacd0@drhqmail203.nvidia.com>
+Date:   Mon, 14 Aug 2023 07:54:24 -0700
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002636C:EE_|BL1PR12MB5030:EE_
+X-MS-Office365-Filtering-Correlation-Id: 84946781-ef99-49b7-d857-08db9cd661b7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: i0Ig8Wy++9Py3xenca9FMzUZP8XxuzMPvCVS3g5J8DnroEcpWMT+0A+l6LtjobJ1cfgjXijbvO7qTPLJOOvgpN8LtQ5DWLftOAvttxIQCpfD1+RiDtF4NuoMEazHHIJfh0dF0HI+oX6FQVSFxUr96uy16bUf/K0W/vk6V4q8+sSuKQK/TXtr3l81210w/CNvBfhMDavajaFadoE6NxEuOP54q3fOrD+MSrWkTXEb7hfqkgY2x9bY6g+j561GpX7QmN2FYMKRBN7Ub4IZIbmhQFdU7QtzG8LLjIqiMOXZgmMmdeNNzxbHCRlvTt3lOryy5OcURIYG7/cqCdOX0b4xNCh15OelHrI4H6ZKNfmiqaawhIgaGokUo1ccxfEOvbI+oVjjt9bxWwaNOFTvHowqlFqZB67wq5ilqh3BtkFqZTUAI5wuIqQD+O/eKP7moUCHPNLkcSDD85EI9+qnCUtKHZlFc86ieX8NpKMI+FFWMx5IrEK1iwHJWS8r0xFijUNOM817zkXgX5aZSTbstkIahprkH83rj50E/jwxI7RipVyHAKzn/bQH5V/Lm1bzZmnAwiupGYNiJtwBqFxuAHudN61v+GR3NQoc9vlcc4XJAbNWz0LTUBBoxxZf7jC+DzG7A1gR6wBwQH1mGi3epAnF6gGXITN0bcAx+SN5yP5ridQkbjt1vZPY07MIb2CbEJ2MTjAE3BkABtrahfqUQpDrGk/1QyqvtcspQy4PGOHnuvW0dIWr+kj9FSHCbYayxBoLxYPAB9YphgDVLTlkXkMlOpEitfF2R74yav4tciRMkLk=
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(136003)(396003)(346002)(376002)(39860400002)(82310400008)(451199021)(186006)(1800799006)(40470700004)(36840700001)(46966006)(40480700001)(110136005)(54906003)(478600001)(40460700003)(356005)(7636003)(82740400003)(7416002)(5660300002)(2906002)(86362001)(31696002)(4326008)(70206006)(70586007)(41300700001)(8936002)(8676002)(316002)(47076005)(426003)(336012)(26005)(36860700001)(966005)(31686004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 14:54:37.8180
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 84946781-ef99-49b7-d857-08db9cd661b7
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002636C.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5030
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-@akpm can you fix this up?
+On Sun, 13 Aug 2023 23:18:53 +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.323 release.
+> There are 26 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
+> Responses should be made by Tue, 15 Aug 2023 21:16:53 +0000.
+> Anything received after that time might be too late.
+>=20
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.323-=
+rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git l=
+inux-4.14.y
+> and the diffstat can be found below.
+>=20
+> thanks,
+>=20
+> greg k-h
 
-On Fri, Aug 4, 2023 at 5:27=E2=80=AFPM Suren Baghdasaryan <surenb@google.co=
-m> wrote:
-> While it's not strictly necessary to lock a newly created vma before
-> adding it into the vma tree (as long as no further changes are performed
-> to it), it seems like a good policy to lock it and prevent accidental
-> changes after it becomes visible to the page faults. Lock the vma before
-> adding it into the vma tree.
->
-> Suggested-by: Jann Horn <jannh@google.com>
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> Reviewed-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-> ---
->  mm/mmap.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
->
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index 3937479d0e07..850a39dee075 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -412,6 +412,8 @@ static int vma_link(struct mm_struct *mm, struct vm_a=
-rea_struct *vma)
->         if (vma_iter_prealloc(&vmi))
->                 return -ENOMEM;
->
-> +       vma_start_write(vma);
-> +
->         if (vma->vm_file) {
->                 mapping =3D vma->vm_file->f_mapping;
->                 i_mmap_lock_write(mapping);
+All tests passing for Tegra ...
 
-Something went wrong when this part of the patch was applied, because
-of a conflict with "mm/mmap: move vma operations to mm_struct out of
-the critical section of file mapping lock"; see how this patch ended
-up in the mm tree:
-https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git/commit/?id=3D26=
-cb4dafc13871ab68a4fb480ca1e19381cff392
+Test results for stable-v4.14:
+    11 builds:	11 pass, 0 fail
+    16 boots:	16 pass, 0 fail
+    32 tests:	32 pass, 0 fail
 
-> @@ -403,6 +403,8 @@ static int vma_link(struct mm_struct *mm, struct vm_a=
-rea_struct *vma)
->
->   vma_iter_store(&vmi, vma);
->
-> + vma_start_write(vma);
-> +
->   if (vma->vm_file) {
->  mapping =3D vma->vm_file->f_mapping;
->  i_mmap_lock_write(mapping);
+Linux version:	4.14.323-rc1-gc2d79804d11f
+Boards tested:	tegra124-jetson-tk1, tegra20-ventana,
+                tegra210-p2371-2180, tegra30-cardhu-a04
 
-The "vma_start_write()" has to be ordered before the
-"vma_iter_store(&vmi, vma)".
+Tested-by: Thierry Reding <treding@nvidia.com>
+
