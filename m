@@ -2,164 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA1477BF8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 20:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 517B277BF91
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 20:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbjHNSHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 14:07:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52036 "EHLO
+        id S230268AbjHNSJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 14:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjHNSHK (ORCPT
+        with ESMTP id S230147AbjHNSJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 14:07:10 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25546E5F
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 11:07:09 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d6ce0c4489bso974206276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 11:07:09 -0700 (PDT)
+        Mon, 14 Aug 2023 14:09:35 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E5410F4;
+        Mon, 14 Aug 2023 11:09:32 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so11718708a12.1;
+        Mon, 14 Aug 2023 11:09:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692036428; x=1692641228;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ILL3/wme+Xj3iELICcc/rzQVuKV1rDXNge6KvsnjpQU=;
-        b=byqR1Ww+0r/eXw/qhFsThHdhUozBD7vXDz8QBlKVU7ODMahemj/tryCgsp4E4moyVo
-         Y6WIvCu4UBQCyYP5mYnIz14yhVEqF0KWZo78E+i/dl/n9UFjqYadCSAb3JQTWyuXtDvT
-         4UJd1fX5GS4LxUOCNLGiW26cx5vZ9VE9JB4mVqHFhkCZn5wP8QNDqPLg11wcW+C04Jz3
-         +rcvEt4yROAK69LcpGxkVyx+x5gT0zv8M+aMV5dZ4uUnSekygISfLbwjVe+6MzvzbUfG
-         F4m09HWA7nxzK5jOFjK4r6EXvYW1uUC8pipTpQCpkwumrAI+6q7TQSgAzntNvfUSGgth
-         qBDA==
+        d=gmail.com; s=20221208; t=1692036571; x=1692641371;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bxONjU63MftJxOkz6NRM6Rjes407erh4cDi2X8r/lC8=;
+        b=RXaptiT73Iw/RatjIT3TbwicFz49/1Kgq/z3oAArQb21M1AA35hTR4RxkjMNMn0UQ2
+         NbII15mE4CbsWQ8rxd2N71tQ8+KrU7SJM4kKmvGf6A56qpdJ+oxWnEW3phDKjHUrCcYR
+         FyBYLKsNTbZ58nX/pIGNnnqzosrcmT9KIemBfLcG1htT74mvtMy2t3vyQZAYP/7awu42
+         4K/TsDJDc72KCjKK4c584nCKsn0rnBY1A1x43ujs39gwW6wq+rpii2+vqUxtQ0vdMz9S
+         eU19i3Sxjgb9ptu5Kv1ljMj5sZR0eVXnv+RZNuHMNuZKd/tJ5j0OLJmbahjo+TjWC6GO
+         EaaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692036428; x=1692641228;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ILL3/wme+Xj3iELICcc/rzQVuKV1rDXNge6KvsnjpQU=;
-        b=XMBrmVuisjemnCz9t8upCG+72qhxaSiMOeOl0hBRRLzl33AvoQPtN8KIY2jYVSzaTH
-         YxA+47h01TnU+7HTqkx54t0eF3JIReS3udn1HXpmLJThQLTQRYPh1U/UfPV6WpPg8n7h
-         pWSzak3jbIgCofVeTW9BMpj5a159K2i2zZZo8wEozeFWC46NMhMgShRCq66Mx9ANyIWR
-         HnZCen5xpd5aqrxycqQGhEiarFq/K/Pj7nqoh7XL/Nj0qCtQycpTdtxA1hEOphukSXpy
-         UKYxgis3SX1SVU9jXpbrhXCAnxVu5enod5oQEb1+3KykFDGXwIpjXbToQFTAvGj3xqyp
-         U9fQ==
-X-Gm-Message-State: AOJu0Yy3o1rDq6nqdZMfUg5YvuYT2NIIQ9jmwRYwScj6n3VMHZrktZh2
-        X0LgeUghuJ9aUJAxUnp7YITtBIhfj/FNQ88=
-X-Google-Smtp-Source: AGHT+IFPcHmzG6KqaH70vqmY/Q2yqgXqnRgdvqHi7Ao2JTUETR1j90+egJ02S9qBGbxPNcRQs1E46IszPQ13uZA=
-X-Received: from rdbabiera.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:18a8])
- (user=rdbabiera job=sendgmr) by 2002:a25:d4d5:0:b0:d0f:bcfe:bc74 with SMTP id
- m204-20020a25d4d5000000b00d0fbcfebc74mr138892ybf.9.1692036428382; Mon, 14 Aug
- 2023 11:07:08 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 18:05:59 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
-Message-ID: <20230814180559.923475-1-rdbabiera@google.com>
-Subject: [PATCH v4] usb: typec: bus: verify partner exists in typec_altmode_attention
-From:   RD Babiera <rdbabiera@google.com>
-To:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
-        linux@roeck-us.net
-Cc:     badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, RD Babiera <rdbabiera@google.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1692036571; x=1692641371;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bxONjU63MftJxOkz6NRM6Rjes407erh4cDi2X8r/lC8=;
+        b=cg6UslqNlgjnPn+hA+jrdgtpj8Xaw0BTxXXh554kqaW151FWtCnSJayKLM/W9GrnI7
+         u3rjFmAdxIgDlhZODkp3WohaDrCLQq0ZsGSP3j1I9DHrrBbvzGzmoO7jTnEbRKrW6SHe
+         kGMpGiZ+yCAJ2CyqM5avscTA7ZwLXbda/VT1ktP9HON0l1IYZ3utoV8XoiWd+YyIHCsj
+         dqbTnaFroediK2f7dzlMRbKlCMIU4e6yHXTW7PKB4hL8Rxhmu9x3XyANiD/xR4i/GTOu
+         58BVRI3p0l00Y5bMgiWmS6WImAp/eUWa2MyXsOjQcFbbg+yORSLg+6gyB1RWGA9YUUzd
+         uFfQ==
+X-Gm-Message-State: AOJu0Ywy6WUndqP83Ljtl+BQF5Rzt1+Do6wkdFgMDjGwHmTsyTexy0dw
+        BPvJkSEX3rBlzMKz1ABlKVsw2R//9eQ=
+X-Google-Smtp-Source: AGHT+IFuIvxah9VY9deeEY7DkiCilqjEm+mvmyD4TsGmOlNBPn8JWVcsCQLkrpbtD7P8KZUq1B1khg==
+X-Received: by 2002:a17:907:a423:b0:98d:4b97:acc8 with SMTP id sg35-20020a170907a42300b0098d4b97acc8mr15128687ejc.25.1692036570563;
+        Mon, 14 Aug 2023 11:09:30 -0700 (PDT)
+Received: from localhost.localdomain ([78.97.234.98])
+        by smtp.gmail.com with ESMTPSA id lf6-20020a170906ae4600b0099cf840527csm5911348ejb.153.2023.08.14.11.09.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 11:09:30 -0700 (PDT)
+From:   Andrei Coardos <aboutphysycs@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Cc:     alex@shruggie.ro, rui.zhang@intel.com, amitk@kernel.org,
+        daniel.lezcano@linaro.org, rafael@kernel.org,
+        Andrei Coardos <aboutphysycs@gmail.com>
+Subject: [PATCH] thermal: generic-adc: removed unneeded call to platform_set_drvdata()
+Date:   Mon, 14 Aug 2023 21:09:21 +0300
+Message-Id: <20230814180921.3336-1-aboutphysycs@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some usb hubs will negotiate DisplayPort Alt mode with the device
-but will then negotiate a data role swap after entering the alt
-mode. The data role swap causes the device to unregister all alt
-modes, however the usb hub will still send Attention messages
-even after failing to reregister the Alt Mode. type_altmode_attention
-currently does not verify whether or not a device's altmode partner
-exists, which results in a NULL pointer error when dereferencing
-the typec_altmode and typec_altmode_ops belonging to the altmode
-partner.
+This function call was found to be unnecessary as there is no equivalent
+platform_get_drvdata() call to access the private data of the driver. Also,
+the private data is defined in this driver, so there is no risk of it being
+accessed outside of this driver file.
 
-Verify the presence of a device's altmode partner before sending
-the Attention message to the Alt Mode driver.
+Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+---
+ drivers/thermal/thermal-generic-adc.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Fixes: 8a37d87d72f0 ("usb: typec: Bus type for alternate modes")
-Cc: stable@vger.kernel.org
-Signed-off-by: RD Babiera <rdbabiera@google.com>
----
-Changes since v1:
-* Only assigns pdev if altmode partner exists in typec_altmode_attention
-* Removed error return in typec_altmode_attention if Alt Mode does
-  not implement Attention messages.
-* Changed tcpm_log message to indicate that altmode partner does not exist,
-  as it only logs in that case.
----
-Changes since v2:
-* Changed tcpm_log message to accurately reflect error
-* Revised commit message
----
-Changes since v3:
-* Fixed nits
----
- drivers/usb/typec/bus.c           | 12 ++++++++++--
- drivers/usb/typec/tcpm/tcpm.c     |  3 ++-
- include/linux/usb/typec_altmode.h |  2 +-
- 3 files changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/usb/typec/bus.c b/drivers/usb/typec/bus.c
-index fe5b9a2e61f5..e95ec7e382bb 100644
---- a/drivers/usb/typec/bus.c
-+++ b/drivers/usb/typec/bus.c
-@@ -183,12 +183,20 @@ EXPORT_SYMBOL_GPL(typec_altmode_exit);
-  *
-  * Notifies the partner of @adev about Attention command.
-  */
--void typec_altmode_attention(struct typec_altmode *adev, u32 vdo)
-+int typec_altmode_attention(struct typec_altmode *adev, u32 vdo)
- {
--	struct typec_altmode *pdev = &to_altmode(adev)->partner->adev;
-+	struct altmode *partner = to_altmode(adev)->partner;
-+	struct typec_altmode *pdev;
-+
-+	if (!partner)
-+		return -ENODEV;
-+
-+	pdev = &partner->adev;
+diff --git a/drivers/thermal/thermal-generic-adc.c b/drivers/thermal/thermal-generic-adc.c
+index f4f1a04f8c0f..1717e4a19dcb 100644
+--- a/drivers/thermal/thermal-generic-adc.c
++++ b/drivers/thermal/thermal-generic-adc.c
+@@ -142,7 +142,6 @@ static int gadc_thermal_probe(struct platform_device *pdev)
+ 		return ret;
  
- 	if (pdev->ops && pdev->ops->attention)
- 		pdev->ops->attention(pdev, vdo);
-+
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(typec_altmode_attention);
+ 	gti->dev = &pdev->dev;
+-	platform_set_drvdata(pdev, gti);
  
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 5a7d8cc04628..77fe16190766 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -1877,7 +1877,8 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
- 			}
- 			break;
- 		case ADEV_ATTENTION:
--			typec_altmode_attention(adev, p[1]);
-+			if (typec_altmode_attention(adev, p[1]))
-+				tcpm_log(port, "typec_altmode_attention no port partner altmode");
- 			break;
- 		}
- 	}
-diff --git a/include/linux/usb/typec_altmode.h b/include/linux/usb/typec_altmode.h
-index 350d49012659..28aeef8f9e7b 100644
---- a/include/linux/usb/typec_altmode.h
-+++ b/include/linux/usb/typec_altmode.h
-@@ -67,7 +67,7 @@ struct typec_altmode_ops {
- 
- int typec_altmode_enter(struct typec_altmode *altmode, u32 *vdo);
- int typec_altmode_exit(struct typec_altmode *altmode);
--void typec_altmode_attention(struct typec_altmode *altmode, u32 vdo);
-+int typec_altmode_attention(struct typec_altmode *altmode, u32 vdo);
- int typec_altmode_vdm(struct typec_altmode *altmode,
- 		      const u32 header, const u32 *vdo, int count);
- int typec_altmode_notify(struct typec_altmode *altmode, unsigned long conf,
-
-base-commit: f176638af476c6d46257cc3303f5c7cf47d5967d
+ 	gti->tz_dev = devm_thermal_of_zone_register(&pdev->dev, 0, gti,
+ 						    &gadc_thermal_ops);
 -- 
-2.41.0.694.ge786442a9b-goog
+2.34.1
 
