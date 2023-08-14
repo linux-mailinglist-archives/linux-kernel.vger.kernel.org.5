@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E3F77BC5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11FDF77BC68
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232223AbjHNPFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 11:05:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
+        id S232540AbjHNPHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 11:07:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232558AbjHNPF0 (ORCPT
+        with ESMTP id S232592AbjHNPHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:05:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 239EDE6A;
-        Mon, 14 Aug 2023 08:05:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Mon, 14 Aug 2023 11:07:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8971BE6A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:06:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692025581;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=coKMnWWCWtqJjCTkHa6gz6tSlFtfIxurPrU2OkeVbd0=;
+        b=G9sVuXeZOD3tLO+8exYYE3WAUSbt/nXtWsO0hVyI+oW9Xf5+wKq9VNmP20tfFGbEmy+KPi
+        Ha+jGQc5m6Ra+uQc+DPjnLID6rzhSN/XB1NcTe2SLt95utVUrUX/8WQzglR5wSGaCiaCKe
+        fEkZtdHgHNjInSUyp95E3a1iIsPqk/Y=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-644-I0CXlIs1MWeF5tyF_66jfg-1; Mon, 14 Aug 2023 11:06:17 -0400
+X-MC-Unique: I0CXlIs1MWeF5tyF_66jfg-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B727F611FE;
-        Mon, 14 Aug 2023 15:05:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA324C433C8;
-        Mon, 14 Aug 2023 15:05:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692025525;
-        bh=4p3z9h6V5+vZPZBXXP6SecTUBOk6jE8UP8wSMjIbjXg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bTdyAgCI6GA7kv+piDLHBOi/CNISNFWEyAk0wvmVFbkJ8OQLGGTtymT0ly5Lzg0EQ
-         l5RxrQtejWK9MbeswBJuFSruueo6p2iqo9Mx/IamnpgLqtro49at1gMoUlIOtx6c5U
-         v7FIdzCrsFSbofDCY2UDjD2uGMIdquCdwMXUKJQ20y5tDUsl+m+PJRmwZp05vDMfU1
-         PcJ7gDG/GJTq+gzbFUN1wJ/C4Rnbw9OMDJuyCXThpyX5MUt3LatIJnJ79qXf74Pby2
-         AgKp/NCNV4Tb8M3YRXcmTb69+Av+ciA6s0OjrqwAt93mXtSuHJLBy9InNwk2iFrIIB
-         60zb5uSgsKpHA==
-Date:   Mon, 14 Aug 2023 17:05:21 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Andi Shyti <andi.shyti@kernel.org>
-Cc:     krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        Ruan Jinjie <ruanjinjie@huawei.com>
-Subject: Re: [PATCH -next] i2c: s3c2410: Remove redundant dev_err()
-Message-ID: <ZNpCsZzVF8WchW+P@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Andi Shyti <andi.shyti@kernel.org>, krzysztof.kozlowski@linaro.org,
-        alim.akhtar@samsung.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, Ruan Jinjie <ruanjinjie@huawei.com>
-References: <20230726174226.2480552-1-ruanjinjie@huawei.com>
- <169100562768.1919254.7407243487471763166.b4-ty@kernel.org>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E7338299E749;
+        Mon, 14 Aug 2023 15:06:16 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.27])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 731A8492C13;
+        Mon, 14 Aug 2023 15:06:14 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 14 Aug 2023 17:05:34 +0200 (CEST)
+Date:   Mon, 14 Aug 2023 17:05:31 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        brauner@kernel.org, ebiederm@xmission.com, david@redhat.com,
+        akpm@linux-foundation.org, linux-mm@kvack.org, koct9i@gmail.com,
+        dave@stgolabs.net
+Subject: Re: [PATCH] kernel/fork: stop playing lockless games for exe_file
+ replacement
+Message-ID: <20230814150530.GB17738@redhat.com>
+References: <20230813123333.1705833-1-mjguzik@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="MvsnLAYldP8ONpVl"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <169100562768.1919254.7407243487471763166.b4-ty@kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230813123333.1705833-1-mjguzik@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 08/13, Mateusz Guzik wrote:
+>
+> fe69d560b5bd ("kernel/fork: always deny write access to current MM
+> exe_file") added another lock trip to synchronize the state of exe_file
+> against fork, further defeating the point of xchg.
+>
+> As such I think the atomic here only adds complexity for no benefit.
+>
+> Just write-lock around the replacement.
 
---MvsnLAYldP8ONpVl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Well, I tend to agree but can't really comment because I forgot everything
+about these code paths.
 
-On Wed, Aug 02, 2023 at 10:10:35PM +0200, Andi Shyti wrote:
-> Hi
->=20
-> On Wed, 26 Jul 2023 17:42:26 +0000, Ruan Jinjie wrote:
-> > There is no need to call the dev_err() function directly to print a cus=
-tom
-> > message when handling an error from platform_get_irq() function as
-> > it is going to display an appropriate error message in case of a failur=
-e.
-> >=20
-> >=20
+But I have to admit that I don't understand the code in replace_mm_exe_file()
+without this patch...
 
-Applied to for-next (via Andi's branch), thanks!
+	old_exe_file = xchg(&mm->exe_file, new_exe_file);
+	if (old_exe_file) {
+		/*
+		 * Don't race with dup_mmap() getting the file and disallowing
+		 * write access while someone might open the file writable.
+		 */
+		mmap_read_lock(mm);
+		allow_write_access(old_exe_file);
+		fput(old_exe_file);
+		mmap_read_unlock(mm);
+	}
 
+Can someone please explain me which exactly race this mmap_read_lock() tries
+to avoid and how ?
 
---MvsnLAYldP8ONpVl
-Content-Type: application/pgp-signature; name="signature.asc"
+Oleg.
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmTaQrEACgkQFA3kzBSg
-Kbaguw/9H0RINXI13sHlLZfgr/kcMN5W2way+cKnaTzxAkLo/n1FDJ7SwrnoRvMb
-aaq5mzB0nFQvhTPSi9r4fgbBlebYyz/F55LYlTbsenem4R/b2+D2prugrE8GypAq
-TL74CFn889w7HnmpbN+/f6OW21XRXZ3rXiJ/xVKeJLCeStj87a4mZeWn03uqaX66
-5/vI/rqlOZTnwmWlE+cDdz3rGIKzB7a/0sZiOJT9a485xMhJazD06GL1xgqJ/mif
-hSEEyum2994uKtaXrf15oRLJm0th9u0hoxrGwgKdKJEmotkmEy3SvkH13m2W5kK7
-MsXdZXRlwV6JZtZxmXsFw0VgAEcKONpr5HyVA8Dm1Izhae6vlZYEs0f+2G6Jl5Ua
-xbjyWOIebXfR7h4mHT5F0fRmri/HbV+GBjAmLpBbcyFhYPrTf1kFEKs7ckd9h/A7
-iWOJ6x4nw/m1tnvbe5rb0QVrhSlhFEmYqZGmLeLnfnqSz6EXI7O516cyfpohd/n8
-wfIkhRBbqM2HnvtibJiyApNj/x28ygE7hcs1xhUQBEL8RxT+imqgTh6pGt+gku44
-kdWlt1hoY80w3m/IhKN/ruCzDrTriNQj9z5X8KpYdIHzgHgcZ66EsVC0i7GMRBWF
-8PrA9iFY7feY0L+W+62Hrzobbneabxfu+eNV3UULLsSEkktQcm4=
-=WiNN
------END PGP SIGNATURE-----
-
---MvsnLAYldP8ONpVl--
