@@ -2,57 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6917B77BD63
+	by mail.lfdr.de (Postfix) with ESMTP id BD08577BD64
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbjHNPrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 11:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47412 "EHLO
+        id S230270AbjHNPrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 11:47:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbjHNPrU (ORCPT
+        with ESMTP id S230021AbjHNPre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:47:20 -0400
+        Mon, 14 Aug 2023 11:47:34 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE6CF10CE;
-        Mon, 14 Aug 2023 08:47:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73F3210E3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:47:33 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 62AF663DE9;
-        Mon, 14 Aug 2023 15:47:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6EF6C433C7;
-        Mon, 14 Aug 2023 15:47:15 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 08EA6634DE
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 15:47:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3AA0C433C7;
+        Mon, 14 Aug 2023 15:47:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692028038;
-        bh=6GSu3pjMz8Et0gMkn69TwZo/5r8JBRUlijAeo9TCKPQ=;
+        s=k20201202; t=1692028052;
+        bh=t1R8otRM3E6EZ1Itt7NVpdWmmwTSamBHRUIDFtKrf0k=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E7Uf5C86CtHU5Ihf+elugH9Uxu+wt/novAeYIKjE2rBf8m4HRQIQRZssm4qloO/BC
-         ot07osQfYkSDampv4CSumUWSQfgO0J+O5OPm8un5qIg9tF5SlcUJWh59vZn/RFiV96
-         nMTFNBsbTSmGRn+J4e59P/ZZ+z4loH4HDD+VTmsJkvn/JvDi6wLmksVWnL8vUOrFcK
-         30nj5BtTQVY37WuTtV0I4IDcwlxCsx2aKGBw8rV6Xhweka1eLOZU0A44ffD5/bW3db
-         IjiSsqKXnNoItFl9uqcOZQ0RYKHA1b/7ULWlWZdT9uOEYLkTl5hSYeJZk/80vRAWEs
-         2I8ra6SrjXweA==
-Date:   Mon, 14 Aug 2023 16:47:13 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     MD Danish Anwar <danishanwar@ti.com>
-Cc:     Suman Anna <s-anna@ti.com>, Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, vigneshr@ti.com, srk@ti.com,
-        nm@ti.com
-Subject: Re: [PATCH v2] dt-bindings: remoteproc: pru: Add Interrupt property
-Message-ID: <20230814-ellipse-backfield-1fd05a2d765e@spud>
-References: <20230814095141.3526684-1-danishanwar@ti.com>
+        b=q/ndevMRJb5n5ncJkJ3CYnQYNdkZV0xZH25Y/IgZp7pjuX9n8HoAGDXd76z9630mC
+         uAYYgjI8Eiwzx48ahKOAc1kGVfLcLQPBDUz11ZkPEIrnIVRuaYk9S28lA3/NIBaayn
+         R0sbNwHn2V5H/zFmRe8gMiMqeY5Uu89wbSM9Vl5cgsErf2Xg4zylY4zS6nP/JOk3/f
+         ciVqZp+KUbnJ5pVVyk1cEZUmxRq+z+1ShDl46yOsW9HRQa8FqFbk9C3BOk87+8WNP1
+         mAfwj1+ZvWWZIpUaHe02+FKGB0J0oANBaHDrtFV5jlkjq/H83j+SzrSLI02pdtUYKg
+         8PCWesEzXvi1Q==
+Date:   Mon, 14 Aug 2023 08:47:30 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Peter Xu <peterx@redhat.com>, lkp@intel.com
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        "Huang, Ying" <ying.huang@intel.com>
+Subject: Re: Cannot find symbol for section 69: .text.arch_max_swapfile_size.
+Message-ID: <20230814154730.GA3072@dev-arch.thelio-3990X>
+References: <202308120906.Efohswpa-lkp@intel.com>
+ <ZNpKaiweCbf9i5QS@x1n>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="kH60MhqjYS1JGdzg"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230814095141.3526684-1-danishanwar@ti.com>
+In-Reply-To: <ZNpKaiweCbf9i5QS@x1n>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -62,31 +58,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 14, 2023 at 11:38:18AM -0400, Peter Xu wrote:
+> On Sat, Aug 12, 2023 at 09:11:33AM +0800, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   190bf7b14b0cf3df19c059061be032bd8994a597
+> > commit: be45a4902c7caa717fee6b2f671e59b396ed395c mm/swap: cache maximum swapfile size when init swap
+> > date:   11 months ago
+> > config: mips-randconfig-r014-20230811 (https://download.01.org/0day-ci/archive/20230812/202308120906.Efohswpa-lkp@intel.com/config)
+> > compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+> > reproduce: (https://download.01.org/0day-ci/archive/20230812/202308120906.Efohswpa-lkp@intel.com/reproduce)
+> > 
+> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <lkp@intel.com>
+> > | Closes: https://lore.kernel.org/oe-kbuild-all/202308120906.Efohswpa-lkp@intel.com/
+> > 
+> > All errors (new ones prefixed by >>):
+> > 
+> > >> Cannot find symbol for section 69: .text.arch_max_swapfile_size.
+> >    mm/swapfile.o: failed
+> 
+> Hmm.. I don't really know what's the issue here, neither can I reproduce
+> this locally - the cross build seems to all work with the reproducer and I
+> can see mm/swapfile.o correctly generated.
 
---kH60MhqjYS1JGdzg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is https://github.com/ClangBuiltLinux/linux/issues/1830 and
+https://github.com/ClangBuiltLinux/linux/issues/981, which is a bug in
+recordmcount with regards to section symbols that occurs when building
+with clang's integrated assembler. It happens when the there are only
+weak symbols in a .text section, which occurs more often with MIPS due
+to LD_DEAD_CODE_DATA_ELIMINATION implying -ffunction-sections (i.e., any
+__weak symbol will trigger this) and I can see this randconfig setting
+it.
 
-On Mon, Aug 14, 2023 at 03:21:41PM +0530, MD Danish Anwar wrote:
-> Add interrupts and interrupt-names protperties for PRU and RTU cores.
->=20
-> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+Unfortunately, the robot seems to have tripped over this a lot over the
+weekend :/ Intel folks, can this type of warning please be added to your
+filter for at least MIPS + LD_DEAD_CODE_DATA_ELIMINATION so that people
+don't get bothered?
 
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+https://lore.kernel.org/202308121810.APAJIBxn-lkp@intel.com/
+https://lore.kernel.org/202308121535.otQuZept-lkp@intel.com/
+https://lore.kernel.org/202308121810.APAJIBxn-lkp@intel.com/
+https://lore.kernel.org/202308121246.0TYkHC1K-lkp@intel.com/
+https://lore.kernel.org/202308120553.IRzzfaXL-lkp@intel.com/
+https://lore.kernel.org/202308111956.QRc8XJVr-lkp@intel.com/
 
-Thanks,
-Conor.
-
---kH60MhqjYS1JGdzg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNpMgQAKCRB4tDGHoIJi
-0u22AP9QEsPEUyj1AWb0YGo781kJJHa6/Yow29+AedrY1bTlowD/dcj9ziQoP1z+
-gyUWVK3hHq1DKUDGRfORHuX4O1yljAE=
-=V0Y0
------END PGP SIGNATURE-----
-
---kH60MhqjYS1JGdzg--
+Cheers,
+Nathan
