@@ -2,72 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DDEE77C25F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 23:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 592E077C263
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 23:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232885AbjHNV2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 17:28:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36460 "EHLO
+        id S232900AbjHNV2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 17:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232897AbjHNV2A (ORCPT
+        with ESMTP id S232924AbjHNV2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 17:28:00 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6284113
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:27:57 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6b9a2416b1cso4181857a34.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:27:57 -0700 (PDT)
+        Mon, 14 Aug 2023 17:28:19 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 206EB10D1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:28:18 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-3496e3e02f3so4003515ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 14:28:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google; t=1692048477; x=1692653277;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=h2Gb6QdAQZGLkPrUcUrS4E1/hnWfvRNciGalZbqgQQ4=;
-        b=i11OJNbYHC5AYqDBR2eu2fGiK9DqeYAVHKwAtBqDqVczemPMwMq9yxj0tSz8BMAJy9
-         Td5JKgLF5NR7KOz2qv7DwuVONvciQESKh8dLyfB6SZTY8qDJFQP3y0mQ1NbREL5rTC4Z
-         F4fAQra83kQoWFJkYnHg+4p6ZlIDUtVKUTvZA=
+        d=linuxfoundation.org; s=google; t=1692048497; x=1692653297;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BR+JPGscnhVrEQwfTBpqpRvh0fXBlGtikJiTfcgyxCo=;
+        b=d/ywBwrd9M+sJ2oLD7lb5RO45Wn3GHcJFxuEAgzXWyM2OyF+cAh9MS495TBGtyEyx1
+         xKK8FnnecwdPy1xPtgyjkgnXJBdOowmQb5Ty1hmFcCTSqdRVwkGPVQvBs5ByQyB/2r/v
+         VPS0ZDhVhZKTaqi9fdJGdge+cefEDDssk/BZc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692048477; x=1692653277;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h2Gb6QdAQZGLkPrUcUrS4E1/hnWfvRNciGalZbqgQQ4=;
-        b=SeGIaeasdgJPp5GJShob/RiWYlsglSuyduQ7yu+hBSG+Zw7e47ZT0NheujA+T+cIOA
-         cPFzuA7G2VYBaf4wQMFwn2e03Ai5D5Oq4/I3aGBVBOhufrjvG4JacapH4eRA6QZMIZjW
-         AMNXlsLu3BH4XKMK/W31ZrHHEPnVSu+/1EcO17l6QCBnB7UBfAyfq9FxlZ7I31m+WKix
-         ym/1ZfJKNIOEv0XDnCAxogzvMiuhfAEoyOkGyPHZI9Z2wwQZe6/Gs2jMSXmEjmVRnBcC
-         Hu/xuJr3TjqW7Tu8biPPW6ya8M/J94Do/09AuPxBC0n59XGXpMOfc2+FMOQD1DE41N9x
-         GQHg==
-X-Gm-Message-State: AOJu0Yw+PkKerEhW7HKwUO/V6qChyCtcRLVGIeTnwaV+Xsh4afa17QSd
-        673nNzijKIsrK2PNfN1yy518IQ==
-X-Google-Smtp-Source: AGHT+IF5Big4bba0sH4Y/J9B79lhl7z/AYAs28CvbkFA9qljvEtUNhSestPpkhMBziUHW7zBNaIktw==
-X-Received: by 2002:a9d:684a:0:b0:6b2:9bdb:a84a with SMTP id c10-20020a9d684a000000b006b29bdba84amr10662554oto.32.1692048477015;
-        Mon, 14 Aug 2023 14:27:57 -0700 (PDT)
-Received: from fedora64.linuxtx.org ([99.47.93.78])
-        by smtp.gmail.com with ESMTPSA id d27-20020a0568301b7b00b006b1570a7674sm4708854ote.29.2023.08.14.14.27.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 14:27:56 -0700 (PDT)
-Sender: Justin Forbes <jmforbes@linuxtx.org>
-Date:   Mon, 14 Aug 2023 16:27:54 -0500
-From:   Justin Forbes <jforbes@fedoraproject.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: [PATCH 6.4 000/206] 6.4.11-rc1 review
-Message-ID: <ZNqcWhqouBYey/8g@fedora64.linuxtx.org>
-References: <20230813211724.969019629@linuxfoundation.org>
+        d=1e100.net; s=20221208; t=1692048497; x=1692653297;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BR+JPGscnhVrEQwfTBpqpRvh0fXBlGtikJiTfcgyxCo=;
+        b=P6mxObwo0j+tKf/uz+R+p1P64ON2mmdbU1skow0yR2MHXAZLw4HzjnpaIvAqNMDkvV
+         NPPSKs4bZdO7/haG1QJLlnM403D7umCGrkVjRVAssz4AAfj6kfWVJn/yLU8PWrDwtdI2
+         atu/e4kSF+SqyPy2Zl04A4qGtXoaqv8vEsNJJpUzRIb/1FxjoRBQZadETCbtGNICV8/q
+         xMXBdO32gRfAWNv4YOExHQV0Y7fQumZarpXoG9Opl4wWvSVe53Dc0hZzv6CWuhJ69i3K
+         MF5pgdOlPo5CsQKylw2RwBqdjAb+VbrzKH0tQSUtgFfQkY8gVQB0Nhd1/loD2xfBD2g7
+         G54w==
+X-Gm-Message-State: AOJu0Yy4KkwBJjdWa3bM/HOm/svs16tXZ1G2MizrUdlFMQzGxvXPXaTE
+        okoXQOUozMUDc9/B6DLI/O3mhmcyYTTF4Lqz0pA=
+X-Google-Smtp-Source: AGHT+IH8EVgnmRaisZltngF35iIiJkH0e7AIZDFQ1T/J2Wk/+Drqq2c8Fae/qJUTgBCf+akPS2exhg==
+X-Received: by 2002:a05:6602:3890:b0:790:f2c3:2fd with SMTP id br16-20020a056602389000b00790f2c302fdmr14455621iob.0.1692048497468;
+        Mon, 14 Aug 2023 14:28:17 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id o3-20020a5e8a43000000b0078714764ca0sm3439153iom.40.2023.08.14.14.28.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Aug 2023 14:28:16 -0700 (PDT)
+Message-ID: <dcb720bc-113f-e467-01bd-3d19869e13ac@linuxfoundation.org>
+Date:   Mon, 14 Aug 2023 15:28:15 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230813211724.969019629@linuxfoundation.org>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] cpupower: Fix querying boost support for amd-pstate-epp
+ mode
+Content-Language: en-US
+To:     Huang Rui <ray.huang@amd.com>,
+        "Limonciello, Mario" <Mario.Limonciello@amd.com>
+Cc:     "Yuan, Perry" <Perry.Yuan@amd.com>,
+        "Karny, Wyes" <Wyes.Karny@amd.com>,
+        "trenn@suse.com" <trenn@suse.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "chenhq2005@gmail.com" <chenhq2005@gmail.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230811213501.17293-1-mario.limonciello@amd.com>
+ <ZNmqQkOK7CLa7TNl@amd.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <ZNmqQkOK7CLa7TNl@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,26 +82,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 13, 2023 at 11:16:10PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.11 release.
-> There are 206 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 8/13/23 22:14, Huang Rui wrote:
+> On Sat, Aug 12, 2023 at 05:35:01AM +0800, Limonciello, Mario wrote:
+>> When running in active mode the driver for amd-pstate has -epp appended.
+>> This throws off amd-pstate detection.
+>>
+>> To detect amd-pstate look for the prefix instead.
+>>
+>> Fixes: ffa5096a7c33 ("cpufreq: amd-pstate: implement Pstate EPP support for the AMD processors")
+>> Reported-by: chenhq2005@gmail.com
+>> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217755
+>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 > 
-> Responses should be made by Tue, 15 Aug 2023 21:16:53 +0000.
-> Anything received after that time might be too late.
+> Acked-by: Huang Rui <ray.huang@amd.com>
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.11-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
 
-Tested rc1 against the Fedora build system (aarch64, ppc64le, s390x,
-x86_64), and boot tested x86_64. No regressions noted.
+This patch doesn't apply on top of cpupower latest:
 
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux.git coupower
+
+Please rebase and send it.
+
+thanks,
+-- Shuah
+
