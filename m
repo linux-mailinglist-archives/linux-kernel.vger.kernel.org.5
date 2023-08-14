@@ -2,92 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9293C77B77C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B05E077B78D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234454AbjHNLWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 07:22:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36862 "EHLO
+        id S234488AbjHNL0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 07:26:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234542AbjHNLWK (ORCPT
+        with ESMTP id S233736AbjHNLZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 07:22:10 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA7BFFA
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 04:22:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CwtUPOcQ0JSmPG9joS7Jsy94l0Wu6FGllPhroZRoesw=; b=qz0rQNpK8fMbkHdREE5ywA9Z44
-        MRZBhwNhNjgiOSISK5PlBdd/8RL2TWqH5NheUcedNazezmmK6/vyyYC3oXcA+/rpLEDwZ+t1cty8v
-        zVv9CjI6LMn0m2DiLwBcBoLhUQbRNvGIEPqIiS7y0lArWgxwpxy7kyZ7qaNMz4l25anUv/0vxt58k
-        61V9cxRr6FDgVzTpmXSoJJS0lMRY7h85ar5H9D9F8xfHViZ9l+7wYjSdf+Vj7ffEM6nxUn0/jNxFY
-        qxWINC1yUtfX8xp+OuKWZzQQMFboa5zwQaHm0hKp6ZATJrR2CPcafi5UWZ2cy1sF6720zQAsLy3KX
-        d5t4qY+g==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qVVdo-00AYBH-2f;
-        Mon, 14 Aug 2023 11:21:45 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3ABA630020B;
-        Mon, 14 Aug 2023 13:21:44 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 280B420167A97; Mon, 14 Aug 2023 13:21:44 +0200 (CEST)
-Date:   Mon, 14 Aug 2023 13:21:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-coco@lists.linux.dev, Borislav Petkov <bp@alien8.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/5] virt: sevguest: Add TSM_REPORTS support for
- SNP_{GET, GET_EXT}_REPORT
-Message-ID: <20230814112144.GF776869@hirez.programming.kicks-ass.net>
-References: <169199898909.1782217.10899362240465838600.stgit@dwillia2-xfh.jf.intel.com>
- <169199901829.1782217.16990408177897780160.stgit@dwillia2-xfh.jf.intel.com>
+        Mon, 14 Aug 2023 07:25:34 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE59E61
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 04:25:32 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-58c4e337357so2043737b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 04:25:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692012332; x=1692617132;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=KS7KVcgftVL37t1n9Che7EJW3j0iqYnMxaJ13obaF6g=;
+        b=pGZf4oMW7KC/g9GiLfwbb7+ZOWIZRij69MhybRVywOgC7Ni84ZUKWxbJZ4K1lwHBKW
+         wUBBrLoHl0RB/t9AgOQ/IpvjGHh8orLDgkhjrWvDIw0JYqo6ilxSo5UVrVK3Kk5ZCI8q
+         rV5R4DziiIAq+HgsTvv7gQdWnofFck99BSICcWnPSizyjgH0WSIudWNomIy/fEcgx8lS
+         CF1h+9FDMrAv9vJ4nmq3AvWQ7DRKgUj1UZnirx7L9+lYxqkipu08SvxK0tw42uni+8GW
+         3Y1fpOT6eobDpkq7KInwApKGjoj9btgJmThWI/yIF1M99vr9v6XhCsmhnq900gcMQxhO
+         AcUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692012332; x=1692617132;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KS7KVcgftVL37t1n9Che7EJW3j0iqYnMxaJ13obaF6g=;
+        b=Yl34WgR5uHcxQ8hxpYjmdUDvW5ItT+Q7/neSpgYSF/t7vgvAQWaak3mUP88ccDcHzK
+         xpLjmt6eLm8OSQig6imwwzIoFvRQlMc9ji44qH1YAbjv2ZHy/ECTsumLFrKdt4/HLy+h
+         rjwUO6plMika6UA6LBlNCWoKVdFUWbo5cbKADkb6O7vBRxMb/ksfFs2iaemb15ucyaYC
+         cHKwFHWa2UPYEIBPIP/OK47N8hBc5+mY57lqEiyy2PcBwy+RtNkPnISKaTV8HKAAmufX
+         pjT82Lh4Y0n0Alj8rjHMXpqfgNIiyv/m9MM8h8KxkkB3+QMKNjWkgyXUvWT9rPZocG7h
+         zGlA==
+X-Gm-Message-State: AOJu0Ywr9jzktV+caQUkyrP2kpi8CbrN2A2lP3+gT3yy88sB57D7B8hW
+        /KYaNNEtj5iYxM89zS5JknOu40p6B52OFLuWNPOF78Majnv/3UcZiCI=
+X-Google-Smtp-Source: AGHT+IES5ORseNqi8LIzHc7ycAD1U+yCVVZUaRHk5zU+z/Eghzgj0E95t8Xr6/jAR11PIgqVILcctQWrS2XEADPK17o=
+X-Received: by 2002:a81:a542:0:b0:583:c917:7ff0 with SMTP id
+ v2-20020a81a542000000b00583c9177ff0mr8563710ywg.51.1692012332124; Mon, 14 Aug
+ 2023 04:25:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <169199901829.1782217.16990408177897780160.stgit@dwillia2-xfh.jf.intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230814104127.1929-1-peng.fan@oss.nxp.com> <20230814104127.1929-8-peng.fan@oss.nxp.com>
+In-Reply-To: <20230814104127.1929-8-peng.fan@oss.nxp.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 14 Aug 2023 13:24:56 +0200
+Message-ID: <CAPDyKFqaA2q=jEYDwAE58vERcHC_rtNYpYf8TbvU80a29oFy3w@mail.gmail.com>
+Subject: Re: [PATCH V4 7/8] genpd: imx: scu-pd: add multi states support
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 12:43:38AM -0700, Dan Williams wrote:
-> +static u8 *sev_report_new(struct device *dev, const struct tsm_desc *desc,
+On Mon, 14 Aug 2023 at 12:37, Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
+>
+> From: Peng Fan <peng.fan@nxp.com>
+>
+> Add multi states support, this is to support devices could run in LP mode
+> when runtime suspend, and OFF mode when system suspend.
 
-> +			  size_t *outblob_len)
+For my understanding, is there a functional problem to support OFF at
+runtime suspend too?
+
+>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/genpd/imx/scu-pd.c | 48 ++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 46 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/genpd/imx/scu-pd.c b/drivers/genpd/imx/scu-pd.c
+> index 2f693b67ddb4..30da101119eb 100644
+> --- a/drivers/genpd/imx/scu-pd.c
+> +++ b/drivers/genpd/imx/scu-pd.c
+> @@ -65,6 +65,12 @@
+>  #include <linux/pm_domain.h>
+>  #include <linux/slab.h>
+>
+> +enum {
+> +       PD_STATE_LP,
+> +       PD_STATE_OFF,
+> +       PD_STATE_MAX
+> +};
+> +
+>  /* SCU Power Mode Protocol definition */
+>  struct imx_sc_msg_req_set_resource_power_mode {
+>         struct imx_sc_rpc_msg hdr;
+> @@ -368,7 +374,8 @@ static int imx_sc_pd_power(struct generic_pm_domain *domain, bool power_on)
+>         hdr->size = 2;
+>
+>         msg.resource = pd->rsrc;
+> -       msg.mode = power_on ? IMX_SC_PM_PW_MODE_ON : IMX_SC_PM_PW_MODE_LP;
+> +       msg.mode = power_on ? IMX_SC_PM_PW_MODE_ON : pd->pd.state_idx ?
+> +                  IMX_SC_PM_PW_MODE_OFF : IMX_SC_PM_PW_MODE_LP;
+>
+>         /* keep uart console power on for no_console_suspend */
+>         if (imx_con_rsrc == pd->rsrc && !console_suspend_enabled && !power_on)
+> @@ -412,11 +419,33 @@ static struct generic_pm_domain *imx_scu_pd_xlate(struct of_phandle_args *spec,
+>         return domain;
+>  }
+>
+> +static bool imx_sc_pd_suspend_ok(struct device *dev)
 > +{
+> +       /* Always true */
+> +       return true;
+> +}
+> +
+> +static bool imx_sc_pd_power_down_ok(struct dev_pm_domain *pd)
+> +{
+> +       struct generic_pm_domain *genpd = pd_to_genpd(pd);
+> +
+> +       /* For runtime suspend, choose LP mode */
+> +       genpd->state_idx = 0;
+> +
+> +       return true;
+> +}
+
+I am wondering if we couldn't use the simple_qos_governor here
+instead. In principle it looks like we want a QoS latency constraint
+to be set during runtime, to prevent the OFF state.
+
+During system wide suspend, the deepest state is always selected by genpd.
 
 > +
-> +	u8 *buf __free(kvfree) = kvzalloc(size, GFP_KERNEL);
+> +struct dev_power_governor imx_sc_pd_qos_governor = {
+> +       .suspend_ok = imx_sc_pd_suspend_ok,
+> +       .power_down_ok = imx_sc_pd_power_down_ok,
+> +};
 > +
+>  static struct imx_sc_pm_domain *
+>  imx_scu_add_pm_domain(struct device *dev, int idx,
+>                       const struct imx_sc_pd_range *pd_ranges)
+>  {
+>         struct imx_sc_pm_domain *sc_pd;
+> +       struct genpd_power_state *states;
+>         bool is_off;
+>         int mode, ret;
+>
+> @@ -427,9 +456,22 @@ imx_scu_add_pm_domain(struct device *dev, int idx,
+>         if (!sc_pd)
+>                 return ERR_PTR(-ENOMEM);
+>
+> +       states = devm_kcalloc(dev, PD_STATE_MAX, sizeof(*states), GFP_KERNEL);
+> +       if (!states) {
+> +               devm_kfree(dev, sc_pd);
+> +               return ERR_PTR(-ENOMEM);
+> +       }
+> +
+>         sc_pd->rsrc = pd_ranges->rsrc + idx;
+>         sc_pd->pd.power_off = imx_sc_pd_power_off;
+>         sc_pd->pd.power_on = imx_sc_pd_power_on;
+> +       states[PD_STATE_LP].power_off_latency_ns = 25000;
+> +       states[PD_STATE_LP].power_on_latency_ns =  25000;
+> +       states[PD_STATE_OFF].power_off_latency_ns = 2500000;
+> +       states[PD_STATE_OFF].power_on_latency_ns =  2500000;
+
+We should probably describe these in DT instead? The
+domain-idle-states bindings allows us to do this. See
+Documentation/devicetree/bindings/power/domain-idle-state.yaml.
+
+Then we have of_genpd_parse_idle_states(), a helper that parses the values.
 
 > +
-> +	*outblob_len = size;
-> +	no_free_ptr(buf);
-> +	return buf;
+> +       sc_pd->pd.states = states;
+> +       sc_pd->pd.state_count = PD_STATE_MAX;
+>
+>         if (pd_ranges->postfix)
+>                 snprintf(sc_pd->name, sizeof(sc_pd->name),
+> @@ -455,14 +497,16 @@ imx_scu_add_pm_domain(struct device *dev, int idx,
+>                          sc_pd->name, sc_pd->rsrc);
+>
+>                 devm_kfree(dev, sc_pd);
+> +               devm_kfree(dev, states);
+>                 return NULL;
+>         }
+>
+> -       ret = pm_genpd_init(&sc_pd->pd, NULL, is_off);
+> +       ret = pm_genpd_init(&sc_pd->pd, &imx_sc_pd_qos_governor, is_off);
+>         if (ret) {
+>                 dev_warn(dev, "failed to init pd %s rsrc id %d",
+>                          sc_pd->name, sc_pd->rsrc);
+>                 devm_kfree(dev, sc_pd);
+> +               devm_kfree(dev, states);
+>                 return NULL;
+>         }
+>
+> --
+> 2.37.1
+>
 
-This seems broken, no_free_ptr(x) is basically xchg(X, NULL) (except no
-atomics). So the above would end up being:
-
-	return NULL;
-
-What you want to write is somehting like:
-
-	return no_free_ptr(buf);
-
-or, a convenient shorthand:
-
-	return_ptr(buf);
-
+Kind regards
+Uffe
