@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB6D77B874
+	by mail.lfdr.de (Postfix) with ESMTP id A93B277B875
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233974AbjHNMOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 08:14:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
+        id S234215AbjHNMOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 08:14:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233666AbjHNMOE (ORCPT
+        with ESMTP id S233889AbjHNMOK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 08:14:04 -0400
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09090D1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:14:03 -0700 (PDT)
+        Mon, 14 Aug 2023 08:14:10 -0400
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D037E7
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:14:08 -0700 (PDT)
 Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20230814121401epoutp0414600936fb423b5f7d66860398ffcd48~7PuXBVgAd1473114731epoutp04Y
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:14:01 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20230814121401epoutp0414600936fb423b5f7d66860398ffcd48~7PuXBVgAd1473114731epoutp04Y
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20230814121406epoutp02dfd19fa68f645306ed799b63ff9e4912~7PubsODCs2098420984epoutp02f
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:14:06 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20230814121406epoutp02dfd19fa68f645306ed799b63ff9e4912~7PubsODCs2098420984epoutp02f
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1692015241;
-        bh=xyVnog2jLedt14D6/THImFoemM70QCVX01i5t6rzCMg=;
+        s=mail20170921; t=1692015246;
+        bh=j5rdSmBKRnRxfErWJPzk0HAdBSyDZUwrIdeWXOSLw1I=;
         h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=oFSgT4+q5yp8TbP4QmFCpPhnX8C0I4GtNfuiaZC0Um+o60gElZbW83+raZsd389TU
-         5EEZTUwNvqY6bTf3YVaTU/rwhXycmcJM1tIt7+q7HTcSLzWxHqHnqefJwDao1oxZgp
-         se6gmGTNh81+GX2VsV1TJvJZAeB+/7EiIy4JoyWQ=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20230814121400epcas5p167b713d95d692ca9a85155c00fd29796~7PuWbYfMJ0558505585epcas5p1d;
-        Mon, 14 Aug 2023 12:14:00 +0000 (GMT)
-Received: from epsmges5p2new.samsung.com (unknown [182.195.38.178]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4RPYGb1R7Qz4x9Pp; Mon, 14 Aug
-        2023 12:13:59 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
+        b=Vx+D6FswOFzL18LhVDS7F09OHLdOYXMnoTv4Pq32JtkyYsdCkS+UAKrP4fIcXBayY
+         5ZvLtrOzmps9to5eftYQsqa3UZqCgbMfsxgEzv1/DI0cg1YC026iDsdw3ktAYMrNsu
+         JU+5e7XkGN6P877j8WwuTRy1IgHCWb3dzx7Ag7ds=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20230814121405epcas5p3abb616d4017400cf74f769afd624df82~7PuatRSRX2391223912epcas5p3v;
+        Mon, 14 Aug 2023 12:14:05 +0000 (GMT)
+Received: from epsmges5p2new.samsung.com (unknown [182.195.38.181]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4RPYGg3bfxz4x9Pt; Mon, 14 Aug
+        2023 12:14:03 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
         epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        0B.FF.44250.78A1AD46; Mon, 14 Aug 2023 21:13:59 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-        20230814101856epcas5p258bdde8064b8796f512d694dd84479e2~7OJ4dlEYZ2119221192epcas5p2T;
-        Mon, 14 Aug 2023 10:18:56 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20230814101856epsmtrp27552a66ecbc4b8b2bab0664475c73582~7OJ4cb1HG0861708617epsmtrp23;
-        Mon, 14 Aug 2023 10:18:56 +0000 (GMT)
-X-AuditID: b6c32a4a-ec1fd7000000acda-23-64da1a8761c2
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F0.E1.30535.09FF9D46; Mon, 14 Aug 2023 19:18:56 +0900 (KST)
-Received: from FDSFTE302 (unknown [107.122.81.78]) by epsmtip1.samsung.com
+        7C.FF.44250.B8A1AD46; Mon, 14 Aug 2023 21:14:03 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20230814102741epcas5p45717e437f88011c36f634329eca7879b~7ORg8iE2a1433014330epcas5p4f;
+        Mon, 14 Aug 2023 10:27:41 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230814102741epsmtrp17c50cb704ccdc51fdf1df385e66f82e4~7ORg7iF8q1830318303epsmtrp1n;
+        Mon, 14 Aug 2023 10:27:41 +0000 (GMT)
+X-AuditID: b6c32a4a-ec1fd7000000acda-29-64da1a8bddf4
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        92.43.64355.D910AD46; Mon, 14 Aug 2023 19:27:41 +0900 (KST)
+Received: from FDSFTE302 (unknown [107.122.81.78]) by epsmtip2.samsung.com
         (KnoxPortal) with ESMTPA id
-        20230814101853epsmtip1485ac2ebfee8abec66117b25d30e6253~7OJ1rJAdB2787827878epsmtip1D;
-        Mon, 14 Aug 2023 10:18:53 +0000 (GMT)
+        20230814102738epsmtip2b22133fe25b9fe7fdf040c9f012bc0e3~7OReWL5br0935709357epsmtip2s;
+        Mon, 14 Aug 2023 10:27:38 +0000 (GMT)
 From:   "Sriranjani P" <sriranjani.p@samsung.com>
 To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@linaro.org>,
         <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
@@ -63,68 +63,68 @@ Cc:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <pankaj.dubey@samsung.com>,
         <alim.akhtar@samsung.com>, <ravi.patel@samsung.com>,
         "'Jayati Sahu'" <jayati.sahu@samsung.com>, <swathi.ks@samsung.com>
-In-Reply-To: <2590a514-81f7-1876-c43b-80c8abe40cf9@linaro.org>
-Subject: RE: [PATCH v2 3/4] arm64: dts: fsd: Add Ethernet support for FSYS0
+In-Reply-To: <7d74a96e-e3a5-118c-04a9-e8ed95fffa54@linaro.org>
+Subject: RE: [PATCH v2 4/4] arm64: dts: fsd: Add Ethernet support for PERIC
  Block of FSD SoC
-Date:   Mon, 14 Aug 2023 15:48:44 +0530
-Message-ID: <000001d9ce98$bbaedb90$330c92b0$@samsung.com>
+Date:   Mon, 14 Aug 2023 15:57:29 +0530
+Message-ID: <000101d9ce99$f454da20$dcfe8e60$@samsung.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-Mailer: Microsoft Outlook 16.0
 Content-Language: en-in
-Thread-Index: AQGL0eLTHe4L9QyPOdGPE73PwLZVZAJJY+tAAlLq9WAA4UOvEbBZlhdw
-X-Brightmail-Tracker: H4sIAAAAAAAAA02TfUxbVRjGc3r7BaTjCmwccCN4yYgDgZYBO0xAwhhcmC4kZsk2dVDptQVK
-        2/SDsRnNAiwbuLItyHTlq6IQRCtfLSLQuUHBCcai21AQFciaMcqXhU2Zkll6i/Lf733zvPd5
-        n3PO5WI+q+xAbp5MTSllQinB9mR2D+4Li7gQOCnit17noPWH1wCaru9mo1prGRM1WL5nIdvw
-        LAdZRj5hoN8al1iocm4GQ2a7iYPGuitZ6E5vLRvVbxhYaFi/Cz0eXQCo0bTGQU/tJoBmVvo5
-        6LzZwkFrHROcZF/S+OkEg7RdNnHIr3S/ckh9p4bsbC1nk1Pj/Wxy+cY9NllpbAWk7S8zRhq/
-        XgXkamdQltfJggQJJRRRymBKlisX5cnEicSRV7MPZcfG8QURgnh0gAiWCQupRCL15ayItDyp
-        Mx4RXCSUapytLKFKRUQlJSjlGjUVLJGr1IkEpRBJFTGKSJWwUKWRiSNllPqggM+PjnUKcwok
-        U5OJiifhxVbje9g5sB5SATy4EI+B+rl2UAE8uT54H4DV5h9YdOEA8I5Zz6SLxwCWVC9wtkYu
-        fuZwj5gB1E5UuosHAM4ZbrA3VWw8CtpbGlzshw8z4IP11zZFGP4IQPO03vUpDzwJOq4OMjfZ
-        Fz8FP9SvupiJ74WTlQ7XMA+Ph83To0yan4HfXr/vYgwPh80f2TF6pWC4bmtm0X1/OLR+CaON
-        0+DPXVUMWvOBB6wYO0NzKizTaVk0+8L5b4zuaIFwdcnMplkMuyxdbo0UXiwpdXu9BG/erXXu
-        wHV67YNtvVF0ew+sHvmCQa+wA2r/vu+25cGe+i0OhR/Plrt5NzTMOlhXAKHblky3LZluWxrd
-        /256wGwFAZRCVSimVLGKaBl1+r8Lz5UXdgLX6w/L7AEz0yuRA4DBBQMAcjHCj3eJNyny4YmE
-        Z85SSnm2UiOlVAMg1nncV7HAnbly5+8jU2cLYuL5MXFxcTHx++MEhD/Pfr5O5IOLhWqqgKIU
-        lHJrjsH1CDzH0Bb/mPL57XB2bMvaIy2WntJS1HG7h69Rpj7/5I8lwdF7ddRb8cnCXQHf7QjY
-        c/PKhndIWRI3g2TMHyFeeLvq1vzRtmO93CGv38dGj9cv2BjWp1H1VaaZy7ujtdUZr//5jyVj
-        uVyS1hbU35dR8+bQ4tShzJwc3FG3WJPULM5PKTl2+NnxmsURq5YzHpSQ3iHOVqKBmbL8AF7y
-        Q+bK3hMXiqZ2vmjB2kv3hxy4Jfd+Tk4uvFIMD/o25XtKj28sO9YEpakGw7WuU1NKv9GaOfX4
-        lyYUmmk1zHojUvrG4t2GJqukyYj65s+Gtne9+86JhWZ/r0H72PtRv5xMP/3U1qipzPiJYKok
-        QkEYplQJ/wXAlgUfhgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sf0yMcRzHfZ/nued5rhyPu4uvH2sc2oRLxnxJLW14yPwczW9X9+wuuuRO
-        hGx+NQlX2EwnXU4uXUinbugqznVWbmRNq1yUdavbRSQmi6w7tv577fP+sfcfHxoXuohJdGLy
-        QU6dLEuSkAGE5bkkeG7OUIt8Xv+D6WjAcxWg9nwLifJenyGQ3v6Kh9yOjxSy1xdi6L3hMw9p
-        uztwVOWtoFCDRctDjU/ySJT/+x4POQrGox8vewAyVPRTaMhbAVDHFyuFMqrsFOova6GiRWx5
-        cQvGurMrKPaxro1iC8yprNl0jmRdTVaS7a1+S7LachNg3T+rcLa85htgv5mD1wduC1gq55IS
-        D3HqsKg9AcrTn9JSzKFpg3fbwQlQJskCfBoyC2BmSR/IAgG0kKkE0NR8g/QLU2BdeyHuZxEs
-        /tNF+U1uALuLisCwQDJh0HtH7wuImQYMGr5GDJtw5jeAV6tLCH/iO4CDrhps2MVnomDfpefE
-        MIuYHdB155KPCWYmbNX2+ZoEzGJobH9J+HkcrMvt9DHOzIYXOzLAfzbe9P6bNxUOuI08/30C
-        rB24gPsXrYDND69gOUCkG1GlG1GlG1GlGxEvAIQJTORSNCqFShOeMj+ZOyzVyFSa1GSFNGG/
-        ygx8DxAa+ghYTV+kNoDRwAYgjUvEgtaVTXKhQC47cpRT79+tTk3iNDYwmSYkEwQ/vBflQkYh
-        O8jt47gUTv1fxWj+pBOYoGaNNC1+Tlix3vniepl+yrHIiW19acqoXM84o3WZ6xa/vsjQk/1k
-        bProDUHRxy29cU/jKPK9I9jDD96siLjNxOi144uiAy878AjxHltH96l3rmshSm9sXWzutRjD
-        T0Vp+s4Zub/GxkXbuxtOakSmFQ2vntFOz+qhWWu33MpfVG/sKqFbYtak5yy7Z195vzHyV1Dt
-        Ktex8tbqBX8s2887Rw/GsWffuBM8QWMCFZmjBgwhPU21kQ4xOPuhUuoEb3eVbmhOaFuyrtTW
-        tDF+6xxxRqc+flpe5nJD5HUhb6cYazWq7h6hrSHrG+ceyIKF3k2xlQt7Obtyr77y/jMvt8Up
-        ITRKWXgortbI/gL0QwPkbwMAAA==
-X-CMS-MailID: 20230814101856epcas5p258bdde8064b8796f512d694dd84479e2
+Thread-Index: AQGL0eLTHe4L9QyPOdGPE73PwLZVZAHe9r7UAmSEgRUC2omxnrBMnmnw
+X-Brightmail-Tracker: H4sIAAAAAAAAA02TfUwTdxjH/d21dwVSdwOFnx1u5BhGQF6KwA4ijmTEXDYlLGbLwhLhQs8W
+        Kdeu127OTYIDGRTHi5mLNAUKTDbZFK2AooKElWrrNhkKzhfkJTAFFmW8qB1RV3rg+O/ze37P
+        93me7+9FgvrOYTJJNqdndRyjJjFvUdsvoaERpbLbiugH7ZByTXwHqOGaNowyXysUUbW238XU
+        uH0Up2zO7xHqXv1DMVX2YASlOqZacaq3rUxMXT9vxqiaZyfElN3iTz2++jeg6lvncOrFVCug
+        RqYv4tTBDhtOzZ2+hSf70S3HbyH0eHkrTrebBnHaYjXQ1qYSjL47cBGjH3X2Y3RZSxOgx592
+        oHTLpVlAz1pfT/NJz9miYhkFqwtiuSyNIptTJpHv7cx4JyMuPloeIU+g3iKDOCaXTSJTtqdF
+        bMtWu+2RQZ8yaoM7lMbwPBm1dYtOY9CzQSoNr08iWa1CrY3VRvJMLm/glJEcq0+UR0fHxLkT
+        M3NUVaZ+XFsRsdf83CrOB/1vGoGXBBKx0HzJiRiBt8SXuACgy9UPhMUMgFfMhfjLxeSpNmxZ
+        MtFiAovsS7QD2GzbKCTdB/DPEod4cQMjouDUj7UewRrCjsD7ro8Xk1BiHsCOYQu+uOFFbIU9
+        h0c97EfsgnVGp6eqiAiB7QsHPIWkRAKsbOjCBH4VOqrGRIuMEuGwsW4KFSYKgq7xRrEQD4A9
+        rkOo0HgbrDS+8FiARLkX/LnRKBIEKXDsr8klsR+cvNyCCyyDE+VFS6yEZ2xnxAKrYfFXBUv5
+        b8OuG2Z3HYm7WShsPh8lhNfDI86TiDDDavjNwhgixKXwXM0yb4ANoyVLHAhPjM6IKwBpWmHN
+        tMKaaYUd0//dLEDUBNaxWj5XyfJx2hiO/ezljWdpcq3A8/zD3j0HRoanI7sBIgHdAEpQco30
+        kPS2wleqYD7fx+o0GTqDmuW7QZz7vCtR2dosjfv/cPoMeWxCdGx8fHxswuZ4ORkgnTpYrfAl
+        lIyezWFZLatb1iESL1k+0onsuXY2j9jUKy/dV5JvvFcwfbPoYSrJVfVlFnJ7i6WrChK6+44+
+        +yIs0eLfv5DqRO6uL1r1AetwpiiC/UdyOpDXhoZXFwdaHU523eDzn3SvPI3ctfuy99BuWXGS
+        LCXrcVu74fiOtWlvqHp2ZHfWhXPBjrFjkk+SzyaGHEtrmjugAradlY7G7embb9rsUr/KR9SX
+        H/7ThTU0mZNSi4L7ivR5p2uP+lQ/iSu9UqFIHvph8FeaqR4o9Am8/m9mwNf8kT3GvG/H5k0f
+        bbLPvu/YP4D2lm2U1Nw5ud8VoiyJUUWMRD2RoaMXmPGZP3qb7V03LPPh6afubLhar5onwlYN
+        /dbHkyJexcjDUB3P/AeZHZL0hwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrJIsWRmVeSWpSXmKPExsWy7bCSvO5cxlspBktvs1n8fDmN0eLBvG1s
+        FnPOt7BYzD9yjtXi6bFH7BZHTi1hsri36B2rRd+Lh8wWe19vZbe4sK2P1eLyrjlsFvP+rmW1
+        OLZAzOLb6TeMFou2fmG3+P96K6PFww972C1a9x5ht/iy8Sa7g7DHlpU3mTye9m9l99g56y67
+        x4JNpR6bVnWyedy5tofN4/2+q2wefVtWMXo8/bGX2WPL/s+MHp83yQVwR3HZpKTmZJalFunb
+        JXBltB7ezlSwWrviR8c15gbGT0pdjJwcEgImEi+3zGLsYuTiEBLYzihxfe5vVoiEjMTJB0uY
+        IWxhiZX/nrNDFD1llLjZ8oQFJMEmoC/xesV8NhBbROACk8Sij9YgRcwCfxklpu1bzQLR8ZVR
+        YkL3HrAOTgE7iaOTHrGD2MICMRJbLz4Ds1kEVCV2/m4EW80rYCkxcfEBNghbUOLkTIhtzALa
+        Er0PWxlh7GULX0OdpyDx8+kyVoi4uMTRnz3MEBe5SUzs+s8+gVF4FpJRs5CMmoVk1Cwk7QsY
+        WVYxiqYWFOem5yYXGOoVJ+YWl+al6yXn525iBMe+VtAOxmXr/+odYmTiYDzEKMHBrCTCe8v9
+        WooQb0piZVVqUX58UWlOavEhRmkOFiVxXuWczhQhgfTEktTs1NSC1CKYLBMHp1QDk+iGRI9H
+        H2bVlWzyWx28X+xaf4R4ldKxRdJVxe9/ayja3y48w3njfNj+Q8uyMstW8STJnQ7iln/06p6U
+        pqPHXWuOFo+p9wy0FAq3MX0yqZBWuSgUGz7vXPmluvnqOkIT5ztNWXPu51/71D/H+Pkv3eZ9
+        zhu+8ET08kPfdPiMF771mria6fISxZ7Qz9ezWNYvalGNvvZg+QEPvx8/Q3Z4OxgZ9y9urZCf
+        veqD0EmPGzYnf8wQ0e297R9xp21K8J2eujtHS60X9wQKTbvoc+rvO8lImZA27R2rjMKsl/Jc
+        +M/UXWnewLc/3cVbqXtXQ0Zk5imtowvcbBNvW/+sYBYOtn9x7NevJHW1fIG3zCWcSizFGYmG
+        WsxFxYkAeUnmlGwDAAA=
+X-CMS-MailID: 20230814102741epcas5p45717e437f88011c36f634329eca7879b
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: REQ_APPROVE
 CMS-TYPE: 105P
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230111075450epcas5p3f13b94bfeaa66d386aa51f87ca4ec5bf
+X-CMS-RootMailID: 20230111075455epcas5p1951d1981f15d252e09281621ef5fbf15
 References: <20230111075422.107173-1-sriranjani.p@samsung.com>
-        <CGME20230111075450epcas5p3f13b94bfeaa66d386aa51f87ca4ec5bf@epcas5p3.samsung.com>
-        <20230111075422.107173-4-sriranjani.p@samsung.com>
-        <2590a514-81f7-1876-c43b-80c8abe40cf9@linaro.org>
+        <CGME20230111075455epcas5p1951d1981f15d252e09281621ef5fbf15@epcas5p1.samsung.com>
+        <20230111075422.107173-5-sriranjani.p@samsung.com>
+        <7d74a96e-e3a5-118c-04a9-e8ed95fffa54@linaro.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -135,7 +135,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 > -----Original Message-----
 > From: Krzysztof Kozlowski =5Bmailto:krzysztof.kozlowski=40linaro.org=5D
-> Sent: 12 January 2023 15:05
+> Sent: 12 January 2023 15:07
 > To: Sriranjani P <sriranjani.p=40samsung.com>; davem=40davemloft.net;
 > edumazet=40google.com; kuba=40kernel.org; pabeni=40redhat.com;
 > robh+dt=40kernel.org; krzysztof.kozlowski+dt=40linaro.org;
@@ -145,15 +145,16 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 > kernel=40vger.kernel.org; pankaj.dubey=40samsung.com;
 > alim.akhtar=40samsung.com; ravi.patel=40samsung.com; Jayati Sahu
 > <jayati.sahu=40samsung.com>
-> Subject: Re: =5BPATCH v2 3/4=5D arm64: dts: fsd: Add Ethernet support for=
- FSYS0
+> Subject: Re: =5BPATCH v2 4/4=5D arm64: dts: fsd: Add Ethernet support for=
+ PERIC
 > Block of FSD SoC
 >=20
 > On 11/01/2023 08:54, Sriranjani P wrote:
 > > The FSD SoC contains two instances of Synopsys DWC QoS Ethernet IP,
-> > one in FSYS0 block and other in PERIC block.
+> > one in
+> > FSYS0 block and other in PERIC block.
 > >
-> > Adds device tree node for Ethernet in FSYS0 Block and enables the same
+> > Adds device tree node for Ethernet in PERIC Block and enables the same
 > > for FSD platform.
 > >
 > > Signed-off-by: Pankaj Dubey <pankaj.dubey=40samsung.com>
@@ -163,19 +164,19 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 > >  arch/arm64/boot/dts/tesla/fsd-evb.dts      =7C  9 ++++
 > >  arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi =7C 56
 > ++++++++++++++++++++++
-> >  arch/arm64/boot/dts/tesla/fsd.dtsi         =7C 22 +++++++++
-> >  3 files changed, 87 insertions(+)
+> >  arch/arm64/boot/dts/tesla/fsd.dtsi         =7C 29 +++++++++++
+> >  3 files changed, 94 insertions(+)
 > >
 > > diff --git a/arch/arm64/boot/dts/tesla/fsd-evb.dts
 > > b/arch/arm64/boot/dts/tesla/fsd-evb.dts
-> > index 1db6ddf03f01..ca0c1a28d562 100644
+> > index ca0c1a28d562..2c0cbe775e04 100644
 > > --- a/arch/arm64/boot/dts/tesla/fsd-evb.dts
 > > +++ b/arch/arm64/boot/dts/tesla/fsd-evb.dts
-> > =40=40 -30,6 +30,15 =40=40
+> > =40=40 -39,6 +39,15 =40=40
 > >  	=7D;
 > >  =7D;
 > >
-> > +&ethernet_0 =7B
+> > +&ethernet_1 =7B
 > > +	status =3D =22okay=22;
 > > +
 > > +	fixed-link =7B
@@ -189,103 +190,107 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 > >  =7D;
 > > diff --git a/arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi
 > > b/arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi
-> > index d0abb9aa0e9e..7ccc0738a149 100644
+> > index 7ccc0738a149..c955bf159786 100644
 > > --- a/arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi
 > > +++ b/arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi
-> > =40=40 -64,6 +64,62 =40=40
-> >  		samsung,pin-pud =3D <FSD_PIN_PULL_NONE>;
-> >  		samsung,pin-drv =3D <FSD_PIN_DRV_LV2>;
+> > =40=40 -395,6 +395,62 =40=40
+> >  		samsung,pin-pud =3D <FSD_PIN_PULL_UP>;
+> >  		samsung,pin-drv =3D <FSD_PIN_DRV_LV1>;
 > >  	=7D;
 > > +
-> > +		eth0_tx_clk: eth0-tx-clk-pins =7B
->=20
-> Wrong indentation.
-Will fix in the next version.
->=20
-> > +		samsung,pins =3D =22gpf0-0=22;
+> > +	eth1_tx_clk: eth1-tx-clk-pins =7B
+> > +		samsung,pins =3D =22gpf2-0=22;
 > > +		samsung,pin-function =3D <FSD_PIN_FUNC_2>;
 > > +		samsung,pin-pud =3D <FSD_PIN_PULL_DOWN>;
 > > +		samsung,pin-drv =3D <FSD_PIN_DRV_LV6>;
 > > +	=7D;
 > > +
-> > +	eth0_tx_data: eth0-tx-data-pins =7B
-> > +		samsung,pins =3D =22gpf0-1=22, =22gpf0-2=22, =22gpf0-3=22, =22gpf0-4=
+> > +	eth1_tx_data: eth1-tx-data-pins =7B
+> > +		samsung,pins =3D =22gpf2-1=22, =22gpf2-2=22, =22gpf2-3=22, =22gpf2-4=
 =22;
 > > +		samsung,pin-function =3D <FSD_PIN_FUNC_2>;
 > > +		samsung,pin-pud =3D <FSD_PIN_PULL_UP>;
 > > +		samsung,pin-drv =3D <FSD_PIN_DRV_LV6>;
 > > +	=7D;
 > > +
-> > +	eth0_tx_ctrl: eth0-tx-ctrl-pins =7B
-> > +		samsung,pins =3D =22gpf0-5=22;
+> > +	eth1_tx_ctrl: eth1-tx-ctrl-pins =7B
+> > +		samsung,pins =3D =22gpf2-5=22;
 > > +		samsung,pin-function =3D <FSD_PIN_FUNC_2>;
 > > +		samsung,pin-pud =3D <FSD_PIN_PULL_UP>;
 > > +		samsung,pin-drv =3D <FSD_PIN_DRV_LV6>;
 > > +	=7D;
 > > +
-> > +	eth0_phy_intr: eth0-phy-intr-pins =7B
-> > +		samsung,pins =3D =22gpf0-6=22;
+> > +	eth1_phy_intr: eth1-phy-intr-pins =7B
+> > +		samsung,pins =3D =22gpf2-6=22;
 > > +		samsung,pin-function =3D <FSD_PIN_FUNC_2>;
-> > +		samsung,pin-pud =3D <FSD_PIN_PULL_NONE>;
+> > +		samsung,pin-pud =3D <FSD_PIN_PULL_UP>;
 > > +		samsung,pin-drv =3D <FSD_PIN_DRV_LV4>;
 > > +	=7D;
 > > +
-> > +	eth0_rx_clk: eth0-rx-clk-pins =7B
-> > +		samsung,pins =3D =22gpf1-0=22;
+> > +	eth1_rx_clk: eth1-rx-clk-pins =7B
+> > +		samsung,pins =3D =22gpf3-0=22;
 > > +		samsung,pin-function =3D <FSD_PIN_FUNC_2>;
 > > +		samsung,pin-pud =3D <FSD_PIN_PULL_UP>;
 > > +		samsung,pin-drv =3D <FSD_PIN_DRV_LV6>;
 > > +	=7D;
 > > +
-> > +	eth0_rx_data: eth0-rx-data-pins =7B
-> > +		samsung,pins =3D =22gpf1-1=22, =22gpf1-2=22, =22gpf1-3=22, =22gpf1-4=
+> > +	eth1_rx_data: eth1-rx-data-pins =7B
+> > +		samsung,pins =3D =22gpf3-1=22, =22gpf3-2=22, =22gpf3-3=22, =22gpf3-4=
 =22;
 > > +		samsung,pin-function =3D <FSD_PIN_FUNC_2>;
 > > +		samsung,pin-pud =3D <FSD_PIN_PULL_UP>;
 > > +		samsung,pin-drv =3D <FSD_PIN_DRV_LV6>;
 > > +	=7D;
 > > +
-> > +	eth0_rx_ctrl: eth0-rx-ctrl-pins =7B
-> > +		samsung,pins =3D =22gpf1-5=22;
+> > +	eth1_rx_ctrl: eth1-rx-ctrl-pins =7B
+> > +		samsung,pins =3D =22gpf3-5=22;
 > > +		samsung,pin-function =3D <FSD_PIN_FUNC_2>;
 > > +		samsung,pin-pud =3D <FSD_PIN_PULL_UP>;
 > > +		samsung,pin-drv =3D <FSD_PIN_DRV_LV6>;
 > > +	=7D;
 > > +
-> > +	eth0_mdio: eth0-mdio-pins =7B
-> > +		samsung,pins =3D =22gpf1-6=22, =22gpf1-7=22;
+> > +	eth1_mdio: eth1-mdio-pins =7B
+> > +		samsung,pins =3D =22gpf3-6=22, =22gpf3-7=22;
 > > +		samsung,pin-function =3D <FSD_PIN_FUNC_2>;
-> > +		samsung,pin-pud =3D <FSD_PIN_PULL_NONE>;
+> > +		samsung,pin-pud =3D <FSD_PIN_PULL_UP>;
 > > +		samsung,pin-drv =3D <FSD_PIN_DRV_LV4>;
 > > +	=7D;
 > >  =7D;
 > >
-> >  &pinctrl_peric =7B
+> >  &pinctrl_pmu =7B
 > > diff --git a/arch/arm64/boot/dts/tesla/fsd.dtsi
 > > b/arch/arm64/boot/dts/tesla/fsd.dtsi
-> > index f35bc5a288c2..ade707cc646b 100644
+> > index ade707cc646b..8807055807dd 100644
 > > --- a/arch/arm64/boot/dts/tesla/fsd.dtsi
 > > +++ b/arch/arm64/boot/dts/tesla/fsd.dtsi
-> > =40=40 -32,6 +32,7 =40=40
-> >  		spi0 =3D &spi_0;
+> > =40=40 -33,6 +33,7 =40=40
 > >  		spi1 =3D &spi_1;
 > >  		spi2 =3D &spi_2;
-> > +		eth0 =3D &ethernet_0;
+> >  		eth0 =3D &ethernet_0;
+> > +		eth1 =3D &ethernet_1;
 >=20
-> This is a friendly reminder during the review process.
->=20
-> It seems my previous comments were not fully addressed. Maybe my
-> feedback got lost between the quotes, maybe you just forgot to apply it.
-> Please go back to the previous discussion and either implement all reques=
-ted
-> changes or keep discussing them.
+> Nope for the reasons I explained last time.
 Sorry somehow I'm not able to find my previous mail chain.
 I had replied to your comment in the previous version of the mail.
 In this case alias id is used to differentiate between Ethernet instance 0 =
 and 1 in the driver code.
 >=20
-> Thank you.
+> >  	=7D;
+> >
+> >  	cpus =7B
+> > =40=40 -882,6 +883,34 =40=40
+> >  			phy-mode =3D =22rgmii=22;
+> >  			status =3D =22disabled=22;
+> >  		=7D;
+> > +
+> > +		ethernet_1: ethernet=4014300000 =7B
 >=20
+> Do not add nodes to the end.
+If you mean to say that the nodes are supposed to be in the increasing orde=
+r of physical address,
+I can see that the existing file is not arranged in that format. If that is=
+ required I can first fix the
+existing file and post the revised patch for the same.=20
 >=20
 > Best regards,
 > Krzysztof
