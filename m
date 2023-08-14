@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E0C77BA03
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9D877B9FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbjHNN3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 09:29:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47124 "EHLO
+        id S231301AbjHNN3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 09:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231287AbjHNN2y (ORCPT
+        with ESMTP id S231295AbjHNN24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 09:28:54 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C538312D
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:28:53 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id 38308e7fff4ca-2b9d3dacb33so66908171fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:28:53 -0700 (PDT)
+        Mon, 14 Aug 2023 09:28:56 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384B0D1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:28:55 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9936b3d0286so613525066b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:28:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1692019732; x=1692624532;
+        d=amarulasolutions.com; s=google; t=1692019733; x=1692624533;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1Cnwn24kWjSS9OZzuaLMB+FQOsa9xOiEu2l5Cypy8oM=;
-        b=Ha0Lm/5JdJ+EloMPJUOSpXMRWOPusaImnP7V/U5+8tMTS1ERCl75AHL7jpF4TCk2AH
-         eNHzuPSNiU6sD4pknfspH08DiANuJzxXyAqQwA7OidU/U1EO6dqy78zMXcZosmBWTtw3
-         tgc0SrYZDE6uKdIHejhn/Sp/PvAgQ2hgylhZ0=
+        bh=nzDesMH0Rl8r5eYsX/SIRdNEzTscR6QCg7fSNhCB0vk=;
+        b=MQgLNcDYQmvN7uT6SDWKD3NsfK4SledTLTrDPRLfkNlRqZC6jYQJviTAMkbpRD6B8L
+         rEvMsDFoOWVc8ZQMwPCWnrOGeRfv0ClQH5mPeBGH12edBFScvSlgwlaEsDzDJ012ogQF
+         HIBGaZ5G5asPiSgniOZ4j+HV2/FCk2hD8vsis=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692019732; x=1692624532;
+        d=1e100.net; s=20221208; t=1692019733; x=1692624533;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1Cnwn24kWjSS9OZzuaLMB+FQOsa9xOiEu2l5Cypy8oM=;
-        b=bSXL6Ek8JvIH7Ezznzzr4XwBfX7UWDvRXiS+rR7afCgLMjmgf5qu4ukenXtXvaOmjr
-         wO6b+PBuLpCY5rJAG2gbDvkEM4MfTudVqAE96VjsocPXRyU7dQsRaNYCWFeFLxkDA1w9
-         C1jaLQI9KR1/2vUijDKqQyZ0GAglV4Smhgt/ywkq1vlpJaTdwF2uHC9DiOPul5xzaxT+
-         Pp83+a7Bwk7ny0UzjnBIAeTBsKPMN0U+sRYFJu76u8AVfqG4zfx2AdBlmoClOrnXZP+g
-         HqrCc1aMXW4rSSopKVmg7JmlUemULXUV/dzhLnnOVKjQFFJz/wXrj30TRKpSrV/NgVJr
-         aU7w==
-X-Gm-Message-State: AOJu0YxIvRFAGIgPsdoUeTWzrGWQ5G36I32bqx+TMD3HwzCY+uApmguu
-        Tu2aCsbiBEGd1V/TlZXMGHLf2rSXv0X2frreMuIirS6B
-X-Google-Smtp-Source: AGHT+IHymIkz+nFWS5gxRgDUIjIaONVHvk3MTNBjHs9LM8OVGKYOcHxf76OnwMmZW5wRJc+vAG/nTA==
-X-Received: by 2002:a2e:b177:0:b0:2b6:e618:b5a0 with SMTP id a23-20020a2eb177000000b002b6e618b5a0mr6918864ljm.6.1692019731835;
-        Mon, 14 Aug 2023 06:28:51 -0700 (PDT)
+        bh=nzDesMH0Rl8r5eYsX/SIRdNEzTscR6QCg7fSNhCB0vk=;
+        b=A+ygXQqfV58TmDECO8HKFbEzqE+miHf/wW0WaCvWmiGBf+pxpTaDh8YjyPosI4Ifft
+         Mt/7Aw6SXE+TJ38Qi8+mXs05GeL8CEOlkGLeHkFpUZ88tcX6ckyAvXt/O/7IKOMe0dIb
+         lX6ezITz8batfpULtgokE4QZEVQal+eujamdPNpk++Tx73YGeMKOKPTFTh+5Q4ZDZaQP
+         OhVI5qLP9TYQfEO5arrZ1/yAg/tUZR50PNagkUM6YL/ClC5IggXNAL8/2vhH9hKLBn9H
+         NnR8TsldXQd+z1436CpLBxab2sUnbE/4Q1BA7pIo/UB3E3L+75if5qxF21gSnKyYw7Pe
+         T3BQ==
+X-Gm-Message-State: AOJu0YxygV/44WjG6jjGgwq5Z5lkQWJ712yCJhMah8PqCjZ8Ksf/D5vX
+        PogEXGyU1Wkx1zmAr19YewIwWF0csIK11TALWRTmYw==
+X-Google-Smtp-Source: AGHT+IETZ6FarzVDypPuqWg73eGRUFR/48vMRN3Lk2qC2taThkHQZ1OzGY5Od1lINS8WuYxn/U+QSw==
+X-Received: by 2002:a17:907:1def:b0:99c:22e3:3eed with SMTP id og47-20020a1709071def00b0099c22e33eedmr8170672ejc.73.1692019733450;
+        Mon, 14 Aug 2023 06:28:53 -0700 (PDT)
 Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-80-180-23-204.pool80180.interbusiness.it. [80.180.23.204])
-        by smtp.gmail.com with ESMTPSA id e3-20020a170906248300b0099d02ca4327sm5662066ejb.54.2023.08.14.06.28.50
+        by smtp.gmail.com with ESMTPSA id e3-20020a170906248300b0099d02ca4327sm5662066ejb.54.2023.08.14.06.28.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 06:28:51 -0700 (PDT)
+        Mon, 14 Aug 2023 06:28:53 -0700 (PDT)
 From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Philippe Cornu <philippe.cornu@foss.st.com>,
@@ -61,17 +61,16 @@ Cc:     Philippe Cornu <philippe.cornu@foss.st.com>,
         Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH v8 2/4] ARM: dts: stm32: add pin map for LTDC on stm32f7
-Date:   Mon, 14 Aug 2023 15:28:42 +0200
-Message-Id: <20230814132844.113312-3-dario.binacchi@amarulasolutions.com>
+Subject: [PATCH v8 3/4] ARM: dts: stm32: rename mmc_vcard to vcc-3v3 on stm32f746-disco
+Date:   Mon, 14 Aug 2023 15:28:43 +0200
+Message-Id: <20230814132844.113312-4-dario.binacchi@amarulasolutions.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230814132844.113312-1-dario.binacchi@amarulasolutions.com>
 References: <20230814132844.113312-1-dario.binacchi@amarulasolutions.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,72 +79,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pin configurations for using LTDC (LCD-tft Display Controller) on
-stm32f746-disco board.
+In the schematics of document UM1907, the power supply for the micro SD
+card is the same 3v3 voltage that is used to power other devices on the
+board. By generalizing the name of the voltage regulator, it can be
+referenced by other nodes in the device tree without creating
+misunderstandings.
+
+This patch is preparatory for future developments.
 
 Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Reviewed-by: Raphaël Gallais-Pou <raphael.gallais-pou@foss.st.com>
-
 ---
 
-(no changes since v7)
+(no changes since v1)
 
-Changes in v7:
-- Add 'Reviewed-by' tag I forgot in v6.
-  https://lore.kernel.org/linux-arm-kernel/20230629083726.84910-1-dario.binacchi@amarulasolutions.com/T/
+ arch/arm/boot/dts/st/stm32f746-disco.dts | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Changes in v3:
-- rename ltdc-pins-a-0 to ltdc-0.
-
- arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi | 35 +++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
-
-diff --git a/arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi
-index 9f65403295ca..36dad40dd0c7 100644
---- a/arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi
-@@ -365,6 +365,41 @@ pins2 {
- 					bias-pull-up;
- 				};
- 			};
-+
-+
-+			ltdc_pins_a: ltdc-0 {
-+				pins {
-+					pinmux = <STM32_PINMUX('E', 4, AF14)>, /* LCD_B0 */
-+						 <STM32_PINMUX('G',12, AF9)>,  /* LCD_B4 */
-+						 <STM32_PINMUX('I', 9, AF14)>, /* LCD_VSYNC */
-+						 <STM32_PINMUX('I',10, AF14)>, /* LCD_HSYNC */
-+						 <STM32_PINMUX('I',14, AF14)>, /* LCD_CLK */
-+						 <STM32_PINMUX('I',15, AF14)>, /* LCD_R0 */
-+						 <STM32_PINMUX('J', 0, AF14)>, /* LCD_R1 */
-+						 <STM32_PINMUX('J', 1, AF14)>, /* LCD_R2 */
-+						 <STM32_PINMUX('J', 2, AF14)>, /* LCD_R3 */
-+						 <STM32_PINMUX('J', 3, AF14)>, /* LCD_R4 */
-+						 <STM32_PINMUX('J', 4, AF14)>, /* LCD_R5 */
-+						 <STM32_PINMUX('J', 5, AF14)>, /* LCD_R6 */
-+						 <STM32_PINMUX('J', 6, AF14)>, /* LCD_R7 */
-+						 <STM32_PINMUX('J', 7, AF14)>, /* LCD_G0 */
-+						 <STM32_PINMUX('J', 8, AF14)>, /* LCD_G1 */
-+						 <STM32_PINMUX('J', 9, AF14)>, /* LCD_G2 */
-+						 <STM32_PINMUX('J',10, AF14)>, /* LCD_G3 */
-+						 <STM32_PINMUX('J',11, AF14)>, /* LCD_G4 */
-+						 <STM32_PINMUX('J',13, AF14)>, /* LCD_B1 */
-+						 <STM32_PINMUX('J',14, AF14)>, /* LCD_B2 */
-+						 <STM32_PINMUX('J',15, AF14)>, /* LCD_B3 */
-+						 <STM32_PINMUX('K', 0, AF14)>, /* LCD_G5 */
-+						 <STM32_PINMUX('K', 1, AF14)>, /* LCD_G6 */
-+						 <STM32_PINMUX('K', 2, AF14)>, /* LCD_G7 */
-+						 <STM32_PINMUX('K', 4, AF14)>, /* LCD_B5 */
-+						 <STM32_PINMUX('K', 5, AF14)>, /* LCD_B6 */
-+						 <STM32_PINMUX('K', 6, AF14)>, /* LCD_B7 */
-+						 <STM32_PINMUX('K', 7, AF14)>; /* LCD_DE */
-+					slew-rate = <2>;
-+				};
-+			};
- 		};
+diff --git a/arch/arm/boot/dts/st/stm32f746-disco.dts b/arch/arm/boot/dts/st/stm32f746-disco.dts
+index c11616ed5fc6..4e785039ba5a 100644
+--- a/arch/arm/boot/dts/st/stm32f746-disco.dts
++++ b/arch/arm/boot/dts/st/stm32f746-disco.dts
+@@ -79,9 +79,9 @@ vcc5v_otg_fs: vcc5v-otg-fs-regulator {
+ 		regulator-always-on;
  	};
- };
+ 
+-	mmc_vcard: mmc_vcard {
++	vcc_3v3: vcc-3v3 {
+ 		compatible = "regulator-fixed";
+-		regulator-name = "mmc_vcard";
++		regulator-name = "vcc_3v3";
+ 		regulator-min-microvolt = <3300000>;
+ 		regulator-max-microvolt = <3300000>;
+ 	};
+@@ -101,7 +101,7 @@ &i2c1 {
+ 
+ &sdio1 {
+ 	status = "okay";
+-	vmmc-supply = <&mmc_vcard>;
++	vmmc-supply = <&vcc_3v3>;
+ 	cd-gpios = <&gpioc 13 GPIO_ACTIVE_LOW>;
+ 	pinctrl-names = "default", "opendrain";
+ 	pinctrl-0 = <&sdio_pins_a>;
 -- 
 2.34.1
 
