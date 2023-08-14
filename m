@@ -2,68 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A0C77C133
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 124E077C135
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232306AbjHNUBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 16:01:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39110 "EHLO
+        id S232355AbjHNUBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 16:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231968AbjHNUBP (ORCPT
+        with ESMTP id S232360AbjHNUBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 16:01:15 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A8A10F4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:01:14 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3a3efebcc24so4015485b6e.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:01:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692043274; x=1692648074;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PLx81HjNMcdtjBPAf501FIttTYshdXsh2VkIYyL/jUk=;
-        b=4RoK/TMueeUlc/+s9Wek0k+/0CReAWcvMe0a4D5ry8OTkcRIgoMFS8dfWNnovi+FtR
-         aJsfh9FwCR6j5RC19LnxdYiuTwFPA9pGlH+NJafKbwqmH7Kjhc623dr+IBKRmesHMsqf
-         VX6gFd1D6D3rmlQuoOZUP6jSw6QGNv5W7M2kyjvQ0PbXuJJKCDM3Dc3zeVQal+DomuHr
-         ODih3LQ911QDnFCxbyzjK7K53OHt7TyrTe+TekyFUl1l0tkiwET7UVSvkUiGx/Pt7jif
-         KQX/pdi4bt9vWNJ4Ub7KdNvxXfAUUzLa2F08+YErUqc5iQxfwTByG+Oy1oTg39KZW/PI
-         3Eog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692043274; x=1692648074;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PLx81HjNMcdtjBPAf501FIttTYshdXsh2VkIYyL/jUk=;
-        b=IGSBkwYshW2+PvWno4WwI+GphoXPSYH6x/TkByeuv5rK4WuBh8z7WyIoJN72RoxBIg
-         /jqOtwauACyOAgH/U2zS8BvROuOMqUJw2IiGDS1zOuYJ3Wfxh2PFxYeu9eD6JpTyVJdM
-         QM4LUjV581Vm48sYsuXYclCxw+nSSaiMuTzlyDSE4RFPfrbXOq3irrFl/r7cNqMSa/vq
-         h0L/b0zlXpLYLjjJFtQ0WHeFByik9KCZ30cjHImoBvxtfgeae+VGVxCBNpU/9IadC+SO
-         JM5J5Zqv8tJIpuVBRBb2PtBaq+j7IppNdoAPhJn8mA3Z/B+5wIoEUIHgkwvNdTm56Asc
-         UPiw==
-X-Gm-Message-State: AOJu0Yy56rAhBwCkvckSzy1J9QO3eoUEtFNtr4PDZG7fJF48DqzYoY8B
-        x7Akhz3iKaJHoDbziFIUbupQjA==
-X-Google-Smtp-Source: AGHT+IHJsw2JK75MRC3bpiMwlKdGt/SDygzWF4moEUm3RhHfFPnMbvc6mpdlGUzicghlzenU7k4mkQ==
-X-Received: by 2002:a05:6870:971f:b0:1bb:b337:fdc7 with SMTP id n31-20020a056870971f00b001bbb337fdc7mr11678733oaq.59.1692043274049;
-        Mon, 14 Aug 2023 13:01:14 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id y6-20020a818806000000b0057736c436f1sm2961902ywf.141.2023.08.14.13.01.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 13:01:13 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 13:01:12 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 2/3] mm,thp: fix nodeN/meminfo output alignment
-In-Reply-To: <dc264fd6-40bb-6510-db36-9340a5f01d94@google.com>
-Message-ID: <be861b50-a790-e041-bcb0-2a987dcfd1a@google.com>
-References: <dc264fd6-40bb-6510-db36-9340a5f01d94@google.com>
+        Mon, 14 Aug 2023 16:01:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7CC410F0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:01:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6BCBE637E4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 20:01:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D273C433C7;
+        Mon, 14 Aug 2023 20:01:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692043290;
+        bh=0Dopu3Kr2QfFROt/Fub5T1L31qUpIl/MqUeM9m/mw6k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gjlvrGkAmq08fLoMQW3+seEBRrwbC1oUNnbb4Sfr5On5w7i9mKc7jnCN5+IeMdKCK
+         awmk8fNryGoirR1GXJYvB4rJZExPxljLRyxGfZIjRzIysuIucF2pI0eeYt2vMvzxxU
+         wJtJGLBLhko//QZBkzOKCUj5TYW9Iw1zW/lpd1LzKNBtQMQ/GaEZXWGPtJL6ZYAXkQ
+         P5YSh3QcG2njGoSpHPANJSFJYXVBIK257zefhVfXqEufK6wBvfd1Or+eeu8iasPu+C
+         GlUzRXRN5xKxZNSRNit5TeWtGhZsLegcudKiHXlZrcXxyFSILZ4FweNvOcVf4ffd7c
+         lZVO49Zeq5vnQ==
+Date:   Mon, 14 Aug 2023 13:01:28 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
+        Andrew.Cooper3@citrix.com, gregkh@linuxfoundation.org,
+        nik.borisov@suse.com
+Subject: Re: [PATCH v2 00/11] Fix up SRSO stuff
+Message-ID: <20230814200128.ioas5lk2r3yzfkkv@treble>
+References: <20230814114426.057251214@infradead.org>
+ <20230814164447.GFZNpZ/64H4lENIe94@fat_crate.local>
+ <20230814195153.2zxtp6zx552trgh6@treble>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230814195153.2zxtp6zx552trgh6@treble>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,29 +59,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add one more space to FileHugePages and FilePmdMapped, so the output
-is aligned with other rows in /sys/devices/system/node/nodeN/meminfo.
+On Mon, Aug 14, 2023 at 12:51:55PM -0700, Josh Poimboeuf wrote:
+> On Mon, Aug 14, 2023 at 06:44:47PM +0200, Borislav Petkov wrote:
+> > On Mon, Aug 14, 2023 at 01:44:26PM +0200, Peter Zijlstra wrote:
+> > > The one open techinical issue I have with the mitigation is the alignment of
+> > > the RET inside srso_safe_ret(). The details given for retbleed stated that RET
+> > > should be on a 64byte boundary, which is not the case here.
+> > 
+> > I have written this in the hope to make this more clear:
+> > 
+> > /*
+> >  * Some generic notes on the untraining sequences:
+> >  *
+> >  * They are interchangeable when it comes to flushing potentially wrong
+> >  * RET predictions from the BTB.
+> >  *
+> >  * The SRSO Zen1/2 (MOVABS) untraining sequence is longer than the
+> >  * Retbleed sequence because the return sequence done there
+> >  * (srso_safe_ret()) is longer and the return sequence must fully nest
+> >  * (end before) the untraining sequence. Therefore, the untraining
+> >  * sequence must overlap the return sequence.
+> >  *
+> >  * Regarding alignment - the instructions which need to be untrained,
+> >  * must all start at a cacheline boundary for Zen1/2 generations. That
+> >  * is, both the ret in zen_untrain_ret() and srso_safe_ret() in the
+> >  * srso_untrain_ret() must both be placed at the beginning of
+> >  * a cacheline.
+> >  */
+> 
+> It's a good comment, but RET in srso_safe_ret() is still misaligned.
+> Don't we need something like so?
 
-Signed-off-by: Hugh Dickins <hughd@google.com>
----
- drivers/base/node.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Scratch that, I guess I misread the confusingly worded comment:
 
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index 9de524e56307..8e871ba9162f 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -446,8 +446,8 @@ static ssize_t node_read_meminfo(struct device *dev,
- 			     "Node %d AnonHugePages:  %8lu kB\n"
- 			     "Node %d ShmemHugePages: %8lu kB\n"
- 			     "Node %d ShmemPmdMapped: %8lu kB\n"
--			     "Node %d FileHugePages: %8lu kB\n"
--			     "Node %d FilePmdMapped: %8lu kB\n"
-+			     "Node %d FileHugePages:  %8lu kB\n"
-+			     "Node %d FilePmdMapped:  %8lu kB\n"
- #endif
- #ifdef CONFIG_UNACCEPTED_MEMORY
- 			     "Node %d Unaccepted:     %8lu kB\n"
+  "both the ret in zen_untrain_ret() and srso_safe_ret()..."
+
+to mean the RET in each function.
+
+How about:
+
+  "both the RET in zen_untrain_ret() and the LEA in srso_untrain_ret()"
+
+?
+
 -- 
-2.35.3
-
+Josh
