@@ -2,74 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8BB77C149
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13DAB77C14B
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231731AbjHNUHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 16:07:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35220 "EHLO
+        id S229513AbjHNUHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 16:07:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231364AbjHNUG5 (ORCPT
+        with ESMTP id S232020AbjHNUHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 16:06:57 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2C910C8
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:06:56 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d62bdd1a97dso4805333276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:06:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692043615; x=1692648415;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t1RQBQR/MAT6mtkRSBLye6IJ4VHPL4IQK3Vm3WdtiNU=;
-        b=imu/s4fyVMvlWWpKp8piuwCJw3qnyxyzhsyh+A8zI1BeWVRWddA2DC5GebTsvOHTTm
-         /MS3ynNjGPWHtuS5Qk/laq1K6eu13RLOntrXxzz/LKKPwna3qsN8UJak9Faz5ZZbhwAg
-         vA7LUKTKIvH7/PkD02qiU8G8uQBLUER0yKZ4lnWDhLTyew8ZDSwSLdaUj9rwqYV7Miq+
-         /CnYTwAlI/TF7x5+wRe2fiZQYxl952G0eTLk4yCYV/lIcaPkal+h1M8ATizQQtpJPqU6
-         djEW6RzdQxUK6EfCOK4bwC+gz4SSA6AsR14zuD6g7BoFoNzAAQnVXrBgVrdT/gqg0s2X
-         PzaA==
+        Mon, 14 Aug 2023 16:07:35 -0400
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E351C10C8
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:07:34 -0700 (PDT)
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-564b8c529bfso5050110a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:07:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692043615; x=1692648415;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t1RQBQR/MAT6mtkRSBLye6IJ4VHPL4IQK3Vm3WdtiNU=;
-        b=Tlq+WnzVyxn8pxGZDzDbzyBwujn3ObKOTcNMLVg4go7phhRrbOotNyf/7uxjx+9vMV
-         8P2Mh/Pcb+6/rLFLQcXSoG/liLdToaFPTYOFLCWhQcGcZyEpmdMvCT+xiacK3T29BiV0
-         6vh2n5qvTygFZ3os47uOoUcd8LMgfRjeM5HGait6gE1GT3WM0u3nmC4THZdeOeq1J/eP
-         RerWDn9vpnY65zhkyrLlsQ1RxgZJ4SRxp9DqcqBUa2SumdOoRxgnU9dr2H9aShOsgepI
-         uONC4CYIpFWwRwZ/Ws+mlaymE2f6W1NSLqVTrOGL7gxEmF9kb/y/49gTY08fqUhAzSM4
-         yZZg==
-X-Gm-Message-State: AOJu0YzbHWMtuLOyHnEMOUIdJBvoXlKe48ftFk7UtN23TVtsShniJMOy
-        CnLYlHdH72BE40nf0Ldpsn04Rwkn1v8QzClDaVIjnw==
-X-Google-Smtp-Source: AGHT+IGO4ICTwdePwp+mfoAA0rvSkF+6YukKJ8MuhcGINvMEj4kcA6FIWTcYRe0eyhPM1IlJImGo++yGi+dLw00Oc90=
-X-Received: by 2002:a25:84d1:0:b0:d12:1094:2036 with SMTP id
- x17-20020a2584d1000000b00d1210942036mr10534671ybm.43.1692043615117; Mon, 14
- Aug 2023 13:06:55 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692043654; x=1692648454;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ESKM9ZhqAvF1tyO2W2reMjI8w6E0LleNDUBpM/RmnhE=;
+        b=KC6wSGkMER4IYbk7V71TQhtnx0teclrF0WmdESS0fi/1G3e3VHarVMdemwZ8HXcZHB
+         4m3dVqCULhTwGalc3kZFF6tkRVO6CEyWszy0+Tk+boZszr0fvIgh8zzVac3MRy1oRUA7
+         HSfGGB2ZWCDWxBCF5EgT6aG/mXdZ+nBixrBi7xu5fxFnNgBV5/90p5EJ2QZyVnXA11QW
+         vRDY3MV4xPxBTxFUwWm/nqm3PtD8B/4rQ0GlzHRipfdi1LrQwVnQ/Z41inWQGX52918d
+         UkBYPcNdOgex4JGeErdAVbf/x94Zur/DtDYaRvQf0qk/wUvsf1a8/Mg5NEnu8eOsKjQ+
+         JSnQ==
+X-Gm-Message-State: AOJu0YwWwc9bYcFh3KbjDtz41WN8bDa7Yy23RGeCVOqdh+IL6tcYC6LT
+        t3K7mUN+vPQo32wr1VAoqFiR0Bip6U9q2/XzeftJIHTRVp/F
+X-Google-Smtp-Source: AGHT+IGJcaYn7JgRZ5RWZ0KV6TFJca5wDYAvPboBneb2qZY/w8uSMizCAPOACt3KIN2USvkejBe0nBlwXzs9Fhs/bo31xoHLNaxE
 MIME-Version: 1.0
-References: <20230804152724.3090321-1-surenb@google.com> <20230804152724.3090321-6-surenb@google.com>
- <CAG48ez0XCXoXbSR6dyX7GUQYJKRFKQsHuye5q-PLU3-gR5of5A@mail.gmail.com>
- <20230814121521.83c2dda21765757d272538b2@linux-foundation.org> <CAG48ez1U5RW6ZJxc9wK4vo8qMJcQ0t+H8z-h4V_E8dkVAomSAQ@mail.gmail.com>
-In-Reply-To: <CAG48ez1U5RW6ZJxc9wK4vo8qMJcQ0t+H8z-h4V_E8dkVAomSAQ@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 14 Aug 2023 13:06:44 -0700
-Message-ID: <CAJuCfpGODc=PpJFR2gUgpTAfn1sufvWWxQL5kGaHQ3dBpa1z1g@mail.gmail.com>
-Subject: Re: [PATCH v4 5/6] mm: always lock new vma before inserting into vma tree
-To:     Jann Horn <jannh@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        torvalds@linux-foundation.org, willy@infradead.org,
-        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
-        ldufour@linux.ibm.com, vbabka@suse.cz, michel@lespinasse.org,
-        jglisse@google.com, mhocko@suse.com, hannes@cmpxchg.org,
-        dave@stgolabs.net, hughd@google.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, kernel-team@android.com
+X-Received: by 2002:a17:903:2301:b0:1b8:95fc:d0f with SMTP id
+ d1-20020a170903230100b001b895fc0d0fmr4379586plh.7.1692043654450; Mon, 14 Aug
+ 2023 13:07:34 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 13:07:34 -0700
+In-Reply-To: <00000000000024d7f70602b705e9@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f7d5180602e79cec@google.com>
+Subject: Re: [syzbot] [udf?] KASAN: use-after-free Read in udf_sync_fs
+From:   syzbot <syzbot+82df44ede2faca24c729@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, jack@suse.com, jack@suse.cz,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        steve.magnani@digidescorp.com, steve@digidescorp.com,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,46 +57,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 1:02=E2=80=AFPM Jann Horn <jannh@google.com> wrote:
->
-> On Mon, Aug 14, 2023 at 9:15=E2=80=AFPM Andrew Morton <akpm@linux-foundat=
-ion.org> wrote:
-> > On Mon, 14 Aug 2023 16:54:01 +0200 Jann Horn <jannh@google.com> wrote:
-> >
-> > > > @@ -403,6 +403,8 @@ static int vma_link(struct mm_struct *mm, struc=
-t vm_area_struct *vma)
-> > > >
-> > > >   vma_iter_store(&vmi, vma);
-> > > >
-> > > > + vma_start_write(vma);
-> > > > +
-> > > >   if (vma->vm_file) {
-> > > >  mapping =3D vma->vm_file->f_mapping;
-> > > >  i_mmap_lock_write(mapping);
-> > >
-> > > The "vma_start_write()" has to be ordered before the
-> > > "vma_iter_store(&vmi, vma)".
-> >
-> > Thanks.  This?
-> >
-> >
-> > --- a/mm/mmap.c~mm-always-lock-new-vma-before-inserting-into-vma-tree-f=
-ix
-> > +++ a/mm/mmap.c
-> > @@ -401,10 +401,10 @@ static int vma_link(struct mm_struct *mm
-> >         if (vma_iter_prealloc(&vmi, vma))
-> >                 return -ENOMEM;
-> >
-> > -       vma_iter_store(&vmi, vma);
-> > -
-> >         vma_start_write(vma);
-> >
-> > +       vma_iter_store(&vmi, vma);
-> > +
-> >         if (vma->vm_file) {
-> >                 mapping =3D vma->vm_file->f_mapping;
-> >                 i_mmap_lock_write(mapping);
->
-> Yes, thanks, that looks good.
+syzbot has bisected this issue to:
 
-Ack. Thanks!
+commit e8b4274735e416621cfb28c2802b4ad52da35d0f
+Author: Steve Magnani <steve.magnani@digidescorp.com>
+Date:   Fri Feb 8 17:34:55 2019 +0000
+
+    udf: finalize integrity descriptor before writeback
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14e3d76fa80000
+start commit:   f8de32cc060b Merge tag 'tpmdd-v6.5-rc7' of git://git.kerne..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16e3d76fa80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12e3d76fa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=171b698bc2e613cf
+dashboard link: https://syzkaller.appspot.com/bug?extid=82df44ede2faca24c729
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10df55d7a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17e4d78ba80000
+
+Reported-by: syzbot+82df44ede2faca24c729@syzkaller.appspotmail.com
+Fixes: e8b4274735e4 ("udf: finalize integrity descriptor before writeback")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
