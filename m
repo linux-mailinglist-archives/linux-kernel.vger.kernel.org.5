@@ -2,93 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8902E77B76C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBF6F77B77D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234283AbjHNLSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 07:18:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48978 "EHLO
+        id S234393AbjHNLWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 07:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234409AbjHNLSa (ORCPT
+        with ESMTP id S232041AbjHNLVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 07:18:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68AC3E58;
-        Mon, 14 Aug 2023 04:18:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692011909; x=1723547909;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=LwXTc34PIhThEixHnA6kYem0jG0C3Vl5cr3G0oK3FTM=;
-  b=Cb1F0Ud/2OfO7BztXtlOeYA9eoOLxoljCHARh86U0d8bqiyziDtpBywP
-   4fvABep8GcMeWPG9jlF7pa7gSradZdtzwoFXc3li6O6VTkr6Pdzrt58RX
-   mCszsVpjLm0Hn7unyafWgHpywtZkmjXKZpTjRKdnvU+7IIe66RyS+tDGz
-   lyspGTvmEKgaaOzx8NjWnuU3VMPHTzoLMFnyw+W9rxmbOxMqerI3DZAAg
-   /+RDE2sSPKNo45D52zE2Tt3viqwUI1GbdUvmKiNe+eeK0T86GgrFpbnlN
-   f5DdZ/YSu3Sd3Fiygy+hvGVmr55WLLaJDv5NP2plti/puea7EsUt/OiJC
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="374785657"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="374785657"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 04:18:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="979951515"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="979951515"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga006.fm.intel.com with ESMTP; 14 Aug 2023 04:18:27 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qVVab-0026aN-2H;
-        Mon, 14 Aug 2023 14:18:25 +0300
-Date:   Mon, 14 Aug 2023 14:18:25 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        linux-gpio@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: regression from commit b0ce9ce408b6 ("gpiolib: Do not unexport
- GPIO on freeing")
-Message-ID: <ZNoNgWQG/5jdXlCK@smile.fi.intel.com>
-References: <20230808102828.4a9eac09@dellmb>
- <ZNYKjnPjIRWIYVot@smile.fi.intel.com>
- <20230814093934.1793961e@dellmb>
+        Mon, 14 Aug 2023 07:21:47 -0400
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050:0:465::201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE99DFA
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 04:21:45 -0700 (PDT)
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4RPX6G0yH2z9sbl;
+        Mon, 14 Aug 2023 13:21:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1692012102;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=GPof4EdKgMmvyi7WtVwBA65TF/30DyeXTjxNc7Ahtgw=;
+        b=QOBYNh/oovsWwu8rM4hzdngQm2+7ZfASOLJfCygfP+X1j8ij/gv0Gom2axD8E+Sj848/OP
+        mcGT63bauZe6HLYC4gNjvXC+2Dq3olRxfay/dzoMvV/6GwDtcaII6GoTWE7wh2TA6LlAa1
+        R7nWQXc4KYuv8gau6rmzwZSQmPN16c5VZ76USDBUQ7h4PYmJ7/vXBhQkanYM+XzSrVXzSO
+        ky5O6jf35HQHfLT4DeRdthts7ulz01DP6V391u9d3KNoKIJKD+Zr3ihZ7k+yN/JXVdg21K
+        yXP642/0uhwy8+WFPoA6Qw9ZxXsiMXIq2n1QHqRuMf8u1/Z1c9/PrBw0d0rdVQ==
+Subject: Re: Does srso safe RET mitigation require microcode update?
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Xi Ruoyao <xry111@xry111.site>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Ken Moffat <zarniwhoop@ntlworld.com>
+References: <79c179acaa6ec4e1cf112ae2dfce8370694a5089.camel@xry111.site>
+ <20230814091012.GAZNnvdD6JX/4E679D@fat_crate.local>
+ <0338eb8b-6b60-313c-e6eb-faca071c5227@mailbox.org>
+ <20230814101134.GBZNn91uTmNImxRDXr@fat_crate.local>
+From:   Rainer Fiebig <jrf@mailbox.org>
+Autocrypt: addr=jrf@mailbox.org; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <9294eeed-e354-48e3-a0fe-8f917074ef8f@mailbox.org>
+Date:   Mon, 14 Aug 2023 13:21:01 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230814093934.1793961e@dellmb>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230814101134.GBZNn91uTmNImxRDXr@fat_crate.local>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-MBO-RS-META: d415p65yidbo8krp86au33yfxiaf5jk7
+X-MBO-RS-ID: 4339c7495afae762f7c
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 09:39:34AM +0200, Marek Behún wrote:
-> On Fri, 11 Aug 2023 13:16:46 +0300
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+Am 14.08.23 um 12:11 schrieb Borislav Petkov:
+> On Mon, Aug 14, 2023 at 11:47:54AM +0200, Rainer Fiebig wrote:
+>> "* 'Mitigation: safe RET':
+>>
+>>    Software-only mitigation. It complements the extended IBPB microcode
+>>    patch functionality by addressing User->Kernel and Guest->Host
+>>    transitions protection."
+>>
+>> Now, what does that mean: partial mitigation or also no mitigation
+>> without microcode?
+> 
+> It *complements*! Meaning, for a full safe RET mitigation, you need the
+> microcode on Zen3/4.
+> 
+> Would that explain it better?
+> 
+> "First of all, it is required that the latest microcode be loaded for
+> mitigations to be effective. That means that for the User->User
+> aspect of the mitigation to be effective, one needs the updated
+> microcode for Zen3 and Zen4 generations. In addition, one needs to
+> *enable* the User->User mitigation which is part of the spectre_v2_user
+> controls:
+> 
+>   - conditional IBPB:
+> 
+>   where each process can select whether it needs an IBPB issued around
+>   it PR_SPEC_DISABLE/_ENABLE etc, see Spectre Side Channels. That is the
+>   default setting
+> 
+>   - strict:
+> 
+>   i.e., always on - by supplying spectre_v2_user=on on the kernel
+>   command line."
+> 
+> IOW, without microcode, you do not mitigate the User->User aspect of the
+> mitigation but you mitigate the other vectors with safe RET.
+> 
+OK, thanks.  So I think a reasonable approach for ordinary users would
+be to update to the latest (LTS-) kernel, use the defaults for the
+mitigations and update to the new AGESA when available.
 
-...
-
-> tested, works.
-
-I convert this to the Tested-by tag, I hope you won't object.
-But tell me if it's the case.
-
-> Please add Fixes tag when sending the patch
-
-Sure, it's done locally that day already :-)
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Rainer
