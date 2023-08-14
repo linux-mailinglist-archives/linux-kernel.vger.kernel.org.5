@@ -2,64 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 908E777C0D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E9D77C0D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231847AbjHNTbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 15:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42690 "EHLO
+        id S232182AbjHNTd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 15:33:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232246AbjHNTbj (ORCPT
+        with ESMTP id S232161AbjHNTdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 15:31:39 -0400
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED74C3;
-        Mon, 14 Aug 2023 12:31:34 -0700 (PDT)
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1bbff6b2679so29828715ad.1;
-        Mon, 14 Aug 2023 12:31:34 -0700 (PDT)
+        Mon, 14 Aug 2023 15:33:00 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15686ED
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:32:59 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5234f46c6f9so6236349a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:32:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692041577; x=1692646377;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+PPyRkE8QNcnw8n4URXIBMydlUyue4gEnUO37VgDlOA=;
+        b=uZ42I4tK6dm+P+AF/H5MI2p0bu0VHhQ7yPZs/u6FYyCso2ccRZgNK6eZBMNd3rmvFo
+         sLXx4suRvyn6HQYLfroPz4RL43N7kgktorfctw5SfYFMrhK3qCBbcWgm0rh1R0eSDX6s
+         kZ6dHLa3Hes0qOybeWm0EAXeb+7QMheSjTumDW4XQJPTpXMINE5Lv0ogrgL7ssFYqUbY
+         90BM7ESD8Y3MuQBzRaiUrDFp4xKx44Coo4evx2Y9K8KK614ipaXzIkPxvQQvKL1HY/kt
+         /N1bdIYgFb5wyqnMDqdCf44YbHhHkHUGlT48j5CZlGww6W2fDaceH9UP8GCDz46y01ci
+         RXhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692041494; x=1692646294;
+        d=1e100.net; s=20221208; t=1692041577; x=1692646377;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bJBCZPU7wndBMkkSrEOkrwqV7pJUYyiEi+KRQwCxM/c=;
-        b=NJDc54e/tjfqzoQ9i4EmVw8BgzQC3wjgHvVRIIRik8rBhUFP0ASuXldFV5VV70liki
-         jos8nxEwquRQnl+m5mDH/6Q5LADe9O8v2P2bGTzYkZ1Gke8rPrvIRNELWTbk75eg0s3d
-         XkQZcnxwwUOK7FCuOdICmz+T8/foHx9GrT29t7Dr9OqB3l3cMc0TgssFJksOKzAt47q6
-         Ool3DpdjN/4cGt6/XsEgC4/8e/gMQlapOlJIdDRLEfcA49ZigQstvaPnIt7m1/RORGot
-         c876MCEDO9lxeVBiIg1a2Zmerg5LKLX8H8EWjyw7sMv9ehjG63oIFu+Cla0bBDe15H/Z
-         wF2w==
-X-Gm-Message-State: AOJu0Yzf1BrlPICdc9Mpa4OUuGd6LleBJeHh3B1SyAi3nBfBl/OVAbpa
-        atYrik2z7AF+t59RXytdaHE=
-X-Google-Smtp-Source: AGHT+IHoTREhRW2DAyMdFvoW6r5gYLHWsA6I3O33/SI1QmYEvcRepE2xqpf7X+5KNkimT5WG+C43xA==
-X-Received: by 2002:a17:902:ce89:b0:1b8:94e9:e7b0 with SMTP id f9-20020a170902ce8900b001b894e9e7b0mr10722355plg.9.1692041493803;
-        Mon, 14 Aug 2023 12:31:33 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:e105:59a6:229c:65de? ([2620:15c:211:201:e105:59a6:229c:65de])
-        by smtp.gmail.com with ESMTPSA id o18-20020a170902d4d200b001ac591b0500sm9836780plg.134.2023.08.14.12.31.32
+        bh=+PPyRkE8QNcnw8n4URXIBMydlUyue4gEnUO37VgDlOA=;
+        b=JAxYj4qDPvQXhnn3IzxsRgnl6gUhmJM9acrF4wOo+ANKOROHzVWgXlyBRbpT6Zcvs5
+         KwmVog7n+1wCGppkyLYrEWkWvrKKizlBPA4Fnj8blwq4ifxUmtSl4hO3ow07h7mIHH6u
+         /q7CuXFHNMITarQWT8D02Lb9jJXa1ABUEznm/0DZTMAVei/NKAhUiOorAQNGl5yrQxHv
+         r/XYcWEyCNZ+jIs4EO0bbkrKQj8LqsZJf7gYs+WHCD6xlxjeVJiXxB2WZMd47xYLLsSE
+         qr/1Go/CmYu/EXa1RVSwLNkMdDhK/X9IvAX8RXlxyjHwJ17slAv8SsyRIhcNAVZPheoN
+         0SrQ==
+X-Gm-Message-State: AOJu0YyVTLs3CR7Msd2Uw8Syy5zIt5/sJ7uuF7dbhaRkUTTpPgWT8qHO
+        mOJIxbz+Fw+MpFcMuV34E4BqLA==
+X-Google-Smtp-Source: AGHT+IHCJObag9Dyk19qMlfSCfz6Iy2moD47tbSnD7NtULAtaT+peJh+ZdxunQCt9JIIgTgjSOmhoQ==
+X-Received: by 2002:aa7:d8d8:0:b0:525:46b7:40f2 with SMTP id k24-20020aa7d8d8000000b0052546b740f2mr5057909eds.21.1692041577535;
+        Mon, 14 Aug 2023 12:32:57 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id a25-20020aa7cf19000000b0051e1660a34esm5930702edy.51.2023.08.14.12.32.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 12:31:33 -0700 (PDT)
-Message-ID: <f01040be-dfa5-fe60-fba5-410fccc1d50e@acm.org>
-Date:   Mon, 14 Aug 2023 12:31:31 -0700
+        Mon, 14 Aug 2023 12:32:57 -0700 (PDT)
+Message-ID: <b3eebd2b-c73b-fdc7-2b2b-07e97db26d92@linaro.org>
+Date:   Mon, 14 Aug 2023 21:32:55 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH v3 1/2] scsi: ufs: core: convert to dev_err_probe() in
- hba_init
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 1/3] dt-bindings: hwmon: Add Infineon TDA38640
 Content-Language: en-US
-To:     Brian Masney <bmasney@redhat.com>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hugo@hugovil.com, quic_nguyenb@quicinc.com
-References: <20230814184352.200531-1-bmasney@redhat.com>
- <20230814184352.200531-2-bmasney@redhat.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20230814184352.200531-2-bmasney@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Naresh Solanki <naresh.solanki@9elements.com>,
+        Conor Dooley <conor@kernel.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        krzysztof.kozlowski+dt@linaro.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-hwmon@vger.kernel.org,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230802193155.2170935-1-Naresh.Solanki@9elements.com>
+ <20230808-stand-cheddar-b76b0b7509a0@spud>
+ <eced746a-1181-bd8f-6828-4a4eeb79727c@roeck-us.net>
+ <20230808-esquire-epidemic-f9bd74ffde25@spud>
+ <CABqG17jm938MaEeqS03WeryVWSRBS7Bqq2Vwq9SL4QOGqXU43A@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CABqG17jm938MaEeqS03WeryVWSRBS7Bqq2Vwq9SL4QOGqXU43A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,25 +86,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/23 11:43, Brian Masney wrote:
-> diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-> index 129446775796..409d176542e1 100644
-> --- a/drivers/ufs/core/ufshcd.c
-> +++ b/drivers/ufs/core/ufshcd.c
-> @@ -9235,8 +9235,9 @@ static int ufshcd_variant_hba_init(struct ufs_hba *hba)
->   
->   	err = ufshcd_vops_init(hba);
->   	if (err)
-> -		dev_err(hba->dev, "%s: variant %s init failed err %d\n",
-> -			__func__, ufshcd_get_var_name(hba), err);
-> +		dev_err_probe(hba->dev, err,
-> +			      "%s: variant %s init failed err %d\n",
-> +			      __func__, ufshcd_get_var_name(hba), err);
->   out:
->   	return err;
->   }
+On 11/08/2023 18:00, Naresh Solanki wrote:
+> Hi,
+> 
+> On Tue, 8 Aug 2023 at 19:58, Conor Dooley <conor@kernel.org> wrote:
+>>
+>> On Tue, Aug 08, 2023 at 07:10:08AM -0700, Guenter Roeck wrote:
+>>> On 8/8/23 04:46, Conor Dooley wrote:
+>>>> On Wed, Aug 02, 2023 at 09:31:51PM +0200, Naresh Solanki wrote:
+>>>>> From: Patrick Rudolph <patrick.rudolph@9elements.com>
+>>>>>
+>>>>> The TDA38640 chip has different output control mechanisms depending on
+>>>>> its mode of operation. When the chip is in SVID mode, only
+>>>>> hardware-based output control is supported via ENABLE pin. However, when
+>>>>> it operates in PMBus mode, software control works perfectly.
+>>>>>
+>>>>> To enable software control as a workaround in SVID mode, add the DT
+>>>>> property 'infineon,en-svid-control'. This property will enable the
+>>>>> workaround, which utilizes ENABLE pin polarity flipping for output when
+>>>>> the chip is in SVID mode.
+>>>>
+>>>> Why do you need a custom property for this? How come it is not possible
+>>>> to determine what bus you are on?
+>>>>
+>>>
+>>> That is not the point. Yes, it can be detected if the control method is
+>>> PMBus or SVID. However, in SVID mode, SVID is supposed to control the
+>>> output, not PMBUs. This is bypassed by controlling the polarity of the
+>>> (physical) output enable signal. We do _not_ want this enabled automatically
+>>> in SVID mode. Its side effects on random boards using this chip are unknown.
+>>> Thus, this needs a property which specifically enables this functionality
+>>> for users who _really_ need to use it and (hopefully) know what they are
+>>> doing.
+>>
+>> Hmm, reading this it makes a lot more sense why this is a property - I
+>> guess I just struggled to understand the commit message here,
+>> particularly what the benefit of using the workaround is. I'm still
+>> having difficulty parsing the commit & property text though - its
+>> unclear to me when you would need to use it - so I will stay out
+>> of the way & let Rob or Krzysztof handle things.
+> 
+> To provide context, my system employs a unique power sequence
+> strategy utilizing a BMC (Baseboard Management Controller),
+> rendering the reliance on the ENABLE pin unnecessary.
+> In this configuration, the ENABLE pin is grounded in the hardware.
+> While most regulators facilitate PMBus Operation for output control,
+> the TDA38640 chip, when in SVID mode, is constrained by the
+> ENABLE pin to align with Intel specifications.
+> My communication with Infineon confirmed that the recommended
+> approach is to invert the Enable Pin for my use case.
+> 
+> Since this is not typically the use case for most setup & hence DT property
+> is must for enabling the special case.
+> 
+> For further insight into my setup's power sequence strategy, you can
+> refer to the following link: https://github.com/9elements/pwrseqd
+> 
 
-This opportunity could have been used to improve the grammar of the reported
-error message. Anyway:
+This justifies to me the property, but still you described desired
+driver behavior, not the hardware characteristic. Don't describe what
+you want to control, but describe the entire system.
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Best regards,
+Krzysztof
+
