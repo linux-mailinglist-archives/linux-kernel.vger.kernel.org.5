@@ -2,185 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4333777C34F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2930F77C352
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233215AbjHNWNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 18:13:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37086 "EHLO
+        id S233230AbjHNWP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 18:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjHNWNi (ORCPT
+        with ESMTP id S233224AbjHNWPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 18:13:38 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE5918B
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 15:13:36 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-6434cd84a96so13604016d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 15:13:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692051216; x=1692656016;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BWR92NMLKFIonzwAykGWVN4HTMfWfyQosEFE/Od71EM=;
-        b=XZUYwHHDr86bXJT3oLOwvUmkwAoC7RcjQdvwJf3pcjwnVr+26pL0EjxTZHnGAaO2Qh
-         a5r0XLPQlrUr8sXlb3LQ7wJ2LMQqbd2kmmYB+UhmVEPlyrAi6c/L/cDhmIDMCPqcFiFn
-         +qslXJpCAuSnF18RNwfE1BwLJjbiivXqFI7TUjzI8wp5lehdrGvV5EcEnxYRcZWikZHh
-         nhPULTGgljV9+y4tA1Qw8E06GYDevX+7v1CroaLrU3Q22wZYEEVYUPH4FVe8NAMcZ6KI
-         enevvMjlVyd4Rr3eI8UvaVkyFE2/s418d2p7XZwbDj7Rc/t0iPYMudQQVbpoWKLLmkz3
-         6NbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692051216; x=1692656016;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BWR92NMLKFIonzwAykGWVN4HTMfWfyQosEFE/Od71EM=;
-        b=klxuPK9JGIg37XpfYdvChSJ3mg86nomFVCAtbtvDMta+91oUrY8JpoplNo3w2tAuOr
-         0gKzwHyPdPmBomCi9v5UjEutcbCgWfp0p0ZRPEWsFy38G990/4LPr5aO+3Zwbvgf0Tnp
-         WCy5+LGVECi57+evA9pDAHHxLMuRvb7QO0AnO90+3W3ljDM1lrraF/H+8bOKAsEGPEha
-         N8+ubeo8q0xtVWCDbjDPV23yJMNAywkmXBhZWtCgbvS8rO+UDsRnjoMQcy/BTepkkrQQ
-         rKMyUWoF/aTnWUcDCfxybvQb2jNb9iRpeg0KnYqp1I1+KqUGnU5R9jPYe6U3uDra+44l
-         88hQ==
-X-Gm-Message-State: AOJu0Yz3Jy0Li7o7JZt7tVEyDYOknZlDSfSgLSJzBA4oNaaxuG39AKyu
-        XO+CwVj2lJ3tVXZx6NjHIIHhJPtMb5U+Vd1LKtFEq8vNY8Z0cLxvDpgxUA==
-X-Google-Smtp-Source: AGHT+IGVqigk1DqQrF/cP0IKDfGG1Y12PPhuKBWQwem6mCRw3c/TxJoXVvUwwHTIhchOutIX2ZCr1TkM5X73fQqFXDQ=
-X-Received: by 2002:a05:6214:494:b0:642:ee8b:88b1 with SMTP id
- pt20-20020a056214049400b00642ee8b88b1mr488600qvb.13.1692051215946; Mon, 14
- Aug 2023 15:13:35 -0700 (PDT)
+        Mon, 14 Aug 2023 18:15:49 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43F518B
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 15:15:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FsU/kUSJeE4IFdU+pvafaqq9P1yFMndH/wWAsxvd9/4=; b=hakcm+Ofq8QDSIor1cPcv+fxUB
+        3xBVCq+UOwwoWJVyBYgzvb+LHSUGtmnhKxXkfr9Vd4C1StQN7XW0mpQUgsT/UPr9ss1uJ4lWjq68H
+        ZSN9dFqJPzYQBqd4SlJkf9biaHZ3A5qQ6ZGVRvGVJ2iNiXMCGrNGPYUDZXZJfYI9jC5iJi2aq9ABP
+        YcKFAbt2fsiruXQj47BzpFciCMHDH89mu2rjr9QXHYaCrGkhECosDN0uVzK+J5+XRbKDQ1ZGGd1vX
+        PuUvw/KHgSrlYcM3J7BaHZ1uwMDrffzwPogOG+L9RjVdf3NRtzO8blptrwaZEUtUZsOuqG/vS54kl
+        mA6XxuPQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qVfq4-00AuYL-2V;
+        Mon, 14 Aug 2023 22:15:07 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EE4DC300388;
+        Tue, 15 Aug 2023 00:15:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DAB4820E3EFC4; Tue, 15 Aug 2023 00:15:03 +0200 (CEST)
+Date:   Tue, 15 Aug 2023 00:15:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-coco@lists.linux.dev, Borislav Petkov <bp@alien8.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v2 5/5] virt: sevguest: Add TSM_REPORTS support for
+ SNP_{GET, GET_EXT}_REPORT
+Message-ID: <20230814221503.GA919179@hirez.programming.kicks-ass.net>
+References: <169199898909.1782217.10899362240465838600.stgit@dwillia2-xfh.jf.intel.com>
+ <169199901829.1782217.16990408177897780160.stgit@dwillia2-xfh.jf.intel.com>
+ <20230814112144.GF776869@hirez.programming.kicks-ass.net>
+ <64da55624c6c1_2138e294cf@dwillia2-xfh.jf.intel.com.notmuch>
+ <20230814164804.GO776869@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <202308090204.9yZffBWo-lkp@intel.com> <CAKwvOd=c94gknBq7TUsQEyC095+1iRW540=xD3zRkf3+Q4vn5Q@mail.gmail.com>
- <ZNSWMgFF529bGy14@yujie-X299>
-In-Reply-To: <ZNSWMgFF529bGy14@yujie-X299>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 14 Aug 2023 15:13:25 -0700
-Message-ID: <CAKwvOd=DC9Ws0+77=6d2M5TqnU=ygCV8HonHKMF7LzzL67z8VQ@mail.gmail.com>
-Subject: Re: error: A dwo section may not contain relocations
-To:     Yujie Liu <yujie.liu@intel.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        Kees Cook <keescook@chromium.org>, llvm@lists.linux.dev,
-        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Conor Dooley <conor@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230814164804.GO776869@hirez.programming.kicks-ass.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 1:04=E2=80=AFAM Yujie Liu <yujie.liu@intel.com> wro=
-te:
->
-> Hi Nick,
->
-> On Tue, Aug 08, 2023 at 12:46:00PM -0700, Nick Desaulniers wrote:
-> > On Tue, Aug 8, 2023 at 12:02=E2=80=AFPM kernel test robot <lkp@intel.co=
-m> wrote:
-> > >
-> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linu=
-x.git master
-> > > head:   02aee814d37c563e24b73bcd0f9cb608fbd403d4
-> > > commit: f9b3cd24578401e7a392974b3353277286e49cee Kconfig.debug: make =
-DEBUG_INFO selectable from a choice
-> > > date:   1 year, 5 months ago
-> > > config: riscv-randconfig-r001-20230808 (https://download.01.org/0day-=
-ci/archive/20230809/202308090204.9yZffBWo-lkp@intel.com/config)
-> > > compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.=
-git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-> >
-> > FWIW, I wasn't able to reproduce with the provided config and
-> > clang-17.  Perhaps this is a bug for older clang releases (the bot
-> > tested with clang-14).
->
-> Thanks for this info. We re-tested with various versions of clang.
-> clang-14 throws this error, while clang-15/16/17 have no problem in this
+On Mon, Aug 14, 2023 at 06:48:04PM +0200, Peter Zijlstra wrote:
+> On Mon, Aug 14, 2023 at 09:25:06AM -0700, Dan Williams wrote:
+> > Peter Zijlstra wrote:
+> > > On Mon, Aug 14, 2023 at 12:43:38AM -0700, Dan Williams wrote:
+> > > > +static u8 *sev_report_new(struct device *dev, const struct tsm_desc *desc,
+> > > 
+> > > > +			  size_t *outblob_len)
+> > > > +{
+> > > 
+> > > > +
+> > > > +	u8 *buf __free(kvfree) = kvzalloc(size, GFP_KERNEL);
+> > > > +
+> > > 
+> > > > +
+> > > > +	*outblob_len = size;
+> > > > +	no_free_ptr(buf);
+> > > > +	return buf;
+> > > 
+> > > This seems broken, no_free_ptr(x) is basically xchg(X, NULL) (except no
+> > > atomics). So the above would end up being:
+> > > 
+> > > 	return NULL;
+> > > 
+> > > What you want to write is somehting like:
+> > > 
+> > > 	return no_free_ptr(buf);
+> > > 
+> > > or, a convenient shorthand:
+> > > 
+> > > 	return_ptr(buf);
+> > > 
+> > 
+> > Oh, I indeed did not realize that no_free_ptr() had side effects beyond
+> > canceling the free when the variable goes out of scope. Will switch to
+> > return_ptr().
+> 
+> Indeed -- ideally no_free_ptr() would be combined with __must_check, but
+> I'm not immediately sure how to pull that off. Let me stick that on the
+> to-do list.
 
-Oh, interesting data point.
+This seems to actually work. I'll try and write some coherent comments
+tomorrow -- it's definitely too late for that now.
 
-Ok, I've filed https://github.com/ClangBuiltLinux/linux/issues/1914 to
-track this.
-
-Will bisect llvm to find when this was fixed.
-
-Then we will fix kconfig for the split debug info.
-
-> case. We will consider adjusting our compiler coverage and remove the old
-> clang-14.
-
-Documentation/process/changes.rst lists our minimal support for
-clang-11+.  It's still useful to have clang-14 builds.
-
->
-> Best Regards,
-> Yujie
->
-> > > reproduce: (https://download.01.org/0day-ci/archive/20230809/20230809=
-0204.9yZffBWo-lkp@intel.com/reproduce)
-> > >
-> > > If you fix the issue in a separate patch/commit (i.e. not just a new =
-version of
-> > > the same patch/commit), kindly add following tags
-> > > | Reported-by: kernel test robot <lkp@intel.com>
-> > > | Closes: https://lore.kernel.org/oe-kbuild-all/202308090204.9yZffBWo=
--lkp@intel.com/
-> > >
-> > > All errors (new ones prefixed by >>):
-> > >
-> > > >> error: A dwo section may not contain relocations
-> > > >> error: A dwo section may not contain relocations
-> > > >> error: A dwo section may not contain relocations
-> > > >> error: A dwo section may not contain relocations
-> > > >> error: A dwo section may not contain relocations
-> > > >> error: A dwo section may not contain relocations
-> > > >> error: A dwo section may not contain relocations
-> > > >> error: A dwo section may not contain relocations
-> > > >> error: A dwo section may not contain relocations
-> > > >> error: A dwo section may not contain relocations
-> > > >> error: A dwo section may not contain relocations
-> > > >> error: A dwo section may not contain relocations
-> > > >> error: A dwo section may not contain relocations
-> > > >> error: A dwo section may not contain relocations
-> > > >> error: A dwo section may not contain relocations
-> > > >> error: A dwo section may not contain relocations
-> > > >> error: A dwo section may not contain relocations
-> > > >> error: A dwo section may not contain relocations
-> > > >> error: A dwo section may not contain relocations
-> > >    fatal error: too many errors emitted, stopping now [-ferror-limit=
-=3D]
-> > >    20 errors generated.
-> > >    make[2]: *** [scripts/Makefile.build:288: arch/riscv/kernel/vdso/v=
-gettimeofday.o] Error 1 shuffle=3D3686795728
-> > >    make[2]: Target 'include/generated/vdso-offsets.h' not remade beca=
-use of errors.
-> > >    make[1]: *** [arch/riscv/Makefile:120: vdso_prepare] Error 2 shuff=
-le=3D3686795728
-> > >    make[1]: Target 'prepare' not remade because of errors.
-> > >    make: *** [Makefile:219: __sub-make] Error 2 shuffle=3D3686795728
-> > >    make: Target 'prepare' not remade because of errors.
-> > >
-> > > --
-> > > 0-DAY CI Kernel Test Service
-> > > https://github.com/intel/lkp-tests/wiki
-> >
-> >
-> >
-> > --
-> > Thanks,
-> > ~Nick Desaulniers
-> >
-
-
-
---=20
-Thanks,
-~Nick Desaulniers
+diff --git a/include/linux/cleanup.h b/include/linux/cleanup.h
+index 53f1a7a932b0..162052cef4c7 100644
+--- a/include/linux/cleanup.h
++++ b/include/linux/cleanup.h
+@@ -39,8 +39,12 @@
+ 
+ #define __free(_name)	__cleanup(__free_##_name)
+ 
++static inline __must_check void * __no_free_ptr(void **pp)
++{ void *p = *pp; *pp = NULL; return p; }
++
+ #define no_free_ptr(p) \
+-	({ __auto_type __ptr = (p); (p) = NULL; __ptr; })
++	((void)__builtin_types_compatible_p(void *, typeof(p)), \
++	 ((typeof(p))__no_free_ptr((void **)&(p))))
+ 
+ #define return_ptr(p)	return no_free_ptr(p)
+ 
