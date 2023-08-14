@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C921C77BF7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 20:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E9877BF7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 20:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbjHNSD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 14:03:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56632 "EHLO
+        id S229788AbjHNSD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 14:03:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbjHNSC6 (ORCPT
+        with ESMTP id S231418AbjHNSDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 14:02:58 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF605B5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 11:02:56 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37EF8ZNs026801;
-        Mon, 14 Aug 2023 18:02:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=UNpVzQ4CMH+jlXb43JIfY+cDSdv9lcGGxee2ap9UWU4=;
- b=ORLoqQU2AuraEppgxCeYnw94c85s3RLg5fKNecf4Awv1Ml+V6/NozBqISg4TEbYR8nx/
- VikH7UIcOzzFxtBMzEnzlu3XQt4fDyHx40xs8XOfny2+YXlrvX0+Xotuij2W34IU7UrU
- 5KnQcwHblJo8/tIrqpAOTxf0uLoVcN5Q3C1DRzkMcb92NAhQppXi5gMvVSDCHw1bO0XA
- JXARDpBtwHPAo+YnSPxSWUBzSC5uH4uERab/HHofiM3R+8sN7ErbO1SVsIIvmnr/3GvR
- 8LG9UyAXV7messvqGH4FjsZ6OJardmwl4Oxvs07MlJ3LIrdC/pFcJ0q/3zMwVk5EZdNx JQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3se40rmf5n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Aug 2023 18:02:50 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37EI2nF5021222
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Aug 2023 18:02:49 GMT
-Received: from [10.134.70.142] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 14 Aug
- 2023 11:02:48 -0700
-Message-ID: <548b0333-103b-ac66-0fc5-f29e7cc50596@quicinc.com>
-Date:   Mon, 14 Aug 2023 11:02:47 -0700
+        Mon, 14 Aug 2023 14:03:46 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE8010DE;
+        Mon, 14 Aug 2023 11:03:45 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b9bf52cd08so67904551fa.2;
+        Mon, 14 Aug 2023 11:03:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692036224; x=1692641024;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mC2VXhQU4CT2VksXFrqMrSWVDm6lE1KSTIG6MCJKlyQ=;
+        b=B8d6JJ6vW2JP8DGhMzF0cTe3zGMnkA4RxRa1jsozlrNhPTyVmQ5SAwEoO9bNgk2w7v
+         1ms1nzq7zCAtDzuvEYwNaev7Z1+luCvPIeln/Wc/JTfSBQ/qTaO1lxeLFjhaySwZMjYX
+         ayGiCT2+rlBFHjDkF2hPapu8aItQ+uGLFc2VLvHwF4iFNS1RNHUEHcDFTPZXhhd1O+72
+         ZGlmZseLXq5bilRyskGf38w8iCfFkMtHxic7DwzIcTRZEqSPZQ2ULzp9rubTzkd50EJY
+         YGo+JD7yeNg7q3USjyqULjhQ1RVkppodbSfOctTMTgDFfKEjYq+knnoiPVHLMyIf0HD7
+         PmNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692036224; x=1692641024;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mC2VXhQU4CT2VksXFrqMrSWVDm6lE1KSTIG6MCJKlyQ=;
+        b=CUQ8jRBmrDL9OWczQoJgmhI2qRPZvE4+LgpvXFpBwkvUEgyijqTdRZgzxiFOHfzPOD
+         37IHU7MKT7SL6tzbD2Gu7veu2x0Qqrw1mBitCalFpHCpjppzc94FvvhPML6TKAuhpHhV
+         LLWmx9JSoBHn2mzJD8oZKkNJcBOb7ycwSRWQtbuoaD86YDqZpcyDedNyF1TPF8xWsbMG
+         VkUrOoeh0YcHGtMqILTY7wkWN/fIYUFLnl0zOmwbRimEiEOv8aex0JEh2tQPqiwt7RE6
+         qCN+LaEL4t8Fjwetf+VrDDENDpxrHCSKlfJ5X/dg9YwJJFiN6h/86Z+zra+tQWUrWz6V
+         DAYA==
+X-Gm-Message-State: AOJu0YwnjWQdhbnd98zw7lVK6axNqNPi+IAejhrZ1SQBeT+pCW5TRnmf
+        cTsM2Huwx5kTFWmgHLHaKII=
+X-Google-Smtp-Source: AGHT+IF7gMEe3vJFVMtOlRZ218BSwotA2DoAUSs7z9Qnop0AdryTgdrg8UGTSqHeqnJrfyGq70r//g==
+X-Received: by 2002:a2e:930d:0:b0:2b9:f27f:e491 with SMTP id e13-20020a2e930d000000b002b9f27fe491mr7567188ljh.42.1692036223664;
+        Mon, 14 Aug 2023 11:03:43 -0700 (PDT)
+Received: from fedora.. ([2a00:1370:8180:6b00:a1a8:4887:1af4:637a])
+        by smtp.gmail.com with ESMTPSA id p24-20020a2ea418000000b002b1b92910c8sm2552460ljn.86.2023.08.14.11.03.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 11:03:43 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        dhowells@redhat.com, pabeni@redhat.com
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+cba21d50095623218389@syzkaller.appspotmail.com
+Subject: [PATCH v2] crypto: fix uninit-value in af_alg_free_resources
+Date:   Mon, 14 Aug 2023 21:03:41 +0300
+Message-Id: <20230814180341.8621-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230813122344.14142-1-paskripkin@gmail.com>
+References: <20230813122344.14142-1-paskripkin@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox
- VTDR6130
-Content-Language: en-US
-To:     <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        Douglas Anderson <dianders@chromium.org>,
-        "Dmitry Baryshkov" <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@gmail.com>
-CC:     <quic_parellan@quicinc.com>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
- <dde2774e-6f0b-21d0-e9c9-4a5bd1eac4e8@linaro.org>
- <2f9a9450-438b-257d-759c-22b273a7b35d@quicinc.com>
- <c183d823-81d4-6d7c-98d9-649fa4041262@quicinc.com>
- <6c0dd9fd-5d8e-537c-804f-7a03d5899a07@linaro.org>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <6c0dd9fd-5d8e-537c-804f-7a03d5899a07@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: p7f1EE0LqDINZI6rLBFQZuxEHTysgEP8
-X-Proofpoint-GUID: p7f1EE0LqDINZI6rLBFQZuxEHTysgEP8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-14_15,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 impostorscore=0 priorityscore=1501 spamscore=0 bulkscore=0
- mlxlogscore=999 suspectscore=0 clxscore=1015 adultscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308140167
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,170 +74,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil
+Syzbot was able to trigger use of uninitialized memory in
+af_alg_free_resources.
 
-On 8/14/2023 1:01 AM, neil.armstrong@linaro.org wrote:
-> Hi Abhinav,
-> 
-> On 10/08/2023 18:26, Abhinav Kumar wrote:
->> Hi Neil
->>
->> On 8/3/2023 10:19 AM, Jessica Zhang wrote:
->>>
->>>
->>> On 7/31/2023 6:00 AM, Neil Armstrong wrote:
->>>> Hi,
->>>>
->>>> On 26/07/2023 00:56, Jessica Zhang wrote:
->>>>> Due to a recent introduction of the pre_enable_prev_first bridge 
->>>>> flag [1],
->>>>> the panel driver will be probed before the DSI is enabled, causing the
->>>>> DCS commands to fail to send.
->>>>>
->>>>> Ensure that DSI is enabled before panel probe by setting the
->>>>> prepare_prev_first flag for the panel.
->>>>
->>>> Well this is specific to MSM DSI driver, it's not related at all to 
->>>> the panel.
->>>
->>
->> I dont fully agree this is a MSM DSI driver specific thing.
->>
->> If the panel can send its commands in its enable() callback, then this 
->> flag need not be set.
->>
->> When a panel sends its DCS commands in its pre_enable() callback, any 
->> DSI controller will need to be ON before that otherwise DCS commands 
->> cannot be sent.
->>
->> With this in mind, may I know why is this a MSM change and not a panel 
->> change?
->>
->> As per my discussion with Dmitry during the last sync up, we were 
->> aligned on this expectation.
-> 
-> As of today, only the MSM DSI driver expects panels to have 
-> prepare_prev_first because it's the first
-> one calling pre_enable() before the DSI controller to be on, all other 
-> DSI drivers I know
-> still enables the DSI controller in mode_set() and thus can send 
-> commands in pre_enable() which
-> is a loose way to map the pre-video state for DSI panels...
-> 
+Bug is caused by missing initialization of rsgl->sgl.need_unpin before
+adding to rsgl_list. Then in case of extract_iter_to_sg() failure, rsgl
+is left with uninitialized need_unpin which is read during clean up
 
-It looks like there are multiple panels already setting this flag so 
-this panel will not be the first unless they were added to make those 
-work with MSM (which seems unlikely)
+BUG: KMSAN: uninit-value in af_alg_free_sg crypto/af_alg.c:545 [inline]
+BUG: KMSAN: uninit-value in af_alg_free_areq_sgls crypto/af_alg.c:778 [inline]
+BUG: KMSAN: uninit-value in af_alg_free_resources+0x3d1/0xf60 crypto/af_alg.c:1117
+ af_alg_free_sg crypto/af_alg.c:545 [inline]
+ af_alg_free_areq_sgls crypto/af_alg.c:778 [inline]
+ af_alg_free_resources+0x3d1/0xf60 crypto/af_alg.c:1117
+ _skcipher_recvmsg crypto/algif_skcipher.c:144 [inline]
+...
 
-panel-samsung-s6d7aa0.c:        ctx->panel.prepare_prev_first = true;
-panel-samsung-s6e3ha2.c:        ctx->panel.prepare_prev_first = true;
-panel-samsung-s6e63j0x03.c:     ctx->panel.prepare_prev_first = true;
-panel-samsung-s6e8aa0.c:        ctx->panel.prepare_prev_first = true;
+Uninit was created at:
+ slab_post_alloc_hook+0x12f/0xb70 mm/slab.h:767
+ slab_alloc_node mm/slub.c:3470 [inline]
+ __kmem_cache_alloc_node+0x536/0x8d0 mm/slub.c:3509
+ __do_kmalloc_node mm/slab_common.c:984 [inline]
+ __kmalloc+0x121/0x3c0 mm/slab_common.c:998
+ kmalloc include/linux/slab.h:586 [inline]
+ sock_kmalloc+0x128/0x1c0 net/core/sock.c:2683
+ af_alg_alloc_areq+0x41/0x2a0 crypto/af_alg.c:1188
+ _skcipher_recvmsg crypto/algif_skcipher.c:71 [inline]
 
-This is where I would like to understand a bit that if the panel sends 
-out the ON commands in enable() instead of pre_enable() then, this flag 
-will not be needed. So its also depends on the panel side and thats why
-the bridge feeds of the panel's input in devm_drm_panel_bridge_add_typed()
+Fixes: c1abe6f570af ("crypto: af_alg: Use extract_iter_to_sg() to create scatterlists")
+Reported-and-tested-by: syzbot+cba21d50095623218389@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=cba21d50095623218389
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
 
-bridge->pre_enable_prev_first = panel->prepare_prev_first;
+Changes since v1:
+	- Move sgl.need_unpin initialization upper instead of
+	  pre-initializing it with false as suggested by David
 
-> A panel driver should not depend on features of a DSI controller, which 
-> is the case here
-> with this patch. Today's expectation is to send DSI commands in 
-> pre_enable() then when enabled
-> expect to be in video mode when enable() is called.
-> 
+---
+ crypto/af_alg.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-We are not depending on any feature as such. Any DSI controller , not 
-just MSM's would need to be ON for DCS commands to be sent out in the 
-panel's pre_enable() callback.
+diff --git a/crypto/af_alg.c b/crypto/af_alg.c
+index 06b15b9f661c..10efb56d8b48 100644
+--- a/crypto/af_alg.c
++++ b/crypto/af_alg.c
+@@ -1241,6 +1241,8 @@ int af_alg_get_rsgl(struct sock *sk, struct msghdr *msg, int flags,
+ 				return -ENOMEM;
+ 		}
+ 
++		rsgl->sgl.need_unpin =
++			iov_iter_extract_will_pin(&msg->msg_iter);
+ 		rsgl->sgl.sgt.sgl = rsgl->sgl.sgl;
+ 		rsgl->sgl.sgt.nents = 0;
+ 		rsgl->sgl.sgt.orig_nents = 0;
+@@ -1255,8 +1257,6 @@ int af_alg_get_rsgl(struct sock *sk, struct msghdr *msg, int flags,
+ 		}
+ 
+ 		sg_mark_end(rsgl->sgl.sgt.sgl + rsgl->sgl.sgt.nents - 1);
+-		rsgl->sgl.need_unpin =
+-			iov_iter_extract_will_pin(&msg->msg_iter);
+ 
+ 		/* chain the new scatterlist with previous one */
+ 		if (areq->last_rsgl)
+-- 
+2.40.1
 
-Its not true that MSM is the only driver powering on the DSI controller 
-in pre_enable(). Even MTK seems to be doing that
-
-mtk_dsi_bridge_atomic_pre_enable
-
-So I assume any panel which sends out commands in pre_enable() will not 
-work with MTK as well.
-
-> The main reason is because some DSI controllers cannot send LP commands 
-> after switching
-> to video mode (allwinner for example), so we must take this into account.
-> 
-> For v6.6, I don't see other solutions than reverting 9e15123eca79 
-> (reverting won't regress anything,
-> because now it regresses also other panels on MSM platforms) and try to 
-> find a proper solution for v6.7...
-> 
-
-No, I would prefer not to revert that. It will bring back special 
-handling for the parade chip into MSM driver, something which I would 
-prefer not to go back to. Powering on the DSI in modeset() was done only 
-for the parade chip.
-
-> Neil
-> 
->>
->> Thanks
->>
->> Abhinav
->>
->>> Hi Neil,
->>>
->>> I think there might be some confusion caused by the commit message -- 
->>> instead of "enabled before panel probe", it should be "enabled before 
->>> panel pre_enable()" as the panel on commands are sent during 
->>> prepare(), which is matched to bridge pre_enable().
->>>
->>> IIRC the general rule is that the panel driver should set the 
->>> prepare_prev_first flag if the on commands are sent during 
->>> pre_enable(), so I'll keep the code change but correct the commit 
->>> message if that's ok with you.
->>>
->>> Thanks,
->>>
->>
->>> Jessica Zhang
->>>
->>>>
->>>> Neil
->>>>
->>>>>
->>>>> [1] commit 4fb912e5e190 ("drm/bridge: Introduce 
->>>>> pre_enable_prev_first to alter bridge init order")
-> 
-> It's not the right commit that cause regression here, it's :
-> 
-> 9e15123eca79 drm/msm/dsi: Stop unconditionally powering up DSI hosts at 
-> modeset
-> 
->>>>>
->>>>> Fixes: 2349183d32d8 ("drm/panel: add visionox vtdr6130 DSI panel 
->>>>> driver")
->>>>> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
->>>>> ---
->>>>>   drivers/gpu/drm/panel/panel-visionox-vtdr6130.c | 1 +
->>>>>   1 file changed, 1 insertion(+)
->>>>>
->>>>> diff --git a/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c 
->>>>> b/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c
->>>>> index bb0dfd86ea67..e1363e128e7e 100644
->>>>> --- a/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c
->>>>> +++ b/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c
->>>>> @@ -296,6 +296,7 @@ static int visionox_vtdr6130_probe(struct 
->>>>> mipi_dsi_device *dsi)
->>>>>       dsi->format = MIPI_DSI_FMT_RGB888;
->>>>>       dsi->mode_flags = MIPI_DSI_MODE_VIDEO | 
->>>>> MIPI_DSI_MODE_NO_EOT_PACKET |
->>>>>                 MIPI_DSI_CLOCK_NON_CONTINUOUS;
->>>>> +    ctx->panel.prepare_prev_first = true;
->>>>>       drm_panel_init(&ctx->panel, dev, &visionox_vtdr6130_panel_funcs,
->>>>>                  DRM_MODE_CONNECTOR_DSI);
->>>>>
->>>>> ---
->>>>> base-commit: 28a5c036b05fc5c935cc72d76abd3589825ea9cd
->>>>> change-id: 20230717-visionox-vtdr-prev-first-e00ae02eec9f
->>>>>
->>>>> Best regards,
->>>>
-> 
