@@ -2,77 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDD577B320
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A3777B324
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234391AbjHNH61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 03:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56612 "EHLO
+        id S233358AbjHNIBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 04:01:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234374AbjHNH6U (ORCPT
+        with ESMTP id S232656AbjHNIBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 03:58:20 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7364F9F;
-        Mon, 14 Aug 2023 00:58:18 -0700 (PDT)
-Received: from loongson.cn (unknown [112.20.109.245])
-        by gateway (Coremail) with SMTP id _____8Cx7+uZ3tlkRQkYAA--.48569S3;
-        Mon, 14 Aug 2023 15:58:17 +0800 (CST)
-Received: from [192.168.100.8] (unknown [112.20.109.245])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx_c6S3tlk2pxZAA--.24232S3;
-        Mon, 14 Aug 2023 15:58:11 +0800 (CST)
-Message-ID: <479156cf-1bdb-421a-8dab-0db8ff73012b@loongson.cn>
-Date:   Mon, 14 Aug 2023 15:58:10 +0800
+        Mon, 14 Aug 2023 04:01:32 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5297D9F
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:01:30 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3197808bb08so486561f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:01:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692000089; x=1692604889;
+        h=content-transfer-encoding:in-reply-to:subject:organization
+         :references:cc:to:content-language:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+HyrK9yUrT2T/ZNwRuy5YfUlkcnbL8Wy7txqOlS3kQs=;
+        b=V6nDojvQDv+P/XF51KDUUdYDT1s9etF/cA5SWF72dHO3IJEWPbYYs0ztztyGHOv3nx
+         200XucdYmp6wBwpUSphf9+ck6gNpSaBifeIWHLgNz0JdHXcZeDR9sD2t3aLuWuOxsDqa
+         2Ebv2+jvjvI3Zd573qIDHxccD5xvmV0/3H7tlBsYR1fM2A0szxmCC1wlEhJQE6rkTNZB
+         hQRj5czf/Jw58bTWTgIElQRpkTEgIsl+V9BV1cPnG/G43XrHkrq6YtBepuJzpr6y2TlA
+         MTYYi16rap0+TcY9oKXksWIp36RRNvmGTsJWNfLeXDrikC6crfBwrRXjpQ8TPsyPFWsx
+         V/Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692000089; x=1692604889;
+        h=content-transfer-encoding:in-reply-to:subject:organization
+         :references:cc:to:content-language:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+HyrK9yUrT2T/ZNwRuy5YfUlkcnbL8Wy7txqOlS3kQs=;
+        b=QPKr70SccFEdJNfpb3fATMOGss93k4LZThv0Kq/gQNkSjIxN2sje82khxrG91K04Bn
+         XyggnaGIdbOPiuVvjoTurSkIcR5TbtClvCAt5zZQUyylkFQxYgA1xTjJxYWkbs825B1N
+         XOzlk4UjrFE5vqRwsmtg7lGLND2Wpz+uKcLBZIbkx/Ht1AFLK//EOUzIKKG8yo64Sybg
+         scSBbMCcp2esmTI+ZaqgyEnHaCVa4b+v36V/lS10tq5Vq3X/7T8jD8vQ3CjfhFSk/2iH
+         W/14BTIn20Ws1tJi88MRYrifsK9bqIsHP+5VmQUj2pqn2m+S4oY+IbzxOcOlyhmr797l
+         CmWQ==
+X-Gm-Message-State: AOJu0YyW4kXaPTAoyRzwCMSrV65Xiwo9LKREhwaozqn7RbcKEVcJ6tSj
+        Sk2arKNOZeN6/9BSuiu83rH7oA==
+X-Google-Smtp-Source: AGHT+IFdabwukLrD2dl+LcZLuQ3MoNMALZ/80yTL4ZPZvc66Cl28Ph45jSNj/aK3qCih/TW0KUiypg==
+X-Received: by 2002:a5d:54cb:0:b0:317:5e73:7594 with SMTP id x11-20020a5d54cb000000b003175e737594mr5546842wrv.28.1692000088649;
+        Mon, 14 Aug 2023 01:01:28 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:a3d8:b217:d82c:9bc0? ([2a01:e0a:982:cbb0:a3d8:b217:d82c:9bc0])
+        by smtp.gmail.com with ESMTPSA id s6-20020a5d5106000000b003141a3c4353sm13605343wrt.30.2023.08.14.01.01.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Aug 2023 01:01:28 -0700 (PDT)
+Message-ID: <6c0dd9fd-5d8e-537c-804f-7a03d5899a07@linaro.org>
+Date:   Mon, 14 Aug 2023 10:01:27 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND v1] docs/zh_CN: add zh_CN translation for
- memory-barriers.txt
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
 Content-Language: en-US
-To:     Gang Li <gang.li@linux.dev>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-doc@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20230811080851.84497-1-gang.li@linux.dev>
- <2f519a69-8f12-4c07-bf20-6776a5ada256@loongson.cn>
- <f8de40bf-1743-793f-7723-232adbfab623@linux.dev>
-From:   Yanteng Si <siyanteng@loongson.cn>
-In-Reply-To: <f8de40bf-1743-793f-7723-232adbfab623@linux.dev>
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Douglas Anderson <dianders@chromium.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     quic_parellan@quicinc.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
+ <dde2774e-6f0b-21d0-e9c9-4a5bd1eac4e8@linaro.org>
+ <2f9a9450-438b-257d-759c-22b273a7b35d@quicinc.com>
+ <c183d823-81d4-6d7c-98d9-649fa4041262@quicinc.com>
+Organization: Linaro Developer Services
+Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox
+ VTDR6130
+In-Reply-To: <c183d823-81d4-6d7c-98d9-649fa4041262@quicinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Cx_c6S3tlk2pxZAA--.24232S3
-X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
-X-Coremail-Antispam: 1Uk129KBj93XoW7WF4DKw4fKF43ur4fZFW3CFX_yoW8Cr15pa
-        yFy3Z2kFs8Jrs7C3Z7Cr1jkryrK3ySkw45W34UJr9Fyrn0qF1fKrWSq398Cryqgrn5GFy3
-        Xw47Kw13Cr1rAagCm3ZEXasCq-sJn29KB7ZKAUJUUUUJ529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUtVW8ZwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-        8JMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
-        6r4UMxCIbckI1I0E14v26r1q6r43MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwV
-        AFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv2
-        0xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4
-        v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AK
-        xVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0L0ePUUUUU==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,70 +90,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Abhinav,
 
-在 2023/8/14 10:40, Gang Li 写道:
-> Hi,
->
-> On 2023/8/12 19:00, Yanteng Si wrote:
->> 在 2023/8/11 16:08, Gang Li 写道:
->>> +译注：
->>> +本文仅为方便汉语阅读，不保证与英文版本同步;
->>> +若有疑问，请阅读英文版本;
->>> +若有翻译问题，请通知译者；
->>> +若想修改文档，也请先修改英文版本。
+On 10/08/2023 18:26, Abhinav Kumar wrote:
+> Hi Neil
+> 
+> On 8/3/2023 10:19 AM, Jessica Zhang wrote:
 >>
->> In fact, we already have an easier way to do this, just include 
->> disclaimer-zh_CN.
 >>
->> If you observe the files under .../zh_CN/, they all have a similar 
->> header, and we can completely follow them.
+>> On 7/31/2023 6:00 AM, Neil Armstrong wrote:
+>>> Hi,
+>>>
+>>> On 26/07/2023 00:56, Jessica Zhang wrote:
+>>>> Due to a recent introduction of the pre_enable_prev_first bridge flag [1],
+>>>> the panel driver will be probed before the DSI is enabled, causing the
+>>>> DCS commands to fail to send.
+>>>>
+>>>> Ensure that DSI is enabled before panel probe by setting the
+>>>> prepare_prev_first flag for the panel.
+>>>
+>>> Well this is specific to MSM DSI driver, it's not related at all to the panel.
 >>
-> Thanks. I just noticed that there are txt files under 
-> "zh_CN/arch/arm64/" and "zh_CN/video4linux/". They have the same 
-> header, and I will
-> refer to them in v2.
->
->> But you should also have noticed that memory-barriers are not a 
->> standard rst file and will not be built, which will result in it only 
->> staying in the development tree.
->> It won't appear at:
-> https://docs.kernel.org
-> https://www.kernel.org/doc/html/latest/
->
-> But people can still access the txt document in this way:
-> https://www.kernel.org/doc/Documentation/memory-barriers.txt
->
->> Finally, this patch is too huge and we may need some time to review it.
+> 
+> I dont fully agree this is a MSM DSI driver specific thing.
+> 
+> If the panel can send its commands in its enable() callback, then this flag need not be set.
+> 
+> When a panel sends its DCS commands in its pre_enable() callback, any DSI controller will need to be ON before that otherwise DCS commands cannot be sent.
+> 
+> With this in mind, may I know why is this a MSM change and not a panel change?
+> 
+> As per my discussion with Dmitry during the last sync up, we were aligned on this expectation.
+
+As of today, only the MSM DSI driver expects panels to have prepare_prev_first because it's the first
+one calling pre_enable() before the DSI controller to be on, all other DSI drivers I know
+still enables the DSI controller in mode_set() and thus can send commands in pre_enable() which
+is a loose way to map the pre-video state for DSI panels...
+
+A panel driver should not depend on features of a DSI controller, which is the case here
+with this patch. Today's expectation is to send DSI commands in pre_enable() then when enabled
+expect to be in video mode when enable() is called.
+
+The main reason is because some DSI controllers cannot send LP commands after switching
+to video mode (allwinner for example), so we must take this into account.
+
+For v6.6, I don't see other solutions than reverting 9e15123eca79 (reverting won't regress anything,
+because now it regresses also other panels on MSM platforms) and try to find a proper solution for v6.7...
+
+Neil
+
+> 
+> Thanks
+> 
+> Abhinav
+> 
+>> Hi Neil,
 >>
-> Of course. Would it be more convenient if I split the file into multiple
-> patches and send them as one series?
-You didn't have to.
-
-
-If you want to send a series, you can refactor the original document 
-into rst format and make it the first patch of the series.
-
-Just like:
-
-[PATCH  v2 0/2] docs: Refactor memory-barriers.txt and translate it into 
-Chinese
-
-[PATCH  v2 1/2] docs: convert memory-barriers.txt to RST
-
-[PATCH  v2 2/2] docs/zh_CN: add zh_CN translation for memory-barriers.rst
-
-
-Thanks,
-
-Yanteng
-
->
+>> I think there might be some confusion caused by the commit message -- instead of "enabled before panel probe", it should be "enabled before panel pre_enable()" as the panel on commands are sent during prepare(), which is matched to bridge pre_enable().
+>>
+>> IIRC the general rule is that the panel driver should set the prepare_prev_first flag if the on commands are sent during pre_enable(), so I'll keep the code change but correct the commit message if that's ok with you.
 >>
 >> Thanks,
 >>
->> Yanteng
+> 
+>> Jessica Zhang
 >>
->
-> Thanks,
-> Gang Li
+>>>
+>>> Neil
+>>>
+>>>>
+>>>> [1] commit 4fb912e5e190 ("drm/bridge: Introduce pre_enable_prev_first to alter bridge init order")
+
+It's not the right commit that cause regression here, it's :
+
+9e15123eca79 drm/msm/dsi: Stop unconditionally powering up DSI hosts at modeset
+
+>>>>
+>>>> Fixes: 2349183d32d8 ("drm/panel: add visionox vtdr6130 DSI panel driver")
+>>>> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+>>>> ---
+>>>>   drivers/gpu/drm/panel/panel-visionox-vtdr6130.c | 1 +
+>>>>   1 file changed, 1 insertion(+)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c b/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c
+>>>> index bb0dfd86ea67..e1363e128e7e 100644
+>>>> --- a/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c
+>>>> +++ b/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c
+>>>> @@ -296,6 +296,7 @@ static int visionox_vtdr6130_probe(struct mipi_dsi_device *dsi)
+>>>>       dsi->format = MIPI_DSI_FMT_RGB888;
+>>>>       dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_NO_EOT_PACKET |
+>>>>                 MIPI_DSI_CLOCK_NON_CONTINUOUS;
+>>>> +    ctx->panel.prepare_prev_first = true;
+>>>>       drm_panel_init(&ctx->panel, dev, &visionox_vtdr6130_panel_funcs,
+>>>>                  DRM_MODE_CONNECTOR_DSI);
+>>>>
+>>>> ---
+>>>> base-commit: 28a5c036b05fc5c935cc72d76abd3589825ea9cd
+>>>> change-id: 20230717-visionox-vtdr-prev-first-e00ae02eec9f
+>>>>
+>>>> Best regards,
+>>>
 
