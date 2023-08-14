@@ -2,136 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD0677B1F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A3777B1F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233958AbjHNHAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 03:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60776 "EHLO
+        id S234001AbjHNHAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 03:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233947AbjHNG7q (ORCPT
+        with ESMTP id S234152AbjHNHAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 02:59:46 -0400
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B485E63;
-        Sun, 13 Aug 2023 23:59:45 -0700 (PDT)
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-52564f3faf7so882315a12.1;
-        Sun, 13 Aug 2023 23:59:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691996383; x=1692601183;
-        h=content-transfer-encoding:in-reply-to:subject:content-language:from
-         :references:cc:to:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dz6rNrYEZr1o1hy+Da5bIJKDMQSjh+lwDKkiGk9K2V4=;
-        b=PWdMGCUCI32v36c7b3JVGqjjjwtPKVWfcwI3WfwyujAtGKhDMFk0srVyLj3e2ud8h2
-         oLEkvPwTSuXvuPF2GHI9ATv7hXsAUPYaX1n8aCIzjDGww6SNROwniD2z/FwIpX4aYfyq
-         9WR4W6i0wl88prliVw1x0ePhRj/waYI4JZ/yU4CFTUoiAuyIU3y6NEbsV7500kBZMm+O
-         +daKT9QyMwGQ/5/hcnAlP7l2oOf+10akgV9TlLQlpaa/YTJhxAN4wCZ0P2dM0pL+LAWA
-         VplAobWO+QilwOBAEs6bZkQnLtKofG09MhypoUH/hMf6rgbXsbP/3VyePxW1RU46ZiK7
-         e4Qg==
-X-Gm-Message-State: AOJu0Yzci0D7ADLucWm8Bi3mmYQDOJ5XzRxCLxTxwPH6eXu3d3lvsDEf
-        iVgJpq1r5cXJ8iXDc9kw4Y2+X3JXJcK5Vw==
-X-Google-Smtp-Source: AGHT+IElH741V6Bi5Gmlqjb+OuvSWI5oSrQOEULXddo956CvC0pSJPxznY9UNorCmFPx1iNMO1xWKg==
-X-Received: by 2002:a17:907:7604:b0:99d:b9d6:6014 with SMTP id jx4-20020a170907760400b0099db9d66014mr306158ejc.4.1691996383408;
-        Sun, 13 Aug 2023 23:59:43 -0700 (PDT)
-Received: from [192.168.1.58] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id s10-20020a1709064d8a00b0099364d9f0e6sm5270550eju.117.2023.08.13.23.59.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 13 Aug 2023 23:59:43 -0700 (PDT)
-Message-ID: <8a0b6de4-3459-76fb-9117-287e71e315f1@kernel.org>
-Date:   Mon, 14 Aug 2023 08:59:42 +0200
+        Mon, 14 Aug 2023 03:00:37 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06574E63;
+        Mon, 14 Aug 2023 00:00:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1691996436; x=1723532436;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HyMtUxxgw2gVLDNuMwD4mMzvJ49O4kx94ybiRXJDRfw=;
+  b=tDJP5sHrCe+RGRVMyWvpkWiFG65k87LOfQ/miYxMfUwjUjtiVEJkZEYK
+   ydhkmn89pTz0CMoI7/QwQpSJOWLfawtpCMiA/2PSBPNkbrSDDLUIyfKbr
+   V59WlkUWpR+HgGjsUaTOevupmzwXMERccR+oVQ6x5tU4fhJEn6xFEwZEL
+   1k8LneHnGDc5dgxOi71sll+T1o5rR7u8tZsIooRrFbWcZquV9g7yofOMl
+   qJhHbr6lYACUbhR7uVMp1+yR7Jy9R33l5BDj1dkGaen0L92ofMGTZdt0x
+   JZy3kE0SnICIYNJsRAayVRiTWm/70hEnYuuVAKUN79DYNeyxnANdpSisx
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
+   d="asc'?scan'208";a="166290856"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Aug 2023 00:00:35 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 14 Aug 2023 00:00:33 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Mon, 14 Aug 2023 00:00:30 -0700
+Date:   Mon, 14 Aug 2023 07:59:51 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Md Danish Anwar <a0501179@ti.com>
+CC:     Conor Dooley <conor@kernel.org>,
+        MD Danish Anwar <danishanwar@ti.com>,
+        Suman Anna <s-anna@ti.com>, Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <vigneshr@ti.com>,
+        <srk@ti.com>, <nm@ti.com>
+Subject: Re: [PATCH] dt-bindings: remoteproc: pru: Add Interrupt property
+Message-ID: <20230814-circus-preachy-b5b9f6ad07d0@wendy>
+References: <20230807110836.2612730-1-danishanwar@ti.com>
+ <20230807-euphemism-trailing-ef4130dc7437@spud>
+ <910a4a98-712a-5517-5a5b-ffb962f83463@ti.com>
+ <20230808-unwomanly-generic-67d20f0e51cd@spud>
+ <cd74e31f-8bc6-445b-9c33-51e53a439cd2@ti.com>
+ <20230808-bazooka-uncoated-a3401d94b063@spud>
+ <e49fb304-bd5d-5013-815f-5933a2a170c4@ti.com>
+ <20230811-ladylike-snore-abba84731921@spud>
+ <ce22155c-31b9-3dd1-8336-275fa92c234d@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-To:     =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20230810091510.13006-1-jirislaby@kernel.org>
- <728dc060-d38c-b8d4-783-2322115cf4b4@linux.intel.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Content-Language: cs-CZ, en-US
-Subject: Re: [PATCH 00/36] tty: type unifications -- part I.
-In-Reply-To: <728dc060-d38c-b8d4-783-2322115cf4b4@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="QVaRVnEiOl5Q3z9C"
+Content-Disposition: inline
+In-Reply-To: <ce22155c-31b9-3dd1-8336-275fa92c234d@ti.com>
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11. 08. 23, 12:26, Ilpo Järvinen wrote:
-> On Thu, 10 Aug 2023, Jiri Slaby (SUSE) wrote:
-> 
->> Currently, the tty layer ops and functions use various types for same
->> things:
->> * characters and flags: unsigned char, char are used on a random basis,
->> * counts: int, unsigned int, size_t are used, again more-or-less
->>    randomly.
->>
->> This makes it rather hard to remember where each type is required and it
->> also makes the code harder to follow. Also the code has to do min_t() on
->> many places simply because the variables hold the same kind of data, but
->> of different type.
->>
->> This is the first part of the series to unify the types:
->> * make characters and flags 'u8'. This is what the hardware expects and
->>    what feeds the tty layer with. Since we compile with -funsigned-char,
->>    char and unsigned char are the same types on all platforms. So there
->>    is no actual change in type.
->> * make sizes/counts 'size_t'. This is what comes from the VFS layer and
->>    some tty functions already operate on this. So instead of using
->>    "shorter" (in term of bytes on 64bit) unsigned int, stick to size_t
->>    and promote it to most places.
->>
->> More cleanup and spreading will be done in tty_buffer, n_tty, and
->> likely other places later.
->>
->> Patches 1-8 are cleanups only. The rest (the real switch) depends on
->> those.
-> 
-> Yeah, very much needed change and step into the right direction!
-> 
-> It's a bit tedious to review all this and comment a particular subchange
-> but e.g. n_tty_receive_buf_common() still seems to still have int count
-> which I think fall into the same call chain about size/count (probably
-> most related change is #15). Note though that it also has room which I
-> think can actually become negative so it might not be as straightforward
-> search and replace like some other parts are.
+--QVaRVnEiOl5Q3z9C
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-tl;dr
-https://git.kernel.org/pub/scm/linux/kernel/git/jirislaby/linux.git/commit/?h=devel&id=9abb593df5a9b9b72d13438f1862ca67936f6b66
+On Mon, Aug 14, 2023 at 10:43:58AM +0530, Md Danish Anwar wrote:
+> On 11/08/23 8:51 pm, Conor Dooley wrote:
+> > On Fri, Aug 11, 2023 at 04:48:28PM +0530, Md Danish Anwar wrote:
+> >=20
+> >>>> There are no standard defines for these interrupt types. However I c=
+an create a
+> >>>> new .h file defining all the three interrupt cells and their values =
+for both
+> >>>> PRU and RTU cores if you think that is required. Otherwise we can go=
+ with
+> >>>> hardcoded values.
+> >>>>
+> >>>> Please let me know what you think should be done here.
+> >>>
+> >>> It'd be good to reference to the documentation for the cells, I don't
+> >>> think adding a header is necessary here.
+> >>>
+> >>
+> >> How should I reference to the documentation for the cells?
+> >>
+> >> Should I just add the details of cells in description of interrupt pro=
+perty here.
+> >>
+> >>   interrupts:
+> >>     maxItems: 1
+> >>     description:
+> >>       Interrupt specifiers enable the virtio/rpmsg communication betwe=
+en MPU
+> >>       and the PRU/RTU cores. The value of the interrupts should be the=
+ PRU
+> >>       System event number [cell 1], PRU channel [cell 2] and PRU host_=
+event
+> >>       (target) [cell 3].
+> >>
+> >> Please let me know if this looks OK to you.
+> >=20
+> > I was thinking there'd be an binding for the interrupt controller that
+> > you could mentioned.
+>=20
+> There is a binding for interrupt-controller [1] that I can mention. I tri=
+ed using
+>=20
+> - $ref: /schemas/interrupt-controller/ti,pruss-intc.yaml#
+>=20
+> But it was throwing dt binding errors so I didn't add the ref.
 
-----
+Yeah, you're not a pruss-itc so that makes sense.
 
-Yes, sorry, my bad -- I forgot to elaborate on why this is "part I." and 
-what is going to be part II., III., ...
+>=20
+> I will mention this file name in the description of the property like bel=
+ow,
+>=20
+>      description:
+>        Interrupt specifiers enable the virtio/rpmsg communication between=
+ MPU
+>        and the PRU/RTU cores. For the values of the interrupt cells please
+>        refer to interrupt-controller/ti,pruss-intc.yaml schema.
+>=20
+> Please let me know if this looks OK to you.
 
-So yeah, I have more in my queue which is growing a lot. I had to cut it 
-at some point as I was losing myself in all the changes already. So I 
-flushed this "part I.". It is only a minimalistic change in the core and 
-necessary changes in drivers' hooks. Parts II. and on will spread this 
-more, of course. Ideally, to every single loop in every driver ;) (in 
-long-term).
+This is what I would've expected, yea
 
-I still have a bunch of changes for tty_buffer and n_tty in my queue. As 
-soon as I rebase on the today's -next which is already supposed to 
-contain this part I., I will send part II. with these changes. I could 
-have merged those II. changes to some earlier I. patches. At first, I 
-actually did try, but the patches were growing with more and more 
-dependencies, so I stopped this approach. Instead, I separated the 
-changes per the core/ldisc/drivers. The parts are self-contained, 
-despite it might look like the changes are incomplete (i.e. not 
-everything is changed everywhere). After all, I wanted to avoid one 
-hundred+ patches series.
+--QVaRVnEiOl5Q3z9C
+Content-Type: application/pgp-signature; name="signature.asc"
 
-thanks,
--- 
-js
-suse labs
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNnQ5wAKCRB4tDGHoIJi
+0sOoAP493J6fgOaLp+xT4qZeoRYxhj410prJLo6DeSre5PkDgQD7BBF3IDKbwsZs
+ZER6gpf5G77oetGXKenPhwnAhW6RwwU=
+=a2k2
+-----END PGP SIGNATURE-----
+
+--QVaRVnEiOl5Q3z9C--
