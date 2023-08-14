@@ -2,336 +2,418 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE80777B832
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD0177B833
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbjHNMGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 08:06:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57028 "EHLO
+        id S232605AbjHNMGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 08:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232968AbjHNMFx (ORCPT
+        with ESMTP id S232582AbjHNMGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 08:05:53 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EAB418B;
-        Mon, 14 Aug 2023 05:05:51 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9d3dacb33so65409251fa.1;
-        Mon, 14 Aug 2023 05:05:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692014749; x=1692619549;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=knsc5YPfC/WceC+DsUjbvgGYRviUK/I7sfDY7NcGB5A=;
-        b=WwWIxRwAHv/a0iRDmjo/3dp5VuB05tDpEbkzuYLdUMdIOCfteHViVu+bhOzmoRMH6f
-         4hVbkf7yYp/JIwseBC0mLoiucBXVC81IDrkVIaGm8lH14Yq6/O1eBhkYzTnlQJjh5mM4
-         qwrNjr1CJ5ZE85tYorZbHoCL/hW/ukffIkNnysiZa2vsfKiC849h3t13f+rnohE7g+2Y
-         OzZj8C2r/9xZ0wvN/1rSkzkvtcucVLgmdNc3FM4W5IuzpzrbK9iyHxugF8VLeqB33ezF
-         Fs56QbfmsfA6T+6gzqL55dguJJ4b60EKoomvLScynmv0v6WbNKVCM/9F4b9qLfj6Ig5U
-         3Tug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692014749; x=1692619549;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=knsc5YPfC/WceC+DsUjbvgGYRviUK/I7sfDY7NcGB5A=;
-        b=MG3k6DOVtBmFJIktszeO1KNrakfrMPmdaZhmxnQ6SemNYnz4AYrRQ6GrtQwDYlThkC
-         gUbZC+PsgDuGFa4Bcc69F0vyd0n7lrZTozahdJqEEeT25DNYz/h9ooSAwVa4sjry4vF2
-         UahwpJmbvMB8kxEJSzFDUQoXuEC0GXBhC6VzfGEca3HkJsekVGSPMtN9bcV2+nN5mOiB
-         x83Sue4h9Zdm0OXIygsWxSohubJPcE4DmJ+PqaVlhM54PYJRnP0mu/Jr4tmsRID+NHA1
-         bh9uwLYQDX4EW6yRpBXSvTV2+VYzfM6EHK8qEYpdvvP1tdtnjwOgl4KY2HvOr46u0yZy
-         PioA==
-X-Gm-Message-State: AOJu0Yw9+djls9lTefcNZ+hj9/1IXjWkNbldAhQmhGFaoA2Ajbse7Ka1
-        hmGMD4pQprTtidnwbENiljfD42IaT4Aazo0sEsk=
-X-Google-Smtp-Source: AGHT+IHz9aumXankCpXAo/3UXM/LwXJJTHNS19+6PgY3LYuTq919ToMMEIfuAhbiYscialRV7ogqypA1NMV+znHeLXo=
-X-Received: by 2002:a2e:809a:0:b0:2b4:6f0c:4760 with SMTP id
- i26-20020a2e809a000000b002b46f0c4760mr6142397ljg.11.1692014749086; Mon, 14
- Aug 2023 05:05:49 -0700 (PDT)
+        Mon, 14 Aug 2023 08:06:07 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2041.outbound.protection.outlook.com [40.107.94.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6426DDD
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:06:05 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jDB+yeUA8RWbrwZcpwmv0I38F4mSxlWnUXy0AptCIhHyj6JH7Mps40w7l8BxfRyzuoTAaWX+1DQNass6M0pDi0F8pAvDpkoNqnaZQf+R+Hs3qNZN6OzMKMExaCu8kQfb9kVGfK0L4fIAl2HuVJu25qCmD7Vfop8+j1Cl/t/uiYiNIG83Sk1dhFc7/cMAVgBCkW/F4L3TTx0g2l3aFbTs10pKGikDghohRRFJn8KTSK2kYUc5Mx1tuFBVL4+oxRsFW+1cVW1Z4a/mDRGJ19T3Y1SQhWOliAu7mz4mgdkjo+Zw0Olzjk9eouqDxC3YvipiTUBBt2GsZhM27boZpQ/+bg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yC5wQEkfg6FAByPUMr9O/xk4WWKjDLIx+AA/BGIg0/M=;
+ b=jsWNcSDPxttOy+BI+Q/nzYUdS8kGUYpgtnCxL3fOlmh88rfUkror95/4nvc4S3YU1H2oF5/WKOotQaNNoRXxIxf5G6kqhK+S6X+nGlJySJX3najkAqG5u5fYlpcJKOn3rcjG0ZvBuVbyB8KZXVW8Re5oByNdY7kOiv+UZ9jmxAisQ1pDC8UlH0yZo7l9nQsgU0/Q+NXDRsPe+3Gm08eGmHZNiriBBTKzPklPvCmrBD3NI+IzHcGmKOmY5yGLSi98mLV2xrCWUbWWG7MFy7pF9CciIDJzdRQG1VpPBK5AWcxXOEG9ld7vofoO8Vmin+/e6vTx1SurJPQK7YXWKFR5kQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yC5wQEkfg6FAByPUMr9O/xk4WWKjDLIx+AA/BGIg0/M=;
+ b=KVm6ofxdjb3yHh82FXC7zhvqd2wu7GDsxc7uIEHozY1ktmKD2uwEgiQG5Bjc1GqXd2HJWj0qX11dZUv6wafga+7cN9N3Tr5sHuJd8mMdtmXcRlmRvlHgfqF+xi21Ls08y2ate9ZtSkoW3dii5cpbcTlt6Z4lYZoL+fAEpwNn664=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by SJ2PR12MB8064.namprd12.prod.outlook.com (2603:10b6:a03:4cc::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.24; Mon, 14 Aug
+ 2023 12:06:01 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::3d:c14:667a:1c81]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::3d:c14:667a:1c81%4]) with mapi id 15.20.6678.025; Mon, 14 Aug 2023
+ 12:06:01 +0000
+Message-ID: <ea08865e-bacb-f377-7ac0-c191045fde72@amd.com>
+Date:   Mon, 14 Aug 2023 14:05:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/3] drm/amdgpu: Add new api to switch on/off power
+ profile mode
+Content-Language: en-US
+To:     Arvind Yadav <Arvind.Yadav@amd.com>, alexander.deucher@amd.com,
+        shashank.sharma@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230814073438.10682-1-Arvind.Yadav@amd.com>
+ <20230814073438.10682-2-Arvind.Yadav@amd.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20230814073438.10682-2-Arvind.Yadav@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR3P281CA0082.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:1f::8) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
 MIME-Version: 1.0
-References: <20230720154941.1504-1-puranjay12@gmail.com> <87pm3qt2c8.fsf@all.your.base.are.belong.to.us>
- <87v8dhgb4u.fsf@all.your.base.are.belong.to.us>
-In-Reply-To: <87v8dhgb4u.fsf@all.your.base.are.belong.to.us>
-From:   Puranjay Mohan <puranjay12@gmail.com>
-Date:   Mon, 14 Aug 2023 14:05:38 +0200
-Message-ID: <CANk7y0jySJ6e+_e5SZDUJnqA=+doLVsOAX81ZoPF6nFBBzNGMQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/2] bpf, riscv: use BPF prog pack allocator in
- BPF JIT
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, pulehui@huawei.com,
-        conor.dooley@microchip.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|SJ2PR12MB8064:EE_
+X-MS-Office365-Filtering-Correlation-Id: b27351cb-26a4-4913-9c4f-08db9cbed370
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yvV/mciy6O7xUY5KKN+g/caKJOrWARzkSHjaWuezeBY4X2dntADDisxikh3Ri+kRo04cvZf/sKF4S65v2P2JNFc9KqzeJzrZ+7AsJ57GjQVnJLumA0QLYPg10xfIOlc4znoack279XxbuA5Rxzo8X9Ne9bdi2ilX9aK4yfxHBiW8BApVsOxuGr1sFDT4hx0XY/1aRbdSVhhFR+C1Wjh/4eQBuzx9VzgI2hDTj2fN6QtPaaiNz94DE7FwawuVH2LUELw6vngfV+lXRuTN0DgdSAECqAIjKB3Ho8qR/aeTfwqKacWOpMDEJKjnOdyfT5SadJIbNmitAzbGgWRvH9+UumlgYdplK5ufdFyM9k0jl9jfhBXnTQPRGvqjEq3TLLB6EJOHRGX4/tm9m3l7Mrdyn5eOlGPYJpoUveyCtcGLAM8O3WKqbPhN4Hqc+5NEzAhFuotAw6FybWw3kO7ugfSayiZZasDEEutdA0+/ZoBqClChJXxnEMHHjv3qCWXt/yDsPl7nx0AnrWy9R0p/dO2OAr+pP2BlQUGm+Rzn66CeyhX1H5nPqRsEVfHPBio+OHToqJ8PxoJ6RhlErxWrTVseviui+uVnv75ilFToA75SM+Q29+i36+Nw01WEVL4Yq0rkDtJPGeV9U5BEbAoPqTciCA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(396003)(376002)(366004)(136003)(39860400002)(451199021)(186006)(1800799006)(36756003)(5660300002)(31696002)(2906002)(86362001)(30864003)(31686004)(66899021)(83380400001)(316002)(66556008)(66946007)(66476007)(38100700002)(41300700001)(2616005)(6512007)(6506007)(6486002)(8676002)(8936002)(6666004)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c054RDlOY0RubWdpQ1VYQzBCaXNySUFPWUJYSDBvOVpOSlI5UDJLSjJFNFA1?=
+ =?utf-8?B?bGszampVdnBUWmg0NXZSU2QyVXBpYm1qYi9QbEhSZ2NVeVp1K1BvLzViYXE2?=
+ =?utf-8?B?clJnV2NtbGpya0kzcU0vc1ZtTEY5bDAvajVwdXg0c2tiZ3FBa1pJZDliaXNK?=
+ =?utf-8?B?a05uT3RKWVFUUS9uUUxKT3Azc2RlR1Z6VUJORktnZDQ3dWc0RmtIeWhHQTU1?=
+ =?utf-8?B?VUpkNnNTaVIxRGJGMjZvaGE2dTQ2VkJ1S2o4Nmhrd0M4WU01U20xL3NEWmd3?=
+ =?utf-8?B?b05YaFNpYTNtN0d3WjNkKzEzOGduSHJXM1U1YmFuWG9YQ2VoQVZuWXRBS080?=
+ =?utf-8?B?Q1IvYXpKU2hyYWpzZm9LNnF1T3YwTDRFZlowTUJYVndoQzlDYlZTcGN5Y1hG?=
+ =?utf-8?B?NTdKN0hmY1ZaL3FtbkV2dUc4UWdTUmJmWEN6c1EzNVJpQXZUbjhsT054RUlJ?=
+ =?utf-8?B?YW5nWi9JbVBJWllnMkFQM2w0OFMrcVVwYkNLZHc4SGxVaXV6bzJRL2FTL0Fv?=
+ =?utf-8?B?ekNFNU9GMFNTMFYveWhPM3libUFZN2d6K2RRM09uR2wwZXlKaUhhY3k3TThU?=
+ =?utf-8?B?T2tUS1c1ZmQ4NUE5RU5tYnJUVUgvR1N3dHZTeEZhamY0bXhqMjg0VzFxR1Ny?=
+ =?utf-8?B?cjBZVGhpZTVWNHFoaExHUUJyeGJFNHRGcWo1ZWhoeXlGZVVhTmxCTzFyUUZ4?=
+ =?utf-8?B?WTIrN00zRkhUbzIxRTloU1R5N1BHTVE2OUtXS0R5QUJZWWtnY2ZqK21HN0JP?=
+ =?utf-8?B?MStKTlpCMkhWRE8ySGFEalluZDJwS0xCMm5kbGVwYUxsd2RKcEdHOEM1UXFV?=
+ =?utf-8?B?aW5rSU9KUUxOQi8yeXBuUEpPWk9sY1NKTk1GZ2hXM21GbXhOaW0wMm9SQmhD?=
+ =?utf-8?B?blZlVjBqMytYTkhWWlNJdWFrS2ViTzFadUt0OUdjK2VDNGZvSno5bEphbkRT?=
+ =?utf-8?B?L3QwdnRwTXp5VDBOTkxubDlWblBJYWlwSERyUWRJK3RJZ3N3THAxeWJqcWhQ?=
+ =?utf-8?B?Y01qN1FPWXBrVVFVK0lSRTUvOVFiYzZqZWR3cVJsc2ROY0ZOUm56aGlNcHhN?=
+ =?utf-8?B?UDVtK0hsZVIyeXkzNFdhMWcydlp5ZEJPNDRDS05HZklLUTFmVWxJRjU3RGor?=
+ =?utf-8?B?NFp5WDVRcWV6SW5ZR2NNMkp1ZWdpS241Z3k5MVRDNXIvd0hsclhtdmo5YlVC?=
+ =?utf-8?B?TnlXQjJwL1lMYkpac3U2TVdsZitXK0hZV0ZmTjU5cXNwZnJRQ3BxNmltWi9S?=
+ =?utf-8?B?WGFicUZIK0hXVUpvQjNVTi9jODdia1hxeDBYWnVJTHp5d21lNzA3UG1DNVNw?=
+ =?utf-8?B?UXBCRkJZOHQ2dVFHVHNVVktHcnhNZm8xbzVNRGxESDlOQjVXUGJMNEgvcUdP?=
+ =?utf-8?B?SWJjRmM5cEVTeHVwcXFLT050YjZhWkdBODh2K2V4ZEd2Mk5DZE1aZXRKU1M4?=
+ =?utf-8?B?ZXZxbUxNR3gxM3Fvd24yaFdnRWRLdG9JVFZib3MwZVM5dXRHYTlwSEpYQnJo?=
+ =?utf-8?B?Y3RRRUMrUStMdUpyTEFCbjMwNnBzTS91V3hrbmYrYUZQU213L3htWkc3Y1R1?=
+ =?utf-8?B?VG9TYTh2OVhyeXp5WHRlMCtiVVdNUXM1aHNYdmlER29KQXBjeHAycXhKYUQx?=
+ =?utf-8?B?ZThPcitKOWM4TnpMbEJmdC83L1RlckJzeDRhanArTUE1UXp0SWNRc0QzZHJr?=
+ =?utf-8?B?emN1T3o3b0ZyZ1Y2UDFtNnhMdlRVSXZKVG5yUjNqWU1KQ2dTU3RCd1JwWHJa?=
+ =?utf-8?B?VVVIdGdzNjdrdXhuM3JXMFcycENCdnVmUUZxSVk4bjFaZnBZaWtGUkNOc0Qr?=
+ =?utf-8?B?aE1YbU9CZTRDTjkrWDErZVdkek5lVU93WkJzd1dxOGFoeVVZT3hrV2NoT2Rs?=
+ =?utf-8?B?R0R2MlErT3RrYXRZSGxPZE83ak9wckJuY2puMFB2TXVTYzA5V0d1aDlyYUpO?=
+ =?utf-8?B?NjJjYlJIZDI4MmxJSHl5Qm9maDBiWUdUOC9FdGtuQytTZXBqaThQT2Q1Y3NB?=
+ =?utf-8?B?SndzcUcvbElzRXlCTEpjbzZMdkRucHZUVlNHMW1CTkkvcU16N0tleExuTmdD?=
+ =?utf-8?B?UkI5NXNPdG5TTTkxWG5XMkw5NkZrdkFFd0NJK0pFWnBrSU5saklTdXhMSUti?=
+ =?utf-8?B?OTArczhBUlBMM3VXVU9IL1NpNUhsTUMyVUpvKzUvVXJHTHZHemZIa3VvdXVS?=
+ =?utf-8?Q?02J4IqxCG2cWchYjoHxKw950+q7Xp1XZm7sBxmurFbnd?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b27351cb-26a4-4913-9c4f-08db9cbed370
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 12:06:01.0160
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: o/RZ9a98fksw4cljIznyD4x1u4zHKLsLLCK2KfRqRRV5nZcvcXtJ+1GaTVHwoySG
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8064
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 12:40=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kerne=
-l.org> wrote:
+Am 14.08.23 um 09:34 schrieb Arvind Yadav:
+> This patch adds a function which will allow to
+> change the GPU power profile based on a submitted job.
+> This can optimize the power performance when the
+> workload is on.
 >
-> Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> writes:
+> Cc: Shashank Sharma <shashank.sharma@amd.com>
+> Cc: Christian Koenig <christian.koenig@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
+> ---
+>   drivers/gpu/drm/amd/amdgpu/Makefile           |   2 +-
+>   drivers/gpu/drm/amd/amdgpu/amdgpu.h           |   3 +
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |   2 +
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c  | 156 ++++++++++++++++++
+>   drivers/gpu/drm/amd/include/amdgpu_workload.h |  44 +++++
+>   5 files changed, 206 insertions(+), 1 deletion(-)
+>   create mode 100644 drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
+>   create mode 100644 drivers/gpu/drm/amd/include/amdgpu_workload.h
 >
-> > Puranjay Mohan <puranjay12@gmail.com> writes:
-> >
-> >> BPF programs currently consume a page each on RISCV. For systems with =
-many BPF
-> >> programs, this adds significant pressure to instruction TLB. High iTLB=
- pressure
-> >> usually causes slow down for the whole system.
-> >>
-> >> Song Liu introduced the BPF prog pack allocator[1] to mitigate the abo=
-ve issue.
-> >> It packs multiple BPF programs into a single huge page. It is currentl=
-y only
-> >> enabled for the x86_64 BPF JIT.
-> >>
-> >> I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewed=
- now.
-> >>
-> >> This patch series enables the BPF prog pack allocator for the RISCV BP=
-F JIT.
-> >> This series needs a patch[3] from the ARM64 series to work.
-> >>
-> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> >> Performance Analysis of prog pack allocator on RISCV64
-> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> >>
-> >> Test setup:
-> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>
-> >> Host machine: Debian GNU/Linux 11 (bullseye)
-> >> Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
-> >> u-boot-qemu Version: 2023.07+dfsg-1
-> >> opensbi Version: 1.3-1
-> >>
-> >> To test the performance of the BPF prog pack allocator on RV, a stress=
-er
-> >> tool[4] linked below was built. This tool loads 8 BPF programs on the =
-system and
-> >> triggers 5 of them in an infinite loop by doing system calls.
-> >>
-> >> The runner script starts 20 instances of the above which loads 8*20=3D=
-160 BPF
-> >> programs on the system, 5*20=3D100 of which are being constantly trigg=
-ered.
-> >> The script is passed a command which would be run in the above environ=
-ment.
-> >>
-> >> The script was run with following perf command:
-> >> ./run.sh "perf stat -a \
-> >>         -e iTLB-load-misses \
-> >>         -e dTLB-load-misses  \
-> >>         -e dTLB-store-misses \
-> >>         -e instructions \
-> >>         --timeout 60000"
-> >>
-> >> The output of the above command is discussed below before and after en=
-abling the
-> >> BPF prog pack allocator.
-> >>
-> >> The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. The=
- rootfs
-> >> was created using Bjorn's riscv-cross-builder[5] docker container link=
-ed below.
-> >>
-> >> Results
-> >> =3D=3D=3D=3D=3D=3D=3D
-> >>
-> >> Before enabling prog pack allocator:
-> >> ------------------------------------
-> >>
-> >> Performance counter stats for 'system wide':
-> >>
-> >>            4939048      iTLB-load-misses
-> >>            5468689      dTLB-load-misses
-> >>             465234      dTLB-store-misses
-> >>      1441082097998      instructions
-> >>
-> >>       60.045791200 seconds time elapsed
-> >>
-> >> After enabling prog pack allocator:
-> >> -----------------------------------
-> >>
-> >> Performance counter stats for 'system wide':
-> >>
-> >>            3430035      iTLB-load-misses
-> >>            5008745      dTLB-load-misses
-> >>             409944      dTLB-store-misses
-> >>      1441535637988      instructions
-> >>
-> >>       60.046296600 seconds time elapsed
-> >>
-> >> Improvements in metrics
-> >> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>
-> >> It was expected that the iTLB-load-misses would decrease as now a sing=
-le huge
-> >> page is used to keep all the BPF programs compared to a single page fo=
-r each
-> >> program earlier.
-> >>
-> >> --------------------------------------------
-> >> The improvement in iTLB-load-misses: -30.5 %
-> >> --------------------------------------------
-> >>
-> >> I repeated this expriment more than 100 times in different setups and =
-the
-> >> improvement was always greater than 30%.
-> >>
-> >> This patch series is boot tested on the Starfive VisionFive 2 board[6]=
-.
-> >> The performance analysis was not done on the board because it doesn't
-> >> expose iTLB-load-misses, etc. The stresser program was run on the boar=
-d to test
-> >> the loading and unloading of BPF programs
-> >>
-> >> [1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.or=
-g/
-> >> [2] https://lore.kernel.org/all/20230626085811.3192402-1-puranjay12@gm=
-ail.com/
-> >> [3] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@gm=
-ail.com/
-> >> [4] https://github.com/puranjaymohan/BPF-Allocator-Bench
-> >> [5] https://github.com/bjoto/riscv-cross-builder
-> >> [6] https://www.starfivetech.com/en/site/boards
-> >>
-> >> Puranjay Mohan (2):
-> >>   riscv: Extend patch_text_nosync() for multiple pages
-> >>   bpf, riscv: use prog pack allocator in the BPF JIT
-> >
-> > I get a hang for "test_tag", but it's not directly related to your
-> > series, but rather "remote fence.i".
-> >
-> >   | rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
-> >   | rcu:      0-....: (1400 ticks this GP) idle=3Dd5e4/1/0x400000000000=
-0000 softirq=3D5542/5542 fqs=3D1862
-> >   | rcu:      (detected by 1, t=3D5252 jiffies, g=3D10253, q=3D195 ncpu=
-s=3D4)
-> >   | Task dump for CPU 0:
-> >   | task:kworker/0:5     state:R  running task     stack:0     pid:319 =
-  ppid:2      flags:0x00000008
-> >   | Workqueue: events bpf_prog_free_deferred
-> >   | Call Trace:
-> >   | [<ffffffff80cbc444>] __schedule+0x2d0/0x940
-> >   | watchdog: BUG: soft lockup - CPU#0 stuck for 21s! [kworker/0:5:319]
-> >   | Modules linked in: nls_iso8859_1 drm fuse i2c_core drm_panel_orient=
-ation_quirks backlight dm_mod configfs ip_tables x_tables
-> >   | CPU: 0 PID: 319 Comm: kworker/0:5 Not tainted 6.5.0-rc5 #1
-> >   | Hardware name: riscv-virtio,qemu (DT)
-> >   | Workqueue: events bpf_prog_free_deferred
-> >   | epc : __sbi_rfence_v02_call.isra.0+0x74/0x11a
-> >   |  ra : __sbi_rfence_v02+0xda/0x1a4
-> >   | epc : ffffffff8000ab4c ra : ffffffff8000accc sp : ff20000001c9bbd0
-> >   |  gp : ffffffff82078c48 tp : ff600000888e6a40 t0 : ff20000001c9bd44
-> >   |  t1 : 0000000000000000 t2 : 0000000000000040 s0 : ff20000001c9bbf0
-> >   |  s1 : 0000000000000010 a0 : 0000000000000000 a1 : 0000000000000000
-> >   |  a2 : 0000000000000000 a3 : 0000000000000000 a4 : 0000000000000000
-> >   |  a5 : 0000000000000000 a6 : 0000000000000000 a7 : 0000000052464e43
-> >   |  s2 : 000000000000ffff s3 : 00000000ffffffff s4 : ffffffff81667528
-> >   |  s5 : 0000000000000000 s6 : 0000000000000000 s7 : 0000000000000000
-> >   |  s8 : 0000000000000001 s9 : 0000000000000003 s10: 0000000000000040
-> >   |  s11: ffffffff8207d240 t3 : 000000000000000f t4 : 000000000000002a
-> >   |  t5 : ff600000872df140 t6 : ffffffff81e26828
-> >   | status: 0000000200000120 badaddr: 0000000000000000 cause: 800000000=
-0000005
-> >   | [<ffffffff8000ab4c>] __sbi_rfence_v02_call.isra.0+0x74/0x11a
-> >   | [<ffffffff8000accc>] __sbi_rfence_v02+0xda/0x1a4
-> >   | [<ffffffff8000a886>] sbi_remote_fence_i+0x1e/0x26
-> >   | [<ffffffff8000cee2>] flush_icache_all+0x1a/0x48
-> >   | [<ffffffff80007736>] patch_text_nosync+0x6c/0x8c
-> >   | [<ffffffff8000f0f8>] bpf_arch_text_invalidate+0x62/0xac
-> >   | [<ffffffff8016c538>] bpf_prog_pack_free+0x9c/0x1b2
-> >   | [<ffffffff8016c84a>] bpf_jit_binary_pack_free+0x20/0x4a
-> >   | [<ffffffff8000f198>] bpf_jit_free+0x56/0x9e
-> >   | [<ffffffff8016b43a>] bpf_prog_free_deferred+0x15a/0x182
-> >   | [<ffffffff800576c4>] process_one_work+0x1b6/0x3d6
-> >   | [<ffffffff80057d52>] worker_thread+0x84/0x378
-> >   | [<ffffffff8005fc2c>] kthread+0xe8/0x108
-> >   | [<ffffffff80003ffa>] ret_from_fork+0xe/0x20
-> >
-> > I'm digging into that now, and I would appreciate if you could run the
-> > test_tag on VF2 or similar (I'm missing that HW).
-> >
-> > It seems like we're hitting a bug with this series, so let's try to
-> > figure out where the problems is, prior merging it.
->
-> Hmm, it looks like the bpf_arch_text_invalidate() implementation is a
-> bit problematic:
->
-> +int bpf_arch_text_invalidate(void *dst, size_t len)
+> diff --git a/drivers/gpu/drm/amd/amdgpu/Makefile b/drivers/gpu/drm/amd/amdgpu/Makefile
+> index 415a7fa395c4..6a9e187d61e1 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/Makefile
+> +++ b/drivers/gpu/drm/amd/amdgpu/Makefile
+> @@ -60,7 +60,7 @@ amdgpu-y += amdgpu_device.o amdgpu_kms.o \
+>   	amdgpu_umc.o smu_v11_0_i2c.o amdgpu_fru_eeprom.o amdgpu_rap.o \
+>   	amdgpu_fw_attestation.o amdgpu_securedisplay.o \
+>   	amdgpu_eeprom.o amdgpu_mca.o amdgpu_psp_ta.o amdgpu_lsdma.o \
+> -	amdgpu_ring_mux.o
+> +	amdgpu_ring_mux.o amdgpu_workload.o
+>   
+>   amdgpu-$(CONFIG_PROC_FS) += amdgpu_fdinfo.o
+>   
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> index 02b827785e39..1939fa1af8a6 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> @@ -107,6 +107,7 @@
+>   #include "amdgpu_fdinfo.h"
+>   #include "amdgpu_mca.h"
+>   #include "amdgpu_ras.h"
+> +#include "amdgpu_workload.h"
+>   
+>   #define MAX_GPU_INSTANCE		16
+>   
+> @@ -1050,6 +1051,8 @@ struct amdgpu_device {
+>   
+>   	bool                            job_hang;
+>   	bool                            dc_enabled;
+> +
+> +	struct amdgpu_smu_workload	smu_workload;
+>   };
+>   
+>   static inline struct amdgpu_device *drm_to_adev(struct drm_device *ddev)
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> index 5c7d40873ee2..0ec18b8fe29f 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> @@ -3672,6 +3672,8 @@ int amdgpu_device_init(struct amdgpu_device *adev,
+>   
+>   	INIT_WORK(&adev->xgmi_reset_work, amdgpu_device_xgmi_reset_func);
+>   
+> +	amdgpu_smu_workload_init(adev);
+> +
+>   	adev->gfx.gfx_off_req_count = 1;
+>   	adev->gfx.gfx_off_residency = 0;
+>   	adev->gfx.gfx_off_entrycount = 0;
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
+> new file mode 100644
+> index 000000000000..ce0339d75c12
+> --- /dev/null
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
+> @@ -0,0 +1,156 @@
+> +// SPDX-License-Identifier: MIT
+> +/*
+> + * Copyright 2023 Advanced Micro Devices, Inc.
+> + *
+> + * Permission is hereby granted, free of charge, to any person obtaining a
+> + * copy of this software and associated documentation files (the "Software"),
+> + * to deal in the Software without restriction, including without limitation
+> + * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+> + * and/or sell copies of the Software, and to permit persons to whom the
+> + * Software is furnished to do so, subject to the following conditions:
+> + *
+> + * The above copyright notice and this permission notice shall be included in
+> + * all copies or substantial portions of the Software.
+> + *
+> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+> + * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
+> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+> + * OTHER DEALINGS IN THE SOFTWARE.
+> + *
+> + */
+> +
+> +#include "amdgpu.h"
+> +
+> +/* 100 millsecond timeout */
+> +#define SMU_IDLE_TIMEOUT	msecs_to_jiffies(100)
+> +
+> +static enum PP_SMC_POWER_PROFILE
+> +ring_to_power_profile(uint32_t ring_type)
 > +{
-> +       __le32 *ptr;
-> +       int ret =3D 0;
-> +       u32 inval =3D 0;
-> +
-> +       for (ptr =3D dst; ret =3D=3D 0 && len >=3D sizeof(u32); len -=3D =
-sizeof(u32)) {
-> +               mutex_lock(&text_mutex);
-> +               ret =3D patch_text_nosync(ptr++, &inval, sizeof(u32));
-> +               mutex_unlock(&text_mutex);
-> +       }
-> +
-> +       return ret;
+> +	switch (ring_type) {
+> +	case AMDGPU_RING_TYPE_GFX:
+> +		return PP_SMC_POWER_PROFILE_FULLSCREEN3D;
+> +	case AMDGPU_RING_TYPE_COMPUTE:
+> +		return PP_SMC_POWER_PROFILE_COMPUTE;
+> +	case AMDGPU_RING_TYPE_UVD:
+> +	case AMDGPU_RING_TYPE_VCE:
+> +	case AMDGPU_RING_TYPE_UVD_ENC:
+> +	case AMDGPU_RING_TYPE_VCN_DEC:
+> +	case AMDGPU_RING_TYPE_VCN_ENC:
+> +	case AMDGPU_RING_TYPE_VCN_JPEG:
+> +		return PP_SMC_POWER_PROFILE_VIDEO;
+> +	default:
+> +		return PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT;
+> +	}
 > +}
->
-> Each patch_text_nosync() is a remote fence.i, and for a big "len", we'll
-> be flooded with remote fences.
+> +
+> +static void
+> +amdgpu_power_profile_set(struct amdgpu_device *adev,
+> +			 enum PP_SMC_POWER_PROFILE profile)
+> +{
+> +	int ret = amdgpu_dpm_switch_power_profile(adev, profile, true);
+> +
+> +	if (ret == 0) {
 
-I understand this now, thanks for debugging this.
+Please double check the coding style, stuff like this is usually 
+complained about by the automated checkers.
 
-We are calling patch_text_nosync() for each word (u32) which calls
-flush_icache_range() and therefore "fence.i" is inserted after every word.
+Apart from that Alex needs to take a look if this here makes sense or not.
 
-I still don't fully understand how it causes this bug because I lack
-the prerequisite
-knowledge about test_tag and what the failing test is doing.
+Regards,
+Christian.
 
-But to solve this issue we would need a function like the x86
-text_poke_set() that will only
-insert a single "fence.i" after setting the whole memory area. This
-can be done by
-implementing a wrapper around patch_insn_write() which would set the memory=
- area
-and at the end call flush_icache_range().
+> +		/* Set the bit for the submitted workload profile */
+> +		adev->smu_workload.submit_workload_status |= (1 << profile);
+> +		atomic_inc(&adev->smu_workload.power_profile_ref[profile]);
+> +	} else {
+> +		DRM_ERROR("Failed to set power profile, error %d\n", ret);
+> +	}
+> +
+> +}
+> +
+> +static void
+> +amdgpu_power_profile_clear(struct amdgpu_device *adev,
+> +			   enum PP_SMC_POWER_PROFILE profile)
+> +{
+> +	int ret = amdgpu_dpm_switch_power_profile(adev, profile, false);
+> +
+> +	if (ret == 0) {
+> +		 /* Clear the bit for the submitted workload profile */
+> +		adev->smu_workload.submit_workload_status &= ~(1 << profile);
+> +	} else
+> +		DRM_ERROR("Failed to clear power profile, error %d\n", ret);
+> +
+> +}
+> +
+> +static void amdgpu_smu_idle_work_handler(struct work_struct *work)
+> +{
+> +
+> +	struct amdgpu_smu_workload *wl = container_of(work,
+> +						      struct amdgpu_smu_workload,
+> +						      smu_delayed_work.work);
+> +	struct amdgpu_device *adev = wl->adev;
+> +	bool reschedule = false;
+> +
+> +	mutex_lock(&adev->smu_workload.workload_lock);
+> +	for (int index  = fls(adev->smu_workload.submit_workload_status);
+> +	     index >= 0; index--) {
+> +		if (!atomic_read(&adev->smu_workload.power_profile_ref[index]) &&
+> +		    adev->smu_workload.submit_workload_status & (1 << index)) {
+> +			amdgpu_power_profile_clear(adev, index);
+> +		} else if (atomic_read(&adev->smu_workload.power_profile_ref[index]))
+> +			reschedule = true;
+> +	}
+> +
+> +	if (reschedule)
+> +		schedule_delayed_work(&adev->smu_workload.smu_delayed_work,
+> +				      SMU_IDLE_TIMEOUT);
+> +
+> +	mutex_unlock(&adev->smu_workload.workload_lock);
+> +}
+> +
+> +void amdgpu_put_workload_profile(struct amdgpu_device *adev,
+> +				 uint32_t ring_type)
+> +{
+> +
+> +	enum PP_SMC_POWER_PROFILE profile = ring_to_power_profile(ring_type);
+> +
+> +	if (profile == PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT)
+> +		return;
+> +
+> +	mutex_lock(&adev->smu_workload.workload_lock);
+> +	atomic_dec(&adev->smu_workload.power_profile_ref[profile]);
+> +	schedule_delayed_work(&adev->smu_workload.smu_delayed_work, SMU_IDLE_TIMEOUT);
+> +	mutex_unlock(&adev->smu_workload.workload_lock);
+> +}
+> +
+> +void amdgpu_set_workload_profile(struct amdgpu_device *adev,
+> +				 uint32_t ring_type)
+> +{
+> +	enum PP_SMC_POWER_PROFILE profile = ring_to_power_profile(ring_type);
+> +
+> +	if (profile == PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT)
+> +		return;
+> +
+> +	mutex_lock(&adev->smu_workload.workload_lock);
+> +	cancel_delayed_work_sync(&adev->smu_workload.smu_delayed_work);
+> +
+> +	amdgpu_power_profile_set(adev, profile);
+> +
+> +	/* Clear the already finished jobs of higher power profile*/
+> +	for (int index = fls(adev->smu_workload.submit_workload_status);
+> +	     index > profile; index--) {
+> +		if (!atomic_read(&adev->smu_workload.power_profile_ref[index]) &&
+> +		    adev->smu_workload.submit_workload_status & (1 << index)) {
+> +			amdgpu_power_profile_clear(adev, index);
+> +		}
+> +	}
+> +
+> +	mutex_unlock(&adev->smu_workload.workload_lock);
+> +}
+> +
+> +void amdgpu_smu_workload_init(struct amdgpu_device *adev)
+> +{
+> +	struct amdgpu_smu_workload wl;
+> +
+> +	wl.adev = adev;
+> +	wl.submit_workload_status = 0;
+> +	adev->smu_workload = wl;
+> +
+> +	mutex_init(&adev->smu_workload.workload_lock);
+> +	INIT_DELAYED_WORK(&adev->smu_workload.smu_delayed_work, amdgpu_smu_idle_work_handler);
+> +}
+> diff --git a/drivers/gpu/drm/amd/include/amdgpu_workload.h b/drivers/gpu/drm/amd/include/amdgpu_workload.h
+> new file mode 100644
+> index 000000000000..09804c3d2869
+> --- /dev/null
+> +++ b/drivers/gpu/drm/amd/include/amdgpu_workload.h
+> @@ -0,0 +1,44 @@
+> +/* SPDX-License-Identifier: MIT */
+> +/*
+> + * Copyright 2023 Advanced Micro Devices, Inc.
+> + *
+> + * Permission is hereby granted, free of charge, to any person obtaining a
+> + * copy of this software and associated documentation files (the "Software"),
+> + * to deal in the Software without restriction, including without limitation
+> + * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+> + * and/or sell copies of the Software, and to permit persons to whom the
+> + * Software is furnished to do so, subject to the following conditions:
+> + *
+> + * The above copyright notice and this permission notice shall be included in
+> + * all copies or substantial portions of the Software.
+> + *
+> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+> + * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
+> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+> + * OTHER DEALINGS IN THE SOFTWARE.
+> + *
+> + */
+> +
+> +#ifndef _AMDGPU_WORKLOAD_H_
+> +#define _AMDGPU_WORKLOAD_H_
+> +
+> +struct amdgpu_smu_workload {
+> +	struct amdgpu_device	*adev;
+> +	struct mutex		workload_lock;
+> +	struct delayed_work	smu_delayed_work;
+> +	uint32_t		submit_workload_status;
+> +	atomic_t		power_profile_ref[PP_SMC_POWER_PROFILE_COUNT];
+> +};
+> +
+> +void amdgpu_set_workload_profile(struct amdgpu_device *adev,
+> +				 uint32_t ring_type);
+> +
+> +void amdgpu_put_workload_profile(struct amdgpu_device *adev,
+> +				 uint32_t ring_type);
+> +
+> +void amdgpu_smu_workload_init(struct amdgpu_device *adev);
+> +
+> +#endif
 
-Something like:
-
-void *text_set_nosync(void *dst, int c, size_t len)
-{
-        __le32 *ptr;
-        int ret =3D 0;
-
-        for (ptr =3D dst; ret =3D=3D 0 && len >=3D sizeof(u32); len -=3D si=
-zeof(u32)) {
-                ret =3D patch_insn_write(ptr++, &c, sizeof(u32));
-        }
-        if(!ret)
-                flush_icache_range((uintptr_t) dst, (uintptr_t) dst + len);
-
-        return ret;
-}
-
-Let me know if this looks correct or we need more details here.
-I will then send v2 with this implemented as a separate patch.
-
->
-> I think that's exactly what we hit with "test_tag".
->
->
-> Bj=C3=B6rn
-
-Thanks,
-Puranjay
