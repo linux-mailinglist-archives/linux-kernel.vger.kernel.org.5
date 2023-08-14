@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB0777BC82
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC46A77BC81
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232817AbjHNPIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 11:08:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52588 "EHLO
+        id S232792AbjHNPIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 11:08:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232666AbjHNPIK (ORCPT
+        with ESMTP id S232673AbjHNPIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:08:10 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56F810C1;
-        Mon, 14 Aug 2023 08:08:07 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 15:08:05 -0000
+        Mon, 14 Aug 2023 11:08:11 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 129A010DB;
+        Mon, 14 Aug 2023 08:08:08 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 15:08:06 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1692025686;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dDBBLrQiUI949l0/QFU5QO+sFl+OnZWaMOm9rfnBDlc=;
-        b=EioAf7K9NRdIg3o5RHW+Q9YUjr4GhLLnKTOiTV+GUIahs8zoax5QwlY5r9V4RnD/rNS5Wy
-        5HzYdUO72dUvgqhp9Om9ns9HX71DRkz8cQhY3ZwV4NJvNNYQffiVzcfR9WWM2HNtpseQUO
-        IcIi4QQe8IWXLleefPiQwnOdbKhe1N6zRa4Ff/aigh2SuHFyROV01S3U6k+HxSC0PvBQJj
-        9X0XF2qGwMEOMsmwcYB63uOzgq4pIct1v5y3HjvBV3GkDRgwOIp3nRP40I2uPbyKK7HT4M
-        xwLCS0WmoiyCSMKfG9NewmCOYfPEFMM0yq5aTp2GVkDhE8PHcXTpfYT0/N39Fw==
+        bh=YMGiIB3ZRF9xDuzowmKuMGbuFtNeEa/dk8I9+QRM62A=;
+        b=crm6U1Y1puA8N68rUT3sEX9cqlewdFVZZCBRq2kQaq148y6iT29NohOJBl3R4JHIw97woh
+        7xHjXBayhMJk0NQ6r2W9ofkoLF7OEcAiReaWFOniBQ5nqt2iimWiIbAH0DttzvEUiw7Mbg
+        e97CsAddUSTLIjegT3Gdvo5aoefxj0bEZOU/zvX3Ay3ML/Ifaxn0JAfz6udZTyWn3Aw3Me
+        zG2Usu7G3Aul7UwVzJjMaZtJFROmUuySvRsOxWtjiy4Flml/EzC7OMEF28GsCM6N5hecsf
+        TM+1B8Y3FcBMkRMEElHo9uvvhVwNsDabcRAxgS3sXMSCbVQZV7uy+et2T7FZSQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1692025686;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,21 +36,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=dDBBLrQiUI949l0/QFU5QO+sFl+OnZWaMOm9rfnBDlc=;
-        b=mDzlwZiM4X/73Pq3RNBt4CWOPnIoZrG5PqrOticMBIZieuQTo/mzRPjIKsn8+2Rwkf/7Fa
-        r0mnB+8CUwNt4rDg==
+        bh=YMGiIB3ZRF9xDuzowmKuMGbuFtNeEa/dk8I9+QRM62A=;
+        b=A/v8uHIc6YkhrKwX4WgWj9AyS0n/YfPYLmkYO4r+DX+PvdR7DsEfNOJZKJtSJ7fiNpVY+S
+        IuudXucGLZYvuDCQ==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Simplify wake_up_if_idle()
+Subject: [tip: sched/core] sched: Simplify: migrate_swap_stop()
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Valentin Schneider <vschneid@redhat.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230801211812.032678917@infradead.org>
-References: <20230801211812.032678917@infradead.org>
+In-Reply-To: <20230801211811.964370836@infradead.org>
+References: <20230801211811.964370836@infradead.org>
 MIME-Version: 1.0
-Message-ID: <169202568576.27769.17983708536271256088.tip-bot2@tip-bot2>
+Message-ID: <169202568621.27769.9047614343930343004.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -66,80 +66,120 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     4eb054f92b066ec0a0cba6896ee8eff4c91dfc9e
-Gitweb:        https://git.kernel.org/tip/4eb054f92b066ec0a0cba6896ee8eff4c91dfc9e
+Commit-ID:     5bb76f1ddf2a7dd98f5a89d7755600ed1b4a7fcd
+Gitweb:        https://git.kernel.org/tip/5bb76f1ddf2a7dd98f5a89d7755600ed1b4a7fcd
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Tue, 01 Aug 2023 22:41:25 +02:00
+AuthorDate:    Tue, 01 Aug 2023 22:41:24 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Mon, 14 Aug 2023 17:01:25 +02:00
 
-sched: Simplify wake_up_if_idle()
+sched: Simplify: migrate_swap_stop()
 
 Use guards to reduce gotos and simplify control flow.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Valentin Schneider <vschneid@redhat.com>
-Link: https://lore.kernel.org/r/20230801211812.032678917@infradead.org
+Link: https://lore.kernel.org/r/20230801211811.964370836@infradead.org
 ---
- kernel/sched/core.c  | 20 ++++++--------------
- kernel/sched/sched.h | 15 +++++++++++++++
- 2 files changed, 21 insertions(+), 14 deletions(-)
+ kernel/sched/core.c  | 23 +++++++----------------
+ kernel/sched/sched.h | 20 ++++++++++++++++++++
+ 2 files changed, 27 insertions(+), 16 deletions(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 66478a6..65ebf43 100644
+index 6e8a8e9..66478a6 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -3939,21 +3939,13 @@ static void __ttwu_queue_wakelist(struct task_struct *p, int cpu, int wake_flags
- void wake_up_if_idle(int cpu)
+@@ -3433,7 +3433,6 @@ static int migrate_swap_stop(void *data)
  {
- 	struct rq *rq = cpu_rq(cpu);
--	struct rq_flags rf;
--
--	rcu_read_lock();
+ 	struct migration_swap_arg *arg = data;
+ 	struct rq *src_rq, *dst_rq;
+-	int ret = -EAGAIN;
  
--	if (!is_idle_task(rcu_dereference(rq->curr)))
--		goto out;
+ 	if (!cpu_active(arg->src_cpu) || !cpu_active(arg->dst_cpu))
+ 		return -EAGAIN;
+@@ -3441,33 +3440,25 @@ static int migrate_swap_stop(void *data)
+ 	src_rq = cpu_rq(arg->src_cpu);
+ 	dst_rq = cpu_rq(arg->dst_cpu);
+ 
+-	double_raw_lock(&arg->src_task->pi_lock,
+-			&arg->dst_task->pi_lock);
+-	double_rq_lock(src_rq, dst_rq);
++	guard(double_raw_spinlock)(&arg->src_task->pi_lock, &arg->dst_task->pi_lock);
++	guard(double_rq_lock)(src_rq, dst_rq);
+ 
+ 	if (task_cpu(arg->dst_task) != arg->dst_cpu)
+-		goto unlock;
++		return -EAGAIN;
+ 
+ 	if (task_cpu(arg->src_task) != arg->src_cpu)
+-		goto unlock;
++		return -EAGAIN;
+ 
+ 	if (!cpumask_test_cpu(arg->dst_cpu, arg->src_task->cpus_ptr))
+-		goto unlock;
++		return -EAGAIN;
+ 
+ 	if (!cpumask_test_cpu(arg->src_cpu, arg->dst_task->cpus_ptr))
+-		goto unlock;
++		return -EAGAIN;
+ 
+ 	__migrate_swap_task(arg->src_task, arg->dst_cpu);
+ 	__migrate_swap_task(arg->dst_task, arg->src_cpu);
+ 
+-	ret = 0;
 -
--	rq_lock_irqsave(rq, &rf);
--	if (is_idle_task(rq->curr))
--		resched_curr(rq);
--	/* Else CPU is not idle, do nothing here: */
--	rq_unlock_irqrestore(rq, &rf);
+-unlock:
+-	double_rq_unlock(src_rq, dst_rq);
+-	raw_spin_unlock(&arg->dst_task->pi_lock);
+-	raw_spin_unlock(&arg->src_task->pi_lock);
 -
--out:
--	rcu_read_unlock();
-+	guard(rcu)();
-+	if (is_idle_task(rcu_dereference(rq->curr))) {
-+		guard(rq_lock_irqsave)(rq);
-+		if (is_idle_task(rq->curr))
-+			resched_curr(rq);
-+	}
+-	return ret;
++	return 0;
  }
  
- bool cpus_share_cache(int this_cpu, int that_cpu)
+ /*
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index c299a58..3a01b7a 100644
+index 9c5035c..c299a58 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -1705,6 +1705,21 @@ rq_unlock(struct rq *rq, struct rq_flags *rf)
- 	raw_spin_rq_unlock(rq);
+@@ -2614,6 +2614,12 @@ static inline void double_rq_clock_clear_update(struct rq *rq1, struct rq *rq2)
+ static inline void double_rq_clock_clear_update(struct rq *rq1, struct rq *rq2) {}
+ #endif
+ 
++#define DEFINE_LOCK_GUARD_2(name, type, _lock, _unlock, ...)		\
++__DEFINE_UNLOCK_GUARD(name, type, _unlock, type *lock2; __VA_ARGS__) \
++static inline class_##name##_t class_##name##_constructor(type *lock, type *lock2) \
++{ class_##name##_t _t = { .lock = lock, .lock2 = lock2 }, *_T = &_t;	\
++  _lock; return _t; }
++
+ #ifdef CONFIG_SMP
+ 
+ static inline bool rq_order_less(struct rq *rq1, struct rq *rq2)
+@@ -2743,6 +2749,16 @@ static inline void double_raw_lock(raw_spinlock_t *l1, raw_spinlock_t *l2)
+ 	raw_spin_lock_nested(l2, SINGLE_DEPTH_NESTING);
  }
  
-+DEFINE_LOCK_GUARD_1(rq_lock, struct rq,
-+		    rq_lock(_T->lock, &_T->rf),
-+		    rq_unlock(_T->lock, &_T->rf),
-+		    struct rq_flags rf)
++static inline void double_raw_unlock(raw_spinlock_t *l1, raw_spinlock_t *l2)
++{
++	raw_spin_unlock(l1);
++	raw_spin_unlock(l2);
++}
 +
-+DEFINE_LOCK_GUARD_1(rq_lock_irq, struct rq,
-+		    rq_lock_irq(_T->lock, &_T->rf),
-+		    rq_unlock_irq(_T->lock, &_T->rf),
-+		    struct rq_flags rf)
++DEFINE_LOCK_GUARD_2(double_raw_spinlock, raw_spinlock_t,
++		    double_raw_lock(_T->lock, _T->lock2),
++		    double_raw_unlock(_T->lock, _T->lock2))
 +
-+DEFINE_LOCK_GUARD_1(rq_lock_irqsave, struct rq,
-+		    rq_lock_irqsave(_T->lock, &_T->rf),
-+		    rq_unlock_irqrestore(_T->lock, &_T->rf),
-+		    struct rq_flags rf)
+ /*
+  * double_rq_unlock - safely unlock two runqueues
+  *
+@@ -2800,6 +2816,10 @@ static inline void double_rq_unlock(struct rq *rq1, struct rq *rq2)
+ 
+ #endif
+ 
++DEFINE_LOCK_GUARD_2(double_rq_lock, struct rq,
++		    double_rq_lock(_T->lock, _T->lock2),
++		    double_rq_unlock(_T->lock, _T->lock2))
 +
- static inline struct rq *
- this_rq_lock_irq(struct rq_flags *rf)
- 	__acquires(rq->lock)
+ extern struct sched_entity *__pick_first_entity(struct cfs_rq *cfs_rq);
+ extern struct sched_entity *__pick_last_entity(struct cfs_rq *cfs_rq);
+ 
