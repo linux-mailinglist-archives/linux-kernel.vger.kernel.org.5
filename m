@@ -2,105 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9131477C173
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFFBB77C174
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231720AbjHNUX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 16:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47100 "EHLO
+        id S232376AbjHNUYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 16:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232427AbjHNUXo (ORCPT
+        with ESMTP id S232375AbjHNUYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 16:23:44 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57465E5B;
-        Mon, 14 Aug 2023 13:23:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=mKonTCdLfpftC39X0RxcU5vrM/gZaTRV3WAv3PeJxKU=; b=r1zGp4cyztm3cyDrkZa6P4lbcz
-        J1A3caAUbRKvsDQD8zVQqAKyZxV/8CWackctoAFcEbLIcmQPAz9h6e/Ruy0Cb7JlYHZF9t7LR8nD7
-        JdUm2mJLR2OAku/qYV/6t06HvdJFrpsJo8jibZbCv2VIMLL7kXGQW7kwwKYt6UwSPWTk=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qVe5t-0045SL-6U; Mon, 14 Aug 2023 22:23:17 +0200
-Date:   Mon, 14 Aug 2023 22:23:17 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Michele Dalle Rive <dallerivemichele@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Davide Rovelli <davide.rovelli@usi.ch>,
-        rust-for-linux@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Subject: Re: [RFC PATCH 0/7] Rust Socket abstractions
-Message-ID: <0e91e3be-abbb-4bf7-be05-ba75c7522736@lunn.ch>
-References: <20230814092302.1903203-1-dallerivemichele@gmail.com>
- <2023081411-apache-tubeless-7bb3@gregkh>
+        Mon, 14 Aug 2023 16:24:20 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D7713E
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:24:19 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-407db3e9669so19521cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:24:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692044658; x=1692649458;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iSSLEw5F2RpsSJDXkksvbuFJhQZkRzBBaxJy2HARoBc=;
+        b=JzzdtEv9iAZ4/IZ+utw2v2/StJoFVZ3duBCJDZ0+foUzYbm++/xzGveSIJFsuHFNXO
+         ENdyEPuLgT4PpMyls1pK58e1FNpmnNvDfMRCmETsngjqHd3Zq7ktSY3r9eK45ioORHZ/
+         EBU4EX7vxeyOPdeFgS+utQkc+fvNXhLt1gXRsXgHNJf5QggEWyQ6BiSR6Lfq7CO0EZR8
+         c/Zgp2q9rhB9CjFdY6UUV6cdyKN5Mt55ABXOpaG9uhAtPM1z+Nmbz+849wa2iWBFUjQH
+         car9PfNoEegDX14lw6GjJ4sCT6iAI7UAOLEbLzEQ2UTI91oXgnA+ihIP7qEP3kU0YIcl
+         q6/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692044658; x=1692649458;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iSSLEw5F2RpsSJDXkksvbuFJhQZkRzBBaxJy2HARoBc=;
+        b=OgoBk8HrAB9cOrRPh5VCuHla9FvILQNnfa4T0q/f8ioIDBYohO3o7cQoqtR8zH+25l
+         Kh0/8Se6aPfrwPlRpDKwUlRcpdVFPqj+Go+t07rh3CTY5aU5gfxUbEMO6f15wZNbaSWM
+         kv42rtpJpWDFecA6uUEFPdVvVh2QEaIQj66OVdZvK9GGI4pSvkr43XSQbCD6hmuCPDrA
+         lv4HGV08XDy15JHl5PxVJ5bm/NUM4pkBH+WPwMOimMOs1bXurFIz/+G/BHVS1G+A4VLo
+         1ezyU3zb0fzNCHMjrvVmMSzKtpYbwOi09msaRFpjOKpE7aIz5dz2Ns5TACa37JdYYk++
+         2wRw==
+X-Gm-Message-State: AOJu0YxwhaUcEoPmFLNT4OURBq8kYWAzV8c+xyIT+POVxE6Eco3OdgdZ
+        NvR+XHXr2gRF3szVj0TXN2r3zD7WUO7GZLq7m8Mk3w==
+X-Google-Smtp-Source: AGHT+IFIeHMMVToGLSS2KTQjtpjyqYWhYjqljbMdFdJAi+CuCc10Vra7FA5ljFCRHw5PEtjHZKUVoV7mrGjALMJhrk0=
+X-Received: by 2002:ac8:7c50:0:b0:40f:db89:5246 with SMTP id
+ o16-20020ac87c50000000b0040fdb895246mr698165qtv.21.1692044658618; Mon, 14 Aug
+ 2023 13:24:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023081411-apache-tubeless-7bb3@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <01CA7674B690CA24+20230804020907.144562-2-ye@kaige.org>
+In-Reply-To: <01CA7674B690CA24+20230804020907.144562-2-ye@kaige.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 14 Aug 2023 13:24:06 -0700
+Message-ID: <CAP-5=fWxxaL7xqTFmButfVUEBCXB9PQOVovooMq+Z7NqP=10HA@mail.gmail.com>
+Subject: Re: [PATCH v2] perf stat-display: Check if snprintf()'s fmt argument
+ is NULL
+To:     Kaige Ye <ye@kaige.org>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, adrian.hunter@intel.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 05:25:49PM +0200, Greg KH wrote:
-> On Mon, Aug 14, 2023 at 11:22:55AM +0200, Michele Dalle Rive wrote:
-> > This patch series is intended to create Rust abstractions for Sockets
-> > and other fundamental network entities. 
-> > 
-> > Specifically, it was added:
-> > - Ip address and Socket address wrappers (for `in_addr`, `in6_addr`,
-> >   `sockaddr_in`, `sockaddr_in6`, `sockaddr_storage`).
-> > - Socket wrapper.
-> > - Socket flags and options enums.
-> > - TCP and UDP specific abstractions over the Rust Socket structure.
-> > 
-> > This series is a RFC because I would appreciate some feedback about:
-> > - The structure of the module: is the division of the files and modules
-> >   appropriate or should it be more or less fine-grained?
-> >   Also, should the `net` module export all the structures of its
-> >   submodules? I noticed that it is done in the standard library.
-> > - Whether the documentation is comprehensive enough.
-> > - A few other specific questions, written in the individual patches.
-> > 
-> > I would greatly appreciate any kind of feedback or opinion. 
-> > I am pretty new to the patch/mailing list world, so please point out any
-> > mistake I might make.
-> 
-> The best feedback is "who will use these new interfaces?"  Without that,
-> it's really hard to review a patchset as it's difficult to see how the
-> bindings will be used, right?
+On Thu, Aug 3, 2023 at 7:10=E2=80=AFPM Kaige Ye <ye@kaige.org> wrote:
+>
+> It is undefined behavior to pass NULL as snprintf()'s fmt argument.
+> Here is an example to trigger the problem:
+>
+>   $ perf stat --metric-only -x, -e instructions -- sleep 1
+>   insn per cycle,
+>   Segmentation fault (core dumped)
+>
+> With this patch:
+>
+>   $ perf stat --metric-only -x, -e instructions -- sleep 1
+>   insn per cycle,
+>   ,
+>
+> Signed-off-by: Kaige Ye <ye@kaige.org>
 
-There is a long standing tradition in Linux, you don't get a new API
-merged without a user.
+Thanks Kaige!
 
-There is not too much use of in kernel sockets. Network file systems
-like NFS, and SMB are one. These need to be careful with memory usage,
-you could be busy writing blocks out because the system is low on
-memory and trying to free some up, and asking for more memory might
-not work.  Sending kernel log messages to a server. But that needs
-care because of the different contexts it can be used in. Without
-knowing what it will be used for, it is hard for us the point the
-special considerations which need to be made.
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-So please also let us see the code using this API.
-
-	Andrew
+> ---
+> V1 -> V2: Addressed Ian's comments (Ian Rogers)
+> ---
+>  tools/perf/util/stat-display.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-displa=
+y.c
+> index 7329b3340..031888545 100644
+> --- a/tools/perf/util/stat-display.c
+> +++ b/tools/perf/util/stat-display.c
+> @@ -578,7 +578,7 @@ static void print_metric_only_csv(struct perf_stat_co=
+nfig *config __maybe_unused
+>         if (!valid_only_metric(unit))
+>                 return;
+>         unit =3D fixunit(tbuf, os->evsel, unit);
+> -       snprintf(buf, sizeof buf, fmt, val);
+> +       snprintf(buf, sizeof(buf), fmt ?: "", val);
+>         ends =3D vals =3D skip_spaces(buf);
+>         while (isdigit(*ends) || *ends =3D=3D '.')
+>                 ends++;
+> @@ -600,7 +600,7 @@ static void print_metric_only_json(struct perf_stat_c=
+onfig *config __maybe_unuse
+>         if (!valid_only_metric(unit))
+>                 return;
+>         unit =3D fixunit(tbuf, os->evsel, unit);
+> -       snprintf(buf, sizeof(buf), fmt, val);
+> +       snprintf(buf, sizeof(buf), fmt ?: "", val);
+>         ends =3D vals =3D skip_spaces(buf);
+>         while (isdigit(*ends) || *ends =3D=3D '.')
+>                 ends++;
+>
+> base-commit: f6b8436bede3e80226e8b2100279c4450c73806a
+> --
+> 2.41.0
+>
