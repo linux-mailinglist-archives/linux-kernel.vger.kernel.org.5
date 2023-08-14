@@ -2,187 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 743DB77C3BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 01:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D8F77C3C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 01:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232971AbjHNXCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 19:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46146 "EHLO
+        id S233158AbjHNXDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 19:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232771AbjHNXBe (ORCPT
+        with ESMTP id S233493AbjHNXDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 19:01:34 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5095D170B
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 16:01:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=f8o/psJ0TXPeTYoQOnqypZJbdp1Q5AMgt88myFFBs/4=; b=eMEuDRJlcFMvVBNtt4Z5j0lGUb
-        7UVx4aDbQvcqNcYhZcxv4BJBZbr2AagsRFMGIsMFSwKeM6yKitzcnmk4LSW6HhV3LG4cYZHdsJK/9
-        rCMy2g95xPX/oiTUmgyrMQKUgvP447KJwd0xKdV3TqGLmDcZ4eSvKPfdfTpGzKxaq2eKbKxcwUCgH
-        l8vMnHuuCFlhqHkS0jIl22tVhPd0bj6824xGB1nNdzffJUopArf1MXvSwd8CK5IEI7cFf5E3E055M
-        EbqNl1+zv/zArNiixUhzp/GqezBG7b646vqP9XuUDJtozXjKuytiDOoUa+NAHmh7QEWDpgkVho0fl
-        CIkiMTow==;
-Received: from [2601:1c2:980:9ec0::577]
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qVgYx-004hU2-T4; Mon, 14 Aug 2023 23:01:28 +0000
-Message-ID: <2a7cac4c-a97e-92e2-56db-9429105d7a83@infradead.org>
-Date:   Mon, 14 Aug 2023 16:01:24 -0700
+        Mon, 14 Aug 2023 19:03:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BBB7E5F
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 16:03:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E418C63A1E
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 23:03:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA58FC433C8;
+        Mon, 14 Aug 2023 23:03:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692054185;
+        bh=gta2RtEYggf0RpNH45Xk8FTnI+6MKWM1/9f6yWhUR/o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TdVN+aYEY94NTcpsxsxpj03c3ThEy4uGx6nbWIXsARtkWISBPgE7A7KM0e7GxSMmH
+         ImTOlRGqL1bkDWbOeX1uoxpuMGEMzOqUlwXAlpPE1okuniMdSJ0rt6lEyivo5Cy4ua
+         +CrbsX7htjyrb/Qs3em85E8TgWOrDA73J8PKGjdBHYiWKKwEBqq5tsDzz1pNwZYGiA
+         eUopaU/kdmBS1V932hZ8/WkJ9DuiP0SCqpjgEb56V3/p+LVS41qht+vQyQehrA0yQb
+         uFaJxWxVpJhs2rR1UUwq7E1mJCatiErl5PUBNFqOj042F5iEodOYo0L8U7k5nJFlky
+         9ck3X3V88fBoA==
+Date:   Mon, 14 Aug 2023 16:03:03 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     syzbot <syzbot+a3618a167af2021433cd@syzkaller.appspotmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
+        edumazet@google.com, jiri@nvidia.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [net?] INFO: rcu detected stall in unix_release
+Message-ID: <20230814160303.41b383b0@kernel.org>
+In-Reply-To: <0000000000008a1fbb0602d4088a@google.com>
+References: <0000000000008a1fbb0602d4088a@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH RFC v2 3/3] mm: Proper document tail pages fields for
- folio
-Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>
-References: <20230814184411.330496-1-peterx@redhat.com>
- <20230814184411.330496-4-peterx@redhat.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230814184411.330496-4-peterx@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
+Hi Vladimir, any ideas for this one?
+The bisection looks pooped, FWIW, looks like a taprio inf loop.
 
-On 8/14/23 11:44, Peter Xu wrote:
-> Tail page struct reuse is over-comlicated.  Not only because we have
-> implicit uses of tail page fields (mapcounts, or private for thp swap
-> support, etc., that we _may_ still use in the page structs, but not obvious
-> the relationship between that and the folio definitions), but also because
-> we have 32/64 bits layouts for struct page so it's unclear what we can use
-> and what we cannot when trying to find a new spot in folio struct.
+On Sun, 13 Aug 2023 13:45:59 -0700 syzbot wrote:
+> Hello,
 > 
-> We also have tricks like page->mapping, where we can reuse only the tail
-> page 1/2 but nothing more than tail page 2.  It is all mostly hidden, until
-> someone starts to read into a VM_BUG_ON_PAGE() of __split_huge_page_tail().
+> syzbot found the following issue on:
 > 
-> It's also unclear on how many fields we can reuse for a tail page.  The
-> real answer is (after help from Matthew): we have 7 WORDs guaranteed on 64
-> bits and 8 WORDs on 32 bits.  Nothing more than that is guaranteed to even
-> exist.
+> HEAD commit:    d0378ae6d16c Merge branch 'enetc-probe-fix'
+> git tree:       net
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1052ea2ba80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=fa5bd4cd5ab6259d
+> dashboard link: https://syzkaller.appspot.com/bug?extid=a3618a167af2021433cd
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1152c6eda80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13b1eddda80000
 > 
-> Let's document it clearly on what we can use and what we can't when
-> extending folio on reusing tail page fields, with 100% explanations on each
-> of them.  Hopefully after the doc update it will make it easier when:
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/c893f52cd6ab/disk-d0378ae6.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/dfb7a8b86a99/vmlinux-d0378ae6.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/cb9134e0a22c/bzImage-d0378ae6.xz
 > 
->    (1) Any reader to know exactly what field is where and for what, the
->        relationships between folio tail pages and struct page definitions,
+> The issue was bisected to:
 > 
->    (2) Any potential new fields to be added to a large folio, so we're clear
->        which field one can still reuse.
+> commit c2368b19807affd7621f7c4638cd2e17fec13021
+> Author: Jiri Pirko <jiri@nvidia.com>
+> Date:   Fri Jul 29 07:10:35 2022 +0000
 > 
-> This is assuming WORD is defined as sizeof(void *) on any archs, just like
-> the other comment in struct page we already have.
+>     net: devlink: introduce "unregistering" mark and use it during devlinks iteration
 > 
-> Signed-off-by: Peter Xu <peterx@redhat.com>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=134f1179a80000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=10cf1179a80000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=174f1179a80000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+a3618a167af2021433cd@syzkaller.appspotmail.com
+> Fixes: c2368b19807a ("net: devlink: introduce "unregistering" mark and use it during devlinks iteration")
+> 
+> rcu: INFO: rcu_preempt self-detected stall on CPU
+> rcu: 	0-....: (10499 ticks this GP) idle=9774/1/0x4000000000000000 softirq=8757/8758 fqs=5219
+> rcu: 	         hardirqs   softirqs   csw/system
+> rcu: 	 number:        1          0            0
+> rcu: 	cputime:    26308      26181           17   ==> 52490(ms)
+> rcu: 	(t=10500 jiffies g=8417 q=457 ncpus=2)
+> CPU: 0 PID: 5047 Comm: syz-executor224 Not tainted 6.5.0-rc4-syzkaller-00212-gd0378ae6d16c #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+> RIP: 0010:taprio_dequeue_tc_priority+0x263/0x4b0 net/sched/sch_taprio.c:798
+> Code: 8b 74 24 10 89 ef 44 89 f6 e8 29 b8 2c f9 44 39 f5 0f 84 40 ff ff ff e8 2b bd 2c f9 49 83 ff 0f 0f 87 e1 01 00 00 48 8b 04 24 <0f> b6 00 38 44 24 36 7c 08 84 c0 0f 85 bf 01 00 00 8b 33 8b 4c 24
+> RSP: 0018:ffffc90000007d60 EFLAGS: 00000293
+> RAX: ffffed10047a4a72 RBX: ffff888023d25394 RCX: 0000000000000100
+> RDX: ffff888028efbb80 RSI: ffffffff88594af5 RDI: 0000000000000004
+> RBP: 0000000000000008 R08: 0000000000000004 R09: 0000000000000008
+> R10: 0000000000000000 R11: ffffc90000007ff8 R12: 0000000000000010
+> R13: ffff88802d19ab60 R14: 0000000000000000 R15: 0000000000000001
+> FS:  0000555555857380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000020000600 CR3: 000000002cdd1000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <IRQ>
+>  taprio_dequeue+0x12e/0x5f0 net/sched/sch_taprio.c:868
+>  dequeue_skb net/sched/sch_generic.c:292 [inline]
+>  qdisc_restart net/sched/sch_generic.c:397 [inline]
+>  __qdisc_run+0x1c4/0x19d0 net/sched/sch_generic.c:415
+>  qdisc_run include/net/pkt_sched.h:125 [inline]
+>  qdisc_run include/net/pkt_sched.h:122 [inline]
+>  net_tx_action+0x71e/0xc80 net/core/dev.c:5049
+>  __do_softirq+0x218/0x965 kernel/softirq.c:553
+>  invoke_softirq kernel/softirq.c:427 [inline]
+>  __irq_exit_rcu kernel/softirq.c:632 [inline]
+>  irq_exit_rcu+0xb7/0x120 kernel/softirq.c:644
+>  sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1109
+>  </IRQ>
+>  <TASK>
+>  asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
+> RIP: 0010:unwind_next_frame+0x5ba/0x2020 arch/x86/kernel/unwind_orc.c:517
+> Code: 31 02 00 00 41 80 fe 04 0f 84 08 0c 00 00 41 80 fe 05 0f 85 d7 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b 14 24 48 c1 ea 03 <80> 3c 02 00 0f 85 42 19 00 00 48 89 c8 4d 8b 7d 38 48 ba 00 00 00
+> RSP: 0018:ffffc90003b9f748 EFLAGS: 00000a02
+> RAX: dffffc0000000000 RBX: 0000000000000001 RCX: ffffffff8f3ed5c8
+> RDX: 1ffff92000773efe RSI: 0000000000000001 RDI: ffffffff8ec31910
+> RBP: ffffc90003b9f800 R08: ffffffff8f3ed646 R09: ffffffff8f3ed5cc
+> R10: ffffc90003b9f7b8 R11: 000000000000d9e9 R12: ffffc90003b9f808
+> R13: ffffc90003b9f7b8 R14: 0000000000000005 R15: 0000000000000000
+>  arch_stack_walk+0x8b/0xf0 arch/x86/kernel/stacktrace.c:25
+>  stack_trace_save+0x96/0xd0 kernel/stacktrace.c:122
+>  kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+>  kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+>  kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
+>  ____kasan_slab_free mm/kasan/common.c:236 [inline]
+>  ____kasan_slab_free+0x15e/0x1b0 mm/kasan/common.c:200
+>  kasan_slab_free include/linux/kasan.h:162 [inline]
+>  slab_free_hook mm/slub.c:1792 [inline]
+>  slab_free_freelist_hook+0x10b/0x1e0 mm/slub.c:1818
+>  slab_free mm/slub.c:3801 [inline]
+>  kmem_cache_free+0xf0/0x490 mm/slub.c:3823
+>  sk_prot_free net/core/sock.c:2122 [inline]
+>  __sk_destruct+0x49e/0x770 net/core/sock.c:2216
+>  sk_destruct+0xc2/0xf0 net/core/sock.c:2231
+>  __sk_free+0xc4/0x3a0 net/core/sock.c:2242
+>  sk_free+0x7c/0xa0 net/core/sock.c:2253
+>  sock_put include/net/sock.h:1975 [inline]
+>  unix_release_sock+0xa76/0xf70 net/unix/af_unix.c:668
+>  unix_release+0x88/0xe0 net/unix/af_unix.c:1065
+>  __sock_release+0xcd/0x290 net/socket.c:654
+>  sock_close+0x1c/0x20 net/socket.c:1386
+>  __fput+0x3fd/0xac0 fs/file_table.c:384
+>  task_work_run+0x14d/0x240 kernel/task_work.c:179
+>  resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+>  exit_to_user_mode_prepare+0x210/0x240 kernel/entry/common.c:204
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
+>  syscall_exit_to_user_mode+0x1d/0x50 kernel/entry/common.c:297
+>  do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7fc3bb116ef7
+> Code: 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b8 ff ff ff f7 d8 64 89 02 b8
+> RSP: 002b:00007ffd1d8ead88 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+> RAX: 0000000000000000 RBX: 0000000000000004 RCX: 00007fc3bb116ef7
+> RDX: 0000000000000000 RSI: 0000000000008933 RDI: 0000000000000004
+> RBP: 00007ffd1d8ead90 R08: 0000000000000008 R09: 0000000000000004
+> R10: 000000000000000b R11: 0000000000000246 R12: 00007ffd1d8eafc0
+> R13: 00003faaaaaaaaaa R14: 00007ffd1d8eaff0 R15: 00007fc3bb164376
+>  </TASK>
+> 
+> 
 > ---
->   include/linux/mm_types.h | 41 ++++++++++++++++++++++++++++++++++------
->   1 file changed, 35 insertions(+), 6 deletions(-)
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
 > 
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 829f5adfded1..9c744f70ae84 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -322,11 +322,40 @@ struct folio {
->   		};
->   		struct page page;
->   	};
-> +	/*
-> +	 * Some of the tail page fields may not be reused by the folio
-> +	 * object because they're already been used by the page struct.  On
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> If the bug is already fixed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+> 
+> If you want to change bug's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the bug is a duplicate of another bug, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
 
-	                  they have
-
-> +	 * 32bits there're at least 8 WORDs while on 64 bits there're at
-
-preferably s/there're/there are/
-
-> +	 * least 7 WORDs:
-> +	 *
-> +	 * |--------+-------------+-------------------|
-> +	 * |  index | 32 bits     | 64 bits           |
-> +	 * |--------+-------------+-------------------|
-> +	 * |      0 | flags       | flags             |
-> +	 * |      1 | head        | head              |
-> +	 * |      2 | FREE        | FREE              |
-> +	 * |      3 | FREE [1]    | FREE [1]          |
-> +	 * |      4 | FREE        | FREE              |
-> +	 * |      5 | FREE        | private [2]       |
-> +	 * |      6 | mapcnt      | mapcnt+refcnt [3] |
-> +	 * |      7 | refcnt [3]  |                   |
-> +	 * |--------+-------------+-------------------|
-> +	 *
-> +	 * [1] "mapping" field.  It is free to use but needs to be with
-> +	 *     some caution due to poisoning, see TAIL_MAPPING_REUSED_MAX.
-> +	 *
-> +	 * [2] "private" field, used when THP_SWAP is on (but disabled on
-> +	 *     32 bits, so this index is FREE on 32bit or hugetlb folios).
-> +	 *     May need to be fixed finally.
-> +	 *
-> +	 * [3] "refcount" field must be zero for all tail pages.  See e.g.
-> +	 *     has_unmovable_pages() on page_ref_count() check and comment.
-> +	 */
->   	union {
->   		struct {
->   			unsigned long _flags_1;
->   			unsigned long _head_1;
-> -	/* public: */
-> +	/* public: WORD 2 */
->   			unsigned char _folio_dtor;
->   			unsigned char _folio_order;
->   	/* private: 2 bytes can be reused later */
-> @@ -335,7 +364,7 @@ struct folio {
->   	/* 4 bytes can be reused later (64 bits only) */
->   			unsigned char _free_1_1[4];
->   #endif
-> -	/* public: */
-> +	/* public: WORD 3 */
->   			atomic_t _entire_mapcount;
->   			atomic_t _nr_pages_mapped;
->   			atomic_t _pincount;
-> @@ -350,20 +379,20 @@ struct folio {
->   		struct page __page_1;
->   	};
->   	union {
-> -		struct {
-> +		struct {	/* hugetlb folios */
->   			unsigned long _flags_2;
->   			unsigned long _head_2;
-> -	/* public: */
-> +	/* public: WORD 2 */
->   			void *_hugetlb_subpool;
->   			void *_hugetlb_cgroup;
->   			void *_hugetlb_cgroup_rsvd;
->   			void *_hugetlb_hwpoison;
->   	/* private: the union with struct page is transitional */
->   		};
-> -		struct {
-> +		struct {	/* non-hugetlb folios */
->   			unsigned long _flags_2a;
->   			unsigned long _head_2a;
-> -	/* public: */
-> +	/* public: WORD 2-3 */
->   			struct list_head _deferred_list;
->   	/* private: 8 more free bytes for either 32/64 bits */
->   			unsigned char _free_2_1[8];
