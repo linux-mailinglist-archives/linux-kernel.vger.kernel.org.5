@@ -2,234 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A3177C3C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 01:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9BD177C3C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 01:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233389AbjHNXG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 19:06:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46980 "EHLO
+        id S233411AbjHNXIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 19:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233411AbjHNXGs (ORCPT
+        with ESMTP id S233408AbjHNXIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 19:06:48 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD40C5;
-        Mon, 14 Aug 2023 16:06:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692054405;
-        bh=GsBbQZ8SIGJQowmFExFSw7KkrFDNXJATxWpeeLKCiJ4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ijDvRXuCv53nq1Q1OYhYZ07rb+NKCxnZ3GMxdKZWKY3TUJ+yiusq7lSDLbuzkZp3t
-         4YXiVpcOqez+AyCu9V1jPJDvugUr08yzRhX7O4jPoNPJlqZ+BIaWIfrkcz/ZvY+0To
-         sebOy6C7RERC+Y+YmqZ57++A7DyA57uKZGmbsHntk2eRXeXYUIeqGFf0aW87y9Kfch
-         D/WqstGoqXkc0bOy0iej3SvOGsYq4WlS8NciPjLjtymTbnFqvVN49EVTJZu68l6wYl
-         GmZhZwsls+MaAA1N0QJu+g64tC7q35DROysoG15Q+b6bRXWy/PZtnVNkIVoBOZ237Q
-         riXyaAO/rilzg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Mon, 14 Aug 2023 19:08:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74D9C10D4;
+        Mon, 14 Aug 2023 16:08:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RPqln5pv6z4wb8;
-        Tue, 15 Aug 2023 09:06:45 +1000 (AEST)
-Date:   Tue, 15 Aug 2023 09:06:45 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the v4l-dvb tree
-Message-ID: <20230815090645.11e1033f@canb.auug.org.au>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EEC9464757;
+        Mon, 14 Aug 2023 23:08:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5249CC433C7;
+        Mon, 14 Aug 2023 23:08:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692054510;
+        bh=XY/WMhO8qiTfyVHayKuSrhJyNRPc36gDgVCOsuSZivw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Xs9DjKsTczVia8fspSjcgg8hXzVUDtvyttUVO+Wu6zR7uCZrSXB0O8ph3nQjCH2jl
+         PBGYKQV87jP/JcQn6TpIByUlXO15r6/qJuhnuJt1OxBOO9F6hsP1c9/EZOJQPgNZxe
+         4uO1ITSJ+WaKye5cMm1Sz24Pie5Jy3dT6RC59E3GYrd6VNAnFQlT6vhYvs9j+Y3kWk
+         WmYQx7Rx7ie9oCaq6Dtt9xnAVOKr72V+oaJO7cbGsNs1BT+arzFSwUI9qP8wtBOQwC
+         gpWzR8c2bpCmAwXJrPXXG1Xr3U9XHCsGx6IyKjSrnkH99E6UMkDQ9N93DYFrUHmWMJ
+         WD3xTwTkVptTA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D70B9CE039C; Mon, 14 Aug 2023 16:08:29 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 16:08:29 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Alexey Dobriyan <adobriyan@gmail.com>, akpm@linux-foundation.org,
+        arnd@kernel.org, ndesaulniers@google.com, sfr@canb.auug.org.au,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com
+Subject: Re: [PATCH RFC bootconfig] 1/2] fs/proc: Add /proc/cmdline_load for
+ boot loader arguments
+Message-ID: <79d0ddcf-3b20-48f5-89f6-7eb5c3fa4c88@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <197cba95-3989-4d2f-a9f1-8b192ad08c49@paulmck-laptop>
+ <20230728033701.817094-1-paulmck@kernel.org>
+ <db2617d2-589d-47c1-a0cc-e8aeca58710a@p183>
+ <9a42de2a-7d9f-4be3-b6c8-9f3e8a092c4d@paulmck-laptop>
+ <20230807114455.b4bab41d771556d086e8bdf4@kernel.org>
+ <7c81c63b-7097-4d28-864e-f364eaafc5a0@paulmck-laptop>
+ <24ec9c40-7310-4544-8c3f-81f2a756aead@paulmck-laptop>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/5TwvrpitQBAuWK2D9tosMyX";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <24ec9c40-7310-4544-8c3f-81f2a756aead@paulmck-laptop>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/5TwvrpitQBAuWK2D9tosMyX
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sat, Aug 12, 2023 at 04:30:41PM -0700, Paul E. McKenney wrote:
+> On Sun, Aug 06, 2023 at 09:39:28PM -0700, Paul E. McKenney wrote:
+> > On Mon, Aug 07, 2023 at 11:44:55AM +0900, Masami Hiramatsu wrote:
+> > > On Fri, 4 Aug 2023 10:36:17 -0700
+> > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > > 
+> > > > On Fri, Aug 04, 2023 at 08:23:20PM +0300, Alexey Dobriyan wrote:
+> > > > > On Thu, Jul 27, 2023 at 08:37:00PM -0700, Paul E. McKenney wrote:
+> > > > > > In kernels built with CONFIG_BOOT_CONFIG_FORCE=y, /proc/cmdline will
+> > > > > > show all kernel boot parameters, both those supplied by the boot loader
+> > > > > > and those embedded in the kernel image.  This works well for those who
+> > > > > > just want to see all of the kernel boot parameters, but is not helpful to
+> > > > > > those who need to see only those parameters supplied by the boot loader.
+> > > > > > This is especially important when these parameters are presented to the
+> > > > > > boot loader by automation that might gather them from diverse sources.
+> > > > > > 
+> > > > > > Therefore, provide a /proc/cmdline_load file that shows only those kernel
+> > > > > > boot parameters supplied by the boot loader.
+> > > > > 
+> > > > > > +static int cmdline_load_proc_show(struct seq_file *m, void *v)
+> > > > > > +{
+> > > > > > +	seq_puts(m, boot_command_line);
+> > > > > > +	seq_putc(m, '\n');
+> > > > > > +	return 0;
+> > > > > > +}
+> > > > > > +
+> > > > > >  static int __init proc_cmdline_init(void)
+> > > > > >  {
+> > > > > >  	struct proc_dir_entry *pde;
+> > > > > > @@ -19,6 +27,11 @@ static int __init proc_cmdline_init(void)
+> > > > > >  	pde = proc_create_single("cmdline", 0, NULL, cmdline_proc_show);
+> > > > > >  	pde_make_permanent(pde);
+> > > > > >  	pde->size = saved_command_line_len + 1;
+> > > > > > +	if (IS_ENABLED(CONFIG_BOOT_CONFIG_FORCE)) {
+> > > > > > +		pde = proc_create_single("cmdline_load", 0, NULL, cmdline_load_proc_show);
+> > > > > > +		pde_make_permanent(pde);
+> > > > > > +		pde->size = strnlen(boot_command_line, COMMAND_LINE_SIZE) + 1;
+> > > > > > +	}
+> > > > > 
+> > > > > Please add it as separate fs/proc/cmdline_load.c file so that name of
+> > > > > the file matches name of the /proc file.
+> > > > 
+> > > > Thank you, will do!
+> > > > 
+> > > > > The name "cmdline_load" is kind of non-descriptive. Mentioning "bootloader"
+> > > > > somewhere should improve things.
+> > > > 
+> > > > If we can all quickly come to agreement on a name, I can of course easily
+> > > > change it.
+> > > > 
+> > > > /proc/cmdline_bootloader?  Better than /proc/cmdline_from_bootloader,
+> > > > I suppose.  /proc/cmdline_bootldr?  /proc/bootloader by analogy with
+> > > > /proc/bootconfig?  Something else?
+> > > 
+> > > What about "/proc/raw_cmdline" ?
+> > 
+> > That would work of me!
+> > 
+> > Any objections to /proc/raw_cmdline?
+> > 
+> > Going once...
+> 
+> Going twice...
+> 
+> If I don't hear otherwise, /proc/raw_cmdline is is on Monday August 14 PDT.
 
-Hi all,
+And gone!
 
-Commits
+Please see below for the updated version.
 
-  6308759ec679 ("media: imx: imx7-media-csi: Fix frame sizes enumeration")
-  c2c0abbe86a0 ("MAINTAINERS: correct file entry in MEDIA DRIVERS FOR FREES=
-CALE
- IMX7/8")
-  12cc6da36af1 ("media: nxp: imx8-isi: Add ISI support for i.MX93")
-  f48498ad0a41 ("media: nxp: imx8-isi: Move i.MX8 gasket configuration to a=
-n op
-s structure")
-  0ac186e36d84 ("media: dt-bindings: nxp,imx8-isi: Add i.MX93 ISI compatibl=
-e st
-ring")
-  4b60db99baba ("media: nxp: Fix wrong return pointer check in mxc_isi_cros=
-sbar
-_init()")
-  0ca2fbab99b1 ("arm64: defconfig: Drop CONFIG_VIDEO_IMX_MEDIA")
-  483fe862488f ("staging: media: imx: Merge VIDEO_IMX_CSI into VIDEO_IMX_ME=
-DIA"
-)
-  093d69ad556d ("media: i2c: ds90ub960: Rename RXPORT_MODE_CSI2_ASYNC to RX=
-PORT
-_MODE_CSI2_NONSYNC")
-  618aba51c294 ("media: i2c: ds90ub953: Support non-sync mode")
-  d7d7a9ab7a77 ("media: i2c: ds90ub953: Restructure clkout management")
-  05428f66fc40 ("media: i2c: ds90ub960: Allow FPD-Link async mode")
-  c7a52ae0b1e8 ("media: i2c: ds90ub953: Handle V4L2_MBUS_CSI2_NONCONTINUOUS=
-_CLO
-CK")
-  be1e71b1db57 ("media: i2c: ds90ub913: Use v4l2_fwnode_endpoint_parse()")
-  255b959be97f ("media: i2c: ds90ub953: Use v4l2_fwnode_endpoint_parse()")
-  b57a5fd2ccf2 ("media: i2c: ds90ub960: Configure CSI-2 continuous clock")
-  905f88ccebb1 ("media: i2c: ds90ub9x3: Fix sub-device matching")
-  59353d7051d6 ("media: firewire: firedtv-avc.c: replace BUG with proper, e=
-rror
- return")
-  935ae6f8ba00 ("media: usb: pvrusb2: fix inconsistent indenting")
-  74a5a66fb422 ("media: tegra_cec: fix the return value handle for platform=
-_get
-_irq()")
-  b134b30f7f06 ("media: cx23885: debug cosmetics")
-  06a67a1a193a ("media: nxp: Remove redundant dev_err()")
-  c84db0f23029 ("media: rcar_jpu: Remove redundant dev_err()")
-  f7692d1d0af9 ("media: jpeg-core: Remove redundant dev_err()")
-  9578de86555b ("dt-bindings: media: amphion,vpu: correct node name")
-  63be999861e2 ("media: dt-bindings: drop unneeded status from examples")
-  7b7a3c014ed6 ("media: dvb: mb86a16: check the return value of mb86a16_rea=
-d()"
-)
-  992ba89d0300 ("media: doc: dev-encoder: Fixup type for ENUM_FRAMEINTERVAL=
-S")
-  525011d84a3f ("media: stm32: dcmi: only call s_stream on the source subde=
-v")
-  7d0e95eb820b ("media: i2c: st_mipid02: cascade s_stream call to the sourc=
-e su
-bdev")
-  1073f4414184 ("media: doc: codec: Rename "Return fields" to "Returned fie=
-lds"
- for consistency")
-  1526ae0fd815 ("media: doc: dev-encoder: Fixup whitespace before bold aste=
-risk
-s")
-  3c76db565fd2 ("media: venus: Fix firmware path for sm8250")
-  32136e283a06 ("media: venus: firmware: Use of_reserved_mem_lookup()")
-  dca24b633c82 ("media: venus: core: Set up secure memory ranges for SC7180=
-")
-  d5a8d2d3ec32 ("media: venus: hfi_venus: Restrict writing SCIACMDARG3 to V=
-enus
- V1/V2")
-  41d41b03289a ("media: venus: Use newly-introduced hfi_buffer_requirements=
- acc
-essors")
-  bbfc89e6f67c ("media: venus: Introduce accessors for remapped hfi_buffer_=
-reqs
- members")
-  04e3a07275a0 ("media: venus: vdec: Sanitize vdec_set_work_route() per-VPU=
--ver
-sion")
-  adeb071bb4cb ("media: venus: hfi_platform: Check vpu_version instead of d=
-evic
-e compatible")
-  c38610f8981e ("media: venus: firmware: Sanitize per-VPU-version")
-  365b4824ebea ("media: venus: hfi_venus: Sanitize venus_cpu_idle_and_pc_re=
-ady(
-) per-VPU-version")
-  3b96e82d54a8 ("media: venus: hfi_venus: Sanitize venus_cpu_and_video_core=
-_idl
-e() per-VPU-version")
-  03811969f9f7 ("media: venus: hfi_venus: Sanitize venus_isr() per-VPU-vers=
-ion"
-)
-  5516263fa0ba ("media: venus: hfi_venus: Sanitize venus_halt_axi() per-VPU=
--ver
-sion")
-  6513d80e085d ("media: venus: core: Assign registers based on VPU version")
-  ff877873a0d4 ("media: venus: hfi_venus: Sanitize venus_boot_core() per-VP=
-U-ve
-rsion")
-  375b48f40fd0 ("media: venus: firmware: Leave a clue about obtaining CP VA=
-Rs")
-  9ac60db2bb4b ("media: venus: Add vpu_version to most SoCs")
-  ed939821c873 ("media: venus: Introduce VPU version distinction")
-  d74e48160980 ("media: venus: hfi_venus: Write to VIDC_CTRL_INIT after unm=
-aski
-ng interrupts")
-  6283e4834c69 ("media: venus: hfi_venus: Only consider sys_idle_indicator =
-on V
-1")
-  1972e32431ed ("media: mediatek: vcodec: Fix possible invalid memory acces=
-s fo
-r encoder")
-  655b86e52eac ("media: mediatek: vcodec: Fix possible invalid memory acces=
-s fo
-r decoder")
-  9d86be9bda6c ("media: mediatek: vcodec: Add driver to support 10bit")
-  1dff2beb60d3 ("media: mediatek: vcodec: Add capture format to support 10b=
-it r
-aster mode")
-  6afcc2b0aebf ("media: mediatek: vcodec: Add capture format to support 10b=
-it t
-ile mode")
-  0934d3759615 ("media: mediatek: vcodec: separate decoder and encoder")
-  183b0b4bd1ff ("media: mediatek: vcodec: remove unused include header")
-  63b71f310ade ("media: mediatek: vcodec: fix unreasonable parameter defini=
-tion
- and style")
-  31272a398447 ("media: mediatek: vcodec: separate struct mtk_vcodec_dev")
-  01abf5fbb081 ("media: mediatek: vcodec: separate struct 'mtk_vcodec_ctx'")
-  41f03c673cb7 ("media: mediatek: vcodec: replace pr_* with dev_* for v4l2 =
-debu
-g message")
-  0db2fc4eec23 ("media: mediatek: vcodec: remove the dependency of vcodec d=
-ebug
- log")
-  17834e0a4db5 ("media: mediatek: vcodec: Removing useless debug log")
-  32986215be7a ("media: mediatek: vcodec: Removing struct 'mtk_vcodec_ctx/d=
-ev'
-for shared interface")
-  2e9eadccf754 ("media: mediatek: vcodec: align fw interface")
-  94f214f4b6b4 ("media: mediatek: vcodec: remove unused parameter")
-  9d7531be3085 ("media: pci: ipu3-cio2: Initialise timing struct to avoid a=
- com
-piler warning")
-  697bef6c70e9 ("media: ccs-pll: Initialise best_div to avoid a compiler wa=
-rnin
-g")
-  9e2a90d75662 ("media: atomisp: Fix me->stages error checking in sh_css_sp=
-_ini
-t_pipeline()")
-  7b4846b65154 ("media: atomisp: Fix smatch warnings caused by atomisp cust=
-om a
-ssert() usage")
-  a2c770324657 ("media: atomisp: Remove bogus asd =3D=3D NULL checks")
+								Thanx, Paul
 
-are missing a Signed-off-by from their committer.
+------------------------------------------------------------------------
 
---=20
-Cheers,
-Stephen Rothwell
+commit 0fe10f0d1873a6f6e287c0c5b45e9203b0e33c83
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Fri Jul 21 16:05:38 2023 -0700
 
---Sig_/5TwvrpitQBAuWK2D9tosMyX
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+    fs/proc: Add /proc/raw_cmdline for boot loader arguments
+    
+    In kernels built with CONFIG_BOOT_CONFIG_FORCE=y, /proc/cmdline will
+    show all kernel boot parameters, both those supplied by the boot loader
+    and those embedded in the kernel image.  This works well for those who
+    just want to see all of the kernel boot parameters, but is not helpful to
+    those who need to see only those parameters supplied by the boot loader.
+    This is especially important when these parameters are presented to the
+    boot loader by automation that might gather them from diverse sources.
+    It is also useful when booting the next kernel via kexec(), in which
+    case it is necessary to supply only those kernel command-line arguments
+    from the boot loader, and most definitely not those that were embedded
+    into the current kernel.
+    
+    Therefore, provide a /proc/raw_cmdline file that shows only those kernel
+    boot parameters supplied by the boot loader.
+    
+    Why put this in /proc?  Because it is quite similar to /proc/cmdline,
+    and /proc/bootconfig, so it makes sense to put it in the same place that
+    those files are located.
+    
+    [ sfr: Apply kernel test robot feedback. ]
+    [ paulmck: Apply Randy Dunlap feedback. ]
+    [ paulmck: Apply naming feedback from Alexey Dobriyan and Masami Hiramatsu. ]
+    
+    Co-developed-by: Stephen Rothwell <sfr@canb.auug.org.au>
+    Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+    Co-developed-by: Arnd Bergmann <arnd@kernel.org>
+    Signed-off-by: Arnd Bergmann <arnd@kernel.org>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+    Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+    Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+    Cc: Andrew Morton <akpm@linux-foundation.org>
+    Cc: Alexey Dobriyan <adobriyan@gmail.com>
+    Cc: <linux-fsdevel@vger.kernel.org>
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTas4UACgkQAVBC80lX
-0Gz1pQf/Qm4AkQUPIAPl9QkVxG9IOk71Aj3XEWSP0M6FFt0gA9lm3AeEXwH6a4Og
-I5pfiucdQN367JTAyhZxPyZrxrpnmSYE9/Cdi+Os0TaXw/BiV8NY9GbfT+pLFoys
-SmFY0RsFH9tF1TTv5wTO3IlFmeXKK/scTZIMubJur/84gdUKNFv1aChsBqCzV5YA
-tAcZYCazUQtcqrREQh5VrgQw7PPX2t10y3IM72NhFihThb5K+f7USTK54UGL3bR3
-epsbjOxlUETe6OAsawvTSnbLlEyKV9y1mrVsCW5w8eAmVK+TbXPYe+jTIRCfzgGt
-LS+4Z3izlh7RKW1sFc16KyEjYClydw==
-=1bh2
------END PGP SIGNATURE-----
-
---Sig_/5TwvrpitQBAuWK2D9tosMyX--
+diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+index 75a8c899ebcc..61419270c38f 100644
+--- a/Documentation/filesystems/proc.rst
++++ b/Documentation/filesystems/proc.rst
+@@ -723,6 +723,7 @@ files are there, and which are missing.
+  partitions   Table of partitions known to the system
+  pci 	      Deprecated info of PCI bus (new way -> /proc/bus/pci/,
+               decoupled by lspci				(2.4)
++ raw_cmdline  Kernel command line obtained from kernel image	(6.6)
+  rtc          Real time clock
+  scsi         SCSI info (see text)
+  slabinfo     Slab pool info
+diff --git a/fs/proc/Makefile b/fs/proc/Makefile
+index bd08616ed8ba..6182296f3c6b 100644
+--- a/fs/proc/Makefile
++++ b/fs/proc/Makefile
+@@ -34,3 +34,4 @@ proc-$(CONFIG_PROC_VMCORE)	+= vmcore.o
+ proc-$(CONFIG_PRINTK)	+= kmsg.o
+ proc-$(CONFIG_PROC_PAGE_MONITOR)	+= page.o
+ proc-$(CONFIG_BOOT_CONFIG)	+= bootconfig.o
++proc-$(CONFIG_BOOT_CONFIG_FORCE)	+= raw_cmdline.o
+diff --git a/fs/proc/raw_cmdline.c b/fs/proc/raw_cmdline.c
+new file mode 100644
+index 000000000000..2e19eb89fc8e
+--- /dev/null
++++ b/fs/proc/raw_cmdline.c
+@@ -0,0 +1,25 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/fs.h>
++#include <linux/init.h>
++#include <linux/proc_fs.h>
++#include <linux/seq_file.h>
++#include <asm/setup.h>
++#include "internal.h"
++
++static int raw_cmdline_proc_show(struct seq_file *m, void *v)
++{
++	seq_puts(m, boot_command_line);
++	seq_putc(m, '\n');
++	return 0;
++}
++
++static int __init proc_raw_cmdline_init(void)
++{
++	struct proc_dir_entry *pde;
++
++	pde = proc_create_single("raw_cmdline", 0, NULL, raw_cmdline_proc_show);
++	pde_make_permanent(pde);
++	pde->size = strnlen(boot_command_line, COMMAND_LINE_SIZE) + 1;
++	return 0;
++}
++fs_initcall(proc_raw_cmdline_init);
+diff --git a/include/linux/init.h b/include/linux/init.h
+index 266c3e1640d4..29e75bbe7984 100644
+--- a/include/linux/init.h
++++ b/include/linux/init.h
+@@ -112,6 +112,7 @@
+ #define __REFCONST       .section       ".ref.rodata", "a"
+ 
+ #ifndef __ASSEMBLY__
++
+ /*
+  * Used for initialization calls..
+  */
+@@ -143,7 +144,7 @@ struct file_system_type;
+ 
+ /* Defined in init/main.c */
+ extern int do_one_initcall(initcall_t fn);
+-extern char __initdata boot_command_line[];
++extern char boot_command_line[];
+ extern char *saved_command_line;
+ extern unsigned int saved_command_line_len;
+ extern unsigned int reset_devices;
+diff --git a/init/main.c b/init/main.c
+index ad920fac325c..2121685c479a 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -135,7 +135,7 @@ EXPORT_SYMBOL(system_state);
+ void (*__initdata late_time_init)(void);
+ 
+ /* Untouched command line saved by arch-specific code. */
+-char __initdata boot_command_line[COMMAND_LINE_SIZE];
++char boot_command_line[COMMAND_LINE_SIZE] __ro_after_init;
+ /* Untouched saved command line (eg. for /proc) */
+ char *saved_command_line __ro_after_init;
+ unsigned int saved_command_line_len __ro_after_init;
