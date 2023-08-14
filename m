@@ -2,181 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC3677B520
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 11:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E036C77B59E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 11:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235430AbjHNJHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 05:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54684 "EHLO
+        id S236479AbjHNJhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 05:37:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235345AbjHNJHG (ORCPT
+        with ESMTP id S234555AbjHNJgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 05:07:06 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B0B10F;
-        Mon, 14 Aug 2023 02:07:05 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 09:07:03 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692004024;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wetadB97bIqAsdJEg4W3RZMOv6KS2WmfR8lmdg07hhI=;
-        b=j5WcKhicADTjPKScxe2225FSF/tYOrL9dNz/9Zy/7FPQlEnkdTgdKaJYD+eGgaXOCbqOjP
-        wg8m7dEYDpzH8AyRocY4tDytzX4w3t+COI3JxKGN5s5orQJPnEZcIlQh/7ue2pkn2Lr7DX
-        qCPNMAhE87cTNcsqeIv1ZXK7VTVxZHpePWkV0dZQaJzM+epf0cuh5UKM90GIIQynNuNdtl
-        Safdpa+RvpOovIHLcViAqN9QVE5yweM2VNEjcMSMVDO2RnFq7OCSEY4VMMZKmUCViQlaAL
-        7hCyhJFwKjOpzC+w0cq5PnPVniTwNi06Fqw9P67eZfl8QumGye/+wNGaVIf1Ww==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692004024;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wetadB97bIqAsdJEg4W3RZMOv6KS2WmfR8lmdg07hhI=;
-        b=t1JsRtyOs8nnLOrUtRxAmW1LoiDD6I3/dxdE2XAzhXqPv4F75ZEmWcir83KHCipbcKVi9a
-        k+AAhUcVjeLch4BQ==
-From:   "tip-bot2 for Sean Christopherson" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/retpoline: Don't clobber RFLAGS during srso_safe_ret()
-Cc:     Srikanth Aithal <sraithal@amd.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>, stable@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230811155255.250835-1-seanjc@google.com>
-References: <20230811155255.250835-1-seanjc@google.com>
+        Mon, 14 Aug 2023 05:36:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E633B10D1;
+        Mon, 14 Aug 2023 02:36:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692005782; x=1723541782;
+  h=date:from:to:cc:subject:message-id:reply-to:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=RKvYTqzrXcwlZ7NNW5wfBFv7WF5t4ecZEc6u2PU8cCA=;
+  b=Ja2R/CD1REnKvab0ew30Zjw6/rHDtPZDK7/KX2PJqYzieInn1HH/3lDW
+   js9Vamyj6SiuyFKh8UB4BJcrCdBGJMQDKAP41K25NKyvlNaNCB0B4n3rY
+   ZBd6sjS+De0i9rgFBoxh2/k2RjV8/+pYJfoDUG8jYCUKdhvulD7YJgxg1
+   h7oOg5IiXd6qNPUhArpTWr4NBo1xHjuLmyOC91n6+qRFClrmEiH9C8A4+
+   TsYgfCUJXe8abOMAjlAu4WQ92UdIOXN+2SLX3EAmIGJTkGRIWMFLGThz8
+   5ZqKCCxTIrIcON5WI/s4kBjldfMm2nsrBWnJ7czXqE2M5EFkAF4u3Xad6
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="351597682"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="351597682"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 02:36:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="979930686"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="979930686"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga006.fm.intel.com with ESMTP; 14 Aug 2023 02:36:22 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 14 Aug 2023 02:36:21 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 14 Aug 2023 02:36:21 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Mon, 14 Aug 2023 02:36:21 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.170)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Mon, 14 Aug 2023 02:36:21 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jwpG6w20i0ZhLKOBUNCojLyJC9F6Gq/Mfse3+52Sp0rI82ekT165bdkfhBxDhAxrBkLWZXGWkmiHI49+KqDWzhbYQR3x3CGeSnWc+oWB5DsKQZJc6iOHf80ymxcgNHjwON4b/h4WsrS053Yje5rJ5xIp3uOIlq4nYBw8HdWOn0U1mRgplFLVE6LOR2Fr7JQO9mR4UZm/hdYA6BgRReThGyV5elydrVEYXqORMJNWqMxACH5EiSA48Me/vAZzTBdKu4kPC2a521xvKN1RJXi+4RsxR2s52bBfuuc8ES/oKEuawZ64rQR5n0idpRvHJSlcSfN3DwZKzrQo4NBpFRmg5w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Zf2GFVTKNjQyfFGNf7ahLCEOd68aAhE1WrNzWdTgOsc=;
+ b=fkdwfFkreQPo/YIAHbortlwpUXuruN97AYq4DyLwI9JG/oBEIElDKkLBlxRWVC1GbMdZtzGffq0IGXRV2qLXtsL7PZf8m+jtKESdT1sTbEsm4VGGUONRi7F8iT45yLMFESEZBWGfmy+XRnXt+OtZYYE2WFk7o5fQ8j8JvZwMIDeFdPgUCo8Kux89aQIrKiyZGWfgVyXpSVFHR/AxBQfsUM9yvTuLMlbFEdXLNFN0Z+PHl+AbQnLqdnn2uLQxNfTcL9EtVREBTYhy40w/Hx5S+xiLAaQOtDTyMbqktRQvR2SHNKXhfgNGhl+sR993VRutsOxKPKqmdQCAD5mrNTk6Eg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
+ IA1PR11MB6514.namprd11.prod.outlook.com (2603:10b6:208:3a2::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Mon, 14 Aug
+ 2023 09:36:19 +0000
+Received: from DS7PR11MB5966.namprd11.prod.outlook.com
+ ([fe80::1b1a:af8e:7514:6f63]) by DS7PR11MB5966.namprd11.prod.outlook.com
+ ([fe80::1b1a:af8e:7514:6f63%2]) with mapi id 15.20.6652.029; Mon, 14 Aug 2023
+ 09:36:19 +0000
+Date:   Mon, 14 Aug 2023 17:09:18 +0800
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     John Hubbard <jhubbard@nvidia.com>
+CC:     David Hildenbrand <david@redhat.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <pbonzini@redhat.com>, <seanjc@google.com>,
+        <mike.kravetz@oracle.com>, <apopple@nvidia.com>, <jgg@nvidia.com>,
+        <rppt@kernel.org>, <akpm@linux-foundation.org>,
+        <kevin.tian@intel.com>, Mel Gorman <mgorman@techsingularity.net>
+Subject: Re: [RFC PATCH v2 0/5] Reduce NUMA balance caused TLB-shootdowns in
+ a VM
+Message-ID: <ZNnvPuRUVsUl5umM@yzhao56-desk.sh.intel.com>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <20230810085636.25914-1-yan.y.zhao@intel.com>
+ <41a893e1-f2e7-23f4-cad2-d5c353a336a3@redhat.com>
+ <ZNSyzgyTxubo0g/D@yzhao56-desk.sh.intel.com>
+ <6b48a161-257b-a02b-c483-87c04b655635@redhat.com>
+ <1ad2c33d-95e1-49ec-acd2-ac02b506974e@nvidia.com>
+ <846e9117-1f79-a5e0-1b14-3dba91ab8033@redhat.com>
+ <d0ad2642-6d72-489e-91af-a7cb15e75a8a@nvidia.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d0ad2642-6d72-489e-91af-a7cb15e75a8a@nvidia.com>
+X-ClientProxiedBy: SG2PR02CA0103.apcprd02.prod.outlook.com
+ (2603:1096:4:92::19) To DS7PR11MB5966.namprd11.prod.outlook.com
+ (2603:10b6:8:71::6)
 MIME-Version: 1.0
-Message-ID: <169200402376.27769.4513228712223783276.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|IA1PR11MB6514:EE_
+X-MS-Office365-Filtering-Correlation-Id: ccc647d1-f269-4f3c-101d-08db9ca9e9d3
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NPCHXjX3a69D1C9BX5q9glZeT3aLszePm72M3xxS4LTPFmjdtdvp9OsdJGzJjiBZjrgg5/AyQYSmFPe2YUNJ7ATqby0BLajnmuyja0GyYYPj8vMcxb6+x+lsl8SKjUy7G7u9wDNbTRN7bQ73Dei+aoBOF3JxQXPhDvHv4zPzPOT8byh4+o1a0utV5OqAMqbnAV1I8/oSM9smT9dvwcKfMvqqGbry/1BvXEhk2ONpKNHvJ6tPDWqfrX1I+rlNSf2D87SMyIoCMt2axEcwtQxX+h9eCxWfsRir33w9bxOLFxDpAQwNS6cMVaqDzR38ZVoS46AOi0ArLkU+bzqFcS3n3/RqWZAO6XbZiHZLgfTVrzczp0Euy3PapTP3uoF10JqFYB1wrbyj5sTj1gM8dmKYigNnkN8F+OUwHQhH8c5mepflSLKTVvZSqSLi+nGjiSF3vfHxzVPjaHg528dLUdTyBqPPOXW3zoVfWQbonRD5r84w7PieJncWSbjLwhM59kfAFAWoA3wcInYXHJQnFG20YYKWPofK3zaTieXtsrEPF4G8I9Nd4XNujLo3w6VRPg7Z
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(376002)(346002)(396003)(366004)(136003)(186006)(1800799006)(451199021)(478600001)(82960400001)(8936002)(8676002)(4326008)(66946007)(66556008)(66476007)(54906003)(6916009)(316002)(41300700001)(38100700002)(83380400001)(6512007)(6486002)(6506007)(53546011)(26005)(3450700001)(86362001)(2906002)(5660300002)(7416002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?wLF1m8oNMO2zjcwwuPubg+NiWJmx2zL1Td7HB9nnx2pGx8fZ4wRyxBQMTj?=
+ =?iso-8859-1?Q?HtsNKNfIQfLKOAy4bmLNWukm3bNwzqnIXxbJsNykF/LpOIxfGJJu4GJf/z?=
+ =?iso-8859-1?Q?mr+ldMBCRml3y2406wMcfW33mvwS9LwcUNE0/W/S4CEyrv9hz8RyNJ+PL6?=
+ =?iso-8859-1?Q?uSCoUldq0aTtJYTUDyyf9DA70/HF7pbiO4QmHFyVqv91/zRz9N0OGUGeFo?=
+ =?iso-8859-1?Q?hiTokF98j6TdySFrsUtctjlauOda6/mLb5P5c0/zmOdbpiqIKUY5y9GwWA?=
+ =?iso-8859-1?Q?sPljoZ2s7GbiDbISlFZNeK03wpAdKkpszyTXLUCY9CUNJDUJnsAcN42svH?=
+ =?iso-8859-1?Q?V2mSKVMGaCwUWxG0zC5yE8E8QoYvP83HNjn5hiDcsLMLmvwFwAeACPKwAS?=
+ =?iso-8859-1?Q?CzrjH5bNj3JX73vdF7VbO+llWHRI0mZIa1Z55An4dtGDDIJZII3TEUpj0O?=
+ =?iso-8859-1?Q?gjLP+W0WoNR44X5b/3WJD0HUkQzluyBF0xR+o2Mefg29+w4lZEjF5/GNTe?=
+ =?iso-8859-1?Q?neREMKhAqy+kGechwpPUvjLigXDcdjeX+z+sEOoRsyTQqlftAkoUCh1Z6r?=
+ =?iso-8859-1?Q?sc6NpbAau2p+YuJJ7TyxXwef9yNg3uNFeMEz1f6lf6PlifvFr8isvXacqp?=
+ =?iso-8859-1?Q?EwDfZbK4fEiALI30NwHVK9kDTQ4sDd+DJzQSYc2wlm6ZdRvn/oIT5nC6zO?=
+ =?iso-8859-1?Q?Lx6OM0Z4GGBfxfkGyrzP42C2/FeL8tge6cspDhiv8hNcStzu2Zq6GxVLt5?=
+ =?iso-8859-1?Q?1lnv9PE+vFiIEBXXUeC8tOhF9Jeb22Sli2WQ8oTMiPKvZD/2zpxizUSAQT?=
+ =?iso-8859-1?Q?hWl2UdFwUo/V6WHzECdnmYDMqCK0uUPZ5quiw73v5bQk5ZbJ1GaeprCtqc?=
+ =?iso-8859-1?Q?GCIaG4FgIvRvhDeWq2jVjq1x+htSRvukQgeKSzxZ14W4xc5PWQycB5YZ0I?=
+ =?iso-8859-1?Q?kRNfsRQ21WfYfDjJNRACKc2ahuOTLiGUNiIPIyzYDd5gjiTYynGjuABtE0?=
+ =?iso-8859-1?Q?gvCcDet4PavJO9rYXfHELKJt1jC8N+fYs2qtyS2SUP7gWg7oX9k+qzimaa?=
+ =?iso-8859-1?Q?JOIjT97qg8PyyzC/iTaMAl1hDD/Br8Mp1rVV+aUYSL4sGE3dumiHBGmdfN?=
+ =?iso-8859-1?Q?R9gL4HRwzkSnhNOeCKNX5Qmne9TVqJ+HOBdvsgswnP4BGKiBTRcOUgml9U?=
+ =?iso-8859-1?Q?as5VEXq7tYYRWNSlPfSq41BwN7TN2EXPw5C0kyp1fTe33K/RfdyMd/BB7C?=
+ =?iso-8859-1?Q?Bv6d20E4/MfvVKORWC0T0AizsHmPicCor4D3mVeEGPfaPCCTOhVMhMVBkk?=
+ =?iso-8859-1?Q?7ObGFRmbkqi11CYncBa64jebOkIU0ivCzJgCs5ZlzlO6WABuZX4J+DR5/t?=
+ =?iso-8859-1?Q?aPAzST4wV8gES0QZajEww1D/DxceX9HXtCkEavMJqxxdTqijDt9w/KmnlW?=
+ =?iso-8859-1?Q?42tBRbIqwHpY7HAVbGY+ls0QXGkSUPKkTAFDzElmQhq2sXiaFSpOZhZGpd?=
+ =?iso-8859-1?Q?YPABhMsJ+2NQxFhtlqu5eYAbVP0Jlhq23JYD+dgQoPtsHgwslnl8Jm+/cy?=
+ =?iso-8859-1?Q?fabuanycQSna7hdY8cnsLcV0Lt3xadk97dOSMfe0YwNgnqH0L7ONrEcVEo?=
+ =?iso-8859-1?Q?n9vnlA/7ovkdUN6ijaVkHw4iRTicbu0nGs?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ccc647d1-f269-4f3c-101d-08db9ca9e9d3
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 09:36:19.0984
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 25UvOCujL595U+JvvYxoBvAamS4YQYNMUfay+62/GVRkqhXXffxyyGHKv46inWUXyn8yP9JtepHz9YU9ad5ygg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6514
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Fri, Aug 11, 2023 at 12:35:27PM -0700, John Hubbard wrote:
+> On 8/11/23 11:39, David Hildenbrand wrote:
+> ...
+> > > > Should we want to disable NUMA hinting for such VMAs instead (for example, by QEMU/hypervisor) that knows that any NUMA hinting activity on these ranges would be a complete waste of time? I recall that John H. once mentioned that there are
+> > > similar issues with GPU memory:  NUMA hinting is actually counter-productive and they end up disabling it.
+> > > > 
+> > > 
+> > > Yes, NUMA balancing is incredibly harmful to performance, for GPU and
+> > > accelerators that map memory...and VMs as well, it seems. Basically,
+> > > anything that has its own processors and page tables needs to be left
+> > > strictly alone by NUMA balancing. Because the kernel is (still, even
+> > > today) unaware of what those processors are doing, and so it has no way
+> > > to do productive NUMA balancing.
+> > 
+> > Is there any existing way we could handle that better on a per-VMA level, or on the process level? Any magic toggles?
+> > 
+> > MMF_HAS_PINNED might be too restrictive. MMF_HAS_PINNED_LONGTERM might be better, but with things like iouring still too restrictive eventually.
+> > 
+> > I recall that setting a mempolicy could prevent auto-numa from getting active, but that might be undesired.
+> > 
+> > CCing Mel.
+> > 
+> 
+> Let's discern between page pinning situations, and HMM-style situations.
+> Page pinning of CPU memory is unnecessary when setting up for using that
+> memory by modern GPUs or accelerators, because the latter can handle
+> replayable page faults. So for such cases, the pages are in use by a GPU
+> or accelerator, but unpinned.
+> 
+> The performance problem occurs because for those pages, the NUMA
+> balancing causes unmapping, which generates callbacks to the device
+> driver, which dutifully unmaps the pages from the GPU or accelerator,
+> even if the GPU might be busy using those pages. The device promptly
+> causes a device page fault, and the driver then re-establishes the
+> device page table mapping, which is good until the next round of
+> unmapping from the NUMA balancer.
+> 
+> hmm_range_fault()-based memory management in particular might benefit
+> from having NUMA balancing disabled entirely for the memremap_pages()
+> region, come to think of it. That seems relatively easy and clean at
+> first glance anyway.
+> 
+> For other regions (allocated by the device driver), a per-VMA flag
+> seems about right: VM_NO_NUMA_BALANCING ?
+> 
+Thanks a lot for those good suggestions!
+For VMs, when could a per-VMA flag be set?
+Might be hard in mmap() in QEMU because a VMA may not be used for DMA until
+after it's mapped into VFIO.
+Then, should VFIO set this flag on after it maps a range?
+Could this flag be unset after device hot-unplug?
 
-Commit-ID:     ba5ca5e5e6a1d55923e88b4a83da452166f5560e
-Gitweb:        https://git.kernel.org/tip/ba5ca5e5e6a1d55923e88b4a83da452166f5560e
-Author:        Sean Christopherson <seanjc@google.com>
-AuthorDate:    Fri, 11 Aug 2023 08:52:55 -07:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Mon, 14 Aug 2023 10:47:55 +02:00
 
-x86/retpoline: Don't clobber RFLAGS during srso_safe_ret()
-
-Use LEA instead of ADD when adjusting %rsp in srso_safe_ret{,_alias}()
-so as to avoid clobbering flags.  Drop one of the INT3 instructions to
-account for the LEA consuming one more byte than the ADD.
-
-KVM's emulator makes indirect calls into a jump table of sorts, where
-the destination of each call is a small blob of code that performs fast
-emulation by executing the target instruction with fixed operands.
-
-E.g. to emulate ADC, fastop() invokes adcb_al_dl():
-
-  adcb_al_dl:
-    <+0>:  adc    %dl,%al
-    <+2>:  jmp    <__x86_return_thunk>
-
-A major motivation for doing fast emulation is to leverage the CPU to
-handle consumption and manipulation of arithmetic flags, i.e. RFLAGS is
-both an input and output to the target of the call.  fastop() collects
-the RFLAGS result by pushing RFLAGS onto the stack and popping them back
-into a variable (held in %rdi in this case):
-
-  asm("push %[flags]; popf; " CALL_NOSPEC " ; pushf; pop %[flags]\n"
-
-  <+71>: mov    0xc0(%r8),%rdx
-  <+78>: mov    0x100(%r8),%rcx
-  <+85>: push   %rdi
-  <+86>: popf
-  <+87>: call   *%rsi
-  <+89>: nop
-  <+90>: nop
-  <+91>: nop
-  <+92>: pushf
-  <+93>: pop    %rdi
-
-and then propagating the arithmetic flags into the vCPU's emulator state:
-
-  ctxt->eflags = (ctxt->eflags & ~EFLAGS_MASK) | (flags & EFLAGS_MASK);
-
-  <+64>:  and    $0xfffffffffffff72a,%r9
-  <+94>:  and    $0x8d5,%edi
-  <+109>: or     %rdi,%r9
-  <+122>: mov    %r9,0x10(%r8)
-
-The failures can be most easily reproduced by running the "emulator"
-test in KVM-Unit-Tests.
-
-If you're feeling a bit of deja vu, see commit b63f20a778c8
-("x86/retpoline: Don't clobber RFLAGS during CALL_NOSPEC on i386").
-
-In addition, this breaks booting of clang-compiled guest on
-a gcc-compiled host where the host contains the %rsp-modifying SRSO
-mitigations.
-
-  [ bp: Massage commit message, extend, remove addresses. ]
-
-Fixes: fb3bd914b3ec ("x86/srso: Add a Speculative RAS Overflow mitigation")
-Closes: https://lore.kernel.org/all/de474347-122d-54cd-eabf-9dcc95ab9eae@amd.com
-Reported-by: Srikanth Aithal <sraithal@amd.com>
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/20230810013334.GA5354@dev-arch.thelio-3990X/
-Link: https://lore.kernel.org/r/20230811155255.250835-1-seanjc@google.com
----
- arch/x86/lib/retpoline.S | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
-index 2cff585..132cedb 100644
---- a/arch/x86/lib/retpoline.S
-+++ b/arch/x86/lib/retpoline.S
-@@ -164,7 +164,7 @@ __EXPORT_THUNK(srso_untrain_ret_alias)
- /* Needs a definition for the __x86_return_thunk alternative below. */
- SYM_START(srso_safe_ret_alias, SYM_L_GLOBAL, SYM_A_NONE)
- #ifdef CONFIG_CPU_SRSO
--	add $8, %_ASM_SP
-+	lea 8(%_ASM_SP), %_ASM_SP
- 	UNWIND_HINT_FUNC
- #endif
- 	ANNOTATE_UNRET_SAFE
-@@ -239,7 +239,7 @@ __EXPORT_THUNK(zen_untrain_ret)
-  * SRSO untraining sequence for Zen1/2, similar to zen_untrain_ret()
-  * above. On kernel entry, srso_untrain_ret() is executed which is a
-  *
-- * movabs $0xccccccc308c48348,%rax
-+ * movabs $0xccccc30824648d48,%rax
-  *
-  * and when the return thunk executes the inner label srso_safe_ret()
-  * later, it is a stack manipulation and a RET which is mispredicted and
-@@ -252,11 +252,10 @@ SYM_START(srso_untrain_ret, SYM_L_GLOBAL, SYM_A_NONE)
- 	.byte 0x48, 0xb8
- 
- SYM_INNER_LABEL(srso_safe_ret, SYM_L_GLOBAL)
--	add $8, %_ASM_SP
-+	lea 8(%_ASM_SP), %_ASM_SP
- 	ret
- 	int3
- 	int3
--	int3
- 	lfence
- 	call srso_safe_ret
- 	int3
