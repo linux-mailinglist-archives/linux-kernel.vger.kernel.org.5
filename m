@@ -2,102 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0EC777B907
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 593EF77B909
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbjHNMt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 08:49:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
+        id S230508AbjHNMuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 08:50:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231202AbjHNMt0 (ORCPT
+        with ESMTP id S230425AbjHNMuL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 08:49:26 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B1694
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:49:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nSu5pZF90pcdhTItj4iKD/oA2dZDTfI4QLO16UzUIZs=; b=eIUlbBMESs05G7H3pZKwv3cv94
-        EiHP+k5HnjKtPSsRSAazLweh0fDPTRHxLRrycEAZzgoXBrDuFPQkfjAhaeybKu+7ccKhhZXvt8/KY
-        VGaxaghnE3KqFtJPvsWIG0Hl5at2sEQkoqNsGxqsnrwdxnRFa/B5dhGKiBFZEDlFjYV08PXv2HaF9
-        W/KEpYYv80PJChRhhS7ZEIvtOJcbwdhsnyp4Uu3HFARJrR0j7SJ6hCVl74/ZdiYVJeTpqt1sr5t/E
-        r8I7fYzRZlWGHRPujO7P4hz11vzkcBPT9Asq6yYfL7LmOKViJ4mc+aDpAY6rUJeSrAU4xgHNKkanQ
-        H/KKcpHg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qVX0U-00Aaoq-31;
-        Mon, 14 Aug 2023 12:49:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8AA51300137;
-        Mon, 14 Aug 2023 14:49:14 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 46491202BDC7A; Mon, 14 Aug 2023 14:49:14 +0200 (CEST)
-Date:   Mon, 14 Aug 2023 14:49:14 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
-        lkp@intel.com, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [tip:sched/eevdf] [sched/fair]  e0c2ff903c:
- phoronix-test-suite.blogbench.Write.final_score -34.8% regression
-Message-ID: <20230814124914.GJ776869@hirez.programming.kicks-ass.net>
-References: <202308101628.7af4631a-oliver.sang@intel.com>
- <ZNWKuccyWnS3UJjK@chenyu5-mobl2.bbrouter>
+        Mon, 14 Aug 2023 08:50:11 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C52394
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:50:10 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fe4b95c371so24769295e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:50:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692017409; x=1692622209;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=64XOobM12qUFrM2PGUblEKGDaFnRYmV14FiLNgEhwBY=;
+        b=rqdlXFOUGvs1lY5LrK7gqX3vDlA8JIzbWrWp/HafRbXaOVo0saPl+r1pytUC9KThed
+         UokJ5Sxz5eIrj8uvsLYsLusYEfeL8Iu/ZRjdA6jjG2fDU9cSIWYMDqhrepF9TQy+VEhe
+         J4zWUgVriKWMeV3YgRDRfMePNtLDkYJuqcPLJW/K8tqC9ic8Z4Ljf8Od0xLrJO9peUFN
+         gFTe9AH9sShKirce0MrRZAysJ3WtnzaX7SUCxhsKlrSrhOcaokadVV0Bp7GeaKC99GSO
+         /5OUEMBqRChgU3vn1N6IxpDez7CJ00SdvjvdkTS84uc3RCJ0LyaC0BuJA6LyUXiw3/By
+         /oQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692017409; x=1692622209;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=64XOobM12qUFrM2PGUblEKGDaFnRYmV14FiLNgEhwBY=;
+        b=G4VwbIvCbjQHf5iuv/LwhRScOoXL7KjcOh9rrlgB2rMNW2EM89DnnKz4M00fqKXVj3
+         Sb00WXG29HEpq5HcxpnaV2tJ8IfuSdX8zp4HbJxqAybRikBLW+l1UH+WySnlqd7eyjYo
+         mF7l8XVHBn2GE0V37okY5x0OTwAl07ttIIAcAlLM8SZ0wELrP7TwIx7cZXza/H3z2f1e
+         MB1kvnzZA3UVUL3wFX78bvx9Mt4iStuwZduT4orVGvDteFC0MvhZxRH66JsAywarAFhB
+         J0bp4nYH9QeZtjjidDoLICih7L8U3ddXMeJi2YVQlAbKuqkeAv5mLcbDwgcMXY7APiNd
+         xkgw==
+X-Gm-Message-State: AOJu0YxdO1mrRhJeAtiRLgeCJ6Jz0/N3RysiDD3bgbpj2FMysUorSIgr
+        ZxkZA+lJfJLRlDimB/ORDGXNWQ==
+X-Google-Smtp-Source: AGHT+IF4Y4fV2ioh2t22KoSy4G3HWMdFuiqgxjY+jZ6GbDr4OhJ2bG8ZjW18r9eQGVCZhHN9kuLDMw==
+X-Received: by 2002:a05:600c:3b03:b0:3fb:c257:9f48 with SMTP id m3-20020a05600c3b0300b003fbc2579f48mr10413863wms.16.1692017408939;
+        Mon, 14 Aug 2023 05:50:08 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id o13-20020a05600c378d00b003fe2de3f94fsm14183872wmr.12.2023.08.14.05.50.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 05:50:08 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+To:     Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Heidelberg <david@ixit.cz>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230812185239.378582-1-david@ixit.cz>
+References: <20230812185239.378582-1-david@ixit.cz>
+Subject: Re: [RESEND PATCH v2] drm/panel: JDI LT070ME05000 simplify with
+ dev_err_probe()
+Message-Id: <169201740818.1405695.2158426262781517183.b4-ty@linaro.org>
+Date:   Mon, 14 Aug 2023 14:50:08 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNWKuccyWnS3UJjK@chenyu5-mobl2.bbrouter>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 09:11:21AM +0800, Chen Yu wrote:
-> On 2023-08-10 at 21:24:37 +0800, kernel test robot wrote:
-> > 
-> > 
-> > Hello,
-> > 
-> > kernel test robot noticed a -34.8% regression of phoronix-test-suite.blogbench.Write.final_score on:
-> > 
-> > 
-> > commit: e0c2ff903c320d3fd3c2c604dc401b3b7c0a1d13 ("sched/fair: Remove sched_feat(START_DEBIT)")
-> > https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git sched/eevdf
-> > 
-> > testcase: phoronix-test-suite
-> > test machine: 96 threads 2 sockets Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz (Cascade Lake) with 512G memory
-> > parameters:
-> > 
-> > 	test: blogbench-1.1.0
-> > 	option_a: Write
-> > 	cpufreq_governor: performance
-> > 
+Hi,
 
-Is this benchmark fork() heavy?
+On Sat, 12 Aug 2023 20:52:39 +0200, David Heidelberg wrote:
+> Use the dev_err_probe() helper to simplify error handling during probe.
+> This also handle scenario, when EDEFER is returned and useless error is printed.
+> 
+> Fixes error:
+> panel-jdi-lt070me05000 4700000.dsi.0: cannot get enable-gpio -517
+> 
+> 
+> [...]
 
-> It seems that commit e0c2ff903c32 removed the sched_feat(START_DEBIT) for initial
-> task, but also increases the vruntime for non-initial task:
-> Before the e0c2ff903c32, the vruntime for a enqueued task is:
-> cfs_rq->min_vruntime
-> After the e0c2ff903c32, the vruntime for a enqueued task is:
-> avg_vruntime(cfs_rq) = \Sum v_i * w_i / W
->                      = \Sum v_i / nr_tasks
-> which is usually higher than cfs_rq->min_vruntime, and we give less sleep bonus to
-> the wakee, which could bring more or less impact to different workloads.
-> But since later we switched to lag based placement, this new vruntime will minus
-> lag, which could mitigate this problem. 
+Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-fixes)
 
-Right.. but given this problem was bisected through the lag based
-placement to this commit, I wondered about fork() / pthread_create().
+[1/1] drm/panel: JDI LT070ME05000 simplify with dev_err_probe()
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=ae6546835efaa7195aaaa10e5ff4e695cd82a816
 
-If this is indeed fork()/pthread_create() heavy, could you please see if
-disabling PLACE_DEADLINE_INITIAL helps?
+-- 
+Neil
+
