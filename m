@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D4177B419
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53F577B57E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 11:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233407AbjHNI1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 04:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42490 "EHLO
+        id S236089AbjHNJ2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 05:28:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234858AbjHNI1l (ORCPT
+        with ESMTP id S236413AbjHNJ2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 04:27:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F023B10E5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:26:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692001616;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H33gECP+9hXyb+EizpAzFVTxGWbGL8MsN4gYGXEf7/Q=;
-        b=e5Gr7WEqkkcrXmpJVIoBZSIQVlQxsu55442TUa0JG5sVp+9tlWkqxT25W+sOUy1T8A6fEX
-        1DALNjAb8vmkcNMa/7DHX+3zWmJ943/h5EZoc3mGDmzDgpXF1W2gQ4Jqm2X23jEivFcbmt
-        P+uU1m4472geyCYJbhOJPRoo+UNu5LA=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-478-UZ9e3W2COM-03RqOQaRmKA-1; Mon, 14 Aug 2023 04:26:52 -0400
-X-MC-Unique: UZ9e3W2COM-03RqOQaRmKA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 174012A59575;
-        Mon, 14 Aug 2023 08:26:52 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C4FB41121315;
-        Mon, 14 Aug 2023 08:26:50 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20230813122344.14142-1-paskripkin@gmail.com>
-References: <20230813122344.14142-1-paskripkin@gmail.com>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     dhowells@redhat.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, pabeni@redhat.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+cba21d50095623218389@syzkaller.appspotmail.com
-Subject: Re: [PATCH] crypto: fix uninit-value in af_alg_free_resources
+        Mon, 14 Aug 2023 05:28:25 -0400
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.216])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7A3EC113;
+        Mon, 14 Aug 2023 02:28:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
+        Content-Type; bh=+FBhsj1NEHZh40veVLb6FpBaS4vsDDs+BM7lRp95dkM=;
+        b=ReoRUyS+ApQYxrmE++ke8YAlfcNoXzoAtlUun+V75zLAAkF0lShGbLh7ccXwog
+        un5m0zuHSHIjI+EdfPm8fhytp6g1K0wXQHm6QLBRyNuHfG5U8HrKh0Rfk79HIc/L
+        INuQpEcTNXVEb65Rgulcp0LumTMrIACE2ZOcVGrgBNfkY=
+Received: from [172.20.10.2] (unknown [39.144.139.60])
+        by zwqz-smtp-mta-g0-4 (Coremail) with SMTP id _____wB3egis6NlkQ7KZDA--.24646S3;
+        Mon, 14 Aug 2023 16:41:18 +0800 (CST)
+Message-ID: <a6c2f193-ef7c-54a0-dfbb-13915be259a1@163.com>
+Date:   Mon, 14 Aug 2023 16:27:37 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3954479.1692001609.1@warthog.procyon.org.uk>
-Date:   Mon, 14 Aug 2023 09:26:49 +0100
-Message-ID: <3954480.1692001609@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] watchdog: simatic: add PCI dependency
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Hans de Goede <hdegoede@redhat.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Haeussler, Gerd" <gerd.haeussler.ext@siemens.com>,
+        "Schaffner, Tobias" <tobias.schaffner@siemens.com>,
+        "Wu, Xing Tong" <XingTong.Wu@siemens.com>
+References: <20230814073924.1066390-1-arnd@kernel.org>
+From:   "xingtong.wu" <xingtong_wu@163.com>
+In-Reply-To: <20230814073924.1066390-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: _____wB3egis6NlkQ7KZDA--.24646S3
+X-Coremail-Antispam: 1Uf129KBjvJXoW7ZF17Xr1kCry5Jw4Utr4rAFb_yoW8CFW5pa
+        93tF10kw1UJr4UtF13A34xWFy5Z3Z3JFW3JF15C3s8ua909r18KF97tr98W3yDAwsrCr17
+        KayrWry7Wa1DurUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UaYLPUUUUU=
+X-Originating-IP: [39.144.139.60]
+X-CM-SenderInfo: p0lqw35rqjs4rx6rljoofrz/1tbiTBXL0GI0adrZ7AAAsS
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pavel Skripkin <paskripkin@gmail.com> wrote:
+Hi
 
-> Syzbot was able to trigger use of uninitialized memory in
-> af_alg_free_resources.
+On 2023/8/14 15:38, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Bug is caused by missing initialization of rsgl->sgl.need_unpin before
-> adding to rsgl_list. Then in case of extract_iter_to_sg() failure, rsgl
-> is left with uninitialized need_unpin which is read during clean up
+> The simatic-ipc driver no longer depends on PCI, but its watchdog portion
+> still needs it, otherwise P2SB runs into a build  failure:
 
-Looks feasible :-).
+If the simatic-ipc driver no longer depends on PCI, you can
+delete the dependency here:
+https://elixir.bootlin.com/linux/v6.5-rc6/source/drivers/platform/x86/Kconfig#L1079
 
-> +		rsgl->sgl.need_unpin = 0;
-> +
+> 
+> WARNING: unmet direct dependencies detected for P2SB
+>   Depends on [n]: PCI [=n] && X86 [=y]
+>   Selected by [m]:
+>   - SIEMENS_SIMATIC_IPC_WDT [=m] && WATCHDOG [=y] && SIEMENS_SIMATIC_IPC [=y]
+> 
+> drivers/platform/x86/p2sb.c:121:3: error: call to undeclared function 'pci_bus_write_config_dword'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+>                 pci_bus_write_config_dword(bus, devfn_p2sb, P2SBC, 0);
+> 
+> Add back the minimum dependendency to make it build in random configurations
+> again.
+> 
+> Fixes: b72da71ce24b0 ("platform/x86: simatic-ipc: drop PCI runtime depends and header")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/watchdog/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index 04e9b40cf7d53..09452384221a4 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -1680,7 +1680,7 @@ config NIC7018_WDT
+>  
+>  config SIEMENS_SIMATIC_IPC_WDT
+>  	tristate "Siemens Simatic IPC Watchdog"
+> -	depends on SIEMENS_SIMATIC_IPC
+> +	depends on SIEMENS_SIMATIC_IPC && PCI
 
-The blank line isn't really necessary and it's a bool, so can you use 'false'
-rather than '0'?
+The SIEMENS_SIMATIC_IPC_WDT does not depends on PCI directly,
+it should depends on P2SB, then P2SB depends on PCI
 
-Alternatively, it might be better to move:
+>  	default y
+>  	select WATCHDOG_CORE
+>  	select P2SB
 
-		rsgl->sgl.need_unpin =
-			iov_iter_extract_will_pin(&msg->msg_iter);
+You can replace the "select" to "depends on" instead.
 
-up instead.
+Reviewed-by: Xing Tong Wu <xingtong.wu@siemens.com>
 
-David
+--
+Xing Tong
 
