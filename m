@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEEB077BE34
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0516E77BE35
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbjHNQiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 12:38:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50174 "EHLO
+        id S231203AbjHNQiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 12:38:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232968AbjHNQiH (ORCPT
+        with ESMTP id S232971AbjHNQiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 12:38:07 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A279E5B
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:38:05 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5840ea40c59so60779317b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:38:05 -0700 (PDT)
+        Mon, 14 Aug 2023 12:38:08 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E949C94
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:38:07 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d63e5f828a0so5256414276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:38:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692031085; x=1692635885;
+        d=google.com; s=20221208; t=1692031087; x=1692635887;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=9M5Kp6au+xtW2CeK8507RoWf4CnApWNQmihr10EV/wQ=;
-        b=KGWwShhyYHQqv5ngOlRXeEsBiMOJRnDM/DZuzfqzoLDqOmXIQSl9ZimX0NceVp5F1g
-         my8S/oTKd1PbqI/7q6okf48Xe0Zio1rd3vVSZZTJiQCVclxVj3wYoCMubVQC6HkOyHz/
-         Gxum+O6N9bAwsmRs3ZoPYIDktu/+5SPTHz8tq3pcKOBQt++Pognjni7hyhL1FCpg2WKi
-         w75ayAGB5wl3ebgCuu8GQnL6C6di135YaTHIAzZ7RCFQdHbF074p3WnrfKgECTnbOEF3
-         00HFgKRyoJzzd8O6IN1z+kB+WGRRLt826eqXC0MgdrPOZ8OkucXRSZHD0h+7SiJgcW1B
-         duxw==
+        bh=igst4mk2Qe0yy+cOTE8q+SB7QjnlDxT/LagI8IxyHvs=;
+        b=Cg7MCoQRuNdld7xCqa7bytZ8lmwbE26tEsLWyUL2QSRJC2JRmm5fWDi9RxftN4na0G
+         thkDV/wLONNXNYcsp8QBsUiOr9w+ewWT2hEQkgOebp9Yl5ngIiB4tX+SRUarU0xTiSXZ
+         1TjnzjbP0FELbaHdqCZ+RtYA3ufrMN3KULk3/cc05YTkUnWOeJ4LimKJxGftR01rdwZx
+         VNbIJQq3bXpOVRecztpIED99ADOg+XULA4+sIIN2HQ2zQe5/kuBvzAWUyj4HpA23zoXN
+         aCar0jwy9gQYWUyWs6Nd1nzWvJHr1RESaI/5mwrlzWx9iLwmGlF0Kg1JPIwQwgEET8iH
+         0eww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692031085; x=1692635885;
+        d=1e100.net; s=20221208; t=1692031087; x=1692635887;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9M5Kp6au+xtW2CeK8507RoWf4CnApWNQmihr10EV/wQ=;
-        b=Z3xhv2XiLL6F2YX9er+Md7mau4U1MrSwaHDXJrmAAv2uPVX3LzFDRgsmIyitab15MA
-         d6tMDiIzeGMlPPFCyKMmmXW4vv3TEGratl30Q5OP/3u2DW/EQpnsAyGphwzehwN0L134
-         mF3EBKkG0hTMF/6MAonGXOyKUaeJSO9qpETMqnijqOLk3tltTasE7HLekoXD1GV4XwEQ
-         p+Gc/zAeOQb6fX8Hp2RQhKvKX+7C7QRknwZjSfJk7TQyl06K/OdCpw9/8dKgOzkTff9O
-         dKz7uc7wkn9eWZa4lK3Scj4e7SHhouOWN21kQkV9q3/Fwd5wuiuYqQUc0yI/zWgG1J68
-         /Jpg==
-X-Gm-Message-State: AOJu0YxjE2YXPant2MmEHhlb5KCac7fLkIa8To7bYOKIoE17rx7xAnkr
-        qMddHjIZXTBtTeuNYucfWvTSO0C3XIQZ
-X-Google-Smtp-Source: AGHT+IGtd9vjdp1qvZb1M4Cmv9dej5Ze/an+8QoegeIi5mbhiIxJbZRrPKcsxOnBeYfjqARfHc8SO3fkXIGc
+        bh=igst4mk2Qe0yy+cOTE8q+SB7QjnlDxT/LagI8IxyHvs=;
+        b=YCnQXXfLP/GnPUA5rgnZwA5+7bqSHfRhvGVVE5V0dWIxlM28QSIBqqURhxfzZtTTPf
+         hENgIUxyGiTdLdXQWxUqenQvT8ByPdbdsMolT8tA2IlnRPlCLGWGMoJY/M5vFKQrLtRr
+         j4MhXsi/H6bpTey89RBMYRrnG9weawx5D9hP1bZXUnAupqVXWwKRDqbDZXQHwe5oLhfk
+         ev7/VSpi3hRVlawNKkUY8xvyMEeJRK2uzGjbJvAZBJK2wOVMCehKoL5MwPTI9A9f85k7
+         P+BgvTCdNyPt2auyQVu9ShIj8CMMSs/LJyiJ5uzaTEdb8ECR4w+bdsB0XxGY+yCMyQp7
+         XXAQ==
+X-Gm-Message-State: AOJu0YzgttREBBqxvX9E0ly2WwIr6ptsbIyazvR/zLTelSwkJAG8lsQF
+        72eBjtP0xj1TqtTIe0kO82vAWDaspgsB
+X-Google-Smtp-Source: AGHT+IGY085eR7sAPeFw2Vv2wVsPZoEMHrzUEnpYB0pv6wew4vvJ+t0oIZrJHInKhW9izPUdoejmhtgVEAGj
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:a919:6125:510f:f0ef])
- (user=irogers job=sendgmr) by 2002:a25:ce53:0:b0:d4f:22c:69a3 with SMTP id
- x80-20020a25ce53000000b00d4f022c69a3mr123751ybe.10.1692031084826; Mon, 14 Aug
- 2023 09:38:04 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 09:37:55 -0700
+ (user=irogers job=sendgmr) by 2002:a25:abcf:0:b0:d45:1b81:1154 with SMTP id
+ v73-20020a25abcf000000b00d451b811154mr133130ybi.2.1692031087237; Mon, 14 Aug
+ 2023 09:38:07 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 09:37:56 -0700
 In-Reply-To: <20230814163757.3077138-1-irogers@google.com>
-Message-Id: <20230814163757.3077138-2-irogers@google.com>
+Message-Id: <20230814163757.3077138-3-irogers@google.com>
 Mime-Version: 1.0
 References: <20230814163757.3077138-1-irogers@google.com>
 X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
-Subject: [PATCH v3 1/3] perf pmus: Sort pmus by name then suffix
+Subject: [PATCH v3 2/3] perf pmus: Add scan that ignores duplicates, use for
+ perf list
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -72,111 +73,145 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sort PMUs by name. If two PMUs have the same name but differ by
-suffix, sort the suffixes numerically. For example, "breakpoint" comes
-before "cpu", "uncore_imc_free_running_0" comes before
-"uncore_imc_free_running_1". Suffixes need to be treated specially as
-otherwise they will be ordered like 0, 1, 10, 11, .., 2, 20, 21, ..,
-etc. Only PMUs starting 'uncore_' are considered to have a potential
-suffix.
-
-Sorting of PMUs is done so that later patches can skip duplicate
-uncore PMUs that differ only by there suffix.
+When there are multiple PMUs that differ only by suffix, by default
+just list the first one and skip all others. As the PMUs are sorted,
+the scan routine checks that the PMU names match and the numbers are
+consecutive. If "-v" is passed to "perf list" then list all PMUs.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/pmus.c | 48 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ tools/perf/builtin-list.c      |  8 +++++
+ tools/perf/util/pmus.c         | 54 ++++++++++++++++++++++++++++++++--
+ tools/perf/util/print-events.h |  1 +
+ 3 files changed, 61 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
-index c58ba9fb6a36..3581710667b0 100644
---- a/tools/perf/util/pmus.c
-+++ b/tools/perf/util/pmus.c
-@@ -1,8 +1,10 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <linux/list.h>
-+#include <linux/list_sort.h>
- #include <linux/zalloc.h>
- #include <subcmd/pager.h>
- #include <sys/types.h>
-+#include <ctype.h>
- #include <dirent.h>
- #include <pthread.h>
- #include <string.h>
-@@ -33,6 +35,31 @@ static LIST_HEAD(other_pmus);
- static bool read_sysfs_core_pmus;
- static bool read_sysfs_all_pmus;
- 
-+static int pmu_name_len_no_suffix(const char *str, unsigned long *num)
-+{
-+	int orig_len, len;
-+
-+	orig_len = len = strlen(str);
-+
-+	/* Non-uncore PMUs have their full length, for example, i915. */
-+	if (strncmp(str, "uncore_", 7))
-+		return len;
-+
-+	/*
-+	 * Count trailing digits and '_', if '_{num}' suffix isn't present use
-+	 * the full length.
-+	 */
-+	while (len > 0 && isdigit(str[len - 1]))
-+		len--;
-+
-+	if (len > 0 && len != orig_len && str[len - 1] == '_') {
-+		if (num)
-+			*num = strtoul(&str[len], NULL, 10);
-+		return len - 1;
-+	}
-+	return orig_len;
-+}
-+
- void perf_pmus__destroy(void)
- {
- 	struct perf_pmu *pmu, *tmp;
-@@ -122,6 +149,25 @@ static struct perf_pmu *perf_pmu__find2(int dirfd, const char *name)
- 	return perf_pmu__lookup(core_pmu ? &core_pmus : &other_pmus, dirfd, name);
+diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
+index 7fec2cca759f..8fe4ddf02c14 100644
+--- a/tools/perf/builtin-list.c
++++ b/tools/perf/builtin-list.c
+@@ -423,6 +423,13 @@ static void json_print_metric(void *ps __maybe_unused, const char *group,
+ 	strbuf_release(&buf);
  }
  
-+static int pmus_cmp(void *priv __maybe_unused,
-+		    const struct list_head *lhs, const struct list_head *rhs)
++static bool default_skip_duplicate_pmus(void *ps)
 +{
-+	unsigned long lhs_num, rhs_num;
-+	struct perf_pmu *lhs_pmu = container_of(lhs, struct perf_pmu, list);
-+	struct perf_pmu *rhs_pmu = container_of(rhs, struct perf_pmu, list);
-+	const char *lhs_pmu_name = lhs_pmu->name ?: "";
-+	const char *rhs_pmu_name = rhs_pmu->name ?: "";
-+	int lhs_pmu_name_len = pmu_name_len_no_suffix(lhs_pmu_name, &lhs_num);
-+	int rhs_pmu_name_len = pmu_name_len_no_suffix(rhs_pmu_name, &rhs_num);
-+	int ret = strncmp(lhs_pmu_name, rhs_pmu_name,
-+			lhs_pmu_name_len < rhs_pmu_name_len ? lhs_pmu_name_len : rhs_pmu_name_len);
++	struct print_state *print_state = ps;
 +
-+	if (lhs_pmu_name_len != rhs_pmu_name_len || ret != 0 || lhs_pmu_name_len == 0)
-+		return ret;
-+
-+	return lhs_num < rhs_num ? -1 : (lhs_num > rhs_num ? 1 : 0);
++	return !print_state->long_desc;
 +}
 +
- /* Add all pmus in sysfs to pmu list: */
- static void pmu_read_sysfs(bool core_only)
+ int cmd_list(int argc, const char **argv)
  {
-@@ -156,6 +202,8 @@ static void pmu_read_sysfs(bool core_only)
- 		if (!perf_pmu__create_placeholder_core_pmu(&core_pmus))
- 			pr_err("Failure to set up any core PMUs\n");
+ 	int i, ret = 0;
+@@ -434,6 +441,7 @@ int cmd_list(int argc, const char **argv)
+ 		.print_end = default_print_end,
+ 		.print_event = default_print_event,
+ 		.print_metric = default_print_metric,
++		.skip_duplicate_pmus = default_skip_duplicate_pmus,
+ 	};
+ 	const char *cputype = NULL;
+ 	const char *unit_name = NULL;
+diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
+index 3581710667b0..5073843aca19 100644
+--- a/tools/perf/util/pmus.c
++++ b/tools/perf/util/pmus.c
+@@ -275,6 +275,50 @@ struct perf_pmu *perf_pmus__scan_core(struct perf_pmu *pmu)
+ 	return NULL;
+ }
+ 
++static struct perf_pmu *perf_pmus__scan_skip_duplicates(struct perf_pmu *pmu)
++{
++	bool use_core_pmus = !pmu || pmu->is_core;
++	int last_pmu_name_len = 0;
++	unsigned long last_pmu_num = 0;
++	const char *last_pmu_name = (pmu && pmu->name) ? pmu->name : "";
++
++	if (!pmu) {
++		pmu_read_sysfs(/*core_only=*/false);
++		pmu = list_prepare_entry(pmu, &core_pmus, list);
++	} else
++		last_pmu_name_len = pmu_name_len_no_suffix(pmu->name ?: "", &last_pmu_num);
++
++	if (use_core_pmus) {
++		list_for_each_entry_continue(pmu, &core_pmus, list) {
++			unsigned long pmu_num = 0;
++			int pmu_name_len = pmu_name_len_no_suffix(pmu->name ?: "", &pmu_num);
++
++			if (last_pmu_name_len == pmu_name_len &&
++			    (last_pmu_num + 1 == pmu_num) &&
++			    !strncmp(last_pmu_name, pmu->name ?: "", pmu_name_len)) {
++				last_pmu_num++;
++				continue;
++			}
++			return pmu;
++		}
++		pmu = NULL;
++		pmu = list_prepare_entry(pmu, &other_pmus, list);
++	}
++	list_for_each_entry_continue(pmu, &other_pmus, list) {
++		unsigned long pmu_num = 0;
++		int pmu_name_len = pmu_name_len_no_suffix(pmu->name ?: "", &pmu_num);
++
++		if (last_pmu_name_len == pmu_name_len &&
++		    (last_pmu_num + 1 == pmu_num) &&
++		    !strncmp(last_pmu_name, pmu->name ?: "", pmu_name_len)) {
++			last_pmu_num++;
++			continue;
++		}
++		return pmu;
++	}
++	return NULL;
++}
++
+ const struct perf_pmu *perf_pmus__pmu_for_pmu_filter(const char *str)
+ {
+ 	struct perf_pmu *pmu = NULL;
+@@ -429,10 +473,16 @@ void perf_pmus__print_pmu_events(const struct print_callbacks *print_cb, void *p
+ 	int printed = 0;
+ 	int len, j;
+ 	struct sevent *aliases;
++	struct perf_pmu *(*scan_fn)(struct perf_pmu *);
++
++	if (print_cb->skip_duplicate_pmus(print_state))
++		scan_fn = perf_pmus__scan_skip_duplicates;
++	else
++		scan_fn = perf_pmus__scan;
+ 
+ 	pmu = NULL;
+ 	len = 0;
+-	while ((pmu = perf_pmus__scan(pmu)) != NULL) {
++	while ((pmu = scan_fn(pmu)) != NULL) {
+ 		list_for_each_entry(event, &pmu->aliases, list)
+ 			len++;
+ 		if (pmu->selectable)
+@@ -445,7 +495,7 @@ void perf_pmus__print_pmu_events(const struct print_callbacks *print_cb, void *p
  	}
-+	list_sort(NULL, &core_pmus, pmus_cmp);
-+	list_sort(NULL, &other_pmus, pmus_cmp);
- 	if (!list_empty(&core_pmus)) {
- 		read_sysfs_core_pmus = true;
- 		if (!core_only)
+ 	pmu = NULL;
+ 	j = 0;
+-	while ((pmu = perf_pmus__scan(pmu)) != NULL) {
++	while ((pmu = scan_fn(pmu)) != NULL) {
+ 		bool is_cpu = pmu->is_core;
+ 
+ 		list_for_each_entry(event, &pmu->aliases, list) {
+diff --git a/tools/perf/util/print-events.h b/tools/perf/util/print-events.h
+index d7fab411e75c..bf4290bef0cd 100644
+--- a/tools/perf/util/print-events.h
++++ b/tools/perf/util/print-events.h
+@@ -26,6 +26,7 @@ struct print_callbacks {
+ 			const char *expr,
+ 			const char *threshold,
+ 			const char *unit);
++	bool (*skip_duplicate_pmus)(void *print_state);
+ };
+ 
+ /** Print all events, the default when no options are specified. */
 -- 
 2.41.0.640.ga95def55d0-goog
 
