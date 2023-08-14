@@ -2,80 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9375277C04A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716DD77C050
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231502AbjHNTEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 15:04:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
+        id S231883AbjHNTE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 15:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230514AbjHNTD7 (ORCPT
+        with ESMTP id S231874AbjHNTEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 15:03:59 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1EA1BC;
-        Mon, 14 Aug 2023 12:03:58 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bd9b4f8e0eso27135355ad.1;
-        Mon, 14 Aug 2023 12:03:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692039838; x=1692644638;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ECxt/EqUJaIlR0rP1Jf4J6URytJT1duQaMJUHBuym1I=;
-        b=fXKDSFXPLHKOHEwCke9AXNpprKnF4DoqbU0mfX98RVt7UW9pq20YTtjofBIddrumnH
-         mG9IgsOifr16HecyPGX+u0Xre3eg0Ok24NwgL/X1INVrwncdev3lufR6KUdpsJksYED+
-         K4tTTFxS8sVDSaVGqgseWU+2xbVo7gxX9zZ3VOkik1u5/qkgd4+LGNW445TMMv2aO9lI
-         lnESkVKcbxIy9zlL7B2qpUnOy9osYBvm1GzIpX0YPgFKkvKtegspSWzdIIDFg6ICYJhV
-         NNtlUf3jyX/u6PFXTc3BQn9Gx7VvfZhHCacJ/F1kLi/pwmkFx6urSmKAp57SHlKtVFxl
-         dc7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692039838; x=1692644638;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ECxt/EqUJaIlR0rP1Jf4J6URytJT1duQaMJUHBuym1I=;
-        b=Mneh1F9KpJwaHBB7u4xyd1UxRitg8tBY3A018DVL+n+rcupbOgEgu7/f7S31CR+pPq
-         S7SqPyWMovd6nKUqrqccHsmxuI9TbKMwlp63UhSc5Ya/+RBPU2uPwjFZtcNp4sT03aw3
-         yDQph9gYToTfAbD+2Q9+aAIrh408h4Fenfww6I3bZtH7MVD0cR2Eaw9p4xrAKGDoyVxb
-         KGD9Katvv8MEkUOjFRuiUtns2KmRXjfgawQWMdtmm8jyEtBeEoLVfqMlCnlRGLE2Q85S
-         tuTbFQyGxc8Es0FqvWSwRJ5hZh091964E/ApfVOW8D57gW5VuascSyQZEGv+Wt5YsY/F
-         B7og==
-X-Gm-Message-State: AOJu0Yzx9goL2INHEmGFtlOCRCqqHNb0oXPxCQLUWUtCup6HKBPQi93x
-        y6GvaMCoAa3bwRfI8YH6+yA=
-X-Google-Smtp-Source: AGHT+IErs1aBD9w0HhOi+1Wck/MKk6Idh1gLlgbl9JnItBaUbYyOreYs9Z6BbRywbVN5mBqaOIgBLg==
-X-Received: by 2002:a17:902:b58f:b0:1b9:f7f4:5687 with SMTP id a15-20020a170902b58f00b001b9f7f45687mr8321855pls.24.1692039838316;
-        Mon, 14 Aug 2023 12:03:58 -0700 (PDT)
-Received: from localhost ([192.55.55.51])
-        by smtp.gmail.com with ESMTPSA id b13-20020a170903228d00b001ab2b4105ddsm9805830plh.60.2023.08.14.12.03.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 12:03:57 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 12:03:55 -0700
-From:   Isaku Yamahata <isaku.yamahata@gmail.com>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     x86@kernel.org, ak@linux.intel.com, arnd@arndb.de, bp@alien8.de,
-        brijesh.singh@amd.com, dan.j.williams@intel.com,
-        dave.hansen@intel.com, dave.hansen@linux.intel.com,
-        haiyangz@microsoft.com, hpa@zytor.com, jane.chu@oracle.com,
-        kirill.shutemov@linux.intel.com, kys@microsoft.com,
-        luto@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        rostedt@goodmis.org, sathyanarayanan.kuppuswamy@linux.intel.com,
-        seanjc@google.com, tglx@linutronix.de, tony.luck@intel.com,
-        wei.liu@kernel.org, Jason@zx2c4.com, nik.borisov@suse.com,
-        mikelley@microsoft.com, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tianyu.Lan@microsoft.com,
-        rick.p.edgecombe@intel.com, andavis@redhat.com, mheslin@redhat.com,
-        vkuznets@redhat.com, xiaoyao.li@intel.com, isaku.yamahata@gmail.com
-Subject: Re: [PATCH v10 1/2] x86/tdx: Retry partially-completed page
- conversion hypercalls
-Message-ID: <20230814190355.GA2672897@ls.amr.corp.intel.com>
-References: <20230811214826.9609-1-decui@microsoft.com>
- <20230811214826.9609-2-decui@microsoft.com>
+        Mon, 14 Aug 2023 15:04:47 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826C110F2;
+        Mon, 14 Aug 2023 12:04:46 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37EEaSlr029603;
+        Mon, 14 Aug 2023 19:04:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=wLkiQoulrtVl1nu/eQK5PDKtYkoSrqvchhDnIYIqfnI=;
+ b=mICfmRZaPP60mqlT2EIDwOU0s6CxiY2pYbIELVWyGXZz4JGqt4uivW0P1FT+m4V8zGaD
+ X5woDVViLwrKbuykBVD7YOoC3xwbc459T6MUphR/9uF4kFA/mAQMhK50CC8zmlw1PxNW
+ ALsDhOFehaFEzfWtEatuGoqEEvYIoFJV0g571nOqJxAURRlfiYjcvVKooQ3QvGY0UhgJ
+ GvzXoGpOV40P3zfCTlyfdVdISwXs71EqbwaBhX2lUx3VAF8cPVUS/Ve0J4rDLDze73dF
+ aMpGUgMxAuujIyPamRvgT+BUJ6jTgTJdSiaTDKuR6jEFEpsAGKNmkzZtjP2j3lakRFM8 1Q== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3se3tymn54-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Aug 2023 19:04:41 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37EJ4exu026356
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Aug 2023 19:04:40 GMT
+Received: from [10.50.35.106] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 14 Aug
+ 2023 12:04:36 -0700
+Message-ID: <fabe1f43-278c-bd29-bd85-937a87f0c27a@quicinc.com>
+Date:   Tue, 15 Aug 2023 00:34:33 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230811214826.9609-2-decui@microsoft.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 06/33] iris: vidc: define video core and instance context
+Content-Language: en-US
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        <stanimir.k.varbanov@gmail.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <mchehab@kernel.org>, <hans.verkuil@cisco.com>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>
+References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
+ <1690550624-14642-7-git-send-email-quic_vgarodia@quicinc.com>
+ <1d640aca-761e-602e-1de4-e34c8184d53d@linaro.org>
+From:   Dikshita Agarwal <quic_dikshita@quicinc.com>
+In-Reply-To: <1d640aca-761e-602e-1de4-e34c8184d53d@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: TiXBkOlSUNXQ6y3uIEyILVXKWI_BpmE8
+X-Proofpoint-ORIG-GUID: TiXBkOlSUNXQ6y3uIEyILVXKWI_BpmE8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-14_16,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
+ lowpriorityscore=0 impostorscore=0 suspectscore=0 phishscore=0
+ adultscore=0 spamscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308140176
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -84,32 +85,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 02:48:25PM -0700,
-Dexuan Cui <decui@microsoft.com> wrote:
 
-> TDX guest memory is private by default and the VMM may not access it.
-> However, in cases where the guest needs to share data with the VMM,
-> the guest and the VMM can coordinate to make memory shared between
-> them.
+
+On 7/28/2023 9:17 PM, Bryan O'Donoghue wrote:
+> On 28/07/2023 14:23, Vikash Garodia wrote:
+>> +#define call_iris_op(d, op, ...)            \
+>> +    (((d) && (d)->iris_ops && (d)->iris_ops->op) ? \
+>> +    ((d)->iris_ops->op(__VA_ARGS__)) : 0)
+>> +
+>> +struct msm_vidc_iris_ops {
+>> +    int (*boot_firmware)(struct msm_vidc_core *core);
+>> +    int (*raise_interrupt)(struct msm_vidc_core *core);
+>> +    int (*clear_interrupt)(struct msm_vidc_core *core);
+>> +    int (*prepare_pc)(struct msm_vidc_core *core);
+>> +    int (*power_on)(struct msm_vidc_core *core);
+>> +    int (*power_off)(struct msm_vidc_core *core);
+>> +    int (*watchdog)(struct msm_vidc_core *core, u32 intr_status);
+>> +};
 > 
-> The guest side of this protocol includes the "MapGPA" hypercall.  This
-> call takes a guest physical address range.  The hypercall spec (aka.
-> the GHCI) says that the MapGPA call is allowed to return partial
-> progress in mapping this range and indicate that fact with a special
-> error code.  A guest that sees such partial progress is expected to
-> retry the operation for the portion of the address range that was not
-> completed.
+> So I don't see how this code supports booting the venus firmware, is that
+> not required on 8550 ?
 > 
-> Hyper-V does this partial completion dance when set_memory_decrypted()
-> is called to "decrypt" swiotlb bounce buffers that can be up to 1GB
-> in size.  It is evidently the only VMM that does this, which is why
-> nobody noticed this until now.
+> I've applied the full patchset to -next
+> 
+> We don't appear to have enumerated callbacks for booting, clearing
+> interrupts..
 
-Now TDX KVM + TDX qemu supports partial completion because TD guest can pass
-very large range. e.g. 1GB order.  I tested this patch with (patched) TDX
-KVM/qemu.
+Hi Bryan,
 
-Reviewed-by: Isaku Yamahata <isaku.yamahata@intel.com>
-Tested-by: Isaku Yamahata <isaku.yamahata@intel.com>
--- 
-Isaku Yamahata <isaku.yamahata@gmail.com>
+Seems you are looking in the incorrect folder, these APIs are implemented
+in variant specific folder, i.e. iris/variant/iris3
+
+Thanks,
+Dikshita
+> 
+> grep -r clear_interrupt drivers/media/platform/qcom/iris/vidc/src/*
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c: call_iris_op(core,
+> clear_interrupt, core);
+> 
+> grep -r boot_firmware drivers/media/platform/qcom/iris/vidc/src/*
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c:    rc =
+> call_iris_op(core, boot_firmware, core);
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c:    rc =
+> call_iris_op(core, boot_firmware, core);
+> 
+> There is dead code @ raise_interrupt..
+> 
+> grep -r raise_interrupt drivers/media/platform/qcom/iris/vidc/src/*
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi_queue.c:    
+> call_iris_op(core, raise_interrupt, core);
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi_queue.c:        
+> //call_iris_op(core, raise_interrupt, core);
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi_queue.c:        
+> //call_iris_op(core, raise_interrupt, core);
+> 
+> grep -r clear_interrupt drivers/media/platform/qcom/iris/vidc/src/*
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c: call_iris_op(core,
+> clear_interrupt, core);
+> 
+> grep -r prepare_pc drivers/media/platform/qcom/iris/vidc/src/*
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c:int
+> __prepare_pc(struct msm_vidc_core *core)
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c:    rc =
+> call_iris_op(core, prepare_pc, core);
+> 
+> 
+> Here we have an admixture of the new name "Iris" with the old name "venus"
+> 
+> grep -r power_on drivers/media/platform/qcom/iris/vidc/src/*
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c:static int
+> __venus_power_on(struct msm_vidc_core *core)
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c:    rc =
+> call_iris_op(core, power_on, core);
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c:    rc =
+> __venus_power_on(core);
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c:        goto
+> err_venus_power_on;
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c:err_venus_power_on:
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c:    rc =
+> __venus_power_on(core);
+> 
+> grep -r power_off drivers/media/platform/qcom/iris/vidc/src/*
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c:        goto
+> skip_power_off;
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c:skip_power_off:
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c:static int
+> __venus_power_off(struct msm_vidc_core *core)
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c:    rc =
+> call_iris_op(core, power_off, core);
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c:
+> __venus_power_off(core);
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c:
+> __venus_power_off(core);
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c:
+> __venus_power_off(core);
+> drivers/media/platform/qcom/iris/vidc/src/venus_hfi.c:
+> __venus_power_off(core);
+> 
+> Lending credence to the argument we could incorporate all of some of the is
+> logic in the existing venus driver.
+> 
+> ---
+> bod
