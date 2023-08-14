@@ -2,139 +2,420 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1BF77BBBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A0C77BBC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232243AbjHNOc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 10:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
+        id S230273AbjHNOec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 10:34:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231438AbjHNOcT (ORCPT
+        with ESMTP id S229954AbjHNOeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 10:32:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16938E4;
-        Mon, 14 Aug 2023 07:32:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A98BA61791;
-        Mon, 14 Aug 2023 14:32:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C10BEC433C9;
-        Mon, 14 Aug 2023 14:32:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692023538;
-        bh=90QNq6jUBs43bpm8ggLivszh1cU+3BB9qLpGVoSmrEo=;
-        h=From:Date:Subject:To:Cc:From;
-        b=YtAh5nNsuYkFuxI4zL8RsiEspCmnoEwuiAm5cQ/bZ7kU7MhWtQwiZn5DujppZvYin
-         PcM0ayv2HA0o7Wv1u82wm7W9X8lPp0LW42ZyVMks0E7m07VI6cS4lX+yWZInrjkGHO
-         y+qizDhSg9pIaGjCZ0cAQQzNMdGzAvXw9VSi3i5r0xhGliex+f0j7/sbB9dtnMRZ7Z
-         abSls76wUWKXw5dAJve1cyMsrgR0m9zXvGvTweROgiispVVGZNMl5rEoJImS3/Ujp4
-         gY2ov9sC3Nsn4GwD64E+GGW+d9UgvUAzDTQX2/vij7C1s87H6APGwjznKYcK76FbAi
-         jbJDKpCWpl1jA==
-From:   Jeff Layton <jlayton@kernel.org>
-Date:   Mon, 14 Aug 2023 10:32:08 -0400
-Subject: [PATCH] sunrpc: account for xdr->page_base in xdr_alloc_bvec
+        Mon, 14 Aug 2023 10:34:05 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB3AE4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:34:04 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6bcb5df95c5so3644141a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:34:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692023643; x=1692628443;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VMCYSTnI0EaprvPrU8AJ07Nk7OqdkIqQaqivREr/cT8=;
+        b=QRd3C0YnJaysian8xt/KxSBaqAEuHPSaeFv3ixRchVmcK0PySTPYp5hTqK86LfyoCI
+         b259L7WTVX1D4ciGHvnNgXKrNHldN1ir7dcGWXptL6A6iMrwYq4fUaL6jbEf4tyzwsDy
+         QS+yUfW0E+6a35PN3oihVshMJcPGAZRrAJy5s6000+wdTlEZI02gpDFrUQdRhX0Nqqu8
+         zaIy4Y89WMiIeYpjozBYBa3ylUGEcSrVqzpwNRqxU5uasZa9JKwVPgTXlGiH3ncdgxUM
+         JgnSW9e+YFprma05b5tTQZqQDT4+n3PcTdkKnMHCtDjXQ+J9KgiFSJT1RyoS4vfmPPI8
+         vzsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692023643; x=1692628443;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VMCYSTnI0EaprvPrU8AJ07Nk7OqdkIqQaqivREr/cT8=;
+        b=eOrunpeeclgs8ZLJb55VN6iQXi+QO8rqfho1QdipuBbhBKrjpMuEtqAjhwnXA5OZi3
+         BLvC3jrSbFaohxemn0eSFibHxSN8J48a1ABuwUUFxWslj0vre8yDQdvfrGTWZTGzAz8s
+         YTKKXVr8oFWamqY6cKY4ZdiOvBYX9j2eu8eeI5k7jeF5D0NC9XJnhj2I4/iGI65DR6Pq
+         +7/mZc2FOyg0FYAIeyPNRPJw/bCQ4+63r5SX33lmfgcmanZ5ZUkk8hbpHeRcd6TIRQOk
+         tL/9i3yC7vEFJ589wakcFUZdro9fKQTppc3UJyMxhLjI9KBQbE7DpILR/1hAEAFQQ2d9
+         B0nQ==
+X-Gm-Message-State: AOJu0YyPBNLXT0Q7BVrL4GtrIIIec+SmDYaUZ8MVTC55ofbwAXotqbZY
+        Ncb84Ga+np+2Zh56mbSqzeB/hui9J6bgtND72RZZ7koJFEQ=
+X-Google-Smtp-Source: AGHT+IGBnw15mEd8LCUpANzlvT1pKn1oKCqBOba0YRURUjQhSKCMPqrZVG3jdyFGkT+kCkNQv89nkEcisSZIw6yZoVQ=
+X-Received: by 2002:a05:6870:b01a:b0:17f:7388:4c69 with SMTP id
+ y26-20020a056870b01a00b0017f73884c69mr10778590oae.30.1692023642423; Mon, 14
+ Aug 2023 07:34:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230814-sendpage-v1-1-d551b0d7f870@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAOc62mQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDC0MT3eLUvJSCRKB4koGJhblJamqKkYmlElB5QVFqWmYF2Kjo2NpaAIk
- 6mylaAAAA
-To:     David Howells <dhowells@redhat.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1876; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=90QNq6jUBs43bpm8ggLivszh1cU+3BB9qLpGVoSmrEo=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBk2jrwoUKjYoT7AqXvTuTJcLJ8Gy0jY9C6foHJg
- 6Dc79Ikx1eJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZNo68AAKCRAADmhBGVaC
- Fbh1EAC9EaYqlhjwxIGjMyt+X9y98zc44/cp0SVY2HEbsQqc9nQ8EXyrEujni37UZq4E9tBNsUH
- 8n+DfAIjNC5OXciefDqQAz+atvdY8jlQXXXQvLU9i7ubP7IrlFxEe1VATHUwEorvnONGBoKuPDq
- /B27fufj2RU4RGeY88I78MqiCd9Yj1Sk4Dc8nuU1w5fqatsekhY6qS9fWKTMEDKeKlWe9JNT6mH
- Yl4F25ymwWdvAV50c6kRIMEy92Wk0yJ31cU0BS16vXleOb7gmy/pWMP8UQDkf71BpKM6sW32e4h
- Nu5/kxCMnY4N5GYTTkEZy3XRBhpvuIIzdhcug/HCCQjdR0X1DAMCVtGm1hUquJfxgOQtUK8YgrU
- QwXapfRPyOLrH5JCZHe6Es+Mi/Z6LyO7S8f71Dafv1NIRXdI34rrdR9mc3xRsaWvzIDSSoCeDHR
- xBGalvQ7YYZIonjSUZX3AotKv/Ta0+UwDhEJ7c5OFz4WtyvbUr3i0E7Kt6g55xMX6HzLik2UbMU
- +Rp0v/c2u9vMydZ1kaFCLgiOqB8sFpxUCLIIvm8DYd/oe8rTlkXOGcRhWomNNas3OZ9IRlU8jp9
- LmK5yziEtuxi+Dmo31dh15HJChFZ9DdaCR5Njy3O0rsc0r7aMtrAZFUkDOaRJiaK+J0neAbZYxz
- Rs71yi3RW2TpIKw==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230814073438.10682-1-Arvind.Yadav@amd.com> <20230814073438.10682-2-Arvind.Yadav@amd.com>
+In-Reply-To: <20230814073438.10682-2-Arvind.Yadav@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 14 Aug 2023 10:33:51 -0400
+Message-ID: <CADnq5_N2YzOv4naA_etwQ_C5NkNYwV-PtBAJ3UKEXp6RbdQojQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] drm/amdgpu: Add new api to switch on/off power
+ profile mode
+To:     Arvind Yadav <Arvind.Yadav@amd.com>
+Cc:     Christian.Koenig@amd.com, alexander.deucher@amd.com,
+        shashank.sharma@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I've been seeing a regression in mainline (v6.5-rc) kernels where
-unaligned reads were returning corrupt data.
+On Mon, Aug 14, 2023 at 3:35=E2=80=AFAM Arvind Yadav <Arvind.Yadav@amd.com>=
+ wrote:
+>
+> This patch adds a function which will allow to
+> change the GPU power profile based on a submitted job.
+> This can optimize the power performance when the
+> workload is on.
 
-9d96acbc7f37 added a routine to allocate and populate a bvec array that
-can be used to back an iov_iter. When it does this, it always sets the
-offset in the first bvec to zero, even when the xdr->page_base is
-non-zero.
+A few minor comments inline below.  One thing to double check is that
+we properly cancel this work before a suspend or driver unload.  We
+need to make sure this is taken care of before we take down the SMU.
 
-The old code in svc_tcp_sendmsg used to account for this, as it was
-sending the pages one at a time anyway, but now that we just hand the
-iov to the network layer, we need to ensure that the bvecs are properly
-initialized.
+Alex
 
-Fix xdr_alloc_bvec to set the offset in the first bvec to the offset
-indicated by xdr->page_base, and then 0 in all subsequent bvecs.
+>
+> Cc: Shashank Sharma <shashank.sharma@amd.com>
+> Cc: Christian Koenig <christian.koenig@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/Makefile           |   2 +-
+>  drivers/gpu/drm/amd/amdgpu/amdgpu.h           |   3 +
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |   2 +
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c  | 156 ++++++++++++++++++
+>  drivers/gpu/drm/amd/include/amdgpu_workload.h |  44 +++++
+>  5 files changed, 206 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
+>  create mode 100644 drivers/gpu/drm/amd/include/amdgpu_workload.h
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/Makefile b/drivers/gpu/drm/amd/am=
+dgpu/Makefile
+> index 415a7fa395c4..6a9e187d61e1 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/Makefile
+> +++ b/drivers/gpu/drm/amd/amdgpu/Makefile
+> @@ -60,7 +60,7 @@ amdgpu-y +=3D amdgpu_device.o amdgpu_kms.o \
+>         amdgpu_umc.o smu_v11_0_i2c.o amdgpu_fru_eeprom.o amdgpu_rap.o \
+>         amdgpu_fw_attestation.o amdgpu_securedisplay.o \
+>         amdgpu_eeprom.o amdgpu_mca.o amdgpu_psp_ta.o amdgpu_lsdma.o \
+> -       amdgpu_ring_mux.o
+> +       amdgpu_ring_mux.o amdgpu_workload.o
+>
+>  amdgpu-$(CONFIG_PROC_FS) +=3D amdgpu_fdinfo.o
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/am=
+dgpu/amdgpu.h
+> index 02b827785e39..1939fa1af8a6 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> @@ -107,6 +107,7 @@
+>  #include "amdgpu_fdinfo.h"
+>  #include "amdgpu_mca.h"
+>  #include "amdgpu_ras.h"
+> +#include "amdgpu_workload.h"
+>
+>  #define MAX_GPU_INSTANCE               16
+>
+> @@ -1050,6 +1051,8 @@ struct amdgpu_device {
+>
+>         bool                            job_hang;
+>         bool                            dc_enabled;
+> +
+> +       struct amdgpu_smu_workload      smu_workload;
+>  };
+>
+>  static inline struct amdgpu_device *drm_to_adev(struct drm_device *ddev)
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm=
+/amd/amdgpu/amdgpu_device.c
+> index 5c7d40873ee2..0ec18b8fe29f 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> @@ -3672,6 +3672,8 @@ int amdgpu_device_init(struct amdgpu_device *adev,
+>
+>         INIT_WORK(&adev->xgmi_reset_work, amdgpu_device_xgmi_reset_func);
+>
+> +       amdgpu_smu_workload_init(adev);
+> +
+>         adev->gfx.gfx_off_req_count =3D 1;
+>         adev->gfx.gfx_off_residency =3D 0;
+>         adev->gfx.gfx_off_entrycount =3D 0;
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c b/drivers/gpu/d=
+rm/amd/amdgpu/amdgpu_workload.c
+> new file mode 100644
+> index 000000000000..ce0339d75c12
+> --- /dev/null
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
+> @@ -0,0 +1,156 @@
+> +// SPDX-License-Identifier: MIT
+> +/*
+> + * Copyright 2023 Advanced Micro Devices, Inc.
+> + *
+> + * Permission is hereby granted, free of charge, to any person obtaining=
+ a
+> + * copy of this software and associated documentation files (the "Softwa=
+re"),
+> + * to deal in the Software without restriction, including without limita=
+tion
+> + * the rights to use, copy, modify, merge, publish, distribute, sublicen=
+se,
+> + * and/or sell copies of the Software, and to permit persons to whom the
+> + * Software is furnished to do so, subject to the following conditions:
+> + *
+> + * The above copyright notice and this permission notice shall be includ=
+ed in
+> + * all copies or substantial portions of the Software.
+> + *
+> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRE=
+SS OR
+> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILI=
+TY,
+> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SH=
+ALL
+> + * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES=
+ OR
+> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+> + * OTHER DEALINGS IN THE SOFTWARE.
+> + *
+> + */
+> +
+> +#include "amdgpu.h"
+> +
+> +/* 100 millsecond timeout */
+> +#define SMU_IDLE_TIMEOUT       msecs_to_jiffies(100)
+> +
+> +static enum PP_SMC_POWER_PROFILE
+> +ring_to_power_profile(uint32_t ring_type)
+> +{
+> +       switch (ring_type) {
+> +       case AMDGPU_RING_TYPE_GFX:
+> +               return PP_SMC_POWER_PROFILE_FULLSCREEN3D;
+> +       case AMDGPU_RING_TYPE_COMPUTE:
+> +               return PP_SMC_POWER_PROFILE_COMPUTE;
+> +       case AMDGPU_RING_TYPE_UVD:
+> +       case AMDGPU_RING_TYPE_VCE:
+> +       case AMDGPU_RING_TYPE_UVD_ENC:
+> +       case AMDGPU_RING_TYPE_VCN_DEC:
+> +       case AMDGPU_RING_TYPE_VCN_ENC:
+> +       case AMDGPU_RING_TYPE_VCN_JPEG:
+> +               return PP_SMC_POWER_PROFILE_VIDEO;
+> +       default:
+> +               return PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT;
+> +       }
+> +}
+> +
+> +static void
+> +amdgpu_power_profile_set(struct amdgpu_device *adev,
+> +                        enum PP_SMC_POWER_PROFILE profile)
+> +{
+> +       int ret =3D amdgpu_dpm_switch_power_profile(adev, profile, true);
+> +
+> +       if (ret =3D=3D 0) {
+> +               /* Set the bit for the submitted workload profile */
+> +               adev->smu_workload.submit_workload_status |=3D (1 << prof=
+ile);
+> +               atomic_inc(&adev->smu_workload.power_profile_ref[profile]=
+);
+> +       } else {
+> +               DRM_ERROR("Failed to set power profile, error %d\n", ret)=
+;
+> +       }
+> +
+> +}
+> +
+> +static void
+> +amdgpu_power_profile_clear(struct amdgpu_device *adev,
+> +                          enum PP_SMC_POWER_PROFILE profile)
+> +{
+> +       int ret =3D amdgpu_dpm_switch_power_profile(adev, profile, false)=
+;
+> +
+> +       if (ret =3D=3D 0) {
+> +                /* Clear the bit for the submitted workload profile */
+> +               adev->smu_workload.submit_workload_status &=3D ~(1 << pro=
+file);
+> +       } else
+> +               DRM_ERROR("Failed to clear power profile, error %d\n", re=
+t);
+> +
+> +}
+> +
+> +static void amdgpu_smu_idle_work_handler(struct work_struct *work)
 
-Fixes: 9d96acbc7f37 ("SUNRPC: Add a bvec array to struct xdr_buf for use with iovec_iter()")
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
-NB: This is only lightly tested so far, but it seems to fix the pynfs
-regressions I've been seeing.
----
- net/sunrpc/xdr.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+How about amdgpu_power_profile_idle_work_handler() for consistency?
 
-diff --git a/net/sunrpc/xdr.c b/net/sunrpc/xdr.c
-index 2a22e78af116..d0f5fc8605b8 100644
---- a/net/sunrpc/xdr.c
-+++ b/net/sunrpc/xdr.c
-@@ -144,6 +144,7 @@ int
- xdr_alloc_bvec(struct xdr_buf *buf, gfp_t gfp)
- {
- 	size_t i, n = xdr_buf_pagecount(buf);
-+	unsigned int offset = offset_in_page(buf->page_base);
- 
- 	if (n != 0 && buf->bvec == NULL) {
- 		buf->bvec = kmalloc_array(n, sizeof(buf->bvec[0]), gfp);
-@@ -151,7 +152,8 @@ xdr_alloc_bvec(struct xdr_buf *buf, gfp_t gfp)
- 			return -ENOMEM;
- 		for (i = 0; i < n; i++) {
- 			bvec_set_page(&buf->bvec[i], buf->pages[i], PAGE_SIZE,
--				      0);
-+				      offset);
-+			offset = 0;
- 		}
- 	}
- 	return 0;
+> +{
+> +
+> +       struct amdgpu_smu_workload *wl =3D container_of(work,
+> +                                                     struct amdgpu_smu_w=
+orkload,
+> +                                                     smu_delayed_work.wo=
+rk);
+> +       struct amdgpu_device *adev =3D wl->adev;
+> +       bool reschedule =3D false;
+> +
+> +       mutex_lock(&adev->smu_workload.workload_lock);
+> +       for (int index  =3D fls(adev->smu_workload.submit_workload_status=
+);
+> +            index >=3D 0; index--) {
+> +               if (!atomic_read(&adev->smu_workload.power_profile_ref[in=
+dex]) &&
+> +                   adev->smu_workload.submit_workload_status & (1 << ind=
+ex)) {
+> +                       amdgpu_power_profile_clear(adev, index);
+> +               } else if (atomic_read(&adev->smu_workload.power_profile_=
+ref[index]))
+> +                       reschedule =3D true;
+> +       }
+> +
+> +       if (reschedule)
+> +               schedule_delayed_work(&adev->smu_workload.smu_delayed_wor=
+k,
+> +                                     SMU_IDLE_TIMEOUT);
+> +
+> +       mutex_unlock(&adev->smu_workload.workload_lock);
+> +}
+> +
+> +void amdgpu_put_workload_profile(struct amdgpu_device *adev,
 
----
-base-commit: 2ccdd1b13c591d306f0401d98dedc4bdcd02b421
-change-id: 20230814-sendpage-b04874eed249
+amdgpu_workload_profile_put() for consistency.
 
-Best regards,
--- 
-Jeff Layton <jlayton@kernel.org>
+> +                                uint32_t ring_type)
+> +{
+> +
+> +       enum PP_SMC_POWER_PROFILE profile =3D ring_to_power_profile(ring_=
+type);
+> +
+> +       if (profile =3D=3D PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT)
+> +               return;
+> +
+> +       mutex_lock(&adev->smu_workload.workload_lock);
+> +       atomic_dec(&adev->smu_workload.power_profile_ref[profile]);
+> +       schedule_delayed_work(&adev->smu_workload.smu_delayed_work, SMU_I=
+DLE_TIMEOUT);
+> +       mutex_unlock(&adev->smu_workload.workload_lock);
+> +}
+> +
+> +void amdgpu_set_workload_profile(struct amdgpu_device *adev,
+> +                                uint32_t ring_type)
 
+amdgpu_workload_profile_set() for consistency.
+
+> +{
+> +       enum PP_SMC_POWER_PROFILE profile =3D ring_to_power_profile(ring_=
+type);
+> +
+> +       if (profile =3D=3D PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT)
+> +               return;
+> +
+> +       mutex_lock(&adev->smu_workload.workload_lock);
+> +       cancel_delayed_work_sync(&adev->smu_workload.smu_delayed_work);
+> +
+> +       amdgpu_power_profile_set(adev, profile);
+> +
+> +       /* Clear the already finished jobs of higher power profile*/
+> +       for (int index =3D fls(adev->smu_workload.submit_workload_status)=
+;
+> +            index > profile; index--) {
+> +               if (!atomic_read(&adev->smu_workload.power_profile_ref[in=
+dex]) &&
+> +                   adev->smu_workload.submit_workload_status & (1 << ind=
+ex)) {
+> +                       amdgpu_power_profile_clear(adev, index);
+> +               }
+> +       }
+> +
+> +       mutex_unlock(&adev->smu_workload.workload_lock);
+> +}
+> +
+> +void amdgpu_smu_workload_init(struct amdgpu_device *adev)
+
+amdgpu_workload_profile_init() for consistency.
+
+> +{
+> +       struct amdgpu_smu_workload wl;
+> +
+> +       wl.adev =3D adev;
+> +       wl.submit_workload_status =3D 0;
+> +       adev->smu_workload =3D wl;
+> +
+> +       mutex_init(&adev->smu_workload.workload_lock);
+> +       INIT_DELAYED_WORK(&adev->smu_workload.smu_delayed_work, amdgpu_sm=
+u_idle_work_handler);
+> +}
+> diff --git a/drivers/gpu/drm/amd/include/amdgpu_workload.h b/drivers/gpu/=
+drm/amd/include/amdgpu_workload.h
+> new file mode 100644
+> index 000000000000..09804c3d2869
+> --- /dev/null
+> +++ b/drivers/gpu/drm/amd/include/amdgpu_workload.h
+> @@ -0,0 +1,44 @@
+> +/* SPDX-License-Identifier: MIT */
+> +/*
+> + * Copyright 2023 Advanced Micro Devices, Inc.
+> + *
+> + * Permission is hereby granted, free of charge, to any person obtaining=
+ a
+> + * copy of this software and associated documentation files (the "Softwa=
+re"),
+> + * to deal in the Software without restriction, including without limita=
+tion
+> + * the rights to use, copy, modify, merge, publish, distribute, sublicen=
+se,
+> + * and/or sell copies of the Software, and to permit persons to whom the
+> + * Software is furnished to do so, subject to the following conditions:
+> + *
+> + * The above copyright notice and this permission notice shall be includ=
+ed in
+> + * all copies or substantial portions of the Software.
+> + *
+> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRE=
+SS OR
+> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILI=
+TY,
+> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SH=
+ALL
+> + * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES=
+ OR
+> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+> + * OTHER DEALINGS IN THE SOFTWARE.
+> + *
+> + */
+> +
+> +#ifndef _AMDGPU_WORKLOAD_H_
+> +#define _AMDGPU_WORKLOAD_H_
+> +
+> +struct amdgpu_smu_workload {
+> +       struct amdgpu_device    *adev;
+> +       struct mutex            workload_lock;
+> +       struct delayed_work     smu_delayed_work;
+> +       uint32_t                submit_workload_status;
+> +       atomic_t                power_profile_ref[PP_SMC_POWER_PROFILE_CO=
+UNT];
+> +};
+> +
+> +void amdgpu_set_workload_profile(struct amdgpu_device *adev,
+> +                                uint32_t ring_type);
+> +
+> +void amdgpu_put_workload_profile(struct amdgpu_device *adev,
+> +                                uint32_t ring_type);
+> +
+> +void amdgpu_smu_workload_init(struct amdgpu_device *adev);
+> +
+> +#endif
+> --
+> 2.34.1
+>
