@@ -2,109 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 609B377B9CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A37C677B9C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbjHNNXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 09:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
+        id S229935AbjHNNWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 09:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbjHNNWu (ORCPT
+        with ESMTP id S231148AbjHNNWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 09:22:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3B93F5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:21:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692019300;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lrFQ1Piu7kOD9w6iKIQkZ8h3C5VVMWcr3aHpTSKZPi0=;
-        b=TyxHk3EPLYb2xGFWR5URHCq7r3t6bPq+RlOJJqWOpWTbwpvTdam68y2lWZ9u+RJJut71Kn
-        y4loUZ6E+UA4eEpB83bhh3iCa43SejhXi+cZcVnh3Tu5/seVzf2gWX46U2GSy2lcNfBSB5
-        hfzbEE27w1lsHRLHEhFU1JMCfC3KaeU=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-107-PXYjbQvYPpCo2pWxCD1h_A-1; Mon, 14 Aug 2023 09:21:35 -0400
-X-MC-Unique: PXYjbQvYPpCo2pWxCD1h_A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 214F285CBEB;
-        Mon, 14 Aug 2023 13:21:25 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.27])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 53E9F2166B25;
-        Mon, 14 Aug 2023 13:21:22 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon, 14 Aug 2023 15:20:42 +0200 (CEST)
-Date:   Mon, 14 Aug 2023 15:20:39 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     David Rheinsberg <david@readahead.eu>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Kees Cook <keescook@chromium.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Luca Boccassi <bluca@debian.org>
-Subject: Re: [PATCH] pid: allow pidfds for reaped tasks
-Message-ID: <20230814132039.GA17738@redhat.com>
-References: <20230807085203.819772-1-david@readahead.eu>
- <20230807-porzellan-rehkitz-9fde1b94dd6b@brauner>
- <20230811112911.GA22566@redhat.com>
- <20230811-perplex-installieren-899f5925534d@brauner>
- <20230811115710.GA21779@redhat.com>
- <6feef7e0-ea72-412d-837e-34b6fdd3b869@app.fastmail.com>
+        Mon, 14 Aug 2023 09:22:34 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8B8C5E77;
+        Mon, 14 Aug 2023 06:22:31 -0700 (PDT)
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 37EDM8bS019276;
+        Mon, 14 Aug 2023 15:22:08 +0200
+Date:   Mon, 14 Aug 2023 15:22:08 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     "'Zhangjin Wu'" <falcon@tinylab.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "thomas@t-8ch.de" <thomas@t-8ch.de>
+Subject: Re: [PATCH v5] tools/nolibc: fix up size inflate regression
+Message-ID: <20230814132208.GC18837@1wt.eu>
+References: <20230814082224.GA16761@1wt.eu>
+ <20230814104226.7094-1-falcon@tinylab.org>
+ <6fef903020954515abdcee7261918903@AcuMS.aculab.com>
+ <20230814120941.GA18837@1wt.eu>
+ <e3a6bd5b7a4d4ac2bccbaac21e0fc1a0@AcuMS.aculab.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6feef7e0-ea72-412d-837e-34b6fdd3b869@app.fastmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <e3a6bd5b7a4d4ac2bccbaac21e0fc1a0@AcuMS.aculab.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/14, David Rheinsberg wrote:
->
-> Hi Oleg,
->
-> On Fri, Aug 11, 2023, at 1:57 PM, Oleg Nesterov wrote:
-> >> What code do we need to allow userspace to open a pidfd to a leader pid
-> >> even if it has already been exited and reaped (without also accidently
-> >> allowing to open non-lead pid pidfds)?
-> >
-> > I'll try to think more, but can you also explain why do we need this?
-> >
-> > See my another email. Can't we simply shift the pid_has_task(PIDTYPE_TGID)
-> > check from pidfd_prepare() to pidfd_create() ? (and then we can kill
-> > pidfd_prepare and rename __pidfd_prepare to pidfd_prepare).
->
-> Yes, the easiest solution would be to use `__pidfd_prepare()` and ensure
-> that the caller only ever calls this on tg-leaders. This would work just
-> fine, imo. And this was my initial approach.
+On Mon, Aug 14, 2023 at 12:27:48PM +0000, David Laight wrote:
+> From: Willy Tarreau
+> > Sent: 14 August 2023 13:10
+> > 
+> > Hi David,
+> > 
+> > On Mon, Aug 14, 2023 at 11:15:51AM +0000, David Laight wrote:
+> > > From: Zhangjin Wu
+> > > > Sent: 14 August 2023 11:42
+> > > ...
+> > > > [...]
+> > > > > > > Sure it's not pretty, and I'd rather just go back to SET_ERRNO() to be
+> > > > > > > honest, because we're there just because of the temptation to remove
+> > > > > > > lines that were not causing any difficulties :-/
+> > > > > > >
+> > > > > > > I think we can do something in-between and deal only with signed returns,
+> > > > > > > and explicitly place the test for MAX_ERRNO on the two unsigned ones
+> > > > > > > (brk and mmap). It should look approximately like this:
+> > > > > > >
+> > > > > > >  #define __sysret(arg)                                                \
+> > > > > > >  ({                                                                   \
+> > > > > > >  	__typeof__(arg) __sysret_arg = (arg);                           \
+> > > > > > >  	(__sysret_arg < 0) ? ({           /* error ? */                 \
+> > > > > > >  		SET_ERRNO(-__sysret_arg); /* yes: errno != -ret */      \
+> > > > > > >  		((__typeof__(arg)) -1);   /*      return -1 */          \
+> > >
+> > > I'm pretty sure you don't need the explicit cast.
+> > > (It would be needed for a pointer type.)
+> > > Can you use __arg < ? SET_ERRNO(-__arg), -1 : __arg
+> > >
+> > > Thinking, maybe it should be:
+> > >
+> > > #define __sysret(syscall_fn_args)
+> > > ({
+> > > 	__typeof__(syscall_fn_args) __rval = syscall_fn_args;
+> > > 	__rval >= 0 ? __rval : SET_ERRNO(-__rval), -1;
+> > > })
+> > 
+> > Yeah almost, since arg is necessarily signed in this version, it's
+> > just that I manually edited the previous macro in the mail and limited
+> > the amount of changes to what was necessary. It's just that SET_ERRNO
+> > only is an instruction, not an expression:
+> > 
+> >    #define SET_ERRNO(v) do { errno = (v); } while (0)
+> > 
+> > Thus the return value doesn't even pass through it. That's why it was
+> > so much simpler before. The rationale behind this was to bring the
+> > ability to completely drop errno for programs where you didn't care
+> > about it. It's particularly interesting when you don't need any other
+> > data either as the program gets strunk from a complete section.
+> 
+> Actually something like:
+> 
+> #define SET_ERRNO(v) (errno = -(long)(v), __typeof__(v)-1)
+> 
+> seems to work and allows the errno assignment be removed.
+> Also works for pointer types (after a different compare).
 
-Great,
+Yes, that's something we can do (with the parenthesis around
+__typeof__(v) though).
 
-> I think Christian preferred an explicit assertion that ensures we do not
-> accidentally hand out pidfds for non-tg-leaders. The question is thus whether
-> there is an easy way to assert this even for reaped tasks?
-> Or whether there is a simple way to flag a pid that was used as tg-leader?
+> A quick check with godbolt doesn't show any sign extensions happening.
 
-I do not see how can we check if a detached pid was a leader pid, and I don't
-think it makes sense to add a new member into struct pid...
+I agree there's none here. 
 
-> Or, ultimately, whether this has limited use and we should just use
-> `__pidfd_prepare()`?
-
-Well, if you confirm that sk->sk_peer_pid and scm->pid are always initialized with
-task_tgid(current), I'd certainly prefer this approach unless Christian objects.
-
-Oleg.
-
+Willy
