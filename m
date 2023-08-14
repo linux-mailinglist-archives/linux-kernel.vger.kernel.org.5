@@ -2,741 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 459AA77B84F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE7377B856
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234309AbjHNMIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 08:08:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36710 "EHLO
+        id S233209AbjHNMLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 08:11:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233753AbjHNMIf (ORCPT
+        with ESMTP id S234762AbjHNMLG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 08:08:35 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F24541710;
-        Mon, 14 Aug 2023 05:08:24 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so10952640a12.1;
-        Mon, 14 Aug 2023 05:08:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692014903; x=1692619703;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ije6etBRqu9eyOmRNorXOsRit4C3yRzoqCKR1YSckOw=;
-        b=qBQfonkCykZodqMNBKKTmUy7IhkebJa/PMGqe4Fnx0MJdUtyNX5wG14gRVYF9u6I5W
-         S8P12wAInp0OEDVBEwG91gQzn/pRlJeniyy1mqs/L8rBeZCbxbJr2S72KwI1hnbM+Kl0
-         1ifth3nReofUOH0/aYtlnaxbj7lwflYOZo4SB9OTRPQQ8+lhTjM4awks5pmUlqVYrXeP
-         LuFkqnMNDmqGMnawMnjAgfAVZNuQVIsOQVFVld0VnwAbZzoR3hRe8AtR6xY5hgw6gFM4
-         qQ/CWe1W9JPX2ZTjh26BDW3FFtdO5Eci5d0KJKBc2AtH6VWd3BH8ZA0sTNMcVRikkHsG
-         OKCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692014903; x=1692619703;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ije6etBRqu9eyOmRNorXOsRit4C3yRzoqCKR1YSckOw=;
-        b=ZAvOH44JWB0hWWUWUbqeyHLBw+VMNXVgVcWzDmvsZB4dYN0WlirWRf7IDCTYHLvnhX
-         LE90Th0eYFEqLnITuXWxSTryBxOSt8ZvHIrGvp++/JQ0D/C5HE7vpFmJxLW0f3qudaem
-         8lcu/F3qh6DfbTciVi3coWo1hzREcTgfOSaYKYeIQtTW0N4rhRyhHpPMflCgjcuXQTNN
-         bVdAosYr1N9resx2pH22QinydyfmMQhjDDf6OZvZmYsTF/hqQZUIUbdBWDMTKnbOKTka
-         7ZizCz054xSIdDbdaexfx7/15RxaQYNtKQ4KHeayhABPKXWw975nSEakfKYpPyJppAxi
-         Gxrg==
-X-Gm-Message-State: AOJu0YwenT1BDJHPjSYuAVr95azppp2uVd7lispvOnu7skI/6lPG4Tgi
-        p6m4ZGoa0nqXQ/G+gb6pWjI=
-X-Google-Smtp-Source: AGHT+IF0IuVfW+uDKgyHTCGkarxWuxfyVzrYmzAnGLvPbaRN6mYbU4EhDQitY6n2fYhe2jOHWk1ETg==
-X-Received: by 2002:a17:907:1c95:b0:98d:f2c9:a1eb with SMTP id nb21-20020a1709071c9500b0098df2c9a1ebmr16447470ejc.24.1692014903336;
-        Mon, 14 Aug 2023 05:08:23 -0700 (PDT)
-Received: from goliat.isc.local (83-233-6-197.cust.bredband2.com. [83.233.6.197])
-        by smtp.gmail.com with ESMTPSA id u5-20020a1709063b8500b009930042510csm5600433ejf.222.2023.08.14.05.08.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 05:08:22 -0700 (PDT)
-From:   Marcus Folkesson <marcus.folkesson@gmail.com>
-To:     Marcus Folkesson <marcus.folkesson@gmail.com>,
-        Kent Gustavsson <kent@minoris.se>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Cosmin Tanislav <demonsingur@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Ramona Bolboaca <ramona.bolboaca@analog.com>,
-        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        William Breathitt Gray <william.gray@linaro.org>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5 6/6] iio: adc: mcp3911: add support for the whole MCP39xx family
-Date:   Mon, 14 Aug 2023 14:10:10 +0200
-Message-ID: <20230814121010.184842-6-marcus.folkesson@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230814121010.184842-1-marcus.folkesson@gmail.com>
-References: <20230814121010.184842-1-marcus.folkesson@gmail.com>
+        Mon, 14 Aug 2023 08:11:06 -0400
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8111732
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:10:49 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=jijie.ji@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Vpmucqn_1692015031;
+Received: from localhost.localdomain(mailfrom:jijie.ji@linux.alibaba.com fp:SMTPD_---0Vpmucqn_1692015031)
+          by smtp.aliyun-inc.com;
+          Mon, 14 Aug 2023 20:10:35 +0800
+From:   Jie Ji <jijie.ji@linux.alibaba.com>
+To:     dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
+        will@kernel.org, robin.murphy@arm.com
+Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+        xianting.tian@linux.alibaba.com, kaijieguo@linux.alibaba.com,
+        daishengdong@yeah.net, Jie Ji <jijie.ji@linux.alibaba.com>
+Subject: [PATCH] iommu/vt-d: Atomic breakdown of IOPT into finer granularity
+Date:   Mon, 14 Aug 2023 20:10:16 +0800
+Message-Id: <20230814121016.32613-1-jijie.ji@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Microchip does have many similar chips, add support for those.
+With the addition of IOMMU support for IO page fault, it's now possible
+to unpin the memory which DMA remapping. However, the lack of support
+for unmapping a subrange of the I/O page table (IOPT) in IOMMU can lead
+to some issues.
 
-The new supported chips are:
-  - microchip,mcp3910
-  - microchip,mcp3912
-  - microchip,mcp3913
-  - microchip,mcp3914
-  - microchip,mcp3918
-  - microchip,mcp3919
+For instance, a virtual machine can establish IOPT of 2M/1G for better
+performance, while the host system enable swap and attempts to swap out
+some 4K pages. Unfortunately, unmap subrange of the large-page mapping
+will make IOMMU page walk to error level, and finally cause kernel crash.
 
-Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+This patch support splitting the page table to a finer granularity and
+atomic switch to it when unmap subrange of the large-page mapping. It
+is much better than the unmap then map method to change IOPT, because
+during interval time, all unmapped address space could trigger IO page
+fault, which is unacceptable.
+
+Signed-off-by: Jie Ji <jijie.ji@linux.alibaba.com>
+Reviewed-by: Kaijie Guo <kaijieguo@linux.alibaba.com>
 ---
+ drivers/iommu/intel/iommu.c | 97 +++++++++++++++++++++++++++++--------
+ drivers/iommu/intel/iommu.h |  1 +
+ 2 files changed, 78 insertions(+), 20 deletions(-)
 
-Notes:
-    v2:
-        - Use callbacks rather than matching against enum for determine chip variants
-    v3:
-        - Fix cosmetics
-    v4:
-        - Do not pollute output variable upon error in *_get_osr() functions.
-        - Fix cosmetics
-    v5:
-        - Reorder text in Kconfig
-        - change val to u32 for *_get_osr(), *_set_osr() and *_set_scale()
-        - avoid ambiguity parameters in macro
-
- drivers/iio/adc/Kconfig   |   6 +-
- drivers/iio/adc/mcp3911.c | 454 +++++++++++++++++++++++++++++++++-----
- 2 files changed, 403 insertions(+), 57 deletions(-)
-
-diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-index eb2b09ef5d5b..2e71a73d8c7d 100644
---- a/drivers/iio/adc/Kconfig
-+++ b/drivers/iio/adc/Kconfig
-@@ -774,8 +774,10 @@ config MCP3911
- 	select IIO_BUFFER
- 	select IIO_TRIGGERED_BUFFER
- 	help
--	  Say yes here to build support for Microchip Technology's MCP3911
--	  analog to digital converter.
-+	  Say yes here to build support for one of the following
-+	  Microchip Technology's analog to digital converters:
-+	  MCP3910, MCP3911, MCP3912, MCP3913, MCP3914,
-+	  MCP3918 and MCP3919.
- 
- 	  This driver can also be built as a module. If so, the module will be
- 	  called mcp3911.
-diff --git a/drivers/iio/adc/mcp3911.c b/drivers/iio/adc/mcp3911.c
-index f1e02aa14e93..6c4605c8f09d 100644
---- a/drivers/iio/adc/mcp3911.c
-+++ b/drivers/iio/adc/mcp3911.c
-@@ -61,12 +61,55 @@
- #define MCP3911_REG_WRITE(reg, id)	((((reg) << 1) | ((id) << 6) | (0 << 0)) & 0xff)
- #define MCP3911_REG_MASK		GENMASK(4, 1)
- 
--#define MCP3911_NUM_CHANNELS		2
- #define MCP3911_NUM_SCALES		6
- 
-+/* Registers compatible with MCP3910 */
-+#define MCP3910_REG_STATUSCOM		0x0c
-+#define MCP3910_STATUSCOM_READ		GENMASK(23, 22)
-+#define MCP3910_STATUSCOM_DRHIZ		BIT(20)
-+
-+#define MCP3910_REG_GAIN		0x0b
-+
-+#define MCP3910_REG_CONFIG0		0x0d
-+#define MCP3910_CONFIG0_EN_OFFCAL	BIT(23)
-+#define MCP3910_CONFIG0_OSR		GENMASK(15, 13)
-+
-+#define MCP3910_REG_CONFIG1		0x0e
-+#define MCP3910_CONFIG1_CLKEXT		BIT(6)
-+#define MCP3910_CONFIG1_VREFEXT		BIT(7)
-+
-+#define MCP3910_REG_OFFCAL_CH0		0x0f
-+#define MCP3910_OFFCAL(ch)		(MCP3910_REG_OFFCAL_CH0 + ch * 6)
-+
-+/* Maximal number of channels used by the MCP39XX family */
-+#define MCP39XX_MAX_NUM_CHANNELS	8
-+
- static const int mcp3911_osr_table[] = { 32, 64, 128, 256, 512, 1024, 2048, 4096 };
- static u32 mcp3911_scale_table[MCP3911_NUM_SCALES][2];
- 
-+enum mcp3911_id {
-+	MCP3910,
-+	MCP3911,
-+	MCP3912,
-+	MCP3913,
-+	MCP3914,
-+	MCP3918,
-+	MCP3919,
-+};
-+
-+struct mcp3911;
-+struct mcp3911_chip_info {
-+	const struct iio_chan_spec *channels;
-+	unsigned int num_channels;
-+
-+	int (*config)(struct mcp3911 *adc);
-+	int (*get_osr)(struct mcp3911 *adc, u32 *val);
-+	int (*set_osr)(struct mcp3911 *adc, u32 val);
-+	int (*get_offset)(struct mcp3911 *adc, int channel, int *val);
-+	int (*set_offset)(struct mcp3911 *adc, int channel, int val);
-+	int (*set_scale)(struct mcp3911 *adc, int channel, u32 val);
-+};
-+
- struct mcp3911 {
- 	struct spi_device *spi;
- 	struct mutex lock;
-@@ -74,14 +117,15 @@ struct mcp3911 {
- 	struct clk *clki;
- 	u32 dev_addr;
- 	struct iio_trigger *trig;
--	u32 gain[MCP3911_NUM_CHANNELS];
-+	u32 gain[MCP39XX_MAX_NUM_CHANNELS];
-+	const struct mcp3911_chip_info *chip;
- 	struct {
--		u32 channels[MCP3911_NUM_CHANNELS];
-+		u32 channels[MCP39XX_MAX_NUM_CHANNELS];
- 		s64 ts __aligned(8);
- 	} scan;
- 
- 	u8 tx_buf __aligned(IIO_DMA_MINALIGN);
--	u8 rx_buf[MCP3911_NUM_CHANNELS * 3];
-+	u8 rx_buf[MCP39XX_MAX_NUM_CHANNELS * 3];
- };
- 
- static int mcp3911_read(struct mcp3911 *adc, u8 reg, u32 *val, u8 len)
-@@ -125,6 +169,102 @@ static int mcp3911_update(struct mcp3911 *adc, u8 reg, u32 mask, u32 val, u8 len
- 	return mcp3911_write(adc, reg, val, len);
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index 5c8c5cdc36cf..b1fe9d07c47b 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -1114,12 +1114,59 @@ static void dma_pte_list_pagetables(struct dmar_domain *domain,
+ 	} while (!first_pte_in_page(pte));
  }
  
-+static int mcp3910_get_offset(struct mcp3911 *adc, int channel, int *val)
+-static void dma_pte_clear_level(struct dmar_domain *domain, int level,
+-				struct dma_pte *pte, unsigned long pfn,
+-				unsigned long start_pfn, unsigned long last_pfn,
+-				struct list_head *freelist)
++static int switch_to_small_page(struct dmar_domain *domain, int level,
++				struct dma_pte *pte)
 +{
-+	return mcp3911_read(adc, MCP3910_OFFCAL(channel), val, 3);
++	u64 pteval, old_pteval, pfn;
++	void *new_pte = NULL;
++	u64 *ptep = NULL;
++	u64 attr;
++	int idx = 0;
++
++	/* Inherit attr from old pte */
++	attr = pte->val & VTD_ATTR_MASK;
++	if (level == 1)
++		attr &= ~DMA_PTE_LARGE_PAGE;
++
++	/* Get old pte entry in case pte change during switch */
++	old_pteval = pte->val;
++	pfn = dma_pte_addr(pte) >> VTD_PAGE_SHIFT;
++
++	new_pte = alloc_pgtable_page(domain->nid, GFP_ATOMIC);
++	if (unlikely(!new_pte))
++		return -ENOMEM;
++
++	ptep = (u64 *)new_pte;
++	for (idx = 0; idx < (1 << LEVEL_STRIDE); idx++) {
++		pteval = (pfn & level_mask(level)) << VTD_PAGE_SHIFT | attr;
++		ptep[idx] = pteval;
++		pfn += level_size(level);
++	}
++
++	pteval = ((unsigned long)virt_to_dma_pfn(new_pte) << VTD_PAGE_SHIFT);
++	/* Snoop bit in page directory entry should be zero (reserve field) */
++	pteval |= DMA_PTE_WRITE | DMA_PTE_READ;
++
++	if (cmpxchg64(&pte->val, old_pteval, pteval) != old_pteval) {
++		pr_err("%s: original pte changed by others, switch fail\n", __func__);
++		free_pgtable_page(new_pte);
++		return -EBUSY;
++	}
++
++	domain_flush_cache(domain, pte, sizeof(*pte));
++
++	pr_debug("%s: pte: %#llx->%#llx\n", __func__, old_pteval, pte->val);
++
++	return 0;
 +}
 +
-+static int mcp3910_set_offset(struct mcp3911 *adc, int channel, int val)
-+{
-+	int ret;
-+
-+	/* Write offset */
-+	ret = mcp3911_write(adc, MCP3910_OFFCAL(channel), val, 3);
-+	if (ret)
-+		return ret;
-+
-+	/* Enable offset*/
-+	return mcp3911_update(adc, MCP3910_REG_CONFIG0,
-+			      MCP3910_CONFIG0_EN_OFFCAL,
-+			      MCP3910_CONFIG0_EN_OFFCAL, 3);
-+}
-+
-+static int mcp3911_get_offset(struct mcp3911 *adc, int channel, int *val)
-+{
-+	return mcp3911_read(adc, MCP3911_OFFCAL(channel), val, 3);
-+}
-+
-+static int mcp3911_set_offset(struct mcp3911 *adc, int channel, int val)
-+{
-+	int ret;
-+
-+	/* Write offset */
-+	ret = mcp3911_write(adc, MCP3911_OFFCAL(channel), val, 3);
-+	if (ret)
-+		return ret;
-+
-+	/* Enable offset */
-+	return mcp3911_update(adc, MCP3911_REG_STATUSCOM,
-+			      MCP3911_STATUSCOM_EN_OFFCAL,
-+			      MCP3911_STATUSCOM_EN_OFFCAL, 2);
-+}
-+
-+static int mcp3910_get_osr(struct mcp3911 *adc, u32 *val)
-+{
-+	int ret, osr;
-+
-+	ret = mcp3911_read(adc, MCP3910_REG_CONFIG0, val, 3);
-+	if (ret)
-+		return ret;
-+
-+	osr = FIELD_GET(MCP3910_CONFIG0_OSR, *val);
-+	*val = 32 << osr;
-+	return ret;
-+}
-+
-+static int mcp3910_set_osr(struct mcp3911 *adc, u32 val)
-+{
-+	int osr = FIELD_PREP(MCP3910_CONFIG0_OSR, val);
-+
-+	return mcp3911_update(adc, MCP3910_REG_CONFIG0,
-+			      MCP3910_CONFIG0_OSR, osr, 3);
-+}
-+
-+static int mcp3911_set_osr(struct mcp3911 *adc, u32 val)
-+{
-+	int osr = FIELD_PREP(MCP3911_CONFIG_OSR, val);
-+
-+	return mcp3911_update(adc, MCP3911_REG_CONFIG,
-+			      MCP3911_CONFIG_OSR, osr, 2);
-+}
-+
-+static int mcp3911_get_osr(struct mcp3911 *adc, u32 *val)
-+{
-+	int ret, osr;
-+
-+	ret = mcp3911_read(adc, MCP3911_REG_CONFIG, val, 2);
-+	if (ret)
-+		return ret;
-+
-+	osr = FIELD_GET(MCP3911_CONFIG_OSR, *val);
-+	*val = 32 << osr;
-+	return ret;
-+}
-+
-+static int mcp3910_set_scale(struct mcp3911 *adc, int channel, u32 val)
-+{
-+	return mcp3911_update(adc, MCP3910_REG_GAIN,
-+			      MCP3911_GAIN_MASK(channel),
-+			      MCP3911_GAIN_VAL(channel, val), 3);
-+}
-+
-+static int mcp3911_set_scale(struct mcp3911 *adc, int channel, u32 val)
-+{
-+	return mcp3911_update(adc, MCP3911_REG_GAIN,
-+			      MCP3911_GAIN_MASK(channel),
-+			      MCP3911_GAIN_VAL(channel, val), 1);
-+}
-+
- static int mcp3911_write_raw_get_fmt(struct iio_dev *indio_dev,
- 				     struct iio_chan_spec const *chan,
- 				     long mask)
-@@ -181,20 +321,18 @@ static int mcp3911_read_raw(struct iio_dev *indio_dev,
- 		break;
- 
- 	case IIO_CHAN_INFO_OFFSET:
--		ret = mcp3911_read(adc,
--				   MCP3911_OFFCAL(channel->channel), val, 3);
-+
-+		ret = adc->chip->get_offset(adc, channel->channel, val);
- 		if (ret)
- 			goto out;
- 
- 		ret = IIO_VAL_INT;
- 		break;
- 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
--		ret = mcp3911_read(adc, MCP3911_REG_CONFIG, val, 2);
-+		ret = adc->chip->get_osr(adc, val);
- 		if (ret)
- 			goto out;
- 
--		*val = FIELD_GET(MCP3911_CONFIG_OSR, *val);
--		*val = 32 << *val;
- 		ret = IIO_VAL_INT;
- 		break;
- 
-@@ -225,9 +363,7 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
- 			    val2 == mcp3911_scale_table[i][1]) {
- 
- 				adc->gain[channel->channel] = BIT(i);
--				ret = mcp3911_update(adc, MCP3911_REG_GAIN,
--						     MCP3911_GAIN_MASK(channel->channel),
--						     MCP3911_GAIN_VAL(channel->channel, i), 1);
-+				ret = adc->chip->set_scale(adc, channel->channel, i);
- 			}
- 		}
- 		break;
-@@ -237,24 +373,13 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
- 			goto out;
- 		}
- 
--		/* Write offset */
--		ret = mcp3911_write(adc, MCP3911_OFFCAL(channel->channel), val,
--				    3);
--		if (ret)
--			goto out;
--
--		/* Enable offset*/
--		ret = mcp3911_update(adc, MCP3911_REG_STATUSCOM,
--				     MCP3911_STATUSCOM_EN_OFFCAL,
--				     MCP3911_STATUSCOM_EN_OFFCAL, 2);
-+		ret = adc->chip->set_offset(adc, channel->channel, val);
- 		break;
- 
- 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
- 		for (int i = 0; i < ARRAY_SIZE(mcp3911_osr_table); i++) {
- 			if (val == mcp3911_osr_table[i]) {
--				val = FIELD_PREP(MCP3911_CONFIG_OSR, i);
--				ret = mcp3911_update(adc, MCP3911_REG_CONFIG, MCP3911_CONFIG_OSR,
--						     val, 2);
-+				ret = adc->chip->set_osr(adc, i);
- 				break;
- 			}
- 		}
-@@ -324,12 +449,60 @@ static int mcp3911_calc_scale_table(struct mcp3911 *adc)
- 		},						\
- }
- 
-+static const struct iio_chan_spec mcp3910_channels[] = {
-+	MCP3911_CHAN(0),
-+	MCP3911_CHAN(1),
-+	IIO_CHAN_SOFT_TIMESTAMP(2),
-+};
-+
- static const struct iio_chan_spec mcp3911_channels[] = {
- 	MCP3911_CHAN(0),
- 	MCP3911_CHAN(1),
- 	IIO_CHAN_SOFT_TIMESTAMP(2),
- };
- 
-+static const struct iio_chan_spec mcp3912_channels[] = {
-+	MCP3911_CHAN(0),
-+	MCP3911_CHAN(1),
-+	MCP3911_CHAN(2),
-+	MCP3911_CHAN(3),
-+	IIO_CHAN_SOFT_TIMESTAMP(4),
-+};
-+
-+static const struct iio_chan_spec mcp3913_channels[] = {
-+	MCP3911_CHAN(0),
-+	MCP3911_CHAN(1),
-+	MCP3911_CHAN(2),
-+	MCP3911_CHAN(3),
-+	MCP3911_CHAN(4),
-+	MCP3911_CHAN(5),
-+	IIO_CHAN_SOFT_TIMESTAMP(6),
-+};
-+
-+static const struct iio_chan_spec mcp3914_channels[] = {
-+	MCP3911_CHAN(0),
-+	MCP3911_CHAN(1),
-+	MCP3911_CHAN(2),
-+	MCP3911_CHAN(3),
-+	MCP3911_CHAN(4),
-+	MCP3911_CHAN(5),
-+	MCP3911_CHAN(6),
-+	MCP3911_CHAN(7),
-+	IIO_CHAN_SOFT_TIMESTAMP(8),
-+};
-+
-+static const struct iio_chan_spec mcp3918_channels[] = {
-+	MCP3911_CHAN(0),
-+	IIO_CHAN_SOFT_TIMESTAMP(1),
-+};
-+
-+static const struct iio_chan_spec mcp3919_channels[] = {
-+	MCP3911_CHAN(0),
-+	MCP3911_CHAN(1),
-+	MCP3911_CHAN(2),
-+	IIO_CHAN_SOFT_TIMESTAMP(3),
-+};
-+
- static irqreturn_t mcp3911_trigger_handler(int irq, void *p)
++static int dma_pte_clear_level(struct dmar_domain *domain, int level,
++			       struct dma_pte *pte, unsigned long pfn,
++			       unsigned long start_pfn, unsigned long last_pfn,
++			       struct list_head *freelist)
  {
- 	struct iio_poll_func *pf = p;
-@@ -342,7 +515,7 @@ static irqreturn_t mcp3911_trigger_handler(int irq, void *p)
- 			.len = 1,
- 		}, {
- 			.rx_buf = adc->rx_buf,
--			.len = sizeof(adc->rx_buf),
-+			.len = (adc->chip->num_channels - 1) * 3,
- 		},
- 	};
- 	int scan_index;
-@@ -381,23 +554,9 @@ static const struct iio_info mcp3911_info = {
- 
- static int mcp3911_config(struct mcp3911 *adc)
- {
--	struct device *dev = &adc->spi->dev;
- 	u32 regval;
- 	int ret;
--
--	ret = device_property_read_u32(dev, "microchip,device-addr", &adc->dev_addr);
--
--	/*
--	 * Fallback to "device-addr" due to historical mismatch between
--	 * dt-bindings and implementation
--	 */
--	if (ret)
--		device_property_read_u32(dev, "device-addr", &adc->dev_addr);
--	if (adc->dev_addr > 3) {
--		dev_err(dev, "invalid device address (%i). Must be in range 0-3.\n", adc->dev_addr);
--		return -EINVAL;
--	}
--	dev_dbg(dev, "use device address %i\n", adc->dev_addr);
-+	struct device *dev = &adc->spi->dev;
- 
- 	ret = mcp3911_read(adc, MCP3911_REG_CONFIG, &regval, 2);
- 	if (ret)
-@@ -433,7 +592,102 @@ static int mcp3911_config(struct mcp3911 *adc)
- 	regval &= ~MCP3911_STATUSCOM_READ;
- 	regval |= FIELD_PREP(MCP3911_STATUSCOM_READ, 0x02);
- 
--	return  mcp3911_write(adc, MCP3911_REG_STATUSCOM, regval, 2);
-+	regval &= ~MCP3911_STATUSCOM_DRHIZ;
-+	if (device_property_read_bool(dev, "microchip,data-ready-hiz"))
-+		regval |= FIELD_PREP(MCP3911_STATUSCOM_DRHIZ, 0);
-+	else
-+		regval |= FIELD_PREP(MCP3911_STATUSCOM_DRHIZ, 1);
-+
-+	/* Disable offset to ignore any old values in offset register*/
-+	regval &= ~MCP3911_STATUSCOM_EN_OFFCAL;
-+
-+	ret =  mcp3911_write(adc, MCP3911_REG_STATUSCOM, regval, 2);
-+	if (ret)
-+		return ret;
-+
-+	/* Set gain to 1 for all channels */
-+	ret = mcp3911_read(adc, MCP3911_REG_GAIN, &regval, 1);
-+	if (ret)
-+		return ret;
-+
-+	for (int i = 0; i < adc->chip->num_channels - 1; i++) {
-+		adc->gain[i] = 1;
-+		regval &= ~MCP3911_GAIN_MASK(i);
-+	}
-+
-+	return mcp3911_write(adc, MCP3911_REG_GAIN, regval, 1);
-+}
-+
-+static int mcp3910_config(struct mcp3911 *adc)
-+{
-+	u32 regval;
+ 	struct dma_pte *first_pte = NULL, *last_pte = NULL;
 +	int ret;
-+	struct device *dev = &adc->spi->dev;
+ 
+ 	pfn = max(start_pfn, pfn);
+ 	pte = &pte[pfn_level_offset(pfn, level)];
+@@ -1143,6 +1190,17 @@ static void dma_pte_clear_level(struct dmar_domain *domain, int level,
+ 				first_pte = pte;
+ 			last_pte = pte;
+ 		} else if (level > 1) {
++			/* Switch to small page when unmap subrange */
++			if (dma_pte_superpage(pte) &&
++			    ((last_pfn - start_pfn + 1) < level_size(level))) {
++				ret = switch_to_small_page(domain, level - 1, pte);
++				if (ret) {
++					pr_err("%s: switch to smaller page fail, ret = %d",
++						__func__, ret);
++					return ret;
++				}
++			}
 +
-+	ret = mcp3911_read(adc, MCP3910_REG_CONFIG1, &regval, 3);
-+	if (ret)
-+		return ret;
+ 			/* Recurse down into a level that isn't *entirely* obsolete */
+ 			dma_pte_clear_level(domain, level - 1,
+ 					    phys_to_virt(dma_pte_addr(pte)),
+@@ -1156,21 +1214,27 @@ static void dma_pte_clear_level(struct dmar_domain *domain, int level,
+ 	if (first_pte)
+ 		domain_flush_cache(domain, first_pte,
+ 				   (void *)++last_pte - (void *)first_pte);
 +
-+	regval &= ~MCP3910_CONFIG1_VREFEXT;
-+	if (adc->vref) {
-+		dev_dbg(dev, "use external voltage reference\n");
-+		regval |= FIELD_PREP(MCP3910_CONFIG1_VREFEXT, 1);
-+	} else {
-+		dev_dbg(dev,
-+			"use internal voltage reference (1.2V)\n");
-+		regval |= FIELD_PREP(MCP3910_CONFIG1_VREFEXT, 0);
-+	}
-+
-+	regval &= ~MCP3910_CONFIG1_CLKEXT;
-+	if (adc->clki) {
-+		dev_dbg(dev, "use external clock as clocksource\n");
-+		regval |= FIELD_PREP(MCP3910_CONFIG1_CLKEXT, 1);
-+	} else {
-+		dev_dbg(dev,
-+			"use crystal oscillator as clocksource\n");
-+		regval |= FIELD_PREP(MCP3910_CONFIG1_CLKEXT, 0);
-+	}
-+
-+	ret = mcp3911_write(adc, MCP3910_REG_CONFIG1, regval, 3);
-+	if (ret)
-+		return ret;
-+
-+	ret = mcp3911_read(adc, MCP3910_REG_STATUSCOM, &regval, 3);
-+	if (ret)
-+		return ret;
-+
-+	/* Address counter incremented, cycle through register types */
-+	regval &= ~MCP3910_STATUSCOM_READ;
-+	regval |= FIELD_PREP(MCP3910_STATUSCOM_READ, 0x02);
-+
-+
-+	regval &= ~MCP3910_STATUSCOM_DRHIZ;
-+	if (device_property_present(dev, "microchip,data-ready-hiz"))
-+		regval |= FIELD_PREP(MCP3910_STATUSCOM_DRHIZ, 0);
-+	else
-+		regval |= FIELD_PREP(MCP3910_STATUSCOM_DRHIZ, 1);
-+
-+	ret = mcp3911_write(adc, MCP3910_REG_STATUSCOM, regval, 3);
-+	if (ret)
-+		return ret;
-+
-+	/* Set gain to 1 for all channels */
-+	ret = mcp3911_read(adc, MCP3910_REG_GAIN, &regval, 3);
-+	if (ret)
-+		return ret;
-+
-+	for (int i = 0; i < adc->chip->num_channels - 1; i++) {
-+		adc->gain[i] = 1;
-+		regval &= ~MCP3911_GAIN_MASK(i);
-+	}
-+	ret = mcp3911_write(adc, MCP3910_REG_GAIN, regval, 3);
-+	if (ret)
-+		return ret;
-+
-+	/* Disable offset to ignore any old values in offset register */
-+	return mcp3911_update(adc, MCP3910_REG_CONFIG0,
-+			      MCP3910_CONFIG0_EN_OFFCAL,
-+			      MCP3910_CONFIG0_EN_OFFCAL, 3);
++	return 0;
  }
  
- static void mcp3911_cleanup_regulator(void *vref)
-@@ -471,6 +725,7 @@ static int mcp3911_probe(struct spi_device *spi)
+ /* We can't just free the pages because the IOMMU may still be walking
+    the page tables, and may have cached the intermediate levels. The
+    pages can only be freed after the IOTLB flush has been done. */
+-static void domain_unmap(struct dmar_domain *domain, unsigned long start_pfn,
+-			 unsigned long last_pfn, struct list_head *freelist)
++static int domain_unmap(struct dmar_domain *domain, unsigned long start_pfn,
++			unsigned long last_pfn, struct list_head *freelist)
+ {
++	int ret;
++
+ 	if (WARN_ON(!domain_pfn_supported(domain, last_pfn)) ||
+ 	    WARN_ON(start_pfn > last_pfn))
+-		return;
++		return -EINVAL;
  
- 	adc = iio_priv(indio_dev);
- 	adc->spi = spi;
-+	adc->chip = spi_get_device_match_data(spi);
+ 	/* we don't need lock here; nobody else touches the iova range */
+-	dma_pte_clear_level(domain, agaw_to_level(domain->agaw),
+-			    domain->pgd, 0, start_pfn, last_pfn, freelist);
++	ret = dma_pte_clear_level(domain, agaw_to_level(domain->agaw),
++				  domain->pgd, 0, start_pfn, last_pfn, freelist);
++	if (ret)
++		return ret;
  
- 	adc->vref = devm_regulator_get_optional(dev, "vref");
- 	if (IS_ERR(adc->vref)) {
-@@ -499,16 +754,21 @@ static int mcp3911_probe(struct spi_device *spi)
- 		}
+ 	/* free pgd */
+ 	if (start_pfn == 0 && last_pfn == DOMAIN_MAX_PFN(domain->gaw)) {
+@@ -1178,6 +1242,8 @@ static void domain_unmap(struct dmar_domain *domain, unsigned long start_pfn,
+ 		list_add_tail(&pgd_page->lru, freelist);
+ 		domain->pgd = NULL;
  	}
- 
--	ret = mcp3911_config(adc);
-+	/*
-+	 * Fallback to "device-addr" due to historical mismatch between
-+	 * dt-bindings and implementation.
-+	 */
-+	ret = device_property_read_u32(dev, "microchip,device-addr", &adc->dev_addr);
- 	if (ret)
--		return ret;
-+		device_property_read_u32(dev, "device-addr", &adc->dev_addr);
-+	if (adc->dev_addr > 3) {
-+		dev_err_probe(dev, -EINVAL,
-+			"invalid device address (%i). Must be in range 0-3.\n",
-+			adc->dev_addr);
-+	}
-+	dev_dbg(dev, "use device address %i\n", adc->dev_addr);
- 
--	if (device_property_read_bool(dev, "microchip,data-ready-hiz"))
--		ret = mcp3911_update(adc, MCP3911_REG_STATUSCOM, MCP3911_STATUSCOM_DRHIZ,
--				     0, 2);
--	else
--		ret = mcp3911_update(adc, MCP3911_REG_STATUSCOM, MCP3911_STATUSCOM_DRHIZ,
--				     MCP3911_STATUSCOM_DRHIZ, 2);
-+	ret = adc->chip->config(adc);
- 	if (ret)
- 		return ret;
- 
-@@ -517,7 +777,7 @@ static int mcp3911_probe(struct spi_device *spi)
- 		return ret;
- 
- 	/* Set gain to 1 for all channels */
--	for (int i = 0; i < MCP3911_NUM_CHANNELS; i++) {
-+	for (int i = 0; i < adc->chip->num_channels - 1; i++) {
- 		adc->gain[i] = 1;
- 		ret = mcp3911_update(adc, MCP3911_REG_GAIN,
- 				     MCP3911_GAIN_MASK(i),
-@@ -531,8 +791,8 @@ static int mcp3911_probe(struct spi_device *spi)
- 	indio_dev->info = &mcp3911_info;
- 	spi_set_drvdata(spi, indio_dev);
- 
--	indio_dev->channels = mcp3911_channels;
--	indio_dev->num_channels = ARRAY_SIZE(mcp3911_channels);
-+	indio_dev->channels = adc->chip->channels;
-+	indio_dev->num_channels = adc->chip->num_channels;
- 
- 	mutex_init(&adc->lock);
- 
-@@ -571,14 +831,98 @@ static int mcp3911_probe(struct spi_device *spi)
- 	return devm_iio_device_register(dev, indio_dev);
++
++	return 0;
  }
  
-+static const struct mcp3911_chip_info mcp3911_chip_info[] = {
-+	[MCP3910] = {
-+		.channels = mcp3910_channels,
-+		.num_channels = ARRAY_SIZE(mcp3910_channels),
-+		.config = mcp3910_config,
-+		.get_osr = mcp3910_get_osr,
-+		.set_osr = mcp3910_set_osr,
-+		.get_offset = mcp3910_get_offset,
-+		.set_offset = mcp3910_set_offset,
-+		.set_scale = mcp3910_set_scale,
-+	},
-+	[MCP3911] = {
-+		.channels = mcp3911_channels,
-+		.num_channels = ARRAY_SIZE(mcp3911_channels),
-+		.config = mcp3911_config,
-+		.get_osr = mcp3911_get_osr,
-+		.set_osr = mcp3911_set_osr,
-+		.get_offset = mcp3911_get_offset,
-+		.set_offset = mcp3911_set_offset,
-+		.set_scale = mcp3911_set_scale,
-+	},
-+	[MCP3912] = {
-+		.channels = mcp3912_channels,
-+		.num_channels = ARRAY_SIZE(mcp3912_channels),
-+		.config = mcp3910_config,
-+		.get_osr = mcp3910_get_osr,
-+		.set_osr = mcp3910_set_osr,
-+		.get_offset = mcp3910_get_offset,
-+		.set_offset = mcp3910_set_offset,
-+		.set_scale = mcp3910_set_scale,
-+	},
-+	[MCP3913] = {
-+		.channels = mcp3913_channels,
-+		.num_channels = ARRAY_SIZE(mcp3913_channels),
-+		.config = mcp3910_config,
-+		.get_osr = mcp3910_get_osr,
-+		.set_osr = mcp3910_set_osr,
-+		.get_offset = mcp3910_get_offset,
-+		.set_offset = mcp3910_set_offset,
-+		.set_scale = mcp3910_set_scale,
-+	},
-+	[MCP3914] = {
-+		.channels = mcp3914_channels,
-+		.num_channels = ARRAY_SIZE(mcp3914_channels),
-+		.config = mcp3910_config,
-+		.get_osr = mcp3910_get_osr,
-+		.set_osr = mcp3910_set_osr,
-+		.get_offset = mcp3910_get_offset,
-+		.set_offset = mcp3910_set_offset,
-+		.set_scale = mcp3910_set_scale,
-+	},
-+	[MCP3918] = {
-+		.channels = mcp3918_channels,
-+		.num_channels = ARRAY_SIZE(mcp3918_channels),
-+		.config = mcp3910_config,
-+		.get_osr = mcp3910_get_osr,
-+		.set_osr = mcp3910_set_osr,
-+		.get_offset = mcp3910_get_offset,
-+		.set_offset = mcp3910_set_offset,
-+		.set_scale = mcp3910_set_scale,
-+	},
-+	[MCP3919] = {
-+		.channels = mcp3919_channels,
-+		.num_channels = ARRAY_SIZE(mcp3919_channels),
-+		.config = mcp3910_config,
-+		.get_osr = mcp3910_get_osr,
-+		.set_osr = mcp3910_set_osr,
-+		.get_offset = mcp3910_get_offset,
-+		.set_offset = mcp3910_set_offset,
-+		.set_scale = mcp3910_set_scale,
-+	},
-+};
- static const struct of_device_id mcp3911_dt_ids[] = {
--	{ .compatible = "microchip,mcp3911" },
-+	{ .compatible = "microchip,mcp3910", .data = &mcp3911_chip_info[MCP3910] },
-+	{ .compatible = "microchip,mcp3911", .data = &mcp3911_chip_info[MCP3911] },
-+	{ .compatible = "microchip,mcp3912", .data = &mcp3911_chip_info[MCP3912] },
-+	{ .compatible = "microchip,mcp3913", .data = &mcp3911_chip_info[MCP3913] },
-+	{ .compatible = "microchip,mcp3914", .data = &mcp3911_chip_info[MCP3914] },
-+	{ .compatible = "microchip,mcp3918", .data = &mcp3911_chip_info[MCP3918] },
-+	{ .compatible = "microchip,mcp3919", .data = &mcp3911_chip_info[MCP3919] },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, mcp3911_dt_ids);
+ /* iommu handling */
+@@ -4219,21 +4285,12 @@ static size_t intel_iommu_unmap(struct iommu_domain *domain,
+ {
+ 	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
+ 	unsigned long start_pfn, last_pfn;
+-	int level = 0;
+-
+-	/* Cope with horrid API which requires us to unmap more than the
+-	   size argument if it happens to be a large-page mapping. */
+-	if (unlikely(!pfn_to_dma_pte(dmar_domain, iova >> VTD_PAGE_SHIFT,
+-				     &level, GFP_ATOMIC)))
+-		return 0;
+-
+-	if (size < VTD_PAGE_SIZE << level_to_offset_bits(level))
+-		size = VTD_PAGE_SIZE << level_to_offset_bits(level);
  
- static const struct spi_device_id mcp3911_id[] = {
--	{ "mcp3911", 0 },
-+	{ "mcp3910", (kernel_ulong_t)&mcp3911_chip_info[MCP3910] },
-+	{ "mcp3911", (kernel_ulong_t)&mcp3911_chip_info[MCP3911] },
-+	{ "mcp3912", (kernel_ulong_t)&mcp3911_chip_info[MCP3912] },
-+	{ "mcp3913", (kernel_ulong_t)&mcp3911_chip_info[MCP3913] },
-+	{ "mcp3914", (kernel_ulong_t)&mcp3911_chip_info[MCP3914] },
-+	{ "mcp3918", (kernel_ulong_t)&mcp3911_chip_info[MCP3918] },
-+	{ "mcp3919", (kernel_ulong_t)&mcp3911_chip_info[MCP3919] },
- 	{ }
- };
- MODULE_DEVICE_TABLE(spi, mcp3911_id);
+ 	start_pfn = iova >> VTD_PAGE_SHIFT;
+ 	last_pfn = (iova + size - 1) >> VTD_PAGE_SHIFT;
+ 
+-	domain_unmap(dmar_domain, start_pfn, last_pfn, &gather->freelist);
++	if (domain_unmap(dmar_domain, start_pfn, last_pfn, &gather->freelist))
++		return 0;
+ 
+ 	if (dmar_domain->max_addr == iova + size)
+ 		dmar_domain->max_addr = iova;
+diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
+index 1c5e1d88862b..b4ccf134735f 100644
+--- a/drivers/iommu/intel/iommu.h
++++ b/drivers/iommu/intel/iommu.h
+@@ -33,6 +33,7 @@
+ #define VTD_PAGE_SIZE		(1UL << VTD_PAGE_SHIFT)
+ #define VTD_PAGE_MASK		(((u64)-1) << VTD_PAGE_SHIFT)
+ #define VTD_PAGE_ALIGN(addr)	(((addr) + VTD_PAGE_SIZE - 1) & VTD_PAGE_MASK)
++#define VTD_ATTR_MASK		(~VTD_PAGE_MASK)
+ 
+ #define VTD_STRIDE_SHIFT        (9)
+ #define VTD_STRIDE_MASK         (((u64)-1) << VTD_STRIDE_SHIFT)
 -- 
-2.41.0
+2.32.0.3.g01195cf9f
 
