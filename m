@@ -2,137 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAA377BD86
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D4377BD85
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbjHNP6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 11:58:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46516 "EHLO
+        id S229918AbjHNP6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 11:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbjHNP6N (ORCPT
+        with ESMTP id S229540AbjHNP6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:58:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB5D109
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:57:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692028652;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7qH/OU93DvHxo0hLIYaxXR0nJoX5oGDzCEQsY4s9O1c=;
-        b=A4GFCdphoNmiW7VBWxTZmhLZp2rXPB1LhchwHvY59q+Vdr62Z46lBuXhrpsLgWTFFaQWsT
-        NyorszjeYBrs33U1uTMCW/1ZyOA4CqGPfoOo+PsgtrJCz4YmmvYMR33pNp6Xty3N6M6Vkx
-        h2AATDaxKpCW7aEyf6SdNDzxQ6M0Qrw=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-326-cIGcbDCOPvucqnm-xMiFYQ-1; Mon, 14 Aug 2023 11:57:31 -0400
-X-MC-Unique: cIGcbDCOPvucqnm-xMiFYQ-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-64714cf9438so24351646d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:57:31 -0700 (PDT)
+        Mon, 14 Aug 2023 11:58:04 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A40FB
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:58:02 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-407db3e9669so417321cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:58:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692028682; x=1692633482;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kFtWfjMi8Qxaqy1mP9aCny6+Rknh4mMvL18UBz6OtTA=;
+        b=wSysMIu+1i4kZ9+szbci6PSfGsQaGegae6HD40omqq4EMu4bKalCrBOhJKB+PnpkBu
+         gCnesMRoU2mnkQ6rTHz+eV5y64EXEvJEAet+Ct12/TfrYI9F+GOW0SF6H/KGF0IQ2tMk
+         KVGNM3cVeqbZMlgMcNkeIOlBxPx2TVLx6I5ESe6DR5q29p2s17SaraCCW1FgXrzpnmr/
+         fjqY6XjkMEYVTdXbAghw/5eqV31dOFoPtGVycrQO59TlpXxlIZjQkKaT+eKyAPh0A/Y/
+         NPriko0mxJUPjc6VvCE+4ID822jfkJw2p6LB98r/eNjizmVBzZEoeFyAh5jewRhHxkls
+         JLqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692028651; x=1692633451;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1692028682; x=1692633482;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7qH/OU93DvHxo0hLIYaxXR0nJoX5oGDzCEQsY4s9O1c=;
-        b=Pu2WLYBNcFT7PAJdHxy5EsStYNVvT2X5ORFhGA5NmUJGbQ3bKer53tPNnbFbd5E454
-         TgKJYzWdB4OnpDsuuHqptuRRO94KdskHKtcWNRIBYYdl4K6aGJdjoSFWZ2jDcq2ZFCeI
-         syOIR3tEq/rzjcyJlyE/rmDHyw0f/FQwNS41YvzcxcjHGixg+dTnYW3Qy65CHK+HOeSW
-         5A/xqOg4+m7Ac3+Kny5UDH/zD7Vl4KaoyK7Ri6y+pCSKE/JGapqzWLiZT2T6LI7qIYqC
-         dmXfdaK7zX8o3+YWhi8btW4rFzJKT+ENM5EtJXk9DKwHaHZ52qO2OvPPdrTrV9ZZEdvR
-         y1/A==
-X-Gm-Message-State: AOJu0Yx+BjUaidp+uj/RrOjzPgi1z5cRa+zF9SGYzvPqVKfZRmNcw9NV
-        rmCTzBxJ356cFe6id3Xa4xC8NDdUo3BzcVOkzRKsKNGUzyuM3EdZRcxqjq1AAiwWNNM3tA95prO
-        bvYewcoeXE4YyTJpDLSb4+VrZaWZGbRLdwxBDrg==
-X-Received: by 2002:a0c:8e45:0:b0:63c:fb61:a201 with SMTP id w5-20020a0c8e45000000b0063cfb61a201mr9439839qvb.35.1692028650889;
-        Mon, 14 Aug 2023 08:57:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFRANvGEcmQZTMaKhUgzhPKVlKrTJYRQomkCbYmgKk3CSjdb0k3TsBz/oJJyzY8rNaOmV349g==
-X-Received: by 2002:a0c:8e45:0:b0:63c:fb61:a201 with SMTP id w5-20020a0c8e45000000b0063cfb61a201mr9439829qvb.35.1692028650657;
-        Mon, 14 Aug 2023 08:57:30 -0700 (PDT)
-Received: from fedora ([174.89.37.104])
-        by smtp.gmail.com with ESMTPSA id d11-20020a05620a166b00b00767d00d10e9sm3078589qko.58.2023.08.14.08.56.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 08:56:18 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 11:55:45 -0400
-From:   Lucas Karpinski <lkarpins@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests: cgroup: fix test_kmem_memcg_deletion false
- positives
-Message-ID: <eex2vdlg4ow2j5bybmav73nbfzuspkk4zobnk7svua4jaypqb5@7ie6e4mci43t>
-References: <edpx3ejic2cxolhoynxvwal2i4a35akopg6hshcfxker6oxcn7@l32pzfyucgec>
- <20230804163716.GA337691@cmpxchg.org>
- <x2zp6vbr5c3oa3xyfctj66y4ikdxtuo7wsqamkqgyt5ppu6ccb@vwxzimqvrhgk>
+        bh=kFtWfjMi8Qxaqy1mP9aCny6+Rknh4mMvL18UBz6OtTA=;
+        b=gZtsV7z6jJav62HdEij5H9uR+FYzrFvW3/G80wUWWvIX3qVeKhYz5VsFpbqar+MrhH
+         7jtphO0aDoDvQXOztA9GIkMbKFwp0wE4dx83dVVOspmZ2k4Sll+jvIKe5/3O2Vq9Kzv5
+         HpPHpHTXLB+CVnOXwph5brd6EdZre5nwsHjZb8VdL7Cs0V5Syt7Chf7SRY7EeaVVKsFB
+         MWLpEmS8fg3dnwz0DUpYpK8GHY1eokqQa2QNyudplXo9aFCwCjIlGzDAyeMPp+mUzEsH
+         fPKmAJUB1JViKNSu8eoxl17UThSHV58GjGPBLomoMc6hQGVOpTwU7NiVtJ/oi/tLCoqJ
+         C6xQ==
+X-Gm-Message-State: AOJu0Yyc4hSDM6+qYCBbbRbVgVuiHWDz38wxz+40yiMlKbkCdXnxXSAj
+        8lYjL79usSo+DORRq4P5wBmrisUIM1fHZhgQXCCKig==
+X-Google-Smtp-Source: AGHT+IHAa0hCkDgiBUN4c4IKMPXHZ+fKZxZU59RDWYNnrnLXXYvU/DTwIQS+FZw9RhO2Xg4TFvj3LOl0yr73KKkDHw4=
+X-Received: by 2002:ac8:5b51:0:b0:403:aa88:cf7e with SMTP id
+ n17-20020ac85b51000000b00403aa88cf7emr542580qtw.29.1692028681933; Mon, 14 Aug
+ 2023 08:58:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <x2zp6vbr5c3oa3xyfctj66y4ikdxtuo7wsqamkqgyt5ppu6ccb@vwxzimqvrhgk>
-User-Agent: NeoMutt/20230517
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230810214952.2934029-1-irogers@google.com> <20230810214952.2934029-3-irogers@google.com>
+ <0111c4b3-174b-84cb-2749-a88342b80498@oracle.com>
+In-Reply-To: <0111c4b3-174b-84cb-2749-a88342b80498@oracle.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 14 Aug 2023 08:57:50 -0700
+Message-ID: <CAP-5=fWPUxOkOorOEiNSWPVhSxi+ANSR=_2rEzF_7hyS=3hF0Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] perf pmus: Add scan that ignores duplicates, use
+ for perf list
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 02:59:28PM -0400, Lucas Karpinski wrote:
-> On Fri, Aug 04, 2023 at 12:37:16PM -0400, Johannes Weiner wrote:
-> > On Fri, Aug 04, 2023 at 11:37:33AM -0400, Lucas Karpinski wrote:
-> > > The test allocates dcache inside a cgroup, then destroys the cgroups and
-> > > then checks the sanity of numbers on the parent level. The reason it
-> > > fails is because dentries are freed with an RCU delay - a debugging
-> > > sleep shows that usage drops as expected shortly after.
-> > > 
-> > > Insert a 1s sleep after completing the cgroup creation/deletions. This
-> > > should be good enough, assuming that machines running those tests are
-> > > otherwise not very busy. This commit is directly inspired by Johannes
-> > > over at the link below.
-> > > 
-> > > Link: https://lore.kernel.org/all/20230801135632.1768830-1-hannes@cmpxchg.org/
-> > > 
-> > > Signed-off-by: Lucas Karpinski <lkarpins@redhat.com>
-> > 
-> > Maybe I'm missing something, but there isn't a limit set anywhere that
-> > would cause the dentries to be reclaimed and freed, no? When the
-> > subgroups are deleted, the objects are just moved to the parent. The
-> > counters inside the parent (which are hierarchical) shouldn't change.
-> > 
-> > So this seems to be a different scenario than test_kmem_basic. If the
-> > test is failing for you, I can't quite see why.
+On Fri, Aug 11, 2023 at 8:51=E2=80=AFAM John Garry <john.g.garry@oracle.com=
+> wrote:
+>
+> On 10/08/2023 22:49, Ian Rogers wrote:
+> > When there are multiple PMUs that differ only by suffix, by default
+> > just list the first one and skip all others. As the PMUs are sorted,
+> > the scan routine checks that the PMU names match and the numbers are
+> > consecutive. If "-v" is passed to "perf list" then list all PMUs.
+>
+> I really think that this should be merged with the next change. I don't
+> like the intermediate step of by default only printing the first PMU.
+
+Ack. I'll leave it as 3 patches and then leave it to Arnaldo squash as
+quite often he wants more patches.
+
 > >
-> You're right, the parent inherited the counters and it should behave
-> the same whether I'm directly removing the child or if I was moving it
-> under another cgroup. I do see the behaviour you described on my
-> x86_64 setup, but the wrong behaviour on my aarch64 dev. platform. I'll
-> take a closer look, but just wanted to leave an example here of what I
-> see.
-> 
-> Example of slab size pre/post sleep:
-> slab_pre = 18164688, slab_post = 3360000
-> 
-> Thanks,
-> Lucas
-Looked into the failures and I do have a proposed solution, just want
-some feedback first. With how the kernel entry in memory.stat is 
-updated, it takes into account all charged / uncharged pages, it looks 
-like it makes more sense to use that single entry rather than `slab + 
-anon + file + kernel_stack + pagetables + percpu + sock' as it would
-cover all utilization.
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >   tools/perf/builtin-list.c      |  8 +++++
+> >   tools/perf/util/pmus.c         | 54 ++++++++++++++++++++++++++++++++-=
+-
+> >   tools/perf/util/print-events.h |  1 +
+> >   3 files changed, 61 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
+> > index 7fec2cca759f..8fe4ddf02c14 100644
+> > --- a/tools/perf/builtin-list.c
+> > +++ b/tools/perf/builtin-list.c
+> > @@ -423,6 +423,13 @@ static void json_print_metric(void *ps __maybe_unu=
+sed, const char *group,
+> >       strbuf_release(&buf);
+> >   }
+> >
+> > +static bool default_skip_duplicate_pmus(void *ps)
+> > +{
+> > +     struct print_state *print_state =3D ps;
+> > +
+> > +     return !print_state->long_desc;
+> > +}
+> > +
+> >   int cmd_list(int argc, const char **argv)
+> >   {
+> >       int i, ret =3D 0;
+> > @@ -434,6 +441,7 @@ int cmd_list(int argc, const char **argv)
+> >               .print_end =3D default_print_end,
+> >               .print_event =3D default_print_event,
+> >               .print_metric =3D default_print_metric,
+> > +             .skip_duplicate_pmus =3D default_skip_duplicate_pmus,
+> >       };
+> >       const char *cputype =3D NULL;
+> >       const char *unit_name =3D NULL;
+> > diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
+> > index 3581710667b0..5073843aca19 100644
+> > --- a/tools/perf/util/pmus.c
+> > +++ b/tools/perf/util/pmus.c
+> > @@ -275,6 +275,50 @@ struct perf_pmu *perf_pmus__scan_core(struct perf_=
+pmu *pmu)
+> >       return NULL;
+> >   }
+> >
+> > +static struct perf_pmu *perf_pmus__scan_skip_duplicates(struct perf_pm=
+u *pmu)
+> > +{
+> > +     bool use_core_pmus =3D !pmu || pmu->is_core;
+> > +     int last_pmu_name_len =3D 0;
+> > +     unsigned long last_pmu_num =3D 0;
+> > +     const char *last_pmu_name =3D (pmu && pmu->name) ? pmu->name : ""=
+;
+> > +
+> > +     if (!pmu) {
+> > +             pmu_read_sysfs(/*core_only=3D*/false);
+> > +             pmu =3D list_prepare_entry(pmu, &core_pmus, list);
+> > +     } else
+> > +             last_pmu_name_len =3D pmu_name_len_no_suffix(pmu->name ?:=
+ "", &last_pmu_num);
+> > +
+> > +     if (use_core_pmus) {
+> > +             list_for_each_entry_continue(pmu, &core_pmus, list) {
+> > +                     unsigned long pmu_num =3D 0;
+> > +                     int pmu_name_len =3D pmu_name_len_no_suffix(pmu->=
+name ?: "", &pmu_num);
+> > +
+> > +                     if (last_pmu_name_len =3D=3D pmu_name_len &&
+> > +                         (last_pmu_num + 1 =3D=3D pmu_num) &&
+> > +                         !strncmp(last_pmu_name, pmu->name ?: "", pmu_=
+name_len)) {
+> > +                             last_pmu_num++;
+> > +                             continue;
+> > +                     }
+> > +                     return pmu;
+> > +             }
+> > +             pmu =3D NULL;
+>
+> you assign pmu NULL
+>
+> > +             pmu =3D list_prepare_entry(pmu, &other_pmus, list);
+>
+> and then re-assign it. If list_prepare_entry() needs first arg =3D NULL,
+> then can just use NULL explicitly?
+
+Done.
+
+> > +     }
+> > +     list_for_each_entry_continue(pmu, &other_pmus, list) {
+> > +             unsigned long pmu_num =3D 0;
+> > +             int pmu_name_len =3D pmu_name_len_no_suffix(pmu->name ?: =
+"", &pmu_num);
+> > +
+> > +             if (last_pmu_name_len =3D=3D pmu_name_len &&
+> > +                 (last_pmu_num + 1 =3D=3D pmu_num) &&
+> > +                 !strncmp(last_pmu_name, pmu->name ?: "", pmu_name_len=
+)) {
+> > +                     last_pmu_num++;
+> > +                     continue;
+>
+> Can some of this code be factored out from the previous patch? It's
+> doing something similar, right?
+
+The previous patch implemented list sorting and a list comparator
+whilst this patch is skipping PMUs if they follow the pattern:
+uncore_xyz_0
+uncore_xyz_1 <- skip
+uncore_xyz_2 <- skip
+The pmu_name_len_no_suffix is factored out and shared between both
+routines. The comparator doesn't maintain state whilst this code does.
+So I don't see a way to refactor things further.
 
 Thanks,
-Lucas
+Ian
 
+> > +             }
+> > +             return pmu;
+> > +     }
+> > +     return NULL;
+> > +}
+> > +
+> >   const struct perf_pmu *perf_pmus__pmu_for_pmu_filter(const char *str)
+> >   {
+> >       struct perf_pmu *pmu =3D NULL;
+> > @@ -429,10 +473,16 @@ void perf_pmus__print_pmu_events(const struct pri=
+nt_callbacks *print_cb, void *p
+> >       int printed =3D 0;
+> >       int len, j;
+> >       struct sevent *aliases;
+> > +     struct perf_pmu *(*scan_fn)(struct perf_pmu *);
+> > +
+> > +     if (print_cb->skip_duplicate_pmus(print_state))
+> > +             scan_fn =3D perf_pmus__scan_skip_duplicates;
+> > +     else
+> > +             scan_fn =3D perf_pmus__scan;
+> >
+> >       pmu =3D NULL;
+> >       len =3D 0;
+> > -     while ((pmu =3D perf_pmus__scan(pmu)) !=3D NULL) {
+> > +     while ((pmu =3D scan_fn(pmu)) !=3D NULL) {
+> >               list_for_each_entry(event, &pmu->aliases, list)
+> >                       len++;
+> >               if (pmu->selectable)
+> > @@ -445,7 +495,7 @@ void perf_pmus__print_pmu_events(const struct print=
+_callbacks *print_cb, void *p
+> >       }
+> >       pmu =3D NULL;
+> >       j =3D 0;
+> > -     while ((pmu =3D perf_pmus__scan(pmu)) !=3D NULL) {
+> > +     while ((pmu =3D scan_fn(pmu)) !=3D NULL) {
+> >               bool is_cpu =3D pmu->is_core;
+> >
+> >               list_for_each_entry(event, &pmu->aliases, list) {
+> > diff --git a/tools/perf/util/print-events.h b/tools/perf/util/print-eve=
+nts.h
+> > index d7fab411e75c..bf4290bef0cd 100644
+> > --- a/tools/perf/util/print-events.h
+> > +++ b/tools/perf/util/print-events.h
+> > @@ -26,6 +26,7 @@ struct print_callbacks {
+> >                       const char *expr,
+> >                       const char *threshold,
+> >                       const char *unit);
+> > +     bool (*skip_duplicate_pmus)(void *print_state);
+> >   };
+> >
+> >   /** Print all events, the default when no options are specified. */
+>
