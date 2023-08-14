@@ -2,121 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DA177BC43
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4602377BC4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230311AbjHNPB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 11:01:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56880 "EHLO
+        id S231479AbjHNPCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 11:02:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229833AbjHNPA5 (ORCPT
+        with ESMTP id S232548AbjHNPCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:00:57 -0400
-Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938D818F;
-        Mon, 14 Aug 2023 08:00:49 -0700 (PDT)
-Received: from newone.lan (unknown [10.0.0.1])
+        Mon, 14 Aug 2023 11:02:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EDCB18F;
+        Mon, 14 Aug 2023 08:02:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 7AD66160897;
-        Mon, 14 Aug 2023 17:00:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1692025246;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=7C2w+0tWL4XQt5OLTpreLub8Xk8xFwshC1CAe/wfDZs=;
-        b=QYklDSJFJ6+RGAkfa/CLMPH3Qn0WzV3psx6rHvu5qQD4WsobEYtEw1zpx/42SiydDHNPyD
-        1KHljAAe6laKnXjutI1uTM+rp93kSn887m++ZZRfg1Zq6dUdnEKU2/hpHdLH2HlCwB2r30
-        DLHKLd/WG2o9YvW7CDRGN2qbrtwABpQ=
-From:   David Heidelberg <david@ixit.cz>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     David Heidelberg <david@ixit.cz>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ARM: dts: apq8064: add support to gsbi4 uart
-Date:   Mon, 14 Aug 2023 17:00:40 +0200
-Message-Id: <20230814150040.64133-1-david@ixit.cz>
-X-Mailer: git-send-email 2.40.1
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C810162B00;
+        Mon, 14 Aug 2023 15:02:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1C5BC433C8;
+        Mon, 14 Aug 2023 15:02:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692025332;
+        bh=CLst8JcIxRWJRs96SWu43o7JLfLImPUU1vROlmY+7V0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gtbYFW/YIqdj8Sia7jg+XIhP2UJW05KXxzz/dVFPvj6/61CI51fZruZlNUaHhd2Q4
+         qhvbaMxNW1/SaEBpebU7emYByq3yXPzvG6zD7UYLAIir9TBsWlSVtGUH3H7p3HcF4k
+         U8MXKe1whDqs5oAvt6IS4njkMm4RoOhZrUvYYMFS90TevvNRmeRSqasg4znPQECkVh
+         C/CbK5oolhiYUOMbWtpC5+pGytQS7zZjXSheMMKpjYTOEdmUJCwfWlujPCfrvqjTlo
+         RiwkLcjvwJhe7NiyckE8fJsbYJbvBFx+wYHShlkr0ItRtwRs7fShLwHYTs7Fm/NwfP
+         tWJeXuQCwGFjg==
+Date:   Mon, 14 Aug 2023 17:02:09 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Andi Shyti <andi.shyti@kernel.org>
+Cc:     aisheng.dong@nxp.com, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, carlos.song@nxp.com,
+        xiaoning.wang@nxp.com, haibo.chen@nxp.com, linux-imx@nxp.com,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] i2c: imx-lpi2c: directly return ISR when detect a NACK
+Message-ID: <ZNpB8fWnOcH8997V@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>, aisheng.dong@nxp.com,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, carlos.song@nxp.com, xiaoning.wang@nxp.com,
+        haibo.chen@nxp.com, linux-imx@nxp.com, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230727030347.3552992-1-carlos.song@nxp.com>
+ <169100562766.1919254.12222013232053766298.b4-ty@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_RDNS_DYNAMIC_FP,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,T_SPF_HELO_TEMPERROR,
-        T_SPF_TEMPERROR autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="w3K+5rbsIPadrzlO"
+Content-Disposition: inline
+In-Reply-To: <169100562766.1919254.12222013232053766298.b4-ty@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support to gsbi4 uart which is used in LG Mako.
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
-v2:
- - incorporated Krzysztof hints: added -state to the node name,
-   and -pins to the sub-nodes
+--w3K+5rbsIPadrzlO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- arch/arm/boot/dts/qcom/qcom-apq8064-pins.dtsi | 16 ++++++++++++++++
- arch/arm/boot/dts/qcom/qcom-apq8064.dtsi      | 12 ++++++++++++
- 2 files changed, 28 insertions(+)
+On Wed, Aug 02, 2023 at 10:10:31PM +0200, Andi Shyti wrote:
+> Hi
+>=20
+> On Thu, 27 Jul 2023 11:03:47 +0800, carlos.song@nxp.com wrote:
+> > A NACK flag in ISR means i2c bus error. In such condition,
+> > there is no need to do read/write operation.
+> >=20
+> > In this patch, i2c will check MSR_NDF, MSR_RDF and MSR_TDF
+> > flag in turn, it's making mutually exclusive NACK/read/write.
+> > So when a NACK is received(MSR_NDF), i2c will return ISR
+> > directly and then stop i2c transfer.
+> >=20
+> > [...]
+>=20
+> Applied to i2c/andi-for-next on
 
-diff --git a/arch/arm/boot/dts/qcom/qcom-apq8064-pins.dtsi b/arch/arm/boot/dts/qcom/qcom-apq8064-pins.dtsi
-index 1f15186dd710..3ece5260ee51 100644
---- a/arch/arm/boot/dts/qcom/qcom-apq8064-pins.dtsi
-+++ b/arch/arm/boot/dts/qcom/qcom-apq8064-pins.dtsi
-@@ -233,6 +233,22 @@ pinconf {
- 		};
- 	};
- 
-+	gsbi4_uart_pin_a: gsbi4-uart-pin-active-state {
-+		rx-pins {
-+			pins = "gpio11";
-+			function = "gsbi4";
-+			drive-strength = <2>;
-+			bias-disable;
-+		};
-+
-+		tx-pins {
-+			pins = "gpio10";
-+			function = "gsbi4";
-+			drive-strength = <4>;
-+			bias-disable;
-+		};
-+	};
-+
- 	gsbi6_uart_2pins: gsbi6_uart_2pins {
- 		mux {
- 			pins = "gpio14", "gpio15";
-diff --git a/arch/arm/boot/dts/qcom/qcom-apq8064.dtsi b/arch/arm/boot/dts/qcom/qcom-apq8064.dtsi
-index 2ab69dd69862..870205028f5c 100644
---- a/arch/arm/boot/dts/qcom/qcom-apq8064.dtsi
-+++ b/arch/arm/boot/dts/qcom/qcom-apq8064.dtsi
-@@ -547,6 +547,18 @@ gsbi4: gsbi@16300000 {
- 			#size-cells = <1>;
- 			ranges;
- 
-+			gsbi4_serial: serial@16340000 {
-+				compatible = "qcom,msm-uartdm-v1.3", "qcom,msm-uartdm";
-+				reg = <0x16340000 0x100>,
-+				      <0x16300000 0x3>;
-+				interrupts = <GIC_SPI 152 IRQ_TYPE_LEVEL_HIGH>;
-+				pinctrl-0 = <&gsbi4_uart_pin_a>;
-+				pinctrl-names = "default";
-+				clocks = <&gcc GSBI4_UART_CLK>, <&gcc GSBI4_H_CLK>;
-+				clock-names = "core", "iface";
-+				status = "disabled";
-+			};
-+
- 			gsbi4_i2c: i2c@16380000 {
- 				compatible = "qcom,i2c-qup-v1.1.1";
- 				pinctrl-0 = <&i2c4_pins>;
--- 
-2.40.1
+Applied to for-next (via Andi's tree), thanks!
 
+
+--w3K+5rbsIPadrzlO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmTaQewACgkQFA3kzBSg
+KbbjoBAArY/BhYhzQhmZR3cld8jSC7zTM/UcLi9YgnSUMdJ4rrLV9Lzf5dGk58WF
+tfdUGhPDDY7CgYwVurUENvqtU5g5O+b4LQJ9Fyj2F/10U5lAFv7Bn6A5W6w98yFH
+28EgSPb5YEuKuDwhIsRmuII5AZf/A6mb7ivrT7e7gS1dn5Ur7GkHhsd9f4megZeq
+WOKZ4Psva/JW0SZW3LlyayV/ZJQsZcapt/puXIPt2IupefKoUxduu4Dbw3sVhf1U
+zA5p4Kw+q0NBqXN7P9D3ZlyWGmYsNURrp4I2EEWkFnQj9yZExVugaEx5TabK9C3q
+z/xBBE504UKgME5n5b7F7IT9wiFRjwwsjtLFlnIrk+h8MnqJ9H2GnVr0UW3Z7tnN
+vMixefzx211lTy9CGWz2zIe6ar4bohkH33u3EEufb0OjBo42s7PXNQ4AudHoCnCO
+TupY9SpVElJmpSocg4i2Q4xBbE/55Gw9q1uOe1dtBz0PP9n1SX+95iZdr/WiZ4zU
+0ZuH2tdaoF+13ngwcih1s6McMwCb4/A6t/AkZcytpk/HzK14rLOAnOorFuaMjfFm
+JUnMigzyLzgiTCVqa0erVtI5/CHIOUkIPJJ74R/Li0upA8HnK23ePRk1F6aB+qRB
+p5JXeKlR1gxjwOAcUI4OAuFT9jWMaS906RzHXjpA/hoDv5YqdFs=
+=yuB9
+-----END PGP SIGNATURE-----
+
+--w3K+5rbsIPadrzlO--
