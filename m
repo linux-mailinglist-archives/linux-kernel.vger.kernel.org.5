@@ -2,201 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D6E77B627
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA95A77B638
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235856AbjHNKLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 06:11:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52542 "EHLO
+        id S236125AbjHNKMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 06:12:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236341AbjHNKLT (ORCPT
+        with ESMTP id S236488AbjHNKMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 06:11:19 -0400
-Received: from mailrelay1-1.pub.mailoutpod2-cph3.one.com (mailrelay1-1.pub.mailoutpod2-cph3.one.com [IPv6:2a02:2350:5:400::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D921984
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:10:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ravnborg.org; s=rsa1;
-        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-         from:date:from;
-        bh=+0d0K8gRdasHBBxBfDYOGaNsANZBdVAsvY0T3Y09Us8=;
-        b=LswpLh2uzMEHOgd2MhTVXwJh4p45iLiHbqEQtxEOy4bHhOj60XRB3ZU+TWKlJ+QR43MFNlcMjNHVz
-         ovHSWetpF6ZkSjdEw5NidQtErrSglJRKA2tS1eIpnIHX1h2oet81XR18F5W2z41uQl+h5evgVK3LbQ
-         QmP2XHEQtqMchlKLSqrbFYQU4hg1onKADGtiX/Uw6Ie5uSbAswuL8FlgfyiA91h5mGSgUNRankY2Cs
-         BszP0m5ALinFW2/K6QhQPl0OmFWJQUKz+UCMFJumwlvAnT3WsxRq1Mcm9jFHEbbchqG9l/F4pUG8U4
-         uUVqfCKbWYiggUB2V8nihz1r2eNuvtw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-        d=ravnborg.org; s=ed1;
-        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-         from:date:from;
-        bh=+0d0K8gRdasHBBxBfDYOGaNsANZBdVAsvY0T3Y09Us8=;
-        b=cm1+80wCQURPqOW72oauiHPiYa75slzrDLc15KT/ufZVuyjQ8haNT5tVRsWWtbPjDTQVMhTZt8PjN
-         EUM/TyqDw==
-X-HalOne-ID: d2b55440-3a8a-11ee-8bb2-c5367ef0e45e
-Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-        by mailrelay1 (Halon) with ESMTPSA
-        id d2b55440-3a8a-11ee-8bb2-c5367ef0e45e;
-        Mon, 14 Aug 2023 10:10:43 +0000 (UTC)
-Date:   Mon, 14 Aug 2023 12:10:41 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@gmail.com>,
-        Francesco Dolcini <francesco@dolcini.it>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Aradhya Bhatia <a-bhatia1@ti.com>
-Subject: Re: [PATCH 11/11] drm/bridge: tc358768: Add
- DRM_BRIDGE_ATTACH_NO_CONNECTOR support
-Message-ID: <20230814101041.GA277347@ravnborg.org>
-References: <20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com>
- <20230804-tc358768-v1-11-1afd44b7826b@ideasonboard.com>
- <e857d383-2287-a985-24c5-fa1fff1da199@gmail.com>
- <0855d804-3ba3-4f29-32b1-bab3b999e506@ideasonboard.com>
+        Mon, 14 Aug 2023 06:12:06 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85487171A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:11:47 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 40E4B40E019C;
+        Mon, 14 Aug 2023 10:11:45 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id XPslDBwXDHIs; Mon, 14 Aug 2023 10:11:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1692007903; bh=/O9fn8QGZ3gDAatYZoz8dvwyIrZcaYK98Ic935cyokU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f0BeA6vgNt5+eT5JIyLAFdLXLktFVV8oTRR9y8BQArm/klkXRzjqX18BaMy+jELEv
+         OSxkap0IgKAry1MtEDRz/9nwC9GBFCk0Xz9LkNO+t8pvTbsrCLBqM4raDQth1R/z48
+         fv//3CZv4BkwQB/MhUTO2ithEoFn0nxt7bzsopxadvX1kp3RtU3kd8NGTU4rbYnZrG
+         5+2VAIVYx0P3EXifwOO+JBSEUtxFfyT7N1LnfUl9NUALajDS1p6yJH3YuUFh5xyJv3
+         SLxeDpFxvYRmkZwks14p61dLZDN9r66P50Un0y5BNuaaiohdRzFlM+6BEo/BBXi1ow
+         +thdt0qT81+e3uebFnBxOcNfJi+GH6mjV/V/7UNb48N2vOBbc1A5dZ7ox9G+Bq/g6j
+         Dc+pPCaPaaVQXdCRcHhm2dwi5hKDjjR6DIQT2dwAO07eBdWgWM2YwN8Wxi4KEaN+e1
+         3Y9Mv/d+2zTqNNoClwr0M6PKvNRNlF96KmFZAa67r2QUjqhTiQokqQIt2rNaWrsnW/
+         NdMIcByvWIHPQXiGISypmod27Yi3pD3KyTIbe4xz5uPAlYg5FKxYB2xIwbxJ9y0ym+
+         g8Fl15rsJxeySozxDyr3O6ySlDZBY7CN4tyE8UWytgShOVH30btAgBUZqUipzd30nu
+         pVxFCZbuJbL8RKmnNIeTfc4c=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1030240E0197;
+        Mon, 14 Aug 2023 10:11:39 +0000 (UTC)
+Date:   Mon, 14 Aug 2023 12:11:34 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Rainer Fiebig <jrf@mailbox.org>
+Cc:     Xi Ruoyao <xry111@xry111.site>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Does srso safe RET mitigation require microcode update?
+Message-ID: <20230814101134.GBZNn91uTmNImxRDXr@fat_crate.local>
+References: <79c179acaa6ec4e1cf112ae2dfce8370694a5089.camel@xry111.site>
+ <20230814091012.GAZNnvdD6JX/4E679D@fat_crate.local>
+ <0338eb8b-6b60-313c-e6eb-faca071c5227@mailbox.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <0855d804-3ba3-4f29-32b1-bab3b999e506@ideasonboard.com>
+In-Reply-To: <0338eb8b-6b60-313c-e6eb-faca071c5227@mailbox.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomi,
+On Mon, Aug 14, 2023 at 11:47:54AM +0200, Rainer Fiebig wrote:
+> "* 'Mitigation: safe RET':
+>
+>    Software-only mitigation. It complements the extended IBPB microcode
+>    patch functionality by addressing User->Kernel and Guest->Host
+>    transitions protection."
+>
+> Now, what does that mean: partial mitigation or also no mitigation
+> without microcode?
 
-> From c13c691bd8826b978325575be9a87f577b83b86b Mon Sep 17 00:00:00 2001
-> From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> Date: Mon, 14 Aug 2023 13:02:23 +0300
-> Subject: [PATCH] drm/bridge: tc358768: fix 'Add DRM_BRIDGE_ATTACH_NO_CONNECTOR
->  support'
-> 
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> ---
->  drivers/gpu/drm/bridge/tc358768.c | 56 +++++++++++++------------------
->  1 file changed, 24 insertions(+), 32 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
-> index 82ea4d9a814a..9705ce1bd028 100644
-> --- a/drivers/gpu/drm/bridge/tc358768.c
-> +++ b/drivers/gpu/drm/bridge/tc358768.c
-> @@ -455,8 +455,6 @@ static int tc358768_dsi_host_detach(struct mipi_dsi_host *host,
->  	struct tc358768_priv *priv = dsi_host_to_tc358768(host);
->  
->  	drm_bridge_remove(&priv->bridge);
-> -	if (priv->output.panel)
-> -		drm_panel_bridge_remove(priv->output.next_bridge);
->  
->  	return 0;
->  }
-> @@ -531,49 +529,42 @@ static int tc358768_bridge_attach(struct drm_bridge *bridge,
->  				  enum drm_bridge_attach_flags flags)
->  {
->  	struct tc358768_priv *priv = bridge_to_tc358768(bridge);
-> +	struct drm_bridge *next_bridge;
-> +	struct drm_panel *panel;
-> +	int ret;
->  
->  	if (!drm_core_check_feature(bridge->dev, DRIVER_ATOMIC)) {
->  		dev_err(priv->dev, "needs atomic updates support\n");
->  		return -ENOTSUPP;
->  	}
->  
-> -	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR) {
-> -		struct device_node *node;
-> -
-> -		/* Get the next bridge, connected to port@1. */
-> -		node = of_graph_get_remote_node(priv->dev->of_node, 1, -1);
-> -		if (!node)
-> -			return -ENODEV;
-> -
-> -		priv->output.next_bridge = of_drm_find_bridge(node);
-> -		of_node_put(node);
-> -		if (!priv->output.next_bridge)
-> -			return -EPROBE_DEFER;
-> -	} else {
-> -		struct drm_bridge *bridge;
-> -		struct drm_panel *panel;
-> -		int ret;
-> -
-> -		ret = drm_of_find_panel_or_bridge(priv->dev->of_node, 1, 0,
-> -						  &panel, &bridge);
-> -		if (ret)
-> -			return ret;
-> -
-> -		if (panel) {
-> -			bridge = drm_panel_bridge_add_typed(panel,
-> -				DRM_MODE_CONNECTOR_DSI);
-> -			if (IS_ERR(bridge))
-> -				return PTR_ERR(bridge);
-> -		}
-> +	ret = drm_of_find_panel_or_bridge(priv->dev->of_node, 1, -1, &panel,
-> +					  &next_bridge);
+It *complements*! Meaning, for a full safe RET mitigation, you need the
+microcode on Zen3/4.
 
-I think the right way is to wrap the panel in a bridge,
-so something like:
+Would that explain it better?
 
-	next_bridge = devm_drm_of_get_bridge(dev, priv->dev->of_node, 1, -1)
+"First of all, it is required that the latest microcode be loaded for
+mitigations to be effective. That means that for the User->User
+aspect of the mitigation to be effective, one needs the updated
+microcode for Zen3 and Zen4 generations. In addition, one needs to
+*enable* the User->User mitigation which is part of the spectre_v2_user
+controls:
 
-	if (IS_ERR(next_bridge))
-		return ...
-	priv->output.next_bridge = next_bridge;
+  - conditional IBPB:
 
+  where each process can select whether it needs an IBPB issued around
+  it PR_SPEC_DISABLE/_ENABLE etc, see Spectre Side Channels. That is the
+  default setting
 
-	Sam
+  - strict:
 
+  i.e., always on - by supplying spectre_v2_user=on on the kernel
+  command line."
 
-> +	if (ret)
-> +		return ret;
->  
-> -		priv->output.next_bridge = bridge;
-> -		priv->output.panel = panel;
-> +	if (panel) {
-> +		next_bridge = drm_panel_bridge_add_typed(panel,
-> +			DRM_MODE_CONNECTOR_DSI);
-> +		if (IS_ERR(next_bridge))
-> +			return PTR_ERR(next_bridge);
->  	}
->  
-> +	priv->output.next_bridge = next_bridge;
-> +	priv->output.panel = panel;
-> +
->  	return drm_bridge_attach(bridge->encoder, priv->output.next_bridge, bridge,
->  				 flags);
->  }
->  
-> +void tc358768_bridge_detach(struct drm_bridge *bridge)
-> +{
-> +	struct tc358768_priv *priv = bridge_to_tc358768(bridge);
-> +
-> +	if (priv->output.panel)
-> +		drm_panel_bridge_remove(priv->output.next_bridge);
-> +}
-> +
->  static enum drm_mode_status
->  tc358768_bridge_mode_valid(struct drm_bridge *bridge,
->  			   const struct drm_display_info *info,
-> @@ -1156,6 +1147,7 @@ tc358768_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
->  
->  static const struct drm_bridge_funcs tc358768_bridge_funcs = {
->  	.attach = tc358768_bridge_attach,
-> +	.detach = tc358768_bridge_detach,
->  	.mode_valid = tc358768_bridge_mode_valid,
->  	.pre_enable = tc358768_bridge_pre_enable,
->  	.enable = tc358768_bridge_enable,
-> -- 
-> 2.34.1
-> 
+IOW, without microcode, you do not mitigate the User->User aspect of the
+mitigation but you mitigate the other vectors with safe RET.
 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
