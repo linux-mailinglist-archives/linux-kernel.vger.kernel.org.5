@@ -2,102 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 641AB77BC61
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4F677BC6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 17:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231761AbjHNPGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 11:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
+        id S232587AbjHNPH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 11:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231483AbjHNPGF (ORCPT
+        with ESMTP id S232582AbjHNPHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 11:06:05 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2BD18F
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 08:06:04 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3699A1F8B8;
-        Mon, 14 Aug 2023 15:06:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1692025563; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KfEZdmnxL2VTiZ3/PBoU2vSIytykiktCavcFmkhOmT4=;
-        b=FS9Iq7RTcXhfJVDetANeBtWI9nUljyos1c9p/f7EOPLmXBVE+GRDuuypiHUlvJ3prEZWAz
-        l3zoqArc8tGQMX4BiwIGfdeUV4SQAuG4is5DwoTHeeZtLqPITw5/0gzbt8bLFrpCVEdQPM
-        eeQExt3yfvH8Ux2DBzfQXIaH4Y9ZTro=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1692025563;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KfEZdmnxL2VTiZ3/PBoU2vSIytykiktCavcFmkhOmT4=;
-        b=SfK+3hoWNMpKgjjM22UVNdHa4MVIThFA1tl+K7df3ztnG4D3VVHCbnITXL1fNsmJJ9CXbb
-        dkw+TePVZl8r36DA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DB98D139BC;
-        Mon, 14 Aug 2023 15:06:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id gDV4M9pC2mRZDgAAMHmgww
-        (envelope-from <tiwai@suse.de>); Mon, 14 Aug 2023 15:06:02 +0000
-Date:   Mon, 14 Aug 2023 17:06:02 +0200
-Message-ID: <87a5ut1x5x.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Karol Herbst <kherbst@redhat.com>
-Cc:     Takashi Iwai <tiwai@suse.de>, nouveau@lists.freedesktop.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org, regressions@leemhuis.info,
-        Borislav Petkov <bp@alien8.de>, Ben Skeggs <bskeggs@redhat.com>
-Subject: Re: 2b5d1c29f6c4 ("drm/nouveau/disp: PIOR DP uses GPIO for HPD, not PMGR AUX interrupts")
-In-Reply-To: <CACO55tv4a5fHd6H-bg_W4bCP15mxAKhxCVWyR4_LqZiTsAva4Q@mail.gmail.com>
-References: <20230806213107.GFZNARG6moWpFuSJ9W@fat_crate.local>
-        <CACO55tvZD5U4J8DawFTRVnV-dLYLngfhuqO29_sWNEGofKfnBg@mail.gmail.com>
-        <20230807150521.GGZNEIMQ9rsyCmkpoA@fat_crate.local>
-        <CACO55tvWuSdwdirj7S3Dk-r4NAw8jC8g5RHKFd62WXi43iQP-w@mail.gmail.com>
-        <87fs4sfu54.wl-tiwai@suse.de>
-        <CACO55tszwFEgt=8xn4auAE7KJVs3ybGG68OzL9HJt19XGVhhHQ@mail.gmail.com>
-        <874jl8fngo.wl-tiwai@suse.de>
-        <CACO55ts9YWF7nLi3Zs4xKySpdHyUFgf4r566cKx3FwNTCaz0Sg@mail.gmail.com>
-        <87wmy4e4uk.wl-tiwai@suse.de>
-        <877cq4e0j5.wl-tiwai@suse.de>
-        <87r0occhtw.wl-tiwai@suse.de>
-        <CACO55tvbLhn5vC=CpcZbuFEj2cja1=Nt=BKsZmU3+SKgbxoE7Q@mail.gmail.com>
-        <87zg2t23js.wl-tiwai@suse.de>
-        <CACO55tvPGx7npsXg+tpDoz=KXQBs4Pwz3h9Bie-vHithcHV5eA@mail.gmail.com>
-        <CACO55tvD_t4y8s_9gj7vO7zOvsYU1iF=5+a4M2g7_qMH9g3EKg@mail.gmail.com>
-        <87r0o521d2.wl-tiwai@suse.de>
-        <CACO55tuvzXkUSOQh8NEwC6nEUCWYVfkUmmFWHg_miWcAUWvPsw@mail.gmail.com>
-        <CACO55tv4a5fHd6H-bg_W4bCP15mxAKhxCVWyR4_LqZiTsAva4Q@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 14 Aug 2023 11:07:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E25BE73;
+        Mon, 14 Aug 2023 08:07:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692025656; x=1723561656;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=m7VkgTENnrlD2O4sqRAqdaUpGqIfQ0V7pFH0Vax2dS0=;
+  b=iNTCttGFJpJ8/R64nijLUW79+8Xd3LhNAO74UOyzzK2aRuLCXZcvq1mW
+   kSInYRt1A5I6TZbi8n2eRXWSb9iin65ehXMY/DlTacOCzSv5rdEmfnZGQ
+   3uXXF45WHowYrNBZHsmjihIeCd2Ge5745dEjzj+xK74Jmb1aw2fFTCEqh
+   5+bRaDzyOdh6amjzMlQmsjT+9K3lCy5B8q4u/Qi/ex4WrgjZ3Rdu6AgS3
+   KruW3BvppjM7v1Tgwss4MhEszUrNDpco0r8YsdyOmf9TJ0MExjKHLj+ru
+   +ONLubD/BhE3h8I5upj42xvP2xOxwQ3IxBUkIV035NLbsp4W9OECTIUf0
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="362209038"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="362209038"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 08:06:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="733478599"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="733478599"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga002.jf.intel.com with ESMTP; 14 Aug 2023 08:06:16 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qVZ95-009vp6-01;
+        Mon, 14 Aug 2023 18:06:15 +0300
+Date:   Mon, 14 Aug 2023 18:06:14 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Sergey Shtylyov <s.shtylyov@omp.ru>
+Cc:     Utkarsh Patel <utkarsh.h.patel@intel.com>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        heikki.krogerus@linux.intel.com, pmalani@chromium.org,
+        bleung@chromium.org
+Subject: Re: [PATCH 4/4] usb: typec: intel_pmc_mux: Configure Displayport
+ Alternate mode 2.1
+Message-ID: <ZNpC5nEthmG9C7n/@smile.fi.intel.com>
+References: <20230811210735.159529-1-utkarsh.h.patel@intel.com>
+ <20230811210735.159529-5-utkarsh.h.patel@intel.com>
+ <e9d83459-623e-34e1-ce9d-eb0b83ea170f@omp.ru>
+ <ZNo+1LRMfcjFEMu5@smile.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNo+1LRMfcjFEMu5@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Aug 2023 16:51:08 +0200,
-Karol Herbst wrote:
+On Mon, Aug 14, 2023 at 05:48:52PM +0300, Andy Shevchenko wrote:
+> On Sat, Aug 12, 2023 at 12:47:43PM +0300, Sergey Shtylyov wrote:
+> > On 8/12/23 12:07 AM, Utkarsh Patel wrote:
+> > 
+> > > Mux agent driver can configure cable details such as cable type and
+> > > cable speed received as a part of displayport configuration to support
+> > > Displayport Alternate mode 2.1.
+> > > 
+> > > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > 
+> >    Hm, I think the R-b tags should follow your signoff...
 > 
-> I've sent a patch out to address this memory corruption
-> https://patchwork.freedesktop.org/patch/552642/
-> 
-> It might or might not fix regressions from the original I2C fix, so
-> please test and report if there are remaining issues.
+> They following historical order.
+> So, before this patch appears upstream, it had collected Rb tags.
 
-Thanks!  I'll build a test kernel and ask the reporter for testing
-with it.  Let's cross fingers :)
+Note, Submitting Patches only defines the order rules to SoB tag, for Rb there
+is no such rule:
+
+ "Both Tested-by and Reviewed-by tags, once received on mailing list from
+ tester or reviewer, should be added by author to the applicable patches when
+ sending next versions."
+
+> > > Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-Takashi
