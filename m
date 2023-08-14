@@ -2,121 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2634577BA9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E676E77BAA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbjHNNw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 09:52:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49834 "EHLO
+        id S231528AbjHNNxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 09:53:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231192AbjHNNwK (ORCPT
+        with ESMTP id S231702AbjHNNxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 09:52:10 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D22E10D5;
-        Mon, 14 Aug 2023 06:52:04 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-34977c2dc27so20784585ab.2;
-        Mon, 14 Aug 2023 06:52:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692021123; x=1692625923;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8NtwI3YlsklSoYLB5EKJ6oRdPMN5Klg8xng3e1ay8vY=;
-        b=acRQvDqHS787ZuPT/mQ8I87VIkW3n6TxCfuxonkcuFsu4kQjz5N2XHrqmUWtr8iWLF
-         ggBMPq/Rqu3AXC61HR5BRnLRz7gTqS4cgps0a/7+909IsAhBFwaMDmAxlTrmS4Oym+Z1
-         pz4JxkDAILE3vW8HJ11fizZnVMnEhznRHdqTMQQ7jVXYI+SWEiPAorR9QJxzQCjzF6Ct
-         GxqIZ5caOr/fUKqebHzXPvHoSAuOUbvwqtyCCjdCP5Ax2DqBD/l4o0HCryxHgYxmn50D
-         upT0nj8VWbrrTA72aIT5Iecwd9wxy633uuFExhnC1I3dlCVhqqxcC/+hRnJfZ3gXW8ie
-         7Maw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692021123; x=1692625923;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8NtwI3YlsklSoYLB5EKJ6oRdPMN5Klg8xng3e1ay8vY=;
-        b=bx8v8l9Vc9bvdhISTf1GVg9wJbmIrzBYWt/lqGfvhU1mjrsMhuCsEjlpcrDTcJeYiD
-         t69qO5iZAfIn1wneAcAipPOPwm9ZRhSal3rXDHFZ2D/62NfDiHBAJxgOqv+3bWDfUpUs
-         Pi2YS0OcMgS4o/BVMVlrkP73KtS4Nc0RHoFVBP/l3HIunIsrYq9aBbGacegxTFHKhP6s
-         1w+Dd5OqoIV4rjPDSbpNN8aM6JjqB3OiORfSiLocSjclhlo9ZVxK5nRq/oks4+5VsPZo
-         SeJwl7Xlmon6w+Zz0DhDz7RchjsR3pvbrPsTdFxtngOnjK7vvU1XrOnRmX7I9S2CspZa
-         eUTg==
-X-Gm-Message-State: AOJu0YxogfyY1JLgu0F1nqGpezRenhQ3w9sivdOBDBubhF7FvwEEvXGI
-        K7tJaxARws5CjlHiT+pNJuBx+XmC4Iw=
-X-Google-Smtp-Source: AGHT+IHSnWu1px0AK37yZsZ/LuGZrARFRKYy7T7jBDf28y69TWrmRitrNBguHGhEyLKHIlUHDu5LdA==
-X-Received: by 2002:a05:6e02:1bee:b0:348:cc2d:7eec with SMTP id y14-20020a056e021bee00b00348cc2d7eecmr15539492ilv.0.1692021122863;
-        Mon, 14 Aug 2023 06:52:02 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w8-20020a92d608000000b0034632ab31c9sm3229479ilm.21.2023.08.14.06.52.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 06:52:02 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 14 Aug 2023 06:52:01 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Meng Li <Meng.Li@windriver.com>
-Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [v2][PATCH] watchdog: core: stop watchdog when executing
- poweroff command
-Message-ID: <ac5d44be-0f87-4f13-ba07-fe274ed773fd@roeck-us.net>
-References: <20230814090616.1853263-1-Meng.Li@windriver.com>
+        Mon, 14 Aug 2023 09:53:23 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17D610DD;
+        Mon, 14 Aug 2023 06:53:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1692021203; x=1723557203;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/0KD1L1RDnuKAhdqbw1tkprSQp/H4jNSydLSzkdaZqk=;
+  b=gntor0doiKPsEiVBitZUx6h9vxsqbiu1vWjfXl9ojktPILkWDM2xtBbG
+   AuntiDFTqWceSmJFp7F35sh0bxqzD8nz3JYEya9SvmJlvbTebASBQSlki
+   eP9p2Ifo3tzSp2xy74afQhYUfta5nPM9A3htOYQTVhOozMaxpy4kn9sIn
+   MT69z2cYi7KgyUABSR9pvcDG3JOWUmm5lgUcvVFAgekP4GE53QmS3njiY
+   qYqAHfp2uA8ChrHsAnzh7Ec7x91iFd0TSmXPnkomulopUEaHG3svn694h
+   wCgPpr5Sww8vZOa3MBCtxvnvm+4f+dmAK2+ShLTfOCURGCub4MZbc8ld5
+   A==;
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="asc'?scan'208";a="225313785"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Aug 2023 06:53:22 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 14 Aug 2023 06:52:47 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Mon, 14 Aug 2023 06:52:44 -0700
+Date:   Mon, 14 Aug 2023 14:52:05 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Minda Chen <minda.chen@starfivetech.com>
+CC:     Daire McNamara <daire.mcnamara@microchip.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+Subject: Re: [PATCH v3 06/11] PCI: plda: Add event interrupt codes and IRQ
+ domain ops
+Message-ID: <20230814-episode-untidy-c66107a33ea0@wendy>
+References: <20230814082016.104181-1-minda.chen@starfivetech.com>
+ <20230814082016.104181-7-minda.chen@starfivetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Y4kxwzWfSP8ufxW9"
 Content-Disposition: inline
-In-Reply-To: <20230814090616.1853263-1-Meng.Li@windriver.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230814082016.104181-7-minda.chen@starfivetech.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        UPPERCASE_50_75 autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 05:06:16PM +0800, Meng Li wrote:
-> From: Meng Li <meng.li@windriver.com>
-> 
-> On some platforms, for example, Intel SoC FPGA platform, the watchdog
-> is started in u-boot, and so kernel will create a timer and work to
-> keep watchdog alive. But when user executes commands "poweroff" or
-> "shutdown -h", the system is reset when watchdog triggers timeout even
-> if WDOG_STOP_ON_REBOOT is set in watchdog driver. The root cause is
-> that the watchdog is not stopped properly because the SYS_POWER_OFF case
-> is not supported in notify callback function. So, add this case to stop
-> watchdog when executing poweroff command.
-> 
-> Signed-off-by: Meng Li <Meng.Li@windriver.com>
+--Y4kxwzWfSP8ufxW9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Makes sense.
-
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
-
+On Mon, Aug 14, 2023 at 04:20:11PM +0800, Minda Chen wrote:
+> For PolarFire implements non-PLDA local interrupt events, most of
+> event interrupt process codes can not be re-used. PLDA implements
+> new codes and IRQ domain ops like PolarFire.
+>=20
+> plda_handle_event adds a new IRQ num to event num mapping codes for
+> PLDA local event except DMA engine interrupt events. The DMA engine
+> interrupt events are implemented by vendors.
+>=20
+> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
 > ---
-> 
-> v2:
->  - fix typos in commit log
-> 
-> ---
->  drivers/watchdog/watchdog_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
-> index d4c5a736fdcb..5b55ccae06d4 100644
-> --- a/drivers/watchdog/watchdog_core.c
-> +++ b/drivers/watchdog/watchdog_core.c
-> @@ -161,7 +161,7 @@ static int watchdog_reboot_notifier(struct notifier_block *nb,
->  	struct watchdog_device *wdd;
->  
->  	wdd = container_of(nb, struct watchdog_device, reboot_nb);
-> -	if (code == SYS_DOWN || code == SYS_HALT) {
-> +	if (code == SYS_DOWN || code == SYS_HALT || code == SYS_POWER_OFF) {
->  		if (watchdog_hw_running(wdd)) {
->  			int ret;
->  
-> -- 
-> 2.17.1
-> 
+>  .../pci/controller/plda/pcie-microchip-host.c | 29 +++---
+>  drivers/pci/controller/plda/pcie-plda-host.c  | 99 +++++++++++++++++++
+>  drivers/pci/controller/plda/pcie-plda.h       | 19 ++++
+>  3 files changed, 133 insertions(+), 14 deletions(-)
+>=20
+> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drivers/=
+pci/controller/plda/pcie-microchip-host.c
+> index c28840315019..b42f1aac3ec3 100644
+> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
+> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
+> @@ -96,20 +96,21 @@
+>  #define EVENT_LOCAL_DMA_END_ENGINE_1		12
+>  #define EVENT_LOCAL_DMA_ERROR_ENGINE_0		13
+>  #define EVENT_LOCAL_DMA_ERROR_ENGINE_1		14
+> -#define EVENT_LOCAL_A_ATR_EVT_POST_ERR		15
+> -#define EVENT_LOCAL_A_ATR_EVT_FETCH_ERR		16
+> -#define EVENT_LOCAL_A_ATR_EVT_DISCARD_ERR	17
+> -#define EVENT_LOCAL_A_ATR_EVT_DOORBELL		18
+> -#define EVENT_LOCAL_P_ATR_EVT_POST_ERR		19
+> -#define EVENT_LOCAL_P_ATR_EVT_FETCH_ERR		20
+> -#define EVENT_LOCAL_P_ATR_EVT_DISCARD_ERR	21
+> -#define EVENT_LOCAL_P_ATR_EVT_DOORBELL		22
+> -#define EVENT_LOCAL_PM_MSI_INT_INTX		23
+> -#define EVENT_LOCAL_PM_MSI_INT_MSI		24
+> -#define EVENT_LOCAL_PM_MSI_INT_AER_EVT		25
+> -#define EVENT_LOCAL_PM_MSI_INT_EVENTS		26
+> -#define EVENT_LOCAL_PM_MSI_INT_SYS_ERR		27
+> -#define NUM_EVENTS				28
+> +#define NUM_MC_EVENTS				15
+> +#define EVENT_LOCAL_A_ATR_EVT_POST_ERR		(NUM_MC_EVENTS + EVENT_A_ATR_EVT=
+_POST_ERR)
+> +#define EVENT_LOCAL_A_ATR_EVT_FETCH_ERR		(NUM_MC_EVENTS + EVENT_A_ATR_EV=
+T_FETCH_ERR)
+> +#define EVENT_LOCAL_A_ATR_EVT_DISCARD_ERR	(NUM_MC_EVENTS + EVENT_A_ATR_E=
+VT_DISCARD_ERR)
+> +#define EVENT_LOCAL_A_ATR_EVT_DOORBELL		(NUM_MC_EVENTS + EVENT_A_ATR_EVT=
+_DOORBELL)
+> +#define EVENT_LOCAL_P_ATR_EVT_POST_ERR		(NUM_MC_EVENTS + EVENT_P_ATR_EVT=
+_POST_ERR)
+> +#define EVENT_LOCAL_P_ATR_EVT_FETCH_ERR		(NUM_MC_EVENTS + EVENT_P_ATR_EV=
+T_FETCH_ERR)
+> +#define EVENT_LOCAL_P_ATR_EVT_DISCARD_ERR	(NUM_MC_EVENTS + EVENT_P_ATR_E=
+VT_DISCARD_ERR)
+> +#define EVENT_LOCAL_P_ATR_EVT_DOORBELL		(NUM_MC_EVENTS + EVENT_P_ATR_EVT=
+_DOORBELL)
+> +#define EVENT_LOCAL_PM_MSI_INT_INTX		(NUM_MC_EVENTS + EVENT_PM_MSI_INT_I=
+NTX)
+> +#define EVENT_LOCAL_PM_MSI_INT_MSI		(NUM_MC_EVENTS + EVENT_PM_MSI_INT_MS=
+I)
+> +#define EVENT_LOCAL_PM_MSI_INT_AER_EVT		(NUM_MC_EVENTS + EVENT_PM_MSI_IN=
+T_AER_EVT)
+> +#define EVENT_LOCAL_PM_MSI_INT_EVENTS		(NUM_MC_EVENTS + EVENT_PM_MSI_INT=
+_EVENTS)
+> +#define EVENT_LOCAL_PM_MSI_INT_SYS_ERR		(NUM_MC_EVENTS + EVENT_PM_MSI_IN=
+T_SYS_ERR)
+> +#define NUM_EVENTS				(NUM_MC_EVENTS + NUM_PLDA_EVENTS)
+
+Is this change not in the wrong patch & should be changed alongside the
+movement of defines?=20
+
+--Y4kxwzWfSP8ufxW9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNoxhQAKCRB4tDGHoIJi
+0i9LAP4sQcKHRQUviJH9x11dE7n8ONwvAzh2QWhHwntrCc2kcAD+KQ0V/O4R1C50
+8jAkUvBTjG95nhERLU8N++0omqA4Fw4=
+=J6we
+-----END PGP SIGNATURE-----
+
+--Y4kxwzWfSP8ufxW9--
