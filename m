@@ -2,100 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B609D77B8D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC0D77B8DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbjHNMkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 08:40:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59014 "EHLO
+        id S230013AbjHNMnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 08:43:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231124AbjHNMkL (ORCPT
+        with ESMTP id S229540AbjHNMme (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 08:40:11 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F1D610E5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:40:08 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe4cdb72b9so38687175e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:40:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692016806; x=1692621606;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rPY+jEXhrjcjJjgPf7QBsv25ZrENh0KuhnzLi48FeUE=;
-        b=OekTk5KXyYJdvEt2nZom//pEkAn+1z1/7Z7tdpH7IQ4Uv98uMNQHSe1WmZN/EOH/Mz
-         kGYjVKrZb/eZb00QbdKioR6Y1PWO4iiDLGPUWI+nPjpNfkuAOZM0k3dJityEHst4qgJi
-         ixbpSxIyObrhR6gWe01jvC+0RaeX33oRoG8eTpDpmGnOMzsf4rNgikeFENKdnSpR2zqH
-         lvO53OJlHkeMdbdiU15RGkacUVIJ8F/zWI1H/gGUtPNX3J01ZlIYLVZvgZD01el4DpN9
-         qr7UJEQhXxs41mA+m9XaS+DzR0GIaTt/m5RkaPxGmzCbYJAys9AOfA++Zrr7h4ZyuBVv
-         +iZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692016806; x=1692621606;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rPY+jEXhrjcjJjgPf7QBsv25ZrENh0KuhnzLi48FeUE=;
-        b=T5f5YTOGHspPteH390c+9+t+oIrQR0fcQhqdP5v1RKOr5kuTPd9644E5fD70mzVeML
-         O2U4TEQyY5tNXKZjsEo0RILuUF+dw8X11pA9qeo7p+iaOUNFJ0dZjMniSsccxcjxKwHD
-         5y17TzbEfyUDngCobnJo8bnvFhy5Hhn5Id6QXCHTy0jvwnd3sRNflGe2w5yPfOFX3vrM
-         L05WwGhlPQoRXh51/wZnyHMps7hPsy0dzvtKGg16oNrnVdzh9EZOtew4Vw9TxxpSgSnq
-         SsIzR1DBRrIwIcPLS8Qx5xePcZNqes4lGpvXV319ae8P4vPo9oxi86xF3uaz/1CXKddf
-         Rl0Q==
-X-Gm-Message-State: AOJu0YwQzCV8CLZQOlVC5+mCKgwIh5rwSNm+XTTdQee0pBpF0AMkFLGE
-        6Upoo/ef3R/EHri8phJOAdBf2A==
-X-Google-Smtp-Source: AGHT+IESQmxYAQ8invo+LuS7mk45cJFiPtXV3GC3mIfli1/teCY1sJQhbbarUG1utFPIMFPDdu9srg==
-X-Received: by 2002:a05:600c:259:b0:3fe:2102:8083 with SMTP id 25-20020a05600c025900b003fe21028083mr6801544wmj.26.1692016806660;
-        Mon, 14 Aug 2023 05:40:06 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:a3d8:b217:d82c:9bc0? ([2a01:e0a:982:cbb0:a3d8:b217:d82c:9bc0])
-        by smtp.gmail.com with ESMTPSA id v14-20020a1cf70e000000b003fe24441e23sm14193823wmh.24.2023.08.14.05.40.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 05:40:06 -0700 (PDT)
-Message-ID: <b5878783-303c-410a-8542-3000e214bf78@linaro.org>
-Date:   Mon, 14 Aug 2023 14:40:05 +0200
+        Mon, 14 Aug 2023 08:42:34 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E23E4A;
+        Mon, 14 Aug 2023 05:42:32 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RPYsz3rLbzrSLV;
+        Mon, 14 Aug 2023 20:41:11 +0800 (CST)
+Received: from localhost.localdomain (10.50.163.32) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 14 Aug 2023 20:42:29 +0800
+From:   Yicong Yang <yangyicong@huawei.com>
+To:     <will@kernel.org>, <catalin.marinas@arm.com>,
+        <lpieralisi@kernel.org>, <mark.rutland@arm.com>,
+        <robin.murphy@arm.com>, <guohanjun@huawei.com>, <corbet@lwn.net>,
+        <rafael@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-doc@vger.kernel.org>, <linux-acpi@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jonathan.cameron@huawei.com>,
+        <shameerali.kolothum.thodi@huawei.com>, <hejunhao3@huawei.com>,
+        <linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
+        <yangyicong@hisilicon.com>, <zhurui3@huawei.com>
+Subject: [PATCH v2] perf/smmuv3: Enable HiSilicon Erratum 162001900 quirk for HIP08/09
+Date:   Mon, 14 Aug 2023 20:40:12 +0800
+Message-ID: <20230814124012.58013-1-yangyicong@huawei.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [RESEND PATCH v2] drm/panel: JDI LT070ME05000 simplify with
- dev_err_probe()
-Content-Language: en-US
-To:     David Heidelberg <david@ixit.cz>, Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230812185239.378582-1-david@ixit.cz>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20230812185239.378582-1-david@ixit.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.50.163.32]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -103,80 +52,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/08/2023 20:52, David Heidelberg wrote:
-> Use the dev_err_probe() helper to simplify error handling during probe.
-> This also handle scenario, when EDEFER is returned and useless error is printed.
-> 
-> Fixes error:
-> panel-jdi-lt070me05000 4700000.dsi.0: cannot get enable-gpio -517
-> 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
-> resend:
->   - applies cleanly on -next
-> v2:
->   - original v1 patch name "drm/panel: JDI LT070ME05000 remove useless warning"
->   - use dev_err_probe function
-> 
->   .../gpu/drm/panel/panel-jdi-lt070me05000.c    | 36 ++++++++-----------
->   1 file changed, 14 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panel/panel-jdi-lt070me05000.c b/drivers/gpu/drm/panel/panel-jdi-lt070me05000.c
-> index e94c98f00391..f9a69f347068 100644
-> --- a/drivers/gpu/drm/panel/panel-jdi-lt070me05000.c
-> +++ b/drivers/gpu/drm/panel/panel-jdi-lt070me05000.c
-> @@ -400,38 +400,30 @@ static int jdi_panel_add(struct jdi_panel *jdi)
->   
->   	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(jdi->supplies),
->   				      jdi->supplies);
-> -	if (ret < 0) {
-> -		dev_err(dev, "failed to init regulator, ret=%d\n", ret);
-> -		return ret;
-> -	}
-> +	if (ret < 0)
-> +		return dev_err_probe(dev, ret,
-> +				     "failed to init regulator, ret=%d\n", ret);
->   
->   	jdi->enable_gpio = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
->   	if (IS_ERR(jdi->enable_gpio)) {
-> -		ret = PTR_ERR(jdi->enable_gpio);
-> -		dev_err(dev, "cannot get enable-gpio %d\n", ret);
-> -		return ret;
-> +		return dev_err_probe(dev, PTR_ERR(jdi->enable_gpio),
-> +				     "cannot get enable-gpio %d\n", ret);
->   	}
->   
->   	jdi->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
-> -	if (IS_ERR(jdi->reset_gpio)) {
-> -		ret = PTR_ERR(jdi->reset_gpio);
-> -		dev_err(dev, "cannot get reset-gpios %d\n", ret);
-> -		return ret;
-> -	}
-> +	if (IS_ERR(jdi->reset_gpio))
-> +		return dev_err_probe(dev, PTR_ERR(jdi->reset_gpio),
-> +				     "cannot get reset-gpios %d\n", ret);
->   
->   	jdi->dcdc_en_gpio = devm_gpiod_get(dev, "dcdc-en", GPIOD_OUT_LOW);
-> -	if (IS_ERR(jdi->dcdc_en_gpio)) {
-> -		ret = PTR_ERR(jdi->dcdc_en_gpio);
-> -		dev_err(dev, "cannot get dcdc-en-gpio %d\n", ret);
-> -		return ret;
-> -	}
-> +	if (IS_ERR(jdi->dcdc_en_gpio))
-> +		return dev_err_probe(dev, PTR_ERR(jdi->dcdc_en_gpio),
-> +				     "cannot get dcdc-en-gpio %d\n", ret);
->   
->   	jdi->backlight = drm_panel_create_dsi_backlight(jdi->dsi);
-> -	if (IS_ERR(jdi->backlight)) {
-> -		ret = PTR_ERR(jdi->backlight);
-> -		dev_err(dev, "failed to register backlight %d\n", ret);
-> -		return ret;
-> -	}
-> +	if (IS_ERR(jdi->backlight))
-> +		return dev_err_probe(dev, PTR_ERR(jdi->backlight),
-> +				     "failed to register backlight %d\n", ret);
->   
->   	drm_panel_init(&jdi->base, &jdi->dsi->dev, &jdi_panel_funcs,
->   		       DRM_MODE_CONNECTOR_DSI);
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+Some HiSilicon SMMU PMCG suffers the erratum 162001900 that the PMU
+disable control sometimes fail to disable the counters. This will lead
+to error or inaccurate data since before we enable the counters the
+counter's still counting for the event used in last perf session.
+
+This patch tries to fix this by hardening the global disable process.
+Before disable the PMU, writing an invalid event type (0xffff) to
+focibly stop the counters. Correspondingly restore each events on
+pmu::pmu_enable().
+
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+---
+Change since v1:
+- Tail call smmu_pmu_{enable, disable}() in quirk handler to avoid duplication
+Link: https://lore.kernel.org/all/20230809100654.32036-1-yangyicong@huawei.com/
+
+ Documentation/arch/arm64/silicon-errata.rst |  3 ++
+ drivers/acpi/arm64/iort.c                   |  5 ++-
+ drivers/perf/arm_smmuv3_pmu.c               | 46 ++++++++++++++++++++-
+ include/linux/acpi_iort.h                   |  1 +
+ 4 files changed, 53 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/arch/arm64/silicon-errata.rst b/Documentation/arch/arm64/silicon-errata.rst
+index bedd3a1d7b42..0ac452333eb4 100644
+--- a/Documentation/arch/arm64/silicon-errata.rst
++++ b/Documentation/arch/arm64/silicon-errata.rst
+@@ -198,6 +198,9 @@ stable kernels.
+ +----------------+-----------------+-----------------+-----------------------------+
+ | Hisilicon      | Hip08 SMMU PMCG | #162001800      | N/A                         |
+ +----------------+-----------------+-----------------+-----------------------------+
++| Hisilicon      | Hip08 SMMU PMCG | #162001900      | N/A                         |
++|                | Hip09 SMMU PMCG |                 |                             |
+++----------------+-----------------+-----------------+-----------------------------+
+ +----------------+-----------------+-----------------+-----------------------------+
+ | Qualcomm Tech. | Kryo/Falkor v1  | E1003           | QCOM_FALKOR_ERRATUM_1003    |
+ +----------------+-----------------+-----------------+-----------------------------+
+diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+index 56d887323ae5..6496ff5a6ba2 100644
+--- a/drivers/acpi/arm64/iort.c
++++ b/drivers/acpi/arm64/iort.c
+@@ -1708,7 +1708,10 @@ static void __init arm_smmu_v3_pmcg_init_resources(struct resource *res,
+ static struct acpi_platform_list pmcg_plat_info[] __initdata = {
+ 	/* HiSilicon Hip08 Platform */
+ 	{"HISI  ", "HIP08   ", 0, ACPI_SIG_IORT, greater_than_or_equal,
+-	 "Erratum #162001800", IORT_SMMU_V3_PMCG_HISI_HIP08},
++	 "Erratum #162001800, Erratum #162001900", IORT_SMMU_V3_PMCG_HISI_HIP08},
++	/* HiSilicon Hip09 Platform */
++	{"HISI  ", "HIP09   ", 0, ACPI_SIG_IORT, greater_than_or_equal,
++	 "Erratum #162001900", IORT_SMMU_V3_PMCG_HISI_HIP09},
+ 	{ }
+ };
+ 
+diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
+index 25a269d431e4..0e17c57ddb87 100644
+--- a/drivers/perf/arm_smmuv3_pmu.c
++++ b/drivers/perf/arm_smmuv3_pmu.c
+@@ -115,6 +115,7 @@
+ #define SMMU_PMCG_PA_SHIFT              12
+ 
+ #define SMMU_PMCG_EVCNTR_RDONLY         BIT(0)
++#define SMMU_PMCG_HARDEN_DISABLE        BIT(1)
+ 
+ static int cpuhp_state_num;
+ 
+@@ -159,6 +160,20 @@ static inline void smmu_pmu_enable(struct pmu *pmu)
+ 	writel(SMMU_PMCG_CR_ENABLE, smmu_pmu->reg_base + SMMU_PMCG_CR);
+ }
+ 
++static int smmu_pmu_apply_event_filter(struct smmu_pmu *smmu_pmu,
++				       struct perf_event *event, int idx);
++
++static inline void smmu_pmu_enable_quirk_hip08_09(struct pmu *pmu)
++{
++	struct smmu_pmu *smmu_pmu = to_smmu_pmu(pmu);
++	unsigned int idx;
++
++	for_each_set_bit(idx, smmu_pmu->used_counters, smmu_pmu->num_counters)
++		smmu_pmu_apply_event_filter(smmu_pmu, smmu_pmu->events[idx], idx);
++
++	smmu_pmu_enable(pmu);
++}
++
+ static inline void smmu_pmu_disable(struct pmu *pmu)
+ {
+ 	struct smmu_pmu *smmu_pmu = to_smmu_pmu(pmu);
+@@ -167,6 +182,22 @@ static inline void smmu_pmu_disable(struct pmu *pmu)
+ 	writel(0, smmu_pmu->reg_base + SMMU_PMCG_IRQ_CTRL);
+ }
+ 
++static inline void smmu_pmu_disable_quirk_hip08_09(struct pmu *pmu)
++{
++	struct smmu_pmu *smmu_pmu = to_smmu_pmu(pmu);
++	unsigned int idx;
++
++	/*
++	 * The global disable of PMU sometimes fail to stop the counting.
++	 * Harden this by writing an invalid event type to each used counter
++	 * to forcibly stop counting.
++	 */
++	for_each_set_bit(idx, smmu_pmu->used_counters, smmu_pmu->num_counters)
++		writel(0xffff, smmu_pmu->reg_base + SMMU_PMCG_EVTYPER(idx));
++
++	smmu_pmu_disable(pmu);
++}
++
+ static inline void smmu_pmu_counter_set_value(struct smmu_pmu *smmu_pmu,
+ 					      u32 idx, u64 value)
+ {
+@@ -765,7 +796,10 @@ static void smmu_pmu_get_acpi_options(struct smmu_pmu *smmu_pmu)
+ 	switch (model) {
+ 	case IORT_SMMU_V3_PMCG_HISI_HIP08:
+ 		/* HiSilicon Erratum 162001800 */
+-		smmu_pmu->options |= SMMU_PMCG_EVCNTR_RDONLY;
++		smmu_pmu->options |= SMMU_PMCG_EVCNTR_RDONLY | SMMU_PMCG_HARDEN_DISABLE;
++		break;
++	case IORT_SMMU_V3_PMCG_HISI_HIP09:
++		smmu_pmu->options |= SMMU_PMCG_HARDEN_DISABLE;
+ 		break;
+ 	}
+ 
+@@ -890,6 +924,16 @@ static int smmu_pmu_probe(struct platform_device *pdev)
+ 	if (!dev->of_node)
+ 		smmu_pmu_get_acpi_options(smmu_pmu);
+ 
++	/*
++	 * For platforms suffer this quirk, the PMU disable sometimes fails to
++	 * stop the counters. This will leads to inaccurate or error counting.
++	 * Forcibly disable the counters with these quirk handler.
++	 */
++	if (smmu_pmu->options & SMMU_PMCG_HARDEN_DISABLE) {
++		smmu_pmu->pmu.pmu_enable = smmu_pmu_enable_quirk_hip08_09;
++		smmu_pmu->pmu.pmu_disable = smmu_pmu_disable_quirk_hip08_09;
++	}
++
+ 	/* Pick one CPU to be the preferred one to use */
+ 	smmu_pmu->on_cpu = raw_smp_processor_id();
+ 	WARN_ON(irq_set_affinity(smmu_pmu->irq, cpumask_of(smmu_pmu->on_cpu)));
+diff --git a/include/linux/acpi_iort.h b/include/linux/acpi_iort.h
+index ee7cb6aaff71..1cb65592c95d 100644
+--- a/include/linux/acpi_iort.h
++++ b/include/linux/acpi_iort.h
+@@ -21,6 +21,7 @@
+  */
+ #define IORT_SMMU_V3_PMCG_GENERIC        0x00000000 /* Generic SMMUv3 PMCG */
+ #define IORT_SMMU_V3_PMCG_HISI_HIP08     0x00000001 /* HiSilicon HIP08 PMCG */
++#define IORT_SMMU_V3_PMCG_HISI_HIP09     0x00000002 /* HiSilicon HIP09 PMCG */
+ 
+ int iort_register_domain_token(int trans_id, phys_addr_t base,
+ 			       struct fwnode_handle *fw_node);
+-- 
+2.24.0
+
