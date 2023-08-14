@@ -2,87 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F368477B04D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 05:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4613E77AF73
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 04:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233056AbjHNDxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 23:53:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56888 "EHLO
+        id S232345AbjHNCRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 22:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233023AbjHNDxI (ORCPT
+        with ESMTP id S229827AbjHNCRe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 23:53:08 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C8EE0E6D;
-        Sun, 13 Aug 2023 20:53:06 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8Cx2eohpdlkw+UXAA--.44452S3;
-        Mon, 14 Aug 2023 11:53:05 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxriMdpdlkLVBZAA--.48641S5;
-        Mon, 14 Aug 2023 11:53:04 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-Subject: [PATCH v2 3/3] MIPS: Remove noreturn attribute for nmi_exception_handler()
-Date:   Mon, 14 Aug 2023 11:53:01 +0800
-Message-Id: <1691985181-28363-4-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1691985181-28363-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1691985181-28363-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf8CxriMdpdlkLVBZAA--.48641S5
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7XFy3Ar4DKr1xKF1DGF4DAwc_yoWfGFcEgF
-        1Ivw1xWrnYyr1Svr1UCa95WFy3Z3yUWF4Ika1qqrZxKas8G345G3yqvrn8Xrn5XrnYy398
-        Xry5Gr929ay3CosvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
-        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUb3AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_JF0_JFyl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4UJVWxJr1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q
-        6rW5McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
-        vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_
-        Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
-        AY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAI
-        cVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42
-        IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIev
-        Ja73UjIFyTuYvjxU4OzVUUUUU
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sun, 13 Aug 2023 22:17:34 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A2F18E;
+        Sun, 13 Aug 2023 19:17:32 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RPJ2G4ln2z4f3mJl;
+        Mon, 14 Aug 2023 10:17:26 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+        by APP4 (Coremail) with SMTP id gCh0CgD31Ke4jtlk5G6lAg--.6563S2;
+        Mon, 14 Aug 2023 10:17:29 +0800 (CST)
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+To:     brendan.higgins@linux.dev, davidgow@google.com,
+        dlatypov@google.com, skhan@linuxfoundation.org,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Cc:     shikemeng@huaweicloud.com
+Subject: [PATCH] kunit: replace KUNIT_TRIGGER_STATIC_STUB macro with KUNIT_STATIC_STUB_REDIRECT
+Date:   Mon, 14 Aug 2023 18:17:32 +0800
+Message-Id: <20230814101732.3733165-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgD31Ke4jtlk5G6lAg--.6563S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr48uF13Zr4ktw4xurWruFg_yoW8uFyxpa
+        s3CFykur15JFs2kFyxZFW8tr1ak3yxJrWjyr43Ww4fuay8Wr4fJa1DKrWrK3yUW3ykXa98
+        Z3sxtry5Ka1DArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvF14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2ocxC64kIII
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAq
+        YI8I648v4I1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AK
+        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
+        TRNgAwUUUUU
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        MAY_BE_FORGED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Additionally, also remove noreturn attribute for nmi_exception_handler()
-due to it calls die(), otherwise there exists the following build error:
+We mix up KUNIT_TRIGGER_STATIC_STUB and KUNIT_STATIC_STUB_REDIRECT in
+static_stub header. Just correct KUNIT_TRIGGER_STATIC_STUB to
+KUNIT_STATIC_STUB_REDIRECT which is documented.
 
-  arch/mips/kernel/traps.c:2001:1: error: 'noreturn' function does return [-Werror]
+Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+Fixes: e047c5eaa763 ("kunit: Expose 'static stub' API to redirect functions")
+Reviewed-by: David Gow <davidgow@google.com>
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- arch/mips/kernel/traps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v1->v2:
+-Fix typo
+-Add Fixes tag.
+-Collect RVB from David
+---
+ include/kunit/static_stub.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 62d6c4e..4f5140f 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -1986,7 +1986,7 @@ int register_nmi_notifier(struct notifier_block *nb)
- 	return raw_notifier_chain_register(&nmi_chain, nb);
- }
+diff --git a/include/kunit/static_stub.h b/include/kunit/static_stub.h
+index 9b80150a5d62..85315c80b303 100644
+--- a/include/kunit/static_stub.h
++++ b/include/kunit/static_stub.h
+@@ -11,7 +11,7 @@
+ #if !IS_ENABLED(CONFIG_KUNIT)
  
--void __noreturn nmi_exception_handler(struct pt_regs *regs)
-+void nmi_exception_handler(struct pt_regs *regs)
- {
- 	char str[100];
+ /* If CONFIG_KUNIT is not enabled, these stubs quietly disappear. */
+-#define KUNIT_TRIGGER_STATIC_STUB(real_fn_name, args...) do {} while (0)
++#define KUNIT_STATIC_STUB_REDIRECT(real_fn_name, args...) do {} while (0)
  
+ #else
+ 
+@@ -30,7 +30,7 @@
+  * This is a function prologue which is used to allow calls to the current
+  * function to be redirected by a KUnit test. KUnit tests can call
+  * kunit_activate_static_stub() to pass a replacement function in. The
+- * replacement function will be called by KUNIT_TRIGGER_STATIC_STUB(), which
++ * replacement function will be called by KUNIT_STATIC_STUB_REDIRECT(), which
+  * will then return from the function. If the caller is not in a KUnit context,
+  * the function will continue execution as normal.
+  *
+@@ -87,7 +87,7 @@ void __kunit_activate_static_stub(struct kunit *test,
+  * When activated, calls to real_fn_addr from within this test (even if called
+  * indirectly) will instead call replacement_addr. The function pointed to by
+  * real_fn_addr must begin with the static stub prologue in
+- * KUNIT_TRIGGER_STATIC_STUB() for this to work. real_fn_addr and
++ * KUNIT_STATIC_STUB_REDIRECT() for this to work. real_fn_addr and
+  * replacement_addr must have the same type.
+  *
+  * The redirection can be disabled again with kunit_deactivate_static_stub().
 -- 
-2.1.0
+2.30.0
 
