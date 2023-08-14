@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B39EE77B805
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B07377B800
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbjHNL5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 07:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57502 "EHLO
+        id S232575AbjHNL5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 07:57:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233016AbjHNL4q (ORCPT
+        with ESMTP id S233084AbjHNL4s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 07:56:46 -0400
+        Mon, 14 Aug 2023 07:56:48 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032D9199E
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB76B10C6
         for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 04:56:31 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 97A581FD6C;
-        Mon, 14 Aug 2023 11:55:56 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 2C85F1FD6D;
+        Mon, 14 Aug 2023 11:55:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1692014156; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1692014157; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=T8//wcNQwPthyNc3xqkx3W41Gepnl5c0ocQ4zcQs/T8=;
-        b=ahIr5qVAWhmupEIPhvZCvLbNS1cPp6yzet/3ILBxDZHn2B3YGoYaKZw/vLv0tphRXo+9Ug
-        ReOjVwzqK4M2nxgiNbyUXhjBnuV7J82LoI75EIPAtqQbogsyaKjDtnQLNa8Iyj+zPByOyp
-        A9SntWNq3spdFHD3SXMLcUbqG6C01ys=
+        bh=M80nhYEbTLUPVHFHZ8NIXDrCRDCyLc81WWCT4H+aCUM=;
+        b=n/keIcTprY4KkvoJ3uVWQpTOpEQvaSBdXL22kxmUEji2tdCl1mAPEyYgRo6wPeCTNrRaU4
+        Tekj0yl/qoSPUB4l1V/Q9Gcsg20WPqyaPyJ47ixIDH+kPE+yPsUSGLaM+RifdSAmhaWVn8
+        IiRxkCbtVXk8rRnzTZBYW5VcDpp0CDE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1692014156;
+        s=susede2_ed25519; t=1692014157;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=T8//wcNQwPthyNc3xqkx3W41Gepnl5c0ocQ4zcQs/T8=;
-        b=hlDhrNK6jq4VcVo8WYfFGbrjqrouo2V6YOFEOXK7T3/ue7U/kD1HKOtwCtN3HnT222JzH3
-        NJOb4bLLjdIFeeAQ==
+        bh=M80nhYEbTLUPVHFHZ8NIXDrCRDCyLc81WWCT4H+aCUM=;
+        b=2jUpBXfthwSVOC2rcKFokRpdmhyF3+eAvEdGgvFIT1Q7dnmOmH5aFfhxK355ngbaTow8EO
+        4nlLZIfjpNYts1Cw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 773BD138EE;
-        Mon, 14 Aug 2023 11:55:56 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 07C10138EE;
+        Mon, 14 Aug 2023 11:55:57 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 4HkHHEwW2mRnMAAAMHmgww
-        (envelope-from <tiwai@suse.de>); Mon, 14 Aug 2023 11:55:56 +0000
+        id oILSAE0W2mRnMAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Mon, 14 Aug 2023 11:55:57 +0000
 From:   Takashi Iwai <tiwai@suse.de>
 To:     alsa-devel@alsa-project.org
-Cc:     linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 23/25] ALSA: doc: Update description for the new PCM copy ops
-Date:   Mon, 14 Aug 2023 13:55:21 +0200
-Message-Id: <20230814115523.15279-24-tiwai@suse.de>
+Cc:     linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 24/25] ASoC: pcm: Drop obsoleted PCM copy_user ops
+Date:   Mon, 14 Aug 2023 13:55:22 +0200
+Message-Id: <20230814115523.15279-25-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230814115523.15279-1-tiwai@suse.de>
 References: <20230814115523.15279-1-tiwai@suse.de>
@@ -69,136 +70,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the documentation about the PCM copy callbacks.
-The update was kept minimalistic, just correcting the use of copy_user
-ops with the single copy ops, and drop/update the text mentioning the
-copy_kernel.
+Now all ASoC users have been replaced to use the new PCM copy ops,
+let's drop the obsoleted copy_user ops and its helper function.
 
+Cc: Mark Brown <broonie@kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- .../kernel-api/writing-an-alsa-driver.rst     | 58 ++++++-------------
- 1 file changed, 19 insertions(+), 39 deletions(-)
+ include/sound/soc-component.h |  7 -------
+ sound/soc/soc-component.c     | 20 --------------------
+ sound/soc/soc-pcm.c           |  2 --
+ 3 files changed, 29 deletions(-)
 
-diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-index 4335c98b3d82..cd421856409e 100644
---- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-+++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-@@ -2018,8 +2018,8 @@ sleeping poll threads, etc.
+diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
+index 8040f001f2fb..17bea3144551 100644
+--- a/include/sound/soc-component.h
++++ b/include/sound/soc-component.h
+@@ -137,10 +137,6 @@ struct snd_soc_component_driver {
+ 		struct timespec64 *audio_ts,
+ 		struct snd_pcm_audio_tstamp_config *audio_tstamp_config,
+ 		struct snd_pcm_audio_tstamp_report *audio_tstamp_report);
+-	int (*copy_user)(struct snd_soc_component *component,
+-			 struct snd_pcm_substream *substream, int channel,
+-			 unsigned long pos, void __user *buf,
+-			 unsigned long bytes);
+ 	int (*copy)(struct snd_soc_component *component,
+ 		    struct snd_pcm_substream *substream, int channel,
+ 		    unsigned long pos, struct iov_iter *buf,
+@@ -513,9 +509,6 @@ int snd_soc_pcm_component_pointer(struct snd_pcm_substream *substream);
+ int snd_soc_pcm_component_ioctl(struct snd_pcm_substream *substream,
+ 				unsigned int cmd, void *arg);
+ int snd_soc_pcm_component_sync_stop(struct snd_pcm_substream *substream);
+-int snd_soc_pcm_component_copy_user(struct snd_pcm_substream *substream,
+-				    int channel, unsigned long pos,
+-				    void __user *buf, unsigned long bytes);
+ int snd_soc_pcm_component_copy(struct snd_pcm_substream *substream,
+ 			       int channel, unsigned long pos,
+ 			       struct iov_iter *buf, unsigned long bytes);
+diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
+index ccab47f22122..d8fbbfc14dc2 100644
+--- a/sound/soc/soc-component.c
++++ b/sound/soc/soc-component.c
+@@ -1072,26 +1072,6 @@ int snd_soc_pcm_component_copy(struct snd_pcm_substream *substream,
+ 	return -EINVAL;
+ }
  
- This callback is also atomic by default.
- 
--copy_user, copy_kernel and fill_silence ops
--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+copy and fill_silence ops
-+~~~~~~~~~~~~~~~~~~~~~~~~~
- 
- These callbacks are not mandatory, and can be omitted in most cases.
- These callbacks are used when the hardware buffer cannot be in the
-@@ -3444,8 +3444,8 @@ external hardware buffer in interrupts (or in tasklets, preferably).
- 
- The first case works fine if the external hardware buffer is large
- enough. This method doesn't need any extra buffers and thus is more
--efficient. You need to define the ``copy_user`` and ``copy_kernel``
--callbacks for the data transfer, in addition to the ``fill_silence``
-+efficient. You need to define the ``copy`` callback
-+for the data transfer, in addition to the ``fill_silence``
- callback for playback. However, there is a drawback: it cannot be
- mmapped. The examples are GUS's GF1 PCM or emu8000's wavetable PCM.
- 
-@@ -3458,22 +3458,22 @@ Another case is when the chip uses a PCI memory-map region for the
- buffer instead of the host memory. In this case, mmap is available only
- on certain architectures like the Intel one. In non-mmap mode, the data
- cannot be transferred as in the normal way. Thus you need to define the
--``copy_user``, ``copy_kernel`` and ``fill_silence`` callbacks as well,
-+``copy`` and ``fill_silence`` callbacks as well,
- as in the cases above. Examples are found in ``rme32.c`` and
- ``rme96.c``.
- 
--The implementation of the ``copy_user``, ``copy_kernel`` and
-+The implementation of the ``copy`` and
- ``silence`` callbacks depends upon whether the hardware supports
--interleaved or non-interleaved samples. The ``copy_user`` callback is
-+interleaved or non-interleaved samples. The ``copy`` callback is
- defined like below, a bit differently depending on whether the direction
- is playback or capture::
- 
--  static int playback_copy_user(struct snd_pcm_substream *substream,
-+  static int playback_copy(struct snd_pcm_substream *substream,
-                int channel, unsigned long pos,
--               void __user *src, unsigned long count);
--  static int capture_copy_user(struct snd_pcm_substream *substream,
-+               struct iov_iter *src, unsigned long count);
-+  static int capture_copy(struct snd_pcm_substream *substream,
-                int channel, unsigned long pos,
--               void __user *dst, unsigned long count);
-+               struct iov_iter *dst, unsigned long count);
- 
- In the case of interleaved samples, the second argument (``channel``) is
- not used. The third argument (``pos``) specifies the position in bytes.
-@@ -3490,18 +3490,17 @@ of data (``count``) at the specified pointer (``src``) to the specified
- offset (``pos``) in the hardware buffer. When coded like memcpy-like
- way, the copy would look like::
- 
--  my_memcpy_from_user(my_buffer + pos, src, count);
-+  my_memcpy_from_iter(my_buffer + pos, src, count);
- 
- For the capture direction, you copy the given amount of data (``count``)
- at the specified offset (``pos``) in the hardware buffer to the
- specified pointer (``dst``)::
- 
--  my_memcpy_to_user(dst, my_buffer + pos, count);
-+  my_memcpy_to_iter(dst, my_buffer + pos, count);
- 
--Here the functions are named ``from_user`` and ``to_user`` because
--it's the user-space buffer that is passed to these callbacks.  That
--is, the callback is supposed to copy data from/to the user-space
--directly to/from the hardware buffer.
-+The given ``src`` or ``dst`` a struct iov_iter pointer containing the
-+pointer and the size.  Use the existing helpers to copy or access the
-+data as defined in ``linux/uio.h``.
- 
- Careful readers might notice that these callbacks receive the
- arguments in bytes, not in frames like other callbacks.  It's because
-@@ -3519,25 +3518,6 @@ the given user-space buffer, but only for the given channel. For
- details, please check ``isa/gus/gus_pcm.c`` or ``pci/rme9652/rme9652.c``
- as examples.
- 
--The above callbacks are the copies from/to the user-space buffer.  There
--are some cases where we want to copy from/to the kernel-space buffer
--instead.  In such a case, the ``copy_kernel`` callback is called.  It'd
--look like::
+-int snd_soc_pcm_component_copy_user(struct snd_pcm_substream *substream,
+-				    int channel, unsigned long pos,
+-				    void __user *buf, unsigned long bytes)
+-{
+-	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+-	struct snd_soc_component *component;
+-	int i;
 -
--  static int playback_copy_kernel(struct snd_pcm_substream *substream,
--               int channel, unsigned long pos,
--               void *src, unsigned long count);
--  static int capture_copy_kernel(struct snd_pcm_substream *substream,
--               int channel, unsigned long pos,
--               void *dst, unsigned long count);
+-	/* FIXME. it returns 1st copy now */
+-	for_each_rtd_components(rtd, i, component)
+-		if (component->driver->copy_user)
+-			return soc_component_ret(
+-				component,
+-				component->driver->copy_user(
+-					component, substream, channel,
+-					pos, buf, bytes));
 -
--As found easily, the only difference is that the buffer pointer is
--without a ``__user`` prefix; that is, a kernel-buffer pointer is passed
--in the fourth argument.  Correspondingly, the implementation would be
--a version without the user-copy, such as::
+-	return -EINVAL;
+-}
 -
--  my_memcpy(my_buffer + pos, src, count);
--
- Usually for the playback, another callback ``fill_silence`` is
- defined.  It's implemented in a similar way as the copy callbacks
- above::
-@@ -3545,10 +3525,10 @@ above::
-   static int silence(struct snd_pcm_substream *substream, int channel,
-                      unsigned long pos, unsigned long count);
- 
--The meanings of arguments are the same as in the ``copy_user`` and
--``copy_kernel`` callbacks, although there is no buffer pointer
-+The meanings of arguments are the same as in the ``copy`` callback,
-+although there is no buffer pointer
- argument. In the case of interleaved samples, the channel argument has
--no meaning, as for the ``copy_*`` callbacks.
-+no meaning, as for the ``copy`` callback.
- 
- The role of the ``fill_silence`` callback is to set the given amount
- (``count``) of silence data at the specified offset (``pos``) in the
+ struct page *snd_soc_pcm_component_page(struct snd_pcm_substream *substream,
+ 					unsigned long offset)
+ {
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 71403da28d37..ae02d1d80c88 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2975,8 +2975,6 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 			rtd->ops.sync_stop	= snd_soc_pcm_component_sync_stop;
+ 		if (drv->copy)
+ 			rtd->ops.copy		= snd_soc_pcm_component_copy;
+-		else if (drv->copy_user)
+-			rtd->ops.copy_user	= snd_soc_pcm_component_copy_user;
+ 		if (drv->page)
+ 			rtd->ops.page		= snd_soc_pcm_component_page;
+ 		if (drv->mmap)
 -- 
 2.35.3
 
