@@ -2,181 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 776A577C3F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 01:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C54E77C3F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 01:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbjHNX1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 19:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54744 "EHLO
+        id S233496AbjHNXck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 19:32:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233479AbjHNX0u (ORCPT
+        with ESMTP id S233492AbjHNXcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 19:26:50 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A81BE;
-        Mon, 14 Aug 2023 16:26:49 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37EN3FYO029924;
-        Mon, 14 Aug 2023 23:26:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=LbOGZMmhNlVa4ttclSQNtMPwN4Io1A6KXK/1M1+rEYc=;
- b=UR2z69B7Lvy9Vs3FWl2PX62cWJxF93RykR98OH9jfrahT+junQisll8dKd7o3VraRuo7
- ewqCdTw2YfqgwTMk3g0o9J6uGSVE9DFfByQYGuT/p+H/nqAez6gkOYzjP87/j3q0UAmE
- 89EvYiXG1YIQ3mb7G/FRfLY0lLogE8t8VfkkydAzCSoLIi5FU/usLvwj6dUvNMa0fNNE
- EGu43O0X1sGG2oi8kdfs8FCIt9eKlCGTGdJ/6OKS/w+QtiiNR7pdQdjP4UjcVAO3hsLS
- JenqCniFfxgtedyi7a8/Dsj53oyhrVEtyGej2hCfVC4MKvdZ5M/l/HqqTdNdGCxngXiV Eg== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sfwkj0ech-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Aug 2023 23:26:39 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37EMpf77003495;
-        Mon, 14 Aug 2023 23:26:38 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3semds8wr2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Aug 2023 23:26:37 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37ENQaXd46924218
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Aug 2023 23:26:36 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 404272004B;
-        Mon, 14 Aug 2023 23:26:36 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 42C4820040;
-        Mon, 14 Aug 2023 23:26:35 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 14 Aug 2023 23:26:35 +0000 (GMT)
-Received: from [10.61.2.107] (haven.au.ibm.com [9.192.254.114])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id BBBF3602FC;
-        Tue, 15 Aug 2023 09:26:30 +1000 (AEST)
-Message-ID: <ab85e604-b7ba-dbbe-53c2-2454e145d829@linux.ibm.com>
-Date:   Tue, 15 Aug 2023 09:26:10 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/8] Documentation/sphinx: fix Python string escapes
-To:     Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-doc@vger.kernel.org,
-        bpf@vger.kernel.org, linux-pm@vger.kernel.org
-Cc:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
-        jan.kiszka@siemens.com, kbingham@kernel.org, mykolal@fb.com
-References: <20230814060704.79655-1-bgray@linux.ibm.com>
- <20230814060704.79655-3-bgray@linux.ibm.com> <87jztxwxtu.fsf@meer.lwn.net>
-Content-Language: en-US, en-AU
-From:   Benjamin Gray <bgray@linux.ibm.com>
-In-Reply-To: <87jztxwxtu.fsf@meer.lwn.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: fMeSr82h78OcmSFLpK5YKZdGHM_Cfxs6
-X-Proofpoint-ORIG-GUID: fMeSr82h78OcmSFLpK5YKZdGHM_Cfxs6
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 14 Aug 2023 19:32:16 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E4A171B
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 16:32:13 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6873a30d02eso3215135b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 16:32:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692055933; x=1692660733;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cQj/nTjuU53JsbV/ZPiiH3P0xM0mPHFJjukerGJ0WyU=;
+        b=Gpxx7jFnj54y5q+IJpeuy+aEXDgo953bd9rr8xLF/FYGQcZIj6HtqKRLxzsMpzbKqh
+         CQX1tdoncL9IegbC+FQSZ8JXoOC5TvLrb6BwipKvb0AOA70nZpKEm737sLVRuQOqmMjy
+         gnAUye5iHmt0m7hLo2TZxkEMwsa4fpHtX5QfM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692055933; x=1692660733;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cQj/nTjuU53JsbV/ZPiiH3P0xM0mPHFJjukerGJ0WyU=;
+        b=ir02W1cE4G7y8YrxGgfVMVv2eOgq8SA0GoVudHiO32zN0t5vIgdzKPUJa4rmYJXHbV
+         Nv0QxZBQzb1Lt509kB5QwLYLN8AI7xbvwPBXXsXhP5/AMhHm8LPGOotZYBc7lpgHXJrf
+         AFBj8JrjCidYYZYrX1sa+hCopMLphgMWSc1KkOrJlET3mUfoJRimczELHe5ONzGbfybi
+         rkVAPSCzp7pg1Gkh8OumezkWvPSdr0uXVWYiCMLFEEnRZXmtE8Xqnpg3OFk5R6kns6ir
+         kNioT4bnFYFpk/CKHe73hBgOD6NgXxUjMPK7ileiLknrQFLhwOyA+n2G1I8G0qKwrupq
+         010A==
+X-Gm-Message-State: AOJu0Yz5iY995/ilFc7dg1cOzkj7kvC4QM33C1O8vwdfFtUDfY9+/qjt
+        FwCwHXi8kF6ebbgqtO7GBo/my59MAf+TbuzMRto=
+X-Google-Smtp-Source: AGHT+IEUvmrXDs073bSxRYuoTAGVJ6TPSzfLJVK6/w5nceeJap/eQ0HBWhM04vYl0/woelmndAb2Xw==
+X-Received: by 2002:a05:6a20:3d29:b0:140:6979:2952 with SMTP id y41-20020a056a203d2900b0014069792952mr11631037pzi.47.1692055933101;
+        Mon, 14 Aug 2023 16:32:13 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id n24-20020aa78a58000000b0068843400dc5sm983969pfa.100.2023.08.14.16.32.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 16:32:12 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 16:32:11 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] s390/ipl: refactor deprecated strncpy
+Message-ID: <202308141626.3F82919BFD@keescook>
+References: <20230811-arch-s390-kernel-v1-1-7edbeeab3809@google.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-14_18,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- adultscore=0 clxscore=1011 lowpriorityscore=0 malwarescore=0 mlxscore=0
- impostorscore=0 priorityscore=1501 suspectscore=0 bulkscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308140211
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811-arch-s390-kernel-v1-1-7edbeeab3809@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/8/23 11:35 pm, Jonathan Corbet wrote:
-> Benjamin Gray <bgray@linux.ibm.com> writes:
+On Fri, Aug 11, 2023 at 09:56:15PM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
 > 
->> Python 3.6 introduced a DeprecationWarning for invalid escape sequences.
->> This is upgraded to a SyntaxWarning in Python 3.12, and will eventually
->> be a syntax error.
->>
->> Fix these now to get ahead of it before it's an error.
->>
->> Signed-off-by: Benjamin Gray <bgray@linux.ibm.com>
->> ---
->>   Documentation/sphinx/cdomain.py             | 2 +-
->>   Documentation/sphinx/kernel_abi.py          | 2 +-
->>   Documentation/sphinx/kernel_feat.py         | 2 +-
->>   Documentation/sphinx/kerneldoc.py           | 2 +-
->>   Documentation/sphinx/maintainers_include.py | 8 ++++----
->>   5 files changed, 8 insertions(+), 8 deletions(-)
+> Use `strscpy_pad` which has the same behavior as `strncpy` here with the
+> extra safeguard of guaranteeing NUL-termination of destination strings.
+> In it's current form, this may result in silent truncation if the src
+> string has the same size as the destination string.
 > 
-> So I am the maintainer for this stuff...is there a reason you didn't
-> copy me on this work?
-
-Sorry, I thought the list linux-doc@vger.kernel.org itself was enough. I 
-haven't done a cross tree series before, I was a bit adverse to CC'ing 
-everyone that appears as a maintainer for every patch.
-
+> Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+>  arch/s390/kernel/ipl.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->> diff --git a/Documentation/sphinx/cdomain.py b/Documentation/sphinx/cdomain.py
->> index ca8ac9e59ded..dbdc74bd0772 100644
->> --- a/Documentation/sphinx/cdomain.py
->> +++ b/Documentation/sphinx/cdomain.py
->> @@ -93,7 +93,7 @@ def markup_ctype_refs(match):
->>   #
->>   RE_expr = re.compile(r':c:(expr|texpr):`([^\`]+)`')
->>   def markup_c_expr(match):
->> -    return '\ ``' + match.group(2) + '``\ '
->> +    return '\\ ``' + match.group(2) + '``\\ '
-> 
-> I have to wonder about this one; I doubt the intent was to insert a
-> literal backslash.  I have to fire up my ancient build environment to
-> even try this, but even if it's right...
+> diff --git a/arch/s390/kernel/ipl.c b/arch/s390/kernel/ipl.c
+> index 85a00d97a314..a6dcf6f28197 100644
+> --- a/arch/s390/kernel/ipl.c
+> +++ b/arch/s390/kernel/ipl.c
+> @@ -266,7 +266,7 @@ static ssize_t sys_##_prefix##_##_name##_store(struct kobject *kobj,	\
+>  		struct kobj_attribute *attr,				\
+>  		const char *buf, size_t len)				\
+>  {									\
+> -	strncpy(_value, buf, sizeof(_value) - 1);			\
+> +	strscpy_pad(_value, buf, sizeof(_value));			\
 
-Yeah, there is even a file that just has a syntax error. I don't have a 
-way to verify the original script was correct, but I have verified this 
-series doesn't change the parsed AST.
+Padding isn't needed here -- the string are consumed by __cpcmd(), which
+explicitly uses strlen() and a memcpy to pass them off.
 
-In this case though, it's generating reST, so it might just be 
-conservatively guarding against generating bad markup[1]
+>  	strim(_value);							\
 
-[1]: 
-https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#inline-markup 
+This existing code line is buggy, though -- it will not trim leading
+whitespace in the buffer. (It _returns_ a string that has been
+forward-adjusted.)
 
+I think this is an API mistake -- strim() should either do in-place
+changes for both ends or be defined with __much_check so the return
+value doesn't get lost. (But this is a separate issue.)
 
->>   #
->>   # Parse Sphinx 3.x C markups, replacing them by backward-compatible ones
->> diff --git a/Documentation/sphinx/kernel_abi.py b/Documentation/sphinx/kernel_abi.py
->> index b5feb5b1d905..b9f026f016fd 100644
->> --- a/Documentation/sphinx/kernel_abi.py
->> +++ b/Documentation/sphinx/kernel_abi.py
->> @@ -138,7 +138,7 @@ class KernelCmd(Directive):
->>                   code_block += "\n    " + l
->>               lines = code_block + "\n\n"
->>   
->> -        line_regex = re.compile("^\.\. LINENO (\S+)\#([0-9]+)$")
->> +        line_regex = re.compile("^\\.\\. LINENO (\\S+)\\#([0-9]+)$")
-> 
-> All of these really just want to be raw strings - a much more minimal
-> fix that makes the result quite a bit more readable:
-> 
->       line_regex = re.compile(r"^\.\. LINENO (\S+)\#([0-9]+)$")
->                               ^
->                               |
->    ---------------------------+
-> 
-> That, I think, is how these should be fixed.
+-Kees
 
-Yup, I mentioned that at the end of the cover letter. I can automate and 
-verify the conversion, but automating what _should_ be treated as a 
-'regex' string is fuzzier. Checking if there's a `re.*(` prefix on the 
-string should work for most though. I'll give it a shot.
-
-> Thanks,
-> 
-> jon
-
+-- 
+Kees Cook
