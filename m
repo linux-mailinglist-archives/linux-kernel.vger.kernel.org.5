@@ -2,92 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B10277C3B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432BC77C3BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 01:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232307AbjHNW6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 18:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50052 "EHLO
+        id S231389AbjHNXA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 19:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231691AbjHNW5o (ORCPT
+        with ESMTP id S231208AbjHNXAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 18:57:44 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF69127;
-        Mon, 14 Aug 2023 15:57:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692053862;
-        bh=14INDazTUYUFWzV9WtQoTUDyMCvY1+63nIUTqw2FnSw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Nuxq3F+iYB4FxAy48OYBhJnP/k78ytutmpTadkp4xGSFhOPlJSdDhKSbw0ylNpISY
-         0mv51DSIdNcpaLPoI43MpKKCvpGX68pdi9SKGdvJZ8SAdhvfUqrhli/wML2sPrc9dt
-         ZHN1zTuvYOrTHitAUym3p0Hp52hqxuHSH7an0vBwzbg6yuKvpB8AIXUiy9FRVW4Jpz
-         GEU1cOlnaEJlCZG7OoReWVMqOyu3pGe+RTnrBalIiFK+zP8lWLbs0dmIUqZrwqNVmr
-         EOXgtm2R3iyKBmZRwscJghzpCm+bzvkTg+N90ww4kG4jnhfnT0NCHweYy966V4SFh5
-         YUQTQZkKNuvMg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Mon, 14 Aug 2023 19:00:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C76E5F;
+        Mon, 14 Aug 2023 16:00:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RPqYL2Kc2z4wxQ;
-        Tue, 15 Aug 2023 08:57:42 +1000 (AEST)
-Date:   Tue, 15 Aug 2023 08:57:41 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the vfs-brauner tree
-Message-ID: <20230815085741.6d4ccca5@canb.auug.org.au>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E696064775;
+        Mon, 14 Aug 2023 23:00:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04BE6C433C8;
+        Mon, 14 Aug 2023 23:00:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692054011;
+        bh=EGJa219ihsXwvLRWPwGjLPQ3UTuDHjV8KLOtyo3Xz5M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=pyhcsuGhgXNLbgCZ/if9Xu8DF/2u9Ax1DOX6dC4ngl9hHTcVkYVhQf3tOAe0OjwVm
+         PpklY7mWveA1pALcUTFYqOm9z6mKj/PazrqpffyWSJY8AxnhkdBdrdqa4ZbwDxDAry
+         ya8myKXKh0pGTK5B5xwK/MAK/LasV/V1OJdH0ipv3+VNos/vD0C3gxcI7H5TQR8CvZ
+         rR1+fwslOxyyp29K35WAU41hWP57hJBc4b0fy78cwIr4dnBFcDABQCZ4qvSx+QSRNs
+         lJbGEcI3M8WB29JPfGg4Eb2CO5vlmfcZoMRJBXXzcySJzCTkhnOXMwAvnEGXlLDhga
+         w1DyPKBO92mPQ==
+Date:   Mon, 14 Aug 2023 18:00:08 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] PCI: iproc: fix -Wvoid-pointer-to-enum-cast warning
+Message-ID: <20230814230008.GA196797@bhelgaas>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/2v/V+.+Oq5d3ZFqjJFn7xzH";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230814-void-drivers-pci-controller-pcie-iproc-platform-v1-1-81a121607851@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/2v/V+.+Oq5d3ZFqjJFn7xzH
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Aug 14, 2023 at 10:29:22PM +0000, Justin Stitt wrote:
+> When building with clang 18 I see the following warning:
+> |       drivers/pci/controller/pcie-iproc-platform.c:55:15: warning: cast to smaller
+> |                integer type 'enum iproc_pcie_type' from 'const void *' [-Wvoid-pointer-to-enum-cast]
+> |          55 |         pcie->type = (enum iproc_pcie_type) of_device_get_match_data(dev);
+> 
+> This is due to the fact that `of_device_get_match_data` returns a void*
+> while `enum iproc_pcie_type` has the size of an int. This leads to
+> truncation and possible data loss.
+> 
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1910
+> Reported-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Note: There is likely no data loss occurring here since `enum
+> iproc_pcie_type` has only a few fields enumerated from 0. Definitely not
+> enough to cause data loss from pointer-width to int-width.
+> ---
+>  drivers/pci/controller/pcie-iproc-platform.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/pcie-iproc-platform.c b/drivers/pci/controller/pcie-iproc-platform.c
+> index acdc583d2980..83cbc95f4384 100644
+> --- a/drivers/pci/controller/pcie-iproc-platform.c
+> +++ b/drivers/pci/controller/pcie-iproc-platform.c
+> @@ -52,7 +52,7 @@ static int iproc_pltfm_pcie_probe(struct platform_device *pdev)
+>  	pcie = pci_host_bridge_priv(bridge);
+>  
+>  	pcie->dev = dev;
+> -	pcie->type = (enum iproc_pcie_type) of_device_get_match_data(dev);
+> +	pcie->type = (uintptr_t) of_device_get_match_data(dev);
 
-Hi all,
+This seems a little ugly on both ends: we have to cast the enum to
+(int *) in the of_device_id table:
 
-In commit
+  static const struct of_device_id iproc_pcie_of_match_table[] = {
+    {
+      .compatible = "brcm,iproc-pcie",
+      .data = (int *)IPROC_PCIE_PAXB,
+    },
 
-  4b4fb74b1aa1 ("vfs, security: Fix automount superblock LSM init problem, =
-preventing NFS sb sharing")
+and then we have to cast it back to the the enum type here, and we
+can't even use the actual enum type:
 
-Fixes tag
+  pcie->type = (uintptr_t) of_device_get_match_data(dev);
 
-  Fixes: 779df6a5480f ("NFS: Ensure security label is set for root inode)
+I think this would be nicer if we made a struct iproc_pcie_of_data
+along the lines of ks_pcie_of_data and put the enum values in
+instances of that struct.
 
-has these problem(s):
+It's definitely a little more code and space, but it might also help
+us get rid of some of the "switch (pcie->type)" stuff scattered around
+this driver.
 
-  - Subject has leading but no trailing quotes
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/2v/V+.+Oq5d3ZFqjJFn7xzH
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTasWUACgkQAVBC80lX
-0GxcLQgAjJPO0W7U40ph8bCEql4Af0ndafRs0zrje2EFUmm+A0AyHHZruBlmS32f
-tiohvBeDalsGSdKU/lcFJJBKnUvX4V/Rcv+AZDtHwRzPc5K4rU2a2H+TFF5W479u
-hoEZmbzoqqmVZB+KjB0FH7gXWrakmvf4oH8Y5RUnV0KZLqVjvodean4To7WpD5S7
-7c9Z5rOM07KKCP+FeeA/CxrUZu4p8zBjWnSDkHHp9hezy41he/j1S2C0CG8pCztB
-semBB6NWJw+rsTIeiuwtp2b9CUVNWJRMcXDgZu5mSZ9FgYpj2q+90AovK6stI/bm
-nKyrIa/tgl0kXcFcMBp5incLUSbenQ==
-=U+fJ
------END PGP SIGNATURE-----
-
---Sig_/2v/V+.+Oq5d3ZFqjJFn7xzH--
+Bjorn
