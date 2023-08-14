@@ -2,377 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CE177B890
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2385A77B892
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbjHNMXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 08:23:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39220 "EHLO
+        id S229679AbjHNMXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 08:23:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232533AbjHNMWz (ORCPT
+        with ESMTP id S233233AbjHNMXG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 08:22:55 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 66E72133;
-        Mon, 14 Aug 2023 05:22:34 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.201])
-        by gateway (Coremail) with SMTP id _____8BxpPBvHNpksy4YAA--.49830S3;
-        Mon, 14 Aug 2023 20:22:07 +0800 (CST)
-Received: from [10.20.42.201] (unknown [10.20.42.201])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxLCNuHNpksu1ZAA--.5877S3;
-        Mon, 14 Aug 2023 20:22:06 +0800 (CST)
-Subject: Re: [PATCH v15 1/2] thermal: loongson-2: add thermal management
- support
-To:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        loongson-kernel@lists.loongnix.cn,
-        zhanghongchen <zhanghongchen@loongson.cn>, zhuyinbo@loongson.cn
-References: <20230620012944.28877-1-zhuyinbo@loongson.cn>
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-Message-ID: <bb1334bf-42fe-c6a9-c843-87efeb77c101@loongson.cn>
-Date:   Mon, 14 Aug 2023 20:22:06 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 14 Aug 2023 08:23:06 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115DC171F;
+        Mon, 14 Aug 2023 05:22:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=uA0zHN58YLJwUy5SMfVkBOc2cAA70lDak/EGMlEIPis=; b=sqLGHv1SU85tXgMpfwvHI/9nl+
+        uKBTOnLMJSw9PYJiCJ1DDdXo4WsRo7qMm0cTUEZdGo3WHFgu12/2xIOsLMaFBahaSvHa/HawAV9Yf
+        nlvNNkS+oTX4uoSMSa4QK+6qWL1pirzwpsYWoxTd07kw0R/12J9T/J5FIMFyW2HjVkbJx7HWG2khz
+        ygOY+12RlNefDjC7cDTa+jbjsxD63oIXBtLIO/b3hHnpE9yUJjo/43SosR+Ns151+y+SZ5v+2ZGZA
+        ChtZQUVUQXtJdyCjaUfkX9UQBi01f1/669X7g7alUcxf33MFxXxUfubzlaxt461Ml6aG1uol3p/s7
+        bP/VFeDg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41946)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qVWam-0000MW-0o;
+        Mon, 14 Aug 2023 13:22:40 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qVWak-0005xc-88; Mon, 14 Aug 2023 13:22:38 +0100
+Date:   Mon, 14 Aug 2023 13:22:38 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Josua Mayer <josua@solid-run.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH] net: sfp: handle 100G/25G active optical cables in
+ sfp_parse_support
+Message-ID: <ZNocjl4+C5ql0bCC@shell.armlinux.org.uk>
+References: <20230810094817.29262-1-josua@solid-run.com>
+ <ZNS+aqPiaNRJ+SK1@shell.armlinux.org.uk>
+ <62adb14a-103d-4d29-9ecc-96203468e447@solid-run.com>
+ <ZNTShohLvCQR5AlU@shell.armlinux.org.uk>
+ <33a1c7b9-728c-46ac-840e-7aac0a725b7e@solid-run.com>
 MIME-Version: 1.0
-In-Reply-To: <20230620012944.28877-1-zhuyinbo@loongson.cn>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxLCNuHNpksu1ZAA--.5877S3
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-        nUUI43ZEXa7xR_UUUUUUUUU==
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <33a1c7b9-728c-46ac-840e-7aac0a725b7e@solid-run.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Friendly ping ?
-
-
-ÔÚ 2023/6/20 ÉÏÎç9:29, Yinbo Zhu Ð´µÀ:
-> This patch adds the support for Loongson-2 thermal sensor controller,
-> which can support maximum four sensor selectors that corresponding to four
-> sets of thermal control registers and one set of sampling register. The
-> sensor selector can selector a speific thermal sensor as temperature input.
-> The sampling register is used to obtain the temperature in real time, the
-> control register GATE field is used to set the threshold of high or low
-> temperature, when the input temperature is higher than the high temperature
-> threshold or lower than the low temperature threshold, an interrupt will
-> occur.
+On Mon, Aug 14, 2023 at 02:12:22PM +0200, Josua Mayer wrote:
+> Hi Russell,
 > 
-> Signed-off-by: zhanghongchen <zhanghongchen@loongson.cn>
-> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
-> ---
-> Change in v15:
-> 		1. Remove the unused head file.
-> 		2. Remove the invalid conditions that such as (low > high).
-> 		3. Use the clamp() to replace max() and min().
-> 		4. Use the macros to replace some constant.
-> 		5. Use the struct data point as data field of of_device_id.
-> 		6. Use the thermal_sensor_sel to replace the sensor id.
-> 		7. Use the thermal_zone_device_priv to replace tz->devdata.
-> 		8. Reword the commit log information.
-> Change in v14:
-> 		1. Add back depends on COMPILE_TEST.
-> 		2. The implementation of devm_thermal_add_hwmon_sysfs has changed in
-> 		   recent community code that cause compile fail issue and this verison
-> 		   add a dev args in devm_thermal_add_hwmon_sysfs to fix compile issue.
-> Change in v13:
-> 		1. Add a description about that how works the sensor.
-> 		2. Drop the COMPILE_TEST.
-> 		3. Rework the help prograph in LOONGSON2_THERMAL Kconfig.
-> 		4. Drop the 'tzd' 'irq' and 'pdev' element in loongson2_thermal_data.
-> 		5. Drop the reset of variable in loongson2_thermal_set.
-> 		6. Drop the function loongson2_thermal_get_sensor_id.
-> 		7. Drop the function loongson2_thermal_alarm_irq.
-> 		8. Rework the devm_thermal_of_zone_register.
-> 		9. Pass 'tzd' instead of 'data' in devm_request_threaded_irq.
-> 		10. Drop the "data->tzd->tzp->no_hwmon = false".
-> 		11. Drop the loongson2_thermal_remove.
-> 		12. Add the sensor id in the of_device_id data field.
-> 		13. Drop the save and restore function.
-> Change in v12:
-> 		1. Fixup it about min and max.
-> 		2. Use dev_err_probe replace dev_err in devm_request_threaded_irq context.
-> Change in v11:
-> 		1. Add min() and max() to replace related code in function
-> 		   loongson2_thermal_set.
-> 		2. Add dev_err_probe to to replace related code for function
-> 		   return value use devm_thermal_of_zone_register.
-> 		3. Replace thermal_add_hwmon_sysfs with devm_thermal_add_hwmon_sysfs
-> 		   and use dev_warn replace dev_err in this context.
-> Change in v10:
-> 		1. Add all history change log information.
-> Change in v9:
-> 		1. Switch new API that use devm_thermal_of_zone_register
-> 		   to replace previous interfaces.
-> 		2. Add depend on LOONGARCH || COMPILE_TEST.
-> Change in v8:
->                  1. Replace string loongson2/Loongson2/LOONGSON2 with loongson-2/
->                     Loongson-2/LOONGSON-2 in Kconfig and commit log and MAINTAINERS
-> 		   files.
-> Change in v7:
-> 		1. Split the modification of patch 3 and merge it into this patch.
-> 		2. Remove the unless code annotation to fix the compile warning
-> 		   when compile C code with W=1.
-> Change in v6:
-> 		1. NO change, but other patch in this series of patches set has
-> 		   changes.
-> Change in v5:
-> 		1. NO change, but other patch in this series of patches set has
-> 		   changes.
-> Change in v4:
-> 		1. Fixup the compatible.
-> Change in v3:
-> 		1. Add a function to gain sensor id an remove dts id.
-> Change in v2:
-> 		1. Remove error msg printing when addr ioremap has error.
-> 		2. Make loongson2 thermal driver was built-in by default.
-> 		3. Replace ls2k with loongson2.
-> 		4. Remove CONFIG_PM_SLEEP and set pm function type was
-> 		   __maybe_unused.
+> Am 10.08.23 um 14:05 schrieb Russell King (Oracle):
+> > On Thu, Aug 10, 2023 at 01:38:13PM +0200, Josua Mayer wrote:
+> > > Hi Russell,
+> > > 
+> > > Am 10.08.23 um 12:39 schrieb Russell King (Oracle):
+> > > > On Thu, Aug 10, 2023 at 11:48:17AM +0200, Josua Mayer wrote:
+> > > > > Handle extended compliance code 0x1 (SFF8024_ECC_100G_25GAUI_C2M_AOC)
+> > > > > for active optical cables supporting 25G and 100G speeds.
+> > > > Thanks. I think I would like one extra change:
+> > > > 
+> > > > > +	case SFF8024_ECC_100G_25GAUI_C2M_AOC:
+> > > > >    	case SFF8024_ECC_100GBASE_SR4_25GBASE_SR:
+> > > > >    		phylink_set(modes, 100000baseSR4_Full);
+> > > > Since SFPs are single lane, SR4 doesn't make sense (which requires
+> > > > four lanes), and I shouldn't have added it when adding these modes.
+> > > > It would be a good idea to drop that, or at least for the
+> > > > addition of the SFF8024_ECC_100G_25GAUI_C2M_AOC case.
+> > > > 
+> > > Would it be okay changing 100000baseSR4 to 100000baseSR dropping the "4"?
+> > Not for SFF8024_ECC_100GBASE_SR4_25GBASE_SR. SFF-8024 states for this
+> > code:
+> > 
+> >           02h        100GBASE-SR4 or 25GBASE-SR
+> > 
+> > 100GBASE-SR4: IEEE 802.3 Physical Layer specification for 100 Gb/s using
+> > 100GBASE-R encoding over four lanes of multimode fiber, with reach
+> > up to at least 100 m. (See IEEE Std 802.3, Clause 95.)
+> > 
+> > 100GBASE-R encoding: The physical coding sublayer encoding defined in
+> > Clause 82 for 100 Gb/s operation. (See IEEE Std 802.3, Clause 82.)
+> > 
+> > 25GBASE-SR: IEEE 802.3 Physical Layer specification for 25 Gb/s using
+> > 25GBASE-R encoding over multimode fiber. (See IEEE Std 802.3, Clause 112.)
+> > 
+> > IEEE 802.3-2018 doesn't define 100GBASE-SR, so I assume that's a later
+> > development, which would be 100GBASE-R encoding over one lane of fiber.
+> > 
+> > So, 100GBASE-SR and 100GBASE-SR4 are not equivalent, and since
+> > SFF8024_ECC_100GBASE_SR4_25GBASE_SR specifies 100GBASE-SR4, that
+> > being _four_ lanes of fiber, and SFP form-factor modules only being
+> > capable of carrying a single lane, and sfp-bus.c only being for SFP
+> > modules, 100GBASE-SR4 is just not relevant for our purposes in
+> > sfp-bus.c - and it makes no sense to switch to 100GBASE-SR because
+> > that is not what this code tells us.
+> > 
+> > 
+> > For the SFF8024_ECC_100G_25GAUI_C2M_AOC in a SFP28 module, the SFP28
+> > form factor only supports up to 28Gb/s, so that means the module is
+> > definitely 25GBASE-R ethernet. So that also excludes 100G operation.
+> Okay. So probably the simple correct solution is to make a seperate
+> case SFF8024_ECC_100G_25GAUI_C2M_AO that only sets 25gbase-r, and
+> 25000baseSR_Full.
+> > 
+> > So, until we see a module in the SFP form factor (implying a single
+> > lane) that does operate at 100G speeds, I think we should omit it.
+> > 
+> > I'm also wondering whether we should check br_nom/br_max/br_min now,
+> > so that if we have to check that in the future, we don't start causing
+> > regressions. Knowing how module EEPROMs are randomly wrong, it would
+> > be a good idea to start with something sensible and see whether any
+> > fail. Bear in mind that br_nom doesn't always get set to the correct
+> > value - for example, 1G operates at 1250Mbps, and the SFP MSA specifies
+> > that br_nom should be 1300 for 1G ethernet, but some modules use 1200.
+> > I guess start at the correct value and then adjust to allow a range
+> > as we see more modules.
+> I don't fully understand how you would like to use br_nom.
+> I see e.g. in sfp-bus.c at the end of sfp_parse_support a mapping of bitrate
+> to 1000/2500 baseX modes.
+> Are you referring to this section?
 > 
->   MAINTAINERS                         |   7 ++
->   drivers/thermal/Kconfig             |  12 ++
->   drivers/thermal/Makefile            |   1 +
->   drivers/thermal/loongson2_thermal.c | 170 ++++++++++++++++++++++++++++
->   4 files changed, 190 insertions(+)
->   create mode 100644 drivers/thermal/loongson2_thermal.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7a91f14cad2e..f9277fa2a728 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -12198,6 +12198,13 @@ S:	Maintained
->   F:	Documentation/devicetree/bindings/pinctrl/loongson,ls2k-pinctrl.yaml
->   F:	drivers/pinctrl/pinctrl-loongson2.c
->   
-> +LOONGSON-2 SOC SERIES THERMAL DRIVER
-> +M:	zhanghongchen <zhanghongchen@loongson.cn>
-> +M:	Yinbo Zhu <zhuyinbo@loongson.cn>
-> +L:	linux-pm@vger.kernel.org
-> +S:	Maintained
-> +F:	drivers/thermal/loongson2_thermal.c
-> +
->   LOONGSON GPIO DRIVER
->   M:	Yinbo Zhu <zhuyinbo@loongson.cn>
->   L:	linux-gpio@vger.kernel.org
-> diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
-> index 4cd7ab707315..c4de94e972f4 100644
-> --- a/drivers/thermal/Kconfig
-> +++ b/drivers/thermal/Kconfig
-> @@ -502,4 +502,16 @@ config KHADAS_MCU_FAN_THERMAL
->   	  If you say yes here you get support for the FAN controlled
->   	  by the Microcontroller found on the Khadas VIM boards.
->   
-> +config LOONGSON2_THERMAL
-> +	tristate "Loongson-2 SoC series thermal driver"
-> +	depends on LOONGARCH || COMPILE_TEST
-> +	depends on OF
-> +	help
-> +	  Support for Thermal driver found on Loongson-2 SoC series platforms.
-> +	  The thermal driver realizes get_temp and set_trips function, which
-> +	  are used to obtain the temperature of the current node and set the
-> +	  temperature range to trigger the interrupt. When the input temperature
-> +	  is higher than the high temperature threshold or lower than the low
-> +	  temperature threshold, the interrupt will occur.
-> +
->   endif
-> diff --git a/drivers/thermal/Makefile b/drivers/thermal/Makefile
-> index 058664bc3ec0..c934cab309ae 100644
-> --- a/drivers/thermal/Makefile
-> +++ b/drivers/thermal/Makefile
-> @@ -63,3 +63,4 @@ obj-$(CONFIG_UNIPHIER_THERMAL)	+= uniphier_thermal.o
->   obj-$(CONFIG_AMLOGIC_THERMAL)     += amlogic_thermal.o
->   obj-$(CONFIG_SPRD_THERMAL)	+= sprd_thermal.o
->   obj-$(CONFIG_KHADAS_MCU_FAN_THERMAL)	+= khadas_mcu_fan.o
-> +obj-$(CONFIG_LOONGSON2_THERMAL)	+= loongson2_thermal.o
-> diff --git a/drivers/thermal/loongson2_thermal.c b/drivers/thermal/loongson2_thermal.c
-> new file mode 100644
-> index 000000000000..2be8e0f5fea3
-> --- /dev/null
-> +++ b/drivers/thermal/loongson2_thermal.c
-> @@ -0,0 +1,170 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Author: zhanghongchen <zhanghongchen@loongson.cn>
-> + *         Yinbo Zhu <zhuyinbo@loongson.cn>
-> + * Copyright (C) 2022-2023 Loongson Technology Corporation Limited
-> + */
-> +
-> +#include <linux/interrupt.h>
-> +#include <linux/io.h>
-> +#include <linux/minmax.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/thermal.h>
-> +#include <linux/units.h>
-> +#include "thermal_hwmon.h"
-> +
-> +#define LOONGSON2_MAX_SENSOR_SEL_NUM			3
-> +
-> +#define LOONGSON2_THSENS_CTRL_HI_REG			0x0
-> +#define LOONGSON2_THSENS_CTRL_LOW_REG			0x8
-> +#define LOONGSON2_THSENS_STATUS_REG			0x10
-> +#define LOONGSON2_THSENS_OUT_REG			0x14
-> +
-> +#define LOONGSON2_THSENS_INT_LO				BIT(0)
-> +#define LOONGSON2_THSENS_INT_HIGH			BIT(1)
-> +#define LOONGSON2_THSENS_OUT_MASK			0xFF
-> +
-> +struct loongson2_thermal_chip_data {
-> +	unsigned int	thermal_sensor_sel;
-> +};
-> +
-> +struct loongson2_thermal_data {
-> +	void __iomem	*regs;
-> +	const struct loongson2_thermal_chip_data *chip_data;
-> +};
-> +
-> +static int loongson2_thermal_set(struct loongson2_thermal_data *data,
-> +					int low, int high, bool enable)
-> +{
-> +	u64 reg_ctrl = 0;
-> +	int reg_off = data->chip_data->thermal_sensor_sel * 2;
-> +
-> +	low = clamp(-40, low, high);
-> +	high = clamp(125, low, high);
-> +
-> +	low += HECTO;
-> +	high += HECTO;
-> +
-> +	reg_ctrl = low;
-> +	reg_ctrl |= enable ? 0x100 : 0;
-> +	writew(reg_ctrl, data->regs + LOONGSON2_THSENS_CTRL_LOW_REG + reg_off);
-> +
-> +	reg_ctrl = high;
-> +	reg_ctrl |= enable ? 0x100 : 0;
-> +	writew(reg_ctrl, data->regs + LOONGSON2_THSENS_CTRL_HI_REG + reg_off);
-> +
-> +	return 0;
-> +}
-> +
-> +static int loongson2_thermal_get_temp(struct thermal_zone_device *tz, int *temp)
-> +{
-> +	u32 reg_val;
-> +	struct loongson2_thermal_data *data = thermal_zone_device_priv(tz);
-> +
-> +	reg_val = readl(data->regs + LOONGSON2_THSENS_OUT_REG);
-> +	*temp = ((reg_val & LOONGSON2_THSENS_OUT_MASK) - HECTO) * KILO;
-> +
-> +	return 0;
-> +}
-> +
-> +static irqreturn_t loongson2_thermal_irq_thread(int irq, void *dev)
-> +{
-> +	struct thermal_zone_device *tzd = dev;
-> +	struct loongson2_thermal_data *data = thermal_zone_device_priv(tzd);
-> +
-> +	writeb(LOONGSON2_THSENS_INT_LO | LOONGSON2_THSENS_INT_HIGH, data->regs +
-> +		LOONGSON2_THSENS_STATUS_REG);
-> +
-> +	thermal_zone_device_update(tzd, THERMAL_EVENT_UNSPECIFIED);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int loongson2_thermal_set_trips(struct thermal_zone_device *tz, int low, int high)
-> +{
-> +	struct loongson2_thermal_data *data = thermal_zone_device_priv(tz);
-> +
-> +	return loongson2_thermal_set(data, low/MILLI, high/MILLI, true);
-> +}
-> +
-> +static const struct thermal_zone_device_ops loongson2_of_thermal_ops = {
-> +	.get_temp = loongson2_thermal_get_temp,
-> +	.set_trips = loongson2_thermal_set_trips,
-> +};
-> +
-> +static int loongson2_thermal_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct loongson2_thermal_data *data;
-> +	struct thermal_zone_device *tzd;
-> +	int ret, irq, i;
-> +
-> +	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	data->chip_data = device_get_match_data(dev);
-> +
-> +	data->regs = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(data->regs))
-> +		return PTR_ERR(data->regs);
-> +
-> +	irq = platform_get_irq(pdev, 0);
-> +	if (irq < 0)
-> +		return irq;
-> +
-> +	writeb(LOONGSON2_THSENS_INT_LO | LOONGSON2_THSENS_INT_HIGH, data->regs +
-> +		LOONGSON2_THSENS_STATUS_REG);
-> +
-> +	loongson2_thermal_set(data, 0, 0, false);
-> +
-> +	for (i = 0; i <= LOONGSON2_MAX_SENSOR_SEL_NUM; i++) {
-> +		tzd = devm_thermal_of_zone_register(dev, i, data,
-> +			&loongson2_of_thermal_ops);
-> +
-> +		if (!IS_ERR(tzd))
-> +			break;
-> +
-> +		if (PTR_ERR(tzd) != ENODEV)
-> +			continue;
-> +
-> +		return dev_err_probe(dev, PTR_ERR(tzd), "failed to register");
-> +	}
-> +
-> +	ret = devm_request_threaded_irq(dev, irq, NULL, loongson2_thermal_irq_thread,
-> +			IRQF_ONESHOT, "loongson2_thermal", tzd);
-> +	if (ret < 0)
-> +		return dev_err_probe(dev, ret, "failed to request alarm irq\n");
-> +
-> +	if (devm_thermal_add_hwmon_sysfs(dev, tzd))
-> +		dev_warn(dev, "Failed to add hwmon sysfs attributes\n");
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct loongson2_thermal_chip_data loongson2_thermal_ls2k1000_data = {
-> +	.thermal_sensor_sel = 0,
-> +};
-> +
-> +static const struct of_device_id of_loongson2_thermal_match[] = {
-> +	{
-> +		.compatible = "loongson,ls2k1000-thermal",
-> +		.data = &loongson2_thermal_ls2k1000_data,
-> +	},
-> +	{ /* end */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, of_loongson2_thermal_match);
-> +
-> +static struct platform_driver loongson2_thermal_driver = {
-> +	.driver = {
-> +		.name		= "loongson2_thermal",
-> +		.of_match_table = of_loongson2_thermal_match,
-> +	},
-> +	.probe	= loongson2_thermal_probe,
-> +};
-> +module_platform_driver(loongson2_thermal_driver);
-> +
-> +MODULE_DESCRIPTION("Loongson2 thermal driver");
-> +MODULE_LICENSE("GPL");
-> 
+> However there are no baseX modes for 25Gbps in ethtool.h - only SR/KR/CR.
 
+I'm thinking something like:
+
+	case SFF8024_ECC_100G_25GAUI_C2M_AO:
+		if (br_min <= 28000 && br_max >= 25000) {
+			/* 25GBASE-R, possibly with FEC */
+			__set_bit(PHY_INTERFACE_MODE_25GBASER, interfaces);
+			/* Re-use 25000baseSR as there is no 25Gbase- suffix
+			 * for this
+			 */
+			phylink_set(modes, 25000baseSR_Full);
+		}
+		break;
+
+I don't know what the actual numerical values should be though.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
