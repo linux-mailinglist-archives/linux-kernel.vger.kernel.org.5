@@ -2,86 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC0677C125
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE8677C126
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232289AbjHNT6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 15:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45436 "EHLO
+        id S232300AbjHNT7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 15:59:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232298AbjHNT6R (ORCPT
+        with ESMTP id S232358AbjHNT6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 15:58:17 -0400
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201FD10C1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:58:17 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-589ed5132c5so16688817b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:58:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692043096; x=1692647896;
-        h=mime-version:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=KuLUGonkyHypddRCRvc9uIETvmmIAQ5QUWOkyLwj158=;
-        b=ooM7tj8exl1jghot/8pzykPkTnev4uSKv4NR/tIEeNzKmANgx7Be+MHrsT8US0vl6o
-         mNM6JrBnDU9G6XPfIzQgMHJUVPIifFpT/HYyhHGszGn24TQFivwlnM3Ul7fR6JEb/2pf
-         gNLNaOyj1s+I9AdhMNmMUK+Lj6tjmMVyK3VFOo61cXH8EKh04y6vzZZi95a4+w/YoKZp
-         xXRZLUy1IwsnG4G2C17wkYaOsxxt7NOEgXDiry/uFq/SmR9vQ8udxfAaxqYrnaGa1z62
-         YJrMkhiXuoqnlKzBDK2sleZFEpPAkKqjkWVhcUvq/qhHHxvfcQNUwd9qJIu8x7pRr7SA
-         OhdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692043096; x=1692647896;
-        h=mime-version:message-id:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KuLUGonkyHypddRCRvc9uIETvmmIAQ5QUWOkyLwj158=;
-        b=QVU69b2HKXSORY6U8woWOwCW0Mnmn1qUOI7YdThtRMfgaMjTTO3uZH7ILvphgfim9W
-         iMbBld2d3FHvT8BnkDOnPXZE2T7/3dWdq1y5/ROlDli6CfLYFOQmai7ISt3jKlEkL5K4
-         ibhbXhAlFee+ZTX9rFiJ7IVBX2q1QcZ8NMvoGrl9Jvnexg0j3ShL3iJsinJr+21EF1bE
-         1bRnzB4ZRNLXzw66d7Zv/SQD8Qg0EohCVSJDV3ntNvwU+skbgC2gvJB/q51a6qOy2xrl
-         BQCmWKMJCp6ATQ/f1bqkhkdZKJDtXUdhr2HQd7dwvUTU1GE02Gu5dctghm7q8Ncrqlmi
-         pP0Q==
-X-Gm-Message-State: AOJu0YxE37YEAI+gsO1/2e+JKPJMc1gLK5YKYHfCtY5LGANnhslhVZkg
-        uQ0hoegEToiuvzMxB+0ZkatEeQ==
-X-Google-Smtp-Source: AGHT+IHD4aJXt8+KzczkizMYxhIRcfrH5YzRDw+eyq/V7eUoP0Hj6R4frkIWfVwAgNBA4Y3ZpBHMzw==
-X-Received: by 2002:a81:62c6:0:b0:586:cf7:2207 with SMTP id w189-20020a8162c6000000b005860cf72207mr14499410ywb.14.1692043096146;
-        Mon, 14 Aug 2023 12:58:16 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id t10-20020a0dea0a000000b00586b5b6347csm2922292ywe.109.2023.08.14.12.58.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 12:58:15 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 12:58:07 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 0/3] mm,thp: fix sloppy text output
-Message-ID: <dc264fd6-40bb-6510-db36-9340a5f01d94@google.com>
+        Mon, 14 Aug 2023 15:58:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4187B10F2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:58:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8y8Cxp20leez+KCFbDnHIE/08EfhVajhz7Hb7arHBgc=; b=QWU6nQ+KgBU8NhZs9pOpMN58ss
+        LwMsUonJ8kXIozIOuBFgYcg/hOw1vm736P5sp0ttA16CsMcCM7aT93kVVX3BOgVps3iH8iPgdZKxI
+        vwo4SG9bH+yRohnAZ8/qqWJ4zPJfM7jBIUpVCfxgLA+hNXu6FGpPrIZ6zlZSgPqm+m20u4x1PmVE+
+        JZ2qsTU1CcTbNbV5/xtOKkhi1z32rqJ+PW/U5OGufOlKTW9sU65dKwZrCa/lBC/jGozp/3sf4ma/t
+        3w7xuf3VYvU4nNNTOZEwmvAeZqCq+ow2Uw6ekPFmWb+wHuDkp7EEQLZAEo25ia84R6l1IPShYVyDD
+        AjRhCbXg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qVdi8-003vcn-AH; Mon, 14 Aug 2023 19:58:44 +0000
+Date:   Mon, 14 Aug 2023 20:58:44 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>
+Subject: Re: [PATCH RFC v2 0/3] mm: Properly document tail pages for a folio
+Message-ID: <ZNqHdIi8ySqwoswd@casper.infradead.org>
+References: <20230814184411.330496-1-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230814184411.330496-1-peterx@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mm,thp: fix sloppy text output
+On Mon, Aug 14, 2023 at 02:44:08PM -0400, Peter Xu wrote:
 
-Three independent trivial patches, fixing sloppy text output which has
-annoyed me; but might risk surprising a parser, so any can be dropped.
+Look, this is all still too complicated.  And you're trying to make
+something better that I'm trying to make disappear.  I'd really rather
+you spent your time worrying about making userfaultfd use folios
+than faffing with this.
 
-1/3 mm,thp: no space after colon in Mem-Info fields
-2/3 mm,thp: fix nodeN/meminfo output alignment
-3/3 mm,thp: fix smaps THPeligible output alignment
+How about this?
 
- drivers/base/node.c                          | 4 ++--
- fs/proc/task_mmu.c                           | 2 +-
- mm/show_mem.c                                | 6 +++---
- tools/testing/selftests/proc/proc-empty-vm.c | 4 ++--
- 4 files changed, 8 insertions(+), 8 deletions(-)
-
-Hugh
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 5e74ce4a28cd..873285bb5d45 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -334,11 +334,14 @@ struct folio {
+ 	/* public: */
+ 			unsigned char _folio_dtor;
+ 			unsigned char _folio_order;
++			/* two bytes available here */
+ 			atomic_t _entire_mapcount;
+ 			atomic_t _nr_pages_mapped;
+ 			atomic_t _pincount;
++			/* no more space on 32-bt */
+ #ifdef CONFIG_64BIT
+ 			unsigned int _folio_nr_pages;
++			/* twelve bytes available on 64-bit */
+ #endif
+ 	/* private: the union with struct page is transitional */
+ 		};
+@@ -360,6 +363,7 @@ struct folio {
+ 			unsigned long _head_2a;
+ 	/* public: */
+ 			struct list_head _deferred_list;
++			/* three more words available here */
+ 	/* private: the union with struct page is transitional */
+ 		};
+ 		struct page __page_2;
