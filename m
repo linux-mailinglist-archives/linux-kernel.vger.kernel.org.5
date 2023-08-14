@@ -2,170 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD1177C37D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B0C77C37F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 00:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233304AbjHNWbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 18:31:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53322 "EHLO
+        id S233317AbjHNWbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 18:31:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233329AbjHNWbO (ORCPT
+        with ESMTP id S233330AbjHNWbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 18:31:14 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29571715;
-        Mon, 14 Aug 2023 15:31:13 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37ELxkOQ031993;
-        Mon, 14 Aug 2023 22:31:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=aqvogJ3Gg6Ldr/fyhM0dIyPC+xh6v86/zGhN0n8wpiI=;
- b=XC8KnyPgz7+Jc2xX0zs7B0+5qOVicX4w/rfXyn/n01o1WaAu/4Z9xJWjZ78dTBOjCCOo
- oO8GZFaMrnNYzI4TN+M8mCNVchQ5bDw+IYc6FB/XvkBJBByVcbPxfY5oGby6kL45WFZM
- N24/kDYvTymeHengEgF7VVVx2c8kbJxcJghWfVUQkX/0Z7tToDB5duiwXms0Ggu4zVha
- TgBlJEPhjy+RiAju3Jt+NlxmG1yvaSahsDV2fM4nyW+76NhCp2KuB7IGl5JwuG505f8C
- vu8N1hZqAzUL6W5sMW79/nsuvM2KDVxZXv8gLqH4thVGyVHDUOZd9qly8DB4VGWefbAD iA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sffxt9tng-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Aug 2023 22:31:06 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37EMV5CZ007350
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 14 Aug 2023 22:31:05 GMT
-Received: from [10.48.240.144] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 14 Aug
- 2023 15:31:04 -0700
-Message-ID: <bc736eb5-3240-48af-38e1-0728ef43211b@quicinc.com>
-Date:   Mon, 14 Aug 2023 15:31:03 -0700
+        Mon, 14 Aug 2023 18:31:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 513251719;
+        Mon, 14 Aug 2023 15:31:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E2EA56186D;
+        Mon, 14 Aug 2023 22:31:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26D29C433CA;
+        Mon, 14 Aug 2023 22:31:11 +0000 (UTC)
+Date:   Tue, 15 Aug 2023 00:31:09 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     Helge Deller <deller@gmx.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH v2] lockdep: Fix static memory detection even more
+Message-ID: <ZNqrLRaOi/3wPAdp@p100>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] ath5k: fix WARNING opportunity for swap.
-Content-Language: en-US
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-To:     Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>,
-        <jirislaby@kernel.org>, <mickflemm@gmail.com>, <mcgrof@kernel.org>,
-        <kvalo@kernel.org>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <linux-kernel-mentees@lists.linuxfoundation.org>
-References: <20230814200234.637583-1-mahmoudmatook.mm@gmail.com>
- <01fc3da3-dc67-8873-dd59-f77a7d067f33@quicinc.com>
-In-Reply-To: <01fc3da3-dc67-8873-dd59-f77a7d067f33@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: qFxs8487Xz6MPaaFVBu7-5rvpo5ZASbB
-X-Proofpoint-GUID: qFxs8487Xz6MPaaFVBu7-5rvpo5ZASbB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-14_18,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=997 spamscore=0
- malwarescore=0 clxscore=1015 suspectscore=0 adultscore=0 bulkscore=0
- mlxscore=0 priorityscore=1501 impostorscore=0 lowpriorityscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308140206
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/2023 3:28 PM, Jeff Johnson wrote:
-> On 8/14/2023 1:02 PM, Mahmoud Maatuq wrote:
->> coccinielle reported the following:
->> ./drivers/net/wireless/ath/ath5k/phy.c:1573:25-26: WARNING opportunity 
->> for swap()
-> 
-> Suggest you add something like:
-> 
-> This revealed that ath5k_hw_get_median_noise_floor() had open-coded 
-> sort() functionality. Since ath5k_hw_get_median_noise_floor() only 
-> executes once every 10 seconds, any extra overhead due to sort() calling 
-> it's "compare" and "swap" functions can be ignored, so replace the 
+On the parisc architecture, lockdep reports for all static objects which
+are in the __initdata section (e.g. "setup_done" in devtmpfs,
+"kthreadd_done" in init/main.c) this warning:
 
-<blush> and of course that should be its and not it's </blush>
+	INFO: trying to register non-static key.
 
-> existing logic with a call to sort().
-> 
-> and before your SOB add:
-> Suggested-by: Jiri Slaby <jirislaby@kernel.org>
-> 
->> Signed-off-by: Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
->> ---
->> changes in v1:
->> - replace the entire double loop with sort()
->>    as suggested by Jiri Slaby <jirislaby@kernel.org>
->> ---
->>   drivers/net/wireless/ath/ath5k/phy.c | 29 +++++++++++++---------------
->>   1 file changed, 13 insertions(+), 16 deletions(-)
->>
->> diff --git a/drivers/net/wireless/ath/ath5k/phy.c 
->> b/drivers/net/wireless/ath/ath5k/phy.c
->> index 5797ef9c73d7..7ee4e1616f45 100644
->> --- a/drivers/net/wireless/ath/ath5k/phy.c
->> +++ b/drivers/net/wireless/ath/ath5k/phy.c
->> @@ -26,6 +26,7 @@
->>   #include <linux/delay.h>
->>   #include <linux/slab.h>
->> +#include <linux/sort.h>
->>   #include <asm/unaligned.h>
->>   #include "ath5k.h"
->> @@ -1554,6 +1555,11 @@ static void ath5k_hw_update_nfcal_hist(struct 
->> ath5k_hw *ah, s16 noise_floor)
->>       hist->nfval[hist->index] = noise_floor;
->>   }
->> +static int cmps16(const void *a, const void *b)
->> +{
->> +    return *(s16 *)a - *(s16 *)b;
->> +}
->> +
->>   /**
->>    * ath5k_hw_get_median_noise_floor() - Get median NF from history 
->> buffer
->>    * @ah: The &struct ath5k_hw
->> @@ -1561,25 +1567,16 @@ static void ath5k_hw_update_nfcal_hist(struct 
->> ath5k_hw *ah, s16 noise_floor)
->>   static s16
->>   ath5k_hw_get_median_noise_floor(struct ath5k_hw *ah)
->>   {
->> -    s16 sort[ATH5K_NF_CAL_HIST_MAX];
->> -    s16 tmp;
->> -    int i, j;
->> -
->> -    memcpy(sort, ah->ah_nfcal_hist.nfval, sizeof(sort));
->> -    for (i = 0; i < ATH5K_NF_CAL_HIST_MAX - 1; i++) {
->> -        for (j = 1; j < ATH5K_NF_CAL_HIST_MAX - i; j++) {
->> -            if (sort[j] > sort[j - 1]) {
->> -                tmp = sort[j];
->> -                sort[j] = sort[j - 1];
->> -                sort[j - 1] = tmp;
->> -            }
->> -        }
->> -    }
->> +    s16 sorted_nfval[ATH5K_NF_CAL_HIST_MAX];
->> +    int i;
->> +
->> +    memcpy(sorted_nfval, ah->ah_nfcal_hist.nfval, sizeof(sorted_nfval));
->> +    sort(sorted_nfval, ATH5K_NF_CAL_HIST_MAX, sizeof(s16), cmps16, 
->> NULL);
->>       for (i = 0; i < ATH5K_NF_CAL_HIST_MAX; i++) {
->>           ATH5K_DBG(ah, ATH5K_DEBUG_CALIBRATE,
->> -            "cal %d:%d\n", i, sort[i]);
->> +            "cal %d:%d\n", i, sorted_nfval[i]);
->>       }
->> -    return sort[(ATH5K_NF_CAL_HIST_MAX - 1) / 2];
->> +    return sorted_nfval[(ATH5K_NF_CAL_HIST_MAX - 1) / 2];
->>   }
->>   /**
-> 
+The warning itself is wrong, because those objects are in the __initdata
+section, but the section itself is on parisc outside of range from
+_stext to _end, which is why the static_obj() functions returns a wrong
+answer.
 
+While fixing this issue, I noticed that the whole existing check can
+be simplified a lot.
+Instead of checking against the _stext and _end symbols (which include
+code areas too) just check for the .data and .bss segments (since we check a
+data object). This can be done with the existing is_kernel_core_data()
+macro.
+
+In addition objects in the __initdata section can be checked with
+init_section_contains(), and is_kernel_rodata() allows keys to be in the
+_ro_after_init section.
+
+This partly reverts and simplifies commit bac59d18c701 ("x86/setup: Fix static
+memory detection").
+
+Fixes: bac59d18c701 ("x86/setup: Fix static memory detection")
+Signed-off-by: Helge Deller <deller@gmx.de>
+
+---
+v2:
+- check is_kernel_rodata() as well, since keys are allowed in the
+  __ro_after_init section. Reported by kernel test robot.
+
+---
+
+diff --git a/arch/x86/include/asm/sections.h b/arch/x86/include/asm/sections.h
+index a6e8373a5170..3fa87e5e11ab 100644
+--- a/arch/x86/include/asm/sections.h
++++ b/arch/x86/include/asm/sections.h
+@@ -2,8 +2,6 @@
+ #ifndef _ASM_X86_SECTIONS_H
+ #define _ASM_X86_SECTIONS_H
+ 
+-#define arch_is_kernel_initmem_freed arch_is_kernel_initmem_freed
+-
+ #include <asm-generic/sections.h>
+ #include <asm/extable.h>
+ 
+@@ -18,20 +16,4 @@ extern char __end_of_kernel_reserve[];
+ 
+ extern unsigned long _brk_start, _brk_end;
+ 
+-static inline bool arch_is_kernel_initmem_freed(unsigned long addr)
+-{
+-	/*
+-	 * If _brk_start has not been cleared, brk allocation is incomplete,
+-	 * and we can not make assumptions about its use.
+-	 */
+-	if (_brk_start)
+-		return 0;
+-
+-	/*
+-	 * After brk allocation is complete, space between _brk_end and _end
+-	 * is available for allocation.
+-	 */
+-	return addr >= _brk_end && addr < (unsigned long)&_end;
+-}
+-
+ #endif	/* _ASM_X86_SECTIONS_H */
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 111607d91489..e85b5ad3e206 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -819,34 +819,26 @@ static int very_verbose(struct lock_class *class)
+  * Is this the address of a static object:
+  */
+ #ifdef __KERNEL__
+-/*
+- * Check if an address is part of freed initmem. After initmem is freed,
+- * memory can be allocated from it, and such allocations would then have
+- * addresses within the range [_stext, _end].
+- */
+-#ifndef arch_is_kernel_initmem_freed
+-static int arch_is_kernel_initmem_freed(unsigned long addr)
+-{
+-	if (system_state < SYSTEM_FREEING_INITMEM)
+-		return 0;
+-
+-	return init_section_contains((void *)addr, 1);
+-}
+-#endif
+-
+ static int static_obj(const void *obj)
+ {
+-	unsigned long start = (unsigned long) &_stext,
+-		      end   = (unsigned long) &_end,
+-		      addr  = (unsigned long) obj;
++	unsigned long addr = (unsigned long) obj;
+ 
+-	if (arch_is_kernel_initmem_freed(addr))
+-		return 0;
++	if (is_kernel_core_data(addr))
++		return 1;
++
++	/*
++	 * keys are allowed in the __ro_after_init section.
++	 */
++	if (is_kernel_rodata(addr))
++		return 1;
+ 
+ 	/*
+-	 * static variable?
++	 * in initdata section and used during bootup only?
++	 * NOTE: On some platforms the initdata section is
++	 * outside of the _stext ... _end range.
+ 	 */
+-	if ((addr >= start) && (addr < end))
++	if (system_state < SYSTEM_FREEING_INITMEM &&
++		init_section_contains((void *)addr, 1))
+ 		return 1;
+ 
+ 	/*
