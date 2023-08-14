@@ -2,56 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2A077AF5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 04:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC3A77AF61
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 04:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232366AbjHNCCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 22:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33324 "EHLO
+        id S232431AbjHNCCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 22:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232382AbjHNCBg (ORCPT
+        with ESMTP id S232582AbjHNCBl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 22:01:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3A0171F;
-        Sun, 13 Aug 2023 19:01:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 97022629FC;
-        Mon, 14 Aug 2023 02:01:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32C48C433C7;
-        Mon, 14 Aug 2023 02:01:15 +0000 (UTC)
-From:   Huacai Chen <chenhuacai@loongson.cn>
-To:     "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        chenhuacai@kernel.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@loongson.cn>,
-        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
-Subject: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
-Date:   Mon, 14 Aug 2023 10:00:45 +0800
-Message-Id: <20230814020045.51950-2-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20230814020045.51950-1-chenhuacai@loongson.cn>
-References: <20230814020045.51950-1-chenhuacai@loongson.cn>
+        Sun, 13 Aug 2023 22:01:41 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FC810D1;
+        Sun, 13 Aug 2023 19:01:27 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RPHgh6fkCz4f3kFt;
+        Mon, 14 Aug 2023 10:01:20 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgAH5Kbyitlkc4GkAg--.41869S3;
+        Mon, 14 Aug 2023 10:01:23 +0800 (CST)
+Subject: Re: [PATCH 1/1] blk-throttle: fix throttle configuring not effective
+To:     Yu Kuai <yukuai1@huaweicloud.com>,
+        zhuxiaohui <zhuxiaohui400@gmail.com>, tj@kernel.org,
+        josef@toxicpanda.com, axboe@kernel.dk,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, zhuxiaohui <zhuxiaohui.400@bytedance.com>,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20230812072116.42321-1-zhuxiaohui.400@bytedance.com>
+ <5ba76f5e-9b02-13c8-c2a3-b15fe016261d@huaweicloud.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <d69f850a-ecfc-61dc-a970-64f57fff806f@huaweicloud.com>
+Date:   Mon, 14 Aug 2023 10:01:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <5ba76f5e-9b02-13c8-c2a3-b15fe016261d@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+X-CM-TRANSID: gCh0CgAH5Kbyitlkc4GkAg--.41869S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxXrWfJry3try7Gry8Jw1DJrb_yoWrJF1rpF
+        y8trs8GrWYqFn3G3W3J3W5Ja45Xw48J348JrWIqFy5AF17Cr90gryUXrnY9348Ars7GF48
+        tw1jqr9rZF47urDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+        sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,120 +68,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The KGDB initial breakpoint gets an rcu stall warning after commit
-a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detection in
-rcu_cpu_stall_reset()").
++CC Michal.
 
-[   53.452051] rcu: INFO: rcu_preempt self-detected stall on CPU
-[   53.487950] rcu:     3-...0: (1 ticks this GP) idle=0e2c/1/0x4000000000000000 softirq=375/375 fqs=8
-[   53.528243] rcu:     (t=12297 jiffies g=-995 q=1 ncpus=4)
-[   53.564840] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc2+ #4848
-[   53.603005] Hardware name: Loongson Loongson-3A5000-HV-7A2000-1w-V0.1-CRB/Loongson-LS3A5000-7A2000-1w-CRB-V1.21, BIOS Loongson-UDK2018-V2.0.05099-beta8 08
-[   53.682062] pc 9000000000332100 ra 90000000003320f4 tp 90000001000a0000 sp 90000001000a3710
-[   53.724934] a0 9000000001d4b488 a1 0000000000000000 a2 0000000000000001 a3 0000000000000000
-[   53.768179] a4 9000000001d526c8 a5 90000001000a38f0 a6 000000000000002c a7 0000000000000000
-[   53.810751] t0 00000000000002b0 t1 0000000000000004 t2 900000000131c9c0 t3 fffffffffffffffa
-[   53.853249] t4 0000000000000080 t5 90000001002ac190 t6 0000000000000004 t7 9000000001912d58
-[   53.895684] t8 0000000000000000 u0 90000000013141a0 s9 0000000000000028 s0 9000000001d512f0
-[   53.937633] s1 9000000001d51278 s2 90000001000a3798 s3 90000000019fc410 s4 9000000001d4b488
-[   53.979486] s5 9000000001d512f0 s6 90000000013141a0 s7 0000000000000078 s8 9000000001d4b450
-[   54.021175]    ra: 90000000003320f4 kgdb_cpu_enter+0x534/0x640
-[   54.060150]   ERA: 9000000000332100 kgdb_cpu_enter+0x540/0x640
-[   54.098347]  CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=CC DACM=CC -WE)
-[   54.136621]  PRMD: 0000000c (PPLV0 +PIE +PWE)
-[   54.172192]  EUEN: 00000000 (-FPE -SXE -ASXE -BTE)
-[   54.207838]  ECFG: 00071c1c (LIE=2-4,10-12 VS=7)
-[   54.242503] ESTAT: 00000800 [INT] (IS=11 ECode=0 EsubCode=0)
-[   54.277996]  PRID: 0014c011 (Loongson-64bit, Loongson-3A5000-HV)
-[   54.313544] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc2+ #4848
-[   54.430170] Stack : 0072617764726148 0000000000000000 9000000000223504 90000001000a0000
-[   54.472308]         9000000100073a90 9000000100073a98 0000000000000000 9000000100073bd8
-[   54.514413]         9000000100073bd0 9000000100073bd0 9000000100073a00 0000000000000001
-[   54.556018]         0000000000000001 9000000100073a98 99828271f24e961a 90000001002810c0
-[   54.596924]         0000000000000001 0000000000010003 0000000000000000 0000000000000001
-[   54.637115]         ffff8000337cdb80 0000000000000001 0000000006360000 900000000131c9c0
-[   54.677049]         0000000000000000 0000000000000000 90000000017b4c98 9000000001912000
-[   54.716394]         9000000001912f68 9000000001913000 9000000001912f70 00000000000002b0
-[   54.754880]         90000000014a8840 0000000000000000 900000000022351c 0000000000000000
-[   54.792372]         00000000000002b0 000000000000000c 0000000000000000 0000000000071c1c
-[   54.829302]         ...
-[   54.859163] Call Trace:
-[   54.859165] [<900000000022351c>] show_stack+0x5c/0x180
-[   54.918298] [<90000000012f6100>] dump_stack_lvl+0x60/0x88
-[   54.949251] [<90000000012dd5d8>] rcu_dump_cpu_stacks+0xf0/0x148
-[   54.981116] [<90000000002d2fb8>] rcu_sched_clock_irq+0xb78/0xe60
-[   55.012744] [<90000000002e47cc>] update_process_times+0x6c/0xc0
-[   55.044169] [<90000000002f65d4>] tick_sched_timer+0x54/0x100
-[   55.075488] [<90000000002e5174>] __hrtimer_run_queues+0x154/0x240
-[   55.107347] [<90000000002e6288>] hrtimer_interrupt+0x108/0x2a0
-[   55.139112] [<9000000000226418>] constant_timer_interrupt+0x38/0x60
-[   55.170749] [<90000000002b3010>] __handle_irq_event_percpu+0x50/0x160
-[   55.203141] [<90000000002b3138>] handle_irq_event_percpu+0x18/0x80
-[   55.235064] [<90000000002b9d54>] handle_percpu_irq+0x54/0xa0
-[   55.266241] [<90000000002b2168>] generic_handle_domain_irq+0x28/0x40
-[   55.298466] [<9000000000aba95c>] handle_cpu_irq+0x5c/0xa0
-[   55.329749] [<90000000012f7270>] handle_loongarch_irq+0x30/0x60
-[   55.361476] [<90000000012f733c>] do_vint+0x9c/0x100
-[   55.391737] [<9000000000332100>] kgdb_cpu_enter+0x540/0x640
-[   55.422440] [<9000000000332b64>] kgdb_handle_exception+0x104/0x180
-[   55.452911] [<9000000000232478>] kgdb_loongarch_notify+0x38/0xa0
-[   55.481964] [<900000000026b4d4>] notify_die+0x94/0x100
-[   55.509184] [<90000000012f685c>] do_bp+0x21c/0x340
-[   55.562475] [<90000000003315b8>] kgdb_compiled_break+0x0/0x28
-[   55.590319] [<9000000000332e80>] kgdb_register_io_module+0x160/0x1c0
-[   55.618901] [<9000000000c0f514>] configure_kgdboc+0x154/0x1c0
-[   55.647034] [<9000000000c0f5e0>] kgdboc_probe+0x60/0x80
-[   55.674647] [<9000000000c96da8>] platform_probe+0x68/0x100
-[   55.702613] [<9000000000c938e0>] really_probe+0xc0/0x340
-[   55.730528] [<9000000000c93be4>] __driver_probe_device+0x84/0x140
-[   55.759615] [<9000000000c93cdc>] driver_probe_device+0x3c/0x120
-[   55.787990] [<9000000000c93e8c>] __device_attach_driver+0xcc/0x160
-[   55.817145] [<9000000000c91290>] bus_for_each_drv+0x90/0x100
-[   55.845654] [<9000000000c94328>] __device_attach+0xa8/0x1a0
-[   55.874145] [<9000000000c925f0>] bus_probe_device+0xb0/0xe0
-[   55.902572] [<9000000000c8ec7c>] device_add+0x65c/0x860
-[   55.930635] [<9000000000c96704>] platform_device_add+0x124/0x2c0
-[   55.959669] [<9000000001452b38>] init_kgdboc+0x58/0xa0
-[   55.987677] [<900000000022015c>] do_one_initcall+0x7c/0x1e0
-[   56.016134] [<9000000001420f1c>] kernel_init_freeable+0x22c/0x2a0
-[   56.045128] [<90000000012f923c>] kernel_init+0x20/0x124
+在 2023/08/12 15:53, Yu Kuai 写道:
+> Hi,
+> 
+> 在 2023/08/12 15:21, zhuxiaohui 写道:
+>> when updating block throttle limit with persistence and stable io
+>> pressure, especially a relative high io pressure, fio test e.g.,
+>> there may never be a change to start a new slice, and carryover_ios &
+>> carryover_bytes will not be cleared.
+>>
+>> As a result, when reconfiguring block throttle limit, we can notice that
+>> the actual iops and throughput is a random value far away from what is
+>> set
+>>
+>> So we need to update carryover value when dispatching bio
+> 
+> I don't understand, not clear carryover_bytes/ios is what expected, and
+> how can they affect actual bandwith/iops.
+> 
+> Can you give a example how you tested and why current calculation is not
+> correct?
 
-Currently rcu_cpu_stall_reset() set rcu_state.jiffies_stall to one check
-period later, i.e. jiffies + rcu_jiffies_till_stall_check(). But jiffies
-is only updated in the timer interrupt, so when kgdb_cpu_enter() begins
-to run there may already be nearly one rcu check period after jiffies.
-Since all interrupts are disabled during kgdb_cpu_enter(), jiffies will
-not be updated. When kgdb_cpu_enter() returns, rcu_state.jiffies_stall
-maybe already gets timeout.
+I can reporduce this, but this patch is obviously wrong. You must
+explaim how the calculation is not correct.
 
-We can set rcu_state.jiffies_stall to two rcu check periods later, e.g.
-jiffies + (rcu_jiffies_till_stall_check() * 2) in rcu_cpu_stall_reset()
-to avoid this problem. But this isn't a complete solution because kgdb
-may take a very long time in irq disabled context.
+After a quick loock, I found that carryover_bytes/ios is not updated in
+throtl_trim_slice(), while tg->io/bytes_disp[] can be cleared. This is
+definitly a problem.
 
-Instead, update jiffies at the beginning of rcu_cpu_stall_reset() can
-solve all kinds of problems.
+Thanks,
+Kuai
 
-Cc: stable@vger.kernel.org
-Fixes: a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detection in rcu_cpu_stall_reset()")
-Reported-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
----
- kernel/rcu/tree_stall.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index b10b8349bb2a..1c7b540985bf 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -153,6 +153,7 @@ static void panic_on_rcu_stall(void)
-  */
- void rcu_cpu_stall_reset(void)
- {
-+	do_update_jiffies_64(ktime_get());
- 	WRITE_ONCE(rcu_state.jiffies_stall,
- 		   jiffies + rcu_jiffies_till_stall_check());
- }
--- 
-2.39.3
+> 
+> Thanks,
+> Kuai
+> 
+>>
+>> Signed-off-by: zhuxiaohui <zhuxiaohui.400@bytedance.com>
+>> ---
+>>   block/blk-throttle.c | 26 ++++++++++++++++++++++++++
+>>   block/blk-throttle.h |  4 ++--
+>>   2 files changed, 28 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+>> index 7397ff199d66..13c9d87a7201 100644
+>> --- a/block/blk-throttle.c
+>> +++ b/block/blk-throttle.c
+>> @@ -821,6 +821,30 @@ static void tg_update_carryover(struct throtl_grp 
+>> *tg)
+>>              tg->carryover_ios[READ], tg->carryover_ios[WRITE]);
+>>   }
+>> +static void tg_charge_carryover(struct throtl_grp *tg, struct bio *bio)
+>> +{
+>> +    bool rw = bio_data_dir(bio);
+>> +
+>> +    if (unlikely(tg->carryover_bytes[rw])) {
+>> +        unsigned int bio_size = throtl_bio_data_size(bio);
+>> +        unsigned int carryout_size = abs(tg->carryover_bytes[rw]);
+>> +
+>> +        carryout_size = min(carryout_size, bio_size);
+>> +
+>> +        if (tg->carryover_bytes[rw] < 0)
+>> +            tg->carryover_bytes[rw] += carryout_size;
+>> +        else
+>> +            tg->carryover_bytes[rw] -= carryout_size;
+>> +    }
+>> +
+>> +    if (unlikely(tg->carryover_ios[rw])) {
+>> +        if (tg->carryover_ios[rw] < 0)
+>> +            tg->carryover_ios[rw] += 1;
+>> +        else
+>> +            tg->carryover_ios[rw] -= 1;
+>> +    }
+>> +}
+>> +
+>>   static unsigned long tg_within_iops_limit(struct throtl_grp *tg, 
+>> struct bio *bio,
+>>                    u32 iops_limit)
+>>   {
+>> @@ -965,6 +989,8 @@ static void throtl_charge_bio(struct throtl_grp 
+>> *tg, struct bio *bio)
+>>       tg->io_disp[rw]++;
+>>       tg->last_io_disp[rw]++;
+>> +
+>> +    tg_charge_carryover(tg, bio);
+>>   }
+>>   /**
+>> diff --git a/block/blk-throttle.h b/block/blk-throttle.h
+>> index d1ccbfe9f797..8f1642becb23 100644
+>> --- a/block/blk-throttle.h
+>> +++ b/block/blk-throttle.h
+>> @@ -127,8 +127,8 @@ struct throtl_grp {
+>>        * bytes/ios are waited already in previous configuration, and 
+>> they will
+>>        * be used to calculate wait time under new configuration.
+>>        */
+>> -    uint64_t carryover_bytes[2];
+>> -    unsigned int carryover_ios[2];
+>> +    int64_t carryover_bytes[2];
+>> +    int carryover_ios[2];
+>>       unsigned long last_check_time;
+>>
+> 
+> .
+> 
 
