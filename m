@@ -2,122 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4890A77B620
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D6E77B627
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235976AbjHNKLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 06:11:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54218 "EHLO
+        id S235856AbjHNKLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 06:11:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236196AbjHNKKi (ORCPT
+        with ESMTP id S236341AbjHNKLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 06:10:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23850171D
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:10:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AA6CF648EA
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 10:10:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACC1EC433C8;
-        Mon, 14 Aug 2023 10:10:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692007829;
-        bh=KwEYWO1MLwfGzs8d9axTJTvThPuNr1FoAll8e/c5bs8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rEvUnJQPmABiDutqgr8m+OXFoOgC0DhNrvPLd7YomjZcp4lnxy4MITsRKzGRN2oq5
-         TmeYBaI0M7NAn47UxTKIq6Xb/SpULm9/2tyAPJtCME2t+sjFTGZ+nxBGRu5HkrgXOL
-         xSEN9pzffJheMZldCQuIFqRvSK8/GUA+M0pkGrXcWnaB8y9+KlYgDHAaXm5oTrdrLc
-         ZspwTOE3FH7i0Fk/YLhAnI4kFDBrUuTUNPIeHkU2xDZ8usPbiBKuel2AY7OoLh3bbT
-         TjScp4/AOggVZjLykJvzzUMfi/goVWMPCnT+nbzzx+C+gXG6wqHGtWu2vLpIBtIZ9Q
-         rfpgkmCPmjoTQ==
-Date:   Mon, 14 Aug 2023 13:10:25 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dong Chenchen <dongchenchen2@huawei.com>
-Cc:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, fw@strlen.de, timo.teras@iki.fi,
-        yuehaibing@huawei.com, weiyongjun1@huawei.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: xfrm: skip policies marked as dead while
- reinserting policies
-Message-ID: <20230814101025.GD3921@unreal>
-References: <20230814013352.2771452-1-dongchenchen2@huawei.com>
+        Mon, 14 Aug 2023 06:11:19 -0400
+Received: from mailrelay1-1.pub.mailoutpod2-cph3.one.com (mailrelay1-1.pub.mailoutpod2-cph3.one.com [IPv6:2a02:2350:5:400::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D921984
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:10:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ravnborg.org; s=rsa1;
+        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+         from:date:from;
+        bh=+0d0K8gRdasHBBxBfDYOGaNsANZBdVAsvY0T3Y09Us8=;
+        b=LswpLh2uzMEHOgd2MhTVXwJh4p45iLiHbqEQtxEOy4bHhOj60XRB3ZU+TWKlJ+QR43MFNlcMjNHVz
+         ovHSWetpF6ZkSjdEw5NidQtErrSglJRKA2tS1eIpnIHX1h2oet81XR18F5W2z41uQl+h5evgVK3LbQ
+         QmP2XHEQtqMchlKLSqrbFYQU4hg1onKADGtiX/Uw6Ie5uSbAswuL8FlgfyiA91h5mGSgUNRankY2Cs
+         BszP0m5ALinFW2/K6QhQPl0OmFWJQUKz+UCMFJumwlvAnT3WsxRq1Mcm9jFHEbbchqG9l/F4pUG8U4
+         uUVqfCKbWYiggUB2V8nihz1r2eNuvtw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+        d=ravnborg.org; s=ed1;
+        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+         from:date:from;
+        bh=+0d0K8gRdasHBBxBfDYOGaNsANZBdVAsvY0T3Y09Us8=;
+        b=cm1+80wCQURPqOW72oauiHPiYa75slzrDLc15KT/ufZVuyjQ8haNT5tVRsWWtbPjDTQVMhTZt8PjN
+         EUM/TyqDw==
+X-HalOne-ID: d2b55440-3a8a-11ee-8bb2-c5367ef0e45e
+Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
+        by mailrelay1 (Halon) with ESMTPSA
+        id d2b55440-3a8a-11ee-8bb2-c5367ef0e45e;
+        Mon, 14 Aug 2023 10:10:43 +0000 (UTC)
+Date:   Mon, 14 Aug 2023 12:10:41 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?iso-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@gmail.com>,
+        Francesco Dolcini <francesco@dolcini.it>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Aradhya Bhatia <a-bhatia1@ti.com>
+Subject: Re: [PATCH 11/11] drm/bridge: tc358768: Add
+ DRM_BRIDGE_ATTACH_NO_CONNECTOR support
+Message-ID: <20230814101041.GA277347@ravnborg.org>
+References: <20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com>
+ <20230804-tc358768-v1-11-1afd44b7826b@ideasonboard.com>
+ <e857d383-2287-a985-24c5-fa1fff1da199@gmail.com>
+ <0855d804-3ba3-4f29-32b1-bab3b999e506@ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230814013352.2771452-1-dongchenchen2@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <0855d804-3ba3-4f29-32b1-bab3b999e506@ideasonboard.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 09:33:52AM +0800, Dong Chenchen wrote:
-> BUG: KASAN: slab-use-after-free in xfrm_policy_inexact_list_reinsert+0xb6/0x430
-> Read of size 1 at addr ffff8881051f3bf8 by task ip/668
+Hi Tomi,
+
+> From c13c691bd8826b978325575be9a87f577b83b86b Mon Sep 17 00:00:00 2001
+> From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> Date: Mon, 14 Aug 2023 13:02:23 +0300
+> Subject: [PATCH] drm/bridge: tc358768: fix 'Add DRM_BRIDGE_ATTACH_NO_CONNECTOR
+>  support'
 > 
-> CPU: 2 PID: 668 Comm: ip Not tainted 6.5.0-rc5-00182-g25aa0bebba72-dirty #64
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13 04/01/2014
-> Call Trace:
->  <TASK>
->  dump_stack_lvl+0x72/0xa0
->  print_report+0xd0/0x620
->  kasan_report+0xb6/0xf0
->  xfrm_policy_inexact_list_reinsert+0xb6/0x430
->  xfrm_policy_inexact_insert_node.constprop.0+0x537/0x800
->  xfrm_policy_inexact_alloc_chain+0x23f/0x320
->  xfrm_policy_inexact_insert+0x6b/0x590
->  xfrm_policy_insert+0x3b1/0x480
->  xfrm_add_policy+0x23c/0x3c0
->  xfrm_user_rcv_msg+0x2d0/0x510
->  netlink_rcv_skb+0x10d/0x2d0
->  xfrm_netlink_rcv+0x49/0x60
->  netlink_unicast+0x3fe/0x540
->  netlink_sendmsg+0x528/0x970
->  sock_sendmsg+0x14a/0x160
->  ____sys_sendmsg+0x4fc/0x580
->  ___sys_sendmsg+0xef/0x160
->  __sys_sendmsg+0xf7/0x1b0
->  do_syscall_64+0x3f/0x90
->  entry_SYSCALL_64_after_hwframe+0x73/0xdd
-> 
-> The root cause is:
-> 
-> cpu 0			cpu1
-> xfrm_dump_policy
-> xfrm_policy_walk
-> list_move_tail
-> 			xfrm_add_policy
-> 			... ...
-> 			xfrm_policy_inexact_list_reinsert
-> 			list_for_each_entry_reverse
-> 				if (!policy->bydst_reinsert)
-> 				//read non-existent policy
-> xfrm_dump_policy_done
-> xfrm_policy_walk_done
-> list_del(&walk->walk.all);
-> 
-> If dump_one_policy() returns err (triggered by netlink socket),
-> xfrm_policy_walk() will move walk initialized by socket to list
-> net->xfrm.policy_all. so this socket becomes visible in the global
-> policy list. The head *walk can be traversed when users add policies
-> with different prefixlen and trigger xfrm_policy node merge.
-> 
-> It can be fixed by skip such "policies" with walk.dead set to 1.
-> 
-> Fixes: 9cf545ebd591 ("xfrm: policy: store inexact policies in a tree ordered by destination address")
-> Fixes: 12a169e7d8f4 ("ipsec: Put dumpers on the dump list")
-> Signed-off-by: Dong Chenchen <dongchenchen2@huawei.com>
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 > ---
->  net/xfrm/xfrm_policy.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  drivers/gpu/drm/bridge/tc358768.c | 56 +++++++++++++------------------
+>  1 file changed, 24 insertions(+), 32 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
+> index 82ea4d9a814a..9705ce1bd028 100644
+> --- a/drivers/gpu/drm/bridge/tc358768.c
+> +++ b/drivers/gpu/drm/bridge/tc358768.c
+> @@ -455,8 +455,6 @@ static int tc358768_dsi_host_detach(struct mipi_dsi_host *host,
+>  	struct tc358768_priv *priv = dsi_host_to_tc358768(host);
+>  
+>  	drm_bridge_remove(&priv->bridge);
+> -	if (priv->output.panel)
+> -		drm_panel_bridge_remove(priv->output.next_bridge);
+>  
+>  	return 0;
+>  }
+> @@ -531,49 +529,42 @@ static int tc358768_bridge_attach(struct drm_bridge *bridge,
+>  				  enum drm_bridge_attach_flags flags)
+>  {
+>  	struct tc358768_priv *priv = bridge_to_tc358768(bridge);
+> +	struct drm_bridge *next_bridge;
+> +	struct drm_panel *panel;
+> +	int ret;
+>  
+>  	if (!drm_core_check_feature(bridge->dev, DRIVER_ATOMIC)) {
+>  		dev_err(priv->dev, "needs atomic updates support\n");
+>  		return -ENOTSUPP;
+>  	}
+>  
+> -	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR) {
+> -		struct device_node *node;
+> -
+> -		/* Get the next bridge, connected to port@1. */
+> -		node = of_graph_get_remote_node(priv->dev->of_node, 1, -1);
+> -		if (!node)
+> -			return -ENODEV;
+> -
+> -		priv->output.next_bridge = of_drm_find_bridge(node);
+> -		of_node_put(node);
+> -		if (!priv->output.next_bridge)
+> -			return -EPROBE_DEFER;
+> -	} else {
+> -		struct drm_bridge *bridge;
+> -		struct drm_panel *panel;
+> -		int ret;
+> -
+> -		ret = drm_of_find_panel_or_bridge(priv->dev->of_node, 1, 0,
+> -						  &panel, &bridge);
+> -		if (ret)
+> -			return ret;
+> -
+> -		if (panel) {
+> -			bridge = drm_panel_bridge_add_typed(panel,
+> -				DRM_MODE_CONNECTOR_DSI);
+> -			if (IS_ERR(bridge))
+> -				return PTR_ERR(bridge);
+> -		}
+> +	ret = drm_of_find_panel_or_bridge(priv->dev->of_node, 1, -1, &panel,
+> +					  &next_bridge);
+
+I think the right way is to wrap the panel in a bridge,
+so something like:
+
+	next_bridge = devm_drm_of_get_bridge(dev, priv->dev->of_node, 1, -1)
+
+	if (IS_ERR(next_bridge))
+		return ...
+	priv->output.next_bridge = next_bridge;
+
+
+	Sam
+
+
+> +	if (ret)
+> +		return ret;
+>  
+> -		priv->output.next_bridge = bridge;
+> -		priv->output.panel = panel;
+> +	if (panel) {
+> +		next_bridge = drm_panel_bridge_add_typed(panel,
+> +			DRM_MODE_CONNECTOR_DSI);
+> +		if (IS_ERR(next_bridge))
+> +			return PTR_ERR(next_bridge);
+>  	}
+>  
+> +	priv->output.next_bridge = next_bridge;
+> +	priv->output.panel = panel;
+> +
+>  	return drm_bridge_attach(bridge->encoder, priv->output.next_bridge, bridge,
+>  				 flags);
+>  }
+>  
+> +void tc358768_bridge_detach(struct drm_bridge *bridge)
+> +{
+> +	struct tc358768_priv *priv = bridge_to_tc358768(bridge);
+> +
+> +	if (priv->output.panel)
+> +		drm_panel_bridge_remove(priv->output.next_bridge);
+> +}
+> +
+>  static enum drm_mode_status
+>  tc358768_bridge_mode_valid(struct drm_bridge *bridge,
+>  			   const struct drm_display_info *info,
+> @@ -1156,6 +1147,7 @@ tc358768_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
+>  
+>  static const struct drm_bridge_funcs tc358768_bridge_funcs = {
+>  	.attach = tc358768_bridge_attach,
+> +	.detach = tc358768_bridge_detach,
+>  	.mode_valid = tc358768_bridge_mode_valid,
+>  	.pre_enable = tc358768_bridge_pre_enable,
+>  	.enable = tc358768_bridge_enable,
+> -- 
+> 2.34.1
 > 
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
