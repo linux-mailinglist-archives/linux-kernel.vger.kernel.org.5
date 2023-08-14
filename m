@@ -2,150 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6716777B7E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 750C777B7EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 13:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbjHNLzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 07:55:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
+        id S232570AbjHNL45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 07:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231706AbjHNLz2 (ORCPT
+        with ESMTP id S231753AbjHNL41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 07:55:28 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2089.outbound.protection.outlook.com [40.107.220.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E2A10E4;
-        Mon, 14 Aug 2023 04:55:03 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JpXE4AOfhIdnRNgspf6PVSJ6uOJn7zWdxhERpupJcP/FacRwiWzQLT19GCrWunDP0VT7IVQi6RhcKLC0IgtLkM/w8oSSW6WpVg/8Tk/III56yU7ijPgGknrppcjqkLAO8KMs4f9gOlAqGy5pTiUFU/w6dIPBR8TbsFrE8chS4O01bIbWMxLjNQewb7vtW1TwX2kP4ZVe6I0al157sQ3mPdVMIx0uXrQdAJhMZv5trU2bGUoYioQtLN0i5I0803MHWbEY0xqOK3wnj/jBR2mKgSaFMfZYseUpPbNMPMpNJdIFCybpBmR7AH3VnH4v8JNFbxkQY+53JB0prsWjEta/jg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=F3boo8w0KibJlppLmBuMFMSN1CmvDFt1OPtjilujb3c=;
- b=GDO+Dl6PK0c5H7RLez/hha6wxT4wfGPj0EvirGbF/511dPTdal2LgUJhBLPDbjMZmdVRPVZkUW61wMCxjTfKDlGm8ryLH6cwlwsrIpM/oNht24MxnsijnMe2Zv8lPOY6/E/uRFNDoneofX/nzlIuUEoQYRZ4y4swC7elkd4DUsUdklUwLwUAvEbJSIeRx51oOe0ZXYGXpnJYAmg0jo3+8VaJcu4IlnzhvrePN2clUTc9hTNy7S5NASN7rxbjxy2PirI1vo67go/lAa4U81/u4Gxj83o/mbKWmRAEfOkAmg/DabPpp7ayvbxUpcjG69WqiY0NFD1WqBJMUYqEDJ21YQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F3boo8w0KibJlppLmBuMFMSN1CmvDFt1OPtjilujb3c=;
- b=NBr8RGxzuGYskg4ulsoNNPwVuGK7a3m6aB4PWMCT07mwcps6Djmm52c66kBlbxD7+hsdyEc5oO/IH9syjBcnVabJyB9ND1095cYYlFXCxkxNxKU71svJHpZl+ZxxyxhtJvYkNQoNVoJOmAkXd+/QjCTm7LUtTL8X/3zGgbrsJQKQWppHdGmVOkfKFefK4sMTtL8/2tvqV1xzzxu5Jv76GtppCbPEBYc1w0vI6IY04JB6k0f3MucbCjIJX8bYbgVT8dN8Rek6+WpHWsBw5M1gtykc/ZPJjU+hrrYMqo6WSBBIXxsznkg065Jw8+25+Sc/22UmqXRTOtdS4lQ0td4LMQ==
-Received: from PH8PR07CA0008.namprd07.prod.outlook.com (2603:10b6:510:2cd::16)
- by IA0PR12MB8748.namprd12.prod.outlook.com (2603:10b6:208:482::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Mon, 14 Aug
- 2023 11:53:47 +0000
-Received: from SN1PEPF0002529D.namprd05.prod.outlook.com
- (2603:10b6:510:2cd:cafe::f9) by PH8PR07CA0008.outlook.office365.com
- (2603:10b6:510:2cd::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.33 via Frontend
- Transport; Mon, 14 Aug 2023 11:53:47 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- SN1PEPF0002529D.mail.protection.outlook.com (10.167.242.4) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6699.12 via Frontend Transport; Mon, 14 Aug 2023 11:53:47 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Mon, 14 Aug 2023
- 04:53:35 -0700
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.37; Mon, 14 Aug 2023 04:53:34 -0700
-Received: from orome.fritz.box (10.127.8.12) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Mon, 14 Aug 2023 04:53:31 -0700
-From:   Thierry Reding <treding@nvidia.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <stable@vger.kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-        <rwarsow@gmx.de>, <conor@kernel.org>, <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH 5.4 000/154] 5.4.253-rc1 review
-In-Reply-To: <20230809103636.887175326@linuxfoundation.org>
-References: <20230809103636.887175326@linuxfoundation.org>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 14 Aug 2023 07:56:27 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3222199E;
+        Mon, 14 Aug 2023 04:56:11 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 17ED721995;
+        Mon, 14 Aug 2023 11:55:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692014141; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=XQeGJoZiwS+WxYkVBoqLRdA0cljITB4QdfMyE6lbFFs=;
+        b=kFp/+CRCPGtee7m/HHJG6RlkE9iBkGLiItLiaZXJaSHCOFJVefxmV49Io8esHULi2dSTmx
+        dkZvny408ZbpCYDNUxDK9iduT8PasgOnmWZQrRNzDBf6v/T2EKwgDtULSDfIPCePUN7veC
+        W7/6+AabVtw/UyAbvOPTJ0Q5KJVfFP0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692014141;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=XQeGJoZiwS+WxYkVBoqLRdA0cljITB4QdfMyE6lbFFs=;
+        b=J0FDoDKgkoTfK6W8B1m8B3Sq8+mKHrYih3FmIaCWeumyUMJoNkdmZeZPdu1jqCS3GM1WoU
+        /fQKa10s4LX6IjCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A12A1138EE;
+        Mon, 14 Aug 2023 11:55:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id POobJjwW2mRnMAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Mon, 14 Aug 2023 11:55:40 +0000
+From:   Takashi Iwai <tiwai@suse.de>
+To:     alsa-devel@alsa-project.org
+Cc:     linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrey Utkin <andrey_utkin@fastmail.com>,
+        Anton Sviridenko <anton@corp.bluecherry.net>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Bluecherry Maintainers <maintainers@bluecherrydvr.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Ismael Luceno <ismael@iodev.co.uk>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Mark Brown <broonie@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-media@vger.kernel.org, xen-devel@lists.xenproject.org
+Subject: [PATCH 00/25] ALSA: Generic PCM copy ops using iov_iter
+Date:   Mon, 14 Aug 2023 13:54:58 +0200
+Message-Id: <20230814115523.15279-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Message-ID: <d6234abd-2d6c-472c-bcd1-0c364e574232@drhqmail201.nvidia.com>
-Date:   Mon, 14 Aug 2023 04:53:31 -0700
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002529D:EE_|IA0PR12MB8748:EE_
-X-MS-Office365-Filtering-Correlation-Id: a58719b3-f2d4-4d69-a4a5-08db9cbd1e37
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RF2gw0YHznJOrqf0Y8ryPfoA39Z+EUdwmxy5/IT/hY0l9yRf+QFL8JHGgRs+1os4SVliCw9d1FCxrdUQBAk46XLLC3oHzi48Nj3ZQSzpwtlpcpWjUTJ4y0pNmLKE9XhMOhgkvI3bv1f62PfEDRzqYfq3UjdsrOu4lkONbiW0anXG0HGTxKMMjBY7BshNFizpBgXvQsASBxnvYGwRNlG0/P8oDGsJMkxDWRZVtIAt6QU/W0tMVqPRZLbNjErdOrYf2egrnOXGqO0alwuPaJRgSk6kWcVVymLbUVXVz9f71KxmGWUiEoxwvcAg1qczIIaI7aOZMCosBvXM/6mxuDhQS7kMsG7TT5XTuYOLKBJp9lEEkzwr3WUwwjfxpUruMwDTPTq1/vvYkqdY6ZHnPIbQsPAgGoGgoCkgRp6TjDb+L2RD7i0nTRCp8f3O64S7bZcUt3AzOApuqTmC4NIEV4IOAiWKReTEDZsm3wksgySUJL/P+CnxOw0dsBYeC4q0+1hf6RQmzDTDWGx/ZedvRg/hwfjKAZ0U1N+46q9oNT8lCs+EFb9NkuMPkhlXsDsAsTlRChWC+UGxctMb1f5OlT5ZAY3unh4o7h2aCnScS5aYwFf6jGuv1atPpeC5kJ/455wjlibbcnI3T9mWDnh1V7oVmsM3UQxrrWU9yNMd+f3wKkGhhmgd+g52e/B9fJfkDqLEhoKxQOaUPOkVaK4ZaEHi+nnXi1/5Y4XUE68QHAtUse+x0qROwWE89JQlgxgeEKItP4h+j+ROVgTzHdkKUkZEtxExoO3XdopNovf7/j733M8=
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(136003)(376002)(39860400002)(186006)(1800799006)(451199021)(82310400008)(36840700001)(40470700004)(46966006)(40480700001)(40460700003)(478600001)(966005)(7636003)(356005)(82740400003)(8936002)(8676002)(4326008)(54906003)(70206006)(110136005)(316002)(41300700001)(70586007)(36860700001)(47076005)(336012)(26005)(426003)(86362001)(2906002)(31696002)(5660300002)(7416002)(31686004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 11:53:47.1522
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a58719b3-f2d4-4d69-a4a5-08db9cbd1e37
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002529D.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8748
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 09 Aug 2023 12:40:31 +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.253 release.
-> There are 154 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
-> Responses should be made by Fri, 11 Aug 2023 10:36:10 +0000.
-> Anything received after that time might be too late.
->=20
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.253-r=
-c1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git l=
-inux-5.4.y
-> and the diffstat can be found below.
->=20
-> thanks,
->=20
-> greg k-h
+Hi,
 
-All tests passing for Tegra ...
+this is a revised patch set for cleaning up the PCM copy ops using
+iov_iter to deal with kernel / user-space pointers consistently.
 
-Test results for stable-v5.4:
-    11 builds:	11 pass, 0 fail
-    26 boots:	26 pass, 0 fail
-    59 tests:	59 pass, 0 fail
+The previous patch set was based on sockptr_t:
+  https://lore.kernel.org/r/20230731154718.31048-1-tiwai@suse.de
+But this approach was NAK'ed as iov_iter is a preferred way for
+achieving the purpose:
+  https://lore.kernel.org/r/87edkce118.wl-tiwai@suse.de
 
-Linux version:	5.4.253-rc1-gb4a2489fa8b7
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra20-ventana,
-                tegra210-p2371-2180, tegra210-p3450-0000,
-                tegra30-cardhu-a04
+The patch set starts with the missing export of import_ubuf()
+function, followed by the new copy_ops using iov_iter, extensions of
+some helpers and replacements of the existing code.  It resulted in a
+good amount of code reduction.
 
-Tested-by: Thierry Reding <treding@nvidia.com>
+
+Takashi
+
+===
+
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Andrey Utkin <andrey_utkin@fastmail.com>
+Cc: Anton Sviridenko <anton@corp.bluecherry.net>
+Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc: Banajit Goswami <bgoswami@quicinc.com>
+Cc: Bluecherry Maintainers <maintainers@bluecherrydvr.com>
+Cc: Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc: Ismael Luceno <ismael@iodev.co.uk>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Cc: Olivier Moysan <olivier.moysan@foss.st.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: linux-media@vger.kernel.org
+Cc: xen-devel@lists.xenproject.org
+
+===
+
+Takashi Iwai (25):
+  iov_iter: Export import_ubuf()
+  ALSA: pcm: Add copy ops with iov_iter
+  ALSA: core: Add memory copy helpers between iov_iter and iomem
+  ALSA: dummy: Convert to generic PCM copy ops
+  ALSA: gus: Convert to generic PCM copy ops
+  ALSA: emu8000: Convert to generic PCM copy ops
+  ALSA: es1938: Convert to generic PCM copy ops
+  ALSA: korg1212: Convert to generic PCM copy ops
+  ALSA: nm256: Convert to generic PCM copy ops
+  ALSA: rme32: Convert to generic PCM copy ops
+  ALSA: rme96: Convert to generic PCM copy ops
+  ALSA: hdsp: Convert to generic PCM copy ops
+  ALSA: rme9652: Convert to generic PCM copy ops
+  ALSA: sh: Convert to generic PCM copy ops
+  ALSA: xen: Convert to generic PCM copy ops
+  ALSA: pcmtest: Update comment about PCM copy ops
+  media: solo6x10: Convert to generic PCM copy ops
+  ASoC: component: Add generic PCM copy ops
+  ASoC: mediatek: Convert to generic PCM copy ops
+  ASoC: qcom: Convert to generic PCM copy ops
+  ASoC: dmaengine: Convert to generic PCM copy ops
+  ASoC: dmaengine: Use iov_iter for process callback, too
+  ALSA: doc: Update description for the new PCM copy ops
+  ASoC: pcm: Drop obsoleted PCM copy_user ops
+  ALSA: pcm: Drop obsoleted PCM copy_user and copy_kernel ops
+
+ .../kernel-api/writing-an-alsa-driver.rst     | 58 ++++-------
+ drivers/media/pci/solo6x10/solo6x10-g723.c    | 38 +-------
+ include/sound/dmaengine_pcm.h                 |  2 +-
+ include/sound/pcm.h                           | 13 ++-
+ include/sound/soc-component.h                 | 14 +--
+ lib/iov_iter.c                                |  1 +
+ sound/core/memory.c                           | 56 +++++++++--
+ sound/core/pcm_lib.c                          | 95 ++++++++++---------
+ sound/core/pcm_native.c                       |  2 +-
+ sound/drivers/dummy.c                         | 12 +--
+ sound/drivers/pcmtest.c                       |  2 +-
+ sound/isa/gus/gus_pcm.c                       | 23 +----
+ sound/isa/sb/emu8000_pcm.c                    | 74 ++++-----------
+ sound/pci/es1938.c                            | 30 +-----
+ sound/pci/korg1212/korg1212.c                 | 50 +++-------
+ sound/pci/nm256/nm256.c                       | 42 ++------
+ sound/pci/rme32.c                             | 50 +++-------
+ sound/pci/rme96.c                             | 42 ++------
+ sound/pci/rme9652/hdsp.c                      | 42 ++------
+ sound/pci/rme9652/rme9652.c                   | 46 ++-------
+ sound/sh/sh_dac_audio.c                       | 25 +----
+ sound/soc/atmel/mchp-pdmc.c                   |  2 +-
+ sound/soc/mediatek/common/mtk-btcvsd.c        | 23 ++---
+ sound/soc/qcom/lpass-platform.c               | 13 +--
+ sound/soc/soc-component.c                     | 10 +-
+ sound/soc/soc-generic-dmaengine-pcm.c         | 18 ++--
+ sound/soc/soc-pcm.c                           |  4 +-
+ sound/soc/stm/stm32_sai_sub.c                 |  2 +-
+ sound/xen/xen_snd_front_alsa.c                | 55 ++---------
+ 29 files changed, 263 insertions(+), 581 deletions(-)
+
+-- 
+2.35.3
 
