@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3172777B55C
+	by mail.lfdr.de (Postfix) with ESMTP id CEA8F77B55E
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 11:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235051AbjHNJZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 05:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32934 "EHLO
+        id S235856AbjHNJZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 05:25:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235552AbjHNJYd (ORCPT
+        with ESMTP id S235610AbjHNJYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 05:24:33 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED793130;
-        Mon, 14 Aug 2023 02:24:29 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-52164adea19so5259247a12.1;
-        Mon, 14 Aug 2023 02:24:29 -0700 (PDT)
+        Mon, 14 Aug 2023 05:24:35 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F87E58;
+        Mon, 14 Aug 2023 02:24:31 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5234f46c6f9so5420826a12.3;
+        Mon, 14 Aug 2023 02:24:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692005068; x=1692609868;
+        d=gmail.com; s=20221208; t=1692005070; x=1692609870;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VJ7xEeTsfzsK2Sj+HhPXkqE70FTyJ3LgvM+nfAM6twU=;
-        b=hM0dyvSDLtX0Dq7BE6YJqSGHWh4y2nIGG/aI0ny+nsd6iBYOdcgVr7c5O0pR7knelK
-         TkCjkJr8pshvdPllcTofVguGpjqaqa9/iIomRhV8/sxPcv/BLGk6ePJvtO4nNIsxkB9P
-         WPbrdMFa+FOI1okQQ3kFdq1bZNgbVFmR1b75cwvUEgU0UqmgBAWFBWJeOBeheKAW3s7i
-         zT/eKBnbR02LHc51Pyyj9lT/Z8dRRaChetaXf9tTiD9pRbWPejY1B7l32UkptcdCHxzt
-         VkBp72e6l5dqfhCMkDEHkywdcdbN1EaHzKeabCuQ/35BgMr9EFA5ioIwZCfedLbTXhOq
-         ojyA==
+        bh=GSuMTLIqOK8XQhnIPkVgfTRr/qLwInZFJV8fjiSPOQk=;
+        b=P8n9xTYdBaZF+QFr+rs6LXf9ov7sIEIbEVU9MjF0SHrrA82S6OBV/r0XShUThmgVnk
+         3oX+vZjNt1kny6Y9zHRL7dZjnEdPaiL6I2m7JnwQpPqZFI2gK1OSrdhUwMJzzfWVPtne
+         nmgTzPlAmpi54Y+trMp6POss7jtihXgimbuFP8mIBa1+nr2JhUIenMAi4R8N/N3xp+lg
+         YX8iVea0S3xxRMG5wvtC8VIL53vPzq7CBN5dZgqiMwPRaU5OFEi2Im/GmJkR9EWBbTMl
+         cjVTlY7WA2oahcNvVBYhYCWC2YCT75zk3j7ctXJUqTqrkBNqo9n/C5wgFn5stki1WTsL
+         gD9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692005068; x=1692609868;
+        d=1e100.net; s=20221208; t=1692005070; x=1692609870;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VJ7xEeTsfzsK2Sj+HhPXkqE70FTyJ3LgvM+nfAM6twU=;
-        b=TBV7GWwSMwBIeOHAc9RO3lH1izoPq+kyJmlWX+g0/zlVTvRIQLQrm4nsJxoGsL5eoX
-         ari5m8mAqpTezyWa6tNZKH84qWLpmYENzLzAl9oIBsGtuL85NnfwXatjHjKkrSlPTtcM
-         ds3QwRN7DgLg3qFJlUqUAx9jTWYNVtbq1wzfcXOQi4Als5863G69k1rA8mRMDkxI7y3q
-         fYv3YS2GVeaaNy9b2Rx6SOhfMBFDMKZ8y2WUuT64Ijse9QGfF3yVc+9snTGXZnUtnixz
-         YNjWC/3UJJZH7l/7mkAE2oCuIsBzzLzqq3pDXuHhhOMqlmA5darNIwq5InpSOa0xrmEq
-         3P2w==
-X-Gm-Message-State: AOJu0Yzuu3iNffhVsCkIUwytTHTfqWrfQi8yQMijJdR1vpEGnbrBg6cG
-        ZzWocjefEjHy9YZPXNbXvdU=
-X-Google-Smtp-Source: AGHT+IG5yO5VujQspYhzAWD6vRpCJiumtT77HplkVprI5NxHY9kfOrjm6iRiKmkA34JHMvH3yL9a8A==
-X-Received: by 2002:aa7:c950:0:b0:523:ae0a:a447 with SMTP id h16-20020aa7c950000000b00523ae0aa447mr7016018edt.13.1692005068229;
-        Mon, 14 Aug 2023 02:24:28 -0700 (PDT)
+        bh=GSuMTLIqOK8XQhnIPkVgfTRr/qLwInZFJV8fjiSPOQk=;
+        b=XFXmkYvzpk7uFs0JNeEMUZDaxZP4ap3pWDC2DX6dyTJzS2ffglMMqKxyv4IWcn4mQz
+         aZQ59OVk4QwfU4jmquxwfpG1xtzpDCrk9/3YvJo1J53AA+wpbKwWZEJKg34Xro+3VokO
+         vflhXYDem+QPKvEaZkbgikHStKa6HPs+6IfZUWXiEDloYeAV5PFnJjzDt7IPbtbUZDQH
+         gSNIvdtfyuZb6lfCrZsfPSK1DegdNjA97cFux/4gJl4y/Oe4lHmm0QmN1kkifyCJi/Z+
+         MRfQxoedhTlq3LlcIVfID5OpOjndgSkj/n8dXdSFjBOwVv6QGXSGnyl800qkQZ0p5wvP
+         KqhA==
+X-Gm-Message-State: AOJu0YyvSaMpOk+ICyFMLli5eGYDZMPwyO2fg5RyGQRyJqHtiqTLdbiF
+        1nPHR+JW/OVY8U3hWOdO5ro=
+X-Google-Smtp-Source: AGHT+IEHXloJ852GBi+ZQDurQkUMVO+cgPXpyIvz/6IooYdZ2bddvZZ+ybxZy/BMSNmgSHZZktEh4w==
+X-Received: by 2002:aa7:de0d:0:b0:523:3ff6:dfc2 with SMTP id h13-20020aa7de0d000000b005233ff6dfc2mr6691154edv.29.1692005069615;
+        Mon, 14 Aug 2023 02:24:29 -0700 (PDT)
 Received: from micheledallerive.home ([2a02:1210:6051:ec00:61e9:3767:83a6:9bd9])
-        by smtp.gmail.com with ESMTPSA id b5-20020aa7c6c5000000b005224d960e66sm5314879eds.96.2023.08.14.02.24.27
+        by smtp.gmail.com with ESMTPSA id b5-20020aa7c6c5000000b005224d960e66sm5314879eds.96.2023.08.14.02.24.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 02:24:28 -0700 (PDT)
+        Mon, 14 Aug 2023 02:24:29 -0700 (PDT)
 From:   Michele Dalle Rive <dallerivemichele@gmail.com>
 To:     Miguel Ojeda <ojeda@kernel.org>,
         Alex Gaynor <alex.gaynor@gmail.com>,
@@ -66,9 +66,9 @@ Cc:     Eric Dumazet <edumazet@google.com>,
         rust-for-linux@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, patches@lists.linux.dev,
         Michele Dalle Rive <dallerivemichele@gmail.com>
-Subject: [RFC PATCH 4/7] rust: net: add socket wrapper.
-Date:   Mon, 14 Aug 2023 11:22:59 +0200
-Message-ID: <20230814092302.1903203-5-dallerivemichele@gmail.com>
+Subject: [RFC PATCH 5/7] rust: net: implement socket options API.
+Date:   Mon, 14 Aug 2023 11:23:00 +0200
+Message-ID: <20230814092302.1903203-6-dallerivemichele@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230814092302.1903203-1-dallerivemichele@gmail.com>
 References: <20230814092302.1903203-1-dallerivemichele@gmail.com>
@@ -84,621 +84,1392 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create a `Socket` abstraction, which provides a Rust API to the kernel
-socket functionalities.
+Create socket `Option`s and `set_option` function in the `Socket`
+abstraction.
 
-The Socket structures tries to keep the same function signatures of the
-Rust standard library; at the same time, functions are added or modified
-in order to provide as much as possible of the C kernel functionalities.
+These changes introduce wrappers and functions to handle socket options
+in Rust, with compilation-time advantages compared to the C API:
+- Type safety: A specific option accepts only a value of the correct
+  type.
+- Read/write safety: A read-only option cannot be set.
+- Coherence safety: An option of, for example, IP level cannot be set by
+  specifying another level.
 
-Most of the internals of the C socket is not accessible by Rust, because
-those structures are still to be wrapped. However, sockets are mainly
-managed through the functions provided by the kernel; thus, even if some
-fields are not accessible, since the functions are wrapped, most of the 
-kernel functionality should be available in Rust as well.
+The downside of using options in the kernel is the lack of functions to
+get the value of an option. For this reason, in Rust, kernel options can
+only be set, but not retrieved.
 
-Specifically, the usage of `msghdr` is mostly abstracted away in the
-Rust interface, because using it would mean having to deal, both in the
-kernel and in modules, with Pinned instances (msghdr is self-referencing),
-which would be a struggle that provides no particular advantage.
-A `MessageHeader` object is actually created and returned when a message
-is received, because at that point the structure is not really
-self-referencing, as long as the source address is copied. The wrapper
-is not used when a message is sent.
-Anyways, some useful functionalities of `msghdr`, like `cmsghdr`s, are 
-missing and should be implemented in the future to provide a complete API.
+Everything that can be done by socket options can actually be done
+through helper functions, or by accessing directly the specific fields.
+However, since the Rust-wrapped structures are few, it can be useful to
+have options in order to still be able to modify the behaviour of the
+socket.
+
+As specified in the documentation of `opts.rs`, options could (and
+should) be removed when the Rust API will be developed enough.
 
 Signed-off-by: Michele Dalle Rive <dallerivemichele@gmail.com>
 ---
-Few questions here as well:
-- What about `MessageHeader`? Does it make sense to only have it on a
-  receive? My reasoning was that, AFAIK, when sending a message, the
-  `msghdr` structure is used for the flags and for eventually the
-  destination address. Does it make sense having to handle a pinned
-  object just to avoid having flags and destination address as arguments
-  of the send function? When a message is received, instead, there is no
-  pinning problem (as long as the address is saved), so the message
-  header can be freely returned and handled. As of now, the
-  `MessageHeader` only contains sender address and flags, but in the
-  future more `msghdr` fields could be wrapped.
-- In `has_flag` and `set_flag`, does it make sense to use the
-  bindgen-provided `__BindgenBitfieldUnit`? It is particularly
-  convenient, as it handles the big/little endianness. However, I
-  noticed that it changes between different bindgen version, and keeping
-  the code up to date could take more time than manually handle the
-  endianness.
+Does this even make sense? I have been struggling figuring out whether
+having socket options is reasonable.
+As described in the message, I think that even if it just limited to
+setting options, it could be useful: Rust support is very limited, and
+having some freedom over the socket is better than having none.
 
- rust/kernel/net.rs        |   1 +
- rust/kernel/net/socket.rs | 550 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 551 insertions(+)
- create mode 100644 rust/kernel/net/socket.rs
+Now, does the implementation make sense? If I had to implement options I
+wanted to at least make the most out of Rust, trying to make them
+type-safe and "read/write" safe. The result is effective for sure, but
+the code might end up being a bit ugly. I preferred using a macro to 
+implement the code, because implementing each trait for each option
+would have been a huge amount of repeated code.
 
-diff --git a/rust/kernel/net.rs b/rust/kernel/net.rs
-index 346e7374e614..7d58ebb0324f 100644
---- a/rust/kernel/net.rs
-+++ b/rust/kernel/net.rs
-@@ -12,6 +12,7 @@
- 
- pub mod addr;
- pub mod ip;
-+pub mod socket;
- 
- /// The address family.
- ///
+ rust/kernel/net/socket.rs      |   91 +++
+ rust/kernel/net/socket/opts.rs | 1222 ++++++++++++++++++++++++++++++++
+ 2 files changed, 1313 insertions(+)
+ create mode 100644 rust/kernel/net/socket/opts.rs
+
 diff --git a/rust/kernel/net/socket.rs b/rust/kernel/net/socket.rs
-new file mode 100644
-index 000000000000..8396ce4b83a8
---- /dev/null
+index 8396ce4b83a8..1a7b3f7d8fc0 100644
+--- a/rust/kernel/net/socket.rs
 +++ b/rust/kernel/net/socket.rs
-@@ -0,0 +1,550 @@
+@@ -16,9 +16,14 @@
+ use crate::error::{to_result, Result};
+ use crate::net::addr::*;
+ use crate::net::ip::IpProtocol;
++use crate::net::socket::opts::{OptionsLevel, WritableOption};
++use core::cmp::max;
++use core::marker::PhantomData;
+ use flags::*;
++use kernel::net::socket::opts::SocketOption;
+ 
+ pub mod flags;
++pub mod opts;
+ 
+ /// The socket type.
+ pub enum SockType {
+@@ -470,6 +475,72 @@ pub fn send_to(
+         };
+         self.send_msg(bytes, message, flags)
+     }
++
++    /// Sets an option on the socket.
++    ///
++    /// Wraps the `sock_setsockopt` function.
++    ///
++    /// The generic type `T` is the type of the option value.
++    /// See the [options module](opts) for the type and extra information about each option.
++    ///
++    /// Unfortunately, options can only be set but not retrieved.
++    /// This is because the kernel functions to retrieve options are not exported by the kernel.
++    /// The only exported functions accept user-space pointers, and are therefore not usable in the kernel.
++    ///
++    /// # Example
++    /// ```
++    /// use kernel::net::AddressFamily;
++    /// use kernel::net::ip::IpProtocol;use kernel::net::socket::{Socket, SockType};
++    /// use kernel::net::socket::opts;
++    ///
++    /// let socket = Socket::new(AddressFamily::Inet, SockType::Datagram, IpProtocol::Udp)?;
++    /// socket.set_option::<opts::ip::BindAddressNoPort>(true)?;
++    /// ```
++    pub fn set_option<O>(&self, value: impl Into<O::Type>) -> Result
++    where
++        O: SocketOption + WritableOption,
++    {
++        let value_ptr = SockPtr::new(&value);
++
++        // The minimum size is the size of an integer.
++        let min_size = core::mem::size_of::<core::ffi::c_int>();
++        let size = max(core::mem::size_of::<O::Type>(), min_size);
++
++        if O::level() == OptionsLevel::Socket && !self.has_flag(SocketFlag::CustomSockOpt) {
++            // SAFETY: FFI call;
++            // the address is valid for the lifetime of the wrapper;
++            // the size is at least the size of an integer;
++            // the level and name of the option are valid and coherent.
++            to_result(unsafe {
++                bindings::sock_setsockopt(
++                    self.0,
++                    O::level() as isize as _,
++                    O::value() as _,
++                    value_ptr.to_raw() as _,
++                    size as _,
++                )
++            })
++        } else {
++            // SAFETY: FFI call;
++            // the address is valid for the lifetime of the wrapper;
++            // the size is at least the size of an integer;
++            // the level and name of the option are valid and coherent.
++            to_result(unsafe {
++                (*(*self.0).ops)
++                    .setsockopt
++                    .map(|f| {
++                        f(
++                            self.0,
++                            O::level() as _,
++                            O::value() as _,
++                            value_ptr.to_raw() as _,
++                            size as _,
++                        )
++                    })
++                    .unwrap_or(-(bindings::EOPNOTSUPP as i32))
++            })
++        }
++    }
+ }
+ 
+ impl Drop for Socket {
+@@ -548,3 +619,23 @@ fn from(hdr: MessageHeader) -> Self {
+         hdr.0
+     }
+ }
++
++#[derive(Clone, Copy)]
++#[repr(transparent)]
++struct SockPtr<'a>(bindings::sockptr_t, PhantomData<&'a ()>);
++
++impl<'a> SockPtr<'a> {
++    fn new<T>(value: &'a T) -> Self
++    where
++        T: Sized,
++    {
++        let mut sockptr = bindings::sockptr_t::default();
++        sockptr.__bindgen_anon_1.kernel = value as *const T as _;
++        sockptr._bitfield_1 = bindings::__BindgenBitfieldUnit::new([1; 1usize]); // kernel ptr
++        SockPtr(sockptr, PhantomData)
++    }
++
++    fn to_raw(self) -> bindings::sockptr_t {
++        self.0
++    }
++}
+diff --git a/rust/kernel/net/socket/opts.rs b/rust/kernel/net/socket/opts.rs
+new file mode 100644
+index 000000000000..6ca8ac35b305
+--- /dev/null
++++ b/rust/kernel/net/socket/opts.rs
+@@ -0,0 +1,1222 @@
 +// SPDX-License-Identifier: GPL-2.0
 +
-+//! Socket API.
++//! Socket options.
 +//!
-+//! This module contains the Socket layer kernel APIs that have been wrapped for usage by Rust code
-+//! in the kernel.
++//! This module contains the types related to socket options.
++//! It is meant to be used together with the [`Socket`](kernel::net::socket::Socket) type.
 +//!
-+//! C header: [`include/linux/socket.h`](../../../../include/linux/socket.h)
++//! Socket options have more sense in the user space than in the kernel space: the kernel can
++//! directly access the socket data structures, so it does not need to use socket options.
++//! However, that level of freedom is currently not available in the Rust kernel API; therefore,
++//! having socket options is a good compromise.
 +//!
-+//! This API is inspired by the Rust std::net Socket API, but is not a direct port.
-+//! The main difference is that the Rust std::net API is designed for user-space, while this API
-+//! is designed for kernel-space.
-+//! Rust net API: <https://doc.rust-lang.org/std/net/index.html>
++//! When Rust wrappers for the structures related to the socket (and required by the options,
++//! e.g. `tcp_sock`, `inet_sock`, etc.) are available, the socket options will be removed,
++//! and substituted by direct methods inside the socket types.
 +
-+use super::*;
-+use crate::error::{to_result, Result};
-+use crate::net::addr::*;
-+use crate::net::ip::IpProtocol;
-+use flags::*;
++use kernel::bindings;
 +
-+pub mod flags;
++/// Options level to retrieve and set socket options.
++/// See `man 7 socket` for more information.
++#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
++pub enum OptionsLevel {
++    /// IP level socket options.
++    /// See `man 7 ip` for more information.
++    Ip = bindings::IPPROTO_IP as isize,
 +
-+/// The socket type.
-+pub enum SockType {
-+    /// Stream socket (e.g. TCP)
-+    Stream = bindings::sock_type_SOCK_STREAM as isize,
-+    /// Connectionless socket (e.g. UDP)
-+    Datagram = bindings::sock_type_SOCK_DGRAM as isize,
-+    /// Raw socket
-+    Raw = bindings::sock_type_SOCK_RAW as isize,
-+    /// Reliably-delivered message
-+    Rdm = bindings::sock_type_SOCK_RDM as isize,
-+    /// Sequenced packet stream
-+    Seqpacket = bindings::sock_type_SOCK_SEQPACKET as isize,
-+    /// Datagram Congestion Control Protocol socket
-+    Dccp = bindings::sock_type_SOCK_DCCP as isize,
-+    /// Packet socket
-+    Packet = bindings::sock_type_SOCK_PACKET as isize,
++    /// Socket level socket options.
++    /// See `man 7 socket` for more information.
++    Socket = bindings::SOL_SOCKET as isize,
++
++    /// IPv6 level socket options.
++    /// See `man 7 ipv6` for more information.
++    Ipv6 = bindings::IPPROTO_IPV6 as isize,
++
++    /// Raw level socket options.
++    /// See `man 7 raw` for more information.
++    Raw = bindings::IPPROTO_RAW as isize,
++
++    /// TCP level socket options.
++    /// See `man 7 tcp` for more information.
++    Tcp = bindings::IPPROTO_TCP as isize,
 +}
 +
-+/// The socket shutdown command.
-+pub enum ShutdownCmd {
-+    /// Disallow further receive operations.
-+    Read = bindings::sock_shutdown_cmd_SHUT_RD as isize,
-+    /// Disallow further send operations.
-+    Write = bindings::sock_shutdown_cmd_SHUT_WR as isize,
-+    /// Disallow further send and receive operations.
-+    Both = bindings::sock_shutdown_cmd_SHUT_RDWR as isize,
++/// Generic socket option type.
++///
++/// This trait is implemented by each individual socket option.
++///
++/// Having socket options as structs instead of enums allows:
++/// - Type safety, making sure that the correct type is used for each option.
++/// - Read/write enforcement, making sure that only readable options
++/// are read and only writable options are written.
++pub trait SocketOption {
++    /// Rust type of the option value.
++    ///
++    /// This type is used to store the value of the option.
++    /// It is also used to enforce type safety.
++    ///
++    /// For example, the [`ip::Mtu`] option has a value of type `u32`.
++    type Type;
++
++    /// Retrieve the C value of the option.
++    ///
++    /// This value is used to pass the option to the kernel.
++    fn value() -> isize;
++
++    /// Retrieve the level of the option.
++    ///
++    /// This value is used to pass the option to the kernel.
++    fn level() -> OptionsLevel;
 +}
 +
-+/// A generic socket.
++/// Generic readable socket option type.
 +///
-+/// Wraps a `struct socket` from the kernel.
-+/// See [include/linux/socket.h](../../../../include/linux/socket.h) for more information.
++/// This trait is implemented by each individual readable socket option.
++/// Can be combined with [`WritableOption`] to create a readable and writable socket option.
++pub trait WritableOption: SocketOption {}
++
++/// Generic writable socket option type.
 +///
-+/// The wrapper offers high-level methods for common operations on the socket.
-+/// More fine-grained control is possible by using the C bindings directly.
++/// This trait is implemented by each individual writable socket option.
++/// Can be combined with [`ReadableOption`] to create a readable and writable socket option.
++pub trait ReadableOption: SocketOption {}
++
++/// Generates the code for the implementation of a socket option.
 +///
-+/// # Example
-+/// A simple TCP echo server:
-+/// ```rust
-+/// use kernel::flag_set;
-+/// use kernel::net::addr::{Ipv4Addr, SocketAddr, SocketAddrV4};
-+/// use kernel::net::{AddressFamily, init_net};
-+/// use kernel::net::ip::IpProtocol;
-+/// use kernel::net::socket::{Socket, SockType};
-+///
-+/// let socket = Socket::new_kern(
-+///     init_net(),
-+///     AddressFamily::Inet,
-+///     SockType::Stream,
-+///     IpProtocol::Tcp,
-+/// )?;
-+/// socket.bind(SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::LOOPBACK, 8000)))?;
-+/// socket.listen(10)?;
-+/// while let Ok(peer) = socket.accept(true) {
-+///     let mut buf = [0u8; 1024];
-+///     peer.receive(&mut buf, flag_set!())?;
-+///     peer.send(&buf, flag_set!())?;
-+/// }
-+/// ```
-+/// A simple UDP echo server:
-+/// ```rust
-+/// use kernel::net::addr::{Ipv4Addr, SocketAddr, SocketAddrV4};
-+/// use kernel::net::{AddressFamily, init_net};
-+/// use kernel::net::ip::IpProtocol;
-+/// use kernel::net::socket::{Socket, SockType};
-+/// use kernel::flag_set;
-+///
-+/// let socket = Socket::new_kern(init_net(), AddressFamily::Inet, SockType::Datagram, IpProtocol::Udp)?;///
-+/// socket.bind(SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::LOOPBACK, 8000)))?;
-+/// let mut buf = [0u8; 1024];
-+/// while let Ok((len, sender_opt)) = socket.receive_from(&mut buf, flag_set!()) {
-+///     let sender: SocketAddr = sender_opt.expect("Sender address is always available for UDP");
-+///     socket.send_to(&buf[..len], &sender, flag_set!())?;
-+/// }
-+/// ```
-+///
-+/// # Invariants
-+///
-+/// The socket pointer is valid for the lifetime of the wrapper.
++/// # Parameters
++/// * `$opt`: Name of the socket option.
++/// * `$value`: C value of the socket option.
++/// * `$level`: Level of the socket option, like [`OptionsLevel::Ip`].
++/// * `$rtyp`: Rust type of the socket option.
++/// * `$($tr:ty),*`: Traits that the socket option implements, like [`WritableOption`].
++macro_rules! impl_opt {
++    ($(#[$meta:meta])*
++    $opt:ident = $value:expr,
++    $level:expr,
++    unimplemented,
++    $($tr:ty),*) => {};
++
++    ($(#[$meta:meta])*
++    $opt:ident = $value:expr,
++    $level:expr,
++    $rtyp:ty,
++    $($tr:ty),*) => {
++        $(#[$meta])*
++        #[repr(transparent)]
++        #[derive(Default)]
++        pub struct $opt;
++        impl SocketOption for $opt {
++            type Type = $rtyp;
++            fn value() -> isize {
++                $value as isize
++            }
++            fn level() -> OptionsLevel {
++                $level
++            }
++        }
++        $(
++            impl $tr for $opt {}
++        )*
++    };
++}
++
++pub mod ip {
++    //! IP socket options.
++    use super::{OptionsLevel, ReadableOption, SocketOption, WritableOption};
++    use crate::net::addr::Ipv4Addr;
++
++    macro_rules! impl_ip_opt {
++        ($(#[$meta:meta])*
++        $opt:ident = $value:expr,
++        unimplemented,
++        $($tr:ty),*) => {
++            impl_opt!(
++                $(#[$meta])*
++                $opt = $value,
++                OptionsLevel::Ip,
++                unimplemented,
++                $($tr),*
++            );
++        };
++
++        ($(#[$meta:meta])*
++        $opt:ident = $value:expr,
++        $rtyp:ty,
++        $($tr:ty),*) => {
++            impl_opt!(
++                $(#[$meta])*
++                $opt = $value,
++                OptionsLevel::Ip,
++                $rtyp,
++                $($tr),*
++            );
++        };
++    }
++
++    impl_ip_opt!(
++        /// Join a multicast group.
++        ///
++        /// C value type: `struct ip_mreqn`.
++        AddMembership = bindings::IP_ADD_MEMBERSHIP,
++        unimplemented,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Join a multicast group with source filtering.
++        ///
++        /// C value type: `struct ip_mreq_source`
++        AddSourceMembership = bindings::IP_ADD_SOURCE_MEMBERSHIP,
++        unimplemented,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Don't reserve a port when binding with port number 0.
++        ///
++        /// C value type: `int`
++        BindAddressNoPort = bindings::IP_BIND_ADDRESS_NO_PORT,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Block packets from a specific source.
++        ///
++        /// C value type: `struct ip_mreq_source`
++        BlockSource = bindings::IP_BLOCK_SOURCE,
++        unimplemented,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Leave a multicast group.
++        ///
++        /// C value type: `struct ip_mreqn`
++        DropMembership = bindings::IP_DROP_MEMBERSHIP,
++        unimplemented,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Stop receiving packets from a specific source.
++        ///
++        /// C value type: `struct ip_mreq_source`
++        DropSourceMembership = bindings::IP_DROP_SOURCE_MEMBERSHIP,
++        unimplemented,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Allow binding to a non-local address.
++        ///
++        /// C value type: `int`
++        FreeBind = bindings::IP_FREEBIND,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Receive the IP header with the packet.
++        ///
++        /// C value type: `int`
++        Header = bindings::IP_HDRINCL,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Full-state multicast filtering API.
++        ///
++        /// C value type: `struct ip_msfilter`
++        MsFilter = bindings::IP_MSFILTER,
++        unimplemented,
++        ReadableOption,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Retrieve the MTU of the socket.
++        ///
++        /// C value type: `int`
++        Mtu = bindings::IP_MTU,
++        u32,
++        ReadableOption
++    );
++    impl_ip_opt!(
++        /// Discover the MTU of the path to a destination.
++        ///
++        /// C value type: `int`
++        MtuDiscover = bindings::IP_MTU_DISCOVER,
++        unimplemented,
++        ReadableOption,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Modify delivery policy of messages.
++        ///
++        /// C value type: `int`
++        MulticastAll = bindings::IP_MULTICAST_ALL,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Set the interface for outgoing multicast packets.
++        ///
++        /// C value type: `struct in_addr`
++        MulticastInterface = bindings::IP_MULTICAST_IF,
++        Ipv4Addr,
++        ReadableOption,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Set whether multicast packets are looped back to the sender.
++        ///
++        /// C value type: `int`
++        MulticastLoop = bindings::IP_MULTICAST_LOOP,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Set the TTL of outgoing multicast packets.
++        ///
++        /// C value type: `int`
++        MulticastTtl = bindings::IP_MULTICAST_TTL,
++        u8,
++        ReadableOption,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Whether to disable reassembling of fragmented packets.
++        ///
++        /// C value type: `int`
++        NoDefrag = bindings::IP_NODEFRAG,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Set the options to be included in outgoing packets.
++        ///
++        /// C value type: `char *`
++        IpOptions = bindings::IP_OPTIONS,
++        unimplemented,
++        ReadableOption,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Enable receiving security context with the packet.
++        ///
++        /// C value type: `int`
++        PassSec = bindings::IP_PASSSEC,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Enable extended reliable error message passing.
++        ///
++        /// C value type: `int`
++        RecvErr = bindings::IP_RECVERR,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Pass all IP Router Alert messages to this socket.
++        ///
++        /// C value type: `int`
++        RouterAlert = bindings::IP_ROUTER_ALERT,
++        bool,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Set the TOS field of outgoing packets.
++        ///
++        /// C value type: `int`
++        Tos = bindings::IP_TOS,
++        u8,
++        ReadableOption,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Set transparent proxying.
++        ///
++        /// C value type: `int`
++        Transparent = bindings::IP_TRANSPARENT,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Set the TTL of outgoing packets.
++        ///
++        /// C value type: `int`
++        Ttl = bindings::IP_TTL,
++        u8,
++        ReadableOption,
++        WritableOption
++    );
++    impl_ip_opt!(
++        /// Unblock packets from a specific source.
++        ///
++        /// C value type: `struct ip_mreq_source`
++        UnblockSource = bindings::IP_UNBLOCK_SOURCE,
++        unimplemented,
++        WritableOption
++    );
++}
++
++pub mod sock {
++    //! Socket options.
++    use super::*;
++    use crate::net::ip::IpProtocol;
++    use crate::net::socket::SockType;
++    use crate::net::AddressFamily;
++    macro_rules! impl_sock_opt {
++        ($(#[$meta:meta])*
++        $opt:ident = $value:expr,
++        unimplemented,
++        $($tr:ty),*) => {
++            impl_opt!(
++                $(#[$meta])*
++                $opt = $value,
++                OptionsLevel::Socket,
++                unimplemented,
++                $($tr),*
++            );
++        };
++
++        ($(#[$meta:meta])*
++        $opt:ident = $value:expr,
++        $rtyp:ty,
++        $($tr:ty),*) => {
++            impl_opt!(
++                $(#[$meta])*
++                $opt = $value,
++                OptionsLevel::Socket,
++                $rtyp,
++                $($tr),*
++            );
++        };
++    }
++
++    impl_sock_opt!(
++        /// Get whether the socket is accepting connections.
++        ///
++        /// C value type: `int`
++        AcceptConn = bindings::SO_ACCEPTCONN,
++        bool,
++        ReadableOption
++    );
++
++    impl_sock_opt!(
++        /// Attach a filter to the socket.
++        ///
++        /// C value type: `struct sock_fprog`
++        AttachFilter = bindings::SO_ATTACH_FILTER,
++        unimplemented,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Attach a eBPF program to the socket.
++        ///
++        /// C value type: `struct sock_fprog`
++        AttachBpf = bindings::SO_ATTACH_BPF,
++        unimplemented,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Bind the socket to a specific network device.
++        ///
++        /// C value type: `char *`
++        BindToDevice = bindings::SO_BINDTODEVICE,
++        &'static str,
++        ReadableOption,
++        WritableOption
++    );
++    impl_sock_opt!(
++        /// Set the broadcast flag on the socket.
++        ///
++        /// Only valid for datagram sockets.
++        ///
++        /// C value type: `int`
++        Broadcast = bindings::SO_BROADCAST,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++    impl_sock_opt!(
++        /// Enable BSD compatibility.
++        ///
++        /// C value type: `int`
++        BsdCompatible = bindings::SO_BSDCOMPAT,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++    impl_sock_opt!(
++        /// Enable socket debugging.
++        ///
++        /// C value type: `int`
++        Debug = bindings::SO_DEBUG,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++    impl_sock_opt!(
++        /// Remove BPF or eBPF program from the socket.
++        ///
++        /// The argument is ignored.
++        ///
++        /// C value type: `int`
++        DetachFilter = bindings::SO_DETACH_FILTER,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++    impl_sock_opt!(
++        /// Get the domain of the socket.
++        ///
++        /// C value type: `int`
++        Domain = bindings::SO_DOMAIN,
++        AddressFamily,
++        ReadableOption
++    );
++    impl_sock_opt!(
++        /// Get and clear pending errors.
++        ///
++        /// C value type: `int`
++        Error = bindings::SO_ERROR,
++        u32,
++        ReadableOption,
++        WritableOption
++    );
++    impl_sock_opt!(
++        /// Only send packets to directly connected peers.
++        ///
++        /// C value type: `int`
++        DontRoute = bindings::SO_DONTROUTE,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++    impl_sock_opt!(
++        /// Set or get the CPU affinity of a socket.
++        ///
++        /// C value type: `int`
++        IncomingCpu = bindings::SO_INCOMING_CPU,
++        u32,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Enable keep-alive packets.
++        ///
++        /// C value type: `int`
++        KeepAlive = bindings::SO_KEEPALIVE,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Set or get the linger timeout.
++        ///
++        /// C value type: `struct linger`
++        Linger = bindings::SO_LINGER,
++        Linger,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Prevent changing the filters attached to the socket.
++        ///
++        /// C value type: `int`
++        LockFilter = bindings::SO_LOCK_FILTER,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Set or get the mark of the socket.
++        ///
++        /// C value type: `int`
++        Mark = bindings::SO_MARK,
++        u32,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Set whether out-of-band data is received in the normal data stream.
++        ///
++        /// C value type: `int`
++        OobInline = bindings::SO_OOBINLINE,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Enable the receiving of SCM credentials.
++        ///
++        /// C value type: `int`
++        PassCred = bindings::SO_PASSCRED,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Set the peek offset for MSG_PEEK reads.
++        ///
++        /// Only valid for UNIX sockets.
++        ///
++        /// C value type: `int`
++        PeekOff = bindings::SO_PEEK_OFF,
++        i32,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Set or get the protocol-defined priority for all packets.
++        ///
++        /// C value type: `int`
++        Priority = bindings::SO_PRIORITY,
++        u8,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Retrieve the socket protocol
++        ///
++        /// C value type: `int`
++        Protocol = bindings::SO_PROTOCOL,
++        IpProtocol,
++        ReadableOption
++    );
++
++    impl_sock_opt!(
++        /// Set or get the receive buffer size.
++        ///
++        /// C value type: `int`
++        RcvBuf = bindings::SO_RCVBUF,
++        u32,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Set or get the receive low watermark.
++        ///
++        /// C value type: `int`
++        RcvLowat = bindings::SO_RCVLOWAT,
++        u32,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Set or get the receive timeout.
++        ///
++        /// C value type: `struct timeval`
++        RcvTimeo = bindings::SO_RCVTIMEO_NEW,
++        unimplemented,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Set or get the reuse address flag.
++        ///
++        /// C value type: `int`
++        ReuseAddr = bindings::SO_REUSEADDR,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Set or get the reuse port flag.
++        ///
++        /// C value type: `int`
++        ReusePort = bindings::SO_REUSEPORT,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Set or get the send buffer size.
++        ///
++        /// C value type: `int`
++        SndBuf = bindings::SO_SNDBUF,
++        u32,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Set or get the send timeout.
++        ///
++        /// C value type: `struct timeval`
++        SndTimeo = bindings::SO_SNDTIMEO_NEW,
++        unimplemented,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Set whether the timestamp control messages are received.
++        ///
++        /// C value type: `int`
++        Timestamp = bindings::SO_TIMESTAMP_NEW,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_sock_opt!(
++        /// Set or get the socket type.
++        ///
++        /// C value type: `int`
++        Type = bindings::SO_TYPE,
++        SockType,
++        ReadableOption
++    );
++}
++
++pub mod ipv6 {
++    //! IPv6 socket options.
++    use super::*;
++    use crate::net::AddressFamily;
++    macro_rules! impl_ipv6_opt {
++        ($(#[$meta:meta])*
++        $opt:ident = $value:expr,
++        unimplemented,
++        $($tr:ty),*) => {
++            impl_opt!(
++                $(#[$meta])*
++                $opt = $value,
++                OptionsLevel::Ipv6,
++                unimplemented,
++                $($tr),*
++            );
++        };
++
++        ($(#[$meta:meta])*
++        $opt:ident = $value:expr,
++        $rtyp:ty,
++        $($tr:ty),*) => {
++            impl_opt!(
++                $(#[$meta])*
++                $opt = $value,
++                OptionsLevel::Ipv6,
++                $rtyp,
++                $($tr),*
++            );
++        };
++    }
++
++    impl_ipv6_opt!(
++        /// Modify the address family used by the socket.
++        ///
++        /// C value type: `int`
++        AddrForm = bindings::IPV6_ADDRFORM,
++        AddressFamily,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_ipv6_opt!(
++        /// Join a multicast group.
++        ///
++        /// C value type: `struct ipv6_mreq`
++        AddMembership = bindings::IPV6_ADD_MEMBERSHIP,
++        unimplemented,
++        WritableOption
++    );
++
++    impl_ipv6_opt!(
++        /// Leave a multicast group.
++        ///
++        /// C value type: `struct ipv6_mreq`
++        DropMembership = bindings::IPV6_DROP_MEMBERSHIP,
++        unimplemented,
++        WritableOption
++    );
++
++    impl_ipv6_opt!(
++        /// Set or get the MTU of the socket.
++        ///
++        /// C value type: `int`
++        Mtu = bindings::IPV6_MTU,
++        u32,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_ipv6_opt!(
++        /// Set or retrieve the MTU discovery settings.
++        ///
++        /// C value type: `int` (macros)
++        MtuDiscover = bindings::IPV6_MTU_DISCOVER,
++        unimplemented,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_ipv6_opt!(
++        /// Set or get the multicast hop limit.
++        ///
++        /// Range is -1 to 255.
++        ///
++        /// C value type: `int`
++        MulticastHops = bindings::IPV6_MULTICAST_HOPS,
++        i16,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_ipv6_opt!(
++        /// Set or get the multicast interface.
++        ///
++        /// Only valid for datagram and raw sockets.
++        ///
++        /// C value type: `int`
++        MulticastInterface = bindings::IPV6_MULTICAST_IF,
++        u32,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_ipv6_opt!(
++        /// Set or read whether multicast packets are looped back
++        ///
++        /// C value type: `int`
++        MulticastLoop = bindings::IPV6_MULTICAST_LOOP,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_ipv6_opt!(
++        /// Set or get whether IPV6_PKTINFO is enabled.
++        ///
++        /// Only valid for datagram and raw sockets.
++        ///
++        /// C value type: `int`
++        ReceivePktInfo = bindings::IPV6_PKTINFO,
++        bool,
++        WritableOption
++    );
++
++    impl_ipv6_opt!(
++        /// Set or get whether IPV6_RTHDR messages are delivered.
++        ///
++        /// Only valid for raw sockets.
++        ///
++        /// C value type: `int`
++        RouteHdr = bindings::IPV6_RTHDR,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_ipv6_opt!(
++        /// Set or get whether IPV6_DSTOPTS messages are delivered.
++        ///
++        /// Only valid for datagram and raw sockets.
++        ///
++        /// C value type: `int`
++        DestOptions = bindings::IPV6_DSTOPTS,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_ipv6_opt!(
++        /// Set or get whether IPV6_HOPOPTS messages are delivered.
++        ///
++        /// Only valid for datagram and raw sockets.
++        ///
++        /// C value type: `int`
++        HopOptions = bindings::IPV6_HOPOPTS,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_ipv6_opt!(
++        /// Set or get whether IPV6_FLOWINFO messages are delivered.
++        ///
++        /// Only valid for datagram and raw sockets.
++        ///
++        /// C value type: `int`
++        FlowInfo = bindings::IPV6_FLOWINFO,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_ipv6_opt!(
++        /// Enable extended reliable error message reporting.
++        ///
++        /// C value type: `int`
++        RecvErr = bindings::IPV6_RECVERR,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_ipv6_opt!(
++        /// Pass all Router Alert enabled messages to the socket.
++        ///
++        /// Only valid for raw sockets.
++        ///
++        /// C value type: `int`
++        RouterAlert = bindings::IPV6_ROUTER_ALERT,
++        bool,
++        WritableOption
++    );
++
++    impl_ipv6_opt!(
++        /// Set or get the unicast hop limit.
++        ///
++        /// Range is -1 to 255.
++        ///
++        /// C value type: `int`
++        UnicastHops = bindings::IPV6_UNICAST_HOPS,
++        i16,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_ipv6_opt!(
++        /// Set whether the socket can only send and receive IPv6 packets.
++        ///
++        /// C value type: `int`
++        V6Only = bindings::IPV6_V6ONLY,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++}
++
++pub mod raw {
++    //! Raw socket options.
++    //!
++    //! These options are only valid for sockets with type [`SockType::Raw`](kernel::net::socket::SockType::Raw).
++    macro_rules! impl_raw_opt {
++        ($(#[$meta:meta])*
++        $opt:ident = $value:expr,
++        unimplemented,
++        $($tr:ty),*) => {
++            impl_opt!(
++                $(#[$meta])*
++                $opt = $value,
++                OptionsLevel::Raw,
++                unimplemented,
++                $($tr),*
++            );
++        };
++
++        ($(#[$meta:meta])*
++        $opt:ident = $value:expr,
++        $rtyp:ty,
++        $($tr:ty),*) => {
++            impl_opt!(
++                $(#[$meta])*
++                $opt = $value,
++                OptionsLevel::Raw,
++                $rtyp,
++                $($tr),*
++            );
++        };
++    }
++
++    impl_raw_opt!(
++        /// Enable a filter for IPPROTO_ICMP raw sockets.
++        /// The filter has a bit set for each ICMP type to be filtered out.
++        ///
++        /// C value type: `struct icmp_filter`
++        Filter = bindings::ICMP_FILTER as isize,
++        unimplemented,
++        ReadableOption,
++        WritableOption
++    );
++}
++
++pub mod tcp {
++    //! TCP socket options.
++    //!
++    //! These options are only valid for sockets with type [`SockType::Stream`](kernel::net::socket::SockType::Stream)
++    //! and protocol [`IpProtocol::Tcp`](kernel::net::ip::IpProtocol::Tcp).
++    use super::*;
++    macro_rules! impl_tcp_opt {
++        ($(#[$meta:meta])*
++        $opt:ident = $value:expr,
++        unimplemented,
++        $($tr:ty),*) => {
++            impl_opt!(
++                $(#[$meta])*
++                $opt = $value,
++                OptionsLevel::Tcp,
++                unimplemented,
++                $($tr),*
++            );
++        };
++
++        ($(#[$meta:meta])*
++        $opt:ident = $value:expr,
++        $rtyp:ty,
++        $($tr:ty),*) => {
++            impl_opt!(
++                $(#[$meta])*
++                $opt = $value,
++                OptionsLevel::Tcp,
++                $rtyp,
++                $($tr),*
++            );
++        };
++    }
++
++    impl_tcp_opt!(
++        /// Set or get the congestion control algorithm to be used.
++        ///
++        /// C value type: `char *`
++        Congestion = bindings::TCP_CONGESTION,
++        unimplemented, // &[u8]? what about lifetime?
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_tcp_opt!(
++        /// If true, don't send partial frames.
++        ///
++        /// C value type: `int`
++        Cork = bindings::TCP_CORK,
++        bool,
++        WritableOption,
++        ReadableOption
++    );
++
++    impl_tcp_opt!(
++        /// Allow a listener to be awakened only when data arrives.
++        /// The value is the time to wait for data in milliseconds.
++        ///
++        /// C value type: `int`
++        DeferAccept = bindings::TCP_DEFER_ACCEPT,
++        i32,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_tcp_opt!(
++        /// Collect information about this socket.
++        ///
++        /// C value type: `struct tcp_info`
++        Info = bindings::TCP_INFO,
++        unimplemented,
++        ReadableOption
++    );
++
++    impl_tcp_opt!(
++        /// Set or get maximum number of keepalive probes to send.
++        ///
++        /// C value type: `int`
++        KeepCount = bindings::TCP_KEEPCNT,
++        i32,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_tcp_opt!(
++        /// Set or get the time in seconds to idle before sending keepalive probes.
++        ///
++        /// C value type: `int`
++        KeepIdle = bindings::TCP_KEEPIDLE,
++        i32,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_tcp_opt!(
++        /// Set or get the time in seconds between keepalive probes.
++        ///
++        /// C value type: `int`
++        KeepInterval = bindings::TCP_KEEPINTVL,
++        i32,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_tcp_opt!(
++        /// Set or get the lifetime or orphaned FIN_WAIT2 sockets.
++        ///
++        /// C value type: `int`
++        Linger2 = bindings::TCP_LINGER2,
++        i32,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_tcp_opt!(
++        /// Set or get the maximum segment size for outgoing TCP packets.
++        ///
++        /// C value type: `int`
++        MaxSeg = bindings::TCP_MAXSEG,
++        i32,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_tcp_opt!(
++        /// If true, Nagle algorithm is disabled, i.e. segments are send as soon as possible.
++        ///
++        /// C value type: `int`
++        NoDelay = bindings::TCP_NODELAY,
++        bool,
++        WritableOption,
++        ReadableOption
++    );
++
++    impl_tcp_opt!(
++        /// Set or get whether QuickAck mode is on.
++        /// If true, ACKs are sent immediately, rather than delayed.
++        ///
++        /// C value type: `int`
++        QuickAck = bindings::TCP_QUICKACK,
++        bool,
++        WritableOption,
++        ReadableOption
++    );
++
++    impl_tcp_opt!(
++        /// Set or get the number of SYN retransmits before the connection is dropped.
++        ///
++        /// C value type: `int`
++        SynCount = bindings::TCP_SYNCNT,
++        u8,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_tcp_opt!(
++        /// Set or get how long sent packets can remain unacknowledged before timing out.
++        /// The value is in milliseconds; 0 means to use the system default.
++        ///
++        /// C value type: `unsigned int`
++        UserTimeout = bindings::TCP_USER_TIMEOUT,
++        u32,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_tcp_opt!(
++        /// Set or get the maximum window size for TCP sockets.
++        ///
++        /// C value type: `int`
++        WindowClamp = bindings::TCP_WINDOW_CLAMP,
++        u32,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_tcp_opt!(
++        /// Enable Fast Open on the listener socket (RFC 7413).
++        /// The value is the maximum length of pending SYNs.
++        ///
++        /// C value type: `int`
++        FastOpen = bindings::TCP_FASTOPEN,
++        u32,
++        ReadableOption,
++        WritableOption
++    );
++
++    impl_tcp_opt!(
++        /// Enable Fast Open on the client socket (RFC 7413).
++        ///
++        /// C value type: `int`
++        FastOpenConnect = bindings::TCP_FASTOPEN_CONNECT,
++        bool,
++        ReadableOption,
++        WritableOption
++    );
++}
++
++/// Linger structure to set and get the [sock::Linger] option.
++/// This is a wrapper around the C struct `linger`.
 +#[repr(transparent)]
-+pub struct Socket(*mut bindings::socket);
++pub struct Linger(bindings::linger);
 +
-+/// Getters and setters of socket internal fields.
-+///
-+/// Not all fields are currently supported: hopefully, this will be improved in the future.
-+impl Socket {
-+    /// Retrieve the flags associated with the socket.
-+    ///
-+    /// Unfortunately, these flags cannot be represented as a [`FlagSet`], since [`SocketFlag`]s
-+    /// are not represented as masks but as the index of the bit they represent.
-+    ///
-+    /// An enum could be created, containing masks instead of indexes, but this could create
-+    /// confusion with the C side.
-+    ///
-+    /// The methods [`Socket::has_flag`] and [`Socket::set_flags`] can be used to check and set individual flags.
-+    pub fn flags(&self) -> u64 {
-+        unsafe { (*self.0).flags }
-+    }
-+
-+    /// Set the flags associated with the socket.
-+    pub fn set_flags(&self, flags: u64) {
-+        unsafe {
-+            (*self.0).flags = flags;
-+        }
-+    }
-+
-+    /// Checks if the socket has a specific flag.
++impl Linger {
++    /// Create a "on" Linger object with the given linger time.
++    /// This is equivalent to `linger { l_onoff: 1, l_linger: linger_time }`.
++    /// The linger time is in seconds.
 +    ///
 +    /// # Example
 +    /// ```
-+    /// use kernel::net::socket::{Socket, flags::SocketFlag, SockType};
-+    /// use kernel::net::AddressFamily;
-+    /// use kernel::net::ip::IpProtocol;
-+    ///
-+    /// let socket = Socket::new(AddressFamily::Inet, SockType::Datagram, IpProtocol::Udp)?;
-+    /// assert_eq!(socket.has_flag(SocketFlag::CustomSockOpt), false);
-+    /// ```
-+    pub fn has_flag(&self, flag: SocketFlag) -> bool {
-+        bindings::__BindgenBitfieldUnit::<[u8; 8], u8>::new(self.flags().to_be_bytes())
-+            .get_bit(flag as _)
++    /// use kernel::net::socket::opts::Linger;
++    /// let linger = Linger::on(10);
++    /// assert!(linger.is_on());
++    /// assert_eq!(linger.linger_time(), 10);
++    pub fn on(linger: i32) -> Self {
++        Linger(bindings::linger {
++            l_onoff: 1 as _,
++            l_linger: linger as _,
++        })
 +    }
 +
-+    /// Sets a flag on the socket.
++    /// Create an "off" Linger object.
++    /// This is equivalent to `linger { l_onoff: 0, l_linger: 0 }`.
 +    ///
 +    /// # Example
 +    /// ```
-+    /// use kernel::net::socket::{Socket, flags::SocketFlag, SockType};
-+    /// use kernel::net::AddressFamily;
-+    /// use kernel::net::ip::IpProtocol;
-+    ///
-+    /// let socket = Socket::new(AddressFamily::Inet, SockType::Datagram, IpProtocol::Udp)?;
-+    /// assert_eq!(socket.has_flag(SocketFlag::CustomSockOpt), false);
-+    /// socket.set_flag(SocketFlag::CustomSockOpt, true);
-+    /// assert_eq!(socket.has_flag(SocketFlag::CustomSockOpt), true);
-+    /// ```
-+    pub fn set_flag(&self, flag: SocketFlag, value: bool) {
-+        let flags_width = core::mem::size_of_val(&self.flags()) * 8;
-+        let mut flags =
-+            bindings::__BindgenBitfieldUnit::<[u8; 8], u8>::new(self.flags().to_be_bytes());
-+        flags.set_bit(flag as _, value);
-+        self.set_flags(flags.get(0, flags_width as _));
-+    }
-+
-+    /// Consumes the socket and returns the underlying pointer.
-+    ///
-+    /// The pointer is valid for the lifetime of the wrapper.
-+    ///
-+    /// # Safety
-+    /// The caller must ensure that the pointer is not used after the wrapper is dropped.
-+    pub unsafe fn into_inner(self) -> *mut bindings::socket {
-+        self.0
-+    }
-+
-+    /// Returns the underlying pointer.
-+    ///
-+    /// The pointer is valid for the lifetime of the wrapper.
-+    ///
-+    /// # Safety
-+    /// The caller must ensure that the pointer is not used after the wrapper is dropped.
-+    pub unsafe fn as_inner(&self) -> *mut bindings::socket {
-+        self.0
-+    }
-+}
-+
-+/// Socket API implementation
-+impl Socket {
-+    /// Private utility function to create a new socket by calling a function.
-+    /// The function is generic over the creation function.
-+    ///
-+    /// # Arguments
-+    /// * `create_fn`: A function that initiates the socket given as parameter.
-+    ///                The function must return 0 on success and a negative error code on failure.
-+    fn base_new<T>(create_fn: T) -> Result<Self>
-+    where
-+        T: (FnOnce(*mut *mut bindings::socket) -> core::ffi::c_int),
-+    {
-+        let mut socket_ptr: *mut bindings::socket = core::ptr::null_mut();
-+        to_result(create_fn(&mut socket_ptr))?;
-+        Ok(Self(socket_ptr))
-+    }
-+
-+    /// Create a new socket.
-+    ///
-+    /// Wraps the `sock_create` function.
-+    pub fn new(family: AddressFamily, type_: SockType, proto: IpProtocol) -> Result<Self> {
-+        // SAFETY: FFI call; the address is valid for the lifetime of the wrapper.
-+        Self::base_new(|socket_ptr| unsafe {
-+            bindings::sock_create(family as _, type_ as _, proto as _, socket_ptr)
++    /// use kernel::net::socket::opts::Linger;
++    /// let linger = Linger::off();
++    /// assert!(!linger.is_on());
++    pub fn off() -> Self {
++        Linger(bindings::linger {
++            l_onoff: 0 as _,
++            l_linger: 0 as _,
 +        })
 +    }
 +
-+    /// Create a new socket in a specific namespace.
-+    ///
-+    /// Wraps the `sock_create_kern` function.
-+    pub fn new_kern(
-+        ns: &Namespace,
-+        family: AddressFamily,
-+        type_: SockType,
-+        proto: IpProtocol,
-+    ) -> Result<Self> {
-+        // SAFETY: FFI call; the address is valid for the lifetime of the wrapper.
-+        Self::base_new(|socket_ptr| unsafe {
-+            bindings::sock_create_kern(ns.0.get(), family as _, type_ as _, proto as _, socket_ptr)
-+        })
-+    }
-+
-+    /// Creates a new "lite" socket.
-+    ///
-+    /// Wraps the `sock_create_lite` function.
-+    ///
-+    /// This is a lighter version of `sock_create` that does not perform any sanity check.
-+    pub fn new_lite(family: AddressFamily, type_: SockType, proto: IpProtocol) -> Result<Self> {
-+        // SAFETY: FFI call; the address is valid for the lifetime of the wrapper.
-+        Self::base_new(|socket_ptr| unsafe {
-+            bindings::sock_create_lite(family as _, type_ as _, proto as _, socket_ptr)
-+        })
-+    }
-+
-+    /// Binds the socket to a specific address.
-+    ///
-+    /// Wraps the `kernel_bind` function.
-+    pub fn bind(&self, address: SocketAddr) -> Result {
-+        // SAFETY: FFI call; the address is valid for the lifetime of the wrapper.
-+        to_result(unsafe {
-+            bindings::kernel_bind(self.0, address.as_ptr() as _, address.size() as i32)
-+        })
-+    }
-+
-+    /// Connects the socket to a specific address.
-+    ///
-+    /// Wraps the `kernel_connect` function.
-+    ///
-+    /// The socket must be a connection-oriented socket.
-+    /// If the socket is not bound, it will be bound to a random local address.
++    /// Get whether the linger option is on.
 +    ///
 +    /// # Example
-+    /// ```rust
-+    /// use kernel::net::{AddressFamily, init_net};
-+    /// use kernel::net::addr::{Ipv4Addr, SocketAddr, SocketAddrV4};
-+    /// use kernel::net::ip::IpProtocol;
-+    /// use kernel::net::socket::{Socket, SockType};
++    /// ```
++    /// use kernel::net::socket::opts::Linger;
++    /// let linger = Linger::on(10);
++    /// assert!(linger.is_on());
++    /// ```
 +    ///
-+    /// let socket = Socket::new_kern(init_net(), AddressFamily::Inet, SockType::Stream, IpProtocol::Tcp)?;
-+    /// socket.bind(SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::LOOPBACK, 8000)))?;
-+    /// socket.listen(10)?;
-+    pub fn listen(&self, backlog: i32) -> Result {
-+        // SAFETY: FFI call; the address is valid for the lifetime of the wrapper.
-+        to_result(unsafe { bindings::kernel_listen(self.0, backlog) })
++    /// ```
++    /// use kernel::net::socket::opts::Linger;
++    /// let linger = Linger::off();
++    /// assert!(!linger.is_on());
++    /// ```
++    pub fn is_on(&self) -> bool {
++        self.0.l_onoff != 0
 +    }
 +
-+    /// Accepts a connection on a socket.
++    /// Get the linger time in seconds.
++    /// If the linger option is off, this will return 0.
 +    ///
-+    /// Wraps the `kernel_accept` function.
-+    pub fn accept(&self, block: bool) -> Result<Socket> {
-+        let mut new_sock = core::ptr::null_mut();
-+        let flags: i32 = if block { 0 } else { bindings::O_NONBLOCK as _ };
-+
-+        // SAFETY: FFI call; the address is valid for the lifetime of the wrapper.
-+        to_result(unsafe { bindings::kernel_accept(self.0, &mut new_sock, flags as _) })?;
-+
-+        Ok(Self(new_sock))
-+    }
-+
-+    /// Returns the address the socket is bound to.
-+    ///
-+    /// Wraps the `kernel_getsockname` function.
-+    pub fn sockname(&self) -> Result<SocketAddr> {
-+        let mut addr: SocketAddrStorage = SocketAddrStorage::default();
-+
-+        // SAFETY: FFI call; the address is valid for the lifetime of the wrapper.
-+        unsafe {
-+            to_result(bindings::kernel_getsockname(
-+                self.0,
-+                &mut addr as *mut _ as _,
-+            ))
-+        }
-+        .and_then(|_| SocketAddr::try_from_raw(addr))
-+    }
-+
-+    /// Returns the address the socket is connected to.
-+    ///
-+    /// Wraps the `kernel_getpeername` function.
-+    ///
-+    /// The socket must be connected.
-+    pub fn peername(&self) -> Result<SocketAddr> {
-+        let mut addr: SocketAddrStorage = SocketAddrStorage::default();
-+
-+        // SAFETY: FFI call; the address is valid for the lifetime of the wrapper.
-+        unsafe {
-+            to_result(bindings::kernel_getpeername(
-+                self.0,
-+                &mut addr as *mut _ as _,
-+            ))
-+        }
-+        .and_then(|_| SocketAddr::try_from_raw(addr))
-+    }
-+
-+    /// Connects the socket to a specific address.
-+    ///
-+    /// Wraps the `kernel_connect` function.
-+    pub fn connect(&self, address: &SocketAddr, flags: i32) -> Result {
-+        // SAFETY: FFI call; the address is valid for the lifetime of the wrapper.
-+        unsafe {
-+            to_result(bindings::kernel_connect(
-+                self.0,
-+                address.as_ptr() as _,
-+                address.size() as _,
-+                flags,
-+            ))
-+        }
-+    }
-+
-+    /// Shuts down the socket.
-+    ///
-+    /// Wraps the `kernel_sock_shutdown` function.
-+    pub fn shutdown(&self, how: ShutdownCmd) -> Result {
-+        // SAFETY: FFI call; the address is valid for the lifetime of the wrapper.
-+        unsafe { to_result(bindings::kernel_sock_shutdown(self.0, how as _)) }
-+    }
-+
-+    /// Receive a message from the socket.
-+    ///
-+    /// This function is the lowest-level receive function. It is used by the other receive functions.
-+    ///
-+    /// The `flags` parameter is a set of flags that control the behavior of the function.
-+    /// The flags are described in the [`ReceiveFlag`] enum.
-+    ///
-+    /// The returned Message is a wrapper for `msghdr` and it contains the header information about the message,
-+    /// including the sender address (if present) and the flags.
-+    ///
-+    /// The data message is written to the provided buffer and the number of bytes written is returned together with the header.
-+    ///
-+    /// Wraps the `kernel_recvmsg` function.
-+    pub fn receive_msg(
-+        &self,
-+        bytes: &mut [u8],
-+        flags: FlagSet<ReceiveFlag>,
-+    ) -> Result<(usize, MessageHeader)> {
-+        let addr = SocketAddrStorage::default();
-+
-+        let mut msg = bindings::msghdr {
-+            msg_name: &addr as *const _ as _,
-+            ..Default::default()
-+        };
-+
-+        let mut vec = bindings::kvec {
-+            iov_base: bytes.as_mut_ptr() as _,
-+            iov_len: bytes.len() as _,
-+        };
-+
-+        // SAFETY: FFI call; the socket address is valid for the lifetime of the wrapper.
-+        let size = unsafe {
-+            bindings::kernel_recvmsg(
-+                self.0,
-+                &mut msg as _,
-+                &mut vec,
-+                1,
-+                bytes.len() as _,
-+                flags.value() as _,
-+            )
-+        };
-+        to_result(size)?;
-+
-+        let addr: Option<SocketAddr> = SocketAddr::try_from_raw(addr).ok();
-+
-+        Ok((size as _, MessageHeader::new(msg, addr)))
-+    }
-+
-+    /// Receives data from a remote socket and returns the bytes read and the sender address.
-+    ///
-+    /// Used by connectionless sockets to retrieve the sender of the message.
-+    /// If the socket is connection-oriented, the sender address will be `None`.
-+    ///
-+    /// The function abstracts the usage of the `struct msghdr` type.
-+    /// See [Socket::receive_msg] for more information.
-+    pub fn receive_from(
-+        &self,
-+        bytes: &mut [u8],
-+        flags: FlagSet<ReceiveFlag>,
-+    ) -> Result<(usize, Option<SocketAddr>)> {
-+        self.receive_msg(bytes, flags)
-+            .map(|(size, hdr)| (size, hdr.into()))
-+    }
-+
-+    /// Receives data from a remote socket and returns only the bytes read.
-+    ///
-+    /// Used by connection-oriented sockets, where the sender address is the connected peer.
-+    pub fn receive(&self, bytes: &mut [u8], flags: FlagSet<ReceiveFlag>) -> Result<usize> {
-+        let (size, _) = self.receive_from(bytes, flags)?;
-+        Ok(size)
-+    }
-+
-+    /// Sends a message to a remote socket.
-+    ///
-+    /// Wraps the `kernel_sendmsg` function.
-+    ///
-+    /// Crate-public to allow its usage only in the kernel crate.
-+    /// In the future, this function could be made public, accepting a [`Message`] as input,
-+    /// but with the current API, it does not give any advantage.
-+    pub(crate) fn send_msg(
-+        &self,
-+        bytes: &[u8],
-+        mut message: bindings::msghdr,
-+        flags: FlagSet<SendFlag>,
-+    ) -> Result<usize> {
-+        let mut vec = bindings::kvec {
-+            iov_base: bytes.as_ptr() as _,
-+            iov_len: bytes.len() as _,
-+        };
-+        message.msg_flags = flags.value() as _;
-+
-+        // SAFETY: FFI call; the address is valid for the lifetime of the wrapper.
-+        let size = unsafe {
-+            bindings::kernel_sendmsg(
-+                self.0,
-+                &message as *const _ as _,
-+                &mut vec,
-+                1,
-+                bytes.len() as _,
-+            )
-+        };
-+        to_result(size)?;
-+        Ok(size as _)
-+    }
-+
-+    /// Sends a message to a remote socket and returns the bytes sent.
-+    ///
-+    /// The `flags` parameter is a set of flags that control the behavior of the function.
-+    /// The flags are described in the [`SendFlag`] enum.
-+    pub fn send(&self, bytes: &[u8], flags: FlagSet<SendFlag>) -> Result<usize> {
-+        self.send_msg(bytes, bindings::msghdr::default(), flags)
-+    }
-+
-+    /// Sends a message to a specific remote socket address and returns the bytes sent.
-+    ///
-+    /// The `flags` parameter is a set of flags that control the behavior of the function.
-+    /// The flags are described in the [`SendFlag`] enum.
-+    pub fn send_to(
-+        &self,
-+        bytes: &[u8],
-+        address: &SocketAddr,
-+        flags: FlagSet<SendFlag>,
-+    ) -> Result<usize> {
-+        let message = bindings::msghdr {
-+            msg_name: address.as_ptr() as _,
-+            msg_namelen: address.size() as _,
-+            ..Default::default()
-+        };
-+        self.send_msg(bytes, message, flags)
-+    }
-+}
-+
-+impl Drop for Socket {
-+    /// Closes and releases the socket.
-+    ///
-+    /// Wraps the `sock_release` function.
-+    fn drop(&mut self) {
-+        // SAFETY: FFI call; the address is valid for the lifetime of the wrapper.
-+        unsafe {
-+            bindings::sock_release(self.0);
-+        }
-+    }
-+}
-+
-+// SAFETY: sockets are thread-safe; synchronization is handled by the kernel.
-+unsafe impl Send for Socket {}
-+unsafe impl Sync for Socket {}
-+
-+/// Socket header message.
-+///
-+/// Wraps the `msghdr` structure.
-+/// This struct provides a safe interface to the `msghdr` structure.
-+///
-+/// The instances of this struct are only created by the `receive` methods of the [`Socket`] struct.
-+///
-+/// # Invariants
-+/// The `msg_name` in the wrapped `msghdr` object is always null; the address is stored in the `MessageHeader` object
-+/// and can be retrieved with the [`MessageHeader::address`] method.
-+#[derive(Clone, Copy)]
-+pub struct MessageHeader(pub(crate) bindings::msghdr, pub(crate) Option<SocketAddr>);
-+
-+impl MessageHeader {
-+    /// Returns the address of the message.
-+    pub fn address(&self) -> Option<&SocketAddr> {
-+        self.1.as_ref()
-+    }
-+
-+    /// Returns the flags of the message.
-+    pub fn flags(&self) -> FlagSet<MessageFlag> {
-+        FlagSet::from(self.0.msg_flags as isize)
-+    }
-+
-+    /// Consumes the message header and returns the underlying `msghdr` structure.
-+    ///
-+    /// The returned msghdr will have a null pointer for the address.
-+    pub fn into_raw(self) -> bindings::msghdr {
-+        self.0
-+    }
-+
-+    /// Creates a new message header.
-+    ///
-+    /// The `msg_name` of the field gets replaced with a NULL pointer.
-+    pub(crate) fn new(mut hdr: bindings::msghdr, addr: Option<SocketAddr>) -> Self {
-+        hdr.msg_name = core::ptr::null_mut();
-+        Self(hdr, addr)
-+    }
-+}
-+
-+impl From<MessageHeader> for Option<SocketAddr> {
-+    /// Consumes the message header and returns the contained address.
-+    fn from(hdr: MessageHeader) -> Self {
-+        hdr.1
-+    }
-+}
-+
-+impl From<MessageHeader> for bindings::msghdr {
-+    /// Consumes the message header and returns the underlying `msghdr` structure.
-+    ///
-+    /// The returned msghdr will have a null pointer for the address.
-+    ///
-+    /// This function is actually supposed to be crate-public, since bindings are not supposed to be
-+    /// used outside the kernel library.
-+    /// However, until the support for `msghdr` is not complete, specific needs might be satisfied
-+    /// only by using directly the underlying `msghdr` structure.
-+    fn from(hdr: MessageHeader) -> Self {
-+        hdr.0
++    /// # Example
++    /// ```
++    /// use kernel::net::socket::opts::Linger;
++    /// let linger = Linger::on(10);
++    /// assert_eq!(linger.linger_time(), 10);
++    /// ```
++    pub fn linger_time(&self) -> i32 {
++        self.0.l_linger as _
 +    }
 +}
 -- 
