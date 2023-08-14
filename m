@@ -2,140 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC3177B97A
+	by mail.lfdr.de (Postfix) with ESMTP id 028AE77B978
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbjHNNNI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 14 Aug 2023 09:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52420 "EHLO
+        id S229731AbjHNNNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 09:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbjHNNMj (ORCPT
+        with ESMTP id S229699AbjHNNMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 09:12:39 -0400
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8596CE6E;
-        Mon, 14 Aug 2023 06:12:38 -0700 (PDT)
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-d6a5207d9d8so1545802276.0;
-        Mon, 14 Aug 2023 06:12:38 -0700 (PDT)
+        Mon, 14 Aug 2023 09:12:35 -0400
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2F5E6E
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:12:34 -0700 (PDT)
+Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-68790b952bbso4833155b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:12:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692018757; x=1692623557;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hSgqut+JHlQUbB4Bd/FI8orZtwhhcAep0ucawImk8r8=;
-        b=S6CFp9bjlVo2MLbyJ+XyKa4kUnGsop4qB3jguxwG65I7ijvj55GkO7lj0YFBY94TgC
-         5KZQEfRttg297W2g1DBgvNEpexbazzzhtz7UMu720mzfWBzIOS+aPxSwJqPcaniDcTiD
-         UZ6K2QzOfviIkHcAemUNYaDE38KV7QSZ1nr/DuovwuPQsdfzksBwgqZ8tMBcB891g5Lm
-         w+qyRkQu9e+9enT1imMPSaLg8/Y8rDT/xWx/sj9XI6PxGTp9TfpyO+3o1whfhSH/v9s4
-         LU+7k/wwfvPrHD9uLE99dQPF/EcxtqZBFfKH1Z6ddf2Kyv3l52fgnyepivmAo5ibj/GY
-         MXJA==
-X-Gm-Message-State: AOJu0YwNels3wHdfljeccvDFY5aP4v9/zjkJegEHyHAOYS2X4nzmyqQY
-        TER/PyD/jBAw5tjJUCua/YHcnv9x8aAgeA==
-X-Google-Smtp-Source: AGHT+IFhPHRvUhhj3UWfHfsFGEqkY264d6jRqnAsh/AeEtCoU9+CuBeEQXY/MMPKPoP/4XAizAZajg==
-X-Received: by 2002:a05:6902:149:b0:d07:b677:3349 with SMTP id p9-20020a056902014900b00d07b6773349mr10364672ybh.25.1692018757455;
-        Mon, 14 Aug 2023 06:12:37 -0700 (PDT)
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
-        by smtp.gmail.com with ESMTPSA id w6-20020a259bc6000000b00d06d47fd0b8sm2324160ybo.53.2023.08.14.06.12.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 06:12:36 -0700 (PDT)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-d6a5207d9d8so1545745276.0;
-        Mon, 14 Aug 2023 06:12:36 -0700 (PDT)
-X-Received: by 2002:a25:2d16:0:b0:d52:6882:1032 with SMTP id
- t22-20020a252d16000000b00d5268821032mr14671149ybt.28.1692018756289; Mon, 14
- Aug 2023 06:12:36 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692018754; x=1692623554;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GkUsQ1wrjvx9w9pGAMLpP0B4qOOaUFlPw9+26kywtpU=;
+        b=ULd+u2WCCxTUlAG9KNiGJThQ0Cl/76CSbykkSKauOrxauAeJh3++ggyPMd4djZRVoQ
+         WaIe/5+xkYWsW1pRCAm01eYJvvBtR7s9/BDXOcsUvcMsuvZPegFK5vYqeO33TlyAuzYY
+         l+PLMkdFFvy5z1VEybjflQmbUe3/wStpvARppimiPigwLsCTU72hFWrWLzSEPM4wtnDP
+         Ur+hC1zh45brqC5YIiJK0+fM0CI9nlA8gfwcTdhLHuNP2pAn+CEOTZj2BhJno0rUwsOs
+         b/4xzPzmZWW3Jt3RgE2Gr7xA4e/jJSvn7EzAjDLmkdvsZYQ4t3a8T9o0DZKBKDthoUpk
+         Youw==
+X-Gm-Message-State: AOJu0Yx1A+4UxLmy6MiCwi4XTL7N/e55SziRKzVK4ygU3hosjwRFJCh9
+        siP7mfivx4IrFz0Ix8rT0jXKMPz8gCtEBrduWGX5TSpcW9M2
+X-Google-Smtp-Source: AGHT+IHzL2RazM92wVEoVMl//dQglkomTDOyKJBBJbRtQJItDXTcwMv7/H4PJ0Ai13M+1wyKNN48sJ8q3IRSuJbMMgIydjW36kOe
 MIME-Version: 1.0
-References: <20230805174036.129ffbc2@jic23-huawei> <OS0PR01MB59220491C7C8AA40BEFAAD82860EA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
- <20230806142950.6c409600@jic23-huawei> <ZNEFjyAloqlkMWn7@smile.fi.intel.com>
- <ZNFV+C1HCIRJpbdC@google.com> <ZNIyrG/2h/PeS9Oz@smile.fi.intel.com>
- <20230809182551.7eca502e@jic23-huawei> <OS0PR01MB59221A1ADB67E96E9E39D0198613A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
- <ZNT+NY99n7y3abwa@smile.fi.intel.com> <OS0PR01MB5922DD3C809B78F1E9C5949B8610A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
- <ZNZF6cjx5N+ZsIJx@smile.fi.intel.com> <OS0PR01MB5922E09340CDCFF54A9A6CBA8610A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-In-Reply-To: <OS0PR01MB5922E09340CDCFF54A9A6CBA8610A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 14 Aug 2023 15:12:24 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdU6LhvnZ5FE_3BxyH7reVi69Rjcircquk=jYZ6-j3cqug@mail.gmail.com>
-Message-ID: <CAMuHMdU6LhvnZ5FE_3BxyH7reVi69Rjcircquk=jYZ6-j3cqug@mail.gmail.com>
-Subject: Re: [PATCH v7 0/4] Extend device_get_match_data() to struct bus_type
-To:     Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Peter Rosin <peda@axentia.se>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>
+X-Received: by 2002:a05:6a00:2d13:b0:682:24c1:2951 with SMTP id
+ fa19-20020a056a002d1300b0068224c12951mr4397426pfb.0.1692018753818; Mon, 14
+ Aug 2023 06:12:33 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 06:12:33 -0700
+In-Reply-To: <20230814125546.1492-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c6570d0602e1d030@google.com>
+Subject: Re: [syzbot] [dri?] [reiserfs?] WARNING: bad unlock balance in vkms_vblank_simulate
+From:   syzbot <syzbot+5671b8bcd5178fe56c23@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Biju,
+Hello,
 
-On Fri, Aug 11, 2023 at 4:46 PM Biju Das <biju.das.jz@bp.renesas.com> wrote:
-> > Subject: Re: [PATCH v7 0/4] Extend device_get_match_data() to struct
-> > bus_type
-> >
-> > On Fri, Aug 11, 2023 at 01:27:36PM +0000, Biju Das wrote:
-> > > > On Thu, Aug 10, 2023 at 09:05:10AM +0000, Biju Das wrote:
-> >
-> > ...
-> >
-> > > > I'm good with this approach, but make sure you checked the whole
-> > > > kernel source tree for a such.
-> > >
-> > > Checking against 16 is too short I guess??
-> > >
-> > > drivers/iio/imu/inv_mpu6050/inv_mpu_iio.h has 18 enums.
-> >
-> > So, what does prevent us from moving that tables to use pointers?
->
-> I think that will lead to ABI breakage(client->name vs id->name)
->
->         match = device_get_match_data(&client->dev);
->         if (match) {
->                 chip_type = (uintptr_t)match;
->                 name = client->name;
->         } else if (id) {
->                 chip_type = (enum inv_devices)
->                         id->driver_data;
->                 name = id->name;
->         } else {
->                 return -ENOSYS;
->         }
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+BUG: unable to handle kernel paging request in corrupted
 
-I don't consider that part of the ABI, as e.g. converting from board files
-to DT would change the name.
-In addition, using id->name breaks multiple instances of the same device.
+BUG: unable to handle page fault for address: 000000000000ff01
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0010) - not-present page
+PGD 68064067 P4D 68064067 PUD 6806d067 PMD 0 
+Oops: 0010 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 5037 Comm: kworker/1:3 Not tainted 6.5.0-rc5-next-20230808-syzkaller-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Workqueue:  0x0 (events)
+RIP: 0010:0xff01
+Code: Unable to access opcode bytes at 0xfed7.
+RSP: 0018:ffffc90003b2fc60 EFLAGS: 00010086
+RAX: ffff888024685940 RBX: 000000000000ff01 RCX: 0000000000000000
+RDX: ffff888021963b80 RSI: ffffffff812d721d RDI: 0000000000000007
+RBP: 0000000100040020 R08: 0000000000000007 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000100040020
+R13: 000000000000ff01 R14: 0000000100040020 R15: 000000000000ff01
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000000ff01 CR3: 000000001ef98000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ </TASK>
+Modules linked in:
+CR2: 000000000000ff01
+---[ end trace 0000000000000000 ]---
+RIP: 0010:0xff01
+Code: Unable to access opcode bytes at 0xfed7.
+RSP: 0018:ffffc90003b2fc60 EFLAGS: 00010086
 
-I applaud more unification ;-)
+RAX: ffff888024685940 RBX: 000000000000ff01 RCX: 0000000000000000
+RDX: ffff888021963b80 RSI: ffffffff812d721d RDI: 0000000000000007
+RBP: 0000000100040020 R08: 0000000000000007 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000100040020
+R13: 000000000000ff01 R14: 0000000100040020 R15: 000000000000ff01
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000000ff01 CR3: 000000001ef98000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-Gr{oetje,eeting}s,
 
-                        Geert
+Tested on:
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+commit:         71cd4fc4 Add linux-next specific files for 20230808
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=166b9763a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e36b5ba725f7349d
+dashboard link: https://syzkaller.appspot.com/bug?extid=5671b8bcd5178fe56c23
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10060e27a80000
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
