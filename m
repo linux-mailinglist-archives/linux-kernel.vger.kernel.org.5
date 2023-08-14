@@ -2,86 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AC377B937
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 992C077B947
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:01:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbjHNNAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 09:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34722 "EHLO
+        id S229574AbjHNNBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 09:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231180AbjHNM7o (ORCPT
+        with ESMTP id S231506AbjHNNA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 08:59:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D6EE52
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:59:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E6CC1650CC
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:59:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39074C433C9;
-        Mon, 14 Aug 2023 12:59:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692017982;
-        bh=LtHqR4yNgL7Btue5s0Mfv0totgeNy96+M5aN+/ZFmOA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Psu8xsv6NXwtYJGq1c6t9ibfBp5frUF8sSiU+GCqLVaVq7hNXs1EFCE1HTqYHlz/U
-         KXM9uxOfO0KmIzuBB/P9LhIQeLLGRvuKHJB8LUwm+yV9h+IsLTdx9COxZWdIu5vi0F
-         9k04ShCArOCiGQYNXyv4Jh+yw6DASwZMcDFH/xZwJIEE8rApUEV/x0IEVm9xii8yAc
-         dtXHjJhvXPLgd56dWDzh87AzFFeJ9pNcY99xNEwUB8t2muuPlsyfj17A+tHstQCRjb
-         SmbIAGUMmo7u0tvLJDD3QTruDgrWuxC5frFNuQlm4zHA0HbERcC3iLWNwHtPL7ieNT
-         6Gw3VjSDrYO9Q==
-Date:   Mon, 14 Aug 2023 13:59:37 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 18/25] ASoC: component: Add generic PCM copy ops
-Message-ID: <aa76de2e-0734-449f-bd46-afae43b8ff01@sirena.org.uk>
-References: <20230814115523.15279-1-tiwai@suse.de>
- <20230814115523.15279-19-tiwai@suse.de>
+        Mon, 14 Aug 2023 09:00:58 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E091C198B;
+        Mon, 14 Aug 2023 06:00:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1692018052; x=1723554052;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=x6U2lciyWZv16l3tw5CDh4m8yiw1CZFrKicNiibj/ZU=;
+  b=iz4Rh9+NKFMTXEapEiBEs9CbBKpBhy7cvH/kZl5eEnSTmdQxHhWV2H/h
+   sNk4M/GRfd5Qn7t23fuyrmPpp9PJ0YpbSHU7sqokcVd20dlB2+C/bikjL
+   jgvPlA7R3GTaE1kMiT3zTMS1mCCDQGjyjsD4jO1OBT8D7HBuhnu5tyANx
+   BQ1kV2ElOfCAqIYxPF2h7aRhJEcltMMCI82xz+Dxmkqs+1kodevl+M48U
+   S6z+4fqTza5GT0d4lV5wZHjtlbPADa53/hGzFGcyjd46UuG9xaImywdY9
+   UDISS8h7LYBSxgFoW+8bynnQrzbXcRg/M4xkmGVVUTDY4DfcrnTLLCPU0
+   w==;
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="asc'?scan'208";a="229705827"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Aug 2023 06:00:51 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 14 Aug 2023 06:00:50 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Mon, 14 Aug 2023 06:00:47 -0700
+Date:   Mon, 14 Aug 2023 14:00:09 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <stable@vger.kernel.org>, <patches@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <torvalds@linux-foundation.org>,
+        <akpm@linux-foundation.org>, <linux@roeck-us.net>,
+        <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
+        <rwarsow@gmx.de>, <conor@kernel.org>
+Subject: Re: [PATCH 6.4 000/206] 6.4.11-rc1 review
+Message-ID: <20230814-jimmy-march-7defc9fff112@wendy>
+References: <20230813211724.969019629@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="grZUougk9zWM0gy0"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="9y0SwpsL8LCJz6Od"
 Content-Disposition: inline
-In-Reply-To: <20230814115523.15279-19-tiwai@suse.de>
-X-Cookie: FACILITY REJECTED 100044200000
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230813211724.969019629@linuxfoundation.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---grZUougk9zWM0gy0
+--9y0SwpsL8LCJz6Od
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Aug 14, 2023 at 01:55:16PM +0200, Takashi Iwai wrote:
-> For following the ALSA PCM core change, a new PCM copy ops is added
-> toe ASoC component framework: snd_soc_component_driver receives the
-> copy ops, and snd_soc_pcm_component_copy() helper is provided.
+On Sun, Aug 13, 2023 at 11:16:10PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.4.11 release.
+> There are 206 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-Reviewed-by: Mark Brown <broonie@kernel.org>
+Tested-by: Conor Dooley <conor.dooley@microchip.com>
 
---grZUougk9zWM0gy0
+Thanks,
+Conor.
+
+--9y0SwpsL8LCJz6Od
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTaJTkACgkQJNaLcl1U
-h9CM6wf/T4m+QpauBQO3eir95Qj1RcDkydZq9yBmkQcHwR9GEJgvGMmK1jvm839j
-cxaYzdvdiwTvC27YarOEPKMhEG+g5Q854av7iyti5cwukGvXGwqmScCH7wbAQWTz
-eI81f1t7wa58sKuxUZ8s/DZG+l4ZEEdWB9LbN38/ZrB5qYlQ9jEujGUaA7wIEXEJ
-NlmlFHJywQ62z3tHIM4WPDJw+soRy4r9x7HX0yxwKdsHerk43Rai6pIrcWEz6Hii
-7mau+k/+PyrO/7yA0QuaG2kla/Kd/oVgNZMQ9kdIrSXl+TuDPpa0kba99K8WtXvl
-J2Ar6sfL4BxaEil3OjpT7H7ByuF1xA==
-=X7du
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNolWQAKCRB4tDGHoIJi
+0tdaAP4i3nafwH/sM8PrBKf8CRaa139GwZ01W000uBSNlQJK9gEAxIiLslXk7hig
+9fmzNbyg31OxBqnPG+99Y9OGMiP2QAI=
+=MsV5
 -----END PGP SIGNATURE-----
 
---grZUougk9zWM0gy0--
+--9y0SwpsL8LCJz6Od--
