@@ -2,280 +2,554 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5D577BB68
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA1C77BB6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbjHNOTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 10:19:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59430 "EHLO
+        id S230347AbjHNOUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 10:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbjHNOTB (ORCPT
+        with ESMTP id S232378AbjHNOUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 10:19:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 773E6FB
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:19:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692022740; x=1723558740;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   mime-version;
-  bh=c6j96miXYj2tHS5SzTJPQGyoshRTAlsk5g/vP3VldmU=;
-  b=fyw5HOZvmzTnfqze0rgkbPuRw5LrkwsFb1ZDDnL4VNbmWX+NEAXIk9mV
-   PVBbtpiTsS8uf4OVbhIfRy4Dqy/dBrHi/6M6mmMwmM4oAZgckdIF9zPiW
-   x6FnDTdToXN9AGY/2wKiDuame9Z4YgiFSZ2LwzcDxcploRiTf3QVHsV7L
-   5jnaTJNiOwV8kgj6GIe6Q5WsDvsNNK6WeEeNYdnkHyV69CRMNGhUyXhFE
-   LN5xr4DaBwaakECmVZFJeWQghOaFXbjrNaiMaiK6yMgm3rP/RZgGar3o9
-   OdOzmuIauauP4V+Lz+3F5sM6akEecVKncLYTmrMNn5UQS/Pq9nrOwmwQP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="370945868"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="370945868"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 07:19:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="798829324"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="798829324"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga008.fm.intel.com with ESMTP; 14 Aug 2023 07:19:00 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 14 Aug 2023 07:18:59 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 14 Aug 2023 07:18:59 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Mon, 14 Aug 2023 07:18:59 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.173)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Mon, 14 Aug 2023 07:18:59 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jVbXxrBKAyQ1WRW/+n6ih21RlmnLWZNXM2yKYjy4z6bdD2obPnERZU5NQ6M5k+AyvzzybUfYQ8V1L8V1J8ahwpeLSjf9IjXxsIxXRO3/E15XWIL50NP0NKNZiYqdTyHJ2rZZWsQERJ9v/clw03BKcvdlryNWZX6u0dnK2CrSRC4g88EIcBxxD/GNG0UTz461S1rUil5jqYTxBN2yCaLzhJYbEEzknQuncaTLGTf0aTdehW0s9Ya74BZyglreHWRez7RcOGy5fmyLVus5AXGyceg+25d8RXzMPFmwzBYD0ytmm5GLx71+JJpe++I/d5SpmAasRO5udumbogL8Q/2ExA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qT5KqV/G43QWRGdDac70k/AOVFTg3viWbf05ufDyPBc=;
- b=GNNfi3z/SBbiK4Gm1ih/GzZQYgZp4M5ltiO0q1Nla+A11tOzbfrxqqCI1qeMrFvYJXujCe/zxReHzp1qCe4/KDVIQUgD6LUY4oFGOwFqJJQd2NeE8lHLLa0QlvnrgEZfb58m5jEMxTLjXl78q5lkkqSv31mmQrkMJKkd7l+h0YdC+05GwZPu0CCRgRpIzq1PrJjvIUyVZPprqbAoumKgTZ03DRvVB6nLensKMYc+2FauNNawmLyNaUDH9bzH6+9QkGRPxx0CGmahXROUoVrsYGOHC8y7sB5SBC3Qo+XLvTTrcM8iwqPI7gHHEc7Bj03jv6iPPf2zbFjSDON6Vlr1YQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB6779.namprd11.prod.outlook.com (2603:10b6:510:1ca::17)
- by IA1PR11MB6492.namprd11.prod.outlook.com (2603:10b6:208:3a4::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.24; Mon, 14 Aug
- 2023 14:18:57 +0000
-Received: from PH8PR11MB6779.namprd11.prod.outlook.com
- ([fe80::73c6:1231:e700:924]) by PH8PR11MB6779.namprd11.prod.outlook.com
- ([fe80::73c6:1231:e700:924%4]) with mapi id 15.20.6678.022; Mon, 14 Aug 2023
- 14:18:56 +0000
-Date:   Mon, 14 Aug 2023 22:18:45 +0800
-From:   kernel test robot <oliver.sang@intel.com>
-To:     Tio Zhang <tiozhang@didiglobal.com>
-CC:     <oe-lkp@lists.linux.dev>, <lkp@intel.com>,
-        <linux-kernel@vger.kernel.org>, <tj@kernel.org>,
-        <jiangshanlai@gmail.com>, <zyhtheonly@gmail.com>,
-        <zyhtheonly@yeah.net>, <tiozhang@didiglobal.com>,
-        <oliver.sang@intel.com>
-Subject: Re: [PATCH] workqueue: let WORKER_CPU_INTENSIVE be included in
- watchdog
-Message-ID: <202308142140.cf9be57a-oliver.sang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230811102250.GA7959@didi-ThinkCentre-M930t-N000>
-X-ClientProxiedBy: KL1PR02CA0021.apcprd02.prod.outlook.com
- (2603:1096:820:d::8) To PH8PR11MB6779.namprd11.prod.outlook.com
- (2603:10b6:510:1ca::17)
+        Mon, 14 Aug 2023 10:20:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D611AB
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:19:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692022766;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wCGjePyq8SnBxyVKGc55iGCbmlzZk5Uvv50+ixu/EMo=;
+        b=D2kI+P8NTeuW7dj5rE0v/AvHAFoZkBulRnjvPat3aGg2X2CJvjagHDxeByevzR5yGl22cX
+        iqE4EpAnMP4xqPMKs6qFT4yiPVEngrlXJNeEg4Y61qtaT7Vc4OBMiciv8xfgkbF/yebGEt
+        YUqZY4agGmWGAHisH1H1vE+QSgBGJNQ=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-694-BQ9OZpCDO4qhpx-HlNU_Ow-1; Mon, 14 Aug 2023 10:19:25 -0400
+X-MC-Unique: BQ9OZpCDO4qhpx-HlNU_Ow-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-4fe4f5ffe2aso857860e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:19:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692022763; x=1692627563;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wCGjePyq8SnBxyVKGc55iGCbmlzZk5Uvv50+ixu/EMo=;
+        b=S5qlFp7ykcFDtvf2WQxCx4xEV+upkXB82f2HlEJDtoOYq5aux69RNqCeq4Frdu7RmZ
+         tvJInVepK9THuLpu2oBwomuyGgmsE0Qv3w6py07S28tL9UnLBz5hi0aXo3Loaayt00sA
+         oPqbgrI5M/lHfGGIG5w/4uz6L/RVjTlzVLT+cEsGF4iKjFzLsM8NWSuGjRsHAranZnKJ
+         a1emHf3TqF+gF5VXUNlaecL6ho21EkDpydQ1FgDtdGRIyoiSbC6UssH3D0H+g6MKXJy4
+         dUitK5yKvXHigbIke4W8FtIhsZhqQjVPjV9YGjMEtGVFSMuNsA6Qm6rHUEGoxRr9PyZv
+         cBOw==
+X-Gm-Message-State: AOJu0Yz8/kl1kspOtzaU5yACtTiHmu/kTIiNXiieyzdwmkN9+AzTxZEG
+        T+mNYyDmMy031MgSP8QZ8mHZgIzHGaoNoQVNVIfjPmUD/VUEScm1MrVlljSQeIxAq8UGN2j/XvV
+        iLj8/WNDtJg+VG2Q9m1SWcWc5qoK3v9aPLwmn2+eY
+X-Received: by 2002:a2e:b808:0:b0:2b9:e10b:a511 with SMTP id u8-20020a2eb808000000b002b9e10ba511mr5641030ljo.0.1692022762721;
+        Mon, 14 Aug 2023 07:19:22 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFT6DT+p03sdBZ97pjPkvopv3aZou63+2Tyy7AXKbzdtEqVwDmlW8saOIJOW6IavJLQTQOX1cB6LWfqdNGmV40=
+X-Received: by 2002:a2e:b808:0:b0:2b9:e10b:a511 with SMTP id
+ u8-20020a2eb808000000b002b9e10ba511mr5640993ljo.0.1692022761937; Mon, 14 Aug
+ 2023 07:19:21 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB6779:EE_|IA1PR11MB6492:EE_
-X-MS-Office365-Filtering-Correlation-Id: 256e5fc8-1d59-4c2a-8dc1-08db9cd16551
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YnJqiQb/8u5aSfbuUPtrBvfqqPrGZmSIvDjLMCEPn8B3eXKElCPFjF3ElOd/4HySGs1z6HbqQEjNAyt3Qw+AUBqpx90sgdGXFqlP4kDW4769dIKgm/67D9Mg1fWMGof1tlCUYTRqFkZHmWeaSKHEHJ4DNrxlTskOdUavx0X85P5sPv/iFPNZD26FeF3v8tKlzGqeI3w4mvJeKQuVMN1FVnMDidB8/Y4nCkDsWIVPEid8leTmpWeSSx1NI591ElFuyXe5Z58hBTrnY0Qz92io37JRY94GmTPIU2Nma/Jua/FZ/vYrz90yfIdpFvfb6y3qiAI+rIf4bni9Z2rcdBWPL14jQsHE/V36oDP5LYBLQluuGzo4a5Eav47jgP//W6JI0une0kpX049ZuCo8GlCXQaLBHMXm/B4HGaFky3Utwuy5VrSiH7IGE+hmr61g8vwOfFk4vqPROH0nAsULCHG4O3kQqkgmY/aurnEQmHE5EMcfziA98ItHXOdkZDvv1wPs4QeU1mOW53S7YorA169OYeS+NL7MRUXJtSN1PbxCXF4EZvx2EFacZ7JsImcv6R6LiFoBa7KNg5y/EwN0xSPxMg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB6779.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(39860400002)(366004)(136003)(346002)(396003)(451199021)(186006)(1800799006)(36756003)(5660300002)(86362001)(2906002)(83380400001)(66556008)(6916009)(4326008)(316002)(66946007)(66476007)(38100700002)(41300700001)(26005)(1076003)(107886003)(6512007)(2616005)(6486002)(6506007)(8936002)(8676002)(45080400002)(6666004)(82960400001)(966005)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VmP+W7FGTW/3YSBSQNRwpaH9USO4DA4aC7a45LBodi2yMd58ONQejvLa1u95?=
- =?us-ascii?Q?EnOlbPmeaFoK0dUUJZOoIbo5VjqSg6DmisinyWGL8sKoNo++NrL4qrR5nVt4?=
- =?us-ascii?Q?YjaLxxP+dx/Ttv/W0VZXoJC1Hl8h2/FjZr4SHAjDWeuUlCMIwPUc6mWJEL6l?=
- =?us-ascii?Q?cKIlWObqL/OzqZ59+Ovx2MPyENZ+dZkz/x15Khrm47VVIlvLizLpmteaEZSW?=
- =?us-ascii?Q?YVCpIIAirkzjTED76O/WOqRUnOiJ6uwrqcKShNf7AbMtg1zNuJHFalV8AioZ?=
- =?us-ascii?Q?qyxblChRbIhv24gxTD1vvZwo2hlaw6WTL+qEUgt/i9g8shwKUz7Oc18reFe7?=
- =?us-ascii?Q?jFQwuJJjwAxY/3xRWMjwndRB/Sa8AI2vFOE7w7B/K0JwoGUr8e8RfXxEoU2o?=
- =?us-ascii?Q?zcTqEp0x5Up1yHC7fE1PpUWzdBIcjvPjb06k8Jey2i9YG85f9xyI/aiPNDtv?=
- =?us-ascii?Q?VilNxz46Y4PeYPS2EIU42gcRdUnieF6f13a12uR3D2zwcqnYs+ekN65NMuZE?=
- =?us-ascii?Q?ObGkanUCPWNddSouWIvy1SyownDU1aS4zlHDLTmNC3fdYsIWH+BaKPY6VT10?=
- =?us-ascii?Q?Td5dXD2guuH0BvLTmLV9OYakHHAAZaxiZ7QjLyMBrZwpFDjq8Flflxipr05c?=
- =?us-ascii?Q?agaWbdVylyMpb6QLCNr6O/G4714DO7kdNcR5nVLZSf9TFSEJggS/jkcci1WJ?=
- =?us-ascii?Q?PrnPmzpI91W3u9J8OvjbkvyrMX06a0+O/1ICZwPT9dSm1hpz7MeiF1KUA/+j?=
- =?us-ascii?Q?s+K4KsYSEmj2rjrC/TpZMNg5a/nnoG7/+69yaf8i3xMfBn4k6gEK+ESrjIK/?=
- =?us-ascii?Q?naHYgx7lisMuH3nWOAhLnRcX2Sc9xxIlbthFiXoHDYFlyH/IDiSF1FG5JuWw?=
- =?us-ascii?Q?Tn8HwR1PCJIrGJF939fZGMKUcVfOif6R06jY9HwlVb4ob9e5cEdoDCF18bK3?=
- =?us-ascii?Q?bOXqGcM4n4s+P5QdTNNJbxFskkoZjBF+aVFl/kpQJNjlckEkPw1dusZuat8l?=
- =?us-ascii?Q?6rrTI7iI1VTU2Bdk2S41F+CJZTBxCaPCLnE1Bom2S2pgFiXvbHtxK2ivEWWc?=
- =?us-ascii?Q?kSHEyjYtADMXb3/bS1iDpmuf5kktg6v9Dhz0MDa7ZOqdsN0WO82JuWgKwByn?=
- =?us-ascii?Q?AnUF1hR0PEgq/Z9a6yKgC1hmQYzLAgkzQDNPMvYnMVAiPjLbBSYyyd/AL7N/?=
- =?us-ascii?Q?b5a1HA7YXZ7mWdN71/lc+j7yyJ4Z0nsR/3Wm47FIHszL6KPFV5ennYROQE+A?=
- =?us-ascii?Q?3/wdL6AEehJa7E0JN7wXpaTteV+cv1Tvlojekr1DROG+yDUpNK0HbAqDoMw3?=
- =?us-ascii?Q?S39n5qfl6mPra9UZS/6pFTN3EMqYWA/Pd9D+YlQSs4rHm3XY3VJ6gd1ztUeK?=
- =?us-ascii?Q?1hqYSrsxIkdJanhak2/kNM1tDcmnJ8/a/YTRwM/VCcusILwLwJAjRWIjiLnQ?=
- =?us-ascii?Q?1h6BGSx4L8a4IS0JPOS4MnfzKON8nEL+7gVBCNbJGZt3FENhMZZYYjPK0ofe?=
- =?us-ascii?Q?btHP+mmuGjunnvRGPgJD7Av5XMZ2/juu+u6QZDNwUGxE62p2S9qABiTWqs6u?=
- =?us-ascii?Q?lASxZ12/zgcoVRO/DXcYf4UapyNaykhO1ZXh7sFxUGELoyo0PXALNAZNmf5d?=
- =?us-ascii?Q?9g=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 256e5fc8-1d59-4c2a-8dc1-08db9cd16551
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6779.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 14:18:56.8847
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: y12o79kU0+thqOqfWhx3E0BQtk1xDONPnga1XwLXMhbxR8l4rijcVJvf0eIPaYc95RkCry+f5pMlLeXeVGj3dw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6492
-X-OriginatorOrg: intel.com
+References: <20230806213107.GFZNARG6moWpFuSJ9W@fat_crate.local>
+ <CACO55tvZD5U4J8DawFTRVnV-dLYLngfhuqO29_sWNEGofKfnBg@mail.gmail.com>
+ <20230807150521.GGZNEIMQ9rsyCmkpoA@fat_crate.local> <CACO55tvWuSdwdirj7S3Dk-r4NAw8jC8g5RHKFd62WXi43iQP-w@mail.gmail.com>
+ <87fs4sfu54.wl-tiwai@suse.de> <CACO55tszwFEgt=8xn4auAE7KJVs3ybGG68OzL9HJt19XGVhhHQ@mail.gmail.com>
+ <874jl8fngo.wl-tiwai@suse.de> <CACO55ts9YWF7nLi3Zs4xKySpdHyUFgf4r566cKx3FwNTCaz0Sg@mail.gmail.com>
+ <87wmy4e4uk.wl-tiwai@suse.de> <877cq4e0j5.wl-tiwai@suse.de>
+ <87r0occhtw.wl-tiwai@suse.de> <CACO55tvbLhn5vC=CpcZbuFEj2cja1=Nt=BKsZmU3+SKgbxoE7Q@mail.gmail.com>
+ <87zg2t23js.wl-tiwai@suse.de> <CACO55tvPGx7npsXg+tpDoz=KXQBs4Pwz3h9Bie-vHithcHV5eA@mail.gmail.com>
+ <CACO55tvD_t4y8s_9gj7vO7zOvsYU1iF=5+a4M2g7_qMH9g3EKg@mail.gmail.com> <87r0o521d2.wl-tiwai@suse.de>
+In-Reply-To: <87r0o521d2.wl-tiwai@suse.de>
+From:   Karol Herbst <kherbst@redhat.com>
+Date:   Mon, 14 Aug 2023 16:19:10 +0200
+Message-ID: <CACO55tuvzXkUSOQh8NEwC6nEUCWYVfkUmmFWHg_miWcAUWvPsw@mail.gmail.com>
+Subject: Re: 2b5d1c29f6c4 ("drm/nouveau/disp: PIOR DP uses GPIO for HPD, not
+ PMGR AUX interrupts")
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     nouveau@lists.freedesktop.org, lkml <linux-kernel@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org, regressions@leemhuis.info,
+        Borislav Petkov <bp@alien8.de>, Ben Skeggs <bskeggs@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 14, 2023 at 3:35=E2=80=AFPM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Mon, 14 Aug 2023 15:19:11 +0200,
+> Karol Herbst wrote:
+> >
+> > On Mon, Aug 14, 2023 at 2:56=E2=80=AFPM Karol Herbst <kherbst@redhat.co=
+m> wrote:
+> > >
+> > > On Mon, Aug 14, 2023 at 2:48=E2=80=AFPM Takashi Iwai <tiwai@suse.de> =
+wrote:
+> > > >
+> > > > On Mon, 14 Aug 2023 14:38:18 +0200,
+> > > > Karol Herbst wrote:
+> > > > >
+> > > > > On Wed, Aug 9, 2023 at 6:16=E2=80=AFPM Takashi Iwai <tiwai@suse.d=
+e> wrote:
+> > > > > >
+> > > > > > On Wed, 09 Aug 2023 16:46:38 +0200,
+> > > > > > Takashi Iwai wrote:
+> > > > > > >
+> > > > > > > On Wed, 09 Aug 2023 15:13:23 +0200,
+> > > > > > > Takashi Iwai wrote:
+> > > > > > > >
+> > > > > > > > On Wed, 09 Aug 2023 14:19:23 +0200,
+> > > > > > > > Karol Herbst wrote:
+> > > > > > > > >
+> > > > > > > > > On Wed, Aug 9, 2023 at 1:46=E2=80=AFPM Takashi Iwai <tiwa=
+i@suse.de> wrote:
+> > > > > > > > > >
+> > > > > > > > > > On Wed, 09 Aug 2023 13:42:09 +0200,
+> > > > > > > > > > Karol Herbst wrote:
+> > > > > > > > > > >
+> > > > > > > > > > > On Wed, Aug 9, 2023 at 11:22=E2=80=AFAM Takashi Iwai =
+<tiwai@suse.de> wrote:
+> > > > > > > > > > > >
+> > > > > > > > > > > > On Tue, 08 Aug 2023 12:39:32 +0200,
+> > > > > > > > > > > > Karol Herbst wrote:
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > On Mon, Aug 7, 2023 at 5:05=E2=80=AFPM Borislav P=
+etkov <bp@alien8.de> wrote:
+> > > > > > > > > > > > > >
+> > > > > > > > > > > > > > On Mon, Aug 07, 2023 at 01:49:42PM +0200, Karol=
+ Herbst wrote:
+> > > > > > > > > > > > > > > in what way does it stop? Just not progressin=
+g? That would be kinda
+> > > > > > > > > > > > > > > concerning. Mind tracing with what arguments =
+`nvkm_uevent_add` is
+> > > > > > > > > > > > > > > called with and without that patch?
+> > > > > > > > > > > > > >
+> > > > > > > > > > > > > > Well, me dumping those args I guess made the bo=
+x not freeze before
+> > > > > > > > > > > > > > catching a #PF over serial. Does that help?
+> > > > > > > > > > > > > >
+> > > > > > > > > > > > > > ....
+> > > > > > > > > > > > > > [    3.410135] Unpacking initramfs...
+> > > > > > > > > > > > > > [    3.416319] software IO TLB: mapped [mem 0x0=
+0000000a877d000-0x00000000ac77d000] (64MB)
+> > > > > > > > > > > > > > [    3.418227] Initialise system trusted keyrin=
+gs
+> > > > > > > > > > > > > > [    3.432273] workingset: timestamp_bits=3D56 =
+max_order=3D22 bucket_order=3D0
+> > > > > > > > > > > > > > [    3.439006] ntfs: driver 2.1.32 [Flags: R/W]=
+.
+> > > > > > > > > > > > > > [    3.443368] fuse: init (API version 7.38)
+> > > > > > > > > > > > > > [    3.447601] 9p: Installing v9fs 9p2000 file =
+system support
+> > > > > > > > > > > > > > [    3.453223] Key type asymmetric registered
+> > > > > > > > > > > > > > [    3.457332] Asymmetric key parser 'x509' reg=
+istered
+> > > > > > > > > > > > > > [    3.462236] Block layer SCSI generic (bsg) d=
+river version 0.4 loaded (major 250)
+> > > > > > > > > > > > > > [    3.475865] efifb: probing for efifb
+> > > > > > > > > > > > > > [    3.479458] efifb: framebuffer at 0xf9000000=
+, using 1920k, total 1920k
+> > > > > > > > > > > > > > [    3.485969] efifb: mode is 800x600x32, linel=
+ength=3D3200, pages=3D1
+> > > > > > > > > > > > > > [    3.491872] efifb: scrolling: redraw
+> > > > > > > > > > > > > > [    3.495438] efifb: Truecolor: size=3D8:8:8:8=
+, shift=3D24:16:8:0
+> > > > > > > > > > > > > > [    3.502349] Console: switching to colour fra=
+me buffer device 100x37
+> > > > > > > > > > > > > > [    3.509564] fb0: EFI VGA frame buffer device
+> > > > > > > > > > > > > > [    3.514013] ACPI: \_PR_.CP00: Found 4 idle s=
+tates
+> > > > > > > > > > > > > > [    3.518850] ACPI: \_PR_.CP01: Found 4 idle s=
+tates
+> > > > > > > > > > > > > > [    3.523687] ACPI: \_PR_.CP02: Found 4 idle s=
+tates
+> > > > > > > > > > > > > > [    3.528515] ACPI: \_PR_.CP03: Found 4 idle s=
+tates
+> > > > > > > > > > > > > > [    3.533346] ACPI: \_PR_.CP04: Found 4 idle s=
+tates
+> > > > > > > > > > > > > > [    3.538173] ACPI: \_PR_.CP05: Found 4 idle s=
+tates
+> > > > > > > > > > > > > > [    3.543003] ACPI: \_PR_.CP06: Found 4 idle s=
+tates
+> > > > > > > > > > > > > > [    3.544219] Freeing initrd memory: 8196K
+> > > > > > > > > > > > > > [    3.547844] ACPI: \_PR_.CP07: Found 4 idle s=
+tates
+> > > > > > > > > > > > > > [    3.609542] Serial: 8250/16550 driver, 4 por=
+ts, IRQ sharing enabled
+> > > > > > > > > > > > > > [    3.616224] 00:05: ttyS0 at I/O 0x3f8 (irq =
+=3D 4, base_baud =3D 115200) is a 16550A
+> > > > > > > > > > > > > > [    3.625552] serial 0000:00:16.3: enabling de=
+vice (0000 -> 0003)
+> > > > > > > > > > > > > > [    3.633034] 0000:00:16.3: ttyS1 at I/O 0xf0a=
+0 (irq =3D 17, base_baud =3D 115200) is a 16550A
+> > > > > > > > > > > > > > [    3.642451] Linux agpgart interface v0.103
+> > > > > > > > > > > > > > [    3.647141] ACPI: bus type drm_connector reg=
+istered
+> > > > > > > > > > > > > > [    3.653261] Console: switching to colour dum=
+my device 80x25
+> > > > > > > > > > > > > > [    3.659092] nouveau 0000:03:00.0: vgaarb: de=
+activate vga console
+> > > > > > > > > > > > > > [    3.665174] nouveau 0000:03:00.0: NVIDIA GT2=
+18 (0a8c00b1)
+> > > > > > > > > > > > > > [    3.784585] nouveau 0000:03:00.0: bios: vers=
+ion 70.18.83.00.08
+> > > > > > > > > > > > > > [    3.792244] nouveau 0000:03:00.0: fb: 512 Mi=
+B DDR3
+> > > > > > > > > > > > > > [    3.948786] nouveau 0000:03:00.0: DRM: VRAM:=
+ 512 MiB
+> > > > > > > > > > > > > > [    3.953755] nouveau 0000:03:00.0: DRM: GART:=
+ 1048576 MiB
+> > > > > > > > > > > > > > [    3.959073] nouveau 0000:03:00.0: DRM: TMDS =
+table version 2.0
+> > > > > > > > > > > > > > [    3.964808] nouveau 0000:03:00.0: DRM: DCB v=
+ersion 4.0
+> > > > > > > > > > > > > > [    3.969938] nouveau 0000:03:00.0: DRM: DCB o=
+utp 00: 02000360 00000000
+> > > > > > > > > > > > > > [    3.976367] nouveau 0000:03:00.0: DRM: DCB o=
+utp 01: 02000362 00020010
+> > > > > > > > > > > > > > [    3.982792] nouveau 0000:03:00.0: DRM: DCB o=
+utp 02: 028003a6 0f220010
+> > > > > > > > > > > > > > [    3.989223] nouveau 0000:03:00.0: DRM: DCB o=
+utp 03: 01011380 00000000
+> > > > > > > > > > > > > > [    3.995647] nouveau 0000:03:00.0: DRM: DCB o=
+utp 04: 08011382 00020010
+> > > > > > > > > > > > > > [    4.002076] nouveau 0000:03:00.0: DRM: DCB o=
+utp 05: 088113c6 0f220010
+> > > > > > > > > > > > > > [    4.008511] nouveau 0000:03:00.0: DRM: DCB c=
+onn 00: 00101064
+> > > > > > > > > > > > > > [    4.014151] nouveau 0000:03:00.0: DRM: DCB c=
+onn 01: 00202165
+> > > > > > > > > > > > > > [    4.021710] nvkm_uevent_add: uevent: 0xffff8=
+88100242100, event: 0xffff8881022de1a0, id: 0x0, bits: 0x1, func: 0x0000000=
+000000000
+> > > > > > > > > > > > > > [    4.033680] nvkm_uevent_add: uevent: 0xffff8=
+88100242300, event: 0xffff8881022de1a0, id: 0x0, bits: 0x1, func: 0x0000000=
+000000000
+> > > > > > > > > > > > > > [    4.045429] nouveau 0000:03:00.0: DRM: MM: u=
+sing COPY for buffer copies
+> > > > > > > > > > > > > > [    4.052059] stackdepot: allocating hash tabl=
+e of 1048576 entries via kvcalloc
+> > > > > > > > > > > > > > [    4.067191] nvkm_uevent_add: uevent: 0xffff8=
+88100242800, event: 0xffff888104b3e260, id: 0x0, bits: 0x1, func: 0x0000000=
+000000000
+> > > > > > > > > > > > > > [    4.078936] nvkm_uevent_add: uevent: 0xffff8=
+88100242900, event: 0xffff888104b3e260, id: 0x1, bits: 0x1, func: 0x0000000=
+000000000
+> > > > > > > > > > > > > > [    4.090514] nvkm_uevent_add: uevent: 0xffff8=
+88100242a00, event: 0xffff888102091f28, id: 0x1, bits: 0x3, func: 0xfffffff=
+f8177b700
+> > > > > > > > > > > > > > [    4.102118] tsc: Refined TSC clocksource cal=
+ibration: 3591.345 MHz
+> > > > > > > > > > > > > > [    4.108342] clocksource: tsc: mask: 0xffffff=
+ffffffffff max_cycles: 0x33c4635c383, max_idle_ns: 440795314831 ns
+> > > > > > > > > > > > > > [    4.108401] nvkm_uevent_add: uevent: 0xffff8=
+881020b6000, event: 0xffff888102091f28, id: 0xf, bits: 0x3, func: 0xfffffff=
+f8177b700
+> > > > > > > > > > > > > > [    4.129864] clocksource: Switched to clockso=
+urce tsc
+> > > > > > > > > > > > > > [    4.131478] [drm] Initialized nouveau 1.3.1 =
+20120801 for 0000:03:00.0 on minor 0
+> > > > > > > > > > > > > > [    4.143806] BUG: kernel NULL pointer derefer=
+ence, address: 0000000000000020
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > ahh, that would have been good to know :) Mind fi=
+guring out what's
+> > > > > > > > > > > > > exactly NULL inside nvif_object_mthd? Or rather w=
+hat line
+> > > > > > > > > > > > > `nvif_object_mthd+0x136` belongs to, then it shou=
+ld be easy to figure
+> > > > > > > > > > > > > out what's wrong here.
+> > > > > > > > > > > >
+> > > > > > > > > > > > FWIW, we've hit the bug on openSUSE Tumbleweed 6.4.=
+8 kernel:
+> > > > > > > > > > > >   https://bugzilla.suse.com/show_bug.cgi?id=3D12140=
+73
+> > > > > > > > > > > > Confirmed that reverting the patch cured the issue.
+> > > > > > > > > > > >
+> > > > > > > > > > > > FWIW, loading nouveau showed a refcount_t warning j=
+ust before the NULL
+> > > > > > > > > > > > dereference:
+> > > > > > > > > > > >
+> > > > > > > > > > >
+> > > > > > > > > > > mh, I wonder if one of those `return -EINVAL;` branch=
+es is hit where
+> > > > > > > > > > > it wasn't before. Could some of you check if `nvkm_uc=
+onn_uevent`
+> > > > > > > > > > > returns -EINVAL with that patch where it didn't befor=
+e? I wonder if
+> > > > > > > > > > > it's the `if (&outp->head =3D=3D &conn->disp->outps) =
+return -EINVAL;` and
+> > > > > > > > > > > if remove that fixes the crash?
+> > > > > > > > > >
+> > > > > > > > > > Please give a patch, then I can build a kernel and let =
+the reporter
+> > > > > > > > > > testing it :)
+> > > > > > > > > >
+> > > > > > > > >
+> > > > > > > > > attached a patch.
+> > > > > > > >
+> > > > > > > > Thanks.  Now I'm building a test kernel and asked the repor=
+ter for
+> > > > > > > > testing it.
+> > > > > > >
+> > > > > > > And the result was negative, the boot still hanged up.
+> > > > > >
+> > > > > > And below is another log from the 6.4.8 kernel with KASAN-enabl=
+ed.
+> > > > > > Some memory corruption seems happening.
+> > > > > >
+> > > > > > [  228.422919] nouveau 0000:02:00.0: DRM: DCB conn 01: 0000a146
+> > > > > > [  228.428674] nouveau 0000:02:00.0: DRM: MM: using M2MF for bu=
+ffer copies
+> > > > > > [  228.436682] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > > > [  228.436698] BUG: KASAN: slab-use-after-free in drm_connector=
+_list_iter_next+0x176/0x320
+> > > > > > [  228.436715] Read of size 4 at addr ffff8881731ce050 by task =
+modprobe/6174
+> > > > > >
+> > > > > > [  228.436728] CPU: 0 PID: 6174 Comm: modprobe Not tainted 6.4.=
+9-4.g5b9ad20-default #1 openSUSE Tumbleweed (unreleased) d0a6841e538b38d175=
+13f6942fb58770372b54fd
+> > > > > > [  228.436740] Hardware name: Apple Inc. MacBook5,1/Mac-F42D89C=
+8, BIOS     MB51.88Z.007D.B03.0904271443 04/27/09
+> > > > > > [  228.436747] Call Trace:
+> > > > > > [  228.436753]  <TASK>
+> > > > > > [  228.436759]  dump_stack_lvl+0x47/0x60
+> > > > > > [  228.436773]  print_report+0xcf/0x640
+> > > > > > [  228.436784]  ? __pfx__raw_spin_lock_irqsave+0x10/0x10
+> > > > > > [  228.436797]  ? drm_connector_list_iter_next+0x176/0x320
+> > > > > > [  228.436807]  kasan_report+0xb1/0xe0
+> > > > > > [  228.436817]  ? drm_connector_list_iter_next+0x176/0x320
+> > > > > > [  228.436828]  kasan_check_range+0x105/0x1b0
+> > > > > > [  228.436837]  drm_connector_list_iter_next+0x176/0x320
+> > > > > > [  228.436848]  ? __pfx_drm_connector_list_iter_next+0x10/0x10
+> > > > > > [  228.436859]  ? __kmem_cache_free+0x18a/0x2c0
+> > > > > > [  228.436868]  nouveau_connector_create+0x170/0x1cd0 [nouveau =
+d0287dfba9984367c331e8149297392f67038244]
+> > > > > > [  228.437540]  ? drm_encoder_init+0xbe/0x140
+> > > > > > [  228.437554]  ? __pfx_nouveau_connector_create+0x10/0x10 [nou=
+veau d0287dfba9984367c331e8149297392f67038244]
+> > > > > > [  228.438137]  ? nvif_outp_ctor+0x2d9/0x430 [nouveau d0287dfba=
+9984367c331e8149297392f67038244]
+> > > > > > [  228.438236]  nv50_display_create+0xe54/0x30d0 [nouveau d0287=
+dfba9984367c331e8149297392f67038244]
+> > > > > > [  228.438236]  nouveau_display_create+0x903/0x10c0 [nouveau d0=
+287dfba9984367c331e8149297392f67038244]
+> > > > > > [  228.438236]  nouveau_drm_device_init+0x3a4/0x19e0 [nouveau d=
+0287dfba9984367c331e8149297392f67038244]
+> > > > > > [  228.438236]  ? __pfx_nouveau_drm_device_init+0x10/0x10 [nouv=
+eau d0287dfba9984367c331e8149297392f67038244]
+> > > > > > [  228.438236]  ? __pfx_pci_update_current_state+0x10/0x10
+> > > > > > [  228.438236]  ? __kasan_check_byte+0x13/0x50
+> > > > > > [  228.438236]  nouveau_drm_probe+0x1a2/0x6b0 [nouveau d0287dfb=
+a9984367c331e8149297392f67038244]
+> > > > > > [  228.438236]  ? __pfx__raw_spin_lock_irqsave+0x10/0x10
+> > > > > > [  228.438236]  ? __pfx_nouveau_drm_probe+0x10/0x10 [nouveau d0=
+287dfba9984367c331e8149297392f67038244]
+> > > > > > [  228.438236]  ? __pfx_nouveau_drm_probe+0x10/0x10 [nouveau d0=
+287dfba9984367c331e8149297392f67038244]
+> > > > > > [  228.438236]  local_pci_probe+0xdd/0x190
+> > > > > > [  228.438236]  pci_device_probe+0x23a/0x770
+> > > > > > [  228.438236]  ? kernfs_add_one+0x2d8/0x450
+> > > > > > [  228.438236]  ? kernfs_get.part.0+0x4c/0x70
+> > > > > > [  228.438236]  ? __pfx_pci_device_probe+0x10/0x10
+> > > > > > [  228.438236]  ? kernfs_create_link+0x15f/0x230
+> > > > > > [  228.438236]  ? kernfs_put+0x1c/0x40
+> > > > > > [  228.438236]  ? sysfs_do_create_link_sd+0x8e/0x100
+> > > > > > [  228.438236]  really_probe+0x3e2/0xb80
+> > > > > > [  228.438236]  __driver_probe_device+0x18c/0x450
+> > > > > > [  228.438236]  ? __pfx_klist_iter_init_node+0x10/0x10
+> > > > > > [  228.438236]  driver_probe_device+0x4a/0x120
+> > > > > > [  228.438236]  __driver_attach+0x1e1/0x4a0
+> > > > > > [  228.438236]  ? __pfx___driver_attach+0x10/0x10
+> > > > > > [  228.438236]  bus_for_each_dev+0xf4/0x170
+> > > > > > [  228.438236]  ? __pfx__raw_spin_lock+0x10/0x10
+> > > > > > [  228.438236]  ? __pfx_bus_for_each_dev+0x10/0x10
+> > > > > > [  228.438236]  bus_add_driver+0x29e/0x570
+> > > > > > [  228.438236]  ? __pfx_nouveau_drm_init+0x10/0x10 [nouveau d02=
+87dfba9984367c331e8149297392f67038244]
+> > > > > > [  228.438236]  ? __pfx_nouveau_drm_init+0x10/0x10 [nouveau d02=
+87dfba9984367c331e8149297392f67038244]
+> > > > > > [  228.438236]  driver_register+0x134/0x460
+> > > > > > [  228.438236]  ? __pfx_nouveau_drm_init+0x10/0x10 [nouveau d02=
+87dfba9984367c331e8149297392f67038244]
+> > > > > > [  228.438236]  do_one_initcall+0x8e/0x310
+> > > > > > [  228.438236]  ? __pfx_do_one_initcall+0x10/0x10
+> > > > > > [  228.438236]  ? __kmem_cache_alloc_node+0x1b9/0x3b0
+> > > > > > [  228.438236]  ? do_init_module+0x4b/0x730
+> > > > > > [  228.438236]  ? kasan_unpoison+0x44/0x70
+> > > > > > [  228.438236]  do_init_module+0x238/0x730
+> > > > > > [  228.438236]  load_module+0x5b41/0x6dd0
+> > > > > > [  228.438236]  ? __pfx_load_module+0x10/0x10
+> > > > > > [  228.438236]  ? _raw_spin_lock+0x85/0xe0
+> > > > > > [  228.438236]  ? __pfx__raw_spin_lock+0x10/0x10
+> > > > > > [  228.438236]  ? find_vmap_area+0xab/0xe0
+> > > > > > [  228.438236]  ? __do_sys_init_module+0x1df/0x210
+> > > > > > [  228.438236]  __do_sys_init_module+0x1df/0x210
+> > > > > > [  228.438236]  ? __pfx___do_sys_init_module+0x10/0x10
+> > > > > > [  228.438236]  ? syscall_exit_to_user_mode+0x1b/0x40
+> > > > > > [  228.438236]  ? do_syscall_64+0x6c/0x90
+> > > > > > [  228.438236]  ? __pfx_ksys_read+0x10/0x10
+> > > > > > [  228.438236]  do_syscall_64+0x60/0x90
+> > > > > > [  228.438236]  ? syscall_exit_to_user_mode+0x1b/0x40
+> > > > > > [  228.438236]  ? do_syscall_64+0x6c/0x90
+> > > > > > [  228.438236]  ? syscall_exit_to_user_mode+0x1b/0x40
+> > > > > > [  228.438236]  ? do_syscall_64+0x6c/0x90
+> > > > > > [  228.438236]  ? exc_page_fault+0x62/0xd0
+> > > > > > [  228.438236]  entry_SYSCALL_64_after_hwframe+0x77/0xe1
+> > > > > > [  228.438236] RIP: 0033:0x7f91ce119a5e
+> > > > > > [  228.438236] Code: c3 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 =
+90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 66 90 49 89 ca b8 af 00 00 =
+00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 7a 03 0d 00 f7 d8 64 89 01 4=
+8
+> > > > > > [  228.438236] RSP: 002b:00007ffce2813538 EFLAGS: 00000246 ORIG=
+_RAX: 00000000000000af
+> > > > > > [  228.438236] RAX: ffffffffffffffda RBX: 00005588462def10 RCX:=
+ 00007f91ce119a5e
+> > > > > > [  228.438236] RDX: 00005588462e39c0 RSI: 0000000000fda8b2 RDI:=
+ 00007f91cc371010
+> > > > > > [  228.438236] RBP: 00005588462e39c0 R08: 00005588462e3ce0 R09:=
+ 0000000000000000
+> > > > > > [  228.438236] R10: 000000000005af11 R11: 0000000000000246 R12:=
+ 0000000000040000
+> > > > > > [  228.438236] R13: 0000000000000000 R14: 0000000000000009 R15:=
+ 00005588462de7c0
+> > > > > > [  228.438236]  </TASK>
+> > > > > >
+> > > > > > [  228.438236] Allocated by task 6174:
+> > > > > > [  228.438236]  kasan_save_stack+0x20/0x40
+> > > > > > [  228.438236]  kasan_set_track+0x25/0x30
+> > > > > > [  228.438236]  __kasan_kmalloc+0xaa/0xb0
+> > > > > > [  228.438236]  nouveau_connector_create+0x386/0x1cd0 [nouveau]
+> > > > > > [  228.438236]  nv50_display_create+0xe54/0x30d0 [nouveau]
+> > > > > > [  228.438236]  nouveau_display_create+0x903/0x10c0 [nouveau]
+> > > > > > [  228.438236]  nouveau_drm_device_init+0x3a4/0x19e0 [nouveau]
+> > > > > > [  228.438236]  nouveau_drm_probe+0x1a2/0x6b0 [nouveau]
+> > > > > > [  228.438236]  local_pci_probe+0xdd/0x190
+> > > > > > [  228.438236]  pci_device_probe+0x23a/0x770
+> > > > > > [  228.438236]  really_probe+0x3e2/0xb80
+> > > > > > [  228.438236]  __driver_probe_device+0x18c/0x450
+> > > > > > [  228.438236]  driver_probe_device+0x4a/0x120
+> > > > > > [  228.438236]  __driver_attach+0x1e1/0x4a0
+> > > > > > [  228.438236]  bus_for_each_dev+0xf4/0x170
+> > > > > > [  228.438236]  bus_add_driver+0x29e/0x570
+> > > > > > [  228.438236]  driver_register+0x134/0x460
+> > > > > > [  228.438236]  do_one_initcall+0x8e/0x310
+> > > > > > [  228.438236]  do_init_module+0x238/0x730
+> > > > > > [  228.438236]  load_module+0x5b41/0x6dd0
+> > > > > > [  228.438236]  __do_sys_init_module+0x1df/0x210
+> > > > > > [  228.438236]  do_syscall_64+0x60/0x90
+> > > > > > [  228.438236]  entry_SYSCALL_64_after_hwframe+0x77/0xe1
+> > > > > >
+> > > > > > [  228.438236] Freed by task 6174:
+> > > > > > [  228.438236]  kasan_save_stack+0x20/0x40
+> > > > > > [  228.438236]  kasan_set_track+0x25/0x30
+> > > > > > [  228.438236]  kasan_save_free_info+0x2e/0x50
+> > > > > > [  228.438236]  ____kasan_slab_free+0x169/0x1c0
+> > > > > > [  228.438236]  slab_free_freelist_hook+0xcd/0x190
+> > > > > > [  228.438236]  __kmem_cache_free+0x18a/0x2c0
+> > > > > > [  228.438236]  nouveau_connector_create+0x1423/0x1cd0 [nouveau=
+]
+> > > > > > [  228.438236]  nv50_display_create+0xe54/0x30d0 [nouveau]
+> > > > > > [  228.438236]  nouveau_display_create+0x903/0x10c0 [nouveau]
+> > > > > > [  228.438236]  nouveau_drm_device_init+0x3a4/0x19e0 [nouveau]
+> > > > > > [  228.438236]  nouveau_drm_probe+0x1a2/0x6b0 [nouveau]
+> > > > > > [  228.438236]  local_pci_probe+0xdd/0x190
+> > > > > > [  228.438236]  pci_device_probe+0x23a/0x770
+> > > > > > [  228.438236]  really_probe+0x3e2/0xb80
+> > > > > > [  228.438236]  __driver_probe_device+0x18c/0x450
+> > > > > > [  228.438236]  driver_probe_device+0x4a/0x120
+> > > > > > [  228.438236]  __driver_attach+0x1e1/0x4a0
+> > > > > > [  228.438236]  bus_for_each_dev+0xf4/0x170
+> > > > > > [  228.438236]  bus_add_driver+0x29e/0x570
+> > > > > > [  228.438236]  driver_register+0x134/0x460
+> > > > > > [  228.438236]  do_one_initcall+0x8e/0x310
+> > > > > > [  228.438236]  do_init_module+0x238/0x730
+> > > > > > [  228.438236]  load_module+0x5b41/0x6dd0
+> > > > > > [  228.438236]  __do_sys_init_module+0x1df/0x210
+> > > > > > [  228.438236]  do_syscall_64+0x60/0x90
+> > > > > > [  228.438236]  entry_SYSCALL_64_after_hwframe+0x77/0xe1
+> > > > > >
+> > > > > > [  228.438236] The buggy address belongs to the object at ffff8=
+881731ce000
+> > > > > >                 which belongs to the cache kmalloc-4k of size 4=
+096
+> > > > > > [  228.438236] The buggy address is located 80 bytes inside of
+> > > > > >                 freed 4096-byte region [ffff8881731ce000, ffff8=
+881731cf000)
+> > > > > >
+> > > > > > [  228.438236] The buggy address belongs to the physical page:
+> > > > > > [  228.438236] page:00000000d1c274b4 refcount:1 mapcount:0 mapp=
+ing:0000000000000000 index:0x0 pfn:0x1731c8
+> > > > > > [  228.438236] head:00000000d1c274b4 order:3 entire_mapcount:0 =
+nr_pages_mapped:0 pincount:0
+> > > > > > [  228.438236] flags: 0x17ffffc0010200(slab|head|node=3D0|zone=
+=3D2|lastcpupid=3D0x1fffff)
+> > > > > > [  228.438236] page_type: 0xffffffff()
+> > > > > > [  228.438236] raw: 0017ffffc0010200 ffff888100042140 dead00000=
+0000122 0000000000000000
+> > > > > > [  228.438236] raw: 0000000000000000 0000000080040004 00000001f=
+fffffff 0000000000000000
+> > > > > > [  228.438236] page dumped because: kasan: bad access detected
+> > > > > >
+> > > > > > [  228.438236] Memory state around the buggy address:
+> > > > > > [  228.438236]  ffff8881731cdf00: fc fc fc fc fc fc fc fc fc fc=
+ fc fc fc fc fc fc
+> > > > > > [  228.438236]  ffff8881731cdf80: fc fc fc fc fc fc fc fc fc fc=
+ fc fc fc fc fc fc
+> > > > > > [  228.438236] >ffff8881731ce000: fa fb fb fb fb fb fb fb fb fb=
+ fb fb fb fb fb fb
+> > > > > > [  228.438236]                                                 =
+ ^
+> > > > > > [  228.438236]  ffff8881731ce080: fb fb fb fb fb fb fb fb fb fb=
+ fb fb fb fb fb fb
+> > > > > > [  228.438236]  ffff8881731ce100: fb fb fb fb fb fb fb fb fb fb=
+ fb fb fb fb fb fb
+> > > > > > [  228.438236] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > > >
+> > > > >
+> > > > > mind resolving those to file lines via decode_stacktrace.sh or
+> > > > > something, because looking at it, it makes no sense really.
+> > > >
+> > > > I don't own the machine, so it's a bit difficult from my side,
+> > > > unfortunately.
+> > > >
+> >
+> > also, you don't need to run it on the same machine if it's all
+> > distribution packaged. As long as you have the exact same binary
+> > available you can resolve the lines. Or just use gdb:
+> > https://docs.kernel.org/admin-guide/bug-hunting.html#gdb
+>
+> Unfortunately it's not possible, as it's a moving target (following
+> the upstream development), and the rpm packages used for the report
+> are already gone.  What I can get now won't match any longer.
+>
+> But now I wonder whether this can be reproduced by injecting an
+> error artificially.
+>
 
+uhh, nvm. I was blind and I didn't see those lines of code:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/dri=
+vers/gpu/drm/nouveau/nouveau_connector.c?h=3Dv6.5-rc6#n1403
 
-Hello,
+Those lines probably should only be called after all error checks,
+I'll see if it's safe to do so.
 
-kernel test robot noticed "WARNING:at_kernel/workqueue.c:#wq_watchdog_timer_fn" on:
-
-commit: f5d265c1a77104897fad14235b2637b155c01efd ("[PATCH] workqueue: let WORKER_CPU_INTENSIVE be included in watchdog")
-url: https://github.com/intel-lab-lkp/linux/commits/Tio-Zhang/workqueue-let-WORKER_CPU_INTENSIVE-be-included-in-watchdog/20230811-182610
-base: https://git.kernel.org/cgit/linux/kernel/git/tj/wq.git for-next
-patch link: https://lore.kernel.org/all/20230811102250.GA7959@didi-ThinkCentre-M930t-N000/
-patch subject: [PATCH] workqueue: let WORKER_CPU_INTENSIVE be included in watchdog
-
-in testcase: rcutorture
-version: 
-with following parameters:
-
-	runtime: 300s
-	test: default
-	torture_type: srcu
-
-
-
-compiler: gcc-12
-test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-
-(please refer to attached dmesg/kmsg for entire log/backtrace)
-
-
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202308142140.cf9be57a-oliver.sang@intel.com
-
-
-
-[   35.935095][    C0] ------------[ cut here ]------------
-[   35.936505][    C0] WARNING: CPU: 0 PID: 100 at kernel/workqueue.c:6400 wq_watchdog_timer_fn+0x185/0x3b0
-[   35.938627][    C0] Modules linked in:
-[   35.939641][    C0] CPU: 0 PID: 100 Comm: systemd-journal Not tainted 6.5.0-rc1-00043-gf5d265c1a771 #1
-[   35.941708][    C0] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-[   35.948000][    C0] EIP: wq_watchdog_timer_fn+0x185/0x3b0
-[   35.949262][    C0] Code: b8 bc bc 2b c2 e8 db ee c8 00 31 d2 89 c3 85 c0 b8 28 91 89 c2 6a 00 0f 94 c2 31 c9 e8 44 b9 10 00 85 db 58 0f 85 6d ff ff ff <0f> 0b ba
- 01 00 00 00 e9 63 ff ff ff 8d b4 26 00 00 00 00 8b 75 e8
-[   35.953232][    C0] EAX: 00000000 EBX: 00000000 ECX: 00000000 EDX: 00000001
-[   35.954818][    C0] ESI: c22bb970 EDI: c3aa3500 EBP: c4067f0c ESP: c4067ee8
-[   35.956302][    C0] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 0068 EFLAGS: 00210246
-[   35.957911][    C0] CR0: 80050033 CR2: b7ae9360 CR3: 2d43e000 CR4: 00040690
-[   35.959401][    C0] Call Trace:
-[   35.960250][    C0]  <SOFTIRQ>
-[   35.961061][    C0]  ? show_regs+0x50/0x60
-[   35.962135][    C0]  ? wq_watchdog_timer_fn+0x185/0x3b0
-[   35.963335][    C0]  ? __warn+0x6f/0x1d0
-[   35.964381][    C0]  ? wq_watchdog_timer_fn+0x185/0x3b0
-[   35.965658][    C0]  ? report_bug+0x169/0x190
-[   35.966864][    C0]  ? exc_overflow+0x40/0x40
-[   35.968144][    C0]  ? handle_bug+0x28/0x50
-[   35.969223][    C0]  ? exc_invalid_op+0x1a/0x60
-[   35.970336][    C0]  ? handle_exception+0x14a/0x14a
-[   35.971590][    C0]  ? poke_int3_handler+0x1eb/0x2e0
-[   35.972787][    C0]  ? exc_overflow+0x40/0x40
-[   35.973818][    C0]  ? wq_watchdog_timer_fn+0x185/0x3b0
-[   35.975100][    C0]  ? exc_overflow+0x40/0x40
-[   35.976255][    C0]  ? wq_watchdog_timer_fn+0x185/0x3b0
-[   35.977590][    C0]  ? show_all_workqueues+0x300/0x300
-[   35.978887][    C0]  call_timer_fn+0xb7/0x310
-[   35.980130][    C0]  ? show_all_workqueues+0x300/0x300
-[   35.981379][    C0]  ? show_all_workqueues+0x300/0x300
-[   35.982658][    C0]  __run_timers+0x2a3/0x3b0
-[   35.983860][    C0]  run_timer_softirq+0x1c/0x20
-[   35.985029][    C0]  __do_softirq+0x144/0x518
-[   35.986182][    C0]  ? __lock_text_end+0xc/0xc
-[   35.987384][    C0]  call_on_stack+0x45/0x50
-[   35.988532][    C0]  </SOFTIRQ>
-[   35.989438][    C0]  ? irq_exit_rcu+0xb3/0xf0
-[   35.990584][    C0]  ? sysvec_apic_timer_interrupt+0x1f/0x30
-[   35.992046][    C0]  ? handle_exception+0x14a/0x14a
-[   35.993299][    C0]  ? percpu_ref_put_many+0x64/0x140
-[   35.994831][    C0]  ? vmware_sched_clock+0x100/0x100
-[   35.996171][    C0]  ? lock_release+0x7b/0xe0
-[   35.997313][    C0]  ? vmware_sched_clock+0x100/0x100
-[   35.998584][    C0]  ? lock_release+0x7b/0xe0
-[   35.999799][    C0]  ? percpu_ref_put_many+0x78/0x140
-[   36.001302][    C0]  ? uncharge_folio+0x198/0x3a0
-[   36.002498][    C0]  ? __mem_cgroup_uncharge_list+0x52/0x90
-[   36.003965][    C0]  ? release_pages+0x17b/0x4b0
-[   36.005193][    C0]  ? __folio_batch_release+0x1d/0x40
-[   36.006440][    C0]  ? shmem_undo_range+0x2f8/0x7f0
-[   36.007799][    C0]  ? shmem_evict_inode+0x111/0x2e0
-[   36.008857][    C0]  ? __lock_release+0x152/0x2f0
-[   36.009924][    C0]  ? check_preemption_disabled+0x2a/0x50
-[   36.011540][    C0]  ? preempt_count_sub+0x74/0x150
-[   36.012814][    C0]  ? _raw_spin_unlock+0x57/0x80
-[   36.014052][    C0]  ? evict+0xed/0x220
-[   36.015188][    C0]  ? evict+0xed/0x220
-[   36.016345][    C0]  ? iput_final+0x148/0x190
-[   36.017550][    C0]  ? iput+0x14f/0x180
-[   36.024349][    C0]  ? dentry_unlink_inode+0xaf/0x110
-[   36.025748][    C0]  ? __dentry_kill+0x11f/0x200
-[   36.027051][    C0]  ? dentry_kill+0x7b/0x1f0
-[   36.028271][    C0]  ? dput+0x2d8/0x2f0
-[   36.029343][    C0]  ? __fput+0x164/0x400
-[   36.030465][    C0]  ? ____fput+0xd/0x10
-[   36.031626][    C0]  ? task_work_run+0x94/0xf0
-[   36.033020][    C0]  ? exit_to_user_mode_prepare+0x335/0x340
-[   36.034506][    C0]  ? syscall_exit_to_user_mode+0x1a/0x50
-[   36.035998][    C0]  ? do_int80_syscall_32+0x62/0xa0
-[   36.037305][    C0]  ? entry_INT80_32+0x107/0x107
-[   36.038557][    C0] irq event stamp: 234966
-[   36.039817][    C0] hardirqs last  enabled at (234978): [<c10eaca6>] __up_console_sem+0x56/0x60
-[   36.041931][    C0] hardirqs last disabled at (234987): [<c10eac8d>] __up_console_sem+0x3d/0x60
-[   36.044105][    C0] softirqs last  enabled at (233030): [<c1d34934>] __do_softirq+0x2a4/0x518
-[   36.046155][    C0] softirqs last disabled at (234197): [<c1023fb5>] call_on_stack+0x45/0x50
-[   36.048296][    C0] ---[ end trace 0000000000000000 ]---
-
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20230814/202308142140.cf9be57a-oliver.sang@intel.com
-
-
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> Takashi
+>
 
