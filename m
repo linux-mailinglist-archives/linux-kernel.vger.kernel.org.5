@@ -2,95 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B08B777C11B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B45177C11D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232190AbjHNTyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 15:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40880 "EHLO
+        id S232241AbjHNTzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 15:55:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232224AbjHNTyh (ORCPT
+        with ESMTP id S232262AbjHNTzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 15:54:37 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D44E73
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:54:35 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1765040E0196;
-        Mon, 14 Aug 2023 19:54:34 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id K110PFzaRqoL; Mon, 14 Aug 2023 19:54:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1692042870; bh=8X5ow2G4Q+5+Ob4SO19VCRpYYOIz9IdhDHUPDB2ajLc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hJrYSYrbNxzELOqrt8a6mqhgkIJRbFusJSg9celVB40aYAvjNeJh80V38YowWSVIH
-         DwMKrbDYmSebbaoGvsvAIVxJ8AbGLhNuX2xYCIjoRqaIo1zZ5lJ92FErSZVr+pztzN
-         ZdW+2EloEYzW/WZyEKjqKEdJ9MuxxBfU/RXdmCkYxkcMcpxzEf6C7vMHGGJW6jRkj3
-         TZ/0sejYeo4AuyCZlQZtDwN4tCKM00VN1eLzJ5sdQgZQo24j0Oqqno0FQqkceUcZoa
-         j2oplJDqehv5X0UAguJNiMdVyZGLIi8cJ4E8wL02i6sA2vEk1dZMjoXg2oz1P7QK64
-         Dv8WtfY9yTAhfl2DkwyYco/21fAvh4xkGm+eBkQ+Z8qgV1UjsoF1szyynKfz+oQf+/
-         oIsIuJyq4s15KmDM65EgIoxVO/P+7S4s60sl7njvYl/0Z3qU65hqJUjefsEYhyMCw1
-         5VcXReJGciM8vrwZBpKz7/v+rDb6Dl+T/kb0uMSa56nHROnzaPWwjSICKI0w8kAvhw
-         s3JW58XhcmJDssojnSJI5aVSEyPnLNclzf4bAxcSTU97B7oFL3pHDdX2TkvEd0LVey
-         ZU+TEeg/Brnr5mIqrwshWAWZa66/XLyHrGMijLNoevyPCm2llfRaKCbmxoicurcD7b
-         FodQN8keLQMcEHOePrczT0bw=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D3BB940E0185;
-        Mon, 14 Aug 2023 19:54:26 +0000 (UTC)
-Date:   Mon, 14 Aug 2023 21:54:20 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     kernel test robot <lkp@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [tip:master 20/20] arch/x86/include/asm/microcode.h:29:20:
- error: redefinition of 'amd_check_microcode'
-Message-ID: <20230814195420.GHZNqGbA54XsfLkvDG@fat_crate.local>
-References: <202308150231.ThoHOoid-lkp@intel.com>
+        Mon, 14 Aug 2023 15:55:08 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55E6E73
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:55:06 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-997c4107d62so630074366b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:55:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692042905; x=1692647705;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RykofCguml6rSMpJYe0VPw+oopELw4ZN/ghN42VwsP4=;
+        b=Md6ABwFmuunlVk+OyZekSEThFF9OwW/PY+wmBONune03X4WdEZk+I9BGLMPGrn1T26
+         7kzogeviAVaxf38nOX1up595rjblj8oaP0LLshPZ5a2rcxY9kbisZMr2WXgWGOl9S3Py
+         8n6D+ma22EtAAl79X6qXxsN0zag7Pa3N2Gc87NbTe9/N2ejQeKxtr0hXvBn2PCTy8tvV
+         6oY2khWUg+f9S6xz/plJOu/sxwyUt6btOnNcjsREEQK87Qkk/CpK8Y8ztJTn0+gTuAG8
+         +aJujmwl+tS/qWKkSItKBYW8f5J+7tS5Ab8OxJDyoUyiCv24wEYDDXBWlRi/FggwjtHq
+         c6PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692042905; x=1692647705;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RykofCguml6rSMpJYe0VPw+oopELw4ZN/ghN42VwsP4=;
+        b=dV3JmKTn5+MQTNYfV627mbXLoNMFnYOWYVOyz5hj96cGICy1Z0wrG63+qSXbTmAz8y
+         Q53EdXqFjkkmrRw26pYaIFdOBOhxV3lc7qrqH6VR0ZRQ5F5cQiZW7B385vEICvspwkGQ
+         QI+MQ6xzDRWDPYApjc0jb9XKFIa0FWjPCLKgaKzGF5DzfTf/1xf449/c1td8Z9DGo75b
+         ie4W/nIU/gLRGoOokeal0DZ8TixG2XSik5wGyxyPQmbDp67tWbAWCyx55jhFWvRpDV8W
+         cHHvW/4jzDeLgdPNDbVJo9vEI2FLx/5ByT45MKc7quJIuwPFthQuabqHpPeWqQybyMEG
+         XUmQ==
+X-Gm-Message-State: AOJu0Yx2M2Ng4I5DzVXfv8303e3wGUe3oSIm4dDlWhjFmppCM2pKRdvF
+        9iriq3qViRTohWYY/B0x7CM/6Q==
+X-Google-Smtp-Source: AGHT+IFxdS8jB/vXR9RW8EAGNbjE/bRPZ4ed13Lyl3ZWTg86j0xk6ItclZVeE1vRwpbXZh8Gv0Ca6w==
+X-Received: by 2002:a17:906:315b:b0:99c:a23b:b4f5 with SMTP id e27-20020a170906315b00b0099ca23bb4f5mr9496008eje.53.1692042905042;
+        Mon, 14 Aug 2023 12:55:05 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id os5-20020a170906af6500b00993a37aebc5sm5972415ejb.50.2023.08.14.12.55.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Aug 2023 12:55:04 -0700 (PDT)
+Message-ID: <e3d2ff98-8d05-fdf7-7df6-a5450c6cdc21@linaro.org>
+Date:   Mon, 14 Aug 2023 21:55:02 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202308150231.ThoHOoid-lkp@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 4/4] arm64: dts: fsd: Add Ethernet support for PERIC
+ Block of FSD SoC
+Content-Language: en-US
+To:     Sriranjani P <sriranjani.p@samsung.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        alexandre.torgue@foss.st.com, peppe.cavallaro@st.com,
+        joabreu@synopsys.com, mcoquelin.stm32@gmail.com
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pankaj.dubey@samsung.com,
+        alim.akhtar@samsung.com, ravi.patel@samsung.com,
+        'Jayati Sahu' <jayati.sahu@samsung.com>, swathi.ks@samsung.com
+References: <20230111075422.107173-1-sriranjani.p@samsung.com>
+ <CGME20230111075455epcas5p1951d1981f15d252e09281621ef5fbf15@epcas5p1.samsung.com>
+ <20230111075422.107173-5-sriranjani.p@samsung.com>
+ <7d74a96e-e3a5-118c-04a9-e8ed95fffa54@linaro.org>
+ <000101d9ce99$f454da20$dcfe8e60$@samsung.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <000101d9ce99$f454da20$dcfe8e60$@samsung.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 02:51:42AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-> head:   d2915b8e76b3a598febd7348799d745cb741a2f5
-> commit: d2915b8e76b3a598febd7348799d745cb741a2f5 [20/20] Merge x86/microcode into tip/master
-> config: i386-debian-10.3 (https://download.01.org/0day-ci/archive/20230815/202308150231.ThoHOoid-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce: (https://download.01.org/0day-ci/archive/20230815/202308150231.ThoHOoid-lkp@intel.com/reproduce)
+On 14/08/2023 12:27, Sriranjani P wrote:
 > 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202308150231.ThoHOoid-lkp@intel.com/
 > 
-> All errors (new ones prefixed by >>):
-> 
->    In file included from arch/x86/kernel/smpboot.c:80:
-> >> arch/x86/include/asm/microcode.h:29:20: error: redefinition of 'amd_check_microcode'
->       29 | static inline void amd_check_microcode(void) {}
+>> -----Original Message-----
+>> From: Krzysztof Kozlowski [mailto:krzysztof.kozlowski@linaro.org]
+>> Sent: 12 January 2023 15:07
+>> To: Sriranjani P <sriranjani.p@samsung.com>; davem@davemloft.net;
+>> edumazet@google.com; kuba@kernel.org; pabeni@redhat.com;
+>> robh+dt@kernel.org; krzysztof.kozlowski+dt@linaro.org;
+>> alexandre.torgue@foss.st.com; peppe.cavallaro@st.com;
+>> joabreu@synopsys.com; mcoquelin.stm32@gmail.com
+>> Cc: netdev@vger.kernel.org; devicetree@vger.kernel.org; linux-
+>> kernel@vger.kernel.org; pankaj.dubey@samsung.com;
+>> alim.akhtar@samsung.com; ravi.patel@samsung.com; Jayati Sahu
+>> <jayati.sahu@samsung.com>
+>> Subject: Re: [PATCH v2 4/4] arm64: dts: fsd: Add Ethernet support for PERIC
+>> Block of FSD SoC
+>>
+>> On 11/01/2023 08:54, Sriranjani P wrote:
+>>> The FSD SoC contains two instances of Synopsys DWC QoS Ethernet IP,
+>>> one in
+>>> FSYS0 block and other in PERIC block.
+>>>
+>>> Adds device tree node for Ethernet in PERIC Block and enables the same
+>>> for FSD platform.
+>>>
+>>> Signed-off-by: Pankaj Dubey <pankaj.dubey@samsung.com>
+>>> Signed-off-by: Jayati Sahu <jayati.sahu@samsung.com>
+>>> Signed-off-by: Sriranjani P <sriranjani.p@samsung.com>
+>>> ---
+>>>  arch/arm64/boot/dts/tesla/fsd-evb.dts      |  9 ++++
+>>>  arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi | 56
+>> ++++++++++++++++++++++
+>>>  arch/arm64/boot/dts/tesla/fsd.dtsi         | 29 +++++++++++
+>>>  3 files changed, 94 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/tesla/fsd-evb.dts
+>>> b/arch/arm64/boot/dts/tesla/fsd-evb.dts
+>>> index ca0c1a28d562..2c0cbe775e04 100644
+>>> --- a/arch/arm64/boot/dts/tesla/fsd-evb.dts
+>>> +++ b/arch/arm64/boot/dts/tesla/fsd-evb.dts
+>>> @@ -39,6 +39,15 @@
+>>>  	};
+>>>  };
+>>>
+>>> +&ethernet_1 {
+>>> +	status = "okay";
+>>> +
+>>> +	fixed-link {
+>>> +		speed = <1000>;
+>>> +		full-duplex;
+>>> +	};
+>>> +};
+>>> +
+>>>  &fin_pll {
+>>>  	clock-frequency = <24000000>;
+>>>  };
+>>> diff --git a/arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi
+>>> b/arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi
+>>> index 7ccc0738a149..c955bf159786 100644
+>>> --- a/arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi
+>>> +++ b/arch/arm64/boot/dts/tesla/fsd-pinctrl.dtsi
+>>> @@ -395,6 +395,62 @@
+>>>  		samsung,pin-pud = <FSD_PIN_PULL_UP>;
+>>>  		samsung,pin-drv = <FSD_PIN_DRV_LV1>;
+>>>  	};
+>>> +
+>>> +	eth1_tx_clk: eth1-tx-clk-pins {
+>>> +		samsung,pins = "gpf2-0";
+>>> +		samsung,pin-function = <FSD_PIN_FUNC_2>;
+>>> +		samsung,pin-pud = <FSD_PIN_PULL_DOWN>;
+>>> +		samsung,pin-drv = <FSD_PIN_DRV_LV6>;
+>>> +	};
+>>> +
+>>> +	eth1_tx_data: eth1-tx-data-pins {
+>>> +		samsung,pins = "gpf2-1", "gpf2-2", "gpf2-3", "gpf2-4";
+>>> +		samsung,pin-function = <FSD_PIN_FUNC_2>;
+>>> +		samsung,pin-pud = <FSD_PIN_PULL_UP>;
+>>> +		samsung,pin-drv = <FSD_PIN_DRV_LV6>;
+>>> +	};
+>>> +
+>>> +	eth1_tx_ctrl: eth1-tx-ctrl-pins {
+>>> +		samsung,pins = "gpf2-5";
+>>> +		samsung,pin-function = <FSD_PIN_FUNC_2>;
+>>> +		samsung,pin-pud = <FSD_PIN_PULL_UP>;
+>>> +		samsung,pin-drv = <FSD_PIN_DRV_LV6>;
+>>> +	};
+>>> +
+>>> +	eth1_phy_intr: eth1-phy-intr-pins {
+>>> +		samsung,pins = "gpf2-6";
+>>> +		samsung,pin-function = <FSD_PIN_FUNC_2>;
+>>> +		samsung,pin-pud = <FSD_PIN_PULL_UP>;
+>>> +		samsung,pin-drv = <FSD_PIN_DRV_LV4>;
+>>> +	};
+>>> +
+>>> +	eth1_rx_clk: eth1-rx-clk-pins {
+>>> +		samsung,pins = "gpf3-0";
+>>> +		samsung,pin-function = <FSD_PIN_FUNC_2>;
+>>> +		samsung,pin-pud = <FSD_PIN_PULL_UP>;
+>>> +		samsung,pin-drv = <FSD_PIN_DRV_LV6>;
+>>> +	};
+>>> +
+>>> +	eth1_rx_data: eth1-rx-data-pins {
+>>> +		samsung,pins = "gpf3-1", "gpf3-2", "gpf3-3", "gpf3-4";
+>>> +		samsung,pin-function = <FSD_PIN_FUNC_2>;
+>>> +		samsung,pin-pud = <FSD_PIN_PULL_UP>;
+>>> +		samsung,pin-drv = <FSD_PIN_DRV_LV6>;
+>>> +	};
+>>> +
+>>> +	eth1_rx_ctrl: eth1-rx-ctrl-pins {
+>>> +		samsung,pins = "gpf3-5";
+>>> +		samsung,pin-function = <FSD_PIN_FUNC_2>;
+>>> +		samsung,pin-pud = <FSD_PIN_PULL_UP>;
+>>> +		samsung,pin-drv = <FSD_PIN_DRV_LV6>;
+>>> +	};
+>>> +
+>>> +	eth1_mdio: eth1-mdio-pins {
+>>> +		samsung,pins = "gpf3-6", "gpf3-7";
+>>> +		samsung,pin-function = <FSD_PIN_FUNC_2>;
+>>> +		samsung,pin-pud = <FSD_PIN_PULL_UP>;
+>>> +		samsung,pin-drv = <FSD_PIN_DRV_LV4>;
+>>> +	};
+>>>  };
+>>>
+>>>  &pinctrl_pmu {
+>>> diff --git a/arch/arm64/boot/dts/tesla/fsd.dtsi
+>>> b/arch/arm64/boot/dts/tesla/fsd.dtsi
+>>> index ade707cc646b..8807055807dd 100644
+>>> --- a/arch/arm64/boot/dts/tesla/fsd.dtsi
+>>> +++ b/arch/arm64/boot/dts/tesla/fsd.dtsi
+>>> @@ -33,6 +33,7 @@
+>>>  		spi1 = &spi_1;
+>>>  		spi2 = &spi_2;
+>>>  		eth0 = &ethernet_0;
+>>> +		eth1 = &ethernet_1;
+>>
+>> Nope for the reasons I explained last time.
+> Sorry somehow I'm not able to find my previous mail chain.
 
-Thanks for reporting. That was a mismerge on my part, sorry about that.
+If you reply like this after half a year, what can I say? Is that a
+reason to ignore the feedback? No.
 
-Fixed now.
+Just use the lore and find it:
+https://lore.kernel.org/all/4fd9dabb-c8f3-b826-2eb2-ab8b5816102a@linaro.org/
 
--- 
-Regards/Gruss,
-    Boris.
+> I had replied to your comment in the previous version of the mail.
+> In this case alias id is used to differentiate between Ethernet instance 0 and 1 in the driver code.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+NAK.
+
+>>
+>>>  	};
+>>>
+>>>  	cpus {
+>>> @@ -882,6 +883,34 @@
+>>>  			phy-mode = "rgmii";
+>>>  			status = "disabled";
+>>>  		};
+>>> +
+>>> +		ethernet_1: ethernet@14300000 {
+>>
+>> Do not add nodes to the end.
+> If you mean to say that the nodes are supposed to be in the increasing order of physical address,
+> I can see that the existing file is not arranged in that format. If that is required I can first fix the
+> existing file and post the revised patch for the same. 
+
+You can drop it in some place more or less matching its address, just
+not to the end.
+
+Best regards,
+Krzysztof
+
