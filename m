@@ -2,334 +2,477 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E1777B68A
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C6077B68E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 12:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233936AbjHNKWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 06:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39992 "EHLO
+        id S234138AbjHNKWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 06:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234430AbjHNKVk (ORCPT
+        with ESMTP id S233896AbjHNKWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 06:21:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE6FBD
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 03:21:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692008499; x=1723544499;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=29wof/6NpjSzrKT6qzH2JPg0H1YIgtNF7q2e72lMGLE=;
-  b=VTnI4L10OtRagMjA976bE3f7o6x7IECxqgWZ00RABAV51Tg7KwxhrVcz
-   o9W8fFzapxQEeonwVI6jUQnEHFEMHywAHN3l0iD1/oGkDAhWnHElZOO79
-   YjNOIqZfrh+s6ead8gUoDEy/9/jBnMlgOGD50w1Df1U1cpnP/WO2PsBCv
-   CVSDbEFYKGOmMno3P+qgyt0zMHTWAhItdnRxMPyMFzf6B9rgLAQKseG/W
-   AmeYOQ2yGohdakkrLb9TciWk8G/NWnxwX1TmC3yz8Q1dMhfzd6Z2rXxLu
-   mz3SG7758KMDgNcA08z4SFPqIF4zBfOkNgqqW0E17tJtGmeaDZ35mhggb
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="458369951"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="458369951"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 03:21:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="736484654"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="736484654"
-Received: from guptan-mobl2.gar.corp.intel.com (HELO [10.249.254.26]) ([10.249.254.26])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 03:21:36 -0700
-Message-ID: <a89f8790-a043-4412-2508-d960b480d709@linux.intel.com>
-Date:   Mon, 14 Aug 2023 12:21:33 +0200
+        Mon, 14 Aug 2023 06:22:13 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46A0AF;
+        Mon, 14 Aug 2023 03:22:11 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99c3c8adb27so565685966b.1;
+        Mon, 14 Aug 2023 03:22:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692008530; x=1692613330;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mIm/soAm2sqvo7n3TF3xNos6LhFpQ9euYNbZFzKmPkU=;
+        b=k6hfI/wfPtIHB+EYp6RhshoVIrmf5ges7Bl63a1cAdXZvG5iuZRl77T3uf6JhUJOgh
+         vZgggOoJKGufco48uihM50+gkApgnMFirUnMJJUdygM4oRPtyDWCSJtlecrjyWbGoAwM
+         lKIJewMs33Tk10Lzu+1Gi3cBOa7GicG0kTr/QnxLr0V8yR9xFS6QlutLIL+gYCE7U/vG
+         /UwBuC5zr/C/VMBv4U0nlMrDb33Ylt92yjmMAIHTJlsZqyZj53J/ufXVWokiQsNz1KO2
+         FVEmqV5Gtp6gAdnI9gwluwmdZNeoP1S4FKTVT/H457kIM4dBV1Y7df2YzJcoFtsQcuF8
+         qljA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692008530; x=1692613330;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mIm/soAm2sqvo7n3TF3xNos6LhFpQ9euYNbZFzKmPkU=;
+        b=GC0Cy/9m3vBqpuGzaYh6GO8vqL3TDDLQzLdEV9j9BYtiWNoj7YFMImmWo2jXpOMkt0
+         fJ9gPSNLZPVPvBmY0o5/qsTOLxmr1BF5BHpQPpnGEln0o6m4TD7wGkyG8Ki6q1NAsUnz
+         /g4xUUctyUQZXKHaAjm+azdwc3piHNpLjxNbYK4r78W9+uQCfH73CNnd+m8zIOFBsbuT
+         4jR9c86B33bCxJoI821Ow/HoG88MPozTk5hYDtuMwb71ieqxaAF2KXZjIQM5JFtqGvde
+         b9jZ6SEnmXiM3wC1CIjN1igKrOq4c2T2banNjduddmfzMV5pyW98VlAp0IfITjiA8Pj6
+         rAkQ==
+X-Gm-Message-State: AOJu0YxeCrnrdfQv6fD138iVPzltwPj+EoZmdWONiawbCo4AFYEbFLRB
+        6Dy+rF39mcb9t2m0RTbp4ic=
+X-Google-Smtp-Source: AGHT+IHoCjkqf8+sexzP/XhE7NtIvoztCMsYC3dpIhKtsD7s5Hp08+sQY+Ve09sWKURjX5sDhAD+PQ==
+X-Received: by 2002:a17:906:116:b0:99c:55c0:ad11 with SMTP id 22-20020a170906011600b0099c55c0ad11mr8225480eje.23.1692008529818;
+        Mon, 14 Aug 2023 03:22:09 -0700 (PDT)
+Received: from jernej-laptop.localnet (89-212-118-115.static.t-2.net. [89.212.118.115])
+        by smtp.gmail.com with ESMTPSA id f16-20020a170906561000b00992076f4a01sm5517911ejq.190.2023.08.14.03.22.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 03:22:09 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Martin Botka <martin.botka@somainline.org>
+Cc:     Martin Botka <martin.botka1@gmail.com>,
+        Martin Botka <martin@biqu3d.com>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Jami Kettunen <jamipkettunen@somainline.org>,
+        Paul Bouchara <paul.bouchara@somainline.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Ludwig Kormann <ludwig.kormann@ict42.de>,
+        Icenowy Zheng <uwu@icenowy.me>, Andrew Lunn <andrew@lunn.ch>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/4] arm64: dts: allwinner: h616: Add BigTreeTech CB1 SoM &
+ boards support
+Date:   Mon, 14 Aug 2023 12:22:06 +0200
+Message-ID: <7555655.EvYhyI6sBW@jernej-laptop>
+In-Reply-To: <C18CZR.UPG8WJSWEO3L2@somainline.org>
+References: <20230807145349.2220490-1-martin@biqu3d.com>
+ <3249535.44csPzL39Z@jernej-laptop> <C18CZR.UPG8WJSWEO3L2@somainline.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5] Documentation/gpu: Add a VM_BIND async draft document
-Content-Language: en-US
-To:     Danilo Krummrich <dakr@redhat.com>
-Cc:     Matthew Brost <matthew.brost@intel.com>,
-        Francois Dugast <francois.dugast@intel.com>,
-        linux-kernel@vger.kernel.org, Oak Zeng <oak.zeng@intel.com>,
-        dri-devel@lists.freedesktop.org, Nirmoy Das <nirmoy.das@intel.com>,
-        intel-xe@lists.freedesktop.org
-References: <20230715154543.13183-1-thomas.hellstrom@linux.intel.com>
- <955bc56a-6cfa-447a-31a9-2b35d8b23149@redhat.com>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
-        <thomas.hellstrom@linux.intel.com>
-In-Reply-To: <955bc56a-6cfa-447a-31a9-2b35d8b23149@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dne nedelja, 13. avgust 2023 ob 18:20:00 CEST je Martin Botka napisal(a):
+> On Sun, Aug 13 2023 at 05:52:10 PM +02:00:00, Jernej =C5=A0krabec
+>=20
+> <jernej.skrabec@gmail.com> wrote:
+> > Hi Martin,
+> >=20
+> > since this will be obviously delayed to 6.7 cycle due to mfd patch
+> > not being
+> > merged in time, I have few nits below.
+> >=20
+> > Dne ponedeljek, 07. avgust 2023 ob 16:53:23 CEST je Martin Botka
+> >=20
+> > napisal(a):
+> >>  From: Martin Botka <martin.botka@somainline.org>
+> >> =20
+> >>  CB1 is Compute Module style board that plugs into Rpi board style
+> >>=20
+> >> adapter or
+> >>=20
+> >>  Manta 3D printer boards (M4P/M8P).
+> >> =20
+> >>  The SoM features:
+> >>    - H616 SoC
+> >>    - 1GiB of RAM
+> >>    - AXP313A PMIC
+> >>    - RTL8189FTV WiFi
+> >> =20
+> >>  Boards feature:
+> >>    - 4x USB via USB2 hub (usb1 on SoM).
+> >>    - SDcard slot for loading images.
+> >>    - Ethernet port wired to the internal PHY. (100M)
+> >>    - 2x HDMI 2.0. (Only 1 usable on CB1)
+> >>    - Power and Status LEDs. (Only Status LED usable on CB1)
+> >>    - 40 pin GPIO header
+> >> =20
+> >>  Currently working:
+> >>    - Booting
+> >>    - USB
+> >>    - UART
+> >>    - MMC
+> >>    - Status LED
+> >>    - WiFi (RTL8189FS via out of tree driver)
+> >> =20
+> >>  I didnt want to duplicate things so the manta DTS can also be used
+> >>=20
+> >> on BTT
+> >>=20
+> >>  pi4b adapter. CB1 SoM has its own DTSI file in case other boards
+> >>=20
+> >> shows up
+> >>=20
+> >>  that accept this SoM.
+> >> =20
+> >>  Signed-off-by: Martin Botka <martin.botka@somainline.org>
+> >>  Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+> >>  ---
+> >> =20
+> >>  Changes in V2:
+> >>      - Fixed whitespace errors
+> >>      - Move UART into carrier boards and BTT Pi
+> >>      - Remove usb1-vbus regulator
+> >>      - Fix ranges and naming of AXP313A rails
+> >>      - Add comment specifying why broken-cd in mmc0 is needed
+> >>      - Rename sdio_wifi to wifi
+> >>      - Specify in commit description that USB-OTG doesnt work
+> >> =20
+> >>  Changes in V3:
+> >>      - Add missed semicolons
+> >>      - Move model string from dtsi to board dts
+> >>      - Add cb1 compatible
+> >>      - Remove extra empty line
+> >> =20
+> >>  Changed in V4:
+> >>      - Extend the range of vcc-dram to 1.5V (1.35V max caused issues
+> >>=20
+> >> with
+> >>=20
+> >>  booting up
+> >> =20
+> >>   arch/arm64/boot/dts/allwinner/Makefile        |   1 +
+> >>   .../sun50i-h616-bigtreetech-cb1-manta.dts     |  35 +++++
+> >>   .../sun50i-h616-bigtreetech-cb1.dtsi          | 140
+> >>=20
+> >> ++++++++++++++++++
+> >>=20
+> >>   3 files changed, 176 insertions(+)
+> >>   create mode 100644
+> >> =20
+> >>  arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts
+> >>=20
+> >> create
+> >>=20
+> >>  mode 100644
+> >>=20
+> >> arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
+> >>=20
+> >>  diff --git a/arch/arm64/boot/dts/allwinner/Makefile
+> >>  b/arch/arm64/boot/dts/allwinner/Makefile index
+> >>=20
+> >> 6a96494a2e0a..7b386428510b
+> >>=20
+> >>  100644
+> >>  --- a/arch/arm64/boot/dts/allwinner/Makefile
+> >>  +++ b/arch/arm64/boot/dts/allwinner/Makefile
+> >>  @@ -38,5 +38,6 @@ dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h6-pine-h64.dtb
+> >> =20
+> >>   dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h6-pine-h64-model-b.dtb
+> >>   dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h6-tanix-tx6.dtb
+> >>   dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h6-tanix-tx6-mini.dtb
+> >> =20
+> >>  +dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h616-bigtreetech-cb1-manta.dtb
+> >> =20
+> >>   dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h616-orangepi-zero2.dtb
+> >>   dtb-$(CONFIG_ARCH_SUNXI) +=3D sun50i-h616-x96-mate.dtb
+> >> =20
+> >>  diff --git
+> >>=20
+> >> a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts
+> >>=20
+> >> b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts
+> >> new
+> >>=20
+> >>  file mode 100644
+> >>  index 000000000000..dbce61b355d6
+> >>  --- /dev/null
+> >>  +++
+> >>=20
+> >> b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1-manta.dts
+> >>=20
+> >>  @@ -0,0 +1,35 @@
+> >>  +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
+> >>  +/*
+> >>  + * Copyright (C) 2023 Martin Botka <martin.botka@somainline.org>.
+> >>  + */
+> >>  +
+> >>  +/dts-v1/;
+> >>  +
+> >>  +#include "sun50i-h616-bigtreetech-cb1.dtsi"
+> >>  +
+> >>  +/ {
+> >>  +	model =3D "BigTreeTech CB1";
+> >>  +	compatible =3D "bigtreetech,cb1-manta", "bigtreetech,cb1",
+> >>  "allwinner,sun50i-h616"; +
+> >>  +	aliases {
+> >>  +		serial0 =3D &uart0;
+> >>  +	};
+> >>  +
+> >>  +	chosen {
+> >>  +		stdout-path =3D "serial0:115200n8";
+> >>  +	};
+> >>  +};
+> >>  +
+> >>  +&ehci1 {
+> >>  +	status =3D "okay";
+> >>  +};
+> >>  +
+> >>  +&ohci1 {
+> >>  +	status =3D "okay";
+> >>  +};
+> >>  +
+> >>  +&uart0 {
+> >>  +	pinctrl-names =3D "default";
+> >>  +	pinctrl-0 =3D <&uart0_ph_pins>;
+> >>  +	status =3D "okay";
+> >>  +};
+> >>  diff --git
+> >>=20
+> >> a/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
+> >>=20
+> >>  b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
+> >>=20
+> >> new file
+> >>=20
+> >>  mode 100644
+> >>  index 000000000000..5e756f217813
+> >>  --- /dev/null
+> >>  +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-bigtreetech-cb1.dtsi
+> >>  @@ -0,0 +1,140 @@
+> >>  +// SPDX-License-Identifier: (GPL-2.0+ or MIT)
+> >>  +/*
+> >>  + * Copyright (C) 2023 Martin Botka <martin.botka@somainline.org>.
+> >>  + */
+> >>  +
+> >>  +/dts-v1/;
+> >>  +
+> >>  +#include "sun50i-h616.dtsi"
+> >>  +
+> >>  +#include <dt-bindings/gpio/gpio.h>
+> >>  +#include <dt-bindings/interrupt-controller/arm-gic.h>
+> >>  +#include <dt-bindings/leds/common.h>
+> >>  +
+> >>  +/ {
+> >>  +	aliases {
+> >>  +		ethernet0 =3D &rtl8189ftv;
+> >>  +	};
+> >>  +
+> >>  +	leds {
+> >>  +		compatible =3D "gpio-leds";
+> >>  +
+> >>  +		led-0 {
+> >>  +			function =3D LED_FUNCTION_STATUS;
+> >>  +			color =3D <LED_COLOR_ID_GREEN>;
+> >>  +			gpios =3D <&pio 7 5 GPIO_ACTIVE_HIGH>; /* PH5
+> >=20
+> > */
+> >=20
+> >>  +		};
+> >>  +	};
+> >>  +
+> >>  +	reg_vcc5v: regulator-vcc5v {
+> >>  +		/* board wide 5V supply from carrier boards */
+> >>  +		compatible =3D "regulator-fixed";
+> >>  +		regulator-name =3D "vcc-5v";
+> >>  +		regulator-min-microvolt =3D <5000000>;
+> >>  +		regulator-max-microvolt =3D <5000000>;
+> >>  +		regulator-always-on;
+> >>  +	};
+> >>  +
+> >>  +	reg_vcc33_wifi: vcc33-wifi {
+> >>  +		/* Always on 3.3V regulator for WiFi */
+> >=20
+> > Please drop the comment. It's pretty obvious from properties.
+> >=20
+> >>  +		compatible =3D "regulator-fixed";
+> >>  +		regulator-name =3D "vcc33-wifi";
+> >>  +		regulator-min-microvolt =3D <3300000>;
+> >>  +		regulator-max-microvolt =3D <3300000>;
+> >>  +		regulator-always-on;
+> >>  +		vin-supply =3D <&reg_vcc5v>;
+> >>  +	};
+> >>  +
+> >>  +	reg_vcc_wifi_io: vcc-wifi-io {
+> >>  +		/* Always on 1.8V/300mA regulator for WiFi */
+> >=20
+> > Ditto.
+> >=20
+> > Once fixed, you can add:
+> > Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+> >=20
+> > Best regards,
+> > Jernej
+>=20
+> Got it for both comments. Will send V5 tomorrow.
 
-On 7/19/23 16:24, Danilo Krummrich wrote:
-> On 7/15/23 17:45, Thomas Hellström wrote:
->> Add a motivation for and description of asynchronous VM_BIND operation
->>
->> v2:
->> - Fix typos (Nirmoy Das)
->> - Improve the description of a memory fence (Oak Zeng)
->> - Add a reference to the document in the Xe RFC.
->> - Add pointers to sample uAPI suggestions
->> v3:
->> - Address review comments (Danilo Krummrich)
->> - Formatting fixes
->> v4:
->> - Address typos (Francois Dugast)
->> - Explain why in-fences are not allowed for VM_BIND operations for long-
->>    running workloads (Matthew Brost)
->> v5:
->> - More typo- and style fixing
->> - Further clarify the implications of disallowing in-fences for VM_BIND
->>    operations for long-running workloads (Matthew Brost)
->>
->> Signed-off-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
->> Acked-by: Nirmoy Das <nirmoy.das@intel.com>
->> ---
->>   Documentation/gpu/drm-vm-bind-async.rst | 171 ++++++++++++++++++++++++
->>   Documentation/gpu/rfc/xe.rst            |   4 +-
->>   2 files changed, 173 insertions(+), 2 deletions(-)
->>   create mode 100644 Documentation/gpu/drm-vm-bind-async.rst
->>
->> diff --git a/Documentation/gpu/drm-vm-bind-async.rst 
->> b/Documentation/gpu/drm-vm-bind-async.rst
->> new file mode 100644
->> index 000000000000..d2b02a38198a
->> --- /dev/null
->> +++ b/Documentation/gpu/drm-vm-bind-async.rst
->> @@ -0,0 +1,171 @@
->> +====================
->> +Asynchronous VM_BIND
->> +====================
->> +
->> +Nomenclature:
->> +=============
->> +
->> +* ``VRAM``: On-device memory. Sometimes referred to as device local 
->> memory.
->> +
->> +* ``gpu_vm``: A GPU address space. Typically per process, but can be 
->> shared by
->> +  multiple processes.
->
-> Again, pretty obvious, but I suggest to be explicit "GPU virtual 
-> address space".
->
-> Also, you might want to remove "draft" from the patch subject.
->
-> Otherwise: Reviewed-by: Danilo Krummrich <dakr@redhat.com>
+You should not send new versions before all discussions are finished, in th=
+is=20
+case for adxl345. If in doubt, ask, but certainly wait on response.
 
-Sure. Thanks for reviewing, Danilo.
+Best regards,
+Jernej
+
+>=20
+> Cheers,
+> Martin
+>=20
+> >>  +		compatible =3D "regulator-fixed";
+> >>  +		regulator-name =3D "vcc-wifi-io";
+> >>  +		regulator-min-microvolt =3D <1800000>;
+> >>  +		regulator-max-microvolt =3D <1800000>;
+> >>  +		regulator-always-on;
+> >>  +		vin-supply =3D <&reg_vcc33_wifi>;
+> >>  +	};
+> >>  +
+> >>  +	wifi_pwrseq: wifi-pwrseq {
+> >>  +		compatible =3D "mmc-pwrseq-simple";
+> >>  +		clocks =3D <&rtc 1>;
+> >>  +		clock-names =3D "ext_clock";
+> >>  +		reset-gpios =3D <&pio 6 18 GPIO_ACTIVE_LOW>; /* PG18 */
+> >>  +		post-power-on-delay-ms =3D <200>;
+> >>  +	};
+> >>  +};
+> >>  +
+> >>  +&mmc0 {
+> >>  +	vmmc-supply =3D <&reg_dldo1>;
+> >>  +	/* Card detection pin is not connected */
+> >>  +	broken-cd;
+> >>  +	bus-width =3D <4>;
+> >>  +	status =3D "okay";
+> >>  +};
+> >>  +
+> >>  +&mmc1 {
+> >>  +	vmmc-supply =3D <&reg_vcc33_wifi>;
+> >>  +	vqmmc-supply =3D <&reg_vcc_wifi_io>;
+> >>  +	mmc-pwrseq =3D <&wifi_pwrseq>;
+> >>  +	bus-width =3D <4>;
+> >>  +	non-removable;
+> >>  +	mmc-ddr-1_8v;
+> >>  +	status =3D "okay";
+> >>  +
+> >>  +	rtl8189ftv: wifi@1 {
+> >>  +		reg =3D <1>;
+> >>  +	};
+> >>  +};
+> >>  +
+> >>  +&r_i2c {
+> >>  +	status =3D "okay";
+> >>  +
+> >>  +	axp313a: pmic@36 {
+> >>  +		compatible =3D "x-powers,axp313a";
+> >>  +		reg =3D <0x36>;
+> >>  +		interrupt-controller;
+> >>  +		#interrupt-cells =3D <1>;
+> >>  +
+> >>  +		regulators{
+> >>  +			reg_dcdc1: dcdc1 {
+> >>  +				regulator-name =3D "vdd-gpu-sys";
+> >>  +				regulator-min-microvolt =3D
+> >=20
+> > <810000>;
+> >=20
+> >>  +				regulator-max-microvolt =3D
+> >=20
+> > <990000>;
+> >=20
+> >>  +				regulator-always-on;
+> >>  +			};
+> >>  +
+> >>  +			reg_dcdc2: dcdc2 {
+> >>  +				regulator-name =3D "vdd-cpu";
+> >>  +				regulator-min-microvolt =3D
+> >=20
+> > <810000>;
+> >=20
+> >>  +				regulator-max-microvolt =3D
+> >=20
+> > <1100000>;
+> >=20
+> >>  +				regulator-ramp-delay =3D <200>;
+> >>  +				regulator-always-on;
+> >>  +			};
+> >>  +
+> >>  +			reg_dcdc3: dcdc3 {
+> >>  +				regulator-name =3D "vcc-dram";
+> >>  +				regulator-min-microvolt =3D
+> >=20
+> > <1350000>;
+> >=20
+> >>  +				regulator-max-microvolt =3D
+> >=20
+> > <1500000>;
+> >=20
+> >>  +				regulator-always-on;
+> >>  +			};
+> >>  +
+> >>  +			reg_aldo1: aldo1 {
+> >>  +				regulator-name =3D "vcc-1v8-pll";
+> >>  +				regulator-min-microvolt =3D
+> >=20
+> > <1800000>;
+> >=20
+> >>  +				regulator-max-microvolt =3D
+> >=20
+> > <1800000>;
+> >=20
+> >>  +				regulator-always-on;
+> >>  +			};
+> >>  +
+> >>  +			reg_dldo1: dldo1 {
+> >>  +				regulator-name =3D "vcc-3v3-io";
+> >>  +				regulator-min-microvolt =3D
+> >=20
+> > <3300000>;
+> >=20
+> >>  +				regulator-max-microvolt =3D
+> >=20
+> > <3300000>;
+> >=20
+> >>  +				regulator-always-on;
+> >>  +			};
+> >>  +		};
+> >>  +	};
+> >>  +};
+> >>  +
+> >>  +&usbphy {
+> >>  +	status =3D "okay";
+> >>  +};
 
 
 
->
->> +
->> +* ``VM_BIND``: An operation or a list of operations to modify a 
->> gpu_vm using
->> +  an IOCTL. The operations include mapping and unmapping system- or
->> +  VRAM memory.
->> +
->> +* ``syncobj``: A container that abstracts synchronization objects. The
->> +  synchronization objects can be either generic, like dma-fences or
->> +  driver specific. A syncobj typically indicates the type of the
->> +  underlying synchronization object.
->> +
->> +* ``in-syncobj``: Argument to a VM_BIND IOCTL, the VM_BIND operation 
->> waits
->> +  for these before starting.
->> +
->> +* ``out-syncobj``: Argument to a VM_BIND_IOCTL, the VM_BIND operation
->> +  signals these when the bind operation is complete.
->> +
->> +* ``memory fence``: A synchronization object, different from a 
->> dma-fence.
->> +  A memory fence uses the value of a specified memory location to 
->> determine
->> +  signaled status. A memory fence can be awaited and signaled by both
->> +  the GPU and CPU. Memory fences are sometimes referred to as
->> +  user-fences, userspace-fences or gpu futexes and do not 
->> necessarily obey
->> +  the dma-fence rule of signaling within a "reasonable amount of time".
->> +  The kernel should thus avoid waiting for memory fences with locks 
->> held.
->> +
->> +* ``long-running workload``: A workload that may take more than the
->> +  current stipulated dma-fence maximum signal delay to complete and
->> +  which therefore needs to set the gpu_vm or the GPU execution 
->> context in
->> +  a certain mode that disallows completion dma-fences.
->> +
->> +* ``exec function``: An exec function is a function that revalidates 
->> all
->> +  affected gpu_vmas, submits a GPU command batch and registers the
->> +  dma_fence representing the GPU command's activity with all affected
->> +  dma_resvs. For completeness, although not covered by this document,
->> +  it's worth mentioning that an exec function may also be the
->> +  revalidation worker that is used by some drivers in compute /
->> +  long-running mode.
->> +
->> +* ``bind context``: A context identifier used for the VM_BIND
->> +  operation. VM_BIND operations that use the same bind context can be
->> +  assumed, where it matters, to complete in order of submission. No 
->> such
->> +  assumptions can be made for VM_BIND operations using separate bind 
->> contexts.
->> +
->> +* ``UMD``: User-mode driver.
->> +
->> +* ``KMD``: Kernel-mode driver.
->> +
->> +
->> +Synchronous / Asynchronous VM_BIND operation
->> +============================================
->> +
->> +Synchronous VM_BIND
->> +___________________
->> +With Synchronous VM_BIND, the VM_BIND operations all complete before 
->> the
->> +IOCTL returns. A synchronous VM_BIND takes neither in-fences nor
->> +out-fences. Synchronous VM_BIND may block and wait for GPU operations;
->> +for example swap-in or clearing, or even previous binds.
->> +
->> +Asynchronous VM_BIND
->> +____________________
->> +Asynchronous VM_BIND accepts both in-syncobjs and out-syncobjs. 
->> While the
->> +IOCTL may return immediately, the VM_BIND operations wait for the 
->> in-syncobjs
->> +before modifying the GPU page-tables, and signal the out-syncobjs when
->> +the modification is done in the sense that the next exec function that
->> +awaits for the out-syncobjs will see the change. Errors are reported
->> +synchronously assuming that the asynchronous part of the job never 
->> errors.
->> +In low-memory situations the implementation may block, performing the
->> +VM_BIND synchronously, because there might not be enough memory
->> +immediately available for preparing the asynchronous operation.
->> +
->> +If the VM_BIND IOCTL takes a list or an array of operations as an 
->> argument,
->> +the in-syncobjs needs to signal before the first operation starts to
->> +execute, and the out-syncobjs signal after the last operation
->> +completes. Operations in the operation list can be assumed, where it
->> +matters, to complete in order.
->> +
->> +Since asynchronous VM_BIND operations may use dma-fences embedded in
->> +out-syncobjs and internally in KMD to signal bind completion, any
->> +memory fences given as VM_BIND in-fences need to be awaited
->> +synchronously before the VM_BIND ioctl returns, since dma-fences,
->
-> IOCTL
->
->> +required to signal in a reasonable amount of time, can never be made
->> +to depend on memory fences that don't have such a restriction.
->> +
->> +To aid in supporting user-space queues, the VM_BIND may take a bind 
->> context.
->> +
->> +The purpose of an Asynchronous VM_BIND operation is for user-mode
->> +drivers to be able to pipeline interleaved gpu_vm modifications and
->> +exec functions. For long-running workloads, such pipelining of a bind
->> +operation is not allowed and any in-fences need to be awaited
->> +synchronously. The reason for this is twofold. First, any memory
->> +fences gated by a long-running workload and used as in-syncobjs for the
->> +VM_BIND operation will need to be awaited synchronously anyway (see
->> +above). Second, any dma-fences used as in-syncobjs for VM_BIND
->> +operations for long-running workloads will not allow for pipelining
->> +anyway since long-running workloads don't allow for dma-fences as
->> +out-syncobjs, so while theoretically possible the use of them is
->> +questionable and should be rejected until there is a valuable use-case.
->> +Note that this is not a limitation imposed by dma-fence rules, but
->> +rather a limitation imposed to keep KMD implementation simple. It does
->> +not affect using dma-fences as dependencies for the long-running
->> +workload itself, which is allowed by dma-fence rules, but rather for
->> +the VM_BIND operation only.
->> +
->> +Also for VM_BINDS for long-running gpu_vms the user-mode driver 
->> should typically
->> +select memory fences as out-fences since that gives greater 
->> flexibility for
->> +the kernel mode driver to inject other operations into the bind /
->> +unbind operations. Like for example inserting breakpoints into batch
->> +buffers. The workload execution can then easily be pipelined behind
->> +the bind completion using the memory out-fence as the signal condition
->> +for a GPU semaphore embedded by UMD in the workload.
->> +
->> +Multi-operation VM_BIND IOCTL error handling and interrupts
->> +===========================================================
->> +
->> +The VM_BIND operations of the IOCTL may error due to lack of resources
->> +to complete and also due to interrupted waits. In both situations UMD
->> +should preferably restart the IOCTL after taking suitable action. If
->> +UMD has over-committed a memory resource, an -ENOSPC error will be
->> +returned, and UMD may then unbind resources that are not used at the
->> +moment and restart the IOCTL. On -EINTR, UMD should simply restart the
->> +IOCTL and on -ENOMEM user-space may either attempt to free known
->> +system memory resources or abort the operation. If aborting as a
->> +result of a failed operation in a list of operations, some operations
->> +may still have completed, and to get back to a known state, user-space
->> +should therefore attempt to unbind all virtual memory regions touched
->> +by the failing IOCTL.
->> +Unbind operations are guaranteed not to cause any errors due to
->> +resource constraints.
->> +In between a failed VM_BIND IOCTL and a successful restart there may
->> +be implementation defined restrictions on the use of the gpu_vm. For a
->> +description why, please see KMD implementation details under `error
->> +state saving`_.
->> +
->> +Sample uAPI implementations
->> +===========================
->> +Suggested uAPI implementations at the moment of writing can be found 
->> for
->> +the Nouveau driver `here
->> +<https://patchwork.freedesktop.org/patch/543260/?series=112994&rev=6>`_. 
->>
->> +and for the Xe driver `here
->> +<https://cgit.freedesktop.org/drm/drm-xe/diff/include/uapi/drm/xe_drm.h?h=drm-xe-next&id=9cb016ebbb6a275f57b1cb512b95d5a842391ad7>`_. 
->>
->> +
->> +KMD implementation details
->> +==========================
->> +
->> +Error state saving
->> +__________________
->> +Open: When the VM_BIND IOCTL returns an error, some or even parts of
->> +an operation may have been completed. If the IOCTL is restarted, in
->> +order to know where to restart, the KMD can either put the gpu_vm in
->> +an error state and save one instance of the needed restart state
->> +internally. In this case, KMD needs to block further modifications of
->> +the gpu_vm state that may cause additional failures requiring a
->> +restart state save, until the error has been fully resolved. If the
->> +uAPI instead defines a pointer to a UMD allocated cookie in the IOCTL
->> +struct, it could also choose to store the restart state in that cookie.
->> +
->> +The restart state may, for example, be the number of successfully
->> +completed operations.
->> +
->> +Easiest for UMD would of course be if KMD did a full unwind on error
->> +so that no error state needs to be saved.
->> diff --git a/Documentation/gpu/rfc/xe.rst b/Documentation/gpu/rfc/xe.rst
->> index 2516fe141db6..0f062e1346d2 100644
->> --- a/Documentation/gpu/rfc/xe.rst
->> +++ b/Documentation/gpu/rfc/xe.rst
->> @@ -138,8 +138,8 @@ memory fences. Ideally with helper support so 
->> people don't get it wrong in all
->>   possible ways.
->>     As a key measurable result, the benefits of ASYNC VM_BIND and a 
->> discussion of
->> -various flavors, error handling and a sample API should be 
->> documented here or in
->> -a separate document pointed to by this document.
->> +various flavors, error handling and sample API suggestions are 
->> documented in
->> +Documentation/gpu/drm-vm-bind-async.rst
->>     Userptr integration and vm_bind
->>   -------------------------------
->
+
