@@ -2,336 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9A677AFE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 05:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A298E77AFEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 05:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbjHNDOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 23:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
+        id S231786AbjHNDPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 23:15:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232710AbjHNDOH (ORCPT
+        with ESMTP id S232758AbjHNDO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 23:14:07 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F7BA6
-        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 20:14:06 -0700 (PDT)
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37E00EMk004769;
-        Mon, 14 Aug 2023 03:13:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=b8uJpl2uq9DqnckI7hs24bmSgkeekSFSNigMRY+xKtM=;
- b=uNdgiEA6RI+azJK4RNejJFvO3S1alM+mPOihDomVQtoFoZj7mmvX1xO0aAt/p1qTAteF
- 5S4m3bpDTsqcufB8pn4OC7sSdf4Rv8Eb2JQtHOohMK9w8NauvAt2fk3SrL3kc0GBkBku
- 70E+4Xjj1Sb3ItnQCQDMy2JNyU2W31ab1NYeJE/MjECBmAnEMddoQcvwFBASVbm/iB8U
- Xql7x4r3TfQu+zNPnHLj8Q/4FF2N5j2aNNkZPzmElx7Mq6ILCG5ZnRkyCOWq4LXq8ARM
- CTylHF/VIKz3umuEnxdL4uAJJ0/v4WkOGkFUSRxaIA2My0Wexet2f5vRsnHPvP8piaFw Ew== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3se2xwhpt2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Aug 2023 03:13:51 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37DMrMMO019874;
-        Mon, 14 Aug 2023 03:13:50 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3sey3tmsdw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Aug 2023 03:13:50 +0000
+        Sun, 13 Aug 2023 23:14:58 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A05E73
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 20:14:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1691982897; x=1723518897;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=R1X3m98LDPGIuqulDEzV8AyKx5iz1WzdA+/v284QvUg=;
+  b=DE6VyMXu7qfN/c9Qswtzzu+Y4bTCUr7cD85FHOgpW+vxxL5441O98fJC
+   tERjabZW2ayd148nzktc53/4s4pb9B8IpCssAoY78iO1aSLaT4g/VipTE
+   GPolUy5+8OW/w015X10JCHJr1JoD9o5Wyzdh9rHAcOhgb6FITthXeTA0D
+   1vvKMgEeJ7l6BvPBFljCpS69NAixro2nku3QzP8Eam96YN6MCW1VsZg2M
+   bql4CLtVs5QFn9si5wckwh4E54I/XFX9hJImE9cFuZYPfbhhOte0zwEPK
+   sUAvXF7C+wYJL//Y3IrCPjiwfj/wKVBU1IjsI3Nw3olD3X9iQqGpGJtN8
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="370852344"
+X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
+   d="scan'208";a="370852344"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2023 20:14:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="803314209"
+X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
+   d="scan'208";a="803314209"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga004.fm.intel.com with ESMTP; 13 Aug 2023 20:14:47 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Sun, 13 Aug 2023 20:14:47 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Sun, 13 Aug 2023 20:14:46 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Sun, 13 Aug 2023 20:14:46 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.174)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Sun, 13 Aug 2023 20:14:46 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BEcKKjmNsj4EcxK7q/gm5FPesVKzGY1NjTUrKXoBeh6kIX5/dL4hyLJHw80C9qXP/DepCqtV6Fp/iZUuZUa5yoOENqd1WgmnKYEPQ6DolnzO8CzueWGxqk/tOhYZSUtItjEgiWwG+h+19xyr6zI673U9bOszLFWrbNI+Zab6G4wWnwk3g3riS3O4o3HOZ3hQR8QeknvLU88KTIMWgq+2rUG5qwRduA0X0bkm8lFNkqJcziDXxMJxoJ87NTiAphNKOGPOXp1ttGNSNxWrEUYAjxBHgG2m0KVEGbVV3qc/oxQRipI28OEROB1O85mS+H8Q+eJTUa3v9SxuqfBNOls+Gg==
+ b=XZC1rryfN4Xhz7muYBmxYtuaD+yzz/N8F0BGz61pxiCjIt7WOJqJQAfm5Sn5xNbtEe+jGyo+om6kuMie6TyTF89W9URXb/mYpsZ8xOF9Fc0oInhkI6/Vseimo03IDh/2zmxH8OzPLyAVL4dH/4nV2jO5PdrwOUQ4BOPQgRn3VyvWUc6GxXZHB081cX35Pv6dWsCAUSGHxLUBl+zogJEQ0AERFDB5hGbbeE3DiNo6IovxZ8sjINRMTi6dCXeZmY2LyWynSMlV9h4JCesaeA/grwZ0ty35eWcsQ72TgaAEBM/cS6rKPsCJQmEsyQEb4f6RhoY9sKvK8nxpHZ/CfbRi6A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=b8uJpl2uq9DqnckI7hs24bmSgkeekSFSNigMRY+xKtM=;
- b=f3g65o+8oEcqjOLnKkflRwzuWQAUDVK9EVZ4v8RxFrrSG6cAkMMSG8pRA9mFBcz1T8oXhiLvhI2UOGkyFEcsmMbJyj0RTgcPRDqYMe/17V8Uq9Daj2LtEP4liWuj9hCHWKIZ7ov0hdA3OSgvy2k8gl8gu2R19aWj8tUDLP4ZfAgRPg94t1V7ykSy/s0PKdSx6j+jsDcTfUPwIYYiOa1KZ/XgBH+nyJE+r7dTxM/dF7E9AR7oowD/+LLp8z2AYjI8Z8kQhRf5iWrsh/AbMXZ2jY2kEJpbrHQOXOmz+ZGRNmDIckeUP9Dnwww0ZoUr9Exl5jKFtr28IG2RR7NYdCwajA==
+ bh=3LjRtnqxYT/Xtjq6//cL/ZO4DD5X2cDzEcRBKAcFinY=;
+ b=Qw0ZEULa02RBmDxZo1BB3bWXhk/RPAg4Bcpco85ouf7JicyKp4kYrCk+3FDKXM9CReRY7IT52qeLeFX/4eYYGcFPTLrWHoCPNKKekGh0Qr4LszZTxy2lxLMK2a3i3OaEaO6CzglpgVXnGRTf4Wpkhg+r+lR8Is1g8AFnWrKX78WWOLkfwhQe28qgmLuAuixmfe/0H4CsN9f2eGbbG9Njr7J17Aaa4dxqH3TsodPP9f5W/1YwotYgXptYmPWVrP4lnrP1SblX/VvYSQoAnJOzf34H+KOi4Bj3jvIFw2MV9y8RMJ+ujB/pT414V6KVshgo7MgCiFj4+HI2K0pzQPFc+w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b8uJpl2uq9DqnckI7hs24bmSgkeekSFSNigMRY+xKtM=;
- b=UYi+Ivj4u2FUio2wbsi9Ina87mjqjHAZyU/+WRSc/s3zFv21Qp4gZO3yZMVdQoGdNoH1dbGJZCAn/+S4OHq0CuF1FKPsRhRVoOH0kak9K1eXR3V0LnHSr9raWDtQkTpl6W3nTUbNK4/FvIezlEf4+y8Tw+3Xnl8xerdhh348bw0=
-Received: from CY8PR10MB7243.namprd10.prod.outlook.com (2603:10b6:930:7c::10)
- by DS0PR10MB7152.namprd10.prod.outlook.com (2603:10b6:8:f1::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6678.24; Mon, 14 Aug 2023 03:13:48 +0000
-Received: from CY8PR10MB7243.namprd10.prod.outlook.com
- ([fe80::2a3e:cf81:52db:a66a]) by CY8PR10MB7243.namprd10.prod.outlook.com
- ([fe80::2a3e:cf81:52db:a66a%4]) with mapi id 15.20.6678.022; Mon, 14 Aug 2023
- 03:13:47 +0000
-Message-ID: <03837ec6-e0e1-4ba8-4b1d-0a125c059f23@oracle.com>
-Date:   Sun, 13 Aug 2023 22:13:44 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH v11 8/8] vhost: use vhost_tasks for worker threads
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     hch@infradead.org, stefanha@redhat.com, jasowang@redhat.com,
-        sgarzare@redhat.com, virtualization@lists.linux-foundation.org,
-        brauner@kernel.org, ebiederm@xmission.com,
-        torvalds@linux-foundation.org, konrad.wilk@oracle.com,
-        linux-kernel@vger.kernel.org
-References: <20230202232517.8695-1-michael.christie@oracle.com>
- <20230202232517.8695-9-michael.christie@oracle.com>
- <20230720090415-mutt-send-email-mst@kernel.org>
- <dcd74064-7617-c895-4f78-cb46ef1d582b@oracle.com>
- <20230810145528-mutt-send-email-mst@kernel.org>
- <b2b02526-913d-42a9-9d23-59badf5b96db@oracle.com>
- <20230813145936-mutt-send-email-mst@kernel.org>
-Content-Language: en-US
-From:   michael.christie@oracle.com
-In-Reply-To: <20230813145936-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM6PR03CA0040.namprd03.prod.outlook.com
- (2603:10b6:5:100::17) To CY8PR10MB7243.namprd10.prod.outlook.com
- (2603:10b6:930:7c::10)
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB3062.namprd11.prod.outlook.com (2603:10b6:a03:92::18)
+ by CH3PR11MB8364.namprd11.prod.outlook.com (2603:10b6:610:174::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.24; Mon, 14 Aug
+ 2023 03:14:44 +0000
+Received: from BYAPR11MB3062.namprd11.prod.outlook.com
+ ([fe80::9a8d:9d34:4af2:f2e5]) by BYAPR11MB3062.namprd11.prod.outlook.com
+ ([fe80::9a8d:9d34:4af2:f2e5%6]) with mapi id 15.20.6678.022; Mon, 14 Aug 2023
+ 03:14:44 +0000
+Date:   Mon, 14 Aug 2023 11:14:32 +0800
+From:   Aaron Lu <aaron.lu@intel.com>
+To:     Zhang Rui <rui.zhang@intel.com>
+CC:     <mingo@redhat.com>, <peterz@infradead.org>,
+        <vincent.guittot@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <tj@kernel.org>, <srinivas.pandruvada@intel.com>
+Subject: Re: [PATCH] sched/fair: Skip cpus with no sched domain attached
+ during NOHZ idle balance
+Message-ID: <20230814031432.GA574314@ziqianlu-dell>
+References: <20230804090858.7605-1-rui.zhang@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230804090858.7605-1-rui.zhang@intel.com>
+X-ClientProxiedBy: SI1PR02CA0025.apcprd02.prod.outlook.com
+ (2603:1096:4:1f4::13) To BYAPR11MB3062.namprd11.prod.outlook.com
+ (2603:10b6:a03:92::18)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY8PR10MB7243:EE_|DS0PR10MB7152:EE_
-X-MS-Office365-Filtering-Correlation-Id: 07c9b5dc-2efc-4e82-a5a6-08db9c7479bc
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3062:EE_|CH3PR11MB8364:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1a764ceb-9d50-4407-c299-08db9c749b17
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zAcl8TxMv6cMOcGCRjzgECyBlMkvGm05nUYFSAJEJ0NrPvK3XjevUMXRxquIoiDxJmUjBLHxikUZohkGjxYYRKOM0nlfPV5PxGx8dWHqqtb0n7p/H+wkQMFaqUR7LwujXV48kAe9i5c2ZysMi43EETq40s3CfShitV8Mz+bCOjKyzb0ywMNdjM8f+5GukIm0IAp+Wh4utGOd8p26aiQ9typ3RHwoUuX7gF8lHXSg1EVVowYyMtGc6Zza0+indYiZ0ZxYVOPpqUGmAjximv2d+blE8MqrModjIAzF85s5TFpNOfhxotbzU26g4NOqOQmYOqwevwbusbVP7SMqWIk9LkINmm55Yv9nlIvMAsqfvNzjxxdKjJ/2Wk2YDs/PW0ooTgtcDFZ7CZdHIs0MsgGyyCmmOwgZlVdCMFHC6t/P+P8Emfl6WyC4f5jwlSYIGJG+54u9Ztq0+3KKjdP0UsIpWgBted95qTThRYs58J2IlQ7OlObgF/lHDnxBmx8syqnzxIoeHXopMZprXRq8tWMAy3FSsOI2yAoP1JqZfAjVtshUkJWisTzMnMFgDhd5nYSB3H0DgwXSD8xSW2hB23jwbYrbydfVeB+sYTRUH+wwDOQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY8PR10MB7243.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(346002)(136003)(39860400002)(376002)(366004)(451199021)(186006)(1800799006)(31686004)(6666004)(6486002)(966005)(6506007)(478600001)(83380400001)(36756003)(86362001)(31696002)(2906002)(7416002)(6512007)(26005)(66946007)(53546011)(2616005)(9686003)(38100700002)(316002)(4326008)(8676002)(66476007)(6916009)(66556008)(5660300002)(41300700001)(8936002)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: TEY5QkEKyJ9yGWQhL0dNs1/qu212BBMDP0TTFYH/nAnMfrfZ1CZaXIdZTw9NN5n6+6/2ovbH+0b2kqMbLBGNBvspiF2Rbd3kMeoLGudqLahRK+QIXYyBvQWTuU+b2z6LlVc1tcZiAdHT++Vw+s9MepQvwVkKJkh5VFD4gtulRLAp3sPiD6ioXhgcbjM9wgjNbQWCvwlMlg3HyyyWcXBnLvmlVltIMxQA4ytMLoIYLyFT99jTiRhvzKEtgw2kv6vR1RzPKM1AQ3YVucBdXaxF5ROWWlgDYjmrhSMoeeR2I0u9ZIHZOg1X6HS0ykb28Lb0H2cyuKdkwxpfw5/MmFBkf9f2zAckBFQE7/2jUBepdH/SUXxzX1YKarvqT2af/xeX9YASBsiScBuhvaLoOOtoYyyFgTBN0+bGeR8mHRNXo8hg/2RWkUwkTrApplkWtYRUJh8Bl15A00AoR0cxGyuByqkydZYzOBjCghBBV5IwZuJk0+NqZAE9Kv5GVHQ68ypNalbPo8dn4geZpCXg4VAffA2U5g1Q98u7lmAmFihFYR9xL1fo9sz9Mq0YPhty4eI/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3062.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(376002)(366004)(39860400002)(346002)(396003)(136003)(451199021)(186006)(1800799006)(86362001)(9686003)(6512007)(107886003)(6666004)(6486002)(6506007)(38100700002)(33656002)(33716001)(82960400001)(26005)(1076003)(83380400001)(6636002)(66946007)(2906002)(8676002)(8936002)(41300700001)(4326008)(6862004)(316002)(5660300002)(66476007)(66556008)(44832011)(478600001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K1hVRE1HOXNOYW90SFdGNEw0bXMrUFVUOFdiWUUxTm92NEpMSkYyNTVXN3l4?=
- =?utf-8?B?Y29NWnhKaDYxcnYySVVyNjhLa3RvWENvSDVkTHkxM25MKzhsMCtmVldqMHc0?=
- =?utf-8?B?VUMyY3o2RDRMTWpGTEdkaXBLcUFha2ZOSVdlMFowZlVvbE1RcFI4aEt4ajY5?=
- =?utf-8?B?QkNQZ2RIaGE3ZHZOT3d5Z0xoTVZuYnRKTFlocHJqUktBZlA1T0VPUmNyWTNq?=
- =?utf-8?B?anNCYWowbDk3dmcvdFp6VWMwbFRoR3E2aStuTkRSSjRhUHAxR1p0U09rSU1i?=
- =?utf-8?B?V3BXcnBOMmRMSm55cFRVMWtidVh5YWEySzkrUVpYdjZBQ2l5b0JYbFp2OHps?=
- =?utf-8?B?MmRPQ3ZmelJPQThvVVJQOEZ0YUd4U0Z1WUU2ck5XdEtBRWRGK0lsamwwdkVY?=
- =?utf-8?B?dUpJZkU0R3VrWk12SGJCRnQxem43VmZrUjd2YS9uVitRMU1LWFltOHp2UEpy?=
- =?utf-8?B?dlpKZUloNC8vcEZWdzBtUWtsL3ZTR1QzYU9NWjd1dXZqK0VWWms4b1p6ZzlK?=
- =?utf-8?B?MmRTeHgvd0prVk9tSGg3K1l5bnFtRWlaUHltUHUvTzhzYXQ0YVdkVlliMzFu?=
- =?utf-8?B?Q29WcjlSdGE2Vk10Mm5meW9lcGs3NGJ2UmVDSUIvZkJCVDM1TVZJb0hQWVpr?=
- =?utf-8?B?VDRoWWFvbTlHSE91cmdmcncycTUvdm82anZvUEJsOFpPcTR1Sm8yTm9IZ2xk?=
- =?utf-8?B?c1NlaGx1SXkvaGxqUCtEeTdIOHVheGRTbVV5eG00YXR4T1Fya1NyV2NmVjc0?=
- =?utf-8?B?Z3hwWTNkMzZsbUdRTHlIbExnR1Mrc0htTlA5U1dxMEtlaVVlYjVTRkcySW5D?=
- =?utf-8?B?VEZpUFNXMEFzNTVYeGg5UU5nMVhrMVphOXJLVzRTTm4yY3NmTjJHMDlNbWNz?=
- =?utf-8?B?OFo4MXNyY1ZVWmNadmpzM3lFQWRaYWJUK0NtS21jSWZFYk9pMlBDOXJ6TXh3?=
- =?utf-8?B?Q0toeEExdnYxcmRQMG9qV0dXOFZYdkROLzR1dHhuZ0IxTEpjZFdmU1UvYThp?=
- =?utf-8?B?cDB0c1NSOWxWOGlSeWdMdlZ6aHkvN0YvL1VJeGNHd3RjQ3RVV3U4WEVMOW91?=
- =?utf-8?B?SDFEeXNMVEtUVGpxYWMzTDJTZXp0RW5FUWJsaXpmMFNBaXYzZ2NOaFNyVkZu?=
- =?utf-8?B?amVoSnJLUURhYjl5bkFsUlVGM01ZV0hqd050dERMWUlmL0lvR3hTQUZ0TmdL?=
- =?utf-8?B?ZVcwMmE3WEtURWFJTmFMYVo4ckVhUEdLSU5WT1k0eXl0RWltN2t2U1hkSmJj?=
- =?utf-8?B?YklkUTBPa2FPOHFqbk4zblg5K3NaTkdPNHkvaW5kV3FadEhkZy81Z1NFQXNW?=
- =?utf-8?B?UzJJaEdNNzdrV3hRMFNTWFR4RXFUSTVvTzh5a2pHZWl5ZTc2b2tFMVJZZFpl?=
- =?utf-8?B?SmJSSUZKeVgrMlRMSDB5aldybG5ObHpiUEdZRmpWMWg5dm9CaFBtZnVpMng5?=
- =?utf-8?B?Tk9DZWhzTEkrY0dsS29PYVVieEVQTlc0ZjVtUWJkcmRjNEp2U1ZsK09BR1h6?=
- =?utf-8?B?SHN6YlovQW8yUkk0QzFYc0l2anFKZmQzVWY2R2RSSGRJNThCYjdLeko4OTJF?=
- =?utf-8?B?L2NwU2h2N3dsVGREMi93ckoweFJHNDYrdHNZNVp0ajRrZTJZUEVpMW9EK1dR?=
- =?utf-8?B?QTdGNzdkOVA0ZHpReXZSSE5UTmMrM2p6RVBVdnk2YXVSNVdJbU5OZTZUalF6?=
- =?utf-8?B?bFJ4V2RWYTUrWXZwcnlEaFFTbXdIeWlYUGdMODRiaTExRWhjQVRIbnJSYlQv?=
- =?utf-8?B?VXo0ZUxIZHQ3MUdvUU5Fd0ZQU1FqcE1Od3JiTUtmb05zYjd3KzhOSndHcmhV?=
- =?utf-8?B?c0NrY1JCUHlJeUJ1RFc1QlZpN2lRSVFOMXhJdHBsYTQ2T09ON05NUHh2dTVq?=
- =?utf-8?B?dDVPR25RanVabFUzMnFVTDU5WGc0QUdxZkpxNWFUZXJNdTluMTQwbjRYL1Vi?=
- =?utf-8?B?OHMrOUI2enhGUkgrSmwrR3Ztd05BLzAzSXZ3SmZuVVNiOURHRllYNXR1QWNy?=
- =?utf-8?B?WlBrNisxNmJnbjVSczRWOExOaUtFUjlYZ3FQN1BlN29QT2RzQ0FmNVhBR0Nw?=
- =?utf-8?B?NWR3czkxcGw4TXVmSjZZUzc1dGRsMGUyVkFZaXZ2UUdBK0NKQkxXb2N1M3pq?=
- =?utf-8?B?eFlOcERVbEJaZHl2T2xONlY5bnRrZHI1dGNOaFk0bVJGVmNzZkxSUitiTFJU?=
- =?utf-8?B?UlE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?SmhhOXM3azNHdVZWd2s1aCtIQmszM0tXQ0xNN0xuTUUzVnNMeTQxK2lXWXVN?=
- =?utf-8?B?MTJsTVZMVGpyRVBFMXJkYU90b0U2NHZ1RDVnbU4vRVZiN3F6aTM1SkFKdUVX?=
- =?utf-8?B?THVGaXBtWExaL3lvQlJhcXBra3JxQVFMMDJVRHM2SDZiVEZ1MWdSaTRSa01n?=
- =?utf-8?B?S1VKQ09GOVlkSXd3dVhNWVFJNVczeHhvM2RpUEhUTHlub2F6STVFN2ZLUVlw?=
- =?utf-8?B?eDVmU1I0ZWp1bGlzckhadkc0L3NEWWNoZ2cxOGRVQm4xYkZ3SXM2MThES1o4?=
- =?utf-8?B?c1BVbUtmRDl3Q2Vaci9SS05CMVdTaTA2czh5VEVhVi8yRzMwV1ZVa0FRRnMw?=
- =?utf-8?B?UlUvWUdmV2tCeEdQQm1DZk82c2VrRzhXb1dKR1J0YmdWTXBjZlBmWXFhTjlX?=
- =?utf-8?B?cTVmNnNmR2Raa1dRaGRjUjZMdGk2OHk0Ukc0dEI3Zm5TYnhoZmo3SzBrd2M4?=
- =?utf-8?B?SDlYTlhIeCtZMHJ3NlpUNjVpMGNSVDdQV05xNXNSdVMzOERDY1JKVVlPcTJ3?=
- =?utf-8?B?OXBIelU4V1BBTDlEUFVjeTBLTFRTU29lNVVlaGF3Tkk4OC9XK2FaQzlPcnV1?=
- =?utf-8?B?MENoT1FGak82TXBiNEhFT0M5SWJDQjMzNHF3eVBqd0d0QnY1QW1aR2pubGsz?=
- =?utf-8?B?SnIyUUVZV24zWEV5MCt5TDFBeGcwYzJGWk9MeGYzT08vVnBZRVVUMlJkaFZl?=
- =?utf-8?B?UEEwcWtIVk81cEFUTEJIQ096NU0vUUhrZW9TbG9mcTUzdEIyR0pINEpVQjhM?=
- =?utf-8?B?a1lQTE9QS2ZQM1lOWi9SSjNzT1BJTjRybDNYbTk5MytxcUx1ak1hMXJzL1dQ?=
- =?utf-8?B?SStQdGpoTFVvK3daZncxOHhZWmZRSXlWWkp2SXNEdFVwSXJvNjhkUldsTjY3?=
- =?utf-8?B?MVBWT1FxS2tsWHI3TkFMbEVKM2I5MGhjdW16VnZmVG5qMDRGRW9MVTFiNlFa?=
- =?utf-8?B?M2ZwZHZjUGIzaGREaUZXS0hycFN2R28zbEFEcm1oZm5FcmVtd3RGcmpSVytj?=
- =?utf-8?B?ZWkzS1pvWjRXVWM1bHQxcTNLYVk5WCtibld3L2xxT2hubzl6UVNHc0FRNk9B?=
- =?utf-8?B?c1NzclVIc2NQSmdQZ2NFYnRVL2grMXNhYUFTYUZYNS9RWHFYNW1JVmFMNHdv?=
- =?utf-8?B?TkNiUXVONzlRb2wvSW1VVi9RWExwYmpqcGplNXFDbXdkL1B2eEZ0Nnh0Z00x?=
- =?utf-8?B?WXM1WmdubDY0WjBXWno4MnNtM05LVVlLNWEzZ1dHN2JxcDVGeFB2Y2NHcnd0?=
- =?utf-8?B?c0IzTVBNSkNrRXNzdnpaVi9hUVJCTWhqeFpBeWtJUmd2RHlnaTAzS1pmZ3M4?=
- =?utf-8?B?dW85WkgzUkxPT2N5alY3dmxRcU8rTmY3RzZGSEo1Z2dNRkZ6Tmt3U2pKRkQ4?=
- =?utf-8?B?YlZGZ2lla0dXZVE9PQ==?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 07c9b5dc-2efc-4e82-a5a6-08db9c7479bc
-X-MS-Exchange-CrossTenant-AuthSource: CY8PR10MB7243.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xblB2yaUIndIUjDB3LMpT+tV8yodCtU14hQFVzcP5/462tF3tnqewW7euAHv?=
+ =?us-ascii?Q?CJTbGIteKgJzp/k524DG4Kft3W/l9uA8Bq4fRbhKgOq/bV1cDrBXk/yAn164?=
+ =?us-ascii?Q?vFGMnGycCYmM9FjvMVFQi0kJfs25wqybMXmbOrxJEIIGkdwtDIY9nrCsuBJt?=
+ =?us-ascii?Q?BxAigga22zwFE0Kgk5sOQLQmofJ3FCssjZRkWChMGy8JaBUWVXoxdGgBN4hA?=
+ =?us-ascii?Q?1dOCTJ8+4jWkCxmpQSJT7gg4+CI3w+oj/qBMYBWXgeI0LKIOv4zFJ/GFVpra?=
+ =?us-ascii?Q?2c1bRz5/PQK7EjsWoPboixWBwxRBKAuIMi8oNfaeTGIds+iTGIDSkGoLyjWz?=
+ =?us-ascii?Q?qFCMYsRuICly5FjzO29UcI7QT+lHZZWrEtqhJ+vvGPjdMTDt4r91qR73cEfs?=
+ =?us-ascii?Q?fEcc4lOuy7meBHQdIjH2hc9bN0p3GBEDpkLJLzUZiQT+S/z/mpk+HBcsDJaN?=
+ =?us-ascii?Q?woES4I3d/yk90bAZFvYKrsfdFORKg9XdQb4HAlZ+dhsIhtEVyflp0t9RsnXj?=
+ =?us-ascii?Q?4uEa0QZHfJ1l57hLXdLUhtM6Hj9/6h6Dct3f1eCG84Q+LnRXNMXkYoYdnROQ?=
+ =?us-ascii?Q?mIl25uMVnqn7arJKWq1vvechuTh5s00aLw7VMSvplkl9ShVnN+GCBqw5Kxl3?=
+ =?us-ascii?Q?yG4Eph4KU+bzJs2CbEC+LSj9wh/x5jVaTKBpt5V/AvIKsCcI2MPRWOAgKnBZ?=
+ =?us-ascii?Q?Hdqka5WsJXtwq6L6sAumgkT/smUGHople18iXkBer+K4KU4WaQVchCfrkMSP?=
+ =?us-ascii?Q?kj5obKTk3Q/uWeaaTD6rKEYKAkbZYpH7gws2obZdZ99yd6oiBw17kmtOYaI+?=
+ =?us-ascii?Q?urpXm6GxPqJYt7JuMvkTYd3MiSlIeD0cOWWSbrCbGq4b/NFFko6A7HWY/+JU?=
+ =?us-ascii?Q?9UzqJIx4n6UFA+nwqXihS0GOcnVE8+IjVK0DK2X7p1YKcbXaqENG5yYzmJjc?=
+ =?us-ascii?Q?+/7e9S8C+yfbz9wZkdyvrW09AJF4rkMcBDX+txwazpyLdpbPNy54IrIraF3M?=
+ =?us-ascii?Q?7mn42N24PUdkJVG+oMm0vPVzdAVYM4iH9vm8rBwoylGP7yUEuQzJfckBjzKh?=
+ =?us-ascii?Q?mTmuyYa2n+EcrjA/qffa5kHHHUfwf48YmFCuljg3pZG5OkCDIDJhMC0IrKfT?=
+ =?us-ascii?Q?IGVnZpo2Hv/DUyErn+C5m6/mrh0acFhByVex3cVQymfqaKPt3cklSJJopdAZ?=
+ =?us-ascii?Q?cmqY5EWPpz/0OCTFUYW+iXwstg/5MpT8WRDsZdre6wyXmzc/6moYK9RClOkU?=
+ =?us-ascii?Q?Vzco3JenLA1pqADnojLWGF5FerN8ri4/L1IMX48Ti7eqxxMLMaEQgT5B9air?=
+ =?us-ascii?Q?ECG73tHnWtWUseJTwLSGOWA5FIKIt5PpbWuGbImPyErVYN1Vh2bPBjveEO19?=
+ =?us-ascii?Q?cjNmYZb6GzRbtT7FTRx6ZuasEayPKMb0JE1NIBIfhiNUWC64Pxn/Ou/A0snA?=
+ =?us-ascii?Q?IwdXav40G0mHYGDxfHITnAC+8zk+p+29H534l/IehYZ87/gf/9vIEN3QAUBg?=
+ =?us-ascii?Q?R1Q+WOP1IflUYGXJ1g7Tbc9eLDwgetl5JO+EwhZj8aj7fE2wMG2ppvi8Bpxz?=
+ =?us-ascii?Q?cOccNOUWG1GYk+Eh6/9o5lMSRUvjrI3PJKy25rZk?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a764ceb-9d50-4407-c299-08db9c749b17
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3062.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 03:13:47.7162
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 03:14:43.9571
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MKaejEoBZOZhGLoKsyKzerQek3WruDFjcU9pm5HvHOBGKNz+9hV1Z8/zmzEMpANga1VR3nMWIQ4QjMAlYm+ylbrZm6NPnwpXqQVQu24dKd0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB7152
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-13_24,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- spamscore=0 mlxscore=0 adultscore=0 bulkscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308140029
-X-Proofpoint-ORIG-GUID: TUI2uYFXLKQ0bPG7LAf4kOBHzSMtiI_z
-X-Proofpoint-GUID: TUI2uYFXLKQ0bPG7LAf4kOBHzSMtiI_z
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: J9yG8xf4LjDR9BIXAo3gV72yQaYikrbE2YGq0gNv05gfBk6MeBYLCWChxxjpDSs3OfLd8sai6eDGlN4bwND51Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8364
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/13/23 2:01 PM, Michael S. Tsirkin wrote:
-> On Fri, Aug 11, 2023 at 01:51:36PM -0500, Mike Christie wrote:
->> On 8/10/23 1:57 PM, Michael S. Tsirkin wrote:
->>> On Sat, Jul 22, 2023 at 11:03:29PM -0500, michael.christie@oracle.com wrote:
->>>> On 7/20/23 8:06 AM, Michael S. Tsirkin wrote:
->>>>> On Thu, Feb 02, 2023 at 05:25:17PM -0600, Mike Christie wrote:
->>>>>> For vhost workers we use the kthread API which inherit's its values from
->>>>>> and checks against the kthreadd thread. This results in the wrong RLIMITs
->>>>>> being checked, so while tools like libvirt try to control the number of
->>>>>> threads based on the nproc rlimit setting we can end up creating more
->>>>>> threads than the user wanted.
->>>>>>
->>>>>> This patch has us use the vhost_task helpers which will inherit its
->>>>>> values/checks from the thread that owns the device similar to if we did
->>>>>> a clone in userspace. The vhost threads will now be counted in the nproc
->>>>>> rlimits. And we get features like cgroups and mm sharing automatically,
->>>>>> so we can remove those calls.
->>>>>>
->>>>>> Signed-off-by: Mike Christie <michael.christie@oracle.com>
->>>>>> Acked-by: Michael S. Tsirkin <mst@redhat.com>
->>>>>
->>>>>
->>>>> Hi Mike,
->>>>> So this seems to have caused a measureable regression in networking
->>>>> performance (about 30%). Take a look here, and there's a zip file
->>>>> with detailed measuraments attached:
->>>>>
->>>>> https://bugzilla.redhat.com/show_bug.cgi?id=2222603
->>>>>
->>>>>
->>>>> Could you take a look please?
->>>>> You can also ask reporter questions there assuming you
->>>>> have or can create a (free) account.
->>>>>
->>>>
->>>> Sorry for the late reply. I just got home from vacation.
->>>>
->>>> The account creation link seems to be down. I keep getting a
->>>> "unable to establish SMTP connection to bz-exim-prod port 25 " error.
->>>>
->>>> Can you give me Quan's email?
->>>>
->>>> I think I can replicate the problem. I just need some extra info from Quan:
->>>>
->>>> 1. Just double check that they are using RHEL 9 on the host running the VMs.
->>>> 2. The kernel config
->>>> 3. Any tuning that was done. Is tuned running in guest and/or host running the
->>>> VMs and what profile is being used in each.
->>>> 4. Number of vCPUs and virtqueues being used.
->>>> 5. Can they dump the contents of:
->>>>
->>>> /sys/kernel/debug/sched
->>>>
->>>> and
->>>>
->>>> sysctl  -a
->>>>
->>>> on the host running the VMs.
->>>>
->>>> 6. With the 6.4 kernel, can they also run a quick test and tell me if they set
->>>> the scheduler to batch:
->>>>
->>>> ps -T -o comm,pid,tid $QEMU_THREAD
->>>>
->>>> then for each vhost thread do:
->>>>
->>>> chrt -b -p 0 $VHOST_THREAD
->>>>
->>>> Does that end up increasing perf? When I do this I see throughput go up by
->>>> around 50% vs 6.3 when sessions was 16 or more (16 was the number of vCPUs
->>>> and virtqueues per net device in the VM). Note that I'm not saying that is a fix.
->>>> It's just a difference I noticed when running some other tests.
->>>
->>>
->>> Mike I'm unsure what to do at this point. Regressions are not nice
->>> but if the kernel is released with the new userspace api we won't
->>> be able to revert. So what's the plan?
->>>
->>
->> I'm sort of stumped. I still can't replicate the problem out of the box. 6.3 and
->> 6.4 perform the same for me. I've tried your setup and settings and with different
->> combos of using things like tuned and irqbalance.
->>
->> I can sort of force the issue. In 6.4, the vhost thread inherits it's settings
->> from the parent thread. In 6.3, the vhost thread inherits from kthreadd and we
->> would then reset the sched settings. So in 6.4 if I just tune the parent differently
->> I can cause different performance. If we want the 6.3 behavior we can do the patch
->> below.
->>
->> However, I don't think you guys are hitting this because you are just running
->> qemu from the normal shell and were not doing anything fancy with the sched
->> settings.
->>
->>
->> diff --git a/kernel/vhost_task.c b/kernel/vhost_task.c
->> index da35e5b7f047..f2c2638d1106 100644
->> --- a/kernel/vhost_task.c
->> +++ b/kernel/vhost_task.c
->> @@ -2,6 +2,7 @@
->>  /*
->>   * Copyright (C) 2021 Oracle Corporation
->>   */
->> +#include <uapi/linux/sched/types.h>
->>  #include <linux/slab.h>
->>  #include <linux/completion.h>
->>  #include <linux/sched/task.h>
->> @@ -22,9 +23,16 @@ struct vhost_task {
->>  
->>  static int vhost_task_fn(void *data)
->>  {
->> +	static const struct sched_param param = { .sched_priority = 0 };
->>  	struct vhost_task *vtsk = data;
->>  	bool dead = false;
->>  
->> +	/*
->> +	 * Don't inherit the parent's sched info, so we maintain compat from
->> +	 * when we used kthreads and it reset this info.
->> +	 */
->> +	sched_setscheduler_nocheck(current, SCHED_NORMAL, &param);
->> +
->>  	for (;;) {
->>  		bool did_work;
->>  
->>
->>
+Hi Rui,
+
+On Fri, Aug 04, 2023 at 05:08:58PM +0800, Zhang Rui wrote:
+> Problem statement
+> -----------------
+> When using cgroup isolated partition to isolate cpus including cpu0, it
+> is observed that cpu0 is woken up frequenctly but doing nothing. This is
+> not good for power efficiency.
 > 
-> yes seems unlikely, still, attach this to bugzilla so it can be
-> tested?
+> <idle>-0     [000]   616.491602: hrtimer_cancel:       hrtimer=0xffff8e8fdf623c10
+> <idle>-0     [000]   616.491608: hrtimer_start:        hrtimer=0xffff8e8fdf623c10 function=tick_sched_timer/0x0 expires=615996000000 softexpires=615996000000
+> <idle>-0     [000]   616.491616: rcu_utilization:      Start context switch
+> <idle>-0     [000]   616.491618: rcu_utilization:      End context switch
+> <idle>-0     [000]   616.491637: tick_stop:            success=1 dependency=NONE
+> <idle>-0     [000]   616.491637: hrtimer_cancel:       hrtimer=0xffff8e8fdf623c10
+> <idle>-0     [000]   616.491638: hrtimer_start:        hrtimer=0xffff8e8fdf623c10 function=tick_sched_timer/0x0 expires=616420000000 softexpires=616420000000
 > 
-> and, what will help you debug? any traces to enable?
-
-I added the patch and asked for a perf trace.
-
+> The above pattern repeats every one or multiple ticks, results in total
+> 2000+ wakeups on cpu0 in 60 seconds, when running workload on the
+> cpus that are not in the isolated partition.
 > 
-> Also wasn't there another issue with a non standard config?
-> Maybe if we fix that it will by chance fix this one too?
+> Rootcause
+> ---------
+> In NOHZ mode, an active cpu either sends an IPI or touches the idle
+> cpu's polling flag to wake it up, so that the idle cpu can pull tasks
+> from the busy cpu. The logic for selecting the target cpu is to use the
+> first idle cpu that presents in both nohz.idle_cpus_mask and
+> housekeeping_cpumask.
 > 
+> In the above scenario, when cpu0 is in the cgroup isolated partition,
+> its sched domain is deteched, but it is still available in both of the
+> above cpumasks. As a result, cpu0
 
-It was when CONFIG_RT_GROUP_SCHED was enabled in the kernel config then
-I would see a large drop in IOPs/throughput.
+I saw in nohz_balance_enter_idle(), if a cpu is isolated, it will not
+set itself in nohz.idle_cpus_mask and thus should not be chosen as
+ilb_cpu. I wonder what's stopping this from working?
 
-In the current 6.5-rc6 I don't see the problem anymore. I haven't had a
-chance to narrow down what fixed it.
-
-
-
+> 1. is always selected when kicking idle load balance
+> 2. is woken up from the idle loop
+> 3. calls __schedule() but cannot find any task to pull because it is not
+>    in any sched_domain, thus it does nothing and reenters idle.
+> 
+> Solution
+> --------
+> Fix the problem by skipping cpus with no sched domain attached during
+> NOHZ idle balance.
+> 
+> Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+> ---
+>  kernel/sched/fair.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index b3e25be58e2b..ea3185a46962 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -11340,6 +11340,9 @@ static inline int find_new_ilb(void)
+>  		if (ilb == smp_processor_id())
+>  			continue;
+>  
+> +		if (unlikely(on_null_domain(cpu_rq(ilb))))
+> +			continue;
+> +
+>  		if (idle_cpu(ilb))
+>  			return ilb;
+>  	}
+> -- 
+> 2.34.1
+> 
