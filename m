@@ -2,61 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB74977B5A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 11:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B5F977B5AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 11:41:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232842AbjHNJih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 05:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45688 "EHLO
+        id S233941AbjHNJlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 05:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235740AbjHNJiD (ORCPT
+        with ESMTP id S229460AbjHNJlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 05:38:03 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CD119B9;
-        Mon, 14 Aug 2023 02:37:40 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 09:37:37 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692005858;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F5gFe4yCE9PlQUdWkfqkyDI/QSw/oTR7ipx5+16LFuk=;
-        b=SDcqvwM0nJdzuPZwCIYo4Vx53axKtU+eN6M46ftDGJD/15T/g7RxdzzCD1my4GVA1B9yEq
-        V1vBlLC+yRFk5mLX/Z2ll87hjurnliu7HOm+RXFycKtJhfSkUBPOmSzSdTvXkksCXtPJRB
-        HzC3TFSx42iLxlzlhl65hzAQw2TjJLLvPT+o3BMtr0gSLlthqwxucnfyonGt/fiBjpMA+m
-        DPHuB1OK6/ziwthtSYSr1DyT8kNa/krPpVAldZ0dLXMKpJ5b8bxUjJMfwy9g43Sb2g6IFR
-        /ai9SJT8+SrrSk+Az6YmXXCpNxdJBzEICFyyR8Fbn8vVo9Ihmrs+xmq6vJU1CA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692005858;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F5gFe4yCE9PlQUdWkfqkyDI/QSw/oTR7ipx5+16LFuk=;
-        b=/LbkhOR8Iwun/rVB9ATlahASQGa4NEiuhXYZrcVwxQytHfb/Iqt7ExT7Hb9ad6uiQc1DCE
-        bhDn5cXsN5Di8GBw==
-From:   "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/srso: Disable the mitigation on unaffected
- configurations
-Cc:     "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230813104517.3346-1-bp@alien8.de>
-References: <20230813104517.3346-1-bp@alien8.de>
+        Mon, 14 Aug 2023 05:41:07 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4CB0106
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 02:41:05 -0700 (PDT)
+Received: from dggpeml500002.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RPTp14QBpztRxg;
+        Mon, 14 Aug 2023 17:37:29 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpeml500002.china.huawei.com (7.185.36.158) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 14 Aug 2023 17:41:03 +0800
+From:   Junhao He <hejunhao3@huawei.com>
+To:     <suzuki.poulose@arm.com>, <mike.leach@linaro.org>,
+        <leo.yan@linaro.org>, <anshuman.khandual@arm.com>,
+        <jonathan.cameron@huawei.com>
+CC:     <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <yangyicong@huawei.com>, <prime.zeng@hisilicon.com>,
+        <hejunhao3@huawei.com>
+Subject: [PATCH 0/2] Fix some issues with TRBE building as a module
+Date:   Mon, 14 Aug 2023 17:38:11 +0800
+Message-ID: <20230814093813.19152-1-hejunhao3@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Message-ID: <169200585787.27769.13062428559701196926.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500002.china.huawei.com (7.185.36.158)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,51 +51,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+The TRBE driver support is build as a module, we found some driver issues
+based on the patchset [1] and set CONFIG_CORESIGHT_TRBE=m.
+1. TRBE driver potential sleep in atomic context when unregister device
+2. Multiple free the platform data resource when rmmod coresight TRBE
+driver
 
-Commit-ID:     e9fbc47b818b964ddff5df5b2d5c0f5f32f4a147
-Gitweb:        https://git.kernel.org/tip/e9fbc47b818b964ddff5df5b2d5c0f5f32f4a147
-Author:        Borislav Petkov (AMD) <bp@alien8.de>
-AuthorDate:    Sun, 13 Aug 2023 12:39:34 +02:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Mon, 14 Aug 2023 11:28:51 +02:00
+[1] "coresight: trbe: Enable ACPI based devices"
+https://lore.kernel.org/all/20230808082247.383405-1-anshuman.khandual@arm.com/
 
-x86/srso: Disable the mitigation on unaffected configurations
+Junhao He (2):
+  coresight: trbe: Fix TRBE potential sleep in atomic context
+  coresight: core: Fix multiple free TRBE platform data resource
 
-Skip the srso cmd line parsing which is not needed on Zen1/2 with SMT
-disabled and with the proper microcode applied (latter should be the
-case anyway) as those are not affected.
+ drivers/hwtracing/coresight/coresight-core.c |  7 ++--
+ drivers/hwtracing/coresight/coresight-trbe.c | 35 +++++++++++---------
+ 2 files changed, 24 insertions(+), 18 deletions(-)
 
-Fixes: 5a15d8348881 ("x86/srso: Tie SBPB bit setting to microcode patch detection")
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20230813104517.3346-1-bp@alien8.de
----
- arch/x86/kernel/cpu/bugs.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+-- 
+2.33.0
 
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index d02f73c..6c04aef 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -2418,8 +2418,10 @@ static void __init srso_select_mitigation(void)
- 		 * IBPB microcode has been applied.
- 		 */
- 		if ((boot_cpu_data.x86 < 0x19) &&
--		    (!cpu_smt_possible() || (cpu_smt_control == CPU_SMT_DISABLED)))
-+		    (!cpu_smt_possible() || (cpu_smt_control == CPU_SMT_DISABLED))) {
- 			setup_force_cpu_cap(X86_FEATURE_SRSO_NO);
-+			return;
-+		}
- 	}
- 
- 	if (retbleed_mitigation == RETBLEED_MITIGATION_IBPB) {
-@@ -2696,6 +2698,9 @@ static ssize_t retbleed_show_state(char *buf)
- 
- static ssize_t srso_show_state(char *buf)
- {
-+	if (boot_cpu_has(X86_FEATURE_SRSO_NO))
-+		return sysfs_emit(buf, "Not affected\n");
-+
- 	return sysfs_emit(buf, "%s%s\n",
- 			  srso_strings[srso_mitigation],
- 			  (cpu_has_ibpb_brtype_microcode() ? "" : ", no microcode"));
