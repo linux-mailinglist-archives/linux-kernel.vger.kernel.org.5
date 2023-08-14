@@ -2,256 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4922977BF2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 19:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E075477BF35
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 19:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbjHNRm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 13:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55356 "EHLO
+        id S230442AbjHNRpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 13:45:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbjHNRmg (ORCPT
+        with ESMTP id S231364AbjHNRpW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 13:42:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE992127;
-        Mon, 14 Aug 2023 10:42:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7455463299;
-        Mon, 14 Aug 2023 17:42:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 333A5C433C7;
-        Mon, 14 Aug 2023 17:42:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692034953;
-        bh=oDKfWtRlcLNAQvkh08JvEm0sUUNG09qXf8Rgaq35i9M=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=TM9tRruOG2GkGbjnVZfsj/Cy5lYvUjoTDROpltW23y0uB89Yl0WsA6+VRKrtxVdqf
-         X534Ysx3accRjTJnuYDnnLGwykvYQXqccUCaqm/w7lelnzhzT9eWaJ8dJnc9fVT8j3
-         0mQJ7xCHFHhz+OYU7i/EHDAWmCevL3nTuK+inLfL/dNVDnsaufl4qLzaMtODT1kSaA
-         vLhIKAzu6s5ma2HiqKbLrd6KflQKLEvgNIBCBS5659OGFuNhAsFLuU2LmRGu5g83PL
-         UpCbM0s6ILJA+ncuz1uLsGUkkrGaUHfKcwQ8pzDYPDhixy98MeWHxTw4bV3Jv1QsSk
-         lBAYP5OGqNa1g==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 14 Aug 2023 20:42:30 +0300
-Message-Id: <CUSGBX9YASR6.1HQHWGQOS3B6Z@suppilovahvero>
-Cc:     "Mimi Zohar" <zohar@linux.ibm.com>,
-        "Eric Snowberg" <eric.snowberg@oracle.com>,
-        "Paul Moore" <paul@paul-moore.com>,
-        <linux-security-module@vger.kernel.org>,
-        "linuxppc-dev" <linuxppc-dev@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 6/6] integrity: PowerVM support for loading third
- party code signing keys
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Nayna Jain" <nayna@linux.ibm.com>,
-        <linux-integrity@vger.kernel.org>
-X-Mailer: aerc 0.14.0
-References: <20230813021531.1382815-1-nayna@linux.ibm.com>
- <20230813021531.1382815-7-nayna@linux.ibm.com>
-In-Reply-To: <20230813021531.1382815-7-nayna@linux.ibm.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 14 Aug 2023 13:45:22 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B3D10D0;
+        Mon, 14 Aug 2023 10:45:21 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37EEVu66014918;
+        Mon, 14 Aug 2023 17:45:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=Hftj3CSCQzqu2/zmdE3hTLfkYdcZT2h+JdbLoFd4VsM=;
+ b=VcnC9dI/VS1AobdBTCrRB1KkWB4hyJIY/UkJTnP5sBYdpQbV8jQLEAaCaZ8jw2JvEOoQ
+ G2I0Dp0Iaqwbl/4leX5GQDeGdH1Y1S2AxwFsYoHrm4jhLQyYOi1Ptjn+Y3CxWn2XPLRc
+ Hsf72HAybfGS1HoK7ZqRzMsTUpQSWsVQkcvC0kJlZjXywBfx3iXMz1rYyk0WTjTEZrnI
+ kVUI7uo8EZpkNZbywbu6ODssxDdRoc8wGNYaSro/Cj/ODtI93tBywjW7buHJNJkljY5T
+ 8tvUSSKKZmn6q9cbofPISlnGP8gVk5JxZVXq3e9mdfa6FszCQiP0gNSxlZUguVe4hCzd jg== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3se3mt4eep-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Aug 2023 17:45:06 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37EHj5Wf032706
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Aug 2023 17:45:05 GMT
+Received: from [10.216.41.62] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 14 Aug
+ 2023 10:44:53 -0700
+Message-ID: <c88fa667-c746-e9da-1ae0-e469607e366d@quicinc.com>
+Date:   Mon, 14 Aug 2023 23:14:47 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH RESEND] tty: serial: qcom-geni-serial: Poll primary
+ sequencer irq status after cancel_tx
+Content-Language: en-CA
+To:     Bjorn Andersson <andersson@kernel.org>
+CC:     Hugo Villeneuve <hugo@hugovil.com>, <agross@kernel.org>,
+        <konrad.dybcio@linaro.org>, <gregkh@linuxfoundation.org>,
+        <jirislaby@kernel.org>, <bartosz.golaszewski@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-serial@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_msavaliy@quicinc.com>,
+        <dianders@chromium.org>, <mka@chromium.org>, <swboyd@chromium.org>,
+        <quic_vtanuku@quicinc.com>
+References: <1691583100-15689-1-git-send-email-quic_vnivarth@quicinc.com>
+ <20230809091951.fbcc682d00deacd4d7b55b44@hugovil.com>
+ <9be10770-d3df-467e-0541-8839bcd22fee@quicinc.com>
+ <7mdlnuxzm7rxstl2r3kyyiuefbj3wpyqprzufdrsxe7hy5fvfo@tdwfhi6a27hj>
+From:   Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com>
+In-Reply-To: <7mdlnuxzm7rxstl2r3kyyiuefbj3wpyqprzufdrsxe7hy5fvfo@tdwfhi6a27hj>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 2lHETf-nAv2jDYxex97pLDaNnWsgh8z5
+X-Proofpoint-ORIG-GUID: 2lHETf-nAv2jDYxex97pLDaNnWsgh8z5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-14_14,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 mlxscore=0 lowpriorityscore=0 adultscore=0
+ suspectscore=0 mlxlogscore=999 spamscore=0 bulkscore=0 malwarescore=0
+ impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2308140163
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun Aug 13, 2023 at 5:15 AM EEST, Nayna Jain wrote:
-> On secure boot enabled PowerVM LPAR, third party code signing keys are
-> needed during early boot to verify signed third party modules. These
-> third party keys are stored in moduledb object in the Platform
-> KeyStore(PKS).
+Thank you very much, Hugo Villeneuve and Bjorn, for the review and time.
+
+If this one doesn't get merged, I will post another patch series incorporating suggestions (including splitting) along with few more changes.
+
+-Vijay/
+
+
+
+On 8/10/2023 8:06 PM, Bjorn Andersson wrote:
+> On Wed, Aug 09, 2023 at 10:51:54PM +0530, Vijaya Krishna Nivarthi wrote:
+>> Hi,
+>>
+>> Thank you very much for the review...
+>>
+> Thank you for the bug fix, Vijaya.
 >
-> Load third party code signing keys onto .secondary_trusted_keys keyring.
+>> On 8/9/2023 6:49 PM, Hugo Villeneuve wrote:
+>>> On Wed,  9 Aug 2023 17:41:40 +0530
+>>> Vijaya Krishna Nivarthi <quic_vnivarth@quicinc.com> wrote:
+>>>
+>>>> TX is handled by primary sequencer. After cancelling primary command, poll
+>>>> primary sequencer's irq status instead of that of secondary.
+>>> Hi,
+>>> it is not clear to me if this is a bug fix or an improvement?
+>> This is a bug fix.
+> Please describe the actual problem you're solving, to allow others
+> working in and around this driver to know what issue(s) are corrected.
 >
-> Signed-off-by: Nayna Jain <nayna@linux.ibm.com>
-> ---
->  certs/system_keyring.c                        | 30 +++++++++++++++++++
->  include/keys/system_keyring.h                 |  7 +++++
->  security/integrity/integrity.h                |  1 +
->  .../platform_certs/keyring_handler.c          |  8 +++++
->  .../platform_certs/keyring_handler.h          |  5 ++++
->  .../integrity/platform_certs/load_powerpc.c   | 18 ++++++++++-
->  6 files changed, 68 insertions(+), 1 deletion(-)
+> This will save others debugging time, and it will teach others to help
+> you maintain this driver.
 >
-> diff --git a/certs/system_keyring.c b/certs/system_keyring.c
-> index b348e0898d34..e458d414918d 100644
-> --- a/certs/system_keyring.c
-> +++ b/certs/system_keyring.c
-> @@ -396,3 +396,33 @@ void __init set_platform_trusted_keys(struct key *ke=
-yring)
->  	platform_trusted_keys =3D keyring;
->  }
->  #endif
-> +
-> +/**
-> + * add_to_secondary_keyring - Add to secondary keyring.
-> + * @source: Source of key
-> + * @data: The blob holding the key
-> + * @len: The length of the data blob
-> + *
-> + * Add a key to the secondary keyring. The key must be vouched for by a =
-key in the builtin,
-> + * machine or secondary keyring itself.
-> + */
-> +void __init add_to_secondary_keyring(const char *source, const void *dat=
-a, size_t len)
-> +{
-> +	key_ref_t key;
-> +	key_perm_t perm;
-> +
-> +	perm =3D (KEY_POS_ALL & ~KEY_POS_SETATTR) | KEY_USR_VIEW;
-> +
-> +	key =3D key_create_or_update(make_key_ref(secondary_trusted_keys, 1),
-> +				   "asymmetric",
-> +				   NULL, data, len, perm,
-> +				   KEY_ALLOC_NOT_IN_QUOTA);
-> +	if (IS_ERR(key)) {
-> +		pr_err("Problem loading X.509 certificate from %s to secondary keyring=
- %ld\n",
-> +		       source, PTR_ERR(key));
-> +		return;
-> +	}
-> +
-> +	pr_notice("Loaded X.509 cert '%s'\n", key_ref_to_ptr(key)->description)=
-;
-> +	key_ref_put(key);
-> +}
-> diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.=
-h
-> index 7e2583208820..4188f75d1bac 100644
-> --- a/include/keys/system_keyring.h
-> +++ b/include/keys/system_keyring.h
-> @@ -50,9 +50,16 @@ int restrict_link_by_digsig_builtin_and_secondary(stru=
-ct key *keyring,
->  						  const struct key_type *type,
->  						  const union key_payload *payload,
->  						  struct key *restriction_key);
-> +void __init add_to_secondary_keyring(const char *source, const void *dat=
-a,
-> +				     size_t len);
-> +
->  #else
->  #define restrict_link_by_builtin_and_secondary_trusted restrict_link_by_=
-builtin_trusted
->  #define restrict_link_by_digsig_builtin_and_secondary restrict_link_by_d=
-igsig_builtin
-> +void __init add_to_secondary_keyring(const char *source, const void *dat=
-a,
-> +				     size_t len)
-> +{
-> +}
->  #endif
-> =20
->  #ifdef CONFIG_INTEGRITY_MACHINE_KEYRING
-> diff --git a/security/integrity/integrity.h b/security/integrity/integrit=
-y.h
-> index d7553c93f5c0..efaa2eb789ad 100644
-> --- a/security/integrity/integrity.h
-> +++ b/security/integrity/integrity.h
-> @@ -228,6 +228,7 @@ static inline int __init integrity_load_cert(const un=
-signed int id,
->  {
->  	return 0;
->  }
-> +
->  #endif /* CONFIG_INTEGRITY_SIGNATURE */
-> =20
->  #ifdef CONFIG_INTEGRITY_ASYMMETRIC_KEYS
-> diff --git a/security/integrity/platform_certs/keyring_handler.c b/securi=
-ty/integrity/platform_certs/keyring_handler.c
-> index 586027b9a3f5..13ea17207902 100644
-> --- a/security/integrity/platform_certs/keyring_handler.c
-> +++ b/security/integrity/platform_certs/keyring_handler.c
-> @@ -78,6 +78,14 @@ __init efi_element_handler_t get_handler_for_ca_keys(c=
-onst efi_guid_t *sig_type)
->  	return NULL;
->  }
-> =20
-> +__init efi_element_handler_t get_handler_for_code_signing_keys(const efi=
-_guid_t *sig_type)
-> +{
-> +	if (efi_guidcmp(*sig_type, efi_cert_x509_guid) =3D=3D 0)
-> +		return add_to_secondary_keyring;
-> +
-> +	return NULL;
-> +}
-> +
->  /*
->   * Return the appropriate handler for particular signature list types fo=
-und in
->   * the UEFI dbx and MokListXRT tables.
-> diff --git a/security/integrity/platform_certs/keyring_handler.h b/securi=
-ty/integrity/platform_certs/keyring_handler.h
-> index 6f15bb4cc8dc..f92895cc50f6 100644
-> --- a/security/integrity/platform_certs/keyring_handler.h
-> +++ b/security/integrity/platform_certs/keyring_handler.h
-> @@ -34,6 +34,11 @@ efi_element_handler_t get_handler_for_mok(const efi_gu=
-id_t *sig_type);
->   */
->  efi_element_handler_t get_handler_for_ca_keys(const efi_guid_t *sig_type=
-);
-> =20
-> +/*
-> + * Return the handler for particular signature list types for code signi=
-ng keys.
-> + */
-> +efi_element_handler_t get_handler_for_code_signing_keys(const efi_guid_t=
- *sig_type);
-> +
->  /*
->   * Return the handler for particular signature list types found in the d=
-bx.
->   */
-> diff --git a/security/integrity/platform_certs/load_powerpc.c b/security/=
-integrity/platform_certs/load_powerpc.c
-> index 6263ce3b3f1e..32c4e5fbf0fb 100644
-> --- a/security/integrity/platform_certs/load_powerpc.c
-> +++ b/security/integrity/platform_certs/load_powerpc.c
-> @@ -59,7 +59,7 @@ static __init void *get_cert_list(u8 *key, unsigned lon=
-g keylen, u64 *size)
->  static int __init load_powerpc_certs(void)
->  {
->  	void *db =3D NULL, *dbx =3D NULL, *data =3D NULL;
-> -	void *trustedca =3D NULL;
-> +	void *trustedca =3D NULL, *moduledb =3D NULL;
-
-The patch looks otherwise good but I'm not sure about this initialization.
-
->  	u64 dsize =3D 0;
->  	u64 offset =3D 0;
->  	int rc =3D 0;
-> @@ -137,6 +137,22 @@ static int __init load_powerpc_certs(void)
->  		kfree(data);
->  	}
-> =20
-> +	data =3D get_cert_list("moduledb", 9,  &dsize);
-> +	if (!data) {
-> +		pr_info("Couldn't get moduledb list from firmware\n");
-> +	} else if (IS_ERR(data)) {
-> +		rc =3D PTR_ERR(data);
-> +		pr_err("Error reading moduledb from firmware: %d\n", rc);
-> +	} else {
-> +		extract_esl(moduledb, data, dsize, offset);
-> +
-> +		rc =3D parse_efi_signature_list("powerpc:moduledb", moduledb, dsize,
-> +					      get_handler_for_code_signing_keys);
-> +		if (rc)
-> +			pr_err("Couldn't parse moduledb signatures: %d\n", rc);
-> +		kfree(data);
-> +	}
-> +
->  	return rc;
->  }
->  late_initcall(load_powerpc_certs);
-> --=20
-> 2.31.1
-
-BR, Jarkko
-
+> The section in the documentation on how to describe your changes is
+> good, please read it:
+> https://docs.kernel.org/process/submitting-patches.html#describe-your-changes
+>
+>>>> While at it, also remove a couple of redundant lines that read from IRQ_EN
+>>>> register and write back same.
+>>> This should go into a separate patch.
+>> The changes were too close by so I wasn't sure it could be split into 2
+>> patches.
+>>
+>> I see that the earlier patch has already been signed off by Greg. (I did a
+>> RESEND after realising that I had Bjorn Andersson's email address incorrect)
+> Please use ./scripts/get_maintainer.pl on the upstream tree, as this
+> uses up to date information about recipients.
+>
+>> Will post another version if original patch doesn't get merged for any
+>> reason.
+>>
+> Please double check linux-next [1], if it's unclear if Greg picked up
+> your previous patch (he's usually quite explicit about it...). I really
+> would like some more details on the bug fix...
+>
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/
+>
+> Regards,
+> Bjorn
