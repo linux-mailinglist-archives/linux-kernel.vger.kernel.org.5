@@ -2,76 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB1777B0C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 07:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E12CC77B0C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 07:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233282AbjHNF3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 01:29:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36160 "EHLO
+        id S233288AbjHNFbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 01:31:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233278AbjHNF3C (ORCPT
+        with ESMTP id S232920AbjHNFbH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 01:29:02 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F01E6A;
-        Sun, 13 Aug 2023 22:29:01 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b9db1de50cso58613251fa.3;
-        Sun, 13 Aug 2023 22:29:01 -0700 (PDT)
+        Mon, 14 Aug 2023 01:31:07 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D12E6A
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 22:31:05 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6bd04558784so3527839a34.3
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 22:31:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691990940; x=1692595740;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BGZyPbP3dzjwp/wLly5dZJJDO3ZcjmUG+xoEOUDLDuc=;
-        b=e0Gac0Da6KXLEGNtelm3EFOPtEeK91Qj1q2koIajDnLcIdoz2ZGrwZPExkEhh9yN3c
-         t33ZJydXNb3bqU0aPWTkOMrw8O4NmM+30WFc7Vd2aQ05PzujPzogB0y1fvWSQ/1k4AMG
-         vU6899pM8mw/geFRvQzUdlRQiYJ+eHtBHco+yQyJK2pnJ8XNg+ODZKSJX8N+LH/MiLF1
-         XdhZGd0znDXp5h3oUqTVxGdb4WHt2awrj0UkXKyaOaiNrDIMyrrvBAh3M1nue1IEvD6s
-         QcCZYBcCFZIc0viznwHfdX5h5brxzZmmeStKpPx8TlxktdWTJIwtQFl4U5qMY735tEM2
-         PLVA==
+        d=gmail.com; s=20221208; t=1691991064; x=1692595864;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6gpw50arjJAJYutxnBYI251PZ1iO12jHMUjWqVshAjU=;
+        b=N9yRWUZ0dY2wHM2E4arp/b79k7UDlfwKyXoSYmZ9KzQftfv6FdCvpuGc1x6dyP8Txi
+         eHre3KtvmESdfaMM2EVmprZ4Igiy2+XbBme7JYp88b9fyW8J7C6EB1rKdF48arRBwTcn
+         NfFqmWEFGnNADtvCEt8sdTmcJqrYKa+650CIImcqUN+iktsxjrMA8yynp98D/gzZAXzG
+         kJQw67xIQD/a3PkF0kTFSC2qePPwzK61dG2rq1rxxzHTmcmPFtpcHnfJPcG0yB4INwBx
+         vrPsl+WuokbOU6AVTOdu6VXpUSwAIBnSfHeVIOrz38I5xG47c9tordsYt0ytSl1s2PB1
+         ryiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691990940; x=1692595740;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BGZyPbP3dzjwp/wLly5dZJJDO3ZcjmUG+xoEOUDLDuc=;
-        b=ldBNOpYxCbigN/GnqlvbDXY50H6TT6UqAr1zSS7Qv3RUlxLuIbhfgkZ7Ph3jkhbBHw
-         RjdP1gXc/J5NcYL9JTzEMSJNyGUwJU0Ob9rIVBoeEvAsuMVDd8x/C5qU40yqGQHJy64d
-         m9ShOE6RMpPsaVkaz/oVZ48qSTE5D05HbFgwl+OY68G7tG/azmnZB/wDESkS41iqA7J5
-         gheO1oLyMICaBnh8B8dlXhGeYEkWctfhwKCEWSv2pYZcr47OhYh7ocnOqbXquQTFGcAV
-         aDzBnnPn7+m1hYPOOgejRP7gZAjZOzlHYyO5wPIiMn64uuZdFQtYdaDXX0KupDDVuq6N
-         TwSA==
-X-Gm-Message-State: AOJu0Yz1O7y3XHQUXy4XUwSD2jb4B9yZM+BKUH3+MovZn9zbxi8iu6qd
-        eRU0HQeR0DmrJ+akYl+VT1DCG/4j+LKd/mHaC2E=
-X-Google-Smtp-Source: AGHT+IHA+eWMvhISyFBVAeBZGt8uccSi2b3i7SypwBjC9lu/LcdShKA+dMXotAZUkAb6evmv915C0Q26Jc0ucn5hMQM=
-X-Received: by 2002:a2e:8897:0:b0:2b7:117:e54 with SMTP id k23-20020a2e8897000000b002b701170e54mr6247163lji.4.1691990939564;
- Sun, 13 Aug 2023 22:28:59 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691991064; x=1692595864;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6gpw50arjJAJYutxnBYI251PZ1iO12jHMUjWqVshAjU=;
+        b=ZsZM/2pdtyqmYs0Xa+zgCnOVP1t5g5mUWh0+uF5Vy9cEiQp7reYGIdilPutggx2mD6
+         YOKZX3V8O0sFEWIZBVl9ibVULksWcz/zbSHGXKh6eSJcBmYb/B2IO72v3ndfPtXidZp9
+         KDz2LZk+Ho1MX9gWszEbAMegQpykhcrYezXCi94ARGNKNPnNo4l50rNYARJuZDx3/oG8
+         vDDTFBHe+m/et5LiWVziZZnRH7O/5tOVVsUyorolfelrh2II3+Kbgb5ODTi44oCMKT/h
+         TgERq5b92pmthfmZAH3sHOD2/MGjr29E5CUhUrQSu5guEmA4S5KqepyxL5MYrBnhGQrf
+         6iAg==
+X-Gm-Message-State: AOJu0YwW8RuRwZukSK9ltgDgoW71PUc0qVIecXGIhEcoNiYI/dNaXNan
+        jeTApcnNiJ0ADoKNqaPhbBuE72QqQw2npZCEr1yqyfxTWc8=
+X-Google-Smtp-Source: AGHT+IGD+VFEjbVXTD+M0FMUQjIMgyrJjW5yrVN8pNnigbRYZg/ZQAYd0UBOvLgCII7seFXLgK6pGvjO3nGEiALU7ZM=
+X-Received: by 2002:a9d:5e88:0:b0:6b9:b938:3524 with SMTP id
+ f8-20020a9d5e88000000b006b9b9383524mr7988110otl.6.1691991064582; Sun, 13 Aug
+ 2023 22:31:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230806-xiaomi-star-v1-0-0c384e8b5737@gmail.com>
- <20230806-xiaomi-star-v1-1-0c384e8b5737@gmail.com> <244d165a-1e53-401e-be36-6bb3f4f260ae@linaro.org>
- <CAA8EJpqiaEamZ6u9D_Sn-bgn8qdpqsQ2EMt7Tb9hKr5kNO2JFg@mail.gmail.com>
-In-Reply-To: <CAA8EJpqiaEamZ6u9D_Sn-bgn8qdpqsQ2EMt7Tb9hKr5kNO2JFg@mail.gmail.com>
-From:   Sophon Wu <wuxilin123@gmail.com>
-Date:   Mon, 14 Aug 2023 13:28:46 +0800
-Message-ID: <CAEPPPKthfyZnD9z9Q5c7YnPMAJhGfyxJdfpzZmhoxK6xxv603g@mail.gmail.com>
-Subject: Re: [PATCH 1/3] soc: qcom: pmic_glink: enable UCSI for SM8350
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-hardening@vger.kernel.org
+From:   Nogay Adygman <nogay.adyge@gmail.com>
+Date:   Mon, 14 Aug 2023 08:30:54 +0300
+Message-ID: <CAFUOiQbsLn-HZt2zgfc=SqnRFP-p+vwAhnhrJoEd=3b2GQNvtw@mail.gmail.com>
+Subject: rasist - kandidat (+history material)
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,25 +62,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dmitry Baryshkov <dmitry.baryshkov@linaro.org> =E4=BA=8E2023=E5=B9=B48=E6=
-=9C=8813=E6=97=A5=E5=91=A8=E6=97=A5 18:56=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Sat, 12 Aug 2023 at 14:12, Konrad Dybcio <konrad.dybcio@linaro.org> wr=
-ote:
-> >
-> > On 5.08.2023 19:03, Xilin Wu via B4 Relay wrote:
-> > > From: Xilin Wu <wuxilin123@gmail.com>
-> > >
-> > > UCSI is supported on SM8350. Allow it to enable USB role switch and
-> > > altmode notifications on SM8350.
-> > >
-> > > Signed-off-by: Xilin Wu <wuxilin123@gmail.com>
-> > > ---
-> > I can confirm this is also required for my SM8350 Xperia 1 III.
->
-> Last time I checked it, UCSI was broken on the SM8350 HDK. Trying to
-> enable it caused pmic_glink to stop working after some port
-> operations.
+https://de.wikipedia.org/wiki/Alexei_Anatoljewitsch_Nawalny
 
-I guess it could be firmware related issues? It works fine on my
-device with latest firmware.
+(+ no work link
+http://lezgi-yar.ru/news/navalnyj_razreshit_gej_parady_i_zapretit_lezginku_esli_stanet_mehrom/2013-08-24-1620)
+
+https://flnka.ru/digest-analytics/5673-kto-podstavil-kreml.html
+
+aborigen nogai
+https://www.interfax-russia.ru/south-and-north-caucasus/news/vostochnye-rayony-stavropolya-nuzhdayutsya-v-pritoke-naseleniya-v-tom-chisle-za-schet-ukrainskih-bezhencev-senator
+
+interes monument
+http://zapravakbr.com/index.php/analitik/1498-madina-khakuasheva-chto-skryvayut-geroicheskie-pamyatniki
