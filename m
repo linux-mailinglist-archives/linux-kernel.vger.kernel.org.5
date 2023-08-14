@@ -2,144 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 962AE77B442
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9FD77B445
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234789AbjHNIfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 04:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58186 "EHLO
+        id S234064AbjHNIgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 04:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234928AbjHNIfI (ORCPT
+        with ESMTP id S232346AbjHNIfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 04:35:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE04D129
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:34:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692002063;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BlUWJ2CnLxkuvPDb9XZkWsErKpnwhZXyja4MQxZ4sYU=;
-        b=JirKrxZhV+javmp8K1llpmJmuev85osvk1xGICvI7mFE2fCQL3/AYM05xPlUjNIoLEezCb
-        N6KpebQOQOBueWPg/RCr4TuTqRjULrWGCFZ6le2gsF2XjSXbb0LjsPYmga3DrZYV796zyO
-        llSk38DPot3escuG3ihiW0qGCk7xPgw=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-286-2zsdWxU0OUiTMpBaHXiezQ-1; Mon, 14 Aug 2023 04:34:22 -0400
-X-MC-Unique: 2zsdWxU0OUiTMpBaHXiezQ-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-99beea69484so244424266b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:34:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692002061; x=1692606861;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BlUWJ2CnLxkuvPDb9XZkWsErKpnwhZXyja4MQxZ4sYU=;
-        b=LC5EkLi3sgMP4kC69exqbaKIJan/+Xddm/9OOfoBQNanf62Ck8++VYwSkpek5IKSOv
-         79aCPcdVZ/ovyl7OUHj4pWFRzTiaGjXpvUkNq7aK8aQsAKyKvqpv3abQZUlJ6mYMl8QS
-         y8E+/8YR8E6i8OrJNQGO/f+P7qsO09YR2jRfw9CDmGJALaIF4TfibTvMO1zLWIN13YiR
-         JmN76rt0a3A+05Q/DMEyNe2ojHcxqRfe3MF1+YhBjcr10C7mqSsAFdAihXthwg/neLui
-         mWuk1THZiOR1SQcBpZ6ytPMGeAmx9OImJ/SahSyjscvHAmdl7Q/3Qq+lwWci3XRsBa4z
-         nttw==
-X-Gm-Message-State: AOJu0YxXAt6M2+56BrYZEdm2P1M6QDkBVmYV9dB/tGv+QagHD2ntkXYT
-        plRI9a4Spc1//Xr4m9SLFg/uK2pXa2Pwv4nVBKJQOSIHKyvhKWj8yl9pd6UDt1MchX6zVciOz5z
-        oFiKgwLzDuQJsPFMr0MJzdBSh
-X-Received: by 2002:a17:906:5c:b0:99c:f966:9e9f with SMTP id 28-20020a170906005c00b0099cf9669e9fmr7220364ejg.64.1692002061242;
-        Mon, 14 Aug 2023 01:34:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHlP2EFgeDt+NObU1PsrWMBNiq2nhwc54zWFCRnWTW8QfnjY0LAKVYftBpDthUIT5OBy5UPCw==
-X-Received: by 2002:a17:906:5c:b0:99c:f966:9e9f with SMTP id 28-20020a170906005c00b0099cf9669e9fmr7220351ejg.64.1692002060919;
-        Mon, 14 Aug 2023 01:34:20 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id a9-20020a170906190900b00992c92af6easm5419065eje.161.2023.08.14.01.34.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 01:34:20 -0700 (PDT)
-Message-ID: <1da50566-4a23-7fe4-16d2-1064f2e18a2d@redhat.com>
-Date:   Mon, 14 Aug 2023 10:34:19 +0200
+        Mon, 14 Aug 2023 04:35:52 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71E19C;
+        Mon, 14 Aug 2023 01:35:51 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37E8Dlfo014154;
+        Mon, 14 Aug 2023 08:35:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=qwGYKRRRJZy7n3umlavxW3NBP3HkUrUEnBJxfTTq5Mc=;
+ b=eqmEe3xSGlfUQFPs7o1HW5VsB2Jmd37g/ylM8wjaj/W6Hh+ArlJ3pluPLlPZvIff9TKl
+ vOOKTDpbVoRY6QvuGw48f1qltR+1e1ZKvo0TDRfW+l6dBmf20FcUnEt3fezYacfTxTnj
+ GfaWaMTMvGvge9ccpN+kOuFz8hyImqaO26OeGLESlC1+4gJOIxDzgYlyCaBFnoD3ktgv
+ CRtZKkMS4xkb5UaKfYa2QZ8lTgVMXImElPXBCVffyPxcW7VpT3tGILIFPxNZjBVBFvJx
+ QrjPvMg7a5gSH3M+2sxxuEXdlKQs5jG7CdRNZG04iRktnjEjhRlg9a+/Wq+oDmo/T+9l 1A== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sffxt83k3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Aug 2023 08:35:15 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37E8ZEjU000903
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 14 Aug 2023 08:35:14 GMT
+Received: from varda-linux.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 14 Aug 2023 01:35:07 -0700
+Date:   Mon, 14 Aug 2023 14:05:04 +0530
+From:   Varadarajan Narayanan <quic_varada@quicinc.com>
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <kishon@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <p.zabel@pengutronix.de>, <arnd@arndb.de>,
+        <geert+renesas@glider.be>, <nfraprado@collabora.com>,
+        <rafal@milecki.pl>, <peng.fan@nxp.com>,
+        <quic_srichara@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v7 2/5] phy: qcom-m31: Introduce qcom,m31 USB phy driver
+Message-ID: <20230814083503.GA3490@varda-linux.qualcomm.com>
+References: <cover.1691660905.git.quic_varada@quicinc.com>
+ <b17b55b2ff2277bb9bfa99acdb2f98ed420dfb6e.1691660905.git.quic_varada@quicinc.com>
+ <ZNXxja5HvVOtgliL@matsya>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] watchdog: simatic: add PCI dependency
-Content-Language: en-US, nl
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Henning Schild <henning.schild@siemens.com>
-Cc:     "xingtong . wu" <xingtong_wu@163.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230814073924.1066390-1-arnd@kernel.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230814073924.1066390-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZNXxja5HvVOtgliL@matsya>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: DZ06qSZka_sIK-LlSDnwfR2sZa7D37gN
+X-Proofpoint-GUID: DZ06qSZka_sIK-LlSDnwfR2sZa7D37gN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-14_03,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=899 spamscore=0
+ malwarescore=0 clxscore=1015 suspectscore=0 adultscore=0 bulkscore=0
+ mlxscore=0 priorityscore=1501 impostorscore=0 lowpriorityscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308140079
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Aug 11, 2023 at 09:30:05AM +0100, Vinod Koul wrote:
+> On 10-08-23, 15:26, Varadarajan Narayanan wrote:
+> > Add the M31 USB2 phy driver.
+>	.
+>	.
+>	.
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
+> > +#include <linux/of_platform.h>
+> > +#include <linux/of.h>
+>
+> do you need both headers..?
+>
+>	.
+>	.
+>	.
+> > + #define FREQ_24MHZ			(GENMASK(6, 6) | GENMASK(4, 4))
+>
+> why not use bit :-)
+>	.
+>	.
+>	.
+> > +struct m31_phy_regs m31_ipq5332_regs[] = {
+> > +	{ USB_PHY_CFG0, UTMI_PHY_OVERRIDE_EN, 0 },
+> > +	{ USB_PHY_UTMI_CTRL5, POR_EN, 15 },
+> > +	{ USB_PHY_FSEL_SEL, FREQ_SEL, 0 },
+> > +	{ USB_PHY_HS_PHY_CTRL_COMMON0, COMMONONN | FREQ_24MHZ | RETENABLEN, 0 },
+> > +	{ USB_PHY_UTMI_CTRL5, POR_EN, 0 },
+> > +	{ USB_PHY_HS_PHY_CTRL2, USB2_SUSPEND_N_SEL | USB2_SUSPEND_N | USB2_UTMI_CLK_EN, 0 },
+> > +	{ USB2PHY_USB_PHY_M31_XCFGI_11, XCFG_COARSE_TUNE_NUM  | XCFG_FINE_TUNE_NUM, 0 },
+> > +	{ USB2PHY_USB_PHY_M31_XCFGI_4, HSTX_SLEW_RATE_565PS | PLL_CHARGING_PUMP_CURRENT_35UA |
+> > +				       ODT_VALUE_38_02_OHM, 0 },
+> > +	{ USB2PHY_USB_PHY_M31_XCFGI_1, USB2_0_TX_ENABLE, 0 },
+> > +	{ USB2PHY_USB_PHY_M31_XCFGI_5, ODT_VALUE_45_02_OHM | HSTX_PRE_EMPHASIS_LEVEL_0_55MA, 4 },
+> > +	{ USB_PHY_UTMI_CTRL5, 0x0, 0 },
+> > +	{ USB_PHY_HS_PHY_CTRL2, USB2_SUSPEND_N | USB2_UTMI_CLK_EN, 0 },
+>
+> More readable way to code
+>                 USB_PHY_CFG0,
+>                 UTMI_PHY_OVERRIDE_EN,
+>                 0
+>
+> and so on, makes a better read and check for errors, one line for off,
+> one for val and one for delay
+>
+> --
+> `~Vinod
 
-On 8/14/23 09:38, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> The simatic-ipc driver no longer depends on PCI, but its watchdog portion
-> still needs it, otherwise P2SB runs into a build  failure:
-> 
-> WARNING: unmet direct dependencies detected for P2SB
->   Depends on [n]: PCI [=n] && X86 [=y]
->   Selected by [m]:
->   - SIEMENS_SIMATIC_IPC_WDT [=m] && WATCHDOG [=y] && SIEMENS_SIMATIC_IPC [=y]
-> 
-> drivers/platform/x86/p2sb.c:121:3: error: call to undeclared function 'pci_bus_write_config_dword'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
->                 pci_bus_write_config_dword(bus, devfn_p2sb, P2SBC, 0);
-> 
-> Add back the minimum dependendency to make it build in random configurations
-> again.
-> 
-> Fixes: b72da71ce24b0 ("platform/x86: simatic-ipc: drop PCI runtime depends and header")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Have posted a new version addressing these (and Konrad's and Bjorn's) issues.
+Please review.
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
-
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
-
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
-
-Regards,
-
-Hans
-
-
-
-> ---
->  drivers/watchdog/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-> index 04e9b40cf7d53..09452384221a4 100644
-> --- a/drivers/watchdog/Kconfig
-> +++ b/drivers/watchdog/Kconfig
-> @@ -1680,7 +1680,7 @@ config NIC7018_WDT
->  
->  config SIEMENS_SIMATIC_IPC_WDT
->  	tristate "Siemens Simatic IPC Watchdog"
-> -	depends on SIEMENS_SIMATIC_IPC
-> +	depends on SIEMENS_SIMATIC_IPC && PCI
->  	default y
->  	select WATCHDOG_CORE
->  	select P2SB
-
+Thanks
+Varada
