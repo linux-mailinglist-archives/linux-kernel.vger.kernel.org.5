@@ -2,71 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E9877BF7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 20:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737BA77BF81
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 20:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbjHNSD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 14:03:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58708 "EHLO
+        id S229927AbjHNSE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 14:04:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231418AbjHNSDq (ORCPT
+        with ESMTP id S231499AbjHNSEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 14:03:46 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE8010DE;
-        Mon, 14 Aug 2023 11:03:45 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b9bf52cd08so67904551fa.2;
-        Mon, 14 Aug 2023 11:03:45 -0700 (PDT)
+        Mon, 14 Aug 2023 14:04:21 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A883110F0;
+        Mon, 14 Aug 2023 11:04:18 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fe44955decso5353855e87.1;
+        Mon, 14 Aug 2023 11:04:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692036224; x=1692641024;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mC2VXhQU4CT2VksXFrqMrSWVDm6lE1KSTIG6MCJKlyQ=;
-        b=B8d6JJ6vW2JP8DGhMzF0cTe3zGMnkA4RxRa1jsozlrNhPTyVmQ5SAwEoO9bNgk2w7v
-         1ms1nzq7zCAtDzuvEYwNaev7Z1+luCvPIeln/Wc/JTfSBQ/qTaO1lxeLFjhaySwZMjYX
-         ayGiCT2+rlBFHjDkF2hPapu8aItQ+uGLFc2VLvHwF4iFNS1RNHUEHcDFTPZXhhd1O+72
-         ZGlmZseLXq5bilRyskGf38w8iCfFkMtHxic7DwzIcTRZEqSPZQ2ULzp9rubTzkd50EJY
-         YGo+JD7yeNg7q3USjyqULjhQ1RVkppodbSfOctTMTgDFfKEjYq+knnoiPVHLMyIf0HD7
-         PmNw==
+        d=gmail.com; s=20221208; t=1692036257; x=1692641057;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EwKZNNozHZ+Il8fPOfH+Jl4RZxqiP6+ZQxkumA1ZNZ8=;
+        b=NnZy32KQijyIfMmpb8IZAIxhcBOcASo6kkWF++uNQNglrGcISSKUuxUM/emEhpIZmL
+         IkMysiBhGHdJW/K0pzmjdwomWfDGQRslv/nS0lKe6D/KYqerr0nrK52/RpO7yo/ztCfo
+         2+7/GS8fSSP0UbPxRa0QLhczDxouHZ4zfTXcJCgOBFf1ykTN65zplqAiHFpTnMoW4vF4
+         XKq4nkrG/CKjz0EUvN+VsMq9tuNxeKczINYO9Bst+WP7kkXDqLkVJiTcUmYSfZ7u73D0
+         vRB2AmSQcqci/yVaB3pkWWAkbpF19OQGKmjR6xuHacxkAZvxTApl4R0lTVKWde98h0wb
+         aayQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692036224; x=1692641024;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mC2VXhQU4CT2VksXFrqMrSWVDm6lE1KSTIG6MCJKlyQ=;
-        b=CUQ8jRBmrDL9OWczQoJgmhI2qRPZvE4+LgpvXFpBwkvUEgyijqTdRZgzxiFOHfzPOD
-         37IHU7MKT7SL6tzbD2Gu7veu2x0Qqrw1mBitCalFpHCpjppzc94FvvhPML6TKAuhpHhV
-         LLWmx9JSoBHn2mzJD8oZKkNJcBOb7ycwSRWQtbuoaD86YDqZpcyDedNyF1TPF8xWsbMG
-         VkUrOoeh0YcHGtMqILTY7wkWN/fIYUFLnl0zOmwbRimEiEOv8aex0JEh2tQPqiwt7RE6
-         qCN+LaEL4t8Fjwetf+VrDDENDpxrHCSKlfJ5X/dg9YwJJFiN6h/86Z+zra+tQWUrWz6V
-         DAYA==
-X-Gm-Message-State: AOJu0YwnjWQdhbnd98zw7lVK6axNqNPi+IAejhrZ1SQBeT+pCW5TRnmf
-        cTsM2Huwx5kTFWmgHLHaKII=
-X-Google-Smtp-Source: AGHT+IF7gMEe3vJFVMtOlRZ218BSwotA2DoAUSs7z9Qnop0AdryTgdrg8UGTSqHeqnJrfyGq70r//g==
-X-Received: by 2002:a2e:930d:0:b0:2b9:f27f:e491 with SMTP id e13-20020a2e930d000000b002b9f27fe491mr7567188ljh.42.1692036223664;
-        Mon, 14 Aug 2023 11:03:43 -0700 (PDT)
-Received: from fedora.. ([2a00:1370:8180:6b00:a1a8:4887:1af4:637a])
-        by smtp.gmail.com with ESMTPSA id p24-20020a2ea418000000b002b1b92910c8sm2552460ljn.86.2023.08.14.11.03.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 11:03:43 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        dhowells@redhat.com, pabeni@redhat.com
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+cba21d50095623218389@syzkaller.appspotmail.com
-Subject: [PATCH v2] crypto: fix uninit-value in af_alg_free_resources
-Date:   Mon, 14 Aug 2023 21:03:41 +0300
-Message-Id: <20230814180341.8621-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230813122344.14142-1-paskripkin@gmail.com>
-References: <20230813122344.14142-1-paskripkin@gmail.com>
+        d=1e100.net; s=20221208; t=1692036257; x=1692641057;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EwKZNNozHZ+Il8fPOfH+Jl4RZxqiP6+ZQxkumA1ZNZ8=;
+        b=eQDz6hqx6A/GtekuUtHIkhWEgr1SSxnKYyLytNjp60QMHd3R5GDH5bImphiWQO4SBH
+         uvtnVv7u5bWzu8qeskUB+ov2IgmnbHIK/TIPTo9ZKZnlYX+IMnI1vh56cZoBXloxTymc
+         IHEG+qyyqYALd5mTE/r3dUB5yaSC6mmHie72Hp6PP3PuxJXbIiY1q7lzDRZsLWyOEXfz
+         swNukgv5J3He06Z/Wl8TbGBLMBH884zEnZgSCzwYy7IX+Y3RJCqo9Sdld1aB0R6Wx+vU
+         9NhVP32G+KIucydnJ8MaPYd/jWQFtX5k5PZisDHc0vFdq0LacFG7brmLbZCzzPyH/pmC
+         X/KQ==
+X-Gm-Message-State: AOJu0YwQmJnZSXJ1x7IatpZb463opGxksFxnNR5HbInkHZQl3qj4/hFt
+        C3Ke5B/uR3ejQKrKJFDYOug=
+X-Google-Smtp-Source: AGHT+IGBafs4A+Xan6sFQYjKy//bN2Ej7Zphd5x7sYO6bBtNZrIH2ISpFDVM1uszz2Kb/MeZ6Jex8A==
+X-Received: by 2002:ac2:4e14:0:b0:4f8:6831:fd70 with SMTP id e20-20020ac24e14000000b004f86831fd70mr4100545lfr.3.1692036256652;
+        Mon, 14 Aug 2023 11:04:16 -0700 (PDT)
+Received: from ?IPV6:2a00:1370:8180:6b00:a1a8:4887:1af4:637a? ([2a00:1370:8180:6b00:a1a8:4887:1af4:637a])
+        by smtp.gmail.com with ESMTPSA id t4-20020ac243a4000000b004fe061269edsm2077622lfl.249.2023.08.14.11.04.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Aug 2023 11:04:16 -0700 (PDT)
+Message-ID: <a3721585-c38f-f222-9a0e-4b268a48491b@gmail.com>
+Date:   Mon, 14 Aug 2023 21:04:15 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH] crypto: fix uninit-value in af_alg_free_resources
+Content-Language: en-US
+To:     David Howells <dhowells@redhat.com>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        pabeni@redhat.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+cba21d50095623218389@syzkaller.appspotmail.com
+References: <20230813122344.14142-1-paskripkin@gmail.com>
+ <3954480.1692001609@warthog.procyon.org.uk>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <3954480.1692001609@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,69 +78,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot was able to trigger use of uninitialized memory in
-af_alg_free_resources.
+Hi David,
 
-Bug is caused by missing initialization of rsgl->sgl.need_unpin before
-adding to rsgl_list. Then in case of extract_iter_to_sg() failure, rsgl
-is left with uninitialized need_unpin which is read during clean up
+David Howells <dhowells@redhat.com> says:
+> Pavel Skripkin <paskripkin@gmail.com> wrote:
+> 
+>> Syzbot was able to trigger use of uninitialized memory in
+>> af_alg_free_resources.
+>> 
+>> Bug is caused by missing initialization of rsgl->sgl.need_unpin before
+>> adding to rsgl_list. Then in case of extract_iter_to_sg() failure, rsgl
+>> is left with uninitialized need_unpin which is read during clean up
+> 
+> Looks feasible :-).
+> 
+>> +		rsgl->sgl.need_unpin = 0;
+>> +
+> 
+> The blank line isn't really necessary and it's a bool, so can you use 'false'
+> rather than '0'?
+> 
+> Alternatively, it might be better to move:
+> 
+> 		rsgl->sgl.need_unpin =
+> 			iov_iter_extract_will_pin(&msg->msg_iter);
+> 
+> up instead.
+> 
 
-BUG: KMSAN: uninit-value in af_alg_free_sg crypto/af_alg.c:545 [inline]
-BUG: KMSAN: uninit-value in af_alg_free_areq_sgls crypto/af_alg.c:778 [inline]
-BUG: KMSAN: uninit-value in af_alg_free_resources+0x3d1/0xf60 crypto/af_alg.c:1117
- af_alg_free_sg crypto/af_alg.c:545 [inline]
- af_alg_free_areq_sgls crypto/af_alg.c:778 [inline]
- af_alg_free_resources+0x3d1/0xf60 crypto/af_alg.c:1117
- _skcipher_recvmsg crypto/algif_skcipher.c:144 [inline]
-...
+Thank you for review! I've just posted v2 :)
 
-Uninit was created at:
- slab_post_alloc_hook+0x12f/0xb70 mm/slab.h:767
- slab_alloc_node mm/slub.c:3470 [inline]
- __kmem_cache_alloc_node+0x536/0x8d0 mm/slub.c:3509
- __do_kmalloc_node mm/slab_common.c:984 [inline]
- __kmalloc+0x121/0x3c0 mm/slab_common.c:998
- kmalloc include/linux/slab.h:586 [inline]
- sock_kmalloc+0x128/0x1c0 net/core/sock.c:2683
- af_alg_alloc_areq+0x41/0x2a0 crypto/af_alg.c:1188
- _skcipher_recvmsg crypto/algif_skcipher.c:71 [inline]
 
-Fixes: c1abe6f570af ("crypto: af_alg: Use extract_iter_to_sg() to create scatterlists")
-Reported-and-tested-by: syzbot+cba21d50095623218389@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=cba21d50095623218389
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
 
-Changes since v1:
-	- Move sgl.need_unpin initialization upper instead of
-	  pre-initializing it with false as suggested by David
-
----
- crypto/af_alg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/crypto/af_alg.c b/crypto/af_alg.c
-index 06b15b9f661c..10efb56d8b48 100644
---- a/crypto/af_alg.c
-+++ b/crypto/af_alg.c
-@@ -1241,6 +1241,8 @@ int af_alg_get_rsgl(struct sock *sk, struct msghdr *msg, int flags,
- 				return -ENOMEM;
- 		}
- 
-+		rsgl->sgl.need_unpin =
-+			iov_iter_extract_will_pin(&msg->msg_iter);
- 		rsgl->sgl.sgt.sgl = rsgl->sgl.sgl;
- 		rsgl->sgl.sgt.nents = 0;
- 		rsgl->sgl.sgt.orig_nents = 0;
-@@ -1255,8 +1257,6 @@ int af_alg_get_rsgl(struct sock *sk, struct msghdr *msg, int flags,
- 		}
- 
- 		sg_mark_end(rsgl->sgl.sgt.sgl + rsgl->sgl.sgt.nents - 1);
--		rsgl->sgl.need_unpin =
--			iov_iter_extract_will_pin(&msg->msg_iter);
- 
- 		/* chain the new scatterlist with previous one */
- 		if (areq->last_rsgl)
--- 
-2.40.1
-
+With regards,
+Pavel Skripkin
