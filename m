@@ -2,89 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36AB577C19C
+	by mail.lfdr.de (Postfix) with ESMTP id 899C077C19D
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232443AbjHNUh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 16:37:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45054 "EHLO
+        id S232455AbjHNUiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 16:38:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbjHNUhg (ORCPT
+        with ESMTP id S232435AbjHNUhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 16:37:36 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29BD0170B;
-        Mon, 14 Aug 2023 13:37:35 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bc8045e09dso29535545ad.0;
-        Mon, 14 Aug 2023 13:37:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692045454; x=1692650254;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8uPcd7vi+XmxVyTrv3YM7Lu69aTpodBb1P/2mWRyLDk=;
-        b=RWLa6KA90zuKIc0q8BZvrngLTAW5gETvb5oNUH9Pq/RpSvazw3SyF6ERITkqlstHXi
-         SnvQgjJfKnsAcF4yUq+Mg63b4IFzV0NG2rK1nc6z2DCAbMIBWmDugDnNGEyXP0EIYme5
-         vByW4uUP3rEVuPXTYNUgAAhOusoA11AXqtxfzjhZz99E8mB6ZpP/8PIY90K39VvB21Ap
-         /BiWx1dcL9qqIfPsPTe+uGAYk95GGPd+wfp6jv4xrO3kWPoadHh407IRGzAjrCpajfPi
-         3dBcN1OEeIJ17a1rQDYNt2D9bAIjACjkHdD6MkKVNxxOnXNEEOUf5u1e/E6Kkqu2zVoU
-         2Wew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692045454; x=1692650254;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8uPcd7vi+XmxVyTrv3YM7Lu69aTpodBb1P/2mWRyLDk=;
-        b=kfr0TtKpAsNtSoZlyH+eojE4oBJbqHnHGrDCh1HERt11A+iaDPa7Xko5Ju2BnOLxG6
-         slGjQeY4mT5TK9U+EF9En/loQw4fFgV38FPDsG8cg9ziutSyPtcCz2h5MaNKJ3VBBA8y
-         1mgf4IT1q6saFwZhbsEGlP1tqHkj8ihWwV+LL8nlrf3xyCULokE8r7zzQJviQBR5DDM7
-         bvP0rhYDsb7B1vTbDa6rc6kH9jfvmp83vXgdMXu0K8iPkvY+hB//BGmNXZ0zb9QP+wrp
-         k25UsbFTGpyhjrF1BTJwBJPYeU6JdqedGNO4klpRLd1e2j0JUiZAFZBomlhutH8WI2Vc
-         DcMg==
-X-Gm-Message-State: AOJu0YyW7Jb9bGPZadOw1Og6B9vyIYmtb7WaLRtB9HxCy4Eat9EUtODa
-        gkNO8vJq+zRmtbmoFLgvU3s=
-X-Google-Smtp-Source: AGHT+IGwJ8PLN1gJbnVFzZ7Ji8FunKvpdZ7Xo5ONFNUozyiWCqVAuNY7UblcngaHnVSiLj69ohXYxQ==
-X-Received: by 2002:a17:902:a411:b0:1bb:6875:5a73 with SMTP id p17-20020a170902a41100b001bb68755a73mr7412171plq.2.1692045454549;
-        Mon, 14 Aug 2023 13:37:34 -0700 (PDT)
-Received: from localhost ([192.55.55.51])
-        by smtp.gmail.com with ESMTPSA id p3-20020a170902c70300b001b243a20f26sm9854404plp.273.2023.08.14.13.37.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 13:37:33 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 13:37:32 -0700
-From:   Isaku Yamahata <isaku.yamahata@gmail.com>
-To:     Yuan Yao <yuan.yao@linux.intel.com>
-Cc:     Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: Re: [PATCH 09/10] x86/virt/tdx: Wire up basic SEAMCALL functions
-Message-ID: <20230814203732.GC2257301@ls.amr.corp.intel.com>
-References: <cover.1689151537.git.kai.huang@intel.com>
- <41b7e5503a3e6057dc168b3c5a9693651c501d22.1689151537.git.kai.huang@intel.com>
- <20230712221510.GG3894444@ls.amr.corp.intel.com>
- <4202b26acdb3fe926dd1a9a46c2c7c35a5d85529.camel@intel.com>
- <20230713184434.GH3894444@ls.amr.corp.intel.com>
- <20230808091606.jk667prer5lmtcpm@yy-desk-7060>
+        Mon, 14 Aug 2023 16:37:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EA410F7;
+        Mon, 14 Aug 2023 13:37:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1D91761419;
+        Mon, 14 Aug 2023 20:37:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32D9AC433C8;
+        Mon, 14 Aug 2023 20:37:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692045458;
+        bh=p/3cegYidBuPQOysI3EfoMODZv58DITeMGmAbN5Lraw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M9Gj4ubRIm3PLxL0kOHAMCQbhl5UCr73qpln3KKMYGI8BLRT42nJyC5CTPpHF4ndY
+         YBIPHCeJjmV2NH0Q3B/m/UnVyIoottcNuILf10IYEJG4+zUfkHphzakSnVN8VdfUlM
+         iSXTFMuoXVShf2rz3Vq8J2jZczWE3g/r4n9A5klaL+G5rDuLAEdJ5NffG20axDDyMD
+         PUG67WZiX27Od1lPassZvtcavO5pQK9uxsL6hDMkQP/NyY8A6s6Wc71FT4hKfs2w34
+         NjUqxAtygX/kWlTIAL5iqO4tdReb4cBWgwprtGdqwkylzH6CZZR3DhkE1kmALM2djG
+         TaDUDVV2xUmHg==
+Date:   Mon, 14 Aug 2023 13:37:36 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Kajetan Puchalski <kajetan.puchalski@arm.com>
+Cc:     Douglas RAILLARD <douglas.raillard@arm.com>,
+        Chao Yu <chao@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "open list:F2FS FILE SYSTEM" <linux-f2fs-devel@lists.sourceforge.net>,
+        "open list:TRACING" <linux-kernel@vger.kernel.org>,
+        "open list:TRACING" <linux-trace-kernel@vger.kernel.org>,
+        jstultz@google.com, qyousef@google.com, lukasz.luba@arm.com
+Subject: Re: [PATCH] f2fs: Fix f2fs_truncate_partial_nodes ftrace event
+Message-ID: <ZNqQkDm0YschY+WI@google.com>
+References: <20230306122549.236561-1-douglas.raillard@arm.com>
+ <ZNotAI1T+hKfzJWV@e126311.manchester.arm.com>
+ <ZNo8hoR2V3Zo14+l@e126311.manchester.arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230808091606.jk667prer5lmtcpm@yy-desk-7060>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <ZNo8hoR2V3Zo14+l@e126311.manchester.arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,WEIRD_PORT autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,59 +63,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 05:16:06PM +0800,
-Yuan Yao <yuan.yao@linux.intel.com> wrote:
-
-> On Thu, Jul 13, 2023 at 11:44:34AM -0700, Isaku Yamahata wrote:
-> > On Thu, Jul 13, 2023 at 03:46:52AM +0000,
-> > "Huang, Kai" <kai.huang@intel.com> wrote:
-> >
-> > > On Wed, 2023-07-12 at 15:15 -0700, Isaku Yamahata wrote:
-> > > > > The SEAMCALL ABI is very similar to the TDCALL ABI and leverages much
-> > > > > TDCALL infrastructure.  Wire up basic functions to make SEAMCALLs for
-> > > > > the basic TDX support: __seamcall(), __seamcall_ret() and
-> > > > > __seamcall_saved_ret() which is for TDH.VP.ENTER leaf function.
-> > > >
-> > > > Hi.  __seamcall_saved_ret() uses struct tdx_module_arg as input and output.  For
-> > > > KVM TDH.VP.ENTER case, those arguments are already in unsigned long
-> > > > kvm_vcpu_arch::regs[].  It's silly to move those values twice.  From
-> > > > kvm_vcpu_arch::regs to tdx_module_args.  From tdx_module_args to real registers.
-> > > >
-> > > > If TDH.VP.ENTER is the only user of __seamcall_saved_ret(), can we make it to
-> > > > take unsigned long kvm_vcpu_argh::regs[NR_VCPU_REGS]?  Maybe I can make the
-> > > > change with TDX KVM patch series.
-> > >
-> > > The assembly code assumes the second argument is a pointer to 'struct
-> > > tdx_module_args'.  I don't know how can we change __seamcall_saved_ret() to
-> > > achieve what you said.  We might change the kvm_vcpu_argh::regs[NR_VCPU_REGS] to
-> > > match 'struct tdx_module_args''s layout and manually convert part of "regs" to
-> > > the structure and pass to __seamcall_saved_ret(), but it's too hacky I suppose.
-> > >
-> > > This was one concern that I mentioned VP.ENTER can be implemented by KVM in its
-> > > own assembly in the TDX host v12 discussion.  I kinda agree we should leverage
-> > > KVM's existing kvm_vcpu_arch::regs[NR_CPU_REGS] infrastructure to minimize the
-> > > code change to the KVM's common infrastructure.  If so, I guess we have to carry
-> > > this memory copy burden between two structures.
-> > >
-> > > Btw, I do find KVM's VP.ENTER code is a little bit redundant to the common
-> > > SEAMCALL assembly, which is a good reason for KVM to use __seamcall() variants
-> > > for TDH.VP.ENTER.
-> > >
-> > > So it's a tradeoff I think.
-> > >
-> > > On the other hand, given CoCo VMs normally don't expose all GPRs to VMM, it's
-> > > also debatable whether we should invent another infrastructure to the KVM code
-> > > to handle register access of CoCo VMs too, e.g., we can catch bugs easily when
-> > > KVM tries to access the registers that it shouldn't access.
-> >
-> > Yes, we'd like to save/restore GPRs only for TDVMCALL. Otherwise skip
-> > save/restore.
+On 08/14, Kajetan Puchalski wrote:
+> On Mon, Aug 14, 2023 at 02:32:53PM +0100, Kajetan Puchalski wrote:
+> > On Mon, Mar 06, 2023 at 12:25:49PM +0000, Douglas RAILLARD wrote:
+> > > From: Douglas Raillard <douglas.raillard@arm.com>
+> > > 
+> > > Fix the nid_t field so that its size is correctly reported in the text
+> > > format embedded in trace.dat files. As it stands, it is reported as
+> > > being of size 4:
+> > > 
+> > >         field:nid_t nid[3];     offset:24;      size:4; signed:0;
+> > > 
+> > > Instead of 12:
+> > > 
+> > >         field:nid_t nid[3];     offset:24;      size:12;        signed:0;
+> > > 
+> > > This also fixes the reported offset of subsequent fields so that they
+> > > match with the actual struct layout.
+> > > 
+> > > 
+> > > Signed-off-by: Douglas Raillard <douglas.raillard@arm.com>
+> > > ---
+> > >  include/trace/events/f2fs.h | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
+> > > index 31d994e6b4ca..8d053838d6cf 100644
+> > > --- a/include/trace/events/f2fs.h
+> > > +++ b/include/trace/events/f2fs.h
+> > > @@ -512,7 +512,7 @@ TRACE_EVENT(f2fs_truncate_partial_nodes,
+> > >  	TP_STRUCT__entry(
+> > >  		__field(dev_t,	dev)
+> > >  		__field(ino_t,	ino)
+> > > -		__field(nid_t,	nid[3])
+> > > +		__array(nid_t,	nid, 3)
+> > >  		__field(int,	depth)
+> > >  		__field(int,	err)
+> > >  	),
+> > > -- 
+> > > 2.25.1
+> > 
+> > Hi,
+> > 
+> > Just wanted to flag that I noticed this breaks Perfetto tracing on
+> > Android, at least as of Android 13. I'm not sure if it's been fixed in newer
+> > versions. Looks like the version of Perfetto in Android 13 is expecting
+> > the previous (ie broken) field format to be there and its entire ftrace
+> > collector fails as a result:
+> > 
+> > E/perfetto( 3532): ranslation_table.cc:133 Failed to infer ftrace field type for "f2fs_truncate_partial_nodes.nid" (type:"nid_t nid[3]" size:12 signed:0) (errno: 2, No such file or directory)
+> > I/perfetto( 3640):            probes.cc:65 Hard resetting ftrace state.
+> > 
+> > For my own purposes I just reverted these two:
+> > * 0b04d4c0542e8573a837b1d81b94209e48723b25 (f2fs: Fix f2fs_truncate_partial_nodes ftrace event)
+> > * f82e7ca019dfad3b006fd3b772f7ac569672db55 (tracing: Error if a trace event has an array for a __field()
+> > 
+> > and now it works fine so not the biggest deal but this should probably
+> > be addressed, I imagine more likely on the Perfetto side.
 > 
-> And another case to save/restore GPRs: supports DEBUG TD,
-> which is type of TD guest allows VMM to change its register
-> context, for debugging purpose.
+> Added context here, it is just caused by the parser implementation in Perfetto
+> being pretty lacking:
+> 
+> https://github.com/google/perfetto/blob/c36c70c1d4a72eafdd257f7a63e55f49fbc3df3d/src/traced/probes/ftrace/proto_translation_table.cc#L255
 
-For Debug TD case, we can use TDH.VP.RD(general purpose register) specifically.
-We don't need to optimize for Debug TD case.
--- 
-Isaku Yamahata <isaku.yamahata@gmail.com>
+Hi, I believe this was fixed by
+https://android-review.git.corp.google.com/c/platform/external/perfetto/+/2587146
