@@ -2,80 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7EDB77B268
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C590177B29D
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 09:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234133AbjHNH1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 03:27:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45914 "EHLO
+        id S232747AbjHNHfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 03:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234095AbjHNH04 (ORCPT
+        with ESMTP id S234289AbjHNHf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 03:26:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF676E73;
-        Mon, 14 Aug 2023 00:26:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691998015; x=1723534015;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fJy8W7xTgs+ewccv0eUJYr8iqTVcjrrPHPF1T9aRC98=;
-  b=akq0lYAfoudJ/zSg+XwNSUNS/579t0osqPskAt0EbNx5NIZcUq8heTdn
-   Vtprt/ke+JkOkIByXa7T3tqk0XD+D96cckoUc1UT81s/VRQghFDh/ZmAY
-   kCj1IhphK5JpeEBfseakmykt0+osNxKk/tAJCZtto4aTrtmumWh9pXh+L
-   QaUbWksbIoJBdS05V53FZDO4SFMvu+mb8QQdoanWrrVOLLQp9eUP2WLtT
-   u/wOgXtlmZEylqzuMSt7IS4f4VtkDLNMZg4Wsnz1AhiQFDBbvPBLr7Izy
-   BK3D0SGb4dSVWG5q9HXTeplg4gY8emdfRh+O8MJsXmP12zfDQgu2M9g3+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="351579342"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="351579342"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 00:26:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="803369875"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="803369875"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 14 Aug 2023 00:26:53 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-        id D1A2C33B; Mon, 14 Aug 2023 10:34:05 +0300 (EEST)
-Date:   Mon, 14 Aug 2023 10:34:05 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Raag Jadav <raag.jadav@intel.com>
-Cc:     linus.walleij@linaro.org, andriy.shevchenko@linux.intel.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mallikarjunappa.sangannavar@intel.com, pandith.n@intel.com
-Subject: Re: [PATCH v1 0/4] Reuse common functions from pinctrl-intel
-Message-ID: <20230814073405.GX14638@black.fi.intel.com>
-References: <20230814060311.15945-1-raag.jadav@intel.com>
+        Mon, 14 Aug 2023 03:35:28 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2055.outbound.protection.outlook.com [40.107.94.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 434FF18F
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 00:35:27 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YCAFryYPREj5WPtxjUJOyGIEmkgh1HH0rEpYb3hcB+1FTSEEAl9TzDgUkU0j3Qbx/pKcPoXJcSlNxJ3sztFDqlE8zyIXHkRLxlqtRR1JQv/Ndk+CflZQw0E0qE8MidBfGxzuBqhRf3MGQ9R5S+zPepzR9tdMoPIkUmP+jKmw4oOsRKuTrUDr7QRZvs/3hjK5LXZaIh1UTHi/JbtjxqB/QbQXHue7W2/k8u1ga/QAGxJ9RUjsTWg31VDh/FiOQiqlpikKNod55q5yrOk7ifz4SIaAmKLrMEXkNobkgJSGdGbcFDuXblUeErREsL9xUByeg9HtkyZjx4sLEp4kXFQ7qA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wlnwonRkXXvXp1W3si0ZM4L+5Mm9Lw8e8KVP8MmwkNo=;
+ b=S6aDSXPgOM/rUlJO7Se9PDHzZDMUz9QUF7hnv+PPF/4Dijp18kWTOvqSRs460kxxNElxgJ/KVk2xYqFx4BAlmEXOcMooohU48K/nvIFDtuxJrnD6w5kfb1c6MGfOg5Nqqg4tYa/VO5s5WK62GivG4zjW6Pv9DJqqY2V7Sw4JmsjQbVMmQ5xfQEw7G9EZg3OTr8eyMD0BagmldhPAGVfc/dnSsb3P4OIvhVxVVLmX7X/eb3rLqKa/YHOXpP5oPzeW5OzQelvZlISbpiSKKEOsQ/mzFom2z8uqN6KTj3QfS3vXBnby7cmNfAfxEFzaNSJRK/iZfHgLwDUtWSAfPwLJ3w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wlnwonRkXXvXp1W3si0ZM4L+5Mm9Lw8e8KVP8MmwkNo=;
+ b=FYy3kUIouMZHsi90/2eQbYNfccFGpVZeVOj7vOr8VSi3Lxrb8yTq+b3IdOKkXvrwgEQRmWkCA/zbyKYiSja0lA8j4NH685PfqtkETT2kr8RGUX6I02SgadMi26+QTOJa/Lvh1DZt8/UnrzG2UizBFTY5py2zr465iFzVjdFg3Xo=
+Received: from CY5PR10CA0017.namprd10.prod.outlook.com (2603:10b6:930:1c::20)
+ by BL1PR12MB5756.namprd12.prod.outlook.com (2603:10b6:208:393::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Mon, 14 Aug
+ 2023 07:35:24 +0000
+Received: from CY4PEPF0000EE33.namprd05.prod.outlook.com
+ (2603:10b6:930:1c:cafe::72) by CY5PR10CA0017.outlook.office365.com
+ (2603:10b6:930:1c::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.33 via Frontend
+ Transport; Mon, 14 Aug 2023 07:35:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EE33.mail.protection.outlook.com (10.167.242.39) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6699.12 via Frontend Transport; Mon, 14 Aug 2023 07:35:23 +0000
+Received: from rtg-System-Product-Name.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 14 Aug 2023 02:35:20 -0500
+From:   Arvind Yadav <Arvind.Yadav@amd.com>
+To:     <Christian.Koenig@amd.com>, <alexander.deucher@amd.com>,
+        <shashank.sharma@amd.com>, <Xinhui.Pan@amd.com>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Arvind Yadav <Arvind.Yadav@amd.com>
+Subject: [PATCH 0/3] GPU workload hints for better performance
+Date:   Mon, 14 Aug 2023 13:04:35 +0530
+Message-ID: <20230814073438.10682-1-Arvind.Yadav@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230814060311.15945-1-raag.jadav@intel.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE33:EE_|BL1PR12MB5756:EE_
+X-MS-Office365-Filtering-Correlation-Id: 96925a9b-c7cf-46c0-662c-08db9c99055d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qFgehFXpGNX/pBzBW60N4q02mvYybeLz3EYoYfW7xwIynpST9Ah06/LKH8mJ7m6o7IXMv/66ga7C6E3GKaphyCf1VIfD52NQKRr4lSqpkmaV4N9L9ER2l1WvBA+/uDHDAtYmCXQR7OvEY5jDoo5DToEu+Ceq9QX5IquSz7OUPyOQF/itcMAH0oryTv+Onbwhj1qGhzUf9HEVFNdYp1e7lUaZIHvOvjsTY6SbESfpB5QjqeIKGftxMEKiVjdTaJMYwch9aCZ6cMzrHZqdmbs6VCD8jHWNAcfKOrEu+pHHOsx/2nC1CWOlujICCmKn+I14+qnuwQF3oMReYZpkB0xBZY+WjZ2FkaaRTGMM97snASWsPo1IiPaem0Alt6fc7wRTEOeVDt7P3ZkGdt7vaphOVeafWsJFOD1jEiKRYqFP+ypvMwncH57lSQTW4LjuwyDKo+II+rItcdLC4Fc+dNkZ78PSjh49rlzInTLbuioaiVQoBUClmzgOU7Y64DJhq1Qzf1ncqJZqt8ghr70MMVsAEMW7C8FTyInwDzn+9+fkpFFdDneTSo7iCoK+KJ8srxUauWrCfZxZoo5/TJqh3hUbjhigBknQdI3DznNLYKIGWzCzbp2jGkt0EXO1GD0dl9S/eca+Lrqf7IZIWC9rwtCgGJenhkHmlx0FJPXNBrWgjG6+ZNpa7OTqZ6ErlkttkXuIBlHrC/falkOPOCbzRMym6HbBeoXKujwcPLBLPu7LQk11lHUgEKqVCFd3f6W2I12OVY9UZtyQ7tu6Zik7qHQ2lw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230028)(4636009)(396003)(346002)(376002)(136003)(39860400002)(1800799006)(186006)(451199021)(82310400008)(46966006)(36840700001)(40470700004)(6666004)(7696005)(478600001)(83380400001)(2616005)(1076003)(336012)(426003)(26005)(16526019)(2906002)(316002)(41300700001)(110136005)(70206006)(70586007)(5660300002)(4326008)(8676002)(8936002)(86362001)(40460700003)(36756003)(47076005)(36860700001)(40480700001)(82740400003)(356005)(81166007)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Aug 2023 07:35:23.5900
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 96925a9b-c7cf-46c0-662c-08db9c99055d
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE33.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5756
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+AMDGPU SOCs supports dynamic workload based power profiles, which can
+provide fine-tuned performance for a particular type of workload.
+This patch series adds an interface to set/reset these power profiles
+based on the submitted job. The driver can dynamically switch
+the power profiles based on submitted job. This can optimize the power
+performance when the particular workload is on.
 
-On Mon, Aug 14, 2023 at 11:33:07AM +0530, Raag Jadav wrote:
->  drivers/pinctrl/intel/Kconfig              |  6 +-
->  drivers/pinctrl/intel/pinctrl-baytrail.c   | 90 +++-------------------
->  drivers/pinctrl/intel/pinctrl-cherryview.c | 69 +++--------------
->  drivers/pinctrl/intel/pinctrl-intel.c      | 30 ++++----
->  drivers/pinctrl/intel/pinctrl-intel.h      | 12 +++
->  drivers/pinctrl/intel/pinctrl-lynxpoint.c  | 86 ++-------------------
->  6 files changed, 57 insertions(+), 236 deletions(-)
+Arvind Yadav (3):
+  drm/amdgpu: Add new api to switch on/off power profile mode
+  drm/amdgpu: Switch on/off GPU workload profile
+  Revert "drm/amd/amdgpu: switch on/off vcn power profile mode"
 
-This is really nice reductions of lines :-)
+ drivers/gpu/drm/amd/amdgpu/Makefile           |   2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu.h           |   3 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |   2 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_job.c       |   5 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c       |  14 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c  | 156 ++++++++++++++++++
+ drivers/gpu/drm/amd/include/amdgpu_workload.h |  44 +++++
+ 7 files changed, 213 insertions(+), 13 deletions(-)
+ create mode 100644 drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
+ create mode 100644 drivers/gpu/drm/amd/include/amdgpu_workload.h
 
-For the whole series,
+-- 
+2.34.1
 
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
