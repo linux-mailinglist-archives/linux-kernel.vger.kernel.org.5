@@ -2,99 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3217177AF38
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 03:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0818077AF3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 03:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbjHNBof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 21:44:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49914 "EHLO
+        id S231491AbjHNBrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 21:47:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231491AbjHNBob (ORCPT
+        with ESMTP id S232318AbjHNBqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 21:44:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C40E52;
-        Sun, 13 Aug 2023 18:44:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691977470; x=1723513470;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=H1bYfTn7A/qFI7qE6WjuM6lA5WEd0AWnwsOlRd3Pq2A=;
-  b=E7hGrmM5Wr3DO9uzkhNxUBRx11k877dkIUXMTbB5qjddRtMGwroq1Uuu
-   uIykL2TuUroSSm+CdDmLDlV93bQxdCP7AyETz/YKfkh77AK8ywMwgZfYD
-   39NqhHtlwzvunST8VKZHqG2LG5xIN0CYZj939ELERypMJHLk0F41rI2g0
-   XEB3w/NrbLpt8SZtG9z2MtWl6dBPHOy8QHyXLnoEtotVhJllZb7uzyfn0
-   fhXowuway4rKGUSaAPqndDazYXSvb/WKzR6shyBXwPLld9YukXMtD3/P4
-   sG9WzjzdfJtdolMRslUIai3te0X2lzVfFpD5JHMhD3qdQ5+DI0F110My+
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="356904804"
-X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
-   d="scan'208";a="356904804"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2023 18:44:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="907061650"
-X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
-   d="scan'208";a="907061650"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 13 Aug 2023 18:44:27 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qVMd8-0009It-2c;
-        Mon, 14 Aug 2023 01:44:26 +0000
-Date:   Mon, 14 Aug 2023 09:44:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Lizhi Hou <lizhi.hou@amd.com>, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, Lizhi Hou <lizhi.hou@amd.com>,
-        max.zhen@amd.com, sonal.santan@amd.com,
-        stefano.stabellini@xilinx.com
-Subject: Re: [PATCH V12 5/5] of: unittest: Add pci_dt_testdrv pci driver
-Message-ID: <202308140955.QY7JaDK3-lkp@intel.com>
-References: <1690564018-11142-6-git-send-email-lizhi.hou@amd.com>
+        Sun, 13 Aug 2023 21:46:40 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF4CE63;
+        Sun, 13 Aug 2023 18:46:37 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RPHLd6kLgz4f3lY2;
+        Mon, 14 Aug 2023 09:46:33 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP4 (Coremail) with SMTP id gCh0CgDnwqV5h9lkUqyjAg--.38273S2;
+        Mon, 14 Aug 2023 09:46:34 +0800 (CST)
+Subject: Re: [PATCH] kunit: replace KUNIT_TRIGGER_STATIC_STUB maro with
+ KUNIT_STATIC_STUB_REDIRECT
+To:     David Gow <davidgow@google.com>
+Cc:     brendan.higgins@linux.dev, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org
+References: <20230725172051.2142641-1-shikemeng@huaweicloud.com>
+ <CABVgOSn_k=TV4Y7pKTw5LY3su6r0TYi_ci95MKw7-wRHA1+MdA@mail.gmail.com>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <915f6336-fc33-c87e-01ac-a80550abbf61@huaweicloud.com>
+Date:   Mon, 14 Aug 2023 09:44:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1690564018-11142-6-git-send-email-lizhi.hou@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CABVgOSn_k=TV4Y7pKTw5LY3su6r0TYi_ci95MKw7-wRHA1+MdA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: gCh0CgDnwqV5h9lkUqyjAg--.38273S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWw48Aw47AF4DArWrAF18Xwb_yoW5Ww1xpa
+        93C3WUur1UJFs2kFyIvFW0qr1akws5Jr4Utr13Ww4Sqa13Wr1xKa1DKr1rK3yUW3ykJa90
+        vasIvFy5KayDArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1wL05UUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lizhi,
 
-kernel test robot noticed the following build warnings:
 
-[auto build test WARNING on pci/next]
-[also build test WARNING on pci/for-linus robh/for-next linus/master v6.5-rc6 next-20230809]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+on 8/12/2023 3:48 PM, David Gow wrote:
+> On Tue, 25 Jul 2023 at 17:20, Kemeng Shi <shikemeng@huaweicloud.com> wrote:
+>>
+>> We mix up KUNIT_TRIGGER_STATIC_STUB and KUNIT_STATIC_STUB_REDIRECT in
+>> static_stub header. Just correct KUNIT_TRIGGER_STATIC_STUB to
+>> KUNIT_STATIC_STUB_REDIRECT which is documented.
+>>
+>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>> ---
+> 
+> Thanks for catching this!
+> 
+> Only minor note is that there's a typo in the subject ("maro","macro").
+> 
+> Fixes: e047c5eaa763 ("kunit: Expose 'static stub' API to redirect functions")
+> Reviewed-by: David Gow <davidgow@google.com>
+> Thanks for the feedback, I will fix it in next version.
+> Cheers,
+> -- David
+> 
+>>  include/kunit/static_stub.h | 6 +++---
+>>  1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/include/kunit/static_stub.h b/include/kunit/static_stub.h
+>> index 9b80150a5d62..85315c80b303 100644
+>> --- a/include/kunit/static_stub.h
+>> +++ b/include/kunit/static_stub.h
+>> @@ -11,7 +11,7 @@
+>>  #if !IS_ENABLED(CONFIG_KUNIT)
+>>
+>>  /* If CONFIG_KUNIT is not enabled, these stubs quietly disappear. */
+>> -#define KUNIT_TRIGGER_STATIC_STUB(real_fn_name, args...) do {} while (0)
+>> +#define KUNIT_STATIC_STUB_REDIRECT(real_fn_name, args...) do {} while (0)
+>>
+>>  #else
+>>
+>> @@ -30,7 +30,7 @@
+>>   * This is a function prologue which is used to allow calls to the current
+>>   * function to be redirected by a KUnit test. KUnit tests can call
+>>   * kunit_activate_static_stub() to pass a replacement function in. The
+>> - * replacement function will be called by KUNIT_TRIGGER_STATIC_STUB(), which
+>> + * replacement function will be called by KUNIT_STATIC_STUB_REDIRECT(), which
+>>   * will then return from the function. If the caller is not in a KUnit context,
+>>   * the function will continue execution as normal.
+>>   *
+>> @@ -87,7 +87,7 @@ void __kunit_activate_static_stub(struct kunit *test,
+>>   * When activated, calls to real_fn_addr from within this test (even if called
+>>   * indirectly) will instead call replacement_addr. The function pointed to by
+>>   * real_fn_addr must begin with the static stub prologue in
+>> - * KUNIT_TRIGGER_STATIC_STUB() for this to work. real_fn_addr and
+>> + * KUNIT_STATIC_STUB_REDIRECT() for this to work. real_fn_addr and
+>>   * replacement_addr must have the same type.
+>>   *
+>>   * The redirection can be disabled again with kunit_deactivate_static_stub().
+>> --
+>> 2.30.0
+>>
+>> --
+>> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
+>> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
+>> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20230725172051.2142641-1-shikemeng%40huaweicloud.com.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Lizhi-Hou/of-dynamic-Add-interfaces-for-creating-device-node-dynamically/20230729-010934
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/1690564018-11142-6-git-send-email-lizhi.hou%40amd.com
-patch subject: [PATCH V12 5/5] of: unittest: Add pci_dt_testdrv pci driver
-config: x86_64-allmodconfig (https://download.01.org/0day-ci/archive/20230814/202308140955.QY7JaDK3-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230814/202308140955.QY7JaDK3-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308140955.QY7JaDK3-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> drivers/of/unittest.c:3737:5: sparse: sparse: symbol 'of_unittest_pci_dev_num' was not declared. Should it be static?
->> drivers/of/unittest.c:3738:5: sparse: sparse: symbol 'of_unittest_pci_child_num' was not declared. Should it be static?
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
