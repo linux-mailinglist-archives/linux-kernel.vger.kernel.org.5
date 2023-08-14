@@ -2,61 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F18EA77C13B
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8BB77C149
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 22:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbjHNUE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 16:04:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51370 "EHLO
+        id S231731AbjHNUHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 16:07:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232380AbjHNUEu (ORCPT
+        with ESMTP id S231364AbjHNUG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 16:04:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D36410E5;
-        Mon, 14 Aug 2023 13:04:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DF36F6465C;
-        Mon, 14 Aug 2023 20:04:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 859A9C433C7;
-        Mon, 14 Aug 2023 20:04:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692043488;
-        bh=hAxyfNnNzxVnPvxCxFqBr4+67fwVr5ZIzGGgFuBdSS0=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=LJoM6DZI8/WjEU5Wp56OPED7CXIS3btLl7TdAdRWOy08zZ1k6vDzOrP+/3trsmUbB
-         PdYeaEShfOf5/BJ7MYan1xRiUVPLuL75KFaYX/rhvtNFXUkUHZz2Zb/pKJo26cAO0F
-         KXdUtq4Z6R7PYsAtQPMEx49OfDc/7mR+ipXfJpjTNIcbrMKm6UMpEHXfwJEwPzGy5j
-         t8PUQ4bBH2zXkXPK/icD13Va4QiS6ws4nkoeyF62v138NSzc+Zg8WstHID7D2S6MfS
-         ghcg4YetNLPvts/qMABaSJjR4lsOqHMAKS/0x8XtS8MYm3RiXKUCD3km4bO9oae8Xz
-         KRvekpb1Qhd+A==
-Message-ID: <a113f6cf-db27-67f1-6996-39fd3912c0c8@kernel.org>
-Date:   Mon, 14 Aug 2023 22:04:40 +0200
+        Mon, 14 Aug 2023 16:06:57 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2C910C8
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:06:56 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d62bdd1a97dso4805333276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 13:06:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692043615; x=1692648415;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t1RQBQR/MAT6mtkRSBLye6IJ4VHPL4IQK3Vm3WdtiNU=;
+        b=imu/s4fyVMvlWWpKp8piuwCJw3qnyxyzhsyh+A8zI1BeWVRWddA2DC5GebTsvOHTTm
+         /MS3ynNjGPWHtuS5Qk/laq1K6eu13RLOntrXxzz/LKKPwna3qsN8UJak9Faz5ZZbhwAg
+         vA7LUKTKIvH7/PkD02qiU8G8uQBLUER0yKZ4lnWDhLTyew8ZDSwSLdaUj9rwqYV7Miq+
+         /CnYTwAlI/TF7x5+wRe2fiZQYxl952G0eTLk4yCYV/lIcaPkal+h1M8ATizQQtpJPqU6
+         djEW6RzdQxUK6EfCOK4bwC+gz4SSA6AsR14zuD6g7BoFoNzAAQnVXrBgVrdT/gqg0s2X
+         PzaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692043615; x=1692648415;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t1RQBQR/MAT6mtkRSBLye6IJ4VHPL4IQK3Vm3WdtiNU=;
+        b=Tlq+WnzVyxn8pxGZDzDbzyBwujn3ObKOTcNMLVg4go7phhRrbOotNyf/7uxjx+9vMV
+         8P2Mh/Pcb+6/rLFLQcXSoG/liLdToaFPTYOFLCWhQcGcZyEpmdMvCT+xiacK3T29BiV0
+         6vh2n5qvTygFZ3os47uOoUcd8LMgfRjeM5HGait6gE1GT3WM0u3nmC4THZdeOeq1J/eP
+         RerWDn9vpnY65zhkyrLlsQ1RxgZJ4SRxp9DqcqBUa2SumdOoRxgnU9dr2H9aShOsgepI
+         uONC4CYIpFWwRwZ/Ws+mlaymE2f6W1NSLqVTrOGL7gxEmF9kb/y/49gTY08fqUhAzSM4
+         yZZg==
+X-Gm-Message-State: AOJu0YzbHWMtuLOyHnEMOUIdJBvoXlKe48ftFk7UtN23TVtsShniJMOy
+        CnLYlHdH72BE40nf0Ldpsn04Rwkn1v8QzClDaVIjnw==
+X-Google-Smtp-Source: AGHT+IGO4ICTwdePwp+mfoAA0rvSkF+6YukKJ8MuhcGINvMEj4kcA6FIWTcYRe0eyhPM1IlJImGo++yGi+dLw00Oc90=
+X-Received: by 2002:a25:84d1:0:b0:d12:1094:2036 with SMTP id
+ x17-20020a2584d1000000b00d1210942036mr10534671ybm.43.1692043615117; Mon, 14
+ Aug 2023 13:06:55 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 02/33] iris: vidc: add core functions
-Content-Language: en-US
-To:     Dikshita Agarwal <quic_dikshita@quicinc.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        stanimir.k.varbanov@gmail.com, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
-        hans.verkuil@cisco.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org
-References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
- <1690550624-14642-3-git-send-email-quic_vgarodia@quicinc.com>
- <0149fcd0-e64b-f155-05d8-f32a78d7e83b@kernel.org>
- <18ee06b6-65bc-a320-f06c-7d18ed29c739@quicinc.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-In-Reply-To: <18ee06b6-65bc-a320-f06c-7d18ed29c739@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230804152724.3090321-1-surenb@google.com> <20230804152724.3090321-6-surenb@google.com>
+ <CAG48ez0XCXoXbSR6dyX7GUQYJKRFKQsHuye5q-PLU3-gR5of5A@mail.gmail.com>
+ <20230814121521.83c2dda21765757d272538b2@linux-foundation.org> <CAG48ez1U5RW6ZJxc9wK4vo8qMJcQ0t+H8z-h4V_E8dkVAomSAQ@mail.gmail.com>
+In-Reply-To: <CAG48ez1U5RW6ZJxc9wK4vo8qMJcQ0t+H8z-h4V_E8dkVAomSAQ@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 14 Aug 2023 13:06:44 -0700
+Message-ID: <CAJuCfpGODc=PpJFR2gUgpTAfn1sufvWWxQL5kGaHQ3dBpa1z1g@mail.gmail.com>
+Subject: Re: [PATCH v4 5/6] mm: always lock new vma before inserting into vma tree
+To:     Jann Horn <jannh@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        torvalds@linux-foundation.org, willy@infradead.org,
+        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
+        ldufour@linux.ibm.com, vbabka@suse.cz, michel@lespinasse.org,
+        jglisse@google.com, mhocko@suse.com, hannes@cmpxchg.org,
+        dave@stgolabs.net, hughd@google.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,48 +77,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/08/2023 20:54, Dikshita Agarwal wrote:
->>> +
->>> +	core = devm_kzalloc(&pdev->dev, sizeof(struct msm_vidc_core), GFP_KERNEL);
->>> +	if (!core) {
->>> +		d_vpr_e("%s: failed to alloc memory for core\n", __func__);
->>
->> Ooops, this for sure did not pass any checks by tools. Sorry, please run
->> basic checks like coccinelle, smatch, sparse, W=1 builds.
->>
-> we ran check patch and smatch on this code but no errors were reported.
+On Mon, Aug 14, 2023 at 1:02=E2=80=AFPM Jann Horn <jannh@google.com> wrote:
+>
+> On Mon, Aug 14, 2023 at 9:15=E2=80=AFPM Andrew Morton <akpm@linux-foundat=
+ion.org> wrote:
+> > On Mon, 14 Aug 2023 16:54:01 +0200 Jann Horn <jannh@google.com> wrote:
+> >
+> > > > @@ -403,6 +403,8 @@ static int vma_link(struct mm_struct *mm, struc=
+t vm_area_struct *vma)
+> > > >
+> > > >   vma_iter_store(&vmi, vma);
+> > > >
+> > > > + vma_start_write(vma);
+> > > > +
+> > > >   if (vma->vm_file) {
+> > > >  mapping =3D vma->vm_file->f_mapping;
+> > > >  i_mmap_lock_write(mapping);
+> > >
+> > > The "vma_start_write()" has to be ordered before the
+> > > "vma_iter_store(&vmi, vma)".
+> >
+> > Thanks.  This?
+> >
+> >
+> > --- a/mm/mmap.c~mm-always-lock-new-vma-before-inserting-into-vma-tree-f=
+ix
+> > +++ a/mm/mmap.c
+> > @@ -401,10 +401,10 @@ static int vma_link(struct mm_struct *mm
+> >         if (vma_iter_prealloc(&vmi, vma))
+> >                 return -ENOMEM;
+> >
+> > -       vma_iter_store(&vmi, vma);
+> > -
+> >         vma_start_write(vma);
+> >
+> > +       vma_iter_store(&vmi, vma);
+> > +
+> >         if (vma->vm_file) {
+> >                 mapping =3D vma->vm_file->f_mapping;
+> >                 i_mmap_lock_write(mapping);
+>
+> Yes, thanks, that looks good.
 
-coccinelle is missing
-
-> please elaborate what issue you see with above code?
->>> +		return -ENOMEM;
-
-We did quite a lot of cleanups long, long time ago removing all unneeded
-error messages from memory allocations failures.
-
-Maybe Your use of custom printks() confuses coccinelle, which is a proof
-that your code is here an anti-pattern.
-
-...
-
->>
-> Sure, will remove these custom wrapper for locks and use standard
-> mutex_lock/unlock APIs directly.
->>> +	allow = msm_vidc_allow_pm_suspend(core);
->>> +
->>> +	if (allow == MSM_VIDC_IGNORE) {
->>> +		d_vpr_h("%s: pm already suspended\n", __func__);
->>
->> So you have bug in PM runtime code? Runtime PM does not suspend devices
->> twice.
->> core is power collapsed in case of idle state when there is no processing
-> happening by hardware, this can also change the core state to power_disable.
-> this check is ensuring if the core is already in power disable state due to
-> that, then no need to suspend it again.
-
-No, you just re-implemented runtime PM.
-
-
-Best regards,
-Krzysztof
-
+Ack. Thanks!
