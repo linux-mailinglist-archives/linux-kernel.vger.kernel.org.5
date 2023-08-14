@@ -2,531 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8B677AF0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 02:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE2E77AF10
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 02:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231616AbjHNAo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 13 Aug 2023 20:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34088 "EHLO
+        id S231376AbjHNAtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 13 Aug 2023 20:49:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231527AbjHNAon (ORCPT
+        with ESMTP id S231204AbjHNAst (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 13 Aug 2023 20:44:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE58CBA;
-        Sun, 13 Aug 2023 17:44:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691973881; x=1723509881;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=nMU49OuQhjBlkIzqgMW98CVzYEzF72LYsmoFN/6bUfs=;
-  b=dN0VINvcrQdwXB15kwQh69mJefY4MGXekCovXRir9Fg0BJRBQ9E9PikB
-   oeqSFKMbhNq3k72eMbmXPxihCxntbD1z9MGvB8bZsugdZFgZNE4hWUdb4
-   S9DcZONDolyH+OcZqaaRzBzH1gq0rYFu7ik9sj43jbNmkyTO9D+OcUloh
-   F4ctBnK3a7HQGeS5ZPlRLyTbiVAqG44uLmPkVTKK/vDATjlOWy5mUkZ8J
-   tFGroKUaHt5vi5NoFgcDHLxqSxN2jkgTgg6cT+eRZ/YBhoYX74Ba5GQYI
-   eriQupS3rbmUGocSF2QJzBEefxdECVZlSiwDd2H3NCtWsEZYlXI7E5JpB
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="356899055"
-X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
-   d="scan'208";a="356899055"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2023 17:44:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10801"; a="710134766"
-X-IronPort-AV: E=Sophos;i="6.01,171,1684825200"; 
-   d="scan'208";a="710134766"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.93.8.79]) ([10.93.8.79])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2023 17:44:30 -0700
-Message-ID: <02239d95-0253-a223-28c2-016cca3ab4d2@linux.intel.com>
-Date:   Mon, 14 Aug 2023 08:44:28 +0800
+        Sun, 13 Aug 2023 20:48:49 -0400
+Received: from mail-pl1-f205.google.com (mail-pl1-f205.google.com [209.85.214.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0372918E
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 17:48:48 -0700 (PDT)
+Received: by mail-pl1-f205.google.com with SMTP id d9443c01a7336-1bc394829b8so45982445ad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 13 Aug 2023 17:48:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691974127; x=1692578927;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ffSiHmXmKvWjGufuXWAkAV+GTFU4ol0O8toxVI2rWJk=;
+        b=QmaNaZDe7TJ1UpXtn9Pgwo0A3D3W6h9NNlsuK7d2guw6fnEQMVaXao79FkA2qSWGZF
+         o58z0DZlPDKs+p9hUwOLNPZHShMzjbziU/kuH8rSOhZAj6rK5tDAFxcU6cMEnz35Mf/6
+         Ks/BUwna36EG6tViRXtHn7zx+J7XEhK+jYrjrOc+lqQbPOB1Y+9rlKZK9I3mfdumpmMT
+         FdWR+2AptmM0nSmBZGtkG1iSoBVvxr/QYBpTgqXmiJ7mlPrphAB74AqG1vWkEjG42s5R
+         C6M0718GjkZFGhiHi/M57/4VMQ44YMYMC5NA66Q9mnm6DFxBhIONGv0FRfpCLZ2wDfkg
+         fQew==
+X-Gm-Message-State: AOJu0Yza1+JoJk+wYgLVSZ7k9fd7N0qD9LHtFxsb1l43L2o5AiV/F1Ac
+        J4hf+hcRmj4mvHVHFQFDQM5Ew7PYNq/Pdw0HlmfMuiAH2YPx
+X-Google-Smtp-Source: AGHT+IGPgJJXdVh8mbvUoK5oesGeh9HjctSCCkMz4+0xqO4BQKMhfhx6Y1y1iuqFPeayyQFbPlzkZFTSzh8oVKrIKjkLtS9ZJD9H
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [RFC PATCH v11 08/29] KVM: Introduce per-page memory attributes
-To:     Sean Christopherson <seanjc@google.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20230718234512.1690985-1-seanjc@google.com>
- <20230718234512.1690985-9-seanjc@google.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <20230718234512.1690985-9-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:ce84:b0:1b2:436b:931d with SMTP id
+ f4-20020a170902ce8400b001b2436b931dmr3390972plg.2.1691974127528; Sun, 13 Aug
+ 2023 17:48:47 -0700 (PDT)
+Date:   Sun, 13 Aug 2023 17:48:47 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d730410602d76cf6@google.com>
+Subject: [syzbot] [net?] [wireless?] INFO: rcu detected stall in cfg80211_wiphy_work
+From:   syzbot <syzbot+b904439e05f11f81ac62@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com, jiri@nvidia.com,
+        johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    cacc6e22932f tpm: Add a helper for checking hwrng enabled
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13b0b5c7a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3e670757e16affb
+dashboard link: https://syzkaller.appspot.com/bug?extid=b904439e05f11f81ac62
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a49fcda80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=136f8679a80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/c18b40f6d56d/disk-cacc6e22.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b270ef22b038/vmlinux-cacc6e22.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/aae3a8e7d564/bzImage-cacc6e22.xz
+
+The issue was bisected to:
+
+commit c2368b19807affd7621f7c4638cd2e17fec13021
+Author: Jiri Pirko <jiri@nvidia.com>
+Date:   Fri Jul 29 07:10:35 2022 +0000
+
+    net: devlink: introduce "unregistering" mark and use it during devlinks iteration
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=123267c3a80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=113267c3a80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=163267c3a80000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b904439e05f11f81ac62@syzkaller.appspotmail.com
+Fixes: c2368b19807a ("net: devlink: introduce "unregistering" mark and use it during devlinks iteration")
+
+rcu: INFO: rcu_preempt self-detected stall on CPU
+rcu: 	1-....: (10490 ticks this GP) idle=5a24/1/0x4000000000000000 softirq=8393/8393 fqs=5242
+rcu: 	         hardirqs   softirqs   csw/system
+rcu: 	 number:        0          0            0
+rcu: 	cputime:    25922      26566          195   ==> 52500(ms)
+rcu: 	(t=10502 jiffies g=5333 q=584 ncpus=2)
+CPU: 1 PID: 5054 Comm: kworker/1:4 Not tainted 6.5.0-rc5-syzkaller-00056-gcacc6e22932f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Workqueue: events cfg80211_wiphy_work
+RIP: 0010:taprio_dequeue_tc_priority+0x266/0x4b0 net/sched/sch_taprio.c:798
+Code: 10 89 ef 44 89 f6 e8 39 b5 2c f9 44 39 f5 0f 84 40 ff ff ff e8 3b ba 2c f9 49 83 ff 0f 0f 87 e1 01 00 00 48 8b 04 24 0f b6 00 <38> 44 24 36 7c 08 84 c0 0f 85 bf 01 00 00 8b 33 8b 4c 24 30 48 8b
+RSP: 0018:ffffc900001e0d60 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: ffff88802b8e7394 RCX: 0000000000000100
+RDX: ffff888076ac0000 RSI: ffffffff88594e65 RDI: 0000000000000004
+RBP: 0000000000000008 R08: 0000000000000004 R09: 0000000000000008
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000010
+R13: ffff88807af8ab60 R14: 0000000000000000 R15: 0000000000000001
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000600 CR3: 0000000022134000 CR4: 0000000000350ee0
+Call Trace:
+ <IRQ>
+ taprio_dequeue+0x12e/0x5f0 net/sched/sch_taprio.c:868
+ dequeue_skb net/sched/sch_generic.c:292 [inline]
+ qdisc_restart net/sched/sch_generic.c:397 [inline]
+ __qdisc_run+0x1c4/0x19d0 net/sched/sch_generic.c:415
+ qdisc_run include/net/pkt_sched.h:125 [inline]
+ qdisc_run include/net/pkt_sched.h:122 [inline]
+ net_tx_action+0x71e/0xc80 net/core/dev.c:5049
+ __do_softirq+0x218/0x965 kernel/softirq.c:553
+ invoke_softirq kernel/softirq.c:427 [inline]
+ __irq_exit_rcu kernel/softirq.c:632 [inline]
+ irq_exit_rcu+0xb7/0x120 kernel/softirq.c:644
+ sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1109
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
+RIP: 0010:__ieee80211_link_release_channel+0x2/0x450 net/mac80211/chan.c:1778
+Code: 89 f7 e8 81 1f 21 f8 e9 44 e0 ff ff 4c 89 f7 e8 74 1f 21 f8 e9 fe fb ff ff 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 41 57 <41> 56 41 55 41 54 55 53 48 89 fb e8 3e 15 cd f7 48 89 da 48 b8 00
+RSP: 0018:ffffc90003cff768 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff888076ac0000 RSI: ffffffff89b909f5 RDI: ffff8880677463a8
+RBP: ffff8880677463a8 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888067744c80
+R13: ffffc90003cff890 R14: ffff888066980e20 R15: ffff888067746c82
+ ieee80211_link_use_channel+0x2dd/0x750 net/mac80211/chan.c:1849
+ __ieee80211_sta_join_ibss+0x5f3/0x17e0 net/mac80211/ibss.c:303
+ ieee80211_sta_create_ibss+0x206/0x410 net/mac80211/ibss.c:1352
+ ieee80211_sta_find_ibss net/mac80211/ibss.c:1482 [inline]
+ ieee80211_ibss_work+0xc19/0x15a0 net/mac80211/ibss.c:1709
+ ieee80211_iface_work+0xbb8/0xd40 net/mac80211/iface.c:1680
+ cfg80211_wiphy_work+0x24e/0x330 net/wireless/core.c:435
+ process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2600
+ worker_thread+0x687/0x1110 kernel/workqueue.c:2751
+ kthread+0x33a/0x430 kernel/kthread.c:389
+ ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
 
 
-On 7/19/2023 7:44 AM, Sean Christopherson wrote:
-> From: Chao Peng <chao.p.peng@linux.intel.com>
->
-> In confidential computing usages, whether a page is private or shared is
-> necessary information for KVM to perform operations like page fault
-> handling, page zapping etc. There are other potential use cases for
-> per-page memory attributes, e.g. to make memory read-only (or no-exec,
-> or exec-only, etc.) without having to modify memslots.
->
-> Introduce two ioctls (advertised by KVM_CAP_MEMORY_ATTRIBUTES) to allow
-> userspace to operate on the per-page memory attributes.
->    - KVM_SET_MEMORY_ATTRIBUTES to set the per-page memory attributes to
->      a guest memory range.
->    - KVM_GET_SUPPORTED_MEMORY_ATTRIBUTES to return the KVM supported
->      memory attributes.
->
-> Use an xarray to store the per-page attributes internally, with a naive,
-> not fully optimized implementation, i.e. prioritize correctness over
-> performance for the initial implementation.
->
-> Because setting memory attributes is roughly analogous to mprotect() on
-> memory that is mapped into the guest, zap existing mappings prior to
-> updating the memory attributes.  Opportunistically provide an arch hook
-> for the post-set path (needed to complete invalidation anyways) in
-s/anyways/anyway
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> anticipation of x86 needing the hook to update metadata related to
-> determining whether or not a given gfn can be backed with various sizes
-> of hugepages.
->
-> It's possible that future usages may not require an invalidation, e.g.
-> if KVM ends up supporting RWX protections and userspace grants _more_
-> protections, but again opt for simplicity and punt optimizations to
-> if/when they are needed.
->
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Link: https://lore.kernel.org/all/Y2WB48kD0J4VGynX@google.com
-> Cc: Fuad Tabba <tabba@google.com>
-> Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
-> Co-developed-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   Documentation/virt/kvm/api.rst |  60 ++++++++++++
->   include/linux/kvm_host.h       |  14 +++
->   include/uapi/linux/kvm.h       |  14 +++
->   virt/kvm/Kconfig               |   4 +
->   virt/kvm/kvm_main.c            | 170 +++++++++++++++++++++++++++++++++
->   5 files changed, 262 insertions(+)
->
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> index 34d4ce66e0c8..0ca8561775ac 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -6068,6 +6068,56 @@ writes to the CNTVCT_EL0 and CNTPCT_EL0 registers using the SET_ONE_REG
->   interface. No error will be returned, but the resulting offset will not be
->   applied.
->   
-> +4.139 KVM_GET_SUPPORTED_MEMORY_ATTRIBUTES
-> +-----------------------------------------
-> +
-> +:Capability: KVM_CAP_MEMORY_ATTRIBUTES
-> +:Architectures: x86
-> +:Type: vm ioctl
-> +:Parameters: u64 memory attributes bitmask(out)
-> +:Returns: 0 on success, <0 on error
-> +
-> +Returns supported memory attributes bitmask. Supported memory attributes will
-> +have the corresponding bits set in u64 memory attributes bitmask.
-> +
-> +The following memory attributes are defined::
-> +
-> +  #define KVM_MEMORY_ATTRIBUTE_PRIVATE           (1ULL << 3)
-> +
-> +4.140 KVM_SET_MEMORY_ATTRIBUTES
-> +-----------------------------------------
-> +
-> +:Capability: KVM_CAP_MEMORY_ATTRIBUTES
-> +:Architectures: x86
-> +:Type: vm ioctl
-> +:Parameters: struct kvm_memory_attributes(in/out)
-> +:Returns: 0 on success, <0 on error
-> +
-> +Sets memory attributes for pages in a guest memory range. Parameters are
-> +specified via the following structure::
-> +
-> +  struct kvm_memory_attributes {
-> +	__u64 address;
-> +	__u64 size;
-> +	__u64 attributes;
-> +	__u64 flags;
-> +  };
-> +
-> +The user sets the per-page memory attributes to a guest memory range indicated
-> +by address/size, and in return KVM adjusts address and size to reflect the
-> +actual pages of the memory range have been successfully set to the attributes.
-> +If the call returns 0, "address" is updated to the last successful address + 1
-> +and "size" is updated to the remaining address size that has not been set
-> +successfully. The user should check the return value as well as the size to
-> +decide if the operation succeeded for the whole range or not. The user may want
-> +to retry the operation with the returned address/size if the previous range was
-> +partially successful.
-> +
-> +Both address and size should be page aligned and the supported attributes can be
-> +retrieved with KVM_GET_SUPPORTED_MEMORY_ATTRIBUTES.
-> +
-> +The "flags" field may be used for future extensions and should be set to 0s.
-> +
->   5. The kvm_run structure
->   ========================
->   
-> @@ -8494,6 +8544,16 @@ block sizes is exposed in KVM_CAP_ARM_SUPPORTED_BLOCK_SIZES as a
->   64-bit bitmap (each bit describing a block size). The default value is
->   0, to disable the eager page splitting.
->   
-> +8.41 KVM_CAP_MEMORY_ATTRIBUTES
-> +------------------------------
-> +
-> +:Capability: KVM_CAP_MEMORY_ATTRIBUTES
-> +:Architectures: x86
-> +:Type: vm
-> +
-> +This capability indicates KVM supports per-page memory attributes and ioctls
-> +KVM_GET_SUPPORTED_MEMORY_ATTRIBUTES/KVM_SET_MEMORY_ATTRIBUTES are available.
-> +
->   9. Known KVM API problems
->   =========================
->   
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index e9ca49d451f3..97db63da6227 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -264,6 +264,7 @@ struct kvm_gfn_range {
->   	gfn_t end;
->   	union {
->   		pte_t pte;
-> +		unsigned long attributes;
->   		u64 raw;
->   	} arg;
->   	bool may_block;
-> @@ -809,6 +810,9 @@ struct kvm {
->   
->   #ifdef CONFIG_HAVE_KVM_PM_NOTIFIER
->   	struct notifier_block pm_notifier;
-> +#endif
-> +#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
-> +	struct xarray mem_attr_array;
->   #endif
->   	char stats_id[KVM_STATS_NAME_SIZE];
->   };
-> @@ -2301,4 +2305,14 @@ static inline void kvm_account_pgtable_pages(void *virt, int nr)
->   /* Max number of entries allowed for each kvm dirty ring */
->   #define  KVM_DIRTY_RING_MAX_ENTRIES  65536
->   
-> +#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
-> +static inline unsigned long kvm_get_memory_attributes(struct kvm *kvm, gfn_t gfn)
-> +{
-> +	return xa_to_value(xa_load(&kvm->mem_attr_array, gfn));
-> +}
-> +
-> +bool kvm_arch_post_set_memory_attributes(struct kvm *kvm,
-> +					 struct kvm_gfn_range *range);
-> +#endif /* CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES */
-> +
->   #endif
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index 6c6ed214b6ac..f065c57db327 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -1211,6 +1211,7 @@ struct kvm_ppc_resize_hpt {
->   #define KVM_CAP_ARM_EAGER_SPLIT_CHUNK_SIZE 228
->   #define KVM_CAP_ARM_SUPPORTED_BLOCK_SIZES 229
->   #define KVM_CAP_USER_MEMORY2 230
-> +#define KVM_CAP_MEMORY_ATTRIBUTES 231
->   
->   #ifdef KVM_CAP_IRQ_ROUTING
->   
-> @@ -2270,4 +2271,17 @@ struct kvm_s390_zpci_op {
->   /* flags for kvm_s390_zpci_op->u.reg_aen.flags */
->   #define KVM_S390_ZPCIOP_REGAEN_HOST    (1 << 0)
->   
-> +/* Available with KVM_CAP_MEMORY_ATTRIBUTES */
-> +#define KVM_GET_SUPPORTED_MEMORY_ATTRIBUTES    _IOR(KVMIO,  0xd2, __u64)
-> +#define KVM_SET_MEMORY_ATTRIBUTES              _IOW(KVMIO,  0xd3, struct kvm_memory_attributes)
-> +
-> +struct kvm_memory_attributes {
-> +	__u64 address;
-> +	__u64 size;
-> +	__u64 attributes;
-> +	__u64 flags;
-> +};
-> +
-> +#define KVM_MEMORY_ATTRIBUTE_PRIVATE           (1ULL << 3)
-> +
->   #endif /* __LINUX_KVM_H */
-> diff --git a/virt/kvm/Kconfig b/virt/kvm/Kconfig
-> index 2fa11bd26cfc..8375bc49f97d 100644
-> --- a/virt/kvm/Kconfig
-> +++ b/virt/kvm/Kconfig
-> @@ -99,3 +99,7 @@ config KVM_GENERIC_HARDWARE_ENABLING
->   config KVM_GENERIC_MMU_NOTIFIER
->          select MMU_NOTIFIER
->          bool
-> +
-> +config KVM_GENERIC_MEMORY_ATTRIBUTES
-> +       select KVM_GENERIC_MMU_NOTIFIER
-> +       bool
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index c14adf93daec..1a31bfa025b0 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -530,6 +530,7 @@ struct kvm_mmu_notifier_range {
->   	u64 end;
->   	union {
->   		pte_t pte;
-> +		unsigned long attributes;
->   		u64 raw;
->   	} arg;
->   	gfn_handler_t handler;
-> @@ -1175,6 +1176,9 @@ static struct kvm *kvm_create_vm(unsigned long type, const char *fdname)
->   	spin_lock_init(&kvm->mn_invalidate_lock);
->   	rcuwait_init(&kvm->mn_memslots_update_rcuwait);
->   	xa_init(&kvm->vcpu_array);
-> +#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
-> +	xa_init(&kvm->mem_attr_array);
-> +#endif
->   
->   	INIT_LIST_HEAD(&kvm->gpc_list);
->   	spin_lock_init(&kvm->gpc_lock);
-> @@ -1346,6 +1350,9 @@ static void kvm_destroy_vm(struct kvm *kvm)
->   		kvm_free_memslots(kvm, &kvm->__memslots[i][0]);
->   		kvm_free_memslots(kvm, &kvm->__memslots[i][1]);
->   	}
-> +#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
-> +	xa_destroy(&kvm->mem_attr_array);
-> +#endif
->   	cleanup_srcu_struct(&kvm->irq_srcu);
->   	cleanup_srcu_struct(&kvm->srcu);
->   	kvm_arch_free_vm(kvm);
-> @@ -2346,6 +2353,145 @@ static int kvm_vm_ioctl_clear_dirty_log(struct kvm *kvm,
->   }
->   #endif /* CONFIG_KVM_GENERIC_DIRTYLOG_READ_PROTECT */
->   
-> +#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
-> +static u64 kvm_supported_mem_attributes(struct kvm *kvm)
-> +{
-> +	return 0;
-> +}
-> +
-> +static __always_inline void kvm_handle_gfn_range(struct kvm *kvm,
-> +						 struct kvm_mmu_notifier_range *range)
-> +{
-> +	struct kvm_gfn_range gfn_range;
-> +	struct kvm_memory_slot *slot;
-> +	struct kvm_memslots *slots;
-> +	struct kvm_memslot_iter iter;
-> +	bool locked = false;
-> +	bool ret = false;
-> +	int i;
-> +
-> +	gfn_range.arg.raw = range->arg.raw;
-> +	gfn_range.may_block = range->may_block;
-> +
-> +	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-> +		slots = __kvm_memslots(kvm, i);
-> +
-> +		kvm_for_each_memslot_in_gfn_range(&iter, slots, range->start, range->end) {
-> +			slot = iter.slot;
-> +			gfn_range.slot = slot;
-> +
-> +			gfn_range.start = max(range->start, slot->base_gfn);
-> +			gfn_range.end = min(range->end, slot->base_gfn + slot->npages);
-> +			if (gfn_range.start >= gfn_range.end)
-> +				continue;
-> +
-> +			if (!locked) {
-> +				locked = true;
-> +				KVM_MMU_LOCK(kvm);
-> +				if (!IS_KVM_NULL_FN(range->on_lock))
-> +					range->on_lock(kvm);
-> +			}
-> +
-> +			ret |= range->handler(kvm, &gfn_range);
-> +		}
-> +	}
-> +
-> +	if (range->flush_on_ret && ret)
-> +		kvm_flush_remote_tlbs(kvm);
-> +
-> +	if (locked) {
-> +		KVM_MMU_UNLOCK(kvm);
-> +		if (!IS_KVM_NULL_FN(range->on_unlock))
-> +			range->on_unlock(kvm);
-> +	}
-> +}
-> +
-> +static int kvm_vm_set_mem_attributes(struct kvm *kvm, unsigned long attributes,
-> +				     gfn_t start, gfn_t end)
-> +{
-> +	struct kvm_mmu_notifier_range unmap_range = {
-> +		.start = start,
-> +		.end = end,
-> +		.handler = kvm_mmu_unmap_gfn_range,
-> +		.on_lock = kvm_mmu_invalidate_begin,
-> +		.on_unlock = (void *)kvm_null_fn,
-> +		.flush_on_ret = true,
-> +		.may_block = true,
-> +	};
-> +	struct kvm_mmu_notifier_range post_set_range = {
-> +		.start = start,
-> +		.end = end,
-> +		.arg.attributes = attributes,
-> +		.handler = kvm_arch_post_set_memory_attributes,
-> +		.on_lock = (void *)kvm_null_fn,
-> +		.on_unlock = kvm_mmu_invalidate_end,
-> +		.may_block = true,
-> +	};
-> +	unsigned long i;
-> +	void *entry;
-> +	int r;
-> +
-> +	entry = attributes ? xa_mk_value(attributes) : NULL;
-Why attributes of value 0 is considered not a value? Is it because 0 is 
-not a valid value when RWX is considered in the future?
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-> +
-> +	mutex_lock(&kvm->slots_lock);
-> +
-> +	/*
-> +	 * Reserve memory ahead of time to avoid having to deal with failures
-> +	 * partway through setting the new attributes.
-> +	 */
-> +	for (i = start; i < end; i++) {
-> +		r = xa_reserve(&kvm->mem_attr_array, i, GFP_KERNEL_ACCOUNT);
-> +		if (r)
-> +			goto out_unlock;
-> +	}
-> +
-> +	kvm_handle_gfn_range(kvm, &unmap_range);
-> +
-> +	for (i = start; i < end; i++) {
-> +		r = xa_err(xa_store(&kvm->mem_attr_array, i, entry,
-> +				    GFP_KERNEL_ACCOUNT));
-> +		KVM_BUG_ON(r, kvm);
-> +	}
-> +
-> +	kvm_handle_gfn_range(kvm, &post_set_range);
-> +
-> +out_unlock:
-> +	mutex_unlock(&kvm->slots_lock);
-> +
-> +	return r;
-> +}
-> +static int kvm_vm_ioctl_set_mem_attributes(struct kvm *kvm,
-> +					   struct kvm_memory_attributes *attrs)
-> +{
-> +	gfn_t start, end;
-> +
-> +	/* flags is currently not used. */
-> +	if (attrs->flags)
-> +		return -EINVAL;
-> +	if (attrs->attributes & ~kvm_supported_mem_attributes(kvm))
-> +		return -EINVAL;
-> +	if (attrs->size == 0 || attrs->address + attrs->size < attrs->address)
-> +		return -EINVAL;
-> +	if (!PAGE_ALIGNED(attrs->address) || !PAGE_ALIGNED(attrs->size))
-> +		return -EINVAL;
-> +
-> +	start = attrs->address >> PAGE_SHIFT;
-> +	end = (attrs->address + attrs->size - 1 + PAGE_SIZE) >> PAGE_SHIFT;
-No need to handle the alignment again since both address and size are 
-page aligned.
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-> +
-> +	if (WARN_ON_ONCE(start == end))
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * xarray tracks data using "unsigned long", and as a result so does
-> +	 * KVM.  For simplicity, supports generic attributes only on 64-bit
-> +	 * architectures.
-> +	 */
-> +	BUILD_BUG_ON(sizeof(attrs->attributes) != sizeof(unsigned long));
-> +
-> +	return kvm_vm_set_mem_attributes(kvm, attrs->attributes, start, end);
-> +}
-> +#endif /* CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES */
-> +
->   struct kvm_memory_slot *gfn_to_memslot(struct kvm *kvm, gfn_t gfn)
->   {
->   	return __gfn_to_memslot(kvm_memslots(kvm), gfn);
-> @@ -4521,6 +4667,9 @@ static int kvm_vm_ioctl_check_extension_generic(struct kvm *kvm, long arg)
->   #ifdef CONFIG_HAVE_KVM_MSI
->   	case KVM_CAP_SIGNAL_MSI:
->   #endif
-> +#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
-> +	case KVM_CAP_MEMORY_ATTRIBUTES:
-> +#endif
->   #ifdef CONFIG_HAVE_KVM_IRQFD
->   	case KVM_CAP_IRQFD:
->   #endif
-> @@ -4937,6 +5086,27 @@ static long kvm_vm_ioctl(struct file *filp,
->   		break;
->   	}
->   #endif /* CONFIG_HAVE_KVM_IRQ_ROUTING */
-> +#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
-> +	case KVM_GET_SUPPORTED_MEMORY_ATTRIBUTES: {
-> +		u64 attrs = kvm_supported_mem_attributes(kvm);
-> +
-> +		r = -EFAULT;
-> +		if (copy_to_user(argp, &attrs, sizeof(attrs)))
-> +			goto out;
-> +		r = 0;
-> +		break;
-> +	}
-> +	case KVM_SET_MEMORY_ATTRIBUTES: {
-> +		struct kvm_memory_attributes attrs;
-> +
-> +		r = -EFAULT;
-> +		if (copy_from_user(&attrs, argp, sizeof(attrs)))
-> +			goto out;
-> +
-> +		r = kvm_vm_ioctl_set_mem_attributes(kvm, &attrs);
-> +		break;
-Both the changelog and the document added mention that the address and 
-size of attrs will be updated to
-"reflect the actual pages of the memory range have been successfully set 
-to the attributes", but it doesn't.
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-> +	}
-> +#endif /* CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES */
->   	case KVM_CREATE_DEVICE: {
->   		struct kvm_create_device cd;
->   
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
