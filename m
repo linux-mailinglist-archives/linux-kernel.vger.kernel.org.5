@@ -2,100 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A614777BAFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C26977BAF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231683AbjHNOHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 10:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45328 "EHLO
+        id S231332AbjHNOG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 10:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231631AbjHNOHQ (ORCPT
+        with ESMTP id S231860AbjHNOGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 10:07:16 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29E3E3;
-        Mon, 14 Aug 2023 07:07:15 -0700 (PDT)
+        Mon, 14 Aug 2023 10:06:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94973E3;
+        Mon, 14 Aug 2023 07:06:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1692022035; x=1723558035;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/MFNWkqsq1K7XfpryTJ0ac/m6VwICjGCbIya+sayRsE=;
-  b=ooFbrjEgj05JlMdRlY97NXIC3T7BrfLxhZDT9wPU3LcYR3grGjTDvS3s
-   Rwuz7c+HPYRH5DEK7eMjfm79KYCe3MdxktPFDJ7yHiWk1qDMvRNi9PSd1
-   hxMVrogBXWw28HYaowgwn7/As0+OmClFEpRPM9/UsuRsjZYjKBw+t/TUQ
-   viYtSlhxZTGXEjuVFdyWTGTdgVT7WSBDNvfAs0+4bAbPvnF+amGEccQxM
-   fUSb6zu8yHbbz6oJ8urlFAq7rRPqrWzrBntoJID9n1cqH+heParKs/dox
-   VhuUoetRypKJ0V3rzx/YCeDC/NaG+/KT2K/61/h5w6dN85GX6S1tqdC+L
-   w==;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692022008; x=1723558008;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=CDzK91hrFBu3C3eQWjdbTzk2hWA6gCmI/7dZQVWE7PE=;
+  b=UcJjx8AtR45so9ZsThfLdvKBwf74uOvLNfgpULEhLBYiILmfFsj3oToe
+   pzdHHUtVUnOkcy7GhPnO/qCLNiFstnwZDdGw3jjA4mQ8llSjXHLaRnxs7
+   YEGUA7tL5bJG1HphRZTsXVA96E6elzZerhioxgPNbiN8c5DqXKRBtiGFP
+   tMELsXzI0ASRH66Fa9H1pNu3JylxZtXO+/T4PYlEXgDA+rDwmSLQRQUT2
+   a80GNUqn5HI0M7fwjsDjHl7AFxkI2SCjiY2EfTGZi9D/7yOFNuj0WZTJL
+   k7snkFSk/RFq6kaVUQA09WFIxdysoQ1440Ce+ok/zo1yGVZjSMeazoAwd
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="438377168"
 X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="asc'?scan'208";a="166343655"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 14 Aug 2023 07:07:15 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 14 Aug 2023 07:07:14 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Mon, 14 Aug 2023 07:07:11 -0700
-Date:   Mon, 14 Aug 2023 15:06:33 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     <stable@vger.kernel.org>, <patches@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <torvalds@linux-foundation.org>,
-        <akpm@linux-foundation.org>, <linux@roeck-us.net>,
-        <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-        <rwarsow@gmx.de>, <conor@kernel.org>
-Subject: Re: [PATCH 6.1 000/149] 6.1.46-rc1 review
-Message-ID: <20230814-immature-roamer-398c43abc0a0@wendy>
-References: <20230813211718.757428827@linuxfoundation.org>
+   d="scan'208";a="438377168"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 07:06:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="683317889"
+X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
+   d="scan'208";a="683317889"
+Received: from pglc00067.png.intel.com ([10.221.207.87])
+  by orsmga003.jf.intel.com with ESMTP; 14 Aug 2023 07:06:43 -0700
+From:   Rohan G Thomas <rohan.g.thomas@intel.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rohan G Thomas <rohan.g.thomas@intel.com>
+Subject: [PATCH net-next v3 0/2] net: stmmac: Tx coe sw fallback
+Date:   Mon, 14 Aug 2023 22:06:35 +0800
+Message-Id: <20230814140637.27629-1-rohan.g.thomas@intel.com>
+X-Mailer: git-send-email 2.19.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="BKYbhG+6ARxAenx9"
-Content-Disposition: inline
-In-Reply-To: <20230813211718.757428827@linuxfoundation.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---BKYbhG+6ARxAenx9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi,
+Some DWMAC IPs support tx coe only for a few initial tx queues,
+starting from tx queue 0. This patchset adds support for tx coe sw
+fallback for those queues that don't support tx coe. Also, add binding
+for snps,tx-queues-with-coe property.
 
-On Sun, Aug 13, 2023 at 11:17:25PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.46 release.
-> There are 149 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+changelog v3:
+* Resend with complete email list
 
-I think I replied to the wrong thing earlier for 6.1 testing..
-Tested-by: Conor Dooley <conor.dooley@microchip.com>
+changelog v2: 
+* Reformed binding description.
+* Minor grammatical corrections in comments and commit messages.
 
-Thanks,
-Conor.
+Rohan G Thomas (2):
+  dt-bindings: net: snps,dwmac: Tx queues with coe
+  net: stmmac: Tx coe sw fallback
 
---BKYbhG+6ARxAenx9
-Content-Type: application/pgp-signature; name="signature.asc"
+ .../devicetree/bindings/net/snps,dwmac.yaml   |  3 +++
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  2 ++
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 19 +++++++++++++++++++
+ .../ethernet/stmicro/stmmac/stmmac_platform.c |  4 ++++
+ include/linux/stmmac.h                        |  1 +
+ 5 files changed, 29 insertions(+)
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.19.0
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNo06QAKCRB4tDGHoIJi
-0hgKAQDMLP2kATJw24PtA4Bi5XuVhgh7wUADE15xJQMAW8bDEwD/QD+7tMnE+gm4
-Rax2OYQ0kcjL2JfyT0taCMKtm/XJpgs=
-=zblf
------END PGP SIGNATURE-----
-
---BKYbhG+6ARxAenx9--
