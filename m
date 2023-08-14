@@ -2,83 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE0977BAE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FDC77BAE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 16:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbjHNOFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 10:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57542 "EHLO
+        id S230269AbjHNOER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 10:04:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229725AbjHNOEv (ORCPT
+        with ESMTP id S231643AbjHNOED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 10:04:51 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC1CE6D;
-        Mon, 14 Aug 2023 07:04:50 -0700 (PDT)
-Received: from canpemm500007.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RPbhV3zSlz1GDbN;
-        Mon, 14 Aug 2023 22:03:06 +0800 (CST)
-Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
- (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 14 Aug
- 2023 22:04:24 +0800
-From:   Yue Haibing <yuehaibing@huawei.com>
-To:     <pbonzini@redhat.com>, <seanjc@google.com>
-CC:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yuehaibing@huawei.com>, <nitesh@redhat.com>,
-        <scottwood@freescale.com>
-Subject: [PATCH v2 -next] kvm_host: Remove unused declarations
-Date:   Mon, 14 Aug 2023 22:03:39 +0800
-Message-ID: <20230814140339.47732-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Mon, 14 Aug 2023 10:04:03 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5658FE6D
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:04:02 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99bdcade7fbso567685966b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 07:04:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692021841; x=1692626641;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=2tYT70QSADvKey9KGvE0OeVu+4Pc0bll8FUx1XFEc0k=;
+        b=Y6/Pg10v/eMAJ47QaGFn8fHG5ZWmsBsXECHzC/cOW+aauVThwHvFr/K/KSf4yl0CkD
+         JGdPfT23l03LduO0WcXQMxv59ERjEqiadP3CpXhEk2ncUwGrpfxy0tFmMjlZPZjsIasX
+         i2rapg4LnyI/adj354368TE7iCYMfJ0Mw4xpxynT4VAq5A0gXg8SVwKBIGg/V+jKQBtT
+         xxpbXk1hPCc3sp2jWTDUG8rnZTg6cQK359rZiyKigeUJ+ESZr5MQgewaDVWfXEi0cKKh
+         AcXYnak0fIXCvd7fwm2npk030LuuamPlrkmx6zF4HoCRdrDDwNWmTrVFCiUjfG6/2VDC
+         tafg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692021841; x=1692626641;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2tYT70QSADvKey9KGvE0OeVu+4Pc0bll8FUx1XFEc0k=;
+        b=lAcLIVw+ZzbN1WcL7bfYTpvsp1tHO8CKMJlHjqCuCSh+qpJ8HZUAV5nJb1QXHZ3wGM
+         +lPQ4cXCGATCOfpEfwb8MeEIvCMWYRjYoMV82k6Dz/+FcA020ccOM/rZcCTvFvQudyW/
+         J6WbL9zSijzcITCU15Qur/6Abqq/BPh0jzwsUhp84GaiXXhHvsYYKWQjbo+UeMr7D1Mj
+         wiEDSIc5BSF+8bGSScOpkCqH+uiuUOYpSl2RrtWsmYm2eNlzWwk0qNZPy9VjVLnzvzwC
+         b6D1apKQcXPNwRMm+wd6ZUWn92wx54i5NrLg9cB3LaAqsqzKv+k5TdFmLyNoV0OA6sWg
+         KraQ==
+X-Gm-Message-State: AOJu0Ywy9rQ9pARXFUou9mPcCU9doqn1cOX2xeCGYCulY33Aj92xX+Nb
+        lix07izwe8F0s2UjMbwk+7E=
+X-Google-Smtp-Source: AGHT+IFPBeqS62+BAbDxMk76ReppLTfDmZdeYVPiM8FQMd6zx2Hr87kqNLX37RBdrArI04/01vCJzw==
+X-Received: by 2002:a17:906:10d7:b0:99d:6dd7:42c2 with SMTP id v23-20020a17090610d700b0099d6dd742c2mr7337754ejv.40.1692021840744;
+        Mon, 14 Aug 2023 07:04:00 -0700 (PDT)
+Received: from nam-dell (ip-217-105-46-58.ip.prioritytelecom.net. [217.105.46.58])
+        by smtp.gmail.com with ESMTPSA id gw4-20020a170906f14400b00993b381f808sm5672731ejb.38.2023.08.14.07.03.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 07:04:00 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 16:03:58 +0200
+From:   Nam Cao <namcaov@gmail.com>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        charlie@rivosinc.com
+Subject: Re: [PATCH] riscv: correct riscv_insn_is_c_jr() and
+ riscv_insn_is_c_jalr()
+Message-ID: <ZNo0TvIOUIx3GdTm@nam-dell>
+References: <20230731183925.152145-1-namcaov@gmail.com>
+ <87o7j9g73d.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500007.china.huawei.com (7.192.104.62)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87o7j9g73d.fsf@all.your.base.are.belong.to.us>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 07f0a7bdec5c ("kvm: destroy emulated devices on VM exit") removed the
-functions but not these declarations.
-Commit 7ee30bc132c6 ("KVM: x86: deliver KVM IOAPIC scan request to target vCPUs")
-declared but never implemented kvm_make_cpus_request_mask()
+On Mon, Aug 14, 2023 at 02:07:50PM +0200, Björn Töpel wrote:
+> In the future, add a Fixes-tag for these kind of changes!
+> Fixes: ec5f90877516 ("RISC-V: Move riscv_insn_is_* macros into a common header")
+> 
+> (No need for a respin, b4 will pick up the Fixes above.)
 
-Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
----
-v2: Also remove kvm_make_cpus_request_mask()
----
- include/linux/kvm_host.h | 4 ----
- 1 file changed, 4 deletions(-)
+Thanks! I will keep that in mind in the future.
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index cb86108c624d..c354874519e8 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -190,8 +190,6 @@ bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
- bool kvm_make_all_cpus_request(struct kvm *kvm, unsigned int req);
- bool kvm_make_all_cpus_request_except(struct kvm *kvm, unsigned int req,
- 				      struct kvm_vcpu *except);
--bool kvm_make_cpus_request_mask(struct kvm *kvm, unsigned int req,
--				unsigned long *vcpu_bitmap);
- 
- #define KVM_USERSPACE_IRQ_SOURCE_ID		0
- #define KVM_IRQFD_RESAMPLE_IRQ_SOURCE_ID	1
-@@ -2167,8 +2165,6 @@ struct kvm_device_ops {
- 	int (*mmap)(struct kvm_device *dev, struct vm_area_struct *vma);
- };
- 
--void kvm_device_get(struct kvm_device *dev);
--void kvm_device_put(struct kvm_device *dev);
- struct kvm_device *kvm_device_from_filp(struct file *filp);
- int kvm_register_device_ops(const struct kvm_device_ops *ops, u32 type);
- void kvm_unregister_device_ops(u32 type);
--- 
-2.34.1
-
+Best regards,
+Nam
