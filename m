@@ -2,140 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4DD77B871
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF6177B8B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 14:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233116AbjHNMOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 08:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42754 "EHLO
+        id S230288AbjHNMeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 08:34:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234612AbjHNMNr (ORCPT
+        with ESMTP id S229718AbjHNMeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 08:13:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3DED1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 05:13:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692015218; x=1723551218;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=bQGNhE6cnc3aK7xOST0lIv95NKMR/6jpJap1uYE1hyQ=;
-  b=Nen4Gf7C8SGKpgDKsBXjcloTPEUpSz/YZOBB5xM/fNvEqe0+5tXzNuVk
-   yh9uvroD3OsCoBbkh466CH/5etlidNeZ8OrzuEwzvnHr0y9vGoRijUVrF
-   2Pd5Y6Nvj+BNqEnabeCtVkx21cAcZOSpVgLz2xR+rmolHY4tNc0nZnIMt
-   4D0S8GMV7wy7UJOJhX1uBpMJuthWZJ75nsik+BbMtJRRJI26XJ220cIk1
-   F/1zf6iucsp7gcnqs57t6Q2/3OVi6BhG9y5vOz7FWeywCSkXi7ct5ABNr
-   Ki+Q9GHscQOMhD2fIB3Bm1nFgSXnEeap12puUYgp2oBz5Brh5V8bYPuAX
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="374793445"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="374793445"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 05:13:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="733424112"
-X-IronPort-AV: E=Sophos;i="6.01,172,1684825200"; 
-   d="scan'208";a="733424112"
-Received: from mtabaka-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.52.77])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 05:13:34 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Wang Jinchao <wangjinchao@xfusion.com>
-Cc:     Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, stone.xulei@xfusion.com
-Subject: Re: [PATCH] drm/i915: Fix Kconfig error for CONFIG_DRM_I915
-In-Reply-To: <ZNoY9bnpLlUwY8ai@fedora>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <ZNdOoHvIg7HXh7Gg@fedora> <87o7jaythm.fsf@intel.com>
- <ZNoY9bnpLlUwY8ai@fedora>
-Date:   Mon, 14 Aug 2023 15:13:32 +0300
-Message-ID: <87h6p1ddoz.fsf@intel.com>
+        Mon, 14 Aug 2023 08:34:19 -0400
+Received: from iodev.co.uk (iodev.co.uk [46.30.189.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 12AC1CC;
+        Mon, 14 Aug 2023 05:34:17 -0700 (PDT)
+Received: from pirotess (80.red-83-50-209.dynamicip.rima-tde.net [83.50.209.80])
+        by iodev.co.uk (Postfix) with ESMTPSA id 7D29920891F;
+        Mon, 14 Aug 2023 14:15:20 +0200 (CEST)
+Date:   Mon, 14 Aug 2023 14:15:18 +0200
+From:   Ismael Luceno <ismael@iodev.co.uk>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Bluecherry Maintainers <maintainers@bluecherrydvr.com>,
+        Anton Sviridenko <anton@corp.bluecherry.net>,
+        Andrey Utkin <andrey_utkin@fastmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH 17/25] media: solo6x10: Convert to generic PCM copy ops
+Message-ID: <ZNoa1jU7O08KwOJ6@pirotess>
+References: <20230814115523.15279-1-tiwai@suse.de>
+ <20230814115523.15279-18-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230814115523.15279-18-tiwai@suse.de>
+X-Spam: Yes
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Aug 2023, Wang Jinchao <wangjinchao@xfusion.com> wrote:
-> On Mon, Aug 14, 2023 at 10:26:45AM +0300, Jani Nikula wrote:
->> On Sat, 12 Aug 2023, Wang Jinchao <wangjinchao@xfusion.com> wrote:
->> > When CONFIG_DRM_I915 is set to 'y' and CONFIG_BACKLIGHT_CLASS_DEVICE
->> > is set to 'm', we encountered an ld.lld error during the build process:
->> >
->> > 	ld.lld: error: undefined symbol: backlight_device_get_by_name
->> > 	>>> referenced by intel_backlight.c:955
->> > 	>>>               vmlinux.o:(intel_backlight_device_register)
->> >
->> > 	ld.lld: error: undefined symbol: backlight_device_register
->> > 	>>> referenced by intel_backlight.c:971
->> > 	>>>               vmlinux.o:(intel_backlight_device_register)
->> >
->> > 	ld.lld: error: undefined symbol: backlight_device_unregister
->> > 	>>> referenced by intel_backlight.c:999
->> > 	>>>               vmlinux.o:(intel_backlight_device_unregister)
->> >
->> > This issue occurred because intel_backlight_device_register and
->> > intel_backlight_device_unregister were enclosed within
->> > However, according to Kconfig, CONFIG_DRM_I915 will select
->> > BACKLIGHT_CLASS_DEVICE only if ACPI is enabled.
->> > This led to an error, which can be resolved by removing the
->> > conditional statements related to ACPI.
->> 
->> The real fix is to use
->> 
->> 	depends on BACKLIGHT_CLASS_DEVICE || BACKLIGHT_CLASS_DEVICE=n
-> it works.
->> 
->> but in order to do that, you need to change a lot of places to depend
-> Why, what are the other places?
+On 14/Aug/2023 13:55, Takashi Iwai wrote:
+> This patch converts the solo6x10 driver code to use the new unified
+> PCM copy callback.  It's a straightforward conversion from *_user() to
+> *_iter() variants.  As copy_to_iter() updates the internal offest at
+> each write, we can drop the dst counter update in the loop, too.
+> 
+> Note that copy_from/to_iter() returns the copied bytes, hence the
+> error condition is inverted from copy_from/to_user().
+> 
+> Cc: Bluecherry Maintainers <maintainers@bluecherrydvr.com>
+> Cc: Anton Sviridenko <anton@corp.bluecherry.net>
+> Cc: Andrey Utkin <andrey_utkin@fastmail.com>
+> Cc: Ismael Luceno <ismael@iodev.co.uk>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: linux-media@vger.kernel.org
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  drivers/media/pci/solo6x10/solo6x10-g723.c | 38 +++-------------------
+>  1 file changed, 5 insertions(+), 33 deletions(-)
+> 
+> diff --git a/drivers/media/pci/solo6x10/solo6x10-g723.c b/drivers/media/pci/solo6x10/solo6x10-g723.c
+> index 6cebad665565..aceacb822cab 100644
+> --- a/drivers/media/pci/solo6x10/solo6x10-g723.c
+> +++ b/drivers/media/pci/solo6x10/solo6x10-g723.c
+> @@ -204,9 +204,9 @@ static snd_pcm_uframes_t snd_solo_pcm_pointer(struct snd_pcm_substream *ss)
+>  	return idx * G723_FRAMES_PER_PAGE;
+>  }
+>  
+> -static int snd_solo_pcm_copy_user(struct snd_pcm_substream *ss, int channel,
+> -				  unsigned long pos, void __user *dst,
+> -				  unsigned long count)
+> +static int snd_solo_pcm_copy(struct snd_pcm_substream *ss, int channel,
+> +			     unsigned long pos, struct iov_iter *dst,
+> +			     unsigned long count)
+>  {
+>  	struct solo_snd_pcm *solo_pcm = snd_pcm_substream_chip(ss);
+>  	struct solo_dev *solo_dev = solo_pcm->solo_dev;
+> @@ -223,35 +223,8 @@ static int snd_solo_pcm_copy_user(struct snd_pcm_substream *ss, int channel,
+>  		if (err)
+>  			return err;
+>  
+> -		if (copy_to_user(dst, solo_pcm->g723_buf, G723_PERIOD_BYTES))
+> +		if (!copy_to_iter(solo_pcm->g723_buf, G723_PERIOD_BYTES, dst))
+>  			return -EFAULT;
+> -		dst += G723_PERIOD_BYTES;
+> -	}
+> -
+> -	return 0;
+> -}
+> -
+> -static int snd_solo_pcm_copy_kernel(struct snd_pcm_substream *ss, int channel,
+> -				    unsigned long pos, void *dst,
+> -				    unsigned long count)
+> -{
+> -	struct solo_snd_pcm *solo_pcm = snd_pcm_substream_chip(ss);
+> -	struct solo_dev *solo_dev = solo_pcm->solo_dev;
+> -	int err, i;
+> -
+> -	for (i = 0; i < (count / G723_FRAMES_PER_PAGE); i++) {
+> -		int page = (pos / G723_FRAMES_PER_PAGE) + i;
+> -
+> -		err = solo_p2m_dma_t(solo_dev, 0, solo_pcm->g723_dma,
+> -				     SOLO_G723_EXT_ADDR(solo_dev) +
+> -				     (page * G723_PERIOD_BLOCK) +
+> -				     (ss->number * G723_PERIOD_BYTES),
+> -				     G723_PERIOD_BYTES, 0, 0);
+> -		if (err)
+> -			return err;
+> -
+> -		memcpy(dst, solo_pcm->g723_buf, G723_PERIOD_BYTES);
+> -		dst += G723_PERIOD_BYTES;
+>  	}
+>  
+>  	return 0;
+> @@ -263,8 +236,7 @@ static const struct snd_pcm_ops snd_solo_pcm_ops = {
+>  	.prepare = snd_solo_pcm_prepare,
+>  	.trigger = snd_solo_pcm_trigger,
+>  	.pointer = snd_solo_pcm_pointer,
+> -	.copy_user = snd_solo_pcm_copy_user,
+> -	.copy_kernel = snd_solo_pcm_copy_kernel,
+> +	.copy = snd_solo_pcm_copy,
+>  };
+>  
+>  static int snd_solo_capture_volume_info(struct snd_kcontrol *kcontrol,
+> -- 
+> 2.35.3
+> 
 
-Generally when you have a mixture of depends on and select on a kconfig
-symbol, you'll eventually end up with dependency problems.
-
-BR,
-Jani.
-
-
->> on, not select BACKLIGHT_CLASS_DEVICE, because otherwise you end up with
-> got it.
->> other dependency issues.
->> 
->> BR,
->> Jani.
->> 
->> >
->> > Signed-off-by: Wang Jinchao <wangjinchao@xfusion.com>
->> > ---
->> >  drivers/gpu/drm/i915/Kconfig | 2 +-
->> >  1 file changed, 1 insertion(+), 1 deletion(-)
->> >
->> > diff --git a/drivers/gpu/drm/i915/Kconfig b/drivers/gpu/drm/i915/Kconfig
->> > index 01b5a8272a27..5003de921bf7 100644
->> > --- a/drivers/gpu/drm/i915/Kconfig
->> > +++ b/drivers/gpu/drm/i915/Kconfig
->> > @@ -24,7 +24,7 @@ config DRM_I915
->> >  	select IRQ_WORK
->> >  	# i915 depends on ACPI_VIDEO when ACPI is enabled
->> >  	# but for select to work, need to select ACPI_VIDEO's dependencies, ick
->> > -	select BACKLIGHT_CLASS_DEVICE if ACPI
->> > +	select BACKLIGHT_CLASS_DEVICE
->> >  	select INPUT if ACPI
->> >  	select X86_PLATFORM_DEVICES if ACPI
->> >  	select ACPI_WMI if ACPI
->> 
->> -- 
->> Jani Nikula, Intel Open Source Graphics Center
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Signed-off-by: Ismael Luceno <ismael@iodev.co.uk>
