@@ -2,66 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 456E577BA2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDFAA77BA35
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbjHNNeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 09:34:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50498 "EHLO
+        id S230196AbjHNNfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 09:35:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbjHNNeh (ORCPT
+        with ESMTP id S231622AbjHNNf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 09:34:37 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A02AB10D5
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:34:35 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fe0a3377bfso1872270e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:34:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mihalicyn.com; s=mihalicyn; t=1692020074; x=1692624874;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FgBLbVkVIt/9kd84g/UWpkPAMBCoIvJC1bWfg1DPPL8=;
-        b=UZB5emU7BQrsXjWUGbSRg+4K0288T0D2UoU0SwZNp2XEtw++592J2ylHKZcU/nqMwB
-         I8/ovlVjiP27GI9G3cr0Z91HDwt80cRJ1aRZbDdjmxzOX9Zw/CEFB6Lh7H/SFkXUh8I1
-         iYMQkCRE9khLcOmzycVKM9XfLVxnF8KP64ihU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692020074; x=1692624874;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FgBLbVkVIt/9kd84g/UWpkPAMBCoIvJC1bWfg1DPPL8=;
-        b=BTogXCLVz+ysMkEyOloPuk0xFrFUe24P44jxiNvKdNSscALmksGNEBg0SfgDgLjQ94
-         CiUzFiHvEc+GxWu/l8FZMVkvEAP8cAgoXLW8+kGKmd2ZJ5Hw3UWnwtWhgD3FJaIJS8EQ
-         D2EpwI8pUxQsjQJSFtCkGkd7HC1IZl780BZmHuN8E/ltLV9ZP0q9dysxvaDQFMkhWacH
-         UuGAGTLXI7Al/3vPx0mah5UDKSbA4xwHGN032zB99gjhECoWO+FXpKVkjCzKzJ50SLiv
-         0Ndq1vdvyBOVc1tpLgVixr7163Zs92E9nRERUaNLRaRjuRG9DfwvoOOyl+UJXqIgTdr1
-         8gXw==
-X-Gm-Message-State: AOJu0Yyroo48/hiJRJOGEWoRl+8ElUENXUPtVDeIC9c0QDusbisxp5PF
-        qNc5Dz7uB0Z0jBJ2SAawkZsKij7iBmwMtUYJkOicsjuAF6lnSzoaTdk=
-X-Google-Smtp-Source: AGHT+IFEWHMHs3CHiKsY+cKZShjPlwLZ7twsTzHLQ11xTg9ZMfI7qwWvak+Yz1zwqaW93n0c+gHYtCVVxcc1WHL1thU=
-X-Received: by 2002:ac2:4892:0:b0:4fd:cbd8:17d5 with SMTP id
- x18-20020ac24892000000b004fdcbd817d5mr4669343lfc.4.1692020073708; Mon, 14 Aug
- 2023 06:34:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230807085203.819772-1-david@readahead.eu> <20230807-porzellan-rehkitz-9fde1b94dd6b@brauner>
- <20230811112911.GA22566@redhat.com> <20230811-perplex-installieren-899f5925534d@brauner>
- <20230811115710.GA21779@redhat.com> <6feef7e0-ea72-412d-837e-34b6fdd3b869@app.fastmail.com>
- <20230814132039.GA17738@redhat.com>
-In-Reply-To: <20230814132039.GA17738@redhat.com>
-From:   Alexander Mikhalitsyn <alexander@mihalicyn.com>
-Date:   Mon, 14 Aug 2023 15:34:22 +0200
-Message-ID: <CAJqdLrr4-Jzw7v5n8gXp54RM918-tCUa-rEg0XsnxOJ2bNKt7A@mail.gmail.com>
-Subject: Re: [PATCH] pid: allow pidfds for reaped tasks
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     David Rheinsberg <david@readahead.eu>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Kees Cook <keescook@chromium.org>,
-        Luca Boccassi <bluca@debian.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 14 Aug 2023 09:35:27 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8F241739
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:35:23 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 51CEA1F383;
+        Mon, 14 Aug 2023 13:35:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692020122; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IJCqlM7vtPtAfyU0MWBM7gsvp4C0XtxC3jIRycWBzGo=;
+        b=GAbTeEdxW2N2Bd8DQ7gdDn1UQxFU19Kfb6/UyN8IeVWj63JEmV6Q7RBn3ZYXxWsrCPz9Yc
+        CXinrrFIQ0vVDz6SGrSBdPxyW41Hdmzs5XsYA7kZDKzb4mKfcez/100F6MOCwT/Cw26Pxz
+        Fwe7L6/o2jEEe7EIz9mRbk4arAj1Hl0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692020122;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IJCqlM7vtPtAfyU0MWBM7gsvp4C0XtxC3jIRycWBzGo=;
+        b=Bn8HD4HD1TBaUYnNPLdsN2ca0kTN8IQs0UCx4NVtukAsK7V5Mch9lr8sZ7rKBH0Qn/kXyB
+        zvk+ujm7Ou7GmjCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 18722138E2;
+        Mon, 14 Aug 2023 13:35:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id T9MQBZot2mTQXwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Mon, 14 Aug 2023 13:35:22 +0000
+Date:   Mon, 14 Aug 2023 15:35:21 +0200
+Message-ID: <87r0o521d2.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Karol Herbst <kherbst@redhat.com>
+Cc:     Takashi Iwai <tiwai@suse.de>, nouveau@lists.freedesktop.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org, regressions@leemhuis.info,
+        Borislav Petkov <bp@alien8.de>, Ben Skeggs <bskeggs@redhat.com>
+Subject: Re: 2b5d1c29f6c4 ("drm/nouveau/disp: PIOR DP uses GPIO for HPD, not PMGR AUX interrupts")
+In-Reply-To: <CACO55tvD_t4y8s_9gj7vO7zOvsYU1iF=5+a4M2g7_qMH9g3EKg@mail.gmail.com>
+References: <20230806213107.GFZNARG6moWpFuSJ9W@fat_crate.local>
+        <CACO55tvZD5U4J8DawFTRVnV-dLYLngfhuqO29_sWNEGofKfnBg@mail.gmail.com>
+        <20230807150521.GGZNEIMQ9rsyCmkpoA@fat_crate.local>
+        <CACO55tvWuSdwdirj7S3Dk-r4NAw8jC8g5RHKFd62WXi43iQP-w@mail.gmail.com>
+        <87fs4sfu54.wl-tiwai@suse.de>
+        <CACO55tszwFEgt=8xn4auAE7KJVs3ybGG68OzL9HJt19XGVhhHQ@mail.gmail.com>
+        <874jl8fngo.wl-tiwai@suse.de>
+        <CACO55ts9YWF7nLi3Zs4xKySpdHyUFgf4r566cKx3FwNTCaz0Sg@mail.gmail.com>
+        <87wmy4e4uk.wl-tiwai@suse.de>
+        <877cq4e0j5.wl-tiwai@suse.de>
+        <87r0occhtw.wl-tiwai@suse.de>
+        <CACO55tvbLhn5vC=CpcZbuFEj2cja1=Nt=BKsZmU3+SKgbxoE7Q@mail.gmail.com>
+        <87zg2t23js.wl-tiwai@suse.de>
+        <CACO55tvPGx7npsXg+tpDoz=KXQBs4Pwz3h9Bie-vHithcHV5eA@mail.gmail.com>
+        <CACO55tvD_t4y8s_9gj7vO7zOvsYU1iF=5+a4M2g7_qMH9g3EKg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -71,63 +87,329 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 3:21=E2=80=AFPM Oleg Nesterov <oleg@redhat.com> wro=
-te:
->
-> On 08/14, David Rheinsberg wrote:
+On Mon, 14 Aug 2023 15:19:11 +0200,
+Karol Herbst wrote:
+> 
+> On Mon, Aug 14, 2023 at 2:56 PM Karol Herbst <kherbst@redhat.com> wrote:
 > >
-> > Hi Oleg,
-> >
-> > On Fri, Aug 11, 2023, at 1:57 PM, Oleg Nesterov wrote:
-> > >> What code do we need to allow userspace to open a pidfd to a leader =
-pid
-> > >> even if it has already been exited and reaped (without also accident=
-ly
-> > >> allowing to open non-lead pid pidfds)?
+> > On Mon, Aug 14, 2023 at 2:48 PM Takashi Iwai <tiwai@suse.de> wrote:
 > > >
-> > > I'll try to think more, but can you also explain why do we need this?
+> > > On Mon, 14 Aug 2023 14:38:18 +0200,
+> > > Karol Herbst wrote:
+> > > >
+> > > > On Wed, Aug 9, 2023 at 6:16 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > >
+> > > > > On Wed, 09 Aug 2023 16:46:38 +0200,
+> > > > > Takashi Iwai wrote:
+> > > > > >
+> > > > > > On Wed, 09 Aug 2023 15:13:23 +0200,
+> > > > > > Takashi Iwai wrote:
+> > > > > > >
+> > > > > > > On Wed, 09 Aug 2023 14:19:23 +0200,
+> > > > > > > Karol Herbst wrote:
+> > > > > > > >
+> > > > > > > > On Wed, Aug 9, 2023 at 1:46 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > > > > >
+> > > > > > > > > On Wed, 09 Aug 2023 13:42:09 +0200,
+> > > > > > > > > Karol Herbst wrote:
+> > > > > > > > > >
+> > > > > > > > > > On Wed, Aug 9, 2023 at 11:22 AM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > > > > > > >
+> > > > > > > > > > > On Tue, 08 Aug 2023 12:39:32 +0200,
+> > > > > > > > > > > Karol Herbst wrote:
+> > > > > > > > > > > >
+> > > > > > > > > > > > On Mon, Aug 7, 2023 at 5:05 PM Borislav Petkov <bp@alien8.de> wrote:
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > On Mon, Aug 07, 2023 at 01:49:42PM +0200, Karol Herbst wrote:
+> > > > > > > > > > > > > > in what way does it stop? Just not progressing? That would be kinda
+> > > > > > > > > > > > > > concerning. Mind tracing with what arguments `nvkm_uevent_add` is
+> > > > > > > > > > > > > > called with and without that patch?
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > Well, me dumping those args I guess made the box not freeze before
+> > > > > > > > > > > > > catching a #PF over serial. Does that help?
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > ....
+> > > > > > > > > > > > > [    3.410135] Unpacking initramfs...
+> > > > > > > > > > > > > [    3.416319] software IO TLB: mapped [mem 0x00000000a877d000-0x00000000ac77d000] (64MB)
+> > > > > > > > > > > > > [    3.418227] Initialise system trusted keyrings
+> > > > > > > > > > > > > [    3.432273] workingset: timestamp_bits=56 max_order=22 bucket_order=0
+> > > > > > > > > > > > > [    3.439006] ntfs: driver 2.1.32 [Flags: R/W].
+> > > > > > > > > > > > > [    3.443368] fuse: init (API version 7.38)
+> > > > > > > > > > > > > [    3.447601] 9p: Installing v9fs 9p2000 file system support
+> > > > > > > > > > > > > [    3.453223] Key type asymmetric registered
+> > > > > > > > > > > > > [    3.457332] Asymmetric key parser 'x509' registered
+> > > > > > > > > > > > > [    3.462236] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 250)
+> > > > > > > > > > > > > [    3.475865] efifb: probing for efifb
+> > > > > > > > > > > > > [    3.479458] efifb: framebuffer at 0xf9000000, using 1920k, total 1920k
+> > > > > > > > > > > > > [    3.485969] efifb: mode is 800x600x32, linelength=3200, pages=1
+> > > > > > > > > > > > > [    3.491872] efifb: scrolling: redraw
+> > > > > > > > > > > > > [    3.495438] efifb: Truecolor: size=8:8:8:8, shift=24:16:8:0
+> > > > > > > > > > > > > [    3.502349] Console: switching to colour frame buffer device 100x37
+> > > > > > > > > > > > > [    3.509564] fb0: EFI VGA frame buffer device
+> > > > > > > > > > > > > [    3.514013] ACPI: \_PR_.CP00: Found 4 idle states
+> > > > > > > > > > > > > [    3.518850] ACPI: \_PR_.CP01: Found 4 idle states
+> > > > > > > > > > > > > [    3.523687] ACPI: \_PR_.CP02: Found 4 idle states
+> > > > > > > > > > > > > [    3.528515] ACPI: \_PR_.CP03: Found 4 idle states
+> > > > > > > > > > > > > [    3.533346] ACPI: \_PR_.CP04: Found 4 idle states
+> > > > > > > > > > > > > [    3.538173] ACPI: \_PR_.CP05: Found 4 idle states
+> > > > > > > > > > > > > [    3.543003] ACPI: \_PR_.CP06: Found 4 idle states
+> > > > > > > > > > > > > [    3.544219] Freeing initrd memory: 8196K
+> > > > > > > > > > > > > [    3.547844] ACPI: \_PR_.CP07: Found 4 idle states
+> > > > > > > > > > > > > [    3.609542] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+> > > > > > > > > > > > > [    3.616224] 00:05: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
+> > > > > > > > > > > > > [    3.625552] serial 0000:00:16.3: enabling device (0000 -> 0003)
+> > > > > > > > > > > > > [    3.633034] 0000:00:16.3: ttyS1 at I/O 0xf0a0 (irq = 17, base_baud = 115200) is a 16550A
+> > > > > > > > > > > > > [    3.642451] Linux agpgart interface v0.103
+> > > > > > > > > > > > > [    3.647141] ACPI: bus type drm_connector registered
+> > > > > > > > > > > > > [    3.653261] Console: switching to colour dummy device 80x25
+> > > > > > > > > > > > > [    3.659092] nouveau 0000:03:00.0: vgaarb: deactivate vga console
+> > > > > > > > > > > > > [    3.665174] nouveau 0000:03:00.0: NVIDIA GT218 (0a8c00b1)
+> > > > > > > > > > > > > [    3.784585] nouveau 0000:03:00.0: bios: version 70.18.83.00.08
+> > > > > > > > > > > > > [    3.792244] nouveau 0000:03:00.0: fb: 512 MiB DDR3
+> > > > > > > > > > > > > [    3.948786] nouveau 0000:03:00.0: DRM: VRAM: 512 MiB
+> > > > > > > > > > > > > [    3.953755] nouveau 0000:03:00.0: DRM: GART: 1048576 MiB
+> > > > > > > > > > > > > [    3.959073] nouveau 0000:03:00.0: DRM: TMDS table version 2.0
+> > > > > > > > > > > > > [    3.964808] nouveau 0000:03:00.0: DRM: DCB version 4.0
+> > > > > > > > > > > > > [    3.969938] nouveau 0000:03:00.0: DRM: DCB outp 00: 02000360 00000000
+> > > > > > > > > > > > > [    3.976367] nouveau 0000:03:00.0: DRM: DCB outp 01: 02000362 00020010
+> > > > > > > > > > > > > [    3.982792] nouveau 0000:03:00.0: DRM: DCB outp 02: 028003a6 0f220010
+> > > > > > > > > > > > > [    3.989223] nouveau 0000:03:00.0: DRM: DCB outp 03: 01011380 00000000
+> > > > > > > > > > > > > [    3.995647] nouveau 0000:03:00.0: DRM: DCB outp 04: 08011382 00020010
+> > > > > > > > > > > > > [    4.002076] nouveau 0000:03:00.0: DRM: DCB outp 05: 088113c6 0f220010
+> > > > > > > > > > > > > [    4.008511] nouveau 0000:03:00.0: DRM: DCB conn 00: 00101064
+> > > > > > > > > > > > > [    4.014151] nouveau 0000:03:00.0: DRM: DCB conn 01: 00202165
+> > > > > > > > > > > > > [    4.021710] nvkm_uevent_add: uevent: 0xffff888100242100, event: 0xffff8881022de1a0, id: 0x0, bits: 0x1, func: 0x0000000000000000
+> > > > > > > > > > > > > [    4.033680] nvkm_uevent_add: uevent: 0xffff888100242300, event: 0xffff8881022de1a0, id: 0x0, bits: 0x1, func: 0x0000000000000000
+> > > > > > > > > > > > > [    4.045429] nouveau 0000:03:00.0: DRM: MM: using COPY for buffer copies
+> > > > > > > > > > > > > [    4.052059] stackdepot: allocating hash table of 1048576 entries via kvcalloc
+> > > > > > > > > > > > > [    4.067191] nvkm_uevent_add: uevent: 0xffff888100242800, event: 0xffff888104b3e260, id: 0x0, bits: 0x1, func: 0x0000000000000000
+> > > > > > > > > > > > > [    4.078936] nvkm_uevent_add: uevent: 0xffff888100242900, event: 0xffff888104b3e260, id: 0x1, bits: 0x1, func: 0x0000000000000000
+> > > > > > > > > > > > > [    4.090514] nvkm_uevent_add: uevent: 0xffff888100242a00, event: 0xffff888102091f28, id: 0x1, bits: 0x3, func: 0xffffffff8177b700
+> > > > > > > > > > > > > [    4.102118] tsc: Refined TSC clocksource calibration: 3591.345 MHz
+> > > > > > > > > > > > > [    4.108342] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x33c4635c383, max_idle_ns: 440795314831 ns
+> > > > > > > > > > > > > [    4.108401] nvkm_uevent_add: uevent: 0xffff8881020b6000, event: 0xffff888102091f28, id: 0xf, bits: 0x3, func: 0xffffffff8177b700
+> > > > > > > > > > > > > [    4.129864] clocksource: Switched to clocksource tsc
+> > > > > > > > > > > > > [    4.131478] [drm] Initialized nouveau 1.3.1 20120801 for 0000:03:00.0 on minor 0
+> > > > > > > > > > > > > [    4.143806] BUG: kernel NULL pointer dereference, address: 0000000000000020
+> > > > > > > > > > > >
+> > > > > > > > > > > > ahh, that would have been good to know :) Mind figuring out what's
+> > > > > > > > > > > > exactly NULL inside nvif_object_mthd? Or rather what line
+> > > > > > > > > > > > `nvif_object_mthd+0x136` belongs to, then it should be easy to figure
+> > > > > > > > > > > > out what's wrong here.
+> > > > > > > > > > >
+> > > > > > > > > > > FWIW, we've hit the bug on openSUSE Tumbleweed 6.4.8 kernel:
+> > > > > > > > > > >   https://bugzilla.suse.com/show_bug.cgi?id=1214073
+> > > > > > > > > > > Confirmed that reverting the patch cured the issue.
+> > > > > > > > > > >
+> > > > > > > > > > > FWIW, loading nouveau showed a refcount_t warning just before the NULL
+> > > > > > > > > > > dereference:
+> > > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > mh, I wonder if one of those `return -EINVAL;` branches is hit where
+> > > > > > > > > > it wasn't before. Could some of you check if `nvkm_uconn_uevent`
+> > > > > > > > > > returns -EINVAL with that patch where it didn't before? I wonder if
+> > > > > > > > > > it's the `if (&outp->head == &conn->disp->outps) return -EINVAL;` and
+> > > > > > > > > > if remove that fixes the crash?
+> > > > > > > > >
+> > > > > > > > > Please give a patch, then I can build a kernel and let the reporter
+> > > > > > > > > testing it :)
+> > > > > > > > >
+> > > > > > > >
+> > > > > > > > attached a patch.
+> > > > > > >
+> > > > > > > Thanks.  Now I'm building a test kernel and asked the reporter for
+> > > > > > > testing it.
+> > > > > >
+> > > > > > And the result was negative, the boot still hanged up.
+> > > > >
+> > > > > And below is another log from the 6.4.8 kernel with KASAN-enabled.
+> > > > > Some memory corruption seems happening.
+> > > > >
+> > > > > [  228.422919] nouveau 0000:02:00.0: DRM: DCB conn 01: 0000a146
+> > > > > [  228.428674] nouveau 0000:02:00.0: DRM: MM: using M2MF for buffer copies
+> > > > > [  228.436682] ==================================================================
+> > > > > [  228.436698] BUG: KASAN: slab-use-after-free in drm_connector_list_iter_next+0x176/0x320
+> > > > > [  228.436715] Read of size 4 at addr ffff8881731ce050 by task modprobe/6174
+> > > > >
+> > > > > [  228.436728] CPU: 0 PID: 6174 Comm: modprobe Not tainted 6.4.9-4.g5b9ad20-default #1 openSUSE Tumbleweed (unreleased) d0a6841e538b38d17513f6942fb58770372b54fd
+> > > > > [  228.436740] Hardware name: Apple Inc. MacBook5,1/Mac-F42D89C8, BIOS     MB51.88Z.007D.B03.0904271443 04/27/09
+> > > > > [  228.436747] Call Trace:
+> > > > > [  228.436753]  <TASK>
+> > > > > [  228.436759]  dump_stack_lvl+0x47/0x60
+> > > > > [  228.436773]  print_report+0xcf/0x640
+> > > > > [  228.436784]  ? __pfx__raw_spin_lock_irqsave+0x10/0x10
+> > > > > [  228.436797]  ? drm_connector_list_iter_next+0x176/0x320
+> > > > > [  228.436807]  kasan_report+0xb1/0xe0
+> > > > > [  228.436817]  ? drm_connector_list_iter_next+0x176/0x320
+> > > > > [  228.436828]  kasan_check_range+0x105/0x1b0
+> > > > > [  228.436837]  drm_connector_list_iter_next+0x176/0x320
+> > > > > [  228.436848]  ? __pfx_drm_connector_list_iter_next+0x10/0x10
+> > > > > [  228.436859]  ? __kmem_cache_free+0x18a/0x2c0
+> > > > > [  228.436868]  nouveau_connector_create+0x170/0x1cd0 [nouveau d0287dfba9984367c331e8149297392f67038244]
+> > > > > [  228.437540]  ? drm_encoder_init+0xbe/0x140
+> > > > > [  228.437554]  ? __pfx_nouveau_connector_create+0x10/0x10 [nouveau d0287dfba9984367c331e8149297392f67038244]
+> > > > > [  228.438137]  ? nvif_outp_ctor+0x2d9/0x430 [nouveau d0287dfba9984367c331e8149297392f67038244]
+> > > > > [  228.438236]  nv50_display_create+0xe54/0x30d0 [nouveau d0287dfba9984367c331e8149297392f67038244]
+> > > > > [  228.438236]  nouveau_display_create+0x903/0x10c0 [nouveau d0287dfba9984367c331e8149297392f67038244]
+> > > > > [  228.438236]  nouveau_drm_device_init+0x3a4/0x19e0 [nouveau d0287dfba9984367c331e8149297392f67038244]
+> > > > > [  228.438236]  ? __pfx_nouveau_drm_device_init+0x10/0x10 [nouveau d0287dfba9984367c331e8149297392f67038244]
+> > > > > [  228.438236]  ? __pfx_pci_update_current_state+0x10/0x10
+> > > > > [  228.438236]  ? __kasan_check_byte+0x13/0x50
+> > > > > [  228.438236]  nouveau_drm_probe+0x1a2/0x6b0 [nouveau d0287dfba9984367c331e8149297392f67038244]
+> > > > > [  228.438236]  ? __pfx__raw_spin_lock_irqsave+0x10/0x10
+> > > > > [  228.438236]  ? __pfx_nouveau_drm_probe+0x10/0x10 [nouveau d0287dfba9984367c331e8149297392f67038244]
+> > > > > [  228.438236]  ? __pfx_nouveau_drm_probe+0x10/0x10 [nouveau d0287dfba9984367c331e8149297392f67038244]
+> > > > > [  228.438236]  local_pci_probe+0xdd/0x190
+> > > > > [  228.438236]  pci_device_probe+0x23a/0x770
+> > > > > [  228.438236]  ? kernfs_add_one+0x2d8/0x450
+> > > > > [  228.438236]  ? kernfs_get.part.0+0x4c/0x70
+> > > > > [  228.438236]  ? __pfx_pci_device_probe+0x10/0x10
+> > > > > [  228.438236]  ? kernfs_create_link+0x15f/0x230
+> > > > > [  228.438236]  ? kernfs_put+0x1c/0x40
+> > > > > [  228.438236]  ? sysfs_do_create_link_sd+0x8e/0x100
+> > > > > [  228.438236]  really_probe+0x3e2/0xb80
+> > > > > [  228.438236]  __driver_probe_device+0x18c/0x450
+> > > > > [  228.438236]  ? __pfx_klist_iter_init_node+0x10/0x10
+> > > > > [  228.438236]  driver_probe_device+0x4a/0x120
+> > > > > [  228.438236]  __driver_attach+0x1e1/0x4a0
+> > > > > [  228.438236]  ? __pfx___driver_attach+0x10/0x10
+> > > > > [  228.438236]  bus_for_each_dev+0xf4/0x170
+> > > > > [  228.438236]  ? __pfx__raw_spin_lock+0x10/0x10
+> > > > > [  228.438236]  ? __pfx_bus_for_each_dev+0x10/0x10
+> > > > > [  228.438236]  bus_add_driver+0x29e/0x570
+> > > > > [  228.438236]  ? __pfx_nouveau_drm_init+0x10/0x10 [nouveau d0287dfba9984367c331e8149297392f67038244]
+> > > > > [  228.438236]  ? __pfx_nouveau_drm_init+0x10/0x10 [nouveau d0287dfba9984367c331e8149297392f67038244]
+> > > > > [  228.438236]  driver_register+0x134/0x460
+> > > > > [  228.438236]  ? __pfx_nouveau_drm_init+0x10/0x10 [nouveau d0287dfba9984367c331e8149297392f67038244]
+> > > > > [  228.438236]  do_one_initcall+0x8e/0x310
+> > > > > [  228.438236]  ? __pfx_do_one_initcall+0x10/0x10
+> > > > > [  228.438236]  ? __kmem_cache_alloc_node+0x1b9/0x3b0
+> > > > > [  228.438236]  ? do_init_module+0x4b/0x730
+> > > > > [  228.438236]  ? kasan_unpoison+0x44/0x70
+> > > > > [  228.438236]  do_init_module+0x238/0x730
+> > > > > [  228.438236]  load_module+0x5b41/0x6dd0
+> > > > > [  228.438236]  ? __pfx_load_module+0x10/0x10
+> > > > > [  228.438236]  ? _raw_spin_lock+0x85/0xe0
+> > > > > [  228.438236]  ? __pfx__raw_spin_lock+0x10/0x10
+> > > > > [  228.438236]  ? find_vmap_area+0xab/0xe0
+> > > > > [  228.438236]  ? __do_sys_init_module+0x1df/0x210
+> > > > > [  228.438236]  __do_sys_init_module+0x1df/0x210
+> > > > > [  228.438236]  ? __pfx___do_sys_init_module+0x10/0x10
+> > > > > [  228.438236]  ? syscall_exit_to_user_mode+0x1b/0x40
+> > > > > [  228.438236]  ? do_syscall_64+0x6c/0x90
+> > > > > [  228.438236]  ? __pfx_ksys_read+0x10/0x10
+> > > > > [  228.438236]  do_syscall_64+0x60/0x90
+> > > > > [  228.438236]  ? syscall_exit_to_user_mode+0x1b/0x40
+> > > > > [  228.438236]  ? do_syscall_64+0x6c/0x90
+> > > > > [  228.438236]  ? syscall_exit_to_user_mode+0x1b/0x40
+> > > > > [  228.438236]  ? do_syscall_64+0x6c/0x90
+> > > > > [  228.438236]  ? exc_page_fault+0x62/0xd0
+> > > > > [  228.438236]  entry_SYSCALL_64_after_hwframe+0x77/0xe1
+> > > > > [  228.438236] RIP: 0033:0x7f91ce119a5e
+> > > > > [  228.438236] Code: c3 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 66 90 49 89 ca b8 af 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 7a 03 0d 00 f7 d8 64 89 01 48
+> > > > > [  228.438236] RSP: 002b:00007ffce2813538 EFLAGS: 00000246 ORIG_RAX: 00000000000000af
+> > > > > [  228.438236] RAX: ffffffffffffffda RBX: 00005588462def10 RCX: 00007f91ce119a5e
+> > > > > [  228.438236] RDX: 00005588462e39c0 RSI: 0000000000fda8b2 RDI: 00007f91cc371010
+> > > > > [  228.438236] RBP: 00005588462e39c0 R08: 00005588462e3ce0 R09: 0000000000000000
+> > > > > [  228.438236] R10: 000000000005af11 R11: 0000000000000246 R12: 0000000000040000
+> > > > > [  228.438236] R13: 0000000000000000 R14: 0000000000000009 R15: 00005588462de7c0
+> > > > > [  228.438236]  </TASK>
+> > > > >
+> > > > > [  228.438236] Allocated by task 6174:
+> > > > > [  228.438236]  kasan_save_stack+0x20/0x40
+> > > > > [  228.438236]  kasan_set_track+0x25/0x30
+> > > > > [  228.438236]  __kasan_kmalloc+0xaa/0xb0
+> > > > > [  228.438236]  nouveau_connector_create+0x386/0x1cd0 [nouveau]
+> > > > > [  228.438236]  nv50_display_create+0xe54/0x30d0 [nouveau]
+> > > > > [  228.438236]  nouveau_display_create+0x903/0x10c0 [nouveau]
+> > > > > [  228.438236]  nouveau_drm_device_init+0x3a4/0x19e0 [nouveau]
+> > > > > [  228.438236]  nouveau_drm_probe+0x1a2/0x6b0 [nouveau]
+> > > > > [  228.438236]  local_pci_probe+0xdd/0x190
+> > > > > [  228.438236]  pci_device_probe+0x23a/0x770
+> > > > > [  228.438236]  really_probe+0x3e2/0xb80
+> > > > > [  228.438236]  __driver_probe_device+0x18c/0x450
+> > > > > [  228.438236]  driver_probe_device+0x4a/0x120
+> > > > > [  228.438236]  __driver_attach+0x1e1/0x4a0
+> > > > > [  228.438236]  bus_for_each_dev+0xf4/0x170
+> > > > > [  228.438236]  bus_add_driver+0x29e/0x570
+> > > > > [  228.438236]  driver_register+0x134/0x460
+> > > > > [  228.438236]  do_one_initcall+0x8e/0x310
+> > > > > [  228.438236]  do_init_module+0x238/0x730
+> > > > > [  228.438236]  load_module+0x5b41/0x6dd0
+> > > > > [  228.438236]  __do_sys_init_module+0x1df/0x210
+> > > > > [  228.438236]  do_syscall_64+0x60/0x90
+> > > > > [  228.438236]  entry_SYSCALL_64_after_hwframe+0x77/0xe1
+> > > > >
+> > > > > [  228.438236] Freed by task 6174:
+> > > > > [  228.438236]  kasan_save_stack+0x20/0x40
+> > > > > [  228.438236]  kasan_set_track+0x25/0x30
+> > > > > [  228.438236]  kasan_save_free_info+0x2e/0x50
+> > > > > [  228.438236]  ____kasan_slab_free+0x169/0x1c0
+> > > > > [  228.438236]  slab_free_freelist_hook+0xcd/0x190
+> > > > > [  228.438236]  __kmem_cache_free+0x18a/0x2c0
+> > > > > [  228.438236]  nouveau_connector_create+0x1423/0x1cd0 [nouveau]
+> > > > > [  228.438236]  nv50_display_create+0xe54/0x30d0 [nouveau]
+> > > > > [  228.438236]  nouveau_display_create+0x903/0x10c0 [nouveau]
+> > > > > [  228.438236]  nouveau_drm_device_init+0x3a4/0x19e0 [nouveau]
+> > > > > [  228.438236]  nouveau_drm_probe+0x1a2/0x6b0 [nouveau]
+> > > > > [  228.438236]  local_pci_probe+0xdd/0x190
+> > > > > [  228.438236]  pci_device_probe+0x23a/0x770
+> > > > > [  228.438236]  really_probe+0x3e2/0xb80
+> > > > > [  228.438236]  __driver_probe_device+0x18c/0x450
+> > > > > [  228.438236]  driver_probe_device+0x4a/0x120
+> > > > > [  228.438236]  __driver_attach+0x1e1/0x4a0
+> > > > > [  228.438236]  bus_for_each_dev+0xf4/0x170
+> > > > > [  228.438236]  bus_add_driver+0x29e/0x570
+> > > > > [  228.438236]  driver_register+0x134/0x460
+> > > > > [  228.438236]  do_one_initcall+0x8e/0x310
+> > > > > [  228.438236]  do_init_module+0x238/0x730
+> > > > > [  228.438236]  load_module+0x5b41/0x6dd0
+> > > > > [  228.438236]  __do_sys_init_module+0x1df/0x210
+> > > > > [  228.438236]  do_syscall_64+0x60/0x90
+> > > > > [  228.438236]  entry_SYSCALL_64_after_hwframe+0x77/0xe1
+> > > > >
+> > > > > [  228.438236] The buggy address belongs to the object at ffff8881731ce000
+> > > > >                 which belongs to the cache kmalloc-4k of size 4096
+> > > > > [  228.438236] The buggy address is located 80 bytes inside of
+> > > > >                 freed 4096-byte region [ffff8881731ce000, ffff8881731cf000)
+> > > > >
+> > > > > [  228.438236] The buggy address belongs to the physical page:
+> > > > > [  228.438236] page:00000000d1c274b4 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1731c8
+> > > > > [  228.438236] head:00000000d1c274b4 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+> > > > > [  228.438236] flags: 0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+> > > > > [  228.438236] page_type: 0xffffffff()
+> > > > > [  228.438236] raw: 0017ffffc0010200 ffff888100042140 dead000000000122 0000000000000000
+> > > > > [  228.438236] raw: 0000000000000000 0000000080040004 00000001ffffffff 0000000000000000
+> > > > > [  228.438236] page dumped because: kasan: bad access detected
+> > > > >
+> > > > > [  228.438236] Memory state around the buggy address:
+> > > > > [  228.438236]  ffff8881731cdf00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> > > > > [  228.438236]  ffff8881731cdf80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> > > > > [  228.438236] >ffff8881731ce000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> > > > > [  228.438236]                                                  ^
+> > > > > [  228.438236]  ffff8881731ce080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> > > > > [  228.438236]  ffff8881731ce100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> > > > > [  228.438236] ==================================================================
+> > > > >
+> > > >
+> > > > mind resolving those to file lines via decode_stacktrace.sh or
+> > > > something, because looking at it, it makes no sense really.
 > > >
-> > > See my another email. Can't we simply shift the pid_has_task(PIDTYPE_=
-TGID)
-> > > check from pidfd_prepare() to pidfd_create() ? (and then we can kill
-> > > pidfd_prepare and rename __pidfd_prepare to pidfd_prepare).
-> >
-> > Yes, the easiest solution would be to use `__pidfd_prepare()` and ensur=
-e
-> > that the caller only ever calls this on tg-leaders. This would work jus=
-t
-> > fine, imo. And this was my initial approach.
->
-> Great,
->
-> > I think Christian preferred an explicit assertion that ensures we do no=
-t
-> > accidentally hand out pidfds for non-tg-leaders. The question is thus w=
-hether
-> > there is an easy way to assert this even for reaped tasks?
-> > Or whether there is a simple way to flag a pid that was used as tg-lead=
-er?
->
-> I do not see how can we check if a detached pid was a leader pid, and I d=
-on't
-> think it makes sense to add a new member into struct pid...
->
-> > Or, ultimately, whether this has limited use and we should just use
-> > `__pidfd_prepare()`?
->
-> Well, if you confirm that sk->sk_peer_pid and scm->pid are always initial=
-ized with
-> task_tgid(current), I'd certainly prefer this approach unless Christian o=
-bjects.
+> > > I don't own the machine, so it's a bit difficult from my side,
+> > > unfortunately.
+> > >
+> 
+> also, you don't need to run it on the same machine if it's all
+> distribution packaged. As long as you have the exact same binary
+> available you can resolve the lines. Or just use gdb:
+> https://docs.kernel.org/admin-guide/bug-hunting.html#gdb
 
-Dear colleagues,
+Unfortunately it's not possible, as it's a moving target (following
+the upstream development), and the rpm packages used for the report
+are already gone.  What I can get now won't match any longer.
 
-I can confirm that sk->sk_peer_pid and scm->pid are always thread-group lea=
-ders.
+But now I wonder whether this can be reproduced by injecting an
+error artificially.
 
-Kind regards,
-Alex
 
->
-> Oleg.
->
+Takashi
