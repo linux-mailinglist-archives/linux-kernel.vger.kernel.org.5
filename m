@@ -2,161 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2CB77BA09
+	by mail.lfdr.de (Postfix) with ESMTP id 86DA677BA0A
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 15:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbjHNN3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 09:29:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54252 "EHLO
+        id S231362AbjHNN3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 09:29:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231393AbjHNN33 (ORCPT
+        with ESMTP id S231446AbjHNN3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 09:29:29 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96376ED
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 06:29:28 -0700 (PDT)
-Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6FDEBD51;
-        Mon, 14 Aug 2023 15:28:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1692019695;
-        bh=BmzEZgZVXN+6fGTllLHO5VdMx+53GoPnZExdNymjSxw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=gP42c/v+sIW71Yevxqalg1Gf5bZBSQokEVSQ6DOwdYTbj3iKzy6W2pr5NYMDbLtzP
-         PVf3nkEYAegdIO78dD9lIfvYeU4M1ENh4gEcdoQYM/uWeT0rKNF7a80YLW6TIiek5t
-         ixey1YBnlJoYqKjeDzdq7E6efsKVGLgSVG/4mqUQ=
-Message-ID: <aca4785f-ab3b-ac1c-d661-e1a103dfc24a@ideasonboard.com>
-Date:   Mon, 14 Aug 2023 16:29:22 +0300
+        Mon, 14 Aug 2023 09:29:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ABEF10D5;
+        Mon, 14 Aug 2023 06:29:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DD86A63D44;
+        Mon, 14 Aug 2023 13:29:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E34B2C433C8;
+        Mon, 14 Aug 2023 13:29:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692019775;
+        bh=vL0Rp5Rao9UZ/BTg2YYC/mT9fxEqJ1wE21HPrTYhQ4A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qWtIvnuATKTld70yR47P3L8R/BFnk3ykveU+GR0wQeD/5/Lg9qkooJ3jxArnG0jRh
+         N10Il8qvl2xVztlh+xNYr4QP6M9fzR9mhdsT8FlTsarhFyJeRIG2kBsMm4rDG+bn/X
+         wmvLfnU2KNURxYeRHf0odxBNtEWESisxhv7n+tt8Wwa5N/ow0eidfg+fO2Vp8VTliM
+         R70LVmBumP9gg+ifFLSG1XzpFCFmcQhGV5HVqnGOErm5dFPaYTsB6Q8MQM6ZACPISx
+         HxfiTxP7RjREY9keqoBDVGbNBnKi9TtM+h9gqvJOJWCViUIVi2hnp6FaJnqO7rlkfh
+         PYxUwcdx/pouw==
+Date:   Mon, 14 Aug 2023 15:29:32 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Tam Nguyen <tamnguyenchi@os.amperecomputing.com>
+Cc:     linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        patches@amperecomputing.com, jarkko.nikula@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
+        jsd@semihalf.com, chuong@os.amperecomputing.com,
+        darren@os.amperecomputing.com,
+        Quan Nguyen <quan@os.amperecomputing.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] i2c: designware: Correct length byte validation
+ logic
+Message-ID: <ZNosPK3M4/bZ0vc9@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Tam Nguyen <tamnguyenchi@os.amperecomputing.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        patches@amperecomputing.com, jarkko.nikula@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
+        jsd@semihalf.com, chuong@os.amperecomputing.com,
+        darren@os.amperecomputing.com,
+        Quan Nguyen <quan@os.amperecomputing.com>, stable@vger.kernel.org
+References: <20230726080001.337353-1-tamnguyenchi@os.amperecomputing.com>
+ <20230726080001.337353-2-tamnguyenchi@os.amperecomputing.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 11/11] drm/bridge: tc358768: Add
- DRM_BRIDGE_ATTACH_NO_CONNECTOR support
-Content-Language: en-US
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
-        Francesco Dolcini <francesco@dolcini.it>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Aradhya Bhatia <a-bhatia1@ti.com>
-References: <20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com>
- <20230804-tc358768-v1-11-1afd44b7826b@ideasonboard.com>
- <e857d383-2287-a985-24c5-fa1fff1da199@gmail.com>
- <0855d804-3ba3-4f29-32b1-bab3b999e506@ideasonboard.com>
- <20230814101041.GA277347@ravnborg.org>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-In-Reply-To: <20230814101041.GA277347@ravnborg.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Va0SrhCIqzaABToJ"
+Content-Disposition: inline
+In-Reply-To: <20230726080001.337353-2-tamnguyenchi@os.amperecomputing.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sam,
 
-On 14/08/2023 13:10, Sam Ravnborg wrote:
-> Hi Tomi,
-> 
->>  From c13c691bd8826b978325575be9a87f577b83b86b Mon Sep 17 00:00:00 2001
->> From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
->> Date: Mon, 14 Aug 2023 13:02:23 +0300
->> Subject: [PATCH] drm/bridge: tc358768: fix 'Add DRM_BRIDGE_ATTACH_NO_CONNECTOR
->>   support'
->>
->> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
->> ---
->>   drivers/gpu/drm/bridge/tc358768.c | 56 +++++++++++++------------------
->>   1 file changed, 24 insertions(+), 32 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
->> index 82ea4d9a814a..9705ce1bd028 100644
->> --- a/drivers/gpu/drm/bridge/tc358768.c
->> +++ b/drivers/gpu/drm/bridge/tc358768.c
->> @@ -455,8 +455,6 @@ static int tc358768_dsi_host_detach(struct mipi_dsi_host *host,
->>   	struct tc358768_priv *priv = dsi_host_to_tc358768(host);
->>   
->>   	drm_bridge_remove(&priv->bridge);
->> -	if (priv->output.panel)
->> -		drm_panel_bridge_remove(priv->output.next_bridge);
->>   
->>   	return 0;
->>   }
->> @@ -531,49 +529,42 @@ static int tc358768_bridge_attach(struct drm_bridge *bridge,
->>   				  enum drm_bridge_attach_flags flags)
->>   {
->>   	struct tc358768_priv *priv = bridge_to_tc358768(bridge);
->> +	struct drm_bridge *next_bridge;
->> +	struct drm_panel *panel;
->> +	int ret;
->>   
->>   	if (!drm_core_check_feature(bridge->dev, DRIVER_ATOMIC)) {
->>   		dev_err(priv->dev, "needs atomic updates support\n");
->>   		return -ENOTSUPP;
->>   	}
->>   
->> -	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR) {
->> -		struct device_node *node;
->> -
->> -		/* Get the next bridge, connected to port@1. */
->> -		node = of_graph_get_remote_node(priv->dev->of_node, 1, -1);
->> -		if (!node)
->> -			return -ENODEV;
->> -
->> -		priv->output.next_bridge = of_drm_find_bridge(node);
->> -		of_node_put(node);
->> -		if (!priv->output.next_bridge)
->> -			return -EPROBE_DEFER;
->> -	} else {
->> -		struct drm_bridge *bridge;
->> -		struct drm_panel *panel;
->> -		int ret;
->> -
->> -		ret = drm_of_find_panel_or_bridge(priv->dev->of_node, 1, 0,
->> -						  &panel, &bridge);
->> -		if (ret)
->> -			return ret;
->> -
->> -		if (panel) {
->> -			bridge = drm_panel_bridge_add_typed(panel,
->> -				DRM_MODE_CONNECTOR_DSI);
->> -			if (IS_ERR(bridge))
->> -				return PTR_ERR(bridge);
->> -		}
->> +	ret = drm_of_find_panel_or_bridge(priv->dev->of_node, 1, -1, &panel,
->> +					  &next_bridge);
-> 
-> I think the right way is to wrap the panel in a bridge,
-> so something like:
-> 
-> 	next_bridge = devm_drm_of_get_bridge(dev, priv->dev->of_node, 1, -1)
-> 
-> 	if (IS_ERR(next_bridge))
-> 		return ...
-> 	priv->output.next_bridge = next_bridge;
+--Va0SrhCIqzaABToJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I tried that, but I had trouble with the cleanup side.
+On Wed, Jul 26, 2023 at 03:00:00PM +0700, Tam Nguyen wrote:
+> From: Quan Nguyen <quan@os.amperecomputing.com>
+>=20
+> Commit 0daede80f870 ("i2c: designware: Convert driver to using regmap API=
+")
+> changes the logic to validate the whole 32-bit return value of
+> DW_IC_DATA_CMD register instead of 8-bit LSB without reason.
+>=20
+> Later, commit f53f15ba5a85 ("i2c: designware: Get right data length"),
+> introduced partial fix but not enough because the "tmp > 0" still test
+> tmp as 32-bit value and is wrong in case the IC_DATA_CMD[11] is set.
+>=20
+> Revert the logic to just before commit 0daede80f870
+> ("i2c: designware: Convert driver to using regmap API").
+>=20
+> Fixes: f53f15ba5a85 ("i2c: designware: Get right data length")
+> Fixes: 0daede80f870 ("i2c: designware: Convert driver to using regmap API=
+")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Tam Nguyen <tamnguyenchi@os.amperecomputing.com>
+> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
 
-In the fixup patch I attached in my reply to Maxim I used 
-drm_of_find_panel_or_bridge() + drm_panel_bridge_add_typed(), and on 
-bridge_detach callback I used drm_panel_bridge_remove() (if there is a 
-panel). This worked for me, but it does feel like a bit too much work 
-for a driver to do.
+Applied to for-current, thanks!
 
-  Tomi
 
+--Va0SrhCIqzaABToJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmTaLDwACgkQFA3kzBSg
+Kbbh6g//azQ4qtqndnhpbxP1Ujc5PyG55chGeQ7kmcTlXpJaZEJq/rTc7y/HbNGG
+6/kIeriOMA2BU4xJKk6ipIK8OiM5Kk8WD6ow7LhICxzi4xg2CAy+ILTiaWnflUtn
+XGW6GNFx02+iiHwv3Dfek5CJ9NF/Kk4CSw3EV9umFT1GPzbCtGLSfX69BW7Abbod
+o3vLeUu5y7P56RYotEjUJPIrM961G/pnPh0p29EkJkFmg/6rdy1bS6FSilT8KgyN
+uLlxqJiSBu1yRJTmPE2wPKlppfNmtCg1VojbDsZaJN9PUxqF/m4+uh6//1spj1O0
+2lh5t/YkbdBAT7u7JH2OuaveQIssgaPFRkt9I9ugda1kAvCeEjBAYVL5wyvIm0mi
+kvHk+2x1HizQfOCRxIWAlEvz3IT1PSjQQ2Daqg1FFSD96jay/6gcFXnkQBXSbVWW
+oiumMrTwHm8yT1uzfN2Srd9j1/OOAnckxC4VPjoMcEv1sPBb9sohssNdMF1Bgzoi
+h2L0thsS4lHgP3KzCAczSpmOT4kbW71h4WMQli2wCnU1fTGyhHX/2GjblEefqyrE
+8o7hTZedd00qhzeKCGZKE+2UuQL6uqKqGaqcv2HviOIu8g3MYThkam3Kr/WQsSov
+//P69PLYuat/fBbVrM5r7AdreNgcLcYuc73L2NlPqnJmneNWQew=
+=cdP5
+-----END PGP SIGNATURE-----
+
+--Va0SrhCIqzaABToJ--
