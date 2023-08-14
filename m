@@ -2,124 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B39D77BDC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1C877BDC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 18:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbjHNQRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 12:17:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52398 "EHLO
+        id S231335AbjHNQRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 12:17:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbjHNQQt (ORCPT
+        with ESMTP id S232122AbjHNQRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 12:16:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7728D106;
-        Mon, 14 Aug 2023 09:16:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Mon, 14 Aug 2023 12:17:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A1B106
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 09:17:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8vjO5Vr4Iqwx53G4DlA4xQ/SuWmPFnqZp5UxmWeGppI=; b=GXcBKaGCu9y4BHouwwR94uvv3V
+        GAKOL5U01e+9yy24mEyYKD8lM2LNFW8JuijYmcF9iaU8VcfVHT5EyCjp1uRVS7ZTV7ey769Qo7Z2l
+        KqUBcyWiXY7llr+inmGpNJVx2ubEaEmdV6bEvExbjTplgVYQJPDXkJfcQVqjORrfaDFe27nwwJp2e
+        qh5z9lUWYwZsGC/gHp0HHaAMu4iP7VLiTqBbEVhQ75bopT2QRQZSDB4mkqQ9gFYmayqtjhh2NW29c
+        QUe/ULPnHCjDpXoYbv5agkS9oAXcXFijazUaCBm38tjLhwEC9bH1NbIFL7AYhL9tOSBKm4yOMat+c
+        /ivwwvAg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qVaG3-002wjc-UG; Mon, 14 Aug 2023 16:17:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0295163FBE;
-        Mon, 14 Aug 2023 16:16:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE590C433BD;
-        Mon, 14 Aug 2023 16:16:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692029807;
-        bh=XKO2xiTql41TuJLWtHYgWjPpFQF/Knxed55Bfd0sH6g=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=N04TVlLA2sSYBppKAwbJPd63MGeg3lZCanL0qajx5zFZXwvmsxyuwQTVgYRHm/Mqs
-         syaqNxvXLKpWuKfLPSN6fv/QV3sQKkawCCt9I2GdfCoK5laCBr5qH6t17hAUf01nUd
-         yfXR0YGud2GcHSC85CpKfMzLS9bFhU6PwKsuwtu3KIdOmZ4vPAOW6GnIVdUIiJlRRN
-         vKKWSs82TOdZiGvg+2C0StnxbSgV3mRshEO2/g+j86IU/8vswNcZnjhw+MsuvEYw3g
-         PU6v6iN/ePYTVD0TPU6+jfphRXeLuD4k3rizkpy0xlC/lZiFsbo3996Weog9THEV1V
-         htAhxBqooDLqg==
-Message-ID: <92d32852-17f0-099c-a2b5-12a29da14133@kernel.org>
-Date:   Mon, 14 Aug 2023 10:16:46 -0600
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7BC3230020B;
+        Mon, 14 Aug 2023 18:17:31 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5F844202C2249; Mon, 14 Aug 2023 18:17:31 +0200 (CEST)
+Date:   Mon, 14 Aug 2023 18:17:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        linux-coco@lists.linux.dev,
+        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] mm/slab: Add __free() support for kvfree
+Message-ID: <20230814161731.GN776869@hirez.programming.kicks-ass.net>
+References: <169199898909.1782217.10899362240465838600.stgit@dwillia2-xfh.jf.intel.com>
+ <169199901230.1782217.9803098171993981037.stgit@dwillia2-xfh.jf.intel.com>
+ <2023081449-blurry-bath-248e@gregkh>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [net-next v2 1/2] seg6: add NEXT-C-SID support for SRv6 End.X
- behavior
-Content-Language: en-US
-To:     Andrea Mayer <andrea.mayer@uniroma2.it>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
-        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
-        Hangbin Liu <liuhangbin@gmail.com>
-References: <20230812180926.16689-1-andrea.mayer@uniroma2.it>
- <20230812180926.16689-2-andrea.mayer@uniroma2.it>
-From:   David Ahern <dsahern@kernel.org>
-In-Reply-To: <20230812180926.16689-2-andrea.mayer@uniroma2.it>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-9.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023081449-blurry-bath-248e@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/12/23 12:09 PM, Andrea Mayer wrote:
-> The NEXT-C-SID mechanism described in [1] offers the possibility of
-> encoding several SRv6 segments within a single 128 bit SID address. Such
-> a SID address is called a Compressed SID (C-SID) container. In this way,
-> the length of the SID List can be drastically reduced.
+On Mon, Aug 14, 2023 at 05:31:27PM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Aug 14, 2023 at 12:43:32AM -0700, Dan Williams wrote:
+> > Allow for the declaration of variables that trigger kvfree() when they
+> > go out of scope.
+> > 
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> > ---
+> >  include/linux/slab.h |    2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/include/linux/slab.h b/include/linux/slab.h
+> > index 848c7c82ad5a..241025367943 100644
+> > --- a/include/linux/slab.h
+> > +++ b/include/linux/slab.h
+> > @@ -746,6 +746,8 @@ static inline __alloc_size(1, 2) void *kvcalloc(size_t n, size_t size, gfp_t fla
+> >  extern void *kvrealloc(const void *p, size_t oldsize, size_t newsize, gfp_t flags)
+> >  		      __realloc_size(3);
+> >  extern void kvfree(const void *addr);
+> > +DEFINE_FREE(kvfree, void *, if (_T) kvfree(_T))
 > 
-> A SID instantiated with the NEXT-C-SID flavor considers an IPv6 address
-> logically structured in three main blocks: i) Locator-Block; ii)
-> Locator-Node Function; iii) Argument.
-> 
->                         C-SID container
-> +------------------------------------------------------------------+
-> |     Locator-Block      |Loc-Node|            Argument            |
-> |                        |Function|                                |
-> +------------------------------------------------------------------+
-> <--------- B -----------> <- NF -> <------------- A --------------->
-> 
->    (i) The Locator-Block can be any IPv6 prefix available to the provider;
-> 
->   (ii) The Locator-Node Function represents the node and the function to
->        be triggered when a packet is received on the node;
-> 
->  (iii) The Argument carries the remaining C-SIDs in the current C-SID
->        container.
-> 
-> This patch leverages the NEXT-C-SID mechanism previously introduced in the
-> Linux SRv6 subsystem [2] to support SID compression capabilities in the
-> SRv6 End.X behavior [3].
-> An SRv6 End.X behavior with NEXT-C-SID flavor works as an End.X behavior
-> but it is capable of processing the compressed SID List encoded in C-SID
-> containers.
-> 
-> An SRv6 End.X behavior with NEXT-C-SID flavor can be configured to support
-> user-provided Locator-Block and Locator-Node Function lengths. In this
-> implementation, such lengths must be evenly divisible by 8 (i.e. must be
-> byte-aligned), otherwise the kernel informs the user about invalid
-> values with a meaningful error code and message through netlink_ext_ack.
-> 
-> If Locator-Block and/or Locator-Node Function lengths are not provided
-> by the user during configuration of an SRv6 End.X behavior instance with
-> NEXT-C-SID flavor, the kernel will choose their default values i.e.,
-> 32-bit Locator-Block and 16-bit Locator-Node Function.
-> 
-> [1] - https://datatracker.ietf.org/doc/html/draft-ietf-spring-srv6-srh-compression
-> [2] - https://lore.kernel.org/all/20220912171619.16943-1-andrea.mayer@uniroma2.it/
-> [3] - https://datatracker.ietf.org/doc/html/rfc8986#name-endx-l3-cross-connect
-> 
-> Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
-> ---
->  net/ipv6/seg6_local.c | 108 ++++++++++++++++++++++++++++++++++--------
->  1 file changed, 88 insertions(+), 20 deletions(-)
-> 
+> No need to check _T before calling this, right (as was also pointed out
+> earlier).
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
+Well, that does mean you get an unconditional call to kvfree() in the
+success case. Linus argued against this.
+
+This way the compiler sees:
+
+	buf = NULL;
+	if (buf)
+		kvfree(buf);
+
+and goes: 'let me clean that up for you'. And all is well.
+
 
