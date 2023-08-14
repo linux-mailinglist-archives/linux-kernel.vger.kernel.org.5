@@ -2,151 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E9D77C0D9
+	by mail.lfdr.de (Postfix) with ESMTP id 7244477C0DA
 	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 21:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232182AbjHNTd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 15:33:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43590 "EHLO
+        id S232193AbjHNTd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 15:33:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232161AbjHNTdA (ORCPT
+        with ESMTP id S232183AbjHNTdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 15:33:00 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15686ED
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:32:59 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5234f46c6f9so6236349a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:32:59 -0700 (PDT)
+        Mon, 14 Aug 2023 15:33:18 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C30C3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:33:18 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6bca38a6618so4007951a34.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 12:33:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692041577; x=1692646377;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20221208; t=1692041597; x=1692646397;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=+PPyRkE8QNcnw8n4URXIBMydlUyue4gEnUO37VgDlOA=;
-        b=uZ42I4tK6dm+P+AF/H5MI2p0bu0VHhQ7yPZs/u6FYyCso2ccRZgNK6eZBMNd3rmvFo
-         sLXx4suRvyn6HQYLfroPz4RL43N7kgktorfctw5SfYFMrhK3qCBbcWgm0rh1R0eSDX6s
-         kZ6dHLa3Hes0qOybeWm0EAXeb+7QMheSjTumDW4XQJPTpXMINE5Lv0ogrgL7ssFYqUbY
-         90BM7ESD8Y3MuQBzRaiUrDFp4xKx44Coo4evx2Y9K8KK614ipaXzIkPxvQQvKL1HY/kt
-         /N1bdIYgFb5wyqnMDqdCf44YbHhHkHUGlT48j5CZlGww6W2fDaceH9UP8GCDz46y01ci
-         RXhw==
+        bh=S4g2eNo9EGxlkyZ8uc+8gCeb6NGWQ3fxW2NfY/S3rM0=;
+        b=F3ai7teyxo8fuYk91lx92G5qY1JotYpBHRfJU9Kxtt2FZZx+lYtCgieH5e+Si2kgiR
+         GuYEUlK/KHHXgjsrR/48oFz1SyAYxSDa/yvyxWldQuRHYLrey3ml1dlQ5ZNbruFA4je/
+         jnglp64DHX9ykk3KhqHcdoeNzTKgzn5B1ZRX69yOnByTkl7kr0tWye19RZixxCgBzbsE
+         4R/p7YlHgRHn4LiC4mKNhI23peTJ15x/gRgvJdCAnTifV1n4eGPPuyffA7lPpNPDFh0/
+         epSgajsiB5jzEg/4KGygsxwxjCW8SmXoy3i4ywARQ217ZligG63OewNADtgj6YfyKbSj
+         m9JA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692041577; x=1692646377;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1692041597; x=1692646397;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+PPyRkE8QNcnw8n4URXIBMydlUyue4gEnUO37VgDlOA=;
-        b=JAxYj4qDPvQXhnn3IzxsRgnl6gUhmJM9acrF4wOo+ANKOROHzVWgXlyBRbpT6Zcvs5
-         KwmVog7n+1wCGppkyLYrEWkWvrKKizlBPA4Fnj8blwq4ifxUmtSl4hO3ow07h7mIHH6u
-         /q7CuXFHNMITarQWT8D02Lb9jJXa1ABUEznm/0DZTMAVei/NKAhUiOorAQNGl5yrQxHv
-         r/XYcWEyCNZ+jIs4EO0bbkrKQj8LqsZJf7gYs+WHCD6xlxjeVJiXxB2WZMd47xYLLsSE
-         qr/1Go/CmYu/EXa1RVSwLNkMdDhK/X9IvAX8RXlxyjHwJ17slAv8SsyRIhcNAVZPheoN
-         0SrQ==
-X-Gm-Message-State: AOJu0YyVTLs3CR7Msd2Uw8Syy5zIt5/sJ7uuF7dbhaRkUTTpPgWT8qHO
-        mOJIxbz+Fw+MpFcMuV34E4BqLA==
-X-Google-Smtp-Source: AGHT+IHCJObag9Dyk19qMlfSCfz6Iy2moD47tbSnD7NtULAtaT+peJh+ZdxunQCt9JIIgTgjSOmhoQ==
-X-Received: by 2002:aa7:d8d8:0:b0:525:46b7:40f2 with SMTP id k24-20020aa7d8d8000000b0052546b740f2mr5057909eds.21.1692041577535;
-        Mon, 14 Aug 2023 12:32:57 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id a25-20020aa7cf19000000b0051e1660a34esm5930702edy.51.2023.08.14.12.32.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 12:32:57 -0700 (PDT)
-Message-ID: <b3eebd2b-c73b-fdc7-2b2b-07e97db26d92@linaro.org>
-Date:   Mon, 14 Aug 2023 21:32:55 +0200
+        bh=S4g2eNo9EGxlkyZ8uc+8gCeb6NGWQ3fxW2NfY/S3rM0=;
+        b=gzdmf51M0y7xTF0uqGn5VyAEBpFmHPSK5hCmrWSIIRo3pD7z/HiTAlIX9LyWuk4r5h
+         C8itRqa1WcreZS65OjhKLvWMO5oKvu1dApMFt/XsGqXWq3rAi9G0izLGoclaZ+y7u6tx
+         PMKGC2fpyHP2LDtSk46jmcI5L6Ktqd40C6CC6L2RF4HF5XKlUPpEtXAEwtg9BvklXCHS
+         wjAhEApEt5RFFUDVeQwnlS9Wn4ODzY2odlFAFTmYzgkYcyPOdsu/0rpzMnyaCbpktYvd
+         1fShY7Gd3REdaGolKAQl9hNQXKWe/Sn1579C4nOSj9DE8END00D5QfzW1djgRxIFmmAc
+         lcyg==
+X-Gm-Message-State: AOJu0YwMLO1HEilqZ+I+EHHws58o6KnQ2lhiuj1UmLZUKh9Gs8iS8LIA
+        /piPZcuz32JAKuM82hsOB5Y=
+X-Google-Smtp-Source: AGHT+IF9jr+6sqe3qPPcB6ViRDfnc8KbRhm3r+zCXLEwETc2Xf7cEP0szdV890O1PWSx+7cOMbtktw==
+X-Received: by 2002:a05:6830:1d70:b0:6bc:e049:b28f with SMTP id l16-20020a0568301d7000b006bce049b28fmr10144444oti.34.1692041597350;
+        Mon, 14 Aug 2023 12:33:17 -0700 (PDT)
+Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:86d6:7871:f7e9:8a15:865a])
+        by smtp.gmail.com with ESMTPSA id c2-20020a9d7842000000b006b94a14b52asm4550003otm.9.2023.08.14.12.33.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 12:33:16 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 16:33:11 -0300
+From:   Alexon Oliveira <alexondunkan@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: [PATCH] staging: vme_user: fix check blank lines not necessary
+Message-ID: <ZNqBd/08H/Y5UEOm@alolivei-thinkpadt480s.gru.csb>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 1/3] dt-bindings: hwmon: Add Infineon TDA38640
-Content-Language: en-US
-To:     Naresh Solanki <naresh.solanki@9elements.com>,
-        Conor Dooley <conor@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        krzysztof.kozlowski+dt@linaro.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-hwmon@vger.kernel.org,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230802193155.2170935-1-Naresh.Solanki@9elements.com>
- <20230808-stand-cheddar-b76b0b7509a0@spud>
- <eced746a-1181-bd8f-6828-4a4eeb79727c@roeck-us.net>
- <20230808-esquire-epidemic-f9bd74ffde25@spud>
- <CABqG17jm938MaEeqS03WeryVWSRBS7Bqq2Vwq9SL4QOGqXU43A@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <CABqG17jm938MaEeqS03WeryVWSRBS7Bqq2Vwq9SL4QOGqXU43A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/08/2023 18:00, Naresh Solanki wrote:
-> Hi,
-> 
-> On Tue, 8 Aug 2023 at 19:58, Conor Dooley <conor@kernel.org> wrote:
->>
->> On Tue, Aug 08, 2023 at 07:10:08AM -0700, Guenter Roeck wrote:
->>> On 8/8/23 04:46, Conor Dooley wrote:
->>>> On Wed, Aug 02, 2023 at 09:31:51PM +0200, Naresh Solanki wrote:
->>>>> From: Patrick Rudolph <patrick.rudolph@9elements.com>
->>>>>
->>>>> The TDA38640 chip has different output control mechanisms depending on
->>>>> its mode of operation. When the chip is in SVID mode, only
->>>>> hardware-based output control is supported via ENABLE pin. However, when
->>>>> it operates in PMBus mode, software control works perfectly.
->>>>>
->>>>> To enable software control as a workaround in SVID mode, add the DT
->>>>> property 'infineon,en-svid-control'. This property will enable the
->>>>> workaround, which utilizes ENABLE pin polarity flipping for output when
->>>>> the chip is in SVID mode.
->>>>
->>>> Why do you need a custom property for this? How come it is not possible
->>>> to determine what bus you are on?
->>>>
->>>
->>> That is not the point. Yes, it can be detected if the control method is
->>> PMBus or SVID. However, in SVID mode, SVID is supposed to control the
->>> output, not PMBUs. This is bypassed by controlling the polarity of the
->>> (physical) output enable signal. We do _not_ want this enabled automatically
->>> in SVID mode. Its side effects on random boards using this chip are unknown.
->>> Thus, this needs a property which specifically enables this functionality
->>> for users who _really_ need to use it and (hopefully) know what they are
->>> doing.
->>
->> Hmm, reading this it makes a lot more sense why this is a property - I
->> guess I just struggled to understand the commit message here,
->> particularly what the benefit of using the workaround is. I'm still
->> having difficulty parsing the commit & property text though - its
->> unclear to me when you would need to use it - so I will stay out
->> of the way & let Rob or Krzysztof handle things.
-> 
-> To provide context, my system employs a unique power sequence
-> strategy utilizing a BMC (Baseboard Management Controller),
-> rendering the reliance on the ENABLE pin unnecessary.
-> In this configuration, the ENABLE pin is grounded in the hardware.
-> While most regulators facilitate PMBus Operation for output control,
-> the TDA38640 chip, when in SVID mode, is constrained by the
-> ENABLE pin to align with Intel specifications.
-> My communication with Infineon confirmed that the recommended
-> approach is to invert the Enable Pin for my use case.
-> 
-> Since this is not typically the use case for most setup & hence DT property
-> is must for enabling the special case.
-> 
-> For further insight into my setup's power sequence strategy, you can
-> refer to the following link: https://github.com/9elements/pwrseqd
-> 
+Fixed all CHECK: Blank lines aren't necessary after an open brace '{'
+and CHECK: Blank lines aren't necessary before a close brace '}'
+as reported by checkpatch to adhere to the Linux kernel
+coding-style guidelines.
 
-This justifies to me the property, but still you described desired
-driver behavior, not the hardware characteristic. Don't describe what
-you want to control, but describe the entire system.
+Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
+---
+ drivers/staging/vme_user/vme.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-Best regards,
-Krzysztof
+diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
+index 5eb0d780c77f..c7c50406c199 100644
+--- a/drivers/staging/vme_user/vme.c
++++ b/drivers/staging/vme_user/vme.c
+@@ -308,7 +308,6 @@ struct vme_resource *vme_slave_request(struct vme_dev *vdev, u32 address,
+ 		if (((slave_image->address_attr & address) == address) &&
+ 		    ((slave_image->cycle_attr & cycle) == cycle) &&
+ 		    (slave_image->locked == 0)) {
+-
+ 			slave_image->locked = 1;
+ 			mutex_unlock(&slave_image->mtx);
+ 			allocated_image = slave_image;
+@@ -510,7 +509,6 @@ struct vme_resource *vme_master_request(struct vme_dev *vdev, u32 address,
+ 		    ((master_image->cycle_attr & cycle) == cycle) &&
+ 		    ((master_image->width_attr & dwidth) == dwidth) &&
+ 		    (master_image->locked == 0)) {
+-
+ 			master_image->locked = 1;
+ 			spin_unlock(&master_image->lock);
+ 			allocated_image = master_image;
+@@ -682,10 +680,8 @@ ssize_t vme_master_read(struct vme_resource *resource, void *buf, size_t count,
+ 		count = length - offset;
+ 
+ 	return bridge->master_read(image, buf, count, offset);
+-
+ }
+ EXPORT_SYMBOL(vme_master_read);
+-
+ /**
+  * vme_master_write - Write data out to VME space from a buffer.
+  * @resource: Pointer to VME master resource.
+@@ -887,7 +883,6 @@ struct vme_resource *vme_dma_request(struct vme_dev *vdev, u32 route)
+ 		mutex_lock(&dma_ctrlr->mtx);
+ 		if (((dma_ctrlr->route_attr & route) == route) &&
+ 		    (dma_ctrlr->locked == 0)) {
+-
+ 			dma_ctrlr->locked = 1;
+ 			mutex_unlock(&dma_ctrlr->mtx);
+ 			allocated_ctrlr = dma_ctrlr;
+-- 
+2.41.0
 
