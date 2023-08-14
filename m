@@ -2,98 +2,584 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D60B77B40D
-	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0329277B42E
+	for <lists+linux-kernel@lfdr.de>; Mon, 14 Aug 2023 10:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234710AbjHNIYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 04:24:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59012 "EHLO
+        id S234776AbjHNIbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 04:31:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234805AbjHNIYZ (ORCPT
+        with ESMTP id S234808AbjHNIap (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 04:24:25 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5E5E1719
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:23:58 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fe490c05c9so28683365e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:23:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1692001423; x=1692606223;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bMhlr43d/Qp9tXUHH7fu45zclcsuiyst2c7+t2VJMps=;
-        b=a/PVHvQcUZ0aoWATIrNy26CLPt3DLdNG3dcT9Z463ZHwD9+yQmZ3OE6XaXIM3YIUlT
-         Nxh0Z3Fr+I8HfM5snfwWlEIm/kELk1ovElwKgoW+Bmqt1VpXFN29Fi/ds5AR0PEcdfGR
-         jM1fsxXH+T6sLMF5gk5nZA/wHZHanp1f25QfKBmZ8yYGYpG0p9Y7Ws/4BFSOL2mVevua
-         vr5g0auft0uJAboYZFzMOWaS+MGnYcn3SdXp94d+2E6FgIfk2Q50x2I2ZL41Atk6mOx9
-         k0SMyP6uabW0jwVWt5YRTRH2LlSbXW9n1WUtT5SFrhrMHdreoP1QAsI7fG1YdadKEYC1
-         7vGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692001423; x=1692606223;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bMhlr43d/Qp9tXUHH7fu45zclcsuiyst2c7+t2VJMps=;
-        b=G746C6KYa/+nq940dJiklSNd+mwsicaTWUrDmwD0lZRDTa8vkysbrBDsCNOhuZasoK
-         BgGPy3lwTnAUIgmjOtRa166qR+7kMcqSs66yrTymUUaGMeYt6C1/ViX7vnehWzObvb6z
-         7PfVsMg+VNMFJQ4fJyGRfLZ1jJ32sOeMn1s1masgAad1192MDM1kyDvlkpKpBPOTHJjp
-         mcm35Czla9YEugkSI9xzO7dzAskboki3MGGMgBqLgrv8nTJzuZlMMiV6Dzx6bjL3klre
-         tFq8XfzaTD/G5MGFgZ/pcDWaWUi4Bb8gPi9w7g80DJPb4P7vnerdGRVFsZ8k5rO3Kw83
-         RG+Q==
-X-Gm-Message-State: AOJu0YwOjtw44ZPwNWNP1aj+N2NMWueazlG6hwzu4UGnEgzp8iqIY9Qi
-        blzQvWUMzARQAGZG8qwW07p3sQ==
-X-Google-Smtp-Source: AGHT+IFKoFLLI6EyfZXMV14ggl2qpQfX7S60ysCHOUNV2TqVyX8HDQKThNqS1iZuyX//HsuaL1bmmw==
-X-Received: by 2002:a5d:5390:0:b0:319:55d8:5d51 with SMTP id d16-20020a5d5390000000b0031955d85d51mr8289906wrv.30.1692001423167;
-        Mon, 14 Aug 2023 01:23:43 -0700 (PDT)
-Received: from snaipe-arista.aristanetworks.com ([2a01:e0a:267:60d0:1a56:80ff:fe33:cdc7])
-        by smtp.gmail.com with ESMTPSA id v9-20020a5d6b09000000b0031759e6b43fsm13716583wrw.39.2023.08.14.01.23.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 01:23:42 -0700 (PDT)
-From:   Snaipe <snaipe@arista.com>
-To:     hughd@google.com
-Cc:     ovt@google.com, corbet@lwn.net, akpm@linux-foundation.org,
-        brauner@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Snaipe <snaipe@arista.com>
-Subject: Re: [PATCH] shmem: add support for user extended attributes
-Date:   Mon, 14 Aug 2023 10:23:39 +0200
-Message-ID: <20230814082339.2006418-1-snaipe@arista.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <9b8d38f0-fd22-3f98-d070-16baf976ecb5@google.com>
-References: <9b8d38f0-fd22-3f98-d070-16baf976ecb5@google.com>
+        Mon, 14 Aug 2023 04:30:45 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D6839F5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 01:30:39 -0700 (PDT)
+Received: from [192.168.2.41] (77-166-152-30.fixed.kpn.net [77.166.152.30])
+        by linux.microsoft.com (Postfix) with ESMTPSA id C068F2100EC6;
+        Mon, 14 Aug 2023 01:24:09 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C068F2100EC6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1692001451;
+        bh=6lSuveb6tWcrTgPfQfTJpGUcY4THwpp4qgo85rO2P2A=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=IcVpfAOnNV+fKPI3Ar3IB4Be/0DjLFfDo4byheBLISwcNO7VT2LRCJpY0kJnZIUsE
+         Qw9xA4fJa9wphvIaZHmE/ysUJiDRDeT12CFwgmTX2qYWrkxTgBwcWmD4369apydvmZ
+         1ujTBx5TFHc8j588yKKqphkdq7mmuRIOeYR1Eu3I=
+Message-ID: <e1a7a56d-b77c-4728-a8c7-be8db640c909@linux.microsoft.com>
+Date:   Mon, 14 Aug 2023 10:24:07 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/5] tsm: Introduce a shared ABI for attestation
+ reports
+Content-Language: en-US
+To:     Dan Williams <dan.j.williams@intel.com>, linux-coco@lists.linux.dev
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dionna Amalie Glaze <dionnaglaze@google.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Peter Gonda <pgonda@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Samuel Ortiz <sameo@rivosinc.com>, peterz@infradead.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <169199898909.1782217.10899362240465838600.stgit@dwillia2-xfh.jf.intel.com>
+ <169199900110.1782217.12112722316618515086.stgit@dwillia2-xfh.jf.intel.com>
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+In-Reply-To: <169199900110.1782217.12112722316618515086.stgit@dwillia2-xfh.jf.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Your sending this patch does help to raise the priority for my
-> sending that patch: thank you; but I cannot promise when that will be.
+On 8/14/2023 9:43 AM, Dan Williams wrote:
+> One of the common operations of a TSM (Trusted Security Module) is to
+> provide a way for a TVM (confidential computing guest execution
+> environment) to take a measurement of its launch state, sign it and
+> submit it to a verifying party. Upon successful attestation that
+> verifies the integrity of the TVM additional secrets may be deployed.
+> The concept is common across TSMs, but the implementations are
+> unfortunately vendor specific. While the industry grapples with a common
+> definition of this attestation format [1], Linux need not make this
+> problem worse by defining a new ABI per TSM that wants to perform a
+> similar operation. The current momentum has been to invent new ioctl-ABI
+> per TSM per function which at best is an abdication of the kernel's
+> responsibility to make common infrastructure concepts share common ABI.
+> 
+> The proposal, targeted to conceptually work with TDX, SEV, COVE if not
+> more, is to define a sysfs interface to retrieve the TSM-specific blob.
+> 
+>     echo $hex_encoded_userdata_plus_nonce > /sys/class/tsm/tsm0/inhex
+>     hexdump /sys/class/tsm/tsm0/outblob
+> 
+> This approach later allows for the standardization of the attestation
+> blob format without needing to change the Linux ABI. Until then, the
+> format of 'outblob' is determined by the parent device for 'tsm0'.
+> 
+> The expectation is that this is a boot time exchange that need not be
+> regenerated, making it amenable to a sysfs interface. In case userspace
+> does try to generate multiple attestation reports it includes conflict
+> detection so userspace can be sure no other thread changed the
+> parameters from its last configuration step to the blob retrieval.
+> 
+> TSM specific options are encoded as 'extra' attributes on the TSM device
+> with the expectation that vendors reuse the same options for similar
+> concepts. The current options are defined by SEV-SNP's need for a
+> 'privilege level' concept (VMPL), and the option to retrieve a
+> certificate chain in addition to the attestation report ("extended"
+> format).
+> 
+> Link: http://lore.kernel.org/r/64961c3baf8ce_142af829436@dwillia2-xfh.jf.intel.com.notmuch [1]
+> Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Cc: Dionna Amalie Glaze <dionnaglaze@google.com>
+> Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+> Cc: Peter Gonda <pgonda@google.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Samuel Ortiz <sameo@rivosinc.com>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> ---
+>  Documentation/ABI/testing/sysfs-class-tsm |   47 +++++
+>  MAINTAINERS                               |    8 +
+>  drivers/virt/coco/Kconfig                 |    4 
+>  drivers/virt/coco/Makefile                |    1 
+>  drivers/virt/coco/tdx-guest/Kconfig       |    1 
+>  drivers/virt/coco/tsm.c                   |  290 +++++++++++++++++++++++++++++
+>  include/linux/tsm.h                       |   45 +++++
+>  7 files changed, 396 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-class-tsm
+>  create mode 100644 drivers/virt/coco/tsm.c
+>  create mode 100644 include/linux/tsm.h
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-class-tsm b/Documentation/ABI/testing/sysfs-class-tsm
+> new file mode 100644
+> index 000000000000..37017bde626d
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-class-tsm
+> @@ -0,0 +1,47 @@
+> +What:		/sys/class/tsm/tsm0/inhex
+> +Date:		August, 2023
+> +KernelVersion:	v6.6
+> +Contact:	linux-cxl@vger.kernel.org
+> +Description:
+> +		(RW) Hex encoded userdata to be included in the attestation
+> +		report. For replay protection this should include a nonce, but
+> +		the kernel does not place any restrictions on the content.
+> +
+> +What:		/sys/class/tsm/tsm0/outblob
+> +Date:		August, 2023
+> +KernelVersion:	v6.6
+> +Contact:	linux-cxl@vger.kernel.org
+> +Description:
+> +		(RO) Binary attestation report generated from @inhex translated
+> +		to binary and any options. The format of the report is vendor
+> +		specific and determined by the parent device of 'tsm0'.
+> +
+> +What:		/sys/class/tsm/tsm0/generation
+> +Date:		August, 2023
+> +KernelVersion:	v6.6
+> +Contact:	linux-cxl@vger.kernel.org
+> +Description:
+> +		(RO) The value in this attribute increments each time @inhex or
+> +		any option is written. Userspace can detect conflicts by
+> +		checking generation before writing to any attribute and making
+> +		sure the number of writes matches expectations after reading
+> +		@outblob.
+> +
+> +What:		/sys/class/tsm/tsm0/privlevel
+> +Date:		August, 2023
+> +KernelVersion:	v6.6
+> +Contact:	linux-cxl@vger.kernel.org
+> +Description:
+> +		(RW) If a TSM implementation supports the concept of attestation
+> +		reports for TVMs running at different privilege levels, like
+> +		SEV-SNP "VMPL", specify the privilege level via this attribute.
+> +
+> +What:		/sys/class/tsm/tsm0/format
+> +Date:		August, 2023
+> +KernelVersion:	v6.6
+> +Contact:	linux-cxl@vger.kernel.org
+> +Description:
+> +		(RW) If a TSM implementation supports the concept of attestation
+> +		reports with "extended" contents, like SEV-SNP extended reports
+> +		with certificate chains, specify "extended" vs "default" via
+> +		this attribute.
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3be1bdfe8ecc..97f74d344c8a 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -21625,6 +21625,14 @@ W:	https://github.com/srcres258/linux-doc
+>  T:	git git://github.com/srcres258/linux-doc.git doc-zh-tw
+>  F:	Documentation/translations/zh_TW/
+>  
+> +TRUSTED SECURITY MODULE (TSM) ATTESTATION REPORTS
+> +M:	Dan Williams <dan.j.williams@intel.com>
+> +L:	linux-coco@lists.linux.dev
+> +S:	Maintained
+> +F:	Documentation/ABI/testing/sysfs-class-tsm
+> +F:	drivers/virt/coco/tsm.c
+> +F:	include/linux/tsm.h
+> +
+>  TTY LAYER
+>  M:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>  M:	Jiri Slaby <jirislaby@kernel.org>
+> diff --git a/drivers/virt/coco/Kconfig b/drivers/virt/coco/Kconfig
+> index fc5c64f04c4a..d92f07019f38 100644
+> --- a/drivers/virt/coco/Kconfig
+> +++ b/drivers/virt/coco/Kconfig
+> @@ -2,6 +2,10 @@
+>  #
+>  # Confidential computing related collateral
+>  #
+> +
+> +config TSM_REPORTS
+> +	tristate
+> +
+>  source "drivers/virt/coco/efi_secret/Kconfig"
+>  
+>  source "drivers/virt/coco/sev-guest/Kconfig"
+> diff --git a/drivers/virt/coco/Makefile b/drivers/virt/coco/Makefile
+> index 55302ef719ad..18c1aba5edb7 100644
+> --- a/drivers/virt/coco/Makefile
+> +++ b/drivers/virt/coco/Makefile
+> @@ -2,6 +2,7 @@
+>  #
+>  # Confidential computing related collateral
+>  #
+> +obj-$(CONFIG_TSM_REPORTS)	+= tsm.o
+>  obj-$(CONFIG_EFI_SECRET)	+= efi_secret/
+>  obj-$(CONFIG_SEV_GUEST)		+= sev-guest/
+>  obj-$(CONFIG_INTEL_TDX_GUEST)	+= tdx-guest/
+> diff --git a/drivers/virt/coco/tdx-guest/Kconfig b/drivers/virt/coco/tdx-guest/Kconfig
+> index 14246fc2fb02..22dd59e19431 100644
+> --- a/drivers/virt/coco/tdx-guest/Kconfig
+> +++ b/drivers/virt/coco/tdx-guest/Kconfig
+> @@ -1,6 +1,7 @@
+>  config TDX_GUEST_DRIVER
+>  	tristate "TDX Guest driver"
+>  	depends on INTEL_TDX_GUEST
+> +	select TSM_REPORTS
+>  	help
+>  	  The driver provides userspace interface to communicate with
+>  	  the TDX module to request the TDX guest details like attestation
+> diff --git a/drivers/virt/coco/tsm.c b/drivers/virt/coco/tsm.c
+> new file mode 100644
+> index 000000000000..1bf2ee82eb94
+> --- /dev/null
+> +++ b/drivers/virt/coco/tsm.c
+> @@ -0,0 +1,290 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright(c) 2023 Intel Corporation. All rights reserved. */
+> +
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> +
+> +#include <linux/tsm.h>
+> +#include <linux/err.h>
+> +#include <linux/slab.h>
+> +#include <linux/rwsem.h>
+> +#include <linux/device.h>
+> +#include <linux/string.h>
+> +#include <linux/module.h>
+> +#include <linux/cleanup.h>
+> +
+> +struct class *tsm_class;
+> +static struct tsm_provider {
+> +	const struct tsm_ops *ops;
+> +	struct device *dev;
+> +} provider;
+> +static DECLARE_RWSEM(tsm_rwsem);
+> +
+> +/**
+> + * DOC: Trusted Security Module (TSM) Attestation Report Interface
+> + *
+> + * The TSM report interface is a common provider of blobs that facilitate
+> + * attestation of a TVM (confidential computing guest) by an attestation
+> + * service. A TSM report combines a user-defined blob (likely a public-key with
+> + * a nonce for a key-exchange protocol) with a signed attestation report. That
+> + * combined blob is then used to obtain secrets provided by an agent that can
+> + * validate the attestation report. The expectation is that this interface is
+> + * invoked infrequently, likely only once at TVM boot time.
+> + *
+> + * The attestation report format is TSM provider specific, when / if a standard
+> + * materializes that can be published instead of the vendor layout.
+> + */
+> +
+> +/**
+> + * struct tsm_report - track state of report generation relative to options
+> + * @desc: report generation options / cached report state
+> + * @outblob: generated evidence to provider to the attestation agent
+> + * @outblob_len: sizeof(outblob)
+> + * @write_generation: conflict detection, and report regeneration tracking
+> + * @read_generation: cached report invalidation tracking
+> + */
+> +struct tsm_report {
+> +	struct tsm_desc desc;
+> +	size_t outblob_len;
+> +	u8 *outblob;
+> +	unsigned long write_generation;
+> +	unsigned long read_generation;
+> +} tsm_report;
+> +
+> +static ssize_t privlevel_store(struct device *dev,
+> +			       struct device_attribute *attr, const char *buf,
+> +			       size_t len)
+> +{
+> +	unsigned int val;
+> +	int rc;
+> +
+> +	rc = kstrtouint(buf, 0, &val);
+> +	if (rc)
+> +		return rc;
+> +
+> +	guard(rwsem_write)(&tsm_rwsem);
+> +	if (tsm_report.desc.privlevel == val)
+> +		return len;
+> +	tsm_report.desc.privlevel = val;
+> +	tsm_report.write_generation++;
+> +
+> +	return len;
+> +}
+> +
+> +static ssize_t privlevel_show(struct device *dev, struct device_attribute *attr,
+> +			      char *buf)
+> +{
+> +	return sysfs_emit(buf, "%u\n", tsm_report.desc.privlevel);
+> +}
+> +
+> +static DEVICE_ATTR_RW(privlevel);
+> +
+> +static ssize_t format_store(struct device *dev, struct device_attribute *attr,
+> +			    const char *buf, size_t len)
+> +{
+> +	enum tsm_format format;
+> +
+> +	if (sysfs_streq(buf, "default"))
+> +		format = TSM_FORMAT_DEFAULT;
+> +	else if (sysfs_streq(buf, "extended"))
+> +		format = TSM_FORMAT_EXTENDED;
+> +	else
+> +		return -EINVAL;
+> +
+> +	guard(rwsem_write)(&tsm_rwsem);
+> +	if (tsm_report.desc.outblob_format == format)
+> +		return len;
+> +	tsm_report.desc.outblob_format = format;
+> +	tsm_report.write_generation++;
+> +
+> +	return len;
+> +}
+> +
+> +static ssize_t format_show(struct device *dev, struct device_attribute *attr,
+> +			   char *buf)
+> +{
+> +	if (tsm_report.desc.outblob_format == TSM_FORMAT_DEFAULT)
+> +		return sysfs_emit(buf, "default\n");
+> +	return sysfs_emit(buf, "extended\n");
+> +}
+> +
+> +static DEVICE_ATTR_RW(format);
+> +
+> +static struct attribute *tsm_extra_attributes[] = {
+> +	&dev_attr_format.attr,
+> +	&dev_attr_privlevel.attr,
+> +	NULL,
+> +};
+> +
+> +struct attribute_group tsm_extra_attribute_group = {
+> +	.attrs = tsm_extra_attributes,
+> +};
+> +EXPORT_SYMBOL_GPL(tsm_extra_attribute_group);
+> +
+> +/*
+> + * Input is a small hex blob, rather than a writable binary attribute, so that
+> + * it is conveyed atomically.
+> + */
+> +static ssize_t inhex_store(struct device *dev, struct device_attribute *attr,
+> +			   const char *buf, size_t len)
+> +{
+> +	u8 inblob[TSM_INBLOB_MAX];
+> +	size_t inblob_len;
+> +	int rc;
+> +
+> +	inblob_len = len;
+> +	if (buf[len - 1] == '\n')
+> +		inblob_len--;
+> +	if (inblob_len & 1)
+> +		return -EINVAL;
+> +	inblob_len /= 2;
+> +	if (inblob_len > TSM_INBLOB_MAX)
+> +		return -EINVAL;
+> +
+> +	rc = hex2bin(inblob, buf, inblob_len);
+> +	if (rc < 0)
+> +		return rc;
+> +
+> +	guard(rwsem_write)(&tsm_rwsem);
+> +	if (memcmp(tsm_report.desc.inblob, inblob, inblob_len) == 0)
+> +		return len;
+> +	memcpy(tsm_report.desc.inblob, inblob, inblob_len);
+> +	tsm_report.desc.inblob_len = inblob_len;
+> +	tsm_report.write_generation++;
+> +
+> +	return len;
+> +}
+> +
+> +static ssize_t inhex_show(struct device *dev, struct device_attribute *attr,
+> +			  char *buf)
+> +{
+> +	char *end;
+> +
+> +	guard(rwsem_read)(&tsm_rwsem);
+> +	if (!tsm_report.desc.inblob_len)
+> +		return 0;
+> +	end = bin2hex(buf, tsm_report.desc.inblob, tsm_report.desc.inblob_len);
+> +	*end++ = '\n';
+> +	return end - buf;
+> +}
+> +static DEVICE_ATTR_RW(inhex);
+> +
+> +static ssize_t generation_show(struct device *dev,
+> +			       struct device_attribute *attr, char *buf)
+> +{
+> +	guard(rwsem_read)(&tsm_rwsem);
+> +	return sysfs_emit(buf, "%lu\n", tsm_report.write_generation);
+> +}
+> +static DEVICE_ATTR_RO(generation);
+> +
+> +static struct attribute *tsm_attributes[] = {
+> +	&dev_attr_inhex.attr,
+> +	&dev_attr_generation.attr,
+> +	NULL,
+> +};
+> +
+> +static ssize_t outblob_read(struct file *f, struct kobject *kobj,
+> +			    struct bin_attribute *bin_attr, char *buf,
+> +			    loff_t offset, size_t count)
+> +{
+> +	guard(rwsem_read)(&tsm_rwsem);
 
-Hey Hugh,
+This is unfortunate but it would need to be a rwsem_write otherwise two
+processes can race to reach the kvfree and both call report_new at the
+same time (unlikely as it may be).
 
-Just as an additional data point, if it helps with priority :)
+Jeremi
 
-The lack of support of user xattrs on tmpfs our last remaining blocker for
-using unprivileged overlayfs mounts that use a tmpfs for the upper dir & work
-dir. Not that it isn't possible to use unprivileged overlayfs mounts in general,
-but not having this option means that use-cases for discardable upper layer
-changes are harder to clean up correctly when not on an tmpfs mount whose
-lifetime is bound to a mount namespace.
+> +	if (!tsm_report.desc.inblob_len)
+> +		return -EINVAL;
+> +
+> +	if (!tsm_report.outblob ||
+> +	    tsm_report.read_generation != tsm_report.write_generation) {
+> +		const struct tsm_ops *ops = provider.ops;
+> +		size_t outblob_len;
+> +		u8 *outblob;
+> +
+> +		kvfree(tsm_report.outblob);
+> +		outblob = ops->report_new(provider.dev->parent,
+> +					  &tsm_report.desc, &outblob_len);
+> +		if (IS_ERR(outblob))
+> +			return PTR_ERR(outblob);
+> +		tsm_report.outblob_len = outblob_len;
+> +		tsm_report.outblob = outblob;
+> +		tsm_report.read_generation = tsm_report.write_generation;
+> +	}
+> +
+> +	return memory_read_from_buffer(buf, count, &offset,
+> +				       tsm_report.outblob,
+> +				       tsm_report.outblob_len);
+> +}
+> +static BIN_ATTR_RO(outblob, 0);
+> +
+> +static struct bin_attribute *tsm_bin_attributes[] = {
+> +	&bin_attr_outblob,
+> +	NULL,
+> +};
+> +
+> +struct attribute_group tsm_default_attribute_group = {
+> +	.bin_attrs = tsm_bin_attributes,
+> +	.attrs = tsm_attributes,
+> +};
+> +EXPORT_SYMBOL_GPL(tsm_default_attribute_group);
+> +
+> +static const struct attribute_group *tsm_default_attribute_groups[] = {
+> +	&tsm_default_attribute_group,
+> +	NULL,
+> +};
+> +
+> +int register_tsm(const struct tsm_ops *ops, struct device *parent,
+> +		 const struct attribute_group **groups)
+> +{
+> +	const struct tsm_ops *conflict;
+> +	struct device *dev;
+> +	int rc;
+> +
+> +	if (!parent)
+> +		return -EINVAL;
+> +
+> +	if (!groups)
+> +		groups = tsm_default_attribute_groups;
+> +
+> +	guard(rwsem_write)(&tsm_rwsem);
+> +	conflict = provider.ops;
+> +	if (conflict) {
+> +		pr_err("\"%s\" ops already registered\n", conflict->name);
+> +		return rc;
+> +	}
+> +
+> +	dev = device_create_with_groups(tsm_class, parent, 0, NULL, groups,
+> +					"tsm0");
+> +	if (IS_ERR(dev))
+> +		return PTR_ERR(dev);
+> +
+> +	provider.ops = ops;
+> +	provider.dev = dev;
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(register_tsm);
+> +
+> +int unregister_tsm(const struct tsm_ops *ops)
+> +{
+> +	guard(rwsem_write)(&tsm_rwsem);
+> +	if (ops != provider.ops)
+> +		return -EBUSY;
+> +	provider.ops = NULL;
+> +	device_unregister(provider.dev);
+> +	provider.dev = NULL;
+> +	kvfree(tsm_report.outblob);
+> +	tsm_report.outblob = NULL;
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(unregister_tsm);
+> +
+> +static int __init tsm_init(void)
+> +{
+> +	tsm_class = class_create("tsm");
+> +	return PTR_ERR_OR_ZERO(tsm_class);
+> +}
+> +module_init(tsm_init);
+> +
+> +static void __exit tsm_exit(void)
+> +{
+> +	class_destroy(tsm_class);
+> +}
+> +module_exit(tsm_exit);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_DESCRIPTION("Provide Trusted Security Module attestation reports via sysfs");
+> diff --git a/include/linux/tsm.h b/include/linux/tsm.h
+> new file mode 100644
+> index 000000000000..6dc2f07543b8
+> --- /dev/null
+> +++ b/include/linux/tsm.h
+> @@ -0,0 +1,45 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __TSM_H
+> +#define __TSM_H
+> +
+> +#include <linux/types.h>
+> +#include <linux/device.h>
+> +
+> +#define TSM_INBLOB_MAX 64
+> +
+> +enum tsm_format {
+> +	TSM_FORMAT_DEFAULT,
+> +	TSM_FORMAT_EXTENDED,
+> +};
+> +
+> +/**
+> + * struct tsm_desc - option descriptor for generating tsm report blobs
+> + * @privlevel: optional privilege level to associate with @outblob
+> + * @inblob_len: sizeof @inblob
+> + * @inblob: arbitrary input data
+> + * @outblob_format: for TSMs with an "extended" format
+> + */
+> +struct tsm_desc {
+> +	unsigned int privlevel;
+> +	size_t inblob_len;
+> +	u8 inblob[TSM_INBLOB_MAX];
+> +	enum tsm_format outblob_format;
+> +};
+> +
+> +/*
+> + * arch specific ops, only one is expected to be registered at a time
+> + * i.e. only one of SEV, TDX, COVE, etc.
+> + */
+> +struct tsm_ops {
+> +	const char *name;
+> +	u8 *(*report_new)(struct device *dev, const struct tsm_desc *desc,
+> +			  size_t *outblob_len);
+> +};
+> +
+> +extern struct attribute_group tsm_default_attribute_group;
+> +extern struct attribute_group tsm_extra_attribute_group;
+> +
+> +int register_tsm(const struct tsm_ops *ops, struct device *parent,
+> +		 const struct attribute_group **groups);
+> +int unregister_tsm(const struct tsm_ops *ops);
+> +#endif /* __TSM_H */
+> 
 
-I don't think there's any rush; we can live with rmdir failing with EIO for now,
-but it'd be great to see this fixed rather than having to implement expensive
-cleanup routines that have to remove the upper+work dirs recursively with
-CAP_DAC_OVERRIDE.
-
-Cheers,
-
--- 
-Snaipe
