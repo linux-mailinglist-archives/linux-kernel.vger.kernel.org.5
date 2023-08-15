@@ -2,148 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF2477C63D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 05:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71A3E77C64F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 05:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234399AbjHODO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 23:14:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39258 "EHLO
+        id S234498AbjHODRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 23:17:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233961AbjHODN6 (ORCPT
+        with ESMTP id S234217AbjHODOr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 23:13:58 -0400
+        Mon, 14 Aug 2023 23:14:47 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E9A1987;
-        Mon, 14 Aug 2023 20:12:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB31E52;
+        Mon, 14 Aug 2023 20:14:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B3D0C618CD;
-        Tue, 15 Aug 2023 03:12:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17FB1C433C8;
-        Tue, 15 Aug 2023 03:12:07 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 73E29631F2;
+        Tue, 15 Aug 2023 03:14:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECD6BC433C7;
+        Tue, 15 Aug 2023 03:14:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692069127;
-        bh=OMqKbUb5Z6H+wBW/auUjyZMEYXJpKnpvS6GlVzJnka0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=S6rt+hAuiJV63P1B4FxfZ3NkAMEZaMsUzvqMbltFVK9UvK3EVj82UoXZcMbY2Lcu/
-         vrW3u3PD5MbNGnLCKp3N5e76dPvsAOZpPZTJ54OAG2dha1MC6qHiNxFkMemOIK8Ed7
-         W2J0DELDonLghGJlSWJffW2kQDo46XYSYQAQ+Mpg2ofWH/nY6a1OrdYxs3kvSLa1bS
-         SnWI72RAmHM+/jUJ4o5OTCCWaVQzYwOjVBwQWEUOPjRYe4qYyJY2TfarZpeAFQbv9g
-         3jfJNdU9jQ3wqGrx4pe7S9O/C7XafPQ7rmMlxX7lS6gUlY6l58tkXFqLtHQLnR3sxI
-         wRB+1w9v46+1A==
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-4fe0c566788so7834064e87.0;
-        Mon, 14 Aug 2023 20:12:06 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwxjX660rul9/cMV7y4SAzmutsbJgFkQH2Pqz7FfFEDtV7r+Qnx
-        zZF0eTXplOH7HImWTR8sSjUraLbmY0dz69Itu24=
-X-Google-Smtp-Source: AGHT+IHLO2l2Hzw4JAJnD4ugJfISr9EG03Lgo5HMyI2u2yjH1FtGDSdelHreBc6cS9H/iMVmKoIVS8YOxBXfylTlElU=
-X-Received: by 2002:ac2:4e04:0:b0:4fd:f7b8:555 with SMTP id
- e4-20020ac24e04000000b004fdf7b80555mr9118198lfr.19.1692069125012; Mon, 14 Aug
- 2023 20:12:05 -0700 (PDT)
+        s=k20201202; t=1692069283;
+        bh=aEqYKksjhQLir8WG8R1TLcbnRt6Stl4Lku02MnI04Ug=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=uEdUxtiX1ir6k+G7ttFJmF9hwx1EtNyLNlhCZ0obnCAs5e+VJx6LA01LWZ49LeT6e
+         RB6mur83O4fp832cGUILaYsFrufmapQCKs1Oy4pLHVIuptyxmr3MqblWk6HAlYCYDX
+         /ixIcEWz8v+3F9G/xayocmnc3jDwqgSJCp4Dqd0RtFAYXPeGInol2AjbXMxVSR+ZDY
+         YyQ0G66vSI2/H4zQ6fN3xq9xowVu76jMkAxCLg0nOFZ9gHUj8Iy6tb0SuJFsLVSmrH
+         g1fX/FrQF33Ce2RyQ9GDyKm9KiiJtzir+d87IzakbJGIbM1otkcdW9PPCyu8M2atRk
+         W1YRfFQ3OGJlg==
+Received: (nullmailer pid 3595615 invoked by uid 1000);
+        Tue, 15 Aug 2023 03:14:41 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-References: <20230815104604.54f65293@canb.auug.org.au>
-In-Reply-To: <20230815104604.54f65293@canb.auug.org.au>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Tue, 15 Aug 2023 11:11:52 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRVG+yX7fktLru4U=OVKrTg73kTR5hirw1hh1P9c+MNOQ@mail.gmail.com>
-Message-ID: <CAJF2gTRVG+yX7fktLru4U=OVKrTg73kTR5hirw1hh1P9c+MNOQ@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the csky tree with the mm tree
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     Guo Ren <guoren@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+From:   Rob Herring <robh@kernel.org>
+To:     like@awinic.com
+Cc:     linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+        liweilei@awinic.com, devicetree@vger.kernel.org,
+        wangweidong.a@awinic.com, krzysztof.kozlowski+dt@linaro.org,
+        robh+dt@kernel.org, liangdong@awinic.com, broonie@kernel.org,
+        conor+dt@kernel.org
+In-Reply-To: <20230815020044.2159900-3-like@awinic.com>
+References: <20230815020044.2159900-1-like@awinic.com>
+ <20230815020044.2159900-3-like@awinic.com>
+Message-Id: <169206928174.3595586.4376041388738556088.robh@kernel.org>
+Subject: Re: [PATCH v3 2/2] regulator: dt-bindings: Add Awinic AW37503
+Date:   Mon, 14 Aug 2023 21:14:41 -0600
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 8:46=E2=80=AFAM Stephen Rothwell <sfr@canb.auug.org=
-.au> wrote:
->
-> Hi all,
->
-> Today's linux-next merge of the csky tree got a conflict in:
->
->   arch/csky/abiv2/cacheflush.c
->
-> between commit:
->
->   1222e1310d64 ("csky: implement the new page table range API")
-Could I take this patch into csky next tree to solve the conflict.
 
->
-> from the mm tree and commit:
->
->   1362d15ffb59 ("csky: pgtable: Invalidate stale I-cache lines in update_=
-mmu_cache")
->
-> from the csky tree.
->
-> I fixed it up (I think - see below) and can carry the fix as
-> necessary. This is now fixed as far as linux-next is concerned, but any
-> non trivial conflicts should be mentioned to your upstream maintainer
-> when your tree is submitted for merging.  You may also want to consider
-> cooperating with the maintainer of the conflicting tree to minimise any
-> particularly complex conflicts.
->
-> --
-> Cheers,
-> Stephen Rothwell
->
-> diff --cc arch/csky/abiv2/cacheflush.c
-> index d05a551af5d5,500eb8f69397..000000000000
-> --- a/arch/csky/abiv2/cacheflush.c
-> +++ b/arch/csky/abiv2/cacheflush.c
-> @@@ -16,23 -15,22 +16,22 @@@ void update_mmu_cache_range(struct vm_f
->
->         flush_tlb_page(vma, address);
->
->  -      if (!pfn_valid(pte_pfn(*pte)))
->  +      if (!pfn_valid(pfn))
->                 return;
->
->  -      page =3D pfn_to_page(pte_pfn(*pte));
->  -      if (page =3D=3D ZERO_PAGE(0))
->  +      folio =3D page_folio(pfn_to_page(pfn));
->  +
->  +      if (test_and_set_bit(PG_dcache_clean, &folio->flags))
->                 return;
->
->  -      if (test_and_set_bit(PG_dcache_clean, &page->flags))
->  -              return;
->  +      for (i =3D 0; i < folio_nr_pages(folio); i++) {
->  +              unsigned long addr =3D (unsigned long) kmap_local_folio(f=
-olio,
->  +                                                              i * PAGE_=
-SIZE);
->
->  -      addr =3D (unsigned long) kmap_atomic(page);
->  -
->  -      icache_inv_range(address, address + PAGE_SIZE);
->  -      dcache_wb_range(addr, addr + PAGE_SIZE);
->  -
->  -      kunmap_atomic((void *) addr);
-> ++              icache_inv_range(address, address + PAGE_SIZE);
->  +              dcache_wb_range(addr, addr + PAGE_SIZE);
-> -               if (vma->vm_flags & VM_EXEC)
-> -                       icache_inv_range(addr, addr + PAGE_SIZE);
->  +              kunmap_local((void *) addr);
->  +      }
->   }
->
->   void flush_icache_deferred(struct mm_struct *mm)
+On Tue, 15 Aug 2023 02:00:44 +0000, like@awinic.com wrote:
+> From: Alec Li <like@awinic.com>
+> 
+> Add aw37503 regulator device-tree binding documentation.
+> 
+> Signed-off-by: Alec Li <like@awinic.com>
+> ---
+>  .../bindings/regulator/awinic,aw37503.yaml    | 66 +++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml
+> 
 
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
+yamllint warnings/errors:
 
---=20
-Best Regards
- Guo Ren
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/regulator/awinic,aw37503.example.dtb: regulator@3e: outp: Unevaluated properties are not allowed ('enable-gpios' was unexpected)
+	from schema $id: http://devicetree.org/schemas/regulator/awinic,aw37503.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/regulator/awinic,aw37503.example.dtb: regulator@3e: outn: Unevaluated properties are not allowed ('enable-gpios' was unexpected)
+	from schema $id: http://devicetree.org/schemas/regulator/awinic,aw37503.yaml#
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230815020044.2159900-3-like@awinic.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
