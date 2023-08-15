@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11BD677D32B
+	by mail.lfdr.de (Postfix) with ESMTP id 64EFA77D32C
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239886AbjHOTQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 15:16:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39304 "EHLO
+        id S239927AbjHOTQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 15:16:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239918AbjHOTPk (ORCPT
+        with ESMTP id S239919AbjHOTPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 15:15:40 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADB1138
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:15:38 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fe1e1142caso56465695e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:15:38 -0700 (PDT)
+        Tue, 15 Aug 2023 15:15:41 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2364ABF
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:15:40 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe4cdb72b9so52266445e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:15:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1692126937; x=1692731737;
+        d=arista.com; s=google; t=1692126938; x=1692731738;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TCicV2Aib3M68fPnrmFoMTYBXDUU3WrcaJEwS9KBGbs=;
-        b=KSrZc8SeRtjynMirvrDP537XDedzJqAMIdl1WW0Cepu9/zr4LB/skrKzCktxWF5XaW
-         WPhYvDhP+jk6+6BRd/iVNoJ0KvV5lcxaYonubOY31VzUCCqLRUhdMMkn8oa5Zq0R2lod
-         Q/dwxyNGAbYPG+2niUaq5R2TC71kQAgFBhmhGPD4jUpMGM8AXO4roMO3BLve3u4vXogB
-         l7BYnkN6dWbhHgb2h8On6WjVzbaKr+9L5qRl2whBYMtCjl5I/OqtqgaC/HKdZZGnS9KG
-         jDiQG6Yh4EMlO5Ie0l/2b+Pxey8H5BjbIJ7VB6Db/rxy7+Ydlx0akGK0GwVxv0Oqsc32
-         WM1Q==
+        bh=7EyHuBFw5EK2jCcTcSbUeTOqQzO5Rjmm6B6zBd+yDm4=;
+        b=VKUH/UbwxOhgithRt2gN9LMv74BX/XIRGKZ/xOACylB46RTasbr1mF8GgJBFnuZhu2
+         5mIW2PLBnZu/Zhg0Utb7cGVBdOHdvhCvIVHmskFub0c7QguYS5Z6nKsJ/DXM5zkCxPqN
+         5Cxgjf/HWUsOA3BdP6lYYpjsUBZFFpBZmTO7Y+/MmPu10Xi6ESQV5sKaEueg+gevHuZa
+         eaF62c0TK2MW949l1tTzHZM4J1wwxwaHIoIwSKf+FbLDkREkv4G28p51TPqC+EWQXKh2
+         j115D22g5ml+OsV3Q5f6Wfb/FAJGopAr/UBRBhBk0oKq3QMz0Ul2KVzKPPY+Jl5u0Tj5
+         J9lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692126937; x=1692731737;
+        d=1e100.net; s=20221208; t=1692126938; x=1692731738;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TCicV2Aib3M68fPnrmFoMTYBXDUU3WrcaJEwS9KBGbs=;
-        b=GKu1JeHNImO4wyYhHDKjsgOyeMrXJBaq5wqW4hT/HQZrjLT8FOFwsNeu1UZyWtpm+e
-         ndLmvos0X0hfnlkbPnaUA7r0ol3Ef/o8/iAN9abYeIOgu1u7m8acUMm18MUflxtBqeo2
-         mUgcbT8cMfAq1INcfXRTqYW9hiyE7zfy/vqanCwcKEr3TvjazCWRQzJDXoQAp9FXmu6w
-         WCDEOakg4Kw4CuM9ZjH12mS0RTsa8pKeshYVZCuG53BM/0PqTOwytqFlZ8kFjIKHg5sX
-         cOqSvCFSgl0JKuUWag9RF6CAIRZth5ezV6CSW4NlQ0GcRJmkQ4gduzoXpwUWf2FK1nXV
-         56+w==
-X-Gm-Message-State: AOJu0YwxzBRVAOORK8LfQbVLxg7Y5kYgwOoqCi+bWD3EuhjistR1OHb1
-        2ItsWk8BgWV+7mn93KDGh1j9lA==
-X-Google-Smtp-Source: AGHT+IF7H9W7EnUie786nxeBQ2hdYK8tOO/6cYa85d4L1yr6T/BjFLUhxfUL3oarWO8EVLGMa1/5YQ==
-X-Received: by 2002:a05:600c:2909:b0:3fe:2b8c:9f00 with SMTP id i9-20020a05600c290900b003fe2b8c9f00mr10327588wmd.24.1692126936972;
-        Tue, 15 Aug 2023 12:15:36 -0700 (PDT)
+        bh=7EyHuBFw5EK2jCcTcSbUeTOqQzO5Rjmm6B6zBd+yDm4=;
+        b=Xne+nZy8sEqOS9yKLRaeIjpHIt9ERCYUBDt+18iTk0mjWZyYPTTyt0HmMamkp7BgOA
+         nmJYiDsE3Xa5fM7WCKGfLv6ebcOZKM8PFYMc+60me+qEdDET9l+9BM6A1iVDPCRwe0h0
+         eB5B1Q9mhoUA/9cuvnx5TaHSAPbvCyud7+aKFERkTtj3oywXcN7Z19UWJpcINfHcvZuU
+         x0GvMlCAX5XpFQ0/kYwYgrKm09eu0F5NZBa3exkt4cCS3z4WU+o2SOK8EFNrf0LRhaY8
+         p4uyhP9mdsomN/E53IbBQcIdyUeEeN18WsQ2Dg8y63sW7zgzQMSonxkm2mEFtiy/hddy
+         deZQ==
+X-Gm-Message-State: AOJu0YylZVrIbSUgMyJPz83bBuqIrNXHKdKv1DBcP3+uO1legpVfaULu
+        gxaRpht4YaPJKK4eyjxMHXQJRA==
+X-Google-Smtp-Source: AGHT+IHGTrm+x1Vu5layC3iYh/XjPQMDHzSnKaBOiU5HOqrYbplpdlDZ4HU2LZK30Hw/fDEj3edw+w==
+X-Received: by 2002:a7b:cd0f:0:b0:3fa:77ed:9894 with SMTP id f15-20020a7bcd0f000000b003fa77ed9894mr10379835wmj.7.1692126938707;
+        Tue, 15 Aug 2023 12:15:38 -0700 (PDT)
 Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id q9-20020a1ce909000000b003fbbe41fd78sm18779737wmc.10.2023.08.15.12.15.35
+        by smtp.gmail.com with ESMTPSA id q9-20020a1ce909000000b003fbbe41fd78sm18779737wmc.10.2023.08.15.12.15.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 12:15:36 -0700 (PDT)
+        Tue, 15 Aug 2023 12:15:38 -0700 (PDT)
 From:   Dmitry Safonov <dima@arista.com>
 To:     David Ahern <dsahern@kernel.org>,
         Eric Dumazet <edumazet@google.com>,
@@ -76,9 +76,9 @@ Cc:     linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
         Salam Noureddine <noureddine@arista.com>,
         Simon Horman <simon.horman@corigine.com>,
         "Tetreault, Francois" <ftetreau@ciena.com>, netdev@vger.kernel.org
-Subject: [PATCH v10 net-next 19/23] net/tcp: Allow asynchronous delete for TCP-AO keys (MKTs)
-Date:   Tue, 15 Aug 2023 20:14:48 +0100
-Message-ID: <20230815191455.1872316-20-dima@arista.com>
+Subject: [PATCH v10 net-next 20/23] net/tcp: Add static_key for TCP-AO
+Date:   Tue, 15 Aug 2023 20:14:49 +0100
+Message-ID: <20230815191455.1872316-21-dima@arista.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230815191455.1872316-1-dima@arista.com>
 References: <20230815191455.1872316-1-dima@arista.com>
@@ -94,101 +94,202 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete becomes very, very fast - almost free, but after setsockopt()
-syscall returns, the key is still alive until next RCU grace period.
-Which is fine for listen sockets as userspace needs to be aware of
-setsockopt(TCP_AO) and accept() race and resolve it with verification
-by getsockopt() after TCP connection was accepted.
+Similarly to TCP-MD5, add a static key to TCP-AO that is patched out
+when there are no keys on a machine and dynamically enabled with the
+first setsockopt(TCP_AO) adds a key on any socket. The static key is as
+well dynamically disabled later when the socket is destructed.
 
-The benchmark results (on non-loaded box, worse with more RCU work pending):
-> ok 33    Worst case delete    16384 keys: min=5ms max=10ms mean=6.93904ms stddev=0.263421
-> ok 34        Add a new key    16384 keys: min=1ms max=4ms mean=2.17751ms stddev=0.147564
-> ok 35 Remove random-search    16384 keys: min=5ms max=10ms mean=6.50243ms stddev=0.254999
-> ok 36         Remove async    16384 keys: min=0ms max=0ms mean=0.0296107ms stddev=0.0172078
+The lifetime of enabled static key here is the same as ao_info: it is
+enabled on allocation, passed over from full socket to twsk and
+destructed when ao_info is scheduled for destruction.
 
-Co-developed-by: Francesco Ruggeri <fruggeri@arista.com>
-Signed-off-by: Francesco Ruggeri <fruggeri@arista.com>
-Co-developed-by: Salam Noureddine <noureddine@arista.com>
-Signed-off-by: Salam Noureddine <noureddine@arista.com>
 Signed-off-by: Dmitry Safonov <dima@arista.com>
 Acked-by: David Ahern <dsahern@kernel.org>
 ---
- include/uapi/linux/tcp.h |  3 ++-
- net/ipv4/tcp_ao.c        | 21 ++++++++++++++++++---
- 2 files changed, 20 insertions(+), 4 deletions(-)
+ include/net/tcp.h    |  3 +++
+ include/net/tcp_ao.h |  2 ++
+ net/ipv4/tcp_ao.c    | 22 +++++++++++++++++++++
+ net/ipv4/tcp_input.c | 46 +++++++++++++++++++++++++++++---------------
+ 4 files changed, 57 insertions(+), 16 deletions(-)
 
-diff --git a/include/uapi/linux/tcp.h b/include/uapi/linux/tcp.h
-index 1109093bbb24..979ff960fddb 100644
---- a/include/uapi/linux/tcp.h
-+++ b/include/uapi/linux/tcp.h
-@@ -383,7 +383,8 @@ struct tcp_ao_del { /* setsockopt(TCP_AO_DEL_KEY) */
- 	__s32	ifindex;		/* L3 dev index for VRF */
- 	__u32   set_current	:1,	/* corresponding ::current_key */
- 		set_rnext	:1,	/* corresponding ::rnext */
--		reserved	:30;	/* must be 0 */
-+		del_async	:1,	/* only valid for listen sockets */
-+		reserved	:29;	/* must be 0 */
- 	__u16	reserved2;		/* padding, must be 0 */
- 	__u8	prefix;			/* peer's address prefix */
- 	__u8	sndid;			/* SendID for outgoing segments */
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index 85e0f0b50261..b90ef7090dd6 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -2612,6 +2612,9 @@ static inline bool tcp_ao_required(struct sock *sk, const void *saddr,
+ 	struct tcp_ao_info *ao_info;
+ 	struct tcp_ao_key *ao_key;
+ 
++	if (!static_branch_unlikely(&tcp_ao_needed.key))
++		return false;
++
+ 	ao_info = rcu_dereference_check(tcp_sk(sk)->ao_info,
+ 					lockdep_sock_is_held(sk));
+ 	if (!ao_info)
+diff --git a/include/net/tcp_ao.h b/include/net/tcp_ao.h
+index 705e791c0a48..a56b1a68a883 100644
+--- a/include/net/tcp_ao.h
++++ b/include/net/tcp_ao.h
+@@ -151,6 +151,8 @@ do {									\
+ 
+ #ifdef CONFIG_TCP_AO
+ /* TCP-AO structures and functions */
++#include <linux/jump_label.h>
++extern struct static_key_false_deferred tcp_ao_needed;
+ 
+ struct tcp4_ao_context {
+ 	__be32		saddr;
 diff --git a/net/ipv4/tcp_ao.c b/net/ipv4/tcp_ao.c
-index 19ca3b36aa5a..124e9489f202 100644
+index 124e9489f202..88634fbb54f2 100644
 --- a/net/ipv4/tcp_ao.c
 +++ b/net/ipv4/tcp_ao.c
-@@ -1578,7 +1578,7 @@ static int tcp_ao_add_cmd(struct sock *sk, unsigned short int family,
+@@ -17,6 +17,8 @@
+ #include <net/ipv6.h>
+ #include <net/icmp.h>
+ 
++DEFINE_STATIC_KEY_DEFERRED_FALSE(tcp_ao_needed, HZ);
++
+ int tcp_ao_calc_traffic_key(struct tcp_ao_key *mkt, u8 *key, void *ctx,
+ 			    unsigned int len, struct tcp_sigpool *hp)
+ {
+@@ -50,6 +52,9 @@ bool tcp_ao_ignore_icmp(const struct sock *sk, int type, int code)
+ 	bool ignore_icmp = false;
+ 	struct tcp_ao_info *ao;
+ 
++	if (!static_branch_unlikely(&tcp_ao_needed.key))
++		return false;
++
+ 	/* RFC5925, 7.8:
+ 	 * >> A TCP-AO implementation MUST default to ignore incoming ICMPv4
+ 	 * messages of Type 3 (destination unreachable), Codes 2-4 (protocol
+@@ -185,6 +190,9 @@ static struct tcp_ao_key *__tcp_ao_do_lookup(const struct sock *sk,
+ 	struct tcp_ao_key *key;
+ 	struct tcp_ao_info *ao;
+ 
++	if (!static_branch_unlikely(&tcp_ao_needed.key))
++		return NULL;
++
+ 	ao = rcu_dereference_check(tcp_sk(sk)->ao_info,
+ 				   lockdep_sock_is_held(sk));
+ 	if (!ao)
+@@ -276,6 +284,7 @@ void tcp_ao_destroy_sock(struct sock *sk, bool twsk)
+ 	}
+ 
+ 	kfree_rcu(ao, rcu);
++	static_branch_slow_dec_deferred(&tcp_ao_needed);
  }
  
- static int tcp_ao_delete_key(struct sock *sk, struct tcp_ao_info *ao_info,
--			     struct tcp_ao_key *key,
-+			     bool del_async, struct tcp_ao_key *key,
- 			     struct tcp_ao_key *new_current,
- 			     struct tcp_ao_key *new_rnext)
- {
-@@ -1586,11 +1586,24 @@ static int tcp_ao_delete_key(struct sock *sk, struct tcp_ao_info *ao_info,
+ void tcp_ao_time_wait(struct tcp_timewait_sock *tcptw, struct tcp_sock *tp)
+@@ -1130,6 +1139,11 @@ int tcp_ao_copy_all_matching(const struct sock *sk, struct sock *newsk,
+ 		goto free_and_exit;
+ 	}
  
- 	hlist_del_rcu(&key->node);
- 
-+	/* Support for async delete on listening sockets: as they don't
-+	 * need current_key/rnext_key maintaining, we don't need to check
-+	 * them and we can just free all resources in RCU fashion.
-+	 */
-+	if (del_async) {
-+		atomic_sub(tcp_ao_sizeof_key(key), &sk->sk_omem_alloc);
-+		call_rcu(&key->rcu, tcp_ao_key_free_rcu);
-+		return 0;
++	if (!static_key_fast_inc_not_disabled(&tcp_ao_needed.key.key)) {
++		ret = -EUSERS;
++		goto free_and_exit;
 +	}
 +
- 	/* At this moment another CPU could have looked this key up
- 	 * while it was unlinked from the list. Wait for RCU grace period,
- 	 * after which the key is off-list and can't be looked up again;
- 	 * the rx path [just before RCU came] might have used it and set it
- 	 * as current_key (very unlikely).
-+	 * Free the key with next RCU grace period (in case it was
-+	 * current_key before tcp_ao_current_rnext() might have
-+	 * changed it in forced-delete).
- 	 */
- 	synchronize_rcu();
- 	if (new_current)
-@@ -1661,6 +1674,8 @@ static int tcp_ao_del_cmd(struct sock *sk, unsigned short int family,
- 		if (!new_rnext)
- 			return -ENOENT;
- 	}
-+	if (cmd.del_async && sk->sk_state != TCP_LISTEN)
-+		return -EINVAL;
+ 	key_head = rcu_dereference(hlist_first_rcu(&new_ao->head));
+ 	first_key = hlist_entry_safe(key_head, struct tcp_ao_key, node);
  
- 	if (family == AF_INET) {
- 		struct sockaddr_in *sin = (struct sockaddr_in *)&cmd.addr;
-@@ -1708,8 +1723,8 @@ static int tcp_ao_del_cmd(struct sock *sk, unsigned short int family,
- 		if (key == new_current || key == new_rnext)
- 			continue;
+@@ -1557,6 +1571,10 @@ static int tcp_ao_add_cmd(struct sock *sk, unsigned short int family,
  
--		return tcp_ao_delete_key(sk, ao_info, key,
--					  new_current, new_rnext);
-+		return tcp_ao_delete_key(sk, ao_info, cmd.del_async, key,
-+					 new_current, new_rnext);
+ 	tcp_ao_link_mkt(ao_info, key);
+ 	if (first) {
++		if (!static_branch_inc(&tcp_ao_needed.key)) {
++			ret = -EUSERS;
++			goto err_free_sock;
++		}
+ 		sk_gso_disable(sk);
+ 		rcu_assign_pointer(tcp_sk(sk)->ao_info, ao_info);
  	}
- 	return -ENOENT;
+@@ -1825,6 +1843,10 @@ static int tcp_ao_info_cmd(struct sock *sk, unsigned short int family,
+ 	if (new_rnext)
+ 		WRITE_ONCE(ao_info->rnext_key, new_rnext);
+ 	if (first) {
++		if (!static_branch_inc(&tcp_ao_needed.key)) {
++			err = -EUSERS;
++			goto out;
++		}
+ 		sk_gso_disable(sk);
+ 		rcu_assign_pointer(tcp_sk(sk)->ao_info, ao_info);
+ 	}
+diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+index 78e7b04fac4f..c554c25eba52 100644
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -3528,41 +3528,55 @@ static inline bool tcp_may_update_window(const struct tcp_sock *tp,
+ 		(ack_seq == tp->snd_wl1 && (nwin > tp->snd_wnd || !nwin));
  }
+ 
+-/* If we update tp->snd_una, also update tp->bytes_acked */
+-static void tcp_snd_una_update(struct tcp_sock *tp, u32 ack)
++static void tcp_snd_sne_update(struct tcp_sock *tp, u32 ack)
+ {
+-	u32 delta = ack - tp->snd_una;
+ #ifdef CONFIG_TCP_AO
+ 	struct tcp_ao_info *ao;
+-#endif
+ 
+-	sock_owned_by_me((struct sock *)tp);
+-	tp->bytes_acked += delta;
+-#ifdef CONFIG_TCP_AO
++	if (!static_branch_unlikely(&tcp_ao_needed.key))
++		return;
++
+ 	ao = rcu_dereference_protected(tp->ao_info,
+ 				       lockdep_sock_is_held((struct sock *)tp));
+ 	if (ao && ack < tp->snd_una)
+ 		ao->snd_sne++;
+ #endif
++}
++
++/* If we update tp->snd_una, also update tp->bytes_acked */
++static void tcp_snd_una_update(struct tcp_sock *tp, u32 ack)
++{
++	u32 delta = ack - tp->snd_una;
++
++	sock_owned_by_me((struct sock *)tp);
++	tp->bytes_acked += delta;
++	tcp_snd_sne_update(tp, ack);
+ 	tp->snd_una = ack;
+ }
+ 
++static void tcp_rcv_sne_update(struct tcp_sock *tp, u32 seq)
++{
++#ifdef CONFIG_TCP_AO
++	struct tcp_ao_info *ao;
++
++	if (!static_branch_unlikely(&tcp_ao_needed.key))
++		return;
++
++	ao = rcu_dereference_protected(tp->ao_info,
++				       lockdep_sock_is_held((struct sock *)tp));
++	if (ao && seq < tp->rcv_nxt)
++		ao->rcv_sne++;
++#endif
++}
++
+ /* If we update tp->rcv_nxt, also update tp->bytes_received */
+ static void tcp_rcv_nxt_update(struct tcp_sock *tp, u32 seq)
+ {
+ 	u32 delta = seq - tp->rcv_nxt;
+-#ifdef CONFIG_TCP_AO
+-	struct tcp_ao_info *ao;
+-#endif
+ 
+ 	sock_owned_by_me((struct sock *)tp);
+ 	tp->bytes_received += delta;
+-#ifdef CONFIG_TCP_AO
+-	ao = rcu_dereference_protected(tp->ao_info,
+-				       lockdep_sock_is_held((struct sock *)tp));
+-	if (ao && seq < tp->rcv_nxt)
+-		ao->rcv_sne++;
+-#endif
++	tcp_rcv_sne_update(tp, seq);
+ 	WRITE_ONCE(tp->rcv_nxt, seq);
+ }
+ 
 -- 
 2.41.0
 
