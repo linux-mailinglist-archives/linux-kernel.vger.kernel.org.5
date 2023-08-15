@@ -2,307 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA3077CCC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC4477CCC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:37:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236402AbjHOMfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 08:35:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38792 "EHLO
+        id S236774AbjHOMg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 08:36:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237337AbjHOMfP (ORCPT
+        with ESMTP id S237269AbjHOMgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 08:35:15 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE9D219AD
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:35:07 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2bad7499bdcso41648831fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:35:07 -0700 (PDT)
+        Tue, 15 Aug 2023 08:36:13 -0400
+Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D511989
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:36:08 -0700 (PDT)
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-1c4f8aa690cso266968fac.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:36:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1692102905; x=1692707705;
+        d=ffwll.ch; s=google; t=1692102966; x=1692707766;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=zF5WE9iAWFMHTZSKLIZl+DNOF3ezUbC59GeC9XQ1mfY=;
-        b=LfIqVG9CiAivodHEBuPteE7cC1WD2XbincFehN0z8qYQ0cYCz6++tu4to2wykxIDCY
-         o5zaFvTUAVYBjGDlCONe3e4m7l154ilWCuaiSfiy5ySWn0qFnPIlEi6nZZifttLLby72
-         IHZ3zr49Uadz5phtZbpsTvRjczzt+xPAv7Acc=
+        bh=WVL87guyrjCBpvHgO84cKF3Q11DoY2+NXqHRgmv+xAI=;
+        b=e+i3kUHJIwUJ0tRITL7y0wZfUDQu6vWVKymHJKJioIVNHrwqLuQzlk+CIvwJPwC+yV
+         AywyVW9auTyI1wj//7akf32JDe3C2bnDOqB9qSgx30EImyJSeKP3L+vg8RM0n0W7lgcp
+         mba4mOzv5Oq47gHPSgpdocy+fv+hOD2zieOGE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692102905; x=1692707705;
+        d=1e100.net; s=20221208; t=1692102966; x=1692707766;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=zF5WE9iAWFMHTZSKLIZl+DNOF3ezUbC59GeC9XQ1mfY=;
-        b=VlKLPOsig8Qeb5OlFv+rz5aa8WqNxDcEyOBA3VOk2AHsqpHlAwC8yd/4fasTO4tAm1
-         PjuA+CYBVgm5wGLRe7kt+7hKW6oclkRnl9tB9510IwgUrX4okMwIIVc9FSj+brST3eaV
-         W8Q56BJCF13LQFAlD9zVSJTXmKj5kcFiQa4NlnruQ6iXkLz6/7Ec82dbJciFzKy65VQw
-         Lew/92RkyBDba/HFTKYHjIkSDARsdDi+aBHu0oYbh8Gab4t8QuejijAZbRMW4sxAcfjF
-         NvhfrovB/hgUjbwgTE+3DqrgzXbxmzWZrKTTEg1dFhe8xzjMYvtLN2i9lQDLzNNNqOLq
-         y4SQ==
-X-Gm-Message-State: AOJu0YyE5QD3mdpfTgyAslS3gysHMF9VNlLnJEDj8U96kOPuYs48V8Pb
-        YL4xucsJleDYS0s1Tz+L+G61jUgx4z7AAy4mhjIFWA==
-X-Google-Smtp-Source: AGHT+IFbOtA156FiWsXlyK18JrqEPOUYOFXK00VWwoxCDlJX24+nUfX70QgaqT+oHwHvN7BW20289+ErVQ+s+InW1nE=
-X-Received: by 2002:a05:651c:44f:b0:2b6:e7c7:b039 with SMTP id
- g15-20020a05651c044f00b002b6e7c7b039mr9157053ljg.28.1692102905366; Tue, 15
- Aug 2023 05:35:05 -0700 (PDT)
+        bh=WVL87guyrjCBpvHgO84cKF3Q11DoY2+NXqHRgmv+xAI=;
+        b=R/7D/Eaax+wk2YGJI44mX4MI6I/KMBn1A6KLR77A8y8Qh9XHkqQ1JFu9sQloZ8oDHM
+         bUY3SpjpHVZqveYkcUaNCHmkfM8g8PfnFXIQCnR+K5BtU2Be3gQXiR/OApwuGxvOrGpF
+         ntSXkiQ4qv92aCJfYgO76FFFLGGdedd7z4ktqtu2ju9Usyas+IQuJot/rIO8PJF3yl6V
+         dDJSJs4K07X+DoCgsXg4OGzJr4E8t8qgzKAXSRNLqClZeSeCnXNZwTI+pCFNlUoLpwkO
+         gMWcKyF9eaSjXvoP66TDHEZwwXkLIyD3v51VPqq90cOq9pQ0Lzb0dMFcF0Y9pu9voc/E
+         UZuw==
+X-Gm-Message-State: AOJu0Yy0zBSK5vxznObHRi5xc7EjRjRnB9tnm4mu0STYzECRkpxefbpu
+        EeSNLWhiaqkDSV5UavlSHyj41+SqNEVcZ4D4tYyN9w==
+X-Google-Smtp-Source: AGHT+IERPMoNjjtyPhxTIBw8Q9A7abJznvQzaOgobDG1OzykjpPIu/34Q4Dlv/xVMwyGSnzoYT/6waLNy2K3hLYgeP4=
+X-Received: by 2002:a05:6871:298:b0:1c3:c45b:92a7 with SMTP id
+ i24-20020a056871029800b001c3c45b92a7mr10537623oae.0.1692102965854; Tue, 15
+ Aug 2023 05:36:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <CA+-6iNzKB4vMkM4Qt6781GN-WwzCCdUYY3o=stgPSjQyJPr6vQ@mail.gmail.com>
- <20230814220658.GA193031@bhelgaas>
-In-Reply-To: <20230814220658.GA193031@bhelgaas>
-From:   Jim Quinlan <james.quinlan@broadcom.com>
-Date:   Tue, 15 Aug 2023 08:34:54 -0400
-Message-ID: <CA+-6iNyYx6VK-pudUV=fGLM88vUZuQEf-moPa=q6CP-pwR_5Tw@mail.gmail.com>
-Subject: Re: [PATCH v6 3/5] PCI: brcmstb: Set higher value for internal bus timeout
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        "open list:PCI NATIVE HOST BRIDGE AND ENDPOINT DRIVERS" 
-        <linux-pci@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Cyril Brulebois <kibi@debian.org>,
-        Phil Elwell <phil@raspberrypi.com>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jim Quinlan <jim2101024@gmail.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000009ea3aa0602f568ef"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <389b-64db6700-1-3dc04b80@31442286> <b278375f-4644-2db6-9a14-9088470d528c@suse.de>
+In-Reply-To: <b278375f-4644-2db6-9a14-9088470d528c@suse.de>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Tue, 15 Aug 2023 14:35:54 +0200
+Message-ID: <CAKMK7uF1hv3S--=jsmFWG_tkOKavgMBOkWQt6VOSV0d1U7C0VA@mail.gmail.com>
+Subject: Re: [PULL for v6.6] drm-misc-next
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        "airlied@gmail.com" <airlied@gmail.com>
+Cc:     Helen Mae Koike Fornazier <helen.koike@collabora.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        daniels@collabora.com, robdclark@google.com,
+        david.heidelberg@collabora.com, guilherme.gallo@collabora.com,
+        sergi.blanch.torne@collabora.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, gustavo.padovan@collabora.com,
+        anholt@google.com, robclark@freedesktop.org, emma@anholt.net,
+        airlied@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000009ea3aa0602f568ef
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Aug 14, 2023 at 6:07=E2=80=AFPM Bjorn Helgaas <helgaas@kernel.org> =
-wrote:
+On Tue, 15 Aug 2023 at 14:31, Thomas Zimmermann <tzimmermann@suse.de> wrote:
 >
-> On Mon, Aug 14, 2023 at 03:30:07PM -0400, Jim Quinlan wrote:
-> > On Fri, Jul 28, 2023 at 12:15=E2=80=AFPM Jim Quinlan <james.quinlan@bro=
-adcom.com> wrote:
-> > > On Thu, Jul 27, 2023, 10:44 PM Lorenzo Pieralisi <lpieralisi@kernel.o=
-rg> wrote:
-> > >> On Fri, Jun 23, 2023 at 10:40:56AM -0400, Jim Quinlan wrote:
-> > >> > During long periods of the PCIe RC HW being in an L1SS sleep state=
-, there
-> > >> > may be a timeout on an internal bus access, even though there may =
-not be
-> > >> > any PCIe access involved.  Such a timeout will cause a subsequent =
-CPU
-> > >> > abort.
-> > >> >
-> > >> > So, when "brcm,enable-l1ss" is observed, we increase the timeout v=
-alue to
-> > >> > four seconds instead of using its HW default.
-> > >> >
-> > >> > Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-> > >> > Tested-by: Florian Fainelli <f.fainelli@gmail.com>
-> > >> > ---
-> > >> >  drivers/pci/controller/pcie-brcmstb.c | 16 ++++++++++++++++
-> > >> >  1 file changed, 16 insertions(+)
-> > >> >
-> > >> > diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/c=
-ontroller/pcie-brcmstb.c
-> > >> > index d30636a725d7..fe0415a98c63 100644
-> > >> > --- a/drivers/pci/controller/pcie-brcmstb.c
-> > >> > +++ b/drivers/pci/controller/pcie-brcmstb.c
-> > >> > @@ -1034,6 +1034,21 @@ static int brcm_pcie_setup(struct brcm_pcie=
- *pcie)
-> > >> >       return 0;
-> > >> >  }
-> > >> >
-> > >> > +/*
-> > >> > + * This extends the timeout period for an access to an internal b=
-us.  This
-> > >> > + * access timeout may occur during L1SS sleep periods even withou=
-t the
-> > >> > + * presence of a PCIe access.
-> > >> > + */
-> > >> > +static void brcm_extend_rbus_timeout(struct brcm_pcie *pcie)
-> > >> > +{
-> > >> > +     /* TIMEOUT register is two registers before RGR1_SW_INIT_1 *=
-/
-> > >> > +     const unsigned int REG_OFFSET =3D PCIE_RGR1_SW_INIT_1(pcie) =
-- 8;
-> > >>
-> > >> Nit: you could define an offset for the TIMEOUT register, if that ma=
-kes
-> > >> it any cleaner, up to you.
-> > >>
-> > >> > +     u32 timeout_us =3D 4000000; /* 4 seconds, our setting for L1=
-SS */
-> > >>
-> > >> It would be useful to describe why this has to be 4 seconds in case
-> > >> someone in the future will have to change it.
-> > >
-> > > IIRC our customer requested 2s and we doubled it.  Bjorn, can you
-> > > please add this comment or a paraphrase of it before applying --
-> > > I'm currently on vacation.
+> Hi,
+>
+> thanks for your patchset.
+>
+> Am 15.08.23 um 13:53 schrieb Helen Mae Koike Fornazier:
+> > On Tuesday, August 15, 2023 06:12 -03, Jani Nikula <jani.nikula@linux.intel.com> wrote:
 > >
-> > Is the above request okay with you?  What is the status of these
-> > commits -- will they be applied to pci-next in the near future?
+> >> On Mon, 14 Aug 2023, Helen Koike <helen.koike@collabora.com> wrote:
+> >>> The following changes since commit f5d8f9c0d8b4bc8ad7e7b23a9f4d116e99202dd3:
+> >>>
+> >>>    drm/panel: JDI LT070ME05000 simplify with dev_err_probe() (2023-08-14 14:44:30 +0200)
+> >>>
+> >>> are available in the Git repository at:
+> >>>
+> >>>    git@gitlab.freedesktop.org:helen.fornazier/linux.git tags/drm-ci-v13-drm-misc
+> >>>
+> >>> for you to fetch changes up to 60242246bc906a37a7eae2094633a38bda7d45e6:
+> >>>
+> >>>    drm: Add initial ci/ subdirectory (2023-08-14 20:47:37 -0300)
+> >>>
+> >>> ----------------------------------------------------------------
+> >>> drm-ci for drm-misc-next
+> >>
+> >> FYI, usually the subject indicates the source or what to pull, not the
+> >> destination. Was confused here for a bit. ;)
+> >
+> > Thanks for the info! Should I re-send this one?
 >
-> The "brcm,enable-l1ss" DT property is either unnecessary or an
-> indication of a hardware defect in the controller.
-
-Agree.
+> Yes, please.
 >
-> Requiring the property is a terrible user experience, completely
-> antithetical to the PCI compatibility story, and per the conversation
-> at [1], there are no known problems that would occur if we ignored
-> "brcm,enable-l1ss" and always configured mode (c) ("Bidirectional
-> CLKREQ# for L1SS capable devices").
-
-Agree, but I don't believe this issue will be in the top five problems of R=
-Pi
-folks getting their PCIe systems to work.
-
+> As a developer, you are not supposed to send pull requests or any other
+> emails with [PULL] in their subject line. We don't merge pull requests
+> into drm-misc.
 >
-> Even when configured as mode (c), L1SS is not *always* enabled.  It's
-> certainly not enabled before ASPM init, and users can always disable
-> L1SS whenever they desire via the sysfs interfaces or pcie_aspm=3Doff,
-> so if there's some problem with running in mode (c) with L1SS
-> disabled, we're still likely to see it.
+> To get your patches merged, please make a patchset on top of the a
+> recent checkout of drm-misc-next. Then send the patchset via
 >
-> But if you want to require the DT property, I guess it's mainly an
-> issue for you and your customers.
+>    git send-email
+>
+> to dri-devel@lists.freedesktop.org and all the developers and
+> maintainers that are affected by the changes. This will start the review
+> process. After your patchset has entered the drm-misc-next branch, we
+> (the maintainers of the drm-misc tree) will create the appropriate pull
+> requests when the time has come.
 
-I believe this to be the best solution for the current HW.  As Cyril
-and I have noted, it
-allows some platforms to work that were not working previously.
+I think we have a coordination problem, at least the rough plan I
+discussed with Dave was that we'd do an entirely separate pull request
+to Linus for the gitlab stuff, so that there's no surprises or "you
+snuck this in without making it obvious" talk after the fact.
 
-So I am all for these commits being applied.
+I'll check with Dave whether he wants to do the branch directly in
+drm.git or whether we'll take the pull from Helen.
 
-FWIW, I am currently advocating changing the PCIe HW core to
-seamlessly handle all
-of the ASPM (sub)states transitions w/o awkward SW driver
-intervention.  I am also
-advocating other changes as well.  So there is a possibility things will
-be changed for the better in the future.
-
-Regards,
-Jim Quinlan
-Broadcom STB
+Cheers, Sima
 
 >
-> So to answer your question, yes, I'm OK with this series.
+> Best regards
+> Thomas
 >
-> Bjorn
+> >
+> > Regards,
+> > Helen
+> >
+> >>
+> >> BR,
+> >> Jani.
+> >>
+> >>>
+> >>> Here is the patch that adds a ci/ subdirectory to drm and allows
+> >>> developers to easily execute tests.
+> >>>
+> >>> Developers can easily execute several tests on different devices
+> >>> by just pushing their branch to their fork in a repository hosted
+> >>> on gitlab.freedesktop.org which has an infrastructure to run jobs
+> >>> in several runners and farms with different devices.
+> >>>
+> >>> The patch was acked and tested by others.
+> >>>
+> >>> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+> >>>
+> >>> ----------------------------------------------------------------
+> >>> Tomeu Vizoso (1):
+> >>>        drm: Add initial ci/ subdirectory
+> >>>
+> >>>   Documentation/gpu/automated_testing.rst            |  144 +
+> >>>   Documentation/gpu/index.rst                        |    1 +
+> >>>   MAINTAINERS                                        |    8 +
+> >>>   drivers/gpu/drm/ci/arm.config                      |   69 +
+> >>>   drivers/gpu/drm/ci/arm64.config                    |  199 ++
+> >>>   drivers/gpu/drm/ci/build-igt.sh                    |   35 +
+> >>>   drivers/gpu/drm/ci/build.sh                        |  157 ++
+> >>>   drivers/gpu/drm/ci/build.yml                       |  110 +
+> >>>   drivers/gpu/drm/ci/check-patch.py                  |   57 +
+> >>>   drivers/gpu/drm/ci/container.yml                   |   65 +
+> >>>   drivers/gpu/drm/ci/gitlab-ci.yml                   |  251 ++
+> >>>   drivers/gpu/drm/ci/igt_runner.sh                   |   77 +
+> >>>   drivers/gpu/drm/ci/image-tags.yml                  |   15 +
+> >>>   drivers/gpu/drm/ci/lava-submit.sh                  |   57 +
+> >>>   drivers/gpu/drm/ci/static-checks.yml               |   12 +
+> >>>   drivers/gpu/drm/ci/test.yml                        |  335 +++
+> >>>   drivers/gpu/drm/ci/testlist.txt                    | 2912 ++++++++++++++++++++
+> >>>   drivers/gpu/drm/ci/x86_64.config                   |  111 +
+> >>>   drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt  |   19 +
+> >>>   drivers/gpu/drm/ci/xfails/amdgpu-stoney-flakes.txt |   21 +
+> >>>   drivers/gpu/drm/ci/xfails/amdgpu-stoney-skips.txt  |    2 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-amly-fails.txt      |   17 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-amly-flakes.txt     |   32 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-amly-skips.txt      |    4 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-apl-fails.txt       |   58 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt      |    1 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-apl-skips.txt       |    6 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-cml-fails.txt       |   18 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt      |   38 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-cml-skips.txt       |    2 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-glk-fails.txt       |   19 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt      |   41 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-glk-skips.txt       |    5 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-kbl-fails.txt       |   25 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt      |   26 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt       |    5 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt       |   37 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-tgl-flakes.txt      |    5 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt       |   11 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-whl-fails.txt       |   48 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-whl-flakes.txt      |    1 +
+> >>>   drivers/gpu/drm/ci/xfails/i915-whl-skips.txt       |    2 +
+> >>>   .../gpu/drm/ci/xfails/mediatek-mt8173-fails.txt    |   29 +
+> >>>   .../gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt   |    0
+> >>>   .../gpu/drm/ci/xfails/mediatek-mt8183-fails.txt    |   10 +
+> >>>   .../gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt   |   14 +
+> >>>   drivers/gpu/drm/ci/xfails/meson-g12b-fails.txt     |   12 +
+> >>>   drivers/gpu/drm/ci/xfails/meson-g12b-flakes.txt    |    4 +
+> >>>   drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt    |   15 +
+> >>>   drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt   |    4 +
+> >>>   drivers/gpu/drm/ci/xfails/msm-apq8096-fails.txt    |    2 +
+> >>>   drivers/gpu/drm/ci/xfails/msm-apq8096-flakes.txt   |    4 +
+> >>>   drivers/gpu/drm/ci/xfails/msm-apq8096-skips.txt    |    2 +
+> >>>   drivers/gpu/drm/ci/xfails/msm-sc7180-fails.txt     |   25 +
+> >>>   drivers/gpu/drm/ci/xfails/msm-sc7180-flakes.txt    |    7 +
+> >>>   drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt     |   23 +
+> >>>   drivers/gpu/drm/ci/xfails/msm-sdm845-fails.txt     |   68 +
+> >>>   drivers/gpu/drm/ci/xfails/msm-sdm845-flakes.txt    |   11 +
+> >>>   drivers/gpu/drm/ci/xfails/msm-sdm845-skips.txt     |    2 +
+> >>>   .../gpu/drm/ci/xfails/rockchip-rk3288-fails.txt    |   48 +
+> >>>   .../gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt   |    9 +
+> >>>   .../gpu/drm/ci/xfails/rockchip-rk3288-skips.txt    |   52 +
+> >>>   .../gpu/drm/ci/xfails/rockchip-rk3399-fails.txt    |   36 +
+> >>>   .../gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt   |   24 +
+> >>>   .../gpu/drm/ci/xfails/rockchip-rk3399-skips.txt    |    5 +
+> >>>   .../gpu/drm/ci/xfails/virtio_gpu-none-fails.txt    |   38 +
+> >>>   .../gpu/drm/ci/xfails/virtio_gpu-none-flakes.txt   |    0
+> >>>   .../gpu/drm/ci/xfails/virtio_gpu-none-skips.txt    |    6 +
+> >>>   68 files changed, 5508 insertions(+)
+> >>>   create mode 100644 Documentation/gpu/automated_testing.rst
+> >>>   create mode 100644 drivers/gpu/drm/ci/arm.config
+> >>>   create mode 100644 drivers/gpu/drm/ci/arm64.config
+> >>>   create mode 100644 drivers/gpu/drm/ci/build-igt.sh
+> >>>   create mode 100644 drivers/gpu/drm/ci/build.sh
+> >>>   create mode 100644 drivers/gpu/drm/ci/build.yml
+> >>>   create mode 100755 drivers/gpu/drm/ci/check-patch.py
+> >>>   create mode 100644 drivers/gpu/drm/ci/container.yml
+> >>>   create mode 100644 drivers/gpu/drm/ci/gitlab-ci.yml
+> >>>   create mode 100755 drivers/gpu/drm/ci/igt_runner.sh
+> >>>   create mode 100644 drivers/gpu/drm/ci/image-tags.yml
+> >>>   create mode 100755 drivers/gpu/drm/ci/lava-submit.sh
+> >>>   create mode 100644 drivers/gpu/drm/ci/static-checks.yml
+> >>>   create mode 100644 drivers/gpu/drm/ci/test.yml
+> >>>   create mode 100644 drivers/gpu/drm/ci/testlist.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/x86_64.config
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-flakes.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-skips.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-fails.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-flakes.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-skips.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-fails.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-skips.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-skips.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-fails.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-skips.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-fails.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-flakes.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-fails.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-flakes.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-skips.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-fails.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-fails.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-flakes.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-fails.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-flakes.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-skips.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-fails.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-flakes.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-fails.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-flakes.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-skips.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-fails.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-skips.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-fails.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-skips.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-flakes.txt
+> >>>   create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-skips.txt
+> >>
+> >> --
+> >> Jani Nikula, Intel Open Source Graphics Center
+> >
 >
-> [1] https://lore.kernel.org/r/20230428223500.23337-2-jim2101024@gmail.com
->
-> > >> > +     /* Each unit in timeout register is 1/216,000,000 seconds */
-> > >> > +     writel(216 * timeout_us, pcie->base + REG_OFFSET);
-> > >> > +}
-> > >> > +
-> > >> >  static void brcm_config_clkreq(struct brcm_pcie *pcie)
-> > >> >  {
-> > >> >       bool l1ss =3D of_property_read_bool(pcie->np, "brcm,enable-l=
-1ss");
-> > >> > @@ -1059,6 +1074,7 @@ static void brcm_config_clkreq(struct brcm_p=
-cie *pcie)
-> > >> >                * of 400ns, as specified in 3.2.5.2.2 of the PCI Ex=
-press
-> > >> >                * Mini CEM 2.0 specification.
-> > >> >                */
-> > >> > +             brcm_extend_rbus_timeout(pcie);
-> > >> >               clkreq_set |=3D PCIE_MISC_HARD_PCIE_HARD_DEBUG_L1SS_=
-ENABLE_MASK;
-> > >> >               dev_info(pcie->dev, "bi-dir CLKREQ# for L1SS power s=
-avings");
-> > >> >       } else {
+> --
+> Thomas Zimmermann
+> Graphics Driver Developer
+> SUSE Software Solutions Germany GmbH
+> Frankenstrasse 146, 90461 Nuernberg, Germany
+> GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
+> HRB 36809 (AG Nuernberg)
 
---0000000000009ea3aa0602f568ef
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
 
-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
-mOAplh6h3nMZUZxBguxG3g2p3iD4EgibUYneEzqOQafIQB/naf2uetKb8y9jKgWJxq2Y4y8Jqg2u
-uVIO1AyOJjWwqdgN+QhuIlat+qZd03P48Gim9ZPEMDUCAwEAAaOCAdswggHXMA4GA1UdDwEB/wQE
-AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
-c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
-AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
-TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
-bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
-L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJQYDVR0R
-BB4wHIEaamFtZXMucXVpbmxhbkBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYIKwYBBQUHAwQwHwYD
-VR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFGx/E27aeGBP2eJktrILxlhK
-z8f6MA0GCSqGSIb3DQEBCwUAA4IBAQBdQQukiELsPfse49X4QNy/UN43dPUw0I1asiQ8wye3nAuD
-b3GFmf3SZKlgxBTdWJoaNmmUFW2H3HWOoQBnTeedLtV9M2Tb9vOKMncQD1f9hvWZR6LnZpjBIlKe
-+R+v6CLF07qYmBI6olvOY/Rsv9QpW9W8qZYk+2RkWHz/fR5N5YldKlJHP0NDT4Wjc5fEzV+mZC8A
-AlT80qiuCVv+IQP08ovEVSLPhUp8i1pwsHT9atbWOfXQjbq1B/ditFIbPzwmwJPuGUc7n7vpmtxB
-75sSFMj27j4JXl5W9vORgHR2YzuPBzfzDJU1ul0DIofSWVF6E1dx4tZohRED1Yl/T/ZGMYICbTCC
-AmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UE
-AxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIMSO43VW7D5NP1X/KD
-MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCDgtugKkZJi/a5pT5Kg+M4rJKu/Yvuv
-WwZBbdlVMih9HTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMzA4
-MTUxMjM1MDVaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBFjALBglg
-hkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEBBzALBglghkgBZQME
-AgEwDQYJKoZIhvcNAQEBBQAEggEAbTIpkuWBNEfxJpEgQIoR6GfQzWQquR1WEyutVHMi2O+7uDQF
-3RcxG8sV7fGigfJYGK61s4jyAKmn5QxKF4zmNEDJJy3Cou20J7KlsL+1z7o2RKDqR5xrj8GCFz1U
-yX1HbjUDF3qkOYSLP3ZYdkoc0qdxXc8lCIbmrLlkjI0S6Nn5kRS9oeaH7jQDCAzNaBOBCsEZ9bja
-X0SL1vnUf0Bl9QwyjOu7KnQEhz2yn3BhntlKwsYP2i4d2jf7UWrA+I6UQAJHA76PdV9VcEhvrE/M
-oNONNOBe4QF64i0xkVXim+Qxs1rUq1Br9pcnMbAXhgj51TlJScM8b97zC569zpaB2g==
---0000000000009ea3aa0602f568ef--
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
