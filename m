@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07D2377D6B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 01:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B305277D6B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 01:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240668AbjHOXhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 19:37:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42626 "EHLO
+        id S240673AbjHOXhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 19:37:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240627AbjHOXg5 (ORCPT
+        with ESMTP id S240628AbjHOXhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 19:36:57 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9CD13E
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 16:36:56 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bdf98a6086so10087105ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 16:36:56 -0700 (PDT)
+        Tue, 15 Aug 2023 19:37:00 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9C71BFE
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 16:36:59 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bdc8081147so23696185ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 16:36:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692142615; x=1692747415;
+        d=gmail.com; s=20221208; t=1692142618; x=1692747418;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MsmgxI2dDLH2ymR4KmGzcaJe1p1eps4K+t7hMi45DJo=;
-        b=MsphCzpuYX4idGa4Gi885hd0RX7AwhMSkXR2PLk4+bJxfiMg9pdrme+8Zw9XFWv6uK
-         vPcUdkTLAjEPSHYYVOzznjhMf+bFaad2WFL9JG+tCzzUJBgJkxgNpXytYGxZPKA2Vsij
-         CRyeDZtCGWy3Iko+bRdJ9shEtXnhTpXZf5rGXaK5BPqfNxFlTBI6/gndcQPO7vdbbdca
-         NbMWHurgoBToBk3r4ZmZnEz8iFCinEPDhBrH491pbfSYSUa0ihwTWm5szLp0N3+XvNFQ
-         bxm2hmbJexZZC2QGRcfiYtmWkC4Z10jrE8n2Aiogqulj2NU+3EC2ck7cJeq9V0htFQDd
-         S7rQ==
+        bh=7HM5VWSDcFnMpZztYnuFJvyiIm9Y9FSftVouXPEbNl8=;
+        b=fFyuH+z3KHaZ/tgX5T9xzHdJf7O0JRfkATFtFmFY81mxv3ezDEbmlEiOhdnfSoiBou
+         FmnTugGV5Mq17m028tFIOYBbhW7J3qUhd/uwbp4j0Lzr3D2LS0rwnEpIkfvC4Ht3x+Qg
+         ucwbAHOMYf1IrANE/GzffC7OzTNJLdSpT18NiYiIGkn5depRLOp/ejjtTKM+3IzDVwI8
+         3t1vOms3fIoA33smVNj1V4+qUcig3WjpJKLU3hwSK9d+VdN+HEJxanbKZ+mAGFnF75Sv
+         +/JZS3jazc+oq4husrvTBgC04ZwD2OSGb0A+89l7UC4jVcWkZsCIaTgZs/3RqU6zxBX8
+         4kYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692142615; x=1692747415;
+        d=1e100.net; s=20221208; t=1692142618; x=1692747418;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MsmgxI2dDLH2ymR4KmGzcaJe1p1eps4K+t7hMi45DJo=;
-        b=bad6WuOwQQuUyr7BZ2Teo3Kp1fahWSPbkO+YDIsy6itXrX0pDq3X6/dCGKN6dDmjRA
-         Af6Y0usoC0krW79XHK72cU0SLVG8WgpM7HkTbFezNbGJAfg0SMB6BOoFN85BkryLnaQQ
-         pSjnFoi5uVL+bMKDiVppRBRSMmSji1s/OWhJZ42nxcTYbPnsGJOSk4to0sRcgSIp9w48
-         4RiOIZR207cgi6j/TFPTnejLmQQ+Ipzbkcjux8aTNh4QG5Dja+F4DygMBU+3PbE6v45m
-         vb6g4bV5kSlGLwWbOIxFtLt9cIonPt29nN7GCrgC+YJ+cZ7tXj5Sd99OYOsDLZ+PoJRc
-         PTZA==
-X-Gm-Message-State: AOJu0Yy9IB8TWH0hjLjjGUW8J/JS3FydIe4m1eV+OTEqowOQh+eFjs0b
-        d9bOqxoQg9NUjHB9FCwx65Z2rxQwu7M=
-X-Google-Smtp-Source: AGHT+IFLlpS4ukwyWWebufIvWo7oJDgo1x/KiX17zl8SGMHl2wrSmmRAJC5D202okZpWXFkemugIMw==
-X-Received: by 2002:a17:902:d2cb:b0:1bd:ae9e:62ea with SMTP id n11-20020a170902d2cb00b001bdae9e62eamr492121plc.8.1692142615155;
-        Tue, 15 Aug 2023 16:36:55 -0700 (PDT)
+        bh=7HM5VWSDcFnMpZztYnuFJvyiIm9Y9FSftVouXPEbNl8=;
+        b=S+/AhvgV9E9ahMjt9rxG92PMrdMt3A6N4XzI0I8uubi5JGVfCZsOw0EpgBl/dWOP/8
+         hyVLr53r2xyUJadUYu95Fp6JCriepHJ/pyYHq85FivkI2inLYc/4ZAvjl+Dd7G128ePj
+         AAegL05Ukoe6fHasYs5OsCgplwqweszxNebaZiew1L+dnMacLGUKr+dvl5fQXJF9bV4S
+         w5mnaOylM3ukEhVAG+dkgge9ww1bfQfZET4cu7BWuUUy9ngzYxXio3tdGdH9kVM/9bl+
+         JxLWKs0/cMI47CzMIH+rnyunpmnxX5i57gWrWAn2vmf/WkOYOtLE5x0v214xQbGo/SUq
+         ULvg==
+X-Gm-Message-State: AOJu0YxoKOVEWYQ4TdzRZLfxBjS0tAb2H9KHBuqJiJcILgjpcNt6K81q
+        TNnvOPhnkULDkIMtuBguZRhwXVC6+2U=
+X-Google-Smtp-Source: AGHT+IHFTU3pnIcFkODHXEDxL2w2vj8mMMcquPUB9dQOkDlEkGFbVBqyy20MA+y+xiJ0dAj7AJ1lOg==
+X-Received: by 2002:a17:902:db0e:b0:1b8:af5e:853c with SMTP id m14-20020a170902db0e00b001b8af5e853cmr531075plx.26.1692142618121;
+        Tue, 15 Aug 2023 16:36:58 -0700 (PDT)
 Received: from localhost ([216.228.127.130])
-        by smtp.gmail.com with ESMTPSA id m11-20020a170902768b00b001bb750189desm11607799pll.255.2023.08.15.16.36.54
+        by smtp.gmail.com with ESMTPSA id w20-20020a170902d71400b001b016313b1dsm8230990ply.86.2023.08.15.16.36.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 16:36:54 -0700 (PDT)
+        Tue, 15 Aug 2023 16:36:57 -0700 (PDT)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-kernel@vger.kernel.org,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>
 Cc:     Yury Norov <yury.norov@gmail.com>
-Subject: [PATCH v3 7/8] bitmap: drop _reg_op() function
-Date:   Tue, 15 Aug 2023 16:36:27 -0700
-Message-Id: <20230815233628.45016-8-yury.norov@gmail.com>
+Subject: [PATCH v3 8/8] bitmap: move bitmap_*_region functions to bitmap.h
+Date:   Tue, 15 Aug 2023 16:36:28 -0700
+Message-Id: <20230815233628.45016-9-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230815233628.45016-1-yury.norov@gmail.com>
 References: <20230815233628.45016-1-yury.norov@gmail.com>
@@ -65,7 +65,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,101 +73,171 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that all _reg_op() users are switched to alternative functions,
-_reg_op() machinery is not needed anymore.
+Now that bitmap_*_region() functions are implemented as thin wrappers
+around others, it's worth to move them to the header, as it opens room
+for compile-time optimizations.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- lib/bitmap.c | 76 ----------------------------------------------------
- 1 file changed, 76 deletions(-)
+ include/linux/bitmap.h | 63 ++++++++++++++++++++++++++++++++++++++++--
+ lib/bitmap.c           | 63 ------------------------------------------
+ 2 files changed, 60 insertions(+), 66 deletions(-)
 
+diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+index 03644237e1ef..cadb1113ae09 100644
+--- a/include/linux/bitmap.h
++++ b/include/linux/bitmap.h
+@@ -216,9 +216,6 @@ void bitmap_onto(unsigned long *dst, const unsigned long *orig,
+ 		const unsigned long *relmap, unsigned int bits);
+ void bitmap_fold(unsigned long *dst, const unsigned long *orig,
+ 		unsigned int sz, unsigned int nbits);
+-int bitmap_find_free_region(unsigned long *bitmap, unsigned int bits, int order);
+-void bitmap_release_region(unsigned long *bitmap, unsigned int pos, int order);
+-int bitmap_allocate_region(unsigned long *bitmap, unsigned int pos, int order);
+ 
+ #ifdef __BIG_ENDIAN
+ void bitmap_copy_le(unsigned long *dst, const unsigned long *src, unsigned int nbits);
+@@ -599,6 +596,66 @@ static inline void bitmap_set_value8(unsigned long *map, unsigned long value,
+ 	map[index] |= value << offset;
+ }
+ 
++/**
++ * bitmap_release_region - release allocated bitmap region
++ *	@bitmap: array of unsigned longs corresponding to the bitmap
++ *	@pos: beginning of bit region to release
++ *	@order: region size (log base 2 of number of bits) to release
++ *
++ * This is the complement to __bitmap_find_free_region() and releases
++ * the found region (by clearing it in the bitmap).
++ */
++static inline void bitmap_release_region(unsigned long *bitmap, unsigned int pos, int order)
++{
++	bitmap_clear(bitmap, pos, BIT(order));
++}
++
++/**
++ * bitmap_allocate_region - allocate bitmap region
++ *	@bitmap: array of unsigned longs corresponding to the bitmap
++ *	@pos: beginning of bit region to allocate
++ *	@order: region size (log base 2 of number of bits) to allocate
++ *
++ * Allocate (set bits in) a specified region of a bitmap.
++ *
++ * Return: 0 on success, or %-EBUSY if specified region wasn't
++ * free (not all bits were zero).
++ */
++static inline int bitmap_allocate_region(unsigned long *bitmap, unsigned int pos, int order)
++{
++	unsigned int len = BIT(order);
++
++	if (find_next_bit(bitmap, pos + len, pos) < pos + len)
++		return -EBUSY;
++	bitmap_set(bitmap, pos, len);
++	return 0;
++}
++
++/*
++ * bitmap_find_free_region - find a contiguous aligned mem region
++ *	@bitmap: array of unsigned longs corresponding to the bitmap
++ *	@bits: number of bits in the bitmap
++ *	@order: region size (log base 2 of number of bits) to find
++ *
++ * Find a region of free (zero) bits in a @bitmap of @bits bits and
++ * allocate them (set them to one).  Only consider regions of length
++ * a power (@order) of two, aligned to that power of two, which
++ * makes the search algorithm much faster.
++ *
++ * Return: the bit offset in bitmap of the allocated region,
++ * or -errno on failure.
++ */
++static inline int bitmap_find_free_region(unsigned long *bitmap, unsigned int bits, int order)
++{
++	unsigned int pos, end;		/* scans bitmap by regions of size order */
++
++	for (pos = 0; (end = pos + BIT(order)) <= bits; pos = end) {
++		if (!bitmap_allocate_region(bitmap, pos, order))
++			return pos;
++	}
++	return -ENOMEM;
++}
++
+ #endif /* __ASSEMBLY__ */
+ 
+ #endif /* __LINUX_BITMAP_H */
 diff --git a/lib/bitmap.c b/lib/bitmap.c
-index c29140e27d20..ffbd400605ac 100644
+index ffbd400605ac..001bfa8a3a71 100644
 --- a/lib/bitmap.c
 +++ b/lib/bitmap.c
-@@ -1224,82 +1224,6 @@ void bitmap_fold(unsigned long *dst, const unsigned long *orig,
+@@ -1224,69 +1224,6 @@ void bitmap_fold(unsigned long *dst, const unsigned long *orig,
  }
  #endif /* CONFIG_NUMA */
  
--/*
-- * Common code for bitmap_*_region() routines.
-- *	bitmap: array of unsigned longs corresponding to the bitmap
-- *	pos: the beginning of the region
-- *	order: region size (log base 2 of number of bits)
-- *	reg_op: operation(s) to perform on that region of bitmap
+-/**
+- * bitmap_find_free_region - find a contiguous aligned mem region
+- *	@bitmap: array of unsigned longs corresponding to the bitmap
+- *	@bits: number of bits in the bitmap
+- *	@order: region size (log base 2 of number of bits) to find
 - *
-- * Can set, verify and/or release a region of bits in a bitmap,
-- * depending on which combination of REG_OP_* flag bits is set.
+- * Find a region of free (zero) bits in a @bitmap of @bits bits and
+- * allocate them (set them to one).  Only consider regions of length
+- * a power (@order) of two, aligned to that power of two, which
+- * makes the search algorithm much faster.
 - *
-- * A region of a bitmap is a sequence of bits in the bitmap, of
-- * some size '1 << order' (a power of two), aligned to that same
-- * '1 << order' power of two.
-- *
-- * Return: 1 if REG_OP_ISFREE succeeds (region is all zero bits).
-- *	   0 in all other cases and reg_ops.
+- * Return: the bit offset in bitmap of the allocated region,
+- * or -errno on failure.
 - */
--
--enum {
--	REG_OP_ISFREE,		/* true if region is all zero bits */
--	REG_OP_ALLOC,		/* set all bits in region */
--	REG_OP_RELEASE,		/* clear all bits in region */
--};
--
--static int __reg_op(unsigned long *bitmap, unsigned int pos, int order, int reg_op)
+-int bitmap_find_free_region(unsigned long *bitmap, unsigned int bits, int order)
 -{
--	int nbits_reg;		/* number of bits in region */
--	int index;		/* index first long of region in bitmap */
--	int offset;		/* bit offset region in bitmap[index] */
--	int nlongs_reg;		/* num longs spanned by region in bitmap */
--	int nbitsinlong;	/* num bits of region in each spanned long */
--	unsigned long mask;	/* bitmask for one long of region */
--	int i;			/* scans bitmap by longs */
--	int ret = 0;		/* return value */
+-	unsigned int pos, end;		/* scans bitmap by regions of size order */
 -
--	/*
--	 * Either nlongs_reg == 1 (for small orders that fit in one long)
--	 * or (offset == 0 && mask == ~0UL) (for larger multiword orders.)
--	 */
--	nbits_reg = 1 << order;
--	index = pos / BITS_PER_LONG;
--	offset = pos - (index * BITS_PER_LONG);
--	nlongs_reg = BITS_TO_LONGS(nbits_reg);
--	nbitsinlong = min(nbits_reg,  BITS_PER_LONG);
--
--	/*
--	 * Can't do "mask = (1UL << nbitsinlong) - 1", as that
--	 * overflows if nbitsinlong == BITS_PER_LONG.
--	 */
--	mask = (1UL << (nbitsinlong - 1));
--	mask += mask - 1;
--	mask <<= offset;
--
--	switch (reg_op) {
--	case REG_OP_ISFREE:
--		for (i = 0; i < nlongs_reg; i++) {
--			if (bitmap[index + i] & mask)
--				goto done;
--		}
--		ret = 1;	/* all bits in region free (zero) */
--		break;
--
--	case REG_OP_ALLOC:
--		for (i = 0; i < nlongs_reg; i++)
--			bitmap[index + i] |= mask;
--		break;
--
--	case REG_OP_RELEASE:
--		for (i = 0; i < nlongs_reg; i++)
--			bitmap[index + i] &= ~mask;
--		break;
+-	for (pos = 0; (end = pos + BIT(order)) <= bits; pos = end) {
+-		if (!bitmap_allocate_region(bitmap, pos, order))
+-			return pos;
 -	}
--done:
--	return ret;
+-	return -ENOMEM;
 -}
+-EXPORT_SYMBOL(bitmap_find_free_region);
+-
+-/**
+- * bitmap_release_region - release allocated bitmap region
+- *	@bitmap: array of unsigned longs corresponding to the bitmap
+- *	@pos: beginning of bit region to release
+- *	@order: region size (log base 2 of number of bits) to release
+- *
+- * This is the complement to __bitmap_find_free_region() and releases
+- * the found region (by clearing it in the bitmap).
+- */
+-void bitmap_release_region(unsigned long *bitmap, unsigned int pos, int order)
+-{
+-	bitmap_clear(bitmap, pos, BIT(order));
+-}
+-EXPORT_SYMBOL(bitmap_release_region);
+-
+-/**
+- * bitmap_allocate_region - allocate bitmap region
+- *	@bitmap: array of unsigned longs corresponding to the bitmap
+- *	@pos: beginning of bit region to allocate
+- *	@order: region size (log base 2 of number of bits) to allocate
+- *
+- * Allocate (set bits in) a specified region of a bitmap.
+- *
+- * Return: 0 on success, or %-EBUSY if specified region wasn't
+- * free (not all bits were zero).
+- */
+-int bitmap_allocate_region(unsigned long *bitmap, unsigned int pos, int order)
+-{
+-	unsigned int len = BIT(order);
+-
+-	if (find_next_bit(bitmap, pos + len, pos) < pos + len)
+-		return -EBUSY;
+-	bitmap_set(bitmap, pos, len);
+-	return 0;
+-}
+-EXPORT_SYMBOL(bitmap_allocate_region);
 -
  /**
-  * bitmap_find_free_region - find a contiguous aligned mem region
-  *	@bitmap: array of unsigned longs corresponding to the bitmap
+  * bitmap_copy_le - copy a bitmap, putting the bits into little-endian order.
+  * @dst:   destination buffer
 -- 
 2.39.2
 
