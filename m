@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BEF77C472
+	by mail.lfdr.de (Postfix) with ESMTP id DAD1077C473
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 02:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233158AbjHOAbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 20:31:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36578 "EHLO
+        id S233224AbjHOAbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 20:31:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233336AbjHOAah (ORCPT
+        with ESMTP id S233584AbjHOAap (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 20:30:37 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C61E4198D
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 17:30:24 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fe4ad22eb0so48184165e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 17:30:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1692059423; x=1692664223;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dLuShFOThvoDFyPjtjqSrXce/+NsjfeL6FKbvb91ep0=;
-        b=CxLgfRZTYE2O+lvzzG0vY5ne298WWrrJYUWkVxMZpLYYaHsHujbTYL5pjKgETSom8D
-         vzAAqqBkpXkWiv0++Uxv0ACgo3g3wnwX2egyTis+N6wLSzvjoT/n1He6wzKIsNcmOJPd
-         u2v+6Q1C4+SciYbUN3OI8YjqnJpbMRUzxEYaE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692059423; x=1692664223;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dLuShFOThvoDFyPjtjqSrXce/+NsjfeL6FKbvb91ep0=;
-        b=hXpIbdsFAOv9PL/FsfyouRYo4efVUSCQOmOZ6Ij26iHWj+psvctAslmp/i4ejrWa43
-         UTRl39D5qSbVQVniNMtij6uM+N1SKx5/6MQ8uGkCwxzQleC4q2UdR+ftnqC0RZFVZvQr
-         O94UKziiB3/+I1Pp85nSQ/5coOncEK9awaEHim8j5G1fm5CcwsEElRbq9vS5jliPgECV
-         Vy/el+s5f/fE/brtt2FDnlKdDFbwG10P8s0gN+lT7yrINIGkc+4+H1Vyp3Drf/dq6Fiy
-         Jq5ecZ1+q8eIzzO6rbe0+5Q7+jLpFclyQTg+mqtj5oJsayPrk3UKfBYy14/ZI8bNBxOl
-         U1+w==
-X-Gm-Message-State: AOJu0YzQBmm6LFeSKGhB1I8F8fhlSjH8Hs8ppgdFfbWwrVLjFBGcg/Js
-        g7xjq+zowvJpceHzNeVSSj82igOYVaiLkpXlsceOUgF9QOqNvS6hXsg=
-X-Google-Smtp-Source: AGHT+IGyNYUpfBkaRUehRFQ2BJSXZpWDK4rzsea/ReN61axbfTfPHR5q7HWor/xA/ao4HC/HTFvoIKofUvPoizB2tp4=
-X-Received: by 2002:a05:600c:3648:b0:3fd:29cf:20c5 with SMTP id
- y8-20020a05600c364800b003fd29cf20c5mr8857963wmq.7.1692059423025; Mon, 14 Aug
- 2023 17:30:23 -0700 (PDT)
+        Mon, 14 Aug 2023 20:30:45 -0400
+Received: from qproxy2-pub.mail.unifiedlayer.com (qproxy2-pub.mail.unifiedlayer.com [69.89.16.161])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40F81715
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 17:30:44 -0700 (PDT)
+Received: from gproxy2-pub.mail.unifiedlayer.com (gproxy2-pub.mail.unifiedlayer.com [69.89.18.3])
+        by qproxy2.mail.unifiedlayer.com (Postfix) with ESMTP id 77DE08026EF2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 00:30:44 +0000 (UTC)
+Received: from cmgw13.mail.unifiedlayer.com (unknown [10.0.90.128])
+        by progateway4.mail.pro1.eigbox.com (Postfix) with ESMTP id 2FCF41004807E
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 00:30:44 +0000 (UTC)
+Received: from box5620.bluehost.com ([162.241.219.59])
+        by cmsmtp with ESMTP
+        id VhxMqTsfIsBigVhxMqlrvk; Tue, 15 Aug 2023 00:30:44 +0000
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.4 cv=OdNdsjfY c=1 sm=1 tr=0 ts=64dac734
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10:nop_charset_1 a=UttIx32zK-AA:10:nop_rcvd_month_year
+ a=-Ou01B_BuAIA:10:endurance_base64_authed_username_1 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10:nop_charset_2
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Mq17y5sD9Z9vYHrZ7xm7qLvRo02ff1Q/ZpijYugkHw0=; b=nW/Yrd7AOntDbMgYDPON9lttGd
+        G3Xqwg6NHhNgTSSKIKci1Iiz796Gblru4q/5dCFsSHkXy0xC1E2rkGMJIvJCYxtuD0A04bY6Td8hn
+        /2eO3WOtLRJAsj6sGlYeTHUKDbu+7wilOudI/mjWddTew8kxBxiLP3cUn0amPz46mTxcschHOCA2j
+        tsziJmw+92Bs8LLVxW+6xdwU42xzSe0P76fidz6OS7TETY4T9Sj3/+/H5RU46t+RkRY63UCLREck1
+        6q2VOq3jIGCJCk5l+TW2TSLfc0eNCw4/EMArQE9J6vN5XTJN4bYhDK7hCwB9yc3f25xI9nU/7gCu3
+        +jSL8Gmw==;
+Received: from c-73-162-232-9.hsd1.ca.comcast.net ([73.162.232.9]:51858 helo=[10.0.1.47])
+        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <re@w6rz.net>)
+        id 1qVhxL-003gbL-1L;
+        Mon, 14 Aug 2023 18:30:43 -0600
+Subject: Re: [PATCH 6.1 000/149] 6.1.46-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20230813211718.757428827@linuxfoundation.org>
+In-Reply-To: <20230813211718.757428827@linuxfoundation.org>
+From:   Ron Economos <re@w6rz.net>
+Message-ID: <6e696499-52d1-1f18-516a-3939f68f7e24@w6rz.net>
+Date:   Mon, 14 Aug 2023 17:30:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com>
- <20230706062045.xwmwns7cm4fxd7iu@google.com> <CABWYdi2pBaCrdKcM37oBomc+5W8MdRp1HwPpOExBGYfZitxyWA@mail.gmail.com>
- <d3f3a7bc-b181-a408-af1d-dd401c172cbf@redhat.com> <CABWYdi2iWYT0sHpK74W6=Oz6HA_3bAqKQd4h+amK0n3T3nge6g@mail.gmail.com>
- <CABWYdi3YNwtPDwwJWmCO-ER50iP7CfbXkCep5TKb-9QzY-a40A@mail.gmail.com>
- <CABWYdi0+0gxr7PB4R8rh6hXO=H7ZaCzfk8bmOSeQMuZR7s7Pjg@mail.gmail.com>
- <CAJD7tkaf5GNbyhCbWyyLtxpqmZ4+iByQgmS1QEFf+bnEMCdmFA@mail.gmail.com>
- <CAJD7tkb=dUfc=L+61noQYHymHPUHswm_XUyFvRdaZemo80qUdQ@mail.gmail.com> <ZNrEV1qEcQMUgztn@slm.duckdns.org>
-In-Reply-To: <ZNrEV1qEcQMUgztn@slm.duckdns.org>
-From:   Ivan Babrou <ivan@cloudflare.com>
-Date:   Mon, 14 Aug 2023 17:30:11 -0700
-Message-ID: <CABWYdi3z7Y4qdjPv4wiHyM6Wvwy_VwSLGA92=_PdYyVZgQDSYQ@mail.gmail.com>
-Subject: Re: Expensive memory.stat + cpu.stat reads
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Waiman Long <longman@redhat.com>,
-        Shakeel Butt <shakeelb@google.com>, cgroups@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 73.162.232.9
+X-Source-L: No
+X-Exim-ID: 1qVhxL-003gbL-1L
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-73-162-232-9.hsd1.ca.comcast.net ([10.0.1.47]) [73.162.232.9]:51858
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 21
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,35 +97,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 5:18=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
+On 8/13/23 2:17 PM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.46 release.
+> There are 149 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> Hello,
+> Responses should be made by Tue, 15 Aug 2023 21:16:53 +0000.
+> Anything received after that time might be too late.
 >
-> On Fri, Aug 11, 2023 at 05:01:08PM -0700, Yosry Ahmed wrote:
-> > There have been a lot of problems coming from this global rstat lock:
-> > hard lockups (when we used to flush atomically), unified flushing
-> > being expensive, skipping flushing being inaccurate, etc.
-> >
-> > I wonder if it's time to rethink this lock and break it down into
-> > granular locks. Perhaps a per-cgroup lock, and develop a locking
-> > scheme where you always lock a parent then a child, then flush the
-> > child and unlock it and move to the next child, etc. This will allow
-> > concurrent flushing of non-root cgroups. Even when flushing the root,
-> > if we flush all its children first without locking the root, then only
-> > lock the root when flushing the top-level children, then some level of
-> > concurrency can be achieved.
-> >
-> > Maybe this is too complicated, I never tried to implement it, but I
-> > have been bouncing around this idea in my head for a while now.
-> >
-> > We can also split the update tree per controller. As far as I can tell
-> > there is no reason to flush cpu stats for example when someone wants
-> > to read memory stats.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.46-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
 >
-> There's another thread. Let's continue there but I'm a bit skeptical whet=
-her
-> splitting the lock is a good solution here. Regardless of locking, we don=
-'t
-> want to run in an atomic context for that long anwyay.
+> thanks,
+>
+> greg k-h
 
-Could you link to the other thread?
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+
+Tested-by: Ron Economos <re@w6rz.net>
+
