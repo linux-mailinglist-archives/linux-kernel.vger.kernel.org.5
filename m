@@ -2,123 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E4D77CCAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 235B377CCAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237193AbjHOMbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 08:31:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53612 "EHLO
+        id S236194AbjHOMa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 08:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235102AbjHOMa4 (ORCPT
+        with ESMTP id S237237AbjHOMam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 08:30:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B1E1D1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:30:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692102655; x=1723638655;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=dkAwFDLCaiCqtDw24YGd2ktTM+uJiKX+nDBEWhIfqOY=;
-  b=Dg5Y0xi9+Uai3mDiHCsW2isS/djc6MG9SJFrsHaaiIjO+zblR7+csx/N
-   kXUa2qJcplneqOebXIZcF78qCe+b0E5kdofUVqxXEpoahnytfjirXszhp
-   FEP66lhWbjfbhGmJgOu36A0TjSYPBqJ64SKmUNnDsdGfUpqaEgMVin1h4
-   LYBG7An/ZXy8Y4Gzq6daxeiniMFNVVG6CerWspkrby1sa8VfmIzDuA9/1
-   sepUWGzJYBbEvhWSs9jMnajH3q3HJAnp+GL+9Pz0NbkK6GRCwtSNfGZos
-   /qAc0tcnjk4Uw7MS1dz+mRkSA1WZArMprRl2p6h/SBlLKNezIqzC8ptBo
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="362415613"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="362415613"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 05:30:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="727372085"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="727372085"
-Received: from lkp-server02.sh.intel.com (HELO b5fb8d9e1ffc) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 15 Aug 2023 05:30:52 -0700
-Received: from kbuild by b5fb8d9e1ffc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qVtCF-0000xa-3C;
-        Tue, 15 Aug 2023 12:30:51 +0000
-Date:   Tue, 15 Aug 2023 20:30:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Edward Cree <ecree.xilinx@gmail.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Andy Moreton <andy.moreton@amd.com>,
-        Simon Horman <simon.horman@corigine.com>
-Subject: drivers/net/ethernet/sfc/falcon/selftest.c:45:16: warning: field ip
- within 'struct ef4_loopback_payload::(anonymous at
- drivers/net/ethernet/sfc/falcon/selftest.c:43:2)' is less aligned than
- 'struct iphdr' and is usually due to 'struct ef4_loopback_payload...
-Message-ID: <202308152020.SxCOJiOI-lkp@intel.com>
+        Tue, 15 Aug 2023 08:30:42 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F790198E
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:30:36 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-51cff235226so11191338a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:30:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692102635; x=1692707435;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=04Eq/C0GWaDiYcCYrFqsfXpuwAiZ6F9rzb+joKB8tu4=;
+        b=QALSGAwR/1jBMsDbraRK442+gevrVJNG2FA/em8vCb76K+1CLqdtNDinvvKckWUAKb
+         nwWZbPUM+DSirsEK5uyxcmn8S8hAn5Xod/kW2nrh/fkQAqzkjWnXdnNXwVdJUaNzQB+9
+         923puvHwQehggdSWpl8rXNaWQESFdtr3rBSMTfJ0XhA3iJ7VM7eRnNMGDV8P9pbtgU9u
+         jSkyPN/Xx4xN6McyfRYhiQ6ZhgydMGN7R5qMxqaR/D0L9sIOrgPFNcY0ACv8lzeiHPqq
+         aIhw8Fbag6QtCnFlSAEjGaCFazLXlW8A4KfSRlxujewqaUju/XrYCd30AEr9yBevpaVn
+         vFTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692102635; x=1692707435;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=04Eq/C0GWaDiYcCYrFqsfXpuwAiZ6F9rzb+joKB8tu4=;
+        b=WgS45WCjI2/+AD4CNBrhL8I2TUbZfuO/6sZbh8ynAXbQovN55f1x7tJ7Po9dqSQfIh
+         vpWpj9Md2gU9xnO2STFNw2Rr9BhKNIg89OU8YBxChlywFExV+biNLZs//9+eoVdB3cJl
+         sV3w8xAYxIcquCcMEVFJPfkKrpddoB0e6mLB9b5n4dt+fBCKcHZ8Cu63IL3DAoj6RrDP
+         pVcz85bhttD94c/whmnjNHDALGdGIbReqzWE6m4fcAo4G5m6l3nuHc3kwQuTlF/hceLP
+         tCaKT9Pfl1Vmfw3LNFGeYW3sDPaWWPxpvnyviTbj5MO9utibXqgm+mxRA5lRkX/EU6SX
+         D0sQ==
+X-Gm-Message-State: AOJu0YxoEuaQ3u5nfT1cKQicQ4KU+1NDaTAzU/LBqcZ64Ge2wPa/QiLJ
+        jyl3jWKp6m+m/tV8YKQXwKWFXw==
+X-Google-Smtp-Source: AGHT+IHMvevtOqubR2zho6uMnwXtb+bjSLnRsMD5Yz9mGAKFCGHRaAcI1M3zTC7JreGower4LClqog==
+X-Received: by 2002:a05:6402:12c9:b0:521:ad49:8493 with SMTP id k9-20020a05640212c900b00521ad498493mr1949191edx.6.1692102634865;
+        Tue, 15 Aug 2023 05:30:34 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id v10-20020aa7d64a000000b00521d2f7459fsm6791546edr.49.2023.08.15.05.30.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Aug 2023 05:30:34 -0700 (PDT)
+Message-ID: <079b6c94-0507-4ff1-86c3-14d6a6080b4b@linaro.org>
+Date:   Tue, 15 Aug 2023 14:30:32 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v1 1/3] dt-bindings: pci: qcom: Add binding for
+ operating-points-v2
+Content-Language: en-US
+To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+        manivannan.sadhasivam@linaro.org
+Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
+        quic_parass@quicinc.com, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+References: <1692102408-7010-1-git-send-email-quic_krichai@quicinc.com>
+ <1692102408-7010-2-git-send-email-quic_krichai@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <1692102408-7010-2-git-send-email-quic_krichai@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   91aa6c412d7f85e48aead7b00a7d9e91f5cf5863
-commit: 55c1528f9b97ff3b7efad73e8f79627fc2efb298 sfc: fix field-spanning memcpy in selftest
-date:   2 weeks ago
-config: arm-randconfig-r011-20230815 (https://download.01.org/0day-ci/archive/20230815/202308152020.SxCOJiOI-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230815/202308152020.SxCOJiOI-lkp@intel.com/reproduce)
+On 15/08/2023 14:26, Krishna chaitanya chundru wrote:
+> This adds a binding documenting operating-points-v2.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308152020.SxCOJiOI-lkp@intel.com/
+1. Missing blank line. Don't write patches by yourself, but use tools
+which create proper commit automatically. Every decent editor does it.
 
-All warnings (new ones prefixed by >>):
+2. Please do not use "This commit/patch", but imperative mood. See
+longer explanation here:
+https://elixir.bootlin.com/linux/v5.17.1/source/Documentation/process/submitting-patches.rst#L95
 
->> drivers/net/ethernet/sfc/falcon/selftest.c:45:16: warning: field ip within 'struct ef4_loopback_payload::(anonymous at drivers/net/ethernet/sfc/falcon/selftest.c:43:2)' is less aligned than 'struct iphdr' and is usually due to 'struct ef4_loopback_payload::(anonymous at drivers/net/ethernet/sfc/falcon/selftest.c:43:2)' being packed, which can lead to unaligned accesses [-Wunaligned-access]
-      45 |                 struct iphdr ip;
-         |                              ^
->> drivers/net/ethernet/sfc/falcon/selftest.c:45:16: warning: field ip within 'struct ef4_loopback_payload::(unnamed at drivers/net/ethernet/sfc/falcon/selftest.c:43:2)' is less aligned than 'struct iphdr' and is usually due to 'struct ef4_loopback_payload::(unnamed at drivers/net/ethernet/sfc/falcon/selftest.c:43:2)' being packed, which can lead to unaligned accesses [-Wunaligned-access]
-   2 warnings generated.
+3. A nit, subject: drop second/last, redundant "binding for". The
+"dt-bindings" prefix is already stating that these are bindings.
 
 
-vim +45 drivers/net/ethernet/sfc/falcon/selftest.c
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> ---
+>  Documentation/devicetree/bindings/pci/qcom,pcie.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+> index 81971be4..6bc99c5 100644
+> --- a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+> @@ -121,6 +121,8 @@ properties:
+>      description: GPIO controlled connection to WAKE# signal
+>      maxItems: 1
+>  
+> +  operating-points-v2: true
 
-5a6681e22c1409 Edward Cree 2016-11-28  34  
-5a6681e22c1409 Edward Cree 2016-11-28  35  /*
-5a6681e22c1409 Edward Cree 2016-11-28  36   * Loopback test packet structure
-5a6681e22c1409 Edward Cree 2016-11-28  37   *
-5a6681e22c1409 Edward Cree 2016-11-28  38   * The self-test should stress every RSS vector, and unfortunately
-5a6681e22c1409 Edward Cree 2016-11-28  39   * Falcon only performs RSS on TCP/UDP packets.
-5a6681e22c1409 Edward Cree 2016-11-28  40   */
-5a6681e22c1409 Edward Cree 2016-11-28  41  struct ef4_loopback_payload {
-1186c6b31ee14f Edward Cree 2023-06-23  42  	char pad[2]; /* Ensures ip is 4-byte aligned */
-55c1528f9b97ff Edward Cree 2023-07-28  43  	struct_group_attr(packet, __packed,
-5a6681e22c1409 Edward Cree 2016-11-28  44  		struct ethhdr header;
-5a6681e22c1409 Edward Cree 2016-11-28 @45  		struct iphdr ip;
-5a6681e22c1409 Edward Cree 2016-11-28  46  		struct udphdr udp;
-5a6681e22c1409 Edward Cree 2016-11-28  47  		__be16 iteration;
-5a6681e22c1409 Edward Cree 2016-11-28  48  		char msg[64];
-55c1528f9b97ff Edward Cree 2023-07-28  49  	);
-1186c6b31ee14f Edward Cree 2023-06-23  50  } __packed __aligned(4);
-55c1528f9b97ff Edward Cree 2023-07-28  51  #define EF4_LOOPBACK_PAYLOAD_LEN	\
-55c1528f9b97ff Edward Cree 2023-07-28  52  		sizeof_field(struct ef4_loopback_payload, packet)
-5a6681e22c1409 Edward Cree 2016-11-28  53  
+phandle without actual table (opp-table) is rather meaningless.
 
-:::::: The code at line 45 was first introduced by commit
-:::::: 5a6681e22c1409089132085811857d6da828761b sfc: separate out SFC4000 ("Falcon") support into new sfc-falcon driver
+Best regards,
+Krzysztof
 
-:::::: TO: Edward Cree <ecree@solarflare.com>
-:::::: CC: David S. Miller <davem@davemloft.net>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
