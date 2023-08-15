@@ -2,91 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB3177CB1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 12:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9C177CB1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 12:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236410AbjHOKZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 06:25:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44630 "EHLO
+        id S236421AbjHOKZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 06:25:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236394AbjHOKYg (ORCPT
+        with ESMTP id S236399AbjHOKYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 06:24:36 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2636810F2;
-        Tue, 15 Aug 2023 03:24:35 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 35D871063;
-        Tue, 15 Aug 2023 03:25:17 -0700 (PDT)
-Received: from [10.57.90.230] (unknown [10.57.90.230])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 60F193F762;
-        Tue, 15 Aug 2023 03:24:33 -0700 (PDT)
-Message-ID: <ab4a51ea-3956-2d2f-5705-a760be69fb59@arm.com>
-Date:   Tue, 15 Aug 2023 11:24:31 +0100
+        Tue, 15 Aug 2023 06:24:53 -0400
+Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A95110E0;
+        Tue, 15 Aug 2023 03:24:51 -0700 (PDT)
+Received: from canonical.com (unknown [106.104.136.95])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id C840C3F2A1;
+        Tue, 15 Aug 2023 10:24:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1692095090;
+        bh=xPBXiljRZrwLOlYKR27Sx0wADMyrpi1nE6ik4jFY4PQ=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=FxUCdyxdBev4F8UbKz8zNlwPqkk203pjFgQgeE4T2gFDPs3U1bnSf48ZLkYr/3NIX
+         XBzrD+8D5gfvLQbm+pGQDSBeFvf5YWUvGE9tg3BVtjurKa4PLiAhBLzsr/DwZoGC33
+         hzS3tfYe4FfqA+PbEXd7kz+zTrB9TCLiv+H7ne4ODPkUA4uAR5jnk1G8Dti3aFMp7h
+         5XpXBXoKzHVhinUFdhbb0uiWon0Iw+B7BSVH0mD/AacKPyrIhkxBCsJeaTlp3Y1RVA
+         SsV6DzJ0pLXeghJpxfhsodsYoR/eGNWsWYRWkZqfqjfaH736aUMlyp4rH5XMmCzQmE
+         R8jK5U1zuaFZw==
+From:   Ivan Hu <ivan.hu@canonical.com>
+To:     s.shravan@intel.com, linuxwwan@intel.com, hdegoede@redhat.com,
+        markgross@kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] platform/x86: intel: int1092: intel_sar: fix _DSM argument4 type mismatch issue
+Date:   Tue, 15 Aug 2023 18:24:45 +0800
+Message-Id: <20230815102445.7101-1-ivan.hu@canonical.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v6 1/4] perf: arm_cspmu: Split 64-bit write to 32-bit
- writes
-To:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Besar Wicaksono <bwicaksono@nvidia.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20230815063526.9022-1-ilkka@os.amperecomputing.com>
- <20230815063526.9022-2-ilkka@os.amperecomputing.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20230815063526.9022-2-ilkka@os.amperecomputing.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/08/2023 07:35, Ilkka Koskinen wrote:
-> Split the 64-bit register accesses if 64-bit access is not supported
-> by the PMU.
-> 
-> Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
-> Reviewed-by: Besar Wicaksono <bwicaksono@nvidia.com>
+Encountered a type mismatch as described below:
+\_SB.WCCD._DSM: Argument #4 type mismatch - Found [Integer], ACPI requires
+[Package]
+This is because the argument#4(arg3) is integer.
+According to the ACPI specification, the arg3 should be a package.
+_DSM (Device Specific Method)
+This optional object is a control method that enables devices to provide device
+specific control functions that are consumed by the device driver.
+Arguments: (4)
+Arg0 - A Buffer containing a UUID
+Arg1 - An Integer containing the Revision ID
+Arg2 - An Integer containing the Function Index
+Arg3 - A Package that contains function-specific arguments
 
-Do we need a Fixes tag ?
+The solution involves rectifying arg3 to be a package for the _DSM method.
+Furthermore, the firmware needs to ensure that ACPI table arg3 is a package as
+well. The suggested amendment is as follows:
+If ((Arg3 == Zero))
+{
+    WDMC [0x02] = WCS0
+}
+should modify as,
+If (((ToInteger(Derefof (Arg3 [Zero]))) == Zero))
+{
+    WDMC [0x02] = WCS0
+}
 
-With that:
+Signed-off-by: Ivan Hu <ivan.hu@canonical.com>
+---
+ drivers/platform/x86/intel/int1092/intel_sar.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-
-Suzuki
-
-> ---
->   drivers/perf/arm_cspmu/arm_cspmu.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/perf/arm_cspmu/arm_cspmu.c b/drivers/perf/arm_cspmu/arm_cspmu.c
-> index 04be94b4aa48..6387cbad7a7d 100644
-> --- a/drivers/perf/arm_cspmu/arm_cspmu.c
-> +++ b/drivers/perf/arm_cspmu/arm_cspmu.c
-> @@ -715,7 +715,10 @@ static void arm_cspmu_write_counter(struct perf_event *event, u64 val)
->   	if (use_64b_counter_reg(cspmu)) {
->   		offset = counter_offset(sizeof(u64), event->hw.idx);
->   
-> -		writeq(val, cspmu->base1 + offset);
-> +		if (cspmu->has_atomic_dword)
-> +			writeq(val, cspmu->base1 + offset);
-> +		else
-> +			lo_hi_writeq(val, cspmu->base1 + offset);
-
-
->   	} else {
->   		offset = counter_offset(sizeof(u32), event->hw.idx);
->   
+diff --git a/drivers/platform/x86/intel/int1092/intel_sar.c b/drivers/platform/x86/intel/int1092/intel_sar.c
+index 6246c066ade2..8fffdce994aa 100644
+--- a/drivers/platform/x86/intel/int1092/intel_sar.c
++++ b/drivers/platform/x86/intel/int1092/intel_sar.c
+@@ -215,13 +215,17 @@ static void sar_notify(acpi_handle handle, u32 event, void *data)
+ 
+ static void sar_get_data(int reg, struct wwan_sar_context *context)
+ {
+-	union acpi_object *out, req;
++	union acpi_object *out, req, argv4;
+ 	u32 rev = 0;
+ 
+-	req.type = ACPI_TYPE_INTEGER;
++	argv4.type = ACPI_TYPE_PACKAGE;
++	argv4.package.count = 1;
++	argv4.package.elements = &req;
++	req.integer.type = ACPI_TYPE_INTEGER;
+ 	req.integer.value = reg;
++
+ 	out = acpi_evaluate_dsm_typed(context->handle, &context->guid, rev,
+-				      COMMAND_ID_CONFIG_TABLE, &req, ACPI_TYPE_PACKAGE);
++				      COMMAND_ID_CONFIG_TABLE, &argv4, ACPI_TYPE_PACKAGE);
+ 	if (!out)
+ 		return;
+ 	if (out->package.count >= 3 &&
+-- 
+2.34.1
 
