@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B5B77C9E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 468A077C9E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235897AbjHOJA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 05:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37148 "EHLO
+        id S235854AbjHOJA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 05:00:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235902AbjHOI66 (ORCPT
+        with ESMTP id S235938AbjHOI7b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 04:58:58 -0400
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4167319AD
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:58:07 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VprNF3U_1692089882;
-Received: from 30.97.48.59(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VprNF3U_1692089882)
-          by smtp.aliyun-inc.com;
-          Tue, 15 Aug 2023 16:58:03 +0800
-Message-ID: <111c3142-e20b-3e3c-f107-cbb64a16c2b0@linux.alibaba.com>
-Date:   Tue, 15 Aug 2023 16:58:04 +0800
+        Tue, 15 Aug 2023 04:59:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46AF1BC0;
+        Tue, 15 Aug 2023 01:59:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4023263E2F;
+        Tue, 15 Aug 2023 08:59:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97C15C433C7;
+        Tue, 15 Aug 2023 08:59:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692089969;
+        bh=MArXAIr8c9w9SGHAmRMmXFdx0pibI2BQaL9ZvGmfZ+k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c5eMKztoKIGPUroWlu0kDWQckmc28nItr01rFT5I4CClgh1M1uBGGsZnH0LVIWtxQ
+         qbyNyWmOigSmPPXS//NsFqZ9z6h+6rRzHjkCFmltOp/mkVdE2AzNOBZUgCaIrPJu+r
+         t5DXUaKuPLwXWbvbt2oDhXLrx1ief2b1C0jrRI9DQ9WUBxNdcwtLDipJ3GH9bMJgQM
+         fylZxEdJM8GgdaLe3wW0HTPWleupgJAT4B6d5eGuxRTVkc4uyMvaeRpJbJJjLfBl6M
+         RiNcn4YA86xiFhW6ycuJCQ+Xt9h3rNTaqz3fqPDb+/mnBoD5TArukWBsYwS9HDsJJg
+         Is5XzyeFf2jLA==
+Date:   Tue, 15 Aug 2023 10:59:22 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>
+Cc:     Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        gyroidos@aisec.fraunhofer.de
+Subject: Re: [PATCH RFC 1/4] bpf: add cgroup device guard to flag a cgroup
+ device prog
+Message-ID: <20230815-feigling-kopfsache-56c2d31275bd@brauner>
+References: <20230814-devcg_guard-v1-0-654971ab88b1@aisec.fraunhofer.de>
+ <20230814-devcg_guard-v1-1-654971ab88b1@aisec.fraunhofer.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 6/9] mm/compaction: rename is_via_compact_memory to
- compaction_with_allocation_order
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, david@redhat.com
-References: <20230805110711.2975149-1-shikemeng@huaweicloud.com>
- <20230805110711.2975149-7-shikemeng@huaweicloud.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20230805110711.2975149-7-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230814-devcg_guard-v1-1-654971ab88b1@aisec.fraunhofer.de>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 14, 2023 at 04:26:09PM +0200, Michael Weiß wrote:
+> Introduce the BPF_F_CGROUP_DEVICE_GUARD flag for BPF_PROG_LOAD
+> which allows to set a cgroup device program to be a device guard.
 
+Currently we block access to devices unconditionally in may_open_dev().
+Anything that's mounted by an unprivileged containers will get
+SB_I_NODEV set in s_i_flags.
 
-On 8/5/2023 7:07 PM, Kemeng Shi wrote:
-> We have order = -1 via proactive compaction, the is_via_compact_memory is
-> not proper name anymore.
-> As cc->order informs the compaction to satisfy a allocation with that
-> order, so rename it to compaction_with_allocation_order.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->   mm/compaction.c | 11 +++++------
->   1 file changed, 5 insertions(+), 6 deletions(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index d8416d3dd445..b5a699ed526b 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -2055,12 +2055,11 @@ static isolate_migrate_t isolate_migratepages(struct compact_control *cc)
->   }
->   
->   /*
-> - * order == -1 is expected when compacting via
-> - * /proc/sys/vm/compact_memory
-> + * compact to satisfy allocation with target order
->    */
-> -static inline bool is_via_compact_memory(int order)
-> +static inline bool compaction_with_allocation_order(int order)
+Then we currently mediate device access in:
 
-I know naming is hard, but this name is not good enough that can show 
-the compaction mode. But the original one could.
+* inode_permission()
+  -> devcgroup_inode_permission()
+* vfs_mknod()
+  -> devcgroup_inode_mknod()
+* blkdev_get_by_dev() // sget()/sget_fc(), other ways to open block devices and friends
+  -> devcgroup_check_permission()
+* drivers/gpu/drm/amd/amdkfd // weird restrictions on showing gpu info afaict
+  -> devcgroup_check_permission()
 
->   {
-> -	return order == -1;
-> +	return order != -1;
->   }
->   
->   /*
-> @@ -2200,7 +2199,7 @@ static enum compact_result __compact_finished(struct compact_control *cc)
->   		goto out;
->   	}
->   
-> -	if (is_via_compact_memory(cc->order))
-> +	if (!compaction_with_allocation_order(cc->order))
->   		return COMPACT_CONTINUE;
->   
->   	/*
-> @@ -2390,7 +2389,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
->   
->   	cc->migratetype = gfp_migratetype(cc->gfp_mask);
->   
-> -	if (!is_via_compact_memory(cc->order)) {
-> +	if (compaction_with_allocation_order(cc->order)) {
->   		unsigned long watermark;
->   
->   		/* Allocation can already succeed, nothing to do */
+All your new flag does is to bypass that SB_I_NODEV check afaict and let
+it proceed to the devcgroup_*() checks for the vfs layer.
+
+But I don't get the semantics yet.
+Is that a flag which is set on BPF_PROG_TYPE_CGROUP_DEVICE programs or
+is that a flag on random bpf programs? It looks like it would be the
+latter but design-wise I would expect this to be a property of the
+device program itself.
