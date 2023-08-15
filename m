@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A53A777C93D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 10:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E5477C942
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 10:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235576AbjHOIRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 04:17:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57688 "EHLO
+        id S235589AbjHOIS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 04:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235573AbjHOIRG (ORCPT
+        with ESMTP id S235645AbjHOISK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 04:17:06 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9789710C0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:17:01 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-40c72caec5cso159131cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:17:01 -0700 (PDT)
+        Tue, 15 Aug 2023 04:18:10 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3EA1703
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:18:08 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-40c72caec5cso159401cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:18:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692087420; x=1692692220;
+        d=google.com; s=20221208; t=1692087488; x=1692692288;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pGGKDDNwGnFQDzqcRZv6uXfyy6kqSDcvWt33DukCwns=;
-        b=LHP7LRgi0HwWo/JsQoA/KJowFtt55lXAZ9F1CMz9YTK6LWVVxkJhkw2QNwXq+NV92v
-         m3sjTvjIfbAmMHZdetXXZZtW3B3VwoG7J5zab4YSZVqK6hzIcmEQkiLl/WyZX2+mYyqR
-         QQd65WXqP2zW2vWFBp9hPRLi3FP1JabL6s30FfuLcQLSjvZI1B1Mx6sB6+kbLqDJo7fI
-         6oSwAzG+AqDXCCvYtSHaGppdAX3mQIrWJv6myO8eCiz8YdCZ5/T2zZQuQHTvTfFrpObW
-         G0a8iBiqL6ddgdAJhm3de9XFaDnc8UfPniLeeQRTTp3Tnm5hoN33a50q26+TtOiT8ufx
-         uFQQ==
+        bh=xfx88hBPKZgPUMvxISVxhC4/bacIhL+OUFTRzij75sk=;
+        b=uz5vKcLfOJjqDmAyfm2IEdzijabG0Xp1WNQCuij9+PfWa0FJl1E2VDEks2CAQqmAS+
+         xzisEwZKh0McrILZOeFsfjAUSmOrimNc7uRbu3VUsJMB3HinZHtiEd+b5G1Y3pwg7T+t
+         SmpH7lYYuOUMjmTbTK5bTsGILm2AUZf2w6aa1pvz88cdgycLS1e5TENiOmbu0YNZ0jpR
+         Bit03HWL0x2GYaBFMAswrGAETv1jH7n70KiwN10hwDlQGPC5QSUFF2s2e4Falb7uJN5p
+         2oyyJSsU5BI+DlZ4yVPiitSUKe2xiVCEKJFPWR4v70YrF2gEZtwxVqwbWuVFdta2mI8Q
+         3cqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692087420; x=1692692220;
+        d=1e100.net; s=20221208; t=1692087488; x=1692692288;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pGGKDDNwGnFQDzqcRZv6uXfyy6kqSDcvWt33DukCwns=;
-        b=YS8MSpDzfD7MoDVun3Yckn0UblQzqJKBAz5+BCC1YNoZnNyt4gXtNpYWRnTA2hd5iQ
-         NWuZtgNg5A+v8hXXe9ToouwlB20HUuMGw+q//WwKMtDWVL29YDYl1SQ4vs7bhmT/U5Zn
-         pzTIRWbHk0ubuTm5OlxUh5baCIu0TUDJB9utkD2mnPy0G3NePN7ir/14F9SDNnDLu2uL
-         i/KQ7xv6vd90xmGe5xQUCjTUhBcCRf89ztMzZk07nKCHdlEfmVknVbrTWtpsy0h+Z8xM
-         gzqJPH8X0M64eK/bkT3cIF3uZGi7/SI1fMiSB4Mk4VNTuDPNjkSl6BrsPZAgyzb+p2EN
-         3uAg==
-X-Gm-Message-State: AOJu0YwUu1M6GA65T1+Ctb8CFuN7h6/LhGiDPYZAIkloyaep2fSSr51K
-        fO26Wu/vy8eQpCJhJOeT+H/dS1TBO90Fs14ioJf5UA==
-X-Google-Smtp-Source: AGHT+IFJLjmq0YlyLOJA7m1XpDyTX80DZqvMd1mwYeyfAmBet8lx03RLtKBykd/NEr59kCdSXOpUh6UEJLM7doIDeGY=
-X-Received: by 2002:a05:622a:1888:b0:3f5:2006:50f1 with SMTP id
- v8-20020a05622a188800b003f5200650f1mr814354qtc.12.1692087420657; Tue, 15 Aug
- 2023 01:17:00 -0700 (PDT)
+        bh=xfx88hBPKZgPUMvxISVxhC4/bacIhL+OUFTRzij75sk=;
+        b=CHllFOBlYWAyujP7hIuC2AtOdWf3mc5Sa1cmd/QejceQkbAtSNUyiR9DbLauEaKox4
+         4b86f7eJoaX4EaVeGdzbWJIUXMUJW+xye2K4q8ZnnajjytZnBv6ihZbgdoPtE4i0O1Ep
+         0JxnkaTc7qRxd1ty2VaDvHgg9PfdqGuhsvSlhZaWAqFwWLz9tLi/20p2ouTDB5EWBpa9
+         4J6qJ3T2qDNS1zgPHzzSeEGm+AAqnM1RbkvpidoP3fqXRq7d8/dKJ23DznmiInEeHCva
+         sM5JcukmtjwiFidfw/1QPG+ZshxgoGf3kIcjzsnd+K1Ko938LnAY9iE+hNfhHiAv3kcN
+         UXIw==
+X-Gm-Message-State: AOJu0Yx4eLRmoBgYixTusvn2RVgCL5m1yAKssA7PQOlXFRKfLFfin1j6
+        SP2zoCCXqzbRfTM6o6Tv5qXov9uiKxsqRYljwMgdCQ==
+X-Google-Smtp-Source: AGHT+IHfpEwzrg+6FEwcZbZfspvqiNJDjiRo2MM7TkJ8cDjquKsEV3WAqpz9fyz08FnAbuI/ezAv8YDZp/mbcA0Y9wo=
+X-Received: by 2002:a05:622a:10d:b0:3f4:f0fd:fe7e with SMTP id
+ u13-20020a05622a010d00b003f4f0fdfe7emr774886qtw.3.1692087487706; Tue, 15 Aug
+ 2023 01:18:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230811025822.3859771-1-namhyung@kernel.org>
-In-Reply-To: <20230811025822.3859771-1-namhyung@kernel.org>
+References: <20230811025822.3859771-1-namhyung@kernel.org> <20230811025822.3859771-2-namhyung@kernel.org>
+In-Reply-To: <20230811025822.3859771-2-namhyung@kernel.org>
 From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 15 Aug 2023 01:16:48 -0700
-Message-ID: <CAP-5=fXNTw8sYup-Gavn6u_NpTJv1DCSkxmAonCXdrxJp86MEw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] perf bpf-filter: Fix sample flag check with ||
+Date:   Tue, 15 Aug 2023 01:17:55 -0700
+Message-ID: <CAP-5=fWJuw0GKFqWcX8TA2hW8WbgXORzyJoYJex=AFNYZpKxOg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] perf test: Add perf record sample filtering test
 To:     Namhyung Kim <namhyung@kernel.org>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@kernel.org>,
@@ -61,7 +61,8 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
+        linux-perf-users@vger.kernel.org,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
@@ -78,25 +79,25 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Thu, Aug 10, 2023 at 7:58=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
 wrote:
 >
-> For logical OR operator, the actual sample_flags are in the 'groups'
-> list so it needs to check entries in the list instead.  Otherwise it
-> would show the following error message.
+>   $ sudo ./perf test 'sample filter' -v
+>    94: perf record sample filtering (by BPF) tests                     :
+>   --- start ---
+>   test child forked, pid 3817527
+>   Checking BPF-filter privilege
+>   Basic bpf-filter test
+>   Basic bpf-filter test [Success]
+>   Failing bpf-filter test
+>   Error: task-clock event does not have PERF_SAMPLE_CPU
+>   Failing bpf-filter test [Success]
+>   Group bpf-filter test
+>   Error: task-clock event does not have PERF_SAMPLE_CPU
+>   Error: task-clock event does not have PERF_SAMPLE_CODE_PAGE_SIZE
+>   Group bpf-filter test [Success]
+>   test child finished with 0
+>   ---- end ----
+>   perf record sample filtering (by BPF) tests: Ok
 >
->   $ sudo perf record -a -e cycles:p --filter 'period > 100 || weight > 0'=
- sleep 1
->   Error: cycles:p event does not have sample flags 0
->   failed to set filter "BPF" on event cycles:p with 2 (No such file or di=
-rectory)
->
-> Actually it should warn on 'weight' is used without WEIGHT flag.
->
->   Error: cycles:p event does not have PERF_SAMPLE_WEIGHT
->    Hint: please add -W option to perf record
->   failed to set filter "BPF" on event cycles:p with 2 (No such file or di=
-rectory)
->
-> Fixes: 4310551b76e0 ("perf bpf filter: Show warning for missing sample fl=
-ags")
+> Cc: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
 > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
 Reviewed-by: Ian Rogers <irogers@google.com>
@@ -105,32 +106,147 @@ Thanks,
 Ian
 
 > ---
->  tools/perf/util/bpf-filter.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+>  tools/perf/tests/shell/record_bpf_filter.sh | 128 ++++++++++++++++++++
+>  1 file changed, 128 insertions(+)
+>  create mode 100755 tools/perf/tests/shell/record_bpf_filter.sh
 >
-> diff --git a/tools/perf/util/bpf-filter.c b/tools/perf/util/bpf-filter.c
-> index 47f01df658d9..b51544996046 100644
-> --- a/tools/perf/util/bpf-filter.c
-> +++ b/tools/perf/util/bpf-filter.c
-> @@ -62,6 +62,16 @@ static int check_sample_flags(struct evsel *evsel, str=
-uct perf_bpf_filter_expr *
->         if (evsel->core.attr.sample_type & expr->sample_flags)
->                 return 0;
->
-> +       if (expr->op =3D=3D PBF_OP_GROUP_BEGIN) {
-> +               struct perf_bpf_filter_expr *group;
+> diff --git a/tools/perf/tests/shell/record_bpf_filter.sh b/tools/perf/tes=
+ts/shell/record_bpf_filter.sh
+> new file mode 100755
+> index 000000000000..e76ea861b92c
+> --- /dev/null
+> +++ b/tools/perf/tests/shell/record_bpf_filter.sh
+> @@ -0,0 +1,128 @@
+> +#!/bin/sh
+> +# perf record sample filtering (by BPF) tests
+> +# SPDX-License-Identifier: GPL-2.0
 > +
-> +               list_for_each_entry(group, &expr->groups, list) {
-> +                       if (check_sample_flags(evsel, group) < 0)
-> +                               return -1;
-> +               }
-> +               return 0;
-> +       }
+> +set -e
 > +
->         info =3D get_sample_info(expr->sample_flags);
->         if (info =3D=3D NULL) {
->                 pr_err("Error: %s event does not have sample flags %lx\n"=
-,
+> +err=3D0
+> +perfdata=3D$(mktemp /tmp/__perf_test.perf.data.XXXXX)
+> +
+> +cleanup() {
+> +  rm -f "${perfdata}"
+> +  rm -f "${perfdata}".old
+> +  trap - EXIT TERM INT
+> +}
+> +
+> +trap_cleanup() {
+> +  cleanup
+> +  exit 1
+> +}
+> +trap trap_cleanup EXIT TERM INT
+> +
+> +test_bpf_filter_priv() {
+> +  echo "Checking BPF-filter privilege"
+> +
+> +  if [ "$(id -u)" !=3D 0 ]
+> +  then
+> +    echo "bpf-filter test [Skipped permission]"
+> +    err=3D2
+> +    return
+> +  fi
+> +  if ! perf record -e task-clock --filter 'period > 1' \
+> +         -o /dev/null --quiet true 2>&1
+> +  then
+> +    echo "bpf-filter test [Skipped missing BPF support]"
+> +    err=3D2
+> +    return
+> +  fi
+> +}
+> +
+> +test_bpf_filter_basic() {
+> +  echo "Basic bpf-filter test"
+> +
+> +  if ! perf record -e task-clock -c 10000 --filter 'ip < 0xffffffff00000=
+000' \
+> +         -o "${perfdata}" true 2> /dev/null
+> +  then
+> +    echo "Basic bpf-filter test [Failed record]"
+> +    err=3D1
+> +    return
+> +  fi
+> +  if perf script -i "${perfdata}" -F ip | grep 'ffffffff[0-9a-f]*'
+> +  then
+> +    echo "Basic bpf-filter test [Failed invalid output]"
+> +    err=3D1
+> +    return
+> +  fi
+> +  echo "Basic bpf-filter test [Success]"
+> +}
+> +
+> +test_bpf_filter_fail() {
+> +  echo "Failing bpf-filter test"
+> +
+> +  # 'cpu' requires PERF_SAMPLE_CPU flag
+> +  if ! perf record -e task-clock --filter 'cpu > 0' \
+> +         -o /dev/null true 2>&1 | grep PERF_SAMPLE_CPU
+> +  then
+> +    echo "Failing bpf-filter test [Failed forbidden CPU]"
+> +    err=3D1
+> +    return
+> +  fi
+> +
+> +  if ! perf record --sample-cpu -e task-clock --filter 'cpu > 0' \
+> +         -o /dev/null true 2>/dev/null
+> +  then
+> +    echo "Failing bpf-filter test [Failed should succeed]"
+> +    err=3D1
+> +    return
+> +  fi
+> +
+> +  echo "Failing bpf-filter test [Success]"
+> +}
+> +
+> +test_bpf_filter_group() {
+> +  echo "Group bpf-filter test"
+> +
+> +  if ! perf record -e task-clock --filter 'period > 1000 || ip > 0' \
+> +         -o /dev/null true 2>/dev/null
+> +  then
+> +    echo "Group bpf-filter test [Failed should succeed]"
+> +    err=3D1
+> +    return
+> +  fi
+> +
+> +  if ! perf record -e task-clock --filter 'cpu > 0 || ip > 0' \
+> +         -o /dev/null true 2>&1 | grep PERF_SAMPLE_CPU
+> +  then
+> +    echo "Group bpf-filter test [Failed forbidden CPU]"
+> +    err=3D1
+> +    return
+> +  fi
+> +
+> +  if ! perf record -e task-clock --filter 'period > 0 || code_pgsz > 409=
+6' \
+> +         -o /dev/null true 2>&1 | grep PERF_SAMPLE_CODE_PAGE_SIZE
+> +  then
+> +    echo "Group bpf-filter test [Failed forbidden CODE_PAGE_SIZE]"
+> +    err=3D1
+> +    return
+> +  fi
+> +
+> +  echo "Group bpf-filter test [Success]"
+> +}
+> +
+> +
+> +test_bpf_filter_priv
+> +
+> +if [ $err =3D 0 ]; then
+> +  test_bpf_filter_basic
+> +fi
+> +
+> +if [ $err =3D 0 ]; then
+> +  test_bpf_filter_fail
+> +fi
+> +
+> +if [ $err =3D 0 ]; then
+> +  test_bpf_filter_group
+> +fi
+> +
+> +cleanup
+> +exit $err
 > --
 > 2.41.0.640.ga95def55d0-goog
 >
