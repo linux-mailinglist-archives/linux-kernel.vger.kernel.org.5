@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C5D77CF75
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0B677CF77
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238220AbjHOPpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 11:45:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49102 "EHLO
+        id S238228AbjHOPpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 11:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238071AbjHOPou (ORCPT
+        with ESMTP id S238182AbjHOPox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 11:44:50 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14B010DC
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:44:48 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6887480109bso314708b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:44:48 -0700 (PDT)
+        Tue, 15 Aug 2023 11:44:53 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46819E72
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:44:52 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-688142a392eso4279739b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:44:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692114288; x=1692719088;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=X+b40dDlDBakx8+hTHp2ebRkg2RA++lkqQVSTeac6zA=;
-        b=BtS41tzhfK7XY6exlpjzQzgARG+Ehge1+0PRdLnYhdOW6v1Bo7SJIi4QfUUoIKcI9x
-         pbi2VdZOgXud1DEl9BDa7AbCo5HKvn/XKF10E4aOV81o3c7y81bD4TpDN0gxIjiW+o34
-         PdoWIJpg8d/x3+RQWmBeMDtnW3My6yZM1rnx0=
+        d=chromium.org; s=google; t=1692114292; x=1692719092;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EA3Mv4UUYDYTKgE8UCN4QVB+ZNunBcvwuNsqlG0Ry6I=;
+        b=h5y6LkHH29JJACtPuQFK+ju2t31IHklluAmYjRYh+fL6/vBj+dpbjjuFRH8RzgIJHv
+         3faXyzAfONVk56VELK7VOhWcS75QSQVePJqTrDnoseYSMoP59ZrBg7pQiCt5m+WhUOND
+         X4HwAb1pEVkyNSyfcuE/NYTOB8f6VL515hgrw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692114288; x=1692719088;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=X+b40dDlDBakx8+hTHp2ebRkg2RA++lkqQVSTeac6zA=;
-        b=UQyytke6Rzxoy/CsBzmtPVwhmX3iDLy/JG6GC4Jz3U1ud18d+CI48F4dD/G+VhR7HL
-         hsYcTRfr+Vp15hOoU3Q9aDYqPgV4jkMO5W5Qa9qFa5x4DwGgNZC/ndX2upwWf97W1MAE
-         XozTD9dgD7YLg7sz2iqyuXKC2aZOjB0t4kmR432mdOIwbpOK//JmZolJSUPHnS44CI7s
-         U1JR04vRg1N6vQabvan7tONR8/JEOQEeP6q5/2DA8YpLxwpl/ezBFZKA437o0HeefkAc
-         gpIm04eWei3IBkQu85PLODrjVl7RsSHa04PJlZhNxuTDWJXHVQGja5oA9REZFuf5THX2
-         ZsGQ==
-X-Gm-Message-State: AOJu0Yxtn3PctmOXr3V4YHoDDwVkCkQKE1LmXsyunqBIpm+rC6VcT5KJ
-        FDo9Ni+HY50uApk5oa302IxrTw==
-X-Google-Smtp-Source: AGHT+IGzSeQ7P7d6hIuKp8jX5Kc6bcArFd2OV1P4lsTdQ+wIT/RytQKLIYbcjxTcDvbMf4xA8ee6oA==
-X-Received: by 2002:a05:6a20:3d28:b0:134:1011:8582 with SMTP id y40-20020a056a203d2800b0013410118582mr17945878pzi.47.1692114288344;
-        Tue, 15 Aug 2023 08:44:48 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692114292; x=1692719092;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EA3Mv4UUYDYTKgE8UCN4QVB+ZNunBcvwuNsqlG0Ry6I=;
+        b=HZFxWEP0WXUbtvNQ9ALsTtyqm0L8NaxT3nVRI5H2lW+mmZYcXdZMPs/uAiYrgs2hgR
+         2lk38oVbxNng6Gnh8GPAJMI1JWtVuNK5fHS/pUwHgwnsSjJ77B6P3Tf8t4C0/d3wKbor
+         297rd8y47cGf41pHn6/G0ulYfmvJ+4ksr1Ls62IcaOI5toowldqPUtJ69ZtDYXxCRl6K
+         +2ckDP/tUxmyc+8Oc4pxWLquroDkiLJoVhpXMRGYzCJp2yowLc2zL1VQgN6tl3HSK6xu
+         10hC4AVSNEGHvRlRduhpk76lRi3JCinMCKdJ6VZLFTkiPzKJKZlmfIBpLEwi3OoInMRS
+         sM/A==
+X-Gm-Message-State: AOJu0YzRIEagVdIcq2/L5dq+90lTkvSXtA90HhBJLpENiTYC8SBHyRtf
+        siUSq7mpoME68bqSm/DWywDJ0Q==
+X-Google-Smtp-Source: AGHT+IFHXM2ifH0wB+IAbVqCwTi6GeJTVYyJNT05exRF3SZCQx7y2NkW6qKN3fV/cPF4uLvnwxcLEg==
+X-Received: by 2002:a05:6a20:1052:b0:12f:dc31:a71e with SMTP id gt18-20020a056a20105200b0012fdc31a71emr13176557pzc.56.1692114291736;
+        Tue, 15 Aug 2023 08:44:51 -0700 (PDT)
 Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:40cf:3807:f8c8:2d76])
-        by smtp.gmail.com with ESMTPSA id n13-20020aa78a4d000000b0065e154bac6dsm9431247pfa.133.2023.08.15.08.44.44
+        by smtp.gmail.com with ESMTPSA id n13-20020aa78a4d000000b0065e154bac6dsm9431247pfa.133.2023.08.15.08.44.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 08:44:47 -0700 (PDT)
+        Tue, 15 Aug 2023 08:44:51 -0700 (PDT)
 From:   Hsin-Yi Wang <hsinyi@chromium.org>
 To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -67,48 +68,59 @@ Cc:     Pratyush Yadav <pratyush@kernel.org>,
         cros-qcom-dts-watchers@chromium.org,
         Andy Gross <agross@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>
-Subject: [PATCH 0/4] Add a property to override the quad mode
-Date:   Tue, 15 Aug 2023 23:31:51 +0800
-Message-ID: <20230815154412.713846-1-hsinyi@chromium.org>
+Subject: [PATCH 1/4] dt-bindings: mtd: jedec,spi-nor: Add disable-quad-mode property
+Date:   Tue, 15 Aug 2023 23:31:52 +0800
+Message-ID: <20230815154412.713846-2-hsinyi@chromium.org>
 X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
+In-Reply-To: <20230815154412.713846-1-hsinyi@chromium.org>
+References: <20230815154412.713846-1-hsinyi@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On gigadevice gd25lq64c, the quad mode is enabled after BFPT is parsed.
-According to datasheet[1], Quad enable (QE) bit needs to be set to 0 to
-use write protection (WP) pin. It also recommends setting default value of
-QE to 0 to avoid a potential short issue.
+Some flash devices, eg. gd25lq64c, enable quad mode by default after
+spi_nor_parse_bfpt(). However, the systems using these flash devices may
+required the quad mode to be turned off for using write protection or to
+avoid a potential short issue[1].
 
-Add a disable-quad-mode property in devicetree that platform can use it to
-override the quad mode status parsed from BFPT to use write protection.
+Add a disable-quad-mode property in devicetree that system can use it to
+override the quad mode status parsed from BFPT.
 
 [1]
 https://www.elm-tech.com/ja/products/spi-flash-memory/gd25lq64/gd25lq64.pdf
 page 13
 
-Hsin-Yi Wang (4):
-  dt-bindings: mtd: jedec,spi-nor: Add disable-quad-mode property
-  mtd: spi-nor: sfdp: read disable-quad-mode property
-  arm64: dts: mediatek: mt8183: disable quad mode for spi nor
-  arm64: dts: qcom: sc7180: disable quad mode for spi nor
-
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+---
  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 7 +++++++
- arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi           | 1 +
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi             | 1 +
- drivers/mtd/spi-nor/core.c                               | 5 +++++
- drivers/mtd/spi-nor/core.h                               | 1 +
- drivers/mtd/spi-nor/debugfs.c                            | 1 +
- 6 files changed, 16 insertions(+)
+ 1 file changed, 7 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+index 58f0cea160ef5..4cf1da1108500 100644
+--- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
++++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml
+@@ -72,6 +72,13 @@ properties:
+       be used on such systems, to denote the absence of a reliable reset
+       mechanism.
+ 
++  disable-quad-mode:
++    type: boolean
++    description:
++      Some flash devices enables QE bit after BFPT is parsed. However, some system
++      may required quad mode to be disabled to use write protection. This boolean
++      flag is to override the quad enable status parsed from BFPT.
++
+   no-wp:
+     type: boolean
+     description:
 -- 
 2.41.0.694.ge786442a9b-goog
 
