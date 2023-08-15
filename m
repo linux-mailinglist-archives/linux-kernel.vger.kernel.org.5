@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E375477CF1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C8677CF1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237982AbjHOP2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 11:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48356 "EHLO
+        id S238000AbjHOP2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 11:28:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237962AbjHOP2I (ORCPT
+        with ESMTP id S237959AbjHOP2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Aug 2023 11:28:08 -0400
 Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63C59C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:28:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F09BE5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:28:08 -0700 (PDT)
 Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37FEFVPe008845;
-        Tue, 15 Aug 2023 08:27:44 -0700
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37FEFUMl008839;
+        Tue, 15 Aug 2023 08:27:48 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=pfpt0220;
- bh=Uk3A5P7WfGa23MOhtDO8rNOCRZXqtO0eZxiTOWLUHWc=;
- b=CjalgO9dVZ0Yyei/AVn7TJJjGpMTbCUTAC7AwC1tc0Mg8mYbgYTknV6HsbsAkYNiEmKP
- q2J9u6xwNJyFq7Ne5C4fZ89ocrpWtkDePvLYrPsWKJzqKLJYRDIs60tO9jyuv210MJu5
- QGLZZSMooMy2ObpMsvGMbMdx08ihJouetiHwGA+h6pifh5iOYLbn7Gt4u4PN5W6YQy6B
- 3qIjhLA1ef+/1nRVID+8DmYe7/o7KbtwLrG4oxW5d8bYG3CGsfEM9VlbT8W09RTKtI6J
- qICidWddCr6WtXnVWyPeU8sGd6rqIskghfdQpCXWY1UxTtBU1V+su3oSe7uDxisIji5N iw== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3sgaydr89a-1
+ bh=2AcGndNsb0mA20+rk92QjaYDMCbdWb3nhdSfrUTAJqc=;
+ b=evhp6I1Sum2FPwRGJl/w7xslgmMPLdEO+EM/Iqjdf6zqNXw/8/V/WsAeLFVsLRsP4n0F
+ G8wpMhnppdCzXzhbjbv25fhbn3ih5uWJW04HqLZ3dI/lhfC+M0dWhgxZ5BnsOnYAXnrZ
+ AbD/NBhOfCd/C9FoAF5mkMb02JG3oS7/tTn121vqbvtQ82g2zZEw/IMlmAx4w+wvonCB
+ gbhQDOntpsc9GZEaTbuC4jcLNz5bOwRiCP+1PRTPtTtyLsb2RCH48kn2Cqg8vflOY6lN
+ t15dhq2XpdtkQf6QC7M66ftTVFZAtt2GH87Sn/r03wDxyzvITNqL2Hs3VcbwE+y/iTw1 BA== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3sgaydr89c-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 15 Aug 2023 08:27:44 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 15 Aug
- 2023 08:27:42 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Tue, 15 Aug 2023 08:27:42 -0700
+        Tue, 15 Aug 2023 08:27:47 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 15 Aug
+ 2023 08:27:46 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Tue, 15 Aug 2023 08:27:46 -0700
 Received: from localhost.localdomain (unknown [10.28.36.167])
-        by maili.marvell.com (Postfix) with ESMTP id D33C43F704D;
-        Tue, 15 Aug 2023 08:27:39 -0700 (PDT)
+        by maili.marvell.com (Postfix) with ESMTP id 5D6833F703F;
+        Tue, 15 Aug 2023 08:27:43 -0700 (PDT)
 From:   Amit Singh Tomar <amitsinght@marvell.com>
 To:     <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>
 CC:     <fenghua.yu@intel.com>, <reinette.chatre@intel.com>,
         <james.morse@arm.com>, <gcherian@marvell.com>, <robh@kernel.org>,
         <peternewman@google.com>, Amit Singh Tomar <amitsinght@marvell.com>
-Subject: [RFC 01/12] arm_mpam: Handle resource instances mapped to different controls
-Date:   Tue, 15 Aug 2023 20:57:01 +0530
-Message-ID: <20230815152712.1760046-2-amitsinght@marvell.com>
+Subject: [RFC 02/12] arm_mpam: resctrl: Detect priority partitioning capability
+Date:   Tue, 15 Aug 2023 20:57:02 +0530
+Message-ID: <20230815152712.1760046-3-amitsinght@marvell.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230815152712.1760046-1-amitsinght@marvell.com>
 References: <20230815152712.1760046-1-amitsinght@marvell.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: EDEfHLYgAD4deGl_cpTtBhjtMuOQekxK
-X-Proofpoint-ORIG-GUID: EDEfHLYgAD4deGl_cpTtBhjtMuOQekxK
+X-Proofpoint-GUID: LytoDMRjzmYmG-5KbYRh7H8fMQPZWMAY
+X-Proofpoint-ORIG-GUID: LytoDMRjzmYmG-5KbYRh7H8fMQPZWMAY
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-08-15_16,2023-08-15_02,2023-05-22_02
@@ -70,77 +70,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At the moment, configuring multiple resource instances (mapped to same
-control) under a resource class is not supported. For instance, on MARVELL
-SoC MPAMF_IDR_NS[RIS_MAX] (under LLC MSC) is 0x2, and there are three
-different resource at index 0,1,2. These are enumerated in
-TAD_CMN_MPAM_RIS_E:
+ARM MPAM supports different control that can be applied to different
+resources in the system, for instance priority partitioning control
+where priority value is generated from one MSC, propagates over
+interconnect to other MSC (known as downstream priority), or can be
+applied within an MSC for internal operations.
 
-0: MSC
-1: LTG
-2: DTG
-
-LLC MSC resource at index 1, and 2 have cache portion partitioning
-feature, i.e., If MPAMCFG_PART_SEL_NS[RIS] is set to 1 (LTG) or to 2 (DTG),
-then MPAMF_IDR_NS[HAS_CPOR_PART] is set to 1. LTG resource has 16
-portion bitmap, and DTG has 18 portion bitmap (mapped to same
-CPOR control), and only one can be configured.
-
-LLC MSC resource at index 0 has the Priority partitioning features.
-If MPAMCFG_PART_SEL_NS[RIS] is set to 0 (MSC), then MPAMF_IDR_NS[HAS_PRI_PART]
-is set to 1, leaving HAS_CPOR_PART bit to 0. CPOR and PRI_PART are
-mutually exclusive resources as far configuration is concerned.
-
-With this change, multiple resource instances that maps to different
-control, say LTG for CPOR, and MSC for PRI_PART is handled properly.
+This change lets the resctrl know the about MSC's priority partitioning
+capability.
 
 Signed-off-by: Amit Singh Tomar <amitsinght@marvell.com>
 ---
- drivers/platform/mpam/mpam_devices.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+ drivers/platform/mpam/mpam_resctrl.c | 14 ++++++++++++++
+ include/linux/resctrl.h              |  4 ++++
+ 2 files changed, 18 insertions(+)
 
-diff --git a/drivers/platform/mpam/mpam_devices.c b/drivers/platform/mpam/mpam_devices.c
-index 589ff1ef2b6b..137cbff925ba 100644
---- a/drivers/platform/mpam/mpam_devices.c
-+++ b/drivers/platform/mpam/mpam_devices.c
-@@ -1829,6 +1829,19 @@ static void mpam_enable_init_class_features(struct mpam_class *class)
- 	class->props = ris->props;
+diff --git a/drivers/platform/mpam/mpam_resctrl.c b/drivers/platform/mpam/mpam_resctrl.c
+index 1dbfb6f6dd34..09618d9ceb1d 100644
+--- a/drivers/platform/mpam/mpam_resctrl.c
++++ b/drivers/platform/mpam/mpam_resctrl.c
+@@ -435,6 +435,16 @@ static bool cache_has_usable_cpor(struct mpam_class *class)
+ 	return (class->props.cpbm_wd <= RESCTRL_MAX_CBM);
  }
  
-+/* Club different resource properties under a class that resctrl uses,
-+ * for instance, L3 cache that supports both CPOR, and DSPRI need to have
-+ * knowledge of both cpbm_wd and dspri_wd.
-+ */
-+static void mpam_enable_club_class_features(struct mpam_class *class,
-+					    struct mpam_msc_ris *ris)
++static bool cache_has_usable_priority_part(struct mpam_class *class)
 +{
-+	class->props.features |= ris->props.features;
-+	class->props.cpbm_wd |= ris->props.cpbm_wd;
-+	class->props.dspri_wd |= ris->props.dspri_wd;
-+	class->props.num_csu_mon |= ris->props.num_csu_mon;
++	struct mpam_props *cprops = &class->props;
++
++	if (!mpam_has_feature(mpam_feat_dspri_part, cprops))
++		return false;
++
++	return (class->props.dspri_wd <= RESCTRL_MAX_DSPRI);
 +}
 +
- /* Merge all the common resource features into class. */
- static void mpam_enable_merge_features(void)
+ static bool cache_has_usable_csu(struct mpam_class *class)
  {
-@@ -1843,7 +1856,16 @@ static void mpam_enable_merge_features(void)
+ 	struct mpam_props *cprops;
+@@ -691,6 +701,7 @@ static int mpam_resctrl_resource_init(struct mpam_resctrl_res *res)
+ 	    res->resctrl_res.rid == RDT_RESOURCE_L3) {
+ 		bool has_csu = cache_has_usable_csu(class);
+ 		bool has_mbwu = class_has_usable_mbwu(class);
++		bool has_ppart = cache_has_usable_priority_part(class);
  
- 		list_for_each_entry(comp, &class->components, class_list) {
- 			list_for_each_entry(ris, &comp->ris, comp_list) {
--				__resource_props_mismatch(ris, class);
-+				/* There can be multiple resources under a class which is
-+				 * mapped to different controls, for instance L3 cache
-+				 * can have both CPOR and DSPRI implemented, and following
-+				 * would avoid property mismatch later on when different
-+				 * resources are present.
-+				 */
-+				if (class->props.features != ris->props.features)
-+					mpam_enable_club_class_features(class, ris);
-+				else
-+					__resource_props_mismatch(ris, class);
+ 		/* TODO: Scaling is not yet supported */
+ 		r->cache.cbm_len = class->props.cpbm_wd;
+@@ -718,6 +729,9 @@ static int mpam_resctrl_resource_init(struct mpam_resctrl_res *res)
+ 			exposed_alloc_capable = true;
+ 		}
  
- 				class->nrdy_usec = max(class->nrdy_usec,
- 						     ris->msc->nrdy_usec);
++		if (has_ppart)
++			r->priority_cap = true;
++
+ 		/*
+ 		 * MBWU counters may be 'local' or 'total' depending on where
+ 		 * they are in the topology. If The counter is on the L3, its
+diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
+index 3ad308e9e226..a98ba5828211 100644
+--- a/include/linux/resctrl.h
++++ b/include/linux/resctrl.h
+@@ -38,6 +38,8 @@ int proc_resctrl_show(struct seq_file *m,
+  */
+ #define RESCTRL_MAX_CBM			32
+ 
++#define RESCTRL_MAX_DSPRI               63
++
+ /* The format for packing fields into the u64 'id' exposed to user-space */
+ #define RESCTRL_ID_CLOSID	GENMASK_ULL(31, 0)
+ #define RESCTRL_ID_RMID		GENMASK_ULL(63, 32)
+@@ -195,6 +197,7 @@ struct resctrl_membw {
+  * @rid:		The index of the resource
+  * @alloc_capable:	Is allocation available on this machine
+  * @mon_capable:	Is monitor feature available on this machine
++ * @priority_capable:   Is priority partitioning feature available on this machine
+  * @num_rmid:		Number of RMIDs available
+  * @cache_level:	Which cache level defines scope of this resource
+  * @cache:		Cache allocation related data
+@@ -212,6 +215,7 @@ struct rdt_resource {
+ 	int			rid;
+ 	bool			alloc_capable;
+ 	bool			mon_capable;
++	bool                    priority_cap;
+ 	int			num_rmid;
+ 	int			cache_level;
+ 	struct resctrl_cache	cache;
 -- 
 2.25.1
 
