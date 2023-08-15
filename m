@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D87077CE21
+	by mail.lfdr.de (Postfix) with ESMTP id D6EA077CE22
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237628AbjHOOc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 10:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54580 "EHLO
+        id S237641AbjHOOcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 10:32:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237669AbjHOOcO (ORCPT
+        with ESMTP id S237674AbjHOOcP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 10:32:14 -0400
+        Tue, 15 Aug 2023 10:32:15 -0400
 Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF2B10C0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:32:12 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe1a17f983so49659425e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:32:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF65510C0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:32:14 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe8a1591c8so39659255e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:32:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692109931; x=1692714731;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xamr+VMNIiHUxs+t0NwOpENr1FFmryIpP13DFeFEEWA=;
-        b=LoYhl7NX/UL3BuSxqil5bfW/WK3lS/sX7oKzuSlIs3D6b8d1vrI6S1GUJ0MljNiP1a
-         Nx8m5uTAxHEOQLqP5JdVxF6Ncwzl/Ivxk8W8PGkF2r77Zp7Y5764sMNyl3G2UOrjBcHM
-         ltW+nhHT5rBAB3+AgdhxwHzDSrNPJ8zyzIRrzoNAo4JTncp+6EPhzoG76abqKPOa6cZO
-         Q/K6+nknXLfmorIK8dwhMOZEba6mJq+LP69fKWHeSgcUYTICHb0lsMp23zJL9bXcRzJq
-         e43ggn7VpP9aTCIkopUTqDCwyLWTHpEAXAaA/gO2s+7dgfHVDsp/j6DQAu2gFBNmtvo8
-         AvGQ==
+        d=linaro.org; s=google; t=1692109933; x=1692714733;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UpZqgVo2zkbi2B7sOh6o48YWO5812KC5/SRbTNsfhC4=;
+        b=AjF7/iSx//xv+IXbPrL7byl1tK/SI6NcdK7rZc73VtoiGg7V7Sah6expliUD2+bF87
+         lzbiBreVfmGWFKUAAvYpVUu5NjpfNgvYtUKTZfW4u/g7Fqp1OWlCIO6GI3wNGlMfsShu
+         QaCMlMbRWVfdrBzrcf837XmCmiNlNcoREEI0n1r+JXFcjIuTNOL/wPsp4n5ZyekJgREy
+         hcf8GsOJcMcDkYSbZ7hjiuaWK/Kdflgiv65As/HmePDlqJjG36NaQcJrTaxIju2YZ1+H
+         S73dQldaf8Um/soORXdpTCTPCxIEu2h3wMSJjpCoLYWdX4EuhzlrSCaMqv358l+yIyhr
+         c8bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692109931; x=1692714731;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xamr+VMNIiHUxs+t0NwOpENr1FFmryIpP13DFeFEEWA=;
-        b=PNJEVLAiwq3DaG+EvrMvKlTH0bP+IRMVuNm6rHLsz0c0UF1Hbomcxhog3hyUNX1maI
-         vcRb2LmwGZM4sJMZLr6Rgcur5txfURm1ovKt4pDb3AeLbbUVGfEVNWQAxrZrY0/7835w
-         j1ksmt5Jyf138nJm566F8kko18+Z+8Ku4NTDlSIsfD59vFrhXJBqKfsplOzMxzfyViNR
-         vc9dXd+2hwCFeKdbi+c6GhpWbjpCFbsThjbp3x4N2tn1R1lynuUoX4uj2a6koT3/sRWs
-         frsKJxMMIoWq9tjXrVswmm4l2lEMkaEZgtdSAXGuBtmkHaF0ptm41DuShKXmFoXWkenu
-         FvXw==
-X-Gm-Message-State: AOJu0YywZ/9tsrrIfa80++tBqsOhc1CxsP4OAPnMB7xahz35FmdA+xSV
-        CguY7G/lOFUAh9HyW1XKsfUlfQ==
-X-Google-Smtp-Source: AGHT+IF1krISD3AJXDPMTk0PBHJrfPjmRe6TLvoVjuU6BZ513y89qdOLID/M+Pv483mdRwQq//j3zw==
-X-Received: by 2002:a7b:cd99:0:b0:3fe:14af:ea21 with SMTP id y25-20020a7bcd99000000b003fe14afea21mr9607003wmj.21.1692109931122;
-        Tue, 15 Aug 2023 07:32:11 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692109933; x=1692714733;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UpZqgVo2zkbi2B7sOh6o48YWO5812KC5/SRbTNsfhC4=;
+        b=XvRM24jx754/bpygMM99wsOg5uuz0st61ftyn4FptxvfUrSmxoHYQgl6IOPOkBWUUn
+         LvIwZvV+iRRNUvnhvej5JYQaQZTKFyp/TroDB/srMr7vdIDfPJJpYzgtQ8ZtKlyojrah
+         6WDoL3ibU5b1m/uTPOwFttDLKy2A67F2uhoOhorV37fgCB10E9uDhOFnVN754Wq/GitB
+         T6pQniv3RkAQlEioS36WzUfUTTRuATTt+aBY3ORmDVkbGwEVh6dIFFW2aoAUT9qMZV2n
+         uNyAbJSrvu8FVC6e8yfIDYSMF/t7HQGJBgTJGFed9BWumKDz1YbmdtbLzTFNgNYa7nZU
+         xpoA==
+X-Gm-Message-State: AOJu0YwWM4Q6A0i94NT3haE06I5CVblkG0AxgK/G4I6mXnra4+6iCfFJ
+        meyI8iDMQTG7QHIjotdTlC3Zaw==
+X-Google-Smtp-Source: AGHT+IHtM12tZqB/uARbgqLwol3KwbEzc5BSEYMRqCDwwlrAIrZkQ/bVwv4A6dHrGW9OOEqZ0i1fRA==
+X-Received: by 2002:a05:600c:5121:b0:3fe:1b4e:c484 with SMTP id o33-20020a05600c512100b003fe1b4ec484mr10756757wms.5.1692109932920;
+        Tue, 15 Aug 2023 07:32:12 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id l11-20020a05600012cb00b003177f57e79esm5851481wrx.88.2023.08.15.07.32.09
+        by smtp.gmail.com with ESMTPSA id l11-20020a05600012cb00b003177f57e79esm5851481wrx.88.2023.08.15.07.32.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 07:32:10 -0700 (PDT)
+        Tue, 15 Aug 2023 07:32:12 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -59,10 +60,12 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH RESEND 1/3] ASoC: codecs: tlv320aic32x4: Fix Wvoid-pointer-to-enum-cast warning
-Date:   Tue, 15 Aug 2023 16:32:02 +0200
-Message-Id: <20230815143204.379708-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH RESEND 2/3] ASoC: codecs: wm8904: Fix Wvoid-pointer-to-enum-cast warning
+Date:   Tue, 15 Aug 2023 16:32:03 +0200
+Message-Id: <20230815143204.379708-2-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230815143204.379708-1-krzysztof.kozlowski@linaro.org>
+References: <20230815143204.379708-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,35 +78,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'type' is an enum, thus cast of pointer on 64-bit compile test with W=1
-causes:
+'devtype' is an enum, thus cast of pointer on 64-bit compile test with
+W=1 causes:
 
-  tlv320aic32x4.c:1352:18: error: cast to smaller integer type 'enum aic32x4_type' from 'void *' [-Werror,-Wvoid-pointer-to-enum-cast]
+  wm8904.c:2205:21: error: cast to smaller integer type 'enum wm8904_type' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
 ---
-
-Resending because thread got duplicated/messed on the lists. I also
-dropped patch for aw88261 from the series, because it was fixed other
-way by Arnd.
----
- sound/soc/codecs/tlv320aic32x4.c | 2 +-
+ sound/soc/codecs/wm8904.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tlv320aic32x4.c b/sound/soc/codecs/tlv320aic32x4.c
-index ffe1828a4b7e..6829834a412f 100644
---- a/sound/soc/codecs/tlv320aic32x4.c
-+++ b/sound/soc/codecs/tlv320aic32x4.c
-@@ -1349,7 +1349,7 @@ int aic32x4_probe(struct device *dev, struct regmap *regmap)
- 		return -ENOMEM;
- 
- 	aic32x4->dev = dev;
--	aic32x4->type = (enum aic32x4_type)dev_get_drvdata(dev);
-+	aic32x4->type = (uintptr_t)dev_get_drvdata(dev);
- 
- 	dev_set_drvdata(dev, aic32x4);
- 
+diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
+index 60319b468fb2..829bf055622a 100644
+--- a/sound/soc/codecs/wm8904.c
++++ b/sound/soc/codecs/wm8904.c
+@@ -2202,7 +2202,7 @@ static int wm8904_i2c_probe(struct i2c_client *i2c)
+ 		match = of_match_node(wm8904_of_match, i2c->dev.of_node);
+ 		if (match == NULL)
+ 			return -EINVAL;
+-		wm8904->devtype = (enum wm8904_type)match->data;
++		wm8904->devtype = (uintptr_t)match->data;
+ 	} else {
+ 		const struct i2c_device_id *id =
+ 			i2c_match_id(wm8904_i2c_id, i2c);
 -- 
 2.34.1
 
