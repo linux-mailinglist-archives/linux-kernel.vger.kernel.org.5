@@ -2,109 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 070C877C599
+	by mail.lfdr.de (Postfix) with ESMTP id 5A11A77C59A
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 04:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234086AbjHOCGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 22:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33008 "EHLO
+        id S234095AbjHOCGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 22:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjHOCGF (ORCPT
+        with ESMTP id S234085AbjHOCG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 22:06:05 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37FF1702
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 19:06:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692065164; x=1723601164;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=MKYGLe8IyShNbMGzrNuYJbpA1fTUIc5suwq/YoZTq9A=;
-  b=IsFu/A0M/fcFWqmzYsJQ5B0HdwzC6M9q2EOfcwTvKXRGAHrG+bFr5kwF
-   D7YQ7+RScOCjEUd+kK8Etv9tL5ui2LCk2UJenDuohbucqbEXP70bSGMLv
-   BuRkDFAOaYhFXTPNkzsfo8eVcka5XdfLvMfMP83lNu6MXiF7KbKlrc+aw
-   26uRxr+sOus2WV93vVdbs7ZQHxWHPp4TjiCH0KHUPQw6z4eE9N5O4fmfX
-   J+f/e9i9gZUdYryFblUX7jEAfOlTJBIwbGho3k3/kyn5BphBKAQqJOmX+
-   vkb9GDicaPvAiSwWlzXY0isaAT6rFbUpyT9Zb3AJJZiLvLd/ZsYpoGPei
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="357148185"
-X-IronPort-AV: E=Sophos;i="6.01,173,1684825200"; 
-   d="scan'208";a="357148185"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 19:06:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="736739582"
-X-IronPort-AV: E=Sophos;i="6.01,173,1684825200"; 
-   d="scan'208";a="736739582"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.215.149]) ([10.254.215.149])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 19:06:00 -0700
-Message-ID: <4b356a28-5637-d492-9540-d7f5e6c617ec@linux.intel.com>
-Date:   Tue, 15 Aug 2023 10:05:58 +0800
+        Mon, 14 Aug 2023 22:06:26 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D171702;
+        Mon, 14 Aug 2023 19:06:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692065183;
+        bh=0+dD2sVdFwzszpHI5Y/LnL4Ozf3sGM2mUBnR+8XHP+Q=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Qkk9Kby6pOWn7aiTDDzFDTAwutXACI9/6GW1AZbi+wFssRwk+nltDwEUyGaEvx9WG
+         3+g76CXrnhkjuyw0zKOSkWBFBb8ef8ezkiHCS4drEXLHEjvxcIK3euPxRFBZTfMHIC
+         jHISI+sVsgZzleHV0f9HxcValj7aS6ecRRu5XKVErNqngweE7JgpVqHrjYVgVmawQx
+         Y+mrhLlkEFS6bTxkkbCNmly0q0PROnhbDMqW84f62EFQs5Ea4q2/RBB4JDDv3+7nsh
+         EhILi0flBdG/op/tEl96+LfXaD2bt1OW25guVzYIjCSPH98RRBOcYYkoY3Iv//bk4L
+         2UM7gtuimZy1Q==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RPvl357X1z4wZx;
+        Tue, 15 Aug 2023 12:06:23 +1000 (AEST)
+Date:   Tue, 15 Aug 2023 12:06:22 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>
+Cc:     ARM <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the samsung-krzk tree
+Message-ID: <20230815120622.528613e2@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Cc:     baolu.lu@linux.intel.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, xianting.tian@linux.alibaba.com,
-        kaijieguo@linux.alibaba.com, daishengdong@yeah.net
-Subject: Re: [PATCH] iommu/vt-d: Atomic breakdown of IOPT into finer
- granularity
-Content-Language: en-US
-To:     Jie Ji <jijie.ji@linux.alibaba.com>, dwmw2@infradead.org,
-        joro@8bytes.org, will@kernel.org, robin.murphy@arm.com,
-        Kevin Tian <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>
-References: <20230814121016.32613-1-jijie.ji@linux.alibaba.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20230814121016.32613-1-jijie.ji@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/.c_clR4AYj1nuQGVvkeFKiR";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Please allow me to include Kevin and Alex in this thread.]
+--Sig_/.c_clR4AYj1nuQGVvkeFKiR
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 2023/8/14 20:10, Jie Ji wrote:
-> With the addition of IOMMU support for IO page fault, it's now possible
-> to unpin the memory which DMA remapping. However, the lack of support
-> for unmapping a subrange of the I/O page table (IOPT) in IOMMU can lead
-> to some issues.
+Hi all,
 
-Is this the right contract about how iommu_map/unmap() should be used?
-If I remember it correctly, IOVA ranges should be mapped in pairs. That
-means, if a range is mapped by iommu_map(), the same range should be
-unmapped with iommu_unmap().
+The following commit is also in arm-soc tree as a different commit
+(but the same patch):
 
-Any misunderstanding or anything changed?
+  3027df7e739c ("ARM: s5pv210: Explicitly include correct DT includes")
 
-> 
-> For instance, a virtual machine can establish IOPT of 2M/1G for better
-> performance, while the host system enable swap and attempts to swap out
-> some 4K pages. Unfortunately, unmap subrange of the large-page mapping
-> will make IOMMU page walk to error level, and finally cause kernel crash.
+This is commit
 
-Sorry that I can't fully understand this use case. Are you talking about
-the nested translation where user spaces manage their own IO page
-tables? But how can those pages been swapped out?
+  8787bc51a7e2 ("ARM: s5pv210: Explicitly include correct DT includes")
 
-> This patch support splitting the page table to a finer granularity and
-> atomic switch to it when unmap subrange of the large-page mapping. It
-> is much better than the unmap then map method to change IOPT, because
-> during interval time, all unmapped address space could trigger IO page
-> fault, which is unacceptable.
-> 
-> Signed-off-by: Jie Ji<jijie.ji@linux.alibaba.com>
-> Reviewed-by: Kaijie Guo<kaijieguo@linux.alibaba.com>
-> ---
->   drivers/iommu/intel/iommu.c | 97 +++++++++++++++++++++++++++++--------
->   drivers/iommu/intel/iommu.h |  1 +
->   2 files changed, 78 insertions(+), 20 deletions(-)
+in the arm-soc tree.
 
-Best regards,
-baolu
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/.c_clR4AYj1nuQGVvkeFKiR
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTa3Z4ACgkQAVBC80lX
+0Gz8dAf/Q+F6dE/efKTMHU8yTmUDSzRubFRhUGN6KFQaeRC2vmlwIKAuqZbMWMNs
+13dDSE/9N68rZ19k/afJCPd3+AEZ4wFuAF6CidD4d2ry1Yzu5fqZ79LpCDzP8OZ9
+erNcPwU5Z3tGY4P7y21+iaMo1L6JkCv/K40X21kFNuw4cPOzVI8mxGYiuiJZyAF8
+fTCgWDsZV+s5wr0RHtaM0sV0ZLSBnOijHpu1B6C/ovDZIZvCOJNvL7QWGitxhers
+65kBBHSshHj8NnIabz6qlRs8oEppkbDDf4YAi5V9ar1sHdCA9KK46MvxYzE1v10a
+i3X9E8m80xbz+7XMlGcmSeKMn0ZwzQ==
+=uG5q
+-----END PGP SIGNATURE-----
+
+--Sig_/.c_clR4AYj1nuQGVvkeFKiR--
