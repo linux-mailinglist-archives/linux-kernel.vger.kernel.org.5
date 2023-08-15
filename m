@@ -2,168 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1784677D50A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 23:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2267377D50C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 23:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240226AbjHOVVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 17:21:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
+        id S239821AbjHOVXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 17:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240203AbjHOVVF (ORCPT
+        with ESMTP id S240257AbjHOVXF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 17:21:05 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2047.outbound.protection.outlook.com [40.107.243.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC16138;
-        Tue, 15 Aug 2023 14:21:04 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g7zCP6W+j1AH+ponLBE3SJK4v4jJjHMZNJPYZ8nixZ31cbwVZfZDwDqIA+JFyp/RY9xv9c1NuwV87YhaqSPccqjqrjZiTw7Wd6sofPvMnUVL7IGkqS0KdqKY4esgcZnwjIEewf1/DH3KJFct2YZnSc8x0ZFK/yoyWMW+6cnESCGe90hQo1poJDUqWXzV04nDeH6ONfcFr6RRR1r5rdizXKCYFPyb9mLZO0y0k6I4VmiQQQYXL00o+KEW5FjnsXsx9QVILvBiyCryYGwufkq+LIXQBoZlVjFg64Vypnb4H3L4AROLidXGjQnWewYUxu4u+RaRnPofZCow+jCNNPk3YA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XJ5wtd0uDmNqrU8869kbaysOfypNnpBIdyeK5Md+pZ4=;
- b=iyc0/Jo1KELWj5Xc+Vy0wY5BuIGcUf/tNCeakBJSuDEIt2WFuyTiWI5/zt+9yI94hhzjJm/5YUgURp08RNOvhAYwC5GDnS3XKOH7FcIMA3K8zAJWZdejscTwVOyt0oyZ6FoL2LZUNacNBSneG6kzqquqapJOt4fg4R4yt52CW/JxlIZRQIM4PXG/dqlTikrvGvW04iiOBtGMN1hqgeaNR68rGnmttj2/pKh6p7IY9jdHvqkmVenB1avMM8uGXvAJTWQJDdBCWZLpMhD0bUvRQh1Lz5rWvj94GBb/ZybZNdsGgFbENwBfU3yitaxkcwV+e5KimW50sBi1jiaDlS0jLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XJ5wtd0uDmNqrU8869kbaysOfypNnpBIdyeK5Md+pZ4=;
- b=yvgGFoEHETrNbgRYOM4jm0VHaCSzsbhucd2ljaNO/N74xzT06xscDh7KaTp/9PIsbm8kPtPCFhC/KzqZfbbrF/nSwvUqgRWVlu+CoRI8rcDQqE4y4lataLGwoxpUu2HSDX1XuZmLOYmOvId5q61e8QU5sLPlSkUL0S0RM6/hXqQ=
-Received: from MW4PR03CA0019.namprd03.prod.outlook.com (2603:10b6:303:8f::24)
- by PH0PR12MB7816.namprd12.prod.outlook.com (2603:10b6:510:28c::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Tue, 15 Aug
- 2023 21:21:02 +0000
-Received: from MWH0EPF000971E5.namprd02.prod.outlook.com
- (2603:10b6:303:8f:cafe::d8) by MW4PR03CA0019.outlook.office365.com
- (2603:10b6:303:8f::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.33 via Frontend
- Transport; Tue, 15 Aug 2023 21:21:02 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MWH0EPF000971E5.mail.protection.outlook.com (10.167.243.73) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6699.14 via Frontend Transport; Tue, 15 Aug 2023 21:21:01 +0000
-Received: from ethanolx50f7host.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 15 Aug
- 2023 16:20:58 -0500
-From:   Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-To:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Bjorn Helgaas <bhelgaas@google.com>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        "Kuppuswamy Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Subject: [PATCH v4 3/3] PCI: pciehp: Clear AtomicOps unconditionally on hot remove.
-Date:   Tue, 15 Aug 2023 21:20:43 +0000
-Message-ID: <20230815212043.114913-4-Smita.KoralahalliChannabasappa@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230815212043.114913-1-Smita.KoralahalliChannabasappa@amd.com>
-References: <20230815212043.114913-1-Smita.KoralahalliChannabasappa@amd.com>
+        Tue, 15 Aug 2023 17:23:05 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEEDD1FE8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 14:22:28 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fe2a116565so9925e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 14:22:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692134547; x=1692739347;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bSOhYSRQ4h4iPkpgTIXcKtQre6JjCPrc8K1miC6Gxzg=;
+        b=FTeL/vZoeGRFdukGCRZdl7f8rxJWNdjp1O+cwOt0donlOeTqZilCzFZ21H40oxvyoZ
+         y0pPeZQ8EFJouEeCEQBG4hzc8C7dn09cHWuR3fRddcDYZ4nMiSbK6bAtqYDZSEZJizjG
+         0pUxdgb+qoT6GdzOr5Oon3nWzrMnJ0/RGRG6YbzPN5vIHdTy379DGn3i3IPOWoUAsev3
+         F22AI/j5e4nK8tjMpOGbPXPG2kCVMmIsaPoekbE6LEkrGQ1DrTbBOUkBg79lYXUegZjl
+         ee3BGSC3y8777Zg2wSYSvoFGHRxWKY7UCEygAlnruk73BcYKhjF8ue1dWXGYrt2B9uOz
+         hVkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692134547; x=1692739347;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bSOhYSRQ4h4iPkpgTIXcKtQre6JjCPrc8K1miC6Gxzg=;
+        b=cFEOlrZL8aMe3Kn3u3KsAzCLEfXc+a9GvxuPLeiRrT3zuoI8mdaTedTJFCGIKDfDC0
+         OYSDVNdQklXktd4qr4KJQtUcoN3eBVkYIvSyLqxiNV5MTXDsrvb2T4e60gmtdgZarb07
+         GxYDsFHJX5umcE7sO7wcNNpCoGaQEvW35EcMnlm1clHJvcy+Xdxzh56eDYRa8ZbUrp6p
+         zSNsO8UWYpg7WWeUtSv47lqpaX0bl0TwYKcjx82n9483z/L8Eeb8BXgdf8h0Ep4+vppA
+         RzisyECqdsnILOPQZfiuEbAuCE5iOU4QEamuQZoagh/KXtDjSstxApZBLWHx9NH6YKcO
+         ewCA==
+X-Gm-Message-State: AOJu0YzWFWSMsvHLRI6LVVjnfCYUlzB6EmmZJMU5tYIHopelzs+s2C8d
+        IJ0srlLBxDDGpe1H7ZD9UnliXA==
+X-Google-Smtp-Source: AGHT+IETS12k29aHBpXnNMvbvGSEb4h9NDHK0rRj1j9kK65gpZbL82l3IBd2HTrxSIlAtqpM5A98lQ==
+X-Received: by 2002:a05:600c:314a:b0:3f4:fb7:48d4 with SMTP id h10-20020a05600c314a00b003f40fb748d4mr13947wmo.3.1692134547102;
+        Tue, 15 Aug 2023 14:22:27 -0700 (PDT)
+Received: from localhost ([2a00:79e0:9d:4:63c2:1adf:83f0:89cc])
+        by smtp.gmail.com with ESMTPSA id m22-20020a7bcb96000000b003fe2696ccfcsm18968134wmi.23.2023.08.15.14.22.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Aug 2023 14:22:26 -0700 (PDT)
+From:   Jann Horn <jannh@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: userfaultfd: remove stale comment about core dump locking
+Date:   Tue, 15 Aug 2023 23:22:16 +0200
+Message-ID: <20230815212216.264445-1-jannh@google.com>
+X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000971E5:EE_|PH0PR12MB7816:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5fa7dcc9-a66d-4c79-274e-08db9dd586f3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BUwzEEvfEcwoUp6vkBJfvR3FFpJfvw+7gWnNjMIf/hiQyPYRfhmOtkAIExV5dunsnap+EVOg8E6po48pFNlnw2KWrxXEWhQ1gIMHLjog9tgkH1S+zCg1vIMUvnjDkvRbMMcOtRtxo4hrQDz/EZMRHXsSnoSS0yXjLGnfEi0ro2NCELhSSrcRTYd1S6KtQInobbX3grGWyt9Lx+I3HIEJ32J5DSxfwu9xnxz1631mJ6fX7p4VDuicZ/Q9a+xnqj/0guhata4HMwJB3Cz9u69NN7zZUnFWqp2URJNgPVTU3PUirsGV+oKtb0PUjVFX840Q1DZdfVLV5Zn1Emi02gJI8vWMZ0lNdp3grzmzvz06X5XlRmHyyjwlIVSh3pMHfvLj7FMWvnX8wBL2AAaXTMtituGDf/cFabgxlvb6lRC3uoH00RUJzX0rpKvIp1o1W9LkUVUtHyCE8RGUZPSLsR6dC4bU3UO5316OWW82+m/x3GzKH8gOgKwUe+0ZXPujYw+bnEfSRw5WxAMhH//LZFBbRZrdk2QshERupLa4X00/79BzmIR5C0AXtsm6qy2Ejkrw9g5gYQuHmZyk+uWjUEvyzjQ+M2kMzrVgOGyPAma/QA0PXltq1YuIlK/th7nInVjimymadRJXS2B42qWK+hVNjbVtAlk0CFdttxRkqoZ+a/YC/sbXWfO2ttRxkZySXfjUmEAYCvmTFD1z2b3YqwMEA7MOArORrfNT6+R2WVrh9GbeW7n/PPtU9I1Lkxu959nN
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(39860400002)(376002)(136003)(1800799009)(82310400011)(186009)(451199024)(46966006)(36840700001)(40470700004)(70586007)(70206006)(41300700001)(8936002)(16526019)(110136005)(7696005)(54906003)(356005)(40480700001)(6666004)(5660300002)(81166007)(86362001)(36756003)(336012)(8676002)(2906002)(316002)(4326008)(966005)(1076003)(478600001)(426003)(83380400001)(40460700003)(2616005)(82740400003)(26005)(36860700001)(47076005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2023 21:21:01.9171
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5fa7dcc9-a66d-4c79-274e-08db9dd586f3
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000971E5.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7816
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On a hot-plug, the optional capabilities ARI Forwarding Enable, AtomicOp
-Requester Enable and 10-Bit Tag Requester Enable in DEVCTL2 must be
-re-negotiated between endpoint and root port for optimal operation.
+Since commit 7f3bfab52cab ("mm/gup: take mmap_lock in get_dump_page()"),
+which landed in v5.10, core dumping doesn't enter fault handling without
+holding the mmap_lock anymore. Remove the stale parts of the comments, but
+leave the behavior as-is - letting core dumping block on userfault handling
+would be a bad idea and could lead to deadlocks if the dumping process was
+handling its own userfaults.
 
-PCIe r6.0 sec 6.13 and 6.15 [1], points out that following a hot-plug
-event, clear the ARI Forwarding Enable bit and AtomicOp Requester Enable
-as its not determined whether the next device inserted will support these
-capabilities. AtomicOp capabilities are not supported on PCI Express to
-PCI/PCI-X Bridges and any newly added component may not be an ARI device.
-
-The enablement and disablement of ARI Forwarding Enable and 10-bit Tag
-Requester Enable is already been taken care in pci_configure_ari() and
-pci_configure_ten_bit_tag() respectively.
-
-AtomicOp requests are not enabled indiscriminately by PCI core as there
-could be devices where AtomicOps are nominally supported but untested or
-broken. Additionally, there is no explicit capability bit to determine
-the support for AtomicOps Requester.
-
-Moreover, it is difficult to determine if the AtomicOps are enabled by
-reading the "AtomicOp Requester Enable" Device Control 2 register as
-the PCIe r6.0 sec 7.5.3.16 [1], states "AtomicOps Requester Enable is
-permitted to be RW even if no AtomicOp Requester capabilities are
-supported by the Endpoint or Root Port", thereby substantiating devices
-that hardwires this bit to '1' is also valid. Hence, clear AtomicOp
-Requester Enable unconditionally on hot remove.
-
-[1] PCI Express Base Specification Revision 6.0, Dec 16 2021.
-    https://members.pcisig.com/wg/PCI-SIG/document/16609
-
-Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+Signed-off-by: Jann Horn <jannh@google.com>
 ---
-v2:
-	Clear all optional capabilities in Device Control 2 register
-	instead of individually clearing ARI Forwarding Enable,
-	AtomicOp Requestor Enable and 10-bit Tag Requestor Enable.
-v3:
-	Restore clearing only ARI, Atomic Op and 10 bit tags as these are
-	the optional capabilities.
-	Provide all necessary information in commit description.
-	Clear register bits of the hotplug port.
-v4:
-	Cleared only AtomicOps instead of all three bits.
-	Removed brackets.
-	Moved clearing at the end after pci_unlock_rescan_remove().
----
- drivers/pci/hotplug/pciehp_pci.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/userfaultfd.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/pci/hotplug/pciehp_pci.c b/drivers/pci/hotplug/pciehp_pci.c
-index ad12515a4a12..a3adbe89239c 100644
---- a/drivers/pci/hotplug/pciehp_pci.c
-+++ b/drivers/pci/hotplug/pciehp_pci.c
-@@ -134,4 +134,7 @@ void pciehp_unconfigure_device(struct controller *ctrl, bool presence)
- 	}
+diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+index 1091cb461747..56eaae9dac1a 100644
+--- a/fs/userfaultfd.c
++++ b/fs/userfaultfd.c
+@@ -428,15 +428,11 @@ vm_fault_t handle_userfault(struct vm_fault *vmf, unsigned long reason)
+ 	 * FOLL_DUMP case, anon memory also checks for FOLL_DUMP with
+ 	 * the no_page_table() helper in follow_page_mask(), but the
+ 	 * shmem_vm_ops->fault method is invoked even during
+-	 * coredumping without mmap_lock and it ends up here.
++	 * coredumping and it ends up here.
+ 	 */
+ 	if (current->flags & (PF_EXITING|PF_DUMPCORE))
+ 		goto out;
  
- 	pci_unlock_rescan_remove();
-+
-+	pcie_capability_clear_word(ctrl->pcie->port, PCI_EXP_DEVCTL2,
-+				   PCI_EXP_DEVCTL2_ATOMIC_REQ);
- }
+-	/*
+-	 * Coredumping runs without mmap_lock so we can only check that
+-	 * the mmap_lock is held, if PF_DUMPCORE was not set.
+-	 */
+ 	assert_fault_locked(vmf);
+ 
+ 	ctx = vma->vm_userfaultfd_ctx.ctx;
+
+base-commit: f8a7ed854c1a66b1984a64baf0ece09e44552fab
 -- 
-2.17.1
+2.41.0.694.ge786442a9b-goog
 
