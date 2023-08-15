@@ -2,225 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7F177D0EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F97677D0F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238822AbjHORXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 13:23:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51242 "EHLO
+        id S238840AbjHORYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 13:24:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238844AbjHORXd (ORCPT
+        with ESMTP id S238860AbjHORYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 13:23:33 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEAB51BD2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 10:23:02 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-991c786369cso762735066b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 10:23:02 -0700 (PDT)
+        Tue, 15 Aug 2023 13:24:02 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2711BEA
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 10:23:22 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6bc9d16c317so4512481a34.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 10:23:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692120100; x=1692724900;
-        h=in-reply-to:content-language:references:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1692120127; x=1692724927;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=StR+EmKA7BsuS3UE5UP084n9Jk6cl004ctN+UiK0eP8=;
-        b=hZnOVP9g4SqDAgQ++bsRTnnPPdS5gfclGq3dZ1TPZ5aIdJCWWphFIsMHV8BRkaAtAu
-         0LZwI3nC6Xwkr4sW/ltUbN+eIyXgCs9AcPRbXoCgrQ5znY6Vv/5Usdpw3w6+gxnWsB9L
-         Oa5muz/Ga60T0sEedTWkoQ4ar6W/1T9OlYHGefvWQV6wbiVKfo25WqhN5H9tJXoJm4Xs
-         Fkup+2kJLgsZhMxppQ8kBZiz8hMvz7ppifDE3JKeihvPsu7PVl+5t5JSZvr0h0aryIQr
-         yi0PrvRWacQazB4rl6KIy+nT+Tr8krscY8q+e9NSqVsPpQOtMZoWjcAOBOoZCPovjRy6
-         WHXg==
+        bh=MM9euffrr+V/1uq4G/APEfY56DZEA1NA8IRMKebX+WA=;
+        b=g5L59vBep0r+/ftR+REWdJrS6nXl1s1W1biL/1VPx5rGQotoKUGwnHslJpYPCDZAOF
+         AMKl73/0gdHxuwNmrwV/zm9rnTtp3RdE3KbtVT51jCPUaEI8vgdaIaOwRz0xKL2dSOrb
+         aXO5MtavbYMX/1gkvgUnfTzMkPnbUln80MGfg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692120100; x=1692724900;
-        h=in-reply-to:content-language:references:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=StR+EmKA7BsuS3UE5UP084n9Jk6cl004ctN+UiK0eP8=;
-        b=aaIX0BqZ1lSx8HVrlYzmomh/dHQnicFErvfroVCo4rLAhFWdoSluWU4S79XxAZvSfi
-         zgjDqyTe5IrWdlA7dwU5DzF1x5f8pl53Q1PJq8BTAVicr+ZoUfV3fw8QyfTt0J+oEzXm
-         S/8/mH/5aR4Kk9wMPuLOy++hJrx8zF2lkcWNn+6Y1RsXqrhh2EhIsJcYoXk61Ca41GGK
-         0ieRadzM68G/af9n5lgXpl0qGaNxhuJAEUkwmqE9YFgUDjuKBt9O47vmC7vu8XYyvv+0
-         YTWqngdcP0quOE3sS+OWyMQxaNtJW7VycjZj93LucBG2POo3++EwVhXrHcGgvuyOyVLg
-         yFcQ==
-X-Gm-Message-State: AOJu0YyfV61Ejpdwa9TMAvi32hMbY+u2Do4KJ5GXmS7yeLT7eezZc9MI
-        5F9StS592P7f4eUPbNahRUBFqf/xy8BzJZ98
-X-Google-Smtp-Source: AGHT+IEKwEOIIlh3BPvKhBc+ZvWJLc19y+XWN52KjRyBQKnROyY+oBpxaxfux78gerKPJ/khwAuvnQ==
-X-Received: by 2002:a17:906:224b:b0:99d:ddae:f5d4 with SMTP id 11-20020a170906224b00b0099dddaef5d4mr845008ejr.44.1692120099538;
-        Tue, 15 Aug 2023 10:21:39 -0700 (PDT)
-Received: from ?IPV6:2a02:908:8b3:1840:3b18:d442:101d:d282? ([2a02:908:8b3:1840:3b18:d442:101d:d282])
-        by smtp.gmail.com with ESMTPSA id a10-20020a170906244a00b00992d70f8078sm7250847ejb.106.2023.08.15.10.21.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 10:21:38 -0700 (PDT)
-Content-Type: multipart/mixed; boundary="------------T30xKVBGOWQAtqsLhirPfOz0"
-Message-ID: <d55fc4d3-015d-8cc2-417e-e92aa4687ca2@gmail.com>
-Date:   Tue, 15 Aug 2023 19:21:37 +0200
+        d=1e100.net; s=20221208; t=1692120127; x=1692724927;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MM9euffrr+V/1uq4G/APEfY56DZEA1NA8IRMKebX+WA=;
+        b=k8h56goMLBts5RJfNFkKlEYiAd83MIK3Z9stpaeCMFr+RM6PsQUPHNMmjbIfQeRAiP
+         nmWqFD74PdZBiPRIY91uLJkfkAl+QymcmnDlzgyhmZCZIoqY6a4kzjPq6+BnHl++bL/p
+         lZtcw8USKy6MGi3chi5Y3TaXZtDxuRDsDltKiv3XCTuOn5hg0asmkmH7nQGhrjsP23nJ
+         2tHHx6SjX/uHz9sEqzEZ+i2f5hXt1UGVAmUFfyherFFGQgC8S1xwJfbdijctqXKcXMji
+         eN6ml5dwS2LDuHf8ot2AWiZ3sYf94hvV/QpjsORIJsLfgq887gKn/jJvhfw1GU+nhvEb
+         +QIg==
+X-Gm-Message-State: AOJu0Yxzb3a2rroKT+gCZ6npbCSEL0YZjirTOdndiOL2io8TdxgAMk4a
+        5iePqWn/anwxRSFZ0ePvT9IT5B3SatEq7U4Y7nMhOw==
+X-Google-Smtp-Source: AGHT+IHgC2abKSNjRtwoIG7RPv/B0LrW+zFvRJCKfHpiwIXf0dkMMKZr7PMY0mgXqpc3ZPNNCyBizoMu6rSLlcxkZZs=
+X-Received: by 2002:a05:6830:1e85:b0:6bb:1629:ab44 with SMTP id
+ n5-20020a0568301e8500b006bb1629ab44mr11361067otr.7.1692120126879; Tue, 15 Aug
+ 2023 10:22:06 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   Maxim Schwalm <maxim.schwalm@gmail.com>
-Subject: Re: [PATCH 02/11] drm/bridge: tc358768: Fix bit updates
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Francesco Dolcini <francesco@dolcini.it>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Aradhya Bhatia <a-bhatia1@ti.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>
-References: <20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com>
- <20230804-tc358768-v1-2-1afd44b7826b@ideasonboard.com>
- <cd5d39a2-4f4c-419a-8137-d2719135e205@gmail.com>
- <241937b4-1ef8-abad-7c4a-b26bfab86a3a@ideasonboard.com>
- <92396880-edb5-d8e0-4fcf-54aeaa2b40d7@gmail.com>
- <52151daa-90af-a6c0-9b03-f69081321253@ideasonboard.com>
-Content-Language: en-US
-In-Reply-To: <52151daa-90af-a6c0-9b03-f69081321253@ideasonboard.com>
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230815154412.713846-1-hsinyi@chromium.org> <202A0C36-D1F6-4BB4-BDEC-F36A76B757A2@walle.cc>
+In-Reply-To: <202A0C36-D1F6-4BB4-BDEC-F36A76B757A2@walle.cc>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Wed, 16 Aug 2023 01:21:40 +0800
+Message-ID: <CAJMQK-iw7ikyHKPPC8+hnpXuRq-_nq_N+21BKgWxD2nx=vAeJA@mail.gmail.com>
+Subject: Re: [PATCH 0/4] Add a property to override the quad mode
+To:     Michael Walle <michael@walle.cc>
+Cc:     Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        "Miquel Raynal )" <miquel.raynal@bootlin.com>,
+        "Richard Weinberger )" <richard@nod.at>,
+        "Vignesh Raghavendra )" <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------T30xKVBGOWQAtqsLhirPfOz0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+On Tue, Aug 15, 2023 at 11:59=E2=80=AFPM Michael Walle <michael@walle.cc> w=
+rote:
+>
+> Hi,
+>
+> >On gigadevice gd25lq64c, the quad mode is enabled after BFPT is parsed.
+> >According to datasheet[1], Quad enable (QE) bit needs to be set to 0 to
+> >use write protection (WP) pin. It also recommends setting default value =
+of
+> >QE to 0 to avoid a potential short issue.
+>
+> So you are using either dual or single io mode. Why can't you use the dev=
+ice tree property spi-{tx,rx}-bus-width?
 
-On 14.08.23 08:34, Tomi Valkeinen wrote:
-> On 13/08/2023 03:23, Maxim Schwalm wrote:
->> Hi,
->>
->> On 11.08.23 19:02, Tomi Valkeinen wrote:
->>> On 11/08/2023 19:23, Péter Ujfalusi wrote:
->>>>
->>>>
->>>> On 04/08/2023 13:44, Tomi Valkeinen wrote:
->>>>> The driver has a few places where it does:
->>>>>
->>>>> if (thing_is_enabled_in_config)
->>>>> 	update_thing_bit_in_hw()
->>>>>
->>>>> This means that if the thing is _not_ enabled, the bit never gets
->>>>> cleared. This affects the h/vsyncs and continuous DSI clock bits.
->>>>
->>>> I guess the idea was to keep the reset value unless it needs to be flipped.
->>>>
->>>>>
->>>>> Fix the driver to always update the bit.
->>>>>
->>>>> Fixes: ff1ca6397b1d ("drm/bridge: Add tc358768 driver")
->>>>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
->>>>> ---
->>>>>    drivers/gpu/drm/bridge/tc358768.c | 13 +++++++------
->>>>>    1 file changed, 7 insertions(+), 6 deletions(-)
->>>>>
->>>>> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
->>>>> index bc97a837955b..b668f77673c3 100644
->>>>> --- a/drivers/gpu/drm/bridge/tc358768.c
->>>>> +++ b/drivers/gpu/drm/bridge/tc358768.c
->>>>> @@ -794,8 +794,8 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
->>>>>    		val |= BIT(i + 1);
->>>>>    	tc358768_write(priv, TC358768_HSTXVREGEN, val);
->>>>>    
->>>>> -	if (!(mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS))
->>>>> -		tc358768_write(priv, TC358768_TXOPTIONCNTRL, 0x1);
->>>>> +	tc358768_write(priv, TC358768_TXOPTIONCNTRL,
->>>>> +		       (mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS) ? 0 : BIT(0));
->>>>>    
->>>>>    	/* TXTAGOCNT[26:16] RXTASURECNT[10:0] */
->>>>>    	val = tc358768_to_ns((lptxcnt + 1) * dsibclk_nsk * 4);
->>>>> @@ -861,11 +861,12 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
->>>>>    	tc358768_write(priv, TC358768_DSI_HACT, hact);
->>>>>    
->>>>>    	/* VSYNC polarity */
->>>>> -	if (!(mode->flags & DRM_MODE_FLAG_NVSYNC))
->>>>> -		tc358768_update_bits(priv, TC358768_CONFCTL, BIT(5), BIT(5));
->>>>> +	tc358768_update_bits(priv, TC358768_CONFCTL, BIT(5),
->>>>> +			     (mode->flags & DRM_MODE_FLAG_PVSYNC) ? BIT(5) : 0);
->>>>
->>>> Was this the reverse before and should be:
->>>> (mode->flags & DRM_MODE_FLAG_PVSYNC) ? 0 : BIT(5)
->>>
->>> Bit 5 is 1 for active high vsync polarity. The test was previously
->>> !nvsync, i.e. the same as pvsync.
->>
->> this statement doesn't seem to be true, since this change causes a
->> regression on the Asus TF700T. Apparently, !nvsync is true and pvsync is
->> false in the present case.
-> 
-> panasonic_vvx10f004b00_mode in panel_simple.c doesn't seem to have mode 
-> flags set. I would say that means the panel doesn't care about the sync 
-> polarities (which obviously is not the case), but maybe there's an 
-> assumption that if sync polarities are not set, the default is... 
-> positive? But I can't find any mention about this.
-> 
-> Does it work for you if you set the polarities in 
-> panasonic_vvx10f004b00_mode?
+I tried setting spi-tx-bus-width and spi-rx-bus-width to either 0 or 1
+and WP still doesn't work.
+For this chip, quad_enable will be set to spi_nor_sr2_bit1_quad_enable
+(QER flag is BFPT_DWORD15_QER_SR2_BIT1_BUGGY)[1]
 
-The panel seems to work with either negative or positive H-/Vsync in
-conjunction with the attached patch from Thierry. Currently, the display
-controller is unconditionally programmed for positive H-/Vsync though.
-What should be done in this case?
+spi_nor_write_sr_and_check() calls
+spi_nor_write_16bit_sr_and_check()[2] and the function sets QE bit if
+quad_enable is not NULL.
 
-BTW, the vendor kernel configures the display controller as well as the
-bridge for negative H-/Vsync.
+[1] https://elixir.bootlin.com/linux/latest/source/drivers/mtd/spi-nor/sfdp=
+.c#L575
+[2] https://elixir.bootlin.com/linux/latest/source/drivers/mtd/spi-nor/core=
+.c#L879
 
-Best regards,
-Maxim
---------------T30xKVBGOWQAtqsLhirPfOz0
-Content-Type: text/x-patch; charset=UTF-8;
- name="0001-drm-tegra-rgb-Parameterize-V-and-H-sync-polarities.patch"
-Content-Disposition: attachment;
- filename*0="0001-drm-tegra-rgb-Parameterize-V-and-H-sync-polarities.patc";
- filename*1="h"
-Content-Transfer-Encoding: base64
+Setting spi-{tx,rx}-bus-width still falls to this function and cases.
 
-RnJvbSBlZmM0ZjkxMDhiM2Y0NGQzZTAwMTQ2YmRiOTdjOTA2ZjE1ZTJhMDY4IE1vbiBTZXAg
-MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBUaGllcnJ5IFJlZGluZyA8dHJlZGluZ0BudmlkaWEu
-Y29tPgpEYXRlOiBNb24sIDMgQXVnIDIwMTUgMTM6MzQ6MzYgKzAyMDAKU3ViamVjdDogW1BB
-VENIXSBkcm0vdGVncmE6IHJnYjogUGFyYW1ldGVyaXplIFYtIGFuZCBILXN5bmMgcG9sYXJp
-dGllcwoKVGhlIHBvbGFyaXRpZXMgb2YgdGhlIFYtIGFuZCBILXN5bmMgc2lnbmFscyBhcmUg
-ZW5jb2RlZCBhcyBmbGFncyBpbiB0aGUKZGlzcGxheSBtb2RlLCBzbyB1c2UgdGhlIGV4aXN0
-aW5nIGluZm9ybWF0aW9uIHRvIHNldHVwIHRoZSBzaWduYWxzIGZvcgp0aGUgUkdCIGludGVy
-ZmFjZS4KClNpZ25lZC1vZmYtYnk6IFRoaWVycnkgUmVkaW5nIDx0cmVkaW5nQG52aWRpYS5j
-b20+Ci0tLQogZHJpdmVycy9ncHUvZHJtL3RlZ3JhL3JnYi5jIHwgMTggKysrKysrKysrKysr
-KysrLS0tCiAxIGZpbGUgY2hhbmdlZCwgMTUgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMo
-LSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vdGVncmEvcmdiLmMgYi9kcml2ZXJz
-L2dwdS9kcm0vdGVncmEvcmdiLmMKaW5kZXggNzk1NjZjOWVhOGZmLi5jY2U0MjJjMmQ2YTYg
-MTAwNjQ0Ci0tLSBhL2RyaXZlcnMvZ3B1L2RybS90ZWdyYS9yZ2IuYworKysgYi9kcml2ZXJz
-L2dwdS9kcm0vdGVncmEvcmdiLmMKQEAgLTk5LDYgKzk5LDcgQEAgc3RhdGljIHZvaWQgdGVn
-cmFfcmdiX2VuY29kZXJfZGlzYWJsZShzdHJ1Y3QgZHJtX2VuY29kZXIgKmVuY29kZXIpCiAK
-IHN0YXRpYyB2b2lkIHRlZ3JhX3JnYl9lbmNvZGVyX2VuYWJsZShzdHJ1Y3QgZHJtX2VuY29k
-ZXIgKmVuY29kZXIpCiB7CisJc3RydWN0IGRybV9kaXNwbGF5X21vZGUgKm1vZGUgPSAmZW5j
-b2Rlci0+Y3J0Yy0+c3RhdGUtPmFkanVzdGVkX21vZGU7CiAJc3RydWN0IHRlZ3JhX291dHB1
-dCAqb3V0cHV0ID0gZW5jb2Rlcl90b19vdXRwdXQoZW5jb2Rlcik7CiAJc3RydWN0IHRlZ3Jh
-X3JnYiAqcmdiID0gdG9fcmdiKG91dHB1dCk7CiAJdTMyIHZhbHVlOwpAQCAtMTA4LDEwICsx
-MDksMjEgQEAgc3RhdGljIHZvaWQgdGVncmFfcmdiX2VuY29kZXJfZW5hYmxlKHN0cnVjdCBk
-cm1fZW5jb2RlciAqZW5jb2RlcikKIAl2YWx1ZSA9IERFX1NFTEVDVF9BQ1RJVkUgfCBERV9D
-T05UUk9MX05PUk1BTDsKIAl0ZWdyYV9kY193cml0ZWwocmdiLT5kYywgdmFsdWUsIERDX0RJ
-U1BfREFUQV9FTkFCTEVfT1BUSU9OUyk7CiAKLQkvKiBYWFg6IHBhcmFtZXRlcml6ZT8gKi8K
-KwkvKiBjb25maWd1cmUgSC0gYW5kIFYtc3luYyBzaWduYWwgcG9sYXJpdGllcyAqLwogCXZh
-bHVlID0gdGVncmFfZGNfcmVhZGwocmdiLT5kYywgRENfQ09NX1BJTl9PVVRQVVRfUE9MQVJJ
-VFkoMSkpOwotCXZhbHVlICY9IH5MVlNfT1VUUFVUX1BPTEFSSVRZX0xPVzsKLQl2YWx1ZSAm
-PSB+TEhTX09VVFBVVF9QT0xBUklUWV9MT1c7CisKKwlpZiAobW9kZS0+ZmxhZ3MgJiBEUk1f
-TU9ERV9GTEFHX1BIU1lOQykKKwkJdmFsdWUgJj0gfkxIU19PVVRQVVRfUE9MQVJJVFlfTE9X
-OworCisJaWYgKG1vZGUtPmZsYWdzICYgRFJNX01PREVfRkxBR19OSFNZTkMpCisJCXZhbHVl
-IHw9IExIU19PVVRQVVRfUE9MQVJJVFlfTE9XOworCisJaWYgKG1vZGUtPmZsYWdzICYgRFJN
-X01PREVfRkxBR19QVlNZTkMpCisJCXZhbHVlICY9IH5MVlNfT1VUUFVUX1BPTEFSSVRZX0xP
-VzsKKworCWlmIChtb2RlLT5mbGFncyAmIERSTV9NT0RFX0ZMQUdfTlZTWU5DKQorCQl2YWx1
-ZSB8PSBMVlNfT1VUUFVUX1BPTEFSSVRZX0xPVzsKKwogCXRlZ3JhX2RjX3dyaXRlbChyZ2It
-PmRjLCB2YWx1ZSwgRENfQ09NX1BJTl9PVVRQVVRfUE9MQVJJVFkoMSkpOwogCiAJLyogWFhY
-OiBwYXJhbWV0ZXJpemU/ICovCi0tIAoyLjM5LjIKCg==
+>
+> >Add a disable-quad-mode property in devicetree that platform can use it =
+to
+> >override the quad mode status parsed from BFPT to use write protection.
+> >
+> >[1]
+> >https://www.elm-tech.com/ja/products/spi-flash-memory/gd25lq64/gd25lq64.=
+pdf
+>
+> should be a link on the vendor Homepage if possible.
 
---------------T30xKVBGOWQAtqsLhirPfOz0--
+Right, https://www.gigadevice.com.cn/Public/Uploads/uploadfile/files/202207=
+14/DS-00012-GD25LQ64C-Rev3.4.pdf
+is a more proper datasheet source. The QE description is also in page
+13.
+
+>
+> -michael
+>
