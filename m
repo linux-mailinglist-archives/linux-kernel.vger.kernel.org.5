@@ -2,184 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 164C477CFEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 18:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA59177CFF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 18:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238440AbjHOQJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 12:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60112 "EHLO
+        id S238451AbjHOQLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 12:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238432AbjHOQJP (ORCPT
+        with ESMTP id S238457AbjHOQLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 12:09:15 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4AC41733
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 09:09:13 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-76c4890a220so436660585a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 09:09:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692115753; x=1692720553;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=a7C9/8y+U58yo9ZvAFzzO1UqKJUAwnM6b0NzrYmnGpo=;
-        b=mvDMKIcZgcK17e9juJTBM1HOO6PNEZrWe7eP2pzdOs4HsP5XTeKNBqD1GRlg58HEhX
-         MaLRc+vSgK3qPfpEhPIeoBoz0RmOv0emmq7MDqbgQSNqGruIPUVRO2SDtwRZoZk16nTQ
-         rbX33pTKk8g3K+eivsboBRF5Ed0lr+V+4SDOZI4R7NLDTTmv6qShAmGA7NYrbpiiV1oq
-         OlzHUF9tot4iKOgeQB3O35rjpcA3cV8PazvgdD/Nrh8I1mEr0opyGDA7xBAFPy93VWoy
-         FzaMP401uCzbFBr6WiUamZKx7BTFCX8oO1O7yMOpSoxqxTODSeYQx2KdXLE99scvi7yy
-         HqEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692115753; x=1692720553;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a7C9/8y+U58yo9ZvAFzzO1UqKJUAwnM6b0NzrYmnGpo=;
-        b=WvpaJNzkAsxKmwatOcyvIX6E2Ul5f6O39IKvWKgXbN7KWPkn4O6ltdbSKmTVYvApNx
-         /cyXkrO/3R8NvEmA/Y6NZJz7FzsNxYbGOJaP+6vCrQU1FKRm/nThNbhjc8eU/R5x4qzX
-         6P2nba0dO799RkeIdzxEHeR280F6XXitmfB7VpMniQIIF7I1hxWY5sOp/HEn86MHaD6I
-         FtwgWgRjI6adkTMGlUHKd3uUTkAfnd9IzvPEcO5Yy4KJT4cu0xf3REnPMw33J/t4IJN5
-         TkfM2fO9snYTnMBcY3ViNdR9CyOnzVsH1Z5ED0IfGmTaOEBN9DPZe2U9ATjTCq6ojgwB
-         NmVA==
-X-Gm-Message-State: AOJu0YxBMviRiB0y8KzslzuemiQJj5QawpxflnQxQH3jsO+8CGWWfxta
-        pbkzzNxAwf5YKTYSZcGDeQ4cjQJiqc0=
-X-Google-Smtp-Source: AGHT+IG0axrB7/devO/26FRZZWAcuvA50Ii95TbGO/5I3HhyO9HJaobhSyv6EQimQSFFQtGg25yFcQ==
-X-Received: by 2002:a37:e310:0:b0:767:dbe5:1f2f with SMTP id y16-20020a37e310000000b00767dbe51f2fmr10923922qki.35.1692115752784;
-        Tue, 15 Aug 2023 09:09:12 -0700 (PDT)
-Received: from localhost (98-159-221-50.static.firstlight.net. [98.159.221.50])
-        by smtp.gmail.com with ESMTPSA id g3-20020a05620a13c300b0075cd80fde9esm3837610qkl.89.2023.08.15.09.09.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 09:09:12 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 09:09:10 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 1/4] genirq/irq_sim: dispose of remaining mappings before
- removing the domain
-Message-ID: <ZNujJhy9fmCFwwLK@yury-ThinkPad>
-References: <20230812194457.6432-1-brgl@bgdev.pl>
- <20230812194457.6432-2-brgl@bgdev.pl>
- <ZNtVuUWTZa0gLwXz@smile.fi.intel.com>
+        Tue, 15 Aug 2023 12:11:37 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123F7127
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 09:11:34 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id BB6A6100006;
+        Tue, 15 Aug 2023 19:11:31 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru BB6A6100006
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1692115891;
+        bh=Zh58zgKGmujKY7UolkYnE5HNgDvOOGFPvKhbvkD39RU=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=McYrbTyZJZGj5ArzerRzpoWxzCbotm44xmgDlv2xy7HK/0ZilsimsdsBZ8MxCLbt+
+         tgBWG4f3PuYO+TM1Nrb0xSlbs9XJVlaMeleBUaqmAd5fgS5tPDrphCROdBFwz52ypV
+         9tsd40DSAuLH7DVTQtCeKL65j3FeHrlGtJVriBXrM9rTPxF5b1ciR4zklBCG5m+iwm
+         DySW5d+ONSHrciSbwNw+XqulgIsQtGMAuQae1j+M/Uu8fR618JXD81jk+XxHfNCPtU
+         P55/orl9jR/YKEQC8tYoMf4jHIp0Rba+FnL0SewtmKvMnWwJ6PiaNLJ/A1HD/z8xIo
+         4KaMjWNogFEjg==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Tue, 15 Aug 2023 19:11:31 +0300 (MSK)
+Received: from CAB-WSD-0004828.sigma.sbrf.ru (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 15 Aug 2023 19:11:21 +0300
+From:   Martin Kurbanov <mmkurbanov@sberdevices.ru>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <kernel@sberdevices.ru>,
+        Martin Kurbanov <mmkurbanov@sberdevices.ru>
+Subject: [PATCH v1] mtd: spinand: micron: correct parameters
+Date:   Tue, 15 Aug 2023 19:10:24 +0300
+Message-ID: <20230815161024.810729-1-mmkurbanov@sberdevices.ru>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNtVuUWTZa0gLwXz@smile.fi.intel.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 179259 [Aug 15 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: MMKurbanov@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 526 526 7a6a9b19f6b9b3921b5701490f189af0e0cd5310, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;sberdevices.ru:5.0.1,7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/15 09:54:00 #21621202
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 01:38:49PM +0300, Andy Shevchenko wrote:
-> On Sat, Aug 12, 2023 at 09:44:54PM +0200, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > 
-> > If the device providing simulated interrupts is unbound (real life
-> > example: gpio-sim is disabled with users that didn't free their irqs)
-> > and removes the simulated domain while interrupts are still requested,
-> > we will hit memory issues when they are eventually freed and the
-> > mappings destroyed in the process.
-> > 
-> > Specifically we'll access freed memory in __irq_domain_deactivate_irq().
-> > 
-> > Dispose of all mappings before removing the simulator domain.
-> 
-> ...
-> 
-> > +#include <linux/list.h>
-> 
-> Maybe ordered?
-> 
-> >  #include <linux/irq.h>
-> >  #include <linux/irq_sim.h>
-> >  #include <linux/irq_work.h>
-> 
-> ...
-> 
-> > @@ -16,12 +17,14 @@ struct irq_sim_work_ctx {
-> >  	unsigned int		irq_count;
-> >  	unsigned long		*pending;
-> >  	struct irq_domain	*domain;
-> > +	struct list_head	irqs;
-> >  };
-> >  
-> >  struct irq_sim_irq_ctx {
-> >  	int			irqnum;
-> >  	bool			enabled;
-> >  	struct irq_sim_work_ctx	*work_ctx;
-> 
-> > +	struct list_head	siblings;
-> 
-> You can reduce the code size by moving this to be the first member.
-> Not sure about struct irq_sim_work_ctx, you can play with bloat-o-meter.
+This patch includes following fixes:
+  1. Correct bitmask for ecc status. Valid bitmask is 0x70 in the
+      status register.
+  2. Fix oob layout:
+        - The first 4 bytes are reserved for bad block data.
+        - Use only non-protected ECC bytes for free data:
+          OOB ECC protected Area is not used due to partial
+          programming from some filesystems (like JFFS2 with
+          cleanmarkers).
 
-Pahole you meant?
+Signed-off-by: Martin Kurbanov <mmkurbanov@sberdevices.ru>
+---
+ drivers/mtd/nand/spi/micron.c | 28 ++++++++++++++++++++++++----
+ 1 file changed, 24 insertions(+), 4 deletions(-)
 
-  yury:linux$ pahole -C irq_sim_irq_ctx /sys/kernel/btf/vmlinux
-  struct irq_sim_irq_ctx {
-  	int                        irqnum;               /*     0     4 */
-  	bool                       enabled;              /*     4     1 */
-  
-  	/* XXX 3 bytes hole, try to pack */
-  
-  	struct irq_sim_work_ctx *  work_ctx;             /*     8     8 */
-  
-  	/* size: 16, cachelines: 1, members: 3 */
-  	/* sum members: 13, holes: 1, sum holes: 3 */
-  	/* last cacheline: 16 bytes */
-  };
+diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
+index 50b7295bc922..897e70913ed0 100644
+--- a/drivers/mtd/nand/spi/micron.c
++++ b/drivers/mtd/nand/spi/micron.c
+@@ -12,7 +12,7 @@
+ 
+ #define SPINAND_MFR_MICRON		0x2c
+ 
+-#define MICRON_STATUS_ECC_MASK		GENMASK(7, 4)
++#define MICRON_STATUS_ECC_MASK		GENMASK(6, 4)
+ #define MICRON_STATUS_ECC_NO_BITFLIPS	(0 << 4)
+ #define MICRON_STATUS_ECC_1TO3_BITFLIPS	(1 << 4)
+ #define MICRON_STATUS_ECC_4TO6_BITFLIPS	(3 << 4)
+@@ -57,6 +57,20 @@ static SPINAND_OP_VARIANTS(x1_write_cache_variants,
+ static SPINAND_OP_VARIANTS(x1_update_cache_variants,
+ 			   SPINAND_PROG_LOAD(false, 0, NULL, 0));
+ 
++/*
++ * OOB spare area map (128 and 256 bytes)
++ *
++ *           +-----+-----------------+-------------------+---------------------+
++ *           | BBM |     Non ECC     |   ECC protected   |      ECC Area       |
++ *           |     | protected Area  |       Area        |                     |
++ * ----------+-----+-----------------+-------------------+---------------------+
++ *  oobsize  | 0:3 | 4:31 (28 bytes) | 32:63 (32 bytes)  | 64:127 (64 bytes)   |
++ * 128 bytes |     |                 |                   |                     |
++ * ----------+-----+-----------------+-------------------+---------------------+
++ *  oobsize  | 0:3 | 4:63 (60 bytes) | 64:127 (64 bytes) | 127:255 (128 bytes) |
++ * 256 bytes |     |                 |                   |                     |
++ * ----------+-----+-----------------+-------------------+---------------------+
++ */
+ static int micron_8_ooblayout_ecc(struct mtd_info *mtd, int section,
+ 				  struct mtd_oob_region *region)
+ {
+@@ -75,9 +89,15 @@ static int micron_8_ooblayout_free(struct mtd_info *mtd, int section,
+ 	if (section)
+ 		return -ERANGE;
+ 
+-	/* Reserve 2 bytes for the BBM. */
+-	region->offset = 2;
+-	region->length = (mtd->oobsize / 2) - 2;
++	/* Reserve 4 bytes for the BBM. */
++	region->offset = 4;
++
++	/* The OOB Free (User) area is divided into two equal parts:
++	 *   the first part is not protected by ECC;
++	 *   the second part is protected by ECC.
++	 * Use only non-protected ECC bytes.
++	 */
++	region->length = (mtd->oobsize / 2) / 2 - 4;
+ 
+ 	return 0;
+ }
+-- 
+2.40.0
 
-In this particular case, there will be no hole because list head
-position (16) will be aligned to sizeof(struct list_head) == 16.
-
-But as Bartosz said in the other email, "it's just good practice
-resulting from years of" kernel coding to have:
- - members declared strongly according to the logic of the code, and
-   if no strong preference: 
- - list head be the first element of the structure, to let compiler
-   avoid generating offsets when traversing lists;
- - put elements of greater size at the beginning, so no holes will be
-   emitted like in the example above.
-
-So I'd suggest:
-
-  struct irq_sim_irq_ctx {
-     struct list_head        siblings;
-     struct irq_sim_work_ctx *work_ctx;
-     int                     irqnum;
-     bool                    enabled;
-  }
-  
-Again, if there's NO ANY reason to have the irq number at the
-beginning.
-
-While here, I wonder, why irqnum is signed? Looking at the very first
-random function in kernel/irq/irq_sim.c, I see that it's initialized
-from a function returning unsigned value:
-
-  static void irq_sim_handle_irq(struct irq_work *work)
-  {
-          struct irq_sim_work_ctx *work_ctx;
-          unsigned int offset = 0;
-          int irqnum;
-  
-          work_ctx = container_of(work, struct irq_sim_work_ctx, work);
-  
-          while (!bitmap_empty(work_ctx->pending, work_ctx->irq_count)) {
-                  offset = find_next_bit(work_ctx->pending,
-                                         work_ctx->irq_count, offset);
-                  clear_bit(offset, work_ctx->pending);
-                  irqnum = irq_find_mapping(work_ctx->domain, offset);
-                  handle_simple_irq(irq_to_desc(irqnum));
-          }
-  }
-
-Thanks,
-Yury
