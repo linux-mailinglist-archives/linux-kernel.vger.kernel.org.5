@@ -2,92 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A813E77CC92
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC72677CC9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235757AbjHOM1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 08:27:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55680 "EHLO
+        id S237127AbjHOM2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 08:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237246AbjHOM0r (ORCPT
+        with ESMTP id S237119AbjHOM1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 08:26:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42303213E
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:26:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5BE8B629DD
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:25:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50C23C433C7;
-        Tue, 15 Aug 2023 12:25:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692102330;
-        bh=Nx1FBHvlUA/rdfOClPZHl5CH9zUDq8zeb7VqfMzCNd0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a3rNwD2OchDQeGZ2Q4vgdL2cR5X5fMnwOoMqhnFBJ2FtRDcPkzZJTpJsYh6wuGeei
-         lf2ppl1Dz2CZLUb84xXQGB9vUWGy2dPx4Q7MPzsYbyNmfUWSeRcMXbYlz5ozI/uCkF
-         ltJhyOhk2TOvM3+Fzy9YibVPjDzQZ5a07y0SD8PuePzdeEKb8HzZdcQKvMe+WqBa5w
-         I1Cj2B8zmDOg5VrN1epzToNYFo/zMB5C0ZcsvKvw1s7Hurs/320KD+Cpcoj1grNANo
-         lnImrvBooqu1gPrn0yMAmZZXEvYVy0V9MnHEXGrpZ8bVOnQU18hc81MMq/8NrspaC4
-         8qp/HE1ksv03A==
-Date:   Tue, 15 Aug 2023 13:25:26 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Kevin-Lu <kevin-lu@ti.com>
-Cc:     peeyush@ti.com, navada@ti.com, baojun.xu@ti.com,
-        shenghao-ding@ti.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] MAINTAINERS: Add entries for TEXAS INSTRUMENTS ASoC
- DRIVERS
-Message-ID: <b60458ca-a6a0-4a71-a9f7-a9e68d9a9a68@sirena.org.uk>
-References: <20230815095631.1655-1-kevin-lu@ti.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="OS/czi0XjYVQh/ZC"
-Content-Disposition: inline
-In-Reply-To: <20230815095631.1655-1-kevin-lu@ti.com>
-X-Cookie: Darth Vader sleeps with a Teddywookie.
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 15 Aug 2023 08:27:45 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C1019AD;
+        Tue, 15 Aug 2023 05:27:28 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37FCGwDi015058;
+        Tue, 15 Aug 2023 12:27:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=9VcILIdlJgSnUSWdHiNzsomq2OEegMHdDkCV43rQmhU=;
+ b=GgDT8Ph9MAzKNdO18sDA5zA+XS4L+LcgM9PGdxuE5n8fM2eIRE8J9rtPleIsneFXosGi
+ fUousHWryxLb6Z+3rE/p1ZgFbbAPaRbTgzpUmsQXYgLpPg1k5/LuvhXmcWNrozdI+QcK
+ 0HZnza+gs/IAOrQfMZJQL9q/fGs4xsUpqAmwaWv3ds8SCUtuYxOlPcsAkXuJV3IO1dMq
+ vTdqCgylG9Sx+95NKCsAFaK9aGTF0k1Rrx66oMIIy6t/fAeDKbux6nUIzfXoe2OhMPMT
+ N0/1K2rJ1AK5AizB2toLl6cqe4fvhR8Vq6OihOicYAF3NpQb1ins2iz3dW54Ca8cW9n6 QQ== 
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sg450ggkn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Aug 2023 12:27:24 +0000
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 37FCRLSB022253;
+        Tue, 15 Aug 2023 12:27:21 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3se35kb8py-1;
+        Tue, 15 Aug 2023 12:27:21 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37FCRLDG022247;
+        Tue, 15 Aug 2023 12:27:21 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-krichai-hyd.qualcomm.com [10.213.110.112])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 37FCRLAO022245;
+        Tue, 15 Aug 2023 12:27:21 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 4058933)
+        id 8A8DC4BC5; Tue, 15 Aug 2023 17:57:20 +0530 (+0530)
+From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
+        quic_parass@quicinc.com, krzysztof.kozlowski@linaro.org,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Subject: [PATCH v1 0/3] PCI: qcom: Add support for OPP
+Date:   Tue, 15 Aug 2023 17:56:45 +0530
+Message-Id: <1692102408-7010-1-git-send-email-quic_krichai@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: UA7UezNcVe9bUb2TQlGiKS4jDyqlNk_f
+X-Proofpoint-GUID: UA7UezNcVe9bUb2TQlGiKS4jDyqlNk_f
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-15_13,2023-08-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ priorityscore=1501 malwarescore=0 lowpriorityscore=0 mlxscore=0
+ suspectscore=0 phishscore=0 adultscore=0 impostorscore=0 mlxlogscore=358
+ clxscore=1011 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308150111
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch adds support for OPP to vote for the performance state of RPMH
+power domain based upon GEN speed it PCIe got enumerated.
 
---OS/czi0XjYVQh/ZC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Before link up PCIe driver will vote for the maximum performance state.
 
-On Tue, Aug 15, 2023 at 05:56:31PM +0800, Kevin-Lu wrote:
-> Add the MAINTAINERS entries for TEXAS INSTRUMENTS ASoC DRIVERS.
-> ---
-> Changes in v1:
-> Add maintian team members to support TEXAS INSTRUMENTS AUDIO DRIVER
->=20
-> Signed-off-by: Kevin-Lu <kevin-lu@ti.com>
-> ---
+Krishna chaitanya chundru (3):
+  dt-bindings: pci: qcom: Add binding for operating-points-v2
+  arm64: dts: qcom: sm8450: Add opp table support to PCIe
+  PCI: qcom: Add OPP suuport for speed based performance state of RPMH
 
-Your signoff needs to go *above* the --- otherwise it gets removed by
-the tooling.
+ .../devicetree/bindings/pci/qcom,pcie.yaml         |  2 +
+ arch/arm64/boot/dts/qcom/sm8450.dtsi               | 47 +++++++++++++++++
+ drivers/pci/controller/dwc/pcie-qcom.c             | 61 ++++++++++++++++++++++
+ 3 files changed, 110 insertions(+)
 
---OS/czi0XjYVQh/ZC
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.7.4
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTbbrUACgkQJNaLcl1U
-h9Dnnwf/WQcKx45cwFsixWqMXuDdTV92XM4xgOkcHnqoNiiQcO0mlmsGZ22La2NM
-nmcPKEJ5jedPf7/g0JMekKt4xKUzdHcSwijVuEC8s8lUtL/ZEwTS6vS7gWJ2hmcU
-b4rQbbR2rV/wHAE8ZOKNH1wNPmzsdUcF2VAWu643RDLfDW91WxzQyxGR02FEOIgN
-RjbLQ8QlP8A5sw2VK3HLycY1yf7wuGCjkUoyugcr/MCSVXncd3YpI1Z/MUx2wbk9
-g/Tf5gNJRD9YpalJZAq+l4coEO00olzxvB0TGFdhb5E4w2BLIs5nN7GQV1FGkMZk
-3w+x07TMgUuH0V7OK3XQYuNY51d9dA==
-=dkFx
------END PGP SIGNATURE-----
-
---OS/czi0XjYVQh/ZC--
