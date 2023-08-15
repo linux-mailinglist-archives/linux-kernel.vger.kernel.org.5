@@ -2,120 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F25177C573
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 03:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DBB77C576
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 03:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234044AbjHOBvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 21:51:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57538 "EHLO
+        id S234045AbjHOBxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 21:53:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234123AbjHOBvu (ORCPT
+        with ESMTP id S234054AbjHOBxa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 21:51:50 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D599DB0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 18:51:48 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6874a386ec7so984163b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 18:51:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1692064308; x=1692669108;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gjJh1H6n4HDecJO/e4d6N0EBFkimFhhLQvDqvGPNpQQ=;
-        b=LLXTK5hD/cetcRfc0dOsWHwgmrWHc72x9/RLAd16QZjkeX4oOo8TS+pw7iSWaDkQJu
-         KOMKooP69Y/2WiI38vhm6o1bM1mGB6HXo/O9uSSCw46Dfy9kjMUcW4Cr0gMWbtwP/L73
-         O/Ju3kaDs2E/dd1a5SvTdqZBVH4HNqP2TnEVNCBgvEQdyEj0EuHP2RuNF6ETsSKWo311
-         9qNzLiUKXcCraYt5qd3/tmdqc9iuv2FdWizO2WZuz7184oIQZT/9Ws/d6aQv9WPbj0xS
-         LABSRhkRlevzyXRiiZCVpdzrTqgEdtr49PvNgHk0HRgR0ONjNr93V5qisFDcfz33w0Rz
-         CDJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692064308; x=1692669108;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gjJh1H6n4HDecJO/e4d6N0EBFkimFhhLQvDqvGPNpQQ=;
-        b=dqdasY47vGR7hzmY//6wV8muf/dyYngWJO1hsFNgh8aZF4q/YqKUvq0agYhHGt1uNm
-         4eC99FbFUV04mmCX9AAmW6+WVq7podZAaCXqPsv0ThJWdCobjGx+GV2qmkzFxrYPqCDN
-         id+9e6hUcmz4z0b3n9YVeHutD3vh1psDHPUPgBwvjlJqC1YXwHTx5iDeyXEJRufJZW39
-         PieQ5sQlL9XbLHeIedyaUx4eVlTRYYLSt6PR/L+GkbCuemJgtkh+9vjPacvAUgYSv764
-         JYSRqGiImLp67gczAklszq0ttQFnY6SqkVCPPzU+YGaS02hTWAz74o9Ksh0S6WgJ1+wv
-         DK0Q==
-X-Gm-Message-State: AOJu0YzsS/sjWoTk47z74VPZsl9MTjyAcKNv53rYBpSn1tk2hzHw2u4c
-        Npe8kNlHffDl+iYSZPIuZdUGLg==
-X-Google-Smtp-Source: AGHT+IG4ucQC4hM9rpUVd+0XSHyHpYDeNAJaZPYaZazhXrh/yZcCvSw9jKvL2m+bXRt4Z4gD+FwQvA==
-X-Received: by 2002:a17:902:e54f:b0:1b3:d8ac:8db3 with SMTP id n15-20020a170902e54f00b001b3d8ac8db3mr13288794plf.6.1692064308278;
-        Mon, 14 Aug 2023 18:51:48 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id m11-20020a170902768b00b001bb750189desm10102601pll.255.2023.08.14.18.51.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 18:51:47 -0700 (PDT)
-Message-ID: <5a7738df-9a4c-47d1-beea-b2b50d5cef19@kernel.dk>
-Date:   Mon, 14 Aug 2023 19:51:46 -0600
+        Mon, 14 Aug 2023 21:53:30 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8544DB0;
+        Mon, 14 Aug 2023 18:53:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692064408;
+        bh=/yI6gnWPXeMs75/SF7gnZEHG4nmUt3Yp6v7q6Xf82kE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=U0ysCnF2KMLJdAJQUUpRiQRtzeUEF1xjCeFr905CLIgyqHIccdcOiHe/Hmok2OVpj
+         JxKxO+p+wj2qjmjLSt/R46+SVxWXhRAnlky4Za9VX8Sx9f8n94KoZm/2Rg9HIMo96k
+         AxPjBqmAiEfXP22AEA6+cx7qrln0Lwz5rylpuvaQydbKIs1kFFroMUbMz/bSGf0/LL
+         wbZYuu90RGvJilqC0+0NiyLhBIaH1UQOmMqVqPk9yNWUKn56MC4Ujh++Z/B6ErSpXl
+         mEQXc0O6TC0W+6qkyj1Rn0DlrENycHeuJP9EH5QsTDxsLHbCjnWKQNz3RE4VWf9z/4
+         u0BYawOkNG7Ng==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RPvS73DVcz4wb5;
+        Tue, 15 Aug 2023 11:53:27 +1000 (AEST)
+Date:   Tue, 15 Aug 2023 11:53:25 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>,
+        David Rheinsberg <david@readahead.eu>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the hid tree with Linus' tree
+Message-ID: <20230815115325.0d20b960@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHSET v4] Add io_uring futex/futexv support
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, andres@anarazel.de
-References: <20230728164235.1318118-1-axboe@kernel.dk> <87jzugnjzy.ffs@tglx>
- <e136823c-b5c9-b6b3-a0e2-7e9cfda2b2d8@kernel.dk> <875y5rmyqi.ffs@tglx>
- <9153c0bf-405b-7c16-d26c-12608a02ee29@kernel.dk> <87y1idgo3j.ffs@tglx>
- <bda49491-4d7f-485f-b929-87a4bec6efaa@kernel.dk> <87v8dhgmhc.ffs@tglx>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <87v8dhgmhc.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/jf=mXhClskyeMoY0yKNBYqE";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/23 6:47 PM, Thomas Gleixner wrote:
-> On Mon, Aug 14 2023 at 18:18, Jens Axboe wrote:
->> On 8/14/23 6:12 PM, Thomas Gleixner wrote:
-> 
->>>> We're now resorting to name calling? Sorry, but I think that's pretty
->>>> low and not very professional.
->>>
->>> I'm not resorting to that. If you got offended by the meme which
->>> happened to elapse into my reply, then I can definitely understand
->>> that. That was not my intention at all. But you might think about why
->>> that meme exists in the first place.
->>
->> It's been there since day 1 because a) the spelling is close, and b)
->> some people are just childish. Same reason kids in the 3rd grade come up
->> with nicknames for each others. And that's fine, but most people grow
->> out of that, and it certainly has no place in what is supposedly a
->> professional setting.
-> 
-> Sure. Repeat that as often you want. I already made clear in my reply
-> that this was unintentional, no?
+--Sig_/jf=mXhClskyeMoY0yKNBYqE
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Wasn't clear to me, and your repeated undertones don't help either.
+Hi all,
 
-> Though the fact that this "rush the feature" ends up in my security
-> inbox more than justified has absolutely nothing to do with my
-> potentially childish and non-professionl attitude, right?
+Today's linux-next merge of the hid tree got a conflict in:
 
-I've already made it clear that nothing is being rushed, yet you keep
-harping on that. It was in my reply, again, though you gracefully
-ignored that, again.
+  .mailmap
 
-Have we had security issues? For sure, and more than I would've liked.
-By far most of that is for old kernels, not the current code base. We've
-made good progress getting that migrated back, and it's always top of
-the mind when developing new features. If you think I don't take this
-seriously, then you are ignorant, and suggesting otherwise is slander.
-And since it's apparently a big problem in your inbox, you will have
-undoubtedly also seen that we've always been handling these well and
-expediently.
+between commit:
 
--- 
-Jens Axboe
+  286812b041cc ("mailmap: update remaining active codeaurora.org email addr=
+esses")
 
+from Linus' tree and commit:
+
+  0c4b9411f363 ("MAINTAINERS: update my email address")
+
+from the hid tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc .mailmap
+index 5dd318121982,cea699139e6d..000000000000
+--- a/.mailmap
++++ b/.mailmap
+@@@ -138,10 -119,10 +138,13 @@@ Daniel Borkmann <daniel@iogearbox.net>=20
+  Daniel Borkmann <daniel@iogearbox.net> <dborkman@redhat.com>
+  Daniel Borkmann <daniel@iogearbox.net> <dxchgb@gmail.com>
+  David Brownell <david-b@pacbell.net>
+ +David Collins <quic_collinsd@quicinc.com> <collinsd@codeaurora.org>
++ David Rheinsberg <david@readahead.eu> <dh.herrmann@gmail.com>
++ David Rheinsberg <david@readahead.eu> <dh.herrmann@googlemail.com>
++ David Rheinsberg <david@readahead.eu> <david.rheinsberg@gmail.com>
+  David Woodhouse <dwmw2@shinybook.infradead.org>
+ +Dedy Lansky <quic_dlansky@quicinc.com> <dlansky@codeaurora.org>
+ +Deepak Kumar Singh <quic_deesin@quicinc.com> <deesin@codeaurora.org>
+  Dengcheng Zhu <dzhu@wavecomp.com> <dczhu@mips.com>
+  Dengcheng Zhu <dzhu@wavecomp.com> <dengcheng.zhu@gmail.com>
+  Dengcheng Zhu <dzhu@wavecomp.com> <dengcheng.zhu@imgtec.com>
+
+--Sig_/jf=mXhClskyeMoY0yKNBYqE
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTa2pUACgkQAVBC80lX
+0GxPzgf+L3QhsDc9Hr1KPqZwQre48dudDb9lyhDaNonLWTO9sbbchrv6H4tQAZ9I
+VzjvZCmiUv0yWaGDxjEva72EwXkCT2W0zV3KFZ3HUbgZqKKu/8tIutJ8urV6rfH5
+tHeCs9W+VPyf9VvCJC8rQ0gzXba5VvR+4WoqhBL8OEVBTgpKHVWwjiHiofCNt4WR
+Ld349i3M58A6My08Zc4VI1l/OZXcY+EDxR+1vzDV88ZpyMcmDjrgjjFn+tM/zyMo
+QSYU3T/9lJImCbgOUc7Se2ANUt/0Od4NSsZob2/j9VR+T7VouXH0cxAMwlgApZLg
+c955sSO1vKMVYG9jJwXVMZ/iifSojg==
+=Ji3X
+-----END PGP SIGNATURE-----
+
+--Sig_/jf=mXhClskyeMoY0yKNBYqE--
