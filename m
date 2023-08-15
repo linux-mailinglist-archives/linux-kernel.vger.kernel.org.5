@@ -2,130 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7016D77C6C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 06:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2FF577C6DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 07:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234517AbjHOEjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 00:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
+        id S234536AbjHOE76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 00:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234326AbjHOEiv (ORCPT
+        with ESMTP id S234524AbjHOE7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 00:38:51 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13678F4;
-        Mon, 14 Aug 2023 21:38:46 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-63d48c3d242so35481626d6.2;
-        Mon, 14 Aug 2023 21:38:46 -0700 (PDT)
+        Tue, 15 Aug 2023 00:59:12 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7CCE7E
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 21:59:10 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3178dd771ceso4510087f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 21:59:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692074325; x=1692679125;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vUSlJ1K+YltX3fu0fwuh0HX4VMb0WiCiIqUudwqAsHI=;
-        b=Av+4LsG4ZZU6TgMGKe/aUJfcGcY4JNFgEIKy7F0/L2u2R6253lSrAQk0upWXGiv0AL
-         Lwfp89+pzCbRyOG6ejURrWN3s5LHgEms85TFwIoq/eNDcna3X5sVOa+ydo/5MC/d5hud
-         6Z60XaMHzBPMjJ6mOUE02vqXuN9Dh8hAeFnlNfiP8IUT/z1b+50GCZ/JYV6kKAF0Mrl9
-         EnXqnUm9ZrcU9fWAv2iSeD0KnAktVdz8ApIHBO2V7ZV6MccfEp8UJBp3JLarLeusXuQ7
-         LzZiVmMfLoGTrIGG94mJVj4LYOHkolLqGk2BPA+WhDyhsR5MQZjBHU7fLAWWRxyj6hTg
-         rH+g==
+        d=linaro.org; s=google; t=1692075548; x=1692680348;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S9FPPB77R5VGDkpEhLuEblwJ1BfQrVVCDwiIsWbwhIA=;
+        b=ibyEzj/ViNZ3VV0SbdqYaaf+Teg3B5IIVBPHIZCkdJNeExyaaMh4vwJDyG5RV5C4LR
+         T2uzJTNYQJyBi0zMAD1/MRJjaSab3eW63or+UURYUpuEoEFDrAC3RN43UpyPQJbmESaZ
+         KiCttMyBNMFluNkXabGLrEtvkqu7G/yi7NCkBa8ZsIP3QKQvR0o8v89yYb6RcxPN0ZDI
+         k4FPC40aFWQgt2wyh0HpqXXZn5JrCq26SybrBbir50DBpFfhi+gCUFeS5Rbdf+D3B/EK
+         121Y03ybDH4rKjZ1oixBYahWS7veYgnzXW4NAI2jrpwYc6aI78MQWr4IlpCyzN5xmUQR
+         1zvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692074325; x=1692679125;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vUSlJ1K+YltX3fu0fwuh0HX4VMb0WiCiIqUudwqAsHI=;
-        b=PCdPKr9gSYaVrFr+utY9icVB+GQEzTlu7znCHMhnPZlhtEL0kiXGYPi0DHH8WE026w
-         4KLOFysOT1aLKk6ilY1YXIHpofuNnBSk0w6dKrIKVjxN9GKhBnAlluORZAVkvGVEji9e
-         /k9MhbQUSQvsdLZmpSkTiUzNeh2Ua6h6tq0HYZi/6Gxuqj18qJ1d5JxtRrLvtoZbg+4k
-         nAgNDO4T0wygQFG7hz3KLxoeGAu8FWF9WXkN0mqkvM37Soh+O2W5zUVe4ffDxfLjX/Iy
-         /nkHRK0wnOLsz+IhsrIrnqMIrgozgfrm62HgO/AoM2NR7iYbTot3HUruNyI1CgUI2WVu
-         ZcXQ==
-X-Gm-Message-State: AOJu0Yy6Mz3qu5b4B74hfnJdh8xdRXBO6wM9DZHbYjzQRgt+ob8QL5MP
-        2ud7xJyAIF6HQCry/tyuoHuks2axKsu11A==
-X-Google-Smtp-Source: AGHT+IHlRKYII7XNiHTvKhRFpl+U39brmO0LJzBgiLbx8fE8kLkSj0Lwrb5EjbPw5hmZsFns09Ducw==
-X-Received: by 2002:a0c:df8a:0:b0:647:2f8f:8c29 with SMTP id w10-20020a0cdf8a000000b006472f8f8c29mr2054378qvl.48.1692074325225;
-        Mon, 14 Aug 2023 21:38:45 -0700 (PDT)
-Received: from localhost.localdomain ([174.95.13.129])
-        by smtp.gmail.com with ESMTPSA id a7-20020a0cb347000000b00630c0ed6339sm3880822qvf.64.2023.08.14.21.38.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 21:38:44 -0700 (PDT)
-From:   Abdel Alkuor <alkuor@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-fbdev@vger.kernel.org, Abdel Alkuor <alkuor@gmail.com>
-Subject: [PATCH] staging: sm750fb: fix sii164InitChip function name
-Date:   Tue, 15 Aug 2023 00:37:59 -0400
-Message-Id: <20230815043759.404423-1-alkuor@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20221208; t=1692075548; x=1692680348;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S9FPPB77R5VGDkpEhLuEblwJ1BfQrVVCDwiIsWbwhIA=;
+        b=ZFzhchR482ksK2jcEav6hRGCZPZN1OMxGZfyguxRIC+B9249z/pk/B1itCWS9mkVue
+         c01h7iX5glYGslpHMIs0l8sKgi6L1E6mGQNBVcO+/CCiwRQ3zD7lbmuWi1HpNPZWiLgN
+         PJs+FiIPuFixKnFlae14wyPq8q54ZxUWa/1Rp1OEqQwlvTjM+HpQUotcTLQ66QNfbGy9
+         42aoysiVWgVi0o0STLC1z5/vNPRb3gUAyoMiAVehwYSlAoChJsraTMEw7oqiCvi4zuWl
+         WBLz6QPZ5AYvBgBtmk5sMyIIYcdwsZYE+7FIYCygDqJrNTjd9TymcoVWzSeJcI4o/W8s
+         ZrBg==
+X-Gm-Message-State: AOJu0YxgB6IrO4N9tYGmqzoNk7pq+kyUSFg+bX4gdc0rZR3shYIdZayq
+        z8bQnztTXGrUddiE6Aga75zJxA==
+X-Google-Smtp-Source: AGHT+IFoTDmW8n9eQAc1xIDsjCJCRCtu5VAOAFQaRuu5TpkU6GUd+VzNO4uHCokM4ZT/E2JkirGg7w==
+X-Received: by 2002:adf:f303:0:b0:317:ef76:b778 with SMTP id i3-20020adff303000000b00317ef76b778mr9202890wro.63.1692075548532;
+        Mon, 14 Aug 2023 21:59:08 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id b13-20020adfe30d000000b003113ed02080sm16358185wrj.95.2023.08.14.21.59.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Aug 2023 21:59:08 -0700 (PDT)
+Message-ID: <c27d68eb-bd7b-6e85-0d7c-d4ff8bb96687@linaro.org>
+Date:   Tue, 15 Aug 2023 06:59:06 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: linux-next: duplicate patch in the samsung-krzk tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>
+Cc:     ARM <linux-arm-kernel@lists.infradead.org>,
+        Rob Herring <robh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20230815120622.528613e2@canb.auug.org.au>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230815120622.528613e2@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adhere to Linux Kernel coding style. Found by checkpatch.
+On 15/08/2023 04:06, Stephen Rothwell wrote:
+> Hi all,
+> 
+> The following commit is also in arm-soc tree as a different commit
+> (but the same patch):
+> 
+>   3027df7e739c ("ARM: s5pv210: Explicitly include correct DT includes")
+> 
+> This is commit
+> 
+>   8787bc51a7e2 ("ARM: s5pv210: Explicitly include correct DT includes")
+> 
+> in the arm-soc tree.
 
-Signed-off-by: Abdel Alkuor <alkuor@gmail.com>
----
- drivers/staging/sm750fb/ddk750_dvi.c    | 2 +-
- drivers/staging/sm750fb/ddk750_sii164.c | 4 ++--
- drivers/staging/sm750fb/ddk750_sii164.h | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
+Thanks, it was expected.
 
-diff --git a/drivers/staging/sm750fb/ddk750_dvi.c b/drivers/staging/sm750fb/ddk750_dvi.c
-index e0c7ff3352bf..8b81e8642f9e 100644
---- a/drivers/staging/sm750fb/ddk750_dvi.c
-+++ b/drivers/staging/sm750fb/ddk750_dvi.c
-@@ -14,7 +14,7 @@
- static struct dvi_ctrl_device dcft_supported_dvi_controller[] = {
- #ifdef DVI_CTRL_SII164
- 	{
--		.init = sii164InitChip,
-+		.init = sii164_init_chip,
- 		.get_vendor_id = sii164_get_vendor_id,
- 		.get_device_id = sii164GetDeviceID,
- #ifdef SII164_FULL_FUNCTIONS
-diff --git a/drivers/staging/sm750fb/ddk750_sii164.c b/drivers/staging/sm750fb/ddk750_sii164.c
-index 3da1796cd7aa..d162e1a16584 100644
---- a/drivers/staging/sm750fb/ddk750_sii164.c
-+++ b/drivers/staging/sm750fb/ddk750_sii164.c
-@@ -72,7 +72,7 @@ unsigned short sii164GetDeviceID(void)
-  */
- 
- /*
-- *  sii164InitChip
-+ *  sii164_init_chip
-  *      This function initialize and detect the DVI controller chip.
-  *
-  *  Input:
-@@ -118,7 +118,7 @@ unsigned short sii164GetDeviceID(void)
-  *      0   - Success
-  *     -1   - Fail.
-  */
--long sii164InitChip(unsigned char edge_select,
-+long sii164_init_chip(unsigned char edge_select,
- 		    unsigned char bus_select,
- 		    unsigned char dual_edge_clk_select,
- 		    unsigned char hsync_enable,
-diff --git a/drivers/staging/sm750fb/ddk750_sii164.h b/drivers/staging/sm750fb/ddk750_sii164.h
-index ca330f6a43e2..13420bcc282c 100644
---- a/drivers/staging/sm750fb/ddk750_sii164.h
-+++ b/drivers/staging/sm750fb/ddk750_sii164.h
-@@ -16,7 +16,7 @@ enum sii164_hot_plug_mode {
- };
- 
- /* Silicon Image SiI164 chip prototype */
--long sii164InitChip(unsigned char edgeSelect,
-+long sii164_init_chip(unsigned char edgeSelect,
- 		    unsigned char busSelect,
- 		    unsigned char dualEdgeClkSelect,
- 		    unsigned char hsyncEnable,
--- 
-2.34.1
+Best regards,
+Krzysztof
 
