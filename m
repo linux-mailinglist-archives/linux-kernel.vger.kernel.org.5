@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9671C77D469
+	by mail.lfdr.de (Postfix) with ESMTP id EAE0A77D46A
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239691AbjHOUin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 16:38:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48250 "EHLO
+        id S239738AbjHOUio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 16:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239152AbjHOUiE (ORCPT
+        with ESMTP id S239150AbjHOUiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Aug 2023 16:38:04 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF362123
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:37:43 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d6411f96b35so4729269276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:37:43 -0700 (PDT)
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B67922122
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:37:44 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58c6564646aso6423167b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:37:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692131842; x=1692736642;
+        d=google.com; s=20221208; t=1692131844; x=1692736644;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=VwtSsZcreifatu5kqX13Ny2lYN44xoh9lZLAjI9CDV8=;
-        b=AmAafd7qRjGmX/mLXgqNgydSCc9aK6NcG30m1fuahWAHRHqvFlIbpCKPn+NV6I5UVF
-         OFG34PdV66G+P3lRdo3c1y7tJzczc0T1F6szwbEAaFLi3/wpayPhLYeg25cUaa8PhtsI
-         rcMZxEuEFj092/IFMueABKOaw6IGtwFU48abuvfsvlDZo2QNoSY+a9h6ywJAIhJj3JsS
-         +Hkq4kJZLeYxqWAg+kNPeCFpOkK3axC8bfUC6JTGpBQX17ELYbMghqFqX6Xao0AWByP5
-         4nVc2Y2GWh9r2Vh1SEvdlERQ5o5yDm30+H+IDd6P4qCJNiaK+toyaviGrU7zakTQGJyL
-         56Kg==
+        bh=3dK+siegY/lcPBE26gvMNEY42khfxilV1mO9bjQlHqg=;
+        b=OrZw6nNj8f0nsd/1qt+U0X1Xd3xCQvB44YKCUfK0QTrigF+dnhpT9lKet46Dffuves
+         aYULYfbfoOYrRNYDyhuBdMYE2xQJqGJ9XTeJnsdvpg0n/TABpQc40EGXuyB8Ly4JxnhS
+         r3QIzpAjBGxlouYEZIyurPp852JBt4V5T7yRbKK0NM3Fs0ov+U4qX4xd5YUpTRBNKe2k
+         e/E5UfgslO1jzpZQDdb2d1qLhko/KtPuLD+E8maPcv6ajRkrQumIeb9DDOu4AxAXv5bb
+         Yjss0thyeIARTiUj6Unqxd3DbEm2reCrdesIRgz+Z6xmWFQXBup4AJAt+bRelShLGCVl
+         cE7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692131842; x=1692736642;
+        d=1e100.net; s=20221208; t=1692131844; x=1692736644;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=VwtSsZcreifatu5kqX13Ny2lYN44xoh9lZLAjI9CDV8=;
-        b=Dhh/MkYrqAIbI9OVwXEFs++TyG7sixC7/CFAPesfaqLbxBOkV5h+S+EvFpLFgTUleb
-         q/klBUeaCBTW0QLm9seYEkSJ+/56sokh3S+5nCdz5jnaCJLnHQTIMFjooye2A3zd+pgJ
-         6GPbZrV83v9ecU8SPEuiedOTEm10aUd6u6ZaRIvvZxRLmbVvD+6pjrbLNWaswxS1+4LI
-         MROy6JtZJi5xH13GPqThvjCpbvrYezA8BsCDP4H/wk4AXO2heqd0m6vlIqmIFd8GrRZv
-         P52W4nkJiFCmxh7wd5Y9KtCCSNLufUZTtrceFB2dCQfSeZX0oQVW/fLr5NfjBmmyAXGY
-         WzvQ==
-X-Gm-Message-State: AOJu0YzZQ2sfENKwYndGIduzpcMNDyyZEEesfYIftgaQfBqAGNr/6hhE
-        uP8Qd/NBUFM0PRg5ZQCs4678qyUbypY=
-X-Google-Smtp-Source: AGHT+IEg51nJ1FSI9AYLBI/nqW4Ys6jGGyoFtvJP9mNyIiW2JZRRrW9LZzRJC7GQGVWIqdNrI6plVPfgu5M=
+        bh=3dK+siegY/lcPBE26gvMNEY42khfxilV1mO9bjQlHqg=;
+        b=R6mR0oF20Xicf2KpqSYA8jArd0ERdIhrjhj2J6WGyxP0P1Gw3lSBEORvEtKUM1PAHO
+         LBRDBs97lC70FF3W+CPRFVPhQwWY5Nd11JKMdFFyiYiCRe0c7R2bjmXliMBn4LfEJmH+
+         hP6jkNoyQsmKkqmm7nUIv7Vnngk6PXmiEWfUz4+Z+Ho4cQZd/OGI00Yxfy6fsWgMetdX
+         NyJB3GG+Cj2i/QmKKOz82RcVRQDlyKjUX8Du3yC9jJDqUGiQnclwl3gmDEAbwuFKf0Uf
+         Mh7H7Dx6qdLATgYaWormj71YxqVE0IBTaSkxoTBTOKfaDbU0HhSC4kREZN9ov+Yj6oNc
+         6WRg==
+X-Gm-Message-State: AOJu0YzCFHupjkL1MrcXR47aagEH35dldFqeQxvkISVCR+RdynZ4+j+j
+        xs6uULFrkGSClomp2kSv8Bkz6CPiVjY=
+X-Google-Smtp-Source: AGHT+IGVmxZgnM/94vT7V9EdxdBjzJvfoob+eub2qtcm+uyZa4akRj6gZeoxuKQTUpT74MB8wuzHWXJ3x8c=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:2683:0:b0:d62:7f3f:621d with SMTP id
- m125-20020a252683000000b00d627f3f621dmr188998ybm.11.1692131842554; Tue, 15
- Aug 2023 13:37:22 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a81:b725:0:b0:579:e07c:2798 with SMTP id
+ v37-20020a81b725000000b00579e07c2798mr183717ywh.2.1692131844699; Tue, 15 Aug
+ 2023 13:37:24 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 15 Aug 2023 13:36:52 -0700
+Date:   Tue, 15 Aug 2023 13:36:53 -0700
 In-Reply-To: <20230815203653.519297-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230815203653.519297-1-seanjc@google.com>
 X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
-Message-ID: <20230815203653.519297-15-seanjc@google.com>
-Subject: [PATCH v3 14/15] KVM: nSVM: Use KVM-governed feature framework to
- track "vNMI enabled"
+Message-ID: <20230815203653.519297-16-seanjc@google.com>
+Subject: [PATCH v3 15/15] KVM: x86: Disallow guest CPUID lookups when IRQs are disabled
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
@@ -67,77 +66,55 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Track "virtual NMI exposed to L1" via a governed feature flag instead of
-using a dedicated bit/flag in vcpu_svm.
-
-Note, checking KVM's capabilities instead of the "vnmi" param means that
-the code isn't strictly equivalent, as vnmi_enabled could have been set
-if nested=false where as that the governed feature cannot.  But that's a
-glorified nop as the feature/flag is consumed only by paths that are
-gated by nSVM being enabled.
+Now that KVM has a framework for caching guest CPUID feature flags, add
+a "rule" that IRQs must be enabled when doing guest CPUID lookups, and
+enforce the rule via a lockdep assertion.  CPUID lookups are slow, and
+within KVM, IRQs are only ever disabled in hot paths, e.g. the core run
+loop, fast page fault handling, etc.  I.e. querying guest CPUID with IRQs
+disabled, especially in the run loop, should be avoided.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/governed_features.h | 1 +
- arch/x86/kvm/svm/svm.c           | 3 +--
- arch/x86/kvm/svm/svm.h           | 5 +----
- 3 files changed, 3 insertions(+), 6 deletions(-)
+ arch/x86/kvm/cpuid.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/arch/x86/kvm/governed_features.h b/arch/x86/kvm/governed_features.h
-index 368696c2e96b..423a73395c10 100644
---- a/arch/x86/kvm/governed_features.h
-+++ b/arch/x86/kvm/governed_features.h
-@@ -15,6 +15,7 @@ KVM_GOVERNED_X86_FEATURE(LBRV)
- KVM_GOVERNED_X86_FEATURE(PAUSEFILTER)
- KVM_GOVERNED_X86_FEATURE(PFTHRESHOLD)
- KVM_GOVERNED_X86_FEATURE(VGIF)
-+KVM_GOVERNED_X86_FEATURE(VNMI)
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 67e9f79fe059..e961e9a05847 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -11,6 +11,7 @@
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
- #undef KVM_GOVERNED_X86_FEATURE
- #undef KVM_GOVERNED_FEATURE
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 9eac0ad3403e..a139c626fa8b 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -4303,8 +4303,7 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
- 	kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_PAUSEFILTER);
- 	kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_PFTHRESHOLD);
- 	kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_VGIF);
--
--	svm->vnmi_enabled = vnmi && guest_cpuid_has(vcpu, X86_FEATURE_VNMI);
-+	kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_VNMI);
+ #include <linux/kvm_host.h>
++#include "linux/lockdep.h"
+ #include <linux/export.h>
+ #include <linux/vmalloc.h>
+ #include <linux/uaccess.h>
+@@ -84,6 +85,18 @@ static inline struct kvm_cpuid_entry2 *cpuid_entry2_find(
+ 	struct kvm_cpuid_entry2 *e;
+ 	int i;
  
- 	svm_recalc_instruction_intercepts(vcpu, svm);
- 
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index eaddaac6bf18..2237230aad98 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -259,9 +259,6 @@ struct vcpu_svm {
- 	unsigned long soft_int_next_rip;
- 	bool soft_int_injected;
- 
--	/* optional nested SVM features that are enabled for this guest  */
--	bool vnmi_enabled                 : 1;
--
- 	u32 ldr_reg;
- 	u32 dfr_reg;
- 	struct page *avic_backing_page;
-@@ -495,7 +492,7 @@ static inline bool nested_npt_enabled(struct vcpu_svm *svm)
- 
- static inline bool nested_vnmi_enabled(struct vcpu_svm *svm)
- {
--	return svm->vnmi_enabled &&
-+	return guest_can_use(&svm->vcpu, X86_FEATURE_VNMI) &&
- 	       (svm->nested.ctl.int_ctl & V_NMI_ENABLE_MASK);
- }
++	/*
++	 * KVM has a semi-arbitrary rule that querying the guest's CPUID model
++	 * with IRQs disabled is disallowed.  The CPUID model can legitimately
++	 * have over one hundred entries, i.e. the lookup is slow, and IRQs are
++	 * typically disabled in KVM only when KVM is in a performance critical
++	 * path, e.g. the core VM-Enter/VM-Exit run loop.  Nothing will break
++	 * if this rule is violated, this assertion is purely to flag potential
++	 * performance issues.  If this fires, consider moving the lookup out
++	 * of the hotpath, e.g. by caching information during CPUID updates.
++	 */
++	lockdep_assert_irqs_enabled();
++
+ 	for (i = 0; i < nent; i++) {
+ 		e = &entries[i];
  
 -- 
 2.41.0.694.ge786442a9b-goog
