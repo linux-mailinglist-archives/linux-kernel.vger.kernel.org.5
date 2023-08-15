@@ -2,122 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7E977D427
+	by mail.lfdr.de (Postfix) with ESMTP id 8970277D428
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237940AbjHOUbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 16:31:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38654 "EHLO
+        id S237963AbjHOUb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 16:31:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237828AbjHOUbZ (ORCPT
+        with ESMTP id S237982AbjHOUbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 16:31:25 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B341BF7;
-        Tue, 15 Aug 2023 13:31:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=5qU/5VuCNxpl7AX33gP+0AiuqhusLaBl3uuYx+5QjPY=; b=O48VbhaB/crYgFw5YXDyYmVlmD
-        c6yFbFo9wu37AXbWrb1K7w7G2IMtEdNqHwk8zFqTW8m5B64YaHxl+OqkfHo7rwXNBLrmvyl/Ma0b0
-        zO0G2nQjK0r3QtA5OR1TYNIx/SgjtoBgS3oToZLa0Oi6k6g5LNGqSMUCZ4GhYQYFkD8FK1knZAqbN
-        of0V+d9ic6KlxpS39laH9gW38gGqk0o5AUxowGd2sI5/cnl64PxDsb7Ui61KTdi9FfrowSbatS2xX
-        ZhgPZvGHrIc7xQ4bcTC18seZ799MVpy+PHtgzx+p6L4DMP2WOsExYG/8cVPuNeC0fUfsn13gInE1o
-        Ly4nPrrg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qW0hB-00C4qZ-2k;
-        Tue, 15 Aug 2023 20:31:18 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4FD07300222;
-        Tue, 15 Aug 2023 22:31:17 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 39F702B57699C; Tue, 15 Aug 2023 22:31:17 +0200 (CEST)
-Date:   Tue, 15 Aug 2023 22:31:17 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 2/2] gpio: sim: simplify code with cleanup helpers
-Message-ID: <20230815203117.GA971582@hirez.programming.kicks-ass.net>
-References: <20230809131442.25524-1-brgl@bgdev.pl>
- <20230809131442.25524-2-brgl@bgdev.pl>
- <CACRpkdavsv3nJnhtdqW8ANAVfxbgHdM-SpcfOv4p_t-7EOaOHQ@mail.gmail.com>
- <20230815155253.GK212435@hirez.programming.kicks-ass.net>
- <ZNugkmhj1Joygorj@smile.fi.intel.com>
+        Tue, 15 Aug 2023 16:31:33 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C581FC9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:31:30 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3110ab7110aso5331290f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:31:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692131489; x=1692736289;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KyN9mbwaXCeD9ddt8BwKaPHZBpIm4dW+EkteSoYWyH4=;
+        b=xrrg1Lm+rYDLYBzWIRiSdaxZjhV1XYNCjktJ68o3hygAEtXIZQFxlCYG+jRKyxoz05
+         2+vwpNjU4cBXfpgO5uLL4CNwSB2jwyhpVzYhYukSX/KH0HkiLLYteYbCJAYJZ7h5vyao
+         ksUw59ES/NyBAbS1jh3IZsGAeOaeAKylI5LhyttanlDC6SCKOkeRaE73Cw0tAjVIgM+o
+         344GyuIR6zYHzAZ5sRl40FTtAEJSuVlYX+YFoLGcL1Hp9kKd0y/Zuxbo0u1loQNJPsnE
+         7tRIFjWxzsra7bTkYejBdpbz7qs4IStP+YM9NGBKyaQqRym0wdlL4WkIbeBd6l4SuWM0
+         nEsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692131489; x=1692736289;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KyN9mbwaXCeD9ddt8BwKaPHZBpIm4dW+EkteSoYWyH4=;
+        b=C/t2Eoj5n639O28ijzaD87MiWAcFEHfTNn5F0dGO7OE9Q9isUaG9flv+lto7yArqR6
+         KnbiKLbxOS+c68RKv8OM69RhetXc7hbLufCyh5l0hodgtQ0VX8g6vPyK/sXTUhn4cTWG
+         M/DDlMSKecJrCTrkfhZrK3zUFDQG2Bo+xX0OFPcwdRMrSATUr1lV1rF3Q8YN/XIIgbV5
+         ilaifQIpvrWomZUljxcranEU6V3hxalRb51Ax/TOYbtJBp3cP6DzrNJtUVcnFTqTr6LH
+         nlWztt6AJEHpfhkpDJWHNkbaBfnXlvJQ6XMfyN6ZZih1ThNVurC9g3TOxk3R9ltcHKuT
+         Z6WA==
+X-Gm-Message-State: AOJu0Yw4YOZTbzyIFmvLEE3d3GEUtj9C23A9wOZhbcBqwCK+VvEI+gF/
+        j5pomkLKGYUIGfQ3cjW/vDRlGQ==
+X-Google-Smtp-Source: AGHT+IGKfKT6v7xAX9eRrfeVce0AfRmSoHeqv6qYSAYqLe+fP7lNSELrPG7WvUwsiJxHDSPObqPb+w==
+X-Received: by 2002:a5d:6889:0:b0:319:8161:ecc6 with SMTP id h9-20020a5d6889000000b003198161ecc6mr3432297wru.63.1692131489426;
+        Tue, 15 Aug 2023 13:31:29 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id o14-20020a5d474e000000b00317f3fd21b7sm5490315wrs.80.2023.08.15.13.31.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Aug 2023 13:31:29 -0700 (PDT)
+Message-ID: <d9a8e265-8862-0fac-24ae-989293bc4d12@linaro.org>
+Date:   Tue, 15 Aug 2023 22:31:27 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZNugkmhj1Joygorj@smile.fi.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 2/3] dt-bindings: leds: Document pull-up supply for
+ interrupt and I2C
+Content-Language: en-US
+To:     Stephan Gerhold <stephan@gerhold.net>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Nikita Travkin <nikita@trvn.ru>, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
+References: <20230815-aw2013-vio-v3-0-2505296b0856@gerhold.net>
+ <20230815-aw2013-vio-v3-2-2505296b0856@gerhold.net>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230815-aw2013-vio-v3-2-2505296b0856@gerhold.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 06:58:10PM +0300, Andy Shevchenko wrote:
-> On Tue, Aug 15, 2023 at 05:52:53PM +0200, Peter Zijlstra wrote:
-> > On Tue, Aug 15, 2023 at 10:04:32AM +0200, Linus Walleij wrote:
-> > > On Wed, Aug 9, 2023 at 3:14 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+On 15/08/2023 19:21, Stephan Gerhold wrote:
+> Since the interrupt and I2C lines of AW2013 operate in open drain low
+> active mode a pull-up supply is needed for correct operation.
+> Unfortunately there is no ideal place to describe it in the DT: The
+> pull-up needed for the I2C lines could be described on the I2C bus.
+> However, the pull-up needed for the interrupt line belongs neither
+> directly to the interrupt controller nor to AW2013. Since the AW2013
+> driver will be typically in control of the power management and
+> interrupt masking it makes more sense to describe it inside the AW2013
+> device tree node.
 > 
+> Add it to the AW2013 DT schema together with a comment that makes it
+> clear what exactly it represents.
 > 
-> > > > -       mutex_lock(&chip->lock);
-> > > > +       guard(mutex)(&chip->lock);
-> 
-> > Looks about right.
-> 
-> Btw, why don't we have something like
-> 
-> 	guard_mutex()
-> 
-> to be used as
-> 
-> 	guard_mutex(&chip->lock);
 
-Because this way I can write:
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-DEFINE_LOCK_GUARD_1(rq_lock_irqsave, struct rq,
-		    rq_lock_irqsave(_T->lock, &_T->rf),
-		    rq_unlock_irqrestore(_T->lock, &_T->rf),
-		    struct rq_flags rf);
+Best regards,
+Krzysztof
 
-And have:
-
-	guard(rq_lock_irqsave)(rq);
-
-and
-
-	scoped_guard (rq_lock_irqsave, rq) {
-	}
-
-just work.
-
-And if you look in tip/sched/core, you'll find exactly this.
-
-Or look here:
-
-  https://lkml.kernel.org/r/20230612090713.652690195@infradead.org
-
-for a bunch more examples -- I've wanted to get more of that merged, but
-alas, only 24h in a day and life got in the way. Defining local guard
-types is very useful.
-
-> Moreover, maybe some macro that can predict the API call from the type of
-> the parameter?
-
-The whole type inferrence in C is not extensible. That is, you get to
-write a single _Generic() statement, and every case that is included in
-it will work, but the moment you use a new type, one that is not
-included in your giant _Generic() statement, you're out of luck.
