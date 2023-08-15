@@ -2,156 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4789B77C5DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 04:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C1577C5E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 04:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234228AbjHOC3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 22:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40414 "EHLO
+        id S234240AbjHOCdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 22:33:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234267AbjHOC2x (ORCPT
+        with ESMTP id S234218AbjHOCdE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 22:28:53 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E1010D0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 19:28:28 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-686efb9ee0cso4738713b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 19:28:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1692066508; x=1692671308;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=A0lxq9OjfrA60t47ee0fVJ+mpuBSaW/wISgNC9Vr6aM=;
-        b=LRLT6XP/XT24hYVtEu3IvtUN57S9JLlno5LNRkdEtYZV4f2UieqgXdcPq4qlVC1iVw
-         lfZu9hnms0iFTvbbIbJXIDDaK/RE1hjvlN+2vhknUB8GXoGlq7MSbu67hxSY6VDq3BQ+
-         Plr/WMT57GfqWc/UZF7hXtwA8VSJHGrjleUwAKZuiKlgh/WhikEYV4L26qIsgp1DPApK
-         Aq2Lsmm7ANV1743gfKej8PRH7SeT5BKGn5wNO+TwteP5XO3AOjehrkjRZiwdLXjmmf9i
-         impumhPSk0pbbQNu27JpjBVFownW6iiChFQtzNxbHzC4qMKl9eCSYGZISzSLLPVOtnXE
-         WKzg==
+        Mon, 14 Aug 2023 22:33:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F57F10C1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 19:32:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692066737;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UNemsS+xeBZrPRoyejjjBBpC6xRjaAOSiLlxHQBTkjs=;
+        b=QNPcU9mSCB8QVnOWhC2qh7tFJ6fkP+1vRU3/0JOS3b3Dw9rCViThRJDITzw/CBj6p0NIE9
+        dxPBK75i+kj2FhqXzOEVT75Xmqn0rCpdOhKwZWh2hC9dwzvi1/ndPnrO2qsdcqlYy5fXCj
+        IvdC+lzaiXn5DLjUkSVrp0CtCtVqeNU=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-371-zpAhEd9KPFqQ4g8jhL6Oxw-1; Mon, 14 Aug 2023 22:32:15 -0400
+X-MC-Unique: zpAhEd9KPFqQ4g8jhL6Oxw-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2b9dc1bfdd2so50524321fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 19:32:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692066508; x=1692671308;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=A0lxq9OjfrA60t47ee0fVJ+mpuBSaW/wISgNC9Vr6aM=;
-        b=VHs8sdapBjf226PGgVQ/LG9RPXioaifAdWwbjHK36bEoJMtPmCZXVmK1BGsTH3DAtd
-         A9Ei9YCcIoVSx3vHoHoUZNZdFvOTjHZBlf2gUbu3EVrnz0eh02utaSd8Mdh90rw3hL9/
-         EmevL5GleTPU5qMjj8DOaCsRtZUmj4D6cxJpz8jhrAYEnfXRvZ6aNoxkYcXM/GaJSWdD
-         MMsUK3+PcZ32ThvKubnqVIJ90+Z47dsXpg5QttLf42L87PXf7YVd0GHPa2yO/89Dt8TT
-         uQdEodbGE+ez79EUY71uBoSTT95dADf1qN5VvTqsxfhF6yvSi6uiBPCcht0dVNTX979f
-         bBHg==
-X-Gm-Message-State: AOJu0YwdDRe+zh5GPpfC4U1nBR3WBxWj7985yaC9er+KFkmJnA9/cP2q
-        MBVxnu5JHusDIYYx9RfXW9lbCw==
-X-Google-Smtp-Source: AGHT+IF0Oahb0/bzmi8xlwgfys35ZcW8ZDVuZHtOLCZ/YfMQuqZlHjVmsVUEHQPx+bRFNXftB5V0SA==
-X-Received: by 2002:a05:6a00:10cc:b0:686:babd:f5c1 with SMTP id d12-20020a056a0010cc00b00686babdf5c1mr12653781pfu.25.1692066507969;
-        Mon, 14 Aug 2023 19:28:27 -0700 (PDT)
-Received: from [10.85.117.81] ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id k19-20020aa790d3000000b00682bec0b680sm8539945pfk.89.2023.08.14.19.28.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 19:28:27 -0700 (PDT)
-Message-ID: <dda53b5a-3298-500f-45c5-f5d123559e8e@bytedance.com>
-Date:   Tue, 15 Aug 2023 10:28:21 +0800
+        d=1e100.net; s=20221208; t=1692066734; x=1692671534;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UNemsS+xeBZrPRoyejjjBBpC6xRjaAOSiLlxHQBTkjs=;
+        b=UxZXRFUQlQtOPM/MosbYYUYTcMnfYowZ8NU3ZJvu5zQWZHift84J7YtOqItAUqVlVd
+         MoxFI/uLY6uYGaNUWHHBGOsPoDhZT75UAogyjprPYNO+pdXYd9o7vdbBGrlsbLlRd3Ba
+         QtLFGxTSUAVDhdbH+qnXTXp/56B/A6RQ5UTMzrFJ/w18l+1r2P5KADINmnRh5F0FhtXR
+         UhjW/LVYRjXrZ35muh1ihjZTWl6p2HLJ3s/w2Abe7spUCCM7vx+2vUzwKYDt8Jypsjnc
+         6pkh1IHv0YxsS3u6YB2ehB31Cn0eEkeH3VU0aZ2pECQlEHpwoiGAGBYahnci03mTX7F7
+         B8kA==
+X-Gm-Message-State: AOJu0YzdS6oUd8A9QAPFduidhs8zdSsQqNyrcdzagszgT1bvbik8TzLw
+        5EhFb/nMvzK7mx4Ybduh+iOEHPSrRfThaJ+LCJxE17McYOOKg+P/0+DHSxW6DcSntVICcv7uxtn
+        p/ny0mzU9Ukbo3bzNlGr/7dvS7XCHdUsRsLfwLj70
+X-Received: by 2002:a2e:3206:0:b0:2b7:3656:c594 with SMTP id y6-20020a2e3206000000b002b73656c594mr8648544ljy.3.1692066734381;
+        Mon, 14 Aug 2023 19:32:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGbJmvQQV3BTnu4wfl0ducCx2L3QaITyRrAxjqVHnhDP/J1HYi/le3Ws0YJdz9jLCvMX+/IOIXZAR7suJHeaZ8=
+X-Received: by 2002:a2e:3206:0:b0:2b7:3656:c594 with SMTP id
+ y6-20020a2e3206000000b002b73656c594mr8648534ljy.3.1692066734088; Mon, 14 Aug
+ 2023 19:32:14 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [RFC PATCH v2 2/5] mm: Add policy_name to identify OOM policies
-To:     Jonathan Corbet <corbet@lwn.net>, hannes@cmpxchg.org,
-        mhocko@kernel.org, roman.gushchin@linux.dev, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, muchun.song@linux.dev
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wuyun.abel@bytedance.com, robin.lu@bytedance.com
-References: <20230810081319.65668-1-zhouchuyi@bytedance.com>
- <20230810081319.65668-3-zhouchuyi@bytedance.com>
- <87h6p1uz3w.fsf@meer.lwn.net>
-From:   Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <87h6p1uz3w.fsf@meer.lwn.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <CACGkMEseKv8MzaF8uxVTjkaAm2xvei578g=rNVzogfPQRQPOhQ@mail.gmail.com>
+ <1692063807-5018-1-git-send-email-si-wei.liu@oracle.com> <1692063807-5018-4-git-send-email-si-wei.liu@oracle.com>
+In-Reply-To: <1692063807-5018-4-git-send-email-si-wei.liu@oracle.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Tue, 15 Aug 2023 10:32:03 +0800
+Message-ID: <CACGkMEvrg0qA6=E-5WJL79XAdO3SpSr=rumsyYMW4a-7tZkD8Q@mail.gmail.com>
+Subject: Re: [PATCH RFC 3/4] vhost-vdpa: should restore 1:1 dma mapping before
+ detaching driver
+To:     Si-Wei Liu <si-wei.liu@oracle.com>
+Cc:     eperezma@redhat.com, gal@nvidia.com, linux-kernel@vger.kernel.org,
+        mst@redhat.com, virtualization@lists.linux-foundation.org,
+        xuanzhuo@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Aug 15, 2023 at 9:45=E2=80=AFAM Si-Wei Liu <si-wei.liu@oracle.com> =
+wrote:
+>
+> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+> ---
+>  drivers/vhost/vdpa.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+>
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index b43e868..62b0a01 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -131,6 +131,15 @@ static struct vhost_vdpa_as *vhost_vdpa_find_alloc_a=
+s(struct vhost_vdpa *v,
+>         return vhost_vdpa_alloc_as(v, asid);
+>  }
+>
+> +static void vhost_vdpa_reset_map(struct vhost_vdpa *v, u32 asid)
+> +{
+> +       struct vdpa_device *vdpa =3D v->vdpa;
+> +       const struct vdpa_config_ops *ops =3D vdpa->config;
+> +
+> +       if (ops->reset_map)
+> +               ops->reset_map(vdpa, asid);
+> +}
+> +
+>  static int vhost_vdpa_remove_as(struct vhost_vdpa *v, u32 asid)
+>  {
+>         struct vhost_vdpa_as *as =3D asid_to_as(v, asid);
+> @@ -140,6 +149,14 @@ static int vhost_vdpa_remove_as(struct vhost_vdpa *v=
+, u32 asid)
+>
+>         hlist_del(&as->hash_link);
+>         vhost_vdpa_iotlb_unmap(v, &as->iotlb, 0ULL, 0ULL - 1, asid);
+> +       /*
+> +        * Devices with on-chip IOMMU need to restore iotlb
+> +        * to 1:1 identity mapping before vhost-vdpa is going
+> +        * to be removed and detached from the device. Give
+> +        * them a chance to do so, as this cannot be done
+> +        * efficiently via the whole-range unmap call above.
+> +        */
 
-在 2023/8/15 04:51, Jonathan Corbet 写道:
-> Chuyi Zhou <zhouchuyi@bytedance.com> writes:
-> 
->> This patch adds a new metadata policy_name in oom_control and report it
->> in dump_header(), so we can know what has been the selection policy. In
->> BPF program, we can call kfunc set_oom_policy_name to set the current
->> user-defined policy name. The in-kernel policy_name is "default".
->>
->> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
->> ---
->>   include/linux/oom.h |  7 +++++++
->>   mm/oom_kill.c       | 42 +++++++++++++++++++++++++++++++++++++++---
->>   2 files changed, 46 insertions(+), 3 deletions(-)
-> 
-> So I have a possibly dumb question here...
-> 
->> diff --git a/include/linux/oom.h b/include/linux/oom.h
->> index 7d0c9c48a0c5..69d0f2ec6ea6 100644
->> --- a/include/linux/oom.h
->> +++ b/include/linux/oom.h
->> @@ -22,6 +22,10 @@ enum oom_constraint {
->>   	CONSTRAINT_MEMCG,
->>   };
->>   
->> +enum {
->> +	POLICY_NAME_LEN = 16,
->> +};
-> 
-> We've defined our name length, fine...
-> 
->>   /*
->>    * Details of the page allocation that triggered the oom killer that are used to
->>    * determine what should be killed.
->> @@ -52,6 +56,9 @@ struct oom_control {
->>   
->>   	/* Used to print the constraint info. */
->>   	enum oom_constraint constraint;
->> +
->> +	/* Used to report the policy info. */
->> +	char policy_name[POLICY_NAME_LEN];
->>   };
-> 
-> ...that is the length of the array, appended to the structure...
-> 
->>   extern struct mutex oom_lock;
->> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
->> index 255c9ef1d808..3239dcdba4d7 100644
->> --- a/mm/oom_kill.c
->> +++ b/mm/oom_kill.c
->> @@ -443,6 +443,35 @@ static int dump_task(struct task_struct *p, void *arg)
->>   	return 0;
->>   }
->>   
->> +__bpf_kfunc void set_oom_policy_name(struct oom_control *oc, const char *src, size_t sz)
->> +{
->> +	memset(oc->policy_name, 0, sizeof(oc->policy_name));
->> +
->> +	if (sz > POLICY_NAME_LEN)
->> +		sz = POLICY_NAME_LEN;
->> +
->> +	memcpy(oc->policy_name, src, sz);
->> +}
-> 
-> This truncates the name, possibly leaving it without a terminating NUL
-> character, right?
-> 
+Same question as before, if 1:1 is restored and the userspace doesn't
+do any IOTLB updating. It looks like a security issue? (Assuming IOVA
+is PA)
 
-Yes, indeed. We should guarantee that the policy_name is terminated with 
-a NULL character to avoid some undefined behavior.
+Thanks
 
-Thanks for your helpful review.
-
-------
-Chuyi Zhou
+> +       vhost_vdpa_reset_map(v, asid);
+>         kfree(as);
+>
+>         return 0;
+> --
+> 1.8.3.1
+>
 
