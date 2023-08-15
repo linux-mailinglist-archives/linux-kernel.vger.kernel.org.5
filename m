@@ -2,84 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D27977CD0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D26077CD28
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 15:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237316AbjHOM7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 08:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60864 "EHLO
+        id S237375AbjHONIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 09:08:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233524AbjHOM6n (ORCPT
+        with ESMTP id S233968AbjHONHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 08:58:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FE110C1;
-        Tue, 15 Aug 2023 05:58:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692104323; x=1723640323;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SHuscfJc7Spgn6W5I+BAK6KTFEfBUxvaCwNrLrNk6o8=;
-  b=Ak4hpMjVY0xAKzPhk98Wr3wpFjLS+4aiIFB4cdzkGpAxeKSEcDs/+/5u
-   PIRhfZlFhb2Y0MkpcuaaDv1OFSk9P+tjbSluR7S2TOthy5kH8dv8ZqCGL
-   ovJcKv2DhCxi5OALxI3FX2dbXBC02gUfehimsyhLAlNSwxJFmwel89Y8v
-   GHPNxe9X6dajEpdi3KIXSEqNsFDSBkwN4BK+nNrn7Zj14HYFjBwBhu+8i
-   Wa4BGfGVT52XK0+ry5QWjEE12vtL2d+G9yEf65lbXpih/h3LaAFSZoBeb
-   rhwOEBaGYWryUxeg72H+3zXkuuU5ucfNvDL2P4qfyd7YYheVG1VIJttie
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="357236335"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="357236335"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 05:58:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="1064445714"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="1064445714"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP; 15 Aug 2023 05:58:40 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qVtd8-0028BZ-23;
-        Tue, 15 Aug 2023 15:58:38 +0300
-Date:   Tue, 15 Aug 2023 15:58:38 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Raag Jadav <raag.jadav@intel.com>, linus.walleij@linaro.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mallikarjunappa.sangannavar@intel.com, pandith.n@intel.com
-Subject: Re: [PATCH v1] pinctrl: baytrail: consolidate common mask operation
-Message-ID: <ZNt2fuqZxOYTIbGH@smile.fi.intel.com>
-References: <20230808084901.18927-1-raag.jadav@intel.com>
- <20230808134142.GQ14638@black.fi.intel.com>
+        Tue, 15 Aug 2023 09:07:52 -0400
+Received: from forward201c.mail.yandex.net (forward201c.mail.yandex.net [IPv6:2a02:6b8:c03:500:1:45:d181:d201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AC7B0;
+        Tue, 15 Aug 2023 06:07:50 -0700 (PDT)
+Received: from forward103b.mail.yandex.net (forward103b.mail.yandex.net [IPv6:2a02:6b8:c02:900:1:45:d181:d103])
+        by forward201c.mail.yandex.net (Yandex) with ESMTP id 2358A4A49F;
+        Tue, 15 Aug 2023 15:59:43 +0300 (MSK)
+Received: from mail-nwsmtp-smtp-production-main-91.iva.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-91.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:17a3:0:640:53a6:0])
+        by forward103b.mail.yandex.net (Yandex) with ESMTP id 643BA60031;
+        Tue, 15 Aug 2023 15:59:10 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-91.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 3xeYJg5Wma60-VVag7b6Y;
+        Tue, 15 Aug 2023 15:59:09 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=6tel.net; s=mail; t=1692104349;
+        bh=W0sB+Yne05rsYeHXPgw3LIcd/XRPY0E85Vo6QNC1YDQ=;
+        h=Message-ID:Date:Cc:Subject:To:From;
+        b=LVy7viZueqdVlCckBmTTdfAMirSbVmesDdfXgWPE6RjzJg1dGN5pPXiUfYddfRvyW
+         1+Q/F39qaCANTXtp1xiW0Uga/P+1Zg0BSRQL2y7fwT8i2I8EDHguB5KIsWvU7EWK1K
+         0/tsEPqfOg0q1FqbhuTYCHBI1aw5o/LrCguqBb6c=
+Authentication-Results: mail-nwsmtp-smtp-production-main-91.iva.yp-c.yandex.net; dkim=pass header.i=@6tel.net
+From:   Muhammed Efe Cetin <efectn@6tel.net>
+To:     linux-rockchip@lists.infradead.org
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        heiko@sntech.de, sebastian.reichel@collabora.com,
+        Muhammed Efe Cetin <efectn@6tel.net>
+Subject: [PATCH 0/3] Add Support for Orange Pi 5
+Date:   Tue, 15 Aug 2023 15:58:58 +0300
+Message-ID: <cover.1692102057.git.efectn@6tel.net>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230808134142.GQ14638@black.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,T_SPF_PERMERROR,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 04:41:42PM +0300, Mika Westerberg wrote:
-> On Tue, Aug 08, 2023 at 02:19:01PM +0530, Raag Jadav wrote:
-> > Consolidate common mask operation outside of switch cases and
-> > limit IO operations to positive cases.
-> > 
-> > Signed-off-by: Raag Jadav <raag.jadav@intel.com>
-> 
-> Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Hi,
 
-Pushed to my review and testing queue, thanks!
+These series add initial support for Orange Pi 5 and SFC node for RK3588S.
+
+Muhammed Efe Cetin (3):
+  dt-bindings: arm: rockchip: Add Orange Pi 5 board
+  arm64: dts: rockchip: Add sfc node to rk3588s
+  arm64: dts: rockchip: Add Orange Pi 5
+
+ .../devicetree/bindings/arm/rockchip.yaml     |   5 +
+ .../boot/dts/rockchip/rk3588s-orangepi-5.dts  | 873 ++++++++++++++++++
+ arch/arm64/boot/dts/rockchip/rk3588s.dtsi     |  13 +
+ 3 files changed, 891 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.41.0
 
