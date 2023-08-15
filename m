@@ -2,127 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5BC77CD0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A312077CD10
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237312AbjHOM5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 08:57:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42246 "EHLO
+        id S237322AbjHOM7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 08:59:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237185AbjHOM5S (ORCPT
+        with ESMTP id S237311AbjHOM6r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 08:57:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5755FE63;
-        Tue, 15 Aug 2023 05:57:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692104237; x=1723640237;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=8zXOqYd4DMvfC6c54rZPbDXh6kGCoq7MWUmTzQG7Jmc=;
-  b=fdi7ohbHkoB8DPJL3e4NS4RZsd7vTq9KzBE1cCTRryOe+uJ6K960jbdY
-   HfyUHo8S9Z84iseWJkixP/x126duXSCY4LB7g/Futobcv2f08Pp1his0D
-   vfVp1RrXkpt+aV5ScVVVo7sV0W7BwaOe+7vspBzqgfzQfCTiAf3790I7N
-   vkwLvfUgnp86c/7zT7Aqgld2W1IfQvG0mi8sQSQ8+B6QK2dF8QENIoswo
-   76HPkJrhT2o5jNwe9KuZaVcl3CJ3bMiBVLLIyNhB126BguQ7Hs0gSuBjB
-   PS2/ew1Pm0n3Gmf4IV5JDmApMIM8bDqVqvdDrYajK0FjQ46NEZVH22Kfh
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="375039202"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="375039202"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 05:57:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="848060285"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="848060285"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP; 15 Aug 2023 05:57:15 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qVtbl-00256d-1c;
-        Tue, 15 Aug 2023 15:57:13 +0300
-Date:   Tue, 15 Aug 2023 15:57:13 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v3] gpiolib: fix reference leaks when removing GPIO chips
- still in use
-Message-ID: <ZNt2KQMtpMdK9TyY@smile.fi.intel.com>
-References: <20230811193034.59124-1-brgl@bgdev.pl>
- <ZNtKQlnQxFediB0J@smile.fi.intel.com>
- <CACRpkdZ32gW3YgQKPbWTnoRwxjXkViendGMhrAxfyp+W4NbqkA@mail.gmail.com>
+        Tue, 15 Aug 2023 08:58:47 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC669C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:58:46 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d6d52f4f977so1490601276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:58:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692104325; x=1692709125;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jJSfsYnM138pKu53K9h3vIlSr2ZBnDVD+P1hLZ7pV7Y=;
+        b=ib0C7xGJh9v/1KNd+sc0caERL7aaD0QAa7OHGef9x0JrRkY/nyKAEwMNvdN1TqYg5j
+         UI60ecWBtrbpvyQF/dMQVH+fdpy36CRkXdPRWbtyyuDgcmFzTtOHfEEM+dQhkww6GsVv
+         nEKlxXFu3Cvk0s99Lai8x/2lSRfjLnsfKs9+mMLZ+IzoGh7YCoIV8S5C/vof6GVYbwPQ
+         IK9WcE+I6yQ4WO+lW+ZgU01NxT/r29lBDoVpNcoEPvcvd+e2ADcmPQrrCuJZtiTpx3QJ
+         UDjmE/gYFsMxb2hLEDo3EOToVH6jMo5U1R15qYnAkIAjqNhXFwO6CEz53B0aTpbq+qsI
+         T1zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692104325; x=1692709125;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jJSfsYnM138pKu53K9h3vIlSr2ZBnDVD+P1hLZ7pV7Y=;
+        b=M+bR1W8zBTKLktnV5AJNOzplZT8uqpFu3cC3CJ6Bcyc/0SInV+S7nV9Nu9Wv/W+T7N
+         ma4q1383JhxmaK/vcavxU7Z/k3Kbx8/5IS+avIP7/SRWWSBUccH4OK9Q5cJAAuHsK+g2
+         q/Kfq9XJtIHvCy2BHCI9+TIMBMYJYsP1H04GGhTAwCWy0gFbOzKXpko4fiGkjVGxqi6G
+         +mMy8yiepwOOrT7UQdRRLjrTs97TB8aeU50ggpkk0leVhWYTFTWDD9Nz+tpPe83Y7nuV
+         GnD4XgULdOP6KI7Uan0IwTnsVahPjI6iWh8qObouwA+vgZgMvFBryZWNPXs/8TSmQ0Lp
+         2OxQ==
+X-Gm-Message-State: AOJu0Yzl1kfsUgrz/augWysUJBA1X0kiOGxU2dj5yE/y/8BaVJiVrA1e
+        WKjBRfXotAdMjSZmiA+xFTZe3ZpRCmKR/5dMX0JtRw==
+X-Google-Smtp-Source: AGHT+IE78hQXbbJl4eyc+svkBIt+hrE1wZN8h+2gI+VT4VqX/jyOv9Ezkr3iKgLg5H+I7L0hjbwU177OuDvE9Pwa5tM=
+X-Received: by 2002:a25:d405:0:b0:d35:f59a:6e46 with SMTP id
+ m5-20020a25d405000000b00d35f59a6e46mr14376363ybf.49.1692104325619; Tue, 15
+ Aug 2023 05:58:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdZ32gW3YgQKPbWTnoRwxjXkViendGMhrAxfyp+W4NbqkA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230813182552.31792-1-fmdefrancesco@gmail.com>
+ <CACRpkdbq8UCtvtRH7FZUEqvTxPQcoGbrKvf_mT5QHMAfVoYNNQ@mail.gmail.com> <3179607.5fSG56mABF@suse>
+In-Reply-To: <3179607.5fSG56mABF@suse>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 15 Aug 2023 14:58:33 +0200
+Message-ID: <CACRpkdbZkp5Tx3SXkdmErcbJ1aMB5t5s=MUO1cDnMs=sGu92nQ@mail.gmail.com>
+Subject: Re: [PATCH v2] Documentation/page_tables: Add info about MMU/TLB and
+ Page Faults
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mike Rapoport <rppt@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 01:40:22PM +0200, Linus Walleij wrote:
-> On Tue, Aug 15, 2023 at 11:50 AM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Fri, Aug 11, 2023 at 09:30:34PM +0200, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > >
-> > > After we remove a GPIO chip that still has some requested descriptors,
-> > > gpiod_free_commit() will fail and we will never put the references to the
-> > > GPIO device and the owning module in gpiod_free().
-> > >
-> > > Rework this function to:
-> > > - not warn on desc == NULL as this is a use-case on which most free
-> > >   functions silently return
-> > > - put the references to desc->gdev and desc->gdev->owner unconditionally
-> > >   so that the release callback actually gets called when the remaining
-> > >   references are dropped by external GPIO users
+Hi Fabio!
 
-...
+trying to answer these things as best I can!
 
-> > > -     if (desc && desc->gdev && gpiod_free_commit(desc)) {
+Notice I'm not natively anglo-saxon either.
+
+It's refreshing to have a discussion about formulations in text
+in addition to our everyday technical churn!
+
+On Tue, Aug 15, 2023 at 2:27=E2=80=AFPM Fabio M. De Francesco
+<fmdefrancesco@gmail.com> wrote:
+> On marted=C3=AC 15 agosto 2023 10:51:24 CEST Linus Walleij wrote:
+> > > +Instead, there are also common and expected other causes of page fau=
+lts.
+> > > These
+> > The word you are looking for is "Additionally" right?
 > >
-> > The commit message doesn't explain disappearing of gdev check.
-> >
-> > > -             module_put(desc->gdev->owner);
-> > > -             gpio_device_put(desc->gdev);
-> > > -     } else {
-> > > +     /*
-> > > +      * We must not use VALIDATE_DESC_VOID() as the underlying gdev->chip
-> > > +      * may already be NULL but we still want to put the references.
-> > > +      */
-> > > +     if (!desc)
-> > > +             return;
-> > > +
-> > > +     if (!gpiod_free_commit(desc))
-> > >               WARN_ON(extra_checks);
-> > > -     }
-> > > +
-> > > +     module_put(desc->gdev->owner);
-> > > +     gpio_device_put(desc->gdev);
-> > >  }
-> >
-> > So, if gdev can be NULL, you will get an Oops with new code.
-> 
-> I read it such that gdev->chip can be NULL, but not gdev,
-> and desc->gdev->owner is fine to reference?
+> > "Additionally, there are..."
+>
+> I was only able to use "Instead" to express that, contrary to the former
+> conditions that is unexpected and uncommon, there are other expected and
+> common causes of page faults. I thought that "Instead" stresses that the
+> latter causes carry with them opposite and wanted consequences.
+>
+> I think of "additionally" as a means to introduce less important and less
+> frequently occurring conditions.
+>
+> Nevertheless, I'll change it to "Additionally" as you are asking for.
 
-Basically the Q is
-"if desc is non-NULL, does it guarantee that gdev is non-NULL either?"
+I think the following is the best:
 
--- 
-With Best Regards,
-Andy Shevchenko
+"There are also other, common and expected causes of page faults".
 
+No bridge words. I can't really explain it, it's just language intuition. :=
+/
 
+An option is to also move the section about the common case section
+before the exceptions, which may be more natural to the flow of the text.
+
+> > > +Swapping can't work for memory mapped by kernel logical addresses. T=
+hese
+> > > are a
+> > "kernel logical addresses" -> "kernel-internal logical addresses"
+>
+> My only question is about why you prefer "kernel-internal" to a straight
+> "kernel". Can you please say more about this?
+
+It's because the kernel handles many address spaces and is aware about
+also the userspace address space and the physical address space.
+So just so emphasize which one it is.
+
+Yours,
+Linus Walleij
