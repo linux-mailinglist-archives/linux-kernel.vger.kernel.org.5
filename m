@@ -2,99 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A610277C894
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 09:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A2177C899
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 09:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235172AbjHOHbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 03:31:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45374 "EHLO
+        id S235126AbjHOHdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 03:33:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235312AbjHOHau (ORCPT
+        with ESMTP id S234660AbjHOHdP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 03:30:50 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC5A19B5;
-        Tue, 15 Aug 2023 00:30:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1692084645;
-        bh=XiXX9eU/s/AkSjfJm9DwVrwntmLvwo4y7VDo0VRqfqw=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=cpr2h286rbQ9ZWA7sIJpieEEunosIMnHIlpuAHRa9sZE8MabuVXAmlJlUtBRr1yar
-         IOyhe1OBFhP8Pi60NS60najNtcw9Sgyfrt6gBpX/YisA9UK7cfOXuy0/pQX9w6s8As
-         r5sR07G+emd4A9HK+8h1Nh6FsveFmjVmpqxUP0orFHTqdRoLatEzucsXjPmv2Jw628
-         aM8/xb6e5beQ4RTtnkfEszZCHauoBHz5drU74sVo0G/im0RywT3ncWqdiN//qhTISa
-         jLIH5smjeKm2+e0N0MLLa7zAAnDnDEWhMGL74bOiDj1IT9D35NOz73L89+1wZ3gkZl
-         qfW7n4aWihFyw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RQ2xK3MyFz4wqX;
-        Tue, 15 Aug 2023 17:30:45 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH] powerpc: Make virt_to_pfn() a static inline
-In-Reply-To: <20230809-virt-to-phys-powerpc-v1-1-12e912a7d439@linaro.org>
-References: <20230809-virt-to-phys-powerpc-v1-1-12e912a7d439@linaro.org>
-Date:   Tue, 15 Aug 2023 17:30:45 +1000
-Message-ID: <87y1icdaoq.fsf@mail.lhotse>
+        Tue, 15 Aug 2023 03:33:15 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DEFC5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 00:33:14 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-986d8332f50so692353466b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 00:33:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692084792; x=1692689592;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mbR8jCSs/QiaV6+2VKNjUs44H5IHvuOfBsH4XIH3FZA=;
+        b=b4S6bUYtiLhsX0nhZOEZvszfR31uQkNh1w9uS0GuIZK1cTGPVMfuQebopR4toCuhOZ
+         yW4bZeOdaiR7WtW3wj3SBlpnDP4o+Biu6f6/5yKJxA/CdulN4o4wUeKAmw8CPHJQzSx8
+         365a9V7SWjF2zSXP1fQuOLa0uXWi1LFUd0OKj6kYMU1hjDEHTioVMdDRX1R3q/YF7+5p
+         zzS6stfKAebdNm+/WDc9r5xA4vBaWMaW7OwBbdZzHYuuic9SkGayKeIu0+rTAgmpvYLW
+         xZtfNo81EbuPSaeZdXJJh6StuSc9WcJcY2euGdN13lTavvhL+xEgStOBqtEIHij6T7G2
+         tLNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692084792; x=1692689592;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mbR8jCSs/QiaV6+2VKNjUs44H5IHvuOfBsH4XIH3FZA=;
+        b=BgPJMsa1ap8WZDmumDVOZgk9quoM/fsmiVmuE7Pa9p6rxO5fKA2KnszkZSD5mcDME/
+         Nhbh5ZPEaTocrZ8fSBOsXc2rOB/dVDACZUJeyQBo+aCss+W3QQEC6vCceN8lZPTl7Xzg
+         EjZljF/DluwmyVkyfRpGFZlYl78P6vdZksnZDjQ0rRLliah1tIymJJJIbKKgczF025qJ
+         pk18oGF0W3VoOU1gWBhapfaCo1zyzAcf9GGexi4kKBk2rDfVJVkiKhL5v46dF/jZTtmq
+         NuVEn5zeKkD6heP9yC0KIrqwUdautk4dzNc9sQZZkYT6qxU+prvdiXNeeO9kne+XpqsA
+         fCJg==
+X-Gm-Message-State: AOJu0YzJzcCzLGTFsYuNWmjCAwj6qIAVYBYQBxfncH6mcdlwG7waZUd4
+        romepjso0su96706ejfoJb1MGg==
+X-Google-Smtp-Source: AGHT+IGYr6mviWLuAJOcMVHhWs6mcErZpsU6d2ANXHcTLWDqnzCdX+z3y/tcTK3XnSwggzX8pkDwyQ==
+X-Received: by 2002:a17:906:314c:b0:99b:64d0:f6c8 with SMTP id e12-20020a170906314c00b0099b64d0f6c8mr8910909eje.50.1692084792293;
+        Tue, 15 Aug 2023 00:33:12 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id w20-20020a170906385400b0097404f4a124sm6651143ejc.2.2023.08.15.00.33.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Aug 2023 00:33:11 -0700 (PDT)
+Message-ID: <79985698-2107-0aee-1395-81e3d9b4d727@linaro.org>
+Date:   Tue, 15 Aug 2023 09:33:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v6 2/3] dt-bindings: input: qcom,pm8xxx-vib: add new SPMI
+ vibrator module
+Content-Language: en-US
+To:     Fenglin Wu <quic_fenglinw@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        agross@kernel.org, andersson@kernel.org,
+        dmitry.baryshkov@linaro.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     quic_collinsd@quicinc.com, quic_subbaram@quicinc.com,
+        quic_kamalw@quicinc.com, jestar@qti.qualcomm.com
+References: <20230815064917.387235-1-quic_fenglinw@quicinc.com>
+ <20230815064917.387235-3-quic_fenglinw@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230815064917.387235-3-quic_fenglinw@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Walleij <linus.walleij@linaro.org> writes:
+On 15/08/2023 08:49, Fenglin Wu wrote:
+> Add compatible strings to support vibrator module inside PMI632,
+> PMI7250B, PM7325B, PM7550BA.
+> 
+> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+> ---
 
-> Making virt_to_pfn() a static inline taking a strongly typed
-> (const void *) makes the contract of a passing a pointer of that
-> type to the function explicit and exposes any misuse of the
-> macro virt_to_pfn() acting polymorphic and accepting many types
-> such as (void *), (unitptr_t) or (unsigned long) as arguments
-> without warnings.
->
-> Move the virt_to_pfn() and related functions below the
-> declaration of __pa() so it compiles.
->
-> For symmetry do the same with pfn_to_kaddr().
->
-> As the file is included right into the linker file, we need
-> to surround the functions with ifndef __ASSEMBLY__ so we
-> don't cause compilation errors.
->
-> The conversion moreover exposes the fact that pmd_page_vaddr()
-> was returning an unsigned long rather than a const void * as
-> could be expected, so all the sites defining pmd_page_vaddr()
-> had to be augmented as well.
-...
-> diff --git a/arch/powerpc/include/asm/pgtable.h b/arch/powerpc/include/asm/pgtable.h
-> index 6a88bfdaa69b..a9515d3d7831 100644
-> --- a/arch/powerpc/include/asm/pgtable.h
-> +++ b/arch/powerpc/include/asm/pgtable.h
-> @@ -60,9 +60,9 @@ static inline pgprot_t pte_pgprot(pte_t pte)
->  }
->  
->  #ifndef pmd_page_vaddr
-> -static inline unsigned long pmd_page_vaddr(pmd_t pmd)
-> +static inline const void *pmd_page_vaddr(pmd_t pmd)
->  {
-> -	return ((unsigned long)__va(pmd_val(pmd) & ~PMD_MASKED_BITS));
-> +	return (const void *)((unsigned long)__va(pmd_val(pmd) & ~PMD_MASKED_BITS));
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-This can also just be:
+Best regards,
+Krzysztof
 
-	return __va(pmd_val(pmd) & ~PMD_MASKED_BITS);
-
-I've squashed that in.
-
-cheers
