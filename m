@@ -2,94 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3995877CFA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527F877CFAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238353AbjHOPxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 11:53:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40974 "EHLO
+        id S238358AbjHOPy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 11:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238394AbjHOPxR (ORCPT
+        with ESMTP id S238382AbjHOPya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 11:53:17 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C58B127;
-        Tue, 15 Aug 2023 08:53:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692114797; x=1723650797;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wUZlmqXgBnLgWlPor+fmQVUDvqytbySx2EHTKvYyLZc=;
-  b=Bm2RPnduiPW1HfUEfvZGcTpijzjl3LtSiU3sRh5cdUg32n6WVxqcqcv6
-   e4GzGe4kvmVhkpLAjPKYIYhNbGA36V8a3pxnzdV4Rq8Vu0LR0HdA4Xfpj
-   jDJlItLRsdS9I8PCUKghLWhwSioar2Fbrj+Ua8NZIosJBi/j4jbBmUBOA
-   LE2f5wX1pqpPfDGNVVb5u3891+jhRwC0f0tbfRhu61aaYUdHmmZAatRG9
-   8qT36to5DqSDn8Bfze4LSyW7qWi9ZvC05mgtIhhrpJjArnd/XX1DbRqAf
-   pi7Y7jVD7R6uZpkSEGATWpUqKUtXyKbTtC6/lVop61ncPH0gf4R7Vr7Dy
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="376042079"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="376042079"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 08:53:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="1064510242"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="1064510242"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP; 15 Aug 2023 08:53:13 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qVwM3-0089T0-38;
-        Tue, 15 Aug 2023 18:53:11 +0300
-Date:   Tue, 15 Aug 2023 18:53:11 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Wolfram Sang <wsa@kernel.org>, Andi Shyti <andi.shyti@kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Peter Rosin <peda@axentia.se>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 4/4] i2c: slave-eeprom: convert to using a pointer in
- i2c_device_id
-Message-ID: <ZNufZ+zttHIsdCaY@smile.fi.intel.com>
-References: <20230814-i2c-id-rework-v1-0-3e5bc71c49ee@gmail.com>
- <20230814-i2c-id-rework-v1-4-3e5bc71c49ee@gmail.com>
+        Tue, 15 Aug 2023 11:54:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B232A6;
+        Tue, 15 Aug 2023 08:54:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0FBFD65D14;
+        Tue, 15 Aug 2023 15:54:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73D7BC433CA;
+        Tue, 15 Aug 2023 15:54:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692114865;
+        bh=f3AES7Qvap7AQxgmzAF0sTBsS1ui0bwzqitDzBDmy4U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qXSsNVIBvksPVNGRJgrZ/6plAWktlqu3663Hn9tEJkd62aFh4oZbnXdoNrjOuSg+l
+         o0Foqb0DoK0nYxMfQGJUfxAB+v4ATo5s6EL+47eM+yt0xSMRwTjbDeLzdHsEXkABmS
+         9XyS1A+xHgtdipGX0B+wnVJyFNdbuIT/vKxeOYs5ZztcVIlY+YiwPIJSq5kb6M58Al
+         GAmalJBbdWTfAFpGi4MwIZ2BnRO8vHmgEPCUN+hscEUHRAfe04RuwioP8rchX5MSTd
+         FU2UddCiPrdWt6qLMfae0hy37qh77IM7WMz9P9t9L2KEUloRgwc//Bh7zQqLX6w7h9
+         Aa6I7FrjIvAEw==
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2b9cd6a554cso82313921fa.3;
+        Tue, 15 Aug 2023 08:54:25 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yyg9lLb7cxaBbc8ak+2cstoUKw/A6mod46Q8k/2r1+Yjnjx7X2d
+        ZE+D3dFeeikgDBL9WjaHlgG/+UaeSXrwfNhyG0c=
+X-Google-Smtp-Source: AGHT+IHEoPC/PD8Hgr/AlB1Qcq1QWWjoXM51m7xNPZOU/zNuBv4WmDP0RNhcp6D+73fu8XvZ5yjv51VayK4g2Je7Q1Y=
+X-Received: by 2002:a2e:87ce:0:b0:2b6:df23:2117 with SMTP id
+ v14-20020a2e87ce000000b002b6df232117mr10276086ljj.43.1692114863484; Tue, 15
+ Aug 2023 08:54:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230814-i2c-id-rework-v1-4-3e5bc71c49ee@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230815030957.509535-1-yukuai1@huaweicloud.com>
+ <20230815030957.509535-4-yukuai1@huaweicloud.com> <bb11d6ca-978a-8e1d-e721-d9d84c9dc5e3@huaweicloud.com>
+In-Reply-To: <bb11d6ca-978a-8e1d-e721-d9d84c9dc5e3@huaweicloud.com>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 15 Aug 2023 23:54:10 +0800
+X-Gmail-Original-Message-ID: <CAPhsuW65Hxq=+D6M6zV8n+k4FarTHui=pSs2YPNKs9MYBD4MHA@mail.gmail.com>
+Message-ID: <CAPhsuW65Hxq=+D6M6zV8n+k4FarTHui=pSs2YPNKs9MYBD4MHA@mail.gmail.com>
+Subject: Re: [PATCH -next v2 3/7] md: delay choosing sync direction to md_start_sync()
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     xni@redhat.com, linux-raid@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 02:52:52PM -0700, Dmitry Torokhov wrote:
-> Switch the driver to use newly added "data" pointer in i2c_device_id and
-> introduce struct eeprom_chip to describe chip's characteristics instead
-> of cramming it all into an unisigned long and then decipher.
+On Tue, Aug 15, 2023 at 2:00=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
+[...]
+> > +
+> > +not_running:
+> > +     clear_bit(MD_RECOVERY_SYNC, &mddev->recovery);
+> > +     clear_bit(MD_RECOVERY_RESHAPE, &mddev->recovery);
+> > +     clear_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
+> > +     clear_bit(MD_RECOVERY_CHECK, &mddev->recovery);
+> > +     clear_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
+> > +     mddev_unlock(mddev);
+> > +
+> > +     wake_up(&resync_wait);
+> > +     if (test_and_clear_bit(MD_RECOVERY_RECOVER, &mddev->recovery) &&
+> > +         mddev->sysfs_action)
+> > +             sysfs_notify_dirent_safe(mddev->sysfs_action);
+> >   }
+> >
+> >   /*
+> > @@ -9379,7 +9402,6 @@ void md_check_recovery(struct mddev *mddev)
+> >               return;
+> >
+> >       if (mddev_trylock(mddev)) {
+> > -             int spares =3D 0;
+> >               bool try_set_sync =3D mddev->safemode !=3D 0;
+> >
+> >               if (!mddev->external && mddev->safemode =3D=3D 1)
+> > @@ -9467,29 +9489,11 @@ void md_check_recovery(struct mddev *mddev)
+> >               clear_bit(MD_RECOVERY_DONE, &mddev->recovery);
+> >
+> >               if (!test_and_clear_bit(MD_RECOVERY_NEEDED, &mddev->recov=
+ery) ||
+> > -                 test_bit(MD_RECOVERY_FROZEN, &mddev->recovery))
+> > -                     goto not_running;
+> > -             if (!md_choose_sync_direction(mddev, &spares))
+> > -                     goto not_running;
+> > -             if (mddev->pers->sync_request) {
+> > -                     if (spares) {
+> > -                             /* We are adding a device or devices to a=
+n array
+> > -                              * which has the bitmap stored on all dev=
+ices.
+> > -                              * So make sure all bitmap pages get writ=
+ten
+> > -                              */
+> > -                             md_bitmap_write_all(mddev->bitmap);
+> > -                     }
+> > +                 test_bit(MD_RECOVERY_FROZEN, &mddev->recovery)) {
+>
+> Sorry that I made a mistake here while rebasing v2, here should be
+>
+> !test_bit(MD_RECOVERY_FROZEN, &mddev->recovery)
+>
+> With this fixed, there are no new regression for mdadm tests using loop
+> devicein my VM.
 
-...
+                if (!test_and_clear_bit(MD_RECOVERY_NEEDED, &mddev->recover=
+y) ||
+                    !test_bit(MD_RECOVERY_FROZEN, &mddev->recovery)) {
+                        queue_work(md_misc_wq, &mddev->sync_work);
+                } else {
 
-> -	const struct i2c_device_id *id = i2c_client_get_device_id(client);
-> +	const struct i2c_device_id *id;
+This doesn't look right. Should we do
 
-> +	id = i2c_client_get_device_id(client);
-> +	if (!id)
-> +		return -EINVAL;
+                if (test_and_clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery=
+) &&
+                    !test_bit(MD_RECOVERY_FROZEN, &mddev->recovery)) {
+                        queue_work(md_misc_wq, &mddev->sync_work);
+                } else {
 
-Unneeded piece of change.
+instead?
 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+Song
