@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 399CB77CDB9
+	by mail.lfdr.de (Postfix) with ESMTP id CC8D977CDBB
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237485AbjHOOBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 10:01:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51896 "EHLO
+        id S237500AbjHOOBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 10:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237456AbjHOOAl (ORCPT
+        with ESMTP id S237457AbjHOOAm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 10:00:41 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B32D1;
-        Tue, 15 Aug 2023 07:00:40 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe28f92d8eso8555783e87.1;
-        Tue, 15 Aug 2023 07:00:40 -0700 (PDT)
+        Tue, 15 Aug 2023 10:00:42 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4DC0D1;
+        Tue, 15 Aug 2023 07:00:41 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fe11652b64so8462772e87.0;
+        Tue, 15 Aug 2023 07:00:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692108039; x=1692712839;
+        d=gmail.com; s=20221208; t=1692108040; x=1692712840;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ltyQwF2LAMGJH0evTykrvVjQou+GUeNnjt/wVeM5SF0=;
-        b=ZHukLVy0358l0WMPNL3pncLnc/8q25csLKF6Cjv9hPbTOZfCSvsjChHoX7POz7RIkI
-         RN/KEjFoWrVw2yRIDYgqFXODJVbLm94e5WGyZ0NxWunzj+ifssTK3/e9YejYzfC29GP5
-         Ab4MJ06QLfi52RO1zDUGC0E/9xK3NLoJ19FtYuG74VZ6GnbapI6n+bERusHpWd/DrSjG
-         k1A3lRAMth5I2tmNQuxWe7D6llF2lNk/B7ZIkWo4Y7m5hcC54d0AN8ZWPCzREHibwxCG
-         0ydGV2vbDPJRjEp3tvL/FemQfKBmiw8wgLyK46z2XUazA4UPX6emR/EJchiywiL7flFI
-         j6OQ==
+        bh=2qzbPPmHH2Cs84MMNUNLEy/8AFYHbEVzbBv7dcVzhPE=;
+        b=O2HcgsWmVGf3noRrJ9w/dYS9V9qM1/QoW+WU7MUAeJ7W22RhWFLbwBf6WSf+ZVoyDC
+         2snnbesW1aam6kkwc7Vwv27Icb/KrQgKR0jz6BZjtpslNAFrXiYU1uXSs+QZJfzmifB4
+         aFC87yM1znezWHUI/2M4x4wq9o8iQqtUtJJmVTZYfWm9PdveS+LyCuItuWI9o5cYf3yH
+         I7PO28oxEI5wATU0Dga6nSYmCxQV0XFTdlorwfuyI78x/NUc15ma8SpFOhntPTS6VcHw
+         30IGLK/enBALtX6qT8Yez3sELl3fd1BnRiaP4F9V9DVsFFs9ePZOevnnr61ANlBe1aWZ
+         zlTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692108039; x=1692712839;
+        d=1e100.net; s=20221208; t=1692108040; x=1692712840;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ltyQwF2LAMGJH0evTykrvVjQou+GUeNnjt/wVeM5SF0=;
-        b=D8upkTb3WwuWp6K3P0MDTVCzKHlT/sB+u8KOF2JuIIWqJSRJHAtKJAs3vaFlu4dLzD
-         olWSxQKG3aBsYa9UunQW2EvhtainPS+KYNH3mg62dvnncjayOMZ9cQDDQwwHNTMUDw06
-         /1Jn+gffRQrFe99LURRSrTzR82GSDK596m5PJFMeyKzgPFsJ5nFpqKTpMtREOnmIclKj
-         ClevOj4X6A7QR2bBZeVSNUHL9NHlN5hBnbGa7fQuDZP1+4O1D2ks4j7mr7iGukswlVkQ
-         SHv13GVKQ9Ev5or1QYAR3ebSnlpbvAb0DNIAseENIohJTbnwR2C14zH6ryoJE8ScyxgU
-         xuzg==
-X-Gm-Message-State: AOJu0YzfckYZ8XvgipNni6EH98DwNQPJccvSBFaaobi2/B0CuIa4o5SC
-        VQj/tg+8dfa0fcxcu9JHBJY=
-X-Google-Smtp-Source: AGHT+IEfr77smkL+24HO9hz+7rz2f9ubnVRvLkFPiEEn2cUK6jQbiqLOYgbvez2LJm6rf+D4Ivg20g==
-X-Received: by 2002:a05:6512:2147:b0:4f8:5e8b:5ec8 with SMTP id s7-20020a056512214700b004f85e8b5ec8mr7416051lfr.9.1692108038419;
-        Tue, 15 Aug 2023 07:00:38 -0700 (PDT)
+        bh=2qzbPPmHH2Cs84MMNUNLEy/8AFYHbEVzbBv7dcVzhPE=;
+        b=X84nZPHyuzmr+9d9r5xXmvXAo7Quz8QQmS+Q3F3RCX0hZZG3J9ckv5mfVp+Dv3QcCr
+         d5Nyl8jnO2fHAfO3r2uL8SD3EUL8WWTofBFl3w7euVa+WXjZlsIX8L1ylO27NgqkZ3jM
+         XqCO2gE2142hSRm8Aqpj1l4c4pQO6DbWTLE+eL+bqgoQMTjDyhhSme8SelTB6TOJgmk5
+         Yfx0PLe9A0krSe/ebn2qNdS+y3h9lM0hnwTUustaEko4RM/dw+I1UQZ5QHaawfG0kuZ9
+         jVT3zMIJ+bcQTdvPbi4tL5Z6h66IJL/HN+xu5WqBSr5uRYoUXpN2OnXSwMJeh50SaxwT
+         +lPw==
+X-Gm-Message-State: AOJu0YyiZugDN3ERqUk4kAIdQUYNI+hCnp9zKcmLBojUptAxO590iFox
+        IJBOivZ5mnmdaRRYmWNtses=
+X-Google-Smtp-Source: AGHT+IH09mRKKgi7n4qLOrwYSpjBkp5Qo0J6B2qC/jr9UQv6lMBVjwpMiLlv5m02pKEJwLW/kFjjcg==
+X-Received: by 2002:a05:6512:3589:b0:4fe:3724:fdae with SMTP id m9-20020a056512358900b004fe3724fdaemr7883880lfr.66.1692108039828;
+        Tue, 15 Aug 2023 07:00:39 -0700 (PDT)
 Received: from fedora.. (dh207-96-14.xnet.hr. [88.207.96.14])
-        by smtp.googlemail.com with ESMTPSA id a26-20020aa7d91a000000b00525740aa68dsm1049042edr.36.2023.08.15.07.00.37
+        by smtp.googlemail.com with ESMTPSA id a26-20020aa7d91a000000b00525740aa68dsm1049042edr.36.2023.08.15.07.00.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 07:00:37 -0700 (PDT)
+        Tue, 15 Aug 2023 07:00:39 -0700 (PDT)
 From:   Robert Marko <robimarko@gmail.com>
 To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
         robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
@@ -57,9 +57,9 @@ To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     computersforpeace@gmail.com, Robert Marko <robimarko@gmail.com>
-Subject: [PATCH v2 4/5] dt-bindings: firmware: qcom,scm: document IPQ5018 compatible
-Date:   Tue, 15 Aug 2023 15:59:37 +0200
-Message-ID: <20230815140030.1068590-4-robimarko@gmail.com>
+Subject: [PATCH v2 5/5] arm64: dts: qcom: ipq5018: indicate that SDI should be disabled
+Date:   Tue, 15 Aug 2023 15:59:38 +0200
+Message-ID: <20230815140030.1068590-5-robimarko@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230815140030.1068590-1-robimarko@gmail.com>
 References: <20230815140030.1068590-1-robimarko@gmail.com>
@@ -75,25 +75,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems that IPQ5018 compatible was never documented in the bindings.
+Now that SCM has support for disabling SDI if indicated by DT, lets set
+it for IPQ5018 as it has SDI enabled by default and it must be disabled.
 
 Signed-off-by: Robert Marko <robimarko@gmail.com>
 ---
- Documentation/devicetree/bindings/firmware/qcom,scm.yaml | 1 +
+ arch/arm64/boot/dts/qcom/ipq5018.dtsi | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/firmware/qcom,scm.yaml b/Documentation/devicetree/bindings/firmware/qcom,scm.yaml
-index bf753192498a..212ad5f32408 100644
---- a/Documentation/devicetree/bindings/firmware/qcom,scm.yaml
-+++ b/Documentation/devicetree/bindings/firmware/qcom,scm.yaml
-@@ -24,6 +24,7 @@ properties:
-           - qcom,scm-apq8064
-           - qcom,scm-apq8084
-           - qcom,scm-ipq4019
-+          - qcom,scm-ipq5018
-           - qcom,scm-ipq5332
-           - qcom,scm-ipq6018
-           - qcom,scm-ipq806x
+diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+index 9f13d2dcdfd5..3285c86824cf 100644
+--- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+@@ -57,6 +57,7 @@ L2_0: l2-cache {
+ 	firmware {
+ 		scm {
+ 			compatible = "qcom,scm-ipq5018", "qcom,scm";
++			qcom,sdi-disable;
+ 		};
+ 	};
+ 
 -- 
 2.41.0
 
