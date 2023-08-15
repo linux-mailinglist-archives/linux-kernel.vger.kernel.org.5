@@ -2,81 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0A877D094
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4847277D09A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238622AbjHORGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 13:06:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
+        id S238633AbjHORHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 13:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238660AbjHORGf (ORCPT
+        with ESMTP id S238627AbjHORGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 13:06:35 -0400
-Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 76F9B1990;
-        Tue, 15 Aug 2023 10:06:31 -0700 (PDT)
-Received: from linma$zju.edu.cn ( [112.5.88.102] ) by ajax-webmail-mail-app4
- (Coremail) ; Wed, 16 Aug 2023 01:04:04 +0800 (GMT+08:00)
-X-Originating-IP: [112.5.88.102]
-Date:   Wed, 16 Aug 2023 01:04:04 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "Lin Ma" <linma@zju.edu.cn>
-To:     "Jakub Kicinski" <kuba@kernel.org>
-Cc:     corbet@lwn.net, davem@davemloft.net, edumazet@google.com,
-        pabeni@redhat.com, rdunlap@infradead.org, void@manifault.com,
-        jani.nikula@intel.com, horms@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v3] docs: net: add netlink attrs best practices
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20220622(41e5976f)
- Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
-In-Reply-To: <20230814085318.090c832d@kernel.org>
-References: <20230811031549.2011622-1-linma@zju.edu.cn>
- <20230811152634.271608c5@kernel.org>
- <54e9d6f6.106b1a.189e798f8ae.Coremail.linma@zju.edu.cn>
- <20230814085318.090c832d@kernel.org>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Tue, 15 Aug 2023 13:06:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F9B21737;
+        Tue, 15 Aug 2023 10:06:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692119210; x=1723655210;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=tyH/FWy72AFApPV4vzZzcaIgwH0owqHF2uXm6vPj/8A=;
+  b=gwuP9pEHmxbXRlYCcR/ZoQqsgZX/rUfHeCrAFJrHXhDUotqGGwJJMW7V
+   M+beYXICaHjP/aYj9HJG8r9MSHxKM0Wu+y2N977eiXqVHjGJt/v4eTFQ7
+   Rqrs5Vrg2Kp5tv6bWcuKY9KMly+s4lh3Qdupf1P4vIYdb5449/YxhDpms
+   xo4EqDXfHsTNpW+xbg48Xff6IcqS21YOVDAa4MrX+1f9HhRCkn9VYYnPA
+   egkPrKKfem74n9+ZsraeleVOKngsyhbJCA1wLLC2Ait9GJstmeOiHOCFY
+   /iTGS2LZHa+iNfNhL6N58hW6b20p3/OXWcaZbBrWFirIYdvsS2XorZvrQ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="438671711"
+X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
+   d="scan'208";a="438671711"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 10:04:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="683728723"
+X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
+   d="scan'208";a="683728723"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP; 15 Aug 2023 10:04:39 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qVxTC-00AbW9-1E;
+        Tue, 15 Aug 2023 20:04:38 +0300
+Date:   Tue, 15 Aug 2023 20:04:37 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Marcus Folkesson <marcus.folkesson@gmail.com>
+Cc:     Kent Gustavsson <kent@minoris.se>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Cosmin Tanislav <demonsingur@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Ramona Bolboaca <ramona.bolboaca@analog.com>,
+        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        William Breathitt Gray <william.gray@linaro.org>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 4/6] iio: adc: mcp3911: fix indentation
+Message-ID: <ZNuwJVSJy0Uy0zPN@smile.fi.intel.com>
+References: <20230814121010.184842-1-marcus.folkesson@gmail.com>
+ <20230814121010.184842-4-marcus.folkesson@gmail.com>
+ <ZNuShXfOoaLk8Ua1@smile.fi.intel.com>
+ <ZNuuER3V8etxeu3o@gmail.com>
 MIME-Version: 1.0
-Message-ID: <7cba74b5.10d19d.189fa27935c.Coremail.linma@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cS_KCgBHTQoFsNtkbKYYCw--.7107W
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwUIEmTa1vsUEQAAsK
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNuuER3V8etxeu3o@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8gSmFrdWIsCgo+IAo+IE9uIFNhdCwgMTIgQXVnIDIwMjMgMTA6MzU6MDkgKzA4MDAgKEdN
-VCswODowMCkgTGluIE1hIHdyb3RlOgo+ID4gTW92aW5nIGZvcndhcmQsIEkgc3VnZ2VzdCB3ZSBj
-b25zaWRlciB0aGUgZm9sbG93aW5nIG9wdGlvbnM6Cj4gPiAKPiA+IDEuIFVwZGF0ZSB0aGUgZG9j
-dW1lbnQgdG8gYWRkcmVzcyB0aGUgY29uZnVzaW9uIGFuZCBtYWtlIGl0IG1vcmUgcmVsZXZhbnQK
-PiA+ICAgIHRvIHRoZSBjdXJyZW50IHN0YXRlIG9mIE5ldGxpbmsgZGV2ZWxvcG1lbnQuIE1heWJl
-IHRoZSBuZXdseSBhZGRlZAo+ID4gICAgc2VjdGlvbiBzZWVtcyBub3QgZW5vdWdoIGZvciB0aGF0
-LiBJIHdvdWxkIGdyZWF0bHkgYXBwcmVjaWF0ZSBhbnkKPiA+ICAgIHNwZWNpZmljIGd1aWRhbmNl
-Lgo+IAo+IFVubGVzcyB3ZSBoYXZlIGRvY3MgZm9yIGtlcm5lbCBzaWRlIG9mIG1vZGVybiBnZW5l
-dGxpbmsgYW55IHNvcnQgb2YKPiBpbmRpY2F0aW9uIHRoYXQgdGhpcyBkb2MgaXMgb25seSBhIGd1
-aWRlIGZvciBsb29raW5nIGF0IG9sZCBjb2RlIHdpbGwKPiBmYWxsIG9uIGRlYWYgZWFycy4KPiAK
-PiBTbyB5b3UnZCBuZWVkIHRvIHdyaXRlIGEgc2FtcGxlIGZhbWlseSBhbmQgZG9jcyBmb3IgbW9k
-ZXJuIHN0dWZmLgoKR3JlYXQsIEkgZ3Vlc3MgSSAoZmluYWxseSkgdW5kZXJzdGFuZCB0aGUgc2l0
-dWF0aW9uIGhlcmUuIEl0IHNlZW1zIHRoYXQKdGhpcyBkb2N1bWVudCBpcyBqdXN0IG9uZSBwaWVj
-ZSBvZiB0aGUgcHV6emxlIHdoZW4gaXQgY29tZXMgdG8gdGhlIG1vZGVybgpnZW5lcmljIE5ldGxp
-bmsuIEhlbmNlLCBJIHNob3VsZCB3cml0ZSBhIHNhbXBsZSBmYW1pbHkgYW5kIGRvY3MgZm9yIG1v
-ZGVybgpzdHVmZiAobWFpbmx5IHRoZSBrZXJuZWwgc2lkZSkgYW5kIHRoZW4gbWFrZSB0aGlzIGRv
-Y3VtZW50IG9uZSBwYXJ0IG9mIGl0LgoKPiAKPiA+IDIuIElmIHRoZSBkb2N1bWVudCBpcyBkZWVt
-ZWQgdG9vIG91dGRhdGVkIGZvciBiZWluZyBrZXJuZWwgZG9jdW1lbnRhdGlvbiwKPiA+ICAgIG1h
-eWJlIEkgc2hvdWxkIHB1Ymxpc2ggaXQgc29tZXdoZXJlIGVsc2UuIERvIHlvdSBoYXZlIGFueQo+
-ID4gICAgcmVjb21tZW5kYXRpb25zIG9uIHdoZXJlIGl0IGNvdWxkIGJlIGJldHRlciBzdWl0ZWQ/
-Cj4gCj4gR2l0SHViIGNvbWVzIHRvIG1pbmQgZm9yIHB1Ymxpc2hpbmcgUmVTVCBkb2NzLCBpbiB0
-aGUgbWVhbnRpbWU/CgpObyB3b3JyaWVzLiBJJ20ganVzdCBicmFpbnN0b3JtaW5nIHdheXMgdG8g
-bWFrZSB0aGVzZSBwcmFjdGljZXMgdXNlZnVsIGlmIHRoZXkKZGlkbid0IG1ha2UgaXQgaW50byB0
-aGUga2VybmVsIGRvY3VtZW50IDpELgpBbGwgaW4gYWxsLCBJJ2xsIGZvbGxvdyB1cCBvbiBvdXIg
-cHJldmlvdXMgZGlzY3Vzc2lvbiBhbmQgZmlsbCBpbiB0aGUgZ2FwcyBhcwpzb29uIGFzIHBvc3Np
-YmxlLgoKUmVnYXJkcwpMaW4K
+On Tue, Aug 15, 2023 at 06:55:45PM +0200, Marcus Folkesson wrote:
+> On Tue, Aug 15, 2023 at 05:58:13PM +0300, Andy Shevchenko wrote:
+> > On Mon, Aug 14, 2023 at 02:10:08PM +0200, Marcus Folkesson wrote:
+> > > The file does not make use of indentation properly.
+> > 
+> > > Fix that.
+> > 
+> > I'm not sure this is anyhow a fix. Yet you may refer to the checkpatch
+> > if it complains.
+> > 
+> > ...
+> > 
+> > This kind of change is preferred to be the last in the series or closer
+> > to the end where no more code changed.
+> 
+> Checkpatch did never complain about the formatting, but I got a few comments
+> during the review process about the formatting, so I went
+> through the whole file to fix it once for all.
+> 
+> I do not think that it has to be the last patch in the series.
+> All following patches has proper indentation.
+> Pretty much the same as the simplification of spi->dev I think.
+> 
+> If there is no strong opinions about it I think I will leave it as is.
+
+I'm not a maintainer of IIO, so let them decide :-)
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
