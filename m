@@ -2,134 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD29177C5FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 04:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6227077C606
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 04:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232523AbjHOCh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 22:37:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34296 "EHLO
+        id S234342AbjHOCm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 22:42:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234362AbjHOChE (ORCPT
+        with ESMTP id S234340AbjHOCm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 22:37:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 263E5199F;
-        Mon, 14 Aug 2023 19:36:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692067006; x=1723603006;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=vHR4xYlNFY3QXhiHYYeRXBjOvyRCRyOZW2MYGLu5e4g=;
-  b=EPjULpEffM5SU+WrlQqN6hxLVSv84hce+7H/6rOYi0G1yptoT5ZVZxP1
-   Q6RCxWKPMT4eNHcgIB6U1mVBMk3Fq+Q9h+bcNHhi757cc0Cg3KccHOhFW
-   PublBc4XRrG+HEEUXsG+1VaGoHd+QyWZMpoeUdK87eBp3XOyyAIJJZ9/W
-   l6/hihaHOuGUv7PR17rka8V9g4TAWCYfs1MCHNYfpi+49B47/oBADvEzu
-   iLOE7sIp31D3hV8/UyluSc0/bxQtEQWsSCFOL2ZAtqMzToLkeI1gtKbXL
-   MB4pBi9HOTBTdJxyOOl2Y4fNR3t/RpoGsdqr3uvILC9q5tq78qU5AJ0Zp
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="438525450"
-X-IronPort-AV: E=Sophos;i="6.01,173,1684825200"; 
-   d="scan'208";a="438525450"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 19:36:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="857275482"
-X-IronPort-AV: E=Sophos;i="6.01,173,1684825200"; 
-   d="scan'208";a="857275482"
-Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
-  by orsmga004.jf.intel.com with ESMTP; 14 Aug 2023 19:36:19 -0700
-Date:   Tue, 15 Aug 2023 10:36:18 +0800
-From:   Yuan Yao <yuan.yao@linux.intel.com>
-To:     Yan Zhao <yan.y.zhao@intel.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        pbonzini@redhat.com, seanjc@google.com, mike.kravetz@oracle.com,
-        apopple@nvidia.com, jgg@nvidia.com, rppt@kernel.org,
-        akpm@linux-foundation.org, kevin.tian@intel.com,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: [RFC PATCH v2 0/5] Reduce NUMA balance caused TLB-shootdowns in
- a VM
-Message-ID: <20230815023618.uvefne3af7fn5msn@yy-desk-7060>
-References: <20230810085636.25914-1-yan.y.zhao@intel.com>
- <41a893e1-f2e7-23f4-cad2-d5c353a336a3@redhat.com>
- <ZNSyzgyTxubo0g/D@yzhao56-desk.sh.intel.com>
- <6b48a161-257b-a02b-c483-87c04b655635@redhat.com>
- <1ad2c33d-95e1-49ec-acd2-ac02b506974e@nvidia.com>
- <846e9117-1f79-a5e0-1b14-3dba91ab8033@redhat.com>
- <d0ad2642-6d72-489e-91af-a7cb15e75a8a@nvidia.com>
- <ZNnvPuRUVsUl5umM@yzhao56-desk.sh.intel.com>
+        Mon, 14 Aug 2023 22:42:29 -0400
+X-Greylist: delayed 301 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 14 Aug 2023 19:42:27 PDT
+Received: from mail-proxy106.phy.lolipop.jp (mail-proxy106.phy.lolipop.jp [157.7.106.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A92FB
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 19:42:27 -0700 (PDT)
+Received: from mail-proxy106.phy.lolipop.jp (localhost [127.0.0.1])
+        by mail-proxy106.phy.lolipop.jp (Postfix) with ESMTP id 6BA021401319A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 11:37:24 +0900 (JST)
+Received: from 127.0.0.1 (127.0.0.1)
+ by mail-proxy106.phy.lolipop.jp (LOLIPOP-Fsecure);
+ Tue, 15 Aug 2023 11:37:24 +0900 (JST)
+X-Virus-Status: clean(LOLIPOP-Fsecure)
+Received: from ownerpc (unknown [211.133.206.19])
+        (Authenticated sender: patrol@cpb.jp)
+        by mail-proxy106.phy.lolipop.jp (Postfix) with ESMTPA
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 11:37:24 +0900 (JST)
+thread-index: AdnPIWplfhw0jXCVSQaR+b7P7lhHQw==
+Thread-Topic: =?iso-2022-jp?B?GyRCOEQ/TT5wSnNOLj1QJE5DbTBVNC01LyRLJEQkJCRGGyhC?=
+From:   <Patrol@cpb.jp>
+To:     <linux-kernel@vger.kernel.org>
+Subject: =?iso-2022-jp?B?GyRCOEQ/TT5wSnNOLj1QJE5DbTBVNC01LyRLJEQkJCRGGyhC?=
+Date:   Tue, 15 Aug 2023 11:37:21 +0900
+Message-ID: <969BE14430F842028242BD62CF8E0514@ownerpc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZNnvPuRUVsUl5umM@yzhao56-desk.sh.intel.com>
-User-Agent: NeoMutt/20171215
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+        charset="iso-2022-jp"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft CDO for Windows 2000
+Content-Class: urn:content-classes:message
+Importance: normal
+X-MimeOLE: Produced By Microsoft MimeOLE V6.3.9600.17728
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_50,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 05:09:18PM +0800, Yan Zhao wrote:
-> On Fri, Aug 11, 2023 at 12:35:27PM -0700, John Hubbard wrote:
-> > On 8/11/23 11:39, David Hildenbrand wrote:
-> > ...
-> > > > > Should we want to disable NUMA hinting for such VMAs instead (for example, by QEMU/hypervisor) that knows that any NUMA hinting activity on these ranges would be a complete waste of time? I recall that John H. once mentioned that there are
-> > > > similar issues with GPU memory:  NUMA hinting is actually counter-productive and they end up disabling it.
-> > > > >
-> > > >
-> > > > Yes, NUMA balancing is incredibly harmful to performance, for GPU and
-> > > > accelerators that map memory...and VMs as well, it seems. Basically,
-> > > > anything that has its own processors and page tables needs to be left
-> > > > strictly alone by NUMA balancing. Because the kernel is (still, even
-> > > > today) unaware of what those processors are doing, and so it has no way
-> > > > to do productive NUMA balancing.
-> > >
-> > > Is there any existing way we could handle that better on a per-VMA level, or on the process level? Any magic toggles?
-> > >
-> > > MMF_HAS_PINNED might be too restrictive. MMF_HAS_PINNED_LONGTERM might be better, but with things like iouring still too restrictive eventually.
-> > >
-> > > I recall that setting a mempolicy could prevent auto-numa from getting active, but that might be undesired.
-> > >
-> > > CCing Mel.
-> > >
-> >
-> > Let's discern between page pinning situations, and HMM-style situations.
-> > Page pinning of CPU memory is unnecessary when setting up for using that
-> > memory by modern GPUs or accelerators, because the latter can handle
-> > replayable page faults. So for such cases, the pages are in use by a GPU
-> > or accelerator, but unpinned.
-> >
-> > The performance problem occurs because for those pages, the NUMA
-> > balancing causes unmapping, which generates callbacks to the device
-> > driver, which dutifully unmaps the pages from the GPU or accelerator,
-> > even if the GPU might be busy using those pages. The device promptly
-> > causes a device page fault, and the driver then re-establishes the
-> > device page table mapping, which is good until the next round of
-> > unmapping from the NUMA balancer.
-> >
-> > hmm_range_fault()-based memory management in particular might benefit
-> > from having NUMA balancing disabled entirely for the memremap_pages()
-> > region, come to think of it. That seems relatively easy and clean at
-> > first glance anyway.
-> >
-> > For other regions (allocated by the device driver), a per-VMA flag
-> > seems about right: VM_NO_NUMA_BALANCING ?
-> >
-> Thanks a lot for those good suggestions!
-> For VMs, when could a per-VMA flag be set?
-> Might be hard in mmap() in QEMU because a VMA may not be used for DMA until
-> after it's mapped into VFIO.
-> Then, should VFIO set this flag on after it maps a range?
-> Could this flag be unset after device hot-unplug?
+$BEv%\%i%s%F%#%"3hF0(B($B%5%$%P!<%Q%H%m!<%k(B)$B$ND4::$NCf$G!"$"$J$?$N%a!<%k%"%I%l%9$d%Q%9%o!<%I$,!"%$%s%?!<%M%C%H>e$XN.=P$7$F$$$k2DG=@-$,$"$j$^$7$?$N$G!"Cm0U4-5/$N$4O"Mm$r$5$;$FD:$-$^$7$?!#(B
 
-Emm... syscall madvise() in my mind, it does things like change flags
-on VMA, e.g madvise(MADV_DONTFORK) adds VM_DONTCOPY to the VMA.
+$B8=;~E@$G8D?M>pJs$NIT@5MxMQHo32$K9g$o$l$F$$$J$$$3$H$r4j$C$F$*$j$^$9$,!"$$$D!"$I$N$h$&$J>pJs$,O3$l$F$7$^$C$?$N$+!">u67$r$43NG'D:$/$3$H$r$*4+$a$$$?$7$^$9!#(B
 
->
->
+$B;29M$^$G$K!"%&%#%k%9BP:v%=%U%H$GM-L>$J!"%N!<%H%s<R$N%@!<%/%&%'%V%b%K%?%j%s%0(B($B2<5-%5%$%H$KL5NA$N%A%'%C%/%5!<%S%9M-$j(B)$B$G!"$"$J$?$N8D?M>pJs$K@x:_E*$J6<0R$,Gw$C$F$$$k$+!"D4$Y$k$3$H$,2DG=$G$9!#(B
+
+https://bit.ly/norton_jp
+
+$B"(K|$,0l!"8D?M>pJsN.=P$,3NG'$5$l$?>l9g$O!"Fs<!Ho32KI;_$N0Y$K%Q%9%o!<%I$NJQ99Ey!"BP:v$r6/2=$5$l$k$3$H$r$*4+$a$$$?$7$^$9!#(B
+($BDj4|E*$K$43NG'D:$/$3$H$G!"Ho32$r:G>.8B$KM^$($k$3$H$K7R$,$j$^$9(B)
+
+$B$^$?!"$42HB2$dM'?MCN?M$G8D?M>pJs$NO3$($$$K$D$$$F?4G[$NJ}$,$$$i$C$7$c$$$^$7$?$i!"J;$;$F$43NG'D:$1$?$i9,$$$G$9!#(B
+
+$B0J>e!"$h$m$7$/$*4j$$$$$?$7$^$9!#(B
+
+=====
+$B%5%$%P!<%Q%H%m!<%k%\%i%s%F%#%";vL36I(B
+https://cpb.jp/
+
+
