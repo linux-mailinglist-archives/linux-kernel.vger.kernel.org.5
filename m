@@ -2,111 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0124077C7F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 08:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6858077C7FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 08:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235179AbjHOGjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 02:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57920 "EHLO
+        id S235143AbjHOGnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 02:43:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235177AbjHOGiM (ORCPT
+        with ESMTP id S234738AbjHOGnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 02:38:12 -0400
-Received: from out-64.mta0.migadu.com (out-64.mta0.migadu.com [IPv6:2001:41d0:1004:224b::40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E291BE7
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 23:37:28 -0700 (PDT)
-Message-ID: <8e232b68-cc15-d47b-4c49-4f36fd696963@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1692081446;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7MvC5Vc55osq3n54e9YCchu2oQZ8ocFcc0a2zTwhcsM=;
-        b=IKLcPW6nwIraNa9SEH4OcTu+wJLJ5YtvSKgC6LEUtY7kNyTSJHsN+94/s2Rl3ITE06qCuw
-        flE3Ndgn+j4WS3EpZY9LfbyKXuGNtS29XWM/dwJBdc46caKjiPgiqmFStHCMHi2aI3hkCy
-        FfcYSgG55OwEkN3xtdMI7sRlcwjELGY=
-Date:   Tue, 15 Aug 2023 14:37:17 +0800
+        Tue, 15 Aug 2023 02:43:02 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A986127;
+        Mon, 14 Aug 2023 23:43:00 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37F6eHer029692;
+        Tue, 15 Aug 2023 06:42:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=nH9TdN+9Ou+OLup3W8vXF8KOi6F2nLMXNpePTMty3Pw=;
+ b=TEnr36r8z8X6ycCjCSTdCOPm9MnZz+TeQlfUhh0BwYevNikLmLXL7UdYSzX6NpV4S/+y
+ iJI6VrMU1f//HhYUz/P84oat8PeDAz4+rWnqhGwBqckgjcXD+09K3l7Aw5b75yWB51nB
+ PEkdcXdEv0tCQp5CP0HRJZvHh9/+ng5yXCWWWApz3BGLZXOPDsHG2EgnloE5PR8U1oJ5
+ 7jNY2WgUa5J97hc6K78f6VPcvKja3/NigbO/TaH7+M22IOwldnLjA/Ci1OEWK/78H84a
+ yAvOPTzUV5ekeoNdFLh/xU59BNXtohOZw6Mld+fa8WiiYRKKxMSjhsRtM52a2qM/jLpA Ug== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sfqp1h7em-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Aug 2023 06:42:46 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37F6gjWR022595
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Aug 2023 06:42:45 GMT
+Received: from [10.239.154.73] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 14 Aug
+ 2023 23:42:42 -0700
+Message-ID: <d4cee19c-6f13-a1dc-d402-1d5c2b769ad1@quicinc.com>
+Date:   Tue, 15 Aug 2023 14:42:40 +0800
 MIME-Version: 1.0
-Subject: Re: [PATCH RESEND v1] docs/zh_CN: add zh_CN translation for
- memory-barriers.txt
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v5 2/3] dt-bindings: input: qcom,pm8xxx-vib: add new SPMI
+ vibrator module
 Content-Language: en-US
-To:     Patrick Yingxi Pan <pyxchina92929@gmail.com>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20230811080851.84497-1-gang.li@linux.dev>
- <CANJ3EgExk-TC=qx0Dn7wA-RfTE-h3E_E+i1MctvhvV-VEUJFnQ@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Gang Li <gang.li@linux.dev>
-In-Reply-To: <CANJ3EgExk-TC=qx0Dn7wA-RfTE-h3E_E+i1MctvhvV-VEUJFnQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+To:     Luca Weiss <luca.weiss@fairphone.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <robh+dt@kernel.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <dmitry.baryshkov@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        <linux-input@vger.kernel.org>, <devicetree@vger.kernel.org>
+CC:     <quic_collinsd@quicinc.com>, <quic_subbaram@quicinc.com>,
+        <quic_kamalw@quicinc.com>, <jestar@qti.qualcomm.com>
+References: <20230815060314.352103-1-quic_fenglinw@quicinc.com>
+ <20230815060314.352103-3-quic_fenglinw@quicinc.com>
+ <CUSWRRL6QOPU.1YM7S0F8F3V2D@otso>
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+In-Reply-To: <CUSWRRL6QOPU.1YM7S0F8F3V2D@otso>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 0x4I6bYn13pn8C_SAAubBjQ-LITwhqcZ
+X-Proofpoint-ORIG-GUID: 0x4I6bYn13pn8C_SAAubBjQ-LITwhqcZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-15_05,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 bulkscore=0 malwarescore=0 priorityscore=1501
+ impostorscore=0 mlxscore=0 phishscore=0 spamscore=0 lowpriorityscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308150060
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/15 12:02, Patrick Yingxi Pan wrote:
->> 它由于有意 (为了简洁) 或无意 (由于人为因素) 的原因而不完整。
-> 它由于有意 (为了简洁) 和无意 (由于人会犯错) 的原因而不完整。
-> 
->> 这些内存模型是维护者的集体意见，而不是准确无误的实现规范。
-> 然而，即使这些内存模型也只是它们的维护者的集体意见，而不是准确无误的实现规范。
-> 
->> 再次重申，本文档不是 Linux 对硬件的规范或期望。
-> 再次重申，本文档不是 Linux 对硬件预期行为的规范。
-> 
->> (1) 为内核屏障函数指定可以依赖的最小功能，以及
-> (1) 为每个内核屏障函数，描述其可以依赖的最小功能，以及
-> 
->> (2) 提供关于如何使用屏障的指南。
-> (2) 提供关于如何使用现有屏障的指南。
-> 
->> 请注意，一个架构可以为任何屏障提供超出最低要求的功能
-> 请注意，一个架构可以为任何一个屏障提供超出其最低要求的功能
-> 
->> 因为该架构已经保证了该内存序，使得显式屏障是不必要的。
-> 因为该架构的工作方式使得显式屏障是不必要的。
-> 
->> - CPU 的保证。
-> - 功能保证。
-> 
->> (*) Inter-CPU 获取屏障。
-> (*) CPU 间获取型屏障的效果。
-> 
->> (*) 内核 I/O 屏障。
-> (*) 内核 I/O 屏障的效果。
-> 
->> (*) 假想的最小执行顺序模型。
-> (*) 可依赖的最弱的执行顺序保证。
-> 
-> 
 
-Thanks for your help!
 
-I try to be concise and localized in translations because sometimes
-literal translation can sound odd. In order to improve readability, I
-even rewrite certain paragraphs.
+On 8/15/2023 2:35 PM, Luca Weiss wrote:
+> Hi Fenglin,
+> 
+> On Tue Aug 15, 2023 at 8:03 AM CEST, Fenglin Wu wrote:
+>> Add compatible strings to support vibrator module inside PMI632,
+>> PMI7250B, PM7325B, PM7550BA.
+>>
+>> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+>> ---
+>>   .../bindings/input/qcom,pm8xxx-vib.yaml           | 15 +++++++++++----
+>>   1 file changed, 11 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml b/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml
+>> index c8832cd0d7da..72b72c67a9b6 100644
+>> --- a/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml
+>> +++ b/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml
+>> @@ -11,10 +11,17 @@ maintainers:
+>>   
+>>   properties:
+>>     compatible:
+>> -    enum:
+>> -      - qcom,pm8058-vib
+>> -      - qcom,pm8916-vib
+>> -      - qcom,pm8921-vib
+>> +    oneOf:
+>> +      - enum:
+>> +          - qcom,pm8058-vib
+>> +          - qcom,pm8916-vib
+>> +          - qcom,pm8921-vib
+>> +      - items:
+>> +          - enum:
+>> +              - qcom,pm7250b-vib
+>> +              - qcom,pm7325b-vib
+>> +              - qcom,pm7550ba-vib
+>> +          - const: qcom,pmi632-vib
+> 
+> With the new revision the standalone 'compatible = "qcom,pmi632-vib";'
+> doesn't pass validation anymore.
+> 
+> foo.dtb: vibrator@5700: compatible: 'oneOf' conditional failed, one must be fixed:
+>          ['qcom,pmi632-vib'] is too short
+>          'qcom,pmi632-vib' is not one of ['qcom,pm8058-vib', 'qcom,pm8916-vib', 'qcom,pm8921-vib']
+>          'qcom,pmi632-vib' is not one of ['qcom,pm7250b-vib', 'qcom,pm7325b-vib', 'qcom,pm7550ba-vib']
+>          from schema $id: http://devicetree.org/schemas/input/qcom,pm8xxx-vib.yaml#
+> 
+> I believe you need to add the compatible also like this:
+> 
+> diff --git a/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml b/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml
+> index 72b72c67a9b6..2025d6a5423e 100644
+> --- a/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml
+> +++ b/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml
+> @@ -16,6 +16,7 @@ properties:
+>             - qcom,pm8058-vib
+>             - qcom,pm8916-vib
+>             - qcom,pm8921-vib
+> +          - qcom,pmi632-vib
+>         - items:
+>             - enum:
+>                 - qcom,pm7250b-vib
+> 
+Yeah, thanks for catching this. I will update it soon.
+
+> 
+> Regards
+> Luca
+> 
+>>   
+>>     reg:
+>>       maxItems: 1
+> 
