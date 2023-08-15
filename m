@@ -2,108 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D1077CF09
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C96577CF10
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237945AbjHOPWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 11:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41350 "EHLO
+        id S236518AbjHOPYU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Aug 2023 11:24:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237995AbjHOPWf (ORCPT
+        with ESMTP id S236083AbjHOPX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 11:22:35 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E4210E;
-        Tue, 15 Aug 2023 08:22:34 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b703a0453fso82929401fa.3;
-        Tue, 15 Aug 2023 08:22:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692112953; x=1692717753;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:cc:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=n9s7BNPlKwG6jAcyz/QreRIkBhVa6z4e1ov5e1etqgg=;
-        b=n0TaKNTlhbYAo7xAJLL29angXA5xrusXd+WmjRzY/8sF1q8mU0aocNLMu3UkSoZE5Z
-         JrG0/k1/jWaxdPwzYZiz0OznGSubFHWy5w5GcsXAZj5NMiOQfowq+CQZ9obFx364b3WE
-         x86G6RnUsivF4fAEh0XcCxHr6um5p9rlrn+mPahuyZm66IFYC9CL1LvV8uKoXWtlit1J
-         pNBbPdSm1FqyICG2AgkwrksZ/JJgEMuKpZlodTOIXDZ6pDDuMWfWrTlMWv86I20Gzx8j
-         ULvLqivInj9xO4dEU1odSGnbEFz3PERWRKpYGXYT3J3ZRQfH4UMxnmddyK5Voy+Q+8VH
-         fffA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692112953; x=1692717753;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:cc:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n9s7BNPlKwG6jAcyz/QreRIkBhVa6z4e1ov5e1etqgg=;
-        b=hLgtIJBdy9nOTQImMF4mP1x62VLlUKCp4FYYc7cNfJWwzJiK8bIvMvzIijpPrk+N+r
-         VQoL3NM1nqXL5Z30WTg+tfWZqEMO7oemrR5xwQ06kpqDqwIHcGeVmTUOLhcdbLLusb1P
-         fIaJRmXQYM/Eibt/XbX4GEZ07nuOX+JbiL5fvI7tTgsFRU1aMGGsWKAmEZklGXrkjhXi
-         1dw//2IFGgF6HsBSDq1V0YZI51/TPcPjkzjcX38h0pCxpsUxlEcNY6Q8wLY2U6jV3PRI
-         Yg6K2hdF/fY1355X6Wrl3q82TMw0ZobiLTtRugTOrQ+g/HQ4InacPAUfFsglMe7DWCjF
-         1kmw==
-X-Gm-Message-State: AOJu0YxIAhLieq71wF8zElyLieWBtH8jAOPF54Vz6ArtsdJpoT2fIITw
-        CZ4EriYQaqCTVE0u6/2lHUY=
-X-Google-Smtp-Source: AGHT+IElz+sw5rqGeU2GmJZ1z03ZuFCV4gynO0z4bsAVD5xlm8JN0vOBOPbM7g052dc2c3xuB0iBLg==
-X-Received: by 2002:a2e:8ed0:0:b0:2b8:3ff3:cd93 with SMTP id e16-20020a2e8ed0000000b002b83ff3cd93mr8986815ljl.7.1692112952472;
-        Tue, 15 Aug 2023 08:22:32 -0700 (PDT)
-Received: from [192.168.0.28] (cable-178-148-234-71.dynamic.sbb.rs. [178.148.234.71])
-        by smtp.gmail.com with ESMTPSA id z6-20020a17090655c600b0098748422178sm7122757ejp.56.2023.08.15.08.22.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 08:22:32 -0700 (PDT)
-Message-ID: <35cea1ae-df13-6309-1b00-6ee236118143@gmail.com>
-Date:   Tue, 15 Aug 2023 17:22:30 +0200
+        Tue, 15 Aug 2023 11:23:57 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B6F10E
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:23:56 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-47-n93EMhJ-NZikTdM6_6FSgA-1; Tue, 15 Aug 2023 16:23:54 +0100
+X-MC-Unique: n93EMhJ-NZikTdM6_6FSgA-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 15 Aug
+ 2023 16:23:51 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Tue, 15 Aug 2023 16:23:51 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Stefan Hajnoczi' <stefanha@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Alex Williamson" <alex.williamson@redhat.com>
+Subject: RE: [PATCH 2/4] vfio: use __aligned_u64 in struct
+ vfio_device_gfx_plane_info
+Thread-Topic: [PATCH 2/4] vfio: use __aligned_u64 in struct
+ vfio_device_gfx_plane_info
+Thread-Index: AQHZywUc1n/Y7EJLKUyoxnVRLesskK/rgeRQ
+Date:   Tue, 15 Aug 2023 15:23:50 +0000
+Message-ID: <aff0d24d4bce4d34b27cfe6a76b0634e@AcuMS.aculab.com>
+References: <20230809210248.2898981-1-stefanha@redhat.com>
+ <20230809210248.2898981-3-stefanha@redhat.com>
+In-Reply-To: <20230809210248.2898981-3-stefanha@redhat.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     savicaleksa83@gmail.com, linux-hwmon@vger.kernel.org,
-        Jack Doan <me@jackdoan.com>, Jean Delvare <jdelvare@suse.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] hwmon: (aquacomputer_d5next) Add selective 200ms delay
- after sending ctrl report
-To:     Guenter Roeck <linux@roeck-us.net>
-References: <20230807172004.456968-1-savicaleksa83@gmail.com>
- <c151d464-da26-4c53-ba7a-d16bb8fca949@roeck-us.net>
- <e7bcf401-991c-808c-66df-65664940bf22@gmail.com>
- <0d94544e-59d7-1860-2cc4-1a9130023b2f@roeck-us.net>
- <932973d5-812b-8bf4-26f0-d167f51f997d@gmail.com>
- <b1083bf1-9d28-48f3-a984-38f63ec1fd16@roeck-us.net>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-From:   Aleksa Savic <savicaleksa83@gmail.com>
-In-Reply-To: <b1083bf1-9d28-48f3-a984-38f63ec1fd16@roeck-us.net>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-14 15:42:19 GMT+02:00, Guenter Roeck wrote:
-> On Sat, Aug 12, 2023 at 08:49:49PM +0200, Aleksa Savic wrote:
->> On 2023-08-12 01:05:19 GMT+02:00, Guenter Roeck wrote:
->>>
->>> It has a Fixes: tag, so it will be applied to affected stable releases
->>> automatically, at least if it applies cleanly. I could have added Cc:
->>> stable@ to make it explicit, but I had pushed it already, and I didn't
->>> want to rebase the branch just for that.
->>>
->>> Guenter
->>>
->>
->> Didn't know explicit Cc wasn't necessary, thanks.
->>
+From: Stefan Hajnoczi
+> Sent: 09 August 2023 22:03
 > 
-> Preferred but not necessary. You should have received an e-mail telling
-> you that the patch did not apply to 6.1.y. If you want it applied there,
-> send a backport to stable@ with a subject such as [PATCH v6.1] ...
-> and backport comments after "---".
+> The memory layout of struct vfio_device_gfx_plane_info is
+> architecture-dependent due to a u64 field and a struct size that is not
+> a multiple of 8 bytes:
+> - On x86_64 the struct size is padded to a multiple of 8 bytes.
+> - On x32 the struct size is only a multiple of 4 bytes, not 8.
+> - Other architectures may vary.
 > 
-> Guenter
+> Use __aligned_u64 to make memory layout consistent. This reduces the
+> chance of holes that result in an information leak and the chance that
+> 32-bit userspace on a 64-bit kernel breakage.
 
-Thanks, will do.
+Isn't the hole likely to cause an information leak?
+Forcing it to be there doesn't make any difference.
+I'd add an explicit pad as well.
 
-Aleksa
+It is a shame there isn't an __attribute__(()) to error padded structures.
+
+> 
+> This patch increases the struct size on x32 but this is safe because of
+> the struct's argsz field. The kernel may grow the struct as long as it
+> still supports smaller argsz values from userspace (e.g. applications
+> compiled against older kernel headers).
+
+Doesn't changing the offset of later fields break compatibility?
+The size field (probably) only lets you extend the structure.
+
+Oh, for sanity do min(variable, constant).
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
