@@ -2,108 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 213E477D690
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF6F77D691
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 01:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbjHOXPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 19:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46046 "EHLO
+        id S240569AbjHOXPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 19:15:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240577AbjHOXPe (ORCPT
+        with ESMTP id S240565AbjHOXPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 19:15:34 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3253B3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 16:15:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kUazwLFRMXpkcStxKAo51k3DyD7NfB8pKGmQSUcqX0Q=; b=q6hfX+4Zo+IR/eZXfZ70AhgnaA
-        u4GvcgjHA/kFqC5hIkwufi0RiDbl56DF2pSgVw6C1LFvI9LFEuu/nmEE23xwC2zFOeuNLmFAwkDdX
-        rXTO8FYpZZKR7uwQP9vSsO3LnwccGTOI/wza3u0rEdeI6lhQHBHPEjtuRFi+B4ma4NI1qraTHKxY7
-        /JSESQjq0MYLXwyogo4EuEPdJPCEtykmc+8fG+kDPTH0DMmrQd+9epQw7yLbbiflPWwugZof4GAiR
-        wjorKpmT/QsoqXFS8aUVR++FlsSsyyILcvX90RTvl/iFzjYxotC7AnX4gQ0+hexEIpiKBwdF885Lg
-        sWhSRESA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qW3FZ-00CBJg-0f;
-        Tue, 15 Aug 2023 23:14:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Tue, 15 Aug 2023 19:15:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EFBB3;
+        Tue, 15 Aug 2023 16:15:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AD897300222;
-        Wed, 16 Aug 2023 01:14:56 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8BB522067FA32; Wed, 16 Aug 2023 01:14:56 +0200 (CEST)
-Date:   Wed, 16 Aug 2023 01:14:56 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     jpoimboe@kernel.org, x86@kernel.org
-Cc:     baron@akamai.com, rostedt@goodmis.org, ardb@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, christian@bricart.de,
-        song@kernel.org, mcgrof@kernel.org
-Subject: Re: [PATCH] x86/static_call: Fix __static_call_fixup()
-Message-ID: <20230815231456.GA975506@hirez.programming.kicks-ass.net>
-References: <20230815230809.GA973560@hirez.programming.kicks-ass.net>
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5449260F0A;
+        Tue, 15 Aug 2023 23:15:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8248BC433C7;
+        Tue, 15 Aug 2023 23:15:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692141320;
+        bh=pa2nvZfQw/bdnEHOh3aiTLrBqJ4/hUwiSG2TjOGJLQg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=c4c9Gl+MoIkUJ+7vUF6e87lxuQumIH4uoBbaCKDZS6AsNOCP1d23AqczDntDGSheX
+         K7MUydOcC7kHIuRM7sXHY0ZuFV+aYc4mnpNAllllNW3VRHFs/yhWhaTrXb4bE0BzwO
+         9zepIF0W5oFdayEF4tyOCB6/mO8TZ+0X70Fzfa3fsUwaRwpxLAgDG6nKIJUIL0SRGl
+         xW6wZFitUH4Xo04qLa9xu+0WXOMBcKifSelsUBScE7XsweU4kdE6Oy+LOJ8qoxh85r
+         SxGQNb7WUPUvFWEJ/GD4pf0AYK7RFnKS/wZyBX9+XqZ8yvYPTMTC8m4h0TX4pBUCQO
+         jXSKwH+654o5Q==
+Date:   Tue, 15 Aug 2023 18:15:17 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     deloptes <emanoil.kotsev@deloptes.org>
+Cc:     linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: SSD SATA 3.3 and Broadcom / LSI SAS1068E PCI-Express Fusion-MPT
+ SAS
+Message-ID: <20230815231517.GA271814@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230815230809.GA973560@hirez.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ubgv7c$43t$1@ciao.gmane.io>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 01:08:10AM +0200, Peter Zijlstra wrote:
-> 
-> Christian reported spurious module crashes after some of Song's module
+On Wed, Aug 16, 2023 at 12:46:03AM +0200, deloptes wrote:
+> Bjorn Helgaas wrote:
+> ...
 
-To clarify: module-load.
+> > I think some controllers have a BIOS setup user interface; have you
+> > poked around in there?
+> 
+> I have not seen the bios of the machine for many years. I was looking
+> forward to plug it to a console, so that I can reboot remotely, but for
+> some reason it was not possible. It was may be 5y ago. I will definitely
+> double check this, allthough there will be nothing regarding SATA3.3 there
+> as these were build many years before SATA3.3 saw daylight.
 
-Obviously I shouldn't be writing Changelogs after 1am :-)
+I saw some mention about BIOS knobs that controlled the minimum
+acceptable SATA link speed or something; that's the kind of thing I
+wondered about.
 
-> memory layout patches.
-> 
-> Turns out that if the very last instruction on the very last page of the
-> module is a 'JMP __x86_return_thunk' then __static_call_fixup() will
-> trip a fault and dies.
-> 
-> And while the module rework made this slightly more likely to happen,
-> it's always been possible.
-> 
-> Fixes: ee88d363d156 ("x86,static_call: Use alternative RET encoding")
-> Reported-by: Christian Bricart <christian@bricart.de>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/x86/kernel/static_call.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/static_call.c b/arch/x86/kernel/static_call.c
-> index b70670a98597..2e67512d7104 100644
-> --- a/arch/x86/kernel/static_call.c
-> +++ b/arch/x86/kernel/static_call.c
-> @@ -186,6 +186,16 @@ EXPORT_SYMBOL_GPL(arch_static_call_transform);
->   */
->  bool __static_call_fixup(void *tramp, u8 op, void *dest)
->  {
-> +	/*
-> +	 * Not all .return_sites are a static_call trampoline (most are not).
-> +	 * Check if the next 3 bytes are still kernel text, if not, then this
-> +	 * definitely is not a trampoline and we need not worry further.
-> +	 *
-> +	 * This avoids the memcmp() below tripping over pagefaults etc..
-> +	 */
-> +	if (!kernel_text_address(tramp+7))
-> +		return false;
-> +
->  	if (memcmp(tramp+5, tramp_ud, 3)) {
->  		/* Not a trampoline site, not our problem. */
->  		return false;
+> As mentioned in the other posting I will attach those SSDs directly to the
+> mobo. There are 6 SATA ports there. I think this is the best approach.
+> But you know curiosity is a force you can not resist, so I still want to
+> know why?! :)
+
+Haha, yeah, I know!  I noticed in your response to Sathya that you're
+running a 4.19.288 kernel, which is really, really old.  If it's
+practical, the first thing I would try is booting a current kernel,
+e.g., v6.4, on the chance that something has been fixed since v4.19.
+I didn't try to compare the mptsas driver to see if it has changed
+since then, so I don't know whether it's likely.
+
+Bjorn
