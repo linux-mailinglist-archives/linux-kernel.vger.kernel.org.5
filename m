@@ -2,103 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E66377C87C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 09:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A24177C882
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 09:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234650AbjHOHWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 03:22:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48178 "EHLO
+        id S234771AbjHOHZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 03:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234605AbjHOHWB (ORCPT
+        with ESMTP id S231305AbjHOHYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 03:22:01 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F43B2;
-        Tue, 15 Aug 2023 00:21:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1692084115;
-        bh=nlRHHnGWBzVd6GeZmokr/74l2q1c/4LBGos+SbEmjB4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=LqS0tqn+HRGFfPMiDlOoCJxPsAfF/HswPSb8oUcBrVZo3e8Y2WTqFvmhey/yUyQWl
-         IBU6eD2sn1GbFqsflszN5EqvcVkAnaqJ5qSbLANS3udEXK0D2i5kfXFTpJ79Y0slVx
-         hD/pa/5A/zlHBTK0wk8sz/tBP1Un/w6esVnGn/VSs96HwK3npbgy3GRQnO4LC+gDBB
-         twPnFPeDoc8r83ga/oM2pzVaKXqlu5BU2Y04aF9RPnYNlfyI34Dl831ci/5+OEVdEY
-         0vSwxLy9iicVgG0mgPNAAIOoQ1Ttnn/5uwVr01Gy/t4n1ZW7pzLtXmMntBG+3+3JEz
-         4HP5KXYgj6vBQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RQ2l74vLqz4wbP;
-        Tue, 15 Aug 2023 17:21:55 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
-Subject: Re: [PATCH] powerpc: Make virt_to_pfn() a static inline
-In-Reply-To: <2e1fcfe4-169f-a52b-8da1-1819962f5783@csgroup.eu>
-References: <20230809-virt-to-phys-powerpc-v1-1-12e912a7d439@linaro.org>
- <87a5uter64.fsf@mail.lhotse>
- <2e1fcfe4-169f-a52b-8da1-1819962f5783@csgroup.eu>
-Date:   Tue, 15 Aug 2023 17:21:52 +1000
-Message-ID: <871qg4epnz.fsf@mail.lhotse>
+        Tue, 15 Aug 2023 03:24:03 -0400
+Received: from out-79.mta0.migadu.com (out-79.mta0.migadu.com [91.218.175.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A210198E
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 00:24:01 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1692084239;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Ahfl1ptR4jsXR4HU9mMdKqws9LH8cXPWldHFhNBW70k=;
+        b=QdoEJah9/mvPZhFaQ6Y4AatJFvpMXCLh8In5a7BUUhReU9Gfl4ej77IqwGTIrXemLstsbl
+        2TyfUbz2enbEbmvRcl/+aVYM3b5pcvjzF3rMXwjkEM3eu57NF9bmRxGHBwcSxNcq3B2K/T
+        HGnSq1n1LnoGnv7Iixzzm7c6SgCDWcY=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     vkoul@kernel.org
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH] dmaengine: Simplify dma_async_device_register()
+Date:   Tue, 15 Aug 2023 15:23:46 +0800
+Message-Id: <20230815072346.2798927-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Le 14/08/2023 =C3=A0 14:37, Michael Ellerman a =C3=A9crit=C2=A0:
->> Linus Walleij <linus.walleij@linaro.org> writes:
->>> Making virt_to_pfn() a static inline taking a strongly typed
->>> (const void *) makes the contract of a passing a pointer of that
->>> type to the function explicit and exposes any misuse of the
->>> macro virt_to_pfn() acting polymorphic and accepting many types
->>> such as (void *), (unitptr_t) or (unsigned long) as arguments
->>> without warnings.
->> ...
->>> diff --git a/arch/powerpc/include/asm/page.h b/arch/powerpc/include/asm=
-/page.h
->>> index f2b6bf5687d0..9ee4b6d4a82a 100644
->>> --- a/arch/powerpc/include/asm/page.h
->>> +++ b/arch/powerpc/include/asm/page.h
->>> @@ -233,6 +224,25 @@ extern long long virt_phys_offset;
->>>   #endif
->>>   #endif
->>>=20=20=20
->>> +#ifndef __ASSEMBLY__
->>> +static inline unsigned long virt_to_pfn(const void *kaddr)
->>> +{
->>> +	return __pa(kaddr) >> PAGE_SHIFT;
->>> +}
->>> +
->>> +static inline const void *pfn_to_kaddr(unsigned long pfn)
->>> +{
->>> +	return (const void *)(((unsigned long)__va(pfn)) << PAGE_SHIFT);
->>=20
->> Any reason to do it this way rather than:
->>=20
->> +       return __va(pfn << PAGE_SHIFT);
->
-> Even cleaner:
->
-> 	return __va(PFN_PHYS(pfn));
+There are a lot of duplicate codes for checking if the dma has some
+capability.
 
-PFN_PHYS() includes a cast to phys_addr_t before shifting, so it's not
-entirely equivalent.
+Define a temporary macro that is used to check if the dma claims some
+capability and if the corresponding function is implemented.
 
-But if phys_addr_t is larger than unsinged long then that cast is
-important. Which makes me wonder how/if pfn_to_kaddr() has been working
-until now for CONFIG_PHYS_ADDR_T_64BIT=3Dy.
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ drivers/dma/dmaengine.c | 82 ++++++++++-------------------------------
+ 1 file changed, 20 insertions(+), 62 deletions(-)
 
-cheers
+diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
+index 826b98284fa1..b7388ae62d7f 100644
+--- a/drivers/dma/dmaengine.c
++++ b/drivers/dma/dmaengine.c
+@@ -1147,69 +1147,27 @@ int dma_async_device_register(struct dma_device *device)
+ 
+ 	device->owner = device->dev->driver->owner;
+ 
+-	if (dma_has_cap(DMA_MEMCPY, device->cap_mask) && !device->device_prep_dma_memcpy) {
+-		dev_err(device->dev,
+-			"Device claims capability %s, but op is not defined\n",
+-			"DMA_MEMCPY");
+-		return -EIO;
+-	}
+-
+-	if (dma_has_cap(DMA_XOR, device->cap_mask) && !device->device_prep_dma_xor) {
+-		dev_err(device->dev,
+-			"Device claims capability %s, but op is not defined\n",
+-			"DMA_XOR");
+-		return -EIO;
+-	}
+-
+-	if (dma_has_cap(DMA_XOR_VAL, device->cap_mask) && !device->device_prep_dma_xor_val) {
+-		dev_err(device->dev,
+-			"Device claims capability %s, but op is not defined\n",
+-			"DMA_XOR_VAL");
+-		return -EIO;
+-	}
+-
+-	if (dma_has_cap(DMA_PQ, device->cap_mask) && !device->device_prep_dma_pq) {
+-		dev_err(device->dev,
+-			"Device claims capability %s, but op is not defined\n",
+-			"DMA_PQ");
+-		return -EIO;
+-	}
+-
+-	if (dma_has_cap(DMA_PQ_VAL, device->cap_mask) && !device->device_prep_dma_pq_val) {
+-		dev_err(device->dev,
+-			"Device claims capability %s, but op is not defined\n",
+-			"DMA_PQ_VAL");
+-		return -EIO;
+-	}
+-
+-	if (dma_has_cap(DMA_MEMSET, device->cap_mask) && !device->device_prep_dma_memset) {
+-		dev_err(device->dev,
+-			"Device claims capability %s, but op is not defined\n",
+-			"DMA_MEMSET");
+-		return -EIO;
+-	}
+-
+-	if (dma_has_cap(DMA_INTERRUPT, device->cap_mask) && !device->device_prep_dma_interrupt) {
+-		dev_err(device->dev,
+-			"Device claims capability %s, but op is not defined\n",
+-			"DMA_INTERRUPT");
+-		return -EIO;
+-	}
+-
+-	if (dma_has_cap(DMA_CYCLIC, device->cap_mask) && !device->device_prep_dma_cyclic) {
+-		dev_err(device->dev,
+-			"Device claims capability %s, but op is not defined\n",
+-			"DMA_CYCLIC");
+-		return -EIO;
+-	}
+-
+-	if (dma_has_cap(DMA_INTERLEAVE, device->cap_mask) && !device->device_prep_interleaved_dma) {
+-		dev_err(device->dev,
+-			"Device claims capability %s, but op is not defined\n",
+-			"DMA_INTERLEAVE");
+-		return -EIO;
+-	}
++#define CHECK_CAP(_name, _type)								\
++{											\
++	if (dma_has_cap(_type, device->cap_mask) && !device->device_prep_##_name) {	\
++		dev_err(device->dev,							\
++			"Device claims capability %s, but op is not defined\n",		\
++			__stringify(_type));						\
++		return -EIO;								\
++	}										\
++}
+ 
++	CHECK_CAP(dma_memcpy,      DMA_MEMCPY);
++	CHECK_CAP(dma_xor,         DMA_XOR);
++	CHECK_CAP(dma_xor_val,     DMA_XOR_VAL);
++	CHECK_CAP(dma_pq,          DMA_PQ);
++	CHECK_CAP(dma_pq_val,      DMA_PQ_VAL);
++	CHECK_CAP(dma_memset,      DMA_MEMSET);
++	CHECK_CAP(dma_interrupt,   DMA_INTERRUPT);
++	CHECK_CAP(dma_cyclic,      DMA_CYCLIC);
++	CHECK_CAP(interleaved_dma, DMA_INTERLEAVE);
++
++#undef CHECK_CAP
+ 
+ 	if (!device->device_tx_status) {
+ 		dev_err(device->dev, "Device tx_status is not defined\n");
+-- 
+2.25.1
+
