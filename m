@@ -2,154 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A174677C622
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 04:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E86AB77C629
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 04:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234374AbjHOCyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 22:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41904 "EHLO
+        id S234352AbjHOC5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 22:57:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234365AbjHOCxp (ORCPT
+        with ESMTP id S234153AbjHOC5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 22:53:45 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECD79E7A
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 19:53:43 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-686b9964ae2so3207400b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 19:53:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1692068023; x=1692672823;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=a8HyUjDBkW62Y7ia/YRzhrRt6SI0MoeiKF06ymvveI4=;
-        b=e5H6YSxaquRTypkZyjRtJDCwTmj5Z8r9Hx5apY8RhyinYxtJgLPHfj1RJYFYO+7j7h
-         /XDrG7/16OKncrgd4rQzDKiDxmTxML7eTcIcJlApNVK7VwSPMRia945Nj3UpFZFqLVxr
-         c+TJdcrrYEsJ2D+NPAvrqWZ/lcET6O9a7jF5NDA3w5oNdN00BW0X7ksw3eGvMmN4iAVv
-         IPJTW3vBweY463qXeEMbiUcYWz3Ge+Zn5GN9ZdDLS+iEAXkLnBKigA9mtVVe0iPmHT/9
-         HIfoGsl7xLunxJrwgoVyzkqCS1QH7hmlNRPFsL1uZKuEccnQq4wlLjkrsukuqlh8NNH1
-         rMpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692068023; x=1692672823;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a8HyUjDBkW62Y7ia/YRzhrRt6SI0MoeiKF06ymvveI4=;
-        b=OzWWr/gsMN034Ixv7weRm8oc0RjvESOhgwYymDMV4eOcjcFhE2AqkWtmw4rL5vdN9y
-         20mA1RbFQebOiCwkWL8clcz8TDv9wLWnqLgo8aTGil9H7jmYVlMMpLZpNMSiWfPzbHo9
-         RE8/wjk5e7rtey0EUvkym/N3sRoa7JR1FlesFe8HgWt0WJK/BD6J7wwDhb6P7b4b7nEx
-         P+m4/UYqeyHqw30MnW3OXal/u2n+jUbZiWjcj4n94A2DoYbdfDRYXdzRkjSmVXJNyxn/
-         UmSdRp+iJz/inexdZ2zTk1ReFuDZsA3PimWmlP6WK7BElG0iEqGiKVfrAGNrqMbz78j8
-         UzSw==
-X-Gm-Message-State: AOJu0Yya580SpZkN9Vvt1cidq7mzSD0m78yxmIlhwGqXLrxNhDx070ND
-        k2kIfc67OXargoKfS8V1kUZwIw==
-X-Google-Smtp-Source: AGHT+IHjc044e6npnV/BiafJF0UU9FsLZmr9i/ZW8Kkux8QHJDLaNlnB4TRHzQQqdetV8IlA/XzFsw==
-X-Received: by 2002:a05:6a00:13a8:b0:682:2e99:9de0 with SMTP id t40-20020a056a0013a800b006822e999de0mr11561476pfg.23.1692068023296;
-        Mon, 14 Aug 2023 19:53:43 -0700 (PDT)
-Received: from ?IPV6:fdbd:ff1:ce00:11bb:1457:9302:1528:c8f4? ([2408:8000:b001:1:1f:58ff:f102:103])
-        by smtp.gmail.com with ESMTPSA id g4-20020aa78744000000b00686f9789064sm8835581pfo.12.2023.08.14.19.53.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 19:53:42 -0700 (PDT)
-Message-ID: <ef6a383f-56b0-9ac5-b358-1a29cf595a24@bytedance.com>
-Date:   Tue, 15 Aug 2023 10:53:35 +0800
+        Mon, 14 Aug 2023 22:57:32 -0400
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B63E7A
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 19:57:30 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VppsQQz_1692068247;
+Received: from 30.97.48.59(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VppsQQz_1692068247)
+          by smtp.aliyun-inc.com;
+          Tue, 15 Aug 2023 10:57:28 +0800
+Message-ID: <bbf1e081-7732-d2f8-6490-215947eed5d3@linux.alibaba.com>
+Date:   Tue, 15 Aug 2023 10:57:29 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: Re: [PATCH net-next v2] net-memcg: Fix scope of sockmem pressure
- indicators
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Ahern <dsahern@kernel.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Breno Leitao <leitao@debian.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Xing <kernelxing@tencent.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Michal Hocko <mhocko@suse.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <cgroups@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-References: <20230814070923.35769-1-wuyun.abel@bytedance.com>
- <CALvZod5C3yWdgWr83EAdVUCH5PEK8ew7Q+FOt_zGOFOE9HVyQQ@mail.gmail.com>
-Content-Language: en-US
-From:   Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <CALvZod5C3yWdgWr83EAdVUCH5PEK8ew7Q+FOt_zGOFOE9HVyQQ@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] mm/compaction: remove unused parameter pgdata of
+ fragmentation_score_wmark
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, david@redhat.com, willy@infradead.org
+References: <20230809094910.3092446-1-shikemeng@huaweicloud.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20230809094910.3092446-1-shikemeng@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-12.2 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/15/23 4:18 AM, Shakeel Butt wrote:
-> On Mon, Aug 14, 2023 at 12:09 AM Abel Wu <wuyun.abel@bytedance.com> wrote:
->>
->> Now there are two indicators of socket memory pressure sit inside
->> struct mem_cgroup, socket_pressure and tcpmem_pressure, indicating
->> memory reclaim pressure in memcg->memory and ->tcpmem respectively.
->>
->> When in legacy mode (cgroupv1), the socket memory is charged into
->> ->tcpmem which is independent of ->memory, so socket_pressure has
->> nothing to do with socket's pressure at all. Things could be worse
->> by taking socket_pressure into consideration in legacy mode, as a
->> pressure in ->memory can lead to premature reclamation/throttling
->> in socket.
->>
->> While for the default mode (cgroupv2), the socket memory is charged
->> into ->memory, and ->tcpmem/->tcpmem_pressure are simply not used.
->>
->> So {socket,tcpmem}_pressure are only used in default/legacy mode
->> respectively for indicating socket memory pressure. This patch fixes
->> the pieces of code that make mixed use of both.
->>
->> Fixes: 8e8ae645249b ("mm: memcontrol: hook up vmpressure to socket pressure")
->> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+
+
+On 8/9/2023 5:49 PM, Kemeng Shi wrote:
+> Parameter pgdat is not used in fragmentation_score_wmark. Just remove it.
 > 
-> So, this is undoing the unintended exposure of v2 functionality for
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
-Exactly.
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-> the v1. I wonder if someone might have started depending upon that
-> behavior but I am more convinced that no one is using v1's tcpmem
-> accounting due to performance impact. So, this looks good to me.
-
-Agreed. The performance impact is not negligible. While not accounting
-tcpmem is also undesired for Resource Manager to do provision properly.
-So we have to migrate to cgroupv2, and now we encountered a new issue.
-Some discussion with Roman can be found here:
-
-https://lore.kernel.org/netdev/29de901f-ae4c-a900-a553-17ec4f096f0e@bytedance.com/
-
-It would be great if you can shed some light on this!
-
+> ---
+>   mm/compaction.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> Acked-by: Shakeel Butt <shakeelb@google.com>
-
-Thanks!
-	Abel
-
-> 
-> I do think we should start the deprecation process of v1's tcpmem accounting.
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index ea61922a1619..38c8d216c6a3 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -2142,7 +2142,7 @@ static unsigned int fragmentation_score_node(pg_data_t *pgdat)
+>   	return score;
+>   }
+>   
+> -static unsigned int fragmentation_score_wmark(pg_data_t *pgdat, bool low)
+> +static unsigned int fragmentation_score_wmark(bool low)
+>   {
+>   	unsigned int wmark_low;
+>   
+> @@ -2162,7 +2162,7 @@ static bool should_proactive_compact_node(pg_data_t *pgdat)
+>   	if (!sysctl_compaction_proactiveness || kswapd_is_running(pgdat))
+>   		return false;
+>   
+> -	wmark_high = fragmentation_score_wmark(pgdat, false);
+> +	wmark_high = fragmentation_score_wmark(false);
+>   	return fragmentation_score_node(pgdat) > wmark_high;
+>   }
+>   
+> @@ -2201,7 +2201,7 @@ static enum compact_result __compact_finished(struct compact_control *cc)
+>   			return COMPACT_PARTIAL_SKIPPED;
+>   
+>   		score = fragmentation_score_zone(cc->zone);
+> -		wmark_low = fragmentation_score_wmark(pgdat, true);
+> +		wmark_low = fragmentation_score_wmark(true);
+>   
+>   		if (score > wmark_low)
+>   			ret = COMPACT_CONTINUE;
