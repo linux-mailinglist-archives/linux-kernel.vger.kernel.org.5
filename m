@@ -2,130 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E99A477D180
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E277477D185
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237778AbjHOSHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 14:07:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44570 "EHLO
+        id S238222AbjHOSJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 14:09:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237636AbjHOSHQ (ORCPT
+        with ESMTP id S238150AbjHOSJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 14:07:16 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404A81987;
-        Tue, 15 Aug 2023 11:07:15 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-79095499a17so246727239f.3;
-        Tue, 15 Aug 2023 11:07:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692122834; x=1692727634;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1VPx8QGORtNg5bUCZpRkMX7Gr4rCncHGCoyJkqRF/4g=;
-        b=a7Nk99b2Wjv/TDe7+U4g7ZdqAqL/N/lNcJx3oQHGk/kHE6JMVQkP2s9XUIjY+m4A9R
-         9zSnWzI7dTfp3fs+jM7AUueRIWd+6iOXz+6pW/Nm9gRvRi04osKK+eWstmb+REheziJj
-         /R7vHX5WefZ236SmK2qXUQnbWK7OD6RKAaOMuTrKkKxPmA4OsufHyGbtuv5bKc0MDVIh
-         lGr3L7ZYpb6THtqM0j14RLBl2iz0koU3t248teffMzNO1CLUrubDoQ8pFsja7vEF8Ah+
-         NvzwYffRRN6jUeNNfQS0eVfxSA8tKq2dwQaioddpM0BXvQ/k2Y8mU6FMhfuyksBwwzoJ
-         nfJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692122834; x=1692727634;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1VPx8QGORtNg5bUCZpRkMX7Gr4rCncHGCoyJkqRF/4g=;
-        b=Je9G9GeDbac50aL0s3KpDdWEVmmW4NIXKffiZ1vuLsj39CwGR+aUxc0RmaNR6jmW6a
-         lM/+1Gh560S9NOwlReswdwSjqS+Vs6oddCxPsPyJDRmZVL1opB6Xq3ZU8kzYr170DRQh
-         88mrB04/G4mGAiVB4vDrD4Pm1cJtoqspxoo1tV6fsBuvHQRTo67TKvAi/+iZvYDdLEmQ
-         5yd4Cy6u8On/z/NRkDhL2kLpdOE4NlJeGj4k2Q1d33Y6YTHN4bp9mgZDy1cCkO8JkoDU
-         X1yPtao3E5rPvv+AoJrio+rPn/b4n8ecyb8B/WdxYmX0g13Sq1xs3HK+YxMwJqm5S34a
-         t2+A==
-X-Gm-Message-State: AOJu0YykG4M5mvynu1DqgU8hPiyJORNocXmaGBTxANMW2vgj22ug3Qgn
-        k2seulg8Qoh+pdTM16DmsICK5r4by4PPImHu39pWxZyLV59fhw==
-X-Google-Smtp-Source: AGHT+IHeLOuQP7iwwLLTQZPtYaapj6AB8sXE5zlz/r9WRsB//3BgeG3DTERDW+dm3uKTF1DhwZEmqfwIODxDuy6+48w=
-X-Received: by 2002:a05:6e02:2197:b0:346:d51:9922 with SMTP id
- j23-20020a056e02219700b003460d519922mr22291641ila.13.1692122834538; Tue, 15
- Aug 2023 11:07:14 -0700 (PDT)
+        Tue, 15 Aug 2023 14:09:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABF2106
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 11:09:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 33A146548E
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 18:09:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F0BDC433C8;
+        Tue, 15 Aug 2023 18:09:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692122953;
+        bh=Dwt2P3n6A9/tnC8wtKE1Ytw/tSXcGuR/aA4YHtP5ODA=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=MIoKTvSAb7bTlfsdn27WdD/DTNXriEamdH2ALNvemFqyCjWZSPiNUnxx8Ayg5MmNi
+         i19Y9b5JvDAxoG0xdsESY1AwN2+y3LrVHQw9Dhv3n9+r0tWlU9oUiC4is7RH4ODjMm
+         Rcb1XALpvM3YxX4l3sUECGMhxOkI5rPC3raDoMSB2E280jDOsK1yYoN39hAa6FSfWg
+         PGRllGia1ST/r2RrLkYBVT2esq2b6Ky3gjhVNR7mZ1Bwadsg9ktAR3YJbd9I9pKQOI
+         fqML16piMQ2WikNCSkrSSZFQpbbf6k1WHVIMkFIM8XUuPwzC97AXPJjRlkt2nfSHpx
+         W0B0R4XsIgQ/w==
+From:   Mark Brown <broonie@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        Ajye Huang <ajye_huang@compal.corp-partner.google.com>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Akihiko Odaki <akihiko.odaki@gmail.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        ye xingchen <ye.xingchen@zte.com.cn>,
+        "balamurugan . c" <balamurugan.c@intel.com>,
+        Libin Yang <libin.yang@intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        David Lin <CTLIN0@nuvoton.com>, Brent Lu <brent.lu@intel.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Terry Cheong <htcheong@chromium.org>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Gongjun Song <gongjun.song@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, apoorv <apoorv@intel.com>,
+        alsa-devel@alsa-project.org
+In-Reply-To: <20230804085648.3721416-1-ajye_huang@compal.corp-partner.google.com>
+References: <20230804085648.3721416-1-ajye_huang@compal.corp-partner.google.com>
+Subject: Re: [PATCH v1] ASoC: Intel: Add rpl_nau8318_8825 driver
+Message-Id: <169212294815.59295.2130257990585943471.b4-ty@kernel.org>
+Date:   Tue, 15 Aug 2023 19:09:08 +0100
 MIME-Version: 1.0
-References: <20230815155612.2535947-1-andre.przywara@arm.com>
-In-Reply-To: <20230815155612.2535947-1-andre.przywara@arm.com>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Tue, 15 Aug 2023 11:07:03 -0700
-Message-ID: <CAKEwX=OFsmTNyF-f=j53f34u8aiOhWf4N6tUW11TdppNW5YbnQ@mail.gmail.com>
-Subject: Re: [PATCH 0/3] selftests: cachestat: fix build and run on older kernels
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 8:56=E2=80=AFAM Andre Przywara <andre.przywara@arm.=
-com> wrote:
->
-> I ran all kernel selftests on some test machine, and stumbled upon
-> cachestat failing (among others).
-> Those patches fix the cachestat test compilation and run on older
-> kernels.
->
-> Also I found that the but-last test (on a normal file) fails when run on
-> a tmpfs mounted directory, as it happens on an initramfs-only system, or
-> when the current directory happens to be /dev/shm or /tmp:
-> # Create/open tmpfilecachestat
-> # Cachestat call returned 0
-> # Using cachestat: Cached: 4, Dirty: 4, Writeback: 0, Evicted: 0, Recentl=
-y Evicted: 0
-> # Cachestat call (after fsync) returned 0
-> # Using cachestat: Cached: 4, Dirty: 4, Writeback: 0, Evicted: 0, Recentl=
-y Evicted: 0
-> # Number of dirty should be zero after fsync.
-> not ok 6 cachestat fails with normal file
->
-> That same test binary succeeds on the same machine right afterwards if
-> the current directory is changed to an ext4 filesystem.
+On Fri, 04 Aug 2023 16:56:48 +0800, Ajye Huang wrote:
+> Boards were using this in older kernels before adl and rpl ids were
+> split. Add this back to maintain support.
+> 
+> 
 
-Ah, if I recall correctly, these kinds of fs have no-op fsync, correct?
-Something along the line of:
-https://github.com/torvalds/linux/blob/91aa6c4/mm/shmem.c#L4111
-The fsync logic would fail indeed. Thanks for pointing that out!
+Applied to
 
->
-> I don't really know if this is expected, and whether we should try to
-> figure out if the test file lives on a tmpfs filesystem, or whether the
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-This would be nice. I think there's a userspace method to check
-this, right? There's a TMPFS_MAGIC here - not sure if relevant:
+Thanks!
 
-https://man7.org/linux/man-pages/man2/statfs.2.html
+[1/1] ASoC: Intel: Add rpl_nau8318_8825 driver
+      commit: 273bc8bf2227108ed2851bea71786a026e34ecbb
 
-> test itself is not strict enough, and requires more "flushing"
-> (drop_caches?) to cover tmpfs directories as well.
->
-> Any ideas how to fix this would be appreciated.
->
-> Cheers,
-> Andre
->
-> Andre Przywara (3):
->   selftests: cachestat: properly link in librt
->   selftests: cachestat: use proper syscall number macro
->   selftests: cachestat: test for cachestat availability
->
->  tools/testing/selftests/cachestat/Makefile    |  2 +-
->  .../selftests/cachestat/test_cachestat.c      | 29 +++++++++++++++----
->  2 files changed, 25 insertions(+), 6 deletions(-)
->
-> --
-> 2.25.1
->
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
