@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 256D077CB77
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FD077CB75
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236669AbjHOLDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 07:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49664 "EHLO
+        id S236686AbjHOLDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 07:03:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236604AbjHOLC5 (ORCPT
+        with ESMTP id S236612AbjHOLDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 07:02:57 -0400
+        Tue, 15 Aug 2023 07:03:01 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F12F7E6B
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:02:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A8FBE6B
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:03:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692097376; x=1723633376;
+  t=1692097380; x=1723633380;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=cSyfx3hnRQU1k3wALJQOySWn/MpRhvobP74R9g7vYM0=;
-  b=EGAW2CGoNmlxgQ0ET4qaQAU5w1bk8MfKqTdYua+ZeZXMPP7RVVz5DjO0
-   dU0r9XZFgSbxEKVKAX7unM3YV0Tsswnxr+lzxt3myKcqNTQVsVS6u/bm7
-   N7TqO34NN4sq+q7AwbCrqMffN/4dsi0DlQ4dl+A05k98HYBkY49w+SrEA
-   gVLLqLYC+vwNazNpgaaBuEm2VINqcIYh36ocA4UwUjFkljp+OIM35ZprP
-   K7ZIB6LfibgydaCNjQSuo0SEEEsgZQyp6dPmg595Ys7qGsI0VkHQ07dt2
-   9DUgHGd6axJLNZvfjyHHoFVoXePwfpgWYr0NpAWzpUUSULq0VUkxhGb2S
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="436148398"
+  bh=KfA+OEQel2hlB9E3+pafaAI8n8ikzj6Tz1k0C8sfZTY=;
+  b=a/7WHoUTJ1lMJ99aEzvj8VY9ZpFVUdyT1nBwIbQtsnNO3SWT+fH3DYdL
+   HS46cvnysczqKhJwO+JIuzEHYgwrf4Cs+c5lY+MMd65zF6Bk9XFhPytAX
+   VGh03JlJQUIR14kD4pMy/zSsZrhAQJ/CyTPoO//SanhOLOIAIxQATfoAK
+   LkiZltCG7/OYWS8B5xoO4htwBdOgcETi06wXpL0ObB8URgBLCqxlPTdt2
+   Qz1tc6P714sL4ZKAOxACEM70Dc6/LlaBi4Fz5mvwutpOrCCvhmTLI6pa1
+   TL7IxzdjpTbpaUcasfOpyX1OHS7rB21rzJ9M089zyJTL5iR2Q2f/cpa8V
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="436148416"
 X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="436148398"
+   d="scan'208";a="436148416"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 04:02:56 -0700
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 04:03:00 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="763236183"
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="763236187"
 X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="763236183"
+   d="scan'208";a="763236187"
 Received: from fwafula-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.212.73.197])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 04:02:53 -0700
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 04:02:56 -0700
 From:   Kai Huang <kai.huang@intel.com>
 To:     peterz@infradead.org, kirill.shutemov@linux.intel.com,
         linux-kernel@vger.kernel.org
@@ -47,9 +47,9 @@ Cc:     dave.hansen@intel.com, tglx@linutronix.de, bp@alien8.de,
         pbonzini@redhat.com, isaku.yamahata@intel.com,
         sathyanarayanan.kuppuswamy@linux.intel.com,
         n.borisov.lkml@gmail.com, kai.huang@intel.com
-Subject: [PATCH v4 11/12] x86/virt/tdx: Make TDX_MODULE_CALL handle SEAMCALL #UD and #GP
-Date:   Tue, 15 Aug 2023 23:02:05 +1200
-Message-ID: <de975832a367f476aab2d0eb0d9de66019a16b54.1692096753.git.kai.huang@intel.com>
+Subject: [PATCH v4 12/12] x86/virt/tdx: Adjust 'struct tdx_module_args' to use x86 "register index" layout
+Date:   Tue, 15 Aug 2023 23:02:06 +1200
+Message-ID: <fb599b890b34c7d76c57543a784c281111ea0bf0.1692096753.git.kai.huang@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1692096753.git.kai.huang@intel.com>
 References: <cover.1692096753.git.kai.huang@intel.com>
@@ -65,129 +65,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SEAMCALL instruction causes #UD if the CPU isn't in VMX operation.
-Currently the TDX_MODULE_CALL assembly doesn't handle #UD, thus making
-SEAMCALL when VMX is disabled would cause Oops.
+For TDX guest, KVM needs to call __seamcall_saved_ret() to make the
+TDH.VP.ENTER SEAMCALL to enter the guest, possibly taking all registers
+in 'struct tdx_module_args' as input/output.
 
-Unfortunately, there are legal cases that SEAMCALL can be made when VMX
-is disabled.  For instance, VMX can be disabled due to emergency reboot
-while there are still TDX guests running.
+KVM caches guest's GPRs in 'kvm_vcpu_arch::regs[]', which follows the
+"register index" hardware layout of x86 GPRs.  On the other hand, the
+__seamcall_saved_ret() takes the pointer of 'struct tdx_module_args' as
+argument, thus there's a mismatch.
 
-Extend the TDX_MODULE_CALL assembly to return an error code for #UD to
-handle this case gracefully, e.g., KVM can then quietly eat all SEAMCALL
-errors caused by emergency reboot.
+KVM could choose to copy input registers from 'vcpu::regs[]' to a
+'struct tdx_module_args' and use that as argument to make the SEAMCALL,
+but such memory copy isn't desired and should be avoided if possible.
 
-SEAMCALL instruction also causes #GP when TDX isn't enabled by the BIOS.
-Use _ASM_EXTABLE_FAULT() to catch both exceptions with the trap number
-recorded, and define two new error codes by XORing the trap number to
-the TDX_SW_ERROR.  This opportunistically handles #GP too while using
-the same simple assembly code.
+It's not feasible to change KVM's 'vcpu::regs[]' layout due to various
+reasons (e.g., emulation code uses decoded register index as array index
+to access the register).  Therefore, adjust 'struct tdx_module_args' to
+match KVM's 'vcpu::regs[]' layout so that KVM can simply do below:
 
-A bonus is when kernel mistakenly calls SEAMCALL when CPU isn't in VMX
-operation, or when TDX isn't enabled by the BIOS, or when the BIOS is
-buggy, the kernel can get a nicer error code rather than a less
-understandable Oops.
+	__seamcall_saved_ret(TDH_VP_ENTER,
+			(struct tdx_module_args *)vcpu->arch.regs);
 
-This is basically based on Peter's code.
+Note RAX/RSP/RBP are not used by the TDX_MODULE_CALL assembly, but they
+are necessary in order to match the layout of 'struct tdx_module_args'
+to KVM's 'vcpu::regs[]'.  Thus add them to the structure, but name them
+as *_unused.  Also don't include them to asm-offset.c so that any misuse
+of them in the assembly would result in build error.
 
 Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Isaku Yamahata <isaku.yamahata@intel.com>
 Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Kai Huang <kai.huang@intel.com>
+Tested-by: Isaku Yamahata <isaku.yamahata@intel.com>
 ---
+ arch/x86/include/asm/shared/tdx.h | 19 +++++++++++++------
+ arch/x86/kernel/asm-offsets.c     |  6 +++---
+ 2 files changed, 16 insertions(+), 9 deletions(-)
 
-v3 -> v4:
- - Changed changelog to use emergency reboot as justification instead of
-   the erratum.
- - Slight changed patch title to be more precise.
+diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
+index 74fc466dfdcd..8d1427562c63 100644
+--- a/arch/x86/include/asm/shared/tdx.h
++++ b/arch/x86/include/asm/shared/tdx.h
+@@ -58,24 +58,31 @@
+  * Used in __tdcall*() to gather the input/output registers' values of the
+  * TDCALL instruction when requesting services from the TDX module. This is a
+  * software only structure and not part of the TDX module/VMM ABI
++ *
++ * Note those *_unused are not used by the TDX_MODULE_CALL assembly.
++ * The layout of this structure also matches KVM's kvm_vcpu_arch::regs[]
++ * layout, which follows the "register index" order of x86 GPRs.  KVM
++ * then can simply type cast kvm_vcpu_arch::regs[] to this structure to
++ * avoid the extra memory copy between two structures when making
++ * TDH.VP.ENTER SEAMCALL.
+  */
+ struct tdx_module_args {
+-	/* callee-clobbered */
++	u64 rax_unused;
+ 	u64 rcx;
+ 	u64 rdx;
++	u64 rbx;
++	u64 rsp_unused;
++	u64 rbp_unused;
++	u64 rsi;
++	u64 rdi;
+ 	u64 r8;
+ 	u64 r9;
+-	/* extra callee-clobbered */
+ 	u64 r10;
+ 	u64 r11;
+-	/* callee-saved + rdi/rsi */
+ 	u64 r12;
+ 	u64 r13;
+ 	u64 r14;
+ 	u64 r15;
+-	u64 rbx;
+-	u64 rdi;
+-	u64 rsi;
+ };
  
-v2 -> v3:
- - Added more material to the changelog to explain the TDX erratum
-  (hoping it can be merged together with this series).
- - Changed to use %rdi to hold $TDX_SW_ERROR instead of %r12 as the
-   latter is callee-saved.
-
-v1 -> v2:
- - Skip saving output registers when SEAMCALL #UD/#GP
-
-
----
- arch/x86/include/asm/tdx.h      |  4 ++++
- arch/x86/virt/vmx/tdx/tdxcall.S | 19 +++++++++++++++++++
- 2 files changed, 23 insertions(+)
-
-diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-index a69bb7d3061b..adcbe3f1de30 100644
---- a/arch/x86/include/asm/tdx.h
-+++ b/arch/x86/include/asm/tdx.h
-@@ -8,6 +8,7 @@
+ /* Used to communicate with the TDX module */
+diff --git a/arch/x86/kernel/asm-offsets.c b/arch/x86/kernel/asm-offsets.c
+index 6913b372ccf7..e4ad822d3acd 100644
+--- a/arch/x86/kernel/asm-offsets.c
++++ b/arch/x86/kernel/asm-offsets.c
+@@ -70,6 +70,9 @@ static void __used common(void)
+ 	BLANK();
+ 	OFFSET(TDX_MODULE_rcx, tdx_module_args, rcx);
+ 	OFFSET(TDX_MODULE_rdx, tdx_module_args, rdx);
++	OFFSET(TDX_MODULE_rbx, tdx_module_args, rbx);
++	OFFSET(TDX_MODULE_rsi, tdx_module_args, rsi);
++	OFFSET(TDX_MODULE_rdi, tdx_module_args, rdi);
+ 	OFFSET(TDX_MODULE_r8,  tdx_module_args, r8);
+ 	OFFSET(TDX_MODULE_r9,  tdx_module_args, r9);
+ 	OFFSET(TDX_MODULE_r10, tdx_module_args, r10);
+@@ -78,9 +81,6 @@ static void __used common(void)
+ 	OFFSET(TDX_MODULE_r13, tdx_module_args, r13);
+ 	OFFSET(TDX_MODULE_r14, tdx_module_args, r14);
+ 	OFFSET(TDX_MODULE_r15, tdx_module_args, r15);
+-	OFFSET(TDX_MODULE_rbx, tdx_module_args, rbx);
+-	OFFSET(TDX_MODULE_rdi, tdx_module_args, rdi);
+-	OFFSET(TDX_MODULE_rsi, tdx_module_args, rsi);
  
- #include <asm/errno.h>
- #include <asm/ptrace.h>
-+#include <asm/trapnr.h>
- #include <asm/shared/tdx.h>
- 
- /*
-@@ -20,6 +21,9 @@
- #define TDX_SW_ERROR			(TDX_ERROR | GENMASK_ULL(47, 40))
- #define TDX_SEAMCALL_VMFAILINVALID	(TDX_SW_ERROR | _UL(0xFFFF0000))
- 
-+#define TDX_SEAMCALL_GP			(TDX_SW_ERROR | X86_TRAP_GP)
-+#define TDX_SEAMCALL_UD			(TDX_SW_ERROR | X86_TRAP_UD)
-+
- #ifndef __ASSEMBLY__
- 
- /*
-diff --git a/arch/x86/virt/vmx/tdx/tdxcall.S b/arch/x86/virt/vmx/tdx/tdxcall.S
-index 3f0b83a9977e..016a2a1ec1d6 100644
---- a/arch/x86/virt/vmx/tdx/tdxcall.S
-+++ b/arch/x86/virt/vmx/tdx/tdxcall.S
-@@ -1,6 +1,7 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- #include <asm/asm-offsets.h>
- #include <asm/frame.h>
-+#include <asm/asm.h>
- #include <asm/tdx.h>
- 
- /*
-@@ -85,6 +86,7 @@
- .endif	/* \saved */
- 
- .if \host
-+.Lseamcall\@:
- 	seamcall
- 	/*
- 	 * SEAMCALL instruction is essentially a VMExit from VMX root
-@@ -191,11 +193,28 @@
- .if \host
- .Lseamcall_vmfailinvalid\@:
- 	mov $TDX_SEAMCALL_VMFAILINVALID, %rax
-+	jmp .Lseamcall_fail\@
-+
-+.Lseamcall_trap\@:
-+	/*
-+	 * SEAMCALL caused #GP or #UD.  By reaching here RAX contains
-+	 * the trap number.  Convert the trap number to the TDX error
-+	 * code by setting TDX_SW_ERROR to the high 32-bits of RAX.
-+	 *
-+	 * Note cannot OR TDX_SW_ERROR directly to RAX as OR instruction
-+	 * only accepts 32-bit immediate at most.
-+	 */
-+	movq $TDX_SW_ERROR, %rdi
-+	orq  %rdi, %rax
-+
-+.Lseamcall_fail\@:
- .if \ret && \saved
- 	/* pop the unused structure pointer back to RSI */
- 	popq %rsi
- .endif
- 	jmp .Lout\@
-+
-+	_ASM_EXTABLE_FAULT(.Lseamcall\@, .Lseamcall_trap\@)
- .endif	/* \host */
- 
- .endm
+ 	BLANK();
+ 	OFFSET(BP_scratch, boot_params, scratch);
 -- 
 2.41.0
 
