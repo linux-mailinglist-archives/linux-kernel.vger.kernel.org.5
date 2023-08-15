@@ -2,133 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2656C77C888
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 09:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4686677C885
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 09:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232566AbjHOH14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 03:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59830 "EHLO
+        id S234874AbjHOH1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 03:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234940AbjHOH1f (ORCPT
+        with ESMTP id S232566AbjHOH06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 03:27:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2AC1736
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 00:26:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692084407;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MUWIHiBbbg8YEf4lfImtTBAg3A+t8ntUP0gis/hwLeU=;
-        b=bKf9hYuLNZEitOj/TgCySpjut3z3t31YMzRahONnf1cmkcVbpvFxzDnW503pZtc/53lD4A
-        QKdOW3/SZeThJjRCxld6VzYTEodlOSnoiYTp9qfnWxKfyMRo9TcjfL5CQa8XnOapXNVsEf
-        Iar7hhs4FP4/8yve1omGQzsmhE7IM8c=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-160-b2fHN4YFOdqEcBir0oobeA-1; Tue, 15 Aug 2023 03:26:46 -0400
-X-MC-Unique: b2fHN4YFOdqEcBir0oobeA-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-317c8fbbd4fso3264917f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 00:26:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692084405; x=1692689205;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MUWIHiBbbg8YEf4lfImtTBAg3A+t8ntUP0gis/hwLeU=;
-        b=cQ/wE3pUe8grnKtrG4NUZs0uROQo2wROiSycBjwQZN0BQDb3lxL2ScufA9Z2xNw5me
-         Sllxji6lVRvoIvzZyNaQtDxoz7KrLp+5erQ7Kum9wA97YKx5tLXLJvrkfimHmYv+E9wr
-         oC4ED+uErJZugMC9F5lINWakRJLITOuWlJY4m1dOAWbJ53dkbnMjUGSFa7cz3SOGS5oi
-         zfTzc4N0V0kjvHBbkSpOsWHtaFTiqpTD93f8rvgJuS1Syu/kh9G2D7CmQHLqVx+2F/vx
-         pj8YtsVpKTnBH17HPmO/O8jgs6XeB+UQ6p40hvfdBzzdu5TQY9nFE8H9MpGvJEgBg6oH
-         5UHg==
-X-Gm-Message-State: AOJu0YwjVq+xG/T8KxFzULVaV4Tgwq57UtKvDgf03RImVaZd/3WV+mPT
-        XjR9w476+2W8tomwZ1fR0VpIteUGTWuVLyg6LX87DVNIePIZvxWkm87qgd8JjL+DTUZHnvAY3bD
-        s5M2IjToZ5AAbsvI7QSTCz4kM
-X-Received: by 2002:a5d:4451:0:b0:317:5722:a41b with SMTP id x17-20020a5d4451000000b003175722a41bmr9192180wrr.7.1692084405065;
-        Tue, 15 Aug 2023 00:26:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IELZPctW5W6HhR2f2xem6d43Ke7qyqoAtwSgO+EgNXc13wZJlKzKbg9ggB81IqopVUexwLz6w==
-X-Received: by 2002:a5d:4451:0:b0:317:5722:a41b with SMTP id x17-20020a5d4451000000b003175722a41bmr9192167wrr.7.1692084404711;
-        Tue, 15 Aug 2023 00:26:44 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c701:3100:c642:ba83:8c37:b0e? (p200300cbc7013100c642ba838c370b0e.dip0.t-ipconnect.de. [2003:cb:c701:3100:c642:ba83:8c37:b0e])
-        by smtp.gmail.com with ESMTPSA id j4-20020adfff84000000b003142ea7a661sm16991148wrr.21.2023.08.15.00.26.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 00:26:44 -0700 (PDT)
-Message-ID: <b805cabc-f235-417b-04f5-6602f9c50c36@redhat.com>
-Date:   Tue, 15 Aug 2023 09:26:43 +0200
+        Tue, 15 Aug 2023 03:26:58 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA48106
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 00:26:57 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0ADE821986;
+        Tue, 15 Aug 2023 07:26:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1692084416; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=1d8p6LSBYvfx6m5+KCyOytVwIyb23YiSy74u7gud+y4=;
+        b=XL5CMDmp2XVU/BbVCsTumtFhoDbyj2NleiXkuGGMQ+CVWDP4rJX0o3LbKFZZqew1GCzW3K
+        ZARuxmC2+odRJ3Tf225gWBKzP0IoE621u1NZnayrpkNKL+a4/thSSlVjbZtfnuP5qHlChy
+        TRNk1/YCI8Oe3sZTYgeTtlFmWEgG6xk=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C437713909;
+        Tue, 15 Aug 2023 07:26:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id YHJ1Lr8o22QYBwAAMHmgww
+        (envelope-from <jgross@suse.com>); Tue, 15 Aug 2023 07:26:55 +0000
+Message-ID: <5abd6c5f-b9fe-4fd1-95d7-f92fa763eb10@suse.com>
+Date:   Tue, 15 Aug 2023 09:26:55 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1] mm/ksm: add pages scanned metric
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] xen: Illustrate the transition to sync_try_cmpxchg
 Content-Language: en-US
-To:     Stefan Roesch <shr@devkernel.io>, kernel-team@fb.com
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, riel@surriel.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org
-References: <20230811193655.2518943-1-shr@devkernel.io>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230811193655.2518943-1-shr@devkernel.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+To:     Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, xen-devel@lists.xenproject.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+References: <20230710192440.47140-1-ubizjak@gmail.com>
+ <20230710192440.47140-3-ubizjak@gmail.com>
+From:   Juergen Gross <jgross@suse.com>
+Autocrypt: addr=jgross@suse.com; keydata=
+ xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
+ ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
+ dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
+ NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
+ XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
+ AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
+ CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
+ mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
+ G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
+ kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
+ Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
+ RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
+ vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
+ sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
+ aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
+ w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
+ auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
+ 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
+ fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
+ HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
+ QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
+ ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
+In-Reply-To: <20230710192440.47140-3-ubizjak@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------H0X8H9rUDW0PJBMy8EwtcgMS"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.08.23 21:36, Stefan Roesch wrote:
-> ksm currently maintains several statistics, which let you determine how
-> successful KSM is at sharing pages. However it does not contain a metric
-> to determine how much work it does.
-> 
-> This commit adds the pages scanned metric. This allows the administrator
-> to determine how many pages have been scanned over a period of time.
-> 
-> Signed-off-by: Stefan Roesch <shr@devkernel.io>
-> ---
->   Documentation/admin-guide/mm/ksm.rst |  2 ++
->   mm/ksm.c                             | 16 +++++++++++++++-
->   2 files changed, 17 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/mm/ksm.rst b/Documentation/admin-guide/mm/ksm.rst
-> index 5c5be7bd84b8..776f244bdae4 100644
-> --- a/Documentation/admin-guide/mm/ksm.rst
-> +++ b/Documentation/admin-guide/mm/ksm.rst
-> @@ -159,6 +159,8 @@ The effectiveness of KSM and MADV_MERGEABLE is shown in ``/sys/kernel/mm/ksm/``:
->   
->   general_profit
->           how effective is KSM. The calculation is explained below.
-> +pages_scanned
-> +        how many pages are being scanned for ksm
->   pages_shared
->           how many shared pages are being used
->   pages_sharing
-> diff --git a/mm/ksm.c b/mm/ksm.c
-> index 6b7b8928fb96..8d6aee05421d 100644
-> --- a/mm/ksm.c
-> +++ b/mm/ksm.c
-> @@ -242,6 +242,9 @@ static struct kmem_cache *rmap_item_cache;
->   static struct kmem_cache *stable_node_cache;
->   static struct kmem_cache *mm_slot_cache;
->   
-> +/* The number of pages scanned */
-> +static unsigned long ksm_pages_scanned;
-> +
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------H0X8H9rUDW0PJBMy8EwtcgMS
+Content-Type: multipart/mixed; boundary="------------9INa0Hf6BXMQPEVZrbWvFYeO";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org,
+ x86@kernel.org, xen-devel@lists.xenproject.org
+Cc: Peter Zijlstra <peterz@infradead.org>,
+ Stefano Stabellini <sstabellini@kernel.org>,
+ Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Message-ID: <5abd6c5f-b9fe-4fd1-95d7-f92fa763eb10@suse.com>
+Subject: Re: [PATCH 3/3] xen: Illustrate the transition to sync_try_cmpxchg
+References: <20230710192440.47140-1-ubizjak@gmail.com>
+ <20230710192440.47140-3-ubizjak@gmail.com>
+In-Reply-To: <20230710192440.47140-3-ubizjak@gmail.com>
 
-LGTM
+--------------9INa0Hf6BXMQPEVZrbWvFYeO
+Content-Type: multipart/mixed; boundary="------------ENw9nYNqNn7D9oSXkACrK1AY"
 
-Acked-by: David Hildenbrand <david@redhat.com>
+--------------ENw9nYNqNn7D9oSXkACrK1AY
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
--- 
-Cheers,
+T24gMTAuMDcuMjMgMjE6MjEsIFVyb3MgQml6amFrIHdyb3RlOg0KPiBUaGlzIHBhdGNoIGls
+bHVzdHJhdGVzIHRoZSB0cmFuc2l0aW9uIHRvIHN5bmNfdHJ5X2NtcHhjaGcuDQo+IEl0IGlz
+IG5vdCBpbnRlbmRlZCB0byBiZSBtZXJnZWQgYXMtaXMuDQo+IA0KPiBDYzogUGV0ZXIgWmlq
+bHN0cmEgPHBldGVyekBpbmZyYWRlYWQub3JnPg0KPiBDYzogSnVlcmdlbiBHcm9zcyA8amdy
+b3NzQHN1c2UuY29tPg0KPiBDYzogU3RlZmFubyBTdGFiZWxsaW5pIDxzc3RhYmVsbGluaUBr
+ZXJuZWwub3JnPg0KPiBDYzogT2xla3NhbmRyIFR5c2hjaGVua28gPG9sZWtzYW5kcl90eXNo
+Y2hlbmtvQGVwYW0uY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBVcm9zIEJpemphayA8dWJpemph
+a0BnbWFpbC5jb20+DQoNCkFja2VkLWJ5OiBKdWVyZ2VuIEdyb3NzIDxqZ3Jvc3NAc3VzZS5j
+b20+DQoNCg0KSnVlcmdlbg0KDQo=
+--------------ENw9nYNqNn7D9oSXkACrK1AY
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
-David / dhildenb
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
+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
+jR/i1DG86lem3iBDXzXsZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------ENw9nYNqNn7D9oSXkACrK1AY--
+
+--------------9INa0Hf6BXMQPEVZrbWvFYeO--
+
+--------------H0X8H9rUDW0PJBMy8EwtcgMS
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmTbKL8FAwAAAAAACgkQsN6d1ii/Ey9u
+mAf5AZKGPPIczGL+OsNSU+/ryKAKVE+Gj3Sn5LVOhZJHyjfEMVPIaAPfkgUdb2r5LTkGfLKC+cet
+cyGtu1MGWfCp1NLqKeOVlWEW0obRsvxEnmbqf1qCzwJKgLXmOIIiX5mwCr8xsCfGdtxAzHs+MRSv
+9IGzUP37mvNHhXAjvZwLuikBO1adOzr4NifffKYbYccty5DkYYA003FDipQcFjsJQaL/HrA55xlJ
+WkH9kwiUgPM3MqIHYUdVu1WGHEwquk85+9p9oDEeliyyGo3iXOVT4FC1WDwCsMO6y63IA1f2skxU
+kGt2plBzE7yXlIt8d/Jmd6DPDpJ/YX29KTWghbCGDA==
+=9wrQ
+-----END PGP SIGNATURE-----
+
+--------------H0X8H9rUDW0PJBMy8EwtcgMS--
