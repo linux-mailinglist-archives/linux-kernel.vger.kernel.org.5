@@ -2,216 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 836AF77D0C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC6077D0DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238737AbjHORTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 13:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57738 "EHLO
+        id S238815AbjHORUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 13:20:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238704AbjHORTM (ORCPT
+        with ESMTP id S238843AbjHORUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 13:19:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3339A1BCB;
-        Tue, 15 Aug 2023 10:19:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692119951; x=1723655951;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=fnhmYRSLLF7upnCUT+rF6FBxCOUm7AKxntdwOQGVU48=;
-  b=nxlTRel/kQ67/0a8wwv1RLZj0whFlMvBgqlqGYgzQuRjPuQ9zQadzrw1
-   9EysTS3mGXR+lC7PVnx/FTeAEhu1pt3MP1Y3l5Om8k1evOueMyl51STK1
-   d2lIF/kA38QZC6pxsBjPrtOL9nbkPsQkfsDc+UhqtiaWwP+worWg/50VU
-   DZScYAhZTn7vQC9xWiBQRjXVLgr8Z0Huo+51tRknW91ehQjfgPiX/pEc7
-   PqFbOO3H0FyJXH5TWZnj8stgtA1RoXo9h+rdxaC+YiF+6oEmQkD1jBPdL
-   LgVceTcQb0NxYcn1wWKiJphHyrN0+oj9ctKajh9vVqheXywypFjOdMlJt
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="436229858"
-X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
-   d="scan'208";a="436229858"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 10:19:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="907693416"
-X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
-   d="scan'208";a="907693416"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 10:19:08 -0700
-From:   isaku.yamahata@intel.com
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
-        Michael Roth <michael.roth@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, erdemaktas@google.com,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        linux-coco@lists.linux.dev,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Yuan Yao <yuan.yao@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
-        Fuad Tabba <tabba@google.com>
-Subject: [PATCH 8/8] RFC: KVM: gmem: Guarantee the order of destruction
-Date:   Tue, 15 Aug 2023 10:18:55 -0700
-Message-Id: <72655345e07a02028c9239ccb2c3633dd72bbf9d.1692119201.git.isaku.yamahata@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1692119201.git.isaku.yamahata@intel.com>
-References: <cover.1692119201.git.isaku.yamahata@intel.com>
+        Tue, 15 Aug 2023 13:20:25 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2069.outbound.protection.outlook.com [40.107.94.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B421FDF;
+        Tue, 15 Aug 2023 10:20:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Kzj2OoO9HVjNE6HHgyIwvbeB2fhEtOk9ih4TTj30hcBGRj4EkCalfJY0QXorVW0fBJXBdavDYYluIVl8aWnzFlqX1K7lgVPQ14gYKJm31T74hebDX4dwAJuRgkPz2z7cZplDe9RQ/KWQYO0qxaa3VX3DcJv/CWclvA5ZlRTqLmSLgZ8rE9kLKnO4wQGoaeup9cFR3eIURmxPdXzDiRqu2jUmYZMFC3WaHS0S2Z/1eddjAWtxk14X+eaOvTSteQ/7n4z6zgCaDVb9fomQ2KqfgxuQObk1Drbi2izW8/JQa8VqyFaMmHgONRndZT+AovnBC3564Wr/PCUPw4Z5um0u0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=44OGpsxAdCuICt/2kfDtzFTfM9btcYeTNmM4vZU/rtc=;
+ b=YnRjoRZ8bl2pDFm4gwLuCGDssCQqH4IjkyEG3NY56ipRGYnEk9qygSzm4I5qlk8zrBjUfBoCCggMPFToJ0ZUA69hcl/lqfLhaFiWcegxfkrm66WQk3o4RM5w+00jODNlJYXJvtTlqubhdhuCgTJJ3Tr6Xjbq2iE6ekXX6YRP/0lYCeldBbyxVogATk4TvAU6Bb+4R/Rfj1EtkjTBqAJFVAA/c8XlyvIouoil9lndnKanKoFfi9VNj/uaniZCq5zp40kWM6+JzPlb/Z45JrR2jb7TA+SXsGhprgu+HflPuSdWUZsVl6MlpDWg8tWPA/z8olcJwP6kjd8jsNdxqmv0KA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=44OGpsxAdCuICt/2kfDtzFTfM9btcYeTNmM4vZU/rtc=;
+ b=gNvte4AJv4YqRyzr2Cbe+c078YJLGO1/MW22KCwyXnK3KRN0Q69PAC4qWpku+O+eVdt9Th3aY1otJfpEMv9vB3Y668kD5HMqsQQB6rF0juMEh/vXchE7i1UN+oW+YHBLqzqPD7A4YZWL2u0V1J/fRdel5kORNYAAzRAP9VoLyBs=
+Received: from MW4PR03CA0337.namprd03.prod.outlook.com (2603:10b6:303:dc::12)
+ by BY5PR12MB4951.namprd12.prod.outlook.com (2603:10b6:a03:1d2::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Tue, 15 Aug
+ 2023 17:20:10 +0000
+Received: from CO1PEPF000044FC.namprd21.prod.outlook.com
+ (2603:10b6:303:dc:cafe::af) by MW4PR03CA0337.outlook.office365.com
+ (2603:10b6:303:dc::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.14 via Frontend
+ Transport; Tue, 15 Aug 2023 17:20:10 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ CO1PEPF000044FC.mail.protection.outlook.com (10.167.241.202) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6723.3 via Frontend Transport; Tue, 15 Aug 2023 17:20:10 +0000
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 15 Aug
+ 2023 12:20:08 -0500
+Received: from xsjlizhih40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
+ Transport; Tue, 15 Aug 2023 12:20:08 -0500
+From:   Lizhi Hou <lizhi.hou@amd.com>
+To:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <robh@kernel.org>
+CC:     Lizhi Hou <lizhi.hou@amd.com>, <max.zhen@amd.com>,
+        <sonal.santan@amd.com>, <stefano.stabellini@xilinx.com>
+Subject: [PATCH V13 0/5] Generate device tree node for pci devices
+Date:   Tue, 15 Aug 2023 10:19:55 -0700
+Message-ID: <1692120000-46900-1-git-send-email-lizhi.hou@amd.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044FC:EE_|BY5PR12MB4951:EE_
+X-MS-Office365-Filtering-Correlation-Id: a4041844-b440-4c95-0f4f-08db9db3e11a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: w75omIcKS1Dnqd8A91I/qDCGEU4GaZEdaH3889O6kA5QxTKNp7G6uUT1fFOepdFmZ8Xq6S82ALD/427S2ZRqSH/grX936LJcxo+iAyKspl52YFXGAKxnfqR2NO9GYewVYMFMDY0RelOD3xFrHDTAyTET0A/Zkm0lEKp41VpkXjFvtNbur2bsQrUHvNvVt7NcXrFbONkV5fjei3CGosdqsCOTfyGIlW5gvOtvVQu23wZnI5OY0Ddu+lOBzOpVOnJFdE/CK0Nc5MMPrTKpS4dfe1F5opOc7yTrpsFAnAgAon9W2q/edj35PYmNISav4Bdaco8jv2X6OmU1+aSe1E/hSmDw03iKsNGjp1WhWTKNE8U6p/HPz6gtXCQO4Mq2tTrqNcUP7uwBjzRfTLipDIWkIA7jEys5paD4XfpjM2Urzc/3wXe+bF4KS/lfWhM7E1+G64pTu1VHQsfI2D0nARfGHFQH1MNT2w0fnnD2M4jwNwDCOXfh810wh7HlUxneojEDOAT4Ue2Yvim1Y6tkhqSjKjOdNaYv9y28zfYzdR2ETG3wDdIb2XsoN/iZo4oYI5pVwFDq8WOZXtVAGtUQnjbbc7o54sQjKMIVEQePFzwREgkRGCStYxOzwDId6mZwn8Z/JRDL04TN7HrmcQrjDnCxr7179pVajLtoGAeLexiyV1v/da5KHlFUJ5nO095OZP5T6eDP4AD9otxXcEJYuOmqTUYoebvhPJVOSA8tMsPAFkBRtILEq2MSb3/THA2TpaY7Nj3SNCBjudeSVhJLNb1NeoifYJsTa7SPOScJfkr9xog=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(396003)(136003)(376002)(451199024)(1800799009)(186009)(82310400011)(46966006)(36840700001)(40470700004)(66574015)(41300700001)(6666004)(478600001)(44832011)(2616005)(2906002)(966005)(8936002)(36756003)(4326008)(70586007)(86362001)(36860700001)(110136005)(47076005)(40460700003)(40480700001)(82740400003)(81166007)(356005)(5660300002)(26005)(54906003)(426003)(336012)(316002)(70206006)(8676002)(83380400001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2023 17:20:10.2939
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a4041844-b440-4c95-0f4f-08db9db3e11a
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044FC.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4951
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Isaku Yamahata <isaku.yamahata@intel.com>
+This patch series introduces OF overlay support for PCI devices which
+primarily addresses two use cases. First, it provides a data driven method
+to describe hardware peripherals that are present in a PCI endpoint and
+hence can be accessed by the PCI host. Second, it allows reuse of a OF
+compatible driver -- often used in SoC platforms -- in a PCI host based
+system.
 
-Call kvm_flush_shadow_all() before releasing kvm gmem file on the guest
-destruction.
+There are 2 series devices rely on this patch:
 
-The current gmem doesn't guarantee the destruction order between kvm gmem
-and kvm_mmu_notifier_release(), which calls kvm_flush_shadow_all().  When
-destructing TD guest, it's efficient to call kvm_flush_shadow_all() before
-calling kvm_gmem_issue_arch_invalidate() on releasing its struct file
-because kvm_flush_shadow_all() releases its host key ID (HKID).  After
-releasing HKID, the TDX module doesn't have to validate the consistency of
-the Secure-EPT structure.
+  1) Xilinx Alveo Accelerator cards (FPGA based device)
+  2) Microchip LAN9662 Ethernet Controller
 
-One way is to make struct kvm to reference kvm gmem file.  The current gmem
-implementation chose to make kvm gmem file to reference struct kvm.  So
-reference from struct kvm to reference kvm gmem file results in a circular
-reference.  Use kvm_mmu_notifier_release() to break it.
+     Please see: https://lore.kernel.org/lkml/20220427094502.456111-1-clement.leger@bootlin.com/
 
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
----
- include/linux/kvm_host.h | 24 ++++++++++++++++++++++++
- virt/kvm/kvm_main.c      | 23 ++++++++++++++++++++++-
- 2 files changed, 46 insertions(+), 1 deletion(-)
+Normally, the PCI core discovers PCI devices and their BARs using the
+PCI enumeration process. However, the process does not provide a way to
+discover the hardware peripherals that are present in a PCI device, and
+which can be accessed through the PCI BARs. Also, the enumeration process
+does not provide a way to associate MSI-X vectors of a PCI device with the
+hardware peripherals that are present in the device. PCI device drivers
+often use header files to describe the hardware peripherals and their
+resources as there is no standard data driven way to do so. This patch
+series proposes to use flattened device tree blob to describe the
+peripherals in a data driven way. Based on previous discussion, using
+device tree overlay is the best way to unflatten the blob and populate
+platform devices. To use device tree overlay, there are three obvious
+problems that need to be resolved.
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 349b0bf81fa5..d717945702a8 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -594,6 +594,10 @@ struct kvm_memory_slot {
- 	u16 as_id;
- 
- #ifdef CONFIG_KVM_PRIVATE_MEM
-+#ifdef CONFIG_KVM_GENERIC_MMU_NOTIFIER
-+	struct file *file;
-+#endif
-+	/* Private guest_mem */
- 	struct {
- 		struct file __rcu *file;
- 		pgoff_t pgoff;
-@@ -601,6 +605,26 @@ struct kvm_memory_slot {
- #endif
- };
- 
-+static inline int kvm_memslot_gmem_fget(struct kvm_memory_slot *memslot, int fd)
-+{
-+#if defined(CONFIG_KVM_PRIVATE_MEM) && defined(CONFIG_KVM_GENERIC_MMU_NOTIFIER)
-+	memslot->file = fget(fd);
-+	if (!memslot->file)
-+		return -EBADF;
-+#endif
-+	return 0;
-+}
-+
-+static inline void kvm_memslot_gmem_fput(struct kvm_memory_slot *memslot)
-+{
-+#if defined(CONFIG_KVM_PRIVATE_MEM) && defined(CONFIG_KVM_GENERIC_MMU_NOTIFIER)
-+	if (memslot->file) {
-+		fput(memslot->file);
-+		memslot->file = NULL;
-+	}
-+#endif
-+}
-+
- static inline bool kvm_slot_can_be_private(const struct kvm_memory_slot *slot)
- {
- 	return slot && (slot->flags & KVM_MEM_PRIVATE);
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 4855d0b7a859..35bc3b64b7e4 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -926,6 +926,7 @@ static void kvm_mmu_notifier_release(struct mmu_notifier *mn,
- {
- 	struct kvm *kvm = mmu_notifier_to_kvm(mn);
- 	int idx;
-+	int i;
- 
- 	/*
- 	 * Avoide race with kvm_gmem_release().
-@@ -936,6 +937,18 @@ static void kvm_mmu_notifier_release(struct mmu_notifier *mn,
- 	idx = srcu_read_lock(&kvm->srcu);
- 	kvm_flush_shadow_all(kvm);
- 	srcu_read_unlock(&kvm->srcu, idx);
-+
-+	/* Break circular reference count: kvm->gmem, gmem->kvm. */
-+	for (i = 0; i < kvm_arch_nr_memslot_as_ids(kvm); i++) {
-+		struct kvm_memslots *slots = __kvm_memslots(kvm, i);
-+		struct kvm_memory_slot *memslot;
-+		struct hlist_node *tmp;
-+		int bkt;
-+
-+		hash_for_each_safe(slots->id_hash, bkt, tmp, memslot, id_node[slots->node_idx])
-+			kvm_memslot_gmem_fput(memslot);
-+	}
-+
- 	mutex_unlock(&kvm->slots_lock);
- }
- 
-@@ -1008,8 +1021,10 @@ static void kvm_destroy_dirty_bitmap(struct kvm_memory_slot *memslot)
- /* This does not remove the slot from struct kvm_memslots data structures */
- static void kvm_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
- {
--	if (slot->flags & KVM_MEM_PRIVATE)
-+	if (slot->flags & KVM_MEM_PRIVATE) {
- 		kvm_gmem_unbind(slot);
-+		kvm_memslot_gmem_fput(slot);
-+	}
- 
- 	kvm_destroy_dirty_bitmap(slot);
- 
-@@ -1734,6 +1749,8 @@ static void kvm_commit_memory_region(struct kvm *kvm,
- 		if (old->dirty_bitmap && !new->dirty_bitmap)
- 			kvm_destroy_dirty_bitmap(old);
- 
-+		kvm_memslot_gmem_fput(old);
-+
- 		/*
- 		 * The final quirk.  Free the detached, old slot, but only its
- 		 * memory, not any metadata.  Metadata, including arch specific
-@@ -2088,6 +2105,9 @@ int __kvm_set_memory_region(struct kvm *kvm,
- 	new->flags = mem->flags;
- 	new->userspace_addr = mem->userspace_addr;
- 	if (mem->flags & KVM_MEM_PRIVATE) {
-+		r = kvm_memslot_gmem_fget(new, mem->gmem_fd);
-+		if (r)
-+			goto out;
- 		r = kvm_gmem_bind(kvm, new, mem->gmem_fd, mem->gmem_offset);
- 		if (r)
- 			goto out;
-@@ -2103,6 +2123,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
- 	if (mem->flags & KVM_MEM_PRIVATE)
- 		kvm_gmem_unbind(new);
- out:
-+	kvm_memslot_gmem_fput(new);
- 	kfree(new);
- 	return r;
- }
+First, we need to create a base tree for non-DT system such as x86_64. A
+patch series has been submitted for this:
+https://lore.kernel.org/lkml/20220624034327.2542112-1-frowand.list@gmail.com/
+https://lore.kernel.org/lkml/20220216050056.311496-1-lizhi.hou@xilinx.com/
+
+Second, a device tree node corresponding to the PCI endpoint is required
+for overlaying the flattened device tree blob for that PCI endpoint.
+Because PCI is a self-discoverable bus, a device tree node is usually not
+created for PCI devices. This series adds support to generate a device
+tree node for a PCI device which advertises itself using PCI quirks
+infrastructure.
+
+Third, we need to generate device tree nodes for PCI bridges since a child
+PCI endpoint may choose to have a device tree node created.
+
+This patch series is made up of three patches.
+
+The first patch is adding OF interface to create or destroy OF node
+dynamically.
+
+The second patch introduces a kernel option, CONFIG_PCI_DYNAMIC_OF_NODES.
+When the option is turned on, the kernel will generate device tree nodes
+for all PCI bridges unconditionally. The patch also shows how to use the
+PCI quirks infrastructure, DECLARE_PCI_FIXUP_FINAL to generate a device
+tree node for a device. Specifically, the patch generates a device tree
+node for Xilinx Alveo U50 PCIe accelerator device. The generated device
+tree nodes do not have any property.
+
+The third patch adds basic properties ('reg', 'compatible' and
+'device_type') to the dynamically generated device tree nodes. More
+properties can be added in the future.
+
+Here is the example of device tree nodes generated within the ARM64 QEMU.
+
+# lspci -t
+-[0000:00]-+-00.0
+           +-01.0
+           +-03.0-[01-03]----00.0-[02-03]----00.0-[03]----00.0
+           +-03.1-[04]--
+           \-04.0-[05-06]----00.0-[06]--
+
+Without CONFIG_PCI_DYNAMIC_OF_NODES
+
+# tree /sys/firmware/devicetree/base/pcie@10000000/
+/sys/firmware/devicetree/base/pcie@10000000/
+|-- #address-cells
+|-- #interrupt-cells
+|-- #size-cells
+|-- bus-range
+|-- compatible
+|-- device_type
+|-- dma-coherent
+|-- interrupt-map
+|-- interrupt-map-mask
+|-- linux,pci-domain
+|-- msi-map
+|-- name
+|-- ranges
+`-- reg
+
+With CONFIG_PCI_DYNAMIC_OF_NODES
+
+# tree /sys/firmware/devicetree/base/pcie@10000000/
+/sys/firmware/devicetree/base/pcie@10000000/
+|-- #address-cells
+|-- #interrupt-cells
+|-- #size-cells
+|-- bus-range
+|-- compatible
+|-- device_type
+|-- dma-coherent
+|-- interrupt-map
+|-- interrupt-map-mask
+|-- linux,pci-domain
+|-- msi-map
+|-- name
+|-- pci@3,0
+|   |-- #address-cells
+|   |-- #interrupt-cells
+|   |-- #size-cells
+|   |-- bus-range
+|   |-- compatible
+|   |-- device_type
+|   |-- interrupt-map
+|   |-- interrupt-map-mask
+|   |-- interrupts
+|   |-- pci@0,0
+|   |   |-- #address-cells
+|   |   |-- #interrupt-cells
+|   |   |-- #size-cells
+|   |   |-- bus-range
+|   |   |-- compatible
+|   |   |-- device_type
+|   |   |-- interrupt-map
+|   |   |-- interrupt-map-mask
+|   |   |-- pci@0,0
+|   |   |   |-- #address-cells
+|   |   |   |-- #interrupt-cells
+|   |   |   |-- #size-cells
+|   |   |   |-- bus-range
+|   |   |   |-- compatible
+|   |   |   |-- dev@0,0
+|   |   |   |   |-- #address-cells
+|   |   |   |   |-- #size-cells
+|   |   |   |   |-- compatible
+|   |   |   |   |-- ranges
+|   |   |   |   `-- reg
+|   |   |   |-- device_type
+|   |   |   |-- interrupt-map
+|   |   |   |-- interrupt-map-mask
+|   |   |   |-- ranges
+|   |   |   `-- reg
+|   |   |-- ranges
+|   |   `-- reg
+|   |-- ranges
+|   `-- reg
+|-- pci@3,1
+|   |-- #address-cells
+|   |-- #interrupt-cells
+|   |-- #size-cells
+|   |-- bus-range
+|   |-- compatible
+|   |-- device_type
+|   |-- interrupt-map
+|   |-- interrupt-map-mask
+|   |-- interrupts
+|   |-- ranges
+|   `-- reg
+|-- pci@4,0
+|   |-- #address-cells
+|   |-- #interrupt-cells
+|   |-- #size-cells
+|   |-- bus-range
+|   |-- compatible
+|   |-- device_type
+|   |-- interrupt-map
+|   |-- interrupt-map-mask
+|   |-- pci@0,0
+|   |   |-- #address-cells
+|   |   |-- #interrupt-cells
+|   |   |-- #size-cells
+|   |   |-- bus-range
+|   |   |-- compatible
+|   |   |-- device_type
+|   |   |-- interrupt-map
+|   |   |-- interrupt-map-mask
+|   |   |-- interrupts
+|   |   |-- ranges
+|   |   `-- reg
+|   |-- ranges
+|   `-- reg
+|-- ranges
+`-- reg
+
+Changes since v12:
+- Minor fix for kernel test robot warning
+
+Changes since v11:
+- Create interrupt related properties
+
+Changes since v10:
+- Remove 'dynamic' property
+
+Changes since v9:
+- Introduce 'dynamic' property to identify dynamically generated device tree
+  node for PCI device
+- Added 'bus-range' property to remove dtc warnings
+- Minor code review fixes
+
+Changes since v8:
+- Added patches to create unit test to verifying address translation
+    The test relies on QEMU PCI Test Device, please see
+        https://github.com/houlz0507/xoclv2/blob/pci-dt-0329/pci-dt-patch-0329/README
+    for test setup
+- Minor code review fixes
+
+Changes since v7:
+- Modified dynamic node creation interfaces
+- Added unittest for new added interfaces
+
+Changes since v6:
+- Removed single line wrapper functions
+- Added Signed-off-by Clément Léger <clement.leger@bootlin.com>
+
+Changes since v5:
+- Fixed code review comments
+- Fixed incorrect 'ranges' and 'reg' properties
+
+Changes since RFC v4:
+- Fixed code review comments
+
+Changes since RFC v3:
+- Split the Xilinx Alveo U50 PCI quirk to a separate patch
+- Minor changes in commit description and code comment
+
+Changes since RFC v2:
+- Merged patch 3 with patch 2
+- Added OF interfaces of_changeset_add_prop_* and use them to create
+  properties.
+- Added '#address-cells', '#size-cells' and 'ranges' properties.
+
+Changes since RFC v1:
+- Added one patch to create basic properties.
+- To move DT related code out of PCI subsystem, replaced of_node_alloc()
+  with of_create_node()/of_destroy_node()
+
+Lizhi Hou (5):
+  of: dynamic: Add interfaces for creating device node dynamically
+  PCI: Create device tree node for bridge
+  PCI: Add quirks to generate device tree node for Xilinx Alveo U50
+  of: overlay: Extend of_overlay_fdt_apply() to specify the target node
+  of: unittest: Add pci_dt_testdrv pci driver
+
+ drivers/of/dynamic.c                          | 164 ++++++++
+ drivers/of/overlay.c                          |  42 ++-
+ drivers/of/unittest-data/Makefile             |   3 +-
+ .../of/unittest-data/overlay_pci_node.dtso    |  22 ++
+ drivers/of/unittest.c                         | 211 ++++++++++-
+ drivers/pci/Kconfig                           |  12 +
+ drivers/pci/Makefile                          |   1 +
+ drivers/pci/bus.c                             |   2 +
+ drivers/pci/of.c                              |  79 ++++
+ drivers/pci/of_property.c                     | 355 ++++++++++++++++++
+ drivers/pci/pci.h                             |  12 +
+ drivers/pci/quirks.c                          |  12 +
+ drivers/pci/remove.c                          |   1 +
+ include/linux/of.h                            |  25 +-
+ 14 files changed, 926 insertions(+), 15 deletions(-)
+ create mode 100644 drivers/of/unittest-data/overlay_pci_node.dtso
+ create mode 100644 drivers/pci/of_property.c
+
 -- 
-2.25.1
+2.34.1
 
