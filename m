@@ -2,73 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E4077C45C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 02:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F26F77C45F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 02:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233670AbjHOAQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 20:16:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57754 "EHLO
+        id S233690AbjHOASy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 20:18:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233656AbjHOAQ1 (ORCPT
+        with ESMTP id S233664AbjHOASf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 20:16:27 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0DE0E5B;
-        Mon, 14 Aug 2023 17:16:26 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bc7b25c699so30009115ad.1;
-        Mon, 14 Aug 2023 17:16:26 -0700 (PDT)
+        Mon, 14 Aug 2023 20:18:35 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F9010D4
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 17:18:33 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68844c0af5dso145391b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 17:18:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692058586; x=1692663386;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=weB9MtIJFBDelUwYLkDTbi/52FIM6MLhscWSCwc5acY=;
-        b=FWpSGHZJ4CdZ12v0OGENLtiQt1uOLNFyMNnseZF25em+3ZLWH01DTz5JSVA8qI2O0G
-         dELHOBFz2lbQexpXMcn2rMjJ7mx7fjXibSc2c/HFDloy+ESY9oECuDx1MUqT8riYWgBy
-         eOiidbErXBg7TZhLbKY6dOquV1SFjhcN6Rj8tIWJI7fvTuKo7ydOoW19PDBAmNbvkdD+
-         SRxNboAL8P0jH6aAT9r8imATRL31saGZ3Y9iTQmo+FbyXsYLi4tlCULOQidR8Ryw5ydJ
-         Vr6jNWbEtEgOzEyObCm3+RabL5nQ9rn/JkMDVJk2nrissQDFdTyaU++WwZ1O5BUlb2tz
-         /zjA==
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1692058713; x=1692663513;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=g0IcJGdbfJaJ6PM9s40d6FQBJcjIORSRRYBAgrhIwik=;
+        b=c1sOCk2uS6tcLgdCvumIY5fsYn7OWU3pQGtCu9xNGoxpyJ/kSUggizZIfFIMultRZG
+         2/4liehzWbTkhEMsBkCuam8gD6oBpnI4wObpjCUgw00EXY/uT2zKFcUALP5XaaRAIfSO
+         QBl54YOWYiMct9HBzDI5tDxgzN2xmLViKL7LvlOQsK9RpheNYvrJw97atFOkyKncqhNp
+         a2aHBQ+MhATDz5H8I1fkNY3u9vz/gZnwFzlvEjVdH14/QWOAmF6eKpgNMRWT320trq8/
+         KBUKLiXplTY2RUv460U48cREef0H9+rt2w2fOFnA1dqcIIk6OygbZlV6QZtr9mwbFQ9L
+         rx5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692058586; x=1692663386;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=weB9MtIJFBDelUwYLkDTbi/52FIM6MLhscWSCwc5acY=;
-        b=N80ngmcnTQJaphHcGYUZ4wzYaJH52qUdx97zyYbsxzTQk1GFh5ULyWAhfy3w4F+40x
-         YYWevmcHgqX9JUtZUYVlaiaBODM8UJUxCe+sj2nwcU+qw08I6PmQ93cro9TvTux3s5ic
-         fu8415TApyPkeRziyx2hln9Jf9+U836Q7VqOZ8A62DjRdgBSPU/WyjBqpvuB4m/uNocp
-         LPcVvWoFvs+8e1f83aIT2khEVYE8rjUDiPNPlIPNMter9tXlzOD6vZzOaBGneu9/h1qO
-         kbcOz+FEtW2dhLwoBIllTxAXNzJxtkNGtmI2dGwdE3MflsZTeJBCnFZYqoTZ8HHwaJdY
-         7rdQ==
-X-Gm-Message-State: AOJu0YxzoxADLo33tWbLPta2Qig4FgGaVIN1zLypolg7FlRPhmNouP3u
-        Xj0yhQYWZLpyoFjcbJfdIkd+JfoBYgo=
-X-Google-Smtp-Source: AGHT+IE4YWmOgaBYgfy3YZ1zDOqbgFEcdff5iiTj+lIjmxaDggUgNgT4Dag7PaXNNgOpekYuWvUZqw==
-X-Received: by 2002:a17:902:e546:b0:1b8:2537:542c with SMTP id n6-20020a170902e54600b001b82537542cmr11481460plf.43.1692058586135;
-        Mon, 14 Aug 2023 17:16:26 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id t12-20020a1709028c8c00b001b9d88a4d1asm9999485plo.289.2023.08.14.17.16.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 17:16:25 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 3215681A2F01; Tue, 15 Aug 2023 07:16:20 +0700 (WIB)
-Date:   Tue, 15 Aug 2023 07:16:20 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     "Dr. David Alan Gilbert" <dave@treblig.org>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, song@kernel.org
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org,
-        Linux Regressions <regressions@lists.linux.dev>
-Subject: Re: 6.5.0rc5 fs hang - ext4? raid?
-Message-ID: <ZNrD1BBvDVh-npz4@debian.me>
-References: <ZNqWfQPTScJDkmpX@gallifrey>
+        d=1e100.net; s=20221208; t=1692058713; x=1692663513;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g0IcJGdbfJaJ6PM9s40d6FQBJcjIORSRRYBAgrhIwik=;
+        b=H1swwkud7/sCpv/d6pmHTK7NYvl4tKuxmHaH90+FSox5ZCvb1VxxGT0PEg98k1XyMu
+         EFSZ0FQzb1cMuN4s/JtChDnAHe10AUDgHYSnDSx+5OyJu16VBKkuzSNSS7rN+eSkmPxe
+         1tTMfnckLS4ZpQVyuzGtqZPGjAvuvXA+MdIOSbUg1w6Xey3Yp6GVWEudjCIphPeo0/Ku
+         5UvXFyT3UR95wccHqWZO38e6zc5O3IhFJdaUL08mvq5P7n5551iPcMuusTOVgncbNLQp
+         u821eiqwotn7jl9jpj3LKjN7fiLluz4k/Zs+hFO8ECIcuHKau1aDFC0QNHKSnTNf5LRk
+         KnJA==
+X-Gm-Message-State: AOJu0Yzuc1b8xiY3ZUUo78TUdB7vyiI7UE77jFvmYQcE4l5qbfUhFK7v
+        bp/aNm+RcmWrLRr03einsDmtpg==
+X-Google-Smtp-Source: AGHT+IGs7E1LejgoAOZW0oOQhIflPh1yO9H6JfabD/As6k4k+KObniWa33OX86QWoreY+R0ofJkCnQ==
+X-Received: by 2002:a05:6a20:440d:b0:13d:1ebf:5dfc with SMTP id ce13-20020a056a20440d00b0013d1ebf5dfcmr15370952pzb.5.1692058713014;
+        Mon, 14 Aug 2023 17:18:33 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id l6-20020a62be06000000b0066f37665a63sm8450712pff.73.2023.08.14.17.18.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Aug 2023 17:18:32 -0700 (PDT)
+Message-ID: <bda49491-4d7f-485f-b929-87a4bec6efaa@kernel.dk>
+Date:   Mon, 14 Aug 2023 18:18:31 -0600
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pd4/NvBj/UOcpGoK"
-Content-Disposition: inline
-In-Reply-To: <ZNqWfQPTScJDkmpX@gallifrey>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHSET v4] Add io_uring futex/futexv support
+Content-Language: en-US
+To:     Thomas Gleixner <tglx@linutronix.de>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, andres@anarazel.de
+References: <20230728164235.1318118-1-axboe@kernel.dk> <87jzugnjzy.ffs@tglx>
+ <e136823c-b5c9-b6b3-a0e2-7e9cfda2b2d8@kernel.dk> <875y5rmyqi.ffs@tglx>
+ <9153c0bf-405b-7c16-d26c-12608a02ee29@kernel.dk> <87y1idgo3j.ffs@tglx>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <87y1idgo3j.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,40 +75,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/14/23 6:12 PM, Thomas Gleixner wrote:
+> Jens!
+> 
+> On Mon, Aug 07 2023 at 12:23, Jens Axboe wrote:
+>> On 8/6/23 7:23?PM, Thomas Gleixner wrote:
+>>> Go and look at the amount of fallout this has caused in the last years.
+>>> io-urine is definitely the leader of the pack in my security@kernel.org
+>>> inbox.
+>>
+>> We're now resorting to name calling? Sorry, but I think that's pretty
+>> low and not very professional.
+> 
+> I'm not resorting to that. If you got offended by the meme which
+> happened to elapse into my reply, then I can definitely understand
+> that. That was not my intention at all. But you might think about why
+> that meme exists in the first place.
 
---pd4/NvBj/UOcpGoK
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It's been there since day 1 because a) the spelling is close, and b)
+some people are just childish. Same reason kids in the 3rd grade come up
+with nicknames for each others. And that's fine, but most people grow
+out of that, and it certainly has no place in what is supposedly a
+professional setting.
 
-On Mon, Aug 14, 2023 at 09:02:53PM +0000, Dr. David Alan Gilbert wrote:
-> Hi,
->   I'm seeing a few hangs on a fs after upgrading to fedora 39's bleeding
-> edge; which is running kernel 6.5.0-0.rc5.20230808git14f9643dc90a.37.fc39=
-=2Ex86_64
-> It was always solid prior to that.  It seems to trigger on heavy IO
-> on this fs.
+>>> Vs. the problem at hand. I've failed to catch a major issue with futex
+>>> patches in the past and I'm not seeing any reason to rush any of this to
+>>> repeat the experience just because.
+>>
+>> I'm not asking anyone to rush anything.
+> 
+>  "As we're getting ever closer to the merge window, and I have other
+>   things sitting on top of the futex series, that's problematic for me."
+> 
+> That's your words and how should I pretty please interpret them
+> correctly?
 
-What kernel version prior to this upgrade?
+Do I need to reorder them? And clearly looks like the answer is yes,
+which is fine.
 
-Also, it'd been great if you can also bisect this regression using kernel
-tree obtained with git. See Documentation/admin-guide/bug-bisect.rst in
-the kernel tree for how to perform bisection.
+-- 
+Jens Axboe
 
-Thanks.
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---pd4/NvBj/UOcpGoK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZNrDzwAKCRD2uYlJVVFO
-o2A/AP0dbAmiqwyQXR2Sig5gkTpPzts7Xdtdfnh7sACSTfpTqQD/Rd4KpsiGkh/6
-TbWXJdSgmaEes7R5LKdgliR0Rw109gk=
-=S/Tg
------END PGP SIGNATURE-----
-
---pd4/NvBj/UOcpGoK--
