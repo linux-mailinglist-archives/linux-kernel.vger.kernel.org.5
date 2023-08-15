@@ -2,103 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC53377CF80
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B734177CF7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238270AbjHOPqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 11:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
+        id S238263AbjHOPp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 11:45:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238283AbjHOPpp (ORCPT
+        with ESMTP id S238205AbjHOPpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 11:45:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6C89E61
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:45:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692114300;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TawkjbN36L2tJSa3Vtp7sv1FkX0qieEa0khYy9fqi68=;
-        b=GzVNpKWauBuwo5xlmYTiOTpaE75kyZKcq3hD2XfUMvFrqBbINHmFucLu/gZpeWVuB30XI1
-        5SAxRiSc8jU2IQHDEubTF65lIyKQfO80lX56Xw6+4jnWsqdcyl13TVvJYsVfdk8Ul3pySy
-        i9gYzaGTq1QAceiu1zZlrjyQcxIZrdA=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-390-Tdg2iIrqNFaYgkrb_S-NTw-1; Tue, 15 Aug 2023 11:44:53 -0400
-X-MC-Unique: Tdg2iIrqNFaYgkrb_S-NTw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8DC1529DD987;
-        Tue, 15 Aug 2023 15:44:43 +0000 (UTC)
-Received: from [10.22.18.67] (unknown [10.22.18.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E6AAEC15BAD;
-        Tue, 15 Aug 2023 15:44:42 +0000 (UTC)
-Message-ID: <54e8c38d-c805-2666-b559-ce785ba24b67@redhat.com>
-Date:   Tue, 15 Aug 2023 11:44:42 -0400
+        Tue, 15 Aug 2023 11:45:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B1C10C6;
+        Tue, 15 Aug 2023 08:45:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692114304; x=1723650304;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=N4FQQZBClojt4wY/wN9yRlt7dQFZc3hyheZLUA0OBTc=;
+  b=TtXIdm5yXGPjRwXudY+Dh+mg9xd9/7to6zfyChaL9fC8QvBBfseYfFnG
+   55GHs1NUxWa3WbFKdHBs4RAFTQO1q6+rbJolRi05RuCLpJhHp2TasL2Fp
+   bBTMCbqjJgcKeGAgxYfad98aGNMD/DUaoLBbAR0sUTgMbnUXGFQH8FfAj
+   SqnJEtT42USmjBEZG6nxN53y6AYAC6vLs66537xIzyHDBRcdTakFVpQfY
+   cOpA4gZt8lWAynPWaBMMYWZ6EbKLcMPGA8OY6eJNxfCdkC7rEqfA+X3+b
+   oVzi6dleeHb9TcFX6oMavuwXR8Q4419eEoirjMPQjQwmY3gziCj8tXFRX
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="438647161"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="438647161"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 08:45:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="907654997"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="907654997"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP; 15 Aug 2023 08:44:59 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qVwE5-007rrs-0v;
+        Tue, 15 Aug 2023 18:44:57 +0300
+Date:   Tue, 15 Aug 2023 18:44:56 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Marcus Folkesson <marcus.folkesson@gmail.com>
+Cc:     Kent Gustavsson <kent@minoris.se>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Cosmin Tanislav <demonsingur@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Ramona Bolboaca <ramona.bolboaca@analog.com>,
+        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        William Breathitt Gray <william.gray@linaro.org>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 6/6] iio: adc: mcp3911: add support for the whole
+ MCP39xx family
+Message-ID: <ZNudeE+VNzSqFRGY@smile.fi.intel.com>
+References: <20230814121010.184842-1-marcus.folkesson@gmail.com>
+ <20230814121010.184842-6-marcus.folkesson@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>, Yosry Ahmed <yosryahmed@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <CAJD7tkbF1tNi8v0W4Mnqs0rzpRBshOFepxFTa1SiSvmBEBUEvw@mail.gmail.com>
- <CALvZod55S3XeK-MquTq0mDuipq8j0vFymQeX_XnPb_HuPK+oGQ@mail.gmail.com>
- <CAJD7tkYZxjAHrodVDK=wmz-sULJrq2VhC_5ecRP7T-KiaOcTuw@mail.gmail.com>
- <CALvZod46Cz_=5UgiyAKM+VgKyk=KJCqDqXu91=9uHy7-2wk53g@mail.gmail.com>
- <CAJD7tkY-ezyYebvcs=8Z_zrw2UVW8jf2WvP1G8tu2rT=2sMnAA@mail.gmail.com>
- <CALvZod5fH9xu_+6x85K38f63GfKGWD1LqtD2R4d09xmDtLB7ew@mail.gmail.com>
- <ZNdEaw2nktq1NfmH@dhcp22.suse.cz>
- <CAJD7tkaFHgc3eN1K1wYsQFWMLu4+Frf9DJ-5HOja2nC20Es9Dw@mail.gmail.com>
- <ZNrDWqfjXtAYhnvT@slm.duckdns.org>
- <CAJD7tkYBFz-gZ2QsHxUMT=t0KNXs66S-zzMPebadHx9zaG0Q3w@mail.gmail.com>
- <ZNrITZVTf2EILRJq@slm.duckdns.org>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <ZNrITZVTf2EILRJq@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230814121010.184842-6-marcus.folkesson@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 14, 2023 at 02:10:10PM +0200, Marcus Folkesson wrote:
+> Microchip does have many similar chips, add support for those.
+> 
+> The new supported chips are:
+>   - microchip,mcp3910
+>   - microchip,mcp3912
+>   - microchip,mcp3913
+>   - microchip,mcp3914
+>   - microchip,mcp3918
+>   - microchip,mcp3919
 
-On 8/14/23 20:35, Tejun Heo wrote:
-> Hello,
->
-> On Mon, Aug 14, 2023 at 05:28:22PM -0700, Yosry Ahmed wrote:
->>> So, the original design used mutex for synchronize flushing with the idea
->>> being that updates are high freq but reads are low freq and can be
->>> relatively slow. Using rstats for mm internal operations changed this
->>> assumption quite a bit and we ended up switching that mutex with a lock.
->> Naive question, do mutexes handle thundering herd problems better than
->> spinlocks? I would assume so but I am not sure.
-> I don't know. We can ask Waiman if that becomes a problem.
+...
 
-We had essentially solved the thundering herd problems for both 
-spinlocks and mutexes. Both types of lock waiters will spin in their own 
-cachelines (in the OSP wait queue in the case of mutex) except one that 
-is at the head of the queue. So there should be minimal cacheline 
-bouncing. One should certainly uses mutexes in sleep-able context or 
-when the critical section is long.
+>  	struct {
+> -		u32 channels[MCP3911_NUM_CHANNELS];
+> +		u32 channels[MCP39XX_MAX_NUM_CHANNELS];
+>  		s64 ts __aligned(8);
 
-Cheers,
-Longman
+Can we actually have the __aligned_s64 defined?
+
+Rhetorical... Let me send a patch for that as it's not related to this series.
+
+>  	} scan;
+
+...
+
+> +	/* Enable offset*/
+
+Missing space.
+
+...
+
+> +static int mcp3911_get_osr(struct mcp3911 *adc, u32 *val)
+> +{
+> +	int ret, osr;
+> +
+> +	ret = mcp3911_read(adc, MCP3911_REG_CONFIG, val, 2);
+> +	if (ret)
+> +		return ret;
+> +
+> +	osr = FIELD_GET(MCP3911_CONFIG_OSR, *val);
+> +	*val = 32 << osr;
+
+> +	return ret;
+
+	return 0;
+
+> +}
+
+...
+
+>  {
+> -	struct device *dev = &adc->spi->dev;
+>  	u32 regval;
+>  	int ret;
+
+> +	struct device *dev = &adc->spi->dev;
+
+Stray change.
+
+...
+
+> +	/* Disable offset to ignore any old values in offset register*/
+
+Missing space.
+
+...
+
+> +	u32 regval;
+> +	int ret;
+> +	struct device *dev = &adc->spi->dev;
+
+Make the longer line first.
+
+...
+
+> +		dev_dbg(dev,
+> +			"use internal voltage reference (1.2V)\n");
+
+One line.
+
+...
+
+> +		dev_dbg(dev,
+> +			"use crystal oscillator as clocksource\n");
+
+Ditto.
+
+(This is the outcome of the exercise with temporary dev variable)
+
+...
+
+> +	ret = device_property_read_u32(dev, "microchip,device-addr", &adc->dev_addr);
+>  	if (ret)
+> -		return ret;
+> +		device_property_read_u32(dev, "device-addr", &adc->dev_addr);
+> +	if (adc->dev_addr > 3) {
+
+> +		dev_err_probe(dev, -EINVAL,
+> +			"invalid device address (%i). Must be in range 0-3.\n",
+> +			adc->dev_addr);
+
+Missing return?
+
+		return dev_err_probe(...);
+
+> +	}
+> +	dev_dbg(dev, "use device address %i\n", adc->dev_addr);
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
