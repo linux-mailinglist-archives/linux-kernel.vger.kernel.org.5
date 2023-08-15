@@ -2,148 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F3377CBCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7ED877CBCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236694AbjHOLdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 07:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59434 "EHLO
+        id S236614AbjHOLeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 07:34:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236696AbjHOLcs (ORCPT
+        with ESMTP id S236823AbjHOLeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 07:32:48 -0400
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58D310E5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:32:46 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-584034c706dso58496837b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:32:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692099166; x=1692703966;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z0cIlhyjWne1murlHvTIDv20f0nQNybjsStT8wYuMbs=;
-        b=KK53EMS9OFUuzcG6+Y9jWCR9UJjdavAseGfBF7l9MTIsU0CtgHyY74O5WDPu6uDVyd
-         /3flAUEvsDmfBZsCIl2KD+tOhCuWVLJcp49luN1tyrfPd5hIl/6wvaakgcp+ZRrGC5oj
-         4udoYkc3clEbtXpW6s91SWOotVQp3z6ezoxk3TV+KW4Eo3Ywr120hGvcr3tj2jaXdhQP
-         h31YzroHZBT0mdj6/Jz/iKwk5HJZG9V6upvk2q35ZtJ8qERLLc6YfHi3AdqnR+lVzoY9
-         18t3sNb8m/T2TZ7szDAE8qKJYEezJqwKNdtW4HF3Ogx3QBol2PHlLSAh4gqsZJ3E356o
-         CsZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692099166; x=1692703966;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=z0cIlhyjWne1murlHvTIDv20f0nQNybjsStT8wYuMbs=;
-        b=BqLUyyGI2qiDb+vDSSaRI2FNvyWnV3RnfHA7SBwFexO4WQ3g/JxKZCwkkeWDQDLmWh
-         hISzxagcc9jXquXA0g+/1/fYrCOPcsvwzlXtdg/oEmTQrQ/Jb3Y/5VOgOii05Ca0pEgF
-         wGfR6zheJREttWGxEof63n3XOGWeBWgsTg2ZKUTuYCqJwTSG344Tk/ILaZTmx4OoisEf
-         r4HLKdabDF21b39jDVIWLpnV3suGriGtdoXnPC2o3TNe2JyDAbvIFZQnNgLH1CDen7Mn
-         AzV8ZfiXGUeqj2a/j6I3bOPtnD63fb+wGIRZ98WN4GmGPESAjkvKsZPazkoqpqiy+/c2
-         Ok2Q==
-X-Gm-Message-State: AOJu0YxSwcACEe7TV1UoYPFVncJta+D0YFPHX8zyEfaTzjb2UJAZkZPw
-        UJTXF0woaPeJSqexm8xhrTbv3VaQX46e5QbsI5ghm0/k+/tS2NqN
-X-Google-Smtp-Source: AGHT+IF+Uq4L1vZ2KYOj/7hnmB0axq1IhUvwed2+zIGTzDRSd6D0RQexOAD/BAlRCgknTqGst3bcTKnrGouhUHLTuVM=
-X-Received: by 2002:a25:209:0:b0:d4b:4a1f:6e13 with SMTP id
- 9-20020a250209000000b00d4b4a1f6e13mr12714722ybc.33.1692099165951; Tue, 15 Aug
- 2023 04:32:45 -0700 (PDT)
+        Tue, 15 Aug 2023 07:34:09 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0237F10E3;
+        Tue, 15 Aug 2023 04:34:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692099242;
+        bh=DtBm+/hYOvO1oRvd8aaePYEzTCG/3G53rxPgWq7IeeY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fAaVDoBUq6YyCdFH95YqeaMXPyoAgabuOLtXXpsjcIziDA0SsA6sTzOAdecd5ObJ7
+         kRitWz2DoTmvyXhrnpTFSgWcL3VGFQe7UkK4PPgfOy3DdwyJMu/eU0NsIgbLggDZ/A
+         6R4ebod4kteWvJJWx7Of4QySLx6LpI+nrvuJLcVfnWqGAuI+pQxm25q8VWXQWjHM79
+         iqqJNrvEDIXdHVe7wH6NXyBiw9uCbp4sLw7CJrSoJFX+DSdug+SdSm9h9//RClbltZ
+         73Zd30yWQ7MuA+NgC+IYCT87rC0LPo4KFNUig77yEDsrZSfiKfhBRlfiXWBGiwB4lQ
+         ZAhyxdv9WeI1A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RQ8L20KFCz4wZs;
+        Tue, 15 Aug 2023 21:34:01 +1000 (AEST)
+Date:   Tue, 15 Aug 2023 21:34:00 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Ivan Orlov <ivan.orlov0322@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the driver-core tree
+Message-ID: <20230815213400.49afbd8f@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20230727070051.17778-1-frank.li@vivo.com> <20230727070051.17778-62-frank.li@vivo.com>
- <90febfa5-b520-05f5-53ca-af0e1f3fc7c4@intel.com> <643e844b-2640-e2c8-d8a7-1cd91d453ccc@intel.com>
-In-Reply-To: <643e844b-2640-e2c8-d8a7-1cd91d453ccc@intel.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 15 Aug 2023 13:32:09 +0200
-Message-ID: <CAPDyKFpjPhgrn8E7WEmJeLeUVSb2es9bZRBV6WDVvMk6UR+QUA@mail.gmail.com>
-Subject: Re: [PATCH v3 62/62] mmc: f-sdh30: fix order of function calls in sdhci_f_sdh30_remove
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        Yangtao Li <frank.li@vivo.com>
-Cc:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/nr8TfKcG9Wb6p3uz8e=4/P9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 3 Aug 2023 at 07:46, Adrian Hunter <adrian.hunter@intel.com> wrote:
->
-> On 27/07/23 16:55, Adrian Hunter wrote:
-> > On 27/07/23 10:00, Yangtao Li wrote:
-> >> The order of function calls in sdhci_f_sdh30_remove is wrong,
-> >> let's call sdhci_pltfm_unregister first.
-> >>
-> >> Cc: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> >> Fixes: 5def5c1c15bf ("mmc: sdhci-f-sdh30: Replace with sdhci_pltfm")
-> >> Signed-off-by: Yangtao Li <frank.li@vivo.com>
-> >> ---
-> >>  drivers/mmc/host/sdhci_f_sdh30.c | 4 ++--
-> >>  1 file changed, 2 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/mmc/host/sdhci_f_sdh30.c b/drivers/mmc/host/sdhci=
-_f_sdh30.c
-> >> index 840084ee72e6..964fa18a61a4 100644
-> >> --- a/drivers/mmc/host/sdhci_f_sdh30.c
-> >> +++ b/drivers/mmc/host/sdhci_f_sdh30.c
-> >> @@ -211,11 +211,11 @@ static void sdhci_f_sdh30_remove(struct platform=
-_device *pdev)
-> >>      struct sdhci_host *host =3D platform_get_drvdata(pdev);
-> >>      struct f_sdhost_priv *priv =3D sdhci_f_sdhost_priv(host);
-> >>
-> >> +    sdhci_pltfm_unregister(pdev);
-> >
-> > That also frees priv
-> >
-> >> +
-> >>      reset_control_assert(priv->rst);
-> >>      clk_disable_unprepare(priv->clk);
-> >>      clk_disable_unprepare(priv->clk_iface);
-> >> -
-> >> -    sdhci_pltfm_unregister(pdev);
-> >>  }
-> >>
-> >>  #ifdef CONFIG_OF
-> >
->
-> So it needs to end up looking something like below, right?
->
-> diff --git a/drivers/mmc/host/sdhci_f_sdh30.c b/drivers/mmc/host/sdhci_f_=
-sdh30.c
-> index 840084ee72e6..47ae853f51aa 100644
-> --- a/drivers/mmc/host/sdhci_f_sdh30.c
-> +++ b/drivers/mmc/host/sdhci_f_sdh30.c
-> @@ -210,12 +210,15 @@ static void sdhci_f_sdh30_remove(struct platform_de=
-vice *pdev)
->  {
->         struct sdhci_host *host =3D platform_get_drvdata(pdev);
->         struct f_sdhost_priv *priv =3D sdhci_f_sdhost_priv(host);
-> -
-> -       reset_control_assert(priv->rst);
-> -       clk_disable_unprepare(priv->clk);
-> -       clk_disable_unprepare(priv->clk_iface);
-> +       struct clk *clk_iface =3D priv->clk_iface;
-> +       struct reset_control *rst =3D priv->rst;
-> +       struct clk *clk =3D priv->clk;
->
->         sdhci_pltfm_unregister(pdev);
-> +
-> +       reset_control_assert(rst);
-> +       clk_disable_unprepare(clk);
-> +       clk_disable_unprepare(clk_iface);
->  }
+--Sig_/nr8TfKcG9Wb6p3uz8e=4/P9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I have amended the patch according to the above. Added Adrian's ack,
-rebased it on top of the fixes branch, added a stable tag and applied
-it for fixes.
+Hi all,
 
-Thanks to both of you!
+The following commits are also in the hid tree as different commits
+(but the same patches):
 
-Kind regards
-Uffe
+  32944855bac7 ("HID: hidraw: make hidraw_class structure const")
+  afdf5dd33a91 ("HID: roccat: make all 'class' structures const")
+
+These are commits
+
+  21168bdba6ea ("HID: hidraw: make hidraw_class structure const")
+  fadfcf360161 ("HID: roccat: make all 'class' structures const")
+
+in the hid tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/nr8TfKcG9Wb6p3uz8e=4/P9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTbYqkACgkQAVBC80lX
+0GwO+wgAlVxMUJFN/q8FYVnAAw45mrispbHv50TcEbq49MoOq4mUMmKv+DxYBl0k
+RxFi4GiKyIS9d04QmpUit9UqbCd994gJo+ZQj4ebOMWz0vPVTrNa91gDyLc3LwAv
+03NsB9rUE7PAcwDOm01Z6uQnbJKcYNrm8MvnS6dxd0ZXgxNcRjB5J7Etavmeu6o/
+A1obpHEAQz7JgjrFZDWG720PmjkWuevX+KTfYlsBsBFbSLtOJpqXDg8OC9JaRxv9
+LSZYu8cJa4cxbIUaNY15yjJFNKz+Qg2/Aj5yWEvEF9IPwcmpDgb+4CijpGYevjS7
+/QhBcGv+7Vt0pYakWwsCMc8dEsiFQw==
+=ojLt
+-----END PGP SIGNATURE-----
+
+--Sig_/nr8TfKcG9Wb6p3uz8e=4/P9--
