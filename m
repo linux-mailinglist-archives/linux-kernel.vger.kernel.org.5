@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA2877C49E
+	by mail.lfdr.de (Postfix) with ESMTP id E00C877C49F
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 02:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233369AbjHOArw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 20:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56232 "EHLO
+        id S233429AbjHOArx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 20:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233173AbjHOAr1 (ORCPT
+        with ESMTP id S233308AbjHOArq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 20:47:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 439D31710
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 17:47:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D6E7A61DBA
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 00:47:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5C6AC433C7;
-        Tue, 15 Aug 2023 00:47:24 +0000 (UTC)
-Date:   Mon, 14 Aug 2023 20:47:23 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     Sven Schnelle <svens@linux.ibm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] tracing/synthetic: use union instead of casts
-Message-ID: <20230814204723.0fd326c0@gandalf.local.home>
-In-Reply-To: <de9b98fe665f4062b5a7eeaa726c547d@AcuMS.aculab.com>
-References: <20230809071459.2004931-1-svens@linux.ibm.com>
-        <20230809085449.453b632a@gandalf.local.home>
-        <de9b98fe665f4062b5a7eeaa726c547d@AcuMS.aculab.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Mon, 14 Aug 2023 20:47:46 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A421710;
+        Mon, 14 Aug 2023 17:47:45 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1692060464;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WU32HA/gaoI3ptIu4TOn7JE0oGwEzWimawkKnxR1rFg=;
+        b=16whkwprCZ9w3g4SBEhDthpyRSyFklWeq0PYLbvOmZNve5M6He9wNAzo/uuEH8CvzHXQNX
+        XXzHSe/4Xt+EaTA3tUlpf550PqkIqWEU35QsdfnO3iZwLB1N7LAw8LIRhaCZpEktMOZzeT
+        32raIT7gPPA2eJeltkhWLr1ySMhQLn7XntPtqqxDAoDvXQeXCE/4WPKOAy/B4n4sRg0VSv
+        Pntzfa7oguxVRO5zjSi9UkacnHXISC35+Ntqezsq3IfP2ymbh0nZ4oJ2LpEdYdo9YdDrij
+        xF2AuIa5knp5/ez6SuA60kpHX1moZx6WWggdHLSHqM81+cZjdIi+I9tBZKTj0g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1692060464;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WU32HA/gaoI3ptIu4TOn7JE0oGwEzWimawkKnxR1rFg=;
+        b=35zh8PUGnAybysOL03Kh5dONQ85BOKJW/dX+69kYwacBfmsRVm07X8wnXlhPjB9vKNpEaM
+        tnVGknpNvLTuDwDw==
+To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, andres@anarazel.de
+Subject: Re: [PATCHSET v4] Add io_uring futex/futexv support
+In-Reply-To: <bda49491-4d7f-485f-b929-87a4bec6efaa@kernel.dk>
+References: <20230728164235.1318118-1-axboe@kernel.dk> <87jzugnjzy.ffs@tglx>
+ <e136823c-b5c9-b6b3-a0e2-7e9cfda2b2d8@kernel.dk> <875y5rmyqi.ffs@tglx>
+ <9153c0bf-405b-7c16-d26c-12608a02ee29@kernel.dk> <87y1idgo3j.ffs@tglx>
+ <bda49491-4d7f-485f-b929-87a4bec6efaa@kernel.dk>
+Date:   Tue, 15 Aug 2023 02:47:43 +0200
+Message-ID: <87v8dhgmhc.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Aug 2023 11:34:20 +0000
-David Laight <David.Laight@ACULAB.COM> wrote:
+On Mon, Aug 14 2023 at 18:18, Jens Axboe wrote:
+> On 8/14/23 6:12 PM, Thomas Gleixner wrote:
 
-> > No need to create a structure around a single element union. Also, I would
-> > like to name it for what it is for.
-> > 
-> > union trace_synth_field {
-> > 	u8				as_u8;
-> > 	u16				as_u16;
-> > 	u32				as_u32;
-> > 	u64				as_u64;
-> > 	struct trace_dynamic_info	as_dynamic;
-> > };
-> > 
-> > Other than that, the patch looks good. Although I still need to test it.  
-> 
-> I was wondering if you need the u8 and u16 members at all?
-> Can't the values just be treated as 32bit?
-> Both char and short aren't really 'proper' arithmetic types.
+>>> We're now resorting to name calling? Sorry, but I think that's pretty
+>>> low and not very professional.
+>> 
+>> I'm not resorting to that. If you got offended by the meme which
+>> happened to elapse into my reply, then I can definitely understand
+>> that. That was not my intention at all. But you might think about why
+>> that meme exists in the first place.
+>
+> It's been there since day 1 because a) the spelling is close, and b)
+> some people are just childish. Same reason kids in the 3rd grade come up
+> with nicknames for each others. And that's fine, but most people grow
+> out of that, and it certainly has no place in what is supposedly a
+> professional setting.
 
-Not sure what you mean by "arithmatic types".
+Sure. Repeat that as often you want. I already made clear in my reply
+that this was unintentional, no?
 
-If you do something like:
+Though the fact that this "rush the feature" ends up in my security
+inbox more than justified has absolutely nothing to do with my
+potentially childish and non-professionl attitude, right?
 
- ~# echo 's:skb u16 protocol; u64 delta;' >> /sys/kernel/tracing/dynamic_events
- ~# echo 'hist:keys=skbaddr:ts=common_timestamp.usecs' >> /sys/kernel/tracing/events/net/netif_receive_skb/trigger
- ~# echo 'hist:keys=skbaddr:delta=common_timestamp.usecs-$ts:onmatch(net.netif_receive_skb).trace(skb,protocol,$delta)' >> /sys/kernel/tracing/events/skb/kfree_skb/trigger
-
-Where it records the protocol as u16, I'm guessing that if we didn't use
-this union, it might break on BIG_ENDIAN machines.
-
-For reference, the kfree_skb event looks like:
-
-system: skb
-name: kfree_skb
-ID: 1735
-format:
-        field:unsigned short common_type;       offset:0;       size:2; signed:0;
-        field:unsigned char common_flags;       offset:2;       size:1; signed:0;
-        field:unsigned char common_preempt_count;       offset:3;       size:1; signed:0;
-        field:int common_pid;   offset:4;       size:4; signed:1;
-
-        field:void * skbaddr;   offset:8;       size:8; signed:0;
-        field:void * location;  offset:16;      size:8; signed:0;
-        field:unsigned short protocol;  offset:24;      size:2; signed:0;
-        field:enum skb_drop_reason reason;      offset:28;      size:4; signed:0;
-
--- Steve
+Though you gracefully ignored that. Fair enough...
