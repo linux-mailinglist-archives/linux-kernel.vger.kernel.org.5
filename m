@@ -2,101 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6284677D35E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4701B77D35D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239640AbjHOTZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 15:25:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34146 "EHLO
+        id S239611AbjHOTYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 15:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239420AbjHOTYy (ORCPT
+        with ESMTP id S239873AbjHOTYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 15:24:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2051FE2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:24:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692127464; x=1723663464;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=gp2+KzE50abHY1M7P/w5vM5Xmdfds0OaRWKBdWmizP0=;
-  b=EYD8kuA8d1tkX78tEqInSS2vfleDzUSPx0pZOrCUQz211BgIV+9UdMhO
-   hown0VmoU0Pba7lN6HlSwk7Qg9XS17ciPz3zIKryJFVnucZlsa1oR9Hq+
-   XBRz9zpP4Gewkj2T9AaSDIS7jAmrzvRjAB+VyogtyiDnyTLhduS0hEcKz
-   soQcW2HCfZJrbRL3QN7rdrFXmKWeZW1rkk7GQNy3SaLKjHxtG77xIztr6
-   Z4mKjcgIMQDJq2ei6R1piAqyBa7TsJforBtjTNDs6tqdObD5TcKbeH8/P
-   Drus+GPLc78yjDxD7TnopaCvf0SpunV9F8nlbeW2HvFZBNSAoPybaSj0y
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="436254303"
-X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
-   d="scan'208";a="436254303"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 12:23:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="683761491"
-X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
-   d="scan'208";a="683761491"
-Received: from lkp-server02.sh.intel.com (HELO b5fb8d9e1ffc) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 15 Aug 2023 12:23:41 -0700
-Received: from kbuild by b5fb8d9e1ffc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qVzdk-0001BP-1j;
-        Tue, 15 Aug 2023 19:23:40 +0000
-Date:   Wed, 16 Aug 2023 03:23:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: vmlinux.o: warning: objtool: cw1200_handle_pspoll.isra.0.cold+0x19:
- relocation to !ENDBR: cw1200_handle_pspoll.isra.0+0x172
-Message-ID: <202308160300.zefdv91N-lkp@intel.com>
+        Tue, 15 Aug 2023 15:24:31 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F25A1FF1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:24:05 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31792ac0fefso4889796f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:24:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692127443; x=1692732243;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eB2YdeaffFvKapTeu97tKDXHKtW8rfmRdezXiy0N6zs=;
+        b=SAY2gmIGNEAiGgInuM1nDGvc/w31ckngzwPdU5Nqy5hC0Nh2Va91zmvCGoJguwvcGY
+         20kRSVSGJXKP6DVme+avP+mwcYdlzcSUDrzWwPvB5dQFqt0dp/w9V4ASPFPW4ogmj4vh
+         x3pE5ECuJREptlRY/PQ5DolWgEM1gYN8/r5QPaIgZwBnj4bC4q+KfKIrLK8qNd9mcvZ7
+         ZHWQkA/8tCoe9HfDv6JqLPFLWGUJrKapW+0lccWL7ASniljFJpcv72pKauVvxCdq9bue
+         afDATz3M4QhchabaBBQ5x0iaP7I28TZfZHV1IuvfYkJmJDCW0E5Xl2crAyvz1ETAjo0I
+         B1eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692127443; x=1692732243;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eB2YdeaffFvKapTeu97tKDXHKtW8rfmRdezXiy0N6zs=;
+        b=e6FawONNhJhPYPjxToIAnOdBdAK2Ty0+Mro5/XFj6n/NvO5cOMOU4wbK1R1yf1L6bG
+         PcHD7AgMzoXzc4TcdCIoH1yDGtUJuo9YWODiKLkPZmRRjzyU+zzCgTPSuemNiFZwyKkN
+         mjKUsQ98J1k8P5HFza93+Aw6HIcrkPhvm087yN7MHVsR0+XhIqR8MS/z3a1awQzK3BQy
+         eNk+2qUoAp71V9H2JB0NNixcjzaU/Bf2JEUYdtGsp1l5CfGmSwyAZhm80Ut6kWbMBuEo
+         gKzGMqswPgeGBe+nxdChoH+xpAkVKp//drtCjlfQ3DBxDyP2RRUMLTHrtYoa2stsQ+0Y
+         h7ww==
+X-Gm-Message-State: AOJu0YzWFfSNKM7+2wRx2OLoHXxls21giT7kLlbBiT52d6Y4AGYIuZRz
+        hE0T0/Lzjuvr5tk3fAdXvN1/qg==
+X-Google-Smtp-Source: AGHT+IHnCElvhjrz7ZJrHjNtJ31GOUgLq29EzBpHyKL8Ir+AdcbNQiYstFhuJeVysB7QpeLgwYuM6Q==
+X-Received: by 2002:adf:ed41:0:b0:317:cdc4:762e with SMTP id u1-20020adfed41000000b00317cdc4762emr11427959wro.63.1692127443408;
+        Tue, 15 Aug 2023 12:24:03 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id c13-20020a5d528d000000b003142c85fbcdsm18681305wrv.11.2023.08.15.12.24.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Aug 2023 12:24:02 -0700 (PDT)
+Message-ID: <afefa654-4f9a-121e-7d1b-76d9dcd778f7@linaro.org>
+Date:   Tue, 15 Aug 2023 21:23:59 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 2/2] Input: cs40l50 - Initial support for Cirrus Logic
+ CS40L50
+Content-Language: en-US
+To:     James Ogletree <James.Ogletree@cirrus.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Fred Treven <Fred.Treven@cirrus.com>,
+        Ben Bright <Ben.Bright@cirrus.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Jeff LaBundy <jeff@labundy.com>, Joel Stanley <joel@jms.id.au>,
+        Arnd Bergmann <arnd@arndb.de>, Jacky Bai <ping.bai@nxp.com>,
+        Jean Delvare <jdelvare@suse.de>,
+        Eddie James <eajames@linux.ibm.com>,
+        Markus Schneider-Pargmann <msp@baylibre.com>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        "patches@cirrus.com" <patches@cirrus.com>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230809191032.820271-1-james.ogletree@cirrus.com>
+ <20230809191032.820271-3-james.ogletree@cirrus.com>
+ <d1b9e063-54df-2dae-1487-c7c932fda145@linaro.org>
+ <D4B53566-9F7D-46DA-8BAE-0572B9A8AA7A@cirrus.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <D4B53566-9F7D-46DA-8BAE-0572B9A8AA7A@cirrus.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   91aa6c412d7f85e48aead7b00a7d9e91f5cf5863
-commit: 0cae5ded535c3a80aed94f119bbd4ee3ae284a65 rcu: Make RCU_LOCKDEP_WARN() avoid early lockdep checks
-date:   7 months ago
-config: x86_64-randconfig-r011-20230815 (https://download.01.org/0day-ci/archive/20230816/202308160300.zefdv91N-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230816/202308160300.zefdv91N-lkp@intel.com/reproduce)
+On 15/08/2023 17:56, James Ogletree wrote:
+> 
+> 
+>> On Aug 10, 2023, at 1:17 AM, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 09/08/2023 21:10, James Ogletree wrote:
+>>
+>>> +
+>>> +static int cs40l50_cs_dsp_init(struct cs40l50_private *cs40l50)
+>>> +{
+>>> + cs40l50->dsp.num = 1;
+>>> + cs40l50->dsp.type = WMFW_HALO;
+>>> + cs40l50->dsp.dev = cs40l50->dev;
+>>> + cs40l50->dsp.regmap = cs40l50->regmap;
+>>> + cs40l50->dsp.base = CS40L50_DSP1_CORE_BASE;
+>>> + cs40l50->dsp.base_sysinfo = CS40L50_DSP1_SYS_INFO_ID;
+>>> + cs40l50->dsp.mem = cs40l50_dsp_regions;
+>>> + cs40l50->dsp.num_mems = ARRAY_SIZE(cs40l50_dsp_regions);
+>>> + cs40l50->dsp.lock_regions = 0xFFFFFFFF;
+>>> + cs40l50->dsp.no_core_startstop = true;
+>>> + cs40l50->dsp.client_ops = &cs40l50_cs_dsp_client_ops;
+>>> +
+>>> + return cs_dsp_halo_init(&cs40l50->dsp);
+>>> +}
+>>> +
+>>> +int cs40l50_probe(struct cs40l50_private *cs40l50)
+>>> +{
+>>> + int error, i, irq;
+>>> + u32 val;
+>>> +
+>>> + mutex_init(&cs40l50->lock);
+>>> +
+>>> + error = devm_regulator_bulk_get(cs40l50->dev, ARRAY_SIZE(cs40l50_supplies),
+>>> + cs40l50_supplies);
+>>> + if (error)
+>>> + return dev_err_probe(cs40l50->dev, error, "Failed to request supplies\n");
+>>> +
+>>> + error = regulator_bulk_enable(ARRAY_SIZE(cs40l50_supplies), cs40l50_supplies);
+>>> + if (error)
+>>> + return dev_err_probe(cs40l50->dev, error, "Failed to enable supplies\n");
+>>> +
+>>> + cs40l50->reset_gpio = devm_gpiod_get_optional(cs40l50->dev, "reset", GPIOD_OUT_HIGH);
+>>
+>> None of the lines above or below seem to be wrapped according to Linux
+>> coding style (80).
+> 
+> This patch abides by the 100-column line length limit which checkpatch.pl enforces.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308160300.zefdv91N-lkp@intel.com/
+Checkpatch does not enforce 100, because it accepts also 80. It
+complains if something is longer than 100, but coding style is still the
+same. Format everything according to coding style and use 100 only if it
+increases readability.
 
-All warnings (new ones prefixed by >>):
+> However, I can see how some of the lines might be less jarring to the eyes if wrapped.
+> That will be addressed in V4.
+> 
 
-   vmlinux.o: warning: objtool: __ct_user_exit+0x3f: call to __kasan_check_write() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: __ct_user_enter+0x5d: call to __kasan_check_write() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: bnx2fc_interface_setup+0x100: relocation to !ENDBR: bnx2fc_interface_setup.cold+0x231
->> vmlinux.o: warning: objtool: cw1200_handle_pspoll.isra.0.cold+0x19: relocation to !ENDBR: cw1200_handle_pspoll.isra.0+0x172
+Best regards,
+Krzysztof
 
-
-objdump-func vmlinux.o cw1200_handle_pspoll.isra.0.cold:
-0000 00000000003fef70 <cw1200_handle_pspoll.isra.0.cold>:
-0000   3fef70:	49 63 d5             	movslq %r13d,%rdx
-0003   3fef73:	be 01 00 00 00       	mov    $0x1,%esi
-0008   3fef78:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi	3fef7b: R_X86_64_32S	.data+0x17d7a20
-000f   3fef7f:	e8 00 00 00 00       	call   3fef84 <cw1200_handle_pspoll.isra.0.cold+0x14>	3fef80: R_X86_64_PLT32	__ubsan_handle_shift_out_of_bounds-0x4
-0014   3fef84:	e8 00 00 00 00       	call   3fef89 <cw1200_handle_pspoll.isra.0.cold+0x19>	3fef85: R_X86_64_PLT32	debug_lockdep_rcu_enabled-0x4
-0019   3fef89:	48 c7 c6 00 00 00 00 	mov    $0x0,%rsi	3fef8c: R_X86_64_32S	.text+0x46ee322
-0020   3fef90:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi	3fef93: R_X86_64_32S	rcu_lock_map
-0027   3fef97:	ff 0d 00 00 00 00    	decl   0x0(%rip)        # 3fef9d <cw1200_handle_pspoll.isra.0.cold+0x2d>	3fef99: R_X86_64_PC32	pcpu_hot+0x4
-002d   3fef9d:	e8 00 00 00 00       	call   3fefa2 <cw1200_handle_pspoll.isra.0.cold+0x32>	3fef9e: R_X86_64_PLT32	lock_release-0x4
-0032   3fefa2:	e9 00 00 00 00       	jmp    3fefa7 <tx_policy_get.constprop.0.cold>	3fefa3: R_X86_64_PC32	.text+0x46ee345
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
