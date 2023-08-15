@@ -2,459 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F4177CC30
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7E977CC39
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236886AbjHOL5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 07:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34514 "EHLO
+        id S236923AbjHOL7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 07:59:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236996AbjHOL5S (ORCPT
+        with ESMTP id S237007AbjHOL6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 07:57:18 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 961B82133;
-        Tue, 15 Aug 2023 04:56:33 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-589e0eef06dso21744887b3.2;
-        Tue, 15 Aug 2023 04:56:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692100521; x=1692705321;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pUUqBcqT59hyILPiVoLGBuxUbat2hApdIu7q/UjQIKo=;
-        b=NSNWbUvCe/JsxExiKXXKEzqk860ZcjtDGoD/MpdivNF/g/+AdFTiEt16JTKxIUvs7h
-         jxGsjfgGcnuJhNo82UO0RXa/D5Wa7YfpXhw5xvroDHMKC8piXRbwLOmPySt8vcfxzcAP
-         MDE++Bwmgbvc4Rbpby1/A8P79VqzPKLlMksE8rQaWuie9Ed9nd2owCrv3m8VZ0kNLBHB
-         q/wjsVGHs0rrb75Fz7vRPsTlqr5nf8SasMjGJRUacDM658YnpS53fwnVVVJOhGVsPBwN
-         BlJE8sWzXmDDPw7QAcAu1/5M1NX6J0GNMK86m5Wt9DAjUPbrUUm4DuOg7E3CwndJeldC
-         xtWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692100521; x=1692705321;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pUUqBcqT59hyILPiVoLGBuxUbat2hApdIu7q/UjQIKo=;
-        b=FNmv1L8RPBvIvAz77b6bpOFOCwebYLQGX79F13DXoWOd3xTYGBOLgyXtnFf6xtHnPh
-         wJw8G59QAhRIGiphM/dOuMw89NLYadfCItkMoGRKz7F4u/Z9z4JfruQR24zdwWad8WYS
-         aFTG2fuAMN1dD1m9ki2o0JkA2gtV6U9FgdIU1GC6M1xffbrpkE5R6QJnVrtcdCW3GQBy
-         RZJp5RnNkWAVmYfZOk2h1WWZq89j26pbzC2H4mduU//6t0Z7Go/cb3tPNOJ8IEuaHj6N
-         /hz0fx5Mu2HZmiy7y1VHXFKkTrflSZ6OWtZedsjGeM/kplGz922nfD+bntUPjHe8woG8
-         QVPg==
-X-Gm-Message-State: AOJu0YxMKx6tdLFzOzmlv2Na9BkKnHd4y4y1LR//KhTjgeiT4TuNxu9f
-        O6KIz6a+ssseg1NU/1j6KzrGEtERmoGpyg==
-X-Google-Smtp-Source: AGHT+IHHpAzw1+E7FaKb7p3bQybbwwwRoRZGdtLCq7i+b4ujtealIW6yrvoV5CHW8q9u3kvLbFfZzw==
-X-Received: by 2002:a81:77d5:0:b0:573:cacd:306 with SMTP id s204-20020a8177d5000000b00573cacd0306mr10494744ywc.16.1692100521491;
-        Tue, 15 Aug 2023 04:55:21 -0700 (PDT)
-Received: from z-Lenovo-Product.lan ([2605:59c8:6244:7600:676:9fca:53:170f])
-        by smtp.gmail.com with ESMTPSA id z20-20020a81c214000000b0058038e6609csm3308329ywc.74.2023.08.15.04.55.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 04:55:20 -0700 (PDT)
-From:   David Ober <dober6023@gmail.com>
-To:     linux-hwmon@vger.kernel.org
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jdelvare@suse.com, linux@roeck-us.net, corbet@lwn.net,
-        dober@lenovo.com, mpearson@lenovo.com,
-        David Ober <dober6023@gmail.com>
-Subject: [PATCH] hwmon: add in watchdog for nct6686
-Date:   Tue, 15 Aug 2023 07:55:15 -0400
-Message-Id: <20230815115515.286142-1-dober6023@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 15 Aug 2023 07:58:53 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C88199B;
+        Tue, 15 Aug 2023 04:58:32 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37FBvk7L019539;
+        Tue, 15 Aug 2023 11:58:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : to : cc : references : from : subject : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Zu7cXJvPVx2WqzJM1LVy5qKbxNzBYeKWJPOVQm3gN10=;
+ b=tIkzRHcUBRBP2VeguYyX+CV7/CXVSZEYJAqTGbgf1Xur1prlYoGNvtoVq14RjZ5btwXl
+ YgPrhH9USQwZ9XIVb71Cibz3Kqso2RFdVp4c58HcAZj1KwmEKklOoM8JShnVbHOZMiqZ
+ QYrLUOv2CTnIF7gs32/h5YJD1Y31ODCZJ5tMqVtWzXyGuCFRVQGzhefKNqxCgJtRBmBi
+ xOVewM/l9U6+zn/W2qWNdb1C1k/ZarM2C0JeDDw2J4ei8oOf7qpNg4Vic1omz6HlAJlS
+ tjytKzKhuzo6kHQ6hS0dSN3ASItkYQxPyR3zYf8+MeJGffyyJi2cMk0pxaVU4/31u20/ zw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sg8gvgdv1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Aug 2023 11:58:31 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37FBdaA3030479;
+        Tue, 15 Aug 2023 11:58:31 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sg8gvgdur-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Aug 2023 11:58:31 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37F8meUC013234;
+        Tue, 15 Aug 2023 11:58:30 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sepmjm3dn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Aug 2023 11:58:30 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37FBwRU362259654
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Aug 2023 11:58:27 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A0BDE20043;
+        Tue, 15 Aug 2023 11:58:27 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1D39D20040;
+        Tue, 15 Aug 2023 11:58:27 +0000 (GMT)
+Received: from [9.171.12.89] (unknown [9.171.12.89])
+        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 15 Aug 2023 11:58:27 +0000 (GMT)
+Message-ID: <1b156168-f349-bc42-fa1d-9a6e8bfba5e1@linux.ibm.com>
+Date:   Tue, 15 Aug 2023 13:58:26 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Steffen Eiden <seiden@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michael Mueller <mimu@linux.vnet.ibm.com>,
+        Marc Hartmayer <mhartmay@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>
+References: <20230810113255.2163043-1-seiden@linux.ibm.com>
+ <20230810113255.2163043-2-seiden@linux.ibm.com>
+From:   Janosch Frank <frankja@linux.ibm.com>
+Subject: Re: [PATCH v3 1/3] s390: uv: UV feature check utility
+In-Reply-To: <20230810113255.2163043-2-seiden@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: mvfsdy4UCmusm0yAkvXmHaZgfRmhZYu3
+X-Proofpoint-ORIG-GUID: 4fh4Ddj1OHU8Z3lGjsPRGQJjYOp37igP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-15_10,2023-08-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
+ suspectscore=0 impostorscore=0 adultscore=0 bulkscore=0 spamscore=0
+ phishscore=0 lowpriorityscore=0 malwarescore=0 priorityscore=1501
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308150103
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change adds in the watchdog timer support for the nct6686
-chip so that it can be used on the Lenovo m90n IOT device
+On 8/10/23 13:32, Steffen Eiden wrote:
+> Introduces a function to check the existence of an UV feature.
+> Refactor feature bit checks to use the new function.
+> 
+> Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> Signed-off-by: Steffen Eiden <seiden@linux.ibm.com>
 
-Signed-off-by: David Ober <dober6023@gmail.com>
----
- Documentation/hwmon/nct6683.rst |   5 +-
- drivers/hwmon/nct6683.c         | 247 ++++++++++++++++++++++++++++++--
- 2 files changed, 242 insertions(+), 10 deletions(-)
+Please add a bounds check, then:
+Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
 
-diff --git a/Documentation/hwmon/nct6683.rst b/Documentation/hwmon/nct6683.rst
-index 2e1408d174bd..7421bc444365 100644
---- a/Documentation/hwmon/nct6683.rst
-+++ b/Documentation/hwmon/nct6683.rst
-@@ -3,7 +3,7 @@ Kernel driver nct6683
- 
- Supported chips:
- 
--  * Nuvoton NCT6683D/NCT6687D
-+  * Nuvoton NCT6683D/NCT6686D/NCT6687D
- 
-     Prefix: 'nct6683'
- 
-@@ -49,6 +49,8 @@ The driver has only been tested with the Intel firmware, and by default
- only instantiates on Intel boards. To enable it on non-Intel boards,
- set the 'force' module parameter to 1.
- 
-+Implement the watchdog functionality of the NCT6686D eSIO chip
-+
- Tested Boards and Firmware Versions
- -----------------------------------
- 
-@@ -63,4 +65,5 @@ Intel DH87MC	NCT6683D EC firmware version 1.0 build 04/03/13
- Intel DB85FL	NCT6683D EC firmware version 1.0 build 04/03/13
- ASRock X570	NCT6683D EC firmware version 1.0 build 06/28/19
- MSI B550	NCT6687D EC firmware version 1.0 build 05/07/20
-+LENOVO M90n-1	NCT6686D EC firmware version 9.0 build 04/21/21
- =============== ===============================================
-diff --git a/drivers/hwmon/nct6683.c b/drivers/hwmon/nct6683.c
-index f673f7d07941..eb95b91c4d39 100644
---- a/drivers/hwmon/nct6683.c
-+++ b/drivers/hwmon/nct6683.c
-@@ -24,15 +24,16 @@
- #include <linux/acpi.h>
- #include <linux/delay.h>
- #include <linux/err.h>
-+#include <linux/hwmon.h>
-+#include <linux/hwmon-sysfs.h>
- #include <linux/init.h>
- #include <linux/io.h>
- #include <linux/jiffies.h>
--#include <linux/hwmon.h>
--#include <linux/hwmon-sysfs.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
-+#include <linux/watchdog.h>
- 
- enum kinds { nct6683, nct6686, nct6687 };
- 
-@@ -73,6 +74,34 @@ static const char * const nct6683_chip_names[] = {
- #define SIO_NCT6687_ID		0xd590
- #define SIO_ID_MASK		0xFFF0
- 
-+#define WDT_CFG			0x828    /* W/O Lock Watchdog Register */
-+#define WDT_CNT			0x829    /* R/W Watchdog Timer Register */
-+#define WDT_STS			0x82A    /* R/O Watchdog Status Register */
-+#define WDT_STS_EVT_POS		(0)
-+#define WDT_STS_EVT_MSK		(0x3 << WDT_STS_EVT_POS)
-+#define WDT_SOFT_EN		0x87    /* Enable soft watchdog timer */
-+#define WDT_SOFT_DIS		0xAA    /* Disable soft watchdog timer */
-+
-+#define WATCHDOG_TIMEOUT	60      /* 1 minute default timeout */
-+
-+/* The timeout range is 1-255 seconds */
-+#define MIN_TIMEOUT		1
-+#define MAX_TIMEOUT		255
-+
-+static int timeout;
-+module_param(timeout, int, 0);
-+MODULE_PARM_DESC(timeout, "Watchdog timeout in seconds. 1 <= timeout <= 255, default="
-+		 __MODULE_STRING(WATCHDOG_TIMEOUT) ".");
-+
-+static bool nowayout = WATCHDOG_NOWAYOUT;
-+module_param(nowayout, bool, 0);
-+MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
-+		 __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
-+
-+static int early_disable;
-+module_param(early_disable, int, 0);
-+MODULE_PARM_DESC(early_disable, "Disable watchdog at boot time (default=0)");
-+
- static inline void
- superio_outb(int ioreg, int reg, int val)
- {
-@@ -171,10 +200,10 @@ superio_exit(int ioreg)
- 
- #define NCT6683_REG_CUSTOMER_ID		0x602
- #define NCT6683_CUSTOMER_ID_INTEL	0x805
-+#define NCT6683_CUSTOMER_ID_LENOVO	0x1101
- #define NCT6683_CUSTOMER_ID_MITAC	0xa0e
- #define NCT6683_CUSTOMER_ID_MSI		0x201
--#define NCT6683_CUSTOMER_ID_MSI2	0x200
--#define NCT6683_CUSTOMER_ID_ASROCK		0xe2c
-+#define NCT6683_CUSTOMER_ID_ASROCK	0xe2c
- #define NCT6683_CUSTOMER_ID_ASROCK2	0xe1b
- 
- #define NCT6683_REG_BUILD_YEAR		0x604
-@@ -183,6 +212,9 @@ superio_exit(int ioreg)
- #define NCT6683_REG_SERIAL		0x607
- #define NCT6683_REG_VERSION_HI		0x608
- #define NCT6683_REG_VERSION_LO		0x609
-+#define NCT6686_PAGE_REG_OFFSET		0
-+#define NCT6686_ADDR_REG_OFFSET		1
-+#define NCT6686_DATA_REG_OFFSET		2
- 
- #define NCT6683_REG_CR_CASEOPEN		0xe8
- #define NCT6683_CR_CASEOPEN_MASK	(1 << 7)
-@@ -304,6 +336,7 @@ struct nct6683_data {
- 
- 	struct device *hwmon_dev;
- 	const struct attribute_group *groups[6];
-+	struct watchdog_device wdt;
- 
- 	int temp_num;			/* number of temperature attributes */
- 	u8 temp_index[NCT6683_NUM_REG_MON];
-@@ -518,6 +551,39 @@ static void nct6683_write(struct nct6683_data *data, u16 reg, u16 value)
- 	outb_p(value & 0xff, data->addr + EC_DATA_REG);
- }
- 
-+static inline void nct6686_wdt_set_bank(int base_addr, u16 reg)
-+{
-+	outb_p(0xFF, base_addr + NCT6686_PAGE_REG_OFFSET);
-+	outb_p(reg >> 8, base_addr + NCT6686_PAGE_REG_OFFSET);
-+}
-+
-+/* Not strictly necessary, but play it safe for now */
-+static inline void nct6686_wdt_reset_bank(int base_addr, u16 reg)
-+{
-+	if (reg & 0xff00)
-+		outb_p(0xFF, base_addr + NCT6686_PAGE_REG_OFFSET);
-+}
-+
-+static u8 nct6686_read(struct nct6683_data *data, u16 reg)
-+{
-+	u8 res;
-+
-+	nct6686_wdt_set_bank(data->addr, reg);
-+	outb_p(reg & 0xff, data->addr + NCT6686_ADDR_REG_OFFSET);
-+	res = inb_p(data->addr + NCT6686_DATA_REG_OFFSET);
-+
-+	nct6686_wdt_reset_bank(data->addr, reg);
-+	return res;
-+}
-+
-+static void nct6686_write(struct nct6683_data *data, u16 reg, u8 value)
-+{
-+	nct6686_wdt_set_bank(data->addr, reg);
-+	outb_p(reg & 0xff, data->addr + NCT6686_ADDR_REG_OFFSET);
-+	outb_p(value & 0xff, data->addr + NCT6686_DATA_REG_OFFSET);
-+	nct6686_wdt_reset_bank(data->addr, reg);
-+}
-+
- static int get_in_reg(struct nct6683_data *data, int nr, int index)
- {
- 	int ch = data->in_index[index];
-@@ -680,11 +746,12 @@ static umode_t nct6683_in_is_visible(struct kobject *kobj,
- 	int nr = index % 4;	/* attribute */
- 
- 	/*
--	 * Voltage limits exist for Intel boards,
-+	 * Voltage limits exist for Intel and Lenovo boards,
- 	 * but register location and encoding is unknown
- 	 */
- 	if ((nr == 2 || nr == 3) &&
--	    data->customer_id == NCT6683_CUSTOMER_ID_INTEL)
-+	    (data->customer_id == NCT6683_CUSTOMER_ID_INTEL ||
-+	     data->customer_id == NCT6683_CUSTOMER_ID_LENOVO))
- 		return 0;
- 
- 	return attr->mode;
-@@ -1186,6 +1253,139 @@ static void nct6683_setup_sensors(struct nct6683_data *data)
- 	}
- }
- 
-+/*
-+ * Watchdog Functions
-+ */
-+static int nct6686_wdt_enable(struct watchdog_device *wdog, bool enable)
-+{
-+	struct nct6683_data *data = watchdog_get_drvdata(wdog);
-+
-+	u_char reg;
-+
-+	mutex_lock(&data->update_lock);
-+	reg = nct6686_read(data, WDT_CFG);
-+
-+	if (enable) {
-+		nct6686_write(data, WDT_CFG, reg | 0x3);
-+		mutex_unlock(&data->update_lock);
-+		return 0;
-+	}
-+
-+	nct6686_write(data, WDT_CFG, reg & ~BIT(0));
-+	mutex_unlock(&data->update_lock);
-+
-+	return 0;
-+}
-+
-+static int nct6686_wdt_set_time(struct watchdog_device *wdog)
-+{
-+	struct nct6683_data *data = watchdog_get_drvdata(wdog);
-+
-+	mutex_lock(&data->update_lock);
-+	nct6686_write(data, WDT_CNT, wdog->timeout);
-+	mutex_unlock(&data->update_lock);
-+
-+	if (wdog->timeout) {
-+		nct6686_wdt_enable(wdog, true);
-+		return 0;
-+	}
-+
-+	nct6686_wdt_enable(wdog, false);
-+	return 0;
-+}
-+
-+static int nct6686_wdt_start(struct watchdog_device *wdt)
-+{
-+	struct nct6683_data *data = watchdog_get_drvdata(wdt);
-+	u_char reg;
-+
-+	nct6686_wdt_set_time(wdt);
-+
-+	/* Enable soft watchdog timer */
-+	mutex_lock(&data->update_lock);
-+	/* reset trigger status */
-+	reg = nct6686_read(data, WDT_STS);
-+	nct6686_write(data, WDT_STS, reg & ~WDT_STS_EVT_MSK);
-+	mutex_unlock(&data->update_lock);
-+	return 0;
-+}
-+
-+static int nct6686_wdt_stop(struct watchdog_device *wdt)
-+{
-+	struct nct6683_data *data = watchdog_get_drvdata(wdt);
-+
-+	mutex_lock(&data->update_lock);
-+	nct6686_write(data, WDT_CFG, WDT_SOFT_DIS);
-+	mutex_unlock(&data->update_lock);
-+	return 0;
-+}
-+
-+static int nct6686_wdt_set_timeout(struct watchdog_device *wdt,
-+				   unsigned int timeout)
-+{
-+	struct nct6683_data *data = watchdog_get_drvdata(wdt);
-+
-+	wdt->timeout = timeout;
-+	mutex_lock(&data->update_lock);
-+	nct6686_write(data, WDT_CNT, timeout);
-+	mutex_unlock(&data->update_lock);
-+	return 0;
-+}
-+
-+static int nct6686_wdt_ping(struct watchdog_device *wdt)
-+{
-+	struct nct6683_data *data = watchdog_get_drvdata(wdt);
-+	int timeout;
-+
-+	/*
-+	 * Note:
-+	 * NCT6686 does not support refreshing WDT_TIMER_REG register when
-+	 * the watchdog is active. Please disable watchdog before feeding
-+	 * the watchdog and enable it again.
-+	 */
-+	/* Disable soft watchdog timer */
-+	nct6686_wdt_enable(wdt, false);
-+
-+	/* feed watchdog */
-+	timeout = wdt->timeout;
-+	mutex_lock(&data->update_lock);
-+	nct6686_write(data, WDT_CNT, timeout);
-+	mutex_unlock(&data->update_lock);
-+
-+	/* Enable soft watchdog timer */
-+	nct6686_wdt_enable(wdt, true);
-+	return 0;
-+}
-+
-+static unsigned int nct6686_wdt_get_timeleft(struct watchdog_device *wdt)
-+{
-+	struct nct6683_data *data = watchdog_get_drvdata(wdt);
-+	int ret;
-+
-+	mutex_lock(&data->update_lock);
-+	ret = nct6686_read(data, WDT_CNT);
-+	mutex_unlock(&data->update_lock);
-+	if (ret < 0)
-+		return 0;
-+
-+	return ret;
-+}
-+
-+static const struct watchdog_info nct6686_wdt_info = {
-+	.options        = WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING |
-+			  WDIOF_MAGICCLOSE,
-+	.identity       = "nct6686 watchdog",
-+};
-+
-+static const struct watchdog_ops nct6686_wdt_ops = {
-+	.owner          = THIS_MODULE,
-+	.start          = nct6686_wdt_start,
-+	.stop           = nct6686_wdt_stop,
-+	.ping           = nct6686_wdt_ping,
-+	.set_timeout    = nct6686_wdt_set_timeout,
-+	.get_timeleft   = nct6686_wdt_get_timeleft,
-+};
-+
- static int nct6683_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -1195,7 +1395,9 @@ static int nct6683_probe(struct platform_device *pdev)
- 	struct device *hwmon_dev;
- 	struct resource *res;
- 	int groups = 0;
-+	int ret;
- 	char build[16];
-+	u_char reg;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
- 	if (!devm_request_region(dev, res->start, IOREGION_LENGTH, DRVNAME))
-@@ -1215,14 +1417,14 @@ static int nct6683_probe(struct platform_device *pdev)
- 
- 	/* By default only instantiate driver if the customer ID is known */
- 	switch (data->customer_id) {
-+	case NCT6683_CUSTOMER_ID_LENOVO:
-+		break;
- 	case NCT6683_CUSTOMER_ID_INTEL:
- 		break;
- 	case NCT6683_CUSTOMER_ID_MITAC:
- 		break;
- 	case NCT6683_CUSTOMER_ID_MSI:
- 		break;
--	case NCT6683_CUSTOMER_ID_MSI2:
--		break;
- 	case NCT6683_CUSTOMER_ID_ASROCK:
- 		break;
- 	case NCT6683_CUSTOMER_ID_ASROCK2:
-@@ -1294,7 +1496,34 @@ static int nct6683_probe(struct platform_device *pdev)
- 
- 	hwmon_dev = devm_hwmon_device_register_with_groups(dev,
- 			nct6683_device_names[data->kind], data, data->groups);
--	return PTR_ERR_OR_ZERO(hwmon_dev);
-+
-+	ret = PTR_ERR_OR_ZERO(hwmon_dev);
-+	if (ret)
-+		return ret;
-+
-+	if (data->kind == nct6686 && data->customer_id == NCT6683_CUSTOMER_ID_LENOVO) {
-+		/* Watchdog initialization */
-+		data->wdt.ops = &nct6686_wdt_ops;
-+		data->wdt.info = &nct6686_wdt_info;
-+
-+		data->wdt.timeout = WATCHDOG_TIMEOUT; /* Set default timeout */
-+		data->wdt.min_timeout = MIN_TIMEOUT;
-+		data->wdt.max_timeout = MAX_TIMEOUT;
-+		data->wdt.parent = &pdev->dev;
-+
-+		watchdog_init_timeout(&data->wdt, timeout, &pdev->dev);
-+		watchdog_set_nowayout(&data->wdt, nowayout);
-+		watchdog_set_drvdata(&data->wdt, data);
-+
-+		/* reset trigger status */
-+		reg = nct6686_read(data, WDT_STS);
-+		nct6686_write(data, WDT_STS, reg & ~WDT_STS_EVT_MSK);
-+
-+		watchdog_stop_on_unregister(&data->wdt);
-+
-+		return devm_watchdog_register_device(dev, &data->wdt);
-+	}
-+	return ret;
- }
- 
- #ifdef CONFIG_PM
--- 
-2.34.1
+> ---
+>   arch/s390/include/asm/uv.h | 5 +++++
+>   arch/s390/kernel/uv.c      | 2 +-
+>   arch/s390/kvm/kvm-s390.c   | 2 +-
+>   arch/s390/mm/fault.c       | 2 +-
+>   4 files changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/s390/include/asm/uv.h b/arch/s390/include/asm/uv.h
+> index d2cd42bb2c26..f76b2747b648 100644
+> --- a/arch/s390/include/asm/uv.h
+> +++ b/arch/s390/include/asm/uv.h
+> @@ -397,6 +397,11 @@ struct uv_info {
+>   
+>   extern struct uv_info uv_info;
+>   
+> +static inline bool uv_has_feature(u8 feature_bit)
+> +{
+
+if (feature_bit >= sizeof(uv_info.uv_feature_indications) * 8)
+	return false;
+
+> +	return test_bit_inv(feature_bit, &uv_info.uv_feature_indications);
+> +}
+> +
+>   #ifdef CONFIG_PROTECTED_VIRTUALIZATION_GUEST
+>   extern int prot_virt_guest;
+>   
+> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
+> index b771f1b4cdd1..fc07bc39e698 100644
+> --- a/arch/s390/kernel/uv.c
+> +++ b/arch/s390/kernel/uv.c
+> @@ -258,7 +258,7 @@ static bool should_export_before_import(struct uv_cb_header *uvcb, struct mm_str
+>   	 * shared page from a different protected VM will automatically also
+>   	 * transfer its ownership.
+>   	 */
+> -	if (test_bit_inv(BIT_UV_FEAT_MISC, &uv_info.uv_feature_indications))
+> +	if (uv_has_feature(BIT_UV_FEAT_MISC))
+>   		return false;
+>   	if (uvcb->cmd == UVC_CMD_UNPIN_PAGE_SHARED)
+>   		return false;
+> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+> index e6511608280c..813cc3d59c90 100644
+> --- a/arch/s390/kvm/kvm-s390.c
+> +++ b/arch/s390/kvm/kvm-s390.c
+> @@ -2406,7 +2406,7 @@ static int kvm_s390_cpus_to_pv(struct kvm *kvm, u16 *rc, u16 *rrc)
+>   	struct kvm_vcpu *vcpu;
+>   
+>   	/* Disable the GISA if the ultravisor does not support AIV. */
+> -	if (!test_bit_inv(BIT_UV_FEAT_AIV, &uv_info.uv_feature_indications))
+> +	if (!uv_has_feature(BIT_UV_FEAT_AIV))
+>   		kvm_s390_gisa_disable(kvm);
+>   
+>   	kvm_for_each_vcpu(i, vcpu, kvm) {
+> diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+> index b5e1bea9194c..8a86dd725870 100644
+> --- a/arch/s390/mm/fault.c
+> +++ b/arch/s390/mm/fault.c
+> @@ -599,7 +599,7 @@ void do_secure_storage_access(struct pt_regs *regs)
+>   	 * reliable without the misc UV feature so we need to check
+>   	 * for that as well.
+>   	 */
+> -	if (test_bit_inv(BIT_UV_FEAT_MISC, &uv_info.uv_feature_indications) &&
+> +	if (uv_has_feature(BIT_UV_FEAT_MISC) &&
+>   	    !test_bit_inv(61, &regs->int_parm_long)) {
+>   		/*
+>   		 * When this happens, userspace did something that it
 
