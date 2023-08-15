@@ -2,179 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A378C77C879
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 09:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E66377C87C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 09:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234771AbjHOHUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 03:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
+        id S234650AbjHOHWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 03:22:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234776AbjHOHUP (ORCPT
+        with ESMTP id S234605AbjHOHWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 03:20:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57579106
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 00:19:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692083967;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nhUenfMGwp0x5jxIRMORVV7d69eUXbxJCsT6e0oA0vs=;
-        b=ix0NyW0zdzcUeW03yUucwPmHT3P8+mJAeIHMEaEAjdg3dw2KcpOXsTUCzZiZo3r88zD/uj
-        +qHs/H2BI9LaMJ13D1kyD9VqVFM7r8ync0DiJramjTgfhGdsD8QgmPPC2rwZ8gJ5wxGZLN
-        0T2RdM7bXKqR/0XPM/7SL4e73RKLT+s=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-41-T3_4ysMGMvKYKXqgRyZc5w-1; Tue, 15 Aug 2023 03:19:25 -0400
-X-MC-Unique: T3_4ysMGMvKYKXqgRyZc5w-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-317d5b38194so2342134f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 00:19:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692083964; x=1692688764;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nhUenfMGwp0x5jxIRMORVV7d69eUXbxJCsT6e0oA0vs=;
-        b=f2RzWGPjsjIerC+FZXP3sOCOnKxoVfa52hOTUnAIB2OkXEAQaS3xaQMbMDEgiNW0CO
-         yMFVgmbk+ztXR/kuje1IUihrTcEiw5I6GPipv84A4+ThAHOyxh0TqJATPiK2f82EmdoO
-         5uZLveU8nrwy4tdTBHNaXSNvzR+LHnhI0Sl11lY10cHj1derVcKynFVp/REWWx/GlBmT
-         +ocBxXAoABdDylgAHdvRoZ5ui7mwWnle3rveLFC0KNLAoe2V3oHHQlyMsNU4EzyMNTrO
-         ZHrdmgF9NDe0jUQ1JG4fYzglLKtQLBATvb1YqeVhwjfHEYNCeBID3xTbv6kUva6qBbO9
-         raXg==
-X-Gm-Message-State: AOJu0Yx5spqBxRLz81v8ZZDxXTrAz+MKs9kHJkycFWgyifeJap57OiE5
-        Ep0282/nvodg/foG4bCKKxJcU9p1U56iOKqnPDYFjwXxT8j1fuhzO0/9dlwUb2Sh8BhJ9OjOUnW
-        AuKT0T/VkNQjeA2LlYBWxi4OGvdubmHUd
-X-Received: by 2002:a5d:5945:0:b0:317:597f:3aa6 with SMTP id e5-20020a5d5945000000b00317597f3aa6mr875033wri.18.1692083964479;
-        Tue, 15 Aug 2023 00:19:24 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGBvNLJnqnIvB7tpGpds9xV93tOCXiH5bAU3H7ji/HpMR5b/Pe1T1NZ0nGfIBCeqH+mr8CAhg==
-X-Received: by 2002:a5d:5945:0:b0:317:597f:3aa6 with SMTP id e5-20020a5d5945000000b00317597f3aa6mr875008wri.18.1692083964102;
-        Tue, 15 Aug 2023 00:19:24 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c701:3100:c642:ba83:8c37:b0e? (p200300cbc7013100c642ba838c370b0e.dip0.t-ipconnect.de. [2003:cb:c701:3100:c642:ba83:8c37:b0e])
-        by smtp.gmail.com with ESMTPSA id c6-20020adfe746000000b003197c7d08ddsm4163213wrn.71.2023.08.15.00.19.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 00:19:23 -0700 (PDT)
-Message-ID: <43d64aee-4bd9-bba0-9434-55cec26bd9dc@redhat.com>
-Date:   Tue, 15 Aug 2023 09:19:22 +0200
+        Tue, 15 Aug 2023 03:22:01 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F43B2;
+        Tue, 15 Aug 2023 00:21:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1692084115;
+        bh=nlRHHnGWBzVd6GeZmokr/74l2q1c/4LBGos+SbEmjB4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=LqS0tqn+HRGFfPMiDlOoCJxPsAfF/HswPSb8oUcBrVZo3e8Y2WTqFvmhey/yUyQWl
+         IBU6eD2sn1GbFqsflszN5EqvcVkAnaqJ5qSbLANS3udEXK0D2i5kfXFTpJ79Y0slVx
+         hD/pa/5A/zlHBTK0wk8sz/tBP1Un/w6esVnGn/VSs96HwK3npbgy3GRQnO4LC+gDBB
+         twPnFPeDoc8r83ga/oM2pzVaKXqlu5BU2Y04aF9RPnYNlfyI34Dl831ci/5+OEVdEY
+         0vSwxLy9iicVgG0mgPNAAIOoQ1Ttnn/5uwVr01Gy/t4n1ZW7pzLtXmMntBG+3+3JEz
+         4HP5KXYgj6vBQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RQ2l74vLqz4wbP;
+        Tue, 15 Aug 2023 17:21:55 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH] powerpc: Make virt_to_pfn() a static inline
+In-Reply-To: <2e1fcfe4-169f-a52b-8da1-1819962f5783@csgroup.eu>
+References: <20230809-virt-to-phys-powerpc-v1-1-12e912a7d439@linaro.org>
+ <87a5uter64.fsf@mail.lhotse>
+ <2e1fcfe4-169f-a52b-8da1-1819962f5783@csgroup.eu>
+Date:   Tue, 15 Aug 2023 17:21:52 +1000
+Message-ID: <871qg4epnz.fsf@mail.lhotse>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] proc/ksm: add ksm stats to /proc/pid/smaps
-Content-Language: en-US
-To:     Stefan Roesch <shr@devkernel.io>, kernel-team@fb.com
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        hannes@cmpxchg.org, riel@surriel.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20230811162803.1361989-1-shr@devkernel.io>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230811162803.1361989-1-shr@devkernel.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for the late reply, Gmail once again decided to classify your 
-mails as spam (for whatever reason).
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> Le 14/08/2023 =C3=A0 14:37, Michael Ellerman a =C3=A9crit=C2=A0:
+>> Linus Walleij <linus.walleij@linaro.org> writes:
+>>> Making virt_to_pfn() a static inline taking a strongly typed
+>>> (const void *) makes the contract of a passing a pointer of that
+>>> type to the function explicit and exposes any misuse of the
+>>> macro virt_to_pfn() acting polymorphic and accepting many types
+>>> such as (void *), (unitptr_t) or (unsigned long) as arguments
+>>> without warnings.
+>> ...
+>>> diff --git a/arch/powerpc/include/asm/page.h b/arch/powerpc/include/asm=
+/page.h
+>>> index f2b6bf5687d0..9ee4b6d4a82a 100644
+>>> --- a/arch/powerpc/include/asm/page.h
+>>> +++ b/arch/powerpc/include/asm/page.h
+>>> @@ -233,6 +224,25 @@ extern long long virt_phys_offset;
+>>>   #endif
+>>>   #endif
+>>>=20=20=20
+>>> +#ifndef __ASSEMBLY__
+>>> +static inline unsigned long virt_to_pfn(const void *kaddr)
+>>> +{
+>>> +	return __pa(kaddr) >> PAGE_SHIFT;
+>>> +}
+>>> +
+>>> +static inline const void *pfn_to_kaddr(unsigned long pfn)
+>>> +{
+>>> +	return (const void *)(((unsigned long)__va(pfn)) << PAGE_SHIFT);
+>>=20
+>> Any reason to do it this way rather than:
+>>=20
+>> +       return __va(pfn << PAGE_SHIFT);
+>
+> Even cleaner:
+>
+> 	return __va(PFN_PHYS(pfn));
 
-On 11.08.23 18:28, Stefan Roesch wrote:
-> With madvise and prctl KSM can be enabled for different VMA's. Once it
-> is enabled we can query how effective KSM is overall. However we cannot
-> easily query if an individual VMA benefits from KSM.
-> 
-> This commit adds a KSM section to the /prod/<pid>/smaps file. It reports
-> how many of the pages are KSM pages.
-> 
-> Here is a typical output:
-> 
-> 7f420a000000-7f421a000000 rw-p 00000000 00:00 0
-> Size:             262144 kB
-> KernelPageSize:        4 kB
-> MMUPageSize:           4 kB
-> Rss:               51212 kB
-> Pss:                8276 kB
-> Shared_Clean:        172 kB
-> Shared_Dirty:      42996 kB
-> Private_Clean:       196 kB
-> Private_Dirty:      7848 kB
-> Referenced:        15388 kB
-> Anonymous:         51212 kB
-> KSM:               41376 kB
-> LazyFree:              0 kB
-> AnonHugePages:         0 kB
-> ShmemPmdMapped:        0 kB
-> FilePmdMapped:         0 kB
-> Shared_Hugetlb:        0 kB
-> Private_Hugetlb:       0 kB
-> Swap:             202016 kB
-> SwapPss:            3882 kB
-> Locked:                0 kB
-> THPeligible:    0
-> ProtectionKey:         0
-> ksm_state:          0
-> ksm_skip_base:      0
-> ksm_skip_count:     0
-> VmFlags: rd wr mr mw me nr mg anon
-> 
-> This information also helps with the following workflow:
-> - First enable KSM for all the VMA's of a process with prctl.
-> - Then analyze with the above smaps report which VMA's benefit the most
-> - Change the application (if possible) to add the corresponding madvise
-> calls for the VMA's that benefit the most
-> 
-> Signed-off-by: Stefan Roesch <shr@devkernel.io>
-> ---
->   Documentation/filesystems/proc.rst | 3 +++
->   fs/proc/task_mmu.c                 | 5 +++++
->   2 files changed, 8 insertions(+)
-> 
-> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-> index 7897a7dafcbc..4ef3c0bbf16a 100644
-> --- a/Documentation/filesystems/proc.rst
-> +++ b/Documentation/filesystems/proc.rst
-> @@ -461,6 +461,7 @@ Memory Area, or VMA) there is a series of lines such as the following::
->       Private_Dirty:         0 kB
->       Referenced:          892 kB
->       Anonymous:             0 kB
-> +    KSM:                   0 kB
->       LazyFree:              0 kB
->       AnonHugePages:         0 kB
->       ShmemPmdMapped:        0 kB
-> @@ -501,6 +502,8 @@ accessed.
->   a mapping associated with a file may contain anonymous pages: when MAP_PRIVATE
->   and a page is modified, the file page is replaced by a private anonymous copy.
->   
-> +"KSM" shows the amount of anonymous memory that has been de-duplicated.
+PFN_PHYS() includes a cast to phys_addr_t before shifting, so it's not
+entirely equivalent.
 
+But if phys_addr_t is larger than unsinged long then that cast is
+important. Which makes me wonder how/if pfn_to_kaddr() has been working
+until now for CONFIG_PHYS_ADDR_T_64BIT=3Dy.
 
-How do we want to treat memory that has been deduplicated into the 
-shared zeropage?
-
-It would also match this description.
-
-See in mm-stable:
-
-commit 30ff6ed9a65c7e73545319fc15f7bcf9c52457eb
-Author: xu xin <xu.xin16@zte.com.cn>
-Date:   Tue Jun 13 11:09:28 2023 +0800
-
-     ksm: support unsharing KSM-placed zero pages
-
-     Patch series "ksm: support tracking KSM-placed zero-pages", v10.
-
-
--- 
-Cheers,
-
-David / dhildenb
-
+cheers
