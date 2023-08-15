@@ -2,176 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4BF77CDF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7ECA77CDF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237570AbjHOOUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 10:20:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47370 "EHLO
+        id S237556AbjHOOUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 10:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237613AbjHOOUW (ORCPT
+        with ESMTP id S237594AbjHOOUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 10:20:22 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A8371BCF
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:20:17 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fe2d620d17so77355e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:20:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692109215; x=1692714015;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Yfq66RGthh/jDqLnx2XGtN7DUux5G0QrMF1Og9o03N4=;
-        b=BVXUKbGSM5V7XRh64ju6Qv9qJH+89VMWUSArDhe4Bpmz+kwCgWOoAOtk5qvjRUF9K4
-         LE+kaCv9g/Zt3nm2XEb8qZF87hcQV7Y2wWg48nz2cgMPPU9Nuo16QQTMr19QnBIcuLjc
-         XWx1xHtaWaBxZFKSd3JN7F9SmjnGxkiEIGKfefemy5RLBRq9f6+SfDGpCWSudcyiOhLk
-         ojDMyu/5bjL3HGNTDL0K0JoLPBIbA0v+lfVKsD22174SivhjsZaGDzOyWdPn/H/Jr2sj
-         4nli5743tvc0w52S0izo1ZpHd61Wn9uq5AB0UI21YvYfYCChc/le0LVK1ILfrbsKDjBv
-         TTyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692109215; x=1692714015;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Yfq66RGthh/jDqLnx2XGtN7DUux5G0QrMF1Og9o03N4=;
-        b=KoDjMoU5xN15Od9CCbJNIsT4+hkyv5azKAHbZ9NxTmw1cr+yJE508Oh9J858oDf/KP
-         NmwRCF027BKP+tY43d9+KctCnVLucM8UkNjZGG8kzNoq4odFi2UPLKUskefCO0seaApw
-         1mfl/0GQsBzh/KWWdDqMpZvhComi5ycKGrVM5xaPo4g1jN4Ncwg/RiN6W9K3sOGSFjHc
-         sq726YFycfqAfK/Xcec9pxNGmC56m6UPAGJ5rxJywiKw4tPx2YWiXEquhP/V6rgIPp7i
-         gzFNeoyJJEBWiB0w6GXrzmIfS/cGe2ug4P3O/c9LB656fMziuy3nbeo7fWalHoQsVgKv
-         5+SQ==
-X-Gm-Message-State: AOJu0YxpQlHb8C1/vfNcZdBNrGznZ3eZFoBiqxNKym3CLrD3MC6RqiA1
-        kO3lZLtn2FZgy/ufeMeex/aQyGLC55yWFedDbIuNyg==
-X-Google-Smtp-Source: AGHT+IHaqR5H5RDLoB3/4IaWducuvBcmXayHOupbcGnkyyMS+481wUOHO1Qsp00nIl/NatF0z0rPhJZD9YUumpwsljA=
-X-Received: by 2002:a05:600c:1d8e:b0:3fe:5ec3:447f with SMTP id
- p14-20020a05600c1d8e00b003fe5ec3447fmr391880wms.1.1692109215503; Tue, 15 Aug
- 2023 07:20:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230724183157.3939892-1-Liam.Howlett@oracle.com>
- <20230724183157.3939892-16-Liam.Howlett@oracle.com> <CAG48ez09ELhVYZftGtcxrvUaW6pF+k9RzwFtjRs-pcRx1aUweQ@mail.gmail.com>
- <20230814191835.jzj7ryvhi6dqwruy@revolver> <CAG48ez2UbpFb41gfcwyoA73ado=+YEiRtU2KmKt560_M_B7JUw@mail.gmail.com>
- <20230815072907.fsvetn4dzohgt2z5@revolver>
-In-Reply-To: <20230815072907.fsvetn4dzohgt2z5@revolver>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 15 Aug 2023 16:19:38 +0200
-Message-ID: <CAG48ez2OTwhdbN2NsYEoU4mayfdCBT+4NirdxMQ=5fZvKFjq6w@mail.gmail.com>
-Subject: Re: [PATCH v3 15/15] mm/mmap: Change vma iteration order in do_vmi_align_munmap()
-To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Jann Horn <jannh@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Suren Baghdasaryan <surenb@google.com>, linux-mm@kvack.org,
+        Tue, 15 Aug 2023 10:20:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D9DF173F;
+        Tue, 15 Aug 2023 07:20:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F0AC262500;
+        Tue, 15 Aug 2023 14:20:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A470EC433C8;
+        Tue, 15 Aug 2023 14:19:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692109200;
+        bh=M6CDBqRLiTm3hil0xMDraWij30Iy1mPwFRVOlkOBWRw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kh5JOKzYNFtCORZofGVo+WWAEOYTnPQ7hLnXju+uRgP7NOc2+z1lBihPytdEDWSIv
+         zQOf6F+54CjpfCoEy8rtZJjCwHKbvibS28v+94JVV5tKp5N/AIjRHnuVph3p779aEu
+         tBpZ7o/jCt1EAq1MX3aCv2cYv0zsVbLajaU9ut8vjxzBsHIQmLdCTLzX3RtxtRltIv
+         jau/Wmv3PUKd61NlvUEXjqmqxxWUs8nYuFaIUiHAa02nijzTgbyRII9PqEQnrLREo2
+         GeNQkToLIub5RBhwq+LRgEH9I/+8V2au2NbGWx+f5J4lCCCHdQ0bPTtsKLIEdMq3Ma
+         wLbTilISxICvQ==
+Date:   Tue, 15 Aug 2023 15:19:55 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Binbin Zhou <zhoubinbin@loongson.cn>
+Cc:     Binbin Zhou <zhoubb.aaron@gmail.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, diasyzhang@tencent.com,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] dt-bindings: interrupt-controller: loongson,liointc: Fix
+ warnings about reg and interrupt description
+Message-ID: <20230815-certainly-sprang-209024530924@spud>
+References: <20230815084713.1627520-1-zhoubinbin@loongson.cn>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ZyVqBzIaMuBVfm1G"
+Content-Disposition: inline
+In-Reply-To: <20230815084713.1627520-1-zhoubinbin@loongson.cn>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 9:29=E2=80=AFAM Liam R. Howlett <Liam.Howlett@oracl=
-e.com> wrote:
->
-> * Jann Horn <jannh@google.com> [230814 17:22]:
-> > On Mon, Aug 14, 2023 at 10:32=E2=80=AFPM Liam R. Howlett
-> > <Liam.Howlett@oracle.com> wrote:
-> > > * Jann Horn <jannh@google.com> [230814 11:44]:
-> > > > @akpm
-> > > >
-> > > > On Mon, Jul 24, 2023 at 8:31=E2=80=AFPM Liam R. Howlett <Liam.Howle=
-tt@oracle.com> wrote:
-> > > > > Since prev will be set later in the function, it is better to rev=
-erse
-> > > > > the splitting direction of the start VMA (modify the new_below ar=
-gument
-> > > > > to __split_vma).
-> > > >
-> > > > It might be a good idea to reorder "mm: always lock new vma before
-> > > > inserting into vma tree" before this patch.
-> > > >
-> > > > If you apply this patch without "mm: always lock new vma before
-> > > > inserting into vma tree", I think move_vma(), when called with a st=
-art
-> > > > address in the middle of a VMA, will behave like this:
-> > > >
-> > > >  - vma_start_write() [lock the VMA to be moved]
-> > > >  - move_page_tables() [moves page table entries]
-> > > >  - do_vmi_munmap()
-> > > >    - do_vmi_align_munmap()
-> > > >      - __split_vma()
-> > > >        - creates a new VMA **covering the moved range** that is **n=
-ot locked**
-> > > >        - stores the new VMA in the VMA tree **without locking it** =
-[1]
-> > > >      - new VMA is locked and removed again [2]
-> > > > [...]
-> > > >
-> > > > So after the page tables in the region have already been moved, I
-> > > > believe there will be a brief window (between [1] and [2]) where pa=
-ge
-> > > > faults in the region can happen again, which could probably cause n=
-ew
-> > > > page tables and PTEs to be created in the region again in that wind=
-ow.
-> > > > (This can't happen in Linus' current tree because the new VMA creat=
-ed
-> > > > by __split_vma() only covers the range that is not being moved.)
-> > >
-> > > Ah, so my reversing of which VMA to keep to the first split call open=
-s a
-> > > window where the VMA being removed is not locked.  Good catch.
->
-> Looking at this again, I think it exists in Linus' tree and my change
-> actually removes this window:
->
-> -               error =3D __split_vma(vmi, vma, start, 0);
-> +               error =3D __split_vma(vmi, vma, start, 1);
->                 if (error)
->                         goto start_split_failed;
->
-> The last argument is "new_below", which means the new VMA will be at the
-> lower address.  I don't love the argument of int or the name, also the
-> documentation is lacking for the split function.
->
-> So, once we split at "start", vm_end =3D "start" in the new VMA while
-> start will be in the old VMA.  I then lock the old vma to be removed
-> (again) and add it to the detached maple tree.
->
-> Before my patch, we split the VMA and took the new unlocked VMA for
-> removal.. until I locked the new vma to be removed and add it to the
-> detached maple tree.  So there is a window that we write the new split
-> VMA into the tree prior to locking the VMA, but it is locked before
-> removal.
->
-> This change actually aligns the splitting with the other callers who use
-> the split_vma() wrapper.
 
-Oooh, you're right. Sorry, I misread that.
+--ZyVqBzIaMuBVfm1G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > >
-> > > >
-> > > > Though I guess that's not going to lead to anything bad, since
-> > > > do_vmi_munmap() anyway cleans up PTEs and page tables in the region=
-?
-> > > > So maybe it's not that important.
-> > >
-> > > do_vmi_munmap() will clean up PTEs from the end of the previous VMA t=
-o
-> > > the start of the next
-> >
-> > Alright, I guess no action is needed here then.
->
-> I don't see a difference between this and the race that exists after the
-> page fault ends and a task unmaps the area prior to the first task using
-> the faulted areas?
+Hey,
 
-Yeah, you're right. I was thinking about it in terms of "this is a
-weird situation and it would be dangerous if something relied on there
-not being any non-empty PTEs in the range", but there's nothing that
-relies on it, so that's fine.
+On Tue, Aug 15, 2023 at 04:47:13PM +0800, Binbin Zhou wrote:
+> As we know, some Loongson-2K CPUs are single-core, e.g. Loongson-2K0500,
+> and the "isr1" means routing interrupts to core1, which should be
+> optional. So add maxItems/minItems limits to reg/reg-names.
+> Also, The interrupt-names attribute represents a list of parent
+> interrupt names that should change with interrupts.
+
+This should have been with the other series that introduces the users
+probably so that things make more sense to the reader.
+
+> Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+> ---
+>  .../interrupt-controller/loongson,liointc.yaml     | 14 ++++++--------
+>  1 file changed, 6 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/loong=
+son,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/l=
+oongson,liointc.yaml
+> index 00b570c82903..adb428211a72 100644
+> --- a/Documentation/devicetree/bindings/interrupt-controller/loongson,lio=
+intc.yaml
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,lio=
+intc.yaml
+> @@ -11,7 +11,7 @@ maintainers:
+> =20
+>  description: |
+>    This interrupt controller is found in the Loongson-3 family of chips a=
+nd
+> -  Loongson-2K1000 chip, as the primary package interrupt controller which
+> +  Loongson-2K series chips, as the primary package interrupt controller =
+which
+>    can route local I/O interrupt to interrupt lines of cores.
+> =20
+>  allOf:
+> @@ -33,6 +33,7 @@ properties:
+>        - const: main
+>        - const: isr0
+>        - const: isr1
+> +    minItems: 2
+> =20
+>    interrupt-controller: true
+> =20
+> @@ -45,11 +46,9 @@ properties:
+>    interrupt-names:
+>      description: List of names for the parent interrupts.
+>      items:
+> -      - const: int0
+> -      - const: int1
+> -      - const: int2
+> -      - const: int3
+> +      pattern: int[0-3]
+
+=46rom a quick look at the new devicetrees, I don't understand the
+ordering relaxation. Do you actually have a system that only has, for
+example, int3?
+
+Also, as the interrupt-names are not required, changing the ordering
+here is not ABI compatible AFAICT. Does that have any fallout?
+
+Thanks,
+Conor.
+
+>      minItems: 1
+> +    maxItems: 4
+> =20
+>    '#interrupt-cells':
+>      const: 2
+> @@ -73,7 +72,6 @@ required:
+>    - '#interrupt-cells'
+>    - loongson,parent_int_map
+> =20
+> -
+>  unevaluatedProperties: false
+> =20
+>  if:
+> @@ -86,7 +84,8 @@ if:
+>  then:
+>    properties:
+>      reg:
+> -      minItems: 3
+> +      minItems: 2
+> +      maxItems: 3
+> =20
+>    required:
+>      - reg-names
+> @@ -113,7 +112,6 @@ examples:
+>                                  <0x0f000000>, /* int1 */
+>                                  <0x00000000>, /* int2 */
+>                                  <0x00000000>; /* int3 */
+> -
+>      };
+> =20
+>  ...
+> --=20
+> 2.39.3
+>=20
+
+--ZyVqBzIaMuBVfm1G
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNuJiwAKCRB4tDGHoIJi
+0hS5AP0XAkJJcHVeqW/yF5gJ9Z/MyINBReOsxwdQjBgsXlPIygEA4tz9NQ2OsYWL
+aB7ZCv2HblA3kM5ikbl5HscxuIBlTQg=
+=By9N
+-----END PGP SIGNATURE-----
+
+--ZyVqBzIaMuBVfm1G--
