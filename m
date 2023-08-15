@@ -2,60 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7FEE77CAAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:43:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D48D77CAAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236205AbjHOJnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 05:43:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40108 "EHLO
+        id S236257AbjHOJnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 05:43:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236260AbjHOJme (ORCPT
+        with ESMTP id S236224AbjHOJmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 05:42:34 -0400
+        Tue, 15 Aug 2023 05:42:53 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C30D1BDF;
-        Tue, 15 Aug 2023 02:42:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A201110D8;
+        Tue, 15 Aug 2023 02:42:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692092537; x=1723628537;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=OTKa2DU5uLIfglQn+15YxSLcT/W/rPMm7HdupfRTTQE=;
-  b=csex3Cil3phXGXx4wsOFOITLKwncY37jgxxdSk1FdMYOXtWWX8InDezo
-   PSfwcGeVO7cFnPV8RPyPBEJ7vVr6bS2d4cnEF9qgRuuYra0m4J0VFDJg9
-   5+717h/om50rchgJ5vQkSEUIA5XjR8+AWeGgc4Out+aSprLOZgKf2yu/G
-   NfY74xB3O+jaR4VphVSyZLVf8R/jlfSEFfNsiffhZoK47gEwudaY8MdJZ
-   PAblfRByMmbcdQt+27Z5ObWOTq9TZ/7jk7nSQxXANgH8x68E6K5pffXKr
-   AxI4Sk6O7TQ7NYORiQAeCqLjO8d8SQSWyYBzwz+3ze1HQTeS5SVrfBmQI
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="403222805"
+  t=1692092551; x=1723628551;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=7h+/sSxZl6JCDHnh5reN75axgALtcqO8XExNpLMoAEQ=;
+  b=nfvhqr9cJvOCEq7a0FlaFMqVf1qFKRTzpLODenqzjFwaAou9RMSCouSD
+   ovQoYx+Rd1KaO5IUdaV5brq7Vp/4mFqiAJey6yE1vPujRXAgR7b7Ay13U
+   DMNdLRPEeQClhWbIBb6KOy4R47V7Uh3b+H7GCmaF/GG/7U9o3kfnal0o1
+   lod+uQSSGO2Dj/51i7jg8Mv7exVxQpaTm+PBFHlLMKKF9UXJfGHpoedrH
+   49+I/bTQAy4AXO7ALMZzZOVN2dewGGtLg6Cu0bsT4MmwxJ+oej4tTf/Ir
+   5NDZKQyRdkMKRKHcnABMrMLIm4PZriLBgXnQ6QtAoI7qrRkjt5QR85UPa
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="403222827"
 X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="403222805"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 02:42:16 -0700
+   d="scan'208";a="403222827"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 02:42:31 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="1064393692"
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="763223745"
 X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="1064393692"
-Received: from ijarvine-mobl1.ger.corp.intel.com (HELO ijarvine-mobl2.mshome.net) ([10.237.66.35])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 02:42:13 -0700
-Date:   Tue, 15 Aug 2023 12:42:10 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
-Subject: Re: [PATCH 5/7] selftests/resctrl: Use pointers to build benchmark
- cmd and make it const
-In-Reply-To: <f300a52c-d65f-fd74-18ce-7d37e76d144f@intel.com>
-Message-ID: <dd83f672-b9fc-cd79-10ff-70651d4822af@linux.intel.com>
-References: <20230808091625.12760-1-ilpo.jarvinen@linux.intel.com> <20230808091625.12760-6-ilpo.jarvinen@linux.intel.com> <f300a52c-d65f-fd74-18ce-7d37e76d144f@intel.com>
+   d="scan'208";a="763223745"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga008.jf.intel.com with ESMTP; 15 Aug 2023 02:42:26 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qVqZE-00Cz3N-1T;
+        Tue, 15 Aug 2023 12:42:24 +0300
+Date:   Tue, 15 Aug 2023 12:42:24 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Peter Rosin <peda@axentia.se>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH v7 0/4] Extend device_get_match_data() to struct bus_type
+Message-ID: <ZNtIgA4S2rHp/jbA@smile.fi.intel.com>
+References: <ZNFV+C1HCIRJpbdC@google.com>
+ <ZNIyrG/2h/PeS9Oz@smile.fi.intel.com>
+ <20230809182551.7eca502e@jic23-huawei>
+ <OS0PR01MB59221A1ADB67E96E9E39D0198613A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+ <ZNT+NY99n7y3abwa@smile.fi.intel.com>
+ <OS0PR01MB5922DD3C809B78F1E9C5949B8610A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+ <ZNZF6cjx5N+ZsIJx@smile.fi.intel.com>
+ <OS0PR01MB5922E09340CDCFF54A9A6CBA8610A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+ <ZNsez3oWNcT72PGy@smile.fi.intel.com>
+ <OS0PR01MB592231608697B4FB0D142CCD8614A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-560072619-1692090068=:1736"
-Content-ID: <651bd820-3777-d413-5647-70f899ee13b@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OS0PR01MB592231608697B4FB0D142CCD8614A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
@@ -66,167 +92,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Tue, Aug 15, 2023 at 06:58:41AM +0000, Biju Das wrote:
+> > Subject: Re: [PATCH v7 0/4] Extend device_get_match_data() to struct
+> > bus_type
+> > On Fri, Aug 11, 2023 at 02:46:10PM +0000, Biju Das wrote:
 
---8323329-560072619-1692090068=:1736
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-Content-ID: <c91af58e-624a-59f5-5f95-7dbdcaed112f@linux.intel.com>
+...
 
-On Mon, 14 Aug 2023, Reinette Chatre wrote:
-
-> Hi Ilpo,
-> 
-> On 8/8/2023 2:16 AM, Ilpo Järvinen wrote:
-> > Benchmark parameter uses fixed-size buffers in stack which is slightly
-> > dangerous. As benchmark command is used in multiple tests, it should
-> 
-> Could you please be specific with issues with current implementation?
-> The term "slightly dangerous" is vague.
-
-I've reworded this so this fragment no longer remains here because the 
-earlier patch got changes so the dangerous part is no longer there.
-
-> > not be mutated by the tests. Due to the order of tests, mutating the
-> > span argument in CMT test does not trigger any real problems currently.
+> > It's easy to work around (may be better fix can be found, haven't checked,
+> > just what first comes to my mind):
 > > 
-> > Mark benchmark_cmd strings as const and setup the benchmark command
-> > using pointers. As span is constant in main(), just provide the default
-> > span also as string to be used in setting up the default fill_buf
-> > argument so no malloc() is required for it.
+> > 	match ...
+> > 	name = match->name;
 > 
-> What is wrong with using malloc()?
-
-Nothing. I think you slightly misunderstood what I meant here.
-
-The main challenge is not malloc() itself but keeping track of what memory 
-has been dynamically allocated, which is simple if nothing has been 
-malloc()ed. With the const benchmark command and default span, there's no 
-need to malloc(), thus I avoid it to keep things simpler on the free() 
-side.
-
-I've tried to reword the entire changelog, please check the v2 changelog 
-once I post it.
-
-> > CMT test has to create a copy of the benchmark command before altering
-> > the benchmark command.
-> > 
-> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> > ---
-> >  tools/testing/selftests/resctrl/cmt_test.c    | 23 ++++++++++---
-> >  tools/testing/selftests/resctrl/mba_test.c    |  2 +-
-> >  tools/testing/selftests/resctrl/mbm_test.c    |  2 +-
-> >  tools/testing/selftests/resctrl/resctrl.h     | 16 ++++++---
-> >  .../testing/selftests/resctrl/resctrl_tests.c | 33 ++++++++-----------
-> >  tools/testing/selftests/resctrl/resctrl_val.c | 10 ++++--
-> >  6 files changed, 54 insertions(+), 32 deletions(-)
-> > 
-> > diff --git a/tools/testing/selftests/resctrl/cmt_test.c b/tools/testing/selftests/resctrl/cmt_test.c
-> > index 9d8e38e995ef..a40e12c3b1a7 100644
-> > --- a/tools/testing/selftests/resctrl/cmt_test.c
-> > +++ b/tools/testing/selftests/resctrl/cmt_test.c
-> > @@ -68,14 +68,16 @@ void cmt_test_cleanup(void)
-> >  	remove(RESULT_FILE_NAME);
-> >  }
-> >  
-> > -int cmt_resctrl_val(int cpu_no, int n, char **benchmark_cmd)
-> > +int cmt_resctrl_val(int cpu_no, int n, const char * const *benchmark_cmd)
-> >  {
-> > +	const char *cmd[BENCHMARK_ARGS];
-> >  	unsigned long cache_size = 0;
-> >  	unsigned long long_mask;
-> > +	char *span_str = NULL;
-> >  	char cbm_mask[256];
-> >  	int count_of_bits;
-> >  	size_t span;
-> > -	int ret;
-> > +	int ret, i;
-> >  
-> >  	if (!validate_resctrl_feature_request(CMT_STR))
-> >  		return -1;
-> > @@ -111,12 +113,22 @@ int cmt_resctrl_val(int cpu_no, int n, char **benchmark_cmd)
-> >  	};
-> >  
-> >  	span = cache_size * n / count_of_bits;
-> > -	if (strcmp(benchmark_cmd[0], "fill_buf") == 0)
-> > -		sprintf(benchmark_cmd[1], "%zu", span);
-> > +	/* Duplicate the command to be able to replace span in it */
-> > +	for (i = 0; benchmark_cmd[i]; i++)
-> > +		cmd[i] = benchmark_cmd[i];
-> > +	cmd[i] = NULL;
-> > +
-> > +	if (strcmp(cmd[0], "fill_buf") == 0) {
-> > +		span_str = malloc(SIZE_MAX_DECIMAL_SIZE);
-> > +		if (!span_str)
-> > +			return -1;
-> > +		snprintf(span_str, SIZE_MAX_DECIMAL_SIZE, "%zu", span);
+> The device_get_match_data()API returns matched data, so we cannot use that one here.
 > 
-> Have you considered asprintf()?
-
-Changed to asprintf() now.
- 
-> > +		cmd[1] = span_str;
-> > +	}
+> Maybe??
 > 
-> It looks to me that array only needs to be duplicated if the
-> default benchmark is used?
+> /* If enumerated via ID lookup, fix the ABI */
+> if (!dev_fwnode())
+> 	name = id->name;
 
-While it's true, another aspect is how that affects the code flow. If I 
-make that change, the benchmark command could come from two different 
-places which is now avoided. IMHO, the current approach is simpler to 
-understand even if it does the unnecessary copy of a few pointers.
-
-But please let me know if you still prefer the other way around so I can 
-change to that.
-
-> >  	remove(RESULT_FILE_NAME);
-> >  
-> > -	ret = resctrl_val(benchmark_cmd, &param);
-> > +	ret = resctrl_val(cmd, &param);
-> >  	if (ret)
-> >  		goto out;
-> >  
-> 
-> ...
-> 
-> > diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-> > index bcd0d2060f81..ddb1e83a3a64 100644
-> > --- a/tools/testing/selftests/resctrl/resctrl.h
-> > +++ b/tools/testing/selftests/resctrl/resctrl.h
-> > @@ -6,6 +6,7 @@
-> >  #include <math.h>
-> >  #include <errno.h>
-> >  #include <sched.h>
-> > +#include <stdint.h>
-> >  #include <stdlib.h>
-> >  #include <unistd.h>
-> >  #include <string.h>
-> > @@ -38,7 +39,14 @@
-> >  
-> >  #define END_OF_TESTS	1
-> >  
-> > +#define BENCHMARK_ARGS		64
-> > +
-> > +/* Approximate %zu max length */
-> > +#define SIZE_MAX_DECIMAL_SIZE	(sizeof(SIZE_MAX) * 8 / 3 + 2)
-> > +
-> > +/* Define default span both as integer and string, these should match */
-> >  #define DEFAULT_SPAN		(250 * MB)
-> > +#define DEFAULT_SPAN_STR	"262144000"
-> 
-> I think above hardcoding can be eliminated by using asprintf()? This
-> does allocate memory though so I would like to understand why one
-> goal is to not dynamically allocate memory.
-
-Because it's simpler on the _free() side_. If there's no allocation, no 
-free() is needed.
-
-Only challenge that remains is the int -> string conversion for the 
-default span which can be either done like in the patch or using some 
-preprocessor trickery to convert the number to string. If you prefer the 
-latter, I can change to that so it's not hardcoded both as int and string.
+Yeah, you got the idea.
 
 -- 
- i.
---8323329-560072619-1692090068=:1736--
+With Best Regards,
+Andy Shevchenko
+
+
