@@ -2,111 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7415777CAA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:43:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7FEE77CAAC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236207AbjHOJmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 05:42:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49868 "EHLO
+        id S236205AbjHOJnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 05:43:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236193AbjHOJmG (ORCPT
+        with ESMTP id S236260AbjHOJme (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 05:42:06 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B02BBF
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 02:42:01 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B0A6021997;
-        Tue, 15 Aug 2023 09:42:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1692092520; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1ypNg2gbWTIwWkw4Bicbg47Uo2SG/HMjGtFegCigeVI=;
-        b=1xnrjiPcttFGXyHfyRm3n5KPDQGSuPUrDZr9DrLyTGFJEjL3MjJhQIzLuS1+LpYKTLyHBf
-        X3YkGekrvdPfMUiSZ9RKYudd8+h660DaJXygLg3AOR7SGdk60OJD1UXtrBGITemysM2h3y
-        IQHkvyivPIHcKb4m1qpTUARRwiSMrc4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1692092520;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1ypNg2gbWTIwWkw4Bicbg47Uo2SG/HMjGtFegCigeVI=;
-        b=8bvYMYmo6dVSLtMHr+aT+PepzIi6PvAFVLbmnRHg5qkm6JRkL37weQjqCloWmUOWC64Whd
-        VMHsAwFmmq3188Bg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7278F1353E;
-        Tue, 15 Aug 2023 09:42:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id M2r+GmhI22TYRQAAMHmgww
-        (envelope-from <tiwai@suse.de>); Tue, 15 Aug 2023 09:42:00 +0000
-Date:   Tue, 15 Aug 2023 11:42:00 +0200
-Message-ID: <87bkf8zlp3.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Karol Herbst <kherbst@redhat.com>
-Cc:     nouveau@lists.freedesktop.org, lkml <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org, regressions@leemhuis.info,
-        Borislav Petkov <bp@alien8.de>, Ben Skeggs <bskeggs@redhat.com>
-Subject: Re: 2b5d1c29f6c4 ("drm/nouveau/disp: PIOR DP uses GPIO for HPD, not PMGR AUX interrupts")
-In-Reply-To: <87a5ut1x5x.wl-tiwai@suse.de>
-References: <20230806213107.GFZNARG6moWpFuSJ9W@fat_crate.local>
-        <CACO55tvZD5U4J8DawFTRVnV-dLYLngfhuqO29_sWNEGofKfnBg@mail.gmail.com>
-        <20230807150521.GGZNEIMQ9rsyCmkpoA@fat_crate.local>
-        <CACO55tvWuSdwdirj7S3Dk-r4NAw8jC8g5RHKFd62WXi43iQP-w@mail.gmail.com>
-        <87fs4sfu54.wl-tiwai@suse.de>
-        <CACO55tszwFEgt=8xn4auAE7KJVs3ybGG68OzL9HJt19XGVhhHQ@mail.gmail.com>
-        <874jl8fngo.wl-tiwai@suse.de>
-        <CACO55ts9YWF7nLi3Zs4xKySpdHyUFgf4r566cKx3FwNTCaz0Sg@mail.gmail.com>
-        <87wmy4e4uk.wl-tiwai@suse.de>
-        <877cq4e0j5.wl-tiwai@suse.de>
-        <87r0occhtw.wl-tiwai@suse.de>
-        <CACO55tvbLhn5vC=CpcZbuFEj2cja1=Nt=BKsZmU3+SKgbxoE7Q@mail.gmail.com>
-        <87zg2t23js.wl-tiwai@suse.de>
-        <CACO55tvPGx7npsXg+tpDoz=KXQBs4Pwz3h9Bie-vHithcHV5eA@mail.gmail.com>
-        <CACO55tvD_t4y8s_9gj7vO7zOvsYU1iF=5+a4M2g7_qMH9g3EKg@mail.gmail.com>
-        <87r0o521d2.wl-tiwai@suse.de>
-        <CACO55tuvzXkUSOQh8NEwC6nEUCWYVfkUmmFWHg_miWcAUWvPsw@mail.gmail.com>
-        <CACO55tv4a5fHd6H-bg_W4bCP15mxAKhxCVWyR4_LqZiTsAva4Q@mail.gmail.com>
-        <87a5ut1x5x.wl-tiwai@suse.de>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 15 Aug 2023 05:42:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C30D1BDF;
+        Tue, 15 Aug 2023 02:42:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692092537; x=1723628537;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=OTKa2DU5uLIfglQn+15YxSLcT/W/rPMm7HdupfRTTQE=;
+  b=csex3Cil3phXGXx4wsOFOITLKwncY37jgxxdSk1FdMYOXtWWX8InDezo
+   PSfwcGeVO7cFnPV8RPyPBEJ7vVr6bS2d4cnEF9qgRuuYra0m4J0VFDJg9
+   5+717h/om50rchgJ5vQkSEUIA5XjR8+AWeGgc4Out+aSprLOZgKf2yu/G
+   NfY74xB3O+jaR4VphVSyZLVf8R/jlfSEFfNsiffhZoK47gEwudaY8MdJZ
+   PAblfRByMmbcdQt+27Z5ObWOTq9TZ/7jk7nSQxXANgH8x68E6K5pffXKr
+   AxI4Sk6O7TQ7NYORiQAeCqLjO8d8SQSWyYBzwz+3ze1HQTeS5SVrfBmQI
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="403222805"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="403222805"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 02:42:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="1064393692"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="1064393692"
+Received: from ijarvine-mobl1.ger.corp.intel.com (HELO ijarvine-mobl2.mshome.net) ([10.237.66.35])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 02:42:13 -0700
+Date:   Tue, 15 Aug 2023 12:42:10 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
+Subject: Re: [PATCH 5/7] selftests/resctrl: Use pointers to build benchmark
+ cmd and make it const
+In-Reply-To: <f300a52c-d65f-fd74-18ce-7d37e76d144f@intel.com>
+Message-ID: <dd83f672-b9fc-cd79-10ff-70651d4822af@linux.intel.com>
+References: <20230808091625.12760-1-ilpo.jarvinen@linux.intel.com> <20230808091625.12760-6-ilpo.jarvinen@linux.intel.com> <f300a52c-d65f-fd74-18ce-7d37e76d144f@intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; BOUNDARY="8323329-560072619-1692090068=:1736"
+Content-ID: <651bd820-3777-d413-5647-70f899ee13b@linux.intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Aug 2023 17:06:02 +0200,
-Takashi Iwai wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-560072619-1692090068=:1736
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <c91af58e-624a-59f5-5f95-7dbdcaed112f@linux.intel.com>
+
+On Mon, 14 Aug 2023, Reinette Chatre wrote:
+
+> Hi Ilpo,
 > 
-> On Mon, 14 Aug 2023 16:51:08 +0200,
-> Karol Herbst wrote:
-> > 
-> > I've sent a patch out to address this memory corruption
-> > https://patchwork.freedesktop.org/patch/552642/
-> > 
-> > It might or might not fix regressions from the original I2C fix, so
-> > please test and report if there are remaining issues.
+> On 8/8/2023 2:16 AM, Ilpo Järvinen wrote:
+> > Benchmark parameter uses fixed-size buffers in stack which is slightly
+> > dangerous. As benchmark command is used in multiple tests, it should
 > 
-> Thanks!  I'll build a test kernel and ask the reporter for testing
-> with it.  Let's cross fingers :)
+> Could you please be specific with issues with current implementation?
+> The term "slightly dangerous" is vague.
 
-The feedback is positive, so far.  It seems fixing the regression
-reported for 6.4.8 kernel.
+I've reworded this so this fragment no longer remains here because the 
+earlier patch got changes so the dangerous part is no longer there.
 
+> > not be mutated by the tests. Due to the order of tests, mutating the
+> > span argument in CMT test does not trigger any real problems currently.
+> > 
+> > Mark benchmark_cmd strings as const and setup the benchmark command
+> > using pointers. As span is constant in main(), just provide the default
+> > span also as string to be used in setting up the default fill_buf
+> > argument so no malloc() is required for it.
+> 
+> What is wrong with using malloc()?
 
-thanks,
+Nothing. I think you slightly misunderstood what I meant here.
 
-Takashi
+The main challenge is not malloc() itself but keeping track of what memory 
+has been dynamically allocated, which is simple if nothing has been 
+malloc()ed. With the const benchmark command and default span, there's no 
+need to malloc(), thus I avoid it to keep things simpler on the free() 
+side.
+
+I've tried to reword the entire changelog, please check the v2 changelog 
+once I post it.
+
+> > CMT test has to create a copy of the benchmark command before altering
+> > the benchmark command.
+> > 
+> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> > ---
+> >  tools/testing/selftests/resctrl/cmt_test.c    | 23 ++++++++++---
+> >  tools/testing/selftests/resctrl/mba_test.c    |  2 +-
+> >  tools/testing/selftests/resctrl/mbm_test.c    |  2 +-
+> >  tools/testing/selftests/resctrl/resctrl.h     | 16 ++++++---
+> >  .../testing/selftests/resctrl/resctrl_tests.c | 33 ++++++++-----------
+> >  tools/testing/selftests/resctrl/resctrl_val.c | 10 ++++--
+> >  6 files changed, 54 insertions(+), 32 deletions(-)
+> > 
+> > diff --git a/tools/testing/selftests/resctrl/cmt_test.c b/tools/testing/selftests/resctrl/cmt_test.c
+> > index 9d8e38e995ef..a40e12c3b1a7 100644
+> > --- a/tools/testing/selftests/resctrl/cmt_test.c
+> > +++ b/tools/testing/selftests/resctrl/cmt_test.c
+> > @@ -68,14 +68,16 @@ void cmt_test_cleanup(void)
+> >  	remove(RESULT_FILE_NAME);
+> >  }
+> >  
+> > -int cmt_resctrl_val(int cpu_no, int n, char **benchmark_cmd)
+> > +int cmt_resctrl_val(int cpu_no, int n, const char * const *benchmark_cmd)
+> >  {
+> > +	const char *cmd[BENCHMARK_ARGS];
+> >  	unsigned long cache_size = 0;
+> >  	unsigned long long_mask;
+> > +	char *span_str = NULL;
+> >  	char cbm_mask[256];
+> >  	int count_of_bits;
+> >  	size_t span;
+> > -	int ret;
+> > +	int ret, i;
+> >  
+> >  	if (!validate_resctrl_feature_request(CMT_STR))
+> >  		return -1;
+> > @@ -111,12 +113,22 @@ int cmt_resctrl_val(int cpu_no, int n, char **benchmark_cmd)
+> >  	};
+> >  
+> >  	span = cache_size * n / count_of_bits;
+> > -	if (strcmp(benchmark_cmd[0], "fill_buf") == 0)
+> > -		sprintf(benchmark_cmd[1], "%zu", span);
+> > +	/* Duplicate the command to be able to replace span in it */
+> > +	for (i = 0; benchmark_cmd[i]; i++)
+> > +		cmd[i] = benchmark_cmd[i];
+> > +	cmd[i] = NULL;
+> > +
+> > +	if (strcmp(cmd[0], "fill_buf") == 0) {
+> > +		span_str = malloc(SIZE_MAX_DECIMAL_SIZE);
+> > +		if (!span_str)
+> > +			return -1;
+> > +		snprintf(span_str, SIZE_MAX_DECIMAL_SIZE, "%zu", span);
+> 
+> Have you considered asprintf()?
+
+Changed to asprintf() now.
+ 
+> > +		cmd[1] = span_str;
+> > +	}
+> 
+> It looks to me that array only needs to be duplicated if the
+> default benchmark is used?
+
+While it's true, another aspect is how that affects the code flow. If I 
+make that change, the benchmark command could come from two different 
+places which is now avoided. IMHO, the current approach is simpler to 
+understand even if it does the unnecessary copy of a few pointers.
+
+But please let me know if you still prefer the other way around so I can 
+change to that.
+
+> >  	remove(RESULT_FILE_NAME);
+> >  
+> > -	ret = resctrl_val(benchmark_cmd, &param);
+> > +	ret = resctrl_val(cmd, &param);
+> >  	if (ret)
+> >  		goto out;
+> >  
+> 
+> ...
+> 
+> > diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
+> > index bcd0d2060f81..ddb1e83a3a64 100644
+> > --- a/tools/testing/selftests/resctrl/resctrl.h
+> > +++ b/tools/testing/selftests/resctrl/resctrl.h
+> > @@ -6,6 +6,7 @@
+> >  #include <math.h>
+> >  #include <errno.h>
+> >  #include <sched.h>
+> > +#include <stdint.h>
+> >  #include <stdlib.h>
+> >  #include <unistd.h>
+> >  #include <string.h>
+> > @@ -38,7 +39,14 @@
+> >  
+> >  #define END_OF_TESTS	1
+> >  
+> > +#define BENCHMARK_ARGS		64
+> > +
+> > +/* Approximate %zu max length */
+> > +#define SIZE_MAX_DECIMAL_SIZE	(sizeof(SIZE_MAX) * 8 / 3 + 2)
+> > +
+> > +/* Define default span both as integer and string, these should match */
+> >  #define DEFAULT_SPAN		(250 * MB)
+> > +#define DEFAULT_SPAN_STR	"262144000"
+> 
+> I think above hardcoding can be eliminated by using asprintf()? This
+> does allocate memory though so I would like to understand why one
+> goal is to not dynamically allocate memory.
+
+Because it's simpler on the _free() side_. If there's no allocation, no 
+free() is needed.
+
+Only challenge that remains is the int -> string conversion for the 
+default span which can be either done like in the patch or using some 
+preprocessor trickery to convert the number to string. If you prefer the 
+latter, I can change to that so it's not hardcoded both as int and string.
+
+-- 
+ i.
+--8323329-560072619-1692090068=:1736--
