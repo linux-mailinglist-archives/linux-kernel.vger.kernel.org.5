@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB0377CF22
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A885477CF2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238052AbjHOP2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 11:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55158 "EHLO
+        id S236136AbjHOPaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 11:30:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237979AbjHOP2U (ORCPT
+        with ESMTP id S238067AbjHOP3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 11:28:20 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D4A9C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:28:18 -0700 (PDT)
+        Tue, 15 Aug 2023 11:29:33 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766C919B5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:29:15 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:5d0c:f209:12a7:4ce5])
-        by laurent.telenet-ops.be with bizsmtp
-        id ZrUF2A00845ualL01rUFq5; Tue, 15 Aug 2023 17:28:16 +0200
+        by michel.telenet-ops.be with bizsmtp
+        id ZrVD2A00845ualL06rVDxq; Tue, 15 Aug 2023 17:29:13 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qVvxo-000j7s-Sp;
-        Tue, 15 Aug 2023 17:28:15 +0200
+        id 1qVvyk-000j7z-Lt;
+        Tue, 15 Aug 2023 17:29:13 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qVvxv-005ckC-6V;
-        Tue, 15 Aug 2023 17:28:15 +0200
+        id 1qVvyq-005clt-W4;
+        Tue, 15 Aug 2023 17:29:13 +0200
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stanley Chang <stanley_chang@realtek.com>
-Cc:     linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
+To:     Wolfram Sang <wsa@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Luca Ceresoli <luca.ceresoli@bootlin.com>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] phy: realtek: Realtek PHYs should depend on ARCH_REALTEK
-Date:   Tue, 15 Aug 2023 17:28:13 +0200
-Message-Id: <2892527cac9af6fa8f5e7b8daeffd7d4351fde68.1692113167.git.geert+renesas@glider.be>
+Subject: [PATCH] i2c: Make I2C_ATR invisible
+Date:   Tue, 15 Aug 2023 17:29:11 +0200
+Message-Id: <588d302477cb7e6b30b52ee6448807324c57b88a.1692113321.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -49,36 +50,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Realtek SoC USB2 and USB3 PHY Transceivers are only present on
-Realtek Digital Home Center (DHC) RTD series SoCs.  Hence add a
-dependency on ARCH_REALTEK, to prevent asking the user about these
-drivers when configuring a kernel without Realtek SoC support.
+I2C Address Translator (ATR) support is not a stand-alone driver, but a
+library.  All of its users select I2C_ATR.  Hence there is no need for
+the user to enable this symbol manually, except when compile-testing.
 
+Fixes: a076a860acae77bb ("media: i2c: add I2C Address Translator (ATR) support")
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- drivers/phy/realtek/Kconfig | 5 +++++
- 1 file changed, 5 insertions(+)
+Do we care yet about out-of-tree drivers that need this functionality?
+---
+ drivers/i2c/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/phy/realtek/Kconfig b/drivers/phy/realtek/Kconfig
-index 650e20ed69af41d2..75ac7e7c31aec6f2 100644
---- a/drivers/phy/realtek/Kconfig
-+++ b/drivers/phy/realtek/Kconfig
-@@ -2,6 +2,9 @@
- #
- # Phy drivers for Realtek platforms
- #
-+
-+if ARCH_REALTEK || COMPILE_TEST
-+
- config PHY_RTK_RTD_USB2PHY
- 	tristate "Realtek RTD USB2 PHY Transceiver Driver"
- 	depends on USB_SUPPORT
-@@ -25,3 +28,5 @@ config PHY_RTK_RTD_USB3PHY
- 	  The DHC (digital home center) RTD series SoCs used the Synopsys
- 	  DWC3 USB IP. This driver will do the PHY initialization
- 	  of the parameters.
-+
-+endif # ARCH_REALTEK || COMPILE_TEST
+diff --git a/drivers/i2c/Kconfig b/drivers/i2c/Kconfig
+index c6d1a345ea6d8aee..9388823bb0bb960c 100644
+--- a/drivers/i2c/Kconfig
++++ b/drivers/i2c/Kconfig
+@@ -72,7 +72,7 @@ config I2C_MUX
+ source "drivers/i2c/muxes/Kconfig"
+ 
+ config I2C_ATR
+-	tristate "I2C Address Translator (ATR) support"
++	tristate "I2C Address Translator (ATR) support" if COMPILE_TEST
+ 	help
+ 	  Enable support for I2C Address Translator (ATR) chips.
+ 
 -- 
 2.34.1
 
