@@ -2,70 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9519C77D30B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B29677D30D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239696AbjHOTK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 15:10:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40276 "EHLO
+        id S239710AbjHOTK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 15:10:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239965AbjHOTKQ (ORCPT
+        with ESMTP id S240050AbjHOTKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 15:10:16 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7ACD1BEB
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:09:51 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-349974537f5so23642115ab.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:09:51 -0700 (PDT)
+        Tue, 15 Aug 2023 15:10:25 -0400
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B4F1FF9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:10:07 -0700 (PDT)
+Received: by mail-vs1-xe31.google.com with SMTP id ada2fe7eead31-447c7607b72so2083535137.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:10:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1692126590; x=1692731390;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TNj070RLyTuUaPJVeAHJLnmbdqPt3qMFEPUjovYEkRk=;
-        b=WjYCSrq7A56vtRUVoV7qotEUe5yCSr0QzIEZ3bAmGe/O5gaUvfjR8bxWJNKYKk5w6u
-         eS4wVUdSnLnButvaW6a0OWPo3+4QwvAZ2fcOJz3E98sZWCn6W6YSCazIHEKzxOX8rFcI
-         gHxyNGLpnCsv7qsYbYFharB7SKFQMPbdTDO2s=
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692126606; x=1692731406;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hiUxUt5zsNu7YvGS43EgY8hBy5YnTNcR0LzuDxUSonI=;
+        b=OoRky4z7z2k+pVNnv2paMYSyzLbht0EaTRzRmeJw8QmznvnjGBu2J40Xb1atfsI43K
+         9XKKAQQLh94m4fLJzf+SSAexlIHo1tIQuyma13YCYpAeGbZAwEWxT4a4xwUpX7bj9+co
+         6VUkuA8wt6iij34h5iuip5bNLpAXaZTATUjuqReqM5bywKr+zFRwFN+fEX/niTGILOqn
+         ajWWJcXSshRyKxijRLaZkTaX6Jatigyl++Y1RzdR/ZmFI6vRqH66duV1T0tc2Nsi4wvk
+         AmH1JXpmZSLmGm2CMpbYdqqHUJdaZ67XjU7FUhmPjn4Mzh9EYiYnn4+S/KLnq6aH7qap
+         J42Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692126590; x=1692731390;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TNj070RLyTuUaPJVeAHJLnmbdqPt3qMFEPUjovYEkRk=;
-        b=kWUOrmWd/tK8Au6KJl/cYb0eyQfQlbQPI1v/5p9X/qI7YFRqzW3QkAQ+rTRhVqnxR1
-         HJx5RBEhOgquPGSfYPWh/+gEnY/R85Lw6kXa+n8nA8OjJD0H6ODTEXPK9IC+RMqtqWlf
-         YW9GyhUCm31C+NX6TS6Co0C/2qsGC2WTm2ireDTdZVmGLUok0w5ZKqgZhVLGOC2EljO/
-         Pbr4pZRR3x334yU7w3rqkM0tXxo3zjqzcu+aQK1GH1R6MlfcvRoqDMLuQrlKyqBvAb2z
-         pa0324QHTC4mtSgDtnH0BSWroDMZEq7cDIJDvezp3PuO34jCV9mvvGOIUrotqhoqsOlZ
-         Vj1w==
-X-Gm-Message-State: AOJu0YywBU/q5QdJThfKvTX0VRrzI0CuK4scay8Wj0Nr0B6uT5NdH0vG
-        9HxsJN6Mt2PgRw5OOI05CUyM1loT8L0sgf2EjBY=
-X-Google-Smtp-Source: AGHT+IFpCDY7trQRG6cp/LxmZFhOBcNsdIbyEFSLsLs/Hd3i+vBHfSUhqXC3aM/q1j0Cjrzg8hC/8A==
-X-Received: by 2002:a05:6e02:13ef:b0:348:6f4a:c341 with SMTP id w15-20020a056e0213ef00b003486f4ac341mr17372320ilj.25.1692126590710;
-        Tue, 15 Aug 2023 12:09:50 -0700 (PDT)
-Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id l7-20020a92d947000000b00345e3a04f2dsm4137010ilq.62.2023.08.15.12.09.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 12:09:49 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 19:09:49 +0000
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Joel <agnel.joel@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v3] rcutorture: Copy out ftrace into its own console file
-Message-ID: <20230815190949.GA3207581@google.com>
+        d=1e100.net; s=20221208; t=1692126606; x=1692731406;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hiUxUt5zsNu7YvGS43EgY8hBy5YnTNcR0LzuDxUSonI=;
+        b=PJH1kWPrCfY8LFR1/m7/GDoOiEcDN/q0EA+Z0eb7Ncmd/SW5VWjsT3QX/dD5VjKxnR
+         1mKJJ0XmnZFIISCvjBHP85IeoceFvFOwXRNDGnvjYKYaYXwhqlWZKwG4UrYZZL/qrgDc
+         kptGfU07rieXg4Ms6Jn/yMTUL05m1GUyIQH15wTZLELD3YOUTxQ2KS0BNc9807lhxCge
+         veVyRAueELt3C7LtlaZ9+6iWduoay/wJBxuCWoi4YlLRHEG7crMLAv1clEPV8HxJetQx
+         XLgdMUK0qPSinnr6LJsuyvKjkwaros4qIyUeBCRJh4N1ixcqPtUaHMpqjZtkt85QTgnM
+         eUlA==
+X-Gm-Message-State: AOJu0YxGQKhM+bbw0ciU+Ai1cgEW5OWr6S80Yfk+95Y3FvAsc++6cLwQ
+        8Sl6+3EKWZMT+l7hxv3IPskM/gqwaMQDuWuEq9BkfA==
+X-Google-Smtp-Source: AGHT+IHnW+Qapu3KsvoKRVkEgCydWxhc70EI3sroVoORi+Hj0jCfSux1fJ1DhvuZxaSyTXlFs9uXafPQIAIIKoNBWWE=
+X-Received: by 2002:a67:db04:0:b0:449:6e0e:b2d5 with SMTP id
+ z4-20020a67db04000000b004496e0eb2d5mr9613977vsj.8.1692126606625; Tue, 15 Aug
+ 2023 12:10:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+References: <20230812183635.5478-1-brgl@bgdev.pl> <ZNtT37d3eR6FcQyR@smile.fi.intel.com>
+In-Reply-To: <ZNtT37d3eR6FcQyR@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 15 Aug 2023 21:09:55 +0200
+Message-ID: <CAMRc=McqdnBBSe1QhyNEFCs3E+Qb_K-z1dT+B8+n2KvWajj5hA@mail.gmail.com>
+Subject: Re: [PATCH v3] gpio: sim: simplify code with cleanup helpers
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,110 +70,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When debugging, it can be difficult to quickly find the ftrace dump
-within the console log, which in turn makes it difficult to process it
-independent of the result of the console output.  This commit therefore
-copies the contents of the buffers into its own file to make it easier
-to locate and process the ftrace dump. The original ftrace dump is still
-available in the console log in cases where it is more convenient to
-process it there, for example, when you have a script that processes
-console output as well as ftrace-dump data.
+On Tue, Aug 15, 2023 at 12:31=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Sat, Aug 12, 2023 at 08:36:35PM +0200, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > Use macros defined in linux/cleanup.h to automate resource lifetime
+> > control in gpio-sim.
+>
+> ...
+>
+> >  static void gpio_sim_set(struct gpio_chip *gc, unsigned int offset, in=
+t value)
+> >  {
+> >       struct gpio_sim_chip *chip =3D gpiochip_get_data(gc);
+> >
+> > -     mutex_lock(&chip->lock);
+> > -     __assign_bit(offset, chip->value_map, value);
+> > -     mutex_unlock(&chip->lock);
+> > +     scoped_guard(mutex, &chip->lock)
+> > +             __assign_bit(offset, chip->value_map, value);
+>
+> But this can also be guarded.
+>
+>         guard(mutex)(&chip->lock);
+>
+>         __assign_bit(offset, chip->value_map, value);
+>
 
-Also handle the case of multiple ftrace dumps potentially showing up in the
-log. Example for a file like [1], it will extract as [2].
+Come on, this is total bikeshedding! I could produce ten arguments in
+favor of the scoped variant.
 
-[1]:
-foo
-foo
-Dumping ftrace buffer:
----------------------------------
-blah
-blah
----------------------------------
-more
-bar
-baz
-Dumping ftrace buffer:
----------------------------------
-blah2
-blah2
----------------------------------
-bleh
-bleh
+Linus acked even the previous version and Peter says it looks right. I
+will queue it unless some *real* issues come up.
 
-[2]:
+> >  }
+>
+> ...
+>
+> >  {
+> >       struct gpio_sim_chip *chip =3D gpiochip_get_data(gc);
+> >
+> > -     mutex_lock(&chip->lock);
+> > -     bitmap_replace(chip->value_map, chip->value_map, bits, mask, gc->=
+ngpio);
+> > -     mutex_unlock(&chip->lock);
+> > +     scoped_guard(mutex, &chip->lock)
+> > +             bitmap_replace(chip->value_map, chip->value_map, bits, ma=
+sk,
+> > +                            gc->ngpio);
+>
+> Ditto.
+>
+>         guard(mutex)(&chip->lock);
+>
+>         bitmap_replace(chip->value_map, chip->value_map, bits, mask, gc->=
+ngpio);
+>
+> (exactly 80 for the sectants of 80 characters :).
+>
+> >  }
+>
+> ...
+>
+> >  {
+> >       struct gpio_sim_chip *chip =3D gpiochip_get_data(gc);
+> >
+> > -     mutex_lock(&chip->lock);
+> > -     __assign_bit(offset, chip->value_map, !!test_bit(offset, chip->pu=
+ll_map));
+> > -     mutex_unlock(&chip->lock);
+> > +     scoped_guard(mutex, &chip->lock)
+> > +             __assign_bit(offset, chip->value_map,
+> > +                          !!test_bit(offset, chip->pull_map));
+>
+> Ditto.
+>
+>         guard(mutex)(&chip->lock);
+>
+>         __assign_bit(offset, chip->value_map, test_bit(offset, chip->pull=
+_map));
+>
+> (in this form fanatics of 80 can sleep well :-)
+>
+> Note that !! is redundant as test_bit() family of functions were fixed to
+> return boolean.
 
-Ftrace dump 1:
-blah
-blah
+Ha! TIL... I'll change it in a separate patch.
 
-Ftrace dump 2:
-blah2
-blah2
+Bart
 
-
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
-v2->v3: Updates from Paul. Also handle multiple ftrace dumps.
-
- .../selftests/rcutorture/bin/functions.sh     | 24 +++++++++++++++++++
- .../selftests/rcutorture/bin/parse-console.sh |  7 ++++++
- 2 files changed, 31 insertions(+)
- mode change 100644 => 100755 tools/testing/selftests/rcutorture/bin/functions.sh
-
-diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
-old mode 100644
-new mode 100755
-index b8e2ea23cb3f..a5c74e508e41
---- a/tools/testing/selftests/rcutorture/bin/functions.sh
-+++ b/tools/testing/selftests/rcutorture/bin/functions.sh
-@@ -331,3 +331,30 @@ specify_qemu_net () {
- 		echo $1 -net none
- 	fi
- }
-+
-+# Extract the ftrace output from the console log output
-+# The ftrace output in the original logs look like:
-+# Dumping ftrace buffer:
-+# ---------------------------------
-+# [...]
-+# ---------------------------------
-+extract_ftrace_from_console() {
-+        awk '
-+        /Dumping ftrace buffer:/ {
-+        buffer_count++
-+        print "Ftrace dump " buffer_count ":"
-+        capture = 1
-+        next
-+    }
-+    /---------------------------------/ {
-+        if(capture == 1) {
-+            capture = 2
-+            next
-+        } else if(capture == 2) {
-+            capture = 0
-+            print ""
-+        }
-+    }
-+    capture == 2
-+    ' "$1";
-+}
-diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-index 9ab0f6bc172c..e3d2f69ec0fb 100755
---- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
-+++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-@@ -182,3 +182,10 @@ if ! test -s $file.diags
- then
- 	rm -f $file.diags
- fi
-+
-+# Call extract_ftrace_from_console function, if the output is empty,
-+# don't create $file.ftrace. Otherwise output the results to $file.ftrace
-+extract_ftrace_from_console $file > $file.ftrace
-+if [ ! -s $file.ftrace ]; then
-+	rm -f $file.ftrace
-+fi
--- 
-2.41.0.694.ge786442a9b-goog
-
+>
+> >  }
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
