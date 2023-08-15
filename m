@@ -2,136 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D0C77D430
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A622777D437
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238270AbjHOUfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 16:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56430 "EHLO
+        id S238293AbjHOUfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 16:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238074AbjHOUe6 (ORCPT
+        with ESMTP id S238328AbjHOUff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 16:34:58 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5410F7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:34:57 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-686b879f630so6261875b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:34:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692131697; x=1692736497;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0Ykk2Dcm0sp1r3wFF3O+L+QDwz/a2RXVAzUE310xTCE=;
-        b=c51n2/tJShODyeeUWChM6SNmOtBH4TwAB27gHlz0U2MW1KhJAFsJAI7HodLDVzEs2L
-         h5EacJeK3yQ7xI1bDM7pS/8+NTTnu/pBkkf0mHnOLxusk130BgOMc3UgF/ILE4pTCv3b
-         FoK/mdVbDTdzIm+PesccCvkjIraV3wLcVysrd2PMSHMHQsQbcViexWNnSAbHE6yrDtgT
-         Mp+VyMCTaEctp9R1ryTin05vgD7DzxczuWzmHabxbBnipkxhOH1Z8NXKF+B+bk3ZWN2C
-         pzEoTOjVu6w2TWjI1tCV+5ZHtdXlLljOrV5rvKK0dr/ZGKr7YBnabTma9ayXOLsdZ9cs
-         ecvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692131697; x=1692736497;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0Ykk2Dcm0sp1r3wFF3O+L+QDwz/a2RXVAzUE310xTCE=;
-        b=BlmY6QCqYTOVoTzRIUih1vAU+GtmuIDD3WRbT9Xf/TE5VZF5RyI5KKlQiJzRa4fQVJ
-         sds44cSIxSWyL7mIuD9bGrmqCC/b+MuM4Bo3+jQjKl+dhD1XGrK+48C3t3Xo5ATfEOvW
-         NuBSgeC0Ny5AWK0StTMUSKYpw8GhRltx/yXNW5X8QmC2i3c6isCHS2sCaPSmmaKV1jUJ
-         7IGbaGvtrLxAlNaiKhWXVVSiVGJQ4ybL6l9rSQyCv/laD0k3MY6NRP6Q2naCFVTGCb9y
-         H5oSeLEk5TCjv8TitlPikfOy2lqxTvtNWlZHCrJMeHwLhD4d9qyMNJP+BO8kK3srmE40
-         auWw==
-X-Gm-Message-State: AOJu0YxblDjB3CEYKl11Pdo/7tSC7u9/qcOfocaLWlHYX6FTjDQMco41
-        7zWK+dfFHSf3Iub+Ui6lVoyuCps4JbYLrlh3BbE=
-X-Google-Smtp-Source: AGHT+IFSPEKlQSmP4El45E8vBc0Epq9faMbNSeZpAP4jMdZu51DXHIvs320ofYVLaVzWyPCFTx03x5OLJ9JW1V1TgBQ=
-X-Received: from samitolvanen.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:4f92])
- (user=samitolvanen job=sendgmr) by 2002:a05:6a00:1a87:b0:674:1663:1270 with
- SMTP id e7-20020a056a001a8700b0067416631270mr6012423pfv.4.1692131697326; Tue,
- 15 Aug 2023 13:34:57 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 20:34:49 +0000
-In-Reply-To: <20230815203442.1608773-8-samitolvanen@google.com>
-Mime-Version: 1.0
-References: <20230815203442.1608773-8-samitolvanen@google.com>
-X-Developer-Key: i=samitolvanen@google.com; a=openpgp; fpr=35CCFB63B283D6D3AEB783944CB5F6848BBC56EE
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1987; i=samitolvanen@google.com;
- h=from:subject; bh=ki2ulz3S+Qkr8AIV7YWzX5sRx6qIOMgf7DcUTP9c/kA=;
- b=owEB7QES/pANAwAKAUy19oSLvFbuAcsmYgBk2+Fi+17Bq1AKxHm6SJ6quZHGmn+eubZLGDQWv
- bi76aScYZaJAbMEAAEKAB0WIQQ1zPtjsoPW0663g5RMtfaEi7xW7gUCZNvhYgAKCRBMtfaEi7xW
- 7uDxC/4yeVJIZQGthB7VhCrB1mQ9aPlWa4zl/qPRC5GlncPWQV/MwLuo1ExhOVxQY1M+pu82F+m
- 8PqQG33dyzALoBf1c1t0RJgk8hXrSg+on+5gsx856SahKsjV3+GpMyptJgjPEwnNHk+6wKMMK8A
- N/pPZs3mhzf+AhJROOGKLcZi1Ux1G5qizF4mL1TsJXLT2ky85P+u9iE+XnlUUOVj0o6+zdRc6E4
- T3hgbyVAvct21OxraGNq6gZ4hFfI1gD0Vzy9TsNhYvkKUv6h9A3mjyabLDgnWYIneyLL5Aw8hLM
- 778p+uRcOJ4tKxAH+wveS7E7YVuTsPIR0MtZTeW4TlXWx284O7O/LdzF0u0artPihMYgdyyeXkT
- fbWExG0nGe0BC399mEX2b1gOK/3yeNpSy5DzlUGN+aTa7vNStcHxmPR4yr6Qlfw7uDrg4g305Ra AkJHJ/qsdN+6PCM8BiYrPK7icqJ3WmLfwFC54pjnKI93e+BJiBx3TlG5aczelxjKucC60=
-X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
-Message-ID: <20230815203442.1608773-14-samitolvanen@google.com>
-Subject: [PATCH v2 6/6] lkdtm: Fix CFI_BACKWARD on RISC-V
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Guo Ren <guoren@kernel.org>, Deepak Gupta <debug@rivosinc.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        linux-riscv@lists.infradead.org, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 15 Aug 2023 16:35:35 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED039F7;
+        Tue, 15 Aug 2023 13:35:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=75R46oKMXGij9WjDuFRcdkMZQJztFv+MgWLiP5Z+wmA=; b=HXM125bORhCV4ax8Na19Xg+n8F
+        qUDPfxv5z5BG59BiS5GrOzIBFT+rykYfaVfA0vxT6jJXyBIvAEbnIWzCNFBfcS9E7+lB8Tdhg2rtd
+        NBvWegeQKrIsT2X8BAu40iqrHwZmSO7d+mqB3+Li5FXQSG+WXm8LdNGH8A5VY5THCscRKJwMAjzk4
+        KgDGfOKWSi9ifyo80vqNkjxtaOm2a/Vpk5flQr0kDDlj/F9j5Ex2ShRwN6O48a5ZMsA3CUAGT05Rp
+        XDbLqyqOiMrQsPWTTbful4WTY0jlyj9V3GgBLvZroT6qSNOm8OktHApKP8h8LxJKVQxBb7ODIK4FU
+        o3C18w5g==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qW0lE-00AISb-0a; Tue, 15 Aug 2023 20:35:28 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 96028300222;
+        Tue, 15 Aug 2023 22:35:27 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 52D992B57699C; Tue, 15 Aug 2023 22:35:27 +0200 (CEST)
+Date:   Tue, 15 Aug 2023 22:35:27 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     James Clark <james.clark@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        catalin.marinas@arm.com, Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Suzuki Poulose <suzuki.poulose@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH V13 - RESEND 02/10] arm64/perf: Add BRBE registers and
+ fields
+Message-ID: <20230815203527.GB971582@hirez.programming.kicks-ass.net>
+References: <20230711082455.215983-1-anshuman.khandual@arm.com>
+ <20230711082455.215983-3-anshuman.khandual@arm.com>
+ <20230728162011.GA22050@willie-the-truck>
+ <89ce4bc4-00c5-a763-3179-e1d3e9f198b7@arm.com>
+ <937468a1-b325-7d05-8daf-765f911c9240@arm.com>
+ <ZMd5gCOHqnGRc0Ja@FVFF77S0Q05N>
+ <f5437bfc-e458-bc23-bc31-a308aa412463@arm.com>
+ <ZNt3mQeGbql4oi55@FVFF77S0Q05N>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNt3mQeGbql4oi55@FVFF77S0Q05N>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On RISC-V, the return address is before the current frame pointer,
-unlike on most other architectures. Use the correct offset on RISC-V
-to fix the CFI_BACKWARD test.
+On Tue, Aug 15, 2023 at 02:05:36PM +0100, Mark Rutland wrote:
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
----
- drivers/misc/lkdtm/cfi.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+> From a quick dig, it's supposed to be like that: the GNU assembler uses a
+> different operator precedence to C, and clang's assembler does the same for
+> compatibility. What a great.
 
-diff --git a/drivers/misc/lkdtm/cfi.c b/drivers/misc/lkdtm/cfi.c
-index fc28714ae3a6..6a33889d0902 100644
---- a/drivers/misc/lkdtm/cfi.c
-+++ b/drivers/misc/lkdtm/cfi.c
-@@ -68,12 +68,20 @@ static void lkdtm_CFI_FORWARD_PROTO(void)
- #define no_pac_addr(addr)      \
- 	((__force __typeof__(addr))((uintptr_t)(addr) | PAGE_OFFSET))
- 
-+#ifdef CONFIG_RISCV
-+/* https://github.com/riscv-non-isa/riscv-elf-psabi-doc/blob/master/riscv-cc.adoc#frame-pointer-convention */
-+#define FRAME_RA_OFFSET		(-1)
-+#else
-+#define FRAME_RA_OFFSET		1
-+#endif
-+
- /* The ultimate ROP gadget. */
- static noinline __no_ret_protection
- void set_return_addr_unchecked(unsigned long *expected, unsigned long *addr)
- {
- 	/* Use of volatile is to make sure final write isn't seen as a dead store. */
--	unsigned long * volatile *ret_addr = (unsigned long **)__builtin_frame_address(0) + 1;
-+	unsigned long * volatile *ret_addr =
-+		(unsigned long **)__builtin_frame_address(0) + FRAME_RA_OFFSET;
- 
- 	/* Make sure we've found the right place on the stack before writing it. */
- 	if (no_pac_addr(*ret_addr) == expected)
-@@ -88,7 +96,8 @@ static noinline
- void set_return_addr(unsigned long *expected, unsigned long *addr)
- {
- 	/* Use of volatile is to make sure final write isn't seen as a dead store. */
--	unsigned long * volatile *ret_addr = (unsigned long **)__builtin_frame_address(0) + 1;
-+	unsigned long * volatile *ret_addr =
-+		(unsigned long **)__builtin_frame_address(0) + FRAME_RA_OFFSET;
- 
- 	/* Make sure we've found the right place on the stack before writing it. */
- 	if (no_pac_addr(*ret_addr) == expected)
--- 
-2.41.0.694.ge786442a9b-goog
+GNU assembler doesn't even have a consistent true value for boolean
+expressions. The comparisons use -1/~0 as true value while the logical
+ops use 1.
 
+It's as if they purposefully want to mess you up :-(
+
+  https://sourceware.org/binutils/docs-2.38/as.html#Infix-Ops
