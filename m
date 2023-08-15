@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6EA077CE22
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3620277CE23
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237641AbjHOOcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 10:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54608 "EHLO
+        id S237647AbjHOOcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 10:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237674AbjHOOcP (ORCPT
+        with ESMTP id S237676AbjHOOcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 10:32:15 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF65510C0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:32:14 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe8a1591c8so39659255e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:32:14 -0700 (PDT)
+        Tue, 15 Aug 2023 10:32:17 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B51810FF
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:32:16 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-3090d3e9c92so4827294f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:32:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692109933; x=1692714733;
+        d=linaro.org; s=google; t=1692109935; x=1692714735;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UpZqgVo2zkbi2B7sOh6o48YWO5812KC5/SRbTNsfhC4=;
-        b=AjF7/iSx//xv+IXbPrL7byl1tK/SI6NcdK7rZc73VtoiGg7V7Sah6expliUD2+bF87
-         lzbiBreVfmGWFKUAAvYpVUu5NjpfNgvYtUKTZfW4u/g7Fqp1OWlCIO6GI3wNGlMfsShu
-         QaCMlMbRWVfdrBzrcf837XmCmiNlNcoREEI0n1r+JXFcjIuTNOL/wPsp4n5ZyekJgREy
-         hcf8GsOJcMcDkYSbZ7hjiuaWK/Kdflgiv65As/HmePDlqJjG36NaQcJrTaxIju2YZ1+H
-         S73dQldaf8Um/soORXdpTCTPCxIEu2h3wMSJjpCoLYWdX4EuhzlrSCaMqv358l+yIyhr
-         c8bg==
+        bh=qzMSq7HLSHN1HFLKAp83kiHFzC/dRhYUs++4UrDqaOA=;
+        b=L1iV0sMzPMso3PSr1XH+y5/B8gyuV5pYEWqlU8NARJdqLI4hZ3F6s321hi7/VG8oLE
+         phF5PpbnKhgxxQhD3n7lKAk/avrkQIoh6ll4b0iLamniMrti4GKXu1vdJsELmnaHYnmy
+         dXW9fqkfSZo2Oc4ZLpAhuO/5waWLbDsOiufUm5OjYPAP2tQG98GYDqdKTERblKPMEH0F
+         K+aDkrfeKeuhJAlzYWKgLsBOO9SDk0kp07/kNYdsC8nGGGUqwun4YursEJrylhuJxp0/
+         n+Ka3lwGrr4oaw4/KSAIokrbKf8wPNLPfVHq2FCcb72KkDxaRhRl5by6WCpyi0ILqMwc
+         OgeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692109933; x=1692714733;
+        d=1e100.net; s=20221208; t=1692109935; x=1692714735;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UpZqgVo2zkbi2B7sOh6o48YWO5812KC5/SRbTNsfhC4=;
-        b=XvRM24jx754/bpygMM99wsOg5uuz0st61ftyn4FptxvfUrSmxoHYQgl6IOPOkBWUUn
-         LvIwZvV+iRRNUvnhvej5JYQaQZTKFyp/TroDB/srMr7vdIDfPJJpYzgtQ8ZtKlyojrah
-         6WDoL3ibU5b1m/uTPOwFttDLKy2A67F2uhoOhorV37fgCB10E9uDhOFnVN754Wq/GitB
-         T6pQniv3RkAQlEioS36WzUfUTTRuATTt+aBY3ORmDVkbGwEVh6dIFFW2aoAUT9qMZV2n
-         uNyAbJSrvu8FVC6e8yfIDYSMF/t7HQGJBgTJGFed9BWumKDz1YbmdtbLzTFNgNYa7nZU
-         xpoA==
-X-Gm-Message-State: AOJu0YwWM4Q6A0i94NT3haE06I5CVblkG0AxgK/G4I6mXnra4+6iCfFJ
-        meyI8iDMQTG7QHIjotdTlC3Zaw==
-X-Google-Smtp-Source: AGHT+IHtM12tZqB/uARbgqLwol3KwbEzc5BSEYMRqCDwwlrAIrZkQ/bVwv4A6dHrGW9OOEqZ0i1fRA==
-X-Received: by 2002:a05:600c:5121:b0:3fe:1b4e:c484 with SMTP id o33-20020a05600c512100b003fe1b4ec484mr10756757wms.5.1692109932920;
-        Tue, 15 Aug 2023 07:32:12 -0700 (PDT)
+        bh=qzMSq7HLSHN1HFLKAp83kiHFzC/dRhYUs++4UrDqaOA=;
+        b=T9g1OdkzSZr0N9/68ksi0vMtE8YmCLOOizWb2YvZ2vMUa7aajrvDgCQPiJAEf724mf
+         sjgUGdg4wgqvpx58BQf/mTSQJBL/c0Aex3Zc15OwF9rFlgIhLZwZF2A8Bu+iJ3sF8U9O
+         LfprMcx6K2PbEYmm8CjUZPS5/FYiuXgHHitge78ZpK/E9dzFW5I+q3K9a904h3XzhFkT
+         gomAo0uaKgHT8mjPglnSkNvcv60iLPTtqJ3ByBLgk7YY651uGUOJusuS7Khv6P5kl18u
+         c+iIk2FPwIKk8OIxV5CMml28wwiw2qGwI/Zt9k+2xdk6jh8B1K5Nq2Rt2HAlOve9Yh5B
+         M+CQ==
+X-Gm-Message-State: AOJu0Yz5+2m2WR98hlgjZ9UxmAS7atmwVzxkx2s39NgtoMMDkPzqrmpL
+        oJDG/mFk6gDJ83sz33XIc99+tTYECM/5gKxoV5Q=
+X-Google-Smtp-Source: AGHT+IH7QnBMIW+PVYhiQDxK0D6EQk2b+8pkoH7NcQ2NFAHzAWryQ2DVu/uXHuscNAunX53Tk+bXPw==
+X-Received: by 2002:a05:6000:42:b0:317:e3a0:92c6 with SMTP id k2-20020a056000004200b00317e3a092c6mr9135862wrx.18.1692109934723;
+        Tue, 15 Aug 2023 07:32:14 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id l11-20020a05600012cb00b003177f57e79esm5851481wrx.88.2023.08.15.07.32.11
+        by smtp.gmail.com with ESMTPSA id l11-20020a05600012cb00b003177f57e79esm5851481wrx.88.2023.08.15.07.32.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 07:32:12 -0700 (PDT)
+        Tue, 15 Aug 2023 07:32:14 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -60,9 +60,9 @@ To:     Liam Girdwood <lgirdwood@gmail.com>,
         linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH RESEND 2/3] ASoC: codecs: wm8904: Fix Wvoid-pointer-to-enum-cast warning
-Date:   Tue, 15 Aug 2023 16:32:03 +0200
-Message-Id: <20230815143204.379708-2-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH RESEND 3/3] ASoC: rockchip: Fix Wvoid-pointer-to-enum-cast warning
+Date:   Tue, 15 Aug 2023 16:32:04 +0200
+Message-Id: <20230815143204.379708-3-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230815143204.379708-1-krzysztof.kozlowski@linaro.org>
 References: <20230815143204.379708-1-krzysztof.kozlowski@linaro.org>
@@ -78,29 +78,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'devtype' is an enum, thus cast of pointer on 64-bit compile test with
+'version' is an enum, thus cast of pointer on 64-bit compile test with
 W=1 causes:
 
-  wm8904.c:2205:21: error: cast to smaller integer type 'enum wm8904_type' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
+  rockchip_pdm.c:587:18: error: cast to smaller integer type 'enum rk_pdm_version' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- sound/soc/codecs/wm8904.c | 2 +-
+ sound/soc/rockchip/rockchip_pdm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
-index 60319b468fb2..829bf055622a 100644
---- a/sound/soc/codecs/wm8904.c
-+++ b/sound/soc/codecs/wm8904.c
-@@ -2202,7 +2202,7 @@ static int wm8904_i2c_probe(struct i2c_client *i2c)
- 		match = of_match_node(wm8904_of_match, i2c->dev.of_node);
- 		if (match == NULL)
- 			return -EINVAL;
--		wm8904->devtype = (enum wm8904_type)match->data;
-+		wm8904->devtype = (uintptr_t)match->data;
- 	} else {
- 		const struct i2c_device_id *id =
- 			i2c_match_id(wm8904_i2c_id, i2c);
+diff --git a/sound/soc/rockchip/rockchip_pdm.c b/sound/soc/rockchip/rockchip_pdm.c
+index 52f9aae60be8..678989b25e57 100644
+--- a/sound/soc/rockchip/rockchip_pdm.c
++++ b/sound/soc/rockchip/rockchip_pdm.c
+@@ -584,7 +584,7 @@ static int rockchip_pdm_probe(struct platform_device *pdev)
+ 
+ 	match = of_match_device(rockchip_pdm_match, &pdev->dev);
+ 	if (match)
+-		pdm->version = (enum rk_pdm_version)match->data;
++		pdm->version = (uintptr_t)match->data;
+ 
+ 	if (pdm->version == RK_PDM_RK3308) {
+ 		pdm->reset = devm_reset_control_get(&pdev->dev, "pdm-m");
 -- 
 2.34.1
 
