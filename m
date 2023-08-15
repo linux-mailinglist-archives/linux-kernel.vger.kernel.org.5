@@ -2,471 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DCB777CF50
+	by mail.lfdr.de (Postfix) with ESMTP id 57BE977CF51
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238136AbjHOPhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 11:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40526 "EHLO
+        id S238147AbjHOPht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 11:37:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238125AbjHOPhN (ORCPT
+        with ESMTP id S238151AbjHOPhW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 11:37:13 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A8141985;
-        Tue, 15 Aug 2023 08:37:07 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-77a62a84855so206414139f.1;
-        Tue, 15 Aug 2023 08:37:07 -0700 (PDT)
+        Tue, 15 Aug 2023 11:37:22 -0400
+Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FBF198A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:37:21 -0700 (PDT)
+Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1c4d5cc56e2so1246185fac.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:37:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692113826; x=1692718626;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4vZPCjYN/flY5kZKTLvD4YB+3YtqTExZk5oN8O3Sqb8=;
-        b=edXHOo3rnhMYtJOa3urVA9KzvuE3kg3kZj6x37+TDMnmBtbDq3C6e5XK+bsu3QehEm
-         8rpO+ClXgEyV9dspJj89CLGrnfBaXypGVxhcWxGgfcmIMlpQRCGVrsEDLNoU0J+DXTIm
-         jLw6DF08Y4rTe+snQNq/xwPayzRd14F7BZyrwt4PBsnbI71HBY35qfc06qjgJlnwZyoA
-         qDolFOA/eVqf5hYtW0/q5FE79LjcN6mt45KndUfDbEwQeFA0Vn0c6tzoIPW9QMU2Iws7
-         /IF7IZZVH83RVtma0/UGiQyRczAKrhoHIGcc9/AzbTjtm7Ie/K8l0CZqOmEybZ+14VGK
-         8Veg==
+        d=chromium.org; s=google; t=1692113839; x=1692718639;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V7bPWyJ4BM2lp8s+cde8/v8oklSjgzrXqoif1AHYHlI=;
+        b=i5XRL2vf9vwjXJ8M4GUPI6pLku9U5KxhSZ7GxGdr62vpK6nSWIc9y5A1MQDXvZbTjQ
+         Xs1jh0AC5FHYCMAwKd6SDAJUOl8D63KKgwc4WjHgyiw8za7V6fwB2EEPoYv8lrMtgl4i
+         6HUeimOWR94mO9tNYl4skmERDGn5nxMjMGtFw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692113826; x=1692718626;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1692113839; x=1692718639;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4vZPCjYN/flY5kZKTLvD4YB+3YtqTExZk5oN8O3Sqb8=;
-        b=EB4aL5+A68zocXOpKid+2mPp11LfUAtb7CcMd9+ArvP+MAGZBmtZl+5r3fIaLnF/CO
-         FJBh/kRJOgvuUC3X7qkotonluHwt8ECmDbMRew5h0rnZKV0UZ7T3eLlEQglVAu+xD8gS
-         y/TJr5uY+XSn51xGIK+6J+hQPEexjk6lD2+ZuIq0iobIvAAP3VVjXrIfnKzcwMTrvyAc
-         ZHAUszSCeSgLv/XeznghvGp9UdsNr6EFUI5i4k2D9TeNDhXWUWpjwyPkCGG1ywS1YMet
-         1AshLtkGKMm+KfVYb67kKClelh/a0ftYR++T48J7CvjrTKJD4gpz2ScoKH6KV483jJRx
-         XJkQ==
-X-Gm-Message-State: AOJu0YyEm8M59Aqrck/7gnFhhPiC5XUppJ2FU4eOwu5Wi3Sb1e7j+Vif
-        dx38DHMQy/BOiqzJYEEWxHo=
-X-Google-Smtp-Source: AGHT+IHm53CU73smv+Q3GaHaEqR2JR2LTA9W9u1uWQfixQkVKXOrENqVn+xAgtSNVHWftzjrHFTd7A==
-X-Received: by 2002:a6b:db15:0:b0:77e:3d2f:d1f4 with SMTP id t21-20020a6bdb15000000b0077e3d2fd1f4mr15981715ioc.15.1692113826250;
-        Tue, 15 Aug 2023 08:37:06 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n13-20020a6b590d000000b00790a8cc4fb6sm4069452iob.10.2023.08.15.08.37.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 08:37:05 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 15 Aug 2023 08:37:04 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     David Ober <dober6023@gmail.com>
-Cc:     linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jdelvare@suse.com, corbet@lwn.net,
-        dober@lenovo.com, mpearson@lenovo.com
-Subject: Re: [PATCH] hwmon: add in watchdog for nct6686
-Message-ID: <8417c931-7ffa-42dd-8bdf-a24d7dfeb094@roeck-us.net>
-References: <20230815115515.286142-1-dober6023@gmail.com>
+        bh=V7bPWyJ4BM2lp8s+cde8/v8oklSjgzrXqoif1AHYHlI=;
+        b=EusWCdIrnfpWGKwFPrEXKtazQ2/xaHAuSNvgUYxoY+LRSoOk0ExRGu0c3TWsLFTtFG
+         kH9RVGsvl0axVlu1DZGcZKLHTqybDEM0wyz1a9BnHf/r94bJdUNMWM3HvPCqDBzqi8vs
+         BLzrAQuuZ2vqqN1Y1ABl8a2UOd0sj0UvPTm6liJL9EWm2x/B5fvL9jEkAbT+04lLTC1A
+         BxKHGIFbo+dngPLgQORx2dELZ4mg29xEcLIrxASpLFPcZvqpcjIg6Kh8Vm4skVhXwg4h
+         0+V71A1dBmht11q7FggIXER1HJtk5g4T0NQGIVGkTR2Mo/csbI2ur8jDSSxO/kwXeb7H
+         RbRg==
+X-Gm-Message-State: AOJu0YzjRkj9notspXVlLJdn3/tW/u4/77MTu7FEJ8M84dpj04mw3hPd
+        es6iIPRclC/ceS6H5kMjQFhj/SdMNTY9qYNDoqiMBQ==
+X-Google-Smtp-Source: AGHT+IFLVkkHK50bZ8po8HJISFrSsj+z23izY23GgRTZvTAFZ59NxY+wD93HIKpSJip7LuJWRR2Fl2tY2wxEeeDKtGw=
+X-Received: by 2002:a05:6870:65a0:b0:1b7:4521:31f with SMTP id
+ fp32-20020a05687065a000b001b74521031fmr13779065oab.18.1692113839521; Tue, 15
+ Aug 2023 08:37:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230815115515.286142-1-dober6023@gmail.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+References: <20230815152822.3660784-1-senozhatsky@chromium.org>
+In-Reply-To: <20230815152822.3660784-1-senozhatsky@chromium.org>
+From:   Rob Clark <robdclark@chromium.org>
+Date:   Tue, 15 Aug 2023 08:37:08 -0700
+Message-ID: <CAJs_Fx4iRqwQjWBOgR_GV+m6___gLU5h9e2ZdT06gSggC7JLOg@mail.gmail.com>
+Subject: Re: [PATCH] dma-debug: defer __dma_entry_alloc_check_leak() printk output
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Petr Mladek <pmladek@suse.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 07:55:15AM -0400, David Ober wrote:
-> This change adds in the watchdog timer support for the nct6686
-> chip so that it can be used on the Lenovo m90n IOT device
-> 
-> Signed-off-by: David Ober <dober6023@gmail.com>
+On Tue, Aug 15, 2023 at 8:28=E2=80=AFAM Sergey Senozhatsky
+<senozhatsky@chromium.org> wrote:
+>
+> __dma_entry_alloc_check_leak() calls printk -> serial console
+> output (qcom geni) and grabs port->lock under free_entries_lock,
+> which is a conflicting locking dependency chain as qcom_geni IRQ
+> handler can call into dma-debug code and grab free_entries_lock
+> under port->lock.
+>
+> Use deferred printk in __dma_entry_alloc_check_leak() so that we
+> don't acquire serial console's port->lock under free_entries_lock.
+>
+> Trimmed-down lockdep splat:
+>
+>    The existing dependency chain (in reverse order) is:
+>
+>                -> #2 (free_entries_lock){-.-.}-{2:2}:
+>         _raw_spin_lock_irqsave+0x60/0x80
+>         dma_entry_alloc+0x38/0x110
+>         debug_dma_map_page+0x60/0xf8
+>         dma_map_page_attrs+0x1e0/0x230
+>         dma_map_single_attrs.constprop.0+0x6c/0xc8
+>         geni_se_rx_dma_prep+0x40/0xcc
+>         qcom_geni_serial_isr+0x310/0x510
+>         __handle_irq_event_percpu+0x110/0x244
+>         handle_irq_event_percpu+0x20/0x54
+>         handle_irq_event+0x50/0x88
+>         handle_fasteoi_irq+0xa4/0xcc
+>         handle_irq_desc+0x28/0x40
+>         generic_handle_domain_irq+0x24/0x30
+>         gic_handle_irq+0xc4/0x148
+>         do_interrupt_handler+0xa4/0xb0
+>         el1_interrupt+0x34/0x64
+>         el1h_64_irq_handler+0x18/0x24
+>         el1h_64_irq+0x64/0x68
+>         arch_local_irq_enable+0x4/0x8
+>         ____do_softirq+0x18/0x24
+>         ...
+>
+>                -> #1 (&port_lock_key){-.-.}-{2:2}:
+>         _raw_spin_lock_irqsave+0x60/0x80
+>         qcom_geni_serial_console_write+0x184/0x1dc
+>         console_flush_all+0x344/0x454
+>         console_unlock+0x94/0xf0
+>         vprintk_emit+0x238/0x24c
+>         vprintk_default+0x3c/0x48
+>         vprintk+0xb4/0xbc
+>         _printk+0x68/0x90
+>         register_console+0x230/0x38c
+>         uart_add_one_port+0x338/0x494
+>         qcom_geni_serial_probe+0x390/0x424
+>         platform_probe+0x70/0xc0
+>         really_probe+0x148/0x280
+>         __driver_probe_device+0xfc/0x114
+>         driver_probe_device+0x44/0x100
+>         __device_attach_driver+0x64/0xdc
+>         bus_for_each_drv+0xb0/0xd8
+>         __device_attach+0xe4/0x140
+>         device_initial_probe+0x1c/0x28
+>         bus_probe_device+0x44/0xb0
+>         device_add+0x538/0x668
+>         of_device_add+0x44/0x50
+>         of_platform_device_create_pdata+0x94/0xc8
+>         of_platform_bus_create+0x270/0x304
+>         of_platform_populate+0xac/0xc4
+>         devm_of_platform_populate+0x60/0xac
+>         geni_se_probe+0x154/0x160
+>         platform_probe+0x70/0xc0
+>         ...
+>
+>                -> #0 (console_owner){-...}-{0:0}:
+>         __lock_acquire+0xdf8/0x109c
+>         lock_acquire+0x234/0x284
+>         console_flush_all+0x330/0x454
+>         console_unlock+0x94/0xf0
+>         vprintk_emit+0x238/0x24c
+>         vprintk_default+0x3c/0x48
+>         vprintk+0xb4/0xbc
+>         _printk+0x68/0x90
+>         dma_entry_alloc+0xb4/0x110
+>         debug_dma_map_sg+0xdc/0x2f8
+>         __dma_map_sg_attrs+0xac/0xe4
+>         dma_map_sgtable+0x30/0x4c
+>         get_pages+0x1d4/0x1e4 [msm]
+>         msm_gem_pin_pages_locked+0x38/0xac [msm]
+>         msm_gem_pin_vma_locked+0x58/0x88 [msm]
+>         msm_ioctl_gem_submit+0xde4/0x13ac [msm]
+>         drm_ioctl_kernel+0xe0/0x15c
+>         drm_ioctl+0x2e8/0x3f4
+>         vfs_ioctl+0x30/0x50
+>         ...
+>
+>  Chain exists of:
+>                  console_owner --> &port_lock_key --> free_entries_lock
+>
+>   Possible unsafe locking scenario:
+>
+>         CPU0                    CPU1
+>         ----                    ----
+>    lock(free_entries_lock);
+>                                 lock(&port_lock_key);
+>                                 lock(free_entries_lock);
+>    lock(console_owner);
+>
+>                 *** DEADLOCK ***
+>
+>  Call trace:
+>   dump_backtrace+0xb4/0xf0
+>   show_stack+0x20/0x30
+>   dump_stack_lvl+0x60/0x84
+>   dump_stack+0x18/0x24
+>   print_circular_bug+0x1cc/0x234
+>   check_noncircular+0x78/0xac
+>   __lock_acquire+0xdf8/0x109c
+>   lock_acquire+0x234/0x284
+>   console_flush_all+0x330/0x454
+>   console_unlock+0x94/0xf0
+>   vprintk_emit+0x238/0x24c
+>   vprintk_default+0x3c/0x48
+>   vprintk+0xb4/0xbc
+>   _printk+0x68/0x90
+>   dma_entry_alloc+0xb4/0x110
+>   debug_dma_map_sg+0xdc/0x2f8
+>   __dma_map_sg_attrs+0xac/0xe4
+>   dma_map_sgtable+0x30/0x4c
+>   get_pages+0x1d4/0x1e4 [msm]
+>   msm_gem_pin_pages_locked+0x38/0xac [msm]
+>   msm_gem_pin_vma_locked+0x58/0x88 [msm]
+>   msm_ioctl_gem_submit+0xde4/0x13ac [msm]
+>   drm_ioctl_kernel+0xe0/0x15c
+>   drm_ioctl+0x2e8/0x3f4
+>   vfs_ioctl+0x30/0x50
+>   ...
+>
+> Reported-by: Rob Clark <robdclark@chromium.org>
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+
+Tested-by: Rob Clark <robdclark@chromium.org>
+
 > ---
->  Documentation/hwmon/nct6683.rst |   5 +-
->  drivers/hwmon/nct6683.c         | 247 ++++++++++++++++++++++++++++++--
-
-This should be a separate driver in drivers/watchdog/, and sneaking
-in support for a new vendor with the above description is inappropriate
-anyway. Besides, why would the watchdog only work for Lenovo ?
-
-Guenter
-
->  2 files changed, 242 insertions(+), 10 deletions(-)
-> 
-> diff --git a/Documentation/hwmon/nct6683.rst b/Documentation/hwmon/nct6683.rst
-> index 2e1408d174bd..7421bc444365 100644
-> --- a/Documentation/hwmon/nct6683.rst
-> +++ b/Documentation/hwmon/nct6683.rst
-> @@ -3,7 +3,7 @@ Kernel driver nct6683
->  
->  Supported chips:
->  
-> -  * Nuvoton NCT6683D/NCT6687D
-> +  * Nuvoton NCT6683D/NCT6686D/NCT6687D
->  
->      Prefix: 'nct6683'
->  
-> @@ -49,6 +49,8 @@ The driver has only been tested with the Intel firmware, and by default
->  only instantiates on Intel boards. To enable it on non-Intel boards,
->  set the 'force' module parameter to 1.
->  
-> +Implement the watchdog functionality of the NCT6686D eSIO chip
-> +
->  Tested Boards and Firmware Versions
->  -----------------------------------
->  
-> @@ -63,4 +65,5 @@ Intel DH87MC	NCT6683D EC firmware version 1.0 build 04/03/13
->  Intel DB85FL	NCT6683D EC firmware version 1.0 build 04/03/13
->  ASRock X570	NCT6683D EC firmware version 1.0 build 06/28/19
->  MSI B550	NCT6687D EC firmware version 1.0 build 05/07/20
-> +LENOVO M90n-1	NCT6686D EC firmware version 9.0 build 04/21/21
->  =============== ===============================================
-> diff --git a/drivers/hwmon/nct6683.c b/drivers/hwmon/nct6683.c
-> index f673f7d07941..eb95b91c4d39 100644
-> --- a/drivers/hwmon/nct6683.c
-> +++ b/drivers/hwmon/nct6683.c
-> @@ -24,15 +24,16 @@
->  #include <linux/acpi.h>
->  #include <linux/delay.h>
->  #include <linux/err.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/hwmon-sysfs.h>
->  #include <linux/init.h>
->  #include <linux/io.h>
->  #include <linux/jiffies.h>
-> -#include <linux/hwmon.h>
-> -#include <linux/hwmon-sysfs.h>
->  #include <linux/module.h>
->  #include <linux/mutex.h>
->  #include <linux/platform_device.h>
->  #include <linux/slab.h>
-> +#include <linux/watchdog.h>
->  
->  enum kinds { nct6683, nct6686, nct6687 };
->  
-> @@ -73,6 +74,34 @@ static const char * const nct6683_chip_names[] = {
->  #define SIO_NCT6687_ID		0xd590
->  #define SIO_ID_MASK		0xFFF0
->  
-> +#define WDT_CFG			0x828    /* W/O Lock Watchdog Register */
-> +#define WDT_CNT			0x829    /* R/W Watchdog Timer Register */
-> +#define WDT_STS			0x82A    /* R/O Watchdog Status Register */
-> +#define WDT_STS_EVT_POS		(0)
-> +#define WDT_STS_EVT_MSK		(0x3 << WDT_STS_EVT_POS)
-> +#define WDT_SOFT_EN		0x87    /* Enable soft watchdog timer */
-> +#define WDT_SOFT_DIS		0xAA    /* Disable soft watchdog timer */
-> +
-> +#define WATCHDOG_TIMEOUT	60      /* 1 minute default timeout */
-> +
-> +/* The timeout range is 1-255 seconds */
-> +#define MIN_TIMEOUT		1
-> +#define MAX_TIMEOUT		255
-> +
-> +static int timeout;
-> +module_param(timeout, int, 0);
-> +MODULE_PARM_DESC(timeout, "Watchdog timeout in seconds. 1 <= timeout <= 255, default="
-> +		 __MODULE_STRING(WATCHDOG_TIMEOUT) ".");
-> +
-> +static bool nowayout = WATCHDOG_NOWAYOUT;
-> +module_param(nowayout, bool, 0);
-> +MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
-> +		 __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
-> +
-> +static int early_disable;
-> +module_param(early_disable, int, 0);
-> +MODULE_PARM_DESC(early_disable, "Disable watchdog at boot time (default=0)");
-> +
->  static inline void
->  superio_outb(int ioreg, int reg, int val)
->  {
-> @@ -171,10 +200,10 @@ superio_exit(int ioreg)
->  
->  #define NCT6683_REG_CUSTOMER_ID		0x602
->  #define NCT6683_CUSTOMER_ID_INTEL	0x805
-> +#define NCT6683_CUSTOMER_ID_LENOVO	0x1101
->  #define NCT6683_CUSTOMER_ID_MITAC	0xa0e
->  #define NCT6683_CUSTOMER_ID_MSI		0x201
-> -#define NCT6683_CUSTOMER_ID_MSI2	0x200
-> -#define NCT6683_CUSTOMER_ID_ASROCK		0xe2c
-> +#define NCT6683_CUSTOMER_ID_ASROCK	0xe2c
->  #define NCT6683_CUSTOMER_ID_ASROCK2	0xe1b
->  
->  #define NCT6683_REG_BUILD_YEAR		0x604
-> @@ -183,6 +212,9 @@ superio_exit(int ioreg)
->  #define NCT6683_REG_SERIAL		0x607
->  #define NCT6683_REG_VERSION_HI		0x608
->  #define NCT6683_REG_VERSION_LO		0x609
-> +#define NCT6686_PAGE_REG_OFFSET		0
-> +#define NCT6686_ADDR_REG_OFFSET		1
-> +#define NCT6686_DATA_REG_OFFSET		2
->  
->  #define NCT6683_REG_CR_CASEOPEN		0xe8
->  #define NCT6683_CR_CASEOPEN_MASK	(1 << 7)
-> @@ -304,6 +336,7 @@ struct nct6683_data {
->  
->  	struct device *hwmon_dev;
->  	const struct attribute_group *groups[6];
-> +	struct watchdog_device wdt;
->  
->  	int temp_num;			/* number of temperature attributes */
->  	u8 temp_index[NCT6683_NUM_REG_MON];
-> @@ -518,6 +551,39 @@ static void nct6683_write(struct nct6683_data *data, u16 reg, u16 value)
->  	outb_p(value & 0xff, data->addr + EC_DATA_REG);
+>  kernel/dma/debug.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+> index f190651bcadd..9e11ceadc69d 100644
+> --- a/kernel/dma/debug.c
+> +++ b/kernel/dma/debug.c
+> @@ -643,9 +643,9 @@ static void __dma_entry_alloc_check_leak(void)
+>
+>         /* Shout each time we tick over some multiple of the initial pool=
+ */
+>         if (tmp < DMA_DEBUG_DYNAMIC_ENTRIES) {
+> -               pr_info("dma_debug_entry pool grown to %u (%u00%%)\n",
+> -                       nr_total_entries,
+> -                       (nr_total_entries / nr_prealloc_entries));
+> +               printk_deferred(KERN_INFO "dma_debug_entry pool grown to =
+%u (%u00%%)\n",
+> +                               nr_total_entries,
+> +                               (nr_total_entries / nr_prealloc_entries))=
+;
+>         }
 >  }
->  
-> +static inline void nct6686_wdt_set_bank(int base_addr, u16 reg)
-> +{
-> +	outb_p(0xFF, base_addr + NCT6686_PAGE_REG_OFFSET);
-> +	outb_p(reg >> 8, base_addr + NCT6686_PAGE_REG_OFFSET);
-> +}
-> +
-> +/* Not strictly necessary, but play it safe for now */
-> +static inline void nct6686_wdt_reset_bank(int base_addr, u16 reg)
-> +{
-> +	if (reg & 0xff00)
-> +		outb_p(0xFF, base_addr + NCT6686_PAGE_REG_OFFSET);
-> +}
-> +
-> +static u8 nct6686_read(struct nct6683_data *data, u16 reg)
-> +{
-> +	u8 res;
-> +
-> +	nct6686_wdt_set_bank(data->addr, reg);
-> +	outb_p(reg & 0xff, data->addr + NCT6686_ADDR_REG_OFFSET);
-> +	res = inb_p(data->addr + NCT6686_DATA_REG_OFFSET);
-> +
-> +	nct6686_wdt_reset_bank(data->addr, reg);
-> +	return res;
-> +}
-> +
-> +static void nct6686_write(struct nct6683_data *data, u16 reg, u8 value)
-> +{
-> +	nct6686_wdt_set_bank(data->addr, reg);
-> +	outb_p(reg & 0xff, data->addr + NCT6686_ADDR_REG_OFFSET);
-> +	outb_p(value & 0xff, data->addr + NCT6686_DATA_REG_OFFSET);
-> +	nct6686_wdt_reset_bank(data->addr, reg);
-> +}
-> +
->  static int get_in_reg(struct nct6683_data *data, int nr, int index)
->  {
->  	int ch = data->in_index[index];
-> @@ -680,11 +746,12 @@ static umode_t nct6683_in_is_visible(struct kobject *kobj,
->  	int nr = index % 4;	/* attribute */
->  
->  	/*
-> -	 * Voltage limits exist for Intel boards,
-> +	 * Voltage limits exist for Intel and Lenovo boards,
->  	 * but register location and encoding is unknown
->  	 */
->  	if ((nr == 2 || nr == 3) &&
-> -	    data->customer_id == NCT6683_CUSTOMER_ID_INTEL)
-> +	    (data->customer_id == NCT6683_CUSTOMER_ID_INTEL ||
-> +	     data->customer_id == NCT6683_CUSTOMER_ID_LENOVO))
->  		return 0;
->  
->  	return attr->mode;
-> @@ -1186,6 +1253,139 @@ static void nct6683_setup_sensors(struct nct6683_data *data)
->  	}
->  }
->  
-> +/*
-> + * Watchdog Functions
-> + */
-> +static int nct6686_wdt_enable(struct watchdog_device *wdog, bool enable)
-> +{
-> +	struct nct6683_data *data = watchdog_get_drvdata(wdog);
-> +
-> +	u_char reg;
-> +
-> +	mutex_lock(&data->update_lock);
-> +	reg = nct6686_read(data, WDT_CFG);
-> +
-> +	if (enable) {
-> +		nct6686_write(data, WDT_CFG, reg | 0x3);
-> +		mutex_unlock(&data->update_lock);
-> +		return 0;
-> +	}
-> +
-> +	nct6686_write(data, WDT_CFG, reg & ~BIT(0));
-> +	mutex_unlock(&data->update_lock);
-> +
-> +	return 0;
-> +}
-> +
-> +static int nct6686_wdt_set_time(struct watchdog_device *wdog)
-> +{
-> +	struct nct6683_data *data = watchdog_get_drvdata(wdog);
-> +
-> +	mutex_lock(&data->update_lock);
-> +	nct6686_write(data, WDT_CNT, wdog->timeout);
-> +	mutex_unlock(&data->update_lock);
-> +
-> +	if (wdog->timeout) {
-> +		nct6686_wdt_enable(wdog, true);
-> +		return 0;
-> +	}
-> +
-> +	nct6686_wdt_enable(wdog, false);
-> +	return 0;
-> +}
-> +
-> +static int nct6686_wdt_start(struct watchdog_device *wdt)
-> +{
-> +	struct nct6683_data *data = watchdog_get_drvdata(wdt);
-> +	u_char reg;
-> +
-> +	nct6686_wdt_set_time(wdt);
-> +
-> +	/* Enable soft watchdog timer */
-> +	mutex_lock(&data->update_lock);
-> +	/* reset trigger status */
-> +	reg = nct6686_read(data, WDT_STS);
-> +	nct6686_write(data, WDT_STS, reg & ~WDT_STS_EVT_MSK);
-> +	mutex_unlock(&data->update_lock);
-> +	return 0;
-> +}
-> +
-> +static int nct6686_wdt_stop(struct watchdog_device *wdt)
-> +{
-> +	struct nct6683_data *data = watchdog_get_drvdata(wdt);
-> +
-> +	mutex_lock(&data->update_lock);
-> +	nct6686_write(data, WDT_CFG, WDT_SOFT_DIS);
-> +	mutex_unlock(&data->update_lock);
-> +	return 0;
-> +}
-> +
-> +static int nct6686_wdt_set_timeout(struct watchdog_device *wdt,
-> +				   unsigned int timeout)
-> +{
-> +	struct nct6683_data *data = watchdog_get_drvdata(wdt);
-> +
-> +	wdt->timeout = timeout;
-> +	mutex_lock(&data->update_lock);
-> +	nct6686_write(data, WDT_CNT, timeout);
-> +	mutex_unlock(&data->update_lock);
-> +	return 0;
-> +}
-> +
-> +static int nct6686_wdt_ping(struct watchdog_device *wdt)
-> +{
-> +	struct nct6683_data *data = watchdog_get_drvdata(wdt);
-> +	int timeout;
-> +
-> +	/*
-> +	 * Note:
-> +	 * NCT6686 does not support refreshing WDT_TIMER_REG register when
-> +	 * the watchdog is active. Please disable watchdog before feeding
-> +	 * the watchdog and enable it again.
-> +	 */
-> +	/* Disable soft watchdog timer */
-> +	nct6686_wdt_enable(wdt, false);
-> +
-> +	/* feed watchdog */
-> +	timeout = wdt->timeout;
-> +	mutex_lock(&data->update_lock);
-> +	nct6686_write(data, WDT_CNT, timeout);
-> +	mutex_unlock(&data->update_lock);
-> +
-> +	/* Enable soft watchdog timer */
-> +	nct6686_wdt_enable(wdt, true);
-> +	return 0;
-> +}
-> +
-> +static unsigned int nct6686_wdt_get_timeleft(struct watchdog_device *wdt)
-> +{
-> +	struct nct6683_data *data = watchdog_get_drvdata(wdt);
-> +	int ret;
-> +
-> +	mutex_lock(&data->update_lock);
-> +	ret = nct6686_read(data, WDT_CNT);
-> +	mutex_unlock(&data->update_lock);
-> +	if (ret < 0)
-> +		return 0;
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct watchdog_info nct6686_wdt_info = {
-> +	.options        = WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING |
-> +			  WDIOF_MAGICCLOSE,
-> +	.identity       = "nct6686 watchdog",
-> +};
-> +
-> +static const struct watchdog_ops nct6686_wdt_ops = {
-> +	.owner          = THIS_MODULE,
-> +	.start          = nct6686_wdt_start,
-> +	.stop           = nct6686_wdt_stop,
-> +	.ping           = nct6686_wdt_ping,
-> +	.set_timeout    = nct6686_wdt_set_timeout,
-> +	.get_timeleft   = nct6686_wdt_get_timeleft,
-> +};
-> +
->  static int nct6683_probe(struct platform_device *pdev)
->  {
->  	struct device *dev = &pdev->dev;
-> @@ -1195,7 +1395,9 @@ static int nct6683_probe(struct platform_device *pdev)
->  	struct device *hwmon_dev;
->  	struct resource *res;
->  	int groups = 0;
-> +	int ret;
->  	char build[16];
-> +	u_char reg;
->  
->  	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
->  	if (!devm_request_region(dev, res->start, IOREGION_LENGTH, DRVNAME))
-> @@ -1215,14 +1417,14 @@ static int nct6683_probe(struct platform_device *pdev)
->  
->  	/* By default only instantiate driver if the customer ID is known */
->  	switch (data->customer_id) {
-> +	case NCT6683_CUSTOMER_ID_LENOVO:
-> +		break;
->  	case NCT6683_CUSTOMER_ID_INTEL:
->  		break;
->  	case NCT6683_CUSTOMER_ID_MITAC:
->  		break;
->  	case NCT6683_CUSTOMER_ID_MSI:
->  		break;
-> -	case NCT6683_CUSTOMER_ID_MSI2:
-> -		break;
->  	case NCT6683_CUSTOMER_ID_ASROCK:
->  		break;
->  	case NCT6683_CUSTOMER_ID_ASROCK2:
-> @@ -1294,7 +1496,34 @@ static int nct6683_probe(struct platform_device *pdev)
->  
->  	hwmon_dev = devm_hwmon_device_register_with_groups(dev,
->  			nct6683_device_names[data->kind], data, data->groups);
-> -	return PTR_ERR_OR_ZERO(hwmon_dev);
-> +
-> +	ret = PTR_ERR_OR_ZERO(hwmon_dev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (data->kind == nct6686 && data->customer_id == NCT6683_CUSTOMER_ID_LENOVO) {
-> +		/* Watchdog initialization */
-> +		data->wdt.ops = &nct6686_wdt_ops;
-> +		data->wdt.info = &nct6686_wdt_info;
-> +
-> +		data->wdt.timeout = WATCHDOG_TIMEOUT; /* Set default timeout */
-> +		data->wdt.min_timeout = MIN_TIMEOUT;
-> +		data->wdt.max_timeout = MAX_TIMEOUT;
-> +		data->wdt.parent = &pdev->dev;
-> +
-> +		watchdog_init_timeout(&data->wdt, timeout, &pdev->dev);
-> +		watchdog_set_nowayout(&data->wdt, nowayout);
-> +		watchdog_set_drvdata(&data->wdt, data);
-> +
-> +		/* reset trigger status */
-> +		reg = nct6686_read(data, WDT_STS);
-> +		nct6686_write(data, WDT_STS, reg & ~WDT_STS_EVT_MSK);
-> +
-> +		watchdog_stop_on_unregister(&data->wdt);
-> +
-> +		return devm_watchdog_register_device(dev, &data->wdt);
-> +	}
-> +	return ret;
->  }
->  
->  #ifdef CONFIG_PM
-> -- 
-> 2.34.1
-> 
+>
+> --
+> 2.41.0.694.ge786442a9b-goog
+>
