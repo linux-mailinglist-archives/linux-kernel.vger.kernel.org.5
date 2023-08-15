@@ -2,229 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E8F277CF27
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E45BA77CF18
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238103AbjHOP3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 11:29:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44050 "EHLO
+        id S237973AbjHOP2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 11:28:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237987AbjHOP2g (ORCPT
+        with ESMTP id S237960AbjHOP2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 11:28:36 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57932172A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:28:35 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bbff6b2679so35044705ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:28:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692113315; x=1692718115;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LDaNmvu0t+IVJSOxdRgpYAMrOwamW5o6s4fUavxCLCc=;
-        b=lGqKzg0uCL5ZyGphrhgCcHVeAOyPMpeC2IAType9piBAyNebL89YSRisTt3RotClx+
-         jMTGOSRblKc+GHGTDZZJkxz2eT9j9k7ljWANX0JLN04fk/7b7/8hM9pNOnqgAgm11kaz
-         DH9dyoCvNmtqp6SvbW7Gy5HwOWTMYBGgAGAfA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692113315; x=1692718115;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LDaNmvu0t+IVJSOxdRgpYAMrOwamW5o6s4fUavxCLCc=;
-        b=DNS3xMimK7pXNhNQ4ltnWmv8VfblzYBQe2Dn/iSGHCprsKL4UeK1uYyKd71ckVjiS8
-         GZRsypyeMYqst4NwofMFTwGEISoD8PLdBK1TzEPnqC4bw1esQClXJyKV0BG+uM+3mxyz
-         /aGZ12d67iHlLOHL6UeiBSWt7QUKx6vOAkFj7y31fjA2Wpg6Y9VFLfT6L9Vjdlkh4neH
-         gJYAT71/kfMEhXJK2YMAQG7c5cyKBd6rFcDv3+l7UDkCq8J+lIgc2IA3uwf36TktsN5K
-         FGwcFbz/EjzFwoukdmJ/uBiPVWwWsEE/rr8zX1IAkTuJqikLqzdxmf475nSgpZaeVTfz
-         aa3A==
-X-Gm-Message-State: AOJu0YwU+eRtyyFfdDLcuKues8AT7C6PN+Rt+r/d/Ckk/zfs9gWRt8t3
-        ihmmY6lBkLLcsTebktAJocMt8Q==
-X-Google-Smtp-Source: AGHT+IF7GGbJ8ioumjXbwaTaJTPkyJQUTvdoKe10QY/02znGZOZbyq4qK3NwYYlAAedB7KD7/Fs6Mg==
-X-Received: by 2002:a17:902:da86:b0:1b8:1b79:a78c with SMTP id j6-20020a170902da8600b001b81b79a78cmr13232285plx.44.1692113314712;
-        Tue, 15 Aug 2023 08:28:34 -0700 (PDT)
-Received: from tigerii.tok.corp.google.com ([2401:fa00:8f:203:898b:9016:5235:af21])
-        by smtp.gmail.com with ESMTPSA id a7-20020a170902ecc700b001aaecc0b6ffsm11195960plh.160.2023.08.15.08.28.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 08:28:34 -0700 (PDT)
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Petr Mladek <pmladek@suse.com>
-Cc:     Rob Clark <robdclark@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCH] dma-debug: defer __dma_entry_alloc_check_leak() printk output
-Date:   Wed, 16 Aug 2023 00:26:43 +0900
-Message-ID: <20230815152822.3660784-1-senozhatsky@chromium.org>
-X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
+        Tue, 15 Aug 2023 11:28:06 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35990172A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:28:04 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37FAXQ1E003906;
+        Tue, 15 Aug 2023 08:27:41 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=2ex+D3u9FzxFtbdhX5RyDEHnyv3P6whTJzV5woJQOkc=;
+ b=BheyIJq24zEHdxB+7hBEguBZo0R+E8MOh0N39oF1FMxWdJSaM9rutoRKqnzSYwY8I6eX
+ vYr5Ynr6T+xLsp9Xb9mEn2wkwbM+NJDICKYTuz6rQr++O/pWLW82s69FgheOiFshzOCA
+ 7OCVsAHsu5pqmWR1NPDZuJz3q5mvAbDOJHIVkWIco+6DiNyi2Y0k8y4oe0hzK428zKYp
+ y8vtFkE0Oku+u7/EZmpNWloJjGk/ztH8Vs8XmJwtwKW0v2SOX3kH5TZtueWyLDnVf2+1
+ I5zpFmXe7PbWfsf7CGAtyjVQv3k7Ns4uU835G0J/TFo6xUFL05U4FABAH0mw3YOOuQiq GQ== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3se9kjaju7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 15 Aug 2023 08:27:41 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 15 Aug
+ 2023 08:27:39 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Tue, 15 Aug 2023 08:27:39 -0700
+Received: from localhost.localdomain (unknown [10.28.36.167])
+        by maili.marvell.com (Postfix) with ESMTP id 54C593F703F;
+        Tue, 15 Aug 2023 08:27:36 -0700 (PDT)
+From:   Amit Singh Tomar <amitsinght@marvell.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <fenghua.yu@intel.com>, <reinette.chatre@intel.com>,
+        <james.morse@arm.com>, <gcherian@marvell.com>, <robh@kernel.org>,
+        <peternewman@google.com>, Amit Singh Tomar <amitsinght@marvell.com>
+Subject: [RFC 00/12] ARM: MPAM: add support for priority partitioning control
+Date:   Tue, 15 Aug 2023 20:57:00 +0530
+Message-ID: <20230815152712.1760046-1-amitsinght@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Proofpoint-GUID: JUDH_Ch8j7qwNSBegcezTal6p9F4YefF
+X-Proofpoint-ORIG-GUID: JUDH_Ch8j7qwNSBegcezTal6p9F4YefF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-15_16,2023-08-15_02,2023-05-22_02
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__dma_entry_alloc_check_leak() calls printk -> serial console
-output (qcom geni) and grabs port->lock under free_entries_lock,
-which is a conflicting locking dependency chain as qcom_geni IRQ
-handler can call into dma-debug code and grab free_entries_lock
-under port->lock.
+Arm Memory System Resource Partitioning and Monitoring (MPAM) supports
+different controls that can be applied to different resources in the system
+For instance, an optional priority partitioning control where priority
+value is generated from one MSC, propagates over interconnect to other MSC
+(known as downstream priority), or can be applied within an MSC for internal
+operations.
 
-Use deferred printk in __dma_entry_alloc_check_leak() so that we
-don't acquire serial console's port->lock under free_entries_lock.
+Marvell implementation of ARM MPAM supports priority partitioning control
+that allows LLC MSC to generate priority values that gets propagated (along with
+read/write request from upstream) to DDR Block. Within the DDR block the
+priority values is mapped to different traffic class under DDR QoS strategy.
+The link[1] gives some idea about DDR QoS strategy, and terms like LPR, VPR
+and HPR.
 
-Trimmed-down lockdep splat:
+Setup priority partitioning control under Resource control
+----------------------------------------------------------
+At present, resource control (resctrl) provides basic interface to configure/set-up
+CAT (Cache Allocation Technology) and MBA (Memory Bandwidth Allocation) capabilities.
+ARM MPAM uses it to support controls like Cache portion partition (CPOR), and 
+MPAM bandwidth partitioning.
 
-   The existing dependency chain (in reverse order) is:
+As an example, "schemata" file under resource control group contains information about
+cache portion bitmaps, and memory bandwidth allocation, and these are used to configure
+Cache portion partition (CPOR), and MPAM bandwidth partitioning controls.
 
-               -> #2 (free_entries_lock){-.-.}-{2:2}:
-        _raw_spin_lock_irqsave+0x60/0x80
-        dma_entry_alloc+0x38/0x110
-        debug_dma_map_page+0x60/0xf8
-        dma_map_page_attrs+0x1e0/0x230
-        dma_map_single_attrs.constprop.0+0x6c/0xc8
-        geni_se_rx_dma_prep+0x40/0xcc
-        qcom_geni_serial_isr+0x310/0x510
-        __handle_irq_event_percpu+0x110/0x244
-        handle_irq_event_percpu+0x20/0x54
-        handle_irq_event+0x50/0x88
-        handle_fasteoi_irq+0xa4/0xcc
-        handle_irq_desc+0x28/0x40
-        generic_handle_domain_irq+0x24/0x30
-        gic_handle_irq+0xc4/0x148
-        do_interrupt_handler+0xa4/0xb0
-        el1_interrupt+0x34/0x64
-        el1h_64_irq_handler+0x18/0x24
-        el1h_64_irq+0x64/0x68
-        arch_local_irq_enable+0x4/0x8
-        ____do_softirq+0x18/0x24
-	...
+MB:0=0100
+L3:0=ffff
 
-               -> #1 (&port_lock_key){-.-.}-{2:2}:
-        _raw_spin_lock_irqsave+0x60/0x80
-        qcom_geni_serial_console_write+0x184/0x1dc
-        console_flush_all+0x344/0x454
-        console_unlock+0x94/0xf0
-        vprintk_emit+0x238/0x24c
-        vprintk_default+0x3c/0x48
-        vprintk+0xb4/0xbc
-        _printk+0x68/0x90
-        register_console+0x230/0x38c
-        uart_add_one_port+0x338/0x494
-        qcom_geni_serial_probe+0x390/0x424
-        platform_probe+0x70/0xc0
-        really_probe+0x148/0x280
-        __driver_probe_device+0xfc/0x114
-        driver_probe_device+0x44/0x100
-        __device_attach_driver+0x64/0xdc
-        bus_for_each_drv+0xb0/0xd8
-        __device_attach+0xe4/0x140
-        device_initial_probe+0x1c/0x28
-        bus_probe_device+0x44/0xb0
-        device_add+0x538/0x668
-        of_device_add+0x44/0x50
-        of_platform_device_create_pdata+0x94/0xc8
-        of_platform_bus_create+0x270/0x304
-        of_platform_populate+0xac/0xc4
-        devm_of_platform_populate+0x60/0xac
-        geni_se_probe+0x154/0x160
-        platform_probe+0x70/0xc0
-	...
+But resctrl doesn't provide a way to set-up other control that ARM MPAM provides
+(For instance, Priority partitioning control as mentioned above). To support this,
+James has suggested to use already existing schemata to be compatible with 
+portable software, and this is the main idea behind this RFC is to have some kind
+of discussion on how resctrl can be extended to support priority partitioning control.
 
-               -> #0 (console_owner){-...}-{0:0}:
-        __lock_acquire+0xdf8/0x109c
-        lock_acquire+0x234/0x284
-        console_flush_all+0x330/0x454
-        console_unlock+0x94/0xf0
-        vprintk_emit+0x238/0x24c
-        vprintk_default+0x3c/0x48
-        vprintk+0xb4/0xbc
-        _printk+0x68/0x90
-        dma_entry_alloc+0xb4/0x110
-        debug_dma_map_sg+0xdc/0x2f8
-        __dma_map_sg_attrs+0xac/0xe4
-        dma_map_sgtable+0x30/0x4c
-        get_pages+0x1d4/0x1e4 [msm]
-        msm_gem_pin_pages_locked+0x38/0xac [msm]
-        msm_gem_pin_vma_locked+0x58/0x88 [msm]
-        msm_ioctl_gem_submit+0xde4/0x13ac [msm]
-        drm_ioctl_kernel+0xe0/0x15c
-        drm_ioctl+0x2e8/0x3f4
-        vfs_ioctl+0x30/0x50
-	...
+To support Priority partitioning control, "schemata" file is updated to accommodate
+priority field (upon priority partitioning capability detection), separated from CPBM
+using delimiter ",".
 
- Chain exists of:
-                 console_owner --> &port_lock_key --> free_entries_lock
+L3:0=ffff,f where f indicates downstream priority max value.
 
-  Possible unsafe locking scenario:
+These dspri value gets programmed per partition, that can be used to override 
+QoS value coming from upstream (CPU).
 
-        CPU0                    CPU1
-        ----                    ----
-   lock(free_entries_lock);
-                                lock(&port_lock_key);
-                                lock(free_entries_lock);
-   lock(console_owner);
+RFC patch-set[2] is based on James Morse's MPAM snapshot[3] for 6.2, and ACPI
+table is based on DEN0065A_MPAM_ACPI_2.0.
 
-                *** DEADLOCK ***
+Test set-up and results:
+------------------------
 
- Call trace:
-  dump_backtrace+0xb4/0xf0
-  show_stack+0x20/0x30
-  dump_stack_lvl+0x60/0x84
-  dump_stack+0x18/0x24
-  print_circular_bug+0x1cc/0x234
-  check_noncircular+0x78/0xac
-  __lock_acquire+0xdf8/0x109c
-  lock_acquire+0x234/0x284
-  console_flush_all+0x330/0x454
-  console_unlock+0x94/0xf0
-  vprintk_emit+0x238/0x24c
-  vprintk_default+0x3c/0x48
-  vprintk+0xb4/0xbc
-  _printk+0x68/0x90
-  dma_entry_alloc+0xb4/0x110
-  debug_dma_map_sg+0xdc/0x2f8
-  __dma_map_sg_attrs+0xac/0xe4
-  dma_map_sgtable+0x30/0x4c
-  get_pages+0x1d4/0x1e4 [msm]
-  msm_gem_pin_pages_locked+0x38/0xac [msm]
-  msm_gem_pin_vma_locked+0x58/0x88 [msm]
-  msm_ioctl_gem_submit+0xde4/0x13ac [msm]
-  drm_ioctl_kernel+0xe0/0x15c
-  drm_ioctl+0x2e8/0x3f4
-  vfs_ioctl+0x30/0x50
-  ...
+The downstream priority value feeds into DRAM controller, and one of the important
+thing that it does with this value is to service the requests sooner (based on the 
+traffic class), hence reducing latency without affecting performance.
 
-Reported-by: Rob Clark <robdclark@chromium.org>
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
----
- kernel/dma/debug.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Within the DDR QoS traffic class.
 
-diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
-index f190651bcadd..9e11ceadc69d 100644
---- a/kernel/dma/debug.c
-+++ b/kernel/dma/debug.c
-@@ -643,9 +643,9 @@ static void __dma_entry_alloc_check_leak(void)
- 
- 	/* Shout each time we tick over some multiple of the initial pool */
- 	if (tmp < DMA_DEBUG_DYNAMIC_ENTRIES) {
--		pr_info("dma_debug_entry pool grown to %u (%u00%%)\n",
--			nr_total_entries,
--			(nr_total_entries / nr_prealloc_entries));
-+		printk_deferred(KERN_INFO "dma_debug_entry pool grown to %u (%u00%%)\n",
-+				nr_total_entries,
-+				(nr_total_entries / nr_prealloc_entries));
- 	}
- }
- 
+0--5 ----> Low priority value
+6-10 ----> Medium priority value
+11-15 ----> High priority value
+
+Benchmark[4] used is multichase.
+
+Two partition P1 and P2:
+
+Partition P1:
+-------------
+Assigned core 0
+100% BW assignment
+
+Partition P2:
+-------------
+Assigned cores 1-79
+100% BW assignment
+
+Test Script:
+-----------
+mkdir p1
+cd p1
+echo 1 > cpus
+echo L3:1=8000,5 > schemata   ##### DSPRI set as 5 (lpr)
+echo "MB:0=100" > schemata
+
+mkdir p2
+cd p2
+echo ffff,ffffffff,fffffffe > cpus
+echo L3:1=8000,0 > schemata
+echo "MB:0=100" > schemata
+
+### Loaded latency run, core 0 does chaseload (pointer chase) with low priority value 5, and cores 1-79 does memory bandwidth run ###
+./multiload -v -n 10 -t 80 -m 1G -c chaseload  
+
+cd /sys/fs/resctrl/p1
+
+echo L3:1=8000,a > schemata  ##### DSPRI set as 0xa (vpr)
+
+### Loaded latency run, core 0 does chaseload (pointer chase) with medium priority value a, and cores 1-79 does memory bandwidth run ###
+./multiload -v -n 10 -t 80 -m 1G -c chaseload
+
+cd /sys/fs/resctrl/p1
+
+echo L3:1=8000,f > schemata  ##### DSPRI set as 0xf (hpr)
+
+### Loaded latency run where core 0 does chaseload (pointer chase) with high priority value f, and cores 1-79 does memory bandwidth run ###
+./multiload -v -n 10 -t 80 -m 1G -c chaseload
+
+Results[5]:
+
+LPR average latency is 204.862(ns) vs VPR average latency is 161.018(ns) vs HPR average latency is 134.210(ns).
+
+[1]: https://drops.dagstuhl.de/opus/volltexte/2021/13934/pdf/LIPIcs-ECRTS-2021-3.pdf
+[2]: https://github.com/Amit-Radur/linux/commits/mpam_downstream_priority_work
+[3]: https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/log/?h=mpam/snapshot/v6.2
+[4]: https://github.com/google/multichase
+[5]:
+
+root@localhost:# ./dspri_test.sh
+Info: Loaded Latency chase selected. A -l memload can be used to select a specific memory load
+nr_threads = 80
+page_size = 4096 bytes
+total_memory = 1073741824 (1024.0 MiB)
+stride = 256
+tlb_locality = 262144
+chase = chaseload
+memload = stream-sum
+run_test_type = RUN_CHASE_LOADED
+main: sample_no=0 
+main: sample_no=1  avg=204.9(ns)
+ main: threads=79, Total(MiB/s)=343018.0, PerThread=4342
+main: sample_no=2  avg=206.0(ns)
+ main: threads=79, Total(MiB/s)=343038.0, PerThread=4342
+main: sample_no=3  avg=206.4(ns)
+ main: threads=79, Total(MiB/s)=342443.0, PerThread=4335
+main: sample_no=4  avg=206.3(ns)
+ main: threads=79, Total(MiB/s)=345156.0, PerThread=4369
+main: sample_no=5  avg=205.6(ns)
+ main: threads=79, Total(MiB/s)=343807.0, PerThread=4352
+main: sample_no=6  avg=205.9(ns)
+ main: threads=79, Total(MiB/s)=343593.0, PerThread=4349
+main: sample_no=7  avg=206.3(ns)
+ main: threads=79, Total(MiB/s)=344770.0, PerThread=4364
+main: sample_no=8  avg=205.7(ns)
+ main: threads=79, Total(MiB/s)=344935.0, PerThread=4366
+main: sample_no=9  avg=205.3(ns)
+ main: threads=79, Total(MiB/s)=343189.0, PerThread=4344
+main: sample_no=10  avg=206.1(ns)
+ main: threads=79, Total(MiB/s)=344455.0, PerThread=4360
+ChasAVG=205.848485, ChasGEO=205.847944, ChasBEST=204.861518, ChasWORST=206.443386, ChasDEV=0.008   
+LdAvgMibs=343840.400000, LdMaxMibs=345156.000000, LdMinMibs=342443.000000, LdDevMibs=0.008   
+Samples	, Byte/thd	, ChaseThds	, ChaseNS	, ChaseMibs	, ChDeviate	, LoadThds	, LdMaxMibs	, LdAvgMibs	, LdDeviate	, ChaseArg	, MemLdArg
+10    	, 1073741824 	, 1       	, 204.862 	, 37      	, 0.008   	, 79      	, 345156  	, 343840  	, 0.008   	, chaseload	, stream-sum
+Info: Loaded Latency chase selected. A -l memload can be used to select a specific memory load
+nr_threads = 80
+page_size = 4096 bytes
+total_memory = 1073741824 (1024.0 MiB)
+stride = 256
+tlb_locality = 262144
+chase = chaseload
+memload = stream-sum
+run_test_type = RUN_CHASE_LOADED
+main: sample_no=0 
+main: sample_no=1  avg=161.4(ns)
+ main: threads=79, Total(MiB/s)=342023.0, PerThread=4329
+main: sample_no=2  avg=161.3(ns)
+ main: threads=79, Total(MiB/s)=341773.0, PerThread=4326
+main: sample_no=3  avg=161.4(ns)
+ main: threads=79, Total(MiB/s)=342780.0, PerThread=4339
+main: sample_no=4  avg=161.6(ns)
+ main: threads=79, Total(MiB/s)=341275.0, PerThread=4320
+main: sample_no=5  avg=161.0(ns)
+ main: threads=79, Total(MiB/s)=342680.0, PerThread=4338
+main: sample_no=6  avg=161.9(ns)
+ main: threads=79, Total(MiB/s)=341538.0, PerThread=4323
+main: sample_no=7  avg=161.5(ns)
+ main: threads=79, Total(MiB/s)=345302.0, PerThread=4371
+main: sample_no=8  avg=161.5(ns)
+ main: threads=79, Total(MiB/s)=341352.0, PerThread=4321
+main: sample_no=9  avg=161.5(ns)
+ main: threads=79, Total(MiB/s)=341200.0, PerThread=4319
+main: sample_no=10  avg=161.5(ns)
+ main: threads=79, Total(MiB/s)=341874.0, PerThread=4328
+ChasAVG=161.458012, ChasGEO=161.457856, ChasBEST=161.017587, ChasWORST=161.935907, ChasDEV=0.006   
+LdAvgMibs=342179.700000, LdMaxMibs=345302.000000, LdMinMibs=341200.000000, LdDevMibs=0.012   
+Samples	, Byte/thd	, ChaseThds	, ChaseNS	, ChaseMibs	, ChDeviate	, LoadThds	, LdMaxMibs	, LdAvgMibs	, LdDeviate	, ChaseArg	, MemLdArg
+10    	, 1073741824 	, 1       	, 161.018 	, 47      	, 0.006   	, 79      	, 345302  	, 342180  	, 0.012   	, chaseload	, stream-sum
+Info: Loaded Latency chase selected. A -l memload can be used to select a specific memory load
+nr_threads = 80
+page_size = 4096 bytes
+total_memory = 1073741824 (1024.0 MiB)
+stride = 256
+tlb_locality = 262144
+chase = chaseload
+memload = stream-sum
+run_test_type = RUN_CHASE_LOADED
+main: sample_no=0 
+main: sample_no=1  avg=134.3(ns)
+ main: threads=79, Total(MiB/s)=345284.0, PerThread=4371
+main: sample_no=2  avg=134.7(ns)
+ main: threads=79, Total(MiB/s)=345295.0, PerThread=4371
+main: sample_no=3  avg=134.4(ns)
+ main: threads=79, Total(MiB/s)=344421.0, PerThread=4360
+main: sample_no=4  avg=134.9(ns)
+ main: threads=79, Total(MiB/s)=343273.0, PerThread=4345
+main: sample_no=5  avg=134.5(ns)
+ main: threads=79, Total(MiB/s)=345518.0, PerThread=4374
+main: sample_no=6  avg=134.5(ns)
+ main: threads=79, Total(MiB/s)=346052.0, PerThread=4380
+main: sample_no=7  avg=134.5(ns)
+ main: threads=79, Total(MiB/s)=342852.0, PerThread=4340
+main: sample_no=8  avg=134.7(ns)
+ main: threads=79, Total(MiB/s)=345818.0, PerThread=4377
+main: sample_no=9  avg=134.2(ns)
+ main: threads=79, Total(MiB/s)=344045.0, PerThread=4355
+main: sample_no=10  avg=134.7(ns)
+ main: threads=79, Total(MiB/s)=344345.0, PerThread=4359
+ChasAVG=134.547983, ChasGEO=134.547841, ChasBEST=134.210254, ChasWORST=134.863073, ChasDEV=0.005   
+LdAvgMibs=344690.300000, LdMaxMibs=346052.000000, LdMinMibs=342852.000000, LdDevMibs=0.009   
+Samples	, Byte/thd	, ChaseThds	, ChaseNS	, ChaseMibs	, ChDeviate	, LoadThds	, LdMaxMibs	, LdAvgMibs	, LdDeviate	, ChaseArg	, MemLdArg
+10    	, 1073741824 	, 1       	, 134.210 	, 57      	, 0.005   	, 79      	, 346052  	, 344690  	, 0.009   	, chaseload	, stream-sum
+
+Amit Singh Tomar (12):
+  arm_mpam: Handle resource instances mapped to different controls
+  arm_mpam: resctrl: Detect priority partitioning capability
+  arm_mpam: resctrl: Define new schemata format for priority partition
+  fs/resctrl: Obtain CPBM upon priority partition presence
+  fs/resctrl: Set-up downstream priority partition resources
+  fs/resctrl: Extend schemata read for priority partition control
+  arm_mpam: resctrl: Retrieve priority values from arch code
+  fs/resctrl: Schemata write only for intended resource
+  fs/resctrl: Extend schemata write for priority partition control
+  arm_mpam: resctrl: Facilitate writing downstream priority value
+  arm_mpam: Fix Downstream priority mask
+  arm_mpam: Program Downstream priority value
+
+ drivers/platform/mpam/mpam_devices.c  |  38 +++++++--
+ drivers/platform/mpam/mpam_internal.h |   1 +
+ drivers/platform/mpam/mpam_resctrl.c  |  64 +++++++++++---
+ fs/resctrl/ctrlmondata.c              | 118 ++++++++++++++++++++++++--
+ fs/resctrl/rdtgroup.c                 |  30 +++++++
+ include/linux/resctrl.h               |  12 +++
+ 6 files changed, 235 insertions(+), 28 deletions(-)
+
 -- 
-2.41.0.694.ge786442a9b-goog
+2.25.1
 
