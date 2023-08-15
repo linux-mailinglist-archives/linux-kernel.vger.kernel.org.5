@@ -2,202 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1603B77CAB4
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA4577CAB5
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236168AbjHOJqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 05:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40762 "EHLO
+        id S236247AbjHOJqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 05:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236251AbjHOJqN (ORCPT
+        with ESMTP id S236249AbjHOJqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Aug 2023 05:46:13 -0400
-Received: from out-12.mta1.migadu.com (out-12.mta1.migadu.com [IPv6:2001:41d0:203:375::c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58C2198A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 02:46:06 -0700 (PDT)
-Message-ID: <6726fde4-a766-b61f-dac8-5ec8e3536f0f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1692092763;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6GubIoUBvX9OOPgXpsNuRTEjW9u/fde6sHXrsSbIhCE=;
-        b=n3o9trbri9hpIOfLrql5kcVOa8+G0BQ6JmkjUDqIf1dNsv/Ou8EjgoHHCEMBJa1J+19WkC
-        MnjoOQ6vklMHPpvUtvLzk/ymAFuUMrxYSbrjKvqt+kv1lCgu7opfCY6wCjPmbjob+2s1tg
-        DVmQGadad9J+HtS9XW1SCMG0ITr0S5A=
-Date:   Tue, 15 Aug 2023 17:45:10 +0800
-MIME-Version: 1.0
-Subject: Re: [PATCH] null_blk: fix poll request timeout handling
-Content-Language: en-US
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     axboe@kernel.dk, kch@nvidia.com, dhowells@redhat.com,
-        damien.lemoal@opensource.wdc.com, bvanassche@acm.org,
-        nj.shetty@samsung.com, kbusch@kernel.org,
-        zhouchengming@bytedance.com, akinobu.mita@gmail.com,
-        shinichiro.kawasaki@wdc.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230815060443.660263-1-chengming.zhou@linux.dev>
- <ZNs3xtOzH4+blVCF@fedora>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <ZNs3xtOzH4+blVCF@fedora>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C68EA127;
+        Tue, 15 Aug 2023 02:46:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.at;
+ s=s31663417; t=1692092762; x=1692697562; i=g.ottinger@gmx.at;
+ bh=Gpp5wVOly18jXg5JkgsCDiSsaBtHz5ZmdyfKk925lNo=;
+ h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+ b=WVGZgbH1JrOtdjqc4wHVJi1wf43jtfFYMsjLN38m4SGlAtOIaPHFJp5cl5GhuajglNMxj3c
+ e4OeSZSkgDmBYV52Sz0+zG7Nwu4mN/lEw6/6bhWJTi5th31K3DMvzR3BvMoA1XSA1ach7U802
+ dxKMLVv5mqBNuWtO2azPWEEsnieBQtCcwYWBWgJqBjYP6Y0rCnLUCqt8za6HHzYVT/6CwEzP6
+ qLS8t6SaMrm3JYYFmH3DEZynGSoZiYHLuHowq/9OxzNinl5ESRyKut1Xti3TejwVR+LZ0ohBi
+ VO2rK8J2ZxYd7GJ93EY74vaMVeVU0CLLQiz9FO3ibnySwQinQ+8w==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from f15h-Latitude-E5450.lan ([89.144.221.190]) by mail.gmx.net
+ (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MtOGa-1pdT5I2IyE-00utuL; Tue, 15 Aug 2023 11:46:02 +0200
+From:   Georg Ottinger <g.ottinger@gmx.at>
+To:     jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        g.ottinger@gmx.at
+Subject: [PATCH] ext2: fix datatype of block number in ext2_xattr_set2()
+Date:   Tue, 15 Aug 2023 11:45:57 +0200
+Message-Id: <20230815094557.19940-1-g.ottinger@gmx.at>
+X-Mailer: git-send-email 2.17.1
+X-Provags-ID: V03:K1:fnwD2vatic2mVIE5NYIWabGSOoRnNYQ714fNZNTts7lI6p2JipU
+ Tg2jRRDL+LzhivGhjSoF+pnZJNKv3ZulAgoG0lnn4fqc8cvMdByOHQ1Nk0XQIqsYd4FUh57
+ ctJ6APcASVXEWPPXosMxBdmoJYRLuktAn+uWp6nhkbiM574Jw+c5qXKW8GouvdAmcBZmoQ8
+ L5EJAKIoINO2BoZ03ERZg==
+UI-OutboundReport: notjunk:1;M01:P0:cSRbbpTuyEM=;1rE9PZkZt3z4c7IAe6AU5zjrSSk
+ MAbGg9Vt5PslkzpGDETkvb70uFjfWcBlq29xbyI0NIV7hEJ0EpvcPU5KRsJnzvNIFLhdMqXNl
+ gvhpFonLutKlPPJZP1VfIOz6hFhP81S/kujLMFbA4m+O3iE+I/otSAsROx0n94iKY9lwpqAW8
+ PTUa8TWkBSF4LZP9vWvkZgaHb1AVEcLI9vuaPB9GGjvB4fSgTKXG/mxnimvBtGbiYjJZ8Y2Nt
+ QRoFbaaoQk+QpDhJbanZkgDB7+3YdO1mk8H1L4cQ2E6QlEdFtzs0KH27KFLfvFwv7rOce58oV
+ bdBo3uhKPxVeeJ0ihsRTfwP5M1a5YnfArgnihpl7GhINOAyDuCaHlh9PJXKteZcPhQRtXWglG
+ PT+7VKGm0aHGNyf0mkUA4N/dwspf3FCV50pbk0PHdXmV1pyUO5gdWg/wYHRjSEmo8aAR7zmQ2
+ 6DzGXLaqG4cQu1bmmP6dlT/MZ1aJ0U5TVpU0PBpi3CGaDF33hfdSZcHV/hDzwr/CJkkqvlkK2
+ +SI/DnwGKeSbnHTidsrXZyu1aQD0r3ako3gzH6TcIjc7HDzdr5d8MMz4mCUYS48xAx0Hko4hd
+ /dybgnZuQ7oCkzKN3HaHhcebqe95MiLNeZdWaSc6QNObfk30Pj1+GDxm3YdqYM7Momqw3kAii
+ 7qQzkDgb3m1m5zdMXOVvou3NK7hxPY97tKw0L1ahMYqw9SIpmYmxyqy+Iv5ASCUlAaz/eDDvo
+ ElOEkdU80fTH6OC+xfHFSyVuqq62ykBUHf+RtdX01BPdJDAzEw8jD9uDLu6EolrGiMGzT5yTj
+ PqW17drJ9b5+dU+69gOXqZ79V0lYNIlkS5WKtj4XJw954JXLRnSmuojd2bl3gkdFiNiv/u3pR
+ 8SMdqKhFZO1T+DvDcFJFfiEWdf1yd6sv275Iw9kJ+8POwdVLiWpJdQ5MlYjpCD4r8nG64/Lk+
+ 49zjMClXPX7rBcflA2cRnLSN+rc=
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/15 16:31, Ming Lei wrote:
-> On Tue, Aug 15, 2023 at 02:04:42PM +0800, chengming.zhou@linux.dev wrote:
->> From: Chengming Zhou <zhouchengming@bytedance.com>
->>
->> When doing io_uring benchmark on /dev/nullb0, it's easy to crash the
->> kernel if poll requests timeout triggered, as reported by David. [1]
-> 
-> Just be curious, how is the timeout triggered when running
-> "./fio/t/io_uring -r20 /dev/nullb0"?
+I run a small server that uses external hard drives for backups. The
+backup software I use uses ext2 filesystems with 4KiB block size and
+the server is running SELinux and therefore relies on xattr. I recently
+upgraded the hard drives from 4TB to 12TB models. I noticed that after
+transferring some TBs I got a filesystem error "Freeing blocks not in
+datazone - block =3D 18446744071529317386, count =3D 1" and the backup
+process stopped. Trying to fix the fs with e2fsck resulted in a
+completely corrupted fs. The error probably came from ext2_free_blocks(),
+and because of the large number 18e19 this problem immediately looked
+like some kind of integer overflow. Whereas the 4TB fs was about 1e9
+blocks, the new 12TB is about 3e9 blocks. So, searching the ext2 code,
+I came across the line in fs/ext2/xattr.c:745 where ext2_new_block()
+is called and the resulting block number is stored in the variable block
+as an int datatype. If a block with a block number greater than
+INT32_MAX is returned, this variable overflows and the call to
+sb_getblk() at line fs/ext2/xattr.c:750 fails, then the call to
+ext2_free_blocks() produces the error.
 
-I tried "./fio/t/io_uring -r20 /dev/nullb0" multiple times, sometimes
-program exit ok, sometimes it dump many timeout messages and kernel BUG.
+Signed-off-by: Georg Ottinger <g.ottinger@gmx.at>
+=2D--
+ fs/ext2/xattr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I just used David's "./fio/t/io_uring -n4 /dev/nullb0", run a while
-then ctrl-C, the program will always dump many timeout messages.
+diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
+index 8906ba479..5e13f7ea1 100644
+=2D-- a/fs/ext2/xattr.c
++++ b/fs/ext2/xattr.c
+@@ -742,7 +742,7 @@ ext2_xattr_set2(struct inode *inode, struct buffer_hea=
+d *old_bh,
+ 			/* We need to allocate a new block */
+ 			ext2_fsblk_t goal =3D ext2_group_first_block_no(sb,
+ 						EXT2_I(inode)->i_block_group);
+-			int block =3D ext2_new_block(inode, goal, &error);
++			ext2_fsblk_t block =3D ext2_new_block(inode, goal, &error);
+ 			if (error)
+ 				goto cleanup;
+ 			ea_idebug(inode, "creating block %d", block);
+=2D-
+2.17.1
 
-It seems that program exit is not clean, leave some requests in driver
-haven't been polled & completed? I don't know.
-
-> 
-> David mentioned that the issue is triggered in 6.5-rc1, maybe one
-> regression?
-> 
-
-I just tested using v6.4.9, found the same timeout and kernel BUG
-using "./fio/t/io_uring -n4 /dev/nullb0".
-
->>
->> BUG: kernel NULL pointer dereference, address: 0000000000000008
->> Workqueue: kblockd blk_mq_timeout_work
->> RIP: 0010:null_timeout_rq+0x4e/0x91
->> Call Trace:
->>  ? __die_body+0x1a/0x5c
->>  ? page_fault_oops+0x6f/0x9c
->>  ? kernelmode_fixup_or_oops+0xc6/0xd6
->>  ? __bad_area_nosemaphore+0x44/0x1eb
->>  ? exc_page_fault+0xe2/0xf4
->>  ? asm_exc_page_fault+0x22/0x30
->>  ? null_timeout_rq+0x4e/0x91
->>  blk_mq_handle_expired+0x31/0x4b
->>  bt_iter+0x68/0x84
->>  ? bt_tags_iter+0x81/0x81
->>  __sbitmap_for_each_set.constprop.0+0xb0/0xf2
->>  ? __blk_mq_complete_request_remote+0xf/0xf
->>  bt_for_each+0x46/0x64
->>  ? __blk_mq_complete_request_remote+0xf/0xf
->>  ? percpu_ref_get_many+0xc/0x2a
->>  blk_mq_queue_tag_busy_iter+0x14d/0x18e
->>  blk_mq_timeout_work+0x95/0x127
->>  process_one_work+0x185/0x263
->>  worker_thread+0x1b5/0x227
->>  ? rescuer_thread+0x287/0x287
->>  kthread+0xfa/0x102
->>  ? kthread_complete_and_exit+0x1b/0x1b
->>  ret_from_fork+0x22/0x30
->>
->> This is indeed a race problem between null_timeout_rq() and null_poll().
->>
->> null_poll()				null_timeout_rq()
->>   spin_lock(&nq->poll_lock)
->>   list_splice_init(&nq->poll_list, &list)
->>   spin_unlock(&nq->poll_lock)
->>
->>   while (!list_empty(&list))
->>     req = list_first_entry()
->>     list_del_init()
->>     ...
->>     blk_mq_add_to_batch()
->>     // req->rq_next = NULL
->> 					spin_lock(&nq->poll_lock)
->>
->> 					// rq->queuelist->next == NULL
->> 					list_del_init(&rq->queuelist)
->>
->> 					spin_unlock(&nq->poll_lock)
->>
->> What's worse is that we don't call blk_mq_complete_request_remote()
->> before blk_mq_add_to_batch(), so these completed requests have wrong
->> rq->state == MQ_RQ_IN_FLIGHT. We can easily check this using bpftrace:
->>
->> ```
->> bpftrace -e 'kretfunc:null_blk:null_poll {
->>   $iob=(struct io_comp_batch *)args->iob;
->>   @[$iob->req_list->state]=count();
->> }'
->>
->> @[1]: 51708
->> ```
->>
->> Fix these problems by setting requests state to MQ_RQ_COMPLETE under
->> nq->poll_lock protection, in which null_timeout_rq() can safely detect
->> this race and early return.
->>
->> [1] https://lore.kernel.org/all/3893581.1691785261@warthog.procyon.org.uk/
->>
->> Fixes: 0a593fbbc245 ("null_blk: poll queue support")
->> Reported-by: David Howells <dhowells@redhat.com>
->> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
->> ---
->>  drivers/block/null_blk/main.c | 12 ++++++++++--
->>  1 file changed, 10 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
->> index 864013019d6b..968090935eb2 100644
->> --- a/drivers/block/null_blk/main.c
->> +++ b/drivers/block/null_blk/main.c
->> @@ -1643,9 +1643,12 @@ static int null_poll(struct blk_mq_hw_ctx *hctx, struct io_comp_batch *iob)
->>  	struct nullb_queue *nq = hctx->driver_data;
->>  	LIST_HEAD(list);
->>  	int nr = 0;
->> +	struct request *rq;
->>  
->>  	spin_lock(&nq->poll_lock);
->>  	list_splice_init(&nq->poll_list, &list);
->> +	list_for_each_entry(rq, &list, queuelist)
->> +		blk_mq_set_request_complete(rq);
->>  	spin_unlock(&nq->poll_lock);
->>  
->>  	while (!list_empty(&list)) {
->> @@ -1671,16 +1674,21 @@ static enum blk_eh_timer_return null_timeout_rq(struct request *rq)
->>  	struct blk_mq_hw_ctx *hctx = rq->mq_hctx;
->>  	struct nullb_cmd *cmd = blk_mq_rq_to_pdu(rq);
->>  
->> -	pr_info("rq %p timed out\n", rq);
->> -
->>  	if (hctx->type == HCTX_TYPE_POLL) {
->>  		struct nullb_queue *nq = hctx->driver_data;
->>  
->>  		spin_lock(&nq->poll_lock);
->> +		/* The request may have completed meanwhile. */
->> +		if (blk_mq_request_completed(rq)) {
->> +			spin_unlock(&nq->poll_lock);
->> +			return BLK_EH_DONE;
->> +		}
->>  		list_del_init(&rq->queuelist);
->>  		spin_unlock(&nq->poll_lock);
->>  	}
-> 
-> I think null_process_cmd() is needed for un-completed request.
-> 
-
-The end of function will set BLK_STS_TIMEOUT error and complete request
-using blk_mq_complete_request(), not sure if null_process_cmd() is
-needed in this error case?
-
-Thanks.
