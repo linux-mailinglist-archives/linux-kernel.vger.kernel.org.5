@@ -2,98 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C27B677CFCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 18:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF3877CFCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 18:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235850AbjHOP7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 11:59:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48018 "EHLO
+        id S238366AbjHOQA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 12:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238469AbjHOP7k (ORCPT
+        with ESMTP id S238442AbjHOQAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 11:59:40 -0400
-Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1B6DF;
-        Tue, 15 Aug 2023 08:59:38 -0700 (PDT)
-Received: from [127.0.0.1] (ip-109-43-115-51.web.vodafone.de [109.43.115.51])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.3ffe.de (Postfix) with ESMTPSA id 6B6F53D5;
-        Tue, 15 Aug 2023 17:59:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-        t=1692115176;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=74PPELyfTdRJMzG/844z25bsJa3XCvyEnvQBQNAdiaY=;
-        b=2LurkNY/UP++tp7HyhcQAep+uOzh7mSWOIHO4I7wCdCKHTrppFFdvhjvrgs+ZrKui2E9xm
-        JzvuT20uC9Zqh/+HN758R4LUWl8W3jqtbPyGvi2lWQol8JiWqVxuAeiF37/yk4M2ea73e7
-        aST0SfYvNKisMulDXoy3rP7N4/V3meWHvzjvZ3KjmToa/WEbAs98POlxnc48ddolyzklhD
-        2tn1oQ9akdoCL7IySSv+FNIigyHN+mvVecJ4hOCrPYm02RjxXEMaiIwd7m0LHhLhMMYnLI
-        rBdaW6KeyIoU13hl8/44rNf7/hK9gozl9G2KXX/uAdh5QDeetvIsl5ILnk2m/g==
-Date:   Tue, 15 Aug 2023 17:59:34 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bjorn Andersson <andersson@kernel.org>
-CC:     Pratyush Yadav <pratyush@kernel.org>,
-        "Miquel Raynal )" <miquel.raynal@bootlin.com>,
-        "Richard Weinberger )" <richard@nod.at>,
-        "Vignesh Raghavendra )" <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Subject: Re: [PATCH 0/4] Add a property to override the quad mode
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20230815154412.713846-1-hsinyi@chromium.org>
-References: <20230815154412.713846-1-hsinyi@chromium.org>
-Message-ID: <202A0C36-D1F6-4BB4-BDEC-F36A76B757A2@walle.cc>
+        Tue, 15 Aug 2023 12:00:02 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA09410F;
+        Tue, 15 Aug 2023 09:00:00 -0700 (PDT)
+Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 135BE2CF;
+        Tue, 15 Aug 2023 17:58:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1692115126;
+        bh=Dnd/cluCU2tJlyL5IE/vj5RGc9tRSKrNvv0CBVqiJT0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=sJa/4ZlsiHqxJZpaZB6CPNhkoXDTp6lqWqtDiwPfsuiaa3jCmK8d1CQ9+N7NbmAK/
+         /teo3klkb0iW/bWdPbO19fp6zCAYAMLJMFeDkjNp7Eq9mxq7NAhJ4qoE6yiI1XGuU8
+         U4HPksBN5yMS9NtNXSn2wKwEkFbrgqUySHtdsHos=
+Message-ID: <94dd2237-2a4a-fb45-ceb1-f224fafd4e36@ideasonboard.com>
+Date:   Tue, 15 Aug 2023 18:59:55 +0300
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] i2c: Make I2C_ATR invisible
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Luca Ceresoli <luca.ceresoli@bootlin.com>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <588d302477cb7e6b30b52ee6448807324c57b88a.1692113321.git.geert+renesas@glider.be>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+In-Reply-To: <588d302477cb7e6b30b52ee6448807324c57b88a.1692113321.git.geert+renesas@glider.be>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,=20
+On 15/08/2023 18:29, Geert Uytterhoeven wrote:
+> I2C Address Translator (ATR) support is not a stand-alone driver, but a
+> library.  All of its users select I2C_ATR.  Hence there is no need for
+> the user to enable this symbol manually, except when compile-testing.
+> 
+> Fixes: a076a860acae77bb ("media: i2c: add I2C Address Translator (ATR) support")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> Do we care yet about out-of-tree drivers that need this functionality?
+> ---
+>   drivers/i2c/Kconfig | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/i2c/Kconfig b/drivers/i2c/Kconfig
+> index c6d1a345ea6d8aee..9388823bb0bb960c 100644
+> --- a/drivers/i2c/Kconfig
+> +++ b/drivers/i2c/Kconfig
+> @@ -72,7 +72,7 @@ config I2C_MUX
+>   source "drivers/i2c/muxes/Kconfig"
+>   
+>   config I2C_ATR
+> -	tristate "I2C Address Translator (ATR) support"
+> +	tristate "I2C Address Translator (ATR) support" if COMPILE_TEST
+>   	help
+>   	  Enable support for I2C Address Translator (ATR) chips.
+>   
 
->On gigadevice gd25lq64c, the quad mode is enabled after BFPT is parsed=2E
->According to datasheet[1], Quad enable (QE) bit needs to be set to 0 to
->use write protection (WP) pin=2E It also recommends setting default value=
- of
->QE to 0 to avoid a potential short issue=2E
+Isn't this normally done with just "tristate", without the text? Is 
+there a need to make configs manually selectable when compile-test is 
+enabled?
 
-So you are using either dual or single io mode=2E Why can't you use the de=
-vice tree property spi-{tx,rx}-bus-width?=20
-
->Add a disable-quad-mode property in devicetree that platform can use it t=
-o
->override the quad mode status parsed from BFPT to use write protection=2E
->
->[1]
->https://www=2Eelm-tech=2Ecom/ja/products/spi-flash-memory/gd25lq64/gd25lq=
-64=2Epdf
-
-should be a link on the vendor Homepage if possible=2E=20
-
--michael
+  Tomi
 
