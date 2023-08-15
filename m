@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C9F77C8D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 09:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46DAA77C8E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 09:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235448AbjHOHtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 03:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45092 "EHLO
+        id S235461AbjHOHwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 03:52:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235443AbjHOHtO (ORCPT
+        with ESMTP id S235459AbjHOHwZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 03:49:14 -0400
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21767172A
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 00:49:11 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Vpr0xAs_1692085747;
-Received: from 30.97.48.59(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Vpr0xAs_1692085747)
-          by smtp.aliyun-inc.com;
-          Tue, 15 Aug 2023 15:49:08 +0800
-Message-ID: <26477981-5348-2da0-8bc8-c736d080a2f2@linux.alibaba.com>
-Date:   Tue, 15 Aug 2023 15:49:09 +0800
+        Tue, 15 Aug 2023 03:52:25 -0400
+X-Greylist: delayed 183 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 15 Aug 2023 00:52:22 PDT
+Received: from cmccmta1.chinamobile.com (cmccmta1.chinamobile.com [221.176.66.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 050FF173C;
+        Tue, 15 Aug 2023 00:52:21 -0700 (PDT)
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from cmccmta.chinamobile.com (unknown[172.16.121.91])
+        by rmmx-syy-dmz-app04-12004 (RichMail) with SMTP id 2ee464db2dfcaf7-10c93;
+        Tue, 15 Aug 2023 15:49:16 +0800 (CST)
+X-RM-TRANSID: 2ee464db2dfcaf7-10c93
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[223.108.79.101])
+        by rmsmtp-syy-appsvrnew06-12031 (RichMail) with SMTP id 2eff64db2dfbec0-66fe9;
+        Tue, 15 Aug 2023 15:49:16 +0800 (CST)
+X-RM-TRANSID: 2eff64db2dfbec0-66fe9
+From:   Ding Xiang <dingxiang@cmss.chinamobile.com>
+To:     catalin.marinas@arm.com, will@kernel.org, shuah@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] kselftest/arm64: fix a memleak in zt_regs_run()
+Date:   Tue, 15 Aug 2023 15:49:15 +0800
+Message-Id: <20230815074915.245528-1-dingxiang@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 2/9] mm/compaction: call list_is_{first}/{last} more
- intuitively in move_freelist_{head}/{tail}
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, david@redhat.com
-References: <20230805110711.2975149-1-shikemeng@huaweicloud.com>
- <20230805110711.2975149-3-shikemeng@huaweicloud.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20230805110711.2975149-3-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-12.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,47 +47,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If memcmp() does not return 0, "zeros" need to be freed to prevent memleak
+
+Signed-off-by: Ding Xiang <dingxiang@cmss.chinamobile.com>
+---
+ tools/testing/selftests/arm64/signal/testcases/zt_regs.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/testing/selftests/arm64/signal/testcases/zt_regs.c b/tools/testing/selftests/arm64/signal/testcases/zt_regs.c
+index e1eb4d5c027a..2e384d731618 100644
+--- a/tools/testing/selftests/arm64/signal/testcases/zt_regs.c
++++ b/tools/testing/selftests/arm64/signal/testcases/zt_regs.c
+@@ -65,6 +65,7 @@ int zt_regs_run(struct tdescr *td, siginfo_t *si, ucontext_t *uc)
+ 	if (memcmp(zeros, (char *)zt + ZT_SIG_REGS_OFFSET,
+ 		   ZT_SIG_REGS_SIZE(zt->nregs)) != 0) {
+ 		fprintf(stderr, "ZT data invalid\n");
++		free(zeros);
+ 		return 1;
+ 	}
+ 
+-- 
+2.38.1
 
 
-On 8/5/2023 7:07 PM, Kemeng Shi wrote:
-> We use move_freelist_head after list_for_each_entry_reverse to skip
-> recent pages. And there is no need to do actual move if all freepages
-> are searched in list_for_each_entry_reverse, e.g. freepage point to
-> first page in freelist. It's more intuitively to call list_is_first
-> with list entry as the first argument and list head as the second
-> argument to check if list entry is the first list entry instead of
-> call list_is_last with list entry and list head passed in reverse.
-> 
-> Similarly, call list_is_last in move_freelist_tail is more intuitively.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
-Make sense to me.
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-
-> ---
->   mm/compaction.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 513b1caeb4fa..fa1b100b0d10 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1395,7 +1395,7 @@ move_freelist_head(struct list_head *freelist, struct page *freepage)
->   {
->   	LIST_HEAD(sublist);
->   
-> -	if (!list_is_last(freelist, &freepage->buddy_list)) {
-> +	if (!list_is_first(&freepage->buddy_list, freelist)) {
->   		list_cut_before(&sublist, freelist, &freepage->buddy_list);
->   		list_splice_tail(&sublist, freelist);
->   	}
-> @@ -1412,7 +1412,7 @@ move_freelist_tail(struct list_head *freelist, struct page *freepage)
->   {
->   	LIST_HEAD(sublist);
->   
-> -	if (!list_is_first(freelist, &freepage->buddy_list)) {
-> +	if (!list_is_last(&freepage->buddy_list, freelist)) {
->   		list_cut_position(&sublist, freelist, &freepage->buddy_list);
->   		list_splice_tail(&sublist, freelist);
->   	}
