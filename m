@@ -2,175 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7DB77C780
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 08:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8DC377C78E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 08:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231244AbjHOGJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 02:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
+        id S235018AbjHOGNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 02:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235069AbjHOGI7 (ORCPT
+        with ESMTP id S234883AbjHOGMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 02:08:59 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD602D54
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 23:07:49 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99c3c8adb27so691333866b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 23:07:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692079667; x=1692684467;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1eTUAES+PjBvQLtO17D5OEYj5uIqydF+x2YtGRgLnbo=;
-        b=H72fNmAPH4wHA+OXV+7CNf+53M0fTZ+j8faZ3SCcJnl+auBlnAdFJMhtBWEldoADCA
-         /ka74oywof0otFVGiIi8HkLP0/2FEWTiUk/pFeV4j97ZMARn1TiUIQ96W6aboZzM9Szk
-         zp4WIZe4tw/OYNfIHYeKqUXnWzedWGYucYqlLghdrxakLDrcTfAyEDc8nE8Gc9Y68hgX
-         JPPtFkDi113yOW8iwSNRWf0RzTtKL76dLR47/VjTQEFvTtZYyhELdUdynIHvn1ibj/2d
-         dUHuBaZEQcHhTBvPv8mkM8TcJGIN6B7q/UjbMS9gzcZbmi801Waeh6RdAk97+o7H/4Os
-         UJ0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692079667; x=1692684467;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1eTUAES+PjBvQLtO17D5OEYj5uIqydF+x2YtGRgLnbo=;
-        b=a+yV/tA6KWl+yVhC/cR44DtWQPotE3uv/JlE1pAhjHA0MXznQAjpXOxVx2pD1dTMKX
-         oKrXOrUINZDtpevV+l0LzhzbKEmTj9/lL5lemwwT00rQZYrzzCNgm/l3pDxaLTpR8pTV
-         B2ZHWlQ925ARG3wA5gqrLhY+N05he8aC3wnFZkt63/wTOkcpiMPefN/YvBGk+xZGGIEL
-         tgW38K0oXXEbm0WL0Ae9TdZIwl2cKkczvSzbigrPINMkNW5e8cqfLCGQAssE3tOBKdQs
-         dfGJiFPjlKOWf7NZ43qzHji1SeVD7Lu0CG1F7YJ2t/IKenk9K5I5v7nn0HESx1tcJnlM
-         fLfQ==
-X-Gm-Message-State: AOJu0YwviQ1iqz109uNRJdsNnIgvqX3aakvEdleQL/hxaxTuYXyst1JV
-        TO2LTh9hshN9x2e4FV5FVdo64CQmwzsTWjOtSLA=
-X-Google-Smtp-Source: AGHT+IF6ACgNcnYcHUhfee/MdzJ+x+8yGLtSpa2a0zxQSRfBPFoCSU7DzrJ1eLX6CBZF+rUmeisMow==
-X-Received: by 2002:a17:906:76d1:b0:99c:ad52:b01 with SMTP id q17-20020a17090676d100b0099cad520b01mr9363081ejn.57.1692079667607;
-        Mon, 14 Aug 2023 23:07:47 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id gw4-20020a170906f14400b00993b381f808sm6528093ejb.38.2023.08.14.23.07.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 23:07:47 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v3 3/3] media: exynos4-is: fimc-is: replace duplicate pmu node with phandle
-Date:   Tue, 15 Aug 2023 08:07:39 +0200
-Message-Id: <20230815060739.30160-3-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230815060739.30160-1-krzysztof.kozlowski@linaro.org>
-References: <20230815060739.30160-1-krzysztof.kozlowski@linaro.org>
+        Tue, 15 Aug 2023 02:12:13 -0400
+Received: from out-91.mta0.migadu.com (out-91.mta0.migadu.com [91.218.175.91])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F7710E5
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 23:12:07 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1692079925;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=87BafcYHTECroCFlPdcmpeMw+ZEtXfVG5SDX5ZX7vng=;
+        b=SaSvNJI87JqpANRZ51JR8umiT3wah4COBIVfxNOITxv/Lg12FLBqHqfeHPAoNaxuqAA75+
+        2+oLt29lwDyujY9SHnOHUCrU+QaCmpqSP7oJSx/5mSVRVtmnYti6gylM1/eRzHR66SqsEJ
+        Blv8MAbBTTfKeKLaIOLEK4wXzok3qEg=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     vkoul@kernel.org, dave.jiang@intel.com, dan.j.williams@intel.com
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH v2] dmaengine: ioat: fixing the wrong dma_dev->chancnt
+Date:   Tue, 15 Aug 2023 14:11:51 +0800
+Message-Id: <20230815061151.2724474-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Devicetree for the FIMC IS camera included duplicated PMU node as its
-child like:
+The chancnt would be updated in __dma_async_device_channel_register(),
+but it was assigned in ioat_enumerate_channels(). Therefore chancnt has
+the wrong value.
 
-  soc@0 {
-    system-controller@10020000 { ... }; // Real PMU
+Add chancnt member to the struct ioatdma_device, ioat_dma->chancnt
+is used in ioat, dma_dev->chancnt is used in dmaengine.
 
-    camera@11800000 {
-      fimc-is@12000000 {
-        // FIMC IS camera node
-        pmu@10020000 {
-          reg = <0x10020000 0x3000>; // Fake PMU node
-        };
-      };
-    };
-  };
-
-This is not a correct representation of the hardware.  Mapping the PMU
-(Power Management Unit) IO memory should be via syscon-like phandle
-(samsung,pmu-syscon, already used for other drivers), not by duplicating
-"pmu" Devicetree node inside the FIMC IS.  Backward compatibility is
-preserved.
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 ---
-
-Changes in v3:
-1. Print deprecated warning only if child node "pmu" is not found.
-   "Finding" -> "Found".
-
-Changes in v2:
-1. Use IOMEM_ERR_PTR (Hans)
+V1 -> V2: add chancnt member to the struct ioatdma_device.
 ---
- .../platform/samsung/exynos4-is/fimc-is.c     | 33 ++++++++++++++-----
- 1 file changed, 24 insertions(+), 9 deletions(-)
+ drivers/dma/ioat/dma.h  |  1 +
+ drivers/dma/ioat/init.c | 19 ++++++++++---------
+ 2 files changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/media/platform/samsung/exynos4-is/fimc-is.c b/drivers/media/platform/samsung/exynos4-is/fimc-is.c
-index 530a148fe4d3..a08c87ef6e2d 100644
---- a/drivers/media/platform/samsung/exynos4-is/fimc-is.c
-+++ b/drivers/media/platform/samsung/exynos4-is/fimc-is.c
-@@ -767,12 +767,32 @@ static void fimc_is_debugfs_create(struct fimc_is *is)
- static int fimc_is_runtime_resume(struct device *dev);
- static int fimc_is_runtime_suspend(struct device *dev);
+diff --git a/drivers/dma/ioat/dma.h b/drivers/dma/ioat/dma.h
+index 35e06b382603..a180171087a8 100644
+--- a/drivers/dma/ioat/dma.h
++++ b/drivers/dma/ioat/dma.h
+@@ -74,6 +74,7 @@ struct ioatdma_device {
+ 	struct dca_provider *dca;
+ 	enum ioat_irq_mode irq_mode;
+ 	u32 cap;
++	int chancnt;
  
-+static void __iomem *fimc_is_get_pmu_regs(struct device *dev)
-+{
-+	struct device_node *node;
-+	void __iomem *regs;
-+
-+	node = of_parse_phandle(dev->of_node, "samsung,pmu-syscon", 0);
-+	if (!node) {
-+		node = of_get_child_by_name(dev->of_node, "pmu");
-+		if (!node)
-+			return IOMEM_ERR_PTR(-ENODEV);
-+		dev_warn(dev, "Found PMU node via deprecated method, update your DTB\n");
-+	}
-+
-+	regs = of_iomap(node, 0);
-+	of_node_put(node);
-+	if (!regs)
-+		return IOMEM_ERR_PTR(-ENOMEM);
-+
-+	return regs;
-+}
-+
- static int fimc_is_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct fimc_is *is;
- 	struct resource res;
--	struct device_node *node;
- 	int ret;
+ 	/* shadow version for CB3.3 chan reset errata workaround */
+ 	u64 msixtba0;
+diff --git a/drivers/dma/ioat/init.c b/drivers/dma/ioat/init.c
+index c4602bfc9c74..9c364e92cb82 100644
+--- a/drivers/dma/ioat/init.c
++++ b/drivers/dma/ioat/init.c
+@@ -420,7 +420,7 @@ int ioat_dma_setup_interrupts(struct ioatdma_device *ioat_dma)
  
- 	is = devm_kzalloc(&pdev->dev, sizeof(*is), GFP_KERNEL);
-@@ -794,14 +814,9 @@ static int fimc_is_probe(struct platform_device *pdev)
- 	if (IS_ERR(is->regs))
- 		return PTR_ERR(is->regs);
+ msix:
+ 	/* The number of MSI-X vectors should equal the number of channels */
+-	msixcnt = ioat_dma->dma_dev.chancnt;
++	msixcnt = ioat_dma->chancnt;
+ 	for (i = 0; i < msixcnt; i++)
+ 		ioat_dma->msix_entries[i].entry = i;
  
--	node = of_get_child_by_name(dev->of_node, "pmu");
--	if (!node)
--		return -ENODEV;
--
--	is->pmu_regs = of_iomap(node, 0);
--	of_node_put(node);
--	if (!is->pmu_regs)
--		return -ENOMEM;
-+	is->pmu_regs = fimc_is_get_pmu_regs(dev);
-+	if (IS_ERR(is->pmu_regs))
-+		return PTR_ERR(is->pmu_regs);
+@@ -511,7 +511,7 @@ static int ioat_probe(struct ioatdma_device *ioat_dma)
+ 	dma_cap_set(DMA_MEMCPY, dma->cap_mask);
+ 	dma->dev = &pdev->dev;
  
- 	is->irq = irq_of_parse_and_map(dev->of_node, 0);
- 	if (!is->irq) {
+-	if (!dma->chancnt) {
++	if (!ioat_dma->chancnt) {
+ 		dev_err(dev, "channel enumeration error\n");
+ 		goto err_setup_interrupts;
+ 	}
+@@ -567,15 +567,16 @@ static void ioat_enumerate_channels(struct ioatdma_device *ioat_dma)
+ 	struct device *dev = &ioat_dma->pdev->dev;
+ 	struct dma_device *dma = &ioat_dma->dma_dev;
+ 	u8 xfercap_log;
++	int chancnt;
+ 	int i;
+ 
+ 	INIT_LIST_HEAD(&dma->channels);
+-	dma->chancnt = readb(ioat_dma->reg_base + IOAT_CHANCNT_OFFSET);
+-	dma->chancnt &= 0x1f; /* bits [4:0] valid */
+-	if (dma->chancnt > ARRAY_SIZE(ioat_dma->idx)) {
++	chancnt = readb(ioat_dma->reg_base + IOAT_CHANCNT_OFFSET);
++	chancnt &= 0x1f; /* bits [4:0] valid */
++	if (chancnt > ARRAY_SIZE(ioat_dma->idx)) {
+ 		dev_warn(dev, "(%d) exceeds max supported channels (%zu)\n",
+-			 dma->chancnt, ARRAY_SIZE(ioat_dma->idx));
+-		dma->chancnt = ARRAY_SIZE(ioat_dma->idx);
++			 chancnt, ARRAY_SIZE(ioat_dma->idx));
++		chancnt = ARRAY_SIZE(ioat_dma->idx);
+ 	}
+ 	xfercap_log = readb(ioat_dma->reg_base + IOAT_XFERCAP_OFFSET);
+ 	xfercap_log &= 0x1f; /* bits [4:0] valid */
+@@ -583,7 +584,7 @@ static void ioat_enumerate_channels(struct ioatdma_device *ioat_dma)
+ 		return;
+ 	dev_dbg(dev, "%s: xfercap = %d\n", __func__, 1 << xfercap_log);
+ 
+-	for (i = 0; i < dma->chancnt; i++) {
++	for (i = 0; i < chancnt; i++) {
+ 		ioat_chan = kzalloc(sizeof(*ioat_chan), GFP_KERNEL);
+ 		if (!ioat_chan)
+ 			break;
+@@ -596,7 +597,7 @@ static void ioat_enumerate_channels(struct ioatdma_device *ioat_dma)
+ 			break;
+ 		}
+ 	}
+-	dma->chancnt = i;
++	ioat_dma->chancnt = i;
+ }
+ 
+ /**
 -- 
-2.34.1
+2.25.1
 
