@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 246B677D18F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B9577D192
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239007AbjHOSNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 14:13:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42370 "EHLO
+        id S239030AbjHOSOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 14:14:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238872AbjHOSN0 (ORCPT
+        with ESMTP id S239015AbjHOSOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 14:13:26 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC88810DA
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 11:13:25 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-760dff4b701so63053239f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 11:13:25 -0700 (PDT)
+        Tue, 15 Aug 2023 14:14:15 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4224310DA;
+        Tue, 15 Aug 2023 11:14:14 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id ada2fe7eead31-4477b141804so2433212137.3;
+        Tue, 15 Aug 2023 11:14:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1692123205; x=1692728005;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=a+eUdHCB3DoY8jEut+5Ikkg8CLuEIFPgqSnNE/p3cew=;
-        b=IWOyzlAZpJyCk13fr+u9oepZqcGJVwrXnasZqYSnZcYHaItrhiKlzhb9vE9n8fDSaL
-         TuXNHrFJea2Ft0NVVLry/M1CCBZT1MXQBHbRJ/Ow8kbcFUFx++h7iV2BNUkKoGd6f0i5
-         8qyegxjCUe1SrUN4RtdE2UuBLZpQaxMmMiGKY=
+        d=gmail.com; s=20221208; t=1692123253; x=1692728053;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UZOfs+JDTQ4+3DRFCCDNSBcuJ2PAqaLR2VayYXscEA0=;
+        b=kvjJjLtsFzvjfYxkZejHrqzGzGFN6oxsg9J1+fjeQzkSzdTjwx0/mLrMKMovHEDsUi
+         EoEmRBSn06ViaIP/ujhPvD7JazEA+tVHLNM39PqYin5/K2EU08UG/ihhFHV0cofM3VAD
+         Re+5DTkkZsnGSbTmIOPC0+NACl34SrohXiwqtaYDlcVGAQ9uD7obuX1+SZ3Zu8xNU4ys
+         IuOt1cWjoCvIGQnayZdnvoLLIESuGJARZAwd/xrbEMYAuQ5Q+NN4StNAW1vIQpooxcfk
+         QH3w4+XAIP14us6L7ci7okbfi56hk9ninmT8J1ewkTRK8FCn/GkRm+0HWMKg6y8yMkNU
+         HFzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692123205; x=1692728005;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a+eUdHCB3DoY8jEut+5Ikkg8CLuEIFPgqSnNE/p3cew=;
-        b=eA2vhwUlYj6NNFq/RDLlYUT1qA61RRW7A21TtyjSXlakiigZlPoA/6BdXjA++dCs4F
-         kYMB/h0ryKxhXv0qvYXTROCJ9Z2/zBEqaIEps8/66mbdse1w5XLL2VOx7dDMegY+P6xu
-         EwRGSPVjLPvQ2NzTa6qbUeDdtYIF/6sUOFY0P0P/231upFFAhDxONxMd4vaeZdYKnd5A
-         fcPeZlipwxO3DoeXpwT0/9xFHMNBkftrVq6di7gjb0vwUVhnAXaa7+t8uIxEcRnzRKol
-         iqMwdXPe12hXFDKUozyu2Lkdm9py55Q0IBYBC08Qg96qVWlZRKFpulRp6si8pe3waiv7
-         BseA==
-X-Gm-Message-State: AOJu0YxF2/Q+WVDHJjJpKnn8QHpVdKdhjufjOhiVSxLU8RX9wLIwbhU0
-        lzQAr2XEQCtf5v8ULSsvhl6E7y+/3lepf9b8lCk=
-X-Google-Smtp-Source: AGHT+IG31pSd31tKfsUgoajC2J61nWgN5tSeTm+8UNBl5DgEJvUS8ie3vLNdZXxOUV+95pbcQK3pag==
-X-Received: by 2002:a6b:1404:0:b0:790:958e:a667 with SMTP id 4-20020a6b1404000000b00790958ea667mr16846682iou.2.1692123205230;
-        Tue, 15 Aug 2023 11:13:25 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id fu11-20020a056638668b00b0042b6a760c31sm3876747jab.28.2023.08.15.11.13.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 11:13:24 -0700 (PDT)
-Message-ID: <9950607c-cafe-c011-7d5f-76a8a971beb0@linuxfoundation.org>
-Date:   Tue, 15 Aug 2023 12:13:24 -0600
+        d=1e100.net; s=20221208; t=1692123253; x=1692728053;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UZOfs+JDTQ4+3DRFCCDNSBcuJ2PAqaLR2VayYXscEA0=;
+        b=SxaE3w3Rm3KWWaJyv1Er3eCpo5fwqwnrtBMNhUFnExJc7LWDFZ+fEPiniuJC1PBI0K
+         vbPJKHlmYmAPwkVchDgtNaxTD+rmQ1LvULcpbyTUkppSFXAVlbEOvF+C5VrVwKcEUtuu
+         BCIEo60vrEbSCrHjy+IO3sBmkHjXp5jHRPeyxo4JzZFmatRIoDC32AJOh4lTVT+yKdyj
+         ubfsTx7jTw9WyfSBg/HWC0gjxjpwqLQtdkqgVxX+3Ds1JwQGbgV8FEhm40ykSDNXQS1n
+         TJQkdqhjLlS9aWVL44S5tCbEA/sZn5+mN7j4URe2ZpNNkPZ2Y2w3qNBpkgrrIAgIJd6B
+         u3rw==
+X-Gm-Message-State: AOJu0Yzxjt+xeCw+nuKXbBhmCGmjTw4VmeFrZDSA9udm+inb9pUmGnLB
+        6G+mhv5biAY53Tv93uhURwS4ki8UgVrN+3D+gq4=
+X-Google-Smtp-Source: AGHT+IECRziSqxda8Q6xU6Txx5TmbWe/AfWN2vBt/Fet2IM5yIw2GD2WwIBUZyIXD2pqePeX0zZVaMhj6gfl5wmdamI=
+X-Received: by 2002:a67:f80d:0:b0:443:6deb:2b4 with SMTP id
+ l13-20020a67f80d000000b004436deb02b4mr14457488vso.2.1692123253105; Tue, 15
+ Aug 2023 11:14:13 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [GIT PULL] nolibc changes for 6.6-rc1
-Content-Language: en-US
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        shuah <shuah@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>
-References: <20230806172245.GA26239@1wt.eu>
- <3efa3710-4e8b-d187-a24d-ff85858e37fe@linuxfoundation.org>
- <20230815143540.GA15075@1wt.eu>
- <29590d7b-40fd-0426-75c6-36667e344f6c@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <29590d7b-40fd-0426-75c6-36667e344f6c@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+References: <20230814171845.65930-1-feliu@nvidia.com> <ZNtYpohWyjnb883M@vergenet.net>
+ <05348d62-586c-4b1f-40bd-5541caca0947@nvidia.com> <ZNunz1hbqPKpcOgA@vergenet.net>
+In-Reply-To: <ZNunz1hbqPKpcOgA@vergenet.net>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Tue, 15 Aug 2023 14:13:36 -0400
+Message-ID: <CAF=yD-L+d34Uuvt3sOFOnxXhMmoMXNfHzcaSPk=t1PtiPUHZ1g@mail.gmail.com>
+Subject: Re: [PATCH net v1] virtio_net: Introduce skb_vnet_common_hdr to avoid typecasting
+To:     Simon Horman <horms@kernel.org>
+Cc:     Feng Liu <feliu@nvidia.com>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Bodong Wang <bodong@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,54 +78,248 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/15/23 08:39, Shuah Khan wrote:
-> On 8/15/23 08:35, Willy Tarreau wrote:
->> On Tue, Aug 15, 2023 at 08:25:51AM -0600, Shuah Khan wrote:
->>>> The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
->>>>
->>>>     Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
->>>>
->>>> are available in the Git repository at:
->>>>
->>>>     https://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git/ 20230806-for-6.6-1
->>>>
->>>> for you to fetch changes up to d98c1e27e46e47a3ae67e1d048f153598ba82611:
->>>>
->>>>     tools/nolibc: stackprotector.h: make __stack_chk_init static (2023-08-06 18:44:47 +0200)
->>>>
->>>
->>> Hi Willy,
->>>
->>> I am sorry for the delay on this. I was traveling last week
->>> and getting back to digging myself out of emails.
->>
->> No problem, thanks for getting back :-)
->>
->>> I am having trouble pulling this request though:
->>>
->>> git request-pull https://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git/ 20230806-for-6.6-1
->>>
->>> gives me the following error
->>>
->>> fatal: Not a valid revision: git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git/
->>>
->>> I don't see a tag at https://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git
->>
->> Ah sorry for the misunderstanding, that's the branch name, I'll set a
->> tag then.
->>
-> 
-> No worries. Could you also share the test you run? I will pull
-> you request and run tests.
-> 
+On Tue, Aug 15, 2023 at 12:29=E2=80=AFPM Simon Horman <horms@kernel.org> wr=
+ote:
+>
+> On Tue, Aug 15, 2023 at 11:09:02AM -0400, Feng Liu wrote:
+> >
+> >
+> > On 2023-08-15 a.m.6:51, Simon Horman wrote:
+> > > External email: Use caution opening links or attachments
+> > >
+> > >
+> > > On Mon, Aug 14, 2023 at 01:18:45PM -0400, Feng Liu wrote:
+> > >
+> > > + "David S. Miller" <davem@davemloft.net>
+> > >    Eric Dumazet <edumazet@google.com>
+> > >    Jakub Kicinski <kuba@kernel.org>
+> > >    Paolo Abeni <pabeni@redhat.com>
+> > >
+> > Thanks for adding David S. Miller.
+> >
+> > > > The virtio_net driver currently deals with different versions and t=
+ypes
+> > > > of virtio net headers, such as virtio_net_hdr_mrg_rxbuf,
+> > > > virtio_net_hdr_v1_hash, etc. Due to these variations, the code reli=
+es
+> > > > on multiple type casts to convert memory between different structur=
+es,
+> > > > potentially leading to bugs when there are changes in these structu=
+res.
+> > > >
+> > > > Introduces the "struct skb_vnet_common_hdr" as a unifying header
+> > > > structure using a union. With this approach, various virtio net hea=
+der
+> > > > structures can be converted by accessing different members of this
+> > > > structure, thus eliminating the need for type casting and reducing =
+the
+> > > > risk of potential bugs.
+> > > >
+> > > > For example following code:
+> > > > static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+> > > >                struct receive_queue *rq,
+> > > >                struct page *page, unsigned int offset,
+> > > >                unsigned int len, unsigned int truesize,
+> > > >                unsigned int headroom)
+> > > > {
+> > > > [...]
+> > > >        struct virtio_net_hdr_mrg_rxbuf *hdr;
+> > > > [...]
+> > > >        hdr_len =3D vi->hdr_len;
+> > > > [...]
+> > > > ok:
+> > > >        hdr =3D skb_vnet_hdr(skb);
+> > > >        memcpy(hdr, hdr_p, hdr_len);
+> > > > [...]
+> > > > }
+> > > >
+> > > > When VIRTIO_NET_F_HASH_REPORT feature is enabled, hdr_len =3D 20
+> > > > But the sizeof(*hdr) is 12,
+> > > > memcpy(hdr, hdr_p, hdr_len); will copy 20 bytes to the hdr,
+> > > > which make a potential risk of bug. And this risk can be avoided by
+> > > > introducing struct virtio_net_hdr_mrg_rxbuf.
+> > > >
+> > > > Signed-off-by: Feng Liu <feliu@nvidia.com>
+> > > > Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+> > >
+> > > I'm unsure if this is 'net' material.
+> > >
+> >
+> > It is about the modification of the virtio_net driver. I think it shoul=
+d be
+> > regarded as `net` material.
+>
+> To clarify: In general new Networking features go via the net-next tree,
+> while bug fixes go via the net tree. I was suggesting this
+> is more appropriate for net-next, and that should be reflected in the
+> subject.
+>
+>         Subject: [PATCH net-next] ...
+>
+> Sorry for not being clearer the first time around.
 
-Please send either another pull request or send the tag details.
+Right, this should go to net-next.
 
-Also please join IRC channel #kselftest on OFTC. It will be easier
-to chat. Unless I am traveling you can find me there Nick: shuah
+>
+> >
+> > > > ---
+> > > >   drivers/net/virtio_net.c        | 29 ++++++++++++++++------------=
+-
+> > > >   include/uapi/linux/virtio_net.h |  7 +++++++
+> > > >   2 files changed, 23 insertions(+), 13 deletions(-)
+> > > >
+> > > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > > > index 1270c8d23463..6ce0fbcabda9 100644
+> > > > --- a/drivers/net/virtio_net.c
+> > > > +++ b/drivers/net/virtio_net.c
+> > > > @@ -344,9 +344,10 @@ static int rxq2vq(int rxq)
+> > > >        return rxq * 2;
+> > > >   }
+> > > >
+> > > > -static inline struct virtio_net_hdr_mrg_rxbuf *skb_vnet_hdr(struct=
+ sk_buff *skb)
+> > > > +static inline struct virtio_net_common_hdr *
+> > > > +skb_vnet_common_hdr(struct sk_buff *skb)
+> > > >   {
+> > > > -     return (struct virtio_net_hdr_mrg_rxbuf *)skb->cb;
+> > > > +     return (struct virtio_net_common_hdr *)skb->cb;
+> > > >   }
+> > > >
+> > > >   /*
+> > > > @@ -469,7 +470,7 @@ static struct sk_buff *page_to_skb(struct virtn=
+et_info *vi,
+> > > >                                   unsigned int headroom)
+> > > >   {
+> > > >        struct sk_buff *skb;
+> > > > -     struct virtio_net_hdr_mrg_rxbuf *hdr;
+> > > > +     struct virtio_net_common_hdr *hdr;
+> > > >        unsigned int copy, hdr_len, hdr_padded_len;
+> > > >        struct page *page_to_free =3D NULL;
+> > > >        int tailroom, shinfo_size;
+> > > > @@ -554,7 +555,7 @@ static struct sk_buff *page_to_skb(struct virtn=
+et_info *vi,
+> > > >                give_pages(rq, page);
+> > > >
+> > > >   ok:
+> > > > -     hdr =3D skb_vnet_hdr(skb);
+> > > > +     hdr =3D skb_vnet_common_hdr(skb);
+> > > >        memcpy(hdr, hdr_p, hdr_len);
+> > > >        if (page_to_free)
+> > > >                put_page(page_to_free);
+> > > > @@ -966,7 +967,7 @@ static struct sk_buff *receive_small_build_skb(=
+struct virtnet_info *vi,
+> > > >                return NULL;
+> > > >
+> > > >        buf +=3D header_offset;
+> > > > -     memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
+> > > > +     memcpy(skb_vnet_common_hdr(skb), buf, vi->hdr_len);
+> > > >
+> > > >        return skb;
+> > > >   }
+> > > > @@ -1577,7 +1578,8 @@ static void receive_buf(struct virtnet_info *=
+vi, struct receive_queue *rq,
+> > > >   {
+> > > >        struct net_device *dev =3D vi->dev;
+> > > >        struct sk_buff *skb;
+> > > > -     struct virtio_net_hdr_mrg_rxbuf *hdr;
+> > > > +     struct virtio_net_common_hdr *common_hdr;
+> > > > +     struct virtio_net_hdr_mrg_rxbuf *mrg_hdr;
+> > > >
+> > > >        if (unlikely(len < vi->hdr_len + ETH_HLEN)) {
+> > > >                pr_debug("%s: short packet %i\n", dev->name, len);
+> > > > @@ -1597,18 +1599,19 @@ static void receive_buf(struct virtnet_info=
+ *vi, struct receive_queue *rq,
+> > > >        if (unlikely(!skb))
+> > > >                return;
+> > > >
+> > > > -     hdr =3D skb_vnet_hdr(skb);
+> > > > +     common_hdr =3D skb_vnet_common_hdr(skb);
+> > > >        if (dev->features & NETIF_F_RXHASH && vi->has_rss_hash_repor=
+t)
+> > > > -             virtio_skb_set_hash((const struct virtio_net_hdr_v1_h=
+ash *)hdr, skb);
+> > > > +             virtio_skb_set_hash(&common_hdr->hash_v1_hdr, skb);
+> > > >
+> > > > -     if (hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VALID)
+> > > > +     mrg_hdr =3D &common_hdr->mrg_hdr;
+> > > > +     if (mrg_hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VALID)
+> > > >                skb->ip_summed =3D CHECKSUM_UNNECESSARY;
+> > > >
+> > > > -     if (virtio_net_hdr_to_skb(skb, &hdr->hdr,
+> > > > +     if (virtio_net_hdr_to_skb(skb, &mrg_hdr->hdr,
+> > > >                                  virtio_is_little_endian(vi->vdev))=
+) {
+> > > >                net_warn_ratelimited("%s: bad gso: type: %u, size: %=
+u\n",
+> > > > -                                  dev->name, hdr->hdr.gso_type,
+> > > > -                                  hdr->hdr.gso_size);
+> > > > +                                  dev->name, mrg_hdr->hdr.gso_type=
+,
+> > > > +                                  mrg_hdr->hdr.gso_size);
+> > > >                goto frame_err;
+> > > >        }
+> > > >
+> > > > @@ -2105,7 +2108,7 @@ static int xmit_skb(struct send_queue *sq, st=
+ruct sk_buff *skb)
+> > > >        if (can_push)
+> > > >                hdr =3D (struct virtio_net_hdr_mrg_rxbuf *)(skb->dat=
+a - hdr_len);
+> > > >        else
+> > > > -             hdr =3D skb_vnet_hdr(skb);
+> > > > +             hdr =3D &skb_vnet_common_hdr(skb)->mrg_hdr;
+> > > >
+> > > >        if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
+> > > >                                    virtio_is_little_endian(vi->vdev=
+), false,
+> > > > diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/v=
+irtio_net.h
+> > > > index 12c1c9699935..db40f93ae8b3 100644
+> > > > --- a/include/uapi/linux/virtio_net.h
+> > > > +++ b/include/uapi/linux/virtio_net.h
+> > > > @@ -201,6 +201,13 @@ struct virtio_net_hdr_mrg_rxbuf {
+> > > >        struct virtio_net_hdr hdr;
+> > > >        __virtio16 num_buffers; /* Number of merged rx buffers */
+> > > >   };
+> > > > +
+> > > > +struct virtio_net_common_hdr {
+> > > > +     union {
+> > > > +             struct virtio_net_hdr_mrg_rxbuf mrg_hdr;
+> > > > +             struct virtio_net_hdr_v1_hash hash_v1_hdr;
+> > > > +     };
+> > > > +};
+> > >
+> > > Does this belong in the UAPI?
+> > > I would have assumed it's a Kernel implementation detail.
+> > >
+> > The existing codes, virtio_net.h is in uapi/linux/, I added the new
+> > structure and followed existing code. My modification is related to Ker=
+nel
+> > implementation detail now.
+>
+> The header you have modified forms part of the userspace API (UAPI).
+> Perhaps there is something about virtio_net that makes this correct, but =
+it
+> seems to me that kernel-internal details don't belong there.
 
-thanks,
--- Shuah
+FWIW, I ran into similar issues before in a draft that added timestamp
+support [1]
 
+If we're going to change this structure, we should do it in a way that
+is forward proof to future extensions to the virtio spec and with that
+the fields in this struct. Especially in UAPI.
 
+Is virtio_net_hdr_v1_hash the latest virtio-spec compliant header? And
+do we expect for v1.3 to just add some fields to this?
 
+The struct comment of virtio_net_hdr_v1 states "This is
+bitwise-equivalent to the legacy struct virtio_net_hdr_mrg_rxbuf, only
+flattened.". I don't quite understand what the flattening bought, vs
+having struct virtio_net_hdr as first member. Another difference may
+be the endianness between legacy (0.9) and v1.0+.
+
+Since legacy virtio will no longer be modified, I don't think there is
+much value is exposing this new union as UAPI. I do appreciate the
+benefit to the implementation.
+
+[1] https://patches.linaro.org/project/netdev/patch/20210208185558.995292-3=
+-willemdebruijn.kernel@gmail.com/
