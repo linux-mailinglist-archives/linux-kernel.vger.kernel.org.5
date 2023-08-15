@@ -2,64 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E7C77CAD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA87877CADB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236294AbjHOJz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 05:55:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58906 "EHLO
+        id S236315AbjHOJ5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 05:57:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236378AbjHOJzS (ORCPT
+        with ESMTP id S236414AbjHOJ5R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 05:55:18 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6E97B98;
-        Tue, 15 Aug 2023 02:55:14 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37F9sZJV1008509, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37F9sZJV1008509
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 15 Aug 2023 17:54:35 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Tue, 15 Aug 2023 17:54:54 +0800
-Received: from RTEXH36506.realtek.com.tw (172.21.6.27) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Tue, 15 Aug 2023 17:54:54 +0800
-Received: from localhost.localdomain (172.21.252.101) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server id
- 15.1.2507.17 via Frontend Transport; Tue, 15 Aug 2023 17:54:54 +0800
-From:   Stanley Chang <stanley_chang@realtek.com>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-CC:     Stanley Chang <stanley_chang@realtek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 2/2] dt-bindings: usb: dwc3: Add Realtek DHC RTD SoC DWC3 USB
-Date:   Tue, 15 Aug 2023 17:54:38 +0800
-Message-ID: <20230815095452.4146-2-stanley_chang@realtek.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230815095452.4146-1-stanley_chang@realtek.com>
-References: <20230815095452.4146-1-stanley_chang@realtek.com>
+        Tue, 15 Aug 2023 05:57:17 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B10199F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 02:57:01 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37F9uqmD090561;
+        Tue, 15 Aug 2023 04:56:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1692093412;
+        bh=bqF+gy8BDXwR+Xnja8MhnruLOhmlX3lm7xY70Kg0B5w=;
+        h=From:To:CC:Subject:Date;
+        b=kkyDvTXpAiJ8+9sG6FB4rFsGEWx/0UC6MFdOdNlbM8QDCSglCZjLrYupwaUiYipFg
+         Xg8gAQ1f8wLFOs2Z2eGLblj/Qgp3JDeA4YJGCVqxs2jrlhxk+3Vvsf+f2vBLFC9Zcg
+         zZ0bKmnOgO0OYw7s0pLc9upd8vAqso1RXoYps/2M=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37F9uqbx113105
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Aug 2023 04:56:52 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 15
+ Aug 2023 04:56:52 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 15 Aug 2023 04:56:52 -0500
+Received: from LT5CG2035V3Q.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37F9unqg003220;
+        Tue, 15 Aug 2023 04:56:50 -0500
+From:   Kevin-Lu <kevin-lu@ti.com>
+To:     <broonie@kernel.org>, <peeyush@ti.com>, <navada@ti.com>,
+        <baojun.xu@ti.com>, <shenghao-ding@ti.com>, <kevin-lu@ti.com>
+CC:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1] MAINTAINERS: Add entries for TEXAS INSTRUMENTS ASoC DRIVERS
+Date:   Tue, 15 Aug 2023 17:56:31 +0800
+Message-ID: <20230815095631.1655-1-kevin-lu@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-KSE-ServerInfo: RTEXDAG01.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,115 +62,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the DWC3 USB bindings for Realtek SoCs.
-
-Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
+Add the MAINTAINERS entries for TEXAS INSTRUMENTS ASoC DRIVERS.
 ---
-v3 to v4 change:
-    Add reg for register set for pm control.
-    Remove maximum-speed in example.
-v2 to v3 change:
-    Add description for reg
-    Remove property for realtek,unlink-usb3-port.
-    Remove property for realtek,disable-usb3-phy.
-    Use the maximum-speed instead of the above two properties.
-v1 to v2 change:
-    Revise the subject.
-    Rename the file.
-    Fix dtschema warnings.
-    Remove the property realtek,enable-l4icg.
-    Drop status.
----
- .../bindings/usb/realtek,rtd-dwc3.yaml        | 80 +++++++++++++++++++
- 1 file changed, 80 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/usb/realtek,rtd-dwc3.yaml
+Changes in v1:
+Add maintian team members to support TEXAS INSTRUMENTS AUDIO DRIVER
 
-diff --git a/Documentation/devicetree/bindings/usb/realtek,rtd-dwc3.yaml b/Documentation/devicetree/bindings/usb/realtek,rtd-dwc3.yaml
-new file mode 100644
-index 000000000000..345d0132d4a5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/usb/realtek,rtd-dwc3.yaml
-@@ -0,0 +1,80 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2023 Realtek Semiconductor Corporation
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/usb/realtek,rtd-dwc3.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+Signed-off-by: Kevin-Lu <kevin-lu@ti.com>
+---
+ MAINTAINERS | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0903d87b17cb..65d57925fe22 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -21051,6 +21051,39 @@ T:	git https://github.com/jcmvbkbc/linux-xtensa.git
+ F:	arch/xtensa/
+ F:	drivers/irqchip/irq-xtensa-*
+ 
++TEXAS INSTRUMENTS AUDIO (ASoC/HDA) DRIVERS
++M:	Shenghao Ding <shenghao-ding@ti.com>
++M:	Kevin Lu <kevin-lu@ti.com>
++M:	Baojun Xu <x1077012@ti.com>
++L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
++S:	Maintained
++F:	Documentation/devicetree/bindings/sound/tas2552.txt
++F:	Documentation/devicetree/bindings/sound/tas2562.yaml
++F:	Documentation/devicetree/bindings/sound/tas2770.yaml
++F:	Documentation/devicetree/bindings/sound/tas27xx.yaml
++F:	Documentation/devicetree/bindings/sound/ti,pcm1681.txt
++F:	Documentation/devicetree/bindings/sound/ti,pcm3168a.yaml
++F:	Documentation/devicetree/bindings/sound/ti,tlv320*.yaml
++F:	Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
++F:	Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
++F:	Documentation/devicetree/bindings/sound/tpa6130a2.txt
++F:	include/sound/tas2*.h
++F:	include/sound/tlv320*.h
++F:	include/sound/tpa6130a2-plat.h
++F:	sound/pci/hda/tas2781_hda_i2c.c
++F:	sound/soc/codecs/pcm1681.c
++F:	sound/soc/codecs/pcm1789*.*
++F:	sound/soc/codecs/pcm179x*.*
++F:	sound/soc/codecs/pcm186x*.*
++F:	sound/soc/codecs/pcm3008.*
++F:	sound/soc/codecs/pcm3060*.*
++F:	sound/soc/codecs/pcm3168a*.*
++F:	sound/soc/codecs/pcm5102a.c
++F:	sound/soc/codecs/pcm512x*.*
++F:	sound/soc/codecs/tas2*.*
++F:	sound/soc/codecs/tlv320*.*
++F:	sound/soc/codecs/tpa6130a2.*
 +
-+title: Realtek DWC3 USB SoC Controller Glue
-+
-+maintainers:
-+  - Stanley Chang <stanley_chang@realtek.com>
-+
-+description:
-+  The Realtek DHC SoC embeds a DWC3 USB IP Core configured for USB 2.0
-+  and USB 3.0 in host or dual-role mode.
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - realtek,rtd1295-dwc3
-+          - realtek,rtd1315e-dwc3
-+          - realtek,rtd1319-dwc3
-+          - realtek,rtd1319d-dwc3
-+          - realtek,rtd1395-dwc3
-+          - realtek,rtd1619-dwc3
-+          - realtek,rtd1619b-dwc3
-+      - const: realtek,rtd-dwc3
-+
-+  reg:
-+    items:
-+      - description: Address and length of register set for wrapper of dwc3 core.
-+      - description: Address and length of register set for pm control.
-+
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 1
-+
-+  ranges: true
-+
-+patternProperties:
-+  "^usb@[0-9a-f]+$":
-+    $ref: snps,dwc3.yaml#
-+    description: Required child node
-+
-+required:
-+  - compatible
-+  - reg
-+  - "#address-cells"
-+  - "#size-cells"
-+  - ranges
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    usb@98013e00 {
-+        compatible = "realtek,rtd1319d-dwc3", "realtek,rtd-dwc3";
-+        reg = <0x98013e00 0x140>, <0x98013f60 0x4>;
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        ranges;
-+
-+        usb@98050000 {
-+            compatible = "snps,dwc3";
-+            reg = <0x98050000 0x9000>;
-+            interrupts = <0 94 4>;
-+            phys = <&usb2phy &usb3phy>;
-+            phy-names = "usb2-phy", "usb3-phy";
-+            dr_mode = "otg";
-+            usb-role-switch;
-+            role-switch-default-mode = "host";
-+            snps,dis_u2_susphy_quirk;
-+            snps,parkmode-disable-ss-quirk;
-+            snps,parkmode-disable-hs-quirk;
-+            maximum-speed = "high-speed";
-+        };
-+    };
+ TEXAS INSTRUMENTS ASoC DRIVERS
+ M:	Peter Ujfalusi <peter.ujfalusi@gmail.com>
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
 -- 
 2.34.1
 
