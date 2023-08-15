@@ -2,129 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4489477D34F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D3B77D359
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239858AbjHOTVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 15:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55246 "EHLO
+        id S239487AbjHOTYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 15:24:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239926AbjHOTVW (ORCPT
+        with ESMTP id S239640AbjHOTYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 15:21:22 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E962682
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:20:38 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99c0cb7285fso710777666b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:20:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692127177; x=1692731977;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HP5r8l+N/G++84rGRD6TPetR/Ye7KhL9+cTCQpuI0nU=;
-        b=lUhNrtoERba3aorZadoUgJp9sCu3IbGKVivMwNrWnTG0yELOzp3fLhGA5srP0IpIxm
-         KBoGNzrF/crrZmebYELgHIEkxozcxxtEo3/rzUVJl78TFfL5q+sms/p0Ih6sWJ+yxmH0
-         WmIOggw4UWG9gVNckTrS8LMy+qNRpFpYXwv9toqdR3AU/V2kkKYXc6ipFkHJi+GnN+YA
-         3BOow5pnOGq74dIyo5z54P1Hbl7aOhsUNecfcx1JoHcYimBY7saJsaYLgWe7FBtoj7V3
-         IkqlbQA1sRa6r/wQa1WAPvD9lQm9WsBzLRoXl7pXOnic75zxJubcIxMOafFzX2CF3F8z
-         DkFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692127177; x=1692731977;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HP5r8l+N/G++84rGRD6TPetR/Ye7KhL9+cTCQpuI0nU=;
-        b=f6hRkSRi5supqCJxVZYU/8va+lczoQ1Y0FHo7eGvgrj0RS+CHDB7g/uk9iVJpAqCyn
-         K6edfwPWl8zSEE0BbCShWtrhv/UlcV2lFLO1QjZ/aqn30hgOu3ouPYCSfCZFS7zUzpPY
-         DNo1iFCUacqsfgjwc9OwZCSicCcU0BY8u2WyMA0o2y6CS20ffxG3IPmGlAErnABYcRxe
-         owr4z4QAN6G+wcl9jzjH6xHvUALyWi94K3nlxJQYtpU0F3zzqo43+9QChMIyWEBwEh8E
-         WvkRFEnY26SYBq2bXKUpQYe4RQyPwryV5dUwTEtPdtFn0aP3BMkHYhGDbSwd1lQVpij0
-         vocw==
-X-Gm-Message-State: AOJu0YxKKeUd90MPIxuCFq7VE+lWFqABMHFN0nTVKBhu1/+x+k9e4Jg/
-        Q35LbeaY5c2arZFuZcT/Gaumpg==
-X-Google-Smtp-Source: AGHT+IEamhO+Jl+q7/ydr+FDFDZuF0BIJhDmzs5q+uIy0rMFYS3cNVnuKTzqQrGnKGFA2D7kUp1BAQ==
-X-Received: by 2002:a17:906:2215:b0:99c:47a:8bd5 with SMTP id s21-20020a170906221500b0099c047a8bd5mr11216606ejs.65.1692127177101;
-        Tue, 15 Aug 2023 12:19:37 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id ov10-20020a170906fc0a00b00993cc1242d4sm7360694ejb.151.2023.08.15.12.19.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 12:19:36 -0700 (PDT)
-Message-ID: <fb85c288-2ea9-3343-ff19-cd58940b44ec@linaro.org>
-Date:   Tue, 15 Aug 2023 21:19:34 +0200
+        Tue, 15 Aug 2023 15:24:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0466D1FE8;
+        Tue, 15 Aug 2023 12:23:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A983644DC;
+        Tue, 15 Aug 2023 19:20:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70879C433C7;
+        Tue, 15 Aug 2023 19:20:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692127243;
+        bh=juaV9ptf7G8D6/MebPy6CX23F3T/jcHKcNtLtg9ebDM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Me6cv4bbbEwLZSsRoScgM4XqzJHT2vQMeTONh/jcANKnQQQFb+Ho+rpW3tgTxsM4C
+         ugCtvS9NDZElc9L8olZL/aXlVDKCS7vpmYH5OtTzvHBy+oA0bVw3xoUgC2tUhiNXUX
+         2vVm1q2Z4b9Agi2HjFY3g1HfSDBvCVCURzkEYNH2uq6deVuq+yOO6HKD/hHdaW2vsn
+         QFwHhgHBbYZDjlFcIQqjFJ96z47XI8/km9w/5gc90NP6oaRcXJoeKUCkTl1QRNGBHl
+         v8U/Q8UVVOHZOG8qTF3h+8OyYfX7q9xZcTi+3Q1HvrdwVFWEEPigPPUTh48cJmtheY
+         U5XuFUSlawLJA==
+Date:   Tue, 15 Aug 2023 14:20:41 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-acpi@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Iain Lane <iain@orangesquash.org.uk>,
+        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>
+Subject: Re: [PATCH v11 3/9] ACPI: x86: s2idle: Fix a logic error parsing AMD
+ constraints table
+Message-ID: <20230815192041.GA233609@bhelgaas>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 0/4] Add a property to override the quad mode
-Content-Language: en-US
-To:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Michael Walle <michael@walle.cc>
-Cc:     Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        "Miquel Raynal )" <miquel.raynal@bootlin.com>,
-        "Richard Weinberger )" <richard@nod.at>,
-        "Vignesh Raghavendra )" <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-References: <20230815154412.713846-1-hsinyi@chromium.org>
- <202A0C36-D1F6-4BB4-BDEC-F36A76B757A2@walle.cc>
- <CAJMQK-iw7ikyHKPPC8+hnpXuRq-_nq_N+21BKgWxD2nx=vAeJA@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <CAJMQK-iw7ikyHKPPC8+hnpXuRq-_nq_N+21BKgWxD2nx=vAeJA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230809185453.40916-4-mario.limonciello@amd.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/08/2023 19:21, Hsin-Yi Wang wrote:
-> On Tue, Aug 15, 2023 at 11:59 PM Michael Walle <michael@walle.cc> wrote:
->>
->> Hi,
->>
->>> On gigadevice gd25lq64c, the quad mode is enabled after BFPT is parsed.
->>> According to datasheet[1], Quad enable (QE) bit needs to be set to 0 to
->>> use write protection (WP) pin. It also recommends setting default value of
->>> QE to 0 to avoid a potential short issue.
->>
->> So you are using either dual or single io mode. Why can't you use the device tree property spi-{tx,rx}-bus-width?
-> 
-> I tried setting spi-tx-bus-width and spi-rx-bus-width to either 0 or 1
-> and WP still doesn't work.
-> For this chip, quad_enable will be set to spi_nor_sr2_bit1_quad_enable
-> (QER flag is BFPT_DWORD15_QER_SR2_BIT1_BUGGY)[1]
-> 
-> spi_nor_write_sr_and_check() calls
-> spi_nor_write_16bit_sr_and_check()[2] and the function sets QE bit if
-> quad_enable is not NULL.
-> 
-> [1] https://elixir.bootlin.com/linux/latest/source/drivers/mtd/spi-nor/sfdp.c#L575
-> [2] https://elixir.bootlin.com/linux/latest/source/drivers/mtd/spi-nor/core.c#L879
-> 
-> Setting spi-{tx,rx}-bus-width still falls to this function and cases.
+On Wed, Aug 09, 2023 at 01:54:47PM -0500, Mario Limonciello wrote:
+> The constraints table should be resetting the `list` object
+> after running through all of `info_obj` iterations.
 
-with tx/rx bus width = 2, how quad mode is still possible? IOW, why do
-you need new property? You wrote here about driver, but I ask about
-bindings.
+This *looks* like it should fix a real problem (see below), but not
+the one mentioned here.  But maybe I'm missing something because the
+code that looks broken to me has been there since 146f1ed852a8 ("ACPI:
+PM: s2idle: Add AMD support to handle _DSM"), which appeared in v5.11
+in 2021.
 
-Best regards,
-Krzysztof
+> This adjusts whitespace as well as less code will now be included
+> with each loop.
+>
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+> v9->v10:
+>  * split from other patches
+> ---
+>  drivers/acpi/x86/s2idle.c | 35 +++++++++++++++++------------------
+>  1 file changed, 17 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/acpi/x86/s2idle.c b/drivers/acpi/x86/s2idle.c
+> index ce62e61a9605e..b566b3aa09388 100644
+> --- a/drivers/acpi/x86/s2idle.c
+> +++ b/drivers/acpi/x86/s2idle.c
+> @@ -129,12 +129,12 @@ static void lpi_device_get_constraints_amd(void)
+>  				struct lpi_constraints *list;
+>  				acpi_status status;
+>  
+> +				list = &lpi_constraints_table[lpi_constraints_table_size];
+> +				list->min_dstate = -EINVAL;
 
+I really have no idea what's going on here, but the code still looks
+weird:
+
+  1) Moving the "list" update:
+
+       for (j = 0; j < package->package.count; ++j) {
+     +   list = &lpi_constraints_table[lpi_constraints_table_size];
+         for (k = 0; k < info_obj->package.count; ++k) {
+     -     list = &lpi_constraints_table[lpi_constraints_table_size];
+           ...
+         }
+         lpi_constraints_table_size++;
+       }
+
+     looks fine, but lpi_constraints_table_size isn't updated inside
+     the "k" loop, and "list" isn't otherwise updated, so it shouldn't
+     make any functional difference.
+
+     HOWEVER, this patch also moves all the
+     dev_info.enabled/name/min_dstate tests outside the "k" loop, so
+     they're only done after the "k" loop has completed and they've
+     all been set, which looks like it DOES fix a problem and is not
+     mentioned in the commit log.
+
+  2) Both lpi_device_get_constraints_amd() and
+     lpi_device_get_constraints() overwrite the global
+     lpi_constraints_table for each PNP0D80 device.  I assume there's
+     some higher-level constraint that there can only be one such
+     device, but the code doesn't enforce that.
+
+  3) It's obvious that lpi_device_get_constraints() can only allocate
+     lpi_constraints_table once per call.  It's NOT obvious for
+     lpi_device_get_constraints_amd(), because the alloc is inside a
+     loop:
+
+       for (i = 0; i < out_obj->package.count; i++) {
+         lpi_constraints_table = kcalloc(...);
+
+     If the AMD _DSM returns more than one package, we'll leak all but
+     the last one.
+
+  4) Both lpi_device_get_constraints_amd() and
+     lpi_device_get_constraints() use pre- and post-increment in the
+     "for" loops for no apparent reason:
+
+       for (i = 0; i < out_obj->package.count; i++)
+         for (j = 0; j < package->package.count; ++j)
+           for (k = 0; k < info_obj->package.count; ++k)  # AMD only
+
+     I'd say they should all use the same (I vote for post-increment).
+
+>  				for (k = 0; k < info_obj->package.count; ++k) {
+>  					union acpi_object *obj = &info_obj->package.elements[k];
+>  
+> -					list = &lpi_constraints_table[lpi_constraints_table_size];
+> -					list->min_dstate = -1;
+> -
+>  					switch (k) {
+>  					case 0:
+>  						dev_info.enabled = obj->integer.value;
+> @@ -149,26 +149,25 @@ static void lpi_device_get_constraints_amd(void)
+>  						dev_info.min_dstate = obj->integer.value;
+>  						break;
+>  					}
+> +				}
+>  
+> -					if (!dev_info.enabled || !dev_info.name ||
+> -					    !dev_info.min_dstate)
+> -						continue;
+> +				if (!dev_info.enabled || !dev_info.name ||
+> +				    !dev_info.min_dstate)
+> +					continue;
+>  
+> -					status = acpi_get_handle(NULL, dev_info.name,
+> -								 &list->handle);
+> -					if (ACPI_FAILURE(status))
+> -						continue;
+> +				status = acpi_get_handle(NULL, dev_info.name, &list->handle);
+> +				if (ACPI_FAILURE(status))
+> +					continue;
+>  
+> -					acpi_handle_debug(lps0_device_handle,
+> -							  "Name:%s\n", dev_info.name);
+> +				acpi_handle_debug(lps0_device_handle,
+> +						  "Name:%s\n", dev_info.name);
+>  
+> -					list->min_dstate = dev_info.min_dstate;
+> +				list->min_dstate = dev_info.min_dstate;
+>  
+> -					if (list->min_dstate < 0) {
+> -						acpi_handle_debug(lps0_device_handle,
+> -								  "Incomplete constraint defined\n");
+> -						continue;
+> -					}
+> +				if (list->min_dstate < 0) {
+> +					acpi_handle_debug(lps0_device_handle,
+> +							  "Incomplete constraint defined\n");
+> +					continue;
+>  				}
+>  				lpi_constraints_table_size++;
+>  			}
+> -- 
+> 2.34.1
+> 
