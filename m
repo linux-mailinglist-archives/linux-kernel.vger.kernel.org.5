@@ -2,102 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2BB577C95D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 10:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62F677C95E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 10:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235640AbjHOI2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 04:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58512 "EHLO
+        id S235646AbjHOI3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 04:29:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235758AbjHOI1t (ORCPT
+        with ESMTP id S235649AbjHOI3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 04:27:49 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FBF19B1;
-        Tue, 15 Aug 2023 01:27:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692088059;
-        bh=ILe/KQxl3q9H0isMqnRIm/TMdvbDqFmbkajIGHLtdzg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=pf4l3dd9TwFJO4JYG8kJ9olltVKzLENjdgh6ixHTo61EDrhePDQpSdxdPkylcliix
-         Waq6r0Bxb4KkS6R6r3T65ZlGOtriH/1fqTXR95rpOLBcV74pE0WAFlZfuk3IdRM6t1
-         rgvgi/r3wratJd/REvnLmRpuPzSUzMQq9w+KqzLTB2iz63RbjLM0GM/6a5plMNlLf4
-         GObNfdT+w+r86EBqwJKWQ3l1rX1EjsugExBULfzrWo+UYM7IIxGS1/aQzQNvWCeJp6
-         gqAxiVDLbGgp7yxOCan56tvGOnfepw/RQ79nTz/QPguWqcrTz0rESrYD8FkPbxh12M
-         Er0gLj2MEgLpA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RQ4By1K6xz4wqX;
-        Tue, 15 Aug 2023 18:27:38 +1000 (AEST)
-Date:   Tue, 15 Aug 2023 18:27:37 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Joel Stanley <joel@jms.id.au>, Jeremy Kerr <jk@ozlabs.org>,
-        Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Eddie James <eajames@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the fsi tree with the char-misc tree
-Message-ID: <20230815182737.534f4ec2@canb.auug.org.au>
+        Tue, 15 Aug 2023 04:29:00 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599F8127
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:28:58 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VprFL1k_1692088132;
+Received: from 30.97.48.59(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VprFL1k_1692088132)
+          by smtp.aliyun-inc.com;
+          Tue, 15 Aug 2023 16:28:53 +0800
+Message-ID: <a8edac8d-8e22-89cf-2c8c-217a54608d27@linux.alibaba.com>
+Date:   Tue, 15 Aug 2023 16:28:54 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Nc3hkoqBVTTm2D7H7kOZnll";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 3/9] mm/compaction: correctly return failure with bogus
+ compound_order in strict mode
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, david@redhat.com
+References: <20230805110711.2975149-1-shikemeng@huaweicloud.com>
+ <20230805110711.2975149-4-shikemeng@huaweicloud.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20230805110711.2975149-4-shikemeng@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-12.2 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Nc3hkoqBVTTm2D7H7kOZnll
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the fsi tree got a conflict in:
+On 8/5/2023 7:07 PM, Kemeng Shi wrote:
+> In strict mode, we should return 0 if there is any hole in pageblock. If
+> we successfully isolated pages at beginning at pageblock and then have a
+> bogus compound_order outside pageblock in next page. We will abort search
+> loop with blockpfn > end_pfn. Although we will limit blockpfn to end_pfn,
+> we will treat it as a successful isolation in strict mode as blockpfn is
+> not < end_pfn and return partial isolated pages. Then
+> isolate_freepages_range may success unexpectly with hole in isolated
+> range.
 
-  drivers/fsi/fsi-core.c
+Yes, that can be happened.
 
-between commits:
+> This patch also removes unnecessary limit for blockpfn to go outside
+> by buddy page introduced in fixed commit or by stride introduced after
+> fixed commit. Caller could use returned blockpfn to check if full
+> pageblock is scanned by test if blockpfn >= end and to get next pfn to
+> scan inside isolate_freepages_block on demand.
 
-  adde0e112c63 ("fsi: Improve master indexing")
-  b1d3a803acfa ("fsi: Lock mutex for master device registration")
+IMO, I don't think removing the pageblock restriction is worth it, since 
+it did not fix anything and will make people more confused, at least to me.
 
-from the char-misc tree and commit:
+That is to say, it will be surprised that the blockpfn can go outside of 
+the pageblock after calling isolate_freepages_block() to just scan only 
+one pageblock, and I did not see in detail if this can cause other 
+potential problems.
 
-  4ecd69609bc0 ("fsi: Improve master indexing")
+> Fixes: 9fcd6d2e052ee ("mm, compaction: skip compound pages by order in free scanner")
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>   mm/compaction.c | 21 +++++++++++----------
+>   1 file changed, 11 insertions(+), 10 deletions(-)
+> 
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index fa1b100b0d10..684f6e6cd8bc 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -631,6 +631,14 @@ static unsigned long isolate_freepages_block(struct compact_control *cc,
+>   				page += (1UL << order) - 1;
+>   				nr_scanned += (1UL << order) - 1;
+>   			}
+> +			/*
+> +			 * There is a tiny chance that we have read bogus
+> +			 * compound_order(), so be careful to not go outside
+> +			 * of the pageblock.
+> +			 */
+> +			if (unlikely(blockpfn >= end_pfn))
+> +				blockpfn = end_pfn - 1;
 
-from the fsi tree.
+So we can just add this validation to ensure that the 
+isolate_freepages_block() can return 0 if failure is happened, which can 
+fix your problem.
 
-I fixed it up (I used the char-misc tree version as it seems to be newer)
-and can carry the fix as necessary. This is now fixed as far as linux-next
-is concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Nc3hkoqBVTTm2D7H7kOZnll
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTbNvkACgkQAVBC80lX
-0Gyc0wgAgKeXl3cCxmXfsHWWoreHaYSLtfppOZ1WwYjgqhR4nzjBDYNMLCLa2cB7
-1jT7IOOAZowOWaXOPhc4P7npJDOpz41FEdKIXL6p6iTQpgVcEb+O3ZxZNwX4ZcbT
-yW8U16zihEoPgADK/5+FI6L1zIKswWo7EOqCRTGd30JWP68TEPEg05jD8ms9kWb3
-z8qgFTHtcTgU+VTGWim202exVlRDkvWDW7whePT+k1kkTUqQZwJTD97OaPF3CT9M
-g3ji7pQ5p6l4e6+q/Lpdj4RCD0lBAegaW7IaZWZMA5KnIVmFp7YrhuyszMcq9uWi
-BRW0SyIfFjp1sYR2sYNCV+CRGBM11A==
-=2Vn/
------END PGP SIGNATURE-----
-
---Sig_/Nc3hkoqBVTTm2D7H7kOZnll--
+> +
+>   			goto isolate_fail;
+>   		}
+>   
+> @@ -677,17 +685,10 @@ static unsigned long isolate_freepages_block(struct compact_control *cc,
+>   	if (locked)
+>   		spin_unlock_irqrestore(&cc->zone->lock, flags);
+>   
+> -	/*
+> -	 * There is a tiny chance that we have read bogus compound_order(),
+> -	 * so be careful to not go outside of the pageblock.
+> -	 */
+> -	if (unlikely(blockpfn > end_pfn))
+> -		blockpfn = end_pfn;
+> -
+>   	trace_mm_compaction_isolate_freepages(*start_pfn, blockpfn,
+>   					nr_scanned, total_isolated);
+>   
+> -	/* Record how far we have got within the block */
+> +	/* Record how far we have got */
+>   	*start_pfn = blockpfn;
+>   
+>   	/*
+> @@ -1443,7 +1444,7 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn)
+>   	isolate_freepages_block(cc, &start_pfn, end_pfn, &cc->freepages, 1, false);
+>   
+>   	/* Skip this pageblock in the future as it's full or nearly full */
+> -	if (start_pfn == end_pfn && !cc->no_set_skip_hint)
+> +	if (start_pfn >= end_pfn && !cc->no_set_skip_hint)
+>   		set_pageblock_skip(page);
+>   }
+>   
+> @@ -1712,7 +1713,7 @@ static void isolate_freepages(struct compact_control *cc)
+>   					block_end_pfn, freelist, stride, false);
+>   
+>   		/* Update the skip hint if the full pageblock was scanned */
+> -		if (isolate_start_pfn == block_end_pfn)
+> +		if (isolate_start_pfn >= block_end_pfn)
+>   			update_pageblock_skip(cc, page, block_start_pfn -
+>   					      pageblock_nr_pages);
+>   
