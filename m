@@ -2,118 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DEB77CD2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 15:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CD177CD29
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 15:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237387AbjHONI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 09:08:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46562 "EHLO
+        id S237380AbjHONI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 09:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237363AbjHONIg (ORCPT
+        with ESMTP id S235312AbjHONIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 09:08:36 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CCC910C0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 06:08:34 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RQBPV74kczrSYH;
-        Tue, 15 Aug 2023 21:07:10 +0800 (CST)
-Received: from localhost.localdomain (10.50.163.32) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 15 Aug 2023 21:08:30 +0800
-From:   Yicong Yang <yangyicong@huawei.com>
-To:     <jonathan.cameron@huawei.com>, <will@kernel.org>,
-        <mark.rutland@arm.com>
-CC:     <hejunhao3@huawei.com>, <prime.zeng@hisilicon.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <yangyicong@hisilicon.com>
-Subject: [PATCH v2] drivers/perf: hisi: Schedule perf session according to locality
-Date:   Tue, 15 Aug 2023 21:06:13 +0800
-Message-ID: <20230815130613.535-1-yangyicong@huawei.com>
-X-Mailer: git-send-email 2.31.0
+        Tue, 15 Aug 2023 09:08:04 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAFA1E7C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 06:08:02 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6bcf2fd5d69so4868774a34.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 06:08:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692104882; x=1692709682;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BNrPaM/FeB6AJxDwItyHoZJ9dPi7u4+7sDupNxPl8GE=;
+        b=UWkoDQMCTw5VJYpvtdwR3R58Sdp+TZoZdLur78QdOr/WcAc9bvPbPSlMP+Y4ceZJih
+         Iwi0RL+ngbQI11P88haMJ3cvjLA9099MTMsxwd/IzTUJtOGyoZ9S7VTqLyn9C4TgCWQO
+         EqELNhrRopbxbtWSl0ISpeKyQPu/nDMkNgNPn7uhLNRIiZLikHLldsvIhgX8PN00HKu5
+         eEK63xgL+n0D5URa6jLfWXKpEgrfwg6a6Uu4YT2yLTd5hPS/oVfuBz43N30kfXUBBglg
+         luxto/R4MKYq87J/9NBQipu9VAnmLvpzF7yvzDVLBGrfrwqdMl9DFWi9kQ6xUILh26Lu
+         9aAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692104882; x=1692709682;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BNrPaM/FeB6AJxDwItyHoZJ9dPi7u4+7sDupNxPl8GE=;
+        b=BCRrSMZNXP9EBebIiCTPRlm0lDxk+go7z4vl2+CMIvcBl5ykcxxW77u2FZWMvMFQhU
+         Hz3hENPcBxWwTAlWPluVCwOyBefnn3ICxGrThc/T1TZyIJAaEGv8ShGXPtqGKw7/CZWE
+         vBlsrMlTrX01tRseBBbxWvW9WWI7C+kEt43m/rfiUxf6QiVz2GrkuwzWCbh72UAPvD8j
+         RIL1VYgS+zBpCUuMpZcvM1QQQDnIJzTlG5DiEXJ0v9lkDnM492i65iYD3/KyLIDYwfeh
+         jHWgJe4TaEAyvl30Cw476OWDMhimnN0Z7xiYc6Z2qHQul3JsdPSkVLom7Bn4P8hfGx6p
+         yXNw==
+X-Gm-Message-State: AOJu0Yxx9Rtx34xrAvCXOtBz/DAQL8MaW7PGwE8Qfvrq2S33kQR5dpIl
+        p2bgpNrNoEej5FzjN/c1+AnRJ8DVO6Za3XGLg/uvdA==
+X-Google-Smtp-Source: AGHT+IHir06hkVtEo/8UA5JIbMguLsDOXrYLBLxWciYx9iN4n2rp+ckcfqHR8rbAbDTNLluD2kAbBTuZTJF1XT0o20o=
+X-Received: by 2002:a05:6830:10d2:b0:6b9:1ad8:18d8 with SMTP id
+ z18-20020a05683010d200b006b91ad818d8mr11382043oto.27.1692104881948; Tue, 15
+ Aug 2023 06:08:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.50.163.32]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230811193034.59124-1-brgl@bgdev.pl> <ZNtKQlnQxFediB0J@smile.fi.intel.com>
+ <CACRpkdZ32gW3YgQKPbWTnoRwxjXkViendGMhrAxfyp+W4NbqkA@mail.gmail.com> <ZNt2KQMtpMdK9TyY@smile.fi.intel.com>
+In-Reply-To: <ZNt2KQMtpMdK9TyY@smile.fi.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 15 Aug 2023 15:07:50 +0200
+Message-ID: <CACRpkdbij=8NMVodezEXG-rtiBzp1q_fecizYtda4HbDXheu8Q@mail.gmail.com>
+Subject: Re: [PATCH v3] gpiolib: fix reference leaks when removing GPIO chips
+ still in use
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yicong Yang <yangyicong@hisilicon.com>
+On Tue, Aug 15, 2023 at 2:57=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> On Tue, Aug 15, 2023 at 01:40:22PM +0200, Linus Walleij wrote:
+> > On Tue, Aug 15, 2023 at 11:50=E2=80=AFAM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Fri, Aug 11, 2023 at 09:30:34PM +0200, Bartosz Golaszewski wrote:
+> > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > > >
+> > > > After we remove a GPIO chip that still has some requested descripto=
+rs,
+> > > > gpiod_free_commit() will fail and we will never put the references =
+to the
+> > > > GPIO device and the owning module in gpiod_free().
+> > > >
+> > > > Rework this function to:
+> > > > - not warn on desc =3D=3D NULL as this is a use-case on which most =
+free
+> > > >   functions silently return
+> > > > - put the references to desc->gdev and desc->gdev->owner unconditio=
+nally
+> > > >   so that the release callback actually gets called when the remain=
+ing
+> > > >   references are dropped by external GPIO users
+>
+> ...
+>
+> > > > -     if (desc && desc->gdev && gpiod_free_commit(desc)) {
+> > >
+> > > The commit message doesn't explain disappearing of gdev check.
+> > >
+> > > > -             module_put(desc->gdev->owner);
+> > > > -             gpio_device_put(desc->gdev);
+> > > > -     } else {
+> > > > +     /*
+> > > > +      * We must not use VALIDATE_DESC_VOID() as the underlying gde=
+v->chip
+> > > > +      * may already be NULL but we still want to put the reference=
+s.
+> > > > +      */
+> > > > +     if (!desc)
+> > > > +             return;
+> > > > +
+> > > > +     if (!gpiod_free_commit(desc))
+> > > >               WARN_ON(extra_checks);
+> > > > -     }
+> > > > +
+> > > > +     module_put(desc->gdev->owner);
+> > > > +     gpio_device_put(desc->gdev);
+> > > >  }
+> > >
+> > > So, if gdev can be NULL, you will get an Oops with new code.
+> >
+> > I read it such that gdev->chip can be NULL, but not gdev,
+> > and desc->gdev->owner is fine to reference?
+>
+> Basically the Q is
+> "if desc is non-NULL, does it guarantee that gdev is non-NULL either?"
 
-The PCIe PMUs locate on different NUMA node but currently we don't
-consider it and likely stack all the sessions on the same CPU:
+gdev->desc is assigned in one single spot, which is in
+gpiochip_add_data_with_key():
 
-[root@localhost tmp]# cat /sys/devices/hisi_pcie*/cpumask
-0
-0
-0
-0
-0
-0
+       for (i =3D 0; i < gc->ngpio; i++)
+                gdev->descs[i].gdev =3D gdev;
 
-This can be optimize a bit to use a local CPU for the PMU.
+It is never assigned anywhere else, so I guess yes.
 
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
-Change since v2:
-- Make interrupt affinity consistent with CPU in online handler
-Link: https://lore.kernel.org/all/20230808125147.2080-1-yangyicong@huawei.com/
+We may also ask if it is ever invalid (i.e. if desc->gdev can point to
+junk).
 
----
- drivers/perf/hisilicon/hisi_pcie_pmu.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+A gdev turns to junk when its reference count goes down to zero
+and gpiodev_release() is called effectively calling kfree() on the
+struct gpio_device *.
 
-diff --git a/drivers/perf/hisilicon/hisi_pcie_pmu.c b/drivers/perf/hisilicon/hisi_pcie_pmu.c
-index e10fc7cb9493..5a00adb2de8c 100644
---- a/drivers/perf/hisilicon/hisi_pcie_pmu.c
-+++ b/drivers/perf/hisilicon/hisi_pcie_pmu.c
-@@ -665,8 +665,8 @@ static int hisi_pcie_pmu_online_cpu(unsigned int cpu, struct hlist_node *node)
- 	struct hisi_pcie_pmu *pcie_pmu = hlist_entry_safe(node, struct hisi_pcie_pmu, node);
- 
- 	if (pcie_pmu->on_cpu == -1) {
--		pcie_pmu->on_cpu = cpu;
--		WARN_ON(irq_set_affinity(pcie_pmu->irq, cpumask_of(cpu)));
-+		pcie_pmu->on_cpu = cpumask_local_spread(0, dev_to_node(&pcie_pmu->pdev->dev));
-+		WARN_ON(irq_set_affinity(pcie_pmu->irq, cpumask_of(pcie_pmu->on_cpu)));
- 	}
- 
- 	return 0;
-@@ -676,14 +676,23 @@ static int hisi_pcie_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
- {
- 	struct hisi_pcie_pmu *pcie_pmu = hlist_entry_safe(node, struct hisi_pcie_pmu, node);
- 	unsigned int target;
-+	cpumask_t mask;
-+	int numa_node;
- 
- 	/* Nothing to do if this CPU doesn't own the PMU */
- 	if (pcie_pmu->on_cpu != cpu)
- 		return 0;
- 
- 	pcie_pmu->on_cpu = -1;
--	/* Choose a new CPU from all online cpus. */
--	target = cpumask_any_but(cpu_online_mask, cpu);
-+
-+	/* Choose a local CPU from all online cpus. */
-+	numa_node = dev_to_node(&pcie_pmu->pdev->dev);
-+	if (cpumask_and(&mask, cpumask_of_node(numa_node), cpu_online_mask) &&
-+	    cpumask_andnot(&mask, &mask, cpumask_of(cpu)))
-+		target = cpumask_any(&mask);
-+	else
-+		target = cpumask_any_but(cpu_online_mask, cpu);
-+
- 	if (target >= nr_cpu_ids) {
- 		pci_err(pcie_pmu->pdev, "There is no CPU to set\n");
- 		return 0;
--- 
-2.24.0
+But that can only happen as a result of module_put() getting
+called, pulling the references down to zero. Which is what we
+are discussing. The line after module_put(), desc->gdev
+*could* be NULL.
 
+But then we just call gpio_device_put(desc->gdev) which is
+just a call to device_put(), which is NULL-tolerant.
+
+Yours,
+Linus Walleij
