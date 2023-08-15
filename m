@@ -2,85 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF6F77D691
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 01:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E3B77D696
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 01:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240569AbjHOXPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 19:15:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53720 "EHLO
+        id S240578AbjHOXT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 19:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240565AbjHOXPW (ORCPT
+        with ESMTP id S240592AbjHOXTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 19:15:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EFBB3;
-        Tue, 15 Aug 2023 16:15:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5449260F0A;
-        Tue, 15 Aug 2023 23:15:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8248BC433C7;
-        Tue, 15 Aug 2023 23:15:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692141320;
-        bh=pa2nvZfQw/bdnEHOh3aiTLrBqJ4/hUwiSG2TjOGJLQg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=c4c9Gl+MoIkUJ+7vUF6e87lxuQumIH4uoBbaCKDZS6AsNOCP1d23AqczDntDGSheX
-         K7MUydOcC7kHIuRM7sXHY0ZuFV+aYc4mnpNAllllNW3VRHFs/yhWhaTrXb4bE0BzwO
-         9zepIF0W5oFdayEF4tyOCB6/mO8TZ+0X70Fzfa3fsUwaRwpxLAgDG6nKIJUIL0SRGl
-         xW6wZFitUH4Xo04qLa9xu+0WXOMBcKifSelsUBScE7XsweU4kdE6Oy+LOJ8qoxh85r
-         SxGQNb7WUPUvFWEJ/GD4pf0AYK7RFnKS/wZyBX9+XqZ8yvYPTMTC8m4h0TX4pBUCQO
-         jXSKwH+654o5Q==
-Date:   Tue, 15 Aug 2023 18:15:17 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     deloptes <emanoil.kotsev@deloptes.org>
-Cc:     linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: SSD SATA 3.3 and Broadcom / LSI SAS1068E PCI-Express Fusion-MPT
- SAS
-Message-ID: <20230815231517.GA271814@bhelgaas>
+        Tue, 15 Aug 2023 19:19:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C1F010C3;
+        Tue, 15 Aug 2023 16:19:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692141557; x=1723677557;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jDk2PL7s6hbeKzM5yWZ5eP5NxRPS1Vb13QdP3E5ftMg=;
+  b=lXRFBNWltaKxRZMTXdUrzi/rYQpkDNWpVnn/FA1YTNgCp9sbklwuPtGm
+   TQdigrzowCGZgCy4aMryPaJnqLASzWerZoKcCoV2U9+hDFVngllDzv/LQ
+   ee8umAQZ1eWOnVSAmyFbDyCxqmNskNHYmku1GZltT8dMWmF0X8OPyhlpj
+   okz9z/vYxQDEEsb0OsKyMlq97ut0ogAy60TzFtQe7wYutMk96SvgzchLV
+   XANOYvC4lAIMvONhc346TtfIfx9T9xvS2RkZ9JDZnP+4OYPzTEGHKPJMD
+   yJksGHkfQLC4/fhd3KsfhNcEjsyGKnJzg3Fy0/+N9fjK+TUJcWr7/zxoT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="375169822"
+X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
+   d="scan'208";a="375169822"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 16:19:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="727537783"
+X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
+   d="scan'208";a="727537783"
+Received: from lkp-server02.sh.intel.com (HELO b5fb8d9e1ffc) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 15 Aug 2023 16:19:13 -0700
+Received: from kbuild by b5fb8d9e1ffc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qW3Jd-0001JX-1O;
+        Tue, 15 Aug 2023 23:19:10 +0000
+Date:   Wed, 16 Aug 2023 07:18:53 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH-cgroup v6 1/6] cgroup/cpuset: Add
+ cpuset.cpus.exclusive.effective for v2
+Message-ID: <202308160752.IWyhJoln-lkp@intel.com>
+References: <20230815153027.633355-2-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ubgv7c$43t$1@ciao.gmane.io>
+In-Reply-To: <20230815153027.633355-2-longman@redhat.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 12:46:03AM +0200, deloptes wrote:
-> Bjorn Helgaas wrote:
-> ...
+Hi Waiman,
 
-> > I think some controllers have a BIOS setup user interface; have you
-> > poked around in there?
-> 
-> I have not seen the bios of the machine for many years. I was looking
-> forward to plug it to a console, so that I can reboot remotely, but for
-> some reason it was not possible. It was may be 5y ago. I will definitely
-> double check this, allthough there will be nothing regarding SATA3.3 there
-> as these were build many years before SATA3.3 saw daylight.
+kernel test robot noticed the following build warnings:
 
-I saw some mention about BIOS knobs that controlled the minimum
-acceptable SATA link speed or something; that's the kind of thing I
-wondered about.
+[auto build test WARNING on next-20230815]
+[cannot apply to tj-cgroup/for-next v6.5-rc6 v6.5-rc5 v6.5-rc4 linus/master v6.5-rc6]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> As mentioned in the other posting I will attach those SSDs directly to the
-> mobo. There are 6 SATA ports there. I think this is the best approach.
-> But you know curiosity is a force you can not resist, so I still want to
-> know why?! :)
+url:    https://github.com/intel-lab-lkp/linux/commits/Waiman-Long/cgroup-cpuset-Add-cpuset-cpus-exclusive-effective-for-v2/20230815-233522
+base:   next-20230815
+patch link:    https://lore.kernel.org/r/20230815153027.633355-2-longman%40redhat.com
+patch subject: [PATCH-cgroup v6 1/6] cgroup/cpuset: Add cpuset.cpus.exclusive.effective for v2
+config: parisc64-defconfig (https://download.01.org/0day-ci/archive/20230816/202308160752.IWyhJoln-lkp@intel.com/config)
+compiler: hppa-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230816/202308160752.IWyhJoln-lkp@intel.com/reproduce)
 
-Haha, yeah, I know!  I noticed in your response to Sathya that you're
-running a 4.19.288 kernel, which is really, really old.  If it's
-practical, the first thing I would try is booting a current kernel,
-e.g., v6.4, on the chance that something has been fixed since v4.19.
-I didn't try to compare the mptsas driver to see if it has changed
-since then, so I don't know whether it's likely.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308160752.IWyhJoln-lkp@intel.com/
 
-Bjorn
+All warnings (new ones prefixed by >>):
+
+   kernel/cgroup/cpuset.c: In function 'update_prstate':
+>> kernel/cgroup/cpuset.c:2468:30: warning: the comparison will always evaluate as 'true' for the address of 'effective_xcpus' will never be NULL [-Waddress]
+    2468 |         if ((new_prs > 0) && !cs->effective_xcpus) {
+         |                              ^
+   kernel/cgroup/cpuset.c:135:23: note: 'effective_xcpus' declared here
+     135 |         cpumask_var_t effective_xcpus;
+         |                       ^~~~~~~~~~~~~~~
+
+
+vim +2468 kernel/cgroup/cpuset.c
+
+  2435	
+  2436	/**
+  2437	 * update_prstate - update partition_root_state
+  2438	 * @cs: the cpuset to update
+  2439	 * @new_prs: new partition root state
+  2440	 * Return: 0 if successful, != 0 if error
+  2441	 *
+  2442	 * Call with cpuset_mutex held.
+  2443	 */
+  2444	static int update_prstate(struct cpuset *cs, int new_prs)
+  2445	{
+  2446		int err = PERR_NONE, old_prs = cs->partition_root_state;
+  2447		struct tmpmasks tmpmask;
+  2448	
+  2449		if (old_prs == new_prs)
+  2450			return 0;
+  2451	
+  2452		/*
+  2453		 * For a previously invalid partition root, leave it at being
+  2454		 * invalid if new_prs is not "member".
+  2455		 */
+  2456		if (new_prs && is_prs_invalid(old_prs)) {
+  2457			cs->partition_root_state = -new_prs;
+  2458			return 0;
+  2459		}
+  2460	
+  2461		if (alloc_cpumasks(NULL, &tmpmask))
+  2462			return -ENOMEM;
+  2463	
+  2464		/*
+  2465		 * Setup effective_xcpus if not set yet, it will be cleared later
+  2466		 * if partition becomes invalid.
+  2467		 */
+> 2468		if ((new_prs > 0) && !cs->effective_xcpus) {
+  2469			struct cpuset *parent = parent_cs(cs);
+  2470	
+  2471			spin_lock_irq(&callback_lock);
+  2472			cpumask_and(cs->effective_xcpus,
+  2473				    cs->cpus_allowed, parent->effective_xcpus);
+  2474			spin_unlock_irq(&callback_lock);
+  2475		}
+  2476	
+  2477		err = update_partition_exclusive(cs, new_prs);
+  2478		if (err)
+  2479			goto out;
+  2480	
+  2481		if (!old_prs) {
+  2482			/*
+  2483			 * cpus_allowed cannot be empty.
+  2484			 */
+  2485			if (cpumask_empty(cs->cpus_allowed)) {
+  2486				err = PERR_CPUSEMPTY;
+  2487				goto out;
+  2488			}
+  2489	
+  2490			err = update_parent_effective_cpumask(cs, partcmd_enable,
+  2491							      NULL, &tmpmask);
+  2492		} else if (old_prs && new_prs) {
+  2493			/*
+  2494			 * A change in load balance state only, no change in cpumasks.
+  2495			 */
+  2496			;
+  2497		} else {
+  2498			/*
+  2499			 * Switching back to member is always allowed even if it
+  2500			 * disables child partitions.
+  2501			 */
+  2502			update_parent_effective_cpumask(cs, partcmd_disable, NULL,
+  2503							&tmpmask);
+  2504	
+  2505			/*
+  2506			 * Invalidation of child partitions will be done in
+  2507			 * update_cpumasks_hier().
+  2508			 */
+  2509		}
+  2510	out:
+  2511		/*
+  2512		 * Make partition invalid & disable CS_CPU_EXCLUSIVE if an error
+  2513		 * happens.
+  2514		 */
+  2515		if (err) {
+  2516			new_prs = -new_prs;
+  2517			update_partition_exclusive(cs, new_prs);
+  2518		}
+  2519	
+  2520		spin_lock_irq(&callback_lock);
+  2521		cs->partition_root_state = new_prs;
+  2522		WRITE_ONCE(cs->prs_err, err);
+  2523		if (!is_partition_valid(cs))
+  2524			cpumask_clear(cs->effective_xcpus);
+  2525		spin_unlock_irq(&callback_lock);
+  2526	
+  2527		/* Force update if switching back to member */
+  2528		update_cpumasks_hier(cs, &tmpmask, !new_prs ? HIER_CHECKALL : 0);
+  2529	
+  2530		/* Update sched domains and load balance flag */
+  2531		update_partition_sd_lb(cs, old_prs);
+  2532	
+  2533		notify_partition_change(cs, old_prs);
+  2534		free_cpumasks(NULL, &tmpmask);
+  2535		return 0;
+  2536	}
+  2537	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
