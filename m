@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B3F77C77F
+	by mail.lfdr.de (Postfix) with ESMTP id EF7DB77C780
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 08:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234840AbjHOGJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 02:09:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44674 "EHLO
+        id S231244AbjHOGJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 02:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235068AbjHOGI7 (ORCPT
+        with ESMTP id S235069AbjHOGI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Aug 2023 02:08:59 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383F819A3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 23:07:48 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe27849e6aso7902587e87.1
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD602D54
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 23:07:49 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99c3c8adb27so691333866b.1
         for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 23:07:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692079666; x=1692684466;
+        d=linaro.org; s=google; t=1692079667; x=1692684467;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KVnFJiMRFz78ILhOUZDeG2BsOXYQ6IIoucdYjDSoZck=;
-        b=ux9EU2te+pnF27RxeJooc1JFE42D9LgEkZ2ZnZNaRNmMU/MdYm5I/WOjXN5wWc5XJw
-         KxiiRwiTeEWBCMn4tCdMZRpoqxR4efsO3S4SUIkpEdE3mzWTcmnjgKjpXPICQeMkEkYv
-         RV3yqfbn07fxqkCs6gtgVbG7c4svgBnGAxOe0PaLP4lswOmJh5SHRxIGw2K9oF/qqdw4
-         kskGGJ2MDI03gV7dMi/CGWHvS+rvLb61oyzlfTUSQtzR1ZfTTvlbyIpPCwCF2Ip0yw41
-         xKzFqxq0dXXKw9TBDlkT0XzEiUiRFrBejBitXo6mT3UameP3IJHKmRdbOT6Ohywv/pnD
-         3fHw==
+        bh=1eTUAES+PjBvQLtO17D5OEYj5uIqydF+x2YtGRgLnbo=;
+        b=H72fNmAPH4wHA+OXV+7CNf+53M0fTZ+j8faZ3SCcJnl+auBlnAdFJMhtBWEldoADCA
+         /ka74oywof0otFVGiIi8HkLP0/2FEWTiUk/pFeV4j97ZMARn1TiUIQ96W6aboZzM9Szk
+         zp4WIZe4tw/OYNfIHYeKqUXnWzedWGYucYqlLghdrxakLDrcTfAyEDc8nE8Gc9Y68hgX
+         JPPtFkDi113yOW8iwSNRWf0RzTtKL76dLR47/VjTQEFvTtZYyhELdUdynIHvn1ibj/2d
+         dUHuBaZEQcHhTBvPv8mkM8TcJGIN6B7q/UjbMS9gzcZbmi801Waeh6RdAk97+o7H/4Os
+         UJ0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692079666; x=1692684466;
+        d=1e100.net; s=20221208; t=1692079667; x=1692684467;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KVnFJiMRFz78ILhOUZDeG2BsOXYQ6IIoucdYjDSoZck=;
-        b=PTn61nHUcSJkFg6s0DOUTpdUtP4MhpcAiWVyK+ktBZ8IKH/iv8l7wHol7PCehlR9Vu
-         3Bv1xLdgDECBFB0JbE/1yJw95+XtazP6laSnnrkWWou46sH6pYaTNfnyqnBDmG06H3dp
-         knifytmV++mBD6/hJ3SDEOpyqs4npxEw9pm9arZefInsOERkmjh6zdWJRAG78TyEp+R9
-         pDFP6772ipJ+Iyvz4vT8I23AlBaABk8PRRLwNOU+hoH+VjvNTekMOvyVqLAX/+DXj/7X
-         39EtbmN+x+Bl49BEnHPsG9nz1K2l5OUpZNo+zGQbxO+buCkb+CYWPvYTZvqMuUiBG62o
-         Is8w==
-X-Gm-Message-State: AOJu0YxjcNiBi670fbU0hqL7zZXa4Lz5bocBFCU6jGaC3ZuaLAKe5Sk5
-        mAkgkBT4J4Yum/Q5YNIqJk2YQw==
-X-Google-Smtp-Source: AGHT+IEU8GZRCKc+uj+gjwiht9Ao/Ja/R6voPLEfx7IHejJ8qPJgWiAfPI7J2oLEh5VRT/2VcidT2w==
-X-Received: by 2002:a05:6512:304d:b0:4ff:74e2:4268 with SMTP id b13-20020a056512304d00b004ff74e24268mr5037814lfb.56.1692079666243;
-        Mon, 14 Aug 2023 23:07:46 -0700 (PDT)
+        bh=1eTUAES+PjBvQLtO17D5OEYj5uIqydF+x2YtGRgLnbo=;
+        b=a+yV/tA6KWl+yVhC/cR44DtWQPotE3uv/JlE1pAhjHA0MXznQAjpXOxVx2pD1dTMKX
+         oKrXOrUINZDtpevV+l0LzhzbKEmTj9/lL5lemwwT00rQZYrzzCNgm/l3pDxaLTpR8pTV
+         B2ZHWlQ925ARG3wA5gqrLhY+N05he8aC3wnFZkt63/wTOkcpiMPefN/YvBGk+xZGGIEL
+         tgW38K0oXXEbm0WL0Ae9TdZIwl2cKkczvSzbigrPINMkNW5e8cqfLCGQAssE3tOBKdQs
+         dfGJiFPjlKOWf7NZ43qzHji1SeVD7Lu0CG1F7YJ2t/IKenk9K5I5v7nn0HESx1tcJnlM
+         fLfQ==
+X-Gm-Message-State: AOJu0YwviQ1iqz109uNRJdsNnIgvqX3aakvEdleQL/hxaxTuYXyst1JV
+        TO2LTh9hshN9x2e4FV5FVdo64CQmwzsTWjOtSLA=
+X-Google-Smtp-Source: AGHT+IF6ACgNcnYcHUhfee/MdzJ+x+8yGLtSpa2a0zxQSRfBPFoCSU7DzrJ1eLX6CBZF+rUmeisMow==
+X-Received: by 2002:a17:906:76d1:b0:99c:ad52:b01 with SMTP id q17-20020a17090676d100b0099cad520b01mr9363081ejn.57.1692079667607;
+        Mon, 14 Aug 2023 23:07:47 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id gw4-20020a170906f14400b00993b381f808sm6528093ejb.38.2023.08.14.23.07.45
+        by smtp.gmail.com with ESMTPSA id gw4-20020a170906f14400b00993b381f808sm6528093ejb.38.2023.08.14.23.07.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 23:07:45 -0700 (PDT)
+        Mon, 14 Aug 2023 23:07:47 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -60,18 +60,17 @@ To:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
         linux-media@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: [PATCH v3 2/3] media: dt-bindings: samsung,fimc: correct unit addresses in DTS example
-Date:   Tue, 15 Aug 2023 08:07:38 +0200
-Message-Id: <20230815060739.30160-2-krzysztof.kozlowski@linaro.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v3 3/3] media: exynos4-is: fimc-is: replace duplicate pmu node with phandle
+Date:   Tue, 15 Aug 2023 08:07:39 +0200
+Message-Id: <20230815060739.30160-3-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230815060739.30160-1-krzysztof.kozlowski@linaro.org>
 References: <20230815060739.30160-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,96 +79,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The camera node's ranges property and unit addresses of its children
-were not correct.  If camera is @11800000, then its fimc child is @0.
+Devicetree for the FIMC IS camera included duplicated PMU node as its
+child like:
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+  soc@0 {
+    system-controller@10020000 { ... }; // Real PMU
+
+    camera@11800000 {
+      fimc-is@12000000 {
+        // FIMC IS camera node
+        pmu@10020000 {
+          reg = <0x10020000 0x3000>; // Fake PMU node
+        };
+      };
+    };
+  };
+
+This is not a correct representation of the hardware.  Mapping the PMU
+(Power Management Unit) IO memory should be via syscon-like phandle
+(samsung,pmu-syscon, already used for other drivers), not by duplicating
+"pmu" Devicetree node inside the FIMC IS.  Backward compatibility is
+preserved.
+
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 ---
 
 Changes in v3:
-1. None
+1. Print deprecated warning only if child node "pmu" is not found.
+   "Finding" -> "Found".
 
 Changes in v2:
-1. Add Ab tag.
+1. Use IOMEM_ERR_PTR (Hans)
 ---
- .../bindings/media/samsung,fimc.yaml          | 22 +++++++++----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ .../platform/samsung/exynos4-is/fimc-is.c     | 33 ++++++++++++++-----
+ 1 file changed, 24 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/media/samsung,fimc.yaml b/Documentation/devicetree/bindings/media/samsung,fimc.yaml
-index 530a08f5d3fe..88b176d594e2 100644
---- a/Documentation/devicetree/bindings/media/samsung,fimc.yaml
-+++ b/Documentation/devicetree/bindings/media/samsung,fimc.yaml
-@@ -117,7 +117,7 @@ examples:
-         #clock-cells = <1>;
-         #address-cells = <1>;
-         #size-cells = <1>;
--        ranges = <0x0 0x0 0x18000000>;
-+        ranges = <0x0 0x0 0xba1000>;
+diff --git a/drivers/media/platform/samsung/exynos4-is/fimc-is.c b/drivers/media/platform/samsung/exynos4-is/fimc-is.c
+index 530a148fe4d3..a08c87ef6e2d 100644
+--- a/drivers/media/platform/samsung/exynos4-is/fimc-is.c
++++ b/drivers/media/platform/samsung/exynos4-is/fimc-is.c
+@@ -767,12 +767,32 @@ static void fimc_is_debugfs_create(struct fimc_is *is)
+ static int fimc_is_runtime_resume(struct device *dev);
+ static int fimc_is_runtime_suspend(struct device *dev);
  
-         clocks = <&clock CLK_SCLK_CAM0>, <&clock CLK_SCLK_CAM1>,
-                  <&clock CLK_PIXELASYNCM0>, <&clock CLK_PIXELASYNCM1>;
-@@ -132,9 +132,9 @@ examples:
-         pinctrl-0 = <&cam_port_a_clk_active &cam_port_b_clk_active>;
-         pinctrl-names = "default";
++static void __iomem *fimc_is_get_pmu_regs(struct device *dev)
++{
++	struct device_node *node;
++	void __iomem *regs;
++
++	node = of_parse_phandle(dev->of_node, "samsung,pmu-syscon", 0);
++	if (!node) {
++		node = of_get_child_by_name(dev->of_node, "pmu");
++		if (!node)
++			return IOMEM_ERR_PTR(-ENODEV);
++		dev_warn(dev, "Found PMU node via deprecated method, update your DTB\n");
++	}
++
++	regs = of_iomap(node, 0);
++	of_node_put(node);
++	if (!regs)
++		return IOMEM_ERR_PTR(-ENOMEM);
++
++	return regs;
++}
++
+ static int fimc_is_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 	struct fimc_is *is;
+ 	struct resource res;
+-	struct device_node *node;
+ 	int ret;
  
--        fimc@11800000 {
-+        fimc@0 {
-             compatible = "samsung,exynos4212-fimc";
--            reg = <0x11800000 0x1000>;
-+            reg = <0x00000000 0x1000>;
-             interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>;
-             clocks = <&clock CLK_FIMC0>,
-                      <&clock CLK_SCLK_FIMC0>;
-@@ -151,9 +151,9 @@ examples:
+ 	is = devm_kzalloc(&pdev->dev, sizeof(*is), GFP_KERNEL);
+@@ -794,14 +814,9 @@ static int fimc_is_probe(struct platform_device *pdev)
+ 	if (IS_ERR(is->regs))
+ 		return PTR_ERR(is->regs);
  
-         /* ... FIMC 1-3 */
+-	node = of_get_child_by_name(dev->of_node, "pmu");
+-	if (!node)
+-		return -ENODEV;
+-
+-	is->pmu_regs = of_iomap(node, 0);
+-	of_node_put(node);
+-	if (!is->pmu_regs)
+-		return -ENOMEM;
++	is->pmu_regs = fimc_is_get_pmu_regs(dev);
++	if (IS_ERR(is->pmu_regs))
++		return PTR_ERR(is->pmu_regs);
  
--        csis@11880000 {
-+        csis@80000 {
-             compatible = "samsung,exynos4210-csis";
--            reg = <0x11880000 0x4000>;
-+            reg = <0x00080000 0x4000>;
-             interrupts = <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>;
-             clocks = <&clock CLK_CSIS0>,
-                      <&clock CLK_SCLK_CSIS0>;
-@@ -186,9 +186,9 @@ examples:
- 
-         /* ... CSIS 1 */
- 
--        fimc-lite@12390000 {
-+        fimc-lite@b90000 {
-               compatible = "samsung,exynos4212-fimc-lite";
--              reg = <0x12390000 0x1000>;
-+              reg = <0xb90000 0x1000>;
-               interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
-               power-domains = <&pd_isp>;
-               clocks = <&isp_clock CLK_ISP_FIMC_LITE0>;
-@@ -198,9 +198,9 @@ examples:
- 
-         /* ... FIMC-LITE 1 */
- 
--        fimc-is@12000000 {
-+        fimc-is@800000 {
-             compatible = "samsung,exynos4212-fimc-is";
--            reg = <0x12000000 0x260000>;
-+            reg = <0x00800000 0x260000>;
-             interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>,
-                          <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>;
-             clocks = <&isp_clock CLK_ISP_FIMC_LITE0>,
-@@ -242,9 +242,9 @@ examples:
-             #size-cells = <1>;
-             ranges;
- 
--            i2c-isp@12140000 {
-+            i2c-isp@940000 {
-                 compatible = "samsung,exynos4212-i2c-isp";
--                reg = <0x12140000 0x100>;
-+                reg = <0x00940000 0x100>;
-                 clocks = <&isp_clock CLK_ISP_I2C1_ISP>;
-                 clock-names = "i2c_isp";
-                 pinctrl-0 = <&fimc_is_i2c1>;
+ 	is->irq = irq_of_parse_and_map(dev->of_node, 0);
+ 	if (!is->irq) {
 -- 
 2.34.1
 
