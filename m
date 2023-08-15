@@ -2,82 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F6F77CCF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA9777CD04
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235071AbjHOMwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 08:52:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40668 "EHLO
+        id S237281AbjHOM4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 08:56:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237333AbjHOMwH (ORCPT
+        with ESMTP id S237150AbjHOMzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 08:52:07 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB09410C8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:52:06 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-114-154.bstnma.fios.verizon.net [173.48.114.154])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37FCpkTm023020
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Aug 2023 08:51:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1692103908; bh=sYrp9LrLuil8xIlfdGEAsRkSlkgtAiaHvWYOVyY+mkI=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=IwXqJ5cQwH02uowWnpTrer4xdovuo8DSGI1gYenUl6jVKwOSNxBOscm51nWE2/+PN
-         el/LsvYrW0IfPATDoNfH5Qr6xeKPzeZlnqctUIHZ9SnfUDwweZHvh9vDeJVeButP6A
-         dP2L8X604SdvQ+joU5V2OkQOUK2Rdy4Vh75D513LVbFwDz+W+WEb+V3X8i/izehOzd
-         X1f+yNjFmy2KSSEj+Tg4trnQIHn0qUMiSfzAz7Ssi7JjtgFafYaiD1PnDkMzR8S/0Q
-         bD+RfAOokFPUv5fJ2jUl5zjtp8JJrbiT9N5aRLjDcfgRAsRqHcA1hvz0eI0MDg8H9j
-         Uf2U6J4nlmp1w==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 6ACCF15C0292; Tue, 15 Aug 2023 08:51:46 -0400 (EDT)
-Date:   Tue, 15 Aug 2023 08:51:46 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     "Dr. David Alan Gilbert" <dave@treblig.org>
-Cc:     adilger.kernel@dilger.ca, song@kernel.org,
-        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: 6.5.0rc5 fs hang - ext4? raid?
-Message-ID: <20230815125146.GA1508930@mit.edu>
-References: <ZNqWfQPTScJDkmpX@gallifrey>
+        Tue, 15 Aug 2023 08:55:31 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21669C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:55:27 -0700 (PDT)
+Received: from kwepemm600004.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RQB4Y0Q1tzFqdL;
+        Tue, 15 Aug 2023 20:52:29 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ kwepemm600004.china.huawei.com (7.193.23.242) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 15 Aug 2023 20:55:25 +0800
+From:   Huisong Li <lihuisong@huawei.com>
+To:     <xuwei5@hisilicon.com>, <arnd@arndb.de>, <arnd@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <soc@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <liuyonglong@huawei.com>,
+        <lihuisong@huawei.com>
+Subject: [PATCH] soc: kunpeng_hccs: fix some sparse warnings about incorrect type
+Date:   Tue, 15 Aug 2023 20:52:33 +0800
+Message-ID: <20230815125233.65469-1-lihuisong@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNqWfQPTScJDkmpX@gallifrey>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600004.china.huawei.com (7.193.23.242)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 09:02:53PM +0000, Dr. David Alan Gilbert wrote:
-> dg         29594   29592  0 18:40 pts/0    00:00:00 /usr/bin/ar --plugin /usr/libexec/gcc/x86_64-redhat-linux/13/liblto_plugin.so -csrDT src/intel/perf/libintel_perf.a src/intel/perf/libintel_perf.a.p/meson-generated_.._intel_perf_metrics.c.o src/intel/perf/libintel_perf.a.p/intel_perf.c.o src/intel/perf/libintel_perf.a.p/intel_perf_query.c.o src/intel/perf/libintel_perf.a.p/intel_perf_mdapi.c.o
-> 
-> [root@dalek dg]# cat /proc/29594/stack 
-> [<0>] md_super_wait+0xa2/0xe0
-> [<0>] md_bitmap_unplug+0xd2/0x120
-> [<0>] flush_bio_list+0xf3/0x100 [raid1]
-> [<0>] raid1_unplug+0x3b/0xb0 [raid1]
-> [<0>] __blk_flush_plug+0xd7/0x150
-> [<0>] blk_finish_plug+0x29/0x40
-> [<0>] ext4_do_writepages+0x401/0xc90
-> [<0>] ext4_writepages+0xad/0x180
+This patch fixes some sparse warnings about incorrect type.
+The address about PCC communication space should use '__iomem' tag.
 
-If you want a few seconds and try grabbing cat /proc/29594/stack
-again, what does the stack trace stay consistent as above?
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308151142.dH5Muhva-lkp@intel.com/
+Fixes: 886bdf9c883b ("soc: hisilicon: Support HCCS driver on Kunpeng SoC")
+Signed-off-by: Huisong Li <lihuisong@huawei.com>
+---
+ drivers/soc/hisilicon/kunpeng_hccs.c | 13 +++++++------
+ drivers/soc/hisilicon/kunpeng_hccs.h |  2 +-
+ 2 files changed, 8 insertions(+), 7 deletions(-)
 
-Also, if you have iostat installed (usually part of the sysstat
-package), does "iostat 1" show any I/O activity on the md device?
-What about the underying block dvices used by the md device?  If the
-md device is attached to HDD's where you can see the activity light,
-can you see (or hear) any disk activity?
+diff --git a/drivers/soc/hisilicon/kunpeng_hccs.c b/drivers/soc/hisilicon/kunpeng_hccs.c
+index 0d6f6bacd3f6..4e94753ab0f7 100644
+--- a/drivers/soc/hisilicon/kunpeng_hccs.c
++++ b/drivers/soc/hisilicon/kunpeng_hccs.c
+@@ -156,8 +156,8 @@ static int hccs_register_pcc_channel(struct hccs_dev *hdev)
+ 	}
+ 
+ 	if (pcc_chan->shmem_base_addr) {
+-		cl_info->pcc_comm_addr = (void __force *)ioremap(
+-			pcc_chan->shmem_base_addr, pcc_chan->shmem_size);
++		cl_info->pcc_comm_addr = ioremap(pcc_chan->shmem_base_addr,
++						 pcc_chan->shmem_size);
+ 		if (!cl_info->pcc_comm_addr) {
+ 			dev_err(dev, "Failed to ioremap PCC communication region for channel-%d.\n",
+ 				hdev->chan_id);
+@@ -177,7 +177,8 @@ static int hccs_register_pcc_channel(struct hccs_dev *hdev)
+ static int hccs_check_chan_cmd_complete(struct hccs_dev *hdev)
+ {
+ 	struct hccs_mbox_client_info *cl_info = &hdev->cl_info;
+-	struct acpi_pcct_shared_memory *comm_base = cl_info->pcc_comm_addr;
++	struct acpi_pcct_shared_memory __iomem *comm_base =
++							cl_info->pcc_comm_addr;
+ 	u16 status;
+ 	int ret;
+ 
+@@ -199,8 +200,8 @@ static int hccs_pcc_cmd_send(struct hccs_dev *hdev, u8 cmd,
+ 			     struct hccs_desc *desc)
+ {
+ 	struct hccs_mbox_client_info *cl_info = &hdev->cl_info;
+-	struct acpi_pcct_shared_memory *comm_base = cl_info->pcc_comm_addr;
+-	void *comm_space = (void *)(comm_base + 1);
++	void __iomem *comm_space = (u8 *)cl_info->pcc_comm_addr +
++					sizeof(struct acpi_pcct_shared_memory);
+ 	struct hccs_fw_inner_head *fw_inner_head;
+ 	struct acpi_pcct_shared_memory tmp = {0};
+ 	u16 comm_space_size;
+@@ -212,7 +213,7 @@ static int hccs_pcc_cmd_send(struct hccs_dev *hdev, u8 cmd,
+ 	tmp.command = cmd;
+ 	/* Clear cmd complete bit */
+ 	tmp.status = 0;
+-	memcpy_toio(comm_base, (void *)&tmp,
++	memcpy_toio(cl_info->pcc_comm_addr, (void *)&tmp,
+ 			sizeof(struct acpi_pcct_shared_memory));
+ 
+ 	/* Copy the message to the PCC comm space */
+diff --git a/drivers/soc/hisilicon/kunpeng_hccs.h b/drivers/soc/hisilicon/kunpeng_hccs.h
+index 9d71fb78443f..6012d2776028 100644
+--- a/drivers/soc/hisilicon/kunpeng_hccs.h
++++ b/drivers/soc/hisilicon/kunpeng_hccs.h
+@@ -50,7 +50,7 @@ struct hccs_mbox_client_info {
+ 	struct mbox_chan *mbox_chan;
+ 	struct pcc_mbox_chan *pcc_chan;
+ 	u64 deadline_us;
+-	void *pcc_comm_addr;
++	void __iomem *pcc_comm_addr;
+ };
+ 
+ struct hccs_dev {
+-- 
+2.33.0
 
-This sure seems like either the I/O driver isn't processing requests,
-or some kind of hang in the md layer....
-
-				- Ted
