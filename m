@@ -2,251 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F94177CF3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C55F77CF3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238055AbjHOPed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 11:34:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38412 "EHLO
+        id S238067AbjHOPfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 11:35:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238134AbjHOPeT (ORCPT
+        with ESMTP id S238102AbjHOPep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 11:34:19 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7CC198A;
-        Tue, 15 Aug 2023 08:33:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=mCMaRiXD+SX4iDd+124jIz0NjwtRlkHyRZGjSWdpLXU=; b=be3WlWR45D2YLBsaPl5M0GIyN4
-        NX8ToHxHcuoz2oKYGrtVZ2dlXuokGFXO/NZJoODnu4FCoJNczN/2bUDJTcu5NRydKYakqpoOOk3+B
-        YygYAhxbqkW4O1j/mK3RZitkMBqncwo0+oBIL5ZW3eLiycBp206Ij6L9Ff7pVkt4aGSI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qVw3E-004AX3-GL; Tue, 15 Aug 2023 17:33:44 +0200
-Date:   Tue, 15 Aug 2023 17:33:44 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Justin Lai <justinlai0215@realtek.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
-        pabeni@redhat.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v3 1/2] net/ethernet/realtek: Add Realtek
- automotive PCIe driver code
-Message-ID: <95f079a4-19f9-4501-90d9-0bcd476ce68d@lunn.ch>
-References: <20230815143756.106623-1-justinlai0215@realtek.com>
- <20230815143756.106623-2-justinlai0215@realtek.com>
+        Tue, 15 Aug 2023 11:34:45 -0400
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2068.outbound.protection.outlook.com [40.107.96.68])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36DA11BD0;
+        Tue, 15 Aug 2023 08:34:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UmmPdlKvku2FcrK7wnYPoTf+SYUOqwMtbYS3LQHoGogFg6ktSJeqKqrTS1rnep+gkR9efvZ+Dre246E32+LkM9sjX7U57Yw+2+JxT8tS/nuSbx8sPFaAB5NhJZ/yrS5UTJNVs0XK8LXEfq1ct4VoY/dCFC1j9eG3xkzAaquL0ryQajOrIjJcQrBXEmyK2imu7zEi+y8WFDb0zyY+pIMjJPaXLS19QS/JxD7Wz5kbmbga1XtECV/fpf23dUYVWvuRCop2zQNYkhrKpRu17iJiiRAKx4Txd+fMdvdFmSqCTUvaBV5Oqh7KnXe+H2Ng+u3dYzVQBBdKVvfM6r5ZObTm4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HPehk5SPPbTq8vf9WNJ8Ko+9c5SUM5NfiKWR/KbxpJU=;
+ b=KC8czhlAaeAmJcHXEY34JYZhGRY16GcLrqHs7Bd3pVYW24okf0KSg4QaN7VBgzkDxnXXQEdWEef8s2v+acFNQgkx/vKsoqWgaGxkoi5ptoCCuJmv38DlpZyceFZL2HmNbBAIer7ZEUTg5nYu0bzE5JzZL8xVdLNPsej0tpEeJp9Xx+QVWOOr6eL361NwAykPDbE7CXab/vSutBUM6lqBOg9sHuYYK6EvVDnIQ++J/noewbWv3Zikpj5JIWfDE8Atpg5N5MW1eJ6GtWpKuOAsF8dNAujaFpCtYglGkXlroEDGnIinoXeYzkxx7I1UKjnk0fLNQ3CLdqWz6KLVnrTp1g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HPehk5SPPbTq8vf9WNJ8Ko+9c5SUM5NfiKWR/KbxpJU=;
+ b=VPi12LTTjWVO2YswzjTW/XTsyFBtBw6ZfwQerP/eKdNUer3B8ypVpN7oJttuwqIxe+7Q49ESWwW7tUXE/UDsclZNx649Onv6Dk9yshPueKdHAd3qbUk0NNYbOOrAeAVOwo6Rn+nOwdyVNhxgemTnFYCC7dZjJ77jIfXWsEUcCN0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by DS0PR12MB6438.namprd12.prod.outlook.com (2603:10b6:8:ca::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Tue, 15 Aug
+ 2023 15:34:10 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::36f9:ffa7:c770:d146]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::36f9:ffa7:c770:d146%7]) with mapi id 15.20.6678.025; Tue, 15 Aug 2023
+ 15:34:10 +0000
+Message-ID: <ed19e1d4-02c7-484d-9620-eedb1393d779@amd.com>
+Date:   Tue, 15 Aug 2023 10:34:07 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 6/7] Documentation: amd-pstate: introduce AMD Pstate
+ Preferred Core
+Content-Language: en-US
+To:     Meng Li <li.meng@amd.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Huang Rui <ray.huang@amd.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-acpi@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Shimmer Huang <shimmer.huang@amd.com>,
+        Perry Yuan <Perry.Yuan@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>
+References: <20230815061546.3556083-1-li.meng@amd.com>
+ <20230815061546.3556083-7-li.meng@amd.com>
+From:   Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <20230815061546.3556083-7-li.meng@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DM6PR02CA0099.namprd02.prod.outlook.com
+ (2603:10b6:5:1f4::40) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230815143756.106623-2-justinlai0215@realtek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,LOTS_OF_MONEY,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|DS0PR12MB6438:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1ddd0168-620a-4804-05b9-08db9da5122a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: W2sNOBsGsVHXRbdcrPdoEulOj1eY9hNKupaDwYCkWYAUOk5KbGgE/LKhdMhO1OmzL5z9JxXYlc2zXA4lcdUciL2OCY7nv9d4QG0nsvjBycwKQMogkQW1J7pqri2JTG2cG2mCXr72JljmlSasQXgDTrxblSNrFilOzXEmb1SyJxF4pZspT3BWIHZEmheo5HJj3PAzYGACuYpoAfsV/Ih9sqmRb5TRMxmdrlEHEo9o6AfDUUkKco1I10u3+qczDd4R6AcwSnehP5IkiIS7EWLQjeaa2guqQqAgkjeii6abDVlxmw1lU7TqQ4KeF79iXwMjog0uBLsCdHmHPlDYfhUmKP0jzzv9DD8izj23aMh2STa0KXjnw69pbNmCOUxy7bMNh0wfqfimsoE8x+ttqoTy+Y0hlbAVG539fN8jRYos6Keq+dzHRVI0oL1gR9jBd3hg1LFf2medSHlmzxXerMfnvbdmdERMKgqlIAwniKycAbwilwQ1buRdv3jqfBr8UScDaIgOIkOUp1s2CxUChOYE5jMrqBnBKlwTrwP9VCw1sMFmrB6wRnXRupflCFQSR+0r5x+u4GI22jiZMImbOqvX7p3JXhf6VzS7MmNXHuxnwkBLHzB84CG2dVoUGGimqWzbIWWSigYW6TnmxJiTLMVk4w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(39860400002)(136003)(376002)(451199024)(1800799009)(186009)(6512007)(26005)(110136005)(66556008)(2616005)(31686004)(66476007)(66946007)(4326008)(6636002)(316002)(54906003)(41300700001)(8936002)(86362001)(8676002)(83380400001)(31696002)(2906002)(36756003)(44832011)(5660300002)(6486002)(6666004)(38100700002)(478600001)(53546011)(6506007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cWVpb1lIUmtWd1g5VFR5ak9ZbUxUdUxXTmtkaHhnQmtKc0hsSmJzbjNidEMy?=
+ =?utf-8?B?WTZhQ0dTWGdlV2p0bEdnYy9kZkRxditJMnZCVVJud1ozUE5KNHZBcGFCUzJS?=
+ =?utf-8?B?c05lTytXZUs3K0pSNlByZ3A5SGFuajlDZ0c2TlNTQkJnQVI5WldVTWNuWlpP?=
+ =?utf-8?B?NjRPWSsxU2MxKy94VHNVdC80YXJLeFRuK0tuU2s0ZUJrV2dFZ3c0dUwzdUNB?=
+ =?utf-8?B?RzZXcTVaSXU0cENwN0tPdDAybWdScGgraGRhbUovWjB6V3crbXdUUXlDcXNS?=
+ =?utf-8?B?S00xV2p3NXIrVmE0b25NWnJTay9heXBBdGc3cnB1bWo4c3dQUkNrUFlCckdS?=
+ =?utf-8?B?T3AzeTRUZ2JyeUVNdjZDYms4Nm95RFpMeGNuZk5CZThvaFNwV0U2TXNxOUxl?=
+ =?utf-8?B?SmdqS0Y3cXJPa1VrNVBFYmRqVlRvNXRTSWJkN3lZZ292b0hYdlkvRGVIVWtI?=
+ =?utf-8?B?cnNrSU5LcllNdUlQaDlRb1RtQlU2bHcwSHVmK1VBV2pQZmRtcXp3SzhOK3hF?=
+ =?utf-8?B?SkM4eWFxRnRYRjNRa0FLYk1hTkt6R3VWamJjWnFCS2h0SWRxenVQOG92ZDRs?=
+ =?utf-8?B?Mk1KVUlBTFlwM1dRSTJ4eE9UZUY2WFhMV0dVU0RoWU1abFRxMDh2RWZhMlBY?=
+ =?utf-8?B?S2gyMjRnVldPRHBYNElmZUU2U0pWN25iYms0aXd5S3drVFUzeXRRSXllL0M4?=
+ =?utf-8?B?ZzVoU3cvQ1BhT2paQlA5R0V1azU5Tmw3blpqeXJOR3IveC84d0tkMm1OQmxU?=
+ =?utf-8?B?SkZyNnZET0FscXJFK1BsQ1A3dlkrSVZsUUhaSXE0NitRN0dwTnRZNk84UHJV?=
+ =?utf-8?B?YlRTUkcvWjg1eVpBTWEyUlg2NEFRb01lUnFDOWJacFdVb0JoWklnVlZhUmdK?=
+ =?utf-8?B?MXlNU1QvdWQ5NjE0L2lqYUd1ekt5dm03SWUrRW1ZRjZOQkErd1lWazFoZE1D?=
+ =?utf-8?B?UEh0VElTWnVITjZSOTRBbmluUG1NSkhWR2hPQjVseWM5S3NtWVM3QVNGUzVn?=
+ =?utf-8?B?ZWMrZ0QvbFR3a1VKc0VLZ05BMExDRWJsSUhCdEJFTzM5SmxUTmVrTWk4bjFq?=
+ =?utf-8?B?bEJ4dTd6Y3F3ZGJQb2ZNT0NXcGIwYXVxNlVIM2IxTjZwcVVTdk5iRW8rTnBj?=
+ =?utf-8?B?NHVsQUJsRTlqNjI1SUhxVC9GS1kzYnM4ZkE1VFBQWVJQdHB4d250YkFTTWJM?=
+ =?utf-8?B?c3Zlck52bWRPTlN4S1lmUWhWTXhsSXc5YWswMFhEVUVQV3NocklCNnJuMXU3?=
+ =?utf-8?B?Nm53MUFDQVNjYWhhUWhEdFpXakVIVnp1L2xPV1kyWUt4SGlyaWl4T3lMTUtk?=
+ =?utf-8?B?RG9DaFlIMDZublFCQTRBRy9GRFFWVTBYcXQ1MG1yNUw2OEphaC8xdFBlM3Za?=
+ =?utf-8?B?YlpSRDJTeGVody9rUkZYM1NUSlo4aVh4YlQ4RDZCQWhIMEpZUkw2NjVqcElE?=
+ =?utf-8?B?R2kxNW5iK1R5cDZMb3o5YUorcEw0QUs4dHJXTkpGdVVPRVp2ZFU3WFRDdFRM?=
+ =?utf-8?B?OWFjSWk4WmxRa0lNVnB5QVRJd3pEbmtyN0tGRUxVRFd1QWJkcFBJN1RQNy81?=
+ =?utf-8?B?V0Z1TFllVFJ4d2tLNXJTUjdzV0tpUzliTVZPclFFK01ZTWdCZmZVdDl0MFg2?=
+ =?utf-8?B?TmpuUmJLWGNYMVJqZDZTa0t0eVpSYzFRYmd0d3FvRE1sd2NWMkdXMWM3Z0Zy?=
+ =?utf-8?B?amJlQjZQL3NKRXp2SWs1TFIxaTd0KzhLOTI3ZEtkZ2F4aWZFMXRiMzdYc1Rp?=
+ =?utf-8?B?SGxQZzNNS0pmMDFkQnBmR1BXQlNZUm5TOUJaZkI2ckxnVzJvNkY1Rlg0TjlG?=
+ =?utf-8?B?VzFPckdtU0N0cnhIeVNXZE0wYlhhdmFXcldVdXVvYWRLRzJuTE0rSXp4bzNl?=
+ =?utf-8?B?WXlmdnh6L1Y2SWVlVUJRNXBYNG1nT1YxS0Iva09acHlCMStrNzltWUxIY3o1?=
+ =?utf-8?B?LytsczdwbUxCUlA4SGxtZW5VSGc4RHVWbTdEZ3V3bDRJYm1CNHA3SXJsMXFX?=
+ =?utf-8?B?OUk0T1lkRndnVGd6MURkNGRmU0N4RzlRcmtCd0Q4YzlSOTdxUDBjYTlNbmxB?=
+ =?utf-8?B?VVA0Lzh3KzRsQ25ZYUZ3MTEyTWNkYkU1T0I3OWs1cnZTbDl4UjZaSUdMVFd6?=
+ =?utf-8?Q?O67wxOHrFigHzG1DUb1B1y/lN?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ddd0168-620a-4804-05b9-08db9da5122a
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2023 15:34:10.5032
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EyeHDcelfBhO+MgN/8s6yYH60Hl728/2o7+FB6oPfNRwp/fTPW8/7XtDgLpkI51ijsm860UPOBNtXqKTXGBJ+w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6438
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 10:37:55PM +0800, Justin Lai wrote:
-> This patch is to add the ethernet device driver for the PCIe interface of Realtek Automotive Ethernet Switch,
-> applicable to RTL9054, RTL9068, RTL9072, RTL9075, RTL9068, RTL9071.
+On 8/15/2023 01:15, Meng Li wrote:
+> Introduce AMD Pstate Preferred Core.
 > 
-> Below is a simplified block diagram of the chip and its relevant interfaces.
+> check preferred core state:
+> $ cat /sys/devices/system/cpu/amd-pstate/prefcore_state
 > 
->           *************************
->           *                       *
->           *  CPU network device   *
->           *    ____________       *
->           *   |            |      *
->           *   |  PCIE Host |      *
->           *************************
->                     ||
->                    PCIE
->                     ||
->   ****************************************
->   *          | PCIE Endpoint |           *
->   *          |---------------|           *
->   *              | GMAC |                *
->   *              |------|  Realtek       *
->   *                 ||   RTL90xx Series  *
->   *                 ||                   *
->   *    _____________||______________     *
->   *   |            |MAC|            |    *
->   *   |            |---|            |    *
->   *   |                             |    *
->   *   |     Ethernet Switch Core    |    *
->   *   |                             |    *
->   *   |  -----             -----    |    *
->   *   |  |MAC| ............|MAC|    |    *
->   *   |__|___|_____________|___|____|    *
->   *      |PHY| ............|PHY|         *
->   *      -----             -----         *
->   *********||****************||***********
-> This driver is mainly used to control GMAC, but does not control the switch core, so it is not the same as DSA.
-> In addition, the GMAC is not directly connected to the PHY, but directly connected to the mac of the switch core,
-> so there is no need for PHY handing.
-
-So this describes your board? Is the MAC and the swtich two separate
-chips? Is it however possible to connect the GMAC to a PHY? Could some
-OEM purchase the chipset and build a board with a PHY? We write MAC
-drivers around what the MAC can do, not what one specific board
-allows.
-
-What MAC drivers do to support being connected to a switch like this
-is use a fixed-link PHY, via phylink. This gives a virtual PHY, which
-supports one speed. The MAC driver then just uses the phylink API as
-normal.
-
-On your board, how is the switch controlled? Is there an MDIO bus as
-part of the MAC? If so, you should add an MDIO bus master driver.
-
-> +/******************************************************************************
-> + *  This product is covered by one or more of the following patents:
-> + *  US6,570,884, US6,115,776, and US6,327,625.
-> + ******************************************************************************/
-
-How many other drivers mentions patents? I'm not a lawyer, but doesn't
-the GPL say something about this?
-
-> +/* 0x05F3 = 1522bye + 1 */
-> +#define RX_BUF_SIZE 0x05F3u
-
-Why not just use:
-
-#define RX_BUF_SIZE 1522 + 1
-
-You don't need the comment then. Better still if you can express this
-in terms of ETH_FRAME_LEN, ETH_FCS_LEN etc.
-
-> +/* write/read MMIO register */
-> +#define RTL_W8(reg, val8)   writeb((val8), ioaddr + (reg))
-> +#define RTL_W16(reg, val16) writew((val16), ioaddr + (reg))
-> +#define RTL_W32(reg, val32) writel((val32), ioaddr + (reg))
-
-macros should only access what is passed to them. ioaddr is not
-passed...
-
-Using small functions would be better, you can then do type checking,
-ensure that val8 is a u8, val16 is a u16 etc.
-
-> +/*****************************************************************************/
-> +#define RTL_NETIF_RX_SCHEDULE_PREP(dev, napi) napi_schedule_prep(napi)
-> +#define __RTL_NETIF_RX_SCHEDULE(dev, napi)    __napi_schedule(napi)
-
-No wrappers. Also, it seems odd you are using a __foo
-function. Anything with a __ prefix is mean to be hidden.
-
-> +#include <linux/module.h>
-> +#include <linux/version.h>
-> +#include <linux/cdev.h>
-> +#include <linux/pci.h>
-> +#include <linux/netdevice.h>
-> +#include <linux/etherdevice.h>
-> +#include <linux/delay.h>
-> +#include <linux/if_vlan.h>
-> +#include <linux/crc32.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/in.h>
-> +#include <linux/ip.h>
-> +#include <linux/ipv6.h>
-> +#include <linux/tcp.h>
-> +#include <linux/init.h>
-> +#include <linux/rtnetlink.h>
-> +#include <linux/prefetch.h>
-> +#include <linux/dma-mapping.h>
-> +#include <linux/moduleparam.h>
-> +#include <linux/mdio.h>
-> +#include <net/ip6_checksum.h>
-> +#include <net/pkt_cls.h>
-> +#include <linux/io.h>
-> +#include <asm/irq.h>
+> Signed-off-by: Meng Li <li.meng@amd.com>
+> ---
+>   Documentation/admin-guide/pm/amd-pstate.rst | 54 +++++++++++++++++++++
+>   1 file changed, 54 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/pm/amd-pstate.rst b/Documentation/admin-guide/pm/amd-pstate.rst
+> index 1cf40f69278c..ef2b69935311 100644
+> --- a/Documentation/admin-guide/pm/amd-pstate.rst
+> +++ b/Documentation/admin-guide/pm/amd-pstate.rst
+> @@ -353,6 +353,48 @@ is activated.  In this mode, driver requests minimum and maximum performance
+>   level and the platform autonomously selects a performance level in this range
+>   and appropriate to the current workload.
+>   
+> +AMD Pstate Preferred Core
+> +=================================
 > +
-> +#include "rtase.h"
+> +The core frequency is subjected to the process variation in semiconductors.
+> +Not all cores are able to reach the maximum frequency respecting the
+> +infrastructure limits. Consequently, AMD has redefined the concept of
+> +maximum frequency of a part. This means that a fraction of cores can reach
+> +maximum frequency. To find the best process scheduling policy for a given
+> +scenario, OS needs to know the core ordering informed by the platform through
+> +highest performance capability register of the CPPC interface.
 > +
-> +/* Maximum number of multicast addresses to filter (vs. Rx-all-multicast).
-> + * The RTL chips use a 64 element hash table based on the Ethernet CRC.
-> + */
-> +#define _R(NAME, MAC, JUM_FRAME_SZ)                                       \
-> +	{                                                                 \
-> +		.name = NAME, .mcfg = MAC, .jumbo_frame_sz = JUM_FRAME_SZ \
-> +	}
+> +``AMD Pstate Preferred Core`` enable the scheduler to favor scheduling on cores
+> +can be get a higher frequency with lower voltage under preferred core.
+> +And it has the ability to dynamically change the preferred core based on the
+> +workload and platform conditions and accounting for thermals and aging.
 > +
-> +static const struct {
-> +	const char *name;
-> +	u8 mcfg;
-> +	u16 jumbo_frame_sz;
-> +} rtl_chip_info[] = {_R("RTL9072", CFG_METHOD_1, JUMBO_FRAME_9K),
+> +The priority metric will be initialized by the AMD Pstate driver. The AMD Pstate
+> +driver will also determine whether or not ``AMD Pstate Preferred Core`` is
+> +supported by the platform.
 > +
-> +		     _R("Unknown", CFG_METHOD_DEFAULT, JUMBO_FRAME_1K)};
-> +#undef _R
+> +AMD Pstate driver will provide an initial core ordering when the system boots.
+> +The platform uses the CPPC interfaces to communicate the core ranking to the
+> +operating system and scheduler to make sure that OS is choosing the cores
+> +with highest performance firstly for scheduling the process. When AMD Pstate
+> +driver receives a message with the highest performance change, it will
+> +update the core ranking and set the cpu's priority.
+> +
+> +AMD Preferred Core Switch
+> +=================================
+> +Kernel Parameters
+> +-----------------
+> +
+> +``AMD Pstate Preferred Core`` has two states: enable and disable.
+> +Enable/disable states can be chosen by different kernel parameters.
+> +Default enable ``AMD Pstate Preferred Core``.
+> + > +``amd_prefcore=disable``
+> +
+> +If ``amd_prefcore=disable`` is passed to kernel command line option
+> +then disable ``AMD Pstate Preferred Core`` if platform can support
+> +the Preferred Core feature.
+This all seems needlessly wordy.  Here's my suggestion.
 
-The R macro just seems like obfuscation.
+"``AMD Pstate preferred core`` will be enabled if the underlying 
+platform supports it.  It can be disabled by kernel parameter:
 
-> +/******************************************************************************
-> + * Module Parameters
-> + ******************************************************************************/
-> +static unsigned int txq_ctrl = 1;
-> +static unsigned int func_txq_num = 1;
-> +static unsigned int func_rxq_num = 1;
-> +static unsigned int interrupt_num = 1;
-> +static int rx_copybreak;
+``amd_prefcore=disable``
+
 > +
-> +module_param(txq_ctrl, uint, 0);
-> +MODULE_PARM_DESC(txq_ctrl, "The maximum number of TX queues for PF.");
+>   User Space Interface in ``sysfs`` - General
+>   ===========================================
+>   
+> @@ -385,6 +427,18 @@ control its functionality at the system level.  They are located in the
+>           to the operation mode represented by that string - or to be
+>           unregistered in the "disable" case.
+>   
+> +``prefcore``
+> +	Preferred Core state of the driver: "enabled" or "disabled".
 > +
-> +module_param(func_txq_num, uint, 0);
-> +MODULE_PARM_DESC(func_txq_num, "TX queue number for this function.");
+> +	"enabled"
+> +		Enable the AMD Preferred Core.
 > +
-> +module_param(func_rxq_num, uint, 0);
-> +MODULE_PARM_DESC(func_rxq_num, "RX queue number for this function.");
+> +	"disabled"
+> +		Disable the AMD Preferred Core
 > +
-> +module_param(interrupt_num, uint, 0);
-> +MODULE_PARM_DESC(interrupt_num, "Interrupt Vector number for this function.");
 > +
-> +module_param(rx_copybreak, int, 0);
-> +MODULE_PARM_DESC(rx_copybreak, "Copy breakpoint for copy-only-tiny-frames");
-
-No module parameters. Please delete them.
-
-> +static int rtase_open(struct net_device *dev);
-> +static netdev_tx_t rtase_start_xmit(struct sk_buff *skb, struct net_device *dev);
-> +static void rtase_set_rx_mode(struct net_device *dev);
-> +static int rtase_set_mac_address(struct net_device *dev, void *p);
-> +static int rtase_change_mtu(struct net_device *dev, int new_mtu);
-> +static void rtase_tx_timeout(struct net_device *dev, unsigned int txqueue);
-> +static void rtase_get_stats64(struct net_device *dev, struct rtnl_link_stats64 *stats);
-> +static int rtase_vlan_rx_add_vid(struct net_device *dev, __be16 protocol, u16 vid);
-> +static int rtase_vlan_rx_kill_vid(struct net_device *dev, __be16 protocol, u16 vid);
-> +static int rtase_setup_tc(struct net_device *dev, enum tc_setup_type type, void *type_data);
+> +        This attribute is read-only to check the state of Preferred Core.
 > +
-> +static irqreturn_t rtase_interrupt(int irq, void *dev_instance);
-> +static irqreturn_t rtase_q_interrupt(int irq, void *dev_instance);
-> +static void rtase_hw_config(struct net_device *dev);
-> +static int rtase_close(struct net_device *dev);
-> +static void rtase_down(struct net_device *dev);
-> +static s32 rtase_init_ring(const struct net_device *dev);
-> +static void rtase_init_netdev_ops(struct net_device *dev);
-> +static void rtase_rar_set(const struct rtase_private *tp, const uint8_t *addr);
-> +static void rtase_desc_addr_fill(const struct rtase_private *tp);
-> +static void rtase_tx_desc_init(struct rtase_private *tp, u16 idx);
-> +static void rtase_rx_desc_init(struct rtase_private *tp, u16 idx);
-> +static void rtase_set_mar(const struct rtase_private *tp);
-> +static s32 tx_handler(struct rtase_ring *ring, s32 budget);
-> +static s32 rx_handler(struct rtase_ring *ring, s32 budget);
-> +static int rtase_poll(struct napi_struct *napi, int budget);
-> +static void rtase_sw_reset(struct net_device *dev);
-> +static void rtase_hw_start(const struct net_device *dev);
-> +static void rtase_dump_tally_counter(const struct rtase_private *tp, dma_addr_t paddr);
-> +static void mac_ocp_write(const struct rtase_private *tp, u16 reg_addr, u16 value);
+>   ``cpupower`` tool support for ``amd-pstate``
+>   ===============================================
+>   
 
-Remove all these put the code in the right order so that they are not
-needed. The only time you need forward definitions is for recursion.
-
-
-    Andrew
-
----
-pw-bot: cr
