@@ -2,117 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2828877CABE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8838D77CACC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236308AbjHOJuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 05:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46310 "EHLO
+        id S236275AbjHOJyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 05:54:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236252AbjHOJuC (ORCPT
+        with ESMTP id S236247AbjHOJx6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 05:50:02 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE5CE3;
-        Tue, 15 Aug 2023 02:49:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692092999; x=1723628999;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=T7avx6akMBj8VUyBxXusJjovm//UmqITJGtB1agsYRQ=;
-  b=Z/JekSAn1vGgGa/OpByVm7vXxrpXpSTRkasiqmJ6VoTh+uuKMCDQlv1x
-   9+5JdyEE0W7sFrNyl4s9gpoF2WwygeDZFR0DG/PFzJAzPyP2oSDHBWvzO
-   YgyA7563jqpfaVKJ1imajh988c9XsF2HxAA0rJV7muEC2HiGY2s7A6roU
-   Dijhpg0dtx5BiMrSer7sTYxGzCb4Peynjpsy7/7dUisBxXz5NKaBK4NZ9
-   PZSiRf8rLmDxbAFD/vZCOkdEGnCa5Q1+iAvUP6q3tyLQDNFh6im5b+ras
-   Q1mPlM89SUQpo9CEd15Wa7X/HHf16UNr/wgA6Bw04N69AgmrokAtq6Wv8
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="362392954"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="362392954"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 02:49:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="733788881"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="733788881"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP; 15 Aug 2023 02:49:56 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qVqgU-00DF2A-2w;
-        Tue, 15 Aug 2023 12:49:54 +0300
-Date:   Tue, 15 Aug 2023 12:49:54 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v3] gpiolib: fix reference leaks when removing GPIO chips
- still in use
-Message-ID: <ZNtKQlnQxFediB0J@smile.fi.intel.com>
-References: <20230811193034.59124-1-brgl@bgdev.pl>
+        Tue, 15 Aug 2023 05:53:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18201F7;
+        Tue, 15 Aug 2023 02:53:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9C70A62B61;
+        Tue, 15 Aug 2023 09:53:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6926DC433C8;
+        Tue, 15 Aug 2023 09:53:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692093235;
+        bh=kvaqJ2sBEkbN7oMgKvzp6aMeCbQ6lN6aEQjyWQJ5X6s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Uqw5AIwCq5p7sCinwmmp/Lqz+8nGO5myfGcZEaCsclPS+/Dq5OkqZIWvlAsVY8uxR
+         FL5dgh/XWOTklxmPq9FDZW5xT31bE/WIg6siTr5DLREiB2Zv7srizXhQIOcqQiDaS4
+         PCZjYG6f3/OWUWTxkKEwh7oAlcEAZU/xrZ/iMoTlKvu1SjYYeqP4Uf5CwHYCvOgzjK
+         rYulG/3FrqS9u8zCuJPbKQNYtQMWuPv1dS8t0eV05/iK8WzCJTpWThBQjtR4cOKgrU
+         qCM6KGWyF2pkR9NkX9uqoHqsfYuQ4rVzrshHKaBe0jrpTTYMdWS100Oykaz9q5eP8k
+         GMSfRQ3v6Nhuw==
+Date:   Tue, 15 Aug 2023 10:53:47 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Yi-De Wu <yi-de.wu@mediatek.com>,
+        Yingshiuan Pan <yingshiuan.pan@mediatek.com>,
+        Ze-Yu Wang <ze-yu.wang@mediatek.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        David Bradil <dbrazdil@google.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Ivan Tseng <ivan.tseng@mediatek.com>,
+        Jade Shih <jades.shih@mediatek.com>,
+        My Chuang <my.chuang@mediatek.com>,
+        Shawn Hsiao <shawn.hsiao@mediatek.com>,
+        PeiLun Suei <peilun.suei@mediatek.com>,
+        Liju Chen <liju-clr.chen@mediatek.com>,
+        Willix Yeh <chi-shen.yeh@mediatek.com>
+Subject: Re: [PATCH v5 04/12] virt: geniezone: Add vcpu support
+Message-ID: <20230815095346.GA11083@willie-the-truck>
+References: <20230727080005.14474-1-yi-de.wu@mediatek.com>
+ <20230727080005.14474-5-yi-de.wu@mediatek.com>
+ <20230811170054.GB3593414-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230811193034.59124-1-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230811170054.GB3593414-robh@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 09:30:34PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Fri, Aug 11, 2023 at 11:00:54AM -0600, Rob Herring wrote:
+> On Thu, Jul 27, 2023 at 03:59:57PM +0800, Yi-De Wu wrote:
+> > From: "Yingshiuan Pan" <yingshiuan.pan@mediatek.com>
+> > 
+> > VMM use this interface to create vcpu instance which is a fd, and this
+> > fd will be for any vcpu operations, such as setting vcpu registers and
+> > accepts the most important ioctl GZVM_VCPU_RUN which requests GenieZone
+> > hypervisor to do context switch to execute VM's vcpu context.
+> > 
+> > Signed-off-by: Yingshiuan Pan <yingshiuan.pan@mediatek.com>
+> > Signed-off-by: Jerry Wang <ze-yu.wang@mediatek.com>
+> > Signed-off-by: Liju Chen <liju-clr.chen@mediatek.com>
+> > Signed-off-by: Yi-De Wu <yi-de.wu@mediatek.com>
+> > ---
+> >  arch/arm64/geniezone/Makefile           |   2 +-
+> >  arch/arm64/geniezone/gzvm_arch_common.h |  20 ++
+> >  arch/arm64/geniezone/vcpu.c             |  88 +++++++++
+> >  arch/arm64/geniezone/vm.c               |  11 ++
+> >  arch/arm64/include/uapi/asm/gzvm_arch.h |  30 +++
 > 
-> After we remove a GPIO chip that still has some requested descriptors,
-> gpiod_free_commit() will fail and we will never put the references to the
-> GPIO device and the owning module in gpiod_free().
-> 
-> Rework this function to:
-> - not warn on desc == NULL as this is a use-case on which most free
->   functions silently return
-> - put the references to desc->gdev and desc->gdev->owner unconditionally
->   so that the release callback actually gets called when the remaining
->   references are dropped by external GPIO users
+> I'm almost certain that the arm64 maintainers will reject putting this 
+> here. What is the purpose of the split with drivers/virt/? Do you plan 
+> to support another arch in the near future?
 
-...
+Thanks, Rob. You're absolutely right that this doesn't belong in the
+architecture code.
 
-> -	if (desc && desc->gdev && gpiod_free_commit(desc)) {
-
-The commit message doesn't explain disappearing of gdev check.
-
-> -		module_put(desc->gdev->owner);
-> -		gpio_device_put(desc->gdev);
-> -	} else {
-> +	/*
-> +	 * We must not use VALIDATE_DESC_VOID() as the underlying gdev->chip
-> +	 * may already be NULL but we still want to put the references.
-> +	 */
-> +	if (!desc)
-> +		return;
-> +
-> +	if (!gpiod_free_commit(desc))
->  		WARN_ON(extra_checks);
-> -	}
-> +
-> +	module_put(desc->gdev->owner);
-> +	gpio_device_put(desc->gdev);
->  }
-
-So, if gdev can be NULL, you will get an Oops with new code.
-
-To keep a status quo this needs to be rewritten.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Will
