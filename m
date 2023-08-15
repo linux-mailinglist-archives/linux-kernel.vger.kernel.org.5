@@ -2,158 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5747777C6A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 06:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F1477C6AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 06:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234681AbjHOENs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 00:13:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55538 "EHLO
+        id S231424AbjHOEOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 00:14:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233883AbjHOELZ (ORCPT
+        with ESMTP id S234599AbjHOELl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 00:11:25 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A0A2688;
-        Mon, 14 Aug 2023 21:08:29 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fe8242fc4dso41966035e9.1;
-        Mon, 14 Aug 2023 21:08:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692072507; x=1692677307;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=anT8jKhSoDVocUIDbiLfqy7dD2AOUweYjEowk202rTE=;
-        b=pXh3wdDuavmAXAWIopZ2tsVh81/1AfndoZfZCz6/vScMlf2CL0WH/iRhg39OnJbi96
-         Mi6oLJlMJ/nsCF54S1G09ZWjPd9vznFlZ3Zry6G3nn00GLfg2bHUu4RH1Ak6x3s8NDZL
-         pf4GLkgmBssOJX8mm7Tlwfi8nYngQz3TT6luj14EsoxJPXmMSHTyhvcg4kzCyG1aDN31
-         moOXSAe0JMwiawhxdNx3ZXSLwp2MFZ5kGCL3gFB4al8mQvJuPYMHOjWIBILFSIB+kKxr
-         6xFm04W11jT9eob7hbPxd4mV+/bqzsVLXYK1JUbcUmavyOY1wvPj+fcf8D06MyLRFmtl
-         YTfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692072507; x=1692677307;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=anT8jKhSoDVocUIDbiLfqy7dD2AOUweYjEowk202rTE=;
-        b=S0kBKxA78RHSAtVQQngTxN6IQzhkSChBPlZ8TAbUNq6F9w6dDnL+bGG5jcSE0rFsvP
-         M3vQ7dh8A4ETBMMlaYPhQDpUS2lXjHrsSdLTi6S5UzAB3GaU3dVaa6opLWugtAbPX7rp
-         E8MHT6vO/hG1gTxc3eALgHN9AarYGpx/h5OaUPAntkUzrurIrWsPUbdsS9ssxucVy1hK
-         YHbbPPSh+DfYVEh6RHh7+9t4qZcMHl6bcVZunIgf+9UDtWwFRlPBFiOotJpdiYp94AaN
-         2NTG3rQRtaDk6GpK+XJjvZwwz+D10B9ynV3bYDCH20jdUpSMAlTvhlgBb+P9rM5XEx/E
-         q+gw==
-X-Gm-Message-State: AOJu0YwhQDrdJapOUUnMo3t3nxNAqutWbGU0wHvImd6k676vZqN50UXd
-        e8T+3P61ED+JCwoq+kl+M+75xKfkHmmlpleeZugHkg==
-X-Google-Smtp-Source: AGHT+IGqJCddhtqQ3on45c/KeSIusPEi1z8qJoVUzy5BtApUx75l6r8iKgX+6HNVY9FMuRS0MrcGLw==
-X-Received: by 2002:a7b:cc8d:0:b0:3f4:d18f:b2fb with SMTP id p13-20020a7bcc8d000000b003f4d18fb2fbmr9080082wma.8.1692072507328;
-        Mon, 14 Aug 2023 21:08:27 -0700 (PDT)
-Received: from mmaatuq-HP-Laptop-15-dy2xxx.. ([2001:8f8:1163:806e:5eb8:ff79:bda:b103])
-        by smtp.gmail.com with ESMTPSA id p1-20020adfcc81000000b003179b3fd837sm16375286wrj.33.2023.08.14.21.08.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 21:08:26 -0700 (PDT)
-From:   Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
-To:     jirislaby@kernel.org, mickflemm@gmail.com, mcgrof@kernel.org,
-        kvalo@kernel.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
-Subject: [PATCH v2] ath5k: fix WARNING opportunity for swap.
-Date:   Tue, 15 Aug 2023 08:08:19 +0400
-Message-Id: <20230815040819.649455-1-mahmoudmatook.mm@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 15 Aug 2023 00:11:41 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 12FE11BCA;
+        Mon, 14 Aug 2023 21:08:43 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.201])
+        by gateway (Coremail) with SMTP id _____8CxyOhK+tpkuZ4YAA--.14979S3;
+        Tue, 15 Aug 2023 12:08:42 +0800 (CST)
+Received: from [10.20.42.201] (unknown [10.20.42.201])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxHCNH+tpkc+BaAA--.7836S3;
+        Tue, 15 Aug 2023 12:08:39 +0800 (CST)
+Subject: Re: [PATCH v6 1/2] soc: dt-bindings: add loongson-2 pm
+To:     Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        zhuyinbo@loongson.cn, Conor Dooley <conor+dt@kernel.org>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, soc@kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
+        Liu Peibao <liupeibao@loongson.cn>,
+        loongson-kernel@lists.loongnix.cn, loongarch@lists.linux.dev,
+        Liu Yun <liuyun@loongson.cn>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+References: <20230803063703.5659-1-zhuyinbo@loongson.cn>
+ <20230803063703.5659-2-zhuyinbo@loongson.cn>
+ <193f9138-57e0-4d4b-8225-54d38be9bfbc@app.fastmail.com>
+ <8efeac46-ebb7-fa05-3d88-7c21acd59c8b@loongson.cn>
+ <6d7335b4-63e2-4a7e-9620-8a0012558dfd@app.fastmail.com>
+ <0616585d-1459-b6ef-375b-890426004e01@loongson.cn>
+ <19feb595-e22a-4304-9b88-b5cb55949cd8@app.fastmail.com>
+ <71c53c37-a0a6-6b11-31d5-4455d2309927@loongson.cn>
+ <e04cf26e-2e38-4e87-b7b4-23dafadee00d@app.fastmail.com>
+From:   Yinbo Zhu <zhuyinbo@loongson.cn>
+Message-ID: <753d10b9-3b33-e7ef-a3d3-78090d67d648@loongson.cn>
+Date:   Tue, 15 Aug 2023 12:08:39 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <e04cf26e-2e38-4e87-b7b4-23dafadee00d@app.fastmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: AQAAf8BxHCNH+tpkc+BaAA--.7836S3
+X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
+        nUUI43ZEXa7xR_UUUUUUUUU==
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-coccinielle reported the following:
-./drivers/net/wireless/ath/ath5k/phy.c:1573:25-26: WARNING opportunity for swap()
 
-while trying to fix the above warning, it reveals that ath5k_hw_get_median_noise_floor() 
-had open-coded sort() functionality. Since ath5k_hw_get_median_noise_floor() only
-executes once every 10 seconds, any extra overhead due to sort() calling
-its "compare" and "swap" functions can be ignored, so replace the
-existing logic with a call to sort().
 
-Signed-off-by: Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
-Suggested-by: Jiri Slaby <jirislaby@kernel.org>
----
-changes in v2:
-- update the commit message explaining why open-coded sort()
-  functionality is replaced with a call to sort().
+在 2023/8/14 下午9:41, Arnd Bergmann 写道:
+> On Mon, Aug 14, 2023, at 13:57, Yinbo Zhu wrote:
+>> 在 2023/8/14 下午4:19, Arnd Bergmann 写道:
+>>> On Mon, Aug 14, 2023, at 09:57, Yinbo Zhu wrote:
+>>>> 在 2023/8/12 下午8:25, Arnd Bergmann 写道:
+>>>>> I found https://github.com/loongson-community/pmon source
+>>>>> code, and a reference to its origin at LSI Logic at
+>>>>> https://www.linux-mips.org/wiki/PMON but otherwise have
+>>>>> no idea about what this actually is, or how it relates
+>>>>> to your UEFI firmware. Did you add UEFI support to PMON,
+>>>>> or do you use it as a first stage loader that loads
+>>>>> the actual UEFI implementation (EDK2 or u-boot, I guess)?
+>>>>
+>>>>
+>>>> Pmon and uefi are two different firmware, and there is no connection
+>>>> between them.
+>>>
+>>> It sounds like we still have problems with terminology. >
+>>> I don't think categorizing UEFI as a firmware is correct,
+>>
+>>
+>> Sorry to have confused you, uefi firmware is our internal name, which is
+>> actually what you referred to as EDK2, the EDK2 need use UEFI.
+> 
+> Ok
+> 
+>>> it's the interface used by various firmware implementations
+>>> to load the operating system. As far as I understand,
+>>> loongarch currently mandates the use of UEFI in whichever
+>>> firmware is used, so if you have Pmon installed in ROM > and Pmon does not itself implement UEFI, it would have
+>>> to load some other firmware such as u-boot in order to
+>>> load a kernel through the UEFI protocol, right?
+>>
+>>
+>> PMON is an independent firmware and loader that can directly load the
+>> operating system and it does not require the use of UEFI.
+>>>
+>>> Has the assumption that loongarch requires UEFI changed?
+>>
+>>
+>> LoongArch embedded board was use Pmon firmware, The other one uses UEFI
+>> firmware (EDK2) on LoongArch platform.
+> 
+> I'm pretty sure we discussed this when the loongarch port
+> was originally merged, with the decisionto just use UEFI for
+> booting any kernel, as the legacy entry point for the ACPI
+> based environment was not really well-defined and the UEFI
+> stub was an easy alternative to have more commonality
+> with other architectures.
+> 
+> I see this was already extended for embedded CPUs to use
+> the uefi stub with DT in commit 88d4d957edc70 ("LoongArch: Add
+> FDT booting support from efi system table"), which seems like
+> the right direction. >
+> Can you explain why this board would want yet another method
+> for entering the kernel? Is there any documentation for the
+> boot protocol?
 
-- this part of updating the commit message is suggested by
-   Jeff Johnson <quic_jjohnson@quicinc.com>
+Yes, you're right, the latest PMON does indeed support UEFI, the PMON
+used in the product code is still outdated and does not support UEFI.
 
-changes in v1:
-- replace the entire double loop with sort()
-  as suggested by Jiri Slaby <jirislaby@kernel.org>
----
- drivers/net/wireless/ath/ath5k/phy.c | 29 +++++++++++++---------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
+Actually, whether using EDK2, Pmon firmware, or other firmware, the
+LoongArch platform's s3 (suspend-to-ram) requires a suspend-address to
+be defined, if dts is supported, it is defined in dts, and if acpi table
+is supported, it is defined in acpi table.
 
-diff --git a/drivers/net/wireless/ath/ath5k/phy.c b/drivers/net/wireless/ath/ath5k/phy.c
-index 5797ef9c73d7..7ee4e1616f45 100644
---- a/drivers/net/wireless/ath/ath5k/phy.c
-+++ b/drivers/net/wireless/ath/ath5k/phy.c
-@@ -26,6 +26,7 @@
- 
- #include <linux/delay.h>
- #include <linux/slab.h>
-+#include <linux/sort.h>
- #include <asm/unaligned.h>
- 
- #include "ath5k.h"
-@@ -1554,6 +1555,11 @@ static void ath5k_hw_update_nfcal_hist(struct ath5k_hw *ah, s16 noise_floor)
- 	hist->nfval[hist->index] = noise_floor;
- }
- 
-+static int cmps16(const void *a, const void *b)
-+{
-+	return *(s16 *)a - *(s16 *)b;
-+}
-+
- /**
-  * ath5k_hw_get_median_noise_floor() - Get median NF from history buffer
-  * @ah: The &struct ath5k_hw
-@@ -1561,25 +1567,16 @@ static void ath5k_hw_update_nfcal_hist(struct ath5k_hw *ah, s16 noise_floor)
- static s16
- ath5k_hw_get_median_noise_floor(struct ath5k_hw *ah)
- {
--	s16 sort[ATH5K_NF_CAL_HIST_MAX];
--	s16 tmp;
--	int i, j;
--
--	memcpy(sort, ah->ah_nfcal_hist.nfval, sizeof(sort));
--	for (i = 0; i < ATH5K_NF_CAL_HIST_MAX - 1; i++) {
--		for (j = 1; j < ATH5K_NF_CAL_HIST_MAX - i; j++) {
--			if (sort[j] > sort[j - 1]) {
--				tmp = sort[j];
--				sort[j] = sort[j - 1];
--				sort[j - 1] = tmp;
--			}
--		}
--	}
-+	s16 sorted_nfval[ATH5K_NF_CAL_HIST_MAX];
-+	int i;
-+
-+	memcpy(sorted_nfval, ah->ah_nfcal_hist.nfval, sizeof(sorted_nfval));
-+	sort(sorted_nfval, ATH5K_NF_CAL_HIST_MAX, sizeof(s16), cmps16, NULL);
- 	for (i = 0; i < ATH5K_NF_CAL_HIST_MAX; i++) {
- 		ATH5K_DBG(ah, ATH5K_DEBUG_CALIBRATE,
--			"cal %d:%d\n", i, sort[i]);
-+			"cal %d:%d\n", i, sorted_nfval[i]);
- 	}
--	return sort[(ATH5K_NF_CAL_HIST_MAX - 1) / 2];
-+	return sorted_nfval[(ATH5K_NF_CAL_HIST_MAX - 1) / 2];
- }
- 
- /**
--- 
-2.34.1
+> 
+>>>>> Is this executing directly from ROM then?
+>>>>
+>>>> Yes.
+>>>
+>>> Is this the only runtime call into the firmware,
+>>
+>>
+>> Only when suspend-to-ram occurs, the kernel will call into the firmware.
+>> No other case.
+> 
+> Ok
+> 
+>>> or are there
+>>> others that are either already called from mainline kernels
+>>> or in your downsteam implementation?
+>>>
+>>> How do you ensure that the DTB matches the actual ROM code
+>>> after rebuilding Pmon? Does Pmon itself fill that field with
+>>> the correct address, or do you rely on it being a hardcoded
+>>> constant?
+>>
+>>
+>> Use Pmon, firmware team will always ensure that DTB matches the actual
+>> ROM code.  The "suspend-address" of dtb and pmon entry address will
+>> synchronized modification by firmware team.
+> 
+> Ok.  So it's linked against libfdt to fill the dtb information,
+> or do you have to provide a dtb blob that matches the firmware?
+
+
+For pmon firmware, the dtb was as part of firmware, the firmware has
+defined the address of the DTB's suspend and the address of the firmware
+entry, and is consistent.
+
+Thanks,
+Yinbo
 
