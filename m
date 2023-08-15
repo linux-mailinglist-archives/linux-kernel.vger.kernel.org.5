@@ -2,107 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0C377CDA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 15:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C6877CDB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237422AbjHON6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 09:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47964 "EHLO
+        id S237466AbjHOOBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 10:01:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237461AbjHON60 (ORCPT
+        with ESMTP id S237073AbjHOOAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 09:58:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0929D19A1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 06:58:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692107895; x=1723643895;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=AMwlw5rr1xM9LnWBVlGLBOruP5s9VUwls2zs+mXeGDo=;
-  b=O9Itv/dgdOHv2eCAyl0pdJ4dEBPw1a8QuxnqavR93JHEoMB56zkqH+DL
-   ij2UF18Kmweeke9MZPp69ZX7IGQIqBeMgUuiMVCnslcsLyPhM0jkQ/Es/
-   oPQJpzOLWZ0xiZRmxVrOXotyQYyf2CkKa+N9u9gx8ci5xcdWOEL2Wx36i
-   POp2mgsffopWibLmGD9LXy9rxPmtGSR7Rjlv8EyXjCQRjAhGazXmSBMPn
-   THaIhq2pp5Y0G4q11lZK75Aoc5v/k7eYCmvKcUFwNBqbK06s5iBVRTbBP
-   fv9JpjT1qzQe792xRbnT4XRlFPk0EsKYLrjTgMjfF6NnhfBz48s/BFH22
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="375050874"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="375050874"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 06:58:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="683660599"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="683660599"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga003.jf.intel.com with ESMTP; 15 Aug 2023 06:58:04 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qVuYd-004Act-0n;
-        Tue, 15 Aug 2023 16:58:03 +0300
-Date:   Tue, 15 Aug 2023 16:58:02 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 19/25] ASoC: mediatek: Convert to generic PCM copy ops
-Message-ID: <ZNuEajC4gqoqniEw@smile.fi.intel.com>
-References: <20230814115523.15279-1-tiwai@suse.de>
- <20230814115523.15279-20-tiwai@suse.de>
+        Tue, 15 Aug 2023 10:00:37 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 860BDD1;
+        Tue, 15 Aug 2023 07:00:36 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe0c566788so8537724e87.0;
+        Tue, 15 Aug 2023 07:00:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692108035; x=1692712835;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0HpL5vZ5TK3sBIkkNc1Nff9Nd8amkfnZofZ3YOp6jpc=;
+        b=b9zaGkxrBEpPcKvR+VRIqgJK+Vm0P/VtpTqg1CuFCnl2LAjdF8bXqqvBgMnXuKGTzD
+         p3zb6np7huhjju0qs+mm3d16tYc5pSCjtr1bZHqX8YwJhfxVtX1rmu10pYI5m1zEaQ54
+         33HH8zVPBzif7R+23M6IxxbiMTXHbG4t/JUPErNMLTTUdsU2UQRh4rtV4oJiELo+b8x+
+         xVJYMU2CPai81kZmWr75Hoay+aYN4RkrbY1F//QYvQFVwNxk4CRkNXToqsRRRsqpwZWP
+         TdpOFRnLhpEmGYRgbMt1B+VN4crFH1zJdnWNoX9xmm8iUj0+yXTPhQjnmmEU+MSUOsGV
+         bGDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692108035; x=1692712835;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0HpL5vZ5TK3sBIkkNc1Nff9Nd8amkfnZofZ3YOp6jpc=;
+        b=QRJmukqwb0r0t9m4PnQAq7ADaJQCMZpkqnovTyoSHHxuBI57/jNT2gKTnY3iMMdNe2
+         kLlnv9dlbdC1KMldLeAiFCEua+lrPDhU8x0lOGWdhdOvQVpxAi3DMom1buRibFvfdpzk
+         fpSZ73+rw8czu0JMY9YoOrRuCWA0uYyHuRQomAeNNO24+avhbuSrIHicg1kILyBjkqND
+         szzQgHxuNkBuGSELgnD85BsDqnSNAHanMSKHLW/KTUXpBYPmxhu1pI2y+kRDxiq9hpS6
+         dlUNoYnYbkmZvUAOkqDnwMXPp7WeJY2wYrxhN61frM6J/TE2//6NoT2iXNwrT7azKeYC
+         /qXQ==
+X-Gm-Message-State: AOJu0Yxab+5piwF0vCYOuo5Gmsm70YX+cVKHhYY0H0mKMyFwuwiZR81g
+        jFw0CLBoj4cUeexsppcRo1M=
+X-Google-Smtp-Source: AGHT+IEk+ezPDL0N8dKyfHvugYBvOwY6+UjD1tlCJXfUzMr36l+/tByYEC5NUUTQRjZxPOlRPd/ABw==
+X-Received: by 2002:a05:6512:746:b0:4fe:958:88ac with SMTP id c6-20020a056512074600b004fe095888acmr8223617lfs.6.1692108034313;
+        Tue, 15 Aug 2023 07:00:34 -0700 (PDT)
+Received: from fedora.. (dh207-96-14.xnet.hr. [88.207.96.14])
+        by smtp.googlemail.com with ESMTPSA id a26-20020aa7d91a000000b00525740aa68dsm1049042edr.36.2023.08.15.07.00.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Aug 2023 07:00:33 -0700 (PDT)
+From:   Robert Marko <robimarko@gmail.com>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, quic_gurus@quicinc.com,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     computersforpeace@gmail.com, Robert Marko <robimarko@gmail.com>
+Subject: [PATCH v2 1/5] dt-bindings: firmware: qcom,scm: Document SDI disable
+Date:   Tue, 15 Aug 2023 15:59:34 +0200
+Message-ID: <20230815140030.1068590-1-robimarko@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230814115523.15279-20-tiwai@suse.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 01:55:17PM +0200, Takashi Iwai wrote:
-> This patch converts the mediatek BT SCO driver code to use the new
-> unified PCM copy callback.  It's a straightforward conversion from
-> *_user() to *_iter() variants.  As copy_form/to_iter() updates the
-> internal offset at each read/write, we can drop the cur_*_idx counter
-> in the loop, too.
-> 
-> Note that copy_from/to_iter() returns the copied bytes, hence the
-> error condition is inverted from copy_from/to_user().
+IPQ5018 has SDI (Secure Debug Image) enabled by TZ by default, and that
+means that WDT being asserted or just trying to reboot will hang the board
+in the debug mode and only pulling the power and repowering will help.
+Some IPQ4019 boards like Google WiFI have it enabled as well.
 
-...
+So, lets add a boolean property to indicate that SDI should be disabled.
 
-> +		if (!copy_to_iter(bt->rx_packet_buf + cur_read_idx,
+Signed-off-by: Robert Marko <robimarko@gmail.com>
+---
+ Documentation/devicetree/bindings/firmware/qcom,scm.yaml | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-!= read_size ?
-
-> +				  read_size, buf)) {
->  			dev_warn(bt->dev, "%s(), copy_to_user fail\n",
-
-Forgot to fix the message.
-
->  				 __func__);
->  			return -EFAULT;
-
-...
-
-> +		if (!copy_from_iter(bt->tx_packet_buf + cur_write_idx,
-> +				    write_size, buf)) {
->  			dev_warn(bt->dev, "%s(), copy_from_user fail\n",
->  				 __func__);
->  			return -EFAULT;
-
-As per above.
-
+diff --git a/Documentation/devicetree/bindings/firmware/qcom,scm.yaml b/Documentation/devicetree/bindings/firmware/qcom,scm.yaml
+index 4233ea839bfc..bf753192498a 100644
+--- a/Documentation/devicetree/bindings/firmware/qcom,scm.yaml
++++ b/Documentation/devicetree/bindings/firmware/qcom,scm.yaml
+@@ -89,6 +89,14 @@ properties:
+       protocol to handle sleeping SCM calls.
+     maxItems: 1
+ 
++  qcom,sdi-disable:
++    description:
++      Indicates that the SDI (Secure Debug Image) has been enabled by TZ
++      by default and it needs to be disabled.
++      If not disabled WDT assertion or reboot will cause the board to hang
++      in the debug mode.
++    type: boolean
++
+   qcom,dload-mode:
+     $ref: /schemas/types.yaml#/definitions/phandle-array
+     items:
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.41.0
 
