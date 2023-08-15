@@ -2,300 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E54877CD1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 15:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3322977CD23
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 15:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237351AbjHONEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 09:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50116 "EHLO
+        id S237368AbjHONGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 09:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237343AbjHONDj (ORCPT
+        with ESMTP id S237377AbjHONFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 09:03:39 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2075.outbound.protection.outlook.com [40.107.20.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0513B0;
-        Tue, 15 Aug 2023 06:03:37 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=haPdl79MY8m0Tr5k1DOSctah1Vs3B4vDGPbbr5Jl8kkiS6RWu0pLkfep5vBK/hoArkgZfFMjwLUegQd7MuzlqMexQ//yiQi2Sj6NdwjpFt5EAL3e+lzRvAukh189bX8IBk7hUjhUxU0Jox9fqVOUksOci0QABtlfmapL1CEc9AwPWPZKbQTqX87VMqjW1kXqefeW9GkQelu9Osgd+0EytQvpK/RY+iLVEp0rJfBCwrDt6HSwwRjj+C8PSGJJpYudyPDV1GcYkZjZtwqfNS+GAYwyIk5V2tfCFxzpkBEWlGf945ITDjgVH6vRZg0AlfXYI1//vH7QJjy+3zndxnUiVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SwV+JXX2y0zJq30DtD2p5N1XWtlP9TfTpglGD2Cu5LE=;
- b=lZM3RkSjzrQH56XWd42doobofxie0H3kF0D8sbjKRWmKhxtSWR7U/fnLLWZgGHV4a9IhriQHUwI0h5vUDOe5JHc4RMiW8ILlvghaFrWoB7ca2aZtz/ONEoqsyTRXDPkgrBHcMpw0GQbA2Mq1ZKawtvaoeP9LFxm2qwpNZ47UvkmCt8YSaHFrndG4Rl1ynIOSmHMUhZTxQZ8DZXuVFwH18bRCsmsbAfkKE9eeHjJeXHNpyvYc6MGV4y60WQBLnBtQt60+vyJkSF+RO2PJ+jC4gk94RVB8DMJn91pWzutmeJM3zEQi0IG0t1HihwA+JHgsSdSyK1VkwaVTvgjSQKldhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SwV+JXX2y0zJq30DtD2p5N1XWtlP9TfTpglGD2Cu5LE=;
- b=ninby9EwqS6PjWzh5CRHHsxKbsDsT8OM/ZANhIKbvjBk3RvRd9C6WCNp2gbkclTdBZ5I6aDfMbwQgG+NuhrPe3YGiuiD8fJa9V/1/8Ejg0fL1lulJix/3MC24K75zINsseaUMXG4yyQL3YL+DtR4PFul+Qx/O3dStI5PrtgoEeg=
-Received: from DU2PR04MB8630.eurprd04.prod.outlook.com (2603:10a6:10:2dd::15)
- by PAWPR04MB9718.eurprd04.prod.outlook.com (2603:10a6:102:381::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Tue, 15 Aug
- 2023 13:03:34 +0000
-Received: from DU2PR04MB8630.eurprd04.prod.outlook.com
- ([fe80::175:d311:2cb4:7915]) by DU2PR04MB8630.eurprd04.prod.outlook.com
- ([fe80::175:d311:2cb4:7915%7]) with mapi id 15.20.6678.025; Tue, 15 Aug 2023
- 13:03:34 +0000
-From:   Pankaj Gupta <pankaj.gupta@nxp.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "clin@suse.com" <clin@suse.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "pierre.gondois@arm.com" <pierre.gondois@arm.com>,
-        Jacky Bai <ping.bai@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        Wei Fang <wei.fang@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        Bough Chen <haibo.chen@nxp.com>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Gaurav Jain <gaurav.jain@nxp.com>,
-        "alexander.stein@ew.tq-group.com" <alexander.stein@ew.tq-group.com>,
-        Sahil Malhotra <sahil.malhotra@nxp.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>,
-        Varun Sethi <V.Sethi@nxp.com>
-Subject: RE: [EXT] Re: [PATCH v4 2/7] arm64: dts: imx8ulp-evk: added nxp
- secure enclave firmware
-Thread-Topic: [EXT] Re: [PATCH v4 2/7] arm64: dts: imx8ulp-evk: added nxp
- secure enclave firmware
-Thread-Index: AQHZtLo4vD63ufm320WJ9kJWTP24Za+2dl8AgBIVjdCAGBmKgIAK4p4Q
-Date:   Tue, 15 Aug 2023 13:03:34 +0000
-Message-ID: <DU2PR04MB8630E7B069A9F9CF2889636C9514A@DU2PR04MB8630.eurprd04.prod.outlook.com>
-References: <20230712121219.2654234-1-pankaj.gupta@nxp.com>
- <20230712121219.2654234-3-pankaj.gupta@nxp.com>
- <1ac2fb68-02e0-ddfe-87aa-fcd093779009@linaro.org>
- <DU2PR04MB86306E154C195F69368D3AB8950DA@DU2PR04MB8630.eurprd04.prod.outlook.com>
- <701ad779-0d1e-e8e6-8eba-294452cfb0bc@linaro.org>
-In-Reply-To: <701ad779-0d1e-e8e6-8eba-294452cfb0bc@linaro.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU2PR04MB8630:EE_|PAWPR04MB9718:EE_
-x-ms-office365-filtering-correlation-id: 637d0243-f9d7-4a75-18d4-08db9d900858
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: XCUUnZoJ/qoildlTzr62qyU8QQlBaaNDnsssbgwFSnAaZ8xrgYHNNovna/ZSAFCu/73W7qc8gpWu3fh05LVinpGGyWT1Mp8qcLzh+vnlh6lSfh+RRkYjxCoyEQc6PvrdHlQh5zqwdFqJDnhxkcPfz3wsyasZW4VK7RqCR9NRDXpAr5hVxt6o4Pn6juiOt9rgi9CiWSUb3ejcvE4tD3F9GUm2z6DnsNMpvtls6D15CmT5+eDNRPsxgVituC4DGMj7a7q6XmIkJv02KTHCilPG9G9ZRT9NbUCbxnnNEx41VPhJJdqcN1JSUk+WT8wFvsrJSEpVXlxZg6WPINHhCa3c2/7TK43zlXUPBhwkx6d5cp/ZerB1i7Fb93+axqyUN4AeytF2Z1X0mq6IUh6uWbT2aN8HPQIceJWl/4Yo4Umkm/hcmoEHy2KAXyN9zNWe5RS5Aj/AY7smBj3Lug8r3LoFwYQbvnQEfPPUzQK+m3LojfnzlzOpYecZcvpO3PREUlTRrhPoAp212NxBMjy1BiSIjD/rSmR09b3tGZBD/eroe8IIohY4NWGKdcynPVSgne3DSmkfdCw50aVMn6+67YlwcACil0pCbguJbrWaaMf3bTWM/DcDdZhpaePz+fuwqsiYXsiHI/yoT0ZOjOw3WzAE0x8DxRceFy9GV9pXbuXUp7s=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8630.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(346002)(396003)(376002)(366004)(451199024)(1800799009)(186009)(478600001)(71200400001)(966005)(38100700002)(76116006)(55016003)(38070700005)(921005)(6506007)(66476007)(66556008)(6636002)(66946007)(316002)(5660300002)(41300700001)(26005)(53546011)(9686003)(122000001)(33656002)(45080400002)(86362001)(110136005)(83380400001)(64756008)(7696005)(66446008)(2906002)(8676002)(44832011)(7416002)(8936002)(52536014)(32563001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?afxE2c/9StKhZjdaTvVSNpKv2kqIWOzQ9UoQLMjU/9XRkKDxSedpGI6cckrX?=
- =?us-ascii?Q?v5HL5mC9rrdW5iHkMegSwrzx/FHadB1awqkLLrat2HmmPmv2RSkPdU3t9MbF?=
- =?us-ascii?Q?62tL0jB9/MwWqbdnGs+aocM02U4i3VOIce3ow0ocbQucOcg6wpEQz6K/SK0/?=
- =?us-ascii?Q?HDrF867uZaUgf1UVmdWwQD1cWDG6lZDRACvRKd6c0u02D/ufglfntU7t+/tj?=
- =?us-ascii?Q?5NRCFH9rSK0EhlOlnpcqPNzvYbAq8RfdralGyGCXyRtrTh92l3DBcEpGaUI9?=
- =?us-ascii?Q?pNtn32OVpQkji8EUeKkWD384eg8gfGqshaZJLJLAAepoa04rqgn4TXwLDf0a?=
- =?us-ascii?Q?jwMNQxjNHAO0fiZMhfch8H1A+I1RcXeW/rwaFNkOf0LigbfJjDRvB/O3TNsl?=
- =?us-ascii?Q?Y3sAoJNC7oFNjrhQ6v24QYUxaF9bWEeuKJ60hH5QApGL/gOMr/5vYE75Maph?=
- =?us-ascii?Q?xgmbaLfHjQHPrpbD42x7bB8YOmWGIJMnxAn6xh8pAUP1oW/Ad9KIiMNqSetw?=
- =?us-ascii?Q?OhzQW4HGtWBihW1VSu8rbV1t4g639Yomx6+w/MpNOhHwWB4ApaC6GxFF89g4?=
- =?us-ascii?Q?6hrfHqsXYMLfmuNDEl02lKnFe8B1n81q6ktsqzYAOIua8UXZUIGc1ULOL7jx?=
- =?us-ascii?Q?xKB10O8dYu5xqfBdgBLD1LIF9aeiUGREgUoVqCBQFxCsCF+J2pVB5CQGipy6?=
- =?us-ascii?Q?cJ45qUpq9ZRAxQouAp2zsJvKbDlOyo1xt6q6GnHHhuyCTZfFtLcH+U72q1SP?=
- =?us-ascii?Q?oqZXVUi5/5yKTNoyAeA2y7IB58geXwUlGBSNqxEanN0yA40vXjes/rejVcxQ?=
- =?us-ascii?Q?lklzOWI6uAMY7W8fp47KVABl58G1U/7HAcipQt/QzIS6v1XT6/PRQdy676Kb?=
- =?us-ascii?Q?S41lMg/6Km1c2l9l2zrg8JfGW8QQc1fFRcCXY1jKbRmx4gZUWISSQMKDKnry?=
- =?us-ascii?Q?d4KVb7HqUH8hZ98WXqvkd2STV/lTo9IjKTrFXSJXWxLGWJ+5JTjeswG3u+71?=
- =?us-ascii?Q?8iKLqs9QIzmcFDjyWtlMA7V/3ggtZPnDxHD9BAtrd4lhmTqTRmhS8Rm/Rc2o?=
- =?us-ascii?Q?CwXNVKckqIs4Lubw52v9/uoUUATN5IHWTscRvx+BkGSMXHyyxhvoC7KO22s6?=
- =?us-ascii?Q?PVtJgefbSfUNJC1DgWI2mK1P1YQCdybFfl5TsGeGQg8alDh5NoQiWBib7LNN?=
- =?us-ascii?Q?53Qf5vC+Y8JFDCLkGCMVF/YITg/FoGngPITf9V0jxxd5njVGjp1ACNLb6giz?=
- =?us-ascii?Q?1Gbngw8w39oUVu3372IZONo9cJBwiZB75+6SwdUxN08TTmuUj59MlilSMqOu?=
- =?us-ascii?Q?GcvolAvmeue8rBb5PGsizKUUI8i/06i20Yff73KFsYdzw57kvMs44zch+j0o?=
- =?us-ascii?Q?3RyXE1kcqKiVUwFt2Tgjn7M2TNOijv1h05tTmiz6t+5tQ1L7F1YQw7OmCkRZ?=
- =?us-ascii?Q?rbkNTKgiTDdlPUDifgZ3R3lvtHwY0bzLPv8RdlFQkMg9m6vFPR4BMV8ncIPn?=
- =?us-ascii?Q?Imo613mJpC/M3tHGvTT1DkgnIMLRsU76kRGVdkt3FUfSKlG2SpjAQWZfN4QX?=
- =?us-ascii?Q?jDSQKDcfRWsVT5VRH/aflkgpc1JlkJF590de+RQ0?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 15 Aug 2023 09:05:53 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5B88C10C0;
+        Tue, 15 Aug 2023 06:05:48 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3BC931063;
+        Tue, 15 Aug 2023 06:06:30 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.3.119])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D01AC3F6C4;
+        Tue, 15 Aug 2023 06:05:45 -0700 (PDT)
+Date:   Tue, 15 Aug 2023 14:05:36 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     James Clark <james.clark@arm.com>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        catalin.marinas@arm.com, Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Suzuki Poulose <suzuki.poulose@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH V13 - RESEND 02/10] arm64/perf: Add BRBE registers and
+ fields
+Message-ID: <ZNt3mQeGbql4oi55@FVFF77S0Q05N>
+References: <20230711082455.215983-1-anshuman.khandual@arm.com>
+ <20230711082455.215983-3-anshuman.khandual@arm.com>
+ <20230728162011.GA22050@willie-the-truck>
+ <89ce4bc4-00c5-a763-3179-e1d3e9f198b7@arm.com>
+ <937468a1-b325-7d05-8daf-765f911c9240@arm.com>
+ <ZMd5gCOHqnGRc0Ja@FVFF77S0Q05N>
+ <f5437bfc-e458-bc23-bc31-a308aa412463@arm.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8630.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 637d0243-f9d7-4a75-18d4-08db9d900858
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Aug 2023 13:03:34.3330
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SqSRpYeoczIGVJ72jSoSizPootJBxPJw2A/2mzim2YGRQ62tAzkPNulGAJQNtrCmWhmp2AkKBOpXQSwVtCPpPA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR04MB9718
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f5437bfc-e458-bc23-bc31-a308aa412463@arm.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Sent: Tuesday, August 8, 2023 8:19 PM
-> To: Pankaj Gupta <pankaj.gupta@nxp.com>; shawnguo@kernel.org;
-> s.hauer@pengutronix.de; kernel@pengutronix.de; clin@suse.com;
-> conor+dt@kernel.org; pierre.gondois@arm.com; Jacky Bai
-> <ping.bai@nxp.com>; Clark Wang <xiaoning.wang@nxp.com>; Wei Fang
-> <wei.fang@nxp.com>; Peng Fan <peng.fan@nxp.com>; Bough Chen
-> <haibo.chen@nxp.com>; festevam@gmail.com; dl-linux-imx <linux-
-> imx@nxp.com>; davem@davemloft.net; robh+dt@kernel.org;
-> krzysztof.kozlowski+dt@linaro.org; linux-arm-kernel@lists.infradead.org;
-> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Gaurav Jain
-> <gaurav.jain@nxp.com>; alexander.stein@ew.tq-group.com; Sahil Malhotra
-> <sahil.malhotra@nxp.com>; Aisheng Dong <aisheng.dong@nxp.com>;
-> Varun Sethi <V.Sethi@nxp.com>
-> Subject: Re: [EXT] Re: [PATCH v4 2/7] arm64: dts: imx8ulp-evk: added nxp
-> secure enclave firmware
->=20
-> Caution: This is an external email. Please take care when clicking links =
-or
-> opening attachments. When in doubt, report the message using the 'Report
-> this email' button
->=20
->=20
-> On 08/08/2023 13:07, Pankaj Gupta wrote:
-> >
-> >
-> >> -----Original Message-----
-> >> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> >> Sent: Thursday, July 13, 2023 12:08 AM
-> >> To: Pankaj Gupta <pankaj.gupta@nxp.com>; shawnguo@kernel.org;
-> >> s.hauer@pengutronix.de; kernel@pengutronix.de; clin@suse.com;
-> >> conor+dt@kernel.org; pierre.gondois@arm.com; Jacky Bai
-> >> <ping.bai@nxp.com>; Clark Wang <xiaoning.wang@nxp.com>; Wei Fang
-> >> <wei.fang@nxp.com>; Peng Fan <peng.fan@nxp.com>; Bough Chen
-> >> <haibo.chen@nxp.com>; festevam@gmail.com; dl-linux-imx <linux-
-> >> imx@nxp.com>; davem@davemloft.net; robh+dt@kernel.org;
-> >> krzysztof.kozlowski+dt@linaro.org;
-> >> linux-arm-kernel@lists.infradead.org;
-> >> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Gaurav Jain
-> >> <gaurav.jain@nxp.com>; alexander.stein@ew.tq-group.com; Sahil
-> >> Malhotra <sahil.malhotra@nxp.com>; Aisheng Dong
-> >> <aisheng.dong@nxp.com>; Varun Sethi <V.Sethi@nxp.com>
-> >> Subject: [EXT] Re: [PATCH v4 2/7] arm64: dts: imx8ulp-evk: added nxp
-> >> secure enclave firmware
-> >>
-> >> Caution: This is an external email. Please take care when clicking
-> >> links or opening attachments. When in doubt, report the message using
-> >> the 'Report this email' button
+On Tue, Aug 15, 2023 at 11:17:19AM +0100, James Clark wrote:
+> 
+> 
+> On 31/07/2023 10:06, Mark Rutland wrote:
+> > On Mon, Jul 31, 2023 at 08:03:21AM +0530, Anshuman Khandual wrote:
 > >>
 > >>
-> >> On 12/07/2023 14:12, Pankaj Gupta wrote:
-> >>> Added support for NXP secure enclave called EdgeLock Enclave
-> >>> firmware
-> >>> (se-fw) for imx8ulp-evk.
+> >> On 7/28/23 22:22, James Clark wrote:
 > >>>
-> >>> Signed-off-by: Pankaj Gupta <pankaj.gupta@nxp.com>
-> >>> ---
-> >>>  arch/arm64/boot/dts/freescale/imx8ulp.dtsi | 12 +++++++++++-
-> >>>  1 file changed, 11 insertions(+), 1 deletion(-)
 > >>>
-> >>> diff --git a/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
-> >>> b/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
-> >>> index 3ddc0f3125b3..10ed31974a6f 100644
-> >>> --- a/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
-> >>> +++ b/arch/arm64/boot/dts/freescale/imx8ulp.dtsi
-> >>> @@ -114,7 +114,7 @@ sosc: clock-sosc {
-> >>>               #clock-cells =3D <0>;
-> >>>       };
+> >>> On 28/07/2023 17:20, Will Deacon wrote:
+> >>>> On Tue, Jul 11, 2023 at 01:54:47PM +0530, Anshuman Khandual wrote:
+> >>>>> This adds BRBE related register definitions and various other related field
+> >>>>> macros there in. These will be used subsequently in a BRBE driver which is
+> >>>>> being added later on.
+> >>>>>
+> >>>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> >>>>> Cc: Will Deacon <will@kernel.org>
+> >>>>> Cc: Marc Zyngier <maz@kernel.org>
+> >>>>> Cc: Mark Rutland <mark.rutland@arm.com>
+> >>>>> Cc: linux-arm-kernel@lists.infradead.org
+> >>>>> Cc: linux-kernel@vger.kernel.org
+> >>>>> Tested-by: James Clark <james.clark@arm.com>
+> >>>>> Reviewed-by: Mark Brown <broonie@kernel.org>
+> >>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> >>>>> ---
+> >>>>>  arch/arm64/include/asm/sysreg.h | 103 +++++++++++++++++++++
+> >>>>>  arch/arm64/tools/sysreg         | 158 ++++++++++++++++++++++++++++++++
+> >>>>>  2 files changed, 261 insertions(+)
+> >>>>>
+> >>>>> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> >>>>> index b481935e9314..f95e30c13c8b 100644
+> >>>>> --- a/arch/arm64/include/asm/sysreg.h
+> >>>>> +++ b/arch/arm64/include/asm/sysreg.h
+> >>>>> @@ -163,6 +163,109 @@
+> >>>>>  #define SYS_DBGDTRTX_EL0		sys_reg(2, 3, 0, 5, 0)
+> >>>>>  #define SYS_DBGVCR32_EL2		sys_reg(2, 4, 0, 7, 0)
+> >>>>>  
+> >>>>> +#define __SYS_BRBINFO(n)		sys_reg(2, 1, 8, ((n) & 0xf), ((((n) & 0x10)) >> 2 + 0))
+> >>>>> +#define __SYS_BRBSRC(n)			sys_reg(2, 1, 8, ((n) & 0xf), ((((n) & 0x10)) >> 2 + 1))
+> >>>>> +#define __SYS_BRBTGT(n)			sys_reg(2, 1, 8, ((n) & 0xf), ((((n) & 0x10)) >> 2 + 2))
+> >>>>
+> >>>> It's that time on a Friday but... aren't these macros busted? I think you
+> >>>> need brackets before adding the offset, otherwise wouldn't, for example,
+> >>>> target registers 0-15 all access info register 0 and __SYS_BRBTGT(16) would
+> >>>> then start accessing source register 0?
+> >>>>
+> >>>> I'm surprised that the compiler doesn't warn about this, but even more
+> >>>> surprised that you managed to test this.
+> >>>>
+> >>>> Please tell me I'm wrong!
+> >>>>
+> >>>> Will
 > >>>
-> >>> -     sram@2201f000 {
-> >>> +     sram0: sram@2201f000 {
-> >>>               compatible =3D "mmio-sram";
-> >>>               reg =3D <0x0 0x2201f000 0x0 0x1000>;
+> >>> No I think you are right, it is wrong. Luckily there is already an
+> >>> extraneous bracket so you you can fix it by moving one a place down:
 > >>>
-> >>> @@ -161,6 +161,16 @@ s4muap: mailbox@27020000 {
-> >>>                       #mbox-cells =3D <2>;
-> >>>               };
+> >>>   sys_reg(2, 1, 8, ((n) & 0xf), ((((n) & 0x10) >> 2) + 2))
 > >>>
-> >>> +             ele_fw: se-fw {
-> >>> +                     compatible =3D "fsl,imx-ele";
-> >>> +                     mboxes =3D <&s4muap 0 0 &s4muap 1 0>;
-> >>> +                     mbox-names =3D "tx", "rx";
-> >>> +                     fsl,mu-did =3D <7>;
-> >>> +                     fsl,mu-id =3D <2>;
-> >>> +                     sram-pool =3D <&sram0>;
+> >>> It's interesting because the test [1] is doing quite a bit and looking
+> >>> at the branch info, and that src and targets match up to function names.
+> >>> I also manually looked at the branch buffers and didn't see anything
+> >>> obviously wrong like things that looked like branch infos in the source
+> >>> or target fields. Will have to take another look to see if it would be
+> >>> possible for the test to catch this.
+> >>>
+> >>> James
+> >>>
+> >>> [1]:
+> >>> https://gitlab.arm.com/linux-arm/linux-jc/-/commit/3a7ddce70c2daadb63fcc511de0a89055ca48b32
 > >>
-> >> It does not look like you tested the DTS against bindings. Please run
-> >> `make dtbs_check` (see
-> >> Documentation/devicetree/bindings/writing-schema.rst or
+> >> ((((n) & 0x10)) >> 2 + 2) ---> ((((n) & 0x10) >> 2) + 2)
 > >>
+> >> The additional brackets are useful in explicitly telling the compiler but
+> >> what it the compiler is just doing the right thing implicitly i.e computing
+> >> the shifting operation before doing the offset addition.
+> > 
+> > No; that is not correct. In c, '+' has higher precedence than '>>'.
+> > 
+> > For 'a >> b + c' the compiler *must* treat that as 'a >> (b + c)', and not as
+> > '(a >> b) + c'
+> > 
+> > That's trivial to test:
+> > 
+> > | [mark@gravadlaks:~]% cat shiftadd.c 
+> > | #include <stdio.h>
+> > | 
+> > | unsigned long logshiftadd(unsigned long a,
+> > |                           unsigned long b,
+> > |                           unsigned long c)
+> > | {
+> > |         printf("%ld >> %ld + %ld is %ld\n",
+> > |                a, b, c, a >> b + c);
+> > | }
+> > | 
+> > | int main(int argc, char *argv)
+> > | {
+> > |         logshiftadd(0, 0, 0);
+> > |         logshiftadd(0, 0, 1);
+> > |         logshiftadd(0, 0, 2);
+> > |         printf("\n");
+> > |         logshiftadd(1024, 0, 0);
+> > |         logshiftadd(1024, 0, 1);
+> > |         logshiftadd(1024, 0, 2);
+> > |         printf("\n");
+> > |         logshiftadd(1024, 2, 0);
+> > |         logshiftadd(1024, 2, 1);
+> > |         logshiftadd(1024, 2, 2);
+> > | 
+> > |         return 0;
+> > | }
+> > | [mark@gravadlaks:~]% gcc shiftadd.c -o shiftadd
+> > | [mark@gravadlaks:~]% ./shiftadd 
+> > | 0 >> 0 + 0 is 0
+> > | 0 >> 0 + 1 is 0
+> > | 0 >> 0 + 2 is 0
+> > | 
+> > | 1024 >> 0 + 0 is 1024
+> > | 1024 >> 0 + 1 is 512
+> > | 1024 >> 0 + 2 is 256
+> > | 
+> > | 1024 >> 2 + 0 is 256
+> > | 1024 >> 2 + 1 is 128
+> > | 1024 >> 2 + 2 is 64
+> > 
+> >> During testing, all > those captured branch records looked alright.
+> > 
+> > I think we clearly need better testing here.
+> > 
+> > Thanks,
+> > Mark.
+> 
+> Hi Will and Mark,
+> 
+> So I started looking into the test both with and without the fix,
+> strangely I couldn't see any difference in the branch outputs, or
+> anywhere in the driver where it would be flipping or filtering anything
+> to make it only appear to be working. This was a bit confusing, but
+> added up with the original point that the test was passing and it was
+> actually doing something.
+> 
+> So I started going deeper and found what the issue (non-issue) is.
+> 
+> Firstly why is there no warning:
+> 
+> The expression is stringified and passed to the assembler, so it skips
+> the C compiler warning settings. I can send a patch to fix this, but all
+> we need to do is get the compiler to evaluate the argument and then
+> throw it away, luckily there are no other issues found even with an
+> allyesconfig, so BRBE was the only thing with this bug:
+> 
+>  #define read_sysreg_s(r) ({
+>  	u64 __val;
+> +	u32 __maybe_unused __check_r = (u32)(r);
+>  	asm volatile(__mrs_s("%0", r) : "=r" (__val));
+>  	__val;					
+>  })
+> 
+> 
+> Secondly, why does BRBE actually work:
+> 
+> Well the assembler (at least in my Clang toolchain) has a different
+> order of operations to C. I put a minimal repro here:
+> https://godbolt.org/z/YP9adh5xh
+> 
+> You can see the op2 should be a 0b100000 (0x20) for BRBSRC and it
+> appears to be, you can also see that moving the bracket makes no
+> difference in this case.
+> 
+> For some more evidence, the disassembler I have locally actually gives
+> the correct register name, even when the bracket is wrong, and diffing
+> the .o file gives no difference when moving the bracket:
+> 
+>   0000000000000008 <main>:
+>    8:   d503245f        bti     c
+>    c:   d503201f        nop
+>   10:   d503201f        nop
+>   14:   2a1f03e0        mov     w0, wzr
+>   18:   d5318028        mrs     x8, brbsrc0_el1
+>   1c:   d5318128        mrs     x8, brbsrc1_el1
+>   20:   d65f03c0        ret
+> 
+> Seems completely crazy to me that this is actually the case. So maybe I
+> am also wrong. Don't know if this counts as a compiler bug or it's just
+> supposed to be like that.
 
-Following tests (1 &2) were performed:
+From a quick dig, it's supposed to be like that: the GNU assembler uses a
+different operator precedence to C, and clang's assembler does the same for
+compatibility. What a great.
 
-1.  make -j32. Build the images and DTB to test the functionality.
+Compare:
 
-2. make dt_binding_check DT_SCHEMA_FILES=3Dfreescale.
+  https://ftp.gnu.org/old-gnu/Manuals/gas-2.9.1/html_chapter/as_6.html#SEC66
 
-3. make CHECK_DTBS=3Dy freescale/imx8ulp-evk.dtb
+... with:
 
-Before sending the V4 patch for review, I have ran tests 1 &2. Both were pa=
-ssing.
-But after seeing the page shared by you, ran the 3rd test and I was able to=
- reproduce the issue, you might be referring to.
+  https://en.wikipedia.org/wiki/Operators_in_C_and_C%2B%2B#Operator_precedence
 
-For V5, I will perform all the 3 tests.
+Adding the brackets will make this work in either case, so I think that's the
+right thing to do for now.
 
-> https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fww
-> w
-> >> .li%2F&data=3D05%7C01%7Cpankaj.gupta%40nxp.com%7Cfce997832862
-> 4056830408
-> >>
-> db981e9af6%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C6382
-> 710294401
-> >>
-> 41352%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2
-> luMzIiLCJ
-> >>
-> BTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=3DKi%2BHqff7
-> rZbTAnAbJ
-> >> ZgRiwxGUx0qJjYzxIjMHNoyM8s%3D&reserved=3D0
-> >> naro.org%2Fblog%2Ftips-and-tricks-for-validating-devicetree-sources-w
-> >> ith-
-> >> the-devicetree-
-> >>
-> schema%2F&data=3D05%7C01%7Cpankaj.gupta%40nxp.com%7Cd13d0b68d0
-> 1c
-> >>
-> 4d10d8cb08db83070ed2%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%
-> >>
-> 7C0%7C638247838553225400%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiM
-> C
-> >>
-> 4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000
-> %7
-> >>
-> C%7C%7C&sdata=3DpO6dnz4aPqVejRNDR0OU4n04hXebyqgrNKg4DPhahI0%3
-> D
-> >> &reserved=3D0
-> >> for instructions).
-> >
-> > Tested. Before submitting the patch.
-> > [Pankaj] Accepted.
->=20
-> You really tested that patch? Before I waste my time on proving it was no=
-t,
-> are you 100% sure that you tested that patch and no new warnings are
-> printed? Or are you just agreeing with me that this time you will test?
-> >
->=20
-> Best regards,
-> Krzysztof
-
+Thanks,
+Mark.
