@@ -2,53 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD3177C839
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 08:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB57B77C83E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 09:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235319AbjHOG7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 02:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51034 "EHLO
+        id S235344AbjHOG7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 02:59:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235364AbjHOG67 (ORCPT
+        with ESMTP id S235340AbjHOG71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 02:58:59 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99DD0E45;
-        Mon, 14 Aug 2023 23:58:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692082737;
-        bh=tRD9V3SZZ/ZdRZnXIe4M5/31IA4xtgNRtQavwRuaq9g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Cj7D6z2eiwcOaG8wAqSvM41Kmr1fNtqJ1zseMYuk9wbv+HKUHAFl3eHgnF+uyA6fF
-         IYpX1yUym1AmpSyiqz1MoYgPJWG0w8l7PPmUIMwGSTKj3HfaVVYGu/1WSxFvX0YdFb
-         u4rQGSwaZlPM/ZeXg5r2F9uw1Go2FAF15IRkM4kfVGd1qRrdOoBvKh1HyQT/ST6DGB
-         DqezbH1kSH/XrB7jfm2RA9fAQRBXNx8fcjSZ3wJP21Gs2r3F+9R6ip8yklWvWnuz2a
-         +0mre9uIOJdhva+qJYMUnhUTehrVOxbbACRtjfCFyKzpWiNG1n79EIU0FKvFkglVA3
-         Ben1f8D2wHPkg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RQ2Dd1WVDz4wbP;
-        Tue, 15 Aug 2023 16:58:57 +1000 (AEST)
-Date:   Tue, 15 Aug 2023 16:58:56 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>
-Cc:     Henning Schild <henning.schild@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patch in the drivers-x86 tree
-Message-ID: <20230815165856.051fb20f@canb.auug.org.au>
-In-Reply-To: <20230815165725.30a01fe9@canb.auug.org.au>
-References: <20230815165725.30a01fe9@canb.auug.org.au>
+        Tue, 15 Aug 2023 02:59:27 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1749E45;
+        Mon, 14 Aug 2023 23:59:24 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37F6xEAg096903;
+        Tue, 15 Aug 2023 01:59:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1692082754;
+        bh=BMw0LM7FqJwhLGnw1m3bibtR1W6JwfqvbehtyyxAFh8=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=W1c3HsxvjIF7DygKdBPpQN4IiMUPtyua9yIsQYPI/0FTUNR8KOSUMQfvFFrSuf0z6
+         dIS9j6YY10H+QQAzxL9fxFD0CvV+5jhqBRWSpTbtOBJCQIQeVyDak+V/b52VVrbL/E
+         omivWIAvD9Y2oQ0JL9m/QMsuaBwOfnsN0CXh6+vo=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37F6xEZO028641
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 15 Aug 2023 01:59:14 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 15
+ Aug 2023 01:59:14 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 15 Aug 2023 01:59:14 -0500
+Received: from [172.24.227.94] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37F6xAsx015294;
+        Tue, 15 Aug 2023 01:59:11 -0500
+Message-ID: <222cafa8-1d29-7200-cbaa-781a012f4e4d@ti.com>
+Date:   Tue, 15 Aug 2023 12:29:10 +0530
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vM9okV9eVpnsW5WUw8RmpCh";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 0/3] arm64: dts: ti: Introduce AM62P5 SoC and board
+To:     Andrew Davis <afd@ti.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230811184432.732215-1-vigneshr@ti.com>
+ <169179403348.1346194.1236976094485793819.b4-ty@ti.com>
+ <5a1ed797-d29a-e047-ccec-adb1dde6d74f@linaro.org>
+ <696e95b2-59fa-136a-541e-edc86ef91715@ti.com>
+Content-Language: en-US
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+In-Reply-To: <696e95b2-59fa-136a-541e-edc86ef91715@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,48 +74,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vM9okV9eVpnsW5WUw8RmpCh
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi Stephen,
 
-On Tue, 15 Aug 2023 16:57:25 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Hi all,
->=20
-> The following commit is also in the watchdog tree as a different commit
-> (but the same patch):
->=20
->   3fce06406c59 ("watchdog: make Siemens Simatic watchdog driver default o=
-n platform")
->=20
-> This is commit
->=20
->   926df9ae133d ("watchdog: make Siemens Simatic watchdog driver default o=
-n platform")
+On 15/08/23 02:24, Andrew Davis wrote:
+> On 8/14/23 2:26 PM, Krzysztof Kozlowski wrote:
+>> On 12/08/2023 00:49, Nishanth Menon wrote:
+>>> Hi Vignesh Raghavendra,
+>>>
+>>> On Sat, 12 Aug 2023 00:14:29 +0530, Vignesh Raghavendra wrote:
+>>>> This series adds basic support for AM62P family of SoCs and
+>>>> specifically
+>>>> AM62P5 variant. Also adds AM62P5-SK support with basic peripheral
+>>>> like UART.
+>>>>
+>>>> TRM at [0] and Schematics is at [1]
+>>>>
+>>>> [0]: https://www.ti.com/lit/pdf/spruj83
+>>>> [1]: https://www.ti.com/lit/zip/sprr487
+>>>>
+>>>> [...]
+>>>
+>>> Note: since the changes were trivial, I incorporated the cosmetic
+>>> fixup suggested by Andrew locally when I applied. I have also dropped
+>>> bootph property from board's reserved nodes inline with what we did
+>>> for j721s2[2]. Thanks for the bootlog.
+>>>
+>>> I have applied the following to branch ti-k3-dts-next on [1].
+>>> Thank you!
+>>>
+>>> [1/3] dt-bindings: arm: ti: Add bindings for AM62P5 SoCs
+>>>        commit: b57fc5cbdbdfd04d44697800a9d59aeb3be2f273
+>>> [2/3] arm64: dts: ti: Introduce AM62P5 family of SoCs
+>>>        commit: 29075cc09f43a024d962da66d2e4f9eb577713d0
+>>> [3/3] arm64: dts: ti: Add support for the AM62P5 Starter Kit
+>>>        commit: 935c4047d42e53a06ec768ddc495a44f6869209c
+>>>
+>>
+>> A bit too fast. simple-mfd *is not allowed* on its own.
+>>
+> We have the rule against ['syscon', 'simple-mfd'], which requires a 3rd
+> specific compatible, but it seems 'simple-mfd' is allowed in the same way
+> as "simple-bus" (not sure how or why, I would expect a `failed to match any
+> schema with compatible`, but I'm not getting that either?).
+> 
 
-in the watchdog tree.
+Indeed, I didn't see any warnings from dtbs_check so far
 
---=20
-Cheers,
-Stephen Rothwell
+> We can add something like simple-mfd.yaml for this to explicitly check that
+> the compatible has minItems: 2.
+> 
+> But in this case these seem to be just a typo and we meant "simple-bus"
+> here,
+> then it got copy/pasted over our k3 tree.
+> 
 
---Sig_/vM9okV9eVpnsW5WUw8RmpCh
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+I dont think "simple-bus" is enough due to presence to TI specific
+property (ti,sci-dev-id). So this will warrant a separate yaml bindings.
+ I will work towards adding such a file.
 
------BEGIN PGP SIGNATURE-----
+> So as Nishanth suggested, we can clean this up first thing next cycle, then
+> add a rule to prevent it from happening for anyone else again while we
+> are at it.
+> 
+> Andrew
+> 
+>> Best regards,
+>> Krzysztof
+>>
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTbIjAACgkQAVBC80lX
-0GxMDAf/UN9T/RUR1QdmngnG1ieHcdCYFKJW50MrcsiZsbY3WWbfSX0C/myQkoKh
-PXM2cM1rzBnLyy7Y9aVOtC0HW5dqqL4HEFj8p/4sTRmbk0s3jxPblIWsAUqQPZLI
-b+xivDhq3PNCzsBOaW5jegjYoJdFd/8s+1trOGdCnACB5jmce7SYPc6HApXmbIHk
-vRN/UlPURQb6J8sk07U7wFx2YSFEV9njrouzlngujvkGZL9D7k16eYN0Vcl7wgSE
-6hrPG9E7kr6PkZSm37K49M1nO9yb961SU1hQzEZET7xIFD/xi0t+S7tf4CfDLgYn
-S21x7qgKEN3XVbdy7AZ0slp61eJP2Q==
-=H1cx
------END PGP SIGNATURE-----
-
---Sig_/vM9okV9eVpnsW5WUw8RmpCh--
+-- 
+Regards
+Vignesh
