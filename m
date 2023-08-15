@@ -2,71 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A90EC77CC45
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1AE77CC49
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236967AbjHOMEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 08:04:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57808 "EHLO
+        id S236996AbjHOMFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 08:05:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236935AbjHOMES (ORCPT
+        with ESMTP id S236969AbjHOMEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 08:04:18 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7431510F4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:04:17 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-40a47e8e38dso199681cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:04:17 -0700 (PDT)
+        Tue, 15 Aug 2023 08:04:47 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D63FF10F4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:04:46 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe216edaf7so7476029e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:04:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692101056; x=1692705856;
+        d=shruggie-ro.20221208.gappssmtp.com; s=20221208; t=1692101085; x=1692705885;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wa4ijFpMRNMdDOXZdXXDwrY7fporBKZPPmAwJ4muH1s=;
-        b=NlAy2nuZM6YR9j6uv9fE7TfLbdb84+Dc3bcHB1de2on8b3q9QHMMiUaqqpZrkQfTCc
-         4GQCzEK7vdfxxw4y51dSVfVL5+t+OL1kgGBV16+kVaFL6/m7Plodl3JNAfx682/FQ75x
-         lTTt95SINOfPa4ECwMwnQH5R2b7ltvoy+KtDxfhvyR63QJqhmnkyqfbLqxZN3lcbE1Mi
-         2LwENFpd6RuTxX+JnFJRI/4C3etxUfRuZLDPOo3lCxVXT0ARk6k6X4MTXweHPW9Ux3+N
-         QxDvCF3OfjBV9yE9mL+o97vo1SoBWDXgU5WY0VvlZeZhLPpJqqXmPqhkOdLPtyJpGwLP
-         XNUQ==
+        bh=mZNL+lyJXlDowNIbWWyMureRuKR8rAj9k/oL5v5izxc=;
+        b=blx3s3KVk/ndOnqHTKt1sHABOS2zy30PgIpcc/O3edhtSyYXL+U1vhVumuylgW5tns
+         PKn3ytyiaJ6ytk2jEB/9Y/J9r5dk+ECrQ8vP4fej7ZsaU90zLfEL8c5WI+Y+8xWL7GW3
+         KswpYBcmpN6pV/a+B2pCHEfuxyWJUCwAjpH2mPtA3biPXRAtjZpn0IFqE1E899EVbR7n
+         Y/ODrxDrHnG5GIrN6lh+n36NQgDf4TBZ4lF1rmh+YNoBvMi5vs1ccqgom3bKi+Yllnvo
+         FayWUVMZFe7cgqXwrjm8M2RKP8c7WkbJPnMmhNfF99W3HC5Apb8ulBsdcZ2u/0pdbAe+
+         JiCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692101056; x=1692705856;
+        d=1e100.net; s=20221208; t=1692101085; x=1692705885;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wa4ijFpMRNMdDOXZdXXDwrY7fporBKZPPmAwJ4muH1s=;
-        b=Q/2KWAG5P403ZMYETwQwAelBIXchDGaPjBzP64BHKbrShMnXo2fo80x5cGhpLVpluy
-         5quVqOJPgZQsSlmABLoNTIWGb8eg5FfEHU03R6vyChfNrdEB3m8vmJCX4b3UdbeewUer
-         Y4ukE8as1qdKbeD12o0jXVVd9WbV3JdqGxElfmd2Brh+OITdTdrQdT95Lf21p0hPUk+h
-         w6ngShh8urcfQdm3PCM5rXYqFOKOxSNSiIpcJnmkB8bWidD7c0Kvge9GT8ryKkKN83z5
-         9vSsI5g2S4YP62c+oJtP6SwRwoUoJctdYHfD+TznQEp+pLwSrBkDRATXibEnxKztciQQ
-         zVYg==
-X-Gm-Message-State: AOJu0YwAE4zAX5DJjpgAL710opUzZdEqbMDR4cY2bZBygD0auyIRMCKa
-        OESo0JJ52yn0i/WttpffYABHnuQsFSTnztmmDPhDDQ==
-X-Google-Smtp-Source: AGHT+IFLbYrlXJqUODynvyJHT9/v4qYbX+kKrxOxLI/Ska83ZEsKVQNmI3ZCRWkbxaNCpQQIqaVcBPaHoOU23NqKoq0=
-X-Received: by 2002:a05:622a:1822:b0:403:f5b8:2bd2 with SMTP id
- t34-20020a05622a182200b00403f5b82bd2mr660297qtc.9.1692101056467; Tue, 15 Aug
- 2023 05:04:16 -0700 (PDT)
+        bh=mZNL+lyJXlDowNIbWWyMureRuKR8rAj9k/oL5v5izxc=;
+        b=SrSM1MHbFOMLywCems6vDsW1iS2BM2dn/iVHZH/EYcBNf1QvzcxLsW42AEtYfvbO9i
+         IsMhULpPg8twh1rzDJGgAoIr5E5n5K5Eda1taKDuRhzOyyilsj5Fd42Cv42zdhwMhPYz
+         +9z6V1tw/OHwGZaShJ4D+gMNZ56+Mw0r5NpRom9FehD4XfjTuh5oCuXFhvHO/wHXVuWD
+         MiJJD1JAgfQWdE/UipAA8SHis3/5VlREbeV0+TdMM2Qr4wsHmxObB6xInxkvcW+HY7U7
+         tdixmguP/eMjyBaT+RAGdROdk3IvYTrMOhXxPl4+HBivpFAf+BeLizVTX2KVCEme8u7x
+         QnSQ==
+X-Gm-Message-State: AOJu0Yz0letxj7aY4GDvTHYQPfp+JnWna4CqpCHhg61sfrfZAequ/TUS
+        IxkEJpk0+jx2CXA99LJAH/+b54Ug/nVRNKlAyK3iKQ==
+X-Google-Smtp-Source: AGHT+IE8gqnACIFDnu3Op7a3XdWdZvfD0AG054fdNXDttJp1YBYTEtCJFVXxXzSJqp5uo73PYYcNwsR3tNOjvzRqhzI=
+X-Received: by 2002:a05:6512:710:b0:4fb:103f:7d56 with SMTP id
+ b16-20020a056512071000b004fb103f7d56mr469965lfs.14.1692101085051; Tue, 15 Aug
+ 2023 05:04:45 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230808171446.2187795-1-mshavit@google.com> <20230809011204.v5.5.I219054a6cf538df5bb22f4ada2d9933155d6058c@changeid>
- <20230809134959.GB4226@willie-the-truck> <CAKHBV25CQYfqm80a1ztHXn3s6kj7KCuJBwJz4EZk5cog4n6R+A@mail.gmail.com>
- <20230810144051.GD5795@willie-the-truck> <ZNUEuIlPmrckwMyn@nvidia.com>
- <CAKHBV24SLBNw-yWn3m6BtvvHUgD0h1e1QkEb1LrUcWSwpR85Yg@mail.gmail.com> <ZNtgD3LKwS4eatoe@nvidia.com>
-In-Reply-To: <ZNtgD3LKwS4eatoe@nvidia.com>
-From:   Michael Shavit <mshavit@google.com>
-Date:   Tue, 15 Aug 2023 20:03:40 +0800
-Message-ID: <CAKHBV25YKMGnAs2L0a5EwdaXrpwb9RPJqBcJjO6ahD7UMgEd2Q@mail.gmail.com>
-Subject: Re: [PATCH v5 5/9] iommu/arm-smmu-v3: Refactor write_ctx_desc
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Will Deacon <will@kernel.org>, iommu@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        robin.murphy@arm.com, nicolinc@nvidia.com, jean-philippe@linaro.org
+References: <20230814181823.3662-1-aboutphysycs@gmail.com> <20230814194335.GV1428172@hu-bjorande-lv.qualcomm.com>
+In-Reply-To: <20230814194335.GV1428172@hu-bjorande-lv.qualcomm.com>
+From:   Alexandru Ardelean <alex@shruggie.ro>
+Date:   Tue, 15 Aug 2023 15:04:34 +0300
+Message-ID: <CAH3L5QrLyAHyA3zdtjM7+eNQk5vExq=d9LWaOegXpv+-6s4Jzw@mail.gmail.com>
+Subject: Re: [PATCH] power: reset: qcom-pon: removed unneeded call to platform_set_drvdata()
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc:     Andrei Coardos <aboutphysycs@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, sre@kernel.org,
+        konrad.dybcio@linaro.org, andersson@kernel.org, agross@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,53 +70,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 7:38=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.com> wr=
-ote:
+On Mon, Aug 14, 2023 at 10:43=E2=80=AFPM Bjorn Andersson
+<quic_bjorande@quicinc.com> wrote:
 >
-> On Tue, Aug 15, 2023 at 01:20:04PM +0800, Michael Shavit wrote:
-> > On Thu, Aug 10, 2023 at 11:39=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.co=
-m> wrote:
-> > >
-> > > Actually, I don't think this even works as nothing on the PASID path
-> > > adds to the list that arm_smmu_write_ctx_desc_devices() iterates over=
- ??
-> > >
-> > > Then the remaining two calls:
-> > >
-> > > arm_smmu_share_asid(struct mm_struct *mm, u16 asid)
-> > >         arm_smmu_write_ctx_desc_devices(smmu_domain, 0, cd);
-> > >
-> > >         This is OK only if the sketchy assumption that the CD
-> > >         we extracted for a conflicting ASID is not asigned to a PASID=
-.
-> > >
-> > > static void arm_smmu_mm_release(struct mmu_notifier *mn, struct mm_st=
-ruct *mm)
-> > >         arm_smmu_write_ctx_desc_devices(smmu_domain, mm->pasid, &quie=
-t_cd);
-> > >
-> > >         This doesn't work because we didn't add the master to the lis=
+> On Mon, Aug 14, 2023 at 09:18:23PM +0300, Andrei Coardos wrote:
+> > This function call was found to be unnecessary as there is no equivalen=
 t
-> > >         during __arm_smmu_sva_bind and this path is expressly working
-> > >         on the PASID binds, not the RID binds.
+> > platform_get_drvdata() call to access the private data of the driver. A=
+lso,
+> > the private data is defined in this driver, so there is no risk of it b=
+eing
+> > accessed outside of this driver file.
 > >
-> > Actually it is working on the RID attached domain (as returned by
-> > iommu_get_domain_for_dev() at sva_bind time) not the SVA domain
-> > here...
+> > Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
 >
-> That can't be right, the purpose of that call and arm_smmu_mm_release is =
-to
-> disable the PASID that is about the UAF the mm's page table.
+
+Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
+
+> Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 >
-> Jason
-
-For the sake of this message, let's call "primary domain" whatever RID
-domain was attached to a master at the time set_dev_pasid() was called
-on that master. That RID domain is locked in while SVA is enabled and
-cannot be detached.
-
-The arm-smmu-v3-sva.c implementation creates a mapping between an SVA
-domain and this primary domain (through the sva domain's mm). In
-arm_smmu_mm_release, the primary domain is looked up and
-arm_smmu_write_ctx_desc() is called on all masters that this domain is
-attached to.
+> Regards,
+> Bjorn
