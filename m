@@ -2,232 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BCE77CC27
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A886277CC2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236909AbjHOLx6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Aug 2023 07:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50078 "EHLO
+        id S236784AbjHOL5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 07:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236922AbjHOLx1 (ORCPT
+        with ESMTP id S237131AbjHOL4b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 07:53:27 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B33C10CF
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:53:24 -0700 (PDT)
-Received: from hamburger.collabora.co.uk (hamburger.collabora.co.uk [IPv6:2a01:4f8:1c1c:f269::1])
-        by madras.collabora.co.uk (Postfix) with ESMTP id 131DF6606EEE;
-        Tue, 15 Aug 2023 12:53:21 +0100 (BST)
-From:   "Helen Mae Koike Fornazier" <helen.koike@collabora.com>
-In-Reply-To: <87bkf8d5z6.fsf@intel.com>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-Date:   Tue, 15 Aug 2023 12:53:21 +0100
-Cc:     airlied@redhat.com, airlied@gmail.com, daniel.vetter@ffwll.ch,
-        dri-devel@lists.freedesktop.org, robdclark@google.com,
-        daniels@collabora.com, emma@anholt.net,
-        gustavo.padovan@collabora.com, guilherme.gallo@collabora.com,
-        sergi.blanch.torne@collabora.com, linux-kernel@vger.kernel.org,
-        robclark@freedesktop.org, david.heidelberg@collabora.com,
-        anholt@google.com
-To:     "Jani Nikula" <jani.nikula@linux.intel.com>
+        Tue, 15 Aug 2023 07:56:31 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5161FE7;
+        Tue, 15 Aug 2023 04:55:55 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 47CED1F38D;
+        Tue, 15 Aug 2023 11:54:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1692100451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pt1M7QGWW9eA1A+fqS8YPgpwOF2TukRlUiBvaRgXL+0=;
+        b=UDdVeE2vyOyvFbkvlEtE+aQGaofliGaRpuxq0SRjIFjp6T9WSczREqnXoK1WruDHfm8H4+
+        txQwVjNFRFt8/wtH0CNHed3I4XvSV14Mp6Zs9Z3Ix3FN5z99+VEodWcTlKOe8LeqEO5iBr
+        lDNH4HYRoKdaPKDzEj+t0S1DWVpATwY=
+Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 09BA72C143;
+        Tue, 15 Aug 2023 11:54:11 +0000 (UTC)
+Date:   Tue, 15 Aug 2023 13:54:07 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Helge Deller <deller@gmx.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH] watchdog: Fix lockdep warning
+Message-ID: <ZNtnX7m_lHE0u-g1@alley>
+References: <ZNZr0mPsIuqKzb5u@p100>
 MIME-Version: 1.0
-Message-ID: <389b-64db6700-1-3dc04b80@31442286>
-Subject: =?utf-8?q?Re=3A?= [PULL for =?utf-8?q?v6=2E6]?= drm-misc-next
-User-Agent: SOGoMail 5.8.4
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNZr0mPsIuqKzb5u@p100>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, August 15, 2023 06:12 -03, Jani Nikula <jani.nikula@linux.intel.com> wrote:
+Adding workqueue and lockdep people into Cc.
 
-> On Mon, 14 Aug 2023, Helen Koike <helen.koike@collabora.com> wrote:
-> > The following changes since commit f5d8f9c0d8b4bc8ad7e7b23a9f4d116e99202dd3:
-> >
-> >   drm/panel: JDI LT070ME05000 simplify with dev_err_probe() (2023-08-14 14:44:30 +0200)
-> >
-> > are available in the Git repository at:
-> >
-> >   git@gitlab.freedesktop.org:helen.fornazier/linux.git tags/drm-ci-v13-drm-misc
-> >
-> > for you to fetch changes up to 60242246bc906a37a7eae2094633a38bda7d45e6:
-> >
-> >   drm: Add initial ci/ subdirectory (2023-08-14 20:47:37 -0300)
-> >
-> > ----------------------------------------------------------------
-> > drm-ci for drm-misc-next
+On Fri 2023-08-11 19:11:46, Helge Deller wrote:
+> Fully initialize detector_work work struct to avoid this kernel warning
+> when lockdep is enabled:
 > 
-> FYI, usually the subject indicates the source or what to pull, not the
-> destination. Was confused here for a bit. ;)
-
-Thanks for the info! Should I re-send this one?
-
-Regards,
-Helen
-
+>  =====================================
+>  WARNING: bad unlock balance detected!
+>  6.5.0-rc5+ #687 Not tainted
+>  -------------------------------------
+>  swapper/0/1 is trying to release lock (detector_work) at:
+>  [<000000004037e554>] __flush_work+0x60/0x658
+>  but there are no more locks to release!
 > 
-> BR,
-> Jani.
+>  other info that might help us debug this:
+>  no locks held by swapper/0/1.
 > 
-> >
-> > Here is the patch that adds a ci/ subdirectory to drm and allows
-> > developers to easily execute tests.
-> >
-> > Developers can easily execute several tests on different devices
-> > by just pushing their branch to their fork in a repository hosted
-> > on gitlab.freedesktop.org which has an infrastructure to run jobs
-> > in several runners and farms with different devices.
-> >
-> > The patch was acked and tested by others.
-> >
-> > Signed-off-by: Helen Koike <helen.koike@collabora.com>
-> >
-> > ----------------------------------------------------------------
-> > Tomeu Vizoso (1):
-> >       drm: Add initial ci/ subdirectory
-> >
-> >  Documentation/gpu/automated_testing.rst            |  144 +
-> >  Documentation/gpu/index.rst                        |    1 +
-> >  MAINTAINERS                                        |    8 +
-> >  drivers/gpu/drm/ci/arm.config                      |   69 +
-> >  drivers/gpu/drm/ci/arm64.config                    |  199 ++
-> >  drivers/gpu/drm/ci/build-igt.sh                    |   35 +
-> >  drivers/gpu/drm/ci/build.sh                        |  157 ++
-> >  drivers/gpu/drm/ci/build.yml                       |  110 +
-> >  drivers/gpu/drm/ci/check-patch.py                  |   57 +
-> >  drivers/gpu/drm/ci/container.yml                   |   65 +
-> >  drivers/gpu/drm/ci/gitlab-ci.yml                   |  251 ++
-> >  drivers/gpu/drm/ci/igt_runner.sh                   |   77 +
-> >  drivers/gpu/drm/ci/image-tags.yml                  |   15 +
-> >  drivers/gpu/drm/ci/lava-submit.sh                  |   57 +
-> >  drivers/gpu/drm/ci/static-checks.yml               |   12 +
-> >  drivers/gpu/drm/ci/test.yml                        |  335 +++
-> >  drivers/gpu/drm/ci/testlist.txt                    | 2912 ++++++++++++++++++++
-> >  drivers/gpu/drm/ci/x86_64.config                   |  111 +
-> >  drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt  |   19 +
-> >  drivers/gpu/drm/ci/xfails/amdgpu-stoney-flakes.txt |   21 +
-> >  drivers/gpu/drm/ci/xfails/amdgpu-stoney-skips.txt  |    2 +
-> >  drivers/gpu/drm/ci/xfails/i915-amly-fails.txt      |   17 +
-> >  drivers/gpu/drm/ci/xfails/i915-amly-flakes.txt     |   32 +
-> >  drivers/gpu/drm/ci/xfails/i915-amly-skips.txt      |    4 +
-> >  drivers/gpu/drm/ci/xfails/i915-apl-fails.txt       |   58 +
-> >  drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt      |    1 +
-> >  drivers/gpu/drm/ci/xfails/i915-apl-skips.txt       |    6 +
-> >  drivers/gpu/drm/ci/xfails/i915-cml-fails.txt       |   18 +
-> >  drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt      |   38 +
-> >  drivers/gpu/drm/ci/xfails/i915-cml-skips.txt       |    2 +
-> >  drivers/gpu/drm/ci/xfails/i915-glk-fails.txt       |   19 +
-> >  drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt      |   41 +
-> >  drivers/gpu/drm/ci/xfails/i915-glk-skips.txt       |    5 +
-> >  drivers/gpu/drm/ci/xfails/i915-kbl-fails.txt       |   25 +
-> >  drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt      |   26 +
-> >  drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt       |    5 +
-> >  drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt       |   37 +
-> >  drivers/gpu/drm/ci/xfails/i915-tgl-flakes.txt      |    5 +
-> >  drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt       |   11 +
-> >  drivers/gpu/drm/ci/xfails/i915-whl-fails.txt       |   48 +
-> >  drivers/gpu/drm/ci/xfails/i915-whl-flakes.txt      |    1 +
-> >  drivers/gpu/drm/ci/xfails/i915-whl-skips.txt       |    2 +
-> >  .../gpu/drm/ci/xfails/mediatek-mt8173-fails.txt    |   29 +
-> >  .../gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt   |    0
-> >  .../gpu/drm/ci/xfails/mediatek-mt8183-fails.txt    |   10 +
-> >  .../gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt   |   14 +
-> >  drivers/gpu/drm/ci/xfails/meson-g12b-fails.txt     |   12 +
-> >  drivers/gpu/drm/ci/xfails/meson-g12b-flakes.txt    |    4 +
-> >  drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt    |   15 +
-> >  drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt   |    4 +
-> >  drivers/gpu/drm/ci/xfails/msm-apq8096-fails.txt    |    2 +
-> >  drivers/gpu/drm/ci/xfails/msm-apq8096-flakes.txt   |    4 +
-> >  drivers/gpu/drm/ci/xfails/msm-apq8096-skips.txt    |    2 +
-> >  drivers/gpu/drm/ci/xfails/msm-sc7180-fails.txt     |   25 +
-> >  drivers/gpu/drm/ci/xfails/msm-sc7180-flakes.txt    |    7 +
-> >  drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt     |   23 +
-> >  drivers/gpu/drm/ci/xfails/msm-sdm845-fails.txt     |   68 +
-> >  drivers/gpu/drm/ci/xfails/msm-sdm845-flakes.txt    |   11 +
-> >  drivers/gpu/drm/ci/xfails/msm-sdm845-skips.txt     |    2 +
-> >  .../gpu/drm/ci/xfails/rockchip-rk3288-fails.txt    |   48 +
-> >  .../gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt   |    9 +
-> >  .../gpu/drm/ci/xfails/rockchip-rk3288-skips.txt    |   52 +
-> >  .../gpu/drm/ci/xfails/rockchip-rk3399-fails.txt    |   36 +
-> >  .../gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt   |   24 +
-> >  .../gpu/drm/ci/xfails/rockchip-rk3399-skips.txt    |    5 +
-> >  .../gpu/drm/ci/xfails/virtio_gpu-none-fails.txt    |   38 +
-> >  .../gpu/drm/ci/xfails/virtio_gpu-none-flakes.txt   |    0
-> >  .../gpu/drm/ci/xfails/virtio_gpu-none-skips.txt    |    6 +
-> >  68 files changed, 5508 insertions(+)
-> >  create mode 100644 Documentation/gpu/automated_testing.rst
-> >  create mode 100644 drivers/gpu/drm/ci/arm.config
-> >  create mode 100644 drivers/gpu/drm/ci/arm64.config
-> >  create mode 100644 drivers/gpu/drm/ci/build-igt.sh
-> >  create mode 100644 drivers/gpu/drm/ci/build.sh
-> >  create mode 100644 drivers/gpu/drm/ci/build.yml
-> >  create mode 100755 drivers/gpu/drm/ci/check-patch.py
-> >  create mode 100644 drivers/gpu/drm/ci/container.yml
-> >  create mode 100644 drivers/gpu/drm/ci/gitlab-ci.yml
-> >  create mode 100755 drivers/gpu/drm/ci/igt_runner.sh
-> >  create mode 100644 drivers/gpu/drm/ci/image-tags.yml
-> >  create mode 100755 drivers/gpu/drm/ci/lava-submit.sh
-> >  create mode 100644 drivers/gpu/drm/ci/static-checks.yml
-> >  create mode 100644 drivers/gpu/drm/ci/test.yml
-> >  create mode 100644 drivers/gpu/drm/ci/testlist.txt
-> >  create mode 100644 drivers/gpu/drm/ci/x86_64.config
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-fails.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-flakes.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/amdgpu-stoney-skips.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-fails.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-flakes.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-amly-skips.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-fails.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-flakes.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-apl-skips.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-fails.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-flakes.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-cml-skips.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-fails.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-flakes.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-glk-skips.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-fails.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-flakes.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-kbl-skips.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-fails.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-flakes.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-tgl-skips.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-fails.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-flakes.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/i915-whl-skips.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-fails.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8173-flakes.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-fails.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/mediatek-mt8183-flakes.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-fails.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/meson-g12b-flakes.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8016-flakes.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-fails.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-flakes.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-apq8096-skips.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-fails.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-flakes.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sc7180-skips.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-fails.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-flakes.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/msm-sdm845-skips.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-fails.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3288-skips.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-fails.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-flakes.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/rockchip-rk3399-skips.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-fails.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-flakes.txt
-> >  create mode 100644 drivers/gpu/drm/ci/xfails/virtio_gpu-none-skips.txt
+>  stack backtrace:
+>  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc5+ #687
+>  Hardware name: 9000/785/C3700
+>  Backtrace:
+>   [<0000000041455d5c>] print_unlock_imbalance_bug.part.0+0x20c/0x230
+>   [<000000004040d5e8>] lock_release+0x2e8/0x3f8
+>   [<000000004037e5cc>] __flush_work+0xd8/0x658
+>   [<000000004037eb7c>] flush_work+0x30/0x60
+>   [<000000004011f140>] lockup_detector_check+0x54/0x128
+>   [<0000000040306430>] do_one_initcall+0x9c/0x408
+>   [<0000000040102d44>] kernel_init_freeable+0x688/0x7f0
+>   [<000000004146df68>] kernel_init+0x64/0x3a8
+>   [<0000000040302020>] ret_from_kernel_thread+0x20/0x28
 > 
-> -- 
-> Jani Nikula, Intel Open Source Graphics Center
+> Signed-off-by: Helge Deller <deller@gmx.de>
+> 
+> ---
+> 
+> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+> index be38276a365f..eab0dfcfa3f9 100644
+> --- a/kernel/watchdog.c
+> +++ b/kernel/watchdog.c
+> @@ -1022,5 +1022,6 @@ void __init lockup_detector_init(void)
+>  	else
+>  		allow_lockup_detector_init_retry = true;
+> 
+> +	INIT_WORK(&detector_work, lockup_detector_delay_init);
+>  	lockup_detector_setup();
+>  }
 
+Strange. The work is initialized when declared:
+
+static struct work_struct detector_work __initdata =
+		__WORK_INITIALIZER(detector_work, lockup_detector_delay_init);
+
+, which should initialize the lockdep map as well. I would expect
+this is enough.
+
+And I do not see this on x86_64 with CONFIG_PROVE_LOCKING=y
+on today's Linus' tree. And the flush_work() is always called
+from the lockup_detector_check() late init call.
+
+IMHO, it must be a bug somewhere else. Otherwise, many other
+users of DECLARE_WORK() or __WORK_INITIALIZER() would have
+the same problem.
+
+Or do I miss something?
+
+Best Regards,
+Petr
