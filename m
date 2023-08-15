@@ -2,67 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41DED77C82D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 08:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3483E77C82F
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 08:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235302AbjHOG5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 02:57:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35562 "EHLO
+        id S235299AbjHOG6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 02:58:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235295AbjHOG5C (ORCPT
+        with ESMTP id S235296AbjHOG5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 02:57:02 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C2C10C0;
-        Mon, 14 Aug 2023 23:57:01 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-56c711a889dso3592589eaf.0;
-        Mon, 14 Aug 2023 23:57:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692082620; x=1692687420;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gUF7+zEwFhnnxO0YUzrV1ZAOv1FqyPAGYAalPW9tUBE=;
-        b=IIiMuHsVnAlCIxFfXYA2IZ3IwE5c9M3UboDhuUYimh7CaDhdCMr0CscYJSTEb8n3rS
-         249+hMUP8she9bC3BXRxvgFlxKrpWOyzxEDi6S9EnkmO/ZuexFH1un2cHVO7lG1rfIFJ
-         lWxhMG5PPIkPlsIpoPW11d5+ZiaGhps7X0CHwvAjt6LAzT2um3A++OwpcjKdwNjs1VnZ
-         hzYpFOvh1R+5NCYs6iN4lpZ68C+pIjjSVX+HsfxGCRL2xPeuvyjni+IFS02KwQ3VI3s0
-         wUCuhUr0LJwjm3VLng7WXF/nUYZeudxEzh7vt+pCqLmQLZq1VxsNjom4m/xPXcX1tTGY
-         8Rjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692082620; x=1692687420;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gUF7+zEwFhnnxO0YUzrV1ZAOv1FqyPAGYAalPW9tUBE=;
-        b=OErGh9uomnbaAoZcQ6Cmt2z3eXv7YkU0Lv758phHaxmfswR7vzxnmm8a3eL0qf2Se5
-         f71IEzksiQwIvlB23eOye6N6uaAbaqP7Y5s3er2tcNM1WfAaEXgc9RYkn8hTneCYcG6n
-         4VFWqJTvZPYOILRAOPCOWWGpeL/5z8eXt/e89IYxWt9nqDJl7l8+A5RBGwXrNzpKgNUo
-         a1j6BlxtvZqPxI3ZN4HTbcI/u4bD3MExosV2sXkzeM+3kzvwfLUrwzy1DYGxNgSXI0S8
-         yjTREAWuGN56+c3BW2t1nRby4ZeEdzYKdH4MDveIaMfWsepdJgtwEx/faQIaN5hjtcuv
-         niJQ==
-X-Gm-Message-State: AOJu0YwpnB+qRb8I86XtHOvdjh59WJfdzeaysbDDEctbi6cWAZ1rSdj/
-        ALN0ChjVotMTLx/RGAXaDah0FsuEFPobU+NwnZA=
-X-Google-Smtp-Source: AGHT+IF9wHpQbz6RjsFYq8asdD4gmXQL8tAld3WVXDlp4tr4KWfme3FVlS7l/mjFiuvLMcN8VLs04uIMXrcfGkSNZyA=
-X-Received: by 2002:a05:6871:28e:b0:1b0:3ffc:97e9 with SMTP id
- i14-20020a056871028e00b001b03ffc97e9mr13997249oae.0.1692082620445; Mon, 14
- Aug 2023 23:57:00 -0700 (PDT)
+        Tue, 15 Aug 2023 02:57:33 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7765F10C6;
+        Mon, 14 Aug 2023 23:57:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692082648;
+        bh=X6h9uRdt/JwF6/Jb8PTPjGTNLT5VM1JgWQ64Qv1EgBA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RPfn1qbK5l6HYLPkhbSABwIsADWWNIcOlNvHzNAVf3Rq2UFACLBYbZozZbnd8P2wQ
+         ZZIENKbLHdVC/YITo0ydR7mMDmKQQQS2EikuIAMxQkVD8GJpdt7OaplMIPXpBl4hdB
+         WH26H5DGP0/NG+7+ER5borlmD7wKEg/h+pB6v7c8GNHt6YlVyVqCBii/sI87KBYGtR
+         T4Z2I+rgeCMeV0qmKDAQNNPuoAAWQ/tkM6wNKUmt89Uwc0qruiduH/qHEnc8SXRWTF
+         UTrLtyV2kWYGxg2+Aywd6NdgrbxN8WMF3ZrckJLZaWOXuSGS5iw7aA7QB/nkGWq1Ch
+         peV8n5e7b5Juw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RQ2Bt30klz4wbP;
+        Tue, 15 Aug 2023 16:57:26 +1000 (AEST)
+Date:   Tue, 15 Aug 2023 16:57:25 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>
+Cc:     Henning Schild <henning.schild@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the drivers-x86 tree
+Message-ID: <20230815165725.30a01fe9@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20230807062345.490-1-xuewen.yan@unisoc.com>
-In-Reply-To: <20230807062345.490-1-xuewen.yan@unisoc.com>
-From:   Xuewen Yan <xuewen.yan94@gmail.com>
-Date:   Tue, 15 Aug 2023 14:56:49 +0800
-Message-ID: <CAB8ipk9wJ-VDHrLMgEoVcdquWptkLnXZ15xFvugC8+WXOf6_Og@mail.gmail.com>
-Subject: Re: [PATCH] PM: QOS: Always use "kstrtos32_from_user()" in cpu_latency_qos_write()
-To:     Xuewen Yan <xuewen.yan@unisoc.com>
-Cc:     rafael@kernel.org, pavel@ucw.cz, len.brown@intel.com,
-        qyousef@layalina.io, guohua.yan@unisoc.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+Content-Type: multipart/signed; boundary="Sig_/_TGV0ieInscxq3A1SZZtCsa";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,77 +54,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi rafael
+--Sig_/_TGV0ieInscxq3A1SZZtCsa
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-What do you think of this patch=EF=BC=9F
+Hi all,
 
- # echo 500 > /dev/cpu_dma_latency
-[T4893] write: qos value=3D170930229
-[T4893] write: count value=3D4
+The following commit is also in the watchdog tree as a different commit
+(but the same patch):
 
-the value is 170930229 is because it's hex is 0x0A303035,  It is
-exactly the "500\0"
+  3fce06406c59 ("watchdog: make Siemens Simatic watchdog driver default on =
+platform")
 
- # echo 200> /dev/cpu_dma_latency
-[T4893] write: qos value=3D170930226
-[T4893] write: count value=3D4
+This is commit
 
-the value is 170930226 is because it's hex is 0x0A303032,  It is
-exactly the "200\0"
+  926df9ae133d ("watchdog: make Siemens Simatic watchdog driver default on =
+platform")
 
-Thanks!
+--=20
+Cheers,
+Stephen Rothwell
 
-On Mon, Aug 7, 2023 at 3:17=E2=80=AFPM Xuewen Yan <xuewen.yan@unisoc.com> w=
-rote:
->
-> In cpu_latency_qos_write, there is a judgment on whether the count
-> value is equal to sizeof(s32). This means that when user write 100~999,
-> it would get error value because it would call the "copy_from_user()"
-> instead of "kstrtos32".
-> Just like:
->
->  # echo 500 > /dev/cpu_dma_latency
-> [T4893] write: qos value=3D170930229
-> [T4893] write: count value=3D4
->
-> [T4893] write: qos value=3D170930226
-> [T4893] write: count value=3D4
->
-> To prevent this happening, delete the "copy_from_user()" and
-> always use "kstrtos32_from_user()".
->
-> Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> ---
->  kernel/power/qos.c | 14 ++++----------
->  1 file changed, 4 insertions(+), 10 deletions(-)
->
-> diff --git a/kernel/power/qos.c b/kernel/power/qos.c
-> index 782d3b41c1f3..21a2f873e921 100644
-> --- a/kernel/power/qos.c
-> +++ b/kernel/power/qos.c
-> @@ -379,17 +379,11 @@ static ssize_t cpu_latency_qos_write(struct file *f=
-ilp, const char __user *buf,
->                                      size_t count, loff_t *f_pos)
->  {
->         s32 value;
-> +       int ret;
->
-> -       if (count =3D=3D sizeof(s32)) {
-> -               if (copy_from_user(&value, buf, sizeof(s32)))
-> -                       return -EFAULT;
-> -       } else {
-> -               int ret;
-> -
-> -               ret =3D kstrtos32_from_user(buf, count, 16, &value);
-> -               if (ret)
-> -                       return ret;
-> -       }
-> +       ret =3D kstrtos32_from_user(buf, count, 16, &value);
-> +       if (ret)
-> +               return ret;
->
->         cpu_latency_qos_update_request(filp->private_data, value);
->
-> --
-> 2.25.1
->
+--Sig_/_TGV0ieInscxq3A1SZZtCsa
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTbIdUACgkQAVBC80lX
+0GzAnQf/f/qwVQ+r9iNi//g6OjvnALXeUxYxYJa3eFpn+bh6WXAiPn51QMf37O4i
+x9Gc7EWXTnizOvyZ4a8taHhZKELZkGHlwMjft5mTyyeVNVKTmG/BMkkmNxiHG6+c
+jGvFJfwA6AxfCWzCstFo3AqAjYNcTECcpZZmGuCsbabjPHiRe9m+9TVskz9Fx5h+
+7YLqztwOEryrrFqumNrAMKIqabfmvh9zb/F8zVyAOB+QgH3q/8pGdvoA6uyIgHmH
+hJma3uVgkOFu80s4KMERHYMNu9tDZJ0MXw/8FPT+2ZY/YYPmz9i6tZqRucyuoUMr
+D//s6IKhoSGlJ3aFe6Rk2Ki3YU6ngw==
+=6zrs
+-----END PGP SIGNATURE-----
+
+--Sig_/_TGV0ieInscxq3A1SZZtCsa--
