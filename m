@@ -2,137 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A1277D2BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C9177D2A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239706AbjHOS6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 14:58:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59158 "EHLO
+        id S239555AbjHOS6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 14:58:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239631AbjHOS6H (ORCPT
+        with ESMTP id S239618AbjHOS5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 14:58:07 -0400
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56B01FF7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 11:58:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:
-        In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=lYbxQgfILVH8fA/tTFGSpqiJIGXYZvMVa/QdVn3ynTY=; b=MbS0ON8NVvJUCKFcJY9Pu7irDu
-        pNSLG1yYzPcgi/N+p6PEWW2toQNFlmh9EYo4AfASgK8bdeYJi3tpyBBdJyPPgFbCeRfFnfNxu22Ok
-        C/g3zzS/CROc/NbYC+z0k5+ORIae9Xu3hytcIj79OgyUAma7D4bZvCXwTVBD6SLKbllvmkC4bAZ3G
-        CYBK7CTcbXecZsnwVra+s8Z9hWJCyV0Fknm7VNlvmFiVlH0FIDC3Hn2kLsRVdJueseU+qYeepxPzM
-        OcbUWxg/YE0o5u/eagalUYp1gxAJiacmy5NQd2rxn5DdQ+sgHkZI3hySUGKgQaj+Vo9hHY3QZsU9t
-        HJ9VvmFQ==;
-Received: from [191.193.179.209] (helo=steammachine.lan)
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-        id 1qVzEr-001Ca3-By; Tue, 15 Aug 2023 20:57:57 +0200
-From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
-To:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, wayland-devel@lists.freedesktop.org
-Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, pierre-eric.pelloux-prayer@amd.com,
-        Simon Ser <contact@emersion.fr>,
-        Rob Clark <robdclark@gmail.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Daniel Stone <daniel@fooishbar.org>,
-        =?UTF-8?q?=27Marek=20Ol=C5=A1=C3=A1k=27?= <maraeo@gmail.com>,
-        Dave Airlie <airlied@gmail.com>,
-        =?UTF-8?q?Michel=20D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
-        Randy Dunlap <rdunlap@infradead.org>, hwentlan@amd.com,
-        joshua@froggi.es, ville.syrjala@linux.intel.com,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
-Subject: [PATCH v6 6/6] drm/doc: Define KMS atomic state set
-Date:   Tue, 15 Aug 2023 15:57:10 -0300
-Message-ID: <20230815185710.159779-7-andrealmeid@igalia.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230815185710.159779-1-andrealmeid@igalia.com>
-References: <20230815185710.159779-1-andrealmeid@igalia.com>
+        Tue, 15 Aug 2023 14:57:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F8F71FE2;
+        Tue, 15 Aug 2023 11:57:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1EC0961576;
+        Tue, 15 Aug 2023 18:57:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EB4AC433C7;
+        Tue, 15 Aug 2023 18:57:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692125840;
+        bh=WcEDKCUsjhr4cwMNn5jRu8EtHbRs3LwUKYQvvm6dKFA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mI7eWHPhIZiEuHucqMXNlVCl1x0rvOt6iFKVikOxWJLEmHvVvicCOdqx2QI/+0PyH
+         9Wuq16EMnEYOsBqlmmXPzbEwap6c3d+3hRRjIjPxxokZ/U9nrqWgYAKmxcMQx0u1iR
+         rr2yFlKalA3pg7EGlX0IVsrn2SgaL3fZw+OTMRJG39uoAPmm0sLTVQg3juEZ5op+V6
+         2ubdQhTU4waT+TweStzeIjyqC/1W15gMYv7L00A0Df7SM9b+LEuwhBGKGpNfQ9QI8x
+         j1gDQK6CgRRtTAUAWgcj1Z3AUVNet3rD+0DWjlBQecKJ3AzWrhgC7xdeGi+Rj1yMlj
+         nBnOh33/kDssQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 93785404DF; Tue, 15 Aug 2023 15:57:17 -0300 (-03)
+Date:   Tue, 15 Aug 2023 15:57:17 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Leo Yan <leo.yan@linaro.org>, John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Guo Ren <guoren@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Ming Wang <wangming01@loongson.cn>,
+        Eric Lin <eric.lin@sifive.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ivan Babrou <ivan@cloudflare.com>,
+        Fangrui Song <maskray@google.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v2 0/6] perf parse-regs: Refactor architecture functions
+Message-ID: <ZNvKjeFkXY8ezf9e@kernel.org>
+References: <20230606014559.21783-1-leo.yan@linaro.org>
+ <CAP-5=fV1m440mKc0R=m5C4N2NtoiixchtnpX2eR3PA_5hXbqEQ@mail.gmail.com>
+ <ZNvCxM/ULdUfzHtR@kernel.org>
+ <ZNvHx+KxIL6JzEl/@kernel.org>
+ <ZNvJdsVmmAWLmfH6@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZNvJdsVmmAWLmfH6@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pekka Paalanen <pekka.paalanen@collabora.com>
+Em Tue, Aug 15, 2023 at 03:52:38PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Tue, Aug 15, 2023 at 03:45:27PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > Agreed, applied to perf-tools-next, sorry for the delay.
+> > 
+> > Had to add this to make 'perf test python' to work. Please run 'perf
+> > test' before sending patches.
+> 
+> One more, please also do a 'make -C tools/perf build-test', with it I
+> caught this:
+> 
+>          make_no_libunwind_O: cd . && make NO_LIBUNWIND=1 FEATURES_DUMP=/var/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP -j32 O=/tmp/tmp.yeEGyQq2HR DESTDIR=/tmp/tmp.ITgoO16jjH
+> cd . && make NO_LIBUNWIND=1 FEATURES_DUMP=/var/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP -j32 O=/tmp/tmp.yeEGyQq2HR DESTDIR=/tmp/tmp.ITgoO16jjH
 
-Specify how the atomic state is maintained between userspace and
-kernel, plus the special case for async flips.
++#include "util/env.h"
 
-Signed-off-by: Pekka Paalanen <pekka.paalanen@collabora.com>
-Signed-off-by: André Almeida <andrealmeid@igalia.com>
----
-v5: Add note that not every redundant attribute will result in no-op
-v4: total rework by Pekka
----
- Documentation/gpu/drm-uapi.rst | 44 ++++++++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
-
-diff --git a/Documentation/gpu/drm-uapi.rst b/Documentation/gpu/drm-uapi.rst
-index 65fb3036a580..b91ccaddeeb9 100644
---- a/Documentation/gpu/drm-uapi.rst
-+++ b/Documentation/gpu/drm-uapi.rst
-@@ -486,3 +486,47 @@ and the CRTC index is its position in this array.
+As now we need it for perf_env__arch(ui->machine->env)
  
- .. kernel-doc:: include/uapi/drm/drm_mode.h
-    :internal:
-+
-+KMS atomic state
-+================
-+
-+An atomic commit can change multiple KMS properties in an atomic fashion,
-+without ever applying intermediate or partial state changes.  Either the whole
-+commit succeeds or fails, and it will never be applied partially. This is the
-+fundamental improvement of the atomic API over the older non-atomic API which is
-+referred to as the "legacy API".  Applying intermediate state could unexpectedly
-+fail, cause visible glitches, or delay reaching the final state.
-+
-+An atomic commit can be flagged with DRM_MODE_ATOMIC_TEST_ONLY, which means the
-+complete state change is validated but not applied.  Userspace should use this
-+flag to validate any state change before asking to apply it. If validation fails
-+for any reason, userspace should attempt to fall back to another, perhaps
-+simpler, final state.  This allows userspace to probe for various configurations
-+without causing visible glitches on screen and without the need to undo a
-+probing change.
-+
-+The changes recorded in an atomic commit apply on top the current KMS state in
-+the kernel. Hence, the complete new KMS state is the complete old KMS state with
-+the committed property settings done on top. The kernel will try to avoid
-+no-operation changes, so it is safe for userspace to send redundant property
-+settings.  However, not every situation allows for no-op changes, due to the
-+need to acquire locks for some attributes. Userspace needs to be aware that some
-+redundant information might result in oversynchronization issues.  No-operation
-+changes do not count towards actually needed changes, e.g.  setting MODE_ID to a
-+different blob with identical contents as the current KMS state shall not be a
-+modeset on its own.
-+
-+A "modeset" is a change in KMS state that might enable, disable, or temporarily
-+disrupt the emitted video signal, possibly causing visible glitches on screen. A
-+modeset may also take considerably more time to complete than other kinds of
-+changes, and the video sink might also need time to adapt to the new signal
-+properties. Therefore a modeset must be explicitly allowed with the flag
-+DRM_MODE_ATOMIC_ALLOW_MODESET.  This in combination with
-+DRM_MODE_ATOMIC_TEST_ONLY allows userspace to determine if a state change is
-+likely to cause visible disruption on screen and avoid such changes when end
-+users do not expect them.
-+
-+An atomic commit with the flag DRM_MODE_PAGE_FLIP_ASYNC is allowed to
-+effectively change only the FB_ID property on any planes. No-operation changes
-+are ignored as always. Changing any other property will cause the commit to be
-+rejected.
--- 
-2.41.0
+>   CC      /tmp/tmp.yeEGyQq2HR/util/expr-flex.o
+> util/unwind-libdw.c: In function ‘memory_read’:
+> util/unwind-libdw.c:173:28: error: implicit declaration of function ‘perf_env__arch’ [-Werror=implicit-function-declaration]
+>   173 |         const char *arch = perf_env__arch(ui->machine->env);
+>       |                            ^~~~~~~~~~~~~~
+> util/unwind-libdw.c:173:28: error: initialization of ‘const char *’ from ‘int’ makes pointer from integer without a cast [-Werror=int-conversion]
+> util/unwind-libdw.c: In function ‘unwind__get_entries’:
+> util/unwind-libdw.c:258:28: error: initialization of ‘const char *’ from ‘int’ makes pointer from integer without a cast [-Werror=int-conversion]
+>   258 |         const char *arch = perf_env__arch(ui_buf.machine->env);
+>       |                            ^~~~~~~~~~~~~~
+> cc1: all warnings being treated as errors
+> make[6]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:98: /tmp/tmp.yeEGyQq2HR/util/unwind-libdw.o] Error 1
+> make[6]: *** Waiting for unfinished jobs....
+> make[5]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:150: util] Error 2
+> make[4]: *** [Makefile.perf:662: /tmp/tmp.yeEGyQq2HR/perf-in.o] Error 2
+> make[4]: *** Waiting for unfinished jobs....
+>   CC      /tmp/tmp.yeEGyQq2HR/pmu-events/pmu-events.o
+>   LD      /tmp/tmp.yeEGyQq2HR/pmu-events/pmu-events-in.o
+> make[3]: *** [Makefile.perf:238: sub-make] Error 2
+> make[2]: *** [Makefile:70: all] Error 2
+> make[1]: *** [tests/make:337: make_no_libunwind_O] Error 1
+> make: *** [Makefile:103: build-test] Error 2
+> make: Leaving directory '/var/home/acme/git/perf-tools-next/tools/perf'
+> 
+> real	1m29.784s
+> user	10m41.597s
+> sys	2m55.948s
+> ⬢[acme@toolbox perf-tools-next]$
+> 
+> I'm trying to fix
 
+-- 
+
+- Arnaldo
