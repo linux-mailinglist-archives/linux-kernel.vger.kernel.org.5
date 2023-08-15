@@ -2,117 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A67A977C4C3
+	by mail.lfdr.de (Postfix) with ESMTP id EFA7377C4C4
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 02:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233634AbjHOAxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 20:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
+        id S233806AbjHOAxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 20:53:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233923AbjHOAxG (ORCPT
+        with ESMTP id S233948AbjHOAxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 20:53:06 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E9B1710
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 17:52:46 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b9dc1bff38so72709001fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 17:52:46 -0700 (PDT)
+        Mon, 14 Aug 2023 20:53:10 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78391BF2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 17:52:48 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d67a458ff66so3912571276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 17:52:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692060683; x=1692665483;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5DF8cCN5c46hMXv7mfXAxrDIYQabUgmS1Hsrig0V+jQ=;
-        b=OqEkid6LHJUv/dnnZQeNSbgPrTga2p1Rg7hC4lce9ysXWPFOb965ybIH11k9KozkYE
-         ++Q/tf1K5gcbbTOpBJwvPUu+khrw9WL0zXKRU4T1sQYBO+GIfKqNstu2m4fOKzHPFVgh
-         RslMiu059PrSxFkvqcBGE1uAJDrfm0+aWeoRRFjPern7kCkCL+ND9+b1+vbUuFEDgSoc
-         POSYw0EN/F5RdTEAizBNUBDtNI5MRiAM2MT58N9sYEAsV/LE7ATMssVAb1qDBfos1d0l
-         5wm9zSdVQFwAZ7hw1vwuzDQA8dyBkeIA9spid8dBeJp17yeTcCVoEN5n9StLcr3vFIOa
-         /cOQ==
+        d=google.com; s=20221208; t=1692060752; x=1692665552;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hk15mUEG36mYzoWqdyXNILxXbUGFuZdN5ezEkvLZ3iM=;
+        b=SUKnvazqj9CVjAezsoD2+y+B/lascXFbPfh2BmPWUTPhsp2ltMrajsTckozDu9ifdm
+         uRoTdnCgOM98B7Rnb91Ve9c/MBRF5IHK3nGacQ54NRHNp4jfWACljRlSNeWuoRdL+3na
+         CtHqlJoC59YHPayYcYzVEhCEfMbZsPVJQIkTDsx0J6ehfskI+bg3C/TTqGB4GfV7K9Vn
+         rRDM2yi+re6usECld7Z4U2WK/2ghsl54KPV4Ycl6v1kRxR+u2a297eNSVYm3jPrYQCL2
+         cXFmXO9Zt4S3exCCMfQ/QP9nNjQaIR5tBPHnG0PDbMprpJdiffEDLgQQkSHFXTPIaHgD
+         6rOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692060683; x=1692665483;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5DF8cCN5c46hMXv7mfXAxrDIYQabUgmS1Hsrig0V+jQ=;
-        b=gGq/emWbmOICPdV86gMj3/5v5zcoz6HidPJFdUgg90gekwRxbe2OG5XURQaE7dNk6V
-         sCs3LKW7A775R039Nryr9fe5nOiiaNrWgvRaB6Mr5KjljWIMdA7HhvIN6OjiQZ5k7vjk
-         NNFdvF28TJbBzBJuQzqYVXsuplU+WNsPSg7Ogl1OBpUK19KF+LSpTqybWWwYTLjzTz33
-         uXk3FpjHoA271UQ+7zoTLymWHKX8KxpcomhzWIrPiJpkWTvRjf7D4mpYhoQGfMcEVCoh
-         9ksDa+wvRJc/7w5A9BaKEXoEK9yXm98mt+2sZdZHzGsNMu/WwLS2UFJIHX52B2PHgJiM
-         +Heg==
-X-Gm-Message-State: AOJu0YyOXCXhORSVLWd69EOzvu5GWMJbZjlacYDwGdey+TOuWFzCFQlV
-        dMOunoRofoZa+wOyvSJKysmgwBdjN7HWkT6SxVs34g==
-X-Google-Smtp-Source: AGHT+IGI+0rMXyiTqDclgVU+5Q/VHvFjTyR5DfGND292wILhrXmllouPmLK8Q8BpDZkXhsxD2W1Jm3Ugsyg6SZXSoNY=
-X-Received: by 2002:a2e:a287:0:b0:2b9:da28:c508 with SMTP id
- k7-20020a2ea287000000b002b9da28c508mr7509811lja.31.1692060683200; Mon, 14 Aug
- 2023 17:51:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAJD7tkYZxjAHrodVDK=wmz-sULJrq2VhC_5ecRP7T-KiaOcTuw@mail.gmail.com>
- <CALvZod46Cz_=5UgiyAKM+VgKyk=KJCqDqXu91=9uHy7-2wk53g@mail.gmail.com>
- <CAJD7tkY-ezyYebvcs=8Z_zrw2UVW8jf2WvP1G8tu2rT=2sMnAA@mail.gmail.com>
- <CALvZod5fH9xu_+6x85K38f63GfKGWD1LqtD2R4d09xmDtLB7ew@mail.gmail.com>
- <ZNdEaw2nktq1NfmH@dhcp22.suse.cz> <CAJD7tkaFHgc3eN1K1wYsQFWMLu4+Frf9DJ-5HOja2nC20Es9Dw@mail.gmail.com>
- <ZNrDWqfjXtAYhnvT@slm.duckdns.org> <CAJD7tkYBFz-gZ2QsHxUMT=t0KNXs66S-zzMPebadHx9zaG0Q3w@mail.gmail.com>
- <ZNrITZVTf2EILRJq@slm.duckdns.org> <CAJD7tkaXwoF-faApweAmm7Db7jAuS3EO7hVvdyVtqW_rE+T9Vg@mail.gmail.com>
- <ZNrLO5PAEZw4yjI9@slm.duckdns.org>
-In-Reply-To: <ZNrLO5PAEZw4yjI9@slm.duckdns.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 14 Aug 2023 17:50:46 -0700
-Message-ID: <CAJD7tkYgCySTX28zK9GZiWwsabR4nv7M2hQ57y12si-fqtv7zg@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        d=1e100.net; s=20221208; t=1692060752; x=1692665552;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=hk15mUEG36mYzoWqdyXNILxXbUGFuZdN5ezEkvLZ3iM=;
+        b=Avh7oRrJvVr9Eb8clbkUTr3z/7yurm16F8BKdzUPKyxBSO3MMpG4ZhTSMVek/yfKIZ
+         lUE/bdpG27Y4JAD2ZIj2Dx4QuqlY9dkt1SQog25yRFEt+isD6XifJNY3DE/GkirwrCAY
+         gYyEXPoSs1sthg1Ph4ycSdxWUX2bMEkKsHh+6nKNFvX6e3t2UGem2SUz5T3hU223jax+
+         Zp2KM+3kfHx38xvV66OoQbtK5o3F0gvh049h8q3+/xkmiOFothFBbFmi/2lJPyhdSBL+
+         PnvEx5vR8vhIBxtsZODf03C5JJRlzy9oDqrs/C5YmN5rHFWqStkZskVsmPsbK/rkVfip
+         cMyA==
+X-Gm-Message-State: AOJu0Yy+5TRf3+d0SyQFgdbItwA810ngzeeqfYxYD27eBVGr3Uptvn/b
+        d46ONlLUwKeHEcDzX1mSlR97RS0tmUE=
+X-Google-Smtp-Source: AGHT+IEm/gyjzby2m0z7Th7h1NzS+zVz9W6iAdmwDKQNzO5UYu/Tw93ovcYoaLNJ0fJilJkbmSYm3tW9J7c=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:7443:0:b0:d20:7752:e384 with SMTP id
+ p64-20020a257443000000b00d207752e384mr148317ybc.3.1692060751838; Mon, 14 Aug
+ 2023 17:52:31 -0700 (PDT)
+Date:   Mon, 14 Aug 2023 17:52:30 -0700
+In-Reply-To: <CAJHc60wMueazp3Wm=b6-tnFPAyX0zeYuVQe9uPEJrpAm0azw2A@mail.gmail.com>
+Mime-Version: 1.0
+References: <20230811045127.3308641-1-rananta@google.com> <ZNq15SZ+53umvOfx@google.com>
+ <CAJHc60wMueazp3Wm=b6-tnFPAyX0zeYuVQe9uPEJrpAm0azw2A@mail.gmail.com>
+Message-ID: <ZNrMTmppUfQhdsyY@google.com>
+Subject: Re: [PATCH v9 00/14] KVM: arm64: Add support for FEAT_TLBIRANGE
+From:   Sean Christopherson <seanjc@google.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Fuad Tabba <tabba@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 5:48=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Mon, Aug 14, 2023 at 05:39:15PM -0700, Yosry Ahmed wrote:
-> > I believe dropping unified flushing, if possible of course, may fix
-> > both problems.
->
-> Yeah, flushing the whole tree for every stat read will push up the big O
-> complexity of the operation. It shouldn't be too bad because only what's
-> updated since the last read will need flushing but if you have a really b=
-ig
-> machine with a lot of constantly active cgroups, you're still gonna feel =
-it.
-> So, yeah, drop that and switch the global lock to mutex and we should all=
- be
-> good?
+On Mon, Aug 14, 2023, Raghavendra Rao Ananta wrote:
+> On Mon, Aug 14, 2023 at 4:16=E2=80=AFPM Sean Christopherson <seanjc@googl=
+e.com> wrote:
+> >
+> > On Fri, Aug 11, 2023, Raghavendra Rao Ananta wrote:
+> > > The series is based off of upstream v6.5-rc1.
+> >
+> > Lies!  :-)
+> >
+> > This is based off one of the kvmarm.git topic branches (I didn't bother=
+ to figure
+> > out which one), not v6.5-rc1.
+> >
+> Sorry, what am I missing here? My git log is as follows:
 
-I hope so, but I am not sure.
+Hmm, not sure what's going on.  Maybe I misinterpreted why `git am` was fai=
+ling?
+I assumed it was because there were objects in kvmarm that I didn't have lo=
+cally,
+and fetching kvmarm allowed am to complete, though with 3-way merges, which=
+ IIUC
+shouldn't have been necessary if I was using the exact same base.  Or maybe=
+ I
+messed up and didn't actually reset to 6.5-rc1.
 
-The unified flushing was added initially to mitigate a thundering herd
-problem from concurrent in-kernel flushers (e.g. concurrent reclaims),
-but back then flushing was atomic so we had to keep the spinlock held
-for a long time. I think it should be better now, but I am hoping
-Shakeel will chime in since he added the unified flushing originally.
+> $ git log --oneline upstream_tlbi_range_v9
+> 5025857507abe (upstream_tlbi_range_v9) KVM: arm64: Use TLBI
+> range-based instructions for unmap
+> 5c0291b99a8fc KVM: arm64: Invalidate the table entries upon a range
+> 8c46b54d4aaec KVM: arm64: Flush only the memslot after write-protect
+> 231abaeb7ffc2 KVM: arm64: Implement kvm_arch_flush_remote_tlbs_range()
+> 5ec291b863309 KVM: arm64: Define kvm_tlb_flush_vmid_range()
+> 5bcd7a085c34e KVM: arm64: Implement  __kvm_tlb_flush_vmid_range()
+> ea08f9dff7e5b arm64: tlb: Implement __flush_s2_tlb_range_op()
+> b3178687947c9 arm64: tlb: Refactor the core flush algorithm of __flush_tl=
+b_range
+> a4850fa988eef KVM: Move kvm_arch_flush_remote_tlbs_memslot() to common co=
+de
+> 306dc4e6afd37 KVM: Allow range-based TLB invalidation from common code
+> d02785a0a1e01 KVM: Remove CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL
+> 136fa2d254537 KVM: arm64: Use kvm_arch_flush_remote_tlbs()
+> e35c68a75170d KVM: Declare kvm_arch_flush_remote_tlbs() globally
+> 5d592777b9bba KVM: Rename kvm_arch_flush_remote_tlb() to
+> kvm_arch_flush_remote_tlbs()
+> 06c2afb862f9d (tag: v6.5-rc1, tag: linux/v6.5-rc1) Linux 6.5-rc1
+> c192ac7357683 MAINTAINERS 2: Electric Boogaloo
+> f71f64210d698 Merge tag 'dma-mapping-6.5-2023-07-09' of
+> git://git.infradead.org/users/hch/dma-mapping
+> ...
+>=20
+> Isn't the commit, 06c2afb862f9d (06c2afb862f9d (tag: v6.5-rc1, tag:
+> linux/v6.5-rc1) Linux 6.5-rc1) the 'base' commit?
 
-We also need to agree on what to do about stats_flushing_threshold and
-flush_next_time since they're both global now (since all flushing is
-global).
+Ya, should be.
 
->
-> Thanks.
->
-> --
-> tejun
+Either way, even if this is PEBKAC on my end, using --base would be nice, e=
+.g.
+then you can definitely say it's my fault ;-)
+
+> > Please try to incorporate git format-patch's "--base" option into your =
+workflow,
+> > e.g. I do "git format-patch --base=3DHEAD~$nr" where $nr is the number =
+of patches
+> > I am posting.
+> >
+> > It's not foolproof, e.g. my approach doesn't help if I have a local pat=
+ch that
+> > I'm not posting, but 99% of the time it Just Works and eliminates any a=
+mbuitity.
+> >
+> > You can also do "--base=3Dauto", but that only does the right thing if =
+your series
+> > has its upstream branch set to the base/tree that you want your patches=
+ applied
+> > to (I use the upstream branch for a completely different purpose for my=
+ dev branches).
