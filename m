@@ -2,198 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D3B77D359
+	by mail.lfdr.de (Postfix) with ESMTP id 773C777D35A
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239487AbjHOTYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 15:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48684 "EHLO
+        id S239649AbjHOTYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 15:24:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239640AbjHOTYA (ORCPT
+        with ESMTP id S239925AbjHOTYM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 15:24:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0466D1FE8;
-        Tue, 15 Aug 2023 12:23:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A983644DC;
-        Tue, 15 Aug 2023 19:20:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70879C433C7;
-        Tue, 15 Aug 2023 19:20:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692127243;
-        bh=juaV9ptf7G8D6/MebPy6CX23F3T/jcHKcNtLtg9ebDM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Me6cv4bbbEwLZSsRoScgM4XqzJHT2vQMeTONh/jcANKnQQQFb+Ho+rpW3tgTxsM4C
-         ugCtvS9NDZElc9L8olZL/aXlVDKCS7vpmYH5OtTzvHBy+oA0bVw3xoUgC2tUhiNXUX
-         2vVm1q2Z4b9Agi2HjFY3g1HfSDBvCVCURzkEYNH2uq6deVuq+yOO6HKD/hHdaW2vsn
-         QFwHhgHBbYZDjlFcIQqjFJ96z47XI8/km9w/5gc90NP6oaRcXJoeKUCkTl1QRNGBHl
-         v8U/Q8UVVOHZOG8qTF3h+8OyYfX7q9xZcTi+3Q1HvrdwVFWEEPigPPUTh48cJmtheY
-         U5XuFUSlawLJA==
-Date:   Tue, 15 Aug 2023 14:20:41 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-acpi@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Iain Lane <iain@orangesquash.org.uk>,
-        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>
-Subject: Re: [PATCH v11 3/9] ACPI: x86: s2idle: Fix a logic error parsing AMD
- constraints table
-Message-ID: <20230815192041.GA233609@bhelgaas>
+        Tue, 15 Aug 2023 15:24:12 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1C1198B
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:23:43 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b962535808so87886881fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:23:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692127422; x=1692732222;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qaFxc7NLdnRLFGC9mlhpM8Q09n9sYqbBf799fEemgfw=;
+        b=TQ21jZyTGF3bfMGXahLoN4HPtf2jI0G0qRbhilG9PHiO7OiF3viTLSdLr8ftgVW2MJ
+         t/n2cjVspxR/8irwI7IlFbd6Uz7LHi9Jg2/8yEW2dI8ahXpOgxzvvwLFm8s7DiZOtODy
+         b6gCmq7bfnW8qjx3IwQfBDhg2BPtk1nuT6sUFCwbJ4WsFL4V8p2lbF7K7ZtV3F3SxPSN
+         6pBvh0Xdf02XPh993XjEty6Nt9rGfLcTjiHKZ4wso3ztCAoO356imeB2k89ew+cS8F/h
+         bm7axHDRBMrKR6de5WQphoD+otQM27z+Ue9qY3UlFB/ZHbQ4/npLLN0KnzuGcH4+DS0I
+         P2Pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692127422; x=1692732222;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qaFxc7NLdnRLFGC9mlhpM8Q09n9sYqbBf799fEemgfw=;
+        b=GaObdEkQ4tDdZUzx6aHWRDbUVjVeuK8UcZQFPjs9KOo9/Z5JGlZgVc1YYr6ph9I1wc
+         sPVppwi5Ozj8GG2Gh0z7CqZ4UtH0CylyXhakUL98mL9A6FyHDOjCgDyXptIJd+bzZKOl
+         JzxgnorTCFPWpG8FclGEraHaCVXiztFFSoUVlnRWp1xylcbUlsg0O1UuQnBHPzTCh1n6
+         xhMmGu+9XGyF3bXKakeTmX2ZU1PsQfYRb1ItpGLY1sW4r+u5xqf2NVLh4CGstQP1uCiR
+         q3HJAZkDogi88Eh7rjHTARdvEb8vvw5QQDiHAOOl/R4roUZIc3nhZaVpebpF2962d5sa
+         sxAQ==
+X-Gm-Message-State: AOJu0YxQxqgveP48sBSWtyEebHJyifE+MNal8OjE+BYraCWa7OyZ0uV7
+        9ZZs8tQGRwcdpBF6/790cQspN9hN2TRMQFa3SAA=
+X-Google-Smtp-Source: AGHT+IHJLA26STk/hwBrtqzVAv06LFh2j1m+MsPIDzZXybnuQC5Pb5RCUUJwpAsqa9+P2xMq87XKKRMURzO/wBgCQmw=
+X-Received: by 2002:a05:651c:14a:b0:2b9:d3b6:769e with SMTP id
+ c10-20020a05651c014a00b002b9d3b6769emr9194707ljd.24.1692127421409; Tue, 15
+ Aug 2023 12:23:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230809185453.40916-4-mario.limonciello@amd.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <389b-64db6700-1-3dc04b80@31442286> <b278375f-4644-2db6-9a14-9088470d528c@suse.de>
+ <CAKMK7uF1hv3S--=jsmFWG_tkOKavgMBOkWQt6VOSV0d1U7C0VA@mail.gmail.com>
+ <1b9ea227-b068-9d91-1036-28a4161b1744@suse.de> <CAF6AEGsr+2xaCeExm9wPmK=nU+jxevLcd8RDWTSFrwKR-yCvZg@mail.gmail.com>
+In-Reply-To: <CAF6AEGsr+2xaCeExm9wPmK=nU+jxevLcd8RDWTSFrwKR-yCvZg@mail.gmail.com>
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Wed, 16 Aug 2023 05:23:29 +1000
+Message-ID: <CAPM=9tx16UoYoOw4hBChVNPcj57ox1XsybPPTGZn=r2DDQBJmw@mail.gmail.com>
+Subject: Re: [PULL for v6.6] drm-misc-next
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>, daniels@collabora.com,
+        robdclark@google.com, gustavo.padovan@collabora.com,
+        guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
+        linux-kernel@vger.kernel.org, robclark@freedesktop.org,
+        david.heidelberg@collabora.com,
+        Helen Mae Koike Fornazier <helen.koike@collabora.com>,
+        anholt@google.com, dri-devel@lists.freedesktop.org,
+        emma@anholt.net, airlied@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 01:54:47PM -0500, Mario Limonciello wrote:
-> The constraints table should be resetting the `list` object
-> after running through all of `info_obj` iterations.
-
-This *looks* like it should fix a real problem (see below), but not
-the one mentioned here.  But maybe I'm missing something because the
-code that looks broken to me has been there since 146f1ed852a8 ("ACPI:
-PM: s2idle: Add AMD support to handle _DSM"), which appeared in v5.11
-in 2021.
-
-> This adjusts whitespace as well as less code will now be included
-> with each loop.
+> > Otherwise, there should be something like a drm-ci tree, from which you
+> > can fetch the changes directly.
 >
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
-> v9->v10:
->  * split from other patches
-> ---
->  drivers/acpi/x86/s2idle.c | 35 +++++++++++++++++------------------
->  1 file changed, 17 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/acpi/x86/s2idle.c b/drivers/acpi/x86/s2idle.c
-> index ce62e61a9605e..b566b3aa09388 100644
-> --- a/drivers/acpi/x86/s2idle.c
-> +++ b/drivers/acpi/x86/s2idle.c
-> @@ -129,12 +129,12 @@ static void lpi_device_get_constraints_amd(void)
->  				struct lpi_constraints *list;
->  				acpi_status status;
->  
-> +				list = &lpi_constraints_table[lpi_constraints_table_size];
-> +				list->min_dstate = -EINVAL;
+> I asked for a pull request so that I could also merge it to msm-next
+> so that I can do CI this cycle.  (Unlike the earlier out-of-tree
+> version of the drm/ci yml, this version needs to be in the branch that
+> CI runs on, so I can't use the workaround that I had in previous
+> cycles.)
+>
+> Perhaps it should be a pull request targeting drm-next instead of drm-misc-next.
+>
+> We were going to do this one-off for this cycle and then evaluate
+> going forward whether a drm-ci-next tree is needed.  But perhaps it is
+> a good idea.
 
-I really have no idea what's going on here, but the code still looks
-weird:
 
-  1) Moving the "list" update:
+I'm still not 100% sure how this is going down, and I'm meant to be off today,
 
-       for (j = 0; j < package->package.count; ++j) {
-     +   list = &lpi_constraints_table[lpi_constraints_table_size];
-         for (k = 0; k < info_obj->package.count; ++k) {
-     -     list = &lpi_constraints_table[lpi_constraints_table_size];
-           ...
-         }
-         lpi_constraints_table_size++;
-       }
+Don't send this as patches to drm-misc-next, but I think we'd want
+this in drm-next for a cycle before sending it to Linus, but maybe
+it's not directly interfering with the kernel so it's fine
 
-     looks fine, but lpi_constraints_table_size isn't updated inside
-     the "k" loop, and "list" isn't otherwise updated, so it shouldn't
-     make any functional difference.
+Ideally when the real merge window opens and drm-next is merged I'd
+want to have a branch + PR written for this against drm-next that I
+can send to Linus separately and see how it goes.
 
-     HOWEVER, this patch also moves all the
-     dev_info.enabled/name/min_dstate tests outside the "k" loop, so
-     they're only done after the "k" loop has completed and they've
-     all been set, which looks like it DOES fix a problem and is not
-     mentioned in the commit log.
-
-  2) Both lpi_device_get_constraints_amd() and
-     lpi_device_get_constraints() overwrite the global
-     lpi_constraints_table for each PNP0D80 device.  I assume there's
-     some higher-level constraint that there can only be one such
-     device, but the code doesn't enforce that.
-
-  3) It's obvious that lpi_device_get_constraints() can only allocate
-     lpi_constraints_table once per call.  It's NOT obvious for
-     lpi_device_get_constraints_amd(), because the alloc is inside a
-     loop:
-
-       for (i = 0; i < out_obj->package.count; i++) {
-         lpi_constraints_table = kcalloc(...);
-
-     If the AMD _DSM returns more than one package, we'll leak all but
-     the last one.
-
-  4) Both lpi_device_get_constraints_amd() and
-     lpi_device_get_constraints() use pre- and post-increment in the
-     "for" loops for no apparent reason:
-
-       for (i = 0; i < out_obj->package.count; i++)
-         for (j = 0; j < package->package.count; ++j)
-           for (k = 0; k < info_obj->package.count; ++k)  # AMD only
-
-     I'd say they should all use the same (I vote for post-increment).
-
->  				for (k = 0; k < info_obj->package.count; ++k) {
->  					union acpi_object *obj = &info_obj->package.elements[k];
->  
-> -					list = &lpi_constraints_table[lpi_constraints_table_size];
-> -					list->min_dstate = -1;
-> -
->  					switch (k) {
->  					case 0:
->  						dev_info.enabled = obj->integer.value;
-> @@ -149,26 +149,25 @@ static void lpi_device_get_constraints_amd(void)
->  						dev_info.min_dstate = obj->integer.value;
->  						break;
->  					}
-> +				}
->  
-> -					if (!dev_info.enabled || !dev_info.name ||
-> -					    !dev_info.min_dstate)
-> -						continue;
-> +				if (!dev_info.enabled || !dev_info.name ||
-> +				    !dev_info.min_dstate)
-> +					continue;
->  
-> -					status = acpi_get_handle(NULL, dev_info.name,
-> -								 &list->handle);
-> -					if (ACPI_FAILURE(status))
-> -						continue;
-> +				status = acpi_get_handle(NULL, dev_info.name, &list->handle);
-> +				if (ACPI_FAILURE(status))
-> +					continue;
->  
-> -					acpi_handle_debug(lps0_device_handle,
-> -							  "Name:%s\n", dev_info.name);
-> +				acpi_handle_debug(lps0_device_handle,
-> +						  "Name:%s\n", dev_info.name);
->  
-> -					list->min_dstate = dev_info.min_dstate;
-> +				list->min_dstate = dev_info.min_dstate;
->  
-> -					if (list->min_dstate < 0) {
-> -						acpi_handle_debug(lps0_device_handle,
-> -								  "Incomplete constraint defined\n");
-> -						continue;
-> -					}
-> +				if (list->min_dstate < 0) {
-> +					acpi_handle_debug(lps0_device_handle,
-> +							  "Incomplete constraint defined\n");
-> +					continue;
->  				}
->  				lpi_constraints_table_size++;
->  			}
-> -- 
-> 2.34.1
-> 
+Dave.
