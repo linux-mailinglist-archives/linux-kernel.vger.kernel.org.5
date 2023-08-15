@@ -2,219 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3FA477C766
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 08:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28CC577C769
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 08:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234875AbjHOGEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 02:04:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40444 "EHLO
+        id S234873AbjHOGEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 02:04:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234799AbjHOGDs (ORCPT
+        with ESMTP id S234918AbjHOGEL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 02:03:48 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C34793;
-        Mon, 14 Aug 2023 23:03:46 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37F5UEwA014462;
-        Tue, 15 Aug 2023 06:03:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=W1ZndHb06o1CqBfEMHAQs0xKzsPqR8W26l51gDxt9tE=;
- b=l0QYp/a/ndOuDYURMdVL31uaACkI+Ktakb5YS5BbvRH6uQR++Y5rPsMNEYaiLoxv1gQ/
- rZUQQewRxqmlcGfWOLwuWC7MicIqBIyJxSgXttoDu4Zylfr6EiFOPevCckaEhPCgzzjW
- tXfU8AthMWOyCEtxyyL/R85g2IfVHzlzrCyWcjBcpP8Cy42HEGug89yn+OW5pmP9s1QH
- 9IcnyxY/YKHZrtg3YuQnl9kpM9qm1n36OAsaZRm35XTz0ZCc+8EnJa8VcCiHy+VYAkzT
- YHoq4jyZmtaH2Iz2w3SuCVH57YOJ6EMCEiaxL/NoZvlYAH8ZHw4HoWmXP0TecBwtXh/6 Qw== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sfxqrrdan-1
+        Tue, 15 Aug 2023 02:04:11 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F4E19AD;
+        Mon, 14 Aug 2023 23:04:09 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37F5vFfm015807;
+        Tue, 15 Aug 2023 06:04:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=Ekj719LWKN0wyPqfYBSToTLp5aoKdb+W6oRGPj7i/Mk=;
+ b=PxKC7URHud/vwKyCEl03xut2r5dU96UQjVXE/XDKhdP6TrEbTtxjC4POR6axajfaH24B
+ 7fhMIWdZJvAfzz765Gv34Xmmo1/LpzIXhtSRa3/woJv9RNZPsfC6aDoYi25eM0RyN/4S
+ 4aqFxzLFAN4jF8msyQltQOC2nuucGue3ta4Yw4AWhQqD56hregN6wrW4jOhuJgH+LkNv
+ LPYuBxGbC3LL+2MxFujYLlb3m69YjvUYVtL9K/oQujdF65heCgADMgyajvgUkAvbliUP
+ s+Me9QSgwrkPrdeW6PuyveQ15r2bR+vfj/OT5/9nZqLIw51nGgkCSxU+rtaI071zU25A lw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sg3nqg52r-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Aug 2023 06:03:41 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37F63eWb006637
+        Tue, 15 Aug 2023 06:04:05 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37F5waNx018326;
+        Tue, 15 Aug 2023 06:04:04 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sg3nqg51j-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Aug 2023 06:03:40 GMT
-Received: from fenglinw2-gv.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 14 Aug 2023 23:03:37 -0700
-From:   Fenglin Wu <quic_fenglinw@quicinc.com>
-To:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <robh+dt@kernel.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <dmitry.baryshkov@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        <linux-input@vger.kernel.org>
-CC:     <quic_collinsd@quicinc.com>, <quic_subbaram@quicinc.com>,
-        <quic_fenglinw@quicinc.com>, <quic_kamalw@quicinc.com>,
-        <jestar@qti.qualcomm.com>, Luca Weiss <luca.weiss@fairphone.com>
-Subject: [PATCH v5 3/3] input: pm8xxx-vibrator: add new SPMI vibrator support
-Date:   Tue, 15 Aug 2023 14:03:14 +0800
-Message-ID: <20230815060314.352103-4-quic_fenglinw@quicinc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230815060314.352103-1-quic_fenglinw@quicinc.com>
-References: <20230815060314.352103-1-quic_fenglinw@quicinc.com>
+        Tue, 15 Aug 2023 06:04:04 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37F4lg0P002465;
+        Tue, 15 Aug 2023 06:04:03 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sendn2u0r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Aug 2023 06:04:02 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37F63xhp23462586
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Aug 2023 06:03:59 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AB51320049;
+        Tue, 15 Aug 2023 06:03:59 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7376E20040;
+        Tue, 15 Aug 2023 06:03:59 +0000 (GMT)
+Received: from osiris (unknown [9.152.212.60])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue, 15 Aug 2023 06:03:59 +0000 (GMT)
+Date:   Tue, 15 Aug 2023 08:03:57 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Justin Stitt <justinstitt@google.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] s390/ipl: refactor deprecated strncpy
+Message-ID: <20230815060357.6414-B-hca@linux.ibm.com>
+References: <20230811-arch-s390-kernel-v1-1-7edbeeab3809@google.com>
+ <202308141626.3F82919BFD@keescook>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202308141626.3F82919BFD@keescook>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: RXT7uMFcO16kfrVK6WEQnyIYhgeSo48f
+X-Proofpoint-ORIG-GUID: e4y6zSqo27BauUc_Fchn_0NX9-cjLulj
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: B0d9tHDdxCSuJ7Al-Kj539hUcdJjHuz7
-X-Proofpoint-ORIG-GUID: B0d9tHDdxCSuJ7Al-Kj539hUcdJjHuz7
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-08-15_04,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- clxscore=1011 impostorscore=0 mlxscore=0 phishscore=0 bulkscore=0
- spamscore=0 malwarescore=0 priorityscore=1501 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308150055
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 spamscore=0 impostorscore=0 mlxlogscore=776
+ clxscore=1011 phishscore=0 bulkscore=0 priorityscore=1501 mlxscore=0
+ adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2308150055
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new SPMI vibrator module which is very similar to the SPMI vibrator
-module inside PM8916 but just has a finer drive voltage step (1mV vs
-100mV) hence its drive level control is expanded to across 2 registers.
-The vibrator module can be found in Qualcomm PMIC PMI632, then following
-PM7250B, PM7325B, PM7550BA PMICs.
+On Mon, Aug 14, 2023 at 04:32:11PM -0700, Kees Cook wrote:
+> On Fri, Aug 11, 2023 at 09:56:15PM +0000, Justin Stitt wrote:
+> > `strncpy` is deprecated for use on NUL-terminated destination strings [1].
+> > 
+> > Use `strscpy_pad` which has the same behavior as `strncpy` here with the
+> > extra safeguard of guaranteeing NUL-termination of destination strings.
+> > In it's current form, this may result in silent truncation if the src
+> > string has the same size as the destination string.
+> > 
+> > Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Cc: linux-hardening@vger.kernel.org
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > ---
+> >  arch/s390/kernel/ipl.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+...
+> > -	strncpy(_value, buf, sizeof(_value) - 1);			\
+> > +	strscpy_pad(_value, buf, sizeof(_value));			\
+> 
+> Padding isn't needed here -- the string are consumed by __cpcmd(), which
+> explicitly uses strlen() and a memcpy to pass them off.
+> 
+> >  	strim(_value);							\
+> 
+> This existing code line is buggy, though -- it will not trim leading
+> whitespace in the buffer. (It _returns_ a string that has been
+> forward-adjusted.)
 
-Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
-Tested-by: Luca Weiss <luca.weiss@fairphone.com> # sdm632-fairphone-fp3 (pmi632)
----
- drivers/input/misc/pm8xxx-vibrator.c | 55 +++++++++++++++++++++++++---
- 1 file changed, 50 insertions(+), 5 deletions(-)
+I'm quite sure that was intentional, so only whitespace at the end of
+the string, in particular '\n', will be stripped.
+But then again this code is 15 years old...
 
-diff --git a/drivers/input/misc/pm8xxx-vibrator.c b/drivers/input/misc/pm8xxx-vibrator.c
-index d6b468324c77..990e8a9ac018 100644
---- a/drivers/input/misc/pm8xxx-vibrator.c
-+++ b/drivers/input/misc/pm8xxx-vibrator.c
-@@ -21,6 +21,13 @@
- #define SPMI_VIB_DRV_LEVEL_MASK		GENMASK(4, 0)
- #define SPMI_VIB_DRV_SHIFT		0
- 
-+#define SPMI_VIB_GEN2_DRV_REG		0x40
-+#define SPMI_VIB_GEN2_DRV_MASK		GENMASK(7, 0)
-+#define SPMI_VIB_GEN2_DRV_SHIFT		0
-+#define SPMI_VIB_GEN2_DRV2_REG		0x41
-+#define SPMI_VIB_GEN2_DRV2_MASK		GENMASK(3, 0)
-+#define SPMI_VIB_GEN2_DRV2_SHIFT	8
-+
- #define SPMI_VIB_EN_REG			0x46
- #define SPMI_VIB_EN_BIT			BIT(7)
- 
-@@ -33,12 +40,14 @@
- enum vib_hw_type {
- 	SSBI_VIB,
- 	SPMI_VIB,
-+	SPMI_VIB_GEN2
- };
- 
- struct pm8xxx_vib_data {
- 	enum vib_hw_type	hw_type;
- 	unsigned int		enable_addr;
- 	unsigned int		drv_addr;
-+	unsigned int		drv2_addr;
- };
- 
- static const struct pm8xxx_vib_data ssbi_vib_data = {
-@@ -52,6 +61,13 @@ static const struct pm8xxx_vib_data spmi_vib_data = {
- 	.drv_addr	= SPMI_VIB_DRV_REG,
- };
- 
-+static const struct pm8xxx_vib_data spmi_vib_gen2_data = {
-+	.hw_type	= SPMI_VIB_GEN2,
-+	.enable_addr	= SPMI_VIB_EN_REG,
-+	.drv_addr	= SPMI_VIB_GEN2_DRV_REG,
-+	.drv2_addr	= SPMI_VIB_GEN2_DRV2_REG,
-+};
-+
- /**
-  * struct pm8xxx_vib - structure to hold vibrator data
-  * @vib_input_dev: input device supporting force feedback
-@@ -85,12 +101,24 @@ static int pm8xxx_vib_set(struct pm8xxx_vib *vib, bool on)
- {
- 	int rc;
- 	unsigned int val = vib->reg_vib_drv;
--	u32 mask = SPMI_VIB_DRV_LEVEL_MASK;
--	u32 shift = SPMI_VIB_DRV_SHIFT;
-+	u32 mask, shift;
- 
--	if (vib->data->hw_type == SSBI_VIB) {
-+
-+	switch (vib->data->hw_type) {
-+	case SSBI_VIB:
- 		mask = SSBI_VIB_DRV_LEVEL_MASK;
- 		shift = SSBI_VIB_DRV_SHIFT;
-+		break;
-+	case SPMI_VIB:
-+		mask = SPMI_VIB_DRV_LEVEL_MASK;
-+		shift = SPMI_VIB_DRV_SHIFT;
-+		break;
-+	case SPMI_VIB_GEN2:
-+		mask = SPMI_VIB_GEN2_DRV_MASK;
-+		shift = SPMI_VIB_GEN2_DRV_SHIFT;
-+		break;
-+	default:
-+		return -EINVAL;
- 	}
- 
- 	if (on)
-@@ -104,6 +132,19 @@ static int pm8xxx_vib_set(struct pm8xxx_vib *vib, bool on)
- 
- 	vib->reg_vib_drv = val;
- 
-+	if (vib->data->hw_type == SPMI_VIB_GEN2) {
-+		mask = SPMI_VIB_GEN2_DRV2_MASK;
-+		shift = SPMI_VIB_GEN2_DRV2_SHIFT;
-+		if (on)
-+			val = (vib->level >> shift) & mask;
-+		else
-+			val = 0;
-+		rc = regmap_update_bits(vib->regmap,
-+				vib->reg_base + vib->data->drv2_addr, mask, val);
-+		if (rc < 0)
-+			return rc;
-+	}
-+
- 	if (vib->data->hw_type == SSBI_VIB)
- 		return 0;
- 
-@@ -128,10 +169,13 @@ static void pm8xxx_work_handler(struct work_struct *work)
- 		vib->active = true;
- 		vib->level = ((VIB_MAX_LEVELS * vib->speed) / MAX_FF_SPEED) +
- 						VIB_MIN_LEVEL_mV;
--		vib->level /= 100;
-+		if (vib->data->hw_type != SPMI_VIB_GEN2)
-+			vib->level /= 100;
- 	} else {
- 		vib->active = false;
--		vib->level = VIB_MIN_LEVEL_mV / 100;
-+		vib->level = VIB_MIN_LEVEL_mV;
-+		if (vib->data->hw_type != SPMI_VIB_GEN2)
-+			vib->level /= 100;
- 	}
- 
- 	pm8xxx_vib_set(vib, vib->active);
-@@ -266,6 +310,7 @@ static const struct of_device_id pm8xxx_vib_id_table[] = {
- 	{ .compatible = "qcom,pm8058-vib", .data = &ssbi_vib_data },
- 	{ .compatible = "qcom,pm8921-vib", .data = &ssbi_vib_data },
- 	{ .compatible = "qcom,pm8916-vib", .data = &spmi_vib_data },
-+	{ .compatible = "qcom,pmi632-vib", .data = &spmi_vib_gen2_data },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, pm8xxx_vib_id_table);
--- 
-2.25.1
+> I think this is an API mistake -- strim() should either do in-place
+> changes for both ends or be defined with __much_check so the return
+> value doesn't get lost. (But this is a separate issue.)
 
+For __must_check see strstrip() which was actively avoided with commit
+1d802e24774c ("[S390] Use strim instead of strstrip to avoid false
+warnings.") many years ago.
+
+For all converted usages of strstrip() by that commit it was indeed
+intended to remove only trailing whitespace, where the above code snipped
+is the only piece of code which is questionable, since it is user space
+provided input; however I don't think this should be changed now.
