@@ -2,117 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB4C77D67A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 01:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9AB377D67B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 01:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240512AbjHOXAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 19:00:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39312 "EHLO
+        id S240522AbjHOXAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 19:00:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240496AbjHOXAC (ORCPT
+        with ESMTP id S240534AbjHOXA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 19:00:02 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54B51FCE
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 16:00:00 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5650ec45a7cso3485574a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 16:00:00 -0700 (PDT)
+        Tue, 15 Aug 2023 19:00:26 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D9E1FC7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 16:00:24 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id ffacd0b85a97d-3175f17a7baso4941432f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 16:00:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692140400; x=1692745200;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7cMcDZ8u4QXqlKEKuadKRcWWAH9liLNOPn0kivqsMbQ=;
-        b=hT6pWaQXflgGvi4PKJEzKA9fyAUFUWmgipUYHnKxzjcwxNNrCXpfPE3EQRmkHzQ+8Z
-         QW4A2dzuG88ENL6MFNGTME4ffjI12q7p/9in21baCwnL3nYMXpgWk9yJsHCYBQNv9hos
-         cluwFSxQkjhBgs2EDGxN0a3SP5KfEYuov22Qy6caF1YW7en/PQOJuXO8YuY6eW8DCec+
-         IcPbzJ4jQ4U1R8up04AEIUPzPgE2JGOipmiXBtDgvS9AWjrGfzYcxvodnYOvWWZRQ6oz
-         SSLdaSESf98Ckyk/3md9aJHOD0lvm2PiUH+ZrS3YGTYe592/g48ddAk1Npu0/xjJOe4y
-         9F3A==
+        d=gmail.com; s=20221208; t=1692140422; x=1692745222;
+        h=subject:to:from:mime-version:date:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=cD6dacPByXWt6P0wM+zJeh7tR3aYOCjQ3opTQo8U4gw=;
+        b=WI5V1IITOpEfdzh9wEOmJu7xrqu2SqqaDkl4/807eEfUoR2KqC/WKgI3Uh+S8NfDcM
+         Z3Y5KNErOBukDaXx/Ojk4PLUqdA1TECM2fDQAdlAKdybVIS0mjBhOTtXSbihKbg+erhK
+         x4VlcL7r0G6FQFSqfdOpv3MRSiCdl5icNb0JMQK0wcmFR7L0llak3nG8e3kxSU49o3PP
+         AOy+fV4En9qC39p1WKBu4P+KKTxYl5fmGc9czppDhUMGM3YZb2yZrZBeQMfA3YXPbDSg
+         Rafr9w2Kmsk4lgu3hVjl+OKAinZRx/4ah/usyjiED26zvT4HQK5xD7xA0tXTpHPTs1+m
+         X2zQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692140400; x=1692745200;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7cMcDZ8u4QXqlKEKuadKRcWWAH9liLNOPn0kivqsMbQ=;
-        b=N+8DqtnA1vB7X8axBwJHACCWhbXFIgAl3AMN3WIIjbZCu+LCqLZpg4r1C7WCJQ8T1T
-         MugIdKoa9NTGTRbYZcWhrqAcD8kTbYVr0P0EDeuMfewfSi0e6PRavKSef0z+zdF8OZci
-         ZkERCGVe1RUXAHEUcpMJYWJqshuhf0/ShX0rIcrzAUbR2o4JNGQtEc+HUdCr7WKp/rne
-         wcF5Xn5RelzrB4NeepWOqZFYmjaDr0zjdLhC70cQYgOw2O38bvffNGDUMh84itqhN+Uo
-         lJLFD9Ss0kEah549ZqB2cBY3RH5N02JO4PsEoy2v+gDybbVhn1srT8qzdPjfgjTh9jok
-         rwzw==
-X-Gm-Message-State: AOJu0YzfHwoyM0bEGoj1CGRMik8nJc3tzWhzb5tv3lCsf0j8SY0KsB1a
-        MDSyEzBvuK4kbXrXGZIQqwMx4t3OwtXzbM3Ecp0M4Q==
-X-Google-Smtp-Source: AGHT+IG1hoYNPfeMlPFtFc094g+68RVzeeOzOIred3Tbx17HYLf2pJJeKElhEI8OAJKD0W7Qhu3s0CJHhla+3WYZoAo=
-X-Received: by 2002:a17:90a:f686:b0:268:c5c7:f7ed with SMTP id
- cl6-20020a17090af68600b00268c5c7f7edmr4628pjb.30.1692140400076; Tue, 15 Aug
- 2023 16:00:00 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692140422; x=1692745222;
+        h=subject:to:from:mime-version:date:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cD6dacPByXWt6P0wM+zJeh7tR3aYOCjQ3opTQo8U4gw=;
+        b=l+VmmM2eZ1jw5HnainZO4QKHgFKJB2qHQs7BCf4wIEPqze2fWQUZGlL11idN+/5bXC
+         In2hTDyqfU5hFzswCXYKoeqM658d+XNXpSBhaOm9gdjowwovfrodti3SgJsxMHch3M35
+         e31L8KxsNfiJ/BK0wFpS8PrPmEMc/RwSEwB1hbNT83NyKfXKR8LbCgRotG38SfEK3HB+
+         06hlduy9gkU70smB5J1NxFwOpjrnuJTQjUMEEJ6vknactOS1AVw104boRfwNnl+Z7NBT
+         +CrxgZ5L5fb9VhPScjsQHGaHbvSNJG6h8fp+U3jZw0NG/QR7doD9ZNUXjQuvTc/bfUoo
+         5wiA==
+X-Gm-Message-State: AOJu0Yx1qfSYpBtL3VlKpZeaR5HzwhHXT9r5BbujsC4duzxDgG9AnPI/
+        vp/amVKuPUu/Win/DvXNWuTZOVWSXMeh3VAB
+X-Google-Smtp-Source: AGHT+IHh8k3+x3X7Hh0Jbz3cj5xpZitHJIaX8Maxt/my8Cku+C8l4J2V2lKVTzHSoJns1vLxN0JCVw==
+X-Received: by 2002:a05:6000:192:b0:317:54de:9719 with SMTP id p18-20020a056000019200b0031754de9719mr62747wrx.70.1692140422349;
+        Tue, 15 Aug 2023 16:00:22 -0700 (PDT)
+Received: from [127.0.1.1] ([105.233.88.147])
+        by smtp.gmail.com with ESMTPSA id x20-20020aa7cd94000000b0051dfa2e30b2sm7565658edv.9.2023.08.15.16.00.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Aug 2023 16:00:21 -0700 (PDT)
+Message-ID: <64dc0385.a70a0220.afb68.5ebc@mx.google.com>
+Date:   Tue, 15 Aug 2023 16:00:21 -0700 (PDT)
+Content-Type: multipart/mixed; boundary="===============3306924434812285861=="
 MIME-Version: 1.0
-References: <20230620194644.3142384-1-yosryahmed@google.com>
- <CAKEwX=OLR02MazB31wR-nphjZJvBHrm5Zy7hLPByZ3ubgO8mjw@mail.gmail.com>
- <CAJD7tkZ7dLwny7-CX7qCywZPtki+fDuESGfv+B9QG87cSsrHVQ@mail.gmail.com>
- <20230811141920.2f9bab6f21ab635ff1bd63ac@linux-foundation.org>
- <CAJD7tkbfKxCOoxNCgtbaAg4LXFbf=afaxei0SbKU2B=HFpPf6Q@mail.gmail.com>
- <CAF8kJuPhP4q5ObisoyWZ0QdqUrTeNBec3P36PNz=KHLiXW6SrA@mail.gmail.com> <CAJD7tkZ21fcwS=m4RuctR4H7dG+NvFQgcc_-Bi6Et73ULgc1kw@mail.gmail.com>
-In-Reply-To: <CAJD7tkZ21fcwS=m4RuctR4H7dG+NvFQgcc_-Bi6Et73ULgc1kw@mail.gmail.com>
-From:   Chris Li <chriscli@google.com>
-Date:   Tue, 15 Aug 2023 15:59:48 -0700
-Message-ID: <CAF8kJuMj1ioKwt9b+JvLNHEpOLEjo+=RyY9z8yELhhNN1udrtg@mail.gmail.com>
-Subject: Re: [PATCH v3] mm: zswap: multiple zpools support
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Nhat Pham <nphamcs@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
-        Yu Zhao <yuzhao@google.com>, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   =?utf-8?b?QkFSUklTVEVSIEQgIFJPQkVSVFNPTiDimpk=?= 
+        <donaldwill039@gmail.com>
+To:     linux-kernel@vger.kernel.org
+X-Priority:  1 (Highest)
+X-MSMail-Priority:  High
+Subject: =?utf-8?b?TGVnYWwgQXNzaXN0YW5jZQ==?=
+X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_20,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yosry,
+--===============3306924434812285861==
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 
-Sure.
+SSB3YW50IHlvdSB0byB3cml0ZSBiYWNrLCBJIGhhdmUgYSByZXF1ZXN0IGZvciB5b3UuIGRvbmFs
+ZGFibHQxMTFAZ21haWwuY29tCg==
 
-Ack-by: Chris Li (Google) <chrisl@kernel.org>
-
-Chris
-
-On Tue, Aug 15, 2023 at 3:30=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> I was hoping we can add the basic support here for multiple zpools,
-> and then later, if needed, extend to support runtime dynamic tuning.
-> Adding this will introduce more complexity as we will need to lock all
-> trees and make sure there is no activity and alloc/free zpools. If a
-> limitation for compile-time constant is observed we can do that,
-> otherwise let's keep it simple and incremental for now.
->
-> FWIW, we have been running with 32 zpools in Google's fleet for ~a
-> decade now and it seems to work well for various workloads and machine
-> configurations.
->
-> >
-> > Chris
-> >
-> > > has seen a ton of testing. I was hoping Johannes would get time to
-> > > take a look, or Nhat would get time to test it out, but neither of
-> > > these things happen.
-> > >
-> > > I obviously want it to be merged, but hopefully someone will chime in=
- here :)
-> > >
->
+--===============3306924434812285861==--
