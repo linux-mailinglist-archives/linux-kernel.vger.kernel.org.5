@@ -2,122 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7964477C517
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 03:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EAD077C51A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 03:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233737AbjHOB3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 21:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52648 "EHLO
+        id S233861AbjHOBam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 21:30:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233614AbjHOB3H (ORCPT
+        with ESMTP id S233883AbjHOBaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 21:29:07 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381A810D1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 18:29:06 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-34aa1a16b14so5678145ab.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 18:29:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1692062945; x=1692667745;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e7/FNZ+/kn2EN/jZotOHGG2mqO/LoJv2hq7cxgzJU0c=;
-        b=lbhrr8uBFXl29L3W+33eTVbMaroAQxnceIFgwppNlBLVMefUy7eDcjWUt4KIW83CMQ
-         xs0wxbuqj4QYKrrG3jEbYQxLkNBB8xhyzZJ0lKO+QmbpnDKQ9M3trfWfW5wHK5qfY/Lp
-         v9FjwaPH7p249FyuVU1mP8raMsabFvcGvXifimINyHSEWHtcBS9gix8/LRVIO6ed/ekV
-         fWjo4sFNJPaFLF9CPk2HCX2nWWfdLtpT4ROFxZ7Bi3nCMQzwFGIqBhkZuTutvViH5wtV
-         YOq481ZyyK2m1eDDb/M1cqyOjmErgvSVcyTBfV6BW1bjkGl8smhMibEvhRXkxdRaFXXr
-         rKUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692062945; x=1692667745;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=e7/FNZ+/kn2EN/jZotOHGG2mqO/LoJv2hq7cxgzJU0c=;
-        b=DSjoXA6Mskk5nzyHFHB9TydlkMA2/nWhz4fN6elGDiJ64wcvX2Z6k/vO824qOIHC7n
-         2Z1XnbtDO5rgXri4jKiv0sLh9qBrBXZXhvY1FXgZ2SdNgNBvwruiM5b4v3sqdgEbRi5m
-         raxEJSQM7xnU8df0OBgRvLSOjURz1yvBGEYTkiaj9RbUxLd8M6zF/VNWT5blzkBBVUC5
-         x6VNnUoQOfG9j2Ix0HgV7fWIMF1syJGz98Gi9sCWe68UGvZkGVVyFvJ0Gjjglx85Gmqw
-         BhaBzVcdUb2rexCQ2avIf+6IQ6s43slV74H/+Dkf1bNBgPchVpammalrYME33olt9VT1
-         SFTA==
-X-Gm-Message-State: AOJu0YwuYefmIoFb0xuaKgWW07wB1GcltXGQ/p2nFBT+KK70c4tRLbkI
-        nsOjb5+nMUOT2xYUx130qDpDLsXjbKoTjUBTP+E1Tw==
-X-Google-Smtp-Source: AGHT+IH9fTgdlitNkb6EBHqBlRxGk0okfJiotZadNreJXeHoK0oyZVb3KFtPGjg2dfY+aKFJWqcw0nu5oBMqLfit85w=
-X-Received: by 2002:a05:6e02:1d18:b0:349:862e:a862 with SMTP id
- i24-20020a056e021d1800b00349862ea862mr18151358ila.20.1692062945654; Mon, 14
- Aug 2023 18:29:05 -0700 (PDT)
+        Mon, 14 Aug 2023 21:30:22 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A948D1981;
+        Mon, 14 Aug 2023 18:30:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692063015;
+        bh=a7CqvDGi+e0s7j+oHUzDvydX0JI5ANvFzQi/BkcBQaU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=q/HNMu6MNVpQCd0EAypLllEjYquYU7xqX7gYr3CqFObosd1LabGPXVolhCxaYScsa
+         WOqTBhRtV6nThpFmfJsuQ+yKMrBiPQ7PnN5ykYoV2wcZ0AWu1A+XKu4PEUo42+UTOt
+         h1RQWPEd4FOP+hlWJsZVb6aiNTyZLW1MNjV+s+ZQT7a/hdIhkR9OVHQ1XMoL1i7aLQ
+         QWBsJKiuMe+hKB5zMfleBkhsssiTe0uu1LXcrRy+s7NhnXhuDDODLjjW5o3CL+ZDYy
+         UmwIjbLrLEVtkFOGgPL2LXzeyN6gEaJQX6P0yC6flYVbmrw6LgC2mLd9oDwLnnSuHu
+         MWj7bO/hDGfWQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RPtxL4j43z4wqX;
+        Tue, 15 Aug 2023 11:30:14 +1000 (AEST)
+Date:   Tue, 15 Aug 2023 11:30:13 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christian Brauner <brauner@kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the vfs-brauner tree with the f2fs tree
+Message-ID: <20230815113013.40cbf98a@canb.auug.org.au>
 MIME-Version: 1.0
-References: <d62ceb33620cab766d809e6bbf30eaf5b46bc955.1689792825.git.tjeznach@rivosinc.com>
- <CANXhq0r=2eqpy9wLjVt1U0J7=LpnJLcKV7N9d90jvCss=7+Fzg@mail.gmail.com>
- <CAK9=C2Vg9eR5LJPeqDDQ0pHZcrT5DOUzA8_wYEVEjfnhb6s8pw@mail.gmail.com>
- <CANXhq0oTrU_-OQroW7H+hvxcU7YROhkgdCF9g_WtPTzVFQL7gA@mail.gmail.com>
- <CAK9=C2XoQjPzZ5yB5jfTbee4-Pb8GgFAZRbfcMwMk9pyo39WxQ@mail.gmail.com>
- <CANXhq0q7R9Srx6U=fReq7LDLFgW6rMmjKH=o6MzDT5AWNRXP6w@mail.gmail.com>
- <592edb17-7fa4-3b5b-2803-e8c50c322eee@linux.intel.com> <CANXhq0pS_=YxgrxSKbdfrFdGcBduzk3LTyC4vp_hqoJTbX3e0g@mail.gmail.com>
- <ZMEO1kNGfGjN6kZM@ziepe.ca> <CANXhq0qMWS_j0n_aUO8BVFSedYCjuMM=Z_tsnK05ZhG+Ob6pqw@mail.gmail.com>
- <ZNOpbac4i5zfmHj4@ziepe.ca>
-In-Reply-To: <ZNOpbac4i5zfmHj4@ziepe.ca>
-From:   Zong Li <zong.li@sifive.com>
-Date:   Tue, 15 Aug 2023 09:28:54 +0800
-Message-ID: <CANXhq0rzz1Sn8dKvNt7acvKN_g5yXFN9u6XPiRHr9ay7q2VbzA@mail.gmail.com>
-Subject: Re: [PATCH 03/11] dt-bindings: Add RISC-V IOMMU bindings
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Baolu Lu <baolu.lu@linux.intel.com>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Tomasz Jeznach <tjeznach@rivosinc.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, linux@rivosinc.com,
-        linux-kernel@vger.kernel.org, Sebastien Boeuf <seb@rivosinc.com>,
-        iommu@lists.linux.dev, Palmer Dabbelt <palmer@dabbelt.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/KKtQ4DEIByincX7+rxMJmbW";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 10:57=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrot=
-e:
->
-> On Thu, Jul 27, 2023 at 10:42:47AM +0800, Zong Li wrote:
->
-> > Perhaps this question could be related to the scenarios in which
-> > devices wish to be in bypass mode when the IOMMU is in translation
-> > mode, and why IOMMU defines/supports this case. Currently, I could
-> > envision a scenario where a device is already connected to the IOMMU
-> > in hardware, but it is not functioning correctly, or there are
-> > performance impacts. If modifying the hardware is not feasible, a
-> > default configuration that allows bypass mode could be provided as a
-> > solution. There might be other scenarios that I might have overlooked.
-> > It seems to me since IOMMU supports this configuration, it would be
-> > advantageous to have an approach to achieve it, and DT might be a
-> > flexible way.
->
-> So far we've taken the approach that broken hardware is quirked in the
-> kernel by matching OF compatible string pattners. This is HW that is
-> completely broken and the IOMMU doesn't work at all for it.
->
-> HW that is slow or whatever is not quirked and this is an admin policy
-> choice where the system should land on the security/performance
-> spectrum.
->
-> So I'm not sure adding DT makes sense here.
->
+--Sig_/KKtQ4DEIByincX7+rxMJmbW
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hi Jason,
-Sorry for being late here, I hadn't noticed this reply earlier. The
-approach seems to address the situation. Could you kindly provide
-information about the location of the patches? I was wondering about
-further details regarding this particular implementation. Thanks
+Hi all,
 
-> Jason
+Today's linux-next merge of the vfs-brauner tree got a conflict in:
+
+  fs/f2fs/super.c
+
+between commit:
+
+  51bf8d3c8199 ("f2fs: don't reopen the main block device in f2fs_scan_devi=
+ces")
+
+from the f2fs tree and commit:
+
+  2ea6f68932f7 ("fs: use the super_block as holder when mounting file syste=
+ms")
+
+from the vfs-brauner tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/f2fs/super.c
+index a067466a694c,aa1f9a3a8037..000000000000
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@@ -1561,8 -1561,7 +1561,8 @@@ static void destroy_device_list(struct=20
+  	int i;
+ =20
+  	for (i =3D 0; i < sbi->s_ndevs; i++) {
+ -		blkdev_put(FDEV(i).bdev, sbi->sb);
+ +		if (i > 0)
+- 			blkdev_put(FDEV(i).bdev, sbi->sb->s_type);
+++			blkdev_put(FDEV(i).bdev, sbi->sb);
+  #ifdef CONFIG_BLK_DEV_ZONED
+  		kvfree(FDEV(i).blkz_seq);
+  #endif
+@@@ -4218,9 -4215,9 +4218,9 @@@ static int f2fs_scan_devices(struct f2f
+  				FDEV(i).end_blk =3D FDEV(i).start_blk +
+  					(FDEV(i).total_segments <<
+  					sbi->log_blocks_per_seg) - 1;
+ +				FDEV(i).bdev =3D blkdev_get_by_path(FDEV(i).path,
+- 					mode, sbi->sb->s_type, NULL);
+++					mode, sbi->sb, NULL);
+  			}
+ -			FDEV(i).bdev =3D blkdev_get_by_path(FDEV(i).path, mode,
+ -							  sbi->sb, NULL);
+  		}
+  		if (IS_ERR(FDEV(i).bdev))
+  			return PTR_ERR(FDEV(i).bdev);
+
+--Sig_/KKtQ4DEIByincX7+rxMJmbW
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTa1SUACgkQAVBC80lX
+0GzGCwf/RKY0vW/CTPN3FjVvHzxwtqEb4wA/WZy04tqSEel2jdvXwpdxwJqAGQAz
+gqfsKsMZCCdP1rt0EJ8mdbZ2fylGfuLoY0W8S0H2rzsJTBqWJ+XxO9US00kh7ZOv
+O8SkzA9kKXVJybV2tttXFMLL/W7tSvR95Ndy3slbgiVhr2BosEl3hkr0txfVscuB
+CH/R78ZZN+R1ARLL+qDx5G+cGf4dRWkSe3tDFRefVuAN+xyhzfrAk7t8rMvai4Le
+ZvpWzUXroAukSIJj3x5yhmnlTKnePRcTrSURIT4mPB0Qli2akK5KKX05DottYNVq
+1bMuyc+DsTVfLBx9f7a0bICmeIohwA==
+=rTcP
+-----END PGP SIGNATURE-----
+
+--Sig_/KKtQ4DEIByincX7+rxMJmbW--
