@@ -2,124 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B2B77C6BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 06:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7016D77C6C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 06:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234547AbjHOE2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 00:28:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53766 "EHLO
+        id S234517AbjHOEjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 00:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234677AbjHOE0N (ORCPT
+        with ESMTP id S234326AbjHOEiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 00:26:13 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDC601FC3;
-        Mon, 14 Aug 2023 21:24:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692073478;
-        bh=4HIEDtYquPQorJ4mXi5h7ds8EOEWiJB1s3blGYY+Rv8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=YksAwXqvlf1kX1LOZTP2VAn8DPQZg2ydYslH3mBcp7VaoMrFyeboI3+/snWcuYin8
-         FTAmkc/+67QSQ/dbIEe4agTz454uIy7GqXyYGIVjaAk3k5StPp+XMNBv0pzj/7otaS
-         ySOy3TsyXMJzQnx5KCTO0FmnRBABcD9F0VP/BIU8tBbG17Oi011QuDclr3FlQLTRnL
-         5OKmmGAu1l9iUJEck3KuBloo4ohanaNiMRL71PmWZ/OMfe1A0DjGqyWe54dGfBYPnq
-         Mu/6Q0pTVc1YYNW5LodGC7NymhPdAD1z0VE91eTRHR8GD7gI/P13GTaq/kIET71siU
-         YbowlBE0aV2lg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RPypZ0cNBz4wb5;
-        Tue, 15 Aug 2023 14:24:38 +1000 (AEST)
-Date:   Tue, 15 Aug 2023 14:24:37 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Palmer Dabbelt <palmer@sifive.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>
-Subject: linux-next: manual merge of the tip tree with the vfs-brauner tree
-Message-ID: <20230815142437.01441969@canb.auug.org.au>
+        Tue, 15 Aug 2023 00:38:51 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13678F4;
+        Mon, 14 Aug 2023 21:38:46 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-63d48c3d242so35481626d6.2;
+        Mon, 14 Aug 2023 21:38:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692074325; x=1692679125;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vUSlJ1K+YltX3fu0fwuh0HX4VMb0WiCiIqUudwqAsHI=;
+        b=Av+4LsG4ZZU6TgMGKe/aUJfcGcY4JNFgEIKy7F0/L2u2R6253lSrAQk0upWXGiv0AL
+         Lwfp89+pzCbRyOG6ejURrWN3s5LHgEms85TFwIoq/eNDcna3X5sVOa+ydo/5MC/d5hud
+         6Z60XaMHzBPMjJ6mOUE02vqXuN9Dh8hAeFnlNfiP8IUT/z1b+50GCZ/JYV6kKAF0Mrl9
+         EnXqnUm9ZrcU9fWAv2iSeD0KnAktVdz8ApIHBO2V7ZV6MccfEp8UJBp3JLarLeusXuQ7
+         LzZiVmMfLoGTrIGG94mJVj4LYOHkolLqGk2BPA+WhDyhsR5MQZjBHU7fLAWWRxyj6hTg
+         rH+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692074325; x=1692679125;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vUSlJ1K+YltX3fu0fwuh0HX4VMb0WiCiIqUudwqAsHI=;
+        b=PCdPKr9gSYaVrFr+utY9icVB+GQEzTlu7znCHMhnPZlhtEL0kiXGYPi0DHH8WE026w
+         4KLOFysOT1aLKk6ilY1YXIHpofuNnBSk0w6dKrIKVjxN9GKhBnAlluORZAVkvGVEji9e
+         /k9MhbQUSQvsdLZmpSkTiUzNeh2Ua6h6tq0HYZi/6Gxuqj18qJ1d5JxtRrLvtoZbg+4k
+         nAgNDO4T0wygQFG7hz3KLxoeGAu8FWF9WXkN0mqkvM37Soh+O2W5zUVe4ffDxfLjX/Iy
+         /nkHRK0wnOLsz+IhsrIrnqMIrgozgfrm62HgO/AoM2NR7iYbTot3HUruNyI1CgUI2WVu
+         ZcXQ==
+X-Gm-Message-State: AOJu0Yy6Mz3qu5b4B74hfnJdh8xdRXBO6wM9DZHbYjzQRgt+ob8QL5MP
+        2ud7xJyAIF6HQCry/tyuoHuks2axKsu11A==
+X-Google-Smtp-Source: AGHT+IHlRKYII7XNiHTvKhRFpl+U39brmO0LJzBgiLbx8fE8kLkSj0Lwrb5EjbPw5hmZsFns09Ducw==
+X-Received: by 2002:a0c:df8a:0:b0:647:2f8f:8c29 with SMTP id w10-20020a0cdf8a000000b006472f8f8c29mr2054378qvl.48.1692074325225;
+        Mon, 14 Aug 2023 21:38:45 -0700 (PDT)
+Received: from localhost.localdomain ([174.95.13.129])
+        by smtp.gmail.com with ESMTPSA id a7-20020a0cb347000000b00630c0ed6339sm3880822qvf.64.2023.08.14.21.38.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 21:38:44 -0700 (PDT)
+From:   Abdel Alkuor <alkuor@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-fbdev@vger.kernel.org, Abdel Alkuor <alkuor@gmail.com>
+Subject: [PATCH] staging: sm750fb: fix sii164InitChip function name
+Date:   Tue, 15 Aug 2023 00:37:59 -0400
+Message-Id: <20230815043759.404423-1-alkuor@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/S8yXrKYqxr02YRxztdU37OG";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/S8yXrKYqxr02YRxztdU37OG
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Adhere to Linux Kernel coding style. Found by checkpatch.
 
-Hi all,
+Signed-off-by: Abdel Alkuor <alkuor@gmail.com>
+---
+ drivers/staging/sm750fb/ddk750_dvi.c    | 2 +-
+ drivers/staging/sm750fb/ddk750_sii164.c | 4 ++--
+ drivers/staging/sm750fb/ddk750_sii164.h | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-Today's linux-next merge of the tip tree got a conflict in:
+diff --git a/drivers/staging/sm750fb/ddk750_dvi.c b/drivers/staging/sm750fb/ddk750_dvi.c
+index e0c7ff3352bf..8b81e8642f9e 100644
+--- a/drivers/staging/sm750fb/ddk750_dvi.c
++++ b/drivers/staging/sm750fb/ddk750_dvi.c
+@@ -14,7 +14,7 @@
+ static struct dvi_ctrl_device dcft_supported_dvi_controller[] = {
+ #ifdef DVI_CTRL_SII164
+ 	{
+-		.init = sii164InitChip,
++		.init = sii164_init_chip,
+ 		.get_vendor_id = sii164_get_vendor_id,
+ 		.get_device_id = sii164GetDeviceID,
+ #ifdef SII164_FULL_FUNCTIONS
+diff --git a/drivers/staging/sm750fb/ddk750_sii164.c b/drivers/staging/sm750fb/ddk750_sii164.c
+index 3da1796cd7aa..d162e1a16584 100644
+--- a/drivers/staging/sm750fb/ddk750_sii164.c
++++ b/drivers/staging/sm750fb/ddk750_sii164.c
+@@ -72,7 +72,7 @@ unsigned short sii164GetDeviceID(void)
+  */
+ 
+ /*
+- *  sii164InitChip
++ *  sii164_init_chip
+  *      This function initialize and detect the DVI controller chip.
+  *
+  *  Input:
+@@ -118,7 +118,7 @@ unsigned short sii164GetDeviceID(void)
+  *      0   - Success
+  *     -1   - Fail.
+  */
+-long sii164InitChip(unsigned char edge_select,
++long sii164_init_chip(unsigned char edge_select,
+ 		    unsigned char bus_select,
+ 		    unsigned char dual_edge_clk_select,
+ 		    unsigned char hsync_enable,
+diff --git a/drivers/staging/sm750fb/ddk750_sii164.h b/drivers/staging/sm750fb/ddk750_sii164.h
+index ca330f6a43e2..13420bcc282c 100644
+--- a/drivers/staging/sm750fb/ddk750_sii164.h
++++ b/drivers/staging/sm750fb/ddk750_sii164.h
+@@ -16,7 +16,7 @@ enum sii164_hot_plug_mode {
+ };
+ 
+ /* Silicon Image SiI164 chip prototype */
+-long sii164InitChip(unsigned char edgeSelect,
++long sii164_init_chip(unsigned char edgeSelect,
+ 		    unsigned char busSelect,
+ 		    unsigned char dualEdgeClkSelect,
+ 		    unsigned char hsyncEnable,
+-- 
+2.34.1
 
-  arch/x86/entry/syscalls/syscall_64.tbl
-
-between commit:
-
-  78252deb023c ("arch: Register fchmodat2, usually as syscall 452")
-
-from the vfs-brauner tree and commit:
-
-  c35559f94ebc ("x86/shstk: Introduce map_shadow_stack syscall")
-
-from the tip tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/x86/entry/syscalls/syscall_64.tbl
-index 814768249eae,38db4b1c291a..000000000000
---- a/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/arch/x86/entry/syscalls/syscall_64.tbl
-@@@ -373,7 -373,7 +373,8 @@@
-  449	common	futex_waitv		sys_futex_waitv
-  450	common	set_mempolicy_home_node	sys_set_mempolicy_home_node
-  451	common	cachestat		sys_cachestat
- -452	64	map_shadow_stack	sys_map_shadow_stack
- +452	common	fchmodat2		sys_fchmodat2
-++453	64	map_shadow_stack	sys_map_shadow_stack
- =20
-  #
-  # Due to a historical design error, certain syscalls are numbered differe=
-ntly
-=20
-
---Sig_/S8yXrKYqxr02YRxztdU37OG
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTa/gUACgkQAVBC80lX
-0GwzvQf/dINNlOYnUFNKYoGdg2MONRsEJhVRkhuUhB+oFxLUqfAEwEZiR1O2mcVj
-KdIP36VCp4b0r9CNfOaLnNtfHJ8PoxiWl3vnfw9led/qZ0oWWL8Ct7vhdrJVSQ8e
-p0UJzskoIedw+nYtWUNrwBuX5GI38+QKebhmjklLXHmx52XOxHOkV06lKDI8Yrrf
-VeOLCJHp8Kkyb10amAoR4k4WyRAagnw8z5GiXTnp5vedgQM26PaZ0CDsabjTMIeG
-H64ZXjkk/SkGo1KX7QP9iHYUg9MqO9DL7UKNcwaOZZ/LKnNBZ+5ucIE0dw2l2JE3
-XgFac2wg3qtqr4KJsvMXXRvXOzsSaQ==
-=zkMW
------END PGP SIGNATURE-----
-
---Sig_/S8yXrKYqxr02YRxztdU37OG--
