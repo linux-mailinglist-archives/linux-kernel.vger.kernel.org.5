@@ -2,67 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C776477D060
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 18:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B21B877D062
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 18:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238579AbjHOQwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 12:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34204 "EHLO
+        id S237305AbjHOQwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 12:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238577AbjHOQvy (ORCPT
+        with ESMTP id S237030AbjHOQwc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 12:51:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 672EA1B2;
-        Tue, 15 Aug 2023 09:51:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EE1AA63255;
-        Tue, 15 Aug 2023 16:51:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57151C433C7;
-        Tue, 15 Aug 2023 16:51:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692118312;
-        bh=ssLJkFs+vvhZqPWeXoLe5+bSo06CfEhsFqoZxkMOeLw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ip9tVy/R+N9x3W2/eTJf/C/YewObmpsK7b0qDyrw6NyFSaaJzC85/GyTYwKcAei5r
-         nkmy5kwdL7gPBmrn+4Ue2uoUIfhZADsKHYDtTMlYyCxE2ZWPM72FFyjzbhuDWCQugQ
-         Y5Q+5GPf86oJ+Hmv10jvpqPKP6kAYGOLiuBeZuq6thyxnQ76pkQqklkCo6tG0/HqWz
-         jWocvdPtpf37QPTNp3ila+5pLX7Gx8MFCj/fRNEcl/Bj4kkvdfUrngX21enrZ2jv84
-         TJSLVfMd589cfCeIq8961OmKjBiOastIgQhZ6SZA7yUqU1txzigp6R1kLTQuOXTfNE
-         cVxTEpS4ifeew==
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-4fe934c4decso8057823e87.1;
-        Tue, 15 Aug 2023 09:51:52 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyNrsSYNToXPrxSkHFGlZAvUtX/p2PzTQwx9jpVnLXckf+4VDzX
-        JWvDG2KOEUqWB0olKYfOi31FjEvgrJidNdwCdUU=
-X-Google-Smtp-Source: AGHT+IFFVgFgA8pSXPNG34hDDVrkKSlykdFfHwrJeqXL0EBNa3zJqNOBuDAzuGTLytPdWyS3ZYiCxqzLP8CqA95R0cE=
-X-Received: by 2002:a05:6512:3a8f:b0:4f8:5e65:b61b with SMTP id
- q15-20020a0565123a8f00b004f85e65b61bmr5578659lfu.65.1692118310366; Tue, 15
- Aug 2023 09:51:50 -0700 (PDT)
+        Tue, 15 Aug 2023 12:52:32 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 587431B2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 09:52:31 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bba48b0bd2so37197185ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 09:52:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692118351; x=1692723151;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0WU61sDbAiqqbH8I4EHycwjHMRPF7UpaeAi6j88GTWM=;
+        b=JknilBfZ8vJ2uS6xiggl6D8ZO/ESLuNJXje0eWh825lDXrEsnEaaKLrwwyvv0uN/Cr
+         Lb+mdCKNIXqb9ygJt6wqgRhbgh5Tukk8R9hZS0YRcMs7cN4GTD8w3Bnh0KYu0iQkhsOH
+         Ql90A3+NJ8w+5Jsnw1KEtIKI0GeH1EKY7LrGo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692118351; x=1692723151;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0WU61sDbAiqqbH8I4EHycwjHMRPF7UpaeAi6j88GTWM=;
+        b=A76QF52rp3PuGzIkIkUzLfCLJxjovgjHAD4k4zT3QeT996dc88kTdi+vAOh7HjJVZo
+         Q6lim9NTQhkPkLg2fG3/EQ4lK0xt8Af+lvPybb3UbkLccXU5ss7Axrk5RHkpNfN91ESj
+         k7wvCpZT23hD2Bic9Xg9p1CWORfvx7B/IB8wzdKaKkoIQQPfb9J8s+DWzM2FQBy85wV3
+         9MJeFqumC+KANoDglbz1Qy8KI63L6OJ1dHE6+314E6YCYVRwdabGizFM6LTm8mSgvYVp
+         UaX2XfmuQaPK1NjMCVjRYipCavcvCfn/dmWB4DGEcSs9/F4c9RkbiQR6A7K0Od5kDUlC
+         9yqg==
+X-Gm-Message-State: AOJu0YwF9N0URPhEhlGAs+mcSvAYbwd1TQxxM6Tb99oDcjuRtFYZHncr
+        xOZjDhKgzg3h7w2NExdphU3P3w==
+X-Google-Smtp-Source: AGHT+IEcqbkJnRxjhuInXKD3uYUMAm3Of1WLzjVQdHZmHoQBHFX2gVtIdwUuLbaIV8rjUcU7seHMxQ==
+X-Received: by 2002:a17:902:d4cf:b0:1b8:9b1b:ae8e with SMTP id o15-20020a170902d4cf00b001b89b1bae8emr12591905plg.59.1692118350823;
+        Tue, 15 Aug 2023 09:52:30 -0700 (PDT)
+Received: from google.com (KD124209188001.ppp-bb.dion.ne.jp. [124.209.188.1])
+        by smtp.gmail.com with ESMTPSA id j4-20020a170902c3c400b001bdccf6b8c9sm6663169plj.127.2023.08.15.09.52.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Aug 2023 09:52:30 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 01:52:25 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Rob Clark <robdclark@chromium.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dma-debug: defer __dma_entry_alloc_check_leak() printk
+ output
+Message-ID: <20230815165225.GF907732@google.com>
+References: <20230815152822.3660784-1-senozhatsky@chromium.org>
+ <b6d28992-5adc-5df0-91e5-7fd0571b1465@arm.com>
 MIME-Version: 1.0
-References: <20230815091931.4dd2b277@canb.auug.org.au> <8c946512-0cc4-fbc5-ca36-0e2c6d636eb2@huaweicloud.com>
- <c39a3bff-01b9-4007-80ac-00ce2b11a902@kernel.dk> <CAPhsuW7ck4Bb8NVUdgZZJqzNCYMgT9rspKshr2Zi=8xo2cQLaw@mail.gmail.com>
- <48f834c2-b283-4b02-9407-4a0842d4ed72@kernel.dk> <CAPhsuW4YNWksHgTZGzX8Rj1+gU-aqQjiYueNRNHPryxOk2WXqQ@mail.gmail.com>
- <a30e4e08-7b8c-498c-b8af-82262b3ec6ff@kernel.dk> <CAPhsuW5AHQkf6wO_4Z6VFbTCxNN9GchW_ZPxmC1vtc23ByPc6g@mail.gmail.com>
- <d7d2aea2-66e3-4172-8c04-f71dbe66612c@kernel.dk>
-In-Reply-To: <d7d2aea2-66e3-4172-8c04-f71dbe66612c@kernel.dk>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 16 Aug 2023 00:51:37 +0800
-X-Gmail-Original-Message-ID: <CAPhsuW7AX-0JiycnaFHFHYWjWaGju-pXMJtrAFWYk62SkHk22w@mail.gmail.com>
-Message-ID: <CAPhsuW7AX-0JiycnaFHFHYWjWaGju-pXMJtrAFWYk62SkHk22w@mail.gmail.com>
-Subject: Re: linux-next: Fixes tag needs some work in the block tree
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Yu Kuai <yukuai1@huaweicloud.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "yukuai (C)" <yukuai3@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b6d28992-5adc-5df0-91e5-7fd0571b1465@arm.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,131 +75,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 12:31=E2=80=AFAM Jens Axboe <axboe@kernel.dk> wrote=
-:
->
-> On 8/15/23 10:26 AM, Song Liu wrote:
-> > On Wed, Aug 16, 2023 at 12:20?AM Jens Axboe <axboe@kernel.dk> wrote:
-> >>
-> >> On 8/15/23 10:17 AM, Song Liu wrote:
-> >>> On Wed, Aug 16, 2023 at 12:07?AM Jens Axboe <axboe@kernel.dk> wrote:
-> >>>>
-> >>>> On 8/15/23 9:58 AM, Song Liu wrote:
-> >>>>> On Tue, Aug 15, 2023 at 11:08?PM Jens Axboe <axboe@kernel.dk> wrote=
-:
-> >>>>>>
-> >>>>>> On 8/14/23 9:21 PM, Yu Kuai wrote:
-> >>>>>>> Hi,
-> >>>>>>>
-> >>>>>>> ? 2023/08/15 7:19, Stephen Rothwell ??:
-> >>>>>>>> Hi all,
-> >>>>>>>>
-> >>>>>>>> In commit
-> >>>>>>>>
-> >>>>>>>>    71070e7bd25d ("md/raid10: fix a 'conf->barrier' leakage in ra=
-id10_takeover()")
-> >>>>>>>>
-> >>>>>>>> Fixes tag
-> >>>>>>>>
-> >>>>>>>>    Fixes: 4d27e927344a ("md: don't quiesce in mddev_suspend()")
-> >>>>>>>>
-> >>>>>>>> has these problem(s):
-> >>>>>>>>
-> >>>>>>>>    - Target SHA1 does not exist
-> >>>>>>>
-> >>>>>>> Sorry about this, the commit was picked from previous md-next bra=
-nch,
-> >>>>>>> and I didn't know that it will change...
-> >>>>>>
-> >>>>>> It's most likely not your fault, I'm guessing Song rebased that br=
-anch
-> >>>>>> and this is why the sha changed. Song?
-> >>>>>
-> >>>>> Yeah, it is my fault. I am really sorry for this issue.
-> >>>>>
-> >>>>>>
-> >>>>>>> Is there any way that I can fix this ?
-> >>>>>>
-> >>>>>> Only way to fix this is if I rewind my branch and Song updates his
-> >>>>>> branch to not have this issue, and then sends a new pull request.
-> >>>>>
-> >>>>> Yes please. Let's fix this.
-> >>>>
-> >>>> Please send a new one, I've dropped the old one.
-> >>>
-> >>> Is this the for-6.6/block branch? I haven't seen the change yet. The =
-top
-> >>> commit on the branch (as I see) is
-> >>>
-> >>> 306d74055754 ("ublk: Switch to memdup_user_nul() helper")
-> >>
-> >> Where are you looking? It's at:
-> >
-> > I am looking at
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git
-> >
-> > It appears to be some lag from git server?
->
-> That's just a backup, I always pull and push from git.kernel.dk. The
-> korg one will lag about an hour, depending on when things are pushed.
-> I've never used the korg one as the canonical location.
+On (23/08/15 17:42), Robin Murphy wrote:
+> On 15/08/2023 4:26 pm, Sergey Senozhatsky wrote:
+> > __dma_entry_alloc_check_leak() calls printk -> serial console
+> > output (qcom geni) and grabs port->lock under free_entries_lock,
+> > which is a conflicting locking dependency chain as qcom_geni IRQ
+> > handler can call into dma-debug code and grab free_entries_lock
+> > under port->lock.
+> > 
+> > Use deferred printk in __dma_entry_alloc_check_leak() so that we
+> > don't acquire serial console's port->lock under free_entries_lock.
+> 
+> Hmm, the print really doesn't need to be under the lock anyway, it only
+> needs to key off whether the "num_free_entries == 0" condition was hit or
+> not.
 
-Got it. I will update my git config.
-
-Here is the updated PR:
-
-
-The following changes since commit 66a6a5d0ec852eaced589da066376e69397cd71e=
-:
-
-  ublk: Switch to memdup_user_nul() helper (2023-08-15 10:06:54 -0600)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/song/md.git
-tags/md-next-20230814-resend
-
-for you to fetch changes up to 0d0bd28c500173bfca78aa840f8f36d261ef1765:
-
-  md/raid5-cache: fix null-ptr-deref for r5l_flush_stripe_to_raid()
-(2023-08-15 09:40:27 -0700)
-
-----------------------------------------------------------------
-Li Lingfeng (1):
-      md: Hold mddev->reconfig_mutex when trying to get mddev->sync_thread
-
-WANG Xuerui (5):
-      raid6: remove the <linux/export.h> include from recov.c
-      raid6: guard the tables.c include of <linux/export.h> with __KERNEL__
-      raid6: test: cosmetic cleanups for the test Makefile
-      raid6: test: make sure all intermediate and artifact files are .gitig=
-nored
-      raid6: test: only check for Altivec if building on powerpc hosts
-
-Yu Kuai (3):
-      md/raid5-cache: fix a deadlock in r5l_exit_log()
-      md/raid10: fix a 'conf->barrier' leakage in raid10_takeover()
-      md/raid5-cache: fix null-ptr-deref for r5l_flush_stripe_to_raid()
-
-Zhang Shurong (1):
-      md: raid1: fix potential OOB in raid1_remove_disk()
-
- drivers/md/md-cluster.c   |  8 ++++----
- drivers/md/md.c           |  9 +++++----
- drivers/md/md.h           |  2 +-
- drivers/md/raid1.c        |  8 ++++++--
- drivers/md/raid10.c       |  3 +--
- drivers/md/raid5-cache.c  | 14 ++++++++------
- drivers/md/raid5.c        |  2 +-
- lib/raid6/mktables.c      |  2 ++
- lib/raid6/recov.c         |  1 -
- lib/raid6/test/.gitignore |  3 +++
- lib/raid6/test/Makefile   | 50
-++++++++++++++++++++++++++------------------------
- 11 files changed, 57 insertions(+), 45 deletions(-)
- create mode 100644 lib/raid6/test/.gitignore
-
-
-Thanks,
-Song
+I thought about it, briefly. __dma_entry_alloc_check_leak() reads
+global nr_total_entries /  nr_prealloc_entries which are updated
+(inc/dec) under free_entries_lock, so I didn't want to move
+__dma_entry_alloc_check_leak() outside of free_entries_lock scope.
