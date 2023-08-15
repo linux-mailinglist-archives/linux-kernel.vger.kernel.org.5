@@ -2,91 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F08C77C5D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 04:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B0177C5D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 04:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234212AbjHOC0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 22:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37212 "EHLO
+        id S234216AbjHOC0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 22:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233747AbjHOCZa (ORCPT
+        with ESMTP id S234277AbjHOC0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 22:25:30 -0400
-Received: from mg.richtek.com (mg.richtek.com [220.130.44.152])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7EFF210C1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 19:25:27 -0700 (PDT)
-X-MailGates: (SIP:2,PASS,NONE)(compute_score:DELIVER,40,3)
-Received: from 192.168.10.47
-        by mg.richtek.com with MailGates ESMTPS Server V6.0(3219768:0:AUTH_RELAY)
-        (envelope-from <alina_yu@richtek.com>)
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256/256); Tue, 15 Aug 2023 10:25:08 +0800 (CST)
-Received: from ex4.rt.l (192.168.10.47) by ex4.rt.l (192.168.10.47) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.25; Tue, 15 Aug
- 2023 10:25:08 +0800
-Received: from linuxcarl2.richtek.com (192.168.10.154) by ex4.rt.l
- (192.168.10.45) with Microsoft SMTP Server id 15.2.1118.25 via Frontend
- Transport; Tue, 15 Aug 2023 10:25:08 +0800
-Date:   Tue, 15 Aug 2023 10:25:08 +0800
-From:   Alina Yu <alina_yu@richtek.com>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-CC:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@pengutronix.de>
-Subject: Re: [PATCH] regulator: rtq2208: Switch back to use struct
- i2c_driver's .probe()
-Message-ID: <20230815022508.GA5930@linuxcarl2.richtek.com>
-References: <20230814210759.26395-1-u.kleine-koenig@pengutronix.de>
+        Mon, 14 Aug 2023 22:26:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0705710D0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 19:25:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692066334;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=huMkYyI3IopZTTExqIZljSG+E6z9zvyVd59pXzY9sp0=;
+        b=ZWwcMBorVRDwHEH9JdZ0K4Zz0sR68a1j2Js5cJQZndy3CElAAMpUBeTITbKiSaGjSgVBV9
+        LqlCKVltEWDIiPFdTVreAJsQx180AowHTFJD1jXpFI/x0ekpMwElTcKR+8dd0Nq2PwmHIv
+        bHLd0Cd2eITtRYwHz3Bi0d0oxGofsZk=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-615-MDOKDVoXOci7a18IL5ruTg-1; Mon, 14 Aug 2023 22:25:33 -0400
+X-MC-Unique: MDOKDVoXOci7a18IL5ruTg-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2ba7e6c988dso24064321fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 19:25:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692066331; x=1692671131;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=huMkYyI3IopZTTExqIZljSG+E6z9zvyVd59pXzY9sp0=;
+        b=GmFnD3e5CgzdE3CYtHJs4q296COH8m63T2PFI37Iq4JLQX5BWXlBmrCbDCHWv/nBMq
+         6LRsi/EMZknnLd51V9Zvoqly7h+tgkhBejBSldgC0Vcu68Aam0mI/UKL2lVVqn5R7yQ3
+         XZ2vgy6EfyMulr3jiaky4I/3+igJZU9W8M03T2ilZgG4aM/qTZS1JWE3IWvqq5lg67vL
+         NtmhKbJaEDhzlBbhyv9X+C6NfU0UNxk93y8X9FhQ6cuGYYrEuGGPe8Jsyn38RoaPWBqH
+         P/FgAZj/2Wm8zZk+K+vRcvSRVwyiWAw8uFF6SRdRt2qsEx2/c7BFJoTlVLE28GGUT5It
+         wB5A==
+X-Gm-Message-State: AOJu0YzjxwnpKw2REjPu9vSRsFiTMk/uR1eovmSl4Tbc6CGEuk8k+JwZ
+        i7ElY+Qy0skjCIPTEAoLsHSXxUC1AoFryBklMxEimoud/xMq/kkR97P3IyEbdi3xCoqjpYIHz7o
+        IY1ZFnl6B+3PyXOjH5qVqXmO9JJdEhLtFYKiEgelJ
+X-Received: by 2002:a2e:8188:0:b0:2b1:ad15:fe38 with SMTP id e8-20020a2e8188000000b002b1ad15fe38mr8101338ljg.3.1692066331497;
+        Mon, 14 Aug 2023 19:25:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHvNiChZXsvQ/GLTCda14YUfdruIORDb1RwBBHhABgmjUe5mDgZEACu5ef/nXi9/8n+tfCK+O1Ea5+BczO9278=
+X-Received: by 2002:a2e:8188:0:b0:2b1:ad15:fe38 with SMTP id
+ e8-20020a2e8188000000b002b1ad15fe38mr8101327ljg.3.1692066331219; Mon, 14 Aug
+ 2023 19:25:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230814210759.26395-1-u.kleine-koenig@pengutronix.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <CACGkMEseKv8MzaF8uxVTjkaAm2xvei578g=rNVzogfPQRQPOhQ@mail.gmail.com>
+ <1692063807-5018-1-git-send-email-si-wei.liu@oracle.com> <1692063807-5018-5-git-send-email-si-wei.liu@oracle.com>
+In-Reply-To: <1692063807-5018-5-git-send-email-si-wei.liu@oracle.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Tue, 15 Aug 2023 10:25:20 +0800
+Message-ID: <CACGkMEuCDN7U2ANYvRa1TuhH5iR5rb2cdHVixwE_C9zgP__9GQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 4/4] vhost-vdpa: introduce IOTLB_PERSIST backend
+ feature bit
+To:     Si-Wei Liu <si-wei.liu@oracle.com>
+Cc:     eperezma@redhat.com, gal@nvidia.com, linux-kernel@vger.kernel.org,
+        mst@redhat.com, virtualization@lists.linux-foundation.org,
+        xuanzhuo@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 11:07:59PM +0200, Uwe Kleine-König wrote:
-> struct i2c_driver::probe_new is about to go away. Switch the driver to
-> use the probe callback with the same prototype.
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+On Tue, Aug 15, 2023 at 9:45=E2=80=AFAM Si-Wei Liu <si-wei.liu@oracle.com> =
+wrote:
+>
+> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
 > ---
-Hi,
-Uwe
+>  drivers/vhost/vdpa.c             | 16 +++++++++++++++-
+>  include/uapi/linux/vhost_types.h |  2 ++
+>  2 files changed, 17 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index 62b0a01..75092a7 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -406,6 +406,14 @@ static bool vhost_vdpa_can_resume(const struct vhost=
+_vdpa *v)
+>         return ops->resume;
+>  }
+>
+> +static bool vhost_vdpa_has_persistent_map(const struct vhost_vdpa *v)
+> +{
+> +       struct vdpa_device *vdpa =3D v->vdpa;
+> +       const struct vdpa_config_ops *ops =3D vdpa->config;
+> +
+> +       return (!ops->set_map && !ops->dma_map) || ops->reset_map;
 
-Thank you for your revising.
+So this means the IOTLB/IOMMU mappings have already been decoupled
+from the vdpa reset. So it should have been noticed by the userspace.
+I guess we can just fix the simulator and mlx5 then we are fine?
 
-Reviewed-by: Alina Yu <alina_yu@richtek.com>
+Thanks
 
-Best regards,
-Alina
-
->  drivers/regulator/rtq2208-regulator.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/regulator/rtq2208-regulator.c b/drivers/regulator/rtq2208-regulator.c
-> index 2463aea4192c..2d54844c4226 100644
-> --- a/drivers/regulator/rtq2208-regulator.c
-> +++ b/drivers/regulator/rtq2208-regulator.c
-> @@ -574,7 +574,7 @@ static struct i2c_driver rtq2208_driver = {
->  		.name = "rtq2208",
->  		.of_match_table = rtq2208_device_tables,
->  	},
-> -	.probe_new = rtq2208_probe,
-> +	.probe = rtq2208_probe,
->  };
->  module_i2c_driver(rtq2208_driver);
->  
-> 
-> base-commit: 85a11f55621a0c18b22b43ab4219450ac1d19386
-> -- 
-> 2.40.1
-> 
