@@ -2,80 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9AB377D67B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 01:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF4577D67E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 01:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240522AbjHOXAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 19:00:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35946 "EHLO
+        id S240526AbjHOXCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 19:02:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240534AbjHOXA0 (ORCPT
+        with ESMTP id S240530AbjHOXCM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 19:00:26 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D9E1FC7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 16:00:24 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id ffacd0b85a97d-3175f17a7baso4941432f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 16:00:24 -0700 (PDT)
+        Tue, 15 Aug 2023 19:02:12 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85EF01FC7;
+        Tue, 15 Aug 2023 16:02:10 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6887b3613e4so245254b3a.3;
+        Tue, 15 Aug 2023 16:02:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692140422; x=1692745222;
-        h=subject:to:from:mime-version:date:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=cD6dacPByXWt6P0wM+zJeh7tR3aYOCjQ3opTQo8U4gw=;
-        b=WI5V1IITOpEfdzh9wEOmJu7xrqu2SqqaDkl4/807eEfUoR2KqC/WKgI3Uh+S8NfDcM
-         Z3Y5KNErOBukDaXx/Ojk4PLUqdA1TECM2fDQAdlAKdybVIS0mjBhOTtXSbihKbg+erhK
-         x4VlcL7r0G6FQFSqfdOpv3MRSiCdl5icNb0JMQK0wcmFR7L0llak3nG8e3kxSU49o3PP
-         AOy+fV4En9qC39p1WKBu4P+KKTxYl5fmGc9czppDhUMGM3YZb2yZrZBeQMfA3YXPbDSg
-         Rafr9w2Kmsk4lgu3hVjl+OKAinZRx/4ah/usyjiED26zvT4HQK5xD7xA0tXTpHPTs1+m
-         X2zQ==
+        d=gmail.com; s=20221208; t=1692140530; x=1692745330;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xNpDKDCZDD5WexNj/cj/aiOz+RKCFDny2Mo09Q2qH44=;
+        b=aFUJ2SEMYYNcqH/i8LJ3DWP3hh8rDK3GtHkvERq1G8lGSIEJ4MYVw/Ly9vAQCpaJLI
+         rHzPCIBTe4S74uOPShoPAEzivYpNXhb/Xrf3IMQLPq37ywhQUn2A4x49mWtXdGIAPrS0
+         Q9YFE4ZygTXFi6oHiGewVzZYBol64xlDTEDBMd56mtAosjl3CjsxLtZV2rmTVXPNUrQU
+         ezrMNHe3rOTaA5l6henTKYotwEer4obqIZolVi/ZlszpIf5eBDQKT/7wQJxP/IYPYfwP
+         EOuIAs08FbIP35pqe6iIDdXKVnR+OpYZM5pEldu4Z9EtIrVndtPbyJLBlZyVFW+ZctPW
+         drLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692140422; x=1692745222;
-        h=subject:to:from:mime-version:date:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cD6dacPByXWt6P0wM+zJeh7tR3aYOCjQ3opTQo8U4gw=;
-        b=l+VmmM2eZ1jw5HnainZO4QKHgFKJB2qHQs7BCf4wIEPqze2fWQUZGlL11idN+/5bXC
-         In2hTDyqfU5hFzswCXYKoeqM658d+XNXpSBhaOm9gdjowwovfrodti3SgJsxMHch3M35
-         e31L8KxsNfiJ/BK0wFpS8PrPmEMc/RwSEwB1hbNT83NyKfXKR8LbCgRotG38SfEK3HB+
-         06hlduy9gkU70smB5J1NxFwOpjrnuJTQjUMEEJ6vknactOS1AVw104boRfwNnl+Z7NBT
-         +CrxgZ5L5fb9VhPScjsQHGaHbvSNJG6h8fp+U3jZw0NG/QR7doD9ZNUXjQuvTc/bfUoo
-         5wiA==
-X-Gm-Message-State: AOJu0Yx1qfSYpBtL3VlKpZeaR5HzwhHXT9r5BbujsC4duzxDgG9AnPI/
-        vp/amVKuPUu/Win/DvXNWuTZOVWSXMeh3VAB
-X-Google-Smtp-Source: AGHT+IHh8k3+x3X7Hh0Jbz3cj5xpZitHJIaX8Maxt/my8Cku+C8l4J2V2lKVTzHSoJns1vLxN0JCVw==
-X-Received: by 2002:a05:6000:192:b0:317:54de:9719 with SMTP id p18-20020a056000019200b0031754de9719mr62747wrx.70.1692140422349;
-        Tue, 15 Aug 2023 16:00:22 -0700 (PDT)
-Received: from [127.0.1.1] ([105.233.88.147])
-        by smtp.gmail.com with ESMTPSA id x20-20020aa7cd94000000b0051dfa2e30b2sm7565658edv.9.2023.08.15.16.00.21
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20221208; t=1692140530; x=1692745330;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xNpDKDCZDD5WexNj/cj/aiOz+RKCFDny2Mo09Q2qH44=;
+        b=Q/jBsfc8l7VKsqV6I3GORLsT/Z9TLtyxAc21q0F+1p3zOhcynWUFI2eAcD3bcAHfj6
+         9hu2aIf+RlUQj+d/nMumzNyjdHSg/E7RPaXPyMHjz51UMGPjsvmYYm1v3xIhiaqpvbXY
+         s0h/oGfxn0jXUp8aiwm7osflj96c3BrpzIg5Q3htg7sOaK8piqWGZ7H7nqgp/SRdg8k8
+         nEr7XEQlzSkgCowOIXRKmXcliWYU+JoCyhY/GuMbvYbivg7OGakj9P129ULXUHOsYDCD
+         Nb6L0wkrRjP6KvHMJHkcTiPElLJcvrygLfw9IsYiwiaN2gFL0sKREDEVooNIgeL4M7rQ
+         D/JA==
+X-Gm-Message-State: AOJu0YyCKNXVAPISJM3X6A50Nt+VFj2VUjAlzGH5WeEiS863shGeVxgf
+        8VEBsbJzwmswhZhpC0jH5UU=
+X-Google-Smtp-Source: AGHT+IFa8lH1VeD1bxeTZcgSXqR7B1RW6dXnxF2zzq2G3IXv0ZUjqDxLEy3u3wV0POYgU7ve/4nMlw==
+X-Received: by 2002:a05:6a00:3907:b0:66a:48db:8f6a with SMTP id fh7-20020a056a00390700b0066a48db8f6amr199340pfb.12.1692140529814;
+        Tue, 15 Aug 2023 16:02:09 -0700 (PDT)
+Received: from localhost ([2601:647:4600:51:4685:ff:fe0f:d124])
+        by smtp.gmail.com with ESMTPSA id s14-20020a62e70e000000b00687196f369esm9780651pfh.62.2023.08.15.16.02.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 16:00:21 -0700 (PDT)
-Message-ID: <64dc0385.a70a0220.afb68.5ebc@mx.google.com>
-Date:   Tue, 15 Aug 2023 16:00:21 -0700 (PDT)
-Content-Type: multipart/mixed; boundary="===============3306924434812285861=="
+        Tue, 15 Aug 2023 16:02:08 -0700 (PDT)
+Date:   Tue, 15 Aug 2023 16:02:07 -0700
+From:   Isaku Yamahata <isaku.yamahata@gmail.com>
+To:     Sagi Shahar <sagis@google.com>
+Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+        Sean Christopherson <seanjc@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        hang.yuan@intel.com, tina.zhang@intel.com
+Subject: Re: [PATCH v15 059/115] KVM: TDX: Create initial guest memory
+Message-ID: <20230815230207.GA1436700@private.email.ne.jp>
+References: <cover.1690322424.git.isaku.yamahata@intel.com>
+ <19a589ab40b01c10c3b9addc5c38f3fe64b15ad0.1690322424.git.isaku.yamahata@intel.com>
+ <CAAhR5DG8hHKVjoN+pWKBVivSm8zkBX5NMbKAuWUL2Tkhaj1YRQ@mail.gmail.com>
 MIME-Version: 1.0
-From:   =?utf-8?b?QkFSUklTVEVSIEQgIFJPQkVSVFNPTiDimpk=?= 
-        <donaldwill039@gmail.com>
-To:     linux-kernel@vger.kernel.org
-X-Priority:  1 (Highest)
-X-MSMail-Priority:  High
-Subject: =?utf-8?b?TGVnYWwgQXNzaXN0YW5jZQ==?=
-X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_20,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLY,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAhR5DG8hHKVjoN+pWKBVivSm8zkBX5NMbKAuWUL2Tkhaj1YRQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---===============3306924434812285861==
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+On Tue, Aug 15, 2023 at 11:50:02AM -0700,
+Sagi Shahar <sagis@google.com> wrote:
 
-SSB3YW50IHlvdSB0byB3cml0ZSBiYWNrLCBJIGhhdmUgYSByZXF1ZXN0IGZvciB5b3UuIGRvbmFs
-ZGFibHQxMTFAZ21haWwuY29tCg==
+> > diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> > index e367351f8d71..32e84c29d35e 100644
+> > --- a/arch/x86/kvm/vmx/tdx.c
+> > +++ b/arch/x86/kvm/vmx/tdx.c
+...
+> > @@ -1215,6 +1271,95 @@ void tdx_flush_tlb_current(struct kvm_vcpu *vcpu)
+> >         tdx_track(to_kvm_tdx(vcpu->kvm));
+> >  }
+> >
+> > +#define TDX_SEPT_PFERR (PFERR_WRITE_MASK | PFERR_GUEST_ENC_MASK)
+> > +
+> > +static int tdx_init_mem_region(struct kvm *kvm, struct kvm_tdx_cmd *cmd)
+> > +{
+> > +       struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+> > +       struct kvm_tdx_init_mem_region region;
+> > +       struct kvm_vcpu *vcpu;
+> > +       struct page *page;
+> > +       int idx, ret = 0;
+> > +       bool added = false;
+> > +
+> > +       /* Once TD is finalized, the initial guest memory is fixed. */
+> > +       if (is_td_finalized(kvm_tdx))
+> > +               return -EINVAL;
+> > +
+> > +       /* The BSP vCPU must be created before initializing memory regions. */
+> > +       if (!atomic_read(&kvm->online_vcpus))
+> > +               return -EINVAL;
+> > +
+> > +       if (cmd->flags & ~KVM_TDX_MEASURE_MEMORY_REGION)
+> > +               return -EINVAL;
+> > +
+> > +       if (copy_from_user(&region, (void __user *)cmd->data, sizeof(region)))
+> > +               return -EFAULT;
+> > +
+> > +       /* Sanity check */
+> > +       if (!IS_ALIGNED(region.source_addr, PAGE_SIZE) ||
+> > +           !IS_ALIGNED(region.gpa, PAGE_SIZE) ||
+> > +           !region.nr_pages ||
+> > +           region.gpa + (region.nr_pages << PAGE_SHIFT) <= region.gpa ||
+> 
+> During an internal security review we noticed that region.nr_pages is
+> always checked after it's shifted but when it is used it is not
+> shifted. This means that if any of the upper 12 bits are set then we
+> will pass the sanity check but the while loop below will run over a
+> much larger range than expected.
+> 
+> A simple fix would be to add the following check to test if any of the
+> shifted bits is set:
+> +           (region.nr_pages << PAGE_SHIFT) >> PAGE_SHIFT != region.nr_pages ||
+> 
+> Reported-by: gkirkpatrick@google.com
 
---===============3306924434812285861==--
+Thank you for catching it. I ended up with the following check.
+
+  region.nr_pages & GENMASK_ULL(63, 63 - PAGE_SHIFT)
+
+-- 
+Isaku Yamahata <isaku.yamahata@gmail.com>
