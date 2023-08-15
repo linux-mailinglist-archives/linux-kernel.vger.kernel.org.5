@@ -2,103 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8970277D428
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11F777D434
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237963AbjHOUb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 16:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58382 "EHLO
+        id S238000AbjHOUfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 16:35:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237982AbjHOUbd (ORCPT
+        with ESMTP id S238039AbjHOUet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 16:31:33 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C581FC9
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:31:30 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3110ab7110aso5331290f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:31:30 -0700 (PDT)
+        Tue, 15 Aug 2023 16:34:49 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB4AF7
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:34:47 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d669fcad15cso5263208276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:34:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692131489; x=1692736289;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KyN9mbwaXCeD9ddt8BwKaPHZBpIm4dW+EkteSoYWyH4=;
-        b=xrrg1Lm+rYDLYBzWIRiSdaxZjhV1XYNCjktJ68o3hygAEtXIZQFxlCYG+jRKyxoz05
-         2+vwpNjU4cBXfpgO5uLL4CNwSB2jwyhpVzYhYukSX/KH0HkiLLYteYbCJAYJZ7h5vyao
-         ksUw59ES/NyBAbS1jh3IZsGAeOaeAKylI5LhyttanlDC6SCKOkeRaE73Cw0tAjVIgM+o
-         344GyuIR6zYHzAZ5sRl40FTtAEJSuVlYX+YFoLGcL1Hp9kKd0y/Zuxbo0u1loQNJPsnE
-         7tRIFjWxzsra7bTkYejBdpbz7qs4IStP+YM9NGBKyaQqRym0wdlL4WkIbeBd6l4SuWM0
-         nEsQ==
+        d=google.com; s=20221208; t=1692131687; x=1692736487;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Vu3YlGSzqXzwwgWi/q2n2LUyYRgXMju9WJu57GL76pk=;
+        b=20AONJpHkDmgRGgvrCxY0YZ8+qqnTitvPIFm7bIiayyUYFEQqFxqWYX8evjU2xIyUw
+         kjDuIsOilMdRoalLKR77olLsbFjaAed3/7DHNZLY8sSj7RzpE3XHC1oIJpS5fO3DdjZs
+         eGslVcDajvPI8Rde/nLOFVgo9XIrAhuny8kJs3Bti6SoSKx0omgX3hzEuQX36GvVbFff
+         2deWtQZiWKLYyFOy6UiM2NxkHW3lvNnozvk+9w3XjLcmLksHncKXXh4v5EzHm4vLOyJc
+         HBhwBE8ay/jX0hjbzZVvnLB1TnzbvlCw64myqkQrR1wHFoJU0qpNclkIh421HKlMKCTj
+         foPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692131489; x=1692736289;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KyN9mbwaXCeD9ddt8BwKaPHZBpIm4dW+EkteSoYWyH4=;
-        b=C/t2Eoj5n639O28ijzaD87MiWAcFEHfTNn5F0dGO7OE9Q9isUaG9flv+lto7yArqR6
-         KnbiKLbxOS+c68RKv8OM69RhetXc7hbLufCyh5l0hodgtQ0VX8g6vPyK/sXTUhn4cTWG
-         M/DDlMSKecJrCTrkfhZrK3zUFDQG2Bo+xX0OFPcwdRMrSATUr1lV1rF3Q8YN/XIIgbV5
-         ilaifQIpvrWomZUljxcranEU6V3hxalRb51Ax/TOYbtJBp3cP6DzrNJtUVcnFTqTr6LH
-         nlWztt6AJEHpfhkpDJWHNkbaBfnXlvJQ6XMfyN6ZZih1ThNVurC9g3TOxk3R9ltcHKuT
-         Z6WA==
-X-Gm-Message-State: AOJu0Yw4YOZTbzyIFmvLEE3d3GEUtj9C23A9wOZhbcBqwCK+VvEI+gF/
-        j5pomkLKGYUIGfQ3cjW/vDRlGQ==
-X-Google-Smtp-Source: AGHT+IGKfKT6v7xAX9eRrfeVce0AfRmSoHeqv6qYSAYqLe+fP7lNSELrPG7WvUwsiJxHDSPObqPb+w==
-X-Received: by 2002:a5d:6889:0:b0:319:8161:ecc6 with SMTP id h9-20020a5d6889000000b003198161ecc6mr3432297wru.63.1692131489426;
-        Tue, 15 Aug 2023 13:31:29 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id o14-20020a5d474e000000b00317f3fd21b7sm5490315wrs.80.2023.08.15.13.31.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 13:31:29 -0700 (PDT)
-Message-ID: <d9a8e265-8862-0fac-24ae-989293bc4d12@linaro.org>
-Date:   Tue, 15 Aug 2023 22:31:27 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 2/3] dt-bindings: leds: Document pull-up supply for
- interrupt and I2C
-Content-Language: en-US
-To:     Stephan Gerhold <stephan@gerhold.net>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Nikita Travkin <nikita@trvn.ru>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
-References: <20230815-aw2013-vio-v3-0-2505296b0856@gerhold.net>
- <20230815-aw2013-vio-v3-2-2505296b0856@gerhold.net>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230815-aw2013-vio-v3-2-2505296b0856@gerhold.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1692131687; x=1692736487;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Vu3YlGSzqXzwwgWi/q2n2LUyYRgXMju9WJu57GL76pk=;
+        b=aOMVIG3W1JhpLqTy9cnaCyP6eTbGKUYwpZQrFhOvmN28eRgQTWdhy7MwMNYhpcPPPi
+         u9wVIQdTr4Ytj+wCBNpJVefML44QhT7bBihfZRJznOgsImwBrH4OMSZLMfdhvvtUSp99
+         dHp1ABcRIp6GToMIvKGVYOpVP3OAn3PiIiZTdvnuVUIlgQXzEZWJRK/Ro4RGqV/sU0g8
+         xK08Ur1dinASv2UdeOUnM5UpEJe1KPQpmP4XxCvarcCeHticV1rgzOHzs0CdsDcAc8hg
+         6q6A6z7ZYkaQz71u3xGd/vNMvYgLM4LUC6WVUU7+aiqs4Q7f5oYkRjJ6dDC/MJbxaj0y
+         B9kQ==
+X-Gm-Message-State: AOJu0YzM8PVP1h9FiCaCWJ2b9Hvf6cYPRD9vlpiZ8zjGHuKrSYQqZe0j
+        PaWbJ0NSZOxSklEPn1N0r+yLX/1jpck+G4WHpHk=
+X-Google-Smtp-Source: AGHT+IEEEB9RkxNGC3nmjrLzfqaEjo04hgJYb9l9GY8BmhXIPcxgYphL1eVtvENoj53ebcdCaRYUhQD32EVakIpj8/M=
+X-Received: from samitolvanen.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:4f92])
+ (user=samitolvanen job=sendgmr) by 2002:a05:6902:565:b0:d18:73fc:40af with
+ SMTP id a5-20020a056902056500b00d1873fc40afmr177279ybt.5.1692131686943; Tue,
+ 15 Aug 2023 13:34:46 -0700 (PDT)
+Date:   Tue, 15 Aug 2023 20:34:43 +0000
+Mime-Version: 1.0
+X-Developer-Key: i=samitolvanen@google.com; a=openpgp; fpr=35CCFB63B283D6D3AEB783944CB5F6848BBC56EE
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3258; i=samitolvanen@google.com;
+ h=from:subject; bh=27ja0uIMORSaGulxExOcQfSpvjxiVAnXn8qbTbuF2b0=;
+ b=owEB7QES/pANAwAKAUy19oSLvFbuAcsmYgBk2+Fi/AuN72l+gcV8yqSSBdN3XwK5ap26p2ccW
+ t4HA4fLgSGJAbMEAAEKAB0WIQQ1zPtjsoPW0663g5RMtfaEi7xW7gUCZNvhYgAKCRBMtfaEi7xW
+ 7r6jC/sH51moOTq9GAgfZW4dtbVJIZrfYUSzK4jLvJmepsTXYq94/9JqoarL8IMhVnGC323YKZr
+ E8A8U0U0WxapNQYW0Z0Q6wamv9b2xwueVG8zXctXXNPZsr8+jSzettmfIZjoB2uhItHSpHotq70
+ iaOJ0gj83hEfx5sej+dGuPOo1tlpXxS1TYm7BVRz+7mAg8U1+4tFwVTi/22JzmAmvNwhc6YeEgX
+ uE+/tftT10bAT8AEYZYiX3Q+MMBvT6cQtj5ybfDWHwHkd4hhWXNlIw9k+gaFc1L2/yoPx53SwS+
+ ISUe54u+RjDb3YNfPy4JpwNdXcFQl3F3Aq7C0d2jI92BeRVINzB9MB1EtqPf01LvLnje/IhJJci
+ ckDpO8njNWQ7J30a147p197hlPwd3LLqXp1YNxeBugtDRxtrbe9dAE1gUQJ3MbzGyhbJAmM5r3S /Li1U6ZyGOsoSDe2NClMgfhbi1GavCoEXC7ieC0iD4U6Oyxr4auvV2u+bGy0MWWimJbx8=
+X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
+Message-ID: <20230815203442.1608773-8-samitolvanen@google.com>
+Subject: [PATCH v2 0/6] riscv: SCS support
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Guo Ren <guoren@kernel.org>, Deepak Gupta <debug@rivosinc.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        linux-riscv@lists.infradead.org, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/08/2023 19:21, Stephan Gerhold wrote:
-> Since the interrupt and I2C lines of AW2013 operate in open drain low
-> active mode a pull-up supply is needed for correct operation.
-> Unfortunately there is no ideal place to describe it in the DT: The
-> pull-up needed for the I2C lines could be described on the I2C bus.
-> However, the pull-up needed for the interrupt line belongs neither
-> directly to the interrupt controller nor to AW2013. Since the AW2013
-> driver will be typically in control of the power management and
-> interrupt masking it makes more sense to describe it inside the AW2013
-> device tree node.
-> 
-> Add it to the AW2013 DT schema together with a comment that makes it
-> clear what exactly it represents.
-> 
+Hi folks,
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+This series adds Shadow Call Stack (SCS) support for RISC-V. SCS
+uses compiler instrumentation to store return addresses in a
+separate shadow stack to protect them against accidental or
+malicious overwrites. More information about SCS can be found
+here:
 
-Best regards,
-Krzysztof
+  https://clang.llvm.org/docs/ShadowCallStack.html
+
+Patch 1 is from Deepak, and it simplifies VMAP_STACK overflow
+handling by adding support for accessing per-CPU variables
+directly in assembly. The patch is included in this series to
+make IRQ stack switching cleaner with SCS, and I've simply
+rebased it. Patch 2 uses this functionality to clean up the stack
+switching by moving duplicate code into a single function. On
+RISC-V, the compiler uses the gp register for storing the current
+shadow call stack pointer, which is incompatible with global
+pointer relaxation. Patch 3 moves global pointer loading into a
+macro that can be easily disabled with SCS. Patch 4 implements
+SCS register loading and switching, and allows the feature to be
+enabled, and patch 5 adds separate per-CPU IRQ shadow call stacks
+when CONFIG_IRQ_STACKS is enabled. Patch 6 fixes the backward-
+edge CFI test in lkdtm for RISC-V.
+
+Note that this series requires Clang 17. Earlier Clang versions
+support SCS on RISC-V, but use the x18 register instead of gp,
+which isn't ideal. gcc has SCS support for arm64, but I'm not
+aware of plans to support RISC-V. Once the Zicfiss extension is
+ratified, it's probably preferable to use hardware-backed shadow
+stacks instead of SCS on hardware that supports the extension,
+and we may want to consider implementing CONFIG_DYNAMIC_SCS to
+patch between the implementation at runtime (similarly to the
+arm64 implementation, which switches to SCS when hardware PAC
+support isn't available).
+
+Sami
+
+---
+
+Changes in v2:
+  - Fixed asm_per_cpu with !CONFIG_SMP.
+  - Added patch 6 to fix the CFI_BACKWARD lkdtm test.
+  - Rebased on top of -rc6.
+
+---
+
+Deepak Gupta (1):
+  riscv: VMAP_STACK overflow detection thread-safe
+
+Sami Tolvanen (5):
+  riscv: Deduplicate IRQ stack switching
+  riscv: Move global pointer loading to a macro
+  riscv: Implement Shadow Call Stack
+  riscv: Use separate IRQ shadow call stacks
+  lkdtm: Fix CFI_BACKWARD on RISC-V
+
+ arch/riscv/Kconfig                   |   6 ++
+ arch/riscv/Makefile                  |   4 +
+ arch/riscv/include/asm/asm.h         |  41 +++++++++
+ arch/riscv/include/asm/irq_stack.h   |   3 +
+ arch/riscv/include/asm/scs.h         |  54 ++++++++++++
+ arch/riscv/include/asm/thread_info.h |  16 +++-
+ arch/riscv/kernel/asm-offsets.c      |   4 +
+ arch/riscv/kernel/entry.S            | 126 +++++++++++++--------------
+ arch/riscv/kernel/head.S             |  19 ++--
+ arch/riscv/kernel/irq.c              |  53 ++++++-----
+ arch/riscv/kernel/suspend_entry.S    |   5 +-
+ arch/riscv/kernel/traps.c            |  65 ++------------
+ arch/riscv/kernel/vdso/Makefile      |   2 +-
+ arch/riscv/purgatory/Makefile        |   4 +
+ drivers/misc/lkdtm/cfi.c             |  13 ++-
+ 15 files changed, 245 insertions(+), 170 deletions(-)
+ create mode 100644 arch/riscv/include/asm/scs.h
+
+
+base-commit: 2ccdd1b13c591d306f0401d98dedc4bdcd02b421
+-- 
+2.41.0.694.ge786442a9b-goog
 
