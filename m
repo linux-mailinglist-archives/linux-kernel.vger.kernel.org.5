@@ -2,101 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A2B77D30E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 811F477D2FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239688AbjHOTMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 15:12:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33188 "EHLO
+        id S235515AbjHOTIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 15:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239855AbjHOTLj (ORCPT
+        with ESMTP id S239514AbjHOTHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 15:11:39 -0400
-Received: from out-40.mta1.migadu.com (out-40.mta1.migadu.com [95.215.58.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D71D41BF8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:11:32 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 12:03:07 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1692126208;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GkRjwrMHjPs40FvzIa8pU0GNTtMYIYTzYPKaWxP8TNI=;
-        b=Ta2jjtysX+1vuxpyDUL4lX0t4dNB9CUUZt1Qpq8S7DmFhD7Q8DvwNvtB+TFE6B48E42Pab
-        4uqcpSkIIf3/cS53lR+lRYgO/ZWUkCJseanx6zyGEoUMpGyn9fN42NZATCchY+ZUoN5mVw
-        M7G1F6TVvzFETdqbgAEU1Z0ohAAmHE0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Chuyi Zhou <zhouchuyi@bytedance.com>, hannes@cmpxchg.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        muchun.song@linux.dev, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wuyun.abel@bytedance.com,
-        robin.lu@bytedance.com
-Subject: Re: [RFC PATCH 1/2] mm, oom: Introduce bpf_select_task
-Message-ID: <ZNvL65bx/PARcyBu@P9FQF9L96D.corp.robot.car>
-References: <ZMzhDFhvol2VQBE4@dhcp22.suse.cz>
- <dfbf05d1-daff-e855-f4fd-e802614b79c4@bytedance.com>
- <ZMz+aBHFvfcr0oIe@dhcp22.suse.cz>
- <866462cf-6045-6239-6e27-45a733aa7daa@bytedance.com>
- <ZNCXgsZL7bKsCEBM@dhcp22.suse.cz>
- <ZNEpsUFgKFIAAgrp@P9FQF9L96D.lan>
- <ZNH6X/2ZZ0quKSI6@dhcp22.suse.cz>
- <ZNK2fUmIfawlhuEY@P9FQF9L96D>
- <ZNNGFzwlv1dC866j@dhcp22.suse.cz>
- <c390dc64-280e-6d9f-661a-9a5d77f16cf8@linux.dev>
+        Tue, 15 Aug 2023 15:07:42 -0400
+Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6392A212D
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:07:07 -0700 (PDT)
+Received: from eig-obgw-5001a.ext.cloudfilter.net ([10.0.29.139])
+        by cmsmtp with ESMTP
+        id Vyw9qkK7dfaVXVzKSqNJO2; Tue, 15 Aug 2023 19:03:44 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id VzKRqqXjbj7JmVzKRqQLVU; Tue, 15 Aug 2023 19:03:43 +0000
+X-Authority-Analysis: v=2.4 cv=SsuDVdC0 c=1 sm=1 tr=0 ts=64dbcc0f
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=UttIx32zK-AA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
+ a=7CQSdrXTAAAA:8 a=4Y44Ad61Qo6RRudwQyUA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=a-qgeE7W1pNrGK8U0ZQC:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=oDTpbnZtb5YY58cxQ1+wqrLvX74qH9kX1x/86gt1r6c=; b=GYqk+IEZHDNl4F1KNkrjKQ4GCv
+        A8WuEZWAoPnmMiy5LJ5rLCvLrfBUjja3movkQMpr/X3RBuLXmLXSa2djw6dKXzKucDKJi/n0OzHsC
+        lgCkFhGiIVfQpofwfVRHtXlcHDGmrQXJIlLN2PSiVfQxmdIM0765db6fe82HYihlPM2Wgwn0/D8eP
+        i5nCbb2biNKRb53PVBwCZRjEqtmn5+EFTXARPbPFiG9+6QkFJxpCavWSSp4tRVGiuoVBC2TDajzeg
+        upx233SUSeGEbPUt3NXjHVv7jeWCyXSBmlaN+7ngIYg5E/XAJLYVujq0sfutwtvAhpl2ITu/tH/74
+        MUNzFOSQ==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:60524 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qVzKQ-000zkG-1t;
+        Tue, 15 Aug 2023 14:03:42 -0500
+Message-ID: <e1c07dd0-e6bf-ca9c-107a-97c5043b1bc7@embeddedor.com>
+Date:   Tue, 15 Aug 2023 13:04:32 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c390dc64-280e-6d9f-661a-9a5d77f16cf8@linux.dev>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH][next] cgroup: Avoid -Wstringop-overflow warnings
+Content-Language: en-US
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <ZIpm3pcs3iCP9UaR@work>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <ZIpm3pcs3iCP9UaR@work>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qVzKQ-000zkG-1t
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:60524
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 2
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfAaNf5TGVhVIzLT3ij7nokBqaNhdLRWxItiwRpDjebni+LxKVD45CwHn7Y6Kx9nzfk6seSSl/QfnviXcIQG39WlTL6dAAJd54nh8X+ZAMby/JBeQA7EV
+ UZZz6ev/KJ4anEdlCqXcqSLpSXMZVzJ4qqfebT0bPWbNGiSTzhuHHF/LBBYop1VTv494heOgV5JYD21N4K4Qt5kt2qPCHedOcWqiDphdwjWpc70C2E5dH+Pw
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 12:41:01PM -0700, Martin KaFai Lau wrote:
-> > > > > First, I'm a bit concerned about implicit restrictions we apply to bpf programs
-> > > > > which will be executed potentially thousands times under a very heavy memory
-> > > > > pressure. We will need to make sure that they don't allocate (much) memory, don't
-> > > > > take any locks which might deadlock with other memory allocations etc.
-> > > > > It will potentially require hard restrictions on what these programs can and can't
-> > > > > do and this is something that the bpf community will have to maintain long-term.
-> > > > 
-> > > > Right, BPF callbacks operating under OOM situations will be really
-> > > > constrained but this is more or less by definition. Isn't it?
-> > > 
-> > > What do you mean?
-> > 
-> > Callbacks cannot depend on any direct or indirect memory allocations.
-> > Dependencies on any sleeping locks (again directly or indirectly) is not
-> > allowed just to name the most important ones.
-> > 
-> > > In general, the bpf community is trying to make it as generic as possible and
-> > > adding new and new features. Bpf programs are not as constrained as they were
-> > > when it's all started.
-> 
-> bpf supports different running context. For example, only non-sleepable bpf
-> prog is allowed to run at the NIC driver. A sleepable bpf prog is only
-> allowed to run at some bpf_lsm hooks that is known to be safe to call
-> blocking bpf-helper/kfunc. From the bpf side, it ensures a non-sleepable bpf
-> prog cannot do things that may block.
+Hi all,
 
-Yeah, you're right: non-sleepable bpf should be ok here.
+I wonder if you have any suggestions on how to address this issue. As it seems that
+my last attempt caused some boot failures[1][2].
 
-> 
-> fwiw, Dave has recently proposed something for iterating the task vma
-> (https://lore.kernel.org/bpf/20230810183513.684836-4-davemarchevsky@fb.com/).
-> Potentially, a similar iterator can be created for a bpf program to iterate
-> cgroups and tasks.
+At first, I thought that the right way to fix this was through a similar fix as this
+one[3]. But it seems I'm missing something else that I cannot determine yet.
 
-Yes, it looks like a much better approach rather than adding a hook into
-the existing iteration over all tasks.
+These -Wstringop-overflow warnings are mostly the last ones remaining before we can
+finally enable this compiler option, globally.
+
+Any help or advice on how to properly address this is greatly appreciated. :)
 
 Thanks!
+--
+Gustavo
+
+[1] https://lore.kernel.org/linux-hardening/726aae97-755d-9806-11d4-2fb21aa93428@arm.com/
+[2] https://lore.kernel.org/linux-hardening/361c2f87-1424-f452-912f-0e4a339f5c46@kernel.org/
+[3] https://git.kernel.org/linus/d20d30ebb199
+
+
+On 6/14/23 19:18, Gustavo A. R. Silva wrote:
+> Address the following -Wstringop-overflow warnings seen when
+> built with ARM architecture and aspeed_g4_defconfig configuration
+> (notice that under this configuration CGROUP_SUBSYS_COUNT == 0):
+> kernel/cgroup/cgroup.c:1208:16: warning: 'find_existing_css_set' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+> kernel/cgroup/cgroup.c:1258:15: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+> kernel/cgroup/cgroup.c:6089:18: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+> kernel/cgroup/cgroup.c:6153:18: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+> 
+> These changes are based on commit d20d30ebb199 ("cgroup: Avoid compiler
+> warnings with no subsystems").
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>   kernel/cgroup/cgroup.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index cd497b90e11a..1ee76e62eb98 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -1200,6 +1200,9 @@ static struct css_set *find_css_set(struct css_set *old_cset,
+>   	unsigned long key;
+>   	int ssid;
+>   
+> +	if (!CGROUP_HAS_SUBSYS_CONFIG)
+> +		return NULL;
+> +
+>   	lockdep_assert_held(&cgroup_mutex);
+>   
+>   	/* First see if we already have a cgroup group that matches
+> @@ -6045,6 +6048,9 @@ int __init cgroup_init(void)
+>   	struct cgroup_subsys *ss;
+>   	int ssid;
+>   
+> +	if (!CGROUP_HAS_SUBSYS_CONFIG)
+> +		return -EINVAL;
+> +
+>   	BUILD_BUG_ON(CGROUP_SUBSYS_COUNT > 16);
+>   	BUG_ON(cgroup_init_cftypes(NULL, cgroup_base_files));
+>   	BUG_ON(cgroup_init_cftypes(NULL, cgroup_psi_files));
