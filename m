@@ -2,138 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB2777CE72
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9CA77CE88
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237779AbjHOOvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 10:51:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37654 "EHLO
+        id S237781AbjHOOyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 10:54:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237794AbjHOOvB (ORCPT
+        with ESMTP id S237783AbjHOOx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 10:51:01 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7EE1C5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:51:00 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5633ad8446bso5969568a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:51:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692111060; x=1692715860;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BSaljbCebqXxAjoldD4Av0i/0DgZBw/2C/j7e5eHNTM=;
-        b=CjVP1jj4QRBNiSjT17ZnmQ6IkpIiSXWRPUAGRWlcELiHLU8pm6JX08g26mT/E7NLgl
-         Sk61Zoumk5UmABrUQ7A27qWDJ3N7uSNTDeyiI9stop74+DNWtWXsIho3spC61XYjmpJu
-         fE0mgLPJytnijZFdWHVkJzO2eNC5Y0uztbNJlXFEud4rzzVINPh2Fcknv/7W4N25v2b+
-         /zjy43E+hnTxlGUrLHSe7PN8r2hzn6zAhKJBV1WVgVM1M4jClB/0Y7Q3NWBRIZr+Z7Qy
-         F8BxkmdjJ8VPe+9HyqLXQY3o94LyApXS+4COm6Ty/l5KK5tNuJ4OdFogp/iwb3SNclLL
-         pf1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692111060; x=1692715860;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BSaljbCebqXxAjoldD4Av0i/0DgZBw/2C/j7e5eHNTM=;
-        b=ht4tDXgFvjdCX1zJQLY7r8z57HZNxgzIqCDKRT0cB9YxYQJcrQoihH0MgbbP3avn9B
-         SeZvLPDo1zp8ieMmT9lnSNOQri15Cc9x+ipRYvE4HpwKvwhad+T1Tu80kHk/9tVQxcR1
-         pQ938GUTLuiuIOFcdfyQzaal+zxCH7OLKlkU6Q8U9PFzISgqSkHadViMtKhWbcK5Eo4S
-         MXXG96uWmYYJODj7lJdrYnTbOooLOXeWiE5W+eiVX1YQ+bQdivW2kTMfnrLomuZoyIlS
-         HrNYF1ErnwZw+ZhoGgribZ4hN9ektJzcSQDeRj8iBLB8Mir0RNgGu2klLmlwvapwy0l3
-         /8mw==
-X-Gm-Message-State: AOJu0YyJw0SiInpfA6e3XPajGDNEo8jjkObZUx20lW5FoQf2lT7RLCy+
-        Bwzz8B/sgc9RDU2UDC5Bhl+3/Os1A8E=
-X-Google-Smtp-Source: AGHT+IHG966N7ESziWjOW/ZteQHTABZwY4fegm6FMIGRWX29Olk3z0GlVrc96GzO09joDfiuW0Hud8OUTxM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:77cc:0:b0:55f:d4a4:57ba with SMTP id
- s195-20020a6377cc000000b0055fd4a457bamr2231606pgc.8.1692111060425; Tue, 15
- Aug 2023 07:51:00 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 07:50:58 -0700
-In-Reply-To: <ZNra3eDNTaKVc7MT@yzhao56-desk.sh.intel.com>
-Mime-Version: 1.0
-References: <20230810085636.25914-1-yan.y.zhao@intel.com> <20230810090218.26244-1-yan.y.zhao@intel.com>
- <277ee023-dc94-6c23-20b2-7deba641f1b1@loongson.cn> <ZNWu2YCxy2FQBl4z@yzhao56-desk.sh.intel.com>
- <e7032573-9717-b1b9-7335-cbb0da12cd2a@loongson.cn> <ZNXq9M/WqjEkfi3x@yzhao56-desk.sh.intel.com>
- <ZNZshVZI5bRq4mZQ@google.com> <ZNnPF4W26ZbAyGto@yzhao56-desk.sh.intel.com>
- <ZNpZDH9//vk8Rqvo@google.com> <ZNra3eDNTaKVc7MT@yzhao56-desk.sh.intel.com>
-Message-ID: <ZNuQ0grC44Dbh5hS@google.com>
-Subject: Re: [RFC PATCH v2 5/5] KVM: Unmap pages only when it's indeed
- protected for NUMA migration
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yan Zhao <yan.y.zhao@intel.com>
-Cc:     bibo mao <maobibo@loongson.cn>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        pbonzini@redhat.com, mike.kravetz@oracle.com, apopple@nvidia.com,
-        jgg@nvidia.com, rppt@kernel.org, akpm@linux-foundation.org,
-        kevin.tian@intel.com, david@redhat.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 15 Aug 2023 10:53:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF7DE5B;
+        Tue, 15 Aug 2023 07:53:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692111239; x=1723647239;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8cZYt7HFAnk2MmSwXTT2RjgwpBr32yZmczsS440Qatw=;
+  b=Vv7sNR3/duZXS1dd7e7sSt9EfIfKffR5uw0GNL3gw5J6EL0o6e06KBNh
+   Vy3ZmMwMd/YIGx/0vPPKWqoGnKtiCbyxldkElDvGHyJ8yj5lh1WOi3o/6
+   zIlblfbtGUeKKizPiap8yKaSyEzkGJ0Cs/5WwGKXLzLywvBBCzalvtBaw
+   pTDJtT55X43tQmruEmmThMreQE8FevHaalzMMua6UMzhUn3RS7t0LGj4n
+   atADgBfdHi1zVk0bh2kA/fmo5m4HohKGGOQq51hUeUz/gAdsIFVBqNwM0
+   KGD1qOthzNBpeLE5ZD8G0QhYflK50aohws1EeYCGLzUAa/Q05xGPpWMcI
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="371207049"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="371207049"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 07:53:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="907630159"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="907630159"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP; 15 Aug 2023 07:53:53 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qVvQd-0065qi-2C;
+        Tue, 15 Aug 2023 17:53:51 +0300
+Date:   Tue, 15 Aug 2023 17:53:51 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Marcus Folkesson <marcus.folkesson@gmail.com>
+Cc:     Kent Gustavsson <kent@minoris.se>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Cosmin Tanislav <demonsingur@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Ramona Bolboaca <ramona.bolboaca@analog.com>,
+        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        William Breathitt Gray <william.gray@linaro.org>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 3/6] iio: adc: mcp3911: simplify usage of spi->dev
+Message-ID: <ZNuRf3hZ9Z2fddxa@smile.fi.intel.com>
+References: <20230814121010.184842-1-marcus.folkesson@gmail.com>
+ <20230814121010.184842-3-marcus.folkesson@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230814121010.184842-3-marcus.folkesson@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023, Yan Zhao wrote:
-> On Mon, Aug 14, 2023 at 09:40:44AM -0700, Sean Christopherson wrote:
-> > > > Note, I'm assuming secondary MMUs aren't allowed to map swap entries...
-> > > > 
-> > > > Compile tested only.
-> > > 
-> > > I don't find a matching end to each
-> > > mmu_notifier_invalidate_range_start_nonblock().
-> > 
-> > It pairs with existing call to mmu_notifier_invalidate_range_end() in change_pmd_range():
-> > 
-> > 	if (range.start)
-> > 		mmu_notifier_invalidate_range_end(&range);
-> No, It doesn't work for mmu_notifier_invalidate_range_start() sent in change_pte_range(),
-> if we only want the range to include pages successfully set to PROT_NONE.
+On Mon, Aug 14, 2023 at 02:10:07PM +0200, Marcus Folkesson wrote:
+> Replace the usage of `adc->spi->dev` with `dev` to make the code prettier.
 
-Precise invalidation was a non-goal for my hack-a-patch.  The intent was purely
-to defer invalidation until it was actually needed, but still perform only a
-single notification so as to batch the TLB flushes, e.g. the start() call still
-used the original @end.
+...
 
-The idea was to play nice with the scenario where nothing in a VMA could be migrated.
-It was complete untested though, so it may not have actually done anything to reduce
-the number of pointless invalidations.
+>  	u32 ref = MCP3911_INT_VREF_MV;
+> +	struct device *dev = &adc->spi->dev;
 
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index 9e4cd8b4a202..f29718a16211 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -4345,6 +4345,9 @@ static int kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
-> >  	if (unlikely(!fault->slot))
-> >  		return kvm_handle_noslot_fault(vcpu, fault, access);
-> >  
-> > +	if (mmu_invalidate_retry_hva(vcpu->kvm, fault->mmu_seq, fault->hva))
-> > +		return RET_PF_RETRY;
-> > +
-> This can effectively reduce the remote flush IPIs a lot!
-> One Nit is that, maybe rmb() or READ_ONCE() is required for kvm->mmu_invalidate_range_start
-> and kvm->mmu_invalidate_range_end.
-> Otherwise, I'm somewhat worried about constant false positive and retry.
+Keep it upper.
 
-If anything, this needs a READ_ONCE() on mmu_invalidate_in_progress.  The ranges
-aren't touched when when mmu_invalidate_in_progress goes to zero, so ensuring they
-are reloaded wouldn't do anything.  The key to making forward progress is seeing
-that there is no in-progress invalidation.
+>  	u32 div;
+>  	int ret;
+>  	u64 tmp;
 
-I did consider adding said READ_ONCE(), but practically speaking, constant false
-positives are impossible.  KVM will re-enter the guest when retrying, and there
-is zero chance of the compiler avoiding reloads across VM-Enter+VM-Exit.
+...
 
-I suppose in theory we might someday differentiate between "retry because a different
-vCPU may have fixed the fault" and "retry because there's an in-progress invalidation",
-and not bother re-entering the guest for the latter, e.g. have it try to yield
-instead.  
+> +	ret = devm_iio_triggered_buffer_setup(dev, indio_dev,
+> +					      NULL,
 
-All that said, READ_ONCE() on mmu_invalidate_in_progress should effectively be a
-nop, so it wouldn't hurt to be paranoid in this case.
+This can be moved to the upper line.
 
-Hmm, at that point, it probably makes sense to add a READ_ONCE() for mmu_invalidate_seq
-too, e.g. so that a sufficiently clever compiler doesn't completely optimize away
-the check.  Losing the check wouldn't be problematic (false negatives are fine,
-especially on that particular check), but the generated code would *look* buggy.
+> +					      mcp3911_trigger_handler, NULL);
+>  	if (ret)
+>  		return ret;
+
+...
+
+With above addressed,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
