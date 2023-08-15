@@ -2,64 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA21377D019
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 18:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC65C77D01C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 18:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238433AbjHOQ1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 12:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54828 "EHLO
+        id S238465AbjHOQ3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 12:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238443AbjHOQ0n (ORCPT
+        with ESMTP id S238464AbjHOQ3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 12:26:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED56410E0;
-        Tue, 15 Aug 2023 09:26:41 -0700 (PDT)
+        Tue, 15 Aug 2023 12:29:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD92D10D1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 09:29:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8BB5765BDD;
-        Tue, 15 Aug 2023 16:26:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDD9CC433C8;
-        Tue, 15 Aug 2023 16:26:40 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 59A9B65D79
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 16:29:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11B2BC433C7;
+        Tue, 15 Aug 2023 16:29:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692116800;
-        bh=m5LH//dTNqZX2XqTcfZFxJBA1o3a7fGIZvj4YOCtVvo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SA8cSYZgvFUrwLFqXSZBO70j7jXXxTNAwRb2Vz7W42IW+YNPlhYiRZxHBwfQhJbfe
-         bPDyqQPnRdbVJeU+eW5ZZ+mJuqtfIFPaADNKVQgYmEV6k7U/Xx+eKDapa0SGxhYLgH
-         P2DgHc5FbyhTSXmMIHTVnH41BAgldJAW8F4RBgoKtkLBgXXGCTG1vguCOTcszPl+7C
-         dIzh53BnEdJ5AhIuujWTqOlA6BGghXacOEr7A00njJVAJ0aVxgpEmrvW93YIpJ9UXh
-         HaEoEOd7hvOPl0M/ZC1bJ2echeiUmZRemOpsNkdZGQYi1QAqPDWc35UHSrs/B+y/ta
-         i+wyuksiwVzBA==
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2b9cf2b1309so65328951fa.0;
-        Tue, 15 Aug 2023 09:26:40 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yw0DwHfUg8UdoV5o7SCM10gqAA4Y9RitTeGZJ3ukxbAap6cLGcl
-        zTmsNHujgJqX0mrqX5DavOuR5bjhwOjO0ynt0vo=
-X-Google-Smtp-Source: AGHT+IHRxXncn2Rfe0JZo7xFbxGA0aclyCi/KEx+qg0KxgNeMtqU6KN30mTri9iYKlFPM2r9NQc1ubofSkn+b0XKQe4=
-X-Received: by 2002:a2e:80d7:0:b0:2b6:d0c1:7cd0 with SMTP id
- r23-20020a2e80d7000000b002b6d0c17cd0mr785695ljg.22.1692116798820; Tue, 15 Aug
- 2023 09:26:38 -0700 (PDT)
+        s=k20201202; t=1692116948;
+        bh=krOcIuYg6hTWBjxkHEr41A9L5hn7EMMeN3KZMz9T4/s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YCy8JKSO1z40r0lqXc5NJ4zx1Hau50O6Va6z+rH9c25QJ8IwxSTLUjzw24S+Y/LkE
+         YQmKU1N2xE3wgbSS8yqsYMncYfoSjtAbL1CufmXrTq5Ep3ER8MGlvYeLU9fA8jKlue
+         ZrpR9KHOBf1WKRaWAA7xg+q6Hxdmzna603eGjrnnHYSapnftb37cailf8E4zqynBoD
+         8nA9Z47QZDc7RuBaSWEtIsbSJ6TKHhLZxa9Eot///l+/8GrJdz14GPNMyVLqwtTCTe
+         Bhifeo1e5KpqqH0peU+/C1ZZo79+Ibp9NjzuzgKvB4HTHzn8Y45CWfkXhIs+mwk7sm
+         GIf8brhD1ra+g==
+Date:   Tue, 15 Aug 2023 18:29:03 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Feng Liu <feliu@nvidia.com>
+Cc:     Simon Horman <horms@kernel.org>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Bodong Wang <bodong@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net v1] virtio_net: Introduce skb_vnet_common_hdr to
+ avoid typecasting
+Message-ID: <ZNunz1hbqPKpcOgA@vergenet.net>
+References: <20230814171845.65930-1-feliu@nvidia.com>
+ <ZNtYpohWyjnb883M@vergenet.net>
+ <05348d62-586c-4b1f-40bd-5541caca0947@nvidia.com>
 MIME-Version: 1.0
-References: <20230815091931.4dd2b277@canb.auug.org.au> <8c946512-0cc4-fbc5-ca36-0e2c6d636eb2@huaweicloud.com>
- <c39a3bff-01b9-4007-80ac-00ce2b11a902@kernel.dk> <CAPhsuW7ck4Bb8NVUdgZZJqzNCYMgT9rspKshr2Zi=8xo2cQLaw@mail.gmail.com>
- <48f834c2-b283-4b02-9407-4a0842d4ed72@kernel.dk> <CAPhsuW4YNWksHgTZGzX8Rj1+gU-aqQjiYueNRNHPryxOk2WXqQ@mail.gmail.com>
- <a30e4e08-7b8c-498c-b8af-82262b3ec6ff@kernel.dk>
-In-Reply-To: <a30e4e08-7b8c-498c-b8af-82262b3ec6ff@kernel.dk>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 16 Aug 2023 00:26:25 +0800
-X-Gmail-Original-Message-ID: <CAPhsuW5AHQkf6wO_4Z6VFbTCxNN9GchW_ZPxmC1vtc23ByPc6g@mail.gmail.com>
-Message-ID: <CAPhsuW5AHQkf6wO_4Z6VFbTCxNN9GchW_ZPxmC1vtc23ByPc6g@mail.gmail.com>
-Subject: Re: linux-next: Fixes tag needs some work in the block tree
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Yu Kuai <yukuai1@huaweicloud.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "yukuai (C)" <yukuai3@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <05348d62-586c-4b1f-40bd-5541caca0947@nvidia.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -70,77 +66,204 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 12:20=E2=80=AFAM Jens Axboe <axboe@kernel.dk> wrote=
-:
->
-> On 8/15/23 10:17 AM, Song Liu wrote:
-> > On Wed, Aug 16, 2023 at 12:07?AM Jens Axboe <axboe@kernel.dk> wrote:
-> >>
-> >> On 8/15/23 9:58 AM, Song Liu wrote:
-> >>> On Tue, Aug 15, 2023 at 11:08?PM Jens Axboe <axboe@kernel.dk> wrote:
-> >>>>
-> >>>> On 8/14/23 9:21 PM, Yu Kuai wrote:
-> >>>>> Hi,
-> >>>>>
-> >>>>> ? 2023/08/15 7:19, Stephen Rothwell ??:
-> >>>>>> Hi all,
-> >>>>>>
-> >>>>>> In commit
-> >>>>>>
-> >>>>>>    71070e7bd25d ("md/raid10: fix a 'conf->barrier' leakage in raid=
-10_takeover()")
-> >>>>>>
-> >>>>>> Fixes tag
-> >>>>>>
-> >>>>>>    Fixes: 4d27e927344a ("md: don't quiesce in mddev_suspend()")
-> >>>>>>
-> >>>>>> has these problem(s):
-> >>>>>>
-> >>>>>>    - Target SHA1 does not exist
-> >>>>>
-> >>>>> Sorry about this, the commit was picked from previous md-next branc=
-h,
-> >>>>> and I didn't know that it will change...
-> >>>>
-> >>>> It's most likely not your fault, I'm guessing Song rebased that bran=
-ch
-> >>>> and this is why the sha changed. Song?
-> >>>
-> >>> Yeah, it is my fault. I am really sorry for this issue.
-> >>>
-> >>>>
-> >>>>> Is there any way that I can fix this ?
-> >>>>
-> >>>> Only way to fix this is if I rewind my branch and Song updates his
-> >>>> branch to not have this issue, and then sends a new pull request.
-> >>>
-> >>> Yes please. Let's fix this.
-> >>
-> >> Please send a new one, I've dropped the old one.
-> >
-> > Is this the for-6.6/block branch? I haven't seen the change yet. The to=
-p
-> > commit on the branch (as I see) is
-> >
-> > 306d74055754 ("ublk: Switch to memdup_user_nul() helper")
->
-> Where are you looking? It's at:
+On Tue, Aug 15, 2023 at 11:09:02AM -0400, Feng Liu wrote:
+> 
+> 
+> On 2023-08-15 a.m.6:51, Simon Horman wrote:
+> > External email: Use caution opening links or attachments
+> > 
+> > 
+> > On Mon, Aug 14, 2023 at 01:18:45PM -0400, Feng Liu wrote:
+> > 
+> > + "David S. Miller" <davem@davemloft.net>
+> >    Eric Dumazet <edumazet@google.com>
+> >    Jakub Kicinski <kuba@kernel.org>
+> >    Paolo Abeni <pabeni@redhat.com>
+> > 
+> Thanks for adding David S. Miller.
+> 
+> > > The virtio_net driver currently deals with different versions and types
+> > > of virtio net headers, such as virtio_net_hdr_mrg_rxbuf,
+> > > virtio_net_hdr_v1_hash, etc. Due to these variations, the code relies
+> > > on multiple type casts to convert memory between different structures,
+> > > potentially leading to bugs when there are changes in these structures.
+> > > 
+> > > Introduces the "struct skb_vnet_common_hdr" as a unifying header
+> > > structure using a union. With this approach, various virtio net header
+> > > structures can be converted by accessing different members of this
+> > > structure, thus eliminating the need for type casting and reducing the
+> > > risk of potential bugs.
+> > > 
+> > > For example following code:
+> > > static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+> > >                struct receive_queue *rq,
+> > >                struct page *page, unsigned int offset,
+> > >                unsigned int len, unsigned int truesize,
+> > >                unsigned int headroom)
+> > > {
+> > > [...]
+> > >        struct virtio_net_hdr_mrg_rxbuf *hdr;
+> > > [...]
+> > >        hdr_len = vi->hdr_len;
+> > > [...]
+> > > ok:
+> > >        hdr = skb_vnet_hdr(skb);
+> > >        memcpy(hdr, hdr_p, hdr_len);
+> > > [...]
+> > > }
+> > > 
+> > > When VIRTIO_NET_F_HASH_REPORT feature is enabled, hdr_len = 20
+> > > But the sizeof(*hdr) is 12,
+> > > memcpy(hdr, hdr_p, hdr_len); will copy 20 bytes to the hdr,
+> > > which make a potential risk of bug. And this risk can be avoided by
+> > > introducing struct virtio_net_hdr_mrg_rxbuf.
+> > > 
+> > > Signed-off-by: Feng Liu <feliu@nvidia.com>
+> > > Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+> > 
+> > I'm unsure if this is 'net' material.
+> > 
+> 
+> It is about the modification of the virtio_net driver. I think it should be
+> regarded as `net` material.
 
-I am looking at
+To clarify: In general new Networking features go via the net-next tree,
+while bug fixes go via the net tree. I was suggesting this
+is more appropriate for net-next, and that should be reflected in the
+subject.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git
+	Subject: [PATCH net-next] ...
 
-It appears to be some lag from git server?
+Sorry for not being clearer the first time around.
 
-Thanks,
-Song
+> 
+> > > ---
+> > >   drivers/net/virtio_net.c        | 29 ++++++++++++++++-------------
+> > >   include/uapi/linux/virtio_net.h |  7 +++++++
+> > >   2 files changed, 23 insertions(+), 13 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > > index 1270c8d23463..6ce0fbcabda9 100644
+> > > --- a/drivers/net/virtio_net.c
+> > > +++ b/drivers/net/virtio_net.c
+> > > @@ -344,9 +344,10 @@ static int rxq2vq(int rxq)
+> > >        return rxq * 2;
+> > >   }
+> > > 
+> > > -static inline struct virtio_net_hdr_mrg_rxbuf *skb_vnet_hdr(struct sk_buff *skb)
+> > > +static inline struct virtio_net_common_hdr *
+> > > +skb_vnet_common_hdr(struct sk_buff *skb)
+> > >   {
+> > > -     return (struct virtio_net_hdr_mrg_rxbuf *)skb->cb;
+> > > +     return (struct virtio_net_common_hdr *)skb->cb;
+> > >   }
+> > > 
+> > >   /*
+> > > @@ -469,7 +470,7 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+> > >                                   unsigned int headroom)
+> > >   {
+> > >        struct sk_buff *skb;
+> > > -     struct virtio_net_hdr_mrg_rxbuf *hdr;
+> > > +     struct virtio_net_common_hdr *hdr;
+> > >        unsigned int copy, hdr_len, hdr_padded_len;
+> > >        struct page *page_to_free = NULL;
+> > >        int tailroom, shinfo_size;
+> > > @@ -554,7 +555,7 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+> > >                give_pages(rq, page);
+> > > 
+> > >   ok:
+> > > -     hdr = skb_vnet_hdr(skb);
+> > > +     hdr = skb_vnet_common_hdr(skb);
+> > >        memcpy(hdr, hdr_p, hdr_len);
+> > >        if (page_to_free)
+> > >                put_page(page_to_free);
+> > > @@ -966,7 +967,7 @@ static struct sk_buff *receive_small_build_skb(struct virtnet_info *vi,
+> > >                return NULL;
+> > > 
+> > >        buf += header_offset;
+> > > -     memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
+> > > +     memcpy(skb_vnet_common_hdr(skb), buf, vi->hdr_len);
+> > > 
+> > >        return skb;
+> > >   }
+> > > @@ -1577,7 +1578,8 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
+> > >   {
+> > >        struct net_device *dev = vi->dev;
+> > >        struct sk_buff *skb;
+> > > -     struct virtio_net_hdr_mrg_rxbuf *hdr;
+> > > +     struct virtio_net_common_hdr *common_hdr;
+> > > +     struct virtio_net_hdr_mrg_rxbuf *mrg_hdr;
+> > > 
+> > >        if (unlikely(len < vi->hdr_len + ETH_HLEN)) {
+> > >                pr_debug("%s: short packet %i\n", dev->name, len);
+> > > @@ -1597,18 +1599,19 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
+> > >        if (unlikely(!skb))
+> > >                return;
+> > > 
+> > > -     hdr = skb_vnet_hdr(skb);
+> > > +     common_hdr = skb_vnet_common_hdr(skb);
+> > >        if (dev->features & NETIF_F_RXHASH && vi->has_rss_hash_report)
+> > > -             virtio_skb_set_hash((const struct virtio_net_hdr_v1_hash *)hdr, skb);
+> > > +             virtio_skb_set_hash(&common_hdr->hash_v1_hdr, skb);
+> > > 
+> > > -     if (hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VALID)
+> > > +     mrg_hdr = &common_hdr->mrg_hdr;
+> > > +     if (mrg_hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VALID)
+> > >                skb->ip_summed = CHECKSUM_UNNECESSARY;
+> > > 
+> > > -     if (virtio_net_hdr_to_skb(skb, &hdr->hdr,
+> > > +     if (virtio_net_hdr_to_skb(skb, &mrg_hdr->hdr,
+> > >                                  virtio_is_little_endian(vi->vdev))) {
+> > >                net_warn_ratelimited("%s: bad gso: type: %u, size: %u\n",
+> > > -                                  dev->name, hdr->hdr.gso_type,
+> > > -                                  hdr->hdr.gso_size);
+> > > +                                  dev->name, mrg_hdr->hdr.gso_type,
+> > > +                                  mrg_hdr->hdr.gso_size);
+> > >                goto frame_err;
+> > >        }
+> > > 
+> > > @@ -2105,7 +2108,7 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
+> > >        if (can_push)
+> > >                hdr = (struct virtio_net_hdr_mrg_rxbuf *)(skb->data - hdr_len);
+> > >        else
+> > > -             hdr = skb_vnet_hdr(skb);
+> > > +             hdr = &skb_vnet_common_hdr(skb)->mrg_hdr;
+> > > 
+> > >        if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
+> > >                                    virtio_is_little_endian(vi->vdev), false,
+> > > diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
+> > > index 12c1c9699935..db40f93ae8b3 100644
+> > > --- a/include/uapi/linux/virtio_net.h
+> > > +++ b/include/uapi/linux/virtio_net.h
+> > > @@ -201,6 +201,13 @@ struct virtio_net_hdr_mrg_rxbuf {
+> > >        struct virtio_net_hdr hdr;
+> > >        __virtio16 num_buffers; /* Number of merged rx buffers */
+> > >   };
+> > > +
+> > > +struct virtio_net_common_hdr {
+> > > +     union {
+> > > +             struct virtio_net_hdr_mrg_rxbuf mrg_hdr;
+> > > +             struct virtio_net_hdr_v1_hash hash_v1_hdr;
+> > > +     };
+> > > +};
+> > 
+> > Does this belong in the UAPI?
+> > I would have assumed it's a Kernel implementation detail.
+> > 
+> The existing codes, virtio_net.h is in uapi/linux/, I added the new
+> structure and followed existing code. My modification is related to Kernel
+> implementation detail now.
 
->
-> commit 66a6a5d0ec852eaced589da066376e69397cd71e (origin/for-6.6/block, fo=
-r-6.6/block)
-> Author: Ruan Jinjie <ruanjinjie@huawei.com>
-> Date:   Tue Aug 15 19:48:14 2023 +0800
->
->     ublk: Switch to memdup_user_nul() helper
->
-> since about 15 min ago.
+The header you have modified forms part of the userspace API (UAPI).
+Perhaps there is something about virtio_net that makes this correct, but it
+seems to me that kernel-internal details don't belong there. 
+
+> 
+> > >   #endif /* ...VIRTIO_NET_NO_LEGACY */
+> > > 
+> > >   /*
+> > > --
+> > > 2.37.1 (Apple Git-137.1)
+> > > 
+> > > 
+> 
