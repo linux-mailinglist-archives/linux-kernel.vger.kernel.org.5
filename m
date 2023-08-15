@@ -2,156 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 811F477D2FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6088777D309
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235515AbjHOTIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 15:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33044 "EHLO
+        id S239552AbjHOTJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 15:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239514AbjHOTHm (ORCPT
+        with ESMTP id S239920AbjHOTJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 15:07:42 -0400
-Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6392A212D
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:07:07 -0700 (PDT)
-Received: from eig-obgw-5001a.ext.cloudfilter.net ([10.0.29.139])
-        by cmsmtp with ESMTP
-        id Vyw9qkK7dfaVXVzKSqNJO2; Tue, 15 Aug 2023 19:03:44 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id VzKRqqXjbj7JmVzKRqQLVU; Tue, 15 Aug 2023 19:03:43 +0000
-X-Authority-Analysis: v=2.4 cv=SsuDVdC0 c=1 sm=1 tr=0 ts=64dbcc0f
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=UttIx32zK-AA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=7CQSdrXTAAAA:8 a=4Y44Ad61Qo6RRudwQyUA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=a-qgeE7W1pNrGK8U0ZQC:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=oDTpbnZtb5YY58cxQ1+wqrLvX74qH9kX1x/86gt1r6c=; b=GYqk+IEZHDNl4F1KNkrjKQ4GCv
-        A8WuEZWAoPnmMiy5LJ5rLCvLrfBUjja3movkQMpr/X3RBuLXmLXSa2djw6dKXzKucDKJi/n0OzHsC
-        lgCkFhGiIVfQpofwfVRHtXlcHDGmrQXJIlLN2PSiVfQxmdIM0765db6fe82HYihlPM2Wgwn0/D8eP
-        i5nCbb2biNKRb53PVBwCZRjEqtmn5+EFTXARPbPFiG9+6QkFJxpCavWSSp4tRVGiuoVBC2TDajzeg
-        upx233SUSeGEbPUt3NXjHVv7jeWCyXSBmlaN+7ngIYg5E/XAJLYVujq0sfutwtvAhpl2ITu/tH/74
-        MUNzFOSQ==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:60524 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qVzKQ-000zkG-1t;
-        Tue, 15 Aug 2023 14:03:42 -0500
-Message-ID: <e1c07dd0-e6bf-ca9c-107a-97c5043b1bc7@embeddedor.com>
-Date:   Tue, 15 Aug 2023 13:04:32 -0600
+        Tue, 15 Aug 2023 15:09:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20645213A;
+        Tue, 15 Aug 2023 12:09:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7E24861633;
+        Tue, 15 Aug 2023 19:09:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DB3AC433C7;
+        Tue, 15 Aug 2023 19:09:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692126552;
+        bh=drMk97XVyKCReqvo0twNj8qWYEWg10p1ckwl8tzVNBA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B4yhcg4O90wKEMrx6eDICyuJ5FVGKESOwrgPDmJj7h5k8Dt9xumIm45W4HXOP+sKe
+         FYo8uYUywe2h0MILLpYTJ5sY4N1Fnh5X85ru4Y7BqmBnDcPJ1rY2Dj6upC9+xcm9XN
+         eRZsx67reSsMDkSu8sY4d/q5n4mylCql0Vn1t0ts5rLlobMDdQ/SlN5Zys5KCNMQyu
+         NMx8HSJdPxQqvNTApHOngRa5KEjLcYUYT1AfvOB9j5Il7SxI2I1oL7eNYjMihrzzCd
+         IW3k2zJoJEhZUzsAQo6+QlXFg6KCT/N47znNx3zabXs+TZiMxTuqfSbWz0DF7K9JGK
+         JzxYRrZ9C+Drw==
+Date:   Tue, 15 Aug 2023 12:09:10 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Artur Weber <aweber.kernel@gmail.com>
+Cc:     Lee Jones <lee@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] backlight: lp855x: Drop ret variable in brightness
+ change function
+Message-ID: <20230815190910.GA2908446@dev-arch.thelio-3990X>
+References: <20230809114216.4078-1-aweber.kernel@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH][next] cgroup: Avoid -Wstringop-overflow warnings
-Content-Language: en-US
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <ZIpm3pcs3iCP9UaR@work>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <ZIpm3pcs3iCP9UaR@work>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1qVzKQ-000zkG-1t
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:60524
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfAaNf5TGVhVIzLT3ij7nokBqaNhdLRWxItiwRpDjebni+LxKVD45CwHn7Y6Kx9nzfk6seSSl/QfnviXcIQG39WlTL6dAAJd54nh8X+ZAMby/JBeQA7EV
- UZZz6ev/KJ4anEdlCqXcqSLpSXMZVzJ4qqfebT0bPWbNGiSTzhuHHF/LBBYop1VTv494heOgV5JYD21N4K4Qt5kt2qPCHedOcWqiDphdwjWpc70C2E5dH+Pw
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230809114216.4078-1-aweber.kernel@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-
-I wonder if you have any suggestions on how to address this issue. As it seems that
-my last attempt caused some boot failures[1][2].
-
-At first, I thought that the right way to fix this was through a similar fix as this
-one[3]. But it seems I'm missing something else that I cannot determine yet.
-
-These -Wstringop-overflow warnings are mostly the last ones remaining before we can
-finally enable this compiler option, globally.
-
-Any help or advice on how to properly address this is greatly appreciated. :)
-
-Thanks!
---
-Gustavo
-
-[1] https://lore.kernel.org/linux-hardening/726aae97-755d-9806-11d4-2fb21aa93428@arm.com/
-[2] https://lore.kernel.org/linux-hardening/361c2f87-1424-f452-912f-0e4a339f5c46@kernel.org/
-[3] https://git.kernel.org/linus/d20d30ebb199
-
-
-On 6/14/23 19:18, Gustavo A. R. Silva wrote:
-> Address the following -Wstringop-overflow warnings seen when
-> built with ARM architecture and aspeed_g4_defconfig configuration
-> (notice that under this configuration CGROUP_SUBSYS_COUNT == 0):
-> kernel/cgroup/cgroup.c:1208:16: warning: 'find_existing_css_set' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
-> kernel/cgroup/cgroup.c:1258:15: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
-> kernel/cgroup/cgroup.c:6089:18: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
-> kernel/cgroup/cgroup.c:6153:18: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+On Wed, Aug 09, 2023 at 01:42:16PM +0200, Artur Weber wrote:
+> Fixes the following warning:
 > 
-> These changes are based on commit d20d30ebb199 ("cgroup: Avoid compiler
-> warnings with no subsystems").
+> drivers/video/backlight/lp855x_bl.c:252:7: warning: variable 'ret' is used
+> uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
 > 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
+> Fixes: 5145531be5fb ("backlight: lp855x: Catch errors when changing brightness")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202308091728.NEJhgUPP-lkp@intel.com/
+
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+
 > ---
->   kernel/cgroup/cgroup.c | 6 ++++++
->   1 file changed, 6 insertions(+)
+>  drivers/video/backlight/lp855x_bl.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
 > 
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index cd497b90e11a..1ee76e62eb98 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -1200,6 +1200,9 @@ static struct css_set *find_css_set(struct css_set *old_cset,
->   	unsigned long key;
->   	int ssid;
->   
-> +	if (!CGROUP_HAS_SUBSYS_CONFIG)
-> +		return NULL;
-> +
->   	lockdep_assert_held(&cgroup_mutex);
->   
->   	/* First see if we already have a cgroup group that matches
-> @@ -6045,6 +6048,9 @@ int __init cgroup_init(void)
->   	struct cgroup_subsys *ss;
->   	int ssid;
->   
-> +	if (!CGROUP_HAS_SUBSYS_CONFIG)
-> +		return -EINVAL;
-> +
->   	BUILD_BUG_ON(CGROUP_SUBSYS_COUNT > 16);
->   	BUG_ON(cgroup_init_cftypes(NULL, cgroup_base_files));
->   	BUG_ON(cgroup_init_cftypes(NULL, cgroup_psi_files));
+> diff --git a/drivers/video/backlight/lp855x_bl.c b/drivers/video/backlight/lp855x_bl.c
+> index 61a7f45bfad8..da1f124db69c 100644
+> --- a/drivers/video/backlight/lp855x_bl.c
+> +++ b/drivers/video/backlight/lp855x_bl.c
+> @@ -241,19 +241,17 @@ static int lp855x_bl_update_status(struct backlight_device *bl)
+>  {
+>  	struct lp855x *lp = bl_get_data(bl);
+>  	int brightness = bl->props.brightness;
+> -	int ret;
+>  
+>  	if (bl->props.state & (BL_CORE_SUSPENDED | BL_CORE_FBBLANK))
+>  		brightness = 0;
+>  
+>  	if (lp->mode == PWM_BASED)
+> -		ret = lp855x_pwm_ctrl(lp, brightness,
+> +		return lp855x_pwm_ctrl(lp, brightness,
+>  				      bl->props.max_brightness);
+>  	else if (lp->mode == REGISTER_BASED)
+> -		ret = lp855x_write_byte(lp, lp->cfg->reg_brightness,
+> +		return lp855x_write_byte(lp, lp->cfg->reg_brightness,
+>  					(u8)brightness);
+> -
+> -	return ret;
+> +	return -EINVAL;
+>  }
+>  
+>  static const struct backlight_ops lp855x_bl_ops = {
+> 
+> base-commit: 21ef7b1e17d039053edaeaf41142423810572741
+> -- 
+> 2.41.0
+> 
