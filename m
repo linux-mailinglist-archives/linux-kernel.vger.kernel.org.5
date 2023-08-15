@@ -2,128 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CED277D494
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6734577D478
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239555AbjHOUrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 16:47:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45532 "EHLO
+        id S238663AbjHOUnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 16:43:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239825AbjHOUr2 (ORCPT
+        with ESMTP id S239154AbjHOUmk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 16:47:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4C51FFF
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:46:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692132336;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZM8Vus7SYRyjZ9hahA/SIHNX1amWb1Q96RY2XciYRCo=;
-        b=bLTf5Gjyx3AZ3iIFcTN+THnnCkyC+nn+EUb2bU7Nex2Gyb0SrRhOgeZfGxOnFNxtWjXxwL
-        mQXRcYGNH3msXJfVcNrpKu0CYsdr/Vi+ZZmXAhx348lL3YI4caiXSeKWbpiaZ9ftG/vzZL
-        GImvWL+SKPdezyR9XxSS1lS7KDVQwwM=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-328-HZfaK1BCPxqThHVQBWaqhg-1; Tue, 15 Aug 2023 16:39:24 -0400
-X-MC-Unique: HZfaK1BCPxqThHVQBWaqhg-1
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-40fd74104f3so11052891cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:39:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692131964; x=1692736764;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZM8Vus7SYRyjZ9hahA/SIHNX1amWb1Q96RY2XciYRCo=;
-        b=SBQ7Uk5ey3i7B5tlghPjd0PRsy3YfCfw9mqp2RHDuZEHNCMnja0S0OohS6bYJvOA1h
-         EtNKuFPZKudJhUApkitvUOvFhczAhx8puR9WM8mL6r5oYnLcYqrYe7JoQPD0Z54HDi5z
-         ikf+aCVRgyg1G9SfCtKCgfQ4HpiSODuLG0kuSMA34+nk6jcvrPyzo2sg9IbM+sutlBeQ
-         4EkIb/vvqmq1ZdcT7t0J9u4l6OOCWPv3JWi5IOCq/VpyCUysnPuJm3utZtMkwncYRpzy
-         PYJ5C4uA/tWXnsdUgruunzYJ97sS39N7rcI0AuhOqa+Vm4sYQvv1XF1lX+J+505qxAQz
-         E8IA==
-X-Gm-Message-State: AOJu0Ywml4cPGDJJFfM8dcWgFkU9Ix5tH1sP3rYbqFLpP7rMTJU36ONu
-        Ueqpc6191jv455OAW/xoDkPyk5MtyKqW4JbCAsnWfPZ7Cp5GV25a/9R1m2wmOIR7lQ+pr0iwKFG
-        pkllRNuLH86u2vfm/mJFeOu8+
-X-Received: by 2002:a05:622a:1a8e:b0:40f:e384:b560 with SMTP id s14-20020a05622a1a8e00b0040fe384b560mr18711833qtc.1.1692131964068;
-        Tue, 15 Aug 2023 13:39:24 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFtIAvbXXGEWNKvGaw16dmndy+4r/NC90p8M86FWmqv/yu68WwM5HI6X1kIy7z48YNh6BshRw==
-X-Received: by 2002:a05:622a:1a8e:b0:40f:e384:b560 with SMTP id s14-20020a05622a1a8e00b0040fe384b560mr18711822qtc.1.1692131963761;
-        Tue, 15 Aug 2023 13:39:23 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id m19-20020ac86893000000b00403cce833eesm4011916qtq.27.2023.08.15.13.39.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 13:39:23 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 16:39:16 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
+        Tue, 15 Aug 2023 16:42:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49BF91FFE
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:42:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692132133; x=1723668133;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=exbiW8jhthhzTeNaTfGZ9rElvFKsApJ1bUdOpF1JaE8=;
+  b=OhA4rK2LSu+uVZca3K63dqDG4nDxGNLDjWisX7NALYW3v6lQtYxwG0rm
+   pUccwic/EhV532IxORoeQcuAfiN+A5/Vm+d4Q4ExP+oNGi3b1JI0NdR0+
+   jLt0gW5Yr46X43a/NXQfzJLA+ADICMdJp9/meZghuBfDfMvS6z7XPbDF7
+   3NC0O/H+UnH0YdkGIBsD4WkLY4vrJI0om5Zlx2Dn4TOOOqP3rwha5RX7o
+   TkGsQEoZD+An+lu8BzdejAtd6daoJzQ3gN74P4Jr0OigJl+U2DMRUK75p
+   1wdybd0ssBY5kSNoYZmQYBnEw1mLtS6pkyGsTt5oXvxHgeU0ZaowIWiXM
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="375142540"
+X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
+   d="scan'208";a="375142540"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 13:41:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="1064574785"
+X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
+   d="scan'208";a="1064574785"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 13:41:27 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>
-Subject: Re: [PATCH RFC v2 0/3] mm: Properly document tail pages for a folio
-Message-ID: <ZNvidA8/FkfHk/YU@x1n>
-References: <20230814184411.330496-1-peterx@redhat.com>
- <ZNqHdIi8ySqwoswd@casper.infradead.org>
- <ZNqM43Y9Pa1S8N7D@x1n>
- <ZNr08E5bublfQI0J@casper.infradead.org>
- <ZNvT8aFemCdtTpBo@x1n>
- <ZNvdL/3kzIcJWKku@casper.infradead.org>
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH 1/4] mm: migrate: use a folio in add_page_for_migration()
+References: <20230802095346.87449-1-wangkefeng.wang@huawei.com>
+        <20230802095346.87449-2-wangkefeng.wang@huawei.com>
+        <ZMpKYfNWA/jNgEuL@casper.infradead.org>
+        <001ee9b0-ea25-a896-e3ae-9a9b05a46546@huawei.com>
+        <ZMud3RreEpsvFKuA@casper.infradead.org>
+        <fb2a22cf-14ae-3594-f5f3-8680c2100d70@huawei.com>
+        <F2621E68-F36E-493C-8619-ADFE05050823@nvidia.com>
+        <d184ba78-97d1-a264-fc31-87dfdbe6fdff@huawei.com>
+        <871qg59cwd.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <2E8CA295-CEA2-4093-8287-F68C3977A538@nvidia.com>
+Date:   Wed, 16 Aug 2023 04:39:50 +0800
+In-Reply-To: <2E8CA295-CEA2-4093-8287-F68C3977A538@nvidia.com> (Zi Yan's
+        message of "Tue, 15 Aug 2023 09:49:06 -0400")
+Message-ID: <87zg2s6nvt.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZNvdL/3kzIcJWKku@casper.infradead.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 09:16:47PM +0100, Matthew Wilcox wrote:
-> No, sometimes there are things which shouldn't be documented because they
-> don't matter, and when changing code sometimes we forget to change the
-> documentation, and then people read the documentation which is different
-> from the code, and they get confused.
-> 
-> It matters that the various 'private' members line up.  It matters
-> that folio->index matches page->index.  It does not matter what
-> offset _entire_mapcount is at.  That can be moved around freely and no
-> documentation needs to be changed.
-> 
-> I don't want you to use FOLIO_MATCH to make any unnecessary assertions.
-> The only assertion missing is for _private_1 and _private_2a, and that's
-> why I wrote a patch to add them.
+Zi Yan <ziy@nvidia.com> writes:
 
-I didn't mean to add assertions for _entire_mapcount (I don't even know
-how..), but _mapcount and _refcount to clamp the fields, then all fields
-can be clear, just like head/flags clamping the start of fields.
+> On 14 Aug 2023, at 23:56, Huang, Ying wrote:
+>
+>> Kefeng Wang <wangkefeng.wang@huawei.com> writes:
+>>
+>>> On 2023/8/4 10:42, Zi Yan wrote:
+>>>> On 3 Aug 2023, at 21:45, Kefeng Wang wrote:
+>>>>
+>>>>> On 2023/8/3 20:30, Matthew Wilcox wrote:
+>>>>>> On Thu, Aug 03, 2023 at 03:13:21PM +0800, Kefeng Wang wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> On 2023/8/2 20:21, Matthew Wilcox wrote:
+>>>>>>>> On Wed, Aug 02, 2023 at 05:53:43PM +0800, Kefeng Wang wrote:
+>>>>>>>>>     	err = -EACCES;
+>>>>>>>>> -	if (page_mapcount(page) > 1 && !migrate_all)
+>>>>>>>>> -		goto out_putpage;
+>>>>>>>>> +	if (folio_estimated_sharers(folio) > 1 && !migrate_all)
+>>>>>>>>> +		goto out_putfolio;
+>>>>>>>>
+>>>>>>>> I do not think this is the correct change.  Maybe leave this line
+>>>>>>>> alone.
+>>>>>>>
+>>>>>>> Ok, I am aware of the discussion about this in other mail, will not
+>>>>>>> change it(also the next two patch about this function), or wait the
+>>>>>>> new work of David.
+>>>>>>>>
+>>>>>>>>> -	if (PageHuge(page)) {
+>>>>>>>>> -		if (PageHead(page)) {
+>>>>>>>>> -			isolated = isolate_hugetlb(page_folio(page), pagelist);
+>>>>>>>>> +	if (folio_test_hugetlb(folio)) {
+>>>>>>>>> +		if (folio_test_large(folio)) {
+>>>>>>>>
+>>>>>>>> This makes no sense when you read it.  All hugetlb folios are large,
+>>>>>>>> by definition.  Think about what this code used to do, and what it
+>>>>>>>> should be changed to.
+>>>>>>>
+>>>>>>> hugetlb folio is self large folio, will drop redundant check
+>>>>>>
+>>>>>> No, that's not the difference.  Keep thinking about it.  This is not
+>>>>>> a mechanical translation!
+>>>>>
+>>>>>
+>>>>>    if (PageHuge(page))  // page must be a hugetlb page
+>>>>> 	if (PageHead(page)) // page must be a head page, not tail
+>>>>>               isolate_hugetlb() // isolate the hugetlb page if head
+>>>>>
+>>>>> After using folio,
+>>>>>
+>>>>>    if (folio_test_hugetlb(folio)) // only check folio is hugetlb or not
+>>>>>
+>>>>> I don't check the page is head or not, since the follow_page could
+>>>>> return a sub-page, so the check PageHead need be retained, right?
+>>>> Right. It will prevent the kernel from trying to isolate the same
+>>>> hugetlb page
+>>>> twice when two pages are in the same hugetlb folio. But looking at the
+>>>> code, if you try to isolate an already-isolated hugetlb folio, isolate_hugetlb()
+>>>> would return false, no error would show up. But it changes err value
+>>>> from -EACCES to -EBUSY and user will see a different page status than before.
+>>>
+>>>
+>>> When check man[1], the current -EACCES is not right, -EBUSY is not
+>>> precise but more suitable for this scenario,
+>>>
+>>>  	-EACCES
+>>>               The page is mapped by multiple processes and can be moved
+>>>               only if MPOL_MF_MOVE_ALL is specified.
+>>>
+>>>        -EBUSY The page is currently busy and cannot be moved.  Try again
+>>>               later.  This occurs if a page is undergoing I/O or another
+>>>               kernel subsystem is holding a reference to the page.
+>>> 	-ENOENT
+>>>               The page is not present.
+>>>
+>>>> I wonder why we do not have follow_folio() and returns -ENOENT error
+>>>> pointer
+>>>> when addr points to a non head page. It would make this patch more folio if
+>>>> follow_folio() can be used in place of follow_page(). One caveat is that
+>>>> user will see -ENOENT instead of -EACCES after this change.
+>>>>
+>>>
+>>> -ENOENT is ok, but maybe the man need to be updated too.
+>>>
+>>>
+>>> 	
+>>> [1] https://man7.org/linux/man-pages/man2/move_pages.2.html
+>>>
+>>
+>> I don't think -ENOENT is appropriate.  IIUC, -ENOENT means no need to
+>> migrate.  Which isn't the case here apparently.
+>
+> Are you referring to a comment or the man page? The man page says
+> -ENOENT means the page is not present. Or you think it also implies
+> there is no need to migrate? If yes, we probably need to update the man
+> page.
 
-One thing I can understand that you'd like to avoid these "offset" things
-is perhaps because you keep that in mind to, one day, have mmdesc replacing
-folio so folio doesn't need to match struct page at all some day,
-ideally. The order of fields, size of fields, etc. none of them should
-matter, when it comes, and we should go toward that.  However my argument
-would be that, before that day comes IMHO we need some good documentation
-for us to know how the fields look like now, why they worked, and how to
-reuse new fields.. when that comes, we can just safely remove these
-documentations.
+Is it possible that a page isn't present, but we need to migrate it?
 
-It's just that these 'offset's still matter and matters a lot now, imho,
-but it's very confusing when read without some help.
-
-Let me try one more time to see how you think about it on an rfcv3.  If
-that still doesn't get any form of ack from you, I'll put this aside.
-
--- 
-Peter Xu
-
+--
+Best Regards,
+Huang, Ying
