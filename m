@@ -2,138 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5329277D699
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 01:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F5A977D69F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 01:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240582AbjHOXUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 19:20:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59546 "EHLO
+        id S240594AbjHOXWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 19:22:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240642AbjHOXUZ (ORCPT
+        with ESMTP id S240585AbjHOXWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 19:20:25 -0400
-Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD2010E5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 16:20:19 -0700 (PDT)
-Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1c4d7103ef5so1725106fac.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 16:20:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692141618; x=1692746418;
-        h=content-transfer-encoding:to:subject:message-id:date:from:sender
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gnXLzx0iQ/sj9AmoAPnFxr/K+kcyclH54zvX67Dv5kE=;
-        b=dgIPeGyE1ILNZfd6fhNhorDJkfkfMZjRyAg2oH6NPZblTVNt8MGQ1olI1uyymMFTPp
-         z9yBZCyPaKhODPGbfdxnJ6o7pi9JQHs029nURejNPE9+uXMhGssEKOF+gYt2e4L2UGmV
-         nG2K/nti1Pd+cgdukbtRV0v1DIXvsVYDCRRKOcSJqCzbe632um43Qycpe59N+wad3f2g
-         7fBSJ5IOxC3CKCKf+0NNYsPGBaiYw+OrWrkYSTu/72EJZRuTtGuKNMufH5VzJh7SL/Om
-         0nUNyHN8zXTyf8mHplM++FeSWtDDYQ4FPRdvAn4sewSvXVmAuq+1BQ4dMSWQxAsLDZc8
-         lwZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692141618; x=1692746418;
-        h=content-transfer-encoding:to:subject:message-id:date:from:sender
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gnXLzx0iQ/sj9AmoAPnFxr/K+kcyclH54zvX67Dv5kE=;
-        b=TyYUHnhIh9rmVC4me9DIfPJpL6pFJRAJWZWZheEh+wCyKSkWQ8hOGMvN0H8Xd7vcrq
-         KKmrd3KwbGBk6wl1LXDLCYCSboQ0ocxNXjHkCGC95ZYqPTYDkICLb5qYWRssAHHY2QkJ
-         gQ2inQX1NuA5YttZ7wyUTzBjm8/jDrNqJyT26ZcR8j3t622vHWU4rzJpUygmWyWTgoJh
-         +1lkK/BRITmwFngH0+oWtmMD/hXHeb5RCQQjooLboUjqcsc/EZzlADlW00hMpMffPpYX
-         /Nn6J2LmfstTeIkO6/xNrZamSaSA1XzVnPtEEgDYqE7z91eJEypIIKgmTGCW8ru5+7Ke
-         m4Pw==
-X-Gm-Message-State: AOJu0Yx5Nz0TrM7UeN8ZVT3CE4H+qugDdkRBryOP0nCeVWR2zbKef+oL
-        5rDcuCuP9HPUZw3rZdEctM5TO5oVgLTkYp0raw==
-X-Google-Smtp-Source: AGHT+IFU0W48TKDKygi/KY4OUabfsL2PomTI1qKiQbrGnsCnUDpTE5b1SIE7yr/czH/mLoJwdXfQ50vkrUiHRWjZoxo=
-X-Received: by 2002:a05:6870:8a12:b0:1b0:24d0:5554 with SMTP id
- p18-20020a0568708a1200b001b024d05554mr2425319oaq.11.1692141618715; Tue, 15
- Aug 2023 16:20:18 -0700 (PDT)
+        Tue, 15 Aug 2023 19:22:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2063C10D1;
+        Tue, 15 Aug 2023 16:22:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B30C6636E4;
+        Tue, 15 Aug 2023 23:21:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10725C433C7;
+        Tue, 15 Aug 2023 23:21:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692141719;
+        bh=reNBqXvvCRZMEH5t3EgVMW5ozRlNJXzgVYKKybLu7+g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tgYMWvchg/ZUqerIoW+zuO2xrgHp1FjGhIDZf0F7H37BKlHJkiszeodbSFqj3PnGp
+         f2uzSQKMyEbBKULD8jUYoWdw+ho2gUgqSPoCpiRRthF97i2hw0AwvOvxRHsnoMNSWD
+         gttYLq9bj0BRRJjSljAXyHOfxgy/c0FWZkAugtCSLC0HoJVzRQ6itwmObiMg7S3MLp
+         eLTfOBH3K1elFZpgkk9Fi0gRg+xjIRhvBg9Be+iT1N4YlVOZfGuGiWElQwXi9Y4FXf
+         FmuAbbOC05PmLzx2GVJ9olOkny6MKI0EpIV4w8sjVE8FBzZs45FzNtmCLwuIp0+0j3
+         XjZluhZGnyksA==
+Date:   Wed, 16 Aug 2023 00:21:49 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 09/36] arm64/mm: Allocate PIE slots for EL0 guarded
+ control stack
+Message-ID: <74cb7458-cdf9-4e7d-972a-3dc81e92ec22@sirena.org.uk>
+References: <20230807-arm64-gcs-v4-0-68cfa37f9069@kernel.org>
+ <20230807-arm64-gcs-v4-9-68cfa37f9069@kernel.org>
+ <ZNZEUEqJuHrdEa/c@arm.com>
 MIME-Version: 1.0
-Sender: hannahdavidwilson1245@gmail.com
-Received: by 2002:a05:6359:5d1b:b0:135:187f:3f4b with HTTP; Tue, 15 Aug 2023
- 16:20:18 -0700 (PDT)
-From:   Hannah David <hannahdavid147@gmail.com>
-Date:   Tue, 15 Aug 2023 15:20:18 -0800
-X-Google-Sender-Auth: 6LWigP_E54r_hPyXEAjcC1mJ56w
-Message-ID: <CAK3VGYd=93cM-f+ygRGC0DTyknbfYV_atCy6ovP7UMj3WBuxoQ@mail.gmail.com>
-Subject: Peace of the Lord be with you,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.7 required=5.0 tests=ADVANCE_FEE_5_NEW_MONEY,
-        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,LOTS_OF_MONEY,MONEY_FRAUD_8,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNDISC_MONEY autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
-        *      DNSWL was blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [2001:4860:4864:20:0:0:0:2b listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [hannahdavidwilson1245[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [hannahdavid147[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  0.0 MONEY_FRAUD_8 Lots of money and very many fraud phrases
-        *  3.0 ADVANCE_FEE_5_NEW_MONEY Advance Fee fraud and lots of money
-        *  2.8 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: ******
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="RanKLfAULhx4GKnc"
+Content-Disposition: inline
+In-Reply-To: <ZNZEUEqJuHrdEa/c@arm.com>
+X-Cookie: Darth Vader sleeps with a Teddywookie.
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings my dear.
 
-Please do not feel disturbed for contacting =C2=A0you in this regards, It
-was based on the critical health condition I find mine self. =C2=A0My names
- are Mrs.Wilson Hannah David, a widow and I=E2=80=99m suffering from brain
-tumor disease and this illness has gotten to a very bad stage, I
- married my husband for Ten years without any family members and no
-child. =C2=A0My husband died after a brief illness that lasted for few
-days.
-Since the death of my husband, I decided not to remarry again, When my
-late husband was alive he deposited the sum of =C2=A0($12.000.000.dollar)
-with the Bank. Presently this money is still in bank. And My  Doctor
-told me that I don't have much time to live because my illness has
-gotten to a very bad stage, Having known my condition I  decided to
-entrust over the deposited fund under your custody to take care of the
-less-privileged ones therein your country or position,
-which i believe that you will utilize this money the way I am going to
-instruct herein.
-However all I need and required from you is your sincerity and ability
-to carry out the transaction successfully and fulfill my final wish in
-implementing the charitable project as it requires absolute trust and
-devotion without any failure and I will be glad to see that the bank
-finally release and transfer the fund into your bank account in your
-country even before I die here in the hospital, because my present
-health condition is very critical at the moment everything needs to be
-process rapidly as soon as possible.
-It will be my pleasure to compensate you as my Investment
-Manager/Partner with 35 % percent of the total fund for your effort in
- handling the transaction, 5 % percent for any expenses or processing
-charges fee that will involve during this process while 60% of the
-fund will be Invested into the charity project there in your country
-for the mutual benefit of the orphans and the less privileges ones.
-Meanwhile I am waiting for your prompt respond, if only you are
-interested for further details of the transaction and execution of
-this  humanitarian project for the glory and honor of God the merciful
-compassionate.
-May God bless you and your family.
-Regards,
-Mrs.Wilson Hannah David.
-written from Hospital.
+--RanKLfAULhx4GKnc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Aug 11, 2023 at 03:23:12PM +0100, Catalin Marinas wrote:
+
+> >  #define PIE_E1	( \
+> > +	PIRx_ELx_PERM(pte_pi_index(_PAGE_GCS),           PIE_RW)      | \
+> > +	PIRx_ELx_PERM(pte_pi_index(_PAGE_GCS_RO),        PIE_R)      | \
+
+> Had some thoughts on this. Why do we need the EL1 GCS attributes to map
+> to RW? The instructions we'd use to write the shadow stack are the GCS
+> 'T' variants that run as user already.
+
+> The only instructions we have in the kernel that would run as EL1 on a
+> user address are the exclusives (futex code or the old deprecated
+> emulation but we don't care about them in this context). So I wonder
+> whether the kernel PIE entry could simply be PIE_NONE_O. Would this be
+> too restrictive for future uses? Given the coherency between a GCS
+> access and a standard data access, we may want to restrict it now until
+> we have a use-case.
+
+Good point.  I remember I originally wrote that before I checked into
+how things like copying pages for ptrace worked but they don't keep
+the GCSness of the page so they're fine.
+
+I don't think we need to worry about future uses since these are slots
+reserved for GCS use, if we need a different value later
+
+--RanKLfAULhx4GKnc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTcCI0ACgkQJNaLcl1U
+h9DbgQf/R35NwygifYB/vR8xKnzjHMpwxWKaHX9I5Hinl2E99odV20pM/bgJZbux
+VbIehF+i+Q/QY+dvRrVAvp4oVfOY4ZFJQRtPrLjGoak9Au980nkR6mlKggF6qd4W
+EGfizM1nkmqrTmfm8vHfn/gEDGJ/ZRB9mOzZmvW8U41g6naodsr9S/0ChKLV1ppq
+IEwo7oiwLNc9Uz1lklKsyq5852jWL3B07QwDzubwM7CJC2UNLQywl8SMW7We551y
+ZtE6twEw91+iq9dcBOKkFi+Oay55UKC4eSrci/08sbb1b4lH5Ta9YoiSEDaCqxXm
+cB6WkJJkkCL7RY0qBvEEDSWx1WqolQ==
+=XTlC
+-----END PGP SIGNATURE-----
+
+--RanKLfAULhx4GKnc--
