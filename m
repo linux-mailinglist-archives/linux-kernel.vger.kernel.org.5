@@ -2,77 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D76F877D168
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B272777D169
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238997AbjHORxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 13:53:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40184 "EHLO
+        id S239003AbjHORyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 13:54:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238985AbjHORx3 (ORCPT
+        with ESMTP id S239000AbjHORxm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 13:53:29 -0400
+        Tue, 15 Aug 2023 13:53:42 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE9B1BDC
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 10:52:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 578A110F4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 10:52:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692121959;
+        s=mimecast20190719; t=1692121972;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uEGcshSa7D7Rn4do1hXBlQcdMbZtjbdurCGpqlpyZdg=;
-        b=VkZ0vRupOkEBzoAdFGpAFLx09GbYAai9KvaAbBepVRakeIfLhMCkx51A8A3PhCUiAlkBlg
-        COZCOtQrU2yOqNTnzC2WREkvUgg47y6t2JQiDmmVUUroXcmB3twCvOmIwoIvuPqetToq4F
-        LH95JTu/PXjOaOFPUiLNShHCtn2CQqI=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=HVQ3sb9xVMcL/Jj/o9MHbLWoxuzHNOB7Lrqi8OAIuDg=;
+        b=VsUbTZ+Kb4yJjSed2X8B6EaO8YzBQvtnVEiFoNpsspDVGogj5mY5oeeKVE+s0JQs4x6K0B
+        T5o7R9ej2BC2dZlOWhFHLVnnDAj2NeOFA6wlU2kzTGk0Hw48V3nVfT/OCNy9reQAERB/Tn
+        PAYQ4dk7zrDt4Z0f60b5xiWvlt8k0AM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-9--wLl0LIPNR6GLO7m83wOOw-1; Tue, 15 Aug 2023 13:52:38 -0400
-X-MC-Unique: -wLl0LIPNR6GLO7m83wOOw-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3196e92c3f6so1278277f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 10:52:37 -0700 (PDT)
+ us-mta-487-STPUdVTIPHam0pBYJ8nYWw-1; Tue, 15 Aug 2023 13:52:51 -0400
+X-MC-Unique: STPUdVTIPHam0pBYJ8nYWw-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fe919c0348so13796715e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 10:52:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692121957; x=1692726757;
+        d=1e100.net; s=20221208; t=1692121970; x=1692726770;
         h=content-transfer-encoding:in-reply-to:organization:from:references
          :cc:to:content-language:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=uEGcshSa7D7Rn4do1hXBlQcdMbZtjbdurCGpqlpyZdg=;
-        b=TRA/QN0I1m0+oJsHNHfpPqxNzlW6M2zwdnaFZda9HnSCk2S6mqTBvxrothJfC0ZoV6
-         EQ8w/ikMRIr7QV+SKwZeTpORjEgua5RaM3Aluv041aPfUZrnnbJ5W3QphVBgAsORJ2Ag
-         175XH0MXMBNy858jwDYxDdwNxEYwHnJu1NB7J3DTT1oMB5ki342m8ZzfjbRlrY6cVa0v
-         LqzkrLhAeph3Mz0AY8/9iDnN6w03zuEoeHR2t6kzMcy62mvUeSS+EADxz7ybAKPDlEg0
-         Av9hUmTrHYYG7xeIdg/SKeu8P/yd7rVMSO1+YdEotlmDJC5EZPctZy4dMOyYFwsH7ps+
-         z0Iw==
-X-Gm-Message-State: AOJu0YyXQyjI0G4SLt4hNI+KXDcNMOxZHXk9Y4mdVuOV3dPKbraQRCi/
-        xHiI0qykdfVhat66NUHJQ3i2RCYQ9mHkg6TNmRTDdLSfd0GyOLL4r3LlWSfQx1n2CmkLoGcr/m2
-        lUHr8ykc+nhHKtHOIzrTt5zxc
-X-Received: by 2002:a5d:6383:0:b0:314:2f3e:dca5 with SMTP id p3-20020a5d6383000000b003142f3edca5mr1722985wru.28.1692121957024;
-        Tue, 15 Aug 2023 10:52:37 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFQDdi7G9B96J6s6o7hiyqpnZECJnPgbHSp302wJcV59oqFBVab10uyDbfNC2BLosXV4Kk4CQ==
-X-Received: by 2002:a5d:6383:0:b0:314:2f3e:dca5 with SMTP id p3-20020a5d6383000000b003142f3edca5mr1722977wru.28.1692121956649;
-        Tue, 15 Aug 2023 10:52:36 -0700 (PDT)
+        bh=HVQ3sb9xVMcL/Jj/o9MHbLWoxuzHNOB7Lrqi8OAIuDg=;
+        b=Uq/mwF6K9BDdM3ZGypTZmckaK2CHvVKq67/WXlHlUyTr6W8vXsvW3P+wgBv4wqzbp9
+         GzgXJnmjscXdRKrhf8yGd3XFY0AIiGUKXPfKWJXPtG2abCNtwRh+weJPyIZb9FElACrW
+         SOzp2usu3/eUt+dMayDcNcScPX7n7ENJVAj3Vbsi3dgB8H9lo0BNIyxMFtlmAr1WQPTK
+         B0YGIO1LziYCXC2lWQY3C/oKs7fMS889dl213s/ybdiXQ4OdcnDz93OhK4CsqBfFIshQ
+         0jksCZtpFpSK2rMMBWaaJbP24iVEbv07ifuHQtuBhiOgoeDNsaA4l5iCEmg7mBtZAcgq
+         OrzA==
+X-Gm-Message-State: AOJu0YzBaaqugTGb12qq5XlLi3n00WYyLJJxcqTQH+Ov6LZFwtj8J9Vl
+        JC5tDjhg6/U3yRB4P1L+FM0H3ZI4LhgRjXFTYbY2a5J4XGr81z0Oz1sMrjMGHntw0ddNBWkK8y/
+        goMbDmTfHBJ5ujraTVG2Gtt6N
+X-Received: by 2002:a05:600c:4444:b0:3fe:21f1:aba8 with SMTP id v4-20020a05600c444400b003fe21f1aba8mr2049390wmn.12.1692121969938;
+        Tue, 15 Aug 2023 10:52:49 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGGwOSu+t9TGNZbyeOtEGVbD6aZZJCbyTZyAsgHlDRI/h/8rHIpPiY8Ko2pF8wnkyhG30kILA==
+X-Received: by 2002:a05:600c:4444:b0:3fe:21f1:aba8 with SMTP id v4-20020a05600c444400b003fe21f1aba8mr2049371wmn.12.1692121969574;
+        Tue, 15 Aug 2023 10:52:49 -0700 (PDT)
 Received: from ?IPV6:2003:cb:c701:3100:c642:ba83:8c37:b0e? (p200300cbc7013100c642ba838c370b0e.dip0.t-ipconnect.de. [2003:cb:c701:3100:c642:ba83:8c37:b0e])
-        by smtp.gmail.com with ESMTPSA id m5-20020a056000008500b00317b063590fsm18700629wrx.55.2023.08.15.10.52.35
+        by smtp.gmail.com with ESMTPSA id f14-20020adffcce000000b00317a04131c5sm18593268wrs.57.2023.08.15.10.52.48
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 10:52:36 -0700 (PDT)
-Message-ID: <57cd9256-1295-c797-5711-807732421063@redhat.com>
-Date:   Tue, 15 Aug 2023 19:52:35 +0200
+        Tue, 15 Aug 2023 10:52:49 -0700 (PDT)
+Message-ID: <ea0a401d-3144-22f8-eae0-c962f9fbe0e4@redhat.com>
+Date:   Tue, 15 Aug 2023 19:52:48 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH 1/3] mm,thp: no space after colon in Mem-Info fields
+Subject: Re: [PATCH 2/3] mm,thp: fix nodeN/meminfo output alignment
 Content-Language: en-US
 To:     Hugh Dickins <hughd@google.com>,
         Andrew Morton <akpm@linux-foundation.org>
 Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org
 References: <dc264fd6-40bb-6510-db36-9340a5f01d94@google.com>
- <c1edd7da-5493-c542-6feb-92452b4dab3b@google.com>
+ <be861b50-a790-e041-bcb0-2a987dcfd1a@google.com>
 From:   David Hildenbrand <david@redhat.com>
 Organization: Red Hat
-In-Reply-To: <c1edd7da-5493-c542-6feb-92452b4dab3b@google.com>
+In-Reply-To: <be861b50-a790-e041-bcb0-2a987dcfd1a@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -85,36 +85,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.08.23 22:00, Hugh Dickins wrote:
-> The SysRq-m or OOM Mem-Info dmesg showed (long lines containing)
-> ... shmem:NkB shmem_thp: NkB shmem_pmdmapped: NkB anon_thp: NkB ...
-> 
-> Delete the space after the colon after shmem_thp, shmem_pmdmapped,
-> anon_thp: as the shmem example shows, no other fields have a space
-> after the colon in this output.
+On 14.08.23 22:01, Hugh Dickins wrote:
+> Add one more space to FileHugePages and FilePmdMapped, so the output
+> is aligned with other rows in /sys/devices/system/node/nodeN/meminfo.
 > 
 > Signed-off-by: Hugh Dickins <hughd@google.com>
 > ---
->   mm/show_mem.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
+>   drivers/base/node.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/mm/show_mem.c b/mm/show_mem.c
-> index 09c7d036d49e..4b888b18bdde 100644
-> --- a/mm/show_mem.c
-> +++ b/mm/show_mem.c
-> @@ -251,9 +251,9 @@ static void show_free_areas(unsigned int filter, nodemask_t *nodemask, int max_z
->   			" writeback:%lukB"
->   			" shmem:%lukB"
->   #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> -			" shmem_thp: %lukB"
-> -			" shmem_pmdmapped: %lukB"
-> -			" anon_thp: %lukB"
-> +			" shmem_thp:%lukB"
-> +			" shmem_pmdmapped:%lukB"
-> +			" anon_thp:%lukB"
+> diff --git a/drivers/base/node.c b/drivers/base/node.c
+> index 9de524e56307..8e871ba9162f 100644
+> --- a/drivers/base/node.c
+> +++ b/drivers/base/node.c
+> @@ -446,8 +446,8 @@ static ssize_t node_read_meminfo(struct device *dev,
+>   			     "Node %d AnonHugePages:  %8lu kB\n"
+>   			     "Node %d ShmemHugePages: %8lu kB\n"
+>   			     "Node %d ShmemPmdMapped: %8lu kB\n"
+> -			     "Node %d FileHugePages: %8lu kB\n"
+> -			     "Node %d FilePmdMapped: %8lu kB\n"
+> +			     "Node %d FileHugePages:  %8lu kB\n"
+> +			     "Node %d FilePmdMapped:  %8lu kB\n"
 >   #endif
->   			" writeback_tmp:%lukB"
->   			" kernel_stack:%lukB"
+>   #ifdef CONFIG_UNACCEPTED_MEMORY
+>   			     "Node %d Unaccepted:     %8lu kB\n"
 
 Reviewed-by: David Hildenbrand <david@redhat.com>
 
