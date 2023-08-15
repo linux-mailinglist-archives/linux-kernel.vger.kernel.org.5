@@ -2,206 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6FF77D21B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C3977D222
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239173AbjHOSnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 14:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56244 "EHLO
+        id S239237AbjHOSn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 14:43:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239279AbjHOSnB (ORCPT
+        with ESMTP id S239228AbjHOSnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 14:43:01 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65D510C0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 11:42:58 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id ada2fe7eead31-44acad48bffso66874137.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 11:42:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692124977; x=1692729777;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NA19hktULJmUDPiX3j/KBCBMEsbPKcE+qy3FeOZUEC0=;
-        b=M5AuDY9NdO9NlF6gxNwT7AkQDsl1VjxvyNF3gxIfnZrMXOJqMWJDF3FBVYSyXzZ+eX
-         22Z/a0HFJ1jEzQotju4HDD4cWdJu8fZD8z3s2OW8hn0OGgGzPvFJ4dC5dFh26k2cFuM5
-         sNtPrSZbHaOi15NbWYrYiUEEdjOaVJJQ46voo65SPtH2mkFkQ21/02zQgF3qsXaj1TxN
-         EXAkOJ9Z9Nfr21D+DOZ/VnZ/DaJilKIrC14yfE4xeS6j2sdpbyN8eU55gnc64fMtiAFV
-         vMqZLtjDydA5TdYTTGBaMLtqb6/4Yyd5Kx87+SGWJzX/ore4pTMSfBRxTM/05LEbpDLC
-         4wGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692124977; x=1692729777;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NA19hktULJmUDPiX3j/KBCBMEsbPKcE+qy3FeOZUEC0=;
-        b=RaOllOopahdEiNQCJkXJvCQ22BJlQDFG8p7or9FJL5thaxCeYLn6V31glAEfFOlrz1
-         8lbzV43ut0czBmXz2Y5FYtTDWXKrRUGyw1VbocnVw6HFfWPW7BbDCgHIQg1C9yHWCruQ
-         jC/aUINj7eJ1nwyYXyot9xrMWQm/XTwnI5JKUUzWgOTMRcuXDYXaDktvFbaaTP7yY9BJ
-         o58Vu0gEXNvcNlLXu6QrUOselaOg8C2EJUV1g40+VKEHKIOpTgbpfq28C9B8TaxQFrsE
-         vQzmG046TkVvw9HVVcToKXAqYqljvnDYurDtN4cPZxXloXZjcuzc0tooz441LIGwYI3e
-         J3ng==
-X-Gm-Message-State: AOJu0YzM/csdObaN5VvRmDozEUGy22KXxXA4nyYv2Es0/5nW1WMJegoy
-        4znIOKNhdPq+lOnVzmAThMUUmvr629YUwgeU39A9Vg==
-X-Google-Smtp-Source: AGHT+IEAzX3U2YDp0YL8ma958s4AHNtteFS2eF03+nYYF9q/eqFbg5u4EWCg+wKKpPb8JBdg8daou4HM91YnAlNB2RI=
-X-Received: by 2002:a05:6102:e43:b0:443:898c:864d with SMTP id
- p3-20020a0561020e4300b00443898c864dmr12504242vst.14.1692124977745; Tue, 15
- Aug 2023 11:42:57 -0700 (PDT)
+        Tue, 15 Aug 2023 14:43:41 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A59ADF1;
+        Tue, 15 Aug 2023 11:43:40 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37FIQxfh004987;
+        Tue, 15 Aug 2023 18:43:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=gK7BHiXi2LZbiwCPhjZXgLpssrCU9wHNzfJtCALM1Jk=;
+ b=W6fI6UGf9j5dtGU7nHI7bMU1Lzf99AWsZTFa6CoFQld2v60O2G+qD8ytOmRCiPVRPgNr
+ E+1inf8oAeE4YHohEuYFh57Lqwqa02Vm70EGRquU3ZPqmRwS8NMj07RvTRKx8yAZDM5z
+ krYuV7VbziojXpGAfWK+6EkAvVJh+fv5itq6Wg636TG+XC2rKuRcdy0r3uwqQ1c/K5Xc
+ uYE2jSCNlCiJuNtK8iQWJOq08JHmQwWUhAu5norOPrL8O7WYK9mGueI/DyGK8fkP2tOw
+ Za8kMTYNl0Ii9jwPdn6NAk0U3EaRn5eGmVvEm+Z/MGEu6dxxeneMjhCcjej0O+ByVwJG Pw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sgenbrgjc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Aug 2023 18:43:38 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37FIXe36030817;
+        Tue, 15 Aug 2023 18:43:37 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sgenbrgj4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Aug 2023 18:43:37 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37FI85ob007832;
+        Tue, 15 Aug 2023 18:43:36 GMT
+Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3senwk6vgt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Aug 2023 18:43:36 +0000
+Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
+        by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37FIhZkc34407058
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Aug 2023 18:43:35 GMT
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A80A558054;
+        Tue, 15 Aug 2023 18:43:35 +0000 (GMT)
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 845305803F;
+        Tue, 15 Aug 2023 18:43:34 +0000 (GMT)
+Received: from li-2c1e724c-2c76-11b2-a85c-ae42eaf3cb3d.endicott.ibm.com (unknown [9.60.75.177])
+        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 15 Aug 2023 18:43:34 +0000 (GMT)
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     jjherne@linux.ibm.com, freude@linux.ibm.com,
+        borntraeger@de.ibm.com, cohuck@redhat.com, mjrosato@linux.ibm.com,
+        pasic@linux.ibm.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, fiuczy@linux.ibm.com
+Subject: [PATCH 00/12] s390/vfio_ap: crypto pass-through for SE guests
+Date:   Tue, 15 Aug 2023 14:43:21 -0400
+Message-Id: <20230815184333.6554-1-akrowiak@linux.ibm.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-References: <20230812194457.6432-1-brgl@bgdev.pl> <20230812194457.6432-2-brgl@bgdev.pl>
- <ZNtVuUWTZa0gLwXz@smile.fi.intel.com> <ZNujJhy9fmCFwwLK@yury-ThinkPad>
-In-Reply-To: <ZNujJhy9fmCFwwLK@yury-ThinkPad>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 15 Aug 2023 20:42:46 +0200
-Message-ID: <CAMRc=MdC15RKOu7Jcphk0XLcMupzV=WkvMBtvUdv8GmsWXcZ=g@mail.gmail.com>
-Subject: Re: [PATCH 1/4] genirq/irq_sim: dispose of remaining mappings before
- removing the domain
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 5YF3gWGIw4D5NjCTtFkHAGJP7XvEyoTF
+X-Proofpoint-ORIG-GUID: XtQM0RIcEloMPx9iWxJFqH2gpUoD7ZRe
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-15_16,2023-08-15_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 suspectscore=0 impostorscore=0
+ clxscore=1011 spamscore=0 adultscore=0 malwarescore=0 mlxlogscore=999
+ mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308150167
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 6:09=E2=80=AFPM Yury Norov <yury.norov@gmail.com> w=
-rote:
->
-> On Tue, Aug 15, 2023 at 01:38:49PM +0300, Andy Shevchenko wrote:
-> > On Sat, Aug 12, 2023 at 09:44:54PM +0200, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > >
-> > > If the device providing simulated interrupts is unbound (real life
-> > > example: gpio-sim is disabled with users that didn't free their irqs)
-> > > and removes the simulated domain while interrupts are still requested=
-,
-> > > we will hit memory issues when they are eventually freed and the
-> > > mappings destroyed in the process.
-> > >
-> > > Specifically we'll access freed memory in __irq_domain_deactivate_irq=
-().
-> > >
-> > > Dispose of all mappings before removing the simulator domain.
-> >
-> > ...
-> >
-> > > +#include <linux/list.h>
-> >
-> > Maybe ordered?
-> >
-> > >  #include <linux/irq.h>
-> > >  #include <linux/irq_sim.h>
-> > >  #include <linux/irq_work.h>
-> >
-> > ...
-> >
-> > > @@ -16,12 +17,14 @@ struct irq_sim_work_ctx {
-> > >     unsigned int            irq_count;
-> > >     unsigned long           *pending;
-> > >     struct irq_domain       *domain;
-> > > +   struct list_head        irqs;
-> > >  };
-> > >
-> > >  struct irq_sim_irq_ctx {
-> > >     int                     irqnum;
-> > >     bool                    enabled;
-> > >     struct irq_sim_work_ctx *work_ctx;
-> >
-> > > +   struct list_head        siblings;
-> >
-> > You can reduce the code size by moving this to be the first member.
-> > Not sure about struct irq_sim_work_ctx, you can play with bloat-o-meter=
-.
->
-> Pahole you meant?
->
->   yury:linux$ pahole -C irq_sim_irq_ctx /sys/kernel/btf/vmlinux
->   struct irq_sim_irq_ctx {
->         int                        irqnum;               /*     0     4 *=
-/
->         bool                       enabled;              /*     4     1 *=
-/
->
->         /* XXX 3 bytes hole, try to pack */
->
->         struct irq_sim_work_ctx *  work_ctx;             /*     8     8 *=
-/
->
->         /* size: 16, cachelines: 1, members: 3 */
->         /* sum members: 13, holes: 1, sum holes: 3 */
->         /* last cacheline: 16 bytes */
->   };
->
-> In this particular case, there will be no hole because list head
-> position (16) will be aligned to sizeof(struct list_head) =3D=3D 16.
->
-> But as Bartosz said in the other email, "it's just good practice
-> resulting from years of" kernel coding to have:
+This patch series is for the changes required in the vfio_ap device 
+driver to facilitate pass-through of crypto devices to a secure 
+execution guest. In particular, it is critical that no data from the
+queues passed through to the SE guest is leaked when the guest is 
+destroyed. There are also some new response codes returned from the
+PQAP(ZAPQ) and PQAP(TAPQ) commands that have been added to the
+architecture in support of pass-through of crypto devices to SE guests;
+these need to be accounted for when handling the reset of queues.
 
-Did I sound smug or what? I didn't mean to. I was merely pointing to
-the fact that linux is not the first to use C autopointers. They've
-been around for years.
 
->  - members declared strongly according to the logic of the code, and
->    if no strong preference:
->  - list head be the first element of the structure, to let compiler
->    avoid generating offsets when traversing lists;
->  - put elements of greater size at the beginning, so no holes will be
->    emitted like in the example above.
->
-> So I'd suggest:
->
->   struct irq_sim_irq_ctx {
->      struct list_head        siblings;
->      struct irq_sim_work_ctx *work_ctx;
->      int                     irqnum;
->      bool                    enabled;
->   }
+Janosch Frank (1):
+  s390/uv: export uv_pin_shared for direct usage
 
-Sounds good.
+Tony Krowiak (11):
+  s390/vfio-ap: No need to check the 'E' and 'I' bits in APQSW after
+    TAPQ
+  s390/vfio-ap: clean up irq resources if possible
+  s390/vfio-ap: wait for response code 05 to clear on queue reset
+  s390/vfio-ap: allow deconfigured queue to be passed through to a guest
+  s390/vfio-ap: remove upper limit on wait for queue reset to complete
+  s390/vfio-ap: store entire AP queue status word with the queue object
+  s390/vfio-ap: use work struct to verify queue reset
+  s390/vfio-ap: handle queue state change in progress on reset
+  s390/vfio-ap: check for TAPQ response codes 0x35 and 0x36
+  kvm: s390: export kvm_s390_pv*_is_protected functions
+  s390/vfio-ap: Make sure nib is shared
 
->
-> Again, if there's NO ANY reason to have the irq number at the
-> beginning.
->
-> While here, I wonder, why irqnum is signed? Looking at the very first
-> random function in kernel/irq/irq_sim.c, I see that it's initialized
-> from a function returning unsigned value:
->
+ arch/s390/include/asm/kvm_host.h      |   3 +
+ arch/s390/include/asm/uv.h            |   6 +
+ arch/s390/kernel/uv.c                 |   3 +-
+ arch/s390/kvm/kvm-s390.h              |  12 --
+ arch/s390/kvm/pv.c                    |  14 +++
+ drivers/s390/crypto/vfio_ap_ops.c     | 164 +++++++++++++++++---------
+ drivers/s390/crypto/vfio_ap_private.h |   6 +-
+ 7 files changed, 135 insertions(+), 73 deletions(-)
 
-This field is currently unused. I'm not sure how it ended up there,
-maybe a leftover from some earlier iterations of the irq_sim. This
-patch just makes use of it in the end. It may be that it should use
-unsigned int. Before I change it, I'd like to hear Thomas' comments on
-these changes in general.
+-- 
+2.39.3
 
-Bart
-
->   static void irq_sim_handle_irq(struct irq_work *work)
->   {
->           struct irq_sim_work_ctx *work_ctx;
->           unsigned int offset =3D 0;
->           int irqnum;
->
->           work_ctx =3D container_of(work, struct irq_sim_work_ctx, work);
->
->           while (!bitmap_empty(work_ctx->pending, work_ctx->irq_count)) {
->                   offset =3D find_next_bit(work_ctx->pending,
->                                          work_ctx->irq_count, offset);
->                   clear_bit(offset, work_ctx->pending);
->                   irqnum =3D irq_find_mapping(work_ctx->domain, offset);
->                   handle_simple_irq(irq_to_desc(irqnum));
->           }
->   }
->
-> Thanks,
-> Yury
