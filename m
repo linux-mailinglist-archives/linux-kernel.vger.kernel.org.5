@@ -2,227 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FAF577D47E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F91A77D480
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239110AbjHOUnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 16:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36258 "EHLO
+        id S239333AbjHOUno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 16:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239487AbjHOUnZ (ORCPT
+        with ESMTP id S239641AbjHOUna (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 16:43:25 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B953F1FE8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:43:00 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-44ac6638896so270380137.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:43:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692132122; x=1692736922;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OkRDDoNPzSLjlacKlxL+E41IsOW/ULTgctVKXf9RjXA=;
-        b=m4stkC2IfX61gWnvsguNFZFSfNPmn3fKsiWqgCrFf5FLAtPaolg3zje5WZMkO67Wtg
-         cJ1cboANk0PbFSG7gWmChbbH2SRfgLJhlJn18V29d0eTqSSjYHrKahlaVw7MzpMfkoXP
-         megBaq4sSSR661uam1lPGVlg+VBY6ocde/VBE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692132122; x=1692736922;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OkRDDoNPzSLjlacKlxL+E41IsOW/ULTgctVKXf9RjXA=;
-        b=eskPG9BDo1hrckHC5SyNgJZMyLHUvDqExsQc3jlbl07HJFBcO3EeKwBgN+2hR6jKHy
-         PtltgQDis96LxX91zNlAILLRelikUAFaPz8Sz7svnTJU7T2aUTUQ+8MOXfuQjSSYwo70
-         WPL1M1QV1WDN/6TXmdMG1R1ex6Mvh5bO9nnTo0tp2MVuCD2q9voj6tSTNhSGDbaWOkWy
-         +PgbGMb/QQbjAHahPk4hORvnC9PsIOWazDpW9k4l9kAjB8iE+Tz0MLB9R5rA2Q1GX6y8
-         is7GiZsg4XVgO2tJmGlE+Ut68G9HoCHpcc/3a7bxL/TzDspY8cX9vAtO/B3xjlvZxzgG
-         9r4w==
-X-Gm-Message-State: AOJu0Ywypa3q+lQ9R3v8I32mNjJwU5B3PsTx28CRp1ugQcoGGZKdCEUC
-        6wETs9D2b5TuyKiBEG7KD2FwaE0VmEQwpSS03s3KPY/B
-X-Google-Smtp-Source: AGHT+IHITUivIrD8/2y44NteB+WUE9ZQIcge/r+qgiGKFL2dIVpbhKUHVVWoFagyOq/EkjLoCuXSNw==
-X-Received: by 2002:a67:f7d7:0:b0:447:68a0:a121 with SMTP id a23-20020a67f7d7000000b0044768a0a121mr95812vsp.2.1692132121693;
-        Tue, 15 Aug 2023 13:42:01 -0700 (PDT)
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com. [209.85.160.173])
-        by smtp.gmail.com with ESMTPSA id y10-20020a0ce04a000000b0063d3744c5c5sm4360961qvk.5.2023.08.15.13.42.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 13:42:00 -0700 (PDT)
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4036bd4fff1so94981cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:42:00 -0700 (PDT)
-X-Received: by 2002:a05:622a:491:b0:403:aa88:cf7e with SMTP id
- p17-20020a05622a049100b00403aa88cf7emr21591qtx.29.1692132120085; Tue, 15 Aug
- 2023 13:42:00 -0700 (PDT)
+        Tue, 15 Aug 2023 16:43:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B307268D
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:43:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AA379661B0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 20:41:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29FFDC433C8;
+        Tue, 15 Aug 2023 20:41:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692132110;
+        bh=N7ipikLuPtGgetkxcY+A3Ut1e/FpcdlgAB/lDl1fW/w=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=RGz9IEfwwSDU6RkRCDeWBhsyJ+y2VV6ZRXXHxyIz7K8wWaxdNlc5MB+oifALvzeFx
+         xVp2/GLHXEFshr5NDyFnNwpxhhc1x0I7k+Opw5udpcBO3Cw9s+a5GrJ8p4D1Lp4M0J
+         3RoPY6uyfLC5ThJEynhJt2NUQat69iIK0PyC31cFkaxrPBNi2LpskBL6VFq+HAgmB1
+         lVis78itGCJiqXLjUD8UCCrPk77UTS1P2qaKKk9DM5lHzxvQTKeFw2tsbgstnd86k5
+         LcGYGqEIYoS93FvFWe+XHckNIw2VkSrCd6lMs4RaVMVTtbSRnymapWooXYIrjYRqv0
+         rFTAGSJRqdiVw==
+From:   Mark Brown <broonie@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Heiko Stuebner <heiko@sntech.de>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230815143204.379708-1-krzysztof.kozlowski@linaro.org>
+References: <20230815143204.379708-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH RESEND 1/3] ASoC: codecs: tlv320aic32x4: Fix
+ Wvoid-pointer-to-enum-cast warning
+Message-Id: <169213210789.572973.6949298748225335967.b4-ty@kernel.org>
+Date:   Tue, 15 Aug 2023 21:41:47 +0100
 MIME-Version: 1.0
-References: <20230804095836.39551-1-sheng-liang.pan@quanta.corp-partner.google.com>
- <20230804175734.v2.1.I7a950de49ec24b957e90d7fe7abd5f2f5f2e24c3@changeid> <3ed8a34b-5f7d-6547-7e34-35e4d0994bba@linaro.org>
-In-Reply-To: <3ed8a34b-5f7d-6547-7e34-35e4d0994bba@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 15 Aug 2023 13:41:46 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WqFo5PFB7+7ZOQtsTLYojjTn1VkaAQpMkqvWUFPOmBQg@mail.gmail.com>
-Message-ID: <CAD=FV=WqFo5PFB7+7ZOQtsTLYojjTn1VkaAQpMkqvWUFPOmBQg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: arm: qcom: add sc7180-lazor board bindings
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, 15 Aug 2023 16:32:02 +0200, Krzysztof Kozlowski wrote:
+> 'type' is an enum, thus cast of pointer on 64-bit compile test with W=1
+> causes:
+> 
+>   tlv320aic32x4.c:1352:18: error: cast to smaller integer type 'enum aic32x4_type' from 'void *' [-Werror,-Wvoid-pointer-to-enum-cast]
+> 
+> 
 
-On Sun, Aug 6, 2023 at 11:32=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 04/08/2023 11:58, Sheng-Liang Pan wrote:
-> > Introduce more sc7180-lazor sku and board version configuration,
-> > add no-eSIM SKU 10 for Lazor, no-eSIM SKU 15 and 18 for Limozeen,
-> > add new board version 10 for audio codec ALC5682i-VS.
-> >
-> > Signed-off-by: Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.goo=
-gle.com>
-> > ---
-> >
-> > Changes in v2:
-> > - add new entry rev9 with Parade bridge chip
-> >
-> >  .../devicetree/bindings/arm/qcom.yaml         | 55 +++++++++++++++++++
-> >  1 file changed, 55 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Document=
-ation/devicetree/bindings/arm/qcom.yaml
-> > index 450f616774e0..dce7b771a280 100644
-> > --- a/Documentation/devicetree/bindings/arm/qcom.yaml
-> > +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
-> > @@ -470,6 +470,11 @@ properties:
-> >            - const: google,lazor-rev8
-> >            - const: qcom,sc7180
-> >
-> > +      - description: Acer Chromebook Spin 513 Parade bridge chip (rev9=
-)
-> > +        items:
-> > +          - const: google,lazor-rev9
-> > +          - const: qcom,sc7180
-> > +
-> >        - description: Acer Chromebook Spin 513 (newest rev)
-> >          items:
-> >            - const: google,lazor
-> > @@ -491,6 +496,11 @@ properties:
-> >            - const: google,lazor-rev8-sku2
-> >            - const: qcom,sc7180
-> >
-> > +      - description: Acer Chromebook Spin 513 Parade bridge chip with =
-KB Backlight (rev9)
-> > +        items:
-> > +          - const: google,lazor-rev9-sku2
-> > +          - const: qcom,sc7180
-> > +
-> >        - description: Acer Chromebook Spin 513 with KB Backlight (newes=
-t rev)
-> >          items:
-> >            - const: google,lazor-sku2
-> > @@ -512,11 +522,26 @@ properties:
-> >            - const: google,lazor-rev8-sku0
-> >            - const: qcom,sc7180
-> >
-> > +      - description: Acer Chromebook Spin 513 Parade bridge chip with =
-LTE (rev9)
-> > +        items:
-> > +          - const: google,lazor-rev9-sku0
-> > +          - const: qcom,sc7180
-> > +
-> >        - description: Acer Chromebook Spin 513 with LTE (newest rev)
-> >          items:
-> >            - const: google,lazor-sku0
-> >            - const: qcom,sc7180
-> >
-> > +      - description: Acer Chromebook Spin 513 Parade bridge chip with =
-LTE no-esim (rev9)
-> > +        items:
-> > +          - const: google,lazor-rev9-sku10
-> > +          - const: qcom,sc7180
-> > +
-> > +      - description: Acer Chromebook Spin 513 with LTE no-esim (newest=
- rev)
-> > +        items:
-> > +          - const: google,lazor-sku10
-> > +          - const: qcom,sc7180
-> > +
-> >        - description: Acer Chromebook 511 (rev4 - rev8)
-> >          items:
-> >            - const: google,lazor-rev4-sku4
-> > @@ -526,6 +551,11 @@ properties:
-> >            - const: google,lazor-rev8-sku4
-> >            - const: qcom,sc7180
-> >
-> > +      - description: Acer Chromebook 511 Parade bridge chip (rev9)
-> > +        items:
-> > +          - const: google,lazor-rev9-sku4
-> > +          - const: qcom,sc7180
-> > +
-> >        - description: Acer Chromebook 511 (newest rev)
-> >          items:
-> >            - const: google,lazor-sku4
-> > @@ -545,11 +575,36 @@ properties:
-> >            - const: google,lazor-rev8-sku6
-> >            - const: qcom,sc7180
-> >
-> > +      - description: Acer Chromebook 511 Parade bridge chip without To=
-uchscreen (rev9)
-> > +        items:
-> > +          - const: google,lazor-rev9-sku6
-> > +          - const: qcom,sc7180
-> > +
-> >        - description: Acer Chromebook 511 without Touchscreen (newest r=
-ev)
-> >          items:
-> >            - const: google,lazor-sku6
-> >            - const: qcom,sc7180
-> >
-> > +      - description: Acer Chromebook 511 Parade bridge chip no-esim (r=
-ev9)
-> > +        items:
-> > +          - const: google,lazor-rev9-sku15
-> > +          - const: qcom,sc7180
-> > +
-> > +      - description: Acer Chromebook 511 no-esim (newest rev)
-> > +        items:
-> > +          - const: google,lazor-sku15
-> > +          - const: qcom,sc7180
-> > +
-> > +      - description: Acer Chromebook 511 Parade bridge chip without To=
-uchscreen no-esim (rev9)
-> > +        items:
-> > +          - const: google,lazor-rev9-sku18
-> > +          - const: qcom,sc7180
-> > +
-> > +      - description: Acer Chromebook 511 without Touchscreen no-esim (=
-newest rev)
-> > +        items:
-> > +          - const: google,lazor-sku18
->
-> All of these entries (existing and new) should be just one entry with:
->  - enum:
->      - ....
->      - ....
->  - const: qcom,sc7180
+Applied to
 
-I believe we've had this discussion before. At least twice. Here's a
-link to the last time you said "Ah, OK, I guess this is fine".
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-https://lore.kernel.org/r/d3d4d90b-85b5-5ad9-78e6-5a074c21af4f@linaro.org
+Thanks!
+
+[1/3] ASoC: codecs: tlv320aic32x4: Fix Wvoid-pointer-to-enum-cast warning
+      commit: 66de320b0214a60095287ba1afa09e870d8cdbe5
+[2/3] ASoC: codecs: wm8904: Fix Wvoid-pointer-to-enum-cast warning
+      commit: 5a1803324949f4ebdf6e887b59e0e89afc3ee0bb
+[3/3] ASoC: rockchip: Fix Wvoid-pointer-to-enum-cast warning
+      commit: 49a4a8d1261230378a8931d0859329057686b6eb
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
