@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7F277D2B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0451777D2B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239588AbjHOS6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 14:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59158 "EHLO
+        id S239597AbjHOS6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 14:58:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239569AbjHOS6B (ORCPT
+        with ESMTP id S239581AbjHOS6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 14:58:01 -0400
+        Tue, 15 Aug 2023 14:58:02 -0400
 Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 313F2211C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 11:57:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E52C41FCF
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 11:57:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
         s=20170329; h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:
         In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=12D9YB4XL5iWqebcq+TLGzYuVPhU8QWpBYqiCegu2nk=; b=WghJqxe8TxHFnK1XYxxq+A7WLQ
-        e62VanIPpX+mcWyG9UiL5FjfzQ4ltV8q/dVjqeNFd0IQf5r7gF1Oqe1vLSmzo3dNgrQMhVzolFTW3
-        5d8ap0btaEfqv/oQP6XJso9ueDHqOmWTD17IbtfLmQbym2ij+FBQ8Iq3n011Abylf9Z0tNq/IK3VP
-        Ovp7m9CqI3yERWtwWUmeY4ohBkemIZS0gtg0+DVIxBGw7uMprLh+8ShSp776k9nsSvJkuD89uumZF
-        31T2YnWrWx23mz9VFa/SaZ49C0VMRY3i4yqJG3sAl8Gly8HcCorK++rGGH9HfIH8x5wkhAUydMjr9
-        JMEPCVnw==;
+        bh=QXd4W2wFaxhhDN1Y2AZplTF5r+QGrQy4P17x4sfG4Dw=; b=p5TQt0RmbPuevG/OlV6kpggsgz
+        kIjeZ3mAlB7e4dg5Ap4ojk+DMxCKFCDhHU3h4D9p9nWnGLlwRXZp2QwjGqXRQpe4WtO40bEIarwuR
+        VjH3R9bRHehsfLq+8hq3qR1rHLqnU91hG/f0nG+WXimmsvGQ80NzP928HV9ZMIWEkvnE6VYzylqZo
+        geMtGYQSCRAGa+2hQ6domzcCauVvq950GsVl7Y9Ehyx2xtMxLgfsAPQT+2Hx/6WvufR1wlMjqC6ij
+        7CeFXHftmO6wfwn3rd1r3t5sTecgpqAy6Lhf+BZ6PMb40QhxPfavX8wiu1byd3qIBbbYBkhOvawUM
+        zerB2oBQ==;
 Received: from [191.193.179.209] (helo=steammachine.lan)
         by fanzine2.igalia.com with esmtpsa 
         (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-        id 1qVzEX-001Ca3-7J; Tue, 15 Aug 2023 20:57:37 +0200
+        id 1qVzEc-001Ca3-3s; Tue, 15 Aug 2023 20:57:42 +0200
 From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
 To:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
         linux-kernel@vger.kernel.org, wayland-devel@lists.freedesktop.org
@@ -47,9 +47,9 @@ Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
         Randy Dunlap <rdunlap@infradead.org>, hwentlan@amd.com,
         joshua@froggi.es, ville.syrjala@linux.intel.com,
         =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
-Subject: [PATCH v6 2/6] drm: introduce DRM_CAP_ATOMIC_ASYNC_PAGE_FLIP
-Date:   Tue, 15 Aug 2023 15:57:06 -0300
-Message-ID: <20230815185710.159779-3-andrealmeid@igalia.com>
+Subject: [PATCH v6 3/6] drm: introduce drm_mode_config.atomic_async_page_flip_not_supported
+Date:   Tue, 15 Aug 2023 15:57:07 -0300
+Message-ID: <20230815185710.159779-4-andrealmeid@igalia.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230815185710.159779-1-andrealmeid@igalia.com>
 References: <20230815185710.159779-1-andrealmeid@igalia.com>
@@ -68,11 +68,21 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Simon Ser <contact@emersion.fr>
 
-This new kernel capability indicates whether async page-flips are
-supported via the atomic uAPI. DRM clients can use it to check
-for support before feeding DRM_MODE_PAGE_FLIP_ASYNC to the kernel.
+This new field indicates whether the driver has the necessary logic
+to support async page-flips via the atomic uAPI. This is leveraged by
+the next commit to allow user-space to use this functionality.
 
-Make it clear that DRM_CAP_ASYNC_PAGE_FLIP is for legacy uAPI only.
+All atomic drivers setting drm_mode_config.async_page_flip are updated
+to also set drm_mode_config.atomic_async_page_flip_not_supported. We
+will gradually check and update these drivers to properly handle
+drm_crtc_state.async_flip in their atomic logic.
+
+The goal of this negative flag is the same as
+fb_modifiers_not_supported: we want to eventually get rid of all
+drivers missing atomic support for async flips. New drivers should not
+set this flag, instead they should support atomic async flips (if
+they support async flips at all). IOW, we don't want more drivers
+with async flip support for legacy but not atomic.
 
 Signed-off-by: Simon Ser <contact@emersion.fr>
 Reviewed-by: André Almeida <andrealmeid@igalia.com>
@@ -82,54 +92,83 @@ Signed-off-by: André Almeida <andrealmeid@igalia.com>
 v5: no changes
 v4: no changes
 ---
- drivers/gpu/drm/drm_ioctl.c |  5 +++++
- include/uapi/drm/drm.h      | 10 +++++++++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c   |  1 +
+ drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c        |  1 +
+ drivers/gpu/drm/i915/display/intel_display_driver.c |  1 +
+ drivers/gpu/drm/nouveau/nouveau_display.c           |  1 +
+ include/drm/drm_mode_config.h                       | 11 +++++++++++
+ 5 files changed, 15 insertions(+)
 
-diff --git a/drivers/gpu/drm/drm_ioctl.c b/drivers/gpu/drm/drm_ioctl.c
-index f03ffbacfe9b..3562b717b74f 100644
---- a/drivers/gpu/drm/drm_ioctl.c
-+++ b/drivers/gpu/drm/drm_ioctl.c
-@@ -301,6 +301,11 @@ static int drm_getcap(struct drm_device *dev, void *data, struct drm_file *file_
- 	case DRM_CAP_CRTC_IN_VBLANK_EVENT:
- 		req->value = 1;
- 		break;
-+	case DRM_CAP_ATOMIC_ASYNC_PAGE_FLIP:
-+		req->value = drm_core_check_feature(dev, DRIVER_ATOMIC) &&
-+			     dev->mode_config.async_page_flip &&
-+			     !dev->mode_config.atomic_async_page_flip_not_supported;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-diff --git a/include/uapi/drm/drm.h b/include/uapi/drm/drm.h
-index 794c1d857677..58baefe32c23 100644
---- a/include/uapi/drm/drm.h
-+++ b/include/uapi/drm/drm.h
-@@ -713,7 +713,8 @@ struct drm_gem_open {
- /**
-  * DRM_CAP_ASYNC_PAGE_FLIP
-  *
-- * If set to 1, the driver supports &DRM_MODE_PAGE_FLIP_ASYNC.
-+ * If set to 1, the driver supports &DRM_MODE_PAGE_FLIP_ASYNC for legacy
-+ * page-flips.
-  */
- #define DRM_CAP_ASYNC_PAGE_FLIP		0x7
- /**
-@@ -773,6 +774,13 @@ struct drm_gem_open {
-  * :ref:`drm_sync_objects`.
-  */
- #define DRM_CAP_SYNCOBJ_TIMELINE	0x14
-+/**
-+ * DRM_CAP_ATOMIC_ASYNC_PAGE_FLIP
-+ *
-+ * If set to 1, the driver supports &DRM_MODE_PAGE_FLIP_ASYNC for atomic
-+ * commits.
-+ */
-+#define DRM_CAP_ATOMIC_ASYNC_PAGE_FLIP	0x15
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 4d3d6009838c..4b433793f5a0 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -3924,6 +3924,7 @@ static int amdgpu_dm_mode_config_init(struct amdgpu_device *adev)
+ 		adev_to_drm(adev)->mode_config.prefer_shadow = 1;
+ 	/* indicates support for immediate flip */
+ 	adev_to_drm(adev)->mode_config.async_page_flip = true;
++	adev_to_drm(adev)->mode_config.atomic_async_page_flip_not_supported = true;
  
- /* DRM_IOCTL_GET_CAP ioctl argument type */
- struct drm_get_cap {
+ 	state = kzalloc(sizeof(*state), GFP_KERNEL);
+ 	if (!state)
+diff --git a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c
+index fa0f9a93d50d..301b222c410d 100644
+--- a/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c
++++ b/drivers/gpu/drm/atmel-hlcdc/atmel_hlcdc_dc.c
+@@ -639,6 +639,7 @@ static int atmel_hlcdc_dc_modeset_init(struct drm_device *dev)
+ 	dev->mode_config.max_height = dc->desc->max_height;
+ 	dev->mode_config.funcs = &mode_config_funcs;
+ 	dev->mode_config.async_page_flip = true;
++	dev->mode_config.atomic_async_page_flip_not_supported = true;
+ 
+ 	return 0;
+ }
+diff --git a/drivers/gpu/drm/i915/display/intel_display_driver.c b/drivers/gpu/drm/i915/display/intel_display_driver.c
+index 8f144d4d3c39..f290c5c2e3c9 100644
+--- a/drivers/gpu/drm/i915/display/intel_display_driver.c
++++ b/drivers/gpu/drm/i915/display/intel_display_driver.c
+@@ -123,6 +123,7 @@ static void intel_mode_config_init(struct drm_i915_private *i915)
+ 	mode_config->helper_private = &intel_mode_config_funcs;
+ 
+ 	mode_config->async_page_flip = HAS_ASYNC_FLIPS(i915);
++	mode_config->atomic_async_page_flip_not_supported = true;
+ 
+ 	/*
+ 	 * Maximum framebuffer dimensions, chosen to match
+diff --git a/drivers/gpu/drm/nouveau/nouveau_display.c b/drivers/gpu/drm/nouveau/nouveau_display.c
+index 99977e5fe716..540895dabfc7 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_display.c
++++ b/drivers/gpu/drm/nouveau/nouveau_display.c
+@@ -720,6 +720,7 @@ nouveau_display_create(struct drm_device *dev)
+ 		dev->mode_config.async_page_flip = false;
+ 	else
+ 		dev->mode_config.async_page_flip = true;
++	dev->mode_config.atomic_async_page_flip_not_supported = true;
+ 
+ 	drm_kms_helper_poll_init(dev);
+ 	drm_kms_helper_poll_disable(dev);
+diff --git a/include/drm/drm_mode_config.h b/include/drm/drm_mode_config.h
+index 973119a9176b..47b005671e6a 100644
+--- a/include/drm/drm_mode_config.h
++++ b/include/drm/drm_mode_config.h
+@@ -918,6 +918,17 @@ struct drm_mode_config {
+ 	 */
+ 	bool async_page_flip;
+ 
++	/**
++	 * @atomic_async_page_flip_not_supported:
++	 *
++	 * If true, the driver does not support async page-flips with the
++	 * atomic uAPI. This is only used by old drivers which haven't yet
++	 * accomodated for &drm_crtc_state.async_flip in their atomic logic,
++	 * even if they have &drm_mode_config.async_page_flip set to true.
++	 * New drivers shall not set this flag.
++	 */
++	bool atomic_async_page_flip_not_supported;
++
+ 	/**
+ 	 * @fb_modifiers_not_supported:
+ 	 *
 -- 
 2.41.0
 
