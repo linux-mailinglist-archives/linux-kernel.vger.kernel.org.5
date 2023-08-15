@@ -2,127 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 644AE77D4BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 23:02:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D111377D4C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 23:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239852AbjHOVCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 17:02:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45542 "EHLO
+        id S239900AbjHOVDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 17:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239825AbjHOVCI (ORCPT
+        with ESMTP id S239795AbjHOVDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 17:02:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C98B0F2;
-        Tue, 15 Aug 2023 14:02:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5E96A656EB;
-        Tue, 15 Aug 2023 21:02:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFEC6C433C9;
-        Tue, 15 Aug 2023 21:02:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692133326;
-        bh=cyy9dMmZpCKf0kwV7gSnc6iwwZGFtG1+94Uv3PmsMU4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bqt6Z6qZREPwPFwBqdMZB2kGJkkZypRmE9bwxc/FX8l6pnZwrXqDF3bNuPrbnNof+
-         Zbk1pTJchswaB67AS8Nj1Fds9Y0G2RQA9I45EqR3l7nWywG7yppNaZroed7qaeEEAZ
-         33mA8BkQ+gc93Br35uBf/91KWeipdjt2HZOsVUK2Ux2Vxd9ZCygGsOHP3hrhNO5jUy
-         2VYsEWdiWM2RoeaISTVoMt6DhY/pcivI+RFTbrq8SXdIqqMaMX6HRMevIxKwi4XifW
-         48vwEdEv9oFNrQbuyJP6Pq9qrvMreh/m17TY8MRUHS9jLxuBTcpwnJXfg4G673G6/2
-         25g2vLFO2qOfA==
-Date:   Tue, 15 Aug 2023 22:01:57 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "corbet@lwn.net" <corbet@lwn.net>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "debug@rivosinc.com" <debug@rivosinc.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "oleg@redhat.com" <oleg@redhat.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-Subject: Re: [PATCH v4 21/36] arm64/mm: Implement map_shadow_stack()
-Message-ID: <496b9d81-c4c8-471d-9be0-3a0c8fbab436@sirena.org.uk>
-References: <20230807-arm64-gcs-v4-0-68cfa37f9069@kernel.org>
- <20230807-arm64-gcs-v4-21-68cfa37f9069@kernel.org>
- <8a7bb14f808ab9da413c11f281041375d9a54b01.camel@intel.com>
+        Tue, 15 Aug 2023 17:03:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD03BF2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 14:03:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LL1KvLzHhFBkD9AIgyLeOWRCgKApYsdyPiFaKvkG4Kw=; b=t7INgrVDxYvVPkKl8NvNusUivq
+        +mjmtqF3WuGWK5tAOOlooiiXAIDjJbWuQ7yLCFc/omenuUj0QyEVTWOH9Ic8nDFDOCM1IT6jP4Etm
+        /28k3tRPfvfELDoKX6eMxyfJKsP4Am8Cnq5SISHsUA5qPUjECYEkMqomdPk+8RdpJoG7c9QL8pEN7
+        T1CWO3QyP7Nh1Dw1kxjf+5yPkQPbipvz+arnhiuhS+CPX6HWc7YuGkHXZuRtCN1dosoWxUqzbvTu9
+        gnkv8PCBbiGrEusBOF2jEXME65osBRUw1Xd+/tBDlaArzPCs+z6lG5+8hgWCWWvzDbXLwLk3x1WRN
+        u+rUk5JQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qW1Bs-00AQJq-Th; Tue, 15 Aug 2023 21:03:00 +0000
+Date:   Tue, 15 Aug 2023 22:03:00 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>
+Subject: Re: [PATCH RFC v2 0/3] mm: Properly document tail pages for a folio
+Message-ID: <ZNvoBAhrRvJI3COY@casper.infradead.org>
+References: <20230814184411.330496-1-peterx@redhat.com>
+ <ZNqHdIi8ySqwoswd@casper.infradead.org>
+ <ZNqM43Y9Pa1S8N7D@x1n>
+ <ZNr08E5bublfQI0J@casper.infradead.org>
+ <ZNvT8aFemCdtTpBo@x1n>
+ <ZNvdL/3kzIcJWKku@casper.infradead.org>
+ <ZNvidA8/FkfHk/YU@x1n>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dU1pnpOPTrUAVGE+"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8a7bb14f808ab9da413c11f281041375d9a54b01.camel@intel.com>
-X-Cookie: Darth Vader sleeps with a Teddywookie.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZNvidA8/FkfHk/YU@x1n>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 15, 2023 at 04:39:16PM -0400, Peter Xu wrote:
+> On Tue, Aug 15, 2023 at 09:16:47PM +0100, Matthew Wilcox wrote:
+> > No, sometimes there are things which shouldn't be documented because they
+> > don't matter, and when changing code sometimes we forget to change the
+> > documentation, and then people read the documentation which is different
+> > from the code, and they get confused.
+> > 
+> > It matters that the various 'private' members line up.  It matters
+> > that folio->index matches page->index.  It does not matter what
+> > offset _entire_mapcount is at.  That can be moved around freely and no
+> > documentation needs to be changed.
+> > 
+> > I don't want you to use FOLIO_MATCH to make any unnecessary assertions.
+> > The only assertion missing is for _private_1 and _private_2a, and that's
+> > why I wrote a patch to add them.
+> 
+> I didn't mean to add assertions for _entire_mapcount (I don't even know
+> how..), but _mapcount and _refcount to clamp the fields, then all fields
+> can be clear, just like head/flags clamping the start of fields.
 
---dU1pnpOPTrUAVGE+
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ah!  mapcount does make sense, yes.  We could just put a
+			/* no more space here */
+comment in, but an assert works too.
 
-On Tue, Aug 15, 2023 at 08:42:52PM +0000, Edgecombe, Rick P wrote:
-> On Mon, 2023-08-07 at 23:00 +0100, Mark Brown wrote:
-> > +=A0=A0=A0=A0=A0=A0=A0if (flags & ~(SHADOW_STACK_SET_TOKEN |
-> > SHADOW_STACK_SET_MARKER))
-> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0return -EINVAL;
+> One thing I can understand that you'd like to avoid these "offset" things
+> is perhaps because you keep that in mind to, one day, have mmdesc replacing
+> folio so folio doesn't need to match struct page at all some day,
+> ideally. The order of fields, size of fields, etc. none of them should
+> matter, when it comes, and we should go toward that.  However my argument
+> would be that, before that day comes IMHO we need some good documentation
+> for us to know how the fields look like now, why they worked, and how to
+> reuse new fields.. when that comes, we can just safely remove these
+> documentations.
+> 
+> It's just that these 'offset's still matter and matters a lot now, imho,
+> but it's very confusing when read without some help.
 
-> Thanks for adding SHADOW_STACK_SET_MARKER. I don't see where it is
-> defined in these patches though. Might have been left out on accident?
+No, that's not why I'm opposed to them.  I'm opposed to over-documenting
+things, as I just outlined.  Documentation is necessary and good for all
+kinds of reasons, but it should be meaningful and not prone to rot.  If
+there's a tool that can tell you something, there's no point in
+documenting it; that's why I pointed you towards pahole.  I also
+like "documentation" which is checked by the compiler, hence the
+existence of the FOLIO_MATCH macro which documents that the two
+structures line up, and the compiler checks that they do.  FOLIO_MATCH
+even caught a bug!
 
-I added it to the dependency patches I've got which pull bits out of the
-x86 series prior to you having rebased it, the ABI bits are mixed in
-with the x86 architecture changes which I didn't feel like dealing with
-the rebasing for so I pulled out the ABI portions.  I'll resolve this
-properly when I rebase back onto the x86 series (ideally after the next
-merge window it'll be in mainline!).  For these that'll probably boil
-down to adding defines to prctl.h for the generic prctl API.
+> Let me try one more time to see how you think about it on an rfcv3.  If
+> that still doesn't get any form of ack from you, I'll put this aside.
 
---dU1pnpOPTrUAVGE+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTb58UACgkQJNaLcl1U
-h9Bc4Af/Xi/XuQ8BuGwUsA64+0G15WTAgvnaEr6smr1t4oyMFuQMUHjd7iBjOThm
-PV/FOTfozLwcOPBbBklofnYUDiI04WMQKwGbdr7Zi1+GFR6+EN7hirIWkuuvQlL5
-NKBQjm5eyQL/yYYt4BJ6hRDbRNoCsRtT6zZHwZJpMXiv+nVQBOZlasA6cZ0TgBO3
-HkA5PardmuhDrB+yavSIm9rV91v8lOpnDP5q3yF8ShV6Il1n6n8cY4FsnTaXQfpk
-dYkB1QCKNAiqGdIWRgeV11iWfrslrXztH2Z94tOjqgbLti1lmf9XEIoX4Wk9Juu8
-JF1NdrdhL8X0X+5VS1Mt4bHie2rizQ==
-=r3Gb
------END PGP SIGNATURE-----
-
---dU1pnpOPTrUAVGE+--
+At least we've got to something that I like the idea of ;-)
