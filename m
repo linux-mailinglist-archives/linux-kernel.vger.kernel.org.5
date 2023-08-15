@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2014577CFB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA67377CFB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238438AbjHOPzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 11:55:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41504 "EHLO
+        id S238372AbjHOPza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 11:55:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238397AbjHOPzO (ORCPT
+        with ESMTP id S238453AbjHOPz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 11:55:14 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145C2A6;
-        Tue, 15 Aug 2023 08:55:13 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37FEUe34005630;
-        Tue, 15 Aug 2023 15:55:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=e3BozafP/lBTB+gB1OanBZ27n4tl0i+fB4EReodxSFA=;
- b=YBCb9pKJF1lrlg6sYMHWD+MHomE20A/uS+oxSxGBs3uqaY5BjHksgAk9S8XRj0uAtC6M
- HUwIBGR/Rrw5utpH4dwmcH6btBaeN8ozsNxid6RNaYiZed9KLSoYzSfBrRI2L4tWonKB
- gCxJ1M3pRE9crQHxcWDlTmWy8joww69yBZugm+RqD2FDfSqXDnFcxHNzL9fxMVvHDVzj
- kN2Sigwv5jOrAsip20L3BCdL5ocJUfmqzMUiB+eJdRMQDcEnnW+TYhaDjs9+ED5VObvG
- S/6mskZOkOWiml9TjQE9dvYEEq9c4s06JT54PYET40i7WSGRAy+ZunVaOF7QamXIFcJD dA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sfuj8hn5j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Aug 2023 15:55:05 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37FFt4t2022401
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Aug 2023 15:55:04 GMT
-Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 15 Aug
- 2023 08:55:03 -0700
-Message-ID: <40b670e1-dea0-8c0c-8605-9067503d100a@quicinc.com>
-Date:   Tue, 15 Aug 2023 09:55:03 -0600
+        Tue, 15 Aug 2023 11:55:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC59A6;
+        Tue, 15 Aug 2023 08:55:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692114926; x=1723650926;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xjBcL6FBcGapG9UkcvFfq8o8+YiISNlkILWmTkEJaHc=;
+  b=OZ+Ei9I3CO53ZUjV2lDG4uOZZoo+KktOUlhbmRYA8rZsw9V5kd208Any
+   cQJSdfSYBHBMCnd9jKDE8ro7HexGL6+aeUDshsocJbgXe9HeQpJrCChRW
+   p7kXJjCn+RblcDYiBZQmdm9LBemjwg5dUMYVmFcPilftxXQAw6lNQSC7p
+   3GPEdY/zILuersnKqH8lorBjWhRwa5dl7wmarh4TaKRVViEw0a/tu7Q/T
+   MKjeDCJoF3vWe6j5GJ2cwATLKqEagSCGFWg6Isvjrgjob58AEaIMOyM35
+   yTIAG7LEclrlUTBAkqVv7dDv1fX6u8n8erxHoI/ZYOpkOlQCAf2NFSf5b
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="436203440"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="436203440"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 08:55:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="763304122"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="763304122"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga008.jf.intel.com with ESMTP; 15 Aug 2023 08:55:23 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qVwO9-008EDA-33;
+        Tue, 15 Aug 2023 18:55:21 +0300
+Date:   Tue, 15 Aug 2023 18:55:21 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Wolfram Sang <wsa@kernel.org>, Andi Shyti <andi.shyti@kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Michael Hennerich <michael.hennerich@analog.com>,
+        Peter Rosin <peda@axentia.se>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 1/4] i2c: start migrating to a pointer in
+ i2c_device_id
+Message-ID: <ZNuf6UpcyVGjxZ2F@smile.fi.intel.com>
+References: <20230814-i2c-id-rework-v1-0-3e5bc71c49ee@gmail.com>
+ <20230814-i2c-id-rework-v1-1-3e5bc71c49ee@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH v2] accel/qaic: Fix slicing memory leak
-Content-Language: en-US
-To:     <dri-devel@lists.freedesktop.org>
-CC:     <ogabbay@kernel.org>, <jacek.lawrynowicz@linux.intel.com>,
-        <stanislaw.gruszka@linux.intel.com>, <quic_carlv@quicinc.com>,
-        <quic_ajitpals@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <Markus.Elfring@web.de>,
-        "Pranjal Ramajor Asha Kanojiya" <quic_pkanojiy@quicinc.com>
-References: <20230802145937.14827-1-quic_jhugo@quicinc.com>
-From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
-In-Reply-To: <20230802145937.14827-1-quic_jhugo@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: cdIe7rKZOp3x45Jv0fzEczLWjGLVJ8fL
-X-Proofpoint-GUID: cdIe7rKZOp3x45Jv0fzEczLWjGLVJ8fL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-15_16,2023-08-15_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- spamscore=0 malwarescore=0 priorityscore=1501 phishscore=0
- lowpriorityscore=0 mlxlogscore=692 bulkscore=0 impostorscore=0
- clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308150142
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230814-i2c-id-rework-v1-1-3e5bc71c49ee@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/2023 8:59 AM, Jeffrey Hugo wrote:
-> From: Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>
+On Mon, Aug 14, 2023 at 02:52:49PM -0700, Dmitry Torokhov wrote:
+> The of_device_id structure uses a void pointer to associate additional
+> driver-private data with device id, most commonly used to refer to a
+> structure containing additional characteristics of a particular chip.
+> However i2c_device_id uses an unsigned long. While it can easily be
+> converted to a pointer, several drivers use it to store a scalar (and it
+> is possible to use a pointer in of_device_id to store a scalar value as
+> well). The worst case comes when OF part of a driver uses pointers,
+> while legacy part is using scalars, causing constructs like:
 > 
-> The temporary buffer storing slicing configuration data from user is only
-> freed on error.  This is a memory leak.  Free the buffer unconditionally.
+> 	data = device_get_match_data(...);
+> 	if (!data)
+> 		data = &some_array[i2c_match_id(...)->data];
+> 	...
 > 
-> Fixes: ff13be830333 ("accel/qaic: Add datapath")
-> Signed-off-by: Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>
-> Reviewed-by: Carl Vanderlip <quic_carlv@quicinc.com>
-> Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-> Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+> To avoid this introduce a const void "data" pointer to i2c_device_id as
+> well, so that we can convert drivers one by one, and drop driver_data
+> member in the end.
+> 
+> The end goal is to clean up all helpers and make device_get_match_data()
+> work universally for all ACPI, DT, and legacy variants.
 
-Pushed to drm-misc-fixes.
+So, we have in the parallel the activity to make buses to have a callback,
+why do we need this one? Looks to me as yet another 1000+ churn for not
+much value. What the good outcome of this is constification, but maybe
+we can find the way on how to prove const to stay over the kernel_ulong_t
+transformations for all device ID tables?
 
--Jeff
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
