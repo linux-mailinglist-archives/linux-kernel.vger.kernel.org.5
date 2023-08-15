@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 693CA77C4AB
+	by mail.lfdr.de (Postfix) with ESMTP id 1263077C4AA
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 02:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233766AbjHOAsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 20:48:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58192 "EHLO
+        id S233753AbjHOAsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 20:48:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233539AbjHOAsY (ORCPT
+        with ESMTP id S233526AbjHOAsX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 20:48:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73AB71710
+        Mon, 14 Aug 2023 20:48:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8711726
         for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 17:48:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0EAD463FE9
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 71C9464B89
         for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 00:48:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 342FFC433C7;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CE69C433CA;
         Tue, 15 Aug 2023 00:48:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1692060500;
-        bh=+ggOxNlO23GQYPQs86USV0qxaHwyNkCE70FT4o/Cdb4=;
+        bh=qJhz5HZk3a2z6HLY6Omtsh1bvWUP5b6b9jSQlFYUi88=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PKlrCQUi2gLF06LPw1KAAhsC7djngjGIZumeC4G0AwhKlZg203W0347Gn35YnCCQR
-         qXwHdo28JesYiJr5sCG3gbqSJjGDMzzZcnDwlsPdRcg5Dkp55cTz8IQD0oM1OC7sEJ
-         z8wJ6ejLtv3g+wXxA1enTbngLf2nHMPGmpb1tVQO3KvSps1t4da7ID0SkeC154IAyP
-         a/DnOVco/FdawyA8DEjkMUcQ/WIbBi3L176Up7c7BsUiEyZqve5dOaLNzReyRfb6AE
-         eBSwqvotPTwYxjKk9pB3gy4BvuCW3UrrDSUlEtV5ke2ZM2geBlcEENovrkGx9lxAmF
-         mz2RbJTVXcb3w==
+        b=RepP7PpGxF7xtsdAuxnk2hkCRD+ZQNMd32rkSghTliLyWIUdiA4zyK5+uM3G8tT70
+         2r8axp88W8OIKiiEO/X4HJQOIMiG7DLSyCWdpJf54miqkalBpkkC2zjBYnQeozgWN/
+         uSIeTbJ14uhmVpTcdRtghJklZ9ZYjBbaFkkBgC+aMvHEvvBmN3kVrVhrUMMhz7Ycaa
+         zBa3elptRKvyTTPjsxcqlr+Kzbe05s/FrRLWj2jkNNivgCd1qv06uimFrCsmvSQNNy
+         4fp0PQDcqxQE46n3vvVkpFrWrAaa1RyLHFHHD98vDFHgrnehV6fsb9Lawarxg6MQIA
+         GshihXUuKkyfQ==
 From:   Vineet Gupta <vgupta@kernel.org>
 To:     linux-snps-arc@lists.infradead.org
 Cc:     linux-kernel@vger.kernel.org,
         Shahab Vahedi <Shahab.Vahedi@synopsys.com>,
         Alexey Brodkin <abrodkin@synopsys.com>,
         Vineet Gupta <vgupta@kernel.org>
-Subject: [PATCH 05/20] ARC: boot log: eliminate struct cpuinfo_arc #1: mm
-Date:   Mon, 14 Aug 2023 17:47:58 -0700
-Message-Id: <20230815004813.555115-6-vgupta@kernel.org>
+Subject: [PATCH 06/20] ARC: boot log: eliminate struct cpuinfo_arc #2: cache
+Date:   Mon, 14 Aug 2023 17:47:59 -0700
+Message-Id: <20230815004813.555115-7-vgupta@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230815004813.555115-1-vgupta@kernel.org>
 References: <20230815004813.555115-1-vgupta@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,283 +57,385 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is first step in eliminating struct cpuinfo_arc[NR_CPUS]
-
-Back when we had just ARCompact ISA, the idea was to read/bit-fiddle
-the BCRs once and and cache decoded information in a global struct ready
-to use.
-
-With ARCv2 it was modified to contained abstract / ISA agnostic
-information.
-
-However with ARCv3 there 's too much disparity to abstract in common
-structures. So drop the entire decode once and store paradigm. Afterall
-there's only 2 users of this machinery anyways:  boot printing and
-cat /proc/cpuinfo. None is performance critical to warrant locking away
-resident memory per cpu.
-
-This patch is first step in that direction
- - decouples struct cpuinfo_arc_mmu from global struct cpuinfo_arc
- - mmu code still has a trimmed down static version of
-   struct cpuinfo_arc_mmu to cache information needed in performance
-   critical code such as tlb flush routines
- - folds read_decode_mmu_bcr() into arc_mmu_mumbojumbo()
- - setup_processor() directly calls arc_mmu_init() and not via
-   arc_cpu_init()
-
 Signed-off-by: Vineet Gupta <vgupta@kernel.org>
 ---
- arch/arc/include/asm/arcregs.h | 27 +++++++---
- arch/arc/include/asm/setup.h   |  1 -
- arch/arc/kernel/setup.c        |  4 +-
- arch/arc/mm/tlb.c              | 92 +++++++++++++---------------------
- 4 files changed, 57 insertions(+), 67 deletions(-)
+ arch/arc/include/asm/arcregs.h |  37 ++++++-
+ arch/arc/include/asm/setup.h   |   1 -
+ arch/arc/kernel/setup.c        |   3 +-
+ arch/arc/mm/cache.c            | 171 ++++++++++++---------------------
+ 4 files changed, 97 insertions(+), 115 deletions(-)
 
 diff --git a/arch/arc/include/asm/arcregs.h b/arch/arc/include/asm/arcregs.h
-index 2162023195c5..af00cbe9b850 100644
+index af00cbe9b850..cb1ad1bb4ece 100644
 --- a/arch/arc/include/asm/arcregs.h
 +++ b/arch/arc/include/asm/arcregs.h
-@@ -185,6 +185,27 @@ struct bcr_uarch_build_arcv2 {
+@@ -206,6 +206,38 @@ struct bcr_mmu_4 {
  #endif
  };
  
-+struct bcr_mmu_3 {
++struct bcr_cache {
 +#ifdef CONFIG_CPU_BIG_ENDIAN
-+	unsigned int ver:8, ways:4, sets:4, res:3, sasid:1, pg_sz:4,
-+		     u_itlb:4, u_dtlb:4;
++	unsigned int pad:12, line_len:4, sz:4, config:4, ver:8;
 +#else
-+	unsigned int u_dtlb:4, u_itlb:4, pg_sz:4, sasid:1, res:3, sets:4,
-+		     ways:4, ver:8;
++	unsigned int ver:8, config:4, sz:4, line_len:4, pad:12;
 +#endif
 +};
 +
-+struct bcr_mmu_4 {
++struct bcr_slc_cfg {
 +#ifdef CONFIG_CPU_BIG_ENDIAN
-+	unsigned int ver:8, sasid:1, sz1:4, sz0:4, res:2, pae:1,
-+		     n_ways:2, n_entry:2, n_super:2, u_itlb:3, u_dtlb:3;
++	unsigned int pad:24, way:2, lsz:2, sz:4;
 +#else
-+	/*           DTLB      ITLB      JES        JE         JA      */
-+	unsigned int u_dtlb:3, u_itlb:3, n_super:2, n_entry:2, n_ways:2,
-+		     pae:1, res:2, sz0:4, sz1:4, sasid:1, ver:8;
++	unsigned int sz:4, lsz:2, way:2, pad:24;
++#endif
++};
++
++struct bcr_clust_cfg {
++#ifdef CONFIG_CPU_BIG_ENDIAN
++	unsigned int pad:7, c:1, num_entries:8, num_cores:8, ver:8;
++#else
++	unsigned int ver:8, num_cores:8, num_entries:8, c:1, pad:7;
++#endif
++};
++
++struct bcr_volatile {
++#ifdef CONFIG_CPU_BIG_ENDIAN
++	unsigned int start:4, limit:4, pad:22, order:1, disable:1;
++#else
++	unsigned int disable:1, order:1, pad:22, limit:4, start:4;
 +#endif
 +};
 +
  struct bcr_mpy {
  #ifdef CONFIG_CPU_BIG_ENDIAN
  	unsigned int pad:8, x1616:8, dsp:4, cycles:2, type:2, ver:8;
-@@ -307,11 +328,6 @@ struct bcr_generic {
+@@ -328,10 +360,6 @@ struct bcr_generic {
   * Generic structures to hold build configuration used at runtime
   */
  
--struct cpuinfo_arc_mmu {
--	unsigned int ver:4, pg_sz_k:8, s_pg_sz_m:8, pad:10, sasid:1, pae:1;
--	unsigned int sets:12, ways:4, u_dtlb:8, u_itlb:8;
+-struct cpuinfo_arc_cache {
+-	unsigned int sz_k:14, line_len:8, assoc:4, alias:1, vipt:1, pad:4;
 -};
 -
- struct cpuinfo_arc_cache {
- 	unsigned int sz_k:14, line_len:8, assoc:4, alias:1, vipt:1, pad:4;
+ struct cpuinfo_arc_bpu {
+ 	unsigned int ver, full, num_cache, num_pred, ret_stk;
  };
-@@ -326,7 +342,6 @@ struct cpuinfo_arc_ccm {
+@@ -341,7 +369,6 @@ struct cpuinfo_arc_ccm {
+ };
  
  struct cpuinfo_arc {
- 	struct cpuinfo_arc_cache icache, dcache, slc;
--	struct cpuinfo_arc_mmu mmu;
+-	struct cpuinfo_arc_cache icache, dcache, slc;
  	struct cpuinfo_arc_bpu bpu;
  	struct bcr_identity core;
  	struct bcr_isa_arcv2 isa;
 diff --git a/arch/arc/include/asm/setup.h b/arch/arc/include/asm/setup.h
-index 374138832c5a..76443f198778 100644
+index 76443f198778..4c0bacd0ff5c 100644
 --- a/arch/arc/include/asm/setup.h
 +++ b/arch/arc/include/asm/setup.h
-@@ -36,7 +36,6 @@ long __init arc_get_mem_sz(void);
- 
- extern void arc_mmu_init(void);
- extern char *arc_mmu_mumbojumbo(int cpu_id, char *buf, int len);
--extern void read_decode_mmu_bcr(void);
+@@ -39,7 +39,6 @@ extern char *arc_mmu_mumbojumbo(int cpu_id, char *buf, int len);
  
  extern void arc_cache_init(void);
  extern char *arc_cache_mumbojumbo(int cpu_id, char *buf, int len);
+-extern void read_decode_cache_bcr(void);
+ 
+ extern void __init handle_uboot_args(void);
+ 
 diff --git a/arch/arc/kernel/setup.c b/arch/arc/kernel/setup.c
-index 41f07b3e594e..094461540f8a 100644
+index 094461540f8a..3ea834941c1f 100644
 --- a/arch/arc/kernel/setup.c
 +++ b/arch/arc/kernel/setup.c
-@@ -186,7 +186,6 @@ static void read_arc_build_cfg_regs(void)
+@@ -186,8 +186,6 @@ static void read_arc_build_cfg_regs(void)
  	/* Read CCM BCRs for boot reporting even if not enabled in Kconfig */
  	read_decode_ccm_bcr(cpu);
  
--	read_decode_mmu_bcr();
- 	read_decode_cache_bcr();
- 
+-	read_decode_cache_bcr();
+-
  	if (is_isa_arcompact()) {
-@@ -256,7 +255,7 @@ static void read_arc_build_cfg_regs(void)
- 		cpu->isa.be = IS_ENABLED(CONFIG_CPU_BIG_ENDIAN);
- 
- 		 /* there's no direct way to distinguish 750 vs. 770 */
--		if (unlikely(cpu->core.family < 0x34 || cpu->mmu.ver < 3))
-+		if (unlikely(cpu->core.family < 0x34))
- 			cpu->name = "ARC750";
- 	} else {
- 		cpu->isa = isa;
-@@ -463,6 +462,7 @@ void setup_processor(void)
- 	arc_init_IRQ();
+ 		struct bcr_fp_arcompact sp, dp;
+ 		struct bcr_bpu_arcompact bpu;
+@@ -463,6 +461,7 @@ void setup_processor(void)
  
  	pr_info("%s", arc_cpu_mumbojumbo(cpu_id, str, sizeof(str)));
-+	pr_info("%s", arc_mmu_mumbojumbo(cpu_id, str, sizeof(str)));
+ 	pr_info("%s", arc_mmu_mumbojumbo(cpu_id, str, sizeof(str)));
++	pr_info("%s", arc_cache_mumbojumbo(cpu_id, str, sizeof(str)));
  
  	arc_mmu_init();
  	arc_cache_init();
-diff --git a/arch/arc/mm/tlb.c b/arch/arc/mm/tlb.c
-index 2a3105a682c3..17e32c707367 100644
---- a/arch/arc/mm/tlb.c
-+++ b/arch/arc/mm/tlb.c
-@@ -18,7 +18,9 @@
- /* A copy of the ASID from the PID reg is kept in asid_cache */
- DEFINE_PER_CPU(unsigned int, asid_cache) = MM_CTXT_FIRST_CYCLE;
+diff --git a/arch/arc/mm/cache.c b/arch/arc/mm/cache.c
+index bdaa4aa40947..7197bb845a40 100644
+--- a/arch/arc/mm/cache.c
++++ b/arch/arc/mm/cache.c
+@@ -28,6 +28,10 @@ int slc_enable = 1, ioc_enable = 1;
+ unsigned long perip_base = ARC_UNCACHED_ADDR_SPACE; /* legacy value for boot */
+ unsigned long perip_end = 0xFFFFFFFF; /* legacy value */
  
--static int __read_mostly pae_exists;
-+static struct cpuinfo_arc_mmu {
-+	unsigned int ver, pg_sz_k, s_pg_sz_m, pae, sets, ways;
-+} mmuinfo;
++static struct cpuinfo_arc_cache {
++	unsigned int sz_k, line_len, colors;
++} ic_info, dc_info, slc_info;
++
+ void (*_cache_line_loop_ic_fn)(phys_addr_t paddr, unsigned long vaddr,
+ 			       unsigned long sz, const int op, const int full_page);
  
- /*
-  * Utility Routine to erase a J-TLB entry
-@@ -131,7 +133,7 @@ static void tlb_entry_insert(unsigned int pd0, phys_addr_t pd1)
+@@ -35,78 +39,24 @@ void (*__dma_cache_wback_inv)(phys_addr_t start, unsigned long sz);
+ void (*__dma_cache_inv)(phys_addr_t start, unsigned long sz);
+ void (*__dma_cache_wback)(phys_addr_t start, unsigned long sz);
  
- noinline void local_flush_tlb_all(void)
+-char *arc_cache_mumbojumbo(int c, char *buf, int len)
++static char *read_decode_cache_bcr_arcv2(int c, char *buf, int len)
  {
--	struct cpuinfo_arc_mmu *mmu = &cpuinfo_arc700[smp_processor_id()].mmu;
-+	struct cpuinfo_arc_mmu *mmu = &mmuinfo;
- 	unsigned long flags;
- 	unsigned int entry;
- 	int num_tlb = mmu->sets * mmu->ways;
-@@ -560,89 +562,63 @@ void local_flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
-  * the cpuinfo structure for later use.
-  * No Validation is done here, simply read/convert the BCRs
-  */
--void read_decode_mmu_bcr(void)
-+char *arc_mmu_mumbojumbo(int c, char *buf, int len)
- {
--	struct cpuinfo_arc_mmu *mmu = &cpuinfo_arc700[smp_processor_id()].mmu;
--	unsigned int tmp;
--	struct bcr_mmu_3 {
--#ifdef CONFIG_CPU_BIG_ENDIAN
--	unsigned int ver:8, ways:4, sets:4, res:3, sasid:1, pg_sz:4,
--		     u_itlb:4, u_dtlb:4;
--#else
--	unsigned int u_dtlb:4, u_itlb:4, pg_sz:4, sasid:1, res:3, sets:4,
--		     ways:4, ver:8;
--#endif
--	} *mmu3;
+-	int n = 0;
+-	struct cpuinfo_arc_cache *p;
 -
--	struct bcr_mmu_4 {
+-#define PR_CACHE(p, cfg, str)						\
+-	if (!(p)->line_len)						\
+-		n += scnprintf(buf + n, len - n, str"\t\t: N/A\n");	\
+-	else								\
+-		n += scnprintf(buf + n, len - n,			\
+-			str"\t\t: %uK, %dway/set, %uB Line, %s%s%s\n",	\
+-			(p)->sz_k, (p)->assoc, (p)->line_len,		\
+-			(p)->vipt ? "VIPT" : "PIPT",			\
+-			(p)->alias ? " aliasing" : "",			\
+-			IS_USED_CFG(cfg));
+-
+-	PR_CACHE(&cpuinfo_arc700[c].icache, CONFIG_ARC_HAS_ICACHE, "I-Cache");
+-	PR_CACHE(&cpuinfo_arc700[c].dcache, CONFIG_ARC_HAS_DCACHE, "D-Cache");
+-
+-	p = &cpuinfo_arc700[c].slc;
+-	if (p->line_len)
+-		n += scnprintf(buf + n, len - n,
+-			       "SLC\t\t: %uK, %uB Line%s\n",
+-			       p->sz_k, p->line_len, IS_USED_RUN(slc_enable));
+-
+-	n += scnprintf(buf + n, len - n, "Peripherals\t: %#lx%s%s\n",
+-		       perip_base,
+-		       IS_AVAIL3(ioc_exists, ioc_enable, ", IO-Coherency (per-device) "));
+-
+-	return buf;
+-}
+-
+-/*
+- * Read the Cache Build Confuration Registers, Decode them and save into
+- * the cpuinfo structure for later use.
+- * No Validation done here, simply read/convert the BCRs
+- */
+-static void read_decode_cache_bcr_arcv2(int cpu)
+-{
+-	struct cpuinfo_arc_cache *p_slc = &cpuinfo_arc700[cpu].slc;
++	struct cpuinfo_arc_cache *p_slc = &slc_info;
++	struct bcr_identity ident;
+ 	struct bcr_generic sbcr;
+-
+-	struct bcr_slc_cfg {
 -#ifdef CONFIG_CPU_BIG_ENDIAN
--	unsigned int ver:8, sasid:1, sz1:4, sz0:4, res:2, pae:1,
--		     n_ways:2, n_entry:2, n_super:2, u_itlb:3, u_dtlb:3;
+-		unsigned int pad:24, way:2, lsz:2, sz:4;
 -#else
--	/*           DTLB      ITLB      JES        JE         JA      */
--	unsigned int u_dtlb:3, u_itlb:3, n_super:2, n_entry:2, n_ways:2,
--		     pae:1, res:2, sz0:4, sz1:4, sasid:1, ver:8;
+-		unsigned int sz:4, lsz:2, way:2, pad:24;
 -#endif
--	} *mmu4;
-+	struct cpuinfo_arc_mmu *mmu = &mmuinfo;
-+	unsigned int bcr, u_dtlb, u_itlb, sasid;
-+	struct bcr_mmu_3 *mmu3;
-+	struct bcr_mmu_4 *mmu4;
-+	char super_pg[64] = "";
+-	} slc_cfg;
+-
+-	struct bcr_clust_cfg {
+-#ifdef CONFIG_CPU_BIG_ENDIAN
+-		unsigned int pad:7, c:1, num_entries:8, num_cores:8, ver:8;
+-#else
+-		unsigned int ver:8, num_cores:8, num_entries:8, c:1, pad:7;
+-#endif
+-	} cbcr;
+-
+-	struct bcr_volatile {
+-#ifdef CONFIG_CPU_BIG_ENDIAN
+-		unsigned int start:4, limit:4, pad:22, order:1, disable:1;
+-#else
+-		unsigned int disable:1, order:1, pad:22, limit:4, start:4;
+-#endif
+-	} vol;
+-
++	struct bcr_clust_cfg cbcr;
++	struct bcr_volatile vol;
 +	int n = 0;
  
--	tmp = read_aux_reg(ARC_REG_MMU_BCR);
--	mmu->ver = (tmp >> 24);
-+	bcr = read_aux_reg(ARC_REG_MMU_BCR);
-+	mmu->ver = (bcr >> 24);
- 
- 	if (is_isa_arcompact() && mmu->ver == 3) {
--		mmu3 = (struct bcr_mmu_3 *)&tmp;
-+		mmu3 = (struct bcr_mmu_3 *)&bcr;
- 		mmu->pg_sz_k = 1 << (mmu3->pg_sz - 1);
- 		mmu->sets = 1 << mmu3->sets;
- 		mmu->ways = 1 << mmu3->ways;
--		mmu->u_dtlb = mmu3->u_dtlb;
--		mmu->u_itlb = mmu3->u_itlb;
--		mmu->sasid = mmu3->sasid;
-+		u_dtlb = mmu3->u_dtlb;
-+		u_itlb = mmu3->u_itlb;
-+		sasid = mmu3->sasid;
- 	} else {
--		mmu4 = (struct bcr_mmu_4 *)&tmp;
-+		mmu4 = (struct bcr_mmu_4 *)&bcr;
- 		mmu->pg_sz_k = 1 << (mmu4->sz0 - 1);
- 		mmu->s_pg_sz_m = 1 << (mmu4->sz1 - 11);
- 		mmu->sets = 64 << mmu4->n_entry;
- 		mmu->ways = mmu4->n_ways * 2;
--		mmu->u_dtlb = mmu4->u_dtlb * 4;
--		mmu->u_itlb = mmu4->u_itlb * 4;
--		mmu->sasid = mmu4->sasid;
--		pae_exists = mmu->pae = mmu4->pae;
-+		u_dtlb = mmu4->u_dtlb * 4;
-+		u_itlb = mmu4->u_itlb * 4;
-+		sasid = mmu4->sasid;
-+		mmu->pae = mmu4->pae;
+ 	READ_BCR(ARC_REG_SLC_BCR, sbcr);
+ 	if (sbcr.ver) {
++		struct bcr_slc_cfg  slc_cfg;
+ 		READ_BCR(ARC_REG_SLC_CFG, slc_cfg);
+ 		p_slc->sz_k = 128 << slc_cfg.sz;
+ 		l2_line_sz = p_slc->line_len = (slc_cfg.lsz == 0) ? 128 : 64;
++		n += scnprintf(buf + n, len - n,
++			       "SLC\t\t: %uK, %uB Line%s\n",
++			       p_slc->sz_k, p_slc->line_len, IS_USED_RUN(slc_enable));
  	}
--}
  
--char *arc_mmu_mumbojumbo(int cpu_id, char *buf, int len)
--{
--	int n = 0;
--	struct cpuinfo_arc_mmu *p_mmu = &cpuinfo_arc700[cpu_id].mmu;
--	char super_pg[64] = "";
+ 	READ_BCR(ARC_REG_CLUSTER_BCR, cbcr);
+@@ -129,70 +79,83 @@ static void read_decode_cache_bcr_arcv2(int cpu)
+ 		ioc_enable = 0;
+ 	}
+ 
++	READ_BCR(AUX_IDENTITY, ident);
++
+ 	/* HS 2.0 didn't have AUX_VOL */
+-	if (cpuinfo_arc700[cpu].core.family > 0x51) {
++	if (ident.family > 0x51) {
+ 		READ_BCR(AUX_VOL, vol);
+ 		perip_base = vol.start << 28;
+ 		/* HS 3.0 has limit and strict-ordering fields */
+-		if (cpuinfo_arc700[cpu].core.family > 0x52)
++		if (ident.family > 0x52)
+ 			perip_end = (vol.limit << 28) - 1;
+ 	}
++
++	n += scnprintf(buf + n, len - n, "Peripherals\t: %#lx%s%s\n",
++		       perip_base,
++		       IS_AVAIL3(ioc_exists, ioc_enable, ", IO-Coherency (per-device) "));
++
++	return buf;
+ }
+ 
+-void read_decode_cache_bcr(void)
++char *arc_cache_mumbojumbo(int c, char *buf, int len)
+ {
+-	struct cpuinfo_arc_cache *p_ic, *p_dc;
+-	unsigned int cpu = smp_processor_id();
+-	struct bcr_cache {
+-#ifdef CONFIG_CPU_BIG_ENDIAN
+-		unsigned int pad:12, line_len:4, sz:4, config:4, ver:8;
+-#else
+-		unsigned int ver:8, config:4, sz:4, line_len:4, pad:12;
+-#endif
+-	} ibcr, dbcr;
++	struct cpuinfo_arc_cache *p_ic = &ic_info, *p_dc = &dc_info;
++	struct bcr_cache ibcr, dbcr;
++	int vipt, assoc;
++	int n = 0;
+ 
+-	p_ic = &cpuinfo_arc700[cpu].icache;
+ 	READ_BCR(ARC_REG_IC_BCR, ibcr);
 -
--	if (p_mmu->s_pg_sz_m)
--		scnprintf(super_pg, 64, "%dM Super Page %s",
--			  p_mmu->s_pg_sz_m,
--			  IS_USED_CFG(CONFIG_TRANSPARENT_HUGEPAGE));
-+	if (mmu->s_pg_sz_m)
-+		scnprintf(super_pg, 64, "/%dM%s",
-+			  mmu->s_pg_sz_m,
-+			  IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) ? " (THP enabled)":"");
+ 	if (!ibcr.ver)
+ 		goto dc_chk;
  
- 	n += scnprintf(buf + n, len - n,
--		      "MMU [v%x]\t: %dk PAGE, %s, swalk %d lvl, JTLB %d (%dx%d), uDTLB %d, uITLB %d%s%s\n",
--		       p_mmu->ver, p_mmu->pg_sz_k, super_pg,  CONFIG_PGTABLE_LEVELS,
--		       p_mmu->sets * p_mmu->ways, p_mmu->sets, p_mmu->ways,
--		       p_mmu->u_dtlb, p_mmu->u_itlb,
--		       IS_AVAIL2(p_mmu->pae, ", PAE40 ", CONFIG_ARC_HAS_PAE40));
-+		      "MMU [v%x]\t: %dk%s, swalk %d lvl, JTLB %dx%d, uDTLB %d, uITLB %d%s%s\n",
-+		       mmu->ver, mmu->pg_sz_k, super_pg, CONFIG_PGTABLE_LEVELS,
-+		       mmu->sets, mmu->ways,
-+		       u_dtlb, u_itlb,
-+		       IS_AVAIL2(mmu->pae, ", PAE40 ", CONFIG_ARC_HAS_PAE40));
+-	if (ibcr.ver <= 3) {
++	if (is_isa_arcompact() && (ibcr.ver <= 3)) {
+ 		BUG_ON(ibcr.config != 3);
+-		p_ic->assoc = 2;		/* Fixed to 2w set assoc */
+-	} else if (ibcr.ver >= 4) {
+-		p_ic->assoc = 1 << ibcr.config;	/* 1,2,4,8 */
++		assoc = 2;		/* Fixed to 2w set assoc */
++	} else if (is_isa_arcv2() && (ibcr.ver >= 4)) {
++		assoc = 1 << ibcr.config;	/* 1,2,4,8 */
+ 	}
  
- 	return buf;
+ 	p_ic->line_len = 8 << ibcr.line_len;
+ 	p_ic->sz_k = 1 << (ibcr.sz - 1);
+-	p_ic->vipt = 1;
+-	p_ic->alias = p_ic->sz_k/p_ic->assoc/TO_KB(PAGE_SIZE) > 1;
++	p_ic->colors = p_ic->sz_k/assoc/TO_KB(PAGE_SIZE);
++
++	n += scnprintf(buf + n, len - n,
++			"I-Cache\t\t: %uK, %dway/set, %uB Line, VIPT%s%s\n",
++			p_ic->sz_k, assoc, p_ic->line_len,
++			p_ic->colors > 1 ? " aliasing" : "",
++			IS_USED_CFG(CONFIG_ARC_HAS_ICACHE));
+ 
+ dc_chk:
+-	p_dc = &cpuinfo_arc700[cpu].dcache;
+ 	READ_BCR(ARC_REG_DC_BCR, dbcr);
+-
+ 	if (!dbcr.ver)
+ 		goto slc_chk;
+ 
+-	if (dbcr.ver <= 3) {
++	if (is_isa_arcompact() && (dbcr.ver <= 3)) {
+ 		BUG_ON(dbcr.config != 2);
+-		p_dc->assoc = 4;		/* Fixed to 4w set assoc */
+-		p_dc->vipt = 1;
+-		p_dc->alias = p_dc->sz_k/p_dc->assoc/TO_KB(PAGE_SIZE) > 1;
+-	} else if (dbcr.ver >= 4) {
+-		p_dc->assoc = 1 << dbcr.config;	/* 1,2,4,8 */
+-		p_dc->vipt = 0;
+-		p_dc->alias = 0;		/* PIPT so can't VIPT alias */
++		vipt = 1;
++		assoc = 4;		/* Fixed to 4w set assoc */
++		p_dc->colors = p_dc->sz_k/assoc/TO_KB(PAGE_SIZE);
++	} else if (is_isa_arcv2() && (dbcr.ver >= 4)) {
++		vipt = 0;
++		assoc = 1 << dbcr.config;	/* 1,2,4,8 */
++		p_dc->colors = 1;		/* PIPT so can't VIPT alias */
+ 	}
+ 
+ 	p_dc->line_len = 16 << dbcr.line_len;
+ 	p_dc->sz_k = 1 << (dbcr.sz - 1);
+ 
++	n += scnprintf(buf + n, len - n,
++			"D-Cache\t\t: %uK, %dway/set, %uB Line, %s%s%s\n",
++			p_dc->sz_k, assoc, p_dc->line_len,
++			vipt ? "VIPT" : "PIPT",
++			p_dc->colors > 1 ? " aliasing" : "",
++			IS_USED_CFG(CONFIG_ARC_HAS_DCACHE));
++
+ slc_chk:
+ 	if (is_isa_arcv2())
+-                read_decode_cache_bcr_arcv2(cpu);
++		read_decode_cache_bcr_arcv2(c, buf + n, len - n);
++
++	return buf;
  }
  
- int pae40_exist_but_not_enab(void)
+ /*
+@@ -1133,10 +1096,8 @@ static noinline void __init arc_ioc_setup(void)
+  */
+ static noinline void __init arc_cache_init_master(void)
  {
--	return pae_exists && !is_pae40_enabled();
-+	return mmuinfo.pae && !is_pae40_enabled();
- }
+-	unsigned int __maybe_unused cpu = smp_processor_id();
+-
+ 	if (IS_ENABLED(CONFIG_ARC_HAS_ICACHE)) {
+-		struct cpuinfo_arc_cache *ic = &cpuinfo_arc700[cpu].icache;
++		struct cpuinfo_arc_cache *ic = &ic_info;
  
- void arc_mmu_init(void)
+ 		if (!ic->line_len)
+ 			panic("cache support enabled but non-existent cache\n");
+@@ -1149,14 +1110,14 @@ static noinline void __init arc_cache_init_master(void)
+ 		 * In MMU v4 (HS38x) the aliasing icache config uses IVIL/PTAG
+ 		 * pair to provide vaddr/paddr respectively, just as in MMU v3
+ 		 */
+-		if (is_isa_arcv2() && ic->alias)
++		if (is_isa_arcv2() && ic->colors > 1)
+ 			_cache_line_loop_ic_fn = __cache_line_loop_v3;
+ 		else
+ 			_cache_line_loop_ic_fn = __cache_line_loop;
+ 	}
+ 
+ 	if (IS_ENABLED(CONFIG_ARC_HAS_DCACHE)) {
+-		struct cpuinfo_arc_cache *dc = &cpuinfo_arc700[cpu].dcache;
++		struct cpuinfo_arc_cache *dc = &dc_info;
+ 
+ 		if (!dc->line_len)
+ 			panic("cache support enabled but non-existent cache\n");
+@@ -1168,14 +1129,13 @@ static noinline void __init arc_cache_init_master(void)
+ 		/* check for D-Cache aliasing on ARCompact: ARCv2 has PIPT */
+ 		if (is_isa_arcompact()) {
+ 			int handled = IS_ENABLED(CONFIG_ARC_CACHE_VIPT_ALIASING);
+-			int num_colors = dc->sz_k/dc->assoc/TO_KB(PAGE_SIZE);
+ 
+-			if (dc->alias) {
++			if (dc->colors > 1) {
+ 				if (!handled)
+ 					panic("Enable CONFIG_ARC_CACHE_VIPT_ALIASING\n");
+-				if (CACHE_COLORS_NUM != num_colors)
++				if (CACHE_COLORS_NUM != dc->colors)
+ 					panic("CACHE_COLORS_NUM not optimized for config\n");
+-			} else if (!dc->alias && handled) {
++			} else if (handled && dc->colors == 1) {
+ 				panic("Disable CONFIG_ARC_CACHE_VIPT_ALIASING\n");
+ 			}
+ 		}
+@@ -1218,9 +1178,6 @@ static noinline void __init arc_cache_init_master(void)
+ void __ref arc_cache_init(void)
  {
--	struct cpuinfo_arc_mmu *mmu = &cpuinfo_arc700[smp_processor_id()].mmu;
+ 	unsigned int __maybe_unused cpu = smp_processor_id();
 -	char str[256];
-+	struct cpuinfo_arc_mmu *mmu = &mmuinfo;
- 	int compat = 0;
- 
--	pr_info("%s", arc_mmu_mumbojumbo(0, str, sizeof(str)));
 -
- 	/*
- 	 * Can't be done in processor.h due to header include dependencies
- 	 */
-@@ -719,7 +695,7 @@ volatile int dup_pd_silent; /* Be silent abt it or complain (default) */
- void do_tlb_overlap_fault(unsigned long cause, unsigned long address,
- 			  struct pt_regs *regs)
- {
--	struct cpuinfo_arc_mmu *mmu = &cpuinfo_arc700[smp_processor_id()].mmu;
-+	struct cpuinfo_arc_mmu *mmu = &mmuinfo;
- 	unsigned long flags;
- 	int set, n_ways = mmu->ways;
+-	pr_info("%s", arc_cache_mumbojumbo(0, str, sizeof(str)));
  
+ 	if (!cpu)
+ 		arc_cache_init_master();
 -- 
 2.34.1
 
