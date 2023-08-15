@@ -2,214 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FC677CF5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2059E77CF69
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238166AbjHOPla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 11:41:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36478 "EHLO
+        id S238195AbjHOPmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 11:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238169AbjHOPlS (ORCPT
+        with ESMTP id S238212AbjHOPmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 11:41:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A39BE61;
-        Tue, 15 Aug 2023 08:41:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692114077; x=1723650077;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=lWHTVMVVzUsh687F017zJbmNhEj8Fz4h52xIxzZXMOY=;
-  b=NfvOQJNE2AJ/0l0K2jvUEWTGeT54uA14Mn/VlLa7TjqdzIIqmEZ4L+vs
-   i1bhLYfssDzRg4/Ltt2OJzg2H+ZjbcTHniU9s/N3Hzy3BK7cvWBKjtd2e
-   UHEIIMcPGTVAkNt34fF+qF9YSYSpXLNAbvBhKJ3G/tWdsSoW3+CztPRHq
-   8GVK3yd5zZ1Q1B2JWNktM5olvOpLw25vrHIfR8xGvsPqyfC3NfJPb5wx9
-   /bpdcIYnularxuiuvKanC0Emr03ule2oD1UEdx5zEXR/neWc9rcHzmflu
-   YdLfDyKPj2T9F4cQ4kmkbdwa3thp/hlZ9RNe957fxQ/9xXOkH4f+MXdAI
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="351896974"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="351896974"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 08:41:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="727406715"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="727406715"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 15 Aug 2023 08:41:13 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 72389C84; Tue, 15 Aug 2023 18:41:12 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Philipp Jungkamp <p.jungkamp@gmx.net>,
+        Tue, 15 Aug 2023 11:42:00 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E7D10C6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:41:58 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-58c531d9a4aso16834827b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:41:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692114118; x=1692718918;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=P7TsLh4UpmerFxSf2LHp//sOCj39QtIaP8NhFu7Ity0=;
+        b=v/t1rSu7IOqD7zsEvHxRPZ8PsCIFzAnrAyhA1GeAnqzR3gqcLYYTCisHr6LsT22vfP
+         4laXof+eVPcmpLgSaUurUglySIUk5wTKrOXJIVrfFuzCfybCzb0/0AVfQMVJ0iJIRG4H
+         0geKl/MMV99hPY+b1UkztXinVcOvwL2sVflQuURKZUXygILqXy0hylwT5O5AGgmvPpyb
+         srYr1if/5tuZjeqAnbfWF3gwfEMlVFJI+jpZVbFzcg3JYBWEdRGg/oIVxBn0/AdWjomv
+         dLXCkhljXHfLN7Qp8CgGrb1wPb2fkkHuSPRQ+VOFXR8Uhg34HjYmVoNDAYs3GRvk+rOp
+         M2IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692114118; x=1692718918;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=P7TsLh4UpmerFxSf2LHp//sOCj39QtIaP8NhFu7Ity0=;
+        b=iRRDK2KB4X89WxNT+YOSXC4kaOVe3hn1bycIFlOBEc/9W7q5gbpcJ+iKnqEl2bmOwq
+         +nQwzDqcYxSiPlERDyQRMivcRiLr4pTlOp6mqNe0mvkTv+dSRSfWS7t2Pc+F/PhFzNYt
+         f3+9innZrn74N48l9HYqdPjSL7xcGLYWKHj67aa9++JqwESldZ5NH/rwYZ8ey/EDEo8m
+         K5DfTooXmqitECTe4sApEttuejro7AsfhskzBM6OdgKPARIQyJzb/FsxNfBLBLayJZlu
+         aS5eVLL4WuyOZnfoCxZcqCjo9HsCo0SbWsIl5Io63+Ycewo9tojeJekFjYMypLmcfAfR
+         MAwQ==
+X-Gm-Message-State: AOJu0YzqCsBDokvLAeQHlftlD7NPbmaZnqNCmM7U6XzlPnSORZVIsEOE
+        Nx2a54VSq83UjegGdpkaEv71mQ==
+X-Google-Smtp-Source: AGHT+IFym1gqMNFckrS6y/rCULvNhW2b/lORvGgm0DCRSg/pwTXV+un25GqW0LvhUjQm8jbcdgknTw==
+X-Received: by 2002:a0d:cc92:0:b0:589:a4c7:ee40 with SMTP id o140-20020a0dcc92000000b00589a4c7ee40mr2727997ywd.2.1692114117698;
+        Tue, 15 Aug 2023 08:41:57 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id x206-20020a814ad7000000b005707fb5110bsm3475226ywa.58.2023.08.15.08.41.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Aug 2023 08:41:57 -0700 (PDT)
+Date:   Tue, 15 Aug 2023 08:41:45 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     David Hildenbrand <david@redhat.com>
+cc:     Hugh Dickins <hughd@google.com>, Jann Horn <jannh@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Xu <peterx@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v1 3/3] iio: hid-sensor: Use aligned data type for timestamp
-Date:   Tue, 15 Aug 2023 18:40:27 +0300
-Message-Id: <20230815154027.12468-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-In-Reply-To: <20230815154027.12468-1-andriy.shevchenko@linux.intel.com>
-References: <20230815154027.12468-1-andriy.shevchenko@linux.intel.com>
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Steven Price <steven.price@arm.com>,
+        SeongJae Park <sj@kernel.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Zack Rusin <zackr@vmware.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Song Liu <song@kernel.org>,
+        Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vishal Moola <vishal.moola@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Zi Yan <ziy@nvidia.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        sparclinux@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Subject: Re: [BUG] Re: [PATCH v3 10/13] mm/khugepaged: collapse_pte_mapped_thp()
+ with mmap_read_lock()
+In-Reply-To: <76e6b2ad-4e1e-2ad3-95df-00b4d33ec9d2@redhat.com>
+Message-ID: <35d52c74-9ba9-211e-a4f-ade6ed318e76@google.com>
+References: <7cd843a9-aa80-14f-5eb2-33427363c20@google.com> <b53be6a4-7715-51f9-aad-f1347dcb7c4@google.com> <CAG48ez0FxiRC4d3VTu_a9h=rg5FW-kYD5Rg5xo_RDBM0LTTqZQ@mail.gmail.com> <cacd4a19-386d-8bea-400-e99778dbc3b@google.com>
+ <76e6b2ad-4e1e-2ad3-95df-00b4d33ec9d2@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use aligned_s64 for the timestamp field.
+On Tue, 15 Aug 2023, David Hildenbrand wrote:
+> On 15.08.23 08:34, Hugh Dickins wrote:
+> > On Mon, 14 Aug 2023, Jann Horn wrote:
+> >>
+> >>          /* step 4: remove page table */
+> >> +       if (strcmp(current->comm, "DELAYME") == 0) {
+> >> +               pr_warn("%s: BEGIN DELAY INJECTION\n", __func__);
+> >> +               mdelay(5000);
+> >> +               pr_warn("%s: END DELAY INJECTION\n", __func__);
+> >> +       }
+> >>
+> >>          /* Huge page lock is still held, so page table must remain empty
+> >>          */
+> >>          pml = pmd_lock(mm, pmd);
+> >>
+> >>
+> >> And then run the attached reproducer against mm/mm-everything. You
+> >> should get this in dmesg:
+> >>
+> >> [  206.578096] BUG: Bad rss-counter state mm:000000000942ebea
+> >> type:MM_ANONPAGES val:1
+> > 
+> > Thanks a lot, Jann. I haven't thought about it at all yet; and just
+> > tried to reproduce, but haven't yet got the "BUG: Bad rss-counter":
+> > just see "Invalid argument" on the UFFDIO_COPY ioctl.
+> > Will investigate tomorrow.
+> 
+> Maybe you're missing a fixup:
+> 
+> https://lkml.kernel.org/r/20230810192128.1855570-1-axelrasmussen@google.com
+> 
+> When the src address is not page aligned, UFFDIO_COPY in mm-unstable would
+> erroneously fail.
 
-Note, the actual data is signed, hence with this we also amend that.
-While at it, drop redundant __alignment directive.
+You got it, many thanks David: I had assumed that my next-20230808 tree
+would be up-to-date enough, but it wasn't.  Reproduced now.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/iio/accel/hid-sensor-accel-3d.c              | 3 +--
- drivers/iio/gyro/hid-sensor-gyro-3d.c                | 2 +-
- drivers/iio/humidity/hid-sensor-humidity.c           | 2 +-
- drivers/iio/light/hid-sensor-als.c                   | 2 +-
- drivers/iio/orientation/hid-sensor-incl-3d.c         | 2 +-
- drivers/iio/orientation/hid-sensor-rotation.c        | 4 ++--
- drivers/iio/position/hid-sensor-custom-intel-hinge.c | 2 +-
- drivers/iio/pressure/hid-sensor-press.c              | 2 +-
- drivers/iio/temperature/hid-sensor-temperature.c     | 2 +-
- 9 files changed, 10 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/iio/accel/hid-sensor-accel-3d.c b/drivers/iio/accel/hid-sensor-accel-3d.c
-index 5eac7ea19993..f739589564c5 100644
---- a/drivers/iio/accel/hid-sensor-accel-3d.c
-+++ b/drivers/iio/accel/hid-sensor-accel-3d.c
-@@ -25,10 +25,9 @@ struct accel_3d_state {
- 	struct hid_sensor_hub_callbacks callbacks;
- 	struct hid_sensor_common common_attributes;
- 	struct hid_sensor_hub_attribute_info accel[ACCEL_3D_CHANNEL_MAX];
--	/* Ensure timestamp is naturally aligned */
- 	struct {
- 		u32 accel_val[3];
--		s64 timestamp __aligned(8);
-+		aligned_s64 timestamp;
- 	} scan;
- 	int scale_pre_decml;
- 	int scale_post_decml;
-diff --git a/drivers/iio/gyro/hid-sensor-gyro-3d.c b/drivers/iio/gyro/hid-sensor-gyro-3d.c
-index 698c50da1f10..a7050a6328d6 100644
---- a/drivers/iio/gyro/hid-sensor-gyro-3d.c
-+++ b/drivers/iio/gyro/hid-sensor-gyro-3d.c
-@@ -27,7 +27,7 @@ struct gyro_3d_state {
- 	struct hid_sensor_hub_attribute_info gyro[GYRO_3D_CHANNEL_MAX];
- 	struct {
- 		u32 gyro_val[GYRO_3D_CHANNEL_MAX];
--		u64 timestamp __aligned(8);
-+		aligned_s64 timestamp;
- 	} scan;
- 	int scale_pre_decml;
- 	int scale_post_decml;
-diff --git a/drivers/iio/humidity/hid-sensor-humidity.c b/drivers/iio/humidity/hid-sensor-humidity.c
-index fa0fe404a70a..0e484b78b735 100644
---- a/drivers/iio/humidity/hid-sensor-humidity.c
-+++ b/drivers/iio/humidity/hid-sensor-humidity.c
-@@ -18,7 +18,7 @@ struct hid_humidity_state {
- 	struct hid_sensor_hub_attribute_info humidity_attr;
- 	struct {
- 		s32 humidity_data;
--		u64 timestamp __aligned(8);
-+		aligned_s64 timestamp;
- 	} scan;
- 	int scale_pre_decml;
- 	int scale_post_decml;
-diff --git a/drivers/iio/light/hid-sensor-als.c b/drivers/iio/light/hid-sensor-als.c
-index eb1aedad7edc..8a906d95edd4 100644
---- a/drivers/iio/light/hid-sensor-als.c
-+++ b/drivers/iio/light/hid-sensor-als.c
-@@ -27,7 +27,7 @@ struct als_state {
- 	struct hid_sensor_hub_attribute_info als_illum;
- 	struct {
- 		u32 illum[CHANNEL_SCAN_INDEX_MAX];
--		u64 timestamp __aligned(8);
-+		aligned_s64 timestamp;
- 	} scan;
- 	int scale_pre_decml;
- 	int scale_post_decml;
-diff --git a/drivers/iio/orientation/hid-sensor-incl-3d.c b/drivers/iio/orientation/hid-sensor-incl-3d.c
-index ba5b581d5b25..3e5f2c58dfa9 100644
---- a/drivers/iio/orientation/hid-sensor-incl-3d.c
-+++ b/drivers/iio/orientation/hid-sensor-incl-3d.c
-@@ -29,7 +29,7 @@ struct incl_3d_state {
- 	struct hid_sensor_hub_attribute_info incl[INCLI_3D_CHANNEL_MAX];
- 	struct {
- 		u32 incl_val[INCLI_3D_CHANNEL_MAX];
--		u64 timestamp __aligned(8);
-+		aligned_s64 timestamp;
- 	} scan;
- 	int scale_pre_decml;
- 	int scale_post_decml;
-diff --git a/drivers/iio/orientation/hid-sensor-rotation.c b/drivers/iio/orientation/hid-sensor-rotation.c
-index a033699910e8..864ecbcad26e 100644
---- a/drivers/iio/orientation/hid-sensor-rotation.c
-+++ b/drivers/iio/orientation/hid-sensor-rotation.c
-@@ -19,8 +19,8 @@ struct dev_rot_state {
- 	struct hid_sensor_common common_attributes;
- 	struct hid_sensor_hub_attribute_info quaternion;
- 	struct {
--		s32 sampled_vals[4] __aligned(16);
--		u64 timestamp __aligned(8);
-+		s32 sampled_vals[4];
-+		aligned_s64 timestamp;
- 	} scan;
- 	int scale_pre_decml;
- 	int scale_post_decml;
-diff --git a/drivers/iio/position/hid-sensor-custom-intel-hinge.c b/drivers/iio/position/hid-sensor-custom-intel-hinge.c
-index 07c30d217255..48005b568dd9 100644
---- a/drivers/iio/position/hid-sensor-custom-intel-hinge.c
-+++ b/drivers/iio/position/hid-sensor-custom-intel-hinge.c
-@@ -39,7 +39,7 @@ struct hinge_state {
- 	const char *labels[CHANNEL_SCAN_INDEX_MAX];
- 	struct {
- 		u32 hinge_val[3];
--		u64 timestamp __aligned(8);
-+		aligned_s64 timestamp;
- 	} scan;
- 
- 	int scale_pre_decml;
-diff --git a/drivers/iio/pressure/hid-sensor-press.c b/drivers/iio/pressure/hid-sensor-press.c
-index a9215eb32d70..a964c7b65402 100644
---- a/drivers/iio/pressure/hid-sensor-press.c
-+++ b/drivers/iio/pressure/hid-sensor-press.c
-@@ -24,7 +24,7 @@ struct press_state {
- 	struct hid_sensor_hub_attribute_info press_attr;
- 	struct {
- 		u32 press_data;
--		u64 timestamp __aligned(8);
-+		aligned_s64 timestamp;
- 	} scan;
- 	int scale_pre_decml;
- 	int scale_post_decml;
-diff --git a/drivers/iio/temperature/hid-sensor-temperature.c b/drivers/iio/temperature/hid-sensor-temperature.c
-index d40f235af1d4..32f4b13fd554 100644
---- a/drivers/iio/temperature/hid-sensor-temperature.c
-+++ b/drivers/iio/temperature/hid-sensor-temperature.c
-@@ -18,7 +18,7 @@ struct temperature_state {
- 	struct hid_sensor_hub_attribute_info temperature_attr;
- 	struct {
- 		s32 temperature_data;
--		u64 timestamp __aligned(8);
-+		aligned_s64 timestamp;
- 	} scan;
- 	int scale_pre_decml;
- 	int scale_post_decml;
--- 
-2.40.0.1.gaa8946217a0b
-
+Hugh 
