@@ -2,163 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6336477C695
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 06:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A3F77C6A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 06:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234541AbjHOEE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 00:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41586 "EHLO
+        id S234517AbjHOEML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 00:12:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234584AbjHOECV (ORCPT
+        with ESMTP id S234648AbjHOEKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 00:02:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE2AE12E
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 20:58:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692071895; x=1723607895;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=8r/PGI5sh6lNNSHE6/JhZvUJ9bsJRVvnF4Cb7LyN84M=;
-  b=MOioReEUUVWdoBAa4F2BZjulgezui5ktuJzp2moaciIStnBhyipkA7EA
-   gb/XCcM/b/Ts/puxF8ukjYRvfB4D9qbDEaKbrGirRav3GMspJXFY2Sejq
-   4d8CdJquigeUsDUY05lugoMEeGa+CDScwUYLI/fK+R43/lc8vlOze4HnA
-   TxR12ZceH6nyCgp/+sBt+eap3R5DU4a2X3HsujlZH1nQpH0gqRTGw0xR9
-   B8LxiidmWOz4gTTClPkb7hZ4/N5TX7OdzzTZGSw8DzvBc4UKZuHWEPBAg
-   WVXKD8Eq7gfTjCu5L+AfxFCLPEcbJZhjxgZAQk9nLr0d9pW3RKEs0pUF0
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="436093218"
-X-IronPort-AV: E=Sophos;i="6.01,173,1684825200"; 
-   d="scan'208";a="436093218"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 20:58:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="857298440"
-X-IronPort-AV: E=Sophos;i="6.01,173,1684825200"; 
-   d="scan'208";a="857298440"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 20:58:11 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Zi Yan <ziy@nvidia.com>, Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        "David Hildenbrand" <david@redhat.com>
-Subject: Re: [PATCH 1/4] mm: migrate: use a folio in add_page_for_migration()
-In-Reply-To: <d184ba78-97d1-a264-fc31-87dfdbe6fdff@huawei.com> (Kefeng Wang's
-        message of "Fri, 4 Aug 2023 13:54:12 +0800")
-References: <20230802095346.87449-1-wangkefeng.wang@huawei.com>
-        <20230802095346.87449-2-wangkefeng.wang@huawei.com>
-        <ZMpKYfNWA/jNgEuL@casper.infradead.org>
-        <001ee9b0-ea25-a896-e3ae-9a9b05a46546@huawei.com>
-        <ZMud3RreEpsvFKuA@casper.infradead.org>
-        <fb2a22cf-14ae-3594-f5f3-8680c2100d70@huawei.com>
-        <F2621E68-F36E-493C-8619-ADFE05050823@nvidia.com>
-        <d184ba78-97d1-a264-fc31-87dfdbe6fdff@huawei.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-Date:   Tue, 15 Aug 2023 11:56:34 +0800
-Message-ID: <871qg59cwd.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        Tue, 15 Aug 2023 00:10:10 -0400
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6306D4483;
+        Mon, 14 Aug 2023 20:57:36 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=guangguan.wang@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Vpq6ttl_1692071851;
+Received: from 30.221.106.14(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0Vpq6ttl_1692071851)
+          by smtp.aliyun-inc.com;
+          Tue, 15 Aug 2023 11:57:33 +0800
+Message-ID: <8c5d1a90-6965-f507-a54d-5c420c972306@linux.alibaba.com>
+Date:   Tue, 15 Aug 2023 11:57:25 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [RFC PATCH v2 net-next 1/6] net/smc: support smc release version
+ negotiation in clc handshake
+To:     Wenjia Zhang <wenjia@linux.ibm.com>, jaka@linux.ibm.com,
+        kgraul@linux.ibm.com, tonylu@linux.alibaba.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     horms@kernel.org, alibuda@linux.alibaba.com,
+        guwen@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230807062720.20555-1-guangguan.wang@linux.alibaba.com>
+ <20230807062720.20555-2-guangguan.wang@linux.alibaba.com>
+ <ecafff58-c93a-5592-ddaa-d8724cf6bdcc@linux.ibm.com>
+Content-Language: en-US
+From:   Guangguan Wang <guangguan.wang@linux.alibaba.com>
+In-Reply-To: <ecafff58-c93a-5592-ddaa-d8724cf6bdcc@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-12.2 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kefeng Wang <wangkefeng.wang@huawei.com> writes:
 
-> On 2023/8/4 10:42, Zi Yan wrote:
->> On 3 Aug 2023, at 21:45, Kefeng Wang wrote:
->> 
->>> On 2023/8/3 20:30, Matthew Wilcox wrote:
->>>> On Thu, Aug 03, 2023 at 03:13:21PM +0800, Kefeng Wang wrote:
->>>>>
->>>>>
->>>>> On 2023/8/2 20:21, Matthew Wilcox wrote:
->>>>>> On Wed, Aug 02, 2023 at 05:53:43PM +0800, Kefeng Wang wrote:
->>>>>>>     	err = -EACCES;
->>>>>>> -	if (page_mapcount(page) > 1 && !migrate_all)
->>>>>>> -		goto out_putpage;
->>>>>>> +	if (folio_estimated_sharers(folio) > 1 && !migrate_all)
->>>>>>> +		goto out_putfolio;
->>>>>>
->>>>>> I do not think this is the correct change.  Maybe leave this line
->>>>>> alone.
->>>>>
->>>>> Ok, I am aware of the discussion about this in other mail, will not
->>>>> change it(also the next two patch about this function), or wait the
->>>>> new work of David.
->>>>>>
->>>>>>> -	if (PageHuge(page)) {
->>>>>>> -		if (PageHead(page)) {
->>>>>>> -			isolated = isolate_hugetlb(page_folio(page), pagelist);
->>>>>>> +	if (folio_test_hugetlb(folio)) {
->>>>>>> +		if (folio_test_large(folio)) {
->>>>>>
->>>>>> This makes no sense when you read it.  All hugetlb folios are large,
->>>>>> by definition.  Think about what this code used to do, and what it
->>>>>> should be changed to.
->>>>>
->>>>> hugetlb folio is self large folio, will drop redundant check
->>>>
->>>> No, that's not the difference.  Keep thinking about it.  This is not
->>>> a mechanical translation!
->>>
->>>
->>>    if (PageHuge(page))  // page must be a hugetlb page
->>> 	if (PageHead(page)) // page must be a head page, not tail
->>>               isolate_hugetlb() // isolate the hugetlb page if head
->>>
->>> After using folio,
->>>
->>>    if (folio_test_hugetlb(folio)) // only check folio is hugetlb or not
->>>
->>> I don't check the page is head or not, since the follow_page could
->>> return a sub-page, so the check PageHead need be retained, right?
->> Right. It will prevent the kernel from trying to isolate the same
->> hugetlb page
->> twice when two pages are in the same hugetlb folio. But looking at the
->> code, if you try to isolate an already-isolated hugetlb folio, isolate_hugetlb()
->> would return false, no error would show up. But it changes err value
->> from -EACCES to -EBUSY and user will see a different page status than before.
->
->
-> When check man[1], the current -EACCES is not right, -EBUSY is not
-> precise but more suitable for this scenario,
->
->  	-EACCES
->               The page is mapped by multiple processes and can be moved
->               only if MPOL_MF_MOVE_ALL is specified.
->
->        -EBUSY The page is currently busy and cannot be moved.  Try again
->               later.  This occurs if a page is undergoing I/O or another
->               kernel subsystem is holding a reference to the page.
-> 	-ENOENT
->               The page is not present.
->
->> I wonder why we do not have follow_folio() and returns -ENOENT error
->> pointer
->> when addr points to a non head page. It would make this patch more folio if
->> follow_folio() can be used in place of follow_page(). One caveat is that
->> user will see -ENOENT instead of -EACCES after this change.
->> 
->
-> -ENOENT is ok, but maybe the man need to be updated too.
->
->
-> 	
-> [1] https://man7.org/linux/man-pages/man2/move_pages.2.html
->
 
-I don't think -ENOENT is appropriate.  IIUC, -ENOENT means no need to
-migrate.  Which isn't the case here apparently.
+On 2023/8/10 00:03, Wenjia Zhang wrote:
+> 
+> 
+> On 07.08.23 08:27, Guangguan Wang wrote:
+>> Support smc release version negotiation in clc handshake. And set
+>> the latest smc release version to 2.1.
+>>
+> 
+> Could you elaborate the changes? Without reading code, it is really difficult to know what you did, and why you did it. Sure, one can read the code and the support document, but the commit message should always be the quick reference. The following information I missed especially:
+> - This implementation is based on SMCv2 where no negotiation process for different releases, but for different versions.
+> - The Server makes the decision for which release will be used.
 
---
-Best Regards,
-Huang, Ying
+Sorry for the lack of descriptions, more descriptions will be added in the next version.
+
+>>
+>> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+>> index a7f887d91d89..bac73eb0542d 100644
+>> --- a/net/smc/af_smc.c
+>> +++ b/net/smc/af_smc.c
+>> @@ -1187,6 +1187,11 @@ static int smc_connect_rdma_v2_prepare(struct smc_sock *smc,
+>>               return SMC_CLC_DECL_NOINDIRECT;
+>>           }
+>>       }
+>> +
+>> +    if (fce->release > SMC_RELEASE)
+>> +        return SMC_CLC_DECL_VERSMISMAT;
+> I'm wondering if this check is necessary, how it could happen?
+
+You are right, I will remove the check.
+
+>>   -static void smc_clc_fill_fce(struct smc_clc_first_contact_ext *fce, int *len)
+>> +static void smc_clc_fill_fce(struct smc_clc_first_contact_ext *fce, int *len, int release_ver)
+>>   {
+>>       memset(fce, 0, sizeof(*fce));
+>>       fce->os_type = SMC_CLC_OS_LINUX;
+>> -    fce->release = SMC_RELEASE;
+>> +    fce->release = release_ver;
+>>       memcpy(fce->hostname, smc_hostname, sizeof(smc_hostname));
+>>       (*len) += sizeof(*fce);
+>>   }
+> 
+> Personally I'd like release_nr instead of release_ver.
+
+
+>>   @@ -382,7 +403,7 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini);
+>>   int smc_clc_send_confirm(struct smc_sock *smc, bool clnt_first_contact,
+>>                u8 version, u8 *eid, struct smc_init_info *ini);
+>>   int smc_clc_send_accept(struct smc_sock *smc, bool srv_first_contact,
+>> -            u8 version, u8 *negotiated_eid);
+>> +            u8 version, u8 *negotiated_eid, struct smc_init_info *ini);
+>>   void smc_clc_init(void) __init;
+>>   void smc_clc_exit(void);
+>>   void smc_clc_get_hostname(u8 **host);
+>> diff --git a/net/smc/smc_core.h b/net/smc/smc_core.h
+>> index 3c1b31bfa1cf..1a97fef39127 100644
+>> --- a/net/smc/smc_core.h
+>> +++ b/net/smc/smc_core.h
+>> @@ -374,6 +374,7 @@ struct smc_init_info {
+>>       u8            is_smcd;
+>>       u8            smc_type_v1;
+>>       u8            smc_type_v2;
+>> +    u8            release_ver;
+> 
+> Also here, I'd like release_nr more.
+
+OK, I will modify it in the next version.
