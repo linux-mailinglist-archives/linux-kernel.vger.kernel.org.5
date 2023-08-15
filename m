@@ -2,166 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA2877C64C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 05:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF2477C63D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 05:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234429AbjHODQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 23:16:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60788 "EHLO
+        id S234399AbjHODO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 23:14:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234345AbjHODOW (ORCPT
+        with ESMTP id S233961AbjHODN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 23:14:22 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A52199A;
-        Mon, 14 Aug 2023 20:13:40 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RPxDd4MSVz4f3q3s;
-        Tue, 15 Aug 2023 11:13:37 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAXp6ld7dpknET3Ag--.64666S11;
-        Tue, 15 Aug 2023 11:13:37 +0800 (CST)
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-To:     xni@redhat.com, song@kernel.org
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
-        yangerkun@huawei.com
-Subject: [PATCH -next v2 7/7] md: delay remove_and_add_spares() for read only array to md_start_sync()
-Date:   Tue, 15 Aug 2023 11:09:57 +0800
-Message-Id: <20230815030957.509535-8-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230815030957.509535-1-yukuai1@huaweicloud.com>
-References: <20230815030957.509535-1-yukuai1@huaweicloud.com>
+        Mon, 14 Aug 2023 23:13:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E9A1987;
+        Mon, 14 Aug 2023 20:12:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B3D0C618CD;
+        Tue, 15 Aug 2023 03:12:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17FB1C433C8;
+        Tue, 15 Aug 2023 03:12:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692069127;
+        bh=OMqKbUb5Z6H+wBW/auUjyZMEYXJpKnpvS6GlVzJnka0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=S6rt+hAuiJV63P1B4FxfZ3NkAMEZaMsUzvqMbltFVK9UvK3EVj82UoXZcMbY2Lcu/
+         vrW3u3PD5MbNGnLCKp3N5e76dPvsAOZpPZTJ54OAG2dha1MC6qHiNxFkMemOIK8Ed7
+         W2J0DELDonLghGJlSWJffW2kQDo46XYSYQAQ+Mpg2ofWH/nY6a1OrdYxs3kvSLa1bS
+         SnWI72RAmHM+/jUJ4o5OTCCWaVQzYwOjVBwQWEUOPjRYe4qYyJY2TfarZpeAFQbv9g
+         3jfJNdU9jQ3wqGrx4pe7S9O/C7XafPQ7rmMlxX7lS6gUlY6l58tkXFqLtHQLnR3sxI
+         wRB+1w9v46+1A==
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-4fe0c566788so7834064e87.0;
+        Mon, 14 Aug 2023 20:12:06 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwxjX660rul9/cMV7y4SAzmutsbJgFkQH2Pqz7FfFEDtV7r+Qnx
+        zZF0eTXplOH7HImWTR8sSjUraLbmY0dz69Itu24=
+X-Google-Smtp-Source: AGHT+IHLO2l2Hzw4JAJnD4ugJfISr9EG03Lgo5HMyI2u2yjH1FtGDSdelHreBc6cS9H/iMVmKoIVS8YOxBXfylTlElU=
+X-Received: by 2002:ac2:4e04:0:b0:4fd:f7b8:555 with SMTP id
+ e4-20020ac24e04000000b004fdf7b80555mr9118198lfr.19.1692069125012; Mon, 14 Aug
+ 2023 20:12:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAXp6ld7dpknET3Ag--.64666S11
-X-Coremail-Antispam: 1UD129KBjvJXoWxZry5GFyrZryfZF17uw4fAFb_yoW5Cry7pr
-        4ftF9Igr4Ut3yfZr47G3WDGa4Yyr10qrZFyry3ua4xAw13Arn7C34rXayDXryrta4SyF43
-        Aw48KFs8uF1rKFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9K14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j6r
-        xdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
-        M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
-        v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
-        F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMx
-        C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
-        wI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
-        vE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxK
-        x2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI
-        0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfUOBTYUUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230815104604.54f65293@canb.auug.org.au>
+In-Reply-To: <20230815104604.54f65293@canb.auug.org.au>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Tue, 15 Aug 2023 11:11:52 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTRVG+yX7fktLru4U=OVKrTg73kTR5hirw1hh1P9c+MNOQ@mail.gmail.com>
+Message-ID: <CAJF2gTRVG+yX7fktLru4U=OVKrTg73kTR5hirw1hh1P9c+MNOQ@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the csky tree with the mm tree
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     Guo Ren <guoren@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+On Tue, Aug 15, 2023 at 8:46=E2=80=AFAM Stephen Rothwell <sfr@canb.auug.org=
+.au> wrote:
+>
+> Hi all,
+>
+> Today's linux-next merge of the csky tree got a conflict in:
+>
+>   arch/csky/abiv2/cacheflush.c
+>
+> between commit:
+>
+>   1222e1310d64 ("csky: implement the new page table range API")
+Could I take this patch into csky next tree to solve the conflict.
 
-Before this patch, for read-only array:
+>
+> from the mm tree and commit:
+>
+>   1362d15ffb59 ("csky: pgtable: Invalidate stale I-cache lines in update_=
+mmu_cache")
+>
+> from the csky tree.
+>
+> I fixed it up (I think - see below) and can carry the fix as
+> necessary. This is now fixed as far as linux-next is concerned, but any
+> non trivial conflicts should be mentioned to your upstream maintainer
+> when your tree is submitted for merging.  You may also want to consider
+> cooperating with the maintainer of the conflicting tree to minimise any
+> particularly complex conflicts.
+>
+> --
+> Cheers,
+> Stephen Rothwell
+>
+> diff --cc arch/csky/abiv2/cacheflush.c
+> index d05a551af5d5,500eb8f69397..000000000000
+> --- a/arch/csky/abiv2/cacheflush.c
+> +++ b/arch/csky/abiv2/cacheflush.c
+> @@@ -16,23 -15,22 +16,22 @@@ void update_mmu_cache_range(struct vm_f
+>
+>         flush_tlb_page(vma, address);
+>
+>  -      if (!pfn_valid(pte_pfn(*pte)))
+>  +      if (!pfn_valid(pfn))
+>                 return;
+>
+>  -      page =3D pfn_to_page(pte_pfn(*pte));
+>  -      if (page =3D=3D ZERO_PAGE(0))
+>  +      folio =3D page_folio(pfn_to_page(pfn));
+>  +
+>  +      if (test_and_set_bit(PG_dcache_clean, &folio->flags))
+>                 return;
+>
+>  -      if (test_and_set_bit(PG_dcache_clean, &page->flags))
+>  -              return;
+>  +      for (i =3D 0; i < folio_nr_pages(folio); i++) {
+>  +              unsigned long addr =3D (unsigned long) kmap_local_folio(f=
+olio,
+>  +                                                              i * PAGE_=
+SIZE);
+>
+>  -      addr =3D (unsigned long) kmap_atomic(page);
+>  -
+>  -      icache_inv_range(address, address + PAGE_SIZE);
+>  -      dcache_wb_range(addr, addr + PAGE_SIZE);
+>  -
+>  -      kunmap_atomic((void *) addr);
+> ++              icache_inv_range(address, address + PAGE_SIZE);
+>  +              dcache_wb_range(addr, addr + PAGE_SIZE);
+> -               if (vma->vm_flags & VM_EXEC)
+> -                       icache_inv_range(addr, addr + PAGE_SIZE);
+>  +              kunmap_local((void *) addr);
+>  +      }
+>   }
+>
+>   void flush_icache_deferred(struct mm_struct *mm)
 
-md_check_recovery() check that 'MD_RECOVERY_NEEDED' is set, then it will
-call remove_and_add_spares() directly to try to remove and add rdevs
-from array.
 
-After this patch:
 
-1) md_check_recovery() check that 'MD_RECOVERY_NEEDED' is set, and the
-   worker 'sync_work' is not pending, and there are rdevs can be added
-   or removed, then it will queue new work md_start_sync();
-2) md_start_sync() will call remove_and_add_spares() and exist;
-
-This change make sure that array reconfiguration is independent from
-daemon, and it'll be much easier to synchronize it with io, consier
-that io may rely on daemon thread to be done.
-
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- drivers/md/md.c | 37 +++++++++++++++++++++++++++----------
- 1 file changed, 27 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index d26d2c35f9af..74d529479fcf 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -9191,6 +9191,16 @@ static bool rdev_addable(struct md_rdev *rdev)
- 	return true;
- }
- 
-+static bool md_spares_need_change(struct mddev *mddev)
-+{
-+	struct md_rdev *rdev;
-+
-+	rdev_for_each(rdev, mddev)
-+		if (rdev_removeable(rdev) || rdev_addable(rdev))
-+			return true;
-+	return false;
-+}
-+
- static int remove_and_add_spares(struct mddev *mddev,
- 				 struct md_rdev *this)
- {
-@@ -9309,6 +9319,12 @@ static void md_start_sync(struct work_struct *ws)
- 
- 	mddev_lock_nointr(mddev);
- 
-+	if (!md_is_rdwr(mddev)) {
-+		remove_and_add_spares(mddev, NULL);
-+		mddev_unlock(mddev);
-+		return;
-+	}
-+
- 	if (!md_choose_sync_direction(mddev, &spares))
- 		goto not_running;
- 
-@@ -9403,7 +9419,8 @@ void md_check_recovery(struct mddev *mddev)
- 	}
- 
- 	if (!md_is_rdwr(mddev) &&
--	    !test_bit(MD_RECOVERY_NEEDED, &mddev->recovery))
-+	    (!test_bit(MD_RECOVERY_NEEDED, &mddev->recovery) ||
-+	     work_pending(&mddev->sync_work)))
- 		return;
- 	if ( ! (
- 		(mddev->sb_flags & ~ (1<<MD_SB_CHANGE_PENDING)) ||
-@@ -9431,15 +9448,8 @@ void md_check_recovery(struct mddev *mddev)
- 				 */
- 				rdev_for_each(rdev, mddev)
- 					clear_bit(Blocked, &rdev->flags);
--			/* On a read-only array we can:
--			 * - remove failed devices
--			 * - add already-in_sync devices if the array itself
--			 *   is in-sync.
--			 * As we only add devices that are already in-sync,
--			 * we can activate the spares immediately.
--			 */
--			remove_and_add_spares(mddev, NULL);
--			/* There is no thread, but we need to call
-+			/*
-+			 * There is no thread, but we need to call
- 			 * ->spare_active and clear saved_raid_disk
- 			 */
- 			set_bit(MD_RECOVERY_INTR, &mddev->recovery);
-@@ -9447,6 +9457,13 @@ void md_check_recovery(struct mddev *mddev)
- 			clear_bit(MD_RECOVERY_RECOVER, &mddev->recovery);
- 			clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
- 			clear_bit(MD_SB_CHANGE_PENDING, &mddev->sb_flags);
-+
-+			/*
-+			 * Let md_start_sync() to remove and add rdevs to the
-+			 * array.
-+			 */
-+			if (md_spares_need_change(mddev))
-+				queue_work(md_misc_wq, &mddev->sync_work);
- 			goto unlock;
- 		}
- 
--- 
-2.39.2
-
+--=20
+Best Regards
+ Guo Ren
