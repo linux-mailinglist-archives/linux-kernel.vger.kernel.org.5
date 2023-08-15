@@ -2,86 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A4977CA64
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF8377CA67
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236140AbjHOJZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 05:25:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54056 "EHLO
+        id S236103AbjHOJ2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 05:28:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236206AbjHOJZd (ORCPT
+        with ESMTP id S236282AbjHOJ1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 05:25:33 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C25AA6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 02:25:32 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37F6wSJa022796
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:25:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        PODMain02222019; bh=yUkxk45vSvGqqSJrwbVbenrykpsk5A2DKnwbhXUzYDQ=; b=
-        meb9A24UdHa7yfzl2akm2uWkC0aq7SOl1AC2I/ueeMaihPv6cSy0gy0YMqVfQyQa
-        Stu/ZDEZqDrd49isf65WphV9lU0twWh2oKmdI6mxqNXloNyvV9nvQycJPG3jZ7mf
-        fcIK2/zXQ9Txa7yCljMy4wpRqmwq8UGNTLzVz2iz5oeeZS1cXlYZxaPr06FlF630
-        MEGKFFAGkJenzyuoG+YGuWX3X9eCtSZVOwGtNxMoJETCVupJ7ShWbH3qv4DbgvvH
-        x33nciDZAQ6J1ef2iztwTUO7xWBWwnN7GWZ3gxqdg2udSxZweowLIR/X9mbcxnPC
-        ArYgBURoV9O2mP1q7EAFdg==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3se8kqua0g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:25:31 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 15 Aug
- 2023 10:25:29 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Tue, 15 Aug 2023 10:25:29 +0100
-Received: from [198.61.65.68] (EDIN4L06LR3.ad.cirrus.com [198.61.65.68])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C9A4911AA;
-        Tue, 15 Aug 2023 09:25:28 +0000 (UTC)
-Message-ID: <39455d8a-6226-2ca6-b289-cf6e61aac413@opensource.cirrus.com>
-Date:   Tue, 15 Aug 2023 10:25:30 +0100
+        Tue, 15 Aug 2023 05:27:33 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF2F1FC4;
+        Tue, 15 Aug 2023 02:27:27 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id A31BD1F8B8;
+        Tue, 15 Aug 2023 09:27:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1692091646; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5j9dNyxti1ROGyLXuS1N2B0CryBtKNjR7Ms5Qc3ptvc=;
+        b=s5qWwgUzCcQh2opehNzwo/XtMtmgQFwM5YPHNJ6WKdpiXDUsvoAnZEa+6nhpiLOko/1p1n
+        h986A8wd+YCaJERReOEOdLhVirKt+n2MePo6dp5HWO1tvRLSjgehLxwpQerJWpkgXKDYp9
+        j392VV/i2tNyXKmL2ctTw3KwwWVLj7I=
+Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 6581D2C143;
+        Tue, 15 Aug 2023 09:27:26 +0000 (UTC)
+Date:   Tue, 15 Aug 2023 11:27:25 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] serial: 8250: drop lockdep annotation from
+ serial8250_clear_IER()
+Message-ID: <ZNtE_dcBaDm-wbHt@alley>
+References: <20230811064340.13400-1-jirislaby@kernel.org>
+ <878rae175n.fsf@jogness.linutronix.de>
+ <7d8ae4f8-8900-5a06-5b7b-d4a3aea0673e@kernel.org>
+ <87bkfa6nvx.fsf@jogness.linutronix.de>
+ <ZNn7KHY3iMRarqAZ@alley>
+ <154dfc10-76fa-b054-54a8-faa22ad52158@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] firmware: cs_dsp: Fix new control name check
-Content-Language: en-US
-To:     Vlad Karpovich <vkarpovi@opensource.cirrus.com>,
-        Simon Trimmer <simont@opensource.cirrus.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>
-CC:     <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>
-References: <20230804165212.236822-1-vkarpovi@opensource.cirrus.com>
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <20230804165212.236822-1-vkarpovi@opensource.cirrus.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: 9i8qMCa6U1xtBDmJwNyYXnDnl8nEgkN9
-X-Proofpoint-GUID: 9i8qMCa6U1xtBDmJwNyYXnDnl8nEgkN9
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <154dfc10-76fa-b054-54a8-faa22ad52158@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/8/23 17:52, Vlad Karpovich wrote:
-> Before adding a new FW control, its name is checked against
-> existing controls list. But the string length in strncmp used
-> to compare controls names is taken from the list, so if beginnings
-> of the controls are matching,  then the new control is not created.
-> For example, if CAL_R control already exists, CAL_R_SELECTED
-> is not created.
-> The fix is to compare string lengths as well.
+On Mon 2023-08-14 12:21:23, Jiri Slaby wrote:
+> On 14. 08. 23, 12:00, Petr Mladek wrote:
+> > I personally vote to keep it as is unless people see this warning
+> > on daily basis. After all, the lockdep splat is correct. The serial
+> > console might not work correctly in panic() when there is the race.
 > 
-> Fixes: 6477960755fb ("ASoC: wm_adsp: Move check for control existence")
-> Signed-off-by: Vlad Karpovich <vkarpovi@opensource.cirrus.com>
-> ---
+> Sorry, but no, the warning is not correct at all. The code path deliberately
+> does NOT take the lock and calls a function which is currently annotated
+> that the lock is _always_ taken. Therefore, the warning is clearly a false
+> positive and I see no reason in keeping it.
 
-You need to send this to Mark Brown.
+There might be a misunderstanding. I only want to keep panic()
+implementation as it is for now. I mean to keep calling
+debug_locks_off() right before console_flush_on_panic().
+The lockdep should stay on before to report potential problems
+in non-printk code, like kexec, panic notifiers.
+
+But I am fine with disabling the particular lockdep_assert_held_once()
+during panic().
+
+It should stay during the normal system state to catch not
+yet discovered races. John is working hard on preventing any
+races which might blow up after introducing the printk kthreads.
+
+I mean something like:
+
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index ecfdc4534123..9533c1eedfb1 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -704,7 +704,8 @@ static void serial8250_set_sleep(struct uart_8250_port *p, int sleep)
+ static void serial8250_clear_IER(struct uart_8250_port *up)
+ {
+ 	/* Port locked to synchronize UART_IER access against the console. */
+-	lockdep_assert_held_once(&up->port.lock);
++	if (!oops_in_progress)
++		lockdep_assert_held_once(&up->port.lock);
+ 
+ 	if (up->capabilities & UART_CAP_UUE)
+ 		serial_out(up, UART_IER, UART_IER_UUE);
+
+
+Best Regards,
+Petr
