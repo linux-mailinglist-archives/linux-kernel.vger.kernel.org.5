@@ -2,134 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A69B377D2BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F9777D2CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239624AbjHOS7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 14:59:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52520 "EHLO
+        id S239630AbjHOTCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 15:02:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239667AbjHOS6r (ORCPT
+        with ESMTP id S239781AbjHOTCj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 14:58:47 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2061.outbound.protection.outlook.com [40.107.93.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935C31FD0;
-        Tue, 15 Aug 2023 11:58:19 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n4K0PB11dvqK0i0vw35ZpXc4WscncV2e4j3A6nkPkMQPMnmLeutzwiDDEI0iHEk4YaMh2tL9O4t9HO3zT22YyP/EVq9uTTvjEWOYDyK9IYmLfv/jv39ymCGk16EM0IaOYYCFBmgHKq99nz5JWnCvyj4ZAKYp8P/D3INm+RMf6y8YkHmiODOvDFB/gDvTEd4JioolLbGfaAw2TJUa1m+GZVEDe3Vd005hJjPoQL1CMN7l9J1I7D9PxiHdRZIMAADJLo8YXHHwE4srJjN/UNpvkJJ70A8B/YrI4C6QJGmTdlw/QIb0hGy04yQFeCH0u9VkGgD4TWWzF8siDEhK12LSGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OKqViah37fP3xOxJrV4r6gKm1nQKV/HcX5onmLoDu0s=;
- b=X7N4AIQuREnq2i8MsdrS8CSd7rZ6+OucNiUy9hpyrk1ZC/INqjSi4AQ3Tc4NsZnzcXifX+AcYvRs+Z3xvVvTvzALzO/KPax8sPWViWt3BXq8ltbgnU74B7xaSgBPOC7SyGsqjpsj0SfxKbONRz0WddZcPPsBcSYe0xO8YzZLCMciLweYJn1bdckJyzfMGtgfdhFm2XCTIOy33XqkOF62ZM0yAbPlY/qGcpgP/R6rZFgzYraXBgQDIlV7LCJPajXgcmX/u67FeWnTK6lwKLZuGumbty7UxMqj4eB3pl33m6sOFlbDufGxLwIEO9mb8VXerRYhsuD76iIP5POVWxkmGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OKqViah37fP3xOxJrV4r6gKm1nQKV/HcX5onmLoDu0s=;
- b=QskNc22aJeFXUHZkhaaVOUYGlVKNf5SRzLW7j1HGvt3YVsSB4VEyV5KTtXKZ+M0EGrpGYBa895h0kQF93LZO2esg5CCpy7YfUETFM74NuU++BiyoxCwhfvQ45kD9+sBkj5HVdkOSa9noiZR9ZrGbpukPiDBROcLEEKv4L46EGXSaGvnXz6mEwaLpnR4HcqoFuCMPJRQ1ZINqP3wqYAZ0Wggyqc94C+f2rqM7Aw5P2lfkAy1kDAiwh2feuSnFBVDoM0LhOfLycCIQ5W4CW0oNcvgYOP3xJTqPkXmCU+leTPxFLYEUgaQ8263OF9j7rR/ha+rVo3ZbKVPLBWaBdW8siA==
-Received: from SA1P222CA0013.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:22c::29)
- by SA1PR12MB8597.namprd12.prod.outlook.com (2603:10b6:806:251::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Tue, 15 Aug
- 2023 18:58:17 +0000
-Received: from SN1PEPF00026368.namprd02.prod.outlook.com
- (2603:10b6:806:22c:cafe::b) by SA1P222CA0013.outlook.office365.com
- (2603:10b6:806:22c::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.33 via Frontend
- Transport; Tue, 15 Aug 2023 18:58:17 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SN1PEPF00026368.mail.protection.outlook.com (10.167.241.133) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6699.14 via Frontend Transport; Tue, 15 Aug 2023 18:58:17 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Tue, 15 Aug 2023
- 11:58:04 -0700
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Tue, 15 Aug
- 2023 11:58:03 -0700
-Received: from Asurada-Nvidia (10.127.8.13) by mail.nvidia.com (10.129.68.10)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Tue, 15 Aug 2023 11:58:02 -0700
-Date:   Tue, 15 Aug 2023 11:58:00 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Yi Liu <yi.l.liu@intel.com>, <joro@8bytes.org>,
-        <alex.williamson@redhat.com>, <kevin.tian@intel.com>,
-        <robin.murphy@arm.com>, <baolu.lu@linux.intel.com>,
-        <cohuck@redhat.com>, <eric.auger@redhat.com>,
-        <kvm@vger.kernel.org>, <mjrosato@linux.ibm.com>,
-        <chao.p.peng@linux.intel.com>, <yi.y.sun@linux.intel.com>,
-        <peterx@redhat.com>, <jasowang@redhat.com>,
-        <shameerali.kolothum.thodi@huawei.com>, <lulu@redhat.com>,
-        <suravee.suthikulpanit@amd.com>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <zhenzhong.duan@intel.com>
-Subject: Re: [PATCH v7 3/4] iommufd: Add IOMMU_GET_HW_INFO
-Message-ID: <ZNvKuCFqCCWwIR24@Asurada-Nvidia>
-References: <20230811071501.4126-1-yi.l.liu@intel.com>
- <20230811071501.4126-4-yi.l.liu@intel.com>
- <ZNuogZV2eEeVwNX4@nvidia.com>
- <ZNu2XWS0BERqykIA@Asurada-Nvidia>
- <ZNvEAWF8ljWHrcws@nvidia.com>
- <ZNvJph2AHKroujFe@Asurada-Nvidia>
- <ZNvKZWcqrjp34zpe@nvidia.com>
+        Tue, 15 Aug 2023 15:02:39 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557BE268D;
+        Tue, 15 Aug 2023 12:02:20 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 353B5211B8;
+        Tue, 15 Aug 2023 19:01:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692126107; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=//6lpnW6sCl4feNuAFbqi6XUsXoCWMdVSeRR25UImmk=;
+        b=lKC4tZf7WG38nR/+S7P0hfukLxRpFMGV/R/rtIcnNlUGsWOO0WmwaXvEWgThkvB1ihsRXm
+        HWmdV0Mo0Bwu13DaVDZt15C+28SU66ST57i/9JfQIAcomGTW0DEn3qM/Z7mh70VWRyUI0a
+        tvIAUJZX0m1q1PB+9pcimyQjlw5iWL8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692126107;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=//6lpnW6sCl4feNuAFbqi6XUsXoCWMdVSeRR25UImmk=;
+        b=7bAEkFaYSkQrYTqFUCvdJZuyzgiU44+C+bBhhQFbDIcKL7WJ0SParPiABaClmft1Gfd6Kg
+        2o7jLFBIu41otZBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C9CCC1353E;
+        Tue, 15 Aug 2023 19:01:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id XZIxL5rL22QTVAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 15 Aug 2023 19:01:46 +0000
+From:   Takashi Iwai <tiwai@suse.de>
+To:     alsa-devel@alsa-project.org
+Cc:     linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrey Utkin <andrey_utkin@fastmail.com>,
+        Anton Sviridenko <anton@corp.bluecherry.net>,
+        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Bluecherry Maintainers <maintainers@bluecherrydvr.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Ismael Luceno <ismael@iodev.co.uk>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Mark Brown <broonie@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-media@vger.kernel.org, xen-devel@lists.xenproject.org
+Subject: [PATCH v2 00/25] ALSA: Generic PCM copy ops using iov_iter
+Date:   Tue, 15 Aug 2023 21:01:11 +0200
+Message-Id: <20230815190136.8987-1-tiwai@suse.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZNvKZWcqrjp34zpe@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF00026368:EE_|SA1PR12MB8597:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1f924a04-df64-47f7-4e2e-08db9dc19645
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EZvqeeMIF7bvIYUY6QLox2Y2nFc5Gxlhh8IeUTJqSy/TG34h4s4U0c+WugGLZyegolV/xyp6vivcj96DqxIdq7i5+EmS4CcQl7uzfIqB1qe05qWcVy/vq3e34Puy1NHaSgytaX7yPmmAzmIiknE3ZrN9fOZ1QWEZckb4Di1ZDp4CMWKO1wdWGcN04L1LHEcsaJGKLhYWvj3wwOuLl0VjgH6FyyUH8f+yuaqSO3BKNdX+Tj29/2svSZateZXP0ueryCeVKDRGHL2O3Bz+xrk9ntdjY8IrGOJxgTrTiJhTa8IvBKY/Ex0d+KWI2lWOFD9UuI52kEB7gNqQc7YQcS+vsRea69QPf3ybgAHSgzwpyGDlfnp3kuJfLVHvVeV4W1Hq9IN5hIkn151Uf7ISh0dWrl3Q8/nqVCfBczqs2eXBCF14Vc4EQr0uLA7H8wHv4E2xgTJqd7F/oPiOghDd1n3AzERwNPVlN4Y1W5r16aOVXpeNbX3ueb9zVZ2rTJhX7t4od0WCLPANdV3m6pDvARu89qbuajQP7cjIphO9Ka4bP6dP9XvwmW0EoN9B3uIgRtCqf/8Hn9Wy34WQYpEqt0oyu37VwAimZoUFJyXRFG5gtAbP6d0Scx+J1cjEF/BCwTsUTSST4n0ZcE9MUMbQy4iHpCm1cPSQjcUmk56lCa3ju8CsAfnpKYiQheZRUtRz27MrjmWQWbY61Gr1qme+rsWU+H1U3HgQZoetJlt2+tkXeIc=
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(39860400002)(346002)(136003)(1800799009)(186009)(82310400011)(451199024)(36840700001)(46966006)(40470700004)(54906003)(4744005)(82740400003)(41300700001)(70206006)(4326008)(86362001)(70586007)(8676002)(336012)(6862004)(40460700003)(33716001)(8936002)(26005)(5660300002)(426003)(7416002)(2906002)(9686003)(47076005)(478600001)(316002)(356005)(6636002)(36860700001)(7636003)(55016003)(40480700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2023 18:58:17.6867
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f924a04-df64-47f7-4e2e-08db9dc19645
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF00026368.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8597
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 03:56:37PM -0300, Jason Gunthorpe wrote:
-> On Tue, Aug 15, 2023 at 11:53:26AM -0700, Nicolin Chen wrote:
-> > > 	ops = dev_iommu_ops(idev->dev);
-> > > 	if (!ops->hw_info) {
-> > > 		data = ops->hw_info(idev->dev, &data_len, &cmd->out_data_type);
-> > 
-> > It should be:
-> >  	if (ops->hw_info) {
-> 
-> Hmm, the test suite probably needs some more stuff then too since it
-> passed like that :)
+Hi,
 
-Ack. I will see what I can do.
+this is a v2 patch set for cleaning up the PCM copy ops using
+iov_iter to deal with kernel / user-space pointers consistently.
+
+v1->v2:
+* The error condition checks of copy_to/from_iter() are changed to
+  be more strictly
+* Put Acked and Reviewed tags
+* The indents in the patch in dmaengine was slightly changed
+
+v1:
+  https://lore.kernel.org/r/20230814115523.15279-1-tiwai@suse.de
+
+
+Takashi
+
+===
+
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Andrey Utkin <andrey_utkin@fastmail.com>
+Cc: Anton Sviridenko <anton@corp.bluecherry.net>
+Cc: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc: Banajit Goswami <bgoswami@quicinc.com>
+Cc: Bluecherry Maintainers <maintainers@bluecherrydvr.com>
+Cc: Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc: Ismael Luceno <ismael@iodev.co.uk>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Cc: Olivier Moysan <olivier.moysan@foss.st.com>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: linux-media@vger.kernel.org
+Cc: xen-devel@lists.xenproject.org
+
+===
+
+Takashi Iwai (25):
+  iov_iter: Export import_ubuf()
+  ALSA: pcm: Add copy ops with iov_iter
+  ALSA: core: Add memory copy helpers between iov_iter and iomem
+  ALSA: dummy: Convert to generic PCM copy ops
+  ALSA: gus: Convert to generic PCM copy ops
+  ALSA: emu8000: Convert to generic PCM copy ops
+  ALSA: es1938: Convert to generic PCM copy ops
+  ALSA: korg1212: Convert to generic PCM copy ops
+  ALSA: nm256: Convert to generic PCM copy ops
+  ALSA: rme32: Convert to generic PCM copy ops
+  ALSA: rme96: Convert to generic PCM copy ops
+  ALSA: hdsp: Convert to generic PCM copy ops
+  ALSA: rme9652: Convert to generic PCM copy ops
+  ALSA: sh: Convert to generic PCM copy ops
+  ALSA: xen: Convert to generic PCM copy ops
+  ALSA: pcmtest: Update comment about PCM copy ops
+  media: solo6x10: Convert to generic PCM copy ops
+  ASoC: component: Add generic PCM copy ops
+  ASoC: mediatek: Convert to generic PCM copy ops
+  ASoC: qcom: Convert to generic PCM copy ops
+  ASoC: dmaengine: Convert to generic PCM copy ops
+  ASoC: dmaengine: Use iov_iter for process callback, too
+  ALSA: doc: Update description for the new PCM copy ops
+  ASoC: pcm: Drop obsoleted PCM copy_user ops
+  ALSA: pcm: Drop obsoleted PCM copy_user and copy_kernel ops
+
+ .../kernel-api/writing-an-alsa-driver.rst     | 58 ++++-------
+ drivers/media/pci/solo6x10/solo6x10-g723.c    | 39 ++------
+ include/sound/dmaengine_pcm.h                 |  2 +-
+ include/sound/pcm.h                           | 13 ++-
+ include/sound/soc-component.h                 | 14 +--
+ lib/iov_iter.c                                |  1 +
+ sound/core/memory.c                           | 56 +++++++++--
+ sound/core/pcm_lib.c                          | 95 ++++++++++---------
+ sound/core/pcm_native.c                       |  2 +-
+ sound/drivers/dummy.c                         | 12 +--
+ sound/drivers/pcmtest.c                       |  2 +-
+ sound/isa/gus/gus_pcm.c                       | 23 +----
+ sound/isa/sb/emu8000_pcm.c                    | 74 ++++-----------
+ sound/pci/es1938.c                            | 30 +-----
+ sound/pci/korg1212/korg1212.c                 | 50 +++-------
+ sound/pci/nm256/nm256.c                       | 42 ++------
+ sound/pci/rme32.c                             | 50 +++-------
+ sound/pci/rme96.c                             | 42 ++------
+ sound/pci/rme9652/hdsp.c                      | 42 ++------
+ sound/pci/rme9652/rme9652.c                   | 46 ++-------
+ sound/sh/sh_dac_audio.c                       | 25 +----
+ sound/soc/atmel/mchp-pdmc.c                   |  2 +-
+ sound/soc/mediatek/common/mtk-btcvsd.c        | 27 ++----
+ sound/soc/qcom/lpass-platform.c               | 13 +--
+ sound/soc/soc-component.c                     | 16 ++--
+ sound/soc/soc-generic-dmaengine-pcm.c         | 18 ++--
+ sound/soc/soc-pcm.c                           |  4 +-
+ sound/soc/stm/stm32_sai_sub.c                 |  2 +-
+ sound/xen/xen_snd_front_alsa.c                | 56 +++--------
+ 29 files changed, 269 insertions(+), 587 deletions(-)
+
+-- 
+2.35.3
+
