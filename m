@@ -2,162 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36FEF77CA26
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE3A77CA3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235954AbjHOJPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 05:15:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41316 "EHLO
+        id S235991AbjHOJQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 05:16:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236080AbjHOJOE (ORCPT
+        with ESMTP id S236055AbjHOJP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 05:14:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32799E5F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 02:13:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2EBEC650CE
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 09:13:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 936E8C433C7;
-        Tue, 15 Aug 2023 09:13:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692090809;
-        bh=eV1YTMJMzlnIU4HCb9/vrK3w7/XNJSy/N3IcgaVrgEM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TN2ea5MEpMjTVPbWwxxp09WOwY2Uz2jgYf8okq7Ls2Y0S9sbyjC9b1ZGnLXNQu/lP
-         qjMstjy+ahUvg29NCDV8cypxP4GuhOPGVbZ8DjzesBH2b3G3hNgsDgINb3TUtA7qWr
-         nENpOilt6SQmt2Sbb66sYWBbFZuZms9750SSHYVPa/28UXEYv5aGUEYZAjQyvG6woa
-         Tfq9J+Tm8yjBeTa2HoO2VG44Ym7BmubVWdi0RGZD+9RCsbAr+xzCZi3jQsezQ1UVMb
-         nGtKXfC15QiXdiTSKg/glvwTNGWPkwyXXH6XaapU5uKO1Db6txwlOyGN8BWjct9GnH
-         cGKg3UR1sgMqA==
-Date:   Tue, 15 Aug 2023 12:13:24 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dong Chenchen <dongchenchen2@huawei.com>
-Cc:     fw@strlen.de, steffen.klassert@secunet.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        timo.teras@iki.fi, yuehaibing@huawei.com, weiyongjun1@huawei.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Patch net, v2] net: xfrm: skip policies marked as dead while
- reinserting policies
-Message-ID: <20230815091324.GL22185@unreal>
-References: <20230814140013.712001-1-dongchenchen2@huawei.com>
- <20230815060026.GE22185@unreal>
+        Tue, 15 Aug 2023 05:15:29 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244E811D
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 02:15:02 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bb91c20602so9096475ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 02:15:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1692090901; x=1692695701;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N6UPah3rxy6GE+IW6hhaEXFukV19/RQgo9PDGSDaxjc=;
+        b=B4NWnukFtWBpBFBooLjjX+4xRi6cYrfaI8iegReeVzLQWKPXXt1CxHdKL4/tZ0fNPM
+         0UExtQR6YZe58qkKHpbXtHQV0uPapic2RYOUTB+6Pi7LdOE1C7GEcaF7+zgpTtYtD/de
+         UlP+/TDXrfMVghqI9OT3wDmB4f+60Ecld4ptmi3g4OGE44+/xTS+dFaCetp2KrysicqF
+         +aYy3xTBT6yAIsFwZB/EdPqMFUGo82MatiM8ko8K8L/pW/bDYDRzwOeVlfM6AvdWPq+b
+         HcGAAnq5GXzxPWbDmjMNdTVLUEtTfSjxZmvfFI4JrMMNezs7y6COdvHcs3klmaxHW6vC
+         FHlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692090901; x=1692695701;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N6UPah3rxy6GE+IW6hhaEXFukV19/RQgo9PDGSDaxjc=;
+        b=a8/ETcZKROE5IA3PXD/U77wIadBmonaaS25QK1xM3RUwNEQ6/vWU7tunzYA3J0d83m
+         NDkWUd8XDvhl5gMKLRbuOnd0cV0q9RIcZJshUKkiX/TJD3714XhXQyPOLVd60f9AoUv+
+         SB5IF2KGsWQxDrF+O10lKG92QLeb1+NlMw2q9dgvs9094rY8d1ez08x8s/KykyGnOLPf
+         lZ/DOQJMXXUxGwUGXpbVTRHKbpmbm6V9qGKc57qABZUpMx0AuQKx3vrN+3VcmtbMmAJi
+         AwDF+qz2pBLd/r/Ce+QB/ar8De0pjUZs7G+a/pDAYUjdJWOin/WR1Eo4OM9n/iAZGbTJ
+         kCdg==
+X-Gm-Message-State: AOJu0YwgTD8n7OiScTVY/E1DZSnj1VpsN6Cj35l/mMR2xbDctENBVWn+
+        dB3wYaHCSGBV4wP83MZJpJwpsw==
+X-Google-Smtp-Source: AGHT+IGKaQyK0d17VyjHV7p/Fr8yAF+2JMAJsl65uoihXD9UcmAUSi1eF134pFnOBdZUKl9ThFMr5Q==
+X-Received: by 2002:a17:902:e5c8:b0:1bb:83ec:832 with SMTP id u8-20020a170902e5c800b001bb83ec0832mr13866844plf.2.1692090901535;
+        Tue, 15 Aug 2023 02:15:01 -0700 (PDT)
+Received: from ?IPV6:fdbd:ff1:ce00:1c25:884:3ed:e1db:b610? ([240e:694:e21:b::2])
+        by smtp.gmail.com with ESMTPSA id io13-20020a17090312cd00b001b39ffff838sm10630843plb.25.2023.08.15.02.14.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Aug 2023 02:15:01 -0700 (PDT)
+Message-ID: <4f64cd2d-90e8-7902-7ef7-1ac58d51b2a8@bytedance.com>
+Date:   Tue, 15 Aug 2023 17:14:40 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230815060026.GE22185@unreal>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v4 01/48] mm: move some shrinker-related function
+ declarations to mm/internal.h
+Content-Language: en-US
+To:     Muchun Song <muchun.song@linux.dev>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, david@fromorbit.com,
+        tkhai@ya.ru, Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>, djwong@kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        yujie.liu@intel.com, Greg KH <gregkh@linuxfoundation.org>,
+        simon.horman@corigine.com, dlemoal@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, x86@kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-erofs@lists.ozlabs.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        rcu@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        dm-devel@redhat.com, linux-raid@vger.kernel.org,
+        linux-bcache@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20230807110936.21819-1-zhengqi.arch@bytedance.com>
+ <20230807110936.21819-2-zhengqi.arch@bytedance.com>
+ <FC3AE898-443D-4ACB-BCB4-0F8F2F48CDD0@linux.dev>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <FC3AE898-443D-4ACB-BCB4-0F8F2F48CDD0@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 04:47:58PM +0800, Dong Chenchen wrote:
-> On Mon, Aug 14, 2023 at 10:00:13PM +0800, Dong Chenchen wrote:
-> >> BUG: KASAN: slab-use-after-free in xfrm_policy_inexact_list_reinsert+0xb6/0x430
-> >> Read of size 1 at addr ffff8881051f3bf8 by task ip/668
-> >> 
-> >> CPU: 2 PID: 668 Comm: ip Not tainted 6.5.0-rc5-00182-g25aa0bebba72-dirty #64
-> >> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13 04/01/2014
-> >> Call Trace:
-> >>  <TASK>
-> >>  dump_stack_lvl+0x72/0xa0
-> >>  print_report+0xd0/0x620
-> >>  kasan_report+0xb6/0xf0
-> >>  xfrm_policy_inexact_list_reinsert+0xb6/0x430
-> >>  xfrm_policy_inexact_insert_node.constprop.0+0x537/0x800
-> >>  xfrm_policy_inexact_alloc_chain+0x23f/0x320
-> >>  xfrm_policy_inexact_insert+0x6b/0x590
-> >>  xfrm_policy_insert+0x3b1/0x480
-> >>  xfrm_add_policy+0x23c/0x3c0
-> >>  xfrm_user_rcv_msg+0x2d0/0x510
-> >>  netlink_rcv_skb+0x10d/0x2d0
-> >>  xfrm_netlink_rcv+0x49/0x60
-> >>  netlink_unicast+0x3fe/0x540
-> >>  netlink_sendmsg+0x528/0x970
-> >>  sock_sendmsg+0x14a/0x160
-> >>  ____sys_sendmsg+0x4fc/0x580
-> >>  ___sys_sendmsg+0xef/0x160
-> >>  __sys_sendmsg+0xf7/0x1b0
-> >>  do_syscall_64+0x3f/0x90
-> >>  entry_SYSCALL_64_after_hwframe+0x73/0xdd
-> >> 
-> >> The root cause is:
-> >> 
-> >> cpu 0			cpu1
-> >> xfrm_dump_policy
-> >> xfrm_policy_walk
-> >> list_move_tail
-> >> 			xfrm_add_policy
-> >> 			... ...
-> >> 			xfrm_policy_inexact_list_reinsert
-> >> 			list_for_each_entry_reverse
-> >> 				if (!policy->bydst_reinsert)
-> >> 				//read non-existent policy
-> >> xfrm_dump_policy_done
-> >> xfrm_policy_walk_done
-> >> list_del(&walk->walk.all);
-> >> 
-> >> If dump_one_policy() returns err (triggered by netlink socket),
-> >> xfrm_policy_walk() will move walk initialized by socket to list
-> >> net->xfrm.policy_all. so this socket becomes visible in the global
-> >> policy list. The head *walk can be traversed when users add policies
-> >> with different prefixlen and trigger xfrm_policy node merge.
-> >> 
-> >> The issue can also be triggered by policy list traversal while rehashing
-> >> and flushing policies.
-> >> 
-> >> It can be fixed by skip such "policies" with walk.dead set to 1.
-> >> 
-> >> Fixes: 9cf545ebd591 ("xfrm: policy: store inexact policies in a tree ordered by destination address")
-> >> Fixes: 12a169e7d8f4 ("ipsec: Put dumpers on the dump list")
-> >> Signed-off-by: Dong Chenchen <dongchenchen2@huawei.com>
-> >> ---
-> >> v2: fix similiar similar while rehashing and flushing policies
-> >> ---
-> >>  net/xfrm/xfrm_policy.c | 20 +++++++++++++++-----
-> >>  1 file changed, 15 insertions(+), 5 deletions(-)
 
-<...>
 
-> >> @@ -1253,11 +1256,14 @@ static void xfrm_hash_rebuild(struct work_struct *work)
-> >>  	 * we start with destructive action.
-> >>  	 */
-> >>  	list_for_each_entry(policy, &net->xfrm.policy_all, walk.all) {
-> >> +		if (policy->walk.dead)
-> >> +			continue;
-> >> +
-> >>  		struct xfrm_pol_inexact_bin *bin;
-> >>  		u8 dbits, sbits;
-> >
-> >Same comment as above.
-> >
-> >>  
-> >>  		dir = xfrm_policy_id2dir(policy->index);
-> >> -		if (policy->walk.dead || dir >= XFRM_POLICY_MAX)
-> >> +		if (dir >= XFRM_POLICY_MAX)
-> >
-> >This change is unnecessary, previous code was perfectly fine.
-> >
-> The walker object initialized by xfrm_policy_walk_init() doesnt have policy. 
-> list_for_each_entry() will use the walker offset to calculate policy address.
-> It's nonexistent and different from invalid dead policy. It will read memory 
-> that doesnt belong to walker if dereference policy->index.
-> I think we should protect the memory.
+On 2023/8/15 16:36, Muchun Song wrote:
+> 
+> 
+>> On Aug 7, 2023, at 19:08, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
+>>
+>> The following functions are only used inside the mm subsystem, so it's
+>> better to move their declarations to the mm/internal.h file.
+>>
+>> 1. shrinker_debugfs_add()
+>> 2. shrinker_debugfs_detach()
+>> 3. shrinker_debugfs_remove()
+>>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> 
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> 
+> One nit bellow.
+> 
+> [...]
+> 
+>> +
+>> +/*
+>> + * shrinker related functions
+>> + */
+> 
+> This is a multi-comment format. "/* shrinker related functions. */" is
+> the right one-line format of comment.
 
-But all operations here are an outcome of "list_for_each_entry(policy,
-&net->xfrm.policy_all, walk.all)" which stores in policy iterator
-the pointer to struct xfrm_policy.
+Will do.
 
-How at the same time access to policy->walk.dead is valid while
-policy->index is not?
+Thanks,
+Qi
 
-Thanks
+> 
+>> +
+>> +#ifdef CONFIG_SHRINKER_DEBUG
+>> +extern int shrinker_debugfs_add(struct shrinker *shrinker);
+>> +extern struct dentry *shrinker_debugfs_detach(struct shrinker *shrinker,
+>> +      int *debugfs_id);
+>> +extern void shrinker_debugfs_remove(struct dentry *debugfs_entry,
+>> +    int debugfs_id);
+>> +#else /* CONFIG_SHRINKER_DEBUG */
+>> +static inline int shrinker_debugfs_add(struct shrinker *shrinker)
+>> +{
+>> +	return 0;
+>> +}
+>> +static inline struct dentry *shrinker_debugfs_detach(struct shrinker *shrinker,
+>> +     int *debugfs_id)
+>> +{
+>> +	*debugfs_id = -1;
+>> +	return NULL;
+>> +}
+>> +static inline void shrinker_debugfs_remove(struct dentry *debugfs_entry,
+>> +	int debugfs_id)
+>> +{
+>> +}
+>> +#endif /* CONFIG_SHRINKER_DEBUG */
+>> +
+>> #endif /* __MM_INTERNAL_H */
+>> -- 
+>> 2.30.2
+>>
+> 
