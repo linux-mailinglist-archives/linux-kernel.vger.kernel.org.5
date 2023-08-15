@@ -2,139 +2,1266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0E777D2A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56FE177D2AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239586AbjHOS6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 14:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35966 "EHLO
+        id S239614AbjHOS6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 14:58:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239570AbjHOS5i (ORCPT
+        with ESMTP id S239558AbjHOS5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 14:57:38 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2043.outbound.protection.outlook.com [40.107.94.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FC8212E;
-        Tue, 15 Aug 2023 11:57:07 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OW/uUc/FwE8whGwiPcMMLmTEclF8BAZ5jG6F3Lbhz3FfgT++hxVWcFj9OUk99MVd5Q1Fg7Th+qzRSMUPrTrKvD/hYcCaAPVJ+xVH5YRiVMsS9isCM91xk8fh2TwIyceOanq9v79dCh2j2Vr4ZG7V76HL+t+eJE04w+KEXyIjNJt/jeZBqcxeG4SGPsE1NEb65DNzA3gVOi5C8Y3t2x0DKTuStQmvv1XS5tCxrd4AoYV707XD/sc8ieb+03bNgaCAjQeO0w+HEBYCyBr5ns/gyW2CScBdvIIQrWxOFDxRt/Zr0EzujJvE9YjVZokpOG2W+wOXl4Td9w+qQz3gi3od0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iehL6paUx6BVwq4DAQkr4e4dphnpfIuKp89FsWYf4QU=;
- b=D9a2AENn25A8YNakVWspKhRqLRpT+m+aGjpL89/F/Nwnxk+6AkQLMbwI7lp6uHuBsc401eopIKQgRnSfUgPD4dEg5ePGlvErusIol7TsD16zh6+hmvAzd1kEX9CrR01BwAgmLeu8LWq43kh2MAPpw0MS6mJQGQ5ZVU2A92O8SuogWJ6GiaUsSK+rfE4xEGvspKZsvqP9M7eCwGkQJr//F1KFtrVq2ERj4bCQSLD4yMiuzoGEdI6JER/HnqwltAt5n4Xs4hzoMGm1R6kzGnjDvF6fUJfTP+knUoKOPkZnPBVpTOeXbBAvZ/Tu3Na18IJuG7vQcJ17lEWxtLVnwhzsPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iehL6paUx6BVwq4DAQkr4e4dphnpfIuKp89FsWYf4QU=;
- b=X/9cKrUnHpEy6x91wWaVXuNjl42UvOdnENrDXm7Hq/muVUXhSOsz83VXem5ns4IL042lD/jCsK+tSLNRmBnDDZk3rDcmi7g2LPosQu4LzwxwvARcvkqw7ZBi6z5sGPUEJmJMzN+Odj1SKGEmj4wMSqyvFHxIN626uOCvb/FiuJYbxaptM0cJXK6ZFejSIXzkCDPX3f8GoMflFJDxiBx5F7OsoCvPW8I8vxZAwxm0PqGMKIxETRD3cg4Z6VQwUxHvQecb/O9ihzV6aCw6d8js/IE4qgFts+qHIqI/miGBiIEwopookrF8LsQhVwB2zaPHT1ERtbzlK3DJtRmBJg30Dg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by PH0PR12MB5402.namprd12.prod.outlook.com (2603:10b6:510:ef::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Tue, 15 Aug
- 2023 18:56:41 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6678.025; Tue, 15 Aug 2023
- 18:56:41 +0000
-Date:   Tue, 15 Aug 2023 15:56:37 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Nicolin Chen <nicolinc@nvidia.com>
-Cc:     Yi Liu <yi.l.liu@intel.com>, joro@8bytes.org,
-        alex.williamson@redhat.com, kevin.tian@intel.com,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
-        eric.auger@redhat.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
-        peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com
-Subject: Re: [PATCH v7 3/4] iommufd: Add IOMMU_GET_HW_INFO
-Message-ID: <ZNvKZWcqrjp34zpe@nvidia.com>
-References: <20230811071501.4126-1-yi.l.liu@intel.com>
- <20230811071501.4126-4-yi.l.liu@intel.com>
- <ZNuogZV2eEeVwNX4@nvidia.com>
- <ZNu2XWS0BERqykIA@Asurada-Nvidia>
- <ZNvEAWF8ljWHrcws@nvidia.com>
- <ZNvJph2AHKroujFe@Asurada-Nvidia>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNvJph2AHKroujFe@Asurada-Nvidia>
-X-ClientProxiedBy: SJ0PR03CA0078.namprd03.prod.outlook.com
- (2603:10b6:a03:331::23) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Tue, 15 Aug 2023 14:57:35 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B951BEE
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 11:57:02 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id ffacd0b85a97d-31768ce2e81so5087594f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 11:57:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692125818; x=1692730618;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2JMRTz+NfeDh5//BApTYF7NcyLlPRBeRMwEUD09EjF4=;
+        b=tjT41Zm2zTA32vtpGhg1xd+tFUhQkY/cvAv1ms3tOYySSG6boJ5FG0bXvRgPgdDMDi
+         hBVbs0ZbOHHjVFHAu9aTrJZbRgq836sD6OuHh5+3N2mnkXwHEIgl8v+bBxbM8twlUFvH
+         fRZ+7Ojr8uz6rKWZIbB/n0lgkCrg0HISO/qJn1xoSTMtP4o0te69Xvc06VrK4U4gPGu1
+         gx73+q2r/ulDB9jHTVdRzE6W0Ms+pDEdShXNPNVUxIY9xiLa+QJJP71uvwf3cwk5QSo3
+         PX8fDUbVBFTLbl8DgR8gonAKB1HzrUkm0PccplCaGFFr+6ksE/XyuMGjmCE82bsNwuhg
+         bjWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692125818; x=1692730618;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2JMRTz+NfeDh5//BApTYF7NcyLlPRBeRMwEUD09EjF4=;
+        b=Hp1OwbGPHJ3U4A7pHc/QCLaq1jF0abklchGrfurmD9tPtASLo+17y/YIMYo4JhguTA
+         S5OCZSeNddSwdLDF6m8FvA5SzSyTc5iDul/bIkOiRSgqHRf6jGBtmQRBIYehkzTLI0to
+         SqqD6ogM2o8olMrBGrlp/1OeRmkI2BCNQOmuGHTYweHwLibTcscvUhwGKzuPTluVw5P2
+         ahCi//V1vjjHXYJMGGQ/xKAw8SI4F2bnhcZRfZS6+OB16zH/FohO6RzY9GeHlJUj3vGG
+         8LeCbC1WN7CZXCAVn7a8pZ1MWMoQhfDx94HkXMsjwg/S4Sdi7R05WXn96QiorJ/Siqoi
+         8s/A==
+X-Gm-Message-State: AOJu0Yy9JFxldiKvQU3LL4OvpY9RgZE83z11NCVrzeL0X8QH3CYgs+zP
+        PGvxoi+1M5q7AIeYTv5OsJL5qA==
+X-Google-Smtp-Source: AGHT+IE4rSijZyr7cAzGYh0iS14YIaDfWdV9Wtoln3nLzyTdmhM5egOxl/dUYFwL4TF3A5fq/BCf1g==
+X-Received: by 2002:a5d:4dcb:0:b0:319:12c2:59cd with SMTP id f11-20020a5d4dcb000000b0031912c259cdmr9489276wru.54.1692125817825;
+        Tue, 15 Aug 2023 11:56:57 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:894:b8c7:af57:bef1])
+        by smtp.gmail.com with ESMTPSA id f14-20020adffcce000000b00317a04131c5sm18736428wrs.57.2023.08.15.11.56.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Aug 2023 11:56:57 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH v5] gpio: consumer: new virtual driver
+Date:   Tue, 15 Aug 2023 20:56:50 +0200
+Message-Id: <20230815185650.152968-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH0PR12MB5402:EE_
-X-MS-Office365-Filtering-Correlation-Id: ab0c3423-7435-4235-1936-08db9dc15c66
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FYFaLXuhzFicR1a+fP1qMmlGfE3ydO72cCqkofr588ODHG4OhaKekK7M0QqIe1tHRlk8Yki5yiHDhtM6QqiBqyFoJ41CxETPQjQTTocuieZ1/cfLqxGXIJ971idXGvRXXdAipVMUtqkhkabXcXfgLPVUPc4LtQm8f1Gpl6bfGo9ONeNFxcU1jS5KHuxs4d54VZ4tSUfKTolweS1Y+9VE8RYZoSaxm4T8kgzi9D57b4n3LXTkRCiiOc7BuFXX6QpPfEiUe0QU1CSta+noigZdojigCH1wpK2uHRAh8irn7qVWmqzYP6U+N5wFFKWPzyars8asaBoRXADyg7Bhtackkn4ftchEJA6614b+Mtl4XcvqodUYL0489WT8qBjikS44MKWu7nOGY/0zEZ+yqPPe0l1n+Tz6UCYipUFpIdnUtvJq9knwoMNNJElHsWt58VEkBXAUgugBMkz0j7xLNIZCC9xSxx0RTtMFBGIrYtufHsYCsjKDkz2UNhQDYd++JxyD3Q/EmqFJhhI6DYxott0m3dPRFRotKi1hPbdjvJMhIewWc+L2vZ2MMVnWQbWBO0eX
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(136003)(346002)(396003)(39860400002)(1800799009)(186009)(451199024)(6512007)(66556008)(66476007)(86362001)(2906002)(4744005)(37006003)(478600001)(6486002)(2616005)(36756003)(38100700002)(6506007)(41300700001)(5660300002)(6862004)(8936002)(6666004)(316002)(6636002)(26005)(8676002)(4326008)(66946007)(7416002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tSEDxxUmtcwH54NkNs8XOLC4J/OMH/MpBK+FJQxVp1RCvxbqk1q+v+iNgQIR?=
- =?us-ascii?Q?NbRRMYQ0PJhJCGOyI7e2mEq68O6OZVVfSVRfJdnnGpne/sYQbres6KIF8sT9?=
- =?us-ascii?Q?vsqQ7CIPgHiwEUG/SPEkl5f5JgyeB+oMOR4pPgV7kro6Z37k84oBf4b1jTQ/?=
- =?us-ascii?Q?aRT/8603FDa7Jn7oBKmYmz1MxvDGHOXFMudLhbJCCKE/7Va6UxccZnoRdJqR?=
- =?us-ascii?Q?LeHFg2/msAEkpRxJdtBkOGJHXLtDqUYmgSUXLJK9VblGd7nRy80Km8tH1OfF?=
- =?us-ascii?Q?yZoo+TH1gEUYr3n/QkHGiZnUXywPvxgoW6VZc4M2qiVcUA137b1CZf2YeBM4?=
- =?us-ascii?Q?jYsRJEiWp9xrfLzvxex/O6FDgYjkTNjFeLOp52WVWJfYob102BInmoP4+sRS?=
- =?us-ascii?Q?P8cenKJEt73o421l1Q3csY4hI60A6u4WYukm2P8zGgIiT/ya1he2PRSCbJDD?=
- =?us-ascii?Q?ZXx4yDGMVXHbMeJhvfZ8PyzFeoVKJedQv/bHRJS+SasiYfK3/FJcbENSicCe?=
- =?us-ascii?Q?RL4ZY8bGw3FqoZVO6KUrAqedawfmjM+17zhm+KVWPPKDkelWSgteoArfOE0E?=
- =?us-ascii?Q?O/9CJ4tiZCkJVbStuI4fEVq15RcKAVqUKCv+nSVLljnSSXtKLQ6UKP2TwJem?=
- =?us-ascii?Q?i8srl4VeDlW1dwzLFMDoDyG3flPxZq07uFF8n2drmJmqkPN5WVJJLzZDtfDB?=
- =?us-ascii?Q?qKSbQ051AF1r5q6QlZKfxkg3c701320gzwurleBEGJiS8N0wrKNd5dZr+XIJ?=
- =?us-ascii?Q?vpfr5bE0aRuEsQAqX+Py1lz2DPkQ55p8dCuF2ptTy3nyxw+8E2YVdug94uQX?=
- =?us-ascii?Q?AMKbOR633KGbTMKIF52qvofY6hLyflOlCubGkgG5opQtllkHJEJft7Tiu+xN?=
- =?us-ascii?Q?8ryWpc/TnNZ3F+Js7UWfLNQEGVfdZHSXm/DRDb6Qj7Q72yB6WVktrvYpYa/d?=
- =?us-ascii?Q?mGde02028Wf96ppGdN+VwwvaFF2d9CGeYAktnI9YQZ1qUEQ0c+VQkmTAsc77?=
- =?us-ascii?Q?0Ek69E7IWAWtwAdulFMCAzQsn9GcNp67UDctq9j84rRmGHu3Q+Qy5YuE0vpw?=
- =?us-ascii?Q?g7vgTsbjVhvsBtd4iKJsz7xqKV5raA1xLno/+0624qOla5OBS+0vlbohNhV0?=
- =?us-ascii?Q?uiuvucjNmaKHM5oQOcFMToGU6d40SQvhrVgiiP38WrZRB8Y9a4aZPbJVY6Rh?=
- =?us-ascii?Q?0e43/cG9k1hTNpUkUraQcA0jW9W+CSAZnjsQInnUJl6a04BD0ddeXZJIYuk6?=
- =?us-ascii?Q?bEvo8pTrkSqCMvnmDAro2Jm1XCsTf7jPkoz0QpGxepAZWP2lGrgnxM3NaQQi?=
- =?us-ascii?Q?LnyDfp8dAgoXMPfvSlOfBr0vyfaH8J+RQU2WeQ2jsU/M4WGrqq5s42g4BKEz?=
- =?us-ascii?Q?SGSFUKetPW4/6JXXpJAlFPWWV7+MQy3Kv4XJOK66yCYhQD71WOXNfIGJ4iFJ?=
- =?us-ascii?Q?IAVW19GRFskt3I9moMJox37Rmd3bNyx0uec/VmQb+E40vHqEJFrOsY0X80tX?=
- =?us-ascii?Q?MtPk+YzZi+1NUV6jynZFrRgG6ikOntE5fu64gfHjT0tak/0QTerJzMKIwEvZ?=
- =?us-ascii?Q?YJIMR8dwAN7sO1bSxHNFWTRKRzibKlSzBS9aERHY?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ab0c3423-7435-4235-1936-08db9dc15c66
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2023 18:56:40.9025
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BaDK3H8Wea//g2acpIK7eHVkiWpyPioo/DXaQwEJ3fKkc8ub9QGnoR1YDdm6+YZ2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB5402
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 11:53:26AM -0700, Nicolin Chen wrote:
-> > 	ops = dev_iommu_ops(idev->dev);
-> > 	if (!ops->hw_info) {
-> > 		data = ops->hw_info(idev->dev, &data_len, &cmd->out_data_type);
-> 
-> It should be:
->  	if (ops->hw_info) {
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Hmm, the test suite probably needs some more stuff then too since it
-passed like that :)
+The GPIO subsystem has a serious problem with undefined behavior and
+use-after-free bugs on hot-unplug of GPIO chips. This can be considered a
+corner-case by some as most GPIO controllers are enabled early in the
+boot process and live until the system goes down but most GPIO drivers
+do allow unbind over sysfs, many are loadable modules that can be (force)
+unloaded and there are also GPIO devices that can be dynamically detached,
+for instance CP2112 which is a USB GPIO expender.
 
-Jason
+Bugs can be triggered both from user-space as well as by in-kernel users.
+We have the means of testing it from user-space via the character device
+but the issues manifest themselves differently in the kernel.
+
+This is a proposition of adding a new virtual driver - a configurable
+GPIO consumer that can be configured over configfs (similarly to
+gpio-sim).
+
+The configfs interface allows users to create dynamic GPIO lookup tables
+that are registered with the GPIO subsystem. Every config group
+represents a consumer device. Every sub-group represents a single GPIO
+lookup. The device can work in three modes: just keeping the line
+active, toggling it every second or requesting its interrupt and
+reporting edges. Every lookup allows to specify the key, offset and
+flags as per the lookup struct defined in linux/gpio/machine.h.
+
+The module together with gpio-sim allows to easily trigger kernel
+hot-unplug errors. A simple use-case is to create a simulated chip,
+setup the consumer to lookup one of its lines in 'monitor' mode, unbind
+the simulator, unbind the consumer and observe the fireworks in dmesg.
+
+This driver is aimed as a helper in tackling the hot-unplug problem in
+GPIO as well as basis for future regression testing once the fixes are
+upstream.
+
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+---
+RFC -> v2:
+- add documentation
+- fix various issues pointed out by Andy: use struct_size() where
+  applicable, improve the logic when storing the 'live' property,
+  improve log messages, remove commas in terminators, etc.
+
+v2 -> v3:
+- use cleanup.h interfaces
+- add some clarifying commets
+- more minor code tweaks
+
+v3 -> v4:
+- fix the toggle value assignment
+- use guard(mutex)() wherever we can return directly from the subsequent
+  function call
+- use skip_spaces() + strim() to avoid having to do a memmove() when
+  stripping strings off whitespaces
+- DON'T try to save a couple LOC in ifdefs if that makes them less
+  readable (Andy :) )
+
+v4 -> v5:
+- add the gpio-consumer docs to the admin-guide/gpio/ index (reported
+  by kernel test robot <lkp@intel.com>)
+
+ .../admin-guide/gpio/gpio-consumer.rst        | 111 ++
+ Documentation/admin-guide/gpio/index.rst      |   1 +
+ drivers/gpio/Kconfig                          |   7 +
+ drivers/gpio/Makefile                         |   1 +
+ drivers/gpio/gpio-consumer.c                  | 954 ++++++++++++++++++
+ 5 files changed, 1074 insertions(+)
+ create mode 100644 Documentation/admin-guide/gpio/gpio-consumer.rst
+ create mode 100644 drivers/gpio/gpio-consumer.c
+
+diff --git a/Documentation/admin-guide/gpio/gpio-consumer.rst b/Documentation/admin-guide/gpio/gpio-consumer.rst
+new file mode 100644
+index 000000000000..50ec57088e5a
+--- /dev/null
++++ b/Documentation/admin-guide/gpio/gpio-consumer.rst
+@@ -0,0 +1,111 @@
++.. SPDX-License-Identifier: GPL-2.0-or-later
++
++Virtual GPIO Consumer
++=====================
++
++The virtual GPIO Consumer module allows users to create dynamic GPIO lookup
++tables using the exposed configfs interface and instantiate virtual GPIO
++consumer devices that retrieve and use GPIOs using these tables.
++
++Creating GPIO consumers
++-----------------------
++
++The gpio-consumer module registers a configfs subsystem called
++``'gpio-consumer'``. For details of the configfs filesystem, please refer to
++the configfs documentation.
++
++The user can create a hierarchy of configfs groups and items as well as modify
++values of exposed attributes. Once the consumer is instantiated, this hierarchy
++will be translated to appropriate device properties. The general structure is:
++
++**Group:** ``/config/gpio-consumer``
++
++This is the top directory of the gpio-consumer configfs tree.
++
++**Group:** ``/config/gpio-consumer/consumer-device``
++
++**Attribute:** ``/config/gpio-consumer/gpio-device/function``
++
++**Attribute:** ``/config/gpio-consumer/gpio-device/live``
++
++This is a directory representing a GPIO consumer device. The ``'function'``
++attribute defines how the device will use requested GPIOs. It takes the
++following values: ``'active'`` - GPIOs will be requested as output-high and
++kept in this state until the device is unbound, ``'toggle'`` - GPIOs will
++be requested in output mode and then toggled periodically (every second)
++between 1 and 0, ``'monitor'`` - GPIOs will be requested in input mode, then
++requested as interrupts and their firing reported in the kernel log.
++
++The ``'live'`` attribute allows to trigger the actual creation of the device
++once it's fully configured. The accepted values are: ``'1'`` to enable the
++virtual device and ``'0'`` to disable and tear it down.
++
++Creating GPIO lookup tables
++---------------------------
++
++User can create a number of configfs groups under the device group with the
++following properties:
++
++**Group:** ``/config/gpio-consumer/consumer-device/lookupX``
++
++**Attribute:** ``/config/gpio-consumer/consumer-device/lookupX/key``
++
++**Attribute:** ``/config/gpio-consumer/consumer-device/lookupX/offset``
++
++**Attribute:** ``/config/gpio-consumer/consumer-device/lookupX/drive``
++
++**Attribute:** ``/config/gpio-consumer/consumer-device/lookupX/pull``
++
++**Attribute:** ``/config/gpio-consumer/consumer-device/lookupX/active_low``
++
++**Attribute:** ``/config/gpio-consumer/consumer-device/lookupX/transitory``
++
++This group represents a single entry in the GPIO lookup table. The name of the
++sub-directory maps to the ``'con_id'`` field of ``'struct gpiod_lookup'``. The
++``'key'`` attribute represents either the name of the chip this GPIO belongs to
++or the GPIO line name. This depends on the value of the ``'offset'`` attribute:
++if its value is >= 0, then ``'key'`` represents the label of the chip to lookup
++while ``'offset'`` represents the offset of the line in that chip. If
++``'offset'`` is < 0, then ``'key'`` represents the name of the line.
++
++The remaining attributes map to the ``'flags'`` field of the GPIO lookup struct.
++The first two take string values as arguments:
++
++**``'drive'``:** ``'push-pull'``, ``'open-drain'``, ``'open-source'``
++**``'pull'``:** ``'pull-up'``, ``'pull-down'``, ``'pull-disabled'``, ``'as-is'``
++
++``'active_low'`` and ``'transitory'`` are boolean attributes.
++
++Activating GPIO consumers
++-------------------------
++
++Once the confiuration is complete, the ``'live'`` attribute must be set to 1 in
++order to instantiate the consumer. It can be set back to 0 to destroy the
++virtual devices. The module will synchronously wait for the new simulated device
++to be successfully probed and if this doesn't happen, writing to ``'live'`` will
++result in an error.
++
++Device-tree
++-----------
++
++Virtual GPIO consumers can also be defined in device-tree. The compatible string
++must be: ``"gpio-virtual-consumer"``. Supported properties are:
++
++  ``"gpio-virtual-consumer,function"`` - function of the virtual device
++  ``"gpio-virtual-consumer,lines"`` - list of lookup keys
++
++An example device-tree code defining a virtual GPIO consumer:
++
++.. code-block :: none
++
++    gpio-virt-consumer {
++        compatible = "gpio-virtual-consumer";
++
++        foo-gpios = <&gpio0 5 GPIO_ACTIVE_LOW>;
++        bar-gpios = <&gpio0 6 0>;
++
++        gpio-virtual-consumer,function = "toggle";
++        gpio-virtual-consumer,lines = "foo", "bar";
++    };
++
++.. SPDX-License-Identifier: GPL-2.0-or-later
+diff --git a/Documentation/admin-guide/gpio/index.rst b/Documentation/admin-guide/gpio/index.rst
+index f6861ca16ffe..be89cb99c027 100644
+--- a/Documentation/admin-guide/gpio/index.rst
++++ b/Documentation/admin-guide/gpio/index.rst
+@@ -8,6 +8,7 @@ gpio
+     :maxdepth: 1
+ 
+     gpio-aggregator
++    gpio-consumer
+     sysfs
+     gpio-mockup
+     gpio-sim
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+index e382dfebad7c..c152fcf6c54f 100644
+--- a/drivers/gpio/Kconfig
++++ b/drivers/gpio/Kconfig
+@@ -1762,6 +1762,13 @@ config GPIO_AGGREGATOR
+ 	      industrial control context, to be operated from userspace using
+ 	      the GPIO chardev interface.
+ 
++config GPIO_CONSUMER
++	tristate "GPIO Consumer Testing Module"
++	select CONFIGFS_FS
++	help
++	  This enables the configurable, configfs-based virtual GPIO consumer
++	  testing driver.
++
+ config GPIO_LATCH
+ 	tristate "GPIO latch driver"
+ 	help
+diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
+index c3ac51d47aa9..268e8f65f3c8 100644
+--- a/drivers/gpio/Makefile
++++ b/drivers/gpio/Makefile
+@@ -46,6 +46,7 @@ obj-$(CONFIG_GPIO_BT8XX)		+= gpio-bt8xx.o
+ obj-$(CONFIG_GPIO_CADENCE)		+= gpio-cadence.o
+ obj-$(CONFIG_GPIO_CLPS711X)		+= gpio-clps711x.o
+ obj-$(CONFIG_GPIO_SNPS_CREG)		+= gpio-creg-snps.o
++obj-$(CONFIG_GPIO_CONSUMER)		+= gpio-consumer.o
+ obj-$(CONFIG_GPIO_CRYSTAL_COVE)		+= gpio-crystalcove.o
+ obj-$(CONFIG_GPIO_CS5535)		+= gpio-cs5535.o
+ obj-$(CONFIG_GPIO_DA9052)		+= gpio-da9052.o
+diff --git a/drivers/gpio/gpio-consumer.c b/drivers/gpio/gpio-consumer.c
+new file mode 100644
+index 000000000000..748c442da1c9
+--- /dev/null
++++ b/drivers/gpio/gpio-consumer.c
+@@ -0,0 +1,954 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Configurable virtual GPIO consumer module.
++ *
++ * Copyright (C) 2023 Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
++ */
++
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include <linux/cleanup.h>
++#include <linux/completion.h>
++#include <linux/configfs.h>
++#include <linux/device.h>
++#include <linux/gpio/consumer.h>
++#include <linux/gpio/machine.h>
++#include <linux/idr.h>
++#include <linux/interrupt.h>
++#include <linux/jiffies.h>
++#include <linux/kernel.h>
++#include <linux/limits.h>
++#include <linux/list.h>
++#include <linux/mod_devicetable.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/notifier.h>
++#include <linux/overflow.h>
++#include <linux/platform_device.h>
++#include <linux/printk.h>
++#include <linux/property.h>
++#include <linux/slab.h>
++#include <linux/string.h>
++#include <linux/timer.h>
++
++#include "gpiolib.h"
++
++#define GPIO_CONSUMER_MAX_PROPS 3
++
++enum gpio_consumer_function {
++	GPIO_CONSUMER_FUNCTION_ACTIVE = 0,
++	GPIO_CONSUMER_FUNCTION_TOGGLE,
++	GPIO_CONSUMER_FUNCTION_MONITOR,
++	__GPIO_CONSUMER_FUNCTION_LAST
++};
++
++static const char *const gpio_consumer_function_strings[] = {
++	[GPIO_CONSUMER_FUNCTION_ACTIVE] = "active",
++	[GPIO_CONSUMER_FUNCTION_TOGGLE] = "toggle",
++	[GPIO_CONSUMER_FUNCTION_MONITOR] = "monitor",
++	NULL
++};
++
++struct gpio_consumer_irq_data {
++	struct device *dev;
++	struct gpio_desc *desc;
++};
++
++struct gpio_consumer_timer_data {
++	struct timer_list timer;
++	struct gpio_desc *desc;
++	int val;
++};
++
++static struct gpio_consumer_timer_data *to_timer_data(struct timer_list *timer)
++{
++	return container_of(timer, struct gpio_consumer_timer_data, timer);
++}
++
++static DEFINE_IDA(gpio_consumer_ida);
++
++static irqreturn_t gpio_consumer_on_irq(int irq, void *data)
++{
++	struct gpio_consumer_irq_data *irq_data = data;
++	struct gpio_desc *desc = irq_data->desc;
++	struct gpio_device *gdev = desc->gdev;
++	struct device *dev = irq_data->dev;
++	int val;
++
++	val = gpiod_get_value_cansleep(desc);
++	if (val < 0) {
++		dev_err(dev, "failed to read GPIO value: %d\n", val);
++		return IRQ_HANDLED;
++	}
++
++	dev_info(dev, "interrupt triggered on line %u of %s, new value: %d\n",
++		 gpio_chip_hwgpio(desc), dev_name(&gdev->dev), val);
++
++	return IRQ_HANDLED;
++}
++
++static void gpio_consumer_on_timer(struct timer_list *timer)
++{
++	struct gpio_consumer_timer_data *timer_data = to_timer_data(timer);
++
++	timer_data->val = timer_data->val ? 0 : 1;
++	gpiod_set_value_cansleep(timer_data->desc, timer_data->val);
++	mod_timer(&timer_data->timer, jiffies + msecs_to_jiffies(1000));
++}
++
++static void gpio_consumer_del_timer(void *data)
++{
++	struct timer_list *timer = data;
++
++	del_timer(timer);
++}
++
++static int gpio_consumer_probe(struct platform_device *pdev)
++{
++	struct gpio_consumer_timer_data *timer_data;
++	struct gpio_consumer_irq_data *irq_data;
++	enum gpio_consumer_function function;
++	const char *function_prop, **lines;
++	struct device *dev = &pdev->dev;
++	struct gpio_desc *desc;
++	enum gpiod_flags flags;
++	int ret, num_lines, i;
++
++	ret = device_property_read_string(dev, "gpio-virtual-consumer,function",
++					  &function_prop);
++	if (ret)
++		return dev_err_probe(dev, ret,
++				     "Failed to read the consumer GPIO function\n");
++
++	ret = match_string(gpio_consumer_function_strings, -1, function_prop);
++	if (ret < 0)
++		return dev_err_probe(dev, ret,
++				     "Invalid consumer function: '%s'\n",
++				     function_prop);
++
++	function = ret;
++	num_lines = device_property_string_array_count(dev,
++					"gpio-virtual-consumer,lines");
++	if (num_lines < 0)
++		return dev_err_probe(dev, num_lines,
++				     "List of GPIO lines to request not found\n");
++
++	lines = devm_kcalloc(dev, num_lines, sizeof(*lines), GFP_KERNEL);
++	if (!lines)
++		return -ENOMEM;
++
++	ret = device_property_read_string_array(dev,
++						"gpio-virtual-consumer,lines",
++						lines, num_lines);
++	if (ret < 0)
++		return dev_err_probe(dev, ret,
++				     "Failed to read GPIO line names\n");
++
++	flags = function == GPIO_CONSUMER_FUNCTION_MONITOR ?
++					GPIOD_IN : GPIOD_OUT_HIGH;
++	for (i = 0; i < num_lines; i++) {
++		desc = devm_gpiod_get(dev, lines[i], flags);
++		if (IS_ERR(desc))
++			return dev_err_probe(dev, PTR_ERR(desc),
++					     "Failed to get GPIO '%s'\n",
++					     lines[i]);
++
++		if (function == GPIO_CONSUMER_FUNCTION_MONITOR) {
++			irq_data = devm_kzalloc(dev, sizeof(*irq_data),
++						GFP_KERNEL);
++			if (!irq_data)
++				return -ENOMEM;
++
++			irq_data->dev = dev;
++			irq_data->desc = desc;
++
++			ret = devm_request_threaded_irq(dev, gpiod_to_irq(desc),
++							NULL,
++							gpio_consumer_on_irq,
++							IRQF_TRIGGER_FALLING |
++							IRQF_TRIGGER_RISING |
++							IRQF_ONESHOT,
++							lines[i], irq_data);
++			if (ret)
++				return dev_err_probe(dev, ret,
++						"Failed to request GPIO line interrupt\n");
++		} else if (function == GPIO_CONSUMER_FUNCTION_TOGGLE) {
++			timer_data = devm_kzalloc(dev, sizeof(*timer_data),
++						  GFP_KERNEL);
++			if (!timer_data)
++				return -ENOMEM;
++
++			timer_data->desc = desc;
++			timer_data->val = 1;
++
++			timer_setup(&timer_data->timer,
++				    gpio_consumer_on_timer, 0);
++			mod_timer(&timer_data->timer,
++				  jiffies + msecs_to_jiffies(1000));
++
++			ret = devm_add_action_or_reset(dev,
++						       gpio_consumer_del_timer,
++						       &timer_data->timer);
++			if (ret)
++				return ret;
++		}
++	}
++
++	return 0;
++}
++
++static const struct of_device_id gpio_consumer_of_match[] = {
++	{ .compatible = "gpio-virtual-consumer" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, gpio_consumer_of_match);
++
++static struct platform_driver gpio_consumer_driver = {
++	.driver = {
++		.name = "gpio-virtual-consumer",
++		.of_match_table = gpio_consumer_of_match,
++	},
++	.probe = gpio_consumer_probe,
++};
++
++struct gpio_consumer_device {
++	struct config_group group;
++
++	struct platform_device *pdev;
++	int id;
++	struct mutex lock;
++
++	struct notifier_block bus_notifier;
++	struct completion probe_completion;
++	bool driver_bound;
++
++	struct gpiod_lookup_table *lookup_table;
++	enum gpio_consumer_function function;
++
++	struct list_head lookup_list;
++};
++
++static int gpio_consumer_bus_notifier_call(struct notifier_block *nb,
++					   unsigned long action, void *data)
++{
++	struct gpio_consumer_device *consumer;
++	struct device *dev = data;
++	char devname[32];
++
++	consumer = container_of(nb, struct gpio_consumer_device, bus_notifier);
++	snprintf(devname, sizeof(devname), "gpio-virtual-consumer.%d",
++		 consumer->id);
++
++	if (strcmp(dev_name(dev), devname))
++		return NOTIFY_DONE;
++
++	switch (action) {
++	case BUS_NOTIFY_BOUND_DRIVER:
++		consumer->driver_bound = true;
++		break;
++	case BUS_NOTIFY_DRIVER_NOT_BOUND:
++		consumer->driver_bound = false;
++		break;
++	default:
++		return NOTIFY_DONE;
++	}
++
++	complete(&consumer->probe_completion);
++	return NOTIFY_OK;
++}
++
++static struct gpio_consumer_device *
++to_gpio_consumer_device(struct config_item *item)
++{
++	struct config_group *group = to_config_group(item);
++
++	return container_of(group, struct gpio_consumer_device, group);
++}
++
++static bool
++gpio_consumer_device_is_live_unlocked(struct gpio_consumer_device *dev)
++{
++	return !!dev->pdev;
++}
++
++struct gpio_consumer_lookup {
++	struct config_group group;
++
++	struct gpio_consumer_device *parent;
++	struct list_head siblings;
++
++	char *con_id;
++	char *key;
++	/* Can be negative to indicate lookup by name. */
++	int offset;
++
++	enum gpio_lookup_flags flags;
++};
++
++static struct gpio_consumer_lookup *
++to_gpio_consumer_lookup(struct config_item *item)
++{
++	struct config_group *group = to_config_group(item);
++
++	return container_of(group, struct gpio_consumer_lookup, group);
++}
++
++static ssize_t
++gpio_consumer_lookup_config_key_show(struct config_item *item, char *page)
++{
++	struct gpio_consumer_lookup *lookup = to_gpio_consumer_lookup(item);
++	struct gpio_consumer_device *dev = lookup->parent;
++
++	guard(mutex)(&dev->lock);
++
++	return sprintf(page, "%s\n", lookup->key);
++}
++
++static ssize_t
++gpio_consumer_lookup_config_key_store(struct config_item *item,
++				      const char *page, size_t count)
++{
++	struct gpio_consumer_lookup *lookup = to_gpio_consumer_lookup(item);
++	struct gpio_consumer_device *dev = lookup->parent;
++	char *key __free(kfree) = NULL;
++
++	key = kstrndup(skip_spaces(page), count, GFP_KERNEL);
++	if (!key)
++		return -ENOMEM;
++
++	strim(key);
++
++	guard(mutex)(&dev->lock);
++
++	if (gpio_consumer_device_is_live_unlocked(dev))
++		return -EBUSY;
++
++	kfree(lookup->key);
++	lookup->key = no_free_ptr(key);
++
++	return count;
++}
++
++CONFIGFS_ATTR(gpio_consumer_lookup_config_, key);
++
++static ssize_t
++gpio_consumer_lookup_config_offset_show(struct config_item *item, char *page)
++{
++	struct gpio_consumer_lookup *lookup = to_gpio_consumer_lookup(item);
++	struct gpio_consumer_device *dev = lookup->parent;
++	unsigned int offset;
++
++	scoped_guard(mutex, &dev->lock)
++		offset = lookup->offset;
++
++	return sprintf(page, "%d\n", offset);
++}
++
++static ssize_t
++gpio_consumer_lookup_config_offset_store(struct config_item *item,
++					 const char *page, size_t count)
++{
++	struct gpio_consumer_lookup *lookup = to_gpio_consumer_lookup(item);
++	struct gpio_consumer_device *dev = lookup->parent;
++	int offset, ret;
++
++	ret = kstrtoint(page, 0, &offset);
++	if (ret)
++		return ret;
++
++	/*
++	 * Negative number here means: 'key' represents a line name to lookup.
++	 * Non-negative means: 'key' represents the label of the chip with
++	 * the 'offset' value representing the line within that chip.
++	 *
++	 * GPIOLIB uses the U16_MAX value to indicate lookup by line name so
++	 * the greatest offset we can accept is (U16_MAX - 1).
++	 */
++	if (offset > (U16_MAX - 1))
++		return -EINVAL;
++
++	guard(mutex)(&dev->lock);
++
++	if (gpio_consumer_device_is_live_unlocked(dev))
++		return -EBUSY;
++
++	lookup->offset = offset;
++
++	return count;
++}
++
++CONFIGFS_ATTR(gpio_consumer_lookup_config_, offset);
++
++static enum gpio_lookup_flags
++gpio_consumer_lookup_get_flags(struct config_item *item)
++{
++	struct gpio_consumer_lookup *lookup = to_gpio_consumer_lookup(item);
++	struct gpio_consumer_device *dev = lookup->parent;
++
++	guard(mutex)(&dev->lock);
++
++	return lookup->flags;
++}
++
++static ssize_t
++gpio_consumer_lookup_config_drive_show(struct config_item *item, char *page)
++{
++	enum gpio_lookup_flags flags;
++	const char *repr;
++
++	flags = gpio_consumer_lookup_get_flags(item);
++
++	if (flags & GPIO_OPEN_DRAIN)
++		repr = "open-drain";
++	else if (flags & GPIO_OPEN_SOURCE)
++		repr = "open-source";
++	else
++		repr = "push-pull";
++
++	return sprintf(page, "%s\n", repr);
++}
++
++static ssize_t
++gpio_consumer_lookup_config_drive_store(struct config_item *item,
++					const char *page, size_t count)
++{
++	struct gpio_consumer_lookup *lookup = to_gpio_consumer_lookup(item);
++	struct gpio_consumer_device *dev = lookup->parent;
++
++	guard(mutex)(&dev->lock);
++
++	if (gpio_consumer_device_is_live_unlocked(dev))
++		return -EBUSY;
++
++	if (sysfs_streq(page, "push-pull")) {
++		lookup->flags &= ~(GPIO_OPEN_DRAIN | GPIO_OPEN_SOURCE);
++	} else if (sysfs_streq(page, "open-drain")) {
++		lookup->flags &= ~GPIO_OPEN_SOURCE;
++		lookup->flags |= GPIO_OPEN_DRAIN;
++	} else if (sysfs_streq(page, "open-source")) {
++		lookup->flags &= ~GPIO_OPEN_DRAIN;
++		lookup->flags |= GPIO_OPEN_SOURCE;
++	} else {
++		count = -EINVAL;
++	}
++
++	return count;
++}
++
++CONFIGFS_ATTR(gpio_consumer_lookup_config_, drive);
++
++static ssize_t
++gpio_consumer_lookup_config_pull_show(struct config_item *item, char *page)
++{
++	enum gpio_lookup_flags flags;
++	const char *repr;
++
++	flags = gpio_consumer_lookup_get_flags(item);
++
++	if (flags & GPIO_PULL_UP)
++		repr = "pull-up";
++	else if (flags & GPIO_PULL_DOWN)
++		repr = "pull-down";
++	else if (flags & GPIO_PULL_DISABLE)
++		repr = "pull-disabled";
++	else
++		repr = "as-is";
++
++	return sprintf(page, "%s\n", repr);
++}
++
++static ssize_t
++gpio_consumer_lookup_config_pull_store(struct config_item *item,
++				       const char *page, size_t count)
++{
++	struct gpio_consumer_lookup *lookup = to_gpio_consumer_lookup(item);
++	struct gpio_consumer_device *dev = lookup->parent;
++
++	guard(mutex)(&dev->lock);
++
++	if (gpio_consumer_device_is_live_unlocked(dev))
++		return -EBUSY;
++
++	if (sysfs_streq(page, "pull-up")) {
++		lookup->flags &= ~(GPIO_PULL_DOWN | GPIO_PULL_DISABLE);
++		lookup->flags |= GPIO_PULL_UP;
++	} else if (sysfs_streq(page, "pull-down")) {
++		lookup->flags &= ~(GPIO_PULL_UP | GPIO_PULL_DISABLE);
++		lookup->flags |= GPIO_PULL_DOWN;
++	} else if (sysfs_streq(page, "pull-disabled")) {
++		lookup->flags &= ~(GPIO_PULL_UP | GPIO_PULL_DOWN);
++		lookup->flags |= GPIO_PULL_DISABLE;
++	} else if (sysfs_streq(page, "as-is")) {
++		lookup->flags &= ~(GPIO_PULL_UP | GPIO_PULL_DOWN |
++				   GPIO_PULL_DISABLE);
++	} else {
++		count = -EINVAL;
++	}
++
++	return count;
++}
++
++CONFIGFS_ATTR(gpio_consumer_lookup_config_, pull);
++
++static ssize_t
++gpio_consumer_lookup_config_active_low_show(struct config_item *item,
++					    char *page)
++{
++	enum gpio_lookup_flags flags;
++
++	flags = gpio_consumer_lookup_get_flags(item);
++
++	return sprintf(page, "%s\n", flags & GPIO_ACTIVE_LOW ? "1" : "0");
++}
++
++static ssize_t
++gpio_consumer_lookup_config_active_low_store(struct config_item *item,
++					     const char *page, size_t count)
++{
++	struct gpio_consumer_lookup *lookup = to_gpio_consumer_lookup(item);
++	struct gpio_consumer_device *dev = lookup->parent;
++	bool active_low;
++	int ret;
++
++	ret = kstrtobool(page, &active_low);
++	if (ret)
++		return ret;
++
++	guard(mutex)(&dev->lock);
++
++	if (gpio_consumer_device_is_live_unlocked(dev))
++		return -EBUSY;
++
++	if (active_low)
++		lookup->flags |= GPIO_ACTIVE_LOW;
++	else
++		lookup->flags &= ~GPIO_ACTIVE_LOW;
++
++	return count;
++}
++
++CONFIGFS_ATTR(gpio_consumer_lookup_config_, active_low);
++
++static ssize_t
++gpio_consumer_lookup_config_transitory_show(struct config_item *item,
++					    char *page)
++{
++	enum gpio_lookup_flags flags;
++
++	flags = gpio_consumer_lookup_get_flags(item);
++
++	return sprintf(page, "%s\n", flags & GPIO_TRANSITORY ? "1" : "0");
++}
++
++static ssize_t
++gpio_consumer_lookup_config_transitory_store(struct config_item *item,
++					     const char *page, size_t count)
++{
++	struct gpio_consumer_lookup *lookup = to_gpio_consumer_lookup(item);
++	struct gpio_consumer_device *dev = lookup->parent;
++	bool transitory;
++	int ret;
++
++	ret = kstrtobool(page, &transitory);
++	if (ret)
++		return ret;
++
++	guard(mutex)(&dev->lock);
++
++	if (gpio_consumer_device_is_live_unlocked(dev))
++		return -EBUSY;
++
++	if (transitory)
++		lookup->flags |= GPIO_TRANSITORY;
++	else
++		lookup->flags &= ~GPIO_TRANSITORY;
++
++	return count;
++}
++
++CONFIGFS_ATTR(gpio_consumer_lookup_config_, transitory);
++
++static struct configfs_attribute *gpio_consumer_lookup_config_attrs[] = {
++	&gpio_consumer_lookup_config_attr_key,
++	&gpio_consumer_lookup_config_attr_offset,
++	&gpio_consumer_lookup_config_attr_drive,
++	&gpio_consumer_lookup_config_attr_pull,
++	&gpio_consumer_lookup_config_attr_active_low,
++	&gpio_consumer_lookup_config_attr_transitory,
++	NULL
++};
++
++static ssize_t gpio_consumer_device_config_live_show(struct config_item *item,
++						     char *page)
++{
++	struct gpio_consumer_device *dev = to_gpio_consumer_device(item);
++	bool live;
++
++	scoped_guard(mutex, &dev->lock)
++		live = gpio_consumer_device_is_live_unlocked(dev);
++
++	return sprintf(page, "%c\n", live ? '1' : '0');
++}
++
++static int
++gpio_consumer_make_lookup_table_unlocked(struct gpio_consumer_device *dev)
++{
++	struct gpiod_lookup_table *table __free(kfree) = NULL;
++	struct gpio_consumer_lookup *lookup;
++	struct gpiod_lookup *curr;
++	size_t num_entries;
++	unsigned int i = 0;
++
++	num_entries = list_count_nodes(&dev->lookup_list);
++	table = kzalloc(struct_size(table, table, num_entries), GFP_KERNEL);
++	if (!table)
++		return -ENOMEM;
++
++	table->dev_id = kasprintf(GFP_KERNEL, "gpio-virtual-consumer.%d",
++				  dev->id);
++	if (!table->dev_id)
++		return -ENOMEM;
++
++	list_for_each_entry(lookup, &dev->lookup_list, siblings) {
++		curr = &table->table[i];
++
++		curr->key = lookup->key;
++		curr->chip_hwnum = lookup->offset < 0 ?
++					U16_MAX : lookup->offset;
++		curr->con_id = lookup->con_id;
++		curr->flags = lookup->flags;
++	}
++
++	gpiod_add_lookup_table(table);
++	dev->lookup_table = no_free_ptr(table);
++
++	return 0;
++}
++
++static struct fwnode_handle *
++gpio_consumer_make_device_swnode(struct gpio_consumer_device *dev)
++{
++	struct property_entry properties[GPIO_CONSUMER_MAX_PROPS];
++	struct gpio_consumer_lookup *lookup;
++	char **lines __free(kfree) = NULL;
++	int prop_idx = 0, i = 0;
++	size_t num_lookups;
++
++	memset(properties, 0, sizeof(properties));
++
++	properties[prop_idx++] = PROPERTY_ENTRY_STRING(
++			"gpio-virtual-consumer,function",
++			gpio_consumer_function_strings[dev->function]);
++
++	num_lookups = list_count_nodes(&dev->lookup_list);
++	lines = kcalloc(num_lookups + 1, sizeof(*lines), GFP_KERNEL);
++	if (!lines)
++		return ERR_PTR(-ENOMEM);
++
++	list_for_each_entry(lookup, &dev->lookup_list, siblings)
++		lines[i++] = lookup->con_id;
++
++	properties[prop_idx++] = PROPERTY_ENTRY_STRING_ARRAY_LEN(
++		"gpio-virtual-consumer,lines", lines, num_lookups);
++
++	return fwnode_create_software_node(properties, NULL);
++}
++
++static int
++gpio_consumer_device_activate_unlocked(struct gpio_consumer_device *dev)
++{
++	struct platform_device_info pdevinfo;
++	struct fwnode_handle *swnode;
++	struct platform_device *pdev;
++	int ret;
++
++	if (list_empty(&dev->lookup_list))
++		return -ENODATA;
++
++	swnode = gpio_consumer_make_device_swnode(dev);
++	if (IS_ERR(swnode))
++		return PTR_ERR(swnode);
++
++	memset(&pdevinfo, 0, sizeof(pdevinfo));
++	pdevinfo.name = "gpio-virtual-consumer";
++	pdevinfo.id = dev->id;
++	pdevinfo.fwnode = swnode;
++
++	ret = gpio_consumer_make_lookup_table_unlocked(dev);
++	if (ret) {
++		fwnode_remove_software_node(swnode);
++		return ret;
++	}
++
++	reinit_completion(&dev->probe_completion);
++	dev->driver_bound = false;
++	bus_register_notifier(&platform_bus_type, &dev->bus_notifier);
++
++	pdev = platform_device_register_full(&pdevinfo);
++	if (IS_ERR(pdev)) {
++		bus_unregister_notifier(&platform_bus_type, &dev->bus_notifier);
++		fwnode_remove_software_node(swnode);
++		return PTR_ERR(pdev);
++	}
++
++	wait_for_completion(&dev->probe_completion);
++	bus_unregister_notifier(&platform_bus_type, &dev->bus_notifier);
++
++	if (!dev->driver_bound) {
++		platform_device_unregister(pdev);
++		fwnode_remove_software_node(swnode);
++		return -ENXIO;
++	}
++
++	dev->pdev = pdev;
++
++	return 0;
++}
++
++static void
++gpio_consumer_device_deactivate_unlocked(struct gpio_consumer_device *dev)
++{
++	struct fwnode_handle *swnode;
++
++	swnode = dev_fwnode(&dev->pdev->dev);
++	platform_device_unregister(dev->pdev);
++	fwnode_remove_software_node(swnode);
++	dev->pdev = NULL;
++	gpiod_remove_lookup_table(dev->lookup_table);
++	kfree(dev->lookup_table);
++}
++
++static ssize_t
++gpio_consumer_device_config_live_store(struct config_item *item,
++				       const char *page, size_t count)
++{
++	struct gpio_consumer_device *dev = to_gpio_consumer_device(item);
++	bool live;
++	int ret;
++
++	ret = kstrtobool(page, &live);
++	if (ret)
++		return ret;
++
++	guard(mutex)(&dev->lock);
++
++	if (live == gpio_consumer_device_is_live_unlocked(dev))
++		ret = -EPERM;
++	else if (live)
++		ret = gpio_consumer_device_activate_unlocked(dev);
++	else
++		gpio_consumer_device_deactivate_unlocked(dev);
++
++	return ret ?: count;
++}
++
++CONFIGFS_ATTR(gpio_consumer_device_config_, live);
++
++static ssize_t
++gpio_consumer_device_config_function_show(struct config_item *item, char *page)
++{
++	struct gpio_consumer_device *dev = to_gpio_consumer_device(item);
++	enum gpio_consumer_function function;
++	const char *repr;
++
++	scoped_guard(mutex, &dev->lock)
++		function = dev->function;
++
++	repr = gpio_consumer_function_strings[function];
++
++	return sprintf(page, "%s\n", repr);
++}
++
++static ssize_t
++gpio_consumer_device_config_function_store(struct config_item *item,
++					   const char *page, size_t count)
++{
++	struct gpio_consumer_device *dev = to_gpio_consumer_device(item);
++	int ret;
++
++	ret = sysfs_match_string(gpio_consumer_function_strings, page);
++	if (ret < 0)
++		return -EINVAL;
++
++	guard(mutex)(&dev->lock);
++
++	if (gpio_consumer_device_is_live_unlocked(dev))
++		return -EBUSY;
++
++	dev->function = ret;
++
++	return count;
++}
++
++CONFIGFS_ATTR(gpio_consumer_device_config_, function);
++
++static struct configfs_attribute *gpio_consumer_device_config_attrs[] = {
++	&gpio_consumer_device_config_attr_live,
++	&gpio_consumer_device_config_attr_function,
++	NULL
++};
++
++static void gpio_consumer_lookup_config_group_release(struct config_item *item)
++{
++	struct gpio_consumer_lookup *lookup = to_gpio_consumer_lookup(item);
++	struct gpio_consumer_device *dev = lookup->parent;
++
++	guard(mutex)(&dev->lock);
++
++	list_del(&lookup->siblings);
++
++	kfree(lookup->con_id);
++	kfree(lookup->key);
++	kfree(lookup);
++}
++
++static struct configfs_item_operations gpio_consumer_lookup_config_item_ops = {
++	.release	= gpio_consumer_lookup_config_group_release,
++};
++
++static const struct config_item_type gpio_consumer_lookup_config_group_type = {
++	.ct_item_ops	= &gpio_consumer_lookup_config_item_ops,
++	.ct_attrs	= gpio_consumer_lookup_config_attrs,
++	.ct_owner	= THIS_MODULE,
++};
++
++static struct config_group *
++gpio_consumer_device_make_lookup_group(struct config_group *group,
++				       const char *name)
++{
++	struct gpio_consumer_device *dev =
++			to_gpio_consumer_device(&group->cg_item);
++	struct gpio_consumer_lookup *lookup __free(kfree) = NULL;
++
++	guard(mutex)(&dev->lock);
++
++	if (gpio_consumer_device_is_live_unlocked(dev))
++		return ERR_PTR(-EBUSY);
++
++	lookup = kzalloc(sizeof(*lookup), GFP_KERNEL);
++	if (!lookup)
++		return ERR_PTR(-ENOMEM);
++
++	lookup->con_id = kstrdup(name, GFP_KERNEL);
++	if (!lookup->con_id)
++		return ERR_PTR(-ENOMEM);
++
++	config_group_init_type_name(&lookup->group, name,
++				    &gpio_consumer_lookup_config_group_type);
++	lookup->flags = GPIO_LOOKUP_FLAGS_DEFAULT;
++	lookup->parent = dev;
++	list_add_tail(&lookup->siblings, &dev->lookup_list);
++
++	return &no_free_ptr(lookup)->group;
++}
++
++static void gpio_consumer_device_config_group_release(struct config_item *item)
++{
++	struct gpio_consumer_device *dev = to_gpio_consumer_device(item);
++
++	guard(mutex)(&dev->lock);
++
++	if (gpio_consumer_device_is_live_unlocked(dev))
++		gpio_consumer_device_deactivate_unlocked(dev);
++
++	mutex_destroy(&dev->lock);
++	ida_free(&gpio_consumer_ida, dev->id);
++	kfree(dev);
++}
++
++static struct configfs_item_operations gpio_consumer_device_config_item_ops = {
++	.release	= gpio_consumer_device_config_group_release,
++};
++
++static struct configfs_group_operations gpio_consumer_device_config_group_ops = {
++	.make_group	= gpio_consumer_device_make_lookup_group,
++};
++
++static const struct config_item_type gpio_consumer_device_config_group_type = {
++	.ct_group_ops	= &gpio_consumer_device_config_group_ops,
++	.ct_item_ops	= &gpio_consumer_device_config_item_ops,
++	.ct_attrs	= gpio_consumer_device_config_attrs,
++	.ct_owner	= THIS_MODULE,
++};
++
++static struct config_group *
++gpio_consumer_config_make_device_group(struct config_group *group,
++				       const char *name)
++{
++	struct gpio_consumer_device *dev __free(kfree) = NULL;
++
++	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
++	if (!dev)
++		return ERR_PTR(-ENOMEM);
++
++	dev->id = ida_alloc(&gpio_consumer_ida, GFP_KERNEL);
++	if (dev->id < 0)
++		return ERR_PTR(dev->id);
++
++	config_group_init_type_name(&dev->group, name,
++				    &gpio_consumer_device_config_group_type);
++	mutex_init(&dev->lock);
++	INIT_LIST_HEAD(&dev->lookup_list);
++	dev->bus_notifier.notifier_call = gpio_consumer_bus_notifier_call;
++	dev->function = GPIO_CONSUMER_FUNCTION_ACTIVE;
++	init_completion(&dev->probe_completion);
++
++	return &no_free_ptr(dev)->group;
++}
++
++static struct configfs_group_operations gpio_consumer_config_group_ops = {
++	.make_group	= gpio_consumer_config_make_device_group,
++};
++
++static const struct config_item_type gpio_consumer_config_type = {
++	.ct_group_ops	= &gpio_consumer_config_group_ops,
++	.ct_owner	= THIS_MODULE,
++};
++
++static struct configfs_subsystem gpio_consumer_config_subsys = {
++	.su_group = {
++		.cg_item = {
++			.ci_namebuf	= "gpio-consumer",
++			.ci_type	= &gpio_consumer_config_type,
++		},
++	},
++};
++
++static int __init gpio_consumer_init(void)
++{
++	int ret;
++
++	ret = platform_driver_register(&gpio_consumer_driver);
++	if (ret) {
++		pr_err("Failed to register the platform driver: %d\n",
++		       ret);
++		return ret;
++	}
++
++	config_group_init(&gpio_consumer_config_subsys.su_group);
++	mutex_init(&gpio_consumer_config_subsys.su_mutex);
++	ret = configfs_register_subsystem(&gpio_consumer_config_subsys);
++	if (ret) {
++		pr_err("Failed to register the '%s' configfs subsystem: %d\n",
++		       gpio_consumer_config_subsys.su_group.cg_item.ci_namebuf,
++		       ret);
++		mutex_destroy(&gpio_consumer_config_subsys.su_mutex);
++		platform_driver_unregister(&gpio_consumer_driver);
++		return ret;
++	}
++
++	return 0;
++}
++module_init(gpio_consumer_init);
++
++static void __exit gpio_consumer_exit(void)
++{
++	configfs_unregister_subsystem(&gpio_consumer_config_subsys);
++	mutex_destroy(&gpio_consumer_config_subsys.su_mutex);
++	platform_driver_unregister(&gpio_consumer_driver);
++}
++module_exit(gpio_consumer_exit);
++
++MODULE_AUTHOR("Bartosz Golaszewski <bartosz.golaszewski@linaro.org>");
++MODULE_DESCRIPTION("Virtual GPIO consumer module");
++MODULE_LICENSE("GPL");
+-- 
+2.39.2
+
