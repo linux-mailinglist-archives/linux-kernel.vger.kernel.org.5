@@ -2,68 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDC577C916
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 10:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25CC77C91C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 10:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235543AbjHOIEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 04:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48600 "EHLO
+        id S235539AbjHOIGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 04:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235546AbjHOIEp (ORCPT
+        with ESMTP id S235548AbjHOIGD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 04:04:45 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42FA310D8
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:04:44 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d3563cb41e9so3777299276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:04:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692086683; x=1692691483;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MeskwxWPTAiQIffQy7Rdk/9Z2xH0Wh4AYqgu5I7jUPw=;
-        b=w++0d/sTBQUse03QTVnNfW2leS/LaaScvbvrGxJCKIqA/29UxMa3lVFkFKjA9bpIE1
-         Cp6D3zDmk4W2Klb6uqkJDyhI5Mrb63QLIMGsPmCb5zK1EBb8cwch2+HbqIpz23nZnp4U
-         3IGOx0skHtzvGHUgFkYnLa66jBz8JitFqw9Ej4XYPk4BubTrhS1wXbWIovr88HnzrWda
-         AZPhZ3VRhjsj8AR3JlGDAJibFMCPyRUgIOFMVbMxCNbI+7fkh3s8eGKn7MLr/DI8mObn
-         u7zCHlSLQdv4zwFQZh2uf8luBqfCOv82fwgHiP1dUEKfEr4nI6brKkqtKDiihjPVVhLo
-         JTdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692086683; x=1692691483;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MeskwxWPTAiQIffQy7Rdk/9Z2xH0Wh4AYqgu5I7jUPw=;
-        b=Jz8KZxkQCFa7shE3AACal4x78c/DVjVmDR8J0Z8zdTmIw0OpdC1b9tdzV0GRkY//gp
-         jNbo82HZgwDimqirJvD6oa+gmHPEzNr3JROjVZv0v7CcpsLvb3kHv9Pse4zhQuptuwZY
-         a3SRqohR2WxpSrsozcEzPlGuW3epn0+QrSVnP/wp/LPCmi9+EEXdjDs0Xxp6CX8YMYt3
-         WyiOd0mZSDn7fddo7sNZd73ksTB/+ZVjd3/P6D+hb4P55XJs0H6wzRKPvsu+hAEhdGVL
-         w9Llks0yjWHb3pB7LZspC1DrNogeRnPn8bBk+VD1TcKMXizGazHvgXkKSw9X3f68dwaA
-         Sy7w==
-X-Gm-Message-State: AOJu0YyNoETXq4ire6IQCz9eeMc8OP9/DibKzKe4mRnd6lCoslsaGCCo
-        C6tqBn78nw0mivIU9WpRmYhMBJGSr2AMCtflbqEgHg==
-X-Google-Smtp-Source: AGHT+IHI9XLp9TKeTxxt8PykqJrhPgYXUjPhN/04BUGDhaTm6KhyzshKT2GuowB4nu+++Ul4Sj40cHOwNpj89N+0JaQ=
-X-Received: by 2002:a25:b4a:0:b0:d6b:75e5:f2fd with SMTP id
- 71-20020a250b4a000000b00d6b75e5f2fdmr4315483ybl.37.1692086683533; Tue, 15 Aug
- 2023 01:04:43 -0700 (PDT)
+        Tue, 15 Aug 2023 04:06:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CFE172A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:06:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A0CDE6185C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:06:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45FBBC433C8;
+        Tue, 15 Aug 2023 08:06:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692086761;
+        bh=MBjm+i9oi2ovjJMqGomAYUboVzAwAtJyrjcdgX8noeU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GZWSfEB167QEpWQhBRCSB/0mt7Mx57zwzwAS1gjcDe7zXNzq1dO8d6V419dvV8dIp
+         E7EyMkdi7QDHs7jWoD/TlVe5eHOVNd9tttE1Czn7m2K6IAedfY+oa/7gOSf0d+MCNi
+         07WXZd6/pKzqeRmAwtu6+KBXiG/pQOMFeoHJdF1N5RrQwJRdGyp6IfxkiGMzZMsPvE
+         vEoRcIduM2Y8koNlu7K3xvBcRAd4XlOkrKRUZus0YY3wsKlc5+Qi/m06QEyJApm/I0
+         arjNyZU5wy7ploc4kHMMRt5ZPxoe9O5SWRdp0F55aLtCQVAFkPgqJCH+9EP4ra/YSq
+         Gy/mJ8qPiCLpA==
+Date:   Tue, 15 Aug 2023 11:05:57 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Dong Chenchen <dongchenchen2@huawei.com>,
+        steffen.klassert@secunet.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        timo.teras@iki.fi, yuehaibing@huawei.com, weiyongjun1@huawei.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Patch net, v2] net: xfrm: skip policies marked as dead while
+ reinserting policies
+Message-ID: <20230815080557.GK22185@unreal>
+References: <20230814140013.712001-1-dongchenchen2@huawei.com>
+ <20230815060026.GE22185@unreal>
+ <20230815060454.GA2833@breakpoint.cc>
+ <20230815073033.GJ22185@unreal>
+ <ZNsukMSQmzmXpgbS@gondor.apana.org.au>
 MIME-Version: 1.0
-References: <20230809131442.25524-1-brgl@bgdev.pl> <20230809131442.25524-2-brgl@bgdev.pl>
-In-Reply-To: <20230809131442.25524-2-brgl@bgdev.pl>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 15 Aug 2023 10:04:32 +0200
-Message-ID: <CACRpkdavsv3nJnhtdqW8ANAVfxbgHdM-SpcfOv4p_t-7EOaOHQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] gpio: sim: simplify code with cleanup helpers
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNsukMSQmzmXpgbS@gondor.apana.org.au>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,33 +64,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 9, 2023 at 3:14=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl> =
-wrote:
+On Tue, Aug 15, 2023 at 03:51:44PM +0800, Herbert Xu wrote:
+> On Tue, Aug 15, 2023 at 10:30:33AM +0300, Leon Romanovsky wrote:
+> >
+> > But policy has, and we are not interested in validity of it as first
+> > check in if (...) will be true for policy->walk.dead.
+> > 
+> > So it is safe to call to dir = xfrm_policy_id2dir(policy->index) even
+> > for dead policy.
+> 
+> If you dereference policy->index on a walker object it will read memory
+> before the start of the walker object.  That could do anything, perhaps
+> even triggering a page fault.
 
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> Use macros defined in linux/cleanup.h to automate resource lifetime
-> control in the gpio-simulator.
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-(...)
-> -       mutex_lock(&chip->lock);
-> +       guard(mutex)(&chip->lock);
-(...)
-> -       mutex_lock(&chip->lock);
-> -       ret =3D !!test_bit(offset, chip->value_map);
-> -       mutex_unlock(&chip->lock);
-> +       scoped_guard(mutex, &chip->lock)
-> +               ret =3D !!test_bit(offset, chip->value_map);
+Where do you see walker object? xfrm_policy_id2dir() is called on policy
+object, which is defined as "struct xfrm_policy".
 
-This is really neat. When I grep:ed around in linux-next this seemed like
-the first user of the scoped guards, so maybe Peter Z want to take a look?
-I bet there is other code using it coming for this next merge window as
-well, but this is really the first that will land in linux-next as it seems=
-.
+Thanks
 
-It looks good to me FWIW:
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+> 
+> Cheers,
+> -- 
+> Email: Herbert Xu <herbert@gondor.apana.org.au>
+> Home Page: http://gondor.apana.org.au/~herbert/
+> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
