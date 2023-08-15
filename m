@@ -2,106 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C0477C4D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 03:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7FF677C4DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 03:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233794AbjHOBEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 21:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39038 "EHLO
+        id S233805AbjHOBEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 21:04:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233707AbjHOBDm (ORCPT
+        with ESMTP id S233707AbjHOBEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 21:03:42 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD10E73
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 18:03:41 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-790af3bfa5cso58229139f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 18:03:41 -0700 (PDT)
+        Mon, 14 Aug 2023 21:04:08 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99525E65;
+        Mon, 14 Aug 2023 18:04:07 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6bd0911c95dso4458570a34.3;
+        Mon, 14 Aug 2023 18:04:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1692061421; x=1692666221;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20221208; t=1692061447; x=1692666247;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Zf24qn986+3HODYb4D7dbEQc+CnKSZ5LVW4DefTNb54=;
-        b=dswvIqwEJ+uQndBIdiZJZx44dP90/nfHjw9vK5bNSC9lVx/tSjJQSrzGV5gDYSlzlK
-         mgTL6y0rjWziN8oiKbhFfq8Tx/EGmeUHJ/zgkpH6LmH8sqgs2DjPQjYWkO6AbfQLywfc
-         XiS0/lDyOZ4jFkwceBgPSiqXIJb37lWnfT2ZA=
+        bh=9HOC4ki6E5bzT2JuiqqGPDcSiKjjcSrTtPrdwQPQGz8=;
+        b=jbYOJKt2HrwiG9nGKVPbLLAqsekGwWN9YHjlnysZeAn2YmLpkr8tMF9tD1JZvAKYGJ
+         vbEmimNdaUYAI0wPBlwg4EMnrLuofS4DS0D8o7hf+znUu75sSQ5XpvQCmRgxPeRg6EUg
+         dTb2llVelhI+k/aUayXYMyyMaxMMhaqDXsllbybpIoP8Z2kOQM1pnG0EFkNljIo0AlvG
+         zT9IbYZ1FsCTBa5gCuIXOnY1PEn61nTlmxGp0N9IrTsg1i0xQvHmdjYKYv8whU2MBhrc
+         NWQa7kVLuzZviA4ZV6Ywt4xsfC1yruywlS26IRrZDXBKph1PuY4RTBY/DkL9Ir8Rtqq4
+         GqTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692061421; x=1692666221;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1692061447; x=1692666247;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zf24qn986+3HODYb4D7dbEQc+CnKSZ5LVW4DefTNb54=;
-        b=FPx4n6FxbEKJzRopHHkC+TiWL1eEb/sI+sbeGNgPo4H4CNJUQsqalxB9zPPiqGCoEz
-         GsBJ23z7FL7riTEtjZQgIXGVtvlug6s/ThwUxi8Anvt5WaWIyKSgJKo3lHcbXEuY8HHl
-         boVyTwurvWMsRlak/Re9344Nxqj9xA1fwBz0uMLYMRlerGsc8EDdicWtR22+n1Hw+ruW
-         j6UFsVPYQHBH3n+6hGZ68YpRNRYzZLfWcLrQ2qD9mCznNTWepS48L21OmXZwmJ+2Kh7u
-         NlSwMs8/ncfypp5/U8iOJmIJ3Z3XgmdHsez16P3tkkk5fv79Ct+pTBEHUuKgroeoHJ35
-         59+g==
-X-Gm-Message-State: AOJu0YxcevoVedU1vKKlzi1WALz8mzvSRZWblRF+KNWoUT4C6BRiyyM9
-        6TcBhyOJ94YL5TEemyZdFJR9pA==
-X-Google-Smtp-Source: AGHT+IFlStz432lwAjsuSr/+troe7G5Li7J95LcHwvH6pVQdhQSvB40tJvf/Q8ymE0iPVul6ltWuqA==
-X-Received: by 2002:a05:6e02:105:b0:349:385e:287e with SMTP id t5-20020a056e02010500b00349385e287emr12041151ilm.1.1692061420997;
-        Mon, 14 Aug 2023 18:03:40 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id b6-20020a92c846000000b00348c7617795sm3563764ilq.49.2023.08.14.18.03.40
+        bh=9HOC4ki6E5bzT2JuiqqGPDcSiKjjcSrTtPrdwQPQGz8=;
+        b=eYAwVRhmnWQOPeYaXSQXllUC1HgXnSKB3DlDwxCTzI3MG7dtZ1hk8G0rU0RTzXmelM
+         mWeTnJs/bN+SIIBBClVuCgzieuegWOP2tmWyZQHbarbZz7RahwMUyzqq7W7thm1fS7WP
+         KqK6Z93XXanb7ICDoI4wrlotYYQw0xGuBiTLsy0o36FQgJ2Biadp88ItIzaAM17V51Hu
+         92/DWiUVTyr3VEsgak1j+SRckEj7HKWM/KBaJ3sciEU0vGHtdji/ZuIhXFJgxDUJl+Zb
+         RlyhGh8aCLhPDMZgIcOn+CODJye5TVyaXB/U5ItBauitxzRKHy4k1DnFCPZE9IL4/EFK
+         DTKA==
+X-Gm-Message-State: AOJu0YyJHMdDS6VQq47rCsCS9hFbB1W9/dL/ja3xqHzXTxfzQCVjaY5c
+        l0bxQypuGsA/CnYCzHDX1mU=
+X-Google-Smtp-Source: AGHT+IFjL4ZIFRI3nxNAgw+fCZpcg4FoDRRJtnLZcUwYFTqwnD757hfZPvlq7Ph81yECYktr9ladPA==
+X-Received: by 2002:a9d:6c5a:0:b0:6b9:2e88:79cc with SMTP id g26-20020a9d6c5a000000b006b92e8879ccmr9978004otq.19.1692061446767;
+        Mon, 14 Aug 2023 18:04:06 -0700 (PDT)
+Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id v10-20020a9d7d0a000000b006b87f593877sm4781985otn.37.2023.08.14.18.04.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 18:03:40 -0700 (PDT)
-Message-ID: <f4848ba1-39ac-5d1e-307f-1fba3ee3786d@linuxfoundation.org>
-Date:   Mon, 14 Aug 2023 19:03:39 -0600
+        Mon, 14 Aug 2023 18:04:06 -0700 (PDT)
+Message-ID: <ff20038d-8b42-471d-b625-8cf0e343a915@gmail.com>
+Date:   Mon, 14 Aug 2023 22:04:01 -0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 4.19 00/33] 4.19.292-rc1 review
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 03/13] rust: add derive macro for `Zeroable`
+To:     Benno Lossin <benno.lossin@proton.me>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <nmi@metaspace.dk>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev, Asahi Lina <lina@asahilina.net>
+References: <20230814084602.25699-1-benno.lossin@proton.me>
+ <20230814084602.25699-4-benno.lossin@proton.me>
 Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230813211703.915807095@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20230813211703.915807095@linuxfoundation.org>
+From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20230814084602.25699-4-benno.lossin@proton.me>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/13/23 15:18, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.292 release.
-> There are 33 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 8/14/23 05:46, Benno Lossin wrote:
+> Add a derive proc-macro for the `Zeroable` trait. The macro supports
+> structs where every field implements the `Zeroable` trait. This way
+> `unsafe` implementations can be avoided.
 > 
-> Responses should be made by Tue, 15 Aug 2023 21:16:53 +0000.
-> Anything received after that time might be too late.
+> The macro is split into two parts:
+> - a proc-macro to parse generics into impl and ty generics,
+> - a declarative macro that expands to the impl block.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.292-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
+> Suggested-by: Asahi Lina <lina@asahilina.net>
+> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
+> ---
+> v3 -> v4:
+> - add support for `+` in `quote!`.
 > 
-> thanks,
+> v2 -> v3:
+> - change derive behavior, instead of adding `Zeroable` bounds for every
+>    field, add them only for generic type parameters,
+> - still check that every field implements `Zeroable`,
+> - removed Reviewed-by's due to changes.
 > 
-> greg k-h
+> v1 -> v2:
+> - fix Zeroable path,
+> - add Reviewed-by from Gary and Björn.
 > 
-
-Compiled and booted on my test system. No dmesg regressions.
-
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
-
+> [...]
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
