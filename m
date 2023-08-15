@@ -2,76 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB9777CFE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 18:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 164C477CFEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 18:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238420AbjHOQIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 12:08:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58926 "EHLO
+        id S238440AbjHOQJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 12:09:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238452AbjHOQHu (ORCPT
+        with ESMTP id S238432AbjHOQJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 12:07:50 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE85C5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 09:07:48 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-686f74a8992so803072b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 09:07:48 -0700 (PDT)
+        Tue, 15 Aug 2023 12:09:15 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4AC41733
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 09:09:13 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-76c4890a220so436660585a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 09:09:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1692115667; x=1692720467;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UMKm67He05h24Txxg1/AURd1FsY44qXVcXZxvPVybZY=;
-        b=ymuIvAlCTGJu2UMghmJxyC5LIaBaMDPVRn6hEipva+70/Gco/Yz10PAT/TeKH41w3a
-         qhJT4WiR16wemFgVY0or+iDZU+iXrgNTOULHgCCoS4/GwspTtb8TATbEJjtdVQYGl6Se
-         jyuGkowLtcvhaUGVJAk9ujHeJ6bzUaudQFqDfSaDZFpBCBeCvlLCs1J6J2emsFkVSWxP
-         aTU87i9u8gy4xa6szS5NCM0x4DfP9FsCOjxS13vOa0o+Ok7KaAXqNLvMYyeDxfmnOlMy
-         9670fWa50wcSwcxIvM3ngKf8pdahkvpd7nZZMA6R7kUlSr9lFEgi6penpK6LoIJrymw3
-         C43g==
+        d=gmail.com; s=20221208; t=1692115753; x=1692720553;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=a7C9/8y+U58yo9ZvAFzzO1UqKJUAwnM6b0NzrYmnGpo=;
+        b=mvDMKIcZgcK17e9juJTBM1HOO6PNEZrWe7eP2pzdOs4HsP5XTeKNBqD1GRlg58HEhX
+         MaLRc+vSgK3qPfpEhPIeoBoz0RmOv0emmq7MDqbgQSNqGruIPUVRO2SDtwRZoZk16nTQ
+         rbX33pTKk8g3K+eivsboBRF5Ed0lr+V+4SDOZI4R7NLDTTmv6qShAmGA7NYrbpiiV1oq
+         OlzHUF9tot4iKOgeQB3O35rjpcA3cV8PazvgdD/Nrh8I1mEr0opyGDA7xBAFPy93VWoy
+         FzaMP401uCzbFBr6WiUamZKx7BTFCX8oO1O7yMOpSoxqxTODSeYQx2KdXLE99scvi7yy
+         HqEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692115667; x=1692720467;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UMKm67He05h24Txxg1/AURd1FsY44qXVcXZxvPVybZY=;
-        b=j6EvId6VVKx+jCfRBKNyxhl4IUX+Z3MOa9oVVvnTgJYMZpgfr0+OKFJJWnSDg12soN
-         frmIpUGduUbXhtSzmNsbPvQHyjeb9mNmN4TTU1Fi3yx5gF6o9DwCUGGtre1m7Dt1O4sC
-         J4xi445cYSeNQwdHOQShZcsL6IhV06cCB7G+aFkKrLfWmWF5kobEHIcntqUv88yEco+D
-         nCM3wq+M17yUmmNpGxdCq+y9vqH2YCPj/d4p8yQyuQDOWmk1DWIYbGn52Ba9oQnrzZvB
-         Mj5XMeolDkLOL7cspxgG5Cex4S30RnW9WBj3k/Pz3arZSz1oL61X5VpHruPAu58IZqxy
-         d8iA==
-X-Gm-Message-State: AOJu0YzG+o4b42EBeVA5FltFH1t79UeSfk7bMWccElgYTLAx90RZy/5G
-        zERMyKe51nVeCfwr+BQG5Dg9qA==
-X-Google-Smtp-Source: AGHT+IGCPhuG+fLQNjnvXlrKDzm+p3MkO03T2Gvyr1BkvQzHUgg2vTNZVBnV24TDUo8opcZjK9PFnQ==
-X-Received: by 2002:a05:6a20:160c:b0:13e:1d49:723c with SMTP id l12-20020a056a20160c00b0013e1d49723cmr17366468pzj.2.1692115667484;
-        Tue, 15 Aug 2023 09:07:47 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id c10-20020a63724a000000b0056416526a5csm10179832pgn.59.2023.08.15.09.07.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 09:07:46 -0700 (PDT)
-Message-ID: <48f834c2-b283-4b02-9407-4a0842d4ed72@kernel.dk>
-Date:   Tue, 15 Aug 2023 10:07:45 -0600
+        d=1e100.net; s=20221208; t=1692115753; x=1692720553;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a7C9/8y+U58yo9ZvAFzzO1UqKJUAwnM6b0NzrYmnGpo=;
+        b=WvpaJNzkAsxKmwatOcyvIX6E2Ul5f6O39IKvWKgXbN7KWPkn4O6ltdbSKmTVYvApNx
+         /cyXkrO/3R8NvEmA/Y6NZJz7FzsNxYbGOJaP+6vCrQU1FKRm/nThNbhjc8eU/R5x4qzX
+         6P2nba0dO799RkeIdzxEHeR280F6XXitmfB7VpMniQIIF7I1hxWY5sOp/HEn86MHaD6I
+         FtwgWgRjI6adkTMGlUHKd3uUTkAfnd9IzvPEcO5Yy4KJT4cu0xf3REnPMw33J/t4IJN5
+         TkfM2fO9snYTnMBcY3ViNdR9CyOnzVsH1Z5ED0IfGmTaOEBN9DPZe2U9ATjTCq6ojgwB
+         NmVA==
+X-Gm-Message-State: AOJu0YxBMviRiB0y8KzslzuemiQJj5QawpxflnQxQH3jsO+8CGWWfxta
+        pbkzzNxAwf5YKTYSZcGDeQ4cjQJiqc0=
+X-Google-Smtp-Source: AGHT+IG0axrB7/devO/26FRZZWAcuvA50Ii95TbGO/5I3HhyO9HJaobhSyv6EQimQSFFQtGg25yFcQ==
+X-Received: by 2002:a37:e310:0:b0:767:dbe5:1f2f with SMTP id y16-20020a37e310000000b00767dbe51f2fmr10923922qki.35.1692115752784;
+        Tue, 15 Aug 2023 09:09:12 -0700 (PDT)
+Received: from localhost (98-159-221-50.static.firstlight.net. [98.159.221.50])
+        by smtp.gmail.com with ESMTPSA id g3-20020a05620a13c300b0075cd80fde9esm3837610qkl.89.2023.08.15.09.09.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Aug 2023 09:09:12 -0700 (PDT)
+Date:   Tue, 15 Aug 2023 09:09:10 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 1/4] genirq/irq_sim: dispose of remaining mappings before
+ removing the domain
+Message-ID: <ZNujJhy9fmCFwwLK@yury-ThinkPad>
+References: <20230812194457.6432-1-brgl@bgdev.pl>
+ <20230812194457.6432-2-brgl@bgdev.pl>
+ <ZNtVuUWTZa0gLwXz@smile.fi.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: Fixes tag needs some work in the block tree
-Content-Language: en-US
-To:     Song Liu <song@kernel.org>
-Cc:     Yu Kuai <yukuai1@huaweicloud.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20230815091931.4dd2b277@canb.auug.org.au>
- <8c946512-0cc4-fbc5-ca36-0e2c6d636eb2@huaweicloud.com>
- <c39a3bff-01b9-4007-80ac-00ce2b11a902@kernel.dk>
- <CAPhsuW7ck4Bb8NVUdgZZJqzNCYMgT9rspKshr2Zi=8xo2cQLaw@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <CAPhsuW7ck4Bb8NVUdgZZJqzNCYMgT9rspKshr2Zi=8xo2cQLaw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNtVuUWTZa0gLwXz@smile.fi.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,45 +77,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/15/23 9:58 AM, Song Liu wrote:
-> On Tue, Aug 15, 2023 at 11:08?PM Jens Axboe <axboe@kernel.dk> wrote:
->>
->> On 8/14/23 9:21 PM, Yu Kuai wrote:
->>> Hi,
->>>
->>> ? 2023/08/15 7:19, Stephen Rothwell ??:
->>>> Hi all,
->>>>
->>>> In commit
->>>>
->>>>    71070e7bd25d ("md/raid10: fix a 'conf->barrier' leakage in raid10_takeover()")
->>>>
->>>> Fixes tag
->>>>
->>>>    Fixes: 4d27e927344a ("md: don't quiesce in mddev_suspend()")
->>>>
->>>> has these problem(s):
->>>>
->>>>    - Target SHA1 does not exist
->>>
->>> Sorry about this, the commit was picked from previous md-next branch,
->>> and I didn't know that it will change...
->>
->> It's most likely not your fault, I'm guessing Song rebased that branch
->> and this is why the sha changed. Song?
+On Tue, Aug 15, 2023 at 01:38:49PM +0300, Andy Shevchenko wrote:
+> On Sat, Aug 12, 2023 at 09:44:54PM +0200, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > 
+> > If the device providing simulated interrupts is unbound (real life
+> > example: gpio-sim is disabled with users that didn't free their irqs)
+> > and removes the simulated domain while interrupts are still requested,
+> > we will hit memory issues when they are eventually freed and the
+> > mappings destroyed in the process.
+> > 
+> > Specifically we'll access freed memory in __irq_domain_deactivate_irq().
+> > 
+> > Dispose of all mappings before removing the simulator domain.
 > 
-> Yeah, it is my fault. I am really sorry for this issue.
+> ...
 > 
->>
->>> Is there any way that I can fix this ?
->>
->> Only way to fix this is if I rewind my branch and Song updates his
->> branch to not have this issue, and then sends a new pull request.
+> > +#include <linux/list.h>
 > 
-> Yes please. Let's fix this.
+> Maybe ordered?
+> 
+> >  #include <linux/irq.h>
+> >  #include <linux/irq_sim.h>
+> >  #include <linux/irq_work.h>
+> 
+> ...
+> 
+> > @@ -16,12 +17,14 @@ struct irq_sim_work_ctx {
+> >  	unsigned int		irq_count;
+> >  	unsigned long		*pending;
+> >  	struct irq_domain	*domain;
+> > +	struct list_head	irqs;
+> >  };
+> >  
+> >  struct irq_sim_irq_ctx {
+> >  	int			irqnum;
+> >  	bool			enabled;
+> >  	struct irq_sim_work_ctx	*work_ctx;
+> 
+> > +	struct list_head	siblings;
+> 
+> You can reduce the code size by moving this to be the first member.
+> Not sure about struct irq_sim_work_ctx, you can play with bloat-o-meter.
 
-Please send a new one, I've dropped the old one.
+Pahole you meant?
 
--- 
-Jens Axboe
+  yury:linux$ pahole -C irq_sim_irq_ctx /sys/kernel/btf/vmlinux
+  struct irq_sim_irq_ctx {
+  	int                        irqnum;               /*     0     4 */
+  	bool                       enabled;              /*     4     1 */
+  
+  	/* XXX 3 bytes hole, try to pack */
+  
+  	struct irq_sim_work_ctx *  work_ctx;             /*     8     8 */
+  
+  	/* size: 16, cachelines: 1, members: 3 */
+  	/* sum members: 13, holes: 1, sum holes: 3 */
+  	/* last cacheline: 16 bytes */
+  };
 
+In this particular case, there will be no hole because list head
+position (16) will be aligned to sizeof(struct list_head) == 16.
+
+But as Bartosz said in the other email, "it's just good practice
+resulting from years of" kernel coding to have:
+ - members declared strongly according to the logic of the code, and
+   if no strong preference: 
+ - list head be the first element of the structure, to let compiler
+   avoid generating offsets when traversing lists;
+ - put elements of greater size at the beginning, so no holes will be
+   emitted like in the example above.
+
+So I'd suggest:
+
+  struct irq_sim_irq_ctx {
+     struct list_head        siblings;
+     struct irq_sim_work_ctx *work_ctx;
+     int                     irqnum;
+     bool                    enabled;
+  }
+  
+Again, if there's NO ANY reason to have the irq number at the
+beginning.
+
+While here, I wonder, why irqnum is signed? Looking at the very first
+random function in kernel/irq/irq_sim.c, I see that it's initialized
+from a function returning unsigned value:
+
+  static void irq_sim_handle_irq(struct irq_work *work)
+  {
+          struct irq_sim_work_ctx *work_ctx;
+          unsigned int offset = 0;
+          int irqnum;
+  
+          work_ctx = container_of(work, struct irq_sim_work_ctx, work);
+  
+          while (!bitmap_empty(work_ctx->pending, work_ctx->irq_count)) {
+                  offset = find_next_bit(work_ctx->pending,
+                                         work_ctx->irq_count, offset);
+                  clear_bit(offset, work_ctx->pending);
+                  irqnum = irq_find_mapping(work_ctx->domain, offset);
+                  handle_simple_irq(irq_to_desc(irqnum));
+          }
+  }
+
+Thanks,
+Yury
