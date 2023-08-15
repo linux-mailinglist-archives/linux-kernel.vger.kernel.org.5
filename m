@@ -2,96 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7E977CC39
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E92B877CC43
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236923AbjHOL7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 07:59:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36284 "EHLO
+        id S236786AbjHOMCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 08:02:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237007AbjHOL6x (ORCPT
+        with ESMTP id S236944AbjHOMC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 07:58:53 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C88199B;
-        Tue, 15 Aug 2023 04:58:32 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37FBvk7L019539;
-        Tue, 15 Aug 2023 11:58:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : to : cc : references : from : subject : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Zu7cXJvPVx2WqzJM1LVy5qKbxNzBYeKWJPOVQm3gN10=;
- b=tIkzRHcUBRBP2VeguYyX+CV7/CXVSZEYJAqTGbgf1Xur1prlYoGNvtoVq14RjZ5btwXl
- YgPrhH9USQwZ9XIVb71Cibz3Kqso2RFdVp4c58HcAZj1KwmEKklOoM8JShnVbHOZMiqZ
- QYrLUOv2CTnIF7gs32/h5YJD1Y31ODCZJ5tMqVtWzXyGuCFRVQGzhefKNqxCgJtRBmBi
- xOVewM/l9U6+zn/W2qWNdb1C1k/ZarM2C0JeDDw2J4ei8oOf7qpNg4Vic1omz6HlAJlS
- tjytKzKhuzo6kHQ6hS0dSN3ASItkYQxPyR3zYf8+MeJGffyyJi2cMk0pxaVU4/31u20/ zw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sg8gvgdv1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Aug 2023 11:58:31 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37FBdaA3030479;
-        Tue, 15 Aug 2023 11:58:31 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sg8gvgdur-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Aug 2023 11:58:31 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37F8meUC013234;
-        Tue, 15 Aug 2023 11:58:30 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sepmjm3dn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Aug 2023 11:58:30 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37FBwRU362259654
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Aug 2023 11:58:27 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A0BDE20043;
-        Tue, 15 Aug 2023 11:58:27 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1D39D20040;
-        Tue, 15 Aug 2023 11:58:27 +0000 (GMT)
-Received: from [9.171.12.89] (unknown [9.171.12.89])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 15 Aug 2023 11:58:27 +0000 (GMT)
-Message-ID: <1b156168-f349-bc42-fa1d-9a6e8bfba5e1@linux.ibm.com>
-Date:   Tue, 15 Aug 2023 13:58:26 +0200
+        Tue, 15 Aug 2023 08:02:29 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C466CB0;
+        Tue, 15 Aug 2023 05:02:25 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id ada2fe7eead31-447d394d1ebso4144769137.1;
+        Tue, 15 Aug 2023 05:02:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692100945; x=1692705745;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=T7VZKftEzDye9TscT4naX9QKoF2fRXcn75T62khYWWQ=;
+        b=kHJJ+YQzAjdBTWqM+jTaA28DDuduIOmeVIXpjNAxaIzEhEwvkEd46GjFTqAtrQ/5g6
+         EB1vOL2dIeeXoRkOFq8w+Q1Y48BEyCdfsvTG0tKeVS3TPj32zDyikBiLccjWfDKaoH52
+         Pv6te7bjbzUzKMMFaeXsD42CVKKjiDVbwRphDPjH8NWOFb8qslNtI2FH+SjFa7EoXAig
+         zPgR7OXFYCeSa1vtUPiS3iYru2GL8kK1nEaUqthS+snQ5tpIDtrLHNjgfxSvtQxFMwOF
+         ki2VqLZp4f89v4tELG1ksdhDepZGox+b7w+BIA/SNTc08lMTuNlHLkRzzC79vdXWd44j
+         gAqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692100945; x=1692705745;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T7VZKftEzDye9TscT4naX9QKoF2fRXcn75T62khYWWQ=;
+        b=O4ylsPBKQOK4ppjwGHUitruZxFMeVjS0yiQAuCJpnS7TQrFyOIrLVwFdKM9OG0BMwN
+         TJNQY+DDsbYWd4g1yD2EXJcjgS7x/F/0C5V6iUn4BWfTzIyhj+1M3L0+RYTq31fUgdte
+         mCg8hYSoKwkNJr8SHcQ+DYj6KF3S059MUSEbW51xlinqnSmifgswbp9FP4JliHVokVz7
+         eBBR05xk2dtGnKLII3ilkC266L0w9Z7LTWc8xSffqwKvxcKF8Y6+xtJrFu9D+rJkmLsL
+         uuyEZtvsAJ/X5tI+x8BdvPjgUbv/wZsjDmgF4ZuTf0vwo+ZhHNxsY9MkqBqhQ0ZznAdj
+         dhzA==
+X-Gm-Message-State: AOJu0YwA/9Heznpk20LSEoFwBtvQtZtpetgcCgozadBLa/5osS63/lmC
+        VehCeF1TrZCD+RcYQRcZJUFpM8UVZnguwrAXuTJMZXgHZpzcSA==
+X-Google-Smtp-Source: AGHT+IHlWJSL+v1L2lw9VEENTbd7+FniMTJi4YOpjY9+FnmdrwanOpKWjo5sk5MiM49brs0DzL3buQvWYYu/r6wP7K0=
+X-Received: by 2002:a05:6102:418d:b0:445:4a0c:3afb with SMTP id
+ cd13-20020a056102418d00b004454a0c3afbmr1843814vsb.8.1692100944625; Tue, 15
+ Aug 2023 05:02:24 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Steffen Eiden <seiden@linux.ibm.com>, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Michael Mueller <mimu@linux.vnet.ibm.com>,
-        Marc Hartmayer <mhartmay@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>
-References: <20230810113255.2163043-1-seiden@linux.ibm.com>
- <20230810113255.2163043-2-seiden@linux.ibm.com>
-From:   Janosch Frank <frankja@linux.ibm.com>
-Subject: Re: [PATCH v3 1/3] s390: uv: UV feature check utility
-In-Reply-To: <20230810113255.2163043-2-seiden@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: mvfsdy4UCmusm0yAkvXmHaZgfRmhZYu3
-X-Proofpoint-ORIG-GUID: 4fh4Ddj1OHU8Z3lGjsPRGQJjYOp37igP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-15_10,2023-08-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
- suspectscore=0 impostorscore=0 adultscore=0 bulkscore=0 spamscore=0
- phishscore=0 lowpriorityscore=0 malwarescore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308150103
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230704064412.2145181-1-milkfafa@gmail.com> <20230704064412.2145181-8-milkfafa@gmail.com>
+ <d28bd991-5a28-6f0d-a8d6-64169ff7a698@xs4all.nl>
+In-Reply-To: <d28bd991-5a28-6f0d-a8d6-64169ff7a698@xs4all.nl>
+From:   Kun-Fa Lin <milkfafa@gmail.com>
+Date:   Tue, 15 Aug 2023 20:02:13 +0800
+Message-ID: <CADnNmFoxgFZi3c9wGoERW4rrPBvMiGyBvUZ7YFu=MpVHbS97pg@mail.gmail.com>
+Subject: Re: [PATCH v13 7/7] media: nuvoton: Add driver for NPCM video capture
+ and encode engine
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     mchehab@kernel.org, avifishman70@gmail.com, tmaimon77@gmail.com,
+        tali.perry1@gmail.com, venture@google.com, yuenn@google.com,
+        benjaminfair@google.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, andrzej.p@collabora.com,
+        devicetree@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
+        kwliu@nuvoton.com, kflin@nuvoton.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,80 +74,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/23 13:32, Steffen Eiden wrote:
-> Introduces a function to check the existence of an UV feature.
-> Refactor feature bit checks to use the new function.
-> 
-> Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> Signed-off-by: Steffen Eiden <seiden@linux.ibm.com>
+Hi Hans,
 
-Please add a bounds check, then:
-Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
+Thanks for the review.
 
-> ---
->   arch/s390/include/asm/uv.h | 5 +++++
->   arch/s390/kernel/uv.c      | 2 +-
->   arch/s390/kvm/kvm-s390.c   | 2 +-
->   arch/s390/mm/fault.c       | 2 +-
->   4 files changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/s390/include/asm/uv.h b/arch/s390/include/asm/uv.h
-> index d2cd42bb2c26..f76b2747b648 100644
-> --- a/arch/s390/include/asm/uv.h
-> +++ b/arch/s390/include/asm/uv.h
-> @@ -397,6 +397,11 @@ struct uv_info {
->   
->   extern struct uv_info uv_info;
->   
-> +static inline bool uv_has_feature(u8 feature_bit)
-> +{
+> > can compress the frame data into HEXTITLE format. This driver implements
+>
+> HEXTITLE -> HEXTILE
 
-if (feature_bit >= sizeof(uv_info.uv_feature_indications) * 8)
-	return false;
+> > +       data into HEXTITLE format.
+>
+> Ditto.
 
-> +	return test_bit_inv(feature_bit, &uv_info.uv_feature_indications);
-> +}
-> +
->   #ifdef CONFIG_PROTECTED_VIRTUALIZATION_GUEST
->   extern int prot_virt_guest;
->   
-> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
-> index b771f1b4cdd1..fc07bc39e698 100644
-> --- a/arch/s390/kernel/uv.c
-> +++ b/arch/s390/kernel/uv.c
-> @@ -258,7 +258,7 @@ static bool should_export_before_import(struct uv_cb_header *uvcb, struct mm_str
->   	 * shared page from a different protected VM will automatically also
->   	 * transfer its ownership.
->   	 */
-> -	if (test_bit_inv(BIT_UV_FEAT_MISC, &uv_info.uv_feature_indications))
-> +	if (uv_has_feature(BIT_UV_FEAT_MISC))
->   		return false;
->   	if (uvcb->cmd == UVC_CMD_UNPIN_PAGE_SHARED)
->   		return false;
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index e6511608280c..813cc3d59c90 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -2406,7 +2406,7 @@ static int kvm_s390_cpus_to_pv(struct kvm *kvm, u16 *rc, u16 *rrc)
->   	struct kvm_vcpu *vcpu;
->   
->   	/* Disable the GISA if the ultravisor does not support AIV. */
-> -	if (!test_bit_inv(BIT_UV_FEAT_AIV, &uv_info.uv_feature_indications))
-> +	if (!uv_has_feature(BIT_UV_FEAT_AIV))
->   		kvm_s390_gisa_disable(kvm);
->   
->   	kvm_for_each_vcpu(i, vcpu, kvm) {
-> diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
-> index b5e1bea9194c..8a86dd725870 100644
-> --- a/arch/s390/mm/fault.c
-> +++ b/arch/s390/mm/fault.c
-> @@ -599,7 +599,7 @@ void do_secure_storage_access(struct pt_regs *regs)
->   	 * reliable without the misc UV feature so we need to check
->   	 * for that as well.
->   	 */
-> -	if (test_bit_inv(BIT_UV_FEAT_MISC, &uv_info.uv_feature_indications) &&
-> +	if (uv_has_feature(BIT_UV_FEAT_MISC) &&
->   	    !test_bit_inv(61, &regs->int_parm_long)) {
->   		/*
->   		 * When this happens, userspace did something that it
+> > +     video->active_timings = video->detected_timings;
+>
+> Why not let npcm_video_set_resolution() set active_timings?
+> And also update pix_fmt? That will also simplify npcm_video_set_dv_timings().
 
+> > +     .type = V4L2_CTRL_TYPE_INTEGER,
+>
+> This must be of TYPE_MENU. It selects between two
+> modes, so that is typically a MENU control. That way you can list
+> the possible modes and get a human-readable name for each setting.
+
+These problems will be addressed in v14.
+
+
+> > +static const struct v4l2_ctrl_config npcm_ctrl_rect_count = {
+> > +     .ops = &npcm_video_ctrl_ops,
+> > +     .id = V4L2_CID_NPCM_RECT_COUNT,
+> > +     .name = "NPCM Compressed Hextile Rectangle Count",
+> > +     .type = V4L2_CTRL_TYPE_INTEGER,
+> > +     .flags = V4L2_CTRL_FLAG_VOLATILE,
+> > +     .min = 0,
+> > +     .max = (MAX_WIDTH / RECT_W) * (MAX_HEIGHT / RECT_H),
+> > +     .step = 1,
+> > +     .def = 0,
+> > +};
+>
+> I'm wondering if this shouldn't be an INTEGER array control.
+> Either dynamic or just fixed to size VIDEO_MAX_FRAME. That way
+> you can set the rectangle count for each buffer index. You wouldn't
+> need this to be volatile either in that case.
+>
+> I don't really like the way it is set up now since if userspace is
+> slow in processing a frame the control might have been updated already
+> for the next frame and you get the wrong value for the buffer you are
+> processing.
+
+When userspace app dequeues a buffer, it needs to know the count of
+HEXTILE rectangles in the buffer,
+so app will call this control to get the rect count after dequeueing the buffer.
+
+And when a buffer is dequeued, npcm_video_buf_finish() will be called,
+in which the buffer index (vb->index) will be stored.
+Then when userspace app calls this control,
+npcm_video_get_volatile_ctrl() will return the rect count of the
+desired buffer index.
+In this way, I think the buffer index is always correct even if
+userspace is slow.
+
+
+> > +     if (*num_buffers > VIDEO_MAX_FRAME)
+> > +             *num_buffers = VIDEO_MAX_FRAME;
+>
+> You can drop this test, it's done automatically by the vb2 core.
+
+> > +     for (i = 0; i < *num_buffers; i++)
+> > +             INIT_LIST_HEAD(&video->list[i]);
+>
+> This is incomplete: if VIDIOC_CREATE_BUFS is called additional buffers can be added.
+> In that case this function is called with *num_planes already set and *num_buffers
+> being the additional buffers you want to add. So in the 'if (*num_planes)' code
+> above you need to take care of that.
+>
+> However, isn't it much easier to just have a fixed 'video->list[VIDEO_MAX_FRAME]' array
+> rather than dynamically allocating it? It would simplify the code, and all you need to
+> do here is call INIT_LIST_HEAD for all (VIDEO_MAX_FRAME) array elements.
+
+> > +     video->num_buffers = *num_buffers;
+>
+> You can drop the num_buffers field: just use the num_buffers field of vb2_queue.
+>
+> This code is incomplete anyway since it doesn't deal with VIDIOC_CREATE_BUFS.
+> Much easier to just rely on the vb2_queue information.
+
+Will modify as you suggested. Thanks.
+
+Regards,
+Marvin
