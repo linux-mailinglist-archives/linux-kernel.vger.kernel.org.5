@@ -2,108 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B2777D155
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5ED777D15E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238950AbjHORtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 13:49:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60180 "EHLO
+        id S238996AbjHORu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 13:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238952AbjHORtp (ORCPT
+        with ESMTP id S239041AbjHORus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 13:49:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF5B21BCC;
-        Tue, 15 Aug 2023 10:49:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Tue, 15 Aug 2023 13:50:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E42821BCC
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 10:50:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692121799;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=JZ9Ljr74bix6rm1ggzkF30XRKzVJSNHwWhldSX1eBVE=;
+        b=Zoc0RgGrPXnxTgI1+wYHWVARGnMvjXh2xKKLY8nOEMaNgFSYumcpGKlpzq+8uzZh4Szq5v
+        Zf8YTJH7AmM1T6GqKfXOfgTvGnUG8dz0IlnDuTimNLpB39a/QmizantSuLx72FvCs+RKgg
+        cEO17aeD5s94SW3zux59dN3jXD2nltY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-637-i2rsF8NCMIe-kMXyn4_Plg-1; Tue, 15 Aug 2023 13:49:58 -0400
+X-MC-Unique: i2rsF8NCMIe-kMXyn4_Plg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6883865462;
-        Tue, 15 Aug 2023 17:49:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EE4EC433C7;
-        Tue, 15 Aug 2023 17:49:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692121783;
-        bh=vENtrbyvbr57KOdBcWWu7mgYK7vmBKZyiaF/cHz+85Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=He2qDjdiqELmH/bMcpvsqeSkqg7u3XUQHTXNM5QwNBZRH3A6WtvAAwviqWhVhJ580
-         G8eAdcZ/Fup8V8Yoje+2YO5n5zIXI5pRXPvC0mHzpGXxR5m1Zb5CNUWwU/W1m7f2+B
-         Hx1BkwX6vqdZ/W6y6Frzxt7RnHJWv6d0hWXAr8CywwhnVw/CzXzf786hNDh2OBLyBv
-         5CA5L+gDN296l67kfk8w3zCYgp0IWT5oNNfFCx7JBAI3jWbD17oBZKqtMG7gaUvjza
-         sJmZbebPb6MDXlfZglGHzn9OZzTqtUwFWFxr6n/bKMkXuqDJAyAGaMQ03OraXon4ol
-         hEoMxCzqwn/AQ==
-Date:   Tue, 15 Aug 2023 12:49:42 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     deloptes <emanoil.kotsev@deloptes.org>
-Cc:     linux-pci@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sathya Prakash Veerichetty <sathya.prakash@broadcom.com>
-Subject: Re: SSD SATA 3.3 and Broadcom / LSI SAS1068E PCI-Express Fusion-MPT
- SAS
-Message-ID: <20230815174942.GA211975@bhelgaas>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D3C65185A791;
+        Tue, 15 Aug 2023 17:49:57 +0000 (UTC)
+Received: from aion.redhat.com (unknown [10.22.17.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7BB8A2026D4B;
+        Tue, 15 Aug 2023 17:49:57 +0000 (UTC)
+Received: from [192.168.0.151] (localhost [IPv6:::1])
+        by aion.redhat.com (Postfix) with ESMTP id 19E1A8957A;
+        Tue, 15 Aug 2023 13:49:57 -0400 (EDT)
+From:   Scott Mayhew <smayhew@redhat.com>
+Date:   Tue, 15 Aug 2023 13:49:50 -0400
+Subject: [PATCH] smb: client: fix null auth
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ubedo7$151n$1@ciao.gmane.io>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230815-fix-cifs-null-auth-v1-1-3cb785216d97@redhat.com>
+X-B4-Tracking: v=1; b=H4sIAL2622QC/x2MWwqAIBAArxL73YKPougq0YfYWgtioRlBePekz
+ 4GZeSFRZEowNS9EujnxESrItgG7m7AR8loZlFBajLJHxw9adglD9h5NvnbshO2166TVaoAanpG
+ q9U/npZQP88UmpWQAAAA=
+To:     Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        "Paulo Alcantara (SUSE)" <pc@cjr.nz>
+Cc:     Steve French <stfrench@microsoft.com>, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org,
+        Scott Mayhew <smayhew@redhat.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1468; i=smayhew@redhat.com;
+ h=from:subject:message-id; bh=QCTDZkn1Og5Nxkd5+Io8DqeQTLoIR10jIci1nQbfvUc=;
+ b=owGbwMvMwCW21EY5XUtI9jjjabUkhpTbu46asa47y2vh9lEocHvGtrid2vrP1mRO2XBhbiXf5
+ 7SYhIMbOkpZGMS4GGTFFFl2XPsuLb3tp72U5KWJMHNYmUCGMHBxCsBEXPQZ/lcfMktbbXSZMf78
+ +smpey9NdbO4vzG76ofr9/U1D5cK5Zcy/JWeahH+wK8qTEe3d+XERu17R6ZaRzF2RJ9KnP00W/f
+ 0E0YA
+X-Developer-Key: i=smayhew@redhat.com; a=openpgp;
+ fpr=B8D6F71B1BB6F93F1A19D291A53C23672A121DC7
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 01:35:35AM +0200, deloptes wrote:
-> Bjorn Helgaas wrote:
-> 
-> > I don't know why that would be.  Are there any hints in the dmesg log?
-> > Can you collect the complete dmesg log with the old drives and again
-> > with the new SSDs so we can compare them?  I assume you have good
-> > cables?  I assume the same cables worked at 3.0 Gb/s with the old
-> > drives.
-> > 
-> > I would *expect* that SATA r3.3 would be completely backwards
-> > compatible, so since mptsas worked just fine at 3.0 Gb/s with the old
-> > SATA r3.0 drives, it should also work just fine at 3.0 Gb/s with the
-> > new SATA r3.3 drives.  But I have no actual knowledge about that.
-> 
-> Thank you for your answer. I am also confused and couldn't think of any
-> meaningful reason. This is why I allowed myself to bother you.
-> 
-> I did not change anything - wiring or such. The server has 12 disk bays on
-> the front. Old disks were pulled out and new disks were inserted into the
-> bays.
-> 
-> You (probably much knowable in this matters than me) also assume negotiation
-> should result in 3.0Gb/s. And if I understand correctly it should be not a
-> driver issue.
-> 
-> The only difference I could find out for now is that Rev3.3 introduced PWDIS
-> on Pin 3. To check if the cables provide wiring on P3 I should disassemble
-> the server, but I can do this in September :/ and it is a lot of effort.
-> 
-> I am attaching a portion of the log and dmesg with the relevant information.
-> I see that ASPM is disabled by default (could it be related to P3?).
+Commit abdb1742a312 removed code that clears ctx->username when
+sec=none, so attempting to mount with '-o sec=none' now fails with
+-EACCES.  Fix it by adding that logic to the parsing of the 'sec'
+option, as well as checking if the mount is using null auth before
+setting the username when parsing the 'user' option.
 
-ASPM is a PCIe feature that applies to the PCIe Links between 00:02.0
-and 01:00.0 (the first 1068E) and 00:15.0 and 08:00.0 (the second
-1068E).
+Fixes: abdb1742a312 ("cifs: get rid of mount options string parsing")
+Signed-off-by: Scott Mayhew <smayhew@redhat.com>
+---
+ fs/smb/client/fs_context.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-PWDIS is a feature on the SATA cables between the SAS1068E adapters
-and the SSDs.
+diff --git a/fs/smb/client/fs_context.c b/fs/smb/client/fs_context.c
+index 4946a0c59600..67e16c2ac90e 100644
+--- a/fs/smb/client/fs_context.c
++++ b/fs/smb/client/fs_context.c
+@@ -231,6 +231,8 @@ cifs_parse_security_flavors(struct fs_context *fc, char *value, struct smb3_fs_c
+ 		break;
+ 	case Opt_sec_none:
+ 		ctx->nullauth = 1;
++		kfree(ctx->username);
++		ctx->username = NULL;
+ 		break;
+ 	default:
+ 		cifs_errorf(fc, "bad security option: %s\n", value);
+@@ -1201,6 +1203,8 @@ static int smb3_fs_context_parse_param(struct fs_context *fc,
+ 	case Opt_user:
+ 		kfree(ctx->username);
+ 		ctx->username = NULL;
++		if (ctx->nullauth)
++			break;
+ 		if (strlen(param->string) == 0) {
+ 			/* null user, ie. anonymous authentication */
+ 			ctx->nullauth = 1;
 
-PWDIS/P3 should not be related to ASPM.  I assume you're referring to
-the "disabling ASPM on pre-1.1 PCIe device" message.  That should
-happen with both the old r3.0 HDDs and the new r3.3 SSDs.
+---
+base-commit: 91aa6c412d7f85e48aead7b00a7d9e91f5cf5863
+change-id: 20230815-fix-cifs-null-auth-40c53f41c327
 
-I wish I had some good ideas for you, but I don't know anything about
-the SATA side.  I googled for "1068 ssd sata 1.5 gb/s" and found a few
-hints about system firmware, LSI firmware, etc, but nothing concrete.
+Best regards,
+-- 
+Scott Mayhew <smayhew@redhat.com>
 
-I think some controllers have a BIOS setup user interface; have you
-poked around in there?
-
-Bjorn
