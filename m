@@ -2,104 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A684977CDF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E96DD77CDEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237555AbjHOOTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 10:19:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36676 "EHLO
+        id S237528AbjHOOS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 10:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237567AbjHOOTP (ORCPT
+        with ESMTP id S237376AbjHOOR7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 10:19:15 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9AB1989;
-        Tue, 15 Aug 2023 07:19:14 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99c1d03e124so672995166b.2;
-        Tue, 15 Aug 2023 07:19:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692109153; x=1692713953;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gbxPwjT8x5u7zIuMPUNe2aimwgkFJxO3k4uTJwZgBjA=;
-        b=se7QNAkYDV3GPEvxCiDX9Sm/lAe9TdH6WKOs3qyrrb1AxdQT3b7u/m09csKrM9NdUz
-         Mq0AVfCIq66b8LT9GL/mOjB3Teiy+3w6t0xSH5Wq2QPkzapvfHm/7qSSwLhxd4Q6nvZx
-         lwchPsDcau6ti05T0ngTGEcn2uCTYhDs6AuHTFn9i/x7UR3QsuNvvr/0kG0zcwS2HIE2
-         rbOQ6glEl7DUq1OmRxaEhNFAQ5XK+hu1O5J+52NhoLzNrtLUuI6dAEStfSBxYAfM1ctp
-         gUttARpaatspb9JZMoig+L8SBkYRS5br90Pu/C84GuwKodyEehjUe+TTITZwFuVHE8H/
-         0ufg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692109153; x=1692713953;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gbxPwjT8x5u7zIuMPUNe2aimwgkFJxO3k4uTJwZgBjA=;
-        b=i9kL1B2aB+WmbNKopakrOIKEgeGAtsOv+6m4oIWDi8oGlfS0QBT3OsVVU1liJOgI82
-         IcdX+aGZ9haoglKZWdclUcPrLFNqj8veDrG2YiuwH4HQvbyNG+Jm/6SKW3vATkD4kOF/
-         AJWTLC6Zb4Ld00PKGFscjan5cjN8RYsrMZDah3/kd4BCRj6UHATlCAoS7+WN1LvOcGZV
-         WnfJlQBmP6F4jVgw2KArpyOb4/lLSQ8xQlH5ZvDUaMYczLe6PH7JWLBwOeXvJRz9c5SN
-         yWihBcAJMBpzfzBPNaPkYNq2Esq2vQnHvL9wgI2Wiq8dQnnDyIvbi34GAIxiLYdxazux
-         z8BQ==
-X-Gm-Message-State: AOJu0Yyc29TFYlu7Jyu+IzRJG/2oCCnoe34K8SuDfBWL8BOdTFBWC+nJ
-        JDygL0eCPdt0KzZcxF1/wTt3rG/UNnMScg==
-X-Google-Smtp-Source: AGHT+IGWYtMxgvkHLBbgNs8+ORFbo/eGF2AelkQWKbuBVYLgTfDFpye106F2LaKPNb0Po11Qh0FCaA==
-X-Received: by 2002:a17:907:2cd4:b0:991:c842:2ca2 with SMTP id hg20-20020a1709072cd400b00991c8422ca2mr9359758ejc.15.1692109152778;
-        Tue, 15 Aug 2023 07:19:12 -0700 (PDT)
-Received: from fedora.. (dh207-96-14.xnet.hr. [88.207.96.14])
-        by smtp.googlemail.com with ESMTPSA id j15-20020a170906278f00b009926928d486sm7078743ejc.35.2023.08.15.07.19.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 07:19:12 -0700 (PDT)
-From:   Robert Marko <robimarko@gmail.com>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        quic_saipraka@quicinc.com, linux-arm-msm@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Robert Marko <robimarko@gmail.com>
-Subject: [PATCH 2/2] arm64: dts: qcom: ipq5018: add WDT
-Date:   Tue, 15 Aug 2023 16:17:51 +0200
-Message-ID: <20230815141908.1084893-2-robimarko@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230815141908.1084893-1-robimarko@gmail.com>
-References: <20230815141908.1084893-1-robimarko@gmail.com>
+        Tue, 15 Aug 2023 10:17:59 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555C319A1;
+        Tue, 15 Aug 2023 07:17:56 -0700 (PDT)
+Received: from kwepemm600012.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RQCv257VmzNmnq;
+        Tue, 15 Aug 2023 22:14:22 +0800 (CST)
+Received: from [10.174.178.220] (10.174.178.220) by
+ kwepemm600012.china.huawei.com (7.193.23.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 15 Aug 2023 22:17:53 +0800
+Message-ID: <1eb055e9-6343-260c-de04-c08d8fb24789@huawei.com>
+Date:   Tue, 15 Aug 2023 22:17:52 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH 00/13] scsi: Support LUN/target based error handle
+Content-Language: en-US
+To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Hannes Reinecke <hare@suse.de>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Dan Carpenter <error27@gmail.com>, <louhongxiang@huawei.com>
+References: <20230723234422.1629194-1-haowenchao2@huawei.com>
+From:   "haowenchao (C)" <haowenchao2@huawei.com>
+In-Reply-To: <20230723234422.1629194-1-haowenchao2@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.220]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600012.china.huawei.com (7.193.23.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the required DT node for WDT operation.
+On 2023/7/24 7:44, Wenchao Hao wrote:
+> The origin error handle would set host to recovery state and perform
+> error recovery operations, and makes all LUNs which share a same host
+> can not handle IOs. This phenomenon is unbearable for systems which
+> deploy many LUNs in one HBA.
+> 
 
-Signed-off-by: Robert Marko <robimarko@gmail.com>
----
- arch/arm64/boot/dts/qcom/ipq5018.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+Friendly PING...
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-index 3285c86824cf..168322bfb11c 100644
---- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-@@ -182,6 +182,13 @@ v2m1: v2m@1000 {
- 			};
- 		};
- 
-+		watchdog: watchdog@b017000 {
-+			compatible = "qcom,apss-wdt-ipq5018", "qcom,kpss-wdt";
-+			interrupts = <GIC_SPI 3 IRQ_TYPE_EDGE_RISING>;
-+			reg = <0x0b017000 0x40>;
-+			clocks = <&sleep_clk>;
-+		};
-+
- 		timer@b120000 {
- 			compatible = "arm,armv7-timer-mem";
- 			reg = <0x0b120000 0x1000>;
--- 
-2.41.0
+We can reduce probability of blocking whole host when handle error
+commands with this patchset, which is important for servers which
+deploy large scale disks. And the new error handler is not enabled
+default, so it would not affect drivers which do not need it.
+
+> This patchset introduce support for LUN/target based error handle,
+> drivers can chose if to implement it. They can implement LUN, target or
+> both of LUN and target based error handle by their own error handle
+> strategy. The first patch defined this framework, it abstract three
+> key operations which are: add error command, wake up error handle, block
+> ios when error command is added and recoverying. Drivers should
+> implement these three function callbacks and setup to SCSI middle level.
+> 
+> Besides the basic framework, this patchset also add a basic LUN/target
+> based error handle strategy.
+> 
+> For LUN based eh, it would try check sense, start unit and reset LUN,
+> if all above steps can not recovery all error commands, fallback to
+> further recovery like tartget based (if implemented) or host based error
+> handle.
+> 
+> It's same for tartget based eh, it would try check sense, start unit,
+> reset LUN and reset target. If all above steps can not recovery all error
+> commands, fallback to further recovery which is host based error handle.
+> 
+> This patchset is tested by scsi_debug which support single LUN error
+> injection, the scsi_debug patches is here:
+> 
+> https://lore.kernel.org/linux-scsi/20230723234105.1628982-1-haowenchao2@huawei.com/T/#t
+> 
+> Wenchao Hao (13):
+>    scsi: Define basic framework for driver LUN/target based error handle
+>    scsi:scsi_error: Move complete variable eh_action from shost to sdevice
+>    scsi:scsi_error: Check if to do reset in scsi_try_xxx_reset
+>    scsi:scsi_error: Add helper scsi_eh_sdev_stu to do START_UNIT
+>    scsi:scsi_error: Add helper scsi_eh_sdev_reset to do lun reset
+>    scsi:scsi_error: Add flags to mark error handle steps has done
+>    scsi:scsi_error: Define helper to perform LUN based error handle
+>    scsi:scsi_error: Add LUN based error handler based previous helper
+>    scsi:core: increase/decrease target_busy without check can_queue
+>    scsi:scsi_error: Define helper to perform target based error handle
+>    scsi:scsi_error: Add target based error handler based previous helper
+>    scsi:scsi_debug: Add param to control if setup LUN based error handle
+>    scsi:scsi_debug: Add param to control if setup target based error handle
+> 
+>   drivers/scsi/scsi_debug.c  |  19 +
+>   drivers/scsi/scsi_error.c  | 705 ++++++++++++++++++++++++++++++++++---
+>   drivers/scsi/scsi_lib.c    |  23 +-
+>   drivers/scsi/scsi_priv.h   |  20 ++
+>   include/scsi/scsi_device.h |  97 +++++
+>   include/scsi/scsi_eh.h     |   4 +
+>   include/scsi/scsi_host.h   |   2 -
+>   7 files changed, 813 insertions(+), 57 deletions(-)
+> 
 
