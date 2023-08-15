@@ -2,98 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C7477CFF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 18:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C9B77CFFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 18:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238483AbjHOQM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 12:12:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52216 "EHLO
+        id S238494AbjHOQQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 12:16:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238552AbjHOQMw (ORCPT
+        with ESMTP id S238497AbjHOQQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 12:12:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98AEB13E;
-        Tue, 15 Aug 2023 09:12:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Tue, 15 Aug 2023 12:16:13 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B1D98
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 09:16:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=70hnSg58IJsTVXQG/lxj7heEIeJUwgyDVoxrGVzhpIQ=; b=E9iLn8dPmHg7G14WFmdWnogudi
+        0x/In1R9m6KcFBG+le0tjPX5VDRCiKcF6uMExzssuJV52TE/IHCWUOTcgfYYXT8KwFOUt3c1n2gfO
+        iqvStGvUOgJLXLpduZCPjKftNhIV2d7EigHb8SkzXTgE17h78BMor+sZF0ta3Qb1dS3vBByd8Do4+
+        5l8R8puDL76HkIOtYF0kHRh5QOBqvu41kmyfR8ZV/KdKQ5l89+3gjaORQU8ZEQGDLo10+jncteJNw
+        76ZDYtX78tAvUSGL4TV4kKDIm2QpFLdebuhbKLzFT3ekKj/xKZeAAa16YO47JVPct03nLwvDalrCb
+        Dm/sI9cw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qVwi6-009AST-6F; Tue, 15 Aug 2023 16:15:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E940E64DEE;
-        Tue, 15 Aug 2023 16:12:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16064C433C8;
-        Tue, 15 Aug 2023 16:12:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692115970;
-        bh=N3OM+clUa6koI6lGjQiHjHyRvH37l0zus4518nO+E10=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=kBD6aRCww6QnLx/rsU4KOMW6CAq1bwVClHVVTzB1NWX4qtMrx2YzWryIPIjwL5Ks6
-         MJLQU6DxP8I9bOo6AqFofCHp26tQxPEA/HPWiI2hORuvG30zP8j8jR+CKH1kdfqASK
-         piwANskal1t91lFVp/NgrC7vrL8YqlxIAWCoI5IsUiE9fQwgtHWebNZGDmi0jevokt
-         cK2P7BCEZI3LIY7fJLbQ3nmlDaQC86ArrFw2yKHL6WZZzD4SIvPGfKOkYMDIG6wlMT
-         NDaLFYYYmP1Zrg3D8O7DmKlwmtSN6SBXu6xYwKbdEqgD5CkoQQXyaEgFHaYd9UC4Z9
-         7FKgXPmZAm9vg==
-Message-ID: <ed79681e-ecd1-3129-5ad1-2965e2cd42b5@kernel.org>
-Date:   Tue, 15 Aug 2023 09:12:48 -0700
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6743D300137;
+        Tue, 15 Aug 2023 18:15:57 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4465420307345; Tue, 15 Aug 2023 18:15:57 +0200 (CEST)
+Date:   Tue, 15 Aug 2023 18:15:57 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     bigeasy@linutronix.de, tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, bsegall@google.com,
+        boqun.feng@gmail.com, swood@redhat.com, bristot@redhat.com,
+        dietmar.eggemann@arm.com, mingo@redhat.com, jstultz@google.com,
+        juri.lelli@redhat.com, mgorman@suse.de, rostedt@goodmis.org,
+        vschneid@redhat.com, vincent.guittot@linaro.org,
+        longman@redhat.com, will@kernel.org
+Subject: Re: [PATCH 0/6] locking/rtmutex: Avoid PI state recursion through
+ sched_submit_work()
+Message-ID: <20230815161557.GK214207@hirez.programming.kicks-ass.net>
+References: <20230815110121.117752409@infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] ARC: avoid unwanted gcc optimizations in atomic
- operations
-To:     Pavel.Kozlov@synopsys.com, linux-snps-arc@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, vgupta@kernel.org,
-        stable@vger.kernel.org
-References: <20230815151136.2220588-1-kozlov@synopsys.com>
-Content-Language: en-US
-From:   Vineet Gupta <vgupta@kernel.org>
-In-Reply-To: <20230815151136.2220588-1-kozlov@synopsys.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230815110121.117752409@infradead.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 15, 2023 at 01:01:21PM +0200, Peter Zijlstra wrote:
+> Hi!
+> 
+> This is basically the 'same' patches as send earlier by Sebastian here:
+> 
+>   https://lkml.kernel.org/r/20230427111937.2745231-1-bigeasy@linutronix.de
+> 
+> I spend a number of days trying to invert rtmutex, only to make a giant mess of
+> things and finally conceded that this is the least horrible approach.
+> 
+> There's a bunch of naming differences and I added some asserts that should
+> hopefully avoid things from going sideways without notice. I've also updated
+> the changelogs to high-light the actual problem. The whole pi_blocked_on
+> 'corruption' is a mere consequence of the more fundamental problem that the
+> whole PI state recurses.
+> 
+> I've not tested this with the rest of the RT patches stuck on, so very limited
+> actual testing happened.
+> 
+> If anybody could please confirm stuff still works as advertised, I'll go queue
+> this mess and we can hopefully forget all about it.
+> 
 
+N/m - 0day found a problem. Futex-PI trips the rt_mutex_schedule()
+assertion for not passing through rt_mutex_pre_schedule().
 
-On 8/15/23 08:11, Pavel.Kozlov@synopsys.com wrote:
-> From: Pavel Kozlov<pavel.kozlov@synopsys.com>
->
-> Notify a compiler about write operations and prevent unwanted
-> optimizations. Add the "memory" clobber to the clobber list.
->
-> An obvious problem with unwanted compiler optimizations appeared after
-> the cpumask optimization commit 596ff4a09b89 ("cpumask: re-introduce
-> constant-sized cpumask optimizations").
->
-> After this commit the SMP kernels for ARC no longer loads because of
-> failed assert in the percpu allocator initialization routine:
->
-> percpu: BUG: failure at mm/percpu.c:2981/pcpu_build_alloc_info()!
->
-> The write operation performed by the scond instruction in the atomic
-> inline asm code is not properly passed to the compiler. The compiler
-> cannot correctly optimize a nested loop that runs through the cpumask
-> in the pcpu_build_alloc_info() function.
->
-> Add the "memory" clobber to fix this.
->
-> Link:https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/135
-> Cc:<stable@vger.kernel.org>  # v6.3+
-> Signed-off-by: Pavel Kozlov<pavel.kozlov@synopsys.com>
-
-
-Acked-by: Vineet Gupta <vgupta@kernel.org>
-
-Fixes: b64be6836993c431e ("ARC: atomics: implement relaxed variants")
-
-Before that commit, atomic ops could elide memory clobber because the 
-trailing smp_mb() did that anyways.
-However after that commit, the smp_mb() was optional for relaxed 
-variants and thus needs clobber.
-
+I'll go try and untangle that...
