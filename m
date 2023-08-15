@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD7577CA62
+	by mail.lfdr.de (Postfix) with ESMTP id A599F77CA63
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236155AbjHOJZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 05:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33828 "EHLO
+        id S236111AbjHOJZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 05:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236129AbjHOJZM (ORCPT
+        with ESMTP id S236132AbjHOJZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 05:25:12 -0400
+        Tue, 15 Aug 2023 05:25:13 -0400
 Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2113.outbound.protection.outlook.com [40.107.21.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FA410C;
-        Tue, 15 Aug 2023 02:25:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22224113;
+        Tue, 15 Aug 2023 02:25:12 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JFeUtSrFztyVMr/KcpWMdzPOwvtzq5Hdkca9HV6yUxbPixUUtDRF9pZ9drQCFoIxhgSF4dLmiHLLA0UE7O7Vn5FlKC1fTkaGzcjux4/nf9he1zk/R1BNvoioG8K2OabvaQWq58tUKJ1ACBqwsGtvh8rjE+3GaAWYWMSBway3AlcP4kS9Ou62mn3XqNsfbqiK3cg1NHbxGytB2peWPxhaqsCybKwgtnPyg8H4SB7i71EECQQE5Tl2LZpFVOjSH5P24wTTN1Y+BmvhEXOQORT2VUeDpNzOVV4iN9ALRuOQ1V2gPx6X1pMb9Uad4guh7FvaWSykdK0eMev6lGYw1lHpQw==
+ b=FpXiEVEEYhsHomZjvMCNej7PZQxkVE6J8e2+dLD0LkT6xoczmeZ9A78bxUjaMqUXDIv5P2V+QRw6mmdc+f1T2XKeLMZOlgK55yxNen0GJ6GKsSo4kFCdsqVVIiSUkolcAcUg7i5zOjK5w1lNhth4e6vI/JDT18iKtHHFnsNg3kAmYMSMwZ/WiQ0855Jn96/SKt2rAPN0aNxzsFcA04Qat/TPA/P1Nvq8z3JIBjmD4vwiIByU+znLEBdR0yHtABbsrEEv7ovw9WEa/qclEFl/+LfPrm4IH1O44JcZNCYOEipQs6v3XZP1nzdWTwNfxz9l4GS4UjgZylW1h1xHtJunGg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=C12dRi5OfAHoQaEVlByZI5+EGSzPCGfepGxfTu4oLwI=;
- b=VQpGR1BWRGt3xdebYvNsOYfbSW9SY0nUxJ2or8ihxs3yQtDOmti69ifXind1CRSJU4lGJ5ldKKUmNRhLT5sPReeg0fDN0bVs5dZqRFLjUxX3x73nFmYJZA0sQpSDMCXuZW/I4RO/FdG7c3SVnwVjM9NWmZxzLUFUJ57nW35tYr1p+52onjIMqrRU4YQGDUuskAqZgrwHfyEUjiS4pqt9fQYCUR/SMGBfX0GZ3u8TgMf4IHDyh31qmpCFMP/9/XuwbAYmigfRpH6eoQzLpbgm2lU/PbbUFlpS0SdA3p12oWRUL0iibYn+3ci3ZTWNNJXF6XN4vqFmPA6pRLs3sZdWHw==
+ bh=YVSxTxsXGoF6gCI/UoMaOM/NQ0mLsqhPdqXDddOq32A=;
+ b=ZrJLhphx6Gq/NlyfLIGNPIxCq+u5XA9CJIsTg9bYg8UxRqTIbbi7Ekaz1XLeQLeszTtVKROO9yB1uayCxHUUVb8Cr0RM0lvK8q7ma71PCoJ9gutOmEYZb9nMuxqFDiEqiYGH+A65814iBHDK/cLjM11uFsQTyyxpObUodkF9ORIVkaG65bDK8mwV5uoo3doYTTI4nkQ0jPzPWnjs9rLLS6jvzKLv+WNu3Cln0NPa8qCz3qJFU1y+Jgj6xSgArP8wfFHi+4Ozh/cvZ92SLp+WU/JLVxZwnNLcnsSWwjOMvOHNOOS/bryIUY0gCA2e/ZTGR+Iphom6B86Vz11Xj9kxTw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=uclouvain.be; dmarc=pass action=none header.from=uclouvain.be;
  dkim=pass header.d=uclouvain.be; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uclouvain.be;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C12dRi5OfAHoQaEVlByZI5+EGSzPCGfepGxfTu4oLwI=;
- b=eLxfeN0G6xoIWTNvoHvsDn9adgeqU46MXjyUwoIhnkhDsVPZV2imndFnaI9B/eghGdIxcCrFIsFxnwbwaOi8jMvAP9PGeCyP5BOd4hMdFYEu8aCFR9Hoxv4tsSagXyIAwqW1dCFTVA1zUZCT1Awjxgv+jxaVcfXtuHx+te5nHkTEe6NzLZi/+CCpewOYcPdPFp1+t/NSjzrWftEYWkAHlKnKb6LOHRgDbJ/WSIpJiffB/DrSZ9TMSTt3Ke2Ao34qkAgublpT0x12mK/wffG4Kfypya0RtkUr9SA/XmJ2Ir4CHsVou1myNIaHjMkDp6tSk/g/kXnfaIn43N4GMwUYcw==
+ bh=YVSxTxsXGoF6gCI/UoMaOM/NQ0mLsqhPdqXDddOq32A=;
+ b=WTblzMMt/F5genKzkq4PSSqJeUx1HcThUtKZsRVroJuxakkl8LgQx9U0GK9OI0jLb4ZShBO7uTuzbFeRUS4tUjSKlzRJ7P7b3zinGTOuHXbAQtYrvX1GK6uy51tCy3D/iIKqUCQvvyWPLeqB4XO7IOWstErMTAqOZ4VkMyASgamSxtgZ+K8AJSNlyZxyN0aBsquhcVMxmHdWJ9keKRlA6tJffWsqNpZR4bzJic/gvbn/N5vCaRcfylavAl+ThavoQsSpwQ9CLipjXxGDk5t0KuCeyZYmrBD5KIJj8HjXlUJlJ2d+B/03Krs3+SpjzP+ZrVbdGDmLyoZm9nCUbZ0yJQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=uclouvain.be;
 Received: from DB9PR03MB7689.eurprd03.prod.outlook.com (2603:10a6:10:2c2::11)
  by PAXPR03MB8228.eurprd03.prod.outlook.com (2603:10a6:102:24f::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.24; Tue, 15 Aug
- 2023 09:25:07 +0000
+ 2023 09:25:09 +0000
 Received: from DB9PR03MB7689.eurprd03.prod.outlook.com
  ([fe80::8303:13bd:7736:34cf]) by DB9PR03MB7689.eurprd03.prod.outlook.com
  ([fe80::8303:13bd:7736:34cf%4]) with mapi id 15.20.6678.025; Tue, 15 Aug 2023
- 09:25:07 +0000
+ 09:25:09 +0000
 From:   Francois Michel <francois.michel@uclouvain.be>
 Cc:     Francois Michel <francois.michel@uclouvain.be>,
         Jamal Hadi Salim <jhs@mojatatu.com>,
@@ -52,9 +52,9 @@ Cc:     Francois Michel <francois.michel@uclouvain.be>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 net-next 2/3] netem: use a seeded PRNG for generating random losses
-Date:   Tue, 15 Aug 2023 11:23:39 +0200
-Message-ID: <20230815092348.1449179-3-francois.michel@uclouvain.be>
+Subject: [PATCH v2 net-next 3/3] netem: use seeded PRNG for correlated loss events
+Date:   Tue, 15 Aug 2023 11:23:40 +0200
+Message-ID: <20230815092348.1449179-4-francois.michel@uclouvain.be>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230815092348.1449179-1-francois.michel@uclouvain.be>
 References: <20230815092348.1449179-1-francois.michel@uclouvain.be>
@@ -66,61 +66,61 @@ X-ClientProxiedBy: ZR0P278CA0131.CHEP278.PROD.OUTLOOK.COM
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DB9PR03MB7689:EE_|PAXPR03MB8228:EE_
-X-MS-Office365-Filtering-Correlation-Id: a3278012-e065-45d6-994f-08db9d71840f
+X-MS-Office365-Filtering-Correlation-Id: a89f4a7a-4891-4afd-fc44-08db9d7184de
 X-MS-Exchange-AtpMessageProperties: SA
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MGiDQBfWMA9PTRsT4dYKQ8h30joX5PHma45KImcAKBhXbie9qQma+EKpLvtL7vAux0hktIY6f+lO+AypxLwrCDotv2RVU1R3yk7wcSSflVLj8joWDFh34c0Y4jc/VLIUt9L+2ZN5eDO7tPjc/Nx548JI/Pn8grUKue3FNDEeYlMx4DSpRyLJqVPTYNCk6I2TtlFWm4KCyzBGc4LfXDSecNUkNwqU0tzvV3RvaGaQ5DcSgqPvD4Fzgk0w1cgcU+FEIOzfkovbsnXlwdkh5dlZsGem8K9WIOI0f9ZqXoTxjOqqOe0K70muagQMYtJi+iIf0xorXt4Uz9ajC+QPMw1bUZZi0fgREvSHKsTmDGnmUzcIIOJXIdyiAeot0X/LsrZOH/lXjn6M5n2Qm1bgo6pQWlB2SRORwEESjoWaJBj49ltVpG3GQFSVO0HDsAttyzKEXGDfYG6cboAy2CwEWsqpK10AGz6vfOOB6mjIdFGzQVpMiInmgkxda2n1GbImcP6EnXabGdms7/bH1B7lfi0hEhZUDdjdMGxHxAS6DvqlI7z67O5bvm9DCMNf++nEdts5whgcj82TtrkZRuE8Fd1GCjj/aX2NyOVsiVps+z6fW40=
+X-Microsoft-Antispam-Message-Info: c8HGxmzX5Eb87x15dW8vIzgtP38uK5whGxvE5TacZKCixdpX7IWe6r2OV84T1FXewR5PKkXMixSrB8f8W1cDYM+pfzZqP4gczhW0GxrQ1bRAv16yAk06KBXyUY4Qt+nG9UZd34KlQ36NgkWpoImitDxUpHDgZIYgSH36UBZNtK/h+ZLytMzaQ3F9xAxjwbQrL+oYcNR70Xw2pCLms0913jLiQtjMLmuSOodiIXaoCGrEDrY3oVwqk6KCW7JjAhSlI4Va1vVTkeQDbVsxfHHE6+MgXmIERVPTJPkekVliUSHaLBD5WJgboOR/QAV60rJAhEBKhNu+zjPa7AYfBpiAVycL/lxxrHCykucFzWAQWE3lreej+WwuYfRBy/+RMUCQQ6uCxCwKCJCtLSjkqsnWnrmEHwyz7mYT7NbfTk7V79gtY1ZF+Rmi7ja/U16mcgMFl5Nh4sC2WLF9jRdLCIA0iKBpLzS5WXdkgpzDzFJG3ylhrw07m6we1G47VSusIyy+o7I3EqIBPCRzi8AuJ6bLdmoDGGILdznRJKugeOsAzldMDTWmASovmv/ngjQUoVb0T2T2xCjnoPnz9kxz1BVZ/yo3iyFFrWwVcjpzcG1X55U=
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR03MB7689.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(39860400002)(376002)(366004)(136003)(396003)(186006)(1800799006)(109986019)(451199021)(83380400001)(36756003)(86362001)(41300700001)(478600001)(66946007)(66476007)(54906003)(6512007)(66556008)(316002)(786003)(8676002)(5660300002)(4326008)(44832011)(8936002)(38100700002)(2616005)(1076003)(6486002)(6666004)(2906002)(7416002)(6506007)(52116002)(266003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OHRWN0RSMElsL0JhUm55TkVoaXA4QTByVWtXQUZhWkdPNlpIY29tVTlUMkl4?=
- =?utf-8?B?R1NDVDZDMHBkRCtoSmZkQmpiVU5iR09Sa200aWVub3VTNzlWN2NQSEEzNEs2?=
- =?utf-8?B?cENSeWsxb3NuSUNzWnpHUXFiVVFYVVcydjVFUGQySmlxMWtWZ1NUalltdWFt?=
- =?utf-8?B?bUhDQ2FIWm9iZERPQlI2VnFoNWhEMVV6QU5iaFFCaHEvU2RKMWViblY3ajRQ?=
- =?utf-8?B?M3J5bVNFK3l4cUlOU2ttWTUwRURzRU00WGhtOVhzdGZlVm1sQXV3WnJYUDQv?=
- =?utf-8?B?a1VPMVc3NlZqdm4vODFES0lxWW5hVVpYb2R5c2wyalF3c0o2aXJSQlArWnRx?=
- =?utf-8?B?dUc4bDNnNjBYRDlwUEJlNitvLzV5MmZGWDIwS3Q2QjZLTFRvK2xKRXVjNHpt?=
- =?utf-8?B?aWkxNTBYWDRNdDJ2VnVzWXZ4RmRkMUNtTFM3S1FMWHpGNitxY3AremhERUdT?=
- =?utf-8?B?d3RjbSs3RldDbVhUVDEwOWhTMUU1aWxMZHhuRGlmY2lvZDJoRzUwMVZpWDF2?=
- =?utf-8?B?NHZTQXRPV2JYTnNoY1JYUldENC9DZmZvdEgxSlg4U05OMW9aZkNJb3p2RVQ2?=
- =?utf-8?B?M3g2Tmk2a1kyOWRjeWRaRlU0cDNCTit3RFVEVGNoYWh6MVROSjRYMlA2WHNk?=
- =?utf-8?B?bkdzcG1zT2N5ZDVWRDRZUDhVNnhLYlliV0U5NVFEZmRQSUwwcDRyNVNmVldH?=
- =?utf-8?B?MWF2L0tCcWEzcjVBUXJOR2piT2w3VTdoNllPcnpFOTJhQ2lSY0tWa2UyRjhV?=
- =?utf-8?B?cExES0Vqc1FYMTdKUlVSVU9NSFhVOHorVCtjNlUyRG50OHJuWEZlb1orc2RF?=
- =?utf-8?B?NVFNL1BqYWdTSkc1SnFVWEZUa3B6UERqaEpObDZFTHZhRk4xVUVXQUVLNzRI?=
- =?utf-8?B?MkF5eHlINlVPWlJOUmY5VlJaV05MWlJEaFQ4SEZUa1oycUxFaS92aUJHMXBa?=
- =?utf-8?B?RkM3SlZUWU5jWFlZKzcwcDdoUGJ0OWFFZHdtbWU0WjNaSVdJWnJwTi91bTVD?=
- =?utf-8?B?akEwUlZmVy9ZeE9DYjdOZ2ZCVHphUFZXSUJWWi96YnN1UWFtL3NXV1o4MERy?=
- =?utf-8?B?U1B5SVdycVNINEdjMGtnNjRhTUR5TEFhNWFDSnAxcnlLWlh2blNXZFBzbnZr?=
- =?utf-8?B?MlRmY2xkY01XN2Rvbmx0WDFKbS91NC9jWWxRVG02T1VvZi9XbmgwR2xzTHU0?=
- =?utf-8?B?UVBxZFNIOG5IUTZGWEhZNzU4c2tPN1g3TUlUQ3VNQU9aNXovQWJRVE5lc09i?=
- =?utf-8?B?MDRhN2M3L2RLT3AwekVjYng4elNoVFcwcTA0SVJPM3graTdqbHlnMUZlTzli?=
- =?utf-8?B?WmZPOTBuZzlzR1hwSHhhV01GRjFxY3YwYytzU2RVanFoUkNpRWo5TVZGZDVW?=
- =?utf-8?B?eTNXa3lDanhWUXRBb1NTQUc0M00wK3VzdHdkZzBVTzZVV3dQTEtUclZwS2ta?=
- =?utf-8?B?M2xxMDFaM09VTFJOKzZNN1hrQk53cjJ4YmtrSStka1hmdzAxWS9EKzVVNGIv?=
- =?utf-8?B?T2ovSXNWa05KUStlVUEwRjgzK1F3ME5EYTJlcWRjcFEvQ3VrVEZWcjJ0SmtS?=
- =?utf-8?B?SmlKTm9HMFRNMjlSS3I5NVpzRm1XWG1FZEpDUFlOZ2g1V0hObHhzTEFoOGNH?=
- =?utf-8?B?cTVRQnIyTjV6T1c2QmdWNnl1anhNRE1QRExwdUZzdVVZcW9hUm4rTzdXbnpR?=
- =?utf-8?B?d2ZqZzhpMC9BZjhCb3VUZTIvZ1NNd2p3Q1pVa0psNHVhbiszakRPa2xvTGFU?=
- =?utf-8?B?QmdBRk11aWJ1eEtGZ1ZjNm5PaUxMelRCTno2bEk2RVF5ekxPTVNkdU9qbEwz?=
- =?utf-8?B?UWlVUEtUQ1NNVGlCR0lEc3dSREY4SVZZSVp0K2Q1K0tnLytsbXhGRXRNN2h4?=
- =?utf-8?B?VldtREw3Skp5dVJmUkNvbVZHYldsSFdvbFJhZEVVeFYrekJhUWNtRWYyb0d3?=
- =?utf-8?B?cUdyQjhORm5zVlhmQ0V1S0dOeTlicUYvcGNwQkdBZitBRUU4WlJ3UzdaY0FX?=
- =?utf-8?B?NnJJYWZrZzYrY0FEL1YybmxPbXJycW16MnVNazQ2ZmgwZUZBbndCZUs0RkQ5?=
- =?utf-8?B?MlJlajJ1MHhXVGRva1BxcmJIeWhmSHphemIrRlNZbG5xUk1lWTAzN3Foancv?=
- =?utf-8?B?UWpjS2hwSjVnTFpZRkQ0K1FxMnNrOTExRFNzdVpQTHpXM3dWdWd3M3JLRjdJ?=
- =?utf-8?Q?CIkvMvzXuM6o+2pmG1EeA+o2YWHKw7b6drkr23WpIKKo?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q3VDTzdvWklZY09Ub1ZnMklmblZtL0Q1Q1VTanBQNElQL1FMaUFlcUZPc0Zs?=
+ =?utf-8?B?NUcvRDJRb2NSY2tHYzlaN3FnWWhnOVNhOTcxSEo4NXJyOWMxcmdOMjNVZ2xZ?=
+ =?utf-8?B?ZDNrQ0hOSXFXVjJPb0lxRmRZaExBdUdwTVFJbERhSHdlN0x1VGxrUFRuc3Vk?=
+ =?utf-8?B?d09sRkRRV3ZwOGJkL1N2QkpXT3BiSWR5MTJVL1ZjQlc3ZHVaWFc4UlVBM2o3?=
+ =?utf-8?B?U2xBWldNS2lmQ3NONHNZQW5OVVNVWmt3M3ZDUE1TdDN6S3hrUzUxTnk1UnhO?=
+ =?utf-8?B?WmdhNVJNWU1oTk0rcFBOekhMeGVCMTVHZnBzUU4xc3V1aklBdkpFOEhuZysv?=
+ =?utf-8?B?UGpoams2QVVDT0JmVkttMGxqVWl3UTRLQ1BnR2pGZWMvQVU4L3pCUFNFZ01I?=
+ =?utf-8?B?bHh0am1iZ1FaSUxYVmdlUzZ4bzhIRFNkeU1YaWxOTy92NklZVTNuaWhwV1l6?=
+ =?utf-8?B?Z1duc2J5NkFKS0VFa2pGVzhrdHpKZ3VXUWlhbFRWZHZlc3ZQR1lzTTFjTWNt?=
+ =?utf-8?B?Nzk1NnVTTXNORS8zTlpTWjJpelN4dDJiUTA3MkpkajdKYWJuMFZLYnluNGxT?=
+ =?utf-8?B?emtpczdQY1NZUXlLTXpXTGFudmEyQUR0Wmc5bEdsRWdkeXhWZGl3ZW9lOGY3?=
+ =?utf-8?B?aTgzSXMxREREdFZDRHR3QmlWMTFscWxramlBTlRRVzh4QVlmL0pGNGJTZjFk?=
+ =?utf-8?B?Mis1M3lEczEvVUFxYWpXRC9aNnpTdzdvSUJEbnQyVTBTaVRFcVZkcVd3MEMy?=
+ =?utf-8?B?OXBRaGdQTDdBRUJkNW1jOGxDekVKK0JBK2l4QmRmTDl4OFkvODdvNmFEc1lh?=
+ =?utf-8?B?MFlrQ0hKakdvYTFLQ2NDMFpMaG1NRlM5c0xKeDdkajBJYUZwdEtBOWYzdmJ5?=
+ =?utf-8?B?azJIOTBickZGdE5GT251dURWcjYvbHZlR3g1WU9RQXROQTBIb0d3T2lqdFdE?=
+ =?utf-8?B?UkJ1TUlVWHJzcUsrWmpiWXZyVWt3SmxGSTBiZFBoRVEwUldpYStDNExyTXBB?=
+ =?utf-8?B?aDlVUk9qVVlmSlhGak5iNjZmODZKc1RZTDZhTmR5WnBSQjBIL1NBT3NoOFF1?=
+ =?utf-8?B?V0tuMnlwWm13ekpuNEV3aXlEVzNKR0tPR2tPcGFpbXN6bklnTFlrRkFKV3o3?=
+ =?utf-8?B?T0xKK0x1WVdjZ0w1RHlNRWJOeHRDOHk4ck1lNWFlZ3JTeWZ5SktmUnVxZ3I3?=
+ =?utf-8?B?c0tBNnpMT2ZHQmZrb01WTkZxK2dWUXplMW5EdE4xdGxpMUxiYUVpUmgvdkE2?=
+ =?utf-8?B?YnZjT1B3MkR4dlpPMzRvMVhway92Z3ZFa0E0MnFQd3dzUHA2Z2lkUzk4SDZy?=
+ =?utf-8?B?UVM5ZnhaTXBMRVlqM3BLOGhYWlVpNG9FTzhNOWJlOXlrODFwZTFsNzN6c0Vh?=
+ =?utf-8?B?QmFzK2k5ZkZGRXpiaEtQZzV5NHkxQWQyUGRuSHVrd2Nqcmc1VjgvRTNET3A3?=
+ =?utf-8?B?MlZERlZKZzROd1ZjbW9KS3NQZ2NyYlBUTU53U3NJRTJBc1RVcldidDJROTJu?=
+ =?utf-8?B?LzNOcmhSM2hwYTI5OVErSm1SeEhCMmdSNjFXblpLNGpHb2VHRFVUaFZmZ2dD?=
+ =?utf-8?B?ZDlsNkdOd3RneWw0VVdNN2FjNldScTI5YUgvT1cxcUtVTW5tKzB5WW5tblFw?=
+ =?utf-8?B?SVBCTE1PekhubDNFOUxNMGUvYlpYQnRodW5Oa0tXTFprR3RXUlJhU0pHdUF5?=
+ =?utf-8?B?dXhaRzVXd1l2cFZyN2FLVkFUOVJRL2d3aG41UVZjaWcrZmJNaThYbCtDbFhp?=
+ =?utf-8?B?a1J3cTE4ekhxK3hQcHQrZGIrcUR0cnpXcGhPYTQ4Q1pMNGNRNFN1MGdteE90?=
+ =?utf-8?B?UnY4VkxPUG9nYzFxWmRRY2JNZXE3ek40UE1mRCtucHI4STEyT3VYekgwWGJS?=
+ =?utf-8?B?V1didXhtcSt2Zy81U1Z2T0ErSi9ZL1RTZ2pIZDFOSGQzTnAzeGJWY1FpRHZm?=
+ =?utf-8?B?cjdjMCtvenB1ZDJnUGJJeXhUUFZvOWNIeEpyUkx5ZGZTd24zaFNPTUo0eE9K?=
+ =?utf-8?B?WG1admtIdnQxS3NOZGhMQkhnV094L3gxN21XeGVrVjYrRHA0ZjFTWDVOb3Nz?=
+ =?utf-8?B?UjVYVDRBL052aDBKK3BxdnIrd2l6bEpjb1lTMVZIdXJGT0xnKzVKencvdDk1?=
+ =?utf-8?B?aUNOckc2UlJ3K1hkd3NDa2tzOTh5em85S1VZSzRvOVNuY2NubzNSbmlNWWQw?=
+ =?utf-8?Q?kK8ZxyZOaAm03xZry8+6IrMKOh58TfR7PvAMBvElXyA/?=
 X-OriginatorOrg: uclouvain.be
-X-MS-Exchange-CrossTenant-Network-Message-Id: a3278012-e065-45d6-994f-08db9d71840f
+X-MS-Exchange-CrossTenant-Network-Message-Id: a89f4a7a-4891-4afd-fc44-08db9d7184de
 X-MS-Exchange-CrossTenant-AuthSource: DB9PR03MB7689.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2023 09:25:07.6911
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2023 09:25:09.1274
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 7ab090d4-fa2e-4ecf-bc7c-4127b4d582ec
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2IfItba14aDu+DiSmTZX0HhqWcLiXfxLirMkmNdUe9ixkT4vAWTSDdgJmKj/TsMUFdM5ike1ixwC5BxSqgA+5QsaX2pmDeOUUoZ2PEgcfdY=
+X-MS-Exchange-CrossTenant-UserPrincipalName: EXP6oNFOpmtwX7UCpOFScE9ce10vb6TBZcW+RG0dWn6p7P5mConRIwqcz22Qrrx0EgpjV5lMoXHfO7EpeC6o3txVigytAaWIkh0i3fD8pYQ=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR03MB8228
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -136,51 +136,105 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 From: François Michel <francois.michel@uclouvain.be>
 
 Use prandom_u32_state() instead of get_random_u32() to generate
-the random loss events of netem. The state of the prng is part
-of the prng attribute of struct netem_sched_data.
+the correlated loss events of netem.
 
 Signed-off-by: François Michel <francois.michel@uclouvain.be>
 ---
- net/sched/sch_netem.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ net/sched/sch_netem.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
 diff --git a/net/sched/sch_netem.c b/net/sched/sch_netem.c
-index 621c6acfd644..8b54b1005a10 100644
+index 8b54b1005a10..4ad39a4a3cf5 100644
 --- a/net/sched/sch_netem.c
 +++ b/net/sched/sch_netem.c
-@@ -206,7 +206,7 @@ static u32 get_crandom(struct crndstate *state)
- static bool loss_4state(struct netem_sched_data *q)
+@@ -184,15 +184,16 @@ static void init_crandom(struct crndstate *state, unsigned long rho)
+  * Next number depends on last value.
+  * rho is scaled to avoid floating point.
+  */
+-static u32 get_crandom(struct crndstate *state)
++static u32 get_crandom(struct crndstate *state, struct prng *p)
  {
- 	struct clgstate *clg = &q->clg;
--	u32 rnd = get_random_u32();
-+	u32 rnd = prandom_u32_state(&q->prng.prng_state);
+ 	u64 value, rho;
+ 	unsigned long answer;
++	struct rnd_state *s = &p->prng_state;
  
- 	/*
- 	 * Makes a comparison between rnd and the transition
-@@ -271,18 +271,19 @@ static bool loss_4state(struct netem_sched_data *q)
- static bool loss_gilb_ell(struct netem_sched_data *q)
+ 	if (!state || state->rho == 0)	/* no correlation */
+-		return get_random_u32();
++		return prandom_u32_state(s);
+ 
+-	value = get_random_u32();
++	value = prandom_u32_state(s);
+ 	rho = (u64)state->rho + 1;
+ 	answer = (value * ((1ull<<32) - rho) + state->last * rho) >> 32;
+ 	state->last = answer;
+@@ -295,7 +296,7 @@ static bool loss_event(struct netem_sched_data *q)
+ 	switch (q->loss_model) {
+ 	case CLG_RANDOM:
+ 		/* Random packet drop 0 => none, ~0 => all */
+-		return q->loss && q->loss >= get_crandom(&q->loss_cor);
++		return q->loss && q->loss >= get_crandom(&q->loss_cor, &q->prng);
+ 
+ 	case CLG_4_STATES:
+ 		/* 4state loss model algorithm (used also for GI model)
+@@ -324,6 +325,7 @@ static bool loss_event(struct netem_sched_data *q)
+  */
+ static s64 tabledist(s64 mu, s32 sigma,
+ 		     struct crndstate *state,
++		     struct prng *prng,
+ 		     const struct disttable *dist)
  {
- 	struct clgstate *clg = &q->clg;
-+	struct rnd_state *s = &q->prng.prng_state;
+ 	s64 x;
+@@ -333,7 +335,7 @@ static s64 tabledist(s64 mu, s32 sigma,
+ 	if (sigma == 0)
+ 		return mu;
  
- 	switch (clg->state) {
- 	case GOOD_STATE:
--		if (get_random_u32() < clg->a1)
-+		if (prandom_u32_state(s) < clg->a1)
- 			clg->state = BAD_STATE;
--		if (get_random_u32() < clg->a4)
-+		if (prandom_u32_state(s) < clg->a4)
- 			return true;
- 		break;
- 	case BAD_STATE:
--		if (get_random_u32() < clg->a2)
-+		if (prandom_u32_state(s) < clg->a2)
- 			clg->state = GOOD_STATE;
--		if (get_random_u32() > clg->a3)
-+		if (prandom_u32_state(s) > clg->a3)
- 			return true;
- 	}
+-	rnd = get_crandom(state);
++	rnd = get_crandom(state, prng);
  
+ 	/* default uniform distribution */
+ 	if (dist == NULL)
+@@ -455,7 +457,7 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch,
+ 	skb->prev = NULL;
+ 
+ 	/* Random duplication */
+-	if (q->duplicate && q->duplicate >= get_crandom(&q->dup_cor))
++	if (q->duplicate && q->duplicate >= get_crandom(&q->dup_cor, &q->prng))
+ 		++count;
+ 
+ 	/* Drop packet? */
+@@ -498,7 +500,7 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch,
+ 	 * If packet is going to be hardware checksummed, then
+ 	 * do it now in software before we mangle it.
+ 	 */
+-	if (q->corrupt && q->corrupt >= get_crandom(&q->corrupt_cor)) {
++	if (q->corrupt && q->corrupt >= get_crandom(&q->corrupt_cor, &q->prng)) {
+ 		if (skb_is_gso(skb)) {
+ 			skb = netem_segment(skb, sch, to_free);
+ 			if (!skb)
+@@ -536,12 +538,12 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch,
+ 	cb = netem_skb_cb(skb);
+ 	if (q->gap == 0 ||		/* not doing reordering */
+ 	    q->counter < q->gap - 1 ||	/* inside last reordering gap */
+-	    q->reorder < get_crandom(&q->reorder_cor)) {
++	    q->reorder < get_crandom(&q->reorder_cor, &q->prng)) {
+ 		u64 now;
+ 		s64 delay;
+ 
+ 		delay = tabledist(q->latency, q->jitter,
+-				  &q->delay_cor, q->delay_dist);
++				  &q->delay_cor, &q->prng, q->delay_dist);
+ 
+ 		now = ktime_get_ns();
+ 
+@@ -645,7 +647,7 @@ static void get_slot_next(struct netem_sched_data *q, u64 now)
+ 	else
+ 		next_delay = tabledist(q->slot_config.dist_delay,
+ 				       (s32)(q->slot_config.dist_jitter),
+-				       NULL, q->slot_dist);
++				       NULL, &q->prng, q->slot_dist);
+ 
+ 	q->slot.slot_next = now + next_delay;
+ 	q->slot.packets_left = q->slot_config.max_packets;
 -- 
 2.41.0
 
