@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7ED877CBCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F06277CC08
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236614AbjHOLeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 07:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57476 "EHLO
+        id S236879AbjHOLuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 07:50:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236823AbjHOLeJ (ORCPT
+        with ESMTP id S236870AbjHOLtl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 07:34:09 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0237F10E3;
-        Tue, 15 Aug 2023 04:34:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692099242;
-        bh=DtBm+/hYOvO1oRvd8aaePYEzTCG/3G53rxPgWq7IeeY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fAaVDoBUq6YyCdFH95YqeaMXPyoAgabuOLtXXpsjcIziDA0SsA6sTzOAdecd5ObJ7
-         kRitWz2DoTmvyXhrnpTFSgWcL3VGFQe7UkK4PPgfOy3DdwyJMu/eU0NsIgbLggDZ/A
-         6R4ebod4kteWvJJWx7Of4QySLx6LpI+nrvuJLcVfnWqGAuI+pQxm25q8VWXQWjHM79
-         iqqJNrvEDIXdHVe7wH6NXyBiw9uCbp4sLw7CJrSoJFX+DSdug+SdSm9h9//RClbltZ
-         73Zd30yWQ7MuA+NgC+IYCT87rC0LPo4KFNUig77yEDsrZSfiKfhBRlfiXWBGiwB4lQ
-         ZAhyxdv9WeI1A==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RQ8L20KFCz4wZs;
-        Tue, 15 Aug 2023 21:34:01 +1000 (AEST)
-Date:   Tue, 15 Aug 2023 21:34:00 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Ivan Orlov <ivan.orlov0322@gmail.com>,
+        Tue, 15 Aug 2023 07:49:41 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6009A1986
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:49:30 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-410487ca3d6so12276861cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:49:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1692100169; x=1692704969;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=T+oV4OJqksoKrrOVqvE1dcZLounPv8Ok3JnUcRmYUME=;
+        b=STewdZOUFdZkhOBFpHmxizNZ1c1uO8h9AahPqSM/bT5mtfAMxp/JPdVz2gwZqkGmYX
+         CXUOy9IYCXGCzF3+rDerXnpoPRTSaME6gIV3+YX4He/3RwZ7YmZPtKP4okT4gQ5aVN20
+         6cWEK8KTmk8A3mcW+j+gCNyyaMNei4bg0w0ZT+dDgr+wEOaUGbEe0JwkFSF22bDlAy4J
+         esSPi0q4M3Ba0gD3p3CWj3sM/8FZucH6suDWsInP9IETZM/LcMw/APtN+NszrWsHvIIT
+         i0v+RG6adtYNoRGQcTvaigBB2aFfCfvZNouda14VkK1JFzxsap17cqjYeHh8VzXo07yw
+         dvqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692100169; x=1692704969;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T+oV4OJqksoKrrOVqvE1dcZLounPv8Ok3JnUcRmYUME=;
+        b=XMFqduAXVjm4anMwVgnP3/zrjpYkj6CqOke8kb01Ccus+hnTfh5KjnnjMPwbK6AZXf
+         ejMK7A2dc8PWAXPT4pJy/YjkrmWB15FisX9IzzBGBf/Ui+W7tAMgn8L9jqP4F8+EXX5e
+         lBQR7L7qnVYitesnViUuyRBD6TZLA08MN9IT/mF6/jQHxYeh59yYWdxu867kPQhAr05u
+         Z8slej7rtNyt2C6xIIEQ77mjUEFq7M02dxVnngHuXCVTyR9XDdza8H3XLi7wPHNPlU9y
+         bW5p/Ig+Dicwb/9mF21538JcfvLJ07PD8YRrDblbvJz92zCuOceidyGk2u9qTPQ4lFYY
+         9jaQ==
+X-Gm-Message-State: AOJu0YyuI88p/4uhcnbPo3k/hqrB7tZ1gxCbu23mxh5LyqV40TrM9Mdd
+        8+mHFfkZa2Ooo1ofCDP/G4GpvQ==
+X-Google-Smtp-Source: AGHT+IFYlxCaiz/GhuJRu3EPuGKafe/PtsfPGq6WvwzBhtCzK32OsxzfaAmFeIUznd0xlljtiCY5Gw==
+X-Received: by 2002:ac8:5bcd:0:b0:3ff:23e4:40b4 with SMTP id b13-20020ac85bcd000000b003ff23e440b4mr16770979qtb.42.1692100169514;
+        Tue, 15 Aug 2023 04:49:29 -0700 (PDT)
+Received: from ziepe.ca ([24.114.95.117])
+        by smtp.gmail.com with ESMTPSA id bq22-20020a05622a1c1600b00406b11a54b8sm3749564qtb.7.2023.08.15.04.49.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Aug 2023 04:49:28 -0700 (PDT)
+Received: from jgg by NV-9X0Z6D3. with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qVsJg-0000AV-Hm;
+        Tue, 15 Aug 2023 08:34:28 -0300
+Date:   Tue, 15 Aug 2023 08:34:28 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the driver-core tree
-Message-ID: <20230815213400.49afbd8f@canb.auug.org.au>
+Subject: Re: linux-next: build failure after merge of the iommufd tree
+Message-ID: <ZNtixPkYKHnWiVv1@ziepe.ca>
+References: <20230815210437.12bd89b0@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/nr8TfKcG9Wb6p3uz8e=4/P9";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230815210437.12bd89b0@canb.auug.org.au>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/nr8TfKcG9Wb6p3uz8e=4/P9
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Aug 15, 2023 at 09:04:37PM +1000, Stephen Rothwell wrote:
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index 20c9a0501760..1e017e1bf5ea 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -332,7 +332,7 @@ int iommu_device_register_bus(struct iommu_device *iommu,
+>  	spin_unlock(&iommu_device_lock);
+>  
+>  	bus->iommu_ops = ops;
+> -	err = bus_iommu_probe(bus);
+> +	err = bus_iommu_probe(bus, iommu);
+>  	if (err) {
+>  		iommu_device_unregister_bus(iommu, bus, nb);
+>  		return err;
 
-Hi all,
+This is the right fix
 
-The following commits are also in the hid tree as different commits
-(but the same patches):
+Thanks,
+Jason
 
-  32944855bac7 ("HID: hidraw: make hidraw_class structure const")
-  afdf5dd33a91 ("HID: roccat: make all 'class' structures const")
-
-These are commits
-
-  21168bdba6ea ("HID: hidraw: make hidraw_class structure const")
-  fadfcf360161 ("HID: roccat: make all 'class' structures const")
-
-in the hid tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/nr8TfKcG9Wb6p3uz8e=4/P9
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTbYqkACgkQAVBC80lX
-0GwO+wgAlVxMUJFN/q8FYVnAAw45mrispbHv50TcEbq49MoOq4mUMmKv+DxYBl0k
-RxFi4GiKyIS9d04QmpUit9UqbCd994gJo+ZQj4ebOMWz0vPVTrNa91gDyLc3LwAv
-03NsB9rUE7PAcwDOm01Z6uQnbJKcYNrm8MvnS6dxd0ZXgxNcRjB5J7Etavmeu6o/
-A1obpHEAQz7JgjrFZDWG720PmjkWuevX+KTfYlsBsBFbSLtOJpqXDg8OC9JaRxv9
-LSZYu8cJa4cxbIUaNY15yjJFNKz+Qg2/Aj5yWEvEF9IPwcmpDgb+4CijpGYevjS7
-/QhBcGv+7Vt0pYakWwsCMc8dEsiFQw==
-=ojLt
------END PGP SIGNATURE-----
-
---Sig_/nr8TfKcG9Wb6p3uz8e=4/P9--
