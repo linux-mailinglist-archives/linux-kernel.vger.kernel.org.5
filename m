@@ -2,876 +2,1362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE8B77CBF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:46:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC8B77CC02
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236847AbjHOLq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 07:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56648 "EHLO
+        id S236864AbjHOLsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 07:48:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236842AbjHOLqR (ORCPT
+        with ESMTP id S236980AbjHOLrs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 07:46:17 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E06B10F2;
-        Tue, 15 Aug 2023 04:46:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692099971;
-        bh=1Kl40O1tJUSfeN47jfrtjAM/lMaT+aeIVlqg9k9G1qk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=pN+8jvzUKWCSuqmLb+ltsFWmIemiNiAd7LMxVg4fw45SFj7+4Q0lWeAmEV8UDmteM
-         tC7CjIIl/foGtytJzsynUZKmKUoWBK9JtXUBb9rGQ3s0T+h2HGQruXhyeDvA734tf9
-         WEvaXVPDSQHTTcXphNPZYGubgrSyk8auWkRl7SpVKhQ0yanGXWkg0d0nvjpzV2+g0Y
-         ZmZoxuKOARLuQIQd+QCmhWlumyHy9CGPhsHGTNrelSxCR0i6Oh332WEkFtCYUX79W3
-         ouL3VXHogXWd+7tq3muL5OgcLqDlJrFuPYeAfsq3azVRqN9aqxs3G0u6soLJRQoP8U
-         90HCkOfdwauRg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RQ8c32pRXz4wZs;
-        Tue, 15 Aug 2023 21:46:11 +1000 (AEST)
-Date:   Tue, 15 Aug 2023 21:46:10 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: Tree for Aug 15
-Message-ID: <20230815214610.0b097d68@canb.auug.org.au>
+        Tue, 15 Aug 2023 07:47:48 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA2411FDF;
+        Tue, 15 Aug 2023 04:47:29 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RQ8dR5rlQz4f3s6L;
+        Tue, 15 Aug 2023 19:47:23 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgDHVqnNZdtk6rITAw--.12971S3;
+        Tue, 15 Aug 2023 19:47:26 +0800 (CST)
+Subject: Re: 6.5.0rc5 fs hang - ext4? raid?
+To:     "Dr. David Alan Gilbert" <dave@treblig.org>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, song@kernel.org
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, "yukuai (C)" <yukuai3@huawei.com>
+References: <ZNqWfQPTScJDkmpX@gallifrey>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <92a1dd41-cafa-4a8c-1e16-d638393d7255@huaweicloud.com>
+Date:   Tue, 15 Aug 2023 19:47:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4IX_r1Rm.hI=tj.WUfswG92";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,LOCALPART_IN_SUBJECT,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <ZNqWfQPTScJDkmpX@gallifrey>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgDHVqnNZdtk6rITAw--.12971S3
+X-Coremail-Antispam: 1UD129KBjvAXoWDXr1kGF13KryxKFWUKFy7Awb_yoWxKFy7to
+        W3X342kr48Cr15JrWfAr4UXa4kJF4xJFy7ZryDCr15WF9rGrWktr18Gr1rJw1UtrsYqryx
+        JFn3WFWUXw1UJ3Z7n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UjIYCTnIWjp_UUUYj7kC6x804xWl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK
+        8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
+        AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF
+        7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7
+        CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
+        rVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
+        IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI
+        7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY
+        6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6x
+        AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv
+        6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/4IX_r1Rm.hI=tj.WUfswG92
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi all,
+在 2023/08/15 5:02, Dr. David Alan Gilbert 写道:
+> Hi,
+>    I'm seeing a few hangs on a fs after upgrading to fedora 39's bleeding
+> edge; which is running kernel 6.5.0-0.rc5.20230808git14f9643dc90a.37.fc39.x86_64
+> It was always solid prior to that.  It seems to trigger on heavy IO
+> on this fs.
+> 
+> The stack of this fs is:
+>    spinning rust on SATA
+>    LVM RAID 1
+>    ext4
+> 
+> The host is a Ryzen 3950X.
+> 
+> Below is a sysrq backtrace of blocked tasks; this happened with
+> rhythmbox playing audio off the fs, while a meson build ran.
+> There was no oops or anything, just all the tasks on the fs hung.
+> 
+> I've got another case now where the only interesting thing running
+> is an 'ag' (parallel grep) running over the kernel tree.
+> (Anything not on that fs still seems to be running OK)
+> 
+> So it seems easy to trigger for me.
+> 
+> NAME                         MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+> sda                            8:0    0   3.6T  0 disk
+> ├─sda1                         8:1    0     1G  0 part
+> └─sda2                         8:2    0   3.6T  0 part
+> ...
+>    ├─main-more_rmeta_0        253:16   0     4M  0 lvm
+>    │ └─main-more              253:20   0   900G  0 lvm  /discs/more
+>    ├─main-more_rimage_0       253:17   0   900G  0 lvm
+>    │ └─main-more              253:20   0   900G  0 lvm  /discs/more
+> 
+> sdb                            8:16   0   3.6T  0 disk
+> ├─sdb1                         8:17   0     1G  0 part
+> └─sdb2                         8:18   0   3.6T  0 part
+>    ├─main-more_rmeta_1        253:18   0     4M  0 lvm
+>    │ └─main-more              253:20   0   900G  0 lvm  /discs/more
+>    ├─main-more_rimage_1       253:19   0   900G  0 lvm
+>    │ └─main-more              253:20   0   900G  0 lvm  /discs/more
+> 
 
-Changes since 20230809:
+Can you stop all the test, and then collect the result of sda/sdb
+debugfs? You can use the following cmd to collect result:
 
-The mm-stable tree gained a conflict against Linus' tree.
+find /sys/kernel/debug/block/sda/ -type f | xargs grep .
 
-The mm tree lost its build failure.
+Thanks,
+Kuai
 
-The scmi tree gained a conflict against the arm-soc tree.
+> Dave
+> 
+> dg         29594   29592  0 18:40 pts/0    00:00:00 /usr/bin/ar --plugin /usr/libexec/gcc/x86_64-redhat-linux/13/liblto_plugin.so -csrDT src/intel/perf/libintel_perf.a src/intel/perf/libintel_perf.a.p/meson-generated_.._intel_perf_metrics.c.o src/intel/perf/libintel_perf.a.p/intel_perf.c.o src/intel/perf/libintel_perf.a.p/intel_perf_query.c.o src/intel/perf/libintel_perf.a.p/intel_perf_mdapi.c.o
+> 
+> [root@dalek dg]# cat /proc/29594/stack
+> [<0>] md_super_wait+0xa2/0xe0
+> [<0>] md_bitmap_unplug+0xd2/0x120
+> [<0>] flush_bio_list+0xf3/0x100 [raid1]
+> [<0>] raid1_unplug+0x3b/0xb0 [raid1]
+> [<0>] __blk_flush_plug+0xd7/0x150
+> [<0>] blk_finish_plug+0x29/0x40
+> [<0>] ext4_do_writepages+0x401/0xc90
+> [<0>] ext4_writepages+0xad/0x180
+> [<0>] do_writepages+0xd2/0x1e0
+> [<0>] filemap_fdatawrite_wbc+0x63/0x90
+> [<0>] __filemap_fdatawrite_range+0x5c/0x80
+> [<0>] ext4_release_file+0x74/0xb0
+> [<0>] __fput+0xf5/0x2a0
+> [<0>] task_work_run+0x5d/0x90
+> [<0>] exit_to_user_mode_prepare+0x1e6/0x1f0
+> [<0>] syscall_exit_to_user_mode+0x1b/0x40
+> [<0>] do_syscall_64+0x6c/0x90
+> [<0>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+>   
+> lvs -a hanging
+> 
+> 6.5.0-0.rc5.20230808git14f9643dc90a.37.fc39.x86_64
+> root       29780   29658  0 18:44 pts/5    00:00:00 [lvs]
+> 
+> [root@dalek dg]# cat /proc/29780/stack
+> [<0>] exit_aio+0x10d/0x120
+> [<0>] __mmput+0x12/0x130
+> [<0>] do_exit+0x305/0xb10
+> [<0>] do_group_exit+0x31/0x80
+> [<0>] get_signal+0x9a5/0x9e0
+> [<0>] arch_do_signal_or_restart+0x3e/0x270
+> [<0>] exit_to_user_mode_prepare+0x195/0x1f0
+> [<0>] syscall_exit_to_user_mode+0x1b/0x40
+> [<0>] do_syscall_64+0x6c/0x90
+> [<0>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> 
+> [15884.105052] sysrq: Show Blocked State
+> [15884.105917] task:mdX_raid1       state:D stack:0     pid:1492  ppid:2      flags:0x00004000
+> [15884.105924] Call Trace:
+> [15884.105927]  <TASK>
+> [15884.105932]  __schedule+0x3ee/0x14c0
+> [15884.105940]  ? ttwu_do_activate+0x64/0x220
+> [15884.105947]  ? sysvec_apic_timer_interrupt+0xe/0x90
+> [15884.105952]  schedule+0x5e/0xd0
+> [15884.105955]  md_super_wait+0xa2/0xe0
+> [15884.105960]  ? __pfx_autoremove_wake_function+0x10/0x10
+> [15884.105966]  md_bitmap_daemon_work+0x183/0x3b0
+> [15884.105971]  ? __pfx_md_thread+0x10/0x10
+> [15884.105974]  md_check_recovery+0x42/0x5a0
+> [15884.105981]  raid1d+0x87/0x16f0 [raid1]
+> [15884.105990]  ? __pfx_md_thread+0x10/0x10
+> [15884.105993]  ? __schedule+0x3f6/0x14c0
+> [15884.105996]  ? psi_task_switch+0x84/0x230
+> [15884.106001]  ? lock_timer_base+0x61/0x80
+> [15884.106007]  ? prepare_to_wait_event+0x60/0x180
+> [15884.106011]  ? __pfx_md_thread+0x10/0x10
+> [15884.106014]  md_thread+0xae/0x190
+> [15884.106017]  ? __pfx_autoremove_wake_function+0x10/0x10
+> [15884.106022]  kthread+0xe8/0x120
+> [15884.106027]  ? __pfx_kthread+0x10/0x10
+> [15884.106031]  ret_from_fork+0x34/0x50
+> [15884.106036]  ? __pfx_kthread+0x10/0x10
+> [15884.106041]  ret_from_fork_asm+0x1b/0x30
+> [15884.106049]  </TASK>
+> [15884.106057] task:jbd2/dm-20-8    state:D stack:0     pid:1536  ppid:2      flags:0x00004000
+> [15884.106063] Call Trace:
+> [15884.106064]  <TASK>
+> [15884.106066]  __schedule+0x3ee/0x14c0
+> [15884.106070]  ? dm_submit_bio+0x3aa/0x620
+> [15884.106077]  schedule+0x5e/0xd0
+> [15884.106080]  io_schedule+0x46/0x70
+> [15884.106083]  bit_wait_io+0x11/0x70
+> [15884.106087]  __wait_on_bit+0x46/0x140
+> [15884.106090]  ? __pfx_bit_wait_io+0x10/0x10
+> [15884.106095]  out_of_line_wait_on_bit+0x95/0xc0
+> [15884.106099]  ? __pfx_wake_bit_function+0x10/0x10
+> [15884.106103]  jbd2_journal_commit_transaction+0x162d/0x1a10
+> [15884.106117]  kjournald2+0xad/0x280
+> [15884.106121]  ? __pfx_autoremove_wake_function+0x10/0x10
+> [15884.106126]  ? __pfx_kjournald2+0x10/0x10
+> [15884.106129]  kthread+0xe8/0x120
+> [15884.106133]  ? __pfx_kthread+0x10/0x10
+> [15884.106138]  ret_from_fork+0x34/0x50
+> [15884.106141]  ? __pfx_kthread+0x10/0x10
+> [15884.106145]  ret_from_fork_asm+0x1b/0x30
+> [15884.106152]  </TASK>
+> [15884.106478] task:oggdemux28:sink state:D stack:0     pid:3637  ppid:2477   flags:0x00000002
+> [15884.106484] Call Trace:
+> [15884.106486]  <TASK>
+> [15884.106488]  __schedule+0x3ee/0x14c0
+> [15884.106494]  schedule+0x5e/0xd0
+> [15884.106497]  io_schedule+0x46/0x70
+> [15884.106500]  folio_wait_bit_common+0x13d/0x350
+> [15884.106506]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.106513]  filemap_get_pages+0x5fb/0x630
+> [15884.106518]  ? psi_task_switch+0xd6/0x230
+> [15884.106522]  ? __switch_to_asm+0x3e/0x70
+> [15884.106528]  filemap_read+0xd9/0x350
+> [15884.106532]  ? dput+0x3a/0x310
+> [15884.106539]  vfs_read+0x201/0x350
+> [15884.106546]  ksys_read+0x6f/0xf0
+> [15884.106551]  do_syscall_64+0x60/0x90
+> [15884.106557]  ? exit_to_user_mode_prepare+0x142/0x1f0
+> [15884.106561]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.106566]  ? do_syscall_64+0x6c/0x90
+> [15884.106569]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.106573]  ? do_syscall_64+0x6c/0x90
+> [15884.106576]  ? do_syscall_64+0x6c/0x90
+> [15884.106579]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.106583]  ? do_syscall_64+0x6c/0x90
+> [15884.106585]  ? do_syscall_64+0x6c/0x90
+> [15884.106589]  ? do_syscall_64+0x6c/0x90
+> [15884.106592]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.106598] RIP: 0033:0x7ff0e5f083ba
+> [15884.106626] RSP: 002b:00007ff0c77fd180 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.106630] RAX: ffffffffffffffda RBX: 00007ff0940c4eb0 RCX: 00007ff0e5f083ba
+> [15884.106633] RDX: 0000000000002278 RSI: 00007ff0a805c880 RDI: 0000000000000015
+> [15884.106635] RBP: 00007ff0c77fd1a0 R08: 0000000000000000 R09: 00007ff0e57886a0
+> [15884.106638] R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000002278
+> [15884.106640] R13: 0000000000000000 R14: 00007ff0c77fe648 R15: 0000000000002278
+> [15884.106646]  </TASK>
+> [15884.106865] task:kworker/u64:2   state:D stack:0     pid:11557 ppid:2      flags:0x00004000
+> [15884.106872] Workqueue: writeback wb_workfn (flush-253:20)
+> [15884.106878] Call Trace:
+> [15884.106880]  <TASK>
+> [15884.106882]  __schedule+0x3ee/0x14c0
+> [15884.106886]  ? enqueue_entity+0x184/0x530
+> [15884.106891]  ? default_send_IPI_single_phys+0x36/0x50
+> [15884.106898]  schedule+0x5e/0xd0
+> [15884.106901]  schedule_timeout+0x151/0x160
+> [15884.106907]  wait_for_completion+0x8a/0x160
+> [15884.106912]  md_bitmap_unplug_async+0x8c/0xb0
+> [15884.106917]  ? __pfx_md_bitmap_unplug_fn+0x10/0x10
+> [15884.106922]  flush_bio_list+0x35/0x100 [raid1]
+> [15884.106931]  raid1_unplug+0x3b/0xb0 [raid1]
+> [15884.106941]  raid1_make_request+0x82b/0x1700 [raid1]
+> [15884.106951]  ? mempool_alloc+0x89/0x1b0
+> [15884.106956]  md_handle_request+0x135/0x220
+> [15884.106962]  raid_map+0x29/0x40 [dm_raid]
+> [15884.106972]  __map_bio+0x44/0x1c0
+> [15884.106977]  dm_submit_bio+0x261/0x620
+> [15884.106984]  __submit_bio+0xb3/0x170
+> [15884.106990]  submit_bio_noacct_nocheck+0x159/0x370
+> [15884.106995]  ext4_io_submit+0x24/0x40
+> [15884.107001]  ext4_do_writepages+0x3bd/0xc90
+> [15884.107008]  ext4_writepages+0xad/0x180
+> [15884.107015]  do_writepages+0xd2/0x1e0
+> [15884.107021]  __writeback_single_inode+0x3d/0x360
+> [15884.107025]  ? wbc_detach_inode+0x101/0x220
+> [15884.107029]  writeback_sb_inodes+0x1ed/0x4b0
+> [15884.107035]  __writeback_inodes_wb+0x4c/0xf0
+> [15884.107040]  wb_writeback+0x298/0x310
+> [15884.107045]  wb_workfn+0x35b/0x510
+> [15884.107049]  ? check_preempt_curr+0x61/0x70
+> [15884.107052]  ? ttwu_do_activate+0x64/0x220
+> [15884.107058]  process_one_work+0x1e1/0x3f0
+> [15884.107063]  worker_thread+0x51/0x390
+> [15884.107068]  ? __pfx_worker_thread+0x10/0x10
+> [15884.107071]  kthread+0xe8/0x120
+> [15884.107075]  ? __pfx_kthread+0x10/0x10
+> [15884.107080]  ret_from_fork+0x34/0x50
+> [15884.107084]  ? __pfx_kthread+0x10/0x10
+> [15884.107088]  ret_from_fork_asm+0x1b/0x30
+> [15884.107095]  </TASK>
+> [15884.107123] task:kworker/u64:3   state:D stack:0     pid:13757 ppid:2      flags:0x00004000
+> [15884.107128] Workqueue: md_bitmap md_bitmap_unplug_fn
+> [15884.107132] Call Trace:
+> [15884.107134]  <TASK>
+> [15884.107136]  __schedule+0x3ee/0x14c0
+> [15884.107140]  ? __submit_bio+0x8b/0x170
+> [15884.107144]  ? submit_bio_noacct_nocheck+0x159/0x370
+> [15884.107150]  schedule+0x5e/0xd0
+> [15884.107153]  md_super_wait+0xa2/0xe0
+> [15884.107157]  ? __pfx_autoremove_wake_function+0x10/0x10
+> [15884.107161]  md_bitmap_unplug+0xad/0x120
+> [15884.107165]  md_bitmap_unplug_fn+0x16/0x20
+> [15884.107168]  process_one_work+0x1e1/0x3f0
+> [15884.107172]  worker_thread+0x51/0x390
+> [15884.107176]  ? __pfx_worker_thread+0x10/0x10
+> [15884.107180]  kthread+0xe8/0x120
+> [15884.107184]  ? __pfx_kthread+0x10/0x10
+> [15884.107188]  ret_from_fork+0x34/0x50
+> [15884.107192]  ? __pfx_kthread+0x10/0x10
+> [15884.107196]  ret_from_fork_asm+0x1b/0x30
+> [15884.107203]  </TASK>
+> [15884.107287] task:ccache          state:D stack:0     pid:29431 ppid:23240  flags:0x00000002
+> [15884.107292] Call Trace:
+> [15884.107294]  <TASK>
+> [15884.107296]  __schedule+0x3ee/0x14c0
+> [15884.107302]  schedule+0x5e/0xd0
+> [15884.107305]  io_schedule+0x46/0x70
+> [15884.107308]  folio_wait_bit_common+0x13d/0x350
+> [15884.107313]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.107318]  filemap_get_pages+0x5fb/0x630
+> [15884.107325]  filemap_read+0xd9/0x350
+> [15884.107332]  vfs_read+0x201/0x350
+> [15884.107338]  ksys_read+0x6f/0xf0
+> [15884.107343]  do_syscall_64+0x60/0x90
+> [15884.107347]  ? exc_page_fault+0x7f/0x180
+> [15884.107351]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.107355] RIP: 0033:0x7fda92908381
+> [15884.107364] RSP: 002b:00007ffc1017e0a8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.107367] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fda92908381
+> [15884.107370] RDX: 0000000000001000 RSI: 000055924b25f180 RDI: 0000000000000004
+> [15884.107373] RBP: 00007ffc101805d0 R08: 0000000000000000 R09: 0000000000000001
+> [15884.107375] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000001000
+> [15884.107377] R13: 00007ffc1017e5a0 R14: 00007ffc1017f5f0 R15: 00007ffc1017e6d0
+> [15884.107381]  </TASK>
+> [15884.107384] task:ccache          state:D stack:0     pid:29436 ppid:23240  flags:0x00000002
+> [15884.107387] Call Trace:
+> [15884.107389]  <TASK>
+> [15884.107391]  __schedule+0x3ee/0x14c0
+> [15884.107397]  schedule+0x5e/0xd0
+> [15884.107400]  io_schedule+0x46/0x70
+> [15884.107403]  folio_wait_bit_common+0x13d/0x350
+> [15884.107407]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.107413]  filemap_get_pages+0x5fb/0x630
+> [15884.107417]  ? terminate_walk+0x61/0x100
+> [15884.107423]  filemap_read+0xd9/0x350
+> [15884.107427]  ? do_filp_open+0xb3/0x160
+> [15884.107434]  vfs_read+0x201/0x350
+> [15884.107440]  ksys_read+0x6f/0xf0
+> [15884.107445]  do_syscall_64+0x60/0x90
+> [15884.107449]  ? exc_page_fault+0x7f/0x180
+> [15884.107453]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.107458] RIP: 0033:0x7f534d908381
+> [15884.107464] RSP: 002b:00007ffc829af3e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.107468] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f534d908381
+> [15884.107470] RDX: 0000000000001000 RSI: 000055f64fb75160 RDI: 0000000000000004
+> [15884.107472] RBP: 00007ffc829b1910 R08: 0000000000000000 R09: 0000000000000001
+> [15884.107474] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000001000
+> [15884.107476] R13: 00007ffc829af8e0 R14: 00007ffc829b0930 R15: 00007ffc829afa10
+> [15884.107481]  </TASK>
+> [15884.107484] task:cc1             state:D stack:0     pid:29440 ppid:29439  flags:0x00000002
+> [15884.107488] Call Trace:
+> [15884.107490]  <TASK>
+> [15884.107492]  __schedule+0x3ee/0x14c0
+> [15884.107495]  ? ext4_match+0x108/0x150
+> [15884.107501]  schedule+0x5e/0xd0
+> [15884.107504]  io_schedule+0x46/0x70
+> [15884.107507]  folio_wait_bit_common+0x13d/0x350
+> [15884.107511]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.107517]  filemap_get_pages+0x5fb/0x630
+> [15884.107521]  ? get_page_from_freelist+0x1630/0x1770
+> [15884.107527]  ? path_lookupat+0x96/0x1a0
+> [15884.107533]  filemap_read+0xd9/0x350
+> [15884.107537]  ? avc_has_perm+0x5f/0xe0
+> [15884.107544]  vfs_read+0x201/0x350
+> [15884.107551]  ksys_read+0x6f/0xf0
+> [15884.107556]  do_syscall_64+0x60/0x90
+> [15884.107560]  ? __count_memcg_events+0x42/0x90
+> [15884.107564]  ? count_memcg_events.constprop.0+0x1a/0x30
+> [15884.107570]  ? handle_mm_fault+0x9e/0x350
+> [15884.107575]  ? do_user_addr_fault+0x179/0x640
+> [15884.107581]  ? exc_page_fault+0x7f/0x180
+> [15884.107585]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.107590] RIP: 0033:0x7f0616708381
+> [15884.107596] RSP: 002b:00007ffea22d25e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.107599] RAX: ffffffffffffffda RBX: 0000000004243050 RCX: 00007f0616708381
+> [15884.107602] RDX: 000000000001fdc8 RSI: 00000000042d89b0 RDI: 0000000000000006
+> [15884.107604] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.107606] R10: 0000000000000004 R11: 0000000000000246 R12: 0000000004151ae0
+> [15884.107608] R13: 0000000000000000 R14: 00000000042d89b0 R15: 000000000001fdc8
+> [15884.107613]  </TASK>
+> [15884.107622] task:cc1             state:D stack:0     pid:29443 ppid:29441  flags:0x00000002
+> [15884.107625] Call Trace:
+> [15884.107626]  <TASK>
+> [15884.107629]  __schedule+0x3ee/0x14c0
+> [15884.107634]  schedule+0x5e/0xd0
+> [15884.107638]  io_schedule+0x46/0x70
+> [15884.107641]  folio_wait_bit_common+0x13d/0x350
+> [15884.107645]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.107651]  filemap_get_pages+0x5fb/0x630
+> [15884.107658]  filemap_read+0xd9/0x350
+> [15884.107661]  ? memcg_check_events+0x77/0x1c0
+> [15884.107669]  vfs_read+0x201/0x350
+> [15884.107676]  ksys_read+0x6f/0xf0
+> [15884.107680]  do_syscall_64+0x60/0x90
+> [15884.107684]  ? do_user_addr_fault+0x179/0x640
+> [15884.107689]  ? exc_page_fault+0x7f/0x180
+> [15884.107693]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.107697] RIP: 0033:0x7fe61fb08381
+> [15884.107704] RSP: 002b:00007fffb85c3588 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.107707] RAX: ffffffffffffffda RBX: 0000000003860770 RCX: 00007fe61fb08381
+> [15884.107709] RDX: 000000000001fdc8 RSI: 00000000038dfd60 RDI: 0000000000000006
+> [15884.107711] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.107713] R10: 00000000038dfd50 R11: 0000000000000246 R12: 000000000384bae0
+> [15884.107716] R13: 0000000000000000 R14: 00000000038dfd60 R15: 000000000001fdc8
+> [15884.107720]  </TASK>
+> [15884.107726] task:cc1             state:D stack:0     pid:29450 ppid:29448  flags:0x00000002
+> [15884.107729] Call Trace:
+> [15884.107731]  <TASK>
+> [15884.107732]  __schedule+0x3ee/0x14c0
+> [15884.107738]  schedule+0x5e/0xd0
+> [15884.107741]  io_schedule+0x46/0x70
+> [15884.107744]  folio_wait_bit_common+0x13d/0x350
+> [15884.107749]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.107755]  filemap_get_pages+0x5fb/0x630
+> [15884.107759]  ? get_page_from_freelist+0x1630/0x1770
+> [15884.107764]  ? filename_lookup+0xe8/0x1f0
+> [15884.107770]  filemap_read+0xd9/0x350
+> [15884.107777]  vfs_read+0x201/0x350
+> [15884.107783]  ksys_read+0x6f/0xf0
+> [15884.107788]  do_syscall_64+0x60/0x90
+> [15884.107792]  ? __count_memcg_events+0x42/0x90
+> [15884.107796]  ? count_memcg_events.constprop.0+0x1a/0x30
+> [15884.107801]  ? handle_mm_fault+0x9e/0x350
+> [15884.107805]  ? do_user_addr_fault+0x179/0x640
+> [15884.107810]  ? exc_page_fault+0x7f/0x180
+> [15884.107814]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.107819] RIP: 0033:0x7fc938908381
+> [15884.107831] RSP: 002b:00007ffee7467d18 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.107834] RAX: ffffffffffffffda RBX: 00000000031e7ff0 RCX: 00007fc938908381
+> [15884.107837] RDX: 0000000000001b8f RSI: 00000000032659c0 RDI: 0000000000000006
+> [15884.107839] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.107841] R10: 0000000000000004 R11: 0000000000000246 R12: 00000000031d3ae0
+> [15884.107842] R13: 0000000000000000 R14: 00000000032659c0 R15: 0000000000001b8f
+> [15884.107847]  </TASK>
+> [15884.107849] task:cc1             state:D stack:0     pid:29451 ppid:29449  flags:0x00000002
+> [15884.107853] Call Trace:
+> [15884.107854]  <TASK>
+> [15884.107856]  __schedule+0x3ee/0x14c0
+> [15884.107862]  schedule+0x5e/0xd0
+> [15884.107865]  io_schedule+0x46/0x70
+> [15884.107868]  folio_wait_bit_common+0x13d/0x350
+> [15884.107872]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.107878]  filemap_get_pages+0x5fb/0x630
+> [15884.107882]  ? terminate_walk+0x61/0x100
+> [15884.107888]  filemap_read+0xd9/0x350
+> [15884.107892]  ? __alloc_pages+0xe0/0x350
+> [15884.107898]  vfs_read+0x201/0x350
+> [15884.107904]  ksys_read+0x6f/0xf0
+> [15884.107909]  do_syscall_64+0x60/0x90
+> [15884.107912]  ? __count_memcg_events+0x42/0x90
+> [15884.107916]  ? count_memcg_events.constprop.0+0x1a/0x30
+> [15884.107921]  ? handle_mm_fault+0x9e/0x350
+> [15884.107925]  ? do_user_addr_fault+0x179/0x640
+> [15884.107930]  ? exc_page_fault+0x7f/0x180
+> [15884.107934]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.107939] RIP: 0033:0x7f8284f08381
+> [15884.107945] RSP: 002b:00007ffcb2d353d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.107949] RAX: ffffffffffffffda RBX: 000000000313b770 RCX: 00007f8284f08381
+> [15884.107951] RDX: 000000000001fdc8 RSI: 00000000031b5d40 RDI: 0000000000000006
+> [15884.107953] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.107955] R10: 00000000031b5d30 R11: 0000000000000246 R12: 0000000003126ae0
+> [15884.107957] R13: 0000000000000000 R14: 00000000031b5d40 R15: 000000000001fdc8
+> [15884.107962]  </TASK>
+> [15884.107964] task:ar              state:D stack:0     pid:29480 ppid:29475  flags:0x00004002
+> [15884.107968] Call Trace:
+> [15884.107970]  <TASK>
+> [15884.107972]  __schedule+0x3ee/0x14c0
+> [15884.107976]  ? md_handle_request+0x19a/0x220
+> [15884.107981]  schedule+0x5e/0xd0
+> [15884.107984]  md_super_wait+0xa2/0xe0
+> [15884.107988]  ? __pfx_autoremove_wake_function+0x10/0x10
+> [15884.107992]  md_bitmap_unplug+0xd2/0x120
+> [15884.107996]  flush_bio_list+0xf3/0x100 [raid1]
+> [15884.108006]  raid1_unplug+0x3b/0xb0 [raid1]
+> [15884.108015]  __blk_flush_plug+0xd7/0x150
+> [15884.108020]  blk_finish_plug+0x29/0x40
+> [15884.108024]  ext4_do_writepages+0x401/0xc90
+> [15884.108031]  ext4_writepages+0xad/0x180
+> [15884.108037]  do_writepages+0xd2/0x1e0
+> [15884.108041]  ? vfs_read+0x201/0x350
+> [15884.108046]  filemap_fdatawrite_wbc+0x63/0x90
+> [15884.108052]  __filemap_fdatawrite_range+0x5c/0x80
+> [15884.108057]  ext4_release_file+0x74/0xb0
+> [15884.108062]  __fput+0xf5/0x2a0
+> [15884.108066]  task_work_run+0x5d/0x90
+> [15884.108072]  exit_to_user_mode_prepare+0x1e6/0x1f0
+> [15884.108076]  syscall_exit_to_user_mode+0x1b/0x40
+> [15884.108080]  do_syscall_64+0x6c/0x90
+> [15884.108083]  ? do_syscall_64+0x6c/0x90
+> [15884.108086]  ? do_syscall_64+0x6c/0x90
+> [15884.108090]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.108094] RIP: 0033:0x7fc5c81037b4
+> [15884.108101] RSP: 002b:00007ffc93a5d078 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
+> [15884.108104] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fc5c81037b4
+> [15884.108106] RDX: 0000000000002000 RSI: 00007ffc93a5d090 RDI: 0000000000000003
+> [15884.108108] RBP: 00007ffc93a5f0d0 R08: 000055debdb6a780 R09: 0000000000000001
+> [15884.108111] R10: 0000000000000000 R11: 0000000000000202 R12: 00007fc5c82efb08
+> [15884.108113] R13: 0000000000000022 R14: 0000000000000003 R15: 0000000000000000
+> [15884.108117]  </TASK>
+> [15884.108121] task:cc1             state:D stack:0     pid:29488 ppid:29487  flags:0x00000002
+> [15884.108125] Call Trace:
+> [15884.108126]  <TASK>
+> [15884.108128]  __schedule+0x3ee/0x14c0
+> [15884.108132]  ? __alloc_pages+0x1a3/0x350
+> [15884.108137]  schedule+0x5e/0xd0
+> [15884.108140]  io_schedule+0x46/0x70
+> [15884.108143]  folio_wait_bit_common+0x13d/0x350
+> [15884.108147]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.108153]  filemap_get_pages+0x5fb/0x630
+> [15884.108160]  filemap_read+0xd9/0x350
+> [15884.108164]  ? __alloc_pages+0xe0/0x350
+> [15884.108169]  vfs_read+0x201/0x350
+> [15884.108176]  ksys_read+0x6f/0xf0
+> [15884.108181]  do_syscall_64+0x60/0x90
+> [15884.108184]  ? count_memcg_events.constprop.0+0x1a/0x30
+> [15884.108189]  ? handle_mm_fault+0x9e/0x350
+> [15884.108193]  ? do_user_addr_fault+0x179/0x640
+> [15884.108198]  ? exc_page_fault+0x7f/0x180
+> [15884.108202]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.108207] RIP: 0033:0x7f8cf3308381
+> [15884.108213] RSP: 002b:00007ffcd7e94738 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.108216] RAX: ffffffffffffffda RBX: 00000000025af240 RCX: 00007f8cf3308381
+> [15884.108219] RDX: 000000000001fdc8 RSI: 0000000002690910 RDI: 0000000000000006
+> [15884.108221] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.108222] R10: 0000000002690900 R11: 0000000000000246 R12: 00000000024f4ae0
+> [15884.108224] R13: 0000000000000000 R14: 0000000002690910 R15: 000000000001fdc8
+> [15884.108229]  </TASK>
+> [15884.108234] task:cc1             state:D stack:0     pid:29493 ppid:29492  flags:0x00000002
+> [15884.108237] Call Trace:
+> [15884.108239]  <TASK>
+> [15884.108241]  __schedule+0x3ee/0x14c0
+> [15884.108246]  schedule+0x5e/0xd0
+> [15884.108249]  io_schedule+0x46/0x70
+> [15884.108252]  folio_wait_bit_common+0x13d/0x350
+> [15884.108257]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.108262]  filemap_get_pages+0x5fb/0x630
+> [15884.108267]  ? path_init+0x38f/0x3c0
+> [15884.108272]  filemap_read+0xd9/0x350
+> [15884.108276]  ? __alloc_pages+0xe0/0x350
+> [15884.108282]  vfs_read+0x201/0x350
+> [15884.108289]  ksys_read+0x6f/0xf0
+> [15884.108293]  do_syscall_64+0x60/0x90
+> [15884.108297]  ? count_memcg_events.constprop.0+0x1a/0x30
+> [15884.108302]  ? handle_mm_fault+0x9e/0x350
+> [15884.108306]  ? do_user_addr_fault+0x179/0x640
+> [15884.108311]  ? exc_page_fault+0x7f/0x180
+> [15884.108315]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.108320] RIP: 0033:0x7f12a9908381
+> [15884.108326] RSP: 002b:00007ffcc9100bb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.108330] RAX: ffffffffffffffda RBX: 0000000003831de0 RCX: 00007f12a9908381
+> [15884.108332] RDX: 000000000001fdc8 RSI: 00000000038caf60 RDI: 0000000000000006
+> [15884.108334] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.108336] R10: 00000000038caf50 R11: 0000000000000246 R12: 0000000003722ae0
+> [15884.108338] R13: 0000000000000000 R14: 00000000038caf60 R15: 000000000001fdc8
+> [15884.108342]  </TASK>
+> [15884.108345] task:cc1             state:D stack:0     pid:29495 ppid:29494  flags:0x00000002
+> [15884.108349] Call Trace:
+> [15884.108350]  <TASK>
+> [15884.108352]  __schedule+0x3ee/0x14c0
+> [15884.108356]  ? __rmqueue_pcplist+0xda/0xb80
+> [15884.108361]  ? avc_has_perm_noaudit+0x6b/0xf0
+> [15884.108366]  schedule+0x5e/0xd0
+> [15884.108369]  io_schedule+0x46/0x70
+> [15884.108373]  folio_wait_bit_common+0x13d/0x350
+> [15884.108377]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.108383]  filemap_get_pages+0x5fb/0x630
+> [15884.108388]  ? __alloc_pages+0xe0/0x350
+> [15884.108391]  filemap_read+0xd9/0x350
+> [15884.108395]  ? __mod_memcg_lruvec_state+0x4e/0xa0
+> [15884.108399]  ? __mod_lruvec_page_state+0x99/0x140
+> [15884.108405]  vfs_read+0x201/0x350
+> [15884.108411]  ksys_read+0x6f/0xf0
+> [15884.108416]  do_syscall_64+0x60/0x90
+> [15884.108420]  ? exc_page_fault+0x7f/0x180
+> [15884.108424]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.108429] RIP: 0033:0x7f61bdb08381
+> [15884.108435] RSP: 002b:00007ffd12a64ca8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.108438] RAX: ffffffffffffffda RBX: 0000000003c67e10 RCX: 00007f61bdb08381
+> [15884.108440] RDX: 000000000001fdc8 RSI: 0000000003d43be0 RDI: 0000000000000006
+> [15884.108442] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.108444] R10: 0000000003d43bd0 R11: 0000000000000246 R12: 0000000003ba3ae0
+> [15884.108446] R13: 0000000000000000 R14: 0000000003d43be0 R15: 000000000001fdc8
+> [15884.108451]  </TASK>
+> [15884.108453] task:ccache          state:D stack:0     pid:29496 ppid:23240  flags:0x00000002
+> [15884.108457] Call Trace:
+> [15884.108458]  <TASK>
+> [15884.108460]  __schedule+0x3ee/0x14c0
+> [15884.108466]  schedule+0x5e/0xd0
+> [15884.108469]  io_schedule+0x46/0x70
+> [15884.108472]  folio_wait_bit_common+0x13d/0x350
+> [15884.108476]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.108482]  filemap_get_pages+0x5fb/0x630
+> [15884.108488]  filemap_read+0xd9/0x350
+> [15884.108495]  vfs_read+0x201/0x350
+> [15884.108502]  ksys_read+0x6f/0xf0
+> [15884.108506]  do_syscall_64+0x60/0x90
+> [15884.108510]  ? kmem_cache_free+0x22/0x3a0
+> [15884.108514]  ? do_sys_openat2+0x97/0xe0
+> [15884.108518]  ? alloc_fd+0xb5/0x170
+> [15884.108523]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.108527]  ? do_syscall_64+0x6c/0x90
+> [15884.108530]  ? exc_page_fault+0x7f/0x180
+> [15884.108534]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.108538] RIP: 0033:0x7f09eef08381
+> [15884.108545] RSP: 002b:00007ffcfb6b5148 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.108548] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f09eef08381
+> [15884.108550] RDX: 0000000000001000 RSI: 000055d7c7de6180 RDI: 0000000000000004
+> [15884.108552] RBP: 00007ffcfb6b7670 R08: 0000000000000000 R09: 0000000000000001
+> [15884.108554] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000001000
+> [15884.108556] R13: 00007ffcfb6b5640 R14: 00007ffcfb6b6690 R15: 00007ffcfb6b5770
+> [15884.108561]  </TASK>
+> [15884.108563] task:ccache          state:D stack:0     pid:29499 ppid:23240  flags:0x00000002
+> [15884.108567] Call Trace:
+> [15884.108568]  <TASK>
+> [15884.108570]  __schedule+0x3ee/0x14c0
+> [15884.108576]  schedule+0x5e/0xd0
+> [15884.108579]  io_schedule+0x46/0x70
+> [15884.108582]  folio_wait_bit_common+0x13d/0x350
+> [15884.108587]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.108592]  filemap_get_pages+0x5fb/0x630
+> [15884.108597]  ? terminate_walk+0x61/0x100
+> [15884.108602]  filemap_read+0xd9/0x350
+> [15884.108609]  vfs_read+0x201/0x350
+> [15884.108616]  ksys_read+0x6f/0xf0
+> [15884.108621]  do_syscall_64+0x60/0x90
+> [15884.108624]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.108628]  ? do_syscall_64+0x6c/0x90
+> [15884.108631]  ? exc_page_fault+0x7f/0x180
+> [15884.108635]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.108639] RIP: 0033:0x7fd2bb308381
+> [15884.108645] RSP: 002b:00007ffddec9b6f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.108649] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd2bb308381
+> [15884.108651] RDX: 0000000000001000 RSI: 000055baf27ca180 RDI: 0000000000000004
+> [15884.108653] RBP: 00007ffddec9dc20 R08: 0000000000000000 R09: 0000000000000001
+> [15884.108655] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000001000
+> [15884.108657] R13: 00007ffddec9bbf0 R14: 00007ffddec9cc40 R15: 00007ffddec9bd20
+> [15884.108662]  </TASK>
+> [15884.108665] task:cc1             state:D stack:0     pid:29502 ppid:29501  flags:0x00000002
+> [15884.108669] Call Trace:
+> [15884.108671]  <TASK>
+> [15884.108673]  __schedule+0x3ee/0x14c0
+> [15884.108676]  ? __rmqueue_pcplist+0xda/0xb80
+> [15884.108683]  schedule+0x5e/0xd0
+> [15884.108686]  io_schedule+0x46/0x70
+> [15884.108689]  folio_wait_bit_common+0x13d/0x350
+> [15884.108693]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.108699]  filemap_get_pages+0x5fb/0x630
+> [15884.108704]  ? __alloc_pages+0xe0/0x350
+> [15884.108708]  filemap_read+0xd9/0x350
+> [15884.108712]  ? folio_add_new_anon_rmap+0x48/0xe0
+> [15884.108719]  vfs_read+0x201/0x350
+> [15884.108726]  ksys_read+0x6f/0xf0
+> [15884.108731]  do_syscall_64+0x60/0x90
+> [15884.108734]  ? exc_page_fault+0x7f/0x180
+> [15884.108737]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.108742] RIP: 0033:0x7ff2fbd08381
+> [15884.108748] RSP: 002b:00007ffc28475c48 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.108751] RAX: ffffffffffffffda RBX: 0000000003452770 RCX: 00007ff2fbd08381
+> [15884.108754] RDX: 000000000001fdc8 RSI: 00000000034d5410 RDI: 0000000000000006
+> [15884.108755] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.108757] R10: 00000000034d5400 R11: 0000000000000246 R12: 000000000343dae0
+> [15884.108759] R13: 0000000000000000 R14: 00000000034d5410 R15: 000000000001fdc8
+> [15884.108764]  </TASK>
+> [15884.108768] task:cc1             state:D stack:0     pid:29510 ppid:29509  flags:0x00000002
+> [15884.108771] Call Trace:
+> [15884.108773]  <TASK>
+> [15884.108775]  __schedule+0x3ee/0x14c0
+> [15884.108781]  schedule+0x5e/0xd0
+> [15884.108784]  io_schedule+0x46/0x70
+> [15884.108787]  folio_wait_bit_common+0x13d/0x350
+> [15884.108791]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.108797]  filemap_get_pages+0x5fb/0x630
+> [15884.108802]  ? generic_fillattr+0x49/0x100
+> [15884.108805]  ? _copy_to_user+0x24/0x40
+> [15884.108811]  filemap_read+0xd9/0x350
+> [15884.108818]  vfs_read+0x201/0x350
+> [15884.108831]  ksys_read+0x6f/0xf0
+> [15884.108836]  do_syscall_64+0x60/0x90
+> [15884.108839]  ? exc_page_fault+0x7f/0x180
+> [15884.108843]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.108848] RIP: 0033:0x7f67cb108381
+> [15884.108854] RSP: 002b:00007ffc29bc22b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.108858] RAX: ffffffffffffffda RBX: 0000000003b58210 RCX: 00007f67cb108381
+> [15884.108860] RDX: 000000000001fdc8 RSI: 0000000003c1f070 RDI: 0000000000000006
+> [15884.108862] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.108864] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000003ab0ae0
+> [15884.108866] R13: 0000000000000000 R14: 0000000003c1f070 R15: 000000000001fdc8
+> [15884.108870]  </TASK>
+> [15884.108874] task:cc1             state:D stack:0     pid:29513 ppid:29512  flags:0x00000002
+> [15884.108878] Call Trace:
+> [15884.108879]  <TASK>
+> [15884.108881]  __schedule+0x3ee/0x14c0
+> [15884.108887]  schedule+0x5e/0xd0
+> [15884.108890]  io_schedule+0x46/0x70
+> [15884.108894]  folio_wait_bit_common+0x13d/0x350
+> [15884.108898]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.108904]  filemap_get_pages+0x5fb/0x630
+> [15884.108909]  ? avc_has_perm+0x5f/0xe0
+> [15884.108914]  filemap_read+0xd9/0x350
+> [15884.108918]  ? _copy_to_user+0x24/0x40
+> [15884.108922]  ? cp_new_stat+0x135/0x170
+> [15884.108928]  vfs_read+0x201/0x350
+> [15884.108934]  ksys_read+0x6f/0xf0
+> [15884.108939]  do_syscall_64+0x60/0x90
+> [15884.108942]  ? do_user_addr_fault+0x179/0x640
+> [15884.108947]  ? exc_page_fault+0x7f/0x180
+> [15884.108951]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.108956] RIP: 0033:0x7f0509508381
+> [15884.108962] RSP: 002b:00007ffd8d920fd8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.108965] RAX: ffffffffffffffda RBX: 0000000003f59b10 RCX: 00007f0509508381
+> [15884.108968] RDX: 000000000001fdc8 RSI: 0000000004020970 RDI: 0000000000000006
+> [15884.108970] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.108971] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000003eb1ae0
+> [15884.108974] R13: 0000000000000000 R14: 0000000004020970 R15: 000000000001fdc8
+> [15884.108978]  </TASK>
+> [15884.108981] task:ar              state:D stack:0     pid:29516 ppid:29514  flags:0x00004002
+> [15884.108985] Call Trace:
+> [15884.108987]  <TASK>
+> [15884.108989]  __schedule+0x3ee/0x14c0
+> [15884.108993]  ? md_handle_request+0x19a/0x220
+> [15884.108998]  schedule+0x5e/0xd0
+> [15884.109001]  md_super_wait+0xa2/0xe0
+> [15884.109005]  ? __pfx_autoremove_wake_function+0x10/0x10
+> [15884.109009]  md_bitmap_unplug+0xd2/0x120
+> [15884.109013]  flush_bio_list+0xf3/0x100 [raid1]
+> [15884.109022]  raid1_unplug+0x3b/0xb0 [raid1]
+> [15884.109031]  __blk_flush_plug+0xd7/0x150
+> [15884.109036]  blk_finish_plug+0x29/0x40
+> [15884.109040]  ext4_do_writepages+0x401/0xc90
+> [15884.109047]  ext4_writepages+0xad/0x180
+> [15884.109053]  do_writepages+0xd2/0x1e0
+> [15884.109059]  filemap_fdatawrite_wbc+0x63/0x90
+> [15884.109064]  __filemap_fdatawrite_range+0x5c/0x80
+> [15884.109069]  ext4_release_file+0x74/0xb0
+> [15884.109073]  __fput+0xf5/0x2a0
+> [15884.109077]  task_work_run+0x5d/0x90
+> [15884.109082]  exit_to_user_mode_prepare+0x1e6/0x1f0
+> [15884.109085]  syscall_exit_to_user_mode+0x1b/0x40
+> [15884.109089]  do_syscall_64+0x6c/0x90
+> [15884.109093]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.109097]  ? do_syscall_64+0x6c/0x90
+> [15884.109100]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.109105] RIP: 0033:0x7f43c9d037b4
+> [15884.109111] RSP: 002b:00007ffd4ead7c88 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
+> [15884.109114] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f43c9d037b4
+> [15884.109116] RDX: 0000000000002000 RSI: 00007ffd4ead7ca0 RDI: 0000000000000003
+> [15884.109119] RBP: 00007ffd4ead9ce0 R08: 00005600127ef780 R09: 0000000000000001
+> [15884.109121] R10: 0000000000000000 R11: 0000000000000202 R12: 00007f43c9f5bb08
+> [15884.109123] R13: 0000000000000009 R14: 0000000000000003 R15: 0000000000000000
+> [15884.109127]  </TASK>
+> [15884.109131] task:cc1             state:D stack:0     pid:29519 ppid:29518  flags:0x00000002
+> [15884.109135] Call Trace:
+> [15884.109136]  <TASK>
+> [15884.109138]  __schedule+0x3ee/0x14c0
+> [15884.109141]  ? __rmqueue_pcplist+0xda/0xb80
+> [15884.109148]  schedule+0x5e/0xd0
+> [15884.109151]  io_schedule+0x46/0x70
+> [15884.109154]  folio_wait_bit_common+0x13d/0x350
+> [15884.109159]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.109164]  filemap_get_pages+0x5fb/0x630
+> [15884.109169]  ? __alloc_pages+0xe0/0x350
+> [15884.109173]  filemap_read+0xd9/0x350
+> [15884.109180]  vfs_read+0x201/0x350
+> [15884.109186]  ksys_read+0x6f/0xf0
+> [15884.109191]  do_syscall_64+0x60/0x90
+> [15884.109195]  ? exc_page_fault+0x7f/0x180
+> [15884.109199]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.109203] RIP: 0033:0x7fa065d08381
+> [15884.109209] RSP: 002b:00007ffd4feb9188 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.109212] RAX: ffffffffffffffda RBX: 00000000038045e0 RCX: 00007fa065d08381
+> [15884.109215] RDX: 000000000001fdc8 RSI: 0000000003893310 RDI: 0000000000000006
+> [15884.109217] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.109219] R10: 0000000003893300 R11: 0000000000000246 R12: 00000000037f2ae0
+> [15884.109221] R13: 0000000000000000 R14: 0000000003893310 R15: 000000000001fdc8
+> [15884.109226]  </TASK>
+> [15884.109229] task:cc1             state:D stack:0     pid:29524 ppid:29523  flags:0x00000002
+> [15884.109233] Call Trace:
+> [15884.109234]  <TASK>
+> [15884.109236]  __schedule+0x3ee/0x14c0
+> [15884.109241]  ? __alloc_pages+0x1a3/0x350
+> [15884.109245]  schedule+0x5e/0xd0
+> [15884.109248]  io_schedule+0x46/0x70
+> [15884.109251]  folio_wait_bit_common+0x13d/0x350
+> [15884.109256]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.109261]  filemap_get_pages+0x5fb/0x630
+> [15884.109268]  filemap_read+0xd9/0x350
+> [15884.109275]  vfs_read+0x201/0x350
+> [15884.109281]  ksys_read+0x6f/0xf0
+> [15884.109286]  do_syscall_64+0x60/0x90
+> [15884.109289]  ? handle_mm_fault+0x9e/0x350
+> [15884.109294]  ? do_user_addr_fault+0x179/0x640
+> [15884.109299]  ? exc_page_fault+0x7f/0x180
+> [15884.109303]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.109307] RIP: 0033:0x7f20f8f08381
+> [15884.109313] RSP: 002b:00007ffd98dcab58 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.109317] RAX: ffffffffffffffda RBX: 00000000042c7950 RCX: 00007f20f8f08381
+> [15884.109319] RDX: 000000000001fdc8 RSI: 000000000433a250 RDI: 0000000000000006
+> [15884.109321] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.109323] R10: 000000000433a240 R11: 0000000000000246 R12: 000000000419cae0
+> [15884.109325] R13: 0000000000000000 R14: 000000000433a250 R15: 000000000001fdc8
+> [15884.109330]  </TASK>
+> [15884.109333] task:cc1             state:D stack:0     pid:29531 ppid:29530  flags:0x00000002
+> [15884.109337] Call Trace:
+> [15884.109339]  <TASK>
+> [15884.109341]  __schedule+0x3ee/0x14c0
+> [15884.109346]  schedule+0x5e/0xd0
+> [15884.109349]  io_schedule+0x46/0x70
+> [15884.109352]  folio_wait_bit_common+0x13d/0x350
+> [15884.109357]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.109362]  filemap_get_pages+0x5fb/0x630
+> [15884.109367]  ? __alloc_pages+0xe0/0x350
+> [15884.109371]  filemap_read+0xd9/0x350
+> [15884.109375]  ? folio_add_new_anon_rmap+0x48/0xe0
+> [15884.109382]  vfs_read+0x201/0x350
+> [15884.109388]  ksys_read+0x6f/0xf0
+> [15884.109393]  do_syscall_64+0x60/0x90
+> [15884.109397]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.109402] RIP: 0033:0x7ffa93308381
+> [15884.109408] RSP: 002b:00007ffcff8dcba8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.109411] RAX: ffffffffffffffda RBX: 000000000262c5e0 RCX: 00007ffa93308381
+> [15884.109413] RDX: 000000000001fdc8 RSI: 00000000026b5560 RDI: 0000000000000006
+> [15884.109415] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.109417] R10: 00000000026b5550 R11: 0000000000000246 R12: 000000000261aae0
+> [15884.109420] R13: 0000000000000000 R14: 00000000026b5560 R15: 000000000001fdc8
+> [15884.109424]  </TASK>
+> [15884.109427] task:ar              state:D stack:0     pid:29534 ppid:29532  flags:0x00004002
+> [15884.109431] Call Trace:
+> [15884.109432]  <TASK>
+> [15884.109434]  __schedule+0x3ee/0x14c0
+> [15884.109439]  ? md_handle_request+0x19a/0x220
+> [15884.109444]  schedule+0x5e/0xd0
+> [15884.109447]  md_super_wait+0xa2/0xe0
+> [15884.109451]  ? __pfx_autoremove_wake_function+0x10/0x10
+> [15884.109455]  md_bitmap_unplug+0xd2/0x120
+> [15884.109459]  flush_bio_list+0xf3/0x100 [raid1]
+> [15884.109468]  raid1_unplug+0x3b/0xb0 [raid1]
+> [15884.109476]  __blk_flush_plug+0xd7/0x150
+> [15884.109482]  blk_finish_plug+0x29/0x40
+> [15884.109486]  ext4_do_writepages+0x401/0xc90
+> [15884.109493]  ext4_writepages+0xad/0x180
+> [15884.109499]  do_writepages+0xd2/0x1e0
+> [15884.109503]  ? xa_load+0x8c/0xe0
+> [15884.109507]  filemap_fdatawrite_wbc+0x63/0x90
+> [15884.109513]  __filemap_fdatawrite_range+0x5c/0x80
+> [15884.109518]  ext4_release_file+0x74/0xb0
+> [15884.109522]  __fput+0xf5/0x2a0
+> [15884.109525]  task_work_run+0x5d/0x90
+> [15884.109530]  exit_to_user_mode_prepare+0x1e6/0x1f0
+> [15884.109534]  syscall_exit_to_user_mode+0x1b/0x40
+> [15884.109538]  do_syscall_64+0x6c/0x90
+> [15884.109542]  ? ksys_write+0x6f/0xf0
+> [15884.109547]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.109550]  ? do_syscall_64+0x6c/0x90
+> [15884.109554]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.109557]  ? do_syscall_64+0x6c/0x90
+> [15884.109560]  ? do_syscall_64+0x6c/0x90
+> [15884.109563]  ? do_syscall_64+0x6c/0x90
+> [15884.109566]  ? do_syscall_64+0x6c/0x90
+> [15884.109569]  ? do_syscall_64+0x6c/0x90
+> [15884.109572]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.109577] RIP: 0033:0x7fa6f1f037b4
+> [15884.109583] RSP: 002b:00007ffe1f4178f8 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
+> [15884.109586] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fa6f1f037b4
+> [15884.109588] RDX: 0000000000002000 RSI: 00007ffe1f417910 RDI: 0000000000000003
+> [15884.109590] RBP: 00007ffe1f419950 R08: 000055aac07c1780 R09: 0000000000000001
+> [15884.109593] R10: 0000000000000000 R11: 0000000000000202 R12: 00007fa6f21c6b08
+> [15884.109594] R13: 000000000000000d R14: 0000000000000003 R15: 0000000000000000
+> [15884.109599]  </TASK>
+> [15884.109602] task:ar              state:D stack:0     pid:29538 ppid:29536  flags:0x00004002
+> [15884.109606] Call Trace:
+> [15884.109607]  <TASK>
+> [15884.109609]  __schedule+0x3ee/0x14c0
+> [15884.109613]  ? md_handle_request+0x19a/0x220
+> [15884.109618]  schedule+0x5e/0xd0
+> [15884.109621]  md_super_wait+0xa2/0xe0
+> [15884.109625]  ? __pfx_autoremove_wake_function+0x10/0x10
+> [15884.109629]  md_bitmap_unplug+0xd2/0x120
+> [15884.109633]  flush_bio_list+0xf3/0x100 [raid1]
+> [15884.109642]  raid1_unplug+0x3b/0xb0 [raid1]
+> [15884.109651]  __blk_flush_plug+0xd7/0x150
+> [15884.109656]  blk_finish_plug+0x29/0x40
+> [15884.109660]  ext4_do_writepages+0x401/0xc90
+> [15884.109667]  ext4_writepages+0xad/0x180
+> [15884.109673]  do_writepages+0xd2/0x1e0
+> [15884.109678]  filemap_fdatawrite_wbc+0x63/0x90
+> [15884.109683]  __filemap_fdatawrite_range+0x5c/0x80
+> [15884.109688]  ext4_release_file+0x74/0xb0
+> [15884.109692]  __fput+0xf5/0x2a0
+> [15884.109696]  task_work_run+0x5d/0x90
+> [15884.109701]  exit_to_user_mode_prepare+0x1e6/0x1f0
+> [15884.109704]  syscall_exit_to_user_mode+0x1b/0x40
+> [15884.109708]  do_syscall_64+0x6c/0x90
+> [15884.109712]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.109716]  ? do_syscall_64+0x6c/0x90
+> [15884.109719]  ? do_syscall_64+0x6c/0x90
+> [15884.109721]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.109725]  ? do_syscall_64+0x6c/0x90
+> [15884.109728]  ? do_syscall_64+0x6c/0x90
+> [15884.109731]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.109736] RIP: 0033:0x7f41c05037b4
+> [15884.109742] RSP: 002b:00007ffc37ebd7f8 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
+> [15884.109746] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f41c05037b4
+> [15884.109748] RDX: 0000000000002000 RSI: 00007ffc37ebd810 RDI: 0000000000000003
+> [15884.109750] RBP: 00007ffc37ebf850 R08: 00005620ae82e780 R09: 0000000000000001
+> [15884.109752] R10: 0000000000000000 R11: 0000000000000202 R12: 00007f41c077ab08
+> [15884.109754] R13: 000000000000000d R14: 0000000000000003 R15: 0000000000000000
+> [15884.109758]  </TASK>
+> [15884.109761] task:ar              state:D stack:0     pid:29543 ppid:29541  flags:0x00004002
+> [15884.109765] Call Trace:
+> [15884.109766]  <TASK>
+> [15884.109768]  __schedule+0x3ee/0x14c0
+> [15884.109772]  ? md_handle_request+0x19a/0x220
+> [15884.109777]  schedule+0x5e/0xd0
+> [15884.109781]  md_super_wait+0xa2/0xe0
+> [15884.109784]  ? __pfx_autoremove_wake_function+0x10/0x10
+> [15884.109789]  md_bitmap_unplug+0xd2/0x120
+> [15884.109792]  flush_bio_list+0xf3/0x100 [raid1]
+> [15884.109801]  raid1_unplug+0x3b/0xb0 [raid1]
+> [15884.109810]  __blk_flush_plug+0xd7/0x150
+> [15884.109816]  blk_finish_plug+0x29/0x40
+> [15884.109820]  ext4_do_writepages+0x401/0xc90
+> [15884.109831]  ext4_writepages+0xad/0x180
+> [15884.109837]  do_writepages+0xd2/0x1e0
+> [15884.109842]  ? touch_atime+0x48/0x1b0
+> [15884.109846]  ? xa_load+0x8c/0xe0
+> [15884.109850]  filemap_fdatawrite_wbc+0x63/0x90
+> [15884.109855]  __filemap_fdatawrite_range+0x5c/0x80
+> [15884.109860]  ext4_release_file+0x74/0xb0
+> [15884.109864]  __fput+0xf5/0x2a0
+> [15884.109868]  task_work_run+0x5d/0x90
+> [15884.109873]  exit_to_user_mode_prepare+0x1e6/0x1f0
+> [15884.109876]  syscall_exit_to_user_mode+0x1b/0x40
+> [15884.109880]  do_syscall_64+0x6c/0x90
+> [15884.109885]  ? ksys_read+0x6f/0xf0
+> [15884.109889]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.109893]  ? do_syscall_64+0x6c/0x90
+> [15884.109897]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.109901] RIP: 0033:0x7fbc449037b4
+> [15884.109908] RSP: 002b:00007fffc47456c8 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
+> [15884.109912] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fbc449037b4
+> [15884.109914] RDX: 0000000000002000 RSI: 00007fffc47456e0 RDI: 0000000000000003
+> [15884.109916] RBP: 00007fffc4747720 R08: 000055a64012a780 R09: 0000000000000001
+> [15884.109918] R10: 0000000000000000 R11: 0000000000000202 R12: 00007fbc44ac8b08
+> [15884.109920] R13: 000000000000000c R14: 0000000000000003 R15: 0000000000000000
+> [15884.109924]  </TASK>
+> [15884.109928] task:cc1             state:D stack:0     pid:29546 ppid:29545  flags:0x00000002
+> [15884.109932] Call Trace:
+> [15884.109933]  <TASK>
+> [15884.109935]  __schedule+0x3ee/0x14c0
+> [15884.109941]  schedule+0x5e/0xd0
+> [15884.109944]  io_schedule+0x46/0x70
+> [15884.109947]  folio_wait_bit_common+0x13d/0x350
+> [15884.109952]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.109957]  filemap_get_pages+0x5fb/0x630
+> [15884.109962]  ? get_page_from_freelist+0x1630/0x1770
+> [15884.109969]  filemap_read+0xd9/0x350
+> [15884.109975]  vfs_read+0x201/0x350
+> [15884.109982]  ksys_read+0x6f/0xf0
+> [15884.109987]  do_syscall_64+0x60/0x90
+> [15884.109991]  ? __count_memcg_events+0x42/0x90
+> [15884.109995]  ? count_memcg_events.constprop.0+0x1a/0x30
+> [15884.110000]  ? handle_mm_fault+0x9e/0x350
+> [15884.110004]  ? do_user_addr_fault+0x179/0x640
+> [15884.110009]  ? exc_page_fault+0x7f/0x180
+> [15884.110013]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.110018] RIP: 0033:0x7fe2bf508381
+> [15884.110024] RSP: 002b:00007ffe4b99d9f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.110027] RAX: ffffffffffffffda RBX: 0000000003da05e0 RCX: 00007fe2bf508381
+> [15884.110030] RDX: 000000000001fdc8 RSI: 0000000003e39760 RDI: 0000000000000006
+> [15884.110032] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.110034] R10: 0000000003e39750 R11: 0000000000000246 R12: 0000000003ca0ae0
+> [15884.110036] R13: 0000000000000000 R14: 0000000003e39760 R15: 000000000001fdc8
+> [15884.110040]  </TASK>
+> [15884.110044] task:cc1             state:D stack:0     pid:29549 ppid:29548  flags:0x00000002
+> [15884.110048] Call Trace:
+> [15884.110050]  <TASK>
+> [15884.110051]  __schedule+0x3ee/0x14c0
+> [15884.110057]  schedule+0x5e/0xd0
+> [15884.110060]  io_schedule+0x46/0x70
+> [15884.110064]  folio_wait_bit_common+0x13d/0x350
+> [15884.110068]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.110074]  filemap_get_pages+0x5fb/0x630
+> [15884.110080]  filemap_read+0xd9/0x350
+> [15884.110087]  vfs_read+0x201/0x350
+> [15884.110094]  ksys_read+0x6f/0xf0
+> [15884.110099]  do_syscall_64+0x60/0x90
+> [15884.110102]  ? do_user_addr_fault+0x179/0x640
+> [15884.110108]  ? exc_page_fault+0x7f/0x180
+> [15884.110111]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.110116] RIP: 0033:0x7f9bac908381
+> [15884.110122] RSP: 002b:00007fff56f186e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.110125] RAX: ffffffffffffffda RBX: 0000000003c4b770 RCX: 00007f9bac908381
+> [15884.110128] RDX: 000000000001fdc8 RSI: 0000000003cc30d0 RDI: 0000000000000006
+> [15884.110130] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.110132] R10: 0000000003cc30c0 R11: 0000000000000246 R12: 0000000003c36ae0
+> [15884.110134] R13: 0000000000000000 R14: 0000000003cc30d0 R15: 000000000001fdc8
+> [15884.110138]  </TASK>
+> [15884.110142] task:cc1             state:D stack:0     pid:29555 ppid:29554  flags:0x00000002
+> [15884.110145] Call Trace:
+> [15884.110147]  <TASK>
+> [15884.110149]  __schedule+0x3ee/0x14c0
+> [15884.110154]  schedule+0x5e/0xd0
+> [15884.110157]  io_schedule+0x46/0x70
+> [15884.110160]  folio_wait_bit_common+0x13d/0x350
+> [15884.110165]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.110170]  filemap_get_pages+0x5fb/0x630
+> [15884.110176]  ? path_init+0x38f/0x3c0
+> [15884.110181]  filemap_read+0xd9/0x350
+> [15884.110187]  vfs_read+0x201/0x350
+> [15884.110194]  ksys_read+0x6f/0xf0
+> [15884.110199]  do_syscall_64+0x60/0x90
+> [15884.110202]  ? __count_memcg_events+0x42/0x90
+> [15884.110206]  ? count_memcg_events.constprop.0+0x1a/0x30
+> [15884.110211]  ? handle_mm_fault+0x9e/0x350
+> [15884.110215]  ? do_user_addr_fault+0x179/0x640
+> [15884.110220]  ? exc_page_fault+0x7f/0x180
+> [15884.110224]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.110229] RIP: 0033:0x7faab7708381
+> [15884.110235] RSP: 002b:00007ffd6e3df0b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.110238] RAX: ffffffffffffffda RBX: 0000000003648a50 RCX: 00007faab7708381
+> [15884.110240] RDX: 000000000001fdc8 RSI: 00000000036bb350 RDI: 0000000000000006
+> [15884.110242] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.110244] R10: 00000000036bb340 R11: 0000000000000246 R12: 000000000351cae0
+> [15884.110246] R13: 0000000000000000 R14: 00000000036bb350 R15: 000000000001fdc8
+> [15884.110251]  </TASK>
+> [15884.110255] task:cc1             state:D stack:0     pid:29558 ppid:29557  flags:0x00000002
+> [15884.110258] Call Trace:
+> [15884.110260]  <TASK>
+> [15884.110262]  __schedule+0x3ee/0x14c0
+> [15884.110267]  schedule+0x5e/0xd0
+> [15884.110270]  io_schedule+0x46/0x70
+> [15884.110273]  folio_wait_bit_common+0x13d/0x350
+> [15884.110278]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.110283]  filemap_get_pages+0x5fb/0x630
+> [15884.110289]  ? terminate_walk+0x61/0x100
+> [15884.110293]  filemap_read+0xd9/0x350
+> [15884.110300]  vfs_read+0x201/0x350
+> [15884.110307]  ksys_read+0x6f/0xf0
+> [15884.110312]  do_syscall_64+0x60/0x90
+> [15884.110316]  ? __count_memcg_events+0x42/0x90
+> [15884.110319]  ? count_memcg_events.constprop.0+0x1a/0x30
+> [15884.110324]  ? handle_mm_fault+0x9e/0x350
+> [15884.110328]  ? do_user_addr_fault+0x179/0x640
+> [15884.110333]  ? exc_page_fault+0x7f/0x180
+> [15884.110337]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.110342] RIP: 0033:0x7feed7b08381
+> [15884.110348] RSP: 002b:00007ffc2a730778 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.110351] RAX: ffffffffffffffda RBX: 00000000037cc0e0 RCX: 00007feed7b08381
+> [15884.110353] RDX: 000000000001fdc8 RSI: 0000000003855760 RDI: 0000000000000006
+> [15884.110355] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.110357] R10: 0000000003855750 R11: 0000000000000246 R12: 000000000369eae0
+> [15884.110359] R13: 0000000000000000 R14: 0000000003855760 R15: 000000000001fdc8
+> [15884.110364]  </TASK>
+> [15884.110367] task:ar              state:D stack:0     pid:29562 ppid:29560  flags:0x00004002
+> [15884.110371] Call Trace:
+> [15884.110372]  <TASK>
+> [15884.110374]  __schedule+0x3ee/0x14c0
+> [15884.110378]  ? md_handle_request+0x19a/0x220
+> [15884.110383]  schedule+0x5e/0xd0
+> [15884.110387]  md_super_wait+0xa2/0xe0
+> [15884.110390]  ? __pfx_autoremove_wake_function+0x10/0x10
+> [15884.110395]  md_bitmap_unplug+0xd2/0x120
+> [15884.110399]  flush_bio_list+0xf3/0x100 [raid1]
+> [15884.110408]  raid1_unplug+0x3b/0xb0 [raid1]
+> [15884.110417]  __blk_flush_plug+0xd7/0x150
+> [15884.110422]  blk_finish_plug+0x29/0x40
+> [15884.110426]  ext4_do_writepages+0x401/0xc90
+> [15884.110432]  ext4_writepages+0xad/0x180
+> [15884.110438]  do_writepages+0xd2/0x1e0
+> [15884.110444]  filemap_fdatawrite_wbc+0x63/0x90
+> [15884.110448]  __filemap_fdatawrite_range+0x5c/0x80
+> [15884.110454]  ext4_release_file+0x74/0xb0
+> [15884.110457]  __fput+0xf5/0x2a0
+> [15884.110461]  task_work_run+0x5d/0x90
+> [15884.110466]  exit_to_user_mode_prepare+0x1e6/0x1f0
+> [15884.110470]  syscall_exit_to_user_mode+0x1b/0x40
+> [15884.110474]  do_syscall_64+0x6c/0x90
+> [15884.110479]  ? exit_to_user_mode_prepare+0x188/0x1f0
+> [15884.110482]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.110486]  ? do_syscall_64+0x6c/0x90
+> [15884.110489]  ? do_syscall_64+0x6c/0x90
+> [15884.110493]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.110497] RIP: 0033:0x7f74a3f037b4
+> [15884.110504] RSP: 002b:00007ffd3d9808f8 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
+> [15884.110507] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f74a3f037b4
+> [15884.110509] RDX: 0000000000002000 RSI: 00007ffd3d980910 RDI: 0000000000000003
+> [15884.110511] RBP: 00007ffd3d982950 R08: 0000555cbacb2780 R09: 0000000000000001
+> [15884.110513] R10: 0000000000000000 R11: 0000000000000202 R12: 00007f74a410bb08
+> [15884.110515] R13: 000000000000000c R14: 0000000000000003 R15: 0000000000000000
+> [15884.110520]  </TASK>
+> [15884.110523] task:cc1             state:D stack:0     pid:29567 ppid:29566  flags:0x00000002
+> [15884.110527] Call Trace:
+> [15884.110528]  <TASK>
+> [15884.110530]  __schedule+0x3ee/0x14c0
+> [15884.110534]  ? __rmqueue_pcplist+0xda/0xb80
+> [15884.110540]  schedule+0x5e/0xd0
+> [15884.110544]  io_schedule+0x46/0x70
+> [15884.110547]  folio_wait_bit_common+0x13d/0x350
+> [15884.110551]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.110557]  filemap_get_pages+0x5fb/0x630
+> [15884.110562]  ? release_pages+0x177/0x510
+> [15884.110566]  filemap_read+0xd9/0x350
+> [15884.110570]  ? __pfx_lru_add_fn+0x10/0x10
+> [15884.110573]  ? folio_batch_move_lru+0xd3/0x150
+> [15884.110579]  vfs_read+0x201/0x350
+> [15884.110586]  ksys_read+0x6f/0xf0
+> [15884.110591]  do_syscall_64+0x60/0x90
+> [15884.110594]  ? exc_page_fault+0x7f/0x180
+> [15884.110598]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.110603] RIP: 0033:0x7fe197b08381
+> [15884.110609] RSP: 002b:00007ffdf102d6e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.110612] RAX: ffffffffffffffda RBX: 0000000003f78f30 RCX: 00007fe197b08381
+> [15884.110615] RDX: 000000000001fdc8 RSI: 0000000003feb830 RDI: 0000000000000006
+> [15884.110617] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.110619] R10: 0000000003feb820 R11: 0000000000000246 R12: 0000000003e43ae0
+> [15884.110621] R13: 0000000000000000 R14: 0000000003feb830 R15: 000000000001fdc8
+> [15884.110626]  </TASK>
+> [15884.110629] task:cc1             state:D stack:0     pid:29570 ppid:29569  flags:0x00000002
+> [15884.110633] Call Trace:
+> [15884.110634]  <TASK>
+> [15884.110636]  __schedule+0x3ee/0x14c0
+> [15884.110642]  schedule+0x5e/0xd0
+> [15884.110645]  io_schedule+0x46/0x70
+> [15884.110648]  folio_wait_bit_common+0x13d/0x350
+> [15884.110653]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.110658]  filemap_get_pages+0x5fb/0x630
+> [15884.110664]  ? generic_fillattr+0x49/0x100
+> [15884.110668]  filemap_read+0xd9/0x350
+> [15884.110674]  vfs_read+0x201/0x350
+> [15884.110680]  ksys_read+0x6f/0xf0
+> [15884.110685]  do_syscall_64+0x60/0x90
+> [15884.110689]  ? exc_page_fault+0x7f/0x180
+> [15884.110693]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.110697] RIP: 0033:0x7fa657508381
+> [15884.110703] RSP: 002b:00007fff0faea488 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.110707] RAX: ffffffffffffffda RBX: 00000000036b6ba0 RCX: 00007fa657508381
+> [15884.110709] RDX: 000000000001fdc8 RSI: 0000000003764340 RDI: 0000000000000006
+> [15884.110711] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.110713] R10: 0000000000000004 R11: 0000000000000246 R12: 00000000035daae0
+> [15884.110715] R13: 0000000000000000 R14: 0000000003764340 R15: 000000000001fdc8
+> [15884.110720]  </TASK>
+> [15884.110722] task:ccache          state:D stack:0     pid:29572 ppid:23240  flags:0x00000002
+> [15884.110725] Call Trace:
+> [15884.110727]  <TASK>
+> [15884.110729]  __schedule+0x3ee/0x14c0
+> [15884.110734]  schedule+0x5e/0xd0
+> [15884.110737]  io_schedule+0x46/0x70
+> [15884.110740]  folio_wait_bit_common+0x13d/0x350
+> [15884.110745]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.110750]  filemap_get_pages+0x5fb/0x630
+> [15884.110757]  filemap_read+0xd9/0x350
+> [15884.110764]  vfs_read+0x201/0x350
+> [15884.110770]  ksys_read+0x6f/0xf0
+> [15884.110775]  do_syscall_64+0x60/0x90
+> [15884.110778]  ? do_syscall_64+0x6c/0x90
+> [15884.110781]  ? __count_memcg_events+0x42/0x90
+> [15884.110785]  ? count_memcg_events.constprop.0+0x1a/0x30
+> [15884.110790]  ? handle_mm_fault+0x9e/0x350
+> [15884.110794]  ? do_user_addr_fault+0x225/0x640
+> [15884.110799]  ? exc_page_fault+0x7f/0x180
+> [15884.110803]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.110808] RIP: 0033:0x7f1e49508381
+> [15884.110814] RSP: 002b:00007fff99d73ad8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.110817] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f1e49508381
+> [15884.110820] RDX: 0000000000001000 RSI: 000055b5678f9140 RDI: 0000000000000004
+> [15884.110828] RBP: 00007fff99d76000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.110830] R10: 0000000000000003 R11: 0000000000000246 R12: 0000000000001000
+> [15884.110832] R13: 00007fff99d73fd0 R14: 00007fff99d75020 R15: 00007fff99d74100
+> [15884.110837]  </TASK>
+> [15884.110841] task:ar              state:D stack:0     pid:29579 ppid:29577  flags:0x00004002
+> [15884.110845] Call Trace:
+> [15884.110846]  <TASK>
+> [15884.110848]  __schedule+0x3ee/0x14c0
+> [15884.110852]  ? md_handle_request+0x19a/0x220
+> [15884.110857]  schedule+0x5e/0xd0
+> [15884.110860]  md_super_wait+0xa2/0xe0
+> [15884.110864]  ? __pfx_autoremove_wake_function+0x10/0x10
+> [15884.110868]  md_bitmap_unplug+0xd2/0x120
+> [15884.110872]  flush_bio_list+0xf3/0x100 [raid1]
+> [15884.110881]  raid1_unplug+0x3b/0xb0 [raid1]
+> [15884.110890]  __blk_flush_plug+0xd7/0x150
+> [15884.110896]  blk_finish_plug+0x29/0x40
+> [15884.110900]  ext4_do_writepages+0x401/0xc90
+> [15884.110906]  ext4_writepages+0xad/0x180
+> [15884.110912]  do_writepages+0xd2/0x1e0
+> [15884.110917]  ? atime_needs_update+0xa0/0x120
+> [15884.110922]  filemap_fdatawrite_wbc+0x63/0x90
+> [15884.110927]  __filemap_fdatawrite_range+0x5c/0x80
+> [15884.110932]  ext4_release_file+0x74/0xb0
+> [15884.110936]  __fput+0xf5/0x2a0
+> [15884.110940]  task_work_run+0x5d/0x90
+> [15884.110945]  exit_to_user_mode_prepare+0x1e6/0x1f0
+> [15884.110949]  syscall_exit_to_user_mode+0x1b/0x40
+> [15884.110953]  do_syscall_64+0x6c/0x90
+> [15884.110956]  ? __rseq_handle_notify_resume+0xa9/0x4f0
+> [15884.110960]  ? kmem_cache_free+0x22/0x3a0
+> [15884.110964]  ? __call_rcu_common.constprop.0+0xe5/0x6c0
+> [15884.110969]  ? exit_to_user_mode_prepare+0x188/0x1f0
+> [15884.110972]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.110976]  ? do_syscall_64+0x6c/0x90
+> [15884.110979]  ? do_syscall_64+0x6c/0x90
+> [15884.110983]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.110987] RIP: 0033:0x7ffa139037b4
+> [15884.110994] RSP: 002b:00007fff88e7d288 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
+> [15884.110997] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007ffa139037b4
+> [15884.110999] RDX: 0000000000002000 RSI: 00007fff88e7d2a0 RDI: 0000000000000003
+> [15884.111001] RBP: 00007fff88e7f2e0 R08: 00005631d3292780 R09: 0000000000000001
+> [15884.111003] R10: 0000000000000000 R11: 0000000000000202 R12: 00007ffa13b5ab08
+> [15884.111005] R13: 000000000000000d R14: 0000000000000003 R15: 0000000000000000
+> [15884.111010]  </TASK>
+> [15884.111013] task:cc1             state:D stack:0     pid:29582 ppid:29581  flags:0x00000002
+> [15884.111017] Call Trace:
+> [15884.111019]  <TASK>
+> [15884.111021]  __schedule+0x3ee/0x14c0
+> [15884.111024]  ? __filemap_get_folio+0x166/0x230
+> [15884.111030]  schedule+0x5e/0xd0
+> [15884.111033]  io_schedule+0x46/0x70
+> [15884.111036]  folio_wait_bit_common+0x13d/0x350
+> [15884.111041]  ? __pfx_wake_page_function+0x10/0x10
+> [15884.111046]  filemap_get_pages+0x5fb/0x630
+> [15884.111051]  ? filename_lookup+0xe8/0x1f0
+> [15884.111055]  ? avc_has_perm_noaudit+0x6b/0xf0
+> [15884.111060]  filemap_read+0xd9/0x350
+> [15884.111067]  vfs_read+0x201/0x350
+> [15884.111074]  ksys_read+0x6f/0xf0
+> [15884.111079]  do_syscall_64+0x60/0x90
+> [15884.111082]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.111086]  ? do_syscall_64+0x6c/0x90
+> [15884.111089]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.111093]  ? do_syscall_64+0x6c/0x90
+> [15884.111096]  ? exc_page_fault+0x7f/0x180
+> [15884.111100]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.111105] RIP: 0033:0x7f1bee108381
+> [15884.111111] RSP: 002b:00007ffd89f20808 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [15884.111114] RAX: ffffffffffffffda RBX: 00000000034e18a0 RCX: 00007f1bee108381
+> [15884.111117] RDX: 000000000001fdc8 RSI: 0000000003584eb0 RDI: 0000000000000006
+> [15884.111119] RBP: 0000000000008000 R08: 0000000000000000 R09: 0000000000000001
+> [15884.111121] R10: 0000000000000004 R11: 0000000000000246 R12: 00000000033ecae0
+> [15884.111123] R13: 0000000000000000 R14: 0000000003584eb0 R15: 000000000001fdc8
+> [15884.111128]  </TASK>
+> [15884.111131] task:ar              state:D stack:0     pid:29591 ppid:29589  flags:0x00004002
+> [15884.111134] Call Trace:
+> [15884.111136]  <TASK>
+> [15884.111138]  __schedule+0x3ee/0x14c0
+> [15884.111142]  ? md_handle_request+0x19a/0x220
+> [15884.111147]  schedule+0x5e/0xd0
+> [15884.111150]  md_super_wait+0xa2/0xe0
+> [15884.111154]  ? __pfx_autoremove_wake_function+0x10/0x10
+> [15884.111158]  md_bitmap_unplug+0xd2/0x120
+> [15884.111162]  flush_bio_list+0xf3/0x100 [raid1]
+> [15884.111171]  raid1_unplug+0x3b/0xb0 [raid1]
+> [15884.111180]  __blk_flush_plug+0xd7/0x150
+> [15884.111185]  blk_finish_plug+0x29/0x40
+> [15884.111189]  ext4_do_writepages+0x401/0xc90
+> [15884.111196]  ext4_writepages+0xad/0x180
+> [15884.111202]  do_writepages+0xd2/0x1e0
+> [15884.111207]  filemap_fdatawrite_wbc+0x63/0x90
+> [15884.111212]  __filemap_fdatawrite_range+0x5c/0x80
+> [15884.111217]  ext4_release_file+0x74/0xb0
+> [15884.111221]  __fput+0xf5/0x2a0
+> [15884.111225]  task_work_run+0x5d/0x90
+> [15884.111230]  exit_to_user_mode_prepare+0x1e6/0x1f0
+> [15884.111234]  syscall_exit_to_user_mode+0x1b/0x40
+> [15884.111238]  do_syscall_64+0x6c/0x90
+> [15884.111241]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.111245]  ? do_syscall_64+0x6c/0x90
+> [15884.111248]  ? do_syscall_64+0x6c/0x90
+> [15884.111251]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.111254]  ? do_syscall_64+0x6c/0x90
+> [15884.111258]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.111262] RIP: 0033:0x7f5c895037b4
+> [15884.111269] RSP: 002b:00007ffefde48ad8 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
+> [15884.111272] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f5c895037b4
+> [15884.111274] RDX: 0000000000002000 RSI: 00007ffefde48af0 RDI: 0000000000000003
+> [15884.111276] RBP: 00007ffefde4ab30 R08: 0000557aafa18780 R09: 0000000000000001
+> [15884.111278] R10: 0000000000000000 R11: 0000000000000202 R12: 00007f5c89644b08
+> [15884.111281] R13: 0000000000000022 R14: 0000000000000003 R15: 0000000000000000
+> [15884.111285]  </TASK>
+> [15884.111288] task:ar              state:D stack:0     pid:29594 ppid:29592  flags:0x00004002
+> [15884.111292] Call Trace:
+> [15884.111293]  <TASK>
+> [15884.111295]  __schedule+0x3ee/0x14c0
+> [15884.111299]  ? md_handle_request+0x19a/0x220
+> [15884.111304]  schedule+0x5e/0xd0
+> [15884.111307]  md_super_wait+0xa2/0xe0
+> [15884.111311]  ? __pfx_autoremove_wake_function+0x10/0x10
+> [15884.111315]  md_bitmap_unplug+0xd2/0x120
+> [15884.111319]  flush_bio_list+0xf3/0x100 [raid1]
+> [15884.111328]  raid1_unplug+0x3b/0xb0 [raid1]
+> [15884.111336]  __blk_flush_plug+0xd7/0x150
+> [15884.111342]  blk_finish_plug+0x29/0x40
+> [15884.111346]  ext4_do_writepages+0x401/0xc90
+> [15884.111352]  ext4_writepages+0xad/0x180
+> [15884.111358]  do_writepages+0xd2/0x1e0
+> [15884.111364]  filemap_fdatawrite_wbc+0x63/0x90
+> [15884.111369]  __filemap_fdatawrite_range+0x5c/0x80
+> [15884.111374]  ext4_release_file+0x74/0xb0
+> [15884.111378]  __fput+0xf5/0x2a0
+> [15884.111382]  task_work_run+0x5d/0x90
+> [15884.111386]  exit_to_user_mode_prepare+0x1e6/0x1f0
+> [15884.111390]  syscall_exit_to_user_mode+0x1b/0x40
+> [15884.111394]  do_syscall_64+0x6c/0x90
+> [15884.111397]  ? exit_to_user_mode_prepare+0x188/0x1f0
+> [15884.111401]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.111404]  ? do_syscall_64+0x6c/0x90
+> [15884.111407]  ? do_syscall_64+0x6c/0x90
+> [15884.111410]  ? do_syscall_64+0x6c/0x90
+> [15884.111413]  ? do_syscall_64+0x6c/0x90
+> [15884.111416]  ? do_syscall_64+0x6c/0x90
+> [15884.111419]  ? do_syscall_64+0x6c/0x90
+> [15884.111423]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.111427] RIP: 0033:0x7ff3905037b4
+> [15884.111433] RSP: 002b:00007fffc71b6e38 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
+> [15884.111437] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007ff3905037b4
+> [15884.111439] RDX: 0000000000002000 RSI: 00007fffc71b6e50 RDI: 0000000000000003
+> [15884.111441] RBP: 00007fffc71b8e90 R08: 00005571b8726780 R09: 0000000000000001
+> [15884.111443] R10: 0000000000000000 R11: 0000000000000202 R12: 00007ff39076ab08
+> [15884.111445] R13: 0000000000000009 R14: 0000000000000003 R15: 0000000000000000
+> [15884.111450]  </TASK>
+> [15884.111465] task:lvs             state:D stack:0     pid:29780 ppid:29658  flags:0x00004006
+> [15884.111469] Call Trace:
+> [15884.111470]  <TASK>
+> [15884.111472]  __schedule+0x3ee/0x14c0
+> [15884.111478]  schedule+0x5e/0xd0
+> [15884.111481]  schedule_timeout+0x151/0x160
+> [15884.111486]  wait_for_completion+0x8a/0x160
+> [15884.111491]  exit_aio+0x10d/0x120
+> [15884.111496]  __mmput+0x12/0x130
+> [15884.111500]  do_exit+0x305/0xb10
+> [15884.111504]  ? aio_read_events_ring+0x19b/0x220
+> [15884.111511]  do_group_exit+0x31/0x80
+> [15884.111515]  get_signal+0x9a5/0x9e0
+> [15884.111519]  ? read_events+0x199/0x1d0
+> [15884.111522]  ? __pfx_autoremove_wake_function+0x10/0x10
+> [15884.111526]  arch_do_signal_or_restart+0x3e/0x270
+> [15884.111534]  exit_to_user_mode_prepare+0x195/0x1f0
+> [15884.111537]  syscall_exit_to_user_mode+0x1b/0x40
+> [15884.111541]  do_syscall_64+0x6c/0x90
+> [15884.111544]  ? exit_to_user_mode_prepare+0x142/0x1f0
+> [15884.111548]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.111552]  ? do_syscall_64+0x6c/0x90
+> [15884.111555]  ? syscall_exit_to_user_mode+0x1b/0x40
+> [15884.111558]  ? do_syscall_64+0x6c/0x90
+> [15884.111561]  ? exit_to_user_mode_prepare+0x142/0x1f0
+> [15884.111565]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+> [15884.111569] RIP: 0033:0x7f9f0fd1380d
+> [15884.111575] RSP: 002b:00007fff94bfb4c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000d0
+> [15884.111579] RAX: fffffffffffffffc RBX: 00007f9f101f0000 RCX: 00007f9f0fd1380d
+> [15884.111581] RDX: 0000000000000040 RSI: 0000000000000001 RDI: 00007f9f101f0000
+> [15884.111583] RBP: 00007fff94bfb510 R08: 0000000000000000 R09: 0000000294bfba10
+> [15884.111586] R10: 00007fff94bfb520 R11: 0000000000000246 R12: 0000000000000001
+> [15884.111588] R13: 0000000000000040 R14: 00007f9f0fe4f090 R15: 00007fff94bfb520
+> [15884.111593]  </TASK>
+> 
+> 
 
-The csky tree gained a conflict against the mm tree.
-
-The nfsd tree gained a conflict against the nfsd-fixes tree.
-
-The vfs-brauner tree gained conflicts against the btrfs and f2fs trees.
-
-The hid tree gained a conflict against Linus' tree.
-
-The i2c tree gained a conflict against the i2c-host-fixes tree.
-
-The mlx5-next tree gained conflicts against Linus' tree and the net-next
-tree.
-
-The block tree gained a conflict against the loongarch tree.
-
-The tip tree gained conflicts against the mm-stable and vfs-brauner
-trees and a semantic conflict against the mm tree.
-
-The kvm-x86 tree gained conflicts against the kvm-riscv tree.
-
-The driver-core tree gained two build failures so I used the version
-from next-20230809.
-
-The vhost tree gained a conflict against the net-next tree.
-
-The fsi tree gained a conflict against the char-misc tree.
-
-The nvmem tree gained a build failure so I used the version from
-next-20230809.
-
-The iommufd tree gained a semantic conflict against the iommu tree.
-
-Non-merge commits (relative to Linus' tree): 9188
- 10533 files changed, 330851 insertions(+), 148406 deletions(-)
-
-----------------------------------------------------------------------------
-
-I have created today's linux-next tree at
-git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-(patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
-are tracking the linux-next tree using git, you should not use "git pull"
-to do so as that will try to merge the new linux-next release with the
-old one.  You should use "git fetch" and checkout or reset to the new
-master.
-
-You can see which trees have been included by looking in the Next/Trees
-file in the source.  There is also the merge.log file in the Next
-directory.  Between each merge, the tree was built with a ppc64_defconfig
-for powerpc, an allmodconfig for x86_64, a multi_v7_defconfig for arm
-and a native build of tools/perf. After the final fixups (if any), I do
-an x86_64 modules_install followed by builds for x86_64 allnoconfig,
-powerpc allnoconfig (32 and 64 bit), ppc44x_defconfig, allyesconfig
-and pseries_le_defconfig and i386, arm64, s390, sparc and sparc64
-defconfig and htmldocs. And finally, a simple boot test of the powerpc
-pseries_le_defconfig kernel in qemu (with and without kvm enabled).
-
-Below is a summary of the state of the merge.
-
-I am currently merging 366 trees (counting Linus' and 105 trees of bug
-fix patches pending for the current merge release).
-
-Stats about the size of the tree over time can be seen at
-http://neuling.org/linux-next-size.html .
-
-Status of my local build tests will be at
-http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
-advice about cross compilers/configs that work, we are always open to add
-more builds.
-
-Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
-Gortmaker for triage and bug fixes.
-
---=20
-Cheers,
-Stephen Rothwell
-
-$ git checkout master
-$ git reset --hard stable
-Merging origin/master (2ccdd1b13c59 Linux 6.5-rc6)
-Merging fixes/fixes (d528014517f2 Revert ".gitignore: ignore *.cover and *.=
-mbx")
-Merging mm-hotfixes/mm-hotfixes-unstable (7a8abf373f29 mm: multi-gen LRU: d=
-on't spin during memcg release)
-Merging kbuild-current/fixes (6ccbd7fd4746 alpha: remove __init annotation =
-from exported page_is_ram())
-Merging arc-current/for-curr (4d3696801bad ARC: -Wmissing-prototype warning=
- fixes)
-Merging arm-current/fixes (6995e2de6891 Linux 6.4)
-Merging arm64-fixes/for-next/fixes (69af56ae56a4 arm64/fpsimd: Sync and zer=
-o pad FPSIMD state for streaming SVE)
-Merging arm-soc-fixes/arm/fixes (6e6d847a8ce1 soc: aspeed: socinfo: Add kfr=
-ee for kstrdup)
-Merging davinci-current/davinci/for-current (06c2afb862f9 Linux 6.5-rc1)
-Merging drivers-memory-fixes/fixes (faafd6ca7e6e memory: tegra: make icc_se=
-t_bw return zero if BWMGR not supported)
-Merging tee-fixes/fixes (ceaa837f96ad Linux 6.2-rc8)
-Merging m68k-current/for-linus (922a9bd13810 m68k: Fix invalid .section syn=
-tax)
-Merging powerpc-fixes/fixes (86582e6189dd powerpc/powermac: Use early_* IO =
-variants in via_calibrate_decr())
-Merging s390-fixes/fixes (388acb471662 s390/ptrace: add missing linux/const=
-.h include)
-Merging sparc/master (2d2b17d08bfc sparc: Unbreak the build)
-Merging fscrypt-current/for-current (4bcf6f827a79 fscrypt: check for NULL k=
-eyring in fscrypt_put_master_key_activeref())
-Merging fsverity-current/for-current (a075bacde257 fsverity: don't drop pag=
-ecache at end of FS_IOC_ENABLE_VERITY)
-Merging net/main (855067defa36 selftests: mirror_gre_changes: Tighten up th=
-e TTL test match)
-Merging bpf/master (9ebbb29db9ca Merge branch 'x86/bugs' of git://git.kerne=
-l.org/pub/scm/linux/kernel/git/tip/tip)
-Merging ipsec/master (f3ec2b5d879e xfrm: don't skip free of empty state in =
-acquire policy)
-Merging netfilter/main (cc941e548bff net: phy: fix IRQ-based wake-on-lan ov=
-er hibernate / power off)
-Merging ipvs/main (829c6524d672 net: pcs: Add missing put_device call in mi=
-ic_create)
-Merging wireless/for-next (06f2ab86a5b6 wifi: ath12k: Fix buffer overflow w=
-hen scanning with extraie)
-Merging wpan/master (9a43827e876c net: dpaa2-mac: add 25gbase-r support)
-Merging rdma-fixes/for-rc (2ccdd1b13c59 Linux 6.5-rc6)
-Merging sound-current/for-linus (7c761166399b ALSA: hda/cs8409: Support new=
- Dell Dolphin Variants)
-Merging sound-asoc-fixes/for-linus (8a60e83d19a7 Merge remote-tracking bran=
-ch 'asoc/for-6.4' into asoc-linus)
-Merging regmap-fixes/for-linus (52a93d39b17d Linux 6.5-rc5)
-Merging regulator-fixes/for-linus (b81f77a4fa88 Merge remote-tracking branc=
-h 'regulator/for-6.4' into regulator-linus)
-Merging spi-fixes/for-linus (e5baf3f03be8 Merge remote-tracking branch 'spi=
-/for-6.4' into spi-linus)
-Merging pci-current/for-linus (cc22522fd55e PCI: acpiphp: Use pci_assign_un=
-assigned_bridge_resources() only for non-root bus)
-Merging driver-core.current/driver-core-linus (5d0c230f1de8 Linux 6.5-rc4)
-Merging tty.current/tty-linus (04c7f60ca477 serial: core: Fix serial core p=
-ort id, including multiport devices)
-Merging usb.current/usb-linus (2ccdd1b13c59 Linux 6.5-rc6)
-Merging usb-serial-fixes/usb-linus (d245aedc0077 USB: serial: simple: sort =
-driver entries)
-Merging phy/fixes (52a93d39b17d Linux 6.5-rc5)
-Merging staging.current/staging-linus (5d0c230f1de8 Linux 6.5-rc4)
-Merging iio-fixes/fixes-togreg (34477b2d710a iio: dac: ad3552r: Correct dev=
-ice IDs)
-Merging counter-current/counter-current (aead78125a98 tools/counter: Makefi=
-le: Replace rmdir by rm to avoid make,clean failure)
-Merging char-misc.current/char-misc-linus (2ccdd1b13c59 Linux 6.5-rc6)
-Merging soundwire-fixes/fixes (52a93d39b17d Linux 6.5-rc5)
-Merging thunderbolt-fixes/fixes (2ccdd1b13c59 Linux 6.5-rc6)
-Merging input-current/for-linus (eb09074bdb05 Input: i8042 - add quirk for =
-TUXEDO Gemini 17 Gen1/Clevo PD70PN)
-Merging crypto-current/master (0b7ec177b589 crypto: algif_hash - Fix race b=
-etween MORE and non-MORE sends)
-Merging vfio-fixes/for-linus (4752354af710 vfio/type1: check pfn valid befo=
-re converting to struct page)
-Merging kselftest-fixes/fixes (569f8b501b17 selftests/arm64: fix build fail=
-ure during the "emit_tests" step)
-Merging modules-fixes/modules-linus (f412eef03938 Documentation: livepatch:=
- module-elf-format: Remove local klp_modinfo definition)
-Merging dmaengine-fixes/fixes (422dbc66b770 dmaengine: xilinx: xdma: Fix ty=
-po)
-Merging backlight-fixes/for-backlight-fixes (88603b6dc419 Linux 6.2-rc2)
-Merging mtd-fixes/mtd/fixes (c6abce60338a mtd: rawnand: fsl_upm: Fix an off=
--by one test in fun_exec_op())
-Merging mfd-fixes/for-mfd-fixes (88603b6dc419 Linux 6.2-rc2)
-Merging v4l-dvb-fixes/fixes (2908042a37b5 media: imx: imx7-media-csi: Fix a=
-pplying format constraints)
-Merging reset-fixes/reset/fixes (3a2390c6777e reset: uniphier-glue: Fix pos=
-sible null-ptr-deref)
-Merging mips-fixes/mips-fixes (6eaae1980760 Linux 6.5-rc3)
-Merging at91-fixes/at91-fixes (06c2afb862f9 Linux 6.5-rc1)
-Merging omap-fixes/fixes (2a906db2824b Merge branch 'am5748-fix' into fixes)
-Merging kvm-fixes/master (d5ad9aae13dc selftests/rseq: Fix build with undef=
-ined __weak)
-Merging kvms390-fixes/master (c2fceb59bbda KVM: s390: pv: fix index value o=
-f replaced ASCE)
-Merging hwmon-fixes/hwmon (56b930dcd88c hwmon: (aquacomputer_d5next) Add se=
-lective 200ms delay after sending ctrl report)
-Merging nvdimm-fixes/libnvdimm-fixes (e98d14fa7315 tools/testing/nvdimm: Dr=
-op empty platform remove function)
-Merging cxl-fixes/fixes (ad64f5952ce3 cxl/memdev: Only show sanitize sysfs =
-files when supported)
-Merging btrfs-fixes/next-fixes (02aff77b978e Merge branch 'misc-6.5' into n=
-ext-fixes)
-Merging vfs-fixes/fixes (609d54441493 fs: prevent out-of-bounds array specu=
-lation when closing a file descriptor)
-Merging dma-mapping-fixes/for-linus (bbb73a103fbb swiotlb: fix a braino in =
-the alignment check fix)
-Merging drivers-x86-fixes/fixes (2b6aa6610dc9 platform/x86: lenovo-ymc: Onl=
-y bind on machines with a convertible DMI chassis-type)
-Merging samsung-krzk-fixes/fixes (06c2afb862f9 Linux 6.5-rc1)
-Merging pinctrl-samsung-fixes/fixes (06c2afb862f9 Linux 6.5-rc1)
-Merging devicetree-fixes/dt/linus (ffc59c6414f9 dt-bindings: serial: Remove=
- obsolete nxp,lpc1850-uart.txt)
-Merging dt-krzk-fixes/fixes (06c2afb862f9 Linux 6.5-rc1)
-Merging scsi-fixes/fixes (ef222f551e7c scsi: qedf: Fix firmware halt over s=
-uspend and resume)
-Merging drm-fixes/drm-fixes (2ccdd1b13c59 Linux 6.5-rc6)
-Merging drm-intel-fixes/for-linux-next-fixes (423ffe62c06a drm/i915: fix di=
-splay probe for IVB Q and IVB D GT2 server)
-Merging mmc-fixes/fixes (cf3f15b8c660 mmc: sunplus: Fix error handling in s=
-pmmc_drv_probe())
-Merging rtc-fixes/rtc-fixes (08279468a294 rtc: sunplus: fix format string f=
-or printing resource)
-Merging gnss-fixes/gnss-linus (fdf0eaf11452 Linux 6.5-rc2)
-Merging hyperv-fixes/hyperv-fixes (6ad0f2f91ad1 Drivers: hv: vmbus: Remove =
-unused extern declaration vmbus_ontimer())
-Merging soc-fsl-fixes/fix (06c2afb862f9 Linux 6.5-rc1)
-Merging risc-v-fixes/fixes (7e3811521dc3 riscv: Implement flush_cache_vmap(=
-))
-Merging riscv-dt-fixes/riscv-dt-fixes (06c2afb862f9 Linux 6.5-rc1)
-Merging riscv-soc-fixes/riscv-soc-fixes (06c2afb862f9 Linux 6.5-rc1)
-Merging fpga-fixes/fixes (06c2afb862f9 Linux 6.5-rc1)
-Merging spdx/spdx-linus (fdf0eaf11452 Linux 6.5-rc2)
-Merging gpio-brgl-fixes/gpio/for-current (2fc8d02058db MAINTAINERS: add con=
-tent regex for gpio-regmap)
-Merging gpio-intel-fixes/fixes (06c2afb862f9 Linux 6.5-rc1)
-Merging pinctrl-intel-fixes/fixes (06c2afb862f9 Linux 6.5-rc1)
-Merging erofs-fixes/fixes (4da3c7183e18 erofs: drop unnecessary WARN_ON() i=
-n erofs_kill_sb())
-Merging kunit-fixes/kunit-fixes (06c2afb862f9 Linux 6.5-rc1)
-Merging ubifs-fixes/fixes (2241ab53cbb5 Linux 6.2-rc5)
-Merging memblock-fixes/fixes (9e46e4dcd9d6 mm,memblock: reset memblock.rese=
-rved to system init state to prevent UAF)
-Merging nfsd-fixes/nfsd-fixes (c96e2a695e00 sunrpc: set the bv_offset of fi=
-rst bvec in svc_tcp_sendmsg)
-Merging irqchip-fixes/irq/irqchip-fixes (6fe5c68ee6a1 irqchip/gic-v3: Worka=
-round for GIC-700 erratum 2941627)
-Merging renesas-fixes/fixes (4c188fa183eb arm64: dts: renesas: rzg2l: Updat=
-e overfow/underflow IRQ names for MTU3 channels)
-Merging broadcom-fixes/fixes (9abf2313adc1 Linux 6.1-rc1)
-Merging perf-current/perf-tools (374a7f47bf40 Merge tag '6.5-rc5-ksmbd-serv=
-er' of git://git.samba.org/ksmbd)
-Merging efi-fixes/urgent (36e4fc57fc16 efi: Bump stub image version for mac=
-OS HVF compatibility)
-Merging zstd-fixes/zstd-linus (6906598f1ce9 zstd: Fix definition of assert(=
-))
-Merging battery-fixes/fixes (205f4cf3136f power: supply: ab8500: Set typing=
- and props)
-Merging uml-fixes/fixes (73a23d771033 um: harddog: fix modular build)
-Merging asahi-soc-fixes/asahi-soc/fixes (568035b01cfb Linux 6.0-rc1)
-Merging iommufd-fixes/for-rc (b7c822fa6b77 iommufd: Set end correctly when =
-doing batch carry)
-Merging rust-fixes/rust-fixes (3fa7187eceee rust: macros: vtable: fix `HAS_=
-*` redefinition (`gen_const_name`))
-Merging v9fs-fixes/fixes/next (e6ab0b914c12 fs/9p: Remove unused extern dec=
-laration)
-Merging w1-fixes/fixes (06c2afb862f9 Linux 6.5-rc1)
-Merging genpd-fixes/fixes (12acb348fa45 cpuidle: psci: Move enabling OSI mo=
-de after power domains creation)
-Merging i2c-host-fixes/i2c/andi-for-current (9a5adaf694f5 i2c: hisi: Only h=
-andle the interrupt of the driver's transfer)
-Merging drm-misc-fixes/for-linux-next-fixes (e8470c0a7bca drm/panel: simple=
-: Fix AUO G121EAN01 panel timings according to the docs)
-Merging mm-stable/mm-stable (5fb2ea3111f4 powerpc/book3s64/radix: add debug=
- message to give more details of vmemmap allocation)
-CONFLICT (content): Merge conflict in arch/parisc/mm/ioremap.c
-Merging mm-nonmm-stable/mm-nonmm-stable (290931e2b83c x86/kernel: increase =
-kcov coverage under arch/x86/kernel folder)
-Merging mm/mm-everything (f8a7ed854c1a Merge branch 'mm-nonmm-unstable' int=
-o mm-everything)
-Merging kbuild/for-next (45a7371d5be2 docs: kbuild: Document search jump fe=
-ature)
-Merging clang-format/clang-format (5d0c230f1de8 Linux 6.5-rc4)
-Merging perf/perf-tools-next (55b290501928 Merge remote-tracking branch 'to=
-rvalds/master' into perf-tools-next)
-Merging compiler-attributes/compiler-attributes (5d0c230f1de8 Linux 6.5-rc4)
-Merging dma-mapping/for-next (d069ed288ac7 swiotlb: optimize get_max_slots(=
-))
-Merging asm-generic/master (cdea694d7616 asm-generic: partially revert "Uni=
-fy uapi bitsperlong.h for arm64, riscv and loongarch")
-Merging arc/for-next (06c2afb862f9 Linux 6.5-rc1)
-Merging arm/for-next (a6f307c20d64 Revert part of ae1f8d793a19 ("ARM: 9304/=
-1: add prototype for function called only from asm"))
-Merging arm64/for-next/core (78a2dc32d20a Merge branches 'for-next/cpufeatu=
-re', 'for-next/docs', 'for-next/entry', 'for-next/errata', 'for-next/misc',=
- 'for-next/mm', 'for-next/perf' and 'for-next/selftests' into for-next/core)
-Merging arm-perf/for-next/perf (ac18ea1a8935 perf/arm-cmn: Add CMN-700 r3 s=
-upport)
-Merging arm-soc/for-next (eac502461628 soc: document merges)
-Merging amlogic/for-next (f590814603bf Merge branch 'v6.6/arm-mach' into fo=
-r-next)
-Merging asahi-soc/asahi-soc/for-next (eaf935fa48ec soc: apple: mailbox: Ren=
-ame config symbol to APPLE_MAILBOX)
-CONFLICT (content): Merge conflict in drivers/soc/apple/Makefile
-Merging aspeed/for-next (8eb02f6fdd01 ARM: dts: aspeed: bonnell: Add reserv=
-ed memory for TPM event log)
-Merging at91/at91-next (b04dba7c1c30 Merge branch 'at91-dt' into at91-next)
-Merging broadcom/next (a70e8c9ff89a Merge branch 'soc/next' into next)
-Merging davinci/davinci/for-next (06c2afb862f9 Linux 6.5-rc1)
-Merging drivers-memory/for-next (35bd78cf2522 memory: tegra: add MC client =
-for Tegra234 GPU)
-Merging imx-mxs/for-next (246e2cc22265 Merge branch 'imx/defconfig' into fo=
-r-next)
-Merging mediatek/for-next (f6925844c82a Merge branch 'v6.4-next/soc' into f=
-or-next)
-Merging mvebu/for-next (a8e364c2c428 Merge branch 'mvebu/drivers' into mveb=
-u/for-next)
-Merging omap/for-next (ca55cf3d7b52 Merge branch 'omap-for-v6.5/fixes' into=
- for-next)
-Merging qcom/for-next (b9a263d90a2c Merge branches 'arm64-defconfig-for-6.6=
-', 'arm64-fixes-for-6.5', 'arm64-for-6.6', 'clk-for-6.6', 'drivers-for-6.6'=
- and 'dts-for-6.6' into for-next)
-Merging renesas/next (13512fa6af4a Merge branch 'renesas-dts-for-v6.6' into=
- renesas-next)
-Merging reset/reset/next (417a3a5ae44a reset: ti: syscon: remove unneeded c=
-all to platform_set_drvdata())
-Merging rockchip/for-next (bcd6a683ddaa Merge branch 'v6.6-armsoc/dts64' in=
-to for-next)
-Merging samsung-krzk/for-next (4124fbc4b4b1 Merge branch 'next/dt64' into f=
-or-next)
-Merging scmi/for-linux-next (45e5b76801e1 Merge branch 'for-next/scmi/fixes=
-' of git://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux into =
-for-linux-next)
-CONFLICT (content): Merge conflict in drivers/firmware/arm_scmi/perf.c
-Merging stm32/stm32-next (06113b7ac2df ARM: dts: st: Add gpio-ranges for st=
-m32f769-pinctrl)
-Merging sunxi/sunxi/for-next (aa333f5e8461 Merge branch 'sunxi/dt-for-6.6' =
-into sunxi/for-next)
-Merging tee/next (6a8b7e801054 tee: optee: Use kmemdup() to replace kmalloc=
- + memcpy)
-Merging tegra/for-next (77a4cfe28fb8 Merge branch for-6.6/arm64/dt into for=
--next)
-Merging ti/ti-next (d0857dc9b22d Merge branch 'ti-k3-dts-next' into ti-next)
-Merging xilinx/for-next (7cd073eddcd4 Merge branch 'zynqmp/soc' into for-ne=
-xt)
-Merging clk/clk-next (bd0f09c12e99 Merge branch 'clk-allwinner' into clk-ne=
-xt)
-CONFLICT (modify/delete): drivers/clk/qcom/lcc-mdm9615.c deleted in HEAD an=
-d modified in clk/clk-next.  Version clk/clk-next of drivers/clk/qcom/lcc-m=
-dm9615.c left in tree.
-$ git rm -f drivers/clk/qcom/lcc-mdm9615.c
-Merging clk-imx/for-next (72d00e560d10 clk: imx: pll14xx: dynamically confi=
-gure PLL for 393216000/361267200Hz)
-Merging clk-renesas/renesas-clk (dec57795efc4 clk: renesas: r8a77965: Add 3=
-DGE and ZG support)
-Merging csky/linux-next (c8171a86b274 csky: Fixup -Wmissing-prototypes warn=
-ing)
-CONFLICT (content): Merge conflict in arch/csky/abiv2/cacheflush.c
-Merging loongarch/loongarch-next (5020c5f9d5f7 LoongArch: Add kernel addres=
-s sanitizer support)
-Merging m68k/for-next (922a9bd13810 m68k: Fix invalid .section syntax)
-Merging m68knommu/for-next (7c53e18ee74e m68k: coldfire: dma_timer: ERROR: =
-"foo __init bar" should be "foo __init bar")
-Merging microblaze/next (0e9a2a228a1a microblaze: Explicitly include correc=
-t DT includes)
-Merging mips/mips-next (f11a99674132 MIPS: Loongson64: Fix more __iomem att=
-ributes)
-Merging openrisc/for-next (232ba1630c66 openrisc: Make pfn accessors static=
-s inlines)
-Merging parisc-hd/for-next (7a894c873747 parisc: Fix CONFIG_TLB_PTLOCK to w=
-ork with lightweight spinlock checks)
-Merging powerpc/next (cd50430ceb35 macintosh/ams: mark ams_init() static)
-Merging soc-fsl/next (fb9c384625dd bus: fsl-mc: fsl-mc-allocator: Drop a wr=
-ite-only variable)
-Merging risc-v/for-next (174e8ac0272d riscv: alternatives: fix a typo in co=
-mment)
-Merging riscv-dt/riscv-dt-for-next (f331eb1f5454 riscv: dts: starfive: jh71=
-10: Fix GMAC configuration)
-Merging riscv-soc/riscv-soc-for-next (30fb4784483b soc: starfive: Add JH711=
-0 AON PMU support)
-Merging s390/for-next (63b9eab21ad8 Merge branch 'features' into for-next)
-CONFLICT (content): Merge conflict in arch/s390/Kconfig
-Merging sh/for-next (06c2afb862f9 Linux 6.5-rc1)
-Merging uml/next (6032aca0deb9 um: make stub data pages size tweakable)
-Merging xtensa/xtensa-for-next (a160e9414d8a xtensa: fix unaligned and load=
-/store configuration interaction)
-Merging pidfd/for-next (a901a3568fd2 Merge tag 'iomap-6.5-merge-1' of git:/=
-/git.kernel.org/pub/scm/fs/xfs/xfs-linux)
-Merging fscrypt/for-next (324718ddddc4 fscrypt: improve the "Encryption mod=
-es and usage" section)
-Merging afs/afs-next (0a278bc196e7 afs: Automatically generate trace tag en=
-ums)
-Merging btrfs/for-next (6099857b7d15 Merge branch 'for-next-next-v6.5-20230=
-814' into for-next-20230814)
-Merging ceph/master (e6e284323079 libceph: fix potential hang in ceph_osdc_=
-notify())
-Merging cifs/for-next (7b38f6ddc97b smb3: display network namespace in debu=
-g information)
-Merging configfs/for-next (77992f896745 configfs: remove mentions of commit=
-table items)
-Merging ecryptfs/next (a3d78fe3e1ae fs: ecryptfs: comment typo fix)
-Merging erofs/dev (c23df8256b55 erofs: refine warning messages for zdata I/=
-Os)
-Merging exfat/dev (ff84772fd45d exfat: release s_lock before calling dir_em=
-it())
-Merging ext3/for_next (70a58515e2ff Merge UDF aops cleanup.)
-Merging ext4/dev (9d3de7ee192a ext4: fix rbtree traversal bug in ext4_mb_us=
-e_preallocated)
-Merging f2fs/dev (0cc81b1ad512 f2fs: should update REQ_TIME for direct writ=
-e)
-Merging fsverity/for-next (adcb53e3ee05 fsverity: skip PKCS#7 parser when k=
-eyring is empty)
-Merging fuse/for-next (91ec6c85599b Revert "fuse: in fuse_flush only wait i=
-f someone wants the return code")
-Merging gfs2/for-next (9f9a7f057f07 gfs2: journal flush threshold fixes and=
- cleanup)
-Merging jfs/jfs-next (6e2bda2c192d jfs: fix invalid free of JFS_IP(ipimap)-=
->i_imap in diUnmount)
-Merging ksmbd/ksmbd-for-next (cdd143e4c508 ksmbd: switch to use kmemdup_nul=
-() helper)
-Merging nfs/linux-next (5b4a82a0724a Revert "NFSv4: Retry LOCK on OLD_STATE=
-ID during delegation return")
-Merging nfs-anna/linux-next (43439d858bba NFSv4.2: Fix a potential double f=
-ree with READ_PLUS)
-Merging nfsd/nfsd-next (f5797323270d SUNRPC: Clean up svc_set_num_threads)
-CONFLICT (content): Merge conflict in net/sunrpc/svcsock.c
-Merging ntfs3/master (44b4494d5c59 fs/ntfs3: Correct mode for label entry i=
-nside /proc/fs/ntfs3/)
-Merging orangefs/for-next (31720a2b109b orangefs: Fix kmemleak in orangefs_=
-{kernel,client}_debug_init())
-Merging overlayfs/overlayfs-next (adcd459ff805 ovl: validate superblock in =
-OVL_FS())
-Merging ubifs/next (b5fda08ef213 ubifs: Fix memleak when insert_old_idx() f=
-ailed)
-Merging v9fs/9p-next (4ec5183ec486 Linux 6.2-rc7)
-Merging v9fs-ericvh/ericvh/for-next (06c2afb862f9 Linux 6.5-rc1)
-Merging xfs/for-next (f6250e205691 xfs: convert flex-array declarations in =
-xfs attr shortform objects)
-Merging zonefs/for-next (8812387d0569 zonefs: set FMODE_CAN_ODIRECT instead=
- of a dummy direct_IO method)
-Merging iomap/iomap-for-next (377698d4abe2 Merge tag 'xfs-async-dio.6-2023-=
-08-01' of git://git.kernel.dk/linux into iomap-6.6-mergeA)
-Merging djw-vfs/vfs-for-next (ce85a1e04645 xfs: stabilize fs summary counte=
-rs for online fsck)
-Merging file-locks/locks-next (72bb0abc3492 locks: fix KASAN: use-after-fre=
-e in trace_event_raw_event_filelock_lock)
-Merging iversion/iversion-next (63355b9884b3 cpumask: be more careful with =
-'cpumask_setall()')
-Merging vfs-brauner/vfs.all (24a62491bb89 Merge branch 'vfs.autofs' into vf=
-s.all)
-CONFLICT (content): Merge conflict in fs/btrfs/inode.c
-CONFLICT (content): Merge conflict in fs/f2fs/super.c
-CONFLICT (content): Merge conflict in fs/f2fs/xattr.c
-Merging vfs/for-next (cff4b23c731a Merge branch 'work.lock_rename_child' in=
-to for-next)
-Merging printk/for-next (b7661f87eda0 Merge branch 'for-6.6' into for-next)
-Merging pci/next (b2c47cd73629 Merge branch 'pci/misc')
-Merging pstore/for-next/pstore (fe8c3623ab06 pstore/ram: Check start of emp=
-ty przs during init)
-Merging hid/for-next (c4cc8dab2d33 Merge branch 'for-6.6/steelseries' into =
-for-next)
-CONFLICT (content): Merge conflict in .mailmap
-Merging i2c/i2c/for-next (8ab7725b6bfb Merge branch 'i2c/for-mergewindow' i=
-nto i2c/for-next)
-CONFLICT (content): Merge conflict in drivers/i2c/busses/i2c-hisi.c
-Merging i2c-host/i2c/andi-for-next (7a34bab2daea i2c: synquacer: Use dev_er=
-r_probe in probe function)
-Merging i3c/i3c/next (300098637900 i3c: master: svc: Do not check for 0 ret=
-urn after calling platform_get_irq())
-Merging dmi/dmi-for-next (13a0ac816d22 firmware: dmi: Fortify entry point l=
-ength checks)
-Merging hwmon-staging/hwmon-next (fc8df28be715 hwmon: (nsa320-hwmon) Remove=
- redundant of_match_ptr())
-Merging jc_docs/docs-next (90cd0c18573a doc: update params of memhp_default=
-_state=3D)
-Merging v4l-dvb/master (29006e196a56 media: pci: intel: ivsc: Add CSI submo=
-dule)
-Merging v4l-dvb-next/master (b7ec3212a73a media: bttv: convert to vb2)
-Merging pm/linux-next (e8cde28ba512 Merge branch 'pm-tools' into linux-next)
-Merging cpufreq-arm/cpufreq/arm/linux-next (d3dec5bb61ce cpufreq: amd-pstat=
-e-ut: Modify the function to get the highest_perf value)
-Merging cpupower/cpupower (99481d2195bf cpupower: Fix cpuidle_set to accept=
- only numeric values for idle-set operation.)
-Merging devfreq/devfreq-next (5693d077595d PM / devfreq: Fix leak in devfre=
-q_dev_release())
-Merging genpd/next (fe38a2d570df MAINTAINERS: adjust file entry in STARFIVE=
- JH71XX PMU CONTROLLER DRIVER)
-Merging opp/opp/linux-next (c2add32ce452 dt-bindings: opp: Increase maxItem=
-s for opp-hz property)
-Merging thermal/thermal/linux-next (57c9eaa4de53 thermal/drivers/qcom/temp-=
-alarm: Use dev_err_probe)
-Merging dlm/next (a3d85fcf268e fs: dlm: don't use RCOM_NAMES for version de=
-tection)
-Merging rdma/for-next (d952f54d01ec RDMA/hns: Remove unused declaration hns=
-_roce_modify_srq())
-Merging net-next/main (479b322ee6fe net: dsa: mv88e6060: add phylink_get_ca=
-ps implementation)
-Merging bpf-next/for-next (83a89c4b6ae9 selftests/bpf: Clean up fmod_ret in=
- bench_rename test script)
-Merging ipsec-next/master (a94fd40a18ae xfrm: delete not-needed clear to ze=
-ro of encap_oa)
-Merging mlx5-next/mlx5-next (2d297d20ace8 RDMA/mlx5: Handles RoCE MACsec st=
-eering rules addition and deletion)
-CONFLICT (modify/delete): drivers/net/ethernet/mellanox/mlx5/core/en_accel/=
-macsec_fs.c deleted in mlx5-next/mlx5-next and modified in HEAD.  Version H=
-EAD of drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_fs.c left in=
- tree.
-CONFLICT (content): Merge conflict in include/linux/mlx5/driver.h
-$ git rm -f drivers/net/ethernet/mellanox/mlx5/core/en_accel/macsec_fs.c
-Applying: fix up for "net/mlx5e: Move MACsec flow steering operations to be=
- used as core library"
-Merging netfilter-next/main (b98a5aa7e4c2 Merge branch 'net-remove-redundan=
-t-initialization-owner')
-Merging ipvs-next/main (b98a5aa7e4c2 Merge branch 'net-remove-redundant-ini=
-tialization-owner')
-Merging bluetooth/master (b5793de3cfae Bluetooth: hci_conn: avoid checking =
-uninitialized CIG/CIS ids)
-Merging wireless-next/for-next (81083076a007 Merge tag 'wireless-next-2023-=
-08-04' of git://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless-n=
-ext)
-Merging wpan-next/master (18b849f12dcc ieee802154: ca8210: Remove stray gpi=
-od_unexport() call)
-Merging wpan-staging/staging (18b849f12dcc ieee802154: ca8210: Remove stray=
- gpiod_unexport() call)
-Merging mtd/mtd/next (264725e35fbc mtd: Clean refcounting with MTD_PARTITIO=
-NED_MASTER)
-Merging nand/nand/next (3549fecd10d2 mtd: rawnand: vf610_nfc: Do not check =
-0 for platform_get_irq())
-Merging spi-nor/spi-nor/next (aa517a29d645 mtd: spi-nor: spansion: switch c=
-ypress_nor_get_page_size() to use vreg_offset)
-Merging crypto/master (91cb1e1432b3 crypto: jitter - Add clarifying comment=
-s to Jitter Entropy RCT cutoff values)
-Merging drm/drm-next (2b9d7b651522 Merge tag 'drm-intel-next-2023-08-10' of=
- git://anongit.freedesktop.org/drm/drm-intel into drm-next)
-CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/amdgpu/psp_v13_0.c
-CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/amdkfd/kfd_debug.c
-CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/display/amdgpu_dm=
-/amdgpu_dm.c
-CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/display/dc/dml/dc=
-n314/dcn314_fpu.c
-Merging drm-misc/for-linux-next (f5d8f9c0d8b4 drm/panel: JDI LT070ME05000 s=
-implify with dev_err_probe())
-Merging amdgpu/drm-next (6be2ad4f0073 drm/amdgpu: don't allow userspace to =
-create a doorbell BO)
-CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/amdkfd/kfd_crat.c
-CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/amdkfd/kfd_device=
-_queue_manager.c
-Merging drm-intel/for-linux-next (95c23e2085f2 drm/i915/dp: Fix LT debug pr=
-int in SDP CRC enable)
-Merging drm-tegra/for-next (2429b3c529da drm/tegra: Avoid potential 32-bit =
-integer overflow)
-Merging drm-msm/msm-next (d93cf453f51d drm/msm/dpu: fix the irq index in dp=
-u_encoder_phys_wb_wait_for_commit_done)
-CONFLICT (content): Merge conflict in drivers/gpu/drm/msm/disp/dpu1/dpu_cor=
-e_perf.h
-CONFLICT (content): Merge conflict in drivers/gpu/drm/msm/msm_mdss.c
-Merging drm-msm-lumag/msm-next-lumag (d93cf453f51d drm/msm/dpu: fix the irq=
- index in dpu_encoder_phys_wb_wait_for_commit_done)
-Merging etnaviv/etnaviv/next (88c31d2dd191 drm/etnaviv: fix error code in e=
-vent_alloc())
-Merging fbdev/for-next (87ac8777d424 fbdev: mx3fb: Remove the driver)
-CONFLICT (content): Merge conflict in drivers/video/fbdev/Kconfig
-CONFLICT (modify/delete): drivers/video/fbdev/mx3fb.c deleted in fbdev/for-=
-next and modified in HEAD.  Version HEAD of drivers/video/fbdev/mx3fb.c lef=
-t in tree.
-$ git rm -f drivers/video/fbdev/mx3fb.c
-Merging regmap/for-next (26fc7cfa30d6 Merge remote-tracking branch 'regmap/=
-for-6.6' into regmap-next)
-Merging sound/for-next (ff7a0b4016cb ALSA: dice: add stream format paramete=
-rs for Weiss devices)
-Merging ieee1394/for-next (06c2afb862f9 Linux 6.5-rc1)
-Merging sound-asoc/for-next (52a3cd64f03b Merge remote-tracking branch 'aso=
-c/for-6.6' into asoc-next)
-Merging modules/modules-next (a6846234f458 ARM: module: Use module_init_lay=
-out_section() to spot init sections)
-Merging input/next (54116d442e00 Input: rpckbd - fix the return value handl=
-e for platform_get_irq())
-Merging block/for-next (bc1b17592bbd Merge branch 'for-6.6/block' into for-=
-next)
-CONFLICT (content): Merge conflict in fs/super.c
-CONFLICT (content): Merge conflict in lib/raid6/test/Makefile
-Merging device-mapper/for-next (1e4ab7b4c881 dm cache policy smq: ensure IO=
- doesn't prevent cleaner policy progress)
-Merging libata/for-next (caea958926c3 ata: sata_rcar: Convert to platform r=
-emove callback returning void)
-Merging pcmcia/pcmcia-next (15e74c6c1ce2 pcmcia: remove AT91RM9200 Compact =
-Flash driver)
-Merging mmc/next (13433b9e2723 mmc: core: Cleanup mmc_sd_num_wr_blocks() fu=
-nction)
-Merging mfd/for-mfd-next (3d2b5d02738e dt-bindings: mfd: stericsson,db8500-=
-prcmu: Add missing unevaluatedProperties for each regulator)
-Merging backlight/for-backlight-next (fe1328b5b2a0 backlight: gpio_backligh=
-t: Drop output GPIO direction check for initial power state)
-Merging battery/for-next (7e6311f04b41 power: supply: qcom_pmi8998_charger:=
- fix charger status)
-Merging regulator/for-next (4483b65be2c2 Merge remote-tracking branch 'regu=
-lator/for-6.6' into regulator-next)
-Merging security/next (6672efbb685f lsm: constify the 'target' parameter in=
- security_capget())
-CONFLICT (content): Merge conflict in security/security.c
-Merging apparmor/apparmor-next (efea5b0dcc43 apparmor: remove unused PROF_*=
- macros)
-Merging integrity/next-integrity (55e2b69649be kexec_lock: Replace kexec_mu=
-tex() by kexec_lock() in two comments)
-Merging safesetid/safesetid-next (64b634830c91 LSM: SafeSetID: add setgroup=
-s() testing to selftest)
-Merging selinux/next (e49be9bc7c1b selinux: use unsigned iterator in nlmsgt=
-ab code)
-Merging smack/next (3ad49d37cf57 smackfs: Prevent underflow in smk_set_cips=
-o())
-Merging tomoyo/master (254a8ed6aab3 tomoyo: remove unused function declarat=
-ion)
-Merging tpmdd/next (2ccdd1b13c59 Linux 6.5-rc6)
-Merging watchdog/master (8a504bd61ec7 watchdog: starfive: Remove #ifdef gua=
-rds for PM related functions)
-Merging iommu/next (b2b57855813d Merge branches 'apple/dart', 'arm/mediatek=
-', 'arm/renesas', 'arm/rockchip', 'unisoc', 'x86/vt-d', 'x86/amd' and 'core=
-' into next)
-Merging audit/next (b59bc6e37237 audit: fix possible soft lockup in __audit=
-_inode_child())
-Merging devicetree/for-next (2b9583244aad of: unittest: Remove redundant of=
-_match_ptr())
-Merging dt-krzk/for-next (f418e00ab433 Merge branch 'next/qcom-pinctrl' int=
-o for-next)
-Merging mailbox/mailbox-for-next (1b712f18c461 mailbox: ti-msgmgr: Fill non=
--message tx data fields with 0x0)
-Merging spi/for-next (a9ca0d5d5006 Merge remote-tracking branch 'spi/for-6.=
-6' into spi-next)
-Merging tip/master (855484a68d16 Merge x86/microcode into tip/master)
-CONFLICT (content): Merge conflict in arch/s390/Kconfig
-CONFLICT (content): Merge conflict in arch/x86/entry/syscalls/syscall_64.tbl
-Applying: fix up for "mm: Make pte_mkwrite() take a VMA"
-Merging clockevents/timers/drivers/next (8b5bf64c89c7 clocksource/drivers/c=
-adence-ttc: Fix memory leak in ttc_timer_probe)
-Merging edac/edac-for-next (ce53ad81ed36 EDAC/igen6: Fix the issue of no er=
-ror events)
-Merging irqchip/irq/irqchip-next (a82f3119d543 Merge branch irq/misc-6.5 in=
-to irq/irqchip-next)
-Merging ftrace/for-next (7c1130ea5cae test: ftrace: Fix kprobe test for eve=
-ntfs)
-Merging rcu/rcu/next (13e3e81ac928 rcu-tasks: Fix boot-time RCU tasks debug=
--only deadlock)
-Merging kvm/next (d5ad9aae13dc selftests/rseq: Fix build with undefined __w=
-eak)
-Merging kvm-arm/next (3b4e3afb2032 Merge branch kvm-arm64/6.6/misc into kvm=
-arm-master/next)
-Merging kvms390/next (b275d8313217 KVM: s390: selftests: Add selftest for s=
-ingle-stepping)
-Merging kvm-riscv/riscv_kvm_next (477069398ed6 KVM: riscv: selftests: Add g=
-et-reg-list test)
-Merging kvm-x86/next (240f73689188 Merge branch 'misc')
-CONFLICT (content): Merge conflict in tools/testing/selftests/kvm/Makefile
-CONFLICT (content): Merge conflict in tools/testing/selftests/kvm/include/t=
-est_util.h
-Merging xen-tip/linux-next (c04e9894846c xen: speed up grant-table reclaim)
-Merging percpu/for-next (abf773b6fafc Merge branch 'for-6.6' into for-next)
-Merging workqueues/for-next (c076af902bdf Merge branch 'for-6.6' into for-n=
-ext)
-Merging drivers-x86/for-next (65c6ea33e7f6 Merge remote-tracking branch 'pd=
-x86/platform-drivers-x86-simatic-ipc' into review-hans)
-CONFLICT (content): Merge conflict in drivers/watchdog/Kconfig
-Merging chrome-platform/for-next (0820debb7d48 platform/chrome: chromeos_ac=
-pi: print hex string for ACPI_TYPE_BUFFER)
-Merging chrome-platform-firmware/for-firmware-next (0979e7e3cfd7 MAINTAINER=
-S: Add drivers/firmware/google/ entry)
-Merging hsi/for-next (7ebf243a2018 hsi: omap_ssi: Explicitly include correc=
-t DT includes)
-Merging leds/for-next (1b929c02afd3 Linux 6.2-rc1)
-Merging leds-lj/for-leds-next (841165267827 leds: qcom-lpg: Drop assignment=
- to struct pwmchip::base)
-Applying: Revert "leds: pca995x: Add support for PCA995X chips"
-Merging ipmi/for-next (b02bb79eee07 ipmi: fix potential deadlock on &kcs_bm=
-c->lock)
-Merging driver-core/driver-core-next (699fb50d9903 drivers: base: Free devm=
- resources when unregistering a device)
-$ git reset --hard HEAD^
-Merging next-20230809 version of driver-core
-Merging usb/usb-next (bbb9e06d2c64 Merge 6.5-rc6 into usb-next)
-Merging thunderbolt/next (a3f6445842e5 Documentation/ABI: thunderbolt: Repl=
-ace 01.org in contact)
-Merging usb-serial/usb-next (974e2f6a0554 USB: serial: xr: add TIOCGRS485 a=
-nd TIOCSRS485 ioctls)
-Merging tty/tty-next (e67d7f60d238 tty: gdm724x: simplify gdm_tty_write())
-CONFLICT (content): Merge conflict in arch/powerpc/platforms/8xx/mpc885ads_=
-setup.c
-CONFLICT (content): Merge conflict in arch/powerpc/platforms/8xx/tqm8xx_set=
-up.c
-CONFLICT (content): Merge conflict in arch/powerpc/sysdev/fsl_soc.c
-Merging char-misc/char-misc-next (e75850b4573a Merge 6.5-rc6 into char-misc=
--next)
-Merging accel/habanalabs-next (ef8b0cb1ba37 accel/habanalabs: fix ETR/ETF f=
-lush logic)
-CONFLICT (content): Merge conflict in drivers/accel/habanalabs/common/haban=
-alabs.h
-Merging coresight/next (484281bd5b98 hwtracing: hisi_ptt: Use pci_dev_id() =
-to simplify the code)
-Merging fastrpc/for-next (64227235abd9 misc: fastrpc: Pass proper scm argum=
-ents for static process init)
-Merging fpga/for-next (1a22ec09a2c1 fpga: region: make fpga_region_class a =
-static const structure)
-Merging icc/icc-next (768c42cd9acb Merge branch 'icc-fixes' into icc-next)
-Merging iio/togreg (14b7447cec15 Documentation: ABI: testing: admv8818: add=
- bypass)
-Merging phy-next/next (7451eecf1ef8 phy: marvell pxa-usb: fix Wvoid-pointer=
--to-enum-cast warning)
-Merging soundwire/next (e66f91a2d10b soundwire: intel_auxdevice: add hybrid=
- IDA-based device_number allocation)
-Merging extcon/extcon-next (d20a3a8a32e3 extcon: cht_wc: add POWER_SUPPLY d=
-ependency)
-Merging gnss/gnss-next (fdf0eaf11452 Linux 6.5-rc2)
-Merging vfio/next (73e2f19da508 kvm/vfio: avoid bouncing the mutex when add=
-ing and deleting groups)
-Merging w1/for-next (06c2afb862f9 Linux 6.5-rc1)
-Merging staging/staging-next (656ae4f48a6f staging: fieldbus: arcx-anybus: =
-Remove redundant of_match_ptr())
-Merging counter-next/counter-next (71ab2f343f1f counter: rz-mtu3-cnt: Reord=
-er locking sequence for consistency)
-Merging mux/for-next (44c026a73be8 Linux 6.4-rc3)
-Merging dmaengine/next (0f264ab788ed dt-bindings: dmaengine: at_xdmac: add =
-compatible with microchip,sam9x7)
-Merging cgroup/for-next (82b90b6c5b38 cgroup:namespace: Remove unused cgrou=
-p_namespaces_init())
-CONFLICT (content): Merge conflict in tools/testing/selftests/cgroup/.gitig=
-nore
-CONFLICT (content): Merge conflict in tools/testing/selftests/cgroup/Makefi=
-le
-Applying: Revert "cgroup: put cgroup_tryget_css() inside CONFIG_CGROUP_SCHE=
-D"
-Merging scsi/for-next (7da4622a53ea Merge branch 'fixes' into for-next)
-Merging scsi-mkp/for-next (a18e81d17a7e scsi: ufs: ufs-pci: Add support for=
- QEMU)
-Merging vhost/linux-next (1a08d66726dc virtio_net: merge dma operations whe=
-n filling mergeable buffers)
-CONFLICT (content): Merge conflict in drivers/net/virtio_net.c
-Merging rpmsg/for-next (af2010496de7 Merge branches 'hwspinlock-next', 'rpm=
-sg-next' and 'rproc-next' into for-next)
-Merging gpio/for-next (ac9a78681b92 Linux 6.4-rc1)
-Merging gpio-brgl/gpio/for-next (a40fe1ffb69b gpio: sim: simplify gpio_sim_=
-device_config_live_store())
-Merging gpio-intel/for-next (06c2afb862f9 Linux 6.5-rc1)
-Merging pinctrl/for-next (dfe014e7b5bc Merge branch 'devel' into for-next)
-Merging pinctrl-intel/for-next (06c2afb862f9 Linux 6.5-rc1)
-Merging pinctrl-renesas/renesas-pinctrl (95eb19869401 pinctrl: renesas: rzg=
-2l: Use devm_clk_get_enabled() helper)
-Merging pinctrl-samsung/for-next (06c2afb862f9 Linux 6.5-rc1)
-Merging pwm/for-next (3ccb179aa40d pwm: lpc32xx: Remove handling of PWM cha=
-nnels)
-Merging userns/for-next (05bd6e0242b4 Merge of unpriv-ipc-sysctls-for-v6.2,=
- and fix-atomic_lock_inc_below-for-v6.2 for testing in linux-next)
-Merging ktest/for-next (7dc8e24f0e09 ktest: Restore stty setting at first i=
-n dodie)
-Merging kselftest/next (2b2fe6052dd0 selftests/rseq: Use rseq_unqual_scalar=
-_typeof in macros)
-Merging kunit/test (06c2afb862f9 Linux 6.5-rc1)
-Merging kunit-next/kunit (582eb3aeed2d kunit: replace KUNIT_TRIGGER_STATIC_=
-STUB maro with KUNIT_STATIC_STUB_REDIRECT)
-Merging livepatching/for-next (ac4890f97211 Merge branch 'for-6.5/core' int=
-o for-next)
-Merging rtc/rtc-next (4f3688dca150 rtc: remove redundant of_match_ptr())
-Merging nvdimm/libnvdimm-for-next (feb72e9b2082 nvdimm/pfn_dev: Avoid unnec=
-essary endian conversion)
-Merging at24/at24/for-next (06c2afb862f9 Linux 6.5-rc1)
-Merging ntb/ntb-next (994def29acc5 ntb: Remove error checking for debugfs_c=
-reate_dir())
-Merging seccomp/for-next/seccomp (fbc5d382407e selftests/seccomp: Handle ar=
-m32 corner cases better)
-Merging fsi/next (f432b1cf7820 fsi: fix some spelling mistakes in comment)
-CONFLICT (content): Merge conflict in drivers/fsi/fsi-core.c
-Merging slimbus/for-next (06c2afb862f9 Linux 6.5-rc1)
-Merging nvmem/for-next (0e4a8e9e49ea nvmem: core: Notify when a new layout =
-is registered)
-$ git reset --hard HEAD^
-Merging next-20230809 version of nvmem
-Merging xarray/main (cbc02854331e XArray: Do not return sibling entries fro=
-m xa_load())
-Merging hyperv/hyperv-next (5d0c230f1de8 Linux 6.5-rc4)
-Merging auxdisplay/auxdisplay (def85dce1451 auxdisplay: Switch i2c drivers =
-back to use .probe())
-Merging kgdb/kgdb/for-next (b6464883f45a kdb: move kdb_send_sig() declarati=
-on to a better header file)
-Merging hmm/hmm (06c2afb862f9 Linux 6.5-rc1)
-Merging cfi/cfi/next (06c2afb862f9 Linux 6.5-rc1)
-Merging mhi/mhi-next (0724869ede9c bus: mhi: host: pci_generic: add support=
- for Telit FE990 modem)
-Merging memblock/for-next (0f5e4adb608c memblock: report failures when memb=
-lock_can_resize is not set)
-Merging cxl/next (fe77cc2e5a6a cxl: Fix one kernel-doc comment)
-Merging zstd/zstd-next (2aa14b1ab2c4 zstd: import usptream v1.5.2)
-Merging efi/next (f6e6e95ce162 efi/riscv: libstub: Fix comment about absolu=
-te relocation)
-Merging unicode/for-next (b500d6d7243d unicode: Handle memory allocation fa=
-ilures in mkutf8data)
-Merging slab/for-next (66489e5487b7 Merge branch 'slab/for-6.6/random_kmall=
-oc' into slab/for-next)
-Merging random/master (512dee0c00ad Merge tag 'x86-urgent-2023-01-04' of gi=
-t://git.kernel.org/pub/scm/linux/kernel/git/tip/tip)
-Merging landlock/next (35ca42399297 selftests/landlock: Add hostfs tests)
-Merging rust/rust-next (08ab786556ff rust: bindgen: upgrade to 0.65.1)
-Merging sysctl/sysctl-next (d6ea45102f22 sysctl: Use ctl_table_size as stop=
-ping criteria for list macro)
-Merging execve/for-next/execve (fdf0eaf11452 Linux 6.5-rc2)
-Merging bitmap/bitmap-for-next (5b914afcd166 bitmap: Fix a typo ("identify =
-map"))
-Merging hte/for-next (ac9a78681b92 Linux 6.4-rc1)
-Merging kspp/for-next/kspp (429e2140a119 Merge branch 'for-next/hardening' =
-into for-next/kspp)
-Merging kspp-gustavo/for-next/kspp (4d8cbf6dbcda fs: omfs: Use flexible-arr=
-ay member in struct omfs_extent)
-Merging nolibc/nolibc (06c2afb862f9 Linux 6.5-rc1)
-Merging iommufd/for-next (23a1b46f15d5 iommufd/selftest: Make the mock iomm=
-u driver into a real driver)
-CONFLICT (content): Merge conflict in drivers/iommu/iommufd/device.c
-Applying: fix for "iommufd: Move putting a hwpt to a helper function"
-Applying: fix up for "iommufd/selftest: Make the mock iommu driver into a r=
-eal driver"
-
---Sig_/4IX_r1Rm.hI=tj.WUfswG92
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTbZYIACgkQAVBC80lX
-0GzM6Qf/b/LmL7nzh3PSIyqeEKfU2My+mCXMeisTn+vEbShoFOCh353VhmSt0dd0
-DYMvp8cFZL1bsmxeNDGRB8IEyo2R9rIHp2tm1THB3bSbs0NW8/7HKa7aNeZ3bXwY
-+JqXGZvMyDR4cle8+Ab4vVsnkbzLIvvGJCYec84HiQY5SQgWiY9+r24sTWvg7qZd
-v3u/Wvumw0ikR2VdtLPHAIk5zbruZ3ZcqQbh+j5CjjcA5uYK2s/Oj2Vs7iPaRvXH
-8ejRt+80Xidu4vGuR3felbPyeUiZMGjYbLCcDiIdQ9aB9jBXWBToDzaBO0fMoSRv
-P+a3q0j33H02qIiW8+WCqNHTUTIdGw==
-=2VYA
------END PGP SIGNATURE-----
-
---Sig_/4IX_r1Rm.hI=tj.WUfswG92--
