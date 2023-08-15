@@ -2,94 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CC577C769
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 08:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 509EC77C771
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 08:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234873AbjHOGEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 02:04:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50176 "EHLO
+        id S234877AbjHOGHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 02:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234918AbjHOGEL (ORCPT
+        with ESMTP id S235101AbjHOGGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 02:04:11 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F4E19AD;
-        Mon, 14 Aug 2023 23:04:09 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37F5vFfm015807;
-        Tue, 15 Aug 2023 06:04:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=Ekj719LWKN0wyPqfYBSToTLp5aoKdb+W6oRGPj7i/Mk=;
- b=PxKC7URHud/vwKyCEl03xut2r5dU96UQjVXE/XDKhdP6TrEbTtxjC4POR6axajfaH24B
- 7fhMIWdZJvAfzz765Gv34Xmmo1/LpzIXhtSRa3/woJv9RNZPsfC6aDoYi25eM0RyN/4S
- 4aqFxzLFAN4jF8msyQltQOC2nuucGue3ta4Yw4AWhQqD56hregN6wrW4jOhuJgH+LkNv
- LPYuBxGbC3LL+2MxFujYLlb3m69YjvUYVtL9K/oQujdF65heCgADMgyajvgUkAvbliUP
- s+Me9QSgwrkPrdeW6PuyveQ15r2bR+vfj/OT5/9nZqLIw51nGgkCSxU+rtaI071zU25A lw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sg3nqg52r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Aug 2023 06:04:05 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37F5waNx018326;
-        Tue, 15 Aug 2023 06:04:04 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sg3nqg51j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Aug 2023 06:04:04 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37F4lg0P002465;
-        Tue, 15 Aug 2023 06:04:03 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sendn2u0r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Aug 2023 06:04:02 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37F63xhp23462586
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Aug 2023 06:03:59 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AB51320049;
-        Tue, 15 Aug 2023 06:03:59 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7376E20040;
-        Tue, 15 Aug 2023 06:03:59 +0000 (GMT)
-Received: from osiris (unknown [9.152.212.60])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Tue, 15 Aug 2023 06:03:59 +0000 (GMT)
-Date:   Tue, 15 Aug 2023 08:03:57 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Justin Stitt <justinstitt@google.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] s390/ipl: refactor deprecated strncpy
-Message-ID: <20230815060357.6414-B-hca@linux.ibm.com>
-References: <20230811-arch-s390-kernel-v1-1-7edbeeab3809@google.com>
- <202308141626.3F82919BFD@keescook>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202308141626.3F82919BFD@keescook>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: RXT7uMFcO16kfrVK6WEQnyIYhgeSo48f
-X-Proofpoint-ORIG-GUID: e4y6zSqo27BauUc_Fchn_0NX9-cjLulj
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 15 Aug 2023 02:06:53 -0400
+Received: from out-81.mta1.migadu.com (out-81.mta1.migadu.com [95.215.58.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FEB410F0
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 23:05:46 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1692079529;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wWsB6kltJ58XUaHsFfqL6Q4RJBmpJEQuaQ5cbRsruY0=;
+        b=NUHbtoXEkOC8aBNe94FABWlMwijvoLrxPXdAz3cp2t7x8mszPyYnRShHVoRdYT3qPD5tLB
+        +t02N9eyMZwIdEVE0NAV0OYK/eOF+laBK0+x0X9i+s1cJD4ynQ8cAhQyrn2ia3XJBfoZ/v
+        /D2RPLbW1RgSe4Az0tdTxRbZd0eUSZw=
+From:   chengming.zhou@linux.dev
+To:     axboe@kernel.dk, kch@nvidia.com, dhowells@redhat.com
+Cc:     damien.lemoal@opensource.wdc.com, bvanassche@acm.org,
+        nj.shetty@samsung.com, kbusch@kernel.org,
+        zhouchengming@bytedance.com, akinobu.mita@gmail.com,
+        shinichiro.kawasaki@wdc.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] null_blk: fix poll request timeout handling
+Date:   Tue, 15 Aug 2023 14:04:42 +0800
+Message-ID: <20230815060443.660263-1-chengming.zhou@linux.dev>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-15_04,2023-08-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 spamscore=0 impostorscore=0 mlxlogscore=776
- clxscore=1011 phishscore=0 bulkscore=0 priorityscore=1501 mlxscore=0
- adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2308150055
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,48 +48,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 04:32:11PM -0700, Kees Cook wrote:
-> On Fri, Aug 11, 2023 at 09:56:15PM +0000, Justin Stitt wrote:
-> > `strncpy` is deprecated for use on NUL-terminated destination strings [1].
-> > 
-> > Use `strscpy_pad` which has the same behavior as `strncpy` here with the
-> > extra safeguard of guaranteeing NUL-termination of destination strings.
-> > In it's current form, this may result in silent truncation if the src
-> > string has the same size as the destination string.
-> > 
-> > Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
-> > Link: https://github.com/KSPP/linux/issues/90
-> > Cc: linux-hardening@vger.kernel.org
-> > Signed-off-by: Justin Stitt <justinstitt@google.com>
-> > ---
-> >  arch/s390/kernel/ipl.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-...
-> > -	strncpy(_value, buf, sizeof(_value) - 1);			\
-> > +	strscpy_pad(_value, buf, sizeof(_value));			\
-> 
-> Padding isn't needed here -- the string are consumed by __cpcmd(), which
-> explicitly uses strlen() and a memcpy to pass them off.
-> 
-> >  	strim(_value);							\
-> 
-> This existing code line is buggy, though -- it will not trim leading
-> whitespace in the buffer. (It _returns_ a string that has been
-> forward-adjusted.)
+From: Chengming Zhou <zhouchengming@bytedance.com>
 
-I'm quite sure that was intentional, so only whitespace at the end of
-the string, in particular '\n', will be stripped.
-But then again this code is 15 years old...
+When doing io_uring benchmark on /dev/nullb0, it's easy to crash the
+kernel if poll requests timeout triggered, as reported by David. [1]
 
-> I think this is an API mistake -- strim() should either do in-place
-> changes for both ends or be defined with __much_check so the return
-> value doesn't get lost. (But this is a separate issue.)
+BUG: kernel NULL pointer dereference, address: 0000000000000008
+Workqueue: kblockd blk_mq_timeout_work
+RIP: 0010:null_timeout_rq+0x4e/0x91
+Call Trace:
+ ? __die_body+0x1a/0x5c
+ ? page_fault_oops+0x6f/0x9c
+ ? kernelmode_fixup_or_oops+0xc6/0xd6
+ ? __bad_area_nosemaphore+0x44/0x1eb
+ ? exc_page_fault+0xe2/0xf4
+ ? asm_exc_page_fault+0x22/0x30
+ ? null_timeout_rq+0x4e/0x91
+ blk_mq_handle_expired+0x31/0x4b
+ bt_iter+0x68/0x84
+ ? bt_tags_iter+0x81/0x81
+ __sbitmap_for_each_set.constprop.0+0xb0/0xf2
+ ? __blk_mq_complete_request_remote+0xf/0xf
+ bt_for_each+0x46/0x64
+ ? __blk_mq_complete_request_remote+0xf/0xf
+ ? percpu_ref_get_many+0xc/0x2a
+ blk_mq_queue_tag_busy_iter+0x14d/0x18e
+ blk_mq_timeout_work+0x95/0x127
+ process_one_work+0x185/0x263
+ worker_thread+0x1b5/0x227
+ ? rescuer_thread+0x287/0x287
+ kthread+0xfa/0x102
+ ? kthread_complete_and_exit+0x1b/0x1b
+ ret_from_fork+0x22/0x30
 
-For __must_check see strstrip() which was actively avoided with commit
-1d802e24774c ("[S390] Use strim instead of strstrip to avoid false
-warnings.") many years ago.
+This is indeed a race problem between null_timeout_rq() and null_poll().
 
-For all converted usages of strstrip() by that commit it was indeed
-intended to remove only trailing whitespace, where the above code snipped
-is the only piece of code which is questionable, since it is user space
-provided input; however I don't think this should be changed now.
+null_poll()				null_timeout_rq()
+  spin_lock(&nq->poll_lock)
+  list_splice_init(&nq->poll_list, &list)
+  spin_unlock(&nq->poll_lock)
+
+  while (!list_empty(&list))
+    req = list_first_entry()
+    list_del_init()
+    ...
+    blk_mq_add_to_batch()
+    // req->rq_next = NULL
+					spin_lock(&nq->poll_lock)
+
+					// rq->queuelist->next == NULL
+					list_del_init(&rq->queuelist)
+
+					spin_unlock(&nq->poll_lock)
+
+What's worse is that we don't call blk_mq_complete_request_remote()
+before blk_mq_add_to_batch(), so these completed requests have wrong
+rq->state == MQ_RQ_IN_FLIGHT. We can easily check this using bpftrace:
+
+```
+bpftrace -e 'kretfunc:null_blk:null_poll {
+  $iob=(struct io_comp_batch *)args->iob;
+  @[$iob->req_list->state]=count();
+}'
+
+@[1]: 51708
+```
+
+Fix these problems by setting requests state to MQ_RQ_COMPLETE under
+nq->poll_lock protection, in which null_timeout_rq() can safely detect
+this race and early return.
+
+[1] https://lore.kernel.org/all/3893581.1691785261@warthog.procyon.org.uk/
+
+Fixes: 0a593fbbc245 ("null_blk: poll queue support")
+Reported-by: David Howells <dhowells@redhat.com>
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+---
+ drivers/block/null_blk/main.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
+index 864013019d6b..968090935eb2 100644
+--- a/drivers/block/null_blk/main.c
++++ b/drivers/block/null_blk/main.c
+@@ -1643,9 +1643,12 @@ static int null_poll(struct blk_mq_hw_ctx *hctx, struct io_comp_batch *iob)
+ 	struct nullb_queue *nq = hctx->driver_data;
+ 	LIST_HEAD(list);
+ 	int nr = 0;
++	struct request *rq;
+ 
+ 	spin_lock(&nq->poll_lock);
+ 	list_splice_init(&nq->poll_list, &list);
++	list_for_each_entry(rq, &list, queuelist)
++		blk_mq_set_request_complete(rq);
+ 	spin_unlock(&nq->poll_lock);
+ 
+ 	while (!list_empty(&list)) {
+@@ -1671,16 +1674,21 @@ static enum blk_eh_timer_return null_timeout_rq(struct request *rq)
+ 	struct blk_mq_hw_ctx *hctx = rq->mq_hctx;
+ 	struct nullb_cmd *cmd = blk_mq_rq_to_pdu(rq);
+ 
+-	pr_info("rq %p timed out\n", rq);
+-
+ 	if (hctx->type == HCTX_TYPE_POLL) {
+ 		struct nullb_queue *nq = hctx->driver_data;
+ 
+ 		spin_lock(&nq->poll_lock);
++		/* The request may have completed meanwhile. */
++		if (blk_mq_request_completed(rq)) {
++			spin_unlock(&nq->poll_lock);
++			return BLK_EH_DONE;
++		}
+ 		list_del_init(&rq->queuelist);
+ 		spin_unlock(&nq->poll_lock);
+ 	}
+ 
++	pr_info("rq %p timed out\n", rq);
++
+ 	/*
+ 	 * If the device is marked as blocking (i.e. memory backed or zoned
+ 	 * device), the submission path may be blocked waiting for resources
+-- 
+2.41.0
+
