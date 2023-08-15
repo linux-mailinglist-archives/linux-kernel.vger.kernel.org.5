@@ -2,164 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA7377C4C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 02:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 673FB77C4C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 02:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233806AbjHOAxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 20:53:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45302 "EHLO
+        id S233707AbjHOAxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 20:53:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233948AbjHOAxK (ORCPT
+        with ESMTP id S233796AbjHOAxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 20:53:10 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78391BF2
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 17:52:48 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d67a458ff66so3912571276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 17:52:48 -0700 (PDT)
+        Mon, 14 Aug 2023 20:53:12 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2540419A6;
+        Mon, 14 Aug 2023 17:52:50 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5257669d4fbso51659a12.0;
+        Mon, 14 Aug 2023 17:52:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692060752; x=1692665552;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hk15mUEG36mYzoWqdyXNILxXbUGFuZdN5ezEkvLZ3iM=;
-        b=SUKnvazqj9CVjAezsoD2+y+B/lascXFbPfh2BmPWUTPhsp2ltMrajsTckozDu9ifdm
-         uRoTdnCgOM98B7Rnb91Ve9c/MBRF5IHK3nGacQ54NRHNp4jfWACljRlSNeWuoRdL+3na
-         CtHqlJoC59YHPayYcYzVEhCEfMbZsPVJQIkTDsx0J6ehfskI+bg3C/TTqGB4GfV7K9Vn
-         rRDM2yi+re6usECld7Z4U2WK/2ghsl54KPV4Ycl6v1kRxR+u2a297eNSVYm3jPrYQCL2
-         cXFmXO9Zt4S3exCCMfQ/QP9nNjQaIR5tBPHnG0PDbMprpJdiffEDLgQQkSHFXTPIaHgD
-         6rOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692060752; x=1692665552;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+        d=gmail.com; s=20221208; t=1692060761; x=1692665561;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=hk15mUEG36mYzoWqdyXNILxXbUGFuZdN5ezEkvLZ3iM=;
-        b=Avh7oRrJvVr9Eb8clbkUTr3z/7yurm16F8BKdzUPKyxBSO3MMpG4ZhTSMVek/yfKIZ
-         lUE/bdpG27Y4JAD2ZIj2Dx4QuqlY9dkt1SQog25yRFEt+isD6XifJNY3DE/GkirwrCAY
-         gYyEXPoSs1sthg1Ph4ycSdxWUX2bMEkKsHh+6nKNFvX6e3t2UGem2SUz5T3hU223jax+
-         Zp2KM+3kfHx38xvV66OoQbtK5o3F0gvh049h8q3+/xkmiOFothFBbFmi/2lJPyhdSBL+
-         PnvEx5vR8vhIBxtsZODf03C5JJRlzy9oDqrs/C5YmN5rHFWqStkZskVsmPsbK/rkVfip
-         cMyA==
-X-Gm-Message-State: AOJu0Yy+5TRf3+d0SyQFgdbItwA810ngzeeqfYxYD27eBVGr3Uptvn/b
-        d46ONlLUwKeHEcDzX1mSlR97RS0tmUE=
-X-Google-Smtp-Source: AGHT+IEm/gyjzby2m0z7Th7h1NzS+zVz9W6iAdmwDKQNzO5UYu/Tw93ovcYoaLNJ0fJilJkbmSYm3tW9J7c=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:7443:0:b0:d20:7752:e384 with SMTP id
- p64-20020a257443000000b00d207752e384mr148317ybc.3.1692060751838; Mon, 14 Aug
- 2023 17:52:31 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 17:52:30 -0700
-In-Reply-To: <CAJHc60wMueazp3Wm=b6-tnFPAyX0zeYuVQe9uPEJrpAm0azw2A@mail.gmail.com>
-Mime-Version: 1.0
-References: <20230811045127.3308641-1-rananta@google.com> <ZNq15SZ+53umvOfx@google.com>
- <CAJHc60wMueazp3Wm=b6-tnFPAyX0zeYuVQe9uPEJrpAm0azw2A@mail.gmail.com>
-Message-ID: <ZNrMTmppUfQhdsyY@google.com>
-Subject: Re: [PATCH v9 00/14] KVM: arm64: Add support for FEAT_TLBIRANGE
-From:   Sean Christopherson <seanjc@google.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Fuad Tabba <tabba@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
+        bh=VBXj6Q1qP6PeN9D3vFvsZujG8b242HgWd1gGmdiSLeg=;
+        b=LWPPKd4whKGFKKdhsfmKztofDKvQXGYkq2R0Dth2wnpFb0we8TEEqeEM30dfTbcfGc
+         OhSoguZwC9yQqe0NhYu29WsYc0bXye+3yr7KXJx28baG1hK0PQMmU4TmPZXBy+Pwd7+t
+         ImlEOeoGzvEi/KQMKvLnLTr3OyJ//FcJTROwblpPYr2lI1teTPuuJ4i/+woGH5pIy+av
+         5N9dOTgngWazsKB0v5RFDOKG0FGmx6iSg0DUqGzLtw/2C65tmD5ipPyldy1gTZqST44r
+         RBUt+COR/JIX4AoaA90E1VfIV2mt5fbJq0Z2WigAjW8o769nju/eqKRN95KvUVQ2dvPy
+         ku/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692060761; x=1692665561;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VBXj6Q1qP6PeN9D3vFvsZujG8b242HgWd1gGmdiSLeg=;
+        b=HWTLBcuy4lllwiF629hH+Jlm2vG8RNR4QPFuPc+zzi7SG39Yxz+neYhxN2OIeDmg7S
+         qk9+cVxbT3os/RQjJznIeNYVR6Na4GTPYBstQhtW44NN599mLPrAt+iX9NgHTKQcLToY
+         QY4fkNJbIWkUe91CxrChOlgaI9zzTybZttGCqP1dyTKz0+BKtLWQvNA4xVBdgJswrtg9
+         4FkYq5JXP1yJBpw7o4Pma0i3M35izGUSf0KhaZNgXAXbUkBDPL/IKXSpmeEB0vZpXVRw
+         LlpHxVAjN1nGtgx6eiABC5IhZz8cs2kdoy+hLwb+xEsf/TBGJNUSNN0jVwlZ0vYp05+1
+         /NfQ==
+X-Gm-Message-State: AOJu0Yyd+6QgjXDj5YFYqwbc8MbtGOcsYX6gz81OL0hZi/MBcl9WhjGu
+        hrwIX/KSBlb1lOxnlWw6JPQ=
+X-Google-Smtp-Source: AGHT+IFxIWCawPFp6LUY+j33M3J8fAuovTqg1U9YMafVTNMHsbMLqOASSn7V+Qg1wgOUlruNEUzudA==
+X-Received: by 2002:aa7:c607:0:b0:525:5ea1:419c with SMTP id h7-20020aa7c607000000b005255ea1419cmr3492818edq.9.1692060761262;
+        Mon, 14 Aug 2023 17:52:41 -0700 (PDT)
+Received: from [192.168.1.95] (grateful-telephoner.volia.net. [93.74.79.183])
+        by smtp.gmail.com with ESMTPSA id l10-20020aa7c3ca000000b005255ddb67c7sm2428856edr.40.2023.08.14.17.52.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Aug 2023 17:52:40 -0700 (PDT)
+Message-ID: <ad3db96c97aea916d555c76069490a176f634ccb.camel@gmail.com>
+Subject: Re: [RFC PATCH bpf-next 1/2] bpf, x64: Fix tailcall infinite loop
+ bug
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Leon Hwang <hffilwlqm@gmail.com>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, x86@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mykolal@fb.com,
+        shuah@kernel.org, davem@davemloft.net, dsahern@kernel.org,
+        tangyeechou@gmail.com, kernel-patches-bot@fb.com,
+        maciej.fijalkowski@intel.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Date:   Tue, 15 Aug 2023 03:52:38 +0300
+In-Reply-To: <20230814134147.70289-2-hffilwlqm@gmail.com>
+References: <20230814134147.70289-1-hffilwlqm@gmail.com>
+         <20230814134147.70289-2-hffilwlqm@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.44.4-0ubuntu1 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023, Raghavendra Rao Ananta wrote:
-> On Mon, Aug 14, 2023 at 4:16=E2=80=AFPM Sean Christopherson <seanjc@googl=
-e.com> wrote:
-> >
-> > On Fri, Aug 11, 2023, Raghavendra Rao Ananta wrote:
-> > > The series is based off of upstream v6.5-rc1.
-> >
-> > Lies!  :-)
-> >
-> > This is based off one of the kvmarm.git topic branches (I didn't bother=
- to figure
-> > out which one), not v6.5-rc1.
-> >
-> Sorry, what am I missing here? My git log is as follows:
-
-Hmm, not sure what's going on.  Maybe I misinterpreted why `git am` was fai=
-ling?
-I assumed it was because there were objects in kvmarm that I didn't have lo=
-cally,
-and fetching kvmarm allowed am to complete, though with 3-way merges, which=
- IIUC
-shouldn't have been necessary if I was using the exact same base.  Or maybe=
- I
-messed up and didn't actually reset to 6.5-rc1.
-
-> $ git log --oneline upstream_tlbi_range_v9
-> 5025857507abe (upstream_tlbi_range_v9) KVM: arm64: Use TLBI
-> range-based instructions for unmap
-> 5c0291b99a8fc KVM: arm64: Invalidate the table entries upon a range
-> 8c46b54d4aaec KVM: arm64: Flush only the memslot after write-protect
-> 231abaeb7ffc2 KVM: arm64: Implement kvm_arch_flush_remote_tlbs_range()
-> 5ec291b863309 KVM: arm64: Define kvm_tlb_flush_vmid_range()
-> 5bcd7a085c34e KVM: arm64: Implement  __kvm_tlb_flush_vmid_range()
-> ea08f9dff7e5b arm64: tlb: Implement __flush_s2_tlb_range_op()
-> b3178687947c9 arm64: tlb: Refactor the core flush algorithm of __flush_tl=
-b_range
-> a4850fa988eef KVM: Move kvm_arch_flush_remote_tlbs_memslot() to common co=
-de
-> 306dc4e6afd37 KVM: Allow range-based TLB invalidation from common code
-> d02785a0a1e01 KVM: Remove CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL
-> 136fa2d254537 KVM: arm64: Use kvm_arch_flush_remote_tlbs()
-> e35c68a75170d KVM: Declare kvm_arch_flush_remote_tlbs() globally
-> 5d592777b9bba KVM: Rename kvm_arch_flush_remote_tlb() to
-> kvm_arch_flush_remote_tlbs()
-> 06c2afb862f9d (tag: v6.5-rc1, tag: linux/v6.5-rc1) Linux 6.5-rc1
-> c192ac7357683 MAINTAINERS 2: Electric Boogaloo
-> f71f64210d698 Merge tag 'dma-mapping-6.5-2023-07-09' of
-> git://git.infradead.org/users/hch/dma-mapping
-> ...
+On Mon, 2023-08-14 at 21:41 +0800, Leon Hwang wrote:
+> From commit ebf7d1f508a73871 ("bpf, x64: rework pro/epilogue and tailcall
+> handling in JIT"), the tailcall on x64 works better than before.
 >=20
-> Isn't the commit, 06c2afb862f9d (06c2afb862f9d (tag: v6.5-rc1, tag:
-> linux/v6.5-rc1) Linux 6.5-rc1) the 'base' commit?
+> From commit e411901c0b775a3a ("bpf: allow for tailcalls in BPF subprogram=
+s
+> for x64 JIT"), tailcall is able to run in BPF subprograms on x64.
+>=20
+> From commit 5b92a28aae4dd0f8 ("bpf: Support attaching tracing BPF program
+> to other BPF programs"), BPF program is able to trace other BPF programs.
+>=20
+> How about combining them all together?
+>=20
+> 1. FENTRY/FEXIT on a BPF subprogram.
+> 2. A tailcall runs in the BPF subprogram.
+> 3. The tailcall calls itself.
+>=20
+> As a result, a tailcall infinite loop comes up. And the loop halts the
+> machine.
+>=20
+> As we know, in tail call context, the tail_call_cnt propagates by stack
+> and RAX register between BPF subprograms. So do it in FENTRY/FEXIT
+> trampolines.
 
-Ya, should be.
+Hi Leon,
 
-Either way, even if this is PEBKAC on my end, using --base would be nice, e=
-.g.
-then you can definitely say it's my fault ;-)
+I'm not familiar with this part of the jit compiler, so decided that
+taking a look at your series might be a good learning point.
+I think I got the gist of it, but I don't understand where
+the initial value of RAX (=3D=3D 0) is coming from in
+arch_prepare_bpf_trampoline(), could you please help me out?
 
-> > Please try to incorporate git format-patch's "--base" option into your =
-workflow,
-> > e.g. I do "git format-patch --base=3DHEAD~$nr" where $nr is the number =
-of patches
-> > I am posting.
-> >
-> > It's not foolproof, e.g. my approach doesn't help if I have a local pat=
-ch that
-> > I'm not posting, but 99% of the time it Just Works and eliminates any a=
-mbuitity.
-> >
-> > You can also do "--base=3Dauto", but that only does the right thing if =
-your series
-> > has its upstream branch set to the base/tree that you want your patches=
- applied
-> > to (I use the upstream branch for a completely different purpose for my=
- dev branches).
+Also a nitpick:
+- in arch_prepare_bpf_trampoline() there is a comment detailing=20
+  the stack layout, it probably should be updated to say that
+  tail call count is stored as well;
+- before arch_prepare_bpf_trampoline() there is a comment with
+  an example of generated assembly, should it be updated?
+
+Thanks,
+Eduard
+
+>=20
+> Fixes: ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handling=
+ in JIT")
+> Fixes: e411901c0b77 ("bpf: allow for tailcalls in BPF subprograms for x64=
+ JIT")
+> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
+> ---
+>  arch/x86/net/bpf_jit_comp.c | 23 +++++++++++++++++++----
+>  include/linux/bpf.h         |  6 ++++++
+>  kernel/bpf/trampoline.c     |  5 +++--
+>  kernel/bpf/verifier.c       |  9 +++++++--
+>  4 files changed, 35 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index a5930042139d3..ca5366d97ad04 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -1018,6 +1018,10 @@ static void emit_shiftx(u8 **pprog, u32 dst_reg, u=
+8 src_reg, bool is64, u8 op)
+> =20
+>  #define INSN_SZ_DIFF (((addrs[i] - addrs[i - 1]) - (prog - temp)))
+> =20
+> +/* mov rax, qword ptr [rbp - rounded_stack_depth - 8] */
+> +#define RESTORE_TAIL_CALL_CNT(stack)				\
+> +	EMIT3_off32(0x48, 0x8B, 0x85, -round_up(stack, 8) - 8)
+> +
+>  static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *=
+rw_image,
+>  		  int oldproglen, struct jit_context *ctx, bool jmp_padding)
+>  {
+> @@ -1623,9 +1627,7 @@ st:			if (is_imm8(insn->off))
+> =20
+>  			func =3D (u8 *) __bpf_call_base + imm32;
+>  			if (tail_call_reachable) {
+> -				/* mov rax, qword ptr [rbp - rounded_stack_depth - 8] */
+> -				EMIT3_off32(0x48, 0x8B, 0x85,
+> -					    -round_up(bpf_prog->aux->stack_depth, 8) - 8);
+> +				RESTORE_TAIL_CALL_CNT(bpf_prog->aux->stack_depth);
+>  				if (!imm32)
+>  					return -EINVAL;
+>  				offs =3D 7 + x86_call_depth_emit_accounting(&prog, func);
+> @@ -2464,6 +2466,8 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_im=
+age *im, void *image, void *i
+>  	else
+>  		/* sub rsp, stack_size */
+>  		EMIT4(0x48, 0x83, 0xEC, stack_size);
+> +	if (flags & BPF_TRAMP_F_TAIL_CALL_CTX)
+> +		EMIT1(0x50);		/* push rax */
+>  	/* mov QWORD PTR [rbp - rbx_off], rbx */
+>  	emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_6, -rbx_off);
+> =20
+> @@ -2516,6 +2520,12 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_i=
+mage *im, void *image, void *i
+>  		restore_regs(m, &prog, regs_off);
+>  		save_args(m, &prog, arg_stack_off, true);
+> =20
+> +		if (flags & BPF_TRAMP_F_TAIL_CALL_CTX)
+> +			/* Before calling the original function, restore the
+> +			 * tail_call_cnt from stack.
+> +			 */
+> +			RESTORE_TAIL_CALL_CNT(stack_size);
+> +
+>  		if (flags & BPF_TRAMP_F_ORIG_STACK) {
+>  			emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, 8);
+>  			EMIT2(0xff, 0xd0); /* call *rax */
+> @@ -2569,7 +2579,12 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_i=
+mage *im, void *image, void *i
+>  			ret =3D -EINVAL;
+>  			goto cleanup;
+>  		}
+> -	}
+> +	} else if (flags & BPF_TRAMP_F_TAIL_CALL_CTX)
+> +		/* Before running the original function, restore the
+> +		 * tail_call_cnt from stack.
+> +		 */
+> +		RESTORE_TAIL_CALL_CNT(stack_size);
+> +
+>  	/* restore return value of orig_call or fentry prog back into RAX */
+>  	if (save_ret)
+>  		emit_ldx(&prog, BPF_DW, BPF_REG_0, BPF_REG_FP, -8);
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index cfabbcf47bdb8..55c72086034ef 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1028,6 +1028,11 @@ struct btf_func_model {
+>   */
+>  #define BPF_TRAMP_F_SHARE_IPMODIFY	BIT(6)
+> =20
+> +/* Indicate that current trampoline is in a tail call context. Then, it =
+has to
+> + * cache and restore tail_call_cnt to avoid infinite tail call loop.
+> + */
+> +#define BPF_TRAMP_F_TAIL_CALL_CTX	BIT(7)
+> +
+>  /* Each call __bpf_prog_enter + call bpf_func + call __bpf_prog_exit is =
+~50
+>   * bytes on x86.
+>   */
+> @@ -1147,6 +1152,7 @@ struct bpf_attach_target_info {
+>  	struct module *tgt_mod;
+>  	const char *tgt_name;
+>  	const struct btf_type *tgt_type;
+> +	bool tail_call_ctx;
+>  };
+> =20
+>  #define BPF_DISPATCHER_MAX 48 /* Fits in 2048B */
+> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> index 78acf28d48732..0fae334e3f7b8 100644
+> --- a/kernel/bpf/trampoline.c
+> +++ b/kernel/bpf/trampoline.c
+> @@ -415,8 +415,8 @@ static int bpf_trampoline_update(struct bpf_trampolin=
+e *tr, bool lock_direct_mut
+>  		goto out;
+>  	}
+> =20
+> -	/* clear all bits except SHARE_IPMODIFY */
+> -	tr->flags &=3D BPF_TRAMP_F_SHARE_IPMODIFY;
+> +	/* clear all bits except SHARE_IPMODIFY and TAIL_CALL_CTX */
+> +	tr->flags &=3D (BPF_TRAMP_F_SHARE_IPMODIFY | BPF_TRAMP_F_TAIL_CALL_CTX)=
+;
+> =20
+>  	if (tlinks[BPF_TRAMP_FEXIT].nr_links ||
+>  	    tlinks[BPF_TRAMP_MODIFY_RETURN].nr_links) {
+> @@ -783,6 +783,7 @@ struct bpf_trampoline *bpf_trampoline_get(u64 key,
+> =20
+>  	memcpy(&tr->func.model, &tgt_info->fmodel, sizeof(tgt_info->fmodel));
+>  	tr->func.addr =3D (void *)tgt_info->tgt_addr;
+> +	tr->flags =3D (tgt_info->tail_call_ctx ? BPF_TRAMP_F_TAIL_CALL_CTX : 0)=
+;
+>  out:
+>  	mutex_unlock(&tr->mutex);
+>  	return tr;
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 4ccca1f6c9981..a78e5a2ae5c72 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -19400,10 +19400,15 @@ int bpf_check_attach_target(struct bpf_verifier=
+_log *log,
+>  			return -EINVAL;
+>  		fallthrough;
+>  	case BPF_MODIFY_RETURN:
+> -	case BPF_LSM_MAC:
+> -	case BPF_LSM_CGROUP:
+>  	case BPF_TRACE_FENTRY:
+>  	case BPF_TRACE_FEXIT:
+> +		if (tgt_prog && subprog > 0 &&
+> +		    tgt_prog->aux->func[subprog]->is_func &&
+> +		    tgt_prog->aux->tail_call_reachable)
+> +			tgt_info->tail_call_ctx =3D true;
+> +		fallthrough;
+> +	case BPF_LSM_MAC:
+> +	case BPF_LSM_CGROUP:
+>  		if (!btf_type_is_func(t)) {
+>  			bpf_log(log, "attach_btf_id %u is not a function\n",
+>  				btf_id);
+
