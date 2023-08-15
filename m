@@ -2,96 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D5B77CEEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A3677CEEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237919AbjHOPRZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Aug 2023 11:17:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50748 "EHLO
+        id S237934AbjHOPSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 11:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238016AbjHOPRU (ORCPT
+        with ESMTP id S237938AbjHOPRa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 11:17:20 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5691BD0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:17:00 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-193-Ping3woFOOOiUUPI28DQrQ-1; Tue, 15 Aug 2023 16:16:29 +0100
-X-MC-Unique: Ping3woFOOOiUUPI28DQrQ-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 15 Aug
- 2023 16:16:26 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 15 Aug 2023 16:16:26 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Peter Zijlstra' <peterz@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: RE: cleanup: Make no_free_ptr() __must_check
-Thread-Topic: cleanup: Make no_free_ptr() __must_check
-Thread-Index: AQHZz4AGFMD1jvh0k02ojUASiqmepq/rdtJA
-Date:   Tue, 15 Aug 2023 15:16:26 +0000
-Message-ID: <4ff59df127e24b83a7c3c9d9aba17857@AcuMS.aculab.com>
-References: <20230815105204.GA927051@hirez.programming.kicks-ass.net>
- <fcc8a158-f6e4-8963-782f-ba04b47350b8@rasmusvillemoes.dk>
- <20230815135339.GA966323@hirez.programming.kicks-ass.net>
-In-Reply-To: <20230815135339.GA966323@hirez.programming.kicks-ass.net>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 15 Aug 2023 11:17:30 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457521BFB;
+        Tue, 15 Aug 2023 08:17:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=YjYoGIziY2w2SX5FBV0LAvBmWZHGropt2vcWSdUJdtY=; b=DPdWmj470BuEOBTtkKtzBY4ko2
+        ghXqtKYBFMKaAHfIqy/iQsBzO8ndnDytW/wQ07TaT4+8ykvDusl2fSXblwPhU+ijTG7NwC6ILJ3id
+        EGcW75/+va4eU4AC762RGDeEco/Pf5yxETdGE/+7Q3WtZ1HDFlJik1+Ssvr3YZLddVD2xSvdk4Ljp
+        X9FcUvebMUbSufuSh/lz1sqqGqmXitA9RLd4Hu/TnFidSBAVlGNkw2rLHcU7vgitTuFXtln2UIA8h
+        tL8w/zPsM37Xx/+Q3V26P72XUh2RaECKXqkjuSQbzS2pqLo/5RBuWAk7S164AjCww5XbQ0As3lcYf
+        8b9nhQxw==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qVvml-000Mk3-02; Tue, 15 Aug 2023 17:16:43 +0200
+Received: from [85.1.206.226] (helo=pc-102.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qVvmk-0004Dw-EL; Tue, 15 Aug 2023 17:16:42 +0200
+Subject: Re: [PATCH bpf-next v3] selftests/bpf: trace_helpers.c: optimize
+ kallsyms cache
+To:     Rong Tao <rtoax@foxmail.com>, sdf@google.com, ast@kernel.org
+Cc:     rongtao@cestc.cn, Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" 
+        <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20230812055703.7218-1-rtoax@foxmail.com>
+ <tencent_50B4B2622FE7546A5FF9464310650C008509@qq.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <d1ad0b4d-574c-15e5-928f-2d9acc30dfe1@iogearbox.net>
+Date:   Tue, 15 Aug 2023 17:16:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <tencent_50B4B2622FE7546A5FF9464310650C008509@qq.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/27001/Tue Aug 15 09:40:17 2023)
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra
-> Sent: 15 August 2023 14:54
-...
-> > Also, isn't it more complicated than necessary? Can we get rid of the
-> > inner stmt expr and tmp var by just making it
-> >
-> >   ((void) (p), ((typeof(p))__no_free_ptr((void **)&(p)))
-> >
-> > which is more or less the whole reason comma expressions is a thing.
+On 8/12/23 7:57 AM, Rong Tao wrote:
+> From: Rong Tao <rongtao@cestc.cn>
 > 
-> Ah, so the point of the statement expression before the comma is to
-> validate that (p) is in fact a pointer, and to that effect we assign it
-> to a 'void *' temporary.
+> Static ksyms often have problems because the number of symbols exceeds the
+> MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
+> commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
+> the problem somewhat, but it's not the perfect way.
 > 
-> If that case is invalid, we'll get a compile fail with a dodgy message.
+> This commit uses dynamic memory allocation, which completely solves the
+> problem caused by the limitation of the number of kallsyms.
 > 
-> I did this, because (void **)&(p) looses type integrity due to the cast.
+> Signed-off-by: Rong Tao <rongtao@cestc.cn>
+> ---
+> v3: Do not use structs and judge ksyms__add_symbol function return value.
+> v2: https://lore.kernel.org/lkml/tencent_B655EE5E5D463110D70CD2846AB3262EED09@qq.com/
+>      Do the usual len/capacity scheme here to amortize the cost of realloc, and
+>      don't free symbols.
+> v1: https://lore.kernel.org/lkml/tencent_AB461510B10CD484E0B2F62E3754165F2909@qq.com/
+> ---
+>   tools/testing/selftests/bpf/trace_helpers.c | 42 ++++++++++++++++-----
+>   1 file changed, 32 insertions(+), 10 deletions(-)
 > 
-> But yeah, I suppose it all needs a wee comment.
+> diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+> index f83d9f65c65b..d8391a2122b4 100644
+> --- a/tools/testing/selftests/bpf/trace_helpers.c
+> +++ b/tools/testing/selftests/bpf/trace_helpers.c
+> @@ -18,10 +18,32 @@
+>   #define TRACEFS_PIPE	"/sys/kernel/tracing/trace_pipe"
+>   #define DEBUGFS_PIPE	"/sys/kernel/debug/tracing/trace_pipe"
+>   
+> -#define MAX_SYMS 400000
+> -static struct ksym syms[MAX_SYMS];
+> +static struct ksym *syms;
+> +static int sym_cap;
+>   static int sym_cnt;
+>   
+> +static int ksyms__add_symbol(const char *name, unsigned long addr)
+> +{
+> +	void *tmp;
+> +	unsigned int new_cap;
+> +
+> +	if (sym_cnt + 1 > sym_cap) {
+> +		new_cap = sym_cap * 4 / 3;
+> +		tmp = realloc(syms, sizeof(struct ksym) * new_cap);
+> +		if (!tmp)
+> +			return -ENOMEM;
+> +		syms = tmp;
+> +		sym_cap = new_cap;
+> +	}
+> +
+> +	syms[sym_cnt].addr = addr;
+> +	syms[sym_cnt].name = strdup(name);
 
-Perhaps add an is_pointer_type() along with is_signed_type()
-(and really is_constexpr()) to a global header.
+Fwiw, strdup() should error check too.. and for teardown in the test suite, lets
+also have the counterpart where we release all the allocated mem.
 
-Various checks can be used including:
-#define is_pointer_type(t) (!is_constexpr((t)0))
-which gives a 0/1 to play with rather than an immediate error.
+> +	sym_cnt++;
+> +
+> +	return 0;
+> +}
+> +
+>   static int ksym_cmp(const void *p1, const void *p2)
+>   {
+>   	return ((struct ksym *)p1)->addr - ((struct ksym *)p2)->addr;
+> @@ -33,9 +55,13 @@ int load_kallsyms_refresh(void)
+>   	char func[256], buf[256];
+>   	char symbol;
+>   	void *addr;
+> -	int i = 0;
+> +	int ret;
+>   
+> +	sym_cap = 1024;
 
-	David
+On my dev node, I have:
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+   # cat /proc/kallsyms | wc -l
+   242586
+
+Why starting out so low with 1k? I would have expected that for most cases we
+don't need the realloc() path to begin with, but just in corner cases like in
+e76a014334a6.
+
+>   	sym_cnt = 0;
+> +	syms = malloc(sizeof(struct ksym) * sym_cap);
+> +	if (!syms)
+> +		return -ENOMEM;
+>   
+>   	f = fopen("/proc/kallsyms", "r");
+>   	if (!f)
+> @@ -46,15 +72,11 @@ int load_kallsyms_refresh(void)
+>   			break;
+>   		if (!addr)
+>   			continue;
+> -		if (i >= MAX_SYMS)
+> -			return -EFBIG;
+> -
+> -		syms[i].addr = (long) addr;
+> -		syms[i].name = strdup(func);
+> -		i++;
+> +		ret = ksyms__add_symbol(func, (unsigned long)addr);
+> +		if (ret)
+> +			return ret;
+>   	}
+>   	fclose(f);
+> -	sym_cnt = i;
+>   	qsort(syms, sym_cnt, sizeof(struct ksym), ksym_cmp);
+>   	return 0;
+>   }
+> 
 
