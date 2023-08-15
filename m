@@ -2,183 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E54A77CEF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA5E77CEFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237901AbjHOPTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 11:19:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46246 "EHLO
+        id S237924AbjHOPUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 11:20:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237971AbjHOPTQ (ORCPT
+        with ESMTP id S237941AbjHOPUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 11:19:16 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BECB173C
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:18:55 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-56c7f47ec42so3958547eaf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:18:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692112734; x=1692717534;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y3CRqLemgEUBP4zdbQ3kjUY5FyHbWQ2nJVCBDIJFBRI=;
-        b=LjHHzTJOdbFKgZDi8pSe2tfhAyYlUJJF3WBqCeW5aY6Y/jWS+ZuhBYvP1x3wHUvsNX
-         3Q1iHF0vcMhJfsdHbNMEGJFOCwr82EzNeh+cVONoqdHvVupXJUS3VQXz96+CULqjurpE
-         Co7GcP8g3wzV+26Ny248zYjZohkEbFZVhz7Ii+qHFrT4yle8WUFXQjvYMw0nXHRJ1xvf
-         h6A5J8vBBZciGfBuRHiycbDjPYM25Q9J+5SeXP4xW9wLlOLjy42s0MAtZhhi3a2nOHd6
-         fwCsqcYcLHGlncW+SLwl01JWlbTQvZN+grGXuMctCs4aN+XOJdgwy8mpzdanQe7yKyoa
-         BSKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692112734; x=1692717534;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y3CRqLemgEUBP4zdbQ3kjUY5FyHbWQ2nJVCBDIJFBRI=;
-        b=WCNhv7umwJrIbuuo2mFJazWk8lqnMYqi08zN3rajRAjvWj5ZXoEdtoz2A/qkfq33Uf
-         ZP7xG5N8o7fN3DGY5/XaERhEYiWKfpWd4BUn77jMReS2te40trKLKvS3SCSHilP743kU
-         IPkptej6zxYq4FniSJx4K6B5bko9wcH6oBBtqdagHxjE++ShSRa+llPc9IMKp+hwRWU9
-         Snc1j8ktSxzOfqAsEtNv6E1m5elzgZVNg4Qtk7KTj8ZuFWffjqy026loxG3lf84ra9BQ
-         qHdQAxDw2COiv2sqziluIb9UNnAW6YGryB7T1vKMoScukB5250WwljlhGhP0o7jB30b7
-         oLJg==
-X-Gm-Message-State: AOJu0YxGkGSGx89b2U6jDoCjQd+akLHE2H9CcDqwjS1jLBnWLffEo+3y
-        3xxEX82yMi556WbN695Xrz2eCf8zMwHlAzbNv/1MZRjw
-X-Google-Smtp-Source: AGHT+IG3TaAG2ACrM9XWPxHA2ca2SZEDt+NEUm4/ZJ1aCvonoIA97JwhGCCYJJwO0OpmQCxuZ4wmIAJBkDXjj3d6YII=
-X-Received: by 2002:a4a:d284:0:b0:563:625b:e02e with SMTP id
- h4-20020a4ad284000000b00563625be02emr10045848oos.9.1692112734212; Tue, 15 Aug
- 2023 08:18:54 -0700 (PDT)
+        Tue, 15 Aug 2023 11:20:11 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2081.outbound.protection.outlook.com [40.107.95.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0287173C;
+        Tue, 15 Aug 2023 08:20:09 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i+G1andYug4s8SOJjltEWEmnsWKND3HNnY5AE616DCawKHo+M61lFaeWAY9+evoX36KDmfvAdvt2IpJb+JnInS3h7G70SgbjOxJj6o2/TL+/1i34uBq2EAgAfOKpTChuIYfQn8dSsQMqoRiDVaIwTo77G8hFDNb5IFvvBFt5i/bcK8OGUeYAK+3uy+7IQerGBb0SKivHG6kaWJNP3HrcKD+UwCDJ+7FyiKh1cpDC1Y01/QaPMSdUWR4XcY1fRb/NymVxuyi7YvV0NEkoEjoWorJlI+0b8fZOLFarA/XIKP54gChhs9o7EMjEbCUxGy30qePVxNfZUDNnIJUYq6ojsw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1wYeLzIt3x9uzkecseLExyNPtOoOiE7b5oW0utbq6rA=;
+ b=N3BYLjPtvCi5PC58VkwoaE/drICnPzR+/2z807eVhZETYlI3PeqWsR+FSiqhB94vCgImTaNUFKjpooALfdAcwFQEIIF8gFAs7gzwYQNzBdOlytUsOo2UL5wKPDGBvYhOaLhVscvgstf5LxYRXL2Mv6oO157oWZp2ZLbLSSZf1dhkWyEK4VYZEqItXAeKBcO3mdpZ18eJQVwT+zLuWmFvYo5ZLRzwuqRWYDm6zZ4qofjhSV7aDITK3PJAMHxXXEWr+H/E4UkDkRf8gTKx/7Tbqizpykl16cYt5Pjk8uxuaQvlT9uUc9ITO03m2wA/lAYfjnqHE5qpSYNhtiDR44boFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1wYeLzIt3x9uzkecseLExyNPtOoOiE7b5oW0utbq6rA=;
+ b=EAER3j1Sppc+3lB4yQ17yurZfgcxsEA3/nnA915svszygOABQOGeQTrcxKPzIui9wrfgDQiXsrbD+vwH7tLguA7rJVtmigofiw/CPIOrq2Gll/5LDzKYFHbpjuG5yVgXkLgLPf5vNnem1wfgkCt5LSToMEXbAI2E5sNF0DkbElg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by SJ0PR12MB6901.namprd12.prod.outlook.com (2603:10b6:a03:47e::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Tue, 15 Aug
+ 2023 15:20:06 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::36f9:ffa7:c770:d146]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::36f9:ffa7:c770:d146%7]) with mapi id 15.20.6678.025; Tue, 15 Aug 2023
+ 15:20:06 +0000
+Message-ID: <dca26c63-9a89-4be0-aa60-6dc99b7927d0@amd.com>
+Date:   Tue, 15 Aug 2023 10:20:02 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 1/7] x86: Drop CPU_SUP_INTEL from SCHED_MC_PRIO for the
+ expansion.
+To:     Meng Li <li.meng@amd.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Huang Rui <ray.huang@amd.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-acpi@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Shimmer Huang <shimmer.huang@amd.com>,
+        Perry Yuan <Perry.Yuan@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>
+References: <20230815061546.3556083-1-li.meng@amd.com>
+ <20230815061546.3556083-2-li.meng@amd.com>
+Content-Language: en-US
+From:   Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <20230815061546.3556083-2-li.meng@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA9PR13CA0148.namprd13.prod.outlook.com
+ (2603:10b6:806:27::33) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 MIME-Version: 1.0
-References: <461df15f.15e2d.189deaa6eed.Coremail.kvmluck@163.com>
- <38e69323-0185-32bb-2de1-8e5b36de2abc@tls.msk.ru> <3c1a93da.16493.189df040e16.Coremail.kvmluck@163.com>
- <20230810141335.GA2931656@fedora> <CAJSP0QX5Z=GFnjyGOgQ8hs6hkdUASznUPmuZJp11ViokSRZ0Tw@mail.gmail.com>
- <1c616fdb.17b27.189e26afed5.Coremail.kvmluck@163.com>
-In-Reply-To: <1c616fdb.17b27.189e26afed5.Coremail.kvmluck@163.com>
-From:   Stefan Hajnoczi <stefanha@gmail.com>
-Date:   Tue, 15 Aug 2023 11:18:42 -0400
-Message-ID: <CAJSP0QXjzxjXcsfLMsKQmOvuzRbqxpT70iGsSdDu+qANCd729w@mail.gmail.com>
-Subject: Re: LTP test related to virtio releasing and reassigning resource
- leads to guest hung
-To:     "longguang.yue" <kvmluck@163.com>
-Cc:     Michael Tokarev <mjt@tls.msk.ru>,
-        "mst@redhat.com" <mst@redhat.com>,
-        qemu-devel <qemu-devel@nongnu.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|SJ0PR12MB6901:EE_
+X-MS-Office365-Filtering-Correlation-Id: 13567338-0813-498b-fa47-08db9da31ad1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ibX6VQ0UVnz/iuprAdzsohKFjkD/6pKmYNKaHxJpSsghFS/1UjY3zNQSpUpmXrLxTA0JtG81UqIKp/7Af1fA4IcccJpvYwLd51L67oZr99nTn1b9pq1A4d9uJpObhFgM7EItmj7b3BnKUwMB6evUkNOchvRcLlWiT7Dmybnm8AKNViQgG3bsQvbd7yh3El5A4jc34VNbcqMgn3w05sG2M18kAOWbPl+uRWnge7co3DJnyzgnIPyW6WN+18azgywDRTeohnk+43gvzaZ+fusqWnaGMTmT1ymwDI3vHErw+gso5YP68dojcBAAjeEh7lT7JfAD/HS9e3mxSDxD5slSiNZjn5h4lBjpB9obXstXuMHCa0BTaV+5eHfENKhgMU5ZHdYZrip4HS2+aG/0vznCujVgKgKZj2PdOJ+J7REITk/g94/tBUiZCVrRMsEYwkFYlwzrLYHiVvfKGVD+Y26R/3wQtBEjzbx8FUVXhkOlKMwpox7KZEBCIVf5oOuZFZ926TsRtn2dbxJ0ESi3D2GAgAGMiHYHcthgAWKMNNblJdcdugrRRNHRbe9itH2Eq1anvR2xSYZ3wAGrDeInOC5yJqProi6Bg4bPIMNRTGgXwBZwnGdXhGJx0IxepXvA8WQRjcvKNJJAOXOFAQO/mw+vUg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(396003)(366004)(39860400002)(346002)(1800799009)(186009)(451199024)(6506007)(31696002)(6486002)(31686004)(86362001)(8936002)(83380400001)(66476007)(36756003)(5660300002)(41300700001)(8676002)(2906002)(53546011)(54906003)(6636002)(6512007)(6666004)(110136005)(26005)(66946007)(478600001)(2616005)(4326008)(66556008)(316002)(44832011)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YXJiZ0VFa3FqNEdoa1d4eEQ2TWRZc0VBZ1B4T0lyazUxV3Y0TDBRcHJjUXB2?=
+ =?utf-8?B?ZERWVUNyYk9xb0hicTNxVXBtZ21CUWJ1MU80YUZxSTlwdVpCYlFWZkRkRUdi?=
+ =?utf-8?B?OEdjc1ZZVFhqZXRTMWpRZTdLTHRhSDJJQ1ZVM0dURUd6U2hWa2ZDSXUrV1cv?=
+ =?utf-8?B?N3ZDRThQUTJvYkdhMTdXM00yR1dxaVdxSlV1ait2TlllZGVBQ3g0ampZb1gz?=
+ =?utf-8?B?TThJZEhKRVRuYldrdkZ6eHdvTWl0T0JPVmNnNU5YTEJBeDdjOWVDN0NxL2tM?=
+ =?utf-8?B?bXNPSVAvMHZtQnI5K3FTd2VtYm40UzZvdW5xek5xZERGRTRXVHFWcXVFcThv?=
+ =?utf-8?B?eUVHRFhjYUVRT0hKVzlWNU13YXJTc2dVSnRqQjVXM1Q4bWNlYm12bFE5TCsx?=
+ =?utf-8?B?aFljWlN6ZFFONTFTQzNPTzZucEZBYjl6Q3pxb1NvN3VRQkkvcldxQWlXK04z?=
+ =?utf-8?B?MFBGUFY0eDV1N1dQT2RaNndWL2gxdDNRVjZQLzJzcmlGbFNYVkIzY3FpMUxU?=
+ =?utf-8?B?RDZCeVhYT0lSNWZyOEJTUUticy9JK3RBZDl0YnhrNHJDTVRsTDlsUzdCcnp4?=
+ =?utf-8?B?Y0FBRGsrNjVLNTJubkFucHVBcCtVNEhpekQzS0c0SmxFN3htMGl5VDlVcmk2?=
+ =?utf-8?B?MFY1bm04aEdxRlVyeGdpWkl3OUM4d3hZNllYaUR3T092Tk1jK0gxNnhMV1g3?=
+ =?utf-8?B?bDcydzhRVEs5em53YlMwUkkyMW9ydUZQNW14SlFvWkJjTjFqaEZQMGVzM2tw?=
+ =?utf-8?B?ZngwSlFSSmY0Zld3cUFBUTZValp2WXRlL3Q1RzZOemFid2haTWYvSVdJRTRa?=
+ =?utf-8?B?MEh0N0lPcmxrNzgxTG8yekZjQll3ZmlnNDdaMDFJMDMveWhvdS9BZ29pNE9P?=
+ =?utf-8?B?SkVpV1FmOWVwUG9MYUcva2ZRWVhSMXo4M1VVN3k2YlVsa0dtMllXZmo5VkY0?=
+ =?utf-8?B?d3M5OGV6czVJSnE2V3BBeXAzYUtFVTdFUEVQa3FERFptSnNLb3pZdGRsUllT?=
+ =?utf-8?B?MUUweGxrbzg2bGloRWhOdGhMQWpXZVdrM2RkVEUxYkkranpuN0dzbHNBbWFJ?=
+ =?utf-8?B?K0JUaXhQMVhQSlNIZ2tnSWNDVUNvVWlJMERrdXE2S3VxRmd3ZlY0Q2tpYzhu?=
+ =?utf-8?B?TUhzN003b2FCK1FTV2diOUJlZm12OEE0NnZmcWRFbndNbGlySmtGSzZjOEh0?=
+ =?utf-8?B?a0JEam1FOEEwanJmYlg2SWwzaS9LY2Y5Y1RmWFFZbjJ1M2ZCSlJRb3JydWNS?=
+ =?utf-8?B?R3dxUkdGai9Za3V0MHhpQjJFTWpxdWN2dW5HWVZ3S1UwUGQzVUdwK3VKYk13?=
+ =?utf-8?B?YmtJNG5JRGVsbHhLaUZ0bmZ6Rzcvc1RkRTRpOCs0dmsrMysrZlpBYVQwWHJt?=
+ =?utf-8?B?Yyt4NTlJN1NnSVk3KytJRjhsNXdNQ0lEdmtNNGg0OEE0QWFUVGwydkkySGtS?=
+ =?utf-8?B?SVRFQ3dEQWlEdnpOdVZoWDBzT08rd01SM252RzNzZEZxWURXZVBUV2ZLUk5h?=
+ =?utf-8?B?RFZ6R0xYY1lZVDhBTWUwbmw3UHQ1dmtibWZseGE2TTYzSUFDSW9CMTRwTDky?=
+ =?utf-8?B?LzZ0V0RHRWRnRGorSWlreHplYTYzN1hsQzg1ckxpMk1VcWR2bndEZlBlUk0x?=
+ =?utf-8?B?YnVFZHBrcmVTSlFqL3FqclRZcDF1Rm5UNldZSU44VWxsM2NxT0RuMElVditq?=
+ =?utf-8?B?UDVrYktrdFpiWW8yV29WdVNHeHRpbVA3N0dRUWpHZ0ZyKzN2YjRKUzRvbkJC?=
+ =?utf-8?B?dG1QclNtemdKYnJYZ2l1TkNDWHlSSXdxaGQ4RUI3alBHWklGZ2xWdW5Zamhr?=
+ =?utf-8?B?cTFMWXljamJBd3o4YWRFdEYrZFJEa1NlUDYrMUhWYnU4bG9pYXhmQkJwakxo?=
+ =?utf-8?B?enNacGVYMjkrQU5tRGhPZVZOVXc4WVZrN3VJNkpsZHl2TXNXdWRucjQvZ1k4?=
+ =?utf-8?B?dEhkRzVZZ2ZER3poNGQ4RnJzT0VQVERmUEZhd2ZkUmp0aUJxOWJlVCt4ekox?=
+ =?utf-8?B?SFJjaDZOVDVCa1o4a3BPanZhSlNJZmEvcGdSUVVtN0RSekM0SWh5S1pjMlNq?=
+ =?utf-8?B?Vk9iaGVFRVhobDZHNFh5MmcvNTBvZE5zTE11ZEppZmtWZnVFTXQ3OWZ4TDQy?=
+ =?utf-8?Q?kBiXE2/y7p62KAzNQ/zVw8ZLb?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 13567338-0813-498b-fa47-08db9da31ad1
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2023 15:20:06.0801
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9sftXIi5ewCSwYwt/syEMrWmIa45yVcIthkH0VJYIU65Qs7v5hyX3zvQO9nUWnKJCuRSFbCe8OS7y7qWBT1E4A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6901
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 at 22:27, longguang.yue <kvmluck@163.com> wrote:
->
->
-> =E4=B8=80=EF=BC=89
-> Can you post the guest kernel messages (dmesg)? If the guest is hanging
-> then it may be easiest to configure a serial console so the kernel
-> messages are sent to the host where you can see them.
->
-> Does the hang occur during the LTP code you linked or afterwards when
-> the PCI device is bound to a virtio driver?
->
->
-> >   I used conosle, the hang occurred afterwards.   dmesg shows that tpci=
- test is finished without error.
-> LTP test case: https://github.com/linux-test-project/ltp/blob/522d7fba4af=
-c84e07b252aa4cd91b241e81d6613/testcases/kernel/device-drivers/pci/tpci_kern=
-el/ltp_tpci.c#L428
-> kernel 5.10, qemu 6.2
->
-> different guest-configuration tests show different results.  guest did no=
-t crash if hung-task-panic=3D0, in my case  i enable hung-task-panic in ord=
-er to trace.
->
-> test case 1:
-> xml machine pc,virtio disk, virtio net =E2=80=94=E2=80=94  guest's io hun=
-g, network broke down, though console is avilable but io operation hung.
->
-> #ps -aux| grep D
-> root           7  0.0  0.0      0     0 ?        D    14:37   0:00 [kwork=
-er/u16:0+flush-253:0]
-> root         483  0.0  0.0      0     0 ?      D    14:37   0:00 [jbd2/vd=
-a3-8]
->
-> test case 2:
-> xml machine q35,virtio/q35,scsi =E2=80=94=E2=80=94disk did not hung but n=
-etwork broke down. ping errors though everything looks ok and no crash and =
-no kernel error
->
->
->
-> =E4=BA=8C=EF=BC=89
-> I didn't see your original email so I missed the panic. I'd still like
-> to see the earlier kernel messages before the panic in order to
-> understand how the PCI device is bound.
->
-> Is the vda device with hung I/O the same device that was accessed by
-> the LTP test earlier? I guess the LTP test runs against the device and
-> then the virtio driver binds to the device again afterwards?
->
-> > the test is
-> ```
-> // iterate all devices
-> =E2=80=A6=E2=80=A6
-> for (i =3D 0; i < 7; ++i) {  // iterate current device's resources
->   if (r->flags & IORESOURCE_MEM &&
->   r->flags & IORESOURCE_PREFETCH) {
->   pci_release_resource(dev, i);
->   ret =3D pci_assign_resource(dev, i);
->   prk_info("assign resource to '%d', ret '%d'", i, ret);
->   rc |=3D (ret < 0 && ret !=3D -EBUSY) ? TFAIL : TPASS;
->   }
-> }
-> ```
-> test does not do virtio device unbind and  bind.
-> I only notice mem resource changed. see 'test-case 12'
->
-> =E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94=
-=E2=80=94=E2=80=94=E2=80=94
-> [   88.905705] ltp_tpci: test-case 12
-> [   88.905706] ltp_tpci: assign resources
-> [   88.905706] ltp_tpci: assign resource #0
-> [   88.905707] ltp_tpci: name =3D 0000:00:07.0, flags =3D 262401, start 0=
-xc080, end 0xc0ff
-> [   88.905707] ltp_tpci: assign resource #1
-> [   88.905708] ltp_tpci: name =3D 0000:00:07.0, flags =3D 262656, start 0=
-xfebd4000, end 0xfebd4fff
-> [   88.905709] ltp_tpci: assign resource #2
-> [   88.905709] ltp_tpci: name =3D 0000:00:07.0, flags =3D 0, start 0x0, e=
-nd 0x0
-> [   88.905710] ltp_tpci: assign resource #3
-> [   88.905710] ltp_tpci: name =3D 0000:00:07.0, flags =3D 0, start 0x0, e=
-nd 0x0
-> [   88.905711] ltp_tpci: assign resource #4
-> [   88.905711] ltp_tpci: name =3D 0000:00:07.0, flags =3D 1319436, start =
-0xfe00c000, end 0xfe00ffff
-> [   88.905713] virtio-pci 0000:00:07.0: BAR 4: releasing [mem 0xfe00c000-=
-0xfe00ffff 64bit pref]
-> [   88.905715] virtio-pci 0000:00:07.0: BAR 4: assigned [mem 0x24000c000-=
-0x24000ffff 64bit pref]
-> [   88.906693] ltp_tpci: assign resource to '4', ret '0'
-> [   88.906694] ltp_tpci: assign resource #5
-> [   88.906694] ltp_tpci: name =3D (null), flags =3D 0, start 0x0, end 0x0
-> [   88.906695] ltp_tpci: assign resource #6
-> [   88.906695] ltp_tpci: name =3D 0000:00:07.0, flags =3D 0, start 0x0, e=
-nd 0x0
->
-> [   88.906800] ltp_tpci: test-case 13
+On 8/15/2023 01:15, Meng Li wrote:
+> Drop CPU_SUP_INTE from SCHED_MC_PRIO, and it can be used by X86_AMD_PSTATE.
 
-I don't know. Maybe the test case is leaving the device is a state
-that conflicts with the virtio drivers that are bound after testing
-finishes.
+s/CPU_SUP_INTE/CPU_SUP_INTEL/
 
-One approach is to trace the PCI BAR accesses after the test runs and
-compare against a trace when the tpci driver hasn't been loaded. That
-way you might be able to find out what is different.
+Also I think this should have a wider description.
 
-Stefan
+Something like:
+
+"amd-pstate also uses SCHED_MC_PRIO, so decouple the requirement
+of CPU_SUP_INTEL from the dependencies to allow compilation in kernels 
+without Intel CPU support."
+
+> 
+> Signed-off-by: Meng Li <li.meng@amd.com>
+> ---
+>   arch/x86/Kconfig | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index e36261b4ea14..03322d2840fa 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -1052,8 +1052,9 @@ config SCHED_MC
+>   
+>   config SCHED_MC_PRIO
+>   	bool "CPU core priorities scheduler support"
+> -	depends on SCHED_MC && CPU_SUP_INTEL
+> +	depends on SCHED_MC
+>   	select X86_INTEL_PSTATE
+> +	select X86_AMD_PSTATE
+
+Thinking about it further I wonder if what we actually want is
+something like this:
+
+select X86_INTEL_PSTATE if CPU_SUP_INTEL
+select X86_INTEL_PSTATE if CPU_SUP_AMD
+
+Then it will work functionally the same for Intel systems
+but now you can compile the kernel with support for one
+or both and get the right combination included.
+
+>   	select CPU_FREQ
+>   	default y
+>   	help
+
