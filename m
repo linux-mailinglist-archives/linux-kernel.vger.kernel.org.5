@@ -2,230 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF3877C5B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 04:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E8F77C5BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 04:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234160AbjHOCOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 22:14:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
+        id S234079AbjHOCQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 22:16:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234219AbjHOCOm (ORCPT
+        with ESMTP id S233989AbjHOCQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 22:14:42 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F87CBE
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 19:14:41 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7914633a110so222324739f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 19:14:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1692065680; x=1692670480;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=1FzNNwtEMI1ctcbSu9gtaMLkg80FqmdR5EYXg9JIFtg=;
-        b=xnZSPDZ8UDmDG+AiHYeSS1LeuPfpOuSrcndRPANwOUJt3OYtEODCYZp2Dxkk+OnxR8
-         CoXsPNRHEdgPz+lffz1vP/CLx83pVu40X0XRmr++k9bhC55jgSZ0N3V8V/evxz/0Cn4f
-         PSonUuTCx7For67KXJz5wGNDLmEsjPcf2eIlg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692065680; x=1692670480;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1FzNNwtEMI1ctcbSu9gtaMLkg80FqmdR5EYXg9JIFtg=;
-        b=O85lB+SL2Okmo5g/49Sku/MxNlESAsN+whACbv1VvfujCOPo9vw5bV4A9ouPwDDS18
-         zMqsnVRbLrZ8+YUphS/AaWczjt6lEb/mQcLQnVD42BLhDSNvE/dN9pOcjh9KQvPtN84V
-         bYIuZ9RtN/OHNSAhk3+Qhfuy1wPxCkz1F2OkECEHLNxV0oAxKENmfL22T2sn0jEHHbd6
-         XCorC9BvMtiqd9135z5H0aN9ZNKdd47ITeTwAZlo82X6p6GBPQ19Y7ffqXIh6NkuvMhV
-         sPrt23sN2Tw7+psTAkMyHTmAKr3Z07YklHIsq4fFzA8TQ8zdqYOwJxFTFsct8PSW9v3B
-         vj3g==
-X-Gm-Message-State: AOJu0YyMLdZgbnHHASIlEg0reAOiUMAn9qzweDMpBXX6dLS3YTW5W8Ny
-        kBBnBQAw/cV7Ke0BSEcvWnCcPw==
-X-Google-Smtp-Source: AGHT+IE52mS+ksJwzniELvA2SQYzEX5vpVK4FQh05SwiLQS3U1AdMZf58YQohMNFkK+sPEIGfwwxrg==
-X-Received: by 2002:a05:6602:2195:b0:783:572c:9caa with SMTP id b21-20020a056602219500b00783572c9caamr15332100iob.0.1692065680377;
-        Mon, 14 Aug 2023 19:14:40 -0700 (PDT)
-Received: from localhost (254.82.172.34.bc.googleusercontent.com. [34.172.82.254])
-        by smtp.gmail.com with ESMTPSA id d24-20020a056602229800b0077a1d1029fcsm3666568iod.28.2023.08.14.19.14.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 19:14:39 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 02:14:39 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, Joel <agnel.joel@gmail.com>,
-        rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2] rcutorture: Copy out ftrace into its own console file
-Message-ID: <20230815021439.GA2320449@google.com>
-References: <20230813203602.GA696907@google.com>
- <8f952ce7-2122-45a4-82a3-a4e4dcd85ff4@paulmck-laptop>
- <CAEXW_YSr2Pg8cw2zrYaoRn8DQgSzM=7DhsPeO8=MMdsA6tN0zg@mail.gmail.com>
- <5bc1a075-db78-4ecd-af06-77555f4184bc@paulmck-laptop>
+        Mon, 14 Aug 2023 22:16:48 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29AE4B0;
+        Mon, 14 Aug 2023 19:16:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692065804;
+        bh=RbPJKD85sdXvV/JOwBisKKoBIXJ6GbBhJ++W7MfDoYA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=DJYWhSBrncHtgj3EKz74BGZQrXoJQ7QDXFpbYz0ICrFb78JQlvnKoj3L3Y86OgbzU
+         8/Mmh/euJ+5gRp3zPRumWqFbrzEA6gzuzsMy2IptfLI5BGC2+U6WEJ9sEPjc2jzSx5
+         CYtC5xVf3MerUlFhefgkN1XQTHa0whY0CbyNVxsjm0bWBt+fdA7m7hekxodLJaBhTu
+         yDGd4JcP7z8zAVqUEFPMx5fEIUotE6/ivXRrxFUsGKXLQ1jwIY64e+jeX3etO/lu0i
+         5jiz5lPCWZSO9FJIdZtsazR/q2TPIc2rpCyf0OAuvt+BKDWUZ/svc4XIP/Skdqq4di
+         8aB5WQrW6SBDA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RPvz05fj0z4wb5;
+        Tue, 15 Aug 2023 12:16:44 +1000 (AEST)
+Date:   Tue, 15 Aug 2023 12:16:43 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Wolfram Sang <wsa@the-dreams.de>,
+        Andi Shyti <andi.shyti@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the i2c tree
+Message-ID: <20230815121643.047c564f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5bc1a075-db78-4ecd-af06-77555f4184bc@paulmck-laptop>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/v.cuq5c2nUXKHBozJtcdz.6";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+--Sig_/v.cuq5c2nUXKHBozJtcdz.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 14, 2023 at 03:27:33PM -0700, Paul E. McKenney wrote:
-> On Mon, Aug 14, 2023 at 06:03:24PM -0400, Joel Fernandes wrote:
-> > On Mon, Aug 14, 2023 at 5:27 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > >
-> > > On Sun, Aug 13, 2023 at 08:36:02PM +0000, Joel Fernandes (Google) wrote:
-> > > > From: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > > >
-> > > > Often times during debugging, it is difficult to jump to the ftrace dump
-> > > > in the console log and treat it independent of the result of the log file.
-> > > > Copy the contents of the buffers into its own file to make it easier to refer
-> > > > to the ftrace dump. The original ftrace dump is still available in the
-> > > > console log if it is desired to refer to it there.
-> > > >
-> > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > >
-> > > Queued, thank you!  I did the usual wordsmithing, please see below.
-> > >
-> > > I also fixed up the indentation and spacing.  I don't know about you,
-> > > but the initial format made that a bit hard for me to read.  ;-)
-> > >
-> > > If there are multiple ftrace dumps in a given console.log file, this
-> > > will concatenate them.  Is that the intent?
-> > 
-> > How would you have multiple dumps, do you mean from subsequent
-> > (re)boots? If so, yes I am OK with that. I usually look at the latest
-> > boot attempt.
-> 
-> Fair, but how would you separate out the ftrace dump for the most
-> recent kernel boot?  (Though please see below.)
+Hi all,
 
-It will print the same markers in console.log which can be used. I posted an
-updated diff below.
+The following commits are also in the i2c-host-fixes tree as different
+commits (but the same patches):
 
-> 
-> > I was also thinking of us stopping boot loops. For example, if there
-> > is a kernel issue and the system keeps rebooting, it will run forever
-> > in the boot loop silently. It would be good for monitoring of
-> > console.log and kill the test if the console.log is acting 'weird'.
-> > Also it would be good if the console.log had a huge timestamp gap in
-> > it like the TREE04 issue. Would such changes be good to make? I can
-> > attempt something.
-> 
-> Boot loops can indeed be irritating.  So I created this commit:
-> 
-> 10f84c2cfb50 ("torture: Avoid torture-test reboot loops")
-> 
-> This passes -no-reboot to qemu, which causes qemu to just stop when
-> it would otherwise reboot.  Much nicer!
-> 
-> The multiple-ftrace-dump issue could still appear should some torture
-> test decide to turn tracing back on at some point, perhaps in response
-> to a yet-as-unthought-of module parameter.
-> 
-> Should this ever be a problem, one approach would be to leave the
-> beginning/end markers and/or number them.
+  27ec43c77b5d ("i2c: tegra: Fix i2c-tegra DMA config option processing")
+  3253f6923a78 ("i2c: tiny-usb: check usb base class before assuming the in=
+terface on device is for this driver")
+  49d4db3953cb ("i2c: designware: Correct length byte validation logic")
+  69f035c480d7 ("i2c: designware: Handle invalid SMBus block data response =
+length value")
+  b610c4bbd153 ("i2c: imx-lpi2c: return -EINVAL when i2c peripheral clk doe=
+sn't work")
 
-Thanks for doing this! I'll add it to all my trees.
+--=20
+Cheers,
+Stephen Rothwell
 
-Also let us replace the diff with the below [3] to properly label potential
-multiple dumps?  Example for a file like [1], it will extract as [2].
+--Sig_/v.cuq5c2nUXKHBozJtcdz.6
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-[1]:
+-----BEGIN PGP SIGNATURE-----
 
-foo
-foo
-Dumping ftrace buffer:
----------------------------------
-blah
-blah
----------------------------------
-more
-bar
-baz
-Dumping ftrace buffer:
----------------------------------
-blah2
-blah2
----------------------------------
-bleh
-bleh
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTa4AsACgkQAVBC80lX
+0GzeXgf9FcKYKQpceyPJITZPOJ/jaJuIp2BoIc+ciLVSV+AYtxBOBgU0wjIEhUjq
+3lcIztfcAiC6Fa/PDN74f9/VHSyfLntRjvHq8ygTjSGSgHlJw4k+qIAuIDVtwLmP
+7D6Z/Bq65kiYIA4vKSC2QAtQkwUwjJPpWKVJsf28k74GRRhzDU4nCRA7PUsBJGcE
+gf7D+tVT2cEa0Il0AK+cEzOp3KARixu54o0GjwVd6LPSW0fGV8EWAgtwQaCCO7P3
+UdFu6lzve7Rg6c5hDxn3UszI1GMxiQ9RFgrG0y7KAkWEkfy2vPwnFulmBY0XtwzB
+pxIIIhrdA0NLKXLT0JryQz2eAQP4mg==
+=/AaF
+-----END PGP SIGNATURE-----
 
-[2]:
-
-Ftrace dump 1:
-blah
-blah
-
-Ftrace dump 2:
-blah2
-blah2
-
----8<-----------------------
-[3]
-
-diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
-old mode 100644
-new mode 100755
-index b8e2ea23cb3f..a5c74e508e41
---- a/tools/testing/selftests/rcutorture/bin/functions.sh
-+++ b/tools/testing/selftests/rcutorture/bin/functions.sh
-@@ -331,3 +331,30 @@ specify_qemu_net () {
- 		echo $1 -net none
- 	fi
- }
-+
-+# Extract the ftrace output from the console log output
-+# The ftrace output in the original logs look like:
-+# Dumping ftrace buffer:
-+# ---------------------------------
-+# [...]
-+# ---------------------------------
-+extract_ftrace_from_console() {
-+        awk '
-+        /Dumping ftrace buffer:/ {
-+        buffer_count++
-+        print "Ftrace dump " buffer_count ":"
-+        capture = 1
-+        next
-+    }
-+    /---------------------------------/ {
-+        if(capture == 1) {
-+            capture = 2
-+            next
-+        } else if(capture == 2) {
-+            capture = 0
-+            print ""
-+        }
-+    }
-+    capture == 2
-+    ' "$1";
-+}
-diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-index 9ab0f6bc172c..e3d2f69ec0fb 100755
---- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
-+++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-@@ -182,3 +182,10 @@ if ! test -s $file.diags
- then
- 	rm -f $file.diags
- fi
-+
-+# Call extract_ftrace_from_console function, if the output is empty,
-+# don't create $file.ftrace. Otherwise output the results to $file.ftrace
-+extract_ftrace_from_console $file > $file.ftrace
-+if [ ! -s $file.ftrace ]; then
-+	rm -f $file.ftrace
-+fi
--- 
-2.41.0.694.ge786442a9b-goog
-
+--Sig_/v.cuq5c2nUXKHBozJtcdz.6--
