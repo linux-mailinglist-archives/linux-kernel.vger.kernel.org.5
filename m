@@ -2,179 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 925D377D0BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD4477D0B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238698AbjHORSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 13:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45422 "EHLO
+        id S238671AbjHORL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 13:11:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238730AbjHORRm (ORCPT
+        with ESMTP id S238680AbjHORLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 13:17:42 -0400
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2945A19B5;
-        Tue, 15 Aug 2023 10:17:23 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 276F93200927;
-        Tue, 15 Aug 2023 13:17:20 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Tue, 15 Aug 2023 13:17:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=devkernel.io; h=
-        cc:cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1692119839; x=1692206239; bh=3Y
-        Va9SLafbAppolvaU0gOB/8rD3tfIXlrgSkLKnfB8Y=; b=YUIGkNI61be5H3tfus
-        iHULantyHkns1KFWmB7QbSj2jlBI/43ex2LjoimptigzKEA2091tP4nHePhDlRbc
-        McqGkeqlOgR/i8+DLk/7mKsgcC0UrVyUkcaEVknLEP8hMCHbYW5fBsJ+0roI8RzO
-        D48ayd/NjyLDrXJqzjK1qEtWY7LsQ3PKVhp//JLdl/mqQB4ZXd95lrgOL5GWUQSc
-        V69XU9IiiKFdbwdnEIy7KXrXRjCvYc5IogbaE450SjQPBcik/uqtVcc15b5fock1
-        8wdiG0RHFQZbSo1NxnOIqUMqhxQrJBz4wQPBMWitbLIM6yIrhUiHCtsVM52El3iH
-        VNmQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1692119839; x=1692206239; bh=3YVa9SLafbApp
-        olvaU0gOB/8rD3tfIXlrgSkLKnfB8Y=; b=UnNWA4GGhDaLfvAUjXw17Uy0Ld52N
-        6gCfwIZ1B75jBvJjh3OWEAlXFutO16XUyDPjpQAguXsrJMfgbmWm8PXuVTBLglFT
-        J7vugOmDvKeDrENQG2jSJkMeTonnx6CJ4RlvgthnsRvxaIEQIGPYxAMR5vbCBQZ6
-        /YYij/Te5zSF7i+wG0mkiy2A5nXrwLmfASOP+GVrxhcTyxWGtWHalQZSGRZ5ZcvW
-        fFAMiRJ2UX2vzD2XVFKW5vI0Tsn36pwuobN2DyvIriLlQlaXXLG6WH+hJiYumwu0
-        sHFHNj451bMDdEh+vj3OaSaitgNvwu55lk22yoh0BVuSVNKfDxJjk0L0Q==
-X-ME-Sender: <xms:H7PbZOB4w2w2Ig_-GbHret7dwYJqG46bcENqBkdtp1XeyBuujGnE4g>
-    <xme:H7PbZIjTSeS5Cz3DFdkEb8W72nJtaOlJNX74U-1B9XJhZHWS0ewO6PL88SwRZcSSX
-    8Pcb2K3QSLInWMmrNw>
-X-ME-Received: <xmr:H7PbZBmZO3Bm7nOIsPYfITP2V-w7H3wxyx2H25MqN8249RMnvxPrns36wlcTJbnKvPSH5JIdjJ9ztAYI2LkujhInmCOUehbD-luH1B6u-TpF>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddtjedgudduvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpehffgfhvfevufffjgfkgggtsehttdertddtredtnecuhfhrohhmpefuthgv
-    fhgrnhcutfhovghstghhuceoshhhrhesuggvvhhkvghrnhgvlhdrihhoqeenucggtffrrg
-    htthgvrhhnpeevlefggffhheduiedtheejveehtdfhtedvhfeludetvdegieekgeeggfdu
-    geeutdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hshhhrseguvghvkhgvrhhnvghlrdhioh
-X-ME-Proxy: <xmx:H7PbZMwR3Gou9-6boagvl9gEf1PyBtV96nVG_HBYDIe4OLj3p8756A>
-    <xmx:H7PbZDSgBMRAu1zJ-NKbX0xXgz9puQdsMXrP0C0Nnnr2adCrDTYK0Q>
-    <xmx:H7PbZHaKveZQkv017C_Bl6_MvXWb6lwwaKnSVf3Gq-9qenD2vSD8wA>
-    <xmx:H7PbZCHWgJWwfo4rDIv6sq2XvOJl1iA7G3C4tkOEw-80KO7NLK_mew>
-Feedback-ID: i84614614:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 15 Aug 2023 13:17:18 -0400 (EDT)
-References: <20230811162803.1361989-1-shr@devkernel.io>
- <43d64aee-4bd9-bba0-9434-55cec26bd9dc@redhat.com>
-User-agent: mu4e 1.10.1; emacs 28.2.50
-From:   Stefan Roesch <shr@devkernel.io>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     kernel-team@fb.com, akpm@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, hannes@cmpxchg.org,
-        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2] proc/ksm: add ksm stats to /proc/pid/smaps
-Date:   Tue, 15 Aug 2023 10:10:55 -0700
-In-reply-to: <43d64aee-4bd9-bba0-9434-55cec26bd9dc@redhat.com>
-Message-ID: <qvqwmsysdy3p.fsf@devbig1114.prn1.facebook.com>
+        Tue, 15 Aug 2023 13:11:17 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D845C1991
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 10:11:15 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-40a47e8e38dso12791cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 10:11:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692119475; x=1692724275;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VjU1cPGHPErz26GfxK/V2Y6QQnaVBfBoHVJffwhAgeg=;
+        b=OkID7iHXzv+hD+tKR8T6YOXxoIXliF3W34NUBxDaFcmljCtGa4UoyiTKJr8D/Tqe60
+         twt1hBEnODfYIcEtDbVnm54kA0lIiilXkx9/J9jQrHX5X/XhOJQ7UdJ3uclpwKIqOirD
+         Nz+BaBpxqO9GVtg0Nf9FtqfKgA5MSX6L6ZpkqwrGirkV/80R7EjnEy3vAejyJrvzENi/
+         tBF0sSeWY68NphfTowZ3duiS82ZwwGD9DYGMlv24ihtwu4rin3c/EbsSxVYNJXnuceR1
+         sl4g7UKfuObykb/yzYDT2NhA5VP8HNK+onSuMDL7WMvns54M1ica33zsia1c0sn9ISDX
+         ebGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692119475; x=1692724275;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VjU1cPGHPErz26GfxK/V2Y6QQnaVBfBoHVJffwhAgeg=;
+        b=KIq8X6wkbvbAVIDoPgDOYysKFBpMK3Ho+5S6kGrgDskarqz0jDaHz86Y7HjgU1cbii
+         VgdCP0yfp26+ul/aSdmvZD2kIN3SD1vu8jdIfCnGpjmMc3acOf5wEfQofJdxpcAPcRgb
+         1Bw9M4gHAzsTyFB7WuekHTVDGi/Gs9GMWSQh+20KzOscRrsLRYPOYSqP7nR8dxUBcfrf
+         9WEu9Qm3jo0NANqLIPmIA1aDjh/96y+pUvrikRK5yvXEvgwAoEn+QikRzUotfN2u8YxZ
+         IIa/OjTGA3e6c1aKwmmfdL91iKEltEkDjckzc5TOTf5KKKAV4PCMD5EB0BiJZAXZMQUE
+         8K9Q==
+X-Gm-Message-State: AOJu0Yx6y+TYg12G6TUg5InvnzrdNHiYeUeYdVgM2glHVzFUw4tknK34
+        I5VO3/K85ptzOshHk/xnmnrCnCgfQtjI3AL9Pdv1xQ==
+X-Google-Smtp-Source: AGHT+IHxC6i5qwpObe1eDOWi/Od0g4GRgAk9jzOZ3XKeiC1SDm7VVZDyGLVzpXyK6cSH8wHoFhS6cxSCFQC9A0v0DV0=
+X-Received: by 2002:a05:622a:198f:b0:40f:c60d:1c79 with SMTP id
+ u15-20020a05622a198f00b0040fc60d1c79mr3382qtc.28.1692119474862; Tue, 15 Aug
+ 2023 10:11:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230811045127.3308641-1-rananta@google.com> <ZNq15SZ+53umvOfx@google.com>
+ <CAJHc60wMueazp3Wm=b6-tnFPAyX0zeYuVQe9uPEJrpAm0azw2A@mail.gmail.com> <ZNrMTmppUfQhdsyY@google.com>
+In-Reply-To: <ZNrMTmppUfQhdsyY@google.com>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Tue, 15 Aug 2023 10:11:02 -0700
+Message-ID: <CAJHc60yp7X9Za=CJnJWqAbPuKznp91fYtnBOuQQCGtiXyQBqWw@mail.gmail.com>
+Subject: Re: [PATCH v9 00/14] KVM: arm64: Add support for FEAT_TLBIRANGE
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Fuad Tabba <tabba@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 14, 2023 at 5:52=E2=80=AFPM Sean Christopherson <seanjc@google.=
+com> wrote:
+>
+> On Mon, Aug 14, 2023, Raghavendra Rao Ananta wrote:
+> > On Mon, Aug 14, 2023 at 4:16=E2=80=AFPM Sean Christopherson <seanjc@goo=
+gle.com> wrote:
+> > >
+> > > On Fri, Aug 11, 2023, Raghavendra Rao Ananta wrote:
+> > > > The series is based off of upstream v6.5-rc1.
+> > >
+> > > Lies!  :-)
+> > >
+> > > This is based off one of the kvmarm.git topic branches (I didn't both=
+er to figure
+> > > out which one), not v6.5-rc1.
+> > >
+> > Sorry, what am I missing here? My git log is as follows:
+>
+> Hmm, not sure what's going on.  Maybe I misinterpreted why `git am` was f=
+ailing?
+> I assumed it was because there were objects in kvmarm that I didn't have =
+locally,
+> and fetching kvmarm allowed am to complete, though with 3-way merges, whi=
+ch IIUC
+> shouldn't have been necessary if I was using the exact same base.  Or may=
+be I
+> messed up and didn't actually reset to 6.5-rc1.
+>
+> > $ git log --oneline upstream_tlbi_range_v9
+> > 5025857507abe (upstream_tlbi_range_v9) KVM: arm64: Use TLBI
+> > range-based instructions for unmap
+> > 5c0291b99a8fc KVM: arm64: Invalidate the table entries upon a range
+> > 8c46b54d4aaec KVM: arm64: Flush only the memslot after write-protect
+> > 231abaeb7ffc2 KVM: arm64: Implement kvm_arch_flush_remote_tlbs_range()
+> > 5ec291b863309 KVM: arm64: Define kvm_tlb_flush_vmid_range()
+> > 5bcd7a085c34e KVM: arm64: Implement  __kvm_tlb_flush_vmid_range()
+> > ea08f9dff7e5b arm64: tlb: Implement __flush_s2_tlb_range_op()
+> > b3178687947c9 arm64: tlb: Refactor the core flush algorithm of __flush_=
+tlb_range
+> > a4850fa988eef KVM: Move kvm_arch_flush_remote_tlbs_memslot() to common =
+code
+> > 306dc4e6afd37 KVM: Allow range-based TLB invalidation from common code
+> > d02785a0a1e01 KVM: Remove CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL
+> > 136fa2d254537 KVM: arm64: Use kvm_arch_flush_remote_tlbs()
+> > e35c68a75170d KVM: Declare kvm_arch_flush_remote_tlbs() globally
+> > 5d592777b9bba KVM: Rename kvm_arch_flush_remote_tlb() to
+> > kvm_arch_flush_remote_tlbs()
+> > 06c2afb862f9d (tag: v6.5-rc1, tag: linux/v6.5-rc1) Linux 6.5-rc1
+> > c192ac7357683 MAINTAINERS 2: Electric Boogaloo
+> > f71f64210d698 Merge tag 'dma-mapping-6.5-2023-07-09' of
+> > git://git.infradead.org/users/hch/dma-mapping
+> > ...
+> >
+> > Isn't the commit, 06c2afb862f9d (06c2afb862f9d (tag: v6.5-rc1, tag:
+> > linux/v6.5-rc1) Linux 6.5-rc1) the 'base' commit?
+>
+> Ya, should be.
+>
+> Either way, even if this is PEBKAC on my end, using --base would be nice,=
+ e.g.
+> then you can definitely say it's my fault ;-)
+>
+I'll consider this, and thanks for the confirmation.
 
-David Hildenbrand <david@redhat.com> writes:
-
-> Sorry for the late reply, Gmail once again decided to classify your mails as
-> spam (for whatever reason).
->
-> On 11.08.23 18:28, Stefan Roesch wrote:
->> With madvise and prctl KSM can be enabled for different VMA's. Once it
->> is enabled we can query how effective KSM is overall. However we cannot
->> easily query if an individual VMA benefits from KSM.
->> This commit adds a KSM section to the /prod/<pid>/smaps file. It reports
->> how many of the pages are KSM pages.
->> Here is a typical output:
->> 7f420a000000-7f421a000000 rw-p 00000000 00:00 0
->> Size:             262144 kB
->> KernelPageSize:        4 kB
->> MMUPageSize:           4 kB
->> Rss:               51212 kB
->> Pss:                8276 kB
->> Shared_Clean:        172 kB
->> Shared_Dirty:      42996 kB
->> Private_Clean:       196 kB
->> Private_Dirty:      7848 kB
->> Referenced:        15388 kB
->> Anonymous:         51212 kB
->> KSM:               41376 kB
->> LazyFree:              0 kB
->> AnonHugePages:         0 kB
->> ShmemPmdMapped:        0 kB
->> FilePmdMapped:         0 kB
->> Shared_Hugetlb:        0 kB
->> Private_Hugetlb:       0 kB
->> Swap:             202016 kB
->> SwapPss:            3882 kB
->> Locked:                0 kB
->> THPeligible:    0
->> ProtectionKey:         0
->> ksm_state:          0
->> ksm_skip_base:      0
->> ksm_skip_count:     0
->> VmFlags: rd wr mr mw me nr mg anon
->> This information also helps with the following workflow:
->> - First enable KSM for all the VMA's of a process with prctl.
->> - Then analyze with the above smaps report which VMA's benefit the most
->> - Change the application (if possible) to add the corresponding madvise
->> calls for the VMA's that benefit the most
->> Signed-off-by: Stefan Roesch <shr@devkernel.io>
->> ---
->>   Documentation/filesystems/proc.rst | 3 +++
->>   fs/proc/task_mmu.c                 | 5 +++++
->>   2 files changed, 8 insertions(+)
->> diff --git a/Documentation/filesystems/proc.rst
->> b/Documentation/filesystems/proc.rst
->> index 7897a7dafcbc..4ef3c0bbf16a 100644
->> --- a/Documentation/filesystems/proc.rst
->> +++ b/Documentation/filesystems/proc.rst
->> @@ -461,6 +461,7 @@ Memory Area, or VMA) there is a series of lines such as the following::
->>       Private_Dirty:         0 kB
->>       Referenced:          892 kB
->>       Anonymous:             0 kB
->> +    KSM:                   0 kB
->>       LazyFree:              0 kB
->>       AnonHugePages:         0 kB
->>       ShmemPmdMapped:        0 kB
->> @@ -501,6 +502,8 @@ accessed.
->>   a mapping associated with a file may contain anonymous pages: when MAP_PRIVATE
->>   and a page is modified, the file page is replaced by a private anonymous copy.
->>   +"KSM" shows the amount of anonymous memory that has been de-duplicated.
->
->
-> How do we want to treat memory that has been deduplicated into the shared
-> zeropage?
->
-> It would also match this description.
->
-> See in mm-stable:
->
-> commit 30ff6ed9a65c7e73545319fc15f7bcf9c52457eb
-> Author: xu xin <xu.xin16@zte.com.cn>
-> Date:   Tue Jun 13 11:09:28 2023 +0800
->
->     ksm: support unsharing KSM-placed zero pages
->
->     Patch series "ksm: support tracking KSM-placed zero-pages", v10.
-
-I see two approaches how to deal with zero page:
- - If zero page is not enabled, it works as is
- - If enabled
-    - Document that zero page is accounted for the current vma or
-    - Pass in the pte from smaps_pte_entry() to smaps_account() so we can
-    determine if this is a zero page.
-    I'm not sure what to do about smaps_pmd_entry in that case. We
-    probably don't care about compund pages.
+- Raghavendra
+> > > Please try to incorporate git format-patch's "--base" option into you=
+r workflow,
+> > > e.g. I do "git format-patch --base=3DHEAD~$nr" where $nr is the numbe=
+r of patches
+> > > I am posting.
+> > >
+> > > It's not foolproof, e.g. my approach doesn't help if I have a local p=
+atch that
+> > > I'm not posting, but 99% of the time it Just Works and eliminates any=
+ ambuitity.
+> > >
+> > > You can also do "--base=3Dauto", but that only does the right thing i=
+f your series
+> > > has its upstream branch set to the base/tree that you want your patch=
+es applied
+> > > to (I use the upstream branch for a completely different purpose for =
+my dev branches).
