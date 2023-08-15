@@ -2,324 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B9577D192
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB4B77D193
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239030AbjHOSOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 14:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56592 "EHLO
+        id S239021AbjHOSOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 14:14:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239015AbjHOSOP (ORCPT
+        with ESMTP id S238793AbjHOSOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 14:14:15 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4224310DA;
-        Tue, 15 Aug 2023 11:14:14 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id ada2fe7eead31-4477b141804so2433212137.3;
-        Tue, 15 Aug 2023 11:14:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692123253; x=1692728053;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UZOfs+JDTQ4+3DRFCCDNSBcuJ2PAqaLR2VayYXscEA0=;
-        b=kvjJjLtsFzvjfYxkZejHrqzGzGFN6oxsg9J1+fjeQzkSzdTjwx0/mLrMKMovHEDsUi
-         EoEmRBSn06ViaIP/ujhPvD7JazEA+tVHLNM39PqYin5/K2EU08UG/ihhFHV0cofM3VAD
-         Re+5DTkkZsnGSbTmIOPC0+NACl34SrohXiwqtaYDlcVGAQ9uD7obuX1+SZ3Zu8xNU4ys
-         IuOt1cWjoCvIGQnayZdnvoLLIESuGJARZAwd/xrbEMYAuQ5Q+NN4StNAW1vIQpooxcfk
-         QH3w4+XAIP14us6L7ci7okbfi56hk9ninmT8J1ewkTRK8FCn/GkRm+0HWMKg6y8yMkNU
-         HFzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692123253; x=1692728053;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UZOfs+JDTQ4+3DRFCCDNSBcuJ2PAqaLR2VayYXscEA0=;
-        b=SxaE3w3Rm3KWWaJyv1Er3eCpo5fwqwnrtBMNhUFnExJc7LWDFZ+fEPiniuJC1PBI0K
-         vbPJKHlmYmAPwkVchDgtNaxTD+rmQ1LvULcpbyTUkppSFXAVlbEOvF+C5VrVwKcEUtuu
-         BCIEo60vrEbSCrHjy+IO3sBmkHjXp5jHRPeyxo4JzZFmatRIoDC32AJOh4lTVT+yKdyj
-         ubfsTx7jTw9WyfSBg/HWC0gjxjpwqLQtdkqgVxX+3Ds1JwQGbgV8FEhm40ykSDNXQS1n
-         TJQkdqhjLlS9aWVL44S5tCbEA/sZn5+mN7j4URe2ZpNNkPZ2Y2w3qNBpkgrrIAgIJd6B
-         u3rw==
-X-Gm-Message-State: AOJu0Yzxjt+xeCw+nuKXbBhmCGmjTw4VmeFrZDSA9udm+inb9pUmGnLB
-        6G+mhv5biAY53Tv93uhURwS4ki8UgVrN+3D+gq4=
-X-Google-Smtp-Source: AGHT+IECRziSqxda8Q6xU6Txx5TmbWe/AfWN2vBt/Fet2IM5yIw2GD2WwIBUZyIXD2pqePeX0zZVaMhj6gfl5wmdamI=
-X-Received: by 2002:a67:f80d:0:b0:443:6deb:2b4 with SMTP id
- l13-20020a67f80d000000b004436deb02b4mr14457488vso.2.1692123253105; Tue, 15
- Aug 2023 11:14:13 -0700 (PDT)
+        Tue, 15 Aug 2023 14:14:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F9210DA;
+        Tue, 15 Aug 2023 11:14:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2FFF065705;
+        Tue, 15 Aug 2023 18:14:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D1D1C433C7;
+        Tue, 15 Aug 2023 18:14:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692123251;
+        bh=NuKmESVRspcP8L5BYB37tHXBD+AuA30X5DxzKxAavx4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JhWy5pLm5Bk8NTy5isaR7waQqw6IGzujj84DV0tpPipSi83OyJ+stRO/rDbuGBH/t
+         ry3VPUW7RgfuzATkAb5sJIDkxY+KU7l05PSA0j/ljqO8GotYGW97/MiG5NLLaUA5x8
+         ky1XnDjKYJL+xMvfiKJ7FN2QkyNdS5VIkDCF3fXJ725f9p3RJqckKbCaokTj79S1GG
+         FO+ZDM5pajdnJe7qi5b6zzMQrykUPhxwo+7RlEFIaamQmBJXh1tN1F/Pjv7+juoWWC
+         hbtebuOgBvZTafzi21alTsmX4CxXNHxRZ1NuANe/pVKnh9PqwfYQoM05vT6lnWCwZb
+         6dOFOvAxISMjg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id E967B404DF; Tue, 15 Aug 2023 15:14:08 -0300 (-03)
+Date:   Tue, 15 Aug 2023 15:14:08 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Changbin Du <changbin.du@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf: doc: fix format of unordered lists
+Message-ID: <ZNvAcGGnIjyMqI8O@kernel.org>
+References: <20230718085242.3090797-1-changbin.du@huawei.com>
+ <36d52843-0070-6f34-bb73-21ecaed776a5@intel.com>
 MIME-Version: 1.0
-References: <20230814171845.65930-1-feliu@nvidia.com> <ZNtYpohWyjnb883M@vergenet.net>
- <05348d62-586c-4b1f-40bd-5541caca0947@nvidia.com> <ZNunz1hbqPKpcOgA@vergenet.net>
-In-Reply-To: <ZNunz1hbqPKpcOgA@vergenet.net>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Tue, 15 Aug 2023 14:13:36 -0400
-Message-ID: <CAF=yD-L+d34Uuvt3sOFOnxXhMmoMXNfHzcaSPk=t1PtiPUHZ1g@mail.gmail.com>
-Subject: Re: [PATCH net v1] virtio_net: Introduce skb_vnet_common_hdr to avoid typecasting
-To:     Simon Horman <horms@kernel.org>
-Cc:     Feng Liu <feliu@nvidia.com>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Bodong Wang <bodong@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <36d52843-0070-6f34-bb73-21ecaed776a5@intel.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 12:29=E2=80=AFPM Simon Horman <horms@kernel.org> wr=
-ote:
->
-> On Tue, Aug 15, 2023 at 11:09:02AM -0400, Feng Liu wrote:
-> >
-> >
-> > On 2023-08-15 a.m.6:51, Simon Horman wrote:
-> > > External email: Use caution opening links or attachments
-> > >
-> > >
-> > > On Mon, Aug 14, 2023 at 01:18:45PM -0400, Feng Liu wrote:
-> > >
-> > > + "David S. Miller" <davem@davemloft.net>
-> > >    Eric Dumazet <edumazet@google.com>
-> > >    Jakub Kicinski <kuba@kernel.org>
-> > >    Paolo Abeni <pabeni@redhat.com>
-> > >
-> > Thanks for adding David S. Miller.
-> >
-> > > > The virtio_net driver currently deals with different versions and t=
-ypes
-> > > > of virtio net headers, such as virtio_net_hdr_mrg_rxbuf,
-> > > > virtio_net_hdr_v1_hash, etc. Due to these variations, the code reli=
-es
-> > > > on multiple type casts to convert memory between different structur=
-es,
-> > > > potentially leading to bugs when there are changes in these structu=
-res.
-> > > >
-> > > > Introduces the "struct skb_vnet_common_hdr" as a unifying header
-> > > > structure using a union. With this approach, various virtio net hea=
-der
-> > > > structures can be converted by accessing different members of this
-> > > > structure, thus eliminating the need for type casting and reducing =
-the
-> > > > risk of potential bugs.
-> > > >
-> > > > For example following code:
-> > > > static struct sk_buff *page_to_skb(struct virtnet_info *vi,
-> > > >                struct receive_queue *rq,
-> > > >                struct page *page, unsigned int offset,
-> > > >                unsigned int len, unsigned int truesize,
-> > > >                unsigned int headroom)
-> > > > {
-> > > > [...]
-> > > >        struct virtio_net_hdr_mrg_rxbuf *hdr;
-> > > > [...]
-> > > >        hdr_len =3D vi->hdr_len;
-> > > > [...]
-> > > > ok:
-> > > >        hdr =3D skb_vnet_hdr(skb);
-> > > >        memcpy(hdr, hdr_p, hdr_len);
-> > > > [...]
-> > > > }
-> > > >
-> > > > When VIRTIO_NET_F_HASH_REPORT feature is enabled, hdr_len =3D 20
-> > > > But the sizeof(*hdr) is 12,
-> > > > memcpy(hdr, hdr_p, hdr_len); will copy 20 bytes to the hdr,
-> > > > which make a potential risk of bug. And this risk can be avoided by
-> > > > introducing struct virtio_net_hdr_mrg_rxbuf.
-> > > >
-> > > > Signed-off-by: Feng Liu <feliu@nvidia.com>
-> > > > Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-> > >
-> > > I'm unsure if this is 'net' material.
-> > >
-> >
-> > It is about the modification of the virtio_net driver. I think it shoul=
-d be
-> > regarded as `net` material.
->
-> To clarify: In general new Networking features go via the net-next tree,
-> while bug fixes go via the net tree. I was suggesting this
-> is more appropriate for net-next, and that should be reflected in the
-> subject.
->
->         Subject: [PATCH net-next] ...
->
-> Sorry for not being clearer the first time around.
+Em Tue, Jul 18, 2023 at 01:33:46PM +0300, Adrian Hunter escreveu:
+> On 18/07/23 11:52, Changbin Du wrote:
+> > Fix the format of unordered lists so the can wrap properly.
+> > 
+> > Signed-off-by: Changbin Du <changbin.du@huawei.com>
+> 
+> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-Right, this should go to net-next.
+Thanks, applied.
 
->
-> >
-> > > > ---
-> > > >   drivers/net/virtio_net.c        | 29 ++++++++++++++++------------=
--
-> > > >   include/uapi/linux/virtio_net.h |  7 +++++++
-> > > >   2 files changed, 23 insertions(+), 13 deletions(-)
-> > > >
-> > > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > > > index 1270c8d23463..6ce0fbcabda9 100644
-> > > > --- a/drivers/net/virtio_net.c
-> > > > +++ b/drivers/net/virtio_net.c
-> > > > @@ -344,9 +344,10 @@ static int rxq2vq(int rxq)
-> > > >        return rxq * 2;
-> > > >   }
-> > > >
-> > > > -static inline struct virtio_net_hdr_mrg_rxbuf *skb_vnet_hdr(struct=
- sk_buff *skb)
-> > > > +static inline struct virtio_net_common_hdr *
-> > > > +skb_vnet_common_hdr(struct sk_buff *skb)
-> > > >   {
-> > > > -     return (struct virtio_net_hdr_mrg_rxbuf *)skb->cb;
-> > > > +     return (struct virtio_net_common_hdr *)skb->cb;
-> > > >   }
-> > > >
-> > > >   /*
-> > > > @@ -469,7 +470,7 @@ static struct sk_buff *page_to_skb(struct virtn=
-et_info *vi,
-> > > >                                   unsigned int headroom)
-> > > >   {
-> > > >        struct sk_buff *skb;
-> > > > -     struct virtio_net_hdr_mrg_rxbuf *hdr;
-> > > > +     struct virtio_net_common_hdr *hdr;
-> > > >        unsigned int copy, hdr_len, hdr_padded_len;
-> > > >        struct page *page_to_free =3D NULL;
-> > > >        int tailroom, shinfo_size;
-> > > > @@ -554,7 +555,7 @@ static struct sk_buff *page_to_skb(struct virtn=
-et_info *vi,
-> > > >                give_pages(rq, page);
-> > > >
-> > > >   ok:
-> > > > -     hdr =3D skb_vnet_hdr(skb);
-> > > > +     hdr =3D skb_vnet_common_hdr(skb);
-> > > >        memcpy(hdr, hdr_p, hdr_len);
-> > > >        if (page_to_free)
-> > > >                put_page(page_to_free);
-> > > > @@ -966,7 +967,7 @@ static struct sk_buff *receive_small_build_skb(=
-struct virtnet_info *vi,
-> > > >                return NULL;
-> > > >
-> > > >        buf +=3D header_offset;
-> > > > -     memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
-> > > > +     memcpy(skb_vnet_common_hdr(skb), buf, vi->hdr_len);
-> > > >
-> > > >        return skb;
-> > > >   }
-> > > > @@ -1577,7 +1578,8 @@ static void receive_buf(struct virtnet_info *=
-vi, struct receive_queue *rq,
-> > > >   {
-> > > >        struct net_device *dev =3D vi->dev;
-> > > >        struct sk_buff *skb;
-> > > > -     struct virtio_net_hdr_mrg_rxbuf *hdr;
-> > > > +     struct virtio_net_common_hdr *common_hdr;
-> > > > +     struct virtio_net_hdr_mrg_rxbuf *mrg_hdr;
-> > > >
-> > > >        if (unlikely(len < vi->hdr_len + ETH_HLEN)) {
-> > > >                pr_debug("%s: short packet %i\n", dev->name, len);
-> > > > @@ -1597,18 +1599,19 @@ static void receive_buf(struct virtnet_info=
- *vi, struct receive_queue *rq,
-> > > >        if (unlikely(!skb))
-> > > >                return;
-> > > >
-> > > > -     hdr =3D skb_vnet_hdr(skb);
-> > > > +     common_hdr =3D skb_vnet_common_hdr(skb);
-> > > >        if (dev->features & NETIF_F_RXHASH && vi->has_rss_hash_repor=
-t)
-> > > > -             virtio_skb_set_hash((const struct virtio_net_hdr_v1_h=
-ash *)hdr, skb);
-> > > > +             virtio_skb_set_hash(&common_hdr->hash_v1_hdr, skb);
-> > > >
-> > > > -     if (hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VALID)
-> > > > +     mrg_hdr =3D &common_hdr->mrg_hdr;
-> > > > +     if (mrg_hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VALID)
-> > > >                skb->ip_summed =3D CHECKSUM_UNNECESSARY;
-> > > >
-> > > > -     if (virtio_net_hdr_to_skb(skb, &hdr->hdr,
-> > > > +     if (virtio_net_hdr_to_skb(skb, &mrg_hdr->hdr,
-> > > >                                  virtio_is_little_endian(vi->vdev))=
-) {
-> > > >                net_warn_ratelimited("%s: bad gso: type: %u, size: %=
-u\n",
-> > > > -                                  dev->name, hdr->hdr.gso_type,
-> > > > -                                  hdr->hdr.gso_size);
-> > > > +                                  dev->name, mrg_hdr->hdr.gso_type=
-,
-> > > > +                                  mrg_hdr->hdr.gso_size);
-> > > >                goto frame_err;
-> > > >        }
-> > > >
-> > > > @@ -2105,7 +2108,7 @@ static int xmit_skb(struct send_queue *sq, st=
-ruct sk_buff *skb)
-> > > >        if (can_push)
-> > > >                hdr =3D (struct virtio_net_hdr_mrg_rxbuf *)(skb->dat=
-a - hdr_len);
-> > > >        else
-> > > > -             hdr =3D skb_vnet_hdr(skb);
-> > > > +             hdr =3D &skb_vnet_common_hdr(skb)->mrg_hdr;
-> > > >
-> > > >        if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
-> > > >                                    virtio_is_little_endian(vi->vdev=
-), false,
-> > > > diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/v=
-irtio_net.h
-> > > > index 12c1c9699935..db40f93ae8b3 100644
-> > > > --- a/include/uapi/linux/virtio_net.h
-> > > > +++ b/include/uapi/linux/virtio_net.h
-> > > > @@ -201,6 +201,13 @@ struct virtio_net_hdr_mrg_rxbuf {
-> > > >        struct virtio_net_hdr hdr;
-> > > >        __virtio16 num_buffers; /* Number of merged rx buffers */
-> > > >   };
-> > > > +
-> > > > +struct virtio_net_common_hdr {
-> > > > +     union {
-> > > > +             struct virtio_net_hdr_mrg_rxbuf mrg_hdr;
-> > > > +             struct virtio_net_hdr_v1_hash hash_v1_hdr;
-> > > > +     };
-> > > > +};
-> > >
-> > > Does this belong in the UAPI?
-> > > I would have assumed it's a Kernel implementation detail.
-> > >
-> > The existing codes, virtio_net.h is in uapi/linux/, I added the new
-> > structure and followed existing code. My modification is related to Ker=
-nel
-> > implementation detail now.
->
-> The header you have modified forms part of the userspace API (UAPI).
-> Perhaps there is something about virtio_net that makes this correct, but =
-it
-> seems to me that kernel-internal details don't belong there.
+- Arnaldo
 
-FWIW, I ran into similar issues before in a draft that added timestamp
-support [1]
+ 
+> > ---
+> >  tools/perf/Documentation/perf-ftrace.txt | 16 +++---
+> >  tools/perf/Documentation/perf-record.txt | 73 +++++++++++++-----------
+> >  2 files changed, 48 insertions(+), 41 deletions(-)
+> > 
+> > diff --git a/tools/perf/Documentation/perf-ftrace.txt b/tools/perf/Documentation/perf-ftrace.txt
+> > index df4595563801..d780b93fcf87 100644
+> > --- a/tools/perf/Documentation/perf-ftrace.txt
+> > +++ b/tools/perf/Documentation/perf-ftrace.txt
+> > @@ -96,8 +96,9 @@ OPTIONS for 'perf ftrace trace'
+> >  
+> >  --func-opts::
+> >  	List of options allowed to set:
+> > -	  call-graph - Display kernel stack trace for function tracer.
+> > -	  irq-info   - Display irq context info for function tracer.
+> > +
+> > +	  - call-graph - Display kernel stack trace for function tracer.
+> > +	  - irq-info   - Display irq context info for function tracer.
+> >  
+> >  -G::
+> >  --graph-funcs=::
+> > @@ -118,11 +119,12 @@ OPTIONS for 'perf ftrace trace'
+> >  
+> >  --graph-opts::
+> >  	List of options allowed to set:
+> > -	  nosleep-time - Measure on-CPU time only for function_graph tracer.
+> > -	  noirqs       - Ignore functions that happen inside interrupt.
+> > -	  verbose      - Show process names, PIDs, timestamps, etc.
+> > -	  thresh=<n>   - Setup trace duration threshold in microseconds.
+> > -	  depth=<n>    - Set max depth for function graph tracer to follow.
+> > +
+> > +	  - nosleep-time - Measure on-CPU time only for function_graph tracer.
+> > +	  - noirqs       - Ignore functions that happen inside interrupt.
+> > +	  - verbose      - Show process names, PIDs, timestamps, etc.
+> > +	  - thresh=<n>   - Setup trace duration threshold in microseconds.
+> > +	  - depth=<n>    - Set max depth for function graph tracer to follow.
+> >  
+> >  
+> >  OPTIONS for 'perf ftrace latency'
+> > diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
+> > index 9c01076f6c89..8ee5d60225ec 100644
+> > --- a/tools/perf/Documentation/perf-record.txt
+> > +++ b/tools/perf/Documentation/perf-record.txt
+> > @@ -523,9 +523,10 @@ CLOCK_BOOTTIME, CLOCK_REALTIME and CLOCK_TAI.
+> >  Select AUX area tracing Snapshot Mode. This option is valid only with an
+> >  AUX area tracing event. Optionally, certain snapshot capturing parameters
+> >  can be specified in a string that follows this option:
+> > -  'e': take one last snapshot on exit; guarantees that there is at least one
+> > +
+> > +  - 'e': take one last snapshot on exit; guarantees that there is at least one
+> >         snapshot in the output file;
+> > -  <size>: if the PMU supports this, specify the desired snapshot size.
+> > +  - <size>: if the PMU supports this, specify the desired snapshot size.
+> >  
+> >  In Snapshot Mode trace data is captured only when signal SIGUSR2 is received
+> >  and on exit if the above 'e' option is given.
+> > @@ -572,8 +573,9 @@ providing implementation for Posix AIO API.
+> >  
+> >  --affinity=mode::
+> >  Set affinity mask of trace reading thread according to the policy defined by 'mode' value:
+> > -  node - thread affinity mask is set to NUMA node cpu mask of the processed mmap buffer
+> > -  cpu  - thread affinity mask is set to cpu of the processed mmap buffer
+> > +
+> > +  - node - thread affinity mask is set to NUMA node cpu mask of the processed mmap buffer
+> > +  - cpu  - thread affinity mask is set to cpu of the processed mmap buffer
+> >  
+> >  --mmap-flush=number::
+> >  
+> > @@ -625,16 +627,17 @@ Record timestamp boundary (time of first/last samples).
+> >  --switch-output[=mode]::
+> >  Generate multiple perf.data files, timestamp prefixed, switching to a new one
+> >  based on 'mode' value:
+> > -  "signal" - when receiving a SIGUSR2 (default value) or
+> > -  <size>   - when reaching the size threshold, size is expected to
+> > -             be a number with appended unit character - B/K/M/G
+> > -  <time>   - when reaching the time threshold, size is expected to
+> > -             be a number with appended unit character - s/m/h/d
+> >  
+> > -             Note: the precision of  the size  threshold  hugely depends
+> > -             on your configuration  - the number and size of  your  ring
+> > -             buffers (-m). It is generally more precise for higher sizes
+> > -             (like >5M), for lower values expect different sizes.
+> > +  - "signal" - when receiving a SIGUSR2 (default value) or
+> > +  - <size>   - when reaching the size threshold, size is expected to
+> > +               be a number with appended unit character - B/K/M/G
+> > +  - <time>   - when reaching the time threshold, size is expected to
+> > +               be a number with appended unit character - s/m/h/d
+> > +
+> > +               Note: the precision of  the size  threshold  hugely depends
+> > +               on your configuration  - the number and size of  your  ring
+> > +               buffers (-m). It is generally more precise for higher sizes
+> > +               (like >5M), for lower values expect different sizes.
+> >  
+> >  A possible use case is to, given an external event, slice the perf.data file
+> >  that gets then processed, possibly via a perf script, to decide if that
+> > @@ -680,11 +683,12 @@ choice in this option.  For example, --synth=no would have MMAP events for
+> >  kernel and modules.
+> >  
+> >  Available types are:
+> > -  'task'    - synthesize FORK and COMM events for each task
+> > -  'mmap'    - synthesize MMAP events for each process (implies 'task')
+> > -  'cgroup'  - synthesize CGROUP events for each cgroup
+> > -  'all'     - synthesize all events (default)
+> > -  'no'      - do not synthesize any of the above events
+> > +
+> > +  - 'task'    - synthesize FORK and COMM events for each task
+> > +  - 'mmap'    - synthesize MMAP events for each process (implies 'task')
+> > +  - 'cgroup'  - synthesize CGROUP events for each cgroup
+> > +  - 'all'     - synthesize all events (default)
+> > +  - 'no'      - do not synthesize any of the above events
+> >  
+> >  --tail-synthesize::
+> >  Instead of collecting non-sample events (for example, fork, comm, mmap) at
+> > @@ -736,18 +740,19 @@ ctl-fifo / ack-fifo are opened and used as ctl-fd / ack-fd as follows.
+> >  Listen on ctl-fd descriptor for command to control measurement.
+> >  
+> >  Available commands:
+> > -  'enable'           : enable events
+> > -  'disable'          : disable events
+> > -  'enable name'      : enable event 'name'
+> > -  'disable name'     : disable event 'name'
+> > -  'snapshot'         : AUX area tracing snapshot).
+> > -  'stop'             : stop perf record
+> > -  'ping'             : ping
+> > -
+> > -  'evlist [-v|-g|-F] : display all events
+> > -                       -F  Show just the sample frequency used for each event.
+> > -                       -v  Show all fields.
+> > -                       -g  Show event group information.
+> > +
+> > +  - 'enable'           : enable events
+> > +  - 'disable'          : disable events
+> > +  - 'enable name'      : enable event 'name'
+> > +  - 'disable name'     : disable event 'name'
+> > +  - 'snapshot'         : AUX area tracing snapshot).
+> > +  - 'stop'             : stop perf record
+> > +  - 'ping'             : ping
+> > +  - 'evlist [-v|-g|-F] : display all events
+> > +
+> > +                         -F  Show just the sample frequency used for each event.
+> > +                         -v  Show all fields.
+> > +                         -g  Show event group information.
+> >  
+> >  Measurements can be started with events disabled using --delay=-1 option. Optionally
+> >  send control command completion ('ack\n') to ack-fd descriptor to synchronize with the
+> > @@ -808,10 +813,10 @@ the second monitors CPUs 1 and 5-7 with the affinity mask 5-7.
+> >  <spec> value can also be a string meaning predefined parallel threads
+> >  layout:
+> >  
+> > -    cpu    - create new data streaming thread for every monitored cpu
+> > -    core   - create new thread to monitor CPUs grouped by a core
+> > -    package - create new thread to monitor CPUs grouped by a package
+> > -    numa   - create new threed to monitor CPUs grouped by a NUMA domain
+> > +    - cpu    - create new data streaming thread for every monitored cpu
+> > +    - core   - create new thread to monitor CPUs grouped by a core
+> > +    - package - create new thread to monitor CPUs grouped by a package
+> > +    - numa   - create new threed to monitor CPUs grouped by a NUMA domain
+> >  
+> >  Predefined layouts can be used on systems with large number of CPUs in
+> >  order not to spawn multiple per-cpu streaming threads but still avoid LOST
+> 
 
-If we're going to change this structure, we should do it in a way that
-is forward proof to future extensions to the virtio spec and with that
-the fields in this struct. Especially in UAPI.
+-- 
 
-Is virtio_net_hdr_v1_hash the latest virtio-spec compliant header? And
-do we expect for v1.3 to just add some fields to this?
-
-The struct comment of virtio_net_hdr_v1 states "This is
-bitwise-equivalent to the legacy struct virtio_net_hdr_mrg_rxbuf, only
-flattened.". I don't quite understand what the flattening bought, vs
-having struct virtio_net_hdr as first member. Another difference may
-be the endianness between legacy (0.9) and v1.0+.
-
-Since legacy virtio will no longer be modified, I don't think there is
-much value is exposing this new union as UAPI. I do appreciate the
-benefit to the implementation.
-
-[1] https://patches.linaro.org/project/netdev/patch/20210208185558.995292-3=
--willemdebruijn.kernel@gmail.com/
+- Arnaldo
