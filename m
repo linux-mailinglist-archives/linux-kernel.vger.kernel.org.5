@@ -2,79 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A885477CF2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E292D77CF30
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236136AbjHOPaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 11:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37386 "EHLO
+        id S238008AbjHOPc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 11:32:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238067AbjHOP3d (ORCPT
+        with ESMTP id S238161AbjHOPcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 11:29:33 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766C919B5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:29:15 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:5d0c:f209:12a7:4ce5])
-        by michel.telenet-ops.be with bizsmtp
-        id ZrVD2A00845ualL06rVDxq; Tue, 15 Aug 2023 17:29:13 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qVvyk-000j7z-Lt;
-        Tue, 15 Aug 2023 17:29:13 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qVvyq-005clt-W4;
-        Tue, 15 Aug 2023 17:29:13 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Wolfram Sang <wsa@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Luca Ceresoli <luca.ceresoli@bootlin.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] i2c: Make I2C_ATR invisible
-Date:   Tue, 15 Aug 2023 17:29:11 +0200
-Message-Id: <588d302477cb7e6b30b52ee6448807324c57b88a.1692113321.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
+        Tue, 15 Aug 2023 11:32:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E09691FCA
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:31:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692113450;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=daE6eAQxqOJuN7ZDS1e0cYUDWgx2XMNqJQ6DBOaarzY=;
+        b=KJPiJC1tE5gXRqX7axg/EZzrv7Cd0dOfc6N0U1r6U5e0KfvRv9gUty1k85z8oc4m5NP6nV
+        IPwNSrIui1caTpkwULt1k4ZGlSXu6QHKW1ZD9+pbkZLTchSJCSsRKusyMfsESiF3R7Sa8C
+        LqmGF/6m4T3oCe2UMbwqkhjX61Hn17M=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-177-QuI8AizfMuSesEpynKffbQ-1; Tue, 15 Aug 2023 11:30:46 -0400
+X-MC-Unique: QuI8AizfMuSesEpynKffbQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2276B28004EB;
+        Tue, 15 Aug 2023 15:30:46 +0000 (UTC)
+Received: from llong.com (unknown [10.22.18.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4414240D2839;
+        Tue, 15 Aug 2023 15:30:45 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH-cgroup v6 0/6] cgroup/cpuset: Support remote partitions
+Date:   Tue, 15 Aug 2023 11:30:21 -0400
+Message-Id: <20230815153027.633355-1-longman@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I2C Address Translator (ATR) support is not a stand-alone driver, but a
-library.  All of its users select I2C_ATR.  Hence there is no need for
-the user to enable this symbol manually, except when compile-testing.
+ v6:
+  - [v5] https://lore.kernel.org/lkml/20230713172601.3285847-1-longman@redhat.com/
+  - Add another read-only cpuset.cpus.exclusive.effective control file
+    to expose the effective set of exclusive CPUs.
+  - Update the documentation and test accordingly.
 
-Fixes: a076a860acae77bb ("media: i2c: add I2C Address Translator (ATR) support")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Do we care yet about out-of-tree drivers that need this functionality?
----
- drivers/i2c/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ v5:
+  - [v4] https://lore.kernel.org/lkml/20230627143508.1576882-1-longman@redhat.com/
+  - Drop the first 4 patches as they had been merged.
+  - Make cpuset.cpus.exclusive invariant once it is manually set. This
+    also means the cpuset.cpus.exclusive may not show the effective value
+    that is actually being used.
+  - Update the documentation and test accordingly.
 
-diff --git a/drivers/i2c/Kconfig b/drivers/i2c/Kconfig
-index c6d1a345ea6d8aee..9388823bb0bb960c 100644
---- a/drivers/i2c/Kconfig
-+++ b/drivers/i2c/Kconfig
-@@ -72,7 +72,7 @@ config I2C_MUX
- source "drivers/i2c/muxes/Kconfig"
- 
- config I2C_ATR
--	tristate "I2C Address Translator (ATR) support"
-+	tristate "I2C Address Translator (ATR) support" if COMPILE_TEST
- 	help
- 	  Enable support for I2C Address Translator (ATR) chips.
- 
+ v4:
+  - [v3] https://lore.kernel.org/lkml/20230627005529.1564984-1-longman@redhat.com/
+  - Fix compilation problem reported by kernel test robot.
+
+This patch series introduces new cpuset control
+files "cpuset.cpus.exclusive" (read-write) and
+"cpuset.cpus.exclusive.effective" (read only) for better control of
+which exclusive CPUs are being distributed down the cgroup hierarchy
+for creating cpuset partition.
+
+Any one of the exclusive CPUs can only be distributed to at most one
+child cpuset. Invalid input to "cpuset.cpus.exclusive" that violates the
+sibling exclusivity rule will be rejected. This new control files has
+no effect on the behavior of the cpuset until it turns into a partition
+root. At that point, its effective CPUs will be set to its exclusive
+CPUs unless some of them are offline.
+
+This patch series also introduces a new category of cpuset partition
+called remote partitions. The existing partition category where the
+partition roots have to be clustered around the root cgroup in a
+hierarchical way is now referred to as local partitions.
+
+A remote partition can be formed far from the root cgroup with no
+partition root parent. While local partitions can be created without
+touching "cpuset.cpus.exclusive" as it can be set automatically
+if a cpuset becomes a local partition root. Properly setting
+"cpuset.cpus.exclusive" values down the hierarchy are required to create
+a remote partition.
+
+Both scheduling and isolated partitions can be formed as a remote
+partition. A local partition can be created under a remote partition.
+A remote partition, however, cannot be formed under a local partition
+for now.
+
+Modern container orchestration tools like Kubernetes use the cgroup
+hierarchy to manage different containers. And it is relying on other
+middleware like systemd to help managing it. If a container needs to
+use isolated CPUs, it is hard to get those with the local partitions
+as it will require the administrative parent cgroup to be a partition
+root too which tool like systemd may not be ready to manage.
+
+With this patch series, we allow the creation of remote partition
+far from the root. The container management tool can manage the
+"cpuset.cpus.exclusive" file without impacting the other cpuset
+files that are managed by other middlewares. Of course, invalid
+"cpuset.cpus.exclusive" values will be rejected.
+
+Waiman Long (6):
+  cgroup/cpuset: Add cpuset.cpus.exclusive.effective for v2
+  cgroup/cpuset: Add cpuset.cpus.exclusive for v2
+  cgroup/cpuset: Introduce remote partition
+  cgroup/cpuset: Check partition conflict with housekeeping setup
+  cgroup/cpuset: Documentation update for partition
+  cgroup/cpuset: Extend test_cpuset_prs.sh to test remote partition
+
+ Documentation/admin-guide/cgroup-v2.rst       |  123 +-
+ kernel/cgroup/cpuset.c                        | 1283 +++++++++++++----
+ .../selftests/cgroup/test_cpuset_prs.sh       |  428 ++++--
+ 3 files changed, 1343 insertions(+), 491 deletions(-)
+
 -- 
-2.34.1
+2.31.1
 
