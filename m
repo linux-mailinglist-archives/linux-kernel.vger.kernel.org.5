@@ -2,89 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B3577CB84
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BBB77CB88
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236644AbjHOLMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 07:12:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34146 "EHLO
+        id S236628AbjHOLNo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Aug 2023 07:13:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236693AbjHOLLk (ORCPT
+        with ESMTP id S236638AbjHOLNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 07:11:40 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 53372A6
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:11:39 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6401A1063;
-        Tue, 15 Aug 2023 04:12:21 -0700 (PDT)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 379853F762;
-        Tue, 15 Aug 2023 04:11:38 -0700 (PDT)
-Message-ID: <b9bda816-612c-b646-63e7-54cb3fedf1f4@arm.com>
-Date:   Tue, 15 Aug 2023 12:11:33 +0100
+        Tue, 15 Aug 2023 07:13:04 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE3BFE
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:13:02 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-180-guUsedkBOBOlgnKb9Vot1w-1; Tue, 15 Aug 2023 12:12:59 +0100
+X-MC-Unique: guUsedkBOBOlgnKb9Vot1w-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 15 Aug
+ 2023 12:12:57 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Tue, 15 Aug 2023 12:12:57 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'David Howells' <dhowells@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     "jlayton@kernel.org" <jlayton@kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC PATCH] iov_iter: Convert iterate*() to inline funcs
+Thread-Topic: [RFC PATCH] iov_iter: Convert iterate*() to inline funcs
+Thread-Index: AQHZzGHVnVxrFjw7PE2nk6LHTBa8tq/rOLUQ
+Date:   Tue, 15 Aug 2023 11:12:57 +0000
+Message-ID: <aceea2408bf049aebb1f1f893281795c@AcuMS.aculab.com>
+References: <3710261.1691764329@warthog.procyon.org.uk>
+In-Reply-To: <3710261.1691764329@warthog.procyon.org.uk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 0/2] iommu/iova: Make the rcache depot properly flexible
-Content-Language: en-GB
-To:     John Garry <john.g.garry@oracle.com>, joro@8bytes.org
-Cc:     will@kernel.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, zhangzekun11@huawei.com
-References: <cover.1692033783.git.robin.murphy@arm.com>
- <80fb865a-eb45-e783-277d-0d2e044c28f5@oracle.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <80fb865a-eb45-e783-277d-0d2e044c28f5@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/08/2023 11:24 am, John Garry wrote:
-> On 14/08/2023 18:53, Robin Murphy wrote:
->> Hi all,
->>
+From: David Howells
+> Sent: 11 August 2023 15:32
 > 
-> Hi Robin,
-> 
->> Prompted by [1], which reminded me I started this a while ago, I've now
->> finished off my own attempt at sorting out the horrid lack of rcache
->> scalability. It's become quite clear that given the vast range of system
->> sizes and workloads there is no right size for a fixed depot array, so I
->> reckon we're better off not having one at all.
->>
->> Note that the reclaim threshold and rate are chosen fairly arbitrarily -
-> 
-> This threshold is the number of online CPUs, right?
+> Convert the iov_iter iteration macros to inline functions to make the code
+> easier to follow.  Ideally, the optimiser would produce much the same code
+> in both cases, but the revised code ends up a bit bigger.
+...
 
-Yes, that's nominally half of the current fixed size (based on all the 
-performance figures from the original series seemingly coming from a 
-16-thread machine, but seemed like a fair compromise. I am of course 
-keen to see how real-world testing actually pans out.
+Actually quite typical because inlining happens much later on.
+I suspect that the #define benefits from the compile front-end
+optimising constants.
 
->> it's enough of a challenge to get my 4-core dev board with spinning disk
->> and gigabit ethernet to push anything into a depot at all :)
->>
-> 
-> I have to admit that I was hoping to also see a more aggressive reclaim 
-> strategy, where we also trim the per-CPU rcaches when not in use. 
-> Leizhen proposed something like this a long time ago.
+	David
 
-Don't think I haven't been having various elaborate ideas for making it 
-cleverer with multiple thresholds and self-tuning, however I have 
-managed to restrain myself ;)
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-At this point I'm just looking to confirm whether the fundamental 
-concepts are sound, and at least no worse than the current behaviour 
-(hence keeping it split into 2 distinct patches for the sake of review 
-and debugging). If it proves solid then we can absolutely come back and 
-go to town on enhancements later.
-
-Cheers,
-Robin.
