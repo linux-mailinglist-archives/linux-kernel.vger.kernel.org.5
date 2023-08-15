@@ -2,192 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F360577CA52
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF0277CA57
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236119AbjHOJWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 05:22:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56886 "EHLO
+        id S236079AbjHOJXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 05:23:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236150AbjHOJVK (ORCPT
+        with ESMTP id S236152AbjHOJWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 05:21:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C058B199F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 02:19:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692091163; x=1723627163;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=mAC4DXIcqQ/8JD4Zjwy/1kp3a2e9CjhUfeak91eAFIY=;
-  b=S8xXNPvRd3QNo7ZxWvYHvwrONWYpT6ENqUzd5Dr6YhRbx2DUqsP4lRW0
-   JCg5brjjKCV7WANIeP6MLEJmJP6trVefEiA3KszKqBi4hZAJopy2Iprnl
-   qYBWrmXi0FGUb99U2OZ68bpEJyG6z3EYTk5Ravr31/njeqnLA/7NURpt4
-   yrMHJQPDRmIlMoUJCAHLDCm21Wa5Sq+sMhxD44Uz/sIsWv8jCTW6TgIew
-   LqoThM+RT9kLkG4CQphMvsxCOwtmlPlkMMYQ3v3uhqEomps/uv/+l2xsB
-   OraRPER/zLkcfC1oYknJajZ4gKIlo1Egwu897v0qhBhvAe4qt3GOtZiYt
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="436135723"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="436135723"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 02:19:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="799137260"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="799137260"
-Received: from cristina-mobl3.ger.corp.intel.com (HELO localhost) ([10.252.52.75])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 02:19:17 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>
-Subject: Re: [PATCH RFC 01/13] drm/connector: Introduce an HDMI connector
-In-Reply-To: <20230814-kms-hdmi-connector-state-v1-1-048054df3654@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20230814-kms-hdmi-connector-state-v1-0-048054df3654@kernel.org>
- <20230814-kms-hdmi-connector-state-v1-1-048054df3654@kernel.org>
-Date:   Tue, 15 Aug 2023 12:19:14 +0300
-Message-ID: <878racd5nx.fsf@intel.com>
+        Tue, 15 Aug 2023 05:22:23 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC9A19AF;
+        Tue, 15 Aug 2023 02:21:53 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4fe0d5f719dso8580903e87.2;
+        Tue, 15 Aug 2023 02:21:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692091311; x=1692696111;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mty89Zsn743QA235zlInIryimxQpDYJ277HbsbXhdWg=;
+        b=m3yx0WGmf+HfuxGalGmrrQxAwumeWYg2dYkjAl9VgThDO6j8+PLy8YyX0K/uCFc7HD
+         JV/2Sb+zL4P3tMoO67fSdnfcH2FCQVT04NW+98IX+6l0SCwx4UoM4leYFvis4IlvrsuC
+         jY8hZD1kTTKesHHrV+OISKuxF34LnShdgfy6FDUH11J4dI+9KwumLlb9ya7zcbq8qar/
+         QM36P6vzlSP+Yb2z4o60A3dBSG0+lHNE3sHnS9cjDvXrKKwN/du+NDGf/wc9yeAzDSpp
+         MqP0EpF1F0LGhrG/oHjddJmm7sOMW3fSHiXsLolPCSoJNtUik3pRaTGGrRemc/LpzlJJ
+         t0iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692091311; x=1692696111;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mty89Zsn743QA235zlInIryimxQpDYJ277HbsbXhdWg=;
+        b=CDExglijKaIeM/ytlZbRn5ACTTH/cI7CI2W2l2X/pgKqwEXNo8dCXUioIXAhv5wvYu
+         l05tXB8eNxZ/raRI0lUUrNQGbk8bum6c7qNq/6vsWhuQ4ZB2Gd9mRDr7FSLPzAtJwo7p
+         +Z5j5+Pl2AGoKFnUk889mCaEJLqnnmz2NSYXQvd2jTKV/mnH0ZdlQEA5JfjAsx0D6m8s
+         avFwIlqVW+K03stgiIeqjWvmOLmHaNtlM7or0tkblIBFN0lyqLcqN/0Je3a6RVIayX3Z
+         atySHa6nrsg0FnpVgMZ2QFps9q3F4wEHTrDKIO95sYs83AD85K95FfFoiN2FmYe5+4hW
+         Hc4w==
+X-Gm-Message-State: AOJu0YyH6mF7l7HGMG53y6izJcom2IBFPbZ0RB3H4t5GuIeQ3zrhC2F3
+        MA4NKdR1KGLMQPQkYaNemhs4tyNYnBwVBgSU
+X-Google-Smtp-Source: AGHT+IHqwcMfn+ov/HY3PvEe3qzwNYh+mZoAO2ekpyvjQAAlCFVl4ozDxPwwO9IbXdqt1b/CTvWU6w==
+X-Received: by 2002:a05:6512:4004:b0:4fd:fef7:95a1 with SMTP id br4-20020a056512400400b004fdfef795a1mr9543796lfb.53.1692091311136;
+        Tue, 15 Aug 2023 02:21:51 -0700 (PDT)
+Received: from DESKTOP-BUQC5RC.localdomain ([178.155.5.98])
+        by smtp.gmail.com with ESMTPSA id a5-20020a19f805000000b004fb9536bc99sm2353569lff.169.2023.08.15.02.21.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Aug 2023 02:21:50 -0700 (PDT)
+From:   Alexander Danilenko <al.b.danilenko@gmail.com>
+To:     Laxman Dewangan <ldewangan@nvidia.com>
+Cc:     Alexander Danilenko <al.b.danilenko@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mason Zhang <Mason.Zhang@mediatek.com>,
+        linux-spi@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: [PATCH] spi: tegra114: Remove unnecessary NULL-pointer checks
+Date:   Tue, 15 Aug 2023 12:20:58 +0300
+Message-Id: <20230815092058.4083-1-al.b.danilenko@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Aug 2023, Maxime Ripard <mripard@kernel.org> wrote:
-> A lot of the various HDMI drivers duplicate some logic that depends on
-> the HDMI spec itself and not really a particular hardware
-> implementation.
->
-> Output BPC or format selection, infoframe generation are good examples
-> of such areas.
->
-> This creates a lot of boilerplate, with a lot of variations, which makes
-> it hard for userspace to rely on, and makes it difficult to get it right
-> for drivers.
->
-> Let's create a new connector variant specifically dedicated to HDMI
-> controllers that will allow to abstract away the duplicated logic.
->
-> Hopefully, this will make drivers simpler to handle, and their behaviour
-> more consistent.
->
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> ---
->  drivers/gpu/drm/Makefile             |  1 +
->  drivers/gpu/drm/drm_hdmi_connector.c | 45 ++++++++++++++++++++++++++++++++++++
->  include/drm/drm_connector.h          | 16 +++++++++++++
->  3 files changed, 62 insertions(+)
->
-> diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
-> index 7a09a89b493b..1520d4ccd3d7 100644
-> --- a/drivers/gpu/drm/Makefile
-> +++ b/drivers/gpu/drm/Makefile
-> @@ -27,6 +27,7 @@ drm-y := \
->  	drm_fourcc.o \
->  	drm_framebuffer.o \
->  	drm_gem.o \
-> +	drm_hdmi_connector.o \
->  	drm_ioctl.o \
->  	drm_lease.o \
->  	drm_managed.o \
-> diff --git a/drivers/gpu/drm/drm_hdmi_connector.c b/drivers/gpu/drm/drm_hdmi_connector.c
-> new file mode 100644
-> index 000000000000..62f01dd2e6df
-> --- /dev/null
-> +++ b/drivers/gpu/drm/drm_hdmi_connector.c
-> @@ -0,0 +1,45 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +
-> +#include <drm/drm_connector.h>
-> +#include <drm/drm_mode.h>
-> +
-> +#include <linux/export.h>
-> +
-> +/**
-> + * drmm_hdmi_connector_init - Init a preallocated HDMI connector
-> + * @dev: DRM device
-> + * @hdmi_connector: A pointer to the HDMI connector to init
-> + * @connector_type: user visible type of the connector
-> + * @ddc: optional pointer to the associated ddc adapter
-> + *
-> + * Initialises a preallocated HDMI connector. Connectors can be
-> + * subclassed as part of driver connector objects.
-> + *
-> + * Cleanup is automatically handled with a call to
-> + * drm_connector_cleanup() in a DRM-managed action.
-> + *
-> + * The connector structure should be allocated with drmm_kzalloc().
-> + *
-> + * Returns:
-> + * Zero on success, error code on failure.
-> + */
-> +int drmm_hdmi_connector_init(struct drm_device *dev,
-> +			     struct drm_hdmi_connector *hdmi_connector,
-> +			     const struct drm_connector_funcs *funcs,
-> +			     int connector_type,
-> +			     struct i2c_adapter *ddc)
-> +{
-> +	struct drm_connector *connector = &hdmi_connector->base;
-> +	int ret;
-> +
-> +	if (connector_type != DRM_MODE_CONNECTOR_HDMIA ||
-> +	    connector_type != DRM_MODE_CONNECTOR_HDMIB)
-> +		return -EINVAL;
-> +
-> +	ret = drmm_connector_init(dev, connector, funcs, connector_type, ddc);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(drmm_hdmi_connector_init);
-> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-> index d300fde6c1a4..1859b74083f5 100644
-> --- a/include/drm/drm_connector.h
-> +++ b/include/drm/drm_connector.h
-> @@ -2042,6 +2042,22 @@ void drm_connector_attach_privacy_screen_provider(
->  	struct drm_connector *connector, struct drm_privacy_screen *priv);
->  void drm_connector_update_privacy_screen(const struct drm_connector_state *connector_state);
->  
-> +struct drm_hdmi_connector {
-> +	/**
-> +	 * @base: Base Connector
-> +	 */
-> +	struct drm_connector base;
-> +};
-> +
-> +#define connector_to_hdmi_connector(connector) \
-> +	container_of_const(connector, struct drm_hdmi_connector, base)
-> +
-> +int drmm_hdmi_connector_init(struct drm_device *dev,
-> +			     struct drm_hdmi_connector *hdmi_connector,
-> +			     const struct drm_connector_funcs *funcs,
-> +			     int connector_type,
-> +			     struct i2c_adapter *ddc);
-> +
+cs_setup, cs_hold and cs_inactive points to fields of spi_device struct,
+so there is no sense in checking them for NULL.
 
-Pure bikeshedding, maybe add drm_hdmi_connector.h from the start so we
-don't have to split this up later.
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-BR,
-Jani.
+Fixes: 04e6bb0d6bb1 ("spi: modify set_cs_timing parameter")
+Signed-off-by: Alexander Danilenko <al.b.danilenko@gmail.com>
+---
+ drivers/spi/spi-tegra114.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
->  /**
->   * struct drm_tile_group - Tile group metadata
->   * @refcount: reference count
-
+diff --git a/drivers/spi/spi-tegra114.c b/drivers/spi/spi-tegra114.c
+index 488df681eaef..2226d77a5d20 100644
+--- a/drivers/spi/spi-tegra114.c
++++ b/drivers/spi/spi-tegra114.c
+@@ -723,27 +723,23 @@ static int tegra_spi_set_hw_cs_timing(struct spi_device *spi)
+ 	struct spi_delay *setup = &spi->cs_setup;
+ 	struct spi_delay *hold = &spi->cs_hold;
+ 	struct spi_delay *inactive = &spi->cs_inactive;
+-	u8 setup_dly, hold_dly, inactive_dly;
++	u8 setup_dly, hold_dly;
+ 	u32 setup_hold;
+ 	u32 spi_cs_timing;
+ 	u32 inactive_cycles;
+ 	u8 cs_state;
+ 
+-	if ((setup && setup->unit != SPI_DELAY_UNIT_SCK) ||
+-	    (hold && hold->unit != SPI_DELAY_UNIT_SCK) ||
+-	    (inactive && inactive->unit != SPI_DELAY_UNIT_SCK)) {
++	if (setup->unit != SPI_DELAY_UNIT_SCK ||
++	    hold->unit != SPI_DELAY_UNIT_SCK ||
++	    inactive->unit != SPI_DELAY_UNIT_SCK) {
+ 		dev_err(&spi->dev,
+ 			"Invalid delay unit %d, should be SPI_DELAY_UNIT_SCK\n",
+ 			SPI_DELAY_UNIT_SCK);
+ 		return -EINVAL;
+ 	}
+ 
+-	setup_dly = setup ? setup->value : 0;
+-	hold_dly = hold ? hold->value : 0;
+-	inactive_dly = inactive ? inactive->value : 0;
+-
+-	setup_dly = min_t(u8, setup_dly, MAX_SETUP_HOLD_CYCLES);
+-	hold_dly = min_t(u8, hold_dly, MAX_SETUP_HOLD_CYCLES);
++	setup_dly = min_t(u8, setup->value, MAX_SETUP_HOLD_CYCLES);
++	hold_dly = min_t(u8, hold->value, MAX_SETUP_HOLD_CYCLES);
+ 	if (setup_dly && hold_dly) {
+ 		setup_hold = SPI_SETUP_HOLD(setup_dly - 1, hold_dly - 1);
+ 		spi_cs_timing = SPI_CS_SETUP_HOLD(tspi->spi_cs_timing1,
+@@ -755,7 +751,7 @@ static int tegra_spi_set_hw_cs_timing(struct spi_device *spi)
+ 		}
+ 	}
+ 
+-	inactive_cycles = min_t(u8, inactive_dly, MAX_INACTIVE_CYCLES);
++	inactive_cycles = min_t(u8, inactive->value, MAX_INACTIVE_CYCLES);
+ 	if (inactive_cycles)
+ 		inactive_cycles--;
+ 	cs_state = inactive_cycles ? 0 : 1;
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+2.34.1
+
