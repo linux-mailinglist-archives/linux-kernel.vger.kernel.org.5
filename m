@@ -2,129 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DBB077CA31
+	by mail.lfdr.de (Postfix) with ESMTP id 816C777CA32
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236015AbjHOJPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 05:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57652 "EHLO
+        id S236072AbjHOJQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 05:16:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235997AbjHOJPT (ORCPT
+        with ESMTP id S236043AbjHOJP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 05:15:19 -0400
-Received: from mail-pj1-f78.google.com (mail-pj1-f78.google.com [209.85.216.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314BF1BC9
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 02:15:17 -0700 (PDT)
-Received: by mail-pj1-f78.google.com with SMTP id 98e67ed59e1d1-26b73f475c0so603612a91.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 02:15:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692090916; x=1692695716;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        Tue, 15 Aug 2023 05:15:28 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C8D510F4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 02:15:23 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99c3c8adb27so708780166b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 02:15:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692090921; x=1692695721;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=D+iGRWuefmU2hiUid4QGdYR0UnLqwkGiIEu1C3f/EfQ=;
-        b=bQeL+jJvOASXC5iigN3CWFKdcZ/cbPsx3mNsn6YEMSIcnKLTMc0GZ/NtnV8YMDBPzy
-         3hFWNZtCRYf9uYkXTpCD49UM6U2Ds5OUKHS0l1JztnhcPliW20IYbd3/4F5JvFkzlNJg
-         6B5nxuK9vF6YioDk1sjyP+0kS7aeWAjob21rHfY+BvKc/tmaYOCuRowUHNSgTWqz34rD
-         BtV/SaCbMEm8n6ms+eST/OTqbhXMy0hv9sLoOkY2J4lFgmugavuvhLeBs7FJ0ly05dTW
-         jqdHmIpAtUNfhRwgBRU+j4kODoW1PDFuhEE4cF99r/KmZsPGLuYBry8bKFzsomZ5aVFd
-         w8rQ==
-X-Gm-Message-State: AOJu0YyISbR94qIs2bYwP8/1ccIBa3g9sXcSXUQ1r8F38nPtvL/Pf0gE
-        bI6+MwsELj6TygZK5rHK1stz+qY/huIoVs9CdM0rszY11InU
-X-Google-Smtp-Source: AGHT+IH9Pz6z43oMnXdI0xY8eQPyvoGkbhYumOmSRX9gEC4UXvhJLnTswhlaJzcU5cCPpBg9a5uPT9cIokiDiBeB3fRQBdS/jRWl
+        bh=Ze5ObTtpb+O9rxTntCpaoYVBo6hW76OOXVC3qfWoqz8=;
+        b=iL4nBpa1LZ7tG9SMde7NSMb5L0c8rOGNT76wdFySWCOO0KxytEcQkII33/Y4ugK9IP
+         0CvkHGFxwqScK6O61uD9ov2ImrC8UJBbu2/svlE+MS4SX7WaR9HxiBQcY4JN50BjF6uB
+         uwfxyqh+H0ifF/L+Zt562ihCSGQIvfPuhaO07Lj7/BGgEHETUiDwbdWOQRUPUwNbGhFV
+         s8S/U7bpPXJk4k7xufe5dG8OS4blesmC9MJCs9uTjx7wTGXPquUfszOq3jtE44Jo/p3X
+         OYPnnoxPx7mm+OS/1NJDH9s0K6Qm1hl410bfigGArRKLTqThEQmcRiYMq6nC99NeT67A
+         tBCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692090921; x=1692695721;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ze5ObTtpb+O9rxTntCpaoYVBo6hW76OOXVC3qfWoqz8=;
+        b=TIwFpJfmUdTL4Fo63/ii4T32vvVjjF1p7l6EgmaZBn3JxmWvag9D5/XoEhQ/aqu3Dp
+         l9jRMFcU7ZXmdENuX7BQd/F/uFpNBGgKLheriIq6PA6rIQMNsg4noXSmWOIXuQcn0sjH
+         Jp+QRsG3QS1v2JcjPuD08gAnNub059Zig97Fhzqv3lemuCV1nOypzhMn1ByfgJFdcl5I
+         eDnL4Xnws/2ldHiJ+F2d0jzk/crvjy9iWRhwwgg5RIj8JsMKBL+flfzA7TNkvfDAXoIL
+         n8nK6bG6QH55MPB12qevUt8q3pjCVe36fxx5eicwFmlcXzOBoghaNgHfB7xeG8n7rd0e
+         RBFg==
+X-Gm-Message-State: AOJu0Yy0k/RU0AmSHVmCGC8hz56GocShmeTDd99ysUZNwAi7GK9g7Ww6
+        UMXELNyqJiJDeDXB5JxAjiAWxpZp6FS1dV8Mmm8=
+X-Google-Smtp-Source: AGHT+IHL0Yt0Nl21n4oLa/TVXgO+c1ct/xVXLAY94QKOW8C+tl23w7X44rljo02S0XUhWgx6eKSeHQ==
+X-Received: by 2002:a17:907:78d3:b0:993:d88e:41ed with SMTP id kv19-20020a17090778d300b00993d88e41edmr10415864ejc.3.1692090921599;
+        Tue, 15 Aug 2023 02:15:21 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id qx27-20020a170906fcdb00b0098e0a937a6asm6764797ejb.69.2023.08.15.02.15.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Aug 2023 02:15:21 -0700 (PDT)
+Message-ID: <3c702ccd-6a82-1121-0b4e-9529d82ccc13@linaro.org>
+Date:   Tue, 15 Aug 2023 11:15:18 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:f306:b0:268:2de3:e6b2 with SMTP id
- ca6-20020a17090af30600b002682de3e6b2mr2876129pjb.5.1692090915735; Tue, 15 Aug
- 2023 02:15:15 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 02:15:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f5ce160602f29dd6@google.com>
-Subject: [syzbot] [btrfs?] memory leak in btrfs_ref_tree_mod
-From:   syzbot <syzbot+d66de4cbf532749df35f@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v4 2/4] dt-bindings: clock: add qca8386/qca8084 clock and
+ reset definitions
+Content-Language: en-US
+To:     Luo Jie <quic_luoj@quicinc.com>, andersson@kernel.org,
+        agross@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_srichara@quicinc.com
+References: <20230815085205.9868-1-quic_luoj@quicinc.com>
+ <20230815085205.9868-3-quic_luoj@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230815085205.9868-3-quic_luoj@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 15/08/2023 10:52, Luo Jie wrote:
+> QCA8386/QCA8084 includes the clock & reset controller that is
+> accessed by MDIO bus. Two work modes are supported, qca8386 works
+> as switch mode, qca8084 works as PHY mode.
+> 
+> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
 
-syzbot found the following issue on:
+This is a friendly reminder during the review process.
 
-HEAD commit:    25aa0bebba72 Merge tag 'net-6.5-rc6' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=169577fda80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2bf8962e4f7984f4
-dashboard link: https://syzkaller.appspot.com/bug?extid=d66de4cbf532749df35f
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148191c3a80000
+It looks like you received a tag and forgot to add it.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/76b0857d2814/disk-25aa0beb.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a01574755257/vmlinux-25aa0beb.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/262002db770e/bzImage-25aa0beb.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/b93cffaa6717/mount_0.gz
+If you do not know the process, here is a short explanation:
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag. Tag is "received", when
+provided in a message replied to you on the mailing list. Tools like b4
+can help here. However, there's no need to repost patches *only* to add
+the tags. The upstream maintainer will do that for tags received on the
+version they apply.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d66de4cbf532749df35f@syzkaller.appspotmail.com
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
 
-BUG: memory leak
-unreferenced object 0xffff888129851240 (size 64):
-  comm "syz-executor.0", pid 5069, jiffies 4294977377 (age 16.480s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff815545e5>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1076
-    [<ffffffff821731b1>] kmalloc include/linux/slab.h:582 [inline]
-    [<ffffffff821731b1>] btrfs_ref_tree_mod+0x211/0xb80 fs/btrfs/ref-verify.c:768
-    [<ffffffff820444f6>] btrfs_free_tree_block+0x116/0x450 fs/btrfs/extent-tree.c:3250
-    [<ffffffff8202d775>] __btrfs_cow_block+0x6a5/0xa30 fs/btrfs/ctree.c:601
-    [<ffffffff8202dc54>] btrfs_cow_block+0x154/0x2b0 fs/btrfs/ctree.c:712
-    [<ffffffff8206013c>] commit_cowonly_roots+0x8c/0x3f0 fs/btrfs/transaction.c:1276
-    [<ffffffff820647c9>] btrfs_commit_transaction+0x999/0x15c0 fs/btrfs/transaction.c:2410
-    [<ffffffff8205a516>] btrfs_commit_super+0x86/0xb0 fs/btrfs/disk-io.c:4195
-    [<ffffffff8205c743>] close_ctree+0x543/0x730 fs/btrfs/disk-io.c:4349
-    [<ffffffff8166b44e>] generic_shutdown_super+0x9e/0x1c0 fs/super.c:499
-    [<ffffffff8166b769>] kill_anon_super+0x19/0x30 fs/super.c:1110
-    [<ffffffff8202357d>] btrfs_kill_super+0x1d/0x30 fs/btrfs/super.c:2138
-    [<ffffffff8166ca46>] deactivate_locked_super+0x46/0xd0 fs/super.c:330
-    [<ffffffff8166cb6c>] deactivate_super fs/super.c:361 [inline]
-    [<ffffffff8166cb6c>] deactivate_super+0x9c/0xb0 fs/super.c:357
-    [<ffffffff816a8931>] cleanup_mnt+0x121/0x210 fs/namespace.c:1254
-    [<ffffffff812becaf>] task_work_run+0x8f/0xe0 kernel/task_work.c:179
+If a tag was not added on purpose, please state why and what changed.
 
+Best regards,
+Krzysztof
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
