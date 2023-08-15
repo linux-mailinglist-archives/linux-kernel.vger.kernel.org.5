@@ -2,127 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA9977CB24
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 12:28:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8915077CB27
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 12:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236423AbjHOK1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 06:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48804 "EHLO
+        id S236426AbjHOKaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 06:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234320AbjHOK1R (ORCPT
+        with ESMTP id S236413AbjHOK3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 06:27:17 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A2019A3;
-        Tue, 15 Aug 2023 03:27:16 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 61B8721999;
-        Tue, 15 Aug 2023 10:27:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692095235; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XUdE5GVXS2U4tq5EGM2we+22dQo5/Hv3fjeHigUh0oQ=;
-        b=SgYBwhsgg7ZC4zYq8cBmux6gaJ5kJqcr1bLFchY2fUEM/UUBOXJnNNroYJ7mw7FFz9Rva2
-        LzgICdbUV7vTKvIY7QzlEZzZ9FHbFrPoxjXWm2aNrZ5FaDKHNxsjZ0g2KFZoANynS86EYG
-        /O6Hwizn5U2nrD/rJkapJmL5opBJzBA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692095235;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XUdE5GVXS2U4tq5EGM2we+22dQo5/Hv3fjeHigUh0oQ=;
-        b=rqyE9+e4qYyK7OYuGH7g7lpvzSzRKk/3iPJaSIuHWqqcgSBjmq41yX8zB+Z46irGi2n+nj
-        t78BTFR0+VpnALDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5020913909;
-        Tue, 15 Aug 2023 10:27:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6J2EEwNT22S6WgAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 15 Aug 2023 10:27:15 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 9D074A0769; Tue, 15 Aug 2023 12:27:14 +0200 (CEST)
-Date:   Tue, 15 Aug 2023 12:27:14 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Georg Ottinger <g.ottinger@gmx.at>
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] ext2: fix datatype of block number in
- ext2_xattr_set2()
-Message-ID: <20230815102714.ymmasd762kygxst4@quack3>
-References: <20230815100340.22121-1-g.ottinger@gmx.at>
+        Tue, 15 Aug 2023 06:29:53 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57EEBB;
+        Tue, 15 Aug 2023 03:29:51 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6bc9d16c317so4205179a34.1;
+        Tue, 15 Aug 2023 03:29:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692095391; x=1692700191;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IYDXyiZB78nsgrVFtbBiEWQh6Rm8Zgp3p/+6t5OSe0c=;
+        b=acAS9HwOf7BPvfJSYqtarCjh8y6fAcxuiqLAUEudrMocPaIjpfMrfPUcq5+weHaHxZ
+         Q2BSUEM9Vtq9V1M7FYkzSNRWZ/Kkuv0zJKMtA6/xLOjCm+W2YVbI7fRuuYNtvQv11isc
+         eKNMiaaSBubHhRnnvsE7jj3PXYotge+huF3LpcuT131Nb73pXVcmUL0KTb+wPORjqMwk
+         wBt7dxfxsKAqU9VUwHQsE2FiXkAr5AtOKcF8DC6biSNGk0ws2qqCpStVUzdlH7XrDTIE
+         tYiDJ2rEHTRav2soHqT69OA+czUIksqWGGWQIuzTGPRlKaGQHzKtDBKIiMRsU4ZgDMdA
+         gZ7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692095391; x=1692700191;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IYDXyiZB78nsgrVFtbBiEWQh6Rm8Zgp3p/+6t5OSe0c=;
+        b=YH6cRsK7z7lfA/RxfpgIrrEl8db5mbdezCqmRNP7hYcj7G5hFIgzDfs14F5xKdrr/I
+         xj2OvJT8su6cDcdUWEXnsEeIGMer3DImKHzhLk+d3ZSNVy+pnHQfXRX2VprfCBxbAT9Z
+         1j6+k3+ApHlea764+NcUii0YIp+V9nBb2M8vqMmTYz3bw1genypPwnkBOz1/T1tWLRpW
+         YsSi+beQ0LfUDe6Ly4qditt+ridRv2XfC93pigvPPFUg3k+VC5BnfgaYb+kRCEXUzx4H
+         Lf6MdjZB58bhtFiEjGDX5yc9gmsQFIq/pgav2EDg1OTPwvgS0Vmbq3Y7AQhTeNoPY1vX
+         6YtA==
+X-Gm-Message-State: AOJu0Ywgvof8aKiV1qnn5mNmAnqB6O6t1OhKZhuo+mb9pIUDaY0LPwhP
+        TY9E6djXi8hdmoYOuE2inZwZeNpYmxUC2cHZ0gk=
+X-Google-Smtp-Source: AGHT+IFUzE2FcYCsyVhpeRb1n3RSSTTo0sSL5CLJwo5HoUGzz2Zr7mZIBP1US+PdtcFC8R7x7fpMBSFIRPdja3hqjTs=
+X-Received: by 2002:a05:6830:1d72:b0:6b8:7eef:a236 with SMTP id
+ l18-20020a0568301d7200b006b87eefa236mr10375640oti.30.1692095391030; Tue, 15
+ Aug 2023 03:29:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230815100340.22121-1-g.ottinger@gmx.at>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230815014057.13589-1-wenchao.chen@unisoc.com> <e66ee2ba-1668-cb88-f7ac-7c7722387fe7@intel.com>
+In-Reply-To: <e66ee2ba-1668-cb88-f7ac-7c7722387fe7@intel.com>
+From:   Wenchao Chen <wenchao.chen666@gmail.com>
+Date:   Tue, 15 Aug 2023 18:29:39 +0800
+Message-ID: <CA+Da2qyuh-WcXdj2emkWcUkqH57W4p6aei8wijFw5fA7og0eaA@mail.gmail.com>
+Subject: Re: [PATCH V2 0/2] mmc: sdhci-sprd: Add SD HS mode online tuning
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Wenchao Chen <wenchao.chen@unisoc.com>, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhenxiong.lai@unisoc.com, chunyan.zhang@unisoc.com,
+        yuelin.tang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 15-08-23 12:03:40, Georg Ottinger wrote:
-> I run a small server that uses external hard drives for backups. The
-> backup software I use uses ext2 filesystems with 4KiB block size and
-> the server is running SELinux and therefore relies on xattr. I recently
-> upgraded the hard drives from 4TB to 12TB models. I noticed that after
-> transferring some TBs I got a filesystem error "Freeing blocks not in
-> datazone - block = 18446744071529317386, count = 1" and the backup
-> process stopped. Trying to fix the fs with e2fsck resulted in a
-> completely corrupted fs. The error probably came from ext2_free_blocks(),
-> and because of the large number 18e19 this problem immediately looked
-> like some kind of integer overflow. Whereas the 4TB fs was about 1e9
-> blocks, the new 12TB is about 3e9 blocks. So, searching the ext2 code,
-> I came across the line in fs/ext2/xattr.c:745 where ext2_new_block()
-> is called and the resulting block number is stored in the variable block
-> as an int datatype. If a block with a block number greater than
-> INT32_MAX is returned, this variable overflows and the call to
-> sb_getblk() at line fs/ext2/xattr.c:750 fails, then the call to
-> ext2_free_blocks() produces the error.
-> 
-> Signed-off-by: Georg Ottinger <g.ottinger@gmx.at>
+On Tue, Aug 15, 2023 at 2:21=E2=80=AFPM Adrian Hunter <adrian.hunter@intel.=
+com> wrote:
+>
+> On 15/08/23 04:40, Wenchao Chen wrote:
+> > Change in v2:
+> > - add mmc_sd_switch() and mmc_send_status() to the header file
+> > - split up core changes from host driver changes
+> > - Use pr_debug instead of dev_info and dev_dbg
+> > - Optimize the best sampled value algorithm
+>
+> What about hooking ->set_ios() as Ulf suggested?
+>
 
-Yeah, definitely looks like a bug. Thanks for the fix! I've added it to my
-tree.
+I've tried that, but it's not a good way to do it.
+We found that sdhci_runtime_resume_host() calls ->set_ios, but we
+don't want to do that.
+We just need SD HS mode tuning at mmc_sd_init_card().
 
-BTW I'm not sure which kernel (and with which config) you are using but in
-most distribution kernels, ext2 filesystem driver is not used and instead
-ext4 driver is used for handling even ext2 filesystems. Just mentioning
-that in case your fs corruption is in fact related to ext4 driver...
-
-								Honza
-
-> ---
->  fs/ext2/xattr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-> index 8906ba479..5e13f7ea1 100644
-> --- a/fs/ext2/xattr.c
-> +++ b/fs/ext2/xattr.c
-> @@ -742,7 +742,7 @@ ext2_xattr_set2(struct inode *inode, struct buffer_head *old_bh,
->  			/* We need to allocate a new block */
->  			ext2_fsblk_t goal = ext2_group_first_block_no(sb,
->  						EXT2_I(inode)->i_block_group);
-> -			int block = ext2_new_block(inode, goal, &error);
-> +			ext2_fsblk_t block = ext2_new_block(inode, goal, &error);
->  			if (error)
->  				goto cleanup;
->  			ea_idebug(inode, "creating block %d", block);
-> --
-> 2.17.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> >
+> > Wenchao Chen (2):
+> >   mmc: core: Add host specific tuning support for SD HS mode
+> >   mmc: sdhci-sprd: Add SD HS mode online tuning
+> >
+> >  drivers/mmc/core/sd.c         |  12 +++
+> >  drivers/mmc/core/sd_ops.c     |   1 +
+> >  drivers/mmc/host/sdhci-sprd.c | 152 ++++++++++++++++++++++++++++++++++
+> >  include/linux/mmc/host.h      |   8 ++
+> >  4 files changed, 173 insertions(+)
+> >
+>
