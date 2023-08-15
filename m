@@ -2,217 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B9A77D449
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D4777D452
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238483AbjHOUht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 16:37:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53890 "EHLO
+        id S238757AbjHOUhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 16:37:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238582AbjHOUhc (ORCPT
+        with ESMTP id S238399AbjHOUhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 16:37:32 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A6C81FF3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:36:59 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-68874e3d89dso691535b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:36:59 -0700 (PDT)
+        Tue, 15 Aug 2023 16:37:21 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1BFC1BFF
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:36:46 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so1208112766b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:36:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692131817; x=1692736617;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=LxhxKcrFotwJQ4zXyPONZCebIAlPqsSs9CH/9edQop0=;
-        b=bj+PXpWlZ7XfkKb4SRKBbwL7SoSHEUDD5ckoAw2oDS6Ke62B3JZ1T19/LzJA9RjlRK
-         QBAMK0vbXvFT7evYAAn/GNYPnndmVmGOjwoHDR/YO0zDdI7w/DvR1DT66BRdTYj+5/s5
-         at690uwMASz8CDMdPWQ15WZoRRuYD93/seeSslVjF5gWv/hdb9WxDJQDQTtAOvJoS0Tp
-         +ZKWm9W44nQqN3AG4hjK+JpPLXZnmZ2YIlKJt+VCNFxtmi4G/P8H2E8QYLH/grCKHn3+
-         SM52RUIBGxTixx8I1pJ82OdGFJsS+14QpRlzLGlhuBZ5Tw8z4P3Cv5QYW8Obz495A8bJ
-         0ZQg==
+        d=linaro.org; s=google; t=1692131802; x=1692736602;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=X6Sjc5kCdevNBIooFIAdaXcgvp9MHaLBrm4GmR4a5kI=;
+        b=fAj5Uun6fMmg8JwRtrO+awU+LcEYYn3b1AiRgb2/esrYZBkNM8tV10/hR44o06tYxe
+         x6tW13BtvxlFQHUYSqCIZV5Ry835ARs2CNw903bBXAvZ+OehESNUGsUEsnaUYN1sTHdq
+         shby10LOk+9SulpTwmNO7xf04GJoS2R8Ey3J9g6DxAo6+MKv19y5GR/Dmo7R97yAG+mL
+         F5k2GyoQ+ROmnqMzBPGvHOv7I5DwPEr+mJOC2jM2/HNe2rq9pxwgYcUGWrCIAJMvNhAe
+         dJ5rKDHjV9bKla4CBC1ge739eOZnuCIEhDBfWTLKGMk5tOMBE2eYhAYPy7bzn2RJ5Siw
+         +gfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692131817; x=1692736617;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LxhxKcrFotwJQ4zXyPONZCebIAlPqsSs9CH/9edQop0=;
-        b=cTHIlVT7DsCJE9IMDsHcFPhK1p2gwfUOmfsWaPSvnK2ufdufB1TKnAsdy2Rvbl76MW
-         sU1g8kqBkAxnHhWjqWe6Pc2tMzVSpuVEsZ7FQJOIQ2ieL446nO8n3oz6FwWEIlwwvNWY
-         yY2Zye8NjoFqrXUBDQkH5mlt9cBhIVwE4PS8HtP0ZfhntcMIw6hxMjc4HBj2i+vp3Dq5
-         NB7pOfQLTQ3q6dIqWWRREty3vSxDx0dX4I9jcJXTLLLBu5UidLDfdrp/IFf6/dxFRIGn
-         4kVeG+JMOiBTKRpFh9ohZP8u7QXDQHboCy/gx6nLgkXcTdEn9YimBmH/X/1xxGCQEoiU
-         wrjA==
-X-Gm-Message-State: AOJu0Ywr7iz/ONWLV5Aanw44SEjRG/wfUb1uUc2G2U0/sric8Anmos+4
-        8IVYbyQkE+0AuFrMtqCliMhdLJxdTh4=
-X-Google-Smtp-Source: AGHT+IGBxJa5dASO30nxuQUhZTH6cFETIEtK9WDd4OiBCgRh0iZb43uuIrHIXrBHs2b+Sf1rJklROSxZbRA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:4a09:b0:688:7ac7:9f4b with SMTP id
- do9-20020a056a004a0900b006887ac79f4bmr82706pfb.1.1692131817570; Tue, 15 Aug
- 2023 13:36:57 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 15 Aug 2023 13:36:39 -0700
-In-Reply-To: <20230815203653.519297-1-seanjc@google.com>
-Mime-Version: 1.0
-References: <20230815203653.519297-1-seanjc@google.com>
-X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
-Message-ID: <20230815203653.519297-2-seanjc@google.com>
-Subject: [PATCH v3 01/15] KVM: x86: Add a framework for enabling KVM-governed
- x86 features
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zeng Guang <guang.zeng@intel.com>,
-        Yuan Yao <yuan.yao@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1692131802; x=1692736602;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=X6Sjc5kCdevNBIooFIAdaXcgvp9MHaLBrm4GmR4a5kI=;
+        b=Xk0IxiYHBl+EYAB5YXzx4xnmOnBWYwq2RNy7IhGQr0ka+P2+TPqbVCFfnjOCagYoJe
+         2C8q18mzplP8ycCyIbmj5TSsRqbV85J8jKc/URAzvEdi7dQRsBlAnBMgLO1sPb5rFVsl
+         GTeaawNQsmENRmlNhB6WfDf0IYIVTP/39TWEHNGBGWe/MulrzCUNcYI07XRU2dUyUsJx
+         zoMZjRJ8PAeBWDCWvyicS7ZQzZqt/Fj9csyM6Zr91gCZIEMP0npdh18qymtkpUz5s25c
+         xTBmi7GxpswLz6GNRfIIP83uXZ2HpeD9plSkv4nfD9jtEMkH5yoFue8swT8O5O21219+
+         wjAA==
+X-Gm-Message-State: AOJu0YzvoNcH2UR0m95fBDIvXfX5q7GzmdOP5TbImxkSAZ2R0d5noWE9
+        cw2jtdK4nR8qrkVT2aAaLbkL5A==
+X-Google-Smtp-Source: AGHT+IH4wM7nrkfOFTqG/v7+FSAdJxm80o8iaJuv9GJHnk6yEmOMGbDxs3H4ETByecHIE/WMvpi9VA==
+X-Received: by 2002:a17:906:6a04:b0:99b:dd23:4f01 with SMTP id qw4-20020a1709066a0400b0099bdd234f01mr3314224ejc.33.1692131802432;
+        Tue, 15 Aug 2023 13:36:42 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id f8-20020a17090624c800b009894b476310sm7407880ejb.163.2023.08.15.13.36.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Aug 2023 13:36:42 -0700 (PDT)
+Message-ID: <102328fa-5699-4731-d639-079bce8863a5@linaro.org>
+Date:   Tue, 15 Aug 2023 22:36:39 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 1/7] dt-bindings: soc: qcom: Add qcom,pbs bindings
+Content-Language: en-US
+To:     Anjelique Melendez <quic_amelende@quicinc.com>, pavel@ucw.cz,
+        lee@kernel.org, thierry.reding@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        agross@kernel.org, andersson@kernel.org
+Cc:     luca.weiss@fairphone.com, konrad.dybcio@linaro.org,
+        u.kleine-koenig@pengutronix.de, quic_subbaram@quicinc.com,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+References: <20230814235918.10396-1-quic_amelende@quicinc.com>
+ <20230814235918.10396-2-quic_amelende@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230814235918.10396-2-quic_amelende@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce yet another X86_FEATURE flag framework to manage and cache KVM
-governed features (for lack of a better name).  "Governed" in this case
-means that KVM has some level of involvement and/or vested interest in
-whether or not an X86_FEATURE can be used by the guest.  The intent of the
-framework is twofold: to simplify caching of guest CPUID flags that KVM
-needs to frequently query, and to add clarity to such caching, e.g. it
-isn't immediately obvious that SVM's bundle of flags for "optional nested
-SVM features" track whether or not a flag is exposed to L1.
+On 15/08/2023 01:59, Anjelique Melendez wrote:
+> Add binding for the Qualcomm Programmable Boot Sequencer device.
+> 
+> Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
+> ---
+>  .../bindings/soc/qcom/qcom,pbs.yaml           | 46 +++++++++++++++++++
+>  1 file changed, 46 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,pbs.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,pbs.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,pbs.yaml
+> new file mode 100644
+> index 000000000000..b502ca72266a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,pbs.yaml
+> @@ -0,0 +1,46 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/soc/qcom/qcom,pbs.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Technologies, Inc. Programmable Boot Sequencer
+> +
+> +maintainers:
+> +  - Anjelique Melendez <quic_amelende@quicinc.com>
+> +
+> +description: |
+> +  The Qualcomm Technologies, Inc. Programmable Boot Sequencer (PBS)
+> +  supports triggering power up and power down sequences for clients
+> +  upon request.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - qcom,pmi632-pbs
+> +      - const: qcom,pbs
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/spmi/spmi.h>
+> +
+> +    pmic@0 {
 
-Begrudgingly define KVM_MAX_NR_GOVERNED_FEATURES for the size of the
-bitmap to avoid exposing governed_features.h in arch/x86/include/asm/, but
-add a FIXME to call out that it can and should be cleaned up once
-"struct kvm_vcpu_arch" is no longer expose to the kernel at large.
+This should be rather just "pmic", because the examples have
+address-cells=1 and size-cells=1, which is not correct in this context.
 
-Cc: Zeng Guang <guang.zeng@intel.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/include/asm/kvm_host.h  | 19 +++++++++++++
- arch/x86/kvm/cpuid.c             |  4 +++
- arch/x86/kvm/cpuid.h             | 46 ++++++++++++++++++++++++++++++++
- arch/x86/kvm/governed_features.h |  9 +++++++
- 4 files changed, 78 insertions(+)
- create mode 100644 arch/x86/kvm/governed_features.h
+Anyway:
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 19d64f019240..60d430b4650f 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -831,6 +831,25 @@ struct kvm_vcpu_arch {
- 	struct kvm_cpuid_entry2 *cpuid_entries;
- 	struct kvm_hypervisor_cpuid kvm_cpuid;
- 
-+	/*
-+	 * FIXME: Drop this macro and use KVM_NR_GOVERNED_FEATURES directly
-+	 * when "struct kvm_vcpu_arch" is no longer defined in an
-+	 * arch/x86/include/asm header.  The max is mostly arbitrary, i.e.
-+	 * can be increased as necessary.
-+	 */
-+#define KVM_MAX_NR_GOVERNED_FEATURES BITS_PER_LONG
-+
-+	/*
-+	 * Track whether or not the guest is allowed to use features that are
-+	 * governed by KVM, where "governed" means KVM needs to manage state
-+	 * and/or explicitly enable the feature in hardware.  Typically, but
-+	 * not always, governed features can be used by the guest if and only
-+	 * if both KVM and userspace want to expose the feature to the guest.
-+	 */
-+	struct {
-+		DECLARE_BITMAP(enabled, KVM_MAX_NR_GOVERNED_FEATURES);
-+	} governed_features;
-+
- 	u64 reserved_gpa_bits;
- 	int maxphyaddr;
- 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 5a88affb2e1a..4ba43ae008cb 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -313,6 +313,10 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
- 	struct kvm_lapic *apic = vcpu->arch.apic;
- 	struct kvm_cpuid_entry2 *best;
- 
-+	BUILD_BUG_ON(KVM_NR_GOVERNED_FEATURES > KVM_MAX_NR_GOVERNED_FEATURES);
-+	bitmap_zero(vcpu->arch.governed_features.enabled,
-+		    KVM_MAX_NR_GOVERNED_FEATURES);
-+
- 	best = kvm_find_cpuid_entry(vcpu, 1);
- 	if (best && apic) {
- 		if (cpuid_entry_has(best, X86_FEATURE_TSC_DEADLINE_TIMER))
-diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
-index b1658c0de847..284fa4704553 100644
---- a/arch/x86/kvm/cpuid.h
-+++ b/arch/x86/kvm/cpuid.h
-@@ -232,4 +232,50 @@ static __always_inline bool guest_pv_has(struct kvm_vcpu *vcpu,
- 	return vcpu->arch.pv_cpuid.features & (1u << kvm_feature);
- }
- 
-+enum kvm_governed_features {
-+#define KVM_GOVERNED_FEATURE(x) KVM_GOVERNED_##x,
-+#include "governed_features.h"
-+	KVM_NR_GOVERNED_FEATURES
-+};
-+
-+static __always_inline int kvm_governed_feature_index(unsigned int x86_feature)
-+{
-+	switch (x86_feature) {
-+#define KVM_GOVERNED_FEATURE(x) case x: return KVM_GOVERNED_##x;
-+#include "governed_features.h"
-+	default:
-+		return -1;
-+	}
-+}
-+
-+static __always_inline bool kvm_is_governed_feature(unsigned int x86_feature)
-+{
-+	return kvm_governed_feature_index(x86_feature) >= 0;
-+}
-+
-+static __always_inline void kvm_governed_feature_set(struct kvm_vcpu *vcpu,
-+						     unsigned int x86_feature)
-+{
-+	BUILD_BUG_ON(!kvm_is_governed_feature(x86_feature));
-+
-+	__set_bit(kvm_governed_feature_index(x86_feature),
-+		  vcpu->arch.governed_features.enabled);
-+}
-+
-+static __always_inline void kvm_governed_feature_check_and_set(struct kvm_vcpu *vcpu,
-+							       unsigned int x86_feature)
-+{
-+	if (kvm_cpu_cap_has(x86_feature) && guest_cpuid_has(vcpu, x86_feature))
-+		kvm_governed_feature_set(vcpu, x86_feature);
-+}
-+
-+static __always_inline bool guest_can_use(struct kvm_vcpu *vcpu,
-+					  unsigned int x86_feature)
-+{
-+	BUILD_BUG_ON(!kvm_is_governed_feature(x86_feature));
-+
-+	return test_bit(kvm_governed_feature_index(x86_feature),
-+			vcpu->arch.governed_features.enabled);
-+}
-+
- #endif
-diff --git a/arch/x86/kvm/governed_features.h b/arch/x86/kvm/governed_features.h
-new file mode 100644
-index 000000000000..40ce8e6608cd
---- /dev/null
-+++ b/arch/x86/kvm/governed_features.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#if !defined(KVM_GOVERNED_FEATURE) || defined(KVM_GOVERNED_X86_FEATURE)
-+BUILD_BUG()
-+#endif
-+
-+#define KVM_GOVERNED_X86_FEATURE(x) KVM_GOVERNED_FEATURE(X86_FEATURE_##x)
-+
-+#undef KVM_GOVERNED_X86_FEATURE
-+#undef KVM_GOVERNED_FEATURE
--- 
-2.41.0.694.ge786442a9b-goog
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
 
