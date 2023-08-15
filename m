@@ -2,102 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E156377C708
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 07:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D5A77C709
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 07:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234776AbjHOFYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 01:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57360 "EHLO
+        id S234784AbjHOFYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 01:24:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234702AbjHOFVj (ORCPT
+        with ESMTP id S234696AbjHOFVi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 01:21:39 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6AE21BD4
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 22:20:50 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-40c72caec5cso126481cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 22:20:50 -0700 (PDT)
+        Tue, 15 Aug 2023 01:21:38 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD051BC9
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 22:20:40 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31781e15a0cso4462973f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 22:20:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692076850; x=1692681650;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R8rldmZbFQsdFeS9GjoqGMHcF+DWT+Us0qlghVZOIyQ=;
-        b=0jsmJBp+rB0QHzuCJc+wW+cKrZ99ZF3C5PhU9hnj2pYiKV0RTwO5iPjtRUk+tFIwYz
-         qaz6+Km88XGrbKnCMuyMIt62JBK/zCZomIffpie+6l7I07pwx6zoyIwYwnWe7bl4u4vJ
-         suu1OKmj+RRoJ5JcdXr0HnTN5GVzbKcRs+9wGFIe57LqPGexwL6yA7o1mSpDCg0dVb3h
-         n5cio5sPjIkjYwem+UvovKPjhsZDt9RYZBFGeTmIpYuQdz5knKSxpgtWPmAstmcOPNTO
-         yMdku0D10bP9qHUH4fs/HdrJxPtdkOTazLbsbngH6t7J6edMQ/pSKIWpy1ZXGSG1n6hb
-         q0mQ==
+        d=linaro.org; s=google; t=1692076838; x=1692681638;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=E1iK6gDGnLT6YH6YDnZtvo75txDfUuM4Picw/2uLIh0=;
+        b=JVbj6cxuWCQ4fdjUTVThiW9Yn4j9If3QsCX5dlVqGZF5tuQ8Bzg071hgBP4IHNPZkI
+         FE/l9sNnzLLIzVG9bo8ex1Nxad+f63t8bXDH4saMDy6SjqPqRLtEJRHCaRJwJ5hHz68o
+         I1hzJmZJeBvfXRsBqqF4ljx/euy8s1Zu11yQ4g92+yzWb101bDbmjJgrHcb1tUPTvU8J
+         aA6kM3RS/Yk0aJwTtXZCcjzzf6NFVSb6Mjyg3WJRe4krR7pdKlxmutOoCZ6EChZ7z2vr
+         nyGc1whQFZVGmdYziMgf59L+JdDaKZeOeozjWz0AomrEbiFeViWSYgcVuO/tD+Y1lCaE
+         2Lsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692076850; x=1692681650;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=R8rldmZbFQsdFeS9GjoqGMHcF+DWT+Us0qlghVZOIyQ=;
-        b=bUGMeJh5I0RljMQi1Y00lRW21C+vRQhzsfSRJzPZKq5tpu9Q5LsZxihBnXPusDCnqf
-         acZbcXbp5WxYzdXtoic3aiQcS/6V1vYCL8KKRwbjzx+8WzfjV7HU/cKNYdN1SKCgpHs2
-         5njMyjoU7m6NfPRyGtXvDujSVrQZVpdmJRi+zCom1C/5M/SmDr1LfQs2XoSGhRxiYtGn
-         PcTpQKwFJt8kcj9FglzMT2199V9Q9j/U/Brq88llyjszroHxxMxijL+n5cKmLHVftwdk
-         RbnYLuuMxoA2u4y7eQFeFQt5fw4+SDgDDynwPEUkXE8FbClbmxw9Te9ckTGpXC6ORPWm
-         uBGA==
-X-Gm-Message-State: AOJu0YwhDoD5vlDIc0jPjBqc2MdfsHWvKLaOjsHcET6hD2mUaBHbLw1s
-        LUSvrt31eM79tq9xDh/Tg8FjnIevXSKWjaBs0GusAH3iT4zCKwxrz7LMpA==
-X-Google-Smtp-Source: AGHT+IFZAtCioCc6H5ESRtOUJNo3u9I3NatUhzr9FskoqmSyhlPqKWZm1LKLKijfMH1VvuR7PEya8GQDPyMrOzHM7ig=
-X-Received: by 2002:a05:622a:1303:b0:3f8:5b2:aeed with SMTP id
- v3-20020a05622a130300b003f805b2aeedmr603740qtk.21.1692076849682; Mon, 14 Aug
- 2023 22:20:49 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692076838; x=1692681638;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E1iK6gDGnLT6YH6YDnZtvo75txDfUuM4Picw/2uLIh0=;
+        b=Ah7I2mr3srQr6IOXcLcK3G45n3IC1q9iWlxCkVVRm1mJlLsvELJKgl5IZ31khsrVAN
+         gKbdxnO3iJkW5sYsM29HDqYAmNpz7Qti3SmMi86/VBJo8FnOS4odqGTmm2k8RAMABBKj
+         vgvVZFamlM8JPeHFEE2uWD2PEXIeYezCo8GQYdRAjc+RUw/dXW4ClpN1nl8kiC6tBEbY
+         e2V9j8hqKkt2VnUnD7tx37x/CHxEkRndXZ1v/nX7/iaRhxE3RCS9vYGplJ9yddhmRgvh
+         Si6HDSm3dHCveLmd7N/jZN54iQiVvwiKdxOeVeeH7C6PiasBwwhwHeYjtDKWQjVqKAmQ
+         C7Mw==
+X-Gm-Message-State: AOJu0Yw8B7nR7LF7RKRgSN70IHCIqGBTkXbIYau1qAZc7wOGdPci+XfN
+        DfiYUrNl0QL3UA6Vs0d7QGHRtw==
+X-Google-Smtp-Source: AGHT+IFyjkPBJoV+XazQhAjmKyn6CK4hTOt2a3tGZBE3jpKVIpVKhpfJ/wcMf8ugaCQ3TimspEYXXg==
+X-Received: by 2002:a5d:554e:0:b0:314:10d8:b491 with SMTP id g14-20020a5d554e000000b0031410d8b491mr6785789wrw.67.1692076838327;
+        Mon, 14 Aug 2023 22:20:38 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id l11-20020a05600012cb00b003177f57e79esm4297502wrx.88.2023.08.14.22.20.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Aug 2023 22:20:37 -0700 (PDT)
+Message-ID: <c577a92a-d1e4-df7e-250c-33d47b4d5bcb@linaro.org>
+Date:   Tue, 15 Aug 2023 07:20:35 +0200
 MIME-Version: 1.0
-References: <20230808171446.2187795-1-mshavit@google.com> <20230809011204.v5.5.I219054a6cf538df5bb22f4ada2d9933155d6058c@changeid>
- <20230809134959.GB4226@willie-the-truck> <CAKHBV25CQYfqm80a1ztHXn3s6kj7KCuJBwJz4EZk5cog4n6R+A@mail.gmail.com>
- <20230810144051.GD5795@willie-the-truck> <ZNUEuIlPmrckwMyn@nvidia.com>
-In-Reply-To: <ZNUEuIlPmrckwMyn@nvidia.com>
-From:   Michael Shavit <mshavit@google.com>
-Date:   Tue, 15 Aug 2023 13:20:04 +0800
-Message-ID: <CAKHBV24SLBNw-yWn3m6BtvvHUgD0h1e1QkEb1LrUcWSwpR85Yg@mail.gmail.com>
-Subject: Re: [PATCH v5 5/9] iommu/arm-smmu-v3: Refactor write_ctx_desc
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Will Deacon <will@kernel.org>, iommu@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        robin.murphy@arm.com, nicolinc@nvidia.com, jean-philippe@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 2/2] i2c: Add GPIO-based hotplug gate
+Content-Language: en-US
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Svyatoslav Ryhel <clamor95@gmail.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230729160857.6332-1-clamor95@gmail.com>
+ <20230729160857.6332-3-clamor95@gmail.com>
+ <25858c22-ef92-2136-67ef-0d27364c1600@linaro.org>
+ <ZMbcb0yuTz6l6BYh@qmqm.qmqm.pl>
+ <b9183dfc-8e8a-9602-f31c-5de9e27acb88@linaro.org>
+ <ZMd1qI7RjQhpI8zO@qmqm.qmqm.pl>
+ <fdc513a3-c0e0-c57d-5c9a-8da6fa2f54e2@linaro.org>
+ <ZMg6m+Dru6rxCRqU@qmqm.qmqm.pl>
+ <249e806a-f094-9514-9c83-e74e7b1f00ba@linaro.org>
+ <ZNVcEfNjo0ZZlhIp@qmqm.qmqm.pl>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <ZNVcEfNjo0ZZlhIp@qmqm.qmqm.pl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 11:39=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.com> w=
-rote:
->
-> Actually, I don't think this even works as nothing on the PASID path
-> adds to the list that arm_smmu_write_ctx_desc_devices() iterates over ??
->
-> Then the remaining two calls:
->
-> arm_smmu_share_asid(struct mm_struct *mm, u16 asid)
->         arm_smmu_write_ctx_desc_devices(smmu_domain, 0, cd);
->
->         This is OK only if the sketchy assumption that the CD
->         we extracted for a conflicting ASID is not asigned to a PASID.
->
-> static void arm_smmu_mm_release(struct mmu_notifier *mn, struct mm_struct=
- *mm)
->         arm_smmu_write_ctx_desc_devices(smmu_domain, mm->pasid, &quiet_cd=
-);
->
->         This doesn't work because we didn't add the master to the list
->         during __arm_smmu_sva_bind and this path is expressly working
->         on the PASID binds, not the RID binds.
+On 10/08/2023 23:52, Michał Mirosław wrote:
+>>>>>>>> Shared IRQ with devm is a recipe for disaster. Are you sure this is a
+>>>>>>>> shared one? You have a remove() function which also points that it is
+>>>>>>>> not safe. You can:
+>>>>>>>> 1. investigate to be sure it is 100% safe (please document why do you
+>>>>>>>> think it is safe)
+> [...]
+>>>> True, therefore non-devm interrupts are recommended also in such case.
+>>>> Maybe one of my solutions is actually not recommended.
+>>>>
+>>>> However if done right, driver with non-shared interrupts, is expected to
+>>>> disable interrupts in remove(), thus there is no risk. We have big
+>>>> discussions in the past about it, so feel free to dig through LKML to
+>>>> read more about. Anyway shared and devm is a clear no go.
+>>>
+>>> Can you share pointers to some of those discussions? Quick search
+>>> about devm_request_irq() and friends found only a thread from 2013
+>>
+>> Just look at CONFIG_DEBUG_SHIRQ. Some things lore points:
+>> https://lore.kernel.org/all/1592130544-19759-2-git-send-email-krzk@kernel.org/
+>> https://lore.kernel.org/all/20200616103956.GL4447@sirena.org.uk/
+>>
+>> I think pretty clear:
+>> https://lore.kernel.org/all/87mu52ca4b.fsf@nanos.tec.linutronix.de/
+>> https://lore.kernel.org/all/CA+h21hrxQ1fRahyQGFS42Xuop_Q2petE=No1dft4nVb-ijUu2g@mail.gmail.com/
+>>
+>> Also:
+>> https://lore.kernel.org/all/651c9a33-71e6-c042-58e2-6ad501e984cd@pengutronix.de/
+>> https://lore.kernel.org/all/36AC4067-78C6-4986-8B97-591F93E266D8@gmail.com/
+> [...]
+> 
+> Thanks! It all looks like a proof by example [1]: a broken driver [2]
+> was converted to devres [3] and allowed a shared interrupt [4] and now is
+> used to back an argument that devres and/or shared IRQs are bad. I have
+> a hard time accepting this line of reasoning.
+> 
+> So: sure, if you disable device's clock, you should first disable the
+> interrupt handler one way or another, and if you request a shared interrupt
+> then you have to write the handler expecting spurious invocations anytime
+> between entry to register_irq() and return from free_irq() (BTW, DEBUG_SHIRQ
+> is here to help test exactly this). And, when used correctly, devres can
+> release you from having to write remove() and error paths (but I guess it
+> might be a challenge to find a single driver that is a complete, good and
+> complex-enough example).
+> 
+> Coming back from the digression: I gathered following items from the
+> review of the i2c-hotplug-gpio driver:
+> 
+>   1. TODO: register i2c_hotplug_deactivate(priv) using
+>      devm_add_action_or_reset() before registering the IRQ handler
+>      and remove remove();
+> 
+>   2. shared IRQ: it is expected to be an edge-triggered, rarely
+>      signalled interrupt and the handler will work fine if called
+>      spuriously; it is not required to be shared for my Transformer,
+>      but I can't say much about other hardware. Would a comment help?
 
-Actually it is working on the RID attached domain (as returned by
-iommu_get_domain_for_dev() at sva_bind time) not the SVA domain
-here... The arm SVA implementation completely dismisses the SVA handle
-(I also have a patch to fix this ;) .  Need to find the time to polish
-and send out).
+We have way too lengthy discussion and now we are circling back. Can you
+refer to the first email I wrote?
+
+"You can:
+1. investigate to be sure it is 100% safe (please document why do you
+think it is safe)
+2. drop devm
+3. drop shared flag."
+
+
+Best regards,
+Krzysztof
+
