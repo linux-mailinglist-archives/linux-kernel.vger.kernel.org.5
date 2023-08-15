@@ -2,51 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F7E77C865
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 09:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9722A77C86C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 09:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235391AbjHOHOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 03:14:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38830 "EHLO
+        id S235406AbjHOHRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 03:17:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235533AbjHOHNo (ORCPT
+        with ESMTP id S235395AbjHOHQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 03:13:44 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31FFFCE;
-        Tue, 15 Aug 2023 00:13:25 -0700 (PDT)
-Received: from localhost.localdomain (unknown [39.34.184.155])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 141E866071C1;
-        Tue, 15 Aug 2023 08:13:21 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1692083603;
-        bh=5OmlFjj5KV/EzXKNt4SeqnKQwRJht9eXvfXu7crYI1g=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Cl3oKnIfrCH4nuKS3XACtSIt+EyfrY3T/osZgwmbUOdYABkVinsD+7NXSVxmG+3Qr
-         Uo+KcUVhbszMSJxN0LhNK4nPOZobYGh10tD1xG2Rbybwm01zb8suWqkwYT/5I4U+p9
-         Xmm00/B2izj2FQH2ALHsA/oJ7qUVrR0voswjaaO2Tti2X5dzldxoJJi+d8lHOc7n4i
-         gHXeBf06aSDyVXhpytkcaUTKpK36qY7QYCbfPWMpey7D81UziEetiZG/kbIHz7B+vQ
-         RQrGItX4CQg3PhniTCop3VG8DQqcknb87jLFr2wmXuyIyaiOqv2Nu2JuVM5rcLfw0Z
-         UByvDbLjgbEhg==
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, Ingo Molnar <mingo@elte.hu>
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        kernel@collabora.com, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [PATCH] tty/sysrq: replace smp_processor_id() with get_cpu()
-Date:   Tue, 15 Aug 2023 12:13:15 +0500
-Message-Id: <20230815071316.3433114-1-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.40.1
+        Tue, 15 Aug 2023 03:16:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A3510F2;
+        Tue, 15 Aug 2023 00:16:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692083793; x=1723619793;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mqpW8dLHNLWmnXIgpv0wcWy9H6kceWlZT7a9uKG7nyY=;
+  b=lcEv4XmEQVU00HHSAbjqZZ1S0ay+Ids2wMrSHl+CWhRR2yv7VfwDNp+S
+   XU5xg4KhthIb2lDEK1Oa+36XCQWwFQADFnplD7vxt4zHZG2so02h0iOui
+   QOMFnOohvEW+syWWR5CMqaPcb5ecLC1+FSBGirND9wsCQF80AZJiW+zMG
+   58a/YcZwCGvuXkAykBsdKzmCeSCpQgypk5uKNa/1eLqgedQaW5Iimtg6v
+   vnOeEH9ZM5egc7ir9NzJNCLJdoaEeFXpwtqXMDhjwsi+wSPMSnsWq2reo
+   jhAGVPxfEBJu7aS97QEA3BPoYwRfGRZila3mhbzEcFTVt3HTIzBpq7h8u
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="369692381"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="369692381"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 00:16:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="733750361"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="733750361"
+Received: from lkp-server02.sh.intel.com (HELO b5fb8d9e1ffc) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 15 Aug 2023 00:16:30 -0700
+Received: from kbuild by b5fb8d9e1ffc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qVoI1-0000l1-1L;
+        Tue, 15 Aug 2023 07:16:29 +0000
+Date:   Tue, 15 Aug 2023 15:16:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>,
+        brendan.higgins@linux.dev, davidgow@google.com, rmoar@google.com
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        patches@opensource.cirrus.com,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: Re: [PATCH v4 01/10] kunit: string-stream: Improve testing of
+ string_stream
+Message-ID: <202308151555.o0Ok5tyv-lkp@intel.com>
+References: <20230814132309.32641-2-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230814132309.32641-2-rf@opensource.cirrus.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,62 +69,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The smp_processor_id() shouldn't be called from preemptible code.
-Instead use get_cpu() and put_cpu() which disables preemption in
-addition to getting the processor id. This fixes the following bug:
+Hi Richard,
 
-[  119.143590] sysrq: Show backtrace of all active CPUs
-[  119.143902] BUG: using smp_processor_id() in preemptible [00000000] code: bash/873
-[  119.144586] caller is debug_smp_processor_id+0x20/0x30
-[  119.144827] CPU: 6 PID: 873 Comm: bash Not tainted 5.10.124-dirty #3
-[  119.144861] Hardware name: QEMU QEMU Virtual Machine, BIOS 2023.05-1 07/22/2023
-[  119.145053] Call trace:
-[  119.145093]  dump_backtrace+0x0/0x1a0
-[  119.145122]  show_stack+0x18/0x70
-[  119.145141]  dump_stack+0xc4/0x11c
-[  119.145159]  check_preemption_disabled+0x100/0x110
-[  119.145175]  debug_smp_processor_id+0x20/0x30
-[  119.145195]  sysrq_handle_showallcpus+0x20/0xc0
-[  119.145211]  __handle_sysrq+0x8c/0x1a0
-[  119.145227]  write_sysrq_trigger+0x94/0x12c
-[  119.145247]  proc_reg_write+0xa8/0xe4
-[  119.145266]  vfs_write+0xec/0x280
-[  119.145282]  ksys_write+0x6c/0x100
-[  119.145298]  __arm64_sys_write+0x20/0x30
-[  119.145315]  el0_svc_common.constprop.0+0x78/0x1e4
-[  119.145332]  do_el0_svc+0x24/0x8c
-[  119.145348]  el0_svc+0x10/0x20
-[  119.145364]  el0_sync_handler+0x134/0x140
-[  119.145381]  el0_sync+0x180/0x1c0
+kernel test robot noticed the following build warnings:
 
-Fixes: 47cab6a722d4 ("debug lockups: Improve lockup detection, fix generic arch fallback")
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
-I've reproduced the bug on arm64. This patch fixes the bug.
----
- drivers/tty/sysrq.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+[auto build test WARNING on shuah-kselftest/kunit]
+[also build test WARNING on shuah-kselftest/kunit-fixes linus/master v6.5-rc6 next-20230809]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index 23198e3f1461a..6b4a28bcf2f5f 100644
---- a/drivers/tty/sysrq.c
-+++ b/drivers/tty/sysrq.c
-@@ -262,13 +262,14 @@ static void sysrq_handle_showallcpus(u8 key)
- 		if (in_hardirq())
- 			regs = get_irq_regs();
- 
--		pr_info("CPU%d:\n", smp_processor_id());
-+		pr_info("CPU%d:\n", get_cpu());
- 		if (regs)
- 			show_regs(regs);
- 		else
- 			show_stack(NULL, NULL, KERN_INFO);
- 
- 		schedule_work(&sysrq_showallcpus);
-+		put_cpu();
- 	}
- }
- 
+url:    https://github.com/intel-lab-lkp/linux/commits/Richard-Fitzgerald/kunit-string-stream-Improve-testing-of-string_stream/20230814-212947
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git kunit
+patch link:    https://lore.kernel.org/r/20230814132309.32641-2-rf%40opensource.cirrus.com
+patch subject: [PATCH v4 01/10] kunit: string-stream: Improve testing of string_stream
+config: arc-randconfig-r073-20230815 (https://download.01.org/0day-ci/archive/20230815/202308151555.o0Ok5tyv-lkp@intel.com/config)
+compiler: arc-elf-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230815/202308151555.o0Ok5tyv-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308151555.o0Ok5tyv-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> lib/kunit/string-stream-test.c:25:9: sparse: sparse: incorrect type in initializer (different base types) @@     expected long long left_value @@     got restricted gfp_t const __left @@
+   lib/kunit/string-stream-test.c:25:9: sparse:     expected long long left_value
+   lib/kunit/string-stream-test.c:25:9: sparse:     got restricted gfp_t const __left
+>> lib/kunit/string-stream-test.c:25:9: sparse: sparse: incorrect type in initializer (different base types) @@     expected long long right_value @@     got restricted gfp_t const __right @@
+   lib/kunit/string-stream-test.c:25:9: sparse:     expected long long right_value
+   lib/kunit/string-stream-test.c:25:9: sparse:     got restricted gfp_t const __right
+
+vim +25 lib/kunit/string-stream-test.c
+
+    13	
+    14	/* string_stream object is initialized correctly. */
+    15	static void string_stream_init_test(struct kunit *test)
+    16	{
+    17		struct string_stream *stream;
+    18	
+    19		stream = alloc_string_stream(test, GFP_KERNEL);
+    20		KUNIT_ASSERT_NOT_ERR_OR_NULL(test, stream);
+    21	
+    22		KUNIT_EXPECT_EQ(test, stream->length, 0);
+    23		KUNIT_EXPECT_TRUE(test, list_empty(&stream->fragments));
+    24		KUNIT_EXPECT_PTR_EQ(test, stream->test, test);
+  > 25		KUNIT_EXPECT_EQ(test, stream->gfp, GFP_KERNEL);
+    26	
+    27		KUNIT_EXPECT_TRUE(test, string_stream_is_empty(stream));
+    28	}
+    29	
+
 -- 
-2.40.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
