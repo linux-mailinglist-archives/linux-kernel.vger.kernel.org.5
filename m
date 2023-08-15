@@ -2,72 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2C177CCF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9629077CCFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237257AbjHOMvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 08:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45960 "EHLO
+        id S237301AbjHOMwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 08:52:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237316AbjHOMvX (ORCPT
+        with ESMTP id S237299AbjHOMwS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 08:51:23 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0262510C8;
-        Tue, 15 Aug 2023 05:51:20 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 15 Aug 2023 08:52:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A869AE5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:51:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692103893;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6h9aonqmeDneHn2sCJ+4YLuPQmV9DjwIRMJXM+2v704=;
+        b=LlVviMhC7rpIfFDEHuI4hUkok7ggB0trWxY9u648d/35mkLjGjrWS+AK/fNSKr+yn7szrV
+        Vfd9TIi4ypnnOo9sdxPJ/CMQ/k4l7jr6AxsP1QO06mjkNxY0M7TssUc8eQxOfSCAdJsyyJ
+        fq7KbToovXyrBadWgQXyr2+ujV6Rdqg=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-595-qBAZoA6cNmWTtYvAFtxRoA-1; Tue, 15 Aug 2023 08:51:32 -0400
+X-MC-Unique: qBAZoA6cNmWTtYvAFtxRoA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 8552E2E5;
-        Tue, 15 Aug 2023 12:51:19 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 8552E2E5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1692103879; bh=A0ruRWbjJ2mUIDDgzFsVPpRpBtq2cd50AaJOZBXP32g=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=mDxMI3HJR0f29YKulfklExT1CBFhIPj/ptRyN/d0v1i6unplWiQ5sQrTO6XwHgwvn
-         3V3rb2D2q12tSKW12hf6BbiPC56C1EqifR8GIW4L6kmqfjmUMzpZwO9IxMDsBSwuWA
-         dWlzZ/vg3ityq3sxA4j3Aii3zfYtVoJWQVpP2/P/wlLJ6mA6hN1xI9DEuskyJynJaL
-         NB0t2nZxpskCCTf0YQBXbq7mY2fn2qM8f785PAf5w6rSMWgsybPc0Ub0WQcADfyDv/
-         OBGRps7EPyK94KopfX7zGLlmeT7pSaD4Ccf0bn3RwN/05TVssvf/VVfkhidz7oXtOB
-         UiKX34KlIVzDQ==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>
-Cc:     ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patches in the jc_docs tree
-In-Reply-To: <20230815121930.6174e047@canb.auug.org.au>
-References: <20230815121930.6174e047@canb.auug.org.au>
-Date:   Tue, 15 Aug 2023 06:51:18 -0600
-Message-ID: <87cyzov589.fsf@meer.lwn.net>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 576E33C108C9;
+        Tue, 15 Aug 2023 12:51:31 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C3E4B140E917;
+        Tue, 15 Aug 2023 12:51:29 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <aceea2408bf049aebb1f1f893281795c@AcuMS.aculab.com>
+References: <aceea2408bf049aebb1f1f893281795c@AcuMS.aculab.com> <3710261.1691764329@warthog.procyon.org.uk>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     dhowells@redhat.com, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "jlayton@kernel.org" <jlayton@kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] iov_iter: Convert iterate*() to inline funcs
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <286906.1692103889.1@warthog.procyon.org.uk>
+Date:   Tue, 15 Aug 2023 13:51:29 +0100
+Message-ID: <286907.1692103889@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
+David Laight <David.Laight@ACULAB.COM> wrote:
 
-> Hi all,
->
-> The following commits are also in the arm-soc tree tree as different
-> commits (but the same patches):
->
->   f92682a736be ("MAINTAINER: samsung: document dtbs_check requirement for Samsung")
->   e12cf84634f1 ("Documentation/process: maintainer-soc: add clean platforms profile")
->   1b46ecf119d8 ("MAINTAINERS: soc: reference maintainer profile")
->
+> Actually quite typical because inlining happens much later on.
+> I suspect that the #define benefits from the compile front-end
+> optimising constants.
 
-They must have appeared in arm-soc today?  I applied them in July.  I
-can happily drop them back out, though.
+I managed to mostly pull it back, and even make some functions slightly
+smaller, in the v2 I posted.  Mostly that came about by arranging things to
+look a bit more like the upstream macro version.
 
-Thanks,
+David
 
-jon
