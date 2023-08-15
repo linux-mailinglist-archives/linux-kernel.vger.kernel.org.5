@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D26077CD28
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 15:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD24B77CD21
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 15:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237375AbjHONIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 09:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52436 "EHLO
+        id S237362AbjHONFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 09:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233968AbjHONHw (ORCPT
+        with ESMTP id S237376AbjHONF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 09:07:52 -0400
-Received: from forward201c.mail.yandex.net (forward201c.mail.yandex.net [IPv6:2a02:6b8:c03:500:1:45:d181:d201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AC7B0;
-        Tue, 15 Aug 2023 06:07:50 -0700 (PDT)
+        Tue, 15 Aug 2023 09:05:27 -0400
+X-Greylist: delayed 365 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 15 Aug 2023 06:05:25 PDT
+Received: from forward200b.mail.yandex.net (forward200b.mail.yandex.net [IPv6:2a02:6b8:c02:900:1:45:d181:d200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5247110C0;
+        Tue, 15 Aug 2023 06:05:23 -0700 (PDT)
 Received: from forward103b.mail.yandex.net (forward103b.mail.yandex.net [IPv6:2a02:6b8:c02:900:1:45:d181:d103])
-        by forward201c.mail.yandex.net (Yandex) with ESMTP id 2358A4A49F;
-        Tue, 15 Aug 2023 15:59:43 +0300 (MSK)
+        by forward200b.mail.yandex.net (Yandex) with ESMTP id 5C0046D3D9;
+        Tue, 15 Aug 2023 15:59:19 +0300 (MSK)
 Received: from mail-nwsmtp-smtp-production-main-91.iva.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-91.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:17a3:0:640:53a6:0])
-        by forward103b.mail.yandex.net (Yandex) with ESMTP id 643BA60031;
-        Tue, 15 Aug 2023 15:59:10 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-91.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 3xeYJg5Wma60-VVag7b6Y;
-        Tue, 15 Aug 2023 15:59:09 +0300
+        by forward103b.mail.yandex.net (Yandex) with ESMTP id 900576008A;
+        Tue, 15 Aug 2023 15:59:14 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-91.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 3xeYJg5Wma60-NJiIOuGT;
+        Tue, 15 Aug 2023 15:59:13 +0300
 X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=6tel.net; s=mail; t=1692104349;
-        bh=W0sB+Yne05rsYeHXPgw3LIcd/XRPY0E85Vo6QNC1YDQ=;
-        h=Message-ID:Date:Cc:Subject:To:From;
-        b=LVy7viZueqdVlCckBmTTdfAMirSbVmesDdfXgWPE6RjzJg1dGN5pPXiUfYddfRvyW
-         1+Q/F39qaCANTXtp1xiW0Uga/P+1Zg0BSRQL2y7fwT8i2I8EDHguB5KIsWvU7EWK1K
-         0/tsEPqfOg0q1FqbhuTYCHBI1aw5o/LrCguqBb6c=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=6tel.net; s=mail; t=1692104354;
+        bh=qVobqAw1ejIeOmOQL3G2D1I+HOKk97SjxD2o3Soufo4=;
+        h=Message-ID:Date:In-Reply-To:Cc:Subject:References:To:From;
+        b=TzaQnxGslyFELK2A8isOQFJlRqsl1BMGBTYnSU9v2DDDFD+92kQZDxyVdL9oZVBuf
+         m/JUeBf8nCsX1joutmBJtUrbIDTY9zut9nzcI/IuVYpTG8HCr8PdxtEYF+Tt6rCt3i
+         snm5h3JLrGSoZsGzcmZh6xQ/rguVG4YniWUOgpfg=
 Authentication-Results: mail-nwsmtp-smtp-production-main-91.iva.yp-c.yandex.net; dkim=pass header.i=@6tel.net
 From:   Muhammed Efe Cetin <efectn@6tel.net>
 To:     linux-rockchip@lists.infradead.org
@@ -38,10 +39,12 @@ Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
         heiko@sntech.de, sebastian.reichel@collabora.com,
         Muhammed Efe Cetin <efectn@6tel.net>
-Subject: [PATCH 0/3] Add Support for Orange Pi 5
-Date:   Tue, 15 Aug 2023 15:58:58 +0300
-Message-ID: <cover.1692102057.git.efectn@6tel.net>
+Subject: [PATCH 1/3] dt-bindings: arm: rockchip: Add Orange Pi 5 board
+Date:   Tue, 15 Aug 2023 15:58:59 +0300
+Message-ID: <cdb5f1d686425e7dcb953c83749153f9321f9afc.1692102057.git.efectn@6tel.net>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <cover.1692102057.git.efectn@6tel.net>
+References: <cover.1692102057.git.efectn@6tel.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -54,21 +57,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Add Orange Pi 5 SBC from Xunlong.
 
-These series add initial support for Orange Pi 5 and SFC node for RK3588S.
+Signed-off-by: Muhammed Efe Cetin <efectn@6tel.net>
+---
+ Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Muhammed Efe Cetin (3):
-  dt-bindings: arm: rockchip: Add Orange Pi 5 board
-  arm64: dts: rockchip: Add sfc node to rk3588s
-  arm64: dts: rockchip: Add Orange Pi 5
-
- .../devicetree/bindings/arm/rockchip.yaml     |   5 +
- .../boot/dts/rockchip/rk3588s-orangepi-5.dts  | 873 ++++++++++++++++++
- arch/arm64/boot/dts/rockchip/rk3588s.dtsi     |  13 +
- 3 files changed, 891 insertions(+)
- create mode 100644 arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts
-
+diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Documentation/devicetree/bindings/arm/rockchip.yaml
+index ca5389862887..b9649e27bc82 100644
+--- a/Documentation/devicetree/bindings/arm/rockchip.yaml
++++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
+@@ -877,6 +877,11 @@ properties:
+               - xunlong,orangepi-r1-plus-lts
+           - const: rockchip,rk3328
+ 
++      - description: Xunlong Orange Pi 5
++        items:
++          - const: xunlong,orangepi-5
++          - const: rockchip,rk3588s
++
+       - description: Zkmagic A95X Z2
+         items:
+           - const: zkmagic,a95x-z2
 -- 
 2.41.0
 
