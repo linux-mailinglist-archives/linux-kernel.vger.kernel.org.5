@@ -2,112 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B44777D3B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7292C77D3C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240180AbjHOTxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 15:53:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38774 "EHLO
+        id S240036AbjHOT7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 15:59:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240037AbjHOTwf (ORCPT
+        with ESMTP id S234858AbjHOT6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 15:52:35 -0400
-Received: from out-5.mta0.migadu.com (out-5.mta0.migadu.com [91.218.175.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4217D19A5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:52:33 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 12:52:13 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1692129151;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KiWwkuxZLXlsMAakbQTpqYVqMa7+2V8VgSeqKNwbqnY=;
-        b=vVlL8aU/i8mbZu9EunVXTFOHbz1Iac2XLnCqGKmQUETNw3eGScVfMkct1OY9dsZ35mputG
-        bQrBsX3UyZtcOEbe+PMx8oGtfdUiBtDD1HH1gtqsncvHwjvFyYYk+xq83u6m8zUB5dlsLu
-        r1JRj2XHpnG1tFzKDyBvHiknMzvvqe4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Chuyi Zhou <zhouchuyi@bytedance.com>, hannes@cmpxchg.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        muchun.song@linux.dev, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robin.lu@bytedance.com
-Subject: Re: Re: [RFC PATCH 1/2] mm, oom: Introduce bpf_select_task
-Message-ID: <ZNvXbX2HIFcl9OqQ@P9FQF9L96D.corp.robot.car>
-References: <ZMzhDFhvol2VQBE4@dhcp22.suse.cz>
- <dfbf05d1-daff-e855-f4fd-e802614b79c4@bytedance.com>
- <ZMz+aBHFvfcr0oIe@dhcp22.suse.cz>
- <866462cf-6045-6239-6e27-45a733aa7daa@bytedance.com>
- <ZNCXgsZL7bKsCEBM@dhcp22.suse.cz>
- <ZNEpsUFgKFIAAgrp@P9FQF9L96D.lan>
- <ZNH6X/2ZZ0quKSI6@dhcp22.suse.cz>
- <ZNK2fUmIfawlhuEY@P9FQF9L96D>
- <ZNNGFzwlv1dC866j@dhcp22.suse.cz>
- <fdec0f4c-a65f-df16-b4ee-7cfd977c8d7f@bytedance.com>
+        Tue, 15 Aug 2023 15:58:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F0C1AB
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:58:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F291F60DC5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:58:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30DA8C433C7;
+        Tue, 15 Aug 2023 19:58:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692129513;
+        bh=liTtQIepDemmgBKm25RqRcTit4+ntzh72R9+hldmPuk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FHArkGL7SuhedGxZT+Q+tVL7vYEi3VdiFjUtpa7esBW/3gxI2YHGjSp5mc5CY9IEu
+         1zACV4FYc11+j3ftiqsvnAUfVHoqWo4rvcKECXXkBbVACapZytiJfUvhgXQLd2GDgc
+         Rmjcy3lyfAfbDeAD2NsvQVPApHBh/D6TvHIKfWZraA325ivvMl93sVS4zTpvSgP6mN
+         dTECccceg2AONf9EaNELtGc7ymDaA9imtdw/wfAV9J//fgenG9spSXB/5lCftKcPuj
+         96J8i4kTBClI0u2i1KpLb7x+LKWd4n9afSGndri4WxsZF8gMr/e1dvtZIInPef9sk1
+         cY8EMI51iD2nQ==
+Date:   Tue, 15 Aug 2023 12:58:31 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Nikolay Borisov <nik.borisov@suse.com>, X86 ML <x86@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/srso: Correct the mitigation status when SMT is
+ disabled
+Message-ID: <20230815195831.2opbgrznnpszaa32@treble>
+References: <20230813104517.3346-1-bp@alien8.de>
+ <1588ed00-be11-ff9d-e4c2-12db78cca06f@suse.com>
+ <20230814200813.p5czl47zssuej7nv@treble>
+ <20230814202545.GKZNqNybUnKv+xyrtP@fat_crate.local>
+ <20230814205300.krikym7jeckehqik@treble>
+ <20230814211727.GLZNqZ5+flxtyaDjMQ@fat_crate.local>
+ <20230815095724.GBZNtMBPUJSEegviJN@fat_crate.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <fdec0f4c-a65f-df16-b4ee-7cfd977c8d7f@bytedance.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230815095724.GBZNtMBPUJSEegviJN@fat_crate.local>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 12:00:36PM +0800, Abel Wu wrote:
-> On 8/9/23 3:53 PM, Michal Hocko wrote:
-> > On Tue 08-08-23 14:41:17, Roman Gushchin wrote:
-> > > It would be also nice to come up with some practical examples of bpf programs.
-> > > What are meaningful scenarios which can be covered with the proposed approach
-> > > and are not covered now with oom_score_adj.
-> > 
-> > Agreed here as well. This RFC serves purpose of brainstorming on all of
-> > this.
-> > 
-> > There is a fundamental question whether we need BPF for this task in the
-> > first place. Are there any huge advantages to export the callback and
-> > allow a kernel module to hook into it?
-> 
-> The ancient oom-killer largely depends on memory usage when choosing
-> victims, which might not fit the need of modern scenarios. It's common
-> nowadays that multiple workloads (tenants) with different 'priorities'
-> run together, and the decisions made by the oom-killer doesn't always
-> obey the service level agreements.
-> 
-> While the oom_score_adj only adjusts the usage-based decisions, so it
-> can hardly be translated into 'priority' semantic. How can we properly
-> configure it given that we don't know how much memory the workloads
-> will use? It's really hard for a static strategy to deal with dynamic
-> provision. IMHO the oom_score_adj is just another demon.
-> 
-> Reworking the oom-killer's internal algorithm or patching some random
-> metrics may satisfy the immediate needs, but for the next 10 years? I
-> doubt it. So I think we do need the flexibility to bypass the legacy
-> usage-based algorithm, through bpf or pre-select interfaces.
+On Tue, Aug 15, 2023 at 11:57:24AM +0200, Borislav Petkov wrote:
+> --- a/arch/x86/kernel/cpu/bugs.c
+> +++ b/arch/x86/kernel/cpu/bugs.c
+> @@ -2417,8 +2417,7 @@ static void __init srso_select_mitigation(void)
+>  		 * Zen1/2 with SMT off aren't vulnerable after the right
+>  		 * IBPB microcode has been applied.
+>  		 */
+> -		if ((boot_cpu_data.x86 < 0x19) &&
+> -		    (!cpu_smt_possible() || (cpu_smt_control == CPU_SMT_DISABLED))) {
+> +		if (boot_cpu_data.x86 < 0x19 && !cpu_smt_possible()) {
+>  			setup_force_cpu_cap(X86_FEATURE_SRSO_NO);
+>  			return;
+>  		}
+> @@ -2698,8 +2697,12 @@ static ssize_t retbleed_show_state(char *buf)
+>  
+>  static ssize_t srso_show_state(char *buf)
+>  {
+> -	if (boot_cpu_has(X86_FEATURE_SRSO_NO))
+> -		return sysfs_emit(buf, "Not affected\n");
+> +	if (boot_cpu_has(X86_FEATURE_SRSO_NO)) {
+> +		if (sched_smt_active())
+> +			return sysfs_emit(buf, "Not affected\n");
+> +		else
+> +			return sysfs_emit(buf, "Mitigation: SMT disabled\n");
+> +	}
 
-I agree in general, but I wouldn't call the existing implementation a legacy
-or obsolete. It's all about trade-offs. The goal of the existing implementation
-is to guarantee the forward progress without killing any processes prematurely.
-And it does it relatively well.
+AFAICT, nowhere in the spec does it say the SRSO_NO bit won't get set by
+future (fixed) HW.  In fact I'd expect it will, similar to other *_NO
+flags.
 
-Userspace oom killers (e.g. oomd) on top of PSI were initially created to
-solve the problem of memory thrashing: having a system which is barely making
-anything useful, but not stuck enough for the OOM killer to kick in.
-But also they were able to provide a much better flexibility. The downside -
-they can't be as reliable as the in-kernel OOM killer.
+Regardless, here SRSO_NO seems to mean two different things: "reported
+safe by host (or HW)" and "not reported safe on Zen1/2 with SMT not
+possible".
 
-Bpf or a pre-select interface can in theory glue them together: make sure that
-a user has a flexibility to choose the OOM victim without compromising on the
-reliability. Pre-select interface could be preferable if all the logic is
-already implemented in userspace, but might be slightly less accurate if some
-statistics (e.g. memory usage) is used for the determination of the victim.
-Bpf approach will require re-implementing the logic, but potentially is more
-powerful due to a fast access to a lot of kernel data.
+Also, in this code, the SRSO_NO+SMT combo doesn't seem logically
+possible, as srso_show_state() only gets called if X86_BUG_SRSO is set,
+which only happens if SRSO_NO is not set by the HW/host in the first
+place.  So here, if boot_cpu_has(X86_FEATURE_SRSO_NO), it means SRSO_NO
+was manually set by srso_select_mitigation(), and SMT can't possibly be
+enabled.
 
-Thanks!
+Instead of piggybacking on SRSO_NO, which is confusing, why not just add
+a new mitigation type, like:
+
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index 6c04aef4b63b..c925b98f5a15 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -2343,6 +2343,7 @@ early_param("l1tf", l1tf_cmdline);
+ enum srso_mitigation {
+ 	SRSO_MITIGATION_NONE,
+ 	SRSO_MITIGATION_MICROCODE,
++	SRSO_MITIGATION_SMT,
+ 	SRSO_MITIGATION_SAFE_RET,
+ 	SRSO_MITIGATION_IBPB,
+ 	SRSO_MITIGATION_IBPB_ON_VMEXIT,
+@@ -2359,6 +2360,7 @@ enum srso_mitigation_cmd {
+ static const char * const srso_strings[] = {
+ 	[SRSO_MITIGATION_NONE]           = "Vulnerable",
+ 	[SRSO_MITIGATION_MICROCODE]      = "Mitigation: microcode",
++	[SRSO_MITIGATION_SMT]		 = "Mitigation: SMT disabled",
+ 	[SRSO_MITIGATION_SAFE_RET]	 = "Mitigation: safe RET",
+ 	[SRSO_MITIGATION_IBPB]		 = "Mitigation: IBPB",
+ 	[SRSO_MITIGATION_IBPB_ON_VMEXIT] = "Mitigation: IBPB on VMEXIT only"
+@@ -2407,19 +2409,15 @@ static void __init srso_select_mitigation(void)
+ 		pr_warn("IBPB-extending microcode not applied!\n");
+ 		pr_warn(SRSO_NOTICE);
+ 	} else {
+-		/*
+-		 * Enable the synthetic (even if in a real CPUID leaf)
+-		 * flags for guests.
+-		 */
++		/* Enable the synthetic flag, as HW doesn't set it. */
+ 		setup_force_cpu_cap(X86_FEATURE_IBPB_BRTYPE);
+ 
+ 		/*
+ 		 * Zen1/2 with SMT off aren't vulnerable after the right
+ 		 * IBPB microcode has been applied.
+ 		 */
+-		if ((boot_cpu_data.x86 < 0x19) &&
+-		    (!cpu_smt_possible() || (cpu_smt_control == CPU_SMT_DISABLED))) {
+-			setup_force_cpu_cap(X86_FEATURE_SRSO_NO);
++		if ((boot_cpu_data.x86 < 0x19) && !cpu_smt_possible()) {
++			srso_mitigation = SRSO_MITIGATION_SMT;
+ 			return;
+ 		}
+ 	}
+@@ -2698,9 +2696,6 @@ static ssize_t retbleed_show_state(char *buf)
+ 
+ static ssize_t srso_show_state(char *buf)
+ {
+-	if (boot_cpu_has(X86_FEATURE_SRSO_NO))
+-		return sysfs_emit(buf, "Not affected\n");
+-
+ 	return sysfs_emit(buf, "%s%s\n",
+ 			  srso_strings[srso_mitigation],
+ 			  (cpu_has_ibpb_brtype_microcode() ? "" : ", no microcode"));
