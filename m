@@ -2,106 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D041277CE34
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE3B77CE3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237669AbjHOOgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 10:36:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
+        id S237690AbjHOOhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 10:37:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237698AbjHOOf5 (ORCPT
+        with ESMTP id S237693AbjHOOgx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 10:35:57 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D3719A6;
-        Tue, 15 Aug 2023 07:35:54 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5234b80e9b6so7461639a12.2;
-        Tue, 15 Aug 2023 07:35:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692110153; x=1692714953;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=5ExkU1aXgwbVZAT4/86NsHH+oPTHRo8kokP8esTR6pM=;
-        b=T8JfBGRKfRbUqDuTJiwMDTGkrsRIKO5jTVuAqeDt45jhDd+MoPa0r9rX6d+JXB2SLH
-         +PdVegksVN7bVdmYt0loLcqvellOQIle4Gh8C4S0uUSTNbGFG/T1RJl2QvLFUj6BVGsi
-         fpLg6c77iRfXi/coDfTa7VaY7bVSsXhSeZmxhUS0UEWcVpiUmO2MkQoZFY6YHpkt9Ltv
-         XzWstHS/9nWlHwYLdZhEtS2nCeZx3HXivTZv7prynNSMvoL5EfqyMFQJFwL4WjM0xpZm
-         N/tnxa2KLrWGXfxKLLIqTwz+bs1lST0+VmoajwsrbVuLtgVk/XpaFyfJZXlHNXb58Qyw
-         Cizw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692110153; x=1692714953;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5ExkU1aXgwbVZAT4/86NsHH+oPTHRo8kokP8esTR6pM=;
-        b=iLrb6NVavHradzfYV9cbPUdV03q0U14iyiR5YoXPjcZGWczPo7NcDHjg7tE8T3UeHv
-         k7kNNzcwt0HzKC2gJCoLbpPaVwX2+Rcu/zRU/gMOwmF/3rVh5K1ZZf60NG0Mwl4ysk8D
-         Vveoxik8QYJiGyLv6DgQkF4LhKXxnm4d7rdneeulkxUS2r3Nm0NUBldMR+KRf4KeQmem
-         xLJS+Flsc5eRp3qb/5MdRKHBlL6spE1mEZeKiZeSaORiGTmBWMW9yCsXtvwpksAaMJoM
-         IpcdDvuzDy1fA+RL/AL90f/s1xHoqiUff4Q/MrYzzMUj1AmqiKVmGvZF06w6XB1cc+EC
-         lgGg==
-X-Gm-Message-State: AOJu0Yw/Qy1GpeZvuMV+OLBGQB7ouGOF9SraQlfNiJkXhnGe5eyNw+QF
-        LdgR6nChaItJ9/Ke9GXNOdvbxIDsIl/csA==
-X-Google-Smtp-Source: AGHT+IFsmByXjHI0wnLzrSXkFNHsDb7aGcOCiExsey2xd2N/qfCGkxS21qOBHQU7rf4CmMMPM/mEAg==
-X-Received: by 2002:aa7:c612:0:b0:522:20a0:7eb8 with SMTP id h18-20020aa7c612000000b0052220a07eb8mr9909900edq.33.1692110152723;
-        Tue, 15 Aug 2023 07:35:52 -0700 (PDT)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id n19-20020aa7c453000000b0052328d4268asm6831254edr.81.2023.08.15.07.35.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 07:35:52 -0700 (PDT)
-Message-ID: <841306f0691a7d56be72be0bb3c7472eadcc3367.camel@gmail.com>
-Subject: Re: [RFC PATCH bpf-next 1/2] bpf, x64: Fix tailcall infinite loop
- bug
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Leon Hwang <hffilwlqm@gmail.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, x86@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mykolal@fb.com,
-        shuah@kernel.org, davem@davemloft.net, dsahern@kernel.org,
-        tangyeechou@gmail.com, kernel-patches-bot@fb.com,
-        maciej.fijalkowski@intel.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Date:   Tue, 15 Aug 2023 17:35:50 +0300
-In-Reply-To: <43201fd2-dca7-9294-1dea-8460a9e99296@gmail.com>
-References: <20230814134147.70289-1-hffilwlqm@gmail.com>
-         <20230814134147.70289-2-hffilwlqm@gmail.com>
-         <ad3db96c97aea916d555c76069490a176f634ccb.camel@gmail.com>
-         <43201fd2-dca7-9294-1dea-8460a9e99296@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu1 
+        Tue, 15 Aug 2023 10:36:53 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335B219A4;
+        Tue, 15 Aug 2023 07:36:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692110212; x=1723646212;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=rtgdSA9vcQoHmkbubdnn9solITQI/tTkYq65Mu7X6gY=;
+  b=VhOgHn8V0RoGNFP/BqQ6DUzXDhvKQVzQZyvuRJNbxVLyQ1ICZa7jBEDv
+   RVPtlpN/qt2CTNyt/6ZsFR0ual0ts7GCi5uYkQ24vwExzhgSsiNfWcuyV
+   UNFsfUlxL3VFWGpjilhqMMPSTZze+AcBcUVi7hPtMmeGW+VRUgKdwC1Qk
+   uZ3+/7UgrXgESbtju8/wjl7GGpz4Nn5JRR9AbU8w31XTHMVE0eeqbAuRO
+   FRQF70sQa4JUrzVGUiFpHnZPHRXG/rMZQM0JyMgbIiW863MT4Fzp4yrwn
+   2gsi8Ml2g6A2wnYVPHy26gyYElVm341sf0hwyp3fK3fLyfLQsdA40z+19
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="376023162"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="376023162"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 07:36:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="799211216"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="799211216"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga008.fm.intel.com with ESMTP; 15 Aug 2023 07:36:44 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qVvA1-005Uej-29;
+        Tue, 15 Aug 2023 17:36:41 +0300
+Date:   Tue, 15 Aug 2023 17:36:41 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Marcus Folkesson <marcus.folkesson@gmail.com>
+Cc:     Kent Gustavsson <kent@minoris.se>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Cosmin Tanislav <demonsingur@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Ramona Bolboaca <ramona.bolboaca@analog.com>,
+        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        William Breathitt Gray <william.gray@linaro.org>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/6] iio: adc: mcp3911: make use of dev_err_probe()
+Message-ID: <ZNuNedpsuPmdfumG@smile.fi.intel.com>
+References: <20230814121010.184842-1-marcus.folkesson@gmail.com>
+ <20230814121010.184842-2-marcus.folkesson@gmail.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230814121010.184842-2-marcus.folkesson@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-08-15 at 11:01 +0800, Leon Hwang wrote:
-[...]
-> a) Initial value of RAX is in emit_prologue().
-> 	if (!ebpf_from_cbpf) {
-> 		if (tail_call_reachable && !is_subprog)
-> 			/* When it's the entry of the whole
-> 			 * tailcall context, zeroing the RAX
-> 			 * means init tail_call_cnt.
-> 			 */
-> 			EMIT2(0x31, 0xC0); /* xor eax, eax */
-> 		else
-> 			// Keep the same asm layout.
-> 			EMIT2(0x66, 0x90); /* nop2 */
-> 	}
->    I'd like to add this comment to emit_prologue().
+On Mon, Aug 14, 2023 at 02:10:06PM +0200, Marcus Folkesson wrote:
+> Simplify code by switch to dev_err_probe().
+> 
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+> ---
+> 
+> Notes:
+>     v5:
+>         - New patch in this series
+> 
+>  drivers/iio/adc/mcp3911.c | 11 +++--------
+>  1 file changed, 3 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/mcp3911.c b/drivers/iio/adc/mcp3911.c
+> index 974c5bd923a6..681248a3ddde 100644
+> --- a/drivers/iio/adc/mcp3911.c
+> +++ b/drivers/iio/adc/mcp3911.c
+> @@ -468,6 +468,7 @@ static int mcp3911_probe(struct spi_device *spi)
+>  {
+>  	struct iio_dev *indio_dev;
+>  	struct mcp3911 *adc;
+> +	struct device *dev = &spi->dev;
+>  	int ret;
 
-Got it, thank you.
+With preserved reversed xmas tree order (longer line comes first),
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+>  	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*adc));
+> @@ -482,10 +483,7 @@ static int mcp3911_probe(struct spi_device *spi)
+>  		if (PTR_ERR(adc->vref) == -ENODEV) {
+>  			adc->vref = NULL;
+>  		} else {
+> -			dev_err(&adc->spi->dev,
+> -				"failed to get regulator (%ld)\n",
+> -				PTR_ERR(adc->vref));
+> -			return PTR_ERR(adc->vref);
+> +			return dev_err_probe(dev, PTR_ERR(adc->vref), "failed to get regulator\n");
+>  		}
+>  
+>  	} else {
+> @@ -504,10 +502,7 @@ static int mcp3911_probe(struct spi_device *spi)
+>  		if (PTR_ERR(adc->clki) == -ENOENT) {
+>  			adc->clki = NULL;
+>  		} else {
+> -			dev_err(&adc->spi->dev,
+> -				"failed to get adc clk (%ld)\n",
+> -				PTR_ERR(adc->clki));
+> -			return PTR_ERR(adc->clki);
+> +			return dev_err_probe(dev, PTR_ERR(adc->clki), "failed to get adc clk\n");
+>  		}
+>  	}
+>  
+> -- 
+> 2.41.0
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-[...]
