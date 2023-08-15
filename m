@@ -2,134 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5D277CBA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A458277CBD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235781AbjHOL1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 07:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56546 "EHLO
+        id S236696AbjHOLin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 07:38:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236251AbjHOL1o (ORCPT
+        with ESMTP id S236702AbjHOLiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 07:27:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7629E73
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:27:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692098863; x=1723634863;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=c0UQwalrepMpq1VW/SpIyUAEXIcvIN5UafwiPH6RW2c=;
-  b=hZ/pvIAsmLClJV6Kzk3ttcmV0Bc3Ei8z6haN1JzWacazeHKiEqTxHbQm
-   DWcQFX7e75gPCBpRKrZUVZfIZAAFX58wwvrndta583IePG1TF1ttiw1nl
-   3xoc93MFVs4JC8OnNoUXFZxzICoMJxjHVte+uZJviwt73Y13p8x3JzFO/
-   /gqJKWZgaSdRDnJlDwe6tVxdX+L/H4yofmEX3n9R7eR3mxrMppWhI2yzN
-   1pT88weKmNVu81pNQ/RtXGGMNGqc07FqcXPB7NnhtKaIxooTZXDGy/nh5
-   dqHAuY5kpIzbO6iC59pvhV+kD3gN1eVR0rINfph2IO4D/8nQFDnLWFuip
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="351844540"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="351844540"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 04:27:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="980338041"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="980338041"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga006.fm.intel.com with ESMTP; 15 Aug 2023 04:27:38 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 3C520350; Tue, 15 Aug 2023 14:35:42 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Herve Codina <herve.codina@bootlin.com>,
-        Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH v1 1/1] minmax: Deduplicate __unconst_integer_typeof()
-Date:   Tue, 15 Aug 2023 14:35:34 +0300
-Message-Id: <20230815113534.10592-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+        Tue, 15 Aug 2023 07:38:21 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5717E7C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:38:19 -0700 (PDT)
+Received: from dggpeml500002.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RQ8MY1jGzzFqdC;
+        Tue, 15 Aug 2023 19:35:21 +0800 (CST)
+Received: from [10.67.103.44] (10.67.103.44) by dggpeml500002.china.huawei.com
+ (7.185.36.158) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 15 Aug
+ 2023 19:38:17 +0800
+Subject: Re: [PATCH 2/2] coresight: core: Fix multiple free TRBE platform data
+ resource
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>, <mike.leach@linaro.org>,
+        <leo.yan@linaro.org>, <anshuman.khandual@arm.com>,
+        <jonathan.cameron@huawei.com>, James Clark <james.clark@arm.com>
+References: <20230814093813.19152-1-hejunhao3@huawei.com>
+ <20230814093813.19152-3-hejunhao3@huawei.com>
+ <2b69bd4e-5ef4-16c7-f908-7c70187e12b6@arm.com>
+CC:     <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <yangyicong@huawei.com>, <prime.zeng@hisilicon.com>
+From:   hejunhao <hejunhao3@huawei.com>
+Message-ID: <68f16bb1-53ed-b8b9-812e-6d3be40a5bde@huawei.com>
+Date:   Tue, 15 Aug 2023 19:38:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2b69bd4e-5ef4-16c7-f908-7c70187e12b6@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.103.44]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500002.china.huawei.com (7.185.36.158)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It appears that compiler_types.h already have an implementation
-of the __unconst_integer_typeof() called __unqual_scalar_typeof().
-Use it instead of the copy.
+Hi, Suzuki
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
 
-As the initial code is in Linux Next via ASoC tree, it's assumed
-to go via that tree as well.
+On 2023/8/15 6:47, Suzuki K Poulose wrote:
+> + James Clark
+>
+> On 14/08/2023 10:38, Junhao He wrote:
+>> Current the TRBE driver supports matching TRBE platform device through
+>> id_table. The ACPI created a dummy TRBE platform device inside
+>> drivers/perf/arm_pmu_acpi.c. So the TRBE platform driver will probe only
+>> once and allocate just one TRBE platform data resource.
+>>
+>> If the system supports the TRBE feature, Each CPU in the systems can
+>> have at least one TRBE present, and the coresight_unregister gets called
+>> multiple times, once for each of them.
+>> Therefore, when unregister TRBE coresight devices, the TRBE platform 
+>> data
+>> resource will multiple free in function coresight_unregister.
+>>
+>> root@localhost:# insmod coresight-trbe.ko
+>> root@localhost:# rmmod coresight-trbe.ko
+>> [  423.455932] ------------[ cut here ]------------
+>> [  423.461987] WARNING: CPU: 1 PID: 0 at drivers/base/devres.c:1064 
+>> devm_kfree+0x88/0x98
+>> [  423.483821] CPU: 1 PID: 0 Comm: swapper/1 Tainted: G           
+>> O       6.5.0-rc4+ #1
+>> [  423.505842] pstate: 614000c9 (nZCv daIF +PAN -UAO -TCO +DIT -SSBS 
+>> BTYPE=--)
+>> ...
+>> [  423.601301] Call trace:
+>> [  423.604202]  devm_kfree+0x88/0x98
+>> [  423.608369]  coresight_release_platform_data+0xb8/0xe0 [coresight]
+>> [  423.616589]  coresight_unregister+0x120/0x170 [coresight]
+>> [  423.623533]  arm_trbe_remove_coresight_cpu+0x70/0xa0 [coresight_trbe]
+>> [  423.631082]  __flush_smp_call_function_queue+0x1e4/0x4e0
+>> [  423.637471] generic_smp_call_function_single_interrupt+0x1c/0x30
+>> [  423.644796]  ipi_handler+0x90/0x278
+>> [  423.648992]  handle_percpu_devid_irq+0x90/0x250
+>> [  423.654636]  generic_handle_domain_irq+0x34/0x58
+>> [  423.659786]  gic_handle_irq+0x12c/0x270
+>> [  423.664039]  call_on_irq_stack+0x24/0x30
+>> [  423.668452]  do_interrupt_handler+0x88/0x98
+>> [  423.673027]  el1_interrupt+0x48/0xe8
+>> [  423.677413]  el1h_64_irq_handler+0x18/0x28
+>> [  423.681781]  el1h_64_irq+0x78/0x80
+>> [  423.685550]  default_idle_call+0x5c/0x180
+>> [  423.689855]  do_idle+0x25c/0x2c0
+>> [  423.694196]  cpu_startup_entry+0x2c/0x40
+>> [  423.698373]  secondary_start_kernel+0x144/0x188
+>> [  423.703920]  __secondary_switched+0xb8/0xc0
+>> [  423.708972] ---[ end trace 0000000000000000 ]---
+>> [  423.729209] ------------[ cut here ]------------
+>> ...
+>> [  423.735217] WARNING: CPU: 2 PID: 40 at drivers/base/devres.c:1064 
+>> devm_kfree+0x88/0x98
+>> ...
+>> [  424.012385] WARNING: CPU: 3 PID: 0 at drivers/base/devres.c:1064 
+>> devm_kfree+0x88/0x98
+>> ...
+>>
+>> This patch does the following:
+>> 1.TRBE coresight devices do not need regular connections information, We
+>>    can free connections resource when the nr_conns is valid.
+>> 2.And we can ignore the free platform data resource, it will be
+>>    automatically free in platform_driver_unregister().
+>
+> Do we need a Fixes tag here ?
 
- include/linux/minmax.h | 26 +++-----------------------
- 1 file changed, 3 insertions(+), 23 deletions(-)
+Yes, I will do that.
 
-diff --git a/include/linux/minmax.h b/include/linux/minmax.h
-index 83aebc244cba..69bbe987fa87 100644
---- a/include/linux/minmax.h
-+++ b/include/linux/minmax.h
-@@ -2,6 +2,7 @@
- #ifndef _LINUX_MINMAX_H
- #define _LINUX_MINMAX_H
- 
-+#include <linux/compiler_types.h>
- #include <linux/const.h>
- #include <linux/types.h>
- 
-@@ -134,27 +135,6 @@
-  */
- #define max_t(type, x, y)	__careful_cmp((type)(x), (type)(y), >)
- 
--/*
-- * Remove a const qualifier from integer types
-- * _Generic(foo, type-name: association, ..., default: association) performs a
-- * comparison against the foo type (not the qualified type).
-- * Do not use the const keyword in the type-name as it will not match the
-- * unqualified type of foo.
-- */
--#define __unconst_integer_type_cases(type)	\
--	unsigned type:  (unsigned type)0,	\
--	signed type:    (signed type)0
--
--#define __unconst_integer_typeof(x) typeof(			\
--	_Generic((x),						\
--		char: (char)0,					\
--		__unconst_integer_type_cases(char),		\
--		__unconst_integer_type_cases(short),		\
--		__unconst_integer_type_cases(int),		\
--		__unconst_integer_type_cases(long),		\
--		__unconst_integer_type_cases(long long),	\
--		default: (x)))
--
- /*
-  * Do not check the array parameter using __must_be_array().
-  * In the following legit use-case where the "array" passed is a simple pointer,
-@@ -169,13 +149,13 @@
-  * 'int *buff' and 'int buff[N]' types.
-  *
-  * The array can be an array of const items.
-- * typeof() keeps the const qualifier. Use __unconst_integer_typeof() in order
-+ * typeof() keeps the const qualifier. Use __unqual_scalar_typeof() in order
-  * to discard the const qualifier for the __element variable.
-  */
- #define __minmax_array(op, array, len) ({				\
- 	typeof(&(array)[0]) __array = (array);				\
- 	typeof(len) __len = (len);					\
--	__unconst_integer_typeof(__array[0]) __element = __array[--__len]; \
-+	__unqual_scalar_typeof(__array[0]) __element = __array[--__len];\
- 	while (__len--)							\
- 		__element = op(__element, __array[__len]);		\
- 	__element; })
--- 
-2.40.0.1.gaa8946217a0b
+>>
+>> Signed-off-by: Junhao He <hejunhao3@huawei.com>
+>> ---
+>>   drivers/hwtracing/coresight/coresight-core.c | 7 ++++---
+>>   1 file changed, 4 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-core.c 
+>> b/drivers/hwtracing/coresight/coresight-core.c
+>> index 118fcf27854d..c6f7889d1b4d 100644
+>> --- a/drivers/hwtracing/coresight/coresight-core.c
+>> +++ b/drivers/hwtracing/coresight/coresight-core.c
+>> @@ -1555,9 +1555,10 @@ void coresight_release_platform_data(struct 
+>> coresight_device *csdev,
+>>           conns[i]->dest_fwnode = NULL;
+>>           devm_kfree(dev, conns[i]);
+>>       }
+>> -    devm_kfree(dev, pdata->out_conns);
+>> -    devm_kfree(dev, pdata->in_conns);
+>> -    devm_kfree(dev, pdata);
+>> +    if (pdata->nr_outconns)
+>> +        devm_kfree(dev, pdata->out_conns);
+>> +    if (pdata->nr_inconns)
+>> +        devm_kfree(dev, pdata->in_conns);
+>
+> These allocations are made on the parent device and that
+> may never get unregistered (e.g., AMBA device, platform device,
+> stay forever, even when the "coresight" modules are unloaded).
+> Thus the memory will be left unused, literally leaking.
+> This specific devm_kfree() was added to fix that. May be we should fix
+> this in the TRBE driver to use separate pdata for the TRBE device
+> instances.
+>
+> Suzuki
+
+If we fix this with minimal changes, I think it is possible to add a check
+and not free pdata if it is TRBE?
+
+     if (csdev->subtype.sink_subtype != 
+CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM)
+         devm_kfree(dev, pdata);
+
+Then free pdata in the end of arm_trbe_remove_coresight().
+
+>
+>>       if (csdev)
+>>           coresight_remove_conns_sysfs_group(csdev);
+>>   }
+>
+>
+> .
+>
 
