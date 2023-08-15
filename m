@@ -2,122 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3BA77C689
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 05:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1AA77C68B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 05:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234540AbjHODyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 23:54:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48258 "EHLO
+        id S234552AbjHODym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 23:54:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234645AbjHODwM (ORCPT
+        with ESMTP id S234651AbjHODw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 23:52:12 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9DB1E73
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 20:52:08 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d656d5e8265so4463597276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 20:52:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692071528; x=1692676328;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=P6v5atA1MLk+jjexl38Oyge5Liq245V+Bs/9eMZT5qA=;
-        b=Hqstt6gpw4qMxWppig97Rr6Qlp3T5tHXqrV5+Qy5v3hpqNIb3H8haad6Oh5Lq22ZIY
-         b4PhmWj8GDeD5Z69Avs0HD+85Ab7CfHWdkMpg7iGPsqvy/3hvQOkEEq+bqVYbUXLYExI
-         t/VhAsv5Q4Fs191fnx9/eSaqTiP4t5xMM5KBSpiwDXd9OVyAXdGEN1Uz7DK9tXgSOGJL
-         z/IfltwnTZ5EHMXdvcI/6S5AfKrkPMtaz3MM0NnfrfGADM6h6PxO8XoEqwb5+vFFIyN8
-         +CKj4mwRMp+CpCQRejAbXaPIgB99Xaw3zdykYucPdtKMA3lFc28QmC35jW+Sgi/hOC7M
-         jkeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692071528; x=1692676328;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P6v5atA1MLk+jjexl38Oyge5Liq245V+Bs/9eMZT5qA=;
-        b=k5eTOzAUdFvtHfb4ElwY7JHwku6tBd1+QwHoQVL0QX4lwHJlI+Wgkbu22ECo7zkZNy
-         RdFmvU16o+SmLXgNPQdsCuBVB1QmhFJ9E8xmdrCifym/sO41rUf8WGLlPwt+P7QH8Di5
-         jm+qhWcO/SHZDQrh3DocsvnEfLP59A9al4V+BV18JgdmNsr3QN7gqGTFSfh0Ti1ry3Nt
-         lL+NqDOisLn5c9BUdK4zeu958gywlolSBI/Cgj5+zwcQXhqrFifoT50A38op9HaERISI
-         S7vD20S8n6LIZBQEO5fOnLlS4OspN1deRktnl0TYzKWI+q/EdyB0Sq6GJA/1nkq4xABm
-         oMtQ==
-X-Gm-Message-State: AOJu0Yzuh0rsl6UlvJu9D+I/vAHWkOOxyZymS5Xd/QxhRhL7GjUTEs8Z
-        ANBamb1AIyfwEfMYIVUhB9Ethg==
-X-Google-Smtp-Source: AGHT+IH0F5gScGnhM0E+60bW0tBpWCasf6XoXDM9+Kb+W9jwZ/n+VEOGms7zmDhiut4cXb6Bi2nhRQ==
-X-Received: by 2002:a81:600b:0:b0:559:f18d:ee94 with SMTP id u11-20020a81600b000000b00559f18dee94mr13057498ywb.10.1692071528050;
-        Mon, 14 Aug 2023 20:52:08 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id n186-20020a8172c3000000b0058605521e6esm3190149ywc.125.2023.08.14.20.52.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Aug 2023 20:52:07 -0700 (PDT)
-Date:   Mon, 14 Aug 2023 20:51:59 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Snaipe <snaipe@arista.com>
-cc:     hughd@google.com, ovt@google.com, corbet@lwn.net,
-        akpm@linux-foundation.org, brauner@kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] shmem: add support for user extended attributes
-In-Reply-To: <20230814082339.2006418-1-snaipe@arista.com>
-Message-ID: <986c412c-669a-43fe-d72a-9e81bca8211@google.com>
-References: <9b8d38f0-fd22-3f98-d070-16baf976ecb5@google.com> <20230814082339.2006418-1-snaipe@arista.com>
+        Mon, 14 Aug 2023 23:52:26 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9F1E7E;
+        Mon, 14 Aug 2023 20:52:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1692071539;
+        bh=WipNlHOpHfl2S9cGwbe9j74qSCdK+cUZfrf7SFk1wb4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=apekYgD9k+drgI4RI/aemoBomLvy1KqqUkRpN/1xd3wRfeaxaSin9q0NwqB8s7O/K
+         rzkoXWx+x3jk0gXCD5V1Z8SgBXjxzRc8hGts/UXSJzCLkHJVGSKI3ho6jEr+M6vCTV
+         P+zvFJUynb3zmjekbpy0xX+dCRWhG91zLN4Wc5M9n2PoSTbS8Zhr6OgqMz7kkigolR
+         F6UT+LTcBlA4nD/nPXGIPvY4pdCUUOBF8ArZcbWLz174FBZ0EonzNPo9Lx88ySQk+T
+         AFkL/FdF+Q/KVYBoibTkcQaPuHt96kOJYVANVuwLodSuySp333NY92E14p6CLxbbA3
+         +C/6DeoqZiaIQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RPy5H2P5Hz4wxn;
+        Tue, 15 Aug 2023 13:52:19 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Mahesh Salgaonkar <mahesh@linux.ibm.com>,
+        linuxppc-dev <linuxppc-dev@ozlabs.org>
+Cc:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8 1/2] powerpc/rtas: Rename rtas_error_rc to
+ rtas_generic_errno
+In-Reply-To: <169138864808.65607.6576358707894823512.stgit@jupiter>
+References: <169138864808.65607.6576358707894823512.stgit@jupiter>
+Date:   Tue, 15 Aug 2023 13:52:14 +1000
+Message-ID: <877cpxdksx.fsf@mail.lhotse>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Aug 2023, Snaipe wrote:
+Mahesh Salgaonkar <mahesh@linux.ibm.com> writes:
+> rtas_generic_errno() function will convert the generic rtas return codes
+> into errno.
 
-> > Your sending this patch does help to raise the priority for my
-> > sending that patch: thank you; but I cannot promise when that will be.
-> 
-> Hey Hugh,
-> 
-> Just as an additional data point, if it helps with priority :)
-> 
-> The lack of support of user xattrs on tmpfs our last remaining blocker for
-> using unprivileged overlayfs mounts that use a tmpfs for the upper dir & work
-> dir. Not that it isn't possible to use unprivileged overlayfs mounts in general,
-> but not having this option means that use-cases for discardable upper layer
-> changes are harder to clean up correctly when not on an tmpfs mount whose
-> lifetime is bound to a mount namespace.
-> 
-> I don't think there's any rush; we can live with rmdir failing with EIO for now,
-> but it'd be great to see this fixed rather than having to implement expensive
-> cleanup routines that have to remove the upper+work dirs recursively with
-> CAP_DAC_OVERRIDE.
+I don't see the point of renaming it, it just creates unnecessary churn.
+The existing name seems OK to me.
 
-Thanks for the encouragement.  At the time that I wrote that (20 July)
-I did not expect to get around to it for months.  But there happens to
-have been various VFS-involving works going on in mm/shmem.c recently,
-targeting v6.6: which caused me to rearrange priorities, and join the
-party with tmpfs user xattrs, see
+...
 
-https://lore.kernel.org/linux-fsdevel/e92a4d33-f97-7c84-95ad-4fed8e84608c@google.com/
+> diff --git a/arch/powerpc/include/asm/rtas.h b/arch/powerpc/include/asm/rtas.h
+> index 3abe15ac79db1..5572a0a2f6e18 100644
+> --- a/arch/powerpc/include/asm/rtas.h
+> +++ b/arch/powerpc/include/asm/rtas.h
+> @@ -202,7 +202,9 @@ typedef struct {
+>  #define RTAS_USER_REGION_SIZE (64 * 1024)
+>  
+>  /* RTAS return status codes */
+> -#define RTAS_BUSY		-2    /* RTAS Busy */
+> +#define RTAS_HARDWARE_ERROR	(-1)  /* Hardware Error */
+> +#define RTAS_BUSY		(-2)  /* RTAS Busy */
 
-Which Christian Brauner quickly put into his vfs.git (vfs.tmpfs branch):
-so unless something goes horribly wrong, you can expect them in v6.6.
+Are the brackets necessary?
 
-There's a lot that you wrote above which I have no understanding of
-whatsoever (why would user xattrs stop rmdir failing?? it's okay, don't
-try to educate me, I don't need to know, I'm just glad if they help you).
+> +#define RTAS_INVALID_PARAMETER	(-3)  /* Invalid indicator/domain/sensor etc. */
+>  #define RTAS_EXTENDED_DELAY_MIN	9900
+>  #define RTAS_EXTENDED_DELAY_MAX	9905
+>  
+> @@ -212,6 +214,11 @@ typedef struct {
+>  #define RTAS_THREADS_ACTIVE     -9005 /* Multiple processor threads active */
+>  #define RTAS_OUTSTANDING_COPROC -9006 /* Outstanding coprocessor operations */
+>  
+> +/* statuses specific to get-sensor-state */
+> +#define RTAS_SLOT_UNISOLATED		(-9000)
+> +#define RTAS_SLOT_NOT_UNISOLATED	(-9001)
+> +#define RTAS_SLOT_NOT_USABLE		(-9002)
 
-Though your mention of "unprivileged" does make me shiver a little:
-Christian will understand the implications when I do not, but I wonder
-if my effort to limit the memory usage of user xattrs to "inode space"
-can be be undermined by unprivileged mounts with unlimited (or default,
-that's bad enough) nr_inodes.
+These aren't specific to get-sensor-state.
 
-If so, that won't endanger the tmpfs user xattrs implementation, since
-the problem would already go beyond those: can an unprivileged mount of
-tmpfs allow its user to gobble up much more memory than is good for the
-rest of the system?
+They're used by at least: ibm,manage-flash-image, ibm,activate-firmware,
+ibm,configure-connector, set-indicator etc.
 
-Hugh
+They have different meanings for those calls. I think you're best to
+just leave the constant values in rtas_error_rc().
+
+>  /* RTAS event classes */
+>  #define RTAS_INTERNAL_ERROR		0x80000000 /* set bit 0 */
+>  #define RTAS_EPOW_WARNING		0x40000000 /* set bit 1 */
+> @@ -425,6 +432,7 @@ extern int rtas_set_indicator(int indicator, int index, int new_value);
+>  extern int rtas_set_indicator_fast(int indicator, int index, int new_value);
+>  extern void rtas_progress(char *s, unsigned short hex);
+>  int rtas_ibm_suspend_me(int *fw_status);
+> +int rtas_generic_errno(int rtas_rc);
+>  
+>  struct rtc_time;
+>  extern time64_t rtas_get_boot_time(void);
+> diff --git a/arch/powerpc/kernel/rtas.c b/arch/powerpc/kernel/rtas.c
+> index c087eeee320ff..80b6099e8ce20 100644
+> --- a/arch/powerpc/kernel/rtas.c
+> +++ b/arch/powerpc/kernel/rtas.c
+> @@ -1330,33 +1330,34 @@ bool __ref rtas_busy_delay(int status)
+>  }
+>  EXPORT_SYMBOL_GPL(rtas_busy_delay);
+>  
+> -static int rtas_error_rc(int rtas_rc)
+> +int rtas_generic_errno(int rtas_rc)
+>  {
+>  	int rc;
+>  
+>  	switch (rtas_rc) {
+> -		case -1: 		/* Hardware Error */
+> -			rc = -EIO;
+> -			break;
+> -		case -3:		/* Bad indicator/domain/etc */
+> -			rc = -EINVAL;
+> -			break;
+> -		case -9000:		/* Isolation error */
+> -			rc = -EFAULT;
+> -			break;
+> -		case -9001:		/* Outstanding TCE/PTE */
+> -			rc = -EEXIST;
+> -			break;
+> -		case -9002:		/* No usable slot */
+> -			rc = -ENODEV;
+> -			break;
+> -		default:
+> -			pr_err("%s: unexpected error %d\n", __func__, rtas_rc);
+> -			rc = -ERANGE;
+> -			break;
+> +	case RTAS_HARDWARE_ERROR:	/* Hardware Error */
+> +		rc = -EIO;
+> +		break;
+> +	case RTAS_INVALID_PARAMETER:	/* Bad indicator/domain/etc */
+> +		rc = -EINVAL;
+> +		break;
+> +	case RTAS_SLOT_UNISOLATED:	/* Isolation error */
+> +		rc = -EFAULT;
+> +		break;
+> +	case RTAS_SLOT_NOT_UNISOLATED:	/* Outstanding TCE/PTE */
+> +		rc = -EEXIST;
+> +		break;
+> +	case RTAS_SLOT_NOT_USABLE:	/* No usable slot */
+> +		rc = -ENODEV;
+> +		break;
+> +	default:
+> +		pr_err("%s: unexpected error %d\n", __func__, rtas_rc);
+> +		rc = -ERANGE;
+> +		break;
+>  	}
+>  	return rc;
+>  }
+> +EXPORT_SYMBOL(rtas_generic_errno);
+  
+Should be GPL.
+
+cheers
