@@ -2,141 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D84D977D493
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0E277D497
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239383AbjHOUrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 16:47:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56252 "EHLO
+        id S239614AbjHOUsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 16:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239458AbjHOUrG (ORCPT
+        with ESMTP id S239709AbjHOUrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 16:47:06 -0400
-Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39DC1FD7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:46:40 -0700 (PDT)
-Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1c50438636fso1535423fac.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:46:40 -0700 (PDT)
+        Tue, 15 Aug 2023 16:47:49 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B1B8210D;
+        Tue, 15 Aug 2023 13:47:16 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bc7b25c699so36101325ad.1;
+        Tue, 15 Aug 2023 13:47:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692132397; x=1692737197;
-        h=in-reply-to:content-disposition:mime-version:references:reply-to
-         :message-id:subject:cc:to:from:date:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VaIHc+gFTv/gCTaNkA6eGeAJslVqFsij3m6nG8kuwbQ=;
-        b=BtUF+COVfEoHH4ObDCfa8UZniGPU0b3si4iqFKuVip+tVxTiT7c+k5vhwcSpRM2qVv
-         e/fD581IC9g0wfwo7Hw5lmY9O4uTBEkiAXviNuLyaSWP5oMvm9n/ElQ5/k4q5tSZdrd6
-         7XNtl36ytsmoedPMWeDPK32he8IXGNeGXKFeOb65ptuniXMm47nJpqSw4VA50AWZWdAE
-         5aril4u1K7Q9Q/ncBbuGZPlqTrWIquwBOSFmQeEOOo5izk57QXjpXTQmxlZe/jM/xiwF
-         fTkZvfsL9QsDm332StnxKO7pAA98yeWeiXNRzNI/CrCeR1otZ50L+HSj/zwCVNmoohZI
-         +Nyg==
+        d=gmail.com; s=20221208; t=1692132434; x=1692737234;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1DJrBiG3w++AEcOTBn4KMkS3FoKlqolWUyFd9yHBFqE=;
+        b=IrJbCdqgtsMAN0bN1cSxGImYPfQbQ5o6H2nhlOrwDCJpyHc6HWhAWvNxVT4jI7yjHH
+         CFm8vsmTaGBMH4ILza5FaKG4ipTHMWXHRYicVWWzWVrPCVG7nTWWjWjt8cQfEI+2y/WW
+         6Z1OnoqmUQuq0q0lynWgsPZpfd+9TbXueyYQZddzspywiH1IpvUFoTVDcyfCerb4W7Md
+         6QDWrN9QVq2GhPWx8+eonezaqr0EGvSL76jwzdVJNMZj9C3JCUrll7LIg1nXruUUoFEE
+         LA+EOVeAlBDy1OYl/yU7ixpNLts1VtTrutpqPPA25QCgh7Ivby8ZnQ1pbOTDd81jhUYM
+         SiOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692132397; x=1692737197;
-        h=in-reply-to:content-disposition:mime-version:references:reply-to
-         :message-id:subject:cc:to:from:date:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=VaIHc+gFTv/gCTaNkA6eGeAJslVqFsij3m6nG8kuwbQ=;
-        b=fjX8ZgT/W40nSAY0MhpSGxZVHYZqFI2XCzpE5fINnQefk8ndm4iI0Bk2DetHbdRrS5
-         n6JSzELWXKtUdXOjvjhkI1GbFwCb/DzTp1ue33cCfb7xd06EB7Ft1n/fdw7t0JLBnIbI
-         ieYp+MWATuZAHiMqMRWtjYOuGt4kWiDmsp6/SzK9ebxWcL9UKCQUTxrOVrr2zkJb+9On
-         otvQErAzP+95SD3CxB56yXChTRZhX/8GXO3egQEoyU6m8N8MvpwqoFLcBcUsVY9Xpxwy
-         t/nGdeJfs3ViI8Sha6AJoPnYVvnxrthNrVjMitsUWaRgqngT3uMdFssJqKypEEQetM/q
-         bG0A==
-X-Gm-Message-State: AOJu0YwQL64kzO51lx0aYOvQoDWY0PRancAAJS9QH7b+Twysp7oVcrsw
-        NF5GxMP+WTW86UvzuKTLzEwewYcAHA==
-X-Google-Smtp-Source: AGHT+IGIcu+xaJ09yTpMfBilaQOCvslUE7RUnQyVistmiDU9ejNDPAdGiWvFAJ3utTuKFPtcgU7wpw==
-X-Received: by 2002:a05:6870:601b:b0:1c3:c43d:838 with SMTP id t27-20020a056870601b00b001c3c43d0838mr15178841oaa.39.1692132396755;
-        Tue, 15 Aug 2023 13:46:36 -0700 (PDT)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id ef38-20020a0568701aa600b001c4b8a9ef88sm4779365oab.24.2023.08.15.13.46.35
+        d=1e100.net; s=20221208; t=1692132434; x=1692737234;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1DJrBiG3w++AEcOTBn4KMkS3FoKlqolWUyFd9yHBFqE=;
+        b=GkFOLR14/UzolXbkSjoydG+J98QtfaoLujy4iFb0UiT985OFQ5QflAiDFS/quDuVeu
+         BJoQXTuBx3aw0NfEuIR7pWNZtChTBWcm+e6F1teHli/HUUXiLi/cJ8w+eCXugGz2w3Nr
+         wwl0Jz3q2yFGYCDr9WP3DUc0KRv4Z0F7Tpvb4/ay6PFf0jt0K/ZTv70PLNs3MlEt4I1n
+         gVnDstplQTn5L/Ba+Tyzo97AeT6aa12j7TaKK6xty4auojeeymzn8OAvwx7z1g8NFGLW
+         z21KWVm31Vp2vIK3JztDUdpIftuPSBmah7KKygGTw7Fw14f3jzbZ6WUZvE7tR5Q7TOku
+         MqUQ==
+X-Gm-Message-State: AOJu0YyuiLaao2/6aTOf0E8Iq4Ft7nMCbvZ5V7Wtoa4h1ugvAMkR61LL
+        aBxtFrfx0o1+XrTXfH5ZsWMnxWJG0R4=
+X-Google-Smtp-Source: AGHT+IGvPAV/XJKZB4RcMANHMh2yKTjRnwDljaVwtaiWZrSa2crx86jlqK8DPYeipCcp291zqiy3Pw==
+X-Received: by 2002:a17:902:9a48:b0:1bb:673f:36ae with SMTP id x8-20020a1709029a4800b001bb673f36aemr5201plv.15.1692132433865;
+        Tue, 15 Aug 2023 13:47:13 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:c009:58e9:db85:3caf:1429:e455])
+        by smtp.gmail.com with ESMTPSA id a11-20020a170902b58b00b001bc676df6a9sm11521575pls.132.2023.08.15.13.47.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 13:46:35 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from mail.minyard.net (unknown [IPv6:2001:470:b8f6:1b:77ae:9090:5436:3099])
-        by serve.minyard.net (Postfix) with ESMTPSA id 91B5C1800E8;
-        Tue, 15 Aug 2023 20:46:34 +0000 (UTC)
-Date:   Tue, 15 Aug 2023 15:46:33 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Arnd Bergmann <arnd@arndb.de>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] ipmi_si: fix -Wvoid-pointer-to-enum-cast warning
-Message-ID: <ZNvkKReuMsDCktsH@mail.minyard.net>
-Reply-To: minyard@acm.org
-References: <20230809-cbl-1902-v1-1-92def12d1dea@google.com>
+        Tue, 15 Aug 2023 13:47:13 -0700 (PDT)
+From:   Atul Kumar Pant <atulpant.linux@gmail.com>
+To:     paul@paul-moore.com, eparis@redhat.com
+Cc:     Atul Kumar Pant <atulpant.linux@gmail.com>, audit@vger.kernel.org,
+        linux-kernel@vger.kernel.org, shuah@kernel.org
+Subject: [PATCH v1] kernel: auditsc: Removes use of assignment in if condition and moves open brace following function definitions to the next line.
+Date:   Wed, 16 Aug 2023 02:16:44 +0530
+Message-Id: <20230815204644.52358-1-atulpant.linux@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230809-cbl-1902-v1-1-92def12d1dea@google.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 09:05:17PM +0000, Justin Stitt wrote:
-> With W=1 we see the following warning:
-> 
-> |  drivers/char/ipmi/ipmi_si_platform.c:272:15: error: \
-> |       cast to smaller integer type 'enum si_type' from \
-> |       'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
-> |    272 |         io.si_type      = (enum si_type) match->data;
-> |        |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~
+The patch fixes following checkpatch.pl issue:
+ERROR: open brace '{' following function definitions go on the next line
+ERROR: do not use assignment in if condition
 
-Ok, this is included in my tree.  Thanks.
+Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
+---
+ kernel/auditsc.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
--corey
+diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+index a674039ea9ef..d88ebc911277 100644
+--- a/kernel/auditsc.c
++++ b/kernel/auditsc.c
+@@ -880,7 +880,8 @@ static void audit_filter_syscall(struct task_struct *tsk,
+  */
+ static int audit_filter_inode_name(struct task_struct *tsk,
+ 				   struct audit_names *n,
+-				   struct audit_context *ctx) {
++				   struct audit_context *ctx)
++{
+ 	int h = audit_hash_ino((u32)n->ino);
+ 	struct list_head *list = &audit_inode_hash[h];
+ 
+@@ -1064,7 +1065,8 @@ int audit_alloc(struct task_struct *tsk)
+ 		return 0;
+ 	}
+ 
+-	if (!(context = audit_alloc_context(state))) {
++	context = audit_alloc_context(state);
++	if (!context) {
+ 		kfree(key);
+ 		audit_log_lost("out of memory in audit_alloc");
+ 		return -ENOMEM;
+-- 
+2.25.1
 
-> 
-> This is due to the fact that the `si_type` enum members are int-width
-> and a cast from pointer-width down to int will cause truncation and
-> possible data loss. Although in this case `si_type` has only a few
-> enumerated fields and thus there is likely no data loss occurring.
-> Nonetheless, this patch is necessary to the goal of promoting this
-> warning out of W=1.
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1902
-> Link: https://lore.kernel.org/llvm/202308081000.tTL1ElTr-lkp@intel.com/
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note:
-> Arnd had mentioned that there perhaps may be some semantic differences
-> between GCC and Clang regarding this warning or family of warnings. For
-> now, this patch (and others following) will yield less noisy W=1 builds
-> and hopefully materialize into this warning getting promoted out of W=1
-> to an always-on warning.
-> ---
->  drivers/char/ipmi/ipmi_si_platform.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/char/ipmi/ipmi_si_platform.c b/drivers/char/ipmi/ipmi_si_platform.c
-> index 505cc978c97a..0d509d683c0f 100644
-> --- a/drivers/char/ipmi/ipmi_si_platform.c
-> +++ b/drivers/char/ipmi/ipmi_si_platform.c
-> @@ -269,7 +269,7 @@ static int of_ipmi_probe(struct platform_device *pdev)
->  	}
->  
->  	memset(&io, 0, sizeof(io));
-> -	io.si_type	= (enum si_type) match->data;
-> +	io.si_type	= (unsigned long) match->data;
->  	io.addr_source	= SI_DEVICETREE;
->  	io.irq_setup	= ipmi_std_irq_setup;
->  
-> 
-> ---
-> base-commit: c1a515d3c0270628df8ae5f5118ba859b85464a2
-> change-id: 20230809-cbl-1902-7532a747b731
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
