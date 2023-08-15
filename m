@@ -2,165 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 167F777C943
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 10:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A10E77C948
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 10:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235601AbjHOITC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 04:19:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38612 "EHLO
+        id S235410AbjHOIVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 04:21:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235650AbjHOIST (ORCPT
+        with ESMTP id S233146AbjHOIUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 04:18:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F94A10C0;
-        Tue, 15 Aug 2023 01:18:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692087498; x=1723623498;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3dYXn6E9NAUNNi42+ayfswlDFcST6ltjtF9/c5VvXpA=;
-  b=a3ouxw1VHoZNRiUCyx7W0dY6pY+0BDTP7mAgItlZMWGY942ybcL22S+4
-   O9BzxtxCj9+qnBT3EPJdUcJZpG5z9os3yrz9G63KA5/yz5nnE3ZBq3yAy
-   g2ek+XKhjZHj7KZnPrwV/2Vb/DTgaAZv+5Hu2ponPQZrD8o3eQLU8iOMw
-   m/fRDN1QTNM6ipIzF9OdT4TMgGjA1+1fw/WsU08M2aGIhzxGYaXL9pRMK
-   oAq9j/btbvzrtOgLho+rIZ3FmvvtMltWLGTa9lgCJ0d6vVP7mBHd4WTyf
-   wB7TVtHgidP/aOabmkVp0/OckwvZCYV45Bg0pED9tJUtcIy0c/s9oVTrH
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="372227408"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="372227408"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 01:18:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="877276113"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga001.fm.intel.com with SMTP; 15 Aug 2023 01:18:18 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 15 Aug 2023 11:18:14 +0300
-Date:   Tue, 15 Aug 2023 11:18:14 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     RD Babiera <rdbabiera@google.com>
-Cc:     gregkh@linuxfoundation.org, linux@roeck-us.net, badhri@google.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v4] usb: typec: bus: verify partner exists in
- typec_altmode_attention
-Message-ID: <ZNs0xhqPHvmzrvlF@kuha.fi.intel.com>
-References: <20230814180559.923475-1-rdbabiera@google.com>
+        Tue, 15 Aug 2023 04:20:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043A710C6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:19:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692087581;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UF3lqFgAWM3woBisT/XHF1hR2APGwzy9dAgACkIkoRk=;
+        b=HhytXsip1GGNWp7SLG7WCkMGZRdZEZ/PzLsLF6Rj/WG6bVDvEhf2nfD8tPy00ipkbBIO3M
+        Y6JyKwZIkAQwzlnHMRdo2I2iDOQAP4YutHi4Dw1XdnHnRcI5T1DahFTCFO/QCVg/5/Le0F
+        FTHw7ttc0m67vO6oA8drDvJ40OHk4A4=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-665-p6Ist1xPNauhruad7BGL3w-1; Tue, 15 Aug 2023 04:19:38 -0400
+X-MC-Unique: p6Ist1xPNauhruad7BGL3w-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BBCCB38008A2;
+        Tue, 15 Aug 2023 08:19:37 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C720C492C13;
+        Tue, 15 Aug 2023 08:19:35 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20230815060443.660263-1-chengming.zhou@linux.dev>
+References: <20230815060443.660263-1-chengming.zhou@linux.dev>
+To:     chengming.zhou@linux.dev
+Cc:     dhowells@redhat.com, axboe@kernel.dk, kch@nvidia.com,
+        damien.lemoal@opensource.wdc.com, bvanassche@acm.org,
+        nj.shetty@samsung.com, kbusch@kernel.org,
+        zhouchengming@bytedance.com, akinobu.mita@gmail.com,
+        shinichiro.kawasaki@wdc.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] null_blk: fix poll request timeout handling
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230814180559.923475-1-rdbabiera@google.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <23382.1692087575.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 15 Aug 2023 09:19:35 +0100
+Message-ID: <23383.1692087575@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 06:05:59PM +0000, RD Babiera wrote:
-> Some usb hubs will negotiate DisplayPort Alt mode with the device
-> but will then negotiate a data role swap after entering the alt
-> mode. The data role swap causes the device to unregister all alt
-> modes, however the usb hub will still send Attention messages
-> even after failing to reregister the Alt Mode. type_altmode_attention
-> currently does not verify whether or not a device's altmode partner
-> exists, which results in a NULL pointer error when dereferencing
-> the typec_altmode and typec_altmode_ops belonging to the altmode
-> partner.
-> 
-> Verify the presence of a device's altmode partner before sending
-> the Attention message to the Alt Mode driver.
-> 
-> Fixes: 8a37d87d72f0 ("usb: typec: Bus type for alternate modes")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: RD Babiera <rdbabiera@google.com>
+chengming.zhou@linux.dev wrote:
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> From: Chengming Zhou <zhouchengming@bytedance.com>
+> =
 
-> ---
-> Changes since v1:
-> * Only assigns pdev if altmode partner exists in typec_altmode_attention
-> * Removed error return in typec_altmode_attention if Alt Mode does
->   not implement Attention messages.
-> * Changed tcpm_log message to indicate that altmode partner does not exist,
->   as it only logs in that case.
-> ---
-> Changes since v2:
-> * Changed tcpm_log message to accurately reflect error
-> * Revised commit message
-> ---
-> Changes since v3:
-> * Fixed nits
-> ---
->  drivers/usb/typec/bus.c           | 12 ++++++++++--
->  drivers/usb/typec/tcpm/tcpm.c     |  3 ++-
->  include/linux/usb/typec_altmode.h |  2 +-
->  3 files changed, 13 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/bus.c b/drivers/usb/typec/bus.c
-> index fe5b9a2e61f5..e95ec7e382bb 100644
-> --- a/drivers/usb/typec/bus.c
-> +++ b/drivers/usb/typec/bus.c
-> @@ -183,12 +183,20 @@ EXPORT_SYMBOL_GPL(typec_altmode_exit);
->   *
->   * Notifies the partner of @adev about Attention command.
->   */
-> -void typec_altmode_attention(struct typec_altmode *adev, u32 vdo)
-> +int typec_altmode_attention(struct typec_altmode *adev, u32 vdo)
->  {
-> -	struct typec_altmode *pdev = &to_altmode(adev)->partner->adev;
-> +	struct altmode *partner = to_altmode(adev)->partner;
-> +	struct typec_altmode *pdev;
-> +
-> +	if (!partner)
-> +		return -ENODEV;
-> +
-> +	pdev = &partner->adev;
->  
->  	if (pdev->ops && pdev->ops->attention)
->  		pdev->ops->attention(pdev, vdo);
-> +
-> +	return 0;
->  }
->  EXPORT_SYMBOL_GPL(typec_altmode_attention);
->  
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 5a7d8cc04628..77fe16190766 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -1877,7 +1877,8 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
->  			}
->  			break;
->  		case ADEV_ATTENTION:
-> -			typec_altmode_attention(adev, p[1]);
-> +			if (typec_altmode_attention(adev, p[1]))
-> +				tcpm_log(port, "typec_altmode_attention no port partner altmode");
->  			break;
->  		}
->  	}
-> diff --git a/include/linux/usb/typec_altmode.h b/include/linux/usb/typec_altmode.h
-> index 350d49012659..28aeef8f9e7b 100644
-> --- a/include/linux/usb/typec_altmode.h
-> +++ b/include/linux/usb/typec_altmode.h
-> @@ -67,7 +67,7 @@ struct typec_altmode_ops {
->  
->  int typec_altmode_enter(struct typec_altmode *altmode, u32 *vdo);
->  int typec_altmode_exit(struct typec_altmode *altmode);
-> -void typec_altmode_attention(struct typec_altmode *altmode, u32 vdo);
-> +int typec_altmode_attention(struct typec_altmode *altmode, u32 vdo);
->  int typec_altmode_vdm(struct typec_altmode *altmode,
->  		      const u32 header, const u32 *vdo, int count);
->  int typec_altmode_notify(struct typec_altmode *altmode, unsigned long conf,
-> 
-> base-commit: f176638af476c6d46257cc3303f5c7cf47d5967d
-> -- 
-> 2.41.0.694.ge786442a9b-goog
+> When doing io_uring benchmark on /dev/nullb0, it's easy to crash the
+> kernel if poll requests timeout triggered, as reported by David. [1]
+> =
 
--- 
-heikki
+> BUG: kernel NULL pointer dereference, address: 0000000000000008
+> Workqueue: kblockd blk_mq_timeout_work
+> RIP: 0010:null_timeout_rq+0x4e/0x91
+> Call Trace:
+>  ? __die_body+0x1a/0x5c
+>  ? page_fault_oops+0x6f/0x9c
+>  ? kernelmode_fixup_or_oops+0xc6/0xd6
+>  ? __bad_area_nosemaphore+0x44/0x1eb
+>  ? exc_page_fault+0xe2/0xf4
+>  ? asm_exc_page_fault+0x22/0x30
+>  ? null_timeout_rq+0x4e/0x91
+>  blk_mq_handle_expired+0x31/0x4b
+>  bt_iter+0x68/0x84
+>  ? bt_tags_iter+0x81/0x81
+>  __sbitmap_for_each_set.constprop.0+0xb0/0xf2
+>  ? __blk_mq_complete_request_remote+0xf/0xf
+>  bt_for_each+0x46/0x64
+>  ? __blk_mq_complete_request_remote+0xf/0xf
+>  ? percpu_ref_get_many+0xc/0x2a
+>  blk_mq_queue_tag_busy_iter+0x14d/0x18e
+>  blk_mq_timeout_work+0x95/0x127
+>  process_one_work+0x185/0x263
+>  worker_thread+0x1b5/0x227
+>  ? rescuer_thread+0x287/0x287
+>  kthread+0xfa/0x102
+>  ? kthread_complete_and_exit+0x1b/0x1b
+>  ret_from_fork+0x22/0x30
+> =
+
+> This is indeed a race problem between null_timeout_rq() and null_poll().
+> =
+
+> null_poll()				null_timeout_rq()
+>   spin_lock(&nq->poll_lock)
+>   list_splice_init(&nq->poll_list, &list)
+>   spin_unlock(&nq->poll_lock)
+> =
+
+>   while (!list_empty(&list))
+>     req =3D list_first_entry()
+>     list_del_init()
+>     ...
+>     blk_mq_add_to_batch()
+>     // req->rq_next =3D NULL
+> 					spin_lock(&nq->poll_lock)
+> =
+
+> 					// rq->queuelist->next =3D=3D NULL
+> 					list_del_init(&rq->queuelist)
+> =
+
+> 					spin_unlock(&nq->poll_lock)
+> =
+
+> What's worse is that we don't call blk_mq_complete_request_remote()
+> before blk_mq_add_to_batch(), so these completed requests have wrong
+> rq->state =3D=3D MQ_RQ_IN_FLIGHT. We can easily check this using bpftrac=
+e:
+> =
+
+> ```
+> bpftrace -e 'kretfunc:null_blk:null_poll {
+>   $iob=3D(struct io_comp_batch *)args->iob;
+>   @[$iob->req_list->state]=3Dcount();
+> }'
+> =
+
+> @[1]: 51708
+> ```
+> =
+
+> Fix these problems by setting requests state to MQ_RQ_COMPLETE under
+> nq->poll_lock protection, in which null_timeout_rq() can safely detect
+> this race and early return.
+> =
+
+> [1] https://lore.kernel.org/all/3893581.1691785261@warthog.procyon.org.u=
+k/
+> =
+
+> Fixes: 0a593fbbc245 ("null_blk: poll queue support")
+> Reported-by: David Howells <dhowells@redhat.com>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+
+Okay, the oops no longer seems to happen, so on that basis:
+
+Tested-by: David Howells <dhowells@redhat.com>
+
+
+However, running:
+
+	./fio/t/io_uring -n4 /dev/nullb0
+
+and then interrupting it with ctrl-C after a while dumps a whole load of
+messages into the dmesg log (excerpt attached).  It seems wrong that the u=
+ser
+should be able to generate a dump like this just by interrupting - but I g=
+uess
+as it's null_blk it probably doesn't matter.
+
+David
+---
+null_blk: rq 00000000bb2d3264 timed out
+timeout error, dev nullb0, sector 328372624 op 0x0:(READ) flags 0xe00000 p=
+hys_seg 1 prio class 2
+null_blk: rq 00000000abcc1075 timed out
+timeout error, dev nullb0, sector 378610072 op 0x0:(READ) flags 0xe00000 p=
+hys_seg 1 prio class 2
+null_blk: rq 00000000d4bdc71f timed out
+timeout error, dev nullb0, sector 185005312 op 0x0:(READ) flags 0xe00000 p=
+hys_seg 1 prio class 2
+null_blk: rq 00000000f4ffddee timed out
+timeout error, dev nullb0, sector 206118608 op 0x0:(READ) flags 0xe00000 p=
+hys_seg 1 prio class 2
+null_blk: rq 000000001e68b709 timed out
+timeout error, dev nullb0, sector 310381160 op 0x0:(READ) flags 0xe00000 p=
+hys_seg 1 prio class 2
+null_blk: rq 00000000bfeafe97 timed out
+timeout error, dev nullb0, sector 52036480 op 0x0:(READ) flags 0xe00000 ph=
+ys_seg 1 prio class 2
+null_blk: rq 00000000aa67d21c timed out
+timeout error, dev nullb0, sector 22746448 op 0x0:(READ) flags 0xe00000 ph=
+ys_seg 1 prio class 2
+null_blk: rq 00000000faec1291 timed out
+timeout error, dev nullb0, sector 391201440 op 0x0:(READ) flags 0xe00000 p=
+hys_seg 1 prio class 2
+null_blk: rq 00000000c634428c timed out
+timeout error, dev nullb0, sector 237216136 op 0x0:(READ) flags 0xe00000 p=
+hys_seg 1 prio class 2
+null_blk: rq 0000000077f91a5d timed out
+timeout error, dev nullb0, sector 453778912 op 0x0:(READ) flags 0xe00000 p=
+hys_seg 1 prio class 2
+null_blk: rq 000000003076467c timed out
+null_blk: rq 000000009c172678 timed out
+null_blk: rq 000000002df50b48 timed out
+null_blk: rq 00000000e4c66900 timed out
+null_blk: rq 0000000082606e31 timed out
+null_blk: rq 00000000fe21ffdc timed out
+null_blk: rq 000000005e5c5173 timed out
+null_blk: rq 00000000b0a0d20c timed out
+null_blk: rq 000000008c729e47 timed out
+null_blk: rq 00000000970f75a0 timed out
+null_blk: rq 000000002ad3c45a timed out
+
