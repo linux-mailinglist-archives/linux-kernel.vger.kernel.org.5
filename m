@@ -2,163 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 923E877D139
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D0077D13C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238904AbjHORgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 13:36:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45686 "EHLO
+        id S238907AbjHORja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 13:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjHORgZ (ORCPT
+        with ESMTP id S238909AbjHORi5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 13:36:25 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E20A10EC;
-        Tue, 15 Aug 2023 10:36:23 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CrslXxdO0fnTUdnLOsKBK/kjGZLb5Qr0T29tF4kyS8AdpkMgIz8jSlcqPRksCcKOzKN6vQUwihrAb32o3CVPq1Re51jodc8+4d+zwpA3W+Xe1cinfnozk1UrI0o/rhpxRZQ29CVzp/MditLcpdfTRX9SUJzU6CQ/RyOb+8pxWZceZPTwqrluao7D8C9ThKjx5QX2VIUGzps3IIJKElErdy3taZZmRsc2INQINuoyZfnXgJ9SqqB9YaIB/JOX2vrKw9TY/GvHTwp1N8I7ViPq+7SAWNJsm1aWlPhSAFupiZoawwJKToLkxeZ4lMx9rWw3M58yWCVOP4FU7ZQ89KUrfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Op4/7KZ6oAUsKdBLWy9AVJT70i62pLtUHVQXqUCz0jE=;
- b=NSsoxc9nsT30tBxZrorAbtBOGjb0BunvRPxgMMIpXWnLyPbf6Lq2xnc5CXfbL1gZVvG/ENwB0XsLNctYVDEK9lUptCeQqIImeu6pERKrWUXE8gzMxWxmr/6KGPCnS3osdvOB78kKfv0xPdf7UKFPKSBpePg6nDZrXnJMvK1N89WopsXeWcM4h41PUCR+vJYajkFVDJ8TAfUgl00QJVjWGrR8DkDxEFqx/HiZrWTyZAGbo4EF5/ENSELoEMxeIeKznq1weVOFj+jkDNT2AppZJpdvnf0q/SM35wpzdGj6YF9Ve+t7jrWTmpa0zl65iJMKrEkEa9LbTL8ucaB4CcVm3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Op4/7KZ6oAUsKdBLWy9AVJT70i62pLtUHVQXqUCz0jE=;
- b=hf4CnR7Tub5gNtCsAf6azN6OMp21gX1mQaBKbYO+uwv5SolPcIeBHncfq4vF36EjqVVC74h8Y/S1tA1Vgy2BdvXqgCWotlPPx6tilVVEmBw51VNzA3ogxkFvKcWZDoSFzDl0vL1nGtg9Ajm3+TJ8LQ2p4tockAPrPmugHjJohIRyGm9y3Gc+ndK1rCWgJz2fl951TmHSYsJ3OFi/Id5zWroKCUjbOcLGUkmDYDyNQcVqar35nQIa2WbYAx0KOZ/0DB//d5uI6bzt9HuAc5ieKMUGmg71bOxeFh2usQgCJzn5ocq+tM8qSZG9frwiMZaGLCGbk522RL5SY70hAZuM+A==
-Received: from DM6PR17CA0014.namprd17.prod.outlook.com (2603:10b6:5:1b3::27)
- by DM4PR12MB8497.namprd12.prod.outlook.com (2603:10b6:8:180::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Tue, 15 Aug
- 2023 17:36:20 +0000
-Received: from DM6NAM11FT113.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:1b3:cafe::f6) by DM6PR17CA0014.outlook.office365.com
- (2603:10b6:5:1b3::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.33 via Frontend
- Transport; Tue, 15 Aug 2023 17:36:20 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- DM6NAM11FT113.mail.protection.outlook.com (10.13.173.5) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6699.14 via Frontend Transport; Tue, 15 Aug 2023 17:36:20 +0000
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Tue, 15 Aug 2023
- 10:36:06 -0700
-Received: from rnnvmail205.nvidia.com (10.129.68.10) by rnnvmail205.nvidia.com
- (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Tue, 15 Aug
- 2023 10:36:06 -0700
-Received: from Asurada-Nvidia (10.127.8.13) by mail.nvidia.com (10.129.68.10)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Tue, 15 Aug 2023 10:36:04 -0700
-Date:   Tue, 15 Aug 2023 10:36:03 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Yi Liu <yi.l.liu@intel.com>, <joro@8bytes.org>,
-        <alex.williamson@redhat.com>, <kevin.tian@intel.com>,
-        <robin.murphy@arm.com>, <baolu.lu@linux.intel.com>,
-        <cohuck@redhat.com>, <eric.auger@redhat.com>,
-        <kvm@vger.kernel.org>, <mjrosato@linux.ibm.com>,
-        <chao.p.peng@linux.intel.com>, <yi.y.sun@linux.intel.com>,
-        <peterx@redhat.com>, <jasowang@redhat.com>,
-        <shameerali.kolothum.thodi@huawei.com>, <lulu@redhat.com>,
-        <suravee.suthikulpanit@amd.com>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <zhenzhong.duan@intel.com>
-Subject: Re: [PATCH v7 3/4] iommufd: Add IOMMU_GET_HW_INFO
-Message-ID: <ZNu3gw/d0wj4qBpU@Asurada-Nvidia>
-References: <20230811071501.4126-1-yi.l.liu@intel.com>
- <20230811071501.4126-4-yi.l.liu@intel.com>
- <ZNuq+17Gv/d3lEin@nvidia.com>
+        Tue, 15 Aug 2023 13:38:57 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01FF1D1;
+        Tue, 15 Aug 2023 10:38:56 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-7672303c831so387334985a.2;
+        Tue, 15 Aug 2023 10:38:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692121135; x=1692725935;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Hkd0vr8l+i8TA7+6Xkb7goHWw+Sxr4X5Pv6u5Fi2CNM=;
+        b=Rh1xTajwGEtdV7nPTnwcFs9RNIiHnwcZQlEOY5aJ1aCvx4dHBTLi1Y3KrkbRpPX1Gv
+         9CyAvtqipwTieYn2KeCenPR2oLECkljVA+m241v1Elb/wbZiKN21NSumhsljvsptsg/f
+         XQ4xIbu5lbJoHwgSI+8dtcZQtxpWcTmM0ODZuWtsK8711Ye0Jp2+7fvyr6hSR29LmpiF
+         tF75UufVfKcZgweVqeyldC6ZHnyjC1b0G7RmKb/8yT2D05GhmWVb9jBfaqJDm4KxQWTh
+         0kYnDeACGPAMT/BTXYJKeQGsI4CB0/NB/7Z6V4MnD2MkfD55z6fYfyyQrQGp+TSOfKMv
+         q6yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692121135; x=1692725935;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hkd0vr8l+i8TA7+6Xkb7goHWw+Sxr4X5Pv6u5Fi2CNM=;
+        b=D06GWVdKy04ieZ4pAbNqEN9GuemSpnrtfj4gc0RzyTYANCcRQ830JDr2qXAOmFMtVA
+         oWGYPM3t6ie0no8GzFuPG07nV6TMrQUISD2KvyaBHCvn+AJnrZcN3RI3Q0sZa3vavjce
+         KVdkgQxKtSDR3t7yFriVkzlmAgSY1V+5x6vkmGfTLwrDa4xJzJkeHQgEKTVrp3BUN2J8
+         1Hfud/McI+oNNxziFXyAzGwTv0thacVEL1WJLnLVilu9YcJREmEqB2/oxgBz9sshOh7w
+         ln/fviNUJLUPpetZZoeshmLQEPT1mCaqHNsz3dsJZ5kNdQUT8RtbViLVvKUY0IvAiL0I
+         /vVg==
+X-Gm-Message-State: AOJu0Yx6443T79YjU8kLaDL6qTmEqf0XOsNvLMNmGxMlx9NnZVhyLtMK
+        xX3B/YsmUfnN4Zm2UPzIM8g=
+X-Google-Smtp-Source: AGHT+IFtBsk6TfpDYGZb7LDV77U4EmAigIkbu7pXVPS19QOpzgX+a65yqEiHbPpbyEVuObDdECQVHw==
+X-Received: by 2002:a05:620a:215b:b0:76c:ea6c:59a3 with SMTP id m27-20020a05620a215b00b0076cea6c59a3mr14366377qkm.46.1692121134963;
+        Tue, 15 Aug 2023 10:38:54 -0700 (PDT)
+Received: from [192.168.114.133] ([107.119.56.177])
+        by smtp.gmail.com with ESMTPSA id j7-20020a05620a000700b00767cfb1e859sm3899603qki.47.2023.08.15.10.38.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Aug 2023 10:38:54 -0700 (PDT)
+Message-ID: <9a4553c6-cd70-b99f-1186-7c3a0168165c@gmail.com>
+Date:   Tue, 15 Aug 2023 10:38:50 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZNuq+17Gv/d3lEin@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6NAM11FT113:EE_|DM4PR12MB8497:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0b3d8e61-17e0-4cfb-b512-08db9db62321
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rmujjCQ3isQQ6Uu9MX7xRDYSPsBfVnCIFin5bYVlkbM0/WU5tVSqWWpzpblk/buOOG5PZcom8XzoKIb/TjJJM2a9alWrlIOGTP3sCnMhTFNdNdv3Q5FivBFENxSpuUdiB35aF2qY3KEtquZz9DfM02gi6uFr6age84KKxwJY4/p8z2Cx73XverfyYiDnWGNGHQDMyz45N7R7tfEgbhVjZIsqK8FW4+i5YktlvwHuX1mZvh0TnT0tCLNXynwslYT5F+cKxDwpuDrvgQJgF+iMRAqRCVYEmDEvHL5eMuIb5R9pDTpCrvAFUPs4uTkIXjXH1siAijerJqPGSeuf5L1//SDmPxUwVC07M0fExwPOyg/iCtMR9zMlpnnR65RVUF95Xl9yCJP+8sR6x99y0FbFWirmdmxPpiytSfV620fI35UHvWxDBPQGUy2JXTcQ32GoH0jrERQGKCDV5xFoeyipKNmqhsPAZV/X/j1P/1tJx+mE8FYXOlywb7LCc7cm3RaketbS2PdzmIEof7fw2dweL+y73U0CncyFFkUyVdmrl7oBOYLbRmwgJX4gcGjWPdRAnkEXe9c6SpyIuaDTuhB7kniK6eN+BXh3nvfx8k6Fd9+ZmhhWQVnSYfleQizcusDNTW++zGSxbBvi5hMFY58i5fG1z/Z5ywr8L95sedo17DOgXJbLY5INt37sOrvZWVMj1kTS+pdZBH753T+Scun8ZPQ/upgdCz6b+tCIRDvly35Hj8p5NGf7OMzc2O3dSSPd
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(346002)(136003)(376002)(451199024)(1800799009)(186009)(82310400011)(40470700004)(36840700001)(46966006)(7416002)(9686003)(6636002)(40480700001)(36860700001)(478600001)(40460700003)(33716001)(8676002)(55016003)(7636003)(4326008)(70586007)(54906003)(70206006)(82740400003)(6862004)(8936002)(356005)(2906002)(26005)(316002)(47076005)(426003)(336012)(5660300002)(86362001)(41300700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2023 17:36:20.0515
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b3d8e61-17e0-4cfb-b512-08db9db62321
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT113.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB8497
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH 6.4 000/206] 6.4.11-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20230813211724.969019629@linuxfoundation.org>
+Content-Language: en-US
+In-Reply-To: <20230813211724.969019629@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 01:42:35PM -0300, Jason Gunthorpe wrote:
-> On Fri, Aug 11, 2023 at 12:15:00AM -0700, Yi Liu wrote:
-> > Under nested IOMMU translation, userspace owns the stage-1 translation
-> > table (e.g. the stage-1 page table of Intel VT-d or the context table
-> > of ARM SMMUv3, and etc.). Stage-1 translation tables are vendor specific,
-> > and need to be compatible with the underlying IOMMU hardware. Hence,
-> > userspace should know the IOMMU hardware capability before creating and
-> > configuring the stage-1 translation table to kernel.
-> > 
-> > This adds IOMMU_GET_HW_INFO ioctl to query the IOMMU hardware information
-> > (a.k.a capability) for a given device. The returned data is vendor specific,
-> > userspace needs to decode it with the structure mapped by the @out_data_type
-> > field.
-> > 
-> > As only physical devices have IOMMU hardware, so this will return error
-> > if the given device is not a physical device.
-> > 
-> > Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
-> > Co-developed-by: Nicolin Chen <nicolinc@nvidia.com>
-> > Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
-> > Signed-off-by: Yi Liu <yi.l.liu@intel.com>
-> > ---
-> >  drivers/iommu/iommufd/main.c | 85 ++++++++++++++++++++++++++++++++++++
-> >  include/uapi/linux/iommufd.h | 36 +++++++++++++++
-> >  2 files changed, 121 insertions(+)
-> > 
-> > diff --git a/drivers/iommu/iommufd/main.c b/drivers/iommu/iommufd/main.c
-> > index 94c498b8fdf6..d459811c5381 100644
-> > --- a/drivers/iommu/iommufd/main.c
-> > +++ b/drivers/iommu/iommufd/main.c
-> > @@ -17,6 +17,7 @@
+On 8/13/23 14:16, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.4.11 release.
+> There are 206 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> I was looking at this more and this code should be in device.c:
->   
-> > +static int iommufd_fill_hw_info(struct device *dev, void __user *user_ptr,
-> > +				unsigned int *length, u32 *type)
-> > +{
+> Responses should be made by Tue, 15 Aug 2023 21:16:53 +0000.
+> Anything received after that time might be too late.
 > 
-> Since it is working on devices
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.11-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
+> and the diffstat can be found below.
 > 
-> main.c is primarily for context related stuff
+> thanks,
+> 
+> greg k-h
 
-Ack for that. We'd make similar changes to the other handlers too.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-Thanks
-Nic
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
+
