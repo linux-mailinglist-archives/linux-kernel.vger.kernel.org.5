@@ -2,132 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DAF77C954
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 10:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9E777C957
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 10:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235621AbjHOIYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 04:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56346 "EHLO
+        id S235625AbjHOIZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 04:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235688AbjHOIYu (ORCPT
+        with ESMTP id S235679AbjHOIZm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 04:24:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32914127
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:24:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B529163E0D
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:24:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A76AC433C8;
-        Tue, 15 Aug 2023 08:24:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692087887;
-        bh=yrszbqjTM+0WGVAMjT8K+IaCN7rxeNZNHl4UW/CvJT4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gpe6BuGve3J4AFU2IiHU/6XMwVSt1CtRJa7RprHB8Jq1YfxN/63exTNKnuWoSHrU6
-         DLfkFGYNDt7lFGRdfNj2UIEu/MtE2LE20Wd5D9YfloXjqQ4JuwUhgtPctOlnXEZF24
-         XqRAYEnOTuxYEiyBPu2wOXzuTk1+MAJQPPxNxg6o26UQm8B1KbOtUQ9Om0SOMHBX+S
-         xG06llXCFRKqUxetESdbtXKrLC+Z0UeSt+VeLX7SRCfj/oClNDu4QoIqk0pHxd7sH6
-         3Ib+oEKijLG8dH6lwm7ek7V+X1uy9WDWPJZMLf99PfclyY/EYoEy9Q6KBU+kBcum1V
-         fv7r2f2fOPu+w==
-Date:   Tue, 15 Aug 2023 10:24:43 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Josua Mayer <josua@solid-run.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH v2] net: sfp: handle 100G/25G active optical cables in
- sfp_parse_support
-Message-ID: <ZNs2Sz6iBMnxshKO@vergenet.net>
-References: <20230814141739.25552-1-josua@solid-run.com>
+        Tue, 15 Aug 2023 04:25:42 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CD61BCE
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:25:40 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d67305c80deso5094315276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:25:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692087939; x=1692692739;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=23jECqG78zEG3HfSc2yRh/FpDDmbVzDHRMD4lKV1Qhg=;
+        b=KrAmrNKUHuRm6x6qlsh9bYHKBIw2hgyxYwBasiPYr13Y7RcMrEgNnzbFrhlHEkHEfX
+         bjB1lWHu06GPmC7I2aE8HstA6NkWNE4nVws19U7sf8H13s+yPNl5T6WrOsEGDUBhtTqW
+         /ghwoaxqoSRy2USBKiK8CsvEjOCViGe0kpeCcL5gebeQIUwd+vIfPCMXBWZF8A0aKdHk
+         Ke9YXOeaAjU6Q+2s1+vFiqznepMv/nquREaV7AHxQU9om1CT2Lje9wnIvIlKU6wonc34
+         MQvWpz7BR/JHWvOZS+R52e4yUqy8CRbv30/cQyr9WrAnBB4YHD1uulxLnfE6HqPKEcHT
+         353Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692087939; x=1692692739;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=23jECqG78zEG3HfSc2yRh/FpDDmbVzDHRMD4lKV1Qhg=;
+        b=H7uv+fSuQgDeBg4Y0liURuUzJZ/HxTHSGLw5j2DpnP1xp1GkC2Y0mjdYrTUavVThty
+         Htn7jN8Td8wRnF3yZM+UtjQVEYcYI+Zmq8v+yesxjRHeDzSfaxEXgdFZMa2a/N7dBYnc
+         cV8N55ETwTHC1S4RP3Rh3gKxYkqzc84P7pjRS4Cax0BKKw2BFKGHINAz//nOwh7Ae983
+         Gnl0fhV2tZ8oOdeHWHC2Y3czmEUvSdh9rYe0PlUg5Jjirv58sW783tNra6903poXJrZW
+         ACSg6cGTNKuAeFeaq7NN4OrnP1HIclOVLX5JaVop1NqvlMwvlFwl7c02WqNLb3ELLAkN
+         qAHg==
+X-Gm-Message-State: AOJu0Yylhq2c2hOidoHpwqWZ3mpgjFoIixaN0uqQYCHp8TIbYx7/nYhS
+        PgskdRI7R11bn76VA82lRhLFwZHWc135RWNSaWyd4A==
+X-Google-Smtp-Source: AGHT+IFNKWTuV42gNaFpktsjwDEK1ReaVlEtEwPvM2nJnyAEc877GkSXWg80Fwj07E0shOJ0yHjG8mue8kSNObUAsU4=
+X-Received: by 2002:a25:dc44:0:b0:d71:e9c:4e7b with SMTP id
+ y65-20020a25dc44000000b00d710e9c4e7bmr1437799ybe.3.1692087939307; Tue, 15 Aug
+ 2023 01:25:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230814141739.25552-1-josua@solid-run.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230811193034.59124-1-brgl@bgdev.pl>
+In-Reply-To: <20230811193034.59124-1-brgl@bgdev.pl>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 15 Aug 2023 10:25:28 +0200
+Message-ID: <CACRpkdb93yAdW7+YLd0jNK8ZsBXsqNCqpUxnB6ENn-2td+vzmg@mail.gmail.com>
+Subject: Re: [PATCH v3] gpiolib: fix reference leaks when removing GPIO chips
+ still in use
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 04:17:39PM +0200, Josua Mayer wrote:
-> Handle extended compliance code 0x1 (SFF8024_ECC_100G_25GAUI_C2M_AOC)
-> for active optical cables supporting 25G and 100G speeds.
-> 
-> Since the specification makes no statement about transmitter range, and
-> as the specific sfp module that had been tested features only 2m fiber -
-> short-range (SR) modes are selected.
-> 
-> The 100G speed is irrelevant because it would require multiple fibers /
-> multiple SFP28 modules combined under one netdev.
-> sfp-bus.c only handles a single module per netdev, so only 25Gbps modes
-> are selected.
-> 
-> sfp_parse_support already handles SFF8024_ECC_100GBASE_SR4_25GBASE_SR
-> with compatible properties, however that entry is a contradiction in
-> itself since with SFP(28) 100GBASE_SR4 is impossible - that would likely
-> be a mode for qsfp modules only.
-> 
-> Add a case for SFF8024_ECC_100G_25GAUI_C2M_AOC selecting 25gbase-r
-> interface mode and 25000baseSR link mode.
-> Also enforce SFP28 bitrate limits on the values read from sfp eeprom as
-> requested by Russell King.
-> 
-> Tested with fs.com S28-AO02 AOC SFP28 module.
-> 
-> Signed-off-by: Josua Mayer <josua@solid-run.com>
+On Fri, Aug 11, 2023 at 9:30=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
+
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> After we remove a GPIO chip that still has some requested descriptors,
+> gpiod_free_commit() will fail and we will never put the references to the
+> GPIO device and the owning module in gpiod_free().
+>
+> Rework this function to:
+> - not warn on desc =3D=3D NULL as this is a use-case on which most free
+>   functions silently return
+> - put the references to desc->gdev and desc->gdev->owner unconditionally
+>   so that the release callback actually gets called when the remaining
+>   references are dropped by external GPIO users
+>
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > ---
-> V1 -> V2: added separate case SFF8024_ECC_100G_25GAUI_C2M_AOC
-> V1 -> V2: added bitrate check for eeprom values
-> 
->  drivers/net/phy/sfp-bus.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/net/phy/sfp-bus.c b/drivers/net/phy/sfp-bus.c
-> index e8dd47bffe43..a4b0bb50e2eb 100644
-> --- a/drivers/net/phy/sfp-bus.c
-> +++ b/drivers/net/phy/sfp-bus.c
-> @@ -258,6 +258,17 @@ void sfp_parse_support(struct sfp_bus *bus, const struct sfp_eeprom_id *id,
->  	switch (id->base.extended_cc) {
->  	case SFF8024_ECC_UNSPEC:
->  		break;
-> +	case SFF8024_ECC_100G_25GAUI_C2M_AOC:
-> +		if (br_min <= 28000 && br_max >= 25000) {
-> +			/* 25GBASE-R, possibly with FEC */
-> +			__set_bit(PHY_INTERFACE_MODE_25GBASER, interfaces);
-> +			/*
-> +			 * There is currently no link mode for 25000base
-> +			 * with unspecified range, reuse SR.
-> +			 */
+> v1 -> v2:
+> - add a comment about why we can't use VALIDATE_DESC_VOID()
+>
+> v2 -> v3:
+> - we must drop the reference to the owner module before we drop the one
+>   to the gpio_device as the latter may be removed if this is the last
+>   reference and we'll end up calling module_put() on freed memory
 
-Hi Josua,
+v3 looks good to me.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-a minor nit from my side: : if you have to re-spin for some other reason,
-the multi-line comment style for Networking code is:
-
-	/* This is
-	 * something.
-	 */
-
-> +			phylink_set(modes, 25000baseSR_Full);
-> +		}
-> +		break;
->  	case SFF8024_ECC_100GBASE_SR4_25GBASE_SR:
->  		phylink_set(modes, 100000baseSR4_Full);
->  		phylink_set(modes, 25000baseSR_Full);
-> -- 
-> 2.35.3
-> 
-> 
+Yours,
+Linus Walleij
