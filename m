@@ -2,56 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B1B77CB2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 12:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF0C77CB31
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 12:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236456AbjHOKgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 06:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37874 "EHLO
+        id S236461AbjHOKhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 06:37:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236455AbjHOKfi (ORCPT
+        with ESMTP id S236460AbjHOKha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 06:35:38 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E37D1987
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 03:35:37 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2FB7F1F38D;
-        Tue, 15 Aug 2023 10:35:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1692095736; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=EHgfTGo331RLPVXZ/xeaNmO0JfnBMv1OFCIB4OSMpaI=;
-        b=AkmIWBonKT9ykk3UUPcpUDx195hMy33WNcKCSEeZ9xNZDIIXOtljlZwP5jaZn4XvDILP3p
-        ESgyKkN+PtUDGxFhhQ5XP0zKms/O/IzGy5jQT9OGezJNpVV7O98WIhCAXRk+fwrtP5cToo
-        W+UrQgJ1y87sAbc5g26yZreV3LTV+Ps=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B09D213909;
-        Tue, 15 Aug 2023 10:35:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id dRnGJvdU22SjXgAAMHmgww
-        (envelope-from <nik.borisov@suse.com>); Tue, 15 Aug 2023 10:35:35 +0000
-From:   Nikolay Borisov <nik.borisov@suse.com>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Nikolay Borisov <nik.borisov@suse.com>
-Subject: [PATCH] objtool: Cache number of return sites recorded
-Date:   Tue, 15 Aug 2023 13:35:09 +0300
-Message-Id: <20230815103509.309443-1-nik.borisov@suse.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 15 Aug 2023 06:37:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2989BB;
+        Tue, 15 Aug 2023 03:37:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692095849; x=1723631849;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=qx5tJfY1kYAR9UlQqPReIadtBhMKuSvR/hBJ0VfElWU=;
+  b=iJ6DgLpPikZg7AVgN8O/WbOOxiFBnLolf6jSHSMqdkkxPuSnxJeCX6tK
+   EkcJjNX4dyWXO+oxWj3MlLd45OAwARC3b+B3LCVMk5ndzgzhKVvocOsTn
+   J8BYTyYcqgZHciR+PbbSCFV3WWcF4R+xlYJMNxMLO7QeJmbewweZt2hRh
+   65Bt2iHFclFBzVi5bwOYRb9ufBSaYRflXNODuWccMUglCoxpSHxl7/lIi
+   6o7pSiXqqO6K6lbcQvxIov/o2Jfyq4J5G8lCrg6QfRp3t1ySBdwi3lVAW
+   zkvXwiUGsNvjz83nCU3mymNGW4WoUh/dPXnNG/+D/5gmb6oD14lBj7mlw
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="357215806"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="357215806"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 03:37:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="768781514"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="768781514"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.52.51])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 03:37:26 -0700
+Message-ID: <a241ac07-c9d5-ba76-44da-267006713365@intel.com>
+Date:   Tue, 15 Aug 2023 13:37:22 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.14.0
+Subject: Re: [PATCH V2 0/2] mmc: sdhci-sprd: Add SD HS mode online tuning
+Content-Language: en-US
+To:     Wenchao Chen <wenchao.chen666@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Wenchao Chen <wenchao.chen@unisoc.com>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhenxiong.lai@unisoc.com,
+        chunyan.zhang@unisoc.com, yuelin.tang@unisoc.com
+References: <20230815014057.13589-1-wenchao.chen@unisoc.com>
+ <e66ee2ba-1668-cb88-f7ac-7c7722387fe7@intel.com>
+ <CA+Da2qyuh-WcXdj2emkWcUkqH57W4p6aei8wijFw5fA7og0eaA@mail.gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <CA+Da2qyuh-WcXdj2emkWcUkqH57W4p6aei8wijFw5fA7og0eaA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,61 +70,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On an allyesconfig currently the kernels emits 454324. No point in
-making around half a million iterations just to count them. Simply
-increment a counter at the time of creation of each site.
+On 15/08/23 13:29, Wenchao Chen wrote:
+> On Tue, Aug 15, 2023 at 2:21 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
+>>
+>> On 15/08/23 04:40, Wenchao Chen wrote:
+>>> Change in v2:
+>>> - add mmc_sd_switch() and mmc_send_status() to the header file
+>>> - split up core changes from host driver changes
+>>> - Use pr_debug instead of dev_info and dev_dbg
+>>> - Optimize the best sampled value algorithm
+>>
+>> What about hooking ->set_ios() as Ulf suggested?
+>>
+> 
+> I've tried that, but it's not a good way to do it.
+> We found that sdhci_runtime_resume_host() calls ->set_ios, but we
+> don't want to do that.
 
-Quick measurements shows a meager 200ms improvement when running
-    objtool --rethunk --prefix=64 --no-unreachable --stats   --link
+Given that sdhci_sprd_runtime_resume() calls sdhci_runtime_resume_host(),
+it should be possible to determine when to tune, right?
 
-Signed-off-by: Nikolay Borisov <nik.borisov@suse.com>
----
- tools/objtool/check.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 8936a05f0e5a..bb71c5d8859f 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -33,6 +33,7 @@ static struct cfi_init_state initial_func_cfi;
- static struct cfi_state init_cfi;
- static struct cfi_state func_cfi;
- static struct cfi_state force_undefined_cfi;
-+static unsigned long nr_rethunk_sites;
- 
- struct instruction *find_insn(struct objtool_file *file,
- 			      struct section *sec, unsigned long offset)
-@@ -802,15 +803,12 @@ static int create_return_sites_sections(struct objtool_file *file)
- 		return 0;
- 	}
- 
--	idx = 0;
--	list_for_each_entry(insn, &file->return_thunk_list, call_node)
--		idx++;
--
--	if (!idx)
-+	if (!nr_rethunk_sites)
- 		return 0;
- 
- 	sec = elf_create_section_pair(file->elf, ".return_sites",
--				      sizeof(int), idx, idx);
-+				      sizeof(int), nr_rethunk_sites,
-+				      nr_rethunk_sites);
- 	if (!sec)
- 		return -1;
- 
-@@ -1473,8 +1471,10 @@ static void add_return_call(struct objtool_file *file, struct instruction *insn,
- 	insn->type = INSN_RETURN;
- 	insn->retpoline_safe = true;
- 
--	if (add)
-+	if (add) {
- 		list_add_tail(&insn->call_node, &file->return_thunk_list);
-+		nr_rethunk_sites++;
-+	}
- }
- 
- static bool is_first_func_insn(struct objtool_file *file,
--- 
-2.34.1
+> We just need SD HS mode tuning at mmc_sd_init_card().
+> 
+>>>
+>>> Wenchao Chen (2):
+>>>   mmc: core: Add host specific tuning support for SD HS mode
+>>>   mmc: sdhci-sprd: Add SD HS mode online tuning
+>>>
+>>>  drivers/mmc/core/sd.c         |  12 +++
+>>>  drivers/mmc/core/sd_ops.c     |   1 +
+>>>  drivers/mmc/host/sdhci-sprd.c | 152 ++++++++++++++++++++++++++++++++++
+>>>  include/linux/mmc/host.h      |   8 ++
+>>>  4 files changed, 173 insertions(+)
+>>>
+>>
 
