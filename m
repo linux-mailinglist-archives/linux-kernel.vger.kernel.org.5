@@ -2,144 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E546C77CE07
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A58877CE08
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237590AbjHOOZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 10:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54996 "EHLO
+        id S237596AbjHOOZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 10:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237595AbjHOOZb (ORCPT
+        with ESMTP id S237636AbjHOOZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 10:25:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 022EC173F;
-        Tue, 15 Aug 2023 07:25:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8A25B65095;
-        Tue, 15 Aug 2023 14:25:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1D9FC433C8;
-        Tue, 15 Aug 2023 14:25:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692109528;
-        bh=coObV9y/RYS3AiSNn8u13h8zoAh7+fxjKoeBOZzSR9M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jyvy+H7ssDO2P5B/nS4Sc2bspYwRxSNsTRDI+ZodIPUfCNJcmo/Of3p8kOorKTxUs
-         eRM/jzo7f9zNOI0mgx36unEe+oIA3yaUSUd2qNpge/UbziBLmuYQLvNPosoOobv2dQ
-         AfNuScxOGKv8xlTk6TTHR4JDnUsAF4iZuepIDxItyzW5618GCTPewpu9gaYo6a5o0U
-         /SvSbs7MZ2AKaZpbogI+kljbfBzjoX6GnbFizCB3bckrMeX7welOSI6LW7wusVYFSh
-         Db9JWBESivJmEWHewjC8O7qmsfcp0g2bctBSZnN4msw1MhaDr4mdRD8+4DWf9vHxUB
-         jrU77Ync1/adg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DACE6404DF; Tue, 15 Aug 2023 11:25:25 -0300 (-03)
-Date:   Tue, 15 Aug 2023 11:25:25 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Fangrui Song <maskray@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Carsten Haitzler <carsten.haitzler@arm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Rob Herring <robh@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        bpf@vger.kernel.org, llvm@lists.linux.dev,
-        Wang Nan <wangnan0@huawei.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        He Kuang <hekuang@huawei.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>
-Subject: Re: [PATCH v1 2/4] perf trace: Migrate BPF augmentation to use a
- skeleton
-Message-ID: <ZNuK1TFwdjyezV3I@kernel.org>
-References: <20230810184853.2860737-1-irogers@google.com>
- <20230810184853.2860737-3-irogers@google.com>
+        Tue, 15 Aug 2023 10:25:54 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D89AF10FF
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:25:52 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-760dff4b701so59184639f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:25:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1692109552; x=1692714352;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=n++fu5lgK8bUrOQTFhHxiUW13bKpyZhkEp2AxLuZIps=;
+        b=PPkwoLdeBQwvyBdlONtZeVF4UZQ5s/LzgIClqs9grEot6Izdv9Ke/ikyhLX8pPIjd/
+         sZTfr1PeTrhVoKX9UoF8VYWBEjJBkbQt5lSoDhylx66e6929F3MSO/W2d0E2FIfmC6Mo
+         tWEcISBSOtjqdnJz3A1ArCnKxozU3gH+jTLTg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692109552; x=1692714352;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n++fu5lgK8bUrOQTFhHxiUW13bKpyZhkEp2AxLuZIps=;
+        b=F0fojTl/vKSxKWoS3Eo4QQFZzooCqbVmRiLEXoA4ZiaVdOTpl5HfKuRHFPGwpw4mQf
+         zJxq756gDaEUxK4baNm8UL3+z3cSfChoko92sNUfXkgsQmrbie2JmyzUc4v3cddZdfjr
+         9da9BMn0yB9nULgOFEpcUhoh80nJ7CwW+3ji8AGW/MdnL0yfgqO2bkx39w6KnRSDSnaH
+         3cQTPbhf3I4gW/0eKbDVP1L3/6nHP1a5Rwm7OYYarGpZHPaOPvvC1eHsjRv5TQZ7DSV5
+         EAY66f87LIQwNgqJt7JrgxORdwnhqx5LqVlP9M/iHmCXEjobzAJhKhR23/ssUbzowBFc
+         P+3g==
+X-Gm-Message-State: AOJu0YzgjEkVlnClkxbhkofjrCO/A+79jw32TD8BD7zT3nHHpGLEa5Pz
+        6jBzRzlZumjokRgXEbjkrI3OeQ==
+X-Google-Smtp-Source: AGHT+IGwqEa3upbwsHqNdEkwQ7urSGaTr4VyveV6m36h3gTUy2GHNdUExTNgQZUhjJQBn5mYuliEJA==
+X-Received: by 2002:a92:c749:0:b0:349:5c87:e712 with SMTP id y9-20020a92c749000000b003495c87e712mr14072947ilp.1.1692109552265;
+        Tue, 15 Aug 2023 07:25:52 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id t1-20020a056e02060100b0034a9a9a2016sm1760463ils.23.2023.08.15.07.25.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Aug 2023 07:25:51 -0700 (PDT)
+Message-ID: <3efa3710-4e8b-d187-a24d-ff85858e37fe@linuxfoundation.org>
+Date:   Tue, 15 Aug 2023 08:25:51 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810184853.2860737-3-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [GIT PULL] nolibc changes for 6.6-rc1
+To:     Willy Tarreau <w@1wt.eu>, "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        shuah <shuah@kernel.org>
+References: <20230806172245.GA26239@1wt.eu>
+Content-Language: en-US
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20230806172245.GA26239@1wt.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Aug 10, 2023 at 11:48:51AM -0700, Ian Rogers escreveu:
-> Previously a BPF event of augmented_raw_syscalls.c could be used to
-> enable augmentation of syscalls by perf trace. As BPF events are no
-> longer supported, switch to using a BPF skeleton which when attached
-> explicitly opens the sysenter and sysexit tracepoints.
+On 8/6/23 11:22, Willy Tarreau wrote:
+> Hi Shuah, hi Paul,
 > 
-> The dump map is removed as debugging wasn't supported by the
-> augmentation and bpf_printk can be used when necessary.
+> I'm sending you the list of planned nolibc changes for 6.6. A doc update
+> may possibly follow a bit later to try to document the contribution
+> process. We also noticed a slight increase in binary sizes that might
+> be fixed soon but I wouldn't bet on this since it will require lot of
+> testing again and I'd rather postpone this by default. In any case I
+> have no intent to push any significant updates/fixes for 6.6 at this
+> point.
 > 
-> Remove tools/perf/examples/bpf/augmented_raw_syscalls.c so that the
-> rename/migration to a BPF skeleton captures that this was the source.
-> +#ifdef HAVE_BPF_SKEL
-> +	trace.skel = augmented_raw_syscalls_bpf__open();
-> +	if (!trace.skel) {
-> +		pr_debug("Failed to open augmented syscalls BPF skeleton");
-> +	} else {
-> +		/*
-> +		 * Disable attaching the BPF programs except for sys_enter and
-> +		 * sys_exit that tail call into this as necessary.
-> +		 */
-> +		bpf_program__set_autoattach(trace.skel->progs.syscall_unaugmented,
-> +					    /*autoattach=*/false);
-> +		bpf_program__set_autoattach(trace.skel->progs.sys_enter_connect,
-> +					    /*autoattach=*/false);
-> +		bpf_program__set_autoattach(trace.skel->progs.sys_enter_sendto,
-> +					    /*autoattach=*/false);
-> +		bpf_program__set_autoattach(trace.skel->progs.sys_enter_open,
-> +					    /*autoattach=*/false);
-> +		bpf_program__set_autoattach(trace.skel->progs.sys_enter_openat,
-> +					    /*autoattach=*/false);
-> +		bpf_program__set_autoattach(trace.skel->progs.sys_enter_rename,
-> +					    /*autoattach=*/false);
-> +		bpf_program__set_autoattach(trace.skel->progs.sys_enter_renameat,
-> +					    /*autoattach=*/false);
-> +		bpf_program__set_autoattach(trace.skel->progs.sys_enter_perf_event_open,
-> +					    /*autoattach=*/false);
-> +		bpf_program__set_autoattach(trace.skel->progs.sys_enter_clock_nanosleep,
-> +					    /*autoattach=*/false);
-> +
-> +		err = augmented_raw_syscalls_bpf__load(trace.skel);
->  
+> I'm also pasting a summary of the changes in this pull request, feel
+> free to use it for the merge commit message if you need.
+> 
+> For any question or if anything is not clear, do not hesitate to ask!
+> 
+> Thanks,
+> Willy
+> 
+> ----- changes ------
+> Nolibc:
+>    - improved portability by removing build errors with -ENOSYS
+>    - added syscall6() on MIPS to support pselect6() and mmap()
+>    - added setvbuf(), rmdir(), pipe(), pipe2()
+>    - add support for ppc/ppc64
+>    - environ is no longer optional
+>    - fixed frame pointer issues at -O0
+>    - dropped sys_stat() in favor of sys_statx()
+>    - centralized _start_c() to remove lots of asm code
+>    - switched size_t to __SIZE_TYPE__
+> 
+> Selftests:
+>    - improved status reporting (success/warning/failure counts, path to log file)
+>    - various code cleanups (indent, unused variables, ...)
+>    - more consistent test numbering
+>    - enabled compiler warnings
+>    - dropped unreliable chmod_net test
+>    - improved reliability (create /dev/zero & /tmp, rely less on /proc)
+>    - new tests (brk/sbrk/mmap/munmap)
+>    - improved compatibility with musl
+>    - new run-nolibc-test target to build and run natively
+>    - new run-libc-test target to build and run against native libc
+>    - made the cmdline parser more reliable against boolean arguments
+>    - dropped dependency on memfd for vfprintf() test
+>    - nolibc-test is no longer stripped
+>    - added support for extending ARCH via XARCH
+> 
+> Other:
+>    - add Thomas as co-maintainer
+> -----------
+> 
+> The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
+> 
+>    Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+> 
+> are available in the Git repository at:
+> 
+>    https://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git/ 20230806-for-6.6-1
+> 
+> for you to fetch changes up to d98c1e27e46e47a3ae67e1d048f153598ba82611:
+> 
+>    tools/nolibc: stackprotector.h: make __stack_chk_init static (2023-08-06 18:44:47 +0200)
+> 
 
-So I converted the above to:
+Hi Willy,
 
-		struct bpf_program *prog;
+I am sorry for the delay on this. I was traveling last week
+and getting back to digging myself out of emails.
 
-		bpf_object__for_each_program(prog, trace.skel->obj) {
-			if (prog != trace.skel->progs.sys_enter && prog != trace.skel->progs.sys_exit)
-				bpf_program__set_autoattach(prog, /*autoattach=*/false);
-		}
+I am having trouble pulling this request though:
 
-So that we don't have to add new lines disabling attachment when adding
-support for other pointer receiving syscalls.
+git request-pull https://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git/ 20230806-for-6.6-1
 
-- Arnaldo
+gives me the following error
+
+fatal: Not a valid revision: git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git/
+
+I don't see a tag at https://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git
+
+thanks,
+-- Shuah
