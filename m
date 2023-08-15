@@ -2,116 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B48177CE63
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5DF77CE6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237726AbjHOOr3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Aug 2023 10:47:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60544 "EHLO
+        id S237777AbjHOOsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 10:48:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237799AbjHOOrO (ORCPT
+        with ESMTP id S237799AbjHOOsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 10:47:14 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8453493
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:47:13 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-283-aQY9xdUMN3GeVjFFocRg_w-1; Tue, 15 Aug 2023 15:47:10 +0100
-X-MC-Unique: aQY9xdUMN3GeVjFFocRg_w-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 15 Aug
- 2023 15:47:07 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 15 Aug 2023 15:47:07 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Oleg Nesterov' <oleg@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-CC:     Petr Skocik <pskocik@gmail.com>, Kees Cook <keescook@chromium.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Marco Elver" <elver@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] signal: Fix the error return of kill -1
-Thread-Topic: [PATCH] signal: Fix the error return of kill -1
-Thread-Index: AQHZzsZurwDqks8Mx0Ka5moH+T06/q/rb+fw
-Date:   Tue, 15 Aug 2023 14:47:07 +0000
-Message-ID: <3b14ae8091e3403bbc4ef1bee6dcf4f6@AcuMS.aculab.com>
-References: <20221122161240.137570-1-pskocik@gmail.com>
- <202211220913.AF86992@keescook>
- <d2d508b7-f267-0fe6-1b56-4292c95355a7@gmail.com>
- <878rai7u0l.fsf@email.froward.int.ebiederm.org>
- <336ae9be-c66c-d87f-61fe-b916e9f04ffc@gmail.com>
- <87pm3t2rvl.fsf@email.froward.int.ebiederm.org>
- <87jzu12pjh.fsf_-_@email.froward.int.ebiederm.org>
- <20230814140652.GA30596@redhat.com> <20230814154351.GA4203@redhat.com>
-In-Reply-To: <20230814154351.GA4203@redhat.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 15 Aug 2023 10:48:16 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1222FE3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:48:14 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b72161c6e9so75748851fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:48:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1692110892; x=1692715692;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ibbiZiUA+psUXSR5jUh/+IlNRDXZdtdDillHT+rm3pU=;
+        b=U6hg5sg6uAKSWxt0HUVBLWSx0P/Va40jtTADSEVuzIH5KWeO3zdr21ZbxzFVKpfBlW
+         KB24HHDVpVo7o/EFigR2hlv89p5idw9I8cydSgr34swBjeccniKPaLFWsjj6eBP8fehe
+         xUIHKwJdDXkOatWNSUnQLVWbU7I6GIGScGp5w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692110892; x=1692715692;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ibbiZiUA+psUXSR5jUh/+IlNRDXZdtdDillHT+rm3pU=;
+        b=OveWhpMG1tVTIwegjBH1BM842PccDWpZ4uK/kPBb5zBOBhnopHPlMoKpULeUK5eN3/
+         nrW1nVifs0PUBGrF1lEXoPkADv2gS4Slc382EIiNHU79Hbwri0xFWSY3xcnFCdq6hsqt
+         HcIJozcDv1uhOfyGdG0Gq3K7wTTTYyuT62h635btK4sOrkVl9ITbDllHNtMK+BJTjhZA
+         dWMYK/KQbwGk/F1SQBBLtYyi5LYJpFpSdcaQZXWnT9BxaYC32miySBah7j/9WLMV4yDm
+         wJEdCOxkGO+1nLRzYpAMngckR4gt3VcPc5H47FMqB9ietYoiv/QuvpgA0Yc/mKgBD+Us
+         nmBA==
+X-Gm-Message-State: AOJu0Yzkg6Hj3mZvYiPJ89opEhX9cz72JgSi31e1/yvgu2Crk0nzp2xF
+        LbN46zvYLLyL6PFWrq7g3LsSuopdHsN2eVkV0vbDbQ==
+X-Google-Smtp-Source: AGHT+IHTIyZF2a0Lewx1kaEyopouMrrXNjHT3NJi7iQHgr1EAUrSfMtmSq7xI4WQF76YzqD1XX4CAWsZeuHhipxQA3A=
+X-Received: by 2002:a2e:9206:0:b0:2b4:6a06:4c26 with SMTP id
+ k6-20020a2e9206000000b002b46a064c26mr710210ljg.2.1692110892069; Tue, 15 Aug
+ 2023 07:48:12 -0700 (PDT)
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230616122815.1037425-1-juerg.haefliger@canonical.com>
+ <20230620054031.1203960-1-juerg.haefliger@canonical.com> <b0460532-b5f1-7efc-49af-8d4feecc1085@linaro.org>
+ <20230815135214.15aeff63@gollum>
+In-Reply-To: <20230815135214.15aeff63@gollum>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Tue, 15 Aug 2023 10:48:01 -0400
+Message-ID: <CAEXW_YShF2RMnsgTzjB1z6vLU+3oOv1vEPtWnmBT-NsREh88-g@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/msm/adreno: Add missing MODULE_FIRMWARE macros
+To:     Juerg Haefliger <juerg.haefliger@canonical.com>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, airlied@gmail.com,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, johan+linaro@kernel.org,
+        konrad.dybcio@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_abhinavk@quicinc.com,
+        quic_akhilpo@quicinc.com, ribalda@chromium.org,
+        robdclark@gmail.com, sean@poorly.run
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleg Nesterov
-> Sent: 14 August 2023 16:44
-...
-> Even simpler
-> 
-> 	} else {
-> 		struct task_struct * p;
-> 		bool success = false;
-> 		int err = -ESRCH;
+On Tue, Aug 15, 2023 at 7:52=E2=80=AFAM Juerg Haefliger
+<juerg.haefliger@canonical.com> wrote:
+>
+> On Thu, 22 Jun 2023 21:44:25 +0300
+> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
+>
+> > On 20/06/2023 08:40, Juerg Haefliger wrote:
+> > > The driver references some firmware files that don't have correspondi=
+ng
+> > > MODULE_FIRMWARE macros and thus won't be listed via modinfo. Fix that=
+.
+> > >
+> > > Signed-off-by: Juerg Haefliger <juerg.haefliger@canonical.com>
+> > >
+> > > ---
+> > > v2:
+> > >    - Drop addition and removal of zap files (needs more discussion)
+> > >    - Add new a690_gmu.bin
+> > >    - Update commit subject and message accordingly
+> > > ---
+> > >   drivers/gpu/drm/msm/adreno/adreno_device.c | 11 +++++++++++
+> > >   1 file changed, 11 insertions(+)
+> >
+> > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> >
+>
 
-		int err;
-		ret = -ESRCH;
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-> 
-> 		for_each_process(p) {
-> 			if (task_pid_vnr(p) > 1 &&
-> 					!same_thread_group(p, current)) {
-> 				err = group_send_sig_info(sig, info, p,
-> 							  PIDTYPE_MAX);
-> 				success |= !err;
-> 			}
-> 		}
-> 		ret = success ? 0 : err;
-> 	}
+thanks,
 
-or maybe even:
-	} else {
-		struct task_struct * p;
-		int err;
-		ret = -ESRCH;
-
-		for_each_process(p) {
-			if (task_pid_vnr(p) > 1 &&
-					!same_thread_group(p, current)) {
-				err = group_send_sig_info(sig, info, p,
-							  PIDTYPE_MAX);
-				if (ret)
-					ret = err; 
-			}
-		}
-	}
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+ - Joel
