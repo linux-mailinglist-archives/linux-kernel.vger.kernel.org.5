@@ -2,204 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA4977CCA4
+	by mail.lfdr.de (Postfix) with ESMTP id 984A277CCA3
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237173AbjHOM2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 08:28:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47852 "EHLO
+        id S237167AbjHOM2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 08:28:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237208AbjHOM1x (ORCPT
+        with ESMTP id S237143AbjHOM1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 08:27:53 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545431FD7;
-        Tue, 15 Aug 2023 05:27:45 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37FCH9Er009878;
-        Tue, 15 Aug 2023 12:27:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=9io79kmNppV1hSdiSWdO/UOvFSsTGqzEsHclTu/DAWk=;
- b=fEcL94dqSaygZb+Q7B7anYR0yo/CGsIJvCyOsrb+sj+7CuzGZVVw+EQeeAO8whrtt/US
- CEpOstJalUPSMD/1C8Or8rZ1YNftHSyPgVZp0WsRAGaZZrtacXbamXX96nr0rKfKc2Oh
- h+BVGx8qwSZwMp/SoxQLLLjSIVKSmQPKTQPsz8pwgWzlVa8aYR6FDQn195Q/G5QImxxO
- 1Mf3ZB81CgK1xRy6EHE476R23skMpGw1Z0ETGj9B525rxpxaSgFVRqHgQxVVa7z0qib0
- bTgVRwbOeZCcpQRcrNFkqCtRcfuPHDnYNFKvjhaDnD8gFHGpsjFnOpoS+sTihfEQWLQ6 wA== 
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sfuj8h7rw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Aug 2023 12:27:38 +0000
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 37FCRPhZ022550;
-        Tue, 15 Aug 2023 12:27:34 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3se35kb8qt-1;
-        Tue, 15 Aug 2023 12:27:34 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37FCRU23022568;
-        Tue, 15 Aug 2023 12:27:34 GMT
-Received: from hu-sgudaval-hyd.qualcomm.com (hu-krichai-hyd.qualcomm.com [10.213.110.112])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 37FCRYvd022589;
-        Tue, 15 Aug 2023 12:27:34 +0000
-Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 4058933)
-        id ED8EE4BC5; Tue, 15 Aug 2023 17:57:33 +0530 (+0530)
-From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
-        quic_parass@quicinc.com, krzysztof.kozlowski@linaro.org,
-        Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH v1 3/3] PCI: qcom: Add OPP suuport for speed based performance state of RPMH
-Date:   Tue, 15 Aug 2023 17:56:48 +0530
-Message-Id: <1692102408-7010-4-git-send-email-quic_krichai@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1692102408-7010-1-git-send-email-quic_krichai@quicinc.com>
-References: <1692102408-7010-1-git-send-email-quic_krichai@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ks1nUCEYRZ7bC8GFnoHVTbTuVebpO5ri
-X-Proofpoint-GUID: ks1nUCEYRZ7bC8GFnoHVTbTuVebpO5ri
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-15_10,2023-08-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- spamscore=0 malwarescore=0 priorityscore=1501 phishscore=0
- lowpriorityscore=0 mlxlogscore=999 bulkscore=0 impostorscore=0
- clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308150111
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+        Tue, 15 Aug 2023 08:27:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CCD7173C
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:27:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692102454; x=1723638454;
+  h=date:from:to:cc:subject:message-id;
+  bh=Wco+elKb5GupysSDibxlEtl8GEF1NPaCM0c2LkzKK88=;
+  b=H8LMbcuBu3cn2guaP+mMB63TpxkQC5adDMELDM6+rU5dQUut7dvf8Zqx
+   4u39ht7iFjmUv+Iz9oGlP1T+Ynlhkg5rKQIBl0GFixNtF3tdcDUSW2H4w
+   QPK65RsU3hfRD8KibOWM77jqpdPmA9XJSIwWJ6doDAhXNkMKNfe2AzlS1
+   TN3DboP+Obd0mZDym2mpBzJAdDqxto2HqorwiuYdwCsUptnXh1JSamka4
+   wfqYwfE6q4yiRG79knVy4O81DQ3GiNq3vLAsT1mhMs62+xM/klWZSPdEP
+   cOuKmO4SraQkhzqwBMZvSe6Oq1rhHRNJeOGYHlq4rR1G0aG9evfmOYvCb
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="375033843"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="375033843"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 05:27:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="848053307"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="848053307"
+Received: from lkp-server02.sh.intel.com (HELO b5fb8d9e1ffc) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 15 Aug 2023 05:27:29 -0700
+Received: from kbuild by b5fb8d9e1ffc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qVt8t-0000x7-29;
+        Tue, 15 Aug 2023 12:27:24 +0000
+Date:   Tue, 15 Aug 2023 20:27:02 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [paulmck-rcu:dev.2023.08.02a] BUILD SUCCESS
+ ce1cf26540b96fc52aec6f6f8e365960ca79a0ad
+Message-ID: <202308152000.k7LcubMk-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before link training vote for the maximum performance state of RPMH
-and once the link is up, vote for the performance state based upon
-the link speed.
-Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
----
- drivers/pci/controller/dwc/pcie-qcom.c | 61 ++++++++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2023.08.02a
+branch HEAD: ce1cf26540b96fc52aec6f6f8e365960ca79a0ad  rcutorture: Copy out ftrace into its own console file
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 7a87a47..e29a986 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -22,6 +22,7 @@
- #include <linux/of_device.h>
- #include <linux/of_gpio.h>
- #include <linux/pci.h>
-+#include <linux/pm_opp.h>
- #include <linux/pm_runtime.h>
- #include <linux/platform_device.h>
- #include <linux/phy/pcie.h>
-@@ -1357,6 +1358,51 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
- 	return 0;
- }
- 
-+static void qcom_pcie_opp_update(struct qcom_pcie *pcie)
-+{
-+	struct dw_pcie *pci = pcie->pci;
-+	struct dev_pm_opp *opp;
-+	u32 offset, status;
-+	uint32_t freq;
-+	int speed;
-+	int ret = 0;
-+
-+	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
-+	status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
-+
-+	/* Only update constraints if link is up. */
-+	if (!(status & PCI_EXP_LNKSTA_DLLLA))
-+		return;
-+
-+	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
-+
-+	switch (speed) {
-+	case 1:
-+		freq = 2500000;
-+		break;
-+	case 2:
-+		freq = 5000000;
-+		break;
-+	case 3:
-+		freq = 8000000;
-+		break;
-+	default:
-+		WARN_ON_ONCE(1);
-+		fallthrough;
-+	case 4:
-+		freq = 16000000;
-+		break;
-+	}
-+
-+	opp = dev_pm_opp_find_freq_exact(pci->dev, freq, true);
-+
-+	if (!IS_ERR(opp)) {
-+		ret = dev_pm_opp_get_voltage(opp);
-+		dev_pm_opp_put(opp);
-+	}
-+
-+}
-+
- static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
- {
- 	struct dw_pcie *pci = pcie->pci;
-@@ -1439,8 +1485,10 @@ static void qcom_pcie_init_debugfs(struct qcom_pcie *pcie)
- static int qcom_pcie_probe(struct platform_device *pdev)
- {
- 	const struct qcom_pcie_cfg *pcie_cfg;
-+	unsigned long max_freq = INT_MAX;
- 	struct device *dev = &pdev->dev;
- 	struct qcom_pcie *pcie;
-+	struct dev_pm_opp *opp;
- 	struct dw_pcie_rp *pp;
- 	struct resource *res;
- 	struct dw_pcie *pci;
-@@ -1511,6 +1559,17 @@ static int qcom_pcie_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_pm_runtime_put;
- 
-+	/* OPP table is optional */
-+	ret = devm_pm_opp_of_add_table(dev);
-+	if (ret && ret != -ENODEV) {
-+		dev_err(dev, "Invalid OPP table in Device tree\n");
-+		goto err_pm_runtime_put;
-+	}
-+
-+	opp = dev_pm_opp_find_freq_floor(dev, &max_freq);
-+	if (!IS_ERR(opp))
-+		dev_pm_opp_put(opp);
-+
- 	ret = pcie->cfg->ops->get_resources(pcie);
- 	if (ret)
- 		goto err_pm_runtime_put;
-@@ -1531,6 +1590,8 @@ static int qcom_pcie_probe(struct platform_device *pdev)
- 
- 	qcom_pcie_icc_update(pcie);
- 
-+	qcom_pcie_opp_update(pcie);
-+
- 	if (pcie->mhi)
- 		qcom_pcie_init_debugfs(pcie);
- 
+elapsed time: 720m
+
+configs tested: 106
+configs skipped: 5
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r024-20230815   gcc  
+alpha                randconfig-r036-20230815   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r001-20230815   gcc  
+arc                  randconfig-r011-20230815   gcc  
+arc                  randconfig-r043-20230815   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r046-20230815   clang
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r033-20230815   gcc  
+hexagon              randconfig-r025-20230815   clang
+hexagon              randconfig-r041-20230815   clang
+hexagon              randconfig-r045-20230815   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230815   clang
+i386         buildonly-randconfig-r005-20230815   clang
+i386         buildonly-randconfig-r006-20230815   clang
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230815   clang
+i386                 randconfig-i002-20230815   clang
+i386                 randconfig-i003-20230815   clang
+i386                 randconfig-i004-20230815   clang
+i386                 randconfig-i005-20230815   clang
+i386                 randconfig-i006-20230815   clang
+i386                 randconfig-i011-20230815   gcc  
+i386                 randconfig-i012-20230815   gcc  
+i386                 randconfig-i013-20230815   gcc  
+i386                 randconfig-i014-20230815   gcc  
+i386                 randconfig-i015-20230815   gcc  
+i386                 randconfig-i016-20230815   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r006-20230815   gcc  
+microblaze           randconfig-r034-20230815   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                 randconfig-r021-20230815   clang
+mips                 randconfig-r031-20230815   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r023-20230815   gcc  
+openrisc             randconfig-r014-20230815   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r026-20230815   gcc  
+riscv                randconfig-r042-20230815   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r044-20230815   gcc  
+sh                               allmodconfig   gcc  
+sh                   randconfig-r002-20230815   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r004-20230815   gcc  
+sparc                randconfig-r012-20230815   gcc  
+sparc                randconfig-r016-20230815   gcc  
+sparc64              randconfig-r003-20230815   gcc  
+sparc64              randconfig-r005-20230815   gcc  
+sparc64              randconfig-r013-20230815   gcc  
+sparc64              randconfig-r032-20230815   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230815   clang
+x86_64       buildonly-randconfig-r002-20230815   clang
+x86_64       buildonly-randconfig-r003-20230815   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-x001-20230815   gcc  
+x86_64               randconfig-x002-20230815   gcc  
+x86_64               randconfig-x003-20230815   gcc  
+x86_64               randconfig-x004-20230815   gcc  
+x86_64               randconfig-x005-20230815   gcc  
+x86_64               randconfig-x006-20230815   gcc  
+x86_64               randconfig-x011-20230815   clang
+x86_64               randconfig-x012-20230815   clang
+x86_64               randconfig-x013-20230815   clang
+x86_64               randconfig-x014-20230815   clang
+x86_64               randconfig-x015-20230815   clang
+x86_64               randconfig-x016-20230815   clang
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+
 -- 
-2.7.4
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
