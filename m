@@ -2,122 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 933B477C9D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 10:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8024377C9DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 10:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235752AbjHOI5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 04:57:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38524 "EHLO
+        id S235837AbjHOI7O convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 15 Aug 2023 04:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236003AbjHOIzr (ORCPT
+        with ESMTP id S235931AbjHOI6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 04:55:47 -0400
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B81C310F4
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:54:08 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VprFaX6_1692089636;
-Received: from 30.97.48.59(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VprFaX6_1692089636)
-          by smtp.aliyun-inc.com;
-          Tue, 15 Aug 2023 16:53:57 +0800
-Message-ID: <7b337eca-1c45-c802-0aea-50d8d149efb4@linux.alibaba.com>
-Date:   Tue, 15 Aug 2023 16:53:57 +0800
+        Tue, 15 Aug 2023 04:58:02 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A57721FE5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:56:01 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-33-Zp5xXA1jN9KEuQKoEhG7Og-1; Tue, 15 Aug 2023 09:55:57 +0100
+X-MC-Unique: Zp5xXA1jN9KEuQKoEhG7Og-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 15 Aug
+ 2023 09:55:55 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Tue, 15 Aug 2023 09:55:55 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Kees Cook' <keescook@chromium.org>
+CC:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+        "'Andy Shevchenko'" <andriy.shevchenko@linux.intel.com>,
+        'Andrew Morton' <akpm@linux-foundation.org>,
+        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
+        'Christoph Hellwig' <hch@infradead.org>,
+        "'Jason A. Donenfeld'" <Jason@zx2c4.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: RE: [PATCH next v3 0/5] minmax: Relax type checks in min() and max().
+Thread-Topic: [PATCH next v3 0/5] minmax: Relax type checks in min() and
+ max().
+Thread-Index: AdnGwQ6IGYkn0IjZSjuTaOSyeQI0UwIK8m4AABl1+KA=
+Date:   Tue, 15 Aug 2023 08:55:55 +0000
+Message-ID: <2dd09c4033644239a314247e635fa735@AcuMS.aculab.com>
+References: <01e3e09005e9434b8f558a893a47c053@AcuMS.aculab.com>
+ <202308141416.89AC5C2@keescook>
+In-Reply-To: <202308141416.89AC5C2@keescook>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 7/9] mm/compaction: factor out code to test if we should
- run compaction for target order
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, david@redhat.com
-References: <20230805110711.2975149-1-shikemeng@huaweicloud.com>
- <20230805110711.2975149-8-shikemeng@huaweicloud.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20230805110711.2975149-8-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/5/2023 7:07 PM, Kemeng Shi wrote:
-> We always do zone_watermark_ok check and compaction_suitable check
-> together to test if compaction for target order should be runned.
-> Factor these code out for preparation to remove repeat code.
+From: Kees Cook
+> Sent: 14 August 2023 22:21
 > 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->   mm/compaction.c | 42 +++++++++++++++++++++++++++++-------------
->   1 file changed, 29 insertions(+), 13 deletions(-)
+> On Fri, Aug 04, 2023 at 10:50:59AM +0000, David Laight wrote:
+> > [...]
+> > I also suspect that many of the min_t(u16, ...) are actually wrong.
+> > For example copy_data() in printk_ringbuffer.c contains:
+> >         data_size = min_t(u16, buf_size, len);
+> > Here buf_size is 'unsigned int' and len 'u16', pass a 64k buffer
+> > (can you prove that doesn't happen?) and no data is returned.
 > 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index b5a699ed526b..26787ebb0297 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -2365,6 +2365,30 @@ bool compaction_zonelist_suitable(struct alloc_context *ac, int order,
->   	return false;
->   }
->   
-> +/*
-> + * Should we do compaction for target allocation order.
-> + * Return COMPACT_SUCCESS if allocation for target order can be already
-> + * satisfied
-> + * Return COMPACT_SKIPPED if compaction for target order is likely to fail
-> + * Return COMPACT_CONTINUE if compaction for target order should be runned
-> + */
-> +static inline enum compact_result
-> +compaction_suit_allocation_order(struct zone *zone, unsigned int order,
-> +				 int highest_zoneidx, unsigned int alloc_flags)
-> +{
-> +	unsigned long watermark;
-> +
-> +	watermark = wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK);
+> Stars aligning... this exact bug (as you saw in the other thread[1]) got
+> hit. And in the analysis, I came to the same conclusion: min_t() is a
+> serious foot-gun, and we should be able to make min() Just Work in the
+> most common situations.
 
-IIUC, the watermark used in patch 8 and patch 9 is different, right? 
-Have you measured the impact of modifying this watermark?
+It is all a question of what 'work' means.
+To my mind (but Linus disagrees!) the only problematic case
+is where a negative signed value gets converted to a large
+unsigned value.
+This snippet from do_tcp_getsockopt() shows what I mean:
 
-> +	if (zone_watermark_ok(zone, order, watermark, highest_zoneidx,
-> +			      alloc_flags))
-> +		return COMPACT_SUCCESS;
-> +
-> +	if (!compaction_suitable(zone, order, highest_zoneidx))
-> +		return COMPACT_SKIPPED;
-> +
-> +	return COMPACT_CONTINUE;
-> +}
-> +
->   static enum compact_result
->   compact_zone(struct compact_control *cc, struct capture_control *capc)
->   {
-> @@ -2390,19 +2414,11 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
->   	cc->migratetype = gfp_migratetype(cc->gfp_mask);
->   
->   	if (compaction_with_allocation_order(cc->order)) {
-> -		unsigned long watermark;
-> -
-> -		/* Allocation can already succeed, nothing to do */
-> -		watermark = wmark_pages(cc->zone,
-> -					cc->alloc_flags & ALLOC_WMARK_MASK);
-> -		if (zone_watermark_ok(cc->zone, cc->order, watermark,
-> -				      cc->highest_zoneidx, cc->alloc_flags))
-> -			return COMPACT_SUCCESS;
-> -
-> -		/* Compaction is likely to fail */
-> -		if (!compaction_suitable(cc->zone, cc->order,
-> -					 cc->highest_zoneidx))
-> -			return COMPACT_SKIPPED;
-> +		ret = compaction_suit_allocation_order(cc->zone, cc->order,
-> +						       cc->highest_zoneidx,
-> +						       cc->alloc_flags);
-> +		if (ret != COMPACT_CONTINUE)
-> +			return ret;
->   	}
->   
->   	/*
+	copy_from_user(&len,...)
+	len = min_t(unsigned int, len, sizeof(int));
+
+	if (len < 0)
+		return -EINVAL;
+
+That can clearly never return -EINVAL.
+That has actually been broken since the test was added in 2.4.4.
+That predates min_t() in 2.4.10 (renamed from min() in 2.4.9
+when the 'strict typecheck' version on min() was added).
+So min_t() actually predates min()!
+
+> It seems like the existing type_max/type_min macros could be used to
+> figure out that the args are safe to appropriately automatically cast,
+> etc. e.g. type_max(u16) <= type_max(unsigned int) && type_min(u16) >=
+> type_min(unsigned int) ...
+
+That doesn't really help; min(a,b) is ok if any of:
+1) is_signed(a) == is_signed(b).
+2) is_signed(a + 0) == is_signed(b + 0)  // Converts char/short to int.
+3) a or b is a constant between 0 and MAXINT and is cast to int.
+
+The one you found passes (1) - both types are unsigned.
+min(len, sizeof (int)) passes (3) and is converted to
+min(len, (int)sizeof (int)) and can still return the expected negatives.
+
+(Clearly that getsockopt code only works for len != 4 on LE.)
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
