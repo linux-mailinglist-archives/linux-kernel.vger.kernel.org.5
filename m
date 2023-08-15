@@ -2,215 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB38377D03F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 18:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC79177D042
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 18:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238543AbjHOQmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 12:42:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33592 "EHLO
+        id S238555AbjHOQm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 12:42:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238540AbjHOQmI (ORCPT
+        with ESMTP id S238557AbjHOQmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 12:42:08 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A1D45B0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 09:42:06 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B56A31063;
-        Tue, 15 Aug 2023 09:42:48 -0700 (PDT)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 66B9A3F6C4;
-        Tue, 15 Aug 2023 09:42:05 -0700 (PDT)
-Message-ID: <b6d28992-5adc-5df0-91e5-7fd0571b1465@arm.com>
-Date:   Tue, 15 Aug 2023 17:42:00 +0100
+        Tue, 15 Aug 2023 12:42:46 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2050.outbound.protection.outlook.com [40.107.94.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A751999;
+        Tue, 15 Aug 2023 09:42:42 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RLTykoHNE0bWRrIm0uaPAy+1ZQwSCWEMgmn40cP1WcgF5nh9TbjbH/DA04/ynqAzUuE+QKhA+p/WjzY1bTOEO2ai6aqP4G7mdls6RKumb+qXijmSmfNtTjKPWBjpvAqeb01wrKx/0ZQjUcL2VWTKtorj1bAYoe/o/0gwPwqbx139F+QjTM1ZjzMSAdX6SPS7+8j4Y+n8ylivoNE2JQDlLqLseb2R7j8HZtJLtMdUDnonuBooTA48JKGgDRR/p7Xqd2DMaPfdLzPPjbwyD1SkR6N4tB5cFVaDq9P4LmuIxhf5Vsq8WVoX/SJ4sYqg691E8DMOkGknuJGMcDnorVfetA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VzHG/tWKB41iD8N9IwYFOFJMRfiBegUyl7L1yHrnXXs=;
+ b=fHx+aBspLMquX+y9fdRHSE3wvWWdvA+SYCuc1UQkimK9wLX780zJzFcMzix7yCYVgItiLQdH6IKreX96s3lMquAPm/gpX+E/JJZXClLWP5qwNaD7f11+VO5r+NT2A4FOfHaXKzWAxoJVKT0QD8n/5J1+Gjjk+9JRCIcWlf2CwUlVbm52pQfrfQTIgI72jDtnW/uR0o+1HwHbwB4L2aIz4QhkzRwdE9YWeXzwl2vCpkUq8Q+L8EHL/O83L7DmbCMKh50x585Fr+iGq2Fek00W68Ajy3OMXBKMjswTE+cl2InT6D77j8s6DGF7fqqyQHHEBuzDtG1rrY7Xzu6jXTi2IA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VzHG/tWKB41iD8N9IwYFOFJMRfiBegUyl7L1yHrnXXs=;
+ b=AydDp0WCVb9KVK22VCS3NROiXpdQ4pTevHSh9RuZp0fylGzbhSPyrtrqC+E9xzbkW+1Jch+l7Q8i9UU1B/jTFOhEbJdOzNDHppTSH4I4Mblxz64wolxeTpNcsXLn6pp/78LPg2JjsynJ4XAaDU+aES90LE4RrZK4GoOY3hSrwziqF47htsVzG3I6Cpthm8xgYGO72vRLfQucMoDvv+aXrwrNuYCNV8zseRVXWKke7otDoVB25rA2o3Y3dBJLItDbRAjWdoRU67cFwNq9eQMcejYsdc9pfLiyH37dFM5c9nsDhN1oUe2uyRj+dhK+FdsRCs+4lnXeRpKjkddg/Hg+gw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by LV8PR12MB9182.namprd12.prod.outlook.com (2603:10b6:408:192::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Tue, 15 Aug
+ 2023 16:42:39 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6678.025; Tue, 15 Aug 2023
+ 16:42:39 +0000
+Date:   Tue, 15 Aug 2023 13:42:35 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Yi Liu <yi.l.liu@intel.com>
+Cc:     joro@8bytes.org, alex.williamson@redhat.com, kevin.tian@intel.com,
+        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
+        eric.auger@redhat.com, nicolinc@nvidia.com, kvm@vger.kernel.org,
+        mjrosato@linux.ibm.com, chao.p.peng@linux.intel.com,
+        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com
+Subject: Re: [PATCH v7 3/4] iommufd: Add IOMMU_GET_HW_INFO
+Message-ID: <ZNuq+17Gv/d3lEin@nvidia.com>
+References: <20230811071501.4126-1-yi.l.liu@intel.com>
+ <20230811071501.4126-4-yi.l.liu@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811071501.4126-4-yi.l.liu@intel.com>
+X-ClientProxiedBy: BYAPR02CA0013.namprd02.prod.outlook.com
+ (2603:10b6:a02:ee::26) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] dma-debug: defer __dma_entry_alloc_check_leak() printk
- output
-Content-Language: en-GB
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Petr Mladek <pmladek@suse.com>
-Cc:     Rob Clark <robdclark@chromium.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org
-References: <20230815152822.3660784-1-senozhatsky@chromium.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20230815152822.3660784-1-senozhatsky@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|LV8PR12MB9182:EE_
+X-MS-Office365-Filtering-Correlation-Id: 940ce42b-0a61-450c-c144-08db9daea369
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ClLUKAVexlyEETRRRTCoO+jhpdiWc3/gPIu7ZHe6ALMKWItzQMcbH7JfNdcNwVQQXMWsO3tfWDGNqcJC2HbXIujUbQmCz5o1I25b4IWgW/jENOux9mXJLYiY21Xn0TiV7l/uhd0dTS4oUGab77kvpetGMCVGnlrs5+JzjTYTXsOXxm0DWBa17nBnRMFz9L9Hejx8VtvZ/Sn71Rd0RCRMCyAfW7HvJe5h/Z1csOXZU2SX2UT9jb8FeDKXd0uU6Kwo+Osqj5MO0ov62CMqrnOWeLOBTBYIiEtECB0D2VO0hAJIO4aXmjMvc0qtNPNDzBM/UBxSmEcnB4JsYsFlHPmdKNwStPsMt7bICTnWV2Eh6Nb++PgVuUt1UU+UJkjDNS9zuuuu7hbD6G9mf00t2twIP+7RAK7wlhQiwEOOu1keelCHxwNvNo9bBQhqeKdj6W/BE0KDioTANV6/p+1z0qGtA61AtcEGAYopojiOv347kM0DVmhyF/LWrlR82AplyNIy1VxxEZR7dch5dimPPlNBAOjJq+lavPc7pH0Zi7m0SbrRpXVYTjSIOT2TAWrmTwTO
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(366004)(396003)(451199024)(1800799009)(186009)(86362001)(4326008)(41300700001)(6916009)(2906002)(316002)(478600001)(5660300002)(2616005)(7416002)(38100700002)(66556008)(26005)(8936002)(6666004)(6506007)(8676002)(6512007)(6486002)(36756003)(66946007)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RwRbiCVI3LQKp856hldqLjcvYZpXsw2sirK3i+qIZ1E2Qsmv+D7+J3vnxXWj?=
+ =?us-ascii?Q?/thE4EJq2w2XEIFA9fwyBeXN7r29h3ovaJnijhSx4Tsa/Wp5Rs6nYmbrsgVy?=
+ =?us-ascii?Q?bol/L8EWjUeoW7Ra5oIFU0LRy6XtNyI1xieh0zczgJiZ7tKZqWrAatFO0hUv?=
+ =?us-ascii?Q?deRjpxDiGev68SdGM2UCbDihCfhV/LjUmSblJDgVbNi5rO64pntUwaL5vPTq?=
+ =?us-ascii?Q?XsxZfXPQjCnOC9cw4z3LAHud5SJS6zk8h+gZw9MQMO6S2bNHtSpwViQqaXbK?=
+ =?us-ascii?Q?AA7AcML+a+AbLHD3xfuHNKjMc1He4sHu7O9u+473jsYAvF+dekXPI18q/+FH?=
+ =?us-ascii?Q?5BQ0XcXSj2/AkTEtSGdk2GwoAMz4ruvfZpODD+MqqJ/AD29ZOWIyxTd9IPJM?=
+ =?us-ascii?Q?G/CocPFnBZSgyvjYYFpRVzx6l1W0voBi5J3UwCvZtCHHzkKXKzl4X1rAS09r?=
+ =?us-ascii?Q?GFhKjIDsvYpu05/qwaBK+O6hSnUd5a9vn4myCWB+H2DLoAkOQgPgHG2KWius?=
+ =?us-ascii?Q?45m8gZw+cHd+FTQgt5aGHx6QDUuIo7nb3LtlP4uf2wrcvvfsUlG7FpvnC2c/?=
+ =?us-ascii?Q?YDeAoCuP4hFR1zx8kvo5ulPm2UmWQtR2dqKE1FKIJ+7FqbWnZz4Km2RMfljm?=
+ =?us-ascii?Q?ijaieWjo1fkkHuRzpYGpquBuarXqigufoxViZw0PHX+fqi3ijBNYh/P2RFq6?=
+ =?us-ascii?Q?lVadmprUNE51/xDscVjIHmlGmaf1pfvtYcUaBr1ZrNPOHro+JmaRjm7IA7xJ?=
+ =?us-ascii?Q?KgRSyJblxfOQ2BfXj9KTlEgMVtbeZjNL7f1D8jCB61h3U/7aYYkTTmXlfMn1?=
+ =?us-ascii?Q?z37kFhC+qbYJ0CWk6uRCGbkjZEJu9dfUL+86S0RvMF3dnpdG/X5dnlx0niCb?=
+ =?us-ascii?Q?+Mn8DhWirlMl4V5JRQFK1dpbpHzVnnGtAanRoW8LJop2LS5nQH0SSN1PXnV4?=
+ =?us-ascii?Q?zznhXo3dFIebF7fTBQ/i2Y9RTPNdnqJmGlkM4rd+6r5w3+UZu1Bv2d4jrmUo?=
+ =?us-ascii?Q?WnXVq5FPm6FVrFvHE+DN/mVTPmHluKtqvU65JXKbIfK2yus5ZPJz+No0YJwI?=
+ =?us-ascii?Q?5pFgVuVl5D8v/XKPzWWwUYFgYfNeQ6oS6OY6W/FYQEzBP2zdN46wFUHSQhHC?=
+ =?us-ascii?Q?g/jsyS1D8FHd315ocFw+SES0rxe4IKH5dNeFWlj7ZtXNY+n1cuO5p9DGxjc7?=
+ =?us-ascii?Q?hPvRW5I+mqPfhomM3MndAzyNi0vUf5igkKlc1GTT2u8Wqm/5NBgzKJd9d240?=
+ =?us-ascii?Q?uFzb8JWxAi7CZQWL31SVl8xl6HMUgl0KLGgVoHfyDq8SCNivMc4iuIanQC0P?=
+ =?us-ascii?Q?4F57QOo8WtO6dzOoART6kzbSVrWIaLpUod2wCVvlpHqvXpTHa980XU3/zMEW?=
+ =?us-ascii?Q?HBnu4rsJTZi4aE1yPrEswDgepeSMdruJtBw0qteCA81tqE9KuG3khMrBY5FR?=
+ =?us-ascii?Q?ds8TD7JcqZWgUeib8/dTXNhrRKoCsfXH3NreY4XvWBe3GrU9pdvW0CDb9eBz?=
+ =?us-ascii?Q?d52MtBJDqBDm1mQTOcdpym4K/CSM/vRl8eYmdbX4pWY6doSyCDSZ97AmlkZI?=
+ =?us-ascii?Q?7axKeGUB0X4ha0borvTta1WbaNqX5y0CpW5kzpDh?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 940ce42b-0a61-450c-c144-08db9daea369
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2023 16:42:39.6197
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FgfhcJdPrba+Kie0CWbGkHY6724d8fDp5n7KNDBXUE4idHFeJScYCT2jQusVisAK
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9182
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/08/2023 4:26 pm, Sergey Senozhatsky wrote:
-> __dma_entry_alloc_check_leak() calls printk -> serial console
-> output (qcom geni) and grabs port->lock under free_entries_lock,
-> which is a conflicting locking dependency chain as qcom_geni IRQ
-> handler can call into dma-debug code and grab free_entries_lock
-> under port->lock.
+On Fri, Aug 11, 2023 at 12:15:00AM -0700, Yi Liu wrote:
+> Under nested IOMMU translation, userspace owns the stage-1 translation
+> table (e.g. the stage-1 page table of Intel VT-d or the context table
+> of ARM SMMUv3, and etc.). Stage-1 translation tables are vendor specific,
+> and need to be compatible with the underlying IOMMU hardware. Hence,
+> userspace should know the IOMMU hardware capability before creating and
+> configuring the stage-1 translation table to kernel.
 > 
-> Use deferred printk in __dma_entry_alloc_check_leak() so that we
-> don't acquire serial console's port->lock under free_entries_lock.
-
-Hmm, the print really doesn't need to be under the lock anyway, it only 
-needs to key off whether the "num_free_entries == 0" condition was hit 
-or not. TBH I think I'd rather just shuffle that code around a bit than 
-have to remember the significance of magic printk variants.
-
-Thanks,
-Robin.
-
+> This adds IOMMU_GET_HW_INFO ioctl to query the IOMMU hardware information
+> (a.k.a capability) for a given device. The returned data is vendor specific,
+> userspace needs to decode it with the structure mapped by the @out_data_type
+> field.
 > 
-> Trimmed-down lockdep splat:
+> As only physical devices have IOMMU hardware, so this will return error
+> if the given device is not a physical device.
 > 
->     The existing dependency chain (in reverse order) is:
-> 
->                 -> #2 (free_entries_lock){-.-.}-{2:2}:
->          _raw_spin_lock_irqsave+0x60/0x80
->          dma_entry_alloc+0x38/0x110
->          debug_dma_map_page+0x60/0xf8
->          dma_map_page_attrs+0x1e0/0x230
->          dma_map_single_attrs.constprop.0+0x6c/0xc8
->          geni_se_rx_dma_prep+0x40/0xcc
->          qcom_geni_serial_isr+0x310/0x510
->          __handle_irq_event_percpu+0x110/0x244
->          handle_irq_event_percpu+0x20/0x54
->          handle_irq_event+0x50/0x88
->          handle_fasteoi_irq+0xa4/0xcc
->          handle_irq_desc+0x28/0x40
->          generic_handle_domain_irq+0x24/0x30
->          gic_handle_irq+0xc4/0x148
->          do_interrupt_handler+0xa4/0xb0
->          el1_interrupt+0x34/0x64
->          el1h_64_irq_handler+0x18/0x24
->          el1h_64_irq+0x64/0x68
->          arch_local_irq_enable+0x4/0x8
->          ____do_softirq+0x18/0x24
-> 	...
-> 
->                 -> #1 (&port_lock_key){-.-.}-{2:2}:
->          _raw_spin_lock_irqsave+0x60/0x80
->          qcom_geni_serial_console_write+0x184/0x1dc
->          console_flush_all+0x344/0x454
->          console_unlock+0x94/0xf0
->          vprintk_emit+0x238/0x24c
->          vprintk_default+0x3c/0x48
->          vprintk+0xb4/0xbc
->          _printk+0x68/0x90
->          register_console+0x230/0x38c
->          uart_add_one_port+0x338/0x494
->          qcom_geni_serial_probe+0x390/0x424
->          platform_probe+0x70/0xc0
->          really_probe+0x148/0x280
->          __driver_probe_device+0xfc/0x114
->          driver_probe_device+0x44/0x100
->          __device_attach_driver+0x64/0xdc
->          bus_for_each_drv+0xb0/0xd8
->          __device_attach+0xe4/0x140
->          device_initial_probe+0x1c/0x28
->          bus_probe_device+0x44/0xb0
->          device_add+0x538/0x668
->          of_device_add+0x44/0x50
->          of_platform_device_create_pdata+0x94/0xc8
->          of_platform_bus_create+0x270/0x304
->          of_platform_populate+0xac/0xc4
->          devm_of_platform_populate+0x60/0xac
->          geni_se_probe+0x154/0x160
->          platform_probe+0x70/0xc0
-> 	...
-> 
->                 -> #0 (console_owner){-...}-{0:0}:
->          __lock_acquire+0xdf8/0x109c
->          lock_acquire+0x234/0x284
->          console_flush_all+0x330/0x454
->          console_unlock+0x94/0xf0
->          vprintk_emit+0x238/0x24c
->          vprintk_default+0x3c/0x48
->          vprintk+0xb4/0xbc
->          _printk+0x68/0x90
->          dma_entry_alloc+0xb4/0x110
->          debug_dma_map_sg+0xdc/0x2f8
->          __dma_map_sg_attrs+0xac/0xe4
->          dma_map_sgtable+0x30/0x4c
->          get_pages+0x1d4/0x1e4 [msm]
->          msm_gem_pin_pages_locked+0x38/0xac [msm]
->          msm_gem_pin_vma_locked+0x58/0x88 [msm]
->          msm_ioctl_gem_submit+0xde4/0x13ac [msm]
->          drm_ioctl_kernel+0xe0/0x15c
->          drm_ioctl+0x2e8/0x3f4
->          vfs_ioctl+0x30/0x50
-> 	...
-> 
->   Chain exists of:
->                   console_owner --> &port_lock_key --> free_entries_lock
-> 
->    Possible unsafe locking scenario:
-> 
->          CPU0                    CPU1
->          ----                    ----
->     lock(free_entries_lock);
->                                  lock(&port_lock_key);
->                                  lock(free_entries_lock);
->     lock(console_owner);
-> 
->                  *** DEADLOCK ***
-> 
->   Call trace:
->    dump_backtrace+0xb4/0xf0
->    show_stack+0x20/0x30
->    dump_stack_lvl+0x60/0x84
->    dump_stack+0x18/0x24
->    print_circular_bug+0x1cc/0x234
->    check_noncircular+0x78/0xac
->    __lock_acquire+0xdf8/0x109c
->    lock_acquire+0x234/0x284
->    console_flush_all+0x330/0x454
->    console_unlock+0x94/0xf0
->    vprintk_emit+0x238/0x24c
->    vprintk_default+0x3c/0x48
->    vprintk+0xb4/0xbc
->    _printk+0x68/0x90
->    dma_entry_alloc+0xb4/0x110
->    debug_dma_map_sg+0xdc/0x2f8
->    __dma_map_sg_attrs+0xac/0xe4
->    dma_map_sgtable+0x30/0x4c
->    get_pages+0x1d4/0x1e4 [msm]
->    msm_gem_pin_pages_locked+0x38/0xac [msm]
->    msm_gem_pin_vma_locked+0x58/0x88 [msm]
->    msm_ioctl_gem_submit+0xde4/0x13ac [msm]
->    drm_ioctl_kernel+0xe0/0x15c
->    drm_ioctl+0x2e8/0x3f4
->    vfs_ioctl+0x30/0x50
->    ...
-> 
-> Reported-by: Rob Clark <robdclark@chromium.org>
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+> Co-developed-by: Nicolin Chen <nicolinc@nvidia.com>
+> Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
 > ---
->   kernel/dma/debug.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
+>  drivers/iommu/iommufd/main.c | 85 ++++++++++++++++++++++++++++++++++++
+>  include/uapi/linux/iommufd.h | 36 +++++++++++++++
+>  2 files changed, 121 insertions(+)
 > 
-> diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
-> index f190651bcadd..9e11ceadc69d 100644
-> --- a/kernel/dma/debug.c
-> +++ b/kernel/dma/debug.c
-> @@ -643,9 +643,9 @@ static void __dma_entry_alloc_check_leak(void)
->   
->   	/* Shout each time we tick over some multiple of the initial pool */
->   	if (tmp < DMA_DEBUG_DYNAMIC_ENTRIES) {
-> -		pr_info("dma_debug_entry pool grown to %u (%u00%%)\n",
-> -			nr_total_entries,
-> -			(nr_total_entries / nr_prealloc_entries));
-> +		printk_deferred(KERN_INFO "dma_debug_entry pool grown to %u (%u00%%)\n",
-> +				nr_total_entries,
-> +				(nr_total_entries / nr_prealloc_entries));
->   	}
->   }
->   
+> diff --git a/drivers/iommu/iommufd/main.c b/drivers/iommu/iommufd/main.c
+> index 94c498b8fdf6..d459811c5381 100644
+> --- a/drivers/iommu/iommufd/main.c
+> +++ b/drivers/iommu/iommufd/main.c
+> @@ -17,6 +17,7 @@
+
+I was looking at this more and this code should be in device.c:
+  
+> +static int iommufd_fill_hw_info(struct device *dev, void __user *user_ptr,
+> +				unsigned int *length, u32 *type)
+> +{
+
+Since it is working on devices
+
+main.c is primarily for context related stuff
+
+Jason
