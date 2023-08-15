@@ -2,105 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C2C77D283
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996D977D280
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239511AbjHOSyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 14:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44610 "EHLO
+        id S239437AbjHOSyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 14:54:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239536AbjHOSyU (ORCPT
+        with ESMTP id S239614AbjHOSyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 14:54:20 -0400
-Received: from mx.treblig.org (unknown [IPv6:2a00:1098:5b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD49C2123;
-        Tue, 15 Aug 2023 11:53:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
-        ; s=bytemarkmx; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID
-        :Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID
-        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
-        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
-        :List-Post:List-Owner:List-Archive;
-        bh=//toRj/PKXJjaN9Lb1xLslhcEFyKob0fP3zRV2NepOY=; b=mCWSJQ3+0FPdTBBgkanltHH+rS
-        rX61emmsNMIugv+6Tk4t48w3LC91RVFaSll2gmoJs0D7Hw25uL6zETFZQ/EzE4M4Iqotd6iVbK0dj
-        ISvu1aPpkqNBzPnBilvnU1ofAUfLY7+pJeg4r8fyS69t6EdyoG9zMqyCbtGZYmaam8XtCxQMNZIYK
-        wQGsTgw9y5pYdQd1L9XuvkqpTLhW8mf5K905JwJScL4prcbhGOaQ3GVNxgp73kHK75In9ag/LeAZi
-        xUu89BGEG3Mv1T6Xrb6W6v2j7NACUQXHy6BJlpz+tdicBAERNe+Z0v70wLzZI5A6uIE/GLKq/UN3l
-        7Jy0OXCA==;
-Received: from dg by mx.treblig.org with local (Exim 4.94.2)
-        (envelope-from <dg@treblig.org>)
-        id 1qVz9Q-0076hZ-EE; Tue, 15 Aug 2023 18:52:20 +0000
-Date:   Tue, 15 Aug 2023 18:52:20 +0000
-From:   "Dr. David Alan Gilbert" <dave@treblig.org>
-To:     Carlos Carvalho <carlos@fisica.ufpr.br>
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: 6.5.0rc5 fs hang - ext4? raid?
-Message-ID: <ZNvJZIXIHJERRtwP@gallifrey>
-References: <ZNqWfQPTScJDkmpX@gallifrey>
- <ZNvCJAclBEJf7uUA@fisica.ufpr.br>
+        Tue, 15 Aug 2023 14:54:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993882101;
+        Tue, 15 Aug 2023 11:53:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 57B4465FDF;
+        Tue, 15 Aug 2023 18:52:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82C9BC433C7;
+        Tue, 15 Aug 2023 18:52:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692125560;
+        bh=WI38EkMC1ok3h4umI619BS/8GW+2Fygzgx16kxgjLZQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bCHXvhDr3FPDfLnCiyo+/vOrd42yCp0baVzVj5QfHzvbX//WDDxVk1XpZxu3z8sfs
+         D68pEnKMtVuEfwBOzaPbyv3O0M68HwXc/YvBETXtR9DVYSp84sQXHqn+Eq3Y6eMa/n
+         RAdN+aYhiId9KQUx2CA/L7hSC4cV5diM4IdvU9MGSBnGzZ8GjePSMkCt45Ics7k2S7
+         SEm13/fOCuxzYFppC0l7fRAocERIn5PmvMoQt9UI8/R6JbzWXUhJIkwN1NpcKc/o0J
+         3UqFVGeRLznfDbpdJlIf25cjfJOfMxnpOmuEEI00MzpJBQ++TPEW80kEmxKmawMEND
+         rWCmcLR58WqLQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4A884404DF; Tue, 15 Aug 2023 15:52:38 -0300 (-03)
+Date:   Tue, 15 Aug 2023 15:52:38 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Leo Yan <leo.yan@linaro.org>, John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Guo Ren <guoren@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Ming Wang <wangming01@loongson.cn>,
+        Eric Lin <eric.lin@sifive.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ivan Babrou <ivan@cloudflare.com>,
+        Fangrui Song <maskray@google.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v2 0/6] perf parse-regs: Refactor architecture functions
+Message-ID: <ZNvJdsVmmAWLmfH6@kernel.org>
+References: <20230606014559.21783-1-leo.yan@linaro.org>
+ <CAP-5=fV1m440mKc0R=m5C4N2NtoiixchtnpX2eR3PA_5hXbqEQ@mail.gmail.com>
+ <ZNvCxM/ULdUfzHtR@kernel.org>
+ <ZNvHx+KxIL6JzEl/@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZNvCJAclBEJf7uUA@fisica.ufpr.br>
-X-Chocolate: 70 percent or better cocoa solids preferably
-X-Operating-System: Linux/5.10.0-23-amd64 (x86_64)
-X-Uptime: 18:49:52 up 40 days,  4:21,  1 user,  load average: 0.02, 0.03, 0.00
-User-Agent: Mutt/2.0.5 (2021-01-21)
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZNvHx+KxIL6JzEl/@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Carlos Carvalho (carlos@fisica.ufpr.br) wrote:
-> Dr. David Alan Gilbert (dave@treblig.org) wrote on Mon, Aug 14, 2023 at 06:02:53PM -03:
-> >   I'm seeing a few hangs on a fs after upgrading to fedora 39's bleeding
-> > edge; which is running kernel 6.5.0-0.rc5.20230808git14f9643dc90a.37.fc39.x86_64
-> > It was always solid prior to that.  It seems to trigger on heavy IO
-> > on this fs.
+Em Tue, Aug 15, 2023 at 03:45:27PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Agreed, applied to perf-tools-next, sorry for the delay.
 > 
-> Good news! No, I didn't forget the smiley... Maybe now the problem has become
-> sufficiently bad to be visible/solvable...
-> 
-> 6.4.* also doesn't run in one of our machines, which has heavy I/O load. The
-> first symptom is that rsync downloads hang and abort with timeout. 1 or 2
-> days later the amount of modified pages waiting to go to disk reaches several
-> GB, as reported by /proc/meminfo, but disks remain idle. Finally reading from
-> the arrays collapses.
+> Had to add this to make 'perf test python' to work. Please run 'perf
+> test' before sending patches.
 
-I'm not sure this is a related fault - I mean it might be, but my
-failure is much more deterministic; it seems solid on 6.4.x to me, but
-just fails reliably somewhere in 6.5.
+One more, please also do a 'make -C tools/perf build-test', with it I
+caught this:
 
-Dave
+         make_no_libunwind_O: cd . && make NO_LIBUNWIND=1 FEATURES_DUMP=/var/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP -j32 O=/tmp/tmp.yeEGyQq2HR DESTDIR=/tmp/tmp.ITgoO16jjH
+cd . && make NO_LIBUNWIND=1 FEATURES_DUMP=/var/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP -j32 O=/tmp/tmp.yeEGyQq2HR DESTDIR=/tmp/tmp.ITgoO16jjH
 
-> This is just the worst case. Since early 5.* I/O performance has dropped
-> absurdly. In all our disk servers this is easy to see: just generate lots of
-> writes quickly (for example expanding a kernel tarball). Using top I see that
-> kworker starts using 100% cpu but disks stay idle (as seen by dstat or sar). If
-> you do a sync or umount it takes looooong to reach ~0 modified pages for the
-> sync or umount to return.
-> 
-> In the server I mentioned above where 6.4.* don't stand the load, which is one
-> of the largest free software mirrors of the world, even sometimes 6.1
-> collapses: I/O becomes so slow that service (apache) stops.
-> 
-> The problem gets progressively worse with time after booting. It's hardly
-> noticeable in the first hour after boot, and easily seen after ~3-4 days of
-> uptime. The higher the (write) I/O load the faster it appears.
-> 
-> All this is with ext4 and raid6 with >~ 14 disks in the arrays.
-> 
-> I don't have debug info because these are production machines and I only
-> compile in the kernel the bare minimum essential for operation. It's always
-> pure kernel.org releases; gcc versions vary, for 6.4* it's gcc-13, for 6.1*
-> gcc-12 is used, on Debian unstable updated more than 4 times/week.
--- 
- -----Open up your eyes, open up your mind, open up your code -------   
-/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-\        dave @ treblig.org |                               | In Hex /
- \ _________________________|_____ http://www.treblig.org   |_______/
+  CC      /tmp/tmp.yeEGyQq2HR/util/expr-flex.o
+util/unwind-libdw.c: In function ‘memory_read’:
+util/unwind-libdw.c:173:28: error: implicit declaration of function ‘perf_env__arch’ [-Werror=implicit-function-declaration]
+  173 |         const char *arch = perf_env__arch(ui->machine->env);
+      |                            ^~~~~~~~~~~~~~
+util/unwind-libdw.c:173:28: error: initialization of ‘const char *’ from ‘int’ makes pointer from integer without a cast [-Werror=int-conversion]
+util/unwind-libdw.c: In function ‘unwind__get_entries’:
+util/unwind-libdw.c:258:28: error: initialization of ‘const char *’ from ‘int’ makes pointer from integer without a cast [-Werror=int-conversion]
+  258 |         const char *arch = perf_env__arch(ui_buf.machine->env);
+      |                            ^~~~~~~~~~~~~~
+cc1: all warnings being treated as errors
+make[6]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:98: /tmp/tmp.yeEGyQq2HR/util/unwind-libdw.o] Error 1
+make[6]: *** Waiting for unfinished jobs....
+make[5]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:150: util] Error 2
+make[4]: *** [Makefile.perf:662: /tmp/tmp.yeEGyQq2HR/perf-in.o] Error 2
+make[4]: *** Waiting for unfinished jobs....
+  CC      /tmp/tmp.yeEGyQq2HR/pmu-events/pmu-events.o
+  LD      /tmp/tmp.yeEGyQq2HR/pmu-events/pmu-events-in.o
+make[3]: *** [Makefile.perf:238: sub-make] Error 2
+make[2]: *** [Makefile:70: all] Error 2
+make[1]: *** [tests/make:337: make_no_libunwind_O] Error 1
+make: *** [Makefile:103: build-test] Error 2
+make: Leaving directory '/var/home/acme/git/perf-tools-next/tools/perf'
+
+real	1m29.784s
+user	10m41.597s
+sys	2m55.948s
+⬢[acme@toolbox perf-tools-next]$
+
+I'm trying to fix
