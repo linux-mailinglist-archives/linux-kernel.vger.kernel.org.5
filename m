@@ -2,437 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F8477D27D
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C2C77D283
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239466AbjHOSvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 14:51:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53692 "EHLO
+        id S239511AbjHOSyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 14:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239594AbjHOSuy (ORCPT
+        with ESMTP id S239536AbjHOSyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 14:50:54 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0DC2689
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 11:50:29 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe1b00fce2so8562965e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 11:50:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692125415; x=1692730215;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dHt7TuIICG9h1Hjps9RfjKxzUr/a7gkVi7bZkYQhJnY=;
-        b=jfVO2gv/D3STtcS/c7Do8Qeupk0u4FySEJfL1dIWXBBpv/tIwvFcLw9mpJQVX4zaB/
-         6LJhhC6KVNn1yPex7cWjjCshBrN7KGk2VdumDaR0lKBn6fe7Sw5XY+/oWElxieUZ1B2l
-         wY19xhlDcdwPpqtaxWIBe9gHarUKFjP8lAnwojuVJc5hQwPOCaX4GqtgV9vVlqTegBaz
-         0yqShVXDe6GaMQAwrV/Vks/A36OXL7muFMmcf5vEJLW9Weia1K9PjBu3YibDIu3WI6Tu
-         qkgj//5ftNBDQ0eBGZ1cx6IfYxz9MJ+bTLP9zmDVY2ag9u40cdTMo3vUjff2Fnhby96P
-         H4Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692125415; x=1692730215;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dHt7TuIICG9h1Hjps9RfjKxzUr/a7gkVi7bZkYQhJnY=;
-        b=NXywXsK6NuLqsACLA1d2wSIhwdNk7R3ahaXximLc7p4Qz0ONK8Nw+46/qb7P/GTxJC
-         UFHRBrzFQO+qE+dNFIhkAMbHbndQSRokSy/fL6NrQ1zItgiT1yDsomy7FucCnLctovGd
-         sb7HGRyaZUgZWU2uUvPe63rfp9Pj1SnCyJ8ToiyYflj/Wii2J0s6cMA3p8FEyjnKbcVA
-         lcNZpCtZMgxcTLUogpmQFpIEr/SA6vIFhOlQZVMAykrBdVBY4hmycbcN20MgRTQAdbst
-         oKItvnR3tIkab5gVJL3QW09uQnFSS4C2jDs/i/kN5P+kEIPyWyb0uLLSAdixBaHL6nNI
-         xB6Q==
-X-Gm-Message-State: AOJu0YwtR7cuvYsTTDr5KM7/TTgyMU9iziwRh/1i2Uaqmro/hgsFz0VA
-        chSs0ze0muw49tyTMJ2ZUKW6Ay9JQRzKZg2s8Qdy1Q==
-X-Google-Smtp-Source: AGHT+IE9TK4lXAiVKvxwV7WjNSw2lx0pvj2Za+gR18Zn3KmoDZnp7fISMixYXbFPgqdZwH3LYoacnpLifN0fgKqFulw=
-X-Received: by 2002:a05:6512:60a:b0:4fe:ae7:d906 with SMTP id
- b10-20020a056512060a00b004fe0ae7d906mr8112628lfe.65.1692125414580; Tue, 15
- Aug 2023 11:50:14 -0700 (PDT)
+        Tue, 15 Aug 2023 14:54:20 -0400
+Received: from mx.treblig.org (unknown [IPv6:2a00:1098:5b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD49C2123;
+        Tue, 15 Aug 2023 11:53:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+        ; s=bytemarkmx; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID
+        :Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID
+        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
+        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
+        :List-Post:List-Owner:List-Archive;
+        bh=//toRj/PKXJjaN9Lb1xLslhcEFyKob0fP3zRV2NepOY=; b=mCWSJQ3+0FPdTBBgkanltHH+rS
+        rX61emmsNMIugv+6Tk4t48w3LC91RVFaSll2gmoJs0D7Hw25uL6zETFZQ/EzE4M4Iqotd6iVbK0dj
+        ISvu1aPpkqNBzPnBilvnU1ofAUfLY7+pJeg4r8fyS69t6EdyoG9zMqyCbtGZYmaam8XtCxQMNZIYK
+        wQGsTgw9y5pYdQd1L9XuvkqpTLhW8mf5K905JwJScL4prcbhGOaQ3GVNxgp73kHK75In9ag/LeAZi
+        xUu89BGEG3Mv1T6Xrb6W6v2j7NACUQXHy6BJlpz+tdicBAERNe+Z0v70wLzZI5A6uIE/GLKq/UN3l
+        7Jy0OXCA==;
+Received: from dg by mx.treblig.org with local (Exim 4.94.2)
+        (envelope-from <dg@treblig.org>)
+        id 1qVz9Q-0076hZ-EE; Tue, 15 Aug 2023 18:52:20 +0000
+Date:   Tue, 15 Aug 2023 18:52:20 +0000
+From:   "Dr. David Alan Gilbert" <dave@treblig.org>
+To:     Carlos Carvalho <carlos@fisica.ufpr.br>
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: 6.5.0rc5 fs hang - ext4? raid?
+Message-ID: <ZNvJZIXIHJERRtwP@gallifrey>
+References: <ZNqWfQPTScJDkmpX@gallifrey>
+ <ZNvCJAclBEJf7uUA@fisica.ufpr.br>
 MIME-Version: 1.0
-References: <cover.1690322424.git.isaku.yamahata@intel.com> <19a589ab40b01c10c3b9addc5c38f3fe64b15ad0.1690322424.git.isaku.yamahata@intel.com>
-In-Reply-To: <19a589ab40b01c10c3b9addc5c38f3fe64b15ad0.1690322424.git.isaku.yamahata@intel.com>
-From:   Sagi Shahar <sagis@google.com>
-Date:   Tue, 15 Aug 2023 11:50:02 -0700
-Message-ID: <CAAhR5DG8hHKVjoN+pWKBVivSm8zkBX5NMbKAuWUL2Tkhaj1YRQ@mail.gmail.com>
-Subject: Re: [PATCH v15 059/115] KVM: TDX: Create initial guest memory
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <ZNvCJAclBEJf7uUA@fisica.ufpr.br>
+X-Chocolate: 70 percent or better cocoa solids preferably
+X-Operating-System: Linux/5.10.0-23-amd64 (x86_64)
+X-Uptime: 18:49:52 up 40 days,  4:21,  1 user,  load average: 0.02, 0.03, 0.00
+User-Agent: Mutt/2.0.5 (2021-01-21)
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 3:15=E2=80=AFPM <isaku.yamahata@intel.com> wrote:
->
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> Because the guest memory is protected in TDX, the creation of the initial
-> guest memory requires a dedicated TDX module API, tdh_mem_page_add, inste=
-ad
-> of directly copying the memory contents into the guest memory in the case
-> of the default VM type.  KVM MMU page fault handler callback,
-> private_page_add, handles it.
->
-> Define new subcommand, KVM_TDX_INIT_MEM_REGION, of VM-scoped
-> KVM_MEMORY_ENCRYPT_OP.  It assigns the guest page, copies the initial
-> memory contents into the guest memory, encrypts the guest memory.  At the
-> same time, optionally it extends memory measurement of the TDX guest.  It
-> calls the KVM MMU page fault(EPT-violation) handler to trigger the
-> callbacks for it.
->
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> ---
-> v14 -> v15:
-> - add a check if TD is finalized or not to tdx_init_mem_region()
-> - return -EAGAIN when partial population
->
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->  arch/x86/include/uapi/asm/kvm.h       |   9 ++
->  arch/x86/kvm/mmu/mmu.c                |   1 +
->  arch/x86/kvm/vmx/tdx.c                | 158 +++++++++++++++++++++++++-
->  arch/x86/kvm/vmx/tdx.h                |   2 +
->  tools/arch/x86/include/uapi/asm/kvm.h |   9 ++
->  5 files changed, 174 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/=
-kvm.h
-> index 311a7894b712..a1815fcbb0be 100644
-> --- a/arch/x86/include/uapi/asm/kvm.h
-> +++ b/arch/x86/include/uapi/asm/kvm.h
-> @@ -572,6 +572,7 @@ enum kvm_tdx_cmd_id {
->         KVM_TDX_CAPABILITIES =3D 0,
->         KVM_TDX_INIT_VM,
->         KVM_TDX_INIT_VCPU,
-> +       KVM_TDX_INIT_MEM_REGION,
->
->         KVM_TDX_CMD_NR_MAX,
->  };
-> @@ -645,4 +646,12 @@ struct kvm_tdx_init_vm {
->         struct kvm_cpuid2 cpuid;
->  };
->
-> +#define KVM_TDX_MEASURE_MEMORY_REGION  (1UL << 0)
-> +
-> +struct kvm_tdx_init_mem_region {
-> +       __u64 source_addr;
-> +       __u64 gpa;
-> +       __u64 nr_pages;
-> +};
-> +
->  #endif /* _ASM_X86_KVM_H */
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 7ef66d8a785b..0d218d930d0a 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5704,6 +5704,7 @@ int kvm_mmu_load(struct kvm_vcpu *vcpu)
->  out:
->         return r;
->  }
-> +EXPORT_SYMBOL(kvm_mmu_load);
->
->  void kvm_mmu_unload(struct kvm_vcpu *vcpu)
->  {
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> index e367351f8d71..32e84c29d35e 100644
-> --- a/arch/x86/kvm/vmx/tdx.c
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -446,6 +446,21 @@ void tdx_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t r=
-oot_hpa, int pgd_level)
->         td_vmcs_write64(to_tdx(vcpu), SHARED_EPT_POINTER, root_hpa & PAGE=
-_MASK);
->  }
->
-> +static void tdx_measure_page(struct kvm_tdx *kvm_tdx, hpa_t gpa)
-> +{
-> +       struct tdx_module_output out;
-> +       u64 err;
-> +       int i;
-> +
-> +       for (i =3D 0; i < PAGE_SIZE; i +=3D TDX_EXTENDMR_CHUNKSIZE) {
-> +               err =3D tdh_mr_extend(kvm_tdx->tdr_pa, gpa + i, &out);
-> +               if (KVM_BUG_ON(err, &kvm_tdx->kvm)) {
-> +                       pr_tdx_error(TDH_MR_EXTEND, err, &out);
-> +                       break;
-> +               }
-> +       }
-> +}
-> +
->  static void tdx_unpin(struct kvm *kvm, kvm_pfn_t pfn)
->  {
->         struct page *page =3D pfn_to_page(pfn);
-> @@ -460,12 +475,10 @@ static int tdx_sept_set_private_spte(struct kvm *kv=
-m, gfn_t gfn,
->         hpa_t hpa =3D pfn_to_hpa(pfn);
->         gpa_t gpa =3D gfn_to_gpa(gfn);
->         struct tdx_module_output out;
-> +       hpa_t source_pa;
-> +       bool measure;
->         u64 err;
->
-> -       /* TODO: handle large pages. */
-> -       if (KVM_BUG_ON(level !=3D PG_LEVEL_4K, kvm))
-> -               return -EINVAL;
-> -
->         /*
->          * Because restricted mem doesn't support page migration with
->          * a_ops->migrate_page (yet), no callback isn't triggered for KVM=
- on
-> @@ -476,7 +489,12 @@ static int tdx_sept_set_private_spte(struct kvm *kvm=
-, gfn_t gfn,
->          */
->         get_page(pfn_to_page(pfn));
->
-> +       /* Build-time faults are induced and handled via TDH_MEM_PAGE_ADD=
-. */
->         if (likely(is_td_finalized(kvm_tdx))) {
-> +               /* TODO: handle large pages. */
-> +               if (KVM_BUG_ON(level !=3D PG_LEVEL_4K, kvm))
-> +                       return -EINVAL;
-> +
->                 err =3D tdh_mem_page_aug(kvm_tdx->tdr_pa, gpa, hpa, &out)=
-;
->                 if (unlikely(err =3D=3D TDX_ERROR_SEPT_BUSY)) {
->                         tdx_unpin(kvm, pfn);
-> @@ -490,7 +508,45 @@ static int tdx_sept_set_private_spte(struct kvm *kvm=
-, gfn_t gfn,
->                 return 0;
->         }
->
-> -       /* TODO: tdh_mem_page_add() comes here for the initial memory. */
-> +       /*
-> +        * KVM_INIT_MEM_REGION, tdx_init_mem_region(), supports only 4K p=
-age
-> +        * because tdh_mem_page_add() supports only 4K page.
-> +        */
-> +       if (KVM_BUG_ON(level !=3D PG_LEVEL_4K, kvm))
-> +               return -EINVAL;
-> +
-> +       /*
-> +        * In case of TDP MMU, fault handler can run concurrently.  Note
-> +        * 'source_pa' is a TD scope variable, meaning if there are multi=
-ple
-> +        * threads reaching here with all needing to access 'source_pa', =
-it
-> +        * will break.  However fortunately this won't happen, because be=
-low
-> +        * TDH_MEM_PAGE_ADD code path is only used when VM is being creat=
-ed
-> +        * before it is running, using KVM_TDX_INIT_MEM_REGION ioctl (whi=
-ch
-> +        * always uses vcpu 0's page table and protected by vcpu->mutex).
-> +        */
-> +       if (KVM_BUG_ON(kvm_tdx->source_pa =3D=3D INVALID_PAGE, kvm)) {
-> +               tdx_unpin(kvm, pfn);
-> +               return -EINVAL;
-> +       }
-> +
-> +       source_pa =3D kvm_tdx->source_pa & ~KVM_TDX_MEASURE_MEMORY_REGION=
-;
-> +       measure =3D kvm_tdx->source_pa & KVM_TDX_MEASURE_MEMORY_REGION;
-> +       kvm_tdx->source_pa =3D INVALID_PAGE;
-> +
-> +       do {
-> +               err =3D tdh_mem_page_add(kvm_tdx->tdr_pa, gpa, hpa, sourc=
-e_pa,
-> +                                      &out);
-> +               /*
-> +                * This path is executed during populating initial guest =
-memory
-> +                * image. i.e. before running any vcpu.  Race is rare.
-> +                */
-> +       } while (unlikely(err =3D=3D TDX_ERROR_SEPT_BUSY));
-> +       if (KVM_BUG_ON(err, kvm)) {
-> +               pr_tdx_error(TDH_MEM_PAGE_ADD, err, &out);
-> +               tdx_unpin(kvm, pfn);
-> +               return -EIO;
-> +       } else if (measure)
-> +               tdx_measure_page(kvm_tdx, gpa);
->
->         return 0;
->  }
-> @@ -1215,6 +1271,95 @@ void tdx_flush_tlb_current(struct kvm_vcpu *vcpu)
->         tdx_track(to_kvm_tdx(vcpu->kvm));
->  }
->
-> +#define TDX_SEPT_PFERR (PFERR_WRITE_MASK | PFERR_GUEST_ENC_MASK)
-> +
-> +static int tdx_init_mem_region(struct kvm *kvm, struct kvm_tdx_cmd *cmd)
-> +{
-> +       struct kvm_tdx *kvm_tdx =3D to_kvm_tdx(kvm);
-> +       struct kvm_tdx_init_mem_region region;
-> +       struct kvm_vcpu *vcpu;
-> +       struct page *page;
-> +       int idx, ret =3D 0;
-> +       bool added =3D false;
-> +
-> +       /* Once TD is finalized, the initial guest memory is fixed. */
-> +       if (is_td_finalized(kvm_tdx))
-> +               return -EINVAL;
-> +
-> +       /* The BSP vCPU must be created before initializing memory region=
-s. */
-> +       if (!atomic_read(&kvm->online_vcpus))
-> +               return -EINVAL;
-> +
-> +       if (cmd->flags & ~KVM_TDX_MEASURE_MEMORY_REGION)
-> +               return -EINVAL;
-> +
-> +       if (copy_from_user(&region, (void __user *)cmd->data, sizeof(regi=
-on)))
-> +               return -EFAULT;
-> +
-> +       /* Sanity check */
-> +       if (!IS_ALIGNED(region.source_addr, PAGE_SIZE) ||
-> +           !IS_ALIGNED(region.gpa, PAGE_SIZE) ||
-> +           !region.nr_pages ||
-> +           region.gpa + (region.nr_pages << PAGE_SHIFT) <=3D region.gpa =
-||
+* Carlos Carvalho (carlos@fisica.ufpr.br) wrote:
+> Dr. David Alan Gilbert (dave@treblig.org) wrote on Mon, Aug 14, 2023 at 06:02:53PM -03:
+> >   I'm seeing a few hangs on a fs after upgrading to fedora 39's bleeding
+> > edge; which is running kernel 6.5.0-0.rc5.20230808git14f9643dc90a.37.fc39.x86_64
+> > It was always solid prior to that.  It seems to trigger on heavy IO
+> > on this fs.
+> 
+> Good news! No, I didn't forget the smiley... Maybe now the problem has become
+> sufficiently bad to be visible/solvable...
+> 
+> 6.4.* also doesn't run in one of our machines, which has heavy I/O load. The
+> first symptom is that rsync downloads hang and abort with timeout. 1 or 2
+> days later the amount of modified pages waiting to go to disk reaches several
+> GB, as reported by /proc/meminfo, but disks remain idle. Finally reading from
+> the arrays collapses.
 
-During an internal security review we noticed that region.nr_pages is
-always checked after it's shifted but when it is used it is not
-shifted. This means that if any of the upper 12 bits are set then we
-will pass the sanity check but the while loop below will run over a
-much larger range than expected.
+I'm not sure this is a related fault - I mean it might be, but my
+failure is much more deterministic; it seems solid on 6.4.x to me, but
+just fails reliably somewhere in 6.5.
 
-A simple fix would be to add the following check to test if any of the
-shifted bits is set:
-+           (region.nr_pages << PAGE_SHIFT) >> PAGE_SHIFT !=3D region.nr_pa=
-ges ||
+Dave
 
-Reported-by: gkirkpatrick@google.com
-
-> +           !kvm_is_private_gpa(kvm, region.gpa) ||
-> +           !kvm_is_private_gpa(kvm, region.gpa + (region.nr_pages << PAG=
-E_SHIFT)))
-> +               return -EINVAL;
-> +
-> +       vcpu =3D kvm_get_vcpu(kvm, 0);
-> +       if (mutex_lock_killable(&vcpu->mutex))
-> +               return -EINTR;
-> +
-> +       vcpu_load(vcpu);
-> +       idx =3D srcu_read_lock(&kvm->srcu);
-> +
-> +       kvm_mmu_reload(vcpu);
-> +
-> +       while (region.nr_pages) {
-> +               if (signal_pending(current)) {
-> +                       ret =3D -ERESTARTSYS;
-> +                       break;
-> +               }
-> +
-> +               if (need_resched())
-> +                       cond_resched();
-> +
-> +               /* Pin the source page. */
-> +               ret =3D get_user_pages_fast(region.source_addr, 1, 0, &pa=
-ge);
-> +               if (ret < 0)
-> +                       break;
-> +               if (ret !=3D 1) {
-> +                       ret =3D -ENOMEM;
-> +                       break;
-> +               }
-> +
-> +               kvm_tdx->source_pa =3D pfn_to_hpa(page_to_pfn(page)) |
-> +                                    (cmd->flags & KVM_TDX_MEASURE_MEMORY=
-_REGION);
-> +
-> +               ret =3D kvm_mmu_map_tdp_page(vcpu, region.gpa, TDX_SEPT_P=
-FERR,
-> +                                          PG_LEVEL_4K);
-> +               put_page(page);
-> +               if (ret)
-> +                       break;
-> +
-> +               region.source_addr +=3D PAGE_SIZE;
-> +               region.gpa +=3D PAGE_SIZE;
-> +               region.nr_pages--;
-> +               added =3D true;
-> +       }
-> +
-> +       srcu_read_unlock(&kvm->srcu, idx);
-> +       vcpu_put(vcpu);
-> +
-> +       mutex_unlock(&vcpu->mutex);
-> +
-> +       if (added && region.nr_pages > 0)
-> +               ret =3D -EAGAIN;
-> +       if (copy_to_user((void __user *)cmd->data, &region, sizeof(region=
-)))
-> +               ret =3D -EFAULT;
-> +
-> +       return ret;
-> +}
-> +
->  int tdx_vm_ioctl(struct kvm *kvm, void __user *argp)
->  {
->         struct kvm_tdx_cmd tdx_cmd;
-> @@ -1234,6 +1379,9 @@ int tdx_vm_ioctl(struct kvm *kvm, void __user *argp=
-)
->         case KVM_TDX_INIT_VM:
->                 r =3D tdx_td_init(kvm, &tdx_cmd);
->                 break;
-> +       case KVM_TDX_INIT_MEM_REGION:
-> +               r =3D tdx_init_mem_region(kvm, &tdx_cmd);
-> +               break;
->         default:
->                 r =3D -EINVAL;
->                 goto out;
-> diff --git a/arch/x86/kvm/vmx/tdx.h b/arch/x86/kvm/vmx/tdx.h
-> index 6603da8708ad..24ee0bc3285c 100644
-> --- a/arch/x86/kvm/vmx/tdx.h
-> +++ b/arch/x86/kvm/vmx/tdx.h
-> @@ -17,6 +17,8 @@ struct kvm_tdx {
->         u64 xfam;
->         int hkid;
->
-> +       hpa_t source_pa;
-> +
->         bool finalized;
->         atomic_t tdh_mem_track;
->
-> diff --git a/tools/arch/x86/include/uapi/asm/kvm.h b/tools/arch/x86/inclu=
-de/uapi/asm/kvm.h
-> index 83bd9e3118d1..a3408f6e1124 100644
-> --- a/tools/arch/x86/include/uapi/asm/kvm.h
-> +++ b/tools/arch/x86/include/uapi/asm/kvm.h
-> @@ -567,6 +567,7 @@ enum kvm_tdx_cmd_id {
->         KVM_TDX_CAPABILITIES =3D 0,
->         KVM_TDX_INIT_VM,
->         KVM_TDX_INIT_VCPU,
-> +       KVM_TDX_INIT_MEM_REGION,
->
->         KVM_TDX_CMD_NR_MAX,
->  };
-> @@ -648,4 +649,12 @@ struct kvm_tdx_init_vm {
->         };
->  };
->
-> +#define KVM_TDX_MEASURE_MEMORY_REGION  (1UL << 0)
-> +
-> +struct kvm_tdx_init_mem_region {
-> +       __u64 source_addr;
-> +       __u64 gpa;
-> +       __u64 nr_pages;
-> +};
-> +
->  #endif /* _ASM_X86_KVM_H */
-> --
-> 2.25.1
->
+> This is just the worst case. Since early 5.* I/O performance has dropped
+> absurdly. In all our disk servers this is easy to see: just generate lots of
+> writes quickly (for example expanding a kernel tarball). Using top I see that
+> kworker starts using 100% cpu but disks stay idle (as seen by dstat or sar). If
+> you do a sync or umount it takes looooong to reach ~0 modified pages for the
+> sync or umount to return.
+> 
+> In the server I mentioned above where 6.4.* don't stand the load, which is one
+> of the largest free software mirrors of the world, even sometimes 6.1
+> collapses: I/O becomes so slow that service (apache) stops.
+> 
+> The problem gets progressively worse with time after booting. It's hardly
+> noticeable in the first hour after boot, and easily seen after ~3-4 days of
+> uptime. The higher the (write) I/O load the faster it appears.
+> 
+> All this is with ext4 and raid6 with >~ 14 disks in the arrays.
+> 
+> I don't have debug info because these are production machines and I only
+> compile in the kernel the bare minimum essential for operation. It's always
+> pure kernel.org releases; gcc versions vary, for 6.4* it's gcc-13, for 6.1*
+> gcc-12 is used, on Debian unstable updated more than 4 times/week.
+-- 
+ -----Open up your eyes, open up your mind, open up your code -------   
+/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+\        dave @ treblig.org |                               | In Hex /
+ \ _________________________|_____ http://www.treblig.org   |_______/
