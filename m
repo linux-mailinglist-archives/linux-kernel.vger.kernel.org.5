@@ -2,111 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E92AB77CBE1
+	by mail.lfdr.de (Postfix) with ESMTP id 9FCA977CBE0
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:41:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236803AbjHOLlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 07:41:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
+        id S236784AbjHOLlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 07:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236790AbjHOLkx (ORCPT
+        with ESMTP id S236785AbjHOLkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 07:40:53 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA7210E0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:40:52 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-4036bd4fff1so203091cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:40:52 -0700 (PDT)
+        Tue, 15 Aug 2023 07:40:39 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E551710E3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:40:34 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d67869054bfso3481677276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:40:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692099651; x=1692704451;
+        d=linaro.org; s=google; t=1692099634; x=1692704434;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bAJu/xV6A/2e1ZophwkUz7aqsqcAzGHXHsGTllbFSDU=;
-        b=Yt3Z0KHaQfa/VFgCqpo6vQ60OvD5saTRP7dyiey6tapaKNkvQLdR/VDzkDGP59Mu/Y
-         4gDzROVampwq61v03vv4W7YhLAV1zqxTjWqJUYTFrz/Wc8VwvqQM2SHxS4t//kljJ5Zh
-         cSQxt1UXorwTk2lse4oKmtuxb06geCyC/g/tdWJb4xeIl/kqPIKaaR31Or/v184szh13
-         XXf9Pvd27xDiPk56Jl1bnBg5ClOqqqv7qgxhiCjyKGAIIPBZiZ7kFXVEUg681wDT80uB
-         /mvk/pbqUlQf/SMP187BtaVPwmPtjxiXgrTPCNGlnAQzdq7LAcb/uTglY7ruSDHnh/7N
-         2zKg==
+        bh=3HkKsN+jQZixL38MtamURXHoSGZeo/BaiGrIFFQCD/I=;
+        b=VIntN0rOelRTHi9gfaeqTNS7zMPJAedltNFHdqzNwcDrJ+KhpKKQK+K9MnwnTsm00T
+         LmRxTp3Rlzq5ewy9qlVg72MquroN3wRK4j8qAnaGLsecqtTlmlmnDVocA/hRRRc+/VUK
+         zZvvSXfu0hAwUl0vvO1qGDD02wKwlALkIQ2yosMgEm5LhUI33+w5QFudOEjELI/13IHX
+         J/d2uQoSG+nscEqa/vFMQICnMUuj4lntKW071pTjLi9C5hAQFzv9QcrquweDfmpugiqo
+         yH5jEXKlZuTwx9IZJ2ZQjIC/CYGaj8nxFzpdu5GFJxKgOXt7GgtvfUZDHCP7MCX1i2jM
+         WS2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692099651; x=1692704451;
+        d=1e100.net; s=20221208; t=1692099634; x=1692704434;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bAJu/xV6A/2e1ZophwkUz7aqsqcAzGHXHsGTllbFSDU=;
-        b=kL+pglfe5n9Pa3QCJreARxiBn1YeVfkVhLX0+pZ9EqI5ni5wU81QFqax8asrDIj2qf
-         snmhu2f7undWlG9A20kxBhw1RR68G1zVcs/1ZFVzQRKFv8KYUYzCNHdqCCKHsIXUjNlt
-         aFC/Ai+LeiF5aF8jtIBiSaCBiIP3SnquIGOBKazQMnittr8QeS6CZMHBKBnJVu5XpSdC
-         rh8qqQHPJ9Ect+7xQ0neKlYsiUj7y+tQ4dVS1DVwUm84vEqFs1lwCXVSqK2QxGoAXKD2
-         2ASwIOCOSYrFglx6cJf4Ua0Q4lDDFgpBFLOlMlaI6/dvipM81eOYrXgP6TQ5Z3ramyzy
-         1lhg==
-X-Gm-Message-State: AOJu0YyuRE6Bhm5vzAuoRlBsq6F7wOdLVNiUrIiB+MRM+Z8fdiGVy9Ng
-        cVTQkbwPvAyOYA/WL1bNeNiXiVrz0EBS0ij76yKMVJhp1JQbKXb9s0SF2w==
-X-Google-Smtp-Source: AGHT+IGukCAhnkO/MP1s3J3prH4E8Xxsrw3oUBPU0yFdTWkCjSA7h2v7C99fsT47XO1RphI+iVrq64CDVJqWgUlyaw4=
-X-Received: by 2002:a05:622a:1444:b0:403:a43d:be41 with SMTP id
- v4-20020a05622a144400b00403a43dbe41mr871291qtx.20.1692099651163; Tue, 15 Aug
- 2023 04:40:51 -0700 (PDT)
+        bh=3HkKsN+jQZixL38MtamURXHoSGZeo/BaiGrIFFQCD/I=;
+        b=GQ2Jekrg9tzzkftrtCW9EcP4sdpBp5/nGrp/jhx/+xttCGWORFESHSzxEuM5CIJ9JY
+         sGlWh90Dz/npdg/xojLyKX/EYiKc8/hNbIgVcJ+zvSFLU18iWyk3kjhJ1iyBsacY65Kq
+         +aU2ACaQRJtHTxOLy2GpBbSlGBaTsVTYIj65Hy8rXur/VMwH0nsTzZfdqLFAk2Wekmw9
+         VG82Wdv+9r9eiDwNRxeeK80/cvriz8e/rUscXPegNUgqwu4NBHQVTgoIcxFbh9MY9THw
+         3xvULfo4YHGjwkQx3g85ffhSYKB3pXJ/hCvmjQfvH59GBP5cHC28gi3qOAXcCjpoJGSb
+         oH0g==
+X-Gm-Message-State: AOJu0YzsI/fswoa3xICuYfNDV02gAM2sYBMXWbVkOlRWOE1QC87s8BiR
+        25bQxvTfplvwD7+0DOZbFdDzK7CWaZqGoBmOLKLt7w==
+X-Google-Smtp-Source: AGHT+IG95mC9+DsTmYlz+MGs4bkmxHO1ToFJljp6aW22BhGOBOFz2fTexJKVPhez06WdfB+/O0GOvd71pw25hEBuV4M=
+X-Received: by 2002:a25:d886:0:b0:d44:a90b:ba56 with SMTP id
+ p128-20020a25d886000000b00d44a90bba56mr13928179ybg.29.1692099634170; Tue, 15
+ Aug 2023 04:40:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230808171446.2187795-1-mshavit@google.com> <20230809011204.v5.5.I219054a6cf538df5bb22f4ada2d9933155d6058c@changeid>
- <20230809134959.GB4226@willie-the-truck> <CAKHBV25CQYfqm80a1ztHXn3s6kj7KCuJBwJz4EZk5cog4n6R+A@mail.gmail.com>
- <CAKHBV27iMDaU3RgJSVFva0UBmyKD8oJEtzDU7PJ4LuPGWAjCCA@mail.gmail.com> <20230815101911.GA11399@willie-the-truck>
-In-Reply-To: <20230815101911.GA11399@willie-the-truck>
-From:   Michael Shavit <mshavit@google.com>
-Date:   Tue, 15 Aug 2023 19:40:14 +0800
-Message-ID: <CAKHBV25PuLERz9AwqtDF-WSPd3fWCEKMw3zyYFV=Lu-0c8Y5zA@mail.gmail.com>
-Subject: Re: [PATCH v5 5/9] iommu/arm-smmu-v3: Refactor write_ctx_desc
-To:     Will Deacon <will@kernel.org>
-Cc:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, robin.murphy@arm.com,
-        nicolinc@nvidia.com, jgg@nvidia.com, jean-philippe@linaro.org
+References: <20230811193034.59124-1-brgl@bgdev.pl> <ZNtKQlnQxFediB0J@smile.fi.intel.com>
+In-Reply-To: <ZNtKQlnQxFediB0J@smile.fi.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 15 Aug 2023 13:40:22 +0200
+Message-ID: <CACRpkdZ32gW3YgQKPbWTnoRwxjXkViendGMhrAxfyp+W4NbqkA@mail.gmail.com>
+Subject: Re: [PATCH v3] gpiolib: fix reference leaks when removing GPIO chips
+ still in use
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 6:19=E2=80=AFPM Will Deacon <will@kernel.org> wrote=
-:
->
-> On Tue, Aug 15, 2023 at 01:04:43PM +0800, Michael Shavit wrote:
-> > On Thu, Aug 10, 2023 at 5:15=E2=80=AFPM Michael Shavit <mshavit@google.=
-com> wrote:
-> > > On Wed, Aug 9, 2023 at 9:50=E2=80=AFPM Will Deacon <will@kernel.org> =
-wrote:
-> > > >
-> > > > Since you're dropping this and relying on the lock being taken high=
-er up
-> > > > callstack, can we add a lockdep assertion that we do actually hold =
-the
-> > > > devices_lock, please?
-> > >
-> > > Will do!
+On Tue, Aug 15, 2023 at 11:50=E2=80=AFAM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> On Fri, Aug 11, 2023 at 09:30:34PM +0200, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > >
-> > I spoke too soon; the point of this change was to remove the
-> > dependency on the arm_smmu_domain, piping the devices_lock would
-> > defeat this. In fact, this section is really depending on the iommu
-> > group lock not the devices_lock.
+> > After we remove a GPIO chip that still has some requested descriptors,
+> > gpiod_free_commit() will fail and we will never put the references to t=
+he
+> > GPIO device and the owning module in gpiod_free().
+> >
+> > Rework this function to:
+> > - not warn on desc =3D=3D NULL as this is a use-case on which most free
+> >   functions silently return
+> > - put the references to desc->gdev and desc->gdev->owner unconditionall=
+y
+> >   so that the release callback actually gets called when the remaining
+> >   references are dropped by external GPIO users
 >
-> Sorry, but I'm not following you here. What is the devices_lock protectin=
-g
-> if we're depending on the group lock?
+> ...
 >
-> Will
+> > -     if (desc && desc->gdev && gpiod_free_commit(desc)) {
+>
+> The commit message doesn't explain disappearing of gdev check.
+>
+> > -             module_put(desc->gdev->owner);
+> > -             gpio_device_put(desc->gdev);
+> > -     } else {
+> > +     /*
+> > +      * We must not use VALIDATE_DESC_VOID() as the underlying gdev->c=
+hip
+> > +      * may already be NULL but we still want to put the references.
+> > +      */
+> > +     if (!desc)
+> > +             return;
+> > +
+> > +     if (!gpiod_free_commit(desc))
+> >               WARN_ON(extra_checks);
+> > -     }
+> > +
+> > +     module_put(desc->gdev->owner);
+> > +     gpio_device_put(desc->gdev);
+> >  }
+>
+> So, if gdev can be NULL, you will get an Oops with new code.
 
-Ugh, yes sorry, we do need the devices_lock held *in the SVA* call
-flow. The group lock is ineffective there because SVA performs
-cross-master operations on iommu_domain callbacks. There, the
-devices_lock is needed to ensure that the list of masters that a
-domain is attached to doesn't mutate while we operate on that domain.
+I read it such that gdev->chip can be NULL, but not gdev,
+and desc->gdev->owner is fine to reference?
 
-Nonetheless, it feels awkward to require the devices_lock to be held
-outside SVA, since there we operate on a single master/CD table
-rather. We don't care what other masters that domain is attached to.
+Yours,
+Linus Walleij
