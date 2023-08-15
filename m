@@ -2,139 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64DF377C8FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 09:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A731977C8FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 09:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235499AbjHOH5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 03:57:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37696 "EHLO
+        id S235514AbjHOH60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 03:58:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235559AbjHOH5G (ORCPT
+        with ESMTP id S233990AbjHOH6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 03:57:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C9D1998;
-        Tue, 15 Aug 2023 00:57:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692086225; x=1723622225;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=/NkiRYZP9eKoasAmY8ofGjnYrdzKcs4bAEe0YJR/m08=;
-  b=LUbjgZACW8lmcg8FC5PZP9TTReH56mY/zOU2gb0pD/Xlr10AU9Nn2Fy9
-   HLVATNcr9NMkBlrIxiVC9TmLR1MoB9qdC7nSeFuWRAs+BQ2Tx5JfD+T3p
-   p/7Ds+IR/iLo0P/ReduOBQ2NHXMG06hXcg9Ca1bhQ+VOo7ntV8Ub6O34X
-   AU+egRx4sDvvhj8wQmsrCnn6YlAYgDrQqzII//US6KGe65KsistVtoSup
-   2pT2HkW7LW0jf+hkaM3QFw7ahF8QAnkvJIvHyZlFxDu/nXV+lPwggauK4
-   XHh5TBGdsfktigKLKgfqQIMdHxi3FjFGbnKIBYOJz4d5/NcSM+ASDzEcd
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="357190613"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="357190613"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 00:57:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="736830708"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="736830708"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.6.77]) ([10.93.6.77])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 00:57:00 -0700
-Message-ID: <f7784e00-c3ab-8e6b-b241-c6aaff824944@intel.com>
-Date:   Tue, 15 Aug 2023 15:56:58 +0800
+        Tue, 15 Aug 2023 03:58:15 -0400
+Received: from baidu.com (mx20.baidu.com [111.202.115.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFC2E7E
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 00:58:12 -0700 (PDT)
+From:   "Gao,Shiyuan" <gaoshiyuan@baidu.com>
+To:     Sean Christopherson <seanjc@google.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "hpa@zytor.com" <hpa@zytor.com>
+Subject: Re: [PATCH] KVM: VMX: Rename vmx_get_max_tdp_level to
+ vmx_get_max_ept_level
+Thread-Topic: [PATCH] KVM: VMX: Rename vmx_get_max_tdp_level to
+ vmx_get_max_ept_level
+Thread-Index: AQHZy39C7x6I8MxfvUObePG6ILxg3K/pmSgAgAFr+wA=
+Date:   Tue, 15 Aug 2023 07:56:59 +0000
+Message-ID: <2AAF3DBB-9257-4ECB-B95E-6C87EAE79DF9@baidu.com>
+References: <20230810113853.98114-1-gaoshiyuan@baidu.com>
+ <ZNpu9qJOqLxG5pq4@google.com>
+In-Reply-To: <ZNpu9qJOqLxG5pq4@google.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.22.192.197]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <83C31D28DCEF4F489880A241AFE26540@internal.baidu.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.14.0
-Subject: Re: [PATCH v15 018/115] KVM: TDX: x86: Add ioctl to get TDX
- systemwide parameters
-Content-Language: en-US
-To:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <cover.1690322424.git.isaku.yamahata@intel.com>
- <e84e0b8e16cf7cd573a8a10a8903689fb9cda713.1690322424.git.isaku.yamahata@intel.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <e84e0b8e16cf7cd573a8a10a8903689fb9cda713.1690322424.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-FEAS-Client-IP: 172.31.51.17
+X-FE-Last-Public-Client-IP: 100.100.100.60
+X-FE-Policy-ID: 15:10:21:SYSTEM
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/26/2023 6:13 AM, isaku.yamahata@intel.com wrote:
-...
-> +static int tdx_get_capabilities(struct kvm_tdx_cmd *cmd)
-> +{
-> +	struct kvm_tdx_capabilities __user *user_caps;
-> +	const struct tdsysinfo_struct *tdsysinfo;
-> +	struct kvm_tdx_capabilities *caps = NULL;
-> +	int ret;
-
-needs to initialize ret to 0; otherwise it returns random value on success.
-
-> +
-> +	BUILD_BUG_ON(sizeof(struct kvm_tdx_cpuid_config) !=
-> +		     sizeof(struct tdx_cpuid_config));
-> +
-> +	if (cmd->flags)
-> +		return -EINVAL;
-> +
-> +	tdsysinfo = tdx_get_sysinfo();
-> +	if (!tdsysinfo)
-> +		return -EOPNOTSUPP;
-> +
-> +	caps = kmalloc(sizeof(*caps), GFP_KERNEL);
-> +	if (!caps)
-> +		return -ENOMEM;
-> +
-> +	user_caps = (void __user *)cmd->data;
-> +	if (copy_from_user(caps, user_caps, sizeof(*caps))) {
-> +		ret = -EFAULT;
-> +		goto out;
-> +	}
-> +
-> +	if (caps->nr_cpuid_configs < tdsysinfo->num_cpuid_config) {
-> +		ret = -E2BIG;
-> +		goto out;
-> +	}
-> +
-> +	*caps = (struct kvm_tdx_capabilities) {
-> +		.attrs_fixed0 = tdsysinfo->attributes_fixed0,
-> +		.attrs_fixed1 = tdsysinfo->attributes_fixed1,
-> +		.xfam_fixed0 = tdsysinfo->xfam_fixed0,
-> +		.xfam_fixed1 = tdsysinfo->xfam_fixed1,
-> +		.supported_gpaw = TDX_CAP_GPAW_48 |
-> +		(kvm_get_shadow_phys_bits() >= 52 &&
-> +		 cpu_has_vmx_ept_5levels()) ? TDX_CAP_GPAW_52 : 0,
-> +		.nr_cpuid_configs = tdsysinfo->num_cpuid_config,
-> +		.padding = 0,
-> +	};
-> +
-> +	if (copy_to_user(user_caps, caps, sizeof(*caps))) {
-> +		ret = -EFAULT;
-> +		goto out;
-> +	}
-> +	if (copy_to_user(user_caps->cpuid_configs, &tdsysinfo->cpuid_configs,
-> +			 tdsysinfo->num_cpuid_config *
-> +			 sizeof(struct tdx_cpuid_config))) {
-> +		ret = -EFAULT;
-> +	}
-> +
-> +out:
-> +	/* kfree() accepts NULL. */
-> +	kfree(caps);
-> +	return ret;
-> +}
-
+PiBPbiBUaHUsIEF1ZyAxMCwgMjAyMywgU2hpeXVhbiBHYW8gd3JvdGU6DQo+ID4gSW4gdm14LCBl
+cHRfbGV2ZWwgbG9va3MgYmV0dGVyIHRoYW4gdGRwIGxldmVsIGFuZCBpcyBjb25zaXN0ZW50IHdp
+dGgNCj4gPiBzdm0gZ2V0X25wdF9sZXZlbCgpLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogU2hp
+eXVhbiBHYW8gPGdhb3NoaXl1YW5AYmFpZHUuY29tIDxtYWlsdG86Z2Fvc2hpeXVhbkBiYWlkdS5j
+b20+Pg0KPiA+IC0tLQ0KPiA+IGFyY2gveDg2L2t2bS92bXgvdm14LmMgfCA0ICsrLS0NCj4gPiAx
+IGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4g
+ZGlmZiAtLWdpdCBhL2FyY2gveDg2L2t2bS92bXgvdm14LmMgYi9hcmNoL3g4Ni9rdm0vdm14L3Zt
+eC5jDQo+ID4gaW5kZXggZGY0NjFmMzg3ZTIwLi5mMGNmZDFmMTBhMDYgMTAwNjQ0DQo+ID4gLS0t
+IGEvYXJjaC94ODYva3ZtL3ZteC92bXguYw0KPiA+ICsrKyBiL2FyY2gveDg2L2t2bS92bXgvdm14
+LmMNCj4gPiBAQCAtMzM1MCw3ICszMzUwLDcgQEAgdm9pZCB2bXhfc2V0X2NyMChzdHJ1Y3Qga3Zt
+X3ZjcHUgKnZjcHUsIHVuc2lnbmVkIGxvbmcgY3IwKQ0KPiA+IHZteC0+ZW11bGF0aW9uX3JlcXVp
+cmVkID0gdm14X2VtdWxhdGlvbl9yZXF1aXJlZCh2Y3B1KTsNCj4gPiB9DQo+ID4NCj4gPiAtc3Rh
+dGljIGludCB2bXhfZ2V0X21heF90ZHBfbGV2ZWwodm9pZCkNCj4gPiArc3RhdGljIGludCB2bXhf
+Z2V0X21heF9lcHRfbGV2ZWwodm9pZCkNCj4gPiB7DQo+ID4gaWYgKGNwdV9oYXNfdm14X2VwdF81
+bGV2ZWxzKCkpDQo+ID4gcmV0dXJuIDU7DQo+ID4gQEAgLTg1MjYsNyArODUyNiw3IEBAIHN0YXRp
+YyBfX2luaXQgaW50IGhhcmR3YXJlX3NldHVwKHZvaWQpDQo+ID4gKi8NCj4gPiB2bXhfc2V0dXBf
+bWVfc3B0ZV9tYXNrKCk7DQo+ID4NCj4gPiAtIGt2bV9jb25maWd1cmVfbW11KGVuYWJsZV9lcHQs
+IDAsIHZteF9nZXRfbWF4X3RkcF9sZXZlbCgpLA0KPiA+ICsga3ZtX2NvbmZpZ3VyZV9tbXUoZW5h
+YmxlX2VwdCwgMCwgdm14X2dldF9tYXhfZXB0X2xldmVsKCksDQo+ID4gZXB0X2NhcHNfdG9fbHBh
+Z2VfbGV2ZWwodm14X2NhcGFiaWxpdHkuZXB0KSk7DQo+DQo+DQo+IEFueW9uZSBlbHNlIGhhdmUg
+YW4gb3BpbmlvbiBvbiB0aGlzPyBJJ20gbGVhbmluZyB0b3dhcmQgYXBwbHlpbmcgaXQsIGJ1dCBh
+IHNtYWxsDQo+IHBhcnQgb2YgbWUgYWxzbyBraW5kYSBsaWtlcyB0aGUgInRkcCIgbmFtZSAodGhv
+dWdoIGV2ZXJ5IHRpbWUgSSBsb29rIGF0IHRoaXMgcGF0Y2gNCj4gdGhhdCBwYXJ0IG9mIG1lIGdl
+dHMgZXZlbiBzbWFsbGVyLi4uKS4NCj4NCg0KUmVtaW5kLCBwbGVhc2UgbG9vayBhdCB0aGlzIHBh
+dGNoIGFnYWluIDopDQoNCg==
