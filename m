@@ -2,186 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51AF177D0FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A68E77D103
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238759AbjHOR2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 13:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38112 "EHLO
+        id S238838AbjHORaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 13:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233869AbjHOR2H (ORCPT
+        with ESMTP id S238850AbjHOR3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 13:28:07 -0400
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2070.outbound.protection.outlook.com [40.107.101.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC41B210C;
-        Tue, 15 Aug 2023 10:27:45 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gz+RXLK3KcAJpvk5F/pGsFNCbzDIuunFkWV6W5Q8tEiAU6g4g268XoeQYkUt9L7l3GG4GyuLPOVSTlA160luO8AUZt5/77ay1gjx0THqfAYmiZaGTPIAeGIQyS5PMTEMN4L12Wp4Q3RF9ZmoDoDv0Ni1+lw1OBKlYooKrXnL/MoeY7P8Ds+lmxX9druV/T9Q7NdazvOQMRYtCSIfqaeHmCVNnQAVcv6bSbhzgxOzqR3LB68YxliBCuurIQQKKnNJTB0w4N9dGkVB6nUVNVMqzuMndTH1kPZi+uwY9GOwfWLijmi8NcfJhtmK0rLck352alqOo/C+q3OJplragwCzcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EOUSCsNDCAIp8YpWpHMbfh2vVSKvFWnaq1lN09g7NGo=;
- b=HRx7t+AGb3H4sXSm5WV2E/H1aLcnfMGVz62iipEnDrS7xjKky1SJnC1xo4W+2btXgaxRbFbZbm2aG3ZSOSbg3dEGF6fUNZ13SBrXBS/1HMM6FT9RS2QtBCLrbOVz+YdANjRHBfEK3bhEUdkL9l+CWRzWGESN6ZCJeaf7oVm8iaA0W0GX/g8mwCb1wKlxopzKyjTMvq3yoWYgXE0+DzQhZu/6mpb04sZhkLlteex91iWgZrzz3snrq+Fog2dgrj8xZeux+o4kTwhPc3LWMxMKIvgBrdiHkLCS5VNB403W5A516G7JzDpE+1WW2uJXdRFT5iwMf44QwlUV4oaJ3vLG2A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EOUSCsNDCAIp8YpWpHMbfh2vVSKvFWnaq1lN09g7NGo=;
- b=d2ft8p2xkefN16eEW0bgdh54gSdhk8/vYLCy9NGfWBJp38dmy3SZI9dsYbL0W34+XrTIvso2sREdsTp6jGVar8YkEpjzbTOTAUmFs9V80VBzsgbxMd/W252nS7SzgEA5LuYoTLOztSJqRSeNIbYvV6OuRbPXIirG3tyBM7KTa7Q=
-Received: from BY5PR13CA0010.namprd13.prod.outlook.com (2603:10b6:a03:180::23)
- by SJ0PR12MB5662.namprd12.prod.outlook.com (2603:10b6:a03:429::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Tue, 15 Aug
- 2023 17:27:16 +0000
-Received: from SN1PEPF000252A1.namprd05.prod.outlook.com
- (2603:10b6:a03:180:cafe::fa) by BY5PR13CA0010.outlook.office365.com
- (2603:10b6:a03:180::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.14 via Frontend
- Transport; Tue, 15 Aug 2023 17:27:16 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SN1PEPF000252A1.mail.protection.outlook.com (10.167.242.8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6699.14 via Frontend Transport; Tue, 15 Aug 2023 17:27:16 +0000
-Received: from hamza-pc.localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 15 Aug
- 2023 12:27:15 -0500
-From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
-To:     <amd-gfx@lists.freedesktop.org>
-CC:     Hamza Mahfooz <hamza.mahfooz@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        <stable@vger.kernel.org>, Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        "Javier Martinez Canillas" <javierm@redhat.com>,
-        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-        Guchun Chen <guchun.chen@amd.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] drm/amdgpu: register a dirty framebuffer callback for fbcon
-Date:   Tue, 15 Aug 2023 13:26:59 -0400
-Message-ID: <20230815172700.255596-1-hamza.mahfooz@amd.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 15 Aug 2023 13:29:49 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714551BE8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 10:29:39 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37FBQqSb031201;
+        Tue, 15 Aug 2023 12:29:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding:content-type; s=
+        PODMain02222019; bh=I3Fk0jyQibU+2gLz/QupGqZPG9XmKM9A8Y4dKFuUElI=; b=
+        dV1g9oFfQRA9nIGVtvpMRFFEybskAkT4GaZ4Hg/8hvFDzx+uXZjRBRmFsheU57Al
+        xE5LmqtkpToRJJ+I9cvSuqRAIf157QydGELOd5+SSXSC09km1BJ5BZ/XxbzQp43/
+        +p++L414hmNHWH0tcJhYL7mhZTUObkaEn3X+h3gMqWZp1g9ziGMFNC4X3yuvmaSv
+        5rUrdSdc+VT0iAsSv9w07SHzrFM0nvyq7RhyYQFNFaNQWQZRcT5uPJp6+fSZgSgs
+        IhKAtclgyKESPlzalD/oWwntPYC3vK2dDxfolTzrH7T7A+VjGIrVmIu5/+QYBGQr
+        XV50Igmha+YDci4nmq6k6A==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3se8kquw86-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Aug 2023 12:29:36 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 15 Aug
+ 2023 18:29:34 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Tue, 15 Aug 2023 18:29:34 +0100
+Received: from vkarpovich-ThinkStation-P620.ad.cirrus.com (unknown [141.131.76.171])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0F5F8475;
+        Tue, 15 Aug 2023 17:29:32 +0000 (UTC)
+From:   Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Simon Trimmer <simont@opensource.cirrus.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+CC:     <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        "Ricardo Rivera-Matos" <ricardo.rivera-matos@cirrus.com>,
+        Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+Subject: [PATCH] firmware: cs_dsp: Fix new control name check
+Date:   Tue, 15 Aug 2023 12:29:08 -0500
+Message-ID: <20230815172908.3454056-1-vkarpovi@opensource.cirrus.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230804165212.236822-1-vkarpovi@opensource.cirrus.com>
+References: <20230804165212.236822-1-vkarpovi@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF000252A1:EE_|SJ0PR12MB5662:EE_
-X-MS-Office365-Filtering-Correlation-Id: ed5f8ff1-ff06-4fb9-1b5d-08db9db4df18
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /XMMgycdlRLzrrzs8SE14ORgQpc6AeFJg20xmiIaMa9jMvgJRL2kZHDe4wsx0XAJzm3W1D/ceBfq9b9jhCiY5rO2JspiHMj7L0U0VGcLXo4duUR8ZBEbgf/wAWFi7n6LP/LzpciWq86DmYlekMc0+gWaRxFn3pKtCOp+HuZMAIxb2xXgLbJa1pe79kNgZoErvbQeaz55jFzlpIqqrIpDGmhOG5G8yTTz6anZiJDopBISe/xnlXrUwZV81WyCbQ14fyLAPE61w3EWdHYsZg+7rPu0XUA9wdduB8gak+G3mpBOeObkxlTReG3Rdd1UvDxyXqFAoxycoSmvruvCg5U0+jMKRUZzndfp7HQjSZ9i5aWrNXUK7c3AHKDoz7jpSD9QDbObUQnB3yqre076pQmkF6c2VWTHEdgINLAU0CCfzGd67Sgsla5+ZGO9hHz3CXexHGBpxICHWi202S1j51ZTNPpVwvsQ32pLs4mF6NyfeRKIuEgA73Fho5T5KeGDo9ryjUBLOyHj5n6DxY7lEtpFxq8oBuj8Lh93rhj/kzAGPpRCo34+ywFyDUy4L+e+s6W6QCTZAUbL6WvlHKYnEiE97elCqs4S8gPb5/6LUws94Y/rLMNPqYP+lzi/JsYO8sRFC+bDlECp6Sls/P++/9Yf0f4KUAoncYtOhukbw57VY8iCOmPC7VOwH1XbLsXr406YeSQQOE6ZlVaE0fx0GldF0i/n6oWlZTqBmSi/E4Myg/WpNmG5W/iV2M2th4rBss0PPo1WSLdeG+EOB036uAlK1bUCRKgWtx4sPoZC20xxurHYR35h6ad0ToldnbG+V8qk
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(396003)(136003)(346002)(186009)(451199024)(82310400011)(1800799009)(46966006)(40470700004)(36840700001)(26005)(1076003)(336012)(40480700001)(36860700001)(81166007)(966005)(6666004)(16526019)(54906003)(478600001)(356005)(70586007)(70206006)(4326008)(316002)(6916009)(44832011)(47076005)(2616005)(41300700001)(426003)(86362001)(40460700003)(5660300002)(83380400001)(2906002)(8676002)(8936002)(36756003)(82740400003)(14143004)(36900700001)(16060500005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2023 17:27:16.5161
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed5f8ff1-ff06-4fb9-1b5d-08db9db4df18
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF000252A1.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5662
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Proofpoint-ORIG-GUID: Q6KsHZ6MeHQIKEx9WXCuAxqCmfnqpRdl
+X-Proofpoint-GUID: Q6KsHZ6MeHQIKEx9WXCuAxqCmfnqpRdl
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fbcon requires that we implement &drm_framebuffer_funcs.dirty.
-Otherwise, the framebuffer might take a while to flush (which would
-manifest as noticeable lag). However, we can't enable this callback for
-non-fbcon cases since it might cause too many atomic commits to be made
-at once. So, implement amdgpu_dirtyfb() and only enable it for fbcon
-framebuffers on devices that support atomic KMS.
+Before adding a new FW control, its name is checked against
+existing controls list. But the string length in strncmp used
+to compare controls names is taken from the list, so if beginnings
+of the controls are matching,  then the new control is not created.
+For example, if CAL_R control already exists, CAL_R_SELECTED
+is not created.
+The fix is to compare string lengths as well.
 
-Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Cc: Mario Limonciello <mario.limonciello@amd.com>
-Cc: stable@vger.kernel.org # 6.1+
-Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2519
-Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+Fixes: 6477960755fb ("ASoC: wm_adsp: Move check for control existence")
+Signed-off-by: Vlad Karpovich <vkarpovi@opensource.cirrus.com>
 ---
-v2: update variable names
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_display.c | 26 ++++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
+ drivers/firmware/cirrus/cs_dsp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-index d20dd3f852fc..d3b59f99cb7c 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-@@ -38,6 +38,8 @@
- #include <linux/pci.h>
- #include <linux/pm_runtime.h>
- #include <drm/drm_crtc_helper.h>
-+#include <drm/drm_damage_helper.h>
-+#include <drm/drm_drv.h>
- #include <drm/drm_edid.h>
- #include <drm/drm_fb_helper.h>
- #include <drm/drm_gem_framebuffer_helper.h>
-@@ -532,11 +534,29 @@ bool amdgpu_display_ddc_probe(struct amdgpu_connector *amdgpu_connector,
- 	return true;
- }
- 
-+static int amdgpu_dirtyfb(struct drm_framebuffer *fb, struct drm_file *file,
-+			  unsigned int flags, unsigned int color,
-+			  struct drm_clip_rect *clips, unsigned int num_clips)
-+{
-+
-+	if (strcmp(fb->comm, "[fbcon]"))
-+		return -ENOSYS;
-+
-+	return drm_atomic_helper_dirtyfb(fb, file, flags, color, clips,
-+					 num_clips);
-+}
-+
- static const struct drm_framebuffer_funcs amdgpu_fb_funcs = {
- 	.destroy = drm_gem_fb_destroy,
- 	.create_handle = drm_gem_fb_create_handle,
- };
- 
-+static const struct drm_framebuffer_funcs amdgpu_fb_funcs_atomic = {
-+	.destroy = drm_gem_fb_destroy,
-+	.create_handle = drm_gem_fb_create_handle,
-+	.dirty = amdgpu_dirtyfb
-+};
-+
- uint32_t amdgpu_display_supported_domains(struct amdgpu_device *adev,
- 					  uint64_t bo_flags)
- {
-@@ -1139,7 +1159,11 @@ static int amdgpu_display_gem_fb_verify_and_init(struct drm_device *dev,
- 	if (ret)
- 		goto err;
- 
--	ret = drm_framebuffer_init(dev, &rfb->base, &amdgpu_fb_funcs);
-+	if (drm_drv_uses_atomic_modeset(dev))
-+		ret = drm_framebuffer_init(dev, &rfb->base,
-+					   &amdgpu_fb_funcs_atomic);
-+	else
-+		ret = drm_framebuffer_init(dev, &rfb->base, &amdgpu_fb_funcs);
- 
- 	if (ret)
- 		goto err;
+diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
+index 81cc3d0f6eec..81c5f94b1be1 100644
+--- a/drivers/firmware/cirrus/cs_dsp.c
++++ b/drivers/firmware/cirrus/cs_dsp.c
+@@ -939,7 +939,8 @@ static int cs_dsp_create_control(struct cs_dsp *dsp,
+ 		    ctl->alg_region.alg == alg_region->alg &&
+ 		    ctl->alg_region.type == alg_region->type) {
+ 			if ((!subname && !ctl->subname) ||
+-			    (subname && !strncmp(ctl->subname, subname, ctl->subname_len))) {
++			    (subname && (ctl->subname_len == subname_len) &&
++			     !strncmp(ctl->subname, subname, ctl->subname_len))) {
+ 				if (!ctl->enabled)
+ 					ctl->enabled = 1;
+ 				return 0;
 -- 
-2.41.0
+2.25.1
 
