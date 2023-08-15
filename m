@@ -2,115 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F9777D2C5
+	by mail.lfdr.de (Postfix) with ESMTP id F40D477D2C7
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236024AbjHOTCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 15:02:15 -0400
+        id S239643AbjHOTCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 15:02:18 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239762AbjHOTCN (ORCPT
+        with ESMTP id S239765AbjHOTCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Aug 2023 15:02:13 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 018441BEB
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:01:50 -0700 (PDT)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB5F213E
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:01:51 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C2B741F8C3;
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E365D219A3;
         Tue, 15 Aug 2023 19:01:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
         t=1692126107; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=O3VMFP/ThTKsmB7svo+Y2YbkVeoI7hlTMO+M5msj2cY=;
-        b=mm09zqvI44MC0922Q7QnkyYJvxBZYPcsk3RCwu6F07NcF5wi97H0zbEDkJT0cWMa6+PtXR
-        b8mV93NLPGNqrE8XEGWR7fXMmlBJ6DO9rz4drcQuvhd9g9EWdzlWYXs0GF8mYCkZeKq0cZ
-        8YTTgyEVMis/jT31jpEFAU0QKnh8rTE=
+        bh=xEwshEXd5jHzSin+0WURFtdbZgE1smV0MVE5PXNoruQ=;
+        b=MXBQHOYYgfH/bnDoaMxIMU9sASgToyrxBUm30m8PuWlu/pP5JqqJvzzrBpOtgj76DJY1c7
+        pbTQcR3wzes52tW2kWVN8ugApPC2jTS3erRVA9FGQ4rmB1la2XsHUdm6BwBlNt8/PdcqRq
+        LuubXnRCBl0PcDOzyIbaUw+A7VxykgE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
         s=susede2_ed25519; t=1692126107;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=O3VMFP/ThTKsmB7svo+Y2YbkVeoI7hlTMO+M5msj2cY=;
-        b=Sgp0i9A+cNlhxo1Y+AdjM8Mf1wTrvb5b3JtTK83KCaJ3d/BkRsIq3o5OdWkzdVUyS6J4Q0
-        RXCFae0By7k2XGBw==
+        bh=xEwshEXd5jHzSin+0WURFtdbZgE1smV0MVE5PXNoruQ=;
+        b=kaVCJFAtAOnSLajpLtq32S+HTkQCWOElto/vs99aqqdWPdCqOBAN03HyTMDs5wC1qfy/48
+        wVqb4g/Z9BsXrxBw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9D8171353E;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C567E1390C;
         Tue, 15 Aug 2023 19:01:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id wEucJZvL22QTVAAAMHmgww
+        id mOkrL5vL22QTVAAAMHmgww
         (envelope-from <tiwai@suse.de>); Tue, 15 Aug 2023 19:01:47 +0000
 From:   Takashi Iwai <tiwai@suse.de>
 To:     alsa-devel@alsa-project.org
-Cc:     linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 04/25] ALSA: dummy: Convert to generic PCM copy ops
-Date:   Tue, 15 Aug 2023 21:01:15 +0200
-Message-Id: <20230815190136.8987-5-tiwai@suse.de>
+Cc:     linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH v2 05/25] ALSA: gus: Convert to generic PCM copy ops
+Date:   Tue, 15 Aug 2023 21:01:16 +0200
+Message-Id: <20230815190136.8987-6-tiwai@suse.de>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20230815190136.8987-1-tiwai@suse.de>
 References: <20230815190136.8987-1-tiwai@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch converts the dummy driver code to use the new unified PCM
-copy callback.  As dummy driver doesn't do anything in the callback,
-it's just a simple replacement.
+This patch converts the GUS driver code to use the new unified PCM
+copy callback.  It's a straightforward conversion from *_user() to
+*_iter() variants.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Note that copy_from/to_iter() returns the copied bytes, hence the
+error condition is adjusted accordingly.
+
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/drivers/dummy.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ sound/isa/gus/gus_pcm.c | 23 +++--------------------
+ 1 file changed, 3 insertions(+), 20 deletions(-)
 
-diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
-index 9c17b49a2ae1..4317677ba24a 100644
---- a/sound/drivers/dummy.c
-+++ b/sound/drivers/dummy.c
-@@ -626,14 +626,7 @@ static int alloc_fake_buffer(void)
+diff --git a/sound/isa/gus/gus_pcm.c b/sound/isa/gus/gus_pcm.c
+index 388db5fb65bd..850544725da7 100644
+--- a/sound/isa/gus/gus_pcm.c
++++ b/sound/isa/gus/gus_pcm.c
+@@ -369,7 +369,7 @@ static int playback_copy_ack(struct snd_pcm_substream *substream,
  
- static int dummy_pcm_copy(struct snd_pcm_substream *substream,
- 			  int channel, unsigned long pos,
--			  void __user *dst, unsigned long bytes)
+ static int snd_gf1_pcm_playback_copy(struct snd_pcm_substream *substream,
+ 				     int voice, unsigned long pos,
+-				     void __user *src, unsigned long count)
++				     struct iov_iter *src, unsigned long count)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct gus_pcm_private *pcmp = runtime->private_data;
+@@ -379,27 +379,11 @@ static int snd_gf1_pcm_playback_copy(struct snd_pcm_substream *substream,
+ 	bpos = get_bpos(pcmp, voice, pos, len);
+ 	if (bpos < 0)
+ 		return pos;
+-	if (copy_from_user(runtime->dma_area + bpos, src, len))
++	if (copy_from_iter(runtime->dma_area + bpos, len, src) != len)
+ 		return -EFAULT;
+ 	return playback_copy_ack(substream, bpos, len);
+ }
+ 
+-static int snd_gf1_pcm_playback_copy_kernel(struct snd_pcm_substream *substream,
+-					    int voice, unsigned long pos,
+-					    void *src, unsigned long count)
 -{
--	return 0; /* do nothing */
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct gus_pcm_private *pcmp = runtime->private_data;
+-	unsigned int len = count;
+-	int bpos;
+-
+-	bpos = get_bpos(pcmp, voice, pos, len);
+-	if (bpos < 0)
+-		return pos;
+-	memcpy(runtime->dma_area + bpos, src, len);
+-	return playback_copy_ack(substream, bpos, len);
 -}
 -
--static int dummy_pcm_copy_kernel(struct snd_pcm_substream *substream,
--				 int channel, unsigned long pos,
--				 void *dst, unsigned long bytes)
-+			  struct iov_iter *iter, unsigned long bytes)
- {
- 	return 0; /* do nothing */
- }
-@@ -667,8 +660,7 @@ static const struct snd_pcm_ops dummy_pcm_ops_no_buf = {
- 	.prepare =	dummy_pcm_prepare,
- 	.trigger =	dummy_pcm_trigger,
- 	.pointer =	dummy_pcm_pointer,
--	.copy_user =	dummy_pcm_copy,
--	.copy_kernel =	dummy_pcm_copy_kernel,
-+	.copy =		dummy_pcm_copy,
- 	.fill_silence =	dummy_pcm_silence,
- 	.page =		dummy_pcm_page,
+ static int snd_gf1_pcm_playback_silence(struct snd_pcm_substream *substream,
+ 					int voice, unsigned long pos,
+ 					unsigned long count)
+@@ -830,8 +814,7 @@ static const struct snd_pcm_ops snd_gf1_pcm_playback_ops = {
+ 	.prepare =	snd_gf1_pcm_playback_prepare,
+ 	.trigger =	snd_gf1_pcm_playback_trigger,
+ 	.pointer =	snd_gf1_pcm_playback_pointer,
+-	.copy_user =	snd_gf1_pcm_playback_copy,
+-	.copy_kernel =	snd_gf1_pcm_playback_copy_kernel,
++	.copy =		snd_gf1_pcm_playback_copy,
+ 	.fill_silence =	snd_gf1_pcm_playback_silence,
  };
+ 
 -- 
 2.35.3
 
