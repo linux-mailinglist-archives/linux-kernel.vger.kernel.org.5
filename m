@@ -2,124 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DBB77C576
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 03:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF53C77C58A
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 03:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234045AbjHOBxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 21:53:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
+        id S234053AbjHOB55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 21:57:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234054AbjHOBxa (ORCPT
+        with ESMTP id S233256AbjHOB5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 21:53:30 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8544DB0;
-        Mon, 14 Aug 2023 18:53:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692064408;
-        bh=/yI6gnWPXeMs75/SF7gnZEHG4nmUt3Yp6v7q6Xf82kE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=U0ysCnF2KMLJdAJQUUpRiQRtzeUEF1xjCeFr905CLIgyqHIccdcOiHe/Hmok2OVpj
-         JxKxO+p+wj2qjmjLSt/R46+SVxWXhRAnlky4Za9VX8Sx9f8n94KoZm/2Rg9HIMo96k
-         AxPjBqmAiEfXP22AEA6+cx7qrln0Lwz5rylpuvaQydbKIs1kFFroMUbMz/bSGf0/LL
-         wbZYuu90RGvJilqC0+0NiyLhBIaH1UQOmMqVqPk9yNWUKn56MC4Ujh++Z/B6ErSpXl
-         mEQXc0O6TC0W+6qkyj1Rn0DlrENycHeuJP9EH5QsTDxsLHbCjnWKQNz3RE4VWf9z/4
-         u0BYawOkNG7Ng==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RPvS73DVcz4wb5;
-        Tue, 15 Aug 2023 11:53:27 +1000 (AEST)
-Date:   Tue, 15 Aug 2023 11:53:25 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        David Rheinsberg <david@readahead.eu>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the hid tree with Linus' tree
-Message-ID: <20230815115325.0d20b960@canb.auug.org.au>
+        Mon, 14 Aug 2023 21:57:39 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09627B0;
+        Mon, 14 Aug 2023 18:57:39 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RPvSn3mBJztRwy;
+        Tue, 15 Aug 2023 09:54:01 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 15 Aug 2023 09:57:35 +0800
+Subject: Re: [PATCH v5 3/7] perf record: Move setting dummy tracking before
+ record__init_thread_masks()
+To:     Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@kernel.org>, <namhyung@kernel.org>,
+        <kan.liang@linux.intel.com>, <james.clark@arm.com>,
+        <tmricht@linux.ibm.com>, <ak@linux.intel.com>,
+        <anshuman.khandual@arm.com>, <linux-kernel@vger.kernel.org>,
+        <linux-perf-users@vger.kernel.org>
+References: <20230804020741.99806-1-yangjihong1@huawei.com>
+ <20230804020741.99806-4-yangjihong1@huawei.com>
+ <b8741176-dc9c-1ddb-6bb5-85293f3c61f7@intel.com>
+ <CAP-5=fV2u+HwxwuCmz0uSo_dvbFAwwjvK_QvkorB+qbtMnwtZg@mail.gmail.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <29111bbc-61af-4452-bf73-c3b32221989f@huawei.com>
+Date:   Tue, 15 Aug 2023 09:57:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/jf=mXhClskyeMoY0yKNBYqE";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAP-5=fV2u+HwxwuCmz0uSo_dvbFAwwjvK_QvkorB+qbtMnwtZg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/jf=mXhClskyeMoY0yKNBYqE
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Hi all,
+On 2023/8/15 4:29, Ian Rogers wrote:
+> On Thu, Aug 3, 2023 at 11:58 PM Adrian Hunter <adrian.hunter@intel.com> wrote:
+>>
+>> On 4/08/23 05:07, Yang Jihong wrote:
+>>> When dummy tracking go system wide, the mmap cpu mask is changed.
+> 
+> As previously commented, can we improve the quality of the function
+> names and commit messages? This sentence is particularly difficult to
+> understand, I don't understand it.
 
-Today's linux-next merge of the hid tree got a conflict in:
+OK. The commit messages will be modified. Please check whether the 
+following description is clear:
 
-  .mailmap
+User space tasks can migrate between CPUs, so when tracing selected 
+CPUs, sideband for all CPUs is needed. In this case set the cpu map of 
+the evsel to all online CPUs. This may modify the original cpu map of 
+the evlist.
+Therefore, need to check whether the preceding scenario exists before 
+record__init_thread_masks().
+Dummy tracking has been set in record__open(), move it before 
+record__init_thread_masks() and add a helper for unified processing.
 
-between commit:
-
-  286812b041cc ("mailmap: update remaining active codeaurora.org email addr=
-esses")
-
-from Linus' tree and commit:
-
-  0c4b9411f363 ("MAINTAINERS: update my email address")
-
-from the hid tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc .mailmap
-index 5dd318121982,cea699139e6d..000000000000
---- a/.mailmap
-+++ b/.mailmap
-@@@ -138,10 -119,10 +138,13 @@@ Daniel Borkmann <daniel@iogearbox.net>=20
-  Daniel Borkmann <daniel@iogearbox.net> <dborkman@redhat.com>
-  Daniel Borkmann <daniel@iogearbox.net> <dxchgb@gmail.com>
-  David Brownell <david-b@pacbell.net>
- +David Collins <quic_collinsd@quicinc.com> <collinsd@codeaurora.org>
-+ David Rheinsberg <david@readahead.eu> <dh.herrmann@gmail.com>
-+ David Rheinsberg <david@readahead.eu> <dh.herrmann@googlemail.com>
-+ David Rheinsberg <david@readahead.eu> <david.rheinsberg@gmail.com>
-  David Woodhouse <dwmw2@shinybook.infradead.org>
- +Dedy Lansky <quic_dlansky@quicinc.com> <dlansky@codeaurora.org>
- +Deepak Kumar Singh <quic_deesin@quicinc.com> <deesin@codeaurora.org>
-  Dengcheng Zhu <dzhu@wavecomp.com> <dczhu@mips.com>
-  Dengcheng Zhu <dzhu@wavecomp.com> <dengcheng.zhu@gmail.com>
-  Dengcheng Zhu <dzhu@wavecomp.com> <dengcheng.zhu@imgtec.com>
-
---Sig_/jf=mXhClskyeMoY0yKNBYqE
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTa2pUACgkQAVBC80lX
-0GxPzgf+L3QhsDc9Hr1KPqZwQre48dudDb9lyhDaNonLWTO9sbbchrv6H4tQAZ9I
-VzjvZCmiUv0yWaGDxjEva72EwXkCT2W0zV3KFZ3HUbgZqKKu/8tIutJ8urV6rfH5
-tHeCs9W+VPyf9VvCJC8rQ0gzXba5VvR+4WoqhBL8OEVBTgpKHVWwjiHiofCNt4WR
-Ld349i3M58A6My08Zc4VI1l/OZXcY+EDxR+1vzDV88ZpyMcmDjrgjjFn+tM/zyMo
-QSYU3T/9lJImCbgOUc7Se2ANUt/0Od4NSsZob2/j9VR+T7VouXH0cxAMwlgApZLg
-c955sSO1vKMVYG9jJwXVMZ/iifSojg==
-=Ji3X
------END PGP SIGNATURE-----
-
---Sig_/jf=mXhClskyeMoY0yKNBYqE--
+Thanks,
+Yang
