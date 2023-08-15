@@ -2,201 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D746277C74F
+	by mail.lfdr.de (Postfix) with ESMTP id 8E28E77C74E
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 08:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234764AbjHOGBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 02:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41832 "EHLO
+        id S234771AbjHOGBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 02:01:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234251AbjHOGAd (ORCPT
+        with ESMTP id S234666AbjHOGAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 02:00:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FCD93
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 23:00:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7255561913
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 06:00:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1F65C433C8;
-        Tue, 15 Aug 2023 06:00:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692079230;
-        bh=lE/p8zYP1Dnrd2GfRHhm178K3wSG7PAmcbJdgZN3zMY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AUcnopSOQuAtcEZlQxH0wEAzQNwtpTFHBjHO0qzwHexcD1KPwRnvaBVgRk9iBYl6+
-         ndhp9UXjqKFHApQTQ1DAKoJ2gmqPCBnxr9Yp8EfXqDihGe5HOHEGmT4SrdOd4ywCgN
-         DHix8isRSjA+rv2MXJFW1mhfduvafwq/QQ24SI/yb6aIY+tI+ucEqJ1DesoV5I4onO
-         wh+A4y/UoS42bxmMWpMkqcRSM5Pek9HPpH9GWWNALX2BJDcKm4iOmKzYKrZD44Mg/a
-         AXipfeLMZmmpD8rDkpbZDS6McPDU29CQsb9UDnxftvoPdFi2GjeZHP3dOsZv6YUUd7
-         NhcW8AAz7Hn+A==
-Date:   Tue, 15 Aug 2023 09:00:26 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dong Chenchen <dongchenchen2@huawei.com>
-Cc:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, fw@strlen.de, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, timo.teras@iki.fi,
-        yuehaibing@huawei.com, weiyongjun1@huawei.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Patch net, v2] net: xfrm: skip policies marked as dead while
- reinserting policies
-Message-ID: <20230815060026.GE22185@unreal>
-References: <20230814140013.712001-1-dongchenchen2@huawei.com>
+        Tue, 15 Aug 2023 02:00:37 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A6993;
+        Mon, 14 Aug 2023 23:00:34 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RQ0xB2RW2z4f403R;
+        Tue, 15 Aug 2023 14:00:30 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP3 (Coremail) with SMTP id _Ch0CgBnPcV9FNtkZKHTAg--.59135S3;
+        Tue, 15 Aug 2023 14:00:30 +0800 (CST)
+Subject: Re: [PATCH -next v2 3/7] md: delay choosing sync direction to
+ md_start_sync()
+To:     Yu Kuai <yukuai1@huaweicloud.com>, xni@redhat.com, song@kernel.org
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20230815030957.509535-1-yukuai1@huaweicloud.com>
+ <20230815030957.509535-4-yukuai1@huaweicloud.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <bb11d6ca-978a-8e1d-e721-d9d84c9dc5e3@huaweicloud.com>
+Date:   Tue, 15 Aug 2023 14:00:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230814140013.712001-1-dongchenchen2@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230815030957.509535-4-yukuai1@huaweicloud.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _Ch0CgBnPcV9FNtkZKHTAg--.59135S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3Ary7WF43WF1kXw4kKr4kWFg_yoW7ZF13pa
+        yxJFnxGrWUJrW3XrW2g3WDXayrZr10q39rtry3Wa4rJwn5tFn7KF15uF1UAFWDKa93Ca1U
+        Zws5JanxCFyj9aUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
+        Y487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVW8JVWx
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbU
+        UUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 10:00:13PM +0800, Dong Chenchen wrote:
-> BUG: KASAN: slab-use-after-free in xfrm_policy_inexact_list_reinsert+0xb6/0x430
-> Read of size 1 at addr ffff8881051f3bf8 by task ip/668
+Hi,
+
+ÔÚ 2023/08/15 11:09, Yu Kuai Ð´µÀ:
+> From: Yu Kuai <yukuai3@huawei.com>
 > 
-> CPU: 2 PID: 668 Comm: ip Not tainted 6.5.0-rc5-00182-g25aa0bebba72-dirty #64
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13 04/01/2014
-> Call Trace:
->  <TASK>
->  dump_stack_lvl+0x72/0xa0
->  print_report+0xd0/0x620
->  kasan_report+0xb6/0xf0
->  xfrm_policy_inexact_list_reinsert+0xb6/0x430
->  xfrm_policy_inexact_insert_node.constprop.0+0x537/0x800
->  xfrm_policy_inexact_alloc_chain+0x23f/0x320
->  xfrm_policy_inexact_insert+0x6b/0x590
->  xfrm_policy_insert+0x3b1/0x480
->  xfrm_add_policy+0x23c/0x3c0
->  xfrm_user_rcv_msg+0x2d0/0x510
->  netlink_rcv_skb+0x10d/0x2d0
->  xfrm_netlink_rcv+0x49/0x60
->  netlink_unicast+0x3fe/0x540
->  netlink_sendmsg+0x528/0x970
->  sock_sendmsg+0x14a/0x160
->  ____sys_sendmsg+0x4fc/0x580
->  ___sys_sendmsg+0xef/0x160
->  __sys_sendmsg+0xf7/0x1b0
->  do_syscall_64+0x3f/0x90
->  entry_SYSCALL_64_after_hwframe+0x73/0xdd
+> Before this patch, for read-write array:
 > 
-> The root cause is:
+> 1) md_check_recover() found that something need to be done, and it'll
+>     try to grab 'reconfig_mutex'. The case that md_check_recover() need
+>     to do something:
+>     - array is not suspend;
+>     - super_block need to be updated;
+>     - 'MD_RECOVERY_NEEDED' or ''MD_RECOVERY_DONE' is set;
+>     - unusual case related to safemode;
 > 
-> cpu 0			cpu1
-> xfrm_dump_policy
-> xfrm_policy_walk
-> list_move_tail
-> 			xfrm_add_policy
-> 			... ...
-> 			xfrm_policy_inexact_list_reinsert
-> 			list_for_each_entry_reverse
-> 				if (!policy->bydst_reinsert)
-> 				//read non-existent policy
-> xfrm_dump_policy_done
-> xfrm_policy_walk_done
-> list_del(&walk->walk.all);
+> 2) if 'MD_RECOVERY_RUNNING' is not set, and 'MD_RECOVERY_NEEDED' is set,
+>     md_check_recover() will try to choose a sync direction, and then
+>     queue a work md_start_sync().
 > 
-> If dump_one_policy() returns err (triggered by netlink socket),
-> xfrm_policy_walk() will move walk initialized by socket to list
-> net->xfrm.policy_all. so this socket becomes visible in the global
-> policy list. The head *walk can be traversed when users add policies
-> with different prefixlen and trigger xfrm_policy node merge.
+> 3) md_start_sync() register sync_thread;
 > 
-> The issue can also be triggered by policy list traversal while rehashing
-> and flushing policies.
+> After this patch,
 > 
-> It can be fixed by skip such "policies" with walk.dead set to 1.
+> 1) is the same;
+> 2) if 'MD_RECOVERY_RUNNING' is not set, and 'MD_RECOVERY_NEEDED' is set,
+>     queue a work md_start_sync() directly;
+> 3) md_start_sync() will try to choose a sync direction, and then
+>     register sync_thread();
 > 
-> Fixes: 9cf545ebd591 ("xfrm: policy: store inexact policies in a tree ordered by destination address")
-> Fixes: 12a169e7d8f4 ("ipsec: Put dumpers on the dump list")
-> Signed-off-by: Dong Chenchen <dongchenchen2@huawei.com>
+> Because 'MD_RECOVERY_RUNNING' is cleared when sync_thread is done, 2)
+> and 3) is always ran in serial and they can never concurrent, this
+> change should not introduce any behavior change for now.
+> 
+> Also fix a problem that md_start_sync() can clear 'MD_RECOVERY_RUNNING'
+> without protection in error path, which might affect the logical in
+> md_check_recovery().
+> 
+> The advantage to change this is that array reconfiguration is
+> independent from daemon now, and it'll be much easier to synchronize it
+> with io, consider that io may rely on daemon thread to be done.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 > ---
-> v2: fix similiar similar while rehashing and flushing policies
-> ---
->  net/xfrm/xfrm_policy.c | 20 +++++++++++++++-----
->  1 file changed, 15 insertions(+), 5 deletions(-)
+>   drivers/md/md.c | 70 ++++++++++++++++++++++++++-----------------------
+>   1 file changed, 37 insertions(+), 33 deletions(-)
 > 
-> diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
-> index d6b405782b63..33efd46fb291 100644
-> --- a/net/xfrm/xfrm_policy.c
-> +++ b/net/xfrm/xfrm_policy.c
-> @@ -848,6 +848,9 @@ static void xfrm_policy_inexact_list_reinsert(struct net *net,
->  	matched_d = 0;
->  
->  	list_for_each_entry_reverse(policy, &net->xfrm.policy_all, walk.all) {
-> +		if (policy->walk.dead)
-> +			continue;
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 4846ff6d25b0..03615b0e9fe1 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -9291,6 +9291,22 @@ static bool md_choose_sync_direction(struct mddev *mddev, int *spares)
+>   static void md_start_sync(struct work_struct *ws)
+>   {
+>   	struct mddev *mddev = container_of(ws, struct mddev, sync_work);
+> +	int spares = 0;
 > +
->  		struct hlist_node *newpos = NULL;
->  		bool matches_s, matches_d;
-
-You can't declare new variables in the middle of execution scope in C.
-
->  
-> @@ -1253,11 +1256,14 @@ static void xfrm_hash_rebuild(struct work_struct *work)
->  	 * we start with destructive action.
->  	 */
->  	list_for_each_entry(policy, &net->xfrm.policy_all, walk.all) {
-> +		if (policy->walk.dead)
-> +			continue;
+> +	mddev_lock_nointr(mddev);
 > +
->  		struct xfrm_pol_inexact_bin *bin;
->  		u8 dbits, sbits;
-
-Same comment as above.
-
->  
->  		dir = xfrm_policy_id2dir(policy->index);
-> -		if (policy->walk.dead || dir >= XFRM_POLICY_MAX)
-> +		if (dir >= XFRM_POLICY_MAX)
-
-This change is unnecessary, previous code was perfectly fine.
-
->  			continue;
->  
->  		if ((dir & XFRM_POLICY_MASK) == XFRM_POLICY_OUT) {
-> @@ -1823,9 +1829,11 @@ int xfrm_policy_flush(struct net *net, u8 type, bool task_valid)
->  
->  again:
->  	list_for_each_entry(pol, &net->xfrm.policy_all, walk.all) {
-> +		if (pol->walk.dead)
-> +			continue;
+> +	if (!md_choose_sync_direction(mddev, &spares))
+> +		goto not_running;
 > +
->  		dir = xfrm_policy_id2dir(pol->index);
-> -		if (pol->walk.dead ||
-> -		    dir >= XFRM_POLICY_MAX ||
-> +		if (dir >= XFRM_POLICY_MAX ||
-
-This change is unnecessary, previous code was perfectly fine.
-
->  		    pol->type != type)
->  			continue;
->  
-> @@ -1862,9 +1870,11 @@ int xfrm_dev_policy_flush(struct net *net, struct net_device *dev,
->  
->  again:
->  	list_for_each_entry(pol, &net->xfrm.policy_all, walk.all) {
-> +		if (pol->walk.dead)
-> +			continue;
+> +	if (!mddev->pers->sync_request)
+> +		goto not_running;
 > +
->  		dir = xfrm_policy_id2dir(pol->index);
-> -		if (pol->walk.dead ||
-> -		    dir >= XFRM_POLICY_MAX ||
-> +		if (dir >= XFRM_POLICY_MAX ||
->  		    pol->xdo.dev != dev)
->  			continue;
+> +	/*
+> +	 * We are adding a device or devices to an array which has the bitmap
+> +	 * stored on all devices. So make sure all bitmap pages get written.
+> +	 */
+> +	if (spares)
+> +		md_bitmap_write_all(mddev->bitmap);
+>   
+>   	rcu_assign_pointer(mddev->sync_thread,
+>   			   md_register_thread(md_do_sync, mddev, "resync"));
+> @@ -9298,20 +9314,27 @@ static void md_start_sync(struct work_struct *ws)
+>   		pr_warn("%s: could not start resync thread...\n",
+>   			mdname(mddev));
+>   		/* leave the spares where they are, it shouldn't hurt */
+> -		clear_bit(MD_RECOVERY_SYNC, &mddev->recovery);
+> -		clear_bit(MD_RECOVERY_RESHAPE, &mddev->recovery);
+> -		clear_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
+> -		clear_bit(MD_RECOVERY_CHECK, &mddev->recovery);
+> -		clear_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
+> -		wake_up(&resync_wait);
+> -		if (test_and_clear_bit(MD_RECOVERY_RECOVER,
+> -				       &mddev->recovery))
+> -			if (mddev->sysfs_action)
+> -				sysfs_notify_dirent_safe(mddev->sysfs_action);
+> -	} else
+> -		md_wakeup_thread(mddev->sync_thread);
+> +		goto not_running;
+> +	}
+> +
+> +	mddev_unlock(mddev);
+> +	md_wakeup_thread(mddev->sync_thread);
+>   	sysfs_notify_dirent_safe(mddev->sysfs_action);
+>   	md_new_event();
+> +	return;
+> +
+> +not_running:
+> +	clear_bit(MD_RECOVERY_SYNC, &mddev->recovery);
+> +	clear_bit(MD_RECOVERY_RESHAPE, &mddev->recovery);
+> +	clear_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
+> +	clear_bit(MD_RECOVERY_CHECK, &mddev->recovery);
+> +	clear_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
+> +	mddev_unlock(mddev);
+> +
+> +	wake_up(&resync_wait);
+> +	if (test_and_clear_bit(MD_RECOVERY_RECOVER, &mddev->recovery) &&
+> +	    mddev->sysfs_action)
+> +		sysfs_notify_dirent_safe(mddev->sysfs_action);
+>   }
+>   
+>   /*
+> @@ -9379,7 +9402,6 @@ void md_check_recovery(struct mddev *mddev)
+>   		return;
+>   
+>   	if (mddev_trylock(mddev)) {
+> -		int spares = 0;
+>   		bool try_set_sync = mddev->safemode != 0;
+>   
+>   		if (!mddev->external && mddev->safemode == 1)
+> @@ -9467,29 +9489,11 @@ void md_check_recovery(struct mddev *mddev)
+>   		clear_bit(MD_RECOVERY_DONE, &mddev->recovery);
+>   
+>   		if (!test_and_clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery) ||
+> -		    test_bit(MD_RECOVERY_FROZEN, &mddev->recovery))
+> -			goto not_running;
+> -		if (!md_choose_sync_direction(mddev, &spares))
+> -			goto not_running;
+> -		if (mddev->pers->sync_request) {
+> -			if (spares) {
+> -				/* We are adding a device or devices to an array
+> -				 * which has the bitmap stored on all devices.
+> -				 * So make sure all bitmap pages get written
+> -				 */
+> -				md_bitmap_write_all(mddev->bitmap);
+> -			}
+> +		    test_bit(MD_RECOVERY_FROZEN, &mddev->recovery)) {
 
-Ditto.
+Sorry that I made a mistake here while rebasing v2, here should be
 
->  
-> -- 
-> 2.25.1
+!test_bit(MD_RECOVERY_FROZEN, &mddev->recovery)
+
+With this fixed, there are no new regression for mdadm tests using loop
+devicein my VM.
+
+Thanks,
+Kuai
+>   			queue_work(md_misc_wq, &mddev->sync_work);
+> -			goto unlock;
+> -		}
+> -	not_running:
+> -		if (!mddev->sync_thread) {
+> +		} else {
+>   			clear_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
+>   			wake_up(&resync_wait);
+> -			if (test_and_clear_bit(MD_RECOVERY_RECOVER,
+> -					       &mddev->recovery))
+> -				if (mddev->sysfs_action)
+> -					sysfs_notify_dirent_safe(mddev->sysfs_action);
+>   		}
+>   	unlock:
+>   		wake_up(&mddev->sb_wait);
 > 
+
