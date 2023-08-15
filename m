@@ -2,159 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB3B77C678
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 05:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C5E77C687
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 05:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234470AbjHODnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 23:43:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38756 "EHLO
+        id S234528AbjHODxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 23:53:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234321AbjHODmH (ORCPT
+        with ESMTP id S234617AbjHODv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 23:42:07 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66FEE52;
-        Mon, 14 Aug 2023 20:41:21 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id 4fb4d7f45d1cf-5255da974c4so2666671a12.3;
-        Mon, 14 Aug 2023 20:41:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692070880; x=1692675680;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2NGrWB5KOcou0erbpEXIt7BZ0L3xELVtjyeYvYlNDOE=;
-        b=kw7RG2wPnj0BJtdnBFkjXJvetMx/mDARmhhX0e5j8mTwWl/JJ5kAnxxiQxNfRwu79e
-         Iiir8YfjPU7aDBFVZlHTkvfopCuZs49vYAN8Ff4f5q90qR1CUErMGimy23lUrigzMc37
-         ZSbzoU3sSXqopo6hsJ/rXJjpB3CH+FYAa43CnlTpBXWPJhJSFv2WSDxugxOz9pbr2I2t
-         S/3ySCaSaI0AcHzuXM/mNDx0ZiCBVu/GJWaad8DI4BWNHEtqCSWLjaWulTAW7HRv6Kxc
-         /3AUIjSRYD9fX6YGQIpls1eNpFo6gjGs92JSVq2ZCCdA5OEAdB9GS0m9XhwKdXntY/qA
-         AJqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692070880; x=1692675680;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2NGrWB5KOcou0erbpEXIt7BZ0L3xELVtjyeYvYlNDOE=;
-        b=DB7u0CWjYYtSRTpyBJmKedOqsjdAcllgA8YQqeIAGCtwvE8PFFkbqPGF7e1tGQ7NBW
-         f5RCiH0YXn80dn/LkCF60l2Xh98aVYDYT9qMirKMSa1PUIdp2T7sT9Hr4gVgD4rHFZLB
-         9NRhPZ/IA3TJOFKGm+HkP1lFvAKcnFoRDvD38xXRbJT/FQd/NLrFbNQa0NsAd6gGZbGp
-         i6FNoFB71NKm3hd2u9f9fn52tGnzVutZWGVGRalOYiC/R1oSXbK2I7GfEBfpmT8Xg04B
-         IF3B5gNRk3zv31iKARhWTVKhQPI0b4pNxXK0B5Tw9tUWrpEdUA2Y3Tnzns8d3o5p7fWP
-         4/RA==
-X-Gm-Message-State: AOJu0YzcqfpLJEHyR4lTXq97xr+9p859fioANxvBHG+GM2/xadMUEehg
-        CgU4bJTGk3J3fAQPPnyfMp1iUthw36SW4JFIRlk=
-X-Google-Smtp-Source: AGHT+IGchufaFx/xTfpZS4VLh8iBiAmEvNeDDNJn9iKkW3MGEIc0nqdLs7t1YOOoMbK0yMyF0f1KUyOKi2ZCPAYb3KU=
-X-Received: by 2002:aa7:d292:0:b0:523:b133:5c7e with SMTP id
- w18-20020aa7d292000000b00523b1335c7emr9921250edq.1.1692070880211; Mon, 14 Aug
- 2023 20:41:20 -0700 (PDT)
+        Mon, 14 Aug 2023 23:51:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F63E1BCB
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 20:46:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tpgOMn6tupkg0P9G8ls5DuN8dJfuULFXJ/njpEhLLnw=; b=bg5cqlPueHT6akZgRTTSPMZaUd
+        FHlH+YLGkfAh+RZzgSYetab8tX5v8EHIBsw23fiE9I8HTEDHc2Y7ht1b9XmdYJROmsJkX1AfHDr5b
+        7dRcEdQxlD1UN1CjlETmirYTv/K5TY/Cu9cgXeOUC23FlK0zhTYqYVnUqi9gmhImLDOdqIguHhbqV
+        ZKmWxB1vPg0ylWCj9/W0DwCHjR+IjsaDKA0GWM+5gmhqlMcLNPEDVE7zVfegzPvrrhsnvC2oHrVtl
+        lOr3stiitSDAgBbRmh4KQ9asUb0esS9iCQUMYXV5qvW2nFUYUSsm7z7pnswzuJYtbw+51hzLdQW9/
+        mMn8rEpQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qVl0C-005viq-Mf; Tue, 15 Aug 2023 03:45:52 +0000
+Date:   Tue, 15 Aug 2023 04:45:52 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>
+Subject: Re: [PATCH RFC v2 0/3] mm: Properly document tail pages for a folio
+Message-ID: <ZNr08E5bublfQI0J@casper.infradead.org>
+References: <20230814184411.330496-1-peterx@redhat.com>
+ <ZNqHdIi8ySqwoswd@casper.infradead.org>
+ <ZNqM43Y9Pa1S8N7D@x1n>
 MIME-Version: 1.0
-References: <20230810090945.16053-1-cloudliang@tencent.com>
- <20230810090945.16053-4-cloudliang@tencent.com> <20230814234926.GD2257301@ls.amr.corp.intel.com>
-In-Reply-To: <20230814234926.GD2257301@ls.amr.corp.intel.com>
-From:   Jinrong Liang <ljr.kernel@gmail.com>
-Date:   Tue, 15 Aug 2023 11:41:08 +0800
-Message-ID: <CAFg_LQXuBfCD6ypmOLS4NhBCPrLXTpetYWGqFDSnKgQa0R6_gA@mail.gmail.com>
-Subject: Re: [PATCH v6 3/6] KVM: selftests: Introduce __kvm_pmu_event_filter
- to improved event filter settings
-To:     Isaku Yamahata <isaku.yamahata@gmail.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Aaron Lewis <aaronlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Jinrong Liang <cloudliang@tencent.com>,
-        linux-kselftest@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNqM43Y9Pa1S8N7D@x1n>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Isaku Yamahata <isaku.yamahata@gmail.com> =E4=BA=8E2023=E5=B9=B48=E6=9C=881=
-5=E6=97=A5=E5=91=A8=E4=BA=8C 07:49=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Thu, Aug 10, 2023 at 05:09:42PM +0800,
-> Jinrong Liang <ljr.kernel@gmail.com> wrote:
->
-> > From: Jinrong Liang <cloudliang@tencent.com>
-> >
-> > Add custom "__kvm_pmu_event_filter" structure to improve pmu event
-> > filter settings. Simplifies event filter setup by organizing event
-> > filter parameters in a cleaner, more organized way.
-> >
-> > Suggested-by: Sean Christopherson <seanjc@google.com>
-> > Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
-> > ---
-> >  .../kvm/x86_64/pmu_event_filter_test.c        | 182 +++++++++---------
-> >  1 file changed, 90 insertions(+), 92 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c=
- b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-> > index 5ac05e64bec9..94f5a89aac40 100644
-> > --- a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-> > +++ b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-> > @@ -28,6 +28,10 @@
-> >
-> >  #define NUM_BRANCHES 42
-> >
-> > +/* Matches KVM_PMU_EVENT_FILTER_MAX_EVENTS in pmu.c */
-> > +#define MAX_FILTER_EVENTS            300
->
-> Can we simply use KVM_PMU_EVENT_FILTER_MAX_EVENTS and remove MAX_FILTER_E=
-VENTS?
+On Mon, Aug 14, 2023 at 04:21:55PM -0400, Peter Xu wrote:
+> On Mon, Aug 14, 2023 at 08:58:44PM +0100, Matthew Wilcox wrote:
+> > On Mon, Aug 14, 2023 at 02:44:08PM -0400, Peter Xu wrote:
+> > 
+> > Look, this is all still too complicated.  And you're trying to make
+> > something better that I'm trying to make disappear.  I'd really rather
+> > you spent your time worrying about making userfaultfd use folios
+> > than faffing with this.
+> 
+> I saw that internally some of uffd already start to use folio, while I
+> don't think the syscall part needs changing yet - the ranged API should
+> work for folio when it comes, and other than that folio should be hidden
+> and transparent, afaiu.
+> 
+> Do you mean when large folios can land on anon/shmem we can start to
+> allocate large folios there for uffd operations?  Or something else?
 
-I didn't find the definition of KVM_PMU_EVENT_FILTER_MAX_EVENTS in
-selftests. KVM_PMU_EVENT_FILTER_MAX_EVENTS is defined in pmu.c. To use
-it, we need to define it in selftests.
+Hm, I thought there were some parts that still needed to be converted.
+But I don't see anything obvious right now.
 
->
->
-> > +#define MAX_TEST_EVENTS              10
-> > +
-> >  /*
-> >   * This is how the event selector and unit mask are stored in an AMD
-> >   * core performance event-select register. Intel's format is similar,
-> > @@ -69,21 +73,33 @@
-> >
-> >  #define INST_RETIRED EVENT(0xc0, 0)
-> >
-> > +struct __kvm_pmu_event_filter {
-> > +     __u32 action;
-> > +     __u32 nevents;
-> > +     __u32 fixed_counter_bitmap;
-> > +     __u32 flags;
-> > +     __u32 pad[4];
-> > +     __u64 events[MAX_FILTER_EVENTS];
-> > +};
-> > +
->
-> Is this same to struct kvm_pmu_event_filter?
+> > @@ -360,6 +363,7 @@ struct folio {
+> >  			unsigned long _head_2a;
+> >  	/* public: */
+> >  			struct list_head _deferred_list;
+> > +			/* three more words available here */
+> 
+> .. not really three more words here but 2 for 32 bits and 1 for 64 bits.
+> In my patch 3 I used "8 bytes free" so it's applicable to both.
 
-In tools/arch/x86/include/uapi/asm/kvm.h
+I always forget about THP_SWAP using tail->private.  That actually needs
+to be asserted by the compiler, not just documented.  Something along
+these lines.
 
-/* for KVM_CAP_PMU_EVENT_FILTER */
-struct kvm_pmu_event_filter {
-__u32 action;
-__u32 nevents;
-__u32 fixed_counter_bitmap;
-__u32 flags;
-__u32 pad[4];
-__u64 events[];
-};
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 659c7b84726c..3880b3f2e321 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -340,8 +340,11 @@ struct folio {
+ 			atomic_t _pincount;
+ #ifdef CONFIG_64BIT
+ 			unsigned int _folio_nr_pages;
+-#endif
++			/* 4 byte gap here */
+ 	/* private: the union with struct page is transitional */
++			/* Fix THP_SWAP to not use tail->private */
++			unsigned long _private_1;
++#endif
+ 		};
+ 		struct page __page_1;
+ 	};
+@@ -362,6 +365,9 @@ struct folio {
+ 	/* public: */
+ 			struct list_head _deferred_list;
+ 	/* private: the union with struct page is transitional */
++			unsigned long _avail_2a;
++			/* Fix THP_SWAP to not use tail->private */
++			unsigned long _private_2a;
+ 		};
+ 		struct page __page_2;
+ 	};
+@@ -386,12 +392,18 @@ FOLIO_MATCH(memcg_data, memcg_data);
+ 			offsetof(struct page, pg) + sizeof(struct page))
+ FOLIO_MATCH(flags, _flags_1);
+ FOLIO_MATCH(compound_head, _head_1);
++#ifdef CONFIG_64BIT
++FOLIO_MATCH(private, _private_1);
++#endif
+ #undef FOLIO_MATCH
+ #define FOLIO_MATCH(pg, fl)						\
+ 	static_assert(offsetof(struct folio, fl) ==			\
+ 			offsetof(struct page, pg) + 2 * sizeof(struct page))
+ FOLIO_MATCH(flags, _flags_2);
+ FOLIO_MATCH(compound_head, _head_2);
++FOLIO_MATCH(flags, _flags_2a);
++FOLIO_MATCH(compound_head, _head_2a);
++FOLIO_MATCH(private, _private_2a);
+ #undef FOLIO_MATCH
+ 
+ /*
 
->
-> Except two trivial issue, looks good to me.
-> --
-> Isaku Yamahata <isaku.yamahata@gmail.com>
+This is against the patchset I just posted which frees up a word in the
+first tail page.
+
