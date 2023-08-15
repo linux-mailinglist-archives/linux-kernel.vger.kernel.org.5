@@ -2,66 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05EC977D141
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6DE77D145
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238685AbjHORmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 13:42:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60372 "EHLO
+        id S238927AbjHORnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 13:43:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238927AbjHORmT (ORCPT
+        with ESMTP id S238981AbjHORnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 13:42:19 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E75061BD2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 10:42:17 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-684c8a66e86so6047746b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 10:42:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692121337; x=1692726137;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I85hmMEUfQYoNIAIbzoOssifzEA41haxq2Yrcu6u0/4=;
-        b=O29+28g02fpA1C6NlzwVGPY8eRAEeK8NVduW8N2KjdxPVJCz2HW5jWnMBX0bDDL9Sa
-         rKIcOrSMTc3sJfjK+/Z3Pg9RO7nLQiR19dT4wyksYH5VdshYj7Ah6D85fqLhSgqqrvZJ
-         4eIeeSGbb7AWshM/XYfJnuLumjOk0ilbev+72PDkpk9GvEpVPkbM5QZTmfPtn7YV5u4s
-         46JfzgMDopKhbeEvWqqiLKoi+Va5vC9ECkO1gcCNxMdxNtIKrbcxt03sQCDAfa/+V+1p
-         q5HFqHZqXsDSCu0ft3TkxR4hw2Uv77DCWrr5CpwAGjFeSkEzDXOvyd18OWirVeuuNM8N
-         bOgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692121337; x=1692726137;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=I85hmMEUfQYoNIAIbzoOssifzEA41haxq2Yrcu6u0/4=;
-        b=IAAcTxiVccWT4bu/yYyRIheI0unaGMXACpcIivZ8PRdi3IjeSFECE2JD3R+cNWiB1N
-         ybrzSJtvshGv5gg9f213ho1aGGrxw+TQeJGZYUFFhEtzumHPLpXV3hBosl5ICk6lWywt
-         cOxZ4+prwkZ6OMVArUpkxBtMJWhLaktkiWlulRqB04P9qGGgP7aogeSvhQFL9dhoqZX0
-         PJVknM+BkkUdsiC2KZGG7aPV81mW8Zcjk0Q9fFFSPjtccUCWvV0Si/SrKEubehgMqV29
-         gR2gWXjGjCEsDckE0Hi39Gysz/BadLacXZdruOor9yNGIuJt3pvUeMAAuE7LmiZ7N1Ms
-         kKgQ==
-X-Gm-Message-State: AOJu0YyYYaAMk1rkcvochlnfq2lHq27Em983zFrA8xpI/CZpOaRTEgZG
-        tfl+cUW0xkZ0LR9lqbGzyCFXg5tg8cA=
-X-Google-Smtp-Source: AGHT+IEmiqcN2YRYAzdWGaGfLTHuDo20/Rre8XF+8NajJbqYsdhtNoO78nHJYJuqpJxqAKa91/SNTwvof04=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:2d0e:b0:666:e42c:d5ec with SMTP id
- fa14-20020a056a002d0e00b00666e42cd5ecmr5881663pfb.3.1692121337470; Tue, 15
- Aug 2023 10:42:17 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 15 Aug 2023 10:42:15 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
-Message-ID: <20230815174215.433222-1-seanjc@google.com>
-Subject: [PATCH] KVM: VMX: Delete ancient pr_warn() about KVM_SET_TSS_ADDR not
- being set
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thorsten Glaser <t.glaser@tarent.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        Tue, 15 Aug 2023 13:43:13 -0400
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F177A1BCC
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 10:43:08 -0700 (PDT)
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4RQJWv4Jdkz9sdG;
+        Tue, 15 Aug 2023 19:43:07 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id IZVCe-XhqlZn; Tue, 15 Aug 2023 19:43:07 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4RQJWv3LQ2z9sdF;
+        Tue, 15 Aug 2023 19:43:07 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 674EE8B76C;
+        Tue, 15 Aug 2023 19:43:07 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id zilZFmMOT9hc; Tue, 15 Aug 2023 19:43:07 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.233.223])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 294F48B763;
+        Tue, 15 Aug 2023 19:43:07 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37FHgvT1130058
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Tue, 15 Aug 2023 19:42:57 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37FHguwX130055;
+        Tue, 15 Aug 2023 19:42:56 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH v2] powerpc/32s: Cleanup the mess in __set_pte_at()
+Date:   Tue, 15 Aug 2023 19:42:40 +0200
+Message-ID: <2322dd08217bccab25456fe8b189edf0e6a8b6dd.1692121353.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692121359; l=4791; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=fGlvVuOrCBi+lhcfv7DJG1AIL9OtHrWZ3x+zLBhy878=; b=5mdamyP7SLVUjlj9979DJHQ8KXiaufcu1xrbOCQ9us+tjEtuQMcxotkHeU+mTCo/bAi2DN9um KrK2TiGkhZrAUkjEvrrlqgInT0s+sxiyiKJp3X+u4PfIo8TM9xKcLVT
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,55 +65,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete KVM's printk about KVM_SET_TSS_ADDR not being called.  When the
-printk was added by commit 776e58ea3d37 ("KVM: unbreak userspace that does
-not sets tss address"), KVM also stuffed a "hopefully safe" value, i.e.
-the message wasn't purely informational.  For reasons unknown, ostensibly
-to try and help people running outdated qemu-kvm versions, the message got
-left behind when KVM's stuffing was removed by commit 4918c6ca6838
-("KVM: VMX: Require KVM_SET_TSS_ADDR being called prior to running a VCPU").
+__set_pte_at() handles 3 main cases with #ifdefs plus the 'percpu'
+subcase which leads to code duplication.
 
-Today, the message is completely nonsensical, as it has been over a decade
-since KVM supported userspace running a Real Mode guest, on a CPU without
-unrestricted guest support, without doing KVM_SET_TSS_ADDR before KVM_RUN.
-I.e. KVM's ABI has required KVM_SET_TSS_ADDR for 10+ years.
+Rewrite the function using IS_ENABLED() to minimise the total number
+of cases and remove duplicated code.
 
-To make matters worse, the message is prone to false positives as it
-triggers when simply *creating* a vCPU due to RESET putting vCPUs into
-Real Mode, even when the user has no intention of ever *running* the vCPU
-in a Real Mode.  E.g. KVM selftests stuff 64-bit mode and never touch Real
-Mode, but trigger the message even though they run just fine without
-doing KVM_SET_TSS_ADDR.  Creating "dummy" vCPUs, e.g. to probe features,
-can also trigger the message.  In both scenarios, the message confuses
-users and falsely implies that they've done something wrong.
-
-Reported-by: Thorsten Glaser <t.glaser@tarent.de>
-Closes: https://lkml.kernel.org/r/f1afa6c0-cde2-ab8b-ea71-bfa62a45b956%40tarent.de
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/x86/kvm/vmx/vmx.c | 7 -------
- 1 file changed, 7 deletions(-)
+v2: Reorganise comments, first case becomes third and third become first.
+---
+ arch/powerpc/include/asm/book3s/32/pgtable.h | 77 ++++++++------------
+ 1 file changed, 31 insertions(+), 46 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 8cf1c00d9352..aadbe1a23e3a 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -3061,13 +3061,6 @@ static void enter_rmode(struct kvm_vcpu *vcpu)
+diff --git a/arch/powerpc/include/asm/book3s/32/pgtable.h b/arch/powerpc/include/asm/book3s/32/pgtable.h
+index 7bf1fe7297c6..d49c2a9d4ffe 100644
+--- a/arch/powerpc/include/asm/book3s/32/pgtable.h
++++ b/arch/powerpc/include/asm/book3s/32/pgtable.h
+@@ -541,58 +541,43 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
  
- 	vmx->rmode.vm86_active = 1;
  
--	/*
--	 * Very old userspace does not call KVM_SET_TSS_ADDR before entering
--	 * vcpu. Warn the user that an update is overdue.
+ /* This low level function performs the actual PTE insertion
+- * Setting the PTE depends on the MMU type and other factors. It's
+- * an horrible mess that I'm not going to try to clean up now but
+- * I'm keeping it in one place rather than spread around
++ * Setting the PTE depends on the MMU type and other factors.
++ *
++ * First case is 32-bit in UP mode with 32-bit PTEs, we need to preserve
++ * the _PAGE_HASHPTE bit since we may not have invalidated the previous
++ * translation in the hash yet (done in a subsequent flush_tlb_xxx())
++ * and see we need to keep track that this PTE needs invalidating.
++ *
++ * Second case is 32-bit with 64-bit PTE.  In this case, we
++ * can just store as long as we do the two halves in the right order
++ * with a barrier in between. This is possible because we take care,
++ * in the hash code, to pre-invalidate if the PTE was already hashed,
++ * which synchronizes us with any concurrent invalidation.
++ * In the percpu case, we fallback to the simple update preserving
++ * the hash bits (ie, same as the non-SMP case).
++ *
++ * Third case is 32-bit in SMP mode with 32-bit PTEs. We use the
++ * helper pte_update() which does an atomic update. We need to do that
++ * because a concurrent invalidation can clear _PAGE_HASHPTE. If it's a
++ * per-CPU PTE such as a kmap_atomic, we also do a simple update preserving
++ * the hash bits instead.
+  */
+ static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
+ 				pte_t *ptep, pte_t pte, int percpu)
+ {
+-#if defined(CONFIG_SMP) && !defined(CONFIG_PTE_64BIT)
+-	/* First case is 32-bit Hash MMU in SMP mode with 32-bit PTEs. We use the
+-	 * helper pte_update() which does an atomic update. We need to do that
+-	 * because a concurrent invalidation can clear _PAGE_HASHPTE. If it's a
+-	 * per-CPU PTE such as a kmap_atomic, we do a simple update preserving
+-	 * the hash bits instead (ie, same as the non-SMP case)
 -	 */
--	if (!kvm_vmx->tss_addr)
--		pr_warn_once("KVM_SET_TSS_ADDR needs to be called before running vCPU\n");
--
- 	vmx_segment_cache_clear(vmx);
+-	if (percpu)
+-		*ptep = __pte((pte_val(*ptep) & _PAGE_HASHPTE)
+-			      | (pte_val(pte) & ~_PAGE_HASHPTE));
+-	else
+-		pte_update(mm, addr, ptep, ~_PAGE_HASHPTE, pte_val(pte), 0);
++	if ((!IS_ENABLED(CONFIG_SMP) && !IS_ENABLED(CONFIG_PTE_64BIT)) || percpu) {
++		*ptep = __pte((pte_val(*ptep) & _PAGE_HASHPTE) |
++			      (pte_val(pte) & ~_PAGE_HASHPTE));
++	} else if (IS_ENABLED(CONFIG_PTE_64BIT)) {
++		if (pte_val(*ptep) & _PAGE_HASHPTE)
++			flush_hash_entry(mm, ptep, addr);
  
- 	vmcs_writel(GUEST_TR_BASE, kvm_vmx->tss_addr);
-
-base-commit: 240f736891887939571854bd6d734b6c9291f22e
+-#elif defined(CONFIG_PTE_64BIT)
+-	/* Second case is 32-bit with 64-bit PTE.  In this case, we
+-	 * can just store as long as we do the two halves in the right order
+-	 * with a barrier in between. This is possible because we take care,
+-	 * in the hash code, to pre-invalidate if the PTE was already hashed,
+-	 * which synchronizes us with any concurrent invalidation.
+-	 * In the percpu case, we also fallback to the simple update preserving
+-	 * the hash bits
+-	 */
+-	if (percpu) {
+-		*ptep = __pte((pte_val(*ptep) & _PAGE_HASHPTE)
+-			      | (pte_val(pte) & ~_PAGE_HASHPTE));
+-		return;
++		asm volatile("stw%X0 %2,%0; eieio; stw%X1 %L2,%1" :
++			     "=m" (*ptep), "=m" (*((unsigned char *)ptep+4)) :
++			     "r" (pte) : "memory");
++	} else {
++		pte_update(mm, addr, ptep, ~_PAGE_HASHPTE, pte_val(pte), 0);
+ 	}
+-	if (pte_val(*ptep) & _PAGE_HASHPTE)
+-		flush_hash_entry(mm, ptep, addr);
+-	__asm__ __volatile__("\
+-		stw%X0 %2,%0\n\
+-		eieio\n\
+-		stw%X1 %L2,%1"
+-	: "=m" (*ptep), "=m" (*((unsigned char *)ptep+4))
+-	: "r" (pte) : "memory");
+-
+-#else
+-	/* Third case is 32-bit hash table in UP mode, we need to preserve
+-	 * the _PAGE_HASHPTE bit since we may not have invalidated the previous
+-	 * translation in the hash yet (done in a subsequent flush_tlb_xxx())
+-	 * and see we need to keep track that this PTE needs invalidating
+-	 */
+-	*ptep = __pte((pte_val(*ptep) & _PAGE_HASHPTE)
+-		      | (pte_val(pte) & ~_PAGE_HASHPTE));
+-#endif
+ }
+ 
+ /*
 -- 
-2.41.0.694.ge786442a9b-goog
+2.41.0
 
