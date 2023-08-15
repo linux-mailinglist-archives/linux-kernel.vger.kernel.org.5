@@ -2,129 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4808C77D439
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D66877D451
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238156AbjHOUgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 16:36:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35280 "EHLO
+        id S238679AbjHOUhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 16:37:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238638AbjHOUga (ORCPT
+        with ESMTP id S238575AbjHOUhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 16:36:30 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A01F2112
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:36:04 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58419550c3aso59188807b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:36:04 -0700 (PDT)
+        Tue, 15 Aug 2023 16:37:31 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43A72268F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:36:58 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-6887a398cd6so390258b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:36:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692131760; x=1692736560;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Dfs5Y3DHJ7npzzREtgFG2ClBmMfGqulqQ90vEMqFSl0=;
-        b=OOTIDsNjwfRz3NfN2DsEPxkwUAtHn0BarheHqRBXArWxQtuawd0kUtOUNtMZett7Et
-         nu21cLxYGNeXCEMGOyH8+vILYoVWUOS33hq+dNQny2L3Tm47juap+Fn7UL4GhqT3uzxP
-         p6nzcrP4XDULAogIGhkjhl0Z422c2c9y3ItO59eDjnC16+LuBuUBOIwi3AxnIsPo6Ty5
-         YID+gKz746bp161B+mQoC5QEpd8VNHVAp3vI7lVsaMh46Ir1jXvcm5ehHGZ0esxRXl6Y
-         I87ObfOJ35XkghzSmJBbvGPoAXduYhYrDDCEn5LzpqTZ7ywM2OOaCU2T87gx2dOsih/k
-         yyZg==
+        d=google.com; s=20221208; t=1692131815; x=1692736615;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YoEkSRdBdZpCM/slmFWAIl3VceQSDmIEC1qF4OaGbzU=;
+        b=043CYGX77s29ipG5tICs4k3MhRhmyS2MaijT4zgA9fT1ubJIFXDv0411+vP90njY4t
+         KKZJ/UDTgbFXX9uQPh+qsyUKhSKhDJ9WWNjN49KE08N6TeohMBpah+yPA5GBuyoLYVvq
+         ZW6ydmp/CAR2D2D1Uxj/S7G5z+rzoFAjjgXF8KHDU72nBmiJU+9N97G0vTVn446vHCWT
+         7FD1qJA6A2s70U+g1KWqn9PJfvipJ/nLKJH6x2I2/nd2NF93mGTPS2Hxp9QkYC53KOTU
+         uyO0e9cMXALFiqwaz777dAZhPfqfomssEEuJ39pwWe9g2DUl9PhuOEeFVg4Gykutr5s9
+         ZlFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692131760; x=1692736560;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Dfs5Y3DHJ7npzzREtgFG2ClBmMfGqulqQ90vEMqFSl0=;
-        b=NTPUOSFHKGtL+Lc7GIsmxoIi81gJIcYtljn9Q7LID6gJzhTHyhmzAGocxT4fhJuUnj
-         s9G5Aig5uksm/HVqybqSi7lO/7NC1hRiT62f3g1rFdOmUpXZO5JzQLTkdUYWnHDcTxDm
-         vRQ5UDxryf0CEHdscI2vZXQzdNQzH4/JexKuol/5gXfvur1Cfmzy8PbaDwXFaF68S+is
-         vHTYDSlzHik/hNgGYQhkutEkde+FUHQu7Bk4XaKdVKH+f8DzY3YFo2O8znC0nePULBg3
-         jJ1bkTuEtLLMU+4AfdNvYu2e/XMsDDI6h7+lQhFNTmoyuC6GcL88ktAqBTvxo3O2f9mh
-         pIUQ==
-X-Gm-Message-State: AOJu0Yy+7EASZPpnY3CUUd/oxcjrlTAq/2m1udKiZEoCuDTGv220XkWL
-        nDw4s+8fzBTVqgP240CyLLKL2drdJWLb+F6YqA==
-X-Google-Smtp-Source: AGHT+IHPT/nbbZXrf0e7v8EA8ROm8f0nGl7AjZVFslemOXzRPn2pjnYb4CswnMsxjZnzqsoOnywqYiXEmqVC7Dv8EQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a81:af27:0:b0:569:e04a:238f with SMTP
- id n39-20020a81af27000000b00569e04a238fmr174069ywh.4.1692131760684; Tue, 15
- Aug 2023 13:36:00 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 20:35:59 +0000
+        d=1e100.net; s=20221208; t=1692131815; x=1692736615;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YoEkSRdBdZpCM/slmFWAIl3VceQSDmIEC1qF4OaGbzU=;
+        b=gtAiJqmcy99nKE01aEe6SWIYahkh+vl4AHCuNDUJsv33xcc/QPaBMIyMUvTs9CCKHE
+         du40OtBXTIdJ+dtz/mpYP99dwZJnKmvP82i9eFTSEOIGlSHi0axO+Sjsz/3blky1+xc9
+         qnIiunxjNlr7dETy/Y1cjofnZbQscV7GCsgWGZxusl7eh9SxfCyr3PGi2fSW/KMzhlzX
+         CmrtRSCeZ+IEmP1CuzAccu8IQ7hS0KmXq9nbtfqJOxO/eJRXXlV8gc0Cl9fgfoQNPfOR
+         NckDw7xuDLBZrezBfPRJIt+jOWRDpbTaYJpupgeXMxqCiBicneoObsFI2QJOucCdkTzA
+         kDYA==
+X-Gm-Message-State: AOJu0YxNWfTtHoj9G1N9nMevPLNJSYl1Z2z2CPg72nqtVW8OwgibCkXZ
+        5NgKwPNKfSf+CcQ0Oz17WlUu1J9CREI=
+X-Google-Smtp-Source: AGHT+IFknvuPI+mTAPx3GC1V2RZaoCHhNTR3vUISIodOT1mcxVXFnOAYopwpCuC9ZoRU8VLH8/02a8s6L+E=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:1a0f:b0:687:4554:5642 with SMTP id
+ g15-20020a056a001a0f00b0068745545642mr5953855pfv.0.1692131815715; Tue, 15 Aug
+ 2023 13:36:55 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Tue, 15 Aug 2023 13:36:38 -0700
 Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAK7h22QC/yWNwQqDMBAFf0X27IK6CsVfKT0Y82r30EQ2EgLiv
- xvay8BcZk5KMEWiuTnJkDVpDFX6tqH1s4QNrL46Dd0g3aOfOEf17E0zLHHAwV+v8Y+yIYAxOXH jIjKKo5rZDW8tv8XzdV032dJlBXIAAAA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692131759; l=1654;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=rsuFH00o6hWgcfF4qhM/BCATheGTTTAlBcUvOm4elss=; b=fEjv5LRK1oRhxMJzmP1RlgzuD977ZksP8znSE/vd2EP5ncIcgC80vChuM2QOMrGrdKbtA/JFK
- 7CLsxE+qDBeAwopuo1KxIaWMk1+bzD04MTqeHguP5oxI0t/8Scdlg7t
-X-Mailer: b4 0.12.3
-Message-ID: <20230815-void-drivers-net-mdio-mdio-xgene-v1-1-5304342e0659@google.com>
-Subject: [PATCH] net: mdio: fix -Wvoid-pointer-to-enum-cast warning
-From:   Justin Stitt <justinstitt@google.com>
-To:     Iyappan Subramanian <iyappan@os.amperecomputing.com>,
-        Keyur Chudgar <keyur@os.amperecomputing.com>,
-        Quan Nguyen <quan@os.amperecomputing.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
+Message-ID: <20230815203653.519297-1-seanjc@google.com>
+Subject: [PATCH v3 00/15] KVM: x86: Add "governed" X86_FEATURE framework
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zeng Guang <guang.zeng@intel.com>,
+        Yuan Yao <yuan.yao@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building with clang 18 I see the following warning:
-|       drivers/net/mdio/mdio-xgene.c:338:13: warning: cast to smaller integer
-|               type 'enum xgene_mdio_id' from 'const void *' [-Wvoid-pointer-to-enum-cast]
-|         338 |                 mdio_id = (enum xgene_mdio_id)of_id->data;
+Third and hopefully final version of the framework to manage and cache
+KVM-governed features, i.e. CPUID based features that require explicit
+KVM enabling and/or need to be queried semi-frequently by KVM.
 
-This is due to the fact that `of_id->data` is a void* while `enum
-xgene_mdio_id` has the size of an int. This leads to truncation and
-possible data loss.
+This version is just the governed features patches, as I kept the TSC
+scaling patches in kvm-x86/misc but blasted away the goverend features
+with a forced push.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1910
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: `xgene_mdio_id` has only two fields enumerated from 1 which means
-this is no data loss happening here. Either way, this patch helps the
-goal of eventually enabling this warning for more builds by reducing
-noise.
----
- drivers/net/mdio/mdio-xgene.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+My plan is again to apply this quite quickly so that it can be used as
+a base for other series.
 
-diff --git a/drivers/net/mdio/mdio-xgene.c b/drivers/net/mdio/mdio-xgene.c
-index 7aafc221b5cf..7119eb11c00d 100644
---- a/drivers/net/mdio/mdio-xgene.c
-+++ b/drivers/net/mdio/mdio-xgene.c
-@@ -335,7 +335,7 @@ static int xgene_mdio_probe(struct platform_device *pdev)
- 
- 	of_id = of_match_device(xgene_mdio_of_match, &pdev->dev);
- 	if (of_id) {
--		mdio_id = (enum xgene_mdio_id)of_id->data;
-+		mdio_id = (uintptr_t)of_id->data;
- 	} else {
- #ifdef CONFIG_ACPI
- 		const struct acpi_device_id *acpi_id;
+v3:
+ - "Drop" TSC scaling patches (already applied).
+ - Remove dead xsave_enabled code (snuck into v2 by a bad conflict
+   resolution). [Zeng]
+ - Make kvm_is_governed_feature() return a bool. [Zeng]
+ - Collect a review. [Yuan]
 
----
-base-commit: 2ccdd1b13c591d306f0401d98dedc4bdcd02b421
-change-id: 20230815-void-drivers-net-mdio-mdio-xgene-e5b3b4a3343b
+v2:
+ - https://lore.kernel.org/all/20230729011608.1065019-1-seanjc@google.com
+ - Add patches to clean up TSC scaling.
+ - Add a comment explaining the virtual VMLOAD/VMLAVE vs. SYSENTER on
+   Intel madness.
+ - Use a governed feature for X86_FEATURE_VMX.
+ - Incorporate KVM capabilities into the main check-and-set helper. [Chao]
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+v1: https://lore.kernel.org/all/20230217231022.816138-1-seanjc@google.com
+
+Sean Christopherson (15):
+  KVM: x86: Add a framework for enabling KVM-governed x86 features
+  KVM: x86/mmu: Use KVM-governed feature framework to track "GBPAGES
+    enabled"
+  KVM: VMX: Recompute "XSAVES enabled" only after CPUID update
+  KVM: VMX: Check KVM CPU caps, not just VMX MSR support, for XSAVE
+    enabling
+  KVM: VMX: Rename XSAVES control to follow KVM's preferred "ENABLE_XYZ"
+  KVM: x86: Use KVM-governed feature framework to track "XSAVES enabled"
+  KVM: nVMX: Use KVM-governed feature framework to track "nested VMX
+    enabled"
+  KVM: nSVM: Use KVM-governed feature framework to track "NRIPS enabled"
+  KVM: nSVM: Use KVM-governed feature framework to track "TSC scaling
+    enabled"
+  KVM: nSVM: Use KVM-governed feature framework to track "vVM{SAVE,LOAD}
+    enabled"
+  KVM: nSVM: Use KVM-governed feature framework to track "LBRv enabled"
+  KVM: nSVM: Use KVM-governed feature framework to track "Pause Filter
+    enabled"
+  KVM: nSVM: Use KVM-governed feature framework to track "vGIF enabled"
+  KVM: nSVM: Use KVM-governed feature framework to track "vNMI enabled"
+  KVM: x86: Disallow guest CPUID lookups when IRQs are disabled
+
+ arch/x86/include/asm/kvm_host.h  | 20 ++++++++-
+ arch/x86/include/asm/vmx.h       |  2 +-
+ arch/x86/kvm/cpuid.c             | 34 ++++++++++++++++
+ arch/x86/kvm/cpuid.h             | 46 +++++++++++++++++++++
+ arch/x86/kvm/governed_features.h | 21 ++++++++++
+ arch/x86/kvm/mmu/mmu.c           | 20 ++-------
+ arch/x86/kvm/svm/nested.c        | 46 ++++++++++++---------
+ arch/x86/kvm/svm/svm.c           | 59 +++++++++++++++------------
+ arch/x86/kvm/svm/svm.h           | 16 ++------
+ arch/x86/kvm/vmx/capabilities.h  |  2 +-
+ arch/x86/kvm/vmx/hyperv.c        |  2 +-
+ arch/x86/kvm/vmx/nested.c        | 13 +++---
+ arch/x86/kvm/vmx/nested.h        |  2 +-
+ arch/x86/kvm/vmx/vmx.c           | 69 ++++++++++++++------------------
+ arch/x86/kvm/vmx/vmx.h           |  3 +-
+ arch/x86/kvm/x86.c               |  4 +-
+ 16 files changed, 232 insertions(+), 127 deletions(-)
+ create mode 100644 arch/x86/kvm/governed_features.h
+
+
+base-commit: aaf44a3a699309c77537d0abf49411f9dc7dc523
+-- 
+2.41.0.694.ge786442a9b-goog
 
