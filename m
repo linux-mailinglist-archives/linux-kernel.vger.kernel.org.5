@@ -2,154 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD1177CDD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2EB77CDDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237517AbjHOOKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 10:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43214 "EHLO
+        id S237520AbjHOOKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 10:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237514AbjHOOJv (ORCPT
+        with ESMTP id S237523AbjHOOKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 10:09:51 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5995199A;
-        Tue, 15 Aug 2023 07:09:49 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b9c907bc68so81609561fa.2;
-        Tue, 15 Aug 2023 07:09:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692108588; x=1692713388;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EUqwQFcaZ1oAyQ7RyvwgmK+J49GL+aD5dHjufsVvaSU=;
-        b=Fqcetz549j/J1l7LSDGsSe0rc+gB4GcJOUV/CogTNYr5XSyP1gD1pBlqP91dbEx2Zb
-         0UXAfea9JiCp2OnOlL7RlxbkEXW6+Xp9qJe4AJCDFCDyV+ruyDmSWUespR7YjWPrwKVi
-         QjEhFkTlJTSWxdhOxngxmNgT53CBEM3Dn2UxefEuob5LAK61LRHEnIVxX3nII3LAIlUV
-         g9VIDt1FYfpXwwDsnLDR0XVqgvi59da+N2qJuSVQe6pJcYFYmnHgnsh6+QkYZz2Zjm74
-         N3maY4TkO1npeLmxgu+fKN9fjD+y8b9HHD9/9zXq7uhnIT9I0KH6n88NRtTxixcGE22g
-         4m9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692108588; x=1692713388;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EUqwQFcaZ1oAyQ7RyvwgmK+J49GL+aD5dHjufsVvaSU=;
-        b=Z1RMGgdrw5IPlGX2/zpGh4NusLhsgGqJn5sFFcwTV0MTEdjKuFt6WnJhv8z1ZZxsCq
-         hHqK/TGpj72KaWTfYIYm4kwZX+FgWyXkqvT4NeWzHO7iSUDykbkXqZZD4/5lEHDDbnQ2
-         1gdWYGciABEjx7OKNETSBYAf8RMa+5v4mWKJdvvRaOYrgNop2wbTuisjSmn4d7IdCN5K
-         8X2rOSaZMbtpNmaub7DYadZ+N0V42tqxW69atdSqJlDKmKM2gTtEYFt/oVE7Vg8D3CUJ
-         FcER6JuhJ7FYuNHK4qDxxhdpzYCkoyUkX2Sl2YnaJTbWmewGFMsKdwhkgD85f5JLVc7P
-         K55w==
-X-Gm-Message-State: AOJu0YwVbBRt/s1W2RAR96Nuf0DY0iSyWUK41w2ec/oajreWatmo72oS
-        cp/RmdXBokZd7eUK6LwrzZcjeLrDhpfJZbQUID0=
-X-Google-Smtp-Source: AGHT+IHFVTgCbx+P55vV/Sr6NoK14EObWpnD7r3nmdPAejOctVxq7J9nAACPeju63tlaFmZYwqFjjngZMGJSVcA2eng=
-X-Received: by 2002:a2e:3e17:0:b0:2b7:33b9:8809 with SMTP id
- l23-20020a2e3e17000000b002b733b98809mr7755616lja.16.1692108587782; Tue, 15
- Aug 2023 07:09:47 -0700 (PDT)
+        Tue, 15 Aug 2023 10:10:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D0B3199A
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:10:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9E04161E53
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 14:10:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9358C433C7;
+        Tue, 15 Aug 2023 14:10:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692108632;
+        bh=n5ZUySZEZiqsQq5qoUoRbN2WfkDeGQmpgZO6gsSVgNU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pvMT8JcnQZj7OZmeLN4OT/RqwDIhHXrGoPSW8qC8zzDbSsyIch1Rv8GKkiGY7DkPR
+         cTIoVmCUU/5zjeeHADYvvuuQj08CU4VD2TJzinH8qRNYMwz5N5GURwwZOEEEHZvLAF
+         yhp3rpbsL8tMQsulZwbJ0sENQc81fWY7bx0Akhhru9ySYSuq6ewC9rTw4fc7MN6ba4
+         X2wCXy4KqRNvCDqJib5ufDckzKOScVjVxRqL79YIvbS6bRSYsVkHm0ojoRA8he0zqs
+         r2FeqkPyvPqJ6kl8TLFwdtJJ/1U0z67s6fDCkmZ3ZfchU/GpsrQVzk+pxlx59NNXRx
+         OZAGmxg0PGNqw==
+Date:   Tue, 15 Aug 2023 15:10:25 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, llvm@lists.linux.dev,
+        Andi Shyti <andi.shyti@kernel.org>
+Subject: Re: [PATCH 1/4] ASoC: aw88261: Fix unitialized ret of
+ aw88261_reg_update()
+Message-ID: <7b35b3b6-7eab-4652-9a16-851a060350bd@sirena.org.uk>
+References: <20230810104749.164827-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-References: <20230626085811.3192402-1-puranjay12@gmail.com> <20230626085811.3192402-4-puranjay12@gmail.com>
-In-Reply-To: <20230626085811.3192402-4-puranjay12@gmail.com>
-From:   Puranjay Mohan <puranjay12@gmail.com>
-Date:   Tue, 15 Aug 2023 16:09:36 +0200
-Message-ID: <CANk7y0gcP3dF2mESLp5JN1+9iDfgtiWRFGqLkCgZD6wby1kQOw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 3/3] bpf, arm64: use bpf_jit_binary_pack_alloc
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, catalin.marinas@arm.com,
-        mark.rutland@arm.com, bpf@vger.kernel.org, kpsingh@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vj9n6GWKkaE+J3Ue"
+Content-Disposition: inline
+In-Reply-To: <20230810104749.164827-1-krzysztof.kozlowski@linaro.org>
+X-Cookie: Darth Vader sleeps with a Teddywookie.
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Everyone,
 
-[+cc Bj=C3=B6rn]
+--vj9n6GWKkaE+J3Ue
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Mon, Jun 26, 2023 at 10:58=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.c=
-om> wrote:
->
-> Use bpf_jit_binary_pack_alloc for memory management of JIT binaries in
-> ARM64 BPF JIT. The bpf_jit_binary_pack_alloc creates a pair of RW and RX
-> buffers. The JIT writes the program into the RW buffer. When the JIT is
-> done, the program is copied to the final RX buffer
-> with bpf_jit_binary_pack_finalize.
->
-> Implement bpf_arch_text_copy() and bpf_arch_text_invalidate() for ARM64
-> JIT as these functions are required by bpf_jit_binary_pack allocator.
->
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> Acked-by: Song Liu <song@kernel.org>
+On Thu, Aug 10, 2023 at 12:47:43PM +0200, Krzysztof Kozlowski wrote:
+> There is a branch in if() clause where aw88261_reg_update() could return
+> uninitialized value.  Pounted out by W=1 clang build:
 
-[...]
+This series appears to have two copies of every patch which *look*
+similar but I'm not 100% sure if that's the case or in general what's
+going on - could you please resend a clean copy, it's probably easier
+than figuring it out?
 
-> +int bpf_arch_text_invalidate(void *dst, size_t len)
-> +{
-> +       __le32 *ptr;
-> +       int ret;
-> +
-> +       for (ptr =3D dst; len >=3D sizeof(u32); len -=3D sizeof(u32)) {
-> +               ret =3D aarch64_insn_patch_text_nosync(ptr++, AARCH64_BRE=
-AK_FAULT);
-> +               if (ret)
-> +                       return ret;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
+--vj9n6GWKkaE+J3Ue
+Content-Type: application/pgp-signature; name="signature.asc"
 
-While testing the same patch for riscv bpf jit, Bj=C3=B6rn found that
-./test_tag is taking a lot of
-time to complete. He found that bpf_arch_text_invalidate() is calling
-patch_text_nosync() in RISCV
-and aarch64_insn_patch_text_nosync() here in ARM64. Both of the
-implementations call these functions
-in a loop for each word. The problem is that every call to
-patch_text_nosync()/aarch64_insn_patch_text_nosync()
-would clean the cache. This will make this
-function(bpf_arch_text_invalidate) really slow.
+-----BEGIN PGP SIGNATURE-----
 
-I did some testing using the vmtest.sh script on ARM64 with and
-without the patches, here are the results:
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTbh1AACgkQJNaLcl1U
+h9Db2wgAhKl6awfKbl76YkckQHA0qEwrCC3ehM9pJoMcPKMh3Sc9f3FMZrk4XmRg
+sPzgcu1JgnUD/G3svs82wur5Kocs8gpAxTiBPonVpko0iILOA6IcELf8Rj3sXVOL
+jUS4Qz89yi5zhrTcEQwZm+9FfrXwmeeRNef1KnNHEbG+24KUPVWcRxu/mWfvTPk5
+WFL5fgeccSniy5L8pWNC464fRdUzoFSLNxR7/SXtiFjoGbXGCDkRsGNAiMWskO6h
+MuFOlNeK8dvtwoVNm06CEk1MWftPzkmRQn6WHb1YjsWU4akwwFXyDRLeTVAfmQCU
+lGuevRFzUsBb2FxR8FJyuJOpeRpAfQ==
+=8N2T
+-----END PGP SIGNATURE-----
 
-With Prog Pack patches applied:
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-root@(none):/# time ./root/bpf/test_tag
-test_tag: OK (40945 tests)
-
-real    3m2.001s
-user    0m1.644s
-sys     2m40.132s
-
-Without Prog Pack:
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-root@(none):/# time ./root/bpf/test_tag
-test_tag: OK (40945 tests)
-
-real    0m26.809s
-user    0m1.591s
-sys     0m24.106s
-
-As you can see the current implementation of
-bpf_arch_text_invalidate() is really slow. I need to
-implement a new function: aarch64_insn_set_text_nosync() and use it in
-bpf_arch_text_invalidate()
-rather than calling aarch64_insn_patch_text_nosync() in a loop.
-
-In the longer run, it would be really helpful if we have a standard
-text_poke API like x86 in every architecture.
-
-Thanks,
-Puranjay
+--vj9n6GWKkaE+J3Ue--
