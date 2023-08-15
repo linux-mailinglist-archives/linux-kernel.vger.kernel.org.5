@@ -2,139 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBECA77D4CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 23:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9DC77D4D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 23:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239190AbjHOVFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 17:05:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34526 "EHLO
+        id S239976AbjHOVHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 17:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239927AbjHOVE5 (ORCPT
+        with ESMTP id S239968AbjHOVGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 17:04:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DFB6F2;
-        Tue, 15 Aug 2023 14:04:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C12465C8C;
-        Tue, 15 Aug 2023 21:04:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06EFAC433C8;
-        Tue, 15 Aug 2023 21:04:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1692133495;
-        bh=xwcwDarbzFSg0MwR0Od2kOF7EW3e+nIsngI5mMgpVvQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Oy21WmZrDR0ZcAKdfSVfTVV8GgQ2KOOCMZpPY4iNEx4uRXpzxOp78SRjQlg+U1QD3
-         AZp1N6BcdHShCbCALtA9daPAFmZCSxBKtSgckIBkz9tApkjuohFsNeZgxKKyhCJWdH
-         +XLftEcvkiULzlUKY+dAEUghMkkUm7Z4oo35yyRc=
-Date:   Tue, 15 Aug 2023 23:04:52 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Atul Kumar Pant <atulpant.linux@gmail.com>
-Cc:     oneukum@suse.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, shuah@kernel.org
-Subject: Re: [PATCH v1] kernel: usb: Adds space, removes trailing whitespace
- and fixes pointer declaration.
-Message-ID: <2023081533-require-pastor-d432@gregkh>
-References: <20230815204841.52600-1-atulpant.linux@gmail.com>
+        Tue, 15 Aug 2023 17:06:43 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 099871B2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 14:06:42 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-790af3bfa5cso71675839f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 14:06:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1692133601; x=1692738401;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ztLnjM2bT7vmtp/V6hmceBoe8bOCHnQ/mTwytlgMJ0k=;
+        b=P1/t/kHsKTxx7aLVHwTvVN6FXN2EqSV0VXYYogCZouU+XE8hV3iXyqyJlRRR120XxY
+         CTyORPHhGsqstcShVUHuVYcbs8C+Rj0RF/XEWUxqblHoMakuDm5pTFM8rYmNO/bprU62
+         8POVTIbxNYDyQeA2JZrpX30bdCEb3+CqB+fSg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692133601; x=1692738401;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ztLnjM2bT7vmtp/V6hmceBoe8bOCHnQ/mTwytlgMJ0k=;
+        b=HHuShkXAQ00oCkzzgVk3fjbEhiMRBhS5D1xwo3OhptMH5GrAQEC3ajL7nL7V6kEo7V
+         em7Vqjtta1P915JCOKxgpBTkdBc0UOtcjEeMC0mOTi9FjOrglFotcJs0BLxS/QfbjK4I
+         PTzOTdfQ/F39xKjUXc9cj25EBN02EKC739rsojLm25RCNTSNbPSlC6y59769gXZbmfUm
+         uRMPW/+ndVKibYGgKucRu4wtJoAevq1cEjuEQmirwGuY0EZcxjxGm41GbIa3ykOiYS7h
+         WSI65sstq8LS4ToMHBPW7pc7kZjvoqeC8B5odJXoi+mmDlCEOYVcAcJZuG4YC4dodyDg
+         5RDA==
+X-Gm-Message-State: AOJu0Ywdofs7P7rniUp6RW/zcTO74qAkeOdhoGTaT/4H5Spqs51dZbAP
+        tQC8XJNevzWFlO4ivAGD23tRrQ==
+X-Google-Smtp-Source: AGHT+IFUXyZf8I8S5b3XfgFxHspACqwcGfGxF/4GQIdz13SeeG7e3I4G1dL3njsF8dW7XfS0jKSGDA==
+X-Received: by 2002:a05:6e02:549:b0:349:385e:287e with SMTP id i9-20020a056e02054900b00349385e287emr113728ils.1.1692133601393;
+        Tue, 15 Aug 2023 14:06:41 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id c18-20020a92cf52000000b00348d2e9701csm4140269ilr.63.2023.08.15.14.06.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Aug 2023 14:06:40 -0700 (PDT)
+Message-ID: <85a03aa3-3d6e-3b16-d113-7d7f5a84bfb4@linuxfoundation.org>
+Date:   Tue, 15 Aug 2023 15:06:39 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230815204841.52600-1-atulpant.linux@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [GIT PULL] nolibc changes for 6.6-rc1
+Content-Language: en-US
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        shuah <shuah@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>
+References: <20230806172245.GA26239@1wt.eu>
+ <3efa3710-4e8b-d187-a24d-ff85858e37fe@linuxfoundation.org>
+ <20230815143540.GA15075@1wt.eu>
+ <29590d7b-40fd-0426-75c6-36667e344f6c@linuxfoundation.org>
+ <9950607c-cafe-c011-7d5f-76a8a971beb0@linuxfoundation.org>
+ <ZNvIkD1oxZENVkoe@1wt.eu>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <ZNvIkD1oxZENVkoe@1wt.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 02:18:41AM +0530, Atul Kumar Pant wrote:
-> This patch fixes following checkpatch.pl issue:
-> ERROR: space required before the open parenthesis '('
-> ERROR: trailing whitespace
-> ERROR: space required after that ','
-> ERROR: "foo * bar" should be "foo *bar"
+On 8/15/23 12:48, Willy Tarreau wrote:
+> Hello Shuah,
 > 
-> Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
-> ---
->  drivers/usb/class/cdc-acm.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> On Tue, Aug 15, 2023 at 12:13:24PM -0600, Shuah Khan wrote:
+>> On 8/15/23 08:39, Shuah Khan wrote:
+>>> On 8/15/23 08:35, Willy Tarreau wrote:
+>>>> On Tue, Aug 15, 2023 at 08:25:51AM -0600, Shuah Khan wrote:
+>>>>>> The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
+>>>>>>
+>>>>>>      Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+>>>>>>
+>>>>>> are available in the Git repository at:
+>>>>>>
+>>>>>>      https://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git/ 20230806-for-6.6-1
+>>>>>>
+>>>>>> for you to fetch changes up to d98c1e27e46e47a3ae67e1d048f153598ba82611:
+>>>>>>
+>>>>>>      tools/nolibc: stackprotector.h: make __stack_chk_init static (2023-08-06 18:44:47 +0200)
+>>>>>>
+>>>>>
+>>>>> Hi Willy,
+>>>>>
+>>>>> I am sorry for the delay on this. I was traveling last week
+>>>>> and getting back to digging myself out of emails.
+>>>>
+>>>> No problem, thanks for getting back :-)
+>>>>
+>>>>> I am having trouble pulling this request though:
+>>>>>
+>>>>> git request-pull https://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git/ 20230806-for-6.6-1
+>>>>>
+>>>>> gives me the following error
+>>>>>
+>>>>> fatal: Not a valid revision: git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git/
+>>>>>
+>>>>> I don't see a tag at https://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git
+>>>>
+>>>> Ah sorry for the misunderstanding, that's the branch name, I'll set a
+>>>> tag then.
+>>>>
+>>>
+>>> No worries. Could you also share the test you run? I will pull
+>>> you request and run tests.
+>>>
+>>
+>> Please send either another pull request or send the tag details.
 > 
-> diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
-> index 11da5fb284d0..638c9cdaa041 100644
-> --- a/drivers/usb/class/cdc-acm.c
-> +++ b/drivers/usb/class/cdc-acm.c
-> @@ -203,7 +203,7 @@ static int acm_wb_is_avail(struct acm *acm)
->  	n = ACM_NW;
->  	spin_lock_irqsave(&acm->write_lock, flags);
->  	for (i = 0; i < ACM_NW; i++)
-> -		if(acm->wb[i].use)
-> +		if (acm->wb[i].use)
->  			n--;
->  	spin_unlock_irqrestore(&acm->write_lock, flags);
->  	return n;
-> @@ -1006,7 +1006,7 @@ static int wait_serial_change(struct acm *acm, unsigned long arg)
->  		}
->  	} while (!rv);
->  
-> -	
-> +
->  
->  	return rv;
->  }
-> @@ -1257,7 +1257,7 @@ static int acm_probe(struct usb_interface *intf,
->  
->  	if (control_interface == data_interface) {
->  		/* some broken devices designed for windows work this way */
-> -		dev_warn(&intf->dev,"Control and data interfaces are not separated!\n");
-> +		dev_warn(&intf->dev, "Control and data interfaces are not separated!\n");
->  		combined_interfaces = 1;
->  		/* a popular other OS doesn't use it */
->  		quirks |= NO_CAP_LINE;
-> @@ -1428,7 +1428,7 @@ static int acm_probe(struct usb_interface *intf,
->  		goto err_free_write_urbs;
->  
->  	if (h.usb_cdc_country_functional_desc) { /* export the country data */
-> -		struct usb_cdc_country_functional_desc * cfd =
-> +		struct usb_cdc_country_functional_desc *cfd =
->  					h.usb_cdc_country_functional_desc;
->  
->  		acm->country_codes = kmalloc(cfd->bLength - 4, GFP_KERNEL);
-> -- 
-> 2.25.1
+> I've pushed a tag named 20230815-for-6.6-2 in the repo below:
+> 
+>    https://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/nolibc.git
+> 
+> Please let me know if you want me to resend a PR.
 > 
 
-Hi,
+Pull worked fine and my verify_fixes script failed on the following patches.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+Commit: 6c931bf0c732 ("selftests/nolibc: avoid buffer underrun in space printing")
+	Fixes tag: Fixes: 8a27526f49f9 ("selftests/nolibc: add EXPECT_PTREQ, EXPECT_PTRNE and EXPECT_PTRER")
+	Has these problem(s):
+		- Target SHA1 does not exist
+Commit: 40f12898b479 ("tools/nolibc/stdio: add setvbuf() to set buffering mode")
+	Fixes tag: Fixes: ecb7fe2cd610 ("selftests: line buffer test program's stdout")
+	Has these problem(s):
+		- Target SHA1 does not exist
 
-You are receiving this message because of the following common error(s)
-as indicated below:
 
-- Your patch did many different things all at once, making it difficult
-  to review.  All Linux kernel patches need to only do one thing at a
-  time.  If you need to do multiple things (such as clean up all coding
-  style issues in a file/driver), do it in a sequence of patches, each
-  one doing only one thing.  This will make it easier to review the
-  patches to ensure that they are correct, and to help alleviate any
-  merge issues that larger patches can cause.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+Will you be able to add the right commit IDs and resend the pull, so there
+are no mistakes if I guess it wrong.
 
 thanks,
+-- Shuah
 
-greg k-h's patch email bot
+
+
