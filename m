@@ -2,104 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 773C777D35A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6284677D35E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239649AbjHOTYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 15:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60650 "EHLO
+        id S239640AbjHOTZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 15:25:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239925AbjHOTYM (ORCPT
+        with ESMTP id S239420AbjHOTYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 15:24:12 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1C1198B
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:23:43 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b962535808so87886881fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:23:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692127422; x=1692732222;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qaFxc7NLdnRLFGC9mlhpM8Q09n9sYqbBf799fEemgfw=;
-        b=TQ21jZyTGF3bfMGXahLoN4HPtf2jI0G0qRbhilG9PHiO7OiF3viTLSdLr8ftgVW2MJ
-         t/n2cjVspxR/8irwI7IlFbd6Uz7LHi9Jg2/8yEW2dI8ahXpOgxzvvwLFm8s7DiZOtODy
-         b6gCmq7bfnW8qjx3IwQfBDhg2BPtk1nuT6sUFCwbJ4WsFL4V8p2lbF7K7ZtV3F3SxPSN
-         6pBvh0Xdf02XPh993XjEty6Nt9rGfLcTjiHKZ4wso3ztCAoO356imeB2k89ew+cS8F/h
-         bm7axHDRBMrKR6de5WQphoD+otQM27z+Ue9qY3UlFB/ZHbQ4/npLLN0KnzuGcH4+DS0I
-         P2Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692127422; x=1692732222;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qaFxc7NLdnRLFGC9mlhpM8Q09n9sYqbBf799fEemgfw=;
-        b=GaObdEkQ4tDdZUzx6aHWRDbUVjVeuK8UcZQFPjs9KOo9/Z5JGlZgVc1YYr6ph9I1wc
-         sPVppwi5Ozj8GG2Gh0z7CqZ4UtH0CylyXhakUL98mL9A6FyHDOjCgDyXptIJd+bzZKOl
-         JzxgnorTCFPWpG8FclGEraHaCVXiztFFSoUVlnRWp1xylcbUlsg0O1UuQnBHPzTCh1n6
-         xhMmGu+9XGyF3bXKakeTmX2ZU1PsQfYRb1ItpGLY1sW4r+u5xqf2NVLh4CGstQP1uCiR
-         q3HJAZkDogi88Eh7rjHTARdvEb8vvw5QQDiHAOOl/R4roUZIc3nhZaVpebpF2962d5sa
-         sxAQ==
-X-Gm-Message-State: AOJu0YxQxqgveP48sBSWtyEebHJyifE+MNal8OjE+BYraCWa7OyZ0uV7
-        9ZZs8tQGRwcdpBF6/790cQspN9hN2TRMQFa3SAA=
-X-Google-Smtp-Source: AGHT+IHJLA26STk/hwBrtqzVAv06LFh2j1m+MsPIDzZXybnuQC5Pb5RCUUJwpAsqa9+P2xMq87XKKRMURzO/wBgCQmw=
-X-Received: by 2002:a05:651c:14a:b0:2b9:d3b6:769e with SMTP id
- c10-20020a05651c014a00b002b9d3b6769emr9194707ljd.24.1692127421409; Tue, 15
- Aug 2023 12:23:41 -0700 (PDT)
+        Tue, 15 Aug 2023 15:24:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B2051FE2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:24:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692127464; x=1723663464;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=gp2+KzE50abHY1M7P/w5vM5Xmdfds0OaRWKBdWmizP0=;
+  b=EYD8kuA8d1tkX78tEqInSS2vfleDzUSPx0pZOrCUQz211BgIV+9UdMhO
+   hown0VmoU0Pba7lN6HlSwk7Qg9XS17ciPz3zIKryJFVnucZlsa1oR9Hq+
+   XBRz9zpP4Gewkj2T9AaSDIS7jAmrzvRjAB+VyogtyiDnyTLhduS0hEcKz
+   soQcW2HCfZJrbRL3QN7rdrFXmKWeZW1rkk7GQNy3SaLKjHxtG77xIztr6
+   Z4mKjcgIMQDJq2ei6R1piAqyBa7TsJforBtjTNDs6tqdObD5TcKbeH8/P
+   Drus+GPLc78yjDxD7TnopaCvf0SpunV9F8nlbeW2HvFZBNSAoPybaSj0y
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="436254303"
+X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
+   d="scan'208";a="436254303"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 12:23:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="683761491"
+X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
+   d="scan'208";a="683761491"
+Received: from lkp-server02.sh.intel.com (HELO b5fb8d9e1ffc) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 15 Aug 2023 12:23:41 -0700
+Received: from kbuild by b5fb8d9e1ffc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qVzdk-0001BP-1j;
+        Tue, 15 Aug 2023 19:23:40 +0000
+Date:   Wed, 16 Aug 2023 03:23:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: vmlinux.o: warning: objtool: cw1200_handle_pspoll.isra.0.cold+0x19:
+ relocation to !ENDBR: cw1200_handle_pspoll.isra.0+0x172
+Message-ID: <202308160300.zefdv91N-lkp@intel.com>
 MIME-Version: 1.0
-References: <389b-64db6700-1-3dc04b80@31442286> <b278375f-4644-2db6-9a14-9088470d528c@suse.de>
- <CAKMK7uF1hv3S--=jsmFWG_tkOKavgMBOkWQt6VOSV0d1U7C0VA@mail.gmail.com>
- <1b9ea227-b068-9d91-1036-28a4161b1744@suse.de> <CAF6AEGsr+2xaCeExm9wPmK=nU+jxevLcd8RDWTSFrwKR-yCvZg@mail.gmail.com>
-In-Reply-To: <CAF6AEGsr+2xaCeExm9wPmK=nU+jxevLcd8RDWTSFrwKR-yCvZg@mail.gmail.com>
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Wed, 16 Aug 2023 05:23:29 +1000
-Message-ID: <CAPM=9tx16UoYoOw4hBChVNPcj57ox1XsybPPTGZn=r2DDQBJmw@mail.gmail.com>
-Subject: Re: [PULL for v6.6] drm-misc-next
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>, daniels@collabora.com,
-        robdclark@google.com, gustavo.padovan@collabora.com,
-        guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
-        linux-kernel@vger.kernel.org, robclark@freedesktop.org,
-        david.heidelberg@collabora.com,
-        Helen Mae Koike Fornazier <helen.koike@collabora.com>,
-        anholt@google.com, dri-devel@lists.freedesktop.org,
-        emma@anholt.net, airlied@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Otherwise, there should be something like a drm-ci tree, from which you
-> > can fetch the changes directly.
->
-> I asked for a pull request so that I could also merge it to msm-next
-> so that I can do CI this cycle.  (Unlike the earlier out-of-tree
-> version of the drm/ci yml, this version needs to be in the branch that
-> CI runs on, so I can't use the workaround that I had in previous
-> cycles.)
->
-> Perhaps it should be a pull request targeting drm-next instead of drm-misc-next.
->
-> We were going to do this one-off for this cycle and then evaluate
-> going forward whether a drm-ci-next tree is needed.  But perhaps it is
-> a good idea.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   91aa6c412d7f85e48aead7b00a7d9e91f5cf5863
+commit: 0cae5ded535c3a80aed94f119bbd4ee3ae284a65 rcu: Make RCU_LOCKDEP_WARN() avoid early lockdep checks
+date:   7 months ago
+config: x86_64-randconfig-r011-20230815 (https://download.01.org/0day-ci/archive/20230816/202308160300.zefdv91N-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230816/202308160300.zefdv91N-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308160300.zefdv91N-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   vmlinux.o: warning: objtool: __ct_user_exit+0x3f: call to __kasan_check_write() leaves .noinstr.text section
+   vmlinux.o: warning: objtool: __ct_user_enter+0x5d: call to __kasan_check_write() leaves .noinstr.text section
+   vmlinux.o: warning: objtool: bnx2fc_interface_setup+0x100: relocation to !ENDBR: bnx2fc_interface_setup.cold+0x231
+>> vmlinux.o: warning: objtool: cw1200_handle_pspoll.isra.0.cold+0x19: relocation to !ENDBR: cw1200_handle_pspoll.isra.0+0x172
 
 
-I'm still not 100% sure how this is going down, and I'm meant to be off today,
+objdump-func vmlinux.o cw1200_handle_pspoll.isra.0.cold:
+0000 00000000003fef70 <cw1200_handle_pspoll.isra.0.cold>:
+0000   3fef70:	49 63 d5             	movslq %r13d,%rdx
+0003   3fef73:	be 01 00 00 00       	mov    $0x1,%esi
+0008   3fef78:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi	3fef7b: R_X86_64_32S	.data+0x17d7a20
+000f   3fef7f:	e8 00 00 00 00       	call   3fef84 <cw1200_handle_pspoll.isra.0.cold+0x14>	3fef80: R_X86_64_PLT32	__ubsan_handle_shift_out_of_bounds-0x4
+0014   3fef84:	e8 00 00 00 00       	call   3fef89 <cw1200_handle_pspoll.isra.0.cold+0x19>	3fef85: R_X86_64_PLT32	debug_lockdep_rcu_enabled-0x4
+0019   3fef89:	48 c7 c6 00 00 00 00 	mov    $0x0,%rsi	3fef8c: R_X86_64_32S	.text+0x46ee322
+0020   3fef90:	48 c7 c7 00 00 00 00 	mov    $0x0,%rdi	3fef93: R_X86_64_32S	rcu_lock_map
+0027   3fef97:	ff 0d 00 00 00 00    	decl   0x0(%rip)        # 3fef9d <cw1200_handle_pspoll.isra.0.cold+0x2d>	3fef99: R_X86_64_PC32	pcpu_hot+0x4
+002d   3fef9d:	e8 00 00 00 00       	call   3fefa2 <cw1200_handle_pspoll.isra.0.cold+0x32>	3fef9e: R_X86_64_PLT32	lock_release-0x4
+0032   3fefa2:	e9 00 00 00 00       	jmp    3fefa7 <tx_policy_get.constprop.0.cold>	3fefa3: R_X86_64_PC32	.text+0x46ee345
 
-Don't send this as patches to drm-misc-next, but I think we'd want
-this in drm-next for a cycle before sending it to Linus, but maybe
-it's not directly interfering with the kernel so it's fine
-
-Ideally when the real merge window opens and drm-next is merged I'd
-want to have a branch + PR written for this against drm-next that I
-can send to Linus separately and see how it goes.
-
-Dave.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
