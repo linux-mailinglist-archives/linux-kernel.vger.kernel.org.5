@@ -2,118 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F1777CAFC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 12:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FAC777CAFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 12:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236127AbjHOKK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 06:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40856 "EHLO
+        id S236169AbjHOKMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 06:12:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236427AbjHOKKW (ORCPT
+        with ESMTP id S233718AbjHOKLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 06:10:22 -0400
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0501710E5;
-        Tue, 15 Aug 2023 03:10:21 -0700 (PDT)
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-99bf8e5ab39so712239266b.2;
-        Tue, 15 Aug 2023 03:10:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692094219; x=1692699019;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DxtXbWDExluXUhdhGSwGLCixL784+N7oTAss+CZkeYk=;
-        b=j7N5sGKUERuwaSo4mVjom6DK14ahAFygnH+9pwV41/9GV3b/HxbdsEIFjivLPpGaj9
-         CzJOzmNL1EulFQIMUgwXnruk9AMr9T/4H6dZU3cA91l3ZHDrlz5yMKibdKGuzgDQ7+B2
-         5MUton4eneDGnxWcEOJ8Guokqmnp1U7yjKh2h6HLXjvtvu9PmQPZi+nWfZv0US5d8tpH
-         VKX5A1lzCCzT+wkmDNhlyICnFaew40LTN6cTbMS8ctI0aqfhLki4/6/6ZilU0AlQ58E1
-         Qt8kk6WpU9dKW4aO3UBm9JNJHPE45p+NNPf/GGPAt3ra+RfJjad1QrCKVKBCRyTP8XpJ
-         kiHQ==
-X-Gm-Message-State: AOJu0YzLW46xdGx3ylxXURO2N/KpdOibcIDVvOSNITURL28BnPY07HHI
-        cDB/3iZ0o42O77bAYzhyCf8=
-X-Google-Smtp-Source: AGHT+IF5agxfKxVU9BmH+YKB+d6b0Jkki95Lu1aSccrJIQ2tweznM+t0gMjDj2I2PhSQV+xo2lcuJA==
-X-Received: by 2002:a17:906:10c9:b0:991:fef4:bb7 with SMTP id v9-20020a17090610c900b00991fef40bb7mr10156437ejv.73.1692094219095;
-        Tue, 15 Aug 2023 03:10:19 -0700 (PDT)
-Received: from [192.168.1.58] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id kq11-20020a170906abcb00b0099bcf563fe6sm6783209ejb.223.2023.08.15.03.10.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 03:10:18 -0700 (PDT)
-Message-ID: <781f5f29-c53e-919c-9c31-0a048a625983@kernel.org>
-Date:   Tue, 15 Aug 2023 12:10:17 +0200
+        Tue, 15 Aug 2023 06:11:34 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115EFE65;
+        Tue, 15 Aug 2023 03:11:33 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C43001F8C1;
+        Tue, 15 Aug 2023 10:11:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1692094291; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QZHXm/564u3x6PUTCJgXhIACDjjhOTuyUgiM0ljfk1Y=;
+        b=cJTPJOTtRkNy9q2Z0HEOQw/wR0+F/RvQOS6DU7kIl3dBO1lqMiBpnGCWi+mE1ONcYklRiI
+        w47X6A3Rk8KQwdeYMZrWe6g2ErI67RI48R1PxEcJpJgz32u1YzOgQJqE1UCrEuoGLJohnk
+        bFJ/OUSOjAv0H18SFBQCV7dnSSwHV58=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1692094291;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QZHXm/564u3x6PUTCJgXhIACDjjhOTuyUgiM0ljfk1Y=;
+        b=LsROFHSTHjhdscGXjbAUahnDMbuMPSSESY6Yn7UYIxDIP6hMAWHHKGHG+q67LoWulENPVl
+        JdxI5IvTa74574Cg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A819D13909;
+        Tue, 15 Aug 2023 10:11:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id AmP+KFNP22S4UwAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 15 Aug 2023 10:11:31 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 3EBB0A0769; Tue, 15 Aug 2023 12:11:31 +0200 (CEST)
+Date:   Tue, 15 Aug 2023 12:11:31 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, yukuai3@huawei.com,
+        Yikebaer Aizezi <yikebaer61@gmail.com>
+Subject: Re: [PATCH v2] ext4: fix slab-use-after-free in
+ ext4_es_insert_extent()
+Message-ID: <20230815101131.f5cdeekwmdz5aues@quack3>
+References: <20230815070808.3377171-1-libaokun1@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] serial: 8250: drop lockdep annotation from
- serial8250_clear_IER()
-Content-Language: en-US
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20230811064340.13400-1-jirislaby@kernel.org>
- <878rae175n.fsf@jogness.linutronix.de>
- <7d8ae4f8-8900-5a06-5b7b-d4a3aea0673e@kernel.org>
- <87bkfa6nvx.fsf@jogness.linutronix.de> <ZNn7KHY3iMRarqAZ@alley>
- <154dfc10-76fa-b054-54a8-faa22ad52158@kernel.org> <ZNtE_dcBaDm-wbHt@alley>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <ZNtE_dcBaDm-wbHt@alley>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230815070808.3377171-1-libaokun1@huawei.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15. 08. 23, 11:27, Petr Mladek wrote:
-> On Mon 2023-08-14 12:21:23, Jiri Slaby wrote:
->> On 14. 08. 23, 12:00, Petr Mladek wrote:
->>> I personally vote to keep it as is unless people see this warning
->>> on daily basis. After all, the lockdep splat is correct. The serial
->>> console might not work correctly in panic() when there is the race.
->>
->> Sorry, but no, the warning is not correct at all. The code path deliberately
->> does NOT take the lock and calls a function which is currently annotated
->> that the lock is _always_ taken. Therefore, the warning is clearly a false
->> positive and I see no reason in keeping it.
+On Tue 15-08-23 15:08:08, Baokun Li wrote:
+> Yikebaer reported an issue:
+> ==================================================================
+> BUG: KASAN: slab-use-after-free in ext4_es_insert_extent+0xc68/0xcb0
+> fs/ext4/extents_status.c:894
+> Read of size 4 at addr ffff888112ecc1a4 by task syz-executor/8438
 > 
-> There might be a misunderstanding. I only want to keep panic()
-> implementation as it is for now. I mean to keep calling
-> debug_locks_off() right before console_flush_on_panic().
-> The lockdep should stay on before to report potential problems
-> in non-printk code, like kexec, panic notifiers.
+> CPU: 1 PID: 8438 Comm: syz-executor Not tainted 6.5.0-rc5 #1
+> Call Trace:
+>  [...]
+>  kasan_report+0xba/0xf0 mm/kasan/report.c:588
+>  ext4_es_insert_extent+0xc68/0xcb0 fs/ext4/extents_status.c:894
+>  ext4_map_blocks+0x92a/0x16f0 fs/ext4/inode.c:680
+>  ext4_alloc_file_blocks.isra.0+0x2df/0xb70 fs/ext4/extents.c:4462
+>  ext4_zero_range fs/ext4/extents.c:4622 [inline]
+>  ext4_fallocate+0x251c/0x3ce0 fs/ext4/extents.c:4721
+>  [...]
 > 
-> But I am fine with disabling the particular lockdep_assert_held_once()
-> during panic().
+> Allocated by task 8438:
+>  [...]
+>  kmem_cache_zalloc include/linux/slab.h:693 [inline]
+>  __es_alloc_extent fs/ext4/extents_status.c:469 [inline]
+>  ext4_es_insert_extent+0x672/0xcb0 fs/ext4/extents_status.c:873
+>  ext4_map_blocks+0x92a/0x16f0 fs/ext4/inode.c:680
+>  ext4_alloc_file_blocks.isra.0+0x2df/0xb70 fs/ext4/extents.c:4462
+>  ext4_zero_range fs/ext4/extents.c:4622 [inline]
+>  ext4_fallocate+0x251c/0x3ce0 fs/ext4/extents.c:4721
+>  [...]
 > 
-> It should stay during the normal system state to catch not
-> yet discovered races. John is working hard on preventing any
-> races which might blow up after introducing the printk kthreads.
+> Freed by task 8438:
+>  [...]
+>  kmem_cache_free+0xec/0x490 mm/slub.c:3823
+>  ext4_es_try_to_merge_right fs/ext4/extents_status.c:593 [inline]
+>  __es_insert_extent+0x9f4/0x1440 fs/ext4/extents_status.c:802
+>  ext4_es_insert_extent+0x2ca/0xcb0 fs/ext4/extents_status.c:882
+>  ext4_map_blocks+0x92a/0x16f0 fs/ext4/inode.c:680
+>  ext4_alloc_file_blocks.isra.0+0x2df/0xb70 fs/ext4/extents.c:4462
+>  ext4_zero_range fs/ext4/extents.c:4622 [inline]
+>  ext4_fallocate+0x251c/0x3ce0 fs/ext4/extents.c:4721
+>  [...]
+> ==================================================================
 > 
-> I mean something like:
+> The flow of issue triggering is as follows:
+> 1. remove es
+>       raw es               es  removed  es1
+> |-------------------| -> |----|.......|------|
 > 
-> diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-> index ecfdc4534123..9533c1eedfb1 100644
-> --- a/drivers/tty/serial/8250/8250_port.c
-> +++ b/drivers/tty/serial/8250/8250_port.c
-> @@ -704,7 +704,8 @@ static void serial8250_set_sleep(struct uart_8250_port *p, int sleep)
->   static void serial8250_clear_IER(struct uart_8250_port *up)
->   {
->   	/* Port locked to synchronize UART_IER access against the console. */
-> -	lockdep_assert_held_once(&up->port.lock);
-> +	if (!oops_in_progress)
-> +		lockdep_assert_held_once(&up->port.lock);
+> 2. insert es
+>   es   insert   es1      merge with es  es1     merge with es and free es1
+> |----|.......|------| -> |------------|------| -> |-------------------|
+> 
+> es merges with newes, then merges with es1, frees es1, then determines
+> if es1->es_len is 0 and triggers a UAF.
+> 
+> The code flow is as follows:
+> ext4_es_insert_extent
+>   es1 = __es_alloc_extent(true);
+>   es2 = __es_alloc_extent(true);
+>   __es_remove_extent(inode, lblk, end, NULL, es1)
+>     __es_insert_extent(inode, &newes, es1) ---> insert es1 to es tree
+>   __es_insert_extent(inode, &newes, es2)
+>     ext4_es_try_to_merge_right
+>       ext4_es_free_extent(inode, es1) --->  es1 is freed
+>   if (es1 && !es1->es_len)
+>     // Trigger UAF by determining if es1 is used.
+> 
+> We determine whether es1 or es2 is used immediately after calling
+> __es_remove_extent() or __es_insert_extent() to avoid triggering a
+> UAF if es1 or es2 is freed.
+> 
+> Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
+> Closes: https://lore.kernel.org/lkml/CALcu4raD4h9coiyEBL4Bm0zjDwxC2CyPiTwsP3zFuhot6y9Beg@mail.gmail.com
+> Fixes: 2a69c450083d ("ext4: using nofail preallocation in ext4_es_insert_extent()")
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-Yes, this is one of my suggestions ;). (Which I thought are not worth 
-it, but I am not opposing either.)
+Looks good. Feel free to add:
 
-thanks,
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/ext4/extents_status.c | 44 +++++++++++++++++++++++++++-------------
+>  1 file changed, 30 insertions(+), 14 deletions(-)
+> 
+> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+> index 9b5b8951afb4..6f7de14c0fa8 100644
+> --- a/fs/ext4/extents_status.c
+> +++ b/fs/ext4/extents_status.c
+> @@ -878,23 +878,29 @@ void ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
+>  	err1 = __es_remove_extent(inode, lblk, end, NULL, es1);
+>  	if (err1 != 0)
+>  		goto error;
+> +	/* Free preallocated extent if it didn't get used. */
+> +	if (es1) {
+> +		if (!es1->es_len)
+> +			__es_free_extent(es1);
+> +		es1 = NULL;
+> +	}
+>  
+>  	err2 = __es_insert_extent(inode, &newes, es2);
+>  	if (err2 == -ENOMEM && !ext4_es_must_keep(&newes))
+>  		err2 = 0;
+>  	if (err2 != 0)
+>  		goto error;
+> +	/* Free preallocated extent if it didn't get used. */
+> +	if (es2) {
+> +		if (!es2->es_len)
+> +			__es_free_extent(es2);
+> +		es2 = NULL;
+> +	}
+>  
+>  	if (sbi->s_cluster_ratio > 1 && test_opt(inode->i_sb, DELALLOC) &&
+>  	    (status & EXTENT_STATUS_WRITTEN ||
+>  	     status & EXTENT_STATUS_UNWRITTEN))
+>  		__revise_pending(inode, lblk, len);
+> -
+> -	/* es is pre-allocated but not used, free it. */
+> -	if (es1 && !es1->es_len)
+> -		__es_free_extent(es1);
+> -	if (es2 && !es2->es_len)
+> -		__es_free_extent(es2);
+>  error:
+>  	write_unlock(&EXT4_I(inode)->i_es_lock);
+>  	if (err1 || err2)
+> @@ -1491,8 +1497,12 @@ void ext4_es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
+>  	 */
+>  	write_lock(&EXT4_I(inode)->i_es_lock);
+>  	err = __es_remove_extent(inode, lblk, end, &reserved, es);
+> -	if (es && !es->es_len)
+> -		__es_free_extent(es);
+> +	/* Free preallocated extent if it didn't get used. */
+> +	if (es) {
+> +		if (!es->es_len)
+> +			__es_free_extent(es);
+> +		es = NULL;
+> +	}
+>  	write_unlock(&EXT4_I(inode)->i_es_lock);
+>  	if (err)
+>  		goto retry;
+> @@ -2047,19 +2057,25 @@ void ext4_es_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk,
+>  	err1 = __es_remove_extent(inode, lblk, lblk, NULL, es1);
+>  	if (err1 != 0)
+>  		goto error;
+> +	/* Free preallocated extent if it didn't get used. */
+> +	if (es1) {
+> +		if (!es1->es_len)
+> +			__es_free_extent(es1);
+> +		es1 = NULL;
+> +	}
+>  
+>  	err2 = __es_insert_extent(inode, &newes, es2);
+>  	if (err2 != 0)
+>  		goto error;
+> +	/* Free preallocated extent if it didn't get used. */
+> +	if (es2) {
+> +		if (!es2->es_len)
+> +			__es_free_extent(es2);
+> +		es2 = NULL;
+> +	}
+>  
+>  	if (allocated)
+>  		__insert_pending(inode, lblk);
+> -
+> -	/* es is pre-allocated but not used, free it. */
+> -	if (es1 && !es1->es_len)
+> -		__es_free_extent(es1);
+> -	if (es2 && !es2->es_len)
+> -		__es_free_extent(es2);
+>  error:
+>  	write_unlock(&EXT4_I(inode)->i_es_lock);
+>  	if (err1 || err2)
+> -- 
+> 2.31.1
+> 
 -- 
-js
-suse labs
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
