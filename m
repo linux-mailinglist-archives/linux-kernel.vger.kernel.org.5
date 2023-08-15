@@ -2,144 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E792477C9D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 10:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 933B477C9D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 10:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235869AbjHOI4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 04:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
+        id S235752AbjHOI5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 04:57:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235902AbjHOIze (ORCPT
+        with ESMTP id S236003AbjHOIzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 04:55:34 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F33E2114
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:53:52 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b962535808so78578391fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:53:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1692089630; x=1692694430;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4Vs87HKrsdbyJ5hB+fbzGtDIkM6Q580dZbGEbWsN7GQ=;
-        b=h1Kj4Vv++QxwzfQK5nZb17y0iz9qPAaV65Ed2PSCtT/l46FlujKD3MAackCJX/IduH
-         I0iFLgP+yvYuANd/zJ9NPbEMstwg5JgqtYDJRDtM4V6oxVnW0SB9+C2+Q+GDxFp9AKvC
-         k508f1FN6NdkkGhB9ccmioBG4T4viMbFfLaX4rELUZZVYaA1IAJ3DMn0jMczk3796kyB
-         k0TSpc3qaI5+PaMMd4UNn3EId3MJzc+zZJc01BCvgTzybJvxWOEhR5YO2CrH6Qxvzs7i
-         WX2fLXXqu/VBW6FIZhG1Kv2NqaCnWhMHTLMVP7dGhOUc0EEBfO/Zi79QbqLkXjJj9MLG
-         36PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692089630; x=1692694430;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4Vs87HKrsdbyJ5hB+fbzGtDIkM6Q580dZbGEbWsN7GQ=;
-        b=PvKnDnbSxv1fi5TKwZCfRgoandZbJgJHZKbhqRfCIttPP1/ARTdk5iG0g461IzDDIL
-         yVeesBnzrDAAeGnyHJOQYm/ZMcOBOcVuFG5Wmpr48TUldA31nFH9cfMx6JcFksCIeOP8
-         PnUl8/UAXehhj7Ki6PhXXjLu5gxwgdSEzxWbEom5cWa5FBo8fukbL0ZysvzQ4DMlDk66
-         f30iILGIo3nAQi+bEQTFB5FuO6khzTTFbL0deWT5QfZZXHLik1r5ynxo3pCeDr4nV/Gs
-         tJ3rfRsJz9DiXrouUrI3cX5Xou3Ny2EgZd3RaL2byWjPfPxlyzRN+fDO03QM8OKxuSPt
-         xJrA==
-X-Gm-Message-State: AOJu0YwqM9AJeMyndmpiFe4Ue48IP6x9nh+J6r1RodkpUY3r+FpJKJNf
-        Te7cUvYgFrXCTlgNOBhFYWnKyJ+PeWCvNEms4iyfng==
-X-Google-Smtp-Source: AGHT+IE3r0FZO/UlxTbbEefaRKebasBru9eYcTIFRU80+0WF9KbVrbhV5Nk0igRdaIa3zAcVh8NTeg==
-X-Received: by 2002:a2e:9dcf:0:b0:2b6:e958:5700 with SMTP id x15-20020a2e9dcf000000b002b6e9585700mr8690050ljj.4.1692089630288;
-        Tue, 15 Aug 2023 01:53:50 -0700 (PDT)
-Received: from [192.168.1.193] (f.c.7.0.0.0.0.0.0.0.0.0.0.0.0.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff::7cf])
-        by smtp.gmail.com with ESMTPSA id 17-20020a05600c231100b003fc01495383sm20172457wmo.6.2023.08.15.01.53.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 01:53:49 -0700 (PDT)
-From:   Lorenz Bauer <lmb@isovalent.com>
-Date:   Tue, 15 Aug 2023 09:53:41 +0100
-Subject: [PATCH bpf-next v2] net: Fix slab-out-of-bounds in
- inet[6]_steal_sock
+        Tue, 15 Aug 2023 04:55:47 -0400
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B81C310F4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:54:08 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VprFaX6_1692089636;
+Received: from 30.97.48.59(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VprFaX6_1692089636)
+          by smtp.aliyun-inc.com;
+          Tue, 15 Aug 2023 16:53:57 +0800
+Message-ID: <7b337eca-1c45-c802-0aea-50d8d149efb4@linux.alibaba.com>
+Date:   Tue, 15 Aug 2023 16:53:57 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 7/9] mm/compaction: factor out code to test if we should
+ run compaction for target order
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, david@redhat.com
+References: <20230805110711.2975149-1-shikemeng@huaweicloud.com>
+ <20230805110711.2975149-8-shikemeng@huaweicloud.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20230805110711.2975149-8-shikemeng@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230815-bpf-next-v2-1-95126eaa4c1b@isovalent.com>
-X-B4-Tracking: v=1; b=H4sIABQ922QC/0WNwQ7CIBAFf6XZsxigrVJP/ofpAerWbqLQACE1D
- f8uIRqPkzeZt0NATxjg0uzgMVEgZwvIQwPTou0DGd0Lg+Sy5YorZtaZWdwi010nNR/6/iQNFH3
- 1ONNWUzf4WTCWZaEQnX/XjyTq/s0N/1wSTLBJGMXPQqJqzZWCS/qJNh4n94Ix5/wBND/S2q4AA
- AA=
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Lorenz Bauer <lmb@isovalent.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-10.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kumar reported a KASAN splat in tcp_v6_rcv:
 
-  bash-5.2# ./test_progs -t btf_skc_cls_ingress
-  ...
-  [   51.810085] BUG: KASAN: slab-out-of-bounds in tcp_v6_rcv+0x2d7d/0x3440
-  [   51.810458] Read of size 2 at addr ffff8881053f038c by task test_progs/226
 
-The problem is that inet[6]_steal_sock accesses sk->sk_protocol without
-accounting for request or timewait sockets. To fix this we can't just
-check sock_common->skc_reuseport since that flag is present on timewait
-sockets.
+On 8/5/2023 7:07 PM, Kemeng Shi wrote:
+> We always do zone_watermark_ok check and compaction_suitable check
+> together to test if compaction for target order should be runned.
+> Factor these code out for preparation to remove repeat code.
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>   mm/compaction.c | 42 +++++++++++++++++++++++++++++-------------
+>   1 file changed, 29 insertions(+), 13 deletions(-)
+> 
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index b5a699ed526b..26787ebb0297 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -2365,6 +2365,30 @@ bool compaction_zonelist_suitable(struct alloc_context *ac, int order,
+>   	return false;
+>   }
+>   
+> +/*
+> + * Should we do compaction for target allocation order.
+> + * Return COMPACT_SUCCESS if allocation for target order can be already
+> + * satisfied
+> + * Return COMPACT_SKIPPED if compaction for target order is likely to fail
+> + * Return COMPACT_CONTINUE if compaction for target order should be runned
+> + */
+> +static inline enum compact_result
+> +compaction_suit_allocation_order(struct zone *zone, unsigned int order,
+> +				 int highest_zoneidx, unsigned int alloc_flags)
+> +{
+> +	unsigned long watermark;
+> +
+> +	watermark = wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK);
 
-Instead, add a fullsock check to avoid the out of bands access of sk_protocol.
+IIUC, the watermark used in patch 8 and patch 9 is different, right? 
+Have you measured the impact of modifying this watermark?
 
-Fixes: 9c02bec95954 ("bpf, net: Support SO_REUSEPORT sockets with bpf_sk_assign")
-Reported-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
----
-Changes in v2:
-- Do a sk_fullsock check instead (Martin Lau)
-- Link to v1: https://lore.kernel.org/r/20230809-bpf-next-v1-1-c1b80712e83b@isovalent.com
----
- include/net/inet6_hashtables.h | 2 +-
- include/net/inet_hashtables.h  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/net/inet6_hashtables.h b/include/net/inet6_hashtables.h
-index 284b5ce7205d..533a7337865a 100644
---- a/include/net/inet6_hashtables.h
-+++ b/include/net/inet6_hashtables.h
-@@ -116,7 +116,7 @@ struct sock *inet6_steal_sock(struct net *net, struct sk_buff *skb, int doff,
- 	if (!sk)
- 		return NULL;
- 
--	if (!prefetched)
-+	if (!prefetched || !sk_fullsock(sk))
- 		return sk;
- 
- 	if (sk->sk_protocol == IPPROTO_TCP) {
-diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
-index 1177effabed3..b277f7ef423a 100644
---- a/include/net/inet_hashtables.h
-+++ b/include/net/inet_hashtables.h
-@@ -462,7 +462,7 @@ struct sock *inet_steal_sock(struct net *net, struct sk_buff *skb, int doff,
- 	if (!sk)
- 		return NULL;
- 
--	if (!prefetched)
-+	if (!prefetched || !sk_fullsock(sk))
- 		return sk;
- 
- 	if (sk->sk_protocol == IPPROTO_TCP) {
-
----
-base-commit: eb62e6aef940fcb1879100130068369d4638088f
-change-id: 20230808-bpf-next-a442a095562b
-
-Best regards,
--- 
-Lorenz Bauer <lmb@isovalent.com>
-
+> +	if (zone_watermark_ok(zone, order, watermark, highest_zoneidx,
+> +			      alloc_flags))
+> +		return COMPACT_SUCCESS;
+> +
+> +	if (!compaction_suitable(zone, order, highest_zoneidx))
+> +		return COMPACT_SKIPPED;
+> +
+> +	return COMPACT_CONTINUE;
+> +}
+> +
+>   static enum compact_result
+>   compact_zone(struct compact_control *cc, struct capture_control *capc)
+>   {
+> @@ -2390,19 +2414,11 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+>   	cc->migratetype = gfp_migratetype(cc->gfp_mask);
+>   
+>   	if (compaction_with_allocation_order(cc->order)) {
+> -		unsigned long watermark;
+> -
+> -		/* Allocation can already succeed, nothing to do */
+> -		watermark = wmark_pages(cc->zone,
+> -					cc->alloc_flags & ALLOC_WMARK_MASK);
+> -		if (zone_watermark_ok(cc->zone, cc->order, watermark,
+> -				      cc->highest_zoneidx, cc->alloc_flags))
+> -			return COMPACT_SUCCESS;
+> -
+> -		/* Compaction is likely to fail */
+> -		if (!compaction_suitable(cc->zone, cc->order,
+> -					 cc->highest_zoneidx))
+> -			return COMPACT_SKIPPED;
+> +		ret = compaction_suit_allocation_order(cc->zone, cc->order,
+> +						       cc->highest_zoneidx,
+> +						       cc->alloc_flags);
+> +		if (ret != COMPACT_CONTINUE)
+> +			return ret;
+>   	}
+>   
+>   	/*
