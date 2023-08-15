@@ -2,151 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D3477CD74
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 15:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49EC477CD7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 15:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237289AbjHONmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 09:42:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46534 "EHLO
+        id S237362AbjHONpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 09:45:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237193AbjHONmP (ORCPT
+        with ESMTP id S236861AbjHONpB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 09:42:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8111986
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 06:41:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692106890;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EMyH+V5f7erV6J8zylTxk3b5SVUBFgCYhMVhPcFeR54=;
-        b=dkrIve3wcO/TLPfg4vM3mYHrOrajaqxTEq2SJX6HFo4nT1Esg2EBzLHELhxAPnZQVQglEH
-        +QfT4/u8F4cMrxE5dBnmsTcNSe2TMX4HxRkn88w+rU/ZZ+UPHjV7VdQAYoFHA1lVRg+w9o
-        uOxO8Yyk52kozTGasc9W3JrcfBgiXhs=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-141-xAgCi_JEM-imRLdCeegC3Q-1; Tue, 15 Aug 2023 09:41:29 -0400
-X-MC-Unique: xAgCi_JEM-imRLdCeegC3Q-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3f5df65f9f4so34147305e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 06:41:29 -0700 (PDT)
+        Tue, 15 Aug 2023 09:45:01 -0400
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC9781986;
+        Tue, 15 Aug 2023 06:44:59 -0700 (PDT)
+Received: by mail-vk1-xa2d.google.com with SMTP id 71dfb90a1353d-4871e5dd7ebso1656349e0c.3;
+        Tue, 15 Aug 2023 06:44:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692107099; x=1692711899;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WblyutNp33S229/zIZJPyXVBU1XRv+8u1otRBaxdntI=;
+        b=Oyjj7U5CclMg5Pz4u81j8aDDCdnEpGVhJrAXYcdyhsmoS3UXI0ZY2RmAqNLxGagS54
+         Bn/fPY/gq4YoY7VS8TACO4EgSOB9ntGEb+RzKAJWexRtbdrO1Is8nuMjqDrQAoN0NVJY
+         53UHd8GxEqh5MQ2aWy2EVbbVt7nZ8loMmsw2XruL794EbKwsNf/urpIhwJGugiNUU6OX
+         k8jbsn7yF9ez77fmp6TiHHDT6ib2u0LMUT5+w4CO52Yg4hN1zxY/WItjWuDnjXg63Zvm
+         R0ghDtUegSzJsPaqtbY0CeqB6BoGYm3KDnXaKmi+ROJR0YjaZLo/P1ESd0SMdb47AXxf
+         WlaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692106888; x=1692711688;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EMyH+V5f7erV6J8zylTxk3b5SVUBFgCYhMVhPcFeR54=;
-        b=DdHbWBTu4GfwpsxINVzgPkeL+Mp8CXd6DxvQ1rMEscNDhavu/56C10yb+yTBsyDiKS
-         Phss7UiGWORPi1s3RfoW2v3U2W7T5K/nq1VWyeGmVlGv9iWpboszWYMNRPDz1s4qnsoZ
-         YDVnVkMlaWIRWtVvatZ6Z7WsEMzy0pAh3bp880tA5qQObq6o+4g/4/KtEoTvrHndL7Hu
-         3H/IbjZnQI9bFLsY++xKiZ3QjuiiMsmgiqz0cxvGbNnzvyxtf6UbeAQttH4AnpBk4f3s
-         xw4NrbhlQ3kxeyL+UQyhmDwQm5k/NQbzvvZg6aS0keZ/Gd+RdjVy8kWU9VeEdVGT3Aah
-         VSkw==
-X-Gm-Message-State: AOJu0YxSvf1gINzk+yeynjKEPLiMLp11fjIORjex6Nz7qVNuyd1SRdkh
-        70G+FVu8FMwpbhLV71+oLA9cZjDGOdgWuRoDD4UsLrm0jo+/vSKmt5spNGNJozApZGapMrRiEYE
-        NRLPY8IRpsksM6WX2PYFe+PgL
-X-Received: by 2002:a1c:7703:0:b0:3fe:159d:422b with SMTP id t3-20020a1c7703000000b003fe159d422bmr9555540wmi.32.1692106888412;
-        Tue, 15 Aug 2023 06:41:28 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEohMgclqjLk6u/tJ5HN7LY7eEaXKoQw8K3cOI+vkgVvaQG0WQtFBe8lnw+0331qIMdGjV0lg==
-X-Received: by 2002:a1c:7703:0:b0:3fe:159d:422b with SMTP id t3-20020a1c7703000000b003fe159d422bmr9555519wmi.32.1692106888039;
-        Tue, 15 Aug 2023 06:41:28 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c701:3100:c642:ba83:8c37:b0e? (p200300cbc7013100c642ba838c370b0e.dip0.t-ipconnect.de. [2003:cb:c701:3100:c642:ba83:8c37:b0e])
-        by smtp.gmail.com with ESMTPSA id i8-20020a5d4388000000b0030647449730sm18174992wrq.74.2023.08.15.06.41.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 06:41:27 -0700 (PDT)
-Message-ID: <ea478fa8-655b-90cc-0cd3-5f127e7e68b7@redhat.com>
-Date:   Tue, 15 Aug 2023 15:41:26 +0200
+        d=1e100.net; s=20221208; t=1692107099; x=1692711899;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WblyutNp33S229/zIZJPyXVBU1XRv+8u1otRBaxdntI=;
+        b=CHJMoouxxExOpH4ZJOsoI16NL3XGovFn+PYM0OC29CNiqtnMeU4I7VLDmjKCUhFBb5
+         Nkx1ZBcKvKQcg8ecUAk82hBiF9ezaak0v0JOp8k/KrIdjZzDNm4s811rGHxv/cfxqmpE
+         Uzvnx/Xxr1jcW5EVa+DqRRF1SZ3nLVo3QupBM/za9J+dLPNyuXtQOTetiUX1/E/VJtgd
+         +KkRqQ8Ar/VwBD5X+nwwZNvZPVBUs454NEigIe9AL6xWrbbP67mhdspZOKv9KwCjtmSb
+         88Gce+MhX1+wNSiueHDKEfTe4nMznDE4q21uPejmW/K+XaPeTX2iXxRDVrWRVjEqZkHY
+         +Fmg==
+X-Gm-Message-State: AOJu0Ywo2u89tNGLw+m655ikBYizrHEElMvFkwIBPsl3AJe3fa22Xzjo
+        KiJbl//fYQD+PRMbzZlXN3ckPbrbmyi+odgwM7Q1X3OKeJbgOHnz0iM=
+X-Google-Smtp-Source: AGHT+IHn8Jmamqj0py2syUKvxiqwXjlm6ujhhP3NVdE9Y/5QrTeOKAbRNnGCs+99DF+wRpfPL0C5EF+u56pPfmc0TKg=
+X-Received: by 2002:a67:fc0a:0:b0:447:60f4:cc51 with SMTP id
+ o10-20020a67fc0a000000b0044760f4cc51mr10404664vsq.28.1692107098888; Tue, 15
+ Aug 2023 06:44:58 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Daniel Gomez <da.gomez@samsung.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vishal.moola@gmail.com" <vishal.moola@gmail.com>,
-        "wangkefeng.wang@huawei.com" <wangkefeng.wang@huawei.com>,
-        "minchan@kernel.org" <minchan@kernel.org>,
-        "yuzhao@google.com" <yuzhao@google.com>,
-        "ryan.roberts@arm.com" <ryan.roberts@arm.com>,
-        "shy828301@gmail.com" <shy828301@gmail.com>
-References: <20230808020917.2230692-1-fengwei.yin@intel.com>
- <20230808020917.2230692-4-fengwei.yin@intel.com>
- <CGME20230815132509eucas1p1b34b2852a9c4efe743c8da82867c4cc3@eucas1p1.samsung.com>
- <4jvrmdpyteny5vaqmcrctzrovap2oy2zuukybbhfqyqbbb5xmy@ufgxufss2ngw>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v2 3/3] madvise:madvise_free_pte_range(): don't use
- mapcount() against large folio for sharing check
-In-Reply-To: <4jvrmdpyteny5vaqmcrctzrovap2oy2zuukybbhfqyqbbb5xmy@ufgxufss2ngw>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230809232851.1004023-1-alistair.francis@wdc.com>
+ <20230810073457.GA26246@wunner.de> <CAKmqyKPm_BFnNxVLXCO_PVRDJaVb+XOj=kEEzXd+MgkwDiZhXA@mail.gmail.com>
+ <20230812081526.GC9469@wunner.de> <2023081224-famished-devotion-6e0e@gregkh>
+In-Reply-To: <2023081224-famished-devotion-6e0e@gregkh>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Tue, 15 Aug 2023 09:44:32 -0400
+Message-ID: <CAKmqyKPx9Oi-ZF0grdUzkHi5BjyyNQZ2r30vgShR6cOY9xZ9YQ@mail.gmail.com>
+Subject: Re: [PATCH v3] PCI/DOE: Expose the DOE protocols via sysfs
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Lukas Wunner <lukas@wunner.de>, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, Jonathan.Cameron@huawei.com,
+        alex.williamson@redhat.com, christian.koenig@amd.com,
+        kch@nvidia.com, logang@deltatee.com, linux-kernel@vger.kernel.org,
+        Alistair Francis <alistair.francis@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.08.23 15:25, Daniel Gomez wrote:
-> Hi Yin,
-> On Tue, Aug 08, 2023 at 10:09:17AM +0800, Yin Fengwei wrote:
->> Commit 98b211d6415f ("madvise: convert madvise_free_pte_range() to use a
->> folio") replaced the page_mapcount() with folio_mapcount() to check
->> whether the folio is shared by other mapping.
->>
->> It's not correct for large folios. folio_mapcount() returns the total
->> mapcount of large folio which is not suitable to detect whether the folio
->> is shared.
->>
->> Use folio_estimated_sharers() which returns a estimated number of shares.
->> That means it's not 100% correct. It should be OK for madvise case here.
-> 
-> I'm trying to understand why it should be ok for madvise this change, so
-> I hope it's okay to ask you few questions.
-> 
-> folio_mapcount() calculates the total maps for all the subpages of a
-> folio. However, the folio_estimated_sharers does it only for the first
-> subpage making it not true for large folios. Then, wouldn't this change
-> drop support for large folios?
+On Sat, Aug 12, 2023 at 4:26=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org=
+> wrote:
+>
+> On Sat, Aug 12, 2023 at 10:15:26AM +0200, Lukas Wunner wrote:
+> > On Thu, Aug 10, 2023 at 11:34:11AM -0400, Alistair Francis wrote:
+> > > On Thu, Aug 10, 2023 at 3:34???AM Lukas Wunner <lukas@wunner.de> wrot=
+e:
+> > > > On Wed, Aug 09, 2023 at 07:28:51PM -0400, Alistair Francis wrote:
+> > > > > --- a/drivers/pci/pci-sysfs.c
+> > > > > +++ b/drivers/pci/pci-sysfs.c
+> > > > > @@ -1226,6 +1227,12 @@ static int pci_create_resource_files(struc=
+t pci_dev *pdev)
+> > > > >       int i;
+> > > > >       int retval;
+> > > > >
+> > > > > +#ifdef CONFIG_PCI_DOE
+> > > > > +     retval =3D doe_sysfs_init(pdev);
+> > > > > +     if (retval)
+> > > > > +             return retval;
+> > > > > +#endif
+> > > > > +
+> > > >
+> > > > The preferred way to expose PCI sysfs attributes nowadays is to add=
+ them
+> > > > to pci_dev_attr_groups[] and use the ->is_visible callback to check
+> > > > whether they're applicable to a particular pci_dev.  The alternativ=
+e
+> > > > via pci_create_resource_files() has race conditions which I think
+> > > > still haven't been fixed. Bjorn recommended the ->is_visible approa=
+ch
+> > > > in response to the most recent attempt to fix the race:
+> > > >
+> > > > https://lore.kernel.org/linux-pci/20230427161458.GA249886@bhelgaas/
+> > >
+> > > The is_visible doen't seem to work in this case.
+> > >
+> > > AFAIK is_visible only applies to the attributes under the group. Whic=
+h
+> > > means that every PCIe device will see a `doe_protos` directory, no
+> > > matter if DOE is supported.
+> >
+> > internal_create_group() in fs/sysfs/group.c does this:
+> >
+> >       if (grp->name) {
+> >                       ...
+> >                       kn =3D kernfs_create_dir_ns(kobj->sd, grp->name, =
+...
+> >
+> > So I'm under the impression that if you set the ->name member of
+> > struct attribute_group, the attributes in that group appear under
+> > a directory of that name.
+> >
+> > In fact, the kernel-doc for struct attribute_group claims as much:
+> >
+> >  * struct attribute_group - data structure used to declare an attribute=
+ group.
+> >  * @name:     Optional: Attribute group name
+> >  *            If specified, the attribute group will be created in
+> >  *            a new subdirectory with this name.
+> >
+> > So I don't quite understand why you think that "every PCIe device will
+> > see a `doe_protos` directory, no matter if DOE is supported"?
+> >
+> > Am I missing something?
+>
+> I think the issue might be that the directory will be created even if no
+> attributes are present in it due to the is_visable() check not returning
+> any valid files?
 
-It's all a mess right now.
+Yes, that's what I'm seeing. I see the directory for all PCIe devices
 
-1) page_mapcount(page): how often it this page mapped
+This is a WIP that I had:
+https://github.com/alistair23/linux/commit/61925cd174c31386eaa7e51e3a1be606=
+b38f847c
 
-For a THP: entire mapcount of the THP (PMD-mapping) + mapcount of *this 
-very subpage* (PTE-mapping) only
+>
+> If so, I had a patch somewhere around here where I was trying to fix
+> that up:
+>         https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-cor=
+e.git/commit/?h=3Ddebugfs_cleanup&id=3Df670945dfbaf353fe068544c31e3fa45575d=
+a5b5
+> but it didn't seem to work properly and kept crashing.  I didn't spend
+> much time on looking into it, but if this is an issue, I can work on
+> fixing this properly.
 
+That patch sounds like it would fix the issue of empty directories
+that I'm seeing. Do you mind fixing it up properly?
 
-2) folio_mapcount(): how often is this folio mapped
+Then I just need to address the race condition and we can switch to
+using .is_visible()
 
-For a THP: entire mapcount of the THP (PMD-mapping) + mapcount of *all* 
-subpages (PTE-mapping) of the folio
+Alistair
 
-
-3) folio_estimated_sharers(): how often is the first page mapped
-
-For a THP: entire mapcount of the THP (PMD-mapping) + mapcount of *the 
-first subpage* (PTE-mapping) only
-
-
-For the time being, folio_estimated_sharers() is better then 
-folio_mapcount(), because for a PTE-mapped THP folio_mapcount() > 1.
-
-I'm looking into a replacement for folio_estimated_sharers() that is 
-more precise ("folio_mapped_shared()"), but it's all a bit tricky. :)
-
--- 
-Cheers,
-
-David / dhildenb
-
+>
+> thanks,
+>
+> greg k-h
