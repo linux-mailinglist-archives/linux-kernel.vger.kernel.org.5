@@ -2,103 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4EF977CDFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 478FD77CDFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237575AbjHOOVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 10:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60758 "EHLO
+        id S237571AbjHOOWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 10:22:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237616AbjHOOVg (ORCPT
+        with ESMTP id S237601AbjHOOWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 10:21:36 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8561E173F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:21:35 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe5695b180so49362325e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:21:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692109294; x=1692714094;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JcRYAsELzZ8xRLuoOUuCkPhIs6L8FpGXiLKJ/U31bwc=;
-        b=W8xTN3MuYzsk/gktkGIfSE/PAeK98mpIjOfIYE/T3/2MX3yrRDb3azJBlDK7GzR4Tz
-         AeAQ1bz+s0fHgqrEMYLn3BVVDyNWduExyhI/6N/4zIrQJuAHXr6fFhOmTLj7hWxMmtET
-         1u+RyuVd3gerwE9AxrDSts6g178F9f5MN/GgBsJpDdw4XytAeIFvwXAlXtAlnl9aoNyT
-         coz/AW+OnpkcCaCsvms44BGaXma8zUXstmUicH+SC/GSxqHJqyGj8TRnunGmkcLQPnqh
-         WzkN91TLjGSWaHEkSsrKad4jQ3Ez58daY/eHTzDqMHDAj7vUlZNJu+dVeCKapvbKTuZD
-         iKzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692109294; x=1692714094;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JcRYAsELzZ8xRLuoOUuCkPhIs6L8FpGXiLKJ/U31bwc=;
-        b=kTqlBEgDSSnJ5WmmW2Ux5UVJKPP2DWGkahPHbn+BwzDf7ocmc95iUn1zyO1c2ZhRWw
-         bInCjgykeh/+7Xzp1wWiU/axkMewOy4cXPdowtPpqhlI9euiwdKrK+4NAwrLZZ1KdRbV
-         KduP7iGsJyMNQFoa2XDWCbRX1cZZsz/sCrJjhDBFjc2i+Mfw5xv8bBIyjF78ODXGJfPr
-         dQczdqCklSS4bJzbJzQp8yBGiawEg3ukpYM+jsGVzMDf/RJTTS0wKs/MleufAZo+hYkM
-         acQ2jRcC+6Z36Pjl675MMPRVQWe0N2jWmrzEqVzC8TgfPoD3UElMsxNbVXIg1bMB57Fi
-         7SCA==
-X-Gm-Message-State: AOJu0Yyd4CcM80l2VIFPAbI6usGLdPjFHiuP7cAsnh/wSqWXuzY6fuWx
-        q9SwkEnnoT5s0oDDp1lrekjSXQ==
-X-Google-Smtp-Source: AGHT+IGMZDYsY9WXT/bGyg3GabwvTyu8r4sZ31hz3OHbKpNSggTjUynaU2Kv5wRsGCL3EmjExdrD9A==
-X-Received: by 2002:adf:e784:0:b0:319:6d91:28c2 with SMTP id n4-20020adfe784000000b003196d9128c2mr6426748wrm.61.1692109294035;
-        Tue, 15 Aug 2023 07:21:34 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id e1-20020a5d5941000000b003141f96ed36sm18128814wri.0.2023.08.15.07.21.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 07:21:33 -0700 (PDT)
-Message-ID: <e8548782-65bf-114e-afb9-f0450468f6a5@linaro.org>
-Date:   Tue, 15 Aug 2023 16:21:31 +0200
+        Tue, 15 Aug 2023 10:22:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEFF1989
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:22:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 34058617A8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 14:22:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55BC2C433C8;
+        Tue, 15 Aug 2023 14:21:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692109319;
+        bh=bGBR8hi9e7WbnYTJUGiwSN8u2LUtojucL5S3dEaViFY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c5jEHBDxJI9CLcgjJ4FNbw2JO7KSGQ86v6l9Abw/ciLLK14qenC0Q5rmWad8eJxlz
+         Xi+F0CWymanP+h1Tc+5nF0OCpCXQS6EzViEmvYLElLLbAVLvpALqKyi7Q3kUT4UkLM
+         NDJfxcVV0JJPS7KR+cFah4lZDwRmLmA6qzcSirCpsPGWIe/c62PYaVmgdxyH+Vv5qD
+         ndhAotfen85FXyMehmU25CJFhKOr3RBrChSbYAXN99M36uRm35a90MlQFNF2RVtAdN
+         SHRZYQHrhz0oTxfOviBvylROdeL2oxG1iQR9aLU2jwkNvbri2ZqgklfhjvtPBPCXew
+         SdCFAC6RlEkOw==
+Date:   Tue, 15 Aug 2023 07:21:57 -0700
+From:   Chris Li <chrisl@kernel.org>
+To:     "Yin, Fengwei" <fengwei.yin@intel.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>, Yu Zhao <yuzhao@google.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, willy@infradead.org, hannes@cmpxchg.org
+Subject: Re: [PATCH] zswap: don't warn if none swapcache folio is passed to
+ zswap_load
+Message-ID: <ZNuKBfNc8mygBjJf@google.com>
+References: <20230810095652.3905184-1-fengwei.yin@intel.com>
+ <CAOUHufYb2LiZYqhyk7GZ2roUbHUEUf3iKkvmSThHBS21EewHiw@mail.gmail.com>
+ <26949c92-95a0-414f-918a-8b8cc11e3e9c@intel.com>
+ <CAJD7tkZRjSKrGBhBQmFsc+45TNAcii2QRMwwhnsgP3_3o8Jxug@mail.gmail.com>
+ <3732dd16-148d-4ac6-8295-86a12f89365b@intel.com>
+ <CAOUHufZWReio1bwzLFeJhi1YVko=kjxcfHo1sS8cfnBZuPaHFQ@mail.gmail.com>
+ <CAJD7tka17GHTgu9JZNW8-CCsH2OR67oj31h53oa-oPTTVnkQQQ@mail.gmail.com>
+ <CAOUHufYk7ZV=YPk6uGE1+ysgTKRXdwV8T3s7qvEkpGYbGNKwEw@mail.gmail.com>
+ <CAJD7tkZoE5is2_pBHs5w7-4Am8HuWdbkBn89OYoHfbRv5rSKsQ@mail.gmail.com>
+ <c98b1c02-4a3e-4b69-ad36-e07100a67398@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/4] ASoC: aw88261: Fix unitialized ret of
- aw88261_reg_update()
-Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, llvm@lists.linux.dev,
-        Andi Shyti <andi.shyti@kernel.org>
-References: <20230810104749.164827-1-krzysztof.kozlowski@linaro.org>
- <7b35b3b6-7eab-4652-9a16-851a060350bd@sirena.org.uk>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <7b35b3b6-7eab-4652-9a16-851a060350bd@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c98b1c02-4a3e-4b69-ad36-e07100a67398@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/08/2023 16:10, Mark Brown wrote:
-> On Thu, Aug 10, 2023 at 12:47:43PM +0200, Krzysztof Kozlowski wrote:
->> There is a branch in if() clause where aw88261_reg_update() could return
->> uninitialized value.  Pounted out by W=1 clang build:
-> 
-> This series appears to have two copies of every patch which *look*
-> similar but I'm not 100% sure if that's the case or in general what's
-> going on - could you please resend a clean copy, it's probably easier
-> than figuring it out?
+Hi Yin,
 
-Sorry for that, I must have screwed something while sending. I'll rebase
-(first patch seems to be already fixed by Arnd) and send again.
+On Fri, Aug 11, 2023 at 01:21:21PM +0800, Yin, Fengwei wrote:
+> OK. I will stick to the current patch.
 
-Best regards,
-Krzysztof
+I think remove that warning is fine.
+
+Feel free to add:
+
+Reviewed-by: Chris Li (Google) <chrisl@kernel.org>
+
+Chris
 
