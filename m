@@ -2,140 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B7777CB7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E9177CB7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236657AbjHOLGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 07:06:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38790 "EHLO
+        id S236658AbjHOLHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 07:07:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236694AbjHOLGZ (ORCPT
+        with ESMTP id S236742AbjHOLGy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 07:06:25 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 788701BC3;
-        Tue, 15 Aug 2023 04:05:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692097479;
-        bh=MpV688qJIlCJuQL+DVSTSQJKjwVC/kuUS1SFDpx5fHo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Mg2sXWQXK7XZdVNWQunVqVS+1b8RHw4rRv0e7IJQEjCf+QfumthoI9ZhVmihwGNkD
-         NiDpplI7MXjWz0XyOJIfQXb2o4HS8zJ6g/hkew/rZ3BTpIpKfEXxNiK4L5uSwv2vk4
-         gVfTdI8YHhx+6l3tKRZY6SEs5hapVPeCjf6h47OoMQBzYY0FvDoJfoDG4p5tZebZJJ
-         pTl5BChA1UOHrFZg4jGBe1xcKYMOpy1AL3/hRF24OCOzCt18nmtW7d/Foih/nsR2i8
-         XdJJQ6H2h2Z4uFs8NEqe03Fd8fs1BM9p1J2Ga0w21uVBPaPH2zIhCIOnjIBYcTxsEK
-         DvMJW2AbI/+fw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RQ7h62Bskz4wxW;
-        Tue, 15 Aug 2023 21:04:38 +1000 (AEST)
-Date:   Tue, 15 Aug 2023 21:04:37 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>, Joerg Roedel <joro@8bytes.org>
-Cc:     Joerg Roedel <jroedel@suse.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the iommufd tree
-Message-ID: <20230815210437.12bd89b0@canb.auug.org.au>
+        Tue, 15 Aug 2023 07:06:54 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3321990
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:06:34 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b962535808so80139851fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:06:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692097591; x=1692702391;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9QB9PMpIHxMSl15jEhQj2gUyUbqxC8jr5ruom3EkY7U=;
+        b=uZ9Pyq7+10EJjDPyRf5UqN3TIkIWm3We9xpznQgvTiZKVHFezbTxkaYLE9RdXGeS4h
+         kekfa+BbdjT83BQ9rZqKNj7Mg6ceouZx2aGeJPtfMBvsbU8m2Kaq43b6nTDdeb9uYBiy
+         DwlcciUQPHv3h6pt2dUu7WZa5V6160P5vawx5gzqloB9zg155vY1hUo8Cn/CvhsJs22w
+         NeGYb06D3FZc+qfrPRTRBMxEjrhFfFe+LP2Fv9Wkvfiq21nr1uyNirj4iEpRxE6epSYJ
+         PuTeR8cO5XTnNeM2YCRnoa66nbT1xbmL6sGzLzJnkpq9vIqYSe4qr+aJEyYH7NLu8orG
+         SB3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692097591; x=1692702391;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9QB9PMpIHxMSl15jEhQj2gUyUbqxC8jr5ruom3EkY7U=;
+        b=YVA8S1/Wet6rExp1kveSHNDnafH3/Ce6T0e3qVQXOMjTTOde1d1d057xOs28xmv1jL
+         ajg6WcfQi/qxEg/ypo6FxhlMzFXFAjAVHhP5CFubHUXekzvqK26EK/4+t2zdr/jZm8/p
+         R6o7gP3r1NRWwOQStHYYDPMxIYjeen0z64XIfmC9KN4DFUU91RhwSZRHaavz0cFzglrQ
+         SaxWyJ1/1nWPPYc1RoFX9t/AFwd4Klo/jP4wJL4BtKtr0wE4SXnMORL2eOORGcMz7Xja
+         WNabXY+xiOxMSf51M5VqYMfSwC1ywa6gD4UsyG7w24zA45NjQ3F7wIJ35dNPqhYvzQn6
+         sEnQ==
+X-Gm-Message-State: AOJu0Yw8/QotdwQUDCOXSpt2J8SwHTINujEE6uzM5HzWYicHJAmY6rdt
+        CLw+Bni7M7e0WsNzBY5sxW2PKw==
+X-Google-Smtp-Source: AGHT+IHFchTlULqciOQ9mFT5NakM1xgtrE/pnBhEiYjYqW2OdfYK6GfZqAb0ySIOgTvvuZ+tKjtkIw==
+X-Received: by 2002:a2e:80d3:0:b0:2bb:8eea:755a with SMTP id r19-20020a2e80d3000000b002bb8eea755amr676100ljg.49.1692097591089;
+        Tue, 15 Aug 2023 04:06:31 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id i23-20020a170906265700b00991bba473e2sm6852642ejc.85.2023.08.15.04.06.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Aug 2023 04:06:30 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        stable@vger.kernel.org
+Subject: [PATCH] pinctrl: qcom: lpass-lpi: fix concurrent register updates
+Date:   Tue, 15 Aug 2023 13:06:25 +0200
+Message-Id: <20230815110625.317971-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/mXfwBR3IljITL8fiCzopG_R";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/mXfwBR3IljITL8fiCzopG_R
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The Qualcomm LPASS LPI pin controller driver uses one lock for guarding
+Read-Modify-Write code for slew rate registers.  However the pin
+configuration and muxing registers have exactly the same RMW code but
+are not protected.
 
-Hi all,
+Pin controller framework does not provide locking here, thus it is
+possible to trigger simultaneous change of pin configuration registers
+resulting in non-atomic changes.
 
-After merging the iommufd tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+Protect from concurrent access by re-using the same lock used to cover
+the slew rate register.  Using the same lock instead of adding second
+one will make more sense, once we add support for newer Qualcomm SoC,
+where slew rate is configured in the same register as pin
+configuration/muxing.
 
-drivers/iommu/iommu.c: In function 'iommu_device_register_bus':
-drivers/iommu/iommu.c:335:15: error: too few arguments to function 'bus_iom=
-mu_probe'
-  335 |         err =3D bus_iommu_probe(bus);
-      |               ^~~~~~~~~~~~~~~
-In file included from drivers/iommu/iommu.c:20:
-include/linux/iommu.h:474:12: note: declared here
-  474 | extern int bus_iommu_probe(const struct bus_type *bus,
-      |            ^~~~~~~~~~~~~~~
-
-Caused by commit
-
-  23a1b46f15d5 ("iommufd/selftest: Make the mock iommu driver into a real d=
-river")
-
-interacting with commit
-
-  2b4de976b360 ("iommu: Pass in the iommu_device to probe for in bus_iommu_=
-probe()")
-
-from the iommu tree.
-
-I have applied the following fix up patch for today:
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 15 Aug 2023 20:50:05 +1000
-Subject: [PATCH] fix up for "iommufd/selftest: Make the mock iommu driver i=
-nto a real driver"
-
-interacting with commit
-
-  2b4de976b360 ("iommu: Pass in the iommu_device to probe for in bus_iommu_=
-probe()")
-
-from the iommu tree.
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Fixes: 6e261d1090d6 ("pinctrl: qcom: Add sm8250 lpass lpi pinctrl driver")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/iommu/iommu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pinctrl/qcom/pinctrl-lpass-lpi.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 20c9a0501760..1e017e1bf5ea 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -332,7 +332,7 @@ int iommu_device_register_bus(struct iommu_device *iomm=
-u,
- 	spin_unlock(&iommu_device_lock);
-=20
- 	bus->iommu_ops =3D ops;
--	err =3D bus_iommu_probe(bus);
-+	err =3D bus_iommu_probe(bus, iommu);
- 	if (err) {
- 		iommu_device_unregister_bus(iommu, bus, nb);
- 		return err;
---=20
-2.40.1
+diff --git a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+index e5a418026ba3..0b2839d27fd6 100644
+--- a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
++++ b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.c
+@@ -32,7 +32,8 @@ struct lpi_pinctrl {
+ 	char __iomem *tlmm_base;
+ 	char __iomem *slew_base;
+ 	struct clk_bulk_data clks[MAX_LPI_NUM_CLKS];
+-	struct mutex slew_access_lock;
++	/* Protects from concurrent register updates */
++	struct mutex lock;
+ 	DECLARE_BITMAP(ever_gpio, MAX_NR_GPIO);
+ 	const struct lpi_pinctrl_variant_data *data;
+ };
+@@ -103,6 +104,7 @@ static int lpi_gpio_set_mux(struct pinctrl_dev *pctldev, unsigned int function,
+ 	if (WARN_ON(i == g->nfuncs))
+ 		return -EINVAL;
+ 
++	mutex_lock(&pctrl->lock);
+ 	val = lpi_gpio_read(pctrl, pin, LPI_GPIO_CFG_REG);
+ 
+ 	/*
+@@ -128,6 +130,7 @@ static int lpi_gpio_set_mux(struct pinctrl_dev *pctldev, unsigned int function,
+ 
+ 	u32p_replace_bits(&val, i, LPI_GPIO_FUNCTION_MASK);
+ 	lpi_gpio_write(pctrl, pin, LPI_GPIO_CFG_REG, val);
++	mutex_unlock(&pctrl->lock);
+ 
+ 	return 0;
+ }
+@@ -233,14 +236,14 @@ static int lpi_config_set(struct pinctrl_dev *pctldev, unsigned int group,
+ 			if (slew_offset == LPI_NO_SLEW)
+ 				break;
+ 
+-			mutex_lock(&pctrl->slew_access_lock);
++			mutex_lock(&pctrl->lock);
+ 
+ 			sval = ioread32(pctrl->slew_base + LPI_SLEW_RATE_CTL_REG);
+ 			sval &= ~(LPI_SLEW_RATE_MASK << slew_offset);
+ 			sval |= arg << slew_offset;
+ 			iowrite32(sval, pctrl->slew_base + LPI_SLEW_RATE_CTL_REG);
+ 
+-			mutex_unlock(&pctrl->slew_access_lock);
++			mutex_unlock(&pctrl->lock);
+ 			break;
+ 		default:
+ 			return -EINVAL;
+@@ -256,6 +259,7 @@ static int lpi_config_set(struct pinctrl_dev *pctldev, unsigned int group,
+ 		lpi_gpio_write(pctrl, group, LPI_GPIO_VALUE_REG, val);
+ 	}
+ 
++	mutex_lock(&pctrl->lock);
+ 	val = lpi_gpio_read(pctrl, group, LPI_GPIO_CFG_REG);
+ 
+ 	u32p_replace_bits(&val, pullup, LPI_GPIO_PULL_MASK);
+@@ -264,6 +268,7 @@ static int lpi_config_set(struct pinctrl_dev *pctldev, unsigned int group,
+ 	u32p_replace_bits(&val, output_enabled, LPI_GPIO_OE_MASK);
+ 
+ 	lpi_gpio_write(pctrl, group, LPI_GPIO_CFG_REG, val);
++	mutex_unlock(&pctrl->lock);
+ 
+ 	return 0;
+ }
+@@ -461,7 +466,7 @@ int lpi_pinctrl_probe(struct platform_device *pdev)
+ 	pctrl->chip.label = dev_name(dev);
+ 	pctrl->chip.can_sleep = false;
+ 
+-	mutex_init(&pctrl->slew_access_lock);
++	mutex_init(&pctrl->lock);
+ 
+ 	pctrl->ctrl = devm_pinctrl_register(dev, &pctrl->desc, pctrl);
+ 	if (IS_ERR(pctrl->ctrl)) {
+@@ -483,7 +488,7 @@ int lpi_pinctrl_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ err_pinctrl:
+-	mutex_destroy(&pctrl->slew_access_lock);
++	mutex_destroy(&pctrl->lock);
+ 	clk_bulk_disable_unprepare(MAX_LPI_NUM_CLKS, pctrl->clks);
+ 
+ 	return ret;
+@@ -495,7 +500,7 @@ int lpi_pinctrl_remove(struct platform_device *pdev)
+ 	struct lpi_pinctrl *pctrl = platform_get_drvdata(pdev);
+ 	int i;
+ 
+-	mutex_destroy(&pctrl->slew_access_lock);
++	mutex_destroy(&pctrl->lock);
+ 	clk_bulk_disable_unprepare(MAX_LPI_NUM_CLKS, pctrl->clks);
+ 
+ 	for (i = 0; i < pctrl->data->npins; i++)
+-- 
+2.34.1
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/mXfwBR3IljITL8fiCzopG_R
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTbW8UACgkQAVBC80lX
-0Gw31wf/YlYZ96F/Cy+T9dh54lcYx4S3J3WuN/n60X0vkZ2hHQSeNzVyyi9Mv5BB
-RMmlDATpqMoh1qRRP3F95e0rAdoL6/X3eMqIIz4twxU0iBUwrIWdZJ+DehTFtkPE
-QXNjuhzIG7B2aoVoFQuKACDAirw2kOj1M6ovIHTwQGsSoA8x9aaFtRjnE3lWbqr/
-VduMaL9RAKwV2AovB57a2Uiv/rCA9GoGZoK2uwZ/et6oD2/DzILbJYzbyveoXGFK
-Jrnb4zazgW9KMGk1Q8634D62DZKuSnOeTDnn/rUx08ND4iRYfLuMEG9JuFkNOsWJ
-UrojVXCUZM2f/MmPtd4WNAweABOLng==
-=3CG8
------END PGP SIGNATURE-----
-
---Sig_/mXfwBR3IljITL8fiCzopG_R--
