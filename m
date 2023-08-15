@@ -2,160 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7292C77D3C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F5777D3C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240036AbjHOT7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 15:59:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
+        id S240079AbjHOT7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 15:59:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234858AbjHOT6g (ORCPT
+        with ESMTP id S240057AbjHOT7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 15:58:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F0C1AB
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:58:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F291F60DC5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:58:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30DA8C433C7;
-        Tue, 15 Aug 2023 19:58:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692129513;
-        bh=liTtQIepDemmgBKm25RqRcTit4+ntzh72R9+hldmPuk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FHArkGL7SuhedGxZT+Q+tVL7vYEi3VdiFjUtpa7esBW/3gxI2YHGjSp5mc5CY9IEu
-         1zACV4FYc11+j3ftiqsvnAUfVHoqWo4rvcKECXXkBbVACapZytiJfUvhgXQLd2GDgc
-         Rmjcy3lyfAfbDeAD2NsvQVPApHBh/D6TvHIKfWZraA325ivvMl93sVS4zTpvSgP6mN
-         dTECccceg2AONf9EaNELtGc7ymDaA9imtdw/wfAV9J//fgenG9spSXB/5lCftKcPuj
-         96J8i4kTBClI0u2i1KpLb7x+LKWd4n9afSGndri4WxsZF8gMr/e1dvtZIInPef9sk1
-         cY8EMI51iD2nQ==
-Date:   Tue, 15 Aug 2023 12:58:31 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Nikolay Borisov <nik.borisov@suse.com>, X86 ML <x86@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/srso: Correct the mitigation status when SMT is
- disabled
-Message-ID: <20230815195831.2opbgrznnpszaa32@treble>
-References: <20230813104517.3346-1-bp@alien8.de>
- <1588ed00-be11-ff9d-e4c2-12db78cca06f@suse.com>
- <20230814200813.p5czl47zssuej7nv@treble>
- <20230814202545.GKZNqNybUnKv+xyrtP@fat_crate.local>
- <20230814205300.krikym7jeckehqik@treble>
- <20230814211727.GLZNqZ5+flxtyaDjMQ@fat_crate.local>
- <20230815095724.GBZNtMBPUJSEegviJN@fat_crate.local>
+        Tue, 15 Aug 2023 15:59:22 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F6083
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:59:20 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-5255ce77d70so3758364a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:59:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692129559; x=1692734359;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dS3682mu41R84swNF5+hT9srqojwp9Qst5EvX4qVzLE=;
+        b=s5olbKVdhKlvi640Pu+d6Uo1NM7DWFOxBE/fc/1wRI2KzhtFAeaikb4tld/eZCIIWG
+         cLKDfsThY6LfoU2wsFcKVbBUU3Fc48mLb2Hw2WsJkPDxM7DpgGLuEMJ53t0K3k3oA8WU
+         H8MNM9Lcq1PrqlewzhhZ5n9jFgATLuKJe9rJ+kE/giOW+OY6D/4bNn1wFGIDvZNUxE5n
+         TzxM2SDt5JSUtM8cRfielD6Qfrkuz9+2TLSm4U+rf3CZorXZTgn5jBeg67aTu5zR+Z8W
+         IAKiYzEtDaO3EtnE6AzTvSZMe5hNJzq9CJyjIHQe5pS/4tI8/b+EpkVRUZFsaRydjX0w
+         sEOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692129559; x=1692734359;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dS3682mu41R84swNF5+hT9srqojwp9Qst5EvX4qVzLE=;
+        b=DstNxkLNjzKjON/Xb/r68ZUvB8OEpiN8UWf9sZe/8a+2D1moJ9uWw499pOmJ7xDwfq
+         mRco4cTaj62b2qDh8abomKdTDZKK7ny4u83Mrdq/B6nwV79bJYuFZhdw0gJqOa4ca+5k
+         0C7z0RetTCnAs0imZ6XQrwZZk4Md+cizps2JtWgxESjyCJ1pSVQXC0ak/UDBTAu9xC+K
+         tQ9xXMNdbrrR/20ILhhC51q2LH0AwXUqNlBVfFq9KLYCDVhD4PfdOmTgpd6Yhk2RVOnk
+         VE6/CiZUNyMpTuwlzgwklfOssu9Rx463y2AwWpyLJ3Uy3cLYkSFpGqUbv6vb8uNl3rDR
+         Gtjw==
+X-Gm-Message-State: AOJu0YxeCtZXDuYBoy3MK028x0vaVYrMU/sGZ+YKCfGZdT8fQgf4w2By
+        uPZvYU3MsyohDHRtfqo0ZBfuKdFLda8FDWKB470=
+X-Google-Smtp-Source: AGHT+IHHb56ttVQa6Oqj7RSVogcURFidJJbohelPmCf3855K7tcoy0NXMphXT9xQQGdX0OkVXYeV1e60uBdxWZTqyhA=
+X-Received: by 2002:a05:6402:447:b0:523:bb8a:8dca with SMTP id
+ p7-20020a056402044700b00523bb8a8dcamr11369118edw.16.1692129559165; Tue, 15
+ Aug 2023 12:59:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230815095724.GBZNtMBPUJSEegviJN@fat_crate.local>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <389b-64db6700-1-3dc04b80@31442286> <b278375f-4644-2db6-9a14-9088470d528c@suse.de>
+ <CAKMK7uF1hv3S--=jsmFWG_tkOKavgMBOkWQt6VOSV0d1U7C0VA@mail.gmail.com>
+ <1b9ea227-b068-9d91-1036-28a4161b1744@suse.de> <CAF6AEGsr+2xaCeExm9wPmK=nU+jxevLcd8RDWTSFrwKR-yCvZg@mail.gmail.com>
+ <CAPM=9tx16UoYoOw4hBChVNPcj57ox1XsybPPTGZn=r2DDQBJmw@mail.gmail.com>
+In-Reply-To: <CAPM=9tx16UoYoOw4hBChVNPcj57ox1XsybPPTGZn=r2DDQBJmw@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Tue, 15 Aug 2023 12:59:07 -0700
+Message-ID: <CAF6AEGu8mRB_wiFeWx17Z12Eu+NnP6VLFBr5sypcnxjQyj7_sQ@mail.gmail.com>
+Subject: Re: [PULL for v6.6] drm-misc-next
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>, daniels@collabora.com,
+        robdclark@google.com, gustavo.padovan@collabora.com,
+        guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
+        linux-kernel@vger.kernel.org, robclark@freedesktop.org,
+        david.heidelberg@collabora.com,
+        Helen Mae Koike Fornazier <helen.koike@collabora.com>,
+        anholt@google.com, dri-devel@lists.freedesktop.org,
+        emma@anholt.net, airlied@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 11:57:24AM +0200, Borislav Petkov wrote:
-> --- a/arch/x86/kernel/cpu/bugs.c
-> +++ b/arch/x86/kernel/cpu/bugs.c
-> @@ -2417,8 +2417,7 @@ static void __init srso_select_mitigation(void)
->  		 * Zen1/2 with SMT off aren't vulnerable after the right
->  		 * IBPB microcode has been applied.
->  		 */
-> -		if ((boot_cpu_data.x86 < 0x19) &&
-> -		    (!cpu_smt_possible() || (cpu_smt_control == CPU_SMT_DISABLED))) {
-> +		if (boot_cpu_data.x86 < 0x19 && !cpu_smt_possible()) {
->  			setup_force_cpu_cap(X86_FEATURE_SRSO_NO);
->  			return;
->  		}
-> @@ -2698,8 +2697,12 @@ static ssize_t retbleed_show_state(char *buf)
->  
->  static ssize_t srso_show_state(char *buf)
->  {
-> -	if (boot_cpu_has(X86_FEATURE_SRSO_NO))
-> -		return sysfs_emit(buf, "Not affected\n");
-> +	if (boot_cpu_has(X86_FEATURE_SRSO_NO)) {
-> +		if (sched_smt_active())
-> +			return sysfs_emit(buf, "Not affected\n");
-> +		else
-> +			return sysfs_emit(buf, "Mitigation: SMT disabled\n");
-> +	}
+On Tue, Aug 15, 2023 at 12:23=E2=80=AFPM Dave Airlie <airlied@gmail.com> wr=
+ote:
+>
+> > > Otherwise, there should be something like a drm-ci tree, from which y=
+ou
+> > > can fetch the changes directly.
+> >
+> > I asked for a pull request so that I could also merge it to msm-next
+> > so that I can do CI this cycle.  (Unlike the earlier out-of-tree
+> > version of the drm/ci yml, this version needs to be in the branch that
+> > CI runs on, so I can't use the workaround that I had in previous
+> > cycles.)
+> >
+> > Perhaps it should be a pull request targeting drm-next instead of drm-m=
+isc-next.
+> >
+> > We were going to do this one-off for this cycle and then evaluate
+> > going forward whether a drm-ci-next tree is needed.  But perhaps it is
+> > a good idea.
+>
+>
+> I'm still not 100% sure how this is going down, and I'm meant to be off t=
+oday,
+>
+> Don't send this as patches to drm-misc-next, but I think we'd want
+> this in drm-next for a cycle before sending it to Linus, but maybe
+> it's not directly interfering with the kernel so it's fine
+>
+> Ideally when the real merge window opens and drm-next is merged I'd
+> want to have a branch + PR written for this against drm-next that I
+> can send to Linus separately and see how it goes.
 
-AFAICT, nowhere in the spec does it say the SRSO_NO bit won't get set by
-future (fixed) HW.  In fact I'd expect it will, similar to other *_NO
-flags.
+The tricky thing is we need this patch in-tree to run CI in the first
+place.. so soak time in drm-next on it's own isn't hugely useful.  (Or
+at least I'd need to move msm-next forward to drm-next for it to be
+useful.)
 
-Regardless, here SRSO_NO seems to mean two different things: "reported
-safe by host (or HW)" and "not reported safe on Zen1/2 with SMT not
-possible".
+I guess that is a bit of an advantage to the earlier approach that
+kept everything but the expectation files in a different git tree..
 
-Also, in this code, the SRSO_NO+SMT combo doesn't seem logically
-possible, as srso_show_state() only gets called if X86_BUG_SRSO is set,
-which only happens if SRSO_NO is not set by the HW/host in the first
-place.  So here, if boot_cpu_has(X86_FEATURE_SRSO_NO), it means SRSO_NO
-was manually set by srso_select_mitigation(), and SMT can't possibly be
-enabled.
-
-Instead of piggybacking on SRSO_NO, which is confusing, why not just add
-a new mitigation type, like:
-
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index 6c04aef4b63b..c925b98f5a15 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -2343,6 +2343,7 @@ early_param("l1tf", l1tf_cmdline);
- enum srso_mitigation {
- 	SRSO_MITIGATION_NONE,
- 	SRSO_MITIGATION_MICROCODE,
-+	SRSO_MITIGATION_SMT,
- 	SRSO_MITIGATION_SAFE_RET,
- 	SRSO_MITIGATION_IBPB,
- 	SRSO_MITIGATION_IBPB_ON_VMEXIT,
-@@ -2359,6 +2360,7 @@ enum srso_mitigation_cmd {
- static const char * const srso_strings[] = {
- 	[SRSO_MITIGATION_NONE]           = "Vulnerable",
- 	[SRSO_MITIGATION_MICROCODE]      = "Mitigation: microcode",
-+	[SRSO_MITIGATION_SMT]		 = "Mitigation: SMT disabled",
- 	[SRSO_MITIGATION_SAFE_RET]	 = "Mitigation: safe RET",
- 	[SRSO_MITIGATION_IBPB]		 = "Mitigation: IBPB",
- 	[SRSO_MITIGATION_IBPB_ON_VMEXIT] = "Mitigation: IBPB on VMEXIT only"
-@@ -2407,19 +2409,15 @@ static void __init srso_select_mitigation(void)
- 		pr_warn("IBPB-extending microcode not applied!\n");
- 		pr_warn(SRSO_NOTICE);
- 	} else {
--		/*
--		 * Enable the synthetic (even if in a real CPUID leaf)
--		 * flags for guests.
--		 */
-+		/* Enable the synthetic flag, as HW doesn't set it. */
- 		setup_force_cpu_cap(X86_FEATURE_IBPB_BRTYPE);
- 
- 		/*
- 		 * Zen1/2 with SMT off aren't vulnerable after the right
- 		 * IBPB microcode has been applied.
- 		 */
--		if ((boot_cpu_data.x86 < 0x19) &&
--		    (!cpu_smt_possible() || (cpu_smt_control == CPU_SMT_DISABLED))) {
--			setup_force_cpu_cap(X86_FEATURE_SRSO_NO);
-+		if ((boot_cpu_data.x86 < 0x19) && !cpu_smt_possible()) {
-+			srso_mitigation = SRSO_MITIGATION_SMT;
- 			return;
- 		}
- 	}
-@@ -2698,9 +2696,6 @@ static ssize_t retbleed_show_state(char *buf)
- 
- static ssize_t srso_show_state(char *buf)
- {
--	if (boot_cpu_has(X86_FEATURE_SRSO_NO))
--		return sysfs_emit(buf, "Not affected\n");
--
- 	return sysfs_emit(buf, "%s%s\n",
- 			  srso_strings[srso_mitigation],
- 			  (cpu_has_ibpb_brtype_microcode() ? "" : ", no microcode"));
+BR,
+-R
