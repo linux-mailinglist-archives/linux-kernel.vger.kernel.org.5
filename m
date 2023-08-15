@@ -2,165 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1505777D0B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9307877D0B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238623AbjHORLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 13:11:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36190 "EHLO
+        id S238677AbjHORPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 13:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238682AbjHORLU (ORCPT
+        with ESMTP id S234364AbjHORPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 13:11:20 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F02E52
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 10:11:19 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-68872e445cdso670982b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 10:11:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692119479; x=1692724279;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cv2n5WJJQIuL/aVi/GBknUHwNAlL9ubXLjVa7Ggcv7I=;
-        b=juBpYIQZEyCC6Jxj3rJ8WnAzIPrIzPVj5tnkYhXpIeMCc4oO2/fQGumrrkXbGCk3g8
-         89rFQ8JFJ7jAi+RKDOoGZu0lboERBLSeqj26Du2aiiZT3HUXr++j5MsFNimW/4tMY2+g
-         rhai3gOe8SafhKvRJ/5b9PjsXezcxE8GcsL2AIP6DNYOol1ymPNSpzGKX4N4U2270Cds
-         PN1LqsVigNzgBLwqPpwepEwsM8KimXnw2TOdhRx1KWDbFUKPeDRaFClMO9+2T2z1icRJ
-         wmeoUCm00GDLdP2w0bHV7FmLWFYd4+xi5/TBn+q9x2KyZBLOZopWH3LIlJtxQ8Z+T6b0
-         OarA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692119479; x=1692724279;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cv2n5WJJQIuL/aVi/GBknUHwNAlL9ubXLjVa7Ggcv7I=;
-        b=W24MjBy2WOirFsC25zxg/rcGtUelIkhQpMnBCUNvBiPDpiXx4r++/6/bQR76WznW0k
-         ++uEXW+Sma92ErZRnaC1GGKfjCOIoN1doidSu2rYlUM4bHybO2/UoQOdBlPvVJUJ6Bkz
-         dMFci0+/JcWhLfmHLK9mjXZIzvWPq1GAtH37eEghiuhWBLssv6qYnWJDo0mqM1hNiKw+
-         QTvZwXOH5FSf3oMFdfSZLg4BML9lRxL2q9FSmtqU69/kNbMYOzmaNLDLjj2ZLJXLpCJo
-         r7e6OEiq1utTF4tsa92SR3dJH0nn3344Z1NnheXC/osTRMePALGbQlGxZMVwULYfeYCD
-         l4gQ==
-X-Gm-Message-State: AOJu0YxtHpeif67479MQN8iyPMilXTrq+bQLAAesO5FrkkyoiwETe4Cf
-        bLXeAvJvGIidRqtpaoSgQKS9/21ZYbY=
-X-Google-Smtp-Source: AGHT+IHbOv08Ksb8i4GH5D8SvhTbeb288EfGwKpVHkJw1xaHbiUdJmgJiWqHwrAr1/byOS/72K0ihXyR9Hs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:398a:b0:687:5d7c:82b8 with SMTP id
- fi10-20020a056a00398a00b006875d7c82b8mr5796779pfb.2.1692119478722; Tue, 15
- Aug 2023 10:11:18 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 10:11:17 -0700
-In-Reply-To: <20230815153537.113861-1-kyle.meyer@hpe.com>
-Mime-Version: 1.0
-References: <20230815153537.113861-1-kyle.meyer@hpe.com>
-Message-ID: <ZNuxtU7kxnv1L88H@google.com>
-Subject: Re: [PATCH] KVM: x86: Increase KVM_MAX_VCPUS to 4096
-From:   Sean Christopherson <seanjc@google.com>
-To:     Kyle Meyer <kyle.meyer@hpe.com>
-Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hasen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vkuznets@redhat.com, dmatlack@google.com, russ.anderson@hpe.com,
-        dimitri.sivanich@hpe.com, steve.wahl@hpe.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 15 Aug 2023 13:15:22 -0400
+Received: from sonic313-15.consmr.mail.ne1.yahoo.com (sonic313-15.consmr.mail.ne1.yahoo.com [66.163.185.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF1E19B4
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 10:15:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1692119719; bh=BPaGmpDTCMPb4Lvs/vaf+VcM/6CX3YE+Dt+y1F5XlrE=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=uOcULKb3MvVxn1CqbvJlutVzek2dAWZhViTfAYlJYqw+dvKBlzy1h/mH3Au1Q8JkJ4b/tAZlYJYP4SmbBiJbrTfSCoTIQGAf7n85Nsl0zB2qRBCg6ukX+OWpN1JyrplQ7QvFseF528Lc0I4RwSaIgONgaeTOWmvMF/hjlBNbhxIb7XlTGnTmOhJ4xih8nBa9xo5Cy7Dn1UVZJOt4fhrZkkuRd/agp2HwjiI4yI4t870bW4NN97G0xeXaNpDgzfAKwfXt3llrCsKXDvrEn0yDmKIxNiEN8I1kxz3+IFXFoVTn+q3QDqfNW4myojEfLOnTgC1QYabY0MHUH4iD9/L0cQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1692119719; bh=cQax5ibei7TzbCpwrTjyZfxqsQ1/ouo1gSVL9s94JrD=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=rUgrLb9kX/CTc2sNWCynK5TVfosZPTwqtoEMmzLonbvKNnboejopWxbxhkze5O+gKLlIAiIRlk6XgnJMD5hmMQAHNVvKPbd/8g1I8PVhHQmvE0uTZb2Dx7YOSLn4+82FAsrhiUzOQdtqhggCw0wc34TAdvz862aI1h0D9SB68CzgUS4CX/HT70y7yeoWDnE1r19F3DKj2dxH8FVPtvexFQJE2XBWnuaEtZRiEh/1/MVIjAsD2zwwDrvx7rdy3xw2TNHRs+RGVovW2zhBFNXI7mUzcnnn5f08h8AsF1muZHZW/HaFkfNRZcNZLPGfet+lhGVfv4+CUZRlmbdrUNHJCQ==
+X-YMail-OSG: 8LS1I7IVM1luXAHtx__GZ_0Q3g.xJp_Hg2ZMvaqkvbGmTAnq2RY0pvRlUIhtvPF
+ prEzwpdHTUIwtxKRQjfTgl52GtTS.uut6uV2X7iAaBWE.aJSQcE86L8U9ELef_.EyyO0bR40VjzG
+ l1f5royGcgeg7RNjRFQ4r9aYKo3KTWBwG5S3EVxsfG9G1sMK2A.Rx92griNnEwpOLZ_KV9sl6qhq
+ 4InkB6yAEiuIYLmQ5s9uZOc4au93QL9qgeZDM1D.XNP2TbNA31EGN81Dhx.o2Q1tupCjBhoDgZD1
+ FoWQIoZPcBhYm7G_sRBxVfOL9EKL3rPfM4TwluBHwLi5kud1luGtKITmi5zBvlI_StTFfgruAh3D
+ hST9Pb7q0KjDE5EuJOS5pDBgU0lWT9LqcQQgbCR6az2PgRUlt3KqcHyf9xqCpvNsR6r0enisIeSw
+ arT8GHJv6oG1asoaEB4H1fWhTZ5oFlb8Z3eGP.E_ukJ2HBnuygYjCynts2U4Pp28bS_hHKDOIkCS
+ 2h_NV72TBCrquJqtYREuJbRcKEtC0iIdNHE_LyvdU7lRrxtOyuXWWlK8D0UwhHwhguZVQ9kZc.he
+ 5ETKii.llAkYFnL4mfPdJCmUTJdpsv_ePQQBPkUr7u.WaR8ZNc467KI.sJH4v5pdK8ng.G5YAPSY
+ bS45obUV7BB4oVN_btipGmoMaGyBe4aXyaptDQgaoeYAIM2oh2N_a8t5.19i8qqoyAGJfeiesepw
+ MBVs2vi6b.SsDoKjy2QCl2t7tcDL7zIUJcp1jymc3YKWewd6K9k3JWnuVyGzDFmKmwZJLnMzE0vA
+ D7SNklo0jrgE.NO7HwdL_9jLNn0BEyUdJpRr.Y.WMm9yWveaMs9V89HtOAMkzZuXpa9pLzZpuVkA
+ chj5m45GNeN6Cvq2M4hR3bJlRq4fvS3dK8tJoXNoRvEki6KExJGqYAn597x4Mk5kbK_fB5D1y_kM
+ sPr6Y157JLXSZiUGkbvhKJAo8xyIsF5Mv0r75bic1pLT8UtCdsX1J4.KMRIGbmSZBADu7Fjnm6N.
+ H_U4T5lV1fBv4uwqxAbjp_lQjwMaM2.S6z49q_DBJgEpKmG21cy2thsokRfNyKRhONxl21aFJOSo
+ kIfu5eARbqaUEHDucUwwlSuMVkKC6pdqrbY0VYA2OkO61fCk0Y1a9RumhnbX_l.R8HTBfM__MuEj
+ CxRRvTxHbVAIKlMLDO8vB9Reg669I72B0VSizy82WtDT8D4KKkXGIacE4e3BPZl1_7fOAvacPgao
+ omd3MX18yU637wbCQR6Q3fFV5ounu.AKSHfZVRtCHuMdsV5UyoUR8nYw.IKi58feExsqykreKAK4
+ LhRyUFtllDwgoyV6LVFtcHcI5uodME10BTicVZsDFqbNq2SnwZPc2IpSJuRhhmBZcGC7ZS_YKh6d
+ a4dMNozB1c351kqcP9GSHEkkxBVxnIlh_MzInAYR5ct4m2NFzkzdMUYcKSHQj8YwFmgkulAmnVmq
+ qPMBUOSOG8FzOSmlBMpwUZjshFujkGZN765CDK8m_tLAR8p_pKOZJldhOBCN_lF13_LIDyhHjdw3
+ zwAaC6F91EJgTOSBgJdkNJ.T5AN9fJc5_eTC8gb93z3q.ylwmBTm2oA8IEixxphpHJEJ5_PCtbEp
+ Y22lCEdNpKYit86.mV.Kun62NkqMLuWXtJFpwEfxulrfttZa6hFv2fa.9C0jJrFAMBBLu0WQHdU3
+ HT0Nv_vDEafnbVmPKLua0DM9SJCL8BHZRSA.j5S0TO1zGLDOeMbEyGONwp3JMDTKJbXlxZmetF7r
+ F0VPlALKm.FEDsTIOHi0utKzXwCqFczJdjvOz6wiV23ztdPrDpCjTRVA0ocMVvAwKACuEatM18HI
+ P0gHKxB.nvOZXIcp3ITvvSzJfz6Rnl_weAIjoyAk4kkvrND_iLMItvwepuZ4qvzfyyzLXMEYUx_9
+ CsHw_PsMRVHeD95ky2jwpFUKR5dZlJqC1M79ZhZQ9D7mc_x7HarXs356oQrqnUK5jatk4T1k0PMn
+ q9hdn.qZCIAKpvPO.gV4qGz.yjAJjSekze_hbwNYKiuZMzc3tEWuDzcGYSllYn.X5K1cBMksR_No
+ 7H6ZySW2PLBgHEVpZAXoZRqG3R1f7avgV9c8heSCGj_yyv9SAjLc9QJ8mzR.AkD.A3tgIDCpWRQE
+ vWgRkrp7Q4G90WoQE_dfzRRYHL0B40inWQwmWSKOkiu.ZFn46D8I5nibFDH3PI_OaLymVb5bs6E1
+ 734qk4UNbSnZusm88okWN._uFAeoC4Ftm9isEuj3zIOfqYe725d27EhY9cDmMBujgXL2FF_UK
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: f868ec95-1348-40e1-b2ea-dd30d63b5a36
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.ne1.yahoo.com with HTTP; Tue, 15 Aug 2023 17:15:19 +0000
+Received: by hermes--production-bf1-865889d799-x5klk (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 4b4d581fd4f018528726dfdcaed7ce40;
+          Tue, 15 Aug 2023 17:15:17 +0000 (UTC)
+Message-ID: <04063c9b-3832-3934-7e4e-3bd969f19a1e@schaufler-ca.com>
+Date:   Tue, 15 Aug 2023 10:15:14 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 03/13] Implement CAP_TRUST capability.
+Content-Language: en-US
+To:     "Dr. Greg" <greg@enjellic.com>
+Cc:     linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, corbet@lwn.net,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20230710102319.19716-1-greg@enjellic.com>
+ <20230710102319.19716-4-greg@enjellic.com>
+ <c5b07b78-f37e-6e95-9c2e-044afe1dd894@schaufler-ca.com>
+ <20230815101947.GA31391@wind.enjellic.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <20230815101947.GA31391@wind.enjellic.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.21695 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023, Kyle Meyer wrote:
-> Increase KVM_MAX_VCPUS to 4096 when MAXSMP is enabled.
-> 
-> Notable changes (when MAXSMP is enabled):
-> 
-> * KMV_MAX_VCPUS will increase from 1024 to 4096.
-> * KVM_MAX_VCPU_IDS will increase from 4096 to 16384.
-> * KVM_HV_MAX_SPARSE_VCPU_SET_BITS will increase from 16 to 64.
-> * CPUID[HYPERV_CPUID_IMPLEMENT_LIMITS (0x40000005)].EAX will now be 4096.
-> 
-> * struct kvm will increase from 39408 B to 39792 B.
-> * struct kvm_ioapic will increase from 5240 B to 19064 B.
-> 
-> * The following (on-stack) bitmaps will increase from 128 B to 512 B:
-> 	* dest_vcpu_bitmap in kvm_irq_delivery_to_apic.
-> 	* vcpu_mask in kvm_hv_flush_tlb.
-> 	* vcpu_bitmap in ioapic_write_indirect.
-> 	* vp_bitmap in sparse_set_to_vcpu_mask.
-> 
-> Signed-off-by: Kyle Meyer <kyle.meyer@hpe.com>
-> ---
-> Virtual machines with 4096 virtual CPUs have been created on 32 socket
-> Cascade Lake and Sapphire Rapids systems.
-> 
-> 4096 is the current maximum value because of the Hyper-V TLFS. See
-> BUILD_BUG_ON in arch/x86/kvm/hyperv.c, commit 79661c3, and Vitaly's
-> comment on https://lore.kernel.org/all/87r136shcc.fsf@redhat.com.
+On 8/15/2023 3:19 AM, Dr. Greg wrote:
+> On Mon, Aug 07, 2023 at 01:21:35PM -0700, Casey Schaufler wrote:
+>
+> Good morning, I hope this note finds the day starting well for
+> everyone.
+>
+>> On 7/10/2023 3:23 AM, Dr. Greg wrote:
+>>> TSEM was designed to support a Trust Orchestration System (TOS)
+>>> security architecture.  A TOS based system uses the concept of a
+>>> minimum Trusted Computing Base of utilities, referred to as trust
+>>> orchestrators, that maintain workloads in a trusted execution
+>>> state.  The trust orchestrators are thus, from a security
+>>> perspective, the most security privileged processes running on
+>>> the platform.
+>>>
+>>> The CAP_ML (machine modeling) capability is defined as a
+>>> capability that allows a process to alter the modeling and hence
+>>> the trust status of the platform.  In a fully orchestrated system
+>>> only the trust orchestrator carry this capability bit and then
+>>> drop the capability for the execution of the workload.  This is
+>>> designed to prevent a security vulnerability in workloads to be
+>>> leveraged to create an entity that could conduct adversarial
+>>> modifications to the trust status of the platform.
+>>>
+>>> With the introduction of TSEM there are three generic mechanisms
+>>> for implementing security contols, each with its own capability
+>>> bit for management, ie:
+>>>
+>>> DAC - CAP_DAC_ADMIN
+>> There is no CAP_DAC_ADMIN. There are several capabilities related to
+>> changing the DAC state of the system.
+> Our apologies, I believe we were thinking of CAP_DAC_OVERRIDE.
 
-Mostly out of curiosity, do you care about Hyper-V support?   If not, at some
-point it'd probably be worth exploring a CONFIG_KVM_HYPERV option to allow
-disabling KVM's Hyper-V support at compile time so that we're not bound by the
-restrictions of the TLFS.
+CAP_DAC_OVERRIDE allows you to circumvent the normal DAC checks.
+It is not an administrative capability.
 
->  arch/x86/include/asm/kvm_host.h | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 3bc146dfd38d..91a01fa17fa7 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -39,7 +39,11 @@
->  
->  #define __KVM_HAVE_ARCH_VCPU_DEBUGFS
->  
-> +#ifdef CONFIG_MAXSMP
-> +#define KVM_MAX_VCPUS 4096
-> +#else
->  #define KVM_MAX_VCPUS 1024
-> +#endif
+>
+>>> MAC - CAP_MAC_ADMIN
+>> Since your system implements a mandatory access control policy
+>> you should be using CAP_MAC_ADMIN.
+> See below.
+>
+>>> Security modeling - CAP_ML
+>> First, the name you've chosen makes no sense at all. It isn't
+>> descriptive and fails even as an abbreviation. Second, you aren't
+>> doing anything that wouldn't be covered under CAP_MAC_ADMIN.
+> Apologies for the name, we choose it ad-hoc as an acronym for 'Machine
+> Learning' which is what TSEM uses, in potentially multiple forms, to
+> implement its security controls.  I wouldn't anticipate it to be
+> forthcoming from your corner, but feel free to suggest an alternative.
 
-Rather than tightly couple this to MAXSMP, what if we add a Kconfig?  I know of
-at least one scenario, SVM's AVIC/x2AVIC, where it would be desirable to configure
-KVM to a much smaller maximum.  The biggest downside I can think of is that KVM
-selftests would need to be updated (they assume the max is >=512), and some of the
-tests might be completely invalid if KVM_MAX_VCPUS is too low (<256?).
+The name should be descriptive and unambiguous. CAP_SYS_ADMIN, for all
+it's faults, tells you exactly what it's for, privileged administration
+operations that are outside the scope of the system security mechanisms.
+Your proposed capability should be named so as it make it obvious where
+else in the system it could/should be used.
 
-E.g.
+> You note above that CAP_MAC_ADMIN should be used because TSEM ends up
+> implementing access control decsions that are mandatory in nature
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 60d430b4650f..8704748e35d9 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -39,7 +39,7 @@
- 
- #define __KVM_HAVE_ARCH_VCPU_DEBUGFS
- 
--#define KVM_MAX_VCPUS 1024
-+#define KVM_MAX_VCPUS CONFIG_KVM_MAX_NR_VCPUS
- 
- /*
-  * In x86, the VCPU ID corresponds to the APIC ID, and APIC IDs
-diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-index ed90f148140d..b0f92eb77f78 100644
---- a/arch/x86/kvm/Kconfig
-+++ b/arch/x86/kvm/Kconfig
-@@ -151,6 +151,17 @@ config KVM_PROVE_MMU
- 
-          If in doubt, say "N".
- 
-+config KVM_MAX_NR_VCPUS
-+       int "Maximum vCPUs per VM"
-+       default "4096" if MAXSMP
-+       default "1024"
-+       range 1 4096
-+       depends on KVM
-+       help
-+         Set the maximum number of vCPUs for a single VM.  Larger values
-+         increase the memory footprint of each VM regardless of how many vCPUs
-+         are actually created (though the memory increase is relatively small).
-+
- config KVM_EXTERNAL_WRITE_TRACKING
-        bool
- 
+That is correct.
 
+> As our documentation notes, with the introduction of TSEM there are
+> three mechanisms that are now available to implement security
+> controls: DAC, static MAC and dynamic controls based on
+> modeling/machine learning.
+
+The static vs. dynamic distinction is fallacious. You can change Smack
+rule sets at any time. You could easily create a modeling/machine learning
+daemon that reads the syslog, audit files and various other system interfaces
+and uses the data to reset the Smack rules to suit its idea of security.
+That daemon would require CAP_MAC_ADMIN and sufficient privilege to read
+the data it is interested in.
+
+Having provided an example of a dynamic, modeling/machine learning system
+for which CAP_MAC_ADMIN is appropriate, I remain of the opinion that your
+proposed CAP_ML is unnecessary.
+
+> Our premise for proposing a separate capability is that different
+> methods of achieving security controls should use different
+> capabilities, so that the capability controls remain orthogonal and
+> independent of one another.
+
+There are lots of people who agree with you. Unfortunately, the capability
+mechanism does not scale well to large numbers of capabilities. It was
+not designed (P1003.1e/2c) with fine grained privilege in mind. The use
+of capabilities has been slow enough on the uptake as it is. Adding all
+the capabilities that have been requested over the years would only make
+it harder.
+
+> Additionally.
+>
+> The mandatory controls implemented by TSEM are subtly different in
+> intent from those implemented by the incumbent LSM's, since TSEM's
+> controls can be generated and implemented by software developers or
+> users.  You had noted in other replies that classic mandatory controls
+> should only be implemented by system administrators or security
+> architects.
+
+Look at seccomp and landlock before you claim TSEM is unique in this way.
+
+> Finally.
+>
+> TSEM brings with it the ability to allow the creation of security
+> control namespaces that do not conflict with other security
+> namespaces,
+
+I read this several times, and can't tease out what it means. :(
+
+>  with the exception that the non-namespaced controls will
+> also exert their authority if they are 'stacked' with TSEM.  If we
+> read user interest and expectations correctly, which I believe we do,
+> there will only be an increasing demand for this type of security
+> functionality.
+>
+> Given that, it will be problematic, moving forward, if the capability
+> to create isolated security namespaces is not orthogonal with the
+> ability to modify how a policy can be configured or managed within an
+> isolated security namespace.
+
+I don't see how "creating an isolated security namespace" isn't
+a "configuraton" or "management" operation. You are going to have
+some other mechanism to prevent processes in an isolated security
+namespace from creating new isolated security namespaces if you
+don't want them to, aren't you?
+
+> Given this latter issue, CAP_ML probably needs a different name,
+> once again, suggestions are welcome.
+>
+>>> Having a separate capability bit for security modeling allows DAC
+>>> and classic label or path based MAC systems to be implemented in
+>>> the context of a security modeling namespace.  Looking forward it
+>>> is not unreasonable to consider the implementation of a modeling
+>>> policy that would verify the status of extended attributes being
+>>> used for label based MAC controls.
+>> It seems reasonable that being trusted with the privilege to change
+>> the modeling policy would imply sufficient trust to change other
+>> security states where allowed. As the Smack maintainer, and having
+>> introduced CAP_MAC_ADMIN, I say that there's insufficient grounds to
+>> introduce a new, single purpose capability.
+> First, no one, least of all our group, doubts your contributions to
+> the art.
+>
+> We are also very confident, in the level of skills and experience in
+> the fields of modeling and security operations, of the team that is
+> bringing forward TSEM.
+>
+> Based on these experiences, as we noted above, we believe it will be
+> unwise to not make the ability to control the creation, isolation and
+> protection of a security namespace from the ability to modify the
+> configuration of a security policy within a namespace.
+
+Sorry, again, I read this several times and can't quite parse it.
+
+> Secondly.
+>
+> With respect to the capability being 'single purpose'.  We haven't
+> seen a clear pathway or discussion regarding namespaces for other
+> security architectures, given the known structural issues involved
+> with classic labeling or pathname based implementations.  Paul
+> suggests that there is ongoing thinking on how to address this issue
+> and you've noted that the stacking work needs to go in before further
+> functionality can be considered.
+
+AppArmor has a working implementation. Both SELinux and Smack have had
+patches reviewed in the past. SELinux work continues, but it has been a
+while since there have been postings. You're correct that no clear path
+has been proposed for dealing with namespaces generically.
+
+> The new capability bit will be available when those initiatives move
+> forward.  Kernel doctrine has been that at least a single use of
+> functionality must be present for a feature to be added, TSEM provides
+> that initial use.
+
+Requests for single-use capabilities come in all the time. The
+capability system isn't set up to allow for them.
+
+> Finally.
+>
+> In his 'ANN' document, regarding LSM submission requirements, Paul
+> Moore noted that he did not want to require the need to demonstrate a
+> 'community of support' around an LSM in order to avoid a 'chicken and
+> egg' problem.  He further noted that LSM authors need to be able to
+> guarantee that API's will be durable for 20+ years.
+>
+> Within the security industry there is already a 'chicken and egg'
+> problem.  A new security architecture or scheme will not evolve
+> without the system, at a minimum, being in the Linux kernel.  New
+> security architectures do not organically appear and evolve, we can
+> state this fact with significant authority.
+>
+> Without generic availability and use of a technology, it is difficult
+> to reason how correct 20+ year guesses on needed functionality can be
+> made.  So there needs to be a 'guess' on how to implement technology,
+> in the most generic form that does not lock the implementation into a
+> corner.
+>
+> We've tried to make these 'guesses' with TSEM, based on, now 15+ years
+> of experience, with multiple implementations of security modeling and
+> namespacing.  Our advocacy for the new capability bit, whatever it is
+> named, is based on that body of experience.
+>
+> We have proposed what we believe is the correct implementation and
+> API.  If the only way forward is an alternate implementation, we have
+> conducted our due diligence, which history will document if that
+> alternate implementation proves to be insufficient and constraining.
+
+Yes, I hear you. Your arguments are fine, they just don't justify
+a new, single use capability.
+
+> Best wishes for a productive remainder of the week.
+
+To you as well.
+
+>
+> As always,
+> Dr. Greg
+>
+> The Quixote Project - Flailing at the Travails of Cybersecurity
