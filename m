@@ -2,88 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A622777D437
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4808C77D439
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238293AbjHOUfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 16:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39302 "EHLO
+        id S238156AbjHOUgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 16:36:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238328AbjHOUff (ORCPT
+        with ESMTP id S238638AbjHOUga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 16:35:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED039F7;
-        Tue, 15 Aug 2023 13:35:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=75R46oKMXGij9WjDuFRcdkMZQJztFv+MgWLiP5Z+wmA=; b=HXM125bORhCV4ax8Na19Xg+n8F
-        qUDPfxv5z5BG59BiS5GrOzIBFT+rykYfaVfA0vxT6jJXyBIvAEbnIWzCNFBfcS9E7+lB8Tdhg2rtd
-        NBvWegeQKrIsT2X8BAu40iqrHwZmSO7d+mqB3+Li5FXQSG+WXm8LdNGH8A5VY5THCscRKJwMAjzk4
-        KgDGfOKWSi9ifyo80vqNkjxtaOm2a/Vpk5flQr0kDDlj/F9j5Ex2ShRwN6O48a5ZMsA3CUAGT05Rp
-        XDbLqyqOiMrQsPWTTbful4WTY0jlyj9V3GgBLvZroT6qSNOm8OktHApKP8h8LxJKVQxBb7ODIK4FU
-        o3C18w5g==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qW0lE-00AISb-0a; Tue, 15 Aug 2023 20:35:28 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 96028300222;
-        Tue, 15 Aug 2023 22:35:27 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 52D992B57699C; Tue, 15 Aug 2023 22:35:27 +0200 (CEST)
-Date:   Tue, 15 Aug 2023 22:35:27 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     James Clark <james.clark@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        catalin.marinas@arm.com, Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH V13 - RESEND 02/10] arm64/perf: Add BRBE registers and
- fields
-Message-ID: <20230815203527.GB971582@hirez.programming.kicks-ass.net>
-References: <20230711082455.215983-1-anshuman.khandual@arm.com>
- <20230711082455.215983-3-anshuman.khandual@arm.com>
- <20230728162011.GA22050@willie-the-truck>
- <89ce4bc4-00c5-a763-3179-e1d3e9f198b7@arm.com>
- <937468a1-b325-7d05-8daf-765f911c9240@arm.com>
- <ZMd5gCOHqnGRc0Ja@FVFF77S0Q05N>
- <f5437bfc-e458-bc23-bc31-a308aa412463@arm.com>
- <ZNt3mQeGbql4oi55@FVFF77S0Q05N>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNt3mQeGbql4oi55@FVFF77S0Q05N>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 15 Aug 2023 16:36:30 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A01F2112
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:36:04 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58419550c3aso59188807b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:36:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692131760; x=1692736560;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Dfs5Y3DHJ7npzzREtgFG2ClBmMfGqulqQ90vEMqFSl0=;
+        b=OOTIDsNjwfRz3NfN2DsEPxkwUAtHn0BarheHqRBXArWxQtuawd0kUtOUNtMZett7Et
+         nu21cLxYGNeXCEMGOyH8+vILYoVWUOS33hq+dNQny2L3Tm47juap+Fn7UL4GhqT3uzxP
+         p6nzcrP4XDULAogIGhkjhl0Z422c2c9y3ItO59eDjnC16+LuBuUBOIwi3AxnIsPo6Ty5
+         YID+gKz746bp161B+mQoC5QEpd8VNHVAp3vI7lVsaMh46Ir1jXvcm5ehHGZ0esxRXl6Y
+         I87ObfOJ35XkghzSmJBbvGPoAXduYhYrDDCEn5LzpqTZ7ywM2OOaCU2T87gx2dOsih/k
+         yyZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692131760; x=1692736560;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Dfs5Y3DHJ7npzzREtgFG2ClBmMfGqulqQ90vEMqFSl0=;
+        b=NTPUOSFHKGtL+Lc7GIsmxoIi81gJIcYtljn9Q7LID6gJzhTHyhmzAGocxT4fhJuUnj
+         s9G5Aig5uksm/HVqybqSi7lO/7NC1hRiT62f3g1rFdOmUpXZO5JzQLTkdUYWnHDcTxDm
+         vRQ5UDxryf0CEHdscI2vZXQzdNQzH4/JexKuol/5gXfvur1Cfmzy8PbaDwXFaF68S+is
+         vHTYDSlzHik/hNgGYQhkutEkde+FUHQu7Bk4XaKdVKH+f8DzY3YFo2O8znC0nePULBg3
+         jJ1bkTuEtLLMU+4AfdNvYu2e/XMsDDI6h7+lQhFNTmoyuC6GcL88ktAqBTvxo3O2f9mh
+         pIUQ==
+X-Gm-Message-State: AOJu0Yy+7EASZPpnY3CUUd/oxcjrlTAq/2m1udKiZEoCuDTGv220XkWL
+        nDw4s+8fzBTVqgP240CyLLKL2drdJWLb+F6YqA==
+X-Google-Smtp-Source: AGHT+IHPT/nbbZXrf0e7v8EA8ROm8f0nGl7AjZVFslemOXzRPn2pjnYb4CswnMsxjZnzqsoOnywqYiXEmqVC7Dv8EQ==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a81:af27:0:b0:569:e04a:238f with SMTP
+ id n39-20020a81af27000000b00569e04a238fmr174069ywh.4.1692131760684; Tue, 15
+ Aug 2023 13:36:00 -0700 (PDT)
+Date:   Tue, 15 Aug 2023 20:35:59 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAK7h22QC/yWNwQqDMBAFf0X27IK6CsVfKT0Y82r30EQ2EgLiv
+ xvay8BcZk5KMEWiuTnJkDVpDFX6tqH1s4QNrL46Dd0g3aOfOEf17E0zLHHAwV+v8Y+yIYAxOXH jIjKKo5rZDW8tv8XzdV032dJlBXIAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692131759; l=1654;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=rsuFH00o6hWgcfF4qhM/BCATheGTTTAlBcUvOm4elss=; b=fEjv5LRK1oRhxMJzmP1RlgzuD977ZksP8znSE/vd2EP5ncIcgC80vChuM2QOMrGrdKbtA/JFK
+ 7CLsxE+qDBeAwopuo1KxIaWMk1+bzD04MTqeHguP5oxI0t/8Scdlg7t
+X-Mailer: b4 0.12.3
+Message-ID: <20230815-void-drivers-net-mdio-mdio-xgene-v1-1-5304342e0659@google.com>
+Subject: [PATCH] net: mdio: fix -Wvoid-pointer-to-enum-cast warning
+From:   Justin Stitt <justinstitt@google.com>
+To:     Iyappan Subramanian <iyappan@os.amperecomputing.com>,
+        Keyur Chudgar <keyur@os.amperecomputing.com>,
+        Quan Nguyen <quan@os.amperecomputing.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 02:05:36PM +0100, Mark Rutland wrote:
+When building with clang 18 I see the following warning:
+|       drivers/net/mdio/mdio-xgene.c:338:13: warning: cast to smaller integer
+|               type 'enum xgene_mdio_id' from 'const void *' [-Wvoid-pointer-to-enum-cast]
+|         338 |                 mdio_id = (enum xgene_mdio_id)of_id->data;
 
-> From a quick dig, it's supposed to be like that: the GNU assembler uses a
-> different operator precedence to C, and clang's assembler does the same for
-> compatibility. What a great.
+This is due to the fact that `of_id->data` is a void* while `enum
+xgene_mdio_id` has the size of an int. This leads to truncation and
+possible data loss.
 
-GNU assembler doesn't even have a consistent true value for boolean
-expressions. The comparisons use -1/~0 as true value while the logical
-ops use 1.
+Link: https://github.com/ClangBuiltLinux/linux/issues/1910
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: `xgene_mdio_id` has only two fields enumerated from 1 which means
+this is no data loss happening here. Either way, this patch helps the
+goal of eventually enabling this warning for more builds by reducing
+noise.
+---
+ drivers/net/mdio/mdio-xgene.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It's as if they purposefully want to mess you up :-(
+diff --git a/drivers/net/mdio/mdio-xgene.c b/drivers/net/mdio/mdio-xgene.c
+index 7aafc221b5cf..7119eb11c00d 100644
+--- a/drivers/net/mdio/mdio-xgene.c
++++ b/drivers/net/mdio/mdio-xgene.c
+@@ -335,7 +335,7 @@ static int xgene_mdio_probe(struct platform_device *pdev)
+ 
+ 	of_id = of_match_device(xgene_mdio_of_match, &pdev->dev);
+ 	if (of_id) {
+-		mdio_id = (enum xgene_mdio_id)of_id->data;
++		mdio_id = (uintptr_t)of_id->data;
+ 	} else {
+ #ifdef CONFIG_ACPI
+ 		const struct acpi_device_id *acpi_id;
 
-  https://sourceware.org/binutils/docs-2.38/as.html#Infix-Ops
+---
+base-commit: 2ccdd1b13c591d306f0401d98dedc4bdcd02b421
+change-id: 20230815-void-drivers-net-mdio-mdio-xgene-e5b3b4a3343b
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
