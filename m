@@ -2,103 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C91777CCB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C30C977CCB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237234AbjHOMbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 08:31:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59820 "EHLO
+        id S237181AbjHOMcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 08:32:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236484AbjHOMbF (ORCPT
+        with ESMTP id S237135AbjHOMbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 08:31:05 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D544D1;
-        Tue, 15 Aug 2023 05:31:04 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RQ9ZG3FwtzrSgW;
-        Tue, 15 Aug 2023 20:29:42 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 15 Aug
- 2023 20:31:02 +0800
-Subject: Re: [PATCH net-next v6 1/6] page_pool: frag API support for 32-bit
- arch with 64-bit DMA
-To:     Simon Horman <horms@kernel.org>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        <linux-rdma@vger.kernel.org>
-References: <20230814125643.59334-1-linyunsheng@huawei.com>
- <20230814125643.59334-2-linyunsheng@huawei.com>
- <ZNtgfy9KPUclHnLE@vergenet.net>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <b497faa8-2e57-a060-1105-24ea6bad0051@huawei.com>
-Date:   Tue, 15 Aug 2023 20:31:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Tue, 15 Aug 2023 08:31:34 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C35A198B
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:31:31 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so1112551266b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:31:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692102689; x=1692707489;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=E3JquWo+PhnRtxv5g8Z8h2LMAj8f61Bdb2igirOa0jM=;
+        b=dp2t8K3rQLReEkq8+il3zNjCfqzoSV52QkRvqwOJXzNReL1sNVI636pULvQcFPpJaR
+         V+aNLoVRQqZyuXMGW9HVCuVKZXXE54NCrg+DeukyswbIGgkS9zc+S+/e/kxqe6UVRRUl
+         P2aD3nOj1rXv6j+R/JbypnD8E6gOZRDEuYviqyNnGvNpy3B1QpnWNMjCP7SfdEceUvRP
+         WvNYT58K8LtLQhGWIjYzmrcZ/XxgERoOgsaiEwqUg7jv1srkCBgM6KF0Q93pTM/uuS9W
+         1UNH4iXuKiS+eJXQwDAACduANt1QFGgnYoYgV2izjPWyEBUqsE3JZ3kXzC67yXx67aBO
+         upBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692102689; x=1692707489;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E3JquWo+PhnRtxv5g8Z8h2LMAj8f61Bdb2igirOa0jM=;
+        b=YrH0ZIZ3+frzjN16y1dTyVSTDsOwXZkCOyYDtnmME8ypY90nSTjIokIKUHHMudjehK
+         eZ/1R1Ea91SR+VvqZW2E7rpMfedWcf/GxbAtz0NabSdGyybuRjTJQ04qqYANV7G6F6Mn
+         0mhq6zzIKmKzpOruXBOtBwpCyxAZJbBXzVCPFkXcijSkS2bRa1aRAOPWw5DpjJAiqLyB
+         s89A9f9RQh7Kxh0EftdX8sDLPYOHC9gngEKQvU/ZYcbQ/tCAZTZleUBY3/k4imVUnJF1
+         ZMQFeop5aHeBj6R655kplbaVvW3M7ORKFefcwDZaLEHfifXlIsr7hkY4I5t5n9PfoBLZ
+         ZAlQ==
+X-Gm-Message-State: AOJu0Yw8f7TQoexbDNijXW5PdIfec9n7F/8iTwM4evb4ftsR/JfOwaLp
+        1tAhf27iDmzqPwXk9EZOsIMgVA==
+X-Google-Smtp-Source: AGHT+IEiYJSPT35S7+7Wzy05+K/JOnc4rIBxfI9zhqdwci8Y3J9mEVZ/8574G6ZEikqQrY/sPJTi9w==
+X-Received: by 2002:a17:906:7315:b0:98e:4f1:f987 with SMTP id di21-20020a170906731500b0098e04f1f987mr2028420ejc.3.1692102689508;
+        Tue, 15 Aug 2023 05:31:29 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id w7-20020aa7da47000000b0052567e6586bsm2349583eds.38.2023.08.15.05.31.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Aug 2023 05:31:29 -0700 (PDT)
+Message-ID: <7fe554e9-27c3-9af4-8167-ae4329c40eb7@linaro.org>
+Date:   Tue, 15 Aug 2023 14:31:27 +0200
 MIME-Version: 1.0
-In-Reply-To: <ZNtgfy9KPUclHnLE@vergenet.net>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v1 2/3] arm64: dts: qcom: sm8450: Add opp table support to
+ PCIe
 Content-Language: en-US
+To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+        manivannan.sadhasivam@linaro.org
+Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
+        quic_parass@quicinc.com, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+References: <1692102408-7010-1-git-send-email-quic_krichai@quicinc.com>
+ <1692102408-7010-3-git-send-email-quic_krichai@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <1692102408-7010-3-git-send-email-quic_krichai@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/15 19:24, Simon Horman wrote:
-> On Mon, Aug 14, 2023 at 08:56:38PM +0800, Yunsheng Lin wrote:
-> 
-> ...
-> 
->> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
->> index 77cb75e63aca..d62c11aaea9a 100644
->> --- a/net/core/page_pool.c
->> +++ b/net/core/page_pool.c
-> 
-> ...
-> 
->> @@ -737,18 +736,16 @@ static void page_pool_free_frag(struct page_pool *pool)
->>  	page_pool_return_page(pool, page);
->>  }
->>  
->> -struct page *page_pool_alloc_frag(struct page_pool *pool,
->> -				  unsigned int *offset,
->> -				  unsigned int size, gfp_t gfp)
->> +struct page *__page_pool_alloc_frag(struct page_pool *pool,
->> +				    unsigned int *offset,
->> +				    unsigned int size, gfp_t gfp)
->>  {
->>  	unsigned int max_size = PAGE_SIZE << pool->p.order;
->>  	struct page *page = pool->frag_page;
->>  
->> -	if (WARN_ON(!(pool->p.flags & PP_FLAG_PAGE_FRAG) ||
->> -		    size > max_size))
->> +	if (WARN_ON(!(pool->p.flags & PP_FLAG_PAGE_FRAG))
-> 
-> Hi Yunsheng Lin,
-> 
-> There is a ')' missing on the line above, which results in a build failure.
+On 15/08/2023 14:26, Krishna chaitanya chundru wrote:
+> PCIe needs to choose the appropriate performance state of RPMH power
+> domain based upon the PCIe gen speed.
 
-Yes, thanks for noticing.
-As the above checking is removed in patch 3, so it is not noticeable in testing
-when the whole patchset is applied.
+This explanation should be also in bindings patch, otherwise why would
+we consider the bindings patch?
 
 > 
+> So, let's add the OPP table support to specify RPMH performance states.
+> 
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/sm8450.dtsi | 47 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> index 595533a..681ea9c 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> @@ -381,6 +381,49 @@
+>  		};
+>  	};
+>  
+> +	pcie0_opp_table: opp-table-pcie0 {
+> +		compatible = "operating-points-v2";
+> +
+> +		opp-2500000 {
+> +			opp-hz = /bits/ 64 <2500000>;
+> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+> +		};
+> +
+> +		opp-5000000 {
+> +			opp-hz = /bits/ 64 <5000000>;
+> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+> +		};
+> +
+> +		opp-8000000 {
+> +			opp-hz = /bits/ 64 <8000000>;
+> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+> +		};
+> +	};
+> +
+> +	pcie1_opp_table: opp-table-pcie1 {
+> +		compatible = "operating-points-v2";
+> +
+> +		opp-2500000 {
+> +			opp-hz = /bits/ 64 <2500000>;
+> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+> +		};
+> +
+> +		opp-5000000 {
+> +			opp-hz = /bits/ 64 <5000000>;
+> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+> +		};
+> +
+> +		opp-8000000 {
+> +			opp-hz = /bits/ 64 <8000000>;
+> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+> +		};
+> +
+> +		opp-16000000 {
+> +			opp-hz = /bits/ 64 <16000000>;
+> +			opp-level = <RPMH_REGULATOR_LEVEL_NOM>;
+> +		};
+> +	};
+> +
+>  	reserved_memory: reserved-memory {
+>  		#address-cells = <2>;
+>  		#size-cells = <2>;
+> @@ -1803,6 +1846,8 @@
+>  			pinctrl-names = "default";
+>  			pinctrl-0 = <&pcie0_default_state>;
+>  
+> +			operating-points-v2 = <&pcie0_opp_table>;
+
+Why the table is not here? Is it shared with multiple devices?
+
+Best regards,
+Krzysztof
+
