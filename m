@@ -2,134 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C2477CE5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E89C77CE62
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237764AbjHOOpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 10:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
+        id S237770AbjHOOpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 10:45:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237743AbjHOOpV (ORCPT
+        with ESMTP id S237771AbjHOOpd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 10:45:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21C710F0;
-        Tue, 15 Aug 2023 07:45:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692110720; x=1723646720;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=Q1salXJI+zzxg06IZ3d1FiWspFLqiYYwuqZGiPPvT+k=;
-  b=fYeloy3/MC4FR7pKKB5WUb5hZ/79WY1+W8t0Igr8XxiRscYU5iZ2e21z
-   8v+6us2+THd1qrVtmDGR6uc75yMiNbsQhaSaxgQbLa09NVF+UE0pwng/m
-   vvxDu88zh2nWaLH22wK4j9bLen4e0x+abwC77h5MRghtevDYxiTt419ax
-   JOTeWnK+q7wBOUcgFXJgmaeipw/xQdcTxlfKXh4sBq8JEZkQTP7UOJMu6
-   Xxg8NeXK3S4ux76lVxF8CBZ4VyqMmL72KOsSz8Ol0lXnKZRgtSrb53Lqs
-   pdfAF0Ful/zHGTF5CW2+ZyUI40IOLPM3QiFTeDAVtQhX/lCAoLHQHCc+q
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="403273146"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="403273146"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 07:45:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="710731386"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="710731386"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga006.jf.intel.com with ESMTP; 15 Aug 2023 07:45:08 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qVvIB-005n4m-0z;
-        Tue, 15 Aug 2023 17:45:07 +0300
-Date:   Tue, 15 Aug 2023 17:45:07 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v3] gpiolib: fix reference leaks when removing GPIO chips
- still in use
-Message-ID: <ZNuPcwnUOdAeGPW/@smile.fi.intel.com>
-References: <20230811193034.59124-1-brgl@bgdev.pl>
- <ZNtKQlnQxFediB0J@smile.fi.intel.com>
- <CACRpkdZ32gW3YgQKPbWTnoRwxjXkViendGMhrAxfyp+W4NbqkA@mail.gmail.com>
- <ZNt2KQMtpMdK9TyY@smile.fi.intel.com>
- <CACRpkdbij=8NMVodezEXG-rtiBzp1q_fecizYtda4HbDXheu8Q@mail.gmail.com>
- <ZNuPKf8NqcgcuGSd@smile.fi.intel.com>
+        Tue, 15 Aug 2023 10:45:33 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83176C6
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:45:31 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe85fd3d27so9084395e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:45:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1692110730; x=1692715530;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vONeIKqh3RTARsIAF9WPhbbZk/7iGt57+WsY/ppCgaU=;
+        b=BO/Sc4m4aJhO5PV+LniTVMfcCNBBXYJHs722AFVLe7jTXvuC6V5OEQJLrHt7vnIVM4
+         iv8AGkNO39bRCWLHLC0gsdeaY3zI0+/LeT1nhU46+dCMx0phdF/LETzY72cAtTPNUsfH
+         enMr9t2qs/l2XOKSRBwmEzOAXcab0p3STMLKo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692110730; x=1692715530;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vONeIKqh3RTARsIAF9WPhbbZk/7iGt57+WsY/ppCgaU=;
+        b=QhmOEWezPnbS5O5JS1Bisigo8uQBeBwAfw5Krv5EePOvuP2Hea6sAGPBEvbxGbXwzi
+         6/l0tU6hEXi2SsIN6H9o3YOBTyTRSH54MUO4fNP+FI1+u1q4hlCTu68gjWDSHrzqTJNC
+         KsaDhNB+RHgGOeiR2IDqRs53nloHWGoTFeWxUGPWoQJVtMc9HzrY+n1CbSEvZpCtDj35
+         r6HjLToefwWLkvlhxIouH3Nu/uAy5ExYrTqJU5y28an4jW1DItLUyvhj4kW3jFVEH9oA
+         KIq9W6+MkdwJmUyIe8xGD/YR5kzmjPH09u7x5EjK8uRRLR4lyWxzR9cXgmDODcrEW3Ns
+         Wfag==
+X-Gm-Message-State: AOJu0Yy5ecoIjMdp0H6n2AD43oCqpW/pOsUis/G+oolMPwlEpABm/9pg
+        0Tjya0vwcXvAEzUa41ESVYlKn41fJF25C1GH2RIc
+X-Google-Smtp-Source: AGHT+IFVXUl5Cl8/LtmxkcpdBq+bk3HP85F80kwNqm9hehPAHORMvnTx5AoOutEVbJ42bB3r1np39Cr+n6Nd+e5o+SY=
+X-Received: by 2002:a2e:7015:0:b0:2b9:b27c:f727 with SMTP id
+ l21-20020a2e7015000000b002b9b27cf727mr8864730ljc.8.1692110729736; Tue, 15 Aug
+ 2023 07:45:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZNuPKf8NqcgcuGSd@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <uba6vj$10n6$1@ciao.gmane.io> <20230814162028.GA176555@bhelgaas> <ubedo7$151n$1@ciao.gmane.io>
+In-Reply-To: <ubedo7$151n$1@ciao.gmane.io>
+From:   Sathya Prakash Veerichetty <sathya.prakash@broadcom.com>
+Date:   Tue, 15 Aug 2023 08:45:13 -0600
+Message-ID: <CAFdVvOz9=wuxeH6nUkmSMRe0vxDRL-b62aaLg_4uaXWD9kK8cA@mail.gmail.com>
+Subject: Re: SSD SATA 3.3 and Broadcom / LSI SAS1068E PCI-Express Fusion-MPT SAS
+To:     emanoil.kotsev@deloptes.org
+Cc:     linux-scsi@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000fd0a050602f73a6c"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 05:43:53PM +0300, Andy Shevchenko wrote:
-> On Tue, Aug 15, 2023 at 03:07:50PM +0200, Linus Walleij wrote:
-> > On Tue, Aug 15, 2023 at 2:57 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Tue, Aug 15, 2023 at 01:40:22PM +0200, Linus Walleij wrote:
-> > > > On Tue, Aug 15, 2023 at 11:50 AM Andy Shevchenko
-> > > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > > On Fri, Aug 11, 2023 at 09:30:34PM +0200, Bartosz Golaszewski wrote:
+--000000000000fd0a050602f73a6c
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-...
+This has nothing to do with the driver and would require analysis from
+the controller hardware/firmware perspective.  The 1068 chip is pretty
+old and out of support and it will be difficult to get any analysis
+done on that.  If you want to upgrade, the latest 12G SAS-NVMe Tri
+Mode controllers are better from a long term support perspective.
+https://www.broadcom.com/products/storage/host-bus-adapters.
 
-> > > > > > +     module_put(desc->gdev->owner);
-> > > > > > +     gpio_device_put(desc->gdev);
-> > > > >
-> > > > > So, if gdev can be NULL, you will get an Oops with new code.
-> > > >
-> > > > I read it such that gdev->chip can be NULL, but not gdev,
-> > > > and desc->gdev->owner is fine to reference?
-> > >
-> > > Basically the Q is
-> > > "if desc is non-NULL, does it guarantee that gdev is non-NULL either?"
-> > 
-> > gdev->desc is assigned in one single spot, which is in
-> > gpiochip_add_data_with_key():
-> > 
-> >        for (i = 0; i < gc->ngpio; i++)
-> >                 gdev->descs[i].gdev = gdev;
-> > 
-> > It is never assigned anywhere else, so I guess yes.
-> > 
-> > We may also ask if it is ever invalid (i.e. if desc->gdev can point to
-> > junk).
-> > 
-> > A gdev turns to junk when its reference count goes down to zero
-> > and gpiodev_release() is called effectively calling kfree() on the
-> > struct gpio_device *.
-> > 
-> > But that can only happen as a result of module_put() getting
-> > called, pulling the references down to zero. Which is what we
-> > are discussing. The line after module_put(), desc->gdev
-> > *could* be NULL.
-> 
-> Yes.
-> 
-> > But then we just call gpio_device_put(desc->gdev) which is
-> > just a call to device_put(), which is NULL-tolerant.
-> 
-> But gpio_device_put() does not NULL tolerant.
-> So, oops in this line then.
-
-That said, this gpiod_free() function needs a lot of additional comments to
-explain all this.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks.
 
 
+On Tue, Aug 15, 2023 at 3:41=E2=80=AFAM deloptes <emanoil.kotsev@deloptes.o=
+rg> wrote:
+>
+> Bjorn Helgaas wrote:
+>
+> > I don't know why that would be.  Are there any hints in the dmesg log?
+> > Can you collect the complete dmesg log with the old drives and again
+> > with the new SSDs so we can compare them?  I assume you have good
+> > cables?  I assume the same cables worked at 3.0 Gb/s with the old
+> > drives.
+> >
+> > I would *expect* that SATA r3.3 would be completely backwards
+> > compatible, so since mptsas worked just fine at 3.0 Gb/s with the old
+> > SATA r3.0 drives, it should also work just fine at 3.0 Gb/s with the
+> > new SATA r3.3 drives.  But I have no actual knowledge about that.
+>
+> Thank you for your answer. I am also confused and couldn't think of any
+> meaningful reason. This is why I allowed myself to bother you.
+>
+> I did not change anything - wiring or such. The server has 12 disk bays o=
+n
+> the front. Old disks were pulled out and new disks were inserted into the
+> bays.
+>
+> You (probably much knowable in this matters than me) also assume negotiat=
+ion
+> should result in 3.0Gb/s. And if I understand correctly it should be not =
+a
+> driver issue.
+>
+> The only difference I could find out for now is that Rev3.3 introduced PW=
+DIS
+> on Pin 3. To check if the cables provide wiring on P3 I should disassembl=
+e
+> the server, but I can do this in September :/ and it is a lot of effort.
+>
+> I am attaching a portion of the log and dmesg with the relevant informati=
+on.
+> I see that ASPM is disabled by default (could it be related to P3?).
+>
+> Thank you all in advance
+> BR
+>
+> --
+> FCD6 3719 0FFB F1BF 38EA 4727 5348 5F1F DCFE BCB0
+
+--000000000000fd0a050602f73a6c
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+v82E+npLwqC8bSHh1m6BJewfpawx72uKM9aFs6SVpLPtN6a5369OCwVeEwkk2FeFU9tZXWBnI4Wu
+d1Q4a3vhOColD6PdTWv74Ez2I3ahCkmpeEQ1YMt61TUH3W8NUJJeYN2xkR6OGsA1AgMBAAGjggHc
+MIIB2DAOBgNVHQ8BAf8EBAMCBaAwgaMGCCsGAQUFBwEBBIGWMIGTME4GCCsGAQUFBzAChkJodHRw
+Oi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MC5jcnQwQQYIKwYBBQUHMAGGNWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJz
+b25hbHNpZ24yY2EyMDIwME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZo
+dHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEkGA1UdHwRC
+MEAwPqA8oDqGOGh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJj
+YTIwMjAuY3JsMCYGA1UdEQQfMB2BG3NhdGh5YS5wcmFrYXNoQGJyb2FkY29tLmNvbTATBgNVHSUE
+DDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU
+VyBc/F5XGkYNCP9Rb96mru8lU4AwDQYJKoZIhvcNAQELBQADggEBACiysbqj0ggjcc9uzOpBkt1Q
+nGtvHhd9pbNmshJRUoNL11pQEzupSsUkDoAa6hPrOaJVobIO+yC84D4GXQc13Jk0QZQhRJJRYLwk
+vdq704JPh4ULIwofTWqwsiZ1OvINzX9h9KEw/+h+Mc3YUCO7tvKBGLJTUaUhrjxyjLQdEK1Xp/8B
+kYd5quZssxYPJ3nl37Moy/U9ZM2F0Ivv4U3wyP5y5cdmBUBAGOd94rH60fVDVogEo5F9gXrZhT/4
+jKzCG3LclOOzLinCkK2J5GYngIUHSmnqk909QPG6jkx5RJWwkpTzm+AAVbJ9a+1F/8iR3FiDddEK
+8wQJuWG84jqd/9wxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxT
+aWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAy
+MDIwAgx2rp2oPFt1hdtt8l8wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIO2awsWX
+OfBqRcNCxmPCgKY1Y12fXlsVv6dA9CxFLRbAMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJ
+KoZIhvcNAQkFMQ8XDTIzMDgxNTE0NDUzMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASow
+CwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZI
+hvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBjb/1bpbS6UajrhoBC3tBlAfNu
+0kHhvOC3/dRAQNdu10xyhafRHFUSiA4y8Zc/MAlqFVamIZmYVSF5f5oUi+r8QXRauLFHw9ducH6l
+BaHOt+Q6YAjvWANlQUjSgT9ObhAVUI0GRMUXqVMDTFiLcPpQaqzm4qFWCVSh7ryELh2PW7oLoMpm
+iiUY5q4Zoy06SJh9R0msfpiuqf1Y515O5aLgy1iaMyQG71/YKuD+SGR6Uv7SCdKAgWhZpFWsQVM0
++hDTbW4f5sK7AAtICGyvu4LpB7qtzaFf6SQh0s7nfIER4d/0ov/ZlzlCla3+ZORgshUgOd3c1W9n
+EprrzXsxKgKM
+--000000000000fd0a050602f73a6c--
