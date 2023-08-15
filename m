@@ -2,134 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B436777C48E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 02:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A1777C493
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 02:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233401AbjHOAiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 20:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35662 "EHLO
+        id S233427AbjHOAkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 20:40:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233237AbjHOAh7 (ORCPT
+        with ESMTP id S233160AbjHOAjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 20:37:59 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416C793;
-        Mon, 14 Aug 2023 17:37:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692059872;
-        bh=TLQVjY3kxE2Np30YiLY3zv14XDCrBIX0I1ZNA+WIP5w=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rkzMLqtHuBx6OZizRyf68NlrUy9vyA4jGebOuctXuEcHJY7h+yQKjFqmyqzVKieGK
-         pGvCGJQr/azZBlfSalTVDV6vGhKm8kBWKnuybUwd96gpliNdZHFDswtS8Dk+04jZOS
-         sKK1ORiR036NU7RVT4dPwqMBlMT6YDn/f+XJgEs6UIUtWFC5bZB0U8kywR/ZSSQsI2
-         1pcXsEdpRh71628FjBqQh6msP5U438Pxji+LXG56TodIXatsG9O8V2h8B5qCBXXzaQ
-         S/EwQotBrIzLI64DtB8nEDwV4drN7o8IaM4LD7n8jjBb3xUG4L4MPPs1M4mkTHa06F
-         vXgY/pu69oqcA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RPsmv1Rmxz4wxQ;
-        Tue, 15 Aug 2023 10:37:50 +1000 (AEST)
-Date:   Tue, 15 Aug 2023 10:37:50 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Sudeep Holla <sudeep.holla@arm.com>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>
-Cc:     ARM <linux-arm-kernel@lists.infradead.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sibi Sankar <quic_sibis@quicinc.com>
-Subject: linux-next: manual merge of the scmi tree with the arm-soc tree
-Message-ID: <20230815103750.18868b76@canb.auug.org.au>
+        Mon, 14 Aug 2023 20:39:54 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B8410F
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 17:39:53 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99357737980so651960966b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 17:39:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692059991; x=1692664791;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pUQhhVLOh6qVlfYVa6vB28rLbeIPVQEya3teNIVSHU8=;
+        b=jp2hKW8+cT+9BIqBvImxERQxPLIhNiBP/eE4OjQULk+2t9+AW9OG8RsWIa7O8bL5AA
+         6SMdlFMG163klFvruDYh20QUH9xHwjHYDNRgpju60THKIMmW69yQIEbK2ZDkXEs61oC4
+         rZ6BT5Wz/YbnmD8OUACA5AB3QECE263UTei1K/Xmg3uh3y3z2qec3y59u64Gs4VvNPlI
+         27Tphcei621LPX0MpfJM+4Dqe59z1HzPM6M9O2JjTKpg+s3DbX8iJqWTcc4xeIywuhDE
+         QmYojV7hVgDhTCJkdN88IlzUz2K1qwW+5wDAionPs0FCK+4dCQZ8Tgs0EOkLpxMiiuVn
+         KeeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692059991; x=1692664791;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pUQhhVLOh6qVlfYVa6vB28rLbeIPVQEya3teNIVSHU8=;
+        b=EQ87m+mzMGazzYNuKIfcz9RWxBq8H7VSZzPxU5lOuSNuougyC6QOqabrZHuEKLx5fP
+         9LoEtTnFKDc+RdahBv4iJwgB4yARa8ub2eeYEGy/2/UTw0QdU/Ldyb5yTO7YhOdIbOIe
+         ekoYKVLnmsiGmULzyWL6PHnLzI4EldrGQ+6o3HT+ngDYjvBzZBs615+HJoiLHxZW/1GR
+         SJtMa2cgy2P+r47vyVDs6dd9UXD50ypElcJJXU89dB4ET8rzPhNvgva5GB1uA0nTzOin
+         OrEunHx/+aKXMNDspEHRg7lGfSQ3G8lPNB2Arv9+fUu1t4a0vVLMGhMHC5y+sRsu2RD7
+         aD2A==
+X-Gm-Message-State: AOJu0YxbpQvfxeU47RoNq1ZyFD2iSNNJ2oGKOFTCYXuVnmBv8Zmr+AUC
+        jW8V9Xa4VOOaJe91zmjVq6fq9UYWzaSzHoS98zDGYA==
+X-Google-Smtp-Source: AGHT+IGd80Yh38r7ND9UV8X81gz5g3oHz8jVaPo0JV5xcL5knZQL2XaC2Z/lONuBN+iOCjcw19UDy7fICHwKzfN7oc4=
+X-Received: by 2002:a17:907:2beb:b0:973:fd02:a41f with SMTP id
+ gv43-20020a1709072beb00b00973fd02a41fmr10317990ejc.40.1692059991412; Mon, 14
+ Aug 2023 17:39:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/BU.atDI/bh.fAiIJlX58WK9";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <CAJD7tkbF1tNi8v0W4Mnqs0rzpRBshOFepxFTa1SiSvmBEBUEvw@mail.gmail.com>
+ <CALvZod55S3XeK-MquTq0mDuipq8j0vFymQeX_XnPb_HuPK+oGQ@mail.gmail.com>
+ <CAJD7tkYZxjAHrodVDK=wmz-sULJrq2VhC_5ecRP7T-KiaOcTuw@mail.gmail.com>
+ <CALvZod46Cz_=5UgiyAKM+VgKyk=KJCqDqXu91=9uHy7-2wk53g@mail.gmail.com>
+ <CAJD7tkY-ezyYebvcs=8Z_zrw2UVW8jf2WvP1G8tu2rT=2sMnAA@mail.gmail.com>
+ <CALvZod5fH9xu_+6x85K38f63GfKGWD1LqtD2R4d09xmDtLB7ew@mail.gmail.com>
+ <ZNdEaw2nktq1NfmH@dhcp22.suse.cz> <CAJD7tkaFHgc3eN1K1wYsQFWMLu4+Frf9DJ-5HOja2nC20Es9Dw@mail.gmail.com>
+ <ZNrDWqfjXtAYhnvT@slm.duckdns.org> <CAJD7tkYBFz-gZ2QsHxUMT=t0KNXs66S-zzMPebadHx9zaG0Q3w@mail.gmail.com>
+ <ZNrITZVTf2EILRJq@slm.duckdns.org>
+In-Reply-To: <ZNrITZVTf2EILRJq@slm.duckdns.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 14 Aug 2023 17:39:15 -0700
+Message-ID: <CAJD7tkaXwoF-faApweAmm7Db7jAuS3EO7hVvdyVtqW_rE+T9Vg@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Michal Hocko <mhocko@suse.com>, Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/BU.atDI/bh.fAiIJlX58WK9
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Aug 14, 2023 at 5:35=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Mon, Aug 14, 2023 at 05:28:22PM -0700, Yosry Ahmed wrote:
+> > > So, the original design used mutex for synchronize flushing with the =
+idea
+> > > being that updates are high freq but reads are low freq and can be
+> > > relatively slow. Using rstats for mm internal operations changed this
+> > > assumption quite a bit and we ended up switching that mutex with a lo=
+ck.
+> >
+> > Naive question, do mutexes handle thundering herd problems better than
+> > spinlocks? I would assume so but I am not sure.
+>
+> I don't know. We can ask Waiman if that becomes a problem.
+>
+> > > * Flush-side, maybe we can break flushing into per-cpu or whatnot but
+> > >   there's no avoiding the fact that flushing can take quite a while i=
+f there
+> > >   are a lot to flush whether locks are split or not. I wonder whether=
+ it'd
+> > >   be possible to go back to mutex for flushing and update the users t=
+o
+> > >   either consume the cached values or operate in a sleepable context =
+if
+> > >   synchronous read is necessary, which is the right thing to do anywa=
+y given
+> > >   how long flushes can take.
+> >
+> > Unfortunately it cannot be broken down into per-cpu as all flushers
+> > update the same per-cgroup counters, so we need a bigger locking
+> > scope. Switching to atomics really hurts performance. Breaking down
+> > the lock to be per-cgroup is doable, but since we need to lock both
+> > the parent and the cgroup, flushing top-level cgroups (which I assume
+> > is most common) will lock the root anyway.
+>
+> Plus, there's not much point in flushing in parallel, so I don't feel too
+> enthusiastic about splitting flush locking.
+>
+> > All flushers right now operate in sleepable context, so we can go
+> > again to the mutex if you think this will make things better. The
+>
+> Yes, I think that'd be more sane.
+>
+> > slowness problem reported recently is in a sleepable context, it's
+> > just too slow for userspace if I understand correctly.
+>
+> I mean, there's a certain amount of work to do. There's no way around it =
+if
+> you wanna read the counters synchronously. The only solution there would =
+be
+> using a cached value or having some sort of auto-flushing mechanism so th=
+at
+> the amount to flush don't build up too much - e.g. keep a count of the
+> number of entries to flush and trigger flush if it goes over some thresho=
+ld.
 
-Hi all,
+I really hoped you'd continue reading past this point :)
 
-Today's linux-next merge of the scmi tree got a conflict in:
+My proposed solution was to only flush the needed subtree rather than
+flushing the entire tree all the time, which is what we do now on the
+memcg side. We already have an asynchronous flusher on the memcg side
+that runs every 2s to try to keep the tree size bounded, and we
+already keep track of the magnitude of updates and only flush if it's
+significant.
 
-  drivers/firmware/arm_scmi/perf.c
+The problems in this thread and the other one are:
+(a) Sometimes reading from userspace is slow because we needlessly
+flush the entire tree.
+(b) Sometimes reading from userspace is inaccurate because we skip
+flushing if someone else is flushing, even though we don't know if
+they flushed the subtree we care about yet or not.
 
-between commit:
+I believe dropping unified flushing, if possible of course, may fix
+both problems.
 
-  31c7c1397a33 ("firmware: arm_scmi: Add v3.2 perf level indexing mode supp=
-ort")
-
-from the arm-soc tree and commit:
-
-  3453de1ec6e4 ("firmware: arm_scmi: Fixup perf power-cost/microwatt suppor=
-t")
-
-from the scmi tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/firmware/arm_scmi/perf.c
-index c0cd556fbaae,b887d57aa446..000000000000
---- a/drivers/firmware/arm_scmi/perf.c
-+++ b/drivers/firmware/arm_scmi/perf.c
-@@@ -1092,20 -833,13 +1094,18 @@@ static int scmi_perf_protocol_init(cons
-  	for (domain =3D 0; domain < pinfo->num_domains; domain++) {
-  		struct perf_dom_info *dom =3D pinfo->dom_info + domain;
- =20
- -		scmi_perf_domain_attributes_get(ph, domain, dom, version);
- -		scmi_perf_describe_levels_get(ph, domain, dom);
- +		dom->id =3D domain;
- +		scmi_perf_domain_attributes_get(ph, dom, version);
- +		scmi_perf_describe_levels_get(ph, dom, version);
- =20
-  		if (dom->perf_fastchannels)
- -			scmi_perf_domain_init_fc(ph, domain, &dom->fc_info);
- +			scmi_perf_domain_init_fc(ph, dom->id, &dom->fc_info);
-  	}
- =20
- +	ret =3D devm_add_action_or_reset(ph->dev, scmi_perf_xa_destroy, pinfo);
- +	if (ret)
- +		return ret;
- +
-- 	pinfo->version =3D version;
--=20
-  	return ph->set_priv(ph, pinfo);
-  }
- =20
-
---Sig_/BU.atDI/bh.fAiIJlX58WK9
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTayN4ACgkQAVBC80lX
-0GyB3Af/bz5tOoFaw/i1eD5zkYGHEsh+wkWyQmnuk9lcP/y0B9vaXCoO9MIe+L6l
-k9Dr8FV0Glu4ou/ozufHBbYSRSDfi+Pxs2V53W9kQpl2U73ZOEnINSYnB1wOJuFy
-AQM8p0LHBpw9lo73XtvzZHFow+e2lu8KphimNet/wPLg0B5suzPSY3gYogSBkk1Y
-AWISgB8y5MpbVpQhBlcP5AOWjlszRDsZ57MM3i8cwtv8DrK+7b6HsHARp01do5PL
-cIRi96vp1xLZ1pC98RsQ7B0gt32yM6GAHoTIQCgQg7LFUAa/lZU1Li4Ayd8sESQO
-wmgdpxpMYxgdfTl6aAQcj8H15Yvlyg==
-=hpvU
------END PGP SIGNATURE-----
-
---Sig_/BU.atDI/bh.fAiIJlX58WK9--
+>
+> Thanks.
+>
+> --
+> tejun
