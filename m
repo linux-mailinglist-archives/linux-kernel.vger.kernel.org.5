@@ -2,77 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD23577C636
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 05:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6EA77C63B
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 05:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234397AbjHODDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 23:03:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45592 "EHLO
+        id S234420AbjHODPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 23:15:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234395AbjHODCp (ORCPT
+        with ESMTP id S234042AbjHODOH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 23:02:45 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E900C1986;
-        Mon, 14 Aug 2023 20:02:44 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-564b8e60ce9so2847473a12.2;
-        Mon, 14 Aug 2023 20:02:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692068564; x=1692673364;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=q9MMTmEvWS/Ce6VFrXHaEsM1pgSF/YPsnYYuXBrACr0=;
-        b=X5Ic6vBDzAAF6Ep0MUw/84Q3nMysEY2zZMaSdDK42+wn0hdRQ/+y2XcgMHrLZg/zOS
-         eMar0jZyljiUPCcl7NQFB5AocYNDAyJ0TGJPLbUGiexbwGyrHg/Zifs8yR8nzHXlM7WY
-         nl3Odbl6CP13riajEITYwujjhnOR50AyL/PfxRJ5fRXy4uP24SagchZDCX/Zuu+gN33c
-         MlFuiboIGSHoMHlLZC0jBtCVHnqipC9pVOS7goRYTdUkotL0DyJmgYh25yvr8HGmzB7t
-         9NXX2K3tNGcuF6y4GM+LyGVb5SywLRKYMmCPMJU2BAAkvlkOT4PsFGUbh4nOXYybQguY
-         BO+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692068564; x=1692673364;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=q9MMTmEvWS/Ce6VFrXHaEsM1pgSF/YPsnYYuXBrACr0=;
-        b=KQaC//pwW5/ivzmhLDzIF81MCX4fplt5XoWXvj9l3zTng6v/LX5KkTDCOdsdWXHGuo
-         m6fZCjSD4naibS9vuBzkiXfblhG0nxkOvFiUaCkwRgULo4sPb2LrjikJk2QweNp64ClN
-         IcSP5CEYPsny8NXxnNUw+IqQ/y21dlOAjgzcQO2dBnKxid15RaO5TGIhUNHaSah+DYMx
-         MEqNyy6gwXJpsV5F6JXfDsFYxXtC5u4ZR/F9ROcwdRexMVuuIbdBLz1zDRubqOEdwKUC
-         rjx4ZTiZJpupyZDkx1uFnTDCAtIYedDE6CRVCz3gUhpu/9xQc7789cX/MwRDm0QvPOUH
-         Fapw==
-X-Gm-Message-State: AOJu0YwKbXLGMt9gEbdF2KMp2vIYJRDo2Cr2/U+NqZr+syW43DhT9Nat
-        1E9Iis9U+47eI0PCcJ/BzXs8di4vkCWDNQ==
-X-Google-Smtp-Source: AGHT+IEkJdNUDBYpx1+AoWlymwYzLLyqU9y56LHk33P2EkpWjWtFxo08KOEXY5Z/VKssMoN/KT2Akw==
-X-Received: by 2002:a05:6a20:4428:b0:132:d029:e2d7 with SMTP id ce40-20020a056a20442800b00132d029e2d7mr15685050pzb.55.1692068564227;
-        Mon, 14 Aug 2023 20:02:44 -0700 (PDT)
-Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
-        by smtp.gmail.com with ESMTPSA id w20-20020a170902d71400b001b016313b1dsm6799423ply.86.2023.08.14.20.02.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 20:02:43 -0700 (PDT)
-Message-ID: <b54c8861-e81e-5e1b-c777-b494a29b76d2@gmail.com>
-Date:   Mon, 14 Aug 2023 20:02:42 -0700
+        Mon, 14 Aug 2023 23:14:07 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45CEC198C;
+        Mon, 14 Aug 2023 20:13:38 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RPxDX2ywGz4f3kG0;
+        Tue, 15 Aug 2023 11:13:32 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP4 (Coremail) with SMTP id gCh0CgAXp6ld7dpknET3Ag--.64666S4;
+        Tue, 15 Aug 2023 11:13:35 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     xni@redhat.com, song@kernel.org
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yukuai1@huaweicloud.com, yi.zhang@huawei.com,
+        yangerkun@huawei.com
+Subject: [PATCH -next v2 0/7] md: make rdev addition and removal independent from daemon thread
+Date:   Tue, 15 Aug 2023 11:09:50 +0800
+Message-Id: <20230815030957.509535-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: [PATCH 5.4 00/39] 5.4.254-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20230813211704.796906808@linuxfoundation.org>
-Content-Language: en-US
-In-Reply-To: <20230813211704.796906808@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgAXp6ld7dpknET3Ag--.64666S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZF1UtrW7JFWxCF1kAF45trb_yoW8Xr1xpr
+        yaqF1agw4UZa9rGr9xX3W7W34Fgw4rWrZrJF9xW348Cw1rurWkZryxJa18ZrWYy34ayry7
+        Wr1jqF95C3WkCFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxG
+        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
+        vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IY
+        x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
+        xKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+        67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,28 +59,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/13/23 14:19, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.254 release.
-> There are 39 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Tue, 15 Aug 2023 21:16:53 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.254-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+From: Yu Kuai <yukuai3@huawei.com>
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+Changes in v2:
+ - remove patch 1 from v1 and some related patches, those patches will
+ be sent later when rcu protection for rdev is removed.
+ - add patch 2.
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+This is the third patchset to do some preparatory work to synchronize
+io with array reconfiguration.
+
+1) The first patchset refactor 'active_io', make sure that mddev_suspend()
+will wait for io to be done. [1]
+
+2) The second patchset remove 'quiesce' callback from mddev_suspend(), so
+that mddev_suspend() doesn't rely on 'quiesce' callback is registered,
+and can be used for all personalites; [2]
+
+3) This patchset make array reconfiguration independent from daemon thread,
+and synchronize it with io will be much easier because io may rely on
+daemon thread to be done.
+
+More patchset on the way!
+
+Yu Kuai (7):
+  md: use separate work_struct for md_start_sync()
+  md: factor out a helper to choose sync direction from
+    md_check_recovery()
+  md: delay choosing sync direction to md_start_sync()
+  md: factor out a helper rdev_removeable() from remove_and_add_spares()
+  md: factor out a helper rdev_is_spare() from remove_and_add_spares()
+  md: factor out a helper rdev_addable() from remove_and_add_spares()
+  md: delay remove_and_add_spares() for read only array to
+    md_start_sync()
+
+ drivers/md/md.c | 257 +++++++++++++++++++++++++++++-------------------
+ drivers/md/md.h |   5 +-
+ 2 files changed, 160 insertions(+), 102 deletions(-)
+
 -- 
-Florian
+2.39.2
 
