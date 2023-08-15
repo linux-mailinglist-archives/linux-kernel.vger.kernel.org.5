@@ -2,88 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC87277CEAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E625B77CEB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237770AbjHOPFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 11:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33742 "EHLO
+        id S237559AbjHOPIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 11:08:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237596AbjHOPE5 (ORCPT
+        with ESMTP id S237809AbjHOPIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 11:04:57 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 256B610E9
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:04:57 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-26b4cf4f77bso1762499a91.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:04:57 -0700 (PDT)
+        Tue, 15 Aug 2023 11:08:06 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DCD7138
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:08:05 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bda3d0f0f1so7026825ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 08:08:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692111896; x=1692716696;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RT6WNrugPktT0WzLKzKehyy4VYO4wkfZ/M3c3LVEmFI=;
-        b=T9hpNUsAw9Wng2+zRSoSkfft3svRVYlQ6eh759ro6nGjTP6EWc1Jxs+eGIsM0w4rMz
-         ICmfKqKo/7MIwbP16qYUf7iMccneby+XZxLHSxvLDMkUesJXH0h8umDJTPKw7YjT2ES+
-         AaCfAEA8PIXkJT5wSqqkzRqwKS3XOdQ24hFfs=
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1692112085; x=1692716885;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3ardLpPzsr7Tjzv/PEhX1ISfceYOB53E6DIF1b0Xw1c=;
+        b=jNIM2oyZSHeFsV5Gq9GM+l1KEzbR200w06JDFZWDa29zAbzwbhXw0BbdFYLwaJUBR1
+         GYvRy88tlJ8Pdk+wbZaj0tynSi5JocEQdUkC/iBWwQA3GXX2GuHSS2dA2dP0+yl+tCz3
+         DGrLFm/H6Tzc7CvWDiJaHYe6rmNNhbls3EhGLAuUX19XeGHQXexfEYyqgcN4ZoTmYtJo
+         RRwnzr6uAENPbmfQS0kNdCGj/p+Md8UeQU6f9mM4OvkKgT5eQQIAVwOEPMDarf6MK4At
+         AE0dL0O/VEJvu0Izd+l+uDe4YLI7gM8Qy0KWwuLbAXwe7rS9CCxDlYPcjBi1RdDToPFo
+         FSFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692111896; x=1692716696;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RT6WNrugPktT0WzLKzKehyy4VYO4wkfZ/M3c3LVEmFI=;
-        b=RO65yf5Q25cFza1EwZqy9XB1TGAdcLJMFA0w7XTSMaujlt+IFYwqTDTut6YlYUkYUG
-         aoMqueELQ5Q+rwGY3qoVNQwm9nCAfvU6uLt10ilFOa5PIdU06a9/uJI8hynxCBm5Yofe
-         kbAH8w6AIKkrKI51AkDWNpbAJ+cl35+hq6YBP67WnjyBwYFkBPozyZiURZ1aElwptIEI
-         sm7egcB3L90IYUFR+LvQbQ8SpaMl4bINrBj0BvFJrYO4tGGWmY/2X3VkJaMGTgyAIr5j
-         KoTa6nC0MnG69f2mVxhZKWPPQg6lF9cJ9eJeRmm/0UJ/hBdhi666aXBWqSffGbjRmfXq
-         JQRA==
-X-Gm-Message-State: AOJu0YxuASiAov7AG492qrx3qADbrNaYh+52FSJ0yhv6yIM5W7wdfND8
-        uf3QS9nzge6QT2D7QsGpQtfatA==
-X-Google-Smtp-Source: AGHT+IF+c5I0laTE1tcETPIswMVPJOHUJev/aR8SbWf3quxuPMRsozUFJEdBzKyH5yW29DExs/Kchw==
-X-Received: by 2002:a17:90a:fe17:b0:268:2f2:cc89 with SMTP id ck23-20020a17090afe1700b0026802f2cc89mr11952810pjb.4.1692111896552;
-        Tue, 15 Aug 2023 08:04:56 -0700 (PDT)
-Received: from google.com (KD124209188001.ppp-bb.dion.ne.jp. [124.209.188.1])
-        by smtp.gmail.com with ESMTPSA id bx20-20020a17090af49400b002681bda127esm9693931pjb.35.2023.08.15.08.04.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 08:04:55 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 00:04:50 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Yunlong Xing <yunlong.xing@unisoc.com>, senozhatsky@chromium.org,
-        rostedt@goodmis.org, john.ogness@linutronix.de,
-        linux-kernel@vger.kernel.org, enlinmu@gmail.com,
-        enlin.mu@unisoc.com, yunlong.xing23@gmail.com
-Subject: Re: [PATCH] printk: export symbols for debug modules
-Message-ID: <20230815150450.GE907732@google.com>
-References: <20230815020711.2604939-1-yunlong.xing@unisoc.com>
- <ZNuDxFGoXPCwECyt@alley>
+        d=1e100.net; s=20221208; t=1692112085; x=1692716885;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3ardLpPzsr7Tjzv/PEhX1ISfceYOB53E6DIF1b0Xw1c=;
+        b=jNDZC0U3FT5Pi/caPDxKPvFHD5eaUSqO6ZsO3uY+5RzDfCwSGd6OLG9WOu5JrBEyJK
+         xnw/sosxr+7wxBuSiU3di04eYqa8eTBiVSgVUvTAl3IvVWzBgDv4CRQRSyN72buj6/1S
+         V1lBN4kA8l1lVVfiSIdUQOqGyyfDhjJyP2QlUDnpWjBhnPpmr21qORxPm6om8/k447Y/
+         GEBIgqPNg+06nmMRKHWhKr4hMWY0Pi46CbQMzuPO4/zh2j3DrkK971h85+83V6IfUAQC
+         RHcvhnm0Ya3VAYNhqNJSe9STnaggkFhd91wo3ZMOwTddUC4ZQn4t+YX5m9lC6cqf1Fvy
+         P/Sg==
+X-Gm-Message-State: AOJu0YzeMBGtnR4Dzu/bzEI40J2IFYyV8Wl8PJvfiAygpi8yiDgR95Pd
+        JhYR0/7DlxQz3ReFg/Jo4SEUhQ==
+X-Google-Smtp-Source: AGHT+IEnuBktlNYwmu21Ts876LBoTJvo25LkSGJ5bY01k3c183yzSE8VYGkQfy1CjhNK7/Fj9wKy7Q==
+X-Received: by 2002:a17:903:190:b0:1b8:35fa:cdcc with SMTP id z16-20020a170903019000b001b835facdccmr15244448plg.5.1692112084669;
+        Tue, 15 Aug 2023 08:08:04 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id 4-20020a170902c14400b001bdeb6bdfbasm3228746plj.241.2023.08.15.08.08.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Aug 2023 08:08:03 -0700 (PDT)
+Message-ID: <c39a3bff-01b9-4007-80ac-00ce2b11a902@kernel.dk>
+Date:   Tue, 15 Aug 2023 09:08:02 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNuDxFGoXPCwECyt@alley>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: Fixes tag needs some work in the block tree
+Content-Language: en-US
+To:     Yu Kuai <yukuai1@huaweicloud.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "yukuai (C)" <yukuai3@huawei.com>,
+        "song@kernel.org" <song@kernel.org>
+References: <20230815091931.4dd2b277@canb.auug.org.au>
+ <8c946512-0cc4-fbc5-ca36-0e2c6d636eb2@huaweicloud.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <8c946512-0cc4-fbc5-ca36-0e2c6d636eb2@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/08/15 15:55), Petr Mladek wrote:
-> On Tue 2023-08-15 10:07:11, Yunlong Xing wrote:
-> > From: Enlin Mu <enlin.mu@unisoc.com>
-> > 
-> > the module is out-of-tree, it saves kernel logs when panic
-> > 
-> > Signed-off-by: Enlin Mu <enlin.mu@unisoc.com>
+On 8/14/23 9:21 PM, Yu Kuai wrote:
+> Hi,
 > 
-> I am fine with it. After all, this API seems to here for
-> similar purposes.
+> ? 2023/08/15 7:19, Stephen Rothwell ??:
+>> Hi all,
+>>
+>> In commit
+>>
+>>    71070e7bd25d ("md/raid10: fix a 'conf->barrier' leakage in raid10_takeover()")
+>>
+>> Fixes tag
+>>
+>>    Fixes: 4d27e927344a ("md: don't quiesce in mddev_suspend()")
+>>
+>> has these problem(s):
+>>
+>>    - Target SHA1 does not exist
+> 
+> Sorry about this, the commit was picked from previous md-next branch,
+> and I didn't know that it will change...
 
-Indeed, I didn't know that powerpc uses it.
+It's most likely not your fault, I'm guessing Song rebased that branch
+and this is why the sha changed. Song?
 
-> Acked-by: Petr Mladek <pmladek@suse.com>
+> Is there any way that I can fix this ?
 
-Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Only way to fix this is if I rewind my branch and Song updates his
+branch to not have this issue, and then sends a new pull request.
+
+-- 
+Jens Axboe
+
