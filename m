@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D4777D452
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F27D77D447
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238757AbjHOUhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 16:37:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51286 "EHLO
+        id S238400AbjHOUhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 16:37:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238399AbjHOUhV (ORCPT
+        with ESMTP id S238633AbjHOUhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 16:37:21 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1BFC1BFF
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:36:46 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so1208112766b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:36:46 -0700 (PDT)
+        Tue, 15 Aug 2023 16:37:35 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D8C2101
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:37:02 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-589c772be14so81533407b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:37:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692131802; x=1692736602;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=X6Sjc5kCdevNBIooFIAdaXcgvp9MHaLBrm4GmR4a5kI=;
-        b=fAj5Uun6fMmg8JwRtrO+awU+LcEYYn3b1AiRgb2/esrYZBkNM8tV10/hR44o06tYxe
-         x6tW13BtvxlFQHUYSqCIZV5Ry835ARs2CNw903bBXAvZ+OehESNUGsUEsnaUYN1sTHdq
-         shby10LOk+9SulpTwmNO7xf04GJoS2R8Ey3J9g6DxAo6+MKv19y5GR/Dmo7R97yAG+mL
-         F5k2GyoQ+ROmnqMzBPGvHOv7I5DwPEr+mJOC2jM2/HNe2rq9pxwgYcUGWrCIAJMvNhAe
-         dJ5rKDHjV9bKla4CBC1ge739eOZnuCIEhDBfWTLKGMk5tOMBE2eYhAYPy7bzn2RJ5Siw
-         +gfA==
+        d=google.com; s=20221208; t=1692131819; x=1692736619;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
+        bh=WBkpDKr6jj4NzlnIGGdQVal1P0a3ByasoO5IEWSIJRE=;
+        b=PohXGEt5p5Gq1eWQMfSEBAlCwCuyTp0UUAhPLRCgxqzUZpMgn02SBiu69mZXoWEq3y
+         3ZvimOOCTpl9ZMhcK/3SP14PXFtJl02TzytZHA5VrIs+SxLBlTFJAtkwxwpIszrGxQyG
+         ypiMSggFd6oqDl5CNl8HLMEeTp//ytZeEG1RV4iGa4fPCPfUUtGX76EHoruSxAd6waDS
+         ilzsqaA+xcc1M22yoAx/4E9Y8WyWUj4ZXujOWv2hnid1bWf9iyRpweqgXAUtIzCFl8Gx
+         Dpe/2zsa44Nj5cfs9qPSwK98v6C+6XwIl5ozo3wSr2dw9S7RFD0Ka0T65AiEf9w6pykt
+         7jiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692131802; x=1692736602;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=X6Sjc5kCdevNBIooFIAdaXcgvp9MHaLBrm4GmR4a5kI=;
-        b=Xk0IxiYHBl+EYAB5YXzx4xnmOnBWYwq2RNy7IhGQr0ka+P2+TPqbVCFfnjOCagYoJe
-         2C8q18mzplP8ycCyIbmj5TSsRqbV85J8jKc/URAzvEdi7dQRsBlAnBMgLO1sPb5rFVsl
-         GTeaawNQsmENRmlNhB6WfDf0IYIVTP/39TWEHNGBGWe/MulrzCUNcYI07XRU2dUyUsJx
-         zoMZjRJ8PAeBWDCWvyicS7ZQzZqt/Fj9csyM6Zr91gCZIEMP0npdh18qymtkpUz5s25c
-         xTBmi7GxpswLz6GNRfIIP83uXZ2HpeD9plSkv4nfD9jtEMkH5yoFue8swT8O5O21219+
-         wjAA==
-X-Gm-Message-State: AOJu0YzvoNcH2UR0m95fBDIvXfX5q7GzmdOP5TbImxkSAZ2R0d5noWE9
-        cw2jtdK4nR8qrkVT2aAaLbkL5A==
-X-Google-Smtp-Source: AGHT+IH4wM7nrkfOFTqG/v7+FSAdJxm80o8iaJuv9GJHnk6yEmOMGbDxs3H4ETByecHIE/WMvpi9VA==
-X-Received: by 2002:a17:906:6a04:b0:99b:dd23:4f01 with SMTP id qw4-20020a1709066a0400b0099bdd234f01mr3314224ejc.33.1692131802432;
-        Tue, 15 Aug 2023 13:36:42 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id f8-20020a17090624c800b009894b476310sm7407880ejb.163.2023.08.15.13.36.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 13:36:42 -0700 (PDT)
-Message-ID: <102328fa-5699-4731-d639-079bce8863a5@linaro.org>
-Date:   Tue, 15 Aug 2023 22:36:39 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 1/7] dt-bindings: soc: qcom: Add qcom,pbs bindings
-Content-Language: en-US
-To:     Anjelique Melendez <quic_amelende@quicinc.com>, pavel@ucw.cz,
-        lee@kernel.org, thierry.reding@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        agross@kernel.org, andersson@kernel.org
-Cc:     luca.weiss@fairphone.com, konrad.dybcio@linaro.org,
-        u.kleine-koenig@pengutronix.de, quic_subbaram@quicinc.com,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-References: <20230814235918.10396-1-quic_amelende@quicinc.com>
- <20230814235918.10396-2-quic_amelende@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230814235918.10396-2-quic_amelende@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        d=1e100.net; s=20221208; t=1692131819; x=1692736619;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WBkpDKr6jj4NzlnIGGdQVal1P0a3ByasoO5IEWSIJRE=;
+        b=L02qBEYbf/JX1vfFn8HgtYcV4V/+9Eyf8Qh6Gp7rIBiAzFdey1meNRtKOsHC9G8QL5
+         UrLbSDq2NFW/vbtC5HQ7D2H+SXgqP1o9coJ/SyrXPJ8b7fHwH695VwsWZ2jxVSqhhvgD
+         2srYdN1qLaD5RaL6O0NsNQED4XxSNshIrJs7vD2a3BVsVsNef+S92SwIc6fIaNg8Y6yu
+         lePBzf/R8m/9uauWjqOlPMZ31Hvrg3IGKCA57Y3u8iAXEAsv16/y1WpLvkuc97dKgweE
+         pxDhNBxB5sdX1cGjA7SwQlx2KzoGzXx0yC16b3liO47txtSq/29fwAAX3TArp1rcw6b9
+         sbNw==
+X-Gm-Message-State: AOJu0YxJmv2wUhkdi86A3UhOuj61p/A/wC5XlIlQlhnh3LzJ/+Q5jiNQ
+        XeAY2+rerud6f5nrVHFP1Rypnl0XMuw=
+X-Google-Smtp-Source: AGHT+IEsB6TpySeJzscsreqlViYCX5OPRs/9V0pFq6s7NBXcybCVD+S+fZLYmnQdMHuHjRmXkoZYZ4UlaF0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:690c:3013:b0:576:e268:903d with SMTP id
+ ey19-20020a05690c301300b00576e268903dmr48638ywb.2.1692131819462; Tue, 15 Aug
+ 2023 13:36:59 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Tue, 15 Aug 2023 13:36:40 -0700
+In-Reply-To: <20230815203653.519297-1-seanjc@google.com>
+Mime-Version: 1.0
+References: <20230815203653.519297-1-seanjc@google.com>
+X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
+Message-ID: <20230815203653.519297-3-seanjc@google.com>
+Subject: [PATCH v3 02/15] KVM: x86/mmu: Use KVM-governed feature framework to
+ track "GBPAGES enabled"
+From:   Sean Christopherson <seanjc@google.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zeng Guang <guang.zeng@intel.com>,
+        Yuan Yao <yuan.yao@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,66 +74,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/08/2023 01:59, Anjelique Melendez wrote:
-> Add binding for the Qualcomm Programmable Boot Sequencer device.
-> 
-> Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
-> ---
->  .../bindings/soc/qcom/qcom,pbs.yaml           | 46 +++++++++++++++++++
->  1 file changed, 46 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,pbs.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,pbs.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,pbs.yaml
-> new file mode 100644
-> index 000000000000..b502ca72266a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,pbs.yaml
-> @@ -0,0 +1,46 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/soc/qcom/qcom,pbs.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Technologies, Inc. Programmable Boot Sequencer
-> +
-> +maintainers:
-> +  - Anjelique Melendez <quic_amelende@quicinc.com>
-> +
-> +description: |
-> +  The Qualcomm Technologies, Inc. Programmable Boot Sequencer (PBS)
-> +  supports triggering power up and power down sequences for clients
-> +  upon request.
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - qcom,pmi632-pbs
-> +      - const: qcom,pbs
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/spmi/spmi.h>
-> +
-> +    pmic@0 {
+Use the governed feature framework to track whether or not the guest can
+use 1GiB pages, and drop the one-off helper that wraps the surprisingly
+non-trivial logic surrounding 1GiB page usage in the guest.
 
-This should be rather just "pmic", because the examples have
-address-cells=1 and size-cells=1, which is not correct in this context.
+No functional change intended.
 
-Anyway:
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/cpuid.c             | 17 +++++++++++++++++
+ arch/x86/kvm/governed_features.h |  2 ++
+ arch/x86/kvm/mmu/mmu.c           | 20 +++-----------------
+ 3 files changed, 22 insertions(+), 17 deletions(-)
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-Best regards,
-Krzysztof
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 4ba43ae008cb..67e9f79fe059 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -312,11 +312,28 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+ {
+ 	struct kvm_lapic *apic = vcpu->arch.apic;
+ 	struct kvm_cpuid_entry2 *best;
++	bool allow_gbpages;
+ 
+ 	BUILD_BUG_ON(KVM_NR_GOVERNED_FEATURES > KVM_MAX_NR_GOVERNED_FEATURES);
+ 	bitmap_zero(vcpu->arch.governed_features.enabled,
+ 		    KVM_MAX_NR_GOVERNED_FEATURES);
+ 
++	/*
++	 * If TDP is enabled, let the guest use GBPAGES if they're supported in
++	 * hardware.  The hardware page walker doesn't let KVM disable GBPAGES,
++	 * i.e. won't treat them as reserved, and KVM doesn't redo the GVA->GPA
++	 * walk for performance and complexity reasons.  Not to mention KVM
++	 * _can't_ solve the problem because GVA->GPA walks aren't visible to
++	 * KVM once a TDP translation is installed.  Mimic hardware behavior so
++	 * that KVM's is at least consistent, i.e. doesn't randomly inject #PF.
++	 * If TDP is disabled, honor *only* guest CPUID as KVM has full control
++	 * and can install smaller shadow pages if the host lacks 1GiB support.
++	 */
++	allow_gbpages = tdp_enabled ? boot_cpu_has(X86_FEATURE_GBPAGES) :
++				      guest_cpuid_has(vcpu, X86_FEATURE_GBPAGES);
++	if (allow_gbpages)
++		kvm_governed_feature_set(vcpu, X86_FEATURE_GBPAGES);
++
+ 	best = kvm_find_cpuid_entry(vcpu, 1);
+ 	if (best && apic) {
+ 		if (cpuid_entry_has(best, X86_FEATURE_TSC_DEADLINE_TIMER))
+diff --git a/arch/x86/kvm/governed_features.h b/arch/x86/kvm/governed_features.h
+index 40ce8e6608cd..b29c15d5e038 100644
+--- a/arch/x86/kvm/governed_features.h
++++ b/arch/x86/kvm/governed_features.h
+@@ -5,5 +5,7 @@ BUILD_BUG()
+ 
+ #define KVM_GOVERNED_X86_FEATURE(x) KVM_GOVERNED_FEATURE(X86_FEATURE_##x)
+ 
++KVM_GOVERNED_X86_FEATURE(GBPAGES)
++
+ #undef KVM_GOVERNED_X86_FEATURE
+ #undef KVM_GOVERNED_FEATURE
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 5bdda75bfd10..9e4cd8b4a202 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -4779,28 +4779,13 @@ static void __reset_rsvds_bits_mask(struct rsvd_bits_validate *rsvd_check,
+ 	}
+ }
+ 
+-static bool guest_can_use_gbpages(struct kvm_vcpu *vcpu)
+-{
+-	/*
+-	 * If TDP is enabled, let the guest use GBPAGES if they're supported in
+-	 * hardware.  The hardware page walker doesn't let KVM disable GBPAGES,
+-	 * i.e. won't treat them as reserved, and KVM doesn't redo the GVA->GPA
+-	 * walk for performance and complexity reasons.  Not to mention KVM
+-	 * _can't_ solve the problem because GVA->GPA walks aren't visible to
+-	 * KVM once a TDP translation is installed.  Mimic hardware behavior so
+-	 * that KVM's is at least consistent, i.e. doesn't randomly inject #PF.
+-	 */
+-	return tdp_enabled ? boot_cpu_has(X86_FEATURE_GBPAGES) :
+-			     guest_cpuid_has(vcpu, X86_FEATURE_GBPAGES);
+-}
+-
+ static void reset_guest_rsvds_bits_mask(struct kvm_vcpu *vcpu,
+ 					struct kvm_mmu *context)
+ {
+ 	__reset_rsvds_bits_mask(&context->guest_rsvd_check,
+ 				vcpu->arch.reserved_gpa_bits,
+ 				context->cpu_role.base.level, is_efer_nx(context),
+-				guest_can_use_gbpages(vcpu),
++				guest_can_use(vcpu, X86_FEATURE_GBPAGES),
+ 				is_cr4_pse(context),
+ 				guest_cpuid_is_amd_or_hygon(vcpu));
+ }
+@@ -4877,7 +4862,8 @@ static void reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu,
+ 	__reset_rsvds_bits_mask(shadow_zero_check, reserved_hpa_bits(),
+ 				context->root_role.level,
+ 				context->root_role.efer_nx,
+-				guest_can_use_gbpages(vcpu), is_pse, is_amd);
++				guest_can_use(vcpu, X86_FEATURE_GBPAGES),
++				is_pse, is_amd);
+ 
+ 	if (!shadow_me_mask)
+ 		return;
+-- 
+2.41.0.694.ge786442a9b-goog
 
