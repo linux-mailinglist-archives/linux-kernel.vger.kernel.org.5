@@ -2,133 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 097BB77C96B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 10:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988B577C96D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 10:37:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235664AbjHOIeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 04:34:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42248 "EHLO
+        id S235676AbjHOIgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 04:36:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235699AbjHOIdp (ORCPT
+        with ESMTP id S233989AbjHOIgP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 04:33:45 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2061.outbound.protection.outlook.com [40.107.93.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116B91BC9
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:33:40 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SrnjgRRo6ekO0e/Q0XK1v7Vq9kOrirMCXkBZiE8raTDOTRf5ujIeqXWx5Y9fdwZKKjesHUcW6H8E2JccvpSQLRAX/bHgLpKg2/7sI2XVB6of4jdvT6L3HSMrr9wBP4H9iDPpNF5PS836j+/aiYJt0QpwXutu27KoNAd0+qpxyotPnGYfAX9esr3EuE1HQro4RLKY3q8DUy0ZHedIj/kWW8W8ZI39pfQREu2s3+dNhSp92bARMirm/fwAne1okZMQHTp0PdoW4hRyOb7UcyN8vUSsFt+3Lr0djS5Pl5zHJW7ae+YtZdiIAZCsQgLIVVlGhwHqErnq05xt6SR26W8GlA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Y0dYUZmU9Urz/A4aoUXEWRrUeIC6jdHgJfqpVQ1Pcds=;
- b=g3LIvCSIHIzZ9fQzmouzFAuzT3EBkybParcHHzoTBrtmkU7Vhg/E4h0mqJFn0NGc/oFk/6TeDhyXDbc+O9Zx65PilbtscGPLFUQKwi3iALUV4++eWsoU+X0Vmcw2CDquIsZnVeXHXMUk0/1V0F4f7ko/VCwcVWHk9l5ZlLtGW/zeICUhqpU92kL+bAenaZ/si+zR2fj1vmtg1Tb2ct3EG6TEAqXIkJpaKKY9yNVzjPsBWEuHKhT/E/KRpQZISiUJizZypb7rFzaru6xF+a6wUWVGL7QAB2JxyR/bTqN9O+rhTip8xmXUNweGfxcoR3IsD8+qqfRS3g89ZSGX3l1nOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y0dYUZmU9Urz/A4aoUXEWRrUeIC6jdHgJfqpVQ1Pcds=;
- b=Vnld7JAXLHqb5U4gcW5YQijie6CBDYOR8CAo/As9Vjfro2jZtP5axy3JtiKd6r79akKDaS69gk4VnLBKRQO9AoRBRz+braUz0EU9CAvowfFbjHwANiQbpUFtgrIbmzYdbf2mLXkEy93Wo7tpUQoJuhDGo/M275qBX/3GpZ5XmEY81uKkQJ7zFblLindwvgZzA57VMA15w3voxRY00tayggV10szYtm19bkE57thUqTPsS0TaGtjpHCxkN7IjBJrqLdzLDUQiNoaLx7nR2PpLIfCS9mqaJVxw6yggpe3ZzGWQPlrTnlc4r2HF82GvA72EgcCrDs+6gMe7ue72e5FYIA==
-Received: from CY5P221CA0070.NAMP221.PROD.OUTLOOK.COM (2603:10b6:930:4::40) by
- BL1PR12MB5272.namprd12.prod.outlook.com (2603:10b6:208:319::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Tue, 15 Aug
- 2023 08:33:38 +0000
-Received: from CY4PEPF0000E9CD.namprd03.prod.outlook.com
- (2603:10b6:930:4:cafe::19) by CY5P221CA0070.outlook.office365.com
- (2603:10b6:930:4::40) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.33 via Frontend
- Transport; Tue, 15 Aug 2023 08:33:37 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- CY4PEPF0000E9CD.mail.protection.outlook.com (10.167.241.140) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6699.12 via Frontend Transport; Tue, 15 Aug 2023 08:33:37 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Tue, 15 Aug 2023
- 01:33:29 -0700
-Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.37; Tue, 15 Aug 2023 01:33:29 -0700
-Received: from c-237-113-200-209.mtl.labs.mlnx (10.127.8.14) by
- mail.nvidia.com (10.126.190.181) with Microsoft SMTP Server id 15.2.986.37
- via Frontend Transport; Tue, 15 Aug 2023 01:33:27 -0700
-From:   Dragos Tatulea <dtatulea@nvidia.com>
-To:     <mst@redhat.com>, <jasowang@redhat.com>,
-        <virtualization@lists.linux-foundation.org>
-CC:     Dragos Tatulea <dtatulea@nvidia.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] MAINTAINERS: Add myself as mlx5_vdpa driver
-Date:   Tue, 15 Aug 2023 11:33:14 +0300
-Message-ID: <20230815083321.533688-1-dtatulea@nvidia.com>
-X-Mailer: git-send-email 2.41.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9CD:EE_|BL1PR12MB5272:EE_
-X-MS-Office365-Filtering-Correlation-Id: bae66550-c863-430f-c279-08db9d6a5268
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kww8/y0q0lzO78pA/eRTKcSlFJFh4FQ6CBJgHRdovssQyf6zAwOjcsykRroH4YYE3Gh8hFmqOGmNrs3kAr4yoh2UgM0x9VNjWImYZhLHt5CBGvaUbt9FdC5mfzOn9tA4ZqaR8YTkWEDlDUCKy9UV1LvREHHpM/NsrXLmWMSm0UOt5AE+8dqRa7bxdrAjLpQ6VFYDvtSCRSxDQ4TvR6FUOWL874lHLi13GfC711jmoR5bMwujkyPGzy8A6+Y4XMkW0ASDl/7WPmmo8oyDowwLHKvXW5q9XvspQBMyf8Mby5GhCWqkIs0ajdmUAC43tGZwqEu83qcm7JDzxWqyIxfM1yTCL9nHZBYHO5w7kZOP0ZmgT12BbWE0ZMJ3mwxSaNVbY/SojlZ+WdH6Ug5Pm9YfXdaqMyjudLvliKAzM0r0O/AepCl+0dqmLEvj4mLhtqS1X3mXfGy5XtuBKimoXp1tHtAq5nIcj+1So2e+LMPZ2hfz/EcEDlNkZh8DDw52DMIyIZb7odYo7PssMqrFu+Ho3r4+hhzSaTA2K1eOHJa5z2EeUU/XDSWKGFgnvOSE/poAO33rJxu7TlPO+hahlNPdhGVhIBZl9RYECGf/GMy26Pp9gYkUpg3HMVHA2PXOCYHOT2x9SDspJY3VgMvZexIO1k0OUdblre+hH1Uc41SiAFNnx7GoZuHDI8oeVg7bN7KcLKD74/KvUBrYQNCQAnqY08Jr6zhQucVE/MO4/a15o1h1C0oardY91ChzwVenhPJr
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(396003)(136003)(376002)(346002)(82310400008)(186006)(1800799006)(451199021)(46966006)(36840700001)(40470700004)(40480700001)(82740400003)(356005)(7636003)(36756003)(86362001)(40460700003)(4744005)(478600001)(6666004)(2906002)(1076003)(2616005)(26005)(70206006)(426003)(336012)(316002)(54906003)(41300700001)(110136005)(70586007)(5660300002)(8676002)(8936002)(4326008)(36860700001)(47076005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2023 08:33:37.5873
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bae66550-c863-430f-c279-08db9d6a5268
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9CD.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5272
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+        Tue, 15 Aug 2023 04:36:15 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0779710F
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 01:36:10 -0700 (PDT)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8Dxg_D5ONtkVrEYAA--.51268S3;
+        Tue, 15 Aug 2023 16:36:09 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax3c74ONtk0QVbAA--.27613S2;
+        Tue, 15 Aug 2023 16:36:08 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+Subject: [PATCH] objtool: Check local label in is_sibling_call() and add_jump_destinations()
+Date:   Tue, 15 Aug 2023 16:36:02 +0800
+Message-Id: <1692088562-4630-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf8Ax3c74ONtk0QVbAA--.27613S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW3XFyrCw1rCF48uF47KFy5KFX_yoW7uw43pa
+        13G3y5Kr4rXFWxuw47tF4UW3WSkw4rXFy7GFW5Ga4Skw1Yqas5ta1fK3WI9F15JFy5WF43
+        Xw4jyryUCF4UAabCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUU9Yb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        XVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
+        AKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
+        6r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
+        CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
+        0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
+        AIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIev
+        Ja73UjIFyTuYvjxU2MKZDUUUU
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As Eli Cohen moved to other work, I'll be the contact point for
-mlx5_vdpa.
+When update the latest upstream gcc and binutils which enables linker
+relaxation by default, it generates more objtool warnings on LoongArch,
+like this:
 
-Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+  init/version.o: warning: objtool: early_hostname+0x20: sibling call from callable instruction with modified stack frame
+
+We can see that the branch and jump operation about local label ".L2"
+is not sibling call, because a sibling call is a tail-call to another
+symbol. In this case, make is_sibling_call() return false, set dest_sec
+and dest_off to calculate jump_dest in add_jump_destinations().
+
+Here are some detailed info:
+[fedora@linux 6.5.test]$ gcc --version
+gcc (GCC) 14.0.0 20230803 (experimental)
+[fedora@linux 6.5.test]$ as --version
+GNU assembler (GNU Binutils) 2.41.50.20230803
+[fedora@linux 6.5.test]$ objdump -M no-aliases -D init/version.o
+0000000000000000 <early_hostname>:
+   0:   00150085        or              $a1, $a0, $zero
+   4:   1a000004        pcalau12i       $a0, 0
+   8:   02ffc063        addi.d          $sp, $sp, -16
+   c:   02810406        addi.w          $a2, $zero, 65
+  10:   02c00084        addi.d          $a0, $a0, 0
+  14:   29c02061        st.d            $ra, $sp, 8
+  18:   54000000        bl              0       # 18 <early_hostname+0x18>
+  1c:   0281000c        addi.w          $t0, $zero, 64
+  20:   6c001584        bgeu            $t0, $a0, 20    # 34 <.L2>
+  24:   1a000004        pcalau12i       $a0, 0
+  28:   02810005        addi.w          $a1, $zero, 64
+  2c:   02c00084        addi.d          $a0, $a0, 0
+  30:   54000000        bl              0       # 30 <early_hostname+0x30>
+
+0000000000000034 <.L2>:
+  34:   28c02061        ld.d            $ra, $sp, 8
+  38:   00150004        or              $a0, $zero, $zero
+  3c:   02c04063        addi.d          $sp, $sp, 16
+  40:   4c000020        jirl            $zero, $ra, 0
+
+By the way, it need to move insn_reloc() before is_sibling_call()
+to avoid implicit declaration build error.
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
+ tools/objtool/check.c | 69 ++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 41 insertions(+), 28 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9a5863f1b016..c9a9259f4d37 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13555,6 +13555,12 @@ F:	Documentation/leds/leds-mlxcpld.rst
- F:	drivers/leds/leds-mlxcpld.c
- F:	drivers/leds/leds-mlxreg.c
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 8936a05..fea3675 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -161,12 +161,39 @@ static bool is_jump_table_jump(struct instruction *insn)
+ 	       insn_jump_table(alt_group->orig_group->first_insn);
+ }
  
-+MELLANOX MLX5_VDPA DRIVER
-+M:	Dragos Tatulea <dtatulea@nvidia.com>
-+L:	virtualization@lists.linux-foundation.org
-+S:	Supported
-+F:	drivers/vdpa/mlx5/
+-static bool is_sibling_call(struct instruction *insn)
++static struct reloc *insn_reloc(struct objtool_file *file, struct instruction *insn)
++{
++	struct reloc *reloc;
 +
- MELLANOX PLATFORM DRIVER
- M:	Vadim Pasternak <vadimp@nvidia.com>
- L:	platform-driver-x86@vger.kernel.org
++	if (insn->no_reloc)
++		return NULL;
++
++	if (!file)
++		return NULL;
++
++	reloc = find_reloc_by_dest_range(file->elf, insn->sec,
++					 insn->offset, insn->len);
++	if (!reloc) {
++		insn->no_reloc = 1;
++		return NULL;
++	}
++
++	return reloc;
++}
++
++static bool is_sibling_call(struct objtool_file *file, struct instruction *insn)
+ {
+ 	/*
+ 	 * Assume only STT_FUNC calls have jump-tables.
+ 	 */
+ 	if (insn_func(insn)) {
++		struct reloc *reloc = insn_reloc(file, insn);
++
++		/* Disallow sibling calls into STT_NOTYPE if it is local lable */
++		if (reloc && reloc->sym->type == STT_NOTYPE &&
++		    strncmp(reloc->sym->name, ".L", 2) == 0)
++			return false;
++
+ 		/* An indirect jump is either a sibling call or a jump to a table. */
+ 		if (insn->type == INSN_JUMP_DYNAMIC)
+ 			return !is_jump_table_jump(insn);
+@@ -232,7 +259,7 @@ static bool __dead_end_function(struct objtool_file *file, struct symbol *func,
+ 	 * of the sibling call returns.
+ 	 */
+ 	func_for_each_insn(file, func, insn) {
+-		if (is_sibling_call(insn)) {
++		if (is_sibling_call(file, insn)) {
+ 			struct instruction *dest = insn->jump_dest;
+ 
+ 			if (!dest)
+@@ -743,7 +770,7 @@ static int create_static_call_sections(struct objtool_file *file)
+ 		if (!elf_init_reloc_data_sym(file->elf, sec,
+ 					     idx * sizeof(*site) + 4,
+ 					     (idx * 2) + 1, key_sym,
+-					     is_sibling_call(insn) * STATIC_CALL_SITE_TAIL))
++					     is_sibling_call(file, insn) * STATIC_CALL_SITE_TAIL))
+ 			return -1;
+ 
+ 		idx++;
+@@ -1298,26 +1325,6 @@ __weak bool arch_is_rethunk(struct symbol *sym)
+ 	return false;
+ }
+ 
+-static struct reloc *insn_reloc(struct objtool_file *file, struct instruction *insn)
+-{
+-	struct reloc *reloc;
+-
+-	if (insn->no_reloc)
+-		return NULL;
+-
+-	if (!file)
+-		return NULL;
+-
+-	reloc = find_reloc_by_dest_range(file->elf, insn->sec,
+-					 insn->offset, insn->len);
+-	if (!reloc) {
+-		insn->no_reloc = 1;
+-		return NULL;
+-	}
+-
+-	return reloc;
+-}
+-
+ static void remove_insn_ops(struct instruction *insn)
+ {
+ 	struct stack_op *op, *next;
+@@ -1560,8 +1567,14 @@ static int add_jump_destinations(struct objtool_file *file)
+ 			 * External sibling call or internal sibling call with
+ 			 * STT_FUNC reloc.
+ 			 */
+-			add_call_dest(file, insn, reloc->sym, true);
+-			continue;
++			if (reloc->sym->type == STT_NOTYPE &&
++			    strncmp(reloc->sym->name, ".L", 2) == 0) {
++				dest_sec = insn->sec;
++				dest_off = arch_jump_destination(insn);
++			} else {
++				add_call_dest(file, insn, reloc->sym, true);
++				continue;
++			}
+ 		} else if (reloc->sym->sec->idx) {
+ 			dest_sec = reloc->sym->sec;
+ 			dest_off = reloc->sym->sym.st_value +
+@@ -3649,7 +3662,7 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 
+ 		case INSN_JUMP_CONDITIONAL:
+ 		case INSN_JUMP_UNCONDITIONAL:
+-			if (is_sibling_call(insn)) {
++			if (is_sibling_call(file, insn)) {
+ 				ret = validate_sibling_call(file, insn, &state);
+ 				if (ret)
+ 					return ret;
+@@ -3670,7 +3683,7 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 
+ 		case INSN_JUMP_DYNAMIC:
+ 		case INSN_JUMP_DYNAMIC_CONDITIONAL:
+-			if (is_sibling_call(insn)) {
++			if (is_sibling_call(file, insn)) {
+ 				ret = validate_sibling_call(file, insn, &state);
+ 				if (ret)
+ 					return ret;
+@@ -3834,7 +3847,7 @@ static int validate_unret(struct objtool_file *file, struct instruction *insn)
+ 
+ 		case INSN_JUMP_UNCONDITIONAL:
+ 		case INSN_JUMP_CONDITIONAL:
+-			if (!is_sibling_call(insn)) {
++			if (!is_sibling_call(file, insn)) {
+ 				if (!insn->jump_dest) {
+ 					WARN_INSN(insn, "unresolved jump target after linking?!?");
+ 					return -1;
 -- 
-2.41.0
+2.1.0
 
