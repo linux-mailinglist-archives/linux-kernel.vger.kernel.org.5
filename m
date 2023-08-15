@@ -2,85 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9629077CCFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F6F77CCF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237301AbjHOMwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 08:52:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42564 "EHLO
+        id S235071AbjHOMwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 08:52:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237299AbjHOMwS (ORCPT
+        with ESMTP id S237333AbjHOMwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 08:52:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A869AE5
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:51:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692103893;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6h9aonqmeDneHn2sCJ+4YLuPQmV9DjwIRMJXM+2v704=;
-        b=LlVviMhC7rpIfFDEHuI4hUkok7ggB0trWxY9u648d/35mkLjGjrWS+AK/fNSKr+yn7szrV
-        Vfd9TIi4ypnnOo9sdxPJ/CMQ/k4l7jr6AxsP1QO06mjkNxY0M7TssUc8eQxOfSCAdJsyyJ
-        fq7KbToovXyrBadWgQXyr2+ujV6Rdqg=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-595-qBAZoA6cNmWTtYvAFtxRoA-1; Tue, 15 Aug 2023 08:51:32 -0400
-X-MC-Unique: qBAZoA6cNmWTtYvAFtxRoA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 576E33C108C9;
-        Tue, 15 Aug 2023 12:51:31 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C3E4B140E917;
-        Tue, 15 Aug 2023 12:51:29 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <aceea2408bf049aebb1f1f893281795c@AcuMS.aculab.com>
-References: <aceea2408bf049aebb1f1f893281795c@AcuMS.aculab.com> <3710261.1691764329@warthog.procyon.org.uk>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     dhowells@redhat.com, Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "jlayton@kernel.org" <jlayton@kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] iov_iter: Convert iterate*() to inline funcs
+        Tue, 15 Aug 2023 08:52:07 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB09410C8
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:52:06 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-114-154.bstnma.fios.verizon.net [173.48.114.154])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37FCpkTm023020
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Aug 2023 08:51:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1692103908; bh=sYrp9LrLuil8xIlfdGEAsRkSlkgtAiaHvWYOVyY+mkI=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=IwXqJ5cQwH02uowWnpTrer4xdovuo8DSGI1gYenUl6jVKwOSNxBOscm51nWE2/+PN
+         el/LsvYrW0IfPATDoNfH5Qr6xeKPzeZlnqctUIHZ9SnfUDwweZHvh9vDeJVeButP6A
+         dP2L8X604SdvQ+joU5V2OkQOUK2Rdy4Vh75D513LVbFwDz+W+WEb+V3X8i/izehOzd
+         X1f+yNjFmy2KSSEj+Tg4trnQIHn0qUMiSfzAz7Ssi7JjtgFafYaiD1PnDkMzR8S/0Q
+         bD+RfAOokFPUv5fJ2jUl5zjtp8JJrbiT9N5aRLjDcfgRAsRqHcA1hvz0eI0MDg8H9j
+         Uf2U6J4nlmp1w==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 6ACCF15C0292; Tue, 15 Aug 2023 08:51:46 -0400 (EDT)
+Date:   Tue, 15 Aug 2023 08:51:46 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Dr. David Alan Gilbert" <dave@treblig.org>
+Cc:     adilger.kernel@dilger.ca, song@kernel.org,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: 6.5.0rc5 fs hang - ext4? raid?
+Message-ID: <20230815125146.GA1508930@mit.edu>
+References: <ZNqWfQPTScJDkmpX@gallifrey>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <286906.1692103889.1@warthog.procyon.org.uk>
-Date:   Tue, 15 Aug 2023 13:51:29 +0100
-Message-ID: <286907.1692103889@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNqWfQPTScJDkmpX@gallifrey>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Laight <David.Laight@ACULAB.COM> wrote:
+On Mon, Aug 14, 2023 at 09:02:53PM +0000, Dr. David Alan Gilbert wrote:
+> dg         29594   29592  0 18:40 pts/0    00:00:00 /usr/bin/ar --plugin /usr/libexec/gcc/x86_64-redhat-linux/13/liblto_plugin.so -csrDT src/intel/perf/libintel_perf.a src/intel/perf/libintel_perf.a.p/meson-generated_.._intel_perf_metrics.c.o src/intel/perf/libintel_perf.a.p/intel_perf.c.o src/intel/perf/libintel_perf.a.p/intel_perf_query.c.o src/intel/perf/libintel_perf.a.p/intel_perf_mdapi.c.o
+> 
+> [root@dalek dg]# cat /proc/29594/stack 
+> [<0>] md_super_wait+0xa2/0xe0
+> [<0>] md_bitmap_unplug+0xd2/0x120
+> [<0>] flush_bio_list+0xf3/0x100 [raid1]
+> [<0>] raid1_unplug+0x3b/0xb0 [raid1]
+> [<0>] __blk_flush_plug+0xd7/0x150
+> [<0>] blk_finish_plug+0x29/0x40
+> [<0>] ext4_do_writepages+0x401/0xc90
+> [<0>] ext4_writepages+0xad/0x180
 
-> Actually quite typical because inlining happens much later on.
-> I suspect that the #define benefits from the compile front-end
-> optimising constants.
+If you want a few seconds and try grabbing cat /proc/29594/stack
+again, what does the stack trace stay consistent as above?
 
-I managed to mostly pull it back, and even make some functions slightly
-smaller, in the v2 I posted.  Mostly that came about by arranging things to
-look a bit more like the upstream macro version.
+Also, if you have iostat installed (usually part of the sysstat
+package), does "iostat 1" show any I/O activity on the md device?
+What about the underying block dvices used by the md device?  If the
+md device is attached to HDD's where you can see the activity light,
+can you see (or hear) any disk activity?
 
-David
+This sure seems like either the I/O driver isn't processing requests,
+or some kind of hang in the md layer....
 
+				- Ted
