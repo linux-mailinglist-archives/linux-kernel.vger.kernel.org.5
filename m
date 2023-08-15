@@ -2,160 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C528077CBA6
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC6E77CBA5
 	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236378AbjHOLZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 07:25:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36936 "EHLO
+        id S235345AbjHOLZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 07:25:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235320AbjHOLY5 (ORCPT
+        with ESMTP id S235300AbjHOLYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 07:24:57 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA2AB10C0;
+        Tue, 15 Aug 2023 07:24:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 014EF10C1;
         Tue, 15 Aug 2023 04:24:53 -0700 (PDT)
-X-QQ-mid: bizesmtp72t1692098660t8rl45w6
-Received: from [192.168.1.114] ( [221.226.144.218])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Tue, 15 Aug 2023 19:24:18 +0800 (CST)
-X-QQ-SSF: 00200000000000B0B000000A0000000
-X-QQ-FEAT: dKvkn8qoLrFQ1alGughSwXTA+ONvfspyvIhP0MGPgn0A+/0FmsKKpXh7V9DqY
-        Q/K32MjJkvxnFZupvarNRF8a0JYfK89Ygt+XKrOyD6lFilgsJW6A6rVemQZhiqnzn3M/FqZ
-        hsFiUiQ5J+V2yqNSbL5dVT2sm5ncMmv6vmKXHePHb+sqnnFgjrWGnu0Ca8g5ctulTur/DNp
-        MyGH83GFkLbhGjkIk7XOfaWcPtPss5YnqIgFTq60m6UL9qfQWXIKt02xGtVyXNJK9yp0Q7J
-        cw+GPThG5xxGnqk6xpQzEf/2Uco6Aqnd9KcqsfEAl9vlUhktKCDyA+cykV6YxFVQQF2HNVm
-        sQCFExTrr4jqAnX8nwPFm2+PPLwgiCo3NW/7lapYI/H0rQExKzZrIBTLn7Hhg==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 4206943508769767112
-Message-ID: <C172F31D25F5ED6E+034cc389-f02c-b681-a989-8592c5dac35e@tinylab.org>
-Date:   Tue, 15 Aug 2023 19:24:18 +0800
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5BB10654B2;
+        Tue, 15 Aug 2023 11:24:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6EA2C433C7;
+        Tue, 15 Aug 2023 11:24:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692098692;
+        bh=Q5TrKurT2V4yZHymYHBHdElu209s20+L7p37ce3WGpY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iQz+eCpoiW8g1C6M+rjd5bNTCcQCAKddvMg/GlDo8Cc/Zf7VyP5jG9CyKx+RqBelL
+         T5bli702r9gFFmKeCQyWug510u9V6P6UopxvESg082ZoNIDOMW4dpsZ7htA5RNch+Y
+         htVCwNbMf3s8hpmgnd5YiKJXiE6LFoU5XX9ifZSytD5/NbGJfemgDhaCJaYhdCAhKB
+         p7xQ2z1oxoNTpFMmc9Niuuhg2Rk72EcS+mfYyWQTBu7ahdOlg9/CJBDLcFBglr3Mnw
+         U/dpU3LEIT1tSyf69rTPU2oqLMy1VNdVp98/8JOpqVJzF5W0XGW9uJh88gk0K9QQ51
+         et+KKjvuQFeZw==
+Date:   Tue, 15 Aug 2023 13:24:47 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next v6 1/6] page_pool: frag API support for 32-bit
+ arch with 64-bit DMA
+Message-ID: <ZNtgfy9KPUclHnLE@vergenet.net>
+References: <20230814125643.59334-1-linyunsheng@huawei.com>
+ <20230814125643.59334-2-linyunsheng@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.0
-Subject: Re: [PATCH v6 0/5] riscv: Introduce KASLR
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-References: <20230722123850.634544-1-alexghiti@rivosinc.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Albert Ou <aou@eecs.berkeley.edu>, zong.li@sifive.com,
-        conor.dooley@microchip.com
-From:   Song Shuai <songshuaishuai@tinylab.org>
-In-Reply-To: <20230722123850.634544-1-alexghiti@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrsz:qybglogicsvrsz4a-0
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,FORGED_MUA_MOZILLA,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230814125643.59334-2-linyunsheng@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 14, 2023 at 08:56:38PM +0800, Yunsheng Lin wrote:
 
-Hi, Alex:
+...
 
-在 2023/7/22 20:38, Alexandre Ghiti 写道:
-> The following KASLR implementation allows to randomize the kernel mapping:
-> 
-> - virtually: we expect the bootloader to provide a seed in the device-tree
-> - physically: only implemented in the EFI stub, it relies on the firmware to
->    provide a seed using EFI_RNG_PROTOCOL. arm64 has a similar implementation
->    hence the patch 3 factorizes KASLR related functions for riscv to take
->    advantage.
-> 
-> The new virtual kernel location is limited by the early page table that only
-> has one PUD and with the PMD alignment constraint, the kernel can only take
-> < 512 positions.
-> 
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index 77cb75e63aca..d62c11aaea9a 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
 
-I have gone through the code and tested this series with RiscVVirt edk2.
-All seems good to me, you can add :
+...
 
-Tested-by: Song Shuai <songshuaishuai@tinylab.org>
+> @@ -737,18 +736,16 @@ static void page_pool_free_frag(struct page_pool *pool)
+>  	page_pool_return_page(pool, page);
+>  }
+>  
+> -struct page *page_pool_alloc_frag(struct page_pool *pool,
+> -				  unsigned int *offset,
+> -				  unsigned int size, gfp_t gfp)
+> +struct page *__page_pool_alloc_frag(struct page_pool *pool,
+> +				    unsigned int *offset,
+> +				    unsigned int size, gfp_t gfp)
+>  {
+>  	unsigned int max_size = PAGE_SIZE << pool->p.order;
+>  	struct page *page = pool->frag_page;
+>  
+> -	if (WARN_ON(!(pool->p.flags & PP_FLAG_PAGE_FRAG) ||
+> -		    size > max_size))
+> +	if (WARN_ON(!(pool->p.flags & PP_FLAG_PAGE_FRAG))
 
-And a few questions about patch 2 ("riscv: Dump out kernel offset 
-information on panic"):
+Hi Yunsheng Lin,
 
-1. The dump_kernel_offset() function would output "Kernel Offset: 0x0 
-from 0xffffffff80000000" when booting with "nokaslr" option.
+There is a ')' missing on the line above, which results in a build failure.
 
-How about disabling the registration of "kernel_offset_notifier" with 
-"nokaslr" option?
-
-2. Inspired by patch 2, I added the Crash KASLR support based on this 
-series [1].
-So is it necessary to keep this patch if we have Crash KASLR support?
-
-
-[1]: 
-https://lore.kernel.org/linux-riscv/20230815104800.705753-1-songshuaishuai@tinylab.org/T/#u
-
-> base-commit-tag: v6.5-rc1
-> 
-> Changes in v6:
->    * Fix reintroduced build failures by compiling kaslr.c only for arm64
->      and riscv, as suggested by Ard
-> 
-> Changes in v5:
->    * Renamed efi-stub-kaslr.c into kaslr.c and fix commit log of patch 3,
->      as suggested by Ard
->    * Removed stubs since the kaslr functions were moved to their own file
->      (and then does not trigger any build failure for architectures that do
->      not call those functions since they are in their own compilation unit)
-> 
-> Changes in v4:
->    * Fix efi_get_kimg macro that returned nothing
->    * Moved new kaslr functions into their own files to avoid zboot link
->      failures, as suggested by Ard
-> 
-> Changes in v3:
->    * Rebase on top of 6.4-rc2
->    * Make RANDOMIZE_BASE depend on 64bit
->    * Fix efi_icache_sync and efi_get_kimg_min_align which were undefined
->      in x86 (and certainly other archs)
->    * Add patch 4 to fix warning on rv32
-> 
-> Changes in v2:
->    * Rebase on top of 6.3-rc1
->    * Add a riscv cache sync after memcpying the kernel
->    * Add kaslr_offset implementation for KCOV
->    * Add forward declaration to quiet LLVM
-> 
-> Alexandre Ghiti (5):
->    riscv: Introduce virtual kernel mapping KASLR
->    riscv: Dump out kernel offset information on panic
->    arm64: libstub: Move KASLR handling functions to kaslr.c
->    libstub: Fix compilation warning for rv32
->    riscv: libstub: Implement KASLR by using generic functions
-> 
->   arch/arm64/include/asm/efi.h              |   2 +
->   arch/riscv/Kconfig                        |  19 +++
->   arch/riscv/include/asm/efi.h              |   2 +
->   arch/riscv/include/asm/page.h             |   3 +
->   arch/riscv/kernel/image-vars.h            |   1 +
->   arch/riscv/kernel/pi/Makefile             |   2 +-
->   arch/riscv/kernel/pi/cmdline_early.c      |  13 ++
->   arch/riscv/kernel/pi/fdt_early.c          |  30 ++++
->   arch/riscv/kernel/setup.c                 |  25 ++++
->   arch/riscv/mm/init.c                      |  36 ++++-
->   drivers/firmware/efi/libstub/Makefile     |   4 +-
->   drivers/firmware/efi/libstub/arm64-stub.c | 117 ++--------------
->   drivers/firmware/efi/libstub/efistub.h    |   8 ++
->   drivers/firmware/efi/libstub/kaslr.c      | 159 ++++++++++++++++++++++
->   drivers/firmware/efi/libstub/riscv-stub.c |  33 ++---
->   15 files changed, 328 insertions(+), 126 deletions(-)
->   create mode 100644 arch/riscv/kernel/pi/fdt_early.c
->   create mode 100644 drivers/firmware/efi/libstub/kaslr.c
-> 
+>  		return NULL;
+>  
+> -	size = ALIGN(size, dma_get_cache_alignment());
+>  	*offset = pool->frag_offset;
+>  
+>  	if (page && *offset + size > max_size) {
+> @@ -781,7 +778,7 @@ struct page *page_pool_alloc_frag(struct page_pool *pool,
+>  	alloc_stat_inc(pool, fast);
+>  	return page;
+>  }
+> -EXPORT_SYMBOL(page_pool_alloc_frag);
+> +EXPORT_SYMBOL(__page_pool_alloc_frag);
+>  
+>  static void page_pool_empty_ring(struct page_pool *pool)
+>  {
 
 -- 
-Thanks
-Song Shuai
+pw-bot: changes-requested
