@@ -2,190 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA98D77D496
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6795577D491
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239597AbjHOUsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 16:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50298 "EHLO
+        id S239537AbjHOUrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 16:47:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239069AbjHOUrh (ORCPT
+        with ESMTP id S238693AbjHOUqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 16:47:37 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12hn2249.outbound.protection.outlook.com [52.100.166.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD711BFF;
-        Tue, 15 Aug 2023 13:47:06 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Rk/ACWjYYA276chk8yO5PnzgCzIkT4JTLk+OkTwIiLZxe/jG3RfdKwqzj8DaX22GFxHuIyZXY74VDtO5TPRE7aQlbqoZW7J+TVNmtMRG+B1lqpazzyApufgZSxmwQE+lEtagErVXeU5W0qS0u12MGSryseUIV5d/EpsWaZXM6T3Dce/D5hZCgMjfNz74VDM2oEZtb5yO/5u7YIUJ6xBZXqlf8kmk5pNivYT++zj+cJ6crnzdBmBEeD6V7LMfuvZeTDi5GqXhhv9MzYcRjxC8pkgxX/LVxJWzz6v8v3IeOSk1mf9eipZe92xoL296T7LM0fmQQxklwGcVV45Pbg5Tkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=J7SJB2kKzFcMzJV0s8Ck7GAAqc5FVrIHX3yHBaxcwBs=;
- b=Rau+jttoT2wsMrWfVgWUd0wRqGohea73dJPbANGnp9WYb7pKw3Edg5xjXboX5aNX2UjpFt+5RHNPh69o/FWoXp2LvM2rj1FvFHlkpGZ/GIbZ7fNPk65TFBHvuzlC++MBuDlkIVaL1zHVff+6yFHv+5mQhEpv8V9MpoS9iQpr/MdzE0MASTmXJUTOSz9eZEuYyCnXUHHXMbOk+U64+ogJXv9Zc4LaSRmr+yAAL6tOqheiBvcMEd9B2J0j33I6nm9bsmMjdL7O8tYK4yeoNFHetK3y02e6Jg2y/YoC4z86t4HgBYx6LCbX9sy28ZzU+tP7nn9MTijSZXYNohvyP4Duow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
+        Tue, 15 Aug 2023 16:46:33 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 719462706
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:46:08 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-51e2a6a3768so7938088a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:46:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J7SJB2kKzFcMzJV0s8Ck7GAAqc5FVrIHX3yHBaxcwBs=;
- b=aWfag+UCbIp4EeylsVBOeVlqReSdTnZ5iKDzT1wRdtMV+dAywHVtdTNmzgwodwCFxzAQdYBeptaD2hRxv7lcF6DYCA5FBdKqmsAemFBmL7bnJbobA6orGawtJyOFjYjtQRoa5KAVEHmV1yVl0ROln0UzR0qYvlq8umbkKxZ/u9M=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from DM5PR0102MB3590.prod.exchangelabs.com (2603:10b6:4:a4::25) by
- BY3PR01MB6708.prod.exchangelabs.com (2603:10b6:a03:363::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6678.26; Tue, 15 Aug 2023 20:46:30 +0000
-Received: from DM5PR0102MB3590.prod.exchangelabs.com
- ([fe80::ed8c:18b8:dac:2331]) by DM5PR0102MB3590.prod.exchangelabs.com
- ([fe80::ed8c:18b8:dac:2331%4]) with mapi id 15.20.6678.025; Tue, 15 Aug 2023
- 20:46:30 +0000
-Date:   Tue, 15 Aug 2023 13:46:00 -0700 (PDT)
-From:   Ilkka Koskinen <ilkka@os.amperecomputing.com>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-cc:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Besar Wicaksono <bwicaksono@nvidia.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v6 1/4] perf: arm_cspmu: Split 64-bit write to 32-bit
- writes
-In-Reply-To: <ab4a51ea-3956-2d2f-5705-a760be69fb59@arm.com>
-Message-ID: <e04669ee-d547-dbbe-e87b-5d7efa6ee8@os.amperecomputing.com>
-References: <20230815063526.9022-1-ilkka@os.amperecomputing.com> <20230815063526.9022-2-ilkka@os.amperecomputing.com> <ab4a51ea-3956-2d2f-5705-a760be69fb59@arm.com>
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-ClientProxiedBy: CH0PR03CA0229.namprd03.prod.outlook.com
- (2603:10b6:610:e7::24) To DM5PR0102MB3590.prod.exchangelabs.com
- (2603:10b6:4:a4::25)
+        d=linaro.org; s=google; t=1692132366; x=1692737166;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7/OQUgxZSXGdXEOLudPU0bFyRRP7WuyPv3FT7DpWnT8=;
+        b=nHZMv6M54PIa6JJHJm9nodNH2x1cC9DNjcRqerawVL/Vj1AnI/PA5aPr4hs9Z3NXVn
+         kXdbayxSToqo4dOGno043q9kyV9Mlt8NqNTXDDfycLi3Y2dUAZ8xGJO8e24PPdgvMcaH
+         JAjkQcVyUkesN+MyRJlfaRoK+AZupZpi/vKjV/vWsxb6HkTEB5xdW25cjg1jf3rWUIiV
+         gu5XXibUw0QI1gJ81H/4sMmjNqo8/anFedoub+m6HRrgcuo+PdZYQSqC1SHzYvGkoMU1
+         TW2RU9W27cMoI/HxMsWBPt0B2VB31Sbs2yE2gmGp+4K6nZSrF81SWnEI3TvuWndVwiSC
+         jQRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692132366; x=1692737166;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7/OQUgxZSXGdXEOLudPU0bFyRRP7WuyPv3FT7DpWnT8=;
+        b=BVrEl2D94t/+um8qZwVgM8d0DmC9LgXBgOFnb+iN7TSAY8ux9vPxblK45VM0kZWb1v
+         heYVzlKi7URldbOrK4Mh1N6YREJyCt7BPql4xJ1LvkCRKIdVgXh1dY7C5B9UnMa/4e4H
+         J1j6sxV7ij6o59qIA91R5TyAvRBG4pVxDJ8Kfta/tjKi6lXB9dV9z7nVD7ZOvBQIU3Xd
+         HwvconBpOoInOYeFC2Je1anNL6L/wz1ph8ge1i1Sibhk7ckhHVZSws5LhCwpIwEJYlwA
+         d4+h/rhx+DIGbf9FQecfgDt1XEyy+vLK0etgOPnYjPi9bWQSZh6LOxowUIePwOPz17NC
+         MoDw==
+X-Gm-Message-State: AOJu0Yy78c3RL6Z3WoVSCKfvvs16BvrgiKdKK8mbGgKXdQOsKBrysZF6
+        hVpPo9MX4gTiXk7GU7Ieu3v2Yg==
+X-Google-Smtp-Source: AGHT+IGPiWnjNSugY+loxPrGX2qhA7sV6YAHpRpRKKXWp8S9BK8vl6Fy8EerZC/9V6h+MV0jyGT8pg==
+X-Received: by 2002:a17:907:7608:b0:99c:180a:ea61 with SMTP id jx8-20020a170907760800b0099c180aea61mr9891970ejc.32.1692132365721;
+        Tue, 15 Aug 2023 13:46:05 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id k18-20020a170906055200b0099bd453357esm7451666eja.41.2023.08.15.13.46.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Aug 2023 13:46:05 -0700 (PDT)
+Message-ID: <55d4090f-d2f3-ffb2-cc6f-a13222f14e47@linaro.org>
+Date:   Tue, 15 Aug 2023 22:46:03 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM5PR0102MB3590:EE_|BY3PR01MB6708:EE_
-X-MS-Office365-Filtering-Correlation-Id: e0a7676d-b534-4aab-35fb-08db9dd0b3bc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?Gl8LSYod2zE5z2EsENiJMlR7b/i/aawLvL8h6PB+jvBCzSU0+37BAsRHjeIN?=
- =?us-ascii?Q?pAWXLhv1SWS+FdfW1xntvKQ+nXA9xk6xjWFpl3acbd2tnykf66DzJi22v9g4?=
- =?us-ascii?Q?Tsb0piIMBVj+Pdip/1ACfXZ5W6FBaCrfTB6ofe3WRQHzM4YgfXbvfVHnXmmU?=
- =?us-ascii?Q?e5f0e2sYEUFVIU+wNwpvRuZQcgaqTzOGMYMD926hk6NonuwvFdFBz5i3t07D?=
- =?us-ascii?Q?oDO1Y2l6eX9iKAJmPQYahFoFXOTcY0cyq4xdpRobFTiov+TLBrhXv5PBZDb/?=
- =?us-ascii?Q?VgUANa8H1Yuo5qqI0x8QwLxdMhExr0AUlsdoANnVu/nAuNRkmDj6JqUEuY1P?=
- =?us-ascii?Q?1QtHmDeYxLxknFKM/OWx7bIeipiV2DWWVIb9rA36/q95VB4J1QSpl6aaXkDj?=
- =?us-ascii?Q?1iH95yX9rjYvueyjyu/mYfDSqQeSAHwz2lsYAoxuN/wtZsYZQZqfM4eAOQTm?=
- =?us-ascii?Q?V326ZDH+mc9fraB1znv84brvJAotQySCYzDkQwumvJGh0uC7OxlSxo37hmf/?=
- =?us-ascii?Q?vaaMrBqS0zb+tTfa43yPKweQcdgBgY6O5mwZOoX5bF7Fb2vpI/wzLKTCX7Wn?=
- =?us-ascii?Q?+3BArUowkzMTus+ZKj5v21MZAFjfNHZ/aLxMBPdHI13l4PWzqZnHYJgwAi6h?=
- =?us-ascii?Q?mUcL629GURcZ6uh/0arySSzpSavmdR8p6nqxg9T0d7PXNpExGSF5oM4LlgDe?=
- =?us-ascii?Q?TkArHY/iOs1aY0EATH2Li0EeoG8fZJQ2aRZoYBG3no4C7tq7dEAtc2OLjUKy?=
- =?us-ascii?Q?ssqpCBSQ/AiYvuk6gqWQnRHv8aIh3vCSmY/cf4D0S7Qldxh1+hOCJ+EVYtMg?=
- =?us-ascii?Q?gvQYAWhnbRUnnFzbFJy2+qiFLIkAuH4ycTfWSV3MIZJI1b6K5IuvKAGEWINb?=
- =?us-ascii?Q?LnZMk/qXQeiYTvbKuxkprhVcIwsITQf6c46M1JpfJzZmuTQ76AkyPfdnxuXQ?=
- =?us-ascii?Q?hl2NdwEkfUYdZwnuw/KYuWfugRjoDZJq7sreO4O90IIFfrpud7qNihuDvolA?=
- =?us-ascii?Q?DeWrFmPBl/x/+1Or1b0hp3y+G32BJtDhp6tK/v2/cOeduaA=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:DM5PR0102MB3590.prod.exchangelabs.com;PTR:;CAT:OSPM;SFS:(13230031)(39850400004)(396003)(376002)(366004)(136003)(346002)(1800799009)(186009)(451199024)(26005)(54906003)(316002)(5660300002)(83380400001)(8676002)(6916009)(66476007)(53546011)(38350700002)(38100700002)(6512007)(6486002)(2906002)(2616005)(478600001)(52116002)(7416002)(6666004)(6506007)(41300700001)(66946007)(86362001)(66556008)(8936002)(4326008)(58440200007);DIR:OUT;SFP:1501;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?kSqaXXUCTW+BHUCpk1pDYe6nFDnYqccEbf2ksBQgciKyEJosaIQiyMuRUCAB?=
- =?us-ascii?Q?1c78Et6chiwQiPAQ+tAX/7ujoKNM/xgeLeIsC+rpMS6GDofLIYVUPuk8VTa+?=
- =?us-ascii?Q?CQAyx/ZjYIWkp7gZLrkyHohwRcP5etoGcVr+RfC2IWHmtg22XBZkBNrYmhQ3?=
- =?us-ascii?Q?UmAsVp5V6DaG1CcmTlkAjFEne+38+YE9eLw9L1DiHTr955dnBDuLUeLFAW68?=
- =?us-ascii?Q?ZcQFuYTir6tgmzsx6PAnfEQtx42raXfSlhFBamnX/t0LgorWEeBU6VAZNvyI?=
- =?us-ascii?Q?BJxDgr7EcpS9Lqp8p0CCLEDPjXN29tIqZuvvg/03cgn+ysiYN29VYWLbj4cH?=
- =?us-ascii?Q?0HkYUa/OL/OB2xlv5P9/jENAHgrA4TG1hi2G+vwSBEABcG/KqJhEzZW8lAfz?=
- =?us-ascii?Q?gg+OfRG07nR0mLGVcfjoL3aTVZQdIQYnNzBeZznwUbuGX5PnEUbnhBb7In9S?=
- =?us-ascii?Q?QnMiE3A877ROFYTXSJYSoSb8yZWyAiDWj7QfJKbcUGq5J18YNplS3SjKfpRO?=
- =?us-ascii?Q?lH5FVAJWNowXoOo26l7/2NNxe33K0jPxZ0zjZ1KEymByUT6GJ59BavKuihUE?=
- =?us-ascii?Q?r3IQJCnSy+nV6QPWag9O1X0moNoSg2FqQlwWCkbAqFT64brxvbgnrenrShwB?=
- =?us-ascii?Q?6cK/YAUt2D4rv2AJEP+PA9a1pDtr0kUGepfz+Gri+/egQKQLIozgLJWu9KQg?=
- =?us-ascii?Q?FFaHTQJ9lkiZZ9TevaPnRdyP2HhF4CkXrpp9P3ZJIVtSK2E43Kz/mXTohUuC?=
- =?us-ascii?Q?qk85ca33CjvF0v8VXfwnDmK5ITgj+FO3yZfiUE/aeB1BPwrHMtyWgKu6SIHv?=
- =?us-ascii?Q?YsElasyaf8wwLGUI7FIW7YNhl1Z3jm5i7s2P+e/14OlLnEQ4XMbAQluD5RwZ?=
- =?us-ascii?Q?6vEsgoBUnblfbjXgopfG8xh0Zk1oTqypz80yEsZIuBOXgM0zX72Bv6BYYMZU?=
- =?us-ascii?Q?imJAr5v36HF07trJrsApl3JCPM35J7FlBmLQLOdw7OzfSJ7jlATH8fR5PIII?=
- =?us-ascii?Q?i6XY0yUjp7N3HgKKg22new//FHiY7IdclWsX3m6X1mi5WLJAd13XmUCPfCFU?=
- =?us-ascii?Q?uxKDl9FkQjSCewKxgyXzjyw481ACvPXccj+eAk9v4bjhCIDXvcu/Cv1QGosk?=
- =?us-ascii?Q?QuxoW608YYROG8a78T9tRHlzHqF+HcB4ByR7XRiyISpT97OZUG70b4e3uU1x?=
- =?us-ascii?Q?zKsgldAQGyA4EkJqcuQswCghexQWpXYEpCEVHSbznw7+zMBMMUqoIsiZwE4P?=
- =?us-ascii?Q?kt/SZpkuYsY9qsfZdtDzi+/qAplmZ3E8tXduMHFMsLQYsIkK+lsISMZplYin?=
- =?us-ascii?Q?MkBSXiiO2AJIwA8ydhELCDGZ9TrFkm6iinvWcg5HFac5el1n7mA/5lvdn+Jv?=
- =?us-ascii?Q?YfK8zX5MAhWK+S7/oEn7hXSFs7TI+kud81PigsrYFc5AQG6Dd6u/Fal6Fo+8?=
- =?us-ascii?Q?rcDGMPFK8dwR2ADNXpNsP5mY2aOipcbG4Z2Iltf2/3ZgqTmhKmKi9FJHQXLQ?=
- =?us-ascii?Q?Y7QlMFoF17YyBTCnEd8+bcb7lu5Wxv3ycvLaRvT0ZFxyQ0HTN/QoVZ6ibIAl?=
- =?us-ascii?Q?tE84QitinbA9Wl17ujNgIB6LBsqN4YOkD03kc8c99tzcW+Lqk5wYK8Js5xcm?=
- =?us-ascii?Q?jNSIYZxBTOyAEIe+YhEt7Vo=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e0a7676d-b534-4aab-35fb-08db9dd0b3bc
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR0102MB3590.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2023 20:46:30.1755
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mI4Y3sf0g7E1rOwnB33uoOL2a3C1dD6KRShEVTkrxWROaQ12HXsEJxTg2lWug/aDuKkDFr9zCgDrDkGH3CEEyc+384V6wUNXUl4Q8CpUOFxUSis9aQwKHr02JI2SOEWB
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR01MB6708
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 1/3] dt-bindings: arm: qcom: add sc7180-lazor board
+ bindings
+Content-Language: en-US
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20230804095836.39551-1-sheng-liang.pan@quanta.corp-partner.google.com>
+ <20230804175734.v2.1.I7a950de49ec24b957e90d7fe7abd5f2f5f2e24c3@changeid>
+ <3ed8a34b-5f7d-6547-7e34-35e4d0994bba@linaro.org>
+ <CAD=FV=WqFo5PFB7+7ZOQtsTLYojjTn1VkaAQpMkqvWUFPOmBQg@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CAD=FV=WqFo5PFB7+7ZOQtsTLYojjTn1VkaAQpMkqvWUFPOmBQg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 15/08/2023 22:41, Doug Anderson wrote:
+> Hi,
+> 
+> On Sun, Aug 6, 2023 at 11:32 PM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 04/08/2023 11:58, Sheng-Liang Pan wrote:
+>>> Introduce more sc7180-lazor sku and board version configuration,
+>>> add no-eSIM SKU 10 for Lazor, no-eSIM SKU 15 and 18 for Limozeen,
+>>> add new board version 10 for audio codec ALC5682i-VS.
+>>>
+>>> Signed-off-by: Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>
+>>> ---
+>>>
+>>> Changes in v2:
+>>> - add new entry rev9 with Parade bridge chip
+>>>
+>>>  .../devicetree/bindings/arm/qcom.yaml         | 55 +++++++++++++++++++
+>>>  1 file changed, 55 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+>>> index 450f616774e0..dce7b771a280 100644
+>>> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+>>> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+>>> @@ -470,6 +470,11 @@ properties:
+>>>            - const: google,lazor-rev8
+>>>            - const: qcom,sc7180
+>>>
+>>> +      - description: Acer Chromebook Spin 513 Parade bridge chip (rev9)
+>>> +        items:
+>>> +          - const: google,lazor-rev9
+>>> +          - const: qcom,sc7180
+>>> +
+>>>        - description: Acer Chromebook Spin 513 (newest rev)
+>>>          items:
+>>>            - const: google,lazor
+>>> @@ -491,6 +496,11 @@ properties:
+>>>            - const: google,lazor-rev8-sku2
+>>>            - const: qcom,sc7180
+>>>
+>>> +      - description: Acer Chromebook Spin 513 Parade bridge chip with KB Backlight (rev9)
+>>> +        items:
+>>> +          - const: google,lazor-rev9-sku2
+>>> +          - const: qcom,sc7180
+>>> +
+>>>        - description: Acer Chromebook Spin 513 with KB Backlight (newest rev)
+>>>          items:
+>>>            - const: google,lazor-sku2
+>>> @@ -512,11 +522,26 @@ properties:
+>>>            - const: google,lazor-rev8-sku0
+>>>            - const: qcom,sc7180
+>>>
+>>> +      - description: Acer Chromebook Spin 513 Parade bridge chip with LTE (rev9)
+>>> +        items:
+>>> +          - const: google,lazor-rev9-sku0
+>>> +          - const: qcom,sc7180
+>>> +
+>>>        - description: Acer Chromebook Spin 513 with LTE (newest rev)
+>>>          items:
+>>>            - const: google,lazor-sku0
+>>>            - const: qcom,sc7180
+>>>
+>>> +      - description: Acer Chromebook Spin 513 Parade bridge chip with LTE no-esim (rev9)
+>>> +        items:
+>>> +          - const: google,lazor-rev9-sku10
+>>> +          - const: qcom,sc7180
+>>> +
+>>> +      - description: Acer Chromebook Spin 513 with LTE no-esim (newest rev)
+>>> +        items:
+>>> +          - const: google,lazor-sku10
+>>> +          - const: qcom,sc7180
+>>> +
+>>>        - description: Acer Chromebook 511 (rev4 - rev8)
+>>>          items:
+>>>            - const: google,lazor-rev4-sku4
+>>> @@ -526,6 +551,11 @@ properties:
+>>>            - const: google,lazor-rev8-sku4
+>>>            - const: qcom,sc7180
+>>>
+>>> +      - description: Acer Chromebook 511 Parade bridge chip (rev9)
+>>> +        items:
+>>> +          - const: google,lazor-rev9-sku4
+>>> +          - const: qcom,sc7180
+>>> +
+>>>        - description: Acer Chromebook 511 (newest rev)
+>>>          items:
+>>>            - const: google,lazor-sku4
+>>> @@ -545,11 +575,36 @@ properties:
+>>>            - const: google,lazor-rev8-sku6
+>>>            - const: qcom,sc7180
+>>>
+>>> +      - description: Acer Chromebook 511 Parade bridge chip without Touchscreen (rev9)
+>>> +        items:
+>>> +          - const: google,lazor-rev9-sku6
+>>> +          - const: qcom,sc7180
+>>> +
+>>>        - description: Acer Chromebook 511 without Touchscreen (newest rev)
+>>>          items:
+>>>            - const: google,lazor-sku6
+>>>            - const: qcom,sc7180
+>>>
+>>> +      - description: Acer Chromebook 511 Parade bridge chip no-esim (rev9)
+>>> +        items:
+>>> +          - const: google,lazor-rev9-sku15
+>>> +          - const: qcom,sc7180
+>>> +
+>>> +      - description: Acer Chromebook 511 no-esim (newest rev)
+>>> +        items:
+>>> +          - const: google,lazor-sku15
+>>> +          - const: qcom,sc7180
+>>> +
+>>> +      - description: Acer Chromebook 511 Parade bridge chip without Touchscreen no-esim (rev9)
+>>> +        items:
+>>> +          - const: google,lazor-rev9-sku18
+>>> +          - const: qcom,sc7180
+>>> +
+>>> +      - description: Acer Chromebook 511 without Touchscreen no-esim (newest rev)
+>>> +        items:
+>>> +          - const: google,lazor-sku18
+>>
+>> All of these entries (existing and new) should be just one entry with:
+>>  - enum:
+>>      - ....
+>>      - ....
+>>  - const: qcom,sc7180
+> 
+> I believe we've had this discussion before. At least twice. Here's a
+> link to the last time you said "Ah, OK, I guess this is fine".
+> 
+> https://lore.kernel.org/r/d3d4d90b-85b5-5ad9-78e6-5a074c21af4f@linaro.org
 
-Hi Suzuki,
+Current solutions brings descriptions, so it has some benefits... I
+guess this is fine for third time. Maybe this time I will remember...
+Although I keep coming with several same questions to all SoC
+DTS/bindings which do things differently than common case. I will be
+coming because that's the price of doing things awkwardly or differently
+than everyone else, e.g. overriding by full DT path like in Tegra.
 
-On Tue, 15 Aug 2023, Suzuki K Poulose wrote:
-> On 15/08/2023 07:35, Ilkka Koskinen wrote:
->> Split the 64-bit register accesses if 64-bit access is not supported
->> by the PMU.
->> 
->> Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
->> Reviewed-by: Besar Wicaksono <bwicaksono@nvidia.com>
->
-> Do we need a Fixes tag ?
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-I believe, NVIDIA's PMU supports 64-bit access while Ampere's one doesn't 
-and since this patchset enables support for the latter one, it doesn't 
-seem like we need a Fixes tag here.
+Best regards,
+Krzysztof
 
-Cheers, Ilkka
-
->
-> With that:
->
-> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->
-> Suzuki
->
->> ---
->>   drivers/perf/arm_cspmu/arm_cspmu.c | 5 ++++-
->>   1 file changed, 4 insertions(+), 1 deletion(-)
->> 
->> diff --git a/drivers/perf/arm_cspmu/arm_cspmu.c 
->> b/drivers/perf/arm_cspmu/arm_cspmu.c
->> index 04be94b4aa48..6387cbad7a7d 100644
->> --- a/drivers/perf/arm_cspmu/arm_cspmu.c
->> +++ b/drivers/perf/arm_cspmu/arm_cspmu.c
->> @@ -715,7 +715,10 @@ static void arm_cspmu_write_counter(struct perf_event 
->> *event, u64 val)
->>   	if (use_64b_counter_reg(cspmu)) {
->>   		offset = counter_offset(sizeof(u64), event->hw.idx);
->>   -		writeq(val, cspmu->base1 + offset);
->> +		if (cspmu->has_atomic_dword)
->> +			writeq(val, cspmu->base1 + offset);
->> +		else
->> +			lo_hi_writeq(val, cspmu->base1 + offset);
->
->
->>   	} else {
->>   		offset = counter_offset(sizeof(u32), event->hw.idx);
->> 
->
->
