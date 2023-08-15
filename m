@@ -2,149 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF2177D6A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 01:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBFEF77D6A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 01:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240603AbjHOX0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 19:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48992 "EHLO
+        id S240610AbjHOX2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 19:28:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240585AbjHOX0H (ORCPT
+        with ESMTP id S234151AbjHOX21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 19:26:07 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8989010F0;
-        Tue, 15 Aug 2023 16:26:06 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-34992058e95so24926645ab.1;
-        Tue, 15 Aug 2023 16:26:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692141966; x=1692746766;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yuFOXmtSNny9sLwdulB8nAUmEQZyFm5IBCtyhhdlg5o=;
-        b=jqvg+OKU+BdVajqZOkReX1+RHnXR+7InhHkL9knqU8H+lVM7RvKDa0TlQ8r601XW5I
-         CIUrbY6VfQbRzLZ9Y3QYE3j5J3cBRALQFFk8XAGUl+Y3VvQqsahzwmSzQ+TqYi1gOojd
-         Ss0dSqXBSABfMwAw9jgaGR7GIhYxwz1quyTMTTbScu4cmanMO/02pMSxAACh5idnHyHa
-         TLtscM2wLm29gPRZo2crI3qkhI3hboBUsoDgMfx1n1oE3PQi8YZPpPUSu4GiCmCZVuoq
-         lBHipjBXNFOaALK+fu2yPwwelGsgYdTxKKw+1FtGi/bDfic77M9vQUzU721TkMmK+Cpo
-         dyyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692141966; x=1692746766;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yuFOXmtSNny9sLwdulB8nAUmEQZyFm5IBCtyhhdlg5o=;
-        b=ZDj/SMQW6BUX82wWaegzxzD+MBkKOxyZRnekjN5HVEEoPwMuqspqOBQYOqAMVjA9kW
-         AlKR+KLGIAObe3qfJcszZckwMiGyCjuYx8QBfXED64S1LSWRHyqi7uLbBYcAtDqwckZ+
-         tmiUYHqDnTWqR8zo91fpCobVCe73C52Vc/s686VOXAagUqslbdL2iImgZXugej5qvPd6
-         S3E3j1J7tI+DFPZCo5sc5H9Bs4sWvq7pb6+rx/Ji/jGaR+5Up0U3CoECRBiIkzTRu0X9
-         lad9yc3kLNB8H7cg+FvbjL7bEwAmOxD/vZHZim0cny3y2kewjJC0ENQ71TycnqPGLBQU
-         YCqQ==
-X-Gm-Message-State: AOJu0YwKvNdNNInAnbQxviXQs5OukFF4M37FR7poee8e941PonvKErzX
-        CSSfZilnvMZ6j7Hijp3OAM11/stOs3ZNP1IaQkxpAPyr6FEz/g==
-X-Google-Smtp-Source: AGHT+IH8BU95JCOFeRU6qCQ9pPnR0FH1UKm37FfLUUA0ybas4MbPzgqExxhQqNeCSW7tJt8xpgtaVNsczjD1HmMaGBM=
-X-Received: by 2002:a05:6e02:f45:b0:349:77c7:2ab4 with SMTP id
- y5-20020a056e020f4500b0034977c72ab4mr496504ilj.30.1692141965799; Tue, 15 Aug
- 2023 16:26:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230815155612.2535947-1-andre.przywara@arm.com> <20230815155612.2535947-4-andre.przywara@arm.com>
-In-Reply-To: <20230815155612.2535947-4-andre.przywara@arm.com>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Tue, 15 Aug 2023 16:25:54 -0700
-Message-ID: <CAKEwX=NvBCiy6WxJWg9EYyTwKTQY35G6=3T2L8KKEe46xg82rg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] selftests: cachestat: test for cachestat availability
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        Tue, 15 Aug 2023 19:28:27 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E193C98;
+        Tue, 15 Aug 2023 16:28:24 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4EBCC1BF205;
+        Tue, 15 Aug 2023 23:28:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1692142103;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KqoiUzPl/8iWAJ5m3KsWYUUQxGcs9hu5/Zmem3XAmgk=;
+        b=nDvy8sqLas9We8g2a4pajsYbUzEELa5PVa+FViFrfQC6tLLYIw3Jn7C8Nu/cvyoo77h8Oq
+        dcbvZdetBmqbo+CqcjfdiLqdOAACYqvmGPWZxVjao6pP82BF8gjvgykKGfqhvWsgEvLTTG
+        FG14roPRnXmnjdz8Zk91sErFXhEsHBMNaFlr01YQaut4TZQ7atlWTpTGLBaooIG//6yYN5
+        ilDlkxd4hjy/BUJfH5XCXFT9TXEBaSyf7XPs5IJ+57Mzit2VYvcL3hvU6TK+eyOEicHkux
+        1c7Z8BV9qruAoUrTNb7XKWBgfYH/4sdtNf+oN6xM+EHQqhUstV2a8ENMs6ageQ==
+Date:   Wed, 16 Aug 2023 01:28:22 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-rtc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v3 0/8] rtc: isl12022: battery backup voltage and clock
+ support
+Message-ID: <169214205184.2051743.7107002461402510185.b4-ty@bootlin.com>
+References: <20230612113059.247275-1-linux@rasmusvillemoes.dk>
+ <20230615105826.411953-1-linux@rasmusvillemoes.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230615105826.411953-1-linux@rasmusvillemoes.dk>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 8:56=E2=80=AFAM Andre Przywara <andre.przywara@arm.=
-com> wrote:
->
-> As cachestat is a new syscall, it won't be available on older kernels,
-> for instance those running on a build machine. In this case, a run
-> reports all tests as "not ok" at the moment.
-Interesting - I was under the assumption that if you backported the
-selftests for cachestat, you would also backport the syscall's implementati=
-on
-and wiring.
 
-But yeah, I guess if you build with !CONFIG_CACHESTAT_SYSCALL,
-these tests would fail.
->
-> Test for the cachestat syscall availability first, before doing further
-> tests, and bail out early with a TAP SKIP comment.
->
-> This also uses the opportunity to add the proper TAP headers, and add
-> one check for the syscall error handling (illegal file descriptor).
-Thanks for the addition!
->
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> ---
->  .../selftests/cachestat/test_cachestat.c      | 22 ++++++++++++++++++-
->  1 file changed, 21 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/cachestat/test_cachestat.c b/tools/t=
-esting/selftests/cachestat/test_cachestat.c
-> index a5a4ac8dcb76c..77620e7ecf562 100644
-> --- a/tools/testing/selftests/cachestat/test_cachestat.c
-> +++ b/tools/testing/selftests/cachestat/test_cachestat.c
-> @@ -15,6 +15,8 @@
->
->  #include "../kselftest.h"
->
-> +#define NR_TESTS       8
-> +
->  static const char * const dev_files[] =3D {
->         "/dev/zero", "/dev/null", "/dev/urandom",
->         "/proc/version", "/proc"
-> @@ -235,7 +237,25 @@ bool test_cachestat_shmem(void)
->
->  int main(void)
->  {
-> -       int ret =3D 0;
-> +       int ret;
-> +
-> +       ksft_print_header();
-> +
-> +       ret =3D syscall(__NR_cachestat, -1, NULL, NULL, 0);
-> +       if (ret =3D=3D -1 && errno =3D=3D ENOSYS) {
-nit: if (ret && errno =3D=3D ENOSYS) sounds cleaner, but up to you.
-> +               printf("1..0 # Skipped: cachestat syscall not available\n=
-");
-nit: perhaps ksft_print_msg()?
-> +               return KSFT_SKIP;
-> +       }
-> +
-> +       ksft_set_plan(NR_TESTS);
-> +
-> +       if (ret =3D=3D -1 && errno =3D=3D EBADF) {
-> +               ksft_test_result_pass("bad file descriptor recognized\n")=
-;
-> +               ret =3D 0;
-> +       } else {
-> +               ksft_test_result_fail("bad file descriptor ignored\n");
-> +               ret =3D 1;
-> +       }
-Nice!
->
->         for (int i =3D 0; i < 5; i++) {
->                 const char *dev_filename =3D dev_files[i];
-> --
-> 2.25.1
->
-Nitpicking aside:
-Acked-by: Nhat Pham <nphamcs@gmail.com>
+On Thu, 15 Jun 2023 12:58:18 +0200, Rasmus Villemoes wrote:
+> The current handling of the low-battery bits in the status register is
+> wrong. The first six patches fix that and implement proper support for
+> RTC_VL_READ.
+> 
+> The last two patches allow describing the isl12022 as a clock
+> provider, for now just as a fixed 32kHz clock. They are also
+> tangentially related to the backup battery, in that when the isl12022
+> is not used as a clock source, one can save some power consumption in
+> battery mode by setting the FOx bits to 0.
+> 
+> [...]
+
+Applied, thanks!
+
+[1/8] rtc: isl12022: remove wrong warning for low battery level
+      commit: 4d6af37cafad69ff93f62db80d5a3daa9ac3223f
+[2/8] dt-bindings: rtc: Move isil,isl12022 from trivial-rtc.yaml into own schema file
+      commit: ffc005280a47030d16cbbf3105c75d3562dba5a8
+[3/8] dt-bindings: rtc: isl12022: add bindings for battery alarm trip levels
+      commit: 69b569c124ffa698de25d039018fe86313c46c84
+[4/8] rtc: isl12022: add support for trip level DT binding
+      commit: 2caeb566baabb65add7d99ca6d8bfd566fe91582
+[5/8] rtc: isl12022: implement RTC_VL_READ ioctl
+      commit: eccebd813874b748ac4e79a9fe4c7290117ad3be
+[6/8] rtc: isl12022: trigger battery level detection during probe
+      commit: a11b6c460620f7fb5fae4c3aee5a5ba2e1e1129b
+[7/8] dt-bindings: rtc: isl12022: add #clock-cells property
+      commit: ab246c897be0bdf981f776399ca62b5ec4b8138f
+[8/8] rtc: isl12022: implement support for the #clock-cells DT property
+      commit: d57d12db774820819d0e591548a56b5cfc95f82a
+
+Best regards,
+
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
