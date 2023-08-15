@@ -2,118 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B27677CD31
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 15:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8254F77CD2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 15:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237399AbjHONMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 09:12:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43748 "EHLO
+        id S237389AbjHONLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 09:11:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237442AbjHONMd (ORCPT
+        with ESMTP id S237381AbjHONLS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 09:12:33 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 785C610C0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 06:12:30 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RQBV41Wl6zrS48;
-        Tue, 15 Aug 2023 21:11:08 +0800 (CST)
-Received: from localhost.localdomain (10.50.163.32) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 15 Aug 2023 21:12:27 +0800
-From:   Yicong Yang <yangyicong@huawei.com>
-To:     <jonathan.cameron@huawei.com>, <will@kernel.org>,
-        <mark.rutland@arm.com>
-CC:     <hejunhao3@huawei.com>, <prime.zeng@hisilicon.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <yangyicong@hisilicon.com>
-Subject: [PATCH v2 RESEND] drivers/perf: hisi: Schedule perf session according to locality
-Date:   Tue, 15 Aug 2023 21:10:10 +0800
-Message-ID: <20230815131010.2147-1-yangyicong@huawei.com>
-X-Mailer: git-send-email 2.31.0
+        Tue, 15 Aug 2023 09:11:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2548F10C0;
+        Tue, 15 Aug 2023 06:11:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AEEAA62F74;
+        Tue, 15 Aug 2023 13:11:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23D53C433C7;
+        Tue, 15 Aug 2023 13:11:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692105076;
+        bh=fxLQn7G8NKCIulwKp9YBaEwTHFcd16tQqNSCGDeE3/c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mctXEb2qdlOCfYwVyM1iF+Jo9WO8j6aRzuEBwJEAJX8XXUVabnZIlbpiYuGKOx2Lt
+         Ouw99X+Pq5Vdeo1qUTDRmn3x8elOW7mJ7uORHH5L99BMTfGUT/TdTifUot+otgJYme
+         d1TNeKS/ZT6KVQH18h/hXXkeFT5YSMX4hNbMYmNWSF/n+iZpUgt79or2pw6iguVpDb
+         f1OWUk0wFWWoQuOhSNM6Ia62+uAjwJ/Dr/pikln1fgEBghlnKMAarCcHz5ARAXgYwQ
+         YyJfk1nZChIEtz66Murubc3iyFhL6eXJIpZsBL5+6/4jPzPZiTwLLK8S6BkpT4C9+L
+         kqX9hVC45IgvQ==
+Date:   Tue, 15 Aug 2023 14:11:09 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Minda Chen <minda.chen@starfivetech.com>
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+Subject: Re: [PATCH v3 06/11] PCI: plda: Add event interrupt codes and IRQ
+ domain ops
+Message-ID: <20230815-five-comment-cff5fb01909f@spud>
+References: <20230814082016.104181-1-minda.chen@starfivetech.com>
+ <20230814082016.104181-7-minda.chen@starfivetech.com>
+ <20230814-episode-untidy-c66107a33ea0@wendy>
+ <f983f3cc-ebb5-18fb-891a-adc073742bb9@starfivetech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.50.163.32]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="y/9ZHub3+HOs9Hmr"
+Content-Disposition: inline
+In-Reply-To: <f983f3cc-ebb5-18fb-891a-adc073742bb9@starfivetech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yicong Yang <yangyicong@hisilicon.com>
 
-The PCIe PMUs locate on different NUMA node but currently we don't
-consider it and likely stack all the sessions on the same CPU:
+--y/9ZHub3+HOs9Hmr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[root@localhost tmp]# cat /sys/devices/hisi_pcie*/cpumask
-0
-0
-0
-0
-0
-0
+On Tue, Aug 15, 2023 at 06:12:07PM +0800, Minda Chen wrote:
+>=20
+>=20
+> On 2023/8/14 21:52, Conor Dooley wrote:
+> > On Mon, Aug 14, 2023 at 04:20:11PM +0800, Minda Chen wrote:
+> >> For PolarFire implements non-PLDA local interrupt events, most of
+> >> event interrupt process codes can not be re-used. PLDA implements
+> >> new codes and IRQ domain ops like PolarFire.
+> >>=20
+> >> plda_handle_event adds a new IRQ num to event num mapping codes for
+> >> PLDA local event except DMA engine interrupt events. The DMA engine
+> >> interrupt events are implemented by vendors.
+> >>=20
+> >> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+> >> ---
+> >>  .../pci/controller/plda/pcie-microchip-host.c | 29 +++---
+> >>  drivers/pci/controller/plda/pcie-plda-host.c  | 99 +++++++++++++++++++
+> >>  drivers/pci/controller/plda/pcie-plda.h       | 19 ++++
+> >>  3 files changed, 133 insertions(+), 14 deletions(-)
+> >>=20
+> >> diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c b/drive=
+rs/pci/controller/plda/pcie-microchip-host.c
+> >> index c28840315019..b42f1aac3ec3 100644
+> >> --- a/drivers/pci/controller/plda/pcie-microchip-host.c
+> >> +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
+> >> @@ -96,20 +96,21 @@
+> >>  #define EVENT_LOCAL_DMA_END_ENGINE_1		12
+> >>  #define EVENT_LOCAL_DMA_ERROR_ENGINE_0		13
+> >>  #define EVENT_LOCAL_DMA_ERROR_ENGINE_1		14
+> >> -#define EVENT_LOCAL_A_ATR_EVT_POST_ERR		15
+> >> -#define EVENT_LOCAL_A_ATR_EVT_FETCH_ERR		16
+> >> -#define EVENT_LOCAL_A_ATR_EVT_DISCARD_ERR	17
+> >> -#define EVENT_LOCAL_A_ATR_EVT_DOORBELL		18
+> >> -#define EVENT_LOCAL_P_ATR_EVT_POST_ERR		19
+> >> -#define EVENT_LOCAL_P_ATR_EVT_FETCH_ERR		20
+> >> -#define EVENT_LOCAL_P_ATR_EVT_DISCARD_ERR	21
+> >> -#define EVENT_LOCAL_P_ATR_EVT_DOORBELL		22
+> >> -#define EVENT_LOCAL_PM_MSI_INT_INTX		23
+> >> -#define EVENT_LOCAL_PM_MSI_INT_MSI		24
+> >> -#define EVENT_LOCAL_PM_MSI_INT_AER_EVT		25
+> >> -#define EVENT_LOCAL_PM_MSI_INT_EVENTS		26
+> >> -#define EVENT_LOCAL_PM_MSI_INT_SYS_ERR		27
+> >> -#define NUM_EVENTS				28
+> >> +#define NUM_MC_EVENTS				15
+> >> +#define EVENT_LOCAL_A_ATR_EVT_POST_ERR		(NUM_MC_EVENTS + EVENT_A_ATR_=
+EVT_POST_ERR)
+> >> +#define EVENT_LOCAL_A_ATR_EVT_FETCH_ERR		(NUM_MC_EVENTS + EVENT_A_ATR=
+_EVT_FETCH_ERR)
+> >> +#define EVENT_LOCAL_A_ATR_EVT_DISCARD_ERR	(NUM_MC_EVENTS + EVENT_A_AT=
+R_EVT_DISCARD_ERR)
+> >> +#define EVENT_LOCAL_A_ATR_EVT_DOORBELL		(NUM_MC_EVENTS + EVENT_A_ATR_=
+EVT_DOORBELL)
+> >> +#define EVENT_LOCAL_P_ATR_EVT_POST_ERR		(NUM_MC_EVENTS + EVENT_P_ATR_=
+EVT_POST_ERR)
+> >> +#define EVENT_LOCAL_P_ATR_EVT_FETCH_ERR		(NUM_MC_EVENTS + EVENT_P_ATR=
+_EVT_FETCH_ERR)
+> >> +#define EVENT_LOCAL_P_ATR_EVT_DISCARD_ERR	(NUM_MC_EVENTS + EVENT_P_AT=
+R_EVT_DISCARD_ERR)
+> >> +#define EVENT_LOCAL_P_ATR_EVT_DOORBELL		(NUM_MC_EVENTS + EVENT_P_ATR_=
+EVT_DOORBELL)
+> >> +#define EVENT_LOCAL_PM_MSI_INT_INTX		(NUM_MC_EVENTS + EVENT_PM_MSI_IN=
+T_INTX)
+> >> +#define EVENT_LOCAL_PM_MSI_INT_MSI		(NUM_MC_EVENTS + EVENT_PM_MSI_INT=
+_MSI)
+> >> +#define EVENT_LOCAL_PM_MSI_INT_AER_EVT		(NUM_MC_EVENTS + EVENT_PM_MSI=
+_INT_AER_EVT)
+> >> +#define EVENT_LOCAL_PM_MSI_INT_EVENTS		(NUM_MC_EVENTS + EVENT_PM_MSI_=
+INT_EVENTS)
+> >> +#define EVENT_LOCAL_PM_MSI_INT_SYS_ERR		(NUM_MC_EVENTS + EVENT_PM_MSI=
+_INT_SYS_ERR)
+> >> +#define NUM_EVENTS				(NUM_MC_EVENTS + NUM_PLDA_EVENTS)
+> >=20
+> > Is this change not in the wrong patch & should be changed alongside the
+> > movement of defines?=20
+> EVENT_xxx is new added one for PLDA codes and The event num start from 0.=
+ This add association to PLDA events.
+> Maybe this can be moved to patch8 or a new patch.
 
-This can be optimize a bit to use a local CPU for the PMU.
+It feels like it should be in patch 3 to me.
 
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
----
-Change since v2:
-- Make interrupt affinity consistent with CPU in online handler
-Link: https://lore.kernel.org/all/20230808125147.2080-1-yangyicong@huawei.com/
+--y/9ZHub3+HOs9Hmr
+Content-Type: application/pgp-signature; name="signature.asc"
 
- drivers/perf/hisilicon/hisi_pcie_pmu.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/drivers/perf/hisilicon/hisi_pcie_pmu.c b/drivers/perf/hisilicon/hisi_pcie_pmu.c
-index e10fc7cb9493..5a00adb2de8c 100644
---- a/drivers/perf/hisilicon/hisi_pcie_pmu.c
-+++ b/drivers/perf/hisilicon/hisi_pcie_pmu.c
-@@ -665,8 +665,8 @@ static int hisi_pcie_pmu_online_cpu(unsigned int cpu, struct hlist_node *node)
- 	struct hisi_pcie_pmu *pcie_pmu = hlist_entry_safe(node, struct hisi_pcie_pmu, node);
- 
- 	if (pcie_pmu->on_cpu == -1) {
--		pcie_pmu->on_cpu = cpu;
--		WARN_ON(irq_set_affinity(pcie_pmu->irq, cpumask_of(cpu)));
-+		pcie_pmu->on_cpu = cpumask_local_spread(0, dev_to_node(&pcie_pmu->pdev->dev));
-+		WARN_ON(irq_set_affinity(pcie_pmu->irq, cpumask_of(pcie_pmu->on_cpu)));
- 	}
- 
- 	return 0;
-@@ -676,14 +676,23 @@ static int hisi_pcie_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
- {
- 	struct hisi_pcie_pmu *pcie_pmu = hlist_entry_safe(node, struct hisi_pcie_pmu, node);
- 	unsigned int target;
-+	cpumask_t mask;
-+	int numa_node;
- 
- 	/* Nothing to do if this CPU doesn't own the PMU */
- 	if (pcie_pmu->on_cpu != cpu)
- 		return 0;
- 
- 	pcie_pmu->on_cpu = -1;
--	/* Choose a new CPU from all online cpus. */
--	target = cpumask_any_but(cpu_online_mask, cpu);
-+
-+	/* Choose a local CPU from all online cpus. */
-+	numa_node = dev_to_node(&pcie_pmu->pdev->dev);
-+	if (cpumask_and(&mask, cpumask_of_node(numa_node), cpu_online_mask) &&
-+	    cpumask_andnot(&mask, &mask, cpumask_of(cpu)))
-+		target = cpumask_any(&mask);
-+	else
-+		target = cpumask_any_but(cpu_online_mask, cpu);
-+
- 	if (target >= nr_cpu_ids) {
- 		pci_err(pcie_pmu->pdev, "There is no CPU to set\n");
- 		return 0;
--- 
-2.24.0
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNt5XAAKCRB4tDGHoIJi
+0ibSAQDzTMya4WyGRaKayC8dXzfWOFoV0m26PddhCyqWuBme3wD+Knf7YQM8iaqS
+nlBsWj+sLO1ExkovRY+V/9w6aPl/CgI=
+=+JHy
+-----END PGP SIGNATURE-----
 
+--y/9ZHub3+HOs9Hmr--
