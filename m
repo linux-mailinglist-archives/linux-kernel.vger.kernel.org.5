@@ -2,164 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AAC77CBD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A7277CBDC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 13:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236771AbjHOLjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 07:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58112 "EHLO
+        id S236778AbjHOLk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 07:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236737AbjHOLi7 (ORCPT
+        with ESMTP id S236862AbjHOLkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 07:38:59 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5755E10D1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:38:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1692099532;
-        bh=V/NidSQ98oxxB1G21yOs4UVictE6JoE4wCMA+7dQFjI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=l3rjqSvCdVYCZIfdriP0jTu8WjiNRoil9UtAgMmSauITsMgEqYasR7qsq6J4Dt7T8
-         9PBo0scIDymFoauOs5I25aaxOUam4yA8WY/ngmP7qk2EVZJ4B8vWwgsKxdN8pl4min
-         DWEuglx6J9wQcN9SU1mgLp+IjQei7EYDEzmy3Nk2O8lSe4XL1MjH3p9LfcYNBJcfVM
-         rGXRv/BeKJtWqRwlkHPAcy8HCrOg3UnSmL/qVoRTNjEJlxmEkITgJi2NadLTZ2D5q3
-         VeOt51Cm6t8zTPIJKgKVubLmu5qXYpjFpzYRlKZ/bx/6/mJFq2Qs9v9NYn8KGqoiYD
-         /aVJ9ebHKv9Rg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RQ8Rc4LNGz4wxQ;
-        Tue, 15 Aug 2023 21:38:52 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] powerpc/32s: Cleanup the mess in __set_pte_at()
-In-Reply-To: <ba485f4a77ed4279b30500bfcc32d99ef0069ba0.1656656649.git.christophe.leroy@csgroup.eu>
-References: <ba485f4a77ed4279b30500bfcc32d99ef0069ba0.1656656649.git.christophe.leroy@csgroup.eu>
-Date:   Tue, 15 Aug 2023 21:38:52 +1000
-Message-ID: <87msyscz77.fsf@mail.lhotse>
+        Tue, 15 Aug 2023 07:40:17 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2850A19AD
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 04:40:03 -0700 (PDT)
+Received: from dggpeml500002.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RQ8Nn48VsztRwL;
+        Tue, 15 Aug 2023 19:36:25 +0800 (CST)
+Received: from [10.67.103.44] (10.67.103.44) by dggpeml500002.china.huawei.com
+ (7.185.36.158) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 15 Aug
+ 2023 19:40:01 +0800
+Subject: Re: [PATCH 1/2] coresight: trbe: Fix TRBE potential sleep in atomic
+ context
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>, <mike.leach@linaro.org>,
+        <leo.yan@linaro.org>, <anshuman.khandual@arm.com>,
+        <jonathan.cameron@huawei.com>
+References: <20230814093813.19152-1-hejunhao3@huawei.com>
+ <20230814093813.19152-2-hejunhao3@huawei.com>
+ <37e36bde-fc70-6d2d-8dec-28e572f618cc@arm.com>
+ <4049aee1-7f4d-5a54-ce27-7d802ae9616d@huawei.com>
+ <b91d36b4-4dcc-7f1e-6125-1641fdc41d4f@arm.com>
+CC:     <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <yangyicong@huawei.com>,
+        <prime.zeng@hisilicon.com>
+From:   hejunhao <hejunhao3@huawei.com>
+Message-ID: <426cd32b-4f11-e720-7463-86e34d7ec817@huawei.com>
+Date:   Tue, 15 Aug 2023 19:40:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <b91d36b4-4dcc-7f1e-6125-1641fdc41d4f@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.103.44]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500002.china.huawei.com (7.185.36.158)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> __set_pte_at() handles 3 main cases with #ifdefs plus the 'percpu'
-> subcase which leads to code duplication.
+Hi Suzuki
+
+
+On 2023/8/15 6:57, Suzuki K Poulose wrote:
+> On 14/08/2023 14:32, hejunhao wrote:
+>> Hi Suzuki
+>>
+>>
+>> On 2023/8/14 18:34, Suzuki K Poulose wrote:
+>>> Hi Junhao
+>>>
+>>> On 14/08/2023 10:38, Junhao He wrote:
+>>>> smp_call_function_single() will allocate an IPI interrupt vector to
+>>>> the target processor and send a function call request to the interrupt
+>>>> vector. After the target processor receives the IPI interrupt, it will
+>>>> execute arm_trbe_remove_coresight_cpu() call request in the interrupt
+>>>> handler.
+>>>>
+>>>> According to the device_unregister() stack information, if other 
+>>>> process
+>>>> is useing the device, the down_write() may sleep, and trigger 
+>>>> deadlocks
+>>>> or unexpected errors.
+>>>>
+>>>>    arm_trbe_remove_coresight_cpu
+>>>>      coresight_unregister
+>>>>        device_unregister
+>>>>          device_del
+>>>>            kobject_del
+>>>>              __kobject_del
+>>>>                sysfs_remove_dir
+>>>>                  kernfs_remove
+>>>>                    down_write ---------> it may sleep
+>>>>
+>>>> Add a helper arm_trbe_disable_cpu() to disable TRBE precpu irq and 
+>>>> reset
+>>>> per TRBE.
+>>>> Simply call arm_trbe_remove_coresight_cpu() directly without useing 
+>>>> the
+>>>> smp_call_function_single(), which is the same as registering the TRBE
+>>>> coresight device.
+>>>>
+>>>> Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
+>>>> Signed-off-by: Junhao He <hejunhao3@huawei.com>
+>>>> ---
+>>>>   drivers/hwtracing/coresight/coresight-trbe.c | 35 
+>>>> +++++++++++---------
+>>>>   1 file changed, 20 insertions(+), 15 deletions(-)
+>>>>
+>>>> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c 
+>>>> b/drivers/hwtracing/coresight/coresight-trbe.c
+>>>> index 7720619909d6..ce1e6f537b8d 100644
+>>>> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+>>>> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+>>>> @@ -1225,6 +1225,17 @@ static void arm_trbe_enable_cpu(void *info)
+>>>>       enable_percpu_irq(drvdata->irq, IRQ_TYPE_NONE);
+>>>>   }
+>>>>   +static void arm_trbe_disable_cpu(void *info)
+>>>> +{
+>>>> +    struct trbe_drvdata *drvdata = info;
+>>>> +    struct trbe_cpudata *cpudata = this_cpu_ptr(drvdata->cpudata);
+>>>> +
+>>>> +    disable_percpu_irq(drvdata->irq);
+>>>> +    trbe_reset_local(cpudata);
+>>>> +    cpudata->drvdata = NULL;
+>>>> +}
+>>>> +
+>>>> +
+>>>>   static void arm_trbe_register_coresight_cpu(struct trbe_drvdata 
+>>>> *drvdata, int cpu)
+>>>>   {
+>>>>       struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, 
+>>>> cpu);
+>>>> @@ -1326,18 +1337,12 @@ static void arm_trbe_probe_cpu(void *info)
+>>>>       cpumask_clear_cpu(cpu, &drvdata->supported_cpus);
+>>>>   }
+>>>>   -static void arm_trbe_remove_coresight_cpu(void *info)
+>>>> +static void arm_trbe_remove_coresight_cpu(struct trbe_drvdata 
+>>>> *drvdata, int cpu)
+>>>>   {
+>>>> -    int cpu = smp_processor_id();
+>>>> -    struct trbe_drvdata *drvdata = info;
+>>>> -    struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, 
+>>>> cpu);
+>>>>       struct coresight_device *trbe_csdev = 
+>>>> coresight_get_percpu_sink(cpu);
+>>>>   -    disable_percpu_irq(drvdata->irq);
+>>>> -    trbe_reset_local(cpudata);
+>>>>       if (trbe_csdev) {
+>>>>           coresight_unregister(trbe_csdev);
+>>>> -        cpudata->drvdata = NULL;
+>>>>           coresight_set_percpu_sink(cpu, NULL);
+>>>
+>>> I am a bit concerned about "resetting" the sink from a different CPU.
+>>> Could we instead, schedule a delayed work to unregister the trbe_csdev?
+>>
+>> Yes, I will try to do that.
+>> Sorry for my following questions.
+>> As you mean, do we need to take the same care when setting the percpu 
+>> sink
+>> in the register trbe_csdev ?
 >
-> Rewrite the function using IS_ENABLED() to minimise the total number
-> of cases and remove duplicated code.
+> Apologies, having taken another look, we set the percpu_sink for
+> a cpu outside smp_call_function(). So, I think your patch is fine.
+>
+>
+>>
+>> Best regards,
+>> Junhao.
+>>
+>>>
+>>>
+>>>>       }
+>>>>   }
+>>>> @@ -1366,8 +1371,12 @@ static int arm_trbe_remove_coresight(struct 
+>>>> trbe_drvdata *drvdata)
+>>>>   {
+>>>>       int cpu;
+>>>>   -    for_each_cpu(cpu, &drvdata->supported_cpus)
+>>>> -        smp_call_function_single(cpu, 
+>>>> arm_trbe_remove_coresight_cpu, drvdata, 1);
+>>>> +    for_each_cpu(cpu, &drvdata->supported_cpus) {
+>>>> +        if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
+>>>> +            smp_call_function_single(cpu, arm_trbe_disable_cpu, 
+>>>> drvdata, 1);
+>>>> +        if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
+>>>> +            arm_trbe_remove_coresight_cpu(drvdata, cpu);
+>
+> Do we need to test the cpu here in both places ? We already check that
+> in the loop entry. The reason why we repeat the check during the probe,
+> is to skip any CPUs that may have a TRBE not accessible.
+>
+> Suzuki
+>
 
-I think the code change is good, but the comment becomes completely
-misleading. Because it talks about "the first case" etc., but then the
-code is structured differently.
+Ok, Will fix in next version.
 
-cheers
+Best regards,
+Junhao.
 
-> diff --git a/arch/powerpc/include/asm/book3s/32/pgtable.h b/arch/powerpc/include/asm/book3s/32/pgtable.h
-> index 40041ac713d9..2a0ca1f9a1ff 100644
-> --- a/arch/powerpc/include/asm/book3s/32/pgtable.h
-> +++ b/arch/powerpc/include/asm/book3s/32/pgtable.h
-> @@ -534,58 +534,43 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
->  
->  
->  /* This low level function performs the actual PTE insertion
-> - * Setting the PTE depends on the MMU type and other factors. It's
-> - * an horrible mess that I'm not going to try to clean up now but
-> - * I'm keeping it in one place rather than spread around
-> + * Setting the PTE depends on the MMU type and other factors.
-> + *
-> + * First case is 32-bit Hash MMU in SMP mode with 32-bit PTEs. We use the
-> + * helper pte_update() which does an atomic update. We need to do that
-> + * because a concurrent invalidation can clear _PAGE_HASHPTE. If it's a
-> + * per-CPU PTE such as a kmap_atomic, we do a simple update preserving
-> + * the hash bits instead (ie, same as the non-SMP case)
-> + *
-> + * Second case is 32-bit with 64-bit PTE.  In this case, we
-> + * can just store as long as we do the two halves in the right order
-> + * with a barrier in between. This is possible because we take care,
-> + * in the hash code, to pre-invalidate if the PTE was already hashed,
-> + * which synchronizes us with any concurrent invalidation.
-> + * In the percpu case, we also fallback to the simple update preserving
-> + * the hash bits
-> + *
-> + * Third case is 32-bit hash table in UP mode, we need to preserve
-> + * the _PAGE_HASHPTE bit since we may not have invalidated the previous
-> + * translation in the hash yet (done in a subsequent flush_tlb_xxx())
-> + * and see we need to keep track that this PTE needs invalidating
->   */
->  static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
->  				pte_t *ptep, pte_t pte, int percpu)
->  {
-> -#if defined(CONFIG_SMP) && !defined(CONFIG_PTE_64BIT)
-> -	/* First case is 32-bit Hash MMU in SMP mode with 32-bit PTEs. We use the
-> -	 * helper pte_update() which does an atomic update. We need to do that
-> -	 * because a concurrent invalidation can clear _PAGE_HASHPTE. If it's a
-> -	 * per-CPU PTE such as a kmap_atomic, we do a simple update preserving
-> -	 * the hash bits instead (ie, same as the non-SMP case)
-> -	 */
-> -	if (percpu)
-> -		*ptep = __pte((pte_val(*ptep) & _PAGE_HASHPTE)
-> -			      | (pte_val(pte) & ~_PAGE_HASHPTE));
-> -	else
-> -		pte_update(mm, addr, ptep, ~_PAGE_HASHPTE, pte_val(pte), 0);
-> +	if ((!IS_ENABLED(CONFIG_SMP) && !IS_ENABLED(CONFIG_PTE_64BIT)) || percpu) {
-> +		*ptep = __pte((pte_val(*ptep) & _PAGE_HASHPTE) |
-> +			      (pte_val(pte) & ~_PAGE_HASHPTE));
-> +	} else if (IS_ENABLED(CONFIG_PTE_64BIT)) {
-> +		if (pte_val(*ptep) & _PAGE_HASHPTE)
-> +			flush_hash_entry(mm, ptep, addr);
->  
-> -#elif defined(CONFIG_PTE_64BIT)
-> -	/* Second case is 32-bit with 64-bit PTE.  In this case, we
-> -	 * can just store as long as we do the two halves in the right order
-> -	 * with a barrier in between. This is possible because we take care,
-> -	 * in the hash code, to pre-invalidate if the PTE was already hashed,
-> -	 * which synchronizes us with any concurrent invalidation.
-> -	 * In the percpu case, we also fallback to the simple update preserving
-> -	 * the hash bits
-> -	 */
-> -	if (percpu) {
-> -		*ptep = __pte((pte_val(*ptep) & _PAGE_HASHPTE)
-> -			      | (pte_val(pte) & ~_PAGE_HASHPTE));
-> -		return;
-> +		asm volatile("stw%X0 %2,%0; eieio; stw%X1 %L2,%1" :
-> +			     "=m" (*ptep), "=m" (*((unsigned char *)ptep+4)) :
-> +			     "r" (pte) : "memory");
-> +	} else {
-> +		pte_update(mm, addr, ptep, ~_PAGE_HASHPTE, pte_val(pte), 0);
->  	}
-> -	if (pte_val(*ptep) & _PAGE_HASHPTE)
-> -		flush_hash_entry(mm, ptep, addr);
-> -	__asm__ __volatile__("\
-> -		stw%X0 %2,%0\n\
-> -		eieio\n\
-> -		stw%X1 %L2,%1"
-> -	: "=m" (*ptep), "=m" (*((unsigned char *)ptep+4))
-> -	: "r" (pte) : "memory");
-> -
-> -#else
-> -	/* Third case is 32-bit hash table in UP mode, we need to preserve
-> -	 * the _PAGE_HASHPTE bit since we may not have invalidated the previous
-> -	 * translation in the hash yet (done in a subsequent flush_tlb_xxx())
-> -	 * and see we need to keep track that this PTE needs invalidating
-> -	 */
-> -	*ptep = __pte((pte_val(*ptep) & _PAGE_HASHPTE)
-> -		      | (pte_val(pte) & ~_PAGE_HASHPTE));
-> -#endif
->  }
->  
->  /*
-> -- 
-> 2.36.1
+>
+>>>> +    }
+>>>>       free_percpu(drvdata->cpudata);
+>>>>       return 0;
+>>>>   }
+>>>> @@ -1406,12 +1415,8 @@ static int arm_trbe_cpu_teardown(unsigned 
+>>>> int cpu, struct hlist_node *node)
+>>>>   {
+>>>>       struct trbe_drvdata *drvdata = hlist_entry_safe(node, struct 
+>>>> trbe_drvdata, hotplug_node);
+>>>>   -    if (cpumask_test_cpu(cpu, &drvdata->supported_cpus)) {
+>>>> -        struct trbe_cpudata *cpudata = 
+>>>> per_cpu_ptr(drvdata->cpudata, cpu);
+>>>> -
+>>>> -        disable_percpu_irq(drvdata->irq);
+>>>> -        trbe_reset_local(cpudata);
+>>>> -    }
+>>>> +    if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
+>>>> +        arm_trbe_disable_cpu(drvdata);
+>>>>       return 0;
+>>>>   }
+>>>
+>>>
+>>> .
+>>>
+>>
+>
+>
+> .
+>
+
