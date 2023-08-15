@@ -2,155 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ECDA77D38F
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5285377D3B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 21:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240002AbjHOTqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 15:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53134 "EHLO
+        id S240085AbjHOTxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 15:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240065AbjHOTq1 (ORCPT
+        with ESMTP id S240036AbjHOTwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 15:46:27 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 784E0173F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:46:26 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58b7b5cc9d4so24340167b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:46:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692128785; x=1692733585;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6RAEeq+C0W6SwJZ/YEOnzqyIIK3nkPxdLI5lLoEzx+s=;
-        b=hZn5SljZOe3N+jH/R2VvkAXWuZx8uHTNLbKpZJv6cKpiSxkzzmx2msDBlZn7BYOdnc
-         ianYU0wWYbDAkUiFCnzJfMyyb649Sas3p6+bcHgWtS002NjqjatTNQW3n+QZwqPTKS3L
-         HOadGKuRWJwjfooYR3NjYGkU3uUPeDvV1ymLb5s71DXWrzmc+XyUbgYScy3Pw8Op2BQq
-         jxnOpKQR21ni31lFkhiQIHWXALW1qOOvI5x7LobMtoA82Ef0V5gSQzRBSI0ewNYt8dlB
-         yh3emINmhenzHHw6OgiI1edJSoZ174fJRUlg62h7O1YZommVUtIESxxvEiejOHksqW8S
-         zkBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692128785; x=1692733585;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6RAEeq+C0W6SwJZ/YEOnzqyIIK3nkPxdLI5lLoEzx+s=;
-        b=cTLF4vmb/UuEB+bxvRK5T9qmZACyJxyIZPMb1irn/wrmoIZrqqxbKJRMxy6dVSrL02
-         C1R0cGVHwESBLkdePZcrig/YovI+S0k0Jx0G2v/eJJXmi3F2VkAtkH5ZiayyeOCP46Up
-         95ZMqn7GBtRwlb2yiDKDW1mpU+0bbDJOEJIqKkGWxavtZYlZY2HkGzW5ELhsjzM9cSEW
-         +ImTjhr3XLwn6OD8zz3VSsrMI58sDuP3NuugW2bQrUrlnZZVZjMOynu/OZ0Q94mDJ2yS
-         ONcslGXtAqTAbaats7Rt0PodC5/tncUI3Bq93BA+qm4UTcDfwiPuwDnrTt5LJ/PdDPID
-         NUyw==
-X-Gm-Message-State: AOJu0YxU//T4lDJQgjv5ur2l+hcdeNf7sdSR2bIgb3twsSJclbAOJe/5
-        T3XoAUcY2iqw8bI9K+k8WBIvmWobPw==
-X-Google-Smtp-Source: AGHT+IFtd2t9NaTpudbZDzFhdmRgojf0QntbLY8VGpagxAig4mAvXf9wo6s1KihYjXCI1S4MASHiNUdHIA==
-X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
- (user=rmoar job=sendgmr) by 2002:a05:6902:1584:b0:d10:5b67:843c with SMTP id
- k4-20020a056902158400b00d105b67843cmr185393ybu.4.1692128785761; Tue, 15 Aug
- 2023 12:46:25 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 19:45:41 +0000
-In-Reply-To: <20230815194541.497115-1-rmoar@google.com>
-Mime-Version: 1.0
-References: <20230815194541.497115-1-rmoar@google.com>
-X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
-Message-ID: <20230815194541.497115-2-rmoar@google.com>
-Subject: [PATCH 2/2] kunit: fix kunit_executor_test to allow for run after boot
-From:   Rae Moar <rmoar@google.com>
-To:     brendan.higgins@linux.dev, davidgow@google.com, dlatypov@google.com
-Cc:     skhan@linuxfoundation.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Rae Moar <rmoar@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Tue, 15 Aug 2023 15:52:35 -0400
+X-Greylist: delayed 166 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 15 Aug 2023 12:52:34 PDT
+Received: from smtprelay02.ispgateway.de (smtprelay02.ispgateway.de [80.67.18.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB1519A7;
+        Tue, 15 Aug 2023 12:52:34 -0700 (PDT)
+Received: from [77.64.243.219] (helo=note-book.lan)
+        by smtprelay02.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <git@apitzsch.eu>)
+        id 1qW02z-0003fk-OD; Tue, 15 Aug 2023 21:49:45 +0200
+From:   =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
+Subject: [PATCH RESEND v3 0/2] arm64: dts: qcom: msm8939-longcheer-l9100:
+ Add initial dts
+Date:   Tue, 15 Aug 2023 21:49:04 +0200
+Message-Id: <20230815-bq_m5-v3-0-fd26d7c76a1f@apitzsch.eu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stephan Gerhold <stephan@gerhold.net>,
+        =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.3
+X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change implementation of executor tests to allow for use of new run
-after boot feature.
+This dts adds support for BQ Aquaris M5 (Longcheer L9100) released in
+2015.
 
-Without this fix, the tests will cause a kernel crash if run after boot
-due to permissions issue in accessing constant strings.
+Add a device tree with initial support for:
 
-Signed-off-by: Rae Moar <rmoar@google.com>
+- GPIO keys
+- Hall sensor
+- SDHCI
+- WCNSS (BT/WIFI)
+- Accelerometer/Magnetometer
+- Vibrator
+- Touchscreen
+- Front flash
+
+Signed-off-by: André Apitzsch <git@apitzsch.eu>
 ---
- lib/kunit/executor_test.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+Changes in v3:
+- use "id-gpios" instead of "id-gpio" to avoid conflicts with
+  https://lore.kernel.org/linux-arm-msm/20230724103914.1779027-7-alexander.stein@ew.tq-group.com/
+  (v2 only contained the changelog entry, but not the actual change)
+- Link to v2: https://lore.kernel.org/r/20230725-bq_m5-v2-0-9779c249aeb1@apitzsch.eu
 
-diff --git a/lib/kunit/executor_test.c b/lib/kunit/executor_test.c
-index 4084071d0eb5..66a02291892d 100644
---- a/lib/kunit/executor_test.c
-+++ b/lib/kunit/executor_test.c
-@@ -119,9 +119,12 @@ static void parse_filter_attr_test(struct kunit *test)
- {
- 	int j, filter_count;
- 	struct kunit_attr_filter *parsed_filters;
--	char *filters = "speed>slow, module!=example";
-+	int max_char = 30;
-+	char *filters = kunit_kzalloc(test, sizeof(char) * max_char, GFP_KERNEL);
- 	int err = 0;
- 
-+	strscpy(filters, "speed>slow, module!=example", max_char);
-+
- 	filter_count = kunit_get_filter_count(filters);
- 	KUNIT_EXPECT_EQ(test, filter_count, 2);
- 
-@@ -154,6 +157,8 @@ static void filter_attr_test(struct kunit *test)
- 		.start = subsuite, .end = &subsuite[2],
- 	};
- 	struct kunit_suite_set got;
-+	int max_char = 30;
-+	char *filter = kunit_kzalloc(test, sizeof(char) * max_char, GFP_KERNEL);
- 	int err = 0;
- 
- 	subsuite[0] = alloc_fake_suite(test, "normal_suite", dummy_attr_test_cases);
-@@ -168,7 +173,8 @@ static void filter_attr_test(struct kunit *test)
- 	 * attribute is unset and thus, the filtering is based on the parent attribute
- 	 * of slow.
- 	 */
--	got = kunit_filter_suites(&suite_set, NULL, "speed>slow", NULL, &err);
-+	strscpy(filter, "speed>slow", max_char);
-+	got = kunit_filter_suites(&suite_set, NULL, filter, NULL, &err);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start);
- 	KUNIT_ASSERT_EQ(test, err, 0);
- 	kfree_at_end(test, got.start);
-@@ -191,12 +197,15 @@ static void filter_attr_empty_test(struct kunit *test)
- 		.start = subsuite, .end = &subsuite[2],
- 	};
- 	struct kunit_suite_set got;
-+	int max_char = 30;
-+	char *filter = kunit_kzalloc(test, sizeof(char) * max_char, GFP_KERNEL);
- 	int err = 0;
- 
- 	subsuite[0] = alloc_fake_suite(test, "suite1", dummy_attr_test_cases);
- 	subsuite[1] = alloc_fake_suite(test, "suite2", dummy_attr_test_cases);
- 
--	got = kunit_filter_suites(&suite_set, NULL, "module!=dummy", NULL, &err);
-+	strscpy(filter, "module!=dummy", max_char);
-+	got = kunit_filter_suites(&suite_set, NULL, filter, NULL, &err);
- 	KUNIT_ASSERT_EQ(test, err, 0);
- 	kfree_at_end(test, got.start); /* just in case */
- 
-@@ -211,12 +220,15 @@ static void filter_attr_skip_test(struct kunit *test)
- 		.start = subsuite, .end = &subsuite[1],
- 	};
- 	struct kunit_suite_set got;
-+	int max_char = 30;
-+	char *filter = kunit_kzalloc(test, sizeof(char) * max_char, GFP_KERNEL);
- 	int err = 0;
- 
- 	subsuite[0] = alloc_fake_suite(test, "suite", dummy_attr_test_cases);
- 
- 	/* Want: suite(slow, normal), NULL -> suite(slow with SKIP, normal), NULL */
--	got = kunit_filter_suites(&suite_set, NULL, "speed>slow", "skip", &err);
-+	strscpy(filter, "speed>slow", max_char);
-+	got = kunit_filter_suites(&suite_set, NULL, filter, "skip", &err);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, got.start);
- 	KUNIT_ASSERT_EQ(test, err, 0);
- 	kfree_at_end(test, got.start);
+Changes in v2:
+- add R-b to first patch
+- sort node extends/overrides by name, but keep &tlmm last, as done in
+  msm8939-samsung-a7.dts
+- use id-gpios, to avoid conflict with
+  https://lore.kernel.org/linux-arm-msm/20230724103914.1779027-7-alexander.stein@ew.tq-group.com/
+- don't enable mdss for now; postpone it till display support is added
+- Link to v1: https://lore.kernel.org/r/20230724-bq_m5-v1-0-17a0870a73be@apitzsch.eu
+
+---
+André Apitzsch (2):
+      dt-bindings: arm: qcom: Add BQ Aquaris M5
+      arm64: dts: qcom: msm8939-longcheer-l9100: Add initial device tree
+
+ Documentation/devicetree/bindings/arm/qcom.yaml    |   1 +
+ arch/arm64/boot/dts/qcom/Makefile                  |   1 +
+ .../boot/dts/qcom/msm8939-longcheer-l9100.dts      | 336 +++++++++++++++++++++
+ 3 files changed, 338 insertions(+)
+---
+base-commit: 451cc82bd11eb6a374f4dbcfc1cf007eafea91ab
+change-id: 20230724-bq_m5-bc9afe378f8d
+
+Best regards,
 -- 
-2.41.0.694.ge786442a9b-goog
+André Apitzsch <git@apitzsch.eu>
 
