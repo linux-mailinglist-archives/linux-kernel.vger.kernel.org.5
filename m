@@ -2,161 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B668677C6EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 07:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AA977C6F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 07:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234605AbjHOFL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 01:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50426 "EHLO
+        id S234622AbjHOFNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 01:13:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234678AbjHOFLI (ORCPT
+        with ESMTP id S234633AbjHOFMl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 01:11:08 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645FE1BE1
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 22:10:19 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99bcfe28909so651343266b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 22:10:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692076218; x=1692681018;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bF28iUeNk56JK9TsikccLm4WltEZTE19xKJs8jn9uAQ=;
-        b=mct1vZmLVqpwNiftHjdz7sR0wwQM52RIrTCtLvKnBc2sulf7CmZZyCra3ey1Z/4bjF
-         q4kUgcJw32Vs/LONAis+TdSogerfcdo8Bxm1w/USc1PBdt9Dgu0LSJr53rXp3wjxOP3V
-         7+KEGCJW1Zda2YQoU3E6NWn8gXrqVD93UzAPgpQbP1AqAw2wrnxdyDtlncPHJaknhwHv
-         6kzV4bMU738my/CRVd1OqkR2vZBCvxBuBU7cHm1uqr+ZJVucJccb+LqgcfBmeCR7Iacl
-         9IWQJ2AyAhcDpkEGgVY68QsnIhWwUpOFOYTkWdU+LR5v/i1+SSluK/dvGHsRv6Pwde/o
-         NPTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692076218; x=1692681018;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bF28iUeNk56JK9TsikccLm4WltEZTE19xKJs8jn9uAQ=;
-        b=SGLTS3UhqQ/J5OAEA3j4vYtoXVqyUFmJGrLSU8YQWyrOD9+qQualF00eXqBFxBZRzf
-         abDTXWpixZyrit5ndIUHSoGbDyAe1UcnS+A25u8U41cLxRTHZEZQrCUK/5tiw/s+FOoW
-         a07hxOZw41CyrvsWZADKmH/Gf5JV6qGkM55m9l06HvUT6pHDsMwH72u+5+ReF6CT+MVI
-         r5HVDS8wMzNRsCVzCHnFjWQaZD2+8Hmmp8mXpZPVUbiNkhoh1l2e3OXfttwOzv1Q9nHP
-         bVYD/JnvGSxv+kA6zFjgMpyrRjIeI+GX1vLnG6SgROhSFlFDRf5OGy4gwnzdR84CtgSQ
-         /yqA==
-X-Gm-Message-State: AOJu0YwUqTLHX7BkqIgai4NNXmpBgaHuu1lYljJl8za90jtUavVauxg/
-        YViRiboGKmTNCn6RqnD8X/FExw==
-X-Google-Smtp-Source: AGHT+IGBkZ4LMf+dzSXpi05VjH8TZyFkhr+fyibIr+D55iwAeA/gaFr4uFToJqM8dsAEqZpeG1xURQ==
-X-Received: by 2002:a17:907:7606:b0:991:e458:d14 with SMTP id jx6-20020a170907760600b00991e4580d14mr8196881ejc.34.1692076217690;
-        Mon, 14 Aug 2023 22:10:17 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id d2-20020a170906640200b0099d0c0bb92bsm6461343ejm.80.2023.08.14.22.10.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Aug 2023 22:10:17 -0700 (PDT)
-Message-ID: <2d8669f1-bab0-d02c-ece5-a6cd87b51e8e@linaro.org>
-Date:   Tue, 15 Aug 2023 07:10:15 +0200
+        Tue, 15 Aug 2023 01:12:41 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FBB2198E
+        for <linux-kernel@vger.kernel.org>; Mon, 14 Aug 2023 22:12:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692076352; x=1723612352;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6+ZcU/Vpexrp5FQDgNFOsYEPzqofwDIztSFtE78sl+E=;
+  b=VPcEmrIukehWjGmz1ButGn0P2vcAggUpbplrE36a+3szpqfqxYIukTW+
+   P2kxJj7UD2TrIx7Rkn7rzisSTCUnIE8Hml0Q4M59tVuSR2SbVTkm6LUBh
+   VUqMaeGvnBxdYuTX3aDBblzEu6uz35heDesPzwrVHLgcBFCh/SIrA6fqa
+   afhOAlBY8vovnxHOCYXiJtxRd0Juf2L4tou6g3sLgAxtZ3ukRtGDWM1a7
+   VjQ0JMdLadsCylHrQ0S6G0aOEGnsR7yn0i7XvGWkDBuFyG0maWWfkO9Z9
+   PHd3c/zk4bSP4V+kh4GGYVAAfS8yC7N1FMeCvnl0EiVaQ6roOkL9WJDcL
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="371109079"
+X-IronPort-AV: E=Sophos;i="6.01,173,1684825200"; 
+   d="scan'208";a="371109079"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2023 22:12:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10802"; a="1064328497"
+X-IronPort-AV: E=Sophos;i="6.01,173,1684825200"; 
+   d="scan'208";a="1064328497"
+Received: from lkp-server02.sh.intel.com (HELO b5fb8d9e1ffc) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 14 Aug 2023 22:12:17 -0700
+Received: from kbuild by b5fb8d9e1ffc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qVmLo-0000g9-1H;
+        Tue, 15 Aug 2023 05:12:16 +0000
+Date:   Tue, 15 Aug 2023 13:11:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        akpm@linux-foundation.org, songmuchun@bytedance.com,
+        mike.kravetz@oracle.com, willy@infradead.org,
+        Sidhartha Kumar <sidhartha.kumar@oracle.com>
+Subject: Re: [PATCH v4] mm/filemap: change ->index to PAGE_SIZE for hugetlb
+ pages
+Message-ID: <202308151231.L2pfzOmu-lkp@intel.com>
+References: <20230814215035.222688-1-sidhartha.kumar@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v4 2/3] dt-bindings: input: qcom,pm8xxx-vib: add new SPMI
- vibrator module
-Content-Language: en-US
-To:     Fenglin Wu <quic_fenglinw@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        agross@kernel.org, andersson@kernel.org,
-        dmitry.baryshkov@linaro.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     quic_collinsd@quicinc.com, quic_subbaram@quicinc.com,
-        quic_kamalw@quicinc.com, jestar@qti.qualcomm.com
-References: <20230731053712.2220898-1-quic_fenglinw@quicinc.com>
- <20230731053712.2220898-3-quic_fenglinw@quicinc.com>
- <a1b1cead-17e4-2016-91a1-9ad9949ff9e3@linaro.org>
- <19e45248-5fff-d806-81f2-feea56d7778d@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <19e45248-5fff-d806-81f2-feea56d7778d@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230814215035.222688-1-sidhartha.kumar@oracle.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/08/2023 04:20, Fenglin Wu wrote:
-> 
-> 
-> On 8/14/2023 6:06 PM, Krzysztof Kozlowski wrote:
->> On 31/07/2023 07:37, Fenglin Wu wrote:
->>> Add compatible string 'qcom,spmi-vib-gen2' to support vibrator module
->>> inside PMI632, PMI7250B, PM7325B, PM7550BA.
->>>
->>> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
->>> ---
->>>   .../bindings/input/qcom,pm8xxx-vib.yaml          | 16 ++++++++++++----
->>>   1 file changed, 12 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml b/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml
->>> index c8832cd0d7da..4a2319fc1e3f 100644
->>> --- a/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml
->>> +++ b/Documentation/devicetree/bindings/input/qcom,pm8xxx-vib.yaml
->>> @@ -11,10 +11,18 @@ maintainers:
->>>   
->>>   properties:
->>>     compatible:
->>> -    enum:
->>> -      - qcom,pm8058-vib
->>> -      - qcom,pm8916-vib
->>> -      - qcom,pm8921-vib
->>> +    oneOf:
->>> +      - enum:
->>> +          - qcom,pm8058-vib
->>> +          - qcom,pm8916-vib
->>> +          - qcom,pm8921-vib
->>> +      - items:
->>> +          - enum:
->>> +              - qcom,pmi632-vib
->>> +              - qcom,pm7250b-vib
->>> +              - qcom,pm7325b-vib
->>> +              - qcom,pm7550b-vib
->>> +          - const: qcom,spmi-vib-gen2
->>
->> This does not seem to implement my comment:
->>
->> "Entirely remove qcom,spmi-vib-gen2 and
->> qcom,spmi-vib-gen1.
->>
->> Use device specific compatibles names only. As fallback and as first
->> compatible."
->>
->> It's nice to respond that you disagree with it. Therefore, I am not
->> going to Ack it.
-> 
-> I saw your comments and I replied your later comments in v2: 
-> https://lore.kernel.org/linux-arm-msm/b5e58172-beb5-0be3-834f-3f1db3e8b3b3@quicinc.com/. 
-> It might not be a good place to follow the discussion though, I am 
-> pasting my last reply below:
-> 
-> 'Sorry, I forgot to mention, in v3, I added the 'reg' value to the
-> register offset and no longer hard code the 16-bit register address,
-> that makes the vibrators inside PMI632/PM7250B/PM7325B/PM7550BA all
-> compatible, and that was another motivation of adding a generic
-> compatible string and make the others as the fallback.
-> 
-> This will be still the case in v4, I might keep it similar in v3 but
-> just drop "qcom,spmi-vib-gen1" '
-> 
-> Anyway, if this is still not a good reason to add a generic compatible 
-> string, I can revert it back to use device specific compatible string 
-> only in next patch.
+Hi Sidhartha,
 
-I just don't see how this argument is anyhow related to what I said. I
-did not comment on removing the fallback. I said use specific compatible
-as fallback.
+kernel test robot noticed the following build warnings:
 
-Best regards,
-Krzysztof
+[auto build test WARNING on akpm-mm/mm-everything]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/Sidhartha-Kumar/mm-filemap-change-index-to-PAGE_SIZE-for-hugetlb-pages/20230815-055236
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20230814215035.222688-1-sidhartha.kumar%40oracle.com
+patch subject: [PATCH v4] mm/filemap: change ->index to PAGE_SIZE for hugetlb pages
+config: i386-randconfig-i005-20230815 (https://download.01.org/0day-ci/archive/20230815/202308151231.L2pfzOmu-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce: (https://download.01.org/0day-ci/archive/20230815/202308151231.L2pfzOmu-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308151231.L2pfzOmu-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> mm/hugetlb.c:2116:9: warning: no previous prototype for function 'hugetlb_basepage_index' [-Wmissing-prototypes]
+   pgoff_t hugetlb_basepage_index(struct page *page)
+           ^
+   mm/hugetlb.c:2116:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   pgoff_t hugetlb_basepage_index(struct page *page)
+   ^
+   static 
+   include/linux/types.h:137:17: note: expanded from macro 'pgoff_t'
+   #define pgoff_t unsigned long
+                   ^
+   1 warning generated.
+
+
+vim +/hugetlb_basepage_index +2116 mm/hugetlb.c
+
+c0d0381ade7988 Mike Kravetz       2020-04-01  2115  
+fe19bd3dae3d15 Hugh Dickins       2021-06-24 @2116  pgoff_t hugetlb_basepage_index(struct page *page)
+13d60f4b6ab5b7 Zhang Yi           2013-06-25  2117  {
+13d60f4b6ab5b7 Zhang Yi           2013-06-25  2118  	struct page *page_head = compound_head(page);
+13d60f4b6ab5b7 Zhang Yi           2013-06-25  2119  	pgoff_t index = page_index(page_head);
+13d60f4b6ab5b7 Zhang Yi           2013-06-25  2120  	unsigned long compound_idx;
+13d60f4b6ab5b7 Zhang Yi           2013-06-25  2121  
+23baf831a32c04 Kirill A. Shutemov 2023-03-15  2122  	if (compound_order(page_head) > MAX_ORDER)
+13d60f4b6ab5b7 Zhang Yi           2013-06-25  2123  		compound_idx = page_to_pfn(page) - page_to_pfn(page_head);
+13d60f4b6ab5b7 Zhang Yi           2013-06-25  2124  	else
+13d60f4b6ab5b7 Zhang Yi           2013-06-25  2125  		compound_idx = page - page_head;
+13d60f4b6ab5b7 Zhang Yi           2013-06-25  2126  
+13d60f4b6ab5b7 Zhang Yi           2013-06-25  2127  	return (index << compound_order(page_head)) + compound_idx;
+13d60f4b6ab5b7 Zhang Yi           2013-06-25  2128  }
+13d60f4b6ab5b7 Zhang Yi           2013-06-25  2129  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
