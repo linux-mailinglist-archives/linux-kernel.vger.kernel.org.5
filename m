@@ -2,219 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47EA277D1F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B51377D1FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239196AbjHOShh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 14:37:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40416 "EHLO
+        id S239174AbjHOSig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 14:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239166AbjHOShB (ORCPT
+        with ESMTP id S239231AbjHOSiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 14:37:01 -0400
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2085.outbound.protection.outlook.com [40.107.100.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC11F10D8;
-        Tue, 15 Aug 2023 11:36:59 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j7izHaKPQXxwJ4D/wuJFHrxvZvIVVtKVnyKZGr80fnGxuELVbe7c1X57jhPW/ztxjM3kzhdyJJFYkI4i+mb2mT+ryVwnV9SPi4k63KWpX2UcR1ZinwCJ+spjFFezuc0xvCdWI437iaf9T2CEJGRZnq0GKwoTuDX+pn7slxGyE2IUVgMKwtaYvMwDySv9FRh0gLQN9M+53sdWukQSaYWx+jtab1wCBMCOQPs4Gi/MpBvI++TieBnQOBUs4wqpDwneAMpKjne68Wgi+2zsxX62Bc5la2sW1tLguDlebzaBRxavdBGsQ5C5Fzb+vr1Lp8hAbGjFb/i1KPAfQY2hY2eQLQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yQa+rJbVNIeopDc2qqPkmuUpAx6pLNaUBew7+bL7Nj4=;
- b=d0n4x30xG2miFPBagdfOVuKcb9J5LWPl26b3S0z1E3130xBHRpHeIcErx49jlEGJ1TeGrRr7yY+n5Eh2EPcpCIoCVYThdVUEqZGOAEt+nQ+Xa0hC7rvt+gZLoGaB5H+MGk70dLVdYLxnY7ukw+nRY19qsEOqzNVaBhaXfa47RqPfy/HY9Fgcc/bI4f9WJM4UYRtMnNKYC7wkc6PICjr2eRS3yK3uzSFX/4Wmk2+/GkHJItn000MADys5JvYkFxX7R4I/e4edMOT+EsbbzDbCwYUC47YM1rhmZkfzDlA89gwo/zw/M81zVp/vDQtpCDF43Gxy11+dov6F8tSBuXjFpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yQa+rJbVNIeopDc2qqPkmuUpAx6pLNaUBew7+bL7Nj4=;
- b=p0Bka6LD4pq7rQrtUgat4QvvqPZNy9/Z7D4S8eGUeP0oads2F7NRlOKpixxiTsRd9Ck6SIu1Fg5AvJ3Pl6yIJM3GAqA/s8z5M1Z7Iqtl0P6NzEzSUlgafmvLxCHeh2VgnOS0uAz9swLsUo+zo5hZyRgjG6TlVwcAlN/wLmqnVoc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by DS7PR12MB6142.namprd12.prod.outlook.com (2603:10b6:8:9a::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Tue, 15 Aug
- 2023 18:36:55 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::36f9:ffa7:c770:d146]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::36f9:ffa7:c770:d146%7]) with mapi id 15.20.6678.025; Tue, 15 Aug 2023
- 18:36:55 +0000
-Message-ID: <3caa31c0-39bd-42e5-8e59-7ac7f197dcb7@amd.com>
-Date:   Tue, 15 Aug 2023 13:36:53 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drm/amdgpu: register a dirty framebuffer callback for
- fbcon
-Content-Language: en-US
-To:     Hamza Mahfooz <hamza.mahfooz@amd.com>,
-        amd-gfx@lists.freedesktop.org
-Cc:     Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        stable@vger.kernel.org, Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-        Guchun Chen <guchun.chen@amd.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230815172700.255596-1-hamza.mahfooz@amd.com>
-From:   Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <20230815172700.255596-1-hamza.mahfooz@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN4PR0501CA0103.namprd05.prod.outlook.com
- (2603:10b6:803:42::20) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+        Tue, 15 Aug 2023 14:38:15 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E361FCE;
+        Tue, 15 Aug 2023 11:38:10 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fe1b00fce2so8547068e87.3;
+        Tue, 15 Aug 2023 11:38:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692124689; x=1692729489;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4YJdY3GQFeB1iPWfE21MENyRveBHqJ2bQXsYhMqaqNs=;
+        b=jqZ1Qnztra5zzKL7pKzwp1m8JUM+DWATFg0LqTqR1HpEWzC+rydke/J7ygTMcLm3z0
+         kwiqfa8LdKZ55Qm5sE4TrSe8dYwRCJ3IeA9AH/e6Oa+dnuQlRshOrxgOctUtLDvVIbHZ
+         FsoQDAkjF0S0UIoGyYxBAw+yLZXGtJx0B9YGudtZSooZdrHee4jh/llvrK9dbHDbwAz2
+         L+IU8EDH1+T2VEtyzBfgRHHgdsEWK8m3T8N9YIYeHh21KVClPqU969gnyO5ajSQJjjU3
+         lf+G0fBu1h/5H9MfAB5mI/3UsY9Ku5q88+0079KX4uU17zzVfFxog8IbuL/NUSxXFKMK
+         oL4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692124689; x=1692729489;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4YJdY3GQFeB1iPWfE21MENyRveBHqJ2bQXsYhMqaqNs=;
+        b=iQlnGGmf2zVEG1bzUUxeO8m//4QoLQk84oFNgW6CkzgCqf/t97ViWjRVEnmfZpsgSl
+         BBUw3Nzc77a/2ntRYT2PIg5M7D4gVNl1Cz3cnsPMmSpUapVGION8zjth9ZUlb/69MAzB
+         bpE3Slku9mfToGjEsKC6k+Td5fNkzlfDA5eifI9i0ohG3zVUKp4B9F8XtwjxWizlesWx
+         tnFGf0xJ3+hTBaJh0JyDKtp/KPrOeyM2CoDDT3APLHo2ahzPkPBlUSK5NlH+2uSD393v
+         Fnihtn+ub6vJgMK59d+nc+gLrCNzqY0KwLXlzkss13PU8lTTSPsxOSuVF4ogUEOOhBTj
+         OWmw==
+X-Gm-Message-State: AOJu0Yxt648/2n3syz+E6X2+sHLMIdGcEy/ka+RjbqJjdXREI6oybq9h
+        qkJUUCpLX8J4888SSTYNFX2T85rMrCxs2w==
+X-Google-Smtp-Source: AGHT+IGAxUqmjRBq+AaVWc8MKqYHI/ETVfCUYtRL3ZbwRWUoVCmGJDJfM8mg79Tg5k0ErvM63f0aFg==
+X-Received: by 2002:a05:6512:10d4:b0:4fe:25bc:71f5 with SMTP id k20-20020a05651210d400b004fe25bc71f5mr10112355lfg.11.1692124688731;
+        Tue, 15 Aug 2023 11:38:08 -0700 (PDT)
+Received: from f.. (cst-prg-75-195.cust.vodafone.cz. [46.135.75.195])
+        by smtp.gmail.com with ESMTPSA id b24-20020aa7dc18000000b005233647bc4csm7197869edu.59.2023.08.15.11.38.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Aug 2023 11:38:08 -0700 (PDT)
+From:   Mateusz Guzik <mjguzik@gmail.com>
+To:     linux-security-module@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Mateusz Guzik <mjguzik@gmail.com>
+Subject: [RESEND PATCH] cred: add get_cred_many and put_cred_many
+Date:   Tue, 15 Aug 2023 20:37:59 +0200
+Message-Id: <20230815183759.1821357-1-mjguzik@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|DS7PR12MB6142:EE_
-X-MS-Office365-Filtering-Correlation-Id: 54f31212-39bb-45bc-1c83-08db9dbe99e8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sdpK13SsvmUZC6m9nbOIa0Qn5Z77RdU71oLXjdI/OZzMmrj98gXMjMGHh5mpXMzOmKFYJadMkLbdH9VWROXqjF6eWY5e36zx32gUxH22rdIxegdkqDFTkRBo6TN0xa22gFoLPmd2W2B414szJI8xYvb7dUq8LHze24IeWDboEC4LQLglk7cJTjG8u3x2zdnfjlHOCRYOHYs1QGcpJc3WxKAG91GU3OZt88uT9AjngJ5j/sbRomomCxOl0Jw2q1KffVnVeTdSaYQaNlk6CBE5Vo9p1aB5r74MmqmJAFH1VZstVj2L+aG5lY71ZkgtnqHwpC5Op268JyAYGIrELheMSDC7GsZxLNoztctTjRnQDakjiHI6NAq8karUVxD5VzXQ7dgj/R7XaqP6XOEvaVASRITa4+ZWhQza1HVrTFlQHFFJ0q3mxgrGIQiUHMZLm2ya9mga5xyWbCRQ+BM+XsJiMVQexC/dA8ULr4OXppLFjUUrbUKt7GSf18GQ0ak3vPxCpAUqukvIepJLe0IHPEdLsJEMP2C3H7HitLFAOOyTHWmKsT8XK328Okfmj1EXPScH8IjUNtu+ZsbMkwAP2NKqbl9NqMRdknYY3oWbOHD3pyAM+dgPC+otoxrNz0VDpdKmNGyJsMGSP6Lvu9uoovrAcK2vy1ji6hVteHcRjbjZCu8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(396003)(366004)(39860400002)(346002)(451199024)(1800799009)(186009)(26005)(6486002)(31686004)(38100700002)(53546011)(6506007)(54906003)(31696002)(86362001)(316002)(66946007)(36756003)(5660300002)(44832011)(478600001)(8936002)(8676002)(4326008)(83380400001)(41300700001)(66476007)(66556008)(2906002)(6512007)(966005)(2616005)(14143004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bUJLK1hqeW9IUXM4RkZ0YjA3Q2o4cjViSVY3TDJtUXVXTUVmaUFUMHJQWUFN?=
- =?utf-8?B?MkhVN0lTMlUzS05jNWNVQ3NOMGtvTXRpa3pqWVFUa2syVmxjWWJSdXdaanF5?=
- =?utf-8?B?Yk0rcldCaWdXMmI2eG5aSW4rZlk4SngxS3Y2U3JScHpDK1lrNkhNbmR4ZUk0?=
- =?utf-8?B?UWFUeXBTT1B0S090MUhXQklwSGpYejZvS3Rzc1JoS2ptMElzRUhFQ2o3RmZx?=
- =?utf-8?B?S2ZTSk1aMGozRzhtWkNzK21kNERRd0JVM2RlWUg0ZlVkV0JHakl0MEVWVTdZ?=
- =?utf-8?B?Q2JNRG9SUEV0SGMzNW9UZ2ZOSm5tZGJrQmVTN3dGdlVaM05rcXRtQVUvRVBU?=
- =?utf-8?B?Z2ZXcGp3dHM1VVV1QkdYNUtyUmdvMlFRZVF2NmZyR1diZFlsOFA5TVNlQTJr?=
- =?utf-8?B?ckNneTNSblJpendNTzhXcC9RdWRIanFqYVUydTNsaVgrbDVtVTMySmpMZjRG?=
- =?utf-8?B?YkpBY2N3NEJPRjZVb1RiYUoybXh6UlhxNHBJYVEzdkFOZnZIMGlvNkc5Sm5I?=
- =?utf-8?B?VjA3VzJmbVgybWVsT3EwNUsvbFJvMlI0VlNUajNLU2cxUFppSDhXbzdFRXBq?=
- =?utf-8?B?cERJSzFjaUZzdjFFeTlzdzFMZ2xmMFdMM2xSdjd6WTB6QkdmSy9XTkdxbjFx?=
- =?utf-8?B?eVBBaHdxM1J6MzdYd1dVSkRsUy9pMDFwQXl4NVNqU040aWdVOEluR1B0bmda?=
- =?utf-8?B?cHRsUkZYVnZuVEl0TWhPSGNvNFhMQlJEVDhHSFFjNzhmdzZ0RGhZNUw4ejlP?=
- =?utf-8?B?TlIzTnJHMUR6WDRHQkt5Ymw1MlN5L1VydXRUZ3lBNmczSGZ4N1RjbFFrVDZT?=
- =?utf-8?B?bzhHcXpRUkpNNGE3NEg4aTBuaGR6YjN2N2J5b3ozT1h5VWVvSVZsYzNkRTM0?=
- =?utf-8?B?V3lkMzZjcngwWUN1SWhtZGx2QmgxNTRVMjZwRWJhMnF5SkhjYnlEbEM5QjZI?=
- =?utf-8?B?U0ZiRVlHdXl0ZlBRWEN3amZzZHpVUGFLS2hWdmJmMVhBMENBbW05K2VJbVE4?=
- =?utf-8?B?SVZMN2llZzNZUk5aaERsbWplZktXNTBtbEpHUzd4V3IvSDlxVmQ4UU04Q2V5?=
- =?utf-8?B?cWt0VmRrQmhjWmJ4U0VjamJoRTBRY3hBUjZGeVYxSHk1TGlXdFpLUDRzNExn?=
- =?utf-8?B?bmV4a2xjMlR0UUNOTDZDbjc0eHp1bjhlaUVyd1RLY3BjNXlpb3hGRlpkVGV3?=
- =?utf-8?B?Tm50L3lVOTNDL25DSkJ3VC9mTng2TVpaQU0yTjk0a1NId25YQ1htaHhzRUg4?=
- =?utf-8?B?eTl4RnpXY2lPMk1weDNudUw5WVZ2Wnc1ZVFTNEZjcmdpVTA3a0VER3Y0REE1?=
- =?utf-8?B?ckUrOVN6ejF4aDBidDNrWUk3ei9iQVBQeGd4WnhJQzdVYlhoRGJYYXErWUxa?=
- =?utf-8?B?L3JtZWNXUTVaN1NXNVdaNXpIbmhIVjF1alExbFJkbkl6SW5PazdlNnhxKzM5?=
- =?utf-8?B?aFRUb0FCOFRsMVlKRHFUcDdZd004bXpQSFBPMG94dTdwYTUvcXhhL2hGcVJj?=
- =?utf-8?B?ZnZtMjUxOER5ZnpVeTZlZGFXN0tGS1Voc2wrckxac0JML01wV1Z3ZnYyVzFT?=
- =?utf-8?B?SWJ0NDF6T25mcnlYSVoxbFhtQ21uSUdCVTVWdzR0MXNCNFZEVHFCMWVBU1lG?=
- =?utf-8?B?VVp0Ull3ZE16Ukp2dnZSdTF6WW1Qays1QmNwbnJiNWZlelJGajU2dWdhdCtm?=
- =?utf-8?B?WjljV1ROSmlkNHlZc1RiZVM4NWxvTXdEeGtUSUhmVnd4Qnp5TzFqU2VlbTlV?=
- =?utf-8?B?cTFITS96MlRwLytYbEx1TTR6TmtRb3hsL0xPdlpNelZRQ2xuOE1LRkVjYkZu?=
- =?utf-8?B?NjU0U09iVnZuMGlmNU9IWDRob1pkcnBVaG5jeUdHc2xwRVVhRGZJUWZ3L3Jt?=
- =?utf-8?B?cEgxZG9UakZhSkxWQUJWT1hpTHk5Ukg1U1RubFBLQ2pZUHJrRGVnQXRDUUY4?=
- =?utf-8?B?YWE1V2FndDNsdnIzYjBxNEVvUlN0b3MvUVQwZWNia2ZMVDZQb0s4bTczVFhI?=
- =?utf-8?B?UmtIM2FOKzZ5TDhNbTJ3c2VzYzAvYm1LQ0VBdDU5dWNkUUxOV0dTWm9wUjVk?=
- =?utf-8?B?SUd3c3JoNlhtOFdoVUNhczRDR0d0SzF1T3JvMGlhb1p2Qjg2SE43ZHBWaitQ?=
- =?utf-8?Q?l2YhgVcuvenKJzehgzz+4BBN7?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 54f31212-39bb-45bc-1c83-08db9dbe99e8
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2023 18:36:55.6633
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9AxeH6BgLVmwiKMtEsXE6q9/fsc355URQHVdEk7WxEg1isvyTGGNyMeM9I2Mcjqi4t1viQPwKkRHOeihodrGJg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6142
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/15/2023 12:26, Hamza Mahfooz wrote:
-> fbcon requires that we implement &drm_framebuffer_funcs.dirty.
-> Otherwise, the framebuffer might take a while to flush (which would
-> manifest as noticeable lag). However, we can't enable this callback for
-> non-fbcon cases since it might cause too many atomic commits to be made
-> at once. So, implement amdgpu_dirtyfb() and only enable it for fbcon
-> framebuffers on devices that support atomic KMS.
-> 
-> Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
-> Cc: Mario Limonciello <mario.limonciello@amd.com>
-> Cc: stable@vger.kernel.org # 6.1+
+Shaves back-to-back atomics in a few places.
 
-This is safe specifically because other things like FB_DAMAGE_CLIPS have 
-come back to 6.1.y as well via f1edb2f58adb ("drm/amd/display: add 
-FB_DAMAGE_CLIPS support") and fixups to that.
+Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+---
+ include/linux/cred.h | 27 +++++++++++++++++++++------
+ kernel/cred.c        | 29 +++++++++++++++++------------
+ 2 files changed, 38 insertions(+), 18 deletions(-)
 
-> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2519
-> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
-
-Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-
-> ---
-> v2: update variable names
-> ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_display.c | 26 ++++++++++++++++++++-
->   1 file changed, 25 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-> index d20dd3f852fc..d3b59f99cb7c 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-> @@ -38,6 +38,8 @@
->   #include <linux/pci.h>
->   #include <linux/pm_runtime.h>
->   #include <drm/drm_crtc_helper.h>
-> +#include <drm/drm_damage_helper.h>
-> +#include <drm/drm_drv.h>
->   #include <drm/drm_edid.h>
->   #include <drm/drm_fb_helper.h>
->   #include <drm/drm_gem_framebuffer_helper.h>
-> @@ -532,11 +534,29 @@ bool amdgpu_display_ddc_probe(struct amdgpu_connector *amdgpu_connector,
->   	return true;
->   }
->   
-> +static int amdgpu_dirtyfb(struct drm_framebuffer *fb, struct drm_file *file,
-> +			  unsigned int flags, unsigned int color,
-> +			  struct drm_clip_rect *clips, unsigned int num_clips)
-> +{
-> +
-> +	if (strcmp(fb->comm, "[fbcon]"))
-> +		return -ENOSYS;
-> +
-> +	return drm_atomic_helper_dirtyfb(fb, file, flags, color, clips,
-> +					 num_clips);
-> +}
-> +
->   static const struct drm_framebuffer_funcs amdgpu_fb_funcs = {
->   	.destroy = drm_gem_fb_destroy,
->   	.create_handle = drm_gem_fb_create_handle,
->   };
->   
-> +static const struct drm_framebuffer_funcs amdgpu_fb_funcs_atomic = {
-> +	.destroy = drm_gem_fb_destroy,
-> +	.create_handle = drm_gem_fb_create_handle,
-> +	.dirty = amdgpu_dirtyfb
-> +};
-> +
->   uint32_t amdgpu_display_supported_domains(struct amdgpu_device *adev,
->   					  uint64_t bo_flags)
->   {
-> @@ -1139,7 +1159,11 @@ static int amdgpu_display_gem_fb_verify_and_init(struct drm_device *dev,
->   	if (ret)
->   		goto err;
->   
-> -	ret = drm_framebuffer_init(dev, &rfb->base, &amdgpu_fb_funcs);
-> +	if (drm_drv_uses_atomic_modeset(dev))
-> +		ret = drm_framebuffer_init(dev, &rfb->base,
-> +					   &amdgpu_fb_funcs_atomic);
-> +	else
-> +		ret = drm_framebuffer_init(dev, &rfb->base, &amdgpu_fb_funcs);
->   
->   	if (ret)
->   		goto err;
+diff --git a/include/linux/cred.h b/include/linux/cred.h
+index 9ed9232af934..b2b570ba204a 100644
+--- a/include/linux/cred.h
++++ b/include/linux/cred.h
+@@ -226,12 +226,17 @@ static inline bool cap_ambient_invariant_ok(const struct cred *cred)
+  * Get a reference on the specified set of new credentials.  The caller must
+  * release the reference.
+  */
+-static inline struct cred *get_new_cred(struct cred *cred)
++static inline struct cred *get_new_cred_many(struct cred *cred, int nr)
+ {
+-	atomic_inc(&cred->usage);
++	atomic_add(nr, &cred->usage);
+ 	return cred;
+ }
+ 
++static inline struct cred *get_new_cred(struct cred *cred)
++{
++	return get_new_cred_many(cred, 1);
++}
++
+ /**
+  * get_cred - Get a reference on a set of credentials
+  * @cred: The credentials to reference
+@@ -245,14 +250,19 @@ static inline struct cred *get_new_cred(struct cred *cred)
+  * accidental alteration of a set of credentials that should be considered
+  * immutable.
+  */
+-static inline const struct cred *get_cred(const struct cred *cred)
++static inline const struct cred *get_cred_many(const struct cred *cred, int nr)
+ {
+ 	struct cred *nonconst_cred = (struct cred *) cred;
+ 	if (!cred)
+ 		return cred;
+ 	validate_creds(cred);
+ 	nonconst_cred->non_rcu = 0;
+-	return get_new_cred(nonconst_cred);
++	return get_new_cred_many(nonconst_cred, nr);
++}
++
++static inline const struct cred *get_cred(const struct cred *cred)
++{
++	return get_cred_many(cred, 1);
+ }
+ 
+ static inline const struct cred *get_cred_rcu(const struct cred *cred)
+@@ -278,17 +288,22 @@ static inline const struct cred *get_cred_rcu(const struct cred *cred)
+  * on task_struct are attached by const pointers to prevent accidental
+  * alteration of otherwise immutable credential sets.
+  */
+-static inline void put_cred(const struct cred *_cred)
++static inline void put_cred_many(const struct cred *_cred, int nr)
+ {
+ 	struct cred *cred = (struct cred *) _cred;
+ 
+ 	if (cred) {
+ 		validate_creds(cred);
+-		if (atomic_dec_and_test(&(cred)->usage))
++		if (atomic_sub_and_test(nr, &cred->usage))
+ 			__put_cred(cred);
+ 	}
+ }
+ 
++static inline void put_cred(const struct cred *cred)
++{
++	put_cred_many(cred, 1);
++}
++
+ /**
+  * current_cred - Access the current task's subjective credentials
+  *
+diff --git a/kernel/cred.c b/kernel/cred.c
+index 811ad654abd1..8a506bc7c1b8 100644
+--- a/kernel/cred.c
++++ b/kernel/cred.c
+@@ -159,23 +159,30 @@ EXPORT_SYMBOL(__put_cred);
+  */
+ void exit_creds(struct task_struct *tsk)
+ {
+-	struct cred *cred;
++	struct cred *real_cred, *cred;
+ 
+ 	kdebug("exit_creds(%u,%p,%p,{%d,%d})", tsk->pid, tsk->real_cred, tsk->cred,
+ 	       atomic_read(&tsk->cred->usage),
+ 	       read_cred_subscribers(tsk->cred));
+ 
+-	cred = (struct cred *) tsk->real_cred;
++	real_cred = (struct cred *) tsk->real_cred;
+ 	tsk->real_cred = NULL;
+-	validate_creds(cred);
+-	alter_cred_subscribers(cred, -1);
+-	put_cred(cred);
+ 
+ 	cred = (struct cred *) tsk->cred;
+ 	tsk->cred = NULL;
+-	validate_creds(cred);
+-	alter_cred_subscribers(cred, -1);
+-	put_cred(cred);
++
++	if (real_cred == cred) {
++		validate_creds(cred);
++		alter_cred_subscribers(cred, -2);
++		put_cred_many(cred, 2);
++	} else {
++		validate_creds(real_cred);
++		validate_creds(cred);
++		alter_cred_subscribers(real_cred, -1);
++		put_cred(real_cred);
++		alter_cred_subscribers(cred, -1);
++		put_cred(cred);
++	}
+ 
+ #ifdef CONFIG_KEYS_REQUEST_CACHE
+ 	key_put(tsk->cached_requested_key);
+@@ -352,8 +359,7 @@ int copy_creds(struct task_struct *p, unsigned long clone_flags)
+ #endif
+ 		clone_flags & CLONE_THREAD
+ 	    ) {
+-		p->real_cred = get_cred(p->cred);
+-		get_cred(p->cred);
++		p->real_cred = get_cred_many(p->cred, 2);
+ 		alter_cred_subscribers(p->cred, 2);
+ 		kdebug("share_creds(%p{%d,%d})",
+ 		       p->cred, atomic_read(&p->cred->usage),
+@@ -517,8 +523,7 @@ int commit_creds(struct cred *new)
+ 		proc_id_connector(task, PROC_EVENT_GID);
+ 
+ 	/* release the old obj and subj refs both */
+-	put_cred(old);
+-	put_cred(old);
++	put_cred_many(old, 2);
+ 	return 0;
+ }
+ EXPORT_SYMBOL(commit_creds);
+-- 
+2.39.2
 
