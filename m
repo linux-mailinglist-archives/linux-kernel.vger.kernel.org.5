@@ -2,136 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF0277CA57
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2445E77CA58
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 11:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236079AbjHOJXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 05:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47660 "EHLO
+        id S236114AbjHOJXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 05:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236152AbjHOJWX (ORCPT
+        with ESMTP id S236155AbjHOJWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 15 Aug 2023 05:22:23 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC9A19AF;
-        Tue, 15 Aug 2023 02:21:53 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4fe0d5f719dso8580903e87.2;
-        Tue, 15 Aug 2023 02:21:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692091311; x=1692696111;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=mty89Zsn743QA235zlInIryimxQpDYJ277HbsbXhdWg=;
-        b=m3yx0WGmf+HfuxGalGmrrQxAwumeWYg2dYkjAl9VgThDO6j8+PLy8YyX0K/uCFc7HD
-         JV/2Sb+zL4P3tMoO67fSdnfcH2FCQVT04NW+98IX+6l0SCwx4UoM4leYFvis4IlvrsuC
-         jY8hZD1kTTKesHHrV+OISKuxF34LnShdgfy6FDUH11J4dI+9KwumLlb9ya7zcbq8qar/
-         QM36P6vzlSP+Yb2z4o60A3dBSG0+lHNE3sHnS9cjDvXrKKwN/du+NDGf/wc9yeAzDSpp
-         MqP0EpF1F0LGhrG/oHjddJmm7sOMW3fSHiXsLolPCSoJNtUik3pRaTGGrRemc/LpzlJJ
-         t0iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692091311; x=1692696111;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mty89Zsn743QA235zlInIryimxQpDYJ277HbsbXhdWg=;
-        b=CDExglijKaIeM/ytlZbRn5ACTTH/cI7CI2W2l2X/pgKqwEXNo8dCXUioIXAhv5wvYu
-         l05tXB8eNxZ/raRI0lUUrNQGbk8bum6c7qNq/6vsWhuQ4ZB2Gd9mRDr7FSLPzAtJwo7p
-         +Z5j5+Pl2AGoKFnUk889mCaEJLqnnmz2NSYXQvd2jTKV/mnH0ZdlQEA5JfjAsx0D6m8s
-         avFwIlqVW+K03stgiIeqjWvmOLmHaNtlM7or0tkblIBFN0lyqLcqN/0Je3a6RVIayX3Z
-         atySHa6nrsg0FnpVgMZ2QFps9q3F4wEHTrDKIO95sYs83AD85K95FfFoiN2FmYe5+4hW
-         Hc4w==
-X-Gm-Message-State: AOJu0YyH6mF7l7HGMG53y6izJcom2IBFPbZ0RB3H4t5GuIeQ3zrhC2F3
-        MA4NKdR1KGLMQPQkYaNemhs4tyNYnBwVBgSU
-X-Google-Smtp-Source: AGHT+IHqwcMfn+ov/HY3PvEe3qzwNYh+mZoAO2ekpyvjQAAlCFVl4ozDxPwwO9IbXdqt1b/CTvWU6w==
-X-Received: by 2002:a05:6512:4004:b0:4fd:fef7:95a1 with SMTP id br4-20020a056512400400b004fdfef795a1mr9543796lfb.53.1692091311136;
-        Tue, 15 Aug 2023 02:21:51 -0700 (PDT)
-Received: from DESKTOP-BUQC5RC.localdomain ([178.155.5.98])
-        by smtp.gmail.com with ESMTPSA id a5-20020a19f805000000b004fb9536bc99sm2353569lff.169.2023.08.15.02.21.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 02:21:50 -0700 (PDT)
-From:   Alexander Danilenko <al.b.danilenko@gmail.com>
-To:     Laxman Dewangan <ldewangan@nvidia.com>
-Cc:     Alexander Danilenko <al.b.danilenko@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mason Zhang <Mason.Zhang@mediatek.com>,
-        linux-spi@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: [PATCH] spi: tegra114: Remove unnecessary NULL-pointer checks
-Date:   Tue, 15 Aug 2023 12:20:58 +0300
-Message-Id: <20230815092058.4083-1-al.b.danilenko@gmail.com>
-X-Mailer: git-send-email 2.34.1
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 83B9F198D;
+        Tue, 15 Aug 2023 02:21:46 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8AxXOqpQ9tk+bQYAA--.23671S3;
+        Tue, 15 Aug 2023 17:21:45 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxxsyYQ9tkLw1bAA--.4228S3;
+        Tue, 15 Aug 2023 17:21:45 +0800 (CST)
+Message-ID: <88f22101-f15b-f8f3-23b7-e7514031e367@loongson.cn>
+Date:   Tue, 15 Aug 2023 17:21:28 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] Mips: loongson3_defconfig: Enable ast drm driver by
+ default
+Content-Language: en-US
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230803091637.971924-1-suijingfeng@loongson.cn>
+ <ZNs3ZwYH5N/uumJP@alpha.franken.de>
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <ZNs3ZwYH5N/uumJP@alpha.franken.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8BxxsyYQ9tkLw1bAA--.4228S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj9xXoWrurWUCr1xKr1UArW7AFy8Xrc_yoWkWwc_tF
+        9Fka48Cr4FyrWIg397X395CrWY9a4UA3WfAFnrXryfXw1Fyr43Xw1kAr98G3W5W34DKFZ3
+        Z3y8AF97CF1SqosvyTuYvTs0mTUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUj1kv1TuYvT
+        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+        cSsGvfJTRUUUbakYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE
+        14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1c
+        AE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E
+        14v26r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4
+        CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1x
+        MIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF
+        4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnI
+        WIevJa73UjIFyTuYvjxU7_MaUUUUU
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cs_setup, cs_hold and cs_inactive points to fields of spi_device struct,
-so there is no sense in checking them for NULL.
+Hi,
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
-
-Fixes: 04e6bb0d6bb1 ("spi: modify set_cs_timing parameter")
-Signed-off-by: Alexander Danilenko <al.b.danilenko@gmail.com>
----
- drivers/spi/spi-tegra114.c | 18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/spi/spi-tegra114.c b/drivers/spi/spi-tegra114.c
-index 488df681eaef..2226d77a5d20 100644
---- a/drivers/spi/spi-tegra114.c
-+++ b/drivers/spi/spi-tegra114.c
-@@ -723,27 +723,23 @@ static int tegra_spi_set_hw_cs_timing(struct spi_device *spi)
- 	struct spi_delay *setup = &spi->cs_setup;
- 	struct spi_delay *hold = &spi->cs_hold;
- 	struct spi_delay *inactive = &spi->cs_inactive;
--	u8 setup_dly, hold_dly, inactive_dly;
-+	u8 setup_dly, hold_dly;
- 	u32 setup_hold;
- 	u32 spi_cs_timing;
- 	u32 inactive_cycles;
- 	u8 cs_state;
- 
--	if ((setup && setup->unit != SPI_DELAY_UNIT_SCK) ||
--	    (hold && hold->unit != SPI_DELAY_UNIT_SCK) ||
--	    (inactive && inactive->unit != SPI_DELAY_UNIT_SCK)) {
-+	if (setup->unit != SPI_DELAY_UNIT_SCK ||
-+	    hold->unit != SPI_DELAY_UNIT_SCK ||
-+	    inactive->unit != SPI_DELAY_UNIT_SCK) {
- 		dev_err(&spi->dev,
- 			"Invalid delay unit %d, should be SPI_DELAY_UNIT_SCK\n",
- 			SPI_DELAY_UNIT_SCK);
- 		return -EINVAL;
- 	}
- 
--	setup_dly = setup ? setup->value : 0;
--	hold_dly = hold ? hold->value : 0;
--	inactive_dly = inactive ? inactive->value : 0;
--
--	setup_dly = min_t(u8, setup_dly, MAX_SETUP_HOLD_CYCLES);
--	hold_dly = min_t(u8, hold_dly, MAX_SETUP_HOLD_CYCLES);
-+	setup_dly = min_t(u8, setup->value, MAX_SETUP_HOLD_CYCLES);
-+	hold_dly = min_t(u8, hold->value, MAX_SETUP_HOLD_CYCLES);
- 	if (setup_dly && hold_dly) {
- 		setup_hold = SPI_SETUP_HOLD(setup_dly - 1, hold_dly - 1);
- 		spi_cs_timing = SPI_CS_SETUP_HOLD(tspi->spi_cs_timing1,
-@@ -755,7 +751,7 @@ static int tegra_spi_set_hw_cs_timing(struct spi_device *spi)
- 		}
- 	}
- 
--	inactive_cycles = min_t(u8, inactive_dly, MAX_INACTIVE_CYCLES);
-+	inactive_cycles = min_t(u8, inactive->value, MAX_INACTIVE_CYCLES);
- 	if (inactive_cycles)
- 		inactive_cycles--;
- 	cs_state = inactive_cycles ? 0 : 1;
--- 
-2.34.1
+On 2023/8/15 16:29, Thomas Bogendoerfer wrote:
+> On Thu, Aug 03, 2023 at 05:16:37PM +0800, Sui Jingfeng wrote:
+>> ASpeed GPU is typically found on the Loongson server platform, as a
+>> peripheral device driver, it generally should be compiled as a module.
+>>
+>> Tested on loongson 3B4000 server[1].
+>>
+>> [1] https://github.com/loongson-gfx/loongson_boards/tree/main/ls3b4000x2_server
+>>
+>> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+>> ---
+>>   arch/mips/configs/loongson3_defconfig | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
+>> index 3087e64e6ebe..a9fadea72da5 100644
+>> --- a/arch/mips/configs/loongson3_defconfig
+>> +++ b/arch/mips/configs/loongson3_defconfig
+>> @@ -283,6 +283,7 @@ CONFIG_DRM_AMDGPU_USERPTR=y
+>>   CONFIG_DRM_AMD_ACP=y
+>>   CONFIG_DRM_AMD_DC=y
+>>   CONFIG_DRM_AMD_DC_SI=y
+>> +CONFIG_DRM_AST=m
+>>   CONFIG_DRM_RADEON=m
+>>   CONFIG_DRM_QXL=y
+>>   CONFIG_DRM_VIRTIO_GPU=y
+>> -- 
+>> 2.34.1
+>>
+> applied to mips-next.
+>
+> Thomas.
+Thanks a lot.
 
