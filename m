@@ -2,124 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 456D177CD33
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 15:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CA577CD39
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 15:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237404AbjHONOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 09:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55772 "EHLO
+        id S237422AbjHONQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 09:16:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237406AbjHONOp (ORCPT
+        with ESMTP id S237407AbjHONPy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 09:14:45 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8480F1999
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 06:14:44 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RQBXf1NYRzrShH;
-        Tue, 15 Aug 2023 21:13:22 +0800 (CST)
-Received: from [10.67.102.169] (10.67.102.169) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 15 Aug 2023 21:14:41 +0800
-CC:     <yangyicong@hisilicon.com>, <hejunhao3@huawei.com>,
-        <prime.zeng@hisilicon.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: Re: [PATCH v2] drivers/perf: hisi: Schedule perf session according to
- locality
-To:     <jonathan.cameron@huawei.com>, <will@kernel.org>,
-        <mark.rutland@arm.com>
-References: <20230815130613.535-1-yangyicong@huawei.com>
-From:   Yicong Yang <yangyicong@huawei.com>
-Message-ID: <2eb98cd6-21a1-8e2c-ddf4-41dad5f2a2cb@huawei.com>
-Date:   Tue, 15 Aug 2023 21:14:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Tue, 15 Aug 2023 09:15:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D631987;
+        Tue, 15 Aug 2023 06:15:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BFDFE64B6F;
+        Tue, 15 Aug 2023 13:15:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D60FEC433C8;
+        Tue, 15 Aug 2023 13:15:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692105352;
+        bh=6FTVwttGp7chwo11oWnhEZ9wZckkKOHug2miCE397ao=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PbI0HlXQewxzvJ6YTJQuikwBHTi36gjuGbWFdSTFVusa8Ef6yDdYddu+OBeo69n0A
+         ACq0jUo9Ql6ZDSYQL3DTFKZHW3+6hfz5PMv7KiR7Nmlm0PGWIYBIMEITJshC08f9Up
+         zYWn9LTS5LdGdzcDVZfKYCNnlPQNZr9WmSGfJU+AD09U6QI9SkWNGdRJoImUmthQxX
+         hkLC0zEmjdp1+GR3hlErUaAaSmDp5nrS0oBljKRzG6G/KzLrDSkQkDxnFt79+szoLu
+         cVz/rq2K/PFOIwEHH+pAbi72ziZdkfvEohKcRkfJ745cs6cf06NdEk9LlCE0HKsp7B
+         a29yV1t20pyZg==
+Date:   Tue, 15 Aug 2023 14:15:46 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Drew Fustini <dfustini@baylibre.com>
+Cc:     Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Fu Wei <wefu@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH v3 0/2] riscv: Add BeagleV Ahead board support
+Message-ID: <20230815-aroma-graveyard-f1fcc61e5030@spud>
+References: <20230811-ahead-dt-v3-v1-0-aef2294bed86@baylibre.com>
 MIME-Version: 1.0
-In-Reply-To: <20230815130613.535-1-yangyicong@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.169]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="gZHHsx5XRZBY8TJZ"
+Content-Disposition: inline
+In-Reply-To: <20230811-ahead-dt-v3-v1-0-aef2294bed86@baylibre.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Please ignore this due to the wrong format of the changelog. Has resend. Sorry for the noise.
+--gZHHsx5XRZBY8TJZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 2023/8/15 21:06, Yicong Yang wrote:
-> From: Yicong Yang <yangyicong@hisilicon.com>
-> 
-> The PCIe PMUs locate on different NUMA node but currently we don't
-> consider it and likely stack all the sessions on the same CPU:
-> 
-> [root@localhost tmp]# cat /sys/devices/hisi_pcie*/cpumask
-> 0
-> 0
-> 0
-> 0
-> 0
-> 0
-> 
-> This can be optimize a bit to use a local CPU for the PMU.
-> 
-> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
-> Change since v2:
-> - Make interrupt affinity consistent with CPU in online handler
-> Link: https://lore.kernel.org/all/20230808125147.2080-1-yangyicong@huawei.com/
-> 
+Hey Jisheng,
+
+On Fri, Aug 11, 2023 at 05:47:15PM -0700, Drew Fustini wrote:
+> The BeagleV Ahead single board computer [1] features the T-Head TH1520
+> SoC. Similar to the Lichee Pi 4A series from Jisheng [2], this adds a
+> minimal device tree file to support booting to a basic shell [3].
+
+Am I supposed to take this, or will you? I still don't know where I
+stand with any of this and will default to assuming things are for me
+to take in the absence of clarity.
+
+Thanks,
+Conor.
+
+>=20
+> Changes since v2:
+> - Drop the MAINTAINERS patch as it is not important and I want this
+>   patch series to make it into the next PR
+> - Add Conor's R-b
+>=20
+> Changes since v1:
+> - Add dual license to dts file as Conor noted this is typical
+> - Reorder new entry in thead.yaml to maintain alphabetical order per
+>   suggestion by Krzysztof
+> - Add A-b's and R-b's from v1
+>=20
+> [1] https://beagleboard.org/beaglev-ahead
+> [2] https://lore.kernel.org/linux-riscv/20230617161529.2092-1-jszhang@ker=
+nel.org/
+> [3] https://gist.github.com/pdp7/91b98f5b8a632802e669d8c359f4f498
+>=20
+> To: Jisheng Zhang <jszhang@kernel.org>
+> To: Guo Ren <guoren@kernel.org>
+> To: Fu Wei <wefu@redhat.com>
+> To: Rob Herring <robh+dt@kernel.org>
+> To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+> To: Conor Dooley <conor+dt@kernel.org>
+> To: Paul Walmsley <paul.walmsley@sifive.com>
+> To: Palmer Dabbelt <palmer@dabbelt.com>
+> To: Albert Ou <aou@eecs.berkeley.edu>
+> To: Conor Dooley <conor@kernel.org>
+> Cc: linux-riscv@lists.infradead.org
+> Cc: devicetree@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: Robert Nelson <robertcnelson@beagleboard.org>
+> Cc: Jason Kridner <jkridner@beagleboard.org>
+>=20
+> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
 > ---
->  drivers/perf/hisilicon/hisi_pcie_pmu.c | 17 +++++++++++++----
->  1 file changed, 13 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/perf/hisilicon/hisi_pcie_pmu.c b/drivers/perf/hisilicon/hisi_pcie_pmu.c
-> index e10fc7cb9493..5a00adb2de8c 100644
-> --- a/drivers/perf/hisilicon/hisi_pcie_pmu.c
-> +++ b/drivers/perf/hisilicon/hisi_pcie_pmu.c
-> @@ -665,8 +665,8 @@ static int hisi_pcie_pmu_online_cpu(unsigned int cpu, struct hlist_node *node)
->  	struct hisi_pcie_pmu *pcie_pmu = hlist_entry_safe(node, struct hisi_pcie_pmu, node);
->  
->  	if (pcie_pmu->on_cpu == -1) {
-> -		pcie_pmu->on_cpu = cpu;
-> -		WARN_ON(irq_set_affinity(pcie_pmu->irq, cpumask_of(cpu)));
-> +		pcie_pmu->on_cpu = cpumask_local_spread(0, dev_to_node(&pcie_pmu->pdev->dev));
-> +		WARN_ON(irq_set_affinity(pcie_pmu->irq, cpumask_of(pcie_pmu->on_cpu)));
->  	}
->  
->  	return 0;
-> @@ -676,14 +676,23 @@ static int hisi_pcie_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
->  {
->  	struct hisi_pcie_pmu *pcie_pmu = hlist_entry_safe(node, struct hisi_pcie_pmu, node);
->  	unsigned int target;
-> +	cpumask_t mask;
-> +	int numa_node;
->  
->  	/* Nothing to do if this CPU doesn't own the PMU */
->  	if (pcie_pmu->on_cpu != cpu)
->  		return 0;
->  
->  	pcie_pmu->on_cpu = -1;
-> -	/* Choose a new CPU from all online cpus. */
-> -	target = cpumask_any_but(cpu_online_mask, cpu);
-> +
-> +	/* Choose a local CPU from all online cpus. */
-> +	numa_node = dev_to_node(&pcie_pmu->pdev->dev);
-> +	if (cpumask_and(&mask, cpumask_of_node(numa_node), cpu_online_mask) &&
-> +	    cpumask_andnot(&mask, &mask, cpumask_of(cpu)))
-> +		target = cpumask_any(&mask);
-> +	else
-> +		target = cpumask_any_but(cpu_online_mask, cpu);
-> +
->  	if (target >= nr_cpu_ids) {
->  		pci_err(pcie_pmu->pdev, "There is no CPU to set\n");
->  		return 0;
-> 
+> Drew Fustini (2):
+>       dt-bindings: riscv: Add BeagleV Ahead board compatibles
+>       riscv: dts: thead: add BeagleV Ahead board device tree
+>=20
+>  Documentation/devicetree/bindings/riscv/thead.yaml |  4 ++
+>  arch/riscv/boot/dts/thead/Makefile                 |  2 +-
+>  arch/riscv/boot/dts/thead/th1520-beaglev-ahead.dts | 61 ++++++++++++++++=
+++++++
+>  3 files changed, 66 insertions(+), 1 deletion(-)
+> ---
+> base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
+> change-id: 20230811-ahead-dt-v3-1d7e85fce20f
+>=20
+> Best regards,
+> --=20
+> Drew Fustini <dfustini@baylibre.com>
+>=20
+
+--gZHHsx5XRZBY8TJZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNt6ggAKCRB4tDGHoIJi
+0iJzAQDJ+f5M3D8HQ7Py0wvo08R6+GUN8qw1shNg6Qg89SJ+2AD/UK4zthaeE8OO
+XrUhvFuiqFQV6Lk40KCdbMc+d3ZQNQg=
+=JfDz
+-----END PGP SIGNATURE-----
+
+--gZHHsx5XRZBY8TJZ--
