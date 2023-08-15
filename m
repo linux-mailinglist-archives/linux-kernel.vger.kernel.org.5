@@ -2,219 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E3B77D696
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 01:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5329277D699
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 01:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240578AbjHOXT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 19:19:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
+        id S240582AbjHOXUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 19:20:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240592AbjHOXTS (ORCPT
+        with ESMTP id S240642AbjHOXUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 19:19:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C1F010C3;
-        Tue, 15 Aug 2023 16:19:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692141557; x=1723677557;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jDk2PL7s6hbeKzM5yWZ5eP5NxRPS1Vb13QdP3E5ftMg=;
-  b=lXRFBNWltaKxRZMTXdUrzi/rYQpkDNWpVnn/FA1YTNgCp9sbklwuPtGm
-   TQdigrzowCGZgCy4aMryPaJnqLASzWerZoKcCoV2U9+hDFVngllDzv/LQ
-   ee8umAQZ1eWOnVSAmyFbDyCxqmNskNHYmku1GZltT8dMWmF0X8OPyhlpj
-   okz9z/vYxQDEEsb0OsKyMlq97ut0ogAy60TzFtQe7wYutMk96SvgzchLV
-   XANOYvC4lAIMvONhc346TtfIfx9T9xvS2RkZ9JDZnP+4OYPzTEGHKPJMD
-   yJksGHkfQLC4/fhd3KsfhNcEjsyGKnJzg3Fy0/+N9fjK+TUJcWr7/zxoT
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="375169822"
-X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
-   d="scan'208";a="375169822"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 16:19:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="727537783"
-X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
-   d="scan'208";a="727537783"
-Received: from lkp-server02.sh.intel.com (HELO b5fb8d9e1ffc) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 15 Aug 2023 16:19:13 -0700
-Received: from kbuild by b5fb8d9e1ffc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qW3Jd-0001JX-1O;
-        Tue, 15 Aug 2023 23:19:10 +0000
-Date:   Wed, 16 Aug 2023 07:18:53 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH-cgroup v6 1/6] cgroup/cpuset: Add
- cpuset.cpus.exclusive.effective for v2
-Message-ID: <202308160752.IWyhJoln-lkp@intel.com>
-References: <20230815153027.633355-2-longman@redhat.com>
+        Tue, 15 Aug 2023 19:20:25 -0400
+Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD2010E5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 16:20:19 -0700 (PDT)
+Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1c4d7103ef5so1725106fac.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 16:20:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692141618; x=1692746418;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gnXLzx0iQ/sj9AmoAPnFxr/K+kcyclH54zvX67Dv5kE=;
+        b=dgIPeGyE1ILNZfd6fhNhorDJkfkfMZjRyAg2oH6NPZblTVNt8MGQ1olI1uyymMFTPp
+         z9yBZCyPaKhODPGbfdxnJ6o7pi9JQHs029nURejNPE9+uXMhGssEKOF+gYt2e4L2UGmV
+         nG2K/nti1Pd+cgdukbtRV0v1DIXvsVYDCRRKOcSJqCzbe632um43Qycpe59N+wad3f2g
+         7fBSJ5IOxC3CKCKf+0NNYsPGBaiYw+OrWrkYSTu/72EJZRuTtGuKNMufH5VzJh7SL/Om
+         0nUNyHN8zXTyf8mHplM++FeSWtDDYQ4FPRdvAn4sewSvXVmAuq+1BQ4dMSWQxAsLDZc8
+         lwZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692141618; x=1692746418;
+        h=content-transfer-encoding:to:subject:message-id:date:from:sender
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gnXLzx0iQ/sj9AmoAPnFxr/K+kcyclH54zvX67Dv5kE=;
+        b=TyYUHnhIh9rmVC4me9DIfPJpL6pFJRAJWZWZheEh+wCyKSkWQ8hOGMvN0H8Xd7vcrq
+         KKmrd3KwbGBk6wl1LXDLCYCSboQ0ocxNXjHkCGC95ZYqPTYDkICLb5qYWRssAHHY2QkJ
+         gQ2inQX1NuA5YttZ7wyUTzBjm8/jDrNqJyT26ZcR8j3t622vHWU4rzJpUygmWyWTgoJh
+         +1lkK/BRITmwFngH0+oWtmMD/hXHeb5RCQQjooLboUjqcsc/EZzlADlW00hMpMffPpYX
+         /Nn6J2LmfstTeIkO6/xNrZamSaSA1XzVnPtEEgDYqE7z91eJEypIIKgmTGCW8ru5+7Ke
+         m4Pw==
+X-Gm-Message-State: AOJu0Yx5Nz0TrM7UeN8ZVT3CE4H+qugDdkRBryOP0nCeVWR2zbKef+oL
+        5rDcuCuP9HPUZw3rZdEctM5TO5oVgLTkYp0raw==
+X-Google-Smtp-Source: AGHT+IFU0W48TKDKygi/KY4OUabfsL2PomTI1qKiQbrGnsCnUDpTE5b1SIE7yr/czH/mLoJwdXfQ50vkrUiHRWjZoxo=
+X-Received: by 2002:a05:6870:8a12:b0:1b0:24d0:5554 with SMTP id
+ p18-20020a0568708a1200b001b024d05554mr2425319oaq.11.1692141618715; Tue, 15
+ Aug 2023 16:20:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230815153027.633355-2-longman@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Sender: hannahdavidwilson1245@gmail.com
+Received: by 2002:a05:6359:5d1b:b0:135:187f:3f4b with HTTP; Tue, 15 Aug 2023
+ 16:20:18 -0700 (PDT)
+From:   Hannah David <hannahdavid147@gmail.com>
+Date:   Tue, 15 Aug 2023 15:20:18 -0800
+X-Google-Sender-Auth: 6LWigP_E54r_hPyXEAjcC1mJ56w
+Message-ID: <CAK3VGYd=93cM-f+ygRGC0DTyknbfYV_atCy6ovP7UMj3WBuxoQ@mail.gmail.com>
+Subject: Peace of the Lord be with you,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=6.7 required=5.0 tests=ADVANCE_FEE_5_NEW_MONEY,
+        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,LOTS_OF_MONEY,MONEY_FRAUD_8,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNDISC_MONEY autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [2001:4860:4864:20:0:0:0:2b listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [hannahdavidwilson1245[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [hannahdavid147[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  0.0 MONEY_FRAUD_8 Lots of money and very many fraud phrases
+        *  3.0 ADVANCE_FEE_5_NEW_MONEY Advance Fee fraud and lots of money
+        *  2.8 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Waiman,
+Greetings my dear.
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on next-20230815]
-[cannot apply to tj-cgroup/for-next v6.5-rc6 v6.5-rc5 v6.5-rc4 linus/master v6.5-rc6]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Waiman-Long/cgroup-cpuset-Add-cpuset-cpus-exclusive-effective-for-v2/20230815-233522
-base:   next-20230815
-patch link:    https://lore.kernel.org/r/20230815153027.633355-2-longman%40redhat.com
-patch subject: [PATCH-cgroup v6 1/6] cgroup/cpuset: Add cpuset.cpus.exclusive.effective for v2
-config: parisc64-defconfig (https://download.01.org/0day-ci/archive/20230816/202308160752.IWyhJoln-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230816/202308160752.IWyhJoln-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308160752.IWyhJoln-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   kernel/cgroup/cpuset.c: In function 'update_prstate':
->> kernel/cgroup/cpuset.c:2468:30: warning: the comparison will always evaluate as 'true' for the address of 'effective_xcpus' will never be NULL [-Waddress]
-    2468 |         if ((new_prs > 0) && !cs->effective_xcpus) {
-         |                              ^
-   kernel/cgroup/cpuset.c:135:23: note: 'effective_xcpus' declared here
-     135 |         cpumask_var_t effective_xcpus;
-         |                       ^~~~~~~~~~~~~~~
-
-
-vim +2468 kernel/cgroup/cpuset.c
-
-  2435	
-  2436	/**
-  2437	 * update_prstate - update partition_root_state
-  2438	 * @cs: the cpuset to update
-  2439	 * @new_prs: new partition root state
-  2440	 * Return: 0 if successful, != 0 if error
-  2441	 *
-  2442	 * Call with cpuset_mutex held.
-  2443	 */
-  2444	static int update_prstate(struct cpuset *cs, int new_prs)
-  2445	{
-  2446		int err = PERR_NONE, old_prs = cs->partition_root_state;
-  2447		struct tmpmasks tmpmask;
-  2448	
-  2449		if (old_prs == new_prs)
-  2450			return 0;
-  2451	
-  2452		/*
-  2453		 * For a previously invalid partition root, leave it at being
-  2454		 * invalid if new_prs is not "member".
-  2455		 */
-  2456		if (new_prs && is_prs_invalid(old_prs)) {
-  2457			cs->partition_root_state = -new_prs;
-  2458			return 0;
-  2459		}
-  2460	
-  2461		if (alloc_cpumasks(NULL, &tmpmask))
-  2462			return -ENOMEM;
-  2463	
-  2464		/*
-  2465		 * Setup effective_xcpus if not set yet, it will be cleared later
-  2466		 * if partition becomes invalid.
-  2467		 */
-> 2468		if ((new_prs > 0) && !cs->effective_xcpus) {
-  2469			struct cpuset *parent = parent_cs(cs);
-  2470	
-  2471			spin_lock_irq(&callback_lock);
-  2472			cpumask_and(cs->effective_xcpus,
-  2473				    cs->cpus_allowed, parent->effective_xcpus);
-  2474			spin_unlock_irq(&callback_lock);
-  2475		}
-  2476	
-  2477		err = update_partition_exclusive(cs, new_prs);
-  2478		if (err)
-  2479			goto out;
-  2480	
-  2481		if (!old_prs) {
-  2482			/*
-  2483			 * cpus_allowed cannot be empty.
-  2484			 */
-  2485			if (cpumask_empty(cs->cpus_allowed)) {
-  2486				err = PERR_CPUSEMPTY;
-  2487				goto out;
-  2488			}
-  2489	
-  2490			err = update_parent_effective_cpumask(cs, partcmd_enable,
-  2491							      NULL, &tmpmask);
-  2492		} else if (old_prs && new_prs) {
-  2493			/*
-  2494			 * A change in load balance state only, no change in cpumasks.
-  2495			 */
-  2496			;
-  2497		} else {
-  2498			/*
-  2499			 * Switching back to member is always allowed even if it
-  2500			 * disables child partitions.
-  2501			 */
-  2502			update_parent_effective_cpumask(cs, partcmd_disable, NULL,
-  2503							&tmpmask);
-  2504	
-  2505			/*
-  2506			 * Invalidation of child partitions will be done in
-  2507			 * update_cpumasks_hier().
-  2508			 */
-  2509		}
-  2510	out:
-  2511		/*
-  2512		 * Make partition invalid & disable CS_CPU_EXCLUSIVE if an error
-  2513		 * happens.
-  2514		 */
-  2515		if (err) {
-  2516			new_prs = -new_prs;
-  2517			update_partition_exclusive(cs, new_prs);
-  2518		}
-  2519	
-  2520		spin_lock_irq(&callback_lock);
-  2521		cs->partition_root_state = new_prs;
-  2522		WRITE_ONCE(cs->prs_err, err);
-  2523		if (!is_partition_valid(cs))
-  2524			cpumask_clear(cs->effective_xcpus);
-  2525		spin_unlock_irq(&callback_lock);
-  2526	
-  2527		/* Force update if switching back to member */
-  2528		update_cpumasks_hier(cs, &tmpmask, !new_prs ? HIER_CHECKALL : 0);
-  2529	
-  2530		/* Update sched domains and load balance flag */
-  2531		update_partition_sd_lb(cs, old_prs);
-  2532	
-  2533		notify_partition_change(cs, old_prs);
-  2534		free_cpumasks(NULL, &tmpmask);
-  2535		return 0;
-  2536	}
-  2537	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Please do not feel disturbed for contacting =C2=A0you in this regards, It
+was based on the critical health condition I find mine self. =C2=A0My names
+ are Mrs.Wilson Hannah David, a widow and I=E2=80=99m suffering from brain
+tumor disease and this illness has gotten to a very bad stage, I
+ married my husband for Ten years without any family members and no
+child. =C2=A0My husband died after a brief illness that lasted for few
+days.
+Since the death of my husband, I decided not to remarry again, When my
+late husband was alive he deposited the sum of =C2=A0($12.000.000.dollar)
+with the Bank. Presently this money is still in bank. And My  Doctor
+told me that I don't have much time to live because my illness has
+gotten to a very bad stage, Having known my condition I  decided to
+entrust over the deposited fund under your custody to take care of the
+less-privileged ones therein your country or position,
+which i believe that you will utilize this money the way I am going to
+instruct herein.
+However all I need and required from you is your sincerity and ability
+to carry out the transaction successfully and fulfill my final wish in
+implementing the charitable project as it requires absolute trust and
+devotion without any failure and I will be glad to see that the bank
+finally release and transfer the fund into your bank account in your
+country even before I die here in the hospital, because my present
+health condition is very critical at the moment everything needs to be
+process rapidly as soon as possible.
+It will be my pleasure to compensate you as my Investment
+Manager/Partner with 35 % percent of the total fund for your effort in
+ handling the transaction, 5 % percent for any expenses or processing
+charges fee that will involve during this process while 60% of the
+fund will be Invested into the charity project there in your country
+for the mutual benefit of the orphans and the less privileges ones.
+Meanwhile I am waiting for your prompt respond, if only you are
+interested for further details of the transaction and execution of
+this  humanitarian project for the glory and honor of God the merciful
+compassionate.
+May God bless you and your family.
+Regards,
+Mrs.Wilson Hannah David.
+written from Hospital.
