@@ -2,109 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E277477D185
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE7777D187
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 20:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238222AbjHOSJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 14:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36940 "EHLO
+        id S238400AbjHOSJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 14:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238150AbjHOSJP (ORCPT
+        with ESMTP id S238150AbjHOSJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 14:09:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABF2106
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 11:09:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 33A146548E
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 18:09:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F0BDC433C8;
-        Tue, 15 Aug 2023 18:09:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692122953;
-        bh=Dwt2P3n6A9/tnC8wtKE1Ytw/tSXcGuR/aA4YHtP5ODA=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=MIoKTvSAb7bTlfsdn27WdD/DTNXriEamdH2ALNvemFqyCjWZSPiNUnxx8Ayg5MmNi
-         i19Y9b5JvDAxoG0xdsESY1AwN2+y3LrVHQw9Dhv3n9+r0tWlU9oUiC4is7RH4ODjMm
-         Rcb1XALpvM3YxX4l3sUECGMhxOkI5rPC3raDoMSB2E280jDOsK1yYoN39hAa6FSfWg
-         PGRllGia1ST/r2RrLkYBVT2esq2b6Ky3gjhVNR7mZ1Bwadsg9ktAR3YJbd9I9pKQOI
-         fqML16piMQ2WikNCSkrSSZFQpbbf6k1WHVIMkFIM8XUuPwzC97AXPJjRlkt2nfSHpx
-         W0B0R4XsIgQ/w==
-From:   Mark Brown <broonie@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Akihiko Odaki <akihiko.odaki@gmail.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        ye xingchen <ye.xingchen@zte.com.cn>,
-        "balamurugan . c" <balamurugan.c@intel.com>,
-        Libin Yang <libin.yang@intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        David Lin <CTLIN0@nuvoton.com>, Brent Lu <brent.lu@intel.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Terry Cheong <htcheong@chromium.org>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Gongjun Song <gongjun.song@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, apoorv <apoorv@intel.com>,
-        alsa-devel@alsa-project.org
-In-Reply-To: <20230804085648.3721416-1-ajye_huang@compal.corp-partner.google.com>
-References: <20230804085648.3721416-1-ajye_huang@compal.corp-partner.google.com>
-Subject: Re: [PATCH v1] ASoC: Intel: Add rpl_nau8318_8825 driver
-Message-Id: <169212294815.59295.2130257990585943471.b4-ty@kernel.org>
-Date:   Tue, 15 Aug 2023 19:09:08 +0100
+        Tue, 15 Aug 2023 14:09:23 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 424AA106;
+        Tue, 15 Aug 2023 11:09:22 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-349a1cf0ae2so20195865ab.0;
+        Tue, 15 Aug 2023 11:09:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692122961; x=1692727761;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BUTkeUiSYRZcU5Me9frBPWYrk1Agc7yrnJKvjQH2y5Q=;
+        b=Zb+6EOo/4l+LM3Rgdm5UnqxiYtIKLc4eLXK0xtkAfRymYk+ayEIMX2a4iFza6uZ6bO
+         vJN08JYjKNO/3sObQjkcgaqrfYLJy1Q0ql3b5aUoZpOm79Yox3mKopZ4FAQVQbyGwwMv
+         /ZqiylRBt7Ei09ppRWQFP5jeirjV7pbwjK4n9aHc8tMR6keCKVWFg2xVDWPXu8aOByr1
+         aPPmjTZyiIBKgIWyP/KnjJpNkLOmtKIuOwFNAU2keqoc/xGemIJ7qpxifExdEtE6omE8
+         wn5NTBnsYgglIudV7tazHlfaJnshUCITxp0VxlZLx4kHcd1ta6ecv9z7Qz0avqcQQ2fG
+         DIrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692122961; x=1692727761;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BUTkeUiSYRZcU5Me9frBPWYrk1Agc7yrnJKvjQH2y5Q=;
+        b=A4QooDzcR6MhotUtPXzEfIugom0nLrDO6JgDLqWerCGuNKpluTbDXaNHulazEwxRrB
+         ++nWovMtyWZuzJh3C75j5pnP7xHwmJXZinEU+MY3dSjpF7Xz1rTmyKoQDJoldF0mn+FC
+         vc0jxGhCZJDhujOUMWjdpvDN5jAzeRncrTDShgw7FlCCs4m+7m5k7APpejUzckExKYNy
+         psK6oYDYCweGc1iDBKIjGFp71kf3zR6L9pPFief55LFe+M3dUG8u3c4IGf41MzJM+Zhc
+         zN5ps4aiL0h3UOfYOP6nGUl3uCOoAvAIefw7q8UaEwCOXUD2c5PNGDK6CMpORyd7nDxz
+         eGhg==
+X-Gm-Message-State: AOJu0YwTxFNkykqAX2n7mc3C/5q+eRtN5CGtKNPdXmPtQ/+ADwjbY628
+        SPpBp1te/0/rq2Gwq7lLO0MYp4aWtOCgLo1Ixr4=
+X-Google-Smtp-Source: AGHT+IGRTQYv7CsT8Fs4KvCqDa1g2VSZFmEY69btb4LNTnIZwsRQ6OArrN7wFiNo3ssygDBmv/toau7cbyVLZ5QITEs=
+X-Received: by 2002:a05:6e02:ecc:b0:34a:9120:d7a with SMTP id
+ i12-20020a056e020ecc00b0034a91200d7amr11414230ilk.26.1692122961590; Tue, 15
+ Aug 2023 11:09:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230815155612.2535947-1-andre.przywara@arm.com> <20230815155612.2535947-3-andre.przywara@arm.com>
+In-Reply-To: <20230815155612.2535947-3-andre.przywara@arm.com>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Tue, 15 Aug 2023 11:09:10 -0700
+Message-ID: <CAKEwX=Pr37R839NP1BQ2sO_x=fDER8KhYvcLvCNGJRZrKd9EUg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] selftests: cachestat: use proper syscall number macro
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 04 Aug 2023 16:56:48 +0800, Ajye Huang wrote:
-> Boards were using this in older kernels before adl and rpl ids were
-> split. Add this back to maintain support.
-> 
-> 
+On Tue, Aug 15, 2023 at 8:56=E2=80=AFAM Andre Przywara <andre.przywara@arm.=
+com> wrote:
+>
+> At the moment the cachestat syscall number is hard coded into the test
+> source code.
+> Remove that and replace it with the proper __NR_cachestat macro.
+> That ensures compatibility should other architectures pick a different
+> number.
+>
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> ---
+>  tools/testing/selftests/cachestat/test_cachestat.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/testing/selftests/cachestat/test_cachestat.c b/tools/t=
+esting/selftests/cachestat/test_cachestat.c
+> index 54d09b820ed4b..a5a4ac8dcb76c 100644
+> --- a/tools/testing/selftests/cachestat/test_cachestat.c
+> +++ b/tools/testing/selftests/cachestat/test_cachestat.c
+> @@ -19,7 +19,6 @@ static const char * const dev_files[] =3D {
+>         "/dev/zero", "/dev/null", "/dev/urandom",
+>         "/proc/version", "/proc"
+>  };
+> -static const int cachestat_nr =3D 451;
+>
+>  void print_cachestat(struct cachestat *cs)
+>  {
+> @@ -126,7 +125,7 @@ bool test_cachestat(const char *filename, bool write_=
+random, bool create,
+>                 }
+>         }
+>
+> -       syscall_ret =3D syscall(cachestat_nr, fd, &cs_range, &cs, 0);
+> +       syscall_ret =3D syscall(__NR_cachestat, fd, &cs_range, &cs, 0);
+>
+>         ksft_print_msg("Cachestat call returned %ld\n", syscall_ret);
+>
+> @@ -152,7 +151,7 @@ bool test_cachestat(const char *filename, bool write_=
+random, bool create,
+>                         ksft_print_msg("fsync fails.\n");
+>                         ret =3D false;
+>                 } else {
+> -                       syscall_ret =3D syscall(cachestat_nr, fd, &cs_ran=
+ge, &cs, 0);
+> +                       syscall_ret =3D syscall(__NR_cachestat, fd, &cs_r=
+ange, &cs, 0);
+>
+>                         ksft_print_msg("Cachestat call (after fsync) retu=
+rned %ld\n",
+>                                 syscall_ret);
+> @@ -213,7 +212,7 @@ bool test_cachestat_shmem(void)
+>                 goto close_fd;
+>         }
+>
+> -       syscall_ret =3D syscall(cachestat_nr, fd, &cs_range, &cs, 0);
+> +       syscall_ret =3D syscall(__NR_cachestat, fd, &cs_range, &cs, 0);
+>
+>         if (syscall_ret) {
+>                 ksft_print_msg("Cachestat returned non-zero.\n");
+> --
+> 2.25.1
+>
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: Intel: Add rpl_nau8318_8825 driver
-      commit: 273bc8bf2227108ed2851bea71786a026e34ecbb
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Oops something I forgot to fix. Thanks, Andre!
+Reviewed-by: Nhat Pham <nphamcs@gmail.com>
