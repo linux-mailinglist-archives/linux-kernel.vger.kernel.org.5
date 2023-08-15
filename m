@@ -2,106 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA67377CFB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:56:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7570D77CFB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 17:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238372AbjHOPza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 11:55:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43974 "EHLO
+        id S238379AbjHOP5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 11:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238453AbjHOPz1 (ORCPT
+        with ESMTP id S238374AbjHOP4d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 11:55:27 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC59A6;
-        Tue, 15 Aug 2023 08:55:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692114926; x=1723650926;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xjBcL6FBcGapG9UkcvFfq8o8+YiISNlkILWmTkEJaHc=;
-  b=OZ+Ei9I3CO53ZUjV2lDG4uOZZoo+KktOUlhbmRYA8rZsw9V5kd208Any
-   cQJSdfSYBHBMCnd9jKDE8ro7HexGL6+aeUDshsocJbgXe9HeQpJrCChRW
-   p7kXJjCn+RblcDYiBZQmdm9LBemjwg5dUMYVmFcPilftxXQAw6lNQSC7p
-   3GPEdY/zILuersnKqH8lorBjWhRwa5dl7wmarh4TaKRVViEw0a/tu7Q/T
-   MKjeDCJoF3vWe6j5GJ2cwATLKqEagSCGFWg6Isvjrgjob58AEaIMOyM35
-   yTIAG7LEclrlUTBAkqVv7dDv1fX6u8n8erxHoI/ZYOpkOlQCAf2NFSf5b
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="436203440"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="436203440"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 08:55:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="763304122"
-X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
-   d="scan'208";a="763304122"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga008.jf.intel.com with ESMTP; 15 Aug 2023 08:55:23 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qVwO9-008EDA-33;
-        Tue, 15 Aug 2023 18:55:21 +0300
-Date:   Tue, 15 Aug 2023 18:55:21 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Wolfram Sang <wsa@kernel.org>, Andi Shyti <andi.shyti@kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Peter Rosin <peda@axentia.se>, linux-i2c@vger.kernel.org,
+        Tue, 15 Aug 2023 11:56:33 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 38E15172A;
+        Tue, 15 Aug 2023 08:56:30 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 231801063;
+        Tue, 15 Aug 2023 08:57:12 -0700 (PDT)
+Received: from donnerap.arm.com (donnerap.manchester.arm.com [10.32.100.58])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C6E533F6C4;
+        Tue, 15 Aug 2023 08:56:28 -0700 (PDT)
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Shuah Khan <shuah@kernel.org>, Nhat Pham <nphamcs@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 1/4] i2c: start migrating to a pointer in
- i2c_device_id
-Message-ID: <ZNuf6UpcyVGjxZ2F@smile.fi.intel.com>
-References: <20230814-i2c-id-rework-v1-0-3e5bc71c49ee@gmail.com>
- <20230814-i2c-id-rework-v1-1-3e5bc71c49ee@gmail.com>
+Subject: [PATCH 0/3] selftests: cachestat: fix build and run on older kernels
+Date:   Tue, 15 Aug 2023 16:56:09 +0100
+Message-Id: <20230815155612.2535947-1-andre.przywara@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230814-i2c-id-rework-v1-1-3e5bc71c49ee@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 02:52:49PM -0700, Dmitry Torokhov wrote:
-> The of_device_id structure uses a void pointer to associate additional
-> driver-private data with device id, most commonly used to refer to a
-> structure containing additional characteristics of a particular chip.
-> However i2c_device_id uses an unsigned long. While it can easily be
-> converted to a pointer, several drivers use it to store a scalar (and it
-> is possible to use a pointer in of_device_id to store a scalar value as
-> well). The worst case comes when OF part of a driver uses pointers,
-> while legacy part is using scalars, causing constructs like:
-> 
-> 	data = device_get_match_data(...);
-> 	if (!data)
-> 		data = &some_array[i2c_match_id(...)->data];
-> 	...
-> 
-> To avoid this introduce a const void "data" pointer to i2c_device_id as
-> well, so that we can convert drivers one by one, and drop driver_data
-> member in the end.
-> 
-> The end goal is to clean up all helpers and make device_get_match_data()
-> work universally for all ACPI, DT, and legacy variants.
+I ran all kernel selftests on some test machine, and stumbled upon
+cachestat failing (among others).
+Those patches fix the cachestat test compilation and run on older
+kernels.
 
-So, we have in the parallel the activity to make buses to have a callback,
-why do we need this one? Looks to me as yet another 1000+ churn for not
-much value. What the good outcome of this is constification, but maybe
-we can find the way on how to prove const to stay over the kernel_ulong_t
-transformations for all device ID tables?
+Also I found that the but-last test (on a normal file) fails when run on
+a tmpfs mounted directory, as it happens on an initramfs-only system, or
+when the current directory happens to be /dev/shm or /tmp:
+# Create/open tmpfilecachestat
+# Cachestat call returned 0
+# Using cachestat: Cached: 4, Dirty: 4, Writeback: 0, Evicted: 0, Recently Evicted: 0
+# Cachestat call (after fsync) returned 0
+# Using cachestat: Cached: 4, Dirty: 4, Writeback: 0, Evicted: 0, Recently Evicted: 0
+# Number of dirty should be zero after fsync.
+not ok 6 cachestat fails with normal file
+
+That same test binary succeeds on the same machine right afterwards if
+the current directory is changed to an ext4 filesystem.
+
+I don't really know if this is expected, and whether we should try to
+figure out if the test file lives on a tmpfs filesystem, or whether the
+test itself is not strict enough, and requires more "flushing"
+(drop_caches?) to cover tmpfs directories as well.
+
+Any ideas how to fix this would be appreciated.
+
+Cheers,
+Andre
+
+Andre Przywara (3):
+  selftests: cachestat: properly link in librt
+  selftests: cachestat: use proper syscall number macro
+  selftests: cachestat: test for cachestat availability
+
+ tools/testing/selftests/cachestat/Makefile    |  2 +-
+ .../selftests/cachestat/test_cachestat.c      | 29 +++++++++++++++----
+ 2 files changed, 25 insertions(+), 6 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
