@@ -2,99 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8D977CDBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E09E77CDAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 16:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237500AbjHOOBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 10:01:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51902 "EHLO
+        id S237454AbjHOOAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 10:00:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237457AbjHOOAm (ORCPT
+        with ESMTP id S237431AbjHOOAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 10:00:42 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4DC0D1;
-        Tue, 15 Aug 2023 07:00:41 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fe11652b64so8462772e87.0;
-        Tue, 15 Aug 2023 07:00:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692108040; x=1692712840;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2qzbPPmHH2Cs84MMNUNLEy/8AFYHbEVzbBv7dcVzhPE=;
-        b=O2HcgsWmVGf3noRrJ9w/dYS9V9qM1/QoW+WU7MUAeJ7W22RhWFLbwBf6WSf+ZVoyDC
-         2snnbesW1aam6kkwc7Vwv27Icb/KrQgKR0jz6BZjtpslNAFrXiYU1uXSs+QZJfzmifB4
-         aFC87yM1znezWHUI/2M4x4wq9o8iQqtUtJJmVTZYfWm9PdveS+LyCuItuWI9o5cYf3yH
-         I7PO28oxEI5wATU0Dga6nSYmCxQV0XFTdlorwfuyI78x/NUc15ma8SpFOhntPTS6VcHw
-         30IGLK/enBALtX6qT8Yez3sELl3fd1BnRiaP4F9V9DVsFFs9ePZOevnnr61ANlBe1aWZ
-         zlTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692108040; x=1692712840;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2qzbPPmHH2Cs84MMNUNLEy/8AFYHbEVzbBv7dcVzhPE=;
-        b=X84nZPHyuzmr+9d9r5xXmvXAo7Quz8QQmS+Q3F3RCX0hZZG3J9ckv5mfVp+Dv3QcCr
-         d5Nyl8jnO2fHAfO3r2uL8SD3EUL8WWTofBFl3w7euVa+WXjZlsIX8L1ylO27NgqkZ3jM
-         XqCO2gE2142hSRm8Aqpj1l4c4pQO6DbWTLE+eL+bqgoQMTjDyhhSme8SelTB6TOJgmk5
-         Yfx0PLe9A0krSe/ebn2qNdS+y3h9lM0hnwTUustaEko4RM/dw+I1UQZ5QHaawfG0kuZ9
-         jVT3zMIJ+bcQTdvPbi4tL5Z6h66IJL/HN+xu5WqBSr5uRYoUXpN2OnXSwMJeh50SaxwT
-         +lPw==
-X-Gm-Message-State: AOJu0YyiZugDN3ERqUk4kAIdQUYNI+hCnp9zKcmLBojUptAxO590iFox
-        IJBOivZ5mnmdaRRYmWNtses=
-X-Google-Smtp-Source: AGHT+IH09mRKKgi7n4qLOrwYSpjBkp5Qo0J6B2qC/jr9UQv6lMBVjwpMiLlv5m02pKEJwLW/kFjjcg==
-X-Received: by 2002:a05:6512:3589:b0:4fe:3724:fdae with SMTP id m9-20020a056512358900b004fe3724fdaemr7883880lfr.66.1692108039828;
-        Tue, 15 Aug 2023 07:00:39 -0700 (PDT)
-Received: from fedora.. (dh207-96-14.xnet.hr. [88.207.96.14])
-        by smtp.googlemail.com with ESMTPSA id a26-20020aa7d91a000000b00525740aa68dsm1049042edr.36.2023.08.15.07.00.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 07:00:39 -0700 (PDT)
-From:   Robert Marko <robimarko@gmail.com>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, quic_gurus@quicinc.com,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     computersforpeace@gmail.com, Robert Marko <robimarko@gmail.com>
-Subject: [PATCH v2 5/5] arm64: dts: qcom: ipq5018: indicate that SDI should be disabled
-Date:   Tue, 15 Aug 2023 15:59:38 +0200
-Message-ID: <20230815140030.1068590-5-robimarko@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230815140030.1068590-1-robimarko@gmail.com>
-References: <20230815140030.1068590-1-robimarko@gmail.com>
+        Tue, 15 Aug 2023 10:00:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A51D1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 07:00:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692108009; x=1723644009;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jFg6+ygBgtTz0t27/ZViFNE4X16j6COx/+N58kJrkiA=;
+  b=cdtKUM81Ma98OicPFrTe+S5DDGfdXttmEbyAQi1CiqR2o/Fn43rxIGYs
+   KX5Ul1P2hkVC2Hf0oD/uhQD24wLaJREckUQPitAHbISoop9Yy1YFH1/MR
+   1QDkSr4sbXxVW64BrjJWiPNs+hidophjo01EJuzXwF3bAMj8E3x0URQgj
+   9qk4itiEK2UmdsiAPRrTg1yGk6n5LStiOgWKNkoQKRL0yu0YrIl8ecAuH
+   JQWsghB5zwxBs6GRTYtt8IT+KpJFsJ5WL1/8NeNn3Wt7ZX2Z20GqVo20g
+   eod0RJJBiWdgmuI8/zCxaWwNBBLaiEc1uEcy4iCurSr+7tUQEHe8NquZe
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="375051125"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="375051125"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 07:00:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="683660812"
+X-IronPort-AV: E=Sophos;i="6.01,174,1684825200"; 
+   d="scan'208";a="683660812"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP; 15 Aug 2023 07:00:07 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1qVuab-004EoF-2h;
+        Tue, 15 Aug 2023 17:00:05 +0300
+Date:   Tue, 15 Aug 2023 17:00:05 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 21/25] ASoC: dmaengine: Convert to generic PCM copy ops
+Message-ID: <ZNuE5UunDd40e8vW@smile.fi.intel.com>
+References: <20230814115523.15279-1-tiwai@suse.de>
+ <20230814115523.15279-22-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230814115523.15279-22-tiwai@suse.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that SCM has support for disabling SDI if indicated by DT, lets set
-it for IPQ5018 as it has SDI enabled by default and it must be disabled.
+On Mon, Aug 14, 2023 at 01:55:19PM +0200, Takashi Iwai wrote:
+> This patch converts the ASoC dmaenging driver code to use the new
+> unified PCM copy callback.  It's a straightforward conversion from
+> *_user() to *_iter() variants.
+> 
+> The process callback is still using the direct pointer as of now, but
+> it'll be converted in the next patch.
+> 
+> Note that copy_from/to_iter() returns the copied bytes, hence the
+> error condition is inverted from copy_from/to_user().
 
-Signed-off-by: Robert Marko <robimarko@gmail.com>
----
- arch/arm64/boot/dts/qcom/ipq5018.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+...
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-index 9f13d2dcdfd5..3285c86824cf 100644
---- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-@@ -57,6 +57,7 @@ L2_0: l2-cache {
- 	firmware {
- 		scm {
- 			compatible = "qcom,scm-ipq5018", "qcom,scm";
-+			qcom,sdi-disable;
- 		};
- 	};
- 
+>  	if (is_playback)
+> -		if (copy_from_user(dma_ptr, buf, bytes))
+> +		if (!copy_from_iter(dma_ptr, bytes, buf))
+
+!= bytes ?
+
+>  			return -EFAULT;
+
+Can be compressed to a single conditional:
+
+	if (is_playback && copy_from_iter(dma_ptr, bytes, buf) != bytes)
+
+...
+
+>  	if (!is_playback)
+> -		if (copy_to_user(buf, dma_ptr, bytes))
+> +		if (!copy_to_iter(dma_ptr, bytes, buf))
+>  			return -EFAULT;
+
+As per above.
+
 -- 
-2.41.0
+With Best Regards,
+Andy Shevchenko
+
 
