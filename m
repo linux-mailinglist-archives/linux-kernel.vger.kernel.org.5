@@ -2,196 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A7B77CCBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F1977CCC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237196AbjHOMdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 08:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33008 "EHLO
+        id S237225AbjHOMeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 08:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237275AbjHOMdA (ORCPT
+        with ESMTP id S237277AbjHOMdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 08:33:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2EE1BFB
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:32:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 69ECB65804
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 12:32:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46171C433C7;
-        Tue, 15 Aug 2023 12:32:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692102757;
-        bh=LLZ+oH1hBLtH9rpeoXZ6k1vXhIAFpyRwaDQwn6U+yA4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DLdmqkj9CfgBnyHRKEmlH116N2lwu/OQiIfQoRBMg67MgulJfDjp2WmTC4vKGRoSI
-         N098HCZyRSCULluqMbbznhcgj8Mj07+CSuI+scqZa8jgtfOY2keLvKV9aYlJoktTom
-         P+9wcszevEDuL6uvDd4PuHlv6no1JAdjk2Dz8ZgROA/gN+LI4gBBxzhakW8npGLZCx
-         uOAP3HdGIl+dlF2/yza6TD4MzJJUqsc08RqQ121Ens+jaPQtPRSz8/cXD24oXftdkw
-         97p55H2voWYgCOTqDEWvRC85x4c51LTrHi3n0HmHhwt6OKwVLXSbsrT5zAtlAkAxq5
-         LRE6hc3AA37iA==
-Date:   Tue, 15 Aug 2023 15:32:33 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dong Chenchen <dongchenchen2@huawei.com>
-Cc:     fw@strlen.de, steffen.klassert@secunet.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        timo.teras@iki.fi, yuehaibing@huawei.com, weiyongjun1@huawei.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Patch net, v2] net: xfrm: skip policies marked as dead while
- reinserting policies
-Message-ID: <20230815123233.GM22185@unreal>
-References: <20230814140013.712001-1-dongchenchen2@huawei.com>
- <20230815060026.GE22185@unreal>
- <20230815091324.GL22185@unreal>
+        Tue, 15 Aug 2023 08:33:52 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5D91BF6;
+        Tue, 15 Aug 2023 05:33:44 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R371e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0Vps0sJO_1692102816;
+Received: from 30.221.150.39(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0Vps0sJO_1692102816)
+          by smtp.aliyun-inc.com;
+          Tue, 15 Aug 2023 20:33:38 +0800
+Message-ID: <30f6e625-cd3e-f846-e04d-667404f9f3c5@linux.alibaba.com>
+Date:   Tue, 15 Aug 2023 20:33:36 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230815091324.GL22185@unreal>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v6 5/7] perf test: Add pmu-event test for "Compat" and new
+ event_field.
+To:     Ian Rogers <irogers@google.com>
+Cc:     John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
+        Zhuo Song <zhuo.song@linux.alibaba.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>
+References: <1691394685-61240-1-git-send-email-renyu.zj@linux.alibaba.com>
+ <1691394685-61240-6-git-send-email-renyu.zj@linux.alibaba.com>
+ <CAP-5=fXPhtPCGYotDi2P_LeFPBMd8N+z_WAPwUT8eR+QiLLTMg@mail.gmail.com>
+From:   Jing Zhang <renyu.zj@linux.alibaba.com>
+In-Reply-To: <CAP-5=fXPhtPCGYotDi2P_LeFPBMd8N+z_WAPwUT8eR+QiLLTMg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-10.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 07:35:13PM +0800, Dong Chenchen wrote:
-> On Tue, Aug 15, 2023 at 04:47:58PM +0800, Dong Chenchen wrote:
-> >> On Mon, Aug 14, 2023 at 10:00:13PM +0800, Dong Chenchen wrote:
-> >> >> BUG: KASAN: slab-use-after-free in xfrm_policy_inexact_list_reinsert+0xb6/0x430
-> >> >> Read of size 1 at addr ffff8881051f3bf8 by task ip/668
-> >> >> 
-> >> >> CPU: 2 PID: 668 Comm: ip Not tainted 6.5.0-rc5-00182-g25aa0bebba72-dirty #64
-> >> >> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13 04/01/2014
-> >> >> Call Trace:
-> >> >>  <TASK>
-> >> >>  dump_stack_lvl+0x72/0xa0
-> >> >>  print_report+0xd0/0x620
-> >> >>  kasan_report+0xb6/0xf0
-> >> >>  xfrm_policy_inexact_list_reinsert+0xb6/0x430
-> >> >>  xfrm_policy_inexact_insert_node.constprop.0+0x537/0x800
-> >> >>  xfrm_policy_inexact_alloc_chain+0x23f/0x320
-> >> >>  xfrm_policy_inexact_insert+0x6b/0x590
-> >> >>  xfrm_policy_insert+0x3b1/0x480
-> >> >>  xfrm_add_policy+0x23c/0x3c0
-> >> >>  xfrm_user_rcv_msg+0x2d0/0x510
-> >> >>  netlink_rcv_skb+0x10d/0x2d0
-> >> >>  xfrm_netlink_rcv+0x49/0x60
-> >> >>  netlink_unicast+0x3fe/0x540
-> >> >>  netlink_sendmsg+0x528/0x970
-> >> >>  sock_sendmsg+0x14a/0x160
-> >> >>  ____sys_sendmsg+0x4fc/0x580
-> >> >>  ___sys_sendmsg+0xef/0x160
-> >> >>  __sys_sendmsg+0xf7/0x1b0
-> >> >>  do_syscall_64+0x3f/0x90
-> >> >>  entry_SYSCALL_64_after_hwframe+0x73/0xdd
-> >> >> 
-> >> >> The root cause is:
-> >> >> 
-> >> >> cpu 0			cpu1
-> >> >> xfrm_dump_policy
-> >> >> xfrm_policy_walk
-> >> >> list_move_tail
-> >> >> 			xfrm_add_policy
-> >> >> 			... ...
-> >> >> 			xfrm_policy_inexact_list_reinsert
-> >> >> 			list_for_each_entry_reverse
-> >> >> 				if (!policy->bydst_reinsert)
-> >> >> 				//read non-existent policy
-> >> >> xfrm_dump_policy_done
-> >> >> xfrm_policy_walk_done
-> >> >> list_del(&walk->walk.all);
-> >> >> 
-> >> >> If dump_one_policy() returns err (triggered by netlink socket),
-> >> >> xfrm_policy_walk() will move walk initialized by socket to list
-> >> >> net->xfrm.policy_all. so this socket becomes visible in the global
-> >> >> policy list. The head *walk can be traversed when users add policies
-> >> >> with different prefixlen and trigger xfrm_policy node merge.
-> >> >> 
-> >> >> The issue can also be triggered by policy list traversal while rehashing
-> >> >> and flushing policies.
-> >> >> 
-> >> >> It can be fixed by skip such "policies" with walk.dead set to 1.
-> >> >> 
-> >> >> Fixes: 9cf545ebd591 ("xfrm: policy: store inexact policies in a tree ordered by destination address")
-> >> >> Fixes: 12a169e7d8f4 ("ipsec: Put dumpers on the dump list")
-> >> >> Signed-off-by: Dong Chenchen <dongchenchen2@huawei.com>
-> >> >> ---
-> >> >> v2: fix similiar similar while rehashing and flushing policies
-> >> >> ---
-> >> >>  net/xfrm/xfrm_policy.c | 20 +++++++++++++++-----
-> >> >>  1 file changed, 15 insertions(+), 5 deletions(-)
-> >
-> ><...>
-> >
-> >> >> @@ -1253,11 +1256,14 @@ static void xfrm_hash_rebuild(struct work_struct *work)
-> >> >>  	 * we start with destructive action.
-> >> >>  	 */
-> >> >>  	list_for_each_entry(policy, &net->xfrm.policy_all, walk.all) {
-> >> >> +		if (policy->walk.dead)
-> >> >> +			continue;
-> >> >> +
-> >> >>  		struct xfrm_pol_inexact_bin *bin;
-> >> >>  		u8 dbits, sbits;
-> >> >
-> >> >Same comment as above.
-> >> >
-> >> >>  
-> >> >>  		dir = xfrm_policy_id2dir(policy->index);
-> >> >> -		if (policy->walk.dead || dir >= XFRM_POLICY_MAX)
-> >> >> +		if (dir >= XFRM_POLICY_MAX)
-> >> >
-> >> >This change is unnecessary, previous code was perfectly fine.
-> >> >
-> >> The walker object initialized by xfrm_policy_walk_init() doesnt have policy. 
-> >> list_for_each_entry() will use the walker offset to calculate policy address.
-> >> It's nonexistent and different from invalid dead policy. It will read memory 
-> >> that doesnt belong to walker if dereference policy->index.
-> >> I think we should protect the memory.
-> >
-> >But all operations here are an outcome of "list_for_each_entry(policy,
-> >&net->xfrm.policy_all, walk.all)" which stores in policy iterator
-> >the pointer to struct xfrm_policy.
-> >
-> >How at the same time access to policy->walk.dead is valid while
-> >policy->index is not?
-> >
-> >Thanks
-> 1.walker init: its only a list head, no policy
-> xfrm_dump_policy_start
-> 	xfrm_policy_walk_init(walk, XFRM_POLICY_TYPE_ANY);
-> 		INIT_LIST_HEAD(&walk->walk.all);
-> 		walk->walk.dead = 1;
-> 
-> 2.add the walk head to net->xfrm.policy_all
-> xfrm_policy_walk
->     list_for_each_entry_from(x, &net->xfrm.policy_all, all)
-> 	if (error) {
-> 		list_move_tail(&walk->walk.all, &x->all);
-> 		//add the walk to list tail
-> 
-> 3.traverse the walk list
-> xfrm_policy_flush
-> list_for_each_entry(pol, &net->xfrm.policy_all, walk.all)
-> 	 dir = xfrm_policy_id2dir(pol->index);
-> 
-> it gets policy by &net->xfrm.policy_all-0x130(offset of walk in policy)
-> but when walk is head, we will read others memory by the calculated policy.
-> such as:
->   walk addr  		policy addr
-> 0xffff0000d7f3b530    0xffff0000d7f3b400 (non-existent) 
-> 
-> head walker of net->xfrm.policy_all can be skipped by  list_for_each_entry().
-> but the walker created by socket is located list tail. so we should skip it. 
 
-list_for_each_entry_from(x, &net->xfrm.policy_all, all) gives you
-pointer to "x", you can't access some of its fields and say they
-exist and other doesn't. Once you can call to "x->...", you can 
-call to "x->index" too.
 
-Thanks
+在 2023/8/15 上午9:11, Ian Rogers 写道:
+> On Mon, Aug 7, 2023 at 12:51 AM Jing Zhang <renyu.zj@linux.alibaba.com> wrote:
+>>
+>> Add new event test for uncore system event which is used to verify the
+>> functionality of "Compat" matching multiple identifiers and the new event
+>> fields "EventIdCode" and "Type".
+>>
+>> Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
+> 
+> Did you test with NO_JEVENTS=1?
+> 
+
+You are absolutely right. I completely overlooked the case where NO_JEVENTS=1.
+
+
+>> ---
+>>  .../pmu-events/arch/test/test_soc/sys/uncore.json  |  8 ++++
+>>  tools/perf/tests/pmu-events.c                      | 55 ++++++++++++++++++++++
+>>  2 files changed, 63 insertions(+)
+>>
+>> diff --git a/tools/perf/pmu-events/arch/test/test_soc/sys/uncore.json b/tools/perf/pmu-events/arch/test/test_soc/sys/uncore.json
+>> index c7e7528..19ec595 100644
+>> --- a/tools/perf/pmu-events/arch/test/test_soc/sys/uncore.json
+>> +++ b/tools/perf/pmu-events/arch/test/test_soc/sys/uncore.json
+>> @@ -12,5 +12,13 @@
+>>             "EventName": "sys_ccn_pmu.read_cycles",
+>>             "Unit": "sys_ccn_pmu",
+>>             "Compat": "0x01"
+>> +   },
+>> +   {
+>> +           "BriefDescription": "Counts total cache misses in first lookup result (high priority).",
+>> +           "Type": "0x05",
+>> +           "EventIdCode": "0x01",
+>> +           "EventName": "sys_cmn_pmu.hnf_cache_miss",
+>> +           "Unit": "sys_cmn_pmu",
+>> +           "Compat": "434*;436*;43c*;43a01"
+> 
+> I suspect this needs adding here:
+> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/pmu-events/empty-pmu-events.c?h=perf-tools-next#n247
+> 
+After adding the relevant code in empty-pmu-events.c, it can successfully test with NO_JEVENTS=1.
+
+Thanks,
+Jing
+
+> Thanks,
+> Ian
+> 
+>>     }
+>>  ]
+>> diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+>> index 3204252..79fb3e2 100644
+>> --- a/tools/perf/tests/pmu-events.c
+>> +++ b/tools/perf/tests/pmu-events.c
+>> @@ -255,9 +255,24 @@ struct perf_pmu_test_pmu {
+>>         .matching_pmu = "uncore_sys_ccn_pmu4",
+>>  };
+>>
+>> +static const struct perf_pmu_test_event sys_cmn_pmu_hnf_cache_miss = {
+>> +       .event = {
+>> +               .name = "sys_cmn_pmu.hnf_cache_miss",
+>> +               .event = "type=0x05,eventid=0x01",
+>> +               .desc = "Counts total cache misses in first lookup result (high priority). Unit: uncore_sys_cmn_pmu ",
+>> +               .topic = "uncore",
+>> +               .pmu = "uncore_sys_cmn_pmu",
+>> +               .compat = "434*;436*;43c*;43a01",
+>> +       },
+>> +       .alias_str = "type=0x5,eventid=0x1",
+>> +       .alias_long_desc = "Counts total cache misses in first lookup result (high priority). Unit: uncore_sys_cmn_pmu ",
+>> +       .matching_pmu = "uncore_sys_cmn_pmu0",
+>> +};
+>> +
+>>  static const struct perf_pmu_test_event *sys_events[] = {
+>>         &sys_ddr_pmu_write_cycles,
+>>         &sys_ccn_pmu_read_cycles,
+>> +       &sys_cmn_pmu_hnf_cache_miss,
+>>         NULL
+>>  };
+>>
+>> @@ -704,6 +719,46 @@ static int __test_uncore_pmu_event_aliases(struct perf_pmu_test_pmu *test_pmu)
+>>                         &sys_ccn_pmu_read_cycles,
+>>                 },
+>>         },
+>> +       {
+>> +               .pmu = {
+>> +                       .name = (char *)"uncore_sys_cmn_pmu0",
+>> +                       .is_uncore = 1,
+>> +                       .id = (char *)"43401",
+>> +               },
+>> +               .aliases = {
+>> +                       &sys_cmn_pmu_hnf_cache_miss,
+>> +               },
+>> +       },
+>> +       {
+>> +               .pmu = {
+>> +                       .name = (char *)"uncore_sys_cmn_pmu0",
+>> +                       .is_uncore = 1,
+>> +                       .id = (char *)"43602",
+>> +               },
+>> +               .aliases = {
+>> +                       &sys_cmn_pmu_hnf_cache_miss,
+>> +               },
+>> +       },
+>> +       {
+>> +               .pmu = {
+>> +                       .name = (char *)"uncore_sys_cmn_pmu0",
+>> +                       .is_uncore = 1,
+>> +                       .id = (char *)"43c03",
+>> +               },
+>> +               .aliases = {
+>> +                       &sys_cmn_pmu_hnf_cache_miss,
+>> +               },
+>> +       },
+>> +       {
+>> +               .pmu = {
+>> +                       .name = (char *)"uncore_sys_cmn_pmu0",
+>> +                       .is_uncore = 1,
+>> +                       .id = (char *)"43a01",
+>> +               },
+>> +               .aliases = {
+>> +                       &sys_cmn_pmu_hnf_cache_miss,
+>> +               },
+>> +       }
+>>  };
+>>
+>>  /* Test that aliases generated are as expected */
+>> --
+>> 1.8.3.1
+>>
