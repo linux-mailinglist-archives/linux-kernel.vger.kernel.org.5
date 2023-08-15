@@ -2,132 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF2177D0F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51AF177D0FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 19:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238863AbjHORZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 13:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35768 "EHLO
+        id S238759AbjHOR2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 13:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238872AbjHORYf (ORCPT
+        with ESMTP id S233869AbjHOR2H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 13:24:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 072701BEA;
-        Tue, 15 Aug 2023 10:24:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D99C165E1A;
-        Tue, 15 Aug 2023 17:22:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1F1EC433C8;
-        Tue, 15 Aug 2023 17:22:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692120169;
-        bh=7O9FdqMiLm40fpPG8sUMe1FLvmeqL8CETydj3KFafrM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ATni7ZcWLK7LxKF2dqg/BcRGt2/E1l6M1qW78YiYhEygtMnZ8xUpdOngoWuoiBLyz
-         giTI+h7KBgFTnN6wk+pwbkqcR8RaBraeiDH/vW/XOBGv2X+jyf2HzWfP4BixMAmgQG
-         vvx5UTJtNAsNC8G00Y4sNWHJYu8Z5wfLymHFwGLBKdUi0XqXe9JvsvbVVDDgHqIgmW
-         dMZc3ychRFhcIw6TfRBpoIi/KcjP5/tKHYQ5sPDKzsfAqUTj8W4RzgVnM5ybRxXbTb
-         IGC73JEQSvrLS5tySj3z3OlNVm7PKsFCYRcTLfNS/Gf72UgoSz/sE2h/vR8LwwJwX6
-         /PNngo4A8tGIQ==
-Date:   Tue, 15 Aug 2023 10:22:47 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
-Subject: Re: [PATCH 34/36] tty: gdm724x: convert counts to size_t
-Message-ID: <20230815172247.GA1690054@dev-arch.thelio-3990X>
-References: <20230810091510.13006-1-jirislaby@kernel.org>
- <20230810091510.13006-35-jirislaby@kernel.org>
+        Tue, 15 Aug 2023 13:28:07 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2070.outbound.protection.outlook.com [40.107.101.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC41B210C;
+        Tue, 15 Aug 2023 10:27:45 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Gz+RXLK3KcAJpvk5F/pGsFNCbzDIuunFkWV6W5Q8tEiAU6g4g268XoeQYkUt9L7l3GG4GyuLPOVSTlA160luO8AUZt5/77ay1gjx0THqfAYmiZaGTPIAeGIQyS5PMTEMN4L12Wp4Q3RF9ZmoDoDv0Ni1+lw1OBKlYooKrXnL/MoeY7P8Ds+lmxX9druV/T9Q7NdazvOQMRYtCSIfqaeHmCVNnQAVcv6bSbhzgxOzqR3LB68YxliBCuurIQQKKnNJTB0w4N9dGkVB6nUVNVMqzuMndTH1kPZi+uwY9GOwfWLijmi8NcfJhtmK0rLck352alqOo/C+q3OJplragwCzcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EOUSCsNDCAIp8YpWpHMbfh2vVSKvFWnaq1lN09g7NGo=;
+ b=HRx7t+AGb3H4sXSm5WV2E/H1aLcnfMGVz62iipEnDrS7xjKky1SJnC1xo4W+2btXgaxRbFbZbm2aG3ZSOSbg3dEGF6fUNZ13SBrXBS/1HMM6FT9RS2QtBCLrbOVz+YdANjRHBfEK3bhEUdkL9l+CWRzWGESN6ZCJeaf7oVm8iaA0W0GX/g8mwCb1wKlxopzKyjTMvq3yoWYgXE0+DzQhZu/6mpb04sZhkLlteex91iWgZrzz3snrq+Fog2dgrj8xZeux+o4kTwhPc3LWMxMKIvgBrdiHkLCS5VNB403W5A516G7JzDpE+1WW2uJXdRFT5iwMf44QwlUV4oaJ3vLG2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EOUSCsNDCAIp8YpWpHMbfh2vVSKvFWnaq1lN09g7NGo=;
+ b=d2ft8p2xkefN16eEW0bgdh54gSdhk8/vYLCy9NGfWBJp38dmy3SZI9dsYbL0W34+XrTIvso2sREdsTp6jGVar8YkEpjzbTOTAUmFs9V80VBzsgbxMd/W252nS7SzgEA5LuYoTLOztSJqRSeNIbYvV6OuRbPXIirG3tyBM7KTa7Q=
+Received: from BY5PR13CA0010.namprd13.prod.outlook.com (2603:10b6:a03:180::23)
+ by SJ0PR12MB5662.namprd12.prod.outlook.com (2603:10b6:a03:429::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Tue, 15 Aug
+ 2023 17:27:16 +0000
+Received: from SN1PEPF000252A1.namprd05.prod.outlook.com
+ (2603:10b6:a03:180:cafe::fa) by BY5PR13CA0010.outlook.office365.com
+ (2603:10b6:a03:180::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.14 via Frontend
+ Transport; Tue, 15 Aug 2023 17:27:16 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SN1PEPF000252A1.mail.protection.outlook.com (10.167.242.8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6699.14 via Frontend Transport; Tue, 15 Aug 2023 17:27:16 +0000
+Received: from hamza-pc.localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 15 Aug
+ 2023 12:27:15 -0500
+From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
+To:     <amd-gfx@lists.freedesktop.org>
+CC:     Hamza Mahfooz <hamza.mahfooz@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        <stable@vger.kernel.org>, Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        "Javier Martinez Canillas" <javierm@redhat.com>,
+        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+        Guchun Chen <guchun.chen@amd.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] drm/amdgpu: register a dirty framebuffer callback for fbcon
+Date:   Tue, 15 Aug 2023 13:26:59 -0400
+Message-ID: <20230815172700.255596-1-hamza.mahfooz@amd.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230810091510.13006-35-jirislaby@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF000252A1:EE_|SJ0PR12MB5662:EE_
+X-MS-Office365-Filtering-Correlation-Id: ed5f8ff1-ff06-4fb9-1b5d-08db9db4df18
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /XMMgycdlRLzrrzs8SE14ORgQpc6AeFJg20xmiIaMa9jMvgJRL2kZHDe4wsx0XAJzm3W1D/ceBfq9b9jhCiY5rO2JspiHMj7L0U0VGcLXo4duUR8ZBEbgf/wAWFi7n6LP/LzpciWq86DmYlekMc0+gWaRxFn3pKtCOp+HuZMAIxb2xXgLbJa1pe79kNgZoErvbQeaz55jFzlpIqqrIpDGmhOG5G8yTTz6anZiJDopBISe/xnlXrUwZV81WyCbQ14fyLAPE61w3EWdHYsZg+7rPu0XUA9wdduB8gak+G3mpBOeObkxlTReG3Rdd1UvDxyXqFAoxycoSmvruvCg5U0+jMKRUZzndfp7HQjSZ9i5aWrNXUK7c3AHKDoz7jpSD9QDbObUQnB3yqre076pQmkF6c2VWTHEdgINLAU0CCfzGd67Sgsla5+ZGO9hHz3CXexHGBpxICHWi202S1j51ZTNPpVwvsQ32pLs4mF6NyfeRKIuEgA73Fho5T5KeGDo9ryjUBLOyHj5n6DxY7lEtpFxq8oBuj8Lh93rhj/kzAGPpRCo34+ywFyDUy4L+e+s6W6QCTZAUbL6WvlHKYnEiE97elCqs4S8gPb5/6LUws94Y/rLMNPqYP+lzi/JsYO8sRFC+bDlECp6Sls/P++/9Yf0f4KUAoncYtOhukbw57VY8iCOmPC7VOwH1XbLsXr406YeSQQOE6ZlVaE0fx0GldF0i/n6oWlZTqBmSi/E4Myg/WpNmG5W/iV2M2th4rBss0PPo1WSLdeG+EOB036uAlK1bUCRKgWtx4sPoZC20xxurHYR35h6ad0ToldnbG+V8qk
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(396003)(136003)(346002)(186009)(451199024)(82310400011)(1800799009)(46966006)(40470700004)(36840700001)(26005)(1076003)(336012)(40480700001)(36860700001)(81166007)(966005)(6666004)(16526019)(54906003)(478600001)(356005)(70586007)(70206006)(4326008)(316002)(6916009)(44832011)(47076005)(2616005)(41300700001)(426003)(86362001)(40460700003)(5660300002)(83380400001)(2906002)(8676002)(8936002)(36756003)(82740400003)(14143004)(36900700001)(16060500005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2023 17:27:16.5161
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ed5f8ff1-ff06-4fb9-1b5d-08db9db4df18
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF000252A1.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5662
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 11:15:08AM +0200, Jiri Slaby (SUSE) wrote:
-> Unify the type of tty_operations::write() counters with the 'count'
-> parameter. I.e. use size_t for them.
-> 
-> This includes changing constants to UL to keep min() and avoid min_t().
+fbcon requires that we implement &drm_framebuffer_funcs.dirty.
+Otherwise, the framebuffer might take a while to flush (which would
+manifest as noticeable lag). However, we can't enable this callback for
+non-fbcon cases since it might cause too many atomic commits to be made
+at once. So, implement amdgpu_dirtyfb() and only enable it for fbcon
+framebuffers on devices that support atomic KMS.
 
-This patch appears to cause a warning/error on 32-bit architectures now
-due to this part of the change, as size_t is 'unsigned int' there:
+Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Cc: Mario Limonciello <mario.limonciello@amd.com>
+Cc: stable@vger.kernel.org # 6.1+
+Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2519
+Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+---
+v2: update variable names
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_display.c | 26 ++++++++++++++++++++-
+ 1 file changed, 25 insertions(+), 1 deletion(-)
 
-  In file included from include/linux/kernel.h:27,
-                   from drivers/staging/gdm724x/gdm_tty.c:6:
-  drivers/staging/gdm724x/gdm_tty.c: In function 'gdm_tty_write':
-  include/linux/minmax.h:21:35: error: comparison of distinct pointer types lacks a cast [-Werror]
-     21 |         (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
-        |                                   ^~
-  include/linux/minmax.h:27:18: note: in expansion of macro '__typecheck'
-     27 |                 (__typecheck(x, y) && __no_side_effects(x, y))
-        |                  ^~~~~~~~~~~
-  include/linux/minmax.h:37:31: note: in expansion of macro '__safe_cmp'
-     37 |         __builtin_choose_expr(__safe_cmp(x, y), \
-        |                               ^~~~~~~~~~
-  include/linux/minmax.h:68:25: note: in expansion of macro '__careful_cmp'
-     68 | #define min(x, y)       __careful_cmp(x, y, <)
-        |                         ^~~~~~~~~~~~~
-  drivers/staging/gdm724x/gdm_tty.c:162:38: note: in expansion of macro 'min'
-    162 |                 size_t sending_len = min(MUX_TX_MAX_SIZE, remain);
-        |                                      ^~~
-  cc1: all warnings being treated as errors
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+index d20dd3f852fc..d3b59f99cb7c 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+@@ -38,6 +38,8 @@
+ #include <linux/pci.h>
+ #include <linux/pm_runtime.h>
+ #include <drm/drm_crtc_helper.h>
++#include <drm/drm_damage_helper.h>
++#include <drm/drm_drv.h>
+ #include <drm/drm_edid.h>
+ #include <drm/drm_fb_helper.h>
+ #include <drm/drm_gem_framebuffer_helper.h>
+@@ -532,11 +534,29 @@ bool amdgpu_display_ddc_probe(struct amdgpu_connector *amdgpu_connector,
+ 	return true;
+ }
+ 
++static int amdgpu_dirtyfb(struct drm_framebuffer *fb, struct drm_file *file,
++			  unsigned int flags, unsigned int color,
++			  struct drm_clip_rect *clips, unsigned int num_clips)
++{
++
++	if (strcmp(fb->comm, "[fbcon]"))
++		return -ENOSYS;
++
++	return drm_atomic_helper_dirtyfb(fb, file, flags, color, clips,
++					 num_clips);
++}
++
+ static const struct drm_framebuffer_funcs amdgpu_fb_funcs = {
+ 	.destroy = drm_gem_fb_destroy,
+ 	.create_handle = drm_gem_fb_create_handle,
+ };
+ 
++static const struct drm_framebuffer_funcs amdgpu_fb_funcs_atomic = {
++	.destroy = drm_gem_fb_destroy,
++	.create_handle = drm_gem_fb_create_handle,
++	.dirty = amdgpu_dirtyfb
++};
++
+ uint32_t amdgpu_display_supported_domains(struct amdgpu_device *adev,
+ 					  uint64_t bo_flags)
+ {
+@@ -1139,7 +1159,11 @@ static int amdgpu_display_gem_fb_verify_and_init(struct drm_device *dev,
+ 	if (ret)
+ 		goto err;
+ 
+-	ret = drm_framebuffer_init(dev, &rfb->base, &amdgpu_fb_funcs);
++	if (drm_drv_uses_atomic_modeset(dev))
++		ret = drm_framebuffer_init(dev, &rfb->base,
++					   &amdgpu_fb_funcs_atomic);
++	else
++		ret = drm_framebuffer_init(dev, &rfb->base, &amdgpu_fb_funcs);
+ 
+ 	if (ret)
+ 		goto err;
+-- 
+2.41.0
 
-> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-> Cc: linux-staging@lists.linux.dev
-> ---
->  drivers/staging/gdm724x/gdm_tty.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
-> index b31f2afb0286..cbaaa8fa7474 100644
-> --- a/drivers/staging/gdm724x/gdm_tty.c
-> +++ b/drivers/staging/gdm724x/gdm_tty.c
-> @@ -17,9 +17,9 @@
->  #define GDM_TTY_MAJOR 0
->  #define GDM_TTY_MINOR 32
->  
-> -#define WRITE_SIZE 2048
-> +#define WRITE_SIZE 2048UL
->  
-> -#define MUX_TX_MAX_SIZE 2048
-> +#define MUX_TX_MAX_SIZE 2048UL
->  
->  static inline bool gdm_tty_ready(struct gdm *gdm)
->  {
-> @@ -152,9 +152,8 @@ static void gdm_tty_send_complete(void *arg)
->  static ssize_t gdm_tty_write(struct tty_struct *tty, const u8 *buf, size_t len)
->  {
->  	struct gdm *gdm = tty->driver_data;
-> -	int remain = len;
-> -	int sent_len = 0;
-> -	int sending_len = 0;
-> +	size_t remain = len;
-> +	size_t sent_len = 0;
->  
->  	if (!gdm_tty_ready(gdm))
->  		return -ENODEV;
-> @@ -163,7 +162,7 @@ static ssize_t gdm_tty_write(struct tty_struct *tty, const u8 *buf, size_t len)
->  		return 0;
->  
->  	while (1) {
-> -		sending_len = min(MUX_TX_MAX_SIZE, remain);
-> +		size_t sending_len = min(MUX_TX_MAX_SIZE, remain);
->  		gdm->tty_dev->send_func(gdm->tty_dev->priv_dev,
->  					(void *)(buf + sent_len),
->  					sending_len,
-> -- 
-> 2.41.0
-> 
