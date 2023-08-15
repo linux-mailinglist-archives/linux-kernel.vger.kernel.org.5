@@ -2,173 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1AA77C68B
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 05:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1D5A77C68D
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 05:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234552AbjHODym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 14 Aug 2023 23:54:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54292 "EHLO
+        id S234629AbjHODzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 14 Aug 2023 23:55:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234651AbjHODw0 (ORCPT
+        with ESMTP id S234301AbjHODxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 14 Aug 2023 23:52:26 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9F1E7E;
-        Mon, 14 Aug 2023 20:52:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1692071539;
-        bh=WipNlHOpHfl2S9cGwbe9j74qSCdK+cUZfrf7SFk1wb4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=apekYgD9k+drgI4RI/aemoBomLvy1KqqUkRpN/1xd3wRfeaxaSin9q0NwqB8s7O/K
-         rzkoXWx+x3jk0gXCD5V1Z8SgBXjxzRc8hGts/UXSJzCLkHJVGSKI3ho6jEr+M6vCTV
-         P+zvFJUynb3zmjekbpy0xX+dCRWhG91zLN4Wc5M9n2PoSTbS8Zhr6OgqMz7kkigolR
-         F6UT+LTcBlA4nD/nPXGIPvY4pdCUUOBF8ArZcbWLz174FBZ0EonzNPo9Lx88ySQk+T
-         AFkL/FdF+Q/KVYBoibTkcQaPuHt96kOJYVANVuwLodSuySp333NY92E14p6CLxbbA3
-         +C/6DeoqZiaIQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RPy5H2P5Hz4wxn;
-        Tue, 15 Aug 2023 13:52:19 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Mahesh Salgaonkar <mahesh@linux.ibm.com>,
-        linuxppc-dev <linuxppc-dev@ozlabs.org>
-Cc:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 1/2] powerpc/rtas: Rename rtas_error_rc to
- rtas_generic_errno
-In-Reply-To: <169138864808.65607.6576358707894823512.stgit@jupiter>
-References: <169138864808.65607.6576358707894823512.stgit@jupiter>
-Date:   Tue, 15 Aug 2023 13:52:14 +1000
-Message-ID: <877cpxdksx.fsf@mail.lhotse>
+        Mon, 14 Aug 2023 23:53:11 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E7E3BC;
+        Mon, 14 Aug 2023 20:53:05 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fe7e1ef45dso7994530e87.1;
+        Mon, 14 Aug 2023 20:53:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692071583; x=1692676383;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vJ5e2Jmry9UpiO8uRUtDPMDVTbABCY1puQ0VmQCvbl0=;
+        b=OJ5QApd0CAXoDjLadFjjmuPwx8+fZY0UexKEMOqOH4yKMSbFbzsrbXVepPmQe1prRQ
+         LF1Bu8hknslDqsmGYCpUgqNCym7X+/C7b2M9Pc1DgtQgfn5ujbNghQ3wYYtzcLplRQfm
+         8QHrJTBDcZEMw1FV/3U/SAYelliUxI3RRHvNRY9YoNtb1F11UqnG5psxcV3otoZv1H82
+         RAf00kH2b6EPZSZsmkN3L+urNciXg/Q/0eKuRet4SzHCNb7NEmNdTbhygF92+NWrLrgB
+         Eyt0JES/Evsy2Y1DN8BurXBgSnotnuBY5ZTDyuw5OE+2Idp1LkJDfy88kM01j1R5wNe6
+         T2Jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692071583; x=1692676383;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vJ5e2Jmry9UpiO8uRUtDPMDVTbABCY1puQ0VmQCvbl0=;
+        b=HiT2up2kirQHIk2ydRHnRZ7L5DK2zr7hRMOmDt09r0Ryo3Kii4dq9qL1osqIuahhio
+         zE+AD2HEwy/cHgy5ukNyKYXce9QE7TvliFWGA9GZj6AKtr0rzK9GrREV60p4WDc/MmzV
+         OP3kPHrvxkFbcYoV+HfFwtq+0aTuMUraF7Jaqy/zFXV0+5MNjpviKWkWlpDdke/6La+z
+         MdFHuG09RNJUeQ65D5ZQIvXTZY+qA1SuvvjZOnT26SCu3HmLolPJ2fv1u10BfGkBjy47
+         ANJQTS2OYm85cyf9MbiKxjn4jIUavWxKsGNLJOy11Krlmmh4YaOf4cpOpAREKWZuCc9R
+         uNDg==
+X-Gm-Message-State: AOJu0YzctuRckz1eIUQxxnLORSHXF8+lu6Fj1+XtJDG4fcHhYRrtns2z
+        S538xpr/3xtleTL95c66lIcwzFJwpl82S4Oq6mJdzqixVGMUMWiists=
+X-Google-Smtp-Source: AGHT+IGU+FJw1H1zuB+qJSfWK+rj8sA16TbcHTfL8bNyYuYszaoW5dWb0Y5jzVgkW5z6Afcl0xY28miDe5sPkx7It34=
+X-Received: by 2002:a05:6512:33d1:b0:4e0:a426:6ddc with SMTP id
+ d17-20020a05651233d100b004e0a4266ddcmr9714070lfg.0.1692071582510; Mon, 14 Aug
+ 2023 20:53:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+From:   Yikebaer Aizezi <yikebaer61@gmail.com>
+Date:   Tue, 15 Aug 2023 11:52:50 +0800
+Message-ID: <CALcu4rY9qc-bhYnpNYwyVtcn3-6+YQ=Z4GUSXuP1vFtQtiY65A@mail.gmail.com>
+Subject: WARNING in kvm_vcpu_reset
+To:     linux-kernel@vger.kernel.org, dave.hansen@linux.intel.com,
+        bp@alien8.de, hpa@zytor.com, kvm@vger.kernel.org, mingo@redhat.com,
+        pbonzini@redhat.com, Sean Christopherson <seanjc@google.com>,
+        tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mahesh Salgaonkar <mahesh@linux.ibm.com> writes:
-> rtas_generic_errno() function will convert the generic rtas return codes
-> into errno.
+Hello,
 
-I don't see the point of renaming it, it just creates unnecessary churn.
-The existing name seems OK to me.
+When using Healer to fuzz the Latest Linux-6.5-rc6,  the following crash
+was triggered.
 
-...
+HEAD commit: 2ccdd1b13c591d306f0401d98dedc4bdcd02b421 (tag: v6.5-rc6=EF=BC=
+=89
+git tree: upstream
 
-> diff --git a/arch/powerpc/include/asm/rtas.h b/arch/powerpc/include/asm/rtas.h
-> index 3abe15ac79db1..5572a0a2f6e18 100644
-> --- a/arch/powerpc/include/asm/rtas.h
-> +++ b/arch/powerpc/include/asm/rtas.h
-> @@ -202,7 +202,9 @@ typedef struct {
->  #define RTAS_USER_REGION_SIZE (64 * 1024)
->  
->  /* RTAS return status codes */
-> -#define RTAS_BUSY		-2    /* RTAS Busy */
-> +#define RTAS_HARDWARE_ERROR	(-1)  /* Hardware Error */
-> +#define RTAS_BUSY		(-2)  /* RTAS Busy */
+console output:
+https://drive.google.com/file/d/1Ccnfmov-_93xUAySMZSzVcoh48Aca3l7/view?usp=
+=3Ddrive_link
+kernel config:https://drive.google.com/file/d/17hBWtOF3u_m7QNnAglE4GRL-sjI0=
+YfQH/view?usp=3Ddrive_link
+C reproducer:https://drive.google.com/file/d/1Qji71sIPoWM1_tjYFN59y-TNHXNtS=
+Y8K/view?usp=3Ddrive_link
+Syzlang reproducer:
+https://drive.google.com/file/d/1_jSavSvc5zHbe8lW8Oo6OXK4Aj5ijcec/view?usp=
+=3Ddrive_link
 
-Are the brackets necessary?
 
-> +#define RTAS_INVALID_PARAMETER	(-3)  /* Invalid indicator/domain/sensor etc. */
->  #define RTAS_EXTENDED_DELAY_MIN	9900
->  #define RTAS_EXTENDED_DELAY_MAX	9905
->  
-> @@ -212,6 +214,11 @@ typedef struct {
->  #define RTAS_THREADS_ACTIVE     -9005 /* Multiple processor threads active */
->  #define RTAS_OUTSTANDING_COPROC -9006 /* Outstanding coprocessor operations */
->  
-> +/* statuses specific to get-sensor-state */
-> +#define RTAS_SLOT_UNISOLATED		(-9000)
-> +#define RTAS_SLOT_NOT_UNISOLATED	(-9001)
-> +#define RTAS_SLOT_NOT_USABLE		(-9002)
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Yikebaer Aizezi <yikebaer61@gmail.com>
 
-These aren't specific to get-sensor-state.
+--------------------------------------------------------------cut
+here-----------------------------------------------------------------------=
+-----------
 
-They're used by at least: ibm,manage-flash-image, ibm,activate-firmware,
-ibm,configure-connector, set-indicator etc.
+WARNING: CPU: 0 PID: 20692 at arch/x86/kvm/x86.c:12023
+kvm_vcpu_reset+0x1d6/0x1410 arch/x86/kvm/x86.c:12023
+Modules linked in:
+CPU: 0 PID: 20692 Comm: syz-executor Not tainted 6.5.0-rc6 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:kvm_vcpu_reset+0x1d6/0x1410 arch/x86/kvm/x86.c:12023
+Code: 8e 7a 11 00 00 8b 9d 98 02 00 00 31 ff 41 89 df 41 83 e7 01 44
+89 fe e8 f8 6e 6f 00 45 84 ff 0f 84 a8 09 00 00 e8 ea 72 6f 00 <0f> 0b
+e8 e3 72 6f 00 4c 89 e2 48 b8 00 00 00 00 00 fc ff df 48 c1
+RSP: 0018:ffffc9000342fa10 EFLAGS: 00010216
+RAX: 00000000000037c6 RBX: 0000000000000002 RCX: ffffc90002b59000
+RDX: 0000000000040000 RSI: ffffffff8110f806 RDI: 0000000000000005
+RBP: ffff8881130dc3b0 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000002 R11: 0000000000000000 R12: ffff8881130dc648
+R13: 0000000000000001 R14: ffff8881130dc5f8 R15: 0000000000000000
+FS:  00007f6d890e4640(0000) GS:ffff888063c00000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000112b8d000 CR4: 0000000000750ef0
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ shutdown_interception+0x66/0xb0 arch/x86/kvm/svm/svm.c:2148
+ svm_invoke_exit_handler+0x79/0x3e0 arch/x86/kvm/svm/svm.c:3390
+ svm_handle_exit+0x3a8/0x7c0 arch/x86/kvm/svm/svm.c:3450
+ vcpu_enter_guest arch/x86/kvm/x86.c:10868 [inline]
+ vcpu_run+0x2b98/0x4df0 arch/x86/kvm/x86.c:10971
+ kvm_arch_vcpu_ioctl_run+0x4db/0x1a80 arch/x86/kvm/x86.c:11192
+ kvm_vcpu_ioctl+0x56c/0xf40 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4124
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl fs/ioctl.c:856 [inline]
+ __x64_sys_ioctl+0x199/0x210 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f6d87e9442d
+Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 b4 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f6d890e4048 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f6d87fcc0a0 RCX: 00007f6d87e9442d
+RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000007
+RBP: 00007f6d87f014b8 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f6d87f00b51
+R13: 000000000000000b R14: 00007f6d87fcc0a0 R15: 00007f6d890c4000
+ </TASK>
 
-They have different meanings for those calls. I think you're best to
-just leave the constant values in rtas_error_rc().
-
->  /* RTAS event classes */
->  #define RTAS_INTERNAL_ERROR		0x80000000 /* set bit 0 */
->  #define RTAS_EPOW_WARNING		0x40000000 /* set bit 1 */
-> @@ -425,6 +432,7 @@ extern int rtas_set_indicator(int indicator, int index, int new_value);
->  extern int rtas_set_indicator_fast(int indicator, int index, int new_value);
->  extern void rtas_progress(char *s, unsigned short hex);
->  int rtas_ibm_suspend_me(int *fw_status);
-> +int rtas_generic_errno(int rtas_rc);
->  
->  struct rtc_time;
->  extern time64_t rtas_get_boot_time(void);
-> diff --git a/arch/powerpc/kernel/rtas.c b/arch/powerpc/kernel/rtas.c
-> index c087eeee320ff..80b6099e8ce20 100644
-> --- a/arch/powerpc/kernel/rtas.c
-> +++ b/arch/powerpc/kernel/rtas.c
-> @@ -1330,33 +1330,34 @@ bool __ref rtas_busy_delay(int status)
->  }
->  EXPORT_SYMBOL_GPL(rtas_busy_delay);
->  
-> -static int rtas_error_rc(int rtas_rc)
-> +int rtas_generic_errno(int rtas_rc)
->  {
->  	int rc;
->  
->  	switch (rtas_rc) {
-> -		case -1: 		/* Hardware Error */
-> -			rc = -EIO;
-> -			break;
-> -		case -3:		/* Bad indicator/domain/etc */
-> -			rc = -EINVAL;
-> -			break;
-> -		case -9000:		/* Isolation error */
-> -			rc = -EFAULT;
-> -			break;
-> -		case -9001:		/* Outstanding TCE/PTE */
-> -			rc = -EEXIST;
-> -			break;
-> -		case -9002:		/* No usable slot */
-> -			rc = -ENODEV;
-> -			break;
-> -		default:
-> -			pr_err("%s: unexpected error %d\n", __func__, rtas_rc);
-> -			rc = -ERANGE;
-> -			break;
-> +	case RTAS_HARDWARE_ERROR:	/* Hardware Error */
-> +		rc = -EIO;
-> +		break;
-> +	case RTAS_INVALID_PARAMETER:	/* Bad indicator/domain/etc */
-> +		rc = -EINVAL;
-> +		break;
-> +	case RTAS_SLOT_UNISOLATED:	/* Isolation error */
-> +		rc = -EFAULT;
-> +		break;
-> +	case RTAS_SLOT_NOT_UNISOLATED:	/* Outstanding TCE/PTE */
-> +		rc = -EEXIST;
-> +		break;
-> +	case RTAS_SLOT_NOT_USABLE:	/* No usable slot */
-> +		rc = -ENODEV;
-> +		break;
-> +	default:
-> +		pr_err("%s: unexpected error %d\n", __func__, rtas_rc);
-> +		rc = -ERANGE;
-> +		break;
->  	}
->  	return rc;
->  }
-> +EXPORT_SYMBOL(rtas_generic_errno);
-  
-Should be GPL.
-
-cheers
+Modules linked in:
+CPU: 0 PID: 20692 Comm: syz-executor Not tainted 6.5.0-rc6 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:kvm_vcpu_reset+0x1d6/0x1410 arch/x86/kvm/x86.c:12023
+Code: 8e 7a 11 00 00 8b 9d 98 02 00 00 31 ff 41 89 df 41 83 e7 01 44
+89 fe e8 f8 6e 6f 00 45 84 ff 0f 84 a8 09 00 00 e8 ea 72 6f 00 <0f> 0b
+e8 e3 72 6f 00 4c 89 e2 48 b8 00 00 00 00 00 fc ff df 48 c1
+RSP: 0018:ffffc9000342fa10 EFLAGS: 00010216
+RAX: 00000000000037c6 RBX: 0000000000000002 RCX: ffffc90002b59000
+RDX: 0000000000040000 RSI: ffffffff8110f806 RDI: 0000000000000005
+RBP: ffff8881130dc3b0 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000002 R11: 0000000000000000 R12: ffff8881130dc648
+R13: 0000000000000001 R14: ffff8881130dc5f8 R15: 0000000000000000
+FS:  00007f6d890e4640(0000) GS:ffff888063c00000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000112b8d000 CR4: 0000000000750ef0
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ shutdown_interception+0x66/0xb0 arch/x86/kvm/svm/svm.c:2148
+ svm_invoke_exit_handler+0x79/0x3e0 arch/x86/kvm/svm/svm.c:3390
+ svm_handle_exit+0x3a8/0x7c0 arch/x86/kvm/svm/svm.c:3450
+ vcpu_enter_guest arch/x86/kvm/x86.c:10868 [inline]
+ vcpu_run+0x2b98/0x4df0 arch/x86/kvm/x86.c:10971
+ kvm_arch_vcpu_ioctl_run+0x4db/0x1a80 arch/x86/kvm/x86.c:11192
+ kvm_vcpu_ioctl+0x56c/0xf40 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4124
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl fs/ioctl.c:856 [inline]
+ __x64_sys_ioctl+0x199/0x210 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f6d87e9442d
+Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 b4 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f6d890e4048 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f6d87fcc0a0 RCX: 00007f6d87e9442d
+RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000007
+RBP: 00007f6d87f014b8 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f6d87f00b51
+R13: 000000000000000b R14: 00007f6d87fcc0a0 R15: 00007f6d890c4000
+ </TASK>
+Kernel panic - not syncing: kernel: panic_on_warn set ...
+CPU: 0 PID: 20692 Comm: syz-executor Not tainted 6.5.0-rc6 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd5/0x150 lib/dump_stack.c:106
+ panic+0x67e/0x730 kernel/panic.c:340
+ check_panic_on_warn+0xad/0xb0 kernel/panic.c:236
+ __warn+0xee/0x390 kernel/panic.c:673
+ __report_bug lib/bug.c:199 [inline]
+ report_bug+0x2d9/0x500 lib/bug.c:219
+ handle_bug+0x3c/0x70 arch/x86/kernel/traps.c:326
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:347
+ asm_exc_invalid_op+0x16/0x20 arch/x86/include/asm/idtentry.h:568
+RIP: 0010:kvm_vcpu_reset+0x1d6/0x1410 arch/x86/kvm/x86.c:12023
+Code: 8e 7a 11 00 00 8b 9d 98 02 00 00 31 ff 41 89 df 41 83 e7 01 44
+89 fe e8 f8 6e 6f 00 45 84 ff 0f 84 a8 09 00 00 e8 ea 72 6f 00 <0f> 0b
+e8 e3 72 6f 00 4c 89 e2 48 b8 00 00 00 00 00 fc ff df 48 c1
+RSP: 0018:ffffc9000342fa10 EFLAGS: 00010216
+RAX: 00000000000037c6 RBX: 0000000000000002 RCX: ffffc90002b59000
+RDX: 0000000000040000 RSI: ffffffff8110f806 RDI: 0000000000000005
+RBP: ffff8881130dc3b0 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000002 R11: 0000000000000000 R12: ffff8881130dc648
+R13: 0000000000000001 R14: ffff8881130dc5f8 R15: 0000000000000000
+ shutdown_interception+0x66/0xb0 arch/x86/kvm/svm/svm.c:2148
+ svm_invoke_exit_handler+0x79/0x3e0 arch/x86/kvm/svm/svm.c:3390
+ svm_handle_exit+0x3a8/0x7c0 arch/x86/kvm/svm/svm.c:3450
+ vcpu_enter_guest arch/x86/kvm/x86.c:10868 [inline]
+ vcpu_run+0x2b98/0x4df0 arch/x86/kvm/x86.c:10971
+ kvm_arch_vcpu_ioctl_run+0x4db/0x1a80 arch/x86/kvm/x86.c:11192
+ kvm_vcpu_ioctl+0x56c/0xf40 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4124
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl fs/ioctl.c:856 [inline]
+ __x64_sys_ioctl+0x199/0x210 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f6d87e9442d
+Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 b4 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f6d890e4048 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f6d87fcc0a0 RCX: 00007f6d87e9442d
+RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000007
+RBP: 00007f6d87f014b8 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f6d87f00b51
+R13: 000000000000000b R14: 00007f6d87fcc0a0 R15: 00007f6d890c4000
+ </TASK>
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+Kernel Offset: disabled
+Rebooting in 1 seconds..
