@@ -2,202 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4686677C885
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 09:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9B677C88C
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 09:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234874AbjHOH1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 03:27:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59846 "EHLO
+        id S234987AbjHOHaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 03:30:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232566AbjHOH06 (ORCPT
+        with ESMTP id S234837AbjHOH3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 03:26:58 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA48106
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 00:26:57 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0ADE821986;
-        Tue, 15 Aug 2023 07:26:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1692084416; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=1d8p6LSBYvfx6m5+KCyOytVwIyb23YiSy74u7gud+y4=;
-        b=XL5CMDmp2XVU/BbVCsTumtFhoDbyj2NleiXkuGGMQ+CVWDP4rJX0o3LbKFZZqew1GCzW3K
-        ZARuxmC2+odRJ3Tf225gWBKzP0IoE621u1NZnayrpkNKL+a4/thSSlVjbZtfnuP5qHlChy
-        TRNk1/YCI8Oe3sZTYgeTtlFmWEgG6xk=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C437713909;
-        Tue, 15 Aug 2023 07:26:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id YHJ1Lr8o22QYBwAAMHmgww
-        (envelope-from <jgross@suse.com>); Tue, 15 Aug 2023 07:26:55 +0000
-Message-ID: <5abd6c5f-b9fe-4fd1-95d7-f92fa763eb10@suse.com>
-Date:   Tue, 15 Aug 2023 09:26:55 +0200
+        Tue, 15 Aug 2023 03:29:31 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E708DFB
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 00:29:28 -0700 (PDT)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37EJOsiS023657;
+        Tue, 15 Aug 2023 07:29:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=corp-2023-03-30;
+ bh=p6FsxYGsyGejCg7s9U6WTFuyEH3DhYB7+UOYzZu9wK0=;
+ b=ogB1toqgaXF9G+r5rbyR/se3gmufk1B95lb2RvhgQAtPgQBGJ+PrWJ541SPduu3iVo2I
+ oiwKJOpXzLRYyVdxEjJPoMWCPfTryg7qC+f+WTXRNbNqt4k0C2fDuNzlHRWNIj4+AGGX
+ zfqTfmfYHA0ilWEpmAiYTZowwmkY/xM1Ro3w6mrhED35109HPlCoPRf3uZrCLDfJ0GR4
+ BJnKzkAKKqhIpBJTZ9QpKQRFbUZtHtmg1RHdbeMPhSqTnwB01WPPQzq3Z1K3ydoniQvh
+ YfrCqbTPOvNrUT548jWW5OzERdA/zkpupupsheXEs2papK46Wf4kYZg/S0FuRQeqpktl 8Q== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3se2w5v50q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Aug 2023 07:29:13 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37F6NCRG006641;
+        Tue, 15 Aug 2023 07:29:11 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3sey2ct8yv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Aug 2023 07:29:11 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YunKtKQx/TnRCx0JoDYg3Yu/LVqh6BxeoZnBt+zbhjAsfj/ArNSMWjMB7DzAhhRuZQzO+fG71BslyJaqR5jtJ50E2nw73MffTIXo1wA91XdePYwPPFsXmesZRbhqDJkTTT+HHp5JvEQmJwwm68V7lOmROrQHfP3JXzABmSch5JXd8T+aPjoUdTQLVAqNa6WFPLxJS3OPp+ZobOn12s4y2x+n3dPFyElA7rm/XcGsBchy1cGYe/W7JwuCXVBHudFx9tC6O0nh9gpssCoOjKNoVLFVs2T5QuUYeR8BVJjuXlhr7d75H7FBIcIF0nIQEU/rXFn/ZXI/3tqTBb2xu07oEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=p6FsxYGsyGejCg7s9U6WTFuyEH3DhYB7+UOYzZu9wK0=;
+ b=EzXl6GCh1m6JAI0tZ34aI6JvT02xbvfPBCAXo5eVVmH4V3a7BwrOHTP6FR3iHpkZ94AdrzXI99cC9v6JNf5GfZKr9oQKJycS5n/MjOWlsyzxM1IQ7gzgcVSPa7ODzGZn1eEk6LT7EtilOjpqND4yfdAt+JosiDzQAkxuwfQ1X2+WNv3dizCBEplpoHEMSKdFiUuH5VSR5xc9KEhFu2hxgK4hk2yAGfxSwzGJHSTeomTaugoGgUWDfQlYw182K3Sb6goDVt4h/RDRSFkvn7MPxLmRAtXf+fD+TmElLMy6nrjrVx04aTC9HUSNjuOKtZ8wYC4FISq2vnyt+2imkPurBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=p6FsxYGsyGejCg7s9U6WTFuyEH3DhYB7+UOYzZu9wK0=;
+ b=qYqEwWYk7lhU79zAo0FMcB+h+MFAL31Q3bGYGsIXjS9XJUyaJYEeHfzuGwmnQRAX1yeRQBQxd/c8K8aKcNGjWIXNKmdSnO8NCGoWR8+erGHRAe6PMpgShIKUozf18zsUoeHtOBtJCeJavJprfJjXiqD9p95HJCWERVMTeFj69Fc=
+Received: from SN6PR10MB3022.namprd10.prod.outlook.com (2603:10b6:805:d8::25)
+ by DS0PR10MB6994.namprd10.prod.outlook.com (2603:10b6:8:151::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Tue, 15 Aug
+ 2023 07:29:09 +0000
+Received: from SN6PR10MB3022.namprd10.prod.outlook.com
+ ([fe80::26d3:6f41:6415:8c35]) by SN6PR10MB3022.namprd10.prod.outlook.com
+ ([fe80::26d3:6f41:6415:8c35%3]) with mapi id 15.20.6678.022; Tue, 15 Aug 2023
+ 07:29:09 +0000
+Date:   Tue, 15 Aug 2023 03:29:07 -0400
+From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+To:     Jann Horn <jannh@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 15/15] mm/mmap: Change vma iteration order in
+ do_vmi_align_munmap()
+Message-ID: <20230815072907.fsvetn4dzohgt2z5@revolver>
+Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+        Jann Horn <jannh@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20230724183157.3939892-1-Liam.Howlett@oracle.com>
+ <20230724183157.3939892-16-Liam.Howlett@oracle.com>
+ <CAG48ez09ELhVYZftGtcxrvUaW6pF+k9RzwFtjRs-pcRx1aUweQ@mail.gmail.com>
+ <20230814191835.jzj7ryvhi6dqwruy@revolver>
+ <CAG48ez2UbpFb41gfcwyoA73ado=+YEiRtU2KmKt560_M_B7JUw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAG48ez2UbpFb41gfcwyoA73ado=+YEiRtU2KmKt560_M_B7JUw@mail.gmail.com>
+User-Agent: NeoMutt/20220429
+X-ClientProxiedBy: YTBP288CA0020.CANP288.PROD.OUTLOOK.COM
+ (2603:10b6:b01:14::33) To SN6PR10MB3022.namprd10.prod.outlook.com
+ (2603:10b6:805:d8::25)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] xen: Illustrate the transition to sync_try_cmpxchg
-Content-Language: en-US
-To:     Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, xen-devel@lists.xenproject.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-References: <20230710192440.47140-1-ubizjak@gmail.com>
- <20230710192440.47140-3-ubizjak@gmail.com>
-From:   Juergen Gross <jgross@suse.com>
-Autocrypt: addr=jgross@suse.com; keydata=
- xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
- ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
- dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
- NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
- XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
- AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
- CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
- mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
- G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
- kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
- Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
- RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
- vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
- sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
- aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
- w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
- auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
- 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
- fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
- HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
- QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
- ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
-In-Reply-To: <20230710192440.47140-3-ubizjak@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------H0X8H9rUDW0PJBMy8EwtcgMS"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN6PR10MB3022:EE_|DS0PR10MB6994:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4176dd4c-0fb3-4174-b353-08db9d6150de
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GZmqIo/G8qbtRW7C8fWpHGzMHXQCp51YzUn7Q7j8heVtEXe2zKHp8NLwl66REZ+L8fWLobQAQZP86lGpG+11a5Gq99Y79+pCZVUJ1rUv5iSnG2H0jUevWGTfK1lZQVPtebuB3fEAxtGxtH5yyiWljgQQiW37AUw8NjL3LMBpJLox46yZqfOzv4ykbm/LqVrKhb/VFtzEXbnmvruO54nAg+hIt8VT/jYUPmR7QA57xrSFZ5+5OILCGLQJzCuzD9oDL/W1lOxIuYMs+/d668gtCzn+kkUY0aMLss2dDF0JzvkYob6UsYQEvQihj/5RwYJb+cVVGAPfgiH0VTfJd71WBS1Tb7hbD31+ypZkTHtQ2DE8FosfT2w6dtfR9+WT5RqgXuUPD296gZy+SCtQ75JT5ZjY0adGBY6VcGuLupkCSE9zU5YMxcyVOkw1bSR7DOj+qsKD6Gf/BHET/ayBiWLzR0njSvAF91+L8kqBMnxnnPFvss9tk0CQn6wnrTzEEWSP7K0vdsNo//LZ33TCvWuSY3mSEZb2NyZO3BPAVH5vp+yN5zP6rxk4rO8kKP8QXKG7
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB3022.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(366004)(136003)(346002)(396003)(376002)(39860400002)(451199021)(1800799006)(186006)(38100700002)(54906003)(6486002)(478600001)(2906002)(5660300002)(86362001)(33716001)(4326008)(6916009)(66476007)(66556008)(66946007)(41300700001)(8936002)(8676002)(316002)(1076003)(53546011)(6506007)(26005)(83380400001)(9686003)(6512007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZmZoRllQbmtDYXBTS2Jld1pNenNuckFrVmdCQWlmVnlPWFBzeDA2VkEwTC9G?=
+ =?utf-8?B?QVV3V3pSUUJncXQxMGkrTFNEcW96R1dOY0w3ZVFRZCtjVkd2RFBuUkhlTWlZ?=
+ =?utf-8?B?TFcrem5oaGtxYzk4MFVEbUNPVExZT0xPOVJqN2dxc3VFN2M4K1ZwMm1zdllZ?=
+ =?utf-8?B?NlRPMEZCR05sWXhyU2pZWnErbnRpdkJDUUplZFJYUG93T0thQ2FLMmt5YTlG?=
+ =?utf-8?B?Z3FNZ2VQOUR5MjNyVS9hZUc3M0lPY2xjcUhrem55N2JEdjRtdS9uY2Y1cmgv?=
+ =?utf-8?B?TjBHRkZwNkRZSjZsbGl5K0xDREZ1b3g2NGhtVzFTK3pFSmZJbDlLRUdPOFNz?=
+ =?utf-8?B?SWY1eEFGYWZEd3JFVUgwTFRMYS93bThJOXBxWFJpVGhwT0NFZlM1VmZ6K2FY?=
+ =?utf-8?B?dkVya0s1V1JpL3dPcmF0MkRpS1gzdzl1ejF3WktLV0VFSUhQeVJWUnM3V1JT?=
+ =?utf-8?B?bXFreThCekUyb29TdTlnc1FTVklFVVlwSDZ6bDRtbndPRVFHRTVwWWszWS9V?=
+ =?utf-8?B?OUZQUG1oUjJCSDgvRU81RFc1SE1Hak8zZDdsb3dndGhWZ3huZHRoa0srNjRq?=
+ =?utf-8?B?YUhScjM2MTBOTHowS3g4clc3WU5lL0Y1bzlrVGhESFdYNFRyczZqQWdkYWVZ?=
+ =?utf-8?B?L1hOOE4vK1BRZWg2SGxNSDlsc3ZtU3M1TW1PdXd0b2dvTkJQcllQRWcvcllF?=
+ =?utf-8?B?My9GS21kN25mUHNTdXB1cFJlNXdpWlNMKzlrY202K2lkTW1IVHk5UmlOTzdL?=
+ =?utf-8?B?N0JhQnM4UlE0akVxUjgwdjZQYzVUTGZTYjc5REtVOFlLVi84aTFrdjZiQWxL?=
+ =?utf-8?B?YXk2bS94bXYyOE02SVU1ME5jRE9CbWpYdkpkQW8vbUZVZEMzeGpSK1ZWZW9a?=
+ =?utf-8?B?U3d0UG1KYm1BSUtVM3B2L2ZROS9NN1ovT2ZuMkQ0SCthZW1LTXEvRHgyb3pp?=
+ =?utf-8?B?ZkhGa0I4UEpSY0xIcDBScVRiSnlQektWY0NrTHhlbVVHT2FJR1g1WU9wWGw0?=
+ =?utf-8?B?YmQ2Qk9leFV1STF5SWx5VEdraGNkeHNpLzR6OU5uTVBMOThFemxPTWtJWjA0?=
+ =?utf-8?B?QnZaRUpQZlcwa2hMRnc1dzYvYVVHd1IxSjlEa0tsUlFIVE5yQWxheG96K1Na?=
+ =?utf-8?B?MmduY1RiV1ZnY0l0SUhZMDR3d2grQ2Q5V3cwUDJRNFZkSy9xQkpPOWhzbFhQ?=
+ =?utf-8?B?TW5vUGFSOWJpZm0xNTFVS002MjBwNFBwaXdhT2xOeXVVNjAvZTBFdngxWmZD?=
+ =?utf-8?B?SW5yL2hpMVhkWk9VSFp0bEx0TmtvOUdkRXZQRVZURjZQUWtwbmtoazVQWndw?=
+ =?utf-8?B?Zk11ZnVXYkJIYStPOUx6V2REYUg3Qml3dFZkNGxNWjUzaThJZ3ZSbHo2K3hK?=
+ =?utf-8?B?SWRxZ003NkNnZHR2RGpLLzQ1ODMrczRzVElGL0t0b1Z3clNJVVJsNmxCWDJQ?=
+ =?utf-8?B?QTgxb1VRMWNNcTQvVWJQNU0raEN4VzYxQTc1ZU5oSnRKS2wxUUNtbFJQRjVl?=
+ =?utf-8?B?THp1bCt3OW9ZVENoTjQyL3Q0RjA4WGlyRlU5R2pob3ZqQ2UrRHl0TDNvK1VY?=
+ =?utf-8?B?dFdYRUZGVWZ3dThLK25nVWRJSXpXOExLNEZtZnE1M1ZoOFppK1liN0ZQUU4z?=
+ =?utf-8?B?eGJneDU5SHZkVlVzRXJPclppM0tQVWJRR05nbTlsUi90LzRVZmZRY3BNNWVh?=
+ =?utf-8?B?Mityc0RzNUxHQUdUbGlPSTVzTWFDMTVOcFJkT3hvSEdTbUxSSEU2eno2azVE?=
+ =?utf-8?B?TmtORnRqb0ZReFFuVTh1ck9ybzhheGM1V3pPTVdoZ0lRclJGVnJXYXNyTUpx?=
+ =?utf-8?B?R3o0NUVDU1ZDR2gvNnFsK1krVGFlMkdON3M5UGlQdDdEQ2VVQ0FtcmZnTXk1?=
+ =?utf-8?B?Zk9FZ0IxMU1Sb2F1NGZNQkRmVGszSnhXMENGd0ZPMC9qZDZVUUZyVlNWU1hX?=
+ =?utf-8?B?WHlOTXFyejZ6NC9WZm0rclNRQTRmSzhSZVViVGZuMk5ET3lSdlFhZjhnZk53?=
+ =?utf-8?B?QlRNTVNUN1JxcWhVbXpZbE5MYTl1KzBiOVV6OEtyRkIzM3c3VzcrNGR2TThD?=
+ =?utf-8?B?eUwxRzIzWU14cHZlY3UzQ0tjdFJSMDVSQnBUdkU5Sy9xdlZycjNCemRWdmph?=
+ =?utf-8?B?WFhESVAvSDhLVDk3L244QlpvOEJRam5RczNRUzc3dVpuVFc4TjRhSXoyNVA2?=
+ =?utf-8?B?REE9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: X0rGxeCMCmMLHQLwIiMwo0kZrx816XDD1sCsFz2tuG/Dk+lfC591XFXivetJ624VrWUWD4Vxc951KjluWg6uAO04rpLzxVtQVhlhoTC5jng1sQ3XcPuf8qMM32ROOAAmXAzN2e/MeYD7Suayo8cIFUw/g+jIpWuCAG906mYx8YEmqejQaD8NDgG14kR3g0P7/8WVyA0EKM2Qu0RWcWr6PpRyl9Vcp/6obezkkqqJ7rmeCJqXrge4LHeorATfeCs+fJeaAeue8X/u5RFiFYUOwKDVlWztEBUFdg722xbVrW6aSKt7CwVixvE9u5HnWhSw8MpHQPYajEvfHz4QmCWzdTDv4J3GdqqOpuNqxtB7OOCzhg4OhFlAwRjP8Hw88kFxeHE/blERPR5fKHyC0lENZ8yz41qzThJEL6Wg3SmemNW1LjrLZq7x2NHno1DuxFQz/nT7NJJMb1nXwwvPflto1afpTym57e9xXErrG9XDe1EeAKblykSz4wT8OeR9sUviWwVscfeNf5BOOi2xBpS8N/lU4pnuxiCXLHNIAmX9w9jEjjrb/uY0YVZqDee+iOg478lfI5335D3J1xCfNCmzL3WKLFyArQKNS3dgPfjfnuF3L0mowpqSiMq7tSXFsZ7we3ZybLgp+v3zf9Nf2yUz7uCevm3lAI7ytovCtHSYH79NXYMqJ9x0IKDDDSLGTAKFwtdrHUveEP3UQ83YtjYomLWBiypdoSOfhG7NigqwIqjWMwGOp/ra1syIVyLPNV9yuU0RqYIrDeYKMJrFVcGx5s+3EP6WdcUwEAB9XD2+PgNby4J6wSmGzhP5JdLzbQMJIF30QI1UvDJL14rAn7DVc83yWXk4ejVIKQqfgsd+3vw8wSYXrLdV9aEznCO16Ong
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4176dd4c-0fb3-4174-b353-08db9d6150de
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB3022.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Aug 2023 07:29:09.8576
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fNeeokO42p0LmnNvYi2qNB9wTPpFBiqSIej/l50jyGMIyACYn9i6/3A2Q+7jOCGRlo5jWiL9mVntHogtCgR7gQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB6994
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-15_06,2023-08-10_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ mlxlogscore=444 bulkscore=0 adultscore=0 spamscore=0 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308150066
+X-Proofpoint-ORIG-GUID: d1KyVYoYcmYhZLRb9GF2jl0SjXUa5agT
+X-Proofpoint-GUID: d1KyVYoYcmYhZLRb9GF2jl0SjXUa5agT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------H0X8H9rUDW0PJBMy8EwtcgMS
-Content-Type: multipart/mixed; boundary="------------9INa0Hf6BXMQPEVZrbWvFYeO";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Uros Bizjak <ubizjak@gmail.com>, linux-kernel@vger.kernel.org,
- x86@kernel.org, xen-devel@lists.xenproject.org
-Cc: Peter Zijlstra <peterz@infradead.org>,
- Stefano Stabellini <sstabellini@kernel.org>,
- Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
-Message-ID: <5abd6c5f-b9fe-4fd1-95d7-f92fa763eb10@suse.com>
-Subject: Re: [PATCH 3/3] xen: Illustrate the transition to sync_try_cmpxchg
-References: <20230710192440.47140-1-ubizjak@gmail.com>
- <20230710192440.47140-3-ubizjak@gmail.com>
-In-Reply-To: <20230710192440.47140-3-ubizjak@gmail.com>
+* Jann Horn <jannh@google.com> [230814 17:22]:
+> On Mon, Aug 14, 2023 at 10:32=E2=80=AFPM Liam R. Howlett
+> <Liam.Howlett@oracle.com> wrote:
+> > * Jann Horn <jannh@google.com> [230814 11:44]:
+> > > @akpm
+> > >
+> > > On Mon, Jul 24, 2023 at 8:31=E2=80=AFPM Liam R. Howlett <Liam.Howlett=
+@oracle.com> wrote:
+> > > > Since prev will be set later in the function, it is better to rever=
+se
+> > > > the splitting direction of the start VMA (modify the new_below argu=
+ment
+> > > > to __split_vma).
+> > >
+> > > It might be a good idea to reorder "mm: always lock new vma before
+> > > inserting into vma tree" before this patch.
+> > >
+> > > If you apply this patch without "mm: always lock new vma before
+> > > inserting into vma tree", I think move_vma(), when called with a star=
+t
+> > > address in the middle of a VMA, will behave like this:
+> > >
+> > >  - vma_start_write() [lock the VMA to be moved]
+> > >  - move_page_tables() [moves page table entries]
+> > >  - do_vmi_munmap()
+> > >    - do_vmi_align_munmap()
+> > >      - __split_vma()
+> > >        - creates a new VMA **covering the moved range** that is **not=
+ locked**
+> > >        - stores the new VMA in the VMA tree **without locking it** [1=
+]
+> > >      - new VMA is locked and removed again [2]
+> > > [...]
+> > >
+> > > So after the page tables in the region have already been moved, I
+> > > believe there will be a brief window (between [1] and [2]) where page
+> > > faults in the region can happen again, which could probably cause new
+> > > page tables and PTEs to be created in the region again in that window=
+.
+> > > (This can't happen in Linus' current tree because the new VMA created
+> > > by __split_vma() only covers the range that is not being moved.)
+> >
+> > Ah, so my reversing of which VMA to keep to the first split call opens =
+a
+> > window where the VMA being removed is not locked.  Good catch.
 
---------------9INa0Hf6BXMQPEVZrbWvFYeO
-Content-Type: multipart/mixed; boundary="------------ENw9nYNqNn7D9oSXkACrK1AY"
+Looking at this again, I think it exists in Linus' tree and my change
+actually removes this window:
 
---------------ENw9nYNqNn7D9oSXkACrK1AY
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+-               error =3D __split_vma(vmi, vma, start, 0);
++               error =3D __split_vma(vmi, vma, start, 1);
+                if (error)
+                        goto start_split_failed;
 
-T24gMTAuMDcuMjMgMjE6MjEsIFVyb3MgQml6amFrIHdyb3RlOg0KPiBUaGlzIHBhdGNoIGls
-bHVzdHJhdGVzIHRoZSB0cmFuc2l0aW9uIHRvIHN5bmNfdHJ5X2NtcHhjaGcuDQo+IEl0IGlz
-IG5vdCBpbnRlbmRlZCB0byBiZSBtZXJnZWQgYXMtaXMuDQo+IA0KPiBDYzogUGV0ZXIgWmlq
-bHN0cmEgPHBldGVyekBpbmZyYWRlYWQub3JnPg0KPiBDYzogSnVlcmdlbiBHcm9zcyA8amdy
-b3NzQHN1c2UuY29tPg0KPiBDYzogU3RlZmFubyBTdGFiZWxsaW5pIDxzc3RhYmVsbGluaUBr
-ZXJuZWwub3JnPg0KPiBDYzogT2xla3NhbmRyIFR5c2hjaGVua28gPG9sZWtzYW5kcl90eXNo
-Y2hlbmtvQGVwYW0uY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBVcm9zIEJpemphayA8dWJpemph
-a0BnbWFpbC5jb20+DQoNCkFja2VkLWJ5OiBKdWVyZ2VuIEdyb3NzIDxqZ3Jvc3NAc3VzZS5j
-b20+DQoNCg0KSnVlcmdlbg0KDQo=
---------------ENw9nYNqNn7D9oSXkACrK1AY
-Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+The last argument is "new_below", which means the new VMA will be at the
+lower address.  I don't love the argument of int or the name, also the
+documentation is lacking for the split function.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+So, once we split at "start", vm_end =3D "start" in the new VMA while
+start will be in the old VMA.  I then lock the old vma to be removed
+(again) and add it to the detached maple tree.
 
-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
-jR/i1DG86lem3iBDXzXsZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+Before my patch, we split the VMA and took the new unlocked VMA for
+removal.. until I locked the new vma to be removed and add it to the
+detached maple tree.  So there is a window that we write the new split
+VMA into the tree prior to locking the VMA, but it is locked before
+removal.
 
---------------ENw9nYNqNn7D9oSXkACrK1AY--
+This change actually aligns the splitting with the other callers who use
+the split_vma() wrapper.
 
---------------9INa0Hf6BXMQPEVZrbWvFYeO--
+> >
+> > >
+> > > Though I guess that's not going to lead to anything bad, since
+> > > do_vmi_munmap() anyway cleans up PTEs and page tables in the region?
+> > > So maybe it's not that important.
+> >
+> > do_vmi_munmap() will clean up PTEs from the end of the previous VMA to
+> > the start of the next
+>=20
+> Alright, I guess no action is needed here then.
 
---------------H0X8H9rUDW0PJBMy8EwtcgMS
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+I don't see a difference between this and the race that exists after the
+page fault ends and a task unmaps the area prior to the first task using
+the faulted areas?
 
------BEGIN PGP SIGNATURE-----
+>=20
+> > I don't have any objections in the ordering or see an issue resulting
+> > from having it this way... Except for maybe lockdep, so maybe we should
+> > change the ordering of the patch sets just to be safe?
+> >
+> > In fact, should we add another check somewhere to ensure we do generate
+> > the warning?  Perhaps to remove_mt() to avoid the exit path hitting it?
+>=20
+> I'm not sure which lockdep check you mean. do_vmi_align_munmap() is
+> going to lock the VMAs again before it operates on them; I guess the
+> only checks that would catch this would be the page table validation
+> logic or the RSS counter checks on exit?
+>=20
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmTbKL8FAwAAAAAACgkQsN6d1ii/Ey9u
-mAf5AZKGPPIczGL+OsNSU+/ryKAKVE+Gj3Sn5LVOhZJHyjfEMVPIaAPfkgUdb2r5LTkGfLKC+cet
-cyGtu1MGWfCp1NLqKeOVlWEW0obRsvxEnmbqf1qCzwJKgLXmOIIiX5mwCr8xsCfGdtxAzHs+MRSv
-9IGzUP37mvNHhXAjvZwLuikBO1adOzr4NifffKYbYccty5DkYYA003FDipQcFjsJQaL/HrA55xlJ
-WkH9kwiUgPM3MqIHYUdVu1WGHEwquk85+9p9oDEeliyyGo3iXOVT4FC1WDwCsMO6y63IA1f2skxU
-kGt2plBzE7yXlIt8d/Jmd6DPDpJ/YX29KTWghbCGDA==
-=9wrQ
------END PGP SIGNATURE-----
+I'm trying to add a lockdep to detect this potential window in the
+future, but it won't work as you pointed out since it will be locked
+before removal.  I'm not sure it's worth it since Suren added more
+lockdep checks in his series.
 
---------------H0X8H9rUDW0PJBMy8EwtcgMS--
+I appreciate you really looking at these changes and thinking them
+through.
+
+Regards,
+Liam
