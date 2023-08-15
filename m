@@ -2,120 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE0A77D46A
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F2277D46E
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239738AbjHOUio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 16:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48214 "EHLO
+        id S239092AbjHOUix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 16:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239150AbjHOUiE (ORCPT
+        with ESMTP id S239110AbjHOUif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 16:38:04 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B67922122
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:37:44 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58c6564646aso6423167b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:37:44 -0700 (PDT)
+        Tue, 15 Aug 2023 16:38:35 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1859EE7A;
+        Tue, 15 Aug 2023 13:38:05 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bdf7086ae5so10543715ad.0;
+        Tue, 15 Aug 2023 13:38:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692131844; x=1692736644;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=3dK+siegY/lcPBE26gvMNEY42khfxilV1mO9bjQlHqg=;
-        b=OrZw6nNj8f0nsd/1qt+U0X1Xd3xCQvB44YKCUfK0QTrigF+dnhpT9lKet46Dffuves
-         aYULYfbfoOYrRNYDyhuBdMYE2xQJqGJ9XTeJnsdvpg0n/TABpQc40EGXuyB8Ly4JxnhS
-         r3QIzpAjBGxlouYEZIyurPp852JBt4V5T7yRbKK0NM3Fs0ov+U4qX4xd5YUpTRBNKe2k
-         e/E5UfgslO1jzpZQDdb2d1qLhko/KtPuLD+E8maPcv6ajRkrQumIeb9DDOu4AxAXv5bb
-         Yjss0thyeIARTiUj6Unqxd3DbEm2reCrdesIRgz+Z6xmWFQXBup4AJAt+bRelShLGCVl
-         cE7A==
+        d=gmail.com; s=20221208; t=1692131884; x=1692736684;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=q9ApbnI87Q8RNqPgxcxbxYleBLjFt36Eud/z8NM1Jfc=;
+        b=Igj27S3Q1W7pnf91BSrgUhHYMac9KPTpHDNMOSpyjGg87YOqrM8yugbC9cQpM9wFZn
+         ot905KzakQ/YUojEz0/la0PlQcexdTkV45EUPdQnKkunKIKgveO6JG3bv/6pgNYvalik
+         UqWYSWuq+SbR1g1jX/emIsChbfQyWYnBmNKUlCtPFO0f3aUqGdJ8K3b4Y5KJS1me89BY
+         3FVnSH4f22UmdGN4eSKRukmqoOtNH/T41pGJSB8pqMnVFiD1wWqL7fjuU2JYKmywif5N
+         HeDbsn+VbosOa+pjWaRjS1lKO8IFSabcQ2uSHHGk16BiEO4Ihv9OrDdu4p4YEY+ESIr8
+         jGQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692131844; x=1692736644;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1692131884; x=1692736684;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=3dK+siegY/lcPBE26gvMNEY42khfxilV1mO9bjQlHqg=;
-        b=R6mR0oF20Xicf2KpqSYA8jArd0ERdIhrjhj2J6WGyxP0P1Gw3lSBEORvEtKUM1PAHO
-         LBRDBs97lC70FF3W+CPRFVPhQwWY5Nd11JKMdFFyiYiCRe0c7R2bjmXliMBn4LfEJmH+
-         hP6jkNoyQsmKkqmm7nUIv7Vnngk6PXmiEWfUz4+Z+Ho4cQZd/OGI00Yxfy6fsWgMetdX
-         NyJB3GG+Cj2i/QmKKOz82RcVRQDlyKjUX8Du3yC9jJDqUGiQnclwl3gmDEAbwuFKf0Uf
-         Mh7H7Dx6qdLATgYaWormj71YxqVE0IBTaSkxoTBTOKfaDbU0HhSC4kREZN9ov+Yj6oNc
-         6WRg==
-X-Gm-Message-State: AOJu0YzCFHupjkL1MrcXR47aagEH35dldFqeQxvkISVCR+RdynZ4+j+j
-        xs6uULFrkGSClomp2kSv8Bkz6CPiVjY=
-X-Google-Smtp-Source: AGHT+IGVmxZgnM/94vT7V9EdxdBjzJvfoob+eub2qtcm+uyZa4akRj6gZeoxuKQTUpT74MB8wuzHWXJ3x8c=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:b725:0:b0:579:e07c:2798 with SMTP id
- v37-20020a81b725000000b00579e07c2798mr183717ywh.2.1692131844699; Tue, 15 Aug
- 2023 13:37:24 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 15 Aug 2023 13:36:53 -0700
-In-Reply-To: <20230815203653.519297-1-seanjc@google.com>
-Mime-Version: 1.0
-References: <20230815203653.519297-1-seanjc@google.com>
-X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
-Message-ID: <20230815203653.519297-16-seanjc@google.com>
-Subject: [PATCH v3 15/15] KVM: x86: Disallow guest CPUID lookups when IRQs are disabled
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zeng Guang <guang.zeng@intel.com>,
-        Yuan Yao <yuan.yao@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        bh=q9ApbnI87Q8RNqPgxcxbxYleBLjFt36Eud/z8NM1Jfc=;
+        b=fRK16UN1cAq2bs+KBd0cJRFiCtCriR55IqltjzWIGlUf4aOZgnhTZtsYAbad+OFu8j
+         0d5WKhFrDM41EYKuOXn6VXSIxdrFiR7pQrkMrsKjUV/3xKk2jrxXR7FMlevYz1LWGY/w
+         8QOblA+TdsySvXs8kRFlui2MSvhKrVJnljoODxa+VAZrZjSigPb1H9W/tkHCAa7erW3c
+         jUlBR9FaW/ZQQx+dbxY45EmQFGp2qRu7buDF8HCtAcqhI7Jzr8dsWnkYDQg4zMEG2CpW
+         jasfxI02EE3vhurIGkWWUC5tmf0uxMvZPfjJYl2X4MyTvVaHnv4KC15zzbuJgM1XvhIm
+         Pzjw==
+X-Gm-Message-State: AOJu0Yybm4ioE1bniIFIiTM8brtCEfgoDGumAUgyMJjehZlChjDV5H5r
+        CymQMj44AID9f5Tuwhl9l6I=
+X-Google-Smtp-Source: AGHT+IHhUV8EaldMz7zWKp34yUjxtun7VSqtlbQQK+DzG0CXOWQECA3nlkJg7rjhLd5VtW+qDgr4YA==
+X-Received: by 2002:a17:903:11c9:b0:1bb:ce4a:5893 with SMTP id q9-20020a17090311c900b001bbce4a5893mr17379711plh.30.1692131884499;
+        Tue, 15 Aug 2023 13:38:04 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:c009:58e9:db85:3caf:1429:e455])
+        by smtp.gmail.com with ESMTPSA id j11-20020a170902da8b00b001b9e9f191f2sm11492962plx.15.2023.08.15.13.37.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Aug 2023 13:38:04 -0700 (PDT)
+From:   Atul Kumar Pant <atulpant.linux@gmail.com>
+To:     josef@toxicpanda.com, axboe@kernel.dk
+Cc:     Atul Kumar Pant <atulpant.linux@gmail.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nbd@other.debian.org, shuah@kernel.org
+Subject: [PATCH v1] drivers: block: Drop unnecessary error check for debugfs_create_dir
+Date:   Wed, 16 Aug 2023 02:07:39 +0530
+Message-Id: <20230815203739.51706-1-atulpant.linux@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that KVM has a framework for caching guest CPUID feature flags, add
-a "rule" that IRQs must be enabled when doing guest CPUID lookups, and
-enforce the rule via a lockdep assertion.  CPUID lookups are slow, and
-within KVM, IRQs are only ever disabled in hot paths, e.g. the core run
-loop, fast page fault handling, etc.  I.e. querying guest CPUID with IRQs
-disabled, especially in the run loop, should be avoided.
+This patch removes the error checking for debugfs_create_dir.
+Even if we get an error from this function, other debugfs APIs will
+handle the error value and doesn't crash in that case. Hence caller can
+safely ignore the errors that occur during the creation of debugfs nodes.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
 ---
- arch/x86/kvm/cpuid.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/block/nbd.c     | 7 -------
+ drivers/block/pktcdvd.c | 2 --
+ 2 files changed, 9 deletions(-)
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 67e9f79fe059..e961e9a05847 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -11,6 +11,7 @@
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 65ecde3e2a5b..f64c79f6e112 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -1666,11 +1666,6 @@ static int nbd_dev_dbg_init(struct nbd_device *nbd)
+ 		return -EIO;
  
- #include <linux/kvm_host.h>
-+#include "linux/lockdep.h"
- #include <linux/export.h>
- #include <linux/vmalloc.h>
- #include <linux/uaccess.h>
-@@ -84,6 +85,18 @@ static inline struct kvm_cpuid_entry2 *cpuid_entry2_find(
- 	struct kvm_cpuid_entry2 *e;
- 	int i;
+ 	dir = debugfs_create_dir(nbd_name(nbd), nbd_dbg_dir);
+-	if (IS_ERR(dir)) {
+-		dev_err(nbd_to_dev(nbd), "Failed to create debugfs dir for '%s'\n",
+-			nbd_name(nbd));
+-		return -EIO;
+-	}
+ 	config->dbg_dir = dir;
  
-+	/*
-+	 * KVM has a semi-arbitrary rule that querying the guest's CPUID model
-+	 * with IRQs disabled is disallowed.  The CPUID model can legitimately
-+	 * have over one hundred entries, i.e. the lookup is slow, and IRQs are
-+	 * typically disabled in KVM only when KVM is in a performance critical
-+	 * path, e.g. the core VM-Enter/VM-Exit run loop.  Nothing will break
-+	 * if this rule is violated, this assertion is purely to flag potential
-+	 * performance issues.  If this fires, consider moving the lookup out
-+	 * of the hotpath, e.g. by caching information during CPUID updates.
-+	 */
-+	lockdep_assert_irqs_enabled();
-+
- 	for (i = 0; i < nent; i++) {
- 		e = &entries[i];
+ 	debugfs_create_file("tasks", 0444, dir, nbd, &nbd_dbg_tasks_fops);
+@@ -1692,8 +1687,6 @@ static int nbd_dbg_init(void)
+ 	struct dentry *dbg_dir;
  
+ 	dbg_dir = debugfs_create_dir("nbd", NULL);
+-	if (IS_ERR(dbg_dir))
+-		return -EIO;
+ 
+ 	nbd_dbg_dir = dbg_dir;
+ 
+diff --git a/drivers/block/pktcdvd.c b/drivers/block/pktcdvd.c
+index 69e5a100b3cf..37cdd68c3de5 100644
+--- a/drivers/block/pktcdvd.c
++++ b/drivers/block/pktcdvd.c
+@@ -451,8 +451,6 @@ static void pkt_debugfs_dev_new(struct pktcdvd_device *pd)
+ 	if (!pkt_debugfs_root)
+ 		return;
+ 	pd->dfs_d_root = debugfs_create_dir(pd->name, pkt_debugfs_root);
+-	if (IS_ERR(pd->dfs_d_root))
+-		return;
+ 
+ 	pd->dfs_f_info = debugfs_create_file("info", 0444,
+ 					     pd->dfs_d_root, pd, &debug_fops);
 -- 
-2.41.0.694.ge786442a9b-goog
+2.25.1
 
