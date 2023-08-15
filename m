@@ -2,57 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB1E77D3F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F2877D407
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 22:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236024AbjHOURD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 16:17:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45596 "EHLO
+        id S234668AbjHOUSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 16:18:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234668AbjHOUQ4 (ORCPT
+        with ESMTP id S233197AbjHOUSK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 16:16:56 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05359C7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:16:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/9YcFGMjTmXUnLrKv4QF9PTeQWEDd0deRpHi/hJXg4I=; b=Yoz8qtkLjSkJfKTPRhC4/0t7M+
-        +Y+Guwp081+fK1vH++EwchRlPbELgiRaLPpC7ubO8ncrMBIAdsx39bsSaIjslrmFOSM+b1W9hiVHS
-        acpC8OIIE7ZywjizR5J8bLHbSTGylU7NgooknTMeDgTNoaWmMkWuTWXgXhzMYmn0c8OCB4TtBdlUj
-        prk2P5oiXiuoquTciMa1hwsdWm7UX8lVPt4u1INl1rbgkB5EyNvZ/7UHRhoOOS4UNguXv2sM9lfL0
-        PJzXaYeNSFyrObYMKw3YQ7mieS6GxwSHCkA6bkthnPvLlL3Hf2p50Dn2pJhgzzmaqF8C1tN8W6FUr
-        4G0mMMFA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qW0T9-00ADGZ-My; Tue, 15 Aug 2023 20:16:47 +0000
-Date:   Tue, 15 Aug 2023 21:16:47 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>
-Subject: Re: [PATCH RFC v2 0/3] mm: Properly document tail pages for a folio
-Message-ID: <ZNvdL/3kzIcJWKku@casper.infradead.org>
-References: <20230814184411.330496-1-peterx@redhat.com>
- <ZNqHdIi8ySqwoswd@casper.infradead.org>
- <ZNqM43Y9Pa1S8N7D@x1n>
- <ZNr08E5bublfQI0J@casper.infradead.org>
- <ZNvT8aFemCdtTpBo@x1n>
+        Tue, 15 Aug 2023 16:18:10 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F1F1BE2
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 13:18:09 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A631D40E0196;
+        Tue, 15 Aug 2023 20:18:07 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id QkTEUdTaLDnL; Tue, 15 Aug 2023 20:18:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1692130685; bh=OiJwsDo9OIpyTbSbSY3O6mZWFr15D/wM50aCasFB0Fg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XDktz93ajwrHAGBtQQaENMdJTtUvLpOLzhHTG/gHMTZR9tuSpxFZZz7d+zgV+khPl
+         fGAwl07qXHwTai4omrlNb8ejbqvv1i3MwJH2vxRpPkmz9jGWV5uTY1EruiwP1nX3Ui
+         HjHI0l0GihQDRRMgMMoamNVti+TJjcsu2Hep45l0ck5la6tsyMCzo2pFD6yf7azGnk
+         IO7zHP8+1QxOyFxqYrhifdBol+Wfye8BkAgNH9ckVinJa1kfH9dvnGUugS+rQtMlXk
+         oJH3bhujfN2QX8rNSFdfUXwgfgGGeOk55I6GNoPE0xbJImpzPhBaDJM92RUUX4bH80
+         5H38CW4tEi3/MgT9vRwgyly5uzFBEuyWHZv6T9Nq0vUBF+IOQIkJmJjXdqT1GfQSWq
+         MYyPMb227ggDAVAh9ZXbs+tXYqj7TPYa0uNFOUQlPykDcm3XvZWZjv0AL0YXmqKEui
+         rYPe6nKQEmi0QK2W9POop3XDVeg85Xuk6SWn2/a+mW2jJGHuGMCwk79sJ3vHND1HCY
+         IQKjj9Y53hsCiaxatJcIicw7pJx6YFe+Gq6lv82XjijP0aMUlypaxkJhwJA9P9jkFJ
+         8dSlJUuWro2fLb3UlRwUv0NyPXeBql8reDPh3hFKv31IFX4Z/3I/kZre/F/8rGjO+n
+         rWQCuJT3BHuztAE+foZhNjGE=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 44E6F40E0140;
+        Tue, 15 Aug 2023 20:18:00 +0000 (UTC)
+Date:   Tue, 15 Aug 2023 22:17:53 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     Nikolay Borisov <nik.borisov@suse.com>, X86 ML <x86@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/srso: Correct the mitigation status when SMT is
+ disabled
+Message-ID: <20230815201753.GGZNvdcbPHXtEXn4As@fat_crate.local>
+References: <20230813104517.3346-1-bp@alien8.de>
+ <1588ed00-be11-ff9d-e4c2-12db78cca06f@suse.com>
+ <20230814200813.p5czl47zssuej7nv@treble>
+ <20230814202545.GKZNqNybUnKv+xyrtP@fat_crate.local>
+ <20230814205300.krikym7jeckehqik@treble>
+ <20230814211727.GLZNqZ5+flxtyaDjMQ@fat_crate.local>
+ <20230815095724.GBZNtMBPUJSEegviJN@fat_crate.local>
+ <20230815195831.2opbgrznnpszaa32@treble>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZNvT8aFemCdtTpBo@x1n>
+In-Reply-To: <20230815195831.2opbgrznnpszaa32@treble>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,77 +75,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 03:37:21PM -0400, Peter Xu wrote:
-> On Tue, Aug 15, 2023 at 04:45:52AM +0100, Matthew Wilcox wrote:
-> > I always forget about THP_SWAP using tail->private.  That actually needs
-> > to be asserted by the compiler, not just documented.  Something along
-> > these lines.
-> > 
-> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> > index 659c7b84726c..3880b3f2e321 100644
-> > --- a/include/linux/mm_types.h
-> > +++ b/include/linux/mm_types.h
-> > @@ -340,8 +340,11 @@ struct folio {
-> >  			atomic_t _pincount;
-> >  #ifdef CONFIG_64BIT
-> >  			unsigned int _folio_nr_pages;
-> > -#endif
-> > +			/* 4 byte gap here */
-> >  	/* private: the union with struct page is transitional */
-> > +			/* Fix THP_SWAP to not use tail->private */
-> > +			unsigned long _private_1;
-> > +#endif
-> >  		};
-> >  		struct page __page_1;
-> >  	};
-> > @@ -362,6 +365,9 @@ struct folio {
-> >  	/* public: */
-> >  			struct list_head _deferred_list;
-> >  	/* private: the union with struct page is transitional */
-> > +			unsigned long _avail_2a;
-> > +			/* Fix THP_SWAP to not use tail->private */
-> > +			unsigned long _private_2a;
-> >  		};
-> >  		struct page __page_2;
-> >  	};
-> > @@ -386,12 +392,18 @@ FOLIO_MATCH(memcg_data, memcg_data);
-> >  			offsetof(struct page, pg) + sizeof(struct page))
-> >  FOLIO_MATCH(flags, _flags_1);
-> >  FOLIO_MATCH(compound_head, _head_1);
-> > +#ifdef CONFIG_64BIT
-> > +FOLIO_MATCH(private, _private_1);
-> > +#endif
-> >  #undef FOLIO_MATCH
-> >  #define FOLIO_MATCH(pg, fl)						\
-> >  	static_assert(offsetof(struct folio, fl) ==			\
-> >  			offsetof(struct page, pg) + 2 * sizeof(struct page))
-> >  FOLIO_MATCH(flags, _flags_2);
-> >  FOLIO_MATCH(compound_head, _head_2);
-> > +FOLIO_MATCH(flags, _flags_2a);
-> > +FOLIO_MATCH(compound_head, _head_2a);
-> > +FOLIO_MATCH(private, _private_2a);
-> >  #undef FOLIO_MATCH
-> >  
-> >  /*
-> > 
-> > This is against the patchset I just posted which frees up a word in the
-> > first tail page.
-> 
-> Okay, I assume you meant to suggest leverage FOLIO_MATCH(), which I can
-> definitely try.  But then I'd hope it covers not only private field but all
-> the fields that the tail pages reuses; the goal is to document everything
-> no matter in what form.  I'll see what I can get..  Thanks.
+On Tue, Aug 15, 2023 at 12:58:31PM -0700, Josh Poimboeuf wrote:
+> AFAICT, nowhere in the spec does it say the SRSO_NO bit won't get set by
+> future (fixed) HW.  In fact I'd expect it will, similar to other *_NO
+> flags.
 
-No, sometimes there are things which shouldn't be documented because they
-don't matter, and when changing code sometimes we forget to change the
-documentation, and then people read the documentation which is different
-from the code, and they get confused.
+I'm pretty sure it won't.
 
-It matters that the various 'private' members line up.  It matters
-that folio->index matches page->index.  It does not matter what
-offset _entire_mapcount is at.  That can be moved around freely and no
-documentation needs to be changed.
+SRSO_NO is synthesized by the hypervisor *software*. Nothing else.
 
-I don't want you to use FOLIO_MATCH to make any unnecessary assertions.
-The only assertion missing is for _private_1 and _private_2a, and that's
-why I wrote a patch to add them.
+It is there so that you don't check microcode version in the guest which
+is nearly impossible anyway.
+
+> Regardless, here SRSO_NO seems to mean two different things: "reported
+> safe by host (or HW)" and "not reported safe on Zen1/2 with SMT not
+> possible".
+
+Huh?
+
+> Also, in this code, the SRSO_NO+SMT combo doesn't seem logically
+> possible, as srso_show_state() only gets called if X86_BUG_SRSO is set,
+> which only happens if SRSO_NO is not set by the HW/host in the first
+> place.  So here, if boot_cpu_has(X86_FEATURE_SRSO_NO), it means SRSO_NO
+> was manually set by srso_select_mitigation(), and SMT can't possibly be
+> enabled.
+
+Have you considered the case where Linux would set SRSO_NO when booting
+on future hardware, which is fixed?
+
+There SRSO_NO and SMT will very much be possible.
+
+> Instead of piggybacking on SRSO_NO, which is confusing, why not just add
+> a new mitigation type, like:
+
+I had a separate mitigation defintion but then realized I don't need it
+because, well, it is not really a mitigation - it is a case where the
+machine is not affected.
+
+For example, I have a Zen2 laptop here with SMT disabled in the hardware
+which is also not affected.
+
+And also, the rest of the SMT disabled cases in bugs.c do check
+sched_smt_active() too, without having a separate mitigation.
+
+That's why.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
