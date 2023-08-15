@@ -2,113 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C8077D034
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 18:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB5D077D035
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 18:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237918AbjHOQfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 12:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54508 "EHLO
+        id S238520AbjHOQfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 12:35:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238528AbjHOQfE (ORCPT
+        with ESMTP id S238533AbjHOQfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 12:35:04 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 679AD10D1;
-        Tue, 15 Aug 2023 09:35:00 -0700 (PDT)
-X-QQ-mid: bizesmtp66t1692117282tw997xya
-Received: from linux-lab-host.localdomain ( [116.30.128.116])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 16 Aug 2023 00:34:41 +0800 (CST)
-X-QQ-SSF: 01200000000000E0Y000000A0000000
-X-QQ-FEAT: swyrzWPvyR1HaG6kWpZ2vB7hvs6Pz5JUZ5mp3W47yEcIUd4WjD96Ch7hUE+Wd
-        F4QSHoOBCsCsx3C0xx0OMIhclFOl/0f4Fg6Mw25oZch8PK8ou8YIE7+Fk5rMruY2S2zY8NZ
-        vqXLKdF3xCwzRj0T4G0+K4x3oeUAV6GdOUtDEEBhPyNVBiV3kQCbCMXLtFnEyjEuXlHicHt
-        rJ0J3fAT9HNwTz6jH74izgruDXxqIX/rZ8VM3uhyFD1eLMUYfZHFPpX/iQaxaD9Duhbe+nM
-        FbldypaxiWsmRA3HBYHAE8iKC25bOMi+QxVEsV0sJ6gB1EX2lQK8ofhBn4T37ai+r0c0qJq
-        nm0v6IAL4rH2QYZ6k0=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 5255109492887261266
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     w@1wt.eu
-Cc:     arnd@arndb.de, david.laight@aculab.com, falcon@tinylab.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        tanyuan@tinylab.org, thomas@t-8ch.de
-Subject: Re: [PATCH v6 2/2] tools/nolibc: fix up size inflate regression
-Date:   Wed, 16 Aug 2023 00:34:36 +0800
-Message-Id: <20230815163436.652522-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <ZNtszQeigYuItaKA@1wt.eu>
-References: <ZNtszQeigYuItaKA@1wt.eu>
+        Tue, 15 Aug 2023 12:35:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5419810E3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 09:35:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DBD7064C61
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 16:35:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C819C433C7;
+        Tue, 15 Aug 2023 16:35:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692117323;
+        bh=WAfPmP4DH1mwde7Ao/JTrW1ILoChZSppc9ArGa2ECe8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=TdJPB2wOSm09Oktdk0iQI4l1bd5K+tTwtmzKQWTVRl842KYqdNYAdeyC55zcdKE4/
+         bYqbG9yhmMOYqgK434oVCXpSJUhijLOD/NzQ17r7rD9QHTApYOT9a+XaFt20W5sdls
+         RlbQdK9bYWwPCbVenXWEZQv+eYTK9ewAnkklIyE2mBxuH+tNGbtZNMCqdllm/AdA8N
+         JPk5BMGGx2GaWJISPg0wSUcv7ez0Jh8UEBAITj6CIG4Y02kKhdT8jzkfYI/tYyfxfU
+         8DqLgXooKyjvUWFgeyC8mn+g/giaWM3ZFraeAcKZtSCwpJmOJsuUg2RNyjNBtJTU6f
+         q6BJCz/BBOuxA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id CB0F9CE09C4; Tue, 15 Aug 2023 09:35:22 -0700 (PDT)
+Date:   Tue, 15 Aug 2023 09:35:22 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Liu, Yujie" <yujie.liu@intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        lkp <lkp@intel.com>,
+        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
+        Vineet Gupta <vgupta@kernel.org>,
+        linux-snps-arc@lists.infradead.org
+Subject: Re: {standard input}:1727: Error: operand out of range (-132 is not
+ between -128 and 127)
+Message-ID: <574cfd03-c279-4cf7-872f-cbe0b8788a50@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <202308111233.rbf5C0JD-lkp@intel.com>
+ <416679c9-96b3-4114-bba3-473e647c4c2d@paulmck-laptop>
+ <f90742a02398f03f715b2a9afef213f5dee8f2bf.camel@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <f90742a02398f03f715b2a9afef213f5dee8f2bf.camel@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Sun, Aug 13, 2023 at 09:39:44PM +0800, Zhangjin Wu wrote:
-> > > And we're done, you can then keep the simplified __sysret() macro for all
-> > > other call places.
+On Tue, Aug 15, 2023 at 07:34:04AM +0000, Liu, Yujie wrote:
+> Hi Paul,
+> 
+> On Fri, 2023-08-11 at 08:41 -0700, Paul E. McKenney wrote:
+> > On Fri, Aug 11, 2023 at 01:02:12PM +0800, kernel test robot wrote:
+> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > > head:   25aa0bebba72b318e71fe205bfd1236550cc9534
+> > > commit: a6889becb05394255c80b62103677e3b095726a9 refscale: Add tests using SLAB_TYPESAFE_BY_RCU
+> > > date:   7 months ago
+> > > config: arc-randconfig-r006-20230811 (https://download.01.org/0day-ci/archive/20230811/202308111233.rbf5C0JD-lkp@intel.com/config)
+> > > compiler: arceb-elf-gcc (GCC) 12.3.0
+> > > reproduce: (https://download.01.org/0day-ci/archive/20230811/202308111233.rbf5C0JD-lkp@intel.com/reproduce)
 > > > 
+> > > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > > the same patch/commit), kindly add following tags
+> > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > > Closes: https://lore.kernel.org/oe-kbuild-all/202308111233.rbf5C0JD-lkp@intel.com/
+> > > 
+> > > All errors (new ones prefixed by >>):
+> > > 
+> > >    {standard input}: Assembler messages:
+> > > > > {standard input}:1727: Error: operand out of range (-132 is not between -128 and 127)
 > > 
-> > Now, this issue is near to the end ;-)
+> > I am not seeing any inline assembly in that patch, so I have to suspect
+> > a bug in arch code or the compiler backend for arc.
+> > 
+> > Or is there something that I am missing here?
 > 
-> I've now pushed the simplified fix (without changing the SET_ERRNO()
-> macro, enough last minute breaking changes for now) in branch
-> 20230815-for-6.6-2.
+> We looked into this case a little bit. The assembler error popped up
+> when building kernel/rcu/refscale.o
 > 
-> The tests pass and riscv/loongarch are even very slightly smaller than
-> before (~8 bytes) but again that doesn't count as it depends on how the
-> compiler decides to arrange if/else branches.
->
-
-Tested 20230815-for-6.6-2 with latest Arnd's gcc 13.2.0 (left: old, right:
-new), no warning, no failure:
-
-    // run-user
-    $ for arch in ${ARCHS[@]}; do printf "%9s: " $arch; make run-user XARCH=$arch | grep status | tr '\n' ' '; \
-	size nolibc-test | tail -1 | tr '\t' ' ' | tr -s ' ' | cut -d ' ' -f2; done
-         i386: 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning 19654 > 19508
-       x86_64: 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning 22337 > 22011
-        arm64: 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning 26292 > 25868
-          arm: 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning 23140 > 23112
-         mips: 160 test(s): 157 passed,   3 skipped,   0 failed => status: warning 23164 > 22924   // mips-linux- has smaller size, here uses mips64
-          ppc: 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning 26812 > 26628
-        ppc64: 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning 27380 > 27204
-      ppc64le: 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning 28004 > 27828
-        riscv: 160 test(s): 158 passed,   2 skipped,   0 failed => status: warning 22062 > 21794
-         s390: 160 test(s): 157 passed,   3 skipped,   0 failed => status: warning 22592 > 22192
-
-
-    // kernel build + run
-           arch/board | result
-          ------------|------------
-      arm/vexpress-a9 | 160 test(s): 159 passed,   1 skipped,   0 failed => status: warning.
-             arm/virt | 160 test(s): 156 passed,   4 skipped,   0 failed => status: warning.
-         aarch64/virt | 160 test(s): 159 passed,   1 skipped,   0 failed => status: warning.
-          ppc/g3beige | 160 test(s): 159 passed,   1 skipped,   0 failed => status: warning.
-          ppc/ppce500 | 160 test(s): 159 passed,   1 skipped,   0 failed => status: warning.
-      ppc64le/pseries | 160 test(s): 159 passed,   1 skipped,   0 failed => status: warning.
-      ppc64le/powernv | 160 test(s): 159 passed,   1 skipped,   0 failed => status: warning.
-        ppc64/pseries | 160 test(s): 159 passed,   1 skipped,   0 failed => status: warning.
-        ppc64/powernv | 160 test(s): 159 passed,   1 skipped,   0 failed => status: warning.
-              i386/pc | 160 test(s): 159 passed,   1 skipped,   0 failed => status: warning.
-            x86_64/pc | 160 test(s): 159 passed,   1 skipped,   0 failed => status: warning.
-         mipsel/malta | 160 test(s): 159 passed,   1 skipped,   0 failed => status: warning.
-     loongarch64/virt | 160 test(s): 159 passed,   1 skipped,   0 failed => status: warning.
-         riscv64/virt | 160 test(s): 159 passed,   1 skipped,   0 failed => status: warning.
-s390x/s390-ccw-virtio | 160 test(s): 159 passed,   1 skipped,   0 failed => status: warning.
-
-Thanks,
-Zhangjin
-
-> I'll let Shuah know about these late fixes.
+> $make W=1 --keep-going CROSS_COMPILE=arceb-elf- ARCH=arc kernel/rcu/refscale.o
+> ...
+>   CC [M]  kernel/rcu/refscale.o
+> {standard input}: Assembler messages:
+> {standard input}:1727: Error: operand out of range (-132 is not between -128 and 127)
+> make[3]: *** [scripts/Makefile.build:252: kernel/rcu/refscale.o] Error 1
+> make[2]: *** [scripts/Makefile.build:504: kernel/rcu] Error 2
+> make[2]: Target 'kernel/rcu/refscale.o' not remade because of errors.
+> make[1]: *** [scripts/Makefile.build:504: kernel] Error 2
+> make[1]: Target 'kernel/rcu/refscale.o' not remade because of errors.
+> make: *** [Makefile:2008: .] Error 2
+> make: Target 'kernel/rcu/refscale.o' not remade because of errors.
 > 
-> Regards,
-> Willy
+> We did some assembly and disassembly tricks:
+> 
+> 1721 .L334:
+> 1722         ld_s    r0,[r14,52]             ;15
+> 1723         brgt r0, r19, @.L335
+> 1724         ld_s    r0,[r13,120]            ;15
+> 1725         breq_s r0, 0, @.L337
+> 1726         jl [r17]
+> 1727         brne_s r0, 0, @.L337    <---
+> 1728         mov_s   r2,20   ;3
+> 1729         mov_s   r1,0    ;3
+> 1730         mov_s   r0,sp   ;4
+> 1731         jl [r20]
+> 1732         mov_s   r1,0    ;3
+> 1733         mov_s   r0,sp   ;4
+> 1734         jl @init_wait_entry
+> 1735         .align 2
+> 
+> This assembly instruction at line 1727 points to the code in main_func,
+> but main_func is not touched by commit a6889becb053.
+> 
+>  d6e:   860d                    ld_s    r0,[r14,0x34]
+>  d70:   0b59 a002               brlt.nt r19,r0,-168     ;cc8 <main_func+0x16c>
+>         return arch_atomic_read(v);
+>  d74:   851e                    ld_s    r0,[r13,0x78]
+>                 wait_event(main_wq,
+>  d76:   e842                    breq_s  r0,0,-124       ;cf8 <main_func+0x19c>
+>  d78:   2022 0440               jl      [r17]
+>  d7c:   e8be                    brne_s  r0,0,124        ;df8 <main_func+0x29c>   <--
+>  d7e:   da14                    mov_s   r2,0x14
+>  d80:   702c                    mov_s   r1,0
+>  d82:   4083                    mov_s   r0,sp
+>  d84:   2022 0500               jl      [r20]
+>  d88:   702c                    mov_s   r1,0
+>  d8a:   4083                    mov_s   r0,sp
+>  d8c:   2022 0f80 0000 0000     jl      0
+> 
+> We also tried on the parent commit 3c6496c86e48. It builds fine without
+> that assembler error, and corresponding disassembly is:
+> 
+>  afe:   860d                    ld_s    r0,[r14,0x34]
+>  b00:   0b5d a002               brlt.nt r19,r0,-164     ;a5c <main_func+0x16c>
+>         return arch_atomic_read(v);
+>  b04:   8518                    ld_s    r0,[r13,0x60]
+>                 wait_event(main_wq,
+>  b06:   e844                    breq_s  r0,0,-120       ;a8c <main_func+0x19c>
+>  b08:   2022 0440               jl      [r17]
+>  b0c:   e8c0                    brne_s  r0,0,-128       ;a8c <main_func+0x19c>   <--
+>  b0e:   da14                    mov_s   r2,0x14
+>  b10:   702c                    mov_s   r1,0
+>  b12:   4083                    mov_s   r0,sp
+>  b14:   2022 0500               jl      [r20]
+>  b18:   702c                    mov_s   r1,0
+>  b1a:   4083                    mov_s   r0,sp
+>  b1c:   2022 0f80 0000 0000     jl      0
+>  b24:   724c                    mov_s   r2,2
+>  b26:   4183                    mov_s   r1,sp
+>  b28:   40c3 0000 0000          mov_s   r0,0
+>  b2e:   2022 0f80 0000 0000     jl      0
+> 
+> 
+> We are also not sure if this is a bug in arch code or compiler side.
+> Here we provide above info for your reference.
+
+Thank you for looking into this and getting back to me.
+
+I added the ARC maintainer and list on CC.
+
+							Thanx, Paul
