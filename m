@@ -2,96 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F1477CC5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D044C77CC63
+	for <lists+linux-kernel@lfdr.de>; Tue, 15 Aug 2023 14:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237041AbjHOMKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 08:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60886 "EHLO
+        id S237062AbjHOMKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 08:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237106AbjHOMKB (ORCPT
+        with ESMTP id S237048AbjHOMKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 08:10:01 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 377F9E51;
-        Tue, 15 Aug 2023 05:10:00 -0700 (PDT)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37FC1l1r006927;
-        Tue, 15 Aug 2023 12:10:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=VS2xpbvAfRJ4RT2nYmjAb7SyLP2weknVq1Pxg7orpYI=;
- b=MXWPoTaz7a+qTAoiHgigbBVLBCn17rILuPn7rpd72LQCo5a5zCNmSlKvu3Wob4NgpBnP
- yLHiMxrBKVfhsuBoF1VInoAho4wrF/VtVapOpoyuq0RF2qbcrc4HaUTKADYE/6igCR/e
- 1AhjYwLD7d3jphxrVPR+xhu+AfV4Ls1uvmDc9air3VBvb3S0cs2nXBHqiULrmysfevCc
- Yw6hBRvj2JoY8DxUuR80TT/OuTTRuFsZaLTvBZy8+nNrlpEiL8kZubrds59ZtN3S+TVD
- +unX271B8fFmQAMwe5tmwfz6vjVDV2bbhR+wIAkAU7b8QZyv8IiDgfw4xi+ni9H8XPiT hQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sg90t8743-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Aug 2023 12:09:59 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37FC2VLw008819;
-        Tue, 15 Aug 2023 12:09:59 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sg90t873n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Aug 2023 12:09:59 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37FBCi9b007861;
-        Tue, 15 Aug 2023 12:09:58 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3senwk4fsf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Aug 2023 12:09:57 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37FC9sWX46137816
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 15 Aug 2023 12:09:54 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8D73020043;
-        Tue, 15 Aug 2023 12:09:54 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0739820040;
-        Tue, 15 Aug 2023 12:09:54 +0000 (GMT)
-Received: from [9.171.12.89] (unknown [9.171.12.89])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 15 Aug 2023 12:09:53 +0000 (GMT)
-Message-ID: <0718475d-907c-6c30-9b33-23b5d21b1236@linux.ibm.com>
-Date:   Tue, 15 Aug 2023 14:09:53 +0200
+        Tue, 15 Aug 2023 08:10:12 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79ACAE51
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 05:10:10 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RQ97b6pXGz4f3lKd
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 20:10:03 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP1 (Coremail) with SMTP id cCh0CgA3ZjIea9tkq+3oAg--.25318S2;
+        Tue, 15 Aug 2023 20:10:06 +0800 (CST)
+Subject: Re: [PATCH 7/9] mm/compaction: factor out code to test if we should
+ run compaction for target order
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, david@redhat.com
+References: <20230805110711.2975149-1-shikemeng@huaweicloud.com>
+ <20230805110711.2975149-8-shikemeng@huaweicloud.com>
+ <7b337eca-1c45-c802-0aea-50d8d149efb4@linux.alibaba.com>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <631d62de-c9b5-3c5f-e0b3-df0109627a27@huaweicloud.com>
+Date:   Tue, 15 Aug 2023 20:10:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 3/3] KVM: s390: pv: Allow AP-instructions for pv-guests
-Content-Language: en-US
-To:     Steffen Eiden <seiden@linux.ibm.com>, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Michael Mueller <mimu@linux.vnet.ibm.com>,
-        Marc Hartmayer <mhartmay@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>
-References: <20230810113255.2163043-1-seiden@linux.ibm.com>
- <20230810113255.2163043-4-seiden@linux.ibm.com>
-From:   Janosch Frank <frankja@linux.ibm.com>
-In-Reply-To: <20230810113255.2163043-4-seiden@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: nfvjEVYsOK9gGjdJBceNcmbbo__DsJXV
-X-Proofpoint-ORIG-GUID: 3faaw7UgopxBD6fEeybJoexTkAlSEyY4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-15_10,2023-08-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
- priorityscore=1501 mlxlogscore=999 phishscore=0 spamscore=0
- lowpriorityscore=0 mlxscore=0 adultscore=0 impostorscore=0 malwarescore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308150108
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <7b337eca-1c45-c802-0aea-50d8d149efb4@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgA3ZjIea9tkq+3oAg--.25318S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFyrXryfGFy5XFyrWF4fAFb_yoWrJF4DpF
+        18JrWUG3y8XF1fGr1xtF1UJFy5Xr48J3WDJrn2qF17Jw1ayr1jvr1qqryq9F1UXr4xJr4U
+        JF4UXF9rZF15AaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
+        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
+        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04
+        k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWHqcUUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,68 +65,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/10/23 13:32, Steffen Eiden wrote:
-> Introduces new feature bits and enablement flags for AP and AP IRQ
-> support.
-> 
-> Signed-off-by: Steffen Eiden <seiden@linux.ibm.com>
 
-Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
 
-> ---
->   arch/s390/include/asm/uv.h | 12 +++++++++++-
->   arch/s390/kvm/pv.c         |  6 ++++--
->   2 files changed, 15 insertions(+), 3 deletions(-)
+on 8/15/2023 4:53 PM, Baolin Wang wrote:
 > 
-> diff --git a/arch/s390/include/asm/uv.h b/arch/s390/include/asm/uv.h
-> index f76b2747b648..680654ff6d17 100644
-> --- a/arch/s390/include/asm/uv.h
-> +++ b/arch/s390/include/asm/uv.h
-> @@ -99,6 +99,8 @@ enum uv_cmds_inst {
->   enum uv_feat_ind {
->   	BIT_UV_FEAT_MISC = 0,
->   	BIT_UV_FEAT_AIV = 1,
-> +	BIT_UV_FEAT_AP = 4,
-> +	BIT_UV_FEAT_AP_INTR = 5,
->   };
->   
->   struct uv_cb_header {
-> @@ -159,7 +161,15 @@ struct uv_cb_cgc {
->   	u64 guest_handle;
->   	u64 conf_base_stor_origin;
->   	u64 conf_virt_stor_origin;
-> -	u64 reserved30;
-> +	u8  reserved30[6];
-> +	union {
-> +		struct {
-> +			u16 : 14;
-> +			u16 ap_instr_intr : 1;
-> +			u16 ap_allow_instr : 1;
-> +		};
-> +		u16 raw;
-> +	} flags;
->   	u64 guest_stor_origin;
->   	u64 guest_stor_len;
->   	u64 guest_sca;
-> diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
-> index 8d3f39a8a11e..bbd3a93db341 100644
-> --- a/arch/s390/kvm/pv.c
-> +++ b/arch/s390/kvm/pv.c
-> @@ -575,12 +575,14 @@ int kvm_s390_pv_init_vm(struct kvm *kvm, u16 *rc, u16 *rrc)
->   	uvcb.conf_base_stor_origin =
->   		virt_to_phys((void *)kvm->arch.pv.stor_base);
->   	uvcb.conf_virt_stor_origin = (u64)kvm->arch.pv.stor_var;
-> +	uvcb.flags.ap_allow_instr = kvm->arch.model.uv_feat_guest.ap;
-> +	uvcb.flags.ap_instr_intr = kvm->arch.model.uv_feat_guest.ap_intr;
->   
->   	cc = uv_call_sched(0, (u64)&uvcb);
->   	*rc = uvcb.header.rc;
->   	*rrc = uvcb.header.rrc;
-> -	KVM_UV_EVENT(kvm, 3, "PROTVIRT CREATE VM: handle %llx len %llx rc %x rrc %x",
-> -		     uvcb.guest_handle, uvcb.guest_stor_len, *rc, *rrc);
-> +	KVM_UV_EVENT(kvm, 3, "PROTVIRT CREATE VM: handle %llx len %llx rc %x rrc %x flags %04x",
-> +		     uvcb.guest_handle, uvcb.guest_stor_len, *rc, *rrc, uvcb.flags.raw);
->   
->   	/* Outputs */
->   	kvm->arch.pv.handle = uvcb.guest_handle;
+> 
+> On 8/5/2023 7:07 PM, Kemeng Shi wrote:
+>> We always do zone_watermark_ok check and compaction_suitable check
+>> together to test if compaction for target order should be runned.
+>> Factor these code out for preparation to remove repeat code.
+>>
+>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>> ---
+>>   mm/compaction.c | 42 +++++++++++++++++++++++++++++-------------
+>>   1 file changed, 29 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/mm/compaction.c b/mm/compaction.c
+>> index b5a699ed526b..26787ebb0297 100644
+>> --- a/mm/compaction.c
+>> +++ b/mm/compaction.c
+>> @@ -2365,6 +2365,30 @@ bool compaction_zonelist_suitable(struct alloc_context *ac, int order,
+>>       return false;
+>>   }
+>>   +/*
+>> + * Should we do compaction for target allocation order.
+>> + * Return COMPACT_SUCCESS if allocation for target order can be already
+>> + * satisfied
+>> + * Return COMPACT_SKIPPED if compaction for target order is likely to fail
+>> + * Return COMPACT_CONTINUE if compaction for target order should be runned
+>> + */
+>> +static inline enum compact_result
+>> +compaction_suit_allocation_order(struct zone *zone, unsigned int order,
+>> +                 int highest_zoneidx, unsigned int alloc_flags)
+>> +{
+>> +    unsigned long watermark;
+>> +
+>> +    watermark = wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK);
+> 
+> IIUC, the watermark used in patch 8 and patch 9 is different, right? Have you measured the impact of modifying this watermark?
+> 
+Actually, there is no functional change intended. Consider wmark_pages with
+alloc_flags = 0 is equivalent to min_wmark_pages, patch 8 and patch 9 still
+use original watermark.
+
+>> +    if (zone_watermark_ok(zone, order, watermark, highest_zoneidx,
+>> +                  alloc_flags))
+>> +        return COMPACT_SUCCESS;
+>> +
+>> +    if (!compaction_suitable(zone, order, highest_zoneidx))
+>> +        return COMPACT_SKIPPED;
+>> +
+>> +    return COMPACT_CONTINUE;
+>> +}
+>> +
+>>   static enum compact_result
+>>   compact_zone(struct compact_control *cc, struct capture_control *capc)
+>>   {
+>> @@ -2390,19 +2414,11 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+>>       cc->migratetype = gfp_migratetype(cc->gfp_mask);
+>>         if (compaction_with_allocation_order(cc->order)) {
+>> -        unsigned long watermark;
+>> -
+>> -        /* Allocation can already succeed, nothing to do */
+>> -        watermark = wmark_pages(cc->zone,
+>> -                    cc->alloc_flags & ALLOC_WMARK_MASK);
+>> -        if (zone_watermark_ok(cc->zone, cc->order, watermark,
+>> -                      cc->highest_zoneidx, cc->alloc_flags))
+>> -            return COMPACT_SUCCESS;
+>> -
+>> -        /* Compaction is likely to fail */
+>> -        if (!compaction_suitable(cc->zone, cc->order,
+>> -                     cc->highest_zoneidx))
+>> -            return COMPACT_SKIPPED;
+>> +        ret = compaction_suit_allocation_order(cc->zone, cc->order,
+>> +                               cc->highest_zoneidx,
+>> +                               cc->alloc_flags);
+>> +        if (ret != COMPACT_CONTINUE)
+>> +            return ret;
+>>       }
+>>         /*
+> 
+> 
 
