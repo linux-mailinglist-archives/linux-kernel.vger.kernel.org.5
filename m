@@ -2,109 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B271477E521
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 17:29:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD14177E55C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 17:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344081AbjHPP2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 11:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43500 "EHLO
+        id S1344243AbjHPPlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 11:41:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344169AbjHPP2R (ORCPT
+        with ESMTP id S239046AbjHPPlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 11:28:17 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B102102
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 08:28:14 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 6D4DA100004;
-        Wed, 16 Aug 2023 18:28:12 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 6D4DA100004
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1692199692;
-        bh=WE0hIh5RLBABYfVTZR+pWZ3G2DbPLavvbNDma5RqYUQ=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=OCAU+WoGGr5mo0/LaK5uScFYuclofAwnb4U5NcZP09BHntYjGIu+wflQrFBroWvHX
-         wJXcFYrNS+P+oYbadIOkI+K1ukx0KDD3WdsxRllCeGkwstPc4fOMHBDonmbQUVJq2Y
-         FVX9BdLrBGSUUx4USXQuqqzzi8PLJsHZpQGb/c/+y6rAeqXkxExUaTiatMonfuswXb
-         wCydyTOKhrCwFcvCAqJZWJqLljy4nmWCWWTMtkOTzoyv48zxHHkDlWcVKeafb+blkF
-         YaIvFDD1+MqmXtKvrpTc4X4hCGweaFQ5n+8suyqCAH7f5S9cKF94F0CyznkhPfL55V
-         jRqXxwJxEaquA==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 16 Aug 2023 11:41:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F2D26A6;
+        Wed, 16 Aug 2023 08:41:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed, 16 Aug 2023 18:28:12 +0300 (MSK)
-Received: from [192.168.1.146] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 16 Aug 2023 18:28:11 +0300
-Message-ID: <b619ef58-06c3-c61a-bb0f-ba243a4a2ade@sberdevices.ru>
-Date:   Wed, 16 Aug 2023 18:28:11 +0300
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 11BB861777;
+        Wed, 16 Aug 2023 15:41:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0F1EC433C8;
+        Wed, 16 Aug 2023 15:41:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692200471;
+        bh=E/IKYTzpQNaTIjxwmCo0tbwLoswgeWU73USgeaiUoRc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TljYul4JFTwRzGTmjIOHRlZZQr9Fi9g0zZjcfNrIgEaDromvz+slL8+dX/zmWBAbI
+         liD/G1qoAvyIkn53it76Hw0PmJkqFRrtMOtrQc/ycA1ASxULJ8sh4bZsR1hD7FvFt5
+         4AA6M5BtKrOiW9LYqwxtBoRmxy2zDt4GqgHJvVnGZkc+RlvNpqcrs4iEGQe1z3sgHA
+         FCVW1bRlTvptubJLDdptiyTeqWfUE4mNhM7gOrInUMgOQVvj/quI70mQFRWMUkR9La
+         2gd/NF65Ytfv2d0O94APf5/LTJpMT/4EUHePJ9UbGDsVM7K753pvLh/KaA0s2LZTwl
+         KEcd+ZEsSIPMw==
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH net-next v4 0/9] net: stmmac: add new features to xgmac
+Date:   Wed, 16 Aug 2023 23:29:17 +0800
+Message-Id: <20230816152926.4093-1-jszhang@kernel.org>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v1] mtd: spinand: micron: correct parameters
-To:     Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        <kernel@sberdevices.ru>
-References: <20230815161024.810729-1-mmkurbanov@sberdevices.ru>
- <0f54b3dd-1fce-4f81-8652-d50fe1bb3873@kontron.de>
-Content-Language: en-US
-From:   Martin Kurbanov <mmkurbanov@sberdevices.ru>
-In-Reply-To: <0f54b3dd-1fce-4f81-8652-d50fe1bb3873@kontron.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 179287 [Aug 16 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: MMKurbanov@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 526 526 7a6a9b19f6b9b3921b5701490f189af0e0cd5310, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/16 12:02:00 #21629266
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frieder.
+This series add below new features to xgmac:
 
-On 16.08.2023 10:21, Frieder Schrempf wrote:
-> I'm okay with 1. and with adjusting region->offset to 4. But I don't
-> really get why we want to restrict the free oob data to the
-> non-ECC-protected area only. Is this specific to Micron? Other SPI NAND
-> drivers also spread the free area over both, the ECC-protected and the
-> non-protected bytes. Why do it differently here?
+correct RX COE parsing
+add more feature parsing from hw cap
+enlarge C22 ADDR and rx/tx channels
+support parse safety ce/ue irq from DT
+support per channel irq
 
-We encountered a problem with the JFFS2 file system: JFFS2 marks erased
-blocks with a marker to avoid re-erasing them. To do this, it writes
-a special marker (cleanmarker) in the free OOB area. And if this OOB
-area is protected by ECC, the ECC will be written. However, during
-the next write to the main area of the same block, the ECC will be
-incorrect because it's necessary to program both the main area and
-the OOB area at one programming time, so that the ECC parity code can
-be calculated properly. Other SPI NAND flash also susceptible to
-this problem.
+Since v3:
+ - collect Acked-by tag
+ - remove patch which enlarges the max XGMAC C22 ADDR to 31 since it's
+   merged
+ - s/stmmac_request_irq_multi/stmmac_request_irq_multi_channel
+ - update the dt-binding to refelct the optional per-channel irq:
+     - use enum
+     - add additionalItems and maxItems to fix the "interupt-names ..
+       is too long"
+
+Since v2:
+ - check per channel irq by (res->rx_irq[0] > 0 && res->tx_irq[0] > 0)
+   rather than (res->rx_irq[0] && res->tx_irq[0])
+ - bypass if (irq <= 0) when request rx/tx irq
+
+Since v1:
+ - remove "_irq" suffix from safety irqs dt binding
+ - remove "snps,per-channel-interrupt" dt binding, check the channel irq
+   instead.
+ - more renaming about "msi" to reflect per channel irq isn't MSI
+   specific
+
+
+Jisheng Zhang (9):
+  net: stmmac: correct RX COE parsing for xgmac
+  net: stmmac: xgmac: add more feature parsing from hw cap
+  net: stmmac: enlarge max rx/tx queues and channels to 16
+  net: stmmac: reflect multi irqs for tx/rx channels and mac and safety
+  net: stmmac: xgmac: support per-channel irq
+  dt-bindings: net: snps,dwmac: add safety irq support
+  net: stmmac: platform: support parsing safety irqs from DT
+  dt-bindings: net: snps,dwmac: add per channel irq support
+  net: stmmac: platform: support parsing per channel irq from DT
+
+ .../devicetree/bindings/net/snps,dwmac.yaml   | 77 ++++++++++++++++++-
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c |  4 +-
+ .../net/ethernet/stmicro/stmmac/dwmac4_dma.c  |  2 +-
+ .../net/ethernet/stmicro/stmmac/dwxgmac2.h    |  2 +
+ .../ethernet/stmicro/stmmac/dwxgmac2_core.c   |  5 +-
+ .../ethernet/stmicro/stmmac/dwxgmac2_dma.c    | 34 ++++----
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 56 +++++++-------
+ .../ethernet/stmicro/stmmac/stmmac_platform.c | 35 +++++++++
+ include/linux/stmmac.h                        | 10 +--
+ 9 files changed, 172 insertions(+), 53 deletions(-)
 
 -- 
-Best Regards,
-Martin Kurbanov
+2.40.1
+
