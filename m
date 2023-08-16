@@ -2,80 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9723577E54B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 17:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 787DD77E5AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 17:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344213AbjHPPi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 11:38:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
+        id S245635AbjHPPw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 11:52:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239046AbjHPPiY (ORCPT
+        with ESMTP id S1344461AbjHPPwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 11:38:24 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B7526A8
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 08:38:23 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-991c786369cso903406566b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 08:38:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692200301; x=1692805101;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rrMrEjSD5O6M353I1H2xKh6LAOtsP+e9kUfVNrj6nQw=;
-        b=S3LJgZzUaprjtW+YHecwMBWFucUDfVvf8lauTGYI4vH2TpkJMTZeGmlFoXnDCXlNZE
-         UIIX30ErJ3DhxY/qd+YdiLsByU5YF/JnfJqPh/JNfCyQjIXdGvV/dy0qPIjKWC3NVsu/
-         n0hwCABVGPB3DcK0qEE3nyL5t8ReDeeB+uz1oBgxh8eVPBvVsl3fjersjMNlqfqItsdd
-         4yQmwqjU6AC4EATwFmjWIJ/9ToRBdAn9jYDU/Jge3iTWROz0/ssfmjtGdbME88J13urG
-         T4a5mNE7OG7OoydZwWEXULMaLZkfEYUTRofMGgg9G/eT8X9FxLmFPO850yjS2kKT9bP4
-         RIhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692200301; x=1692805101;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rrMrEjSD5O6M353I1H2xKh6LAOtsP+e9kUfVNrj6nQw=;
-        b=QUVnUYoEGfm7BNDhCwRaVRHxMVwzJ8UsIDMLYlwfjfMCihyLLYIOmlb2ANTmxcRSly
-         i4khOianGoOrEkdudgWZk5I7UhNXkse2yn3gaLAYGlpEHy3gXdnl66riGX0eb5X+4Sjg
-         nkOOmPq/YT8MyUcJyUPLJGQoICmvLgv/KSQcaoimxkru7i2Ymyi9wQ3krJN7eWxJI2/i
-         0p+l97bt5bsquYTAp4rJhhoeK827unO2HdZ7XfGeJBTRDALNxmT15UVJJUZUQBEhBquU
-         o6n7bLiu8v6kHQNukk4wOJVyS1UUVlRJs7j83++ylGEAMHtd8j9+FpOzxWAYZR+8ttUm
-         RAkA==
-X-Gm-Message-State: AOJu0YyIa/uALmkALkrI72gPpEpVYDW5dc0yn5qTyGo5UACgS5mVoz84
-        IKycxdNhhJksC6ypWAS67p8=
-X-Google-Smtp-Source: AGHT+IFOZRTiNwDqdqhRuKNh28Wi6CXzO7shnwHZCKEBp0Nd03KAc/h84roVEXIgOO5R6fENycTjhQ==
-X-Received: by 2002:a17:907:2724:b0:992:ab3a:f0d4 with SMTP id d4-20020a170907272400b00992ab3af0d4mr1653874ejl.17.1692200301404;
-        Wed, 16 Aug 2023 08:38:21 -0700 (PDT)
-Received: from homer.fritz.box ([185.191.217.218])
-        by smtp.googlemail.com with ESMTPSA id c17-20020a170906695100b0099297782aa9sm8611996ejs.49.2023.08.16.08.38.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 08:38:21 -0700 (PDT)
-Message-ID: <3d10fbfb0171cc017e19adf39fa97a3160a76206.camel@gmail.com>
-Subject: Re: [tip:sched/eevdf] [sched/fair]  e0c2ff903c:
- phoronix-test-suite.blogbench.Write.final_score -34.8% regression
-From:   Mike Galbraith <umgwanakikbuti@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Chen Yu <yu.c.chen@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        oe-lkp@lists.linux.dev, lkp@intel.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Ingo Molnar <mingo@kernel.org>
-Date:   Wed, 16 Aug 2023 17:38:20 +0200
-In-Reply-To: <20230816134059.GC982867@hirez.programming.kicks-ass.net>
-References: <202308101628.7af4631a-oliver.sang@intel.com>
-         <ZNWKuccyWnS3UJjK@chenyu5-mobl2.bbrouter>
-         <ZNWgAeN/EVS/vOLi@chenyu5-mobl2.bbrouter>
-         <20230814132935.GK776869@hirez.programming.kicks-ass.net>
-         <bd96d883d0d1575ebbee4323f4396596adb0ad09.camel@gmail.com>
-         <20230816123716.GI980931@hirez.programming.kicks-ass.net>
-         <20230816134059.GC982867@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Wed, 16 Aug 2023 11:52:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5F626AD;
+        Wed, 16 Aug 2023 08:52:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 534E066B4B;
+        Wed, 16 Aug 2023 15:52:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 891AEC433C8;
+        Wed, 16 Aug 2023 15:52:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692201131;
+        bh=TIjmNB9p3Z/mYIestCCsQETqQqkBVHq59rkmx1l98tA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NmQqVHOpb7712AfKgM+B5SW3Twh3u+wfuMdaMR2kdraPNtxc51ZTVcveQS/KsnlI7
+         z5d8o/ARnKgq2cHsoOamkNT7PcIXW/dfBNvMYNyE17sOZpCv6JH9zLXj+iR1RzH6sN
+         +10ByFqwsvqIalj7HygKCrPScZ1NhSqy9RBtaYuTNq4Ne4eaw7lf3qy2TR+8Xwdh7q
+         oVzdbYk5sIhqrwe7MxDX8MuALkWgLbeVCqO/RWvXIJpuvPF6YHTuq2MJQE22mCN4LB
+         j7y0XTEuhaZd+4mqnlR5YrS3t/2aTcEC+Wfu0Q2OvoL/FuzYabSBlIEIH4Jsbc0/qn
+         EverZ1UpwQCnw==
+Date:   Wed, 16 Aug 2023 23:40:25 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     "G Thomas, Rohan" <rohan.g.thomas@intel.com>
+Cc:     "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "joabreu@synopsys.com" <joabreu@synopsys.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "peppe.cavallaro@st.com" <peppe.cavallaro@st.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Subject: Re: [PATCH net-next v3 03/10] net: stmmac: mdio: enlarge the max
+ XGMAC C22 ADDR to 31
+Message-ID: <ZNzt6cP9fVnGZe9d@xhacker>
+References: <DM3PR11MB871491A357B9A12BF1B0CC82DE16A@DM3PR11MB8714.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <DM3PR11MB871491A357B9A12BF1B0CC82DE16A@DM3PR11MB8714.namprd11.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,87 +72,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-08-16 at 15:40 +0200, Peter Zijlstra wrote:
-> On Wed, Aug 16, 2023 at 02:37:16PM +0200, Peter Zijlstra wrote:
-> > On Mon, Aug 14, 2023 at 08:32:55PM +0200, Mike Galbraith wrote:
-> > 
-> > > --- a/kernel/sched/fair.c
-> > > +++ b/kernel/sched/fair.c
-> > > @@ -875,6 +875,12 @@ static struct sched_entity *pick_eevdf(s
-> > >         if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
-> > >                 curr = NULL;
-> > >  
-> > > +       /*
-> > > +        * Once selected, run the task to parity to avoid overscheduling.
-> > > +        */
-> > > +       if (sched_feat(RUN_TO_PARITY) && curr)
-> > > +               return curr;
-> > > +
-> > >         while (node) {
-> > >                 struct sched_entity *se = __node_2_se(node);
-> > >  
-> > 
-> > So I read it wrong last night... but I rather like this idea. But
-> > there's something missing. When curr starts a new slice it should
-> > probably do a full repick and not stick with it.
-> > 
-> > Let me poke at this a bit.. nice
+On Sun, Aug 13, 2023 at 02:18:27PM +0000, G Thomas, Rohan wrote:
 > 
-> Something like so.. it shouldn't matter much now, but might make a
-> difference once we start mixing different slice lengths.
+> On 8/9/23 18:50, Jisheng Zhang wrote:
+> > The IP can support up to 31 xgmac c22 addresses now.
+> > 
+> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> > ---
+> >   drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
+> > index 3db1cb0fd160..e6d8e34fafef 100644
+> > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
+> > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c
+> > @@ -40,7 +40,7 @@
+> >   #define MII_XGMAC_WRITE			(1 << MII_XGMAC_CMD_SHIFT)
+> >   #define MII_XGMAC_READ			(3 << MII_XGMAC_CMD_SHIFT)
+> >   #define MII_XGMAC_BUSY			BIT(22)
+> > -#define MII_XGMAC_MAX_C22ADDR		3
+> > +#define MII_XGMAC_MAX_C22ADDR		31
+> >   #define MII_XGMAC_C22P_MASK		GENMASK(MII_XGMAC_MAX_C22ADDR, 0)
+> >   #define MII_XGMAC_PA_SHIFT		16
+> >   #define MII_XGMAC_DA_SHIFT		21
+> 
+> Recent commit 10857e677905 ("net: stmmac: XGMAC support for mdio C22
+> addr > 3") already addressed this in a different way. As per Synopsis
+> IP team until version 2.2, XGMAC supports only MDIO devices 0 - 3. An
 
-Hm, that stash the deadline trick _seems_ to have cured the reason I
-was inspired to added that XXX hunk.. no 'ew, that's a tad harsh'
-latency penalty in sight <knocks wood>.
+I didn't find your patch in mailist when I submit the v1 on 23 July, in
+fact my series was earlier than yours.
 
-Here's hoping test bots don't have a cow. 
+> XGMAC IP version check is newly added for the same reason. I think this
+> covers your commit also. Please have a look and if so you can drop this
+> commit.
+
+Dropped in new version.
 
 > 
-> ---
->  kernel/sched/fair.c     | 12 ++++++++++++
->  kernel/sched/features.h |  1 +
->  2 files changed, 13 insertions(+)
+> BR,
+> Rohan
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index fe5be91c71c7..128a78f3f264 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -873,6 +873,13 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
->         if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
->                 curr = NULL;
->  
-> +       /*
-> +        * Once selected, run a task until it either becomes non-eligible or
-> +        * until it gets a new slice. See the HACK in set_next_entity().
-> +        */
-> +       if (sched_feat(RUN_TO_PARITY) && curr && curr->vlag == curr->deadline)
-> +               return curr;
-> +
->         while (node) {
->                 struct sched_entity *se = __node_2_se(node);
->  
-> @@ -5168,6 +5175,11 @@ set_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
->                 update_stats_wait_end_fair(cfs_rq, se);
->                 __dequeue_entity(cfs_rq, se);
->                 update_load_avg(cfs_rq, se, UPDATE_TG);
-> +               /*
-> +                * HACK, stash a copy of deadline at the point of pick in vlag,
-> +                * which isn't used until dequeue.
-> +                */
-> +               se->vlag = se->deadline;
->         }
->  
->         update_stats_curr_start(cfs_rq, se);
-> diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-> index 61bcbf5e46a4..f770168230ae 100644
-> --- a/kernel/sched/features.h
-> +++ b/kernel/sched/features.h
-> @@ -6,6 +6,7 @@
->   */
->  SCHED_FEAT(PLACE_LAG, true)
->  SCHED_FEAT(PLACE_DEADLINE_INITIAL, true)
-> +SCHED_FEAT(RUN_TO_PARITY, true)
->  
->  /*
->   * Prefer to schedule the task we woke last (assuming it failed
-
