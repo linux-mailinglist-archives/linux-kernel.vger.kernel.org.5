@@ -2,162 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F00877DBE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF5877DBF3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242776AbjHPIPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 04:15:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49930 "EHLO
+        id S242813AbjHPIRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 04:17:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237364AbjHPIOw (ORCPT
+        with ESMTP id S242822AbjHPIRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 04:14:52 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BC794
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 01:14:50 -0700 (PDT)
-Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CE811B2A;
-        Wed, 16 Aug 2023 10:13:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1692173615;
-        bh=ElXL6fYxDLsP/9sUEgVHcxzYyUCsen+i+kQs9f4MzQE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=KyppgEgRNn/0vwjZ3IAxWZOVAc4lrgoLqpIsiRNgyw8h4S0hjp4zFj2mLXM8dhF/s
-         LdRtGvZdIfG/iZuy6mdPsGjS38TBDICA5Aav1Lp1+I+4cf+aFSmgVznn2x8mHiPYoZ
-         EZS1r2BOdwg+cnia5cEFatf691v4ZAnQViqE6G0I=
-Message-ID: <5ffb773d-5a3e-cb88-db3b-522423f2b834@ideasonboard.com>
-Date:   Wed, 16 Aug 2023 11:14:43 +0300
+        Wed, 16 Aug 2023 04:17:14 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50699EE
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 01:17:12 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bdbbede5d4so40840705ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 01:17:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692173832; x=1692778632;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=KollqGO/dAUktTKQSV48LBDZD/Is8TwBzR7oQ65i/bg=;
+        b=VJJPgq5hUi3U42SXqtOW26rvO+Yk5s4uHO6IdG+wDPxl08aBzfgSxCNz7sss7tXBdN
+         XeG1KtDo47thXL2KCd7qqsih/GRA9dKe1pc0KU9RzuBtuYb1eAEo+D03YguG+KHhRxoK
+         ugOFwJsjfOG8i0VJLgPqrlfWMGwfOimkhRPkfqWLM9eyC/isoUgM7G7ujM1eqvkVLM9O
+         4j+geWj0pqYF9FaHfueF9GLLb/g6pglk4FOFqLC3sqrrAalOwwRH8I6JSJe7zVtVE20y
+         piz7B1cFg2zBSZROUe3TbxvxdXwqePV9VL7zJl8MUuM7cwZ1F/LUfnk1WF/n+k+668fC
+         wusQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692173832; x=1692778632;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KollqGO/dAUktTKQSV48LBDZD/Is8TwBzR7oQ65i/bg=;
+        b=AQ42tDzvSwiNGfMlEKYon/pdTz4b8nPt2OAviK8jJKUsY7AtsO4WfOZyEFwgPmEdkv
+         rwci+LHHq0W0UYyIC4eFh5xvH31gd6QRmGZc0AZUdTYCoYI7wKMwvLxU0IBRuMCSL32c
+         7phYh8bybIJs5jH9lErwibJsBb1w7pDOxc+aNwXXS2gmysfFgWg2I9hqU8bKz+TDy7JR
+         z5yq5f7zaa1+seQ9PvIda3sw1ot+EedGIL7AD3j7OXzsLF7qbPoTB1sZlacp6OYdeqTj
+         u/7h8M7Ql0nq+nZZKBM1hN6hpLx4q9yydgN+2hgveV+hpKvzT171pE06jqowef8wXX3U
+         NKsg==
+X-Gm-Message-State: AOJu0Yz54gBXeekmG2tqB9FmDJeeWN/xEdx19mRwR+Wn33OSETqpOZX1
+        1Zsj3OVuq0l1N3mnrE5E0wHq0Q==
+X-Google-Smtp-Source: AGHT+IFGr1enhOVTDxrwB3LWcvV3qEjEtdn80iA1vBXgnCKahHwtjqgSIOzA6krQ7SKdiGVqCgeHjw==
+X-Received: by 2002:a17:903:2306:b0:1b3:d4d5:beb2 with SMTP id d6-20020a170903230600b001b3d4d5beb2mr1671917plh.9.1692173831778;
+        Wed, 16 Aug 2023 01:17:11 -0700 (PDT)
+Received: from localhost ([122.172.87.195])
+        by smtp.gmail.com with ESMTPSA id l5-20020a170903120500b001b891259eddsm12363232plh.197.2023.08.16.01.17.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 01:17:10 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 13:47:08 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Liao, Chang" <liaochang1@huawei.com>
+Cc:     rafael@kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpufreq: cppc: Add missing error pointer check
+Message-ID: <20230816081708.o36cvwi3wwh62cmu@vireshk-i7>
+References: <20230816030549.849824-1-liaochang1@huawei.com>
+ <20230816034630.a4hvsj373q6aslk3@vireshk-i7>
+ <8fea501c-b950-17bd-c710-c923b9af6e62@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 02/11] drm/bridge: tc358768: Fix bit updates
-To:     Maxim Schwalm <maxim.schwalm@gmail.com>,
-        =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Francesco Dolcini <francesco@dolcini.it>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Aradhya Bhatia <a-bhatia1@ti.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>
-References: <20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com>
- <20230804-tc358768-v1-2-1afd44b7826b@ideasonboard.com>
- <cd5d39a2-4f4c-419a-8137-d2719135e205@gmail.com>
- <241937b4-1ef8-abad-7c4a-b26bfab86a3a@ideasonboard.com>
- <92396880-edb5-d8e0-4fcf-54aeaa2b40d7@gmail.com>
- <52151daa-90af-a6c0-9b03-f69081321253@ideasonboard.com>
- <d55fc4d3-015d-8cc2-417e-e92aa4687ca2@gmail.com>
-Content-Language: en-US
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-In-Reply-To: <d55fc4d3-015d-8cc2-417e-e92aa4687ca2@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <8fea501c-b950-17bd-c710-c923b9af6e62@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/08/2023 20:21, Maxim Schwalm wrote:
-> On 14.08.23 08:34, Tomi Valkeinen wrote:
->> On 13/08/2023 03:23, Maxim Schwalm wrote:
->>> Hi,
->>>
->>> On 11.08.23 19:02, Tomi Valkeinen wrote:
->>>> On 11/08/2023 19:23, Péter Ujfalusi wrote:
->>>>>
->>>>>
->>>>> On 04/08/2023 13:44, Tomi Valkeinen wrote:
->>>>>> The driver has a few places where it does:
->>>>>>
->>>>>> if (thing_is_enabled_in_config)
->>>>>> 	update_thing_bit_in_hw()
->>>>>>
->>>>>> This means that if the thing is _not_ enabled, the bit never gets
->>>>>> cleared. This affects the h/vsyncs and continuous DSI clock bits.
->>>>>
->>>>> I guess the idea was to keep the reset value unless it needs to be flipped.
->>>>>
->>>>>>
->>>>>> Fix the driver to always update the bit.
->>>>>>
->>>>>> Fixes: ff1ca6397b1d ("drm/bridge: Add tc358768 driver")
->>>>>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
->>>>>> ---
->>>>>>     drivers/gpu/drm/bridge/tc358768.c | 13 +++++++------
->>>>>>     1 file changed, 7 insertions(+), 6 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
->>>>>> index bc97a837955b..b668f77673c3 100644
->>>>>> --- a/drivers/gpu/drm/bridge/tc358768.c
->>>>>> +++ b/drivers/gpu/drm/bridge/tc358768.c
->>>>>> @@ -794,8 +794,8 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
->>>>>>     		val |= BIT(i + 1);
->>>>>>     	tc358768_write(priv, TC358768_HSTXVREGEN, val);
->>>>>>     
->>>>>> -	if (!(mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS))
->>>>>> -		tc358768_write(priv, TC358768_TXOPTIONCNTRL, 0x1);
->>>>>> +	tc358768_write(priv, TC358768_TXOPTIONCNTRL,
->>>>>> +		       (mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS) ? 0 : BIT(0));
->>>>>>     
->>>>>>     	/* TXTAGOCNT[26:16] RXTASURECNT[10:0] */
->>>>>>     	val = tc358768_to_ns((lptxcnt + 1) * dsibclk_nsk * 4);
->>>>>> @@ -861,11 +861,12 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
->>>>>>     	tc358768_write(priv, TC358768_DSI_HACT, hact);
->>>>>>     
->>>>>>     	/* VSYNC polarity */
->>>>>> -	if (!(mode->flags & DRM_MODE_FLAG_NVSYNC))
->>>>>> -		tc358768_update_bits(priv, TC358768_CONFCTL, BIT(5), BIT(5));
->>>>>> +	tc358768_update_bits(priv, TC358768_CONFCTL, BIT(5),
->>>>>> +			     (mode->flags & DRM_MODE_FLAG_PVSYNC) ? BIT(5) : 0);
->>>>>
->>>>> Was this the reverse before and should be:
->>>>> (mode->flags & DRM_MODE_FLAG_PVSYNC) ? 0 : BIT(5)
->>>>
->>>> Bit 5 is 1 for active high vsync polarity. The test was previously
->>>> !nvsync, i.e. the same as pvsync.
->>>
->>> this statement doesn't seem to be true, since this change causes a
->>> regression on the Asus TF700T. Apparently, !nvsync is true and pvsync is
->>> false in the present case.
->>
->> panasonic_vvx10f004b00_mode in panel_simple.c doesn't seem to have mode
->> flags set. I would say that means the panel doesn't care about the sync
->> polarities (which obviously is not the case), but maybe there's an
->> assumption that if sync polarities are not set, the default is...
->> positive? But I can't find any mention about this.
->>
->> Does it work for you if you set the polarities in
->> panasonic_vvx10f004b00_mode?
+On 16-08-23, 15:27, Liao, Chang wrote:
+> Hi Viresh,
 > 
-> The panel seems to work with either negative or positive H-/Vsync in
-> conjunction with the attached patch from Thierry. Currently, the display
-> controller is unconditionally programmed for positive H-/Vsync though.
-> What should be done in this case?
+> 在 2023/8/16 11:46, Viresh Kumar 写道:
+> > On 16-08-23, 03:05, Liao Chang wrote:
+> >> The function cppc_freq_invariance_init() may failed to create
+> >> kworker_fie, make it more robust by checking the return value to prevent
+> >> an invalid pointer dereference in kthread_destroy_worker(), which called
+> >> from cppc_freq_invariance_exit().
+> >>
+> >> Signed-off-by: Liao Chang <liaochang1@huawei.com>
+> >> ---
+> >>  drivers/cpufreq/cppc_cpufreq.c | 21 ++++++++++++++-------
+> >>  1 file changed, 14 insertions(+), 7 deletions(-)
+> > 
+> > I think why it was designed this way was to make the driver work,
+> > without invariance support, in the worst case instead of just failing
+> > completely. The invariance thing is a good to have feature, but not
+> > really necessary and so failing probing the driver for that isn't
+> > worth it. We should print all error messages though.
+> > 
+> Thanks for pointing that out. I think you are right that the kworker created
+> in the cppc driver is not the only arch_freq_scale updater, the ARCH provided
+> updater has more priority than the driver, so the driver should still work even
+> without kworker_fie supports.
 > 
-> BTW, the vendor kernel configures the display controller as well as the
-> bridge for negative H-/Vsync.
+> If that is the case, i think the best thing to do is checking the error pointer
+> and printing an error message before calling kthread_destroy() in cppc_freq_invariance_exit(),
+> this is because at that point, it is really necessary to ensure the kworker_fie has
+> been initialized as expected, otherwise it will raise a NULL pointer exception.
 
-Ah, of course, I wasn't thinking. It's a DSI panel (obviously...), so it 
-doesn't have sync polarities and as such it doesn't really make sense to 
-define them in the panel-simple.c.
+Or just set fie_disabled to true ?
 
-But we still need an agreed sync polarity between the tegra and the 
-tc358768, as that is a parallel video bus. And that polarity is not 
-defined anywhere, as it is expected to come from the panel.
+> I hope this makes sense, thanks.
 
-Maybe tc358768 should have a mode-fixup, where it sets the polarities if 
-they are not defined? I'll have to look at this a bit more.
+It does.
 
-  Tomi
-
+-- 
+viresh
