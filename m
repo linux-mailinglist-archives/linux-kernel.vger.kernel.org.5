@@ -2,281 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EC777D9CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 07:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4808777D9DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 07:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241900AbjHPFf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 01:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59410 "EHLO
+        id S241926AbjHPFjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 01:39:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241890AbjHPFf2 (ORCPT
+        with ESMTP id S241909AbjHPFil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 01:35:28 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8931C1FCE
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 22:35:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1692164120;
-        bh=1XQDjGNYbykrfK9ci4ZbulfmW5e7btpf3Feb7gvDwyo=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=p/1faKlBCgOy58t1H4V4ztkIAK/ikTxQI4KkBGe2fTXMJNqKFci1ZruF08B+6e77k
-         hvf48FAJ+xwbd5QAHnkgsZFly7LxAZeDAwMsEfnkuJn6obwaopljl/HRQAcpqEZ/nb
-         pC+thgwpHyX4qU6Y3wq1nFI68mheF7iEyK0SaCgjS7xwhQiegxIwVPjSRW8OzJ/X9l
-         P/qLKqDAYJEM7yX3HvBQFzmV8cDg8E29KEugHOw2GUYxJw19RIC5FXHPTP1TjC+nW5
-         Fxxwk9pDY3s1rNgnXeZ6A3pwWFRmJzzzkKLnwlxEdL/3UySAzFomZeYyix2r7K2vCV
-         XXxKUpFV34e4A==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RQcKg6s00z4wZn;
-        Wed, 16 Aug 2023 15:35:19 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2] powerpc/ptrace: Split gpr32_set_common
-In-Reply-To: <b8d6ae4483fcfd17524e79d803c969694a85cc02.1687428075.git.christophe.leroy@csgroup.eu>
-References: <b8d6ae4483fcfd17524e79d803c969694a85cc02.1687428075.git.christophe.leroy@csgroup.eu>
-Date:   Wed, 16 Aug 2023 15:35:16 +1000
-Message-ID: <87fs4jczxn.fsf@mail.lhotse>
+        Wed, 16 Aug 2023 01:38:41 -0400
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB0083
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 22:38:39 -0700 (PDT)
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20230816053836epoutp043ceb8147752322782d1b186f0b5ecfb1~7xnrxqMO92888028880epoutp04Q
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:38:36 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20230816053836epoutp043ceb8147752322782d1b186f0b5ecfb1~7xnrxqMO92888028880epoutp04Q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1692164316;
+        bh=iC6z9KTXhMJJKJAifkpiD2z5zC2PU00ngNvG/1pLNSw=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=pdRZ5MH0EHqmC5hl/CwwfXoh1ZuOmeuP7KjqlWltQlpObqe/P70IYNuyw/Apvp3wH
+         HTooaRUEHu+OozaXddruLvN/IPW5EXkqrW0MkVMDCknMI5M67SGp6do5Ei+iXdBdFL
+         2QZJ7yCbyO1DsJCPSuxXpSVMoeMGSwVAiMdKCB2A=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+        20230816053835epcas5p1324b989bf7fcb196862235201026e106~7xnq1lHHq1702017020epcas5p1t;
+        Wed, 16 Aug 2023 05:38:35 +0000 (GMT)
+Received: from epsmges5p3new.samsung.com (unknown [182.195.38.183]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4RQcPP3XCBz4x9Q9; Wed, 16 Aug
+        2023 05:38:33 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B6.54.06099.9D06CD46; Wed, 16 Aug 2023 14:38:33 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20230816053710epcas5p498d626cac93ea679af6003942f1504f3~7xmb1vekg3098830988epcas5p4B;
+        Wed, 16 Aug 2023 05:37:10 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20230816053710epsmtrp2776b05489f5d58352912df9d1c091dad~7xmb0k_RR1948119481epsmtrp2K;
+        Wed, 16 Aug 2023 05:37:10 +0000 (GMT)
+X-AuditID: b6c32a4b-d308d700000017d3-bd-64dc60d96338
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        96.1F.34491.6806CD46; Wed, 16 Aug 2023 14:37:10 +0900 (KST)
+Received: from FDSFTE302 (unknown [107.122.81.78]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20230816053707epsmtip23fb655503682b58fb08b19fd8c01e993~7xmY46zVo3213332133epsmtip2j;
+        Wed, 16 Aug 2023 05:37:07 +0000 (GMT)
+From:   "Sriranjani P" <sriranjani.p@samsung.com>
+To:     "'Rob Herring'" <robh@kernel.org>
+Cc:     <edumazet@google.com>, <linux-kernel@vger.kernel.org>,
+        <alexandre.torgue@foss.st.com>, <ravi.patel@samsung.com>,
+        <alim.akhtar@samsung.com>, <linux-samsung-soc@vger.kernel.org>,
+        <linux-fsd@tesla.com>, <conor+dt@kernel.org>,
+        <mcoquelin.stm32@gmail.com>, <kuba@kernel.org>,
+        <netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <pabeni@redhat.com>, <robh+dt@kernel.org>,
+        <pankaj.dubey@samsung.com>, <richardcochran@gmail.com>,
+        <krzysztof.kozlowski+dt@linaro.org>, <joabreu@synopsys.com>,
+        <devicetree@vger.kernel.org>, <davem@davemloft.net>,
+        <swathi.ks@samsung.com>
+In-Reply-To: <169201998303.2086680.8457687937999615543.robh@kernel.org>
+Subject: RE: [PATCH v3 1/4] dt-bindings: net: Add FSD EQoS device tree
+ bindings
+Date:   Wed, 16 Aug 2023 11:06:51 +0530
+Message-ID: <000001d9d003$b3a9a8a0$1afcf9e0$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQG0kE2cByMDcfrFjxkR49X5VWx9JAKGcKNgAXd78/0BAMIwYrAO8GWg
+Content-Language: en-in
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpll+LIzCtJLcpLzFFi42LZdlhTQ/dmwp0Ug2s3RSx+vpzGaPFg3jY2
+        izV7zzFZzDnfwmIx/8g5Vounxx6xW9xb9I7Vou/FQ2aLC9v6WC02Pb7GavHwVbjF5V1z2Cxm
+        nN/HZDHv71pWi2MLxCy+nX7DaLFo6xd2i4cf9rBbHDnzgtmide8Rdov/e3awW3zZeJPdQcxj
+        y8qbTB5P+7eye+ycdZfdY8GmUo9NqzrZPO5c28PmsXlJvcf7fVfZPPq2rGL02LL/M6PHv6a5
+        7B6fN8kF8ERl22SkJqakFimk5iXnp2TmpdsqeQfHO8ebmhkY6hpaWpgrKeQl5qbaKrn4BOi6
+        ZeYAPaykUJaYUwoUCkgsLlbSt7Mpyi8tSVXIyC8usVVKLUjJKTAp0CtOzC0uzUvXy0stsTI0
+        MDAyBSpMyM442LeYqeCBXMWf878ZGxgvSHUxcnJICJhIvFw/lamLkYtDSGA3o8TsXW9ZIJxP
+        jBJT722GynxjlPi8eh0LTMubHavZIBJ7GSX2XtzDCuE8Z5S4N3cHM0gVm4C+xOsV89lAbBEB
+        VYmmWQ/A5jILXGaR+Hh1FStIglPAXWLJ7AdMILawQKDEvGczgBo4OFiAGnrOe4KEeQUsJVau
+        7WGFsAUlTs58AnYFs4C2xLKFr5khLlKQ+Pl0GSvELjeJLXseMUPUiEsc/dnDDLJXQmA1p8SJ
+        M5PB5ksIuEjMOCEN0Sss8er4FnYIW0ri87u9bBB2usTmI5tZIewciY6mZqhd9hIHrsxhARnD
+        LKApsX6XPkRYVmLqqXVMEGv5JHp/P2GCiPNK7JgHY6tJLH7UCWXLSKx99Il1AqPSLCSfzULy
+        2SwkH8xC2LaAkWUVo2RqQXFuemqxaYFxXmo5PMKT83M3MYLzg5b3DsZHDz7oHWJk4mA8xCjB
+        wawkwtvDeytFiDclsbIqtSg/vqg0J7X4EKMpMLQnMkuJJucDM1ReSbyhiaWBiZmZmYmlsZmh
+        kjjv69a5KUIC6YklqdmpqQWpRTB9TBycUg1M3NyF3TLF5i4Fl6epv2vYFxX/bcnqJA2FW/+O
+        BwdyauvM81j3VfpnrXXMqynCn5qMNk/awqIdFpxjN/upgr+p6tdtxgLmZXHcZ9541kalTVWR
+        K3Iv2ORy4MAf/acOkWyHlVwP7de91OXfkeSaFby6P/0j/6726SorTDTTq4tbdZ+erJYpqJtW
+        tswzub6n584zK7/lVn5KAvXyuWxbtXz/eT9xWrtpx3p21WTxv/eLj1RMOboq+UBid7BvoOGV
+        mz7rE0TORfA1rz3M06Mv9s6gPOP37aAE2S5Fjr98Uspf6lKbtNY/sZfwfSRdezSgfadNiY3b
+        Fa07c3ad5T0cuvj+WrkbS18nb//zoV5ziRJLcUaioRZzUXEiABX7bpyYBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SfVDLcRzHffd7XGd3v1anb6Uw4uQqw/EtDueOfpwJ6XSOmPa7ldrMZhjn
+        uMIpk86zyUq6HkaOn5ZowprOc3na3VxYaSmRPNuRhxqu/973eb9f78/njw+NibvxEDpdvZ7T
+        quWZEtIPr66XDIvatapZMb72VxDydh4GyG2uJtGZK/cFqKBxB44KHfcJ5GlopdDz4m4C5XW0
+        YKipOo9A/EsngVpeL0WPLheQ6GhjnQCZeysJ1FA0BH258wagYusnCrX02CjkuNuBoZ1XHBT6
+        Zauh0KfzLmrmELaqwiVgPfusFHvJ9Ixii3g9y1tySLbZaSPZCyXb2Hd1T0g2r8oC2KqrHwH7
+        M+sExX7kwxcOXuY3TcFlpm/gtDHTV/mlmUt5XNMctmmvzY5tBzeDc4GQhswk+KbmNJkL/Ggx
+        Uwugqb6d9BlD4S13CebTAbDi5yvKF/IAaDR24X0GycTArvLCfiCQiYBZJjfeF8KYThx+/V6G
+        +YgfADblfBD0pYRMPCw57u7XAUwCPFtz6A9N0/gf2tg4t28sYmJhRaWR8Gl/eOtYW/8yjBkH
+        PS7Pf116suvvdcOh11NK+I6YA6tsrZgvEwRveI1YPggwDagyDagyDagyDUCKAG4BwZxGp1Kq
+        dFKNVM1tjNbJVTq9WhmdulbFg/6XiBxbAy5aeqLtQEADO4A0JgkUGUVPFWKRQm7YzGnXrtTq
+        MzmdHYTSuCRIFNSxVyFmlPL1XAbHaTjtP1dAC0O2Cwwz4zVT8bz4yTvEPeuchjY61Dpyxf4F
+        sq2z69cUh6QaCJXee+pFU9ysjms62Zyt7yWybJx/bo1yIIehPGx5z5gL7S6Dxf+wc5b+1fvQ
+        PdfLzlq0EURyLRocVRC7+MykO11q6cYvMfqGea/JcdhSq7rSLLyYmr2o6cPDGRntaxJRivPE
+        qOZdcbvx7Jedox8G9p5LWrKaPkYFhnn3TeFDvt3rLdeQD2Ilabmr42KPJt9u/zye25w0IaWu
+        m0cZxBRSFp7U6z9Zw7Tac1Kmm/KFyrbd7HFplCwhoyLRNULz4F7iBqWhbv6RdSD/yCAq/PHp
+        qa6JB3LMo9x41sG3UtsWCa5Lk0sjMa1O/hsJNrQTgQMAAA==
+X-CMS-MailID: 20230816053710epcas5p498d626cac93ea679af6003942f1504f3
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230814112605epcas5p31aca7b23e70e8d93df11414291f7ce66
+References: <20230814112539.70453-1-sriranjani.p@samsung.com>
+        <CGME20230814112605epcas5p31aca7b23e70e8d93df11414291f7ce66@epcas5p3.samsung.com>
+        <20230814112539.70453-2-sriranjani.p@samsung.com>
+        <169201998303.2086680.8457687937999615543.robh@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> objtool report the following warning:
->
->   arch/powerpc/kernel/ptrace/ptrace-view.o: warning: objtool:
->     gpr32_set_common+0x23c (.text+0x860): redundant UACCESS disable
->
-> gpr32_set_common() conditionnaly opens and closes UACCESS based on
-> whether kbuf point is NULL or not. This is wackelig.
->
-> Split gpr32_set_common() in two fonctions, one for user one for
-> kernel.
->
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
-> v2: Mark gpr32_set_common_kernel() and gpr32_set_common_user() static
-> ---
->  arch/powerpc/kernel/ptrace/ptrace-view.c | 106 ++++++++++++++---------
->  1 file changed, 67 insertions(+), 39 deletions(-)
->
-> diff --git a/arch/powerpc/kernel/ptrace/ptrace-view.c b/arch/powerpc/kernel/ptrace/ptrace-view.c
-> index 3910cd7bb2d9..42abbed452cd 100644
-> --- a/arch/powerpc/kernel/ptrace/ptrace-view.c
-> +++ b/arch/powerpc/kernel/ptrace/ptrace-view.c
-> @@ -716,73 +716,89 @@ int gpr32_get_common(struct task_struct *target,
->  	return membuf_zero(&to, (ELF_NGREG - PT_REGS_COUNT) * sizeof(u32));
->  }
->  
-> -int gpr32_set_common(struct task_struct *target,
-> -		     const struct user_regset *regset,
-> -		     unsigned int pos, unsigned int count,
-> -		     const void *kbuf, const void __user *ubuf,
-> -		     unsigned long *regs)
-> +static int gpr32_set_common_kernel(struct task_struct *target,
-> +				   const struct user_regset *regset,
-> +				   unsigned int pos, unsigned int count,
-> +				   const void *kbuf, unsigned long *regs)
->  {
->  	const compat_ulong_t *k = kbuf;
-> +
-> +	pos /= sizeof(compat_ulong_t);
-> +	count /= sizeof(compat_ulong_t);
-> +
-> +	for (; count > 0 && pos < PT_MSR; --count)
-> +		regs[pos++] = *k++;
-> +
-> +	if (count > 0 && pos == PT_MSR) {
-> +		set_user_msr(target, *k++);
-> +		++pos;
-> +		--count;
-> +	}
-> +
-> +	for (; count > 0 && pos <= PT_MAX_PUT_REG; --count)
-> +		regs[pos++] = *k++;
-> +	for (; count > 0 && pos < PT_TRAP; --count, ++pos)
-> +		++k;
-> +
-> +	if (count > 0 && pos == PT_TRAP) {
-> +		set_user_trap(target, *k++);
-> +		++pos;
-> +		--count;
-> +	}
-> +
-> +	kbuf = k;
-> +	pos *= sizeof(compat_ulong_t);
-> +	count *= sizeof(compat_ulong_t);
-> +	user_regset_copyin_ignore(&pos, &count, &kbuf, NULL,
-> +				  (PT_TRAP + 1) * sizeof(compat_ulong_t), -1);
-> +	return 0;
-> +}
-> +
-> +static int gpr32_set_common_user(struct task_struct *target,
-> +				 const struct user_regset *regset,
-> +				 unsigned int pos, unsigned int count,
-> +				 const void __user *ubuf, unsigned long *regs)
-> +{
->  	const compat_ulong_t __user *u = ubuf;
->  	compat_ulong_t reg;
->  
-> -	if (!kbuf && !user_read_access_begin(u, count))
-> +	if (!user_read_access_begin(u, count))
->  		return -EFAULT;
->  
->  	pos /= sizeof(reg);
->  	count /= sizeof(reg);
->  
-> -	if (kbuf)
-> -		for (; count > 0 && pos < PT_MSR; --count)
-> -			regs[pos++] = *k++;
-> -	else
-> -		for (; count > 0 && pos < PT_MSR; --count) {
-> -			unsafe_get_user(reg, u++, Efault);
-> -			regs[pos++] = reg;
-> -		}
-> -
-> +	for (; count > 0 && pos < PT_MSR; --count) {
-> +		unsafe_get_user(reg, u++, Efault);
-> +		regs[pos++] = reg;
-> +	}
->  
->  	if (count > 0 && pos == PT_MSR) {
-> -		if (kbuf)
-> -			reg = *k++;
-> -		else
-> -			unsafe_get_user(reg, u++, Efault);
-> +		unsafe_get_user(reg, u++, Efault);
->  		set_user_msr(target, reg);
->  		++pos;
->  		--count;
->  	}
->  
-> -	if (kbuf) {
-> -		for (; count > 0 && pos <= PT_MAX_PUT_REG; --count)
-> -			regs[pos++] = *k++;
-> -		for (; count > 0 && pos < PT_TRAP; --count, ++pos)
-> -			++k;
-> -	} else {
-> -		for (; count > 0 && pos <= PT_MAX_PUT_REG; --count) {
-> -			unsafe_get_user(reg, u++, Efault);
-> -			regs[pos++] = reg;
-> -		}
-> -		for (; count > 0 && pos < PT_TRAP; --count, ++pos)
-> -			unsafe_get_user(reg, u++, Efault);
-> +	for (; count > 0 && pos <= PT_MAX_PUT_REG; --count) {
-> +		unsafe_get_user(reg, u++, Efault);
-> +		regs[pos++] = reg;
->  	}
-> +	for (; count > 0 && pos < PT_TRAP; --count, ++pos)
-> +		unsafe_get_user(reg, u++, Efault);
->  
->  	if (count > 0 && pos == PT_TRAP) {
-> -		if (kbuf)
-> -			reg = *k++;
-> -		else
-> -			unsafe_get_user(reg, u++, Efault);
-> +		unsafe_get_user(reg, u++, Efault);
->  		set_user_trap(target, reg);
->  		++pos;
->  		--count;
->  	}
-> -	if (!kbuf)
-> -		user_read_access_end();
-> +	user_read_access_end();
->  
-> -	kbuf = k;
->  	ubuf = u;
->  	pos *= sizeof(reg);
->  	count *= sizeof(reg);
-> -	user_regset_copyin_ignore(&pos, &count, &kbuf, &ubuf,
-> +	user_regset_copyin_ignore(&pos, &count, NULL, &ubuf,
->  				  (PT_TRAP + 1) * sizeof(reg), -1);
->  	return 0;
-
-This was oopsing:
-
-    [ 1508.081530][T16432] BUG: Kernel NULL pointer dereference on read at 0x00000000
-    [ 1508.081551][T16432] Faulting instruction address: 0xc00000000002c690
-    [ 1508.081558][T16432] Oops: Kernel access of bad area, sig: 11 [#2]
-    [ 1508.081565][T16432] BE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=64 NUMA pSeries
-    [ 1508.081573][T16432] Modules linked in:
-    [ 1508.081580][T16432] CPU: 0 PID: 16432 Comm: ptrace-gpr Tainted: G      D            6.5.0-rc3-00069-gb23dade91efd #1
-    [ 1508.081589][T16432] Hardware name: IBM,9117-MMA POWER6 (raw) 0x3e0301 0xf000002 of:IBM,EM350_176 hv:phyp pSeries
-    [ 1508.081597][T16432] NIP:  c00000000002c690 LR: c00000000002f0f0 CTR: 0000000000000000
-    [ 1508.081604][T16432] REGS: c00000002000ba80 TRAP: 0300   Tainted: G      D             (6.5.0-rc3-00069-gb23dade91efd)
-    [ 1508.081612][T16432] MSR:  8000000000009032 <SF,EE,ME,IR,DR,RI>  CR: 24004224  XER: 00000000
-    [ 1508.081632][T16432] CFAR: c00000000002c82c DAR: 0000000000000000 DSISR: 40000000 IRQMASK: 0
-    [ 1508.081632][T16432] GPR00: c00000000002f0f0 c00000002000bd20 c000000001347e00 c00000002116ab80
-    [ 1508.081632][T16432] GPR04: 0000000000000005 0000000010030270 000000000000002d c00000002aa3bfb0
-    [ 1508.081632][T16432] GPR08: c00000002aa3be80 0000000000000000 0000000000000000 0000000000000000
-    [ 1508.081632][T16432] GPR12: c00000000002d370 c0000000019f0000 0000000000000000 0000000000000000
-    [ 1508.081632][T16432] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-    [ 1508.081632][T16432] GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-    [ 1508.081632][T16432] GPR24: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-    [ 1508.081632][T16432] GPR28: 00000000100301d0 00000000100301d0 000000000000000c 00000000000000a4
-    [ 1508.081735][T16432] NIP [c00000000002c690] gpr32_set_common_user.isra.0+0x160/0x490
-    [ 1508.081748][T16432] LR [c00000000002f0f0] compat_arch_ptrace+0x4a0/0xaf0
-    [ 1508.081756][T16432] Call Trace:
-    [ 1508.081760][T16432] [c00000002000bd20] [c00000002000bd60] 0xc00000002000bd60 (unreliable)
-    [ 1508.081771][T16432] [c00000002000bd50] [c00000000002f0f0] compat_arch_ptrace+0x4a0/0xaf0
-    [ 1508.081781][T16432] [c00000002000bdc0] [c000000000176734] compat_sys_ptrace+0x174/0x1e0
-    [ 1508.081791][T16432] [c00000002000be10] [c00000000002b404] system_call_exception+0x374/0x380
-    [ 1508.081803][T16432] [c00000002000be50] [c00000000000cb54] system_call_common+0xf4/0x258
 
 
-Because user_regset_copyin_ignore() always dereferences kbuf:
+> -----Original Message-----
+> From: Rob Herring =5Bmailto:robh=40kernel.org=5D
+> Sent: 14 August 2023 19:03
+> To: Sriranjani P <sriranjani.p=40samsung.com>
+> Cc: edumazet=40google.com; linux-kernel=40vger.kernel.org;
+> alexandre.torgue=40foss.st.com; ravi.patel=40samsung.com;
+> alim.akhtar=40samsung.com; linux-samsung-soc=40vger.kernel.org; linux-
+> fsd=40tesla.com; conor+dt=40kernel.org; mcoquelin.stm32=40gmail.com;
+> kuba=40kernel.org; netdev=40vger.kernel.org; linux-arm-
+> kernel=40lists.infradead.org; pabeni=40redhat.com; robh+dt=40kernel.org;
+> pankaj.dubey=40samsung.com; richardcochran=40gmail.com;
+> krzysztof.kozlowski+dt=40linaro.org; joabreu=40synopsys.com;
+> devicetree=40vger.kernel.org; davem=40davemloft.net;
+> swathi.ks=40samsung.com
+> Subject: Re: =5BPATCH v3 1/4=5D dt-bindings: net: Add FSD EQoS device tre=
+e
+> bindings
+>=20
+>=20
+> On Mon, 14 Aug 2023 16:55:36 +0530, Sriranjani P wrote:
+> > Add FSD Ethernet compatible in Synopsys dt-bindings document. Add FSD
+> > Ethernet YAML schema to enable the DT validation.
+> >
+> > Signed-off-by: Pankaj Dubey <pankaj.dubey=40samsung.com>
+> > Signed-off-by: Ravi Patel <ravi.patel=40samsung.com>
+> > Signed-off-by: Swathi K S <swathi.ks=40samsung.com>
+> > Signed-off-by: Sriranjani P <sriranjani.p=40samsung.com>
+> > ---
+> >  .../devicetree/bindings/net/snps,dwmac.yaml   =7C   5 +-
+> >  .../devicetree/bindings/net/tesla,ethqos.yaml =7C 114
+> > ++++++++++++++++++
+> >  2 files changed, 117 insertions(+), 2 deletions(-)  create mode
+> > 100644 Documentation/devicetree/bindings/net/tesla,ethqos.yaml
+> >
+>=20
+> My bot found errors running 'make DT_CHECKER_FLAGS=3D-m
+> dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+>=20
+> yamllint warnings/errors:
+>=20
+> dtschema/dtc warnings/errors:
+> /builds/robherring/dt-review-
+> ci/linux/Documentation/devicetree/bindings/net/tesla,ethqos.yaml:
+> properties:clock-names: =7B'minItems': 5, 'maxItems': 10, 'items': =5B=7B=
+'const':
+> 'ptp_ref'=7D, =7B'const': 'master_bus'=7D, =7B'const': 'slave_bus'=7D, =
+=7B'const': 'tx'=7D, =7B'const':
+> 'rx'=7D, =7B'const': 'master2_bus'=7D, =7B'const': 'slave2_bus'=7D, =7B'c=
+onst':
+> 'eqos_rxclk_mux'=7D, =7B'const': 'eqos_phyrxclk'=7D, =7B'const':
+> 'dout_peric_rgmii_clk'=7D=5D=7D should not be valid under =7B'required': =
+=5B'maxItems'=5D=7D
+> 	hint: =22maxItems=22 is not needed with an =22items=22 list
+> 	from schema =24id: https://protect2.fireeye.com/v1/url?k=3Df50e335d-
+> aa950a44-f50fb812-000babff3793-de26ea17ef025418&q=3D1&e=3D897786e4-
+> 5f9b-40d8-8a7f-399cb69c7ee8&u=3Dhttp%3A%2F%2Fdevicetree.org%2Fmeta-
+> schemas%2Fitems.yaml%23
+> Documentation/devicetree/bindings/net/tesla,ethqos.example.dtb:
+> /example-0/ethernet=4014300000: failed to match any schema with
+> compatible: =5B'tesla,dwc-qos-ethernet-4.21'=5D
+>=20
 
-    static inline void user_regset_copyin_ignore(unsigned int *pos,
-    					     unsigned int *count,
-    					     const void **kbuf,
-    					     const void __user **ubuf,
-    					     const int start_pos,
-    					     const int end_pos)
-    {
-    	if (*count == 0)
-    		return;
-    	BUG_ON(*pos < start_pos);
-    	if (end_pos < 0 || *pos < end_pos) {
-    		unsigned int copy = (end_pos < 0 ? *count
-    				     : min(*count, end_pos - *pos));
-    		if (*kbuf)
-    			*kbuf += copy;
+Thanks for review. Will fix this in v4.
+
+> doc reference errors (make refcheckdocs):
+>=20
+> See https://protect2.fireeye.com/v1/url?k=3Dccb7f6d0-932ccfc9-ccb67d9f-
+> 000babff3793-2137ac63fe6ddef8&q=3D1&e=3D897786e4-5f9b-40d8-8a7f-
+> 399cb69c7ee8&u=3Dhttps%3A%2F%2Fpatchwork.ozlabs.org%2Fproject%2Fdev
+> icetree-bindings%2Fpatch%2F20230814112539.70453-2-
+> sriranjani.p%40samsung.com
+>=20
+> The base for the series is generally the latest rc1. A different dependen=
+cy
+> should be noted in *this* patch.
+>=20
+
+Sorry, I could not get this comment, can you elaborate this.=20
+
+> If you already ran 'make dt_binding_check' and didn't see the above error=
+(s),
+> then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+>=20
+> pip3 install dtschema --upgrade
+>=20
+Sure will cross check.
+
+> Please check and re-submit after running the above command yourself. Note
+> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+> your schema. However, it must be unset to test all examples with your
+> schema.
 
 
-I fixed it with:
-
-diff --git a/arch/powerpc/kernel/ptrace/ptrace-view.c b/arch/powerpc/kernel/ptrace/ptrace-view.c
-index 42abbed452cd..584cf5c3df50 100644
---- a/arch/powerpc/kernel/ptrace/ptrace-view.c
-+++ b/arch/powerpc/kernel/ptrace/ptrace-view.c
-@@ -760,6 +760,7 @@ static int gpr32_set_common_user(struct task_struct *target,
- 				 const void __user *ubuf, unsigned long *regs)
- {
- 	const compat_ulong_t __user *u = ubuf;
-+	const void *kbuf = NULL;
- 	compat_ulong_t reg;
- 
- 	if (!user_read_access_begin(u, count))
-@@ -798,7 +799,7 @@ static int gpr32_set_common_user(struct task_struct *target,
- 	ubuf = u;
- 	pos *= sizeof(reg);
- 	count *= sizeof(reg);
--	user_regset_copyin_ignore(&pos, &count, NULL, &ubuf,
-+	user_regset_copyin_ignore(&pos, &count, &kbuf, &ubuf,
- 				  (PT_TRAP + 1) * sizeof(reg), -1);
- 	return 0;
- 
-
-cheers
