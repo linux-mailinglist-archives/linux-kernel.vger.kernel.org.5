@@ -2,118 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A745F77DDE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BA277DDE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243607AbjHPJwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 05:52:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51018 "EHLO
+        id S243614AbjHPJwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 05:52:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243656AbjHPJvw (ORCPT
+        with ESMTP id S243694AbjHPJw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 05:51:52 -0400
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B86A2729
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:51:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        sang-engineering.com; h=date:from:to:cc:subject:message-id
-        :references:mime-version:content-type:in-reply-to; s=k1; bh=pjnA
-        d2IvOCH765Y6OcYlBsPrnBHU+4w4cKdan2DbybU=; b=Xhhdf8ZjHtgq+MdOxieJ
-        WaCHz4HSOhFXUaU/1owOoy3az1S9NZ8SDkSYFIImzZZCBwy/E5BAQLveLdOUq60Y
-        whd6UTJtBbfaTIjk+NYXcEP8YzCS6a2JeVvh2xViHN1/sSChflB46iuWIcDh6Acu
-        JfALuaHYsLUIx9rQrcnlvkqs8oezWdU/p48gsHtWpP86zRgDq+j+hDEoTPl8bULE
-        iPtlT30Qr21PqTsvtgH2QIdX/WyWlLEXp5F7czy/PTSdGYOoxkQx19FkxK2PQDvQ
-        FFwFKdAmH7n2qc6OaQTBaYjR3LkVnozlXbAKFIIouMaHWoxaK/u7y9oUakQzOYU0
-        Qw==
-Received: (qmail 87517 invoked from network); 16 Aug 2023 11:51:17 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 16 Aug 2023 11:51:17 +0200
-X-UD-Smtp-Session: l3s3148p1@nPd0PAcDELwgAwDPXy5qAJ1huuy56R1W
-Date:   Wed, 16 Aug 2023 11:51:13 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 RESEND 2/2] PCI: rcar-host: add support for optional
- regulators
-Message-ID: <ZNycEWhT7a7llUSZ@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        linux-renesas-soc@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230712103916.1631-3-wsa+renesas@sang-engineering.com>
- <20230713153401.GA317502@bhelgaas>
+        Wed, 16 Aug 2023 05:52:26 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B994272C;
+        Wed, 16 Aug 2023 02:51:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=vPIRm+r2j/XGNQXmGb4kJZdwIiaYA0yFVuKELbN9uLA=; b=oyNmb5IZWnRRDkvSc1JUzx4yvm
+        LaVAUu4hmkg/TtletDcU/VC5E9VSgwp03B4OVBq03ZPk+9afMC+7tKkb6yg7DQ50tiV3Q32RBjlx5
+        jeR3Rw5K6R0mjxEfyNijqOP5XGAf0NzOVA/uKpayTE89oWcTHQmQO+sakz4KsUffXIhCWrm2wrtxb
+        Gc394NOj28WCq8AAriIPnTOBwT+AEAl+rKWv36+WFggWjr+nYZzxORA7KY1u4gLIuMHaL5MOoJldG
+        pcmp7BwXNppsxj4wmtWUxDCkyAGJSFerBpDBHF/62zdR/GD5nIfag2cQ2POAyh9nvwN541AJ6p8TW
+        Ff48bYqQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45260)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qWDBn-0002b3-2d;
+        Wed, 16 Aug 2023 10:51:43 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qWDBl-0007ug-W6; Wed, 16 Aug 2023 10:51:42 +0100
+Date:   Wed, 16 Aug 2023 10:51:41 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Justin Stitt <justinstitt@google.com>,
+        Iyappan Subramanian <iyappan@os.amperecomputing.com>,
+        Keyur Chudgar <keyur@os.amperecomputing.com>,
+        Quan Nguyen <quan@os.amperecomputing.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] net: mdio: fix -Wvoid-pointer-to-enum-cast warning
+Message-ID: <ZNycLZCK4GGfayWg@shell.armlinux.org.uk>
+References: <20230815-void-drivers-net-mdio-mdio-xgene-v1-1-5304342e0659@google.com>
+ <cf3a36ea-d8d2-4560-9032-04ecc2ad7495@lunn.ch>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Z+q6h2c7HBqfnx+w"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230713153401.GA317502@bhelgaas>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <cf3a36ea-d8d2-4560-9032-04ecc2ad7495@lunn.ch>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 15, 2023 at 10:41:39PM +0200, Andrew Lunn wrote:
+> On Tue, Aug 15, 2023 at 08:35:59PM +0000, Justin Stitt wrote:
+> > When building with clang 18 I see the following warning:
+> > |       drivers/net/mdio/mdio-xgene.c:338:13: warning: cast to smaller integer
+> > |               type 'enum xgene_mdio_id' from 'const void *' [-Wvoid-pointer-to-enum-cast]
+> > |         338 |                 mdio_id = (enum xgene_mdio_id)of_id->data;
+> > 
+> > This is due to the fact that `of_id->data` is a void* while `enum
+> > xgene_mdio_id` has the size of an int. This leads to truncation and
+> > possible data loss.
+> > 
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/1910
+> > Reported-by: Nathan Chancellor <nathan@kernel.org>
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> 
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
---Z+q6h2c7HBqfnx+w
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I wonder whether it would be better to use device_get_match_data()
+here? The whole of_match_device()...acpi_match_device() dance could
+become:
 
-On Thu, Jul 13, 2023 at 10:34:01AM -0500, Bjorn Helgaas wrote:
-> On Wed, Jul 12, 2023 at 12:39:16PM +0200, Wolfram Sang wrote:
-> > The KingFisher board has regulators. They just need to be en-/disabled,
-> > so we can leave the handling to devm. Order variables in reverse-xmas
-> > while we are here.
-> >=20
-> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
->=20
-> Krzysztof or Lorenzo may fix this up for you, but:
-> s/add support/Add support/ in subject to match history
-> and recast commit log to say what the patch *does* ("enable optional
-> regulators using devm, so devm will automatically disable them when
-> the driver releases the device"), not *what needs to be done*.
++	mdio_id = (uintptr_t)device_get_match_data(&pdev->dev);
+	if (!mdio_id)
+		return -ENODEV;
 
-I will fix the commit messages and resend. But frankly, except the
-latter is a tad more explicit, they both qualify for "what needs to be
-done" for me *shrug* Still, thanks for the review, I appreciate it!
+It's probably something for a follow-up patch though.
 
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
---Z+q6h2c7HBqfnx+w
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks!
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmTcnAsACgkQFA3kzBSg
-KbZriw/+I09tLqG4hjE4xb6HV6gZWEB8x6u5l7Y9HEkqwcyECM/IWZT2iULs1Jf8
-l0MK5fOJB61p+VhicbfwXmcTaVgeOL22o1I0QfrW3bk8a79nueFH87x46jziYu3V
-aAtelZIvxpxYnI50UIM8Vkh1So674QWdfZ9mw70smbj9jF3uGnNdlIENqj0ufo+G
-Viogt7/KlncssCj5GRT1HKqjG5GLZXHPXk9FADMRLJGBJIryqK4hnsjfHymi+PYr
-tW1BtPN5jJDWUMT7wFNpewqO4lqtywJC36hIxdOtaGJlE+W4uHtm0YT4XkW29hlw
-JU0lij5nD/BwpfhW8DJjdhJn9Hggyh/pucizMGfAkpqpK75qnxiUMECFtXtLtiVl
-5Ra2snfJjqj9pse2A/jNs90cN6UkGLqeWp338Rt4dJKbPl9s01j7HdPqCkbKCeSx
-Yhoqjk1iCyXod4WyE6uRvvQ5v+LKw6uwjQVTSCSNICwZJuaUCpltgyc8Zgw0lROo
-TMpoVGKUXMGP5zSejs5bYTWet+JS4kGN/jhy8YHGCKidf/EOY+dRqeLuBSRcvlwD
-SDqfS4lz1CULEywwESn+xQDVAg6JYbzu/eQoaG8pdHXxuQP4N8ZXularhO+7wFlR
-lpnnke2tlPHgyb50k9Ccpzu8pszblXyBRDOogF4yPZ+elhQn5EQ=
-=VFZt
------END PGP SIGNATURE-----
-
---Z+q6h2c7HBqfnx+w--
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
