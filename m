@@ -2,132 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7B877E612
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EE477E617
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243828AbjHPQL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 12:11:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33326 "EHLO
+        id S1344525AbjHPQMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 12:12:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234312AbjHPQLZ (ORCPT
+        with ESMTP id S1344533AbjHPQMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 12:11:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FC4E2;
-        Wed, 16 Aug 2023 09:11:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A95264A17;
-        Wed, 16 Aug 2023 16:11:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88A8FC433C7;
-        Wed, 16 Aug 2023 16:11:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692202283;
-        bh=l0J8yDMBc74nmT7gwZGggcXqRVTFJWQG2J54M7XA4UI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BPp0q5QqydyqEXh/RKGyCfuudu+haCSzEXo8u/ua6uYq8RgUjltDdIFycod4kJCTz
-         wY3Ml5pwlnFsI9dJgfIhOnzXzK2u6NbP1XZBby9cLzY/IJYiwylv8aJYaPTz0x7F2/
-         YFn+D40+ZYw7aP0iMym2qVoBRyQ5raJUMDztW96kPHz/58DnMl4Pqn0BJkJ58zXhTm
-         95D2m3ysSi2K+YNtDpffRR66V2DflNFOXqC668ykO5yNWSFZ2XM2EQ7+9cr0shykPk
-         GDA15EOwoKnlG7FhLiUEbK5L0y5Of4I6PgYkcQI0h5XDrCX1Zw6fjBHci1NjcRxcpu
-         M03bniOi6LiXw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E6BD6404DF; Wed, 16 Aug 2023 13:11:20 -0300 (-03)
-Date:   Wed, 16 Aug 2023 13:11:20 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     linux-perf-users@vger.kernel.org, irogers@google.com,
-        john.g.garry@oracle.com, renyu.zj@linux.alibaba.com,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Haixin Yu <yuhaixin.yhx@linux.alibaba.com>,
-        Nick Forrington <nick.forrington@arm.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Sohom Datta <sohomdatta1@gmail.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v6 2/6] perf test: Add a test for the new Arm CPU ID
- comparison behavior
-Message-ID: <ZNz1KNaNhct35bzd@kernel.org>
-References: <20230816114841.1679234-1-james.clark@arm.com>
- <20230816114841.1679234-3-james.clark@arm.com>
+        Wed, 16 Aug 2023 12:12:14 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EBC9121
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 09:12:13 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-790b6761117so60493939f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 09:12:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1692202332; x=1692807132;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ml7Avdsp0K+s+IDRpfySD8LfsZQkyxX2I1nAe0mHNMk=;
+        b=KnDm8W4GNVKCo3YffmVxkSbPl/peWhH/66l4KbUpxp8xiR3aQoJBJQfJrApS0JHDv0
+         v0Ni2/TxKbiA5haP+FdXt+MqPH6nnfynKU+qHilBbdn6C8M1GUo6QkHcUdDcpimGER4T
+         4OgCMaA7XhkKTbcAmJiJEZg7TXoUcNuD5FDv0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692202332; x=1692807132;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ml7Avdsp0K+s+IDRpfySD8LfsZQkyxX2I1nAe0mHNMk=;
+        b=NjZLBJhQ7tJL4TAm88nK1Q/2cNVRiZZcZOGD7ZFW/3o1W96C2RTh2ih6z0makRqsWH
+         8rOv4X7FuvMWLzsXyOfw35j9XDUcknuTjprfDRJ6WVrEa5CVj+QNf5+Q0uJZoZ4bV9MF
+         bmamvWusV0ox2UTUeLVuP1+oTV8ZWesBFCCRyHIr5erMECPlRRYu8bBCS3Z8zl0QUsx7
+         gh4BN4wHRpc5MqKkAe1z+3lAPpf18w06/KOSS9nFJLLaE93Bs+giNFygvnXxMmRK9zAA
+         XvWqjsEDM+5ylRAVytQHeSvMiNB4zFR/h3IyksYWy9MErjefy/UO7vzIsYdpDCNeC0DE
+         s0Lg==
+X-Gm-Message-State: AOJu0YxGp5WED1D+cIay+NXKOhxpwJdIHFBMlcTggakqOMJKxaxpF/Mm
+        pk8sZIVs5qu3kkGg01HuKtjd2oFfF3PH+yHDtNE=
+X-Google-Smtp-Source: AGHT+IE8HyobJuBfFiDVV4/Qagzq+NVtrmovBgIE65BWuYxV7zzs9Mj3rx6J0MOuXmxh2AYiCelQHg==
+X-Received: by 2002:a05:6602:358f:b0:790:f2c3:2fd with SMTP id bi15-20020a056602358f00b00790f2c302fdmr3730059iob.0.1692202332593;
+        Wed, 16 Aug 2023 09:12:12 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id r2-20020a6b4402000000b0079119cfcfb7sm4574036ioa.35.2023.08.16.09.12.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 09:12:12 -0700 (PDT)
+Message-ID: <38059b04-d822-51a7-f638-34b2795bdd16@linuxfoundation.org>
+Date:   Wed, 16 Aug 2023 10:12:11 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230816114841.1679234-3-james.clark@arm.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] selftests/filesystems: Add six consecutive 'x' characters
+ to mktemp
+Content-Language: en-US
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        Hui Min Mina Chou <minachou@andestech.com>,
+        hirofumi@mail.parknet.co.jp, shuah@kernel.org
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tim609@andestech.com, dylan@andestech.com, az70021@gmail.com,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230718034351.1373857-1-minachou@andestech.com>
+ <87351lk9xo.fsf@minerva.mail-host-address-is-not-set>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <87351lk9xo.fsf@minerva.mail-host-address-is-not-set>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Aug 16, 2023 at 12:47:44PM +0100, James Clark escreveu:
-> +++ b/tools/perf/arch/arm64/tests/cpuid-match.c
-> @@ -0,0 +1,38 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/compiler.h>
-> +
-> +#include "arch-tests.h"
-> +#include "tests/tests.h"
-> +#include "util/header.h"
-> +
-> +int test__cpuid_match(struct test_suite *test __maybe_unused,
-> +			     int subtest __maybe_unused)
-> +{
-> +	/* midr with no leading zeros matches */
-> +	if (strcmp_cpuid_str("0x410fd0c0", "0x00000000410fd0c0"))
-> +		return -1;
-> +	/* Upper case matches */
-> +	if (strcmp_cpuid_str("0x410fd0c0", "0x00000000410FD0C0"))
-> +		return -1;
-> +	/* r0p0 = r0p0 matches */
-> +	if (strcmp_cpuid_str("0x00000000410fd480", "0x00000000410fd480"))
-> +		return -1;
-> +	/* r0p1 > r0p0 matches */
-> +	if (strcmp_cpuid_str("0x00000000410fd480", "0x00000000410fd481"))
-> +		return -1;
-> +	/* r1p0 > r0p0 matches*/
-> +	if (strcmp_cpuid_str("0x00000000410fd480", "0x00000000411fd480"))
-> +		return -1;
-> +	/* r0p0 < r0p1 doesn't match */
-> +	if (!strcmp_cpuid_str("0x00000000410fd481", "0x00000000410fd480"))
-> +		return -1;
-> +	/* r0p0 < r1p0 doesn't match */
-> +	if (!strcmp_cpuid_str("0x00000000411fd480", "0x00000000410fd480"))
-> +		return -1;
-> +	/* Different CPU doesn't match */
-> +	if (!strcmp_cpuid_str("0x00000000410fd4c0", "0x00000000430f0af0"))
-> +		return -1;
-> +
-> +	return 0;
-> +}
-> +
-> -- 
-> 2.34.1
+On 7/18/23 00:31, Javier Martinez Canillas wrote:
+> Hui Min Mina Chou <minachou@andestech.com> writes:
 > 
-⬢[acme@toolbox perf-tools-next]$        git am ./v6_20230816_james_clark_perf_vendor_events_arm64_update_n2_and_v2_metrics_and_events_using_arm_telem.mbx
-Applying: perf test: Add a test for the new Arm CPU ID comparison behavior
-.git/rebase-apply/patch:93: new blank line at EOF.
-+
-warning: 1 line adds whitespace errors.
-⬢[acme@toolbox perf-tools-next]$
+>> In busybox, the mktemp requires that the generated filename be
+>> suffixed with at least six consecutive 'X' characters. Otherwise,
+>> it will return an "Invalid argument" error.
+>>
+>> Signed-off-by: Hui Min Mina Chou <minachou@andestech.com>
+>> ---
+> 
+> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+> 
 
-I'm removing it
+Applied to linux-kselftest next for Linux 6.6-rc1.
+
+thanks,
+-- Shuah
