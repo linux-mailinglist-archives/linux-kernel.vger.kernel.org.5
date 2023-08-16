@@ -2,218 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4649177E31D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D6277E322
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245719AbjHPN6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 09:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57602 "EHLO
+        id S245727AbjHPN7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245710AbjHPN6F (ORCPT
+        with ESMTP id S245746AbjHPN66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 09:58:05 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0621980;
-        Wed, 16 Aug 2023 06:58:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692194283; x=1723730283;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=DUczewNPllC94OPCnns3pO2+rMVMgE13ohRtdkbEVoM=;
-  b=PdGFLCar8eL4e4VW7HxPoBdzKG97HEV7eUTvi7hEmFo7C0R8szGhPPXK
-   69W8RVUgHLuamGtjFYwjskO95xtiZPXfGcQvijhWlRABU2SGcFLhurjIk
-   HZlOCaFu5tWAbl5Tdd+6oS0H7QnsRbhQCAPHbwuOZODNss/zGbZ4PO5Al
-   wcdVNVi3+ciaMIbc3r4uLgAsVfGlesQGu5OzYWOicFdi7rOuDNxTCfNrO
-   PhpGZjdwDdn+YfnEID72JVsj30Fj3nkpzdtxscxoHeWqI7iD8xni/kdYO
-   16YEIKqqoWjrkR/Z+yDA+NPwHnMOJhJsW3/rzwpwBEdtivkrXxXEweNs0
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="352863245"
-X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
-   d="scan'208";a="352863245"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 06:58:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="857828332"
-X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
-   d="scan'208";a="857828332"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 16 Aug 2023 06:57:56 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWH23-0000M5-18;
-        Wed, 16 Aug 2023 13:57:55 +0000
-Date:   Wed, 16 Aug 2023 21:57:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
-        david@fromorbit.com, tkhai@ya.ru, vbabka@suse.cz,
-        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
-        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
-        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
-        gregkh@linuxfoundation.org, muchun.song@linux.dev,
-        joel@joelfernandes.org, christian.koenig@amd.com
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, dri-devel@lists.freedesktop.org,
-        linux-fsdevel@vger.kernel.org,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: Re: [PATCH 1/5] mm: move some shrinker-related function declarations
- to mm/internal.h
-Message-ID: <202308162105.y9XrlTA7-lkp@intel.com>
-References: <20230816083419.41088-2-zhengqi.arch@bytedance.com>
+        Wed, 16 Aug 2023 09:58:58 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on20606.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e8a::606])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324EE2711;
+        Wed, 16 Aug 2023 06:58:57 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Cwwl/G/uaTbC80Uo3HS16+P7GYcTO4h2SRkyeLV9XL0BKr80b1w3siAvk2wf0kAbMSI++hKprUjV/AKRJ0h/DPjRZI2VeGOsyyJdOEGky4y9A0GUevBObKHM0WLHp4cvEzYMoGCeWWL308tULgsJXltE/HCBPwLnfqVzxUTZczjEJs8WhqI9mkrC/X9sSLsgY2IO1DcNYK7EMOpqGglb4IQvmgYvtaon/zN7eO26RMCKu8VzfQLiIkc7aI1gd73AE2CBJjf+5otCzo2XRIlFqLauZSyMqmOPzYIcXIWDLSiTjjkLuFYR2L76pTM8LwZHX/+pPtQ94GR4HI0XhGQDIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PzWU8BzzH3SqSYEA2LLJl30W5zFcax5iBensNa6UXCA=;
+ b=UKBIARMKkCjRbJAB9Ot8YHBNtL1WsXzPEkanDAEeKorC+3aBHIQWoIrzmjI5au5AhTG5On7S0L5FeP3TOwEwTlxsg4IhAZ+r+hcXFrc26CBWQtTSAoPeDXz/0o+aZznJydbyoeiVR1JuEMcQf83Zp8y/sN8nRuGfIpIW1KL1vlmREkB4flmYUacLUYxDvQzr0BQAD+BIdXqDqQoi++RUdP+im7EJbqVxBirorkjjJTg5AEwFZ04D2GWcjpNZxUBeUq9Xh7/ZO6K2aS10dSRDg1P+GTPCf8B7Wuv1na/KUgv8GuUVvwLVHN5gv7HzHnyyHqGc12LW6w1nK85P7v7Ftw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PzWU8BzzH3SqSYEA2LLJl30W5zFcax5iBensNa6UXCA=;
+ b=DjEtAPfK18KPLw5wFgkvRXBD/0DEiHHtawW2jes7vngnyeld4VkGh5YpOec8385KqpmzDwS0TX/v7Dh8HsPG+tz19FD/OW2JZLiMI89hiEMp0guA0nurzoiPxmsl3XJpiiK6RRFDYVmu0LAm1oGLSuDDgQ5y6O8CGWIEhLSHhqqHJR+y13tKP1GJxVY/VfU6RII/S910Qp/Ux8vghixnE3w97pPtE1zPqA+qlsAQUdxbUWbF5aiP+i2gNqPhA2hNMHt6JQZTxAayowuaMqYKLn9mDmM1As73lrVhixiwJMiHw6bPP9UcD8aQXckXuzBrwTz/HP20eOc2eLho0aryqQ==
+Received: from SA1P222CA0177.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:3c4::25)
+ by SJ0PR12MB8167.namprd12.prod.outlook.com (2603:10b6:a03:4e6::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Wed, 16 Aug
+ 2023 13:58:53 +0000
+Received: from SN1PEPF0002636B.namprd02.prod.outlook.com
+ (2603:10b6:806:3c4:cafe::6c) by SA1P222CA0177.outlook.office365.com
+ (2603:10b6:806:3c4::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.14 via Frontend
+ Transport; Wed, 16 Aug 2023 13:58:53 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ SN1PEPF0002636B.mail.protection.outlook.com (10.167.241.136) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.14 via Frontend Transport; Wed, 16 Aug 2023 13:58:53 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Wed, 16 Aug 2023
+ 06:58:43 -0700
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.37; Wed, 16 Aug 2023 06:58:42 -0700
+Received: from vdi.nvidia.com (10.127.8.14) by mail.nvidia.com
+ (10.126.190.181) with Microsoft SMTP Server id 15.2.986.37 via Frontend
+ Transport; Wed, 16 Aug 2023 06:58:42 -0700
+From:   Asmaa Mnebhi <asmaa@nvidia.com>
+To:     <andy.shevchenko@gmail.com>, <linux-gpio@vger.kernel.org>,
+        <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
+        <brgl@bgdev.pl>, <linux-kernel@vger.kernel.org>
+CC:     Asmaa Mnebhi <asmaa@nvidia.com>
+Subject: [PATCH v1 0/2] Fix Nvidia BlueField-3 GPIO access
+Date:   Wed, 16 Aug 2023 09:58:37 -0400
+Message-ID: <20230816135839.24011-1-asmaa@nvidia.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230816083419.41088-2-zhengqi.arch@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002636B:EE_|SJ0PR12MB8167:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6a08aca7-cf5a-49ca-bd37-08db9e60ed45
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hfuCAuiu4UNbobkaGvO71vE+xGmpWO1HovmxpCvjPxXHpwawiHFd6Qp+fLV/PN3Qvbzy70Wp9aenxesYVkaGJDfll8HDVp5t4raNBrN7SqJu15Dbx8Gx+XWKrM6G+ClmbbvYGx6QI3vAFwFdOHoMxciJeG1Ywch6W1mms1YVPEnIFRH0kIzLoWeNHTotl2WWYu1QwL6hLpVv+vvT5vvD7i79WYZ4DFTtuu2hUjd4sd/kg1+7+KflbdPJSbkWTBmLy42NkmSfWz8LLYCIB2ox12FlT2c+/JlQj2IbAJ+gh5TCTgWHqc0g5AFjShuK4zS/VfV0ECpoaEBCTwedMWMHoQNtFyE4rxlnukI/6u/vl2peHdAwdX1b0RtGimSSSuqaOcXBzQVvaykPBT6CModgdDZNI2M7i9QUl/xAmXFwei+zfEY5YlYAYJqj+3JUvS1KvTG+2YNpUt2OXZd0fORBk/Gu1MhvK2wYxr2L/v5rpvrUBsSQJQDynZYLItF4m3vqWjLwmnNZocE2kaBBcIEmxTHoATzLAaCvpg/1+WC86TMY0qfKpTL3Kp/xoj71ZqG/P5gxO8TxyciMF8ZTchn161esnl82XiIxy+lP9wPpI1DHznJt1v/MW4gL8joy2dHyEVYOwiZ5U+rQdMHwvEluXf29P74WN1QcWlkR0A42Q13iPPm1FWTenh9ww3EZh7WHqqOMakLqtFSPp9b/2kapeB4VWAFp/k4b6I086WppiJr3PJXde960Mtcuk34ZNlFiIGRxmpGGcuNCVc0Op7D4Mw==
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(346002)(376002)(136003)(1800799009)(451199024)(186009)(82310400011)(46966006)(36840700001)(40470700004)(7636003)(316002)(356005)(82740400003)(110136005)(70586007)(70206006)(36860700001)(41300700001)(5660300002)(47076005)(8676002)(4326008)(8936002)(2906002)(40460700003)(83380400001)(26005)(40480700001)(478600001)(426003)(336012)(86362001)(107886003)(7696005)(36756003)(6666004)(1076003)(2616005)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 13:58:53.6783
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a08aca7-cf5a-49ca-bd37-08db9e60ed45
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002636B.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB8167
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qi,
+Fix Nvidia BlueField-3 GPIO access via libgpiod gpioset tool.
+gpioset tool fails to modify the GPIO value due to the following:
+1) the pinctrl-mlxbf3 driver defines mlxbf3_gpio_request_enable()
+   to enable software to take control over a gpio. Only then can
+   the gpio-mlxbf3 driver modify the direction and value of the
+   gpio. mlxbf3_gpio_disable_free() gives control back to hardware
+   and is called when the "gpioset" command is invoked.
+   This cancels out the effort to change the GPIO value and
+   direction. So mlxbf3_gpio_disable_free() needs to be removed.
+2) the gpio-mlxbf3 driver calls gpiochip_generic_request() which
+   calls mlxbf3_gpio_request_enable(). "pin_ranges" needs not to be
+   empty for mlxbf3_gpio_request_enable() to be invoked. So
+   gpio-mlxbf3 needs to populate "pin_ranges".
 
-kernel test robot noticed the following build warnings:
+Asmaa Mnebhi (2):
+  pinctrl: mlxbf3: Remove gpio_disable_free()
+  gpio: mlxbf3: Support add_pin_ranges()
 
-[auto build test WARNING on brauner-vfs/vfs.all]
-[also build test WARNING on linus/master v6.5-rc6 next-20230816]
-[cannot apply to akpm-mm/mm-everything drm-misc/drm-misc-next vfs-idmapping/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Qi-Zheng/mm-move-some-shrinker-related-function-declarations-to-mm-internal-h/20230816-163833
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git vfs.all
-patch link:    https://lore.kernel.org/r/20230816083419.41088-2-zhengqi.arch%40bytedance.com
-patch subject: [PATCH 1/5] mm: move some shrinker-related function declarations to mm/internal.h
-config: m68k-randconfig-r013-20230816 (https://download.01.org/0day-ci/archive/20230816/202308162105.y9XrlTA7-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230816/202308162105.y9XrlTA7-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308162105.y9XrlTA7-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> mm/shrinker_debug.c:174:5: warning: no previous prototype for 'shrinker_debugfs_add' [-Wmissing-prototypes]
-     174 | int shrinker_debugfs_add(struct shrinker *shrinker)
-         |     ^~~~~~~~~~~~~~~~~~~~
->> mm/shrinker_debug.c:249:16: warning: no previous prototype for 'shrinker_debugfs_detach' [-Wmissing-prototypes]
-     249 | struct dentry *shrinker_debugfs_detach(struct shrinker *shrinker,
-         |                ^~~~~~~~~~~~~~~~~~~~~~~
->> mm/shrinker_debug.c:265:6: warning: no previous prototype for 'shrinker_debugfs_remove' [-Wmissing-prototypes]
-     265 | void shrinker_debugfs_remove(struct dentry *debugfs_entry, int debugfs_id)
-         |      ^~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/shrinker_debugfs_add +174 mm/shrinker_debug.c
-
-bbf535fd6f06b9 Roman Gushchin     2022-05-31  173  
-5035ebc644aec9 Roman Gushchin     2022-05-31 @174  int shrinker_debugfs_add(struct shrinker *shrinker)
-5035ebc644aec9 Roman Gushchin     2022-05-31  175  {
-5035ebc644aec9 Roman Gushchin     2022-05-31  176  	struct dentry *entry;
-e33c267ab70de4 Roman Gushchin     2022-05-31  177  	char buf[128];
-5035ebc644aec9 Roman Gushchin     2022-05-31  178  	int id;
-5035ebc644aec9 Roman Gushchin     2022-05-31  179  
-47a7c01c3efc65 Qi Zheng           2023-06-09  180  	lockdep_assert_held(&shrinker_rwsem);
-5035ebc644aec9 Roman Gushchin     2022-05-31  181  
-5035ebc644aec9 Roman Gushchin     2022-05-31  182  	/* debugfs isn't initialized yet, add debugfs entries later. */
-5035ebc644aec9 Roman Gushchin     2022-05-31  183  	if (!shrinker_debugfs_root)
-5035ebc644aec9 Roman Gushchin     2022-05-31  184  		return 0;
-5035ebc644aec9 Roman Gushchin     2022-05-31  185  
-5035ebc644aec9 Roman Gushchin     2022-05-31  186  	id = ida_alloc(&shrinker_debugfs_ida, GFP_KERNEL);
-5035ebc644aec9 Roman Gushchin     2022-05-31  187  	if (id < 0)
-5035ebc644aec9 Roman Gushchin     2022-05-31  188  		return id;
-5035ebc644aec9 Roman Gushchin     2022-05-31  189  	shrinker->debugfs_id = id;
-5035ebc644aec9 Roman Gushchin     2022-05-31  190  
-e33c267ab70de4 Roman Gushchin     2022-05-31  191  	snprintf(buf, sizeof(buf), "%s-%d", shrinker->name, id);
-5035ebc644aec9 Roman Gushchin     2022-05-31  192  
-5035ebc644aec9 Roman Gushchin     2022-05-31  193  	/* create debugfs entry */
-5035ebc644aec9 Roman Gushchin     2022-05-31  194  	entry = debugfs_create_dir(buf, shrinker_debugfs_root);
-5035ebc644aec9 Roman Gushchin     2022-05-31  195  	if (IS_ERR(entry)) {
-5035ebc644aec9 Roman Gushchin     2022-05-31  196  		ida_free(&shrinker_debugfs_ida, id);
-5035ebc644aec9 Roman Gushchin     2022-05-31  197  		return PTR_ERR(entry);
-5035ebc644aec9 Roman Gushchin     2022-05-31  198  	}
-5035ebc644aec9 Roman Gushchin     2022-05-31  199  	shrinker->debugfs_entry = entry;
-5035ebc644aec9 Roman Gushchin     2022-05-31  200  
-2124f79de6a909 John Keeping       2023-04-18  201  	debugfs_create_file("count", 0440, entry, shrinker,
-5035ebc644aec9 Roman Gushchin     2022-05-31  202  			    &shrinker_debugfs_count_fops);
-2124f79de6a909 John Keeping       2023-04-18  203  	debugfs_create_file("scan", 0220, entry, shrinker,
-bbf535fd6f06b9 Roman Gushchin     2022-05-31  204  			    &shrinker_debugfs_scan_fops);
-5035ebc644aec9 Roman Gushchin     2022-05-31  205  	return 0;
-5035ebc644aec9 Roman Gushchin     2022-05-31  206  }
-5035ebc644aec9 Roman Gushchin     2022-05-31  207  
-e33c267ab70de4 Roman Gushchin     2022-05-31  208  int shrinker_debugfs_rename(struct shrinker *shrinker, const char *fmt, ...)
-e33c267ab70de4 Roman Gushchin     2022-05-31  209  {
-e33c267ab70de4 Roman Gushchin     2022-05-31  210  	struct dentry *entry;
-e33c267ab70de4 Roman Gushchin     2022-05-31  211  	char buf[128];
-e33c267ab70de4 Roman Gushchin     2022-05-31  212  	const char *new, *old;
-e33c267ab70de4 Roman Gushchin     2022-05-31  213  	va_list ap;
-e33c267ab70de4 Roman Gushchin     2022-05-31  214  	int ret = 0;
-e33c267ab70de4 Roman Gushchin     2022-05-31  215  
-e33c267ab70de4 Roman Gushchin     2022-05-31  216  	va_start(ap, fmt);
-e33c267ab70de4 Roman Gushchin     2022-05-31  217  	new = kvasprintf_const(GFP_KERNEL, fmt, ap);
-e33c267ab70de4 Roman Gushchin     2022-05-31  218  	va_end(ap);
-e33c267ab70de4 Roman Gushchin     2022-05-31  219  
-e33c267ab70de4 Roman Gushchin     2022-05-31  220  	if (!new)
-e33c267ab70de4 Roman Gushchin     2022-05-31  221  		return -ENOMEM;
-e33c267ab70de4 Roman Gushchin     2022-05-31  222  
-47a7c01c3efc65 Qi Zheng           2023-06-09  223  	down_write(&shrinker_rwsem);
-e33c267ab70de4 Roman Gushchin     2022-05-31  224  
-e33c267ab70de4 Roman Gushchin     2022-05-31  225  	old = shrinker->name;
-e33c267ab70de4 Roman Gushchin     2022-05-31  226  	shrinker->name = new;
-e33c267ab70de4 Roman Gushchin     2022-05-31  227  
-e33c267ab70de4 Roman Gushchin     2022-05-31  228  	if (shrinker->debugfs_entry) {
-e33c267ab70de4 Roman Gushchin     2022-05-31  229  		snprintf(buf, sizeof(buf), "%s-%d", shrinker->name,
-e33c267ab70de4 Roman Gushchin     2022-05-31  230  			 shrinker->debugfs_id);
-e33c267ab70de4 Roman Gushchin     2022-05-31  231  
-e33c267ab70de4 Roman Gushchin     2022-05-31  232  		entry = debugfs_rename(shrinker_debugfs_root,
-e33c267ab70de4 Roman Gushchin     2022-05-31  233  				       shrinker->debugfs_entry,
-e33c267ab70de4 Roman Gushchin     2022-05-31  234  				       shrinker_debugfs_root, buf);
-e33c267ab70de4 Roman Gushchin     2022-05-31  235  		if (IS_ERR(entry))
-e33c267ab70de4 Roman Gushchin     2022-05-31  236  			ret = PTR_ERR(entry);
-e33c267ab70de4 Roman Gushchin     2022-05-31  237  		else
-e33c267ab70de4 Roman Gushchin     2022-05-31  238  			shrinker->debugfs_entry = entry;
-e33c267ab70de4 Roman Gushchin     2022-05-31  239  	}
-e33c267ab70de4 Roman Gushchin     2022-05-31  240  
-47a7c01c3efc65 Qi Zheng           2023-06-09  241  	up_write(&shrinker_rwsem);
-e33c267ab70de4 Roman Gushchin     2022-05-31  242  
-e33c267ab70de4 Roman Gushchin     2022-05-31  243  	kfree_const(old);
-e33c267ab70de4 Roman Gushchin     2022-05-31  244  
-e33c267ab70de4 Roman Gushchin     2022-05-31  245  	return ret;
-e33c267ab70de4 Roman Gushchin     2022-05-31  246  }
-e33c267ab70de4 Roman Gushchin     2022-05-31  247  EXPORT_SYMBOL(shrinker_debugfs_rename);
-e33c267ab70de4 Roman Gushchin     2022-05-31  248  
-26e239b37ebdfd Joan Bruguera Micó 2023-05-03 @249  struct dentry *shrinker_debugfs_detach(struct shrinker *shrinker,
-26e239b37ebdfd Joan Bruguera Micó 2023-05-03  250  				       int *debugfs_id)
-5035ebc644aec9 Roman Gushchin     2022-05-31  251  {
-badc28d4924bfe Qi Zheng           2023-02-02  252  	struct dentry *entry = shrinker->debugfs_entry;
-badc28d4924bfe Qi Zheng           2023-02-02  253  
-47a7c01c3efc65 Qi Zheng           2023-06-09  254  	lockdep_assert_held(&shrinker_rwsem);
-5035ebc644aec9 Roman Gushchin     2022-05-31  255  
-e33c267ab70de4 Roman Gushchin     2022-05-31  256  	kfree_const(shrinker->name);
-14773bfa70e67f Tetsuo Handa       2022-07-20  257  	shrinker->name = NULL;
-e33c267ab70de4 Roman Gushchin     2022-05-31  258  
-26e239b37ebdfd Joan Bruguera Micó 2023-05-03  259  	*debugfs_id = entry ? shrinker->debugfs_id : -1;
-badc28d4924bfe Qi Zheng           2023-02-02  260  	shrinker->debugfs_entry = NULL;
-badc28d4924bfe Qi Zheng           2023-02-02  261  
-badc28d4924bfe Qi Zheng           2023-02-02  262  	return entry;
-5035ebc644aec9 Roman Gushchin     2022-05-31  263  }
-5035ebc644aec9 Roman Gushchin     2022-05-31  264  
-26e239b37ebdfd Joan Bruguera Micó 2023-05-03 @265  void shrinker_debugfs_remove(struct dentry *debugfs_entry, int debugfs_id)
-26e239b37ebdfd Joan Bruguera Micó 2023-05-03  266  {
-26e239b37ebdfd Joan Bruguera Micó 2023-05-03  267  	debugfs_remove_recursive(debugfs_entry);
-26e239b37ebdfd Joan Bruguera Micó 2023-05-03  268  	ida_free(&shrinker_debugfs_ida, debugfs_id);
-26e239b37ebdfd Joan Bruguera Micó 2023-05-03  269  }
-26e239b37ebdfd Joan Bruguera Micó 2023-05-03  270  
+ drivers/gpio/gpio-mlxbf3.c       | 20 ++++++++++++++++++++
+ drivers/pinctrl/pinctrl-mlxbf3.c | 14 --------------
+ 2 files changed, 20 insertions(+), 14 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.30.1
+
