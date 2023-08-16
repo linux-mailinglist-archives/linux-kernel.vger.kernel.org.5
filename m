@@ -2,97 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FA777DE62
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FCD777DE66
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243832AbjHPKTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 06:19:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45390 "EHLO
+        id S243837AbjHPKTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 06:19:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243824AbjHPKSk (ORCPT
+        with ESMTP id S243894AbjHPKTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 06:18:40 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F681990
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:18:38 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fe24dd8898so59761585e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:18:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692181117; x=1692785917;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=C/clY/dRW1xIHeRIxZxe1CCICvaVCPAzy02zhvzR3a8=;
-        b=TSzgzVTJUl1fWL09M1YvugYA7/4Jvd3vZ2D+VuPfos/0AqPx3UGohziKzqIuD5U2le
-         dkk/F3CVBrtSFwUs+/Q229MyfCq2F/pSetQdFWbh6tEOseCv/cjAYfY3pnLo7y5/lWJm
-         1PiN5UGdAvY6CtT5ufUKcRzmif3VDU92qRay8b7d9aw/FDj7TncIZaWMiqOc/AAKQ1A8
-         8Jb7Wh3JA4jowbNVrQ7lrEf3gC2CO4qjQ5PJepyXO6G1zaQxFzUCDEMSEwH9tXyC+vux
-         4mO0obfH7cNCUVOqMVDDDQ9EoaK8MRAoBObskQCyUgAVWQlAm+3gFosgnQRKcE9vAQGx
-         c6QA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692181117; x=1692785917;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C/clY/dRW1xIHeRIxZxe1CCICvaVCPAzy02zhvzR3a8=;
-        b=W9WgzKmJRBXS55MjCjtn6Q0fsZQoYXACd45OL0ypCHpoBxaFm88V/0jUYwHpr1p4Sl
-         MtBaxSfm4AsO/Nx02epKisPg5A83DTTLMG2bNUDat3+LXIEZLiabvZfPISYz0lDgJGTS
-         rocPyFqeF5u7By8Etl0BXarFNV1F/ZoeqHEqKFRBG1gFIAssEwf/xrjFxu3MLg4WpfOa
-         3MSa3UBJJV9VSgfLd043UMoqwyGYkyCuZHDyviSygzJgdB8uUEcrHv8Kwmqjh8Cyp7Zy
-         oPprBNWUXeFggPfyiyphfWOgTvrQ6fo8uNzvS00riGxpsKvyqRhL5EsLtCyXPhi4zvi5
-         e8qQ==
-X-Gm-Message-State: AOJu0Yz0B81Ez7mIK4kEF9gzPW5u1Q1yeBvcCxLLESoyb5fzEUxsZrpH
-        5jKWqCk6XLEyd+Vd8WLX39KAmHC8a1b5J506Drg=
-X-Google-Smtp-Source: AGHT+IGSAcO4vvHBg5CZaQLs9ZmCtlKhhEMI+nYCq411MHuYciX17G3u31bOFeatoypWnqfRoF5UWA==
-X-Received: by 2002:adf:fcc8:0:b0:317:71bb:7ccd with SMTP id f8-20020adffcc8000000b0031771bb7ccdmr950387wrs.52.1692181117335;
-        Wed, 16 Aug 2023 03:18:37 -0700 (PDT)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id h1-20020adffd41000000b0030ae499da59sm20896988wrs.111.2023.08.16.03.18.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 03:18:37 -0700 (PDT)
-Message-ID: <cecec127-5494-297f-9be0-51a76ce9f149@linaro.org>
-Date:   Wed, 16 Aug 2023 12:18:36 +0200
+        Wed, 16 Aug 2023 06:19:07 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F6271999
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:19:06 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 12:19:02 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1692181144;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nKq4Lj7bJy5C6Mfz80GTTkN4qCbI70YzBo06GeXrdAI=;
+        b=pktBrazY0mrvtjUxgd1bbmPm7duZ7pLScaR2aZXsMFhWHJSETwUR2EYhp+uhda2OZq1Y6b
+        2bY58wAsBhR65jdKqCq8bVA8PYVGIW9NnFiPI6PIvquEG1IY7qGhzD81x2sziiwH7BwWZG
+        z/LQFCTmdGYx8naWL2sjLLa6v/odICBtlpRnqXttH+PrEIK0h1cPC7bLr6Ts4do6MZF+dj
+        oxJ5LbZwm1XLz/4wYzsqsmgSLsbM6SGFPrVdPIJVfrq7K6U/l+QC4Gk/cMdbX095OKRb5d
+        pHNuHAxayH0cUBfkm+PzMKc+4E3MxyDaQWGvNJBfXBl+LbLCuH4ld/VirjUU9A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1692181144;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nKq4Lj7bJy5C6Mfz80GTTkN4qCbI70YzBo06GeXrdAI=;
+        b=N9iYgOkkZVnc/eql+GY+J+2yxGpIlYd6VIKcQ+v5rhJUaJ90z57apQn62GFnFrb99WS7wk
+        BA/QqCJuVeBbmxCg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        bsegall@google.com, boqun.feng@gmail.com, swood@redhat.com,
+        bristot@redhat.com, dietmar.eggemann@arm.com, mingo@redhat.com,
+        jstultz@google.com, juri.lelli@redhat.com, mgorman@suse.de,
+        rostedt@goodmis.org, vschneid@redhat.com,
+        vincent.guittot@linaro.org, longman@redhat.com, will@kernel.org
+Subject: Re: [PATCH 0/6] locking/rtmutex: Avoid PI state recursion through
+ sched_submit_work()
+Message-ID: <20230816101902.Pz8wdats@linutronix.de>
+References: <20230815110121.117752409@infradead.org>
+ <20230815161557.GK214207@hirez.programming.kicks-ass.net>
+ <20230816085826.zfXjhNmj@linutronix.de>
+ <20230816094257.GE980931@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] thermal: broadcom: sr-thermal: removed call to
- platform_set_drvdata()
-Content-Language: en-US
-To:     Andrei Coardos <aboutphysycs@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Cc:     hayashi.kunihiko@socionext.com, bchihi@baylibre.com,
-        rui.zhang@intel.com, amitk@kernel.org, rafael@kernel.org,
-        alex@shruggie.ro
-References: <20230810111330.3248-1-aboutphysycs@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20230810111330.3248-1-aboutphysycs@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230816094257.GE980931@hirez.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08/2023 13:13, Andrei Coardos wrote:
-> This function call was found to be unnecessary as there is no equivalent
-> platform_get_drvdata() call to access the private data of the driver. Also,
-> the private data is defined in this driver, so there is no risk of it being
-> accessed outside of this driver file.
-> 
-> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
-> ---
+On 2023-08-16 11:42:57 [+0200], Peter Zijlstra wrote:
+> Not the same -- this is namespace_lock(), right? That's a regular rwsem
+> afaict and that *should* be good. Clearly I messed something up.
 
-Applied, thanks
+Most likely. I do see it also fom inode_lock() which does down_write().
+I see it only to originate from rwbase_write_lock().
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> Thanks!
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
+Sebastian
