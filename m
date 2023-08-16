@@ -2,106 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A03D77E218
+	by mail.lfdr.de (Postfix) with ESMTP id DDDA777E219
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245348AbjHPNC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 09:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57482 "EHLO
+        id S245323AbjHPNCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:02:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245137AbjHPNCS (ORCPT
+        with ESMTP id S245354AbjHPNCH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 09:02:18 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FDD1FF3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:02:17 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37GBIg4I005868;
-        Wed, 16 Aug 2023 13:01:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=gKxMbXmQSCBGgVaeiPE/RTBTHJ70HDlWSNhe4Vr/jC4=;
- b=POwKQeA6Bkynj4oV9H0nbi6UXNbpYx4fyZtv++mw79Ozt5xJ0Kf3+EOXP63IDpqj2Lgd
- ExXZOF982xr14nnqHYHIeh3oi33hKaB2KdD5PvlK12jxRxEcstK3BqN4yHSGRSjcxtUb
- tOFkX57yNi4+IPEpy8PNtaCfW4vdDZs3aG3cjtL6DwxhsCWBoFWN+Ng0OGB5s+rht93W
- SCmnNoaF4JXPhy4bVN7g9qbILfQp2L4UTd6t6oD1iwdi9QGAA6a2jZYNSE2lzcAadvua
- RmDbJ/9LZV+/wR0rk3AOx6nyxpxrrBYJw7/FiBdJ1up70uL+XImdYFGKSivYXegzJcC2 pw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sg83raq65-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 13:01:44 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37GD1hho031411
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 13:01:43 GMT
-Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Wed, 16 Aug 2023 06:01:41 -0700
-From:   Komal Bajaj <quic_kbajaj@quicinc.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-CC:     <linux-kernel@vger.kernel.org>,
-        Komal Bajaj <quic_kbajaj@quicinc.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] nvmem: sec-qfprom: Remove unused variable 'ret'
-Date:   Wed, 16 Aug 2023 18:30:57 +0530
-Message-ID: <20230816130057.28717-1-quic_kbajaj@quicinc.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 16 Aug 2023 09:02:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5967626BA
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:01:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692190883;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DNKndmkR86opFvoKrce1WVAZhxenGOmX/f8JaJm8XLw=;
+        b=JOgFLHDf3n9H38DTClv9Ukn+adPS8AoNQYZZ5WoJJBQn/dCXKJD4dr9XeQbnooFYWl3rd3
+        RP2snyxK0PJNxSpazy4sOAVdK7kWDH9nYkACNV07ea4aEoiySzYcGwiFPzrIp6y508cumj
+        h9lPqMVfnLK9edbEeBmaOacO2g8GLRQ=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-511-QxzeT4OZPB-tcERZId_oBQ-1; Wed, 16 Aug 2023 09:01:22 -0400
+X-MC-Unique: QxzeT4OZPB-tcERZId_oBQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3feb93ba681so2383605e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:01:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692190881; x=1692795681;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DNKndmkR86opFvoKrce1WVAZhxenGOmX/f8JaJm8XLw=;
+        b=Me8/WaSDCtpXWgU4Vk5hAGDZCj+161bF991Bf42M7walbKJe27DRpfMkzkJkQGTfA0
+         3WGuopz3GKI0lCS5bBncx9m+7QyEYac0ScTcVslg/7fi2DnNt433iQU9s75PB83jc5Km
+         5xtTcTta1hagGlUnfuJKQXD99Bt0qHeVMEmT7yTnei3DSFMMmcwL15dDjlvtztVx9MZV
+         490C0u71QtGarI8S81ID8HdaWLNHEFKu0ZbOv+qZ61stmWMz4/cDM5kR1P4kYQuiNTVq
+         H49K5M2bBIc1q2thTZ28m1fiAZp9xtBnHkxoFsKlvh5Mn0g7jeZjD8WbNnhPHWSzy8kd
+         KYxQ==
+X-Gm-Message-State: AOJu0YwFUncA3b9bRhMJEzV/dfvcgx48PDptBFmkhE240K0fvT/F6HAr
+        2123MnNxBKwIfCL7MHTR6UClCMh9bO9fI00zhzMzEGIjNHx1EQGkoDLZ1zFDcS8ieZKwzYmJ9+v
+        DynfnsMEqYEtuqQCu0Rnu4nAO
+X-Received: by 2002:a05:600c:218f:b0:3fe:1232:93fa with SMTP id e15-20020a05600c218f00b003fe123293famr1326958wme.22.1692190880888;
+        Wed, 16 Aug 2023 06:01:20 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHro2DsR4SQTI6IvZjre+pOGodr4/FGLL/K8zQv9Q7hglPXttjWlCLsrsKKVYGjweqICWNDwg==
+X-Received: by 2002:a05:600c:218f:b0:3fe:1232:93fa with SMTP id e15-20020a05600c218f00b003fe123293famr1326936wme.22.1692190880541;
+        Wed, 16 Aug 2023 06:01:20 -0700 (PDT)
+Received: from fedora (g2.ign.cz. [91.219.240.8])
+        by smtp.gmail.com with ESMTPSA id v14-20020a1cf70e000000b003fe24441e23sm21118140wmh.24.2023.08.16.06.01.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 06:01:19 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Roman Mamedov <rm+bko@romanrm.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux KVM <kvm@vger.kernel.org>, Borislav Petkov <bp@alien8.de>
+Subject: Re: Fwd: kvm: Windows Server 2003 VM fails to work on 6.1.44 (works
+ fine on 6.1.43)
+In-Reply-To: <87o7j75g0g.fsf@redhat.com>
+References: <8cc000d5-9445-d6f1-f02e-4629a4a59e0e@gmail.com>
+ <87o7j75g0g.fsf@redhat.com>
+Date:   Wed, 16 Aug 2023 15:01:18 +0200
+Message-ID: <87il9f5eg1.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: LIKusHPc6CFqSnk_1lgsAb2X-7fYzEIX
-X-Proofpoint-ORIG-GUID: LIKusHPc6CFqSnk_1lgsAb2X-7fYzEIX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-16_12,2023-08-15_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=777
- malwarescore=0 spamscore=0 suspectscore=0 bulkscore=0 priorityscore=1501
- clxscore=1011 mlxscore=0 phishscore=0 impostorscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308160113
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes:
-drivers/nvmem/sec-qfprom.c:59:13: warning: unused variable 'ret' [-Wunused-variable]
+Vitaly Kuznetsov <vkuznets@redhat.com> writes:
 
-Fixes: 9c7f2bce8a0e ("nvmem: sec-qfprom: Add Qualcomm secure QFPROM support")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202308142248.QsUg82Wt-lkp@intel.com/
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Closes: https://lore.kernel.org/linux-next/20230815202508.0523ecce@canb.auug.org.au/
-Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
----
- drivers/nvmem/sec-qfprom.c | 1 -
- 1 file changed, 1 deletion(-)
+> Bagas Sanjaya <bagasdotme@gmail.com> writes:
+>
+>> Hi,
+>>
+>> I notice a regression report on Bugzilla [1]. Quoting from it:
+>>
+>>> Hello,
+>>> 
+>>> I have a virtual machine running the old Windows Server 2003. On kernels 6.1.44 and 6.1.45, the QEMU VNC window stays dark, not switching to any of the guest's video modes and the VM process uses only ~64 MB of RAM of the assigned 2 GB, indefinitely. It's like the VM is paused/halted/stuck before even starting. The process can be killed successfully and then restarted again (with the same result), so it is not deadlocked in kernel or the like.
+>>> 
+>>> Kernel 6.1.43 works fine.
+>>> 
+>>> I have also tried downgrading CPU microcode from 20230808 to 20230719, but that did not help.
+>>> 
+>>> The CPU is AMD Ryzen 5900. I suspect some of the newly added mitigations may be the culprit?
+>>
+>> See Bugzilla for the full thread.
+>>
+>> Anyway, I'm adding it to regzbot as stable-specific regression:
+>>
+>> #regzbot introduced: v6.1.43..v6.1.44 https://bugzilla.kernel.org/show_bug.cgi?id=217799
+>> #regzbot title: Windows Server 2003 VM boot hang (only 64MB RAM allocated)
+>>
+>> Thanks.
+>>
+>> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217799
+>
+> From KVM's PoV, I don't see any KVM/x86 patches v6.1.44..v6.1.45 
 
-diff --git a/drivers/nvmem/sec-qfprom.c b/drivers/nvmem/sec-qfprom.c
-index 868a91c81197..e48c2dc0c44b 100644
---- a/drivers/nvmem/sec-qfprom.c
-+++ b/drivers/nvmem/sec-qfprom.c
-@@ -56,7 +56,6 @@ static int sec_qfprom_probe(struct platform_device *pdev)
- 	struct nvmem_device *nvmem;
- 	struct sec_qfprom *priv;
- 	struct resource *res;
--	int ret;
+Oh, sorry, my bad, in the description of the BZ it is said that 6.1.44
+is already broken, so it's most likely srso stuff then:
 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
---
-2.41.0
+dd5f2ef16e3c x86: fix backwards merge of GDS/SRSO bit
+4f25355540ad x86/srso: Tie SBPB bit setting to microcode patch detection
+77cf32d0dbfb x86/srso: Add a forgotten NOENDBR annotation
+c7f2cd045542 x86/srso: Fix return thunks in generated code
+c9ae63d773ca x86/srso: Add IBPB on VMEXIT
+79c8091888ef x86/srso: Add IBPB
+98f62883e751 x86/srso: Add SRSO_NO support
+9139f4b6dd4f x86/srso: Add IBPB_BRTYPE support
+ac41e90d8daa x86/srso: Add a Speculative RAS Overflow mitigation
+dec3b91f2c4b x86/cpu, kvm: Add support for CPUID_80000021_EAX
+
+it would still be great to try to bisect to the particular patch causing
+the issue.
+
+-- 
+Vitaly
 
