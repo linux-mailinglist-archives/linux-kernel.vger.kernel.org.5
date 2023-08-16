@@ -2,212 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 848F877DF08
+	by mail.lfdr.de (Postfix) with ESMTP id D881C77DF09
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243703AbjHPKmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 06:42:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
+        id S243919AbjHPKmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 06:42:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244012AbjHPKmP (ORCPT
+        with ESMTP id S233488AbjHPKmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 06:42:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6790A2718;
-        Wed, 16 Aug 2023 03:42:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692182524; x=1723718524;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=O9Mi3ukPZMXGw4qpDDWQ4PFtxGV6uTKsBrO6Nq3xvJk=;
-  b=L6qW7eaZdtwwO9jhrDLzoQd78K1CfZDmQTW9Qdv987aw21F8s/9Ptx71
-   yqZ0XSdK2jCWdmQY4lj7vpgVukhah8bVJFwhTthDk15bMgNfDHHew5UoS
-   01MnDA+6WBZrOde4siaMqlHHCUiIzG3sUqKE705I7JhSEEDdc/jJroz8N
-   PB8OMNFbQf9scDHxpcHvHi8MY8opOo4pDNrc+yZUuJfZJaxiR/08ig4Jq
-   n94ymPcq8Kw2WKCEl36SvrlKjhOZpIjwwcJl+oc0WnydZSznrRTzdAenw
-   4wq9Ru3NLoII+k5fZbDmfV6kRhczOQ0ogvHKhYkvYB1TpefzsAAv4B+5y
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="371405700"
-X-IronPort-AV: E=Sophos;i="6.01,176,1684825200"; 
-   d="scan'208";a="371405700"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 03:41:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="804181910"
-X-IronPort-AV: E=Sophos;i="6.01,176,1684825200"; 
-   d="scan'208";a="804181910"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Aug 2023 03:41:41 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWDy8-0000En-32;
-        Wed, 16 Aug 2023 10:41:40 +0000
-Date:   Wed, 16 Aug 2023 18:41:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Seven Lee <wtli@nuvoton.com>, broonie@kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, conor+dt@kernel.org, YHCHuang@nuvoton.com,
-        KCHSU0@nuvoton.com, CTLIN0@nuvoton.com, WTLI@nuvoton.com,
-        SJLIN0@nuvoton.com, scott6986@gmail.com, supercraig0719@gmail.com,
-        dardar923@gmail.com
-Subject: Re: [PATCH 2/2] ASoC: nau8821: Improve AMIC recording performance.
-Message-ID: <202308161844.humS3QWm-lkp@intel.com>
-References: <20230816080006.1624342-2-wtli@nuvoton.com>
+        Wed, 16 Aug 2023 06:42:13 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 878A82709
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:42:02 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe21e7f3d1so10277180e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:42:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692182521; x=1692787321;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EEOhlysOvfWNJvIb70cjtnJmAujK5omEn+wIvkrC/Ww=;
+        b=Bbk0jbkCUL6Bw7ExFSdT/GvvQxOPYqWu2Qi9kKF3x77YR8kVSYKCk2aIpdDS+r6Cee
+         uIuFolqUeIt/637IudG876aHUsAzoB2GYFQ+QZOoav2V7ANQtv29i6BhiBYK3WM4MeRt
+         V9o3xWJFwXbTSpcbMFrWGLzNUakLQs//XQFb4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692182521; x=1692787321;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EEOhlysOvfWNJvIb70cjtnJmAujK5omEn+wIvkrC/Ww=;
+        b=e3DeWyjQ4FxWbyRiLgpeNZwecQjyeLKZsaKyDRXHYDaCVVo3JVdJo13nKqoeY0Lxgu
+         myKk2wfrSk+QHSlhU3RopQn3j5mh1XyVeiprd7kvtceiVhnAM4Ho3izbbPAf/5Z46U6M
+         J2Nn3S6unFd/WSRVaaT1nR0Czvta9cM7b6/3G56PcGiKpqJo/06Ph5/b1YvJODp505wH
+         /Anin/+/QLZrpPVCVT0RIUVXA1j43wPOvZEF3Bu4sPnultb21AygD26VbJ/yMjNhnMZ7
+         AgpDkNze/kJOgEFudpTQGGNq6Ot4Wf+Ca1F7KtAfFCemm1pKEVFdq9/GVX1ZrAkZJE2O
+         K1mw==
+X-Gm-Message-State: AOJu0YyLEB/Nq8ekjIE7gUmiCv8bwiNlB+/meb+itcfPp/6zYFfFHF4E
+        XsAsma/G+JEdq7szUsSyFYQ62w==
+X-Google-Smtp-Source: AGHT+IE0uEVDF8E5jme7kg4yNkE/yuuga1yCAg5iZ5Ktjjzp7BITPW2cpxAD8XTiTR9FW2SVEFDFYQ==
+X-Received: by 2002:a05:6512:3d20:b0:4fb:8eec:ce49 with SMTP id d32-20020a0565123d2000b004fb8eecce49mr1765492lfv.31.1692182520687;
+        Wed, 16 Aug 2023 03:42:00 -0700 (PDT)
+Received: from localhost ([2620:0:1043:12:eef1:eea9:c836:8ed9])
+        by smtp.gmail.com with UTF8SMTPSA id k20-20020ac257d4000000b004fe4d122a66sm2861403lfo.187.2023.08.16.03.41.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 03:42:00 -0700 (PDT)
+From:   Stefan Adolfsson <sadolfsson@chromium.org>
+X-Google-Original-From: Stefan Adolfsson <sadolfsson@google.com>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Reka Norman <rekanorman@chromium.org>,
+        linux-media@vger.kernel.org, chrome-platform@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Stefan Adolfsson <sadolfsson@chromium.org>
+Subject: [PATCH] media: cros-ec-cec: Add Constitution to the match table
+Date:   Wed, 16 Aug 2023 12:41:25 +0200
+Message-ID: <20230816104125.712370-1-sadolfsson@google.com>
+X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230816080006.1624342-2-wtli@nuvoton.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Seven,
+From: Stefan Adolfsson <sadolfsson@chromium.org>
 
-kernel test robot noticed the following build warnings:
+Constitution has two HDMI ports which support CEC:
+    Port B is EC port 0
+    Port A is EC port 1
 
-[auto build test WARNING on broonie-sound/for-next]
-[also build test WARNING on next-20230816]
-[cannot apply to linus/master v6.5-rc6]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+This patch depends on "media: cros-ec-cec: Add Dibbi to the match
+table".
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Seven-Lee/ASoC-nau8821-Improve-AMIC-recording-performance/20230816-160236
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-patch link:    https://lore.kernel.org/r/20230816080006.1624342-2-wtli%40nuvoton.com
-patch subject: [PATCH 2/2] ASoC: nau8821: Improve AMIC recording performance.
-config: hexagon-randconfig-r003-20230816 (https://download.01.org/0day-ci/archive/20230816/202308161844.humS3QWm-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce: (https://download.01.org/0day-ci/archive/20230816/202308161844.humS3QWm-lkp@intel.com/reproduce)
+Signed-off-by: Stefan Adolfsson <sadolfsson@chromium.org>
+---
+ drivers/media/cec/platform/cros-ec/cros-ec-cec.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308161844.humS3QWm-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from sound/soc/codecs/nau8821.c:15:
-   In file included from include/linux/i2c.h:19:
-   In file included from include/linux/regulator/consumer.h:35:
-   In file included from include/linux/suspend.h:5:
-   In file included from include/linux/swap.h:9:
-   In file included from include/linux/memcontrol.h:13:
-   In file included from include/linux/cgroup.h:26:
-   In file included from include/linux/kernel_stat.h:9:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:334:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __raw_readb(PCI_IOBASE + addr);
-                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-   #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-                                                     ^
-   In file included from sound/soc/codecs/nau8821.c:15:
-   In file included from include/linux/i2c.h:19:
-   In file included from include/linux/regulator/consumer.h:35:
-   In file included from include/linux/suspend.h:5:
-   In file included from include/linux/swap.h:9:
-   In file included from include/linux/memcontrol.h:13:
-   In file included from include/linux/cgroup.h:26:
-   In file included from include/linux/kernel_stat.h:9:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:334:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-                                                           ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-   #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-                                                     ^
-   In file included from sound/soc/codecs/nau8821.c:15:
-   In file included from include/linux/i2c.h:19:
-   In file included from include/linux/regulator/consumer.h:35:
-   In file included from include/linux/suspend.h:5:
-   In file included from include/linux/swap.h:9:
-   In file included from include/linux/memcontrol.h:13:
-   In file included from include/linux/cgroup.h:26:
-   In file included from include/linux/kernel_stat.h:9:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:334:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writeb(value, PCI_IOBASE + addr);
-                               ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-                                                         ~~~~~~~~~~ ^
->> sound/soc/codecs/nau8821.c:649:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-           default:
-           ^
-   sound/soc/codecs/nau8821.c:649:2: note: insert 'break;' to avoid fall-through
-           default:
-           ^
-           break; 
-   7 warnings generated.
-
-
-vim +649 sound/soc/codecs/nau8821.c
-
-   626	
-   627	static int nau8821_left_fepga_event(struct snd_soc_dapm_widget *w,
-   628			struct snd_kcontrol *kcontrol, int event)
-   629	{
-   630		struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-   631		struct nau8821 *nau8821 = snd_soc_component_get_drvdata(component);
-   632	
-   633		if (!nau8821->left_input_single_end)
-   634			return 0;
-   635	
-   636		switch (event) {
-   637		case SND_SOC_DAPM_POST_PMU:
-   638			regmap_update_bits(nau8821->regmap, NAU8821_R77_FEPGA,
-   639				NAU8821_ACDC_CTRL_MASK | NAU8821_FEPGA_MODEL_MASK,
-   640				NAU8821_ACDC_VREF_MICN | NAU8821_FEPGA_MODEL_AAF);
-   641			regmap_update_bits(nau8821->regmap, NAU8821_R76_BOOST,
-   642				NAU8821_HP_BOOST_DISCHRG_EN, NAU8821_HP_BOOST_DISCHRG_EN);
-   643			break;
-   644		case SND_SOC_DAPM_POST_PMD:
-   645			regmap_update_bits(nau8821->regmap, NAU8821_R77_FEPGA,
-   646				NAU8821_ACDC_CTRL_MASK | NAU8821_FEPGA_MODEL_MASK, 0);
-   647			regmap_update_bits(nau8821->regmap, NAU8821_R76_BOOST,
-   648				NAU8821_HP_BOOST_DISCHRG_EN, 0);
- > 649		default:
-   650			break;
-   651		}
-   652	
-   653		return 0;
-   654	}
-   655	
-
+diff --git a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
+index 29f9a464857b..3c27349ce1d6 100644
+--- a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
++++ b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
+@@ -313,6 +313,8 @@ static const struct cec_dmi_match cec_dmi_match_table[] = {
+ 	{ "Google", "Lisbon", "0000:00:02.0", { "Port B" } },
+ 	/* Google Dibbi */
+ 	{ "Google", "Dibbi", "0000:00:02.0", { "Port D", "Port B" } },
++	/* Google Constitution */
++	{ "Google", "Constitution", "0000:00:02.0", { "Port B", "Port A" } },
+ };
+ 
+ static struct device *cros_ec_cec_find_hdmi_dev(struct device *dev,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.41.0.694.ge786442a9b-goog
+
