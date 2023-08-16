@@ -2,205 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4E277E7DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC3077E7ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344763AbjHPRra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 13:47:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37458 "EHLO
+        id S1345092AbjHPRye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 13:54:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243435AbjHPRrD (ORCPT
+        with ESMTP id S1344901AbjHPRyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 13:47:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB03F7
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:46:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692207975;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EIcyWOk8ct32MvKJ0/Egg3F3gig3WNdJKpxeA9uIkj4=;
-        b=U/fporrQw8dR73xGj3/QLH6sLffy2GFcQGciQraLPCdxsvaGa5AZF71A8gywDNp4ntKMK6
-        hU1DPQPsChoXovgrsqz4y44A5QknjRKprcJM/NGsmhyqAiMDKvz7S1abPijAX7ibnro6Nx
-        P1rIeXrFrI02HJwvVrVnasjC21Vxlcw=
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
- [209.85.166.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-639-7fyLDbKUPYiK5fuwBDT_Jg-1; Wed, 16 Aug 2023 13:46:14 -0400
-X-MC-Unique: 7fyLDbKUPYiK5fuwBDT_Jg-1
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-790a9d5b74cso5444139f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:46:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692207973; x=1692812773;
-        h=content-transfer-encoding:mime-version:organization:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EIcyWOk8ct32MvKJ0/Egg3F3gig3WNdJKpxeA9uIkj4=;
-        b=UxEZ7F+RwMsb7Xl5lx+pGXuJjR1pbI197/z/xwHWV140JodWJ/jxnqbV/KNwUF5R4C
-         MVcYEQhsLdsLe56Y8hYLevPSU/Lp1Yoww/QfQ+LIU18wk1EFcYi2AsyTBveh2wjjAaNs
-         pIgDXf2BMj4QBL07WexHwEw002K+hx91BGZIZJfI+B3x3CpKqTs6XPk8He6+CXDFgx9U
-         Yce7od8yjbRke/m2CMW67fEQgGLPPRaBfBDPgNmP76bZYI8n2ADJ1Bv96Lj9fQf0d84p
-         /wDYpKK+bcLGO/Z7twGSKoHm3CTNCWHRflAalPala6peyFXw1geYGjnjhqIpef5AhD2Q
-         47Lg==
-X-Gm-Message-State: AOJu0YyZOKf6dcsEz5bCdDTErWp2pHRoZS+UQfLnrn7+6FSz7+YS76Mn
-        SbCQ3nqsY6YFSmyWV7GbWaf0prWRweHE/TQKRptHKOt1kYnYE0c4j+XR/5Qu/bxCnSGsutCfzHw
-        OQoA4YRQVBgZS0QRq7ToqQTWs
-X-Received: by 2002:a05:6602:4252:b0:783:3899:e1d7 with SMTP id cc18-20020a056602425200b007833899e1d7mr467134iob.2.1692207973284;
-        Wed, 16 Aug 2023 10:46:13 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEpd7qT1AzUsiVSWK8a2LueJWSPxZC1QISs1xCpH2iUKtYPS16fOFHEl1Y/Pqf8gB0adN5sKw==
-X-Received: by 2002:a05:6602:4252:b0:783:3899:e1d7 with SMTP id cc18-20020a056602425200b007833899e1d7mr467115iob.2.1692207973050;
-        Wed, 16 Aug 2023 10:46:13 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id t3-20020a056602180300b00790af7745b1sm4831179ioh.20.2023.08.16.10.46.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 10:46:12 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 11:46:10 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Nipun Gupta <nipun.gupta@amd.com>
-Cc:     <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
-        <git@amd.com>, <pieter.jansen-van-vuuren@amd.com>,
-        <nikhil.agarwal@amd.com>, <michal.simek@amd.com>,
-        <abhijit.gangurde@amd.com>, Shubham Rohila <shubham.rohila@amd.com>
-Subject: Re: [PATCH v6 3/3] vfio-cdx: add bus mastering device feature
- support
-Message-ID: <20230816114610.79c9eccc.alex.williamson@redhat.com>
-In-Reply-To: <20230810084409.4922-3-nipun.gupta@amd.com>
-References: <20230810084409.4922-1-nipun.gupta@amd.com>
-        <20230810084409.4922-3-nipun.gupta@amd.com>
-Organization: Red Hat
+        Wed, 16 Aug 2023 13:54:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8148C270D;
+        Wed, 16 Aug 2023 10:54:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 14F34618F9;
+        Wed, 16 Aug 2023 17:54:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 618DAC433C8;
+        Wed, 16 Aug 2023 17:54:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692208450;
+        bh=C3KpSEGvTHFdso9lkeVRktVz6+sn8+u/LTyv13MKxIc=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=ShGJ5XYIWCgpoe2NLz9exJSq3NoBUfpxcAErxGY7T4FIWMVvLC799TsZaCK0QU0lD
+         BE4ynuqXUahcT1SbR9Xeh/kbGK4uayvk7twKlr8pMeV75Lxv9acXB1mh7jiZuc9Glg
+         oL28d5NAulwBa6zAzLk3tPGnZz0ugXob+ULVuamy/GmsjkZ6BhFgihPS/lcxq18Ioc
+         7l3A5y1Fvva1H4yqBufNbqDPm7O3nbdguHe3IzEinR+6mB6HgtCgrj5z7Ae2IvcR7V
+         0l9Q7Oehj83eKOTwIzCVJ4eV01ceLhHyp6kWgcb7k+xn/9oVJDMR8QnPBsm0SPzJ6A
+         LmoVHQjFx1YXA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id EAB5ECE06FA; Wed, 16 Aug 2023 10:54:09 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 10:54:09 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        x86@kernel.org
+Cc:     peterz@infradead.org, keescook@chromium.org, elver@google.com,
+        dvyukov@google.com, glider@google.com
+Subject: [BUG] missing return thunk: __ret+0x5/0x7e-__ret+0x0/0x7e: e9 f6 ff
+ ff ff
+Message-ID: <4dc3d0ec-b827-4bce-8927-cfa5d837fd03@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 14:14:09 +0530
-Nipun Gupta <nipun.gupta@amd.com> wrote:
+Hello!
 
-> Support Bus master enable and disable on VFIO-CDX devices using
-> VFIO_DEVICE_FEATURE_BUS_MASTER flag over VFIO_DEVICE_FEATURE IOCTL.
-> 
-> Co-developed-by: Shubham Rohila <shubham.rohila@amd.com>
-> Signed-off-by: Shubham Rohila <shubham.rohila@amd.com>
-> Signed-off-by: Nipun Gupta <nipun.gupta@amd.com>
-> ---
-> 
-> Changes v5->v6:
-> - Called CDX device reset at cdx_open_device()
-> 
-> Changes v4->v5:
-> - Use device feature IOCTL instead of adding a new VFIO IOCTL
->   for bus master feature.
-> 
-> Changes in v4:
-> - This patch is newly added which uses cdx_set_master() and
->   cdx_clear_master() APIs.
-> 
->  drivers/vfio/cdx/main.c | 46 +++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 44 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/vfio/cdx/main.c b/drivers/vfio/cdx/main.c
-> index c376a69d2db2..bf0e1f56e0f9 100644
-> --- a/drivers/vfio/cdx/main.c
-> +++ b/drivers/vfio/cdx/main.c
-> @@ -14,7 +14,7 @@ static int vfio_cdx_open_device(struct vfio_device *core_vdev)
->  		container_of(core_vdev, struct vfio_cdx_device, vdev);
->  	struct cdx_device *cdx_dev = to_cdx_device(core_vdev->dev);
->  	int count = cdx_dev->res_count;
-> -	int i;
-> +	int i, ret;
->  
->  	vdev->regions = kcalloc(count, sizeof(struct vfio_cdx_region),
->  				GFP_KERNEL_ACCOUNT);
-> @@ -39,8 +39,11 @@ static int vfio_cdx_open_device(struct vfio_device *core_vdev)
->  		if (!(cdx_dev->res[i].flags & IORESOURCE_READONLY))
->  			vdev->regions[i].flags |= VFIO_REGION_INFO_FLAG_WRITE;
->  	}
-> +	ret = cdx_dev_reset(core_vdev->dev);
-> +	if (ret)
-> +		kfree(vdev->regions);
+I hit the splat at the end of this message in recent mainline, and has
+appeared some time since v6.5-rc1.  Should I be worried?
 
-AIUI, this reset clears bus master, but per the first patch in the
-series the ability to set or clear bus master depends on whether the
-underlying cdx_ops supports dev_configure.  Apparently all currently
-do, but will that always be true?
+Reproducer on a two-socket hyperthreaded 20-core-per-socket x86 system:
 
-It seems like this could make a gratuitous call to cdx_clear_master()
-to validate the return value and only conditionally support this device
-feature based on that result (or fail the device open if it's meant to
-be required).
+tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 5m --torture refscale --kcsan --kconfig "CONFIG_NR_CPUS=40" --kmake-args "CC=clang" --bootargs "refscale.scale_type=typesafe_seqlock refscale.nreaders=40 refscale.loops=10000 refscale.holdoff=20 torture.disable_onoff_at_boot refscale.verbose_batched=5 torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=5"
 
-It might also be a good idea to set vdev->regions = NULL in the error
-path to avoid the possibility of a double-free.  Thanks,
+This is from overnight testing that hit this only in the KCSAN runs.
+The KASAN and non-debug runs had no trouble.
 
-Alex
+This commit added the warning long ago:
 
->  
-> -	return 0;
-> +	return ret;
->  }
->  
->  static void vfio_cdx_close_device(struct vfio_device *core_vdev)
-> @@ -52,6 +55,44 @@ static void vfio_cdx_close_device(struct vfio_device *core_vdev)
->  	cdx_dev_reset(core_vdev->dev);
->  }
->  
-> +static int vfio_cdx_bm_ctrl(struct vfio_device *core_vdev, u32 flags,
-> +			    void __user *arg, size_t argsz)
-> +{
-> +	size_t minsz =
-> +		offsetofend(struct vfio_device_feature_bus_master, op);
-> +	struct cdx_device *cdx_dev = to_cdx_device(core_vdev->dev);
-> +	struct vfio_device_feature_bus_master ops;
-> +	int ret;
-> +
-> +	ret = vfio_check_feature(flags, argsz, VFIO_DEVICE_FEATURE_SET,
-> +				 sizeof(ops));
-> +	if (ret != 1)
-> +		return ret;
-> +
-> +	if (copy_from_user(&ops, arg, minsz))
-> +		return -EFAULT;
-> +
-> +	switch (ops.op) {
-> +	case VFIO_DEVICE_FEATURE_CLEAR_MASTER:
-> +		return cdx_clear_master(cdx_dev);
-> +	case VFIO_DEVICE_FEATURE_SET_MASTER:
-> +		return cdx_set_master(cdx_dev);
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static int vfio_cdx_ioctl_feature(struct vfio_device *device, u32 flags,
-> +				  void __user *arg, size_t argsz)
-> +{
-> +	switch (flags & VFIO_DEVICE_FEATURE_MASK) {
-> +	case VFIO_DEVICE_FEATURE_BUS_MASTER:
-> +		return vfio_cdx_bm_ctrl(device, flags, arg, argsz);
-> +	default:
-> +		return -ENOTTY;
-> +	}
-> +}
-> +
->  static int vfio_cdx_ioctl_get_info(struct vfio_cdx_device *vdev,
->  				   struct vfio_device_info __user *arg)
->  {
-> @@ -169,6 +210,7 @@ static const struct vfio_device_ops vfio_cdx_ops = {
->  	.open_device	= vfio_cdx_open_device,
->  	.close_device	= vfio_cdx_close_device,
->  	.ioctl		= vfio_cdx_ioctl,
-> +	.device_feature = vfio_cdx_ioctl_feature,
->  	.mmap		= vfio_cdx_mmap,
->  	.bind_iommufd	= vfio_iommufd_physical_bind,
->  	.unbind_iommufd	= vfio_iommufd_physical_unbind,
+65cdf0d623be ("x86/alternative: Report missing return thunk details")
 
+Thoughts?
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+[    0.281208] ------------[ cut here ]------------
+[    0.281484] missing return thunk: __ret+0x5/0x7e-__ret+0x0/0x7e: e9 f6 ff ff ff
+[    0.281514] WARNING: CPU: 0 PID: 0 at arch/x86/kernel/alternative.c:753 apply_returns+0x2fc/0x450
+[    0.283482] Modules linked in:
+[    0.284489] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.5.0-rc6-00047-g21575bdc67ed #34195
+[    0.285483] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+[    0.286482] RIP: 0010:apply_returns+0x2fc/0x450
+[    0.287124] Code: ff ff 0f 0b e9 a9 fd ff ff c6 05 a1 0a 65 02 01 48 c7 c7 8b e3 2b b9 4c 89 ee 48 89 da b9 05 00 00 00 4d 89 e8 e8 04 f4 06 00 <0f> 0b e9 9a fe ff ff 85 db 0f 84 15 ff ff ff 48 c7 c7 4b e3 2b b9
+[    0.287483] RSP: 0000:ffffffffb9603e00 EFLAGS: 00010246
+[    0.288482] RAX: 22c53364d8918300 RBX: ffffffffb8b0e600 RCX: 0000000000000002
+[    0.289482] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+[    0.290482] RBP: ffffffffb9603ee0 R08: 0000000080000003 R09: 0000000000000000
+[    0.291481] R10: 0001ffffffffffff R11: ffffffffb9623800 R12: ffffffffb9603e18
+[    0.292481] R13: ffffffffb8b0e605 R14: ffffffffba150a70 R15: ffffffffba150a68
+[    0.293482] FS:  0000000000000000(0000) GS:ffff97305ec00000(0000) knlGS:0000000000000000
+[    0.294481] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    0.295481] CR2: ffff973055601000 CR3: 0000000013a44000 CR4: 00000000000006f0
+[    0.296483] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[    0.297482] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[    0.298482] Call Trace:
+[    0.298859]  <TASK>
+[    0.299185]  ? __warn+0x12c/0x330
+[    0.299484]  ? apply_returns+0x2fc/0x450
+[    0.300484]  ? report_bug+0x12a/0x1c0
+[    0.301079]  ? handle_bug+0x3d/0x80
+[    0.301483]  ? exc_invalid_op+0x1a/0x50
+[    0.302041]  ? asm_exc_invalid_op+0x1a/0x20
+[    0.302483]  ? __ret+0x5/0x7e
+[    0.302903]  ? zen_untrain_ret+0x1/0x1
+[    0.303487]  ? apply_returns+0x2fc/0x450
+[    0.304003]  ? __ret+0x5/0x7e
+[    0.304482]  ? __ret+0x14/0x7e
+[    0.304869]  ? __ret+0xa/0x7e
+[    0.305484]  ? unregister_die_notifier+0x4e/0x60
+[    0.306063]  alternative_instructions+0x52/0x120
+[    0.306489]  arch_cpu_finalize_init+0x2c/0x50
+[    0.307068]  start_kernel+0x480/0x590
+[    0.307485]  x86_64_start_reservations+0x24/0x30
+[    0.308482]  x86_64_start_kernel+0xab/0xb0
+[    0.309068]  secondary_startup_64_no_verify+0x17a/0x17b
+[    0.309490]  </TASK>
+[    0.309808] irq event stamp: 128439
+[    0.310481] hardirqs last  enabled at (128457): [<ffffffffb7368401>] __up_console_sem+0x91/0xc0
+[    0.311481] hardirqs last disabled at (128474): [<ffffffffb73683e6>] __up_console_sem+0x76/0xc0
+[    0.312482] softirqs last  enabled at (128490): [<ffffffffb72cf624>] __irq_exit_rcu+0x64/0xd0
+[    0.313481] softirqs last disabled at (128501): [<ffffffffb72cf624>] __irq_exit_rcu+0x64/0xd0
+[    0.314481] ---[ end trace 0000000000000000 ]---
