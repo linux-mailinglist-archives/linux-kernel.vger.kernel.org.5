@@ -2,196 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D3F77E3BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5C477E3C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343673AbjHPOfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 10:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52486 "EHLO
+        id S1343687AbjHPOhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 10:37:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343738AbjHPOex (ORCPT
+        with ESMTP id S1343675AbjHPOgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 10:34:53 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66DA2712
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:34:51 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-265c94064b8so925161a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:34:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1692196491; x=1692801291;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NScA+PcQZhcEVersyfhdbefEy+tNTcLh+PJYZN6zQJY=;
-        b=q/RxBKZSnukRvIDE0HYoCV4LgKpFAYqMpW+27qXlHUQKSf5Fs6m5Xttjc9/BTz0qFa
-         EnYmRE/ypCWNUC825ADvHK0GyceBhxWCpdQkwcTireVpf7IktBoDQYYMQK10U0r1fPan
-         ks2KyM/LgWV97fVodqrURGLMtPIZgVZsJZUuRRxf6PmivrG0xxd/Z1gPjXP0KEn4F0o9
-         F17r0+ZduirB3SWwwcdEfG61OXZtdptrXD6aC5ClUKiFpUZ1KRYKYaESmqucnc14Blvc
-         WPMgI0zGIL+g0WRCgsFGyPSdyqJgBqayLXujFx04YlFE0DfLqhb99btgSOQlz5U2VNzK
-         YfRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692196491; x=1692801291;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NScA+PcQZhcEVersyfhdbefEy+tNTcLh+PJYZN6zQJY=;
-        b=JMaHeD3GOe/OHwn9JV1HZgC+RJ2cAYUivW7Oe8d9Id077O00A46Z/LRzq2rQ3mpM9m
-         yGdRzoq7yFxjZogSEt/8wBC0IDYTAh2TUCt85ZXRA/afTyxt5BIJlJMz6CHQGY7OGjs3
-         lICLFmkOQGeY6noUAW8zNzXxe45+4WfQsM+Mg2vevGYQ37Y3240cJsfIGMTkWUQ05zTV
-         5CnM/Cg4x30cA6ID6VBnSrHO0Zef1diG2exaRs94kjR+P1WhBmwa4OmKO2/1xBvTP+mw
-         Lz1uw7ctSk3gFgZUUJdIlTriyEA1/hvoiUm36chWRmwNxNyopC4zYt441S/OuxhXJtt4
-         Hyug==
-X-Gm-Message-State: AOJu0Yw39qrHs2TRrqeteBt8x6ye0vDWX+zC0jN2VQM6+Xj6NwcDpbTi
-        A+YM4F5DdXvCTtsV0WukNHScXA==
-X-Google-Smtp-Source: AGHT+IG53xkS59ODIviBNRX/zHspgxoqmaG7VcA2xXmb5Q9LAQUUTyxr4spMWPcEPQPdtmxrEmfdaw==
-X-Received: by 2002:a17:90a:3ee5:b0:26b:27f6:90cc with SMTP id k92-20020a17090a3ee500b0026b27f690ccmr1710801pjc.2.1692196491224;
-        Wed, 16 Aug 2023 07:34:51 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id y22-20020a1709027c9600b001b8a85489a3sm13164080pll.262.2023.08.16.07.34.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 07:34:50 -0700 (PDT)
-Message-ID: <324fc71c-dead-4418-af81-6817e1f41c39@kernel.dk>
-Date:   Wed, 16 Aug 2023 08:34:49 -0600
+        Wed, 16 Aug 2023 10:36:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE95268F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:36:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692196604; x=1723732604;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=GNI3sGmC2SBeIrIzMv7Arfx8q09ovz3DeuRdw3tKYjU=;
+  b=mr/XPYkSLQVpTsGAAIlxWUko6kmEzLMXcrVg0+8/blBvAOa0sQzXBRNI
+   1EIdh3nU7cUeZu7OWzxFJDcXOkhErWJ0oXwlDvva3tD7QwkuItjEmqStI
+   BiQR2JNk3v9GsnhSAouImPV/otqT+Qm7oXJqOfO5cY9Op8rqyXgaltKfB
+   xg2S6v4/PsoGJ4NQffJ3HuhtBwCABskdCcISSq9yDYiXcdPlP5QpuFHQ3
+   YLkm6E8FqNCeoCjCUc75KQWnJa9UnDE9nOnzuElfKm62XOWTegkOVjbbS
+   o976pXjqt8xVHezdvZMGBm61k9VzLZYruLjeI30OIDvxxyCTgtBbBplTm
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="352138630"
+X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
+   d="scan'208";a="352138630"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 07:36:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="980758842"
+X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
+   d="scan'208";a="980758842"
+Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
+  by fmsmga006.fm.intel.com with ESMTP; 16 Aug 2023 07:36:42 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+        adrian.hunter@intel.com, ak@linux.intel.com, eranian@google.com,
+        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Subject: [PATCH V3 1/6] perf: Add branch stack extra
+Date:   Wed, 16 Aug 2023 07:36:23 -0700
+Message-Id: <20230816143628.1885281-1-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: 6.5.0rc5 fs hang - ext4? raid?
-Content-Language: en-US
-To:     "Dr. David Alan Gilbert" <dave@treblig.org>,
-        Theodore Ts'o <tytso@mit.edu>, hch@lst.de
-Cc:     adilger.kernel@dilger.ca, song@kernel.org,
-        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-References: <ZNqWfQPTScJDkmpX@gallifrey> <20230815125146.GA1508930@mit.edu>
- <ZNt11WbPn7LCXPvB@gallifrey> <ZNu668KGiNcwCSVe@gallifrey>
- <ZNwm7Mo9yv7uIkno@gallifrey>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <ZNwm7Mo9yv7uIkno@gallifrey>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/15/23 7:31 PM, Dr. David Alan Gilbert wrote:
-> (Copying in Christoph and Jens)
-> 
-> * Dr. David Alan Gilbert (dave@treblig.org) wrote:
->> * Dr. David Alan Gilbert (dave@treblig.org) wrote:
->>> * Theodore Ts'o (tytso@mit.edu) wrote:
->>>> On Mon, Aug 14, 2023 at 09:02:53PM +0000, Dr. David Alan Gilbert wrote:
->>>>> dg         29594   29592  0 18:40 pts/0    00:00:00 /usr/bin/ar --plugin /usr/libexec/gcc/x86_64-redhat-linux/13/liblto_plugin.so -csrDT src/intel/perf/libintel_perf.a src/intel/perf/libintel_perf.a.p/meson-generated_.._intel_perf_metrics.c.o src/intel/perf/libintel_perf.a.p/intel_perf.c.o src/intel/perf/libintel_perf.a.p/intel_perf_query.c.o src/intel/perf/libintel_perf.a.p/intel_perf_mdapi.c.o
->>>>>
->>>>> [root@dalek dg]# cat /proc/29594/stack 
->>>>> [<0>] md_super_wait+0xa2/0xe0
->>>>> [<0>] md_bitmap_unplug+0xd2/0x120
->>>>> [<0>] flush_bio_list+0xf3/0x100 [raid1]
->>>>> [<0>] raid1_unplug+0x3b/0xb0 [raid1]
->>>>> [<0>] __blk_flush_plug+0xd7/0x150
->>>>> [<0>] blk_finish_plug+0x29/0x40
->>>>> [<0>] ext4_do_writepages+0x401/0xc90
->>>>> [<0>] ext4_writepages+0xad/0x180
->>>>
->>>> If you want a few seconds and try grabbing cat /proc/29594/stack
->>>> again, what does the stack trace stay consistent as above?
->>>
->>> I'll get back to that and retry it.
->>
->> Yeh, the stack is consistent; this time around it's an 'ar' in a kernel
->> build:
->>
->> [root@dalek dg]# cat /proc/17970/stack
->> [<0>] md_super_wait+0xa2/0xe0
->> [<0>] md_bitmap_unplug+0xad/0x120
->> [<0>] flush_bio_list+0xf3/0x100 [raid1]
->> [<0>] raid1_unplug+0x3b/0xb0 [raid1]
->> [<0>] __blk_flush_plug+0xd7/0x150
->> [<0>] blk_finish_plug+0x29/0x40
->> [<0>] ext4_do_writepages+0x401/0xc90
->> [<0>] ext4_writepages+0xad/0x180
->> [<0>] do_writepages+0xd2/0x1e0
->> [<0>] filemap_fdatawrite_wbc+0x63/0x90
->> [<0>] __filemap_fdatawrite_range+0x5c/0x80
->> [<0>] ext4_release_file+0x74/0xb0
->> [<0>] __fput+0xf5/0x2a0
->> [<0>] task_work_run+0x5d/0x90
->> [<0>] exit_to_user_mode_prepare+0x1e6/0x1f0
->> [<0>] syscall_exit_to_user_mode+0x1b/0x40
->> [<0>] do_syscall_64+0x6c/0x90
->> [<0>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
->> [root@dalek dg]# cat /proc/17970/stack
->> [<0>] md_super_wait+0xa2/0xe0
->> [<0>] md_bitmap_unplug+0xad/0x120
->> [<0>] flush_bio_list+0xf3/0x100 [raid1]
->> [<0>] raid1_unplug+0x3b/0xb0 [raid1]
->> [<0>] __blk_flush_plug+0xd7/0x150
->> [<0>] blk_finish_plug+0x29/0x40
->> [<0>] ext4_do_writepages+0x401/0xc90
->> [<0>] ext4_writepages+0xad/0x180
->> [<0>] do_writepages+0xd2/0x1e0
->> [<0>] filemap_fdatawrite_wbc+0x63/0x90
->> [<0>] __filemap_fdatawrite_range+0x5c/0x80
->> [<0>] ext4_release_file+0x74/0xb0
->> [<0>] __fput+0xf5/0x2a0
->> [<0>] task_work_run+0x5d/0x90
->> [<0>] exit_to_user_mode_prepare+0x1e6/0x1f0
->> [<0>] syscall_exit_to_user_mode+0x1b/0x40
->> [<0>] do_syscall_64+0x6c/0x90
->> [<0>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
->>
->>>> Also, if you have iostat installed (usually part of the sysstat
->>>> package), does "iostat 1" show any I/O activity on the md device?
->>
->> iostat is showing something odd, most devices are at 0,
->> except for 3 of the dm's that are stuck at 100% utilisation with
->> apparently nothing going on:
->>
->> avg-cpu:  %user   %nice %system %iowait  %steal   %idle
->>            0.06    0.00    0.03   53.06    0.00   46.84
->>
->> Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s  %drqm d_await dareq-sz     f/s f_await  aqu-sz  %util
->> ...
->> dm-16            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00 100.00
->> dm-17            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00 100.00
->> dm-18            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00   0.00
->> dm-19            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00   0.00
->> dm-2             0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00   0.00
->> dm-20            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00 100.00
->> ....
->>
->> dm-20 is the /dev/mapper/main-more which is the RAID on which the
->> fs runs, 16 and 17 are main-more_rmeta_0 and main-more_rimage_0
->> so something screwy is going on there.
-> 
-> I've just finished a bisect of this hang, and got to:
-> 
-> 615939a2ae734e3e68c816d6749d1f5f79c62ab7 is the first bad commit
-> commit 615939a2ae734e3e68c816d6749d1f5f79c62ab7
-> Author: Christoph Hellwig <hch@lst.de>
-> Date:   Fri May 19 06:40:48 2023 +0200
-> 
->     blk-mq: defer to the normal submission path for post-flush requests
-> 
->     Requests with the FUA bit on hardware without FUA support need a post
->     flush before returning to the caller, but they can still be sent using
->     the normal I/O path after initializing the flush-related fields and
->     end I/O handler.
-> 
->     Signed-off-by: Christoph Hellwig <hch@lst.de>
->     Reviewed-by: Bart Van Assche <bvanassche@acm.org>
->     Link: https://lore.kernel.org/r/20230519044050.107790-6-hch@lst.de
->     Signed-off-by: Jens Axboe <axboe@kernel.dk>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Can you try and pull in:
+Currently, the additional information of a branch entry is stored in a
+u64 space. With more and more information added, the space is running
+out. For example, the information of occurrences of events will be added
+for each branch.
 
-https://git.kernel.dk/cgit/linux/commit/?h=block-6.5&id=5ff3213a5387e076af2b87f796f94b36965e8c3a
+Add a new branch sample type, PERF_SAMPLE_BRANCH_EXTRA, to indicate
+whether to support an extra space.
 
-and see if that helps?
+Two places were suggested to append the extra space.
+https://lore.kernel.org/lkml/20230802215814.GH231007@hirez.programming.kicks-ass.net/
+One place is right after the flags of each branch entry. It changes the
+existing struct perf_branch_entry. In the later Intel-specific
+implementation, two separate spaces have to be created in the
+struct cpu_hw_events to store different branch entry structures. That
+duplicates space.
+The other place is right after the entire struct perf_branch_stack.
+Only adding the new extra space in the struct cpu_hw_event is necessary.
+The disadvantage is that the pointer of the extra space has to be
+recorded. The common interface perf_sample_save_brstack() has to be
+updated as well.
 
+The latter requires less space and is much straight forward. It is
+implemented in the patch.
+
+Also, add a new branch sample type, PERF_SAMPLE_BRANCH_EVT_CNTRS, to
+indicate whether include occurrences of events in branch info. The
+information will be stored in the extra space.
+
+Add two helper functions for the new branch sample types.
+
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Cc: Sandipan Das <sandipan.das@amd.com>
+Cc: Ravi Bangoria <ravi.bangoria@amd.com>
+Cc: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+---
+
+Changes since V2:
+- Drop the new bit in struct perf_branch_entry
+- Introduce a new sample type PERF_SAMPLE_BRANCH_EXTRA
+
+ arch/powerpc/perf/core-book3s.c |  2 +-
+ arch/x86/events/amd/core.c      |  2 +-
+ arch/x86/events/core.c          |  2 +-
+ arch/x86/events/intel/core.c    |  2 +-
+ arch/x86/events/intel/ds.c      |  4 ++--
+ include/linux/perf_event.h      | 22 +++++++++++++++++++++-
+ include/uapi/linux/perf_event.h |  9 +++++++++
+ kernel/events/core.c            |  8 ++++++++
+ 8 files changed, 44 insertions(+), 7 deletions(-)
+
+diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
+index 8c1f7def596e..3c14596bbfaf 100644
+--- a/arch/powerpc/perf/core-book3s.c
++++ b/arch/powerpc/perf/core-book3s.c
+@@ -2313,7 +2313,7 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
+ 			struct cpu_hw_events *cpuhw;
+ 			cpuhw = this_cpu_ptr(&cpu_hw_events);
+ 			power_pmu_bhrb_read(event, cpuhw);
+-			perf_sample_save_brstack(&data, event, &cpuhw->bhrb_stack);
++			perf_sample_save_brstack(&data, event, &cpuhw->bhrb_stack, NULL);
+ 		}
+ 
+ 		if (event->attr.sample_type & PERF_SAMPLE_DATA_SRC &&
+diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
+index abadd5f23425..01c0619d12d5 100644
+--- a/arch/x86/events/amd/core.c
++++ b/arch/x86/events/amd/core.c
+@@ -930,7 +930,7 @@ static int amd_pmu_v2_handle_irq(struct pt_regs *regs)
+ 			continue;
+ 
+ 		if (has_branch_stack(event))
+-			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack);
++			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack, NULL);
+ 
+ 		if (perf_event_overflow(event, &data, regs))
+ 			x86_pmu_stop(event, 0);
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index 185f902e5f28..2919bb5a53a0 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -1702,7 +1702,7 @@ int x86_pmu_handle_irq(struct pt_regs *regs)
+ 		perf_sample_data_init(&data, 0, event->hw.last_period);
+ 
+ 		if (has_branch_stack(event))
+-			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack);
++			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack, NULL);
+ 
+ 		if (perf_event_overflow(event, &data, regs))
+ 			x86_pmu_stop(event, 0);
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 64a3533997e1..0f4ce79de4f8 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -3058,7 +3058,7 @@ static int handle_pmi_common(struct pt_regs *regs, u64 status)
+ 		perf_sample_data_init(&data, 0, event->hw.last_period);
+ 
+ 		if (has_branch_stack(event))
+-			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack);
++			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack, NULL);
+ 
+ 		if (perf_event_overflow(event, &data, regs))
+ 			x86_pmu_stop(event, 0);
+diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
+index eb8dd8b8a1e8..7566190389f0 100644
+--- a/arch/x86/events/intel/ds.c
++++ b/arch/x86/events/intel/ds.c
+@@ -1755,7 +1755,7 @@ static void setup_pebs_fixed_sample_data(struct perf_event *event,
+ 		setup_pebs_time(event, data, pebs->tsc);
+ 
+ 	if (has_branch_stack(event))
+-		perf_sample_save_brstack(data, event, &cpuc->lbr_stack);
++		perf_sample_save_brstack(data, event, &cpuc->lbr_stack, NULL);
+ }
+ 
+ static void adaptive_pebs_save_regs(struct pt_regs *regs,
+@@ -1912,7 +1912,7 @@ static void setup_pebs_adaptive_sample_data(struct perf_event *event,
+ 
+ 		if (has_branch_stack(event)) {
+ 			intel_pmu_store_pebs_lbrs(lbr);
+-			perf_sample_save_brstack(data, event, &cpuc->lbr_stack);
++			perf_sample_save_brstack(data, event, &cpuc->lbr_stack, NULL);
+ 		}
+ 	}
+ 
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index e83f13ce4a9f..c4877924d43c 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -1137,6 +1137,15 @@ static inline bool branch_sample_priv(const struct perf_event *event)
+ 	return event->attr.branch_sample_type & PERF_SAMPLE_BRANCH_PRIV_SAVE;
+ }
+ 
++static inline bool branch_sample_extra(const struct perf_event *event)
++{
++	return event->attr.branch_sample_type & PERF_SAMPLE_BRANCH_EXTRA;
++}
++
++static inline bool branch_sample_evt_cntrs(const struct perf_event *event)
++{
++	return event->attr.branch_sample_type & PERF_SAMPLE_BRANCH_EVT_CNTRS;
++}
+ 
+ struct perf_sample_data {
+ 	/*
+@@ -1171,6 +1180,7 @@ struct perf_sample_data {
+ 	struct perf_callchain_entry	*callchain;
+ 	struct perf_raw_record		*raw;
+ 	struct perf_branch_stack	*br_stack;
++	u64				*br_stack_ext;
+ 	union perf_sample_weight	weight;
+ 	union  perf_mem_data_src	data_src;
+ 	u64				txn;
+@@ -1248,7 +1258,8 @@ static inline void perf_sample_save_raw_data(struct perf_sample_data *data,
+ 
+ static inline void perf_sample_save_brstack(struct perf_sample_data *data,
+ 					    struct perf_event *event,
+-					    struct perf_branch_stack *brs)
++					    struct perf_branch_stack *brs,
++					    u64 *brs_ext)
+ {
+ 	int size = sizeof(u64); /* nr */
+ 
+@@ -1256,7 +1267,16 @@ static inline void perf_sample_save_brstack(struct perf_sample_data *data,
+ 		size += sizeof(u64);
+ 	size += brs->nr * sizeof(struct perf_branch_entry);
+ 
++	/*
++	 * The extension space is appended after the struct perf_branch_stack.
++	 * It is used to store the extra data of each branch, e.g.,
++	 * the occurrences of events since the last branch entry for Intel LBR.
++	 */
++	if (branch_sample_extra(event))
++		size += brs->nr * sizeof(u64);
++
+ 	data->br_stack = brs;
++	data->br_stack_ext = brs_ext;
+ 	data->dyn_size += size;
+ 	data->sample_flags |= PERF_SAMPLE_BRANCH_STACK;
+ }
+diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+index 39c6a250dd1b..252066579dae 100644
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -204,6 +204,10 @@ enum perf_branch_sample_type_shift {
+ 
+ 	PERF_SAMPLE_BRANCH_PRIV_SAVE_SHIFT	= 18, /* save privilege mode */
+ 
++	PERF_SAMPLE_BRANCH_EXTRA_SHIFT		= 19, /* support extra space */
++
++	PERF_SAMPLE_BRANCH_EVT_CNTRS_SHIFT	= 20, /* save occurrences of events on a branch */
++
+ 	PERF_SAMPLE_BRANCH_MAX_SHIFT		/* non-ABI */
+ };
+ 
+@@ -235,6 +239,10 @@ enum perf_branch_sample_type {
+ 
+ 	PERF_SAMPLE_BRANCH_PRIV_SAVE	= 1U << PERF_SAMPLE_BRANCH_PRIV_SAVE_SHIFT,
+ 
++	PERF_SAMPLE_BRANCH_EXTRA	= 1U << PERF_SAMPLE_BRANCH_EXTRA_SHIFT,
++
++	PERF_SAMPLE_BRANCH_EVT_CNTRS	= 1U << PERF_SAMPLE_BRANCH_EVT_CNTRS_SHIFT,
++
+ 	PERF_SAMPLE_BRANCH_MAX		= 1U << PERF_SAMPLE_BRANCH_MAX_SHIFT,
+ };
+ 
+@@ -982,6 +990,7 @@ enum perf_event_type {
+ 	 *	{ u64                   nr;
+ 	 *	  { u64	hw_idx; } && PERF_SAMPLE_BRANCH_HW_INDEX
+ 	 *        { u64 from, to, flags } lbr[nr];
++	 *        { u64 extra; } ext[nr] && PERF_SAMPLE_BRANCH_EXTRA
+ 	 *      } && PERF_SAMPLE_BRANCH_STACK
+ 	 *
+ 	 * 	{ u64			abi; # enum perf_sample_regs_abi
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index f84e2640ea2f..482e7efe365c 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -7324,6 +7324,14 @@ void perf_output_sample(struct perf_output_handle *handle,
+ 			if (branch_sample_hw_index(event))
+ 				perf_output_put(handle, data->br_stack->hw_idx);
+ 			perf_output_copy(handle, data->br_stack->entries, size);
++			/*
++			 * Add the extension space which is appended
++			 * right after the struct perf_branch_stack.
++			 */
++			if (branch_sample_extra(event) && data->br_stack_ext) {
++				size = data->br_stack->nr * sizeof(u64);
++				perf_output_copy(handle, data->br_stack_ext, size);
++			}
+ 		} else {
+ 			/*
+ 			 * we always store at least the value of nr
 -- 
-Jens Axboe
+2.35.1
 
