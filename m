@@ -2,118 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDBA77ED60
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 00:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53ABB77ED67
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 00:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347014AbjHPWrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 18:47:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51396 "EHLO
+        id S1347028AbjHPWtM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Aug 2023 18:49:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347012AbjHPWq6 (ORCPT
+        with ESMTP id S1347024AbjHPWsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 18:46:58 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0F01BF3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:46:57 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1bb29dc715bso3954765ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:46:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692226016; x=1692830816;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=n7a+uEDA5jWim2WjEe90Wh2lZxzibPYDcHdGrkYhrCo=;
-        b=3rWoeQRrMGgmiQAR59dF+dosUKDEIxpMJHcGetrQmAYhK7t/p+kJTyRyARgg6NFdIM
-         SFj6HTnU3/0HTfd8+Pi25DdHz547vqeGA+sMkVjSFICq45apap82cKChchDfpHsxqiY3
-         Cq67uWauPB+TPSB6IjaPnJqQCsmSpnVmdcOEsswdT61h1ykcZn/PWvOExXraCT51rvUB
-         Ris6ap9kzZYPhw2d0ojgodh7k26ZB9f6S/JZKn9sb0ph0bf1g4AB0mkykRAyYdH/cX6q
-         4hIgZFneL3wAUEmB3o5iHkiOy3y7bkTXxFew/qBiP5eM7Sph6BdaRAQ1IL0drcyMelIW
-         +Hug==
+        Wed, 16 Aug 2023 18:48:51 -0400
+Received: from mail-pf1-f206.google.com (mail-pf1-f206.google.com [209.85.210.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF0E173F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:48:49 -0700 (PDT)
+Received: by mail-pf1-f206.google.com with SMTP id d2e1a72fcca58-68892eab70eso1548462b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:48:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692226016; x=1692830816;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n7a+uEDA5jWim2WjEe90Wh2lZxzibPYDcHdGrkYhrCo=;
-        b=DmP3Wp1qTe5A7li2FYlMRRK7pXaS70ye8LKf56hKnHXvnrvkQiwU7RjEvcN/2ZRQjZ
-         RDmhV+QbSOlwCHP5XXmbKKtGt9ehWQeNg3z0LNVuBxu52DcZGxsQSd/OYS/UXbNJHzNJ
-         V3fwpW8IS4U2dJwKZ7P0uCw4w7VTnTmLZKtOyjkr0G7ak3BYpOTFk3RTSUePlDuhoeZR
-         ROFR71Fo7+zuFqTWKLG1O9yPq2d4q9y4ZfVXSQkAEtZJNStC9h+rl6Lv3Ki/iOtmsvvs
-         q11nzEcl1SK4JcqVbcJvuv3c737xmviAcCKbSgCsuyVkpQBbzoLFH5cfbSjgwMFE5eJm
-         kxTA==
-X-Gm-Message-State: AOJu0YzPaXM91Pt9OkHWfjDDhGNPRjZbPPtpd4Rzs95i0rWmGY7anc27
-        5a2pGElqbnuNcxAVPepgTBB6iB4zai0=
-X-Google-Smtp-Source: AGHT+IH0EciIyG+E7fGItbQPNlQ+YZpngXRdFj7vCBCg/vY89U8Bdg91XCR3378skcS2onG2JHZ9RKdEjr8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:27cd:b0:1bc:73a6:8be7 with SMTP id
- km13-20020a17090327cd00b001bc73a68be7mr186093plb.3.1692226016567; Wed, 16 Aug
- 2023 15:46:56 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 15:46:55 -0700
-In-Reply-To: <20230801002127.534020-5-mizhang@google.com>
-Mime-Version: 1.0
-References: <20230801002127.534020-1-mizhang@google.com> <20230801002127.534020-5-mizhang@google.com>
-Message-ID: <ZN1R31uo4FGQfKrQ@google.com>
-Subject: Re: [PATCH v3 4/6] KVM: Documentation: Add the missing description
- for tdp_mmu_root_count into kvm_mmu_page
-From:   Sean Christopherson <seanjc@google.com>
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kai Huang <kai.huang@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Ben Gardon <bgardon@google.com>, Xu Yilun <yilun.xu@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1692226129; x=1692830929;
+        h=content-transfer-encoding:to:from:subject:message-id:date
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GzwLqv7bpZfAyR4e420CE/PzPemUg67hgqEHw1UBtUk=;
+        b=AztzKtUYE7+nQwc7xDmeSD0Q8ESJcaHY8FnYgZMhEhqABo5pUZq6tpmpJGgybhUu3/
+         ANuVZoSyCy4F24LOqkFx4ama1OGfHaKpmC2d9QBT1ADj62e0aXzwJ6byAeKj0C/7u9Qs
+         Sw+7FFC+qzb1CJYSeZqW+2KiZ8WVOkLco0m3KrK2EJDobTp1oG1633zGdeHCVv8ncAjg
+         OAKpjDWlTiqVBJxXd6Gtp9eEzgugJE1bGU122oCpsB41clkXgGyGukS/YimTc4IomfHi
+         dLizKN+q1LHXnPbviMVC02OKxhvC6eO2aZ2ulkWspmFGMgATsthN0KXZJ6DrHXBLAeZX
+         wpmg==
+X-Gm-Message-State: AOJu0YyMowcSPTfL1Pz6xrfjEfoUJSDxaNnxEGuUKjETEFCnCxwAiZMg
+        wa+3MpioolbaJetz2ECn1U6TaWayGpkZPoYSZfjHRGB5XQqy
+X-Google-Smtp-Source: AGHT+IEM5vv31TNAebpUiR/YN2gpOjhloP5qqKkJbGjKKOYYmnqiKn2w2j/7j/lEokgs3OVKVRbD1UgxlbwBBBXGl87AP/PWAadM
+MIME-Version: 1.0
+X-Received: by 2002:a05:6a00:1a16:b0:668:7143:50ea with SMTP id
+ g22-20020a056a001a1600b00668714350eamr1450790pfv.4.1692226129430; Wed, 16 Aug
+ 2023 15:48:49 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 15:48:49 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000530e0d060312199e@google.com>
+Subject: [syzbot] [ext4?] kernel panic: EXT4-fs (device loop0): panic forced
+ after error (3)
+From:   syzbot <syzbot+27eece6916b914a49ce7@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023, Mingwei Zhang wrote:
-> Add the description of tdp_mmu_root_count into kvm_mmu_page description and
-> combine it with the description of root_count. tdp_mmu_root_count is an
-> atomic counter used only in TDP MMU. Update the doc.
-> 
-> Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> Reviewed-by: Kai Huang <kai.huang@intel.com>
-> ---
->  Documentation/virt/kvm/x86/mmu.rst | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/virt/kvm/x86/mmu.rst b/Documentation/virt/kvm/x86/mmu.rst
-> index 17d90974204e..40daf8beb9b1 100644
-> --- a/Documentation/virt/kvm/x86/mmu.rst
-> +++ b/Documentation/virt/kvm/x86/mmu.rst
-> @@ -229,10 +229,14 @@ Shadow pages contain the following information:
->      can be calculated from the gfn field when used.  In addition, when
->      role.direct is set, KVM does not track access permission for each of the
->      gfn. See role.direct and gfn.
-> -  root_count:
-> -    A counter keeping track of how many hardware registers (guest cr3 or
-> -    pdptrs) are now pointing at the page.  While this counter is nonzero, the
-> -    page cannot be destroyed.  See role.invalid.
-> +  root_count / tdp_mmu_root_count:
-> +     root_count is a reference counter for root shadow pages in Shadow MMU.
-> +     vCPUs elevate the refcount when getting a shadow page that will be used as
-> +     a root page, i.e. page that will be loaded into hardware directly (CR3,
-> +     PDPTRs, nCR3 EPTP). Root pages cannot be destroyed while their refcount is
-> +     non-zero. See role.invalid. tdp_mmu_root_count is similar but exclusively
-> +     used in TDP MMU as an atomic refcount. When the value is non-zero, it
-> +     allows vCPUs acquire references while holding mmu_lock for read.
+Hello,
 
-That last sentence is wrong.  *vCPUs* can't acquire references while holding
-mmu_lock for read.  And actually, they don't ever put references while holding
-for read either.  vCPUs *must* hold mmu_lock for write to obtain a new root,
-Not putting references while holding mmu_lock for read is mostly an implementation
-quirk.
+syzbot found the following issue on:
 
-Maybe replace it with this?
+HEAD commit:    ae545c3283dc Merge tag 'gpio-fixes-for-v6.5-rc6' of git://..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=13e5d553a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=171b698bc2e613cf
+dashboard link: https://syzkaller.appspot.com/bug?extid=27eece6916b914a49ce7
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13433207a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=109cd837a80000
 
-    tdp_mmu_root_count is similar but exclusively used in the TDP MMU as an
-    atomic refcount (select TDP MMU flows walk all roots while holding mmu_lock
-    for read, e.g. when clearing dirty bits).
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3b9bad020898/disk-ae545c32.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/4073566d0a4b/vmlinux-ae545c32.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b163e2a2c47c/bzImage-ae545c32.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/004395fabe81/mount_0.gz
+
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12890d53a80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=11890d53a80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16890d53a80000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+27eece6916b914a49ce7@syzkaller.appspotmail.com
+
+loop0: detected capacity change from 0 to 512
+ext2: Unknown parameter '����'
+EXT4-fs (loop0): feature flags set on rev 0 fs, running e2fsck is recommended
+EXT4-fs (loop0): warning: checktime reached, running e2fsck is recommended
+EXT4-fs warning (device loop0): ext4_update_dynamic_rev:1084: updating to rev 1 because of new feature flag, running e2fsck is recommended
+EXT4-fs error (device loop0): ext4_validate_block_bitmap:430: comm syz-executor211: bg 0: block 46: invalid block bitmap
+Kernel panic - not syncing: EXT4-fs (device loop0): panic forced after error
+CPU: 1 PID: 5061 Comm: syz-executor211 Not tainted 6.5.0-rc5-syzkaller-00353-gae545c3283dc #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ panic+0x30f/0x770 kernel/panic.c:340
+ ext4_handle_error+0x84e/0x8b0 fs/ext4/super.c:685
+ __ext4_error+0x277/0x3b0 fs/ext4/super.c:776
+ ext4_validate_block_bitmap+0xdf5/0x1200 fs/ext4/balloc.c:429
+ ext4_read_block_bitmap+0x40/0x80 fs/ext4/balloc.c:595
+ ext4_mb_clear_bb fs/ext4/mballoc.c:6503 [inline]
+ ext4_free_blocks+0xfd3/0x2e20 fs/ext4/mballoc.c:6748
+ ext4_remove_blocks fs/ext4/extents.c:2545 [inline]
+ ext4_ext_rm_leaf fs/ext4/extents.c:2710 [inline]
+ ext4_ext_remove_space+0x216e/0x4d90 fs/ext4/extents.c:2958
+ ext4_ext_truncate+0x164/0x1f0 fs/ext4/extents.c:4408
+ ext4_truncate+0xa0a/0x1150 fs/ext4/inode.c:4127
+ ext4_process_orphan+0x1aa/0x2d0 fs/ext4/orphan.c:339
+ ext4_orphan_cleanup+0xb71/0x1400 fs/ext4/orphan.c:474
+ __ext4_fill_super fs/ext4/super.c:5577 [inline]
+ ext4_fill_super+0x63ef/0x6ce0 fs/ext4/super.c:5696
+ get_tree_bdev+0x468/0x6c0 fs/super.c:1318
+ vfs_get_tree+0x8c/0x270 fs/super.c:1519
+ do_new_mount+0x28f/0xae0 fs/namespace.c:3335
+ do_mount fs/namespace.c:3675 [inline]
+ __do_sys_mount fs/namespace.c:3884 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3861
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f86c9eb1a99
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc2eecbce8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 00007f86c9eb1a99
+RDX: 00000000200001c0 RSI: 00000000200006c0 RDI: 0000000020000640
+RBP: 000000000000ec37 R08: 0000000000000000 R09: 00005555562044c0
+R10: 000000003f000000 R11: 0000000000000246 R12: 00007ffc2eecbd10
+R13: 00007ffc2eecbcfc R14: 431bde82d7b634db R15: 00007f86c9efa03b
+ </TASK>
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
