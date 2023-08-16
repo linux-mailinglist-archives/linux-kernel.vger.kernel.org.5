@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C5277EB22
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 22:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3236377EB2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346297AbjHPU5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 16:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57030 "EHLO
+        id S239517AbjHPU7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 16:59:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346323AbjHPU5S (ORCPT
+        with ESMTP id S1346299AbjHPU7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 16:57:18 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7886F271D
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:57:17 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-26b7c16556eso1461287a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:57:17 -0700 (PDT)
+        Wed, 16 Aug 2023 16:59:18 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29CC12711
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:59:17 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bc3d94d40fso58846665ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:59:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692219437; x=1692824237;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PTnRjDgF03Eifi7sf3kpv96X0kZ1CgBBnY922J5YppA=;
-        b=YrnJuLkKAUI9GOoFGUyMxaW0N4JvwWCdrMEG+WXxw28UwGdvMagNkGayO+D+VNRv7W
-         tdSXtKKS34K9MQ4zDTHtW6q2rQmnBOa1Cm/YWl1qMYvmdTxQHD3MejqhxJNse7BFpFZ4
-         taJO9DBM9v9B7HzFifZ/3iQ27MxXyE1MvyhG4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692219437; x=1692824237;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1692219556; x=1692824356;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PTnRjDgF03Eifi7sf3kpv96X0kZ1CgBBnY922J5YppA=;
-        b=WDtsKO/Ptri9kLDSWwg2Tuj3VdcENgatPrywRjrnR9wH1iHxF77A2rH0obPQ1eFCry
-         C+f4bm9m8p8v/dUCLI/UZzQTiW8DtMNFXb4EfZsN6iSP19XcrQzgUoARpdS5zbHuYca+
-         UboHeC2kh5O6qQr9p02ECFdyMQVXp5zdgVn8qXP1VNAymk0FtCPVbrf/QBhQRbJrEAcb
-         faFcHtj3goo8uo998rgGJetHRdBfLycdxpKFBC1iqVSuwbf3v4yyNfqAcmdMt19Z4rK5
-         ra0G6yDJ5BvtKSlpXGY+qdKF//nQsz00BzpQc3IZNHooiFfi/mFa1wDWQryjeLPr/joo
-         3Rzw==
-X-Gm-Message-State: AOJu0YxkygquwR64AXMZOfQ1JB0xf4SNXQc4srBk0EL1HTYZC7ALh5cB
-        Z499LQkgWU0qA/W9cLzCPthCUw==
-X-Google-Smtp-Source: AGHT+IG3SG9qeo0oZfUja9go8C9ZZOvux73Nr1ZbS1VQ53Pv2p6wh5BCDdxyWq4rcnvjgBR0dMyodw==
-X-Received: by 2002:a17:90a:e38a:b0:268:e43a:dbfd with SMTP id b10-20020a17090ae38a00b00268e43adbfdmr2746938pjz.1.1692219436996;
-        Wed, 16 Aug 2023 13:57:16 -0700 (PDT)
+        bh=xlGgwWTf/nLP2TlwAmP1MWgMzO0RJqkyJNjk5XF286w=;
+        b=da09eNAHkWEo/pEOng7AkizliA/xPdjEjR4w1hWOr6cprU1HJasY8mlRG3X5jlWYpR
+         TQDai+S04x09MlFWQVCyVt7TvTg1NKjygAq0L4ybvBKX1MYRtaJyrZl/Er9T6P7t0k6G
+         VQXoEBwVTI+LCFVKl9WnKuSx+eCIgamm9s9+Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692219556; x=1692824356;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xlGgwWTf/nLP2TlwAmP1MWgMzO0RJqkyJNjk5XF286w=;
+        b=JjFZy+wwQa8U4j8IGEtTNcvU0RHbqjjbfIKREKn79cZBWUMdQUMnPs4zuj6ehSztfq
+         CHbr1fBKBjKKsuzRHgFMkPFIu8o5bliU9XEISM4hXEHE5UZEPM/WTbbmJkgUhFmFsnbd
+         04d4shiYc2Fb98UyF5Loqb4oKZQJDd78k8UBP5sCCvi3hk6f9fZA3Eu+RN5Yoigo67G8
+         fUOgD9t4FlhWGusUbRVljbtNiECnBnVb2uBoTAj8b6g609npHaIjm40289VE6fmbXvOV
+         fXDqYVjuw+LgxGShdi1aEJlSdyEv2HWiHPtsqQgNoaBNQkcD6OpK5TRys3d6aevEMvbw
+         5rNQ==
+X-Gm-Message-State: AOJu0YzgB8UuM7FYF49y4lxjm0036GSwjq2MT+Jje4wK361WFqQ7l5kv
+        pKQxLQYP+X5h+RJe///YmrFa4g==
+X-Google-Smtp-Source: AGHT+IFScTCnLhDPzkRADw5u9zcBAk0sLroO3CH7he7HPI1WAHYwTrUUwVGAXpnxTWUxsTPr96Os9w==
+X-Received: by 2002:a17:903:11d1:b0:1bb:cf4e:ccd with SMTP id q17-20020a17090311d100b001bbcf4e0ccdmr4098212plh.28.1692219556713;
+        Wed, 16 Aug 2023 13:59:16 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id rj6-20020a17090b3e8600b002680f0f2886sm158262pjb.12.2023.08.16.13.57.16
+        by smtp.gmail.com with ESMTPSA id t3-20020a170902bc4300b001b8c6662094sm13505194plz.188.2023.08.16.13.59.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 13:57:16 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 13:57:16 -0700
+        Wed, 16 Aug 2023 13:59:16 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2][next] cgroup: Avoid -Wstringop-overflow warnings
-Message-ID: <202308161356.4AED47263E@keescook>
-References: <ZN02iLcZYgxHFrEN@work>
- <ZN02wFqzvwP2JI-K@slm.duckdns.org>
+To:     Russell King <linux@armlinux.org.uk>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Wolfram Sang <wsa@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] ARM: ptrace: Restore syscall skipping and restart while tracing
+Date:   Wed, 16 Aug 2023 13:59:08 -0700
+Message-Id: <169221954681.1236522.6821211749332698917.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230810195141.never.338-kees@kernel.org>
+References: <20230810195141.never.338-kees@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZN02wFqzvwP2JI-K@slm.duckdns.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 10:51:12AM -1000, Tejun Heo wrote:
-> Hello,
-> 
-> On Wed, Aug 16, 2023 at 02:50:16PM -0600, Gustavo A. R. Silva wrote:
-> > Change the notation from pointer-to-array to pointer-to-pointer.
-> > With this, we avoid the compiler complaining about trying
-> > to access a region of size zero as an argument during function
-> > calls.
-> 
-> Haha, I thought the functions were actually accessing the memory. This can't
-> be an intended behavior on the compiler's side, right?
+On Thu, 10 Aug 2023 12:54:17 -0700, Kees Cook wrote:
+> Fix tracing on arm since commit 4e57a4ddf6b0 ("ARM: 9107/1: syscall:
+> always store thread_info->abi_syscall"). This was seen with the broken
+> seccomp tests "syscall_errno", "syscall_faked", and "syscall_restart".
 
-I think it's a result of inlining -- the compiler ends up with a case
-where it looks like it might be possible to index a zero-sized array,
-but it is "accidentally safe".
+Applied to for-next/seccomp, thanks!
+
+[1/2] ARM: ptrace: Restore syscall restart tracing
+      https://git.kernel.org/kees/c/cf007647475b
+[2/2] ARM: ptrace: Restore syscall skipping for tracers
+      https://git.kernel.org/kees/c/4697b5848bd9
+
+Take care,
 
 -- 
 Kees Cook
+
