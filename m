@@ -2,67 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1AE77DB85
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 09:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3BE77DB88
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242488AbjHPH7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 03:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54434 "EHLO
+        id S242506AbjHPIAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 04:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242621AbjHPH6p (ORCPT
+        with ESMTP id S242630AbjHPH7z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 03:58:45 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB9A2684;
-        Wed, 16 Aug 2023 00:58:23 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RQgVC2c7Rz4f3lXm;
-        Wed, 16 Aug 2023 15:57:55 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-        by APP1 (Coremail) with SMTP id cCh0CgDXUzCAgdxkdBcnAw--.32370S2;
-        Wed, 16 Aug 2023 15:57:55 +0800 (CST)
-Subject: Re: [PATCH bpf-next v5] libbpf: Expose API to consume one ring at a
- time
-To:     Adam Sindelar <adam@wowsignal.io>
-Cc:     bpf@vger.kernel.org, Adam Sindelar <ats@fb.com>,
-        David Vernet <void@manifault.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Florent Revest <revest@chromium.org>
-References: <20230728093346.673994-1-adam@wowsignal.io>
- <7c792532-4474-b523-08f9-f82fb57f1b09@huaweicloud.com>
- <ZNx5Meh0doxdXs4H@Momo.fritz.box>
-From:   Hou Tao <houtao@huaweicloud.com>
-Message-ID: <2e224b7b-7e33-fce7-02a7-87b144d45495@huaweicloud.com>
-Date:   Wed, 16 Aug 2023 15:57:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 16 Aug 2023 03:59:55 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89DB42690
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 00:59:52 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9cdbf682eso93856271fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 00:59:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692172791; x=1692777591;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R+trWIdlrzpqniw9b5ygOEC/+6S3W3oWFAOX3CKxYQ8=;
+        b=znZ4XxE+b16iEkyCx1xs5HCgx4VUI6h4qH4j7/7nV9Du3jSFLqNp5GrkYLSc/sC1ek
+         oWboENGFyx5ncRJIDAGTLX54E8Ilrx+ONZQoCTcyQuDZWcITrvcPtfvY17Sc8oADWdEB
+         Jw9V2xiXpb3cZuUX+MiygP6vX1OGhYdg6p35gIYtD6JQ7rzspsyGK2cUh3ae1fQlKF6A
+         mu1QDmL1uTZU9BqWpv0+7rsBOFDwYnp/npcpyizhB2Ab6erH8+E/eC2Rh6Yg+X8TFwYi
+         6HnUldC6qzdWy5NAXWYdCEeir0+nVKdkm24g9tKC1bf1fqgW6AI8HyRSErz+A7OHVQnA
+         riYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692172791; x=1692777591;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=R+trWIdlrzpqniw9b5ygOEC/+6S3W3oWFAOX3CKxYQ8=;
+        b=MN41evZjLOG0hUFPCb5DfdtGOcwcLMsTT1yuU8Vupo+9u4wNTk1oU3piAOO0BObGbn
+         4762Apn9wzHfsLBa6BqW0YDMBtN4KdAtYkqBgvgzUhkr4SAQJNAzQ5KmPMy+nvxaq61O
+         yg3rrBU06RBdcY/Uu4h4iSOYnRBRi9cX8pKAdtQKBktxjZV7A4WzifcHIZxcQ32kO/Sc
+         xwHZ9J+V5NvYngl3cVAupl9uK4t9+E8eRN670k8T0PiX4DP+/EigOelg9/L4OIFGp8W1
+         +u35exUo32WUZdHVAQSubEE3EdewAiromvuohM60cLqXcn3D0t7lmPOuZIVQiGG6T3CB
+         oFxw==
+X-Gm-Message-State: AOJu0Yx455vn8e5+6jfawKnMFGh0M1GqF3ah5Zo7OcOK2DndHqOcpji7
+        F2URnolr3NH0W9de+AqG6e9BpXSvKBXrKtcj3SubQg==
+X-Google-Smtp-Source: AGHT+IE5jRJ8LzB8iTS4v9CCGNFjalN+bplijt9ZP8QfzALe7jbesl9Ju7o3DJqqq0Szk5HlF8uScA==
+X-Received: by 2002:a2e:9085:0:b0:2b5:7a87:a85a with SMTP id l5-20020a2e9085000000b002b57a87a85amr856726ljg.13.1692172790668;
+        Wed, 16 Aug 2023 00:59:50 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:60eb:1b42:890:194? ([2a01:e0a:982:cbb0:60eb:1b42:890:194])
+        by smtp.gmail.com with ESMTPSA id g7-20020a7bc4c7000000b003fbdd5d0758sm20196401wmk.22.2023.08.16.00.59.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 00:59:50 -0700 (PDT)
+Message-ID: <f8c7d1f4-a8fb-4b3d-9b3a-17eb7d1561b4@linaro.org>
+Date:   Wed, 16 Aug 2023 09:59:49 +0200
 MIME-Version: 1.0
-In-Reply-To: <ZNx5Meh0doxdXs4H@Momo.fritz.box>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: linux-next: duplicate patch in the amlogic tree
+Content-Language: en-US, fr
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>
+Cc:     ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20230815113822.613b514b@canb.auug.org.au>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20230815113822.613b514b@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID: cCh0CgDXUzCAgdxkdBcnAw--.32370S2
-X-Coremail-Antispam: 1UD129KBjvJXoWrZFy3uF45Wry7CrW5Gw4DArb_yoW8Jr4fpF
-        W8Kr1Yqa4qyF1j939rtF1fXryYqayfAw15Ja15G348A3W5KF9Ygr40yw1Y9F1YkrsIgaya
-        vayag3Z7A34UCa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -71,31 +107,22 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On 8/16/2023 3:22 PM, Adam Sindelar wrote:
-> On Fri, Jul 28, 2023 at 06:51:25PM +0800, Hou Tao wrote:
-> Hi, sorry for potentially dumb question, but should I do anything else
-> after someone acks it? This is a minor patch for a userland component,
-> but it's really helpful IMO - is anything preventing this getting merged
-> at this point?
+On 15/08/2023 03:38, Stephen Rothwell wrote:
+> Hi all,
+> 
+> The following commit is also in the arm-soc tree as a different commit
+> (but the same patch):
+> 
+>    b18226ffd080 ("firmware: meson_sm: fix to avoid potential NULL pointer dereference")
+> 
+> This is commit
+> 
+>    f2ed165619c1 ("firmware: meson_sm: fix to avoid potential NULL pointer dereference")
+> 
+> in the arm-soc tree.
+> 
 
-According to BPF CI [0], the main reason that it was closed was due to
-the failure of test_progs_no_alu32 on s390x, but it seems the failure
-was due to BPF CI itself instead of the modification in the patchset, so
-I think resend v5 to BPF mail list will be enough. After the pass of BPF
-CI, I think the maintainer will merge it if there is no disagreement.
+Sorry about that, it's now fixed in the amlogic for-next tree,
 
-[0]:
-https://github.com/kernel-patches/bpf/actions/runs/5829217685/job/15808898814
-> Thanks,
-> Adam
->
->> On 7/28/2023 5:33 PM, Adam Sindelar wrote:
->>> We already provide ring_buffer__epoll_fd to enable use of external
->>> polling systems. However, the only API available to consume the ring
->>> buffer is ring_buffer__consume, which always checks all rings. When
->>> polling for many events, this can be wasteful.
->>>
->>> Signed-off-by: Adam Sindelar <adam@wowsignal.io>
->> Acked-by: Hou Tao <houtao1@huawei.com>
->>
-
+Thanks,
+Neil
