@@ -2,122 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C13F877E50B
+	by mail.lfdr.de (Postfix) with ESMTP id 2507477E509
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 17:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344160AbjHPPXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 11:23:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37408 "EHLO
+        id S1344115AbjHPPXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 11:23:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344153AbjHPPW5 (ORCPT
+        with ESMTP id S1344120AbjHPPWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 11:22:57 -0400
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2695010C7
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 08:22:54 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id B2C8624002B
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 17:22:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
-        t=1692199365; bh=NREnd7UbRKli9nwhAUt6QP6b7ggS9yX8hW3zlVDQ2Xs=;
-        h=Mime-Version:Subject:From:Date:Cc:Message-Id:To:From;
-        b=mRNYZP1gjC/ARPAbbf9gh36vWi2mvcXcHZMV1KZ7CXJyhPIG4rqIClnW2krhr9c/J
-         3OD+4p3FdzqwN3WJliBIMl1IG8P4e3NqmEnO/I3QUJObompB9qP7G5Li6LMnFKi6/s
-         yXPnIJqWEtGIXWHj2C/Tfdc0xAPbdlewX9Km8OuBtN3xQOGvpiG1hDoGSQLbDi4wcj
-         FGFyEnisgTEnPk6IBLn/KJ1hUsBzwyW/Mjt52arDIUMGJkROpPoMsQAUOd9Pj7OW0e
-         b4+TU14TSxlpCrr1a+qh+oIPw8PWBP/7JzkXZcq60B8ORoSVAFG4WxOOuOtTyhxFa5
-         +oV0W2SiN4N6A==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4RQsMS0tN7z9rxL;
-        Wed, 16 Aug 2023 17:22:43 +0200 (CEST)
-Content-Type: multipart/signed;
-        boundary="Apple-Mail=_DA91F584-71C9-442C-B454-2CF84A9985CC";
-        protocol="application/pgp-signature";
-        micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
-Subject: Re: [PATCH] auxdisplay: hd44780: move cursor home after clear display
- command
-From:   Christian Meusel <christian.meusel@posteo.de>
-In-Reply-To: <20230722140743.fe710f4f12c344f07d879c88@hugovil.com>
-Date:   Wed, 16 Aug 2023 15:22:30 +0000
-Cc:     me@davidreaver.com,
-        =?utf-8?Q?Lars_P=C3=B6schel?= <poeschel@lemonage.de>,
-        linux-kernel@vger.kernel.org, geert@linux-m68k.org
-Message-Id: <EC4DEACC-70E6-4E98-9A56-780F3E4079BA@posteo.de>
-References: <20230706185100.84322-1-hugo@hugovil.com>
- <CANiq72kZ0cHxCKkm_781G__9tJxYCw3tpJarqvLOFB4Jw6ZONw@mail.gmail.com>
- <20230706154937.1380bdcf9d84e1cff78911fa@hugovil.com>
- <7eb2d50baf269310e51854f700936e94@lemonage.de>
- <86wmysknde.fsf@davidreaver.com>
- <CANiq72nO04+2BcwBe_P0uD8pXJtTMG3djAFAj5Ucez6VvT4g7g@mail.gmail.com>
- <20230722140743.fe710f4f12c344f07d879c88@hugovil.com>
-To:     Hugo Villeneuve <hugo@hugovil.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>
+        Wed, 16 Aug 2023 11:22:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3FE1BF8
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 08:22:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HjOw2FdgXFmbhO+aMb+cZ+8tSDi/d/ouknBH++Hh0Fw=; b=DhBfBfgKBP2FUewtIp2kTOz9M7
+        pBOi/UzXQqBXrtmsLht4U0zxs7zl2n9e6rncttH1h/ykZXF2xNViPsJwFia21YdHFhLRur/wqf5bU
+        pFOgcuugk+xxM2+ugay0Fn0oxcMN9gKB0MXLrH3W+nF0DuNbgyVzeqVkRybq7kitceAC+2WGuKwKW
+        PDZkTPjmN06z3ht9BI09/P6JEHr7x1lznMRwMfPxvFaVYQMx8XZP5IYbrVRpQPROZ53usnxfnM60A
+        mkuKmElH94re7ZUt7MWt/7gAdhv7TseMllMHzAJC7MhpwhUOY/OR7sm5UoDBAatlxJ4TIvA2EM4Sq
+        yOtthavA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qWILw-00FNuL-6m; Wed, 16 Aug 2023 15:22:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8C133300222;
+        Wed, 16 Aug 2023 17:22:31 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4CD7521025978; Wed, 16 Aug 2023 17:22:31 +0200 (CEST)
+Date:   Wed, 16 Aug 2023 17:22:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        bsegall@google.com, boqun.feng@gmail.com, swood@redhat.com,
+        bristot@redhat.com, dietmar.eggemann@arm.com, mingo@redhat.com,
+        jstultz@google.com, juri.lelli@redhat.com, mgorman@suse.de,
+        rostedt@goodmis.org, vschneid@redhat.com,
+        vincent.guittot@linaro.org, longman@redhat.com, will@kernel.org
+Subject: Re: [PATCH 0/6] locking/rtmutex: Avoid PI state recursion through
+ sched_submit_work()
+Message-ID: <20230816152231.GD982867@hirez.programming.kicks-ass.net>
+References: <20230815110121.117752409@infradead.org>
+ <20230815161557.GK214207@hirez.programming.kicks-ass.net>
+ <20230816085826.zfXjhNmj@linutronix.de>
+ <20230816094257.GE980931@hirez.programming.kicks-ass.net>
+ <20230816101902.Pz8wdats@linutronix.de>
+ <20230816134630.KO12Djeh@linutronix.de>
+ <20230816145818.GA989936@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230816145818.GA989936@hirez.programming.kicks-ass.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 16, 2023 at 04:58:18PM +0200, Peter Zijlstra wrote:
 
---Apple-Mail=_DA91F584-71C9-442C-B454-2CF84A9985CC
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+> I've ended up with the below, but it is quite horrible.. but let me go
+> stare at the futex wreckage before trying to clean things up.
 
-Hello everyone,
+OK, I think the below covers the simple case, now lets see if I can make
+sense of futex_wait_requeue_pi()... :/
 
->> I will wait a while in case Christian or somebody else wants to test
->> it, and send it for 6.6.
-
-I finally managed to test this patch with our hardware and I'm seeing =
-the same expected behavior as beforehand.
-
-When executing David's test sequence with a EH002004A [1], I'm getting =
-garbled contents when shifting with '\x1b[LR'. But this also happens =
-with the version of the driver we're currently using, does not look =
-related to this patch and might be an issue with our display model.
-
-
-Best regards,
-
-Christian
-
-
---
-[1] =
-https://www.winstar.com.tw/pt/products/oled-module/oled-character-display/=
-20x4-oled.html
-
---Apple-Mail=_DA91F584-71C9-442C-B454-2CF84A9985CC
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEIhqZz/J2souq/IKUfmJl21on4+EFAmTc6bYACgkQfmJl21on
-4+FDHxAAvhC3E+kzVGyCuQZ943zKODLu4toUnWdaKKFYnMRZcTKOWwE+zEEYlhP+
-WIh/oeyZgqSM+HwrfRfh8uD1Qya9gBRS0LhAaKH7lMOmlyz9LE7eKixVDiaI24Gw
-m3E0OsQhMofBXD6EArN4mMKADYMp2z8PwTBRjVT5eAJwH/d9bcj2vdj7aXoeMgXZ
-y3JEDsb27gJ1K37Nh+b42v6TvZVKAEUxk1K2GpmJQVGF3+fhivTf59idkS/neuBY
-9tYMcw3ubkNtDMFaH0vBpawD9qgDe5qMaCl7CJ84kUbf4pPP4TkvLCpt6VvWtSRh
-BsE+wX8aQU58U4Todic7Hbp/xegthuPiKq8SglxYfg3TitvwE0TSnocbtVsBO0pB
-9V46Pu0zUCC7HyL7gYaWDTx7bFKpeEdkFo3Ck77hh/ciD77MhA8bFU77wCR29Mxm
-uDUzmobwXf/E4DiJRa/RmM3yfP4b0PtqQtX2fnDBTTsN3ATcSkL1XvgkQsZbKktr
-0dKwXTPCAPc0S+BssCb/T2NdIyuSZnvdInCVA7FaAGV4MMaMyLape0VA3pZ6uO49
-8t408xyvocUsTGWoKu6NVRDCOtEUGHjxz44cCd2hBZNpmV7G95rQIqIBVQCptH4+
-IWVNzQ6opIJdVTrAIbYKAnT2ddtC6cCvAEJ2tQY29Km4z2CebTI=
-=ARi7
------END PGP SIGNATURE-----
-
---Apple-Mail=_DA91F584-71C9-442C-B454-2CF84A9985CC--
+---
+--- a/kernel/futex/pi.c
++++ b/kernel/futex/pi.c
+@@ -1002,6 +1002,12 @@ int futex_lock_pi(u32 __user *uaddr, uns
+ 		goto no_block;
+ 	}
+ 
++	/*
++	 * Must be done before we enqueue the waiter, here is unfortunately
++	 * under the hb lock, but that *should* work.
++	 */
++	rt_mutex_pre_schedule();
++
+ 	rt_mutex_init_waiter(&rt_waiter);
+ 
+ 	/*
+@@ -1052,6 +1058,10 @@ int futex_lock_pi(u32 __user *uaddr, uns
+ 	if (ret && !rt_mutex_cleanup_proxy_lock(&q.pi_state->pi_mutex, &rt_waiter))
+ 		ret = 0;
+ 
++	/*
++	 * Waiter is unqueued.
++	 */
++	rt_mutex_post_schedule();
+ no_block:
+ 	/*
+ 	 * Fixup the pi_state owner and possibly acquire the lock if we
