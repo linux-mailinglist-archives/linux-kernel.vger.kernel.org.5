@@ -2,183 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B689477DE9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 694DB77DEA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243889AbjHPK1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 06:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58632 "EHLO
+        id S243909AbjHPK26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 06:28:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243414AbjHPK1k (ORCPT
+        with ESMTP id S243957AbjHPK2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 06:27:40 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CDEE719A1;
-        Wed, 16 Aug 2023 03:27:38 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 61BAE1063;
-        Wed, 16 Aug 2023 03:28:19 -0700 (PDT)
-Received: from pluto (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 433D13F762;
-        Wed, 16 Aug 2023 03:27:36 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 11:27:32 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
-Cc:     "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH v4 1/4] firmware: arm_scmi: Add optional flags to
- extended names helper
-Message-ID: <ZNyklIL7qGhJnDiJ@pluto>
-References: <cover.1691518313.git.oleksii_moisieiev@epam.com>
- <318eb79c7e1ddb1f964a901e778a0475bf18c85b.1691518313.git.oleksii_moisieiev@epam.com>
+        Wed, 16 Aug 2023 06:28:45 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4AF1FE2;
+        Wed, 16 Aug 2023 03:28:39 -0700 (PDT)
+Received: from [192.168.100.7] (unknown [59.103.216.185])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: usama.anjum)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9F9196601F5E;
+        Wed, 16 Aug 2023 11:28:30 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1692181716;
+        bh=ftvs9GI0pTNN1Q/Ql07C6782DgKc5N83c95v6mS+/Vs=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=PpzIsZzgyGy2AshrVIdc0edRLPNHnuk21fD7lKYnpXHzB3doJSC+w046cwPHp/3hr
+         aGPn8aQutuTcG4dJfCB0G+DhBK26/PIQiLCKqfEdv4XVOxnIs2Xw/5rd7gw3LysdUf
+         G6d4DFOa5zJIzJGVq1WxwkqR53uGvGX9Ec7S1iR4WyZQfAMzWxhgPSee/WCpJUnSZP
+         8QzQsj1RZ2d4z3hBSRUfN2O7gaN3i0UM1t/yduIBDcTVfRbwFvp126hmnNSFzCPqTB
+         KvDfCe2qfyzx+UxAeRAVPZXYkHw5NR7FhImLJF9vXmy1H4wiAJ4gWXswlWiD/saGHX
+         UK21CV+X0xKqA==
+Message-ID: <4367a28b-97c8-a73a-f8a2-8706d8ecf285@collabora.com>
+Date:   Wed, 16 Aug 2023 15:28:26 +0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <318eb79c7e1ddb1f964a901e778a0475bf18c85b.1691518313.git.oleksii_moisieiev@epam.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v30 2/6] fs/proc/task_mmu: Implement IOCTL to get and
+ optionally clear info about PTEs
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+References: <20230816065925.850879-1-usama.anjum@collabora.com>
+ <20230816065925.850879-3-usama.anjum@collabora.com>
+ <ZNya0c7zRmQ/HPMl@qmqm.qmqm.pl>
+Content-Language: en-US
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <ZNya0c7zRmQ/HPMl@qmqm.qmqm.pl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 06:25:35PM +0000, Oleksii Moisieiev wrote:
-> From: Cristian Marussi <cristian.marussi@arm.com>
+On 8/16/23 2:45 PM, Michał Mirosław wrote:
+> On Wed, Aug 16, 2023 at 11:59:21AM +0500, Muhammad Usama Anjum wrote:
+>> The PAGEMAP_SCAN IOCTL on the pagemap file can be used to get or optionally
+>> clear the info about page table entries.
+> [...]
+>> --- a/fs/proc/task_mmu.c
+>> +++ b/fs/proc/task_mmu.c
+> [...]
+>> +static long do_pagemap_scan(struct mm_struct *mm, unsigned long uarg)
+>> +{
+> [...]
+>> +	for (walk_start = p.arg.start; walk_start < p.arg.end;
+>> +			walk_start = p.arg.walk_end) {
+>> +		long n_out;
+>> +
+>> +		if (fatal_signal_pending(current)) {
+>> +			ret = -EINTR;
+>> +			break;
+>> +		}
+>> +
+>> +		ret = mmap_read_lock_killable(mm);
+>> +		if (ret)
+>> +			break;
+>> +		ret = walk_page_range(mm, walk_start, p.arg.end,
+>> +				      &pagemap_scan_ops, &p);
+>> +		mmap_read_unlock(mm);
+>> +
+>> +		n_out = pagemap_scan_flush_buffer(&p);
+>> +		if (n_out < 0)
+>> +			ret = n_out;
+>> +		else
+>> +			n_ranges_out += n_out;
+>> +
+>> +		p.arg.walk_end = p.walk_end_addr ? p.walk_end_addr : p.arg.end;
 > 
-> Some recently added SCMI protocols needs an additional flags parameter to
-> be able to properly configure the command used to query the extended name
-> of a resource.
+> I think p.walk_end_addr can be removed and replaced by `p.arg.walk_end`
+> directly in the walk functions. If we don't set walk_end_addr we'll also
+> return 0 so the check below will match. Might be good to add this as
+> a comment.
+I'll remove it and add a short comment.
+
 > 
-
-Hi Oleksii,
-
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> ---
-
-You need to apply also your Signed-off as last in V5 for this to be
-accepted AND beside this I spotted a bug while re-testing this. (my bad)
-See down below a possible fix.
-
->  drivers/firmware/arm_scmi/clock.c     | 2 +-
->  drivers/firmware/arm_scmi/driver.c    | 7 +++++--
->  drivers/firmware/arm_scmi/perf.c      | 3 ++-
->  drivers/firmware/arm_scmi/power.c     | 2 +-
->  drivers/firmware/arm_scmi/powercap.c  | 2 +-
->  drivers/firmware/arm_scmi/protocols.h | 3 ++-
->  drivers/firmware/arm_scmi/reset.c     | 3 ++-
->  drivers/firmware/arm_scmi/sensors.c   | 2 +-
->  drivers/firmware/arm_scmi/voltage.c   | 2 +-
->  9 files changed, 16 insertions(+), 10 deletions(-)
+>> +		if (ret != -ENOSPC)
+>> +			break;
+>> +
+>> +		if (p.arg.vec_len == 0 || p.found_pages == p.arg.max_pages)
+>> +			break;
+>> +	}
+>> +
+>> +	/* ENOSPC signifies early stop (buffer full) from the walk. */
+>> +	if (!ret || ret == -ENOSPC)
+>> +		ret = n_ranges_out;
+>> +
+>> +	p.arg.walk_end = p.arg.walk_end ? p.arg.walk_end : walk_start;
 > 
-> diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
-> index 96060bf90a24..e6e087686e8c 100644
-> --- a/drivers/firmware/arm_scmi/clock.c
-> +++ b/drivers/firmware/arm_scmi/clock.c
-> @@ -169,7 +169,7 @@ static int scmi_clock_attributes_get(const struct scmi_protocol_handle *ph,
->  	if (!ret && PROTOCOL_REV_MAJOR(version) >= 0x2) {
->  		if (SUPPORTS_EXTENDED_NAMES(attributes))
->  			ph->hops->extended_name_get(ph, CLOCK_NAME_GET, clk_id,
-> -						    clk->name,
-> +						    NULL, clk->name,
->  						    SCMI_MAX_STR_SIZE);
->  
->  		if (SUPPORTS_RATE_CHANGED_NOTIF(attributes))
-> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> index e7d97b59963b..729201d8f935 100644
-> --- a/drivers/firmware/arm_scmi/driver.c
-> +++ b/drivers/firmware/arm_scmi/driver.c
-> @@ -1438,6 +1438,7 @@ struct scmi_msg_resp_domain_name_get {
->   * @ph: A protocol handle reference.
->   * @cmd_id: The specific command ID to use.
->   * @res_id: The specific resource ID to use.
-> + * @flags: A pointer to specific flags to use, if any.
->   * @name: A pointer to the preallocated area where the retrieved name will be
->   *	  stored as a NULL terminated string.
->   * @len: The len in bytes of the @name char array.
-> @@ -1445,8 +1446,8 @@ struct scmi_msg_resp_domain_name_get {
->   * Return: 0 on Succcess
->   */
->  static int scmi_common_extended_name_get(const struct scmi_protocol_handle *ph,
-> -					 u8 cmd_id, u32 res_id, char *name,
-> -					 size_t len)
-> +					 u8 cmd_id, u32 res_id, u32 *flags,
-> +					 char *name, size_t len)
->  {
->  	int ret;
->  	struct scmi_xfer *t;
-> @@ -1458,6 +1459,8 @@ static int scmi_common_extended_name_get(const struct scmi_protocol_handle *ph,
->  		goto out;
->  
->  	put_unaligned_le32(res_id, t->tx.buf);
-> +	if (flags)
-> +		put_unaligned_le32(*flags, t->tx.buf + sizeof(res_id));
->  	resp = t->rx.buf;
->  
->  	ret = ph->xops->do_xfer(ph, t);
+> When the walk is finished, with ret == 0, the walk_start will point to
+> the beginning, not the end of the range. So:
+> 
+> if (!walk_end) walk_end = p.arg.end;
+This condition is to cater for the case when for loop doesn't execute at
+all because the address range was zero. In that case start == end. So
+p.arg.start or p.arg.end both would work fine. I'll add p.arg.end in
+accordance to above loop.
 
-Here my patch is buggy since when you provide the optional flags they
-are after the res_id parameter BUT the previous xfer_get_init still
-requires an xfer with a tx_len size of sizeof(res_id) ONLY, so while the
-flags will fit into tx.buf that second optional flags field won't be
-sent because the core SCMI stack will see t->tx.len == 4 :<
-(so this flags extension wont work when needed in Pinctrl)
+> 
+> Other than that, the patch looks complete now. Thanks for all your work!
+I'll send the next revision.
 
-A possible fix that I tested consist in changing this snippet with:
+> 
+> Best Regards
+> Michał Mirosław
 
--->8---
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index b5957cc12fee..06c101edba7f 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -1438,6 +1438,7 @@ struct scmi_msg_resp_domain_name_get {
-  * @ph: A protocol handle reference.
-  * @cmd_id: The specific command ID to use.
-  * @res_id: The specific resource ID to use.
-+ * @flags: A pointer to specific flags to use, if any.
-  * @name: A pointer to the preallocated area where the retrieved name will be
-  *       stored as a NULL terminated string.
-  * @len: The len in bytes of the @name char array.
-@@ -1445,19 +1446,22 @@ struct scmi_msg_resp_domain_name_get {
-  * Return: 0 on Succcess
-  */
- static int scmi_common_extended_name_get(const struct scmi_protocol_handle *ph,
--                                        u8 cmd_id, u32 res_id, char *name,
--                                        size_t len)
-+                                        u8 cmd_id, u32 res_id, u32 *flags,
-+                                        char *name, size_t len)
- {
-        int ret;
-+       size_t txlen;
-        struct scmi_xfer *t;
-        struct scmi_msg_resp_domain_name_get *resp;
- 
--       ret = ph->xops->xfer_get_init(ph, cmd_id, sizeof(res_id),
--                                     sizeof(*resp), &t);
-+       txlen = !flags ? sizeof(res_id) : sizeof(res_id) + sizeof(*flags);
-+       ret = ph->xops->xfer_get_init(ph, cmd_id, txlen, sizeof(*resp), &t);
-        if (ret)
-                goto out;
- 
-        put_unaligned_le32(res_id, t->tx.buf);
-+       if (flags)
-+               put_unaligned_le32(*flags, t->tx.buf + sizeof(res_id));
-        resp = t->rx.buf;
- 
-        ret = ph->xops->do_xfer(ph, t);
-
-
----8<---
-
-My bad,
-
-Thanks,
-Cristian
+-- 
+BR,
+Muhammad Usama Anjum
