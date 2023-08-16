@@ -2,99 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3236377EB2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE1C77EB2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239517AbjHPU7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 16:59:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57406 "EHLO
+        id S1346305AbjHPVA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 17:00:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346299AbjHPU7S (ORCPT
+        with ESMTP id S1346331AbjHPVAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 16:59:18 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29CC12711
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:59:17 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bc3d94d40fso58846665ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:59:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692219556; x=1692824356;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xlGgwWTf/nLP2TlwAmP1MWgMzO0RJqkyJNjk5XF286w=;
-        b=da09eNAHkWEo/pEOng7AkizliA/xPdjEjR4w1hWOr6cprU1HJasY8mlRG3X5jlWYpR
-         TQDai+S04x09MlFWQVCyVt7TvTg1NKjygAq0L4ybvBKX1MYRtaJyrZl/Er9T6P7t0k6G
-         VQXoEBwVTI+LCFVKl9WnKuSx+eCIgamm9s9+Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692219556; x=1692824356;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xlGgwWTf/nLP2TlwAmP1MWgMzO0RJqkyJNjk5XF286w=;
-        b=JjFZy+wwQa8U4j8IGEtTNcvU0RHbqjjbfIKREKn79cZBWUMdQUMnPs4zuj6ehSztfq
-         CHbr1fBKBjKKsuzRHgFMkPFIu8o5bliU9XEISM4hXEHE5UZEPM/WTbbmJkgUhFmFsnbd
-         04d4shiYc2Fb98UyF5Loqb4oKZQJDd78k8UBP5sCCvi3hk6f9fZA3Eu+RN5Yoigo67G8
-         fUOgD9t4FlhWGusUbRVljbtNiECnBnVb2uBoTAj8b6g609npHaIjm40289VE6fmbXvOV
-         fXDqYVjuw+LgxGShdi1aEJlSdyEv2HWiHPtsqQgNoaBNQkcD6OpK5TRys3d6aevEMvbw
-         5rNQ==
-X-Gm-Message-State: AOJu0YzgB8UuM7FYF49y4lxjm0036GSwjq2MT+Jje4wK361WFqQ7l5kv
-        pKQxLQYP+X5h+RJe///YmrFa4g==
-X-Google-Smtp-Source: AGHT+IFScTCnLhDPzkRADw5u9zcBAk0sLroO3CH7he7HPI1WAHYwTrUUwVGAXpnxTWUxsTPr96Os9w==
-X-Received: by 2002:a17:903:11d1:b0:1bb:cf4e:ccd with SMTP id q17-20020a17090311d100b001bbcf4e0ccdmr4098212plh.28.1692219556713;
-        Wed, 16 Aug 2023 13:59:16 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id t3-20020a170902bc4300b001b8c6662094sm13505194plz.188.2023.08.16.13.59.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 13:59:16 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Russell King <linux@armlinux.org.uk>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Wolfram Sang <wsa@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] ARM: ptrace: Restore syscall skipping and restart while tracing
-Date:   Wed, 16 Aug 2023 13:59:08 -0700
-Message-Id: <169221954681.1236522.6821211749332698917.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230810195141.never.338-kees@kernel.org>
-References: <20230810195141.never.338-kees@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 17:00:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945BD271F;
+        Wed, 16 Aug 2023 14:00:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2056461119;
+        Wed, 16 Aug 2023 21:00:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0321BC433C7;
+        Wed, 16 Aug 2023 21:00:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692219627;
+        bh=LZYTm/3n8hysxPtQ/HtUMDBzH/dBCllJirECbMdqunE=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=svl4X5fv1U2LkBa9AyhGmbXnzxZ+XpS2imljIWUfEO2BdWspgsYJajw4tEBByKLhO
+         Bbb4cDWkjKsgq6xnwXW7thmPObr7J34bLtiGH80s/wZ9egN+ZwNsmD0yb6SyfCpBdZ
+         gHcn4gWlDCmsrnxnsyuhxkAniRO8sB+76RpAsfTPRm4ytRxLGog2WrvZdYXfEPpTeq
+         zxc9GT2JfmM7UglI4y+ncQ8VjRs5VEObny8IgWh91fnyZoJSqONLhseROEtX8Gh8vo
+         aPeNJx/luRHX5xXSkLlVjGaihfD6I9eLsJYgXtLjpiXdkSOVu2qFxYTGJ8Ka1ZY8W2
+         744neDpDiiS4w==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 17 Aug 2023 00:00:22 +0300
+Message-Id: <CUU9SIBEDBLO.1VTU1PCPLLEYR@suppilovahvero>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <pbrobinson@gmail.com>, <zbyszek@in.waw.pl>, <hch@lst.de>,
+        <mjg59@srcf.ucam.org>, <pmatilai@redhat.com>, <jannh@google.com>,
+        "Roberto Sassu" <roberto.sassu@huawei.com>
+Subject: Re: [RFC][PATCH v2 03/13] integrity/digest_cache: Add functions to
+ populate and search
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Roberto Sassu" <roberto.sassu@huaweicloud.com>, <corbet@lwn.net>,
+        <zohar@linux.ibm.com>, <dmitry.kasatkin@gmail.com>,
+        <paul@paul-moore.com>, <jmorris@namei.org>, <serge@hallyn.com>
+X-Mailer: aerc 0.14.0
+References: <20230812104616.2190095-1-roberto.sassu@huaweicloud.com>
+ <20230812104616.2190095-4-roberto.sassu@huaweicloud.com>
+ <CUSFPINBGDSS.DQ0I19Z9FNR4@suppilovahvero>
+ <98959e3d-7543-4a8e-9712-05a3ba04d2c8@huaweicloud.com>
+In-Reply-To: <98959e3d-7543-4a8e-9712-05a3ba04d2c8@huaweicloud.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 12:54:17 -0700, Kees Cook wrote:
-> Fix tracing on arm since commit 4e57a4ddf6b0 ("ARM: 9107/1: syscall:
-> always store thread_info->abi_syscall"). This was seen with the broken
-> seccomp tests "syscall_errno", "syscall_faked", and "syscall_restart".
+On Wed Aug 16, 2023 at 11:35 AM EEST, Roberto Sassu wrote:
+> On 8/14/2023 7:13 PM, Jarkko Sakkinen wrote:
+> > On Sat Aug 12, 2023 at 1:46 PM EEST, Roberto Sassu wrote:
+> >> From: Roberto Sassu <roberto.sassu@huawei.com>
+> >>
+> >> Add digest_cache_init_htable(), to size a hash table depending on the
+> >> number of digests to be added to the cache.
+> >>
+> >> Add digest_cache_add() and digest_cache_lookup() to respectively add a=
+nd
+> >> lookup a digest in the digest cache.
+> >>
+> >> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> >> ---
+> >>   security/integrity/digest_cache.c | 131 ++++++++++++++++++++++++++++=
+++
+> >>   security/integrity/digest_cache.h |  24 ++++++
+> >>   2 files changed, 155 insertions(+)
+> >>
+> >> diff --git a/security/integrity/digest_cache.c b/security/integrity/di=
+gest_cache.c
+> >> index 4201c68171a..d14d84b804b 100644
+> >> --- a/security/integrity/digest_cache.c
+> >> +++ b/security/integrity/digest_cache.c
+> >> @@ -315,3 +315,134 @@ struct digest_cache *digest_cache_get(struct den=
+try *dentry,
+> >>  =20
+> >>   	return iint->dig_user;
+> >>   }
+> >> +
+> >> +/**
+> >> + * digest_cache_init_htable - Allocate and initialize the hash table
+> >> + * @digest_cache: Digest cache
+> >> + * @num_digests: Number of digests to add to the digest cache
+> >> + *
+> >> + * This function allocates and initializes the hash table. Its size i=
+s
+> >> + * determined by the number of digests to add to the digest cache, kn=
+own
+> >> + * at this point by the parser calling this function.
+> >> + *
+> >> + * Return: Zero on success, a negative value otherwise.
+> >> + */
+> >> +int digest_cache_init_htable(struct digest_cache *digest_cache,
+> >> +			     u64 num_digests)
+> >> +{
+> >> +	int i;
+> >> +
+> >> +	if (!digest_cache)
+> >> +		return 0;
+> >> +
+> >> +	digest_cache->num_slots =3D num_digests / DIGEST_CACHE_HTABLE_DEPTH;
+> >> +	if (!digest_cache->num_slots)
+> >> +		digest_cache->num_slots =3D 1;
+> >> +
+> >> +	digest_cache->slots =3D kmalloc_array(num_digests,
+> >> +					    sizeof(*digest_cache->slots),
+> >> +					    GFP_KERNEL);
+> >> +	if (!digest_cache->slots)
+> >> +		return -ENOMEM;
+> >> +
+> >> +	for (i =3D 0; i < digest_cache->num_slots; i++)
+> >> +		INIT_HLIST_HEAD(&digest_cache->slots[i]);
+> >> +
+> >> +	pr_debug("Initialized %d hash table slots for digest list %s\n",
+> >> +		 digest_cache->num_slots, digest_cache->path_str);
+> >> +	return 0;
+> >> +}
+> >> +
+> >> +/**
+> >> + * digest_cache_add - Add a new digest to the digest cache
+> >> + * @digest_cache: Digest cache
+> >> + * @digest: Digest to add
+> >> + *
+> >> + * This function, invoked by a digest list parser, adds a digest extr=
+acted
+> >> + * from a digest list to the digest cache.
+> >> + *
+> >> + * Return: Zero on success, a negative value on error.
+> >=20
+> > Nit: previous had a different phrasing "a negative value otherwise".
+> >=20
+> > I would suggest "a POSIX error code otherwise" for both.
+>
+> Ok.
+>
+> >> + */
+> >> +int digest_cache_add(struct digest_cache *digest_cache, u8 *digest)
+> >> +{
+> >> +	struct digest_cache_entry *entry;
+> >> +	unsigned int key;
+> >> +	int digest_len;
+> >> +
+> >> +	if (!digest_cache)
+> >> +		return 0;
+> >> +
+> >> +	digest_len =3D hash_digest_size[digest_cache->algo];
+> >> +
+> >> +	entry =3D kmalloc(sizeof(*entry) + digest_len, GFP_KERNEL);
+> >> +	if (!entry)
+> >> +		return -ENOMEM;
+> >> +
+> >> +	memcpy(entry->digest, digest, digest_len);
+> >> +
+> >> +	key =3D digest_cache_hash_key(digest, digest_cache->num_slots);
+> >> +	hlist_add_head(&entry->hnext, &digest_cache->slots[key]);
+> >> +	pr_debug("Add digest %s:%*phN from digest list %s\n",
+> >> +		 hash_algo_name[digest_cache->algo], digest_len, digest,
+> >> +		 digest_cache->path_str);
+> >> +	return 0;
+> >> +}
+> >> +
+> >> +/**
+> >> + * digest_cache_lookup - Searches a digest in the digest cache
+> >> + * @digest_cache: Digest cache
+> >> + * @digest: Digest to search
+> >> + * @algo: Algorithm of the digest to search
+> >> + * @pathname: Path of the file whose digest is looked up
+> >> + *
+> >> + * This function, invoked by IMA or EVM, searches the calculated dige=
+st of
+> >> + * a file or file metadata in the digest cache acquired with
+> >> + * digest_cache_get().
+> >> + *
+> >> + * Return: Zero if the digest is found, a negative value if not.
+> >> + */
+> >> +int digest_cache_lookup(struct digest_cache *digest_cache, u8 *digest=
+,
+> >> +			enum hash_algo algo, const char *pathname)
+> >> +{
+> >> +	struct digest_cache_entry *entry;
+> >> +	unsigned int key;
+> >> +	int digest_len;
+> >> +	int search_depth =3D 0;
+> >> +
+> >> +	if (!digest_cache)
+> >> +		return -ENOENT;
+> >> +
+> >> +	if (digest_cache->algo =3D=3D HASH_ALGO__LAST) {
+> >> +		pr_debug("Algorithm not set for digest list %s\n",
+> >> +			 digest_cache->path_str);
+> >> +		return -ENOENT;
+> >> +	}
+> >> +
+> >> +	digest_len =3D hash_digest_size[digest_cache->algo];
+> >> +
+> >> +	if (algo !=3D digest_cache->algo) {
+> >> +		pr_debug("Algo mismatch for file %s, digest %s:%*phN in digest list=
+ %s (%s)\n",
+> >> +			 pathname, hash_algo_name[algo], digest_len, digest,
+> >> +			 digest_cache->path_str,
+> >> +			 hash_algo_name[digest_cache->algo]);
+> >> +		return -ENOENT;
+> >> +	}
+> >> +
+> >> +	key =3D digest_cache_hash_key(digest, digest_cache->num_slots);
+> >> +
+> >> +	hlist_for_each_entry_rcu(entry, &digest_cache->slots[key], hnext) {
+> >> +		if (!memcmp(entry->digest, digest, digest_len)) {
+> >> +			pr_debug("Cache hit at depth %d for file %s, digest %s:%*phN in di=
+gest list %s\n",
+> >> +				 search_depth, pathname, hash_algo_name[algo],
+> >> +				 digest_len, digest, digest_cache->path_str);
+> >> +			return 0;
+> >> +		}
+> >> +
+> >> +		search_depth++;
+> >> +	}
+> >> +
+> >> +	pr_debug("Cache miss for file %s, digest %s:%*phN in digest list %s\=
+n",
+> >> +		 pathname, hash_algo_name[algo], digest_len, digest,
+> >> +		 digest_cache->path_str);
+> >> +	return -ENOENT;
+> >> +}
+> >> diff --git a/security/integrity/digest_cache.h b/security/integrity/di=
+gest_cache.h
+> >> index ff88e8593c6..01cd70f9850 100644
+> >> --- a/security/integrity/digest_cache.h
+> >> +++ b/security/integrity/digest_cache.h
+> >> @@ -66,6 +66,11 @@ static inline unsigned int digest_cache_hash_key(u8=
+ *digest,
+> >>   void digest_cache_free(struct digest_cache *digest_cache);
+> >>   struct digest_cache *digest_cache_get(struct dentry *dentry,
+> >>   				      struct integrity_iint_cache *iint);
+> >> +int digest_cache_init_htable(struct digest_cache *digest_cache,
+> >> +			     u64 num_digests);
+> >> +int digest_cache_add(struct digest_cache *digest_cache, u8 *digest);
+> >> +int digest_cache_lookup(struct digest_cache *digest_cache, u8 *digest=
+,
+> >> +			enum hash_algo algo, const char *pathname);
+> >>   #else
+> >>   static inline void digest_cache_free(struct digest_cache *digest_cac=
+he)
+> >>   {
+> >> @@ -77,5 +82,24 @@ digest_cache_get(struct dentry *dentry, struct inte=
+grity_iint_cache *iint)
+> >>   	return NULL;
+> >>   }
+> >>  =20
+> >> +static inline int digest_cache_init_htable(struct digest_cache *diges=
+t_cache,
+> >> +					   u64 num_digests)
+> >> +{
+> >> +	return -EOPNOTSUPP;
+> >> +}
+> >> +
+> >> +static inline int digest_cache_add(struct digest_cache *digest_cache,
+> >> +				   u8 *digest)
+> >> +{
+> >> +	return -EOPNOTSUPP;
+> >> +}
+> >> +
+> >> +static inline int digest_cache_lookup(struct digest_cache *digest_cac=
+he,
+> >> +				      u8 *digest, enum hash_algo algo,
+> >> +				      const char *pathname)
+> >> +{
+> >> +	return -ENOENT;
+> >> +}
+> >> +
+> >>   #endif /* CONFIG_INTEGRITY_DIGEST_CACHE */
+> >>   #endif /* _DIGEST_CACHE_H */
+> >> --=20
+> >> 2.34.1
+> >=20
+> > Why all this complexity instead of using xarray?
+> >=20
+> > https://docs.kernel.org/core-api/xarray.html
+>
+> Uhm, did I get correctly from the documentation that it isn't the=20
+> optimal solution for hash tables?
 
-Applied to for-next/seccomp, thanks!
+I think you are correct with xarray that it is not a great fit here=20
+(I overlooked).
 
-[1/2] ARM: ptrace: Restore syscall restart tracing
-      https://git.kernel.org/kees/c/cf007647475b
-[2/2] ARM: ptrace: Restore syscall skipping for tracers
-      https://git.kernel.org/kees/c/4697b5848bd9
-
-Take care,
-
--- 
-Kees Cook
-
+BR, Jarkko
