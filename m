@@ -2,108 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA15877EB18
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 22:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C5277EB22
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 22:58:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346283AbjHPUz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 16:55:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46732 "EHLO
+        id S1346297AbjHPU5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 16:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346328AbjHPUzo (ORCPT
+        with ESMTP id S1346323AbjHPU5S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 16:55:44 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E492727
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:55:43 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-565ea1088fbso1395631a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:55:43 -0700 (PDT)
+        Wed, 16 Aug 2023 16:57:18 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7886F271D
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:57:17 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-26b7c16556eso1461287a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:57:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692219342; x=1692824142;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=C00XHrqX2JehVx2BBEXfXecV7OVkf6gSj4eigV0sDaQ=;
-        b=Wd+2qwQqJLbcXOZfZxHK7QeYcunXx/JB1n8i5nb0p6eHz8dT9PSiVtuZHXF9om1+hX
-         afleLuXxjUJI+9b6oL+ivcB0pCk60ar2sDz6igfDLeBu8b+zpuhIB3GoyLlDBFfcGP0S
-         eF8L6NfDlEdKuwAYRfjUf1/T0y843DHuXwRPM=
+        d=chromium.org; s=google; t=1692219437; x=1692824237;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PTnRjDgF03Eifi7sf3kpv96X0kZ1CgBBnY922J5YppA=;
+        b=YrnJuLkKAUI9GOoFGUyMxaW0N4JvwWCdrMEG+WXxw28UwGdvMagNkGayO+D+VNRv7W
+         tdSXtKKS34K9MQ4zDTHtW6q2rQmnBOa1Cm/YWl1qMYvmdTxQHD3MejqhxJNse7BFpFZ4
+         taJO9DBM9v9B7HzFifZ/3iQ27MxXyE1MvyhG4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692219342; x=1692824142;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C00XHrqX2JehVx2BBEXfXecV7OVkf6gSj4eigV0sDaQ=;
-        b=QSBBkSzzD6toT0swmREU6v1sZRjorozzjYBliil2P9l7zmR/rFV106Dxh15Swd4R9G
-         EIfYLRRN3qlp83vagVjx/wx5xfGdVqz+G9vkTYN65BnydDwCG1mrAU9pdKBD0YMv1A6n
-         jjPiBG3tTC9040KM/dsf7A1TYqz3X19ds5NIuqibSOfucjSgeeyyy55q/vUB7+c5DWL+
-         K2qvtImMKHOGlLBfr/ymIU6mS7hC6FnI3uYR+4YfWPASJCZOyAZeP/hQ5dRvdl4Yi8vh
-         EuNTqXruYDdMwYhKd8s0Ogks7HTfBTB9hwPf7ekVhJUV30Lts4PLINMXu2BQmHrTQwEI
-         d1oA==
-X-Gm-Message-State: AOJu0Yz6bk5LGtoovx0X39Swumc53vUY3HhAc54xtfhMXpo5Z50+HtN1
-        rEMlalLgSpTdO4GdPwKuVDbTfA==
-X-Google-Smtp-Source: AGHT+IHJW+AH5vlrIhdUlHgmZMHwz/lc7DRwSMYiYs0PBq1i1vK5obxcxfHOGdznenzbMzBFW6xmFA==
-X-Received: by 2002:a17:90a:d988:b0:262:f0e6:9e09 with SMTP id d8-20020a17090ad98800b00262f0e69e09mr2633351pjv.14.1692219342574;
-        Wed, 16 Aug 2023 13:55:42 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692219437; x=1692824237;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PTnRjDgF03Eifi7sf3kpv96X0kZ1CgBBnY922J5YppA=;
+        b=WDtsKO/Ptri9kLDSWwg2Tuj3VdcENgatPrywRjrnR9wH1iHxF77A2rH0obPQ1eFCry
+         C+f4bm9m8p8v/dUCLI/UZzQTiW8DtMNFXb4EfZsN6iSP19XcrQzgUoARpdS5zbHuYca+
+         UboHeC2kh5O6qQr9p02ECFdyMQVXp5zdgVn8qXP1VNAymk0FtCPVbrf/QBhQRbJrEAcb
+         faFcHtj3goo8uo998rgGJetHRdBfLycdxpKFBC1iqVSuwbf3v4yyNfqAcmdMt19Z4rK5
+         ra0G6yDJ5BvtKSlpXGY+qdKF//nQsz00BzpQc3IZNHooiFfi/mFa1wDWQryjeLPr/joo
+         3Rzw==
+X-Gm-Message-State: AOJu0YxkygquwR64AXMZOfQ1JB0xf4SNXQc4srBk0EL1HTYZC7ALh5cB
+        Z499LQkgWU0qA/W9cLzCPthCUw==
+X-Google-Smtp-Source: AGHT+IG3SG9qeo0oZfUja9go8C9ZZOvux73Nr1ZbS1VQ53Pv2p6wh5BCDdxyWq4rcnvjgBR0dMyodw==
+X-Received: by 2002:a17:90a:e38a:b0:268:e43a:dbfd with SMTP id b10-20020a17090ae38a00b00268e43adbfdmr2746938pjz.1.1692219436996;
+        Wed, 16 Aug 2023 13:57:16 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 5-20020a17090a018500b0026b26181ac9sm178867pjc.14.2023.08.16.13.55.41
+        by smtp.gmail.com with ESMTPSA id rj6-20020a17090b3e8600b002680f0f2886sm158262pjb.12.2023.08.16.13.57.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 13:55:41 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 13:55:41 -0700
+        Wed, 16 Aug 2023 13:57:16 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 13:57:16 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Waqar Hameed <waqar.hameed@axis.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Wang Weiyang <wangweiyang2@huawei.com>,
-        Xiu Jianfeng <xiujianfeng@huawei.com>, gongruiqi1@huawei.com
-Subject: Re: [PATCH v2] iio: irsd200: fix -Warray-bounds bug in
- irsd200_trigger_handler
-Message-ID: <202308161355.9EC0D12C@keescook>
-References: <20230810035910.1334706-1-gongruiqi@huaweicloud.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2][next] cgroup: Avoid -Wstringop-overflow warnings
+Message-ID: <202308161356.4AED47263E@keescook>
+References: <ZN02iLcZYgxHFrEN@work>
+ <ZN02wFqzvwP2JI-K@slm.duckdns.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230810035910.1334706-1-gongruiqi@huaweicloud.com>
+In-Reply-To: <ZN02wFqzvwP2JI-K@slm.duckdns.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 11:59:10AM +0800, GONG, Ruiqi wrote:
-> From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
+On Wed, Aug 16, 2023 at 10:51:12AM -1000, Tejun Heo wrote:
+> Hello,
 > 
-> When compiling with gcc 13 with -Warray-bounds enabled:
+> On Wed, Aug 16, 2023 at 02:50:16PM -0600, Gustavo A. R. Silva wrote:
+> > Change the notation from pointer-to-array to pointer-to-pointer.
+> > With this, we avoid the compiler complaining about trying
+> > to access a region of size zero as an argument during function
+> > calls.
 > 
-> In file included from drivers/iio/proximity/irsd200.c:15:
-> In function ‘iio_push_to_buffers_with_timestamp’,
->     inlined from ‘irsd200_trigger_handler’ at drivers/iio/proximity/irsd200.c:770:2:
-> ./include/linux/iio/buffer.h:42:46: error: array subscript ‘int64_t {aka long long int}[0]’
-> is partly outside array bounds of ‘s16[1]’ {aka ‘short int[1]’} [-Werror=array-bounds=]
->    42 |                 ((int64_t *)data)[ts_offset] = timestamp;
->       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
-> drivers/iio/proximity/irsd200.c: In function ‘irsd200_trigger_handler’:
-> drivers/iio/proximity/irsd200.c:763:13: note: object ‘buf’ of size 2
->   763 |         s16 buf = 0;
->       |             ^~~
-> 
-> The problem seems to be that irsd200_trigger_handler() is taking a s16
-> variable as an int64_t buffer. As Jonathan suggested [1], fix it by
-> extending the buffer to a two-element array of s64.
-> 
-> Link: https://github.com/KSPP/linux/issues/331
-> Link: https://lore.kernel.org/lkml/20230809181329.46c00a5d@jic23-huawei/ [1]
-> Fixes: 3db3562bc66e ("iio: Add driver for Murata IRS-D200")
-> Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
+> Haha, I thought the functions were actually accessing the memory. This can't
+> be an intended behavior on the compiler's side, right?
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+I think it's a result of inlining -- the compiler ends up with a case
+where it looks like it might be possible to index a zero-sized array,
+but it is "accidentally safe".
 
 -- 
 Kees Cook
