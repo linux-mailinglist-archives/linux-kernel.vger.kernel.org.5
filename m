@@ -2,52 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C17D677D819
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 04:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A91177D820
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 04:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241159AbjHPCFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 22:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38808 "EHLO
+        id S241184AbjHPCIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 22:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232693AbjHPCF2 (ORCPT
+        with ESMTP id S241179AbjHPCHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 22:05:28 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 790DD2121;
-        Tue, 15 Aug 2023 19:05:26 -0700 (PDT)
-Received: from dggpeml500006.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RQWc30TPVzFqYL;
-        Wed, 16 Aug 2023 10:02:27 +0800 (CST)
-Received: from [10.174.176.127] (10.174.176.127) by
- dggpeml500006.china.huawei.com (7.185.36.76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 16 Aug 2023 10:05:22 +0800
-Subject: Re: [PATCH 4.19 00/33] 4.19.292-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <stable@vger.kernel.org>
-CC:     <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-        <rwarsow@gmx.de>, <conor@kernel.org>
-References: <20230813211703.915807095@linuxfoundation.org>
-From:   luomeng <luomeng12@huawei.com>
-Message-ID: <67f18995-78c6-d53c-1bc5-e30da7018bc6@huawei.com>
-Date:   Wed, 16 Aug 2023 10:05:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.1
+        Tue, 15 Aug 2023 22:07:30 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3952129
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:07:28 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bdca7cc28dso31613725ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:07:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692151648; x=1692756448;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=1cgPRSiv90OT3/SJL8ZMyRGl4jaRnBiBcYOX7OaylDE=;
+        b=sQMCdgdwxL3T4OXi4BlV/8FePNPTCIivYKVkWn7lRRSmnv5c9qZy5fs29K/KOgn29Y
+         O8HjNk71YBIgx74M3jMGU3NLOjIFS9rRDybcVMBz2bJESPp8ZeMJf139+YR9x/hnzLdK
+         D0Gv8oY475Le4AEIkHqSSKHQQo7i5EhKKU06ctzgup9rZYddS9+agRyqLXUdQKd3X3+P
+         K3GWm8qR+KCTSWmkUrwFHmWiaduwlS7z6JNuRPhqqDNHTDMq3oYDQ2T7uc9wG8tD2bZV
+         IWvkM3M+XBkk+S50u1wastmv7g7ljregVsfk60vECo7OjFjmkfrl3z5hhUIg5CxY2zhR
+         0drw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692151648; x=1692756448;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1cgPRSiv90OT3/SJL8ZMyRGl4jaRnBiBcYOX7OaylDE=;
+        b=RyBxfybfeO0m4V85u0BR2rxLFGftBMnHvcayXDYbANNZdczsxHF48nyUiAQ8iOfDw3
+         jYsksGjBsAtDblIcZGXokV18r/lgOH5DOeqhvJBZDOvSdkHip40gQRR+kq0nWaNT+gMu
+         sOp3TNKQ+/hoEmYaUnISe+nTM59lNtPYq/iu+Umnk578Ht0Ss/aEsCFJHGm+f2juBSd7
+         hxD3lcwRII6a3U48kKnPK/aJ73ZYzKhwEe6hKuzqGMHiZRxsuP6EtuObYL7l1G6WPXYT
+         vk3IgAxviE6ehJmzfYxC8iTQTlcb3z47OlIWHKaPN3fAQEnCqLJs0lQoCUKcO4Fs8Zap
+         dfyw==
+X-Gm-Message-State: AOJu0YxWda/5onSt/CzGRGG1aKwHpTbMNb5mHl4FeIcJWYVoPi0Vzq+f
+        5TC+T4uhoY3dnmw71wDN6AFLtg==
+X-Google-Smtp-Source: AGHT+IFCPpYmyWaib0MQfDL563rBcVuQf0cRysHOx8FVJ+qFoWVHApR2PRs6Is19nR5cTTuzLoiwuw==
+X-Received: by 2002:a17:903:2796:b0:1b8:8223:8bdd with SMTP id jw22-20020a170903279600b001b882238bddmr692922plb.59.1692151647664;
+        Tue, 15 Aug 2023 19:07:27 -0700 (PDT)
+Received: from leoy-huanghe.lan ([150.230.248.162])
+        by smtp.gmail.com with ESMTPSA id l2-20020a170902f68200b001b8943b37a5sm11673061plg.24.2023.08.15.19.07.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Aug 2023 19:07:27 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 10:07:15 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ian Rogers <irogers@google.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Guo Ren <guoren@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Ming Wang <wangming01@loongson.cn>,
+        Eric Lin <eric.lin@sifive.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ivan Babrou <ivan@cloudflare.com>,
+        Fangrui Song <maskray@google.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v2 0/6] perf parse-regs: Refactor architecture functions
+Message-ID: <20230816020715.GA135657@leoy-huanghe.lan>
+References: <20230606014559.21783-1-leo.yan@linaro.org>
+ <CAP-5=fV1m440mKc0R=m5C4N2NtoiixchtnpX2eR3PA_5hXbqEQ@mail.gmail.com>
+ <ZNvCxM/ULdUfzHtR@kernel.org>
+ <ZNvHx+KxIL6JzEl/@kernel.org>
+ <ZNvJdsVmmAWLmfH6@kernel.org>
+ <ZNvKjeFkXY8ezf9e@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20230813211703.915807095@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.127]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500006.china.huawei.com (7.185.36.76)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <ZNvKjeFkXY8ezf9e@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,214 +102,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested on arm64 and x86 for 4.19.292-rc1,
+On Tue, Aug 15, 2023 at 03:57:17PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Aug 15, 2023 at 03:52:38PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Tue, Aug 15, 2023 at 03:45:27PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > > Agreed, applied to perf-tools-next, sorry for the delay.
+> > > 
+> > > Had to add this to make 'perf test python' to work. Please run 'perf
+> > > test' before sending patches.
+> > 
+> > One more, please also do a 'make -C tools/perf build-test', with it I
+> > caught this:
+> > 
+> >          make_no_libunwind_O: cd . && make NO_LIBUNWIND=1 FEATURES_DUMP=/var/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP -j32 O=/tmp/tmp.yeEGyQq2HR DESTDIR=/tmp/tmp.ITgoO16jjH
+> > cd . && make NO_LIBUNWIND=1 FEATURES_DUMP=/var/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP -j32 O=/tmp/tmp.yeEGyQq2HR DESTDIR=/tmp/tmp.ITgoO16jjH
+> 
+> +#include "util/env.h"
+> 
+> As now we need it for perf_env__arch(ui->machine->env)
 
-Kernel 
-repo:https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-4.19.y
-Version: 4.19.292-rc1
-Commit: 84b9d8b93009a14264e351f2ae6dd63d95dd6ceb
-Compiler: gcc version 7.3.0 (GCC))
+Sorry for inconvenience.
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8901
-passed: 8901
-failed: 0
-timeout: 0
---------------------------------------------------------------------
+I saw this patch series has been picked into the branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/log/?h=tmp.perf-tools-next
 
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8901
-passed: 8901
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+If want me to follow up, let me know.  Thank you!
 
-在 2023/8/14 5:18, Greg Kroah-Hartman 写道:
-> This is the start of the stable review cycle for the 4.19.292 release.
-> There are 33 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> >   CC      /tmp/tmp.yeEGyQq2HR/util/expr-flex.o
+> > util/unwind-libdw.c: In function ‘memory_read’:
+> > util/unwind-libdw.c:173:28: error: implicit declaration of function ‘perf_env__arch’ [-Werror=implicit-function-declaration]
+> >   173 |         const char *arch = perf_env__arch(ui->machine->env);
+> >       |                            ^~~~~~~~~~~~~~
+> > util/unwind-libdw.c:173:28: error: initialization of ‘const char *’ from ‘int’ makes pointer from integer without a cast [-Werror=int-conversion]
+> > util/unwind-libdw.c: In function ‘unwind__get_entries’:
+> > util/unwind-libdw.c:258:28: error: initialization of ‘const char *’ from ‘int’ makes pointer from integer without a cast [-Werror=int-conversion]
+> >   258 |         const char *arch = perf_env__arch(ui_buf.machine->env);
+> >       |                            ^~~~~~~~~~~~~~
+> > cc1: all warnings being treated as errors
+> > make[6]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:98: /tmp/tmp.yeEGyQq2HR/util/unwind-libdw.o] Error 1
+> > make[6]: *** Waiting for unfinished jobs....
+> > make[5]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:150: util] Error 2
+> > make[4]: *** [Makefile.perf:662: /tmp/tmp.yeEGyQq2HR/perf-in.o] Error 2
+> > make[4]: *** Waiting for unfinished jobs....
+> >   CC      /tmp/tmp.yeEGyQq2HR/pmu-events/pmu-events.o
+> >   LD      /tmp/tmp.yeEGyQq2HR/pmu-events/pmu-events-in.o
+> > make[3]: *** [Makefile.perf:238: sub-make] Error 2
+> > make[2]: *** [Makefile:70: all] Error 2
+> > make[1]: *** [tests/make:337: make_no_libunwind_O] Error 1
+> > make: *** [Makefile:103: build-test] Error 2
+> > make: Leaving directory '/var/home/acme/git/perf-tools-next/tools/perf'
+> > 
+> > real	1m29.784s
+> > user	10m41.597s
+> > sys	2m55.948s
+> > ⬢[acme@toolbox perf-tools-next]$
+> > 
+> > I'm trying to fix
 > 
-> Responses should be made by Tue, 15 Aug 2023 21:16:53 +0000.
-> Anything received after that time might be too late.
+> -- 
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.292-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
-> -------------
-> Pseudo-Shortlog of commits:
-> 
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->      Linux 4.19.292-rc1
-> 
-> Eric Dumazet <edumazet@google.com>
->      sch_netem: fix issues in netem_change() vs get_dist_table()
-> 
-> Masahiro Yamada <masahiroy@kernel.org>
->      alpha: remove __init annotation from exported page_is_ram()
-> 
-> Zhu Wang <wangzhu9@huawei.com>
->      scsi: core: Fix possible memory leak if device_add() fails
-> 
-> Zhu Wang <wangzhu9@huawei.com>
->      scsi: snic: Fix possible memory leak if device_add() fails
-> 
-> Alexandra Diupina <adiupina@astralinux.ru>
->      scsi: 53c700: Check that command slot is not NULL
-> 
-> Michael Kelley <mikelley@microsoft.com>
->      scsi: storvsc: Fix handling of virtual Fibre Channel timeouts
-> 
-> Tony Battersby <tonyb@cybernetics.com>
->      scsi: core: Fix legacy /proc parsing buffer overflow
-> 
-> Pablo Neira Ayuso <pablo@netfilter.org>
->      netfilter: nf_tables: report use refcount overflow
-> 
-> Pablo Neira Ayuso <pablo@netfilter.org>
->      netfilter: nf_tables: bogus EBUSY when deleting flowtable after flush
-> 
-> Christoph Hellwig <hch@lst.de>
->      btrfs: don't stop integrity writeback too early
-> 
-> Nick Child <nnac123@linux.ibm.com>
->      ibmvnic: Handle DMA unmapping of login buffs in release functions
-> 
-> Felix Fietkau <nbd@nbd.name>
->      wifi: cfg80211: fix sband iftype data lookup for AP_VLAN
-> 
-> Douglas Miller <doug.miller@cornelisnetworks.com>
->      IB/hfi1: Fix possible panic during hotplug remove
-> 
-> Andrew Kanner <andrew.kanner@gmail.com>
->      drivers: net: prevent tun_build_skb() to exceed the packet size limit
-> 
-> Eric Dumazet <edumazet@google.com>
->      dccp: fix data-race around dp->dccps_mss_cache
-> 
-> Ziyang Xuan <william.xuanziyang@huawei.com>
->      bonding: Fix incorrect deletion of ETH_P_8021AD protocol vid from slaves
-> 
-> Eric Dumazet <edumazet@google.com>
->      net/packet: annotate data-races around tp->status
-> 
-> Nathan Chancellor <nathan@kernel.org>
->      mISDN: Update parameter type of dsp_cmx_send()
-> 
-> Karol Herbst <kherbst@redhat.com>
->      drm/nouveau/disp: Revert a NULL check inside nouveau_connector_get_modes
-> 
-> Arnd Bergmann <arnd@arndb.de>
->      x86: Move gds_ucode_mitigated() declaration to header
-> 
-> Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
->      x86/mm: Fix VDSO and VVAR placement on 5-level paging machines
-> 
-> Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
->      x86/cpu/amd: Enable Zenbleed fix for AMD Custom APU 0405
-> 
-> Elson Roy Serrao <quic_eserrao@quicinc.com>
->      usb: dwc3: Properly handle processing of pending events
-> 
-> Alan Stern <stern@rowland.harvard.edu>
->      usb-storage: alauda: Fix uninit-value in alauda_check_media()
-> 
-> Qi Zheng <zhengqi.arch@bytedance.com>
->      binder: fix memory leak in binder_init()
-> 
-> Yiyuan Guo <yguoaz@gmail.com>
->      iio: cros_ec: Fix the allocation size for cros_ec_command
-> 
-> Ryusuke Konishi <konishi.ryusuke@gmail.com>
->      nilfs2: fix use-after-free of nilfs_root in dirtying inodes via iput
-> 
-> Colin Ian King <colin.i.king@gmail.com>
->      radix tree test suite: fix incorrect allocation size for pthreads
-> 
-> Karol Herbst <kherbst@redhat.com>
->      drm/nouveau/gr: enable memory loads on helper invocation on all channels
-> 
-> Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
->      dmaengine: pl330: Return DMA_PAUSED when transaction is paused
-> 
-> Maciej Żenczykowski <maze@google.com>
->      ipv6: adjust ndisc_is_useropt() to also return true for PIO
-> 
-> Sergei Antonov <saproj@gmail.com>
->      mmc: moxart: read scr register without changing byte order
-> 
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->      sparc: fix up arch_cpu_finalize_init() build breakage.
-> 
-> 
-> -------------
-> 
-> Diffstat:
-> 
->   Makefile                                           |   4 +-
->   arch/alpha/kernel/setup.c                          |   3 +-
->   arch/sparc/Kconfig                                 |   2 +-
->   arch/x86/entry/vdso/vma.c                          |   4 +-
->   arch/x86/include/asm/processor.h                   |   2 +
->   arch/x86/kernel/cpu/amd.c                          |   1 +
->   arch/x86/kvm/x86.c                                 |   2 -
->   drivers/android/binder.c                           |   1 +
->   drivers/android/binder_alloc.c                     |   6 +
->   drivers/android/binder_alloc.h                     |   1 +
->   drivers/dma/pl330.c                                |  18 ++-
->   drivers/gpu/drm/nouveau/nouveau_connector.c        |   2 +-
->   drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgf100.h  |   1 +
->   drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk104.c  |   4 +-
->   drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk110.c  |  10 ++
->   drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk110b.c |   1 +
->   drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk208.c  |   1 +
->   drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgm107.c  |   1 +
->   .../common/cros_ec_sensors/cros_ec_sensors_core.c  |   2 +-
->   drivers/infiniband/hw/hfi1/chip.c                  |   1 +
->   drivers/isdn/mISDN/dsp.h                           |   2 +-
->   drivers/isdn/mISDN/dsp_cmx.c                       |   2 +-
->   drivers/isdn/mISDN/dsp_core.c                      |   2 +-
->   drivers/mmc/host/moxart-mmc.c                      |   8 +-
->   drivers/net/bonding/bond_main.c                    |   4 +-
->   drivers/net/ethernet/ibm/ibmvnic.c                 |  15 +-
->   drivers/net/tun.c                                  |   2 +-
->   drivers/scsi/53c700.c                              |   2 +-
->   drivers/scsi/raid_class.c                          |   1 +
->   drivers/scsi/scsi_proc.c                           |  30 ++--
->   drivers/scsi/snic/snic_disc.c                      |   1 +
->   drivers/scsi/storvsc_drv.c                         |   4 -
->   drivers/usb/dwc3/gadget.c                          |   9 +-
->   drivers/usb/storage/alauda.c                       |   9 +-
->   fs/btrfs/extent_io.c                               |   7 +-
->   fs/nilfs2/inode.c                                  |   8 +
->   fs/nilfs2/segment.c                                |   2 +
->   fs/nilfs2/the_nilfs.h                              |   2 +
->   include/net/cfg80211.h                             |   3 +
->   include/net/netfilter/nf_tables.h                  |  35 +++-
->   net/dccp/output.c                                  |   2 +-
->   net/dccp/proto.c                                   |  10 +-
->   net/ipv6/ndisc.c                                   |   3 +-
->   net/netfilter/nf_tables_api.c                      | 180 ++++++++++++++-------
->   net/netfilter/nft_flow_offload.c                   |  23 ++-
->   net/netfilter/nft_objref.c                         |   8 +-
->   net/packet/af_packet.c                             |  16 +-
->   net/sched/sch_netem.c                              |  59 +++----
->   tools/testing/radix-tree/regression1.c             |   2 +-
->   49 files changed, 349 insertions(+), 169 deletions(-)
-> 
-> 
-> .
-> 
+> - Arnaldo
