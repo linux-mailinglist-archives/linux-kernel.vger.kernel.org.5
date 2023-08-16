@@ -2,94 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E68DA77E748
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45DFA77E749
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345080AbjHPRKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 13:10:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33290 "EHLO
+        id S1345088AbjHPRKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 13:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345085AbjHPRKC (ORCPT
+        with ESMTP id S1345090AbjHPRKH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 13:10:02 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6F11FF3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:10:01 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37G5L6WC023417;
-        Wed, 16 Aug 2023 12:09:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        PODMain02222019; bh=k8FECQ69+aGbUYRS1sMlaMZF2LSEprEh6aORDIpMYDE=; b=
-        B7T396nGMgUfrBrpw2IxC3nlxp4rF013Mbif+T4X6UT3OnnJjJ7yhz8s9ti7Kl97
-        UbC/Bbie+jDZy0CNiVZh6Mlbq5NKStH58s39iUuG7DXtwG7pOc48cxMuOAi/8ArE
-        64Ex26LHU2p8iqWm4bFL/bfbclP3RLvyrRsCC27j/w6MB9riu1pR3dxGTQrp1Eeo
-        SLvm+Q1sIXumFHJ17qKIRb1nPHIyXyl2o+jprARO0h9V5yU28f1Ousx4UzwVUytm
-        qXBQhiBY/AxO+o/n4C/cutIi1sFphztPcyOFtyYIWoj9hkXfPilktW1CneS7n52V
-        vapFIelVsQKYHKUviFrQZw==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3se8kqw9dn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 12:09:55 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 16 Aug
- 2023 18:09:53 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Wed, 16 Aug 2023 18:09:53 +0100
-Received: from [198.61.65.68] (EDIN4L06LR3.ad.cirrus.com [198.61.65.68])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C31E53563;
-        Wed, 16 Aug 2023 17:09:52 +0000 (UTC)
-Message-ID: <b244708a-414e-1f56-61a0-7c183f8ff45e@opensource.cirrus.com>
-Date:   Wed, 16 Aug 2023 18:09:52 +0100
+        Wed, 16 Aug 2023 13:10:07 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D462102;
+        Wed, 16 Aug 2023 10:10:06 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D86FE21881;
+        Wed, 16 Aug 2023 17:10:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692205804; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=a3qfw7b6VtzK+oTiKTKRt1wxgxkLu2IP8WGIMKZ1KeE=;
+        b=kfBE/ABLvbtRdT4Y/oml8zlIJJ8h7FdyIYd4nRtVX0Wi6fPLluFlhY7ixN9uVtginkmrLn
+        Vp8OPN5Ds9K/JLuC9ypAlrYEv2CQibwbo/Kt9kFby84knAhWIqILT9SMLJRHHryzKQQMFq
+        oHd5BSJgFu0uZn0hY2gPnsNAqakD1ts=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692205804;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=a3qfw7b6VtzK+oTiKTKRt1wxgxkLu2IP8WGIMKZ1KeE=;
+        b=p+3ad/X+2eMGyAeJ998W4vtW8ha4B42XTW69wVxk+sgxO+ihH2PBBTTsLOXvplboxAWViU
+        o5Ej2tQfbghoTuCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 695DF1353E;
+        Wed, 16 Aug 2023 17:10:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id bvKSGOwC3WQoSgAAMHmgww
+        (envelope-from <hare@suse.de>); Wed, 16 Aug 2023 17:10:04 +0000
+Message-ID: <25b4000b-b61d-c109-0d5c-f71656d896d4@suse.de>
+Date:   Wed, 16 Aug 2023 19:10:03 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 2/2] ASoC: cs35l56: Read firmware uuid from a device
- property instead of _SUB
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH RESEND] scsi: fcoe: Fix potential deadlock on
+ &fip->ctlr_lock
 Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Maciej Strozek <mstrozek@opensource.cirrus.com>
-References: <20230816164906.42-1-rf@opensource.cirrus.com>
- <20230816164906.42-3-rf@opensource.cirrus.com>
- <c3e42efc-9ddc-4788-85f7-cfa350d75d43@sirena.org.uk>
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-In-Reply-To: <c3e42efc-9ddc-4788-85f7-cfa350d75d43@sirena.org.uk>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: 4vGE2lD6PzOIbC-5BV0ze471vjVGr2eN
-X-Proofpoint-GUID: 4vGE2lD6PzOIbC-5BV0ze471vjVGr2eN
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+To:     Chengfeng Ye <dg573847474@gmail.com>, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, bigeasy@linutronix.de,
+        dave@stgolabs.net, satishkh@cisco.com, sebaddel@cisco.com,
+        kartilak@cisco.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230816155524.5913-1-dg573847474@gmail.com>
+From:   Hannes Reinecke <hare@suse.de>
+In-Reply-To: <20230816155524.5913-1-dg573847474@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/8/23 18:03, Mark Brown wrote:
-> On Wed, Aug 16, 2023 at 05:49:06PM +0100, Richard Fitzgerald wrote:
->> From: Maciej Strozek <mstrozek@opensource.cirrus.com>
->>
->> Use a device property "cirrus,firmware-uid" to get the unique firmware
->> identifier instead of using ACPI _SUB.
->>
->> There will not usually be a _SUB in Soundwire nodes. The ACPI can use a
->> _DSD section for custom properties.
->>
->> There is also a need to support instantiating this driver using software
->> nodes. This is for systems where the CS35L56 is a back-end device and the
->> ACPI refers only to the front-end audio device - there will not be any ACPI
->> references to CS35L56.
+On 8/16/23 17:55, Chengfeng Ye wrote:
+> There is a long call chain that &fip->ctlr_lock is acquired by isr
+> fnic_isr_msix_wq_copy() under hard irq context. Thus other process
+> context code acquiring the lock should disable irq, otherwise
+> deadlock could happen if the irq preempt the execution while the
+> lock is held in process context on the same CPU.
 > 
-> Are there any existing systems (or might there be given that the driver
-> is in released kernels already) which rely on _SUB?
+> [ISR]
+> fnic_isr_msix_wq_copy()
+>   -> fnic_wq_copy_cmpl_handler()
+>   -> fnic_fcpio_cmpl_handler()
+>   -> fnic_fcpio_flogi_reg_cmpl_handler()
+>   -> fnic_flush_tx()
+>   -> fnic_send_frame()
+>   -> fcoe_ctlr_els_send()
+>   -> spin_lock_bh(&fip->ctlr_lock)
+> 
+> [Process Context]
+> 1. fcoe_ctlr_timer_work()
+>   -> fcoe_ctlr_flogi_send()
+>   -> spin_lock_bh(&fip->ctlr_lock)
+> 
+> 2. fcoe_ctlr_recv_work()
+>   -> fcoe_ctlr_recv_handler()
+>   -> fcoe_ctlr_recv_els()
+>   -> fcoe_ctlr_announce()
+>   -> spin_lock_bh(&fip->ctlr_lock)
+> 
+> 3. fcoe_ctlr_recv_work()
+>   -> fcoe_ctlr_recv_handler()
+>   -> fcoe_ctlr_recv_els()
+>   -> fcoe_ctlr_flogi_retry()
+>   -> spin_lock_bh(&fip->ctlr_lock)
+> 
+> 4. -> fcoe_xmit()
+>   -> fcoe_ctlr_els_send()
+>   -> spin_lock_bh(&fip->ctlr_lock)
+> 
+> spin_lock_bh() is not enough since fnic_isr_msix_wq_copy() is a
+> hardirq.
+> 
+> These flaws were found by an experimental static analysis tool I am
+> developing for irq-related deadlock.
+> 
+> The patch fix the potential deadlocks by spin_lock_irqsave() to
+> disable hard irq.
+> 
+> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
+> ---
+>   drivers/scsi/fcoe/fcoe_ctlr.c | 20 ++++++++++++--------
+>   1 file changed, 12 insertions(+), 8 deletions(-)
+> 
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
-No. Nothing has been released with CS35L56.
+Cheers,
+
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
+Myers, Andrew McDonald, Martje Boudien Moerman
+
