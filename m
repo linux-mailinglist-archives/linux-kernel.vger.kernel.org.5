@@ -2,116 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BCA77E172
+	by mail.lfdr.de (Postfix) with ESMTP id 7F86177E173
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 14:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245120AbjHPMXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 08:23:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45220 "EHLO
+        id S245131AbjHPMXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 08:23:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245150AbjHPMWt (ORCPT
+        with ESMTP id S245210AbjHPMXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 08:22:49 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72172D55
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:22:24 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fe1b00fce2so9744275e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:22:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692188543; x=1692793343;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6SVPI9u/mcgbeuFPm8+cRABDPuzkfsOkgYL/geOPsqA=;
-        b=fKUrvIBIXc7qYGyW2qRezMNsy2BzcC/BIje4Wd/pGZ1GT7whw98uEvNJZyz39vcF0r
-         bJfiPsIvxzeHdw4QgR9ZoKGDwb8HV0l1k7Hl0acZntx+etje3ExV1SeDBmjKnZXfjEzA
-         jh18lyAkr1Dpfbhp682dYo1bz4nIjrpXRJ/hvs5nJO6c8hCVbZq2wMTB1vERT8EdRsrh
-         mSOTbDGNfLEfIUOuYTOSrXGnCl2G1KHtJJrT4BFUGeAx3PyS4m79u2YavxSnXpvdkHvY
-         YoIAAnFBEeOYO7omILd6Mw/qaOx18wumSbL4iPaKqzHfqH+hfF+KWjeWuhN/i+dNj+fi
-         NrbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692188543; x=1692793343;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6SVPI9u/mcgbeuFPm8+cRABDPuzkfsOkgYL/geOPsqA=;
-        b=Q6vO+Fa2Wgz0SuJIME0cS9ltlWURYbz2kRaYmW41CBmiW6LOztRiolwPwqBiaWM2Gv
-         OThMVq2+jJcCd+QRL/W46jtgpKkqDlwAqAnDFgEH7FGSyE3m+arpB58MUT44zW57vVVF
-         F6gT3o1a723WZSLYn97kwkKoakhemHVbd3IKoC1He8vZEcpcZWstYPnxwf9IMgX/ii/T
-         vDkflLLJ59IOxrU5KbjtEogRO+1Xvkhc3vEvDHcsmke1D7+fC7l0Yy1CCR2uUBIIoTED
-         4ynN25445Wh9RnE9EJ1uw+WBpVZvTVaolQTqcQqu3C7B9U4UiFLnbOYYmqsP5H3k6DUT
-         7cMg==
-X-Gm-Message-State: AOJu0Yys8tlis1l2GdWjSc6pwpnzlXLn62ODe90ZBWZBBfQYDrDVkc0l
-        TGh3elTuntDBk3xfu0DVEYzfvw==
-X-Google-Smtp-Source: AGHT+IFhGfy/vcTxgmHaLK2R36JKCtTnwfYbD5wD2riaRXetSdjzCBkFDJkO4ZucnZhPeQSw4cDj6A==
-X-Received: by 2002:a05:6512:473:b0:4fb:780d:2a49 with SMTP id x19-20020a056512047300b004fb780d2a49mr1469833lfd.5.1692188542987;
-        Wed, 16 Aug 2023 05:22:22 -0700 (PDT)
-Received: from [192.168.1.101] (abxi8.neoplus.adsl.tpnet.pl. [83.9.2.8])
-        by smtp.gmail.com with ESMTPSA id c11-20020ac2530b000000b004fe0fead9e2sm536419lfh.165.2023.08.16.05.22.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 05:22:22 -0700 (PDT)
-Message-ID: <0e111aaa-705b-4ae5-a07b-32691f01cc31@linaro.org>
-Date:   Wed, 16 Aug 2023 14:22:20 +0200
+        Wed, 16 Aug 2023 08:23:04 -0400
+Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA1E109;
+        Wed, 16 Aug 2023 05:23:03 -0700 (PDT)
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.3ffe.de (Postfix) with ESMTPSA id 1F0C08E2;
+        Wed, 16 Aug 2023 14:22:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+        t=1692188580;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EHiNxjeUrAwzOphGHu0eZkI/pOqktqiZVERvri1bSWI=;
+        b=o9R+3sm3pMwFG3qh3EzYHeTUHgjbIgTu8lM7an1cb+HYmwazI823tRZETHJIxMPBexoUPn
+        vd/LVkxhgcSSt66PqNTUGxJo6BAe+9pO/fsrhRRrpWad/F+sd7Esa9097f5ALhX8Yk8lec
+        RXlQNPwZ9Zo8v/Yh1nKCCEm8P7hFHGN8qXMahnr91zS0+arIA/Jlf4TMjXl8ymmPJ30+et
+        SkfSfq4YAQ4SGue9Z4DtVr/EQ9WzrUcshtuupvENfeTzZskiwq35yXaDgZepLf9MeNXRRs
+        2pygHBc6ovZ2wg2+Ha0gocKYgll3FMhxcqBrht2XxswRQ4jmfDuBPFwpwhgEaQ==
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/3] arm64: dts: qcom: sm8450: Add opp table support to
- PCIe
-Content-Language: en-US
-To:     Pavan Kondeti <quic_pkondeti@quicinc.com>,
-        Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Cc:     manivannan.sadhasivam@linaro.org, helgaas@kernel.org,
-        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
-        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
-        quic_ramkri@quicinc.com, quic_parass@quicinc.com,
-        krzysztof.kozlowski@linaro.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
+Date:   Wed, 16 Aug 2023 14:22:58 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-References: <1692102408-7010-1-git-send-email-quic_krichai@quicinc.com>
- <1692102408-7010-3-git-send-email-quic_krichai@quicinc.com>
- <dc14acb4-9fe8-4b3b-a9da-7f7915de4d5c@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <dc14acb4-9fe8-4b3b-a9da-7f7915de4d5c@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        "Miquel Raynal )" <miquel.raynal@bootlin.com>,
+        "Richard Weinberger )" <richard@nod.at>,
+        "Vignesh Raghavendra )" <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: Re: [PATCH v2,1/2] mtd: spi-nor: giga: gd25lq64c: Disable quad mode
+ according to bus width
+In-Reply-To: <5911201a-f703-abbd-3c7b-769f70df08a8@linaro.org>
+References: <20230816104245.2676965-1-hsinyi@chromium.org>
+ <6702bac712daab13698b9bb9ad81d49e@walle.cc>
+ <5911201a-f703-abbd-3c7b-769f70df08a8@linaro.org>
+Message-ID: <80ec748f37f40ae5c3c3c5d1602681b3@walle.cc>
+X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -123,73 +77,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.08.2023 09:05, Pavan Kondeti wrote:
-> On Tue, Aug 15, 2023 at 05:56:47PM +0530, Krishna chaitanya chundru wrote:
->> PCIe needs to choose the appropriate performance state of RPMH power
->> domain based upon the PCIe gen speed.
->>
->> So, let's add the OPP table support to specify RPMH performance states.
->>
->> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
->> ---
->>  arch/arm64/boot/dts/qcom/sm8450.dtsi | 47 ++++++++++++++++++++++++++++++++++++
->>  1 file changed, 47 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
->> index 595533a..681ea9c 100644
->> --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
->> @@ -381,6 +381,49 @@
->>  		};
->>  	};
->>  
->> +	pcie0_opp_table: opp-table-pcie0 {
->> +		compatible = "operating-points-v2";
->> +
->> +		opp-2500000 {
->> +			opp-hz = /bits/ 64 <2500000>;
->> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
->> +		};
->> +
->> +		opp-5000000 {
->> +			opp-hz = /bits/ 64 <5000000>;
->> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
->> +		};
->> +
->> +		opp-8000000 {
->> +			opp-hz = /bits/ 64 <8000000>;
->> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
->> +		};
->> +	};
->> +
->> +	pcie1_opp_table: opp-table-pcie1 {
->> +		compatible = "operating-points-v2";
->> +
->> +		opp-2500000 {
->> +			opp-hz = /bits/ 64 <2500000>;
->> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
->> +		};
->> +
->> +		opp-5000000 {
->> +			opp-hz = /bits/ 64 <5000000>;
->> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
->> +		};
->> +
->> +		opp-8000000 {
->> +			opp-hz = /bits/ 64 <8000000>;
->> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
->> +		};
->> +
->> +		opp-16000000 {
->> +			opp-hz = /bits/ 64 <16000000>;
->> +			opp-level = <RPMH_REGULATOR_LEVEL_NOM>;
->> +		};
->> +	};
->> +
-> 
-> Should not we using required-opps property to pass the
-> rpmhpd_opp_xxx phandle so that when this OPP is selected based on your
-> clock rate, the appropriate OPP (voltage) would be selected on the RPMH side?
-Yes, opp-level is for opp providers.
+Hi,
 
-Konrad
+>> like a fundamental problem and that commit 39d1e3340c73 ("mtd: 
+>> spi-nor:
+>> Fix clearing of QE bit on lock()/unlock()") is broken in that regard.
+> 
+> what's wrong with the mentioned commit?
+
+         } else if (nor->params->quad_enable) {
+                 /*
+                  * If the Status Register 2 Read command (35h) is not
+                  * supported, we should at least be sure we don't
+                  * change the value of the SR2 Quad Enable bit.
+                  *
+                  * We can safely assume that when the Quad Enable method 
+is
+                  * set, the value of the QE bit is one, as a consequence 
+of the
+                  * nor->params->quad_enable() call.
+                  *
+                  * We can safely assume that the Quad Enable bit is 
+present in
+                  * the Status Register 2 at BIT(1). According to the 
+JESD216
+                  * revB standard, BFPT DWORDS[15], bits 22:20, the 
+16-bit
+                  * Write Status (01h) command is available just for the 
+cases
+                  * in which the QE bit is described in SR2 at BIT(1).
+                  */
+                 sr_cr[1] = SR2_QUAD_EN_BIT1;
+         } else {
+                 sr_cr[1] = 0;
+         }
+
+"We can safely assume that when the Quad Enable method..". We cannot, if 
+we
+don't have 4 I/O lines. The quad_enable is just the op how to do it, but 
+not
+*if* can do it. It seems to be missing the same check as the
+spi_nor_quad_enable(). But I'm not sure if it's that simple.
+
+-michael
