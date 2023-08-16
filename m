@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2A477E054
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC03377E057
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244612AbjHPL0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 07:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43600 "EHLO
+        id S244513AbjHPL11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 07:27:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244569AbjHPL0J (ORCPT
+        with ESMTP id S244584AbjHPL1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 07:26:09 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C202135
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 04:26:08 -0700 (PDT)
-Received: from [127.0.1.1] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6DA1DF02;
-        Wed, 16 Aug 2023 13:24:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1692185086;
-        bh=lJbs+u3Qj3Q0zC4Wo5t/O8IezT1rm6E1W3iejTWvFus=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=Ze7KdHL3OAdq7ax0zkkKIHQ/HlllSOfnky93i4Xp34qVfrUJC9p2Ax0U6ZbStay4M
-         eh7D0WjAH8J+MowPxRlG9va8kjuiueCx6rQXOdIbuL6ymOiNaD2nJ/8dfz6uO09Hak
-         2ezuRdzgSd9HGLK22D2500LcsCCAW5CdBVItDP4A=
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Date:   Wed, 16 Aug 2023 14:25:15 +0300
-Subject: [PATCH v2 12/12] drm/bridge: tc358768: Default to positive h/v
- syncs
+        Wed, 16 Aug 2023 07:27:15 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1773F272B
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 04:26:57 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2ba1e9b1fa9so99677021fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 04:26:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692185215; x=1692790015;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jdqXLx5XWStq+9cLlC6wOm/1TMw9og16TtkojIWGoi8=;
+        b=Ma15+fY6wVBfh31fR4jEu3Pq0sTvbG9FYaTIpwkA8e/IqW0cQGppM4IF5FNWJeJqiE
+         6b4+VZ3yAZko2drR/4JNhnrH0XGk0ypitLWsCFOCI2+q/sll4N0GwjINrCh+zQPoiPZe
+         Gu3pucBeptjfeE6AnquvD6K+DRbZF79KBGytRtmL9kIvn+G8wsDFZJ51DgacJqOE8OWU
+         /xdkab94z+DLwaQM15rdfq84C/Ed/swPprITEwrsomNtPFnzoyoxNnWh9wFrjs7bL3qW
+         cBZMWY2BFsawzi4iJop8u7L3Tmkw1f5p8zVzHSQJiSIr8wHKfXj3DQexQ8HkALalnxX/
+         Ne4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692185215; x=1692790015;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jdqXLx5XWStq+9cLlC6wOm/1TMw9og16TtkojIWGoi8=;
+        b=R7hBL9OT+SpoQlarrYBLxjHoVHm6pHturFAEQsa4SdAqGDnyUW4Q0vv+Is/whPJv9i
+         ULrixQ5Po0CAdW20p9tfW1rw4ubDQOMZDV0iXukJBFCj9XXxuNn/TdmMMD+Vo4U6xBRI
+         MGdTj6PRZGBvkf1IrFK7iXlFd+aBpBF6HhJpOVtjRsaIXt3qU1Ukw8xHWPmw/crf6eMF
+         MnBCPPSfcs9e+ySZuz/oh/3IwXzu1oUOvqgHPUsmqg10rIY5sXW6XSyWiv/rNs/phuCi
+         R+k8r40tBF6LKG940Iqd8ppO23tKPgv1pbotw2e/pmnHFkS/3a5E7ykxTJL7XOvwh9B/
+         XbHQ==
+X-Gm-Message-State: AOJu0YxQHXq3t2LJ8YQHnYniRNvI91lNa0QH/Cx5+le7JFyet0yng8wY
+        FSHKJoDrvr1P402eMZxhAOHkaw2icXgdVwsmgh+zRQ==
+X-Google-Smtp-Source: AGHT+IHNQn6zFil4Uau1m3wCi9bFrYxUNd2VolPBahHJJqNLtSnnus5aLyZXJZqfT82LDYrsZmjtX0bNAmoP0eX2rck=
+X-Received: by 2002:a2e:958a:0:b0:2b9:4418:b46e with SMTP id
+ w10-20020a2e958a000000b002b94418b46emr1469690ljh.21.1692185215304; Wed, 16
+ Aug 2023 04:26:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230816-tc358768-v2-12-242b9d5f703a@ideasonboard.com>
-References: <20230816-tc358768-v2-0-242b9d5f703a@ideasonboard.com>
-In-Reply-To: <20230816-tc358768-v2-0-242b9d5f703a@ideasonboard.com>
-To:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?utf-8?q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Francesco Dolcini <francesco@dolcini.it>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Aradhya Bhatia <a-bhatia1@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1587;
- i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=lJbs+u3Qj3Q0zC4Wo5t/O8IezT1rm6E1W3iejTWvFus=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBk3LI3X79NX4TNGdgFOlXsh77AMKmBQn51e/e1l
- 8Djg/M+A/WJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZNyyNwAKCRD6PaqMvJYe
- 9SKlD/9WJ72o8W4x/nTq2DdYvThqd3Yi0xdA6Fs2VtWFglzyIy80utupxMrnHJ8188TWLM+IRUg
- k3vjjUENpUD+mMUB2qTJoOyLPf/cwZdOlkq1You1A7MGGsVXHfU4BUKNDnWDFB1lE4kESuHSPMy
- qC1p1N4nMgJCJqkcNq1HGHrG67u+bfQgWb7OMBnLOcb+8x88doP8RAi8outnRQ5DtAwpPZ2MnFR
- PQSJ23GC8/E6afT9QrwMuAxsCXb5OcgndOs+zzNdPV4dje1Y2kRC3xayoVfj7Xk50vnlVCDfgvA
- +/jA2L24ZIL5iCSCo8yr028Ck7rjGYX588IHLMUxiBulQ3fx1VAHWEH67w/EcjbAyA2mvwynfeP
- Jm5vfbkM02c20/0NqX/rhVyCImb+rRI5N42rtY3CbGvjVLliYZer8Uw4FHzJbtgEJf/LWnaIoMd
- ag/AIBwotOKEk7/VdszmuH8BEUe+CJJ72/ruorEm0FbflxD1nifUPjXMWCH2VaxZI9pBdbL+ddE
- 0d6j4EoL7w66cFHRyKA77UhkPQ37kp40bQsY3nz5CaMU++M1a6t/3TlMI6bVcVWLEh7M+aj0kC5
- ydRbg5BTgT/LLNCLcraNeHvs32awVRT+qFEEBYWcS7Kv8k8HFWD0cXqVQjRvBZuTIlRthlXY2jq
- gFkxiqI8+XhlJ/A==
-X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
- fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
+References: <20230814125643.59334-1-linyunsheng@huawei.com> <20230814125643.59334-2-linyunsheng@huawei.com>
+In-Reply-To: <20230814125643.59334-2-linyunsheng@huawei.com>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Wed, 16 Aug 2023 14:26:19 +0300
+Message-ID: <CAC_iWjKMLoUu4bctrWtK46mpyhQ7LoKe4Nm2t8jZVMM0L9O2xA@mail.gmail.com>
+Subject: Re: [PATCH net-next v6 1/6] page_pool: frag API support for 32-bit
+ arch with 64-bit DMA
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,50 +77,269 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the TC358768 is a DPI to DSI bridge, the DSI side does not need to
-define h/v sync polarities. This means that sometimes we have a mode
-without defined sync polarities, which does not work on the DPI side.
+Hi Yunsheng
 
-Add a mode_fixup hook to default to positive sync polarities.
+On Mon, 14 Aug 2023 at 15:59, Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+> Currently page_pool_alloc_frag() is not supported in 32-bit
+> arch with 64-bit DMA because of the overlap issue between
+> pp_frag_count and dma_addr_upper in 'struct page' for those
+> arches, which seems to be quite common, see [1], which means
+> driver may need to handle it when using frag API.
 
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
----
- drivers/gpu/drm/bridge/tc358768.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+That wasn't so common. IIRC it was a single TI platform that was breaking?
 
-diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
-index ea19de5509ed..b465e0a31d09 100644
---- a/drivers/gpu/drm/bridge/tc358768.c
-+++ b/drivers/gpu/drm/bridge/tc358768.c
-@@ -1124,9 +1124,27 @@ tc358768_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
- 	return input_fmts;
- }
- 
-+static bool tc358768_mode_fixup(struct drm_bridge *bridge,
-+				const struct drm_display_mode *mode,
-+				struct drm_display_mode *adjusted_mode)
-+{
-+	/* Default to positive sync */
-+
-+	if (!(adjusted_mode->flags &
-+	      (DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_NHSYNC)))
-+		adjusted_mode->flags |= DRM_MODE_FLAG_PHSYNC;
-+
-+	if (!(adjusted_mode->flags &
-+	      (DRM_MODE_FLAG_PVSYNC | DRM_MODE_FLAG_NVSYNC)))
-+		adjusted_mode->flags |= DRM_MODE_FLAG_PVSYNC;
-+
-+	return true;
-+}
-+
- static const struct drm_bridge_funcs tc358768_bridge_funcs = {
- 	.attach = tc358768_bridge_attach,
- 	.mode_valid = tc358768_bridge_mode_valid,
-+	.mode_fixup = tc358768_mode_fixup,
- 	.pre_enable = tc358768_bridge_pre_enable,
- 	.enable = tc358768_bridge_enable,
- 	.disable = tc358768_bridge_disable,
+>
+> In order to simplify the driver's work when using frag API
+> this patch allows page_pool_alloc_frag() to call
+> page_pool_alloc_pages() to return pages for those arches.
 
--- 
-2.34.1
+Do we have any use cases of people needing this?  Those architectures
+should be long dead and although we have to support them in the
+kernel,  I don't personally see the advantage of adjusting the API to
+do that.  Right now we have a very clear separation between allocating
+pages or fragments.   Why should we hide a page allocation under a
+frag allocation?  A driver writer can simply allocate pages for those
+boards.  Am I the only one not seeing a clean win here?
 
+Thanks
+/Ilias
+
+>
+> Add a PP_FLAG_PAGE_SPLIT_IN_DRIVER flag in order to fail the
+> page_pool creation for 32-bit arch with 64-bit DMA when driver
+> tries to do the page splitting itself.
+>
+> Note that it may aggravate truesize underestimate problem for
+> skb as there is no page splitting for those pages, if driver
+> need a accurate truesize, it may calculate that according to
+> frag size, page order and PAGE_POOL_DMA_USE_PP_FRAG_COUNT
+> being true or not. And we may provide a helper for that if it
+> turns out to be helpful.
+>
+> 1. https://lore.kernel.org/all/20211117075652.58299-1-linyunsheng@huawei.com/
+>
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> CC: Lorenzo Bianconi <lorenzo@kernel.org>
+> CC: Alexander Duyck <alexander.duyck@gmail.com>
+> CC: Liang Chen <liangchen.linux@gmail.com>
+> CC: Alexander Lobakin <aleksander.lobakin@intel.com>
+> ---
+>  .../net/ethernet/mellanox/mlx5/core/en_main.c |  3 +-
+>  include/net/page_pool/helpers.h               | 38 +++++++++++++++--
+>  include/net/page_pool/types.h                 | 42 ++++++++++++-------
+>  net/core/page_pool.c                          | 15 +++----
+>  4 files changed, 68 insertions(+), 30 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> index bc9d5a5bea01..ec9c5a8cbda6 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> @@ -834,7 +834,8 @@ static int mlx5e_alloc_rq(struct mlx5e_params *params,
+>                 struct page_pool_params pp_params = { 0 };
+>
+>                 pp_params.order     = 0;
+> -               pp_params.flags     = PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV | PP_FLAG_PAGE_FRAG;
+> +               pp_params.flags     = PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV |
+> +                                       PP_FLAG_PAGE_SPLIT_IN_DRIVER;
+>                 pp_params.pool_size = pool_size;
+>                 pp_params.nid       = node;
+>                 pp_params.dev       = rq->pdev;
+> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
+> index 94231533a369..cb18de55f239 100644
+> --- a/include/net/page_pool/helpers.h
+> +++ b/include/net/page_pool/helpers.h
+> @@ -29,8 +29,12 @@
+>  #ifndef _NET_PAGE_POOL_HELPERS_H
+>  #define _NET_PAGE_POOL_HELPERS_H
+>
+> +#include <linux/dma-mapping.h>
+>  #include <net/page_pool/types.h>
+>
+> +#define PAGE_POOL_DMA_USE_PP_FRAG_COUNT        \
+> +               (sizeof(dma_addr_t) > sizeof(unsigned long))
+> +
+>  #ifdef CONFIG_PAGE_POOL_STATS
+>  int page_pool_ethtool_stats_get_count(void);
+>  u8 *page_pool_ethtool_stats_get_strings(u8 *data);
+> @@ -73,6 +77,29 @@ static inline struct page *page_pool_dev_alloc_pages(struct page_pool *pool)
+>         return page_pool_alloc_pages(pool, gfp);
+>  }
+>
+> +static inline struct page *page_pool_alloc_frag(struct page_pool *pool,
+> +                                               unsigned int *offset,
+> +                                               unsigned int size, gfp_t gfp)
+> +{
+> +       unsigned int max_size = PAGE_SIZE << pool->p.order;
+> +
+> +       size = ALIGN(size, dma_get_cache_alignment());
+> +
+> +       if (WARN_ON(size > max_size))
+> +               return NULL;
+> +
+> +       /* Don't allow page splitting and allocate one big frag
+> +        * for 32-bit arch with 64-bit DMA, corresponding to
+> +        * the checking in page_pool_is_last_frag().
+> +        */
+> +       if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
+> +               *offset = 0;
+> +               return page_pool_alloc_pages(pool, gfp);
+> +       }
+> +
+> +       return __page_pool_alloc_frag(pool, offset, size, gfp);
+> +}
+> +
+>  static inline struct page *page_pool_dev_alloc_frag(struct page_pool *pool,
+>                                                     unsigned int *offset,
+>                                                     unsigned int size)
+> @@ -134,8 +161,14 @@ static inline long page_pool_defrag_page(struct page *page, long nr)
+>  static inline bool page_pool_is_last_frag(struct page_pool *pool,
+>                                           struct page *page)
+>  {
+> -       /* If fragments aren't enabled or count is 0 we were the last user */
+> +       /* We assume we are the last frag user that is still holding
+> +        * on to the page if:
+> +        * 1. Fragments aren't enabled.
+> +        * 2. We are running in 32-bit arch with 64-bit DMA.
+> +        * 3. page_pool_defrag_page() indicate we are the last user.
+> +        */
+>         return !(pool->p.flags & PP_FLAG_PAGE_FRAG) ||
+> +              PAGE_POOL_DMA_USE_PP_FRAG_COUNT ||
+>                (page_pool_defrag_page(page, 1) == 0);
+>  }
+>
+> @@ -197,9 +230,6 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
+>         page_pool_put_full_page(pool, page, true);
+>  }
+>
+> -#define PAGE_POOL_DMA_USE_PP_FRAG_COUNT        \
+> -               (sizeof(dma_addr_t) > sizeof(unsigned long))
+> -
+>  /**
+>   * page_pool_get_dma_addr() - Retrieve the stored DMA address.
+>   * @page:      page allocated from a page pool
+> diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
+> index 887e7946a597..079337c42aa6 100644
+> --- a/include/net/page_pool/types.h
+> +++ b/include/net/page_pool/types.h
+> @@ -6,21 +6,29 @@
+>  #include <linux/dma-direction.h>
+>  #include <linux/ptr_ring.h>
+>
+> -#define PP_FLAG_DMA_MAP                BIT(0) /* Should page_pool do the DMA
+> -                                       * map/unmap
+> -                                       */
+> -#define PP_FLAG_DMA_SYNC_DEV   BIT(1) /* If set all pages that the driver gets
+> -                                       * from page_pool will be
+> -                                       * DMA-synced-for-device according to
+> -                                       * the length provided by the device
+> -                                       * driver.
+> -                                       * Please note DMA-sync-for-CPU is still
+> -                                       * device driver responsibility
+> -                                       */
+> -#define PP_FLAG_PAGE_FRAG      BIT(2) /* for page frag feature */
+> +/* Should page_pool do the DMA map/unmap */
+> +#define PP_FLAG_DMA_MAP                        BIT(0)
+> +
+> +/* If set all pages that the driver gets from page_pool will be
+> + * DMA-synced-for-device according to the length provided by the device driver.
+> + * Please note DMA-sync-for-CPU is still device driver responsibility
+> + */
+> +#define PP_FLAG_DMA_SYNC_DEV           BIT(1)
+> +
+> +/* for page frag feature */
+> +#define PP_FLAG_PAGE_FRAG              BIT(2)
+> +
+> +/* If set driver will do the page splitting itself. This is used to fail the
+> + * page_pool creation because there is overlap issue between pp_frag_count and
+> + * dma_addr_upper in 'struct page' for some arches with
+> + * PAGE_POOL_DMA_USE_PP_FRAG_COUNT being true.
+> + */
+> +#define PP_FLAG_PAGE_SPLIT_IN_DRIVER   BIT(3)
+> +
+>  #define PP_FLAG_ALL            (PP_FLAG_DMA_MAP |\
+>                                  PP_FLAG_DMA_SYNC_DEV |\
+> -                                PP_FLAG_PAGE_FRAG)
+> +                                PP_FLAG_PAGE_FRAG |\
+> +                                PP_FLAG_PAGE_SPLIT_IN_DRIVER)
+>
+>  /*
+>   * Fast allocation side cache array/stack
+> @@ -45,7 +53,8 @@ struct pp_alloc_cache {
+>
+>  /**
+>   * struct page_pool_params - page pool parameters
+> - * @flags:     PP_FLAG_DMA_MAP, PP_FLAG_DMA_SYNC_DEV, PP_FLAG_PAGE_FRAG
+> + * @flags:     PP_FLAG_DMA_MAP, PP_FLAG_DMA_SYNC_DEV, PP_FLAG_PAGE_FRAG,
+> + *             PP_FLAG_PAGE_SPLIT_IN_DRIVER
+>   * @order:     2^order pages on allocation
+>   * @pool_size: size of the ptr_ring
+>   * @nid:       NUMA node id to allocate from pages from
+> @@ -183,8 +192,9 @@ struct page_pool {
+>  };
+>
+>  struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp);
+> -struct page *page_pool_alloc_frag(struct page_pool *pool, unsigned int *offset,
+> -                                 unsigned int size, gfp_t gfp);
+> +struct page *__page_pool_alloc_frag(struct page_pool *pool,
+> +                                   unsigned int *offset, unsigned int size,
+> +                                   gfp_t gfp);
+>  struct page_pool *page_pool_create(const struct page_pool_params *params);
+>
+>  struct xdp_mem_info;
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index 77cb75e63aca..d62c11aaea9a 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -14,7 +14,6 @@
+>  #include <net/xdp.h>
+>
+>  #include <linux/dma-direction.h>
+> -#include <linux/dma-mapping.h>
+>  #include <linux/page-flags.h>
+>  #include <linux/mm.h> /* for put_page() */
+>  #include <linux/poison.h>
+> @@ -212,7 +211,7 @@ static int page_pool_init(struct page_pool *pool,
+>         }
+>
+>         if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
+> -           pool->p.flags & PP_FLAG_PAGE_FRAG)
+> +           pool->p.flags & PP_FLAG_PAGE_SPLIT_IN_DRIVER)
+>                 return -EINVAL;
+>
+>  #ifdef CONFIG_PAGE_POOL_STATS
+> @@ -737,18 +736,16 @@ static void page_pool_free_frag(struct page_pool *pool)
+>         page_pool_return_page(pool, page);
+>  }
+>
+> -struct page *page_pool_alloc_frag(struct page_pool *pool,
+> -                                 unsigned int *offset,
+> -                                 unsigned int size, gfp_t gfp)
+> +struct page *__page_pool_alloc_frag(struct page_pool *pool,
+> +                                   unsigned int *offset,
+> +                                   unsigned int size, gfp_t gfp)
+>  {
+>         unsigned int max_size = PAGE_SIZE << pool->p.order;
+>         struct page *page = pool->frag_page;
+>
+> -       if (WARN_ON(!(pool->p.flags & PP_FLAG_PAGE_FRAG) ||
+> -                   size > max_size))
+> +       if (WARN_ON(!(pool->p.flags & PP_FLAG_PAGE_FRAG))
+>                 return NULL;
+>
+> -       size = ALIGN(size, dma_get_cache_alignment());
+>         *offset = pool->frag_offset;
+>
+>         if (page && *offset + size > max_size) {
+> @@ -781,7 +778,7 @@ struct page *page_pool_alloc_frag(struct page_pool *pool,
+>         alloc_stat_inc(pool, fast);
+>         return page;
+>  }
+> -EXPORT_SYMBOL(page_pool_alloc_frag);
+> +EXPORT_SYMBOL(__page_pool_alloc_frag);
+>
+>  static void page_pool_empty_ring(struct page_pool *pool)
+>  {
+> --
+> 2.33.0
+>
