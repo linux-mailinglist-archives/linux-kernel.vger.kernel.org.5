@@ -2,154 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7887077D7A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 03:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F79A77D7A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 03:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241022AbjHPBXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 21:23:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33754 "EHLO
+        id S241027AbjHPBZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 21:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241014AbjHPBWk (ORCPT
+        with ESMTP id S241031AbjHPBY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 21:22:40 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2071.outbound.protection.outlook.com [40.107.92.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5C71FFB;
-        Tue, 15 Aug 2023 18:22:39 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CbPmx+dUv3PgmES0Y+2ZuIiv8Pxkq9+D4S4M7QLuFgaY6eMEcD0fnbZemmVVfRiMnVxyVgOu9WOHqfSjsuLZdp/4gvWJ631heq5EnnqKYo9mNcZX5D19YYbhRfjVkd37uL3+Rcg93hjQKSfSmP2ySxGgU/gTZTB2BoefmI1rgN2JaIL4uEO937Lv2GsrN6ZL0/Lb1Z+CCCtFhvKUqy3cjz5k3KBpqJMnB8E8q2LDlobaGFfgtkwVmzHVx2e/JVm2Qg/ByWXxALVEf/PEUI+Hw/u/CEkX/chlYMaqhjYUKMHOieuIDtLWbNZt/FsNG8+QOaX08XTFTAk5IrMFBqAUkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ElCP1+EKWUMM80HhDNhjriK/jEOsoaEovzmDRudUFEA=;
- b=DsG/QeBuemT95NaCKSyDgGdkykSg+pK/axhTBJegI4oBLQE2htQzpk0YMQ3GJF69VwTX4hxWTQvqyOnoJ8ZAWGd8QKMxpLNL2LT46wxJJT/w9G46WF82FipE0bSFSowk+2B6pk8cqnxzqRqCQ0oUMuRmhiEWIlb9su4HrGk6LYWaikQUVZaP44ZKLV8UXo9cxh8IJYcOQJnde7+k0VqFCpQKpydCLsiqE++ucBvCiMfagiqAZqs6leXA5jrKogx9NoiR/ExKz8qhb419FtlqJ9UjyNC9nHrO/I8JiRqSoEtP+J85316RVSlKTJp/CH5IKMfXODMT04RIYpkVJb6W1A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=gmx.net smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ElCP1+EKWUMM80HhDNhjriK/jEOsoaEovzmDRudUFEA=;
- b=MscjKF1hoUMZW9SSANJC2SKn2DSePRIT1XS0MwpWTWlFo3yS4TG/OS8t/PsJ+s/dy0UgF7LnGV2fXN8OPvuHwYk5195ptPPJZRU9dJKQrXHQc/NBQEbhOmMB/PdziKWuLd7+/WGCWfijyQ+59SzBCLWbVh7b2X3CuYzkZLkQ07A=
-Received: from CH0PR03CA0108.namprd03.prod.outlook.com (2603:10b6:610:cd::23)
- by MW3PR12MB4425.namprd12.prod.outlook.com (2603:10b6:303:5e::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Wed, 16 Aug
- 2023 01:22:33 +0000
-Received: from CO1PEPF000044FA.namprd21.prod.outlook.com
- (2603:10b6:610:cd:cafe::cf) by CH0PR03CA0108.outlook.office365.com
- (2603:10b6:610:cd::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.33 via Frontend
- Transport; Wed, 16 Aug 2023 01:22:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044FA.mail.protection.outlook.com (10.167.241.200) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6723.5 via Frontend Transport; Wed, 16 Aug 2023 01:22:32 +0000
-Received: from platform-dev1.pensando.io (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 15 Aug 2023 20:22:28 -0500
-From:   Brad Larson <blarson@amd.com>
-To:     <j.neuschaefer@gmx.net>
-CC:     <adrian.hunter@intel.com>, <alcooperx@gmail.com>,
-        <andy.shevchenko@gmail.com>, <arnd@arndb.de>, <blarson@amd.com>,
-        <brendan.higgins@linux.dev>, <briannorris@chromium.org>,
-        <broonie@kernel.org>, <catalin.marinas@arm.com>,
-        <conor+dt@kernel.org>, <davidgow@google.com>,
-        <devicetree@vger.kernel.org>, <fancer.lancer@gmail.com>,
-        <gerg@linux-m68k.org>, <gsomlo@gmail.com>,
-        <hal.feng@starfivetech.com>, <hasegawa-hitomi@fujitsu.com>,
-        <joel@jms.id.au>, <kernel@esmil.dk>, <krzk@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <lee.jones@linaro.org>,
-        <lee@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, <p.zabel@pengutronix.de>,
-        <rdunlap@infradead.org>, <robh+dt@kernel.org>,
-        <samuel@sholland.org>, <skhan@linuxfoundation.org>,
-        <suravee.suthikulpanit@amd.com>, <thomas.lendacky@amd.com>,
-        <tonyhuang.sunplus@gmail.com>, <ulf.hansson@linaro.org>,
-        <vaishnav.a@ti.com>, <walker.chen@starfivetech.com>,
-        <will@kernel.org>, <zhuyinbo@loongson.cn>
-Subject: Re: [PATCH v15 4/6] arm64: Add config for AMD Pensando SoC platforms
-Date:   Tue, 15 Aug 2023 18:22:21 -0700
-Message-ID: <20230816012221.59796-1-blarson@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <ZNnoeAG8MevNTjtV@probook>
-References: <ZNnoeAG8MevNTjtV@probook>
+        Tue, 15 Aug 2023 21:24:58 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D89211E
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 18:24:57 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b9cf2b1309so70083501fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 18:24:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692149096; x=1692753896;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FVAK93nBTUhP03UZuT1wSrhAJPoyMfizbB0mnMkFNas=;
+        b=ahfd2FaAavrzi1WwrrZRyko+Td2LG1bR1Kx8JkpslXiLojkeczYWrXEdljkM6tTOpY
+         UTPRwzdsOw7G957HJYRC/tJQuMSYZ8gpYkyLo1rWJDEmX2ES9RKNxdygtLUMURLUKL/Q
+         iqnDnAFVCBv8p9KqzyPGyyKGN+gGAJ2eKwaHDKhB1uwcwq6FsLOZQ8mTS/4Hf0K1GyJg
+         C89fylfIHknOwBXlL01BP0Jns+seERmbowEaTVW1iMb8yCs8c0awrSddBYdqCiD7RaXT
+         mi+z1q9AYRC8DHtU1WB/XbuOcE86ftmI3Hx2qqTUYTWqEljgYubDoj7gYk+U+RPiRU55
+         A9jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692149096; x=1692753896;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FVAK93nBTUhP03UZuT1wSrhAJPoyMfizbB0mnMkFNas=;
+        b=BFs9UhkeTybKQ00ufoMucJkpasDjmrdyYqa1+qC9+7GAoen+/mQ8GS8Ig2HgeuQn6c
+         GIafKrRzgkRBw1q+D02NUWgt6yJ3gpzlACjStqm6166x3uRTWu6rvu5zr/zEzlCF74DN
+         EDUTcE2IyreoDHYqqgEBc4+ae/5gRkCJItOW8+xJZFrWksnt3EKkmQWJ+pr89atQ9BZz
+         9XktnJxMt14bXYiOmtBF+svQAAU8dKe+24zxxRMUyyGnjWKR1DhhXMt7dv0as7zeWWL1
+         f2X311b+ER70PGkPZvAJcHh2M/6kDQWAKX3yHTvmUynwSfdpWShQ9LLvCqsC9aJiBCaC
+         SLqg==
+X-Gm-Message-State: AOJu0YzVIiDDchXSSY8Mzl6v0oVs9tOmd38jUatvRXsx7Pijlvmw9ubi
+        ZzXRY4Hbb2oUdRA7dGCutdT9CwO14RnCYoLDSo8=
+X-Google-Smtp-Source: AGHT+IFTLod9nEOcAA015vv80e7zw9VzyF0KXxsw8tvfEjh9XCNhjDLoG+w7VN9zKo4o1hJPDTqYZ0kSj+F8v0pkGDk=
+X-Received: by 2002:a2e:905a:0:b0:2b6:e6ad:25be with SMTP id
+ n26-20020a2e905a000000b002b6e6ad25bemr236975ljg.3.1692149095805; Tue, 15 Aug
+ 2023 18:24:55 -0700 (PDT)
 MIME-Version: 1.0
+References: <20230815020711.2604939-1-yunlong.xing@unisoc.com> <ZNuDxFGoXPCwECyt@alley>
+In-Reply-To: <ZNuDxFGoXPCwECyt@alley>
+From:   Enlin Mu <enlinmu@gmail.com>
+Date:   Wed, 16 Aug 2023 09:24:29 +0800
+Message-ID: <CAAfh-jM0B2Cn579B0CkCrW44pJGGvjs112K+oMuViib+jDKafg@mail.gmail.com>
+Subject: Re: [PATCH] printk: export symbols for debug modules
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Yunlong Xing <yunlong.xing@unisoc.com>, senozhatsky@chromium.org,
+        rostedt@goodmis.org, john.ogness@linutronix.de,
+        linux-kernel@vger.kernel.org, enlin.mu@unisoc.com,
+        yunlong.xing23@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044FA:EE_|MW3PR12MB4425:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8fde4db9-6285-4967-c479-08db9df743e2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xgENl9OO09zhEPL1Q3+89DS7YXR9ww4c01S+CVrVMQhKU8Rtj2tEFvp8rcdejhQ9wfdhwbpamVKDQqOMs4WfU9dXuZLj/IL+6JJlFryX9ajIcwovGgSeVSTFLXkwojA+Jhc3yf3cG9KY4oQqX/pxAml1B+FEoioCkV316yQVh7CkLmxaeWm9xR8NDF70aBm4aTNTPf8nvKGb0Ndl91MaVzwfNF5H59OWLhE7JP0E6IP6oTT2ALIrc1vcEiiJp2vRyNAEQqEc0qlNGbaSvIrXDX9B3YiSaLn9z3ZTD964UinKF9erXAJNGiXxsSk+9nS7/ZrFgz/lZcuaSV9oHuK+NVD3H2JL+0FkguReFewNIE1JSsm39wizPyzRDhITXWkRXcvqrBkirCM3EsSyRnYA/EE6q+icBQH/zu2vQGtm+sWFKDIL9Fk0yAMc91/Bd3l7f/QI22eh2ATkb8DxLxHR+xzeaeUpZ7o9UYg5IY4TOfRwyuS1p/ZJevaQJ/IcsTbHpqqu/7Bzflmkz8zw8xeByXWe53tSqcyIRGSZdN8N3b8q8qI+K0eaZ6KqGtgMvRvh7BHESCaH5Sl8e+n8bxqT98S6iA9EP71LDimSpH0gbfqOlc4jAIvJta1XVzU3E95nO+WYHVZCFANPd4FVwVv96iZ8LgHtnuDb2pCxfbnSQg1sDnylioXu+RdcS8bu6V+eW2hGE4b1+DA37qAVVIQj1mLfK9Ls+Nm0aND4V45n8OU3/fXIBwuOhABHOyU5vC4qLCXTPz3mFTYeCbL5diNwCw==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(136003)(376002)(346002)(451199024)(186009)(1800799009)(82310400011)(36840700001)(46966006)(40470700004)(70206006)(4326008)(70586007)(41300700001)(6916009)(2906002)(81166007)(316002)(478600001)(47076005)(7406005)(426003)(5660300002)(7416002)(2616005)(36860700001)(40480700001)(356005)(53546011)(26005)(8936002)(16526019)(1076003)(6666004)(8676002)(40460700003)(336012)(54906003)(36756003)(82740400003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 01:22:32.2912
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8fde4db9-6285-4967-c479-08db9df743e2
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044FA.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4425
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+Petr Mladek <pmladek@suse.com> =E4=BA=8E2023=E5=B9=B48=E6=9C=8815=E6=97=A5=
+=E5=91=A8=E4=BA=8C 21:55=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Tue 2023-08-15 10:07:11, Yunlong Xing wrote:
+> > From: Enlin Mu <enlin.mu@unisoc.com>
+> >
+> > the module is out-of-tree, it saves kernel logs when panic
+> >
+> > Signed-off-by: Enlin Mu <enlin.mu@unisoc.com>
+>
+> I am fine with it. After all, this API seems to here for
+> similar purposes.
+Thanks.
+>
+> Acked-by: Petr Mladek <pmladek@suse.com>
+>
+> Of course, it would be better to maintain the module in upstream.
+> Is there any chance to get it upstream? It seems that it
+> is GPL-compatible so...
+Yes, currently under development. Once the code debugging is stable,
+it will be pushed to the community.
+>
+> Best Regards,
+> Petr
 
-On Mon, Aug 14, 2023 at 10:40:17 +0200, Jonathan NeuschÃ¤fer wrote:
-> On Fri, Aug 11, 2023 at 11:05:17AM -0700, Brad Larson wrote:
->> Add ARCH_PENSANDO configuration option for AMD Pensando SoC
->> based platforms.
->> 
->> Signed-off-by: Brad Larson <blarson@amd.com>
->> ---
-> [...]
->> +config ARCH_PENSANDO
->> +	bool "AMD Pensando Platforms"
->> +	help
->> +	  This enables support for the ARMv8 based AMD Pensando SoC
->> +	  family to include the Elba SoC.
->> +
->> +	  AMD Pensando SoCs support a range of Distributed Services
->> +	  Cards in PCIe format installed into servers.  The Elba
->> +	  SoC includes 16 A-72 CPU cores, 144 programmable P4
->> +	  cores for a minimal latency/jitter datapath, and network
->
-> Out of curiosity, what are A-72 and P4?
->
-> A-72 sounds like Arm Cortex A-72, P4 seems to refer to the P4
-> programming language (https://opennetworking.org/p4/).
->
-> Perhaps something like:
->
->+	  Cards in PCIe format installed into servers.  The Elba
->+	  SoC includes 16 Cortex A-72 CPU cores, 144 P4-programmable
->+	  cores for a minimal latency/jitter datapath, and network
+Best Regards,
 
-Thanks for the review!  Yes, exactly.  I'll add that change which
-makes the description more precise.
-
-Regards,
-Brad
+Enlin
