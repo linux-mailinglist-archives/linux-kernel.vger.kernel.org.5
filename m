@@ -2,95 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1D677DFFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A6177DFF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244368AbjHPLEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 07:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50040 "EHLO
+        id S242867AbjHPLEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 07:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244467AbjHPLDt (ORCPT
+        with ESMTP id S244382AbjHPLDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 07:03:49 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4BE02D68;
-        Wed, 16 Aug 2023 04:03:23 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 14D381F855;
-        Wed, 16 Aug 2023 11:01:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1692183708; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kh9gn+MAlUKG30rkz4N7QMgrJ4Mle0VRLZ/2rPI+KVo=;
-        b=egKSjtKnCQg+lMexVn55ytb/W4boIZ5k4LDJbUVLAvcUsG0FegBE+cGE9rEpWaa2p+RXRR
-        ugudL9KdCPop984AOz0HlXKYvEAr0oNDqrsaBGCbwOdsv616QifhhL14FwUYdaXpCS5nFd
-        B56BqMjsycFUa1XkDMzkkXfUx6UUaKg=
-Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 8D5612C143;
-        Wed, 16 Aug 2023 11:01:47 +0000 (UTC)
-Date:   Wed, 16 Aug 2023 13:01:46 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     rostedt@goodmis.org, senozhatsky@chromium.org,
-        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        ndesaulniers@google.com, trix@redhat.com,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        patches@lists.linux.dev, stable@vger.kernel.org
-Subject: Re: [PATCH v2] lib: test_scanf: Add explicit type cast to result
- initialization in test_number_prefix()
-Message-ID: <ZNysmicYHHQ3f1Ck@alley>
-References: <20230807-test_scanf-wconstant-conversion-v2-1-839ca39083e1@kernel.org>
+        Wed, 16 Aug 2023 07:03:40 -0400
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F742D45;
+        Wed, 16 Aug 2023 04:03:11 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-9923833737eso847694566b.3;
+        Wed, 16 Aug 2023 04:03:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692183733; x=1692788533;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cJU6KQ3PJKsFFkSrCzSUBY4MjtuY9BbjYXsDhDJBkXg=;
+        b=Wv1ChWiNhjbIBBSZSqlKABdFM9/5ox5WJ/Gnnf0WIM/Z8M0FoIfW4+1373dMmrYAip
+         F5n+f7Szp0J8ShDmfnV/6/jS9c3H9RwMoCkCaABipLperyLVCzbaPk78xeKGq6wR8tbE
+         wAXjmz1xOD69JqVHSciTvrBMFPPCPuc6UhmDqV4Q4U2W6P+TtlR+monNS9QWmIFVpJ9M
+         jOznVXEOHS2qACiL1lYt4xR5EsLrNgPXivygy8iA7RR1ZC9MGI+gVY5luviMmKke6J12
+         kF4KGSurGj+FDEAcv+J23hAjDgGmyFrDS//OhXj+7WeGL9pdS4urq3bZAvmiwRBwm0D3
+         6rCg==
+X-Gm-Message-State: AOJu0Yyg9n09nAOh79msJPOmiLk4M5cUHFgWEbzG/gxqA9Wdq5wEAcMC
+        LAfuQl7ZgvZW6c6IAaRqeKEBXQsRNg7Kpw==
+X-Google-Smtp-Source: AGHT+IFAQGmIJBKVXeFZIjDADVrbgYhoaJ3OX9d1+JK1G4mWPysrluNt+z2cbPv0Qc6lUD2Ph/vUPg==
+X-Received: by 2002:a17:906:b009:b0:99d:101b:8403 with SMTP id v9-20020a170906b00900b0099d101b8403mr1158873ejy.36.1692183732740;
+        Wed, 16 Aug 2023 04:02:12 -0700 (PDT)
+Received: from [192.168.1.58] (185-219-167-24-static.vivo.cz. [185.219.167.24])
+        by smtp.gmail.com with ESMTPSA id z24-20020a170906241800b009934b1eb577sm8433429eja.77.2023.08.16.04.02.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 04:02:12 -0700 (PDT)
+Message-ID: <1882495c-b16b-10f0-2acf-ee86cf4e031b@kernel.org>
+Date:   Wed, 16 Aug 2023 13:02:11 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807-test_scanf-wconstant-conversion-v2-1-839ca39083e1@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 00/14] tty: n_tty: cleanup
+Content-Language: en-US
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230816105822.3685-1-jirislaby@kernel.org>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <20230816105822.3685-1-jirislaby@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2023-08-07 08:36:28, Nathan Chancellor wrote:
-> A recent change in clang allows it to consider more expressions as
-> compile time constants, which causes it to point out an implicit
-> conversion in the scanf tests:
+Bah, this series intermixed with old patches in one dir.
+
+Patches 1/4 2/4 3/4 4/4 are to be ignored.
+
+OTOH, 01/14 ... 04/14 are a correct part of this series.
+
+Do you want me to resend?
+
+On 16. 08. 23, 12:58, Jiri Slaby (SUSE) wrote:
+> This is another part (say part III.) of the previous type unification
+> across the tty layer[1]. This time, in n_tty line discipline. Apart from
+> type changes, this series contains a larger set of refactoring of the
+> code. Namely, separating hairy code into single functions for better
+> readability.
 > 
->   lib/test_scanf.c:661:2: warning: implicit conversion from 'int' to 'unsigned char' changes value from -168 to 88 [-Wconstant-conversion]
->     661 |         test_number_prefix(unsigned char,       "0xA7", "%2hhx%hhx", 0, 0xa7, 2, check_uchar);
->         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   lib/test_scanf.c:609:29: note: expanded from macro 'test_number_prefix'
->     609 |         T result[2] = {~expect[0], ~expect[1]};                                 \
->         |                       ~            ^~~~~~~~~~
->   1 warning generated.
+> [1] https://lore.kernel.org/all/20230810091510.13006-1-jirislaby@kernel.org/
 > 
-> The result of the bitwise negation is the type of the operand after
-> going through the integer promotion rules, so this truncation is
-> expected but harmless, as the initial values in the result array get
-> overwritten by _test() anyways. Add an explicit cast to the expected
-> type in test_number_prefix() to silence the warning. There is no
-> functional change, as all the tests still pass with GCC 13.1.0 and clang
-> 18.0.0.
+> Note this is completely independent on "part II." (tty_buffer cleanup),
+> so those two can be applied in any order.
 > 
-> Cc: stable@vger.kernel.org
-> Closes: https://github.com/ClangBuiltLinux/linux/issues/1899
+> Jiri Slaby (SUSE) (14):
+>    tty: n_tty: make flow of n_tty_receive_buf_common() a bool
+>    tty: n_tty: use output character directly
+>    tty: n_tty: use 'retval' for writes' retvals
+>    tty: n_tty: use time_is_before_jiffies() in n_tty_receive_overrun()
+>    tty: n_tty: make n_tty_data::num_overrun unsigned
+>    tty: n_tty: use MASK() for masking out size bits
+>    tty: n_tty: move canon handling to a separate function
+>    tty: n_tty: move newline handling to a separate function
+>    tty: n_tty: remove unsigned char casts from character constants
+>    tty: n_tty: simplify chars_in_buffer()
+>    tty: n_tty: use u8 for chars and flags
+>    tty: n_tty: unify counts to size_t
+>    tty: n_tty: extract ECHO_OP processing to a separate function
+>    tty: n_tty: deduplicate copy code in n_tty_receive_buf_real_raw()
+> 
+>   drivers/tty/n_tty.c | 551 +++++++++++++++++++++++---------------------
+>   1 file changed, 284 insertions(+), 267 deletions(-)
+> 
 
-"Closes:" is not a valid tag. It was proposed and rejected in the end.
-I replaced it with "Link:" as suggested by ./scripts/checkpatch.pl/
+-- 
+js
+suse labs
 
-> Link: https://github.com/llvm/llvm-project/commit/610ec954e1f81c0e8fcadedcd25afe643f5a094e
-> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-
-The patch has been pushed into printk/linux.git, branch for-6.6.
-
-Best Regards,
-Petr
