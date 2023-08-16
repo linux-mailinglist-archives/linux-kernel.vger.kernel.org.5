@@ -2,66 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF7D77EC47
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05E777EC51
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236987AbjHPVyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 17:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44064 "EHLO
+        id S1346692AbjHPV4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 17:56:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346678AbjHPVxf (ORCPT
+        with ESMTP id S1346691AbjHPV4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 17:53:35 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C83182716
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:53:33 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-583c49018c6so88924357b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:53:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692222813; x=1692827613;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5U/ye/HLLHU/JJfiRkVc60C30cItgmeRYpMYP9FcKiM=;
-        b=PWKIkyBQUmD6JPUwrnxbzNd/8go2kuU6pqHijYG6MCKbS9kxanLME/QPzswYYRp4Va
-         WoUU6LxZ914BeCpkNYWlb+cvhi3jLBPQKu1t3sDe6WOzE2HQspYB65pEcFCznl+c1mPs
-         fO9uXz3YD1XBECwkDUz2fn6669jnR+3PObslQ1IYmj1cdnShetOhqL3bhPjmz8vdQoFF
-         91b6xWQXOXFioytRPTeMWM55Png+68nEIeEGxz56vStWZUOkG0+E4/w+5qoqo8nSHopv
-         6N006dtsCweGdCw7Ot56OdHWsfE8zfsKhZ+OYDvh6bth827Dw6EByt9TbhXBcSnrTz9k
-         xYvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692222813; x=1692827613;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5U/ye/HLLHU/JJfiRkVc60C30cItgmeRYpMYP9FcKiM=;
-        b=aRVwd+wPiZDpXnHPqQUpvNjjYfENu+ChUFLAZBHXKwOQwfgej5J+UPnh4l/vLp17qq
-         6aNmRvrwGHmnrEchUgf0AEOKBvJW9jITAe/unFSJbjidf+gDOCrDe6KznCYFzkkSgXHG
-         r93I+ml8+zsvFBQcLexUHfw9KtCVGDFnl+ZLkIVxK85/FPTEic/C5tXV11UEDmF4BNj5
-         UjPbnNpWI+HAdVlDOOcu8dwu637Cjd4P/Yj8cN+FYAr4ohbZgemrDzsJyvoXjv2Iuw7v
-         gUkIKM2enF438f6uZ6yXu87uCwYFrwKlTw7ZXexltlvdHi7xvU2/MtRgAqzscxZP0KvN
-         gwFw==
-X-Gm-Message-State: AOJu0Yzn8So4dj5/QnqEwA0gFjvT6pkP0hFNy9kCMH3ZabrlyT7SXLSb
-        lBeQ5cy5S6LVBXuEANZdfqbz3w4eqNg=
-X-Google-Smtp-Source: AGHT+IGQotSeqquzPZzglE1yO40ugG8Roq/D5aKi1TxCw/8m7cn22zOorE24QGwVCCegSkXo40u2q2Wy9yM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:ae52:0:b0:58c:8c9f:c05a with SMTP id
- g18-20020a81ae52000000b0058c8c9fc05amr40828ywk.9.1692222813109; Wed, 16 Aug
- 2023 14:53:33 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 14:53:31 -0700
-In-Reply-To: <20230719144131.29052-10-binbin.wu@linux.intel.com>
-Mime-Version: 1.0
-References: <20230719144131.29052-1-binbin.wu@linux.intel.com> <20230719144131.29052-10-binbin.wu@linux.intel.com>
-Message-ID: <ZN1FW7krxOVs9uA8@google.com>
-Subject: Re: [PATCH v10 9/9] KVM: x86: Expose LAM feature to userspace VMM
-From:   Sean Christopherson <seanjc@google.com>
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
-        David.Laight@aculab.com, robert.hu@linux.intel.com,
-        guang.zeng@intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        Wed, 16 Aug 2023 17:56:13 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7763A1FC3;
+        Wed, 16 Aug 2023 14:56:12 -0700 (PDT)
+Received: from [192.168.0.5] (71-212-112-68.tukw.qwest.net [71.212.112.68])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B7663211F617;
+        Wed, 16 Aug 2023 14:56:11 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B7663211F617
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1692222972;
+        bh=TcBeYn9mQXOHIb67yyVRR1Bs9s8VL8uFOeaa9wR+MIM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ausrTEkYhRFOv5htMYsJcYgAHDG+cbBqoggTvPnlE+avIcWkaDB4hAl3RULni0HW7
+         3OllRJ+GEAZ7xDtmTqolLZUBmvAbPgT46YFdVXzGsVeZn9+0lLm7PNSGGrazQEQuV5
+         6Rz4JdSrw6Yy4LyoQBV/nlRxB7XilKf7n6BQLsds=
+Message-ID: <92ed100d-b17d-4779-a10f-ca513f9b30ea@linux.microsoft.com>
+Date:   Wed, 16 Aug 2023 14:56:11 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 09/15] Drivers: hv: Introduce hv_output_arg_exists in
+ hv_common
+Content-Language: en-US
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, mikelley@microsoft.com,
+        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
+        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
+        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
+        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
+        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        will@kernel.org, catalin.marinas@arm.com
+References: <1690487690-2428-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1690487690-2428-10-git-send-email-nunodasneves@linux.microsoft.com>
+ <ZMrx5m2Tg7bfX9Ce@liuwe-devbox-debian-v2>
+From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
+In-Reply-To: <ZMrx5m2Tg7bfX9Ce@liuwe-devbox-debian-v2>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,56 +61,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/Expose/Advertise
+On 8/2/2023 5:16 PM, Wei Liu wrote:
+> On Thu, Jul 27, 2023 at 12:54:44PM -0700, Nuno Das Neves wrote:
+>> This is a more flexible approach for determining whether to allocate the
+>> output page.
+> 
+>> This will be used in both mshv_vtl and root partition.
+>>
+>> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+>> ---
+>>  drivers/hv/hv_common.c | 30 +++++++++++++++++++++++++-----
+>>  1 file changed, 25 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/hv/hv_common.c b/drivers/hv/hv_common.c
+>> index 99d9b262b8a7..16f069beda78 100644
+>> --- a/drivers/hv/hv_common.c
+>> +++ b/drivers/hv/hv_common.c
+>> @@ -57,6 +57,18 @@ EXPORT_SYMBOL_GPL(hyperv_pcpu_input_arg);
+>>  void * __percpu *hyperv_pcpu_output_arg;
+>>  EXPORT_SYMBOL_GPL(hyperv_pcpu_output_arg);
+>>  
+>> +/*
+>> + * Determine whether output arg is in use, for allocation/deallocation
+>> + */
+>> +static bool hv_output_arg_exists(void)
+>> +{
+>> +	bool ret = hv_root_partition ? true : false;
+>> +#ifdef CONFIG_MSHV_VTL
+>> +	ret = true;
+>> +#endif
+> 
+> This should not be here. As far as I can tell, CONFIG_MSHV_VTL is
+> introduced in a later patch.
+> 
 
-And I would add an "enable" in there somehwere, because to Kai's point earlier in
-the series about kvm_cpu_cap_has(), the guest can't actually use LAM until this
-patch.  Sometimes we do just say "Advertise", but typically only for features
-where there's not virtualization support, e.g. AVX instructions where the guest
-can use them irrespective of what KVM says it supports.
+Ok, I will introduce this #ifdef with the mshv_vtl module.
 
-This?
+> The rest looks okay.
+> 
+> Thanks,
+> Wei.
 
-KVM: x86: Advertise and enable LAM (user and supervisor)
-
-On Wed, Jul 19, 2023, Binbin Wu wrote:
-> From: Robert Hoo <robert.hu@linux.intel.com>
-> 
-> LAM feature is enumerated by CPUID.7.1:EAX.LAM[bit 26].
-> Expose the feature to userspace as the final step after the following
-> supports:
-> - CR4.LAM_SUP virtualization
-> - CR3.LAM_U48 and CR3.LAM_U57 virtualization
-> - Check and untag 64-bit linear address when LAM applies in instruction
->   emulations and VMExit handlers.
-> 
-> Exposing SGX LAM support is not supported yet. SGX LAM support is enumerated
-> in SGX's own CPUID and there's no hard requirement that it must be supported
-> when LAM is reported in CPUID leaf 0x7.
-> 
-> Signed-off-by: Robert Hoo <robert.hu@linux.intel.com>
-> Signed-off-by: Binbin Wu <binbin.wu@linux.intel.com>
-> Reviewed-by: Jingqi Liu <jingqi.liu@intel.com>
-> Reviewed-by: Chao Gao <chao.gao@intel.com>
-> Reviewed-by: Kai Huang <kai.huang@intel.com>
-> Tested-by: Xuelian Guo <xuelian.guo@intel.com>
-> ---
->  arch/x86/kvm/cpuid.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 7ebf3ce1bb5f..21d525b01d45 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -645,7 +645,7 @@ void kvm_set_cpu_caps(void)
->  	kvm_cpu_cap_mask(CPUID_7_1_EAX,
->  		F(AVX_VNNI) | F(AVX512_BF16) | F(CMPCCXADD) |
->  		F(FZRM) | F(FSRS) | F(FSRC) |
-> -		F(AMX_FP16) | F(AVX_IFMA)
-> +		F(AMX_FP16) | F(AVX_IFMA) | F(LAM)
->  	);
->  
->  	kvm_cpu_cap_init_kvm_defined(CPUID_7_1_EDX,
-> -- 
-> 2.25.1
-> 
