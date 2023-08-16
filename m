@@ -2,107 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E4577E716
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F19DF77E71C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345011AbjHPQ5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 12:57:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40706 "EHLO
+        id S1345017AbjHPQ6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 12:58:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345015AbjHPQ5e (ORCPT
+        with ESMTP id S1345055AbjHPQ6e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 12:57:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E51E4C;
-        Wed, 16 Aug 2023 09:57:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E8C4E6593B;
-        Wed, 16 Aug 2023 16:57:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC411C433C9;
-        Wed, 16 Aug 2023 16:57:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692205052;
-        bh=jmZaFGRk0mUd7Pn/E+CuctT0M3zhRkLYEdXtN8lsMhA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=k7vQ/PV8S4TL0HpkpHGVy1moEfw91SCl+jhhNMzthED0X0dSObwAvzdZXwsLxri+d
-         a2RYh7SyPZQchgqYquk8pX8uEzL3+20Qw6xrffbWzwt/s43/IoSnR9L8xNIQ55rbkJ
-         hOpFQ2vo//Pi8co9yutR7F3b9ZfQE5Z8+DyOPZ6bKdueexcOujBQDZ/qElezZPciUq
-         zXg1ZCus/o7jhJ/xfQTqTWN3aOKuBtWtpci2NkUnmL96hjDQFbb1GGEd2VN0IK/DE1
-         Xjb63h8Jg9Kt7hMiVn33cqYbhi+/FMoZM11JjiamkfcaDJJISevOiIMAezkTS7iwAJ
-         8fiT1gAYsncRw==
-Date:   Wed, 16 Aug 2023 11:57:29 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-acpi@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Iain Lane <iain@orangesquash.org.uk>,
-        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>
-Subject: Re: [PATCH v11 2/9] ACPI: Adjust #ifdef for *_lps0_dev use
-Message-ID: <20230816165729.GA291397@bhelgaas>
+        Wed, 16 Aug 2023 12:58:34 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64B81BE7;
+        Wed, 16 Aug 2023 09:58:31 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 082113200936;
+        Wed, 16 Aug 2023 12:58:26 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 16 Aug 2023 12:58:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjusaka.me; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1692205106; x=1692291506; bh=bqqqxjVQXB11bXS2XPDSYy3H/z1FMuEH1+F
+        +yhBNcXM=; b=SpGcFI9tty5G9XxTIQp3m6j1v9g7Rc+qHIb5y47g7gC6r0+95eY
+        +X+ZSJi+X0Dxakt4z2FYC2C4DqK0ylAhgjHgVdEP2s4W3dL49EhSfVcu1VvvB/Yp
+        iHiffyxaZI6Qz8LlZeX5SwRgnapi5xZqp0wfYFk9C+BbySVny8N8wi+LFBysjpKB
+        LPI1VHIOzflT3dZmwW8wI0GIj1YlhKCQWpBy2mQ1qcnobS1Y1pgxEKcZHvM+HDGC
+        IAN8LTbyBQIHsmu87bLmJFcC0Ctu3mnGAO8N8t5MYvCUyFNApef30btJhD4+pjlx
+        3QDLHg7vCkw+mUodUjzm+oFT6va+yzeKciQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1692205106; x=1692291506; bh=bqqqxjVQXB11bXS2XPDSYy3H/z1FMuEH1+F
+        +yhBNcXM=; b=dSXAhvZyD1Sz+sOQ3jiijy0iUP53HYcBiZP2hGb3arMwbXBe7S8
+        KxRPuWgfAp0WTOQrJBRLRUDkLJ7DO0tXCBgODTGcaZU0FFONSpiIpiOilPzF2aJ4
+        ZcVMzU6OyGB4JshhmAoM9SmBQttKYuGubGqypLM0+c124+53N1Rb3qq75ECJJOFT
+        Nux9CJL6fjoiCPTY8k5dCL+sCfJZihdtEquH9S2GsPS+G2/javkjTdhTVRS8Bj3I
+        1tSyjvGtxnoHpwZH384e8BtvEe9VouYSvNsGKh2ZlnXOREIRuGVzTzDJWcdEPsuL
+        vCRTPD4+7620a0NJfy2EK6MMBkoF3mBPw6w==
+X-ME-Sender: <xms:MgDdZGJYKhzEkNmosz2m88L_QOMyOQHl5WZPng0N--h88yITaDq3Mg>
+    <xme:MgDdZOLJvceuiltx6y0I9R0j6gOlnWULTMtP8WlIWMGUP--z29YQiupKCP1X9xygF
+    ZKCbQzlbgzxZ5uz9tY>
+X-ME-Received: <xmr:MgDdZGtZ6J7ncVdtmCiy3Ltu2xHIZqL8wZsyuikDtO_hDDNp_-u8mRJIN2dMofbk9A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddtledguddtlecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomhepofgr
+    nhhjuhhsrghkrgcuoehmvgesmhgrnhhjuhhsrghkrgdrmhgvqeenucggtffrrghtthgvrh
+    hnpeehheevjeeiudegledtleevuddufedttdekudfgteejjeetfeejleejffdtvdeugeen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmvgesmh
+    grnhhjuhhsrghkrgdrmhgv
+X-ME-Proxy: <xmx:MgDdZLagy-aPeEAMS0OSIjhUPaOQntc9XLR_qTYYc2qVM_l34zZcng>
+    <xmx:MgDdZNa1Im85TOLkeBt9i3gWwp-qwmfxU6WxKY7CDNqcbmGB_-py6Q>
+    <xmx:MgDdZHBMVDd02v-SsyL6JXDEPT9AP77lQijOkPSa3Gwqcn1tIVyiJA>
+    <xmx:MgDdZDBbVpaQiNItVk7nTG8Ez2anmqSlo6xWg_kAVLEO4hJgL0-vWA>
+Feedback-ID: i3ea9498d:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 16 Aug 2023 12:58:19 -0400 (EDT)
+Message-ID: <82771f1c-9659-4aaa-bded-62bef6082bf8@manjusaka.me>
+Date:   Thu, 17 Aug 2023 00:58:05 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <88d86ba9-d21e-4284-847c-3b0d99cc2403@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] tracepoint: add new `tcp:tcp_ca_event` trace event
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Joe Perches <joe@perches.com>, edumazet@google.com,
+        bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
+        ncardwell@google.com, netdev@vger.kernel.org, pabeni@redhat.com
+References: <CANn89iKQXhqgOTkSchH6Bz-xH--pAoSyEORBtawqBTvgG+dFig@mail.gmail.com>
+ <20230812201249.62237-1-me@manjusaka.me>
+ <20230812205905.016106c0@rorschach.local.home>
+ <20230812210140.117da558@rorschach.local.home>
+ <20230812210450.53464a78@rorschach.local.home>
+ <6bfa88099fe13b3fd4077bb3a3e55e3ae04c3b5d.camel@perches.com>
+ <20230812215327.1dbd30f3@rorschach.local.home>
+ <a587dac9e02cfde669743fd54ab41a3c6014c5e9.camel@perches.com>
+ <8b0f2d2b-c5a0-4654-9cc0-78873260a881@manjusaka.me>
+ <20230816110206.13980573@gandalf.local.home>
+Content-Language: en-US
+From:   Manjusaka <me@manjusaka.me>
+In-Reply-To: <20230816110206.13980573@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 01:32:05PM -0500, Mario Limonciello wrote:
-> On 8/15/2023 13:28, Bjorn Helgaas wrote:
-> > On Wed, Aug 09, 2023 at 01:54:46PM -0500, Mario Limonciello wrote:
-> > > The #ifdef currently is guarded against CONFIG_X86, but these are
-> > > actually sleep related functions so they should be tied to
-> > > CONFIG_ACPI_SLEEP.
-> > > 
-> > > Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> > > ---
-> > > v9->v10:
-> > >   * split from other patches
-> > > ---
-> > >   include/linux/acpi.h | 4 ++--
-> > >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> > > index 0d5277b7c6323..13a0fca3539f0 100644
-> > > --- a/include/linux/acpi.h
-> > > +++ b/include/linux/acpi.h
-> > > @@ -1100,7 +1100,7 @@ void acpi_os_set_prepare_extended_sleep(int (*func)(u8 sleep_state,
-> > >   acpi_status acpi_os_prepare_extended_sleep(u8 sleep_state,
-> > >   					   u32 val_a, u32 val_b);
-> > > -#ifdef CONFIG_X86
-> > > +#if defined(CONFIG_ACPI_SLEEP) && defined(CONFIG_X86)
-> > 
-> > What's the connection to CONFIG_ACPI_SLEEP?
-> > 
-> > The acpi_register_lps0_dev() implementation in
-> > drivers/acpi/x86/s2idle.c is under #ifdef CONFIG_SUSPEND (and
-> > obviously s2idle.c is only compiled at all if CONFIG_X86).
-> > 
-> > Both callers (amd_pmc_probe() and thinkpad_acpi_module_init()) are
-> > under #ifdef CONFIG_SUSPEND.
+On 2023/8/16 23:02, Steven Rostedt wrote:
+> On Wed, 16 Aug 2023 14:09:06 +0800
+> Manjusaka <me@manjusaka.me> wrote:
 > 
-> My thought process was that s2idle.c is from drivers/acpi/x86 and only can
-> be used in the context of ACPI enabled sleep.
+>>> +# trace include files use a completely different grammar
+>>> +		next if ($realfile =~ m{(?:include/trace/events/|/trace\.h$/)});
+>>> +
+>>>  # check multi-line statement indentation matches previous line
+>>>  		if ($perl_version_ok &&
+>>>  		    $prevline =~ /^\+([ \t]*)((?:$c90_Keywords(?:\s+if)\s*)|(?:$Declare\s*)?(?:$Ident|\(\s*\*\s*$Ident\s*\))\s*|(?:\*\s*)*$Lval\s*=\s*$Ident\s*)\(.*(\&\&|\|\||,)\s*$/) {
+>>>
+>>>
+>>>   
+>>
+>> Actually, I'm not sure this is the checkpatch style issue or my code style issue.
+>>
+>> Seems wired.
 > 
-> But I could see the argument for CONFIG_SUSPEND being stronger.  I'll adjust
-> and make sure the rest of the series works with CONFIG_SUSPEND.
+> The TRACE_EVENT() macro has its own style. I need to document it, and
+> perhaps one day get checkpatch to understand it as well.
+> 
+> The TRACE_EVENT() typically looks like:
+> 
+> 
+> TRACE_EVENT(name,
+> 
+> 	TP_PROTO(int arg1, struct foo *arg2, struct bar *arg3),
+> 
+> 	TP_ARGS(arg1, arg2, arg3),
+> 
+> 	TP_STRUCT__entry(
+> 		__field(	int,		field1				)
+> 		__array(	char,		mystring,	MYSTRLEN	)
+> 		__string(	filename,	arg3->name			)
+> 	),
+> 
+> 	TP_fast_assign(
+> 		__entry->field1 = arg1;
+> 		memcpy(__entry->mystring, arg2->string);
+> 		__assign_str(filename, arg3->name);
+> 	),
+> 
+> 	TP_printk("field1=%d mystring=%s filename=%s",
+> 		__entry->field1, __entry->mystring, __get_str(filename))
+> );
+> 
+> The TP_STRUCT__entry() should be considered more of a "struct" layout than
+> a macro layout, and that's where checkpatch gets confused. The spacing
+> makes it much easier to see the fields and their types.
+> 
+> -- Steve
 
-It's very hard to verify that it's correct if the declaration is under
-a different #ifdef than the implementation, whereas it's trivial if it
-uses the same #ifdef.
+Thanks for the explain!
 
-Bjorn
+So could I keep the current code without any code style change?
+
+I think it would be a good idea to fix the checkpatch.pl script in another patch
