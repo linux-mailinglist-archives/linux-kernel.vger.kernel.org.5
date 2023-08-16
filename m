@@ -2,90 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 556DF77E20E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 14:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D1977E210
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245326AbjHPM6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 08:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37900 "EHLO
+        id S245061AbjHPNBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:01:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244660AbjHPM6d (ORCPT
+        with ESMTP id S238513AbjHPNAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 08:58:33 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 776A91FF3;
-        Wed, 16 Aug 2023 05:58:32 -0700 (PDT)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37GCvh1L032106;
-        Wed, 16 Aug 2023 12:58:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=WmKNqt5RyLphEHTQ3PhyNwbR24W9Co9HoNVQhPeG+SU=;
- b=tlN282+ea6K8K19iQkBOd7thTBnMF9M7LVWNWzV5jMmItBzxqvaW41FXXJCdwKMxZIBI
- bSMXdsXgz1hJttPtQHs+/pzztqgUcf2N4IjiUTFQMN9fnVhRlmhGUPM/NbRcMxhAsKKm
- PpumHzYwDQEHKHcL3SRChhyoKtJ0to3nMVzdkJEVSCfymyPJf+fcDgbyy2TARYiL5Tcv
- j77mft8egkhtRD6CMGPsqvf+Y2rJW9Q8Ns5MfcBAOQnlGODFyurqq3KIGX4HEbJBEqt9
- NYWJ/kYK60PJOGcqSM3TCtw62MHm7zCSA7DmfPSMAhoB326PBg8HZ03GPWdxU+EB7QvG cA== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sgxx080p1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 12:58:20 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37GAvrJx001090;
-        Wed, 16 Aug 2023 12:58:19 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3semsycm8b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 12:58:19 +0000
-Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
-        by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37GCwIHa20185390
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Aug 2023 12:58:18 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0886C5805B;
-        Wed, 16 Aug 2023 12:58:18 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3F1D05805E;
-        Wed, 16 Aug 2023 12:58:17 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.190.160])
-        by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 16 Aug 2023 12:58:17 +0000 (GMT)
-Message-ID: <3b4024eb6602fc2b7be821e6e33c656eee3c7cae.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 2/6] integrity: ignore keys failing CA restrictions
- on non-UEFI platform
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        linux-integrity@vger.kernel.org
-Cc:     Eric Snowberg <eric.snowberg@oracle.com>,
-        Paul Moore <paul@paul-moore.com>,
-        linux-security-module@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 16 Aug 2023 08:58:16 -0400
-In-Reply-To: <CUSG8HX9J4L0.37OHE7QHLL9N7@suppilovahvero>
-References: <20230813021531.1382815-1-nayna@linux.ibm.com>
-         <20230813021531.1382815-3-nayna@linux.ibm.com>
-         <CUSG8HX9J4L0.37OHE7QHLL9N7@suppilovahvero>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-Mime-Version: 1.0
+        Wed, 16 Aug 2023 09:00:47 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6231D1BFB;
+        Wed, 16 Aug 2023 06:00:45 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1FCDBD75;
+        Wed, 16 Aug 2023 06:01:26 -0700 (PDT)
+Received: from [192.168.178.38] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E5B2D3F6C4;
+        Wed, 16 Aug 2023 06:00:41 -0700 (PDT)
+Message-ID: <07436e93-7339-e91c-b169-f0ad89cdbc29@arm.com>
+Date:   Wed, 16 Aug 2023 15:00:31 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 00/12] Introduce runtime modifiable Energy Model
+Content-Language: en-US
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, rafael@kernel.org
+Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
+        amit.kachhap@gmail.com, daniel.lezcano@linaro.org,
+        viresh.kumar@linaro.org, len.brown@intel.com, pavel@ucw.cz,
+        Pierre.Gondois@arm.com, ionela.voinescu@arm.com,
+        mhiramat@kernel.org
+References: <20230721155022.2339982-1-lukasz.luba@arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <20230721155022.2339982-1-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: aJNxpgGI1i7q6w3pkC8aTvsLKU1rNLm9
-X-Proofpoint-ORIG-GUID: aJNxpgGI1i7q6w3pkC8aTvsLKU1rNLm9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-16_11,2023-08-15_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- lowpriorityscore=0 bulkscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0
- impostorscore=0 phishscore=0 clxscore=1015 adultscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308160110
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,52 +49,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-08-14 at 20:38 +0300, Jarkko Sakkinen wrote:
-> On Sun Aug 13, 2023 at 5:15 AM EEST, Nayna Jain wrote:
-> > On non-UEFI platforms, handle restrict_link_by_ca failures differently.
-> >
-> > Certificates which do not satisfy CA restrictions on non-UEFI platforms
-> > are ignored.
-> >
-> > Signed-off-by: Nayna Jain <nayna@linux.ibm.com>
-> > Reviewed-and-tested-by: Mimi Zohar <zohar@linux.ibm.com>
-> > ---
-> >  security/integrity/platform_certs/machine_keyring.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/security/integrity/platform_certs/machine_keyring.c b/security/integrity/platform_certs/machine_keyring.c
-> > index 7aaed7950b6e..389a6e7c9245 100644
-> > --- a/security/integrity/platform_certs/machine_keyring.c
-> > +++ b/security/integrity/platform_certs/machine_keyring.c
-> > @@ -36,7 +36,7 @@ void __init add_to_machine_keyring(const char *source, const void *data, size_t
-> >  	 * If the restriction check does not pass and the platform keyring
-> >  	 * is configured, try to add it into that keyring instead.
-> >  	 */
-> > -	if (rc && IS_ENABLED(CONFIG_INTEGRITY_PLATFORM_KEYRING))
-> > +	if (rc && efi_enabled(EFI_BOOT) && IS_ENABLED(CONFIG_INTEGRITY_PLATFORM_KEYRING))
-> >  		rc = integrity_load_cert(INTEGRITY_KEYRING_PLATFORM, source,
-> >  					 data, len, perm);
-> >  
-> > -- 
-> > 2.31.1
+On 21/07/2023 17:50, Lukasz Luba wrote:
+> Hi all,
 > 
-> Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+> This patch set adds a new feature which allows to modify Energy Model (EM)
+> power values at runtime. It will allow to better reflect power model of
+> a recent SoCs and silicon. Different characteristics of the power usage
+> can be leveraged and thus better decisions made during task placement in EAS.
+> 
+> It's part of feature set know as Dynamic Energy Model. It has been presented
+> and discussed recently at OSPM2023 [3]. This patch set implements the 1st
+> improvement for the EM.
+> 
+> The concepts:
+> 1. The CPU power usage can vary due to the workload that it's running or due
+> to the temperature of the SoC. The same workload can use more power when the
+> temperature of the silicon has increased (e.g. due to hot GPU or ISP).
+> In such situation or EM can be adjusted and reflect the fact of increased
+> power usage. That power increase is due to a factor called static power
+> (sometimes called simply: leakage). The CPUs in recent SoCs are different.
+> We have heterogeneous SoCs with 3 (or even 4) different microarchitectures.
+> They are also built differently with High Performance (HP) cells or
+> Low Power (LP) cells. They are affected by the temperature increase
+> differently: HP cells have bigger leakage. The SW model can leverage that
+> knowledge.
 
-Hi Jarkko,
+IMHO it's important to note that this feature will add support for a
+'single EM which can be changed during runtime according to the
+workload' design.
+Instead of the 'single and during the entire runtime static EM' design
+we have today.
+It won't support a 'multiple EMs and tasks can choose which model to use
+based on some form of classification' design.
 
-Without the following two commits in your master branch, the last patch
-in this series "[PATCH v4 6/6] integrity: PowerVM support for loading
-third party code signing keys"   doesn't apply cleanly.
+> 2. It is also possible to change the EM to better reflect the currently
+> running workload. Usually the EM is derived from some average power values
+> taken from experiments with benchmark (e.g. Dhrystone). The model derived
+> from such scenario might not represent properly the workloads usually running
+> on the device. Therefore, runtime modification of the EM allows to switch to
+> a different model, when there is a need.
+> 3. The EM can be adjusted after boot, when all the modules are loaded and
+> more information about the SoC is available e.g. chip binning. This would help
+> to better reflect the silicon characteristics. Thus, this EM modification
+> API allows it now. It wasn't possible in the past and the EM had to be
+> 'set in stone'.
 
-- commit 409b465f8a83 ("integrity: Enforce digitalSignature usage in
-the ima and evm keyrings")
-- commit e34a6c7dd192 ("KEYS: DigitalSignature link restriction")
+Testing perspective:
 
-If you're not planning on upstreaming this patch set, I'd appreciate
-your creating a topic branch with these two commits.
+I know that there is a test module with which we can test the new
+em_dev_update_perf_domain() together with CPU hotplug etc.
 
--- 
-thanks,
+What's missing is IMHO a test case showing the benefit of this new
+feature for at least one of the use-cases (1. - 3.) described above.
 
-Mimi
+Would it be possible to test a workload W at normal temperature with
+EM_1 then head up the system and use EM_2 and spot performance/energy
+consumption benefits against a vanilla system (case 1.) on Pixel6? This
+would actually proof that this more on code complexity pays off.
+
+--
+
+We know that Google uses something similar in there Android kernel for
+Pixel7 (CONFIG_PIXEL_EM). The EM is chosen from different EM profiles in
+find_energy_efficient_cpu() -> compute_energy() -> em_cpu_energy().
+
+In case we would have evidence that Google is switching their
+proprietary implementation to this mainline one in the Android kernel
+this would definitely also boost the confidence that we do need this
+feature in mainline right now.
+
+> Some design details:
+> The internal mechanisms for the memory allocation are handled internally in the 
+> EM. Kernel modules can just call the new API to update the EM data and the 
+> new memory would be provided and owned by the EM. The EM memory is used by
+> EAS, which impacts those design decisions. The EM writers are protected by
+> a mutex. This new runtime modified EM table is protected using RCU mechanism,
+> which fits the current EAS hot path (which already uses RCU read lock).
+> The unregister API handles only non-CPU (e.g. GPU, ISP) devices and uses the
+> same mutex as EM modifiers to make sure the memory is safely freed.
+> 
+> More detailed explanation and background can be found in presentations
+> during LPC2022 [1][2] or in the documentation patches.
+> 
+> The time cost to update EM for 11 OPPs can be found here [6]. It's roughly
+> 1.5us per 1 OPP while doing this on Little CPU at max frequency (1.8GHz).
+
+I would list those results in this cover letter in a processed form and
+also mention the target platform (Pixel6).
+
+[...]
 
