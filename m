@@ -2,222 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B624677DCD3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE3477DCD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243160AbjHPIyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 04:54:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57394 "EHLO
+        id S243167AbjHPIys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 04:54:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243157AbjHPIxo (ORCPT
+        with ESMTP id S243213AbjHPIyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 04:53:44 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B6F13D;
-        Wed, 16 Aug 2023 01:53:43 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37G7ldEF006071;
-        Wed, 16 Aug 2023 08:53:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=N8pAXBarq5a+zUCq5m202B9YAGdwbDmkS5Fv+6+22rc=;
- b=aeqk4pgmAYX09ogaQCoB/L5gNXDEKPkO2IASEC98MD81wkaLzbANXMMO/drPInjAFwNf
- JMpMnGAtFiZhszKSW2gs4I0wIdsgAFTvAeH25INfrLkazjvYF6SSsmvXl0eo+zwYN9ys
- HknKtK608XmqS1I4dtdVIzmYRb2AjL9Vgt4xnlrywxxdd8tV+x52y7SmrFjy0vYSIlmh
- BxCghT7jfsPYewuBSX3kzxNZHAkqxWi+xHXeDzWq3jJIxATHOZPnBGupn6UgkHq4sN2T
- QiQ5GU1OGUqekSK3uOLL4GgqxJjXa+3b5x8avKQpWr6Jtvqd1LpUIKT8SnHcmU27CzeY yQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sfuj8kac1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 08:53:36 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37G8rYX5026145
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 08:53:34 GMT
-Received: from [10.218.41.203] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 16 Aug
- 2023 01:53:28 -0700
-Message-ID: <2b61913c-d93b-af30-f75d-0958d912dc8f@quicinc.com>
-Date:   Wed, 16 Aug 2023 14:23:25 +0530
+        Wed, 16 Aug 2023 04:54:39 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0403610C8;
+        Wed, 16 Aug 2023 01:54:37 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RQhlW1Tnjz4f3jXm;
+        Wed, 16 Aug 2023 16:54:31 +0800 (CST)
+Received: from [10.174.179.247] (unknown [10.174.179.247])
+        by APP4 (Coremail) with SMTP id gCh0CgCXc6bEjtxkxHNZAw--.11704S3;
+        Wed, 16 Aug 2023 16:54:32 +0800 (CST)
+Message-ID: <6042c46d-72f1-6480-032d-1670916a734e@huaweicloud.com>
+Date:   Wed, 16 Aug 2023 16:54:28 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v1 3/3] PCI: qcom: Add OPP suuport for speed based
- performance state of RPMH
-Content-Language: en-US
-To:     Pavan Kondeti <quic_pkondeti@quicinc.com>
-CC:     <manivannan.sadhasivam@linaro.org>, <helgaas@kernel.org>,
-        <linux-pci@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
-        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
-        <quic_ramkri@quicinc.com>, <quic_parass@quicinc.com>,
-        <krzysztof.kozlowski@linaro.org>, Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-References: <1692102408-7010-1-git-send-email-quic_krichai@quicinc.com>
- <1692102408-7010-4-git-send-email-quic_krichai@quicinc.com>
- <076196e4-36e5-4a90-b3cc-b0ffd61627a3@quicinc.com>
-From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <076196e4-36e5-4a90-b3cc-b0ffd61627a3@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: FZitCQzzO_zTzkrRat30Q6w-7caZd3E1
-X-Proofpoint-GUID: FZitCQzzO_zTzkrRat30Q6w-7caZd3E1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-16_06,2023-08-15_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- spamscore=0 malwarescore=0 priorityscore=1501 phishscore=0
- lowpriorityscore=0 mlxlogscore=999 bulkscore=0 impostorscore=0
- clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308160078
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+ Thunderbird/91.10.0
+Subject: Re: [PATCH v4 0/4] block/badblocks: fix badblocks setting error
+To:     axboe@kernel.dk, vishal.l.verma@intel.com,
+        dan.j.williams@intel.com, ashok_raj@linux.intel.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
+        yangerkun@huawei.com
+References: <20230626080913.3493135-1-linan666@huaweicloud.com>
+From:   Li Nan <linan666@huaweicloud.com>
+In-Reply-To: <20230626080913.3493135-1-linan666@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgCXc6bEjtxkxHNZAw--.11704S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrKryxKw13ZF4rZF13GF1kGrg_yoWktFc_u3
+        yIyFyrGr4kXayfAay3tF15XrWIyF4UCr10kFyDtr4Sqr17tF4Utws5JrWDXwnxWF4kWwn8
+        Z3s5XryfXw1IqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbakYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l
+        5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67
+        AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
+        IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
+        MI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
+        WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3
+        Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8Jb
+        IYCTnIWIevJa73UjIFyTuYvjxUFfHjUUUUU
+X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Friendly ping.
 
-On 8/16/2023 11:54 AM, Pavan Kondeti wrote:
-> On Tue, Aug 15, 2023 at 05:56:48PM +0530, Krishna chaitanya chundru wrote:
->> Before link training vote for the maximum performance state of RPMH
->> and once the link is up, vote for the performance state based upon
->> the link speed.
->> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
->> ---
->>   drivers/pci/controller/dwc/pcie-qcom.c | 61 ++++++++++++++++++++++++++++++++++
->>   1 file changed, 61 insertions(+)
->>
->> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
->> index 7a87a47..e29a986 100644
->> --- a/drivers/pci/controller/dwc/pcie-qcom.c
->> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
->> @@ -22,6 +22,7 @@
->>   #include <linux/of_device.h>
->>   #include <linux/of_gpio.h>
->>   #include <linux/pci.h>
->> +#include <linux/pm_opp.h>
->>   #include <linux/pm_runtime.h>
->>   #include <linux/platform_device.h>
->>   #include <linux/phy/pcie.h>
->> @@ -1357,6 +1358,51 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
->>   	return 0;
->>   }
->>   
->> +static void qcom_pcie_opp_update(struct qcom_pcie *pcie)
->> +{
->> +	struct dw_pcie *pci = pcie->pci;
->> +	struct dev_pm_opp *opp;
->> +	u32 offset, status;
->> +	uint32_t freq;
->> +	int speed;
->> +	int ret = 0;
->> +
->> +	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
->> +	status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
->> +
->> +	/* Only update constraints if link is up. */
->> +	if (!(status & PCI_EXP_LNKSTA_DLLLA))
->> +		return;
->> +
->> +	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
->> +
->> +	switch (speed) {
->> +	case 1:
->> +		freq = 2500000;
->> +		break;
->> +	case 2:
->> +		freq = 5000000;
->> +		break;
->> +	case 3:
->> +		freq = 8000000;
->> +		break;
->> +	default:
->> +		WARN_ON_ONCE(1);
->> +		fallthrough;
->> +	case 4:
->> +		freq = 16000000;
->> +		break;
->> +	}
->> +
->> +	opp = dev_pm_opp_find_freq_exact(pci->dev, freq, true);
->> +
->> +	if (!IS_ERR(opp)) {
->> +		ret = dev_pm_opp_get_voltage(opp);
->> +		dev_pm_opp_put(opp);
->> +	}
->> +
-> Where are we setting the OPP here?
->
->> +}
->> +
->>   static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
->>   {
->>   	struct dw_pcie *pci = pcie->pci;
->> @@ -1439,8 +1485,10 @@ static void qcom_pcie_init_debugfs(struct qcom_pcie *pcie)
->>   static int qcom_pcie_probe(struct platform_device *pdev)
->>   {
->>   	const struct qcom_pcie_cfg *pcie_cfg;
->> +	unsigned long max_freq = INT_MAX;
->>   	struct device *dev = &pdev->dev;
->>   	struct qcom_pcie *pcie;
->> +	struct dev_pm_opp *opp;
->>   	struct dw_pcie_rp *pp;
->>   	struct resource *res;
->>   	struct dw_pcie *pci;
->> @@ -1511,6 +1559,17 @@ static int qcom_pcie_probe(struct platform_device *pdev)
->>   	if (ret)
->>   		goto err_pm_runtime_put;
->>   
->> +	/* OPP table is optional */
->> +	ret = devm_pm_opp_of_add_table(dev);
->> +	if (ret && ret != -ENODEV) {
->> +		dev_err(dev, "Invalid OPP table in Device tree\n");
->> +		goto err_pm_runtime_put;
->> +	}
->> +
->> +	opp = dev_pm_opp_find_freq_floor(dev, &max_freq);
->> +	if (!IS_ERR(opp))
->> +		dev_pm_opp_put(opp);
->> +
-> This OPP (corresponding to max freq) is not used, so how are we voting
-> for max perf state during probe?
->
->>   	ret = pcie->cfg->ops->get_resources(pcie);
->>   	if (ret)
->>   		goto err_pm_runtime_put;
->> @@ -1531,6 +1590,8 @@ static int qcom_pcie_probe(struct platform_device *pdev)
->>   
->>   	qcom_pcie_icc_update(pcie);
->>   
->> +	qcom_pcie_opp_update(pcie);
->> +
-> commit description says, OPP voting is done as per the link speed after
-> probe? I don't see any calls to qcom_pcie_opp_update() outside probe.
+在 2023/6/26 16:09, linan666@huaweicloud.com 写道:
+> From: Li Nan <linan122@huawei.com>
+> 
+> This patch series fixes some simple bugs of setting badblocks and
+> optimizing struct badblocks. Coly Li has been trying to refactor badblocks
+> in patch series "badblocks improvement for multiple bad block ranges"
+> (https://lore.kernel.org/all/20220721121152.4180-1-colyli@suse.de). but the
+> workload is significant. Before that, I will fix some easily triggered
+> issues and optimize some code that does not conflict with Coly's changes.
+> 
+> Changes in v4:
+>   - patch 1, remove the part of reorder fields
+>   - patch 3/4, improve commit log.
+> 
+> Changes in v3:
+>   - delete patchs with significant changes.
+> 
+> Li Nan (4):
+>    block/badblocks: change some members of badblocks to bool
+>    block/badblocks: only set bb->changed/unacked_exist when badblocks
+>      changes
+>    block/badblocks: fix badblocks loss when badblocks combine
+>    block/badblocks: fix the bug of reverse order
+> 
+>   include/linux/badblocks.h |  9 +++++----
+>   block/badblocks.c         | 38 ++++++++++++++++++++++----------------
+>   2 files changed, 27 insertions(+), 20 deletions(-)
+> 
 
-my mistake dev_pm_opp_set_opp somehow missed here I will update in next 
-patch.
+-- 
+Thanks,
+Nan
 
-- KC
-
->>   	if (pcie->mhi)
->>   		qcom_pcie_init_debugfs(pcie);
->>   
->>
-> Thanks,
-> Pavan
