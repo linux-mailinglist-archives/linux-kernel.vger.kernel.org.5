@@ -2,173 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 674AA77D96B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 06:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A73D77D96E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 06:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241763AbjHPE0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 00:26:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58234 "EHLO
+        id S241775AbjHPE15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 00:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241760AbjHPE0j (ORCPT
+        with ESMTP id S241768AbjHPE1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 00:26:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922EA2102
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 21:25:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692159947;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ip39erQL05vM1EfoUzr0gxFHM5VqQHryueh/4GpGeoc=;
-        b=S5Ve8nRei7fqlsTx4g+8pqjye5U10EiIXQh0bOKBAiSmVpO1UwId7qi9qhrCbYzH4+h0df
-        Dpk5xOsm01HyXMSXRcDdSS1FYQIs0XW+d59k9eEhXd3DlVdVBbct4LhM3k3ES/AT2M1aMQ
-        o6qcwmxYbCzs/q2/HqzD6oYlE8/MDcI=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-464-xX0HvtxcPAK6w-mzM8i2yQ-1; Wed, 16 Aug 2023 00:25:45 -0400
-X-MC-Unique: xX0HvtxcPAK6w-mzM8i2yQ-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-6418ba8ed7cso63262296d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 21:25:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692159945; x=1692764745;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ip39erQL05vM1EfoUzr0gxFHM5VqQHryueh/4GpGeoc=;
-        b=DFHcMzInUw/ul2cfzmRgzB7WfUE69AU0PdpqjKvWeZk/rXFJyUgTSMmgEetjufR1r/
-         sGi3OhL0RmPjsgYLVWY5acnCLIgodGVP054IWaRqegQJFDME69ZQTCiQT7Y+GYAyH7GH
-         vogwYrqrL3lYKT5+2oIdzFBPmkSoiUaBxVMkYtKsr9WOeiDRzO1YdpdzR7MoaoDDlsPJ
-         0qDDn7+nRGlymnf8GDv6dQ0oEwa82R12dGAX8nPZJV1fDP0ck35nXLYOfxmSpI0ezjo9
-         coJ27JsmZI0qdewIwWzSLY8EyO2g/fQWRo6J4BCXB4u03sRV7Db+bIhhSxEyd/lIfN23
-         j0Eg==
-X-Gm-Message-State: AOJu0Yy+GzKregfimrW/Fr+zxRIsmeNrMdvEx1qwyzgTwFG7t/sKPgpo
-        M8D95jAhIDFfSt3M1MR09a+T4kWqav7pr8OqAeG/V0p3CURBKhNnjZZRwDFoDl8Qk0aY+VxbgGp
-        JGL9cQRzYS0KOal3NfoLHiGgNE3hmxFtc
-X-Received: by 2002:a05:620a:bc8:b0:76c:de57:7b61 with SMTP id s8-20020a05620a0bc800b0076cde577b61mr973677qki.25.1692159945124;
-        Tue, 15 Aug 2023 21:25:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHGr6aYlrh82DZ/hL7UsMEar2vLjwlrqUpt6dQpM33QY1109L6Qr9W32PzkRFKCPIldoiLtsQ==
-X-Received: by 2002:a05:620a:bc8:b0:76c:de57:7b61 with SMTP id s8-20020a05620a0bc800b0076cde577b61mr973650qki.25.1692159944853;
-        Tue, 15 Aug 2023 21:25:44 -0700 (PDT)
-Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
-        by smtp.gmail.com with ESMTPSA id oq15-20020a05620a610f00b0076d4bb714afsm2579213qkn.50.2023.08.15.21.25.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 21:25:44 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 21:25:42 -0700
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     "zhangzekun (A)" <zhangzekun11@huawei.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>, will@kernel.org,
-        iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        john.g.garry@oracle.com, joro@8bytes.org
-Subject: Re: [PATCH 2/2] iommu/iova: Manage the depot list size
-Message-ID: <2eq236vycub7mrxlxos2dnbzgqptkeclbprsh6rsml64eoapdx@xumsokaj6rfy>
-References: <cover.1692033783.git.robin.murphy@arm.com>
- <abc5a322584f5c8a44f7a0a7f709899053c5df01.1692033783.git.robin.murphy@arm.com>
- <70e7dcc8-819f-d957-f43c-75b7818a3a96@huawei.com>
+        Wed, 16 Aug 2023 00:27:25 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 724FF210E;
+        Tue, 15 Aug 2023 21:27:22 -0700 (PDT)
+Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RQZnh3Z8tz1GDM1;
+        Wed, 16 Aug 2023 12:26:00 +0800 (CST)
+Received: from [10.67.110.218] (10.67.110.218) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 16 Aug 2023 12:27:20 +0800
+Message-ID: <8c853c0c-84f0-c8be-3020-561db6f87081@huawei.com>
+Date:   Wed, 16 Aug 2023 12:27:20 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH] tracing: Fix memleak due to race between current_tracer
+ and trace
+Content-Language: en-US
+From:   Zheng Yejian <zhengyejian1@huawei.com>
+To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>
+CC:     <fweisbec@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>
+References: <20230808092905.2936459-1-zhengyejian1@huawei.com>
+ <32583a11-9cbd-9b4d-34be-551babed6f51@huawei.com>
+In-Reply-To: <32583a11-9cbd-9b4d-34be-551babed6f51@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <70e7dcc8-819f-d957-f43c-75b7818a3a96@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.110.218]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 10:11:51PM +0800, zhangzekun (A) wrote:
+On 2023/8/16 09:45, Zheng Yejian wrote:
+> On 2023/8/8 17:29, Zheng Yejian wrote:
+>> Kmemleak report a leak in graph_trace_open():
+>>
+>>    unreferenced object 0xffff0040b95f4a00 (size 128):
+>>      comm "cat", pid 204981, jiffies 4301155872 (age 99771.964s)
+>>      hex dump (first 32 bytes):
+>>        e0 05 e7 b4 ab 7d 00 00 0b 00 01 00 00 00 00 00 .....}..........
+>>        f4 00 01 10 00 a0 ff ff 00 00 00 00 65 00 10 00 ............e...
+>>      backtrace:
+>>        [<000000005db27c8b>] kmem_cache_alloc_trace+0x348/0x5f0
+>>        [<000000007df90faa>] graph_trace_open+0xb0/0x344
+>>        [<00000000737524cd>] __tracing_open+0x450/0xb10
+>>        [<0000000098043327>] tracing_open+0x1a0/0x2a0
+>>        [<00000000291c3876>] do_dentry_open+0x3c0/0xdc0
+>>        [<000000004015bcd6>] vfs_open+0x98/0xd0
+>>        [<000000002b5f60c9>] do_open+0x520/0x8d0
+>>        [<00000000376c7820>] path_openat+0x1c0/0x3e0
+>>        [<00000000336a54b5>] do_filp_open+0x14c/0x324
+>>        [<000000002802df13>] do_sys_openat2+0x2c4/0x530
+>>        [<0000000094eea458>] __arm64_sys_openat+0x130/0x1c4
+>>        [<00000000a71d7881>] el0_svc_common.constprop.0+0xfc/0x394
+>>        [<00000000313647bf>] do_el0_svc+0xac/0xec
+>>        [<000000002ef1c651>] el0_svc+0x20/0x30
+>>        [<000000002fd4692a>] el0_sync_handler+0xb0/0xb4
+>>        [<000000000c309c35>] el0_sync+0x160/0x180
+>>
+>> The root cause is descripted as follows:
+>>
+>>    __tracing_open() {  // 1. File 'trace' is being opened;
+>>      ...
+>>      *iter->trace = *tr->current_trace;  // 2. Tracer 'function_graph' is
+>>                                          //    currently set;
+>>      ...
+>>      iter->trace->open(iter);  // 3. Call graph_trace_open() here,
+>>                                //    and memory are allocated in it;
+>>      ...
+>>    }
+>>
+>>    s_start() {  // 4. The opened file is being read;
+>>      ...
+>>      *iter->trace = *tr->current_trace;  // 5. If tracer is switched to
+>>                                          //    'nop' or others, then 
+>> memory
+>>                                          //    in step 3 are leaked!!!
+>>      ...
+>>    }
+>>
+>> To fix it, in s_start(), close tracer before switching then reopen the
+>> new tracer after switching.
+>>
+>> Fixes: d7350c3f4569 ("tracing/core: make the read callbacks reentrants")
+>> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+>> ---
+>>   kernel/trace/trace.c | 9 ++++++++-
+>>   1 file changed, 8 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+>> index b8870078ef58..d50a0227baa3 100644
+>> --- a/kernel/trace/trace.c
+>> +++ b/kernel/trace/trace.c
+>> @@ -4213,8 +4213,15 @@ static void *s_start(struct seq_file *m, loff_t 
+>> *pos)
+>>        * will point to the same string as current_trace->name.
+>>        */
+>>       mutex_lock(&trace_types_lock);
+>> -    if (unlikely(tr->current_trace && iter->trace->name != 
+>> tr->current_trace->name))
+>> +    if (unlikely(tr->current_trace && iter->trace->name != 
+>> tr->current_trace->name)) {
+>> +        /* Close iter->trace before switching to the new current 
+>> tracer */
+>> +        if (iter->trace->close)
+>> +            iter->trace->close(iter);
 > 
+> Hi, kasan report an issue related to this patch in v5.10, I'll handle
+> it and then send V2 if the patch needs to be changed.
 > 
-> 在 2023/8/15 1:53, Robin Murphy 写道:
-> > Automatically scaling the depot up to suit the peak capacity of a
-> > workload is all well and good, but it would be nice to have a way to
-> > scale it back down again if the workload changes. To that end, add
-> > automatic reclaim that will gradually free unused magazines if the
-> > depot size remains above a reasonable threshold for long enough.
-> > 
-> > Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-> > ---
-> >   drivers/iommu/iova.c | 29 +++++++++++++++++++++++++++++
-> >   1 file changed, 29 insertions(+)
-> > 
-> > diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-> > index d2de6fb0e9f4..76a7d694708e 100644
-> > --- a/drivers/iommu/iova.c
-> > +++ b/drivers/iommu/iova.c
-> > @@ -11,6 +11,7 @@
-> >   #include <linux/smp.h>
-> >   #include <linux/bitops.h>
-> >   #include <linux/cpu.h>
-> > +#include <linux/workqueue.h>
-> >   /* The anchor node sits above the top of the usable address space */
-> >   #define IOVA_ANCHOR	~0UL
-> > @@ -626,6 +627,8 @@ EXPORT_SYMBOL_GPL(reserve_iova);
-> >    */
-> >   #define IOVA_MAG_SIZE 127
-> > +#define IOVA_DEPOT_DELAY msecs_to_jiffies(100)
-> > +
-> >   struct iova_magazine {
-> >   	/*
-> >   	 * Only full magazines are inserted into the depot, so we can avoid
-> > @@ -646,8 +649,11 @@ struct iova_cpu_rcache {
-> >   struct iova_rcache {
-> >   	spinlock_t lock;
-> > +	unsigned int depot_size;
-> >   	struct iova_magazine *depot;
-> >   	struct iova_cpu_rcache __percpu *cpu_rcaches;
-> > +	struct iova_domain *iovad;
-> > +	struct delayed_work work;
-> >   };
-> >   static struct iova_magazine *iova_magazine_alloc(gfp_t flags)
-> > @@ -728,6 +734,7 @@ static struct iova_magazine *iova_depot_pop(struct iova_rcache *rcache)
-> >   	rcache->depot = mag->next;
-> >   	mag->size = IOVA_MAG_SIZE;
-> > +	rcache->depot_size--;
-> >   	return mag;
-> >   }
-> > @@ -735,6 +742,24 @@ static void iova_depot_push(struct iova_rcache *rcache, struct iova_magazine *ma
-> >   {
-> >   	mag->next = rcache->depot;
-> >   	rcache->depot = mag;
-> > +	rcache->depot_size++;
-> > +}
-> > +
-> > +static void iova_depot_work_func(struct work_struct *work)
-> > +{
-> > +	struct iova_rcache *rcache = container_of(work, typeof(*rcache), work.work);
-> > +	struct iova_magazine *mag = NULL;
-> > +
-> > +	spin_lock(&rcache->lock);
-> > +	if (rcache->depot_size > num_online_cpus())
-> > +		mag = iova_depot_pop(rcache);
-> > +	spin_unlock(&rcache->lock);
-> > +
-> > +	if (mag) {
-> > +		iova_magazine_free_pfns(mag, rcache->iovad);
-> > +		iova_magazine_free(mag);
-> > +		schedule_delayed_work(&rcache->work, msecs_to_jiffies(IOVA_DEPOT_DELAY));
-> Hi, Robin,
+>    BUG: KASAN: use-after-free in graph_trace_close+0x78/0x7c
+>    Read of size 8 at addr ffff204054ca8f00 by task cat/193541
+>    [...]
+>    Call trace:
+>     dump_backtrace+0x0/0x3e4
+>     show_stack+0x20/0x2c
+>     dump_stack+0x140/0x198
+>     print_address_description.constprop.0+0x2c/0x1fc
+>     __kasan_report+0xe0/0x140
+>     kasan_report+0x44/0x5c
+>     __asan_report_load8_noabort+0x34/0x60
+>     graph_trace_close+0x78/0x7c
+>     wakeup_trace_close+0x3c/0x54
+>     s_start+0x4f4/0x794
+>     seq_read_iter+0x210/0xd90
+>     seq_read+0x288/0x410
+>     vfs_read+0x13c/0x41c
+>     ksys_read+0xf4/0x1e0
+>     __arm64_sys_read+0x74/0xa4
+>     el0_svc_common.constprop.0+0xfc/0x394
+>     do_el0_svc+0xac/0xec
+>     el0_svc+0x20/0x30
+>     el0_sync_handler+0xb0/0xb4
+>     el0_sync+0x160/0x180
 > 
-> I am a little confused why IOVA_DEPOT_DELAY need to be calculated twice in
-> iova_depot_work_func(), as it already equals to "msecs_to_jiffies(100)".
+>    Allocated by task 193541:
+>     kasan_save_stack+0x28/0x60
+>     __kasan_kmalloc.constprop.0+0xa4/0xd0
+>     kasan_kmalloc+0x10/0x20
+>     kmem_cache_alloc_trace+0x2ec/0x5f0
+>     graph_trace_open+0xb0/0x344
+>     __tracing_open+0x450/0xb10
+>     tracing_open+0x1a0/0x2a0
+>     do_dentry_open+0x3c0/0xdc0
+>     vfs_open+0x98/0xd0
+>     do_open+0x520/0x8d0
+> 
 
-I think it was a typo, and is meant to be IOVA_DEPOT_DELAY like it is in
-__iova_rcache_insert.
+The root cause should be that:
+   1. As __tracing_open() being called, function graph tracer is set,
+      then graph_trace_open() is called;
+   2. As s_start() being called, switch to wakeup tracer, then
+      graph_trace_close() is called, here 'iter->private' is not cleared.
+      Then wakeup_trace_open() is called, and if graph_trace_open() is
+      not called by it due to is_graph(iter->tr) returns false;
+   3. As next time s_start() being called, if tracer switched again then
+      wakeup_trace_close() is called and it mistakenly close the
+      'iter->private' in step 2 which finally causes kasan do the report.
 
-Regards,
-Jerry
+So we may also need to set 'iter->private' to be NULL in
+graph_trace_close(), I'll send v2 soon.
 
-> Besides, do we really need to invoke a delayed_work in
-> iova_depot_work_func()? As each time we put a iova magazine to depot, a
-> delayed_work will be invoked which is reponsible to free a iova magazine in
-> depot if the depot size is greater than num_online_cpus().
+--- a/kernel/trace/trace_functions_graph.c
++++ b/kernel/trace/trace_functions_graph.c
+@@ -1244,6 +1244,7 @@ void graph_trace_close(struct trace_iterator *iter)
+         if (data) {
+                 free_percpu(data->cpu_data);
+                 kfree(data);
++               iter->private = NULL;
+         }
+  }
+
+-- Zheng Yejian
+
+>>           *iter->trace = *tr->current_trace;
+>> +        /* Reopen the new current tracer */
+>> +        if (iter->trace->open)
+>> +            iter->trace->open(iter);
+>> +    }
+>>       mutex_unlock(&trace_types_lock);
+>>   #ifdef CONFIG_TRACER_MAX_TRACE
 > 
-> Thanks,
-> Zekun
+> 
 
