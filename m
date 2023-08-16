@@ -2,103 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E08677EC39
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7489477EC5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346667AbjHPVuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 17:50:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
+        id S1346737AbjHPV4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 17:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346666AbjHPVtz (ORCPT
+        with ESMTP id S1346701AbjHPV4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 17:49:55 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC58271D
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:49:54 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d1c693a29a0so8037116276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:49:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692222593; x=1692827393;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GvRFojY4ZPxhLxJxPJp9kdBhD+0BLzra773t2FQ2yTE=;
-        b=wWcZFTT8vxfvGkzlVbDIOEF8n/eaS3Hra04YiDrWv6UlfylY0i2N4j5i/VEaHMKVH+
-         /a7HfzeKcwecHhJKrmvuIwYhRhx7GCjWGNv08XiuTJxRRCUbViWcx+uojc9VfMp0ueVg
-         16N2v9fH1E/H7ZsWBqVhERW7G0dGmO/8z5ffhXyqF0cOKPk+3q6FqDP2A3nf41D4FJxK
-         ztGBQ1o7E8POXSoqi2OGGILguKT87JnuJejNlh0i7DJPHE+XfgDfeU9bSBnhiUi8ErQU
-         BNf/fZv5NIacObcMfkY9MYA6o4qjVwuLWO6f6Lw6hWndKpn5feqqh1ZJyH58TwYpaOn6
-         Rk4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692222593; x=1692827393;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GvRFojY4ZPxhLxJxPJp9kdBhD+0BLzra773t2FQ2yTE=;
-        b=jypgAHHDU0iXVbrW4NlxewzvjocEjdgrvtZ6Kd7VOCE4HKl2tA9zBvzH4MEK0I0aL2
-         lrrVG+DkuvFM/IK4Dsnek58rXwEvwlArp3R8uvt92kqf86iN9tHAqonhcQgEfizUyIBP
-         nkpV9U7evFOCnvQevFMhxlmULjn0wzoSVmxbQhAskJyZKt7j9xDPOoBIWsx/Al9p38t4
-         cQVkzM63OdEiUtZ/NFzENTsklcaZMNd/IKG7XqpqSGJum/uSjaSXIruIgDGVtmcnLsc5
-         a0Da1BeWvTftlGt1Xa5ECs/e5AJOyYNj953jzE7ohP5Yi2MvamHnoIG15aM0tdLxVf4W
-         FaNQ==
-X-Gm-Message-State: AOJu0YyaUI6jrVE60C3BYhfrD6bnNGnbdEYqnmOW4ods6saZxVCs5LfD
-        B7h82cwG7C1ZvxxufD/KEwpM1EjnrBY=
-X-Google-Smtp-Source: AGHT+IFKPz1foqDJAhh6UiyGPAL2mjKbfE9CCla+q1Q/LHPV+6Wvp3iYQOs5ByE0HeluDfYDwIhhzs/PMck=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1609:b0:d07:7001:495b with SMTP id
- bw9-20020a056902160900b00d077001495bmr48522ybb.11.1692222593583; Wed, 16 Aug
- 2023 14:49:53 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 14:49:52 -0700
-In-Reply-To: <20230719144131.29052-9-binbin.wu@linux.intel.com>
-Mime-Version: 1.0
-References: <20230719144131.29052-1-binbin.wu@linux.intel.com> <20230719144131.29052-9-binbin.wu@linux.intel.com>
-Message-ID: <ZN1EgJwQc33jLd6W@google.com>
-Subject: Re: [PATCH v10 8/9] KVM: x86: Untag address for vmexit handlers when
- LAM applicable
-From:   Sean Christopherson <seanjc@google.com>
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
-        David.Laight@aculab.com, robert.hu@linux.intel.com,
-        guang.zeng@intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Wed, 16 Aug 2023 17:56:30 -0400
+Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB842713;
+        Wed, 16 Aug 2023 14:56:29 -0700 (PDT)
+Received: from pps.filterd (m0134424.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37GLanZe005975;
+        Wed, 16 Aug 2023 21:56:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : subject :
+ date : message-id; s=pps0720;
+ bh=i1BmpRUKXdmLHDvzaZaflfFYI2wT+wgud90i3UccK8o=;
+ b=TEoAUcDxRFw3Egy+F3ZfYpJGAY5n17k8HuhhGumBkcRdInszctFTmCyl21t53p9HZwVO
+ 95Y+itsRBC70vkFtn+b9cN+aHzsvh+CNBcM1jdw1PdwirC8edT9dU9T/5Y1i8wKmGT6x
+ TAvdvGdYrmUlP9fl87G67MhsBSUhVH1LnfQxnqUYvV8SKgle4nZXPB2b/PzOJ2Ua2Ppx
+ uuwvO71+7RXEuRA9OOOnzIwM4PNPRNBUQpPSfb09SxwoYCND37fffQfj+WdSblEt0wUK
+ 4Vvotb/Y+1+5aN/B2tJ69tUMhnv3cx+BGdzQHMzrJJqw6YyVr3NE9ykwFF6W40Iy6usm Cg== 
+Received: from p1lg14878.it.hpe.com ([16.230.97.204])
+        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3sh0y039d0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 21:56:17 +0000
+Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by p1lg14878.it.hpe.com (Postfix) with ESMTPS id 684C6D2E3;
+        Wed, 16 Aug 2023 21:55:45 +0000 (UTC)
+Received: from hpe.com (unknown [16.231.227.39])
+        by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTP id 71CBE80BA10;
+        Wed, 16 Aug 2023 21:55:38 +0000 (UTC)
+From:   nick.hawkins@hpe.com
+To:     christophe.jaillet@wanadoo.fr, simon.horman@corigine.com,
+        andrew@lunn.ch, verdun@hpe.com, nick.hawkins@hpe.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/5] ARM: Add GXP UMAC Support
+Date:   Wed, 16 Aug 2023 16:52:15 -0500
+Message-Id: <20230816215220.114118-1-nick.hawkins@hpe.com>
+X-Mailer: git-send-email 2.17.1
+X-Proofpoint-GUID: O7j7x0tS138nYGoWCPcCQQzPFFKPNzf3
+X-Proofpoint-ORIG-GUID: O7j7x0tS138nYGoWCPcCQQzPFFKPNzf3
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-16_19,2023-08-15_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 mlxlogscore=999 mlxscore=0 malwarescore=0
+ impostorscore=0 clxscore=1015 priorityscore=1501 adultscore=0 spamscore=0
+ phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308160196
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023, Binbin Wu wrote:
-> index abf6d42672cd..f18e610c4363 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -8177,8 +8177,7 @@ static void vmx_vm_destroy(struct kvm *kvm)
->  	free_pages((unsigned long)kvm_vmx->pid_table, vmx_get_pid_table_order(kvm));
->  }
->  
-> -static gva_t vmx_get_untagged_addr(struct kvm_vcpu *vcpu, gva_t gva,
-> -			    unsigned int flags)
-> +gva_t vmx_get_untagged_addr(struct kvm_vcpu *vcpu, gva_t gva, unsigned int flags)
->  {
->  	unsigned long cr3_bits;
->  	int lam_bit;
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index 32384ba38499..6fb612355769 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -421,6 +421,8 @@ void vmx_enable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type);
->  u64 vmx_get_l2_tsc_offset(struct kvm_vcpu *vcpu);
->  u64 vmx_get_l2_tsc_multiplier(struct kvm_vcpu *vcpu);
->  
-> +gva_t vmx_get_untagged_addr(struct kvm_vcpu *vcpu, gva_t gva, unsigned int flags);
-> +
+From: Nick Hawkins <nick.hawkins@hpe.com>
 
-I think it makes sense to squash this with whatever patch first adds
-vmx_get_untagged_addr().  It'll make that initial "virtual LAM_*" patch a fair
-bit bigger, but overall I think the series/patches will be easier to review,
-e.g. the rules for LAM_SUP will mostly be captured in a single patch.
+The GXP contains two Ethernet MACs that can be
+connected externally to several physical devices. From an external
+interface perspective the BMC provides two SERDES interface connections
+capable of either SGMII or 1000Base-X operation. The BMC also provides
+a RMII interface for sideband connections to external Ethernet controllers.
 
-One could even make an argument for squashing LAM_U* support with the LAM_SUP
-patch, but my vote is to keep them separate.
+The primary MAC (umac0) can be mapped to either SGMII/1000-BaseX
+SERDES interface.  The secondary MAC (umac1) can be mapped to only
+the second SGMII/1000-Base X Serdes interface or it can be mapped for
+RMII sideband.
+
+The MDIO(mdio0) interface from the primary MAC (umac0) is used for
+external PHY status. The MDIO(mdio1) interface from
+the secondary MAC (umac1) is routed to the SGMII/100Base-X IP blocks
+on the two SERDES interface connections. In most cases the internal
+phy connects directly to the external phy.
+
+---
+
+Changes since v2:
+ *Removed PHY Configuration from MAC driver to Bootloader
+ *Fixed several issues with the Kconfig and Makefile for both
+  the mdio and umac driver.
+ *Fixed code alignment where applicable
+ *Removed MDIO from MAC yaml.
+ *Added description to explain the use-ncsi use case.
+ *Removed multiple unecessary functions and function calls
+  from MAC driver
+
+Changes since v1:
+ *Corrected improper descriptions and use of | in yaml files
+ *Used reverse christmas tree format for network drivers
+ *Moved gxp-umac-mdio.c to /mdio/
+ *Fixed dependencies on both Kconfigs
+ *Added COMPILE_TEST to both Kconfigs
+ *Used devm_ functions where possible in both drivers
+ *Moved mac-address to inside of port in yaml files
+ *Exchanged listing individual yaml files for hpe,gxp*
+ *Restricted use of le32
+
+Nick Hawkins (5):
+  dt-bindings: net: Add HPE GXP UMAC MDIO
+  net: hpe: Add GXP UMAC MDIO
+  dt-bindings: net: Add HPE GXP UMAC
+  net: hpe: Add GXP UMAC Driver
+  MAINTAINERS: HPE: Add GXP UMAC Networking Files
+
+ .../bindings/net/hpe,gxp-umac-mdio.yaml       |  50 ++
+ .../devicetree/bindings/net/hpe,gxp-umac.yaml |  97 +++
+ MAINTAINERS                                   |   2 +
+ drivers/net/ethernet/Kconfig                  |   1 +
+ drivers/net/ethernet/Makefile                 |   1 +
+ drivers/net/ethernet/hpe/Kconfig              |  32 +
+ drivers/net/ethernet/hpe/Makefile             |   1 +
+ drivers/net/ethernet/hpe/gxp-umac.c           | 759 ++++++++++++++++++
+ drivers/net/ethernet/hpe/gxp-umac.h           |  89 ++
+ drivers/net/mdio/Kconfig                      |  13 +
+ drivers/net/mdio/Makefile                     |   1 +
+ drivers/net/mdio/mdio-gxp-umac.c              | 142 ++++
+ 12 files changed, 1188 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/hpe,gxp-umac-mdio.yaml
+ create mode 100644 Documentation/devicetree/bindings/net/hpe,gxp-umac.yaml
+ create mode 100644 drivers/net/ethernet/hpe/Kconfig
+ create mode 100644 drivers/net/ethernet/hpe/Makefile
+ create mode 100644 drivers/net/ethernet/hpe/gxp-umac.c
+ create mode 100644 drivers/net/ethernet/hpe/gxp-umac.h
+ create mode 100644 drivers/net/mdio/mdio-gxp-umac.c
+
+-- 
+2.17.1
+
