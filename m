@@ -2,74 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E4077E19C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 14:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CD777E19E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 14:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245173AbjHPM2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 08:28:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45772 "EHLO
+        id S245198AbjHPM2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 08:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245297AbjHPM2Y (ORCPT
+        with ESMTP id S245271AbjHPM2P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 08:28:24 -0400
-Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FEF3270E
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:27:57 -0700 (PDT)
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RQnTH60S9zBZ;
-        Wed, 16 Aug 2023 14:27:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1692188851; bh=ZoZ74Qt7gAfxTdmWNwTdEhvWfKZGk4ZFTxTG8dPs4zA=;
-        h=Date:From:Subject:To:Cc:From;
-        b=pV9Jn9RXX6WjAGPqgR4EUTdzAOuRu3DC5xsMjZbZlocF4y4liLkPh88mB4hbAfm3q
-         F9ZZZ1tSUMK4Im9KwB9Hk90lnyTHSQ70gJt7z096lXJE6XzAJpiIqHdsSM789vLnb0
-         yJ+zA74YnhWIdijH7kcNo4EoxIxnjdPmF6M8K+kArqlYUEbUNHt27lUkYF8V8NB2EQ
-         nuTnhWEN2YdXeffNy6ud6+7Yphb1ZDllT62dhcA9I17KkQC01LfCgJuqj9uJ4WoIK/
-         ZrkhwM0cylGg2t/cCQuB9ThGrmsb2NnNSv7gbLSpmcSYdwyGF6RcKm3SsXyvoLU/4m
-         0N9OR/8gXoF+A==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.8 at mail
-Date:   Wed, 16 Aug 2023 14:27:31 +0200
-Message-Id: <aa8de668f39f76c98e443c7cce2834e813807111.1692188782.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH] mfd: core: Un-constify mfd_cell.of_reg
+        Wed, 16 Aug 2023 08:28:15 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5ED62D7C
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:27:50 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99bf1f632b8so906113566b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:27:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1692188867; x=1692793667;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=aaCcsSxEpyyqDlzbXB5HOjQbGizw0wp80mopcOcdi0M=;
+        b=hMjB0UzncaxXwNyO/6mAQIWoL8eI9H/wuORRT+ykfvjKMRGhelkIBJ0FeOAK98QfFj
+         6ugSNV9MPsdU+RvWFY3NcLCp8Cwe0cL1PvY/9OnmJm1kU9YIi4/r+79pmkAKx6NngaVj
+         I/Qksm5+Ox7lTjTt+d7WbvJ0unewmIt4GL1kg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692188867; x=1692793667;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aaCcsSxEpyyqDlzbXB5HOjQbGizw0wp80mopcOcdi0M=;
+        b=GWIouG/mPz2uSfAy+G0L5/FPMCKyP+rjhjb++9lESdbq96w1/ilGX5OAM0Crm0Faoe
+         QVaYCjurzvXQbY/5H1ngsRo3H2FRx3QWAib8H9F//MmHNInViFV2JJYxbVrGNRQniNmf
+         zjRtCjtoRDcdHkzLfyUfcnerFn3GgtGgvShExtoNEMX6+Wg5NOIlFlbZmN824mf/9jsi
+         OCoL3xu8bBEHo5/wP1L12A8pzaZfOzijjDUZ0pv+Qo+aF3qOFud2rSxIDIr9H8Ogf/fV
+         9S7bE4l19RrgDQg7tXJloBmBqXntGw3ljXAdG1QHeKglWvGfnbsRftoz8A4Ax5lyn/G3
+         LcYA==
+X-Gm-Message-State: AOJu0YxR6tF8l+9Uz02ph5nh3Ivqe4OfMAG43K+ybK2FVR5paJdd84zl
+        PyLk0EHoiuQks72eYCYPx+tHTzhewzqWAbntIjHy1g==
+X-Google-Smtp-Source: AGHT+IFEJjQsMHwnxXfKTZ7htXSjeP5q0ZYCuaZN8uFVfqYiUPc7DgSetH5Qj6mp/A267t0Kgo6sMlUQkl9GXMvZHvk=
+X-Received: by 2002:a17:906:ae88:b0:99c:6312:73ca with SMTP id
+ md8-20020a170906ae8800b0099c631273camr1317797ejb.71.1692188867145; Wed, 16
+ Aug 2023 05:27:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     Lee Jones <lee@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230711043405.66256-1-zhangjiachen.jaycee@bytedance.com> <20230711043405.66256-3-zhangjiachen.jaycee@bytedance.com>
+In-Reply-To: <20230711043405.66256-3-zhangjiachen.jaycee@bytedance.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 16 Aug 2023 14:27:35 +0200
+Message-ID: <CAJfpegtVQywX28=H+msmkcjaELpfQr6_UdvNZdCN3_B8KCfYTA@mail.gmail.com>
+Subject: Re: [PATCH 2/5] fuse: invalidate dentry on EEXIST creates or ENOENT deletes
+To:     Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-fsdevel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        me@jcix.top
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-of_reg is the only constant member of struct mfd_cell. It seems to be
-accidental and prevents dynamically filling in mfd_cells that use of_reg.
-Remove the `const`.
+On Tue, 11 Jul 2023 at 06:36, Jiachen Zhang
+<zhangjiachen.jaycee@bytedance.com> wrote:
+>
+> The EEXIST errors returned from server are strong sign that a local
+> negative dentry should be invalidated. Similarly, The ENOENT errors from
+> server can also be a sign of revalidate failure. This commit invalidates
+> dentries on EEXIST creates and ENOENT deletes by calling
+> fuse_invalidate_entry(), which improves the consistency with no
+> performance degradation.
 
-Fixes: 466a62d7642f ("mfd: core: Make a best effort attempt to match devices with the correct of_nodes")
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
----
- include/linux/mfd/core.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Applied, thanks.
 
-diff --git a/include/linux/mfd/core.h b/include/linux/mfd/core.h
-index 47e7a3a61ce6..e8bcad641d8c 100644
---- a/include/linux/mfd/core.h
-+++ b/include/linux/mfd/core.h
-@@ -92,7 +92,7 @@ struct mfd_cell {
- 	 * (above) when matching OF nodes with devices that have identical
- 	 * compatible strings
- 	 */
--	const u64 of_reg;
-+	u64 of_reg;
- 
- 	/* Set to 'true' to use 'of_reg' (above) - allows for of_reg=0 */
- 	bool use_of_reg;
--- 
-2.39.2
-
+Miklos
