@@ -2,138 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E5C77E093
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410B477E09E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244569AbjHPLiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 07:38:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42296 "EHLO
+        id S244684AbjHPLjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 07:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244690AbjHPLho (ORCPT
+        with ESMTP id S244703AbjHPLjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 07:37:44 -0400
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D137CE7C
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 04:37:43 -0700 (PDT)
-Received: by mail-vk1-xa2e.google.com with SMTP id 71dfb90a1353d-48713d11531so4120566e0c.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 04:37:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692185863; x=1692790663;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gkniGw8X60dZGG0/2QwYml0OEv6BpB8eq/BnoakL6l8=;
-        b=KCefl4EeF0bE09011/E1zvYnnZv31+reSVQfTbVywg473EQH9YWm/LbD929FyieFdh
-         1HNKB9dztsgryIF+NPzK3ZZNNYW+5bFPZpJwA7dJg6AtLmnwY5ZWoFDpgvL8cFwH72ju
-         hB0Q/8VrJUhJXBt17KIhYUN6fKuC2rLlv/Nb4IICv1vANvz0QSCFsPPIdHVsGtv//nmF
-         ITy9aghDGb8SVe8udkPAETFFX3qBGAorg40kra7QFbT0/FIdnltQWYYzIQfR1Alvm0QL
-         CxjmhAE5ZtpSMsF3F1vKjUDpu9kCnyjQFTKSjCjryuF0ZljGP6YlJqRD7AjCvnxJpkfK
-         78rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692185863; x=1692790663;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gkniGw8X60dZGG0/2QwYml0OEv6BpB8eq/BnoakL6l8=;
-        b=DrmmWEecr27Z6CNbHStcgGgqPcdMECrDZyn8+Wou8G5wXUDte2iI2YMGL6BJDLtQfE
-         GjwyfsVfe/BsPI2MFm3Fk1tItRGGw2Vy47n2vJ15kzLlGnnLMM6/12LO62A4T3rJE+0P
-         o2rCzKmxN1yxPIq+DODYgGB2icM0OD63aKvWqPVax5XS7A+cewR5izPFklxS6NQd6kc/
-         1ena8zP2uBRjPbmHRdf1LNRTyXM2wp+rqnhWiTzMyCqf5jM8TWs4won56zH3NShgHO1w
-         rQzipG14S8dNyL0uNs6MoklQX+aimoOLhjwZbyxfjGP3RZbSO5jDyWHHcLHyrzmZ5pxn
-         WbDA==
-X-Gm-Message-State: AOJu0YwBj+ZUgWJOjDoduWUz5rg4Ju/ZoSbLzfFRpW9IWp7/bNDOTssO
-        NcPVMIx4jdqvKl3KEbtSiMLEo3HVKXUl6dxmNmD8Mg==
-X-Google-Smtp-Source: AGHT+IFDwRo5f/VSRlfWrbcO2BNZxwsIUB6eqolmB8bXeSu+qTy0BzDKtb+TQUJi1yzWVPIKFOsaPkl3DiOc0yAqx8E=
-X-Received: by 2002:a1f:a4c1:0:b0:481:5218:ad27 with SMTP id
- n184-20020a1fa4c1000000b004815218ad27mr2568426vke.3.1692185862866; Wed, 16
- Aug 2023 04:37:42 -0700 (PDT)
+        Wed, 16 Aug 2023 07:39:45 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CF4138;
+        Wed, 16 Aug 2023 04:39:41 -0700 (PDT)
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37G8qjjf002232;
+        Wed, 16 Aug 2023 13:39:12 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=a8L54AqLoW+YCVf5muWdGfhIDNv/gOLzOo4eeextb24=; b=wT
+        sLsklvobkJHK4RDIIDi6CiH/ENfG3+EN25t25S77kRYign479HodC8eXywKBES7Q
+        0dN/h3NwCc1z6d6DRWBXVLe9YOmNnmAKfpYE81/58s2fV/03+K7wnlP5kAdbbPmv
+        EGuedlynJi69hHWc3hcgTbgYy+7yfOHTXE3YqnA+GLf2qZv3fUI1VuKV+1rOWNQJ
+        ljsHcjSyf1YPDxtMdgIB0GluU1c5iXD3OIzABKdylWkqCXVBQ9MDrla+kCWWzmHe
+        9nBdmGlWbSLgeSEIlAgGb5MAd0TYwZEciEcu3HGDPfcdVayltHPvn3u+f059hHBZ
+        az2q+V1rEejY6dn8kGnA==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3sgth61d4g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 13:39:11 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D68E9100064;
+        Wed, 16 Aug 2023 13:39:09 +0200 (CEST)
+Received: from Webmail-eu.st.com (eqndag1node4.st.com [10.75.129.133])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id CB7F22309FB;
+        Wed, 16 Aug 2023 13:39:09 +0200 (CEST)
+Received: from [10.201.21.122] (10.201.21.122) by EQNDAG1NODE4.st.com
+ (10.75.129.133) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 16 Aug
+ 2023 13:39:08 +0200
+Message-ID: <e0e35593-bccc-4959-1de6-07062849ccf5@foss.st.com>
+Date:   Wed, 16 Aug 2023 13:39:07 +0200
 MIME-Version: 1.0
-References: <20230811193034.59124-1-brgl@bgdev.pl>
-In-Reply-To: <20230811193034.59124-1-brgl@bgdev.pl>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 16 Aug 2023 13:37:32 +0200
-Message-ID: <CAMRc=MdeG2S=HSc0TY03nXX_hSnBLp7ywTSa2=xwTXWDTZqb=Q@mail.gmail.com>
-Subject: Re: [PATCH v3] gpiolib: fix reference leaks when removing GPIO chips
- still in use
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 0/4] STM32MP13x expose SCMI regulators
+Content-Language: en-US
+To:     <p.paillet@foss.st.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Etienne Carriere <etienne.carriere@foss.st.com>
+References: <20230712142432.1885162-1-p.paillet@foss.st.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+In-Reply-To: <20230712142432.1885162-1-p.paillet@foss.st.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.201.21.122]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To EQNDAG1NODE4.st.com
+ (10.75.129.133)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-16_10,2023-08-15_02,2023-05-22_02
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 9:30=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
- wrote:
->
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> After we remove a GPIO chip that still has some requested descriptors,
-> gpiod_free_commit() will fail and we will never put the references to the
-> GPIO device and the owning module in gpiod_free().
->
-> Rework this function to:
-> - not warn on desc =3D=3D NULL as this is a use-case on which most free
->   functions silently return
-> - put the references to desc->gdev and desc->gdev->owner unconditionally
->   so that the release callback actually gets called when the remaining
->   references are dropped by external GPIO users
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
-> v1 -> v2:
-> - add a comment about why we can't use VALIDATE_DESC_VOID()
->
-> v2 -> v3:
-> - we must drop the reference to the owner module before we drop the one
->   to the gpio_device as the latter may be removed if this is the last
->   reference and we'll end up calling module_put() on freed memory
->
->  drivers/gpio/gpiolib.c | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index 251c875b5c34..76e0c38026c3 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -2167,12 +2167,18 @@ static bool gpiod_free_commit(struct gpio_desc *d=
-esc)
->
->  void gpiod_free(struct gpio_desc *desc)
->  {
-> -       if (desc && desc->gdev && gpiod_free_commit(desc)) {
-> -               module_put(desc->gdev->owner);
-> -               gpio_device_put(desc->gdev);
-> -       } else {
-> +       /*
-> +        * We must not use VALIDATE_DESC_VOID() as the underlying gdev->c=
-hip
-> +        * may already be NULL but we still want to put the references.
-> +        */
-> +       if (!desc)
-> +               return;
-> +
-> +       if (!gpiod_free_commit(desc))
->                 WARN_ON(extra_checks);
-> -       }
-> +
-> +       module_put(desc->gdev->owner);
-> +       gpio_device_put(desc->gdev);
->  }
->
->  /**
-> --
-> 2.39.2
->
+Hi Pascal
 
-Queued for fixes.
+On 7/12/23 16:24, p.paillet@foss.st.com wrote:
+> From: Pascal Paillet <p.paillet@foss.st.com>
+> 
+> Updates STM32MP13 DTS files to define the voltage regulators
+> exposed by OP-TEE SCMI service and remove the fixed regulator
+> abstraction previously used.
+> 
+> Etienne Carriere (3):
+>    dt-bindings: rcc: stm32: add STM32MP13 SCMI regulators IDs
+>    ARM: dts: stm32: STM32MP13x SoC exposes SCMI regulators
+>    ARM: dts: stm32: add SCMI PMIC regulators on stm32mp135f-dk board
+> 
+> Pascal Paillet (1):
+>    ARM: multi_v7_defconfig: Add SCMI regulator support
+> 
+>   arch/arm/boot/dts/st/stm32mp131.dtsi          | 50 +++++++-------
+>   arch/arm/boot/dts/st/stm32mp135f-dk.dts       | 68 ++++++++-----------
+>   arch/arm/configs/multi_v7_defconfig           |  1 +
+>   .../regulator/st,stm32mp13-regulator.h        | 42 ++++++++++++
+>   4 files changed, 98 insertions(+), 63 deletions(-)
+>   create mode 100644 include/dt-bindings/regulator/st,stm32mp13-regulator.h
+> 
 
-Bart
+Series applied on stm32-next. Commit title of patch[4] has been updated 
+to explain the reason of the patch (as suggested by Krzysztof). I also 
+ordered the config flag.
+
+Regards
+Alex
