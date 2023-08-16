@@ -2,129 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC3077E7ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E22777E7F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345092AbjHPRye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 13:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
+        id S1345268AbjHPRzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 13:55:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344901AbjHPRyN (ORCPT
+        with ESMTP id S1345240AbjHPRyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 13:54:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8148C270D;
-        Wed, 16 Aug 2023 10:54:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 14F34618F9;
-        Wed, 16 Aug 2023 17:54:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 618DAC433C8;
-        Wed, 16 Aug 2023 17:54:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692208450;
-        bh=C3KpSEGvTHFdso9lkeVRktVz6+sn8+u/LTyv13MKxIc=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=ShGJ5XYIWCgpoe2NLz9exJSq3NoBUfpxcAErxGY7T4FIWMVvLC799TsZaCK0QU0lD
-         BE4ynuqXUahcT1SbR9Xeh/kbGK4uayvk7twKlr8pMeV75Lxv9acXB1mh7jiZuc9Glg
-         oL28d5NAulwBa6zAzLk3tPGnZz0ugXob+ULVuamy/GmsjkZ6BhFgihPS/lcxq18Ioc
-         7l3A5y1Fvva1H4yqBufNbqDPm7O3nbdguHe3IzEinR+6mB6HgtCgrj5z7Ae2IvcR7V
-         0l9Q7Oehj83eKOTwIzCVJ4eV01ceLhHyp6kWgcb7k+xn/9oVJDMR8QnPBsm0SPzJ6A
-         LmoVHQjFx1YXA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id EAB5ECE06FA; Wed, 16 Aug 2023 10:54:09 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 10:54:09 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        x86@kernel.org
-Cc:     peterz@infradead.org, keescook@chromium.org, elver@google.com,
-        dvyukov@google.com, glider@google.com
-Subject: [BUG] missing return thunk: __ret+0x5/0x7e-__ret+0x0/0x7e: e9 f6 ff
- ff ff
-Message-ID: <4dc3d0ec-b827-4bce-8927-cfa5d837fd03@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+        Wed, 16 Aug 2023 13:54:40 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A52582711
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:54:38 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bad7499bdcso65327841fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:54:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692208477; x=1692813277;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1kL8iqatk1tnwSn5GpU5w8c60PHF1rwz6XWlzAwa8Vo=;
+        b=RtbmO0YudER5L1Uc4ZFUo9ZBzx/t54o4sieNUnhbYYsm942TpP+1GdStiSAzBi+FS7
+         sqk59Cfnbd3YynSWGdDz9bKNoGwN+CNVMqfnH3UOuv6O1YcoultZgbm3WqqFjYb1Mf5P
+         yYyCRLuFohvT0U0vjV2ou3v1hTzvJ64PjpeGR4IUjs8/7pg9FOTjInIS5xWZcyC+3d15
+         7C0r7FH4eD3BOhXNVscXbrjSJXu/Q+c50Ip7YFgUMEgK8eyujCH0+V9AodX/xPOYmKea
+         /xeRH+wRQGE+0a/IxHtTPH0DeSk3I8bI5RquLl2H0pzFvdtfBlszuD3ub0KSWdcyLd3k
+         Kdwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692208477; x=1692813277;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1kL8iqatk1tnwSn5GpU5w8c60PHF1rwz6XWlzAwa8Vo=;
+        b=KZQeSzfBT5iH9iSF56rCq4mpEk012OXj4M3jDzNQF04gHCgcnSXbn3G8tE0QVPZxY6
+         6nVly2NdEuHiN7z4cxzf2voC7JdysCY9SH/IMSdsav+MpvnVou7CaM02L0DaZznwTg0n
+         uAiBR1o/19sVo2IxXKIfi7Y9oM5J3iNRSWphBPAetb/r1Arph7Ky2p9+ulrlU+ycx20s
+         gvigt9GatiWmmo2LVSeUzby20M6jFXwarRXkBkiBWVOhcISc1bgDBHT70z+YgS9S+lTC
+         ttRH0wCKDr6esXHtJ3wHua3AdiKCp+SXRUSeoctuyL1ypuZxHMLO6GhhT+cW2eQHX9Rm
+         rRWg==
+X-Gm-Message-State: AOJu0YylKtC51ndMTvIHdhH/x/N7+kKfz6UGkyXqp9INls6DxSBD6veh
+        HT2ciSpTERRNLtfiJi+OAouIJ4JD+pcVwbyGVoM=
+X-Google-Smtp-Source: AGHT+IHGzZTTHfXrVL3b9YGMttYGkyMK6z8Tqr/XW158Mk+GcAhb2SlTArg/bIfoHt4LdjLRGO5mdQ==
+X-Received: by 2002:a05:651c:226:b0:2b4:6e21:637e with SMTP id z6-20020a05651c022600b002b46e21637emr2336220ljn.16.1692208476804;
+        Wed, 16 Aug 2023 10:54:36 -0700 (PDT)
+Received: from [192.168.1.101] (abxi8.neoplus.adsl.tpnet.pl. [83.9.2.8])
+        by smtp.gmail.com with ESMTPSA id k22-20020a2e2416000000b002b9e0aeff68sm3581086ljk.95.2023.08.16.10.54.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 10:54:36 -0700 (PDT)
+Message-ID: <5a3d3bef-29a6-478e-9f7e-374ffd42758b@linaro.org>
+Date:   Wed, 16 Aug 2023 19:54:34 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/6] PM: domains: Add the domain HW-managed mode to the
+ summary
+Content-Language: en-US
+To:     Abel Vesa <abel.vesa@linaro.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@qti.qualcomm.com>
+Cc:     linux-pm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>
+References: <20230816145741.1472721-1-abel.vesa@linaro.org>
+ <20230816145741.1472721-3-abel.vesa@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230816145741.1472721-3-abel.vesa@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On 16.08.2023 16:57, Abel Vesa wrote:
+> Now that domains support being managed by the HW, lets add that
+> information to the genpd summary.
+> 
+> Suggested-by: Taniya Das <quic_tdas@quicinc.com>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
+>  drivers/base/power/domain.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> index dfb4f1de540d..053b7b510825 100644
+> --- a/drivers/base/power/domain.c
+> +++ b/drivers/base/power/domain.c
+> @@ -3171,6 +3171,15 @@ static void rtpm_status_str(struct seq_file *s, struct device *dev)
+>  	seq_printf(s, "%-25s  ", p);
+>  }
+>  
+> +static void mode_status_str(struct seq_file *s, struct device *dev)
+> +{
+> +	struct generic_pm_domain_data *gpd_data;
+> +
+> +	gpd_data = to_gpd_data(dev->power.subsys_data->domain_data);
+> +
+> +	seq_printf(s, "%20s", gpd_data->hw_mode ? "HW_Mode" : "SW_Mode");
+That's a very personal opinion and take it for what it is, but I think
+"_Mode" is excessive given the column is named "mode"
 
-I hit the splat at the end of this message in recent mainline, and has
-appeared some time since v6.5-rc1.  Should I be worried?
-
-Reproducer on a two-socket hyperthreaded 20-core-per-socket x86 system:
-
-tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 5m --torture refscale --kcsan --kconfig "CONFIG_NR_CPUS=40" --kmake-args "CC=clang" --bootargs "refscale.scale_type=typesafe_seqlock refscale.nreaders=40 refscale.loops=10000 refscale.holdoff=20 torture.disable_onoff_at_boot refscale.verbose_batched=5 torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=5"
-
-This is from overnight testing that hit this only in the KCSAN runs.
-The KASAN and non-debug runs had no trouble.
-
-This commit added the warning long ago:
-
-65cdf0d623be ("x86/alternative: Report missing return thunk details")
-
-Thoughts?
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-[    0.281208] ------------[ cut here ]------------
-[    0.281484] missing return thunk: __ret+0x5/0x7e-__ret+0x0/0x7e: e9 f6 ff ff ff
-[    0.281514] WARNING: CPU: 0 PID: 0 at arch/x86/kernel/alternative.c:753 apply_returns+0x2fc/0x450
-[    0.283482] Modules linked in:
-[    0.284489] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.5.0-rc6-00047-g21575bdc67ed #34195
-[    0.285483] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-[    0.286482] RIP: 0010:apply_returns+0x2fc/0x450
-[    0.287124] Code: ff ff 0f 0b e9 a9 fd ff ff c6 05 a1 0a 65 02 01 48 c7 c7 8b e3 2b b9 4c 89 ee 48 89 da b9 05 00 00 00 4d 89 e8 e8 04 f4 06 00 <0f> 0b e9 9a fe ff ff 85 db 0f 84 15 ff ff ff 48 c7 c7 4b e3 2b b9
-[    0.287483] RSP: 0000:ffffffffb9603e00 EFLAGS: 00010246
-[    0.288482] RAX: 22c53364d8918300 RBX: ffffffffb8b0e600 RCX: 0000000000000002
-[    0.289482] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-[    0.290482] RBP: ffffffffb9603ee0 R08: 0000000080000003 R09: 0000000000000000
-[    0.291481] R10: 0001ffffffffffff R11: ffffffffb9623800 R12: ffffffffb9603e18
-[    0.292481] R13: ffffffffb8b0e605 R14: ffffffffba150a70 R15: ffffffffba150a68
-[    0.293482] FS:  0000000000000000(0000) GS:ffff97305ec00000(0000) knlGS:0000000000000000
-[    0.294481] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    0.295481] CR2: ffff973055601000 CR3: 0000000013a44000 CR4: 00000000000006f0
-[    0.296483] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[    0.297482] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[    0.298482] Call Trace:
-[    0.298859]  <TASK>
-[    0.299185]  ? __warn+0x12c/0x330
-[    0.299484]  ? apply_returns+0x2fc/0x450
-[    0.300484]  ? report_bug+0x12a/0x1c0
-[    0.301079]  ? handle_bug+0x3d/0x80
-[    0.301483]  ? exc_invalid_op+0x1a/0x50
-[    0.302041]  ? asm_exc_invalid_op+0x1a/0x20
-[    0.302483]  ? __ret+0x5/0x7e
-[    0.302903]  ? zen_untrain_ret+0x1/0x1
-[    0.303487]  ? apply_returns+0x2fc/0x450
-[    0.304003]  ? __ret+0x5/0x7e
-[    0.304482]  ? __ret+0x14/0x7e
-[    0.304869]  ? __ret+0xa/0x7e
-[    0.305484]  ? unregister_die_notifier+0x4e/0x60
-[    0.306063]  alternative_instructions+0x52/0x120
-[    0.306489]  arch_cpu_finalize_init+0x2c/0x50
-[    0.307068]  start_kernel+0x480/0x590
-[    0.307485]  x86_64_start_reservations+0x24/0x30
-[    0.308482]  x86_64_start_kernel+0xab/0xb0
-[    0.309068]  secondary_startup_64_no_verify+0x17a/0x17b
-[    0.309490]  </TASK>
-[    0.309808] irq event stamp: 128439
-[    0.310481] hardirqs last  enabled at (128457): [<ffffffffb7368401>] __up_console_sem+0x91/0xc0
-[    0.311481] hardirqs last disabled at (128474): [<ffffffffb73683e6>] __up_console_sem+0x76/0xc0
-[    0.312482] softirqs last  enabled at (128490): [<ffffffffb72cf624>] __irq_exit_rcu+0x64/0xd0
-[    0.313481] softirqs last disabled at (128501): [<ffffffffb72cf624>] __irq_exit_rcu+0x64/0xd0
-[    0.314481] ---[ end trace 0000000000000000 ]---
+Konrad
