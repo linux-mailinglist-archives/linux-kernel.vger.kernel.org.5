@@ -2,135 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48FE777E2E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9FD277E2E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245665AbjHPNmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 09:42:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43400 "EHLO
+        id S245577AbjHPNmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245695AbjHPNmV (ORCPT
+        with ESMTP id S245721AbjHPNm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 09:42:21 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2064.outbound.protection.outlook.com [40.107.243.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE71271D;
-        Wed, 16 Aug 2023 06:41:52 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AMrkH1CrXR04s/qXNv+qqlpp4ABhQAQFqc0aq4zIeqQzvFS+H9Z9kCQadPxERasfIJlE3uzziRcAcqPCCF5yW5CMyvC9sD1CazE5Io6F8J1yAoqYJkMH0nrn7C8qv1lJBebtoYqgmriYcQKCyR135zGUIGusqzVtOSpAH/ZcoKexGDYOEEv2HIgR2BSvdI4WKg3uLTrvz+U6x9dnGAGxOd9pKBePCuYv7D0S2pylCRVjfE/M38YOE/d0CzJqxX+NLPsvWbo2MRKkGlqXkn2kuRuABhj0mVp6aWCNf/87IGHnvKH0RYvfwR17pjVqs/MC06TAw5vu45wG0tooaz/ZNQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=o8L3YCLAKTA6V80l653tk0bn+5cbklpsHNwXGW0tipQ=;
- b=PUL37vOCFUGII/Ufv+Md+F82ejUKtN3DJuZ/+6HyNZUIq19O3PSemeEn57WBrmHjYFSaV/e+2xWM6ycHOCy6ZVpXxYNgWVXsshgfsxOX2neKBWbMIJ2NsoHabePb+lGSrfmA0R3+TObYesQvqxRo7/g+wdzDcuVonkj324DREL5xS3i4LClIfAl73HmfGVpVxW8LWYnHdbS0iSrYXzi+4frPfnSMviqSoaASudG/diBjy9Id/EMB9XASuIcrttdMt4i1i/6oSrKiKuNGxTEZTKrpm/N1wQu9bON7665bOQOnOW0lyVuoIGUoTy3yM+XKa+q0jhJYa9LwzcRff0GxDA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o8L3YCLAKTA6V80l653tk0bn+5cbklpsHNwXGW0tipQ=;
- b=b412q/aG/qxxDasUu6G68K7GTcb7uvUWkKCCNwQ/nKNHI9I+ZQcoDFUwgSdj5tYLIkSzc06UMaqk6EahL76nyCP4ev4gvIp1jObkn+ePWXp6L2GAJ8SkH+kVkhpFsowyQrAD7qEkHIs7BkipRqPlmmNDH91chj7AXJAStWFTqPg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
- SA1PR12MB7152.namprd12.prod.outlook.com (2603:10b6:806:2b2::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Wed, 16 Aug
- 2023 13:41:24 +0000
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::4196:c9c9:dfe9:8079]) by DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::4196:c9c9:dfe9:8079%3]) with mapi id 15.20.6678.025; Wed, 16 Aug 2023
- 13:41:24 +0000
-Message-ID: <855aeab8-13e1-4dc4-841e-24d298c9c072@amd.com>
-Date:   Wed, 16 Aug 2023 09:41:19 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drm/amdgpu: register a dirty framebuffer callback for
- fbcon
-Content-Language: en-US
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        amd-gfx@lists.freedesktop.org
-Cc:     Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Guchun Chen <guchun.chen@amd.com>,
-        dri-devel@lists.freedesktop.org,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>
-References: <20230815172700.255596-1-hamza.mahfooz@amd.com>
- <d1831afd-9e02-fbc9-69f7-e8f044f35ee0@gmail.com>
-From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
-In-Reply-To: <d1831afd-9e02-fbc9-69f7-e8f044f35ee0@gmail.com>
+        Wed, 16 Aug 2023 09:42:28 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA251272C
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:41:58 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-565334377d0so4852393a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:41:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1692193316; x=1692798116;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8ihTiRqTb2aq3ohAKkaAZG0MxMTltkenTkWuMMzeDzE=;
+        b=KB872v4fXmvzxtYyx6VAyuNleEfWUz+nV5594C+XcRRq+RcNkNcdXuKpSvWB8a9odA
+         M0lZxz2T5CbuozCfOrP7cx13OtzCHCDue/+AHUMcaq5jGn4/ken5CWM92rlLEBevNu7B
+         1DD5KkN2kV6+X3TLG2qafzaS5FVymR0zD4suP2c2MrnL3qmNEVi8/PD2ndBQpH5MN0t6
+         7yyDlsPAbJm3VLjp96QZdFBmeolvvvciaODLXxkzdZr1lK+ccs34LTKsNAIRLYTOZw8O
+         WnzUPvj7gg/HqicvGOWaIy8ff2XXxPTQ8o3Y8qC5Qk2CLxvtnbqMpAXXKs5MOpF5HDEP
+         7ZlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692193316; x=1692798116;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8ihTiRqTb2aq3ohAKkaAZG0MxMTltkenTkWuMMzeDzE=;
+        b=kedcMmavVKfGmPCRBAfz75AVQQwO0wGK7xNa+nqpHUQxPrYXGiv4kykDh/v2Z3Xkf6
+         VG/t8Ugr+4y4+4f4M6P6doNga1MmNN8u2zLimJC6p/nfb41dPRVX81bt492o7i5gSw9r
+         jnFLTh8OJrvekmAaVi+n47BTF6Y1Zjp+eleYrIrgX38nIWNCH2iEIbk21rTPDLj+wS/H
+         2q9EHIm+2F3tHOqMaUk35SFAavuncUsZDoq6VPrq6bMVCexMmLSHloLuTqVLHRyW1dBl
+         Oe8PRy3sPlHB35Af2IdDpecEdpKtes7twZjLKk2yAKb22e5yhXpTE8DYszDoinx/Oyd5
+         7AEg==
+X-Gm-Message-State: AOJu0YzkgO/4M0/THWT3PpG+4QUx39EX5I43vVIqk7CGSFJnEyNLQlHQ
+        8+hs0wWQCeXw7xDoZ0hB0hD6XQ==
+X-Google-Smtp-Source: AGHT+IEszk9C0QYQmqCnnszdSR3D5xosNDW1dmgUMlYbIMwwxmJBkulSegYFAsSMNbL3kmzbJYzhaQ==
+X-Received: by 2002:a17:90a:fd14:b0:268:42a2:35db with SMTP id cv20-20020a17090afd1400b0026842a235dbmr1374091pjb.48.1692193315624;
+        Wed, 16 Aug 2023 06:41:55 -0700 (PDT)
+Received: from [10.254.252.111] ([139.177.225.249])
+        by smtp.gmail.com with ESMTPSA id p5-20020a170902e74500b001bb99e188fcsm13072912plf.194.2023.08.16.06.41.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 06:41:55 -0700 (PDT)
+Message-ID: <3f4e73cc-1a98-95a8-9ab2-47797d236585@bytedance.com>
+Date:   Wed, 16 Aug 2023 21:41:46 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH 04/11] maple_tree: Introduce interfaces __mt_dup() and
+ mt_dup()
+To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+        Peng Zhang <zhangpeng.00@bytedance.com>, willy@infradead.org,
+        michael.christie@oracle.com, surenb@google.com, npiggin@gmail.com,
+        corbet@lwn.net, mathieu.desnoyers@efficios.com, avagin@gmail.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, brauner@kernel.org, peterz@infradead.org
+References: <20230726080916.17454-1-zhangpeng.00@bytedance.com>
+ <20230726080916.17454-5-zhangpeng.00@bytedance.com>
+ <20230726160354.konsgq6hidj7gr5u@revolver>
+ <beaab8b4-180c-017d-bd8d-8766196f302a@bytedance.com>
+ <20230731162714.4x3lzymuyvu2mter@revolver>
+From:   Peng Zhang <zhangpeng.00@bytedance.com>
+In-Reply-To: <20230731162714.4x3lzymuyvu2mter@revolver>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YQZPR01CA0012.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:85::10) To DM4PR12MB6280.namprd12.prod.outlook.com
- (2603:10b6:8:a2::11)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|SA1PR12MB7152:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7d84c495-8a19-4632-ca9b-08db9e5e7b7b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3BEnBU3FDz2zZ2KqWB9Ro73pLTPk3A99x7kIXtAaeGM+31F6ZDISa7kgTZ8LRXKQakyGV3LG/l1FjK6nmIQHGQgxl7Qn0cxAxp+WlhKa9inhCjpgsGbYhglERiUVZ8nqrqP1S+wEBOeAZnmsLHcD/Zvg4MAEale1y99jmx4CtmsQ/jECRiOriBe7jl7SFbpJOAtEZhpLBn7x8WLl7jPPJYbEeiSJh2Ytb70485yoQP9YpqGeOmZgsOi685a8Vdc1gU/BtUydguClnlOVrkDWd6vznLxM3MJxDb8jidVIsmgv7rXJxgO7F7cf4x5+l9OLRgWAJmhnOT0MUXj2dLAtIJchMDcx9faPSXU7mxGOr/WeVz1d2Nyz4mMMbpFjPaRxR+OzQeMl7SfmxRWk3qCVX/OBYfHjIj+NCstP+GNsv1dDRzyXHP4aWL86pHoTOdjS4BXe7Fhy0XVi9WLu9pCK4yfny/Vini3fyU5w7bSoinc3+M9j9wg+wk+N8J2z7K7HUERTIzNX9osHR5AMY6zmvHAs3P0wq0vQdC9Bb5ym7ofbFmSC1y3e7sGKLQPx9WJnQPlrdSlA2FmFyyt6+kOBH8vsMK5GVmO+52d10laxfo7fZ16LArfBlh5w3y1HG0vCJissphfvgExnlXEAY0BT4kCGseNjaWpTzR1PssXeScI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(366004)(376002)(136003)(1800799009)(451199024)(186009)(316002)(54906003)(66946007)(66476007)(66556008)(966005)(41300700001)(5660300002)(44832011)(66574015)(38100700002)(31686004)(8676002)(4326008)(8936002)(2906002)(83380400001)(26005)(478600001)(86362001)(31696002)(6512007)(53546011)(6506007)(36756003)(6666004)(2616005)(6486002)(14143004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cEhQb3ptcmZVMmZmenlSYjBjR1h3enF5djRRUFlXWmdmOExROUQ1RHZBZFM0?=
- =?utf-8?B?dU9VSi8zQUJIVzR4bVEzeTZwWkdPdEdCVmRPeXk1Wm1DMExNcFV1Y2o2SSsy?=
- =?utf-8?B?N2pydkdSS3dwV1ZpOWJBWnd1V2ovZzIzSHd5RWN4TzBFRXllY0JFZFNob1J2?=
- =?utf-8?B?Q0R6VmthdnBoamQzQWxSaHlTUGxtUCtiTVFaZFVTYkw4U0VVMU9qazRKaS9a?=
- =?utf-8?B?bTJPdk04b0FFNmpBREZWWDNzNFJaTWI0ZUoxUUFFOVFaaVRST2d4NVFkNml2?=
- =?utf-8?B?LzVpY01oNEFtajFiYjBNMGphYVVOTVJsZGVYd3oyc2h6aWkreXh0azk3SXZE?=
- =?utf-8?B?SWtwUm1qbUJRTWtrWkpGN3MzMFRENDlyVXVmK285V2t0NDNReURHa1B2SzNt?=
- =?utf-8?B?c1hMUGVTZGF4TkMycm9xbEtWbm53MDBJTTNFRUVEOC9DenV0OEZWV3B2YXdL?=
- =?utf-8?B?bCtyaFFjV1d6NStTRGFXQkROTkJqNktkM0dMV1lvTGhCWUg2MzNhclp0TG0w?=
- =?utf-8?B?WGhjbktJMEtrU3VjVmdUQjM2OGtwYm5adVBJVzVWQTVvVzRka3dQQkZNRzh5?=
- =?utf-8?B?ZE12MjVueXZIbUR0RzJEUm05YzZGRmVzc1FwR3hpWU5yUkhSdmxvNUdvOC9K?=
- =?utf-8?B?OHh1TjJaeHp0bmJ2YXZxQTV2WFFTVjJDdUNZSkZIaGdydEVFbDMyTG5HRDF0?=
- =?utf-8?B?ZUVHcHlRaDYyTmozeUsyaldhQWxkMW5NZktRbG03WHhOSkZNYjFMcTB6aFZh?=
- =?utf-8?B?UXJjUXpzT3NmUU9sanh5emZrMC9ucnRqbXBhVFA4Z3FickY4djJuemQrY1B0?=
- =?utf-8?B?OG5DZVl4R21QSFF0OUR5eUtQbkwxZmVKSWlrLzJmTkQvWG5BOTZSbWpCY2NM?=
- =?utf-8?B?dGNKOE1UYVc2QjlaUVZlUjZLQkdmcmZxUDdpT0J0dVRkUzdtNzlqSFdUZElY?=
- =?utf-8?B?STRFOGpycHRzRFNXUWhwQTVMYXVvNERRcVF1RW9PZ25SNis3WW1WM3M1TXM4?=
- =?utf-8?B?aHk3Uk1yeUk5SEUyeHlWYVM3TTdBaTBvMCs2aFdWNyt1aGJqYnFVSmMwK016?=
- =?utf-8?B?SGZ5TnRiZG95TjhkTUdQN3hpVnhTRkVnejhrWUx5cEFiOWh0OFQ3WTUxQ0N1?=
- =?utf-8?B?NSsvWDdUYVpCbDc0T0JWaXVpblpINGhTQ2xqVDRnc1FhNHNRaDlwbkFzL29u?=
- =?utf-8?B?OW1ZZ011bWp2U1Y1UEVHSFhUVEZhajlNRktEOGI5Rnh6SkE4U1cxS1BCa3E3?=
- =?utf-8?B?QU5qYzFxTmZrMXlyMFVrRjhhN0w4bjN3U0dwcW5SbDErMDdDbWFBaWtEVzBx?=
- =?utf-8?B?UXdHb3UzTU8yVTNWZmJ2YXlxanBWSjhad2RTYW01Yk5GaHBCUm5LcTRpZzNM?=
- =?utf-8?B?M1ZMKzVHRnZNZVB6ODExUzF0ZUMzSDZ4N1ZwUFhFalRCWHJBeG0rai9ic2ZR?=
- =?utf-8?B?enJxRUErdk4wT1YvaERUYjdvTzQ1Rm82T1ltOUoxOUpEVytWZjdkem4rOVZu?=
- =?utf-8?B?ZllMQmFvVmZvdWx4em53dnVJVXgvN1JncG54QWUyQzM1RVYyVEpsRDNUOW5r?=
- =?utf-8?B?dmM0VlV6M0JHN0dSRXJqVXRnbWlHZ1o1YnFzMzZPalF6TFFvVlhMN0dGTVFq?=
- =?utf-8?B?RFVzU3MybjJrWDBJcVZFR1BqeFUzZ1lHdllYR3hncExhRjhMOTJsL3VOTjB2?=
- =?utf-8?B?NnZETW83ZzIybWVGUjNzbUVXS1lhd3BZR0ZSaEZ6ZldFQ0plZnZCOWVVelhm?=
- =?utf-8?B?Q0VPK00rV3UwNWZncEF1SE52ZU96K3NzRDRwTUdlaU1mQmVVL1Z4UFA1NXJE?=
- =?utf-8?B?S1BRQ1RWU2F5U1FVbEdtY1RaV0hSdittUkI1RThUQXExM2RMcFdLa3ZFMndX?=
- =?utf-8?B?bGhPU0FnSzNvRk1HaVRsN2JqV3FQVmFaZk5zRUcwMGJFR0g4VUFpUlh4WHlY?=
- =?utf-8?B?MytFQnhKV1FWdDBEd0dMdkNKZkVGTEE0WS9PUmgvUHlMR0xoajl6c2poeHFZ?=
- =?utf-8?B?aTJVUzZLSDhTWjk5a241am5oWXpMNzdmVGt5eDd1NENtdzNUUE8vTUNYNTZj?=
- =?utf-8?B?NzhEV0x2WUZ2YzIvbFkrVkY5dFd2WG1FR0VTK2dJbHRwWVl4ZzRXTmtJNS9l?=
- =?utf-8?Q?zAUZmtmEbgIi8XzX+Tef71cBq?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d84c495-8a19-4632-ca9b-08db9e5e7b7b
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 13:41:24.1880
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dklfTVasSf/wMwgPvtz+Y8ECG6Ux7rUXYkOuxAKRip8mM0Psz65D9ju0fiAHkWYYZL6/DS4aPKVpWYPm+g1X1A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7152
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -138,97 +84,344 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 8/16/23 01:55, Christian König wrote:
-> 
-> 
-> Am 15.08.23 um 19:26 schrieb Hamza Mahfooz:
->> fbcon requires that we implement &drm_framebuffer_funcs.dirty.
->> Otherwise, the framebuffer might take a while to flush (which would
->> manifest as noticeable lag). However, we can't enable this callback for
->> non-fbcon cases since it might cause too many atomic commits to be made
->> at once. So, implement amdgpu_dirtyfb() and only enable it for fbcon
->> framebuffers on devices that support atomic KMS.
+
+在 2023/8/1 00:27, Liam R. Howlett 写道:
+> * Peng Zhang <zhangpeng.00@bytedance.com> [230731 08:24]:
 >>
->> Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
->> Cc: Mario Limonciello <mario.limonciello@amd.com>
->> Cc: stable@vger.kernel.org # 6.1+
->> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2519
->> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
->> ---
->> v2: update variable names
->> ---
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_display.c | 26 ++++++++++++++++++++-
->>   1 file changed, 25 insertions(+), 1 deletion(-)
 >>
->> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c 
->> b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
->> index d20dd3f852fc..d3b59f99cb7c 100644
->> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
->> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
->> @@ -38,6 +38,8 @@
->>   #include <linux/pci.h>
->>   #include <linux/pm_runtime.h>
->>   #include <drm/drm_crtc_helper.h>
->> +#include <drm/drm_damage_helper.h>
->> +#include <drm/drm_drv.h>
->>   #include <drm/drm_edid.h>
->>   #include <drm/drm_fb_helper.h>
->>   #include <drm/drm_gem_framebuffer_helper.h>
->> @@ -532,11 +534,29 @@ bool amdgpu_display_ddc_probe(struct 
->> amdgpu_connector *amdgpu_connector,
->>       return true;
->>   }
->> +static int amdgpu_dirtyfb(struct drm_framebuffer *fb, struct drm_file 
->> *file,
->> +              unsigned int flags, unsigned int color,
->> +              struct drm_clip_rect *clips, unsigned int num_clips)
->> +{
->> +
->> +    if (strcmp(fb->comm, "[fbcon]"))
->> +        return -ENOSYS;
+>> 在 2023/7/27 00:03, Liam R. Howlett 写道:
+>>> * Peng Zhang <zhangpeng.00@bytedance.com> [230726 04:10]:
+>>>> Introduce interfaces __mt_dup() and mt_dup(), which are used to
+>>>> duplicate a maple tree. Compared with traversing the source tree and
+>>>> reinserting entry by entry in the new tree, it has better performance.
+>>>> The difference between __mt_dup() and mt_dup() is that mt_dup() holds
+>>>> an internal lock.
+>>>>
+>>>> Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
+>>>> ---
+>>>>    include/linux/maple_tree.h |   3 +
+>>>>    lib/maple_tree.c           | 211 +++++++++++++++++++++++++++++++++++++
+>>>>    2 files changed, 214 insertions(+)
+>>>>
+>>>> diff --git a/include/linux/maple_tree.h b/include/linux/maple_tree.h
+>>>> index c962af188681..229fe78e4c89 100644
+>>>> --- a/include/linux/maple_tree.h
+>>>> +++ b/include/linux/maple_tree.h
+>>>> @@ -327,6 +327,9 @@ int mtree_store(struct maple_tree *mt, unsigned long index,
+>>>>    		void *entry, gfp_t gfp);
+>>>>    void *mtree_erase(struct maple_tree *mt, unsigned long index);
+>>>> +int mt_dup(struct maple_tree *mt, struct maple_tree *new, gfp_t gfp);
+>>>> +int __mt_dup(struct maple_tree *mt, struct maple_tree *new, gfp_t gfp);
+>>>> +
+>>>>    void mtree_destroy(struct maple_tree *mt);
+>>>>    void __mt_destroy(struct maple_tree *mt);
+>>>> diff --git a/lib/maple_tree.c b/lib/maple_tree.c
+>>>> index da3a2fb405c0..efac6761ae37 100644
+>>>> --- a/lib/maple_tree.c
+>>>> +++ b/lib/maple_tree.c
+>>>> @@ -6595,6 +6595,217 @@ void *mtree_erase(struct maple_tree *mt, unsigned long index)
+>>>>    }
+>>>>    EXPORT_SYMBOL(mtree_erase);
+>>>> +/*
+>>>> + * mt_dup_free() - Free the nodes of a incomplete maple tree.
+>>>> + * @mt: The incomplete maple tree
+>>>> + * @node: Free nodes from @node
+>>>> + *
+>>>> + * This function frees all nodes starting from @node in the reverse order of
+>>>> + * mt_dup_build(). At this point we don't need to hold the source tree lock.
+>>>> + */
+>>>> +static void mt_dup_free(struct maple_tree *mt, struct maple_node *node)
+>>>> +{
+>>>> +	void **slots;
+>>>> +	unsigned char offset;
+>>>> +	struct maple_enode *enode;
+>>>> +	enum maple_type type;
+>>>> +	unsigned char count = 0, i;
+>>>> +
+>>>
+>>> Can we make these labels inline functions and try to make this a loop?
+>> I did this just to make things easier. Refer to the implementation of
+>> walk_tg_tree_from() in sched/core.c. Using some loops and inline
+>> functions probably doesn't simplify things. I'll try to do that and give
+>> up if it complicates things.
 > 
-> Once more to the v2 of this patch: Tests like those are a pretty big 
-> NO-GO for upstreaming.
+> Thanks, I'd like to try and simplify the code instead of adding goto
+> label loops. The code you are referencing is from 2008 and goto loops
+> are not common.
+> 
+>>>
+>>>> +try_ascend:
+>>>> +	if (ma_is_root(node)) {
+>>>> +		mt_free_one(node);
+>>>> +		return;
+>>>> +	}
+>>>> +
+>>>> +	offset = ma_parent_slot(node);
+>>>> +	type = ma_parent_type(mt, node);
+>>>> +	node = ma_parent(node);
+>>>> +	if (!offset)
+>>>> +		goto free;
+>>>> +
+>>>> +	offset--;
+>>>> +
+>>>> +descend:
+>>>> +	slots = (void **)ma_slots(node, type);
+>>>> +	enode = slots[offset];
+>>>> +	if (mte_is_leaf(enode))
+>>>> +		goto free;
+>>>> +
+>>>> +	type = mte_node_type(enode);
+>>>> +	node = mte_to_node(enode);
+>>>> +	offset = ma_nonleaf_data_end_nocheck(node, type);
+>>>> +	goto descend;
+>>>> +
+>>>> +free:
+>>>> +	slots = (void **)ma_slots(node, type);
+>>>> +	count = ma_nonleaf_data_end_nocheck(node, type) + 1;
+>>>> +	for (i = 0; i < count; i++)
+>>>> +		((unsigned long *)slots)[i] &= ~MAPLE_NODE_MASK;
+>>>> +
+>>>> +	/* Cast to __rcu to avoid sparse checker complaining. */
+>>>> +	mt_free_bulk(count, (void __rcu **)slots);
+>>>> +	goto try_ascend;
+>>>> +}
+>>>> +
+>>>> +/*
+>>>> + * mt_dup_build() - Build a new maple tree from a source tree
+>>>> + * @mt: The source maple tree to copy from
+>>>> + * @new: The new maple tree
+>>>> + * @gfp: The GFP_FLAGS to use for allocations
+>>>> + * @to_free: Free nodes starting from @to_free if the build fails
+>>>> + *
+>>>> + * This function builds a new tree in DFS preorder. If it fails due to memory
+>>>> + * allocation, @to_free will store the last failed node to free the incomplete
+>>>> + * tree. Use mt_dup_free() to free nodes.
+>>>> + *
+>>>> + * Return: 0 on success, -ENOMEM if memory could not be allocated.
+>>>> + */
+>>>> +static inline int mt_dup_build(struct maple_tree *mt, struct maple_tree *new,
+>>>> +			       gfp_t gfp, struct maple_node **to_free)
+>>>
+>>> I am trying to change the functions to be two tabs of indent for
+>>> arguments from now on.  It allows for more to fit on a single line and
+>>> still maintains a clear separation between code and argument lists.
+>> I'm not too concerned about code formatting. . . At least in this
+>> patchset.
+> 
+> I have a mess of it in the tree and wanted to communicate my desire to
+> shift to using two tabs for extra arguments in the future.
+> 
+>>>
+>>>> +{
+>>>> +	struct maple_enode *enode;
+>>>> +	struct maple_node *new_node, *new_parent = NULL, *node;
+>>>> +	enum maple_type type;
+>>>> +	void __rcu **slots;
+>>>> +	void **new_slots;
+>>>> +	unsigned char count, request, i, offset;
+>>>> +	unsigned long *set_parent;
+>>>> +	unsigned long new_root;
+>>>> +
+>>>> +	mt_init_flags(new, mt->ma_flags);
+>>>> +	enode = mt_root_locked(mt);
+>>>> +	if (unlikely(!xa_is_node(enode))) {
+>>>> +		rcu_assign_pointer(new->ma_root, enode);
+>>>> +		return 0;
+>>>> +	}
+>>>> +
+>>>> +	new_node = mt_alloc_one(gfp);
+>>>> +	if (!new_node)
+>>>> +		return -ENOMEM;
+>>>> +
+>>>> +	new_root = (unsigned long)new_node;
+>>>> +	new_root |= (unsigned long)enode & MAPLE_NODE_MASK;
+>>>> +
+>>>> +copy_node:
+>>>
+>>> Can you make copy_node, descend, ascend inline functions instead of the
+>>> goto jumping please?  It's better to have loops over jumping around a
+>>> lot.  Gotos are good for undoing things and retry, but constructing
+>>> loops with them makes it difficult to follow.
+>> Same as above.
+>>>
+>>>> +	node = mte_to_node(enode);
+>>>> +	type = mte_node_type(enode);
+>>>> +	memcpy(new_node, node, sizeof(struct maple_node));
+>>>> +
+>>>> +	set_parent = (unsigned long *)&(new_node->parent);
+>>>> +	*set_parent &= MAPLE_NODE_MASK;
+>>>> +	*set_parent |= (unsigned long)new_parent;
+>>>
+>>> Maybe make a small inline to set the parent instead of this?
+>>>
+>>> There are some defined helpers for setting the types like
+>>> ma_parent_ptr() and ma_enode_ptr() to make casting more type-safe.
+>> Ok, I'll try to do that.
+>>>
+>>>> +	if (ma_is_leaf(type))
+>>>> +		goto ascend;
+>>>> +
+>>>> +	new_slots = (void **)ma_slots(new_node, type);
+>>>> +	slots = ma_slots(node, type);
+>>>> +	request = ma_nonleaf_data_end(mt, node, type) + 1;
+>>>> +	count = mt_alloc_bulk(gfp, request, new_slots);
+>>>> +	if (!count) {
+>>>> +		*to_free = new_node;
+>>>> +		return -ENOMEM;
+>>>> +	}
+>>>> +
+>>>> +	for (i = 0; i < count; i++)
+>>>> +		((unsigned long *)new_slots)[i] |=
+>>>> +				((unsigned long)mt_slot_locked(mt, slots, i) &
+>>>> +				 MAPLE_NODE_MASK);
+>>>> +	offset = 0;
+>>>> +
+>>>> +descend:
+>>>> +	new_parent = new_node;
+>>>> +	enode = mt_slot_locked(mt, slots, offset);
+>>>> +	new_node = mte_to_node(new_slots[offset]);
+>>>> +	goto copy_node;
+>>>> +
+>>>> +ascend:
+>>>> +	if (ma_is_root(node)) {
+>>>> +		new_node = mte_to_node((void *)new_root);
+>>>> +		new_node->parent = ma_parent_ptr((unsigned long)new |
+>>>> +						 MA_ROOT_PARENT);
+>>>> +		rcu_assign_pointer(new->ma_root, (void *)new_root);
+>>>> +		return 0;
+>>>> +	}
+>>>> +
+>>>> +	offset = ma_parent_slot(node);
+>>>> +	type = ma_parent_type(mt, node);
+>>>> +	node = ma_parent(node);
+>>>> +	new_node = ma_parent(new_node);
+>>>> +	if (offset < ma_nonleaf_data_end(mt, node, type)) {
+>>>> +		offset++;
+>>>> +		new_slots = (void **)ma_slots(new_node, type);
+>>>> +		slots = ma_slots(node, type);
+>>>> +		goto descend;
+>>>> +	}
+>>>> +
+>>>> +	goto ascend;
+>>>> +}
+>>>> +
+>>>> +/**
+>>>> + * __mt_dup(): Duplicate a maple tree
+>>>> + * @mt: The source maple tree
+>>>> + * @new: The new maple tree
+>>>> + * @gfp: The GFP_FLAGS to use for allocations
+>>>> + *
+>>>> + * This function duplicates a maple tree using a faster method than traversing
+>>>> + * the source tree and inserting entries into the new tree one by one. The user
+>>>> + * needs to lock the source tree manually. Before calling this function, @new
+>>>> + * must be an empty tree or an uninitialized tree. If @mt uses an external lock,
+>>>> + * we may also need to manually set @new's external lock using
+>>>> + * mt_set_external_lock().
+>>>> + *
+>>>> + * Return: 0 on success, -ENOMEM if memory could not be allocated.
+>>>> + */
+>>>> +int __mt_dup(struct maple_tree *mt, struct maple_tree *new, gfp_t gfp)
+>>>
+>>> We use mas_ for things that won't handle the locking and pass in a maple
+>>> state.  Considering the leaves need to be altered once this is returned,
+>>> I would expect passing in a maple state should be feasible?
+>> But we don't really need mas here. What do you think the state of mas
+>> should be when this function returns? Make it point to the first entry,
+>> or the last entry?
+> 
+> I would write it to point to the first element so that the call to
+> replace the first element can just do that without an extra walk and
+> document the maple state end point.
+Unfortunately, this does not seem to be convenient. Users usually use
+mas_for_each() to replace elements. If we set mas to the first element,
+the first call to mas_find() in mas_for_each() will get the next
+element.
 
-On closer inspection it is actually sufficient to check if `file` is
-NULL here (since it means that the request isn't from userspace). So, do
-you think that would be palatable for upstream?
+There may also be other scenarios where the user does not necessarily
+have to replace every element.
 
-> 
-> Regards,
-> Christian.
-> 
->> +
->> +    return drm_atomic_helper_dirtyfb(fb, file, flags, color, clips,
->> +                     num_clips);
->> +}
->> +
->>   static const struct drm_framebuffer_funcs amdgpu_fb_funcs = {
->>       .destroy = drm_gem_fb_destroy,
->>       .create_handle = drm_gem_fb_create_handle,
->>   };
->> +static const struct drm_framebuffer_funcs amdgpu_fb_funcs_atomic = {
->> +    .destroy = drm_gem_fb_destroy,
->> +    .create_handle = drm_gem_fb_create_handle,
->> +    .dirty = amdgpu_dirtyfb
->> +};
->> +
->>   uint32_t amdgpu_display_supported_domains(struct amdgpu_device *adev,
->>                         uint64_t bo_flags)
->>   {
->> @@ -1139,7 +1159,11 @@ static int 
->> amdgpu_display_gem_fb_verify_and_init(struct drm_device *dev,
->>       if (ret)
->>           goto err;
->> -    ret = drm_framebuffer_init(dev, &rfb->base, &amdgpu_fb_funcs);
->> +    if (drm_drv_uses_atomic_modeset(dev))
->> +        ret = drm_framebuffer_init(dev, &rfb->base,
->> +                       &amdgpu_fb_funcs_atomic);
->> +    else
->> +        ret = drm_framebuffer_init(dev, &rfb->base, &amdgpu_fb_funcs);
->>       if (ret)
->>           goto err;
-> 
--- 
-Hamza
+Finally, getting the first element in __mt_dup() requires an additional
+check to check whether the first element has already been recorded. Such
+a check will be performed at each leaf node, which is unnecessary
+overhead.
 
+Of course, the first reason is the main reason, which prevents us from
+using mas_for_each(). So I don't want to record the first element.
+> 
+>>>
+>>>> +{
+>>>> +	int ret;
+>>>> +	struct maple_node *to_free = NULL;
+>>>> +
+>>>> +	ret = mt_dup_build(mt, new, gfp, &to_free);
+>>>> +
+>>>> +	if (unlikely(ret == -ENOMEM)) {
+>>>
+>>> On other errors, will the half constructed tree be returned?  Is this
+>>> safe?
+>> Of course, mt_dup_free() is carefully designed to handle this.
+>>>
+>>>> +		if (to_free)
+>>>> +			mt_dup_free(new, to_free);
+>>>> +	}
+>>>> +
+>>>> +	return ret;
+>>>> +}
+>>>> +EXPORT_SYMBOL(__mt_dup);
+>>>> +
+>>>> +/**
+>>>> + * mt_dup(): Duplicate a maple tree
+>>>> + * @mt: The source maple tree
+>>>> + * @new: The new maple tree
+>>>> + * @gfp: The GFP_FLAGS to use for allocations
+>>>> + *
+>>>> + * This function duplicates a maple tree using a faster method than traversing
+>>>> + * the source tree and inserting entries into the new tree one by one. The
+>>>> + * function will lock the source tree with an internal lock, and the user does
+>>>> + * not need to manually handle the lock. Before calling this function, @new must
+>>>> + * be an empty tree or an uninitialized tree. If @mt uses an external lock, we
+>>>> + * may also need to manually set @new's external lock using
+>>>> + * mt_set_external_lock().
+>>>> + *
+>>>> + * Return: 0 on success, -ENOMEM if memory could not be allocated.
+>>>> + */
+>>>> +int mt_dup(struct maple_tree *mt, struct maple_tree *new, gfp_t gfp)
+>>>
+>>> mtree_ ususually used to indicate locking is handled.
+>> Before unifying mtree_* and mt_*, I don't think I can see any difference
+>> between them. At least mt_set_in_rcu() and mt_clear_in_rcu() will hold
+>> the lock.
+> 
+> Fair enough.  I was thinking this closely matches __mt_destroy() and
+> mtree_destroy().  We could be consistent in our inconsistency, at least.
+> 
+>>>
+>>>> +{
+>>>> +	int ret;
+>>>> +	struct maple_node *to_free = NULL;
+>>>> +
+>>>> +	mtree_lock(mt);
+>>>> +	ret = mt_dup_build(mt, new, gfp, &to_free);
+>>>> +	mtree_unlock(mt);
+>>>> +
+>>>> +	if (unlikely(ret == -ENOMEM)) {
+>>>> +		if (to_free)
+>>>> +			mt_dup_free(new, to_free);
+>>>
+>>> Again, is a half constructed tree safe to return?  Since each caller
+>>> checks to_free is NULL, could that be in mt_dup_free() instead?
+>> Yes, this check can be put in mt_dup_free().
+>>>
+>>>> +	}
+>>>> +
+>>>> +	return ret;
+>>>> +}
+>>>> +EXPORT_SYMBOL(mt_dup);
+>>>> +
+>>>>    /**
+>>>>     * __mt_destroy() - Walk and free all nodes of a locked maple tree.
+>>>>     * @mt: The maple tree
+>>>> -- 
+>>>> 2.20.1
+>>>>
+>>>>
