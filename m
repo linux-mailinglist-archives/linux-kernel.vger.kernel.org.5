@@ -2,136 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE4777EDD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 01:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CFE77EDD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 01:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347151AbjHPX1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 19:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
+        id S1347177AbjHPX1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 19:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347167AbjHPX1R (ORCPT
+        with ESMTP id S1347176AbjHPX1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 19:27:17 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5E52723
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 16:27:15 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b9bf52cd08so105459141fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 16:27:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1692228434; x=1692833234;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q45JqAXzr4Yc7nNEyhWOzDg94DzcZe7EdIRyJCqv0Jo=;
-        b=YcPQmIOtMYQxiiZ/0AoABDlTNdSDIrOtk2rGs70EhaTerh977ds3mBVgJcKMcJTDHe
-         YjKFJ/KIfKRAka9zH6TltVJEIm9Zy6YyMSj1y+Tvdn7Ih5/BknEoMv00A1MUjAKHV86c
-         Jf0U662FZiWrgTbizBQ0/YqFTtOjmLu9LVX40=
+        Wed, 16 Aug 2023 19:27:49 -0400
+Received: from mail-pl1-f206.google.com (mail-pl1-f206.google.com [209.85.214.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC54271E
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 16:27:47 -0700 (PDT)
+Received: by mail-pl1-f206.google.com with SMTP id d9443c01a7336-1bc49d0cb4aso84587595ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 16:27:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692228434; x=1692833234;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q45JqAXzr4Yc7nNEyhWOzDg94DzcZe7EdIRyJCqv0Jo=;
-        b=OFcpVPc+cNnmykk+AeryWPGGEC+6OSZj3DlWRzjhbDlfqBpJw2Rf1AIo6l7CRQo864
-         /VAOmnbjkOCytMxVvumsou8UlqzBXGJ1TtMbhmykhhTKzgQwx13xjgYxwzSVu1W4t9ty
-         ZpTnlYtGN1E+EwghBYU+AAGos7WZe+8j2lN06ZyeNztUUU6ti6g2+phncjLgrEjgTP81
-         dJKrfZBswVB3UqZhBuRb8412XVAW2PV2tyTRGnoopo0togKHI4QOx3cDCx07NuyYYgAg
-         ovNIIB9sRVaXD3JGy0quLGGYATlrdfcrF09wC4BJ6QjfEltMhavM8ekVl26uy0/oznxU
-         Ad2w==
-X-Gm-Message-State: AOJu0YzKwQEBPqMPc6LJmwoMb8k0vqsyFoSv8vGHEykyf2iz4/wji4SF
-        Es0wOqT+ObqPdZX9a0g+/Kao0OxN81ArRgVhv+haVA==
-X-Google-Smtp-Source: AGHT+IH0VhJQ4iHGjbsEVYoyXsbb7mFyuwd1ohzgGIBeAZ28yYlgIp80AlZ4zKJUOIb/8h8k0GqlMkO3KvQm76wUGac=
-X-Received: by 2002:a2e:80c7:0:b0:2b5:9f54:e290 with SMTP id
- r7-20020a2e80c7000000b002b59f54e290mr2556165ljg.0.1692228434049; Wed, 16 Aug
- 2023 16:27:14 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692228467; x=1692833267;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PAODHEKlkohyVW4SPU/mzzjLtNTRD9df5tm0JKFVRoM=;
+        b=jUDVKRMKTqjYaBzwWd7xdLT+EoNFRbUbwTkHh2DdBkcayDkEjWm9cGfJLJKUFWzDx/
+         XeCBjF9toLnOITTuo7DsVzT+8Z7bUB+yt/C6Js9huPsITi5/ELDtuTREKGYfn0J8nNaP
+         Rgb9xXeTW8X7cE1CPGgMHAlWDqzzoqkiI5fOk//FsQl3pJkFL8uRA2hDelkdoS/gwHjc
+         utkg6Vi16/ZP314rSk+AFjHm858FWfc2cYEHu3tfhFS3NrxxcntqE3+EEdbwNNIll1w0
+         KL6kV5r9MHq40+wqn4ec5eYRR0HRhhq0MtvzF9jgdWIzqbJgMNVmYS2WOc62i5kvLd7o
+         kbag==
+X-Gm-Message-State: AOJu0YyJ32i9C93u+rhPjDdJQWznVvg7wbwnZqhLJ1q3b4c/0HzRRxMg
+        HsXKW4NGqBNMA4uxnNU+S4B9ZiVgiXkOaSTZtvx6sD0ztP5e
+X-Google-Smtp-Source: AGHT+IEVKJaNYWhsLc8jTBq2cwXfDEnAiIer4Ho7bobQt0yn5iTbUe7aSmJ6XKe0ibJTzIG5RgoIruxRyMGV2FDmDHgDfLBB37dR
 MIME-Version: 1.0
-References: <20230815190949.GA3207581@google.com> <6a234118-1ad2-4e22-ad80-f35a1dab8f03@paulmck-laptop>
-In-Reply-To: <6a234118-1ad2-4e22-ad80-f35a1dab8f03@paulmck-laptop>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 16 Aug 2023 19:27:03 -0400
-Message-ID: <CAEXW_YQkPOPXEwTCc3nZ2CH_scOomPgz7ACYECi3k64T+YD5Vg@mail.gmail.com>
-Subject: Re: [PATCH v3] rcutorture: Copy out ftrace into its own console file
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, Joel <agnel.joel@gmail.com>,
-        rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
+X-Received: by 2002:a17:903:2302:b0:1bf:794:9e8f with SMTP id
+ d2-20020a170903230200b001bf07949e8fmr564090plh.7.1692228467435; Wed, 16 Aug
+ 2023 16:27:47 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 16:27:47 -0700
+In-Reply-To: <000000000000f59fa505fe48748f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ae2d46060312a494@google.com>
+Subject: Re: [syzbot] [ext4?] INFO: task hung in __writeback_inodes_sb_nr (6)
+From:   syzbot <syzbot+38d04642cea49f3a3d2e@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linkinjeon@kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sj1557.seo@samsung.com,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 6:57=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
->
-> On Tue, Aug 15, 2023 at 07:09:49PM +0000, Joel Fernandes (Google) wrote:
-> > When debugging, it can be difficult to quickly find the ftrace dump
-> > within the console log, which in turn makes it difficult to process it
-> > independent of the result of the console output.  This commit therefore
-> > copies the contents of the buffers into its own file to make it easier
-> > to locate and process the ftrace dump. The original ftrace dump is stil=
-l
-> > available in the console log in cases where it is more convenient to
-> > process it there, for example, when you have a script that processes
-> > console output as well as ftrace-dump data.
-> >
-> > Also handle the case of multiple ftrace dumps potentially showing up in=
- the
-> > log. Example for a file like [1], it will extract as [2].
-> >
-> > [1]:
-> > foo
-> > foo
-> > Dumping ftrace buffer:
-> > ---------------------------------
-> > blah
-> > blah
-> > ---------------------------------
-> > more
-> > bar
-> > baz
-> > Dumping ftrace buffer:
-> > ---------------------------------
-> > blah2
-> > blah2
-> > ---------------------------------
-> > bleh
-> > bleh
-> >
-> > [2]:
-> >
-> > Ftrace dump 1:
-> > blah
-> > blah
-> >
-> > Ftrace dump 2:
-> > blah2
-> > blah2
-> >
-> >
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->
-> Very good, and I did queue this one.
->
-> I fixed the indentation of the awk script.  Perhaps your text editor is
-> being too smart for our good?  ;-)
+syzbot has found a reproducer for the following issue on:
 
-Thanks!  Yes the editor messing up is a possibility, I'll go look at
-that, though the indent seems still messed up in your dev branch:
+HEAD commit:    4853c74bd7ab Merge tag 'parisc-for-6.5-rc7' of git://git.k..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=178eb2efa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aa796b6080b04102
+dashboard link: https://syzkaller.appspot.com/bug?extid=38d04642cea49f3a3d2e
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171242cfa80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17934703a80000
 
-The line "/Dumping ftrace buffer:/ " has spaces, as does the "awk <
-$1" line. Is that intentional?  All the following ones have tabs.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/fef982ba26aa/disk-4853c74b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/633875549882/vmlinux-4853c74b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a1d2d81c82f6/bzImage-4853c74b.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/45ecbb86ca49/mount_4.gz
 
-thanks,
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+38d04642cea49f3a3d2e@syzkaller.appspotmail.com
 
- - Joel
+INFO: task syz-executor359:5018 blocked for more than 143 seconds.
+      Not tainted 6.5.0-rc6-syzkaller-00036-g4853c74bd7ab #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor359 state:D stack:27216 pid:5018  ppid:5015   flags:0x00004002
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5381 [inline]
+ __schedule+0xee1/0x59f0 kernel/sched/core.c:6710
+ schedule+0xe7/0x1b0 kernel/sched/core.c:6786
+ wb_wait_for_completion+0x1ae/0x270 fs/fs-writeback.c:192
+ __writeback_inodes_sb_nr+0x1d8/0x270 fs/fs-writeback.c:2650
+ sync_filesystem fs/sync.c:54 [inline]
+ sync_filesystem+0xb6/0x280 fs/sync.c:30
+ generic_shutdown_super+0x74/0x480 fs/super.c:472
+ kill_block_super+0x64/0xb0 fs/super.c:1417
+ deactivate_locked_super+0x9a/0x170 fs/super.c:330
+ deactivate_super+0xde/0x100 fs/super.c:361
+ cleanup_mnt+0x222/0x3d0 fs/namespace.c:1254
+ task_work_run+0x14d/0x240 kernel/task_work.c:179
+ ptrace_notify+0x10c/0x130 kernel/signal.c:2376
+ ptrace_report_syscall include/linux/ptrace.h:411 [inline]
+ ptrace_report_syscall_exit include/linux/ptrace.h:473 [inline]
+ syscall_exit_work kernel/entry/common.c:252 [inline]
+ syscall_exit_to_user_mode_prepare+0x120/0x220 kernel/entry/common.c:279
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:284 [inline]
+ syscall_exit_to_user_mode+0xd/0x50 kernel/entry/common.c:297
+ do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f497ef65487
+RSP: 002b:00007ffdd57d4148 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f497ef65487
+RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007ffdd57d4200
+RBP: 00007ffdd57d4200 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000206 R12: 00007ffdd57d5270
+R13: 00005555566da6c0 R14: 431bde82d7b634db R15: 00007ffdd57d5290
+ </TASK>
+
+Showing all locks held in the system:
+1 lock held by rcu_tasks_kthre/13:
+ #0: ffffffff8c9a67f0 (rcu_tasks.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x2c/0xe20 kernel/rcu/tasks.h:522
+1 lock held by rcu_tasks_trace/14:
+ #0: ffffffff8c9a64f0 (rcu_tasks_trace.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x2c/0xe20 kernel/rcu/tasks.h:522
+1 lock held by khungtaskd/27:
+ #0: ffffffff8c9a7400 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x340 kernel/locking/lockdep.c:6615
+3 locks held by kworker/u4:2/34:
+2 locks held by getty/4774:
+ #0: ffff88802cdfa098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x24/0x80 drivers/tty/tty_ldisc.c:243
+ #1: ffffc900015c02f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xfcb/0x1480 drivers/tty/n_tty.c:2187
+1 lock held by syz-executor359/5018:
+ #0: ffff88807b0e80e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: deactivate_super+0xd6/0x100 fs/super.c:360
+
+=============================================
+
+NMI backtrace for cpu 1
+CPU: 1 PID: 27 Comm: khungtaskd Not tainted 6.5.0-rc6-syzkaller-00036-g4853c74bd7ab #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ nmi_cpu_backtrace+0x277/0x380 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x2ac/0x310 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
+ watchdog+0xf29/0x11b0 kernel/hung_task.c:379
+ kthread+0x33a/0x430 kernel/kthread.c:389
+ ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 34 Comm: kworker/u4:2 Not tainted 6.5.0-rc6-syzkaller-00036-g4853c74bd7ab #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Workqueue: writeback wb_workfn (flush-7:0)
+RIP: 0010:__sanitizer_cov_trace_pc+0x0/0x70 kernel/kcov.c:200
+Code: a6 27 99 02 66 0f 1f 44 00 00 f3 0f 1e fa 48 8b be b0 01 00 00 e8 b0 ff ff ff 31 c0 c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 <f3> 0f 1e fa 65 8b 05 dd b0 7d 7e 89 c1 48 8b 34 24 81 e1 00 01 00
+RSP: 0018:ffffc90000ab74e8 EFLAGS: 00000206
+RAX: 0000000000000000 RBX: ffffea0001c90174 RCX: ffffffff81fa92f9
+RDX: ffff8880136fbb80 RSI: 0000000000000000 RDI: 0000000000000005
+RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000003 R11: 1ffffffff1936441 R12: 0000000000000003
+R13: 0000000000000200 R14: 0000000000000003 R15: ffffea0001c90140
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055fded888928 CR3: 0000000028191000 CR4: 0000000000350ef0
+Call Trace:
+ <NMI>
+ </NMI>
+ <TASK>
+ instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
+ atomic_dec_and_test include/linux/atomic/atomic-instrumented.h:1375 [inline]
+ page_ref_dec_and_test include/linux/page_ref.h:210 [inline]
+ put_page_testzero include/linux/mm.h:1028 [inline]
+ folio_put_testzero include/linux/mm.h:1033 [inline]
+ folio_put include/linux/mm.h:1439 [inline]
+ grow_dev_page fs/buffer.c:1093 [inline]
+ grow_buffers fs/buffer.c:1123 [inline]
+ __getblk_slow+0x4b7/0x720 fs/buffer.c:1150
+ __getblk_gfp fs/buffer.c:1445 [inline]
+ __bread_gfp+0x215/0x310 fs/buffer.c:1479
+ sb_bread include/linux/buffer_head.h:351 [inline]
+ exfat_get_dentry_set+0x283/0xc10 fs/exfat/dir.c:878
+ __exfat_write_inode+0x2c0/0x9e0 fs/exfat/inode.c:45
+ exfat_write_inode+0xad/0x130 fs/exfat/inode.c:94
+ write_inode fs/fs-writeback.c:1456 [inline]
+ __writeback_single_inode+0xa81/0xe70 fs/fs-writeback.c:1668
+ writeback_sb_inodes+0x599/0x1010 fs/fs-writeback.c:1894
+ wb_writeback+0x2a5/0xa90 fs/fs-writeback.c:2070
+ wb_do_writeback fs/fs-writeback.c:2217 [inline]
+ wb_workfn+0x29c/0xfd0 fs/fs-writeback.c:2257
+ process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2600
+ worker_thread+0x687/0x1110 kernel/workqueue.c:2751
+ kthread+0x33a/0x430 kernel/kthread.c:389
+ ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.463 msecs
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
