@@ -2,154 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C919477E0FB
+	by mail.lfdr.de (Postfix) with ESMTP id 7545C77E0FA
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 14:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244894AbjHPL7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 07:59:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59540 "EHLO
+        id S244917AbjHPL7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 07:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244954AbjHPL72 (ORCPT
+        with ESMTP id S244963AbjHPL7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 07:59:28 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 229412121
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 04:59:26 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fe21e7f3d1so10391622e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 04:59:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692187164; x=1692791964;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TrjzBslgbGZ9bpoeR45JjTw7/ZPEgHiY5QlVRz4wxmY=;
-        b=byoKrU0IUP+TaIMLiMyhcIyk1V1HBEjmnpAtmkfMzWgdZso5dlKv+oDH3x4L9mBqFI
-         FQ9YOP6Iakhr8OApjsTtVuD8osKnDREiuXHvumZMEH92KThwJqrpE836XzWxzBqtpXZd
-         Kko5RiFXa4XKp25MGIMW360SzAv5Gzu5h2CRP1PLa2/RKhYlzYQC+lQ6Dx9QRFk0eWDv
-         F2yOYXd7Ug657uawd7kk2Zt3gnVL3LdsqmFyPjocTBg0pIAyZ4F5nPgogXaXM2E2anj/
-         8AUfFeIMp1KeqR5sImtDiqYSQc8r6Xle82EsKaBrilDDK3LmTlwvqCLcPq8qChQZO4iu
-         1TPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692187164; x=1692791964;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TrjzBslgbGZ9bpoeR45JjTw7/ZPEgHiY5QlVRz4wxmY=;
-        b=GlFtWTP54VWmIT/5620u9L5d5nNKbHQgn8FNj/wqbViCA0YXziJq2Kj8+E9exKebBh
-         dfnPAvYrDYVPLBeGcNW5lr5dwuKYYvWXtYE3jP4gkOG0x9XyqZGVSrWJd9ssD1r2ZO5Q
-         SB+K9MlRYVwSRMGD1WP5TeEKWJ9sAIPS26nMB/3B3U5Xfvn0OfCBjyPUQM0aU+xhHb0Z
-         KzyXoKbK33GTGumvzzbcPw4DokFoQJFMCFH8Xhd/I2AbJCKrFMzcl9SgAb9tHOgkNm61
-         j+jFLq7l93HOisLd1LHZpO8k+veweW8K5lUqq+hHnx6sd73pcnofDL9/C0kUNxw+9Uzc
-         v0Sg==
-X-Gm-Message-State: AOJu0Yw/7sM84HzGRAmAH4C04A/fKIVZ3mSmqfZ6MiXrd+1yEYa2FA7T
-        mRFd8JDJR8rpUwuOxWgSsXtQw8bzalvNNREB7OxTqQ==
-X-Google-Smtp-Source: AGHT+IHkPw8Z++C0XeOANREQGb/F7aTBQn7hukjOj1Q/g0vsdie6QkT2t9Q5MEPUmJnDQxadMFjU/AVAIqYDipvMyok=
-X-Received: by 2002:a19:8c01:0:b0:4fb:9105:58b0 with SMTP id
- o1-20020a198c01000000b004fb910558b0mr1240905lfd.20.1692187164381; Wed, 16 Aug
- 2023 04:59:24 -0700 (PDT)
+        Wed, 16 Aug 2023 07:59:35 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AEF2121;
+        Wed, 16 Aug 2023 04:59:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=w4pNixXG/yujqwuAAE04Kdf6OftnyKzc8cljjGmu4i0=; b=JdVKR7WK8g11MZo+4lm3fupwxw
+        GoLvxoGZxjzWh+wP9bd0wrNAt8ewSXQl5qjB3tp0OvS+R3xJB9Jkf7+sKU16nrgNaVC9MckkWdC1I
+        PE1NPfdpesLNRMb+w0SupQ3T2PXmV4n09rMp41IfsqhGnqE92gMMpwaPan299rizYgBmYUVJBtwq1
+        eyoUIhYWVc5a3pxl86GdNmil5LhcaS2vi25ISLrhq6H4zvoRlFEA1rgDRCVxwvBMKEwx/P45ztu7f
+        ZseukUVqOzPx9L+X2TxW+ZeByx4fUNP9K4SdRRZkdbF23SPK2uctEoorUYKNj3yxWy2SLGKAdaCwq
+        JIu5mnFw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qWFBK-00CytP-1g;
+        Wed, 16 Aug 2023 11:59:22 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 289123001FD;
+        Wed, 16 Aug 2023 13:59:22 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 057EE2C904588; Wed, 16 Aug 2023 13:59:22 +0200 (CEST)
+Date:   Wed, 16 Aug 2023 13:59:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-tip-commits@vger.kernel.org,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org
+Subject: Re: [tip: x86/urgent] objtool/x86: Fix SRSO mess
+Message-ID: <20230816115921.GH980931@hirez.programming.kicks-ass.net>
+References: <20230814121148.704502245@infradead.org>
+ <169217251760.27769.15304146275480287222.tip-bot2@tip-bot2>
 MIME-Version: 1.0
-References: <20230807025343.1939-1-masahisa.kojima@linaro.org>
- <CAC_iWjLU+mVtG4uGVoEJSJwuE0=GVcfJgi=h3QX54=fh2P4EAg@mail.gmail.com>
- <660cec45-d0d1-433f-b58e-a22a07a289fb@siemens.com> <CADQ0-X_dJag7EuEEEgCZrnJNNH9Va77mxmGYA9vPFw9DkoB-AA@mail.gmail.com>
-In-Reply-To: <CADQ0-X_dJag7EuEEEgCZrnJNNH9Va77mxmGYA9vPFw9DkoB-AA@mail.gmail.com>
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date:   Wed, 16 Aug 2023 14:58:48 +0300
-Message-ID: <CAC_iWjLzaSBz3_j=rz73QLCBX_YouCL+KBvR7sXMFFMQA3pOPg@mail.gmail.com>
-Subject: Re: [PATCH v8 0/5] introduce tee-based EFI Runtime Variable Service
-To:     Masahisa Kojima <masahisa.kojima@linaro.org>
-Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <169217251760.27769.15304146275480287222.tip-bot2@tip-bot2>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Aug 2023 at 05:41, Masahisa Kojima
-<masahisa.kojima@linaro.org> wrote:
->
-> Hi Jan,
->
-> 2023=E5=B9=B48=E6=9C=8815=E6=97=A5(=E7=81=AB) 2:23 Jan Kiszka <jan.kiszka=
-@siemens.com>:
->>
->> On 14.08.23 11:24, Ilias Apalodimas wrote:
->> > Hi Jan,
->> >
->> > On Mon, 7 Aug 2023 at 05:53, Masahisa Kojima <masahisa.kojima@linaro.o=
-rg> wrote:
->> >>
->> >> This series introduces the tee based EFI Runtime Variable Service.
->> >>
->> >> The eMMC device is typically owned by the non-secure world(linux in
->> >> this case). There is an existing solution utilizing eMMC RPMB partiti=
-on
->> >> for EFI Variables, it is implemented by interacting with
->> >> OP-TEE, StandaloneMM(as EFI Variable Service Pseudo TA), eMMC driver
->> >> and tee-supplicant. The last piece is the tee-based variable access
->> >> driver to interact with OP-TEE and StandaloneMM.
->> >>
->> >> Changelog:
->> >> v7 -> v8
->> >> Only patch #3 "efi: Add tee-based EFI variable driver" is updated.
->> >> - fix typos
->> >> - refactor error handling, direct return if applicable
->> >> - use devm_add_action_or_reset() for closing of tee context/session
->> >> - remove obvious comment
->> >
->> > Any chance you can run this and see if it solves your issues?
->> >
->>
->> I also need [1], and I still need a cleanup script before terminating
->> the tee-supplicant, right?
->
->
-> Yes, we need patch[1] and a cleanup script.
-> Sorry, I should note in the cover letter.
->
->> And if need some service in the initrd
->> already, I still need to start the supplicant there and transfer its
->> ownership to systemd later on?
->
-> Yes.
->
->> These patches here only make life easier
->> if the supplicant is started by systemd, after efivarfs has been
->> mounted, correct?
+On Wed, Aug 16, 2023 at 07:55:17AM -0000, tip-bot2 for Peter Zijlstra wrote:
+> The following commit has been merged into the x86/urgent branch of tip:
+> 
+> Commit-ID:     4ae68b26c3ab5a82aa271e6e9fc9b1a06e1d6b40
+> Gitweb:        https://git.kernel.org/tip/4ae68b26c3ab5a82aa271e6e9fc9b1a06e1d6b40
+> Author:        Peter Zijlstra <peterz@infradead.org>
+> AuthorDate:    Mon, 14 Aug 2023 13:44:29 +02:00
+> Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+> CommitterDate: Wed, 16 Aug 2023 09:39:16 +02:00
+> 
+> objtool/x86: Fix SRSO mess
+> 
+> Objtool --rethunk does two things:
+> 
+>  - it collects all (tail) call's of __x86_return_thunk and places them
+>    into .return_sites. These are typically compiler generated, but
+>    RET also emits this same.
+> 
+>  - it fudges the validation of the __x86_return_thunk symbol; because
+>    this symbol is inside another instruction, it can't actually find
+>    the instruction pointed to by the symbol offset and gets upset.
+> 
+> Because these two things pertained to the same symbol, there was no
+> pressing need to separate these two separate things.
+> 
+> However, alas, along comes SRSO and more crazy things to deal with
+> appeared.
+> 
+> The SRSO patch itself added the following symbol names to identify as
+> rethunk:
+> 
+>   'srso_untrain_ret', 'srso_safe_ret' and '__ret'
+> 
+> Where '__ret' is the old retbleed return thunk, 'srso_safe_ret' is a
+> new similarly embedded return thunk, and 'srso_untrain_ret' is
+> completely unrelated to anything the above does (and was only included
+> because of that INT3 vs UD2 issue fixed previous).
+> 
+> Clear things up by adding a second category for the embedded instruction
+> thing.
+> 
+> Fixes: fb3bd914b3ec ("x86/srso: Add a Speculative RAS Overflow mitigation")
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+> Link: https://lore.kernel.org/r/20230814121148.704502245@infradead.org
 
-Not systemd specifically.  Any tool that can signal
-<dev>/driver/unbind would work.  Sumit is just reusing the default
-unbind notification mechanism
+Turns out I forgot to build with FRAME_POINTER=y, that still gives:
 
-Thanks
-/Ilias
+vmlinux.o: warning: objtool: srso_untrain_ret+0xd: call without frame pointer save/setup
 
->
-> Yes.
->
-> Thanks,
-> Masahisa Kojima
->
->>
->>
->> Jan
->>
->> [1] https://lkml.org/lkml/2023/7/28/853
->>
->> --
->> Siemens AG, Technology
->> Linux Expert Center
->>
+the below seems to cure this.
+
+---
+ tools/objtool/check.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
+
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 7a9aaf400873..1384090530db 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -2650,12 +2650,17 @@ static int decode_sections(struct objtool_file *file)
+ 	return 0;
+ }
+ 
+-static bool is_fentry_call(struct instruction *insn)
++static bool is_special_call(struct instruction *insn)
+ {
+-	if (insn->type == INSN_CALL &&
+-	    insn_call_dest(insn) &&
+-	    insn_call_dest(insn)->fentry)
+-		return true;
++	if (insn->type == INSN_CALL) {
++		struct symbol *dest = insn_call_dest(insn);
++
++		if (!dest)
++			return false;
++
++		if (dest->fentry || dest->embedded_insn)
++			return true;
++	}
+ 
+ 	return false;
+ }
+@@ -3656,7 +3661,7 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 			if (ret)
+ 				return ret;
+ 
+-			if (opts.stackval && func && !is_fentry_call(insn) &&
++			if (opts.stackval && func && !is_special_call(insn) &&
+ 			    !has_valid_stack_frame(&state)) {
+ 				WARN_INSN(insn, "call without frame pointer save/setup");
+ 				return 1;
