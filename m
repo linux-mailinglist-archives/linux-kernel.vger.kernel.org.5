@@ -2,49 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8847777E16A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 14:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35BCA77E172
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 14:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245097AbjHPMXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 08:23:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55284 "EHLO
+        id S245120AbjHPMXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 08:23:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245103AbjHPMWj (ORCPT
+        with ESMTP id S245150AbjHPMWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 08:22:39 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9812F2D48;
-        Wed, 16 Aug 2023 05:22:09 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E3EE51063;
-        Wed, 16 Aug 2023 05:22:42 -0700 (PDT)
-Received: from pluto (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3B3183F6C4;
-        Wed, 16 Aug 2023 05:22:00 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 13:21:49 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
-Cc:     "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        Wed, 16 Aug 2023 08:22:49 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72172D55
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:22:24 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fe1b00fce2so9744275e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:22:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692188543; x=1692793343;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6SVPI9u/mcgbeuFPm8+cRABDPuzkfsOkgYL/geOPsqA=;
+        b=fKUrvIBIXc7qYGyW2qRezMNsy2BzcC/BIje4Wd/pGZ1GT7whw98uEvNJZyz39vcF0r
+         bJfiPsIvxzeHdw4QgR9ZoKGDwb8HV0l1k7Hl0acZntx+etje3ExV1SeDBmjKnZXfjEzA
+         jh18lyAkr1Dpfbhp682dYo1bz4nIjrpXRJ/hvs5nJO6c8hCVbZq2wMTB1vERT8EdRsrh
+         mSOTbDGNfLEfIUOuYTOSrXGnCl2G1KHtJJrT4BFUGeAx3PyS4m79u2YavxSnXpvdkHvY
+         YoIAAnFBEeOYO7omILd6Mw/qaOx18wumSbL4iPaKqzHfqH+hfF+KWjeWuhN/i+dNj+fi
+         NrbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692188543; x=1692793343;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6SVPI9u/mcgbeuFPm8+cRABDPuzkfsOkgYL/geOPsqA=;
+        b=Q6vO+Fa2Wgz0SuJIME0cS9ltlWURYbz2kRaYmW41CBmiW6LOztRiolwPwqBiaWM2Gv
+         OThMVq2+jJcCd+QRL/W46jtgpKkqDlwAqAnDFgEH7FGSyE3m+arpB58MUT44zW57vVVF
+         F6gT3o1a723WZSLYn97kwkKoakhemHVbd3IKoC1He8vZEcpcZWstYPnxwf9IMgX/ii/T
+         vDkflLLJ59IOxrU5KbjtEogRO+1Xvkhc3vEvDHcsmke1D7+fC7l0Yy1CCR2uUBIIoTED
+         4ynN25445Wh9RnE9EJ1uw+WBpVZvTVaolQTqcQqu3C7B9U4UiFLnbOYYmqsP5H3k6DUT
+         7cMg==
+X-Gm-Message-State: AOJu0Yys8tlis1l2GdWjSc6pwpnzlXLn62ODe90ZBWZBBfQYDrDVkc0l
+        TGh3elTuntDBk3xfu0DVEYzfvw==
+X-Google-Smtp-Source: AGHT+IFhGfy/vcTxgmHaLK2R36JKCtTnwfYbD5wD2riaRXetSdjzCBkFDJkO4ZucnZhPeQSw4cDj6A==
+X-Received: by 2002:a05:6512:473:b0:4fb:780d:2a49 with SMTP id x19-20020a056512047300b004fb780d2a49mr1469833lfd.5.1692188542987;
+        Wed, 16 Aug 2023 05:22:22 -0700 (PDT)
+Received: from [192.168.1.101] (abxi8.neoplus.adsl.tpnet.pl. [83.9.2.8])
+        by smtp.gmail.com with ESMTPSA id c11-20020ac2530b000000b004fe0fead9e2sm536419lfh.165.2023.08.16.05.22.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 05:22:22 -0700 (PDT)
+Message-ID: <0e111aaa-705b-4ae5-a07b-32691f01cc31@linaro.org>
+Date:   Wed, 16 Aug 2023 14:22:20 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/3] arm64: dts: qcom: sm8450: Add opp table support to
+ PCIe
+Content-Language: en-US
+To:     Pavan Kondeti <quic_pkondeti@quicinc.com>,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc:     manivannan.sadhasivam@linaro.org, helgaas@kernel.org,
+        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
+        quic_ramkri@quicinc.com, quic_parass@quicinc.com,
+        krzysztof.kozlowski@linaro.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH v4 2/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
- protocol basic support
-Message-ID: <ZNy_Xb7knK5GzjEa@pluto>
-References: <cover.1691518313.git.oleksii_moisieiev@epam.com>
- <cde361d9d2b155c72fbd6aa85fd077864e36b6e3.1691518314.git.oleksii_moisieiev@epam.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cde361d9d2b155c72fbd6aa85fd077864e36b6e3.1691518314.git.oleksii_moisieiev@epam.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+References: <1692102408-7010-1-git-send-email-quic_krichai@quicinc.com>
+ <1692102408-7010-3-git-send-email-quic_krichai@quicinc.com>
+ <dc14acb4-9fe8-4b3b-a9da-7f7915de4d5c@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <dc14acb4-9fe8-4b3b-a9da-7f7915de4d5c@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,469 +123,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 06:25:35PM +0000, Oleksii Moisieiev wrote:
-> Add basic implementation of the SCMI v3.2 pincontrol protocol.
+On 16.08.2023 09:05, Pavan Kondeti wrote:
+> On Tue, Aug 15, 2023 at 05:56:47PM +0530, Krishna chaitanya chundru wrote:
+>> PCIe needs to choose the appropriate performance state of RPMH power
+>> domain based upon the PCIe gen speed.
+>>
+>> So, let's add the OPP table support to specify RPMH performance states.
+>>
+>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>> ---
+>>  arch/arm64/boot/dts/qcom/sm8450.dtsi | 47 ++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 47 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+>> index 595533a..681ea9c 100644
+>> --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+>> @@ -381,6 +381,49 @@
+>>  		};
+>>  	};
+>>  
+>> +	pcie0_opp_table: opp-table-pcie0 {
+>> +		compatible = "operating-points-v2";
+>> +
+>> +		opp-2500000 {
+>> +			opp-hz = /bits/ 64 <2500000>;
+>> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+>> +		};
+>> +
+>> +		opp-5000000 {
+>> +			opp-hz = /bits/ 64 <5000000>;
+>> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+>> +		};
+>> +
+>> +		opp-8000000 {
+>> +			opp-hz = /bits/ 64 <8000000>;
+>> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+>> +		};
+>> +	};
+>> +
+>> +	pcie1_opp_table: opp-table-pcie1 {
+>> +		compatible = "operating-points-v2";
+>> +
+>> +		opp-2500000 {
+>> +			opp-hz = /bits/ 64 <2500000>;
+>> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+>> +		};
+>> +
+>> +		opp-5000000 {
+>> +			opp-hz = /bits/ 64 <5000000>;
+>> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+>> +		};
+>> +
+>> +		opp-8000000 {
+>> +			opp-hz = /bits/ 64 <8000000>;
+>> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+>> +		};
+>> +
+>> +		opp-16000000 {
+>> +			opp-hz = /bits/ 64 <16000000>;
+>> +			opp-level = <RPMH_REGULATOR_LEVEL_NOM>;
+>> +		};
+>> +	};
+>> +
 > 
-> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-> ---
-> Changes v3 -> v4
->   - Fixed MAINTAINERS file description
->   - adjusted pinctrl ops position and callback names
->   - add trailing coma in scmi_protocol list
->   - removed unneeded pi checks
->   - corrected selector check
->   - resource allocation refactoring
->   - scmi_*_info swap params to generate better code
->   - style, add trailing coma in definitions
-> ---
+> Should not we using required-opps property to pass the
+> rpmhpd_opp_xxx phandle so that when this OPP is selected based on your
+> clock rate, the appropriate OPP (voltage) would be selected on the RPMH side?
+Yes, opp-level is for opp providers.
 
-Hi Oleksii,
-
-thanks to have addressed all the previous reported issues.
-At this point my only residual blocker issue is that, after the recent
-changes to PINCTRL_CONFIG_GET/SET command formats [1], as requested by Peng
-(multiple config values per message), the support added by this patch
-around CONFIG_GET/SET is not out-of-spec, because the changes from the
-previous BETA were not backward compatible.
-
-So, even sending just one config/val request, as it is now, won't work
-because an out-of-spec message will be sent.
-
-I am NOT aware of any further change to this last BETA but you may want
-to check with Souvik.
-
-[1]: https://developer.arm.com/documentation/den0056/latest/
-
-Some more comments on this down below.
-
->  MAINTAINERS                           |   6 +
->  drivers/firmware/arm_scmi/Makefile    |   2 +-
->  drivers/firmware/arm_scmi/driver.c    |   2 +
->  drivers/firmware/arm_scmi/pinctrl.c   | 791 ++++++++++++++++++++++++++
->  drivers/firmware/arm_scmi/protocols.h |   1 +
->  include/linux/scmi_protocol.h         |  42 ++
->  6 files changed, 843 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/firmware/arm_scmi/pinctrl.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 0dab9737ec16..2d81d00e5f4f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -20522,6 +20522,12 @@ F:	include/linux/sc[mp]i_protocol.h
->  F:	include/trace/events/scmi.h
->  F:	include/uapi/linux/virtio_scmi.h
->  
-> +PINCTRL DRIVER FOR SYSTEM CONTROL MANAGEMENT INTERFACE (SCMI)
-> +M:	Oleksii Moisieiev <oleksii_moisieiev@epam.com>
-> +L:	linux-arm-kernel@lists.infradead.org
-> +S:	Maintained
-> +F:	drivers/firmware/arm_scmi/pinctrl.c
-> +
->  SYSTEM RESET/SHUTDOWN DRIVERS
->  M:	Sebastian Reichel <sre@kernel.org>
->  L:	linux-pm@vger.kernel.org
-> diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
-> index b31d78fa66cc..603430ec0bfe 100644
-> --- a/drivers/firmware/arm_scmi/Makefile
-> +++ b/drivers/firmware/arm_scmi/Makefile
-> @@ -10,7 +10,7 @@ scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_SMC) += smc.o
->  scmi-transport-$(CONFIG_ARM_SCMI_HAVE_MSG) += msg.o
->  scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_VIRTIO) += virtio.o
->  scmi-transport-$(CONFIG_ARM_SCMI_TRANSPORT_OPTEE) += optee.o
-> -scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o voltage.o powercap.o
-> +scmi-protocols-y = base.o clock.o perf.o power.o reset.o sensors.o system.o voltage.o powercap.o pinctrl.o
->  scmi-module-objs := $(scmi-driver-y) $(scmi-protocols-y) $(scmi-transport-y)
->  
->  obj-$(CONFIG_ARM_SCMI_PROTOCOL) += scmi-core.o
-> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> index 729201d8f935..03686bff000e 100644
-> --- a/drivers/firmware/arm_scmi/driver.c
-> +++ b/drivers/firmware/arm_scmi/driver.c
-> @@ -3024,6 +3024,7 @@ static int __init scmi_driver_init(void)
->  	scmi_voltage_register();
->  	scmi_system_register();
->  	scmi_powercap_register();
-> +	scmi_pinctrl_register();
->  
->  	return platform_driver_register(&scmi_driver);
->  }
-> @@ -3041,6 +3042,7 @@ static void __exit scmi_driver_exit(void)
->  	scmi_voltage_unregister();
->  	scmi_system_unregister();
->  	scmi_powercap_unregister();
-> +	scmi_pinctrl_unregister();
->  
->  	scmi_transports_exit();
->  
-> diff --git a/drivers/firmware/arm_scmi/pinctrl.c b/drivers/firmware/arm_scmi/pinctrl.c
-> new file mode 100644
-> index 000000000000..868a2f9821be
-> --- /dev/null
-> +++ b/drivers/firmware/arm_scmi/pinctrl.c
-> @@ -0,0 +1,791 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * System Control and Management Interface (SCMI) Pinctrl Protocol
-> + *
-> + * Copyright (C) 2023 EPAM
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/scmi_protocol.h>
-> +#include <linux/slab.h>
-> +
-> +#include "protocols.h"
-> +
-> +#define REG_TYPE_BITS GENMASK(9, 8)
-> +#define REG_CONFIG GENMASK(7, 0)
-> +
-> +#define GET_GROUPS_NR(x)	le32_get_bits((x), GENMASK(31, 16))
-> +#define GET_PINS_NR(x)		le32_get_bits((x), GENMASK(15, 0))
-> +#define GET_FUNCTIONS_NR(x)	le32_get_bits((x), GENMASK(15, 0))
-> +
-> +#define EXT_NAME_FLAG(x)	le32_get_bits((x), BIT(31))
-> +#define NUM_ELEMS(x)		le32_get_bits((x), GENMASK(15, 0))
-> +
-> +#define REMAINING(x)		le32_get_bits((x), GENMASK(31, 16))
-> +#define RETURNED(x)		le32_get_bits((x), GENMASK(11, 0))
-> +
-> +enum scmi_pinctrl_protocol_cmd {
-> +	PINCTRL_ATTRIBUTES = 0x3,
-> +	PINCTRL_LIST_ASSOCIATIONS = 0x4,
-> +	PINCTRL_CONFIG_GET = 0x5,
-> +	PINCTRL_CONFIG_SET = 0x6,
-> +	PINCTRL_FUNCTION_SELECT = 0x7,
-> +	PINCTRL_REQUEST = 0x8,
-> +	PINCTRL_RELEASE = 0x9,
-> +	PINCTRL_NAME_GET = 0xa,
-> +	PINCTRL_SET_PERMISSIONS = 0xb
-> +};
-> +
-> +struct scmi_msg_conf_set {
-> +	__le32 identifier;
-> +	__le32 attributes;
-> +	__le32 config_value;
-> +};
-> +
-> +struct scmi_msg_conf_get {
-> +	__le32 identifier;
-> +	__le32 attributes;
-> +};
-> +
-> +struct scmi_msg_pinctrl_protocol_attributes {
-> +	__le32 attributes_low;
-> +	__le32 attributes_high;
-> +};
-> +
-> +struct scmi_msg_pinctrl_attributes {
-> +	__le32 identifier;
-> +	__le32 flags;
-> +};
-> +
-> +struct scmi_resp_pinctrl_attributes {
-> +	__le32 attributes;
-> +	u8 name[SCMI_SHORT_NAME_MAX_SIZE];
-> +};
-> +
-> +struct scmi_msg_pinctrl_list_assoc {
-> +	__le32 identifier;
-> +	__le32 flags;
-> +	__le32 index;
-> +};
-> +
-> +struct scmi_resp_pinctrl_list_assoc {
-> +	__le32 flags;
-> +	__le16 array[];
-> +};
-> +
-> +struct scmi_msg_func_set {
-> +	__le32 identifier;
-> +	__le32 function_id;
-> +	__le32 flags;
-> +};
-> +
-> +struct scmi_msg_request {
-> +	__le32 identifier;
-> +	__le32 flags;
-> +};
-> +
-> +struct scmi_group_info {
-> +	char name[SCMI_MAX_STR_SIZE];
-> +	bool present;
-> +	unsigned int *group_pins;
-> +	unsigned int nr_pins;
-> +};
-> +
-> +struct scmi_function_info {
-> +	char name[SCMI_MAX_STR_SIZE];
-> +	bool present;
-> +	unsigned int *groups;
-> +	unsigned int nr_groups;
-> +};
-> +
-> +struct scmi_pin_info {
-> +	char name[SCMI_MAX_STR_SIZE];
-> +	bool present;
-> +};
-> +
-> +struct scmi_pinctrl_info {
-> +	u32 version;
-> +	int nr_groups;
-> +	int nr_functions;
-> +	int nr_pins;
-> +	struct scmi_group_info *groups;
-> +	struct scmi_function_info *functions;
-> +	struct scmi_pin_info *pins;
-> +};
-> +
-> +static int scmi_pinctrl_attributes_get(const struct scmi_protocol_handle *ph,
-> +				       struct scmi_pinctrl_info *pi)
-> +{
-> +	int ret;
-> +	struct scmi_xfer *t;
-> +	struct scmi_msg_pinctrl_protocol_attributes *attr;
-> +
-> +	ret = ph->xops->xfer_get_init(ph, PROTOCOL_ATTRIBUTES, 0, sizeof(*attr), &t);
-> +	if (ret)
-> +		return ret;
-> +
-> +	attr = t->rx.buf;
-> +
-> +	ret = ph->xops->do_xfer(ph, t);
-> +	if (!ret) {
-> +		pi->nr_functions = GET_FUNCTIONS_NR(attr->attributes_high);
-> +		pi->nr_groups = GET_GROUPS_NR(attr->attributes_low);
-> +		pi->nr_pins = GET_PINS_NR(attr->attributes_low);
-> +	}
-> +
-> +	ph->xops->xfer_put(ph, t);
-> +	return ret;
-> +}
-> +
-> +static int scmi_pinctrl_count_get(const struct scmi_protocol_handle *ph,
-> +				  enum scmi_pinctrl_selector_type type)
-> +{
-> +	struct scmi_pinctrl_info *pi = ph->get_priv(ph);
-> +
-> +	switch (type) {
-> +	case PIN_TYPE:
-> +		return pi->nr_pins;
-> +	case GROUP_TYPE:
-> +		return pi->nr_groups;
-> +	case FUNCTION_TYPE:
-> +		return pi->nr_functions;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static int scmi_pinctrl_validate_id(const struct scmi_protocol_handle *ph,
-> +				    u32 identifier,
-> +				    enum scmi_pinctrl_selector_type type)
-> +{
-> +	int value;
-> +
-> +	value = scmi_pinctrl_count_get(ph, type);
-> +	if (value < 0)
-> +		return value;
-> +
-> +	if (identifier >= value)
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +
-> +static int scmi_pinctrl_attributes(const struct scmi_protocol_handle *ph,
-> +				   enum scmi_pinctrl_selector_type type,
-> +				   u32 selector, char *name,
-> +				   unsigned int *n_elems)
-> +{
-> +	int ret;
-> +	struct scmi_xfer *t;
-> +	struct scmi_msg_pinctrl_attributes *tx;
-> +	struct scmi_resp_pinctrl_attributes *rx;
-> +
-> +	if (!name)
-> +		return -EINVAL;
-> +
-> +	ret = scmi_pinctrl_validate_id(ph, selector, type);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = ph->xops->xfer_get_init(ph, PINCTRL_ATTRIBUTES, sizeof(*tx), sizeof(*rx), &t);
-> +	if (ret)
-> +		return ret;
-> +
-> +	tx = t->tx.buf;
-> +	rx = t->rx.buf;
-> +	tx->identifier = cpu_to_le32(selector);
-> +	tx->flags = cpu_to_le32(type);
-> +
-> +	ret = ph->xops->do_xfer(ph, t);
-> +	if (!ret) {
-> +		if (n_elems)
-> +			*n_elems = NUM_ELEMS(rx->attributes);
-> +
-> +		strscpy(name, rx->name, SCMI_SHORT_NAME_MAX_SIZE);
-> +	}
-> +
-> +	ph->xops->xfer_put(ph, t);
-> +
-> +	/*
-> +	 * If supported overwrite short name with the extended one;
-> +	 * on error just carry on and use already provided short name.
-> +	 */
-> +	if (!ret && EXT_NAME_FLAG(rx->attributes))
-> +		ph->hops->extended_name_get(ph, PINCTRL_NAME_GET, selector,
-> +					    (u32 *)&type, name,
-> +					    SCMI_MAX_STR_SIZE);
-> +	return ret;
-> +}
-> +
-> +struct scmi_pinctrl_ipriv {
-> +	u32 selector;
-> +	enum scmi_pinctrl_selector_type type;
-> +	unsigned int *array;
-> +};
-> +
-> +static void iter_pinctrl_assoc_prepare_message(void *message,
-> +					       unsigned int desc_index,
-> +					       const void *priv)
-> +{
-> +	struct scmi_msg_pinctrl_list_assoc *msg = message;
-> +	const struct scmi_pinctrl_ipriv *p = priv;
-> +
-> +	msg->identifier = cpu_to_le32(p->selector);
-> +	msg->flags = cpu_to_le32(p->type);
-> +	/* Set the number of OPPs to be skipped/already read */
-> +	msg->index = cpu_to_le32(desc_index);
-> +}
-> +
-> +static int iter_pinctrl_assoc_update_state(struct scmi_iterator_state *st,
-> +					   const void *response, void *priv)
-> +{
-> +	const struct scmi_resp_pinctrl_list_assoc *r = response;
-> +
-> +	st->num_returned = RETURNED(r->flags);
-> +	st->num_remaining = REMAINING(r->flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static int
-> +iter_pinctrl_assoc_process_response(const struct scmi_protocol_handle *ph,
-> +				    const void *response,
-> +				    struct scmi_iterator_state *st, void *priv)
-> +{
-> +	const struct scmi_resp_pinctrl_list_assoc *r = response;
-> +	struct scmi_pinctrl_ipriv *p = priv;
-> +
-> +	p->array[st->desc_index + st->loop_idx] =
-> +		le16_to_cpu(r->array[st->loop_idx]);
-> +
-> +	return 0;
-> +}
-> +
-> +static int scmi_pinctrl_list_associations(const struct scmi_protocol_handle *ph,
-> +					  u32 selector,
-> +					  enum scmi_pinctrl_selector_type type,
-> +					  u16 size, unsigned int *array)
-> +{
-> +	int ret;
-> +	void *iter;
-> +	struct scmi_iterator_ops ops = {
-> +		.prepare_message = iter_pinctrl_assoc_prepare_message,
-> +		.update_state = iter_pinctrl_assoc_update_state,
-> +		.process_response = iter_pinctrl_assoc_process_response,
-> +	};
-> +	struct scmi_pinctrl_ipriv ipriv = {
-> +		.selector = selector,
-> +		.type = type,
-> +		.array = array,
-> +	};
-> +
-> +	if (!array || !size || type == PIN_TYPE)
-> +		return -EINVAL;
-> +
-> +	ret = scmi_pinctrl_validate_id(ph, selector, type);
-> +	if (ret)
-> +		return ret;
-> +
-> +	iter = ph->hops->iter_response_init(ph, &ops, size,
-> +					    PINCTRL_LIST_ASSOCIATIONS,
-> +					    sizeof(struct scmi_msg_pinctrl_list_assoc),
-> +					    &ipriv);
-> +
-> +	if (IS_ERR(iter))
-> +		return PTR_ERR(iter);
-> +
-> +	return ph->hops->iter_response_run(iter);
-> +}
-> +
-> +static int scmi_pinctrl_config_get(const struct scmi_protocol_handle *ph,
-> +				   u32 selector,
-> +				   enum scmi_pinctrl_selector_type type,
-> +				   u8 config_type, unsigned long *config_value)
-> +{
-> +	int ret;
-> +	u32 attributes;
-> +	struct scmi_xfer *t;
-> +	struct scmi_msg_conf_get *tx;
-> +
-When supporting new multiple config/values calls here you should be able
-to use the iterators helpers for the multipart reply.
-(beside reworking all the message field-bits ...)
-
-> +	if (!config_value || type == FUNCTION_TYPE)
-> +		return -EINVAL;
-> +
-> +	ret = scmi_pinctrl_validate_id(ph, selector, type);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = ph->xops->xfer_get_init(ph, PINCTRL_CONFIG_GET, sizeof(*tx), sizeof(__le32), &t);
-> +	if (ret)
-> +		return ret;
-> +
-> +	tx = t->tx.buf;
-> +	tx->identifier = cpu_to_le32(selector);
-> +	attributes = FIELD_PREP(REG_TYPE_BITS, type) |
-> +		FIELD_PREP(REG_CONFIG, config_type);
-> +	tx->attributes = cpu_to_le32(attributes);
-> +
-> +	ret = ph->xops->do_xfer(ph, t);
-> +	if (!ret)
-> +		*config_value = get_unaligned_le32(t->rx.buf);
-> +
-> +	ph->xops->xfer_put(ph, t);
-> +	return ret;
-> +}
-> +
-> +static int scmi_pinctrl_config_set(const struct scmi_protocol_handle *ph,
-> +				   u32 selector,
-> +				   enum scmi_pinctrl_selector_type type,
-> +				   u8 config_type, unsigned long config_value)
-> +{
-> +	struct scmi_xfer *t;
-> +	struct scmi_msg_conf_set *tx;
-> +	u32 attributes = 0;
-> +	int ret;
-> +
-
-Here instead when suppoting setting multiple config/values at once
-you'll have anyway to split your request by hand into multiple messages
-based on the underlying transport size.
-
-Not sure if it is worth to add some support helper for multi-part
-request, probably NO, given that this protocol would be the only user
-of such multi-part request at the moment and this would add just more
-complexity for just one user.
-
-Anyway, per-transport max_msg_size is NOT exposed explicitly to the
-protocols as of now, but, off-the-top-of-my-head I think you should be
-able to obtain the current desc->max_msg_size reading t->rx.len after the
-xfer_get_init() since that rx.len is initialized to max_msg_size when
-you call xfer_get_init() with 0 as rx_size as you do.
-
-Thanks,
-Cristian
+Konrad
