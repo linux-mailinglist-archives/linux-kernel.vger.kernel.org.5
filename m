@@ -2,148 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B6877EC1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3309877EC1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346625AbjHPVnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 17:43:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        id S1346627AbjHPVow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 17:44:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346637AbjHPVng (ORCPT
+        with ESMTP id S1346660AbjHPVob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 17:43:36 -0400
-Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-centralusazon11020015.outbound.protection.outlook.com [52.101.61.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7325626BE;
-        Wed, 16 Aug 2023 14:43:35 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k8BR36EV7zcNyCnmnA8Lqhw/WSwmXp6gvCKzrRXSpE2QGr8+zeOfSQkwEOTadiuQdxzHqy+Vcj+S2TNQIgKP6JdK5BOH96DPBlUbp408U33K6uehQHBwJfIS8NXpy70BXLCqjAKLiJPQvqDbleH3EvzEYTGPm+646wY+qWxFMKPWiZzEQZeD5bD8hWyCy+0/xMfLo6qkwPXNGET8tdH8yAu5CZQ51T0pCbu/ckS/IllCm7NXO9+mKaQ2WmPmL+NDyedsCCVM9Pkxv/qgSveekQr01YOuuTBFTMuQkPDAak+cQkaDAGGiL1IDa5cy6h+aGrVsNFZTy1SjUcVNAf14Fw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=X7mfhZSvmGzAYdT5a2/00jviei+EN6qBo481c601Qg0=;
- b=FdAT/7+jf10ta7wbGo8y2Wg9/Az9yF8Sft7hN75OGkh4L1wyKTP8vEZdTOp2acrHphhcNBDtZ4VYQBOlUbaPXHFbUEam0cn8pc3No6q8klceujqGalJAML4SpUr1TO2daoNpFuzuxYnXlEeuRm37yNw903svx9/JUhAZO+89h5b4QnZZw8uFOR/gr9btzH+KQeKVw5IiWkGiwzZ1G7pgTKdFDPZFZnX+Pq1kLaIE/U56o3eSTncUK/N9t0WL4eGYTDt/oWe58aHecVjsdqHmx5nt8W7hKihSIFdTLlNEtlvNmNH5TyXB9kAqHp8SXfk6QCvp+yUGSyquQyLSTGuGvg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X7mfhZSvmGzAYdT5a2/00jviei+EN6qBo481c601Qg0=;
- b=V/yzozJzAiDmfGxGz6PKBEnE2OSzntNhAw1zlqiU8KHuq5B5E0nSskZkAsdDvo4kLA/b/juUx9tu44t7rY+iW3ZJfkC3uWPEhqeqlaUNO3uAYWDVkk3ndRnssL0fcEhPbAxia14Kb4yfzHrz2maAlqe1i7XAZ/eGMnN9Z9Y2md0=
-Received: from SA1PR21MB1335.namprd21.prod.outlook.com (2603:10b6:806:1f2::11)
- by BL1PR21MB3307.namprd21.prod.outlook.com (2603:10b6:208:39c::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6723.3; Wed, 16 Aug
- 2023 21:43:32 +0000
-Received: from SA1PR21MB1335.namprd21.prod.outlook.com
- ([fe80::b05:d4ac:60ff:3b3f]) by SA1PR21MB1335.namprd21.prod.outlook.com
- ([fe80::b05:d4ac:60ff:3b3f%4]) with mapi id 15.20.6723.002; Wed, 16 Aug 2023
- 21:43:31 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Tianyu Lan <ltykernel@gmail.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-CC:     Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        vkuznets <vkuznets@redhat.com>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-Subject: RE: [PATCH v6 8/8] x86/hyperv: Add hyperv-specific handling for
- VMMCALL under SEV-ES
-Thread-Topic: [PATCH v6 8/8] x86/hyperv: Add hyperv-specific handling for
- VMMCALL under SEV-ES
-Thread-Index: AQHZ0FqaMqPZBN6V00+vnaHmoqfPAK/tdJGg
-Date:   Wed, 16 Aug 2023 21:43:31 +0000
-Message-ID: <SA1PR21MB133562080902E8F5527731B3BF15A@SA1PR21MB1335.namprd21.prod.outlook.com>
-References: <20230816155850.1216996-1-ltykernel@gmail.com>
- <20230816155850.1216996-9-ltykernel@gmail.com>
-In-Reply-To: <20230816155850.1216996-9-ltykernel@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=cfbe7993-2898-49f4-aa5d-1893e596ec83;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-08-16T21:43:04Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR21MB1335:EE_|BL1PR21MB3307:EE_
-x-ms-office365-filtering-correlation-id: 12d89031-1a5c-491e-4045-08db9ea1d5db
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: II4BKbO/Cpxxu7ihUyzkI+JgHj2i6gS1+rb5yvyn899X8hRzJAh+guWSTlhoZteUpkzAQ46ikBIRnqY1rM+/J1x+WZPfM80LkG2LnEhHLeLRo1INTZe6rpecwLKga3z+CT87Xk/7jSoz8wXpR9DzdBzfUSYlyqCNrNGz34ZUi26uIJPhcP/klWsYTNV5s1qVDUP4QJZZ58ofP1HQrf8JqNtaU/w0cvZ4MQ6fhmfaO322hFz1lzH0mY45fm+kFtEUY4pLZEIvLa5RXdcevsgQBfUdeAu3GNDurkutpZ1lH9ThAxzXk+CtSjD37CjOujnsZ9PZI0PgpeFM/B8yS89ZBhKp+DhDu54B2imTrZtSm7z31L4W4LFexoXP/FMbkvBa5b8JueJPoekbrTLvq/BBRJJUWn6CugyQc3+uQ4LBLxxFtMEP2qL7uhy+i9oEmLlvNfILwXYrkpjF1LqKv5TtL2SKkBk7rr4YSArZQo/KIhd22SllO/e49ky1I9P7tw7aZkvkWSpNDj+RmPTv8WdrgV1tDiDo7QJLbUVacu7FTXVgQ8nRuDC1qZJ41eka3eCU4YchS9nA5y1do1/DV9RNWGOm/Vbj+XN9IdPGbn8r04Zod7RI/nD3NXQQr2nuEUs/U6ZBVqiTj3g+v+VIhtkASgmcSyRQWo/BGfK0v8tKd88YOge7PsVV0T4V6KlMYDGL42uDM7tVWllzwLwKlLpYfA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR21MB1335.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(376002)(346002)(136003)(396003)(451199024)(186009)(1800799009)(9686003)(8676002)(38100700002)(5660300002)(122000001)(52536014)(82950400001)(921005)(316002)(38070700005)(66946007)(66446008)(66556008)(41300700001)(7416002)(82960400001)(8936002)(76116006)(64756008)(4326008)(55016003)(6636002)(66476007)(33656002)(86362001)(558084003)(8990500004)(2906002)(54906003)(71200400001)(6506007)(10290500003)(12101799020)(110136005)(7696005)(478600001)(107886003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?k4Q2GQsr8aWor59/Guohqs4p6GqANSRvsXNWsI3/9fpgyac/g3Re0XhIE6eg?=
- =?us-ascii?Q?kXU3xmnqHhwdIIwLdJ/vL+kr30VDrobHVb7fHmRCoAVD4qF6XCFrDQ8FieR+?=
- =?us-ascii?Q?f4ODm5ArahwqzT0+fFyzdgEsMd9z8w5+16vpqcaQKGvimBnZZ7ZYVfKccFE4?=
- =?us-ascii?Q?x1XFFOKz2H51zK2JxhTbGzmetuZ7WhM/WxYMwS7Um7R4Rqb5dLzDoBe1pWQg?=
- =?us-ascii?Q?IN02t8mu55Ctqzg0/JHMYKBbaj9lIdHGX9eNe9SOgVRADlTJdxEFHPv1ZIBt?=
- =?us-ascii?Q?ogCnrnfOtelhI3isZkfQBKGPHRODkaBU5XPMxgyEVP5Cm8bDxqT61kU8Fy7r?=
- =?us-ascii?Q?ndvaufVpRTpTWKMkATtgOkVSsNR8CDEnCgcZojAvmFa3t/BfJBt8XIPj+TSN?=
- =?us-ascii?Q?dlcpgxC8a1LAa/jGxhGp99xVPuCy6ky3Dh2K5Ysjh3k9LbrBt6dpiZPgQp0o?=
- =?us-ascii?Q?UdihLFxDsP/J21wmiIi/SU4mC9sabmJh2GundFVFJHh9/BgW01vIJQccuF2R?=
- =?us-ascii?Q?jio8BpdKBBSO8ltofVGh+tRtAwZwX3FkecvV61OkpvGaSxksGu0+cdl40nkU?=
- =?us-ascii?Q?MSkU5QcdZ7MKb5zJnhUcNsna2Qyv7LPEaScRrWr3pSKnD+yQSda1BJbbhjZG?=
- =?us-ascii?Q?bN6XVRJv52Pei71xv2E7skUb6glVeVtBJgrhTE6aKyBzln8tTq3ZYEpCiQ+z?=
- =?us-ascii?Q?ZFaDjYSg1ILBLUaKM7iXEJUenQPj+fiiHUB3uSWYLHEtmBMpyKJNXXRAFcvT?=
- =?us-ascii?Q?tBSWkv50OBqCeW5FZEkMXBDK7kmkuSz+hDVuYieVmq9BSQicnQyyAsTKmAKY?=
- =?us-ascii?Q?L5oyxkAmqnnM6cn2k6xwOqhZHzeLlbmVpfSJ+Q/RJPvds27BzO5aKTaSSIU2?=
- =?us-ascii?Q?LheEfnnMAmx72iNTTeX8MdWkzbf6viEpmmnkMrSWsryhBEpFeRiWuQ79Z4Km?=
- =?us-ascii?Q?doIYc2U4YN+qD7LvM/gWZlGVmcmvfxmVTq2f641CR2uvQSkfmykZOtHcbPKZ?=
- =?us-ascii?Q?YGotpYDY2WJqW4sN4V2WMPMuKnmbcl1BDXEvyQZVuMjNyc2YFEcFoaeyKthb?=
- =?us-ascii?Q?3n2z3f6xteMcEzL1UH7dJIYwUESaXMDIBd/ZYrpnWUU7c5q4+OEu9IQhWdVP?=
- =?us-ascii?Q?DVOz2MO2GbbzN9WJXuFr4A0Gn8FkXKiaB5gCa2PY3bBsWZiqHtoEaPEoSySu?=
- =?us-ascii?Q?18MnL0xPvXQJ3WRGWzZBaXtsHvdmjVyoXHJnH+twTOqjf0Fd91EPqwrqLGZM?=
- =?us-ascii?Q?VieiiklSbMQVm3T8FR398pc40rRWAPxTDDvSE1OkUHzWHPXABZMeZ7QJs/Tg?=
- =?us-ascii?Q?M29sZ6IIu0sASBS2FmdvgML+9wwPR+dTQaBU1MtbRNeYSX+bn3tO8dNE5e1C?=
- =?us-ascii?Q?sx2+hR29SmZpChcJbj7Qxc5zku9D9pyhzP4IJtddnSMOot63fj8F8NN9YwGq?=
- =?us-ascii?Q?+6R32s59BQzieZYatd8VQGcT3wYg30E7DBcV03dvnT33NDD1JM1Y1RRTWrS4?=
- =?us-ascii?Q?hiELyQU4IbyQ1BY5AyYAFF8UuG2CEWLwfYs0L+5oeGooQj98yKZeavUTXVh/?=
- =?us-ascii?Q?BsfwsdZBn1AnDNKNA+Ir2hRaadq/8b3CY+YmJgrOGlBGBlkDgz5Xre9TjcG/?=
- =?us-ascii?Q?O71cwgrsat5v14mQF8BrqjQ=3D?=
+        Wed, 16 Aug 2023 17:44:31 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1270C273A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:44:27 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5646e695ec1so10509063a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:44:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692222266; x=1692827066;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7aJZe8+CPSzm1uQ31UW15d4LYpFiin9OTY1YmG5+H2o=;
+        b=5FnFmr0h3gjr+/vpDpnpYnX5gIhkCQ4jEG1gSS7nJJAppTjOcaxDoFqgcIXvY7h/d2
+         a0Z47gC4syP1XGsTzyh5eMyJLZbwtKk3CUWhffe/MVgdDpWHQAuEIm1I5rQHuRHFYYMf
+         nM5zBOKmA3EySxHeLEUE5+NIC03+C0EyBB+5/L0q52W0pvV+wkx34CLyQpHOzOjRnD9B
+         jJ4qq54VpzsihbVPJ2cNOpCllRUgbLASkaNsh45bNmQMTg9OBKIZuW9WvD/b/f4VgPWJ
+         KHXEETo1KapA27A1ayPOROfeBJdqOYlYOZ/Bl0RzPNZXUGaF2Y9pIpzesy8dGvI7mnjM
+         CjXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692222266; x=1692827066;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7aJZe8+CPSzm1uQ31UW15d4LYpFiin9OTY1YmG5+H2o=;
+        b=bnvJaFxTE0Nk7rh2d/2YWb7nrJPnN7tasz7AKZI5gx209kH87LpdETEq8gOpEev9A3
+         GuY9F01YIelN8H5BNCwiOmWTGv4nVO+hP2KnJSdq1kuNd9UvuR8lMi8gw0EhG+qhc9xp
+         2Z0Gyf1uLoBwoPQP4iCO2s5uOnLI+CRGXfNnN6b3TOe+ZzseF1XoJ8VuR3mjTDMaJhdb
+         vqiGoK5dgvBMHxObXaJR01UsEyAECPelEk0aCoXzTd8JZrSx3iranehl/JMpo81dR4rY
+         qOS6JYZe64VFUfYqK0EES+uyuWBOb4f8rR3ae3Rabef5rbGUXkRgjvPimgNMvGcmGnVy
+         KzcA==
+X-Gm-Message-State: AOJu0YzmW3LFhkSXntKwhgaJjPz+GvXSLDP+ybTfVTqQ8jIanv5Te/XA
+        edH+x+JPKEnk+I7aEsDUcnTHl/Wx1ZI=
+X-Google-Smtp-Source: AGHT+IHQ5b8bXt+vgSEAeURRHYKMC28i0AKm9/yVRY0BGqX1G7iOdGibZ10hhforoeesRKRFiCL3cxRmWJI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:715b:0:b0:567:c791:ce64 with SMTP id
+ b27-20020a63715b000000b00567c791ce64mr159671pgn.8.1692222266642; Wed, 16 Aug
+ 2023 14:44:26 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 14:44:24 -0700
+In-Reply-To: <20230719144131.29052-6-binbin.wu@linux.intel.com>
+Mime-Version: 1.0
+References: <20230719144131.29052-1-binbin.wu@linux.intel.com> <20230719144131.29052-6-binbin.wu@linux.intel.com>
+Message-ID: <ZN1DOHiIS618oeuY@google.com>
+Subject: Re: [PATCH v10 5/9] KVM: x86: Virtualize CR3.LAM_{U48,U57}
+From:   Sean Christopherson <seanjc@google.com>
+To:     Binbin Wu <binbin.wu@linux.intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
+        David.Laight@aculab.com, robert.hu@linux.intel.com,
+        guang.zeng@intel.com
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR21MB1335.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 12d89031-1a5c-491e-4045-08db9ea1d5db
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Aug 2023 21:43:31.7395
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yzpjGLdTEg7cRxgC33u7JyL/iahznS9sVUoX9gzv5BkKgYZzmUysoJeiDm68UUrT51Icu3gHZqfLsQakinW89w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR21MB3307
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Tianyu Lan <ltykernel@gmail.com>
-> Sent: Wednesday, August 16, 2023 8:59 AM
-> [...]
-> Add Hyperv-specific handling for faults caused by VMMCALL
-> instructions.
->=20
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-> Signed-off-by: Tianyu Lan <tiala@microsoft.com>
+On Wed, Jul 19, 2023, Binbin Wu wrote:
+> Add support to allow guests to set two new CR3 non-address control bits for
+> guests to enable the new Intel CPU feature Linear Address Masking (LAM) on user
+> pointers.
 
-Reviewed-by: Dexuan Cui <decui@microsoft.com>
+Same feedback as the LAM_SUP patch.
+
+> ---
+>  arch/x86/kvm/cpuid.h   | 3 +++
+>  arch/x86/kvm/mmu.h     | 8 ++++++++
+>  arch/x86/kvm/mmu/mmu.c | 2 +-
+>  arch/x86/kvm/vmx/vmx.c | 3 ++-
+>  4 files changed, 14 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
+> index 8b26d946f3e3..274f41d2250b 100644
+> --- a/arch/x86/kvm/cpuid.h
+> +++ b/arch/x86/kvm/cpuid.h
+> @@ -285,6 +285,9 @@ static __always_inline bool guest_can_use(struct kvm_vcpu *vcpu,
+>  
+>  static inline bool kvm_vcpu_is_legal_cr3(struct kvm_vcpu *vcpu, unsigned long cr3)
+>  {
+> +	if (guest_can_use(vcpu, X86_FEATURE_LAM))
+> +		cr3 &= ~(X86_CR3_LAM_U48 | X86_CR3_LAM_U57);
+> +
+>  	return kvm_vcpu_is_legal_gpa(vcpu, cr3);
+>  }
+>  
+> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
+> index 92d5a1924fc1..e92395e6b876 100644
+> --- a/arch/x86/kvm/mmu.h
+> +++ b/arch/x86/kvm/mmu.h
+> @@ -144,6 +144,14 @@ static inline unsigned long kvm_get_active_pcid(struct kvm_vcpu *vcpu)
+>  	return kvm_get_pcid(vcpu, kvm_read_cr3(vcpu));
+>  }
+>  
+> +static inline unsigned long kvm_get_active_cr3_lam_bits(struct kvm_vcpu *vcpu)
+> +{
+> +	if (!guest_can_use(vcpu, X86_FEATURE_LAM))
+> +		return 0;
+> +
+> +	return kvm_read_cr3(vcpu) & (X86_CR3_LAM_U48 | X86_CR3_LAM_U57);
+> +}
+> +
+>  static inline void kvm_mmu_load_pgd(struct kvm_vcpu *vcpu)
+>  {
+>  	u64 root_hpa = vcpu->arch.mmu->root.hpa;
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index ec169f5c7dce..0285536346c1 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3819,7 +3819,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+>  	hpa_t root;
+>  
+>  	root_pgd = kvm_mmu_get_guest_pgd(vcpu, mmu);
+> -	root_gfn = root_pgd >> PAGE_SHIFT;
+> +	root_gfn = (root_pgd & __PT_BASE_ADDR_MASK) >> PAGE_SHIFT;
+
+And as mentioned previously, this should be in the patch that adds __PT_BASE_ADDR_MASK.
+
+>  	if (mmu_check_root(vcpu, root_gfn))
+>  		return 1;
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index a0d6ea87a2d0..bcee5dc3dd0b 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -3358,7 +3358,8 @@ static void vmx_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa,
+>  			update_guest_cr3 = false;
+>  		vmx_ept_load_pdptrs(vcpu);
+>  	} else {
+> -		guest_cr3 = root_hpa | kvm_get_active_pcid(vcpu);
+> +		guest_cr3 = root_hpa | kvm_get_active_pcid(vcpu) |
+> +		            kvm_get_active_cr3_lam_bits(vcpu);
+>  	}
+>  
+>  	if (update_guest_cr3)
+> -- 
+> 2.25.1
+> 
