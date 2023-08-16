@@ -2,142 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBF177E7B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0EA77E7B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345240AbjHPRda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 13:33:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41802 "EHLO
+        id S1345256AbjHPRfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 13:35:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345304AbjHPRdT (ORCPT
+        with ESMTP id S1345251AbjHPRei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 13:33:19 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369A410FF
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:33:18 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b9b5ee9c5aso106234791fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:33:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692207196; x=1692811996;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hlJlE+pLzohqehJhGlKehccYlE2SfB36KPQVu33mNpA=;
-        b=IT7+QY425Z6hPqSdKlPUHX+BgJhLtUz6CFYhT0PlTQtFlEQp3u4BUH9ezBHaIx96Bz
-         ui88ZdlkKUT7is+qkZbkjMyDcdJH6GbV7MnC6VEckQZsUHMfOvbLqKGWyijgBg9ChGT6
-         9f3R+hd+zrXbeSiiNxnJHjdmBpKhYFNiB37oDDRW3A2yoR2RcBPfTnstsqsfefInvuM+
-         aoSYRGYGFQnicmMDeIhiFiSxjDEreLpCyU24/Cj490L5pq+Hxugq8udc+fyqZtdpvX1V
-         HYYaieabRVjIrZQb2H4Lpg7um+m4lXLayUDF5buetlGWJa1t6/z93ZJwjekdXvyHNZwr
-         49VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692207196; x=1692811996;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hlJlE+pLzohqehJhGlKehccYlE2SfB36KPQVu33mNpA=;
-        b=ecqqIu7NcW9Z0pvq7MSfAX23vQgnn1lNEm0Xz9L6dyI2JsjOew5C4IHDGqCDzfuzG8
-         2msbcVvBuCpPW/eILVOZ1fcJZQ+PyspzcEW2QWGEO9omM9P6IgQgKjImJy+g192rIcNb
-         K8RpTeo+PAYzaCD8uhuc14lp0MqjJpzRDjVM3ARZuMTmDi8LFc9PCoX1sTHeBlRvUKIg
-         vL4rWkZM/PqeyBqkx4vUbMXZiCMm1tQQAJI5jQH8LfLoVNJBbpDA+7jUyS7VXbycRSYi
-         kpwCMvWQ+qydqJNbcvBfh5AP92ipDqp61ZblnNgdhXWdaWQ6NU8OqERZwq2M1HSqDunC
-         E7HQ==
-X-Gm-Message-State: AOJu0Ywunc00WXZR1oN4mWeIwx7ZL3ti+mvy+kH30RXE5yck+HTd61Td
-        xESYlIW93kkgIKyxHPNv4XGqCQ==
-X-Google-Smtp-Source: AGHT+IF2+esa9Q6gVnEqpMdQ6jiaFvZ66jD02ePRHhMaBTrMMqQR+eMYM/3bkmvze/MjJtR0+3h2AQ==
-X-Received: by 2002:a2e:8604:0:b0:2b9:ea17:5590 with SMTP id a4-20020a2e8604000000b002b9ea175590mr1867712lji.16.1692207196484;
-        Wed, 16 Aug 2023 10:33:16 -0700 (PDT)
-Received: from [192.168.1.101] (abxi8.neoplus.adsl.tpnet.pl. [83.9.2.8])
-        by smtp.gmail.com with ESMTPSA id p17-20020a2ea411000000b002b9f9cb8e08sm3588267ljn.21.2023.08.16.10.33.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 10:33:16 -0700 (PDT)
-Message-ID: <e89b4a5a-e634-45b5-a8dc-cf7d1a968ccc@linaro.org>
-Date:   Wed, 16 Aug 2023 19:33:14 +0200
+        Wed, 16 Aug 2023 13:34:38 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2058.outbound.protection.outlook.com [40.107.237.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F317CC1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:34:36 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wi6+33QH+CrFR2+gNECT5ZMMKOkfwWLr5eD6jBkhsILZ3INQIkPLy/2UL+zW2aLBBOCZBukXyF75Q08+9yvUL+0DP8vQ5qavbPS365IHP79A+3MXjhBXFAE6CxaPhy/5NmgeEDvzHzmJmUZrdp++45/mZKj2NFX/aUcOrIGB0bcaE4/1g9BvC4KKV72n0Qq6vDbiWjcjgNisyfWVLMskExzPKkdDa5WU57ezxv2lSvEGTh0HprKlcIevLydFD58z+k07jJJyd4r6fMgilAjmYrHoYNLqL9Km1VSMWOaQip8D3QXWp2LlSnUG3Or8AOjqRQWoxODDyrc9UZnC8dDwHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nK0sT7eFerEJpYNYABA3j2Mk1yzGzdUyddF2qMAknUs=;
+ b=YZYOewgPNF+EaXT/fqI0hbxu9R4jOMCksfFbXwppAvpMuKJh9id3YWHqc3cZIJh0Qu3gfXZjd8l34tpL4DkNsdRwJky+bkc/vq7dUzIEF1yNMDt/3LGSRq7V01IS2qwxQzmt/zg3NRgbuecec8+ZhGMZJGus7jJSeFahUJo4afDLyh8gri6CX95qPdBYwVQBb5UzCGL6lvRBLCP6XHiMZoqdGFvwhzHSI/fRj2MgjngxAubCJe9yPpAT0Vr3wQ0DqjKIXIkJpSzZHo7k3RuuKYfon1AMcHMKbbU/leL7lyqi11M7ouluxwn0nVBOH9h1tGYx8Lpb+C5m/wY3M7ffvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nK0sT7eFerEJpYNYABA3j2Mk1yzGzdUyddF2qMAknUs=;
+ b=cFOlHriX+yi5lrUWDdZSQMguE4ZsQj1H4tZLhR0eJuo9dMVBhtDE5vURujDOahh/GucPw3d/OO70THqS3x+leC/VrSpSwtoSLuF0WYk2+uCOCg808yZCtiD16wPiaIb633gC19M3b3/X7b8/HJIAEJTTTJDolaTQiqm6MZPAHJtoBeAjkzjfufSAGXtQtzSvEY0EA0/ifpvM0jVU2UcRH5iIPtmQdIbqk5EmyfW3j0HaRJCW4GSgh98QdTCaOBY3D0JZyAAkXgtDU2dlmCm7R0Hayfp7YNaXi5FpFFjpwGWECErDTwUOrcGT5g7OzZL38nQbqSMC34R/dHdBVl9O1g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SA1PR12MB7344.namprd12.prod.outlook.com (2603:10b6:806:2b7::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Wed, 16 Aug
+ 2023 17:34:35 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6678.025; Wed, 16 Aug 2023
+ 17:34:35 +0000
+Date:   Wed, 16 Aug 2023 14:34:33 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Nicolin Chen <nicolinc@nvidia.com>
+Cc:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
+        jean-philippe@linaro.org, apopple@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux.dev
+Subject: Re: [PATCH] iommu/arm-smmu-v3: Add a configurable
+ tlbi_range_max_n_shift for TLBI
+Message-ID: <ZN0Iqf9xrCEOOXUJ@nvidia.com>
+References: <20230814215701.5455-1-nicolinc@nvidia.com>
+ <ZNy6Pw/Jxn6jsIxl@nvidia.com>
+ <ZN0CciT2hBISXxoJ@Asurada-Nvidia>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZN0CciT2hBISXxoJ@Asurada-Nvidia>
+X-ClientProxiedBy: BLAPR03CA0079.namprd03.prod.outlook.com
+ (2603:10b6:208:329::24) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/4] firmware: qcom_scm: disable SDI if required
-Content-Language: en-US
-To:     Robert Marko <robimarko@gmail.com>, agross@kernel.org,
-        andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        quic_gurus@quicinc.com, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_mojha@quicinc.com
-Cc:     computersforpeace@gmail.com
-References: <20230816164641.3371878-1-robimarko@gmail.com>
- <20230816164641.3371878-2-robimarko@gmail.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
- BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
- HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
- TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
- zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
- MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
- t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
- UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
- aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
- kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
- Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
- R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
- BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
- yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
- xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
- 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
- GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
- mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
- x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
- BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
- mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
- Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
- xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
- AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
- 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
- jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
- cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
- jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
- cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
- bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
- YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
- bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
- nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
- izWDgYvmBE8=
-In-Reply-To: <20230816164641.3371878-2-robimarko@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SA1PR12MB7344:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1015c7d2-9d1f-45d7-78db-08db9e7f0ecb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EWeiiRbiw4ZSagKIebNRh2T0DvQn0dbyfTTdfuH4uxdZ/95pjShW0ITm3ZQss+3xpFGsxgPtwxbwSeQNA85qO934RDFtS22DyHECrhbKhUc1k8lPML8PkU5ppMet/fqAgSLAtjVnTFjBMCgbTsG5Cik9Oo5dYNLI3ZoARSVqcW/pVEfdPeq7miMaqcEl5xzz3AWFtc1cWq/WA4XMPZTqd9nxJyXY+U/M2lcChx9baPfICzWgNpFC7qvztvoghfI9CFR53FE96BW1DNSxFHVeWU/pFWLJ4zs5Yf0xowVm6mXoo1WBVAuO8ABg0MyagTLvC7ILcIRUJ1MI0zRjG8UdKYSb2RRvotsJQB5643MfZeFgRzsGN+vHh0aO6WIleL3cvz95IUE9BbxtRu/o4YeRpHo465EBvowxTxF7xH286bjHYJQcEmqBPU1U1Tk6Nk/5Rev257Z3vhm4KR8PWLXdpUP5+w0Y1rpFJXiNgGNufQy77XWSt+istCL19SiWwR9DxPMUJRhcffMRkBwaLPrEgtGimNEsHg+LwSPe7+72fJ8Vqlww5tqwvS7TMBvy3yrL
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(39860400002)(396003)(346002)(451199024)(1800799009)(186009)(2906002)(83380400001)(4744005)(86362001)(478600001)(6506007)(36756003)(6486002)(2616005)(6512007)(26005)(5660300002)(41300700001)(37006003)(6636002)(316002)(66946007)(66556008)(66476007)(8676002)(6862004)(8936002)(4326008)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UGDqZCW6gTjcY9AXB8ogM5YHx9DDTQ00ylTvDfN/qfcuqCdlGOhhIc5NlwVI?=
+ =?us-ascii?Q?igxf17+kiOPV3r5TC1Upec+RiMSCbG9eaOC5QAQ5C0s/dRp3fn/FYEYihr36?=
+ =?us-ascii?Q?JvYiq15seAwn740QVrym72fpwVROVVvPOXtd072zDAKo+6qifI3MyDw2kfEn?=
+ =?us-ascii?Q?HjWUeR8bSunMZv2vDm0kv/uurES8PXkOldX/RjTPrHX5bMYu5AdvbdYYYgxB?=
+ =?us-ascii?Q?aGv9B9dHFD/9SidP88Vum1dgdfIyZ4qr8eyDL5RVtINuXxWGRfm5/9/czXhT?=
+ =?us-ascii?Q?YuqoX5UX6nU96LUJMlJOArojxbbXM7JI66do2Ce+nK7i7y9YC1ZOFutGxr9M?=
+ =?us-ascii?Q?AsTTdjaCOj9wbvAqTF8Ew4eUWQp/q1t4ja9Fj0vPX3vomKjBEZlCSptX5zk3?=
+ =?us-ascii?Q?EgpJO6lsf2UZ6PNEan/SPIzd/rtHIF0te8iFCNURxqRh3i3byeWx57k5WssB?=
+ =?us-ascii?Q?bSk5uiNwRmnTxgEgmUmZccE/vDNfx9b2JhJiJk20AoJB1BgXiTYnevBQ4lnX?=
+ =?us-ascii?Q?Rc4CwbKd8susFzWTm1ROxxXKb8UvFD2V0GI14Rw5mrrU3ZCR/U2SRWEKq2JD?=
+ =?us-ascii?Q?g9HuE5Af2te8zfyHAlaMpJUxl2nQuaQEDpy6uGY4GyVgbkH3uYurNyd41oMK?=
+ =?us-ascii?Q?MWGOwyFRuizAdgnD/GJ1XJcdyWy59WGjToFuhDox6kH+YD6TKXdCfRvmmiM1?=
+ =?us-ascii?Q?wSfsgUhvADFYB9jJLEEeL1n1wH9dPdDHP33Dyiscr8Uh7JKlAbcMp1FY39PJ?=
+ =?us-ascii?Q?oJYw34+0HHrnQaviWqDm+/5Fw86O0/OMA0g0BWOcmOkcvf/MfebGNztIUQIn?=
+ =?us-ascii?Q?A6BsfLLKq1ZadqWVfOFs1I2jy0qDnCChr/9ZxR0LBaFevEpLIUtPTlBijoe2?=
+ =?us-ascii?Q?b24FGzjkzLKxUsloO3Rni6QNmF99RI8MGiS4j+54gGbd9pB5FhhCU4FeZi5W?=
+ =?us-ascii?Q?AtLXPa49yCieako/RnoUH6aogieaj3rvacs4WwKYxfGdKuf81KsuYZ6pKUdV?=
+ =?us-ascii?Q?c6GwkX57uHe5guH02iJ2T4C9BCYJQ+ZWcbk9r4Ff+F3Lew39wvmOZbboHZAO?=
+ =?us-ascii?Q?6mkQqwgIiOlYSrbWho3uFpdNn96k+Y6CGL1HWVq5ikpiVHtvkuuglqDv9S1k?=
+ =?us-ascii?Q?+1PWzoBMpqcedzFhLxT3LDt7NNDED8mMBswIsaZWvi+cCshr3EtEgTcLEOMT?=
+ =?us-ascii?Q?e8jfEzTBJwAG/cCNQn54MU+adIR81f0KLYKfN4SEgQHXF9fOBdCNjNTQbyW0?=
+ =?us-ascii?Q?aXaa7bmdri0FNA+nMpXjzn/HtgcP+corC1OwXe43hW76PUztmaohlxxuAI0a?=
+ =?us-ascii?Q?CTq+tK2suXa/IQsp4UwvQ+PJWo+qXfyWy8PAQPEW/QYL2oebl3sXgDQS1PDA?=
+ =?us-ascii?Q?1FOPYHGkmE0hzlf/3ap0sMPE5xIbp4SMMfit9sA5fhL8lf8pq48xXvr6s/Mj?=
+ =?us-ascii?Q?ZL3Mow/pk+Jf6z5+pUMWTq6QDfx8rnmlt90CI+4004xk6tdyBekn9fhXFzdA?=
+ =?us-ascii?Q?qqepc55NNwJvcaJgfSt5Exnpa8I+K4peAQDYLhG64Yr0fnXo8TUOnbiQOW9j?=
+ =?us-ascii?Q?6MPqmmF6yV5zFmN790lK9LGNY4nZxAvtS8OQuEB+?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1015c7d2-9d1f-45d7-78db-08db9e7f0ecb
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 17:34:35.0785
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KGNL8GI/xfcL44QBX6fQa3X8n6hZEmteb/WIHQdqit+6Dq3Ix7XnlaALaGGEcr9h
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7344
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.08.2023 18:45, Robert Marko wrote:
-> IPQ5018 has SDI (Secure Debug Image) enabled by TZ by default, and that
-> means that WDT being asserted or just trying to reboot will hang the board
-> in the debug mode and only pulling the power and repowering will help.
-> Some IPQ4019 boards like Google WiFI have it enabled as well.
+On Wed, Aug 16, 2023 at 10:09:20AM -0700, Nicolin Chen wrote:
+> > This seems convoluted for a uapi, you should just make it
+> > 'invalidate_threshold' in bytes or something simpler.
 > 
-> Luckily, SDI can be disabled via an SCM call.
-> 
-> So, lets use the boolean DT property to identify boards that have SDI
-> enabled by default and use the SCM call to disable SDI during SCM probe.
-> It is important to disable it as soon as possible as we might have a WDT
-> assertion at any time which would then leave the board in debug mode,
-> thus disabling it during SCM removal is not enough.
-> 
-> Signed-off-by: Robert Marko <robimarko@gmail.com>
-> ---
-[...]
+> Hmm. That'd be a direct 64-bit size configuration, and very likely
+> to be at upper 32-bit range, so I feel the value would be very big
+> that might be hard to read.
 
+hard to read is fine, it is sysfs
 
-> +	/*
-> +	 * Disable SDI if indicated by DT that it is enabled by default.
-> +	 */
-> +	if (of_property_read_bool(pdev->dev.of_node, "qcom,sdi-enabled"))
-> +		qcom_scm_disable_sdi();
-Should we care about the return value?
-
-Konrad
+Jason
