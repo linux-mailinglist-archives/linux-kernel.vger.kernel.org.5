@@ -2,54 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A295277E95F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF76977E961
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345701AbjHPTIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 15:08:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52636 "EHLO
+        id S1345709AbjHPTIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 15:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345749AbjHPTID (ORCPT
+        with ESMTP id S1345707AbjHPTIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 15:08:03 -0400
-Received: from mail-pf1-f208.google.com (mail-pf1-f208.google.com [209.85.210.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57F02701
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 12:07:58 -0700 (PDT)
-Received: by mail-pf1-f208.google.com with SMTP id d2e1a72fcca58-6887c563b4eso1595136b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 12:07:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692212878; x=1692817678;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AHdogJFRX/HOEOhf9V11ILn0TfaNRuouoGFxj473o8g=;
-        b=kixFifRaYCn39Bm87ejo2GVAnPPRxAiEZ6YUAJIfaZEgefO74Vhx6r43Kkh5TIQwgX
-         shp3AqfFiFJDMLrsjOVF6yJ97yb3miZqdPvx3QAr4yw7v/d7AVBrm5TQfrrkmKryzyw4
-         npGhzc7xBbMcto7b4r/hV8hcCJCA+c8ivpegy8YQZx61YtddlpjrGETjIdu4LznRkquk
-         S00RIlYzVSwkQRsYRivN8vST3fppiCqN/rayiiL5fgqxtqyXZurjaSFC4ltyYRAOtDiq
-         DdeZUf+iuD8n1/BNqAnnen4+nb9RH/YdMmUz04IgptYJ//iobupiW5DGADNXiC9qdPya
-         Lp1Q==
-X-Gm-Message-State: AOJu0Yz4md8JRqQA6ODk0IcpP/Z2L0lnZcf80fLncGRnylob8eN1VNqU
-        06WZwdOvCnQWpcATs2oWStxfR6ATHP85rNo2BoDiM2YCrCBg
-X-Google-Smtp-Source: AGHT+IHm/XS7DTLDnrzjhY3z868q0DeHF6IzSL0Ky5sCqQBvZCrA2lQnzYp6z3kkoc2L91nN0HxlkHp6ueSr6nMPU2+WOfunmXtp
+        Wed, 16 Aug 2023 15:08:25 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0CC812702
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 12:08:21 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D8AC4D75;
+        Wed, 16 Aug 2023 12:09:02 -0700 (PDT)
+Received: from [10.57.90.114] (unknown [10.57.90.114])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 72A813F6C4;
+        Wed, 16 Aug 2023 12:08:19 -0700 (PDT)
+Message-ID: <9510695e-407c-53b6-2e91-cd8209d86c84@arm.com>
+Date:   Wed, 16 Aug 2023 20:08:14 +0100
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:22cb:b0:687:3110:7faa with SMTP id
- f11-20020a056a0022cb00b0068731107faamr1326078pfj.5.1692212878133; Wed, 16 Aug
- 2023 12:07:58 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 12:07:57 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007c506006030f0332@google.com>
-Subject: [syzbot] [net?] WARNING in dev_index_reserve
-From:   syzbot <syzbot+5ba06978f34abb058571@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
-        davem@davemloft.net, edumazet@google.com, hawk@kernel.org,
-        john.fastabend@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 07/11] RISC-V: drivers/iommu/riscv: Add device context
+ support
+Content-Language: en-GB
+To:     Tomasz Jeznach <tjeznach@rivosinc.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Sebastien Boeuf <seb@rivosinc.com>, iommu@lists.linux.dev,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux@rivosinc.com
+References: <cover.1689792825.git.tjeznach@rivosinc.com>
+ <702670f5be2b641a231f2dda84be12024afd2002.1689792825.git.tjeznach@rivosinc.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <702670f5be2b641a231f2dda84be12024afd2002.1689792825.git.tjeznach@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,98 +55,278 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2023-07-19 20:33, Tomasz Jeznach wrote:
+> Introduces per device translation context, with 1,2 or 3 tree level
+> device tree structures.
+> 
+> Signed-off-by: Tomasz Jeznach <tjeznach@rivosinc.com>
+> ---
+>   drivers/iommu/riscv/iommu.c | 163 ++++++++++++++++++++++++++++++++++--
+>   drivers/iommu/riscv/iommu.h |   1 +
+>   2 files changed, 158 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/iommu/riscv/iommu.c b/drivers/iommu/riscv/iommu.c
+> index 5c4cf9875302..9ee7d2b222b5 100644
+> --- a/drivers/iommu/riscv/iommu.c
+> +++ b/drivers/iommu/riscv/iommu.c
+> @@ -41,7 +41,7 @@ MODULE_ALIAS("riscv-iommu");
+>   MODULE_LICENSE("GPL v2");
+>   
+>   /* Global IOMMU params. */
+> -static int ddt_mode = RISCV_IOMMU_DDTP_MODE_BARE;
+> +static int ddt_mode = RISCV_IOMMU_DDTP_MODE_3LVL;
+>   module_param(ddt_mode, int, 0644);
+>   MODULE_PARM_DESC(ddt_mode, "Device Directory Table mode.");
+>   
+> @@ -452,6 +452,14 @@ static bool riscv_iommu_post(struct riscv_iommu_device *iommu,
+>   	return riscv_iommu_post_sync(iommu, cmd, false);
+>   }
+>   
+> +static bool riscv_iommu_iodir_inv_devid(struct riscv_iommu_device *iommu, unsigned devid)
+> +{
+> +	struct riscv_iommu_command cmd;
+> +	riscv_iommu_cmd_iodir_inval_ddt(&cmd);
+> +	riscv_iommu_cmd_iodir_set_did(&cmd, devid);
+> +	return riscv_iommu_post(iommu, &cmd);
+> +}
+> +
+>   static bool riscv_iommu_iofence_sync(struct riscv_iommu_device *iommu)
+>   {
+>   	struct riscv_iommu_command cmd;
+> @@ -671,6 +679,94 @@ static bool riscv_iommu_capable(struct device *dev, enum iommu_cap cap)
+>   	return false;
+>   }
+>   
+> +/* TODO: implement proper device context management, e.g. teardown flow */
+> +
+> +/* Lookup or initialize device directory info structure. */
+> +static struct riscv_iommu_dc *riscv_iommu_get_dc(struct riscv_iommu_device *iommu,
+> +						 unsigned devid)
+> +{
+> +	const bool base_format = !(iommu->cap & RISCV_IOMMU_CAP_MSI_FLAT);
+> +	unsigned depth = iommu->ddt_mode - RISCV_IOMMU_DDTP_MODE_1LVL;
+> +	u8 ddi_bits[3] = { 0 };
+> +	u64 *ddtp = NULL, ddt;
+> +
+> +	if (iommu->ddt_mode == RISCV_IOMMU_DDTP_MODE_OFF ||
+> +	    iommu->ddt_mode == RISCV_IOMMU_DDTP_MODE_BARE)
+> +		return NULL;
 
-syzbot found the following issue on:
+I don't see how the driver can ever be useful without a DDT - I'd have 
+thought that you only ever want to use one of those modes on probe 
+failure or remove.
 
-HEAD commit:    950fe35831af Merge branch 'ipv6-expired-routes'
-git tree:       net-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=13158a4ba80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fe63ad15dded26b6
-dashboard link: https://syzkaller.appspot.com/bug?extid=5ba06978f34abb058571
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11be0117a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14950727a80000
+> +
+> +	/* Make sure the mode is valid */
+> +	if (iommu->ddt_mode > RISCV_IOMMU_DDTP_MODE_MAX)
+> +		return NULL;
+> +
+> +	/*
+> +	 * Device id partitioning for base format:
+> +	 * DDI[0]: bits 0 - 6   (1st level) (7 bits)
+> +	 * DDI[1]: bits 7 - 15  (2nd level) (9 bits)
+> +	 * DDI[2]: bits 16 - 23 (3rd level) (8 bits)
+> +	 *
+> +	 * For extended format:
+> +	 * DDI[0]: bits 0 - 5   (1st level) (6 bits)
+> +	 * DDI[1]: bits 6 - 14  (2nd level) (9 bits)
+> +	 * DDI[2]: bits 15 - 23 (3rd level) (9 bits)
+> +	 */
+> +	if (base_format) {
+> +		ddi_bits[0] = 7;
+> +		ddi_bits[1] = 7 + 9;
+> +		ddi_bits[2] = 7 + 9 + 8;
+> +	} else {
+> +		ddi_bits[0] = 6;
+> +		ddi_bits[1] = 6 + 9;
+> +		ddi_bits[2] = 6 + 9 + 9;
+> +	}
+> +
+> +	/* Make sure device id is within range */
+> +	if (devid >= (1 << ddi_bits[depth]))
+> +		return NULL;
+> +
+> +	/* Get to the level of the non-leaf node that holds the device context */
+> +	for (ddtp = (u64 *) iommu->ddtp; depth-- > 0;) {
+> +		const int split = ddi_bits[depth];
+> +		/*
+> +		 * Each non-leaf node is 64bits wide and on each level
+> +		 * nodes are indexed by DDI[depth].
+> +		 */
+> +		ddtp += (devid >> split) & 0x1FF;
+> +
+> + retry:
+> +		/*
+> +		 * Check if this node has been populated and if not
+> +		 * allocate a new level and populate it.
+> +		 */
+> +		ddt = READ_ONCE(*ddtp);
+> +		if (ddt & RISCV_IOMMU_DDTE_VALID) {
+> +			ddtp = __va(ppn_to_phys(ddt));
+> +		} else {
+> +			u64 old, new = get_zeroed_page(GFP_KERNEL);
+> +			if (!new)
+> +				return NULL;
+> +
+> +			old = cmpxchg64_relaxed(ddtp, ddt,
+> +						phys_to_ppn(__pa(new)) |
+> +						RISCV_IOMMU_DDTE_VALID);
+> +
+> +			if (old != ddt) {
+> +				free_page(new);
+> +				goto retry;
+> +			}
+> +
+> +			ddtp = (u64 *) new;
+> +		}
+> +	}
+> +
+> +	/*
+> +	 * Grab the node that matches DDI[depth], note that when using base
+> +	 * format the device context is 4 * 64bits, and the extended format
+> +	 * is 8 * 64bits, hence the (3 - base_format) below.
+> +	 */
+> +	ddtp += (devid & ((64 << base_format) - 1)) << (3 - base_format);
+> +	return (struct riscv_iommu_dc *)ddtp;
+> +}
+> +
+>   static struct iommu_device *riscv_iommu_probe_device(struct device *dev)
+>   {
+>   	struct riscv_iommu_device *iommu;
+> @@ -708,6 +804,9 @@ static struct iommu_device *riscv_iommu_probe_device(struct device *dev)
+>   	ep->iommu = iommu;
+>   	ep->dev = dev;
+>   
+> +	/* Initial DC pointer can be NULL if IOMMU is configured in OFF or BARE mode */
+> +	ep->dc = riscv_iommu_get_dc(iommu, ep->devid);
+> +
+>   	dev_info(iommu->dev, "adding device to iommu with devid %i in domain %i\n",
+>   		ep->devid, ep->domid);
+>   
+> @@ -734,6 +833,16 @@ static void riscv_iommu_release_device(struct device *dev)
+>   	list_del(&ep->domain);
+>   	mutex_unlock(&ep->lock);
+>   
+> +	if (ep->dc) {
+> +		// this should be already done by domain detach.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/d3d4f3ce986f/disk-950fe358.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d5afd9c7f284/vmlinux-950fe358.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/1a203c65f0ae/bzImage-950fe358.xz
+What's domain detach? ;)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5ba06978f34abb058571@syzkaller.appspotmail.com
+> +		ep->dc->tc = 0ULL;
+> +		wmb();
+> +		ep->dc->fsc = 0ULL;
+> +		ep->dc->iohgatp = 0ULL;
+> +		wmb();
+> +		riscv_iommu_iodir_inv_devid(iommu, ep->devid);
+> +	}
+> +
+>   	/* Remove endpoint from IOMMU tracking structures */
+>   	mutex_lock(&iommu->eps_mutex);
+>   	rb_erase(&ep->node, &iommu->eps);
+> @@ -853,11 +962,21 @@ static int riscv_iommu_domain_finalize(struct riscv_iommu_domain *domain,
+>   	return 0;
+>   }
+>   
+> +static u64 riscv_iommu_domain_atp(struct riscv_iommu_domain *domain)
+> +{
+> +	u64 atp = FIELD_PREP(RISCV_IOMMU_DC_FSC_MODE, domain->mode);
+> +	if (domain->mode != RISCV_IOMMU_DC_FSC_MODE_BARE)
+> +		atp |= FIELD_PREP(RISCV_IOMMU_DC_FSC_PPN, virt_to_pfn(domain->pgd_root));
+> +	return atp;
+> +}
+> +
+>   static int riscv_iommu_attach_dev(struct iommu_domain *iommu_domain, struct device *dev)
+>   {
+>   	struct riscv_iommu_domain *domain = iommu_domain_to_riscv(iommu_domain);
+>   	struct riscv_iommu_endpoint *ep = dev_iommu_priv_get(dev);
+> +	struct riscv_iommu_dc *dc = ep->dc;
+>   	int ret;
+> +	u64 val;
+>   
+>   	/* PSCID not valid */
+>   	if ((int)domain->pscid < 0)
+> @@ -880,17 +999,44 @@ static int riscv_iommu_attach_dev(struct iommu_domain *iommu_domain, struct devi
+>   		return ret;
+>   	}
+>   
+> -	if (ep->iommu->ddt_mode != RISCV_IOMMU_DDTP_MODE_BARE ||
+> -	    domain->domain.type != IOMMU_DOMAIN_IDENTITY) {
+> -		dev_warn(dev, "domain type %d not supported\n",
+> -		    domain->domain.type);
+> +	if (ep->iommu->ddt_mode == RISCV_IOMMU_DDTP_MODE_BARE &&
+> +	    domain->domain.type == IOMMU_DOMAIN_IDENTITY) {
+> +		dev_info(dev, "domain type %d attached w/ PSCID %u\n",
+> +		    domain->domain.type, domain->pscid);
+> +		return 0;
+> +	}
+> +
+> +	if (!dc) {
+>   		return -ENODEV;
+>   	}
+>   
+> +	/*
+> +	 * S-Stage translation table. G-Stage remains unmodified (BARE).
+> +	 */
+> +	val = FIELD_PREP(RISCV_IOMMU_DC_TA_PSCID, domain->pscid);
+> +
+> +	dc->ta = cpu_to_le64(val);
+> +	dc->fsc = cpu_to_le64(riscv_iommu_domain_atp(domain));
+> +
+> +	wmb();
+> +
+> +	/* Mark device context as valid, synchronise device context cache. */
+> +	val = RISCV_IOMMU_DC_TC_V;
+> +
+> +	if (ep->iommu->cap & RISCV_IOMMU_CAP_AMO) {
+> +		val |= RISCV_IOMMU_DC_TC_GADE |
+> +		       RISCV_IOMMU_DC_TC_SADE;
+> +	}
+> +
+> +	dc->tc = cpu_to_le64(val);
+> +	wmb();
+> +
+>   	list_add_tail(&ep->domain, &domain->endpoints);
+>   	mutex_unlock(&ep->lock);
+>   	mutex_unlock(&domain->lock);
+>   
+> +	riscv_iommu_iodir_inv_devid(ep->iommu, ep->devid);
+> +
+>   	dev_info(dev, "domain type %d attached w/ PSCID %u\n",
+>   	    domain->domain.type, domain->pscid);
+>   
+> @@ -1239,7 +1385,12 @@ int riscv_iommu_init(struct riscv_iommu_device *iommu)
+>   		goto fail;
+>   
+>    no_ats:
+> -	ret = riscv_iommu_enable(iommu, RISCV_IOMMU_DDTP_MODE_BARE);
+> +	if (iommu_default_passthrough()) {
+> +		dev_info(dev, "iommu set to passthrough mode\n");
+> +		ret = riscv_iommu_enable(iommu, RISCV_IOMMU_DDTP_MODE_BARE);
 
-netlink: 24 bytes leftover after parsing attributes in process `syz-executor252'.
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5027 at net/core/dev.c:9593 dev_index_reserve+0x1a2/0x1c0 net/core/dev.c:9593
-Modules linked in:
-CPU: 0 PID: 5027 Comm: syz-executor252 Not tainted 6.5.0-rc5-syzkaller-01605-g950fe35831af #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:dev_index_reserve+0x1a2/0x1c0 net/core/dev.c:9593
-Code: 00 31 d2 4d 8d 45 50 b9 ff ff ff 7f 48 8d 74 24 20 e8 f2 05 02 02 4c 89 e7 89 c3 e8 48 01 11 02 e9 48 ff ff ff e8 5e 1a 5e f9 <0f> 0b bb ea ff ff ff e9 52 ff ff ff e8 cd 4f 0d 02 66 66 2e 0f 1f
-RSP: 0018:ffffc90003a2efa8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 00000000ffffffff RCX: 0000000000000000
-RDX: ffff88807d940000 RSI: ffffffff88280632 RDI: 0000000000000005
-RBP: 1ffff92000745df5 R08: 0000000000000005 R09: 0000000000000000
-R10: 00000000ffffffff R11: ffffffff8a40008b R12: ffff88823bd20010
-R13: ffffffff924d1180 R14: ffff88823bd20000 R15: ffff88823bd200f8
-FS:  00005555573a0380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055feb9a33020 CR3: 000000001eaea000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- register_netdevice+0x69a/0x1490 net/core/dev.c:10081
- veth_newlink+0x521/0xa50 drivers/net/veth.c:1938
- rtnl_newlink_create net/core/rtnetlink.c:3471 [inline]
- __rtnl_newlink+0x115e/0x18c0 net/core/rtnetlink.c:3688
- rtnl_newlink+0x67/0xa0 net/core/rtnetlink.c:3701
- rtnetlink_rcv_msg+0x439/0xd30 net/core/rtnetlink.c:6427
- netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2545
- netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
- netlink_unicast+0x536/0x810 net/netlink/af_netlink.c:1368
- netlink_sendmsg+0x93c/0xe40 net/netlink/af_netlink.c:1910
- sock_sendmsg_nosec net/socket.c:728 [inline]
- sock_sendmsg+0xd9/0x180 net/socket.c:751
- ____sys_sendmsg+0x6ac/0x940 net/socket.c:2514
- ___sys_sendmsg+0x135/0x1d0 net/socket.c:2568
- __sys_sendmsg+0x117/0x1e0 net/socket.c:2597
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7ff9080bb329
-Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc3ff5b078 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007ffc3ff5b248 RCX: 00007ff9080bb329
-RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000003
-RBP: 00007ff90812e610 R08: 0000000000000000 R09: 00007ffc3ff5b248
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffc3ff5b238 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
+Yeah, disabling the whole IOMMU is not what default passthrough means... 
+drivers should not care about that at all, it only affects the core 
+code's choice of default domain type. Even if that is identity, 
+translation absolutely still needs to be available on a per-device 
+basis, for unmanaged domains or default domain changes via sysfs.
 
+Thanks,
+Robin.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> +	} else {
+> +		ret = riscv_iommu_enable(iommu, ddt_mode);
+> +	}
+>   
+>   	if (ret) {
+>   		dev_err(dev, "cannot enable iommu device (%d)\n", ret);
+> diff --git a/drivers/iommu/riscv/iommu.h b/drivers/iommu/riscv/iommu.h
+> index 04148a2a8ffd..9140df71e17b 100644
+> --- a/drivers/iommu/riscv/iommu.h
+> +++ b/drivers/iommu/riscv/iommu.h
+> @@ -105,6 +105,7 @@ struct riscv_iommu_endpoint {
+>   	unsigned devid;      			/* PCI bus:device:function number */
+>   	unsigned domid;    			/* PCI domain number, segment */
+>   	struct rb_node node;    		/* device tracking node (lookup by devid) */
+> +	struct riscv_iommu_dc *dc;		/* device context pointer */
+>   	struct riscv_iommu_device *iommu;	/* parent iommu device */
+>   
+>   	struct mutex lock;
