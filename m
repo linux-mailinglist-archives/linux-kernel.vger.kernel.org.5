@@ -2,139 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C0777E759
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C265177E75A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345126AbjHPRM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 13:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
+        id S1345103AbjHPRN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 13:13:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345153AbjHPRMK (ORCPT
+        with ESMTP id S1345167AbjHPRNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 13:12:10 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C59BB2D47
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:11:51 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-34a91a25db9so2886515ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:11:51 -0700 (PDT)
+        Wed, 16 Aug 2023 13:13:11 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B642701
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:13:06 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fe2d620d17so5915e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:13:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1692205911; x=1692810711;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nYoS3FzLsOAr5f0S1EEKnI/Ectdz8JgA5KQtKpQFDV4=;
-        b=AMv+0pmzEtAON1kkKvAZgz0CRU9HzFF6eZbOn0MLgnGQI2zzR020WXGqXXHGUyebvU
-         OvfOa98ihp+NtRXQMaOmmWe2NooUIxbBUFGG+e5MNM6ZvXWEbg8SjQMVZgI8350c7/Hg
-         GU2kas2RbxyQ/Kppz74xwUHgUxzuGBOtsw0XA=
+        d=google.com; s=20221208; t=1692205985; x=1692810785;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZYUypjySzrAs8GAD7XVdfOM4s0Fcr0Thimjx1ALtpVI=;
+        b=KXJiRmmYEO/zdoFBPp/YAhd426XdPnK00YUWC+8mkii6PtisTHWhvdS5tkZ0xGKMtk
+         fHk3BqdfOMpgwYwuvAG7FpL6rospMidGIxerCPzwoKvxbDBU52MX5lF2D+nBY+DLtxyt
+         RGc50o7vFONOM/2TNGQJZm/lk5P8AsD35hpJq5XVbrBE1Ilo8NJOHBJmqZgsKQnU+Vca
+         NyIi10ieIOHkI/bcXrFIuBgptWq1ow8nONf3bVOFUoJYTlIlX/8kLhNEBNd/TlzqpO4S
+         BYd6LC7im3QYFcDRiwfebjrzs6KxRqPOsGcTpyx/CZSBFCa8HnsEsGT1vbz6hssLcPnb
+         E2oA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692205911; x=1692810711;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nYoS3FzLsOAr5f0S1EEKnI/Ectdz8JgA5KQtKpQFDV4=;
-        b=Qvr6s4aqb9JyGjW5McEbHD5InFDiYhKCiYKFY2OXLv+SATS4RACuS42cvtkoZmz37N
-         CheegvwyhS/RB6TomiyvfF1SDbIdqm+fcS6CAJLCuoq4AjU0n5hbZDwJm2qmixPWmUxe
-         KsLFTdX7falaZYZfUZ/9215haU7GOICQfX8wChXQY2T7e7DLtYfNXW7nHBKWOkBfYXoP
-         NQh89W7a2E6Q6tOB7CgT5gwKI2awPGx5gnS00DOnF3RnS8aI52Q28HaG9BLRSGuOVFZH
-         CX+Fa53fNAb8wzsdcy/jzetFcayajrOHbUeTpwb29dDeswQFsPEReeCURtybPH09dmpn
-         gugA==
-X-Gm-Message-State: AOJu0YyU4OaE/k8IorKzmJlqWQSXQaIecoAHNMgrwVG8CJt6M/gfT9ao
-        Nyfdvuq91GuhSz4nLItzbihqrQ==
-X-Google-Smtp-Source: AGHT+IErv/EEWy15Sn057ZKbpCRgOvwG9jec2C11rkrbrBZ//FPdRLPpwEoeD7xt4vH/QgloY06scw==
-X-Received: by 2002:a92:c951:0:b0:349:1d60:7250 with SMTP id i17-20020a92c951000000b003491d607250mr3251426ilq.0.1692205911157;
-        Wed, 16 Aug 2023 10:11:51 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id t17-20020a02ab91000000b00430a20ce88bsm4370963jan.174.2023.08.16.10.11.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 10:11:50 -0700 (PDT)
-Message-ID: <59c0fcd1-a1f2-de37-c94d-76687934acd5@linuxfoundation.org>
-Date:   Wed, 16 Aug 2023 11:11:49 -0600
+        d=1e100.net; s=20221208; t=1692205985; x=1692810785;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZYUypjySzrAs8GAD7XVdfOM4s0Fcr0Thimjx1ALtpVI=;
+        b=Hy9JWCUDc16JFaQ8MLbbrVbYceu3eMtvllee7q9jZPxB2ODBnprB0uLuE/yIB6yPSN
+         FGtDycMroNVC0lItZr4XxmU8kSafTBJvO1K2QQ0gdsb1ChoXkVMk1QZetwgex79p8xL7
+         VUx91ALYkgde28mJ6EJ9xfGDaULMw1PMwaxkQtGLLLXTbM2ZK+7EWR2+YCXRVT0vZgf3
+         raxWgF5Y/T61qYQ6yinF7pEjq3YPqQiy7gufC3KniymURVjjBFcf41Squ8Tg4Q4yNyxH
+         GMVALgBvq8luUY5I64EaZ+1PA5n/I859wQqjoUPMbdj+DqLt3UeYhb3Y6TBGPUj43pje
+         tMjw==
+X-Gm-Message-State: AOJu0Yw1fKl+TDgSiHU3trVpJOy8yLO7AmhUWhCsQeJKQNNH9AqHyZU+
+        YPfM4UGCkt9Ken7c6zhmpUcPUVBGwuzGJ6m5Zr58zg==
+X-Google-Smtp-Source: AGHT+IHSaO6WGnDE0QP8Hi7+3CkXN+E8BSEciMIfec2sBc4o6XMsWSHcwRcMePlTHR9KIDKgQ2howap+w7lK11I/LCc=
+X-Received: by 2002:a05:600c:5119:b0:3f4:fb7:48d4 with SMTP id
+ o25-20020a05600c511900b003f40fb748d4mr4622wms.3.1692205984767; Wed, 16 Aug
+ 2023 10:13:04 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 3/3] selftests: cachestat: test for cachestat availability
-Content-Language: en-US
-To:     Andre Przywara <andre.przywara@arm.com>,
-        Shuah Khan <shuah@kernel.org>, Nhat Pham <nphamcs@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230815155612.2535947-1-andre.przywara@arm.com>
- <20230815155612.2535947-4-andre.przywara@arm.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20230815155612.2535947-4-andre.przywara@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <CAG48ez12VN1JAOtTNMY+Y2YnsU45yL5giS-Qn=ejtiHpgJAbdQ@mail.gmail.com>
+ <20230816161758.avedpxvqpwngzmut@revolver>
+In-Reply-To: <20230816161758.avedpxvqpwngzmut@revolver>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 16 Aug 2023 19:12:27 +0200
+Message-ID: <CAG48ez3mcH-ms0piv7iMcB_ap+WDgkE_ex6VHSZw_Aw30-Ox8g@mail.gmail.com>
+Subject: Re: maple tree change made it possible for VMA iteration to see same
+ VMA twice due to late vma_merge() failure
+To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Jann Horn <jannh@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/15/23 09:56, Andre Przywara wrote:
-> As cachestat is a new syscall, it won't be available on older kernels,
-> for instance those running on a build machine. In this case, a run
-> reports all tests as "not ok" at the moment.
-> 
-> Test for the cachestat syscall availability first, before doing further
-> tests, and bail out early with a TAP SKIP comment.
-> 
-> This also uses the opportunity to add the proper TAP headers, and add
-> one check for the syscall error handling (illegal file descriptor).
-> 
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> ---
->   .../selftests/cachestat/test_cachestat.c      | 22 ++++++++++++++++++-
->   1 file changed, 21 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/cachestat/test_cachestat.c b/tools/testing/selftests/cachestat/test_cachestat.c
-> index a5a4ac8dcb76c..77620e7ecf562 100644
-> --- a/tools/testing/selftests/cachestat/test_cachestat.c
-> +++ b/tools/testing/selftests/cachestat/test_cachestat.c
-> @@ -15,6 +15,8 @@
->   
->   #include "../kselftest.h"
->   
-> +#define NR_TESTS	8
-> +
->   static const char * const dev_files[] = {
->   	"/dev/zero", "/dev/null", "/dev/urandom",
->   	"/proc/version", "/proc"
-> @@ -235,7 +237,25 @@ bool test_cachestat_shmem(void)
->   
->   int main(void)
->   {
-> -	int ret = 0;
-> +	int ret;
-> +
-> +	ksft_print_header();
-> +
-> +	ret = syscall(__NR_cachestat, -1, NULL, NULL, 0);
-> +	if (ret == -1 && errno == ENOSYS) {
-> +		printf("1..0 # Skipped: cachestat syscall not available\n");
-> +		return KSFT_SKIP;
-What happens when other errors besides ENOSYS? The test shouldn't
-continue.
+On Wed, Aug 16, 2023 at 6:18=E2=80=AFPM Liam R. Howlett <Liam.Howlett@oracl=
+e.com> wrote:
+> * Jann Horn <jannh@google.com> [230815 15:37]:
+> > commit 18b098af2890 ("vma_merge: set vma iterator to correct
+> > position.") added a vma_prev(vmi) call to vma_merge() at a point where
+> > it's still possible to bail out. My understanding is that this moves
+> > the VMA iterator back by one VMA.
+> >
+> > If you patch some extra logging into the kernel and inject a fake
+> > out-of-memory error at the vma_iter_prealloc() call in vma_split() (a
+> > real out-of-memory error there is very unlikely to happen in practice,
+> > I think - my understanding is that the kernel will basically kill
+> > every process on the system except for init before it starts failing
+> > GFP_KERNEL allocations that fit within a single slab, unless the
+> > allocation uses GFP_ACCOUNT or stuff like that, which the maple tree
+> > doesn't):
+[...]
+> > then you'll get this fun log output, showing that the same VMA
+> > (ffff88810c0b5e00) was visited by two iterations of the VMA iteration
+> > loop, and on the second iteration, prev=3D=3Dvma:
+> >
+> > [  326.765586] userfaultfd_register: begin vma iteration
+> > [  326.766985] userfaultfd_register: prev=3Dffff88810c0b5ef0,
+> > vma=3Dffff88810c0b5e00 (0000000000101000-0000000000102000)
+> > [  326.768786] userfaultfd_register: vma_merge returned 000000000000000=
+0
+> > [  326.769898] userfaultfd_register: prev=3Dffff88810c0b5e00,
+> > vma=3Dffff88810c0b5e00 (0000000000101000-0000000000102000)
+> >
+> > I don't know if this can lead to anything bad but it seems pretty
+> > clearly unintended?
+>
+> Yes, unintended.
+>
+> So we are running out of memory, but since vma_merge() doesn't
+> differentiate between failure and 'nothing to merge', we end up in a
+> situation that we will revisit the same VMA.
+>
+> I've been thinking about a way to work this into the interface and I
+> don't see a clean way because we (could) do different things before the
+> call depending on the situation.
+>
+> I think we need to undo any vma iterator changes in the failure
+> scenarios if there is a chance of the iterator continuing to be used,
+> which is probably not limited to just this case.
 
-> +	}
-> +
-> +	ksft_set_plan(NR_TESTS);
-> +
-> +	if (ret == -1 && errno == EBADF) {
-> +		ksft_test_result_pass("bad file descriptor recognized\n");
-> +		ret = 0;
-> +	} else {
-> +		ksft_test_result_fail("bad file descriptor ignored\n");
-> +		ret = 1;
-> +	}
->   
->   	for (int i = 0; i < 5; i++) {
->   		const char *dev_filename = dev_files[i];
+I don't fully understand the maple tree interface - in the specific
+case of vma_merge(), could you move the vma_prev() call down below the
+point of no return, after vma_iter_prealloc()? Or does
+vma_iter_prealloc() require that the iterator is already in the insert
+position?
 
-thanks,
--- Shuah
+> I will audit these areas and CC you on the result.
+
+Thanks!
