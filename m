@@ -2,104 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D45CA77E363
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8261D77E369
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343543AbjHPORJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 10:17:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58290 "EHLO
+        id S1343557AbjHPOSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 10:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343566AbjHPORB (ORCPT
+        with ESMTP id S1343566AbjHPORs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 10:17:01 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A73352708
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:17:00 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d68c0f22fc9so8015347276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:17:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692195420; x=1692800220;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mWxq8XPPN3K2/Hl7/jGuCvbco+UzQfaTP/jtlKOAWpo=;
-        b=W5RkvSqWtUqZtUjB2ze0doBKoggpcspjyiMRkYklWTf2haqW9D9sSHYqoxAR18toeV
-         2z9RYXIQjIj556tedMIJq3rAO+1Rw8GZcPOBmo6B3a1I3Wjzq+KMVwGbzsVpQvXh+AoO
-         ad88pJQ9ht+/z//hgVJjtmN5SMFBtESxC3hF81opZvsKtl/wqYtcakAJBiluJrg2THKY
-         pnEZZtVLlL3BuK2DyiCZxa+DekBOKl9UpUpX6OG2kGPSR90KorX78VExiMh4yhXRPDj3
-         IEe1AbQhYVYcMHjyresqIt6W2/Bfj4WjrRe3mJLCzQKIxtXengvAm5xnmHMtao8ARbdd
-         7Nyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692195420; x=1692800220;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mWxq8XPPN3K2/Hl7/jGuCvbco+UzQfaTP/jtlKOAWpo=;
-        b=M7u7dhRX85Ptb19k5R7thLBr3MzqaylIwp+bUBWHaWPtElX+qODsyoEH1SjzvsaWvi
-         0QHuUOkTz7D+Ut+b6mv/qBtFK36lkWxm436YNKSdUPW4WjO/P/Zy0wNBy56ouNamoUH0
-         eutiIdQadO5EnC5J5lk3JD5hW117dp4avjJsD5kNzGdJn2enxELMjtmp9t6dXep6q9mo
-         ziW6B5PXuilNOUzMWllIHw/Z9oTrFoX6ijchhOJnoNc5c2FAkc5fCwqcBdcfvu09MQmW
-         J8c86yedmbrA5ixs/qFQcMszH5vTx1iW72AKv+i+EfoP4dx4BofzD+hPwIRidAw551h5
-         da4Q==
-X-Gm-Message-State: AOJu0Yz4ie+cSPz9v31lzOmNUmPVyAVX7446vlMLd7jKJ+bkGLw3wbfE
-        K2k14KOIOySm7wl4xX/CKl+CC5ugaOU=
-X-Google-Smtp-Source: AGHT+IGheELvBADZ/ZGgycp9hodD4csVOu7LpxIxavoM/BdHmL+oISGRpZgvo+gyeVlsTmNsJnvzHTff28k=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1785:b0:d64:9e2c:5c0d with SMTP id
- ca5-20020a056902178500b00d649e2c5c0dmr77206ybb.5.1692195419994; Wed, 16 Aug
- 2023 07:16:59 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 14:16:58 +0000
-In-Reply-To: <ZNzVxMPkOvqOGACD@gallifrey>
-Mime-Version: 1.0
-References: <RyxwdfAZ2mHvlqqVVbFdCK5cQnWoOE_qz1LwSFfuXyoj0EvkDn1-TacV_C0GezxY901qUnRersvHSni9sewNZT7sGe8rKQ8OOCdAA5Bi940=@protonmail.com>
- <ZNzVxMPkOvqOGACD@gallifrey>
-Message-ID: <ZNzX15Ao9LSW6KF/@google.com>
-Subject: Re: 5.10.189 and 5.10.190 breaks nested virtualization
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Dr. David Alan Gilbert" <dave@treblig.org>
-Cc:     Blair Strater <strater@protonmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 10:17:48 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2085.outbound.protection.outlook.com [40.107.101.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F69E272C;
+        Wed, 16 Aug 2023 07:17:45 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iQ3r3/SoKVSItwUMgXC4EYR8DRqT3CkwBITAJze3uey3+W+CzHMlUWNfK+WnNSgeyH+VY+fFskxqJGiuChn1HAkVs2pWKTeD/hhUPjYGe17QzVjBdjOWDpshM7tj1pO/LXnJx2hhajUQuCIJPZ7Jc7w+4+CLUTHZWBis4X1vx0jtaSM10orgyXIBj7ZYd1nvULLojJs24QRg2jxEv4JHepzEuhDNe0z9b4MOdr4EsJyuNasZPYW5M31lJGb9DM0wtmRuCwz1bhKSK2OjRAI2qNElPbLLxZVpKNIiUc6xRaIL0caSdFZukfPkFhjMgaWqfDlyT/WhjAiMmsk1EvYU+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pIlYviRfxRmoTXiged3GPLYUZ2916nMZe5U43lL/lHk=;
+ b=neiwULDnCrmw0TxYfG0CrucNSSUYQczpkzCP4IouHs7QC4oDVHqE0XTP9mY0d+5rgevxAxOYRynKgwE+lCghapQ1SODfU2qtcIVnUtNWx0+1PVIPd+Ib03LwW94wDCPVTBCbHV5Oqtv4Y+la02GFj69pqNcyidJKarBgdJ9+6DZ3ngYCNlmxsvxYci++zkVvMXJuPZqXFoO/Sz+gKM1dZb2M/ne0ukvNsG8+KCK67NbPIWJa2bf4VBFWoOeUu4zy6gq8uI5r82SMWbLDodBu0hAyNncDuwF/2BbiJVlGDp7Hbyjt7+yWDp4alA1DFwY/LqswN2aBbAqHfp/pUnTFvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pIlYviRfxRmoTXiged3GPLYUZ2916nMZe5U43lL/lHk=;
+ b=skMDGbjRKLwgMCPkByR7RnsSPX75Nm6mZeqQF4f0TgvC3lLwOFfM5OqTbMkPSHrXLexwWLrEMg3OHszqVQC/Iji4Xv8uD4CMeS0HDZQ6zIxuLy6UubdY8FyW/aYMh28ZA1wBWMeU6Yg+n0uRtsEJUAple5CfdDPXFl6oDjLgsmA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by SN7PR12MB7809.namprd12.prod.outlook.com (2603:10b6:806:34e::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Wed, 16 Aug
+ 2023 14:17:42 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::3d:c14:667a:1c81]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::3d:c14:667a:1c81%4]) with mapi id 15.20.6678.029; Wed, 16 Aug 2023
+ 14:17:42 +0000
+Message-ID: <9855fa7a-dd9d-27b8-171e-b662d417b902@amd.com>
+Date:   Wed, 16 Aug 2023 16:17:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] drm/amdgpu: register a dirty framebuffer callback for
+ fbcon
+Content-Language: en-US
+To:     Hamza Mahfooz <hamza.mahfooz@amd.com>,
+        amd-gfx@lists.freedesktop.org
+Cc:     Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Guchun Chen <guchun.chen@amd.com>,
+        dri-devel@lists.freedesktop.org,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>
+References: <20230815172700.255596-1-hamza.mahfooz@amd.com>
+ <d1831afd-9e02-fbc9-69f7-e8f044f35ee0@gmail.com>
+ <855aeab8-13e1-4dc4-841e-24d298c9c072@amd.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+In-Reply-To: <855aeab8-13e1-4dc4-841e-24d298c9c072@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR0P281CA0117.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a8::15) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|SN7PR12MB7809:EE_
+X-MS-Office365-Filtering-Correlation-Id: 591dc7f5-4c20-41b4-5ede-08db9e638de8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8K4gmMxT/D+EnRhOQdlIIkf16urzpnFHc3A9dRzM8UfQ+TWLQbIDFDB/Nj0J/EVXK1wNONRqw4yQ6phdh4cjF/iISxfZKL8o6L8MqlxrOJkQg6Sz6IFS8+OT/rbAIih3Azg9JrzyjXA/9+H3AbKAkt0T86jikZHoDV8snOTqwfN74Dl5XgYJ5wRA8iYnJpsRgSCeW9/8ThtapyX5si17/A5fWw/sty68kcI3pSPPS1QqqUqMKpYXHSbFd8x5rHr47G0DwsqoBwaeWuBRgI52hqn1EK3bgXpJ6FGXEJIKVoigvNzZ72nghbN4KyKw2e5Szzc9lo7UdDq6IqYIgAg5lTvWegpCnody5tGSJLS6YuGCOpeXnJtYAeAOU6qhn7erHfK1a9BNBDVh73hnoo6bn/6IABH6tE+cBs1UorPxEdiyr/kK0tA0DmlM+Dcv++crj12tDrMIOhbsPP7W72l/yOeyqHT6TxZIfR0DaosX5vBKIPKUYwcirLQHzyK8JaYjnu5ZL4fVu4/5FDbTiYTTP3vqD85S/QlUPAmETEx6lb92e80pluD4yBNpmwA5eJ1fvPsYUWisFXqd4asSUJwFx/3C8x/nuCHsA6ydLeGG8ATDbbroTnDRY3fpZdvUMoFIMgC3HVZnHmnOlj3zF/e2AJMnAxO4pepDEzLCzIZpj1g=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(366004)(376002)(136003)(1800799009)(451199024)(186009)(316002)(54906003)(66946007)(66476007)(66556008)(966005)(41300700001)(5660300002)(66574015)(38100700002)(31686004)(8676002)(4326008)(8936002)(2906002)(83380400001)(26005)(478600001)(86362001)(31696002)(6512007)(53546011)(6506007)(36756003)(6666004)(2616005)(6486002)(14143004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d1YxYWZKdC9RdnduZHFYaG51TGJBK3BHMDN0ZldWUENaV2tRNlI3MFdHazhh?=
+ =?utf-8?B?cHE0OER3UjllaVcrakhxUnR3R0w5UzFzVG96WDVJWU4zbThyOEd0VEQzdHRy?=
+ =?utf-8?B?U095d1JRL2JxdmJrYmpPZTlDcndUQXROcEVFUFZ1R2xCcExnZkVGMmlsdXZr?=
+ =?utf-8?B?cm1wVHJWT0JaU2g5MUZGMGo3KzRkRE1vSVJSZnZRL2NDNmFaQi9nZ3FBYTlq?=
+ =?utf-8?B?TTR5akxKdEppc0drcDRKUmZmdWFnam14a3J6Y1dvYjY0MzBYVHdpckNiTkht?=
+ =?utf-8?B?cGxUWFN4ZWt0TG9CSDY2SnFNbWRSa0JyZ2dvMDJUYTFrMlZvWE1sbnhQUURV?=
+ =?utf-8?B?NFAzZUpSWHVHZWpxYlpJR1gxS1dMNTRqVFNFRmxFZE5LTVpQbml5V0s4Nnp1?=
+ =?utf-8?B?anRUVVRRUjNHaTV4MWZPQ1Y1NTNXTFBhVDM4cFBud3VIMjhxd3BBdUgva3Z2?=
+ =?utf-8?B?WElteU9kUk1BUmNLUkxHT1Qzc1FveDAyYkQrRFB6aFR1bXh3Qk9VMDk1ZktT?=
+ =?utf-8?B?MFpIWTVOYnI5OHRsYnFORGRsYjFLMlA3MFlqbzlmaFZlNEY4SUZJVHk1QXlK?=
+ =?utf-8?B?L0hXTDZZa25VZ1ZDZmZCUzZlZlprOEF6Q2FPVWhDR3Mram5KOFg5T09kdkRo?=
+ =?utf-8?B?YmhrZFNnZUtzWjliYUNhek5lWUhPbFVqa2JuZmdOSzg4THQxbGpMbEhTZ2Q3?=
+ =?utf-8?B?TTFwQXFUa0pqWVdlT3V5QjNNdmtndU1INGZCTHJhN2VyZWJFVFJwSDAxSHNw?=
+ =?utf-8?B?Q0kyS0QzTnUybGJQQUtGNmN5Z0hWVWhJTTJ1WWhrcWpwV2t0N1d0ZG1NaWEv?=
+ =?utf-8?B?UkpwVloyekNTWkFNNnRmbGxuUzhpbFpYaFRSWGF1QThCaG1QVW93R0RnYlNo?=
+ =?utf-8?B?bks1T2gwUlp6bmdWR3plY3hBMWZ4VFBtVVVQaEJUK2FFbFZZaSs4clYxRmdC?=
+ =?utf-8?B?Tk9TenA5SXNRT2xWdE5iMUV5WTFWZUdET0E4WXl2VTA3TFdyM3ljdDJOOE5I?=
+ =?utf-8?B?K0ZOdGhwSFBYeFp0UjhIREJqUko4dHd3RDhQa2xCdTZZYzRGZjljMUlZT3N0?=
+ =?utf-8?B?RHhtMzVvR29ibE1hcHhER3lNNENvcXNRdk1zN1dZdnkyU1lUMHkxNUdxZlp4?=
+ =?utf-8?B?ZW0yZnNjQ0FpeG40UjB5Nzh6WStmMzlYRk9WNkhQY0d5b3BNQmtPbmtxcUov?=
+ =?utf-8?B?RnQySHdrOWllZ09LR1M4d0RUSVgwZFVUMUVPaXhBYTc5TWNRaFE4MFBNeElm?=
+ =?utf-8?B?UE5KS0N1OWdSMllub3NTOUZsUkVNMDJhazVrTjl2UXg0cEpybGIvTDRObTMw?=
+ =?utf-8?B?azJZbzdtN3FwbEZtaVlDS0JmU1gva2tHQnQxeVI1Y0JZL3EraXExb0pwN2VL?=
+ =?utf-8?B?a3V1VzRiT21SbkNvWGJVa3VUQmVwSVE5UU90Y1dlbGNRUXQ0TGM1V3UvcGFI?=
+ =?utf-8?B?NVlJT2JPcllQSHM1ZXNET3M3d3FVMFhySHE0S3dtaVhoelkzeXN6UElwdC8z?=
+ =?utf-8?B?SmdrN0ROUWljZndxeFJpdXB3YlBQT1g3N3BNU3NtUndKdXVyU2JOTG95cktY?=
+ =?utf-8?B?US9uRlArcFI1L25nQkIrcUhkRDN5TGlOcE9VS25XTHBpS205cVFKd2h5ZGc5?=
+ =?utf-8?B?cW5WeUxMcUNvczJEZjdURUQyaWZvaHB6M0hNRm9PbGdxWjVBMTRqTFBWaHJl?=
+ =?utf-8?B?TmkzK2cxRnBJcFltaUFGS0Y1eFRFdUlvUm4wc3NRT2RkRXJuWUdKVnJjcGtt?=
+ =?utf-8?B?SjE2RE9IaTVnT2VXRys2Q20wQmdZaXFmbWlkSlNlbm5tRUJ5MklzaFJMSEJP?=
+ =?utf-8?B?L2pUeHVzVmhpY045OThKUTduNXFNSUpXek9PMWZwRzk3enhBbklCN0prSURo?=
+ =?utf-8?B?aTd1NXBUbjduOVZGN0NPT0Vhc3REZUZ3ZUl6bEsxYVQzSjFuTE42SzFickVR?=
+ =?utf-8?B?NDBvWlpudTZJckF1bHh6SDJBSWVETUFRNktmK0VvNWxTbE1BMWNIMGlwck9z?=
+ =?utf-8?B?UkppWW1KOVdPUTUzckppQVhmb3JnUnlxZ1F4Mlk1eGtFUDV1KytyUFRKSkIv?=
+ =?utf-8?B?SytycTA1eXRLQkNYelA1bTJ1REozOFJHTHEyWmRidlBFNitkaFkvMlB1eTht?=
+ =?utf-8?Q?pccKKinXBPOvo81+gyvSmhe/J?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 591dc7f5-4c20-41b4-5ede-08db9e638de8
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 14:17:42.4597
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: K9LJEn8KJaIxOpa8Xhtsk1BQDRsk4uaCqA5Ark2Orr/jAvUtpMhyE1s7htPmHruV
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7809
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023, Dr. David Alan Gilbert wrote:
-> * Blair Strater (strater@protonmail.com) wrote:
-> > Per the request at https://lwn.net/Articles/940798/, I'm reaching out to
-> > let you know that this patch breaks nested virtualization on AMD
-> > processors.
-> > 
-> > I've tested 5.10.189 and 5.10.190 on the "outer" virtual host, and both
-> > Debian 12 running libvirt, and Proxmox 7 as "inner" hosts. For Debian, the
-> > nested VM fails to start at all, and consumes the entirety of one CPU core.
-> > For Proxmox, 100-200MB/second of memory is allocated and never released,
-> > and also the guest fails to start. The problems go away when taking the
-> > outer host back to 5.10.188.
-> > 
-> > The processor in question is a Ryzen 7 2700. The kernel revision for
-> > Proxmox is 5.15.108-1-pve, and the kernel revision for Debian 12 is
-> > 6.1.0-11-amd64. I've run into another person who can confirm that this bug
-> > also occurs in the 6.4 series, "somewhere between 6.4.3 and 6.4.9", 6.4.9
-> > being the likely culprit.
-> > 
-> > Please let me know if you need any other information. 
-> > 
-> > I apologize for bothering an entire mailing list, Greg's email bot told me to.
-> 
-> cc'd in Vitaly (who I notice was working another regression bug in
-> the recent stables), and Sean (who I notice has an L2 patch in the
-> 5.10.189..190 set).
+Am 16.08.23 um 15:41 schrieb Hamza Mahfooz:
+>
+> On 8/16/23 01:55, Christian König wrote:
+>>
+>>
+>> Am 15.08.23 um 19:26 schrieb Hamza Mahfooz:
+>>> fbcon requires that we implement &drm_framebuffer_funcs.dirty.
+>>> Otherwise, the framebuffer might take a while to flush (which would
+>>> manifest as noticeable lag). However, we can't enable this callback for
+>>> non-fbcon cases since it might cause too many atomic commits to be made
+>>> at once. So, implement amdgpu_dirtyfb() and only enable it for fbcon
+>>> framebuffers on devices that support atomic KMS.
+>>>
+>>> Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
+>>> Cc: Mario Limonciello <mario.limonciello@amd.com>
+>>> Cc: stable@vger.kernel.org # 6.1+
+>>> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2519
+>>> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+>>> ---
+>>> v2: update variable names
+>>> ---
+>>>   drivers/gpu/drm/amd/amdgpu/amdgpu_display.c | 26 
+>>> ++++++++++++++++++++-
+>>>   1 file changed, 25 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c 
+>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+>>> index d20dd3f852fc..d3b59f99cb7c 100644
+>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+>>> @@ -38,6 +38,8 @@
+>>>   #include <linux/pci.h>
+>>>   #include <linux/pm_runtime.h>
+>>>   #include <drm/drm_crtc_helper.h>
+>>> +#include <drm/drm_damage_helper.h>
+>>> +#include <drm/drm_drv.h>
+>>>   #include <drm/drm_edid.h>
+>>>   #include <drm/drm_fb_helper.h>
+>>>   #include <drm/drm_gem_framebuffer_helper.h>
+>>> @@ -532,11 +534,29 @@ bool amdgpu_display_ddc_probe(struct 
+>>> amdgpu_connector *amdgpu_connector,
+>>>       return true;
+>>>   }
+>>> +static int amdgpu_dirtyfb(struct drm_framebuffer *fb, struct 
+>>> drm_file *file,
+>>> +              unsigned int flags, unsigned int color,
+>>> +              struct drm_clip_rect *clips, unsigned int num_clips)
+>>> +{
+>>> +
+>>> +    if (strcmp(fb->comm, "[fbcon]"))
+>>> +        return -ENOSYS;
+>>
+>> Once more to the v2 of this patch: Tests like those are a pretty big 
+>> NO-GO for upstreaming.
+>
+> On closer inspection it is actually sufficient to check if `file` is
+> NULL here (since it means that the request isn't from userspace). So, do
+> you think that would be palatable for upstream?
 
-Does running with "spec_rstack_overflow=off" fix things for you?  If so, can you
-then try testing the fix for the guest RFLAGS corruption[1]?  It's a bit of a long
-shot, but I'm hoping we'll get lucky and all of these nested SVM errors[2] are
-just weird symptoms of branches going awry.
+That's certainly better than doing a string compare, but I'm not sure if 
+that's sufficient.
 
-[1] https://lore.kernel.org/all/20230811155255.250835-1-seanjc@google.com
-[2] https://bugzilla.kernel.org/show_bug.cgi?id=217796
+In general drivers shouldn't have any special handling for fdcon.
+
+You should probably have Thomas Zimmermann <tzimmermann@suse.de> take a 
+look at this.
+
+Regards,
+Christian.
+
+>
+>>
+>> Regards,
+>> Christian.
+>>
+>>> +
+>>> +    return drm_atomic_helper_dirtyfb(fb, file, flags, color, clips,
+>>> +                     num_clips);
+>>> +}
+>>> +
+>>>   static const struct drm_framebuffer_funcs amdgpu_fb_funcs = {
+>>>       .destroy = drm_gem_fb_destroy,
+>>>       .create_handle = drm_gem_fb_create_handle,
+>>>   };
+>>> +static const struct drm_framebuffer_funcs amdgpu_fb_funcs_atomic = {
+>>> +    .destroy = drm_gem_fb_destroy,
+>>> +    .create_handle = drm_gem_fb_create_handle,
+>>> +    .dirty = amdgpu_dirtyfb
+>>> +};
+>>> +
+>>>   uint32_t amdgpu_display_supported_domains(struct amdgpu_device *adev,
+>>>                         uint64_t bo_flags)
+>>>   {
+>>> @@ -1139,7 +1159,11 @@ static int 
+>>> amdgpu_display_gem_fb_verify_and_init(struct drm_device *dev,
+>>>       if (ret)
+>>>           goto err;
+>>> -    ret = drm_framebuffer_init(dev, &rfb->base, &amdgpu_fb_funcs);
+>>> +    if (drm_drv_uses_atomic_modeset(dev))
+>>> +        ret = drm_framebuffer_init(dev, &rfb->base,
+>>> +                       &amdgpu_fb_funcs_atomic);
+>>> +    else
+>>> +        ret = drm_framebuffer_init(dev, &rfb->base, &amdgpu_fb_funcs);
+>>>       if (ret)
+>>>           goto err;
+>>
+
