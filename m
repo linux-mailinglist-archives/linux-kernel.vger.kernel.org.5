@@ -2,145 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C60E977D9C6
+	by mail.lfdr.de (Postfix) with ESMTP id 6B05277D9C5
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 07:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241873AbjHPF3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 01:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41878 "EHLO
+        id S241880AbjHPFcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 01:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241840AbjHPF2v (ORCPT
+        with ESMTP id S241840AbjHPFbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 01:28:51 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4713C1FC7;
-        Tue, 15 Aug 2023 22:28:50 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso812869766b.1;
-        Tue, 15 Aug 2023 22:28:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692163729; x=1692768529;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oI9EbUbdFX+RrThKFfE8bckQkP7vk+YwcykLWlRyZmc=;
-        b=pVHILuPrelt8olO6J3x6t/JNyuP+8amxy7PYit2QNk6GKT26n4acrJxjECq9+khi+n
-         6r6y9zU8Y1KgZF3Pg/SLchBo04Ia9kd+/goffo1ag0frUlBD9WAehmnn8/Nk9uf8H0Op
-         g5gVHsf2/RhSfwkfwgWF/rGKxyhlzJghbagqEm4yE5bAomBKCsP6FxJuYd1HwHQnFJgO
-         kKW9o0qUVVy+ljmlqdYGjh31Z4XyuoDKQMP9hu5ILLFk9FOfMkCiZUy1yYzhSElHO9uR
-         UeIqSDy4FzGyHCVDLLCRyF6aoqkq4v+9Ov1tw+uREDnUJybAqlXvOudp5JBvqJu1vQiu
-         L4pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692163729; x=1692768529;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oI9EbUbdFX+RrThKFfE8bckQkP7vk+YwcykLWlRyZmc=;
-        b=cP7vAmAoFbvb2WBRtfS7ma/i8QzUhyHcx4fjbThzI51e38lOz7+Cg+iLkAQvG4+S4w
-         r41P4YjJUGOv2AnrDnf0TQXRMmgLDg5kiWcuGZ3vHwTqzg2NlgSyjhERBqgS1p/T1rK8
-         Rpni2njvPI8oQaWkMOJxWcCSwUjPCzUKuZqyixx1kQGQivT+7ZMlRdkzNNayvt1DfOd7
-         PFRzwowREae1bjacUmB64FlEUBD9T3xpT5weL5uxaeRKpyzMbdH125qjzkfT6de5L/kF
-         1moAuRhTSalyM4Tph8K38ylOnYVR4w1UizX51Gvc6RhZ4QhpOUSduNJT5eO0XaoiIcbf
-         QEkw==
-X-Gm-Message-State: AOJu0Yw/sUIrDQaosdTS9xsFAnfr8ve8w5o/lKKGeSa40HTYUMHXj+Ea
-        kyDaPXFa/K8/kfEEoiqTVkh3BAV3bbz6OaN+lWo=
-X-Google-Smtp-Source: AGHT+IHSF+TLanoCC/zz7iEYIVfKfhNYq8rVc5R2wapF465iYq1NHWQsc0WUGyq7xOotb7ciDMOqbS1Diw9kIuc+dZY=
-X-Received: by 2002:a17:907:1de0:b0:99d:f2dc:97e3 with SMTP id
- og32-20020a1709071de000b0099df2dc97e3mr307243ejc.20.1692163728394; Tue, 15
- Aug 2023 22:28:48 -0700 (PDT)
+        Wed, 16 Aug 2023 01:31:41 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5057B1FC7;
+        Tue, 15 Aug 2023 22:31:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.at;
+ s=s31663417; t=1692163895; x=1692768695; i=g.ottinger@gmx.at;
+ bh=qxO18DwXZii86eJnCMKp0O3O9rqlhobuQS8bj+UVmZo=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=RW8m7fdfMGVyv35MzItb6puntOQz9APD2dSJvVr5VxW0qcDgeZRjK+KPUoQzB/VGmzOqB9t
+ 66OqrSsGKkHxC2LIeSH+Yt1oJwQWBYe1YDQb5RvPJboOpbAWE4Dq6IV04QN0e99A5AAGywyPc
+ 1KMc68Xy2hVRGzvijKUU0otyppqEVCGqGixvHREYsSEPosYnEnBwSMoKTYAOcyzuLotmBDUG4
+ k97PeUjLdxYF9WBYyXhE/wggN+xHv1ioZepXsT0RyegT7oFL+nhnifBlhrcf0YraPhuL8ry1T
+ kvIYgmHO7IpOHJ8SSPSZ3ZfO17HPPtl89EPe2goY6BXOhAUP7ZZg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.153.228] ([89.144.221.196]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MD9X9-1qfFnb3Maf-009Adu; Wed, 16
+ Aug 2023 07:31:34 +0200
+Message-ID: <e6dff0e9-9f08-2684-2bba-74570c3655a8@gmx.at>
+Date:   Wed, 16 Aug 2023 07:31:34 +0200
 MIME-Version: 1.0
-References: <20230815-fix-cifs-null-auth-v1-1-3cb785216d97@redhat.com> <2f7522c01a45f9052f423869040258ba.pc@manguebit.com>
-In-Reply-To: <2f7522c01a45f9052f423869040258ba.pc@manguebit.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Wed, 16 Aug 2023 00:28:36 -0500
-Message-ID: <CAH2r5msYemdM+J_ETsrHOkxmm4qeDnA8cLYOHVA9LhfjoBnYuQ@mail.gmail.com>
-Subject: Re: [PATCH] smb: client: fix null auth
-To:     Paulo Alcantara <pc@manguebit.com>
-Cc:     Scott Mayhew <smayhew@redhat.com>,
-        Steve French <sfrench@samba.org>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org,
-        Steve French <stfrench@microsoft.com>
-Content-Type: multipart/mixed; boundary="000000000000eee10a060303917c"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2] ext2: fix datatype of block number in
+ ext2_xattr_set2()
+To:     jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230816052104.3374-1-g.ottinger@gmx.at>
+Content-Language: en-US
+From:   Georg Ottinger <g.ottinger@gmx.at>
+In-Reply-To: <20230816052104.3374-1-g.ottinger@gmx.at>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:VXnnEnRGVIpDmN2hJI7YTzvkW1mwt/58ECZMtrdD5Ln8tMY1LTf
+ +sWQC40kI/PGiLZTfaYoxhUhYqd+GajnrSVwbM1zikzbrv9pfbuJMAj41YK4OyBw2i6hdkA
+ /4oV2q1zb5/OSUpzWaeSIaCtvQl6Ta3+p7BnsJ2vwNKKiyARLAkOvHtKMDJvYTjy89Pr0iH
+ SzUW2QadJtV2pDSFyCjkQ==
+UI-OutboundReport: notjunk:1;M01:P0:1bzbiHE/zOQ=;rnBHGKcUeZ9ab0gYdKNJjhNv6fP
+ fm188aaH9esLg8K8ZANmNCIk0h0/SNDRZZiqhTv1giBqIgQWdnDGNcBy7bF6lYE9p4vOAllV7
+ rKjakE7u/57CiKwrPpEYPEkSadO9B3d/f/o5Izov/d4u5E1mvnY/aE8EY/3dhoiUmV3NO/D9j
+ MdeMixwNVdumZsWeYZdLN2v1gXPKcKwxFXzZvPaaIeOSxp63dWUr+sYajUV/PV4bfUjIQzPRc
+ xkpESrbZYo1vjkSC8dH1dnSoGGw1VlPG+Hb6d30/epGFFD+8jeXHwG/AhCX/JJQ4KI2gQ90fp
+ 9pxpk2aHK1Zf8PceygasuGY4PXFvQDDiv9XDWcJgRy64i/CrKVGKHQS5Rj13XH9RoRjoLLW/W
+ jwgowk5VhSwVgfuTrGv8cuz08zSWCM3sOFoSvnWrM9Ic7BwfeNpbBr9g4rw0J8TPIIA5xoxux
+ mEOGIIbcrxwmFd6x7yHvqMwDRv+vIh2aMKJtZ80t4w4+dGRTcIuYubHJX1FTPFNZDRYmGSEEa
+ N9xLWo3FeU9T2msXAej1ZzC9TT0l1m1VxftdtIq0/j/cMdkb3752gpkBGLSI8tlyQW8dcZYLh
+ 7eo4j1XNf7fCnReamlix09POTbAdnjFYZimwDbWjeSijxEjBy9llcvRcSC89gd3rfAGkm6LhG
+ f22Sv+NS+ADFZ/zBQ0j11hxeUIMENoRWNooX1do1ZRYUYkXLXA8DHHxrZttgrNKavP+l2Y9zE
+ OBXchj9JYVFNH942nkINjs8L6Q+1daa2W1QoJaFmyH9lXD3Sp58CozAumagxPoAI1M/U8TXf/
+ gQ4SNzk7tRhS4sIwYO8UkkxiG7roVIqpalQdDwgKGYEE0tsouX6NQy5q92fM4elShM+4qlC7b
+ 3sOzJcTlL2AVCjVFj7ALNj5Gthp9dC5jSSQdj7W0PqggPYMoAaWB4jF+4cpwRC/HNBrexnG4R
+ NpDH2zK6O/GsiIW/WGhDm9okfOk=
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000eee10a060303917c
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+I missed the proper format string for the debug message.
 
-Fixed some checkpatch warnings and added Paulo's RB, and updated
-cifs-2.6.git for-next
+answering Andreas question - I did check the remaining calls to
+ext2_new_block(), ext2_new_blocks() and ext2_free_blocks() within the
+ext2 directory - here the block argument is either unsigned long or
+ext2_fsblk_t (which is a typedef to unsigend long) - However I want to
+mention that the use of unsigned long / ext2_fsblk_t is inconsistent. I
+guess that ext2_fsblk_t should be the prefered data type.
+
+Concerning the fs corruption - thanks Jan for your input.
+
+The server is an old Centos6 / RHEL6 Machine, and as a workaround - i
+resized the partition to 8180GB - Unfortunately I am unsure if I find
+time to investigate this issue further - I just did a quick look at the
+kernel source and the Bug was kind of obvious ...
 
 
-On Tue, Aug 15, 2023 at 1:42=E2=80=AFPM Paulo Alcantara via samba-technical
-<samba-technical@lists.samba.org> wrote:
+On 16.08.23 07:21, Georg Ottinger wrote:
+> I run a small server that uses external hard drives for backups. The
+> backup software I use uses ext2 filesystems with 4KiB block size and
+> the server is running SELinux and therefore relies on xattr. I recently
+> upgraded the hard drives from 4TB to 12TB models. I noticed that after
+> transferring some TBs I got a filesystem error "Freeing blocks not in
+> datazone - block =3D 18446744071529317386, count =3D 1" and the backup
+> process stopped. Trying to fix the fs with e2fsck resulted in a
+> completely corrupted fs. The error probably came from ext2_free_blocks()=
+,
+> and because of the large number 18e19 this problem immediately looked
+> like some kind of integer overflow. Whereas the 4TB fs was about 1e9
+> blocks, the new 12TB is about 3e9 blocks. So, searching the ext2 code,
+> I came across the line in fs/ext2/xattr.c:745 where ext2_new_block()
+> is called and the resulting block number is stored in the variable block
+> as an int datatype. If a block with a block number greater than
+> INT32_MAX is returned, this variable overflows and the call to
+> sb_getblk() at line fs/ext2/xattr.c:750 fails, then the call to
+> ext2_free_blocks() produces the error.
 >
-> Scott Mayhew <smayhew@redhat.com> writes:
+> Signed-off-by: Georg Ottinger <g.ottinger@gmx.at>
+> ---
+>   fs/ext2/xattr.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> > Commit abdb1742a312 removed code that clears ctx->username when
-> > sec=3Dnone, so attempting to mount with '-o sec=3Dnone' now fails with
-> > -EACCES.  Fix it by adding that logic to the parsing of the 'sec'
-> > option, as well as checking if the mount is using null auth before
-> > setting the username when parsing the 'user' option.
-> >
-> > Fixes: abdb1742a312 ("cifs: get rid of mount options string parsing")
-> > Signed-off-by: Scott Mayhew <smayhew@redhat.com>
-> > ---
-> >  fs/smb/client/fs_context.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
+> diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
+> index 8906ba479..89517937d 100644
+> --- a/fs/ext2/xattr.c
+> +++ b/fs/ext2/xattr.c
+> @@ -742,10 +742,10 @@ ext2_xattr_set2(struct inode *inode, struct buffer=
+_head *old_bh,
+>   			/* We need to allocate a new block */
+>   			ext2_fsblk_t goal =3D ext2_group_first_block_no(sb,
+>   						EXT2_I(inode)->i_block_group);
+> -			int block =3D ext2_new_block(inode, goal, &error);
+> +			ext2_fsblk_t block =3D ext2_new_block(inode, goal, &error);
+>   			if (error)
+>   				goto cleanup;
+> -			ea_idebug(inode, "creating block %d", block);
+> +			ea_idebug(inode, "creating block %lu", block);
 >
-> Reviewed-by: Paulo Alcantara (SUSE) <pc@manguebit.com>
+>   			new_bh =3D sb_getblk(sb, block);
+>   			if (unlikely(!new_bh)) {
+> --
+> 2.17.1
 >
 
-
---=20
-Thanks,
-
-Steve
-
---000000000000eee10a060303917c
-Content-Type: text/x-patch; charset="US-ASCII"; name="0001-smb-client-fix-null-auth.patch"
-Content-Disposition: attachment; 
-	filename="0001-smb-client-fix-null-auth.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lldakw8n0>
-X-Attachment-Id: f_lldakw8n0
-
-RnJvbSAyNzBkNzNlNjUwN2Y5YzdmZmY0Mzg0NGQ3NGY4NjM2NWRmMDAwYjM2IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBTY290dCBNYXloZXcgPHNtYXloZXdAcmVkaGF0LmNvbT4KRGF0
-ZTogV2VkLCAxNiBBdWcgMjAyMyAwMDoyMzo1NiAtMDUwMApTdWJqZWN0OiBbUEFUQ0hdIHNtYjog
-Y2xpZW50OiBmaXggbnVsbCBhdXRoCgpDb21taXQgYWJkYjE3NDJhMzEyIHJlbW92ZWQgY29kZSB0
-aGF0IGNsZWFycyBjdHgtPnVzZXJuYW1lIHdoZW4gc2VjPW5vbmUsIHNvIGF0dGVtcHRpbmcKdG8g
-bW91bnQgd2l0aCAnLW8gc2VjPW5vbmUnIG5vdyBmYWlscyB3aXRoIC1FQUNDRVMuICBGaXggaXQg
-YnkgYWRkaW5nIHRoYXQgbG9naWMgdG8gdGhlCnBhcnNpbmcgb2YgdGhlICdzZWMnIG9wdGlvbiwg
-YXMgd2VsbCBhcyBjaGVja2luZyBpZiB0aGUgbW91bnQgaXMgdXNpbmcgbnVsbCBhdXRoIGJlZm9y
-ZQpzZXR0aW5nIHRoZSB1c2VybmFtZSB3aGVuIHBhcnNpbmcgdGhlICd1c2VyJyBvcHRpb24uCgpG
-aXhlczogYWJkYjE3NDJhMzEyICgiY2lmczogZ2V0IHJpZCBvZiBtb3VudCBvcHRpb25zIHN0cmlu
-ZyBwYXJzaW5nIikKQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcKU2lnbmVkLW9mZi1ieTogU2Nv
-dHQgTWF5aGV3IDxzbWF5aGV3QHJlZGhhdC5jb20+ClJldmlld2VkLWJ5OiBQYXVsbyBBbGNhbnRh
-cmEgKFNVU0UpIDxwY0BtYW5ndWViaXQuY29tPgpTaWduZWQtb2ZmLWJ5OiBTdGV2ZSBGcmVuY2gg
-PHN0ZnJlbmNoQG1pY3Jvc29mdC5jb20+Ci0tLQogZnMvc21iL2NsaWVudC9mc19jb250ZXh0LmMg
-fCA0ICsrKysKIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9m
-cy9zbWIvY2xpZW50L2ZzX2NvbnRleHQuYyBiL2ZzL3NtYi9jbGllbnQvZnNfY29udGV4dC5jCmlu
-ZGV4IDQ5NDZhMGM1OTYwMC4uNjdlMTZjMmFjOTBlIDEwMDY0NAotLS0gYS9mcy9zbWIvY2xpZW50
-L2ZzX2NvbnRleHQuYworKysgYi9mcy9zbWIvY2xpZW50L2ZzX2NvbnRleHQuYwpAQCAtMjMxLDYg
-KzIzMSw4IEBAIGNpZnNfcGFyc2Vfc2VjdXJpdHlfZmxhdm9ycyhzdHJ1Y3QgZnNfY29udGV4dCAq
-ZmMsIGNoYXIgKnZhbHVlLCBzdHJ1Y3Qgc21iM19mc19jCiAJCWJyZWFrOwogCWNhc2UgT3B0X3Nl
-Y19ub25lOgogCQljdHgtPm51bGxhdXRoID0gMTsKKwkJa2ZyZWUoY3R4LT51c2VybmFtZSk7CisJ
-CWN0eC0+dXNlcm5hbWUgPSBOVUxMOwogCQlicmVhazsKIAlkZWZhdWx0OgogCQljaWZzX2Vycm9y
-ZihmYywgImJhZCBzZWN1cml0eSBvcHRpb246ICVzXG4iLCB2YWx1ZSk7CkBAIC0xMjAxLDYgKzEy
-MDMsOCBAQCBzdGF0aWMgaW50IHNtYjNfZnNfY29udGV4dF9wYXJzZV9wYXJhbShzdHJ1Y3QgZnNf
-Y29udGV4dCAqZmMsCiAJY2FzZSBPcHRfdXNlcjoKIAkJa2ZyZWUoY3R4LT51c2VybmFtZSk7CiAJ
-CWN0eC0+dXNlcm5hbWUgPSBOVUxMOworCQlpZiAoY3R4LT5udWxsYXV0aCkKKwkJCWJyZWFrOwog
-CQlpZiAoc3RybGVuKHBhcmFtLT5zdHJpbmcpID09IDApIHsKIAkJCS8qIG51bGwgdXNlciwgaWUu
-IGFub255bW91cyBhdXRoZW50aWNhdGlvbiAqLwogCQkJY3R4LT5udWxsYXV0aCA9IDE7Ci0tIAoy
-LjM0LjEKCg==
---000000000000eee10a060303917c--
