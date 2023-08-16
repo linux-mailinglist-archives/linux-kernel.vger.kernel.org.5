@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FEB977DF83
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15BA177DFC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244296AbjHPKqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 06:46:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34712 "EHLO
+        id S234422AbjHPK5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 06:57:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244122AbjHPKpS (ORCPT
+        with ESMTP id S244146AbjHPKpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 06:45:18 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B1C26B9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:44:58 -0700 (PDT)
+        Wed, 16 Aug 2023 06:45:19 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2660D2709
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:45:06 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:5d0c:f209:12a7:4ce5])
-        by michel.telenet-ops.be with bizsmtp
-        id aAkh2A00y45ualL06Akh1v; Wed, 16 Aug 2023 12:44:43 +0200
+        by albert.telenet-ops.be with bizsmtp
+        id aAkh2A01645ualL06AkhRA; Wed, 16 Aug 2023 12:44:43 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtp (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qWE0x-000ost-Dq;
+        id 1qWE0x-000osp-BQ;
         Wed, 16 Aug 2023 12:44:41 +0200
 Received: from geert by rox.of.borg with local (Exim 4.95)
         (envelope-from <geert@linux-m68k.org>)
-        id 1qWDAw-00674t-Hu;
+        id 1qWDAw-00674y-IZ;
         Wed, 16 Aug 2023 11:50:50 +0200
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
 To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
@@ -38,9 +38,9 @@ Cc:     dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>,
         Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Subject: [PATCH v3 10/41] drm: renesas: shmobile: Add missing YCbCr formats
-Date:   Wed, 16 Aug 2023 11:50:17 +0200
-Message-Id: <ebf5d89e4e523436b972202ca8c02f733a11ef7a.1692178020.git.geert+renesas@glider.be>
+Subject: [PATCH v3 11/41] drm: renesas: shmobile: Improve shmob_drm_format_info table
+Date:   Wed, 16 Aug 2023 11:50:18 +0200
+Message-Id: <23228c37a0b15c3cfe8e0d02f16892ea273f023a.1692178020.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1692178020.git.geert+renesas@glider.be>
 References: <cover.1692178020.git.geert+renesas@glider.be>
@@ -55,9 +55,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The primary plane supports various YCbCr formats, and the CRTC code
-already knows how to handle them.  Enable support for the missing
-formats by adding them to the table of supported modes.
+Improve the table containing hardware information related to the
+supported plane formats:
+  1. Move (part of) the overlay format register settings from multiple
+     switch() statements spread across the code into the table, like is
+     already done for the primary plane register settings,
+  2. Remove the .yuv field, as that information can easily be extracted
+     from the register settings using a new helper macro,
+  3. Shrink and move the .bpp field to reduce table size.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
@@ -68,26 +73,278 @@ v3:
 v2:
   - Add Reviewed-by.
 ---
- drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ .../gpu/drm/renesas/shmobile/shmob_drm_crtc.c | 29 ++--------
+ .../gpu/drm/renesas/shmobile/shmob_drm_kms.c  | 42 ++++++++++----
+ .../gpu/drm/renesas/shmobile/shmob_drm_kms.h  |  9 ++-
+ .../drm/renesas/shmobile/shmob_drm_plane.c    | 56 ++-----------------
+ 4 files changed, 47 insertions(+), 89 deletions(-)
 
 diff --git a/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c b/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c
-index 2d9ae0c6ab7b18a8..a0e1a49c84d5691a 100644
+index a0e1a49c84d5691a..2cdf8f9b06e5feb8 100644
 --- a/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c
 +++ b/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c
-@@ -460,6 +460,12 @@ static const uint32_t modeset_formats[] = {
- 	DRM_FORMAT_RGB888,
- 	DRM_FORMAT_ARGB8888,
- 	DRM_FORMAT_XRGB8888,
-+	DRM_FORMAT_NV12,
-+	DRM_FORMAT_NV21,
-+	DRM_FORMAT_NV16,
-+	DRM_FORMAT_NV61,
-+	DRM_FORMAT_NV24,
-+	DRM_FORMAT_NV42,
+@@ -191,31 +191,12 @@ static void shmob_drm_crtc_start(struct shmob_drm_crtc *scrtc)
+ 	lcdc_write(sdev, LDDFR, format->lddfr | LDDFR_CF1);
+ 	lcdc_write(sdev, LDMLSR, scrtc->line_size);
+ 	lcdc_write(sdev, LDSA1R, scrtc->dma[0]);
+-	if (format->yuv)
++	if (shmob_drm_format_is_yuv(format))
+ 		lcdc_write(sdev, LDSA2R, scrtc->dma[1]);
+ 	lcdc_write(sdev, LDSM1R, 0);
+ 
+ 	/* Word and long word swap. */
+-	switch (format->fourcc) {
+-	case DRM_FORMAT_RGB565:
+-	case DRM_FORMAT_NV21:
+-	case DRM_FORMAT_NV61:
+-	case DRM_FORMAT_NV42:
+-		value = LDDDSR_LS | LDDDSR_WS;
+-		break;
+-	case DRM_FORMAT_RGB888:
+-	case DRM_FORMAT_NV12:
+-	case DRM_FORMAT_NV16:
+-	case DRM_FORMAT_NV24:
+-		value = LDDDSR_LS | LDDDSR_WS | LDDDSR_BS;
+-		break;
+-	case DRM_FORMAT_ARGB8888:
+-	case DRM_FORMAT_XRGB8888:
+-	default:
+-		value = LDDDSR_LS;
+-		break;
+-	}
+-	lcdc_write(sdev, LDDDSR, value);
++	lcdc_write(sdev, LDDDSR, format->ldddsr);
+ 
+ 	/* Setup planes. */
+ 	drm_for_each_legacy_plane(plane, dev) {
+@@ -271,12 +252,12 @@ static void shmob_drm_crtc_compute_base(struct shmob_drm_crtc *scrtc,
+ 	struct drm_gem_dma_object *gem;
+ 	unsigned int bpp;
+ 
+-	bpp = scrtc->format->yuv ? 8 : scrtc->format->bpp;
++	bpp = shmob_drm_format_is_yuv(scrtc->format) ? 8 : scrtc->format->bpp;
+ 	gem = drm_fb_dma_get_gem_obj(fb, 0);
+ 	scrtc->dma[0] = gem->dma_addr + fb->offsets[0]
+ 		      + y * fb->pitches[0] + x * bpp / 8;
+ 
+-	if (scrtc->format->yuv) {
++	if (shmob_drm_format_is_yuv(scrtc->format)) {
+ 		bpp = scrtc->format->bpp - 8;
+ 		gem = drm_fb_dma_get_gem_obj(fb, 1);
+ 		scrtc->dma[1] = gem->dma_addr + fb->offsets[1]
+@@ -293,7 +274,7 @@ static void shmob_drm_crtc_update_base(struct shmob_drm_crtc *scrtc)
+ 	shmob_drm_crtc_compute_base(scrtc, crtc->x, crtc->y);
+ 
+ 	lcdc_write_mirror(sdev, LDSA1R, scrtc->dma[0]);
+-	if (scrtc->format->yuv)
++	if (shmob_drm_format_is_yuv(scrtc->format))
+ 		lcdc_write_mirror(sdev, LDSA2R, scrtc->dma[1]);
+ 
+ 	lcdc_write(sdev, LDRCNTR, lcdc_read(sdev, LDRCNTR) ^ LDRCNTR_MRS);
+diff --git a/drivers/gpu/drm/renesas/shmobile/shmob_drm_kms.c b/drivers/gpu/drm/renesas/shmobile/shmob_drm_kms.c
+index 99381cc0abf3ae1f..8fd360149743f8e2 100644
+--- a/drivers/gpu/drm/renesas/shmobile/shmob_drm_kms.c
++++ b/drivers/gpu/drm/renesas/shmobile/shmob_drm_kms.c
+@@ -27,53 +27,73 @@ static const struct shmob_drm_format_info shmob_drm_format_infos[] = {
+ 	{
+ 		.fourcc = DRM_FORMAT_RGB565,
+ 		.bpp = 16,
+-		.yuv = false,
+ 		.lddfr = LDDFR_PKF_RGB16,
++		.ldddsr = LDDDSR_LS | LDDDSR_WS,
++		.ldbbsifr = LDBBSIFR_AL_1 | LDBBSIFR_SWPL | LDBBSIFR_SWPW |
++			    LDBBSIFR_RY | LDBBSIFR_RPKF_RGB16,
+ 	}, {
+ 		.fourcc = DRM_FORMAT_RGB888,
+ 		.bpp = 24,
+-		.yuv = false,
+ 		.lddfr = LDDFR_PKF_RGB24,
++		.ldddsr = LDDDSR_LS | LDDDSR_WS | LDDDSR_BS,
++		.ldbbsifr = LDBBSIFR_AL_1 | LDBBSIFR_SWPL | LDBBSIFR_SWPW |
++			    LDBBSIFR_SWPB | LDBBSIFR_RY | LDBBSIFR_RPKF_RGB24,
+ 	}, {
+ 		.fourcc = DRM_FORMAT_ARGB8888,
+ 		.bpp = 32,
+-		.yuv = false,
+ 		.lddfr = LDDFR_PKF_ARGB32,
++		.ldddsr = LDDDSR_LS,
++		.ldbbsifr = LDBBSIFR_AL_PK | LDBBSIFR_SWPL | LDBBSIFR_RY |
++			    LDBBSIFR_RPKF_ARGB32,
+ 	}, {
+ 		.fourcc = DRM_FORMAT_XRGB8888,
+ 		.bpp = 32,
+-		.yuv = false,
+ 		.lddfr = LDDFR_PKF_ARGB32,
++		.ldddsr = LDDDSR_LS,
++		.ldbbsifr = LDBBSIFR_AL_1 | LDBBSIFR_SWPL | LDBBSIFR_RY |
++			    LDBBSIFR_RPKF_ARGB32,
+ 	}, {
+ 		.fourcc = DRM_FORMAT_NV12,
+ 		.bpp = 12,
+-		.yuv = true,
+ 		.lddfr = LDDFR_CC | LDDFR_YF_420,
++		.ldddsr = LDDDSR_LS | LDDDSR_WS | LDDDSR_BS,
++		.ldbbsifr = LDBBSIFR_AL_1 | LDBBSIFR_SWPL | LDBBSIFR_SWPW |
++			    LDBBSIFR_SWPB | LDBBSIFR_CHRR_420,
+ 	}, {
+ 		.fourcc = DRM_FORMAT_NV21,
+ 		.bpp = 12,
+-		.yuv = true,
+ 		.lddfr = LDDFR_CC | LDDFR_YF_420,
++		.ldddsr = LDDDSR_LS | LDDDSR_WS,
++		.ldbbsifr = LDBBSIFR_AL_1 | LDBBSIFR_SWPL | LDBBSIFR_SWPW |
++			    LDBBSIFR_CHRR_420,
+ 	}, {
+ 		.fourcc = DRM_FORMAT_NV16,
+ 		.bpp = 16,
+-		.yuv = true,
+ 		.lddfr = LDDFR_CC | LDDFR_YF_422,
++		.ldddsr = LDDDSR_LS | LDDDSR_WS | LDDDSR_BS,
++		.ldbbsifr = LDBBSIFR_AL_1 | LDBBSIFR_SWPL | LDBBSIFR_SWPW |
++			    LDBBSIFR_SWPB | LDBBSIFR_CHRR_422,
+ 	}, {
+ 		.fourcc = DRM_FORMAT_NV61,
+ 		.bpp = 16,
+-		.yuv = true,
+ 		.lddfr = LDDFR_CC | LDDFR_YF_422,
++		.ldddsr = LDDDSR_LS | LDDDSR_WS,
++		.ldbbsifr = LDBBSIFR_AL_1 | LDBBSIFR_SWPL | LDBBSIFR_SWPW |
++			    LDBBSIFR_CHRR_422,
+ 	}, {
+ 		.fourcc = DRM_FORMAT_NV24,
+ 		.bpp = 24,
+-		.yuv = true,
+ 		.lddfr = LDDFR_CC | LDDFR_YF_444,
++		.ldddsr = LDDDSR_LS | LDDDSR_WS | LDDDSR_BS,
++		.ldbbsifr = LDBBSIFR_AL_1 | LDBBSIFR_SWPL | LDBBSIFR_SWPW |
++			    LDBBSIFR_SWPB | LDBBSIFR_CHRR_444,
+ 	}, {
+ 		.fourcc = DRM_FORMAT_NV42,
+ 		.bpp = 24,
+-		.yuv = true,
+ 		.lddfr = LDDFR_CC | LDDFR_YF_444,
++		.ldddsr = LDDDSR_LS | LDDDSR_WS,
++		.ldbbsifr = LDBBSIFR_AL_1 | LDBBSIFR_SWPL | LDBBSIFR_SWPW |
++			    LDBBSIFR_CHRR_444,
+ 	},
  };
  
- static const struct drm_plane_funcs primary_plane_funcs = {
+@@ -112,7 +132,7 @@ shmob_drm_fb_create(struct drm_device *dev, struct drm_file *file_priv,
+ 		return ERR_PTR(-EINVAL);
+ 	}
+ 
+-	if (format->yuv) {
++	if (shmob_drm_format_is_yuv(format)) {
+ 		unsigned int chroma_cpp = format->bpp == 24 ? 2 : 1;
+ 
+ 		if (mode_cmd->pitches[1] != mode_cmd->pitches[0] * chroma_cpp) {
+diff --git a/drivers/gpu/drm/renesas/shmobile/shmob_drm_kms.h b/drivers/gpu/drm/renesas/shmobile/shmob_drm_kms.h
+index 0347b1fd2338a84d..590162c3db20209d 100644
+--- a/drivers/gpu/drm/renesas/shmobile/shmob_drm_kms.h
++++ b/drivers/gpu/drm/renesas/shmobile/shmob_drm_kms.h
+@@ -17,11 +17,14 @@ struct shmob_drm_device;
+ 
+ struct shmob_drm_format_info {
+ 	u32 fourcc;
+-	unsigned int bpp;
+-	bool yuv;
+-	u32 lddfr;
++	u32 lddfr;	/* LCD Data Format Register */
++	u16 ldbbsifr;	/* CHn Source Image Format Register low bits */
++	u8 ldddsr;	/* LCDC Input Image Data Swap Register low bits */
++	u8 bpp;
+ };
+ 
++#define shmob_drm_format_is_yuv(format)	((format)->lddfr & LDDFR_CC)
++
+ const struct shmob_drm_format_info *shmob_drm_format_info(u32 fourcc);
+ 
+ int shmob_drm_modeset_init(struct shmob_drm_device *sdev);
+diff --git a/drivers/gpu/drm/renesas/shmobile/shmob_drm_plane.c b/drivers/gpu/drm/renesas/shmobile/shmob_drm_plane.c
+index 36fedb2b74c8b7a2..0b2ab153e9ae76df 100644
+--- a/drivers/gpu/drm/renesas/shmobile/shmob_drm_plane.c
++++ b/drivers/gpu/drm/renesas/shmobile/shmob_drm_plane.c
+@@ -43,12 +43,12 @@ static void shmob_drm_plane_compute_base(struct shmob_drm_plane *splane,
+ 	struct drm_gem_dma_object *gem;
+ 	unsigned int bpp;
+ 
+-	bpp = splane->format->yuv ? 8 : splane->format->bpp;
++	bpp = shmob_drm_format_is_yuv(splane->format) ? 8 : splane->format->bpp;
+ 	gem = drm_fb_dma_get_gem_obj(fb, 0);
+ 	splane->dma[0] = gem->dma_addr + fb->offsets[0]
+ 		       + y * fb->pitches[0] + x * bpp / 8;
+ 
+-	if (splane->format->yuv) {
++	if (shmob_drm_format_is_yuv(splane->format)) {
+ 		bpp = splane->format->bpp - 8;
+ 		gem = drm_fb_dma_get_gem_obj(fb, 1);
+ 		splane->dma[1] = gem->dma_addr + fb->offsets[1]
+@@ -64,54 +64,8 @@ static void __shmob_drm_plane_setup(struct shmob_drm_plane *splane,
+ 	u32 format;
+ 
+ 	/* TODO: Support ROP3 mode */
+-	format = LDBBSIFR_EN | (splane->alpha << LDBBSIFR_LAY_SHIFT);
+-
+-	switch (splane->format->fourcc) {
+-	case DRM_FORMAT_RGB565:
+-	case DRM_FORMAT_NV21:
+-	case DRM_FORMAT_NV61:
+-	case DRM_FORMAT_NV42:
+-		format |= LDBBSIFR_SWPL | LDBBSIFR_SWPW;
+-		break;
+-	case DRM_FORMAT_RGB888:
+-	case DRM_FORMAT_NV12:
+-	case DRM_FORMAT_NV16:
+-	case DRM_FORMAT_NV24:
+-		format |= LDBBSIFR_SWPL | LDBBSIFR_SWPW | LDBBSIFR_SWPB;
+-		break;
+-	case DRM_FORMAT_ARGB8888:
+-	case DRM_FORMAT_XRGB8888:
+-	default:
+-		format |= LDBBSIFR_SWPL;
+-		break;
+-	}
+-
+-	switch (splane->format->fourcc) {
+-	case DRM_FORMAT_RGB565:
+-		format |= LDBBSIFR_AL_1 | LDBBSIFR_RY | LDBBSIFR_RPKF_RGB16;
+-		break;
+-	case DRM_FORMAT_RGB888:
+-		format |= LDBBSIFR_AL_1 | LDBBSIFR_RY | LDBBSIFR_RPKF_RGB24;
+-		break;
+-	case DRM_FORMAT_ARGB8888:
+-		format |= LDBBSIFR_AL_PK | LDBBSIFR_RY | LDBBSIFR_RPKF_ARGB32;
+-		break;
+-	case DRM_FORMAT_XRGB8888:
+-		format |= LDBBSIFR_AL_1 | LDBBSIFR_RY | LDBBSIFR_RPKF_ARGB32;
+-		break;
+-	case DRM_FORMAT_NV12:
+-	case DRM_FORMAT_NV21:
+-		format |= LDBBSIFR_AL_1 | LDBBSIFR_CHRR_420;
+-		break;
+-	case DRM_FORMAT_NV16:
+-	case DRM_FORMAT_NV61:
+-		format |= LDBBSIFR_AL_1 | LDBBSIFR_CHRR_422;
+-		break;
+-	case DRM_FORMAT_NV24:
+-	case DRM_FORMAT_NV42:
+-		format |= LDBBSIFR_AL_1 | LDBBSIFR_CHRR_444;
+-		break;
+-	}
++	format = LDBBSIFR_EN | (splane->alpha << LDBBSIFR_LAY_SHIFT) |
++		 splane->format->ldbbsifr;
+ 
+ #define plane_reg_dump(sdev, splane, reg) \
+ 	dev_dbg(sdev->ddev->dev, "%s(%u): %s 0x%08x 0x%08x\n", __func__, \
+@@ -144,7 +98,7 @@ static void __shmob_drm_plane_setup(struct shmob_drm_plane *splane,
+ 	shmob_drm_plane_compute_base(splane, fb, splane->src_x, splane->src_y);
+ 
+ 	lcdc_write(sdev, LDBnBSAYR(splane->index), splane->dma[0]);
+-	if (splane->format->yuv)
++	if (shmob_drm_format_is_yuv(splane->format))
+ 		lcdc_write(sdev, LDBnBSACR(splane->index), splane->dma[1]);
+ 
+ 	lcdc_write(sdev, LDBCR,
 -- 
 2.34.1
 
