@@ -2,151 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA8A77DEC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D24C77DED7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243832AbjHPKbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 06:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35708 "EHLO
+        id S243913AbjHPKdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 06:33:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243918AbjHPKbM (ORCPT
+        with ESMTP id S243724AbjHPKcs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 06:31:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 107F21BD4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:31:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=D34RT3Lur+N9/zCG68ltkoNZKq0tMJJ4VHitpo+qvt8=; b=rwFCyKhSkb1ggUhxZeHprZmc+G
-        vwCyROAbsuqqmEnyLLMINDeKfppUN2vNsdA6TERV/UtvSBY5WSjL5cFyW6jPwpwWd89eJYhE3fIt9
-        AjQ56Tuib+YFAr8RPqbeeE45IVvsRn5BBEcQ3PWn4RqWiEsPcvRtAG0JQBaGVVtnAtGiYkDUuRMbe
-        xWmYQIAaet7XwaqdMZ8Fl/GdtxMAwW2e+LKbMcGNfThr914rjQ8l0RupICJ5f4gW6eGQRdLcNTAp0
-        kg8cIxHmeNX4wxRPADjb8DggCRIDQa2UYt/tbEPmSOtZuaqUTqbmEj8lIuZl9/1VPy2gu2IiiOiJq
-        F5oTx3UA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qWDnq-00E6jY-Tf; Wed, 16 Aug 2023 10:31:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6EC18300137;
-        Wed, 16 Aug 2023 12:31:02 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 580AB2C8679C6; Wed, 16 Aug 2023 12:31:02 +0200 (CEST)
-Date:   Wed, 16 Aug 2023 12:31:02 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dan.j.williams@intel.com
-Cc:     linux-kernel@vger.kernel.org, linux@rasmusvillemoes.dk,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: [PATCH v2] cleanup: Make no_free_ptr() __must_check
-Message-ID: <20230816103102.GF980931@hirez.programming.kicks-ass.net>
+        Wed, 16 Aug 2023 06:32:48 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C7F1BE6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:32:47 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fe490c05c9so42860745e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:32:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692181965; x=1692786765;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YC9zSjW5qJSLaHkjlLNtCDqndh0xP9swEagVyGknaqU=;
+        b=wpEs/CpPrI3h+HCkYEr01NY3QqBMr2yKvpUYmnhgogr/P7kZSDcxaIQaawdGNRPE22
+         j4f7zj5xJhTQw0gs/WT4tvtb8ZlQpWGHGnbZSkkzs2mHl80GvBaOiG2t7Yo8lm9ur8hB
+         wHO3g/R4TgJZl0V0rcZcDlDGpFYodp9LSCYRQtLXTMtlEjWgmg/2TsL4FOgHsZlYZWqT
+         XfcqNpEiLNdF3rO/ESTI8OmhsNQqpycYadi44h0f5Du7zaxfftvBrcG5RIqIvTKygTdS
+         AyOUueRPAAPRtS8vd78zQlUqTsBGPGjtwT4pnpGGzHpKelJ7JqeGmdojyOa1JILm2Ecx
+         lDhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692181965; x=1692786765;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YC9zSjW5qJSLaHkjlLNtCDqndh0xP9swEagVyGknaqU=;
+        b=PffMYCoKpfoVY48jxeX+1x42AcIAm6FV6+WP19drUB7Kikeb6Wji729S6Y61Zmg/8B
+         GsTjDSWr0nWR45nrN4tTXqlUQHI2f7z6yw5jxPxvLU37tKIXtRNQYjyqzuqRfZzoISLT
+         Ha0VSpwz9sfZCsLqmtT4Ps6FgWyFmiYOK2xhp/j91Hc740MNZo4VgtOS9Qh/dv6vfTOi
+         e5CstW/IgErv7fl5fbpWUSgxsOLZRvM6Y8hOW7OdumvKqm/npNM8R+ynbxOY6tnhFwlJ
+         BwidXEUEhPnLP6rj06yJQYoltnD+SnvkE1wZ+PEv4bzJSrZ7SNwrHg6pBXRnrxH+J5PU
+         npLw==
+X-Gm-Message-State: AOJu0Yz8HlALGyASI6K0ON2YtasM/sq0ISbKnr1NFAIlBtZfJUavCy2s
+        BlzG0YJKHpnbQ0CYxqBzDO9BMw==
+X-Google-Smtp-Source: AGHT+IEz3ZApHcg9tH0Wrn9dq79bBukMYWbSso0EoozDFpWboS2hbhfJ66cm9MP+tf15RtnZqY9vRQ==
+X-Received: by 2002:adf:e588:0:b0:317:de66:259b with SMTP id l8-20020adfe588000000b00317de66259bmr3563667wrm.15.1692181965592;
+        Wed, 16 Aug 2023 03:32:45 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id l6-20020adff486000000b003143867d2ebsm20913347wro.63.2023.08.16.03.32.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 03:32:45 -0700 (PDT)
+Message-ID: <87248920-c5d6-1ab7-db87-f0dc34b787ec@linaro.org>
+Date:   Wed, 16 Aug 2023 12:32:44 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] thermal: sun8i_thermal: remove unneeded call to
+ platform_set_drvdata()
+Content-Language: en-US
+To:     Andrei Coardos <aboutphysycs@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
+Cc:     samuel@sholland.org, jernej.skrabec@gmail.com, wens@csie.org,
+        rui.zhang@intel.com, amitk@kernel.org, rafael@kernel.org,
+        tiny.windzz@gmail.com, anarsoul@gmail.com, alex@shruggie.ro
+References: <20230811194032.4240-1-aboutphysycs@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <20230811194032.4240-1-aboutphysycs@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/08/2023 21:40, Andrei Coardos wrote:
+> This function call was found to be unnecessary as there is no equivalent
+> platform_get_drvdata() call to access the private data of the driver. Also,
+> the private data is defined in this driver, so there is no risk of it being
+> accessed outside of this driver file.
+> 
+> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+> ---
 
-recent discussion brought about the realization that it makes sense for
-no_free_ptr() to have __must_check semantics in order to avoid leaking
-the resource.
+Applied, thanks
 
-Additionally, add a few comments to clarify why/how things work.
+Are you checking neither dev_get_drvdata is used ?
 
-All credit to Linus on how to combine __must_check and the
-statement expression.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- include/linux/cleanup.h |   39 ++++++++++++++++++++++++++++++++++++---
- 1 file changed, 36 insertions(+), 3 deletions(-)
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
---- a/include/linux/cleanup.h
-+++ b/include/linux/cleanup.h
-@@ -7,8 +7,9 @@
- /*
-  * DEFINE_FREE(name, type, free):
-  *	simple helper macro that defines the required wrapper for a __free()
-- *	based cleanup function. @free is an expression using '_T' to access
-- *	the variable.
-+ *	based cleanup function. @free is an expression using '_T' to access the
-+ *	variable. @free should typically include a NULL test before calling a
-+ *	function, see the example below.
-  *
-  * __free(name):
-  *	variable attribute to add a scoped based cleanup to the variable.
-@@ -17,6 +18,9 @@
-  *	like a non-atomic xchg(var, NULL), such that the cleanup function will
-  *	be inhibited -- provided it sanely deals with a NULL value.
-  *
-+ *	NOTE: this has __must_check semantics so that it is harder to accidentally
-+ *	leak the resource.
-+ *
-  * return_ptr(p):
-  *	returns p while inhibiting the __free().
-  *
-@@ -24,6 +28,8 @@
-  *
-  * DEFINE_FREE(kfree, void *, if (_T) kfree(_T))
-  *
-+ * void *alloc_obj(...)
-+ * {
-  *	struct obj *p __free(kfree) = kmalloc(...);
-  *	if (!p)
-  *		return NULL;
-@@ -32,6 +38,24 @@
-  *		return NULL;
-  *
-  *	return_ptr(p);
-+ * }
-+ *
-+ * NOTE: the DEFINE_FREE()'s @free expression includes a NULL test even though
-+ * kfree() is fine to be called with a NULL value. This is on purpose. This way
-+ * the compiler sees the end of our alloc_obj() function as:
-+ *
-+ *	tmp = p;
-+ *	p = NULL;
-+ *	if (p)
-+ *		kfree(p);
-+ *	return tmp;
-+ *
-+ * And through the magic of value-propagation and dead-code-elimination, it
-+ * eliminates the actual cleanup call and compiles into:
-+ *
-+ *	return p;
-+ *
-+ * Without the NULL test it turns into a mess and the compiler can't help us.
-  */
- 
- #define DEFINE_FREE(_name, _type, _free) \
-@@ -39,8 +63,17 @@
- 
- #define __free(_name)	__cleanup(__free_##_name)
- 
-+#define __get_and_null_ptr(p) \
-+	({ __auto_type __ptr = &(p); \
-+	   __auto_type __val = *__ptr; \
-+	   *__ptr = NULL;  __val; })
-+
-+static inline __must_check
-+const volatile void * __must_check_fn(const volatile void *val)
-+{ return val; }
-+
- #define no_free_ptr(p) \
--	({ __auto_type __ptr = (p); (p) = NULL; __ptr; })
-+	((typeof(p)) __must_check_fn(__get_and_null_ptr(p)))
- 
- #define return_ptr(p)	return no_free_ptr(p)
- 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
