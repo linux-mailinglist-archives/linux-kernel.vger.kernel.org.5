@@ -2,148 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 811B677D72A
+	by mail.lfdr.de (Postfix) with ESMTP id 3780677D729
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 02:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240866AbjHPAn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 20:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60162 "EHLO
+        id S240871AbjHPAn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 20:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233831AbjHPAnZ (ORCPT
+        with ESMTP id S240860AbjHPAn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 20:43:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFFB38E;
-        Tue, 15 Aug 2023 17:43:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692146603; x=1723682603;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EXFt+DVMPpy5/WiDLt0PKUW2C3TnX2KNn2swCXJ/iCM=;
-  b=WRn29HQMLB7163zt52vnEF9wFZdKprD9Vjw+u/2BRytomaEwS8CTZD26
-   UlsUwf+5Ojq1Ns9qqt/LMVFqookoEVWmnW6DgJJUilxQGiFCl5ekdXqlK
-   38pXBlL78WOg3iCjlTY4Tl0pgq12zcgXP11/KzZPlk+e8q7v+oh1VtIme
-   OHgPIK2thKZuOzDKQ8OmkYvdnmmxEXozzsTDNJK92uCCnhmIiKXKPRaLZ
-   Wwg8R/zc9W7i3w8wzRJqqimyZ8CesaLBuCnTu7PCGEDt9k/krWEopJh0o
-   vdf/UdLQfWNVaV6SoQX8lXY7G+krkEupFAeeFfeR5qKtpabngazx1mSqG
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="352739008"
-X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
-   d="scan'208";a="352739008"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 17:43:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="763459820"
-X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
-   d="scan'208";a="763459820"
-Received: from lkp-server02.sh.intel.com (HELO b5fb8d9e1ffc) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 15 Aug 2023 17:43:18 -0700
-Received: from kbuild by b5fb8d9e1ffc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qW4d3-0001M3-0B;
-        Wed, 16 Aug 2023 00:43:17 +0000
-Date:   Wed, 16 Aug 2023 08:42:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, isaku.yamahata@intel.com,
-        isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, erdemaktas@google.com,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        linux-coco@lists.linux.dev,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Yuan Yao <yuan.yao@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
-        Fuad Tabba <tabba@google.com>
-Subject: Re: [PATCH 6/8] KVM: gmem, x86: Add gmem hook for invalidating
- private memory
-Message-ID: <202308160801.jwbys3HI-lkp@intel.com>
-References: <8c9f0470ba6e5dc122f3f4e37c4dcfb6fb97b184.1692119201.git.isaku.yamahata@intel.com>
+        Tue, 15 Aug 2023 20:43:57 -0400
+Received: from mx.treblig.org (unknown [IPv6:2a00:1098:5b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0467199B;
+        Tue, 15 Aug 2023 17:43:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+        ; s=bytemarkmx; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID
+        :Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID
+        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
+        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
+        :List-Post:List-Owner:List-Archive;
+        bh=p7r3uREoQh2baDnpVSadnAlYXwW8BFeYAnWiNEnk194=; b=fH7FUKI3yL1QXeZHZyf70tvtyb
+        rdSNCIJCCtaFl1qKxWGADDgz1WE3vjmcNhhsv0L4ajhQST6t7Cox9kGoq/4OpfSpd3SX4pIpNCbt5
+        253G9qLd721Lw2on8F/+SyLNtpQXd/aJZxb8wUqa387LXQRl68a5qeubFZCN9GRXyz9VfHX2G3bKk
+        SBlSi7dhQpcj9IzIKeANCGNCTZPOyWoa/WKQg4QraHXrYX0bKS4swuRZX7RTmsTTcrdFdBmnl1ECK
+        8RRtAKc0N2ifAvEMqN0LGIWWR/zVKXR4YJQAIn9SQXJyISilCxX1kQjtZHQ7oM0qjx+eqiJdwq2jx
+        emUB2bAg==;
+Received: from dg by mx.treblig.org with local (Exim 4.94.2)
+        (envelope-from <dg@treblig.org>)
+        id 1qW4dd-0079SV-B5; Wed, 16 Aug 2023 00:43:53 +0000
+Date:   Wed, 16 Aug 2023 00:43:53 +0000
+From:   "Dr. David Alan Gilbert" <dave@treblig.org>
+To:     Carlos Carvalho <carlos@fisica.ufpr.br>
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: 6.5.0rc5 fs hang - ext4? raid?
+Message-ID: <ZNwbyTLdcnVHL+Vy@gallifrey>
+References: <ZNqWfQPTScJDkmpX@gallifrey>
+ <ZNvCJAclBEJf7uUA@fisica.ufpr.br>
+ <ZNvJZIXIHJERRtwP@gallifrey>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <8c9f0470ba6e5dc122f3f4e37c4dcfb6fb97b184.1692119201.git.isaku.yamahata@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZNvJZIXIHJERRtwP@gallifrey>
+X-Chocolate: 70 percent or better cocoa solids preferably
+X-Operating-System: Linux/5.10.0-23-amd64 (x86_64)
+X-Uptime: 00:43:19 up 40 days, 10:14,  2 users,  load average: 0.01, 0.00,
+ 0.00
+User-Agent: Mutt/2.0.5 (2021-01-21)
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+* Dr. David Alan Gilbert (dave@treblig.org) wrote:
+> * Carlos Carvalho (carlos@fisica.ufpr.br) wrote:
+> > Dr. David Alan Gilbert (dave@treblig.org) wrote on Mon, Aug 14, 2023 at 06:02:53PM -03:
+> > >   I'm seeing a few hangs on a fs after upgrading to fedora 39's bleeding
+> > > edge; which is running kernel 6.5.0-0.rc5.20230808git14f9643dc90a.37.fc39.x86_64
+> > > It was always solid prior to that.  It seems to trigger on heavy IO
+> > > on this fs.
+> > 
+> > Good news! No, I didn't forget the smiley... Maybe now the problem has become
+> > sufficiently bad to be visible/solvable...
+> > 
+> > 6.4.* also doesn't run in one of our machines, which has heavy I/O load. The
+> > first symptom is that rsync downloads hang and abort with timeout. 1 or 2
+> > days later the amount of modified pages waiting to go to disk reaches several
+> > GB, as reported by /proc/meminfo, but disks remain idle. Finally reading from
+> > the arrays collapses.
+> 
+> I'm not sure this is a related fault - I mean it might be, but my
+> failure is much more deterministic; it seems solid on 6.4.x to me, but
+> just fails reliably somewhere in 6.5.
 
-kernel test robot noticed the following build errors:
+Actually, you know your description smells a lot closer to the one
+Rishabh has just posted today:
+   https://lore.kernel.org/lkml/153d081d-e738-b916-4f72-364b2c1cc36a@amazon.com/
 
-[auto build test ERROR on 89b6a7b873d72280e85976bbb8fe4998b2ababa8]
+Dave
 
-url:    https://github.com/intel-lab-lkp/linux/commits/isaku-yamahata-intel-com/KVM-gmem-Make-kvm_gmem_bind-return-EBADF-on-wrong-fd/20230816-012315
-base:   89b6a7b873d72280e85976bbb8fe4998b2ababa8
-patch link:    https://lore.kernel.org/r/8c9f0470ba6e5dc122f3f4e37c4dcfb6fb97b184.1692119201.git.isaku.yamahata%40intel.com
-patch subject: [PATCH 6/8] KVM: gmem, x86: Add gmem hook for invalidating private memory
-config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20230816/202308160801.jwbys3HI-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230816/202308160801.jwbys3HI-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308160801.jwbys3HI-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   arch/x86/kvm/../../../virt/kvm/guest_mem.c: In function 'kvm_gmem_punch_hole':
->> arch/x86/kvm/../../../virt/kvm/guest_mem.c:186:40: error: 'kvm' undeclared (first use in this function)
-     186 |         kvm_gmem_issue_arch_invalidate(kvm, file, start, end);
-         |                                        ^~~
-   arch/x86/kvm/../../../virt/kvm/guest_mem.c:186:40: note: each undeclared identifier is reported only once for each function it appears in
->> arch/x86/kvm/../../../virt/kvm/guest_mem.c:186:45: error: 'file' undeclared (first use in this function)
-     186 |         kvm_gmem_issue_arch_invalidate(kvm, file, start, end);
-         |                                             ^~~~
-
-
-vim +/kvm +186 arch/x86/kvm/../../../virt/kvm/guest_mem.c
-
-   169	
-   170	static long kvm_gmem_punch_hole(struct inode *inode, loff_t offset, loff_t len)
-   171	{
-   172		struct list_head *gmem_list = &inode->i_mapping->private_list;
-   173		pgoff_t start = offset >> PAGE_SHIFT;
-   174		pgoff_t end = (offset + len) >> PAGE_SHIFT;
-   175		struct kvm_gmem *gmem;
-   176	
-   177		/*
-   178		 * Bindings must stable across invalidation to ensure the start+end
-   179		 * are balanced.
-   180		 */
-   181		filemap_invalidate_lock(inode->i_mapping);
-   182	
-   183		list_for_each_entry(gmem, gmem_list, entry)
-   184			kvm_gmem_invalidate_begin(gmem, start, end);
-   185	
- > 186		kvm_gmem_issue_arch_invalidate(kvm, file, start, end);
-   187		truncate_inode_pages_range(inode->i_mapping, offset, offset + len - 1);
-   188	
-   189		list_for_each_entry(gmem, gmem_list, entry)
-   190			kvm_gmem_invalidate_end(gmem, start, end);
-   191	
-   192		filemap_invalidate_unlock(inode->i_mapping);
-   193	
-   194		return 0;
-   195	}
-   196	
-
+> Dave
+> 
+> > This is just the worst case. Since early 5.* I/O performance has dropped
+> > absurdly. In all our disk servers this is easy to see: just generate lots of
+> > writes quickly (for example expanding a kernel tarball). Using top I see that
+> > kworker starts using 100% cpu but disks stay idle (as seen by dstat or sar). If
+> > you do a sync or umount it takes looooong to reach ~0 modified pages for the
+> > sync or umount to return.
+> > 
+> > In the server I mentioned above where 6.4.* don't stand the load, which is one
+> > of the largest free software mirrors of the world, even sometimes 6.1
+> > collapses: I/O becomes so slow that service (apache) stops.
+> > 
+> > The problem gets progressively worse with time after booting. It's hardly
+> > noticeable in the first hour after boot, and easily seen after ~3-4 days of
+> > uptime. The higher the (write) I/O load the faster it appears.
+> > 
+> > All this is with ext4 and raid6 with >~ 14 disks in the arrays.
+> > 
+> > I don't have debug info because these are production machines and I only
+> > compile in the kernel the bare minimum essential for operation. It's always
+> > pure kernel.org releases; gcc versions vary, for 6.4* it's gcc-13, for 6.1*
+> > gcc-12 is used, on Debian unstable updated more than 4 times/week.
+> -- 
+>  -----Open up your eyes, open up your mind, open up your code -------   
+> / Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+> \        dave @ treblig.org |                               | In Hex /
+>  \ _________________________|_____ http://www.treblig.org   |_______/
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+ -----Open up your eyes, open up your mind, open up your code -------   
+/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+\        dave @ treblig.org |                               | In Hex /
+ \ _________________________|_____ http://www.treblig.org   |_______/
