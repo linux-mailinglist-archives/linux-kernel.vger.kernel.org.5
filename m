@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7480277E2CF
+	by mail.lfdr.de (Postfix) with ESMTP id BDD0977E2D0
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245644AbjHPNkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 09:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42172 "EHLO
+        id S245656AbjHPNkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:40:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245607AbjHPNjs (ORCPT
+        with ESMTP id S245609AbjHPNjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 09:39:48 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE3726A9;
-        Wed, 16 Aug 2023 06:39:46 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-2685bcd046eso3603934a91.3;
-        Wed, 16 Aug 2023 06:39:46 -0700 (PDT)
+        Wed, 16 Aug 2023 09:39:49 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 459C726A9;
+        Wed, 16 Aug 2023 06:39:48 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bdf7086ae5so16019805ad.0;
+        Wed, 16 Aug 2023 06:39:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692193186; x=1692797986;
+        d=gmail.com; s=20221208; t=1692193188; x=1692797988;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ihRosdJY/MK1unL/lNrVSe4a2dGQokFzFvZLgmQopPI=;
-        b=j+6XEUXTsqdJvltiCc3RvWq8Xnv9msec9ucrjipAkY0kRTmSTVx1T+O1TOMiifO6gO
-         5ktmZjLTQ0wfS2qlhKcLhyaDF8ms++nZySlKpH0U8rCiL6w00YSSgDEhFONND6VolTPL
-         byWnVQpd0HOLTjzONjNZnhsK+hdKRWALNz9jrC6o4KVNqRbkrOQOX0EqswwMaX8RTqpr
-         6dWmqO7P78sQAoW5hhY+gBI9AKlLchnhV42KqNC8Lw+fFO+UWJSDKhuY6+PiRojLRVnr
-         vaqQ4Qdc4KL7h8Qjyfa2r4WeiwhCSXKrEHV15v2NyCu7rkV3B9hPq7bDeLKxEFtS3c5U
-         fwmQ==
+        bh=oscugnf7qYaTZOb13U9ax19uPvy15y4ztIfQsoTuemg=;
+        b=C4NKz8S2dkpWNgwFeQmkOLjPwyXB2iURVjCpQ73Sa5SYRQEjIRSFZkXJV17gS6ppfG
+         etzuAmbwu94iRIMEuqQdmVd73tTyXvyqJd7wBVNUoL4It95ok5sKs4YF3iEXC7BnQ1lE
+         7UmKVCEHWgGebJ16Od3m8lfc1Inl/OFqt8wLn0hDLSUpK8n3ZqsVANSFkesUI7EncayZ
+         6zw8MDCGSToRyvnVXuadnKjst7LTvrNNZSCX32IiUjOaN++Vb/1WI+vZUyAw9vJMo1dO
+         MaV3mgE4pGTCUxje2bS0xZDNqpQYB5dTAka55kHTzaXTwHUhVFKBfpjCJegRp6/DG4IN
+         3oYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692193186; x=1692797986;
+        d=1e100.net; s=20221208; t=1692193188; x=1692797988;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=ihRosdJY/MK1unL/lNrVSe4a2dGQokFzFvZLgmQopPI=;
-        b=IbMA74ZnaFSApDT0iK0stNFQGdxj8etBA9uumiQsoq4fwHwsU6c9kXsNhIA07EszC1
-         rd8Xffltr8zwUSRyVe2yO0nj79z93/FaTl3JR0Jdt34Ddz07tn51uNuiBrhydNqfX/qr
-         PTngcLl/biGNHVtdvzCyAquPqXytuObw5CRH2E3AndYhiWEjO+sXrgJeaM7jwRcHGKmP
-         Ym4G0o3EgLhbVOJBNK/4x0BJXsQzmio2ifDBKEH4OG+Ia/OkZmXd6rmSPb4/KqdhOc5C
-         NihNr/ErRP1VngDLDslr0kWvrzGE8c9sZY3Jjt3WpATMXA/hgfPM7Jj9yJzr5nTeriCr
-         z0jQ==
-X-Gm-Message-State: AOJu0YxwBaWwjLonozAKtEP27meVQgxldsMHC8v1mheCsfxvjMcesLJW
-        QnJ9iElTgE8KU0sDfhKQ4dE=
-X-Google-Smtp-Source: AGHT+IGMO4nj1foQwnCaomc9HozibnzXeEy7aZNnvHy+1Ii11lxEc3obNmdcpHAYsL1dtgB28BTMRw==
-X-Received: by 2002:a17:90b:144:b0:26b:5334:5ee9 with SMTP id em4-20020a17090b014400b0026b53345ee9mr1273363pjb.36.1692193186333;
-        Wed, 16 Aug 2023 06:39:46 -0700 (PDT)
+        bh=oscugnf7qYaTZOb13U9ax19uPvy15y4ztIfQsoTuemg=;
+        b=ELyaDrVOw2A5kSFsFBR+lKpw4E5k8CHEilru8m/BWuTL+UIbc73maZgnJJiZuotbvw
+         gGHOpU3SsGts1hBiJnKmYIn78cmnw5QRo2PkE+uPoKJ3IOTfJ1CTxH0yjm0wqkxGGLo2
+         QX9+8aOAjNRhBR3eUqReIxgLhuwZilKY6f7rkAKJVAgOEd0kIgfOzp5SfsboAsGXtpY0
+         IwIMZGGp0aPD+TSaLpkxNlJ9UmTdNAJi0t9wIvJc+t1MjOltYAzgAv0nACKp8xU34jd/
+         XlOoFmlF9uz2tPA7Z93U+f5uiOeKICp/51Ee7ogVOVYZDjssZ8ZcPga2uY0YXhQbvp9x
+         DtiQ==
+X-Gm-Message-State: AOJu0Yy37Bj6l3ySemJSxlhmBjS76kOT+sXFXK4LBpjF2JQbamq3R0lS
+        YB8ynoRXArC5pd4PECQHtv172L/ltCk=
+X-Google-Smtp-Source: AGHT+IE9o2BFl+XSfkXzpZE3w/IEWeczET+nJDuzj9eYjAN8CUJekT0r5nLPfNh05AT8k+Z6CzUjWg==
+X-Received: by 2002:a17:902:e5cc:b0:1bc:5197:73c5 with SMTP id u12-20020a170902e5cc00b001bc519773c5mr2172551plf.54.1692193187739;
+        Wed, 16 Aug 2023 06:39:47 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id pj1-20020a17090b4f4100b002696bd123e4sm11244252pjb.46.2023.08.16.06.39.45
+        by smtp.gmail.com with ESMTPSA id b4-20020a170902d50400b001bb9b5e86b7sm13173773plg.91.2023.08.16.06.39.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 06:39:45 -0700 (PDT)
+        Wed, 16 Aug 2023 06:39:47 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
 From:   Guenter Roeck <linux@roeck-us.net>
 To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
@@ -62,9 +62,9 @@ Cc:     Alessandro Zummo <a.zummo@towertech.it>,
         linux-kernel@vger.kernel.org,
         Brian Norris <briannorris@chromium.org>,
         Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 3/7] rtc: cros-ec: Detect and report supported alarm window size
-Date:   Wed, 16 Aug 2023 06:39:32 -0700
-Message-Id: <20230816133936.2150294-4-linux@roeck-us.net>
+Subject: [PATCH 4/7] rtc: cmos: Report supported alarm limit to rtc infrastructure
+Date:   Wed, 16 Aug 2023 06:39:33 -0700
+Message-Id: <20230816133936.2150294-5-linux@roeck-us.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230816133936.2150294-1-linux@roeck-us.net>
 References: <20230816133936.2150294-1-linux@roeck-us.net>
@@ -73,7 +73,7 @@ Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,77 +81,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RTC on some older Chromebooks can only handle alarms less than
-24 hours in the future. The only way to find out is to try to set
-an alarm further in the future. If that fails, assume that the RTC
-connected to the EC can only handle less than 24 hours of alarm
-window, and report that value to the RTC core.
-
-After that change, it is no longer necessary to limit the alarm time
-when setting it. Report any excessive alarms to the caller instead.
+The alarm window supported by the cmos RTC depends on the chip
+and its configuration. Report the limit to the RTC core.
 
 Cc: Brian Norris <briannorris@chromium.org>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- drivers/rtc/rtc-cros-ec.c | 38 +++++++++++++++++++++++---------------
- 1 file changed, 23 insertions(+), 15 deletions(-)
+ drivers/rtc/rtc-cmos.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/rtc/rtc-cros-ec.c b/drivers/rtc/rtc-cros-ec.c
-index 998ab8606f0b..a257a24e8223 100644
---- a/drivers/rtc/rtc-cros-ec.c
-+++ b/drivers/rtc/rtc-cros-ec.c
-@@ -182,21 +182,15 @@ static int cros_ec_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
+diff --git a/drivers/rtc/rtc-cmos.c b/drivers/rtc/rtc-cmos.c
+index c9416fe8542d..c565dc4d5bf5 100644
+--- a/drivers/rtc/rtc-cmos.c
++++ b/drivers/rtc/rtc-cmos.c
+@@ -913,6 +913,10 @@ static inline void cmos_check_acpi_rtc_status(struct device *dev,
+ #define	INITSECTION	__init
+ #endif
  
- 	ret = cros_ec_rtc_set(cros_ec, EC_CMD_RTC_SET_ALARM, alarm_offset);
- 	if (ret < 0) {
--		if (ret == -EINVAL && alarm_offset >= SECS_PER_DAY) {
--			/*
--			 * RTC chips on some older Chromebooks can only handle
--			 * alarms up to 24h in the future. Try to set an alarm
--			 * below that limit to avoid suspend failures.
--			 */
--			ret = cros_ec_rtc_set(cros_ec, EC_CMD_RTC_SET_ALARM,
--					      SECS_PER_DAY - 1);
--		}
--
--		if (ret < 0) {
--			dev_err(dev, "error setting alarm in %u seconds: %d\n",
--				alarm_offset, ret);
--			return ret;
--		}
-+		dev_err(dev, "error setting alarm in %u seconds: %d\n",
-+			alarm_offset, ret);
-+		/*
-+		 * The EC code returns -EINVAL if the alarm time is too
-+		 * far in the future. Convert it to the expected error code.
-+		 */
-+		if (ret == -EINVAL)
-+			ret = -ERANGE;
-+		return ret;
++#define SECS_PER_DAY	(24 * 60 * 60)
++#define SECS_PER_MONTH	(28 * SECS_PER_DAY)
++#define SECS_PER_YEAR	(365 * SECS_PER_DAY)
++
+ static int INITSECTION
+ cmos_do_probe(struct device *dev, struct resource *ports, int rtc_irq)
+ {
+@@ -1019,6 +1023,13 @@ cmos_do_probe(struct device *dev, struct resource *ports, int rtc_irq)
+ 		goto cleanup0;
  	}
  
- 	return 0;
-@@ -355,6 +349,20 @@ static int cros_ec_rtc_probe(struct platform_device *pdev)
- 	cros_ec_rtc->rtc->ops = &cros_ec_rtc_ops;
- 	cros_ec_rtc->rtc->range_max = U32_MAX;
++	if (cmos_rtc.mon_alrm)
++		cmos_rtc.rtc->range_max_offset = SECS_PER_YEAR - 1;
++	else if (cmos_rtc.day_alrm)
++		cmos_rtc.rtc->range_max_offset = SECS_PER_MONTH - 1;
++	else
++		cmos_rtc.rtc->range_max_offset = SECS_PER_DAY - 1;
++
+ 	rename_region(ports, dev_name(&cmos_rtc.rtc->dev));
  
-+	/*
-+	 * The RTC on some older Chromebooks can only handle alarms less than
-+	 * 24 hours in the future. The only way to find out is to try to set an
-+	 * alarm further in the future. If that fails, assume that the RTC
-+	 * connected to the EC can only handle less than 24 hours of alarm
-+	 * window.
-+	 */
-+	ret = cros_ec_rtc_set(cros_ec, EC_CMD_RTC_SET_ALARM, SECS_PER_DAY * 2);
-+	if (ret == -EINVAL)
-+		cros_ec_rtc->rtc->range_max_offset = SECS_PER_DAY - 1;
-+
-+	(void)cros_ec_rtc_set(cros_ec, EC_CMD_RTC_SET_ALARM,
-+			      EC_RTC_ALARM_CLEAR);
-+
- 	ret = devm_rtc_register_device(cros_ec_rtc->rtc);
- 	if (ret)
- 		return ret;
+ 	if (!mc146818_does_rtc_work()) {
 -- 
 2.39.2
 
