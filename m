@@ -2,141 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F86177DE5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB5577DE60
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240973AbjHPKRg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Aug 2023 06:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34742 "EHLO
+        id S243821AbjHPKSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 06:18:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243831AbjHPKRb (ORCPT
+        with ESMTP id S243826AbjHPKRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 06:17:31 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D6EFFE
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:17:30 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-263-B9QQiW5KPp2z-0gqw5gR7Q-1; Wed, 16 Aug 2023 11:17:27 +0100
-X-MC-Unique: B9QQiW5KPp2z-0gqw5gR7Q-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 16 Aug
- 2023 11:17:23 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Wed, 16 Aug 2023 11:17:23 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'David Howells' <dhowells@redhat.com>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        "jlayton@kernel.org" <jlayton@kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC PATCH v2] iov_iter: Convert iterate*() to inline funcs
-Thread-Topic: [RFC PATCH v2] iov_iter: Convert iterate*() to inline funcs
-Thread-Index: AQHZzvgmq2lQZxPz+UuF+eoksadYZ6/rhpfwgAEYzACAABNV8A==
-Date:   Wed, 16 Aug 2023 10:17:23 +0000
-Message-ID: <a72036d57d50464ea4fe7fa556ee1a72@AcuMS.aculab.com>
-References: <8722207799c342e780e1162a983dc48b@AcuMS.aculab.com>
- <855.1692047347@warthog.procyon.org.uk>
- <5247.1692049208@warthog.procyon.org.uk>
- <440141.1692179410@warthog.procyon.org.uk>
-In-Reply-To: <440141.1692179410@warthog.procyon.org.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 16 Aug 2023 06:17:38 -0400
+Received: from mx4.sionneau.net (mx4.sionneau.net [51.15.250.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E84198E
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:17:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sionneau.net;
+        s=selectormx4; t=1692181054;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=6M9tt3zpTWSYp9oRydSxYUo11ncDPEHNocW6qHm2Gzw=;
+        b=GeGniOG6jIL7MQg0TsqD7uy7QJwhXDdsAssMt33SQ1aO+6HdqyuEwqdxM3CsUtqym8Q9bt
+        5P6GA8ZqKLNGUyulRQf4h39hfVGbr6HKwEIR3MoJoehl0MBrK+TKaQ6b+kx3Av3NAZWnF3
+        Wa6TKHdxpMGs2pQp5U8U5YwujSeXX1I=
+Received: from fallen-ThinkPad-X260.home (<unknown> [109.190.253.11])
+        by mx4.sionneau.net (OpenSMTPD) with ESMTPSA id 0417cac3 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Wed, 16 Aug 2023 10:17:34 +0000 (UTC)
+From:   Yann Sionneau <yann@sionneau.net>
+To:     Nick Alcock <nick.alcock@oracle.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Yann Sionneau <yann@sionneau.net>
+Subject: [PATCH] bus: bt1-axi: Change from u32 to unsigned int for regmap_read() calls
+Date:   Wed, 16 Aug 2023 12:17:29 +0200
+Message-Id: <20230816101729.30229-1-yann@sionneau.net>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells
-> Sent: Wednesday, August 16, 2023 10:50 AM
-> 
-> David Laight <David.Laight@ACULAB.COM> wrote:
-> 
-> > It is harder to compare because of some of the random name changes.
-> 
-> I wouldn't say 'random' exactly, but if you prefer, some of the name changing
-> can be split out into a separate patch.  The macros are kind of the worst
-> since they picked up variable names from the callers.
-> 
-> > The version of the source I found seems to pass priv2 to functions
-> > that don't use it?
-> 
-> That can't be avoided if I convert everything to inline functions and function
-> pointers - but the optimiser can get rid of it where it can inline the step
-> function.
+regmap_read() API signature expects the caller to send "unsigned int"
+type to return back the read value.
+Change the two calls to match the regmap_read() signature.
 
-AFAICT the IOVEC one was only called directly.
+Signed-off-by: Yann Sionneau <yann@sionneau.net>
+---
+ drivers/bus/bt1-axi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> I tried passing the iterator to the step functions instead, but that just made
-> things bigger.  memcpy_from_iter_mc() is interesting to deal with.  I would
-> prefer to deal with it in the caller so we only do the check once, but that
-> might mean duplicating the caller.
+diff --git a/drivers/bus/bt1-axi.c b/drivers/bus/bt1-axi.c
+index 4007e7322cf2..80a76f26b4c3 100644
+--- a/drivers/bus/bt1-axi.c
++++ b/drivers/bus/bt1-axi.c
+@@ -58,7 +58,7 @@ struct bt1_axi {
+ static irqreturn_t bt1_axi_isr(int irq, void *data)
+ {
+ 	struct bt1_axi *axi = data;
+-	u32 low = 0, high = 0;
++	unsigned int low = 0, high = 0;
+ 
+ 	regmap_read(axi->sys_regs, BT1_AXI_WERRL, &low);
+ 	regmap_read(axi->sys_regs, BT1_AXI_WERRH, &high);
 
-You could try something slightly horrid that the compiler
-might optimise for you.
-Instead of passing in a function pointer pass a number.
-Then do something like:
-#define call_iter(id, ...) \
-	(id == x ? fn_x(__VA_ARGS__) : id == y ? fn_y(__VA_ARGS) ...)
-constant folding on the inline should kill the function pointer.
-You might get away with putting the args on the end.
-
-...
-> > I rather hope the should_fail_usercopy() and instrument_copy_xxx()
-> > calls are usually either absent or, at most, nops.
-> 
-> Okay - it's probably worth marking those too, then.
-
-Thinking I'm sure they are KASAN annotations.
-The are few enough calls that I suspect that replicating them
-won't affect KASAN (etc) builds.
-
-> > This all seems to have a lot fewer options than last time I looked.
-> 
-> I'm not sure what you mean by 'a lot fewer options'?
-
-It might just be ITER_PIPE that has gone.
-
-> > Is it worth optimising the KVEC case with a single buffer?
-> 
-> You mean an equivalent of UBUF?  Maybe.  There are probably a whole bunch of
-> netfs places that do single-kvec writes, though I'm trying to convert these
-> over to bvec arrays, combining them with their data, and MSG_SPLICE_PAGES.
-
-I'm thinking of what happens with kernel callers of things
-like the socket code - especially for address/option buffers.
-Probably io_uring and bpf (and my out of tree drivers!).
-
-Could be the equivalent of UBUF, but checking for KVEC with
-a count of 1 wouldn't really add any more cmp/jmp pairs.
-
-I've also noticed in the past that some of this code seems
-to be optimised for zero length buffers/fragments.
-Surely they just need to work?
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+base-commit: 2ccdd1b13c591d306f0401d98dedc4bdcd02b421
+-- 
+2.34.1
 
