@@ -2,70 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B32C77ECC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 00:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F28777ECC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 00:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346764AbjHPWKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 18:10:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42246 "EHLO
+        id S1346776AbjHPWKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 18:10:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346825AbjHPWKO (ORCPT
+        with ESMTP id S1346777AbjHPWKe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 18:10:14 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21DD726AD
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:10:13 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-40a47e8e38dso53211cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:10:13 -0700 (PDT)
+        Wed, 16 Aug 2023 18:10:34 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF2926AD
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:10:33 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-68843280241so3542857b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:10:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692223812; x=1692828612;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PFjB2tLQIoSeAgU5IVsLBX1N7i27DDlVtUelL66J7Zc=;
-        b=nmWPyeOAAxC0artxP5WclYBb/QHjLfhpVy5u3AQjYt5138vxBvKZgPinLsXh/Kf9IO
-         lgBKTfuzFCYmS2PjU69kZy6UvlLs+VPhElTcxwGg1fKCnGViHqYPVARPYmuHw6NBIegV
-         /EpEXDfy69XTd9S29+HdUFEdEkmYbLwubeWBvPA4Kw/AxOj/P1MTmxZgh1lrya/WK8V1
-         PWKvFcHibJplRjDCFzzwCl1e1B5pK/KsUYY4riXl6GaiAcsas+DTbM+aKEugsRIyQslL
-         db5wp6vwKeA9cz3VSjCCILHkY4UN1WPo+t8n5CoOzZDHkWLAgO862YvhfDslbmDklGDv
-         MccQ==
+        d=google.com; s=20221208; t=1692223832; x=1692828632;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bOUzFt8md+GEULwt6gukoa4NkQZdac6afNy05QrNcVU=;
+        b=SkN2R0vSkw5Zhziri5dGCby864YYEwmgPdsNen6zP/gpdE8VX7wdAft8C4IYRnH5CN
+         x9X42pE3PX27x52k2K5CxZqc4xu07C70AxEvtYq2GuvMRX2JLM3VAIqeBsoI+R0FxSEi
+         jvyW2em4xcGFt4dvoBKXKC1mE/r5+3Ruuacq1rKPwWAw0VMORurE39Fp+OnXMf5w+4DH
+         wF7keAPZ76stKkKcrf4nHnOoQlPZf2bwvOpLgsO1uIFPTxLkDboEdLD9+RmPS1o3fCt/
+         NwCYOaH5GalInG05FE23BWJZHQdSMxlamYeT5OAHSRGTaHBJjqHpZP40/VzSKf+YQ46p
+         8lBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692223812; x=1692828612;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PFjB2tLQIoSeAgU5IVsLBX1N7i27DDlVtUelL66J7Zc=;
-        b=gqRJpoN7z1EYG91Y6vFI5B7cTm8H5wXG5DSFeCcodQ8DNPjFFcldnMEL6m/upua8/Q
-         y2PZDv+FIgB4RhqEVgMRbry7LG1V+FSmDjHlxlPLk0w6VQ0Q8CYp9qwDqkTOM6RxCwDf
-         Om1mvud5u0tKScpNUWx6VB/LjZgubJrx2iZ200GcjRILDp2I5v+0tmQ8/NnFcCUSElg9
-         cRdi0CF2x4bH103YfwviaJw9TFQMS5Y2W7Ne3FZKpIj7UzPB2MlBzh4TyAfpIO+uoDsZ
-         h4mkCj8NMav0RNmU+pJWklgzqMk/8/Qi1hwgZ5sOelZLPvvqGvk2eVRefv0w42xA9byW
-         u8VQ==
-X-Gm-Message-State: AOJu0YwLTcEDBAXpDR513icksUB9MIMWVMqGxGJ2j7KKwgGiPs19qa+H
-        CFdFqYQD4ye6etqhK7DqL9IUyl63p6wOgi0gIb+t8Q==
-X-Google-Smtp-Source: AGHT+IGOauo1lTRA1jBKb7+Ni+dPfId9cr9MgoJ2mEt37FOpIvgTUxVmW3ZENT9ywO8zxCY6lYHK2hYMp9TEjWlC1KI=
-X-Received: by 2002:a05:622a:1887:b0:403:b6ff:c0b with SMTP id
- v7-20020a05622a188700b00403b6ff0c0bmr119146qtc.6.1692223812100; Wed, 16 Aug
- 2023 15:10:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <ZN1ELw41wQE5zDrK@kernel.org>
-In-Reply-To: <ZN1ELw41wQE5zDrK@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 16 Aug 2023 15:10:00 -0700
-Message-ID: <CAP-5=fVU07VHcQE6r9k7aEV+xM3_HFcgY+5Y8N7qVvsZD3V9vg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] perf bpf_skel augmented_raw_syscalls: Cap the socklen
- parameter using &= sizeof(saddr)
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        d=1e100.net; s=20221208; t=1692223832; x=1692828632;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bOUzFt8md+GEULwt6gukoa4NkQZdac6afNy05QrNcVU=;
+        b=HXumED48MBdUvkqt/JDSPdVOhKBPpnT3Sc+1elSMdTxKNXNTUI3XT4cmM6vVrs9a5J
+         YtPwtSTUlhzl7Tn7aNoMTtmKhStT69ohlRYeF13/0d4NlMMd3fstJwCUE6t8j8MDDiPO
+         ilGYNPToM1SHFN/JqX+cfnZhrfdZLrDECrxEiRr0caK9eUSPBoSADVM8EBzERSyDGnm3
+         8+kaOdL00HI/GU4JigqrLpPovH/2GhdTZsH9dAdckLF+ylvyMsAWkZ5npESd0k5Y+qvO
+         NepwMny1V/AfA83EYfx2kK29NSLQNa4bLNG57vv/028NjV/0dcgD6PrkrdqZ5pnsCXtW
+         nHAw==
+X-Gm-Message-State: AOJu0Yy+PjK2miXIJhIoNt7ajcGeB47zLtJA94dSta6VllmHggEjrHub
+        hiBXCsZfj6mUuPPsI+Zc4uY1RuCZr1w=
+X-Google-Smtp-Source: AGHT+IGsQ0SESsAUfzBJzZthcYav8uvzSUGvRtBaXwMQJ8KsTted0fpoCzM1noUASxHrMq7GSzST5evXH4s=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:1798:b0:687:926f:e62f with SMTP id
+ s24-20020a056a00179800b00687926fe62fmr1633253pfg.2.1692223832612; Wed, 16 Aug
+ 2023 15:10:32 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 15:10:31 -0700
+In-Reply-To: <20230719144131.29052-9-binbin.wu@linux.intel.com>
+Mime-Version: 1.0
+References: <20230719144131.29052-1-binbin.wu@linux.intel.com> <20230719144131.29052-9-binbin.wu@linux.intel.com>
+Message-ID: <ZN1JV2TR277zGevl@google.com>
+Subject: Re: [PATCH v10 8/9] KVM: x86: Untag address for vmexit handlers when
+ LAM applicable
+From:   Sean Christopherson <seanjc@google.com>
+To:     Binbin Wu <binbin.wu@linux.intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
+        David.Laight@aculab.com, robert.hu@linux.intel.com,
+        guang.zeng@intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,129 +70,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 2:48=E2=80=AFPM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> This works with:
->
->   $ clang -v
->   clang version 14.0.5 (Fedora 14.0.5-2.fc36)
->   $
->
-> But not with:
->
->   $ clang -v
->   clang version 16.0.6 (Fedora 16.0.6-2.fc38)
->   $
->
->   [root@quaco ~]# perf trace -e connect*,sendto* ping -c 10 localhost
->   libbpf: prog 'sys_enter_sendto': BPF program load failed: Permission de=
-nied
->   libbpf: prog 'sys_enter_sendto': -- BEGIN PROG LOAD LOG --
->   reg type unsupported for arg#0 function sys_enter_sendto#59
->   0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
->   ; int sys_enter_sendto(struct syscall_enter_args *args)
->   0: (bf) r6 =3D r1                       ; R1=3Dctx(off=3D0,imm=3D0) R6_=
-w=3Dctx(off=3D0,imm=3D0)
->   1: (b7) r1 =3D 0                        ; R1_w=3D0
->   ; int key =3D 0;
->   2: (63) *(u32 *)(r10 -4) =3D r1         ; R1_w=3D0 R10=3Dfp0 fp-8=3D000=
-0????
->   3: (bf) r2 =3D r10                      ; R2_w=3Dfp0 R10=3Dfp0
->   ;
->   4: (07) r2 +=3D -4                      ; R2_w=3Dfp-4
->   ; return bpf_map_lookup_elem(&augmented_args_tmp, &key);
->   5: (18) r1 =3D 0xffff8de5a5b8bc00       ; R1_w=3Dmap_ptr(off=3D0,ks=3D4=
-,vs=3D8272,imm=3D0)
->   7: (85) call bpf_map_lookup_elem#1    ; R0_w=3Dmap_value_or_null(id=3D1=
-,off=3D0,ks=3D4,vs=3D8272,imm=3D0)
->   8: (bf) r7 =3D r0                       ; R0_w=3Dmap_value_or_null(id=
-=3D1,off=3D0,ks=3D4,vs=3D8272,imm=3D0) R7_w=3Dmap_value_or_null(id=3D1,off=
-=3D0,ks=3D4,vs=3D8272,imm=3D0)
->   9: (b7) r0 =3D 1                        ; R0_w=3D1
->   ; if (augmented_args =3D=3D NULL)
->   10: (15) if r7 =3D=3D 0x0 goto pc+25      ; R7_w=3Dmap_value(off=3D0,ks=
-=3D4,vs=3D8272,imm=3D0)
->   ; unsigned int socklen =3D args->args[5];
->   11: (79) r1 =3D *(u64 *)(r6 +56)        ; R1_w=3Dscalar() R6_w=3Dctx(of=
-f=3D0,imm=3D0)
->   ;
->   12: (bf) r2 =3D r1                      ; R1_w=3Dscalar(id=3D2) R2_w=3D=
-scalar(id=3D2)
->   13: (67) r2 <<=3D 32                    ; R2_w=3Dscalar(smax=3D92233720=
-32559808512,umax=3D18446744069414584320,var_off=3D(0x0; 0xffffffff00000000)=
-,s32_min=3D0,s32_max=3D0,u32_max=3D0)
->   14: (77) r2 >>=3D 32                    ; R2_w=3Dscalar(umax=3D42949672=
-95,var_off=3D(0x0; 0xffffffff))
->   15: (b7) r8 =3D 128                     ; R8=3D128
->   ; if (socklen > sizeof(augmented_args->saddr))
->   16: (25) if r2 > 0x80 goto pc+1       ; R2=3Dscalar(umax=3D128,var_off=
-=3D(0x0; 0xff))
->   17: (bf) r8 =3D r1                      ; R1=3Dscalar(id=3D2) R8_w=3Dsc=
-alar(id=3D2)
->   ; const void *sockaddr_arg =3D (const void *)args->args[4];
->   18: (79) r3 =3D *(u64 *)(r6 +48)        ; R3_w=3Dscalar() R6=3Dctx(off=
-=3D0,imm=3D0)
->   ; bpf_probe_read(&augmented_args->saddr, socklen, sockaddr_arg);
->   19: (bf) r1 =3D r7                      ; R1_w=3Dmap_value(off=3D0,ks=
-=3D4,vs=3D8272,imm=3D0) R7=3Dmap_value(off=3D0,ks=3D4,vs=3D8272,imm=3D0)
->   20: (07) r1 +=3D 64                     ; R1_w=3Dmap_value(off=3D64,ks=
-=3D4,vs=3D8272,imm=3D0)
->   ; bpf_probe_read(&augmented_args->saddr, socklen, sockaddr_arg);
->   21: (bf) r2 =3D r8                      ; R2_w=3Dscalar(id=3D2) R8_w=3D=
-scalar(id=3D2)
->   22: (85) call bpf_probe_read#4
->   R2 min value is negative, either use unsigned or 'var &=3D const'
->   processed 22 insns (limit 1000000) max_states_per_insn 0 total_states 1=
- peak_states 1 mark_read 1
->   -- END PROG LOAD LOG --
->   libbpf: prog 'sys_enter_sendto': failed to load: -13
->   libbpf: failed to load object 'augmented_raw_syscalls_bpf'
->   libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -13
->
-> So use the suggested &=3D variant since sizeof(saddr) =3D=3D 128 bytes.
-
-Could this be an assert?
-
-Thanks,
-Ian
-
->
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+On Wed, Jul 19, 2023, Binbin Wu wrote:
+> Untag address for 64-bit memory operand in VMExit handlers when LAM is applicable.
+> 
+> For VMExit handlers related to 64-bit linear address:
+> - Cases need to untag address (handled in get_vmx_mem_address())
+>   Operand(s) of VMX instructions and INVPCID.
+>   Operand(s) of SGX ENCLS.
+> - Cases LAM doesn't apply to (no change needed)
+>   Operand of INVLPG.
+>   Linear address in INVPCID descriptor.
+>   Linear address in INVVPID descriptor.
+>   BASEADDR specified in SESC of ECREATE.
+> 
+> Note:
+> LAM doesn't apply to the writes to control registers or MSRs.
+> LAM masking applies before paging, so the faulting linear address in CR2
+> doesn't contain the metadata.
+> The guest linear address saved in VMCS doesn't contain metadata.
+> 
+> Signed-off-by: Binbin Wu <binbin.wu@linux.intel.com>
+> Reviewed-by: Chao Gao <chao.gao@intel.com>
 > ---
->  tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c b/tool=
-s/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
-> index 0586c4118656d3e4..9c1d0b271b20f693 100644
-> --- a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
-> +++ b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
-> @@ -187,8 +187,7 @@ int sys_enter_connect(struct syscall_enter_args *args=
-)
->          if (augmented_args =3D=3D NULL)
->                  return 1; /* Failure: don't filter */
->
-> -       if (socklen > sizeof(augmented_args->saddr))
-> -               socklen =3D sizeof(augmented_args->saddr);
-> +       socklen &=3D sizeof(augmented_args->saddr) - 1;
->
->         bpf_probe_read(&augmented_args->saddr, socklen, sockaddr_arg);
->
-> @@ -206,8 +205,7 @@ int sys_enter_sendto(struct syscall_enter_args *args)
->          if (augmented_args =3D=3D NULL)
->                  return 1; /* Failure: don't filter */
->
-> -       if (socklen > sizeof(augmented_args->saddr))
-> -               socklen =3D sizeof(augmented_args->saddr);
-> +       socklen &=3D sizeof(augmented_args->saddr) - 1;
->
->         bpf_probe_read(&augmented_args->saddr, socklen, sockaddr_arg);
->
-> --
-> 2.41.0
->
+>  arch/x86/kvm/vmx/nested.c | 2 ++
+>  arch/x86/kvm/vmx/sgx.c    | 1 +
+>  arch/x86/kvm/vmx/vmx.c    | 3 +--
+>  arch/x86/kvm/vmx/vmx.h    | 2 ++
+>  arch/x86/kvm/x86.c        | 1 +
+>  5 files changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 76c9904c6625..bd2c8936953a 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -4980,6 +4980,7 @@ int get_vmx_mem_address(struct kvm_vcpu *vcpu, unsigned long exit_qualification,
+>  		else
+>  			*ret = off;
+>  
+> +		*ret = vmx_get_untagged_addr(vcpu, *ret, 0);
+>  		/* Long mode: #GP(0)/#SS(0) if the memory address is in a
+>  		 * non-canonical form. This is the only check on the memory
+>  		 * destination for long mode!
+> @@ -5797,6 +5798,7 @@ static int handle_invvpid(struct kvm_vcpu *vcpu)
+>  	vpid02 = nested_get_vpid02(vcpu);
+>  	switch (type) {
+>  	case VMX_VPID_EXTENT_INDIVIDUAL_ADDR:
+> +		/* LAM doesn't apply to the address in descriptor of invvpid */
+
+Nit, if we're going to bother with a comment, I think it makes sense to explain
+that LAM doesn't apply to any TLB invalidation input, i.e. as opposed to just
+saying the INVVPID is special.
+
+		/*
+		 * LAM doesn't apply to addresses that are inputs to TLB
+		 * invalidation.
+		 */
+
+And then when LAM and LASS collide:
+
+		/*
+		 * LAM and LASS don't apply to ...
+		 */
+
+>  		if (!operand.vpid ||
+>  		    is_noncanonical_address(operand.gla, vcpu))
+>  			return nested_vmx_fail(vcpu,
+> diff --git a/arch/x86/kvm/vmx/sgx.c b/arch/x86/kvm/vmx/sgx.c
+> index 3e822e582497..6fef01e0536e 100644
+> --- a/arch/x86/kvm/vmx/sgx.c
+> +++ b/arch/x86/kvm/vmx/sgx.c
+> @@ -37,6 +37,7 @@ static int sgx_get_encls_gva(struct kvm_vcpu *vcpu, unsigned long offset,
+>  	if (!IS_ALIGNED(*gva, alignment)) {
+>  		fault = true;
+>  	} else if (likely(is_64_bit_mode(vcpu))) {
+> +		*gva = vmx_get_untagged_addr(vcpu, *gva, 0);
+>  		fault = is_noncanonical_address(*gva, vcpu);
+>  	} else {
+>  		*gva &= 0xffffffff;
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index abf6d42672cd..f18e610c4363 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -8177,8 +8177,7 @@ static void vmx_vm_destroy(struct kvm *kvm)
+>  	free_pages((unsigned long)kvm_vmx->pid_table, vmx_get_pid_table_order(kvm));
+>  }
+>  
+> -static gva_t vmx_get_untagged_addr(struct kvm_vcpu *vcpu, gva_t gva,
+> -			    unsigned int flags)
+> +gva_t vmx_get_untagged_addr(struct kvm_vcpu *vcpu, gva_t gva, unsigned int flags)
+>  {
+>  	unsigned long cr3_bits;
+>  	int lam_bit;
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index 32384ba38499..6fb612355769 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -421,6 +421,8 @@ void vmx_enable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type);
+>  u64 vmx_get_l2_tsc_offset(struct kvm_vcpu *vcpu);
+>  u64 vmx_get_l2_tsc_multiplier(struct kvm_vcpu *vcpu);
+>  
+> +gva_t vmx_get_untagged_addr(struct kvm_vcpu *vcpu, gva_t gva, unsigned int flags);
+> +
+>  static inline void vmx_set_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr,
+>  					     int type, bool value)
+>  {
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 339a113b45af..d2a0cdfb77a5 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -13370,6 +13370,7 @@ int kvm_handle_invpcid(struct kvm_vcpu *vcpu, unsigned long type, gva_t gva)
+>  
+>  	switch (type) {
+>  	case INVPCID_TYPE_INDIV_ADDR:
+> +		/* LAM doesn't apply to the address in descriptor of invpcid */
+
+Same thing here.
+
+>  		if ((!pcid_enabled && (operand.pcid != 0)) ||
+>  		    is_noncanonical_address(operand.gla, vcpu)) {
+>  			kvm_inject_gp(vcpu, 0);
+> -- 
+> 2.25.1
+> 
