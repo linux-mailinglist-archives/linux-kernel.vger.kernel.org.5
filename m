@@ -2,194 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C302077E775
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87A777E779
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345167AbjHPRTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 13:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59926 "EHLO
+        id S1345175AbjHPRU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 13:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345181AbjHPRTG (ORCPT
+        with ESMTP id S1345163AbjHPRUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 13:19:06 -0400
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE7698;
-        Wed, 16 Aug 2023 10:19:03 -0700 (PDT)
-Received: from i53875bbf.versanet.de ([83.135.91.191] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <heiko@sntech.de>)
-        id 1qWKAT-0006YA-LC; Wed, 16 Aug 2023 19:18:49 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Andreas Kemnade <andreas@kemnade.info>,
-        Conor Dooley <conor@kernel.org>
-Cc:     dmitry.torokhov@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, rydberg@bitmath.org,
-        u.kleine-koenig@pengutronix.de, linus.walleij@linaro.org,
-        Jonathan.Cameron@huawei.com, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/4] dt-bindings: touchscreen: convert neonode,zforce to
- json-schema
-Date:   Wed, 16 Aug 2023 19:18:48 +0200
-Message-ID: <113333811.nniJfEyVGO@diego>
-In-Reply-To: <20230816-customary-service-8d9c5e5dbf1b@spud>
-References: <20230815182948.212575-1-andreas@kemnade.info>
- <20230815182948.212575-2-andreas@kemnade.info>
- <20230816-customary-service-8d9c5e5dbf1b@spud>
+        Wed, 16 Aug 2023 13:20:31 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1D726AB
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:20:26 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qWKBi-0002k8-Mk; Wed, 16 Aug 2023 19:20:06 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qWKBd-0015eP-F2; Wed, 16 Aug 2023 19:20:01 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qWKBc-00DYfr-LE; Wed, 16 Aug 2023 19:20:00 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Eddie James <eajames@linux.ibm.com>, Joel Stanley <joel@jms.id.au>,
+        Jeremy Kerr <jk@ozlabs.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Alistar Popple <alistair@popple.id.au>, linux-fsi@lists.ozlabs.org,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org
+Subject: [PATCH] fsi: i2cr: Switch to use struct i2c_driver's .probe()
+Date:   Wed, 16 Aug 2023 19:19:44 +0200
+Message-Id: <20230816171944.123705-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1051; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=wo9hR2BjWdL9hjjE317gsXX6geCTrTXD/PgBXWB4lVE=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBk3QUrJQVScMu9Tv9CBsX65YmoEuVxmhPtqCech k2h2iCtylGJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZN0FKwAKCRCPgPtYfRL+ TiMbB/9ubQpDNL8lOGZbjjNfqzdHBw4P+XV/vciE0nJd6okLHs/Vz07y9gAjN0TGsQOVZOmDwhf nmXblVOyLhdxJO7tKomTkhrh6ATwe/R4syEiAweb5nNZFtoNwjoHtz75FiiS/084zmRJwIQzUZo neBcFDE41E6GJ4IyyBoR3vYMKwc+eSn7xO1QnMt9flKLaAudEflH7y1LhtDPK7kjxPEyu1/nwaV CVTG7tVFCE3cv1/gmnlnYcQbqQkESs4Gvo54AG+wnVwiV/v1gv5MbKKwA6UHB6ITFAbItWcV2+p k0Tx0ZuDynWo3BawIqgNCEyOhVYXs8fij3uNXZjXlm+q3zFV
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SPF_HELO_TEMPERROR,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+struct i2c_driver::probe_new is about to go away. Switch the driver to
+use the probe callback with the same prototype.
 
-Am Mittwoch, 16. August 2023, 16:52:16 CEST schrieb Conor Dooley:
-> On Tue, Aug 15, 2023 at 08:29:45PM +0200, Andreas Kemnade wrote:
-> > Convert Neonode infrared touchscreen controller binding to DT schema.
-> > 
-> > Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> > ---
-> >  .../input/touchscreen/neonode,zforce.yaml     | 67 +++++++++++++++++++
-> >  .../bindings/input/touchscreen/zforce_ts.txt  | 34 ----------
-> >  2 files changed, 67 insertions(+), 34 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/neonode,zforce.yaml
-> >  delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/zforce_ts.txt
-> > 
-> > diff --git a/Documentation/devicetree/bindings/input/touchscreen/neonode,zforce.yaml b/Documentation/devicetree/bindings/input/touchscreen/neonode,zforce.yaml
-> > new file mode 100644
-> > index 000000000000..1c45adb2407a
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/input/touchscreen/neonode,zforce.yaml
-> > @@ -0,0 +1,67 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/input/touchscreen/neonode,zforce.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Neonode infrared touchscreen controller
-> > +
-> > +maintainers:
-> > +  - Heiko Stuebner <heiko.stuebner@bqreaders.com>
-> 
-> It;d be good to CC the person you're volunteering! I've done so.
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+Hello,
 
-BQ the company is no more. So I have no issue with me being in there,
-afterall I did that driver back then, but I guess my main and permanent
-address of heiko@sntech.de might be more appropriate :-)
+this driver appeared in next just today. I intend to drop .probe_new
+from struct i2c_driver after v6.6-rc1, so it would be great if this
+patch would go in together with the commit adding this driver.
 
-Heiko
+Thanks
+Uwe
 
+ drivers/fsi/fsi-master-i2cr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: neonode,zforce
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  reset-gpios:
-> > +    maxItems: 1
-> > +
-> > +  irq-gpios:
-> > +    maxItems: 1
-> > +
-> > +  x-size:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +
-> > +  y-size:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +
-> > +  vdd-supply: true
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - interrupts
-> > +  - reset-gpios
-> > +  - x-size
-> > +  - y-size
-> > +
-> > +unevaluatedProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/interrupt-controller/irq.h>
-> > +
-> > +    i2c {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        touchscreen@50 {
-> > +            compatible = "neonode,zforce";
-> > +            reg = <0x50>;
-> > +            interrupts = <2 0>;
-> > +            vdd-supply = <&reg_zforce_vdd>;
-> > +
-> > +            reset-gpios = <&gpio5 9 0>; /* RST */
-> > +            irq-gpios = <&gpio5 6 0>; /* IRQ, optional */
-> > +
-> > +            x-size = <800>;
-> > +            y-size = <600>;
-> > +        };
-> > +    };
-> > +...
-> > diff --git a/Documentation/devicetree/bindings/input/touchscreen/zforce_ts.txt b/Documentation/devicetree/bindings/input/touchscreen/zforce_ts.txt
-> > deleted file mode 100644
-> > index e3c27c4fd9c8..000000000000
-> > --- a/Documentation/devicetree/bindings/input/touchscreen/zforce_ts.txt
-> > +++ /dev/null
-> > @@ -1,34 +0,0 @@
-> > -* Neonode infrared touchscreen controller
-> > -
-> > -Required properties:
-> > -- compatible: must be "neonode,zforce"
-> > -- reg: I2C address of the chip
-> > -- interrupts: interrupt to which the chip is connected
-> > -- reset-gpios: reset gpio the chip is connected to
-> > -- x-size: horizontal resolution of touchscreen
-> > -- y-size: vertical resolution of touchscreen
-> > -
-> > -Optional properties:
-> > -- irq-gpios : interrupt gpio the chip is connected to
-> > -- vdd-supply: Regulator controlling the controller supply
-> > -
-> > -Example:
-> > -
-> > -	i2c@00000000 {
-> > -		/* ... */
-> > -
-> > -		zforce_ts@50 {
-> > -			compatible = "neonode,zforce";
-> > -			reg = <0x50>;
-> > -			interrupts = <2 0>;
-> > -			vdd-supply = <&reg_zforce_vdd>;
-> > -
-> > -			reset-gpios = <&gpio5 9 0>; /* RST */
-> > -			irq-gpios = <&gpio5 6 0>; /* IRQ, optional */
-> > -
-> > -			x-size = <800>;
-> > -			y-size = <600>;
-> > -		};
-> > -
-> > -		/* ... */
-> > -	};
-> 
+diff --git a/drivers/fsi/fsi-master-i2cr.c b/drivers/fsi/fsi-master-i2cr.c
+index 61659c27a973..40f1f4d231e5 100644
+--- a/drivers/fsi/fsi-master-i2cr.c
++++ b/drivers/fsi/fsi-master-i2cr.c
+@@ -301,7 +301,7 @@ static const struct of_device_id i2cr_ids[] = {
+ MODULE_DEVICE_TABLE(of, i2cr_ids);
+ 
+ static struct i2c_driver i2cr_driver = {
+-	.probe_new = i2cr_probe,
++	.probe = i2cr_probe,
+ 	.remove = i2cr_remove,
+ 	.driver = {
+ 		.name = "fsi-master-i2cr",
 
-
-
+base-commit: 53e89e3e4490d6630a68e61a3cb478e7a7f2ce8b
+-- 
+2.40.1
 
