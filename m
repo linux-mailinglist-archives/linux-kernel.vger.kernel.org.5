@@ -2,139 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE1477DDA8
+	by mail.lfdr.de (Postfix) with ESMTP id DE94F77DDAA
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243463AbjHPJqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 05:46:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46696 "EHLO
+        id S243485AbjHPJqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 05:46:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243526AbjHPJqG (ORCPT
+        with ESMTP id S243543AbjHPJqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 05:46:06 -0400
-Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 593F426AB;
-        Wed, 16 Aug 2023 02:46:00 -0700 (PDT)
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RQjtq04rDzBZ;
-        Wed, 16 Aug 2023 11:45:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1692179157; bh=Sos1qBs3VlhhehklG3z9L5LLCdtvKR73wVoo/Xasofo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ol06/qIuowDl7DPikhSBJ06gBA3bo6LVSVl3/SSxjEXhTMUOzp2DmEgKigpja0DX5
-         ExHnhjvldSYSXIBbUvvPOEQ+/AlcmfTCYFvFj9OFu7ljS4XL+f4W7PkRzkVLhstuqm
-         DF7fVFuCZDEeUJRt92zYm4pwI6QfXmF8nv1kx9WDAAVJl17NMacCM5aWXRIh0025rH
-         W88IZz96SfBc3464a8ghhNDsZfSSTwHM1c6HMp9RxLNMFVkKLLn9kGzOCIOeoPRxSz
-         bTSC8c0ya+Q7EphOave/HMXcGQwbIK0b8+/oWWi8yyyySIQbRBl0idRigCqsoUmgYY
-         ZX37j+Ik0gWbQ==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.8 at mail
-Date:   Wed, 16 Aug 2023 11:45:53 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     Peter Xu <peterx@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <emmir@google.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        Paul Gofman <pgofman@codeweavers.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v30 2/6] fs/proc/task_mmu: Implement IOCTL to get and
- optionally clear info about PTEs
-Message-ID: <ZNya0c7zRmQ/HPMl@qmqm.qmqm.pl>
-References: <20230816065925.850879-1-usama.anjum@collabora.com>
- <20230816065925.850879-3-usama.anjum@collabora.com>
+        Wed, 16 Aug 2023 05:46:10 -0400
+Received: from mx4.sionneau.net (mx4.sionneau.net [51.15.250.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 597E2E74;
+        Wed, 16 Aug 2023 02:46:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sionneau.net;
+        s=selectormx4; t=1692179164;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mRCEFKwx/2j2MnXJTRWsju404KtQoZROl0rEb/btkc8=;
+        b=AQiUCLa6aYqr9Stk6+Z3tb1JxL6bH/6aptFWrxVHsTrhacid568VyHPlkH8j40TPM/KX9B
+        0XECvgUQGJUPvvVvoMQXD+B/6eEvO9pmFaGnBU4oWyrwp0oqGCRwFeEL5c1ZsdlJ8xFrO4
+        QPPi4upRUvo7JRRW+/EHjXtEkfGVPmo=
+Received: from [10.125.4.51] (<unknown> [109.190.253.11])
+        by mx4.sionneau.net (OpenSMTPD) with ESMTPSA id fc590364 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Wed, 16 Aug 2023 09:46:04 +0000 (UTC)
+Message-ID: <8f3e12e2-7e0f-3c25-2c7a-7cc7c32b5f36@sionneau.net>
+Date:   Wed, 16 Aug 2023 11:46:02 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] i2c: designware: add support for pinctrl for recovery
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yann Sionneau <ysionneau@kalray.eu>
+References: <20230811135201.23046-1-yann@sionneau.net>
+ <ZNZHfPCMg1Js28iF@smile.fi.intel.com>
+Content-Language: en-US
+From:   Yann Sionneau <yann@sionneau.net>
+In-Reply-To: <ZNZHfPCMg1Js28iF@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230816065925.850879-3-usama.anjum@collabora.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 11:59:21AM +0500, Muhammad Usama Anjum wrote:
-> The PAGEMAP_SCAN IOCTL on the pagemap file can be used to get or optionally
-> clear the info about page table entries.
-[...]
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-[...]
-> +static long do_pagemap_scan(struct mm_struct *mm, unsigned long uarg)
-> +{
-[...]
-> +	for (walk_start = p.arg.start; walk_start < p.arg.end;
-> +			walk_start = p.arg.walk_end) {
-> +		long n_out;
-> +
-> +		if (fatal_signal_pending(current)) {
-> +			ret = -EINTR;
-> +			break;
-> +		}
-> +
-> +		ret = mmap_read_lock_killable(mm);
-> +		if (ret)
-> +			break;
-> +		ret = walk_page_range(mm, walk_start, p.arg.end,
-> +				      &pagemap_scan_ops, &p);
-> +		mmap_read_unlock(mm);
-> +
-> +		n_out = pagemap_scan_flush_buffer(&p);
-> +		if (n_out < 0)
-> +			ret = n_out;
-> +		else
-> +			n_ranges_out += n_out;
-> +
-> +		p.arg.walk_end = p.walk_end_addr ? p.walk_end_addr : p.arg.end;
+Le 11/08/2023 Ã  16:36, Andy Shevchenko a Ã©critÂ :
 
-I think p.walk_end_addr can be removed and replaced by `p.arg.walk_end`
-directly in the walk functions. If we don't set walk_end_addr we'll also
-return 0 so the check below will match. Might be good to add this as
-a comment.
+> On Fri, Aug 11, 2023 at 03:52:01PM +0200, Yann Sionneau wrote:
+>> From: Yann Sionneau <ysionneau@kalray.eu>
+>>
+>> Currently if the SoC needs pinctrl to switch the scl and sda
+> SCL
+> SDA
+ack
+>
+>> from hw function to gpio function, the recovery won't work.
+> from the I2C
+>
+> GPIO
+ack
+>>   #include <linux/pm_runtime.h>
+>>   #include <linux/regmap.h>
+>>   #include <linux/reset.h>
+>> +#include <linux/pinctrl/consumer.h>
+> Keep this in order.
+Ok
+>
+> ...
+>
+>> +	rinfo->pinctrl = devm_pinctrl_get(dev->dev);
+>> +	if (!rinfo->pinctrl || IS_ERR(rinfo->pinctrl)) {
+> It's not possible to have it NULL, why a dead code?
 
-> +		if (ret != -ENOSPC)
-> +			break;
-> +
-> +		if (p.arg.vec_len == 0 || p.found_pages == p.arg.max_pages)
-> +			break;
-> +	}
-> +
-> +	/* ENOSPC signifies early stop (buffer full) from the walk. */
-> +	if (!ret || ret == -ENOSPC)
-> +		ret = n_ranges_out;
-> +
-> +	p.arg.walk_end = p.arg.walk_end ? p.arg.walk_end : walk_start;
+Woops, I thought NULL was possible, you are right: it's impossible.
 
-When the walk is finished, with ret == 0, the walk_start will point to
-the beginning, not the end of the range. So:
+I will also add handling of -EPROBE_DEFER error.
 
-if (!walk_end) walk_end = p.arg.end;
+Thanks for the review.
 
-Other than that, the patch looks complete now. Thanks for all your work!
+Regards,
 
-Best Regards
-Micha³ Miros³aw
+-- 
+
+Yann
+
