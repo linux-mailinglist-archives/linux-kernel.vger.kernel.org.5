@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43BFE77DEDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE82077DEE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243919AbjHPKew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 06:34:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51934 "EHLO
+        id S243920AbjHPKhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 06:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243920AbjHPKel (ORCPT
+        with ESMTP id S240878AbjHPKgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 06:34:41 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E1702117
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:34:40 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fe4ad22e36so59555205e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:34:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692182079; x=1692786879;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1TBFn80+o0TLek+tL20KausYPCYv+uibCCkUTGpWXII=;
-        b=U6swsDAbG+qx9TXxFTUymdjEanUzVmA7yebBb8lE3T+bHlCH1zW/VN0QoY5d3379Gp
-         k/3no7XUva6SHr2hK16zBJyQiL2vn2+lmyxKnb2JOytfFC+WUYHkHFIacpznwjhkHAEC
-         O1e06fogSY7D47cOctHJS86WHNees2xYk3MB5gTQK1LCQbVxE5WRvx+QlftRJtOjnLox
-         vELFO9EfXCTTNlr5lSPDOFKGD8DBZVEUTDN8qMN8EXN7juPE1y3sYl/uJW8B3DG4bYd7
-         5gajEkVpDl7kobnwAzGNYqtdgXGYt3WjNFF/M4xbsJo9EJFnLwPUaaKOE/XojvDF+Tp1
-         7rNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692182079; x=1692786879;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1TBFn80+o0TLek+tL20KausYPCYv+uibCCkUTGpWXII=;
-        b=G8jv6mQ1eZznqg0zBqZYdwb/jnoDMADO0NRfRKlX5vuXYFaoHw1vbXtnqf9WilwldX
-         sjMouUNdfEoDr2Ewdk5/cj5R96kZ6JJ9Ls2SUVTlO2p8Czm2iM6Pk2iM+ZkxPero2Nkd
-         HLiYztwLq596+bvx6pLcphtcsYP1GsIG+8SeZMs9eTA4PLxJav7GsEJQH/v+kNcrZdHn
-         gfW/3hWz5XGFCCR/IlGfvjfCHDbg1ZBduUC+Wvx0O4E66/C/+PXs6zcf3OyhmCvhr2Pk
-         ibBi4zJ7G8sxGPiR1GRh23lTd4k2EQ+hzGPJrCCG4CXh9IRk/lVXosjRaddyUR174fqI
-         z6Hg==
-X-Gm-Message-State: AOJu0Yxi8yTpXSRs6aN+7JPzyNjxEMJrK4da/RJwSPpRu5WJkx52sjq+
-        X2nYXJ8vAkW66ORePkpOAl71sA==
-X-Google-Smtp-Source: AGHT+IFlcNBWlNE8mfmjhWrUCRt3pXMI2oaXy/5gBTXPSbPjugwMcUsRpxIw6Pa7OJZaHH+3Wv77iA==
-X-Received: by 2002:a1c:4c0f:0:b0:3fb:e1d5:7f48 with SMTP id z15-20020a1c4c0f000000b003fbe1d57f48mr1080073wmf.5.1692182078531;
-        Wed, 16 Aug 2023 03:34:38 -0700 (PDT)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id z15-20020a05600c114f00b003fe2bea77ccsm20796404wmz.5.2023.08.16.03.34.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 03:34:38 -0700 (PDT)
-Message-ID: <cfcc85b6-fcb7-6433-d64b-58f287e9d028@linaro.org>
-Date:   Wed, 16 Aug 2023 12:34:37 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] thermal: max77620_thermal: removed unneeded call to
- platform_set_drvdata()
-Content-Language: en-US
-To:     Andrei Coardos <aboutphysycs@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Cc:     alex@shruggie.ro, rui.zhang@intel.com, amitk@kernel.org,
-        rafael@kernel.org
-References: <20230811191548.3340-1-aboutphysycs@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20230811191548.3340-1-aboutphysycs@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Wed, 16 Aug 2023 06:36:32 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52186210D
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:36:31 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 06A7021910;
+        Wed, 16 Aug 2023 10:36:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692182190; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tAL5BP6HLJYIFFuAOyQ9ypRvBhMeLPd5InptuqlGzHg=;
+        b=VyVTbEIY1Mc/WERAMwn0XxFVJ+NR3RusukAmpToS/omcTjJ+6SYYQwLNc4MeyPETi0CKj4
+        252iGRkmNQKiOYy+qhFx1XSgbLDgCOegSwmt99a8W7KUgUKS8+CsEgPEnfo+xQ2aVmUryQ
+        RlznlFJ2nooZlpJte9D8pweUjHPOKyU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692182190;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tAL5BP6HLJYIFFuAOyQ9ypRvBhMeLPd5InptuqlGzHg=;
+        b=zpoTT+PwxeIaRf3IIWomQfGxqXR7vvtSi6SncSfDz8rfOz5EsmNke9YkqqSNhbYlpXAGTD
+        DTBAoRKStF9NFQCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E5D2C1353E;
+        Wed, 16 Aug 2023 10:36:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id yyPAN62m3GQ9cgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Wed, 16 Aug 2023 10:36:29 +0000
+Date:   Wed, 16 Aug 2023 12:36:29 +0200
+Message-ID: <871qg36zpu.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Karol Herbst <kherbst@redhat.com>, linux-kernel@vger.kernel.org,
+        Ben Skeggs <bskeggs@redhat.com>, Lyude Paul <lyude@redhat.com>,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH] drm/nouveau/disp: fix use-after-free in error handling of nouveau_connector_create
+In-Reply-To: <20230816101424.GGZNyhgP6GpqZx9xi3@fat_crate.local>
+References: <20230814144933.3956959-1-kherbst@redhat.com>
+        <20230816093015.GDZNyXJ28y9uspb4Mr@fat_crate.local>
+        <CACO55tu8ab-rxCzxFXbUh4Z=W9E-1f8sH6BVd=P+16dQ9PQNjg@mail.gmail.com>
+        <20230816100344.GEZNyfAIt0CJa+g6Sj@fat_crate.local>
+        <20230816101157.GFZNyg7QARIL+io6m4@fat_crate.local>
+        <20230816101424.GGZNyhgP6GpqZx9xi3@fat_crate.local>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/08/2023 21:15, Andrei Coardos wrote:
-> This function call was found to be unnecessary as there is no equivalent
-> platform_get_drvdata() call to access the private data of the driver. Also,
-> the private data is defined in this driver, so there is no risk of it being
-> accessed outside of this driver file.
+On Wed, 16 Aug 2023 12:14:24 +0200,
+Borislav Petkov wrote:
 > 
-> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
-> ---
+> On Wed, Aug 16, 2023 at 12:11:57PM +0200, Borislav Petkov wrote:
+> > Does that help?
+> 
+> Btw, note that this is *plain* -rc5, without your patch.
 
-Applied, thanks
+The UAF looks very same as I had and that's the bug Karol's patch
+should address.  So more interesting would be the result with the
+patch :)
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
+Takashi
