@@ -2,273 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED32A77EBCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B95577EBC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346408AbjHPV3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 17:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
+        id S1346497AbjHPV2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 17:28:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346499AbjHPV2n (ORCPT
+        with ESMTP id S1346488AbjHPV2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 17:28:43 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34241FD;
-        Wed, 16 Aug 2023 14:28:42 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 19DF260174;
-        Wed, 16 Aug 2023 23:28:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1692221320; bh=rIZf+tAqF67XAb0OfH9NkRmreg9cRVOUccORHUbh0H4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ip8HZAJDpPj4BkPt74Lq9cHX2vfPStRQpP7FbobsLN1TTqe10LT+MixTwEAaOEBsF
-         oWK0r2HuOPsrVjtIboxyzlw3b0IEIF1+Znp/bEaWY4IvSWROWft3gH+BEnAXQ45loi
-         k3chfVnEcxr8wpy0UNfoCYBM6g1kpRiCdvT+FeIWAx0fVUkraR8+6EB6xE6OeRr/8A
-         ICQAru91zWnNjB9WNPyaH8E8DqIxZ1OkISAhaX3s+7SOlzpFtOT0lNA2gwPyWHgl9K
-         +tlfom2aszpaiUdbzsw8mj7XigOShBCvDHkzIp2jkc47m5nljKRkcVlTcaEIce7Ip6
-         aigUO4Qq9wE8A==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id YeHIiorDg4g1; Wed, 16 Aug 2023 23:28:36 +0200 (CEST)
-Received: from defiant.. (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 39A6B6015E;
-        Wed, 16 Aug 2023 23:28:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1692221316; bh=rIZf+tAqF67XAb0OfH9NkRmreg9cRVOUccORHUbh0H4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LWpPMdZ6/Zn4Mqa3h4TvyvYrd3+6FpBCr+FCQVHpTkgc6VtAFWp2PdYo444oHEJ8k
-         26ALhOk4jmEMP38WH9I0oQBtucoIRfIjbFrxKn4xzHneBACkw9lbJtAW2IjMccALG6
-         F0iypWoinFein3WPA18nps7m6CGZxUe73qiP0MggSmekVvAJNCYVQWd/tf1+TPzg5Q
-         6K+ETVN+jiHpEkqrhv0OeYStLPb8q8SOPFEQFDZNdhCffkEJc5IemfFTlQcIaZzZYX
-         vtNZzPv/FbaVUtQ2eA3NXGYXOebntnqQOc0z4/TQnGepYk16jnXKSN4mBG5qgAFdQP
-         9nQehndIxFAJw==
-From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        linux-kernel@vger.kernel.org
-Cc:     "Luis R . Rodriguez" <mcgrof@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Russ Weight <russell.h.weight@intel.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        Tianfei Zhang <tianfei.zhang@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kselftest@vger.kernel.org, stable@vger.kernel.org,
-        Dan Carpenter <error27@gmail.com>
-Subject: [PATCH v4 4.19 1/1] test_firmware: prevent race conditions by a correct implementation of locking
-Date:   Wed, 16 Aug 2023 23:27:18 +0200
-Message-Id: <20230816212717.817202-1-mirsad.todorovac@alu.unizg.hr>
-X-Mailer: git-send-email 2.34.1
+        Wed, 16 Aug 2023 17:28:30 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2047.outbound.protection.outlook.com [40.107.94.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B52F7FD;
+        Wed, 16 Aug 2023 14:28:28 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g+Ddvz30Nc+pZHth4+BSYeUIU4vUy/lS9yxf0IJTl7aqw9ZV1xlLqffIM0LtVDpI+F/XqpXK0lkKBFYqMVRaU1ecWR8s2DOPYVuR0Me8e01y+Xrm1ycKqIOZdtwlCvU6f3oFGocJuQVcDQCCVqhyPk3N9WBKiwbKeNmaFtBdWoNZ2E3L+urxvRNuOm0lkpQZzq62b4tgMo1AAC7bYs6FmTyo+oPEV2XSaJ5DuawTSSD6vlNw8/uH8geL1fSVA/HsSLaxbcnyVNQxD7Fs0KF+c9N247b7yu4fdA7Ilz6TGpPVQyEcH14Fod5thD0RpFdr1pi250NUgTPfZr1W5UL33A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xznmG5Zqw0KqTFiL7YueEEWAK4tz6xiCoAe7DH+ux/4=;
+ b=E3EhdwRgExaR2K0fqkcyDq9lbhk4rvR9q33C0PXVUcHxcJ10uh3muJ3glbh7OjV595vpP10ktZ6LA6mYDl+1akREpiySPnchiZHi9JWfx3dGyw7EtLcxga4LvwDNjmrKTAzcE6zYV45/i+uWX467hARXf5xXOwxaslEWflvHn0/NeFCoUgqGrsr4/EozuGjZmeypJAMpzugBIbgUN9upwCTxUlAGTfCBO5Uo9OlzT27U7ibgBDnK75IfDdhBEaOFHOCFPqH98PsBwEDUZEeBVPf1zy8tEf6bd5fbX0t5WuE1OysyAGpKF3i7GC0FcQfDQx+NRCer/Txr4DnDOoob8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xznmG5Zqw0KqTFiL7YueEEWAK4tz6xiCoAe7DH+ux/4=;
+ b=WNUP4anuXso3nvweJnhRkUSV2qH3/vrLlaA/izAuySit/M6sdXmshGDeJPTTjHheERyXfsU+xvBZSCGA8Um+96F9KW5CvQAFkatsPdSSpt7FbU3xCXUa0K0wfVEmiVzk0GvfENUTaLO85w5Nqe1v0Fy3/zPhdTForob/zZmjH7dtgnLeWYKk98AMHscYkTcXEW/uBHq4vQsBpUgLUMB3LYLrR3RkP2bKJ3ZcYVH1SA75rA9eD0FIdwhjAM+78Mc8Xgk3DWeonkTXdquMMKSNonBQkrjIXCd6LXV+yWCuZFvffg7mtHaNOj6NItynYjb3soFNhEY9jfH+gWMW+kK+pA==
+Received: from CH2PR12MB3895.namprd12.prod.outlook.com (2603:10b6:610:2a::13)
+ by CY5PR12MB6033.namprd12.prod.outlook.com (2603:10b6:930:2f::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.29; Wed, 16 Aug
+ 2023 21:28:26 +0000
+Received: from CH2PR12MB3895.namprd12.prod.outlook.com
+ ([fe80::ae25:4f33:8a19:32c9]) by CH2PR12MB3895.namprd12.prod.outlook.com
+ ([fe80::ae25:4f33:8a19:32c9%4]) with mapi id 15.20.6678.029; Wed, 16 Aug 2023
+ 21:28:26 +0000
+From:   Asmaa Mnebhi <asmaa@nvidia.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "brgl@bgdev.pl" <brgl@bgdev.pl>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 2/2] gpio: mlxbf3: Support add_pin_ranges()
+Thread-Topic: [PATCH v2 2/2] gpio: mlxbf3: Support add_pin_ranges()
+Thread-Index: AQHZ0Fiforf54onJHkGX7vWgR5BAI6/tEceAgAACvyA=
+Date:   Wed, 16 Aug 2023 21:28:26 +0000
+Message-ID: <CH2PR12MB38953114436B7B0768A1C321D715A@CH2PR12MB3895.namprd12.prod.outlook.com>
+References: <20230816154442.8417-1-asmaa@nvidia.com>
+ <20230816154442.8417-3-asmaa@nvidia.com>
+ <CAHp75Vdp9TYTod6UBLxG_YrT_vD4azfyrM9dTrau8CPJuH_vrQ@mail.gmail.com>
+In-Reply-To: <CAHp75Vdp9TYTod6UBLxG_YrT_vD4azfyrM9dTrau8CPJuH_vrQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CH2PR12MB3895:EE_|CY5PR12MB6033:EE_
+x-ms-office365-filtering-correlation-id: 7f8fc1f1-26c0-49c2-2bca-08db9e9fba20
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 38VC2ccQ4FRfMkgOzjaGpv3s3BnQKPjyRIB4jkd2WVGlpInzHd855xEEcT4KuxE3TfESOqejRHBArf4d2ayV1ixuoiu3Qxx/aqqmiVh5OC0JsSRhNFGfpvCsXCD/jfx45B/+C+4SwYbzP50NbceFpVeDYdS5v8SAbg4xBxM6eipaJn33O3BrjKZCezjN5mLa5rIItVY+DI2aqqL1xalyMGNsS/vwgu/TMACiYVCmLvQQzP84XK3qPwycMA/S7w/6T3UfoAOr56uVGCVdCUUMXyBkGGFIpXP+RvzWnfOa7YpOqkQoB3Buq0gzeTGTavZvhUrpTrN1W/Oham2ZNZIccFPk1OQLpORnN2scaImkVLUZv/mnFTr8Ij+EAje2KxMTgn2wlQXpvKDj4N6UfP+QZ4RnS3WEt1pTTA35ixS0CMb8U5d2r2dq0pW3OGQcSJliK6z5MVwvnuLHAO32huLqVHcsSrHBVTlWRv5Z7Qfl5WqID7L63uS9nrXO0gru1nW5eYJFmI0KWPG4quYCobgMtSXiuyfVJ3sE0UFAY2tqO46I90CRPShxZCTAd0qFcVtxMcPbWahkU7N7n/E/4czpji9kxE3sWym7z380dd8tdz3IDn9e1dNo/8NRf2tuogWS
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR12MB3895.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(396003)(376002)(39860400002)(1800799009)(451199024)(186009)(2906002)(83380400001)(4744005)(86362001)(478600001)(6506007)(7696005)(71200400001)(33656002)(9686003)(26005)(55016003)(5660300002)(52536014)(41300700001)(66446008)(122000001)(54906003)(316002)(66946007)(66556008)(66476007)(64756008)(6916009)(76116006)(8676002)(8936002)(4326008)(38100700002)(38070700005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WUMwQmI5YmJkVTh1cHU0TDdzNHA2RnRDT2FzaFpWRzg5OTMvQVF4THVLQmZj?=
+ =?utf-8?B?WnRWNEsySzBuNjV6K3JZSnN4U3NHWlFoTVBoMmVJb0o0eW5HYmZURWFmU2hL?=
+ =?utf-8?B?bTh3VzFKc0JyWll1cmRYbmxMYzNZaTIxMno4a1RvbmlFRjVBUFVqdTFaZWRO?=
+ =?utf-8?B?SkVoOHZQbjNVd3ZoOUl1V285WjhEdWc2STI4Mk1sdFVaTnlMbGx1NFhGRnhu?=
+ =?utf-8?B?TzdEMWxTL1lyTnlnWHQwa1F0eTdYVjEydEc1SHlxRkZFY3pFdUQzQkZEZFFt?=
+ =?utf-8?B?ZnNVOWlLM29tUlR2MzVoNXZuWTgxVitla3pIaDlpVWRpWHNHdnJIeFlDWmhC?=
+ =?utf-8?B?and3NEpDZ0hFam5ZUGdYRW1EdERmY1NiaVQ4V3oxZzA1ZFVIRUNMdmlZbDlP?=
+ =?utf-8?B?bnBSMTNZOElHaEVzenJ3eFFRUXdSN2MzM0tDcXpRejJRcTVmdFdBQVlIbC9O?=
+ =?utf-8?B?T1dlOHIwZ3BKQW1TdnpCdlFZSFlXc3Y0R3ZZQWhCNFRmOWNNZ0pKUU5KYlNQ?=
+ =?utf-8?B?MHhZMi9KeUJNd3dkV2hMSzV3N3A1S2srZjl2d003MVloR0tFdGtmeXBOZTgr?=
+ =?utf-8?B?bGVKN1J5WTV4VkkzWTI0NmFvcGVMb3R4VTEyWHpQZElmTGpvT1F4TmttRmRT?=
+ =?utf-8?B?Z3ZIeXE5aVVXdExwaGJWd04ySDZ3V1Y5Q2hhK0d2Z08zbnZiZ1BVOGVVZGFH?=
+ =?utf-8?B?SkUwdzNieGV1SEtOUWkzaUdtYnY2TWxVSnlBZ0VaTk96RWl3NTVCUStmTVgz?=
+ =?utf-8?B?cWEzVTNQUk9ZRVJSTXh4dUgwZFFUeFRMWTBSeUZkamFqQ0xRTGtHZnZjWjBM?=
+ =?utf-8?B?T3VwTW9SSHNlTk9jY1RBemNqa084U1E3MjU1a3FtNHlUNXVzL1kvMHBYby84?=
+ =?utf-8?B?eEp0TXZQU0J1SEhLNzRkSTdpdGF1eFJzRXFsdmNueU5GbFo3V2Q4c3Vyakw3?=
+ =?utf-8?B?dzBBUVpDTkhEeEo4ditRbjlhVmNRK1hpWTRSZkozaTF2WGttencwdXdseEsz?=
+ =?utf-8?B?OWY5Z0Fha1huNXRqY3NSVVk0NFRNc3BBNUJWYUgydGlRUys4bnFCc2FDNUZU?=
+ =?utf-8?B?VGQzdWtVeFR1NU1lWmxCczBNU3ljeUZ4aEwxUTZqTEFYdnhvVUJFcmRyeGVw?=
+ =?utf-8?B?THJRZVNjdU5LdlA1NFBqem11UlFiUEQ2QlpPTUlpM0l1SEJDTUlOWlJJTjRM?=
+ =?utf-8?B?WWxYclZlNzVueFJRVDVpNmZPN3Zpb3ZUYVpWL2syOVYrRCt5NzdybmsvWjFK?=
+ =?utf-8?B?TG9ySm9hbE9PTWNSNmpZazlKWWhCbVNFOFpxMGYwVVVCeFFabTFIM01TRXdL?=
+ =?utf-8?B?ZnFMVTR4RkJQcExuUDk4aElROE9YeHhKOE11UHBUOFFJQjdzZktRN1hGNnpq?=
+ =?utf-8?B?NFpMenRod0Q2ZVlqUkx0TVY2cnVRNUk1aE9IaHlSY3NHZkdaVnphTExVZ29l?=
+ =?utf-8?B?SW44VGk5TUR1OXQ1L21wSWpZTmRncmtIQ2Y0c3Q0bGg2aXlOaE1uTkZGb2kz?=
+ =?utf-8?B?Ymp5dW41bU52Z2NSaWJ3OW1ldEQ3YXh2Q1NyNisrVjFiem1wdlpWd0ZBb3J0?=
+ =?utf-8?B?Q01uMG1wT2FIUURlUkl4L0dJcWxmeDBudGVvQUdZc29HT0FLYVhGZWhlbGNm?=
+ =?utf-8?B?NENlK0I2U3BrRWhvZjEwcXJQeUM3MllEcnJjMmFuRW1sZ3ZIaXRXTFBXdnhs?=
+ =?utf-8?B?eVpPcFFJd3ByUWMvRWJoTy9UUGwzbWtOajZyaElnd3d5WEpOTTBjalU0c0Mr?=
+ =?utf-8?B?R2dJR0R6aUFISGJCQ21lSUM3YkZZeGs1NlZwdGR5QUJLNHBwUlg1Q1JoZXNn?=
+ =?utf-8?B?TTBmaGVYdGRvYW5JVmw0YjV5SVpTTk9yT0xFcVdKYlRrcjkwcmZ5ZlJJeU5N?=
+ =?utf-8?B?SjhxTVdlM21xZHFUWUhyUEFQay9jMFlhemNTNzFtU1BldXN2dm0ybXVRcFh6?=
+ =?utf-8?B?YkdWbWNkVHNRNDBuTU1PS3J1c2NxaTZtVkxwaUUxMVlwQ1djdWVLd3A0WFJx?=
+ =?utf-8?B?bjVDUHRQNzdjQ0ZSQzloSkxlZWtnRFZIc1lDdm50YVQ5NjIzaGVhbEJHemkr?=
+ =?utf-8?B?NEl2akhaQWNJMWQ4ZHl5bzFiNnc3M29XTmxyT1Bjazh5OWU1TGZGd05MclZO?=
+ =?utf-8?Q?G+0o=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB3895.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f8fc1f1-26c0-49c2-2bca-08db9e9fba20
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Aug 2023 21:28:26.2265
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YF397fl15cc+8+3/Hm78nQ0s+j6WiY0pLixMDoM8xgL1EOlmZufaBNvkd+IroODhSh3VNHDvOchWbeugsXUGYg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6033
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Upstream commit 4acfe3dfde685a5a9eaec5555351918e2d7266a1 ]
-
-Dan Carpenter spotted a race condition in a couple of situations like
-these in the test_firmware driver:
-
-static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
-{
-        u8 val;
-        int ret;
-
-        ret = kstrtou8(buf, 10, &val);
-        if (ret)
-                return ret;
-
-        mutex_lock(&test_fw_mutex);
-        *(u8 *)cfg = val;
-        mutex_unlock(&test_fw_mutex);
-
-        /* Always return full write size even if we didn't consume all */
-        return size;
-}
-
-static ssize_t config_num_requests_store(struct device *dev,
-                                         struct device_attribute *attr,
-                                         const char *buf, size_t count)
-{
-        int rc;
-
-        mutex_lock(&test_fw_mutex);
-        if (test_fw_config->reqs) {
-                pr_err("Must call release_all_firmware prior to changing config\n");
-                rc = -EINVAL;
-                mutex_unlock(&test_fw_mutex);
-                goto out;
-        }
-        mutex_unlock(&test_fw_mutex);
-
-        // NOTE: HERE is the race!!! Function can be preempted!
-
-        // test_fw_config->reqs can change between the release of
-        // the lock about and acquire of the lock in the
-        // test_dev_config_update_u8()
-
-        rc = test_dev_config_update_u8(buf, count,
-                                       &test_fw_config->num_requests);
-
-out:
-        return rc;
-}
-
-static ssize_t config_read_fw_idx_store(struct device *dev,
-                                        struct device_attribute *attr,
-                                        const char *buf, size_t count)
-{
-        return test_dev_config_update_u8(buf, count,
-                                         &test_fw_config->read_fw_idx);
-}
-
-The function test_dev_config_update_u8() is called from both the locked
-and the unlocked context, function config_num_requests_store() and
-config_read_fw_idx_store() which can both be called asynchronously as
-they are driver's methods, while test_dev_config_update_u8() and siblings
-change their argument pointed to by u8 *cfg or similar pointer.
-
-To avoid deadlock on test_fw_mutex, the lock is dropped before calling
-test_dev_config_update_u8() and re-acquired within test_dev_config_update_u8()
-itself, but alas this creates a race condition.
-
-Having two locks wouldn't assure a race-proof mutual exclusion.
-
-This situation is best avoided by the introduction of a new, unlocked
-function __test_dev_config_update_u8() which can be called from the locked
-context and reducing test_dev_config_update_u8() to:
-
-static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
-{
-        int ret;
-
-        mutex_lock(&test_fw_mutex);
-        ret = __test_dev_config_update_u8(buf, size, cfg);
-        mutex_unlock(&test_fw_mutex);
-
-        return ret;
-}
-
-doing the locking and calling the unlocked primitive, which enables both
-locked and unlocked versions without duplication of code.
-
-Fixes: c92316bf8e948 ("test_firmware: add batched firmware tests")
-Cc: Luis R. Rodriguez <mcgrof@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Russ Weight <russell.h.weight@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Tianfei Zhang <tianfei.zhang@intel.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Colin Ian King <colin.i.king@gmail.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kselftest@vger.kernel.org
-Cc: stable@vger.kernel.org # v5.4, 4.19, 4.14
-Suggested-by: Dan Carpenter <error27@gmail.com>
-Link: https://lore.kernel.org/r/20230509084746.48259-1-mirsad.todorovac@alu.unizg.hr
-Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
-
-[ This is the patch to fix the racing condition in locking for the 5.4, ]
-[ 4.19 and 4.14 stable branches. Not all the fixes from the upstream    ]
-[ commit apply, but those which do are verbatim equal to those in the   ]
-[ upstream commit.                                                      ]
-
----
- v4:
-	verbatim the same patch as for the 5.4 stable tree which patchwork failed to apply.
-
- lib/test_firmware.c | 37 ++++++++++++++++++++++++++++---------
- 1 file changed, 28 insertions(+), 9 deletions(-)
-
-diff --git a/lib/test_firmware.c b/lib/test_firmware.c
-index b5e779bcfb34..be3baea88b61 100644
---- a/lib/test_firmware.c
-+++ b/lib/test_firmware.c
-@@ -284,16 +284,26 @@ static ssize_t config_test_show_str(char *dst,
- 	return len;
- }
- 
--static int test_dev_config_update_bool(const char *buf, size_t size,
--				       bool *cfg)
-+static inline int __test_dev_config_update_bool(const char *buf, size_t size,
-+						bool *cfg)
- {
- 	int ret;
- 
--	mutex_lock(&test_fw_mutex);
- 	if (strtobool(buf, cfg) < 0)
- 		ret = -EINVAL;
- 	else
- 		ret = size;
-+
-+	return ret;
-+}
-+
-+static int test_dev_config_update_bool(const char *buf, size_t size,
-+				       bool *cfg)
-+{
-+	int ret;
-+
-+	mutex_lock(&test_fw_mutex);
-+	ret = __test_dev_config_update_bool(buf, size, cfg);
- 	mutex_unlock(&test_fw_mutex);
- 
- 	return ret;
-@@ -323,7 +333,7 @@ static ssize_t test_dev_config_show_int(char *buf, int cfg)
- 	return snprintf(buf, PAGE_SIZE, "%d\n", val);
- }
- 
--static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
-+static inline int __test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
- {
- 	int ret;
- 	long new;
-@@ -335,14 +345,23 @@ static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
- 	if (new > U8_MAX)
- 		return -EINVAL;
- 
--	mutex_lock(&test_fw_mutex);
- 	*(u8 *)cfg = new;
--	mutex_unlock(&test_fw_mutex);
- 
- 	/* Always return full write size even if we didn't consume all */
- 	return size;
- }
- 
-+static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
-+{
-+	int ret;
-+
-+	mutex_lock(&test_fw_mutex);
-+	ret = __test_dev_config_update_u8(buf, size, cfg);
-+	mutex_unlock(&test_fw_mutex);
-+
-+	return ret;
-+}
-+
- static ssize_t test_dev_config_show_u8(char *buf, u8 cfg)
- {
- 	u8 val;
-@@ -375,10 +394,10 @@ static ssize_t config_num_requests_store(struct device *dev,
- 		mutex_unlock(&test_fw_mutex);
- 		goto out;
- 	}
--	mutex_unlock(&test_fw_mutex);
- 
--	rc = test_dev_config_update_u8(buf, count,
--				       &test_fw_config->num_requests);
-+	rc = __test_dev_config_update_u8(buf, count,
-+					 &test_fw_config->num_requests);
-+	mutex_unlock(&test_fw_mutex);
- 
- out:
- 	return rc;
--- 
-2.34.1
-
+ID4gPiB2MS0+djI6DQo+ID4gLSBObyBjaGFuZ2VzLg0KPiANCj4gSXMgdGhpcyBjb3JyZWN0Pw0K
+QWggbXkgYXBvbG9naWVzLCBJIGFkZGVkIHRoZSB3cm9uZyBjb21tZW50IGhlcmUuIEkgcHV0IGl0
+IGluICJ2MiAxLzIiLg0KDQo+ID4gK3N0YXRpYyBpbnQgbWx4YmYzX2dwaW9fYWRkX3Bpbl9yYW5n
+ZXMoc3RydWN0IGdwaW9fY2hpcCAqY2hpcCkgew0KPiA+ICsgICAgICAgdW5zaWduZWQgaW50IGlk
+ID0gMDsNCj4gPiArICAgICAgIGludCByZXQ7DQo+ID4gKw0KPiA+ICsgICAgICAgaWYgKGNoaXAt
+Pm5ncGlvICUgTUxYQkYzX0dQSU9fTUFYX1BJTlNfUEVSX0JMT0NLKQ0KPiA+ICsgICAgICAgICAg
+ICAgICBpZCA9IDE7DQo+IA0KPiBUaGlzIGlkIGNhbGN1bGF0aW9uIHNlZW1zIHdyb25nIHRvIG1l
+IGFzIEkgc2FpZCBpbiB2MSByZXZpZXcuDQo+IFdoeSBkbyB5b3UgdGhpbmsgdGhlIGFib3ZlIGlz
+IHdoYXQgeW91IHdhbnQgYW5kIG5vdCBqdXN0IHdvcmtpbmcgYnkgbHVjaz8NCg0KSSB3b3VsZCBs
+aWtlIHRvIGdldCB0aGUgZ3BpbyBibG9jayBpZCB3aGljaCBjYW4gb25seSBiZSAwIG9yIDEgb24g
+Qmx1ZUZpZWxkLTMgKG9ubHkgMiBncGlvIGJsb2Nrcywgb25lIHdpdGggMzIgZ3BpbyBwaW5zIGFu
+ZCBvbmUgd2l0aCAyNCBncGlvIHBpbnMpLg0KVGhlIGFib3ZlIGxvZ2ljIHdhcyBhbiAiZWFzeSIg
+d2F5IGZvciBtZSB0byBnZXQgdGhlIGdwaW8gYmxvY2sgaWQuIFRoZW4gdGhlIHBpbl9iYXNlIGZv
+ciBlYWNoIGdwaW8gYmxvY2sgaXM6DQpwaW5fYmFzZSA9IGlkICogTUxYQkYzX0dQSU9fTUFYX1BJ
+TlNfUEVSX0JMT0NLDQoNCg0KDQoNCg0KICAgDQoNCg==
