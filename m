@@ -2,126 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7771077E59D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 17:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12F0D77E5A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 17:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344386AbjHPPuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 11:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56320 "EHLO
+        id S1344370AbjHPPuw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Aug 2023 11:50:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344445AbjHPPuC (ORCPT
+        with ESMTP id S1344372AbjHPPuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 11:50:02 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A67A2733;
-        Wed, 16 Aug 2023 08:49:53 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37GFauQm012404;
-        Wed, 16 Aug 2023 15:49:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=FJZYLStsj55jSIlYlDgwpbg7S5EBCrJAiAQRw3GAopw=;
- b=CnO52sh4ZH5oiqh3tfLQ0EkwiicbWZKrhznXHo2V7ByO6OalRCxb4tDZi+7D5KQDVE/0
- ls5Cjv0YAADdDV8tPBlncZxF8JE958h1ACetIIDk9xZdsZ0uXoxFxSoHMwFrijaqq9oz
- 4piKlo7g1UOh/qlP1CuJBcemk+kaMtiWygB1qAiJSFOI8VOpXT1s3gFTn1S7M3FVV7W/
- BOQKr6HvMm4MICZlvK6ZvPRIEMyxv5RsJFxzg/iZeMiReg90TQsuVr/FheYLXaZPDC94
- gJtVKYb0fPxSa6hAe9oL/hKEXC3U3+d95F3menOaXdaHD4I6PC7KZUXrTYyBM8QxmCeZ ow== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sh12u8q53-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 15:49:50 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37GFBsqM002403;
-        Wed, 16 Aug 2023 15:49:49 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sendne2se-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 15:49:48 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37GFnk1u26936042
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Aug 2023 15:49:47 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D993D2004B;
-        Wed, 16 Aug 2023 15:49:46 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C74F120040;
-        Wed, 16 Aug 2023 15:49:46 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed, 16 Aug 2023 15:49:46 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55390)
-        id 7BC89E012C; Wed, 16 Aug 2023 17:49:46 +0200 (CEST)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH RESEND v3 3/3] tracing/synthetic: allocate one additional element for size
-Date:   Wed, 16 Aug 2023 17:49:28 +0200
-Message-Id: <20230816154928.4171614-4-svens@linux.ibm.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230816154928.4171614-1-svens@linux.ibm.com>
-References: <20230816154928.4171614-1-svens@linux.ibm.com>
+        Wed, 16 Aug 2023 11:50:19 -0400
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4F02D46
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 08:49:59 -0700 (PDT)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-58c7bd44c7bso9572417b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 08:49:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692200999; x=1692805799;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2iT0YlCUUEWGIL1xiG1wfsHzxu/rA8CnFEMGG0g8NF0=;
+        b=OUoYY6FxZqwnASu/nYtQi8S+6/h+sgAST5nACZqi+DXf35Z+yTY+D7qTygqDdkEv/o
+         pBAf7rBSRKWrmJz2Q6AtmWMdnMvMcYErLDtcwY1PigFlr2HLyg58pz569JQrFhCQISJZ
+         x9LPbeg2VoD1Lzcstqkn/JOPgpIU491yVFrVIQzfP+I1II2u0mGY9xGVvwGtxIq/+1MY
+         uXjj/nZrsKNBvzbocJqCWqlqV+K8r9+NDpj9XWK73cRHGkzIIZ75u7I4dSqNoe8RYX/H
+         hhkNZOgwypqO1hcuTVtXCFBzHtrTBN3oRMfx29SaOCXQlrgY3dnC3uuIN2Jx7x2hQ08I
+         OCjg==
+X-Gm-Message-State: AOJu0YzgLVy0pg702NmGbfvvBq+sNkI+pWKqZejighlNIkM9Wqwk0Exe
+        GxWj9uSkaBxDLSZtwXgAjyFozhZF+ZkfrQ==
+X-Google-Smtp-Source: AGHT+IFOiSEX2GvbNI0JKcwmWZjLa6KCRZuNdiMsyBsJJAaD6TTfIaZD/CRRdO3GDzs6w0Kgcvj1qw==
+X-Received: by 2002:a0d:e6d0:0:b0:568:d586:77c4 with SMTP id p199-20020a0de6d0000000b00568d58677c4mr2066588ywe.4.1692200998915;
+        Wed, 16 Aug 2023 08:49:58 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id v13-20020a81480d000000b0056d2a19ad91sm1391795ywa.103.2023.08.16.08.49.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 08:49:58 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-d62bdd1a97dso6573876276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 08:49:58 -0700 (PDT)
+X-Received: by 2002:a25:6b44:0:b0:d01:2e8:740e with SMTP id
+ o4-20020a256b44000000b00d0102e8740emr2125365ybm.37.1692200998153; Wed, 16 Aug
+ 2023 08:49:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Rq6ZPzLbUSRNKmXEE-XkXN_ezXXgVytQ
-X-Proofpoint-GUID: Rq6ZPzLbUSRNKmXEE-XkXN_ezXXgVytQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-16_15,2023-08-15_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- mlxscore=0 priorityscore=1501 spamscore=0 adultscore=0 lowpriorityscore=0
- malwarescore=0 suspectscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308160135
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230810141947.1236730-1-arnd@kernel.org> <20230810141947.1236730-11-arnd@kernel.org>
+In-Reply-To: <20230810141947.1236730-11-arnd@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 16 Aug 2023 17:49:46 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWuFSX+W6-MaiUAf+s4pqmGZnX2z5NV1vyGVQaMz5CaWw@mail.gmail.com>
+Message-ID: <CAMuHMdWuFSX+W6-MaiUAf+s4pqmGZnX2z5NV1vyGVQaMz5CaWw@mail.gmail.com>
+Subject: Re: [PATCH 10/17] zorro: include zorro.h in names.c
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        linux-m68k@lists.linux-m68k.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While debugging another issue i noticed that the stack trace contains
-one invalid entry at the end:
+On Thu, Aug 10, 2023 at 4:22 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The zorro_name_device() function is defined in drivers/zorror/names.c, but
+> the declaration is not visible there:
+>
+> drivers/zorro/names.c:58:13: error: no previous prototype for 'zorro_name_device' [-Werror=missing-prototypes]
+>    58 | void __init zorro_name_device(struct zorro_dev *dev)
+>
+> Include the header to avoid the warning.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-<idle>-0       [008] d..4.    26.484201: wake_lat: pid=0 delta=2629976084 000000009cc24024 stack=STACK:
-=> __schedule+0xac6/0x1a98
-=> schedule+0x126/0x2c0
-=> schedule_timeout+0x150/0x2c0
-=> kcompactd+0x9ca/0xc20
-=> kthread+0x2f6/0x3d8
-=> __ret_from_fork+0x8a/0xe8
-=> 0x6b6b6b6b6b6b6b6b
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k for-v6.6 branch, with the "zorror" typo fixed.
 
-This is because the code failed to add the one element containing the
-number of entries to field_size.
+Gr{oetje,eeting}s,
 
-Fixes: 00cf3d672a9d ("tracing: Allow synthetic events to pass around stacktraces")
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
----
- kernel/trace/trace_events_synth.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+                        Geert
 
-diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-index 80a2a832f857..9897d0bfcab7 100644
---- a/kernel/trace/trace_events_synth.c
-+++ b/kernel/trace/trace_events_synth.c
-@@ -528,7 +528,8 @@ static notrace void trace_event_raw_event_synth(void *__data,
- 		str_val = (char *)(long)var_ref_vals[val_idx];
- 
- 		if (event->dynamic_fields[i]->is_stack) {
--			len = *((unsigned long *)str_val);
-+			/* reserve one extra element for size */
-+			len = *((unsigned long *)str_val) + 1;
- 			len *= sizeof(unsigned long);
- 		} else {
- 			len = fetch_store_strlen((unsigned long)str_val);
 -- 
-2.39.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
