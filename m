@@ -2,150 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0706977E1BC
+	by mail.lfdr.de (Postfix) with ESMTP id EF09977E1BF
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 14:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245271AbjHPMhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 08:37:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35262 "EHLO
+        id S245276AbjHPMhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 08:37:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243973AbjHPMhJ (ORCPT
+        with ESMTP id S244388AbjHPMhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 08:37:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989641FDC;
-        Wed, 16 Aug 2023 05:37:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Wed, 16 Aug 2023 08:37:10 -0400
+Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E851D1FDC;
+        Wed, 16 Aug 2023 05:37:09 -0700 (PDT)
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2DDA362081;
-        Wed, 16 Aug 2023 12:37:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67732C433C8;
-        Wed, 16 Aug 2023 12:37:04 +0000 (UTC)
-Message-ID: <89e72ad4-573d-2fa2-9883-9cbedc8c00ff@xs4all.nl>
-Date:   Wed, 16 Aug 2023 14:37:02 +0200
+        by mail.3ffe.de (Postfix) with ESMTPSA id 3514AA06;
+        Wed, 16 Aug 2023 14:37:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+        t=1692189428;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vJfh6GC8aHch959POkYyqkTUnj4NnXdjMKw7FcRwKoc=;
+        b=u8hsom4F23QN+Q0vmRp43G18VGyk4NagNu0MBrNjIj82pxXy7IdgNV1LyTKVVledQSz0Mr
+        yWqNrOj03deQUT0jvO8ZmrKfCDriYz9ymRcOGi9FU2T5d0Wbs/p088U7l0anJN/JvEFOu0
+        gEvQd+3d60Qg3aElZTBAvP9OJPTrCzb1vUnAhZJGSMps6CWM1kQ58UFp+laD9NR5/rcw1n
+        C1tWsUsHbPCaeKpN9GnRRcpO5a6NkVK9RA7baa99xytvA59XKaUtFl0ZpgUs+d54oRVXFg
+        NgpVc/pmdUwmfzBl1mXRHjIQvgjjrtSl+fT8m9Qo4GCuwQtGVtSDq9dtjW841A==
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2] media: vcodec: Fix potential array out-of-bounds in
- encoder queue_setup
-Content-Language: en-US, nl
-To:     Nicolas Dufresne <nicolas@ndufresne.ca>,
-        Wei Chen <harperchen1110@gmail.com>, tiffany.lin@mediatek.com
-Cc:     andrew-ct.chen@mediatek.com, yunfei.dong@mediatek.com,
-        mchehab@kernel.org, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+Date:   Wed, 16 Aug 2023 14:37:07 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        "Miquel Raynal )" <miquel.raynal@bootlin.com>,
+        "Richard Weinberger )" <richard@nod.at>,
+        "Vignesh Raghavendra )" <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
         linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20230810082333.972165-1-harperchen1110@gmail.com>
- <5a70c141736e91f635f71d9922a3bbe993a76c69.camel@ndufresne.ca>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-In-Reply-To: <5a70c141736e91f635f71d9922a3bbe993a76c69.camel@ndufresne.ca>
-Content-Type: text/plain; charset=UTF-8
+        linux-mediatek@lists.infradead.org,
+        cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: Re: [PATCH v2,1/2] mtd: spi-nor: giga: gd25lq64c: Disable quad mode
+ according to bus width
+In-Reply-To: <0011a25a-e096-73ac-9800-9d8e35efdc8b@linaro.org>
+References: <20230816104245.2676965-1-hsinyi@chromium.org>
+ <6702bac712daab13698b9bb9ad81d49e@walle.cc>
+ <5911201a-f703-abbd-3c7b-769f70df08a8@linaro.org>
+ <80ec748f37f40ae5c3c3c5d1602681b3@walle.cc>
+ <0011a25a-e096-73ac-9800-9d8e35efdc8b@linaro.org>
+Message-ID: <ecfe1bc6799755d1f2c6f94b8cb59b27@walle.cc>
+X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/08/2023 15:58, Nicolas Dufresne wrote:
-> Hi,
+Hi,
+
+>>>> like a fundamental problem and that commit 39d1e3340c73 ("mtd: 
+>>>> spi-nor:
+>>>> Fix clearing of QE bit on lock()/unlock()") is broken in that 
+>>>> regard.
+>>> 
+>>> what's wrong with the mentioned commit?
+>> 
+>>         } else if (nor->params->quad_enable) {
+>>                 /*
+>>                  * If the Status Register 2 Read command (35h) is not
+>>                  * supported, we should at least be sure we don't
+>>                  * change the value of the SR2 Quad Enable bit.
+>>                  *
+>>                  * We can safely assume that when the Quad Enable 
+>> method is
+>>                  * set, the value of the QE bit is one, as a 
+>> consequence of the
+>>                  * nor->params->quad_enable() call.
+>>                  *
+>>                  * We can safely assume that the Quad Enable bit is 
+>> present in
+>>                  * the Status Register 2 at BIT(1). According to the 
+>> JESD216
+>>                  * revB standard, BFPT DWORDS[15], bits 22:20, the 
+>> 16-bit
+>>                  * Write Status (01h) command is available just for 
+>> the cases
+>>                  * in which the QE bit is described in SR2 at BIT(1).
+>>                  */
+>>                 sr_cr[1] = SR2_QUAD_EN_BIT1;
+>>         } else {
+>>                 sr_cr[1] = 0;
+>>         }
+>> 
+>> "We can safely assume that when the Quad Enable method..". We cannot, 
+>> if we
+>> don't have 4 I/O lines. The quad_enable is just the op how to do it, 
+>> but not
+>> *if* can do it. It seems to be missing the same check as the
+>> spi_nor_quad_enable(). But I'm not sure if it's that simple.
+>> 
 > 
-> Le jeudi 10 août 2023 à 08:23 +0000, Wei Chen a écrit :
->> variable *nplanes is provided by user via system call argument. The
->> possible value of q_data->fmt->num_planes is 1-3, while the value
->> of *nplanes can be 1-8. The array access by index i can cause array
->> out-of-bounds.
->>
->> Fix this bug by checking *nplanes against the array size.
->>
->> Fixes: 4e855a6efa54 ("[media] vcodec: mediatek: Add Mediatek V4L2 Video Encoder Driver")
->> Signed-off-by: Wei Chen <harperchen1110@gmail.com>
->> Cc: stable@vger.kernel.org
->> ---
->> Changes in v2:
->> - Add Fixes tag and CC stable email address
->> - Change the title to be more expressive
->>
->>  drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c | 2 ++
->>  1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c b/drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c
->> index 9ff439a50f53..9e8817863cb8 100644
->> --- a/drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c
->> +++ b/drivers/media/platform/mediatek/vcodec/mtk_vcodec_enc.c
->> @@ -821,6 +821,8 @@ static int vb2ops_venc_queue_setup(struct vb2_queue *vq,
->>  		return -EINVAL;
->>  
->>  	if (*nplanes) {
->> +		if (*nplanes != q_data->fmt->num_planes)
->> +			return -EINVAL;
+> I see. Then extending the if condition should do the trick, as
+> spi_nor_write_16bit_sr_and_check() is called after setup. Something
+> like:
 > 
-> I don't think the claim really exists. 	For this driver, when *nplane is set,
-> it will be:
+> if (spi_nor_get_protocol_width(nor->read_proto) == 4 &&
+>     spi_nor_get_protocol_width(nor->write_proto) == 4 &&
+>     nor->params->quad_enable)
 > 
-> 
->         case V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE:
->                 requested_planes = f->fmt.pix_mp.num_planes;
->                 if (requested_planes == 0 ||
->                     requested_planes > VIDEO_MAX_PLANES)
->                         return -EINVAL;
->                 for (i = 0; i < requested_planes; i++)
->                         requested_sizes[i] =
->                                 f->fmt.pix_mp.plane_fmt[i].sizeimage;
->                 break;
-> 
-> Or the value the driver have set it in the previous call with *nplane == 0. So
-> unless there is a bug, this should not happen, and more importantly, the core
-> should not let that happen, meaning it should not be driver jobs to validate
-> this.
-> 
-> my 2 cents,
-> Nicolas
-> 
-> 
->>  		for (i = 0; i < *nplanes; i++)
->>  			if (sizes[i] < q_data->sizeimage[i])
+> Is this what Hsin-Yi is hitting?
 
-It's q_data->sizeimage that has only 3 elements, so if *nplanes is 4, then
-this will fail with an OOB.
+Hopefully :)
 
-However, I think the check should really happen in the vb2 core. If no
-buffers have been allocated yet, then the queue_setup callback will set
-the number of planes based on the current format.
-
-If CREATE_BUFS is called afterwards, then *nplanes is set to the number
-of planes that is specified in the format field of struct v4l2_create_buffers.
-
-The core clips that value to the range [1..VIDEO_MAX_PLANES], but otherwise it
-places no restrictions.
-
-I was afraid that this would cause serious problems if fewer planes are
-requested than the current format needs, but in that case the size checks
-in the buf_prepare callback of the driver will fail (since one or more planes
-will have size 0).
-
-The idea behind allowing userspace to allocate different number of planes
-in CREATE_BUFS really makes little sense and there are no drivers that rely
-on this. It would be much better if the vb2 core would return -EINVAL if
-the requested number of planes does not match that of what is used for already
-allocated buffers.
-
-If we ever get drivers that for some reason want more flexibility, then those
-drivers can set a special flag indicating that they want to check this themselves.
-
-I'll post a patch adding the check to the vb2 core.
-
-Regards,
-
-	Hans
-
->>  				return -EINVAL;
-> 
+-michael
 
