@@ -2,137 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5075177E439
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1503377E443
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343833AbjHPOyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 10:54:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54806 "EHLO
+        id S1343837AbjHPOzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 10:55:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343836AbjHPOyA (ORCPT
+        with ESMTP id S1343832AbjHPOyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 10:54:00 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EE8269F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:53:54 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 23E8140E0193;
-        Wed, 16 Aug 2023 14:53:53 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id H2xnBl_8putw; Wed, 16 Aug 2023 14:53:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1692197630; bh=eATcUugUKmg/0JLDPnk8Wvs/F7ufU1c8fhbjk7WJvtI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BTK7HLiiZf02cDAAdM3jz4GmxhDB0shh60FYymu0Vlw1t8ld2/jJ6GNQ+HS84wBP1
-         nZsvabY37js5GdXt4MCn+7AiK7gfQCViow2ueU0NsyPmdeZcq+znNZOmb+b8l+KTOF
-         uUk9VgYDxHOkBlH4FYbheDy4m30u8juOd1BfUV2+pHV8HUc9Dkkz7Cs9dSTPZgjGL+
-         UcezEFCH2UI8WOQh4pmsXGxiFjoKqO9bXbh0YrI2oXwuaH8RO4ykXYxozPIjqdNCSS
-         o1k7up5aK2o3E9wmj+LYTTLe2VOKyNMOrbn1lUcjfmpziRCw4rj9p/8cWregNJjMXn
-         DoqCvnNU19ErIrJ/UZrk8YU1/bM10A6808cGXYYtyn8tpRHNZp/6ngw2T6syeX7No+
-         cMEOdk6czenYVV73LUx0qrGd+bFU4IyLFNj9p/Q+dQsuk0JwcyOnfLRfdJXmiNy3b0
-         FH62Fy3alJfJjqkhSGBI6WoDiUWgwSW+5KB8Z5J1DHpPo9W/DxPZQQXc7ZaKegSGO+
-         Nfi09lkBPiP1AaDM0vhYEx4QH1BinPVwbGksInzBXErqRz/hqyedBaVcUluu/fiDHz
-         kP/z7U2ipabaDDZc4l42BCzywGm2FY7AunmGHGUs5U28on/PqdXfNH3KLN3x/CIEX+
-         p47aHtVtcbL3x11/EvkaJs4w=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AFD0E40E00F4;
-        Wed, 16 Aug 2023 14:53:43 +0000 (UTC)
-Date:   Wed, 16 Aug 2023 16:53:38 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Karol Herbst <kherbst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH] drm/nouveau/disp: fix use-after-free in error handling
- of nouveau_connector_create
-Message-ID: <20230816145338.GIZNzi8o3d9x9bcPzX@fat_crate.local>
-References: <20230814144933.3956959-1-kherbst@redhat.com>
- <20230816093015.GDZNyXJ28y9uspb4Mr@fat_crate.local>
- <CACO55tu8ab-rxCzxFXbUh4Z=W9E-1f8sH6BVd=P+16dQ9PQNjg@mail.gmail.com>
+        Wed, 16 Aug 2023 10:54:50 -0400
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2084.outbound.protection.outlook.com [40.107.102.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F692721;
+        Wed, 16 Aug 2023 07:54:41 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JJbHhJirFVW0FpS+dMUEANQQ4HF/enSny05CpxGv+LHY1PbAoXfxKGPxaWYl3sIicBrawd413HvGMfIv/Ayc+4TVf5tV0G9ygaOJ3g5rGrnbPu5Lh2hC4gq/98MVmrkY+25MppCxpAIjmg1VdwpjmGHAHBd/1hOtZUk+v8d5dRHzKJOH6DK+PQNO6hUohP+Dwjc6KSBM3gDoxk4HP78ldTjHCtEXQov8b0lHlEe8SwrVjZcnA1l7ggNzC5Bz3mH3ex4OVtdW8/hYsuKe9vpqW1VhEyTPZ71ojw2ApvoTQcgj8CtJOWfCcUWeQzNg+ET+HNoa90Qmqso/m0QbrbCG7A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AFY7wHMunlUUheDmU7+A7Vag0z5dzOq6JHlg511tqDY=;
+ b=d7i9DQx9fH93OKvGXn5eWM5qpYi9XM8XFw3Xosn7kmF7JzsvWftUuQXiZwYmzssKt7Ky9bUdE2iOqLmDGwNlEYk9JxmEOA9PIMDi+abQGoUhigNzZG0cpMLHXWfpENxA9GNKNr28EChhTZKwe2AaJvNGrAusaQzZhjV1Eq9wQi8H7AChQK3EJhYnAULe2giimRB5cDU62tlg3j5yX/UJT9TLwzqHm3wCFcGifwBhyfTO1MYRj8XSsx3elywxSAy5tZYEKxcf3SFt3pfKTgyVaLh+yq8LG6b+jb0jv7ct6VMm1FCg1OQtYtWMtYblK7A9e7QDUnhyAM5XvnknzeV8+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AFY7wHMunlUUheDmU7+A7Vag0z5dzOq6JHlg511tqDY=;
+ b=AcONHg24znEVvKuYOy7fUyPYJp3i2/nmNbNx5HSL2UgTzkm0WTI8AuO+2aSgle06+9BiHXh3KyC//8J2v2vrSYCwRytlxD1FnUkYAASKWuJrdY3R61n7FCwDwk1iJLWAlI3PQOaY9ZFOQXRRTJr9HUe+FY2BKSzG8O2OQW8nPOU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BL1PR12MB5874.namprd12.prod.outlook.com (2603:10b6:208:396::17)
+ by SA1PR12MB6725.namprd12.prod.outlook.com (2603:10b6:806:254::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Wed, 16 Aug
+ 2023 14:54:38 +0000
+Received: from BL1PR12MB5874.namprd12.prod.outlook.com
+ ([fe80::1352:c7fd:4b4b:cc18]) by BL1PR12MB5874.namprd12.prod.outlook.com
+ ([fe80::1352:c7fd:4b4b:cc18%7]) with mapi id 15.20.6678.025; Wed, 16 Aug 2023
+ 14:54:38 +0000
+Message-ID: <24698029-4c45-2292-ded5-13a6c12e93dc@amd.com>
+Date:   Wed, 16 Aug 2023 09:54:35 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC] Proposal to relax warnings of htmldocs
+To:     Jonathan Corbet <corbet@lwn.net>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Avadhut Naik <Avadhut.Naik@amd.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>
+References: <85964510-4f88-58d2-2687-f7fa76013cf9@amd.com>
+ <87v8dgtb9o.fsf@meer.lwn.net>
+Content-Language: en-US
+From:   Carlos Bilbao <carlos.bilbao@amd.com>
+In-Reply-To: <87v8dgtb9o.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DS7PR06CA0034.namprd06.prod.outlook.com
+ (2603:10b6:8:54::18) To BL1PR12MB5874.namprd12.prod.outlook.com
+ (2603:10b6:208:396::17)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CACO55tu8ab-rxCzxFXbUh4Z=W9E-1f8sH6BVd=P+16dQ9PQNjg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5874:EE_|SA1PR12MB6725:EE_
+X-MS-Office365-Filtering-Correlation-Id: d74d2904-1caf-4b4b-f76b-08db9e68b6f7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KhlneQeB4DsYa3BcdkjwInHnyoeoXMwPNkTK18kcIWtf2V9MbcwfxTIx7WozyqkJ2ir6Enl22sDm3euBKmOygf43nc9uk8usCW9EkBPXnM2xfOoIhk2Q5QM7JCXoUOANIgGL98uxgOoX5jLQPZ6ZkmMOGvRWMWfvOBkmiGZG8LxE2gA2QJnCszty916Vigjw9f+KcOrFKrhPQGDJmIMiUycyLKZRUbt7TTTgMbC2862TQjt5bFANdpa2ZUH9fvpmo0otDtRZvouAbhUkvCJNKHv6mCG++5896aAM5n9F9vwoGzbGHn8aYuRDGKHJF0r61T6oZO5VJnVQXY0VDYY7I1B1TKmewM3e7LUIVS+hcAS7fNxSTVyvjz7UefhUIHo44EdRSmwidJyTxbksdzfpD1yC70jsFsU78//6N36pqChyJEUqWb7OQKHtflBn53kzyhaj3CiDtLOtYDisUoc4zZvAJ3RIbdHe062qr3d3gM32a+Xeu8stQRvGvckyJZ+6zyA5touUie7n0ZWOdpjTyoY2E+GP/QUEfobIJgAP480toa3ZTF65N1VcCmoUlESwd7u8dMcctn1PAnyKstQo1bTQzSWxWNbmqo06P9l14KikpLC9uExRF+OpvDqXJF+6YnBmLn5r7x6NlWtaUbbomA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5874.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(366004)(376002)(136003)(1800799009)(451199024)(186009)(316002)(54906003)(66946007)(110136005)(66476007)(66556008)(41300700001)(5660300002)(44832011)(38100700002)(31686004)(8676002)(4326008)(8936002)(2906002)(83380400001)(26005)(478600001)(86362001)(31696002)(6512007)(53546011)(6506007)(36756003)(6666004)(2616005)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NFc2aWU2Y3pXcnJ3UExsekJsOTFhYnNhMTJNV2MrTXRlcXJqS1lheVQ5SEVF?=
+ =?utf-8?B?dTNjZ1VZTTVHZ3FTNEVwalVSUmlhTkFJOEk0VzVWcG5RVG1sZHpNTnBTZkJZ?=
+ =?utf-8?B?NzNvckQyN2NQdUtRdVFmejNHTkVMZ3pJM1FlQ2VsVUd1OUJZZHMxSytRZXk0?=
+ =?utf-8?B?bEdJYjhzeUIrNlhxcHAvUDE1SzYzOEt1eGtrdWdsVTNGQzZhQkJ6R3IzUFNl?=
+ =?utf-8?B?ckd2aHdQWjVoZG0wWk1vZmt1UjJpdWhXNEZRV1ZKZ2tpUVh3Y3VWUEFEYnVl?=
+ =?utf-8?B?b2xxWVB0eiszK0NUTHByQ2xJUFVpSHNkV3NUcVBHMEFBeEk0OTlIMUdIUjYv?=
+ =?utf-8?B?Szc5NCtJM29wVTl0SHAybEtsOURpVWI4ZDNXYU1WMyt3dVppcVExWmlMSVVk?=
+ =?utf-8?B?cWtBY1J0SWt2T0phZ3NUbXp6VVd6VzJMaGdpcFdnZ1lSK2c5aDNkRi9LaE1E?=
+ =?utf-8?B?c3BEU3pLUWU0MXYxSkRFTzk2ZzBpamZIRnBFa2ZrQzJnLzlSSDRMUmZXcnY4?=
+ =?utf-8?B?WmpJODVTL0l5UTZpNFlDVDdFd0x4ZEhKa01URkFwYTltQml4MkRsbFBybnVT?=
+ =?utf-8?B?SnhVaUNyS0dtTGJKTEZlMENwcGhRaGN6SmE4WVRvbmxLZ3l3dHBKS2ZCcWxa?=
+ =?utf-8?B?MVhNR2Z5REJReXZMaVE0bDlwamd6Y1I4OFlIOFNNMXFrVExZNWJyejQ2cE05?=
+ =?utf-8?B?OCt5eUp0ZUVENmEyVEgxRkZQTnlQUHZMaGNJSHpFTTVBSm5HbU1xWFcxQmJk?=
+ =?utf-8?B?aURSZHRYWFplVkxUSmorZjhBSFhwUGVqL25iOTl5bUk5T2hoRDBXNVloTDRQ?=
+ =?utf-8?B?VmJuSGFvYzhzQVViMHFVbFAwSG8xTlMwVldKc1IvNmhZd25WNXdablpUTFhk?=
+ =?utf-8?B?dDlHcGtiR0ZZTmZZN2JTdHdzVDF5b05RYmQ5YmVIeURmcCtYTG1vakRJRC9k?=
+ =?utf-8?B?UFlrYlUwbWw5YzgvbG5HQjRtZDI2cThWSThUT0RHQXU3RjRCWGRWKytmczlI?=
+ =?utf-8?B?TjFRMk5RUmMrdExnWWtCL2dHdm1FcEJIMXpHcnRrM0M2VjVCazgyZlJKVHVF?=
+ =?utf-8?B?TmpwcHZ4d0Q5VnhYM2ZyaWRIcnhKa0RSUTdRMFBic0t4dkR3Mk1na2E5czEx?=
+ =?utf-8?B?VUgxV3QwUUczMmdKSEs0TnJkejZ2a1RaZWJNMWtuRFhFSzd2RlFOWHJwRDRp?=
+ =?utf-8?B?alp0MnVTOC9vWlRWeDZ3Mng0WEs3K00zRVc0RkRVSS93RGo1NExUMmxTQWY4?=
+ =?utf-8?B?KytKTVZubnJ2STJnekpYVjlxckMxTVl1dlBZaThxUXFudk0rRGVqUVZJYU45?=
+ =?utf-8?B?UGY0TDZpRDJxQ3RUVjZQVGo5S1pRVGFBNHF5SDdQVXYwellKdVpFSnNJZkFw?=
+ =?utf-8?B?K3hNTGtGdGZmUHB2OXpTM21DcFdHUDZwVkdKU0hGSXZlZVRtOEdwZzJsellY?=
+ =?utf-8?B?ZE9oL0tsL0k2ekFaak1DSk5YVThGWS9wYmJUTm4xMWVDcFdUanpzM3R6L2l0?=
+ =?utf-8?B?L0didWZMTmY1VFp6OVMxMjFGMWdFUVEyNnF6RHV3citUTHVlR2UyeWFXcWxt?=
+ =?utf-8?B?QTYrZ09JZVlqYk1KeWpYRllFaGRyV0dycnE2M3lMeWptbGRlbGhGUFdycDhS?=
+ =?utf-8?B?S3F5aWV2UG14Qk1GeGEwNlZVQlNTZ2dTRWo1cmovRVFrQWRpU0tnRE93NTQ0?=
+ =?utf-8?B?QWZDcmUvWmpXRWUvOG15QXdMbXg4Q21uY0I2U1pzWDRvVTY4ZXQxOTZVaHBO?=
+ =?utf-8?B?K1RtMjBiWXRWckl1T3B0R0xlZys5Ylp4d25FZnpCbm1xeXVvSmpjbmpBa3F4?=
+ =?utf-8?B?WHJUU3RWckpmSGJ5UzZlQThOMVd6NFJ2Z1Q0djgvMkpaWk83eENxMU8xVDIw?=
+ =?utf-8?B?TXU2dDdCN2hWMmxaZVJoa3Y1NXFjSThTUktYdm1tYVRaSXQxd1NKVHdEOHNa?=
+ =?utf-8?B?b2JzZmNpREo1bnRVQk5SQjVnMldxYVpjbitjSTY2enlPazhIcWpFRVhTU3Yw?=
+ =?utf-8?B?Y29rNFo2cHk3N3daVDF2bjB0WWVaNVhZMXBROENQRDRKMW5WWGtTWjB0RmFU?=
+ =?utf-8?B?RnNJNmd2THorYlhjc3h3dGZKdC9DVHVPc29WMkZzaE1nK2ozSk5DVVVKRjBM?=
+ =?utf-8?Q?2T1ZsbYDPowGjpjVjdFuMeK93?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d74d2904-1caf-4b4b-f76b-08db9e68b6f7
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5874.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 14:54:38.7981
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tJrQuirFFdFoNTRiIJehJ4+k/2xuklDFf4tPu4tG08T25K0M1UcPHyhleXywbRL1RSNqRtN6eyvr/sDZDrCwHw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6725
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 11:51:50AM +0200, Karol Herbst wrote:
-> Mind sharing your kernel logs with that patch applied? I suspect your
-> system boots up but you might just not have the connector available or
-> something? It could be that you have one of those GPUs affected by the
-> original change and then we'd have to figure out what to do with that.
+On 8/15/23 13:23, Jonathan Corbet wrote:
+> Carlos Bilbao <carlos.bilbao@amd.com> writes:
+> 
+>> Hello all,
+>>
+>> I would like to discuss a recurring issue that we all have encountered
+>> while running `make htmldocs`. The process often generates an overwhelming
+>> amount of warnings that are not relevant to our work, which makes it harder
+>> to identify and address actual warning messages related to our changes.
+>>
+>> One of the reasons for this is the variation in warnings raised by
+>> different compilers. For instance, the Linux kernel robot employs Sparse,
+>> which recently raised a warning that we (Avadhut in CC, and then me
+>> reviewing his patch) did not catch during our testing [1,2].
+>>
+>> Particularly annoying -to me personally- are warnings of the form:
+>>
+>> "warning: Function parameter or member 'field' not described in 'struct'"
+>>
+>> that seem to enumerate every single undocumented field within a struct.
+>>
+>> I would like to propose something to alleviate this issue before the list
+>> of warnings keeps piling up.
+> 
+> ...other than fixing the actual problems? :)
 
-Close. With your patch applied, the machine is up and I can log in and
-use it. However, the output on the connected monitor stops after...
+I'm happy to fix as many as I can, but there are obstacles e.g. some things
+lack documentation, such as undocumented fields in structures with names
+that nobody but their creator could decipher. Also, that won't solve the
+underlying warning display problem (which maybe it's W!=1, as noted by
+Matthew.
 
-[    6.815167] ACPI: \_PR_.CP05: Found 4 idle states
-[    6.825438] ACPI: \_PR_.CP06: Found 4 idle states
-[    6.835661] ACPI: \_PR_.CP07: Found 4 idle states
-[    7.280093] Freeing initrd memory: 8328K
-[    7.601986] tsc: Refined TSC clocksource calibration: 3591.346 MHz
-[    7.608360] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x33c46403b59, max_idle_ns: 440795293818 ns
-[    7.620254] clocksource: Switched to clocksource tsc
-[    8.337724] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
-[    8.350553] 00:05: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
-[    8.375311] serial 0000:00:16.3: enabling device (0000 -> 0003)
-[    8.403681] 0000:00:16.3: ttyS1 at I/O 0xf0a0 (irq = 17, base_baud = 115200) is a 16550A
-[    8.424951] Linux agpgart interface v0.103
-[    8.432456] ACPI: bus type drm_connector registered
+> 
+>> I suggest for the command `make htmldocs` to
+>> only display, by default, warnings directly related to the changes being
+>> made, unless explicitly requested otherwisee.
+>>
+>> I'm thinking we could do this, for example, by making hmtldocs a two-step
+>> process: First running htmldocs as usual but with warnings disabled, and
+>> then generating docs again but only for the new files (see $git diff
+>> --name-only HEAD), with warnings active but limited to the scope of the
+>> changes made.
+> 
+> A normal build should just generate warnings for files that have
+> changed (since the last build).  Does that not do what you want?
 
-... this line here above. It is the last one output. What you see here
-below what I'm catching from serial.
+That's not the behavior I see on my system, when I run `make htmldocs` I
+see many warnings from other places.It floods my screen. The default
+behavior appears to change between configurations and compilers.
 
-[    8.456734] Console: switching to colour dummy device 80x25
-[    8.464414] nouveau 0000:03:00.0: vgaarb: deactivate vga console
-[    8.473063] nouveau 0000:03:00.0: NVIDIA GT218 (0a8c00b1)
-[    8.594096] nouveau 0000:03:00.0: bios: version 70.18.83.00.08
-[    8.607906] nouveau 0000:03:00.0: fb: 512 MiB DDR3
-[    8.926721] nouveau 0000:03:00.0: DRM: VRAM: 512 MiB
-[    8.931763] nouveau 0000:03:00.0: DRM: GART: 1048576 MiB
-[    8.937156] nouveau 0000:03:00.0: DRM: TMDS table version 2.0
-[    8.942969] nouveau 0000:03:00.0: DRM: DCB version 4.0
-[    8.948173] nouveau 0000:03:00.0: DRM: DCB outp 00: 02000360 00000000
-[    8.954696] nouveau 0000:03:00.0: DRM: DCB outp 01: 02000362 00020010
-[    8.961211] nouveau 0000:03:00.0: DRM: DCB outp 02: 028003a6 0f220010
-[    8.967739] nouveau 0000:03:00.0: DRM: DCB outp 03: 01011380 00000000
-[    8.974261] nouveau 0000:03:00.0: DRM: DCB outp 04: 08011382 00020010
-[    8.980769] nouveau 0000:03:00.0: DRM: DCB outp 05: 088113c6 0f220010
-[    8.987293] nouveau 0000:03:00.0: DRM: DCB conn 00: 00101064
-[    8.993015] nouveau 0000:03:00.0: DRM: DCB conn 01: 00202165
-[    9.005724] nouveau 0000:03:00.0: DRM: MM: using COPY for buffer copies
-[    9.023889] [drm] Initialized nouveau 1.3.1 20120801 for 0000:03:00.0 on minor 0
-[    9.032044] nouveau 0000:03:00.0: [drm] Cannot find any crtc or sizes
-[    9.162909] megasas: 07.725.01.00-rc1
-[    9.167537] st: Version 20160209, fixed bufsize 32768, s/g segs 256
-[    9.176058] ahci 0000:00:1f.2: version 3.0
-[    9.194078] ahci 0000:00:1f.2: AHCI 0001.0300 32 slots 6 ports 6 Gbps 0x3 impl SATA mode
-[    9.202487] ahci 0000:00:1f.2: flags: 64bit ncq sntf pm led clo pio slum part ems apst 
-[    9.243154] scsi host0: ahci
-[    9.252090] scsi host1: ahci
-[    9.260389] scsi host2: ahci
-[    9.268061] scsi host3: ahci
-[    9.273542] scsi host4: ahci
-[    9.279071] scsi host5: ahci
-...
+> 
+> Trying to get Sphinx to do smarter things with partial builds seems like
+> a path to frustration.  Since the specific warnings you're talking about
+> are generated by kernel-doc, a better solution would probably just
+> invoke it directly.  It wouldn't be that hard to bash out a script to
+> feed a given set of files to kernel-doc and see what it says.
+> 
+> As an alternative, of course, we could consider turning off those
+> specific warnings entirely for normal builds.
 
-and so on until full boot.
+Thanks for explaining, yes, looks like kernel-doc is the place to do
+something at.
 
--- 
-Regards/Gruss,
-    Boris.
+> 
+> Thanks,
+> 
+> jon
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Carlos
