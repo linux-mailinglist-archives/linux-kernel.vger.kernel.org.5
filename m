@@ -2,53 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA4C77E9C1
+	by mail.lfdr.de (Postfix) with ESMTP id DFBEC77E9C2
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345832AbjHPTg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 15:36:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39168 "EHLO
+        id S1345837AbjHPTga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 15:36:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345823AbjHPTf6 (ORCPT
+        with ESMTP id S1345826AbjHPTgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 15:35:58 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E439270C;
-        Wed, 16 Aug 2023 12:35:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=2EGYLJQaPR1NXrPNObCs2DqcDBIJjR1YHbvOU+64Xqo=; b=XC9AV8RD/fx9oQa7BAGuxKKIcd
-        IWwTZgE7qo35FOZjk3/7if+FSrSlAwg63eYLK/XRutn6wKDgFYCD8zx46cLpchLSplKyqAOGo++c5
-        rY74GUGM27gtGK7Cj0/JlcMYjSZ176v04akHCjQUKpOU+/t98Q8sonS2Fg+Ipbot4zFfzK31OXYR8
-        tSA6hsblTzXflhaKRxClOzmO+NctLN6PXh7MF3xFbSWX9WPmmX2MTO7VvhZQpDvcIq/gecfuh0LeY
-        jRyNeeSa/RUv7QshGULIoQItpSmyt7YCAxkW3ytVuTEkXlqCLvPgOFwTyvPs5wGrHFk3to4TXID1M
-        n4lpsTaA==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qWMJ7-004tWe-1P;
-        Wed, 16 Aug 2023 19:35:53 +0000
-Message-ID: <38158855-5738-16a9-2237-34980917566b@infradead.org>
-Date:   Wed, 16 Aug 2023 12:35:52 -0700
+        Wed, 16 Aug 2023 15:36:17 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 484EA270C;
+        Wed, 16 Aug 2023 12:36:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=QxcHYEXSEj/KJ+FSI5KmSWw0t70fxjKqE05cLmLc4gg=; b=lHRwkJOmRglxwZ3Wo7qKJoYuDq
+        ++x4k/xLJZbnx+/fwIytW6J2lhyheAYXnLHPLxU6auxEaBbtYvB8BZ+pKK6MuXiEd9GqgmTagZ8o0
+        962N4AEESI9tv1nuxGTKfBqNuR1sXOf9FoWADFuk8Wj0lIvKhGPr0w3zeG6rA9xjrAY4=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qWMJB-004J93-AI; Wed, 16 Aug 2023 21:35:57 +0200
+Date:   Wed, 16 Aug 2023 21:35:57 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC net] Revert "net: phy: Fix race condition on link status
+ change"
+Message-ID: <b5ae4bc5-20cb-470b-988c-86353592f1c9@lunn.ch>
+References: <20230816180944.19262-1-fancer.lancer@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] scsi: sli4: Remove code duplication
-Content-Language: en-US
-To:     coolrrsh@gmail.com, james.smart@broadcom.com,
-        ram.vegesna@broadcom.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org
-References: <20230816085007.10591-1-coolrrsh@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230816085007.10591-1-coolrrsh@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230816180944.19262-1-fancer.lancer@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,51 +55,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
-
-On 8/16/23 01:50, coolrrsh@gmail.com wrote:
-> From: Rajeshwar R Shinde <coolrrsh@gmail.com>
+On Wed, Aug 16, 2023 at 09:09:40PM +0300, Serge Semin wrote:
+> Protecting the phy_driver.drv->handle_interrupt() callback invocation by
+> the phy_device.lock mutex causes all the IRQ-capable PHY drivers to lock
+> the mutex twice thus deadlocking on the next calls thread:
+> IRQ: phy_interrupt()
+>      +-> mutex_lock(&phydev->lock); <-------------+
+>          drv->handle_interrupt()                  | Deadlock due to the
+>          +-> phy_error()                          + nested PHY-device
+>              +-> phy_process_error()              | mutex lock
+>                  +-> mutex_lock(&phydev->lock); <-+
+>                      phydev->state = PHY_ERROR;
+>                      mutex_unlock(&phydev->lock);
+>          mutex_unlock(&phydev->lock);
 > 
-> In the function sli_xmit_bls_rsp64_wqe, the 'if' and 'else' conditions 
-> evaluates the same expression and gives same output. So removing the redundant 
-> code duplication to optimise the code.
-> 
-> This fixes warning such as:
-> drivers/scsi/elx/libefc_sli/sli4.c:2320:2-4: WARNING: possible condition with no effect (if == else)
+> The problem can be easily reproduced just by calling phy_error() from the
+> any PHY-device interrupt handler.
 
-What tool produces this message?
+https://elixir.bootlin.com/linux/v6.5-rc6/source/drivers/net/phy/phy.c#L1201
 
-> Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
-> ---
->  drivers/scsi/elx/libefc_sli/sli4.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/scsi/elx/libefc_sli/sli4.c b/drivers/scsi/elx/libefc_sli/sli4.c
-> index 8f96049f62dd..5e7fb110bc3f 100644
-> --- a/drivers/scsi/elx/libefc_sli/sli4.c
-> +++ b/drivers/scsi/elx/libefc_sli/sli4.c
-> @@ -2317,12 +2317,8 @@ sli_xmit_bls_rsp64_wqe(struct sli4 *sli, void *buf,
->  		SLI4_GENERIC_CONTEXT_VPI << SLI4_BLS_RSP_WQE_CT_SHFT;
->  		bls->context_tag = cpu_to_le16(params->vpi);
->  
-> -		if (params->s_id != U32_MAX)
-> -			bls->local_n_port_id_dword |=
-> -				cpu_to_le32(params->s_id & 0x00ffffff);
-> -		else
-> -			bls->local_n_port_id_dword |=
-> -				cpu_to_le32(params->s_id & 0x00ffffff);
-> +		bls->local_n_port_id_dword |=
-> +			cpu_to_le32(params->s_id & 0x00ffffff);
+/**
+ * phy_error - enter ERROR state for this PHY device
+ * @phydev: target phy_device struct
+ *
+ * Moves the PHY to the ERROR state in response to a read
+ * or write error, and tells the controller the link is down.
+ * Must not be called from interrupt context, or while the
+ * phydev->lock is held.
+ */
+void phy_error(struct phy_device *phydev)
+{
+	WARN_ON(1);
+	phy_process_error(phydev);
+}
+EXPORT_SYMBOL(phy_error);
 
-That could be correct. Or there could be a bug there.
-Who knows? I don't.
+It is clearly documented you should not do this.
 
-But maybe it doesn't matter since AFAICT that field isn't used
-anywhere after it is set.
+[Goes and looks]
 
->  
->  		dw_ridflags = (dw_ridflags & ~SLI4_BLS_RSP_RID) |
->  			       (params->d_id & SLI4_BLS_RSP_RID);
+Ah, there are lots of examples of
 
--- 
-~Randy
+micrel.c-	irq_status = phy_read(phydev, LAN8814_INTS);
+micrel.c-	if (irq_status < 0) {
+micrel.c:		phy_error(phydev);
+micrel.c-		return IRQ_NONE;
+micrel.c-	}
+
+I actually think phy_error() is broken here. The general pattern is
+that the mutex is locked before calling into the driver. So we
+actually want phy_error() to be safe to use with the lock already
+taken. The exceptions when the lock is not held is stuff outside of
+PHY operation, like HWMON, and suspend and resume, plus probe.
+
+So i suggest you change phy_process_error() to remove the lock. Maybe
+add a test to ensure the lock is actually held, and do a phydev_err()
+if not.
+
+The comment about interrupt context is also probably bogus. phylib
+only uses threaded interrupts, and it is safe to block in this
+context.
+
+	Andrew
