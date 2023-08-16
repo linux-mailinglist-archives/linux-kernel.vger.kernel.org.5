@@ -2,139 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F1577ECBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 00:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9ED77ECBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 00:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346752AbjHPWIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 18:08:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56820 "EHLO
+        id S1346760AbjHPWJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 18:09:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346750AbjHPWIS (ORCPT
+        with ESMTP id S1346755AbjHPWIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 18:08:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA3AB2705
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:08:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692223696; x=1723759696;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Lll5KAQi4W7vfzba71CF5AHgH0JmiwGvHE7bYnj7pIw=;
-  b=Tvovckp8wkr6e7ktxcDpV5NbpVkk2/pVh6XHewYS8UhXSSB5RcbD5Tje
-   B2t0ikB5iG5nELpNhnIRvXLlH6X/4Xj5YkdThOk+cinlDXvpE2Hx23nQp
-   dKWksaSBX20nbV+5M2qWdLl8G9Yj/W3ImsLaiujI1Nvf9a7An+9tx2BVQ
-   IzWfEZOl+iS6hEWWq7guc7HJw/vr1Jfwrjf+pHjTmxg7hEv3pPq5Y/hWT
-   6yFn3PvBmqvTKb/pejlOAHbacusKdN+Vv+S2LWlFIawq7OoiEie7UDqsW
-   jvouJo02mK151sPH+/mTdFo4cUtZPniCebA879vXUKZzNFlNHhEry5qV+
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="436550451"
-X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="436550451"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 15:08:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="824385593"
-X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="824385593"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 16 Aug 2023 15:08:13 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWOgW-0000bZ-1A;
-        Wed, 16 Aug 2023 22:08:12 +0000
-Date:   Thu, 17 Aug 2023 06:07:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Stuart Hayes <stuart.w.hayes@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Tanjore Suresh <tansuresh@google.com>,
-        Martin Belanger <Martin.Belanger@dell.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Keith Busch <kbusch@kernel.org>, Lukas Wunner <lukas@wunner.de>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Stuart Hayes <stuart.w.hayes@gmail.com>
-Subject: Re: [PATCH] driver core: shut down devices asynchronously
-Message-ID: <202308170534.naCLTFzQ-lkp@intel.com>
-References: <20230816154518.3487-1-stuart.w.hayes@gmail.com>
+        Wed, 16 Aug 2023 18:08:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846F126AD;
+        Wed, 16 Aug 2023 15:08:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6+3FzdqyU8erirMrs06cOCf70G4V/DWb87UhgWGmP/4=; b=vGCV+mCUXp6TIF5906g7OwNexv
+        TCqTCwqMnR3qmtbbh7Il1heTPs06TnlK5TH8Q5s0D2bM3xbtW9+4Rtar9GxFxqQ1RJzrKWMIubrwP
+        NwO6Ms3AzLYQbWfkzwUvFQGZR3RKiwveEdaoWtJ55iS3wLtyEpg+bX62+MtycwAR93oNRIZ1US1II
+        CB2Fea76XqjuGODu/UdVeJ42Wjrks/soNNEn79IBCEK6lBo75nBiXflONu9uIs8GpNYXdzkKsqFFk
+        LVScCILSQXy8xKkoML0xd+mBxR3Wd8WsnHp/vzMQSIl5JcfBNilea7YWy8aBRW75iyUt8zRMH3BQP
+        QAjwProA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qWOgz-00H9tB-7w; Wed, 16 Aug 2023 22:08:41 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DACC730020C;
+        Thu, 17 Aug 2023 00:08:40 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C677820307330; Thu, 17 Aug 2023 00:08:40 +0200 (CEST)
+Date:   Thu, 17 Aug 2023 00:08:40 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org
+Subject: [PATCH] objtool/x86: Fixup frame-pointer vs rethunk
+Message-ID: <20230816220840.GB998718@hirez.programming.kicks-ass.net>
+References: <20230814121148.704502245@infradead.org>
+ <169217251760.27769.15304146275480287222.tip-bot2@tip-bot2>
+ <20230816115921.GH980931@hirez.programming.kicks-ass.net>
+ <20230816203152.co5hgmo2epd6wvef@treble>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230816154518.3487-1-stuart.w.hayes@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230816203152.co5hgmo2epd6wvef@treble>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stuart,
+On Wed, Aug 16, 2023 at 01:31:52PM -0700, Josh Poimboeuf wrote:
+> On Wed, Aug 16, 2023 at 01:59:21PM +0200, Peter Zijlstra wrote:
+> > Turns out I forgot to build with FRAME_POINTER=y, that still gives:
+> > 
+> > vmlinux.o: warning: objtool: srso_untrain_ret+0xd: call without frame pointer save/setup
+> > 
+> > the below seems to cure this.
+> 
+> LGTM
 
-kernel test robot noticed the following build warnings:
+OK, with Changelog below.
 
-[auto build test WARNING on driver-core/driver-core-testing]
-[also build test WARNING on driver-core/driver-core-next driver-core/driver-core-linus linus/master v6.5-rc6 next-20230816]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+---
+Subject: objtool/x86: Fixup frame-pointer vs rethunk
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Wed, 16 Aug 2023 13:59:21 +0200
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Stuart-Hayes/driver-core-shut-down-devices-asynchronously/20230816-234737
-base:   driver-core/driver-core-testing
-patch link:    https://lore.kernel.org/r/20230816154518.3487-1-stuart.w.hayes%40gmail.com
-patch subject: [PATCH] driver core: shut down devices asynchronously
-config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20230817/202308170534.naCLTFzQ-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230817/202308170534.naCLTFzQ-lkp@intel.com/reproduce)
+For stack-validation of a frame-pointer build, objtool validates that
+every CALL instructions is preceded by a frame-setup. The new SRSO
+return thunks violate this with their RSB stuffing trickery.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308170534.naCLTFzQ-lkp@intel.com/
+Extend the __fentry__ exception to also cover the embedded_insn case
+used for this. This cures:
 
-All warnings (new ones prefixed by >>):
+vmlinux.o: warning: objtool: srso_untrain_ret+0xd: call without frame pointer save/setup
 
->> drivers/base/core.c:4762:6: warning: no previous prototype for 'shutdown_dev_work' [-Wmissing-prototypes]
-    4762 | void shutdown_dev_work(struct work_struct *work)
-         |      ^~~~~~~~~~~~~~~~~
+Fixes: 4ae68b26c3ab ("objtool/x86: Fix SRSO mess")
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ tools/objtool/check.c |   17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-
-vim +/shutdown_dev_work +4762 drivers/base/core.c
-
-  4761	
-> 4762	void shutdown_dev_work(struct work_struct *work)
-  4763	{
-  4764		struct shutdown_work *sd_work = container_of(work, struct shutdown_work, work);
-  4765		struct shutdown_work *child_sd_work;
-  4766		struct device *dev = sd_work->dev;
-  4767	
-  4768		/*
-  4769		 * wait for child devices to finish shutdown
-  4770		 */
-  4771		list_for_each_entry(child_sd_work, &sd_work->children, node) {
-  4772			wait_for_completion(&child_sd_work->complete);
-  4773		}
-  4774	
-  4775		if (dev) {
-  4776			/*
-  4777			 * Make sure the device is off the kset list, in the
-  4778			 * event that dev->*->shutdown() doesn't remove it.
-  4779			 */
-  4780			spin_lock(&devices_kset->list_lock);
-  4781			list_del_init(&dev->kobj.entry);
-  4782			spin_unlock(&devices_kset->list_lock);
-  4783	
-  4784			shutdown_device(dev, dev->parent);
-  4785		}
-  4786	
-  4787		complete(&sd_work->complete);
-  4788	}
-  4789	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -2630,12 +2630,17 @@ static int decode_sections(struct objtoo
+ 	return 0;
+ }
+ 
+-static bool is_fentry_call(struct instruction *insn)
++static bool is_special_call(struct instruction *insn)
+ {
+-	if (insn->type == INSN_CALL &&
+-	    insn_call_dest(insn) &&
+-	    insn_call_dest(insn)->fentry)
+-		return true;
++	if (insn->type == INSN_CALL) {
++		struct symbol *dest = insn_call_dest(insn);
++
++		if (!dest)
++			return false;
++
++		if (dest->fentry || dest->embedded_insn)
++			return true;
++	}
+ 
+ 	return false;
+ }
+@@ -3636,7 +3641,7 @@ static int validate_branch(struct objtoo
+ 			if (ret)
+ 				return ret;
+ 
+-			if (opts.stackval && func && !is_fentry_call(insn) &&
++			if (opts.stackval && func && !is_special_call(insn) &&
+ 			    !has_valid_stack_frame(&state)) {
+ 				WARN_INSN(insn, "call without frame pointer save/setup");
+ 				return 1;
