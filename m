@@ -2,108 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3857777E75D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C861577E760
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345119AbjHPROC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 13:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
+        id S1345139AbjHPROd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 13:14:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345160AbjHPRNm (ORCPT
+        with ESMTP id S1345165AbjHPROR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 13:13:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D98CE52;
-        Wed, 16 Aug 2023 10:13:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0205F62232;
-        Wed, 16 Aug 2023 17:13:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EACAC433C7;
-        Wed, 16 Aug 2023 17:13:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692206020;
-        bh=p24LV4d/PSjicOA4bNsxeM8KTvX0pE92+j4eepvZU6M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qu2vRBDXS+n1XINFh040FrwUvC+/M1w4Ul37EH8D4Lxl2Gi6UQ1SQiguVYF7Z0r2Z
-         uc+++yqVHTXSQUmB7vSfNX0Bw5mZKxOzqsNGx5em2wZuptyW0No6g8XWYwgUn2TBnD
-         ifY2sqCRNYVkuKEE0rtcZWvhd0tRqKc6biOcQp9Bh63UzO2cjLSLSefAX60lmFMYPo
-         NS8P6oMJc0T2B+qrE5NynW7V1xFB53dKNHxY3TjaTBBsP/O/ceWiOQRjzkjXULC+eT
-         Ku4lMy90FrXDqjwVBPm4Ma+DZwlg04N/G5/ELAxjDQa6OWOazbdqQtrePI4N2AlF6C
-         g4GGEd2gGc4ng==
-Date:   Wed, 16 Aug 2023 10:13:38 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] tty: gdm724x: use min_t() for size_t varable and a
- constant
-Message-ID: <20230816171338.GA2138570@dev-arch.thelio-3990X>
-References: <20230816085322.22065-1-jirislaby@kernel.org>
+        Wed, 16 Aug 2023 13:14:17 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5167926A6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:14:14 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-34a99690da7so649785ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:14:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1692206053; x=1692810853;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bClHJc1J09Uc597SKqIse7SwNgjMDo77yl9cKdngn9U=;
+        b=DXtlJjZUp2yZCW7rYDuyQyY/VXeK1fLyOGPHYMN3WPoUPLdyMOyqdK7Fr8rjhkw+PS
+         nPlufPtvLecFrzr25J/fklFN09Om16H3OYExbNY3VFtVfbJ4pxIU7gUNcV2uY2YUWJDo
+         ZrvHgKxNd+8PhFmOzx3fJ+hfzEfkslslI7igE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692206053; x=1692810853;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bClHJc1J09Uc597SKqIse7SwNgjMDo77yl9cKdngn9U=;
+        b=NGeKlSjIw37WRYym5ZDki0mVH63FywN5HNVBUjCXWrWwi8YOllCqZAOmMby+j9A0wz
+         IGY97X2kMcD+gXNIeTgrbmfemCCIBlezNyFx/DpLHSW5eFLImFnCy8X36E8OFOBxi/Jy
+         rLWXDH8XHKDdUAPVkNzkVjJUYFaYBsiJN5V7KZWk40wIDPK0gVPCshXkSVSoki18cSXw
+         h2A8rQfcAitOu0bjflF2IKG3mCP2FIB3EbrDJG1DSgcYYQZE4Hc4HnnkpDOIXLspwR5L
+         g7AUIBmYExMvkEzogqGqRhCywHBLFRJ/eUmUt7oUUgFMNCZHTMQYbVmuPtP3ALvWyoVV
+         ry+g==
+X-Gm-Message-State: AOJu0YyASQZ4N00fZtq4ZIvz9au9g7aBksh11kjXWOBXKpkH424hun7N
+        5bdrad34SDU1H1uWub2IlTgRDw==
+X-Google-Smtp-Source: AGHT+IGmANeZ6j/J0szq/EhG3Ckfna1QYShnyfqDtKVX0ELxpzdZHjr0F7+ELeUG7nsvIrvSOF3MKA==
+X-Received: by 2002:a92:cf4a:0:b0:341:c98a:529 with SMTP id c10-20020a92cf4a000000b00341c98a0529mr3482713ilr.0.1692206053696;
+        Wed, 16 Aug 2023 10:14:13 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id n2-20020a92dd02000000b00348880831fdsm4678665ilm.58.2023.08.16.10.14.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 10:14:13 -0700 (PDT)
+Message-ID: <111cdd72-05bc-5811-092f-419937a9f1e0@linuxfoundation.org>
+Date:   Wed, 16 Aug 2023 11:14:12 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230816085322.22065-1-jirislaby@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/3] selftests: cachestat: properly link in librt
+Content-Language: en-US
+To:     Andre Przywara <andre.przywara@arm.com>,
+        Shuah Khan <shuah@kernel.org>, Nhat Pham <nphamcs@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230815155612.2535947-1-andre.przywara@arm.com>
+ <20230815155612.2535947-2-andre.przywara@arm.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20230815155612.2535947-2-andre.przywara@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 10:53:22AM +0200, Jiri Slaby (SUSE) wrote:
-> My thinking was that ulong is the same as size_t everywhere. No, size_t
-> is uint on 32bit. So the below commit introduced a build warning on
-> 32bit:
-> .../gdm724x/gdm_tty.c:165:24: warning: comparison of distinct pointer types ('typeof (2048UL) *' (aka 'unsigned long *') and 'typeof (remain) *' (aka 'unsigned int *'))
+On 8/15/23 09:56, Andre Przywara wrote:
+> Libraries should be listed last on the compiler's command line, so that
+> the linker can look for and find still unresolved symbols. The librt
+> library, required for the shm_* functions, was announced using CFLAGS,
+> which puts the library *before* the source files, and fails compilation
+> on my system:
+> ======================
+> gcc -isystem /src/linux-selftests/usr/include -Wall -lrt test_cachestat.c
+>    -o /src/linux-selftests/kselftest/cachestat/test_cachestat
+> /usr/bin/ld: /tmp/cceQWO3u.o: in function `test_cachestat_shmem':
+> test_cachestat.c:(.text+0x890): undefined reference to `shm_open'
+> /usr/bin/ld: test_cachestat.c:(.text+0x99c): undefined reference to `shm_unlink'
+> collect2: error: ld returned 1 exit status
+> make[4]: *** [../lib.mk:181: /src/linux-selftests/kselftest/cachestat/test_cachestat] Error 1
+> ======================
 > 
-> To fix this, partially revert the commit (remove constants' suffixes)
-> and switch to min_t() in this case instead.
+> Announce the library using the LDLIBS variable, which ensures the proper
+> ordering on the command line.
 > 
-> /me would hope for Z (or alike) suffix for constants.
-> 
-> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-> Fixes: c3e5c706aefc (tty: gdm724x: convert counts to size_t)
-> Reported-by: Nathan Chancellor <nathan@kernel.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202308151953.rNNnAR2N-lkp@intel.com/
-
-Tested-by: Nathan Chancellor <nathan@kernel.org> # build
-
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 > ---
->  drivers/staging/gdm724x/gdm_tty.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>   tools/testing/selftests/cachestat/Makefile | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
-> index 67d9bf41e836..32b2e817ff04 100644
-> --- a/drivers/staging/gdm724x/gdm_tty.c
-> +++ b/drivers/staging/gdm724x/gdm_tty.c
-> @@ -17,9 +17,9 @@
->  #define GDM_TTY_MAJOR 0
->  #define GDM_TTY_MINOR 32
->  
-> -#define WRITE_SIZE 2048UL
-> +#define WRITE_SIZE 2048
->  
-> -#define MUX_TX_MAX_SIZE 2048UL
-> +#define MUX_TX_MAX_SIZE 2048
->  
->  static inline bool gdm_tty_ready(struct gdm *gdm)
->  {
-> @@ -159,7 +159,7 @@ static ssize_t gdm_tty_write(struct tty_struct *tty, const u8 *buf, size_t len)
->  		return -ENODEV;
->  
->  	while (remain) {
-> -		size_t sending_len = min(MUX_TX_MAX_SIZE, remain);
-> +		size_t sending_len = min_t(size_t, MUX_TX_MAX_SIZE, remain);
->  		gdm->tty_dev->send_func(gdm->tty_dev->priv_dev,
->  					(void *)(buf + sent_len),
->  					sending_len,
-> -- 
-> 2.41.0
-> 
+> diff --git a/tools/testing/selftests/cachestat/Makefile b/tools/testing/selftests/cachestat/Makefile
+> index fca73aaa7d141..778b54ebb0364 100644
+> --- a/tools/testing/selftests/cachestat/Makefile
+> +++ b/tools/testing/selftests/cachestat/Makefile
+> @@ -3,6 +3,6 @@ TEST_GEN_PROGS := test_cachestat
+>   
+>   CFLAGS += $(KHDR_INCLUDES)
+>   CFLAGS += -Wall
+> -CFLAGS += -lrt
+> +LDLIBS += -lrt
+>   
+>   include ../lib.mk
+
+Thank you. Applied to linux-kselftest next for Linux 6.6-rc1
+
+thanks,
+-- Shuah
+
