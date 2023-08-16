@@ -2,115 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F29177E23B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C41877E23D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244843AbjHPNK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 09:10:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60558 "EHLO
+        id S245281AbjHPNLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245414AbjHPNKo (ORCPT
+        with ESMTP id S245393AbjHPNLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 09:10:44 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC1726BA;
-        Wed, 16 Aug 2023 06:10:42 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 9A3193200921;
-        Wed, 16 Aug 2023 09:10:40 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Wed, 16 Aug 2023 09:10:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1692191440; x=1692277840; bh=dbk6un3F9NnxFuDCsKeUUKbwa0Jf99CB0Bc
-        mOR3Wn+0=; b=CLEqak0tE68MU7X604tFBhFvR3ckdz9EVSqebZDPM4412w5LT32
-        v39CH8OHGm1G46dZFDLtCVNJDg9Iqb/lXNC6YIZc4qKv8YuF1ocRjytH43SYOlVO
-        x5K8Ianu6vf9dVHikV7j2zQk3cTu4+gbTWDPgeVXWrfUTJHcbzA4hFVIqtdFcGbQ
-        n9WvYCZsLJDF8OpxjZp2DY+RdN1QHlHy58tqLrXukT4KbHRV7Zj8Kwul8QOuqHLW
-        sNMOPFbLMYflBBiG6gG5XfKDOtS+lJ51zu4raPz7gho3HxC3QXB8hz/Dv8QBeYOF
-        n+cL+LFUtuKWP/8N9W1jaf7ZSeXOhzbvYNQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1692191440; x=1692277840; bh=dbk6un3F9NnxFuDCsKeUUKbwa0Jf99CB0Bc
-        mOR3Wn+0=; b=Ei+4V9vSBYhEDhIyw2K+eQBiq8yLHWNbg0Vyqb03n0nh9NiUtmu
-        3YXh7IzxYKbFzhgwBkpfqkfaBn2/PWQHNBd9YG3zRC2Wd0qbmB/zYqfJg40il6YT
-        sZJSzGVvsSV1jCBNQBavIUi9+tJAkjlT8Z3y6B50ichQEjlLmqz50klHvppwLjcZ
-        IS3ZNrKwYlE87Pk+40xA4ylWSTiomicW37jPfGqtBGmMLIGwx1UFegnYrhpgFM4s
-        1m7zhytJb11/eLsSRxCNEj9MECsLhpz28mQ+MG8d7156A1ot/viEXUM8HM0uCLJU
-        sk9yjgzQNxYi8T58q9L99YOk1z4EZV4DMhQ==
-X-ME-Sender: <xms:z8rcZGMqhiJVQkL9IjXfwu6mnuORyhH4MOQNJ6tTLpHgsNL0hCWNjg>
-    <xme:z8rcZE8ab3LP9R4_kopyEp8YI4FkZEnFsfnW-PvI1gzmW1vDbYUguUdsM1a8-8hc2
-    RM2tIW0-QftF3fdc74>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddtledgiedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
-    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:z8rcZNSFJUXm7tJqf7pd6zJ-EhpqhX-9I0DqEBem-u93B8xOQvN4pw>
-    <xmx:z8rcZGvfiaO3tkaZnFUGFgyt5KmPTxXcwNlIy9lNYpYAp-jGUHg73A>
-    <xmx:z8rcZOcGVn25vovTgrgWsZD4t0r0gdxoKcMNA6RoCfJAaeh4ry4OGg>
-    <xmx:0MrcZEvWn2oPgo6BgojWIa1ndLwZb8v7cKa1MK4BQTXiGxqNB7S0VA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 7A443B60089; Wed, 16 Aug 2023 09:10:39 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
-Mime-Version: 1.0
-Message-Id: <500a73ea-98e9-4b85-a34f-88a7bd98550d@app.fastmail.com>
-In-Reply-To: <20230816113326.1468435-1-geert@linux-m68k.org>
-References: <20230816113326.1468435-1-geert@linux-m68k.org>
-Date:   Wed, 16 Aug 2023 15:10:19 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Alessandro Zummo" <a.zummo@towertech.it>,
-        "Alexandre Belloni" <alexandre.belloni@bootlin.com>,
-        "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
-        "Alexandre Torgue" <alexandre.torgue@foss.st.com>,
-        "Valentin Caron" <valentin.caron@foss.st.com>
-Cc:     linux-rtc@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rtc: stm32: Use NOIRQ_SYSTEM_SLEEP_PM_OPS()
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 09:11:17 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EDC1BFB;
+        Wed, 16 Aug 2023 06:11:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5328D61C4E;
+        Wed, 16 Aug 2023 13:11:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C04BC433C9;
+        Wed, 16 Aug 2023 13:11:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692191475;
+        bh=zWuvXK7QMRZXyxcMioldJT+UNyw10JlwQNc8/I5Yezk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GTWI0SxKGp1wEgqfo7YBE5wtsKMlhEew8Ab06byaIFdkUrz50ik8wuvOe4ce2cHvg
+         jwfFc0nHs36ks6Kv+rPzQ5qXPcm2pqp0WIUjd2yVM0PvfsaMnx+yjoHQNfLw9g5+Or
+         xwLPPV+4eTmXDPIy9UWP3x/Px/GmK3VxuG9concy7gKpLchjOE85KsrrrbNj3TrbTZ
+         74Alulf+4B6X7JC2m1k6nWK+Ae7nFFPADkX2Sak6GQ46OBd7NqADHdZzUjSnrpD/If
+         Gqn5UL12zGEvZ3cz+19OWWnuSHYpTZmHVJ/6+itKxvJSkj/tBhv3SoroJ9StX5jJuN
+         u0sluyTu4ywbQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id BA6CF404DF; Wed, 16 Aug 2023 10:11:11 -0300 (-03)
+Date:   Wed, 16 Aug 2023 10:11:11 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Fangrui Song <maskray@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Carsten Haitzler <carsten.haitzler@arm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Rob Herring <robh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, llvm@lists.linux.dev,
+        Wang Nan <wangnan0@huawei.com>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        He Kuang <hekuang@huawei.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>
+Subject: Re: [PATCH v1 2/4] perf trace: Migrate BPF augmentation to use a
+ skeleton
+Message-ID: <ZNzK70eH3ISoL8r0@kernel.org>
+References: <20230810184853.2860737-1-irogers@google.com>
+ <20230810184853.2860737-3-irogers@google.com>
+ <ZNuK1TFwdjyezV3I@kernel.org>
+ <CAP-5=fURf+vv3TA4cRx1MiV3DDp=3wo0g5dBYH43DKtPhNZQsQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fURf+vv3TA4cRx1MiV3DDp=3wo0g5dBYH43DKtPhNZQsQ@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023, at 13:33, Geert Uytterhoeven wrote:
-> If CONFIG_PM_SLEEP=3Dn (e.g. m68k/allmodconfig):
->
->     drivers/rtc/rtc-stm32.c:904:12: error: =E2=80=98stm32_rtc_resume=E2=
-=80=99 defined=20
-> but not used [-Werror=3Dunused-function]
->       904 | static int stm32_rtc_resume(struct device *dev)
-> 	  |            ^~~~~~~~~~~~~~~~
->     drivers/rtc/rtc-stm32.c:894:12: error: =E2=80=98stm32_rtc_suspend=E2=
-=80=99 defined=20
-> but not used [-Werror=3Dunused-function]
->       894 | static int stm32_rtc_suspend(struct device *dev)
-> 	  |            ^~~~~~~~~~~~~~~~~
->
-> Indeed, the previous change mixed up the semantics between
-> SET_NOIRQ_SYSTEM_SLEEP_PM_OPS() and NOIRQ_SYSTEM_SLEEP_PM_OPS().
-> Fix this by using the modern NOIRQ_SYSTEM_SLEEP_PM_OPS() instead.
->
-> Reported-by: noreply@ellerman.id.au
-> Fixes: a69c610e13e2b2de ("rtc: stm32: remove incorrect #ifdef check")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Em Tue, Aug 15, 2023 at 07:34:08AM -0700, Ian Rogers escreveu:
+> On Tue, Aug 15, 2023, 7:25 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> >                 bpf_object__for_each_program(prog, trace.skel->obj) {
+> >                         if (prog != trace.skel->progs.sys_enter && prog !=
+> > trace.skel->progs.sys_exit)
+> >                                 bpf_program__set_autoattach(prog,
+> > /*autoattach=*/false);
+> >                 }
+> >
+> > So that we don't have to add new lines disabling attachment when adding
+> > support for other pointer receiving syscalls.
+ 
+> Makes sense. Thanks,
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Just taking notes about things to work on top of what is in
+tmp.perf-tools-next, that will move to perf-tools-next soon:
+
+We need to make these libbpf error messages appear only in verbose mode,
+and probably have a hint about unprivileged BPF, a quick attempt failed
+after several attempts at getting privileges :-\
+
+Probably attaching to tracepoints is off limits to !root even with
+/proc/sys/kernel/unprivileged_bpf_disabled set to zero.
+
+[acme@quaco perf-tools-next]$ perf trace ls
+libbpf: Failed to bump RLIMIT_MEMLOCK (err = -1), you might need to do it explicitly!
+libbpf: Error in bpf_object__probe_loading():Operation not permitted(1). Couldn't load trivial BPF program. Make sure your kernel supports BPF (CONFIG_BPF_SYSCALL=y) and/or that RLIMIT_MEMLOCK is set to big enough value.
+libbpf: failed to load object 'augmented_raw_syscalls_bpf'
+libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -1
+Error:	No permissions to read /sys/kernel/tracing//events/raw_syscalls/sys_(enter|exit)
+Hint:	Try 'sudo mount -o remount,mode=755 /sys/kernel/tracing/'
+
+[acme@quaco perf-tools-next]$
+
+[acme@quaco perf-tools-next]$ perf trace -e open* sleep 1
+libbpf: Failed to bump RLIMIT_MEMLOCK (err = -1), you might need to do it explicitly!
+libbpf: Error in bpf_object__probe_loading():Operation not permitted(1). Couldn't load trivial BPF program. Make sure your kernel supports BPF (CONFIG_BPF_SYSCALL=y) and/or that RLIMIT_MEMLOCK is set to big enough value.
+libbpf: failed to load object 'augmented_raw_syscalls_bpf'
+libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -1
+Error:	No permissions to read /sys/kernel/tracing//events/raw_syscalls/sys_(enter|exit)
+Hint:	Try 'sudo mount -o remount,mode=755 /sys/kernel/tracing/'
+
+[acme@quaco perf-tools-next]$ sudo mount -o remount,mode=755 /sys/kernel/tracing/
+[sudo] password for acme:
+[acme@quaco perf-tools-next]$ perf trace -e open* sleep 1
+libbpf: Failed to bump RLIMIT_MEMLOCK (err = -1), you might need to do it explicitly!
+libbpf: Error in bpf_object__probe_loading():Operation not permitted(1). Couldn't load trivial BPF program. Make sure your kernel supports BPF (CONFIG_BPF_SYSCALL=y) and/or that RLIMIT_MEMLOCK is set to big enough value.
+libbpf: failed to load object 'augmented_raw_syscalls_bpf'
+libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -1
+Error:	No permissions to read /sys/kernel/tracing//events/raw_syscalls/sys_(enter|exit)
+Hint:	Try 'sudo mount -o remount,mode=755 /sys/kernel/tracing/'
+
+[acme@quaco perf-tools-next]$ sudo mount -o remount,mode=755 /sys/kernel/debug
+[acme@quaco perf-tools-next]$ perf trace -e open* sleep 1
+libbpf: Failed to bump RLIMIT_MEMLOCK (err = -1), you might need to do it explicitly!
+libbpf: Error in bpf_object__probe_loading():Operation not permitted(1). Couldn't load trivial BPF program. Make sure your kernel supports BPF (CONFIG_BPF_SYSCALL=y) and/or that RLIMIT_MEMLOCK is set to big enough value.
+libbpf: failed to load object 'augmented_raw_syscalls_bpf'
+libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -1
+Error:	No permissions to read /sys/kernel/tracing//events/raw_syscalls/sys_(enter|exit)
+Hint:	Try 'sudo mount -o remount,mode=755 /sys/kernel/tracing/'
+
+[acme@quaco perf-tools-next]$ sudo sh -c "echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled"
+[acme@quaco perf-tools-next]$ perf trace -e open* sleep 1
+libbpf: prog 'syscall_unaugmented': BPF program load failed: Operation not permitted
+libbpf: prog 'syscall_unaugmented': failed to load: -1
+libbpf: failed to load object 'augmented_raw_syscalls_bpf'
+libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -1
+Error:	No permissions to read /sys/kernel/tracing//events/raw_syscalls/sys_(enter|exit)
+Hint:	Try 'sudo mount -o remount,mode=755 /sys/kernel/tracing/'
+
+[acme@quaco perf-tools-next]$ cat /proc/sys/kernel/unprivileged_bpf_disabled
+0
+[acme@quaco perf-tools-next]$
+[acme@quaco perf-tools-next]$
+[acme@quaco perf-tools-next]$ cat /proc/sys/kernel/perf_event_paranoid
+2
+[acme@quaco perf-tools-next]$ sudo sh -c "echo -1 > /proc/sys/kernel/perf_event_paranoid"
+[acme@quaco perf-tools-next]$ perf trace -e open* sleep 1
+libbpf: prog 'syscall_unaugmented': BPF program load failed: Operation not permitted
+libbpf: prog 'syscall_unaugmented': failed to load: -1
+libbpf: failed to load object 'augmented_raw_syscalls_bpf'
+libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -1
+Error:	No permissions to read /sys/kernel/tracing//events/raw_syscalls/sys_(enter|exit)
+Hint:	Try 'sudo mount -o remount,mode=755 /sys/kernel/tracing/'
+
+[acme@quaco perf-tools-next]$
+
