@@ -2,156 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1C077E34C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334E377E34D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343509AbjHPOKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 10:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54476 "EHLO
+        id S245704AbjHPOK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 10:10:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343567AbjHPOKY (ORCPT
+        with ESMTP id S1343573AbjHPOK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 10:10:24 -0400
+        Wed, 16 Aug 2023 10:10:26 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A5711210D
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:10:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AAAEF26B5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:10:24 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E243D75;
-        Wed, 16 Aug 2023 07:11:03 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A2F2E1063;
+        Wed, 16 Aug 2023 07:11:05 -0700 (PDT)
 Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A1E723F762;
-        Wed, 16 Aug 2023 07:10:20 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 999E93F762;
+        Wed, 16 Aug 2023 07:10:22 -0700 (PDT)
 From:   Suzuki K Poulose <suzuki.poulose@arm.com>
 To:     hejunhao3@huawei.com
 Cc:     coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, jonathan.cameron@huawei.com,
         leo.yan@linaro.org, mike.leach@linaro.org, james.clark@arm.com,
         linuxarm@huawei.com, yangyicong@huawei.com,
-        prime.zeng@hisilicon.com, Suzuki K Poulose <suzuki.poulose@arm.com>
-Subject: [PATCH v2 1/2] coresight: trbe: Fix TRBE potential sleep in atomic context
-Date:   Wed, 16 Aug 2023 15:10:07 +0100
-Message-Id: <20230816141008.535450-1-suzuki.poulose@arm.com>
+        prime.zeng@hisilicon.com,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH 2/2] coresight: trbe: Allocate platform data per device
+Date:   Wed, 16 Aug 2023 15:10:08 +0100
+Message-Id: <20230816141008.535450-2-suzuki.poulose@arm.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230814093813.19152-1-hejunhao3@huawei.com>
+In-Reply-To: <20230816141008.535450-1-suzuki.poulose@arm.com>
 References: <20230814093813.19152-1-hejunhao3@huawei.com>
+ <20230816141008.535450-1-suzuki.poulose@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junhao He <hejunhao3@huawei.com>
-
-smp_call_function_single() will allocate an IPI interrupt vector to
-the target processor and send a function call request to the interrupt
-vector. After the target processor receives the IPI interrupt, it will
-execute arm_trbe_remove_coresight_cpu() call request in the interrupt
-handler.
-
-According to the device_unregister() stack information, if other process
-is useing the device, the down_write() may sleep, and trigger deadlocks
-or unexpected errors.
-
-  arm_trbe_remove_coresight_cpu
-    coresight_unregister
-      device_unregister
-        device_del
-          kobject_del
-            __kobject_del
-              sysfs_remove_dir
-                kernfs_remove
-                  down_write ---------> it may sleep
-
-Add a helper arm_trbe_disable_cpu() to disable TRBE precpu irq and reset
-per TRBE.
-Simply call arm_trbe_remove_coresight_cpu() directly without useing the
-smp_call_function_single(), which is the same as registering the TRBE
-coresight device.
+Coresight TRBE driver shares a single platform data (which is empty btw).
+However, with the commit 4e8fe7e5c3a5
+("coresight: Store pointers to connections rather than an array of them")
+the coresight core would free up the pdata, resulting in multiple attempts
+to free the same pdata for TRBE instances. Fix this by allocating a pdata per
+coresight_device.
 
 Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
-Signed-off-by: Junhao He <hejunhao3@huawei.com>
-Link: https://lore.kernel.org/r/20230814093813.19152-2-hejunhao3@huawei.com
-[ Remove duplicate cpumask checks during removal ]
+Link: https://lore.kernel.org/r/20230814093813.19152-3-hejunhao3@huawei.com
+Reported-by: Junhao He <hejunhao3@huawei.com>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 ---
- drivers/hwtracing/coresight/coresight-trbe.c | 33 +++++++++++---------
- 1 file changed, 18 insertions(+), 15 deletions(-)
+ drivers/hwtracing/coresight/coresight-trbe.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-index 7720619909d6..025f70adee47 100644
+index 025f70adee47..d3d34a833f01 100644
 --- a/drivers/hwtracing/coresight/coresight-trbe.c
 +++ b/drivers/hwtracing/coresight/coresight-trbe.c
-@@ -1225,6 +1225,17 @@ static void arm_trbe_enable_cpu(void *info)
- 	enable_percpu_irq(drvdata->irq, IRQ_TYPE_NONE);
- }
+@@ -1255,10 +1255,13 @@ static void arm_trbe_register_coresight_cpu(struct trbe_drvdata *drvdata, int cp
+ 	if (!desc.name)
+ 		goto cpu_clear;
  
-+static void arm_trbe_disable_cpu(void *info)
-+{
-+	struct trbe_drvdata *drvdata = info;
-+	struct trbe_cpudata *cpudata = this_cpu_ptr(drvdata->cpudata);
++	desc.pdata = coresight_get_platform_data(dev);
++	if (IS_ERR(desc.pdata))
++		goto cpu_clear;
 +
-+	disable_percpu_irq(drvdata->irq);
-+	trbe_reset_local(cpudata);
-+	cpudata->drvdata = NULL;
-+}
-+
-+
- static void arm_trbe_register_coresight_cpu(struct trbe_drvdata *drvdata, int cpu)
- {
- 	struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
-@@ -1326,18 +1337,12 @@ static void arm_trbe_probe_cpu(void *info)
- 	cpumask_clear_cpu(cpu, &drvdata->supported_cpus);
- }
+ 	desc.type = CORESIGHT_DEV_TYPE_SINK;
+ 	desc.subtype.sink_subtype = CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM;
+ 	desc.ops = &arm_trbe_cs_ops;
+-	desc.pdata = dev_get_platdata(dev);
+ 	desc.groups = arm_trbe_groups;
+ 	desc.dev = dev;
+ 	trbe_csdev = coresight_register(&desc);
+@@ -1482,7 +1485,6 @@ static void arm_trbe_remove_irq(struct trbe_drvdata *drvdata)
  
--static void arm_trbe_remove_coresight_cpu(void *info)
-+static void arm_trbe_remove_coresight_cpu(struct trbe_drvdata *drvdata, int cpu)
+ static int arm_trbe_device_probe(struct platform_device *pdev)
  {
--	int cpu = smp_processor_id();
--	struct trbe_drvdata *drvdata = info;
--	struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
- 	struct coresight_device *trbe_csdev = coresight_get_percpu_sink(cpu);
+-	struct coresight_platform_data *pdata;
+ 	struct trbe_drvdata *drvdata;
+ 	struct device *dev = &pdev->dev;
+ 	int ret;
+@@ -1497,12 +1499,7 @@ static int arm_trbe_device_probe(struct platform_device *pdev)
+ 	if (!drvdata)
+ 		return -ENOMEM;
  
--	disable_percpu_irq(drvdata->irq);
--	trbe_reset_local(cpudata);
- 	if (trbe_csdev) {
- 		coresight_unregister(trbe_csdev);
--		cpudata->drvdata = NULL;
- 		coresight_set_percpu_sink(cpu, NULL);
- 	}
- }
-@@ -1366,8 +1371,10 @@ static int arm_trbe_remove_coresight(struct trbe_drvdata *drvdata)
- {
- 	int cpu;
- 
--	for_each_cpu(cpu, &drvdata->supported_cpus)
--		smp_call_function_single(cpu, arm_trbe_remove_coresight_cpu, drvdata, 1);
-+	for_each_cpu(cpu, &drvdata->supported_cpus) {
-+		smp_call_function_single(cpu, arm_trbe_disable_cpu, drvdata, 1);
-+		arm_trbe_remove_coresight_cpu(drvdata, cpu);
-+	}
- 	free_percpu(drvdata->cpudata);
- 	return 0;
- }
-@@ -1406,12 +1413,8 @@ static int arm_trbe_cpu_teardown(unsigned int cpu, struct hlist_node *node)
- {
- 	struct trbe_drvdata *drvdata = hlist_entry_safe(node, struct trbe_drvdata, hotplug_node);
- 
--	if (cpumask_test_cpu(cpu, &drvdata->supported_cpus)) {
--		struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
+-	pdata = coresight_get_platform_data(dev);
+-	if (IS_ERR(pdata))
+-		return PTR_ERR(pdata);
 -
--		disable_percpu_irq(drvdata->irq);
--		trbe_reset_local(cpudata);
--	}
-+	if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
-+		arm_trbe_disable_cpu(drvdata);
- 	return 0;
- }
- 
+ 	dev_set_drvdata(dev, drvdata);
+-	dev->platform_data = pdata;
+ 	drvdata->pdev = pdev;
+ 	ret = arm_trbe_probe_irq(pdev, drvdata);
+ 	if (ret)
 -- 
 2.34.1
 
