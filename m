@@ -2,210 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D4777E6F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:53:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FDF577E700
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344958AbjHPQxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 12:53:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48268 "EHLO
+        id S1344971AbjHPQyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 12:54:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344969AbjHPQww (ORCPT
+        with ESMTP id S1345057AbjHPQx6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 12:52:52 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2099.outbound.protection.outlook.com [40.107.255.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55DF819A7
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 09:52:51 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bfe2mvVMwluyjvgEDl+ARa3fRn15LHhG7JYbyNYbmSpgkrD77/UvBU2n8rlzK084zFFQnsk307/EzhPLP+ecc/merr6WzKnTOng7D9yB9UCZZNxQN6Y2VUNi8s87CAVBI6e1fo5YScf39hGtBwncySvOmuBRensCRCyjSfWkqbuNIXO1qGDLDwQrdsepLjTuuYp+tC46GvrHW7Uc/JBNopSioIojpJNnPi39LjLKz5369Yol2d+30t/S+QPWHkjvx3zPEVFE8pHcsUUXJ71l4tiU13hq88Itj1qT9uXa07ZTkeFIPTHzJtxyeHz3tiJBVAwpzxYW3KmeQBxx+4FiDw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tO83d9mkL80x6+pRlbMX5wy4XXaAF0pfRDqvHI1VV3w=;
- b=CgOo2l6h1SaBnE+UgBaZAJ9AouXVaRF9BF0diuywPl1ekTz8P0I3dFpEQhXaf/ZcL27ooLVW/1UBYiAvDNc4mG9UtimUFhd2p0KncCsOnuJlJ26N9crZcKLxtGfaUE0LeQTxMUD9unw0DPeSap5Z3wa4Njvym/AXD8+Y36S6RD4sMx8BgHSnjwdfQVSDHFmFdg7WW2oIb/nQ+4BatZwpjYXl6UbYt73UmCKxAb90d2oKklO0pBWTBo71bxtb/GfCRo57DFeEEcVCWq3SbHN/ZdQpGO+VDvbWg2ZxheGSzPjnrFT4aFJVUf9IPpv/XgM4WxFcX7jF0IFe6GTDJ8D9sg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tO83d9mkL80x6+pRlbMX5wy4XXaAF0pfRDqvHI1VV3w=;
- b=ASN8LUUJEOn30uMP9JJl25lcZYfN7f71/QKMcQlcHx5hy2i7J892j+rFNnBVGZLrnY8cMLRRutIt5S2AeGlt8fu4fAJxBNDcQJoeom38QsfFGP4lm/E9cXUQmxXkYfqyXz8YTbBd/4YDuZm5RWNgnr3jMwyI04AnDHo9iOaiKfg=
-Received: from PUZP153MB0635.APCP153.PROD.OUTLOOK.COM (2603:1096:301:e2::8) by
- SI2P153MB0704.APCP153.PROD.OUTLOOK.COM (2603:1096:4:19f::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6723.4; Wed, 16 Aug 2023 16:52:47 +0000
-Received: from PUZP153MB0635.APCP153.PROD.OUTLOOK.COM
- ([fe80::4153:b8b:7077:5188]) by PUZP153MB0635.APCP153.PROD.OUTLOOK.COM
- ([fe80::4153:b8b:7077:5188%6]) with mapi id 15.20.6723.005; Wed, 16 Aug 2023
- 16:52:47 +0000
-From:   Saurabh Singh Sengar <ssengar@microsoft.com>
-To:     Matthew Wilcox <willy@infradead.org>,
-        Zach O'Keefe <zokeefe@google.com>
-CC:     Dan Williams <dan.j.williams@intel.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Yang Shi <shy828301@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [EXTERNAL] [PATCH] mm/thp: fix "mm: thp: kill
- __transhuge_page_enabled()"
-Thread-Topic: [EXTERNAL] [PATCH] mm/thp: fix "mm: thp: kill
- __transhuge_page_enabled()"
-Thread-Index: AQHZzWA78fOP2PgBLkyBLwXjPivf+6/nv4MggAJlYgCAAAUiAIAAU2yAgAAnGYCAAoQs8A==
-Date:   Wed, 16 Aug 2023 16:52:47 +0000
-Message-ID: <PUZP153MB063529C4869A7A666C275B23BE15A@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
-References: <20230812210053.2325091-1-zokeefe@google.com>
- <PUZP153MB06358FF02518EF3B279F5DD4BE16A@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
- <CAAa6QmSrwe2m4MjS9mGO+DeGNGSv=B2uZ72EAxnZk2jsDh39rQ@mail.gmail.com>
- <ZNp7JDaPhT3Se4de@casper.infradead.org>
- <CAAa6QmSN4NhaDL0DQsRd-F8HTnCCjq1ULRNk88LAA9gVbDXE4g@mail.gmail.com>
- <ZNrh6w9ICu4rMrhV@casper.infradead.org>
-In-Reply-To: <ZNrh6w9ICu4rMrhV@casper.infradead.org>
-Accept-Language: en-IN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=165822fb-d334-4f61-907e-c4155a3c5358;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-08-16T16:50:17Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PUZP153MB0635:EE_|SI2P153MB0704:EE_
-x-ms-office365-filtering-correlation-id: c7c3784b-845c-4211-2ef1-08db9e79380a
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WjW8wCUckbKSCRju/uZDopaVVqcnJgwTgDg2HZykC2j+iQXmcr4Ml9vGw2NezMpf37f5NnsGRWpKxNOpYym9lDKCS55eDy+YLGrTw4eCWPzDV5uF4MsGkj+tCcLTxGgSOq84wHQg0zkXJa4oLs3YBQc/EK6yZWCmrElXFiJUY1mOpKZxl9XrLHQ1BdQZio9ci7MMYVhWkqI1fS/tvkMbmBN2jKW1QAITxBdePo9MnYaXwdZutN2uwR7cID+9YLSX1Hs05rUTbBLzT33LgwxsPGaFBvRBuMkloBCMALc46u41YJ578GARaPMsdCcuYhue6QV/rCqDhn4d7F4dmh2cDZU8eqEXpWJQxDEWYj0bxBbEIH2grxt94dad+thlylwDiiAn/O2kNAayu0fURBgHoJShzjK2tQzsxM8ypmR1Q75WNwzTiuvu8PKmpEFhmLyQvL630OHgpJoDxFIvokETaFm80NBoCVA//r084ODO9seXuQpRRc4z4vH6dfWaWs9CFlGThcw2n9Qhdm7W079bULX4u3JED6PssQXDyEvxjEZrgJYvOzsRLAYKokTfcdWiE+MT8lGSQ0DUV37TNdLeolA1ClitfloGdgkOIs2Ih9S6vKI1xZevj9Iw5E2RmHEZJuhrOI+jzB1I9RoTQWknkYx7Y3Tb+hs4ywlaF0VgMZP7WPPfM7STjYiD9+le2b3Q
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZP153MB0635.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(136003)(376002)(366004)(396003)(1800799009)(186009)(451199024)(12101799020)(10290500003)(478600001)(7696005)(55016003)(110136005)(9686003)(33656002)(83380400001)(86362001)(38070700005)(8990500004)(2906002)(6506007)(71200400001)(52536014)(66476007)(5660300002)(4326008)(122000001)(38100700002)(64756008)(66446008)(76116006)(316002)(41300700001)(54906003)(66946007)(82960400001)(66556008)(82950400001)(53546011)(8936002)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?tH4vdj9DgTNZi06K0iihePvC7fMkfXe5sN2BDDk+m2RORp2Bmo3JYQaiM2Ih?=
- =?us-ascii?Q?KDyyjr1LBeCeBFlZX0nnoqLzctWuR4tRetznZ6XzrY5jFY/VmhXYQOKXxNjA?=
- =?us-ascii?Q?bOa3Rb7xBwx5/uAjTIvNwIO8k8QCy8onjIXkOCNT5nUnOHhpmFaY6UnEd788?=
- =?us-ascii?Q?9ZS8ml/LjVa+wNsdc1oW5b7Mz8xvzK2LhRBen+OpEQwYR9JluweRTYeKi/Ke?=
- =?us-ascii?Q?1Rms920BNIZwM6qvjVDWtviCg3KIZmrKFdnweXhIIx3jTBrVdqBorVT72wXM?=
- =?us-ascii?Q?ygvJMFOOxUAvMYOVsdqSLtA8ZOwi3UTX4W0yQ/mztBD4ZKI4LWKmcI4dN71W?=
- =?us-ascii?Q?LTSxIVCOQg7hfRmLbyBNzgwJvNPdTRzgutqdbkrXfUkphoF7EvWXQ33MTrTU?=
- =?us-ascii?Q?4umuqUkqiTtG2P1OUGMOyJXTTq1ncSmo90PMKreI730DE0P9dSzRgC/mk7vX?=
- =?us-ascii?Q?GCcmdv/+Gc6io2M3obeSFxYJm4TNj9OkioJR1Z7lwk4ymVjU5CIUOrIWqpx4?=
- =?us-ascii?Q?YsNKP4CIxH0erY0WapcZ2pZurQtuXipGcpUSXRNEPQxDPdwaZqfuWgtbWmF3?=
- =?us-ascii?Q?foJPyQPaV2kJvpzuZywuIVRtr1+5AgfBDe/vXrHtIZS+mBvhFoo2a/0i4q14?=
- =?us-ascii?Q?Vt4KTu3zOVuYDpce44V2tLcnBWyKxyTl2nMWyR9mJzYgOoT2TCwTNpQvjETk?=
- =?us-ascii?Q?DbxDHZnhl057SEZ0mervnZOeYF2pWoUKUmPfcfjkfvDAE/uEcWABF1wGEfaK?=
- =?us-ascii?Q?YuN527STZxVpX5XE24cAVhJWBrT5qqrYG722dgdZxmTOKk/cUGl43Ws2ip2o?=
- =?us-ascii?Q?Eqn7zezfJJQiW2/b5APtNrc8zLeTCvOlVzQzqxbp+FIcr4EmfmH7fUgnLlA/?=
- =?us-ascii?Q?aOjQFQoPbbPYWH2L6OQUCiRe0m1B2E3UzWbzLFHdJXIl6ROu95BQ9za6Cwjh?=
- =?us-ascii?Q?Q/LztIPSAc3zANeep8eftNWOQS6LPIrk0HUCs3AzqgQDw1OkfPldx21znsdM?=
- =?us-ascii?Q?uVr2jbmCvo5mEE0sEMLQvHspl9yC23lEYX1WCxMqK/89QpeZToI5dJrb1eLK?=
- =?us-ascii?Q?H9hRRMYgzAVtYxbYfeotpIRBsO4R06yENDSjnqkqdo9gPN8AGb6okxlfh0eH?=
- =?us-ascii?Q?cxJ1LqXKBuBiRYVsWgTvyS6FLQ1HUGqxM7aofOvmO9XDLqUjC7BDrl2ITSij?=
- =?us-ascii?Q?dsXUk87U8DReXD2az0dBPcU5IF/S6RliDMZsVNVoBQmQ81WBBS3s9obPCp4X?=
- =?us-ascii?Q?PjOHfFNsP+Lq5SzP+asLH0NsBOCSJff6H+IUCilVqurjBd53CXc/3ohPAKCt?=
- =?us-ascii?Q?PDEc6Y2Bo6XYxerYJMz+OhMtJq8m1dYMTz1wKKbyE9CYxLgrbMLsnnM/Ek0y?=
- =?us-ascii?Q?zbidAlHuArgWgDehpAWEqv7s+wibzCb3tbj8f9lIJ80dRclcEES5w85XN0YT?=
- =?us-ascii?Q?G2FwgVrjQT8TsHlrbX9VxtAm+I4jFGx8on5JCAqbBmzd1NJDMq8TRpdI3VVz?=
- =?us-ascii?Q?29OVWX7QNbKqMCIC0QSzpA/leM39S2qZhbTEDp90rUmt6xsQArgQPh+4LJ/P?=
- =?us-ascii?Q?jhZA0S2SB19MJ5pyptaSCGvOc0FJ3Y6i8eQC5Ehz?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 16 Aug 2023 12:53:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B02199B
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 09:53:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692204791;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gs4/ygsmx60svnx/BACaLYethMvInQSVH+8hNUPRRfQ=;
+        b=hm4fu6Gbu4hM8ka7Q6KmGyOj3rZ8gwXGoi3DCFJgdJx18lmg1N+EC+Ve6+bHWf1lE5mcp6
+        mLrnRgR8tta9Sl/CvJDO5ziX7Jwjno5Vopv5pKZw8sooWhbNGcL0tt67jmU5HF+1ikdisK
+        1/JweEhpF9pXIuEwwl4zpGkWVcps9OU=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-245-tysm9fAmP1GrwzQd_C31IQ-1; Wed, 16 Aug 2023 12:53:09 -0400
+X-MC-Unique: tysm9fAmP1GrwzQd_C31IQ-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-99cc32f2ec5so404154566b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 09:53:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692204788; x=1692809588;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gs4/ygsmx60svnx/BACaLYethMvInQSVH+8hNUPRRfQ=;
+        b=Q5fxJfcmpLThU/hNY07XAKiUMtv01ePL6cn4HUkGJJ01aycGiE59siYtxocgKzzjkA
+         F8TmaI426wSJcdX1fM8WGhQpzEpgPqkhvHZYK7hzY9Xzl0VQq1NKQE6+FUB54atyv1xA
+         7lKhqwmqP3ZJuFTjXYzXNnj5PUOl8Xw1p5UeRs5/cWdB8wf9QKbhQA7aPfzObpg6ga9L
+         oWUWalMmcSmwP1RHCZRrI05FjvKwE27sQQREsEPoWYrV5qRkWkNrVkK1JrACxDItTq2g
+         N0m/iapYFcH+UXzN4V2Wd9RXoCnkCsqmJAv6USsDeitIu85Nwx2WGTNNfCHBFkDDTrgi
+         rebg==
+X-Gm-Message-State: AOJu0YzXvBfemxTD5lzHwumO9+sS8KKx7XHCzJOonx28kdhQAjo2CzyA
+        PDJyVW1v1OWOMYfJp464wsQVQh/yJCAM70qDlTnOX6qsAeHr2Wtyh49cB5UQZY6N/OtbtylY5hH
+        WszKXGjhI6w0pgStLY3WHZxKf
+X-Received: by 2002:a17:906:8a6c:b0:98e:2b01:ab97 with SMTP id hy12-20020a1709068a6c00b0098e2b01ab97mr1640168ejc.68.1692204788521;
+        Wed, 16 Aug 2023 09:53:08 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFU1ojiVZymlqloH4pPtPiX1lfCdcDJ2adbg7XhEXCcNlm0BxaLm0gVIFz94ySyezwHEVrMGA==
+X-Received: by 2002:a17:906:8a6c:b0:98e:2b01:ab97 with SMTP id hy12-20020a1709068a6c00b0098e2b01ab97mr1640156ejc.68.1692204788162;
+        Wed, 16 Aug 2023 09:53:08 -0700 (PDT)
+Received: from starship ([77.137.131.138])
+        by smtp.gmail.com with ESMTPSA id k17-20020a17090646d100b00997d76981e0sm8672389ejs.208.2023.08.16.09.53.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 09:53:07 -0700 (PDT)
+Message-ID: <6b2aedbcff7625574596b363651e0bbd76b03140.camel@redhat.com>
+Subject: Re: Fwd: kvm: Windows Server 2003 VM fails to work on 6.1.44 (works
+ fine on 6.1.43)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Roman Mamedov <rm+bko@romanrm.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux KVM <kvm@vger.kernel.org>, Borislav Petkov <bp@alien8.de>
+Date:   Wed, 16 Aug 2023 19:53:05 +0300
+In-Reply-To: <87cyzn5cln.fsf@redhat.com>
+References: <8cc000d5-9445-d6f1-f02e-4629a4a59e0e@gmail.com>
+         <87o7j75g0g.fsf@redhat.com> <87il9f5eg1.fsf@redhat.com>
+         <87cyzn5cln.fsf@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PUZP153MB0635.APCP153.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7c3784b-845c-4211-2ef1-08db9e79380a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Aug 2023 16:52:47.1158
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: i5KdBuEHN1sH5+8JW4ta5HbKhIXlR0qYosvxIH8CQWIRHqoeWzthWO6pYDEZ/SVYwYj9ka1NVHdpimVS45Zzsg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2P153MB0704
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+У ср, 2023-08-16 у 15:41 +0200, Vitaly Kuznetsov пише:
+> Vitaly Kuznetsov <vkuznets@redhat.com> writes:
+> 
+> > Vitaly Kuznetsov <vkuznets@redhat.com> writes:
+> > 
+> > > Bagas Sanjaya <bagasdotme@gmail.com> writes:
+> > > 
+> > > > Hi,
+> > > > 
+> > > > I notice a regression report on Bugzilla [1]. Quoting from it:
+> > > > 
+> > > > > Hello,
+> > > > > 
+> > > > > I have a virtual machine running the old Windows Server 2003. On kernels 6.1.44 and 6.1.45, the QEMU VNC window stays dark, not switching to any of the guest's video modes and the VM process uses only ~64 MB of RAM of the assigned 2 GB, indefinitely. It's like the VM is paused/halted/stuck before even starting. The process can be killed successfully and then restarted again (with the same result), so it is not deadlocked in kernel or the like.
+> > > > > 
+> > > > > Kernel 6.1.43 works fine.
+> > > > > 
+> > > > > I have also tried downgrading CPU microcode from 20230808 to 20230719, but that did not help.
+> > > > > 
+> > > > > The CPU is AMD Ryzen 5900. I suspect some of the newly added mitigations may be the culprit?
+> > > > 
+> > > > See Bugzilla for the full thread.
+> > > > 
+> > > > Anyway, I'm adding it to regzbot as stable-specific regression:
+> > > > 
+> > > > #regzbot introduced: v6.1.43..v6.1.44 https://bugzilla.kernel.org/show_bug.cgi?id=217799
+> > > > #regzbot title: Windows Server 2003 VM boot hang (only 64MB RAM allocated)
+> > > > 
+> > > > Thanks.
+> > > > 
+> > > > [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217799
+> > > 
+> > > From KVM's PoV, I don't see any KVM/x86 patches v6.1.44..v6.1.45 
+> > 
+> > Oh, sorry, my bad, in the description of the BZ it is said that 6.1.44
+> > is already broken, so it's most likely srso stuff then:
+> > 
+> > dd5f2ef16e3c x86: fix backwards merge of GDS/SRSO bit
+> > 4f25355540ad x86/srso: Tie SBPB bit setting to microcode patch detection
+> > 77cf32d0dbfb x86/srso: Add a forgotten NOENDBR annotation
+> > c7f2cd045542 x86/srso: Fix return thunks in generated code
+> > c9ae63d773ca x86/srso: Add IBPB on VMEXIT
+> > 79c8091888ef x86/srso: Add IBPB
+> > 98f62883e751 x86/srso: Add SRSO_NO support
+> > 9139f4b6dd4f x86/srso: Add IBPB_BRTYPE support
+> > ac41e90d8daa x86/srso: Add a Speculative RAS Overflow mitigation
+> 
+> Sean's https://lore.kernel.org/all/20230811155255.250835-1-seanjc@google.com/
+> (alteady in 'tip') can actually be related and I see it was already
+> tagged for stable@. Can anyone check if it really helps?
+> 
+> > dec3b91f2c4b x86/cpu, kvm: Add support for CPUID_80000021_EAX
+> > 
+> > it would still be great to try to bisect to the particular patch causing
+> > the issue.
 
+My 0.2 cents on something that might be related:
 
-> -----Original Message-----
-> From: Matthew Wilcox <willy@infradead.org>
-> Sent: Tuesday, August 15, 2023 7:55 AM
-> To: Zach O'Keefe <zokeefe@google.com>
-> Cc: Saurabh Singh Sengar <ssengar@microsoft.com>; Dan Williams
-> <dan.j.williams@intel.com>; linux-mm@kvack.org; Yang Shi
-> <shy828301@gmail.com>; linux-kernel@vger.kernel.org
-> Subject: Re: [EXTERNAL] [PATCH] mm/thp: fix "mm: thp: kill
-> __transhuge_page_enabled()"
->=20
-> On Mon, Aug 14, 2023 at 05:04:47PM -0700, Zach O'Keefe wrote:
-> > > From a large folios perspective, filesystems do not implement a
-> > > special handler.  They call filemap_fault() (directly or indirectly)
-> > > from their
-> > > ->fault handler.  If there is already a folio in the page cache
-> > > ->which
-> > > satisfies this fault, we insert it into the page tables (no matter
-> > > what size it is).  If there is no folio, we call readahead to
-> > > populate that index in the page cache, and probably some other indice=
-s
-> around it.
-> > > That's do_sync_mmap_readahead().
-> > >
-> > > If you look at that, you'll see that we check the VM_HUGEPAGE flag,
-> > > and if set we align to a PMD boundary and read two PMD-size pages
-> > > (so that we can do async readahead for the second page, if we're doin=
-g a
-> linear scan).
-> > > If the VM_HUGEPAGE flag isn't set, we'll use the readahead algorithm
-> > > to decide how large the folio should be that we're reading into; if
-> > > it's a random read workload, we'll stick to order-0 pages, but if
-> > > we're getting good hit rate from the linear scan, we'll increase the
-> > > size (although we won't go past PMD size)
-> > >
-> > > There's also the ->map_pages() optimisation which handles page
-> > > faults locklessly, and will fail back to ->fault() if there's even a
-> > > light breeze.  I don't think that's of any particular use in
-> > > answering your question, so I'm not going into details about it.
-> > >
-> > > I'm not sure I understand the code that's being modified well enough
-> > > to be able to give you a straight answer to your question, but
-> > > hopefully this is helpful to you.
-> >
-> > Thank you, this was great info. I had thought, incorrectly, that large
-> > folio work would eventually tie into that ->huge_fault() handler
-> > (should be dax_huge_fault() ?)
-> >
-> > If that's the case, then faulting file-backed, non-DAX memory as
-> > (pmd-mapped-)THPs isn't supported at all, and no fault lies with the
-> > aforementioned patches.
->=20
-> Ah, wait, hang on.  You absolutely can get a PMD mapping by calling into
-> ->fault.  Look at how finish_fault() works:
->=20
->         if (pmd_none(*vmf->pmd)) {
->                 if (PageTransCompound(page)) {
->                         ret =3D do_set_pmd(vmf, page);
->                         if (ret !=3D VM_FAULT_FALLBACK)
->                                 return ret;
->                 }
->=20
->                 if (vmf->prealloc_pte)
->                         pmd_install(vma->vm_mm, vmf->pmd, &vmf->prealloc_=
-pte);
->=20
-> So if we find a large folio that is PMD mappable, and there's nothing at =
-vmf-
-> >pmd, we install a PMD-sized mapping at that spot.  If that fails, we ins=
-tall the
-> preallocated PTE table at vmf->pmd and continue to trying set one or more
-> PTEs to satisfy this page fault.
->=20
-> So why, you may be asking, do we have ->huge_fault.  Well, you should ask
-> the clown who did commit b96375f74a6d ... in fairness to me,
-> finish_fault() did not exist at the time, and the ability to return a PMD=
--sized
-> page was added later.
+On my Intel laptop I can't boot a windows guest with hyperv enabled inside (either regular hyperv win10 or win11 with core isolation)
+I know now that 'ibt=off' on host kernel line fixes this, but I didn't yet bisected it to see which commit started it.
+(I took this from https://bugzilla.redhat.com/show_bug.cgi?id=2221531, which is unrelated but I just noticed it somehow and tried the solution)
 
-Do you think we can restore this earlier behaviour of kernel to allow page =
-fault
-for huge pages via ->huge_fault.
+I run upstream 6.4 kernel + kvm/queue on that laptop.
+
+Best regards,
+	Maxim Levitsky
+
