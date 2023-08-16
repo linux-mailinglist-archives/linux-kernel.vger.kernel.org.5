@@ -2,109 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BEE77EBC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED32A77EBCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346492AbjHPV2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 17:28:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38396 "EHLO
+        id S1346408AbjHPV3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 17:29:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243387AbjHPV2D (ORCPT
+        with ESMTP id S1346499AbjHPV2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 17:28:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA3C1FD0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:27:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692221239;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bhlCltG/6J4T9mqv57bOozrctEIXFs/9BESilmBG2aE=;
-        b=VQZDcXc7TefFXZJtlGW5et8r+KV6Fh0tUggpRgYard6wPQOQOQd5WniSCnI4EMPP1sZlne
-        HknbzvphXSF3C+Dff6gu/vmGfSlLYcOWRFQCtAoZSrc2LtckmY+wRCghigLvUpJahmglab
-        UnEITyOI3BwDUDbVKD38qkrHxtcrhEw=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-659-Bq0CUfI2Od6uWL1SAj2b5A-1; Wed, 16 Aug 2023 17:27:18 -0400
-X-MC-Unique: Bq0CUfI2Od6uWL1SAj2b5A-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2a7a6393ba6so12788131fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:27:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692221236; x=1692826036;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bhlCltG/6J4T9mqv57bOozrctEIXFs/9BESilmBG2aE=;
-        b=NO5sJFbAws5lO9lE5d326yVqYZWzhe0vrWf0FYpm/fAr4fOtPKA5dVsJJFd+Xyci/A
-         hVSZTTB3zUPXCoW4VI4hG4F9zy9RIRn+RryYGJXOGFj7POiuiUudXnvRSu791XgOar3C
-         qYmzHL0UM1NKGpjhhPOT9GyCy5KXLDBPnEpBHzmhwVtWQLiuPyu0allIVb+JyQY8z+yq
-         gCW1/6CmHYURkjsmBLv6Ip4Ck2ybRcR712GXbPq4wIfWe4UFamla5/Gs5LBUC+vSpeGi
-         WweSz6Wou8VdBG//3w3HtrhpjcMa6eszRp5i30y9ynnXhGzMV0KLAnpjnOgVaYnHW4lt
-         zVgQ==
-X-Gm-Message-State: AOJu0YylfMwjdpbDiT2KyfRapCEWCpxe46KaO9Ga19azVofwC2bbU72O
-        IajE6Hmb4esE4Gvy8AcGFL7Jwuz0yPhXD95+nvYqrEXqBVIL6GvqLrgUiMmLDrTCuRCUkJlXjSa
-        27HoB5MlLmPZGcsc7pOIa1v0G7gyAwSvjHu8nHpeexae9Y9mw9+A=
-X-Received: by 2002:a2e:b53a:0:b0:2b8:3c52:113 with SMTP id z26-20020a2eb53a000000b002b83c520113mr2446675ljm.5.1692221236442;
-        Wed, 16 Aug 2023 14:27:16 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGqEJkEAo5Pa4rNZ4q8LahYF0AcRVhQvLqoo9MCByspT6ADS2ntaRvd1hh34mL6+q7aFi+DN5uWeOnI1es4zj0=
-X-Received: by 2002:a2e:b53a:0:b0:2b8:3c52:113 with SMTP id
- z26-20020a2eb53a000000b002b83c520113mr2446668ljm.5.1692221236114; Wed, 16 Aug
- 2023 14:27:16 -0700 (PDT)
+        Wed, 16 Aug 2023 17:28:43 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34241FD;
+        Wed, 16 Aug 2023 14:28:42 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 19DF260174;
+        Wed, 16 Aug 2023 23:28:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1692221320; bh=rIZf+tAqF67XAb0OfH9NkRmreg9cRVOUccORHUbh0H4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ip8HZAJDpPj4BkPt74Lq9cHX2vfPStRQpP7FbobsLN1TTqe10LT+MixTwEAaOEBsF
+         oWK0r2HuOPsrVjtIboxyzlw3b0IEIF1+Znp/bEaWY4IvSWROWft3gH+BEnAXQ45loi
+         k3chfVnEcxr8wpy0UNfoCYBM6g1kpRiCdvT+FeIWAx0fVUkraR8+6EB6xE6OeRr/8A
+         ICQAru91zWnNjB9WNPyaH8E8DqIxZ1OkISAhaX3s+7SOlzpFtOT0lNA2gwPyWHgl9K
+         +tlfom2aszpaiUdbzsw8mj7XigOShBCvDHkzIp2jkc47m5nljKRkcVlTcaEIce7Ip6
+         aigUO4Qq9wE8A==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id YeHIiorDg4g1; Wed, 16 Aug 2023 23:28:36 +0200 (CEST)
+Received: from defiant.. (unknown [94.250.191.183])
+        by domac.alu.hr (Postfix) with ESMTPSA id 39A6B6015E;
+        Wed, 16 Aug 2023 23:28:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1692221316; bh=rIZf+tAqF67XAb0OfH9NkRmreg9cRVOUccORHUbh0H4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LWpPMdZ6/Zn4Mqa3h4TvyvYrd3+6FpBCr+FCQVHpTkgc6VtAFWp2PdYo444oHEJ8k
+         26ALhOk4jmEMP38WH9I0oQBtucoIRfIjbFrxKn4xzHneBACkw9lbJtAW2IjMccALG6
+         F0iypWoinFein3WPA18nps7m6CGZxUe73qiP0MggSmekVvAJNCYVQWd/tf1+TPzg5Q
+         6K+ETVN+jiHpEkqrhv0OeYStLPb8q8SOPFEQFDZNdhCffkEJc5IemfFTlQcIaZzZYX
+         vtNZzPv/FbaVUtQ2eA3NXGYXOebntnqQOc0z4/TQnGepYk16jnXKSN4mBG5qgAFdQP
+         9nQehndIxFAJw==
+From:   Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+To:     Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        linux-kernel@vger.kernel.org
+Cc:     "Luis R . Rodriguez" <mcgrof@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Russ Weight <russell.h.weight@intel.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        Tianfei Zhang <tianfei.zhang@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kselftest@vger.kernel.org, stable@vger.kernel.org,
+        Dan Carpenter <error27@gmail.com>
+Subject: [PATCH v4 4.19 1/1] test_firmware: prevent race conditions by a correct implementation of locking
+Date:   Wed, 16 Aug 2023 23:27:18 +0200
+Message-Id: <20230816212717.817202-1-mirsad.todorovac@alu.unizg.hr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230814144933.3956959-1-kherbst@redhat.com> <20230816093015.GDZNyXJ28y9uspb4Mr@fat_crate.local>
- <CACO55tu8ab-rxCzxFXbUh4Z=W9E-1f8sH6BVd=P+16dQ9PQNjg@mail.gmail.com>
- <20230816145338.GIZNzi8o3d9x9bcPzX@fat_crate.local> <CACO55ttasKLxBTmZjN-XBOuJFC7rng2PbLgxCT8WT6ukOZNGzQ@mail.gmail.com>
- <20230816151252.GKZNzndDNySuWC+Vwz@fat_crate.local>
-In-Reply-To: <20230816151252.GKZNzndDNySuWC+Vwz@fat_crate.local>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Wed, 16 Aug 2023 23:27:05 +0200
-Message-ID: <CACO55tunC5mEu3Tw64rKLqNM6MN6d=N90kYQKYwXWNMB=ahDaw@mail.gmail.com>
-Subject: Re: [PATCH] drm/nouveau/disp: fix use-after-free in error handling of nouveau_connector_create
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 5:13=E2=80=AFPM Borislav Petkov <bp@alien8.de> wrot=
-e:
->
-> On Wed, Aug 16, 2023 at 04:57:28PM +0200, Karol Herbst wrote:
-> > Do you have any connectors listed in "/sys/class/drm"?
->
-> tree /sys/class/drm/
-> /sys/class/drm/
-> =E2=94=9C=E2=94=80=E2=94=80 card0 -> ../../devices/pci0000:00/0000:00:02.=
-0/0000:03:00.0/drm/card0
-> =E2=94=9C=E2=94=80=E2=94=80 renderD128 -> ../../devices/pci0000:00/0000:0=
-0:02.0/0000:03:00.0/drm/renderD128
-> =E2=94=94=E2=94=80=E2=94=80 version
->
-> > Also, mind sharing your vbios.rom file from
-> > "/sys/kernel/debug/dri/0/vbios.rom"?
->
-> Attached.
+[ Upstream commit 4acfe3dfde685a5a9eaec5555351918e2d7266a1 ]
 
-that GPU has only a `DMS-59` connector, is that right? I have such a
-GPU myself, so maybe I can trigger that bug there, let's see..
+Dan Carpenter spotted a race condition in a couple of situations like
+these in the test_firmware driver:
 
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
+static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
+{
+        u8 val;
+        int ret;
+
+        ret = kstrtou8(buf, 10, &val);
+        if (ret)
+                return ret;
+
+        mutex_lock(&test_fw_mutex);
+        *(u8 *)cfg = val;
+        mutex_unlock(&test_fw_mutex);
+
+        /* Always return full write size even if we didn't consume all */
+        return size;
+}
+
+static ssize_t config_num_requests_store(struct device *dev,
+                                         struct device_attribute *attr,
+                                         const char *buf, size_t count)
+{
+        int rc;
+
+        mutex_lock(&test_fw_mutex);
+        if (test_fw_config->reqs) {
+                pr_err("Must call release_all_firmware prior to changing config\n");
+                rc = -EINVAL;
+                mutex_unlock(&test_fw_mutex);
+                goto out;
+        }
+        mutex_unlock(&test_fw_mutex);
+
+        // NOTE: HERE is the race!!! Function can be preempted!
+
+        // test_fw_config->reqs can change between the release of
+        // the lock about and acquire of the lock in the
+        // test_dev_config_update_u8()
+
+        rc = test_dev_config_update_u8(buf, count,
+                                       &test_fw_config->num_requests);
+
+out:
+        return rc;
+}
+
+static ssize_t config_read_fw_idx_store(struct device *dev,
+                                        struct device_attribute *attr,
+                                        const char *buf, size_t count)
+{
+        return test_dev_config_update_u8(buf, count,
+                                         &test_fw_config->read_fw_idx);
+}
+
+The function test_dev_config_update_u8() is called from both the locked
+and the unlocked context, function config_num_requests_store() and
+config_read_fw_idx_store() which can both be called asynchronously as
+they are driver's methods, while test_dev_config_update_u8() and siblings
+change their argument pointed to by u8 *cfg or similar pointer.
+
+To avoid deadlock on test_fw_mutex, the lock is dropped before calling
+test_dev_config_update_u8() and re-acquired within test_dev_config_update_u8()
+itself, but alas this creates a race condition.
+
+Having two locks wouldn't assure a race-proof mutual exclusion.
+
+This situation is best avoided by the introduction of a new, unlocked
+function __test_dev_config_update_u8() which can be called from the locked
+context and reducing test_dev_config_update_u8() to:
+
+static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
+{
+        int ret;
+
+        mutex_lock(&test_fw_mutex);
+        ret = __test_dev_config_update_u8(buf, size, cfg);
+        mutex_unlock(&test_fw_mutex);
+
+        return ret;
+}
+
+doing the locking and calling the unlocked primitive, which enables both
+locked and unlocked versions without duplication of code.
+
+Fixes: c92316bf8e948 ("test_firmware: add batched firmware tests")
+Cc: Luis R. Rodriguez <mcgrof@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Russ Weight <russell.h.weight@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Tianfei Zhang <tianfei.zhang@intel.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Colin Ian King <colin.i.king@gmail.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kselftest@vger.kernel.org
+Cc: stable@vger.kernel.org # v5.4, 4.19, 4.14
+Suggested-by: Dan Carpenter <error27@gmail.com>
+Link: https://lore.kernel.org/r/20230509084746.48259-1-mirsad.todorovac@alu.unizg.hr
+Signed-off-by: Mirsad Goran Todorovac <mirsad.todorovac@alu.unizg.hr>
+
+[ This is the patch to fix the racing condition in locking for the 5.4, ]
+[ 4.19 and 4.14 stable branches. Not all the fixes from the upstream    ]
+[ commit apply, but those which do are verbatim equal to those in the   ]
+[ upstream commit.                                                      ]
+
+---
+ v4:
+	verbatim the same patch as for the 5.4 stable tree which patchwork failed to apply.
+
+ lib/test_firmware.c | 37 ++++++++++++++++++++++++++++---------
+ 1 file changed, 28 insertions(+), 9 deletions(-)
+
+diff --git a/lib/test_firmware.c b/lib/test_firmware.c
+index b5e779bcfb34..be3baea88b61 100644
+--- a/lib/test_firmware.c
++++ b/lib/test_firmware.c
+@@ -284,16 +284,26 @@ static ssize_t config_test_show_str(char *dst,
+ 	return len;
+ }
+ 
+-static int test_dev_config_update_bool(const char *buf, size_t size,
+-				       bool *cfg)
++static inline int __test_dev_config_update_bool(const char *buf, size_t size,
++						bool *cfg)
+ {
+ 	int ret;
+ 
+-	mutex_lock(&test_fw_mutex);
+ 	if (strtobool(buf, cfg) < 0)
+ 		ret = -EINVAL;
+ 	else
+ 		ret = size;
++
++	return ret;
++}
++
++static int test_dev_config_update_bool(const char *buf, size_t size,
++				       bool *cfg)
++{
++	int ret;
++
++	mutex_lock(&test_fw_mutex);
++	ret = __test_dev_config_update_bool(buf, size, cfg);
+ 	mutex_unlock(&test_fw_mutex);
+ 
+ 	return ret;
+@@ -323,7 +333,7 @@ static ssize_t test_dev_config_show_int(char *buf, int cfg)
+ 	return snprintf(buf, PAGE_SIZE, "%d\n", val);
+ }
+ 
+-static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
++static inline int __test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
+ {
+ 	int ret;
+ 	long new;
+@@ -335,14 +345,23 @@ static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
+ 	if (new > U8_MAX)
+ 		return -EINVAL;
+ 
+-	mutex_lock(&test_fw_mutex);
+ 	*(u8 *)cfg = new;
+-	mutex_unlock(&test_fw_mutex);
+ 
+ 	/* Always return full write size even if we didn't consume all */
+ 	return size;
+ }
+ 
++static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
++{
++	int ret;
++
++	mutex_lock(&test_fw_mutex);
++	ret = __test_dev_config_update_u8(buf, size, cfg);
++	mutex_unlock(&test_fw_mutex);
++
++	return ret;
++}
++
+ static ssize_t test_dev_config_show_u8(char *buf, u8 cfg)
+ {
+ 	u8 val;
+@@ -375,10 +394,10 @@ static ssize_t config_num_requests_store(struct device *dev,
+ 		mutex_unlock(&test_fw_mutex);
+ 		goto out;
+ 	}
+-	mutex_unlock(&test_fw_mutex);
+ 
+-	rc = test_dev_config_update_u8(buf, count,
+-				       &test_fw_config->num_requests);
++	rc = __test_dev_config_update_u8(buf, count,
++					 &test_fw_config->num_requests);
++	mutex_unlock(&test_fw_mutex);
+ 
+ out:
+ 	return rc;
+-- 
+2.34.1
 
