@@ -2,100 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6B477EDC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 01:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC19977EDC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 01:24:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347142AbjHPXTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 19:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40828 "EHLO
+        id S1347155AbjHPXYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 19:24:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347122AbjHPXTO (ORCPT
+        with ESMTP id S1347146AbjHPXXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 19:19:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 164E610C7
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 16:18:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692227907;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e27Prao+8w59knGJmOWj+3FndpKc2qgsbyaKBRsKylU=;
-        b=Q9/aQrA5X1+ygBNF3HAUmTXZc8+5fQNm8ul1cwsU4JAu+w101B/NZOFJNuRuC3qVY49RYU
-        b6VZGpS55+W/XWUkDGkMBJNQuImWAOGtJSdA3hcikqc1IR+qaiC28pjxaC2RZ1d0B7pxBT
-        dWpTouVbmHkqYpAdf6/bGaUxVBpg7C8=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-307-4dLJJUB1OtakkQbz6wKCTQ-1; Wed, 16 Aug 2023 19:18:25 -0400
-X-MC-Unique: 4dLJJUB1OtakkQbz6wKCTQ-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-4fe6b399119so1420295e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 16:18:25 -0700 (PDT)
+        Wed, 16 Aug 2023 19:23:46 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8AE271E;
+        Wed, 16 Aug 2023 16:23:45 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-318015ade49so6280203f8f.0;
+        Wed, 16 Aug 2023 16:23:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692228224; x=1692833024;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tgdXOP4yR6ZnH/y1qGFKmHKWNqRrRuobjN/2x4b+FbA=;
+        b=WEB4xO5LWij5oKfwGh1OEk4FXjhCGsMXw/ewx7R6a0QjvqDafEoSNlCkRtFivEPFen
+         TLR8FfJ6EfvqoNSpjp+UlLgLKbHENMneStqXnyRRfQ/MX1+zGq+MIaqXmVITtO7AnLBB
+         6wgS2VYD3PZxXGqdMPzVw5YO8XpveYZZYBUMicCNZRSpqU9+0avSQ4edpW8fzJySwGps
+         D46siM0ztdasxWVy1ROb7n/oytocnGykiUrW+1zzTSoVokhEMB+/RKb+ZL6R9bmJ2DLX
+         9zVRSB0ExIhEmvCeXAk9SooDtsu9BtzefewFaDXf/8agZccM2E5kxe+eINljjw/4ikJl
+         CiNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692227904; x=1692832704;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=e27Prao+8w59knGJmOWj+3FndpKc2qgsbyaKBRsKylU=;
-        b=BQUzonUL0q9aOgiwAECO/5O5i+N9PVsHFJ19oEmbvBEMAJ3OyhGq+XF8BopZyFZ/Sm
-         ikiK56nKJnS37qCM1oDTwWJ3Q+1g6yb+Jjy/w7lmnmaGHcwZkS58QOv/BD8KzSwX35SK
-         Y/7Ns0mZbay5yZtrKO7tKUkOe+m3Hqat6dqY/w8g86eC/+immGlv/5zwB4hnIHMMBBGB
-         1KUgqvuXIMYY59rK+Q6R8exwtQa3vkWt79BZD8/BfWdtt5j79AkoofYHoGyaj9ObyeX6
-         Ly1fmL6Cn31CIwB97cK+OvLGVDajZDSToET98hppVgyYbLFpnT6tTGzVfeXd19BN26P6
-         Ez/w==
-X-Gm-Message-State: AOJu0YwlLdw6ynw2qRIWY6UiM4lnlcYaRUutt01Xo+lBbXxX6mRxEpgK
-        lnXUprBeYghaYCGM6I8VpkODRlzsT87LnaiYngOAJqpNtsJqo5RqPc1fxrCRL6Ye1O4h+D3Bc68
-        6r3Q3Y+OA1ARvYxgH4uhUS2ITP2aMv2ilkwzHkVsEz7CmJ/VA2a0=
-X-Received: by 2002:a2e:535d:0:b0:2b6:af68:6803 with SMTP id t29-20020a2e535d000000b002b6af686803mr2442423ljd.4.1692227904017;
-        Wed, 16 Aug 2023 16:18:24 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF1K6kBGziG4deNuHLAraS88W59a/Ay7fpQlOgwaRtMAQHHcJu47CsepbxS6R+gOkE0cHNdxbWZY06UjdNnDbI=
-X-Received: by 2002:a2e:535d:0:b0:2b6:af68:6803 with SMTP id
- t29-20020a2e535d000000b002b6af686803mr2442415ljd.4.1692227903720; Wed, 16 Aug
- 2023 16:18:23 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692228224; x=1692833024;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tgdXOP4yR6ZnH/y1qGFKmHKWNqRrRuobjN/2x4b+FbA=;
+        b=bI0R5Djic3DFLmie3W+jkE8HWULmR31RWHaydHBnckgaZpuUb9dJ1YzOX+CWCg2CRq
+         o31bVG8MCFE+gH0mztRlRpyxSt3ATIwWO9UK3e5mhfR3m6eLDTdGWVxLmyB/+4+tkf9V
+         fRsAfMb7b00vzAHKfI9xxd9ZvyFBNrgTh9NmKJFSeyvbx7LeuVIW2z8UG3sIVWtqpW7F
+         T0Mmay/8OsxAhHWb5avmWGq6e2eAT+PqN5w3Fc3ih+5oPB5ejkk4Er0SCaIH4lY60oVc
+         L8sOs77ir2FeSeyfKNBWUfYCLjn1vKYyOB7HxQZb3hXM9M+7pyc//C6f8xv3jywU6GDS
+         lI8Q==
+X-Gm-Message-State: AOJu0YzcObQawDMpUTKqSY6+9VlsvOXdP5pfNsaxKyBuTKgUmCV2pc9R
+        cHCv36IXV3vAeORsvUgF3gg=
+X-Google-Smtp-Source: AGHT+IEOsLQXTtu9Ww1G9TMwF+CJtQ5zAjl4dANCkwAMo4lC/cxbVGxVfQfn4ev6QwpY38US7Fbrmg==
+X-Received: by 2002:adf:db48:0:b0:317:74ce:3e27 with SMTP id f8-20020adfdb48000000b0031774ce3e27mr2422087wrj.67.1692228223853;
+        Wed, 16 Aug 2023 16:23:43 -0700 (PDT)
+Received: from prasmi.home ([2a00:23c8:2501:c701:aeb8:832b:ebc0:1bbf])
+        by smtp.gmail.com with ESMTPSA id q4-20020adff944000000b003143c9beeaesm22752617wrr.44.2023.08.16.16.23.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 16:23:42 -0700 (PDT)
+From:   Prabhakar <prabhakar.csengg@gmail.com>
+X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-riscv@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v3 0/3] riscv: dma-mapping: unify support for cache flushes
+Date:   Thu, 17 Aug 2023 00:23:33 +0100
+Message-Id: <20230816232336.164413-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230814144933.3956959-1-kherbst@redhat.com> <20230816093015.GDZNyXJ28y9uspb4Mr@fat_crate.local>
- <CACO55tu8ab-rxCzxFXbUh4Z=W9E-1f8sH6BVd=P+16dQ9PQNjg@mail.gmail.com>
- <20230816145338.GIZNzi8o3d9x9bcPzX@fat_crate.local> <CACO55ttasKLxBTmZjN-XBOuJFC7rng2PbLgxCT8WT6ukOZNGzQ@mail.gmail.com>
- <20230816151252.GKZNzndDNySuWC+Vwz@fat_crate.local> <CACO55tunC5mEu3Tw64rKLqNM6MN6d=N90kYQKYwXWNMB=ahDaw@mail.gmail.com>
- <20230816221353.GXZN1KIXloRn8cGt5E@fat_crate.local>
-In-Reply-To: <20230816221353.GXZN1KIXloRn8cGt5E@fat_crate.local>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Thu, 17 Aug 2023 01:18:12 +0200
-Message-ID: <CACO55ts7430tAUDC+0qY0EZ5ReO=2Rjwj1SzHaBLodmyBgrUrw@mail.gmail.com>
-Subject: Re: [PATCH] drm/nouveau/disp: fix use-after-free in error handling of nouveau_connector_create
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 12:14=E2=80=AFAM Borislav Petkov <bp@alien8.de> wro=
-te:
->
-> On Wed, Aug 16, 2023 at 11:27:05PM +0200, Karol Herbst wrote:
-> > that GPU has only a `DMS-59` connector, is that right?
->
-> No clue. How do I figure that out?
->
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-do you have one of these? https://en.wikipedia.org/wiki/DMS-59
+This patch series is a subset from Arnd's original series [0]. Ive just
+picked up the bits required for RISC-V unification of cache flushing.
+Remaining patches from the series [0] will be taken care by Arnd soon.
 
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
->
+Cheers,
+Prabhakar
+
+v2->v3
+* Got rid of dma-sync.h and included the changes directly into dma-noncoherent.c
+
+v1->v2
+* Dropped others archs
+* Included RB and ACKs
+* Fixed checkpatch issues
+
+V1:
+[0] https://patchwork.kernel.org/project/linux-riscv/cover/20230327121317.4081816-1-arnd@kernel.org/
+
+Arnd Bergmann (2):
+  riscv: dma-mapping: only invalidate after DMA, not flush
+  riscv: dma-mapping: skip invalidation before bidirectional DMA
+
+Lad Prabhakar (1):
+  riscv: dma-mapping: switch over to generic implementation
+
+ arch/riscv/mm/dma-noncoherent.c | 60 ++++++++++++++++++++++++++++-----
+ 1 file changed, 51 insertions(+), 9 deletions(-)
+
+-- 
+2.34.1
 
