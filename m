@@ -2,120 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0708E77DF1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC5F77DF91
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243690AbjHPKoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 06:44:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42766 "EHLO
+        id S244216AbjHPKqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 06:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243947AbjHPKnb (ORCPT
+        with ESMTP id S244174AbjHPKpV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 06:43:31 -0400
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9EE42135
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:43:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        sang-engineering.com; h=from:to:cc:subject:date:message-id
-        :in-reply-to:references:mime-version:content-transfer-encoding;
-         s=k1; bh=JT/ceu3tRi/TtP6bujmqfafQ7JcoYnXeX4PGLaTdLSE=; b=ZE4bWY
-        xzImjPSE/fGTZArxDGKK/We1LyxUywLQ0RHkLRfA8V86IN11mT6uCdr9OBdHqnrn
-        iP6l8i9nSizrUfV4Rqud/S+uZLEi9+Gyd1mz3oJFKN2iA7/RmNiFE0YXZp63UrVm
-        bxCAiSU/fjtTT1y7NjJbB8JitoC5i0Hy0WFWaYJgAuI2inCrwqm2j2Qz5p+o2Res
-        8j1QazF/rq1tMtSBEScX6vpdnzFGHcbTRgj+5zN1QPsuMONR/znfd8jLpAVapMDh
-        y4cS9ZImugHHyeRAbbMY6I1hVDWhh1twGur3KNIi6gJMIlnBsmRgUhRRZFPpm8PX
-        PmHGQOCFoHioaf3A==
-Received: (qmail 102039 invoked from network); 16 Aug 2023 12:43:10 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 16 Aug 2023 12:43:10 +0200
-X-UD-Smtp-Session: l3s3148p1@PlM19gcDUr0gAwDPXy5qAJ1huuy56R1W
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-renesas-soc@vger.kernel.org
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/2] PCI: rcar-host: add support for optional regulators
-Date:   Wed, 16 Aug 2023 12:42:50 +0200
-Message-Id: <20230816104251.19744-3-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20230816104251.19744-1-wsa+renesas@sang-engineering.com>
-References: <20230816104251.19744-1-wsa+renesas@sang-engineering.com>
+        Wed, 16 Aug 2023 06:45:21 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B0D2D59
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:45:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0JdrWOJluu/S8f7RqK4Xy++CAfnHudALXmCN2ITRnFc=; b=eOD5p639gXFa+3sNEG3NyWt+sY
+        SmtBM8olp0sYRHaISNgwz6iZ1Oi4jnXxb31C4TG4SN7VBHZuIL6PpBzO7fbnoUiaEpvJUPOML25ky
+        qLK44B9nyrpNHa9qL2m5VNdNDMwT9Oe8O2nvp27msrphYjop0NupfENBUcsm4GAQ6Iut8ljCOmezv
+        JkWTu0rwhZq1Hn9zMBVA3Zl7Q5peiI25BCLN+LGR03EGa5Q/KryNSCuSd5w5jc6uSwvCH9O55v2v4
+        SeCSnAAAvEScmmxb1CnOnLA1FtAX0zFH3HvuKr2Z52S71XwLTviqwZA2x/NM9zWtkoBnr4zkJ5MO2
+        AWreRPrA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qWE0j-00EByf-2Q; Wed, 16 Aug 2023 10:44:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 00B82300137;
+        Wed, 16 Aug 2023 12:44:19 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CD7562C8E889B; Wed, 16 Aug 2023 12:44:19 +0200 (CEST)
+Date:   Wed, 16 Aug 2023 12:44:19 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     jpoimboe@kernel.org, x86@kernel.org
+Cc:     baron@akamai.com, rostedt@goodmis.org, ardb@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, christian@bricart.de,
+        song@kernel.org, mcgrof@kernel.org
+Subject: [PATCH v2] x86/static_call: Fix __static_call_fixup()
+Message-ID: <20230816104419.GA982867@hirez.programming.kicks-ass.net>
+References: <20230815230809.GA973560@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230815230809.GA973560@hirez.programming.kicks-ass.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The KingFisher board has regulators for miniPCIe, so enable these
-optional regulators using devm. devm will automatically disable them
-when the driver releases the device. Order variables in reverse-xmas
-while we are here.
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Christian reported spurious module load crashes after some of Song's
+module memory layout patches.
+
+Turns out that if the very last instruction on the very last page of the
+module is a 'JMP __x86_return_thunk' then __static_call_fixup() will
+trip a fault and die.
+
+And while the module rework made this slightly more likely to happen,
+it's always been possible.
+
+Fixes: ee88d363d156 ("x86,static_call: Use alternative RET encoding")
+Reported-by: Christian Bricart <christian@bricart.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- drivers/pci/controller/pcie-rcar-host.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+ arch/x86/kernel/static_call.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/pci/controller/pcie-rcar-host.c b/drivers/pci/controller/pcie-rcar-host.c
-index 88975e40ee2f..7aecc114af4f 100644
---- a/drivers/pci/controller/pcie-rcar-host.c
-+++ b/drivers/pci/controller/pcie-rcar-host.c
-@@ -29,6 +29,7 @@
- #include <linux/phy/phy.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-+#include <linux/regulator/consumer.h>
- 
- #include "pcie-rcar.h"
- 
-@@ -953,14 +954,20 @@ static const struct of_device_id rcar_pcie_of_match[] = {
- 	{},
- };
- 
-+/* Design note 346 from Linear Technology says order is not important */
-+static const char * const rcar_pcie_supplies[] = {
-+	"vpcie12v", "vpcie3v3", "vpcie1v5"
-+};
-+
- static int rcar_pcie_probe(struct platform_device *pdev)
+--- a/arch/x86/kernel/static_call.c
++++ b/arch/x86/kernel/static_call.c
+@@ -186,6 +186,19 @@ EXPORT_SYMBOL_GPL(arch_static_call_trans
+  */
+ bool __static_call_fixup(void *tramp, u8 op, void *dest)
  {
- 	struct device *dev = &pdev->dev;
-+	struct pci_host_bridge *bridge;
- 	struct rcar_pcie_host *host;
- 	struct rcar_pcie *pcie;
-+	unsigned int i;
- 	u32 data;
- 	int err;
--	struct pci_host_bridge *bridge;
- 
- 	bridge = devm_pci_alloc_host_bridge(dev, sizeof(*host));
- 	if (!bridge)
-@@ -971,6 +978,13 @@ static int rcar_pcie_probe(struct platform_device *pdev)
- 	pcie->dev = dev;
- 	platform_set_drvdata(pdev, host);
- 
-+	for (i = 0; i < ARRAY_SIZE(rcar_pcie_supplies); i++) {
-+		err = devm_regulator_get_enable_optional(dev, rcar_pcie_supplies[i]);
-+		if (err < 0 && err != -ENODEV)
-+			return dev_err_probe(dev, err, "can't enable regulator %s\n",
-+					     rcar_pcie_supplies[i]);
-+	}
++	unsigned long addr = (unsigned long)tramp;
++	/*
++	 * Not all .return_sites are a static_call trampoline (most are not).
++	 * Check if the 3 bytes after the return are still kernel text, if not,
++	 * then this definitely is not a trampoline and we need not worry
++	 * further.
++	 *
++	 * This avoids the memcmp() below tripping over pagefaults etc..
++	 */
++	if (((addr >> PAGE_SHIFT) != ((addr + 7) >> PAGE_SHIFT)) &&
++	    !kernel_text_address(addr + 7))
++		return false;
 +
- 	pm_runtime_enable(pcie->dev);
- 	err = pm_runtime_get_sync(pcie->dev);
- 	if (err < 0) {
--- 
-2.35.1
-
+ 	if (memcmp(tramp+5, tramp_ud, 3)) {
+ 		/* Not a trampoline site, not our problem. */
+ 		return false;
