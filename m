@@ -2,65 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFFF377D755
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 03:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7A577D75D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 03:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240932AbjHPBH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 21:07:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
+        id S240945AbjHPBJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 21:09:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240923AbjHPBHc (ORCPT
+        with ESMTP id S240987AbjHPBJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 21:07:32 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD686211E;
-        Tue, 15 Aug 2023 18:07:30 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RQVNY67Ssz4f3pHm;
-        Wed, 16 Aug 2023 09:07:25 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgAHl6lNIdxkR5k_Aw--.16538S3;
-        Wed, 16 Aug 2023 09:07:26 +0800 (CST)
-Subject: Re: [PATCH -next v2 3/7] md: delay choosing sync direction to
- md_start_sync()
-To:     Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     xni@redhat.com, linux-raid@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20230815030957.509535-1-yukuai1@huaweicloud.com>
- <20230815030957.509535-4-yukuai1@huaweicloud.com>
- <bb11d6ca-978a-8e1d-e721-d9d84c9dc5e3@huaweicloud.com>
- <CAPhsuW65Hxq=+D6M6zV8n+k4FarTHui=pSs2YPNKs9MYBD4MHA@mail.gmail.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <bd0a6f0f-2766-deb9-bbfd-5310d3f18e12@huaweicloud.com>
-Date:   Wed, 16 Aug 2023 09:07:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Tue, 15 Aug 2023 21:09:20 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB73B268D;
+        Tue, 15 Aug 2023 18:09:12 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6b9cd6876bbso1603429a34.1;
+        Tue, 15 Aug 2023 18:09:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692148152; x=1692752952;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NSkEH/9Z3XQRfMyS98L8/MPpuGgYuS2fQa5TuY149uE=;
+        b=YvVbDNYWtmke5r+BFoaiJW3pq+6BH17n4jsoOYmt1XDJ3dHrjANAYfxQVwqqYIuVHh
+         hVnFilqdYGJTNpiXOpKw0qFq251aHUnOTc8ZnW78i2VD+TGtbvpLwuVMeqO/qDHuZTKV
+         0JkafwmHHwwYt2RBaBdpcMO2w//5idfsQwJ4KGPDVvKxZlalfAsDczlFCREnWU6tWgIO
+         IlkS2WLEiQ/fhoXagPPFqyW9mD5MTdYNJT8rBS4HtpF6IzKntZ5/WIZR0MDDj75SDveX
+         +nIMYJmOXOY6LW4lytxGWQ3ubqpMVXSCXq6yy5aTUyfNn8hUMwJxBybatmeIixZYu3+7
+         eW2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692148152; x=1692752952;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NSkEH/9Z3XQRfMyS98L8/MPpuGgYuS2fQa5TuY149uE=;
+        b=Ov1zMvNi3K/ND0SUaI7c9qd8lMLcqHfQxOUoBokvf/gOJo1XpKMd4xQfnaXPCT21VQ
+         msdSfDEXD0VwlxX6RzJomdgk9Vpah1cykKNTMoiSFHVY3MqR175JtKsqs0GXzBFlOGea
+         93saJQPYLfuyE6eJlUj5EqdcGttnQ0UaTJz+2PHAT/U100RwTwFs2qq37lLP60Ka0ePl
+         sIOJr69OURg/DhyoG7wybqcWv7ulKOq9AG6UdMc0+msvgOfFuOX946WSPNxTxEmjuTuw
+         P6hwmrDFMa9YJQpAHn7EWpKVDhb9rQxibTtwJ/ECocRR+IMysgeHFF+rgRUTD0WYf43d
+         mzcg==
+X-Gm-Message-State: AOJu0YyZMbzrVfibJk+qsYBlGL4sD1gXFls1IIr+FcOoi4JRkUPteCSh
+        i5oeyUbnmteeGc+IYX61jig=
+X-Google-Smtp-Source: AGHT+IEF1hcMxMdsNg+davQYwzBYH0iK/IPiOlxi5OV7huxZ5R1Ounlk8rluR8E+dbqWda3ieyyrXQ==
+X-Received: by 2002:a05:6808:1827:b0:394:25b9:db19 with SMTP id bh39-20020a056808182700b0039425b9db19mr409770oib.2.1692148151894;
+        Tue, 15 Aug 2023 18:09:11 -0700 (PDT)
+Received: from [192.168.0.82] ([67.6.79.63])
+        by smtp.gmail.com with ESMTPSA id s22-20020a0568080b1600b003a4243d034dsm5985013oij.17.2023.08.15.18.09.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Aug 2023 18:09:11 -0700 (PDT)
+Message-ID: <2980f5e6-40b0-4ab2-ae73-bceeb97b4de5@gmail.com>
+Date:   Tue, 15 Aug 2023 20:09:10 -0500
 MIME-Version: 1.0
-In-Reply-To: <CAPhsuW65Hxq=+D6M6zV8n+k4FarTHui=pSs2YPNKs9MYBD4MHA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAHl6lNIdxkR5k_Aw--.16538S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4UKrWkZFWrZr18tFWrKrg_yoW5JF1Upa
-        yfJFn8GrW7XFy3XrW2q3Z0qayj9r1jqrZrJF43Wa4fJrnaqF1fKF1rWF17CFWDJa929a1r
-        Zw48Ja9xZFyFgF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
-        Y487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUU
-        UU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 2/2] Input: Add Novatek NT36xxx touchscreen driver
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Dang Huynh <danct12@riseup.net>,
+        Amit Pundir <amit.pundir@linaro.org>
+References: <20230808-topic-nt36xxx-v10-0-dd135dfa0b5e@linaro.org>
+ <20230808-topic-nt36xxx-v10-2-dd135dfa0b5e@linaro.org>
+From:   Joel Selvaraj <joelselvaraj.oss@gmail.com>
+In-Reply-To: <20230808-topic-nt36xxx-v10-2-dd135dfa0b5e@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,83 +84,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Konrad Dybcio,
 
-在 2023/08/15 23:54, Song Liu 写道:
-> On Tue, Aug 15, 2023 at 2:00 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
-> [...]
->>> +
->>> +not_running:
->>> +     clear_bit(MD_RECOVERY_SYNC, &mddev->recovery);
->>> +     clear_bit(MD_RECOVERY_RESHAPE, &mddev->recovery);
->>> +     clear_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
->>> +     clear_bit(MD_RECOVERY_CHECK, &mddev->recovery);
->>> +     clear_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
->>> +     mddev_unlock(mddev);
->>> +
->>> +     wake_up(&resync_wait);
->>> +     if (test_and_clear_bit(MD_RECOVERY_RECOVER, &mddev->recovery) &&
->>> +         mddev->sysfs_action)
->>> +             sysfs_notify_dirent_safe(mddev->sysfs_action);
->>>    }
->>>
->>>    /*
->>> @@ -9379,7 +9402,6 @@ void md_check_recovery(struct mddev *mddev)
->>>                return;
->>>
->>>        if (mddev_trylock(mddev)) {
->>> -             int spares = 0;
->>>                bool try_set_sync = mddev->safemode != 0;
->>>
->>>                if (!mddev->external && mddev->safemode == 1)
->>> @@ -9467,29 +9489,11 @@ void md_check_recovery(struct mddev *mddev)
->>>                clear_bit(MD_RECOVERY_DONE, &mddev->recovery);
->>>
->>>                if (!test_and_clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery) ||
->>> -                 test_bit(MD_RECOVERY_FROZEN, &mddev->recovery))
->>> -                     goto not_running;
->>> -             if (!md_choose_sync_direction(mddev, &spares))
->>> -                     goto not_running;
->>> -             if (mddev->pers->sync_request) {
->>> -                     if (spares) {
->>> -                             /* We are adding a device or devices to an array
->>> -                              * which has the bitmap stored on all devices.
->>> -                              * So make sure all bitmap pages get written
->>> -                              */
->>> -                             md_bitmap_write_all(mddev->bitmap);
->>> -                     }
->>> +                 test_bit(MD_RECOVERY_FROZEN, &mddev->recovery)) {
->>
->> Sorry that I made a mistake here while rebasing v2, here should be
->>
->> !test_bit(MD_RECOVERY_FROZEN, &mddev->recovery)
->>
->> With this fixed, there are no new regression for mdadm tests using loop
->> devicein my VM.
+On 8/8/23 18:38, Konrad Dybcio wrote:
+> From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 > 
->                  if (!test_and_clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery) ||
->                      !test_bit(MD_RECOVERY_FROZEN, &mddev->recovery)) {
->                          queue_work(md_misc_wq, &mddev->sync_work);
->                  } else {
-> 
-> This doesn't look right. Should we do
-> 
->                  if (test_and_clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery) &&
->                      !test_bit(MD_RECOVERY_FROZEN, &mddev->recovery)) {
->                          queue_work(md_misc_wq, &mddev->sync_work);
->                  } else {
-> 
-> instead?
-> 
+> This is a driver for the Novatek in-cell touch controller and
+> supports various chips from the NT36xxx family, currently
+> including NT36525, NT36672A, NT36676F, NT36772 and NT36870.
 
-Yes you're right, this is exactly what I did in v1, sorry that I keep
-making mistake while rebasing.
+In kernel v6.4, a basic novatek touchscreen driver was introduced [1].
+I was able to tweak IT a bit (add devicetree compatible, regulator 
+support, remove chip id hardcode) and get it properly working in my 
+Xiaomi Poco F1 which has Novatek NT36672A touchscreen. Probably the 
+other ICs will also work. So, do we really need a separate touchscreen 
+driver? Maybe the existing one can be improved to add more features if 
+needed?
 
-Thanks,
-Kuai
+Personally I have been looking forward to the v10 of this patchseries :) 
+Thanks for working on this! But, yeah, we need to decide if we need this 
+to be a separate driver.
 
-> Thanks,
-> Song
-> .
-> 
+Link: 
+https://lore.kernel.org/all/20230326212308.55730-1-hdegoede@redhat.com/
 
+Regards
+Joel Selvaraj
