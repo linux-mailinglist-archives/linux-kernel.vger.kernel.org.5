@@ -2,97 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E6977DD54
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC6277DD55
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243367AbjHPJbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 05:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53964 "EHLO
+        id S243332AbjHPJcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 05:32:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242422AbjHPJbk (ORCPT
+        with ESMTP id S242445AbjHPJcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 05:31:40 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B1B26A1;
-        Wed, 16 Aug 2023 02:31:39 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id C7D692191A;
-        Wed, 16 Aug 2023 09:31:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1692178297; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6sKyG7pmNqgi6eGz+JdQnSC3feV2UCUViK6Z12J6spo=;
-        b=WZ4PRyHOlZ2TgjYP+EDYWHzP2I1VGz0nPyOBLVnX09XlvQUrNqGoN1VFpVE1cBvzTXPt9a
-        9MbT3acHM6OysITkLAInhE8YwJsl4EEKyGTG/BTapu66or6dhtCFTI9FkCds77mAgcabRo
-        0pgDRxM0zS4ee70PhrVK1+8sBUM4bd4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1692178297;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6sKyG7pmNqgi6eGz+JdQnSC3feV2UCUViK6Z12J6spo=;
-        b=aSwtdCnQ4/CNaHi+iCBy4oLJWfpXKwLzE7fThb5aa6MLdqHdXVGY8HgbUIiXTO01J0G65h
-        WiSJs4V6huUnARDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B0215133F2;
-        Wed, 16 Aug 2023 09:31:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id GKQRK3mX3GSNTwAAMHmgww
-        (envelope-from <dwagner@suse.de>); Wed, 16 Aug 2023 09:31:37 +0000
-Date:   Wed, 16 Aug 2023 11:31:46 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Chaitanya Kulkarni <kch@nvidia.com>,
-        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Hannes Reinecke <hare@suse.de>,
-        James Smart <jsmart2021@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: Re: [PATCH blktests v3 00/13] Switch to allowed_host
-Message-ID: <6e3i34utxot67jod2opzksdufcnfypycule5kkrcfaezxxvyg4@ixifxnti4wqy>
-References: <20230811093614.28005-1-dwagner@suse.de>
- <1098c6a6-50cb-8704-9041-03c431155dfb@grimberg.me>
+        Wed, 16 Aug 2023 05:32:12 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E446026A1;
+        Wed, 16 Aug 2023 02:32:10 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31427ddd3fbso5549368f8f.0;
+        Wed, 16 Aug 2023 02:32:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692178329; x=1692783129;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CROS11eQc4VdamWNPpkT/+SP9fFFyQmzSXVLUtxDZNE=;
+        b=gkJUMBYDBiDz+w+hHK/s4KLlBswof+5/6pLmHCiSRn+8eM/S962FZbAtIdUj9BnHZD
+         bhWNK6PyHY7ByDfxeXxqjSIRD9TianaNDEfWwUw4NTX3f2uTzeD9wcXetkXRW3OIRswH
+         g0YSrsAi1EYxWAsnPUy5gXBA/oh35RSoTTLVukDHUTu/fxqtWU48mr68AnjyZ7E1Cn05
+         l+tfZKhOw+yGqNIyod5CMZgJsOAR6p6HAovoWC9vzdXuwqK3SGhrFRAZ6C/xYYt5+BT6
+         kNV4B9Rgld2atqYao1zvT7hMXJLwuKmXXIUjmifbMszc71xt5Q/5j5G+s/C2EYsdmq/G
+         s4gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692178329; x=1692783129;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CROS11eQc4VdamWNPpkT/+SP9fFFyQmzSXVLUtxDZNE=;
+        b=Qn3H9OyOKkoX1P9Dn4fGRw5E8M9hY82gfNiczcb+RJFGzcVWH4kyI5b1Ni1o9oFe4e
+         2PaQWU39btLQqJNyiMR//A5++YDsOzSMSmyd4AfZG0M2DcCXTpvoQKSIZe+wS5y0Bp8X
+         j9ZZHAJMTo3mW4vgxVxsZCZaPc8YCbbdK1r3GMn8IvOaNsMXO6PMjjlxSZUgaDdjwbYR
+         5gk0CfKqo4kVOY84j/1sRePX313prYZJGb9HUfRMCMUSCmwK34V/27MylmXz0BsmJlMo
+         OBh5u063r4ALXIC3rMTfTWwkOntVyDasTOmCUI9zGXZ2GvNZiltVWapA8O5KYJ0kvS1O
+         WlDQ==
+X-Gm-Message-State: AOJu0Yy1fK8Hjf/mBWQkzusVFLW2kN3JpHhY9a0nU7Pm5mqecEwQLK5L
+        0rPWf1XheFgqxgZxkswNnM4=
+X-Google-Smtp-Source: AGHT+IED11k3OhCVYJf57vRvQOu7TpdsSNcxeoXQrTN4ekCEG4hqItcvlx+nbAfnEFrZegkR0U/J5A==
+X-Received: by 2002:a05:6000:90e:b0:314:34dd:aaec with SMTP id cw14-20020a056000090e00b0031434ddaaecmr891744wrb.8.1692178329137;
+        Wed, 16 Aug 2023 02:32:09 -0700 (PDT)
+Received: from localhost ([81.168.73.77])
+        by smtp.gmail.com with ESMTPSA id x4-20020a5d4904000000b003143801f8d8sm20748650wrq.103.2023.08.16.02.32.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 02:32:08 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 10:32:07 +0100
+From:   Martin Habets <habetsm.xilinx@gmail.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, ecree.xilinx@gmail.com, netdev@vger.kernel.org,
+        linux-net-drivers@amd.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] sfc: Remove unneeded semicolon
+Message-ID: <20230816093207.GA239320@gmail.com>
+Mail-Followup-To: Yang Li <yang.lee@linux.alibaba.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        ecree.xilinx@gmail.com, netdev@vger.kernel.org,
+        linux-net-drivers@amd.com, linux-kernel@vger.kernel.org
+References: <20230816004944.10841-1-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1098c6a6-50cb-8704-9041-03c431155dfb@grimberg.me>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230816004944.10841-1-yang.lee@linux.alibaba.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 13, 2023 at 05:59:53PM +0300, Sagi Grimberg wrote:
+On Wed, Aug 16, 2023 at 08:49:44AM +0800, Yang Li wrote:
+> ./drivers/net/ethernet/sfc/tc_conntrack.c:464:2-3: Unneeded semicolon
 > 
-> > Addressed the comments from v2. I also added cleanup code to _nvmet_cleanup() to
-> > make sure we do not leak resources when something goes wrong. I run into this
-> > while testing and all tests after the first failure failed then.
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+
+Thanks for catching this!
+
+Acked-by: Martin Habets <habetsm.xilinx@gmail.com>
+
+> ---
+>  drivers/net/ethernet/sfc/tc_conntrack.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> The name of the patch series suggest that it switches to allowed_hosts
-> where it does that in 2 patches 11+12 out of 13 patches. The rest are
-> just bug fixes and unifications. It's true that any series will include
-> fixes, cleanups and prep patches, but this is too far :)
-
-I see your point. The whole series started smaller, but just grew over
-time. I suppose if we agree with the general direction we could just get
-the first part done (bug fixes and refactoring).
-
-> I'll let Shinichiro accept as he wish though.
-
-I am fine either way, just let me know what you prefer.
-
-> The cleanups look fine to me.
-
-Thanks for reviewing!
+> diff --git a/drivers/net/ethernet/sfc/tc_conntrack.c b/drivers/net/ethernet/sfc/tc_conntrack.c
+> index 54ed288543d0..8e06bfbcbea1 100644
+> --- a/drivers/net/ethernet/sfc/tc_conntrack.c
+> +++ b/drivers/net/ethernet/sfc/tc_conntrack.c
+> @@ -461,7 +461,7 @@ static int efx_tc_flow_block(enum tc_setup_type type, void *type_data,
+>  		return efx_tc_ct_stats(ct_zone, tcb);
+>  	default:
+>  		break;
+> -	};
+> +	}
+>  
+>  	return -EOPNOTSUPP;
+>  }
+> -- 
+> 2.20.1.7.g153144c
+> 
