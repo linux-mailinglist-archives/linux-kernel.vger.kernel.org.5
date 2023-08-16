@@ -2,116 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6B677E886
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B501E77E898
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345456AbjHPSRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 14:17:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34082 "EHLO
+        id S1345468AbjHPSXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 14:23:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345452AbjHPSQk (ORCPT
+        with ESMTP id S1345461AbjHPSXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 14:16:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8891BF8
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:15:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692209757;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4NCk5EuygTllxrThg0vFVBSkXpm2Kj6r/bz6FMUkUls=;
-        b=ejMgq1I32I19kIIPvhtQEpkxahbiSpYn2EiePcf2J/UIOQHNIiwEAZtMnicr1S/uQWsGsA
-        3GblbZC/IkrMOWBtuqrjkJEUxhDvTW6xeo5HuG0oW2hRWWG7mMVJHq/g9E6KMpqvt8Oa+s
-        nXzyV2ihDkN2qvLaoNVcXvl6KX8FhxA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-318-8Hh94IScOuyW4gb4qhhidQ-1; Wed, 16 Aug 2023 14:15:54 -0400
-X-MC-Unique: 8Hh94IScOuyW4gb4qhhidQ-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 131FC857A84;
-        Wed, 16 Aug 2023 18:15:52 +0000 (UTC)
-Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8E626492C13;
-        Wed, 16 Aug 2023 18:15:51 +0000 (UTC)
-From:   Jeff Moyer <jmoyer@redhat.com>
-To:     Gabriel Krisman Bertazi <krisman@suse.de>
-Cc:     matteorizzo@google.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        axboe@kernel.dk, asml.silence@gmail.com, corbet@lwn.net,
-        akpm@linux-foundation.org, keescook@chromium.org,
-        ribalda@chromium.org, rostedt@goodmis.org, jannh@google.com,
-        chenhuacai@kernel.org, gpiccoli@igalia.com, ldufour@linux.ibm.com,
-        evn@google.com, poprdi@google.com, jordyzomer@google.com,
-        andres@anarazel.de
-Subject: Re: [PATCH v4] io_uring: add a sysctl to disable io_uring system-wide
-References: <x49wmxuub14.fsf@segfault.boston.devel.redhat.com>
-        <87cyzm504h.fsf@suse.de>
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date:   Wed, 16 Aug 2023 14:21:39 -0400
-In-Reply-To: <87cyzm504h.fsf@suse.de> (Gabriel Krisman Bertazi's message of
-        "Wed, 16 Aug 2023 14:10:38 -0400")
-Message-ID: <x49sf8iu9u4.fsf@segfault.boston.devel.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 16 Aug 2023 14:23:00 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958F41986
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:22:58 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bb84194bf3so43678165ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:22:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692210178; x=1692814978;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AavxYaQEPY9dU8GTHMOuzfvF8C2yZfbqDwD9ecZqf/Y=;
+        b=Rv7jJw/Th5/GaDIfWDCHp5w2jn1aTtV1ApTzdN68lHRwKO67VVqilDVbh2kKFJKmEv
+         UUuqhjrQ5sdAjyuisef1dIUbX23rWq8ZAZscoM2zGhJr/qPEpVJKTnxPC0TfcqDIl6wJ
+         m6Qilif7tbIn/PT7AfkHSpf0nzMKgwtUWibtE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692210178; x=1692814978;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AavxYaQEPY9dU8GTHMOuzfvF8C2yZfbqDwD9ecZqf/Y=;
+        b=YBCH+RldGSVZmSG4xR9uq17xBWTWiFEC6AdmWZBh+k7DQdEfcfY0DSgU6z8/lnUJ1n
+         Kiz12A4HJSu9OwqBIgfWS9bbn6LFDwRbMPWYjSW20LM8tjVTEdY2ZWLcphSGLh7uFvGY
+         vr7qtTS8cg79W7xBfW+I1lkC0YyNmbe4lQj1p5i+rHC2JB6i9C1WiJA5vtSVECPtQPpw
+         Np0IrmO90UUpQTrnwGvRa1j3x62OSexkL4EGnk8cKPoVzThJDsL/BzAKypxHRcQdbBrL
+         E3iTeOx/SH3AcXeRqkIojiDLOFMZ+lhSVsDijZgntRwFJAw6B2bCJuVJWrBFtoWjBu5x
+         L1nQ==
+X-Gm-Message-State: AOJu0YwDQOisjHUSdEEkAdTfUGKrEbCXO+9IyYUsOPaZN09Lb1mWakNM
+        dYRhhi+P9v2kGtyEtTAXHoCmyQ==
+X-Google-Smtp-Source: AGHT+IGvTPmZRIujQIljk/5aGfiMHaNQcMM7hE4+cTpS9LxESEUNLHPCrmRJKKfzItxnoeLLP7q30Q==
+X-Received: by 2002:a17:902:ec90:b0:1b0:3df7:5992 with SMTP id x16-20020a170902ec9000b001b03df75992mr2520493plg.32.1692210177924;
+        Wed, 16 Aug 2023 11:22:57 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:d195:f984:f71b:ed07])
+        by smtp.gmail.com with ESMTPSA id x18-20020a1709027c1200b001b9ff5aa2e7sm13440155pll.239.2023.08.16.11.22.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 11:22:57 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Bjorn Andersson <andersson@kernel.org>
+Cc:     Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] arm64: dts: qcom: sc7180: Move trogdor rt5682s bits to a fragment
+Date:   Wed, 16 Aug 2023 11:21:53 -0700
+Message-ID: <20230816112143.1.I7227efd47e0dc42b6ff243bd22aa1a3e01923220@changeid>
+X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gabriel Krisman Bertazi <krisman@suse.de> writes:
+Several trogdor boards have moved from the older rt5862i to the newer
+rt5862s, at least on newer revisions of boards. Let's get rid of the
+dts duplication across boards and promote this to a fragment.
 
-> Jeff Moyer <jmoyer@redhat.com> writes:
->
->> From: Matteo Rizzo <matteorizzo@google.com>
->>
->> Introduce a new sysctl (io_uring_disabled) which can be either 0, 1, or
->> 2. When 0 (the default), all processes are allowed to create io_uring
->> instances, which is the current behavior.  When 1, io_uring creation is
->> disabled (io_uring_setup() will fail with -EPERM) for processes not in
->> the kernel.io_uring_group group.  When 2, calls to io_uring_setup() fail
->> with -EPERM regardless of privilege.
->>
->> Signed-off-by: Matteo Rizzo <matteorizzo@google.com>
->> [JEM: modified to add io_uring_group]
->> Signed-off-by: Jeff Moyer <jmoyer@redhat.com>
->>
->> ---
->> v4:
->>
->> * Add a kernel.io_uring_group sysctl to hold a group id that is allowed
->>   to use io_uring.  One thing worth pointing out is that, when a group
->>   is specified, only users in that group can create an io_uring.  That
->>   means that if the root user is not in that group, root can not make
->>   use of io_uring.
->
-> Rejecting root if it's not in the group doesn't make much sense to
-> me. Of course, root can always just add itself to the group, so it is
-> not a security feature. But I'd expect 'sudo <smth>' to not start giving
-> EPERM based on user group settings.  Can you make CAP_SYS_ADMIN
-> always allowed for option 1?
+Note: The old boards used to override the "compatible" in the "sound"
+node with the exact same thing that was in "sc7180-trogdor.dtsi"
+("google,sc7180-trogdor"). I got rid of that.
 
-Yes, that's easy to do.  I'd like to gather more opinions on this before
-changing it, though.
+This is validated to produce the same result when taking the dtbs
+generated by the kernel build and then doing:
 
->>   I also wrote unit tests for liburing.  I'll post that as well if there
->>   is consensus on this approach.
->
-> I'm fine with this approach as it allow me to easily reject non-root users.
+  for dtb in *trogdor*.dtb; do
+    dtc -I dtb -O dts $dtb -o out/$dtb.dts;
+  done
 
-Thanks for taking a look!
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
--Jeff
+ .../boot/dts/qcom/sc7180-trogdor-kingoftown.dts | 13 +------------
+ .../dts/qcom/sc7180-trogdor-pazquel360.dtsi     | 13 +------------
+ .../dts/qcom/sc7180-trogdor-rt5682s-sku.dtsi    | 17 +++++++++++++++++
+ ...180-trogdor-wormdingler-rev1-boe-rt5682s.dts | 13 +------------
+ ...180-trogdor-wormdingler-rev1-inx-rt5682s.dts | 13 +------------
+ 5 files changed, 21 insertions(+), 48 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-rt5682s-sku.dtsi
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-kingoftown.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-kingoftown.dts
+index 36326ef972dc..d6db7d83adcf 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-kingoftown.dts
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-kingoftown.dts
+@@ -11,19 +11,13 @@
+ #include "sc7180-trogdor-parade-ps8640.dtsi"
+ #include <arm/cros-ec-keyboard.dtsi>
+ #include "sc7180-trogdor-lte-sku.dtsi"
++#include "sc7180-trogdor-rt5682s-sku.dtsi"
+ 
+ / {
+ 	model = "Google Kingoftown";
+ 	compatible = "google,kingoftown", "qcom,sc7180";
+ };
+ 
+-&alc5682 {
+-	compatible = "realtek,rt5682s";
+-	/delete-property/ VBAT-supply;
+-	realtek,dmic1-clk-pin = <2>;
+-	realtek,dmic-clk-rate-hz = <2048000>;
+-};
+-
+ &ap_tp_i2c {
+ 	status = "okay";
+ };
+@@ -84,11 +78,6 @@ &pp3300_dx_edp {
+ 	gpio = <&tlmm 67 GPIO_ACTIVE_HIGH>;
+ };
+ 
+-&sound {
+-	compatible = "google,sc7180-trogdor";
+-	model = "sc7180-rt5682s-max98357a-1mic";
+-};
+-
+ &wifi {
+ 	qcom,ath10k-calibration-variant = "GO_KINGOFTOWN";
+ };
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pazquel360.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pazquel360.dtsi
+index 273e2249f018..89034b6702f4 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pazquel360.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pazquel360.dtsi
+@@ -7,13 +7,7 @@
+ 
+ /* This file must be included after sc7180-trogdor.dtsi */
+ #include "sc7180-trogdor-pazquel.dtsi"
+-
+-&alc5682 {
+-	compatible = "realtek,rt5682s";
+-	realtek,dmic1-clk-pin = <2>;
+-	realtek,dmic-clk-rate-hz = <2048000>;
+-	/delete-property/ VBAT-supply;
+-};
++#include "sc7180-trogdor-rt5682s-sku.dtsi"
+ 
+ ap_ts_pen_1v8: &i2c4 {
+ 	clock-frequency = <400000>;
+@@ -64,11 +58,6 @@ CROS_STD_MAIN_KEYMAP
+ 	>;
+ };
+ 
+-&sound {
+-	compatible = "google,sc7180-trogdor";
+-	model = "sc7180-rt5682s-max98357a-1mic";
+-};
+-
+ &wifi {
+ 	qcom,ath10k-calibration-variant = "GO_PAZQUEL360";
+ };
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-rt5682s-sku.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-rt5682s-sku.dtsi
+new file mode 100644
+index 000000000000..66b8773309d4
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-rt5682s-sku.dtsi
+@@ -0,0 +1,17 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Google Trogdor dts fragment for SKUs with
++ *
++ * Copyright 2023 Google LLC.
++ */
++
++&alc5682 {
++	compatible = "realtek,rt5682s";
++	/delete-property/ VBAT-supply;
++	realtek,dmic1-clk-pin = <2>;
++	realtek,dmic-clk-rate-hz = <2048000>;
++};
++
++&sound {
++	model = "sc7180-rt5682s-max98357a-1mic";
++};
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-wormdingler-rev1-boe-rt5682s.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-wormdingler-rev1-boe-rt5682s.dts
+index 6225ab8329c3..842f07f16ed1 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-wormdingler-rev1-boe-rt5682s.dts
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-wormdingler-rev1-boe-rt5682s.dts
+@@ -11,20 +11,9 @@
+ /dts-v1/;
+ 
+ #include "sc7180-trogdor-wormdingler-rev1-boe.dts"
++#include "sc7180-trogdor-rt5682s-sku.dtsi"
+ 
+ / {
+ 	model = "Google Wormdingler rev1+ (BOE, rt5682s)";
+ 	compatible = "google,wormdingler-sku1025", "qcom,sc7180";
+ };
+-
+-&alc5682 {
+-	compatible = "realtek,rt5682s";
+-	/delete-property/ VBAT-supply;
+-	realtek,dmic1-clk-pin = <2>;
+-	realtek,dmic-clk-rate-hz = <2048000>;
+-};
+-
+-&sound {
+-	compatible = "google,sc7180-trogdor";
+-	model = "sc7180-rt5682s-max98357a-1mic";
+-};
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-wormdingler-rev1-inx-rt5682s.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-wormdingler-rev1-inx-rt5682s.dts
+index b40b068dad6a..084870323606 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-wormdingler-rev1-inx-rt5682s.dts
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-wormdingler-rev1-inx-rt5682s.dts
+@@ -11,20 +11,9 @@
+ /dts-v1/;
+ 
+ #include "sc7180-trogdor-wormdingler-rev1-inx.dts"
++#include "sc7180-trogdor-rt5682s-sku.dtsi"
+ 
+ / {
+ 	model = "Google Wormdingler rev1+ (INX, rt5682s)";
+ 	compatible = "google,wormdingler-sku1", "qcom,sc7180";
+ };
+-
+-&alc5682 {
+-	compatible = "realtek,rt5682s";
+-	/delete-property/ VBAT-supply;
+-	realtek,dmic1-clk-pin = <2>;
+-	realtek,dmic-clk-rate-hz = <2048000>;
+-};
+-
+-&sound {
+-	compatible = "google,sc7180-trogdor";
+-	model = "sc7180-rt5682s-max98357a-1mic";
+-};
+-- 
+2.41.0.694.ge786442a9b-goog
 
