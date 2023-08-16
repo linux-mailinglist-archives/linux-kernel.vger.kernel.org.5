@@ -2,91 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D3277E96B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9840E77E973
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345726AbjHPTJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 15:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41182 "EHLO
+        id S1344319AbjHPTMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 15:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345710AbjHPTJO (ORCPT
+        with ESMTP id S1344724AbjHPTMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 15:09:14 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 301B92709
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 12:09:09 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3197a71a9c0so106626f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 12:09:09 -0700 (PDT)
+        Wed, 16 Aug 2023 15:12:18 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3529826A0;
+        Wed, 16 Aug 2023 12:12:17 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-688769faa09so1364041b3a.2;
+        Wed, 16 Aug 2023 12:12:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692212947; x=1692817747;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=09PKymi2INrdrlOMABU+GEUt5jt78IgIuvixujEnKUM=;
-        b=vRWRLII6GKEsk7DVcD8uEi9WUCy+goBHYUKeOGlYF15KCbc2bwu37qSuMHzMrqZb70
-         w5ZRlk+9Cs1N0YFpNBqXxNnOgPr3lvnaKA9dvFdCnvDp1H9aMAirBIgVX/c4KQzp2JOL
-         vBiXFhg2ekRvp+0uIMBac+tCKUSICTgLSJSBlxl99+7YkoYhQFmjlReC67o4T8ctSmvX
-         7hnakN4JPZY9ymEV6hRX3GXLHWgFU9nGluWvbjR2VmkUlR6ctD+3pwQscvmDhfBEGpsB
-         bIegSmJbJguUQ4sxpwVf7NtDhNT8EPBPtws9cRBWOydUnA3uwHIBL3RdsP5IND6fNQ7i
-         Ss1Q==
+        d=gmail.com; s=20221208; t=1692213136; x=1692817936;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RUxQtzAvxn5wMlUvvgAAU6yViv0NwyF3TSGjuAQvdk4=;
+        b=oAk1zgzxFyDAzQ/tPy3vjbGQ1SNAEfP+D3+5tBdes/lds4x+bZPvD8zooasxmINK3p
+         UH4oBYH0UH4PsXA8PYk0ZG3QVi05+hvts3zPcvrqI+YHpEtf683NGzALXdaib4xCjbNr
+         /HCuN5NEZY2OJWUyHPwxr+gS3Xf8DTTTK1waF95hB7t4v10pU2CU8eNAIWwarajJF033
+         2aQxlzHfbvdlqRIbISHagbizvNBJ5wPaZK5ebqfux7YVUFoybsFZ/Gi2kcBlEVFNkRlW
+         v4gGdq+1QtB4n5xGh4PHNY8milQp4UPfqDeHqoymm2iSyGNHni7CPslStZwfmrNocoQr
+         GJMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692212947; x=1692817747;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=09PKymi2INrdrlOMABU+GEUt5jt78IgIuvixujEnKUM=;
-        b=J/cErAO6bcrvZHWt6HqkkbgWMx4wmU42LsNe3IEumdoUtuzcOg/nZclWWJuAIPAth9
-         dmW3mcOWDhGrR8gZMYFILisBfXwxDEtlPsfiJWwIThh0FFubghL/YK3m3skL10YUlpGl
-         EdwWHWmFQ6XtI/Db/73egDdl4EEv7DhUYLNjUdNBGJRr17omEf6DFbYLwmSXc1bBDzyl
-         EYQXYTkMrS03dbezepCbFgHGSkCAfrxUAPzP7gELV2fR5DJfnMDaJ5ZiKvwTOHygR6na
-         bHAyf7Y0FR8afsAXdNdKYs9dLjetnCum/3SSjj9f7ZxNYU1W4RBFXGe1GEv+6AXil9KN
-         46CA==
-X-Gm-Message-State: AOJu0Yz6Aju4dV4a/Z8mZb0gDMbShTC9rTOSOrXYr+bmcvzg6wOn8lsz
-        2uY/JzaLsptVlz2IbWTHc6bGwg==
-X-Google-Smtp-Source: AGHT+IFHhd2ahj51VAR9JLJ+iyux43T6WsIdy2vxZYFdi6uZTG4tab97q9GBhPFtAwOZyRek0RsH/Q==
-X-Received: by 2002:adf:f805:0:b0:316:f4b9:a952 with SMTP id s5-20020adff805000000b00316f4b9a952mr360625wrp.31.1692212947623;
-        Wed, 16 Aug 2023 12:09:07 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id m9-20020a05600c280900b003fe539b83f2sm259821wmb.42.2023.08.16.12.09.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 12:09:06 -0700 (PDT)
-Message-ID: <5332efa6-621c-a338-09e7-dfcc86f898ca@linaro.org>
-Date:   Wed, 16 Aug 2023 20:09:05 +0100
+        d=1e100.net; s=20221208; t=1692213136; x=1692817936;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RUxQtzAvxn5wMlUvvgAAU6yViv0NwyF3TSGjuAQvdk4=;
+        b=cg4EwIgwD8/FN9Tm9PbkiBoP+MmCq//jVBeLqnl13BhbYOUBUSetdAJnHl1ZBTMQvn
+         Wuk7W56Lsjxd4MuzSYW/zhHQe3f89BsbL9rwIArIgMPCI2sPVjE0qhx6zuDNylx73SOk
+         aJ4ueEJxM0Kl4YxM2bHRo/c2njgRwNbl+jdvjqpVu6YGIVBHa907bZVCTSmaJLYKnv85
+         DEpcgZVUXfw29W+5igOL7xtMzYawiqmj3Yfx3h4nmU0jQdFswY0Gtjxvnf5DO/KdzlSr
+         AlmTbkyTGoEqjdv86noSfNuRaL1sMgT5j+4BsEk+z0JCvI+UQaohp9Nw/hqHBl7e0XsX
+         +XLg==
+X-Gm-Message-State: AOJu0YyCDhqbyPEjqabchKtcpBU8DN0YOLKJ+aYoUokFFI2CK8Ycf5aR
+        VmI4SNDbu9ukGIfNaEfFFqA=
+X-Google-Smtp-Source: AGHT+IFgVe3Z4fhdFFJttNsSX5HhKfDbfGs8s3UaqjCMtX2YpTSdFENYDXbMwsVCycEMP1mgTCUTFg==
+X-Received: by 2002:a05:6a20:dd94:b0:13d:6c5a:1887 with SMTP id kw20-20020a056a20dd9400b0013d6c5a1887mr2590414pzb.20.1692213136423;
+        Wed, 16 Aug 2023 12:12:16 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id fe23-20020a056a002f1700b0067b643b814csm11413469pfb.6.2023.08.16.12.12.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 12:12:15 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 16 Aug 2023 12:12:14 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Benson Leung <bleung@chromium.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH 0/7] rtc: Add support for limited alarm timer offsets
+Message-ID: <6ffc915e-ca91-4b64-b7a5-f13f60df8b1d@roeck-us.net>
+References: <20230816133936.2150294-1-linux@roeck-us.net>
+ <20230816150353137debc5@mail.local>
+ <8079bdf4-f790-451b-a2c2-be4e23c0c3a1@roeck-us.net>
+ <20230816161435bd2bbd4a@mail.local>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v1 04/14] media: qcom: camss: Pass icc bandwidth table as
- a platform parameter
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, rfoss@kernel.org,
-        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230814162907.3878421-1-bryan.odonoghue@linaro.org>
- <20230814162907.3878421-5-bryan.odonoghue@linaro.org>
- <eaed15ca-5c0b-420e-a11e-007ef5608019@linaro.org>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <eaed15ca-5c0b-420e-a11e-007ef5608019@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230816161435bd2bbd4a@mail.local>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/08/2023 18:20, Konrad Dybcio wrote:
->> +	icc_res = camss->res->icc_res;
-> Would initializing at declaration time fit in 100 chars?
+On Wed, Aug 16, 2023 at 06:14:35PM +0200, Alexandre Belloni wrote:
+> On 16/08/2023 08:50:12-0700, Guenter Roeck wrote:
+> > > I'm fine with the series, however, this doesn't solve the issue for RTCs
+> > > that have an absolute limit on the alarm (as opposed to an offset to the
+> > > current time/date).
+> > > 
+> > 
+> > I thought that is checked by rtc_valid_range() in rtc_set_alarm().
+> > Am I missing something ? Of course that assumes that the absolute
+> > maximum alarm timeout matches range_max, but I didn't find any
+> > drivers where that would not be the case.
+> > 
+> 
+> There are RTCs where this is not the case. When this is far away in the
+> future enough, the usual solution is to clip range_max which works but
+> is not really great intellectually.
+> 
+Do you have an example, by any chance ?
 
-Ah yeah, that would be nice.
+Thanks,
+Guenter
 
----
-bod
+> -- 
+> Alexandre Belloni, co-owner and COO, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
