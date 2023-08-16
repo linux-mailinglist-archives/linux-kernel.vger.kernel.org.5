@@ -2,138 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC72C77E5C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 17:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED10977E58F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 17:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344464AbjHPP7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 11:59:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58838 "EHLO
+        id S1344358AbjHPPtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 11:49:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344461AbjHPP6g (ORCPT
+        with ESMTP id S1344324AbjHPPtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 11:58:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6E62D46;
-        Wed, 16 Aug 2023 08:58:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3094B6397C;
-        Wed, 16 Aug 2023 15:58:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0244FC433C8;
-        Wed, 16 Aug 2023 15:58:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692201496;
-        bh=yI3jO41F7I/D3o6O2gOqgEinRf/cP8uzb58UxsDvrsQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lOcjP2EXCONRBcqrbt5zkrB422WqcWN4nFbUcpq1VSIrMSUqz/I+eOOLH51KG4mUP
-         /oR92BYvYXlmHEB9etc0pB1mRX/y2xTv1f2qEFEC4n0Gp7pci+mKwh0+oumUO+8AqU
-         19i3pVPE4pHViUJpU/y4Geoo7v5Xvwx/UzBrmw1JoghVf/mnfSEM8GkZQ16jCz/OxT
-         rd32ztPE31TzWNp1fPQQZ7/+tzmn0f8iRvJwebRBjnNEvCxev0kB5uV4i/Unzb3rzJ
-         qzvHIsZQmPwqyFw54c6PuLhwxSluXo0SLZWczAAqyZ501d7u3/5zvTHQbzY3qryRuO
-         D84MQ9hFjdAfg==
-Date:   Wed, 16 Aug 2023 23:46:30 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Drew Fustini <dfustini@baylibre.com>, Fu Wei <wefu@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: dts: change TH1520 files to dual license
-Message-ID: <ZNzvVuJ9fW8xTCTN@xhacker>
-References: <20230724182129.843687-1-dfustini@baylibre.com>
- <ZM9tUFddbRUglwfG@xhacker>
- <CAJF2gTT4pyAT5xpSAuOJ801WSk=xouv=uC0PSpHKqB3D=GxHsg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJF2gTT4pyAT5xpSAuOJ801WSk=xouv=uC0PSpHKqB3D=GxHsg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 11:49:00 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E74026B5;
+        Wed, 16 Aug 2023 08:48:59 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37GCn9QJ001845;
+        Wed, 16 Aug 2023 15:48:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=q1VVgRd6l4S/kIJMK4NM0Qezc5H2bSqFKTnDSuMElGQ=;
+ b=WPcGeruemqs3LXBqt2q2rdaFIgB0z6lZX09sDrrqQ/xRWvogXtJZ4c5/pc+MP35OYETd
+ hPn08DkAMivzjN5yChTHppm/nynM1e5XgeVc/0ibkv4vG7uP9/El96816n3WSOkosHos
+ hY5+pRQHFoBHAsuPTCCbpUKo+WzHbx996E3DpzuoLmu4HCUvaBnZrL5whidPLeytzaiq
+ 5ioVdHo2ARe7ZkDXJpQNE41VtU5Khez96bFpCDeZW5t9XFVGbIjrygg4+Gj2yhBXRchJ
+ lRoOkHHe/51/9ir9qHGpwDAuwarnQBkFFXbeujQbCHdkXm0TMdm7H2GIQh0vKQ+ep1Sp MQ== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sg66hu8t9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 15:48:47 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 37GFmiWn002204;
+        Wed, 16 Aug 2023 15:48:44 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3se35maye0-1;
+        Wed, 16 Aug 2023 15:48:44 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37GFmi5I002198;
+        Wed, 16 Aug 2023 15:48:44 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-nitirawa-hyd.qualcomm.com [10.213.109.152])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 37GFmiuv002197;
+        Wed, 16 Aug 2023 15:48:44 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2342877)
+        id 635D85000A7; Wed, 16 Aug 2023 21:18:43 +0530 (+0530)
+From:   Nitin Rawat <quic_nitirawa@quicinc.com>
+To:     andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
+        agross@kernel.org, kishon@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Nitin Rawat <quic_nitirawa@quicinc.com>
+Subject: [PATCH V1 0/2] Add Phy Configuration support for SC7280
+Date:   Wed, 16 Aug 2023 21:18:39 +0530
+Message-Id: <20230816154841.2183-1-quic_nitirawa@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 5seZ0W1TkW2-9uOLK8g4f9I-dyWR2hDw
+X-Proofpoint-GUID: 5seZ0W1TkW2-9uOLK8g4f9I-dyWR2hDw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-16_15,2023-08-15_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
+ mlxscore=0 lowpriorityscore=0 bulkscore=0 phishscore=0 clxscore=1011
+ priorityscore=1501 malwarescore=0 impostorscore=0 mlxlogscore=672
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308160137
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 11:23:30PM +0800, Guo Ren wrote:
-> On Sun, Aug 6, 2023 at 6:03 PM Jisheng Zhang <jszhang@kernel.org> wrote:
-> >
-> > On Mon, Jul 24, 2023 at 11:21:29AM -0700, Drew Fustini wrote:
-> > > Modify the SPDX-License-Identifier for dual license of GPL-2.0 OR MIT.
-> > >
-> > > Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+This patch adds Phy configuration support for Qualcomm SC7280 SOC.
 
-Acked-by: Jisheng Zhang <jszhang@kernel.org>
+Nitin Rawat (2):
+  dt-bindings: phy: Add QMP UFS PHY comptible for SC7280
+  phy: qcom-qmp-ufs: Add Phy Configuration support for SC7280
 
-> > > ---
-> > >  arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi | 2 +-
-> > >  arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts      | 2 +-
-> > >  arch/riscv/boot/dts/thead/th1520.dtsi                  | 2 +-
-> > >  3 files changed, 3 insertions(+), 3 deletions(-)
-> > >
-> > > Jisheng Zhang and Guo Ren - I thought I would post this patch based on
-> > > the discussion in the thread about the BeagleV Ahead patches.
-> >
-> > I need Guo's ack to this patch. Hi Guo Ren, are you OK with this patch?
-> I'm okay with the dual license.
-> Acked-by: Guo Ren <guoren@kernel.org>
-> 
-> >
-> > Thanks
-> >
-> > >
-> > > Message-ID:
-> > > 20230722-upstream-beaglev-ahead-dts-v1-0-ccda511357f4@baylibre.com
-> > >
-> > > Thanks,
-> > > Drew
-> > >
-> > > diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-> > > index 4b0249ac710f..a802ab110429 100644
-> > > --- a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-> > > +++ b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
-> > > @@ -1,4 +1,4 @@
-> > > -// SPDX-License-Identifier: GPL-2.0
-> > > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> > >  /*
-> > >   * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-> > >   */
-> > > diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts b/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts
-> > > index a1248b2ee3a3..9a3884a73e13 100644
-> > > --- a/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts
-> > > +++ b/arch/riscv/boot/dts/thead/th1520-lichee-pi-4a.dts
-> > > @@ -1,4 +1,4 @@
-> > > -// SPDX-License-Identifier: GPL-2.0
-> > > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> > >  /*
-> > >   * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-> > >   */
-> > > diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > index 56a73134b49e..ce708183b6f6 100644
-> > > --- a/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > +++ b/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > @@ -1,4 +1,4 @@
-> > > -// SPDX-License-Identifier: GPL-2.0
-> > > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> > >  /*
-> > >   * Copyright (C) 2021 Alibaba Group Holding Limited.
-> > >   * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-> > > --
-> > > 2.34.1
-> > >
-> 
-> 
-> 
-> -- 
-> Best Regards
->  Guo Ren
+ .../phy/qcom,sc8280xp-qmp-ufs-phy.yaml        |   2 +
+ drivers/phy/qualcomm/phy-qcom-qmp-ufs.c       | 142 ++++++++++++++++++
+ 2 files changed, 144 insertions(+)
+
+--
+2.17.1
+
