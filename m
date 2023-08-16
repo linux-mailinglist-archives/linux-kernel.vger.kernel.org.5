@@ -2,91 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD4777E214
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A03D77E218
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245173AbjHPNBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 09:01:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59834 "EHLO
+        id S245348AbjHPNC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245317AbjHPNBi (ORCPT
+        with ESMTP id S245137AbjHPNCS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 09:01:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235342117
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:00:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692190856;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JL9XHCcHn9+lzn3csLfA/07hiNGl99qLxrzUXZlZiMU=;
-        b=CMYD8dFjSI7u01vLA2WbsRQ8g22bq/SAEriyUdMTLBVRXXzsfhnWF63Sabd09o+DYcm9N8
-        yv2iq3jwWHPKkhfNKprmpAWYiaLPpVEuBzTZ/0SJptfmwZvxhC6Sbtwc5tEroGrREHq4FK
-        OpvVdJfAFgyug0jL0GDUxkdktEtsUHw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-669-Zdu0GcBbNlWDvx1senW_nQ-1; Wed, 16 Aug 2023 09:00:51 -0400
-X-MC-Unique: Zdu0GcBbNlWDvx1senW_nQ-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 09950185A7A3;
-        Wed, 16 Aug 2023 13:00:50 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 491CA492C14;
-        Wed, 16 Aug 2023 13:00:48 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <03730b50cebb4a349ad8667373bb8127@AcuMS.aculab.com>
-References: <03730b50cebb4a349ad8667373bb8127@AcuMS.aculab.com> <20230816120741.534415-1-dhowells@redhat.com> <20230816120741.534415-3-dhowells@redhat.com>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     dhowells@redhat.com, Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@list.de>,
-        "Christian Brauner" <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Jeff Layton" <jlayton@kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] iov_iter: Don't deal with iter->copy_mc in memcpy_from_iter_mc()
+        Wed, 16 Aug 2023 09:02:18 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FDD1FF3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:02:17 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37GBIg4I005868;
+        Wed, 16 Aug 2023 13:01:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=gKxMbXmQSCBGgVaeiPE/RTBTHJ70HDlWSNhe4Vr/jC4=;
+ b=POwKQeA6Bkynj4oV9H0nbi6UXNbpYx4fyZtv++mw79Ozt5xJ0Kf3+EOXP63IDpqj2Lgd
+ ExXZOF982xr14nnqHYHIeh3oi33hKaB2KdD5PvlK12jxRxEcstK3BqN4yHSGRSjcxtUb
+ tOFkX57yNi4+IPEpy8PNtaCfW4vdDZs3aG3cjtL6DwxhsCWBoFWN+Ng0OGB5s+rht93W
+ SCmnNoaF4JXPhy4bVN7g9qbILfQp2L4UTd6t6oD1iwdi9QGAA6a2jZYNSE2lzcAadvua
+ RmDbJ/9LZV+/wR0rk3AOx6nyxpxrrBYJw7/FiBdJ1up70uL+XImdYFGKSivYXegzJcC2 pw== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sg83raq65-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 13:01:44 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37GD1hho031411
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 13:01:43 GMT
+Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Wed, 16 Aug 2023 06:01:41 -0700
+From:   Komal Bajaj <quic_kbajaj@quicinc.com>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+CC:     <linux-kernel@vger.kernel.org>,
+        Komal Bajaj <quic_kbajaj@quicinc.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] nvmem: sec-qfprom: Remove unused variable 'ret'
+Date:   Wed, 16 Aug 2023 18:30:57 +0530
+Message-ID: <20230816130057.28717-1-quic_kbajaj@quicinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <608852.1692190847.1@warthog.procyon.org.uk>
-Date:   Wed, 16 Aug 2023 14:00:47 +0100
-Message-ID: <608853.1692190847@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: LIKusHPc6CFqSnk_1lgsAb2X-7fYzEIX
+X-Proofpoint-ORIG-GUID: LIKusHPc6CFqSnk_1lgsAb2X-7fYzEIX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-16_12,2023-08-15_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=777
+ malwarescore=0 spamscore=0 suspectscore=0 bulkscore=0 priorityscore=1501
+ clxscore=1011 mlxscore=0 phishscore=0 impostorscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2308160113
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Laight <David.Laight@ACULAB.COM> wrote:
+This fixes:
+drivers/nvmem/sec-qfprom.c:59:13: warning: unused variable 'ret' [-Wunused-variable]
 
-> 
-> Couldn't the relevant code directly call __copy_from_iter_mc() ?
-> Or a version then checked iov_is_copy_mc() and then fell
-> back to the standard function.
+Fixes: 9c7f2bce8a0e ("nvmem: sec-qfprom: Add Qualcomm secure QFPROM support")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308142248.QsUg82Wt-lkp@intel.com/
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Closes: https://lore.kernel.org/linux-next/20230815202508.0523ecce@canb.auug.org.au/
+Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+---
+ drivers/nvmem/sec-qfprom.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-No, because the marked iterator is handed by the coredump code to
-__kernel_write_iter() and thence on to who-knows-what driver - which will call
-copy_from_iter() or some such.  $DRIVER shouldn't need to know about
-->copy_mc.
+diff --git a/drivers/nvmem/sec-qfprom.c b/drivers/nvmem/sec-qfprom.c
+index 868a91c81197..e48c2dc0c44b 100644
+--- a/drivers/nvmem/sec-qfprom.c
++++ b/drivers/nvmem/sec-qfprom.c
+@@ -56,7 +56,6 @@ static int sec_qfprom_probe(struct platform_device *pdev)
+ 	struct nvmem_device *nvmem;
+ 	struct sec_qfprom *priv;
+ 	struct resource *res;
+-	int ret;
 
-One thing I do wonder about, though, is what should happen if they call, say,
-csum_and_copy_from_iter()?  That doesn't have an _mc variant.  Or what if they
-extract the pages and operate directly on those?
-
-David
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+--
+2.41.0
 
