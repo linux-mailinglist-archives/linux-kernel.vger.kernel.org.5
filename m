@@ -2,147 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A055A77E8D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9EF777E8DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345584AbjHPSh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 14:37:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36036 "EHLO
+        id S1345593AbjHPSjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 14:39:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345606AbjHPShT (ORCPT
+        with ESMTP id S1345623AbjHPSiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 14:37:19 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E0081986
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:37:18 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-55c79a5565aso7427588a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:37:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692211037; x=1692815837;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=R7fdKmEY7bD6zEhbTIZAzgi0Gq+GtDgf7Fev/C7AAGM=;
-        b=rLZhtE01pc4I/k71SWB8oJkUqzVgoZkl9ke1X5JLEjFj6IuHfSYzT0dm1pZJrfdYDF
-         3z2/TcRKzbCXR4Op2KduCzCGnYNexhlMbsIUtEHK3vCqhPslckbETavmtCH8tgH6WfM8
-         XwLxhZGD4wqa370lTsFYHEL3kMYp+Q+wgfFVEkNNGwWFA5ccGjBywHW9K1uzXkHDsl/Z
-         3TezHRxWqpSQRmzvd3I6D0IblynqsTWLj8uUhvUTQAMLghf0S9VIuxazRs91Ov1BpHve
-         Z33yEeSf1kIy19Iu92oO0x0tPBZ5bvQpdHSYnafd9DI8M2bQr2lV36BWBEGofOG21pN8
-         nkbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692211037; x=1692815837;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=R7fdKmEY7bD6zEhbTIZAzgi0Gq+GtDgf7Fev/C7AAGM=;
-        b=C1LO9hUzYwbpzxbdw7hA4+WrUPhmCVk5FSC31HidamtvlEhNEoGM43RBk9wXJxEyRN
-         yS+yv+jGeMikABJZbgaaWB8zjYQYwCKaMz9ZphJwas65oinlusB6YkSaJhAYmFUJYqr6
-         qhd+OtlCc2j7RFOfJ6Buky1COO67y83tuvrTiB7/wfW03whYkoXfHxWVNYSc+e1RZe3/
-         ZqanOJP01LVwk60BBcm7gJ5WZ/SDFuF1I5Yhe1arRD5Mgzso8WYDnAx2zwzfPdDClAED
-         SRzf1qSTjdBh1BuvURga+FO9nMgoSo9iefIJ7wz9TBV6r2ItMRCf2a0faEUX3n6xeEaM
-         ka1A==
-X-Gm-Message-State: AOJu0YwTkIG5YOdFzeCmoBxU3iuEa7ExIlvsjRae8Nc1rrcIpPme3XNr
-        ItKMqnfkUH5xwp0ZxKNgUPFed8oHR40=
-X-Google-Smtp-Source: AGHT+IEFp1LYkqGFtNbmR422YJnqFFI8fTBy63QxTHUvjzRIoP7Ald+8kd/ogLf8DJDRFadAPDh/XaorXLQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:950c:0:b0:565:e2cd:c9e1 with SMTP id
- p12-20020a63950c000000b00565e2cdc9e1mr588044pgd.11.1692211037524; Wed, 16 Aug
- 2023 11:37:17 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 11:37:16 -0700
-In-Reply-To: <20230802051700.52321-2-likexu@tencent.com>
-Mime-Version: 1.0
-References: <20230802051700.52321-1-likexu@tencent.com> <20230802051700.52321-2-likexu@tencent.com>
-Message-ID: <ZN0XXKezcXjv1GWH@google.com>
-Subject: Re: [PATCH v2 1/2] KVM: eventfd: Fix NULL deref irqbypass producer
-From:   Sean Christopherson <seanjc@google.com>
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 14:38:51 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18891B2;
+        Wed, 16 Aug 2023 11:38:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=Zt0oIUR7CPyOLzen8uwt/eQkJhMyoct9UDoUX3KYy9w=; b=4LQCWKgUm1uweQAPl58aV65Jjg
+        IX4nraKfDHtq1oTAbepnVOGSPyAWWfQ4VefJaI0s8DpCrRaWZdlkiTZqSdQ3GMipKyrWbP5Oi03Ok
+        QfLIbNaXV5YRFr8YE2RnoICQRW207MvP69Ov6eevZi37iadRfuuKWZz4E327Cvq/AxXkUwYfM57+d
+        CJk3yQRJ5kdEMjwkI2AHONGEwArp16+wSefizti8D4HvGQDm0fnq1ajcsV3IivGaxWGWLGPVPTlZn
+        TiPIkA/lUpnPTjt7Up6uFImFfdVHuYIYct6pGp5ZsPpw6lBgjzVoQxmhsDXudLHyt2OPGqGJHCDpA
+        iWY1hX4g==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qWLPp-004on9-1W;
+        Wed, 16 Aug 2023 18:38:45 +0000
+Message-ID: <1595571f-e69a-319e-0f8e-708c222706cb@infradead.org>
+Date:   Wed, 16 Aug 2023 11:38:44 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] dma: dmatest: Use div64_s64
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>, coolrrsh@gmail.com
+Cc:     vkoul@kernel.org, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20230816060400.3325-1-coolrrsh@gmail.com>
+ <2023081654-dormitory-vocally-02f7@gregkh>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <2023081654-dormitory-vocally-02f7@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023, Like Xu wrote:
-> From: Like Xu <likexu@tencent.com>
-> 
-> Adding guard logic to make irq_bypass_register/unregister_producer()
-> looks for the producer entry based on producer pointer itself instead
-> of pure token matching.
-> 
-> As was attempted commit 4f3dbdf47e15 ("KVM: eventfd: fix NULL deref
-> irqbypass consumer"), two different producers may occasionally have two
-> identical eventfd's. In this case, the later producer may unregister
-> the previous one after the registration fails (since they share the same
-> token), then NULL deref incurres in the path of deleting producer from
-> the producers list.
-> 
-> Registration should also fail if a registered producer changes its
-> token and registers again via the same producer pointer.
-> 
-> Cc: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: Like Xu <likexu@tencent.com>
-> Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
-> ---
->  virt/lib/irqbypass.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/virt/lib/irqbypass.c b/virt/lib/irqbypass.c
-> index 28fda42e471b..e0aabbbf27ec 100644
-> --- a/virt/lib/irqbypass.c
-> +++ b/virt/lib/irqbypass.c
-> @@ -98,7 +98,7 @@ int irq_bypass_register_producer(struct irq_bypass_producer *producer)
->  	mutex_lock(&lock);
->  
->  	list_for_each_entry(tmp, &producers, node) {
-> -		if (tmp->token == producer->token) {
-> +		if (tmp->token == producer->token || tmp == producer) {
->  			ret = -EBUSY;
->  			goto out_err;
->  		}
-> @@ -148,7 +148,7 @@ void irq_bypass_unregister_producer(struct irq_bypass_producer *producer)
->  	mutex_lock(&lock);
->  
->  	list_for_each_entry(tmp, &producers, node) {
-> -		if (tmp->token != producer->token)
-> +		if (tmp != producer)
 
-What are the rules for using these APIs?  E.g. is doing unregister without
-first doing a register actually allowed?  Ditto for having multiple in-flight
-calls to (un)register the exact same producer or consumer.
 
-E.g. can we do something like the below, and then remove the list iteration to
-find the passed in pointer (which is super odd IMO).  Obviously not a blocker
-for this patch, but it seems like we could achieve a simpler and more performant
-implementation if we first sanitize the rules and the usage.
+On 8/16/23 08:16, Greg KH wrote:
+> On Wed, Aug 16, 2023 at 11:34:00AM +0530, coolrrsh@gmail.com wrote:
+>> From: Rajeshwar R Shinde <coolrrsh@gmail.com>
+>>
+>> In the function do_div, the dividend is evaluated multiple times
+>> so it can cause side effects. Therefore replace it with div64_s64.
+>>
+>> This fixes warning such as:
+>> drivers/dma/dmatest.c:496:1-7:
+>> WARNING: do_div() does a 64-by-32 division,
+>> please consider using div64_s64 instead.
+>>
+>> Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
+>> ---
+>>  drivers/dma/dmatest.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/dma/dmatest.c b/drivers/dma/dmatest.c
+>> index ffe621695e47..07042f239db8 100644
+>> --- a/drivers/dma/dmatest.c
+>> +++ b/drivers/dma/dmatest.c
+>> @@ -9,6 +9,7 @@
+>>  
+>>  #include <linux/err.h>
+>>  #include <linux/delay.h>
+>> +#include <linux/math64.h>
+>>  #include <linux/dma-mapping.h>
+>>  #include <linux/dmaengine.h>
+>>  #include <linux/freezer.h>
+>> @@ -493,7 +494,7 @@ static unsigned long long dmatest_persec(s64 runtime, unsigned int val)
+>>  
+>>  	per_sec *= val;
+>>  	per_sec = INT_TO_FIXPT(per_sec);
+>> -	do_div(per_sec, runtime);
+>> +	per_sec=div64_s64(per_sec, runtime);
+> 
+> Please always run checkpatch.pl on your changes before submitting them
+> for others to review.
 
-diff --git a/virt/lib/irqbypass.c b/virt/lib/irqbypass.c
-index 28fda42e471b..be0ba4224a23 100644
---- a/virt/lib/irqbypass.c
-+++ b/virt/lib/irqbypass.c
-@@ -90,6 +90,9 @@ int irq_bypass_register_producer(struct irq_bypass_producer *producer)
-        if (!producer->token)
-                return -EINVAL;
- 
-+       if (WARN_ON_ONCE(producer->node.prev && !list_empty(&producer->node)))
-+               return -EINVAL;
-+
-        might_sleep();
- 
-        if (!try_module_get(THIS_MODULE))
-@@ -140,6 +143,9 @@ void irq_bypass_unregister_producer(struct irq_bypass_producer *producer)
-        if (!producer->token)
-                return;
- 
-+       if (WARN_ON_ONCE(!producer->node.prev || list_empty(&producer->node)))
-+               return;
-+
-        might_sleep();
- 
-        if (!try_module_get(THIS_MODULE))
+Also please tell us what tool produced that warning message.
+Thanks.
 
+-- 
+~Randy
