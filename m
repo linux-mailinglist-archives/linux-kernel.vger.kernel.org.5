@@ -2,114 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF9077DDEF
+	by mail.lfdr.de (Postfix) with ESMTP id 9A32777DDEE
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243658AbjHPJxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 05:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52100 "EHLO
+        id S243642AbjHPJxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 05:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243645AbjHPJxJ (ORCPT
+        with ESMTP id S243618AbjHPJxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 05:53:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5BF12738
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:52:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692179524;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZVs8rRFJ0IEN0Qvd7JyrUgFnvlIR0R3LkNLJET1b6L0=;
-        b=Um+4Q6nq2Xz1uWHdGaXVJHkHtUd4QOxFV8gfx2Y14Zlxih/t6/65GFPqEC9cOVzfxKSSnl
-        7fatHZ8dliK9r3algsexVXPVgHT611LDT7DV+GXG3Ig0HXJVZq3dic0Nzom5MqBJFdafIS
-        354hzWQU1ccauJ7D2Rxe87vkSEbReyk=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-671-fLJJUVdDNzyxh-XdgtUBQw-1; Wed, 16 Aug 2023 05:52:03 -0400
-X-MC-Unique: fLJJUVdDNzyxh-XdgtUBQw-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-4fe4f5ffe2aso1268283e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:52:02 -0700 (PDT)
+        Wed, 16 Aug 2023 05:53:04 -0400
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 343D92D5A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:52:47 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-58c68c79befso8925697b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:52:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692179566; x=1692784366;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=/5so/M+AhEEk4mX4pqGb1Pa0ON/8pUQD4BvXmodkCBo=;
+        b=XXivQr6n3Q1n02LmLFKvNhwy2ZFWWELsv6C48KCsw5fEHWPfYbexf3ffuIMEiinrek
+         Y/X4tSzo9RTA+oD8AqmTQOgsypEgRI1IACIl6th69I5MJnHnpAM6DJzjnF0Vig6V1aXF
+         nimlSnBQhrbLHZ2s9/9qQ+2wRcLW3iV6LeAAslAB2Vc7ZsHptr65tDb80MtKJEO+fhEx
+         gmg5PQSqhuOoGgiKl3qCz6PKhZdX7xOEDfa2ZXLqY1AHRLRId8sQV3wxRBiLjFaqpwWS
+         ydo7f/yZ0IdSZQaupZFLJMlf5LsvhRp4oFEi2n5u8qeurZCj9ighow94U2DidWpU4CAJ
+         imVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692179521; x=1692784321;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZVs8rRFJ0IEN0Qvd7JyrUgFnvlIR0R3LkNLJET1b6L0=;
-        b=f892wQoFcoQEKK2WK9SpEkTLUBlzT78+VfkQ56QO92uOYf0lutpsU9q3+8eNmpYnA5
-         5ho728CJ375BCSQTy/+hOu22oxb7ouXX+EIWzDcYzpnOR/eDW8B4Re3fwovd5+sikrGH
-         XKqTj2es3ab8y19zQhk2FU97NlynzM6VUQFBrGBpomR2CO1zCLcyjE8UOdBYQ7mMoG8i
-         s1Zhx8ZfrhZPG1AT2T5Sqmh9gvmfaYAQ/eq2ffrqqaURJ+FwtcKfIgMvHSDGOkHjqEfy
-         V/RTnqj1LCVMF8LDhqlPdVa+bfIuV2LYe5NNZNRvPMiZFg+7E5TUSlysQc1kSTyhItqQ
-         YgNg==
-X-Gm-Message-State: AOJu0YyfyVb3CmeHdhCE+GwLoxpr8Ij5Nf7FuKQwpdKQOB2kICqGgf2w
-        PBt2oBh60fQJ97RvA7MpYpwDRWDvduEGS3IGYtf0gqNKI3AkG5TtwSiaAV98hWOtC5PqqNBXjE4
-        Q21dCw63Vpe4qMoXUfP/iY3gs1c5/fb0513zx5FyX
-X-Received: by 2002:a2e:9043:0:b0:2b9:e10b:a511 with SMTP id n3-20020a2e9043000000b002b9e10ba511mr908811ljg.0.1692179521582;
-        Wed, 16 Aug 2023 02:52:01 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGanDULkwlMo/rQxiB2QPRaIEdUVecA5fMUQidnmhkP0uI680R9tlOgxGyrfqoEs1/jh/773s08ogYfa/jn3uU=
-X-Received: by 2002:a2e:9043:0:b0:2b9:e10b:a511 with SMTP id
- n3-20020a2e9043000000b002b9e10ba511mr908801ljg.0.1692179521300; Wed, 16 Aug
- 2023 02:52:01 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692179566; x=1692784366;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/5so/M+AhEEk4mX4pqGb1Pa0ON/8pUQD4BvXmodkCBo=;
+        b=hYzP6YZreEwJ99wjuwBIsVBONbugthWWyoOIZv/6Yly0J9Y6NneLawB4o9U0ju8cfp
+         KjOnuZ6tEedid3iNw5M2UMLa2ZHvlg8pOcFpb/55nAJB4QKllp6vlOrS9+H3BYdzi1x7
+         VR4eKBI95+Y9FK2pEMzGnQnD2HFRXKOq4kfKgAH0cFpUL3U7Ypd4ejIygHQ23Nl1HHSq
+         JJ9fNgI8cgKWwrMUa1PJkGJy/z8kvkxlgCvedjs8+IunyEYs+UWSW7B/y2m9Y9WQG+aM
+         DiBAy0gI805XGE1bQ6pEUF8+Z1zNEK5Gm27Y9Fi10/OVe9Uqdl6QMCfYhuONKejgU6va
+         VMTw==
+X-Gm-Message-State: AOJu0YxiHXKFn+tb5Fkhnba204ffL0VOPFq8L7lLSao4gOJa/wPscR4u
+        qzBh9fKDJYwZgQzAyF9lQDBGwwgBj25svBAdgrBHvA==
+X-Google-Smtp-Source: AGHT+IHA9n2w/op4DAH5GzrBpdtTvK2/1xJVANiOu/xelGO0k7TIr+ajFJb7Jsxolv8ybqVetV/we8lj15rls0+GD54=
+X-Received: by 2002:a81:6057:0:b0:583:d1fa:1fc4 with SMTP id
+ u84-20020a816057000000b00583d1fa1fc4mr1108904ywb.26.1692179566441; Wed, 16
+ Aug 2023 02:52:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230814144933.3956959-1-kherbst@redhat.com> <20230816093015.GDZNyXJ28y9uspb4Mr@fat_crate.local>
-In-Reply-To: <20230816093015.GDZNyXJ28y9uspb4Mr@fat_crate.local>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Wed, 16 Aug 2023 11:51:50 +0200
-Message-ID: <CACO55tu8ab-rxCzxFXbUh4Z=W9E-1f8sH6BVd=P+16dQ9PQNjg@mail.gmail.com>
-Subject: Re: [PATCH] drm/nouveau/disp: fix use-after-free in error handling of nouveau_connector_create
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>
+References: <20230811214853.8623-1-giulio.benetti@benettiengineering.com>
+In-Reply-To: <20230811214853.8623-1-giulio.benetti@benettiengineering.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 16 Aug 2023 11:52:10 +0200
+Message-ID: <CAPDyKForXMxANUrvOUfEtiRsXYPJ8MbfPBdJB6zu49QfeJfS8A@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-esdhc-imx: improve ESDHC_FLAG_ERR010450
+To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc:     Haibo Chen <haibo.chen@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Jim Reinhart <jimr@tekvox.com>,
+        James Autry <jautry@tekvox.com>,
+        Matthew Maron <matthewm@tekvox.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 11:30=E2=80=AFAM Borislav Petkov <bp@alien8.de> wro=
-te:
+On Fri, 11 Aug 2023 at 23:49, Giulio Benetti
+<giulio.benetti@benettiengineering.com> wrote:
 >
-> On Mon, Aug 14, 2023 at 04:49:32PM +0200, Karol Herbst wrote:
-> > We can't simply free the connector after calling drm_connector_init on =
-it.
-> > We need to clean up the drm side first.
-> >
-> > It might not fix all regressions from 2b5d1c29f6c4 ("drm/nouveau/disp:
-> > PIOR DP uses GPIO for HPD, not PMGR AUX interrupts"), but at least it
-> > fixes a memory corruption in error handling related to that commit.
-> >
-> > Link: https://lore.kernel.org/lkml/20230806213107.GFZNARG6moWpFuSJ9W@fa=
-t_crate.local/
-> > Fixes: 95983aea8003 ("drm/nouveau/disp: add connector class")
-> > Signed-off-by: Karol Herbst <kherbst@redhat.com>
-> > ---
-> >  drivers/gpu/drm/nouveau/nouveau_connector.c | 11 +++++++----
-> >  1 file changed, 7 insertions(+), 4 deletions(-)
+> Errata ERR010450 only shows up if voltage is 1.8V, but if the device is
+> supplied by 3v3 the errata can be ignored. So let's check for if quirk
+> SDHCI_QUIRK2_NO_1_8_V is defined or not before limiting the frequency.
 >
-> This one ontop of -rc5 doesn't help, unfortunately.
->
+> Sponsored by: Tekvox Inc.
 
-Mind sharing your kernel logs with that patch applied? I suspect your
-system boots up but you might just not have the connector available or
-something? It could be that you have one of those GPUs affected by the
-original change and then we'd have to figure out what to do with that.
+Didn't know we have this kind of tag. Can you point me to the
+documentation of it?
 
-> Thx.
+> Cc: Jim Reinhart <jimr@tekvox.com>
+> Cc: James Autry <jautry@tekvox.com>
+> Cc: Matthew Maron <matthewm@tekvox.com>
+> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+
+Kind regards
+Uffe
+
+> ---
+>  drivers/mmc/host/sdhci-esdhc-imx.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 >
+> diff --git a/drivers/mmc/host/sdhci-esdhc-imx.c b/drivers/mmc/host/sdhci-esdhc-imx.c
+> index eebf94604a7f..cddecc1e1ac2 100644
+> --- a/drivers/mmc/host/sdhci-esdhc-imx.c
+> +++ b/drivers/mmc/host/sdhci-esdhc-imx.c
+> @@ -171,8 +171,8 @@
+>  #define ESDHC_FLAG_HS400               BIT(9)
+>  /*
+>   * The IP has errata ERR010450
+> - * uSDHC: Due to the I/O timing limit, for SDR mode, SD card clock can't
+> - * exceed 150MHz, for DDR mode, SD card clock can't exceed 45MHz.
+> + * uSDHC: At 1.8V due to the I/O timing limit, for SDR mode, SD card
+> + * clock can't exceed 150MHz, for DDR mode, SD card clock can't exceed 45MHz.
+>   */
+>  #define ESDHC_FLAG_ERR010450           BIT(10)
+>  /* The IP supports HS400ES mode */
+> @@ -961,7 +961,8 @@ static inline void esdhc_pltfm_set_clock(struct sdhci_host *host,
+>                 | ESDHC_CLOCK_MASK);
+>         sdhci_writel(host, temp, ESDHC_SYSTEM_CONTROL);
+>
+> -       if (imx_data->socdata->flags & ESDHC_FLAG_ERR010450) {
+> +       if ((imx_data->socdata->flags & ESDHC_FLAG_ERR010450) &&
+> +           (!(host->quirks2 & SDHCI_QUIRK2_NO_1_8_V))) {
+>                 unsigned int max_clock;
+>
+>                 max_clock = imx_data->is_ddr ? 45000000 : 150000000;
 > --
-> Regards/Gruss,
->     Boris.
+> 2.34.1
 >
-> https://people.kernel.org/tglx/notes-about-netiquette
->
-
