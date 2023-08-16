@@ -2,173 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97AC177DA62
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 08:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CF477DA67
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 08:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242087AbjHPGSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 02:18:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57408 "EHLO
+        id S242096AbjHPGTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 02:19:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242081AbjHPGSY (ORCPT
+        with ESMTP id S242091AbjHPGSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 02:18:24 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A97981BF7
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 23:18:22 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fe2048c910so56893995e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 23:18:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692166701; x=1692771501;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mx1UIYShAlyyGP0ErV9nIroDLEozIanzm7Ts9TKbkrM=;
-        b=sGRsL/QwaCaMlCql1uvOL6IGh0E98/pBn3LrQQXZsTX8IqKKEWtEAB2CZwq+H668RF
-         JbqBn8YtMPi6ldm/E8BbYohvY6iQa8T24TGbSt0iyICvjA2Z+TckZ/Z+jZOmX4mHKw8+
-         DiimN6PrAGcy8YoVTAylTFhDeKSOSIkwt8Yh2QK2IRHPksPknXZpTUvoZDcEIa8hgCTo
-         WIaFh7qkGangROXZNy088IpQUAeeYFjHAMfXXOMX3iyL8Rmf98u8ZgHcufFlF6x64c8a
-         8cyCl0uN4/fNsetPTh/N4UANeU2pkXVVlOqppc2hh5I5zE+5Yxpdh+PCnfXNnYcwfnjG
-         34LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692166701; x=1692771501;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mx1UIYShAlyyGP0ErV9nIroDLEozIanzm7Ts9TKbkrM=;
-        b=Y3r/BZc8UICiwkXr/J8S2qoMsHViOL+hEQGIbwmJrZpABfDScYgugr9KsvtXh4b0PZ
-         J9cBnWI8gc17SBnlOmDDhYVtNbPzaQL/5j0g0TazkcHmnn9uUNZxzNbZBqgpBEd0mPyr
-         BNhi1PRWQZHkay0TevWxk4ackJABwwOUtAgYXhr2nYFO2iA7D/qXci+tCO4XrWBUuKEV
-         QA8tu/MyKxSt46ZFKNM90/NC3xK4BGTs0LsbXZa6JiK4kN80MKRROAZtnp0cK5Mxbl46
-         Ic+7ZGAh1aY2eww4wp8aN6e02aFtZbEyFt/2+a2c6QlCcqxh16mEwTtWpBvkMzkMWzS/
-         ToEw==
-X-Gm-Message-State: AOJu0Yy8YMYZ0OD+GtMGO2viVZWYHHX8bHgajv4UjVRU/RJH44zDrbq4
-        BEfq8wzHADfiTDJL3ejsRnGSCA==
-X-Google-Smtp-Source: AGHT+IE+Q/6wB3/7hbdxzeM5zH2YL/GCM/loFcZttKMzb+hJ56y2b4Px4vAxawaocigURv4jii3uIA==
-X-Received: by 2002:a5d:6386:0:b0:319:8b4d:5ec with SMTP id p6-20020a5d6386000000b003198b4d05ecmr797710wru.34.1692166701144;
-        Tue, 15 Aug 2023 23:18:21 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id g6-20020adff3c6000000b003197869bcd7sm8630690wrp.13.2023.08.15.23.18.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 23:18:20 -0700 (PDT)
-Message-ID: <c9344953-9367-0ab0-fa42-3117d17643eb@linaro.org>
-Date:   Wed, 16 Aug 2023 08:18:18 +0200
+        Wed, 16 Aug 2023 02:18:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205DA1BE6;
+        Tue, 15 Aug 2023 23:18:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692166729; x=1723702729;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=rmaGpqgmqHBPiSdtmwJkObODwLvcQ3yhPyjaJpg/XkM=;
+  b=DK2N3H/BJ+3NUIpsvTNeZK9sargxZaNEut5VKyJGvhvwe5moKL5p6RXi
+   yF87IST1hxuxj45qS6sZyB8aRHpDRzMJx78ABIBDV5uHUL4hfEEVRaZJL
+   qJiEPDZEF0A1EFQaJZmSE43s8JsYh+oFGelTZznnD1AI1w9Ht7re/qgLq
+   xUyNdJi3WR6Z31PW71bxLyw0RYOiEyiMa4tFM5iydT7lZ+tCRln6Cmw7e
+   xhSuHNfUXdjHbHYz0GeZlJFLOuCZVO/L8ZPHKrwnZy+Ew7Wd5SRt+h9tK
+   G5//rU0jGxjIIguZlFhXRd2iLJkdStX7wp80Me95YqPOYVegTEjHJs1Sf
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="436352582"
+X-IronPort-AV: E=Sophos;i="6.01,176,1684825200"; 
+   d="scan'208";a="436352582"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 23:18:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="727646619"
+X-IronPort-AV: E=Sophos;i="6.01,176,1684825200"; 
+   d="scan'208";a="727646619"
+Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
+  by orsmga007.jf.intel.com with ESMTP; 15 Aug 2023 23:18:46 -0700
+Date:   Wed, 16 Aug 2023 14:18:45 +0800
+From:   Yuan Yao <yuan.yao@linux.intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zeng Guang <guang.zeng@intel.com>,
+        Yuan Yao <yuan.yao@intel.com>
+Subject: Re: [PATCH v3 08/15] KVM: nSVM: Use KVM-governed feature framework
+ to track "NRIPS enabled"
+Message-ID: <20230816061845.qygaiwsgbi3sp2ya@yy-desk-7060>
+References: <20230815203653.519297-1-seanjc@google.com>
+ <20230815203653.519297-9-seanjc@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 1/4] dt-bindings: net: Add FSD EQoS device tree
- bindings
-Content-Language: en-US
-To:     Sriranjani P <sriranjani.p@samsung.com>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, richardcochran@gmail.com,
-        alexandre.torgue@foss.st.com, joabreu@synopsys.com,
-        mcoquelin.stm32@gmail.com, alim.akhtar@samsung.com,
-        linux-fsd@tesla.com, pankaj.dubey@samsung.com,
-        swathi.ks@samsung.com, ravi.patel@samsung.com
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230814112539.70453-1-sriranjani.p@samsung.com>
- <CGME20230814112605epcas5p31aca7b23e70e8d93df11414291f7ce66@epcas5p3.samsung.com>
- <20230814112539.70453-2-sriranjani.p@samsung.com>
- <16eab776-07d4-3c31-7e82-444863303102@linaro.org>
- <000d01d9d006$a211d880$e6358980$@samsung.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <000d01d9d006$a211d880$e6358980$@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230815203653.519297-9-seanjc@google.com>
+User-Agent: NeoMutt/20171215
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/08/2023 07:58, Sriranjani P wrote:
->>> +
->>> +allOf:
->>> +  - $ref: snps,dwmac.yaml#
->>> +
->>> +properties:
->>> +  compatible:
->>> +    const: tesla,fsd-ethqos-4.21.yaml
->>
->> ?
-> 
-> Will fix this to tesla,fsd-ethqos.yaml 
+On Tue, Aug 15, 2023 at 01:36:46PM -0700, Sean Christopherson wrote:
+> Track "NRIPS exposed to L1" via a governed feature flag instead of using
+> a dedicated bit/flag in vcpu_svm.
+>
+> No functional change intended.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-Test your patches before sending. REALLY TEST.
+Reviewed-by: Yuan Yao <yuan.yao@intel.com>
 
-> 
->>> +
->>> +  reg:
->>> +    maxItems: 1
->>> +
->>> +  interrupts:
->>> +    maxItems: 1
->>> +
->>> +  clocks:
->>> +    minItems: 5
->>
->> Why? I expect it to be specific.
-> 
-> Sorry, I could not understood this comment. In FSD we have two instances of EQoS IP, one in PERIC block, which requires total 10 clocks  to be configured and another instance exist in FSYS0 block which needs 5 clocks to be configured, so we kept minItems as 5 and maxItems as 10, but looks like latest items schema do not need maxItems entry so we will drop maxItems entry. In my understanding minItems still required so it should be kept with minimum number of clock requirements.
-
-No, the code is fine then.
-
-> 
->>
->>> +    maxItems: 10
->>> +
->>> +  clock-names:
->>> +    minItems: 5
->>> +    maxItems: 10
->>> +    items:
->>> +      - const: ptp_ref
->>> +      - const: master_bus
->>> +      - const: slave_bus
->>> +      - const: tx
->>> +      - const: rx
->>> +      - const: master2_bus
->>> +      - const: slave2_bus
->>> +      - const: eqos_rxclk_mux
->>> +      - const: eqos_phyrxclk
->>> +      - const: dout_peric_rgmii_clk
->>> +
->>> +  fsd-rx-clock-skew:
->>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
->>> +    items:
->>> +      - items:
->>> +          - description: phandle to the syscon node
->>> +          - description: offset of the control register
->>> +    description:
->>> +      Should be phandle/offset pair. The phandle to the syscon node.
->>> +
->>> +  iommus:
->>> +    maxItems: 1
->>> +
->>> +  phy-mode:
->>> +    $ref: ethernet-controller.yaml#/properties/phy-connection-type
->>> +
->>> +required:
->>> +  - compatible
->>> +  - reg
->>> +  - interrupts
->>> +  - clocks
->>> +  - clock-names
->>> +  - rx-clock-skew
->>
->> Eee? Isn't it fsd-rx-clock-skew which anyway is not correct?
-> 
-> Sorry, I missed to change this in DT schema before posting, I will make this to fsd-rx-clock-skew. 
-
-Remember about vendor prefixes for every custom property.
-
-
-Best regards,
-Krzysztof
-
+> ---
+>  arch/x86/kvm/governed_features.h | 1 +
+>  arch/x86/kvm/svm/nested.c        | 6 +++---
+>  arch/x86/kvm/svm/svm.c           | 4 +---
+>  arch/x86/kvm/svm/svm.h           | 1 -
+>  4 files changed, 5 insertions(+), 7 deletions(-)
+>
+> diff --git a/arch/x86/kvm/governed_features.h b/arch/x86/kvm/governed_features.h
+> index 22446614bf49..722b66af412c 100644
+> --- a/arch/x86/kvm/governed_features.h
+> +++ b/arch/x86/kvm/governed_features.h
+> @@ -8,6 +8,7 @@ BUILD_BUG()
+>  KVM_GOVERNED_X86_FEATURE(GBPAGES)
+>  KVM_GOVERNED_X86_FEATURE(XSAVES)
+>  KVM_GOVERNED_X86_FEATURE(VMX)
+> +KVM_GOVERNED_X86_FEATURE(NRIPS)
+>
+>  #undef KVM_GOVERNED_X86_FEATURE
+>  #undef KVM_GOVERNED_FEATURE
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index 3342cc4a5189..9092f3f8dccf 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -716,7 +716,7 @@ static void nested_vmcb02_prepare_control(struct vcpu_svm *svm,
+>  	 * what a nrips=0 CPU would do (L1 is responsible for advancing RIP
+>  	 * prior to injecting the event).
+>  	 */
+> -	if (svm->nrips_enabled)
+> +	if (guest_can_use(vcpu, X86_FEATURE_NRIPS))
+>  		vmcb02->control.next_rip    = svm->nested.ctl.next_rip;
+>  	else if (boot_cpu_has(X86_FEATURE_NRIPS))
+>  		vmcb02->control.next_rip    = vmcb12_rip;
+> @@ -726,7 +726,7 @@ static void nested_vmcb02_prepare_control(struct vcpu_svm *svm,
+>  		svm->soft_int_injected = true;
+>  		svm->soft_int_csbase = vmcb12_csbase;
+>  		svm->soft_int_old_rip = vmcb12_rip;
+> -		if (svm->nrips_enabled)
+> +		if (guest_can_use(vcpu, X86_FEATURE_NRIPS))
+>  			svm->soft_int_next_rip = svm->nested.ctl.next_rip;
+>  		else
+>  			svm->soft_int_next_rip = vmcb12_rip;
+> @@ -1026,7 +1026,7 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
+>  	if (vmcb12->control.exit_code != SVM_EXIT_ERR)
+>  		nested_save_pending_event_to_vmcb12(svm, vmcb12);
+>
+> -	if (svm->nrips_enabled)
+> +	if (guest_can_use(vcpu, X86_FEATURE_NRIPS))
+>  		vmcb12->control.next_rip  = vmcb02->control.next_rip;
+>
+>  	vmcb12->control.int_ctl           = svm->nested.ctl.int_ctl;
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index d67f6e23dcd2..c8b97cb3138c 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -4288,9 +4288,7 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+>  	    guest_cpuid_has(vcpu, X86_FEATURE_XSAVE))
+>  		kvm_governed_feature_set(vcpu, X86_FEATURE_XSAVES);
+>
+> -	/* Update nrips enabled cache */
+> -	svm->nrips_enabled = kvm_cpu_cap_has(X86_FEATURE_NRIPS) &&
+> -			     guest_cpuid_has(vcpu, X86_FEATURE_NRIPS);
+> +	kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_NRIPS);
+>
+>  	svm->tsc_scaling_enabled = tsc_scaling && guest_cpuid_has(vcpu, X86_FEATURE_TSCRATEMSR);
+>  	svm->lbrv_enabled = lbrv && guest_cpuid_has(vcpu, X86_FEATURE_LBRV);
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index 5115b35a4d31..e147f2046ffa 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -259,7 +259,6 @@ struct vcpu_svm {
+>  	bool soft_int_injected;
+>
+>  	/* optional nested SVM features that are enabled for this guest  */
+> -	bool nrips_enabled                : 1;
+>  	bool tsc_scaling_enabled          : 1;
+>  	bool v_vmload_vmsave_enabled      : 1;
+>  	bool lbrv_enabled                 : 1;
+> --
+> 2.41.0.694.ge786442a9b-goog
+>
