@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5AE77DFDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EED5777DFCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244334AbjHPLAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 07:00:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56674 "EHLO
+        id S244144AbjHPK7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 06:59:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244349AbjHPK76 (ORCPT
+        with ESMTP id S244348AbjHPK67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 06:59:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55CD9212E;
-        Wed, 16 Aug 2023 03:59:33 -0700 (PDT)
+        Wed, 16 Aug 2023 06:58:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC70C212B;
+        Wed, 16 Aug 2023 03:58:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 45F69665B1;
-        Wed, 16 Aug 2023 10:58:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A4ACC433CB;
-        Wed, 16 Aug 2023 10:58:27 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C0B9A665B6;
+        Wed, 16 Aug 2023 10:58:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25994C433C7;
+        Wed, 16 Aug 2023 10:58:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692183508;
-        bh=0GR92p/xHgh+SB0Vh4UXvbMnYubrfRc1ALFS0imA2uM=;
+        s=k20201202; t=1692183510;
+        bh=CJX8SlHepZCFBu+LS4vVyP3RzICxchrVKsWPVGHPYpw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NLkSkS/fhOMC4hGJzXLPaGi3o47W4lyKfMAXYtp6gI8Z9o3uZPmOm/5ZaxWAr+t/P
-         SXqVyjJTXMmbQnfdVsdEY6CIZUtybOno7Mr9WP5Ygjg0vFhXufd1h/6+0YQP3TaQgF
-         9cLkhnNKTXOxP+sxp/VohC/x5k6KpNpwG6b4NqdUDUQ3HZQ+Y9oXnBwA811/jWiFdD
-         mg9NhCfyKj+OCOc9mTzGt/Pxq748aExUIre5P1zT0YCJki9PBFZ0hEQlJCCwdazpYm
-         Eu3VXFD2jgMvWMLvkr+WSX8iQP3qqvQrbf0h2ywcDd9BbWfHmXN3Y06m6IoTabC7J5
-         AZcewPJgkdkGg==
+        b=jQLi/dKO5eDtAfQ7NVObJGr/IZ+Iotd+HqX4/aGsyHk2O0kQ4dDH6zzWMaPUjDRBD
+         K0Th3GCYdX5aBtiER4f9of3EHKdGUtqj0BtEvYbsY5PQPSn8hAKlzfot7WMVH/4Iln
+         67XMxEu1Cn9tPWaN8p/vqAOEQpJnEEsfwogR89/xBO3GK//mDSYFSZLqpdm742B0WU
+         IJXZKafNxAw6z5osoWHLtKu3KVtClME8PkStSlQ7X+POnhoaxLQC/JnPXXqNdimrU5
+         eaCBgzWpixwvcHQ4BiyM6HKoXlQ+IqFs2WqckIePwPazNoSaBPjnN3qL3uXqyosN+Y
+         6GdKvJO02Vxww==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Subject: [PATCH 01/14] tty: n_tty: make flow of n_tty_receive_buf_common() a bool
-Date:   Wed, 16 Aug 2023 12:58:06 +0200
-Message-ID: <20230816105822.3685-3-jirislaby@kernel.org>
+Subject: [PATCH 2/4] n_tty: simplify and sanitize zero_buffer()
+Date:   Wed, 16 Aug 2023 12:58:07 +0200
+Message-ID: <20230816105822.3685-4-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230816105822.3685-1-jirislaby@kernel.org>
 References: <20230816105822.3685-1-jirislaby@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,43 +54,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'flow' parameter of n_tty_receive_buf_common() is meant to be a
-boolean value. So use bool and alter call sites accordingly.
+* Make 'tty' parameter const as we only look at tty flags here.
+* Make 'size' parameter of size_t type as everyone passes that and
+  memset() (the consumer) expects size_t too. So be consistent.
+* Remove redundant local variables, place the content directly to the
+  'if'.
+* Use 0 instead of 0x00 in memset(). The former is more obvious.
+
+No functional changes expected.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 ---
- drivers/tty/n_tty.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/tty/n_tty.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
-index f44f38bb412e..8b2bacb3e40d 100644
+index 1599012f20c8..c1859ae263eb 100644
 --- a/drivers/tty/n_tty.c
 +++ b/drivers/tty/n_tty.c
-@@ -1665,7 +1665,7 @@ static void __receive_buf(struct tty_struct *tty, const u8 *cp, const u8 *fp,
-  */
- static size_t
- n_tty_receive_buf_common(struct tty_struct *tty, const u8 *cp, const u8 *fp,
--			 int count, int flow)
-+			 int count, bool flow)
- {
- 	struct n_tty_data *ldata = tty->disc_data;
- 	size_t rcvd = 0;
-@@ -1748,13 +1748,13 @@ n_tty_receive_buf_common(struct tty_struct *tty, const u8 *cp, const u8 *fp,
- static void n_tty_receive_buf(struct tty_struct *tty, const u8 *cp,
- 			      const u8 *fp, size_t count)
- {
--	n_tty_receive_buf_common(tty, cp, fp, count, 0);
-+	n_tty_receive_buf_common(tty, cp, fp, count, false);
+@@ -158,13 +158,10 @@ static inline unsigned char *echo_buf_addr(struct n_tty_data *ldata, size_t i)
  }
  
- static size_t n_tty_receive_buf2(struct tty_struct *tty, const u8 *cp,
- 				 const u8 *fp, size_t count)
+ /* If we are not echoing the data, perhaps this is a secret so erase it */
+-static void zero_buffer(struct tty_struct *tty, u8 *buffer, int size)
++static void zero_buffer(const struct tty_struct *tty, u8 *buffer, size_t size)
  {
--	return n_tty_receive_buf_common(tty, cp, fp, count, 1);
-+	return n_tty_receive_buf_common(tty, cp, fp, count, true);
+-	bool icanon = !!L_ICANON(tty);
+-	bool no_echo = !L_ECHO(tty);
+-
+-	if (icanon && no_echo)
+-		memset(buffer, 0x00, size);
++	if (L_ICANON(tty) && !L_ECHO(tty))
++		memset(buffer, 0, size);
  }
  
- /**
+ static void tty_copy(struct tty_struct *tty, void *to, size_t tail, size_t n)
 -- 
 2.41.0
 
