@@ -2,65 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 656B177E2BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D3777E2BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245590AbjHPNhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 09:37:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37714 "EHLO
+        id S245583AbjHPNiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:38:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245668AbjHPNhn (ORCPT
+        with ESMTP id S245601AbjHPNiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 09:37:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C21271C
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:36:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692193016;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Dx+js2X4fkPT4YvlU5JKstwIzUXxPY2qnoEgh+8ke+Q=;
-        b=XNLRdfHz3DfXLMiYwZblBcdsDULe20iIDQLKnOX0EWfluk1uu3+b/ztyM2Jz4yLBFBoloA
-        GRVmPB70Jz1eGe4DgFvy0s/33yksTm8p8PAWewSzj/GYQjcs5ZnJ5NWlh00gUofuFcl05G
-        Uq12GwxdnGT/f7i05M6M/dMoMk/tQi0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-76-czA8zGnuPj2VbZyTc6YT5Q-1; Wed, 16 Aug 2023 09:36:52 -0400
-X-MC-Unique: czA8zGnuPj2VbZyTc6YT5Q-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2FADF8DC672;
-        Wed, 16 Aug 2023 13:36:52 +0000 (UTC)
-Received: from localhost (unknown [10.39.193.154])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A43F4492C18;
-        Wed, 16 Aug 2023 13:36:51 +0000 (UTC)
-Date:   Wed, 16 Aug 2023 09:36:50 -0400
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>
-Subject: Re: [PATCH 2/4] vfio: use __aligned_u64 in struct
- vfio_device_gfx_plane_info
-Message-ID: <20230816133650.GC3425284@fedora>
-References: <20230809210248.2898981-1-stefanha@redhat.com>
- <20230809210248.2898981-3-stefanha@redhat.com>
- <aff0d24d4bce4d34b27cfe6a76b0634e@AcuMS.aculab.com>
+        Wed, 16 Aug 2023 09:38:15 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64755B9
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:38:14 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-58c4f6115bdso25180477b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:38:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1692193093; x=1692797893;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yFk6yRXIIHkOEvFC134UvLIF2wd6FFDonNio1jeok9w=;
+        b=RHoKBPupeYA7SrWo0q7PbNF5ntazEJKGsU97Zf9M3m0BVAUoOeZVNvoLNIRLdUkWTi
+         sFFdOMafEkwKwKrCksLSRBZTxNbDND5cXKFDyPFTFj/h6Qp3NBTzANx2nfJDFWN1jss/
+         7V4Lupd7U7EihO51vO648AM8KsoYyUqjDwbqC2phWZGbtqAuwrZvOif2vuMsbbRIqBcz
+         uufM3u+0BAxxqInkAKotUiO5mKy7MHoX57owZtFRsPgNWO1XF03eW79z0WUj96OhRajy
+         mZAv37KcXxRGPG3DzkBYp2h1tXU8LpMcJQ6dgMq4d/1hfpVDEf2Lu1eS7RDSgGNcSejE
+         GNyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692193093; x=1692797893;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yFk6yRXIIHkOEvFC134UvLIF2wd6FFDonNio1jeok9w=;
+        b=Oh0UBhrGC5F+Pa6mQm0TLBvHW3aVFnlSkYZIGn4DHPgEDadqatIU3+mXgaWtawmXla
+         dfKHRKROuhmH1JDeVVEaLUDrogkGwN1k8Im3g6LYYn1cDDhe1ks5m/ptR83HOEqDQshL
+         IwhQsrCOZAJKnbR+cu3RjZ72AGVGnDqORD2rGRVaHCj2w3T9zWbT6fyQYu+M074Se/KT
+         BOkD5L4SAokkUTpMsYoay2gwaqsS0GhRcZp0uqznRfsjmhnsSj7m5Kqekx/9NPJAgp2K
+         ZGQ32fpnjn1mQpCTb8RyH1phw5PQsmUJ/Lt9nlAzX5Tz2eMrceenpBOuccsQpNXMiPjK
+         JC/g==
+X-Gm-Message-State: AOJu0YwJ7PNGaJgdL6cUfD4NkZwBxQm89ZjiQqD0uTqna1X8qsp2+pEs
+        LUdfjf5tiSaNYDkJsJUkggJ9QNtz3VNeiuWd8lbMTsSzqRhnTv7Lk2Pr
+X-Google-Smtp-Source: AGHT+IGGDk9Pyi5oSqBh7ckQNXLO3AWM6VH2oSh9mxDFPuQuoWa1Tzd0Ad8SzA7VmXTVYyeihZMbBixnVbyBWmdOdNA=
+X-Received: by 2002:a81:8404:0:b0:58c:5132:deee with SMTP id
+ u4-20020a818404000000b0058c5132deeemr1713911ywf.43.1692193093583; Wed, 16 Aug
+ 2023 06:38:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="IA0szQIho2MN2VEN"
-Content-Disposition: inline
-In-Reply-To: <aff0d24d4bce4d34b27cfe6a76b0634e@AcuMS.aculab.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+References: <20230815204553.52261-1-atulpant.linux@gmail.com>
+ <aecb4e94bc65928c674b6a083e7fd489.paul@paul-moore.com> <20230816025550.GD57274@atom0118>
+In-Reply-To: <20230816025550.GD57274@atom0118>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 16 Aug 2023 09:38:02 -0400
+Message-ID: <CAHC9VhQc9jfE=H-3ePTBbEQ3nGj8z1cwGPaZebrn=YjqO+J-+g@mail.gmail.com>
+Subject: Re: [PATCH v1] kernel: Add space before parenthesis and around '=',
+ "==" and '<'
+To:     Atul Kumar Pant <atulpant.linux@gmail.com>
+Cc:     eparis@redhat.com, audit@vger.kernel.org,
+        linux-kernel@vger.kernel.org, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,73 +71,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 15, 2023 at 10:55=E2=80=AFPM Atul Kumar Pant
+<atulpant.linux@gmail.com> wrote:
+> On Tue, Aug 15, 2023 at 06:09:19PM -0400, Paul Moore wrote:
+> > On Aug 15, 2023 Atul Kumar Pant <atulpant.linux@gmail.com> wrote:
+> > >
+> > > Fixes following checkpatch.pl issue:
+> > > ERROR: space required before the open parenthesis '('
+> > > ERROR: spaces required around that '=3D'
+> > > ERROR: spaces required around that '<'
+> > > ERROR: spaces required around that '=3D=3D'
+> > >
+> > > Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
+> > > ---
+> > >  kernel/acct.c        |  2 +-
+> > >  kernel/auditfilter.c | 16 ++++++++--------
+> > >  kernel/auditsc.c     |  2 +-
+> > >  3 files changed, 10 insertions(+), 10 deletions(-)
+> >
+> > I changed the subject line to "audit: add space before parenthesis and
+> > around '=3D', "=3D=3D", and '<'" as the "audit:" prefix is more appropr=
+iate
+> > and I'm a believer of the Oxford Comma.  Otherwise it looks fine and I
+> > just merged it into audit/next, thanks.
+>
+>         Thank you for your comments. Do I need to change commit message n=
+ow?
 
---IA0szQIho2MN2VEN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No, I fixed it up and merged the patch, it's just something to
+remember for future patch submissions.  Here is the commit in the
+audit/next branch:
 
-On Tue, Aug 15, 2023 at 03:23:50PM +0000, David Laight wrote:
-> From: Stefan Hajnoczi
-> > Sent: 09 August 2023 22:03
-> >=20
-> > The memory layout of struct vfio_device_gfx_plane_info is
-> > architecture-dependent due to a u64 field and a struct size that is not
-> > a multiple of 8 bytes:
-> > - On x86_64 the struct size is padded to a multiple of 8 bytes.
-> > - On x32 the struct size is only a multiple of 4 bytes, not 8.
-> > - Other architectures may vary.
-> >=20
-> > Use __aligned_u64 to make memory layout consistent. This reduces the
-> > chance of holes that result in an information leak and the chance that
-> > 32-bit userspace on a 64-bit kernel breakage.
->=20
-> Isn't the hole likely to cause an information leak?
-> Forcing it to be there doesn't make any difference.
-> I'd add an explicit pad as well.
+   commit 62acadda115a94bffd1f6b36acbb67e3f04811be
+   Author: Atul Kumar Pant <atulpant.linux@gmail.com>
+   Date:   Wed Aug 16 02:15:53 2023 +0530
 
-Yes, Kevin had a similar comment about this text. What I meant was that
-it's safest to have a single memory layout across all architectures
-(with explicit padding) so that there are no surprises. I'm going to
-remove the statement about information leaks because it's confusing.
+   audit: add space before parenthesis and around '=3D', "=3D=3D", and '<'
 
->=20
-> It is a shame there isn't an __attribute__(()) to error padded structures.
->=20
-> >=20
-> > This patch increases the struct size on x32 but this is safe because of
-> > the struct's argsz field. The kernel may grow the struct as long as it
-> > still supports smaller argsz values from userspace (e.g. applications
-> > compiled against older kernel headers).
->=20
-> Doesn't changing the offset of later fields break compatibility?
-> The size field (probably) only lets you extend the structure.
+   Fixes following checkpatch.pl issue:
+   ERROR: space required before the open parenthesis '('
+   ERROR: spaces required around that '=3D'
+   ERROR: spaces required around that '<'
+   ERROR: spaces required around that '=3D=3D'
 
-Yes, that would break compatibility but I don't see any changes in this
-patch series that modifies the offsets of later fields. Have I missed
-something?
+   Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
+   [PM: subject line tweaks]
+   Signed-off-by: Paul Moore <paul@paul-moore.com>
 
-> Oh, for sanity do min(variable, constant).
-
-Can you elaborate?
-
-Thanks,
-Stefan
-
---IA0szQIho2MN2VEN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmTc0PIACgkQnKSrs4Gr
-c8jAuQf/Upyntfw/M5KfXri893SxdBLJ23KNlmWpQG93GFyLqc4NWElriTGYe98j
-swYOSqt679605BgSc7OR7TttgzLM6s9rDgXo+g5WzF2LzwIFcSjkvySKhjRmaH6a
-onatY7KI1vKw59JhuHLU5aCIoG3+SlsfA9gNNGD8Zyo+BtoQqeWUIsKcEsJvQx04
-hkiriJOzvjHlWoo6B1w/98HZhaNEwkUOIdskVu5z2PuejMd5wCxR3ho81GIKznds
-1JzRXA7dkfAuZ/T4WUP3+XmIllwzMw6YFkafvAwaaHS69myNtk28UDbEcPTUEcw0
-QZcCXTOjunwBQzp4Td0LVjEVbz4V1g==
-=cIK8
------END PGP SIGNATURE-----
-
---IA0szQIho2MN2VEN--
-
+--=20
+paul-moore.com
