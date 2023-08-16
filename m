@@ -2,77 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1661E77DB63
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 09:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BBC277DB60
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 09:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242531AbjHPHwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 03:52:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33556 "EHLO
+        id S242512AbjHPHvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 03:51:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242519AbjHPHvy (ORCPT
+        with ESMTP id S233909AbjHPHvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 03:51:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEF610D1
+        Wed, 16 Aug 2023 03:51:11 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF6D210E5
         for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 00:51:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692172264;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AZlg1ec/mQtSS6ubj7YbrmzREiYAKoW43hD8kXXjJ1o=;
-        b=Q0M54+8HUFpOiQ7AvmaM4s4hPehvWgSfIB6SeZO87w3tSYqNdBuVKlIh2TlXuna4iSkuQJ
-        95V+x23F89HAirycCu8NX3azZ/qi5fAhaSB4c4E1Rld7BTP/8OEPnox06QnMBuZtKr9TDb
-        S+nA2hjX5KnI0apqSECREfqud4/h238=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-578-VbnPobI-PwONazGoEUkZXw-1; Wed, 16 Aug 2023 03:51:01 -0400
-X-MC-Unique: VbnPobI-PwONazGoEUkZXw-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-993d41cbc31so395980466b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 00:51:00 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fe27849e6aso9733244e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 00:51:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692172264; x=1692777064;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u89h35VZUFU7oFhgg4xY+gsNp+JZwekwjFY4ath1SXw=;
+        b=ucPP4NvcbQKXeey+xG4dHvX9kc7jTataZ+pT3fXEJBxZ2Z0q7xGxu94JfhsYASzi8R
+         k3W2dBY9e7v06jdavSdV51TXULnKtq4azXOWEcs6ZOZDK9OUmY0MKA0gu3X23p833YWq
+         +vZBmvT0hRa6OlgCw8eVzhfZNyjete+fn+Il9QgldGS6V8+SPpkDsA84RsgtvNyahRKg
+         vH/0P97mkWos1nQnhead8NItNA6xLXTaX7ud/4j2HPV+1UVQe/ugJXRRYZWreAos6y4A
+         57LWm+fRMed7PE4+iGJtzlWsaYTOWPuz1TkqpChAWg1iFAMB6pbEPDMi+oocuDYKPxIs
+         cbsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692172260; x=1692777060;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AZlg1ec/mQtSS6ubj7YbrmzREiYAKoW43hD8kXXjJ1o=;
-        b=jQTo6TNj2N9WTjIoERnR6AzdFa1AZvzCJoL75HJIJGx+OBIz9GNsAVSNlLjofTiHqD
-         aErBuEnbVZnxkiy9nGMg3Xo/El2TizM4TvWjf/lbxu5mD7NJmmOTJW5wm84+w3X14y+8
-         /qm2VKQJNaHPTznNBqWEF5pqeTF+kd8uZGQLIsNQvQg57vBDF9oPYApBrVYtp8siwRSp
-         q0D+A0TPqCUNJpvA1NbYidApqnfJz2pDQc4DMdevUGTkTX8xQEvXMEonrb7j0/v8ztiq
-         hxanssWI0KOHoauxnXbtcLH7penGzZtpOCj3KDuGCJquTgSZQ6XlP8JBSdcQ71simqRQ
-         JgoA==
-X-Gm-Message-State: AOJu0YzUPi48SI9alQjSfWwGN2Io/vEkn9WpgQTPn6Dlg+M32YlxH4pR
-        2Phk/7UBrFfMts/bsKw6f/OfjeDJvLe4Uz8XjvpzvHpgrYsjwOj9hilthfOaZMPyA3Sx6PqAxK2
-        iNsHRDf/C8dvVehzNyAYVtwFk
-X-Received: by 2002:a17:906:5195:b0:99d:f6e9:1cf8 with SMTP id y21-20020a170906519500b0099df6e91cf8mr320258ejk.20.1692172260030;
-        Wed, 16 Aug 2023 00:51:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHfXulRLkjZnEiUk0Lqs9vV5TTlzLYw/3JRYT58DkHKCqSk7vLvhVTuXqb7QD9bghh38XGRvQ==
-X-Received: by 2002:a17:906:5195:b0:99d:f6e9:1cf8 with SMTP id y21-20020a170906519500b0099df6e91cf8mr320245ejk.20.1692172259706;
-        Wed, 16 Aug 2023 00:50:59 -0700 (PDT)
-Received: from fedora (g2.ign.cz. [91.219.240.8])
-        by smtp.gmail.com with ESMTPSA id v8-20020a1709060b4800b009930308425csm8166429ejg.31.2023.08.16.00.50.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 00:50:58 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zeng Guang <guang.zeng@intel.com>,
-        Yuan Yao <yuan.yao@intel.com>
-Subject: Re: [PATCH v3 05/15] KVM: VMX: Rename XSAVES control to follow
- KVM's preferred "ENABLE_XYZ"
-In-Reply-To: <20230815203653.519297-6-seanjc@google.com>
-References: <20230815203653.519297-1-seanjc@google.com>
- <20230815203653.519297-6-seanjc@google.com>
-Date:   Wed, 16 Aug 2023 09:50:57 +0200
-Message-ID: <87y1ib5sta.fsf@redhat.com>
+        d=1e100.net; s=20221208; t=1692172264; x=1692777064;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=u89h35VZUFU7oFhgg4xY+gsNp+JZwekwjFY4ath1SXw=;
+        b=X6CwZHb8iQTa1R9lePItcmp/t4UY6o83q/nQHT3vNRliNqZ/AludQLnjqkzE3++HBU
+         pMu970v99Dh/dsk4d8EthL/0sp8giX9r73ko6jk3lH4ndoZsuB8UQ5bppdGwO10xlu1x
+         qRdtVkOQxrZl49ZoJZXTA56QwoXhed8BG4uK0Cv2pC4BAUgU1siRBpT3JLU6EsewATgl
+         P6boK0/gU7vOydiku0xuxn+M6EpiGnhj0nHtGzM6nFxUytPdvXQ6gf0jp/JKTskto98+
+         rtcNzmPIijmaY0kYn4Gydy2yceay4tKmsHS8yUwIEhD2GbdkPGREf2gJpWz5hyoe1mWv
+         bwGg==
+X-Gm-Message-State: AOJu0YzhE7CWOwQDxzhm9ezU6/A8zTqx5FmAt+n2ybR2mheR2GA+JnHr
+        iLWDlc/BZsGjKy1NlMxRCSi7dg==
+X-Google-Smtp-Source: AGHT+IENpZDsmMPNtWMc+9x1g9K3gGcn34PsdnS7ZCTTU446wk+45iMOjBqyJ2731in2wO8fDKTUEw==
+X-Received: by 2002:a05:6512:4005:b0:4f8:5e49:c613 with SMTP id br5-20020a056512400500b004f85e49c613mr1211979lfb.43.1692172263961;
+        Wed, 16 Aug 2023 00:51:03 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:60eb:1b42:890:194? ([2a01:e0a:982:cbb0:60eb:1b42:890:194])
+        by smtp.gmail.com with ESMTPSA id n9-20020a1c7209000000b003fe577eb8cbsm23033512wmc.44.2023.08.16.00.51.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 00:51:03 -0700 (PDT)
+Message-ID: <6e1f6cb7-7f88-48dc-b494-1a5e990e1a33@linaro.org>
+Date:   Wed, 16 Aug 2023 09:51:02 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+User-Agent: Mozilla Thunderbird
+From:   neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox
+ VTDR6130
+Content-Language: en-US, fr
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Douglas Anderson <dianders@chromium.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     quic_parellan@quicinc.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
+ <dde2774e-6f0b-21d0-e9c9-4a5bd1eac4e8@linaro.org>
+ <2f9a9450-438b-257d-759c-22b273a7b35d@quicinc.com>
+ <c183d823-81d4-6d7c-98d9-649fa4041262@quicinc.com>
+ <6c0dd9fd-5d8e-537c-804f-7a03d5899a07@linaro.org>
+ <548b0333-103b-ac66-0fc5-f29e7cc50596@quicinc.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <548b0333-103b-ac66-0fc5-f29e7cc50596@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,153 +115,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+Hi Abhinav,
 
-> Rename the XSAVES secondary execution control to follow KVM's preferred
-> style so that XSAVES related logic can use common macros that depend on
-> KVM's preferred style.
->
-> No functional change intended.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/include/asm/vmx.h      | 2 +-
->  arch/x86/kvm/vmx/capabilities.h | 2 +-
->  arch/x86/kvm/vmx/hyperv.c       | 2 +-
+On 14/08/2023 20:02, Abhinav Kumar wrote:
+> Hi Neil
+> 
+> On 8/14/2023 1:01 AM, neil.armstrong@linaro.org wrote:
+>> Hi Abhinav,
+>>
+>> On 10/08/2023 18:26, Abhinav Kumar wrote:
+>>> Hi Neil
+>>>
+>>> On 8/3/2023 10:19 AM, Jessica Zhang wrote:
+>>>>
+>>>>
+>>>> On 7/31/2023 6:00 AM, Neil Armstrong wrote:
+>>>>> Hi,
+>>>>>
+>>>>> On 26/07/2023 00:56, Jessica Zhang wrote:
+>>>>>> Due to a recent introduction of the pre_enable_prev_first bridge flag [1],
+>>>>>> the panel driver will be probed before the DSI is enabled, causing the
+>>>>>> DCS commands to fail to send.
+>>>>>>
+>>>>>> Ensure that DSI is enabled before panel probe by setting the
+>>>>>> prepare_prev_first flag for the panel.
+>>>>>
+>>>>> Well this is specific to MSM DSI driver, it's not related at all to the panel.
+>>>>
+>>>
+>>> I dont fully agree this is a MSM DSI driver specific thing.
+>>>
+>>> If the panel can send its commands in its enable() callback, then this flag need not be set.
+>>>
+>>> When a panel sends its DCS commands in its pre_enable() callback, any DSI controller will need to be ON before that otherwise DCS commands cannot be sent.
+>>>
+>>> With this in mind, may I know why is this a MSM change and not a panel change?
+>>>
+>>> As per my discussion with Dmitry during the last sync up, we were aligned on this expectation.
+>>
+>> As of today, only the MSM DSI driver expects panels to have prepare_prev_first because it's the first
+>> one calling pre_enable() before the DSI controller to be on, all other DSI drivers I know
+>> still enables the DSI controller in mode_set() and thus can send commands in pre_enable() which
+>> is a loose way to map the pre-video state for DSI panels...
+>>
+> 
+> It looks like there are multiple panels already setting this flag so this panel will not be the first unless they were added to make those work with MSM (which seems unlikely)
+> 
+> panel-samsung-s6d7aa0.c:        ctx->panel.prepare_prev_first = true;
+> panel-samsung-s6e3ha2.c:        ctx->panel.prepare_prev_first = true;
+> panel-samsung-s6e63j0x03.c:     ctx->panel.prepare_prev_first = true;
+> panel-samsung-s6e8aa0.c:        ctx->panel.prepare_prev_first = true;
+> 
+> This is where I would like to understand a bit that if the panel sends out the ON commands in enable() instead of pre_enable() then, this flag will not be needed. So its also depends on the panel side and thats why
+> the bridge feeds of the panel's input in devm_drm_panel_bridge_add_typed()
+> 
+> bridge->pre_enable_prev_first = panel->prepare_prev_first;
+> 
+>> A panel driver should not depend on features of a DSI controller, which is the case here
+>> with this patch. Today's expectation is to send DSI commands in pre_enable() then when enabled
+>> expect to be in video mode when enable() is called.
+>>
+> 
+> We are not depending on any feature as such. Any DSI controller , not just MSM's would need to be ON for DCS commands to be sent out in the panel's pre_enable() callback.
+> 
+> Its not true that MSM is the only driver powering on the DSI controller in pre_enable(). Even MTK seems to be doing that
+> 
+> mtk_dsi_bridge_atomic_pre_enable
+> 
+> So I assume any panel which sends out commands in pre_enable() will not work with MTK as well.
 
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Sending HS commands will always work on any controller, it's all about LP commands.
+The Samsung panels you listed only send HS commands so they can use prepare_prev_first
+and work on any controllers.
 
-with a minor comment
+None of the panels using LP commands uses prepare_prev_first:
 
->  arch/x86/kvm/vmx/nested.c       | 6 +++---
->  arch/x86/kvm/vmx/nested.h       | 2 +-
->  arch/x86/kvm/vmx/vmx.c          | 2 +-
->  arch/x86/kvm/vmx/vmx.h          | 2 +-
->  7 files changed, 9 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
-> index 0d02c4aafa6f..0e73616b82f3 100644
-> --- a/arch/x86/include/asm/vmx.h
-> +++ b/arch/x86/include/asm/vmx.h
-> @@ -71,7 +71,7 @@
->  #define SECONDARY_EXEC_RDSEED_EXITING		VMCS_CONTROL_BIT(RDSEED_EXITING)
->  #define SECONDARY_EXEC_ENABLE_PML               VMCS_CONTROL_BIT(PAGE_MOD_LOGGING)
->  #define SECONDARY_EXEC_PT_CONCEAL_VMX		VMCS_CONTROL_BIT(PT_CONCEAL_VMX)
-> -#define SECONDARY_EXEC_XSAVES			VMCS_CONTROL_BIT(XSAVES)
-> +#define SECONDARY_EXEC_ENABLE_XSAVES		VMCS_CONTROL_BIT(XSAVES)
->  #define SECONDARY_EXEC_MODE_BASED_EPT_EXEC	VMCS_CONTROL_BIT(MODE_BASED_EPT_EXEC)
->  #define SECONDARY_EXEC_PT_USE_GPA		VMCS_CONTROL_BIT(PT_USE_GPA)
->  #define SECONDARY_EXEC_TSC_SCALING              VMCS_CONTROL_BIT(TSC_SCALING)
+$ grep prepare_prev_first `grep -l LPM drivers/gpu/drm/panel/panel-*`
+$
 
-To avoid the need to make up these names in KVM we can probably just
-stick to SDM; that would make it easier to make a connection between KVM
-and Intel docs if needed. E.g. SDM uses "Use TSC scaling" so this
-could've been "SECONDARY_EXEC_USE_TSC_SCALING" for consistency.
+Note that there's a smart move for VTDR6130 with the command mode introduced in 20230728011218.14630-1-parellan@quicinc.com,
+in the way prepare_prev_first could only be set to true if command-mode is selected.
+I'll accept that since it would be logical, video mode won't work anymore but by default
+the panel would still work in command mode + prepare_prev_first.
 
-Unfortunatelly, SDM itself is not very consistent in the naming,
-e.g. compare "WBINVD exiting"/"RDSEED exiting" with "Enable ENCLS
-exiting"/"Enable ENCLV exiting" but I guess we won't be able to do
-significantly better in KVM anyways..
+> 
+>> The main reason is because some DSI controllers cannot send LP commands after switching
+>> to video mode (allwinner for example), so we must take this into account.
+>>
+>> For v6.6, I don't see other solutions than reverting 9e15123eca79 (reverting won't regress anything,
+>> because now it regresses also other panels on MSM platforms) and try to find a proper solution for v6.7...
+>>
+> 
+> No, I would prefer not to revert that. It will bring back special handling for the parade chip into MSM driver, something which I would prefer not to go back to. Powering on the DSI in modeset() was done only for the parade chip.
 
-> diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
-> index d0abee35d7ba..41a4533f9989 100644
-> --- a/arch/x86/kvm/vmx/capabilities.h
-> +++ b/arch/x86/kvm/vmx/capabilities.h
-> @@ -252,7 +252,7 @@ static inline bool cpu_has_vmx_pml(void)
->  static inline bool cpu_has_vmx_xsaves(void)
->  {
->  	return vmcs_config.cpu_based_2nd_exec_ctrl &
-> -		SECONDARY_EXEC_XSAVES;
-> +		SECONDARY_EXEC_ENABLE_XSAVES;
->  }
->  
->  static inline bool cpu_has_vmx_waitpkg(void)
-> diff --git a/arch/x86/kvm/vmx/hyperv.c b/arch/x86/kvm/vmx/hyperv.c
-> index 79450e1ed7cf..313b8bb5b8a7 100644
-> --- a/arch/x86/kvm/vmx/hyperv.c
-> +++ b/arch/x86/kvm/vmx/hyperv.c
-> @@ -78,7 +78,7 @@
->  	 SECONDARY_EXEC_DESC |						\
->  	 SECONDARY_EXEC_ENABLE_RDTSCP |					\
->  	 SECONDARY_EXEC_ENABLE_INVPCID |				\
-> -	 SECONDARY_EXEC_XSAVES |					\
-> +	 SECONDARY_EXEC_ENABLE_XSAVES |					\
->  	 SECONDARY_EXEC_RDSEED_EXITING |				\
->  	 SECONDARY_EXEC_RDRAND_EXITING |				\
->  	 SECONDARY_EXEC_TSC_SCALING |					\
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index 516391cc0d64..22e08d30baef 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -2307,7 +2307,7 @@ static void prepare_vmcs02_early(struct vcpu_vmx *vmx, struct loaded_vmcs *vmcs0
->  				  SECONDARY_EXEC_VIRTUALIZE_X2APIC_MODE |
->  				  SECONDARY_EXEC_ENABLE_INVPCID |
->  				  SECONDARY_EXEC_ENABLE_RDTSCP |
-> -				  SECONDARY_EXEC_XSAVES |
-> +				  SECONDARY_EXEC_ENABLE_XSAVES |
->  				  SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE |
->  				  SECONDARY_EXEC_VIRTUAL_INTR_DELIVERY |
->  				  SECONDARY_EXEC_APIC_REGISTER_VIRT |
-> @@ -6331,7 +6331,7 @@ static bool nested_vmx_l1_wants_exit(struct kvm_vcpu *vcpu,
->  		 * If if it were, XSS would have to be checked against
->  		 * the XSS exit bitmap in vmcs12.
->  		 */
-> -		return nested_cpu_has2(vmcs12, SECONDARY_EXEC_XSAVES);
-> +		return nested_cpu_has2(vmcs12, SECONDARY_EXEC_ENABLE_XSAVES);
->  	case EXIT_REASON_UMWAIT:
->  	case EXIT_REASON_TPAUSE:
->  		return nested_cpu_has2(vmcs12,
-> @@ -6874,7 +6874,7 @@ static void nested_vmx_setup_secondary_ctls(u32 ept_caps,
->  		SECONDARY_EXEC_ENABLE_INVPCID |
->  		SECONDARY_EXEC_ENABLE_VMFUNC |
->  		SECONDARY_EXEC_RDSEED_EXITING |
-> -		SECONDARY_EXEC_XSAVES |
-> +		SECONDARY_EXEC_ENABLE_XSAVES |
->  		SECONDARY_EXEC_TSC_SCALING |
->  		SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE;
->  
-> diff --git a/arch/x86/kvm/vmx/nested.h b/arch/x86/kvm/vmx/nested.h
-> index 96952263b029..b4b9d51438c6 100644
-> --- a/arch/x86/kvm/vmx/nested.h
-> +++ b/arch/x86/kvm/vmx/nested.h
-> @@ -168,7 +168,7 @@ static inline int nested_cpu_has_ept(struct vmcs12 *vmcs12)
->  
->  static inline bool nested_cpu_has_xsaves(struct vmcs12 *vmcs12)
->  {
-> -	return nested_cpu_has2(vmcs12, SECONDARY_EXEC_XSAVES);
-> +	return nested_cpu_has2(vmcs12, SECONDARY_EXEC_ENABLE_XSAVES);
->  }
->  
->  static inline bool nested_cpu_has_pml(struct vmcs12 *vmcs12)
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 78f292b7e2c5..22975cc949b7 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -4614,7 +4614,7 @@ static u32 vmx_secondary_exec_control(struct vcpu_vmx *vmx)
->  
->  	if (cpu_has_vmx_xsaves())
->  		vmx_adjust_secondary_exec_control(vmx, &exec_control,
-> -						  SECONDARY_EXEC_XSAVES,
-> +						  SECONDARY_EXEC_ENABLE_XSAVES,
->  						  vcpu->arch.xsaves_enabled, false);
->  
->  	/*
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index 32384ba38499..cde902b44d97 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -562,7 +562,7 @@ static inline u8 vmx_get_rvi(void)
->  	 SECONDARY_EXEC_APIC_REGISTER_VIRT |				\
->  	 SECONDARY_EXEC_VIRTUAL_INTR_DELIVERY |				\
->  	 SECONDARY_EXEC_SHADOW_VMCS |					\
-> -	 SECONDARY_EXEC_XSAVES |					\
-> +	 SECONDARY_EXEC_ENABLE_XSAVES |					\
->  	 SECONDARY_EXEC_RDSEED_EXITING |				\
->  	 SECONDARY_EXEC_RDRAND_EXITING |				\
->  	 SECONDARY_EXEC_ENABLE_PML |					\
+I understand, but this patch doesn't qualify as a fix for 9e15123eca79 and is too late to be merged in drm-misc-next for v6.6,
+and since 9e15123eca79 actually breaks some support it should be reverted (+ deps) since we are late in the rc cycles.
 
+It's not a fatality or the end of the world, but this is an indirect fix and not way all this should be fixed.
+We already had the case for the lt9611 breakage, and it's the same case here.
 
+Neil
 
--- 
-Vitaly
+> 
+>> Neil
+>>
+>>>
+>>> Thanks
+>>>
+>>> Abhinav
+>>>
+>>>> Hi Neil,
+>>>>
+>>>> I think there might be some confusion caused by the commit message -- instead of "enabled before panel probe", it should be "enabled before panel pre_enable()" as the panel on commands are sent during prepare(), which is matched to bridge pre_enable().
+>>>>
+>>>> IIRC the general rule is that the panel driver should set the prepare_prev_first flag if the on commands are sent during pre_enable(), so I'll keep the code change but correct the commit message if that's ok with you.
+>>>>
+>>>> Thanks,
+>>>>
+>>>
+>>>> Jessica Zhang
+>>>>
+>>>>>
+>>>>> Neil
+>>>>>
+>>>>>>
+>>>>>> [1] commit 4fb912e5e190 ("drm/bridge: Introduce pre_enable_prev_first to alter bridge init order")
+>>
+>> It's not the right commit that cause regression here, it's :
+>>
+>> 9e15123eca79 drm/msm/dsi: Stop unconditionally powering up DSI hosts at modeset
+>>
+>>>>>>
+>>>>>> Fixes: 2349183d32d8 ("drm/panel: add visionox vtdr6130 DSI panel driver")
+>>>>>> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+>>>>>> ---
+>>>>>>   drivers/gpu/drm/panel/panel-visionox-vtdr6130.c | 1 +
+>>>>>>   1 file changed, 1 insertion(+)
+>>>>>>
+>>>>>> diff --git a/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c b/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c
+>>>>>> index bb0dfd86ea67..e1363e128e7e 100644
+>>>>>> --- a/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c
+>>>>>> +++ b/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c
+>>>>>> @@ -296,6 +296,7 @@ static int visionox_vtdr6130_probe(struct mipi_dsi_device *dsi)
+>>>>>>       dsi->format = MIPI_DSI_FMT_RGB888;
+>>>>>>       dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_NO_EOT_PACKET |
+>>>>>>                 MIPI_DSI_CLOCK_NON_CONTINUOUS;
+>>>>>> +    ctx->panel.prepare_prev_first = true;
+>>>>>>       drm_panel_init(&ctx->panel, dev, &visionox_vtdr6130_panel_funcs,
+>>>>>>                  DRM_MODE_CONNECTOR_DSI);
+>>>>>>
+>>>>>> ---
+>>>>>> base-commit: 28a5c036b05fc5c935cc72d76abd3589825ea9cd
+>>>>>> change-id: 20230717-visionox-vtdr-prev-first-e00ae02eec9f
+>>>>>>
+>>>>>> Best regards,
+>>>>>
+>>
 
