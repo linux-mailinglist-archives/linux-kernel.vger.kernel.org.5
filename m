@@ -2,105 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67DB077EB12
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 22:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA15877EB18
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 22:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346277AbjHPUyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 16:54:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47864 "EHLO
+        id S1346283AbjHPUz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 16:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231737AbjHPUyp (ORCPT
+        with ESMTP id S1346328AbjHPUzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 16:54:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C79E69;
-        Wed, 16 Aug 2023 13:54:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EC63B66AEC;
-        Wed, 16 Aug 2023 20:54:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F48CC433BC;
-        Wed, 16 Aug 2023 20:54:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692219283;
-        bh=3sylDS4XJ4uOJXps4FntEKYtOTl8H32tGJ1dqKZJzl8=;
-        h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-        b=EHrtZr6AAWQVaAffZeshV8zLS99DXCkdyZ34hgQrDjU6FtbrycrvTvRSNWfY5rJcC
-         FsAu00a1zMmsS09581M3HaM9hV6KOdkcdVM0RCvYD0TfDyAZ64IduPQ1byo2nXH40C
-         TPPXya7AjaLhAiz2wcwFxmYiILxQcGLqQagDSnwTAgsc67dr4AVOKiRwwt54DtM1g/
-         AWLGPCDB+Q6kP96L/50KhawC32baSTUAOuUcHS6smZhfZqGIqWibwi05Rhqn0zIeqf
-         zt6Ew8/ZqQFf+Fngk0OdGrYY/8gSY5hgAwCo+x1dzKxReLkmiABK8KAd47ECxuLd2q
-         nv9rsva2vv8PA==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 16 Aug 2023 23:54:39 +0300
-Message-Id: <CUU9O4ZKMDAV.20Q9VINXK6DI0@suppilovahvero>
-To:     "Thore Sommer" <public@thson.de>, <dhowells@redhat.com>,
-        <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-Cc:     <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] X.509: if signature is unsupported skip validation
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.14.0
-References: <20230815112942.392572-1-public@thson.de>
-In-Reply-To: <20230815112942.392572-1-public@thson.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 16:55:44 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E492727
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:55:43 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-565ea1088fbso1395631a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:55:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692219342; x=1692824142;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=C00XHrqX2JehVx2BBEXfXecV7OVkf6gSj4eigV0sDaQ=;
+        b=Wd+2qwQqJLbcXOZfZxHK7QeYcunXx/JB1n8i5nb0p6eHz8dT9PSiVtuZHXF9om1+hX
+         afleLuXxjUJI+9b6oL+ivcB0pCk60ar2sDz6igfDLeBu8b+zpuhIB3GoyLlDBFfcGP0S
+         eF8L6NfDlEdKuwAYRfjUf1/T0y843DHuXwRPM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692219342; x=1692824142;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=C00XHrqX2JehVx2BBEXfXecV7OVkf6gSj4eigV0sDaQ=;
+        b=QSBBkSzzD6toT0swmREU6v1sZRjorozzjYBliil2P9l7zmR/rFV106Dxh15Swd4R9G
+         EIfYLRRN3qlp83vagVjx/wx5xfGdVqz+G9vkTYN65BnydDwCG1mrAU9pdKBD0YMv1A6n
+         jjPiBG3tTC9040KM/dsf7A1TYqz3X19ds5NIuqibSOfucjSgeeyyy55q/vUB7+c5DWL+
+         K2qvtImMKHOGlLBfr/ymIU6mS7hC6FnI3uYR+4YfWPASJCZOyAZeP/hQ5dRvdl4Yi8vh
+         EuNTqXruYDdMwYhKd8s0Ogks7HTfBTB9hwPf7ekVhJUV30Lts4PLINMXu2BQmHrTQwEI
+         d1oA==
+X-Gm-Message-State: AOJu0Yz6bk5LGtoovx0X39Swumc53vUY3HhAc54xtfhMXpo5Z50+HtN1
+        rEMlalLgSpTdO4GdPwKuVDbTfA==
+X-Google-Smtp-Source: AGHT+IHJW+AH5vlrIhdUlHgmZMHwz/lc7DRwSMYiYs0PBq1i1vK5obxcxfHOGdznenzbMzBFW6xmFA==
+X-Received: by 2002:a17:90a:d988:b0:262:f0e6:9e09 with SMTP id d8-20020a17090ad98800b00262f0e69e09mr2633351pjv.14.1692219342574;
+        Wed, 16 Aug 2023 13:55:42 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id 5-20020a17090a018500b0026b26181ac9sm178867pjc.14.2023.08.16.13.55.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 13:55:41 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 13:55:41 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Waqar Hameed <waqar.hameed@axis.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org,
+        Wang Weiyang <wangweiyang2@huawei.com>,
+        Xiu Jianfeng <xiujianfeng@huawei.com>, gongruiqi1@huawei.com
+Subject: Re: [PATCH v2] iio: irsd200: fix -Warray-bounds bug in
+ irsd200_trigger_handler
+Message-ID: <202308161355.9EC0D12C@keescook>
+References: <20230810035910.1334706-1-gongruiqi@huaweicloud.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230810035910.1334706-1-gongruiqi@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue Aug 15, 2023 at 2:29 PM EEST, Thore Sommer wrote:
-> When the hash algorithm for the signature is not available the digest siz=
-e
-> is 0 and the signature in the certificate is marked as unsupported.
->
-> When validating a self-signed certificate, this needs to be checked,
-> because otherwise trying to validate the signature will fail with an
-> warning:
->
-> Loading compiled-in X.509 certificates
-> WARNING: CPU: 0 PID: 1 at crypto/rsa-pkcs1pad.c:537 \
-> pkcs1pad_verify+0x46/0x12c
-> ...
-> Problem loading in-kernel X.509 certificate (-22)
->
-> Signed-off-by: Thore Sommer <public@thson.de>
-> ---
->  crypto/asymmetric_keys/x509_public_key.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/crypto/asymmetric_keys/x509_public_key.c b/crypto/asymmetric=
-_keys/x509_public_key.c
-> index 6fdfc82e23a8..7c71db3ac23d 100644
-> --- a/crypto/asymmetric_keys/x509_public_key.c
-> +++ b/crypto/asymmetric_keys/x509_public_key.c
-> @@ -130,6 +130,11 @@ int x509_check_for_self_signed(struct x509_certifica=
-te *cert)
->  			goto out;
->  	}
-> =20
-> +	if (cert->unsupported_sig) {
-> +		ret =3D 0;
-> +		goto out;
-> +	}
-> +
->  	ret =3D public_key_verify_signature(cert->pub, cert->sig);
->  	if (ret < 0) {
->  		if (ret =3D=3D -ENOPKG) {
-> --=20
-> 2.41.0
+On Thu, Aug 10, 2023 at 11:59:10AM +0800, GONG, Ruiqi wrote:
+> From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
+> 
+> When compiling with gcc 13 with -Warray-bounds enabled:
+> 
+> In file included from drivers/iio/proximity/irsd200.c:15:
+> In function ‘iio_push_to_buffers_with_timestamp’,
+>     inlined from ‘irsd200_trigger_handler’ at drivers/iio/proximity/irsd200.c:770:2:
+> ./include/linux/iio/buffer.h:42:46: error: array subscript ‘int64_t {aka long long int}[0]’
+> is partly outside array bounds of ‘s16[1]’ {aka ‘short int[1]’} [-Werror=array-bounds=]
+>    42 |                 ((int64_t *)data)[ts_offset] = timestamp;
+>       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+> drivers/iio/proximity/irsd200.c: In function ‘irsd200_trigger_handler’:
+> drivers/iio/proximity/irsd200.c:763:13: note: object ‘buf’ of size 2
+>   763 |         s16 buf = 0;
+>       |             ^~~
+> 
+> The problem seems to be that irsd200_trigger_handler() is taking a s16
+> variable as an int64_t buffer. As Jonathan suggested [1], fix it by
+> extending the buffer to a two-element array of s64.
+> 
+> Link: https://github.com/KSPP/linux/issues/331
+> Link: https://lore.kernel.org/lkml/20230809181329.46c00a5d@jic23-huawei/ [1]
+> Fixes: 3db3562bc66e ("iio: Add driver for Murata IRS-D200")
+> Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
 
-Should have:
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Cc: stable@vger.kernel.org # v4.7+
-Fixes: 6c2dc5ae4ab7 ("X.509: Extract signature digest and make self-signed =
-cert checks earlier")
-
-BR, Jarkko
+-- 
+Kees Cook
