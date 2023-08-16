@@ -2,72 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB4C77E71F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A6577E721
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345024AbjHPQ72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 12:59:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44462 "EHLO
+        id S1345030AbjHPQ77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 12:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345021AbjHPQ64 (ORCPT
+        with ESMTP id S1345021AbjHPQ73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 12:58:56 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 172AB1FC3;
-        Wed, 16 Aug 2023 09:58:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=D2PHbo0EsztXcxRMSJk7ynouAeB9gcGPg6mbvGpkXA4=; b=IIimy8fCNOMjHgos9lmvKWQNPN
-        iGfrBehzONu1qS59k07b7d4+YSOY2ES5Aa2jREQdOhs5mWLvtcfwYgxILvNudfv0eYVQkIJxW95Yk
-        XobtiM/k/tdcKCxBA1aJOlkWkNqejmVyaWPqRJuNgFntjhyXIukStAHGGuTyjp4dsnwcjcs98gekD
-        x44e8cIyPL4NusHQsHlnHIgs4uU+PeSFnM/k2a90xxF8w0H+negx/xJajaBc0oEmc6l8tJYisMz9J
-        igd+Wzzy1mk9gk+BofvAr7NQMVqAxiIltqf8KOQx4Lt+R4vEKZyUTcevJ660YH5X2Za6s4c2S8TSk
-        JxYep2EQ==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qWJqw-000AGF-TS; Wed, 16 Aug 2023 18:58:38 +0200
-Received: from [85.1.206.226] (helo=pc-102.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qWJqv-000SBc-R0; Wed, 16 Aug 2023 18:58:37 +0200
-Subject: Re: [PATCH bpf-next v4] selftests/bpf: trace_helpers.c: optimize
- kallsyms cache
-To:     Rong Tao <rtoax@foxmail.com>, sdf@google.com, andrii@kernel.org
-Cc:     rongtao@cestc.cn, Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "open list:BPF [SELFTESTS] (Test Runners & Infrastructure)" 
-        <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <tencent_59C74613113F0C728524B2A82FE5540A5E09@qq.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <60da4749-3009-0e40-90bd-90cd03395e45@iogearbox.net>
-Date:   Wed, 16 Aug 2023 18:58:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Wed, 16 Aug 2023 12:59:29 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C2019A7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 09:59:27 -0700 (PDT)
+Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 04739223;
+        Wed, 16 Aug 2023 18:58:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1692205092;
+        bh=qL8j5qkM/ioz7U94Qh0NCq/z7yI3gA+ae9rI0TA7xWE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=eF+yvHtaLVinq2N80Q2GU0vwWOHQbKR7IDYp1h/zC7mAcVop5tIQG7ZlB/Z2khqTk
+         Gxw6q8Gw02MJsaYq6UGIdGARBRXhM3uVgkloFCkFlVJ0RA1AQSGBjgrtfnKjojiTK3
+         hTxMyy255rAg0KuHK7YM5n2lIUtxHRRC6THdUA8Q=
+Message-ID: <7ab235b0-2bac-46a4-7a79-9270768ac3d9@ideasonboard.com>
+Date:   Wed, 16 Aug 2023 19:59:20 +0300
 MIME-Version: 1.0
-In-Reply-To: <tencent_59C74613113F0C728524B2A82FE5540A5E09@qq.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 00/12] drm/bridge: tc358768: Fixes and timings
+ improvements
 Content-Language: en-US
+To:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Francesco Dolcini <francesco@dolcini.it>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+References: <20230816-tc358768-v2-0-242b9d5f703a@ideasonboard.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+In-Reply-To: <20230816-tc358768-v2-0-242b9d5f703a@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/27002/Wed Aug 16 09:38:26 2023)
 X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,114 +63,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/16/23 3:36 AM, Rong Tao wrote:
-> From: Rong Tao <rongtao@cestc.cn>
+On 16/08/2023 14:25, Tomi Valkeinen wrote:
+> This series contains various fixes and cleanups for TC358768. The target
+> of this work is to get TC358768 working on Toradex's AM62 based board,
+> which has the following display pipeline:
 > 
-> Static ksyms often have problems because the number of symbols exceeds the
-> MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
-> commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
-> the problem somewhat, but it's not the perfect way.
+> AM62 DPI -> TC358768 -> LT8912B -> HDMI connector
 > 
-> This commit uses dynamic memory allocation, which completely solves the
-> problem caused by the limitation of the number of kallsyms.
+> The main thing the series does is to improve the DSI HSW, HFP and VSDly
+> calculations.
 > 
-> Acked-by: Stanislav Fomichev <sdf@google.com>
-> Signed-off-by: Rong Tao <rongtao@cestc.cn>
+>   Tomi
+> 
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 > ---
-> v4: Make sure most cases we don't need the realloc() path to begin with,
->      and check strdup() return value.
-> v3: https://lore.kernel.org/lkml/tencent_50B4B2622FE7546A5FF9464310650C008509@qq.com/
->      Do not use structs and judge ksyms__add_symbol function return value.
-> v2: https://lore.kernel.org/lkml/tencent_B655EE5E5D463110D70CD2846AB3262EED09@qq.com/
->      Do the usual len/capacity scheme here to amortize the cost of realloc, and
->      don't free symbols.
-> v1: https://lore.kernel.org/lkml/tencent_AB461510B10CD484E0B2F62E3754165F2909@qq.com/
-> ---
->   tools/testing/selftests/bpf/trace_helpers.c | 46 ++++++++++++++++-----
->   1 file changed, 36 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-> index f83d9f65c65b..a1461508925e 100644
-> --- a/tools/testing/selftests/bpf/trace_helpers.c
-> +++ b/tools/testing/selftests/bpf/trace_helpers.c
-> @@ -18,10 +18,35 @@
->   #define TRACEFS_PIPE	"/sys/kernel/tracing/trace_pipe"
->   #define DEBUGFS_PIPE	"/sys/kernel/debug/tracing/trace_pipe"
->   
-> -#define MAX_SYMS 400000
-> -static struct ksym syms[MAX_SYMS];
-> +static struct ksym *syms;
-> +static int sym_cap;
->   static int sym_cnt;
->   
-> +static int ksyms__add_symbol(const char *name, unsigned long addr)
-> +{
-> +	void *tmp;
-> +	unsigned int new_cap;
-> +
-> +	if (sym_cnt + 1 > sym_cap) {
-> +		new_cap = sym_cap * 4 / 3;
-> +		tmp = realloc(syms, sizeof(struct ksym) * new_cap);
-> +		if (!tmp)
-> +			return -ENOMEM;
-> +		syms = tmp;
-> +		sym_cap = new_cap;
-> +	}
-> +
-> +	tmp = strdup(name);
-> +	if (!tmp)
-> +		return -ENOMEM;
-> +	syms[sym_cnt].addr = addr;
-> +	syms[sym_cnt].name = tmp;
-> +
-> +	sym_cnt++;
-> +
-> +	return 0;
-> +}
+> Changes in v2:
+> - Add "drm/tegra: rgb: Parameterize V- and H-sync polarities" so that
+>    Tegra can configure the polarities correctly.
+> - Add "drm/bridge: tc358768: Default to positive h/v syncs" as we don't
+>    (necessarily) have the polarities set in the mode.
+> - Drop "drm/bridge: tc358768: Add DRM_BRIDGE_ATTACH_NO_CONNECTOR
+>    support" as it's not needed for DRM_BRIDGE_ATTACH_NO_CONNECTOR
+>    support.
+> - Link to v1: https://lore.kernel.org/r/20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com
 
-Since this patch is about improving the load_kallsyms_refresh(), I mentioned in the v3
-that it would also be good to have the counterpart to release the allocated memory once
-the test concluded or upon error given it's dynamically allocated.
+Looks like I forgot to add the reviewed-bys from Peter. Sorry about 
+that! Will add to v3.
 
->   static int ksym_cmp(const void *p1, const void *p2)
->   {
->   	return ((struct ksym *)p1)->addr - ((struct ksym *)p2)->addr;
-> @@ -33,9 +58,14 @@ int load_kallsyms_refresh(void)
->   	char func[256], buf[256];
->   	char symbol;
->   	void *addr;
-> -	int i = 0;
-> +	int ret;
->   
-> +	/* Make sure most cases we don't need the realloc() path to begin with */
-> +	sym_cap = 400000;
->   	sym_cnt = 0;
-> +	syms = malloc(sizeof(struct ksym) * sym_cap);
-> +	if (!syms)
-> +		return -ENOMEM;
->   
->   	f = fopen("/proc/kallsyms", "r");
->   	if (!f)
-> @@ -46,15 +76,11 @@ int load_kallsyms_refresh(void)
->   			break;
->   		if (!addr)
->   			continue;
-> -		if (i >= MAX_SYMS)
-> -			return -EFBIG;
-> -
-> -		syms[i].addr = (long) addr;
-> -		syms[i].name = strdup(func);
-> -		i++;
-> +		ret = ksyms__add_symbol(func, (unsigned long)addr);
-> +		if (ret)
-> +			return ret;
->   	}
->   	fclose(f);
-> -	sym_cnt = i;
->   	qsort(syms, sym_cnt, sizeof(struct ksym), ksym_cmp);
->   	return 0;
->   }
-> 
+  Tomi
 
-Thanks,
-Daniel
