@@ -2,114 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 331B777E000
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1DF577E004
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238720AbjHPLIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 07:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59246 "EHLO
+        id S244268AbjHPLKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 07:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244268AbjHPLIL (ORCPT
+        with ESMTP id S244106AbjHPLJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 07:08:11 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBA3E56
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 04:08:09 -0700 (PDT)
-Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RQlgD5kYHzVk9b;
-        Wed, 16 Aug 2023 19:06:00 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 16 Aug 2023 19:08:04 +0800
-Subject: Re: Fwd: ubi: fastmap: Fix a series of wear leveling problems
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Linux MTD <linux-mtd@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <44f5a8f7-0bf4-c986-a0dc-dc12d0cb30ca@gmail.com>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <1ee21a88-0969-47f5-fa87-b5090fc7718f@huawei.com>
-Date:   Wed, 16 Aug 2023 19:08:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Wed, 16 Aug 2023 07:09:58 -0400
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F0D1985;
+        Wed, 16 Aug 2023 04:09:57 -0700 (PDT)
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37G9pGOG019132;
+        Wed, 16 Aug 2023 07:09:33 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3se8g8y9w1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 07:09:33 -0400 (EDT)
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 37GB9Wmb010995
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Aug 2023 07:09:32 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Wed, 16 Aug
+ 2023 07:09:30 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Wed, 16 Aug 2023 07:09:30 -0400
+Received: from ubuntu.ad.analog.com ([10.48.65.222])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 37GB9Dxh027589;
+        Wed, 16 Aug 2023 07:09:16 -0400
+From:   Ana-Maria Cusco <ana-maria.cusco@analog.com>
+To:     <ana-maria.cusco@analog.com>
+CC:     Michael Hennerich <michael.hennerich@analog.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/2] iio: amplifiers: hmc425a: Add Support HMC540S 4-bit Attenuator
+Date:   Wed, 16 Aug 2023 14:09:05 +0300
+Message-ID: <20230816110906.144540-1-ana-maria.cusco@analog.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <44f5a8f7-0bf4-c986-a0dc-dc12d0cb30ca@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600013.china.huawei.com (7.193.23.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: Iaj7JFOyWX4afQhPhh1-fdB_-3eV22XO
+X-Proofpoint-GUID: Iaj7JFOyWX4afQhPhh1-fdB_-3eV22XO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-16_09,2023-08-15_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 adultscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999
+ priorityscore=1501 clxscore=1011 lowpriorityscore=0 phishscore=0
+ spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2306200000 definitions=main-2308160099
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2023/8/16 17:56, Bagas Sanjaya 写道:
-Hi,
-> Hi,
-> 
-> I notice a bug report with proposed fixes on Bugzilla [1]. Quoting from it
-> (only the first problem that is quoted):
-> 
->> Problem 1: large erase counter for single fastmap data PEB
->>
->> Config:
->> x86_64 qemu
->> flash: nandsim
->> CONFIG_MTD_UBI_WL_THRESHOLD=128
->> CONFIG_MTD_UBI_FASTMAP=y
->> ubi->beb_rsvd_pebs=0
->>
->> Running fsstress on ubifs for 3h(fastmap data PEB has large erase counter than others):
->> =========================================================
->> from              to     count      min      avg      max
->> ---------------------------------------------------------
->> 0        ..        9:        0        0        0        0
->> 10       ..       99:      532       84       92       99
->> 100      ..      999:    15787      100      147      229
->> 1000     ..     9999:       64     4699     4765     4826
->> 10000    ..    99999:        0        0        0        0
->> 100000   ..      inf:        1   272935   272935   272935
->> ---------------------------------------------------------
->> Total               :    16384       84      180   272935
->> PEB 8031(ec=272935) is always taken for fastmap data.
->>
->> After fix, running fsstress on ubifs for 12h(no pool reservation), no individual peb has big erase counter:
->> =========================================================
->> from              to     count      min      avg      max
->> ---------------------------------------------------------
->> 0        ..        9:        0        0        0        0
->> 10       ..       99:        0        0        0        0
->> 100      ..      999:    16320      609      642      705
->> 1000     ..     9999:        0        0        0        0
->> 10000    ..    99999:       64    18176    18234    18303
->> 100000   ..      inf:        0        0        0        0
->> ---------------------------------------------------------
->> Total               :    16384      609      710    18303
-> 
-> See Bugzilla for the full thread (with other problems mentioned) and
-> attached patch series that fixes them.
-> 
-> Zhihao: I asked you on BZ to send your patches to linux-mtd list,
-> but you didn't respond there. Would you like to send them for
-> review?
-> 
+From: Michael Hennerich <michael.hennerich@analog.com>
 
-Sorry for the delayed response. Yes, I have sent the fix patches in 
-https://patchwork.ozlabs.org/project/linux-mtd/list/?series=368534.
-Any suggestions are welcomed.
+This adds support for the Analog Devices HMC540s 1 dB LSB
+Silicon MMIC 4-Bit Digital Positive Control Attenuator, 0.1 - 8 GHz
 
+Signed-off-by: Ana-Maria Cusco <ana-maria.cusco@analog.com>
+---
+ drivers/iio/amplifiers/hmc425a.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-> Thanks.
-> 
-> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217787
-> 
+diff --git a/drivers/iio/amplifiers/hmc425a.c b/drivers/iio/amplifiers/hmc425a.c
+index 108f0f1685ef..e87d35d50a95 100644
+--- a/drivers/iio/amplifiers/hmc425a.c
++++ b/drivers/iio/amplifiers/hmc425a.c
+@@ -21,6 +21,7 @@
+ 
+ enum hmc425a_type {
+ 	ID_HMC425A,
++	ID_HMC540S,
+ };
+ 
+ struct hmc425a_chip_info {
+@@ -70,6 +71,9 @@ static int hmc425a_read_raw(struct iio_dev *indio_dev,
+ 		case ID_HMC425A:
+ 			gain = ~code * -500;
+ 			break;
++		case ID_HMC540S:
++			gain = ~code * -1000;
++			break;
+ 		}
+ 
+ 		*val = gain / 1000;
+@@ -106,6 +110,9 @@ static int hmc425a_write_raw(struct iio_dev *indio_dev,
+ 	case ID_HMC425A:
+ 		code = ~((abs(gain) / 500) & 0x3F);
+ 		break;
++	case ID_HMC540S:
++		code = ~((abs(gain) / 1000) & 0xF);
++		break;
+ 	}
+ 
+ 	mutex_lock(&st->lock);
+@@ -157,6 +164,7 @@ static const struct iio_chan_spec hmc425a_channels[] = {
+ /* Match table for of_platform binding */
+ static const struct of_device_id hmc425a_of_match[] = {
+ 	{ .compatible = "adi,hmc425a", .data = (void *)ID_HMC425A },
++	{ .compatible = "adi,hmc540s", .data = (void *)ID_HMC540S },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, hmc425a_of_match);
+@@ -171,6 +179,15 @@ static struct hmc425a_chip_info hmc425a_chip_info_tbl[] = {
+ 		.gain_max = 0,
+ 		.default_gain = -0x40, /* set default gain -31.5db*/
+ 	},
++	[ID_HMC540S] = {
++		.name = "hmc540s",
++		.channels = hmc425a_channels,
++		.num_channels = ARRAY_SIZE(hmc425a_channels),
++		.num_gpios = 4,
++		.gain_min = -15000,
++		.gain_max = 0,
++		.default_gain = -0x10, /* set default gain -15.0db*/
++	},
+ };
+ 
+ static int hmc425a_probe(struct platform_device *pdev)
+-- 
+2.34.1
 
