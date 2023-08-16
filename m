@@ -2,149 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E64877D7BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 03:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3E677D7AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 03:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241086AbjHPBba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 21:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46776 "EHLO
+        id S241048AbjHPB3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 21:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241065AbjHPBa5 (ORCPT
+        with ESMTP id S241044AbjHPB3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 21:30:57 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 898D81BF8;
-        Tue, 15 Aug 2023 18:30:56 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RQVvZ5DMnz4f3nwk;
-        Wed, 16 Aug 2023 09:30:50 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgAH5KbHJtxkQuVAAw--.55976S8;
-        Wed, 16 Aug 2023 09:30:51 +0800 (CST)
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-To:     tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk,
-        yukuai3@huawei.com, mkoutny@suse.com
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yukuai1@huaweicloud.com,
-        yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: [PATCH -next v2 4/4] blk-throttle: consider 'carryover_ios/bytes' in throtl_trim_slice()
-Date:   Wed, 16 Aug 2023 09:27:08 +0800
-Message-Id: <20230816012708.1193747-5-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230816012708.1193747-1-yukuai1@huaweicloud.com>
-References: <20230816012708.1193747-1-yukuai1@huaweicloud.com>
+        Tue, 15 Aug 2023 21:29:43 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4527D211E;
+        Tue, 15 Aug 2023 18:29:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=bfS5LUD1zjNYyRIJC4f8khPclEuBDPMUL6qQTc/jqQQ=; b=3ZSJBcsKSY/X08DUQ2pvtDMl2D
+        wMlCaoIUKDtLZBsnTGd8gcDrfFyA5ZwLnb425Rx0PQsV+W9rY1V2rr53hqeH5JhM/hwsBDvMj0oBb
+        EQri7hFRHvLSsMwfqDtygaF54/zWzJ356CdZiODqU6OqmVcJu0i+o04t3uaQDGgWjDag=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qW5Lg-004Dsk-8j; Wed, 16 Aug 2023 03:29:24 +0200
+Date:   Wed, 16 Aug 2023 03:29:24 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Hawkins, Nick" <nick.hawkins@hpe.com>
+Cc:     "christophe.jaillet@wanadoo.fr" <christophe.jaillet@wanadoo.fr>,
+        "simon.horman@corigine.com" <simon.horman@corigine.com>,
+        "Verdun, Jean-Marie" <verdun@hpe.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/5] net: hpe: Add GXP UMAC MDIO
+Message-ID: <8f68f1dc-1841-4d28-b0b5-d968b1950e81@lunn.ch>
+References: <20230802201824.3683-1-nick.hawkins@hpe.com>
+ <20230802201824.3683-3-nick.hawkins@hpe.com>
+ <0b227994-2577-4a74-b604-79410f5607b8@lunn.ch>
+ <75F51B6F-A477-4A2B-B40F-1CC894546CF2@hpe.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAH5KbHJtxkQuVAAw--.55976S8
-X-Coremail-Antispam: 1UD129KBjvJXoWxWrW3ZF47Zw43Ww13trW8WFg_yoW5Zw1fpF
-        WfJF47twsIqFn3K3ZxZ3Wvv3Wjk3yDJryDG3y5trWfAF90kry8Kr1vkrW2qay2yas7ua1f
-        J3409r9rAr4qkrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-        3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-        IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-        kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
-        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
-        wI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
-        W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUOBTY
-        UUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <75F51B6F-A477-4A2B-B40F-1CC894546CF2@hpe.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+On Wed, Aug 16, 2023 at 12:55:56AM +0000, Hawkins, Nick wrote:
+> Greetings Andrew,
+> 
+> I have a follow up question below:
+> 
+> >> +static int umac_mdio_read(struct mii_bus *bus, int phy_id, int reg)
+> >> +{
+> >> + struct umac_mdio_priv *umac_mdio = bus->priv;
+> >> + unsigned int status;
+> >> + unsigned int value;
+> >> + int ret;
+> >> +
+> >> + status = __raw_readl(umac_mdio->base + UMAC_MII);
+> >> +
+> >> + status &= ~(UMAC_MII_PHY_ADDR_MASK | UMAC_MII_REG_ADDR_MASK);
+> >> + status |= ((phy_id << UMAC_MII_PHY_ADDR_SHIFT) &
+> >> + UMAC_MII_PHY_ADDR_MASK);
+> >> + status |= (reg & UMAC_MII_REG_ADDR_MASK);
+> >> + status |= UMAC_MII_MRNW; /* set bit for read mode */
+> >> + __raw_writel(status, umac_mdio->base + UMAC_MII);
+> >> +
+> >> + status |= UMAC_MII_MOWNER; /* set bit to activate mii transfer */
+> >> + __raw_writel(status, umac_mdio->base + UMAC_MII);
+> 
+> 
+> > I assume UMAC_MII_MOWNER must be set in a separate operation? But
+> > using __raw_writel() i'm not sure there is any barrier between the two
+> > writes.
+> 
+> Is there a function you would recommend using instead?
 
-Currently, 'carryover_ios/bytes' is not handled in throtl_trim_slice(),
-for consequence, 'carryover_ios/bytes' will be used to throttle bio
-multiple times, for example:
+writel().
 
-1) set iops limit to 100, and slice start is 0, slice end is 100ms;
-2) current time is 0, and 10 ios are dispatched, those io won't be
-   throttled and io_disp is 10;
-3) still at current time 0, update iops limit to 1000, carryover_ios is
-   updated to (0 - 10) = -10;
-4) in this slice(0 - 100ms), io_allowed = 100 + (-10) = 90, which means
-   only 90 ios can be dispatched without waiting;
-5) assume that io is throttled in slice(0 - 100ms), and
-   throtl_trim_slice() update silce to (100ms - 200ms). In this case,
-   'carryover_ios/bytes' is not cleared and still only 90 ios can be
-   dispatched between 100ms - 200ms.
+In general, it is best to use writel()/readl() for correctness. In the
+hot path, dealing with actually Ethernet frames where every uS counts,
+you can then think about using writel_relaxed()/readl_relaxed(). But
+for something slow like an MDIO bus driver, i would always avoid the
+possibility of having hard to find bugs because of missing barriers.
 
-Fix this problem by updating 'carryover_ios/bytes' in
-throtl_trim_slice().
-
-Fixes: a880ae93e5b5 ("blk-throttle: fix io hung due to configuration updates")
-Reported-by: zhuxiaohui <zhuxiaohui.400@bytedance.com>
-Link: https://lore.kernel.org/all/20230812072116.42321-1-zhuxiaohui.400@bytedance.com/
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-throttle.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 69a994156772..38a881cf97d0 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -729,8 +729,9 @@ static u64 calculate_bytes_allowed(u64 bps_limit, unsigned long jiffy_elapsed)
- /* Trim the used slices and adjust slice start accordingly */
- static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
- {
--	unsigned long time_elapsed, io_trim;
--	u64 bytes_trim;
-+	unsigned long time_elapsed;
-+	long long bytes_trim;
-+	int io_trim;
- 
- 	BUG_ON(time_before(tg->slice_end[rw], tg->slice_start[rw]));
- 
-@@ -758,17 +759,21 @@ static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
- 		return;
- 
- 	bytes_trim = calculate_bytes_allowed(tg_bps_limit(tg, rw),
--					     time_elapsed);
--	io_trim = calculate_io_allowed(tg_iops_limit(tg, rw), time_elapsed);
--	if (!bytes_trim && !io_trim)
-+					     time_elapsed) +
-+		     tg->carryover_bytes[rw];
-+	io_trim = calculate_io_allowed(tg_iops_limit(tg, rw), time_elapsed) +
-+		  tg->carryover_ios[rw];
-+	if (bytes_trim <= 0 && io_trim <= 0)
- 		return;
- 
--	if (tg->bytes_disp[rw] >= bytes_trim)
-+	tg->carryover_bytes[rw] = 0;
-+	if ((long long)tg->bytes_disp[rw] >= bytes_trim)
- 		tg->bytes_disp[rw] -= bytes_trim;
- 	else
- 		tg->bytes_disp[rw] = 0;
- 
--	if (tg->io_disp[rw] >= io_trim)
-+	tg->carryover_ios[rw] = 0;
-+	if ((int)tg->io_disp[rw] >= io_trim)
- 		tg->io_disp[rw] -= io_trim;
- 	else
- 		tg->io_disp[rw] = 0;
-@@ -776,7 +781,7 @@ static inline void throtl_trim_slice(struct throtl_grp *tg, bool rw)
- 	tg->slice_start[rw] += time_elapsed;
- 
- 	throtl_log(&tg->service_queue,
--		   "[%c] trim slice nr=%lu bytes=%llu io=%lu start=%lu end=%lu jiffies=%lu",
-+		   "[%c] trim slice nr=%lu bytes=%lld io=%d start=%lu end=%lu jiffies=%lu",
- 		   rw == READ ? 'R' : 'W', time_elapsed / tg->td->throtl_slice,
- 		   bytes_trim, io_trim, tg->slice_start[rw], tg->slice_end[rw],
- 		   jiffies);
--- 
-2.39.2
-
+	Andrew
