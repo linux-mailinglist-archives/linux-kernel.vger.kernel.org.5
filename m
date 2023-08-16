@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DC177DBC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E40E77DBC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242760AbjHPIIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 04:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46480 "EHLO
+        id S239260AbjHPIK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 04:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242745AbjHPIHx (ORCPT
+        with ESMTP id S242809AbjHPIKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 04:07:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15A5B26A8;
-        Wed, 16 Aug 2023 01:07:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692173261; x=1723709261;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=KPdktamhAah4Tzj7A9dDY419aZKIxpABZHLmlpCy7rc=;
-  b=egU2Q6ylIsbGSRYAyZ4F3iXkDaeJLNvpumBuQ3sSohXnpB+84Jxmnf0k
-   BzgzlQm1hoDy3YgkTpp50RAYACLA4nPdpW0G4sWKafkcV7qFb51S6rGyE
-   vHo6rmZ/dal8BQ+PSCL7v8PzvShx5kzqgF46nrrlw/9OLMMz+YchR9JVq
-   a1FiwBlXAQed0UJvILVe0XqTp0/+FxHxERX8gkineyPn1LrSAzID/dYNX
-   yNxi/a5yYC7G/zFp2BdTo0V7nhMbswQCtXggcGXrqxV90Qy4WpiZkegt6
-   Yb+UQ5v1gnbw2nglbanMoMbIQemM6xp/yKWHgILKDwwKmhQt43WJHdmqx
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="371379215"
-X-IronPort-AV: E=Sophos;i="6.01,176,1684825200"; 
-   d="scan'208";a="371379215"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 01:07:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="804115129"
-X-IronPort-AV: E=Sophos;i="6.01,176,1684825200"; 
-   d="scan'208";a="804115129"
-Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
-  by fmsmga004.fm.intel.com with ESMTP; 16 Aug 2023 01:07:38 -0700
-Date:   Wed, 16 Aug 2023 16:07:38 +0800
-From:   Yuan Yao <yuan.yao@linux.intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zeng Guang <guang.zeng@intel.com>,
-        Yuan Yao <yuan.yao@intel.com>
-Subject: Re: [PATCH v3 04/15] KVM: VMX: Check KVM CPU caps, not just VMX MSR
- support, for XSAVE enabling
-Message-ID: <20230816080737.zmqfdrlifedjqmw6@yy-desk-7060>
-References: <20230815203653.519297-1-seanjc@google.com>
- <20230815203653.519297-5-seanjc@google.com>
+        Wed, 16 Aug 2023 04:10:19 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 525F594
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 01:10:18 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37G4px6f021725;
+        Wed, 16 Aug 2023 03:09:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=PODMain02222019; bh=RtuS4+RPM5H1eJM
+        X+4Vl/LFgMJ7LIG0XPxVu8i+mQYU=; b=p6gCqmF5a32jO0Yqo4wAaacnUR4GSqG
+        Y95zPgG7IA7/Y/guuFNkunnjFa/Lmij4iQf7nQAZ4xvR+jdk4/8Hy/yhTTs1QepI
+        8LxL0nL8jXuARklIL/d3WausNTHxRf0VnyKIu/Jx8o+I6uwrOlZoYqotNoQjEUBG
+        6Z8F/cuy86suepUnRX3EZc2Fo0EC4UdUWa0NC+RdaF3KIT07tKsrAvVb/iPTy8Vm
+        W5B9b8g07ao/TltFpj+l2ALVQBxXz6W4jshFuBZETiLcuz+t5eOirbi3BeWYN6dE
+        TYO4kdptj7qAT15pxIbFYzbYD7QMocO8XrojXEpOP6UWRcTH7BqqSEA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3se8kqvnbb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 03:09:36 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 16 Aug
+ 2023 09:09:33 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
+ Transport; Wed, 16 Aug 2023 09:09:33 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CBBE33575;
+        Wed, 16 Aug 2023 08:09:33 +0000 (UTC)
+Date:   Wed, 16 Aug 2023 08:09:33 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-rockchip@lists.infradead.org>
+Subject: Re: [PATCH RESEND 2/3] ASoC: codecs: wm8904: Fix
+ Wvoid-pointer-to-enum-cast warning
+Message-ID: <20230816080933.GA103419@ediswmail.ad.cirrus.com>
+References: <20230815143204.379708-1-krzysztof.kozlowski@linaro.org>
+ <20230815143204.379708-2-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20230815203653.519297-5-seanjc@google.com>
-User-Agent: NeoMutt/20171215
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230815143204.379708-2-krzysztof.kozlowski@linaro.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: eNCEnLsDOM7DPowp6ucywe6coIrIFr1T
+X-Proofpoint-GUID: eNCEnLsDOM7DPowp6ucywe6coIrIFr1T
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 01:36:42PM -0700, Sean Christopherson wrote:
-> Check KVM CPU capabilities instead of raw VMX support for XSAVES when
-> determining whether or not XSAVER can/should be exposed to the guest.
-> Practically speaking, it's nonsensical/impossible for a CPU to support
-> "enable XSAVES" without XSAVES being supported natively.  The real
-> motivation for checking kvm_cpu_cap_has() is to allow using the governed
-> feature's standard check-and-set logic.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-
-Reviewed-by: Yuan Yao <yuan.yao@intel.com>
-
+On Tue, Aug 15, 2023 at 04:32:03PM +0200, Krzysztof Kozlowski wrote:
+> 'devtype' is an enum, thus cast of pointer on 64-bit compile test with
+> W=1 causes:
+> 
+>   wm8904.c:2205:21: error: cast to smaller integer type 'enum wm8904_type' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > ---
->  arch/x86/kvm/vmx/vmx.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 1bf85bd53416..78f292b7e2c5 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -7745,7 +7745,7 @@ static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->  	 * to the guest.  XSAVES depends on CR4.OSXSAVE, and CR4.OSXSAVE can be
->  	 * set if and only if XSAVE is supported.
->  	 */
-> -	vcpu->arch.xsaves_enabled = cpu_has_vmx_xsaves() &&
-> +	vcpu->arch.xsaves_enabled = kvm_cpu_cap_has(X86_FEATURE_XSAVES) &&
->  				    boot_cpu_has(X86_FEATURE_XSAVE) &&
->  				    guest_cpuid_has(vcpu, X86_FEATURE_XSAVE) &&
->  				    guest_cpuid_has(vcpu, X86_FEATURE_XSAVES);
-> --
-> 2.41.0.694.ge786442a9b-goog
->
+
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+
+Thanks,
+Charles
