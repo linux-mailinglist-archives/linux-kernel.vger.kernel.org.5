@@ -2,65 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3671D77E35C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8CD77E35B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343522AbjHPOPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 10:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48986 "EHLO
+        id S1343525AbjHPOPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 10:15:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343531AbjHPOPM (ORCPT
+        with ESMTP id S1343516AbjHPOOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 10:15:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65DA62705
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:14:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692195264;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=I6qVX4JL8hzYB+i+zAVqFPzRtDjXizOIDWnRU30YDjI=;
-        b=efvOUz6ZxR1EZpdLko4lWhAsKA3IftojQ8nImVpKMxwXSyvkJxYj3ZzHgwfmERdKnG0kR4
-        f/5GQQ+MvBh3A59ieizZ5uKlzc5axbu7DPTo0LqUCiq2q+P7QTIJ6NLezC+qs8RvMPrUnw
-        NyzHBWtKhd4CN1WwtcHhNzrrjLHILuA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-33-wJRE6CGlN6GBpR_FC4Vi_A-1; Wed, 16 Aug 2023 10:14:21 -0400
-X-MC-Unique: wJRE6CGlN6GBpR_FC4Vi_A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8B493800C78;
-        Wed, 16 Aug 2023 14:14:20 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.39.192.53])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DF15763F75;
-        Wed, 16 Aug 2023 14:14:14 +0000 (UTC)
-Date:   Wed, 16 Aug 2023 10:14:10 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     bigeasy@linutronix.de, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, bsegall@google.com,
-        boqun.feng@gmail.com, swood@redhat.com, bristot@redhat.com,
-        dietmar.eggemann@arm.com, mingo@redhat.com, jstultz@google.com,
-        juri.lelli@redhat.com, mgorman@suse.de, rostedt@goodmis.org,
-        vschneid@redhat.com, vincent.guittot@linaro.org,
-        longman@redhat.com, will@kernel.org
-Subject: Re: [PATCH 3/6] sched: Extract __schedule_loop()
-Message-ID: <20230816141410.GC641857@lorien.usersys.redhat.com>
-References: <20230815110121.117752409@infradead.org>
- <20230815111430.288063671@infradead.org>
- <20230815223301.GC602899@lorien.usersys.redhat.com>
- <20230815223926.GC971582@hirez.programming.kicks-ass.net>
+        Wed, 16 Aug 2023 10:14:30 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C252426BF;
+        Wed, 16 Aug 2023 07:14:28 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37GECUUP022636;
+        Wed, 16 Aug 2023 14:14:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Sgg8lU8bmANYEflcOqPjMKSXG1Ue3wWCHKHsOjnK+C8=;
+ b=nF8JrxM1MPw5klfmHUh3Z83OvpXHMFrIE65eQTFOBlbl3RFuByWOhD2TVKJM6Xy3hJav
+ ha5fMRcylE7E5mnGgZ/ijh4/Vyii+01rz/cds2e429zHUttGv+z2HufgrytXUAlKdNQu
+ aWw6hBMUeZmMfhYNrkEb441CC/cGZNhijNC8dhhZNlWvWtlhtIlLuUdO7JHujxjQtgIy
+ DCTsQKEkFDon/tF7cRUVUhFwHutcOaeZWxUzgaGYI7dvyxBwIwcQMDNptT+0hN8EcVKd
+ PyG1b2O34RW9ByeV3haxcF4pbphJ8YFP+GRX4+dz4pRjLf7+c5VNsFWZPkNV3PxAF0aT kw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sgych9erd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 14:14:22 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37GEChrU023509;
+        Wed, 16 Aug 2023 14:14:22 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sgych9equ-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 14:14:22 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37GE7d2D007839;
+        Wed, 16 Aug 2023 14:14:21 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3senwkcx8n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 14:14:21 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37GEEIVb8651372
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Aug 2023 14:14:18 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0EED02004D;
+        Wed, 16 Aug 2023 14:14:18 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2FF572004B;
+        Wed, 16 Aug 2023 14:14:17 +0000 (GMT)
+Received: from [9.171.10.228] (unknown [9.171.10.228])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 16 Aug 2023 14:14:17 +0000 (GMT)
+Message-ID: <36db51b2-ff88-0419-1e9b-cae2b111e570@linux.ibm.com>
+Date:   Wed, 16 Aug 2023 16:14:15 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230815223926.GC971582@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH net-next 1/6] net/smc: support smc release version
+ negotiation in clc handshake
+To:     Guangguan Wang <guangguan.wang@linux.alibaba.com>,
+        wenjia@linux.ibm.com, kgraul@linux.ibm.com,
+        tonylu@linux.alibaba.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com
+Cc:     horms@kernel.org, alibuda@linux.alibaba.com,
+        guwen@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230816083328.95746-1-guangguan.wang@linux.alibaba.com>
+ <20230816083328.95746-2-guangguan.wang@linux.alibaba.com>
+From:   Jan Karcher <jaka@linux.ibm.com>
+Organization: IBM - Network Linux on Z
+In-Reply-To: <20230816083328.95746-2-guangguan.wang@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: jP-ZOWTh52H7hIBgntMb6Ygc7F6nWOtE
+X-Proofpoint-GUID: rXDdrqPTm-nTvr9b9sFL4Mn7nzyb4u6v
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-16_13,2023-08-15_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ mlxscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0 clxscore=1011
+ mlxlogscore=999 impostorscore=0 adultscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308160121
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,50 +100,237 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 12:39:26AM +0200 Peter Zijlstra wrote:
-> On Tue, Aug 15, 2023 at 06:33:01PM -0400, Phil Auld wrote:
-> > Hi Peter,
-> > 
-> > On Tue, Aug 15, 2023 at 01:01:24PM +0200 Peter Zijlstra wrote:
-> > > From: Thomas Gleixner <tglx@linutronix.de>
-> > > 
-> > > There are currently two implementations of this basic __schedule()
-> > > loop, and there is soon to be a third.
-> > > 
-> > > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > > Link: https://lkml.kernel.org/r/20230427111937.2745231-2-bigeasy@linutronix.de
-> > > ---
-> > >  kernel/sched/core.c |   21 +++++++++++----------
-> > >  1 file changed, 11 insertions(+), 10 deletions(-)
-> > > 
-> > > --- a/kernel/sched/core.c
-> > > +++ b/kernel/sched/core.c
-> > > @@ -6787,16 +6787,21 @@ static void sched_update_worker(struct t
-> > >  	}
-> > >  }
-> > >  
-> > > -asmlinkage __visible void __sched schedule(void)
-> > > +static __always_inline void __schedule_loop(unsigned int sched_mode)
-> > 
-> > I think this needs __sched or it's the only thing that ever shows up
-> > in wchan. E.g.
-> > 
-> >   16995 0 bash     S __schedule_loop.constprop.0
-> >   17036 1 kworker/ I __schedule_loop.constprop.0
-> >   17151 1 kworker/ I __schedule_loop.constprop.0
-> >   17235 0 sleep    S __schedule_loop.constprop.0
-> >   17236 4 ps       R -
+
+
+On 16/08/2023 10:33, Guangguan Wang wrote:
+> Support smc release version negotiation in clc handshake based on
+> SMC v2, where no negotiation process for different releases, but
+> for different versions. The latest smc release version was updated
+> to v2.1. And currently there are two release versions of SMCv2, v2.0
+> and v2.1. In the release version negotiation, client sends the preferred
+> release version by CLC Proposal Message, server makes decision for which
+> release version to use based on the client preferred release version and
+> self-supported release version (here choose the minimum release version
+> of the client preferred and server latest supported), then the decision
+> returns to client by CLC Accept Message. Client confirms the decision by
+> CLC Confirm Message.
 > 
-> But but but __always_inline... ?!?
+> Client                                    Server
+>        Proposal(preferred release version)
+>       ------------------------------------>
 > 
+>        Accept(accpeted release version)
+>   min(client preferred, server latest supported)
+>       <------------------------------------
+> 
+>        Confirm(accpeted release version)
+>       ------------------------------------>
+> 
+> Signed-off-by: Guangguan Wang <guangguan.wang@linux.alibaba.com>
+> Reviewed-by: Tony Lu <tonylu@linux.alibaba.com>
+> ---
+>   net/smc/af_smc.c   | 18 ++++++++++++++++--
+>   net/smc/smc.h      |  5 ++++-
+>   net/smc/smc_clc.c  | 14 +++++++-------
+>   net/smc/smc_clc.h  | 23 ++++++++++++++++++++++-
+>   net/smc/smc_core.h |  1 +
+>   5 files changed, 50 insertions(+), 11 deletions(-)
+> 
+> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+> index a7f887d91d89..97265691bc95 100644
+> --- a/net/smc/af_smc.c
+> +++ b/net/smc/af_smc.c
+> @@ -1187,6 +1187,9 @@ static int smc_connect_rdma_v2_prepare(struct smc_sock *smc,
+>   			return SMC_CLC_DECL_NOINDIRECT;
+>   		}
+>   	}
+> +
+> +	ini->release_nr = fce->release;
+> +
 
-Yep, sorry. Totally missed those characters (and this reply of yours).
+why would we do this and vvvvv
+>   	return 0;
+>   }
+>   
+> @@ -1355,6 +1358,13 @@ static int smc_connect_ism(struct smc_sock *smc,
+>   		struct smc_clc_msg_accept_confirm_v2 *aclc_v2 =
+>   			(struct smc_clc_msg_accept_confirm_v2 *)aclc;
+>   
+> +		if (ini->first_contact_peer) {
+> +			struct smc_clc_first_contact_ext *fce =
+> +				smc_get_clc_first_contact_ext(aclc_v2, true);
+> +
+> +			ini->release_nr = fce->release;
+> +		}
+> +
 
-The older version from the rt tree had neither. 
+this two times?
+Can't we put this together into __smc_connect where those functions get 
+called (via smc_connect_rdma and smc_connect_ism)?
 
+Please provide reasoning, it might be that i oversaw the reasoning 
+behind this duplication.
 
-Cheers,
-Phil
--- 
+Also note: Even if there is a reason to set this information seperate 
+for SMC-D and SMC-R think about using your very neat helper function 
+(smc_get_clc_first_contact_ext) in smc_connect_rdma_v2_prepare as well.
 
+>   		rc = smc_v2_determine_accepted_chid(aclc_v2, ini);
+>   		if (rc)
+>   			return rc;
+> @@ -1389,7 +1399,7 @@ static int smc_connect_ism(struct smc_sock *smc,
+>   	}
+>   
+>   	rc = smc_clc_send_confirm(smc, ini->first_contact_local,
+> -				  aclc->hdr.version, eid, NULL);
+> +				  aclc->hdr.version, eid, ini);
+>   	if (rc)
+>   		goto connect_abort;
+>   	mutex_unlock(&smc_server_lgr_pending);
+> @@ -1965,6 +1975,10 @@ static int smc_listen_v2_check(struct smc_sock *new_smc,
+>   		}
+>   	}
+>   
+> +	ini->release_nr = pclc_v2_ext->hdr.flag.release;
+> +	if (pclc_v2_ext->hdr.flag.release > SMC_RELEASE)
+> +		ini->release_nr = SMC_RELEASE;
+> +
+>   out:
+>   	if (!ini->smcd_version && !ini->smcr_version)
+>   		return rc;
+> @@ -2412,7 +2426,7 @@ static void smc_listen_work(struct work_struct *work)
+>   	/* send SMC Accept CLC message */
+>   	accept_version = ini->is_smcd ? ini->smcd_version : ini->smcr_version;
+>   	rc = smc_clc_send_accept(new_smc, ini->first_contact_local,
+> -				 accept_version, ini->negotiated_eid);
+> +				 accept_version, ini->negotiated_eid, ini);
+>   	if (rc)
+>   		goto out_unlock;
+>   
+> diff --git a/net/smc/smc.h b/net/smc/smc.h
+> index 2eeea4cdc718..9cce1a41e011 100644
+> --- a/net/smc/smc.h
+> +++ b/net/smc/smc.h
+> @@ -21,7 +21,10 @@
+>   
+>   #define SMC_V1		1		/* SMC version V1 */
+>   #define SMC_V2		2		/* SMC version V2 */
+> -#define SMC_RELEASE	0
+> +
+> +#define SMC_RELEASE_0 0
+> +#define SMC_RELEASE_1 1
+> +#define SMC_RELEASE	SMC_RELEASE_1 /* the latest release version */
+>   
+>   #define SMCPROTO_SMC		0	/* SMC protocol, IPv4 */
+>   #define SMCPROTO_SMC6		1	/* SMC protocol, IPv6 */
+> diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
+> index b9b8b07aa702..7c5627c6abcc 100644
+> --- a/net/smc/smc_clc.c
+> +++ b/net/smc/smc_clc.c
+> @@ -420,11 +420,11 @@ smc_clc_msg_decl_valid(struct smc_clc_msg_decline *dclc)
+>   	return true;
+>   }
+>   
+> -static void smc_clc_fill_fce(struct smc_clc_first_contact_ext *fce, int *len)
+> +static void smc_clc_fill_fce(struct smc_clc_first_contact_ext *fce, int *len, int release_nr)
+>   {
+>   	memset(fce, 0, sizeof(*fce));
+>   	fce->os_type = SMC_CLC_OS_LINUX;
+> -	fce->release = SMC_RELEASE;
+> +	fce->release = release_nr;
+>   	memcpy(fce->hostname, smc_hostname, sizeof(smc_hostname));
+>   	(*len) += sizeof(*fce);
+>   }
+> @@ -1019,7 +1019,7 @@ static int smc_clc_send_confirm_accept(struct smc_sock *smc,
+>   				memcpy(clc_v2->d1.eid, eid, SMC_MAX_EID_LEN);
+>   			len = SMCD_CLC_ACCEPT_CONFIRM_LEN_V2;
+>   			if (first_contact)
+> -				smc_clc_fill_fce(&fce, &len);
+> +				smc_clc_fill_fce(&fce, &len, ini->release_nr);
+>   			clc_v2->hdr.length = htons(len);
+>   		}
+>   		memcpy(trl.eyecatcher, SMCD_EYECATCHER,
+> @@ -1063,10 +1063,10 @@ static int smc_clc_send_confirm_accept(struct smc_sock *smc,
+>   				memcpy(clc_v2->r1.eid, eid, SMC_MAX_EID_LEN);
+>   			len = SMCR_CLC_ACCEPT_CONFIRM_LEN_V2;
+>   			if (first_contact) {
+> -				smc_clc_fill_fce(&fce, &len);
+> +				smc_clc_fill_fce(&fce, &len, ini->release_nr);
+>   				fce.v2_direct = !link->lgr->uses_gateway;
+>   				memset(&gle, 0, sizeof(gle));
+> -				if (ini && clc->hdr.type == SMC_CLC_CONFIRM) {
+> +				if (clc->hdr.type == SMC_CLC_CONFIRM) {
+>   					gle.gid_cnt = ini->smcrv2.gidlist.len;
+>   					len += sizeof(gle);
+>   					len += gle.gid_cnt * sizeof(gle.gid[0]);
+> @@ -1141,7 +1141,7 @@ int smc_clc_send_confirm(struct smc_sock *smc, bool clnt_first_contact,
+>   
+>   /* send CLC ACCEPT message across internal TCP socket */
+>   int smc_clc_send_accept(struct smc_sock *new_smc, bool srv_first_contact,
+> -			u8 version, u8 *negotiated_eid)
+> +			u8 version, u8 *negotiated_eid, struct smc_init_info *ini)
+>   {
+>   	struct smc_clc_msg_accept_confirm_v2 aclc_v2;
+>   	int len;
+> @@ -1149,7 +1149,7 @@ int smc_clc_send_accept(struct smc_sock *new_smc, bool srv_first_contact,
+>   	memset(&aclc_v2, 0, sizeof(aclc_v2));
+>   	aclc_v2.hdr.type = SMC_CLC_ACCEPT;
+>   	len = smc_clc_send_confirm_accept(new_smc, &aclc_v2, srv_first_contact,
+> -					  version, negotiated_eid, NULL);
+> +					  version, negotiated_eid, ini);
+>   	if (len < ntohs(aclc_v2.hdr.length))
+>   		len = len >= 0 ? -EPROTO : -new_smc->clcsock->sk->sk_err;
+>   
+> diff --git a/net/smc/smc_clc.h b/net/smc/smc_clc.h
+> index 5fee545c9a10..b923e89acafb 100644
+> --- a/net/smc/smc_clc.h
+> +++ b/net/smc/smc_clc.h
+> @@ -370,6 +370,27 @@ smc_get_clc_smcd_v2_ext(struct smc_clc_v2_extension *prop_v2ext)
+>   		 ntohs(prop_v2ext->hdr.smcd_v2_ext_offset));
+>   }
+>   
+> +static inline struct smc_clc_first_contact_ext *
+> +smc_get_clc_first_contact_ext(struct smc_clc_msg_accept_confirm_v2 *clc_v2,
+> +			      bool is_smcd)
+> +{
+> +	int clc_v2_len;
+> +
+> +	if (clc_v2->hdr.version == SMC_V1 ||
+> +	    !(clc_v2->hdr.typev2 & SMC_FIRST_CONTACT_MASK))
+> +		return NULL;
+> +
+> +	if (is_smcd)
+> +		clc_v2_len =
+> +			offsetofend(struct smc_clc_msg_accept_confirm_v2, d1);
+> +	else
+> +		clc_v2_len =
+> +			offsetofend(struct smc_clc_msg_accept_confirm_v2, r1);
+> +
+> +	return (struct smc_clc_first_contact_ext *)(((u8 *)clc_v2) +
+> +						    clc_v2_len);
+> +}
+> +
+>   struct smcd_dev;
+>   struct smc_init_info;
+>   
+> @@ -382,7 +403,7 @@ int smc_clc_send_proposal(struct smc_sock *smc, struct smc_init_info *ini);
+>   int smc_clc_send_confirm(struct smc_sock *smc, bool clnt_first_contact,
+>   			 u8 version, u8 *eid, struct smc_init_info *ini);
+>   int smc_clc_send_accept(struct smc_sock *smc, bool srv_first_contact,
+> -			u8 version, u8 *negotiated_eid);
+> +			u8 version, u8 *negotiated_eid, struct smc_init_info *ini);
+>   void smc_clc_init(void) __init;
+>   void smc_clc_exit(void);
+>   void smc_clc_get_hostname(u8 **host);
+> diff --git a/net/smc/smc_core.h b/net/smc/smc_core.h
+> index 3c1b31bfa1cf..b6c68db61f23 100644
+> --- a/net/smc/smc_core.h
+> +++ b/net/smc/smc_core.h
+> @@ -374,6 +374,7 @@ struct smc_init_info {
+>   	u8			is_smcd;
+>   	u8			smc_type_v1;
+>   	u8			smc_type_v2;
+> +	u8			release_nr;
+>   	u8			first_contact_peer;
+>   	u8			first_contact_local;
+>   	unsigned short		vlan_id;
