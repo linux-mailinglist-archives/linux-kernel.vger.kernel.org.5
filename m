@@ -2,192 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 478A277DBAD
+	by mail.lfdr.de (Postfix) with ESMTP id 9ACE677DBAE
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242697AbjHPIGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 04:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52128 "EHLO
+        id S242708AbjHPIGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 04:06:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242710AbjHPIGT (ORCPT
+        with ESMTP id S242752AbjHPIGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 04:06:19 -0400
-Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD971987;
-        Wed, 16 Aug 2023 01:06:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-        s=default2211; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:
-        Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References;
-        bh=DFCSa0bKnBx/detxGAhP6SEXintID1n5Sv8s4xGXPaA=; b=T+d3KCiS7aS2zac7vnzY9jD0L2
-        a73KzbrITljHnG3bCVwKaYIEGHuVmijM969/tKjKKpP+isrt04F+ueDWq2Rb/0z7ZjagPcJkPc0NJ
-        adfDdDbV8rONIm1nusqUgZDqeCz2S/3YGV6qWR1/6WspfMAHwxdZsfQJIO7tiyiI3PXZ9EHeaSRhX
-        WK6BadsKTd88gDgxygUj5TiEs6Mx+LvieQh4TPwS2/Lpw2TdhBekP/gW/biNmi30sGOuXIo8id3I1
-        b/VZR42rTfQ4y7QlFP3LNaWgKzipyPioePXr9FrnqGLqq6TFt64+IP9RxDw1OcijkFWoMTFvRAGSB
-        7HIrkzWg==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <sean@geanix.com>)
-        id 1qWBXh-0009hR-VY; Wed, 16 Aug 2023 10:06:14 +0200
-Received: from [185.17.218.86] (helo=zen..)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sean@geanix.com>)
-        id 1qWBXh-000VYp-DJ; Wed, 16 Aug 2023 10:06:13 +0200
-From:   Sean Nyekjaer <sean@geanix.com>
-To:     Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-        Alain Volmat <alain.volmat@foss.st.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     Sean Nyekjaer <sean@geanix.com>, linux-i2c@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] i2c: stm32f7: Add atomic_xfer method to driver
-Date:   Wed, 16 Aug 2023 10:05:52 +0200
-Message-ID: <20230816080552.3045491-1-sean@geanix.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 16 Aug 2023 04:06:36 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CB7E9AB
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 01:06:34 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3280F1063;
+        Wed, 16 Aug 2023 01:07:15 -0700 (PDT)
+Received: from [10.162.40.18] (a077893.blr.arm.com [10.162.40.18])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE5EA3F64C;
+        Wed, 16 Aug 2023 01:06:31 -0700 (PDT)
+Message-ID: <435813e1-3e26-d125-d706-a2e3d8fd4e45@arm.com>
+Date:   Wed, 16 Aug 2023 13:36:29 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] coresight: etm4x: Ensure valid drvdata and clock before
+ clk_put()
+Content-Language: en-US
+To:     James Clark <james.clark@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@linaro.org>
+References: <20230811062738.1066787-1-anshuman.khandual@arm.com>
+ <07b0dabb-5409-9ba8-543f-aeecafe083e9@arm.com>
+ <72960b11-9e35-a259-3ea6-bae91ff94838@arm.com>
+ <32017de8-7b92-a88f-0bf6-da1dfe3a7f7d@arm.com>
+ <b253e26f-f39d-52be-0aec-0fa72c6947f9@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <b253e26f-f39d-52be-0aec-0fa72c6947f9@arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: sean@geanix.com
-X-Virus-Scanned: Clear (ClamAV 0.103.8/27001/Tue Aug 15 09:40:17 2023)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an atomic_xfer method to the driver so that it behaves correctly
-when controlling a PMIC that is responsible for device shutdown.
 
-The atomic_xfer method added is similar to the one from the i2c-mv64xxx
-driver. When running an atomic_xfer a bool flag in the driver data is
-set, the interrupt is not unmasked on transfer start, and the IRQ
-handler is manually invoked while waiting for pending transfers to
-complete.
 
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
----
-Changes since v1:
- - Removed dma in atomic
+On 8/11/23 15:44, James Clark wrote:
+> 
+> 
+> On 11/08/2023 10:22, Anshuman Khandual wrote:
+>>
+>>
+>> On 8/11/23 14:39, Suzuki K Poulose wrote:
+>>> On 11/08/2023 09:39, James Clark wrote:
+>>>>
+>>>>
+>>>> On 11/08/2023 07:27, Anshuman Khandual wrote:
+>>>>> This validates 'drvdata' and 'drvdata->pclk' clock before calling clk_put()
+>>>>> in etm4_remove_platform_dev(). The problem was detected using Smatch static
+>>>>> checker as reported.
+>>>>>
+>>>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>>>> Cc: Mike Leach <mike.leach@linaro.org>
+>>>>> Cc: James Clark <james.clark@arm.com>
+>>>>> Cc: coresight@lists.linaro.org
+>>>>> Cc: linux-arm-kernel@lists.infradead.org
+>>>>> Cc: linux-kernel@vger.kernel.org
+>>>>> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+>>>>> Closes: https://lists.linaro.org/archives/list/coresight@lists.linaro.org/thread/G4N6P4OXELPLLQSNU3GU2MR4LOLRXRMJ/
+>>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>>>> ---
+>>>>> This applies on coresight-next
+>>>>>
+>>>>>   drivers/hwtracing/coresight/coresight-etm4x-core.c | 2 +-
+>>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>>>> index 703b6fcbb6a5..eb412ce302cc 100644
+>>>>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>>>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>>>> @@ -2269,7 +2269,7 @@ static int __exit etm4_remove_platform_dev(struct platform_device *pdev)
+>>>>>           etm4_remove_dev(drvdata);
+>>>>>       pm_runtime_disable(&pdev->dev);
+>>>>>   -    if (drvdata->pclk)
+>>>>> +    if (drvdata && drvdata->pclk && !IS_ERR(drvdata->pclk))
+>>>>>           clk_put(drvdata->pclk);
+>>>>>         return 0;
+>>>>
+>>>> It could be !IS_ERR_OR_NULL(drvdata->pclk), but I wouldn't bother
+>>>> changing it at this point.
+>>>
+>>> +1, please could we have that. Someone else will run a code scanner and
+>>> send a patch later. Given this is straight and easy change, lets do it
+>>> in the first place.
+>>
+>> But we already have a drvdata->pclk validation check before IS_ERR().
+>> Would not _OR_NULL be redundant ?
+> 
+> I meant that it could be replaced with the single check:
+> 
+>   if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
+>       clk_put(drvdata->pclk);
+> 
+> As Dan mentions it can't be an error pointer anyway, but leaving it like
+> this could just be considered defensive coding.
 
-Changes since v2:
- - Changed stm32f7_i2c_xfer_msg() so we have less of a diff
- - Changed try_wait_for_completion -> completion_done
+Let's just go with the above change as you had suggested unless there is any
+particular objection.
 
- drivers/i2c/busses/i2c-stm32f7.c | 51 +++++++++++++++++++++++++++++---
- 1 file changed, 47 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index 579b30581725..16e2cb0b82bf 100644
---- a/drivers/i2c/busses/i2c-stm32f7.c
-+++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -357,6 +357,7 @@ struct stm32f7_i2c_dev {
- 	u32 dnf_dt;
- 	u32 dnf;
- 	struct stm32f7_i2c_alert *alert;
-+	bool atomic;
- };
- 
- /*
-@@ -915,7 +916,8 @@ static void stm32f7_i2c_xfer_msg(struct stm32f7_i2c_dev *i2c_dev,
- 
- 	/* Configure DMA or enable RX/TX interrupt */
- 	i2c_dev->use_dma = false;
--	if (i2c_dev->dma && f7_msg->count >= STM32F7_I2C_DMA_LEN_MIN) {
-+	if (i2c_dev->dma && f7_msg->count >= STM32F7_I2C_DMA_LEN_MIN
-+	    && !i2c_dev->atomic) {
- 		ret = stm32_i2c_prep_dma_xfer(i2c_dev->dev, i2c_dev->dma,
- 					      msg->flags & I2C_M_RD,
- 					      f7_msg->count, f7_msg->buf,
-@@ -939,6 +941,9 @@ static void stm32f7_i2c_xfer_msg(struct stm32f7_i2c_dev *i2c_dev,
- 			cr1 |= STM32F7_I2C_CR1_TXDMAEN;
- 	}
- 
-+	if (i2c_dev->atomic)
-+		cr1 &= ~STM32F7_I2C_ALL_IRQ_MASK; /* Disable all interrupts */
-+
- 	/* Configure Start/Repeated Start */
- 	cr2 |= STM32F7_I2C_CR2_START;
- 
-@@ -1670,7 +1675,22 @@ static irqreturn_t stm32f7_i2c_isr_error(int irq, void *data)
- 	return IRQ_HANDLED;
- }
- 
--static int stm32f7_i2c_xfer(struct i2c_adapter *i2c_adap,
-+static int stm32f7_i2c_wait_polling(struct stm32f7_i2c_dev *i2c_dev)
-+{
-+	ktime_t timeout = ktime_add_ms(ktime_get(), i2c_dev->adap.timeout);
-+
-+	while (ktime_compare(ktime_get(), timeout) < 0) {
-+		udelay(5);
-+		stm32f7_i2c_isr_event(0, i2c_dev);
-+
-+		if (completion_done(&i2c_dev->complete))
-+			return 1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int stm32f7_i2c_xfer_core(struct i2c_adapter *i2c_adap,
- 			    struct i2c_msg msgs[], int num)
- {
- 	struct stm32f7_i2c_dev *i2c_dev = i2c_get_adapdata(i2c_adap);
-@@ -1694,8 +1714,12 @@ static int stm32f7_i2c_xfer(struct i2c_adapter *i2c_adap,
- 
- 	stm32f7_i2c_xfer_msg(i2c_dev, msgs);
- 
--	time_left = wait_for_completion_timeout(&i2c_dev->complete,
--						i2c_dev->adap.timeout);
-+	if (!i2c_dev->atomic)
-+		time_left = wait_for_completion_timeout(&i2c_dev->complete,
-+							i2c_dev->adap.timeout);
-+	else
-+		time_left = stm32f7_i2c_wait_polling(i2c_dev);
-+
- 	ret = f7_msg->result;
- 	if (ret) {
- 		if (i2c_dev->use_dma)
-@@ -1727,6 +1751,24 @@ static int stm32f7_i2c_xfer(struct i2c_adapter *i2c_adap,
- 	return (ret < 0) ? ret : num;
- }
- 
-+static int stm32f7_i2c_xfer(struct i2c_adapter *i2c_adap,
-+			    struct i2c_msg msgs[], int num)
-+{
-+	struct stm32f7_i2c_dev *i2c_dev = i2c_get_adapdata(i2c_adap);
-+
-+	i2c_dev->atomic = false;
-+	return stm32f7_i2c_xfer_core(i2c_adap, msgs, num);
-+}
-+
-+static int stm32f7_i2c_xfer_atomic(struct i2c_adapter *i2c_adap,
-+			    struct i2c_msg msgs[], int num)
-+{
-+	struct stm32f7_i2c_dev *i2c_dev = i2c_get_adapdata(i2c_adap);
-+
-+	i2c_dev->atomic = true;
-+	return stm32f7_i2c_xfer_core(i2c_adap, msgs, num);
-+}
-+
- static int stm32f7_i2c_smbus_xfer(struct i2c_adapter *adapter, u16 addr,
- 				  unsigned short flags, char read_write,
- 				  u8 command, int size,
-@@ -2095,6 +2137,7 @@ static u32 stm32f7_i2c_func(struct i2c_adapter *adap)
- 
- static const struct i2c_algorithm stm32f7_i2c_algo = {
- 	.master_xfer = stm32f7_i2c_xfer,
-+	.master_xfer_atomic = stm32f7_i2c_xfer_atomic,
- 	.smbus_xfer = stm32f7_i2c_smbus_xfer,
- 	.functionality = stm32f7_i2c_func,
- 	.reg_slave = stm32f7_i2c_reg_slave,
--- 
-2.41.0
-
+if (drvdata && !IS_ERR_OR_NULL(drvdata->pclk))
+	clk_put(drvdata->pclk);
