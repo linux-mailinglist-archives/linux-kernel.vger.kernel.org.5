@@ -2,91 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D3D77E1C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 14:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 663F277E1CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 14:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245281AbjHPMhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 08:37:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42598 "EHLO
+        id S243107AbjHPMm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 08:42:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244571AbjHPMh3 (ORCPT
+        with ESMTP id S237177AbjHPMm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 08:37:29 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69EF21FF9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:37:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=meButugzK+c8b7F/2W247t2wjtoumPjf98JrcWTnXLk=; b=clHXquPzLZPNUfJ/MkxaqbYb3Y
-        I2vcp4UlQJFz7KT+/RXOOlNFUMtMsUK6prRFwzZKkrTHa+lIasMeLbY0824nvgbF7e8LOn1gDRFGB
-        hyU4qzRQpF2Tcxyml4YJOBtlQLIW7GpJ5dP55DkKjVrzt9Z5c5ANn7Ugp8ePPz/6kJMAeeQl98FQv
-        deIeS42+iR/FLxgKMT5ILnoR+gfjqE81YZLe4q+nQJ8xW9FJHNp0RcW9dTFCv0MHvQsIL6obrDMDu
-        iEcpsffCybCb0CfnY8DAGLUKuQoJluykptTZ+Wt62rIuyfWiULmEfFqh+BImwUhQK23YETX+V8679
-        MbJTmnWA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qWFm0-00CzLf-2c;
-        Wed, 16 Aug 2023 12:37:17 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 32ED13001FD;
-        Wed, 16 Aug 2023 14:37:16 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1AB6A2C2FDF3F; Wed, 16 Aug 2023 14:37:16 +0200 (CEST)
-Date:   Wed, 16 Aug 2023 14:37:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mike Galbraith <umgwanakikbuti@gmail.com>
-Cc:     Chen Yu <yu.c.chen@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        oe-lkp@lists.linux.dev, lkp@intel.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [tip:sched/eevdf] [sched/fair]  e0c2ff903c:
- phoronix-test-suite.blogbench.Write.final_score -34.8% regression
-Message-ID: <20230816123716.GI980931@hirez.programming.kicks-ass.net>
-References: <202308101628.7af4631a-oliver.sang@intel.com>
- <ZNWKuccyWnS3UJjK@chenyu5-mobl2.bbrouter>
- <ZNWgAeN/EVS/vOLi@chenyu5-mobl2.bbrouter>
- <20230814132935.GK776869@hirez.programming.kicks-ass.net>
- <bd96d883d0d1575ebbee4323f4396596adb0ad09.camel@gmail.com>
+        Wed, 16 Aug 2023 08:42:28 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB502110
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:42:26 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-26b4dea0000so2511426a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:42:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692189746; x=1692794546;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lAJXx3zuvSUSvm1+zrkqCECfcvDo+O7F4875vOACYRk=;
+        b=j7Ox/IcgLbYiNCnKkA5P1aW1n6BF0hnr145B3ZN4i/TepbcJL0fIK1M54uaBORNhZy
+         P9SLJn0HlXa5Lp7YmOigzV4PtiOVuN+XIrZyatwAJaOjlpN96THrEcau9Og5I1so3N1s
+         Eg9xmL3aHJqrWT8Cf+t2sIDwVyH1SowSHBj4s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692189746; x=1692794546;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lAJXx3zuvSUSvm1+zrkqCECfcvDo+O7F4875vOACYRk=;
+        b=Sq8LEskzZT5EFzWfGJVe9coNTmZbJD/jDmVqmdZJxzdHjRpBnJoZBQ9f+LYu2ATEGu
+         xfCyU4lplVjZahtqcoplNS3y7lAgdiHRraldYZf+9FrSsGfkWkCjEaOswIsQDlcufTGI
+         TARSm0OuL7MWZvWHnhkMltEH6FuUf6R6w7CQklCeSFS+Rv8q+heYtrf5zQwhnx1XGv/8
+         ylzm/maIs7DX/l5qdQ5XNycTqbsx/7vKbKIt4r3BWCvT7R29l3QQDWUNBxw4GUSzjsSF
+         eimHO46y1fMPS51UqLfj8RAgbmQ5BmxCCxEbqfgE7arjSNyTJdOolOuJcsRyjH5Ogq5Q
+         2NBA==
+X-Gm-Message-State: AOJu0Yz7KPFh1BIdHqsyY3x8BGg4EfJu16eoA0lqBi8zaf8Ao8K9QcqI
+        exJY+05u0/ti0uOIRn11AohbZQ==
+X-Google-Smtp-Source: AGHT+IFskuvVotxrDIdmeP91Bzepe2AtmyMh5/G4MEmMxSOTDyx2oIRxeNV0PaPKOnRnkSqNq1kLHg==
+X-Received: by 2002:a17:90a:9f85:b0:268:34b1:a5a9 with SMTP id o5-20020a17090a9f8500b0026834b1a5a9mr1463552pjp.8.1692189745793;
+        Wed, 16 Aug 2023 05:42:25 -0700 (PDT)
+Received: from google.com (KD124209188001.ppp-bb.dion.ne.jp. [124.209.188.1])
+        by smtp.gmail.com with ESMTPSA id bk18-20020a17090b081200b002680f0f2886sm930591pjb.12.2023.08.16.05.42.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 05:42:25 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 21:42:21 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Tomasz Figa <tfiga@chromium.org>, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: kconfig: list unknown symbols in the old .config
+Message-ID: <20230816124221.GH907732@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bd96d883d0d1575ebbee4323f4396596adb0ad09.camel@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 08:32:55PM +0200, Mike Galbraith wrote:
+Hi,
 
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -875,6 +875,12 @@ static struct sched_entity *pick_eevdf(s
->  	if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
->  		curr = NULL;
->  
-> +	/*
-> +	 * Once selected, run the task to parity to avoid overscheduling.
-> +	 */
-> +	if (sched_feat(RUN_TO_PARITY) && curr)
-> +		return curr;
-> +
->  	while (node) {
->  		struct sched_entity *se = __node_2_se(node);
->  
+We recently were hit (unnecessarily hard) when after kernel uprev we
+figured that something wasn't working. The root cause was a rename of
+the CONFIG_FOO option between kernel releases, which make oldconfig
+doesn't warn/notify about.
 
-So I read it wrong last night... but I rather like this idea. But
-there's something missing. When curr starts a new slice it should
-probably do a full repick and not stick with it.
+Would it be possible to add either a new --listunknown mode to conf or
+to somehow make it conf_warning("unknown symbol: %s\n", line) when it
+reads a line from oldconf that it cannot sym_find()?
 
-Let me poke at this a bit.. nice
-
+That would save a ton of time.
