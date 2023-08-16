@@ -2,136 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5C777E5E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D1C77E5E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:00:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344510AbjHPP7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 11:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57220 "EHLO
+        id S1344562AbjHPP7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 11:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344518AbjHPP7S (ORCPT
+        with ESMTP id S1344552AbjHPP7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 11:59:18 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0E72D4B;
-        Wed, 16 Aug 2023 08:59:05 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bf078d5f33so2084575ad.3;
-        Wed, 16 Aug 2023 08:59:05 -0700 (PDT)
+        Wed, 16 Aug 2023 11:59:32 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E933210F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 08:59:31 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-760dff4b701so80395739f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 08:59:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692201544; x=1692806344;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Oyq9KI3NurUC1G8S0DuY90VVqt2QiudPjei5bx+xe8I=;
-        b=fn+7szNFLJ7B2fCHmXj5A4B26YXulifd8l00n5xECuLXlR17RuT0pUyQCeu+hgdOyZ
-         mSr8sqlY8jlKb8nfNMQsuodtAhmfxO6kcc1SQhj07kOEO/rXiJGyCb6fBuIflmXAAHlp
-         1fJo36kOa1d4EliCgoanxELBXZiPJWQQCQ3jrVRAM0gGdusUlbENb2punRgWE9M6kead
-         j96dhPuTzsgk7ip81LZo1j6LKAx+5vbNLBzpOy/ygQccZDnmw9dyqYWI7tjjXGUG648A
-         JaRJvIInTc/1nohyw0NEn9lur76Aharvhk8tA3m5vPFhkskPbsioSTFmxuGW+ZmU8lAg
-         Q7zw==
+        d=linuxfoundation.org; s=google; t=1692201571; x=1692806371;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6LWn1wprpupG35+bMZ4L8PNbSMJ+ptPNw9QujPnf6hY=;
+        b=Y9009i98a5k/RKDiCvgAVt/GpX9xfdqqSzhcRoZ4o5yRIf4K57F6CXkNhs4fCSxZHE
+         gufo+/8vkgMf63/1JpsrRlmv/PgunPkbf9IQQKvFZpljRW4gK3Or+xkqA3dgQ9sRYAPq
+         mx8lAzpcktGEMFRg42+fUjWmNnuPb6pfGq4dY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692201544; x=1692806344;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Oyq9KI3NurUC1G8S0DuY90VVqt2QiudPjei5bx+xe8I=;
-        b=ckEhQGDO1Mx0KiOy2ZkQTaR1Wz6dQS6+0p3F0vdQYKx9YvJg4jkuLCO0yeUVt6kWIP
-         Mp5kk5sw1AtSzIRDUEaWk8zmA+Z1rA2Jl3R1CIIS4NMkd2TcCMZwSm9kPZOBgg1fsYO+
-         Iwm/q49jqg5sqYzANARtOd6MOa3MwPCcRpbp1iZJub55iItGGisFTy/OEt0jdKeFPJv9
-         j/dIgZFzlyATOQ2CrhuJRQOnrkzQ6s58PKFZ99M1RqA6zr+H6NPUSVAAr2rvBQwsoQ5h
-         +G1uTkh7XBsNzljLh2SzCcUPoPpuZFgi3TaP4lDvIEvbwPlEvFW/Yq6iBnajaR4cpP6U
-         r62A==
-X-Gm-Message-State: AOJu0YwNesamHm/eSgiOJZ60kFZEhrd/Gx0DX/gv8dS7Pg6BDLrcuxMt
-        5MMTjIqR5CeIKiWQaMANwso=
-X-Google-Smtp-Source: AGHT+IGPm8/54I+WSetL6xPW3f3htkirKcOG2+oU3Oqcm4g01axknIbIaWIbfIb1hwrIskZZicQ0qw==
-X-Received: by 2002:a17:902:bd89:b0:1bb:77a2:edda with SMTP id q9-20020a170902bd8900b001bb77a2eddamr2150365pls.36.1692201544645;
-        Wed, 16 Aug 2023 08:59:04 -0700 (PDT)
-Received: from ubuntu-Virtual-Machine.corp.microsoft.com ([2001:4898:80e8:0:e588:8d80:9ae5:5adc])
-        by smtp.gmail.com with ESMTPSA id h17-20020a170902f7d100b001bc930d4517sm13366973plw.42.2023.08.16.08.59.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 08:59:04 -0700 (PDT)
-From:   Tianyu Lan <ltykernel@gmail.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, daniel.lezcano@linaro.org, arnd@arndb.de,
-        michael.h.kelley@microsoft.com
-Cc:     Tianyu Lan <tiala@microsoft.com>, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vkuznets@redhat.com, Michael Kelley <mikelley@microsoft.com>
-Subject: [PATCH v6 8/8] x86/hyperv: Add hyperv-specific handling for VMMCALL under SEV-ES
-Date:   Wed, 16 Aug 2023 11:58:49 -0400
-Message-Id: <20230816155850.1216996-9-ltykernel@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230816155850.1216996-1-ltykernel@gmail.com>
-References: <20230816155850.1216996-1-ltykernel@gmail.com>
+        d=1e100.net; s=20221208; t=1692201571; x=1692806371;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6LWn1wprpupG35+bMZ4L8PNbSMJ+ptPNw9QujPnf6hY=;
+        b=Ie3/Lhfydl56LJh7ZBA1OfY5nJIbRhkA88+6ZzHjYG+xbjky63fT4z561ZC+M74TcI
+         IzvMKU47rvpajtQFrZaIQw5SPh70ehOfVDS+sKznR7JxiWqTchkiApwQ7paMo8hPVKLm
+         eTSN0jK1Jkz6RL3kyD7sdRUR7is/UAHWOlnjI9ImnHR102nmXzja3XnkH/kqZtdE7JHN
+         7cIuy/ozsiiU/YmMxPmeOyIIWR36I8BFftwLMbBd4Zjq0z280mgXtCbMo04foyyJ8d0U
+         B2yI7CIST7YXqSB+OKyY7I3m/rwlWY5ly4L/3i8Ad2xEHiAh121ZdwvjqwFJY/r/Mzj+
+         1cVw==
+X-Gm-Message-State: AOJu0YxqM/Ny4bAzBc8tUN3qdnL94yVWl0UOlCmmJzZAkH5LOUy/t1cg
+        pKmhEE71jtmsGVOlM+csCUKqjQ==
+X-Google-Smtp-Source: AGHT+IGK4cdCETtfYgSH4T9D5jn2WTiDl9/1cLISPwpvLDfE4s5qSf8Ox8MxyoVcoyjql0bwO2/2jQ==
+X-Received: by 2002:a05:6602:3983:b0:783:63e8:3bfc with SMTP id bw3-20020a056602398300b0078363e83bfcmr3773980iob.0.1692201571288;
+        Wed, 16 Aug 2023 08:59:31 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id b12-20020a5ea70c000000b0078702f4894asm4719286iod.9.2023.08.16.08.59.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 08:59:30 -0700 (PDT)
+Message-ID: <8d0c3075-22a0-bd13-45fe-f8c052e50588@linuxfoundation.org>
+Date:   Wed, 16 Aug 2023 09:59:30 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5] selftests: rtc: Fixes rtctest error handling.
+Content-Language: en-US
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Atul Kumar Pant <atulpant.linux@gmail.com>
+Cc:     a.zummo@towertech.it, shuah@kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-rtc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230717175251.54390-1-atulpant.linux@gmail.com>
+ <202307172115223bd0669f@mail.local>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <202307172115223bd0669f@mail.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianyu Lan <tiala@microsoft.com>
+On 7/17/23 15:15, Alexandre Belloni wrote:
+> On 17/07/2023 23:22:51+0530, Atul Kumar Pant wrote:
+>> Adds a check to verify if the rtc device file is valid or not
+>> and prints a useful error message if the file is not accessible.
+>>
+>> Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
+> 
+> Please collect and keep the tags you got on previous versions
+> 
+>> ---
+>>
+>> changes since v4:
+>>      Updated the commit message.
+>>
+>> changes since v3:
+>>      Added Linux-kselftest and Linux-kernel mailing lists.
+>>
+>> changes since v2:
+>>      Changed error message when rtc file does not exist.
+>>
+>> changes since v1:
+>>      Removed check for uid=0
+>>      If rtc file is invalid, then exit the test.
+>>
+>>   tools/testing/selftests/rtc/rtctest.c | 11 ++++++++++-
+>>   1 file changed, 10 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/testing/selftests/rtc/rtctest.c b/tools/testing/selftests/rtc/rtctest.c
+>> index 63ce02d1d5cc..630fef735c7e 100644
+>> --- a/tools/testing/selftests/rtc/rtctest.c
+>> +++ b/tools/testing/selftests/rtc/rtctest.c
+>> @@ -17,6 +17,7 @@
+>>   #include <unistd.h>
+>>   
+>>   #include "../kselftest_harness.h"
+>> +#include "../kselftest.h"
+>>   
+>>   #define NUM_UIE 3
+>>   #define ALARM_DELTA 3
+>> @@ -419,6 +420,8 @@ __constructor_order_last(void)
+>>   
+>>   int main(int argc, char **argv)
+>>   {
+>> +	int ret = -1;
+>> +
+>>   	switch (argc) {
+>>   	case 2:
+>>   		rtc_file = argv[1];
+>> @@ -430,5 +433,11 @@ int main(int argc, char **argv)
+>>   		return 1;
+>>   	}
+>>   
+>> -	return test_harness_run(argc, argv);
+>> +	// Run the test if rtc_file is valid
+>> +	if (access(rtc_file, F_OK) == 0)
+>> +		ret = test_harness_run(argc, argv);
+>> +	else
+>> +		ksft_exit_fail_msg("[ERROR]: Cannot access rtc file %s - Exiting\n", rtc_file);
 
-Add Hyperv-specific handling for faults caused by VMMCALL
-instructions.
-
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-Signed-off-by: Tianyu Lan <tiala@microsoft.com>
----
- arch/x86/kernel/cpu/mshyperv.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
-
-diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-index c2ccb49b49c2..b7d73f3107c6 100644
---- a/arch/x86/kernel/cpu/mshyperv.c
-+++ b/arch/x86/kernel/cpu/mshyperv.c
-@@ -32,6 +32,7 @@
- #include <asm/nmi.h>
- #include <clocksource/hyperv_timer.h>
- #include <asm/numa.h>
-+#include <asm/svm.h>
- 
- /* Is Linux running as the root partition? */
- bool hv_root_partition;
-@@ -574,6 +575,22 @@ static bool __init ms_hyperv_msi_ext_dest_id(void)
- 	return eax & HYPERV_VS_PROPERTIES_EAX_EXTENDED_IOAPIC_RTE;
- }
- 
-+#ifdef CONFIG_AMD_MEM_ENCRYPT
-+static void hv_sev_es_hcall_prepare(struct ghcb *ghcb, struct pt_regs *regs)
-+{
-+	/* RAX and CPL are already in the GHCB */
-+	ghcb_set_rcx(ghcb, regs->cx);
-+	ghcb_set_rdx(ghcb, regs->dx);
-+	ghcb_set_r8(ghcb, regs->r8);
-+}
-+
-+static bool hv_sev_es_hcall_finish(struct ghcb *ghcb, struct pt_regs *regs)
-+{
-+	/* No checking of the return state needed */
-+	return true;
-+}
-+#endif
-+
- const __initconst struct hypervisor_x86 x86_hyper_ms_hyperv = {
- 	.name			= "Microsoft Hyper-V",
- 	.detect			= ms_hyperv_platform,
-@@ -581,4 +598,8 @@ const __initconst struct hypervisor_x86 x86_hyper_ms_hyperv = {
- 	.init.x2apic_available	= ms_hyperv_x2apic_available,
- 	.init.msi_ext_dest_id	= ms_hyperv_msi_ext_dest_id,
- 	.init.init_platform	= ms_hyperv_init_platform,
-+#ifdef CONFIG_AMD_MEM_ENCRYPT
-+	.runtime.sev_es_hcall_prepare = hv_sev_es_hcall_prepare,
-+	.runtime.sev_es_hcall_finish = hv_sev_es_hcall_finish,
-+#endif
- };
--- 
-2.25.1
-
+This should be skip not a fail. access() could for a number of reasons.
+Since the test isn't run when access() returns error, this would be a
+skip. Also the new message could be improved to use strerror() to
+print message with details on why access() failed.
+  
+thanks,
+-- Shuah
