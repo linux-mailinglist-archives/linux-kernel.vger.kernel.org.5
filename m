@@ -2,146 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4142E77E60B
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC5577E60C
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344021AbjHPQIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 12:08:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59428 "EHLO
+        id S1344512AbjHPQIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 12:08:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344628AbjHPQIL (ORCPT
+        with ESMTP id S1344534AbjHPQIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 12:08:11 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B1C114;
-        Wed, 16 Aug 2023 09:08:08 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 16518100003;
-        Wed, 16 Aug 2023 19:08:07 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 16518100003
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1692202087;
-        bh=wGqvJOn5fP6VPclwBqfTYsb4NWORtmmUmxW9yBj0C14=;
-        h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version:From;
-        b=pu+ViZnBT4SSAr62uJNCBMvDiuJCilFDki3AXaaLXyz4XH2VnUEiTE9Huf8B701oc
-         bxprMscRUVXlinABZqkwEkHGqofS+XCEHJp8oy6z8Z94iXDblbqV1pr7VRm24s0DQK
-         KwvnNuE+iWW2TIFXdBdCUGVcLz9JEvmBpmfTqEtLNBnkqdys9TvxZEg3zU+j7bU5IE
-         30rB589keO2aD3Nb3crBHjBYsVwxrxSSm5d9NrcLgzbb2o4qxgm10Ys7X+b2CXe6xG
-         Y+LIx72CggsxaVqPKn62YzN/FDyraKHJ1wrU1QwQhFq2zgcSio+B7CaDq3ZQpTWZaw
-         Z97Awe+AvAX1Q==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 16 Aug 2023 12:08:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 493602715;
+        Wed, 16 Aug 2023 09:08:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed, 16 Aug 2023 19:08:06 +0300 (MSK)
-Received: from p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 16 Aug 2023 19:08:05 +0300
-Received: from p-i-exch-sc-m01.sberdevices.ru ([::1]) by
- p-i-exch-sc-m01.sberdevices.ru ([fe80::80e5:bab:4999:4480%7]) with mapi id
- 15.02.1118.030; Wed, 16 Aug 2023 19:08:05 +0300
-From:   Alexey Romanov <AVRomanov@sberdevices.ru>
-To:     "narmstrong@baylibre.com" <narmstrong@baylibre.com>,
-        "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
-        "olivia@selenic.com" <olivia@selenic.com>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "conor@kernel.org" <conor@kernel.org>,
-        "khilman@baylibre.com" <khilman@baylibre.com>,
-        "jbrunet@baylibre.com" <jbrunet@baylibre.com>,
-        "martin.blumenstingl@googlemail.com" 
-        <martin.blumenstingl@googlemail.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
-        "lists@kaiser.cx" <lists@kaiser.cx>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-amlogic@lists.infradead.org" 
-        <linux-amlogic@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        kernel <kernel@sberdevices.ru>
-Subject: Re: [PATCH v2 0/3]  Meson S4 HW RNG Support
-Thread-Topic: [PATCH v2 0/3]  Meson S4 HW RNG Support
-Thread-Index: AQHZyS/okR/Cmydlp02gvetqwMngtK/s8v8A
-Date:   Wed, 16 Aug 2023 16:08:05 +0000
-Message-ID: <20230816160802.pi75gl2smx2llcf4@cab-wsm-0029881.sigma.sbrf.ru>
-References: <20230807130611.63914-1-avromanov@sberdevices.ru>
-In-Reply-To: <20230807130611.63914-1-avromanov@sberdevices.ru>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.18.93]
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <7146A6B2EA2EED4BA4EE46F3C863E684@sberdevices.ru>
-Content-Transfer-Encoding: quoted-printable
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BD0B5658DC;
+        Wed, 16 Aug 2023 16:08:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C076EC433C9;
+        Wed, 16 Aug 2023 16:08:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692202098;
+        bh=jrViBcOF+k6elFlQX62ESQoaEbSxiZkNTyIObFNP2QM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TVFZMUtHsV2VIWG0rixURPjsGCWWHkv3h4qWbmQ/gsXrJXAoa+0NGs/UNZFdbbHOP
+         1WUYPSLX4B5dkW96aZgv2YTOJUmJvXYG5o2zObPaQwfdKJN7xKUf9WMYqVdMTn6f7r
+         hu/I/LtC2s/6t/POesRwsako4rUossFMexa3oA1FXZWkyckvd33PjDgS/t7ifUgBAm
+         XPJRiqFkQN4oTapRoHEgen5/hcm3W85eeUa5HUD9W7SP6K/g2LeUaSV23Acl416+oM
+         IpIJoLWvgGwvfvPgaLr1K0uJovIT8BJQOqDSRL/r157cL5pyDx5F/sEag9Ko9Is5Nv
+         tl69G0aRrEAug==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C9B47404DF; Wed, 16 Aug 2023 13:08:14 -0300 (-03)
+Date:   Wed, 16 Aug 2023 13:08:14 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Fangrui Song <maskray@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Carsten Haitzler <carsten.haitzler@arm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Rob Herring <robh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, llvm@lists.linux.dev,
+        Wang Nan <wangnan0@huawei.com>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        He Kuang <hekuang@huawei.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>
+Subject: Re: [PATCH v1 2/4] perf trace: Migrate BPF augmentation to use a
+ skeleton
+Message-ID: <ZNz0bmclvZPg5Y/X@kernel.org>
+References: <20230810184853.2860737-1-irogers@google.com>
+ <20230810184853.2860737-3-irogers@google.com>
+ <ZNuK1TFwdjyezV3I@kernel.org>
+ <CAP-5=fURf+vv3TA4cRx1MiV3DDp=3wo0g5dBYH43DKtPhNZQsQ@mail.gmail.com>
+ <ZNzK70eH3ISoL8r0@kernel.org>
+ <ZNzNh9Myua1xjNuL@kernel.org>
 MIME-Version: 1.0
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 179289 [Aug 16 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: AVRomanov@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 526 526 7a6a9b19f6b9b3921b5701490f189af0e0cd5310, {Track_E25351}, {Tracking_internal2}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;cab-wsm-0029881.sigma.sbrf.ru:5.0.1,7.1.1;sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1, FromAlignment: s, {Tracking_white_helo}
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/16 12:02:00 #21629266
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNzNh9Myua1xjNuL@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Em Wed, Aug 16, 2023 at 10:22:15AM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Wed, Aug 16, 2023 at 10:11:11AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Just taking notes about things to work on top of what is in
+> > tmp.perf-tools-next, that will move to perf-tools-next soon:
 
-Really sorry for the noise, but
-I would like to receive some feedback on my patchset.
+> > We need to make these libbpf error messages appear only in verbose mode,
+> > and probably have a hint about unprivileged BPF, a quick attempt failed
+> > after several attempts at getting privileges :-\
 
-On Mon, Aug 07, 2023 at 04:06:08PM +0300, Alexey Romanov wrote:
-> Hello!
->=20
-> This patch series adds hwrng support for Amlogic S4-series.
-> Now, S4 uses a new random number generation algorithm.
-> This changes implemnents new algo and also adds description
-> to meson-s4.dtsi.
->=20
-> V2:
->=20
-> - Use readl_relaxed_poll_timeout_atomic() function instead of loop.
-> - Use two different functions: meson_rng_read() and meson_s4_rng_read().
-> - Fix naming in DT schema (meson-s4-hwrng instead of meson-hwrng-s4).
-> - A little code style fixes.
->=20
-> Alexey Romanov (3):
->   drivers: rng: meson: add support for S4
->   dt-bindings: rng: meson: add meson-rng-s4 compatible
->   arch/arm64: dts: meson-s4: add hwrng node
->=20
->  .../bindings/rng/amlogic,meson-rng.yaml       |  1 +
->  arch/arm64/boot/dts/amlogic/meson-s4.dtsi     |  5 ++
->  drivers/char/hw_random/meson-rng.c            | 80 ++++++++++++++++++-
->  3 files changed, 83 insertions(+), 3 deletions(-)
->=20
-> --=20
-> 2.38.1
->=20
+> > Probably attaching to tracepoints is off limits to !root even with
+> > /proc/sys/kernel/unprivileged_bpf_disabled set to zero.
 
---=20
-Thank you,
-Alexey=
+> yep, the libbpf sys_bpf call to check if it could load a basic BPF
+> bytecode (prog_type=BPF_PROG_TYPE_SOCKET_FILTER, insn_cnt=2) succeeds,
+> but then, later we manage to create the maps, etc to then stumble on 
+ 
+> bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_PERCPU_ARRAY, key_size=4, value_size=8272, max_entries=1, map_flags=0, inner_map_fd=0, map_name="augmented_args_", map_ifindex=0, btf_fd=0, btf_key_type_id=0, btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 7
+> bpf(BPF_BTF_LOAD, {btf="\237\353\1\0\30\0\0\0\0\0\0\0000\0\0\0000\0\0\0\t\0\0\0\1\0\0\0\0\0\0\1"..., btf_log_buf=NULL, btf_size=81, btf_log_size=0, btf_log_level=0}, 32) = -1 EPERM (Operation not permitted)
+ 
+> and:
+ 
+> bpf(BPF_PROG_LOAD, {prog_type=BPF_PROG_TYPE_TRACEPOINT, insn_cnt=2, insns=0x1758340, license="GPL", log_level=0, log_size=0, log_buf=NULL, kern_version=KERNEL_VERSION(6, 4, 7), prog_flags=0, prog_name="syscall_unaugme", prog_ifindex=0, expected_attach_type=BPF_CGROUP_INET_INGRESS, prog_btf_fd=0, func_info_rec_size=0, func_info=NULL, func_info_cnt=0, line_info_rec_size=0, line_info=NULL, line_info_cnt=0, attach_btf_id=0, attach_prog_fd=0, fd_array=NULL}, 144) = -1 EPERM (Operation not permitted)
+ 
+> So 'perf trace' should just not try to load the augmented_raw_syscalls
+> BPF skel for !root.
+
+Not really, I insisted and it is (was?) possible to make it work,
+testing on some other machine and after having to change the permissions
+recursively on tracefs (before a remount with mode=755 seemed to
+work?).
+
+I managed to make it work for !root, BPF collecting the pointer args for
+openat, access (perf trace looks for syscall signatures and reuses BPF
+progs for the ones matching one of the explicitely provided)
+clock_namosleep, etc.
+
+(re)Reading Documentation/admin-guide/perf-security.rst and getting it
+into the hints system of 'perf trace' may make this process simpler and
+safer, by using a group, etc. But it is possible, great!
+
+I didn't even had to touch /proc/sys/kernel/unprivileged_bpf_disabled,
+just the capabilities for the perf binary (which is a pretty big window,
+but way smaller than touching /proc/sys/kernel/unprivileged_bpf_disabled).
+
+So now we need to get BUILD_BPF_SKEL=1 to be the default but just emit a
+warning when what is needed isn't available, just like with other
+features, in that case 'perf trace' continues as today, no pointer arg
+contents collection.
+
+Unfortunately it is too late in the process for v6.6 even, so as soon as
+perf-tools-next becomes perf-tools and we reopen it for v6.7 the first
+patch should be this build BPF skels if what is needed is available.
+
+I'll also check if we can enable BUILD_BPF_SKEL=1 in the distro packages
+so that we collect some info from them about possible problems.
+
+What I have is now in perf-tools-next, so should get into linux-next and
+hopefully help in testing it, IIRC there are CIs that enable
+BUILD_BPF_SKEL=1.
+
+- Arnaldo
+
+[acme@five ~]$ uname -a
+Linux five 6.2.15-100.fc36.x86_64 #1 SMP PREEMPT_DYNAMIC Thu May 11 16:51:53 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+[acme@five ~]$ id
+uid=1000(acme) gid=1000(acme) groups=1000(acme),10(wheel) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+[acme@five ~]$ perf trace sleep 1
+         ? (         ): sleep/980735  ... [continued]: execve())                                           = 0
+     0.031 ( 0.002 ms): sleep/980735 brk()                                                                 = 0x55c621548000
+     0.039 ( 0.001 ms): sleep/980735 arch_prctl(option: 0x3001, arg2: 0x7ffeb8a6a460)                      = -1 EINVAL (Invalid argument)
+     0.058 ( 0.006 ms): sleep/980735 access(filename: "/etc/ld.so.preload", mode: R)                       = -1 ENOENT (No such file or directory)
+     0.068 ( 0.005 ms): sleep/980735 openat(dfd: CWD, filename: "/etc/ld.so.cache", flags: RDONLY|CLOEXEC) = 3
+     0.074 ( 0.002 ms): sleep/980735 newfstatat(dfd: 3, filename: "", statbuf: 0x7ffeb8a69680, flag: 4096) = 0
+     0.077 ( 0.006 ms): sleep/980735 mmap(len: 54771, prot: READ, flags: PRIVATE, fd: 3)                   = 0x7f6b95ad9000
+     0.084 ( 0.001 ms): sleep/980735 close(fd: 3)                                                          = 0
+     0.094 ( 0.006 ms): sleep/980735 openat(dfd: CWD, filename: "/lib64/libc.so.6", flags: RDONLY|CLOEXEC) = 3
+     0.101 ( 0.002 ms): sleep/980735 read(fd: 3, buf: 0x7ffeb8a697e8, count: 832)                          = 832
+     0.105 ( 0.001 ms): sleep/980735 pread64(fd: 3, buf: 0x7ffeb8a693e0, count: 784, pos: 64)              = 784
+     0.107 ( 0.001 ms): sleep/980735 pread64(fd: 3, buf: 0x7ffeb8a69380, count: 80, pos: 848)              = 80
+     0.110 ( 0.001 ms): sleep/980735 pread64(fd: 3, buf: 0x7ffeb8a69330, count: 68, pos: 928)              = 68
+     0.113 ( 0.002 ms): sleep/980735 newfstatat(dfd: 3, filename: "", statbuf: 0x7ffeb8a69680, flag: 4096) = 0
+     0.115 ( 0.003 ms): sleep/980735 mmap(len: 8192, prot: READ|WRITE, flags: PRIVATE|ANONYMOUS)           = 0x7f6b95ad7000
+     0.122 ( 0.001 ms): sleep/980735 pread64(fd: 3, buf: 0x7ffeb8a692d0, count: 784, pos: 64)              = 784
+     0.126 ( 0.006 ms): sleep/980735 mmap(len: 2104720, prot: READ, flags: PRIVATE|DENYWRITE, fd: 3)       = 0x7f6b95800000
+     0.133 ( 0.013 ms): sleep/980735 mmap(addr: 0x7f6b95828000, len: 1523712, prot: READ|EXEC, flags: PRIVATE|FIXED|DENYWRITE, fd: 3, off: 0x28000) = 0x7f6b95828000
+     0.147 ( 0.008 ms): sleep/980735 mmap(addr: 0x7f6b9599c000, len: 360448, prot: READ, flags: PRIVATE|FIXED|DENYWRITE, fd: 3, off: 0x19c000) = 0x7f6b9599c000
+     0.156 ( 0.010 ms): sleep/980735 mmap(addr: 0x7f6b959f4000, len: 24576, prot: READ|WRITE, flags: PRIVATE|FIXED|DENYWRITE, fd: 3, off: 0x1f3000) = 0x7f6b959f4000
+     0.171 ( 0.005 ms): sleep/980735 mmap(addr: 0x7f6b959fa000, len: 32144, prot: READ|WRITE, flags: PRIVATE|FIXED|ANONYMOUS) = 0x7f6b959fa000
+     0.182 ( 0.001 ms): sleep/980735 close(fd: 3)                                                          = 0
+     0.193 ( 0.003 ms): sleep/980735 mmap(len: 12288, prot: READ|WRITE, flags: PRIVATE|ANONYMOUS)          = 0x7f6b95ad4000
+     0.199 ( 0.001 ms): sleep/980735 arch_prctl(option: SET_FS, arg2: 0x7f6b95ad4740)                      = 0
+     0.202 ( 0.001 ms): sleep/980735 set_tid_address(tidptr: 0x7f6b95ad4a10)                               = 980735 (sleep)
+     0.204 ( 0.001 ms): sleep/980735 set_robust_list(head: 0x7f6b95ad4a20, len: 24)                        = 0
+     0.206 ( 0.001 ms): sleep/980735 rseq(rseq: 0x7f6b95ad50e0, rseq_len: 32, sig: 1392848979)             = 0
+     0.277 ( 0.010 ms): sleep/980735 mprotect(start: 0x7f6b959f4000, len: 16384, prot: READ)               = 0
+     0.306 ( 0.007 ms): sleep/980735 mprotect(start: 0x55c61fa4a000, len: 4096, prot: READ)                = 0
+     0.320 ( 0.010 ms): sleep/980735 mprotect(start: 0x7f6b95b1c000, len: 8192, prot: READ)                = 0
+     0.340 ( 0.002 ms): sleep/980735 prlimit64(resource: STACK, old_rlim: 0x7ffeb8a6a1c0)                  = 0
+     0.349 ( 0.009 ms): sleep/980735 munmap(addr: 0x7f6b95ad9000, len: 54771)                              = 0
+     0.381 ( 0.002 ms): sleep/980735 getrandom(ubuf: 0x7f6b959ff4d8, len: 8, flags: NONBLOCK)              = 8
+     0.386 ( 0.001 ms): sleep/980735 brk()                                                                 = 0x55c621548000
+     0.388 ( 0.006 ms): sleep/980735 brk(brk: 0x55c621569000)                                              = 0x55c621569000
+     0.403 ( 0.012 ms): sleep/980735 openat(dfd: CWD, filename: "", flags: RDONLY|CLOEXEC)                 = 3
+     0.417 ( 0.003 ms): sleep/980735 newfstatat(dfd: 3, filename: "", statbuf: 0x7f6b959f9b80, flag: 4096) = 0
+     0.422 ( 0.008 ms): sleep/980735 mmap(len: 224096080, prot: READ, flags: PRIVATE, fd: 3)               = 0x7f6b88200000
+     0.436 ( 0.002 ms): sleep/980735 close(fd: 3)                                                          = 0
+     0.480 (1000.041 ms): sleep/980735 clock_nanosleep(rqtp: { .tv_sec: 1, .tv_nsec: 0 }, rmtp: 0x7ffeb8a6a450) = 0
+  1000.552 ( 0.003 ms): sleep/980735 close(fd: 1)                                                          = 0
+  1000.558 ( 0.002 ms): sleep/980735 close(fd: 2)                                                          = 0
+  1000.565 (         ): sleep/980735 exit_group()                                                          = ?
+[acme@five ~]$ getcap ~/bin/perf
+/var/home/acme/bin/perf cap_perfmon,cap_bpf=ep
+[acme@five ~]$ cat /proc/sys/kernel/unprivileged_bpf_disabled
+2
+[acme@five ~]$ cat /proc/sys/kernel/perf_event_paranoid
+-1
+[acme@five ~]$
