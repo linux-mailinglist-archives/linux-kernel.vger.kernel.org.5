@@ -2,141 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F194F77E437
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5075177E439
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233213AbjHPOyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 10:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
+        id S1343833AbjHPOyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 10:54:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343824AbjHPOxp (ORCPT
+        with ESMTP id S1343836AbjHPOyA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 10:53:45 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7502610FF;
-        Wed, 16 Aug 2023 07:53:40 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-76754b9eac0so447950385a.0;
-        Wed, 16 Aug 2023 07:53:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692197619; x=1692802419;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C/F+yO89r+58XA2jTJmqFV7AKNI1UXlByvHmUmA3sA4=;
-        b=hJ0JNR07O6hNfvI0xZ2K57RdwwA+zhGGvgN1u5MeIJpwg2g6A38rxQYYtjMTc+DrIQ
-         OQKQIzsh/kXj6LBcKPZHjh6TDJjQoyZR9sv/ZFs1MrH/0YQbtE8WdYpPg89JB9m9u9j8
-         y/u5h/wRwaSktqnNv6AeWOnq16To/G5M8xOsJ4xwE5+6U03REY4mPgeLMapCOdBPycHL
-         JEq5/GHZ+7CMff1ABYwHMm7pYN1NFal7znvXjmINFymH4O7Fe5T77dnWF9Ir/tCqjnF7
-         mqH+Pdma8Ou779VNhqk7dP7ET2SKLB2szR+/7oxYyeGGm6ZxG5QXiGhmus7LtSaOPOCl
-         7lcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692197619; x=1692802419;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=C/F+yO89r+58XA2jTJmqFV7AKNI1UXlByvHmUmA3sA4=;
-        b=TwJPZDWuQ6yYY3cc8JdtNTnPKLnQ5HMJxRVb5Tbcqp5vU9uTXeesq8k8d1XLfMCkL6
-         HTYXPE0c0+vOSezD1Fbzjbsv4Kdcl8FZy37ySmwhl/yPZ5sq6zCudMslHNq21dZZx+O8
-         IZ1GCJIO5voIS+ZsHBL0ygMyJvLWC/BtF1ZkPokbjG7ZeDMCytoMfRHpTWajCU26cLpc
-         27Dt93OTiewquyX96CHaxXQuup86akms3WyObXNv557ksbh7P88fgaLoBRhUGCWhAtQR
-         gNUTu1bu086oBc8u/Qtb4HY2gakPe4/doqBlsdVJDtxMTyZol8vZgJs+Azv+KxqZhkgW
-         8AEQ==
-X-Gm-Message-State: AOJu0Yx/S7N5QQyji3faY5MWaDCWgGkWBeKhv1RofwYMY4AgJs5LxVxm
-        GqZh9oqyulmIKnOtUXeS01A=
-X-Google-Smtp-Source: AGHT+IE/ongpvCQd3F2ohVavPqcLH2c3ICTQBale59UpK8GdXCBun10dc4tTmVJGODuMRW1RyyVMpQ==
-X-Received: by 2002:a05:620a:b8d:b0:76c:9ad6:8199 with SMTP id k13-20020a05620a0b8d00b0076c9ad68199mr1789963qkh.77.1692197619528;
-        Wed, 16 Aug 2023 07:53:39 -0700 (PDT)
-Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
-        by smtp.gmail.com with ESMTPSA id f23-20020a05620a15b700b0076cf0c4eecbsm4469821qkk.0.2023.08.16.07.53.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 07:53:38 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 10:53:38 -0400
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To:     Feng Liu <feliu@nvidia.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Simon Horman <horms@kernel.org>
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Bodong Wang <bodong@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Message-ID: <64dce2f2b99f5_23f1f82949f@willemb.c.googlers.com.notmuch>
-In-Reply-To: <f9f3c150-2b5e-7bd0-1c1a-062bd1f16fcd@nvidia.com>
-References: <20230814171845.65930-1-feliu@nvidia.com>
- <ZNtYpohWyjnb883M@vergenet.net>
- <05348d62-586c-4b1f-40bd-5541caca0947@nvidia.com>
- <ZNunz1hbqPKpcOgA@vergenet.net>
- <CAF=yD-L+d34Uuvt3sOFOnxXhMmoMXNfHzcaSPk=t1PtiPUHZ1g@mail.gmail.com>
- <f9f3c150-2b5e-7bd0-1c1a-062bd1f16fcd@nvidia.com>
-Subject: Re: [PATCH net v1] virtio_net: Introduce skb_vnet_common_hdr to avoid
- typecasting
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Wed, 16 Aug 2023 10:54:00 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EE8269F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:53:54 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 23E8140E0193;
+        Wed, 16 Aug 2023 14:53:53 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id H2xnBl_8putw; Wed, 16 Aug 2023 14:53:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1692197630; bh=eATcUugUKmg/0JLDPnk8Wvs/F7ufU1c8fhbjk7WJvtI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BTK7HLiiZf02cDAAdM3jz4GmxhDB0shh60FYymu0Vlw1t8ld2/jJ6GNQ+HS84wBP1
+         nZsvabY37js5GdXt4MCn+7AiK7gfQCViow2ueU0NsyPmdeZcq+znNZOmb+b8l+KTOF
+         uUk9VgYDxHOkBlH4FYbheDy4m30u8juOd1BfUV2+pHV8HUc9Dkkz7Cs9dSTPZgjGL+
+         UcezEFCH2UI8WOQh4pmsXGxiFjoKqO9bXbh0YrI2oXwuaH8RO4ykXYxozPIjqdNCSS
+         o1k7up5aK2o3E9wmj+LYTTLe2VOKyNMOrbn1lUcjfmpziRCw4rj9p/8cWregNJjMXn
+         DoqCvnNU19ErIrJ/UZrk8YU1/bM10A6808cGXYYtyn8tpRHNZp/6ngw2T6syeX7No+
+         cMEOdk6czenYVV73LUx0qrGd+bFU4IyLFNj9p/Q+dQsuk0JwcyOnfLRfdJXmiNy3b0
+         FH62Fy3alJfJjqkhSGBI6WoDiUWgwSW+5KB8Z5J1DHpPo9W/DxPZQQXc7ZaKegSGO+
+         Nfi09lkBPiP1AaDM0vhYEx4QH1BinPVwbGksInzBXErqRz/hqyedBaVcUluu/fiDHz
+         kP/z7U2ipabaDDZc4l42BCzywGm2FY7AunmGHGUs5U28on/PqdXfNH3KLN3x/CIEX+
+         p47aHtVtcbL3x11/EvkaJs4w=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AFD0E40E00F4;
+        Wed, 16 Aug 2023 14:53:43 +0000 (UTC)
+Date:   Wed, 16 Aug 2023 16:53:38 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Karol Herbst <kherbst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH] drm/nouveau/disp: fix use-after-free in error handling
+ of nouveau_connector_create
+Message-ID: <20230816145338.GIZNzi8o3d9x9bcPzX@fat_crate.local>
+References: <20230814144933.3956959-1-kherbst@redhat.com>
+ <20230816093015.GDZNyXJ28y9uspb4Mr@fat_crate.local>
+ <CACO55tu8ab-rxCzxFXbUh4Z=W9E-1f8sH6BVd=P+16dQ9PQNjg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CACO55tu8ab-rxCzxFXbUh4Z=W9E-1f8sH6BVd=P+16dQ9PQNjg@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > 
-> > Since legacy virtio will no longer be modified, I don't think there is
-> > much value is exposing this new union as UAPI. I do appreciate the
-> > benefit to the implementation.
-> > 
-> > [1] https://patches.linaro.org/project/netdev/patch/20210208185558.995292-3-willemdebruijn.kernel@gmail.com/
-> Hi, William and Simon
-> 
-> Thanks for the detailed explanation.
-> 
-> I kept virtio_net_hdr_mrg_rxbuf and virtio_net_hdr_v1_hash structures in 
-> virtio_net.h, which can be forward compatible with existing user 
-> applications which use these structures.
+On Wed, Aug 16, 2023 at 11:51:50AM +0200, Karol Herbst wrote:
+> Mind sharing your kernel logs with that patch applied? I suspect your
+> system boots up but you might just not have the connector available or
+> something? It could be that you have one of those GPUs affected by the
+> original change and then we'd have to figure out what to do with that.
 
-They're UAPI, so we cannot modify or remove them anyway.
+Close. With your patch applied, the machine is up and I can log in and
+use it. However, the output on the connected monitor stops after...
 
-Which is exactly why we want to be careful with adding anything new.
- 
-> virtio_net_hdr_v1_hash cannot use virtio_net_hdr as the first member, 
-> because in virtio_net_hdr_v1, csum_start and csum_offset are stored in 
-> union as a structure, and virtio_net_hdr cannot be used instead.
+[    6.815167] ACPI: \_PR_.CP05: Found 4 idle states
+[    6.825438] ACPI: \_PR_.CP06: Found 4 idle states
+[    6.835661] ACPI: \_PR_.CP07: Found 4 idle states
+[    7.280093] Freeing initrd memory: 8328K
+[    7.601986] tsc: Refined TSC clocksource calibration: 3591.346 MHz
+[    7.608360] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x33c46403b59, max_idle_ns: 440795293818 ns
+[    7.620254] clocksource: Switched to clocksource tsc
+[    8.337724] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+[    8.350553] 00:05: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
+[    8.375311] serial 0000:00:16.3: enabling device (0000 -> 0003)
+[    8.403681] 0000:00:16.3: ttyS1 at I/O 0xf0a0 (irq = 17, base_baud = 115200) is a 16550A
+[    8.424951] Linux agpgart interface v0.103
+[    8.432456] ACPI: bus type drm_connector registered
 
-Oh right. That wasn't always the case, or the reason for this.
-Not super relevant but, commit ed9ecb0415b9 has the history
+... this line here above. It is the last one output. What you see here
+below what I'm catching from serial.
 
-    virtio: Don't expose legacy net features when VIRTIO_NET_NO_LEGACY defined.
+[    8.456734] Console: switching to colour dummy device 80x25
+[    8.464414] nouveau 0000:03:00.0: vgaarb: deactivate vga console
+[    8.473063] nouveau 0000:03:00.0: NVIDIA GT218 (0a8c00b1)
+[    8.594096] nouveau 0000:03:00.0: bios: version 70.18.83.00.08
+[    8.607906] nouveau 0000:03:00.0: fb: 512 MiB DDR3
+[    8.926721] nouveau 0000:03:00.0: DRM: VRAM: 512 MiB
+[    8.931763] nouveau 0000:03:00.0: DRM: GART: 1048576 MiB
+[    8.937156] nouveau 0000:03:00.0: DRM: TMDS table version 2.0
+[    8.942969] nouveau 0000:03:00.0: DRM: DCB version 4.0
+[    8.948173] nouveau 0000:03:00.0: DRM: DCB outp 00: 02000360 00000000
+[    8.954696] nouveau 0000:03:00.0: DRM: DCB outp 01: 02000362 00020010
+[    8.961211] nouveau 0000:03:00.0: DRM: DCB outp 02: 028003a6 0f220010
+[    8.967739] nouveau 0000:03:00.0: DRM: DCB outp 03: 01011380 00000000
+[    8.974261] nouveau 0000:03:00.0: DRM: DCB outp 04: 08011382 00020010
+[    8.980769] nouveau 0000:03:00.0: DRM: DCB outp 05: 088113c6 0f220010
+[    8.987293] nouveau 0000:03:00.0: DRM: DCB conn 00: 00101064
+[    8.993015] nouveau 0000:03:00.0: DRM: DCB conn 01: 00202165
+[    9.005724] nouveau 0000:03:00.0: DRM: MM: using COPY for buffer copies
+[    9.023889] [drm] Initialized nouveau 1.3.1 20120801 for 0000:03:00.0 on minor 0
+[    9.032044] nouveau 0000:03:00.0: [drm] Cannot find any crtc or sizes
+[    9.162909] megasas: 07.725.01.00-rc1
+[    9.167537] st: Version 20160209, fixed bufsize 32768, s/g segs 256
+[    9.176058] ahci 0000:00:1f.2: version 3.0
+[    9.194078] ahci 0000:00:1f.2: AHCI 0001.0300 32 slots 6 ports 6 Gbps 0x3 impl SATA mode
+[    9.202487] ahci 0000:00:1f.2: flags: 64bit ncq sntf pm led clo pio slum part ems apst 
+[    9.243154] scsi host0: ahci
+[    9.252090] scsi host1: ahci
+[    9.260389] scsi host2: ahci
+[    9.268061] scsi host3: ahci
+[    9.273542] scsi host4: ahci
+[    9.279071] scsi host5: ahci
+...
 
-    In particular, the virtio header always has the u16 num_buffers field.
-    We define a new 'struct virtio_net_hdr_v1' for this (rather than
-    simply calling it 'struct virtio_net_hdr', to avoid nasty type errors
-    if some parts of a project define VIRTIO_NET_NO_LEGACY and some don't.
+and so on until full boot.
 
-    Transitional devices (which can't define VIRTIO_NET_NO_LEGACY) will
-    have to keep using struct virtio_net_hdr_mrg_rxbuf, which has the same
-    byte layout as struct virtio_net_hdr_v1.
+-- 
+Regards/Gruss,
+    Boris.
 
-The union was added to overload csum use on tx with RSC use on rx, in
-commit 22b436c9b568. I don't quite follow why there now are three
-structs, rather than two. The first two seem to both implement csum
-partial. Anyway, not super important here.
-
-> In addition, I put this new structure virtio_net_common_hdr in uapi, 
-> hoping it could be used in future user space application to avoid 
-> potential risks caused by type coercion (such as the problems mentioned 
-> in the patch description ). So I think it should be in this header file.
-> What do you think?
-
-Adding anything to UAPI has a high bar. Do you have a concrete use
-case for this?
-
-This does seem mostly a helper to simplify kernel logic to me, which
-is better kept in non-UAPI headers.
+https://people.kernel.org/tglx/notes-about-netiquette
