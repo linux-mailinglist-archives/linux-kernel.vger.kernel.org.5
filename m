@@ -2,122 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC2677DBE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F00877DBE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242802AbjHPIMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 04:12:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36014 "EHLO
+        id S242776AbjHPIPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 04:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242792AbjHPIMB (ORCPT
+        with ESMTP id S237364AbjHPIOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 04:12:01 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31AF4AB;
-        Wed, 16 Aug 2023 01:12:00 -0700 (PDT)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37G8040d013993;
-        Wed, 16 Aug 2023 03:11:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=
-        PODMain02222019; bh=XBrvMs7nTF97Zizz0enpQAZB41SWEkMJ3maqN3ukMzQ=; b=
-        FgDChWYalZkKudOOEl8FamrnW0bJoqndnzdJB/gr4eG0X5mDtAvBrR4gxLNPd/+a
-        yDVeG9LyKDHv+Ym3ekfZQlQ6zzMDHYpKgpHvPDHRZQmATKClkJ5AcdijbiyxKCBa
-        xob5TxcHeU4MSxNR95tmXOWGeTDABwCVqWH3aqLhHsda4/CuEKPCnAoT9VROevk0
-        JsYdGqmwaArrELbprb6ujZF9SP00EmMU3jzUkucVQJcLsRxM2gi5XTbrAPUK3cDl
-        hr6gSSwIwm9FemUK6AmQ1MwSYWjZ85owtTwEiyMzC1FsTav9OZUbQDGo0jbAwaFz
-        Q+Vmbo/J1qw7ldjF+G+2Bg==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3se6uhkwmy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 03:11:32 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 16 Aug
- 2023 09:11:30 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Wed, 16 Aug 2023 09:11:30 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9AB083560;
-        Wed, 16 Aug 2023 08:11:30 +0000 (UTC)
-Date:   Wed, 16 Aug 2023 08:11:30 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     James Ogletree <James.Ogletree@cirrus.com>
-CC:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Fred Treven <Fred.Treven@cirrus.com>,
-        Ben Bright <Ben.Bright@cirrus.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "Lee Jones" <lee@kernel.org>, Jeff LaBundy <jeff@labundy.com>,
-        Joel Stanley <joel@jms.id.au>, Arnd Bergmann <arnd@arndb.de>,
-        Jacky Bai <ping.bai@nxp.com>, Jean Delvare <jdelvare@suse.de>,
-        Eddie James <eajames@linux.ibm.com>,
-        Markus Schneider-Pargmann <msp@baylibre.com>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] Input: cs40l50 - Initial support for Cirrus Logic
- CS40L50
-Message-ID: <20230816081130.GB103419@ediswmail.ad.cirrus.com>
-References: <20230809191032.820271-1-james.ogletree@cirrus.com>
- <20230809191032.820271-3-james.ogletree@cirrus.com>
- <20230810103005.GZ103419@ediswmail.ad.cirrus.com>
- <51826BD7-BB75-4D1F-B947-A7AC2C642F62@cirrus.com>
+        Wed, 16 Aug 2023 04:14:52 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0BC794
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 01:14:50 -0700 (PDT)
+Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CE811B2A;
+        Wed, 16 Aug 2023 10:13:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1692173615;
+        bh=ElXL6fYxDLsP/9sUEgVHcxzYyUCsen+i+kQs9f4MzQE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=KyppgEgRNn/0vwjZ3IAxWZOVAc4lrgoLqpIsiRNgyw8h4S0hjp4zFj2mLXM8dhF/s
+         LdRtGvZdIfG/iZuy6mdPsGjS38TBDICA5Aav1Lp1+I+4cf+aFSmgVznn2x8mHiPYoZ
+         EZS1r2BOdwg+cnia5cEFatf691v4ZAnQViqE6G0I=
+Message-ID: <5ffb773d-5a3e-cb88-db3b-522423f2b834@ideasonboard.com>
+Date:   Wed, 16 Aug 2023 11:14:43 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 02/11] drm/bridge: tc358768: Fix bit updates
+To:     Maxim Schwalm <maxim.schwalm@gmail.com>,
+        =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Francesco Dolcini <francesco@dolcini.it>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>
+References: <20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com>
+ <20230804-tc358768-v1-2-1afd44b7826b@ideasonboard.com>
+ <cd5d39a2-4f4c-419a-8137-d2719135e205@gmail.com>
+ <241937b4-1ef8-abad-7c4a-b26bfab86a3a@ideasonboard.com>
+ <92396880-edb5-d8e0-4fcf-54aeaa2b40d7@gmail.com>
+ <52151daa-90af-a6c0-9b03-f69081321253@ideasonboard.com>
+ <d55fc4d3-015d-8cc2-417e-e92aa4687ca2@gmail.com>
+Content-Language: en-US
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+In-Reply-To: <d55fc4d3-015d-8cc2-417e-e92aa4687ca2@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <51826BD7-BB75-4D1F-B947-A7AC2C642F62@cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: qkx6JlK6fSTwvvVUFttnD-gWC8JlX5E0
-X-Proofpoint-ORIG-GUID: qkx6JlK6fSTwvvVUFttnD-gWC8JlX5E0
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 10:33:00PM +0000, James Ogletree wrote:
+On 15/08/2023 20:21, Maxim Schwalm wrote:
+> On 14.08.23 08:34, Tomi Valkeinen wrote:
+>> On 13/08/2023 03:23, Maxim Schwalm wrote:
+>>> Hi,
+>>>
+>>> On 11.08.23 19:02, Tomi Valkeinen wrote:
+>>>> On 11/08/2023 19:23, Péter Ujfalusi wrote:
+>>>>>
+>>>>>
+>>>>> On 04/08/2023 13:44, Tomi Valkeinen wrote:
+>>>>>> The driver has a few places where it does:
+>>>>>>
+>>>>>> if (thing_is_enabled_in_config)
+>>>>>> 	update_thing_bit_in_hw()
+>>>>>>
+>>>>>> This means that if the thing is _not_ enabled, the bit never gets
+>>>>>> cleared. This affects the h/vsyncs and continuous DSI clock bits.
+>>>>>
+>>>>> I guess the idea was to keep the reset value unless it needs to be flipped.
+>>>>>
+>>>>>>
+>>>>>> Fix the driver to always update the bit.
+>>>>>>
+>>>>>> Fixes: ff1ca6397b1d ("drm/bridge: Add tc358768 driver")
+>>>>>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+>>>>>> ---
+>>>>>>     drivers/gpu/drm/bridge/tc358768.c | 13 +++++++------
+>>>>>>     1 file changed, 7 insertions(+), 6 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
+>>>>>> index bc97a837955b..b668f77673c3 100644
+>>>>>> --- a/drivers/gpu/drm/bridge/tc358768.c
+>>>>>> +++ b/drivers/gpu/drm/bridge/tc358768.c
+>>>>>> @@ -794,8 +794,8 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>>>>>>     		val |= BIT(i + 1);
+>>>>>>     	tc358768_write(priv, TC358768_HSTXVREGEN, val);
+>>>>>>     
+>>>>>> -	if (!(mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS))
+>>>>>> -		tc358768_write(priv, TC358768_TXOPTIONCNTRL, 0x1);
+>>>>>> +	tc358768_write(priv, TC358768_TXOPTIONCNTRL,
+>>>>>> +		       (mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS) ? 0 : BIT(0));
+>>>>>>     
+>>>>>>     	/* TXTAGOCNT[26:16] RXTASURECNT[10:0] */
+>>>>>>     	val = tc358768_to_ns((lptxcnt + 1) * dsibclk_nsk * 4);
+>>>>>> @@ -861,11 +861,12 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>>>>>>     	tc358768_write(priv, TC358768_DSI_HACT, hact);
+>>>>>>     
+>>>>>>     	/* VSYNC polarity */
+>>>>>> -	if (!(mode->flags & DRM_MODE_FLAG_NVSYNC))
+>>>>>> -		tc358768_update_bits(priv, TC358768_CONFCTL, BIT(5), BIT(5));
+>>>>>> +	tc358768_update_bits(priv, TC358768_CONFCTL, BIT(5),
+>>>>>> +			     (mode->flags & DRM_MODE_FLAG_PVSYNC) ? BIT(5) : 0);
+>>>>>
+>>>>> Was this the reverse before and should be:
+>>>>> (mode->flags & DRM_MODE_FLAG_PVSYNC) ? 0 : BIT(5)
+>>>>
+>>>> Bit 5 is 1 for active high vsync polarity. The test was previously
+>>>> !nvsync, i.e. the same as pvsync.
+>>>
+>>> this statement doesn't seem to be true, since this change causes a
+>>> regression on the Asus TF700T. Apparently, !nvsync is true and pvsync is
+>>> false in the present case.
+>>
+>> panasonic_vvx10f004b00_mode in panel_simple.c doesn't seem to have mode
+>> flags set. I would say that means the panel doesn't care about the sync
+>> polarities (which obviously is not the case), but maybe there's an
+>> assumption that if sync polarities are not set, the default is...
+>> positive? But I can't find any mention about this.
+>>
+>> Does it work for you if you set the polarities in
+>> panasonic_vvx10f004b00_mode?
 > 
+> The panel seems to work with either negative or positive H-/Vsync in
+> conjunction with the attached patch from Thierry. Currently, the display
+> controller is unconditionally programmed for positive H-/Vsync though.
+> What should be done in this case?
 > 
-> > On Aug 10, 2023, at 5:30 AM, Charles Keepax <ckeepax@opensource.cirrus.com> wrote:
-> > 
-> > On Wed, Aug 09, 2023 at 07:10:28PM +0000, James Ogletree wrote:
-> >> +
-> >> +static int cs40l50_pseq_write(struct cs40l50_private *cs40l50, u32 addr, u32 data)
-> >> +{
-> >> +
-> >> +static int cs40l50_owt_upload(struct cs40l50_private *cs40l50, s16 *in_data, u32 in_data_nibbles)
-> >> +{
-> > 
-> > These pseq and OWT bits, could they be shared with l26?
-> > Definitely worth syncing with those guys, my assumption is the
-> > wavetable/pseq won't have changed much and it might be nice to
-> > factor these bits out into some library code that both drivers
-> > can use.
-> 
-> The pseq code most certainly can, likely the OWT code, perhaps others. I assume it is
-> acceptable to move some of these functions to a library in this patch set, even though this is
-> the only driver utilizing them as far as mainline is concerned? In other words, we shouldn’t
-> wait for one of L26 or L50 drivers to be accepted before splitting off the common code as part
-> of the others’ patchset? I’m probably overcomplicating; just want to be sure on the process here.
-> 
-> Everything else in your review will be fixed in V4. Thank you.
-> 
+> BTW, the vendor kernel configures the display controller as well as the
+> bridge for negative H-/Vsync.
 
-I think this makes sense to do now, just need to make sure the
-next series of L26 is synced up to it.
+Ah, of course, I wasn't thinking. It's a DSI panel (obviously...), so it 
+doesn't have sync polarities and as such it doesn't really make sense to 
+define them in the panel-simple.c.
 
-Thanks,
-Charles
+But we still need an agreed sync polarity between the tegra and the 
+tc358768, as that is a parallel video bus. And that polarity is not 
+defined anywhere, as it is expected to come from the panel.
+
+Maybe tc358768 should have a mode-fixup, where it sets the polarities if 
+they are not defined? I'll have to look at this a bit more.
+
+  Tomi
+
