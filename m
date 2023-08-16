@@ -2,168 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7093077DADD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 09:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A194B77DAE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 09:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242274AbjHPHDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 03:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37142 "EHLO
+        id S242299AbjHPHEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 03:04:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242308AbjHPHDI (ORCPT
+        with ESMTP id S242261AbjHPHEL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 03:03:08 -0400
-Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF2530DA;
-        Wed, 16 Aug 2023 00:02:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-        s=default2211; h=To:References:Message-Id:Content-Transfer-Encoding:Cc:Date:
-        In-Reply-To:From:Subject:Mime-Version:Content-Type:Sender:Reply-To:Content-ID
-        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=5MhjneJemItWisEeWBJ9xqyHb/f6PYCrLEq/lmLd5KA=;
-        b=J8rD/W08c+MKJzItNdHqV3pDQIwtbiAFDQVtGWBpsFI4YVZPXKJol2wVZn5ZGYmnA2prDmr2FZV
-        xZ7kg/zTkbnXzNXwGZRpHVaRAoTYL8tdUXMNKwJgzgScJXh/Vo1QaKWuJs8GIi3ZUI3byRgcat9ij
-        EUlRx8mVcFUMk5D4sf8UY8HVbdpbYmasAZBcr9NjXKAJP3zhGISRiplx2aCLo/hiaZXEDe3LlllLV
-        zaYzVQeHF/XEIeXRTlClfxIv868r2VJi8m874o7zIJBj0wXpf0PGCZqtF0W8Uuz65tzDv3AaTgfv0
-        f6wl9f9UG3gFNuooZXKROE68Pw7EoCjLeZaA==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <sean@geanix.com>)
-        id 1qWAY3-0000hq-QY; Wed, 16 Aug 2023 09:02:31 +0200
-Received: from [2a06:4004:10df:0:1cda:5a2e:6344:82ff] (helo=smtpclient.apple)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sean@geanix.com>)
-        id 1qWAY3-000NjS-BA; Wed, 16 Aug 2023 09:02:31 +0200
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.600.7\))
-Subject: Re: [PATCH v2] i2c: stm32f7: Add atomic_xfer method to driver
-From:   Sean Nyekjaer <sean@geanix.com>
-In-Reply-To: <20230802100709.GB2156918@gnbcxd0016.gnb.st.com>
-Date:   Wed, 16 Aug 2023 09:02:20 +0200
-Cc:     Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-i2c@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <5E10F2AD-6D7E-4F2F-ACEB-B6FD3C71C85D@geanix.com>
-References: <20230718105435.2641207-1-sean@geanix.com>
- <20230802100709.GB2156918@gnbcxd0016.gnb.st.com>
-To:     Alain Volmat <alain.volmat@foss.st.com>
-X-Mailer: Apple Mail (2.3731.600.7)
-X-Authenticated-Sender: sean@geanix.com
-X-Virus-Scanned: Clear (ClamAV 0.103.8/27001/Tue Aug 15 09:40:17 2023)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 03:04:11 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6340F1FCE;
+        Wed, 16 Aug 2023 00:04:09 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37G6wH5g018435;
+        Wed, 16 Aug 2023 07:03:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : content-type :
+ mime-version; s=pp1; bh=JRiEwG7CGAIwUuGxv6cswmnrQS0AldAPoI7yGXpgWgY=;
+ b=O3aDDuYqblqU2ow4KXHkowrbrKcpbFLAIEDT7DzfJtDf7OrzA3/f1/0927eO8jdgbBg/
+ inigcHl7nc5bFh3AQMtv/3kLaqp2u414YiQJtdr/tZIZqETkRnoLq/HPO+33N7a54CL4
+ EQvWs7I9ZIbPJcRccVCBwTXeDgzoPYqoj7tlPUO+cZFWsROJvvoIdWPMKWD79hORmFVd
+ JQx324Oyy5j57ZD3DKP3MdPuMDLoa4JvxkSL2y80b0s2uSXCoYr7a+6DDSNMAn5/KWlm
+ fMPmIYKEOC+aD5RwZILE1rfksPIUKMiD+jY9r5U4s5eofcHl5CkeaV2xIoEnBrCWstNJ YQ== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sgsn984kx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 07:03:58 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37G40GHT013425;
+        Wed, 16 Aug 2023 07:03:58 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sepmjt3vy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 07:03:57 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37G73t6d62587154
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Aug 2023 07:03:55 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ED10E2004B;
+        Wed, 16 Aug 2023 07:03:54 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A71FD20040;
+        Wed, 16 Aug 2023 07:03:54 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Wed, 16 Aug 2023 07:03:54 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        linux-kbuild@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-s390@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: linux-next-2023-0815: s390/block/dasd: build error
+References: <95b176a2-3670-1e89-c8f6-86b094eebc4c@infradead.org>
+Date:   Wed, 16 Aug 2023 09:03:54 +0200
+In-Reply-To: <95b176a2-3670-1e89-c8f6-86b094eebc4c@infradead.org> (Randy
+        Dunlap's message of "Tue, 15 Aug 2023 22:34:19 -0700")
+Message-ID: <yt9d350jbh9h.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: cjURwvIYWuHXhR9BbhXBbvstXJsiOinV
+X-Proofpoint-ORIG-GUID: cjURwvIYWuHXhR9BbhXBbvstXJsiOinV
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-16_04,2023-08-15_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=994
+ mlxscore=0 impostorscore=0 clxscore=1011 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 bulkscore=0 spamscore=0 adultscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2308160063
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alain,
+Randy Dunlap <rdunlap@infradead.org> writes:
 
-Thanks for the review
+> I have spent some time on this but I don't see where the problem is.
+>
+> ERROR: modpost: "bdev_mark_dead" [drivers/s390/block/dasd_mod.ko] undefined!
+>
+> CONFIG_BLOCK=y, bdev.o is built and contains the missing symbol.
+>
+> Full randconfig file is attached.
+>
+> Hopefully I'm just overlooking something.
 
-> On 2 Aug 2023, at 12.07, Alain Volmat <alain.volmat@foss.st.com> =
-wrote:
->=20
-> Hi Sean,
->=20
-> sorry for the delay for this review.  Thank you Andi for
-> the review as well.
+The EXPORT_SYMBOL_GPL is surrounded by #ifdef CONFIG_DASD, but i think
+it should be '#ifdef CONFIG_DASD_MODULE'. This was introduced by
 
-Also from my side :) Vacation.
+381f678306ce ("block: consolidate __invalidate_device and fsync_bdev")
 
->=20
-> Few other comments in addition to what Andi already mentioned.
->=20
-> On Tue, Jul 18, 2023 at 12:54:35PM +0200, Sean Nyekjaer wrote:
->> Add an atomic_xfer method to the driver so that it behaves correctly
->> when controlling a PMIC that is responsible for device shutdown.
->>=20
->> The atomic_xfer method added is similar to the one from the =
-i2c-mv64xxx
->> driver. When running an atomic_xfer a bool flag in the driver data is
->> set, the interrupt is not unmasked on transfer start, and the IRQ
->> handler is manually invoked while waiting for pending transfers to
->> complete.
->>=20
->> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
->> ---
->> Changes since v1:
->> - Removed dma in atomic
->>=20
->> drivers/i2c/busses/i2c-stm32f7.c | 111 =
-++++++++++++++++++++++---------
->> 1 file changed, 78 insertions(+), 33 deletions(-)
->>=20
->> diff --git a/drivers/i2c/busses/i2c-stm32f7.c =
-b/drivers/i2c/busses/i2c-stm32f7.c
->> index e897d9101434..d944b8f85d1c 100644
->> --- a/drivers/i2c/busses/i2c-stm32f7.c
->> +++ b/drivers/i2c/busses/i2c-stm32f7.c
->> @@ -357,6 +357,7 @@ struct stm32f7_i2c_dev {
->> u32 dnf_dt;
->> u32 dnf;
->> struct stm32f7_i2c_alert *alert;
->> + bool atomic;
->=20
-> I am wondering if this atomic really needs to be within the struct.
-> It could well be given as last arg of stm32f7_i2c_xfer_core and
-> stm32f7_i2c_xfer functions.
+There was already a thread about this:
 
-Agree.
+https://www.spinics.net/lists/linux-btrfs/msg138633.html
 
->=20
->=20
->> };
->>=20
->>=20
-
-[ =E2=80=A6 ]
-
->> @@ -1670,7 +1676,22 @@ static irqreturn_t stm32f7_i2c_isr_error(int =
-irq, void *data)
->> return IRQ_HANDLED;
->> }
->>=20
->> -static int stm32f7_i2c_xfer(struct i2c_adapter *i2c_adap,
->> +static int stm32f7_i2c_wait_polling(struct stm32f7_i2c_dev *i2c_dev)
->> +{
->> + ktime_t timeout =3D ktime_add_ms(ktime_get(), =
-i2c_dev->adap.timeout);
->> +
->> + while (ktime_compare(ktime_get(), timeout) < 0) {
->> + udelay(5);
->> + stm32f7_i2c_isr_event(0, i2c_dev);
->> +
->> + if (try_wait_for_completion(&i2c_dev->complete))
->> + return 1;
->=20
-> I agree with the complete / wait_for_completion approach since it =
-allows
-> to keep most of code common by manually calling the isr_event for
-> checking status bits.  However what about using completion_done =
-instead
-> of try_wait_for_completion here ? This shouldn't change much since
-> anyway there is a reinit_completion at the beginning of the xfer
-> function, but at least function naming feels better since not refering
-> to waiting ..
-
-I=E2=80=99ll take a look at the completion_done()
-
->=20
->> + }
->>=20
-
-[ =E2=80=A6 ]
-
-/Sean
-
+regards,
+Sven
