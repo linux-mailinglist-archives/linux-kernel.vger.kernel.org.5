@@ -2,113 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D915477D9C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 07:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60E977D9C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 07:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241863AbjHPFVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 01:21:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38576 "EHLO
+        id S241873AbjHPF3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 01:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241888AbjHPFVS (ORCPT
+        with ESMTP id S241840AbjHPF2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 01:21:18 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 552EA268F;
-        Tue, 15 Aug 2023 22:21:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.at;
- s=s31663417; t=1692163270; x=1692768070; i=g.ottinger@gmx.at;
- bh=zihyiJ73ADx+UuuJMxXFt7FINHQFNKkDIYeeeLl7Gys=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
- b=UB4rcAlBDsyX9MH45FrGgCo+stOeOOX4CWb98Pk71ahkFzsQB1AupLaa5U9qdWk7+pB0Wi+
- CG8nLi3O5TtgY5FqaEJ6SCAMs5P/U0SHfzJg72iVqAO4UHRQ8ns+N/qPPtTd4WbBT18tteUVL
- wAs0JJ7l9tcxSdk/HHAN0oIDsGcx/09fqo52/d7Szwu8InO/3bzIJSBadVwfQ6zf/KMMtc2sw
- 6uVOsNE2M9qvx/VePvWjSr8V6rSa2kRGwvLy5TpyN4u5qRNyCn8cPKpMN82ISYUpmxWv9sDS7
- PyTzpdwY41uaXpSSW9Hv9lDeWOipEzKjqvRh+TXxMsqJ329HPUsA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from f15h-Latitude-E5450.lan ([89.144.221.196]) by mail.gmx.net
- (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1N9Mta-1pijBa1eDs-015JeV; Wed, 16 Aug 2023 07:21:10 +0200
-From:   Georg Ottinger <g.ottinger@gmx.at>
-To:     jack@suse.com
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        g.ottinger@gmx.at
-Subject: [PATCH v2] ext2: fix datatype of block number in ext2_xattr_set2()
-Date:   Wed, 16 Aug 2023 07:21:04 +0200
-Message-Id: <20230816052104.3374-1-g.ottinger@gmx.at>
-X-Mailer: git-send-email 2.17.1
+        Wed, 16 Aug 2023 01:28:51 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4713C1FC7;
+        Tue, 15 Aug 2023 22:28:50 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso812869766b.1;
+        Tue, 15 Aug 2023 22:28:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692163729; x=1692768529;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=oI9EbUbdFX+RrThKFfE8bckQkP7vk+YwcykLWlRyZmc=;
+        b=pVHILuPrelt8olO6J3x6t/JNyuP+8amxy7PYit2QNk6GKT26n4acrJxjECq9+khi+n
+         6r6y9zU8Y1KgZF3Pg/SLchBo04Ia9kd+/goffo1ag0frUlBD9WAehmnn8/Nk9uf8H0Op
+         g5gVHsf2/RhSfwkfwgWF/rGKxyhlzJghbagqEm4yE5bAomBKCsP6FxJuYd1HwHQnFJgO
+         kKW9o0qUVVy+ljmlqdYGjh31Z4XyuoDKQMP9hu5ILLFk9FOfMkCiZUy1yYzhSElHO9uR
+         UeIqSDy4FzGyHCVDLLCRyF6aoqkq4v+9Ov1tw+uREDnUJybAqlXvOudp5JBvqJu1vQiu
+         L4pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692163729; x=1692768529;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oI9EbUbdFX+RrThKFfE8bckQkP7vk+YwcykLWlRyZmc=;
+        b=cP7vAmAoFbvb2WBRtfS7ma/i8QzUhyHcx4fjbThzI51e38lOz7+Cg+iLkAQvG4+S4w
+         r41P4YjJUGOv2AnrDnf0TQXRMmgLDg5kiWcuGZ3vHwTqzg2NlgSyjhERBqgS1p/T1rK8
+         Rpni2njvPI8oQaWkMOJxWcCSwUjPCzUKuZqyixx1kQGQivT+7ZMlRdkzNNayvt1DfOd7
+         PFRzwowREae1bjacUmB64FlEUBD9T3xpT5weL5uxaeRKpyzMbdH125qjzkfT6de5L/kF
+         1moAuRhTSalyM4Tph8K38ylOnYVR4w1UizX51Gvc6RhZ4QhpOUSduNJT5eO0XaoiIcbf
+         QEkw==
+X-Gm-Message-State: AOJu0Yw/sUIrDQaosdTS9xsFAnfr8ve8w5o/lKKGeSa40HTYUMHXj+Ea
+        kyDaPXFa/K8/kfEEoiqTVkh3BAV3bbz6OaN+lWo=
+X-Google-Smtp-Source: AGHT+IHSF+TLanoCC/zz7iEYIVfKfhNYq8rVc5R2wapF465iYq1NHWQsc0WUGyq7xOotb7ciDMOqbS1Diw9kIuc+dZY=
+X-Received: by 2002:a17:907:1de0:b0:99d:f2dc:97e3 with SMTP id
+ og32-20020a1709071de000b0099df2dc97e3mr307243ejc.20.1692163728394; Tue, 15
+ Aug 2023 22:28:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:JxcYQOoSRCKJNW9jHezvOnUVv5Ym/zSkRwGa+ShBlFSn5EuyRq+
- HHtTeFJV5mzJaTx9tWW+iILGsDHlU4tBWYX/nLm18TWU/v8sohjdFnGnGUuzqu6iF2N+Ski
- piShylxLm8wArlH0tNgZF3bMMjzVksgjzeXRG0KkpnUbveH7Omi7OwsOIT8/ro0h95w/1Pe
- oJ7wtYSFtBo6afeyEws2g==
-UI-OutboundReport: notjunk:1;M01:P0:yrwRBMUQpHg=;2r7qejm93REDKt+vnWRsxn722Ll
- p41N0Of2yg9cWvGR1ZO74+FvzL+1h+HODR1/HXjhy72w6DObRSCxiW/X0rYnsVaE4eukud6gS
- QRob0R03Ip7tRR/dwfKF4QXxKG6VPyw2xIsz3pDTFtipTKVyLIM6vXSeK731y1GqfhteViLwe
- 45fDp3KZ6AhHgz1cNSYfThHn+xSQYBLMkL2enwq5N5pqR2dQAbcOtvdC5oW0IwkHY7ogTlfU4
- ioNdfszsA2k/7kIWk0eOGDKlNkU42DNpWL4WV2Xp5k0rpxpYvW1xhMQ0q5oMd4hsIn081JFS6
- Dt1zvKIJU5u9de1NU3bDR2cwqIVLsDzLOH9hgUol58aXbJV1cByO80JFyzxxJSHRuc2d6x7sg
- IPk0uyS+PCnGCn03Ing2+/57xF45d7aCoVP3U5naEVHipmxfCsyrZg/GETdgZVin6sTN+02MU
- dneVNpYr4ILQ7M2YYZOCjTyRcM+HKo9AAG9BDC+T7897gN2GwotZ0eU9E+Fnf+EVgWZC/74OE
- FY6uHtBI7uoFZuqDHHlCh8nUy0ClcsABA9uKZ9vUIXeXX4kYi2+wHYB2qjXB6HWrgbFkRxqGZ
- qkMki6BpkVCP3EnVRjydMWyrvDZDYHO8lRFcLgfOYlzmwAknICwIy0L6Qx3rMi2443km9H3hx
- nsUorEnXiz4x/CCRNE1/2ob59cCIHJTDbHdQIrtP1Y+WdFCRabBS4hQE8utp2hbP5kIHXpboc
- RWlKQhrKzx0W0JiOU9tYmVZUHDnPpOuPUuX6yfwKPuwXMmrXKCzwUK1xrn066pcqvBeIrbn1F
- mgNwYgLsw1SxZLrUijQi6WyNiJMmPUYKIpuLzeOt1BMB3eTFoThSl7wQuvRHNMQbx2gy+bCzZ
- TJ85Isc51tkvBEtRZaKxYX/g8BGDNFRxW4KuHMNkAhUAq/JHEIAoYPi+gnT/S33rPZcWI+hzl
- 2yyRn2SGwKB+E9XlAkmZEGjH98w=
+References: <20230815-fix-cifs-null-auth-v1-1-3cb785216d97@redhat.com> <2f7522c01a45f9052f423869040258ba.pc@manguebit.com>
+In-Reply-To: <2f7522c01a45f9052f423869040258ba.pc@manguebit.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Wed, 16 Aug 2023 00:28:36 -0500
+Message-ID: <CAH2r5msYemdM+J_ETsrHOkxmm4qeDnA8cLYOHVA9LhfjoBnYuQ@mail.gmail.com>
+Subject: Re: [PATCH] smb: client: fix null auth
+To:     Paulo Alcantara <pc@manguebit.com>
+Cc:     Scott Mayhew <smayhew@redhat.com>,
+        Steve French <sfrench@samba.org>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org,
+        Steve French <stfrench@microsoft.com>
+Content-Type: multipart/mixed; boundary="000000000000eee10a060303917c"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I run a small server that uses external hard drives for backups. The
-backup software I use uses ext2 filesystems with 4KiB block size and
-the server is running SELinux and therefore relies on xattr. I recently
-upgraded the hard drives from 4TB to 12TB models. I noticed that after
-transferring some TBs I got a filesystem error "Freeing blocks not in
-datazone - block =3D 18446744071529317386, count =3D 1" and the backup
-process stopped. Trying to fix the fs with e2fsck resulted in a
-completely corrupted fs. The error probably came from ext2_free_blocks(),
-and because of the large number 18e19 this problem immediately looked
-like some kind of integer overflow. Whereas the 4TB fs was about 1e9
-blocks, the new 12TB is about 3e9 blocks. So, searching the ext2 code,
-I came across the line in fs/ext2/xattr.c:745 where ext2_new_block()
-is called and the resulting block number is stored in the variable block
-as an int datatype. If a block with a block number greater than
-INT32_MAX is returned, this variable overflows and the call to
-sb_getblk() at line fs/ext2/xattr.c:750 fails, then the call to
-ext2_free_blocks() produces the error.
+--000000000000eee10a060303917c
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Georg Ottinger <g.ottinger@gmx.at>
-=2D--
- fs/ext2/xattr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Fixed some checkpatch warnings and added Paulo's RB, and updated
+cifs-2.6.git for-next
 
-diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-index 8906ba479..89517937d 100644
-=2D-- a/fs/ext2/xattr.c
-+++ b/fs/ext2/xattr.c
-@@ -742,10 +742,10 @@ ext2_xattr_set2(struct inode *inode, struct buffer_h=
-ead *old_bh,
- 			/* We need to allocate a new block */
- 			ext2_fsblk_t goal =3D ext2_group_first_block_no(sb,
- 						EXT2_I(inode)->i_block_group);
--			int block =3D ext2_new_block(inode, goal, &error);
-+			ext2_fsblk_t block =3D ext2_new_block(inode, goal, &error);
- 			if (error)
- 				goto cleanup;
--			ea_idebug(inode, "creating block %d", block);
-+			ea_idebug(inode, "creating block %lu", block);
 
- 			new_bh =3D sb_getblk(sb, block);
- 			if (unlikely(!new_bh)) {
-=2D-
-2.17.1
+On Tue, Aug 15, 2023 at 1:42=E2=80=AFPM Paulo Alcantara via samba-technical
+<samba-technical@lists.samba.org> wrote:
+>
+> Scott Mayhew <smayhew@redhat.com> writes:
+>
+> > Commit abdb1742a312 removed code that clears ctx->username when
+> > sec=3Dnone, so attempting to mount with '-o sec=3Dnone' now fails with
+> > -EACCES.  Fix it by adding that logic to the parsing of the 'sec'
+> > option, as well as checking if the mount is using null auth before
+> > setting the username when parsing the 'user' option.
+> >
+> > Fixes: abdb1742a312 ("cifs: get rid of mount options string parsing")
+> > Signed-off-by: Scott Mayhew <smayhew@redhat.com>
+> > ---
+> >  fs/smb/client/fs_context.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+>
+> Reviewed-by: Paulo Alcantara (SUSE) <pc@manguebit.com>
+>
 
+
+--=20
+Thanks,
+
+Steve
+
+--000000000000eee10a060303917c
+Content-Type: text/x-patch; charset="US-ASCII"; name="0001-smb-client-fix-null-auth.patch"
+Content-Disposition: attachment; 
+	filename="0001-smb-client-fix-null-auth.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_lldakw8n0>
+X-Attachment-Id: f_lldakw8n0
+
+RnJvbSAyNzBkNzNlNjUwN2Y5YzdmZmY0Mzg0NGQ3NGY4NjM2NWRmMDAwYjM2IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBTY290dCBNYXloZXcgPHNtYXloZXdAcmVkaGF0LmNvbT4KRGF0
+ZTogV2VkLCAxNiBBdWcgMjAyMyAwMDoyMzo1NiAtMDUwMApTdWJqZWN0OiBbUEFUQ0hdIHNtYjog
+Y2xpZW50OiBmaXggbnVsbCBhdXRoCgpDb21taXQgYWJkYjE3NDJhMzEyIHJlbW92ZWQgY29kZSB0
+aGF0IGNsZWFycyBjdHgtPnVzZXJuYW1lIHdoZW4gc2VjPW5vbmUsIHNvIGF0dGVtcHRpbmcKdG8g
+bW91bnQgd2l0aCAnLW8gc2VjPW5vbmUnIG5vdyBmYWlscyB3aXRoIC1FQUNDRVMuICBGaXggaXQg
+YnkgYWRkaW5nIHRoYXQgbG9naWMgdG8gdGhlCnBhcnNpbmcgb2YgdGhlICdzZWMnIG9wdGlvbiwg
+YXMgd2VsbCBhcyBjaGVja2luZyBpZiB0aGUgbW91bnQgaXMgdXNpbmcgbnVsbCBhdXRoIGJlZm9y
+ZQpzZXR0aW5nIHRoZSB1c2VybmFtZSB3aGVuIHBhcnNpbmcgdGhlICd1c2VyJyBvcHRpb24uCgpG
+aXhlczogYWJkYjE3NDJhMzEyICgiY2lmczogZ2V0IHJpZCBvZiBtb3VudCBvcHRpb25zIHN0cmlu
+ZyBwYXJzaW5nIikKQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcKU2lnbmVkLW9mZi1ieTogU2Nv
+dHQgTWF5aGV3IDxzbWF5aGV3QHJlZGhhdC5jb20+ClJldmlld2VkLWJ5OiBQYXVsbyBBbGNhbnRh
+cmEgKFNVU0UpIDxwY0BtYW5ndWViaXQuY29tPgpTaWduZWQtb2ZmLWJ5OiBTdGV2ZSBGcmVuY2gg
+PHN0ZnJlbmNoQG1pY3Jvc29mdC5jb20+Ci0tLQogZnMvc21iL2NsaWVudC9mc19jb250ZXh0LmMg
+fCA0ICsrKysKIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9m
+cy9zbWIvY2xpZW50L2ZzX2NvbnRleHQuYyBiL2ZzL3NtYi9jbGllbnQvZnNfY29udGV4dC5jCmlu
+ZGV4IDQ5NDZhMGM1OTYwMC4uNjdlMTZjMmFjOTBlIDEwMDY0NAotLS0gYS9mcy9zbWIvY2xpZW50
+L2ZzX2NvbnRleHQuYworKysgYi9mcy9zbWIvY2xpZW50L2ZzX2NvbnRleHQuYwpAQCAtMjMxLDYg
+KzIzMSw4IEBAIGNpZnNfcGFyc2Vfc2VjdXJpdHlfZmxhdm9ycyhzdHJ1Y3QgZnNfY29udGV4dCAq
+ZmMsIGNoYXIgKnZhbHVlLCBzdHJ1Y3Qgc21iM19mc19jCiAJCWJyZWFrOwogCWNhc2UgT3B0X3Nl
+Y19ub25lOgogCQljdHgtPm51bGxhdXRoID0gMTsKKwkJa2ZyZWUoY3R4LT51c2VybmFtZSk7CisJ
+CWN0eC0+dXNlcm5hbWUgPSBOVUxMOwogCQlicmVhazsKIAlkZWZhdWx0OgogCQljaWZzX2Vycm9y
+ZihmYywgImJhZCBzZWN1cml0eSBvcHRpb246ICVzXG4iLCB2YWx1ZSk7CkBAIC0xMjAxLDYgKzEy
+MDMsOCBAQCBzdGF0aWMgaW50IHNtYjNfZnNfY29udGV4dF9wYXJzZV9wYXJhbShzdHJ1Y3QgZnNf
+Y29udGV4dCAqZmMsCiAJY2FzZSBPcHRfdXNlcjoKIAkJa2ZyZWUoY3R4LT51c2VybmFtZSk7CiAJ
+CWN0eC0+dXNlcm5hbWUgPSBOVUxMOworCQlpZiAoY3R4LT5udWxsYXV0aCkKKwkJCWJyZWFrOwog
+CQlpZiAoc3RybGVuKHBhcmFtLT5zdHJpbmcpID09IDApIHsKIAkJCS8qIG51bGwgdXNlciwgaWUu
+IGFub255bW91cyBhdXRoZW50aWNhdGlvbiAqLwogCQkJY3R4LT5udWxsYXV0aCA9IDE7Ci0tIAoy
+LjM0LjEKCg==
+--000000000000eee10a060303917c--
