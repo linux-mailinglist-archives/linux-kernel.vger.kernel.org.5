@@ -2,113 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E5A77E3C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6404777E3DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343730AbjHPOjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 10:39:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34590 "EHLO
+        id S1343760AbjHPOjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 10:39:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343753AbjHPOiy (ORCPT
+        with ESMTP id S1343749AbjHPOjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 10:38:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F2E2D41;
-        Wed, 16 Aug 2023 07:38:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 96D6863FD9;
-        Wed, 16 Aug 2023 14:38:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42698C433C8;
-        Wed, 16 Aug 2023 14:38:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692196692;
-        bh=wAA3WePHJSoHVgxkU3KiZytlFD8F7FCW7Hbk/uZSCGo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NVgNgu63cFaxLiCNMANcOgomGY8QLmO2yCAxa2dxkePn/NytnJ+DTy9SWCLuaJfW+
-         +L8tjYp4N/Fm8dLgNAgPzWDGFG75XFs2EyOG4lUXHIlV2HEDjvdsH+hBrT1vm7K8fq
-         HZ1DRuI15yUS+YZht81PvOGYAEqlPyOHJS3ENImGY4pyn2tuERq95nJimDaokPLow8
-         x5uza3VFZ4xkpk52basr8ay5Jm6RpO6XyR60P9+vG81EBelMkPoQQSJnuNyIM3YCPh
-         5WxR+xGZDQbH8A035fcewFXyxwHS7M8jva14J2nauC4v1yPvFDkxGaCSvQ16Uycjzc
-         sxtvpoxnDuMTA==
-Date:   Wed, 16 Aug 2023 15:38:07 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Mihai.Sain@microchip.com
-Cc:     claudiu.beznea@tuxon.dev, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        Nicolas.Ferre@microchip.com, Cristian.Birsan@microchip.com,
-        alexandre.belloni@bootlin.com, andre.przywara@arm.com,
-        Jerry.Ray@microchip.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Andrei.Simion@microchip.com
-Subject: Re: [PATCH] ARM: dts: at91: sama5d29_curiosity: Add device tree for
- sama5d29_curiosity board
-Message-ID: <20230816-asleep-move-ab8746612698@spud>
-References: <20230804101043.4063-1-mihai.sain@microchip.com>
- <127fc712-d924-f27f-5449-33385e89d6c3@tuxon.dev>
- <PH8PR11MB6804E49B5946F4A9D60837E18213A@PH8PR11MB6804.namprd11.prod.outlook.com>
- <98d01db3-3eba-0731-0dd9-4310ed293bd6@tuxon.dev>
- <PH8PR11MB6804B1C6466C7A450A180D1D8215A@PH8PR11MB6804.namprd11.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="TC0LRDS6Pz+cbGoi"
-Content-Disposition: inline
-In-Reply-To: <PH8PR11MB6804B1C6466C7A450A180D1D8215A@PH8PR11MB6804.namprd11.prod.outlook.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 10:39:20 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40757272E
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:38:52 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-26b0b4a7cccso4500257a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:38:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20221208.gappssmtp.com; s=20221208; t=1692196728; x=1692801528;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=z7kyCuHl1t/gCCGpNTbA3hwFj/lf6SuaKvtbsxGuDBs=;
+        b=dZxL0Ptmo/RfqSZAnaNdMqEON3wvqTtz9rCCZbGwRlxrXd7njXeZ9MC0HoDMQnzbMm
+         Mbp7gkbEr8As7DndYa19Nv36eYd2hToSSCFzF826MiTxJFQPanB3TDkisU5ug1n2xO0x
+         lqvfBU8gjYGcjvzm7z1KhnYi76zAKQMvLjSkKN8VKcgO7yrfcLxnnczFGmL7s8fYvGKe
+         iupXY/7su7eB4Qp8Ot15WegMitq0aXkC7C2B4amBqtpQq9iCTqbSvz7oVYvokSqAF4SL
+         qE7Cmnt2iThlim9z5xca3mEZ27llu2nfrUpa7hwX8WY7UkN0OSfjH/LjoRTW/fMpY9+M
+         GNdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692196728; x=1692801528;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z7kyCuHl1t/gCCGpNTbA3hwFj/lf6SuaKvtbsxGuDBs=;
+        b=H8GRkrwqU7bv1wijG2wu1NcEJmQMk6Z3POs/kdARZou5rLJtX762QWRn5kj7YiTlQU
+         4AouUymxIdCOTEK+n8k8QvMJ9JJZDG7COXNW4ViQI+Vlrir5htq8GEv5AT+bUwMQ3Na7
+         C9f6ETgsGC/0z0ngsoLt8lkU06xh2H0r0zrIsYkFH2ydaiQ9xrAuOQf3hMX1P6vQkrgs
+         r6PJkqkkIKuP/NxZ6SQZxN709Ovq9yFbuDADkXxGj/F73mSK2L1CM0e11C1zp6+ySd+k
+         8PTeVpP33BGtJNHMIhEkJCONihQ/89cN3DkvGDv9ao7fWuze7rQLNAIEVXSSrlYeJE52
+         dJvw==
+X-Gm-Message-State: AOJu0Yyej90IGsrxBW0BrRfBVCCfPVuUK7lMmzJtTH2CVOCu9CptFWFi
+        9quxphR5X5Aih8jiQwjaec/eoA==
+X-Google-Smtp-Source: AGHT+IG9lm23RRLom/xb7C80klG2aDXB0ZwUgcZV4fsV/hyXYHdBd19S4I3YH9SwHqrCXPj4TdemSQ==
+X-Received: by 2002:a17:90a:f982:b0:26b:4e59:57e7 with SMTP id cq2-20020a17090af98200b0026b4e5957e7mr1730234pjb.43.1692196727793;
+        Wed, 16 Aug 2023 07:38:47 -0700 (PDT)
+Received: from localhost ([135.180.227.0])
+        by smtp.gmail.com with ESMTPSA id gi23-20020a17090b111700b0025645ce761dsm13120399pjb.35.2023.08.16.07.38.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 07:38:47 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 07:38:47 -0700 (PDT)
+X-Google-Original-Date: Wed, 16 Aug 2023 07:38:45 PDT (-0700)
+Subject:     Re: [PATCH 00/17] -Wmissing-prototype warning fixes
+In-Reply-To: <20230810141947.1236730-1-arnd@kernel.org>
+CC:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, mattst88@gmail.com,
+        vgupta@kernel.org, linux@armlinux.org.uk,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, guoren@kernel.org,
+        bcain@quicinc.com, chenhuacai@kernel.org, kernel@xen0n.name,
+        geert@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de,
+        dinguyen@kernel.org, jonas@southpole.se,
+        stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
+        James.Bottomley@HansenPartnership.com, deller@gmx.de,
+        mpe@ellerman.id.au, christophe.leroy@csgroup.eu, hca@linux.ibm.com,
+        glaubitz@physik.fu-berlin.de, x86@kernel.org, bp@alien8.de,
+        jcmvbkbc@gmail.com, axboe@kernel.dk, sudipm.mukherjee@gmail.com,
+        martin.petersen@oracle.com, richard@nod.at, bhelgaas@google.com,
+        masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
+        linux@roeck-us.net, Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kbuild@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     arnd@kernel.org
+Message-ID: <mhng-ce493a2d-71e9-440f-84d0-522a4f694bbe@palmer-ri-x1c9>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 10 Aug 2023 07:19:18 PDT (-0700), arnd@kernel.org wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Most of the patches I sent so far for the -Wmissing-prototype warnings
+> have made it into linux-next now. There are a few that I'm resending
+> now as nobody has picked them up, and then a number of fixes that I
+> found while test-building across all architectures rather than just the
+> ones I usually test.
+>
+> The first 15 patches in this series should be uncontroversial, so
+> I expect that either a subsystem maintainer or Andrew Morton can
+> apply these directly.
+>
+> For the last two patches, these might still need some debate about how
+> to handle them. I added a Kconfig option to turn off most of the missing
+> prototype warnings in the architectures that nobody has fixed yet,
+> see patch 16 for those. The last patch does cause some known warnings
+> and likely unknown ones for architectures other than x86 and arm,
+> so applying it now will bring new problems, but not applying it also
+> means that new warnings creep in, so I think this is mainly a question
+> of what the best timing is for having this in linux-next.
+>
+> Arnd Bergmann (17):
+>   [RESEND] jffs2: mark __jffs2_dbg_superblock_counts() static
+>   [RESEND] irq_work: consolidate arch_irq_work_raise prototypes
+>   [RESEND] ida: make 'ida_dump' static
+>   pci: sysfs: move declarations to linux/pci.h
+>   swim3: mark swim3_init() static
+>   macintosh/ams: mark ams_init() static
+>   scsi: qlogicpti: mark qlogicpti_info() static
+>   microblaze: mark flush_dcache_folio() inline
+>   parport: gsc: mark init function static
+>   zorro: include zorro.h in names.c
+>   scsi: gvp11: remove unused gvp11_setup() function
+>   time: make sysfs_get_uname() function visible in header
+>   stackleak: add declarations for global functions
+>   kprobes: unify kprobes_exceptions_nofify() prototypes
+>   arch: fix asm-offsets.c building with -Wmissing-prototypes
+>   [RFC] arch: turn -Wmissing-prototypes off conditionally
+>   [RFC] Makefile.extrawarn: turn on missing-prototypes again
+>
+>  arch/alpha/Kbuild                        |  2 ++
+>  arch/alpha/include/asm/pci.h             |  3 ---
+>  arch/alpha/kernel/asm-offsets.c          |  2 +-
+>  arch/alpha/lib/Makefile                  |  1 +
+>  arch/arc/Kbuild                          |  2 ++
+>  arch/arc/include/asm/kprobes.h           |  3 ---
+>  arch/arm/include/asm/irq_work.h          |  2 --
+>  arch/arm/include/asm/kprobes.h           |  2 --
+>  arch/arm64/include/asm/irq_work.h        |  2 --
+>  arch/arm64/include/asm/kprobes.h         |  2 --
+>  arch/csky/Kbuild                         |  2 ++
+>  arch/csky/include/asm/irq_work.h         |  2 +-
+>  arch/hexagon/Kbuild                      |  2 ++
+>  arch/ia64/Kbuild                         |  2 ++
+>  arch/ia64/include/asm/kprobes.h          |  2 --
+>  arch/ia64/kernel/asm-offsets.c           |  2 +-
+>  arch/ia64/lib/Makefile                   |  1 +
+>  arch/loongarch/Kbuild                    |  2 ++
+>  arch/loongarch/kernel/asm-offsets.c      | 12 ++++++++++++
+>  arch/m68k/Kbuild                         |  2 ++
+>  arch/m68k/lib/Makefile                   |  1 +
+>  arch/microblaze/Kbuild                   |  2 ++
+>  arch/microblaze/include/asm/cacheflush.h |  2 +-
+>  arch/mips/Kbuild                         |  2 ++
+>  arch/mips/boot/compressed/Makefile       |  3 ++-
+>  arch/mips/include/asm/kprobes.h          |  2 --
+>  arch/nios2/Kbuild                        |  2 ++
+>  arch/nios2/lib/Makefile                  |  1 +
+>  arch/openrisc/Kbuild                     |  2 ++
+>  arch/parisc/Kbuild                       |  2 ++
+>  arch/parisc/lib/Makefile                 |  1 +
+>  arch/powerpc/include/asm/irq_work.h      |  1 -
+>  arch/powerpc/include/asm/kprobes.h       |  2 --
+>  arch/riscv/include/asm/irq_work.h        |  2 +-
+>  arch/s390/include/asm/irq_work.h         |  2 --
+>  arch/s390/include/asm/kprobes.h          |  2 --
+>  arch/sh/Kbuild                           |  2 ++
+>  arch/sh/boot/compressed/Makefile         |  1 +
+>  arch/sh/include/asm/kprobes.h            |  2 --
+>  arch/sparc/Kbuild                        |  2 ++
+>  arch/sparc/include/asm/kprobes.h         |  2 --
+>  arch/sparc/kernel/asm-offsets.c          | 13 ++-----------
+>  arch/sparc/lib/Makefile                  |  1 +
+>  arch/sparc/prom/Makefile                 |  1 +
+>  arch/x86/include/asm/irq_work.h          |  1 -
+>  arch/x86/include/asm/kprobes.h           |  2 --
+>  arch/xtensa/Kbuild                       |  2 ++
+>  arch/xtensa/boot/lib/Makefile            |  2 ++
+>  drivers/block/swim3.c                    |  2 +-
+>  drivers/macintosh/ams/ams-core.c         |  2 +-
+>  drivers/parport/parport_gsc.c            |  2 +-
+>  drivers/scsi/gvp11.c                     |  5 -----
+>  drivers/scsi/qlogicpti.c                 |  2 +-
+>  drivers/zorro/names.c                    |  1 +
+>  fs/jffs2/debug.c                         |  2 +-
+>  include/linux/irq_work.h                 |  3 +++
+>  include/linux/kprobes.h                  |  4 ++++
+>  include/linux/pci.h                      |  5 +++++
+>  include/linux/stackleak.h                |  6 ++++++
+>  init/Kconfig                             | 10 ++++++++++
+>  kernel/time/tick-internal.h              |  3 ++-
+>  lib/test_ida.c                           |  2 +-
+>  scripts/Makefile.extrawarn               |  5 +++--
+>  63 files changed, 101 insertions(+), 63 deletions(-)
 
---TC0LRDS6Pz+cbGoi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Aug 16, 2023 at 09:05:19AM +0000, Mihai.Sain@microchip.com wrote:
-> Hi Claudiu,
->=20
-> ----------------------
->=20
-> Hi, Mihai,
->=20
-> On 8/10/23 09:47, Mihai.Sain@microchip.com wrote:
-> >> +&i2s0 {
-> >> +     pinctrl-names =3D "default";
-> >> +     pinctrl-0 =3D <&pinctrl_i2s0_default>;
-> >> +     status =3D "okay";
-> > I see no sound bindings on DT. Is there any reason for having this here?
-> > # i2s0 bus is wired to RPi 40-pin connector. I want to have this node a=
-nd its pinctrl here.
-> > # i2c1, flx4-spi, pwm0, uart1 are also wired to Rpi connector, and are =
-defined here.
-> > # The same logic we apply also for mikroBUS sockets: i2c, pwm, spi and =
-uart nodes are defined here.
-> >
->=20
-> Can you use it (either with user space tools or other kernel consumers) w=
-/o additional device tree bindings?
-> # Yes. We have added in dt-overlay the codec which uses the i2s0 and i2c1=
- nodes and pinctrls.
-
-Can you please fix your mail client so that your replies are properly
-quoted? I don't understand who is saying what here.
-
---TC0LRDS6Pz+cbGoi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNzfTgAKCRB4tDGHoIJi
-0mskAQDqB7yvGCNZL5HLPqbFd4miuOsz8BFLD9vxbjY5k+x9XAD+NKe0JvyQzcBk
-MW+H0TBbpXXo7VMYE0ttbiSKddZE1QI=
-=X1ZD
------END PGP SIGNATURE-----
-
---TC0LRDS6Pz+cbGoi--
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com> # RISC-V
