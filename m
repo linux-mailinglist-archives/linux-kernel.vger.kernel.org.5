@@ -2,173 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C1C77E80D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8397877E813
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345326AbjHPR7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 13:59:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56538 "EHLO
+        id S1345337AbjHPSBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 14:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345322AbjHPR64 (ORCPT
+        with ESMTP id S1345343AbjHPSAf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 13:58:56 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3AAC2710
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:58:54 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so109211641fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:58:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692208733; x=1692813533;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rL1d5IkkpVuyaHJUviWq3wb0oe5qxAALKeywaszABpo=;
-        b=f9t0VBOxRmhAPHWhEew70l7ub3eQ1HxIhoi1qa1w7k0EFrextvcWK3vdTGbL8aPiIp
-         Q3doG/2Mey7PKIb6XIlJpGeKG+0iLHUY8UBgSnrQIPFXhhGyHLw+xKpvSrDiA1HNg2t8
-         4iB2q0A2hkAjUVXDq7rDwqHxdT3j5VxELLYwucVD6Yz/vYDR5whteKmqLVsJ7Vh9sQQ4
-         kRQeYNrEfbQzhLq2/5knVeS4py+fev72cCaHwOr+TaFRX0JYmQ3RsbcPBUMTkCVLKrFI
-         c/CBNFc5T/LAcnl5wK4VNjQxiTtSqTfIuLwgUfh1hjoKKld+QQ6whrSD6mk1Smf35gKV
-         dWdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692208733; x=1692813533;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rL1d5IkkpVuyaHJUviWq3wb0oe5qxAALKeywaszABpo=;
-        b=R6z9AQT7AgUsYkomtp1rtJ7j9JJ4E3LQY0Grb0WtejH4umyXq3/RxxKG6JPulIo1rm
-         jR+1P0f2lUcPpEDd0uzKN3Eq6i5uoarbXoG6In/CRiVJcEZdk2zSb09aZEtT+fEv4Kbd
-         WDfLQmYvxGN+aKflwzd9rtLijzjxLpEthAN4vJYlydrQViJxMOaTwh6MKhX3Dz1fV1Sv
-         InALjw5OE+276RreG+qDOP/38of2dfz8K9bXOKdxGidXz57FiTzsrVg0oeQcbNzSjJEK
-         AjJ+1BCN7cR8acZGw9d1/52E2ozmaPrg/qbc+vJ6sAOrGI8Obn1BjLLyN+yyHDKf3Dke
-         8+7Q==
-X-Gm-Message-State: AOJu0Yy6mfqlQWJnm27j3cTCrYSoaCBAuKVA1pveB3wkmTSNMWyJSSZE
-        SkTcm4ilgX3V6aWmHxUy3fgKdA==
-X-Google-Smtp-Source: AGHT+IGmlFLezr5yGl7cSouAqe8XS1SwhcY8CrjyqarVswLmc7p7MEkLmDIAAfCbjQRhEMEbcAsTjw==
-X-Received: by 2002:a2e:9c99:0:b0:2b6:e618:b593 with SMTP id x25-20020a2e9c99000000b002b6e618b593mr2263846lji.31.1692208733180;
-        Wed, 16 Aug 2023 10:58:53 -0700 (PDT)
-Received: from [192.168.1.101] (abxi8.neoplus.adsl.tpnet.pl. [83.9.2.8])
-        by smtp.gmail.com with ESMTPSA id k22-20020a2e2416000000b002b9e0aeff68sm3581086ljk.95.2023.08.16.10.58.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 10:58:52 -0700 (PDT)
-Message-ID: <ef031105-3b77-484d-8f47-a6c0233dd9c2@linaro.org>
-Date:   Wed, 16 Aug 2023 19:58:51 +0200
+        Wed, 16 Aug 2023 14:00:35 -0400
+Received: from DM6FTOPR00CU001.outbound.protection.outlook.com (mail-centralusazon11020027.outbound.protection.outlook.com [52.101.61.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B27A12D45;
+        Wed, 16 Aug 2023 11:00:19 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CIF7xnJ/6ZQw/Ur4twiwQ1BjzM3bghCuCdaBxKhmP3fZY5qCGdZ5zW4yhUmWrBBlVYBbDJd9sAlIBckrJEvrFwlNGqPt9k3Hwwq4zgbKn5XZWuzJoNmjvYXY0rlFImrUQg8NeXhsxCEfkxHSuoMBAWa19fUaPFrbz5QLPs7iKmm8eY7r83F1c/5iSjrfGBgGsO2uf5gD9rbkyAi8tQPkimCZzlYBy0YYJUUtChT5tnE7B9H25KPO3PoPrA9Lr+8lEivmpQICIsm6k27u2mjulY+asoHPoXHwXs1cDquedwPBW1WPU3SNjixIpMuoNy7ua0z/yfkUraS6N1oM7m1OwA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=koh5ZnYpXDiyEv0pywSlKhUHQ9hn7pXloCfSnctC4QA=;
+ b=eIOPVZwccZlcdBOisfO3JjCtWnf5C34hopZrow+HtF1afOlcX/G/FOMteoYIYdN0aOH5BNdNd515pOuAC4DF1v2mWgbv/pvHNKdqZunn6uaGaPS4pAnilZWWA7LijobNha7kzRqHyBP8CjPh5FIDL7ny8AjxG4QgPtyANMVYeiDx16FRYl4wzrdKMNnWPAlsFc97t+pMN8F2SENeAkq5iIUQzeg3lbd90Sg75YmITN+nvVMqtYvNpXyIODUWkFqSTIrPgi1TJKAkuae8HMDco95oYXTRHvokDHxRZAuIHJaKRfUrkD5drPKtmxKsnmiAAI9S4viSm63FfWAVSP9T0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=koh5ZnYpXDiyEv0pywSlKhUHQ9hn7pXloCfSnctC4QA=;
+ b=dVV3Xxsne1lnFNlQu6TJXSKP0kxI03IivcQCx80SibVrkeFy23eo3Dxas4W31mQxlSIU502di/8Z6HEh7QitEoYKu6pgU1z9h7qKoIO42AHceFz5ynTtbm6DFyx/9WWkRxyauski9yHSODLA9obP03U7JXjytSAhczL9gnBt7I4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from BL0PR2101MB1092.namprd21.prod.outlook.com
+ (2603:10b6:207:30::23) by MN2PR21MB1503.namprd21.prod.outlook.com
+ (2603:10b6:208:1f7::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6723.4; Wed, 16 Aug
+ 2023 18:00:16 +0000
+Received: from BL0PR2101MB1092.namprd21.prod.outlook.com
+ ([fe80::b3df:a8e9:52dd:dfad]) by BL0PR2101MB1092.namprd21.prod.outlook.com
+ ([fe80::b3df:a8e9:52dd:dfad%5]) with mapi id 15.20.6723.002; Wed, 16 Aug 2023
+ 18:00:16 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     tglx@linutronix.de, jgg@ziepe.ca, bhelgaas@google.com,
+        haiyangz@microsoft.com, kw@linux.com, kys@microsoft.com,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        lpieralisi@kernel.org, mikelley@microsoft.com, robh@kernel.org,
+        wei.liu@kernel.org, helgaas@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Dexuan Cui <decui@microsoft.com>
+Subject: [PATCH v2] PCI: hv: Fix a crash in hv_pci_restore_msi_msg() during hibernation
+Date:   Wed, 16 Aug 2023 10:59:39 -0700
+Message-Id: <20230816175939.21566-1-decui@microsoft.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: CY5PR15CA0165.namprd15.prod.outlook.com
+ (2603:10b6:930:81::7) To BL0PR2101MB1092.namprd21.prod.outlook.com
+ (2603:10b6:207:30::23)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/6] venus: pm_helpers: Use dev_pm_genpd_set_hwmode to
- switch GDSC mode
-Content-Language: en-US
-To:     Abel Vesa <abel.vesa@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Mike Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@qti.qualcomm.com>
-Cc:     linux-pm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org,
-        Jagadeesh Kona <quic_jkona@quicinc.com>
-References: <20230816145741.1472721-1-abel.vesa@linaro.org>
- <20230816145741.1472721-7-abel.vesa@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230816145741.1472721-7-abel.vesa@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL0PR2101MB1092:EE_|MN2PR21MB1503:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6d5f4774-4e64-4290-2eb5-08db9e82a52e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TzPyaK94eyN+lgllalHs/QuEmqXIZ3Iii0jTK+xfjnuq4mz3BfoMlfwvIrxik54IyLPO4p+irW2Uke3rLLNBri69t/17/INeNgdYbKTJw27M3WU7WrPwh+M3jNJeqSG0w7jAsJop8nRYhkKK0+z9DMC0Q4JdwQldOFP9be5Sn2qAZJUl+LPVGuybjEtyJrzynLVtACCFnHpJz90X5E/uYw+2s3VXd83/v+uPnuuhyP0PM1ij+ve8scaDkI+zwrAwpjk/xFNrTz0icHEKl5KrVYAIYZ8fr7RZ/07Z7onFLMvHu9Ivdo4I/R0p40uuquLFeMgggSeiVzjCW69DoR13kNuW8HqI8tagHwYcuZ6RQjTSYMbNBAUQQ0kGUcNMQrwC3tFZKUhIDlUAhEXyGOrNFyq1eiV2m/5it+zysgzEQ2hiXGNEWWGJsEoyr2ulOHafdrg6qd1/LqV+k1ezWeN0pWIbVWqDYMEBHLxVwKqDf6bKNK9Xm3GYLxvCpjm6U3Sw/hukVinuQiRRHxWhv//fWj+lSf7dZNOCS1tvRcjdfslgz8HYtiChNVmdr31SFmGMpe+7TaNKBF5IPuPO3wrtG/3uRJvY6sx6Aq4RDstbzWisgRKP8uFRu+i+oPUdDPy0RsDtjB3KNuOD4kcmAM2lhboXf1N56Oz9QLPmi42mKcSv/flwQaYA3Q63hhNKwPuW
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR2101MB1092.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(346002)(376002)(366004)(396003)(1800799009)(186009)(451199024)(12101799020)(107886003)(6506007)(52116002)(316002)(4326008)(86362001)(1076003)(66476007)(2616005)(10290500003)(41300700001)(66946007)(6666004)(66556008)(6512007)(6486002)(38100700002)(921005)(5660300002)(478600001)(82960400001)(2906002)(83380400001)(82950400001)(7416002)(36756003)(8936002)(8676002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?m0/cam3NrogI2tZOwA8Bth514oF7ArA4BJJvyxYToQWaz1XUYpefBYgGy6L4?=
+ =?us-ascii?Q?NJ3Xu8Fup2cZfJVFI0PVAEnCLOL0JPn+FMJLUT6SFZhOCRAwF1eCgCxlfasE?=
+ =?us-ascii?Q?mL1RsUckGaVvPbKn3hKuhLfwlcFWV/Z29x/j9blJEpJTTLanYwwBSOqUGa8/?=
+ =?us-ascii?Q?KXQOWnS+SWihZzfCTAQ/lfhnUzClZ7csC6Gix42VwIn+rhiSiClUfSdxhJJO?=
+ =?us-ascii?Q?WrszXbzFKECWdPSfGxrRWN+P+Bvu3YWefuLD3NOtq9IdoM/FufPvDhoKpmR1?=
+ =?us-ascii?Q?VYtIU7LWXVrCI3H04tZol/tTkznNZaomU9rtue5S2mQTg99L4BhNd8f3fu4v?=
+ =?us-ascii?Q?XNWNE+qOTQoRXHq6DXAOJrUWk4qMaZ8HR5bNppaJA12qZEQAekKi3kwik40X?=
+ =?us-ascii?Q?2xHDbq9elOVPpvf/ZuJOtooyAdNi2YW1YFovKDWD6JfVNel1tIvC2wWiRCWs?=
+ =?us-ascii?Q?dpLc3wcFM9vFtcmcKljy517seecaPCkiuJiHz1pFkYXgYo6SOxLDZHnikumT?=
+ =?us-ascii?Q?39+xj/wksiNBe61c+RwhnIfH7NZokkAMQ1Vb6BtOwnVAJplJDvUYOnFlu+LU?=
+ =?us-ascii?Q?yvAOnEh6rvnX7epMB4BmSpJoRZizUKwz8YTBm2pSX9r5snlAFhjnOtAnRUKQ?=
+ =?us-ascii?Q?4Q3Lk9nR8YHsteisEBHbQDzbmfkMD1xBV3i2ChMP7d/spsc7sXIwH+Db35OI?=
+ =?us-ascii?Q?p1pNDDQbtx3t1vCvwzf5OFj8plO7RhOul1A1PhrvwP9bZcdnEq3Z5fCB1HtQ?=
+ =?us-ascii?Q?AKp6adDrk+hTASItE9HyZY7KBOI3yKR5wGUEfgba35Tgfswazfjy11JVFioX?=
+ =?us-ascii?Q?/kcHwPWtEcnLZ2pRw3/yQo5YhhpNaaEWTQwjZkd4k9VFMv2YEoBV0Dk5EgxF?=
+ =?us-ascii?Q?IUX5PoJaRDsegpL2wePJgxuc5AasXRwkD4xuzqMXrUTfgLepIhI9OhDL8N19?=
+ =?us-ascii?Q?9EWGlNMQJ0w9LliGoGpOwrs2PwUoBxdCWcIWkI5XTtLflWNFwk2ZbxlsJm2K?=
+ =?us-ascii?Q?V3pAlLgAyUvUVuensFhJa7wgwcXavpC1NPt2xBGLuXUBnSos0uHcn29MSvfF?=
+ =?us-ascii?Q?MOyp/n40yWp84ZB/kC3VXh0vDaYKv/iHGG3Qnn/mvsqhbEeNgmKLVu0cVoY6?=
+ =?us-ascii?Q?ARDvZcvb74d6N0BrO02A556SRYJchxDbFp84vSkz/6Osuh2hwfF6VyFFOKEe?=
+ =?us-ascii?Q?zbHy3UyUJZN4TdcFChLXb6jE5/VcdFxgIqsV/qBg1O3Cdy0pIe9zEVeW3+T9?=
+ =?us-ascii?Q?ylC4OZY/OVHlcemYjzLknSjEuW6np3jZFbPF41TszxsAehC1hMu2KLsPGQcy?=
+ =?us-ascii?Q?AhbyUtqVpYpkP8zbqdULZHu4f5Q8BsreIiIOS9yxt3oXfWy7Dc3WKV2CxVIq?=
+ =?us-ascii?Q?ZV3WN/kNaJEO8t7xvbNZBrK3LIVKRpE9Z8iacbpnpmvS0uI0QDq+T8gWIFjG?=
+ =?us-ascii?Q?mA9OVnxhT8Em59kKpXy1+jduEu+f2Gv0p+H20v6US/wSEZm3apL4jetNvqgH?=
+ =?us-ascii?Q?Zcp2JbKsMj26PrZjQcMNys5lcjsJpI6ukHjxPfIPCE5hiiRx0VFaWU/xdpZC?=
+ =?us-ascii?Q?ObhlCWiSirA2w6Yl6IoMULSiPYifyrHe/L9gxpuFkl1Q2iUoScpaB4vcGlIs?=
+ =?us-ascii?Q?JUOLVydXxoPz9LcTP9Py8s5CKRx5hB1oJedWrwup/Bw/?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d5f4774-4e64-4290-2eb5-08db9e82a52e
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR2101MB1092.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 18:00:16.1320
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QD6bFM6Y/3rR69YKXA3N8gke09CK5XXppzXxvQBaHUPClaBDP5JqB8vYkNDLuykHjIOpZuTUVOfwsHcFdDsYnw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR21MB1503
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.08.2023 16:57, Abel Vesa wrote:
-> From: Jagadeesh Kona <quic_jkona@quicinc.com>
-> 
-> This change demonstrates the use of dev_pm_genpd_set_hwmode API from
-> video driver to switch the video mvs0 gdsc to SW/HW modes at runtime
-> based on requirement.
-> 
-> This change adds a new boolean array member vcodec_pmdomains_hwctrl in
-> venus_resources structure to indicate if GDSC's have HW control support
-> or not. This data is used in vcodec_control_v4() to check if GDSC has
-> support to switch to HW control mode and then call dev_pm_genpd_set_hwmode
-> to switch the GDSC mode.
-> 
-> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
-[...]
+When a Linux VM with an assigned PCI device runs on Hyper-V, if the PCI
+device driver is not loaded yet (i.e. MSI-X/MSI is not enabled on the
+device yet), doing a VM hibernation triggers a panic in
+hv_pci_restore_msi_msg() -> msi_lock_descs(&pdev->dev), because
+pdev->dev.msi.data is still NULL.
 
->  static int vcodec_control_v4(struct venus_core *core, u32 coreid, bool enable)
->  {
-> -	void __iomem *ctrl, *stat;
-> -	u32 val;
-> -	int ret;
-> -
-> -	if (IS_V6(core)) {
-> -		ctrl = core->wrapper_base + WRAPPER_CORE_POWER_CONTROL_V6;
-> -		stat = core->wrapper_base + WRAPPER_CORE_POWER_STATUS_V6;
-> -	} else if (coreid == VIDC_CORE_ID_1) {
-> -		ctrl = core->wrapper_base + WRAPPER_VCODEC0_MMCC_POWER_CONTROL;
-> -		stat = core->wrapper_base + WRAPPER_VCODEC0_MMCC_POWER_STATUS;
-> -	} else {
-> -		ctrl = core->wrapper_base + WRAPPER_VCODEC1_MMCC_POWER_CONTROL;
-> -		stat = core->wrapper_base + WRAPPER_VCODEC1_MMCC_POWER_STATUS;
-> -	}
-> -
-> -	if (enable) {
-> -		writel(0, ctrl);
-> -
-> -		ret = readl_poll_timeout(stat, val, val & BIT(1), 1, 100);
-> -		if (ret)
-> -			return ret;
-> -	} else {
-> -		writel(1, ctrl);
-This removal cries for better explanation.
+Avoid the panic by checking if MSI-X/MSI is enabled.
 
-Has the venus hw been setting some registers that alter the GDSC's state?
-Or the hardware's expectations of the GDSC state?
+Fixes: dc2b453290c4 ("PCI: hv: Rework MSI handling")
+Signed-off-by: Dexuan Cui <decui@microsoft.com>
+---
 
-Konrad
+Changes in v2:
+    Replaced the test "if (!pdev->dev.msi.data)" with
+		      "if (!pdev->msi_enabled && !pdev->msix_enabled)".
+      Thanks Michael!
+    Updated the changelog accordingly.
+
+ drivers/pci/controller/pci-hyperv.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+index 2d93d0c4f10d..bed3cefdaf19 100644
+--- a/drivers/pci/controller/pci-hyperv.c
++++ b/drivers/pci/controller/pci-hyperv.c
+@@ -3983,6 +3983,9 @@ static int hv_pci_restore_msi_msg(struct pci_dev *pdev, void *arg)
+ 	struct msi_desc *entry;
+ 	int ret = 0;
+ 
++	if (!pdev->msi_enabled && !pdev->msix_enabled)
++		return 0;
++
+ 	msi_lock_descs(&pdev->dev);
+ 	msi_for_each_desc(entry, &pdev->dev, MSI_DESC_ASSOCIATED) {
+ 		irq_data = irq_get_irq_data(entry->irq);
+-- 
+2.25.1
+
