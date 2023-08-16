@@ -2,58 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 831F177D86F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 04:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E8777D871
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 04:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241298AbjHPC1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 22:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33812 "EHLO
+        id S241300AbjHPC3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 22:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241293AbjHPC0j (ORCPT
+        with ESMTP id S241308AbjHPC3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 22:26:39 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C931FDC
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:26:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692152797; x=1723688797;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=2tRf3naf2c5ctxT7q+HHdzbvlkfLOsIUa5+Agb4rgas=;
-  b=m1OjrNmHShS++E3O7kPuM9gJ2AdWCXiPi3xC68vc4/YQw+lYX29iRBc/
-   Td+8Qz058IZiXd7qa/4t+a3hI+4bHURNNCZeFWSaLfa7mI1xDZUB9huRR
-   MBtOuI1Uvrw19mxEz+XSzhjxnW3PmAbxPQcmMzp32kofKMPFhJEYvXSiF
-   bwT2DSSXxA13eelcIXZgSe/aVelsnpK0Gp3I1ZZqZ/pBl4wNMtitY3xKP
-   ewIrQ50QV1H4IqB8tJSn6/9VLLmG4M3u1PvY1LmRfZk3ubXCkb8MqJMod
-   c6jl5wOifud1W3eXRsiN9USjZLhZYFCYdyAaJ6AytyPDopTVnJFq2Bd0l
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="458775788"
-X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
-   d="scan'208";a="458775788"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 19:26:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="877585273"
-Received: from lkp-server02.sh.intel.com (HELO b5fb8d9e1ffc) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 15 Aug 2023 19:26:40 -0700
-Received: from kbuild by b5fb8d9e1ffc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qW6F1-0001Q7-1w;
-        Wed, 16 Aug 2023 02:26:35 +0000
-Date:   Wed, 16 Aug 2023 10:26:32 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [paulmck-rcu:dev.2023.08.14a 48/51] kernel/rcu/tree_stall.h:11:10:
- fatal error: linux/rcu_notifier.h: No such file or directory
-Message-ID: <202308161041.0EOMbdcX-lkp@intel.com>
+        Tue, 15 Aug 2023 22:29:04 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9399A1FDF
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:29:03 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-114-154.bstnma.fios.verizon.net [173.48.114.154])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37G2SqM3021107
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Aug 2023 22:28:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1692152934; bh=Tqzc6H21Z5tRhTJIgrgKqSfa8TiyK0F3Ud9NCiMZK/A=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=aLdMHT7WV2jz7+Y3WXrBLdjFizcOCRkXODCFec6ifdZG037N42OPLao+xQbCeOc2h
+         hFFAzO4iqdsybeFmN93kkPU7Zl98s/7lRqY1YjUB9WCuXtcoGa5YJ8Y6+xp2tS/kxp
+         uG7uCuLURWt61hzPFEhwRLpIRCzBmShaar7To9/zj1T5el3TUVQ6se2Ku0zKb+UYhC
+         bP5qhw9q3zBGGicCd9GV5QEK8dj5a74kl4TMVFaPQ/ip2hQU9PH0Sh1o4YAfaG8bOk
+         Jf3BYBJHXBKVUtn5gKYKRMdxW8oU2DuQJEozI4m7I3HbTgIJg0nxifm/o+IbFfyPe4
+         V/Vnt7CJVKfVg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id E70D915C0292; Tue, 15 Aug 2023 22:28:51 -0400 (EDT)
+Date:   Tue, 15 Aug 2023 22:28:51 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Bhatnagar, Rishabh" <risbhat@amazon.com>
+Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Park, SeongJae" <sjpark@amazon.com>
+Subject: Re: Tasks stuck jbd2 for a long time
+Message-ID: <20230816022851.GH2247938@mit.edu>
+References: <153d081d-e738-b916-4f72-364b2c1cc36a@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <153d081d-e738-b916-4f72-364b2c1cc36a@amazon.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,32 +57,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2023.08.14a
-head:   a90c4cbc91475bd5df35f712a954972fbfff40a1
-commit: 815c9a53ab6b20e0dc90e733336151310a05cba2 [48/51] rcu: Add RCU CPU stall notifier
-config: parisc-defconfig (https://download.01.org/0day-ci/archive/20230816/202308161041.0EOMbdcX-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230816/202308161041.0EOMbdcX-lkp@intel.com/reproduce)
+It would be helpful if you can translate address in the stack trace to
+line numbers.  See [1] and the script in
+./scripts/decode_stacktrace.sh in the kernel sources.  (It is
+referenced in the web page at [1].)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308161041.0EOMbdcX-lkp@intel.com/
+[1] https://docs.kernel.org/admin-guide/bug-hunting.html
 
-All errors (new ones prefixed by >>):
+Of course, in order to interpret the line numbers, we'll need a
+pointer to the git repo of your kernel sources and the git commit ID
+you were using that presumably corresponds to 5.10.184-175.731.amzn2.x86_64.
 
-   In file included from kernel/rcu/tree.c:5066:
->> kernel/rcu/tree_stall.h:11:10: fatal error: linux/rcu_notifier.h: No such file or directory
-      11 | #include <linux/rcu_notifier.h>
-         |          ^~~~~~~~~~~~~~~~~~~~~~
-   compilation terminated.
+The stack trace for which I am particularly interested is the one for
+the jbd2/md0-8 task, e.g.:
 
+>       Not tainted 5.10.184-175.731.amzn2.x86_64 #1
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:jbd2/md0-8      state:D stack:    0 pid: 8068 ppid:     2
+> flags:0x00004080
+> Call Trace:
+> __schedule+0x1f9/0x660
+>  schedule+0x46/0xb0
+>  jbd2_journal_commit_transaction+0x35d/0x1880 [jbd2]  <--------- line #?
+>  ? update_load_avg+0x7a/0x5d0
+>  ? add_wait_queue_exclusive+0x70/0x70
+>  ? lock_timer_base+0x61/0x80
+>  ? kjournald2+0xcf/0x360 [jbd2]
+>  kjournald2+0xcf/0x360 [jbd2]
 
-vim +11 kernel/rcu/tree_stall.h
+Most of the other stack traces you refenced are tasks that are waiting
+for the transaction commit to complete so they can proceed with some
+file system operation.  The stack traces which have
+start_this_handle() in them are examples of this going on.  Stack
+traces of tasks that do *not* have start_this_handle() would be
+specially interesting.
 
-  > 11	#include <linux/rcu_notifier.h>
-    12	
+The question is why is the commit thread blocking, and on what.  It
+could be blocking on some I/O; or some memory allocation; or waiting
+for some process with an open transation handle to close it.  The line
+number of the jbd2 thread in fs/jbd2/commit.c will give us at least a
+partial answer to that question.  Of course, then we'll need to answer
+the next question --- why is the I/O blocked?  Or why is the memory
+allocation not completing?   etc.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I could make some speculation (such as perhaps some memory allocation
+is being made without GFP_NOFS, and this is causing a deadlock between
+the memory allocation code which is trying to initiate writeback, but
+that is blocked on the transaction commit completing), but without
+understanding what the jbd2_journal_commit_transaction() is blocking
+at  jbd2_journal_commit_transaction+0x35d/0x1880, that would be justa
+guess - pure speculation --- without knowing more.
+
+Cheers,
+
+						- Ted
