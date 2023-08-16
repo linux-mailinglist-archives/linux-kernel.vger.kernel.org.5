@@ -2,171 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F5477D9BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 07:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D915477D9C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 07:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241792AbjHPFU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 01:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38244 "EHLO
+        id S241863AbjHPFVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 01:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241850AbjHPFUU (ORCPT
+        with ESMTP id S241888AbjHPFVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 01:20:20 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2049.outbound.protection.outlook.com [40.107.243.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DAAC1999;
-        Tue, 15 Aug 2023 22:20:17 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kKufe2s85WsTL6NIXN0QIyTIBxhI2bXTnfzr+pkpnakaXGYx/uy+yJ+0P/jIaXnfaY3i13LAVFF1IR4VxVYMWiOhjCGmzLICz6JKoiUiflapVJO0tjX7a58LNKWp0gkjmwlaFr7gMK+0PFVrhiNT1JcXUqireTJJOq8qeuY5JheKUaQyeZtnNYIGD2/Xe7QGImsvOQuG1HDQqroZdh7Z0yFG4gIswsIt9giQnPkqUyQY9ULmY9wMUTzHZv7BuLmqXpDRcMu9fxZPP0Y960xoklDQwENFvKkhIklkqHcIKAh9WT3qmXGqQXnefKGZFganB/UH6efRut9Wmy1TbZDSKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2Tk+JYvf5UeY8XEYcBdNYTw7vyC1DOs3pZFEu1aj99s=;
- b=HGnB9AAGie3cIVpv86TEFxSbhVqT3gdcGIFCga/dtghSIb2LReE/P+kc2Sh8K/zabwY0HMBSMQcC69Gd5oXemIKOQ09S7G7EEdYBQiskK042zregJftNxF96+ypoHj024YodXPAivao4N+HmDcZK89J+QWhAapKXd/tXrUmyJGuLfRjTMqhX4sMkRbStDD1Q9Vcs8w9VchqCrfhz2KWjRvPAEZyQsPeUFWjuTttRZgshg6epMWXq5d5MDzkHVI7qe72hXsqATJC6zr3WVXtNdkx0HDewvdWCE13hf31XVcSFIE8Cdp+hV4jMs5NfV7DYtBKOQv6CdMODUzyZdKlbpA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2Tk+JYvf5UeY8XEYcBdNYTw7vyC1DOs3pZFEu1aj99s=;
- b=S1wXTPF4i6HmBWDQQxIVLUcAOCn+VSwX1GxMeCttrQlxLjbzBxVknTPGWE3GWn7g0vn8l26/D4MKXRPinTQ2ZHAvGmyAI03oozT3rnOkUVwTF/6ERSEcVPIiafqqB7z7QbxhBvDTf9AMeSDtuKle2TvQJO1wNHpuV8lhprQjnbE=
-Received: from MW4PR04CA0059.namprd04.prod.outlook.com (2603:10b6:303:6a::34)
- by PH7PR12MB7260.namprd12.prod.outlook.com (2603:10b6:510:208::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Wed, 16 Aug
- 2023 05:20:13 +0000
-Received: from MWH0EPF000971E3.namprd02.prod.outlook.com
- (2603:10b6:303:6a:cafe::d3) by MW4PR04CA0059.outlook.office365.com
- (2603:10b6:303:6a::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.33 via Frontend
- Transport; Wed, 16 Aug 2023 05:20:13 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MWH0EPF000971E3.mail.protection.outlook.com (10.167.243.70) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6699.15 via Frontend Transport; Wed, 16 Aug 2023 05:20:13 +0000
-Received: from jatayu.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 16 Aug
- 2023 00:20:10 -0500
-From:   Sanath S <Sanath.S@amd.com>
-To:     <bhelgaas@google.com>, <linux-pci@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <mario.limonciello@amd.com>,
-        Sanath S <Sanath.S@amd.com>,
-        Sanjay R Mehta <sanju.mehta@amd.com>
-Subject: [PATCH] PCI: Allocate maximum available buses to help extending the daisy chain
-Date:   Wed, 16 Aug 2023 10:49:23 +0530
-Message-ID: <20230816051923.2287912-1-Sanath.S@amd.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 16 Aug 2023 01:21:18 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 552EA268F;
+        Tue, 15 Aug 2023 22:21:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.at;
+ s=s31663417; t=1692163270; x=1692768070; i=g.ottinger@gmx.at;
+ bh=zihyiJ73ADx+UuuJMxXFt7FINHQFNKkDIYeeeLl7Gys=;
+ h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+ b=UB4rcAlBDsyX9MH45FrGgCo+stOeOOX4CWb98Pk71ahkFzsQB1AupLaa5U9qdWk7+pB0Wi+
+ CG8nLi3O5TtgY5FqaEJ6SCAMs5P/U0SHfzJg72iVqAO4UHRQ8ns+N/qPPtTd4WbBT18tteUVL
+ wAs0JJ7l9tcxSdk/HHAN0oIDsGcx/09fqo52/d7Szwu8InO/3bzIJSBadVwfQ6zf/KMMtc2sw
+ 6uVOsNE2M9qvx/VePvWjSr8V6rSa2kRGwvLy5TpyN4u5qRNyCn8cPKpMN82ISYUpmxWv9sDS7
+ PyTzpdwY41uaXpSSW9Hv9lDeWOipEzKjqvRh+TXxMsqJ329HPUsA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from f15h-Latitude-E5450.lan ([89.144.221.196]) by mail.gmx.net
+ (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1N9Mta-1pijBa1eDs-015JeV; Wed, 16 Aug 2023 07:21:10 +0200
+From:   Georg Ottinger <g.ottinger@gmx.at>
+To:     jack@suse.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        g.ottinger@gmx.at
+Subject: [PATCH v2] ext2: fix datatype of block number in ext2_xattr_set2()
+Date:   Wed, 16 Aug 2023 07:21:04 +0200
+Message-Id: <20230816052104.3374-1-g.ottinger@gmx.at>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000971E3:EE_|PH7PR12MB7260:EE_
-X-MS-Office365-Filtering-Correlation-Id: c9012912-40fa-411e-dc39-08db9e187802
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: v0hZhLwfTidJkZtS0F242jCntL/uQ/Y45WG5PDpyml638qKtacalmHa9lkevsndR3OsDD8sjTxBc01B8ZWkFDErut4wMYR8mWNXqoicrXSstSMzvYXkdhpid41cVMdIJCDOFD3EqnXuybNnEU+PkoW9TgJ7HJsIQyKxPHQNkXkizognGtSKLMrlZZGZrWeHYK+dHsdTkeAS9q17R6a/rrxvHJBUb8s9ZlCKX1AZ/1mGnXE31gLkQV6aUnFIPxKNTh3dQZOPVBMYB5b+8HQqAM0JWt93Bz0FO5EaM4n5HLTEEql9ZfYsmsmc0KqCEoan2a0AjXl6iXqGEScAAoCbBto8bUvOqupUrgVyJGEzlnZAx7F9XXd+qZhOqfzT30WGtvosDZIyzPlaRaGgG05OSoLTUERMhi4zNlGAjkHbhDLBCu9EKYT2Rev0JdBHnqB4+spSSi3XSs1Jtah20Nv9vhZ9U9qVAy8+lUma07Dy0t4m2K+LilbAouBfKN/DouYMkp2/T7fdeMXRIkV3iv8/kG+2NofLi5sT8SFjC9oEjBqTGwEXZl15fOmCOvW2bcWsdrU5AAPi1hVYwxPh9t1LwwZB0aNr90vsXsMgb8w+c/h4EemV0ZTTNaNpGnwoQ5ZLgJonH91MfY9E1bdCHlKeswik5nHLoO5/EaQyGmrbmJDjQ3EjxoUWPCho0TIoVe8BdQORF+py3g19xJ5pZ65KePDGV/vsWvfexFQ9jKC0qJk0vkvTrF7kiO4L99L1xwAskWrNPyCDFgxYHIWl18UBbuJaMrQAleoJD6bRHFN9aNzU=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(396003)(346002)(136003)(1800799009)(82310400011)(451199024)(186009)(46966006)(36840700001)(40470700004)(6666004)(54906003)(70586007)(70206006)(7696005)(2906002)(478600001)(966005)(16526019)(1076003)(336012)(426003)(26005)(110136005)(5660300002)(2616005)(83380400001)(41300700001)(316002)(47076005)(36860700001)(8936002)(4326008)(82740400003)(8676002)(81166007)(356005)(40460700003)(36756003)(86362001)(40480700001)(131093003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 05:20:13.1351
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c9012912-40fa-411e-dc39-08db9e187802
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000971E3.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7260
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:JxcYQOoSRCKJNW9jHezvOnUVv5Ym/zSkRwGa+ShBlFSn5EuyRq+
+ HHtTeFJV5mzJaTx9tWW+iILGsDHlU4tBWYX/nLm18TWU/v8sohjdFnGnGUuzqu6iF2N+Ski
+ piShylxLm8wArlH0tNgZF3bMMjzVksgjzeXRG0KkpnUbveH7Omi7OwsOIT8/ro0h95w/1Pe
+ oJ7wtYSFtBo6afeyEws2g==
+UI-OutboundReport: notjunk:1;M01:P0:yrwRBMUQpHg=;2r7qejm93REDKt+vnWRsxn722Ll
+ p41N0Of2yg9cWvGR1ZO74+FvzL+1h+HODR1/HXjhy72w6DObRSCxiW/X0rYnsVaE4eukud6gS
+ QRob0R03Ip7tRR/dwfKF4QXxKG6VPyw2xIsz3pDTFtipTKVyLIM6vXSeK731y1GqfhteViLwe
+ 45fDp3KZ6AhHgz1cNSYfThHn+xSQYBLMkL2enwq5N5pqR2dQAbcOtvdC5oW0IwkHY7ogTlfU4
+ ioNdfszsA2k/7kIWk0eOGDKlNkU42DNpWL4WV2Xp5k0rpxpYvW1xhMQ0q5oMd4hsIn081JFS6
+ Dt1zvKIJU5u9de1NU3bDR2cwqIVLsDzLOH9hgUol58aXbJV1cByO80JFyzxxJSHRuc2d6x7sg
+ IPk0uyS+PCnGCn03Ing2+/57xF45d7aCoVP3U5naEVHipmxfCsyrZg/GETdgZVin6sTN+02MU
+ dneVNpYr4ILQ7M2YYZOCjTyRcM+HKo9AAG9BDC+T7897gN2GwotZ0eU9E+Fnf+EVgWZC/74OE
+ FY6uHtBI7uoFZuqDHHlCh8nUy0ClcsABA9uKZ9vUIXeXX4kYi2+wHYB2qjXB6HWrgbFkRxqGZ
+ qkMki6BpkVCP3EnVRjydMWyrvDZDYHO8lRFcLgfOYlzmwAknICwIy0L6Qx3rMi2443km9H3hx
+ nsUorEnXiz4x/CCRNE1/2ob59cCIHJTDbHdQIrtP1Y+WdFCRabBS4hQE8utp2hbP5kIHXpboc
+ RWlKQhrKzx0W0JiOU9tYmVZUHDnPpOuPUuX6yfwKPuwXMmrXKCzwUK1xrn066pcqvBeIrbn1F
+ mgNwYgLsw1SxZLrUijQi6WyNiJMmPUYKIpuLzeOt1BMB3eTFoThSl7wQuvRHNMQbx2gy+bCzZ
+ TJ85Isc51tkvBEtRZaKxYX/g8BGDNFRxW4KuHMNkAhUAq/JHEIAoYPi+gnT/S33rPZcWI+hzl
+ 2yyRn2SGwKB+E9XlAkmZEGjH98w=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the case of Thunderbolt, it contains a PCIe switch and one or
-more hotplug-capable PCIe downstream ports where the daisy chain
-can be extended.
+I run a small server that uses external hard drives for backups. The
+backup software I use uses ext2 filesystems with 4KiB block size and
+the server is running SELinux and therefore relies on xattr. I recently
+upgraded the hard drives from 4TB to 12TB models. I noticed that after
+transferring some TBs I got a filesystem error "Freeing blocks not in
+datazone - block =3D 18446744071529317386, count =3D 1" and the backup
+process stopped. Trying to fix the fs with e2fsck resulted in a
+completely corrupted fs. The error probably came from ext2_free_blocks(),
+and because of the large number 18e19 this problem immediately looked
+like some kind of integer overflow. Whereas the 4TB fs was about 1e9
+blocks, the new 12TB is about 3e9 blocks. So, searching the ext2 code,
+I came across the line in fs/ext2/xattr.c:745 where ext2_new_block()
+is called and the resulting block number is stored in the variable block
+as an int datatype. If a block with a block number greater than
+INT32_MAX is returned, this variable overflows and the call to
+sb_getblk() at line fs/ext2/xattr.c:750 fails, then the call to
+ext2_free_blocks() produces the error.
 
-Currently when a Thunderbolt Dock is plugged in during S5/Reboot,
-System BIOS allocates a very minimal number of buses for bridges and
-hot-plug capable PCIe downstream ports to enumerate the dock during
-boot. Because of this, we run out of bus space pretty quickly when
-more PCIe devices are attached to hotplug downstream ports in order
-to extend the chain.
+Signed-off-by: Georg Ottinger <g.ottinger@gmx.at>
+=2D--
+ fs/ext2/xattr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Before:
-           +-04.0
-           +-04.1-[63-c1]----00.0-[64-69]--+-00.0-[65]--
-           |                               +-01.0-[66]--
-           |                               +-02.0-[67]--
-           |                               +-03.0-[68]--
-           |                               \-04.0-[69]--
-           +-08.0
+diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
+index 8906ba479..89517937d 100644
+=2D-- a/fs/ext2/xattr.c
++++ b/fs/ext2/xattr.c
+@@ -742,10 +742,10 @@ ext2_xattr_set2(struct inode *inode, struct buffer_h=
+ead *old_bh,
+ 			/* We need to allocate a new block */
+ 			ext2_fsblk_t goal =3D ext2_group_first_block_no(sb,
+ 						EXT2_I(inode)->i_block_group);
+-			int block =3D ext2_new_block(inode, goal, &error);
++			ext2_fsblk_t block =3D ext2_new_block(inode, goal, &error);
+ 			if (error)
+ 				goto cleanup;
+-			ea_idebug(inode, "creating block %d", block);
++			ea_idebug(inode, "creating block %lu", block);
 
-In case of a thunderbolt capable bridge, reconfigure the buses allocated
-by BIOS to the maximum available buses. So that the hot-plug bridges gets
-maximum buses and chain can be extended to accommodate more PCIe devices.
-This fix is necessary for all the PCIe downstream ports where the daisy
-chain can be extended.
-
-After:
-           +-04.0
-           +-04.1-[63-c1]----00.0-[64-c1]--+-00.0-[65]--
-           |                               +-01.0-[66-84]--
-           |                               +-02.0-[85-a3]--
-           |                               +-03.0-[a4-c0]--
-           |                               \-04.0-[c1]--
-           +-08.0
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=216000
-Signed-off-by: Sanjay R Mehta <sanju.mehta@amd.com>
-Signed-off-by: Sanath S <Sanath.S@amd.com>
----
- drivers/pci/probe.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index 8bac3ce02609..ab7e90ef2382 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -1263,6 +1263,8 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
- 	bool fixed_buses;
- 	u8 fixed_sec, fixed_sub;
- 	int next_busnr;
-+	int start = bus->busn_res.start;
-+	int end = bus->busn_res.end;
- 
- 	/*
- 	 * Make sure the bridge is powered on to be able to access config
-@@ -1292,6 +1294,13 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
- 		broken = 1;
- 	}
- 
-+	/* Reconfigure, If maximum buses are not allocated */
-+	if (!pass && start != 0 && end != 0xff && subordinate != end) {
-+		pci_info(dev, "Bridge has subordinate 0x%x but max busn 0x%x, reconfiguring\n",
-+			 subordinate, end);
-+		broken = 1;
-+	}
-+
- 	/*
- 	 * Disable Master-Abort Mode during probing to avoid reporting of
- 	 * bus errors in some architectures.
--- 
-2.34.1
+ 			new_bh =3D sb_getblk(sb, block);
+ 			if (unlikely(!new_bh)) {
+=2D-
+2.17.1
 
