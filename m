@@ -2,83 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9012177ECB2
+	by mail.lfdr.de (Postfix) with ESMTP id E3C3F77ECB3
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 00:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346700AbjHPWCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 18:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34886 "EHLO
+        id S1346731AbjHPWCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 18:02:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346695AbjHPWBy (ORCPT
+        with ESMTP id S1346702AbjHPWCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 18:01:54 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B7B90
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:01:53 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-68893256397so368910b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:01:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692223313; x=1692828113;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VBWbG2QXVJxk1xBNtiZNPqeLW4yQOwcqBAAuTBoWz9U=;
-        b=7yK6nlaM2bwfZv5iDk55eg/lYYmEMSRwr5atiJ9WsovSYfY6fGKBta1lCVV5aYmckx
-         8yiK7t4Mnw7iEtfTm+A/AS/UWyV04DZ6eCMFcUlVCTukikXQ2nQReiDspIg0QLMfdeNh
-         Vo+mRcwX4BB4+cwTZFtze9vU0E+AIPXkdiAa6jK0c+CSjkqfh5EhgZJqArNlxkT67s1N
-         FOX1ciMZYoN69DRgFDrhaIo7CdclnhjU1gKdTZxxtN5RVk3JXGBAEo4f+yAy1mlhKWT/
-         dk28REorXDFlkSUKQVLek5hAhV4UWkkuGsfDVY9gXz0+ZnZpwmJFLzSnZpP0RWB2NaPS
-         1rDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692223313; x=1692828113;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VBWbG2QXVJxk1xBNtiZNPqeLW4yQOwcqBAAuTBoWz9U=;
-        b=g6VivbWWB4U4L59bGVRavtBrBltwlOAUy7oNjwSZQOLSGcjTYwscNwCB8CrNq7dAuG
-         1UjilBgC50J9+hyJrkFWkC1PRjvt1hJqbQ4kO3Er+8hOLnCj1ybnfNm5bHjVIRffpaFM
-         6dm7vrXQ3vBSo3iagjwCPBrLgUVatI1I2rKITkg8YCjEIK+TqsED7up5wRki4QHaqWg1
-         2PZ3i/H9Ri8J8z6jSrzmjmiUceTdWNyV9pQU0Row4bdTHYf63gNh4etmHkAzCl7EiKyj
-         uBD0D9A3EDykPrPbtGzecCG8FMwQ7quRih2DPNqsY6echmXbVsLs2G8U4WpwLlGf7YPM
-         R5Cw==
-X-Gm-Message-State: AOJu0Yw4EfPHX3YSG5C476yGn5Lw1DmwnnebME/rSthRX+DaIOdHKGOJ
-        B762oRHd+Cpl4uQRcw6vUFxkurkyl2A=
-X-Google-Smtp-Source: AGHT+IECGuILJhGG7M10tme6mh4YKaUBjEHoQvuTjBLw+EFSHmvpxYXkTjIEzuG1aw08h29gjmonNn4jiJY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:9a0:b0:687:5274:da17 with SMTP id
- u32-20020a056a0009a000b006875274da17mr414480pfg.2.1692223312805; Wed, 16 Aug
- 2023 15:01:52 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 15:01:51 -0700
-In-Reply-To: <20230719144131.29052-8-binbin.wu@linux.intel.com>
-Mime-Version: 1.0
-References: <20230719144131.29052-1-binbin.wu@linux.intel.com> <20230719144131.29052-8-binbin.wu@linux.intel.com>
-Message-ID: <ZN1HT61WM0Pmxqmr@google.com>
-Subject: Re: [PATCH v10 7/9] KVM: VMX: Implement and wire get_untagged_addr()
- for LAM
-From:   Sean Christopherson <seanjc@google.com>
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
-        David.Laight@aculab.com, robert.hu@linux.intel.com,
-        guang.zeng@intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 18:02:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC810F2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:01:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 63DAA61BB6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 22:01:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60DCEC433C8;
+        Wed, 16 Aug 2023 22:01:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692223318;
+        bh=UUEYl5HxoSScFuWiDblQhxwz1ZMb/pQYtbWQP+cA2eg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mzhhZBrdLkDYrFA8xJ72K20M7OC88H5TSa9hS2L0i5T6JJ0YIpbHlA0McRhYXzWn2
+         8bDPQskKDcGnOwlpmAPrwmug7W2uRytVo3pM9VxGHL0LDzbfsfPI4iJxBSxnccOSh3
+         CX1ZVXE6QR5x7LuNCfsd4fG54FtffTe/gNTqoY36ZRmc1uf5ROun6UvI15n+Te0TDC
+         PJdqX1NfQRO9ZkoJR69B+GLh+KdUQnBfnpNCYxevZvO9yZ67HFBtj6C+qdhqGtPet3
+         TTCG+Q24+sK5cUxckv0TMYlbGgWiMPoMx9gfKGH/mcNDVHi91n+jyLfAu/xvvK4wn9
+         06+DaUJ0Ikw4Q==
+Date:   Wed, 16 Aug 2023 15:01:56 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Keguang Zhang <keguang.zhang@gmail.com>, llvm@lists.linux.dev,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: Re: ld.lld: error: version script assignment of 'LINUX_2.6' to
+ symbol '__vdso_gettimeofday' failed: symbol not defined
+Message-ID: <20230816220156.GA1408221@dev-arch.thelio-3990X>
+References: <202308170532.zxFFv25c-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202308170532.zxFFv25c-lkp@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023, Binbin Wu wrote:
-> +	return (sign_extend64(gva, lam_bit) & ~BIT_ULL(63)) | (gva & BIT_ULL(63));
+On Thu, Aug 17, 2023 at 05:15:55AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
+> commit: e738521a11f13e40af89f66527e59306c4169782 clocksource/drivers/loongson1: Move PWM timer to clocksource framework
+> date:   8 weeks ago
+> config: mips-randconfig-r012-20230817 (https://download.01.org/0day-ci/archive/20230817/202308170532.zxFFv25c-lkp@intel.com/config)
+> compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+> reproduce: (https://download.01.org/0day-ci/archive/20230817/202308170532.zxFFv25c-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202308170532.zxFFv25c-lkp@intel.com/
+> 
+> All errors (new ones prefixed by >>):
+> 
+> >> ld.lld: error: version script assignment of 'LINUX_2.6' to symbol '__vdso_gettimeofday' failed: symbol not defined
 
-Almost forgot.  Please add a comment explaning how LAM untags the address,
-specifically the whole bit 63 preservation.  The logic is actually straightforward,
-but the above looks way more complex than it actually is.  This?
+I fail to see why the robot landed on this change as the cause of this
+error but regardless, I have sent a patch to clear it up:
 
-	/*
-	 * Untag the address by sign-extending the LAM bit, but NOT to bit 63.
-	 * Bit 63 is retained from the raw virtual address so that untagging
-	 * doesn't change a user access to a supervisor access, and vice versa.
-	 */
+https://lore.kernel.org/20230816-mips-vdso-cond-export-__vdso_gettimeofday-v1-1-fe725254c782@kernel.org/
+
+Cheers,
+Nathan
