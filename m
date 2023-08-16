@@ -2,200 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 127C877E8C4
+	by mail.lfdr.de (Postfix) with ESMTP id AF82477E8C6
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345545AbjHPScA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 14:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
+        id S1345551AbjHPScC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 14:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345540AbjHPSbZ (ORCPT
+        with ESMTP id S1345558AbjHPSbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 14:31:25 -0400
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2041.outbound.protection.outlook.com [40.107.100.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5024519A1;
-        Wed, 16 Aug 2023 11:31:23 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L+8JuXEvxF8VSyPTLTSfzzzlRe14LL6QggDbDCxjzBf7b+89pMAxxU57C2z8kyYzdMK8x05KcFEdAU3M+ZJ0WL5POxkN3O3BSaweiUFxQ8BnsABueRC1Vp/UhoIFNpfqQo42r69BS8/bcSPf5tLrvup8Tjl+SypDi77PDkd6/OkgLg3Us71lYhgeYPWe1Ho7BaKxo8CgNEXLZExNaqTLBD1uUlD9iauP84VxQKfmqS40QiGDEo95uaUGo3kHTODTLncCadgXiPoNYZ170NUQxPVGVfdhU1XQ6EJa/2ej8NsVjQExurw0Ubimb99CtLppplbCp8AhyxmScnNteY9lhw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3BnfSgAaPgCFNbDNytPDTdgaGyTZ0n9K+idJLqt10Cs=;
- b=iVQCWQZb4BgSQEFHGvFAnr0PsXFpnKkRHaupR2hCsd/IvtAkC/PPYUfaACfPdvfQC6D99rSb53cpKqUQ0Lo5O8sGnw04312vu2zU/a9RelInRMxXELWl42ZAKNBzgnlzjTr0E4RwW8q3An4S20BDwUcNny+ryHc6nIlLCk+Qswk2ZBIO+r9XD7WiUiBRpA2iYgf7DMQeX1QALaVng1+gGMtRPLNybj2V3GRxNqZ7A0ax7rhdfQvvArsGIlccPmkw1qI5e4sj6DiH3tielK147WKHinMQz7opYEDLwMPEeJ1tO6E/79Mvh6aknDN+56y1bbV2NkR/ozvBWkhS01dB9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3BnfSgAaPgCFNbDNytPDTdgaGyTZ0n9K+idJLqt10Cs=;
- b=J2vmuHssah3UYksvcMACznZCOW1nLrdK5Jwb5NF8cBxr9CFhkErECQfpOcotxRWZR51uSMs7QBF3UKfnOUuHX1bEdL/xMkWhDlw/gk5yZjteSe1U++OeIO9Aj5AzykN/8SxrqbeK5WGiORh55FoIVoBqMex3Lng2OAhz6EtjZwls5CLE1fyPLQNIji7zJmCbGyW222tNmDx3PdbzDPrdvmkSoJvRRH3KAmtyAA85BNf9FJERw1l1AYLlWJQP7RUu4YMXgTAx9MFO1UT4ZCQY4Ba5SjDbkAswIipC3g/EBAKfZu4M8hUZ540c0bifb/j5Q8jGzJHBatSn48WmdLsYCA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CY5PR12MB6201.namprd12.prod.outlook.com (2603:10b6:930:26::16)
- by MW4PR12MB7117.namprd12.prod.outlook.com (2603:10b6:303:221::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Wed, 16 Aug
- 2023 18:31:20 +0000
-Received: from CY5PR12MB6201.namprd12.prod.outlook.com
- ([fe80::87fb:3736:7ec4:b260]) by CY5PR12MB6201.namprd12.prod.outlook.com
- ([fe80::87fb:3736:7ec4:b260%4]) with mapi id 15.20.6678.029; Wed, 16 Aug 2023
- 18:31:19 +0000
-Message-ID: <e8a414f0-ac55-9ac1-b115-94daa5914a9c@nvidia.com>
-Date:   Wed, 16 Aug 2023 14:31:15 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.9.0
-Subject: Re: [PATCH net v1] virtio_net: Introduce skb_vnet_common_hdr to avoid
- typecasting
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Simon Horman <horms@kernel.org>
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Bodong Wang <bodong@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-References: <20230814171845.65930-1-feliu@nvidia.com>
- <ZNtYpohWyjnb883M@vergenet.net>
- <05348d62-586c-4b1f-40bd-5541caca0947@nvidia.com>
- <ZNunz1hbqPKpcOgA@vergenet.net>
- <CAF=yD-L+d34Uuvt3sOFOnxXhMmoMXNfHzcaSPk=t1PtiPUHZ1g@mail.gmail.com>
- <f9f3c150-2b5e-7bd0-1c1a-062bd1f16fcd@nvidia.com>
- <64dce2f2b99f5_23f1f82949f@willemb.c.googlers.com.notmuch>
-From:   Feng Liu <feliu@nvidia.com>
-In-Reply-To: <64dce2f2b99f5_23f1f82949f@willemb.c.googlers.com.notmuch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DS7PR03CA0190.namprd03.prod.outlook.com
- (2603:10b6:5:3b6::15) To CY5PR12MB6201.namprd12.prod.outlook.com
- (2603:10b6:930:26::16)
+        Wed, 16 Aug 2023 14:31:55 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C4C1986
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:31:53 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b9ba3d6157so106758061fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:31:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692210710; x=1692815510;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Lx+mSV9nVDCSUCZ9Mp20Kvrcl4sv9ALrPuz3+qN6T0w=;
+        b=KF72xASUYluN/72dWo+aR6khFl46jSBhJ21VozdC9HBp/U7j4mfKg7Kmso6fv1RyrL
+         2UZad5fbNrfwGOKnAfHtkX/hd2+nvmLX7dQAa+BWV5Cbgg64KpeOk5Hf7TPAX1pQgEjP
+         3WKXN3vQrj7aSUja4t6Ql4ldSe+I6OKbb5C+g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692210710; x=1692815510;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Lx+mSV9nVDCSUCZ9Mp20Kvrcl4sv9ALrPuz3+qN6T0w=;
+        b=ISJ6QYu4HXrxlxHbwZ3JMHQ6soZvB2yeh46HGNlH65x2Db4S9yb5GsH4Szi5Tf/3Tz
+         82lMPw++CPf8CgT5rSyK7rdzOBrELjeQLp4V5vginKeZ73HqzrKyFeu78oCrtWHL71UD
+         6HrIztxWtSvs45/Hc9wdUldhYOhkhjeIr9y3fLQ1dkk3cLTbY3ON/jkdscXMm+vEKnmb
+         ErrYUS7ymKmJihp0GUaFwaFAmdPXNonE46M2GD2xVqIPnEmCDxR25zHmzcjE6XOrzXi4
+         4QpkdMbvRu9FGPy47uhaULIwvwntJ9R/MHqy4Op9DJy08HWvU4lgFaTgeH27OFO97kjP
+         RetA==
+X-Gm-Message-State: AOJu0YwTv1ze/9Y6KBRy3hFUPuinrEKM2x+zDjd7noBRM73QtOrhoNwb
+        CxiIVVcD8LOL/q2Q5oGcGIs1ynqkz8+x/bmbbDAuhpy+
+X-Google-Smtp-Source: AGHT+IFbK6r2pz7XdvrM0h+SLT3UQMDoHzp1u5Lv/DXYdCMPmZ8WfV/FAnd8C+MQV6NR3IuUNLdlDw==
+X-Received: by 2002:a2e:9c86:0:b0:2b4:6f0c:4760 with SMTP id x6-20020a2e9c86000000b002b46f0c4760mr2009912lji.11.1692210710203;
+        Wed, 16 Aug 2023 11:31:50 -0700 (PDT)
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
+        by smtp.gmail.com with ESMTPSA id i25-20020a170906115900b00992025654c1sm8991370eja.179.2023.08.16.11.31.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 11:31:50 -0700 (PDT)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so1995a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:31:49 -0700 (PDT)
+X-Received: by 2002:a50:a45b:0:b0:523:bdc9:48a9 with SMTP id
+ v27-20020a50a45b000000b00523bdc948a9mr18121edb.0.1692210709094; Wed, 16 Aug
+ 2023 11:31:49 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR12MB6201:EE_|MW4PR12MB7117:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6eaf0462-d11b-4a2d-8c26-08db9e86fc14
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 244sFdBLJDtohsWz/lT0aWp86rfAfvSaQsXeLq/wd1TevKdlVXsWQGQmOgWMLEqpZewGAXD3HaXckga1DSqBr7wkM3VALS0mmwgzQjoG7F9aT5MhtjW92QuT/h4btpC2lsyFVDwfzBjchzDj2BcJhMG/8fF0W959sb2/WOjzLs85SApTjtxrEAfbvub0drPd+Uvf91GWi1VGtHK6C8N3y4xR591b9qPSM+09xrvnfKBvoCW5PNJsL7Vq58bXTEu2FiaUtIPSQKzWz/1RGBVGjHs8xIi6dlGinkvLxeDuE2kl3HYGp/I1WtvY5Ri7XkSE4HkzqO+6e72Hp4Bv8sYk6gK+o8wuymfxl7bScZXWifG72YMENjvGc0ToiQub3B8CraK9ppcmci/810U0MD36YBQlCw8uFWu8uLolJpkT0ZQbz8OpCzvyRO2QwPBmma4ueAT0XWLDFMWk3zFnxfNwwZxeaWUdG6kIBUIkiSykkfgEhucgQGf3vsnnTVDVpTyqEQXtwrsviI0ex0Kj0KlgsQz6VP8dHoajosRtCpdH6MokQuNGTqwJc/4SK9Y0d4aGL7elKro6IfT26H+++ZsQe0XgUWw6nyyA0Iv8qKgrfGDSf7L8mMYYerT1i0bCcfGK4ZlccwKPI0xMxkxTmVrrvA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6201.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(396003)(376002)(136003)(366004)(451199024)(1800799009)(186009)(316002)(54906003)(66946007)(110136005)(66476007)(66556008)(41300700001)(5660300002)(38100700002)(31686004)(8676002)(4326008)(8936002)(2906002)(83380400001)(26005)(478600001)(7416002)(86362001)(6512007)(31696002)(6506007)(36756003)(6666004)(2616005)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QVM5ZHlOOG51REMySVpHMDFDNmRkVE9pK21xSDlMNytSWjM2Z2NmcnNUVmxK?=
- =?utf-8?B?UXJsaGQ1VWFZTWR5THFrN0s5MVRYOXJVYjlRdHFzVWlTNXZ0bEhtOC8veGRY?=
- =?utf-8?B?N0FDb1ZVK0pvTjVkZy9JRFg3Z2VXZ0ppa2lRMVNKRGpRUkI4NlR0bmZQQ1BD?=
- =?utf-8?B?eHpxdEtDZ3hyWDRjQ0E4RkM4cW1hUUJZRHNEUW1qNHRwT3ViZmhXdllkdTBD?=
- =?utf-8?B?ekhYOGJzTXJIcFlZdDJTWTZiczgrKy9WYkJCOEszMXBCVG5qYjZjTHZpWUUv?=
- =?utf-8?B?UkZGMmxjRlgyTWhJNWlDWTNkQ2RKMXNGVmVYdnpieW9WTzF6eVpBSnlVYmYz?=
- =?utf-8?B?SE9aMU5zdGJlSkJVcVFyN0VqR1BEOXJncFY0V1dqQ3NZMmRvWjNESERDYnJY?=
- =?utf-8?B?UHQwbElDMElOd2JXMjJLOGsxZXVKR3VSYWRmM21JTmtZQUwvc0JoUEN0N2Iz?=
- =?utf-8?B?MEd6K1ZTYmN5UlFWWlB5MXBlZXVKWE1ob2VvMzJ4WUJXS282d0VVeXN1Ykt1?=
- =?utf-8?B?d0l3T1NQM1Nic0Z2UVhvL1BleUpscWZhZGh6YkcwMVBiVEE3Q1dpRS9RR2ZZ?=
- =?utf-8?B?MEZsdkNwUTRTaUZiQjNkMVhNYjVHR2lidmtSNXNyQjlsTzh1V3dMTGZWNW5P?=
- =?utf-8?B?UU5xRjVObVdKNHBudzFiLzZxRGcyVTJWazhkV2FUVkd1VVNPUnBZeUxSUjlY?=
- =?utf-8?B?M0VuSzluVnVRUW9NalNOWFlscDZ4VnIyTTRRU1hkSWVhQUtQdDkwMS9zRzNp?=
- =?utf-8?B?ZUppOFV3c3ljOHB2VFJBcnBJZE4rZG1yb1gvYlRyREZNNUJOQkxUU3Bwd3Zm?=
- =?utf-8?B?RjFjRGtsN1l4MEFrQm9TUml5Z2dtT3BKRkhJWE5EN05WY2NuWURKaTVMUlpz?=
- =?utf-8?B?cVVUb3p1aHNxNU9yVjNrTktTWFdsNFZ6dy9qWVFsVGQ3L2RJWEo3SlIvbmhi?=
- =?utf-8?B?OXdoZ0R6VGdITUJZL1lzSk0yaEFJdUhHYTdVbnVNNkVPcWwzeWxDTUhYUGtQ?=
- =?utf-8?B?NjZLMk5HWDZ3YTZXRTdWaGwrcmhObEQraFUwbTRoSTNTejNlaU9WNWhZZExk?=
- =?utf-8?B?emF2dEllOHBCdC8zMWdqMW1DOVA3MDd6WFY1enVRdWJhTTNyOXlyaHFNaDBT?=
- =?utf-8?B?ekpDQ0xnRDZOWXNwalNneDQwK3pZbGJhVXMyNnR4dU9HSWpwUXA3cGlNMUxN?=
- =?utf-8?B?bWwrY21qTHRFS0NDaUpud0g2ZVBTTUJOREhuRFRtakVTb05Td1hiejVDVzRK?=
- =?utf-8?B?ZXd2eXdqM2FWRmUzSzg3R3krT3Y0d0oyQkVRa0pNOC90OVIrbnZkSnMxSy9M?=
- =?utf-8?B?NVU3NDIyV2RMSGdHdGtjWU9naXd3dlZZZmdOVWtqbU45ODIyZno1NnZPckZQ?=
- =?utf-8?B?Vitqbm5ESUdQN0RNcVVwaExrd0lUYWcvRGpRbGhkTE4xVjZ5VHlkV1RQUnFn?=
- =?utf-8?B?OWJwWUZFd1prYURtMjBOazZoV3IxSlkwaVdRdW9tbmFEY1NXTTJHNlkxaXox?=
- =?utf-8?B?NE44M2VEVEM1RjRUQVhEUW00VHA4dlVjZVUrd29MLyt0TTZxamREM0ZRNGdL?=
- =?utf-8?B?RFM0ZkVyb0c0V1RPb1ZHLzNLNlpVaFk1eVRwUE9kZHlrbnVxTTNJZjhYc3BS?=
- =?utf-8?B?eTRMcFpHeVo4ZWVVNGJnQjlUd3pKYm4vb1FjbCtYSTRNaENPeGtROEtJZi95?=
- =?utf-8?B?cnl0NnMzTkxYem5obVhydWJqM1BtVFI3Z3ErN3NISTN3SWRVRlJHM1VmY1Z6?=
- =?utf-8?B?Sk90UUpIMGRHRkM1NmlId0V1aHpMbzRLL0FVdFRRS0ptZ3ZqKzNtOEJvZTdl?=
- =?utf-8?B?ZUZHS2RmdDB4RnNMVEhaYlNaeWhBY2VSK0JWK1g2cjJvaUIvU2padmUwRVp2?=
- =?utf-8?B?NmhtU1BaMk5UMVJneW50TlR4OUVOUWFqdG4zUmJKOHVVSVBGK2VLVCtFRVJE?=
- =?utf-8?B?U3J6V0tLOWVoYjQ0Uk12TG9VczdET28wWEFVQ0NKMzJhRCs4NmNNRDZGRlpm?=
- =?utf-8?B?WDFKMGY3ZmFneUovV0NMbVhyTXNadEtSbzRVRGpaVEl3R3k4dkRWbEpidUsz?=
- =?utf-8?B?TFZQaWUzM0R5c1RKTngyeERKdlJYQUYyR1dYbldOdFdNRVE3MDBPekswcVds?=
- =?utf-8?Q?7atX2aynV0Tjcx2GiT85Igl3e?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6eaf0462-d11b-4a2d-8c26-08db9e86fc14
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6201.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 18:31:19.6413
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /CkO+cylfKnslvAcZabqhA4xZFxP2jPh/rdgE0b/xEbVOOGlq+2IqSb1XbY9lVR1zKtuKJNstmxF9qDRpjTz+A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7117
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230804095836.39551-1-sheng-liang.pan@quanta.corp-partner.google.com>
+ <20230804175734.v2.3.Ie77732a87ab53d21bac47db309b75a796fa19337@changeid>
+ <0cc71595-ba11-11d4-1fcd-865721ede3f9@linaro.org> <CAD=FV=UfKXBQ6R0+5yY6WaNFS49=jmg2NTXrUPcyD3MBZA7A5A@mail.gmail.com>
+ <eb082e10-efc2-0f5f-95e1-4d2707c87c59@linaro.org> <eb082e10-efc2-0f5f-95e1-4d2707c87c59@linaro.org/>
+ <20230816095910.41305-1-sheng-liang.pan@quanta.corp-partner.google.com>
+In-Reply-To: <20230816095910.41305-1-sheng-liang.pan@quanta.corp-partner.google.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 16 Aug 2023 11:31:36 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VedSS62LKPHeHm8qXF_acVmjXODJS8V-EeC6eHSc9yNg@mail.gmail.com>
+Message-ID: <CAD=FV=VedSS62LKPHeHm8qXF_acVmjXODJS8V-EeC6eHSc9yNg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: sc7180: Add board id for lazor/limozeen
+To:     Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>
+Cc:     krzysztof.kozlowski@linaro.org, agross@kernel.org,
+        andersson@kernel.org, conor+dt@kernel.org,
+        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
+        konrad.dybcio@linaro.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+On Wed, Aug 16, 2023 at 2:59=E2=80=AFAM Sheng-Liang Pan
+<sheng-liang.pan@quanta.corp-partner.google.com> wrote:
+>
+> > On 15/08/2023 23:10, Doug Anderson wrote:
+> >> Hi,
+> >>
+> >> On Sun, Aug 6, 2023 at 11:34=E2=80=AFPM Krzysztof Kozlowski
+> >> <krzysztof.kozlowski@linaro.org> wrote:
+> >>>
+> >>> On 04/08/2023 11:58, Sheng-Liang Pan wrote:
+> >>>> add BRD_ID(0, Z, 0) =3D 10 for new board with ALC5682i-VS
+> >>>>
+> >>>> Signed-off-by: Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.=
+google.com>
+> >>>> ---
+> >>>>
+> >>>> Changes in v2:
+> >>>> - correct newly create dts files
+> >>>>
+> >>>
+> >>>
+> >>>> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10.dts b=
+/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10.dts
+> >>>> new file mode 100644
+> >>>> index 000000000000..5a58e94c228e
+> >>>> --- /dev/null
+> >>>> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10.dts
+> >>>> @@ -0,0 +1,30 @@
+> >>>> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> >>>> +/*
+> >>>> + * Google Lazor board device tree source
+> >>>> + *
+> >>>> + * Copyright 2023 Google LLC.
+> >>>> + */
+> >>>> +
+> >>>> +/dts-v1/;
+> >>>> +
+> >>>> +#include "sc7180-trogdor.dtsi"
+> >>>> +#include "sc7180-trogdor-parade-ps8640.dtsi"
+> >>>> +#include "sc7180-trogdor-lazor.dtsi"
+> >>>> +#include "sc7180-lite.dtsi"
+> >>>> +
+> >>>> +/ {
+> >>>> +     model =3D "Google Lazor (rev10+)";
+> >>>> +     compatible =3D "google,lazor", "qcom,sc7180";
+> >>>> +};
+> >>>> +
+> >>>> +&alc5682 {
+> >>>> +     compatible =3D "realtek,rt5682s";
+> >>>> +     /delete-property/ VBAT-supply;
+> >>>
+> >>> No, don't delete properties. First of all, why you do not have this
+> >>> supply here? I doubt it... Especially that this DTS has vbat-supply
+> >>> regulator!
+> >>>
+> >>> Second, define the properties where applicable instead.
+> >>
+> >> It looks like v3 is out, but responding here since it looks like
+> >> Sheng-Liang didn't make any changes in v3 but also didn't respond and
+> >> explain why he didn't make any changes. Sheng-Liang: for future
+> >> reference you should make sure to address comments folks have on the
+> >> list. If your new version takes their feedback into account then
+> >> there's no reason to just respond with "Done", but if (like in this
+> >> case) you ignored feedback you need to say why.
+> >>
+> >> In this case the extra "/delete-property/" is needed to pass bindings
+> >> checks. Specifically this revision of the board replaces the "rt5682i"
+> >> with the newer "rt5682s". This new codec is _almost_ a drop-in
+> >> replacement for the old codec with just a few tiny changes. One such
+> >> change is that the new codec doesn't need a "VBAT-supply".
+> >>
+> >> Since most trogdor devices have the older "rt5682i" codec, the default
+> >> in "sc7180-trogdor.dtsi" specifies the properties for that codec. Only
+> >> the handful of boards that have been spun to use the new codec have an
+> >> override like this. You can see that the override done here matches
+> >> the one done in a few other trogdor boards. A good grep is:
+> >>
+> >> git grep -A4 realtek,rt5682s -- arch/arm64/boot/dts/qcom/sc7180-*
+> >>
+> >> Ironically, that grep finds that "sc7180-trogdor-pazquel360.dtsi" is
+> >> missing the "/delete-property/" which I'm fairly certain means that
+> >> it's giving a validation warning today.
+> >>
+> >> I'm happy to have a bikeshed discussion about doing this better. In a
+> >> previous reply [1] I suggested that it's probably time to move the
+> >> "realtek,rt5682s" snippet to something like
+> >> "sc7180-trogdor-rt5682s-sku.dtsi". Then we could include it in the
+> >> devices and avoid duplicating this bit of dts. I didn't insist on it,
+> >> but if you feel strongly then maybe Sheng-Liang could add that to his
+> >> series? Once done, we could have further bikeshed discussions about
+> >> whether we should continue to use the "/delete-property/" solution or
+> >> if we have to also create a "sc7180-trogdor-rt5682i-sku.dtsi" and
+> >> force all older SKUs to include that. Personally I don't hate this
+> >> "/delete-property/" but I don't care a whole lot either way.
+> >
+> > Thanks for explanation. I vote against /delete-property/ because it is
+> > error-prone and a bit confusing. The same with overriding compatibles -
+> > if possible, should be avoided. sc7180-trogdor-pazquel360.dtsi is doing
+> > both, but that's not the pattern I find easy to read.
+
+OK, I tried it. I'm on the fence but don't object to it landing [1]
 
 
-On 2023-08-16 a.m.10:53, Willem de Bruijn wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
->>
->> Thanks for the detailed explanation.
->>
->> I kept virtio_net_hdr_mrg_rxbuf and virtio_net_hdr_v1_hash structures in
->> virtio_net.h, which can be forward compatible with existing user
->> applications which use these structures.
-> 
-> They're UAPI, so we cannot modify or remove them anyway.
-> 
-> Which is exactly why we want to be careful with adding anything new.
-> 
-ok
+> > I accept overriding supplies or pins, because these differ per board.
+> > But if common DTSI defines compatible, then it is common for everyone o=
+r
+> > it is not really part of common DTSI.
+> >
+> > IOW, the common DTSI should be more like a SoC DTSI - have only parts
+> > present there. I simplify here, because obviously SoC is a real thing
+> > piece of hardware and common board DTSI is not. It's just an
+> > abstraction... but anyway if different boards use different codecs, the=
+n
+> > I would say it is not part of common platform.
+> >
+> > Best regards,
+> > Krzysztof
+> >
+> >
+> Thank Doug's explain, as Doug says, we need "/delete-property/" to pass b=
+inding checks.
+> I read from https://lore.kernel.org/all/20221102182002.255282-9-nfraprado=
+@collabora.com/ which removed VBAT-supply;
+>
+> I'd like to know what I can do for our project. Please advise.
 
->> virtio_net_hdr_v1_hash cannot use virtio_net_hdr as the first member,
->> because in virtio_net_hdr_v1, csum_start and csum_offset are stored in
->> union as a structure, and virtio_net_hdr cannot be used instead.
-> 
-> Oh right. That wasn't always the case, or the reason for this.
-> Not super relevant but, commit ed9ecb0415b9 has the history
-> 
->      virtio: Don't expose legacy net features when VIRTIO_NET_NO_LEGACY defined.
-> 
->      In particular, the virtio header always has the u16 num_buffers field.
->      We define a new 'struct virtio_net_hdr_v1' for this (rather than
->      simply calling it 'struct virtio_net_hdr', to avoid nasty type errors
->      if some parts of a project define VIRTIO_NET_NO_LEGACY and some don't.
-> 
->      Transitional devices (which can't define VIRTIO_NET_NO_LEGACY) will
->      have to keep using struct virtio_net_hdr_mrg_rxbuf, which has the same
->      byte layout as struct virtio_net_hdr_v1.
-> 
-> The union was added to overload csum use on tx with RSC use on rx, in
-> commit 22b436c9b568. I don't quite follow why there now are three
-> structs, rather than two. The first two seem to both implement csum
-> partial. Anyway, not super important here.
->ok
+I've posted a series which I think will help [2] [1]. Assuming those
+look good, your action items would be:
 
->> In addition, I put this new structure virtio_net_common_hdr in uapi,
->> hoping it could be used in future user space application to avoid
->> potential risks caused by type coercion (such as the problems mentioned
->> in the patch description ). So I think it should be in this header file.
->> What do you think?
-> 
-> Adding anything to UAPI has a high bar. Do you have a concrete use
-> case for this?
+1. If they look good, you could provide "Reviewed-by" and/or
+"Tested-by" tags on my patches.
 
-In the scene of with and without VIRTIO_NET_F_HASH_REPORT feature, this 
-patch has been tested on my setup, and the function is ok.
+2. You can send a new version of your patches based atop mine. You'd
+want to note in the cover letter and/or "after the cut" in the patch
+that your patches depend on mine.
 
-> 
-> This does seem mostly a helper to simplify kernel logic to me, which
-> is better kept in non-UAPI headers.
-OK, will change it.
+NOTE: there's no reason that the cleanup patches needed to be posted
+by me. As you get more familiar with upstream kernel development, you
+should be able to write similar patches yourself and include them in
+your series. It's perfectly OK to "cleanup" other boards as part of
+your series.
 
+
+[1] https://lore.kernel.org/r/20230816112143.2.I29a5a330b6994afca81871f74bb=
+acaf55b155937@changeid
+[2] https://lore.kernel.org/r/20230816112143.1.I7227efd47e0dc42b6ff243bd22a=
+a1a3e01923220@changeid
