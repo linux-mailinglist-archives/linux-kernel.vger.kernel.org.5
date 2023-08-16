@@ -2,87 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E94977E156
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 14:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FDBD77E15C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 14:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245065AbjHPMU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 08:20:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53324 "EHLO
+        id S245085AbjHPMVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 08:21:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245074AbjHPMUN (ORCPT
+        with ESMTP id S245073AbjHPMUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 08:20:13 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 243F2109
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:20:12 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 14:20:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692188410;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MaUwkyTxNitYNx61TmEE8oVCLZ3GY9p7YUKFRU3g2qc=;
-        b=KuCcd25Yq+ISwHIIW17Pd/ZAsu3HnhhQgsaF2PN9qQxzh2YuHvz2dyKPWYrK4lkQoH31Or
-        z5xTnAJWWtt4UQfmYjKOoxTNBFPqXQNSELKrv5u3it5A5Ol7rHrsFEAkUAoCT6Ck6fWhH1
-        t8/keBHpD6epC9nkIBfmMW9FXMd+B/02Unv2y0Qp9DADDO4Vtl5trzYdWlbG6Qmu+sL5T5
-        k5jPk+ZlX0//15U2VCWdN7RdbK7XL6ClyV0FpJTcejARGKgsNoH6LmjzNo5Y26EBq8WlyP
-        uERB0nG4+iHAPr/5f4WQdvWEh2vKlQ3tVIMpgxAwD6GVI7XtCRC6RomkH7CVDA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692188410;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MaUwkyTxNitYNx61TmEE8oVCLZ3GY9p7YUKFRU3g2qc=;
-        b=d22kaDJLiixr810KQ+8/JI3xOV621kQkZWV/260VxR1VYjfmGkS2wNszadau8pIvXPWK2N
-        ALtuRv7Y7+VIqrBA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Phil Auld <pauld@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, bsegall@google.com,
-        boqun.feng@gmail.com, swood@redhat.com, bristot@redhat.com,
-        dietmar.eggemann@arm.com, mingo@redhat.com, jstultz@google.com,
-        juri.lelli@redhat.com, mgorman@suse.de, rostedt@goodmis.org,
-        vschneid@redhat.com, vincent.guittot@linaro.org,
-        longman@redhat.com, will@kernel.org
-Subject: Re: [PATCH 3/6] sched: Extract __schedule_loop()
-Message-ID: <20230816122007.W7OJW3Fx@linutronix.de>
-References: <20230815110121.117752409@infradead.org>
- <20230815111430.288063671@infradead.org>
- <20230815223301.GC602899@lorien.usersys.redhat.com>
- <20230816100154.k6cmHUUp@linutronix.de>
- <20230816113945.GA639355@lorien.usersys.redhat.com>
+        Wed, 16 Aug 2023 08:20:38 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A41626A9
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:20:37 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-317c3ac7339so5505878f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:20:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692188436; x=1692793236;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jLh/negnTwluibo6jtiJjzohUikGXUShD/K+FOySKiw=;
+        b=Anx1XYN13rdyuN8+XOJB7ld+3JrSxDVieeevuFr/sOI8VfnZDbBxoTSbMYiqjri658
+         hrhj4P5rBe9r3hFu/kZpTJmkTmD9YTiPMMmx+KLvydZaK1EZ/GycMZaAG0Uv6LTT6rx2
+         2JctPaAxa9hGxxHYduZCFckSmo5CpX+nHbX7qNtoa/mK5ITB+KfRuV3D29PSXniK1VzR
+         eZhYdgznJJKo3xWhk1BjBjMFDJEpYR7paW65YqVpYX1ROIyqi+OysAoFXYoC4dY0bRMg
+         E8FoIqnvwyAhwQhH/TTtfHRqpj3H18CUU/fyfjpcXMi+uvPf+2X/4GkHlUhnf0OgHsbW
+         X2+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692188436; x=1692793236;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jLh/negnTwluibo6jtiJjzohUikGXUShD/K+FOySKiw=;
+        b=dzQ1vUHcgYv4L4o6tLnWeo9JblO5TB1oCzCrmujOb/VVdJV8YJQ2LNI6ZMoAyrglgd
+         B26SeCBaidDt6Fz7eVG0YgxT+RfhvrAvgE8YOkO745YBbagmCKufc1ILJ4Z7Wv0dbVtP
+         ZuSiKre8c9uhu8xz9SLSAVTYXNOI70AOmsim628+9A3WiveSE3hJwLN/PzOWzaKxuGoR
+         uUDDnUdkF1Yk0dQkl3acDy+kZYBZjXUtz4Vn+QVYCQfRsw6Vc/KL8s6mSGlDK8CcuCnK
+         wUZ0KicWJLji3tIrSYnE6GZYN9byDmzvHv24C8fyReQ6wGDCd9pNj8OYauFsdToRpkEP
+         cD+A==
+X-Gm-Message-State: AOJu0Ywtg39NG+oSMx+4SMQqGc/aAOM/kEwtHXT3+v2czbawwqkA1x1N
+        7IxvgwZUHh1KtazmzafGdO7diQ==
+X-Google-Smtp-Source: AGHT+IGhOLt0CZddayDndy/iUcglJyQGtRzjOPAvpFHUqMQzctkcdACIYHjlED9Y/3MOvvQsUDDqjA==
+X-Received: by 2002:a5d:55c7:0:b0:315:ad1a:5abc with SMTP id i7-20020a5d55c7000000b00315ad1a5abcmr1612887wrw.5.1692188435603;
+        Wed, 16 Aug 2023 05:20:35 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:55ba:c083:817:86f])
+        by smtp.gmail.com with ESMTPSA id e6-20020adffd06000000b003196b1bb528sm14566112wrr.64.2023.08.16.05.20.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 05:20:35 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH 0/5] gpio: cdev: bail out of poll() if the device goes down
+Date:   Wed, 16 Aug 2023 14:20:27 +0200
+Message-Id: <20230816122032.15548-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230816113945.GA639355@lorien.usersys.redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-16 07:39:45 [-0400], Phil Auld wrote:
-> I do.  Admittedly I'm not an expert in how the wchan unwinding works but
-> we have a slightly older version of this patch in our kernel (schedule_loop
-> not __schedule_loop). When I added __sched it fixed it.   Maybe there
-> is something else but that seemed pretty obvious. 
-> 
-> 
-> /* Attach to any functions which should be ignored in wchan output. */
-> #define __sched		__section(".sched.text")
-> 
-> I can't explain why you are not seeing it.
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-as peterz pointed out, it is marked __always_inline so the compiler
-shouldn't make a separate function out of it.
-Could you check with _this_ series? The schedule_loop variant is in RT
-and does not have this inline thingy. So it would be good if the issue
-you report actually exists in the series that has been posted.
+Wake up all three wake queues (the one associated with the character
+device file, the one for V1 line events and the V2 line request one)
+when the underlying GPIO device is unregistered. This way we won't get
+stuck in poll() after the chip is gone as user-space will be forced to
+go back into a new system call and will see that gdev->chip is NULL.
 
-> Cheers,
-> Phil
+Bartosz Golaszewski (5):
+  gpio: cdev: ignore notifications other than line status changes
+  gpio: cdev: rename the notifier block and notify callback
+  gpio: cdev: wake up chardev poll() on device unbind
+  gpio: cdev: wake up linereq poll() on device unbind
+  gpio: cdev: wake up lineevent poll() on device unbind
 
-Sebastian
+ drivers/gpio/gpiolib-cdev.c | 127 +++++++++++++++++++++++++++++-------
+ drivers/gpio/gpiolib.h      |   3 +-
+ 2 files changed, 105 insertions(+), 25 deletions(-)
+
+-- 
+2.39.2
+
