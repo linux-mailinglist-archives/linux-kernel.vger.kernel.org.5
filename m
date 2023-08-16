@@ -2,308 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D764277E227
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE8A77E22A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245366AbjHPNGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 09:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57450 "EHLO
+        id S245271AbjHPNHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:07:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245433AbjHPNGf (ORCPT
+        with ESMTP id S245369AbjHPNGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 09:06:35 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24E02712
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:06:28 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-54290603887so3958987a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:06:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692191188; x=1692795988;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=y8LN8kLzzLczsPbdJAMvHHgeSuXAc6gkdKeWAaN4L44=;
-        b=Ktdl2pgaHZptGepBHvj9uBh+Ex2svm7kOQy0oPCJUlhZJogSdmIUlJz5mlGxjF06jn
-         yh9iP8z2++tuthp+kMS+42ig6DtlNijgRJ8srGolUb1ueoSmWLz5HdgxLWlMj/3qNsV4
-         ThYqkRmCXnApKgNz634RGW8kdPG0IxSlUNrtA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692191188; x=1692795988;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y8LN8kLzzLczsPbdJAMvHHgeSuXAc6gkdKeWAaN4L44=;
-        b=VnRKGjwY4GHTu+i5Pw38aVgwFfMhbmFps3RXEalI0kirbUWrxwaBgyThcTw38GMtNj
-         dICTIXupFySuVUOE6pIHjyfCxSK3S7kdb+9aFBEa00NxXjPCYw1iKcekgEnrAE2u1Ycm
-         GP3aVeBCPcDjkN6SkAvevX1iLFq03SP+O7tPVqEbTTt/p+7EE5IWQbMM94T7K54+bpRz
-         c6WltEoW6gTnjWT0KL6SJ7H+rRuiL51Falng4BPhZZ/s1r8N9teDUuhVDg1Ev4XCkhXX
-         urz95rSwQhd3/PcmUhAXKwmjlYXS+b+wOKlpCWmYPsobm6l044zrJ5Dc3+kaNv2MUewC
-         vQ4Q==
-X-Gm-Message-State: AOJu0YzCgt2V4uFyPSIPDo2CSvgpz6jpr7HfKKxfzxPNrNrJVmk6nh7k
-        Y7rKU83xjKupiAvuXx8aO05SiQ==
-X-Google-Smtp-Source: AGHT+IHt1aDr1VoKfxePkEnb6zzzgPARwvGN/v1bEnHZCx6EPswEzl0KK3MUVtKBqWM4wh9HYw4Mrg==
-X-Received: by 2002:a17:90b:3741:b0:25e:d727:6fb4 with SMTP id ne1-20020a17090b374100b0025ed7276fb4mr1198090pjb.2.1692191188228;
-        Wed, 16 Aug 2023 06:06:28 -0700 (PDT)
-Received: from google.com (KD124209188001.ppp-bb.dion.ne.jp. [124.209.188.1])
-        by smtp.gmail.com with ESMTPSA id y11-20020a170902700b00b001b89b7e208fsm13106575plk.88.2023.08.16.06.06.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 06:06:27 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 22:06:23 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Tomasz Figa <tfiga@chromium.org>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: Re: kconfig: list unknown symbols in the old .config
-Message-ID: <20230816130623.GI907732@google.com>
-References: <20230816124221.GH907732@google.com>
+        Wed, 16 Aug 2023 09:06:41 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 871D91BFB;
+        Wed, 16 Aug 2023 06:06:39 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6750CD75;
+        Wed, 16 Aug 2023 06:07:20 -0700 (PDT)
+Received: from [192.168.178.38] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 568C33F6C4;
+        Wed, 16 Aug 2023 06:06:36 -0700 (PDT)
+Message-ID: <e324df5d-a4c1-43f3-5e45-95dc591085ac@arm.com>
+Date:   Wed, 16 Aug 2023 15:06:30 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230816124221.GH907732@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 09/12] PM: EM: Add RCU mechanism which safely cleans
+ the old data
+Content-Language: en-US
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, rafael@kernel.org
+Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
+        amit.kachhap@gmail.com, daniel.lezcano@linaro.org,
+        viresh.kumar@linaro.org, len.brown@intel.com, pavel@ucw.cz,
+        Pierre.Gondois@arm.com, ionela.voinescu@arm.com,
+        mhiramat@kernel.org
+References: <20230721155022.2339982-1-lukasz.luba@arm.com>
+ <20230721155022.2339982-10-lukasz.luba@arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <20230721155022.2339982-10-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/08/16 21:42), Sergey Senozhatsky wrote:
-> Hi,
+On 21/07/2023 17:50, Lukasz Luba wrote:
+> The EM is going to support runtime modifications of the power data.
+> Introduce RCU safe mechanism to clean up the old allocated EM data.
+> It also adds a mutex for the EM structure to serialize the modifiers.
 > 
-> We recently were hit (unnecessarily hard) when after kernel uprev we
-> figured that something wasn't working. The root cause was a rename of
-> the CONFIG_FOO option between kernel releases, which make oldconfig
-> doesn't warn/notify about.
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  kernel/power/energy_model.c | 42 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 42 insertions(+)
 > 
-> Would it be possible to add either a new --listunknown mode to conf or
-> to somehow make it conf_warning("unknown symbol: %s\n", line) when it
-> reads a line from oldconf that it cannot sym_find()?
-> 
-> That would save a ton of time.
+> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+> index c2f8a0046f8a..4596bfe7398e 100644
+> --- a/kernel/power/energy_model.c
+> +++ b/kernel/power/energy_model.c
+> @@ -23,6 +23,9 @@
+>   */
+>  static DEFINE_MUTEX(em_pd_mutex);
+>  
+> +static void em_cpufreq_update_efficiencies(struct device *dev,
+> +					   struct em_perf_state *table);
+> +
+>  static bool _is_cpu_device(struct device *dev)
+>  {
+>  	return (dev->bus == &cpu_subsys);
+> @@ -104,6 +107,45 @@ static void em_debug_create_pd(struct device *dev) {}
+>  static void em_debug_remove_pd(struct device *dev) {}
+>  #endif
+>  
+> +static void em_destroy_rt_table_rcu(struct rcu_head *rp)
+> +{
+> +	struct em_perf_table *runtime_table;
+> +
+> +	runtime_table = container_of(rp, struct em_perf_table, rcu);
+> +	kfree(runtime_table->state);
+> +	kfree(runtime_table);
+> +}
+> +
+> +static void em_destroy_tmp_setup_rcu(struct rcu_head *rp)
+> +{
+> +	struct em_perf_table *runtime_table;
+> +
+> +	runtime_table = container_of(rp, struct em_perf_table, rcu);
+> +	kfree(runtime_table);
+> +}
 
-So I have this simple (quick-n-dirty) patch, that seem to be doing
-the trick. Just to show the idea.
+Still don't like that we have to have 2 rcu callbacks here. In case we
+could assign default_table to runtime_table in em_create_pd() (and not
+just default_table->state to runtime_table->state) IMHO we would only
+need one rcu callback?
 
-Running `make listunknown` produces the following (on a hand-crafted
-.config):
+-->8--
 
-.config:6:warning: unknown symbol: CONFIG_DISABLE_BUGS
-.config:7:warning: unknown symbol: CONFIG_COMPILE_GOOD_CODE_ONLY
-make[2]: *** [scripts/kconfig/Makefile:77: listunknown] Error 1
-...
-
----
-
-diff --git a/scripts/kconfig/conf.c b/scripts/kconfig/conf.c
-index 33d19e419908..37b777a0848c 100644
---- a/scripts/kconfig/conf.c
-+++ b/scripts/kconfig/conf.c
-@@ -36,6 +36,7 @@ enum input_mode {
- 	yes2modconfig,
- 	mod2yesconfig,
- 	mod2noconfig,
-+	listunknown,
- };
- static enum input_mode input_mode = oldaskconfig;
- static int input_mode_opt;
-@@ -683,6 +684,7 @@ static const struct option long_opts[] = {
- 	{"yes2modconfig", no_argument,       &input_mode_opt, yes2modconfig},
- 	{"mod2yesconfig", no_argument,       &input_mode_opt, mod2yesconfig},
- 	{"mod2noconfig",  no_argument,       &input_mode_opt, mod2noconfig},
-+	{"listunknown",  no_argument,       &input_mode_opt, listunknown},
- 	{NULL, 0, NULL, 0}
- };
- 
-@@ -712,6 +714,7 @@ static void conf_usage(const char *progname)
- 	printf("  --yes2modconfig         Change answers from yes to mod if possible\n");
- 	printf("  --mod2yesconfig         Change answers from mod to yes if possible\n");
- 	printf("  --mod2noconfig          Change answers from mod to no if possible\n");
-+	printf("  --listunknown           List symbols that are not recognized anymore\n");
- 	printf("  (If none of the above is given, --oldaskconfig is the default)\n");
- }
- 
-@@ -823,6 +826,12 @@ int main(int ac, char **av)
- 			exit(1);
- 		}
- 		break;
-+	case listunknown:
-+		if (conf_read_listunknown())
-+			exit(1);
-+		else
-+			exit(0);
-+		break;
- 	default:
- 		break;
- 	}
-diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
-index 992575f1e976..d70cd3b034e1 100644
---- a/scripts/kconfig/confdata.c
-+++ b/scripts/kconfig/confdata.c
-@@ -341,64 +341,113 @@ static ssize_t compat_getline(char **lineptr, size_t *n, FILE *stream)
- 	return -1;
- }
- 
--int conf_read_simple(const char *name, int def)
-+static FILE *open_conf_file(const char *name)
+-static void em_destroy_tmp_setup_rcu(struct rcu_head *rp)
+-{
+-       struct em_perf_table *runtime_table;
+-
+-       runtime_table = container_of(rp, struct em_perf_table, rcu);
+-       kfree(runtime_table);
+-}
+-
+ static void em_perf_runtime_table_set(struct device *dev,
+                                      struct em_perf_table *runtime_table)
  {
--	FILE *in = NULL;
--	char   *line = NULL;
--	size_t  line_asize = 0;
--	char *p, *p2;
--	struct symbol *sym;
--	int i, def_flags;
-+	char *env, *p;
-+	FILE *in;
+@@ -136,13 +128,8 @@ static void em_perf_runtime_table_set(struct device *dev,
  
--	if (name) {
--		in = zconf_fopen(name);
--	} else {
--		char *env;
-+	if (name)
-+		return zconf_fopen(name);
+        em_cpufreq_update_efficiencies(dev, runtime_table->state);
  
--		name = conf_get_configname();
--		in = zconf_fopen(name);
--		if (in)
--			goto load;
--		conf_set_changed(true);
-+	name = conf_get_configname();
-+	in = zconf_fopen(name);
-+	if (in)
-+		return in;
+-       /*
+-        * Check if the 'state' array is not actually the one from setup.
+-        * If it is then don't free it.
+-        */
+-       if (tmp->state == pd->default_table->state)
+-               call_rcu(&tmp->rcu, em_destroy_tmp_setup_rcu);
+-       else
++       /* Don't free default table (inital value of runtime table) */
++       if (tmp != pd->default_table)
+                call_rcu(&tmp->rcu, em_destroy_rt_table_rcu);
+ }
  
--		env = getenv("KCONFIG_DEFCONFIG_LIST");
--		if (!env)
--			return 1;
-+	conf_set_changed(true);
+@@ -349,7 +336,6 @@ static int em_create_pd(struct device *dev, int nr_states,
+                        unsigned long flags)
+ {
+        struct em_perf_table *default_table;
+-       struct em_perf_table *runtime_table;
+        struct em_perf_domain *pd;
+        struct device *cpu_dev;
+        int cpu, ret, num_cpus;
+@@ -382,24 +368,15 @@ static int em_create_pd(struct device *dev, int nr_states,
  
--		while (1) {
--			bool is_last;
-+	env = getenv("KCONFIG_DEFCONFIG_LIST");
-+	if (!env)
-+		return NULL;
+        pd->default_table = default_table;
  
--			while (isspace(*env))
--				env++;
-+	while (1) {
-+		bool is_last;
+-       runtime_table = kzalloc(sizeof(*runtime_table), GFP_KERNEL);
+-       if (!runtime_table) {
+-               kfree(default_table);
+-               kfree(pd);
+-               return -ENOMEM;
+-       }
+-
+        ret = em_create_perf_table(dev, pd, nr_states, cb, flags);
+        if (ret) {
+                kfree(default_table);
+-               kfree(runtime_table);
+                kfree(pd);
+                return ret;
+        }
  
--			if (!*env)
--				break;
-+		while (isspace(*env))
-+			env++;
+-       /* Re-use temporally (till 1st modification) the memory */
+-       runtime_table->state = default_table->state;
+-       rcu_assign_pointer(pd->runtime_table, runtime_table);
++       /* Initialize runtime table as default table */
++       rcu_assign_pointer(pd->runtime_table, default_table);
  
--			p = env;
--			while (*p && !isspace(*p))
--				p++;
-+		if (!*env)
-+			break;
- 
--			is_last = (*p == '\0');
-+		p = env;
-+		while (*p && !isspace(*p))
-+			p++;
- 
--			*p = '\0';
-+		is_last = (*p == '\0');
- 
--			in = zconf_fopen(env);
--			if (in) {
--				conf_message("using defaults found in %s",
--					     env);
--				goto load;
--			}
-+		*p = '\0';
- 
--			if (is_last)
--				break;
-+		in = zconf_fopen(env);
-+		if (in) {
-+			conf_message("using defaults found in %s",
-+				     env);
-+			return in;
-+		}
-+
-+		if (is_last)
-+			break;
-+		env = p + 1;
-+	}
-+
-+	return NULL;
-+}
-+
-+int conf_read_listunknown(void)
-+{
-+	FILE *in = NULL;
-+	char *line = NULL;
-+	size_t line_asize = 0;
-+	char *p, *p2;
-+	struct symbol *sym;
- 
--			env = p + 1;
-+	conf_filename = conf_get_configname();
-+	in = open_conf_file(conf_filename);
-+	if (!in)
-+		return 1;
-+
-+	conf_warnings = 0;
-+	while (compat_getline(&line, &line_asize, in) != -1) {
-+		conf_lineno++;
-+		sym = NULL;
-+		if (line[0] == '#')
-+			continue;
-+
-+		if (memcmp(line, CONFIG_, strlen(CONFIG_)) == 0) {
-+			p = strchr(line + strlen(CONFIG_), '=');
-+			if (!p)
-+				continue;
-+			*p++ = 0;
-+			p2 = strchr(p, '\n');
-+			if (p2) {
-+				*p2-- = 0;
-+				if (*p2 == '\r')
-+					*p2 = 0;
-+			}
-+
-+			sym = sym_find(line + strlen(CONFIG_));
-+			if (!sym)
-+				conf_warning("unknown symbol: %s", line);
- 		}
- 	}
-+
-+	free(line);
-+	fclose(in);
-+	return conf_warnings;
-+}
-+
-+int conf_read_simple(const char *name, int def)
-+{
-+	FILE *in = NULL;
-+	char   *line = NULL;
-+	size_t  line_asize = 0;
-+	char *p, *p2;
-+	struct symbol *sym;
-+	int i, def_flags;
-+
-+	in = open_conf_file(name);
- 	if (!in)
- 		return 1;
- 
--load:
- 	conf_filename = name;
- 	conf_lineno = 0;
- 	conf_warnings = 0;
-diff --git a/scripts/kconfig/lkc_proto.h b/scripts/kconfig/lkc_proto.h
-index edd1e617b25c..d76faaec120a 100644
---- a/scripts/kconfig/lkc_proto.h
-+++ b/scripts/kconfig/lkc_proto.h
-@@ -5,6 +5,7 @@
- void conf_parse(const char *name);
- int conf_read(const char *name);
- int conf_read_simple(const char *name, int);
-+int conf_read_listunknown(void);
- int conf_write_defconfig(const char *name);
- int conf_write(const char *name);
- int conf_write_autoconf(int overwrite);
+        if (_is_cpu_device(dev))
+                for_each_cpu(cpu, cpus) {
+
+
+
