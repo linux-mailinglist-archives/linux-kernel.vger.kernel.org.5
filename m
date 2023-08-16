@@ -2,327 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 078DF77EDD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 01:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C280877EDDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 01:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347185AbjHPXcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 19:32:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54646 "EHLO
+        id S1347187AbjHPXe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 19:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347189AbjHPXcC (ORCPT
+        with ESMTP id S1347190AbjHPXem (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 19:32:02 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0AAE12720;
-        Wed, 16 Aug 2023 16:32:00 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1152)
-        id 32840211F61A; Wed, 16 Aug 2023 16:31:59 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 32840211F61A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1692228719;
-        bh=J6mAVcuDUUkGCq7a0/n68XNrg34IWu48uqF8U0WpAm0=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=UAHmt4NDP8ojpDlHQ7mmfTrBhz6yBDALkfRASJl8rpxed90SBL69nHszacBg/ijpD
-         +3t4AODe3l90DjlPAMRZIM1J8sHzttOHyMRb+ZBcNobzelIn2ll8NU26zPrwK0UfUb
-         Oh8xeqwChGFhBkCGk3AF8bWMPEqMUJDD1i7Bzf8o=
-Received: from localhost (localhost [127.0.0.1])
-        by linux.microsoft.com (Postfix) with ESMTP id 2C00230705BA;
-        Wed, 16 Aug 2023 16:31:59 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 16:31:59 -0700 (PDT)
-From:   Shyam Saini <shyamsaini@linux.microsoft.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-cc:     linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        op-tee@lists.trustedfirmware.org, linux-scsi@vger.kernel.org,
-        =?ISO-8859-15?Q?Alex_Benn=E9e?= <alex.bennee@linaro.org>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Tyler Hicks <code@tyhicks.com>,
-        "Srivatsa S . Bhat" <srivatsa@csail.mit.edu>,
-        Paul Moore <paul@paul-moore.com>,
-        Allen Pais <apais@linux.microsoft.com>
-Subject: Re: [RFC, PATCH 1/1] rpmb: add Replay Protected Memory Block (RPMB)
- driver
-In-Reply-To: <CAPDyKFoBC+GaGerGDEAjg9q4ayV9mMBKkfFk3nO-zcQzOZ_H6Q@mail.gmail.com>
-Message-ID: <b875892c-1777-d84a-987e-1b0d5ac29df@linux.microsoft.com>
-References: <20230722014037.42647-1-shyamsaini@linux.microsoft.com> <20230722014037.42647-2-shyamsaini@linux.microsoft.com> <CAPDyKFoBC+GaGerGDEAjg9q4ayV9mMBKkfFk3nO-zcQzOZ_H6Q@mail.gmail.com>
+        Wed, 16 Aug 2023 19:34:42 -0400
+Received: from ixit.cz (ip-89-177-23-149.bb.vodafone.cz [89.177.23.149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E412128;
+        Wed, 16 Aug 2023 16:34:37 -0700 (PDT)
+Received: from [10.0.0.200] (unknown [10.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 68F151608E8;
+        Thu, 17 Aug 2023 01:34:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1692228875;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=8LHQ3CYd7hs8GshdT2sa6AaBnLkj7dinKILMrmDhq6M=;
+        b=pZRZdTd9iJemCPUZgXtrZDPBeBJsqshOB06iWRFW6wYHcPuOeWd4Uz1FvYZjg97zblBRr4
+        NhtyPYTyUOLM3ySzxhLARqT7f14Y/q8h0WhyHgSR1EiNHbZmVJnwsm4PB6Hc+AKpdkCEgq
+        cD8PUoi+pLkWdCoAfndIwAlexthfFTA=
+Message-ID: <799d01c6-e256-468b-a913-5945f22b5789@ixit.cz>
+Date:   Thu, 17 Aug 2023 01:34:35 +0200
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="656392-1707973189-1692228719=:10222"
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 0/2] usb: serial: add support for CH348
+To:     johan@kernel.org, Corentin Labbe <clabbe@baylibre.com>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        gregkh@linuxfoundation.org
+References: <20230628133834.1527941-1-clabbe@baylibre.com>
+Content-Language: en-US
+From:   David Heidelberg <david@ixit.cz>
+Autocrypt: addr=david@ixit.cz; keydata=
+ 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
+In-Reply-To: <20230628133834.1527941-1-clabbe@baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_RDNS_DYNAMIC_FP,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hello Johan,
 
---656392-1707973189-1692228719=:10222
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+Any chance to get CH348 into 6.5?
+
+I want to highlight that from all serials I have around this is the only 
+one which support 1500000 baud (needed for Rockchip devices).
+
+Thank you!
+David
 
 
-Hi Ulf,
-
-> On Sat, 22 Jul 2023 at 03:41, Shyam Saini
-> <shyamsaini@linux.microsoft.com> wrote:
->>
->> From: Alex Bennée <alex.bennee@linaro.org>
->>
->> [This is patch 1 from [1] Alex's submission and this RPMB layer was
->> originally proposed by [2]Thomas Winkler ]
->>
->> A number of storage technologies support a specialised hardware
->> partition designed to be resistant to replay attacks. The underlying
->> HW protocols differ but the operations are common. The RPMB partition
->> cannot be accessed via standard block layer, but by a set of specific
->> commands: WRITE, READ, GET_WRITE_COUNTER, and PROGRAM_KEY. Such a
->> partition provides authenticated and replay protected access, hence
->> suitable as a secure storage.
->>
->> The initial aim of this patch is to provide a simple RPMB Driver which
->> can be accessed by Linux's optee driver to facilitate fast-path for
->> RPMB access to optee OS(secure OS) during the boot time. [1] Currently,
->> Optee OS relies on user-tee supplicant to access eMMC RPMB partition.
->>
->> A TEE device driver can claim the RPMB interface, for example, via
->> class_interface_register(). The RPMB driver provides a series of
->> operations for interacting with the device.
+On 28/06/2023 15:38, Corentin Labbe wrote:
+> Hello
 >
-> I don't quite follow this. More exactly, how will the TEE driver know
-> what RPMB device it should use?
-
-I don't have complete code to for this yet, but i think OP-TEE driver
-should register with RPMB subsystem and then we can have eMMC/UFS/NVMe
-specific implementation for RPMB operations.
-
-Linux optee driver can handle RPMB frames and pass it to RPMB subsystem
-
-[1] U-Boot has mmc specific implementation
-
-I think OPTEE-OS has CFG_RPMB_FS_DEV_ID option
-CFG_RPMB_FS_DEV_ID=1 for /dev/mmcblk1rpmb, but in case if a
-system has multiple RPMB devices such as UFS/eMMC/NVMe, one them
-should be declared as secure storage and optee should access that one 
-only.
-
-Sumit, do you have suggestions for this ?
-
-
->>
->>   * program_key - a one time operation for setting up a new device
->>   * get_capacity - introspect the device capacity
->>   * get_write_counter - check the write counter
->>   * write_blocks - write a series of blocks to the RPMB device
->>   * read_blocks - read a series of blocks from the RPMB device
->>
->> The detailed operation of implementing the access is left to the TEE
->> device driver itself.
->>
->> The framing details and HW specific bits (JDEC vs NVME frames) are
->> left to the lower level TEE driver to worry about.
->>
->> Without kernel fast path to RPMB access doesn't work when IMA try to
->> extend ftpm's PCR registers.
->>
->> This fast-path would require additional work in linux optee driver and
->> as well as in MMC driver.
->>
->> [1] https://lore.kernel.org/lkml/20220405093759.1126835-2-alex.bennee@linaro.org/
->> [2] https://lore.kernel.org/linux-mmc/1478548394-8184-2-git-send-email-tomas.winkler@intel.com/
->> [3] https://optee.readthedocs.io/en/latest/architecture/secure_storage.html
->>
->> Signed-off-by: Alex Bennée <alex.bennee@linaro.org>
->> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
->> Signed-off-by: Shyam Saini <shyamsaini@linux.microsoft.com>
->>
+> The CH348 is an octo serial to USB adapter.
+> The following patch adds a driver for supporting it.
+> Since there is no public datasheet, unfortunatly it remains some magic values.
 >
-> [...]
+> It was tested with a large range of baud from 1200 to 1500000 and used with
+> success in one of our kernel CI testlab.
 >
->> +/**
->> + * rpmb_dev_find_device() - return first matching rpmb device
->> + * @data: data for the match function
->> + * @match: the matching function
->> + *
->> + * Return: matching rpmb device or NULL on failure
->> + */
->> +static
->> +struct rpmb_dev *rpmb_dev_find_device(const void *data,
->> +                                     int (*match)(struct device *dev,
->> +                                                  const void *data))
->> +{
->> +       struct device *dev;
->> +
->> +       dev = class_find_device(&rpmb_class, NULL, data, match);
->> +
->> +       return dev ? to_rpmb_dev(dev) : NULL;
->> +}
->> +
->> +struct device_with_target {
->> +       const struct device *dev;
->> +       u8 target;
->> +};
->> +
->> +static int match_by_parent(struct device *dev, const void *data)
->> +{
->> +       const struct device_with_target *d = data;
->> +       struct rpmb_dev *rdev = to_rpmb_dev(dev);
->> +
->> +       return (d->dev && dev->parent == d->dev && rdev->target == d->target);
->> +}
->> +
->> +/**
->> + * rpmb_dev_find_by_device() - retrieve rpmb device from the parent device
->> + * @parent: parent device of the rpmb device
->> + * @target: RPMB target/region within the physical device
->> + *
->> + * Return: NULL if there is no rpmb device associated with the parent device
->> + */
->> +struct rpmb_dev *rpmb_dev_find_by_device(struct device *parent, u8 target)
->> +{
->> +       struct device_with_target t;
->> +
->> +       if (!parent)
->> +               return NULL;
->> +
->> +       t.dev = parent;
->> +       t.target = target;
->> +
->> +       return rpmb_dev_find_device(&t, match_by_parent);
->> +}
->> +EXPORT_SYMBOL_GPL(rpmb_dev_find_by_device);
+> Regards
 >
-> Is this what the TEE driver would be calling to find the rpmb device/partition?
-
-yes, that's the idea.
-
->> +
->> +/**
->> + * rpmb_dev_unregister() - unregister RPMB partition from the RPMB subsystem
->> + * @rdev: the rpmb device to unregister
->> + * Return:
->> + * *        0 on success
->> + * *        -EINVAL on wrong parameters
->> + */
->> +int rpmb_dev_unregister(struct rpmb_dev *rdev)
->> +{
->> +       if (!rdev)
->> +               return -EINVAL;
->> +
->> +       mutex_lock(&rdev->lock);
->> +       rpmb_cdev_del(rdev);
+> Changes since v1:
+> - use a data structure for encoding/decoding messages.
+> - check if needed endpoints exists
+> - fix URB leak in ch348_allocate_status_read error case
+> - test for maximum baud rate as stated by datasheet
 >
-> I can't find the function above. I guess it should be included as a
-> part of the patch too?
-
-Sorry for the confusion, this is leftover from original version
-Will be removed in next iteration.
-
->> +       device_del(&rdev->dev);
->> +       mutex_unlock(&rdev->lock);
->> +
->> +       rpmb_dev_put(rdev);
->> +
->> +       return 0;
->> +}
->> +EXPORT_SYMBOL_GPL(rpmb_dev_unregister);
+> Changes since v2:
+> - specify ch348_rxbuf data length
+> - Use correct speed_t dwDTERate instead of __le32
+> - test for maximum baud rate supported according to datasheet
+> - Use a define for CH348_TX_HDRSIZE
 >
-> [...]
+> Changes since v3
+> - Fixed all reported problem from https://lore.kernel.org/lkml/Y5NDwEakGJbmB6+b@Red/T/#mb6234d0427cfdabf412190565e215995a41482dd
+>    Mostly reworked the endpoint mux to be the same than mx_uport
 >
->> +/**
->> + * rpmb_dev_register - register RPMB partition with the RPMB subsystem
->> + * @dev: storage device of the rpmb device
->> + * @target: RPMB target/region within the physical device
->> + * @ops: device specific operations
->> + *
->> + * Return: a pointer to rpmb device
->> + */
->> +struct rpmb_dev *rpmb_dev_register(struct device *dev, u8 target,
->> +                                  const struct rpmb_ops *ops)
->> +{
->> +       struct rpmb_dev *rdev;
->> +       int id;
->> +       int ret;
->> +
->> +       if (!dev || !ops)
->> +               return ERR_PTR(-EINVAL);
->> +
->> +       if (!ops->program_key)
->> +               return ERR_PTR(-EINVAL);
->> +
->> +       if (!ops->get_capacity)
->> +               return ERR_PTR(-EINVAL);
->> +
->> +       if (!ops->get_write_counter)
->> +               return ERR_PTR(-EINVAL);
->> +
->> +       if (!ops->write_blocks)
->> +               return ERR_PTR(-EINVAL);
->> +
->> +       if (!ops->read_blocks)
->> +               return ERR_PTR(-EINVAL);
->> +
->> +       rdev = kzalloc(sizeof(*rdev), GFP_KERNEL);
->> +       if (!rdev)
->> +               return ERR_PTR(-ENOMEM);
->> +
->> +       id = ida_simple_get(&rpmb_ida, 0, 0, GFP_KERNEL);
->> +       if (id < 0) {
->> +               ret = id;
->> +               goto exit;
->> +       }
->> +
->> +       mutex_init(&rdev->lock);
->> +       rdev->ops = ops;
->> +       rdev->id = id;
->> +       rdev->target = target;
->> +
->> +       dev_set_name(&rdev->dev, "rpmb%d", id);
->> +       rdev->dev.class = &rpmb_class;
->> +       rdev->dev.parent = dev;
->> +
->> +       rpmb_cdev_prepare(rdev);
+> Changes since v4:
+> - The V4 was sent against stable and next have ch348_set_termios ktermios
+>    parameter const that I forgot to change
 >
-> Ditto.
-
-same as my last comment
->> +
->> +       ret = device_register(&rdev->dev);
->> +       if (ret)
->> +               goto exit;
->> +
->> +       rpmb_cdev_add(rdev);
+> Changes since v5:
+> - Fixed all reported problem from https://lore.kernel.org/lkml/20230106135338.643951-1-clabbe@baylibre.com/T/#m044aab24dfb652ea34aa06f8ef704da9d6a2e036
+> - Major change is dropping of all status handling which was unused.
+>    It will be probably necessary to bring it back when using GPIO.
+>    This will be done when I will finish my next devboard.
 >
-> Ditto.
-
-same as above.
-
->> +
->> +       dev_dbg(&rdev->dev, "registered device\n");
->> +
->> +       return rdev;
->> +
->> +exit:
->> +       if (id >= 0)
->> +               ida_simple_remove(&rpmb_ida, id);
->> +       kfree(rdev);
->> +       return ERR_PTR(ret);
->> +}
->> +EXPORT_SYMBOL_GPL(rpmb_dev_register);
->> +
+> Corentin Labbe (2):
+>    usb: serial: add support for CH348
+>    usb: serial: add myself as maintainer of CH348
 >
-> [...]
+>   MAINTAINERS                 |   5 +
+>   drivers/usb/serial/Kconfig  |   9 +
+>   drivers/usb/serial/Makefile |   1 +
+>   drivers/usb/serial/ch348.c  | 491 ++++++++++++++++++++++++++++++++++++
+>   4 files changed, 506 insertions(+)
+>   create mode 100644 drivers/usb/serial/ch348.c
 >
+-- 
+David Heidelberg
+Certified Linux Magician
 
-
-[1] https://source.denx.de/u-boot/u-boot/-/commit/4853ad3e13e21462a86e09caee4ea27ae68e764b
-
-Best Regards,
-Shyam
---656392-1707973189-1692228719=:10222--
