@@ -2,125 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3EC77E9EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEF677E9EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345874AbjHPTrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 15:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59892 "EHLO
+        id S1345879AbjHPTst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 15:48:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345882AbjHPTrd (ORCPT
+        with ESMTP id S1345908AbjHPTs2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 15:47:33 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB8B1FE9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 12:47:31 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fe55d70973so251138e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 12:47:31 -0700 (PDT)
+        Wed, 16 Aug 2023 15:48:28 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E54611FE9
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 12:48:27 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d27ac992539so7419251276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 12:48:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692215250; x=1692820050;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Z4DiVaODc3NNqjwCm66F8RB3+saagdsgWHxtY6M6FSU=;
-        b=UC9E+GfPHLuTLXbLOB+OG0/QvBsTzmzti/MKnAQskfj3OGadzerUhaLPqIh312Y5uO
-         IEA903lUPocCSo0Li31sBO4FWvCqBnl4LtX9VW/DIMqNJqbS5/h4F0N43cgt/v0yb34r
-         CNGKzFzwm0S3Mf+Jjik8szkKshJmlHZsIbx0GwPhDRkJWpIPjSnbfnIx71913+QOGdqt
-         po5iXj3Nh2HPwiYgHgkw+ln2LISSSyXMGRhnrDtA1wFLjbRw+OYBKpUNfcahWQg/y+cR
-         htjXnZ9nuzvx2HRQfyajCByOVcUdKmVnxC5kqe5VM4SycPnzRRCgotfTRgsbjiJZ2ZUM
-         WucA==
+        d=google.com; s=20221208; t=1692215307; x=1692820107;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=nkZLboM2Wm9YlU5YcPRNRdsA86AbIHK8rlKPDBuPrH8=;
+        b=w1omL2BiOFpkdL5jDclMmBY0GNnDbrWPT4wTL4N2sQpREeclV+NMYHxIdUx9hQ5/X1
+         1ceBSumpLZfuuKV31ysa+PqpHBwXG3XdIvLMIOPkMfMCmzt+6STuu9nqzp5vPlc3ROyo
+         EwN+SX9nLIhz0we10ylC835cua9hzNyD3wFz35mWISCc755akVT34hz/6ISQX7cymKKQ
+         jI+x8IEWL/Tk7pmKBhpVskeeHsg3mt1jzfDz+PyOzmBI6Ksc/CMDJeFHj6MQwwgauTa/
+         De/iHDXsuuCoTWEfuqekPQ+aFMTaQFBOBvxacVvea5KIVpTOuyanIORyYaVbcuFbCSQK
+         /sCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692215250; x=1692820050;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z4DiVaODc3NNqjwCm66F8RB3+saagdsgWHxtY6M6FSU=;
-        b=WKE5ls/2hY7krjeungT1WrGK3pkKJxL7HP1gvLMDrfWiyFcqARPonNxc5HO1+shNJ2
-         yMey60n6QAlv04tTD/ftJ8Y+mkyKmb4kR3VVhG4PpMiYN2DMN+E1ClGdlK3muxozlwLV
-         rujtz//qOoRqlJVY7/h//QNgeBZB9EK6PGRaVCRt8DUlsbYd7E4yZdzQtkG0PrTKuBMG
-         CCMZYK2loZkeE6FZ6kv9u9eWZU9NXg2xQqGoc11lcRAj2L7pXD7EoElR0q0TNDYb6nqJ
-         csRv3L9t50W5ZlnC1WnCenI0jZJfhJc+KfRjJHXkL+mZ3EDajtyEMXJBCaFc4/iQo5QK
-         SFVw==
-X-Gm-Message-State: AOJu0YyI2IehUiEzNVikoyCFUWECYwbjJuyRGMINI1ib7BgVkSzA+HFr
-        x3rE4UbwLs7alSIzeLPw/EKmYw==
-X-Google-Smtp-Source: AGHT+IGKOzX86gdZpQVVR2FYafqexKmLoxqJ1TdlsDBZbMN2EiTJf/OnN6IcQ2vdDBhyWzBrq0meZw==
-X-Received: by 2002:a05:6512:104c:b0:4fd:d254:edc6 with SMTP id c12-20020a056512104c00b004fdd254edc6mr263753lfb.26.1692215249900;
-        Wed, 16 Aug 2023 12:47:29 -0700 (PDT)
-Received: from [192.168.1.101] (abxi8.neoplus.adsl.tpnet.pl. [83.9.2.8])
-        by smtp.gmail.com with ESMTPSA id q25-20020ac25299000000b004ff8e845bcbsm518475lfm.301.2023.08.16.12.47.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 12:47:29 -0700 (PDT)
-Message-ID: <222eabdb-7a64-405a-95e8-2293f6186cae@linaro.org>
-Date:   Wed, 16 Aug 2023 21:47:18 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: ipq5018: add WDT
-Content-Language: en-US
-To:     Robert Marko <robimarko@gmail.com>, agross@kernel.org,
-        andersson@kernel.org, wim@linux-watchdog.org, linux@roeck-us.net,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, quic_saipraka@quicinc.com,
-        linux-arm-msm@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230816161455.3310629-1-robimarko@gmail.com>
- <20230816161455.3310629-2-robimarko@gmail.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230816161455.3310629-2-robimarko@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1692215307; x=1692820107;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nkZLboM2Wm9YlU5YcPRNRdsA86AbIHK8rlKPDBuPrH8=;
+        b=Yh+RMj+NU0cKTA7s4Iw3bIqZ/zhPr1+xgRxR/1lN56bOm1YPhmwog7WLJ3eBcZf+8q
+         qiFKth2aGCPneU985dlamy5RzxtFZmjNQflaZHlqx0xVs1OmsQB5F2WBXNgJCBQXIAB9
+         1nTPY0xav0Ekapsqe+hwuRqaBb6P9bmOOSE5YEGfOFF7EyhiYWSIOX49uHSNX+knuilP
+         bdyLpUGhfkdpF4r4WT0NWJILS3nqpjWJ32QJM7tRLT4pE4HsMhJyyFecjUIi8bfl3kV+
+         wFFHrPtfqodbak5YU4aZqiRANO8vtlOSpayvdE8XKkEWg52L8PpmFsZmWIdP60iawXPG
+         NN7A==
+X-Gm-Message-State: AOJu0Yy0zxopy7KiqJqiqUkQziE10pN8Zg8eXT2Skhs2vThApQHz+hC8
+        P1tX9TTKATQOB+rhSvP4yGGTr9fK9kotadOR2w==
+X-Google-Smtp-Source: AGHT+IHjp9P72ZGwmOWlkS671Xd985XpiPnEOZX2GKLyktLXegMqDh3mye2IrJSib9umXBMNuOxs5qxEBzWx72SCXg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6902:1828:b0:d47:4b58:a19e with
+ SMTP id cf40-20020a056902182800b00d474b58a19emr40504ybb.11.1692215307122;
+ Wed, 16 Aug 2023 12:48:27 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 19:48:23 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAAYo3WQC/yWNQQqEMAwAvyI5G6jtrqhfEQ+1TddcVBIsgvh3i
+ 3ubucxcoCRMCkN1gVBm5W0t0tQVhMWvP0KOxcEa60zXtJg3jhiFM4ki24DzoUp/3E+P3qf+k77 B9WSgVHahxOd7GKf7fgCAzDQXcQAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692215306; l=1676;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=hkaFiiA7JBYWa2I9LQiYCZ5i8gpVCmv0FGtI2UsqcAI=; b=C+oj7SwQG5q6DxF4FuXnKHonwIbMc/hMkdyBDnSA5r93/ldMj84vq4vMPjfD+yqNQdN46FsVt
+ DYX535Hg3IwCqUUFd4fVOYEFuw7cTbl8W+Vcw+jn7/fL+2Ugzue4gxH
+X-Mailer: b4 0.12.3
+Message-ID: <20230816-void-drivers-i2c-busses-i2c-pxa-v1-1-931634b931ec@google.com>
+Subject: [PATCH] i2c: pxa: fix clang -Wvoid-pointer-to-enum-cast warning
+From:   Justin Stitt <justinstitt@google.com>
+To:     Andi Shyti <andi.shyti@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.08.2023 18:14, Robert Marko wrote:
-> Add the required DT node for WDT operation.
-> 
-> Signed-off-by: Robert Marko <robimarko@gmail.com>
-> ---
-> Changes in v2:
-> * Put the reg property as second in node
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+When building with clang 18 I see the following warning:
+|       drivers/i2c/busses/i2c-pxa.c:1267:15: warning: cast to smaller integer
+|       type 'enum pxa_i2c_types' from 'const void *' [-Wvoid-pointer-to-enum-cast]
+|        1267 |         *i2c_types = (enum pxa_i2c_types)(of_id->data);
 
-Konrad
+This is due to the fact that `of_id->data` is a void* while `enum pxa_i2c_types`
+has the size of an int.
+
+Cast `of_id->data` to a uintptr_t to silence the above warning for clang
+builds using W=1
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/1910
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: I think something like this may be more readable:
+| 	*i2c_types = (enum pxa_i2c_types)(uintptr_t)of_id->data;
+
+Thoughts on this approach against the one present in this patch?
+---
+ drivers/i2c/busses/i2c-pxa.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/i2c/busses/i2c-pxa.c b/drivers/i2c/busses/i2c-pxa.c
+index 937f7eebe906..20d1132d3d69 100644
+--- a/drivers/i2c/busses/i2c-pxa.c
++++ b/drivers/i2c/busses/i2c-pxa.c
+@@ -1264,7 +1264,7 @@ static int i2c_pxa_probe_dt(struct platform_device *pdev, struct pxa_i2c *i2c,
+ 	i2c->use_pio = of_property_read_bool(np, "mrvl,i2c-polling");
+ 	i2c->fast_mode = of_property_read_bool(np, "mrvl,i2c-fast-mode");
+ 
+-	*i2c_types = (enum pxa_i2c_types)(of_id->data);
++	*i2c_types = (uintptr_t)of_id->data;
+ 
+ 	return 0;
+ }
+
+---
+base-commit: 2ccdd1b13c591d306f0401d98dedc4bdcd02b421
+change-id: 20230816-void-drivers-i2c-busses-i2c-pxa-aaf94f5c39e0
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
