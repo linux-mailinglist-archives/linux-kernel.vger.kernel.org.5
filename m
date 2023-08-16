@@ -2,139 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D87B277DD6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6CD77DD69
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243401AbjHPJhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 05:37:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40210 "EHLO
+        id S243357AbjHPJgf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Aug 2023 05:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243393AbjHPJgs (ORCPT
+        with ESMTP id S243465AbjHPJgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 05:36:48 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCF826A4;
-        Wed, 16 Aug 2023 02:36:46 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RQjh84VPsz4f3kFB;
-        Wed, 16 Aug 2023 17:36:40 +0800 (CST)
-Received: from vm-fedora-38.huawei.com (unknown [10.67.174.164])
-        by APP3 (Coremail) with SMTP id _Ch0CgCHXcWmmNxkidopAw--.9644S2;
-        Wed, 16 Aug 2023 17:36:41 +0800 (CST)
-From:   "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        netdev@vger.kernel.org, coreteam@netfilter.org,
-        bridge@lists.linux-foundation.org, gongruiqi1@huawei.com
-Subject: [PATCH net-next v2] netfilter: ebtables: replace zero-length array members
-Date:   Wed, 16 Aug 2023 17:34:43 +0800
-Message-ID: <20230816093443.1460204-1-gongruiqi@huaweicloud.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 16 Aug 2023 05:36:31 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0BEC026A4;
+        Wed, 16 Aug 2023 02:36:30 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD2D71063;
+        Wed, 16 Aug 2023 02:37:10 -0700 (PDT)
+Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B1F993F64C;
+        Wed, 16 Aug 2023 02:36:28 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 10:36:26 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] selftests: cachestat: test for cachestat
+ availability
+Message-ID: <20230816103626.0f679788@donnerap.manchester.arm.com>
+In-Reply-To: <CAKEwX=NvBCiy6WxJWg9EYyTwKTQY35G6=3T2L8KKEe46xg82rg@mail.gmail.com>
+References: <20230815155612.2535947-1-andre.przywara@arm.com>
+        <20230815155612.2535947-4-andre.przywara@arm.com>
+        <CAKEwX=NvBCiy6WxJWg9EYyTwKTQY35G6=3T2L8KKEe46xg82rg@mail.gmail.com>
+Organization: ARM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _Ch0CgCHXcWmmNxkidopAw--.9644S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWFW7tr47ZFyDur15WFy7GFg_yoW5Gr48pF
-        yjka4qyrWUtay2grW7tay7ZF4avws5Gr17JrWxG34FyF90yay7WrWxKry5KFyq9rZ5uFsx
-        ArWftry8KFZ7taUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
-        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
-        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF
-        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
-        vE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
-        aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1rMa5UUUUU==
-X-CM-SenderInfo: pjrqw2pxltxq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
+On Tue, 15 Aug 2023 16:25:54 -0700
+Nhat Pham <nphamcs@gmail.com> wrote:
 
-As suggested by Kees[1], replace the old-style 0-element array members
-of multiple structs in ebtables.h with modern C99 flexible array.
+Hi Nhat,
 
-[1]: https://lore.kernel.org/all/5E8E0F9C-EE3F-4B0D-B827-DC47397E2A4A@kernel.org/
+many thanks for having a look!
 
-Link: https://github.com/KSPP/linux/issues/21
-Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
+> On Tue, Aug 15, 2023 at 8:56 AM Andre Przywara <andre.przywara@arm.com> wrote:
+> >
+> > As cachestat is a new syscall, it won't be available on older kernels,
+> > for instance those running on a build machine. In this case, a run
+> > reports all tests as "not ok" at the moment.  
+> Interesting - I was under the assumption that if you backported the
+> selftests for cachestat, you would also backport the syscall's implementation
+> and wiring.
 
-v2: designate to net-next; cc more netdev maintainers
+Well, just running the tests on the kernel you just built is only one
+use case. I build the tests from latest git HEAD, then copy them to a
+target system with some kernel running. Or I just build the tests and run
+them for regression testing on my build system with a distro kernel, which
+is Ubuntu's 5.15 flavour, in my case.
+The documentation explicitly mentions that selftests should work on older
+kernels (copying the normal userland compatibility requirements), check
+the second paragraph of Documentation/dev-tools/kselftest.rst.
 
- include/uapi/linux/netfilter_bridge/ebtables.h | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+> But yeah, I guess if you build with !CONFIG_CACHESTAT_SYSCALL,
+> these tests would fail.
+> >
+> > Test for the cachestat syscall availability first, before doing further
+> > tests, and bail out early with a TAP SKIP comment.
+> >
+> > This also uses the opportunity to add the proper TAP headers, and add
+> > one check for the syscall error handling (illegal file descriptor).  
+> Thanks for the addition!
+> >
+> > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> > ---
+> >  .../selftests/cachestat/test_cachestat.c      | 22 ++++++++++++++++++-
+> >  1 file changed, 21 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/cachestat/test_cachestat.c b/tools/testing/selftests/cachestat/test_cachestat.c
+> > index a5a4ac8dcb76c..77620e7ecf562 100644
+> > --- a/tools/testing/selftests/cachestat/test_cachestat.c
+> > +++ b/tools/testing/selftests/cachestat/test_cachestat.c
+> > @@ -15,6 +15,8 @@
+> >
+> >  #include "../kselftest.h"
+> >
+> > +#define NR_TESTS       8
+> > +
+> >  static const char * const dev_files[] = {
+> >         "/dev/zero", "/dev/null", "/dev/urandom",
+> >         "/proc/version", "/proc"
+> > @@ -235,7 +237,25 @@ bool test_cachestat_shmem(void)
+> >
+> >  int main(void)
+> >  {
+> > -       int ret = 0;
+> > +       int ret;
+> > +
+> > +       ksft_print_header();
+> > +
+> > +       ret = syscall(__NR_cachestat, -1, NULL, NULL, 0);
+> > +       if (ret == -1 && errno == ENOSYS) {  
+> nit: if (ret && errno == ENOSYS) sounds cleaner, but up to you.
 
-diff --git a/include/uapi/linux/netfilter_bridge/ebtables.h b/include/uapi/linux/netfilter_bridge/ebtables.h
-index b0caad82b693..673b00df162c 100644
---- a/include/uapi/linux/netfilter_bridge/ebtables.h
-+++ b/include/uapi/linux/netfilter_bridge/ebtables.h
-@@ -87,7 +87,7 @@ struct ebt_entries {
- 	/* nr. of entries */
- 	unsigned int nentries;
- 	/* entry list */
--	char data[0] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
-+	char data[] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
- };
- 
- /* used for the bitmask of struct ebt_entry */
-@@ -129,7 +129,7 @@ struct ebt_entry_match {
- 	} u;
- 	/* size of data */
- 	unsigned int match_size;
--	unsigned char data[0] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
-+	unsigned char data[] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
- };
- 
- struct ebt_entry_watcher {
-@@ -142,7 +142,7 @@ struct ebt_entry_watcher {
- 	} u;
- 	/* size of data */
- 	unsigned int watcher_size;
--	unsigned char data[0] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
-+	unsigned char data[] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
- };
- 
- struct ebt_entry_target {
-@@ -155,7 +155,7 @@ struct ebt_entry_target {
- 	} u;
- 	/* size of data */
- 	unsigned int target_size;
--	unsigned char data[0] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
-+	unsigned char data[] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
- };
- 
- #define EBT_STANDARD_TARGET "standard"
-@@ -190,7 +190,7 @@ struct ebt_entry {
- 		/* sizeof ebt_entry + matches + watchers + target */
- 		unsigned int next_offset;
- 	);
--	unsigned char elems[0] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
-+	unsigned char elems[] __attribute__ ((aligned (__alignof__(struct ebt_replace))));
- };
- 
- static __inline__ struct ebt_entry_target *
--- 
-2.41.0
+Do you ever return a positive value other than 0? I think technically
+errno is only valid when the return value is -1, so in the error case,
+which I wanted to test here explicitly.
+Some syscall selftests (I checked landlock the other day) do very elaborate
+testing of the error path, trying to carefully cover all corner cases:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/testing/selftests/landlock/base_test.c#n24
 
+So this test was inspired by that, but I didn't want to go that far here
+;-)
+
+> > +               printf("1..0 # Skipped: cachestat syscall not available\n");  
+> nit: perhaps ksft_print_msg()?
+
+Ah, yes, of course!
+
+> > +               return KSFT_SKIP;
+> > +       }
+> > +
+> > +       ksft_set_plan(NR_TESTS);
+> > +
+> > +       if (ret == -1 && errno == EBADF) {
+> > +               ksft_test_result_pass("bad file descriptor recognized\n");
+> > +               ret = 0;
+> > +       } else {
+> > +               ksft_test_result_fail("bad file descriptor ignored\n");
+> > +               ret = 1;
+> > +       }  
+> Nice!
+> >
+> >         for (int i = 0; i < 5; i++) {
+> >                 const char *dev_filename = dev_files[i];
+> > --
+> > 2.25.1
+> >  
+> Nitpicking aside:
+> Acked-by: Nhat Pham <nphamcs@gmail.com>
+
+Thanks, I will send a v2 later, using ksft_print_msg(). But first I will
+try if I can detect a tmpfs instance without boiling the ocean.
+
+Cheers,
+Andre
