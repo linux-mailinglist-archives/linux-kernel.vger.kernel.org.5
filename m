@@ -2,60 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81A6577E721
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B7F77E724
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345030AbjHPQ77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 12:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
+        id S1344826AbjHPRBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 13:01:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345021AbjHPQ73 (ORCPT
+        with ESMTP id S1344925AbjHPRAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 12:59:29 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C2019A7
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 09:59:27 -0700 (PDT)
-Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 04739223;
-        Wed, 16 Aug 2023 18:58:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1692205092;
-        bh=qL8j5qkM/ioz7U94Qh0NCq/z7yI3gA+ae9rI0TA7xWE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=eF+yvHtaLVinq2N80Q2GU0vwWOHQbKR7IDYp1h/zC7mAcVop5tIQG7ZlB/Z2khqTk
-         Gxw6q8Gw02MJsaYq6UGIdGARBRXhM3uVgkloFCkFlVJ0RA1AQSGBjgrtfnKjojiTK3
-         hTxMyy255rAg0KuHK7YM5n2lIUtxHRRC6THdUA8Q=
-Message-ID: <7ab235b0-2bac-46a4-7a79-9270768ac3d9@ideasonboard.com>
-Date:   Wed, 16 Aug 2023 19:59:20 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 00/12] drm/bridge: tc358768: Fixes and timings
- improvements
-Content-Language: en-US
-To:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Francesco Dolcini <francesco@dolcini.it>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Aradhya Bhatia <a-bhatia1@ti.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-References: <20230816-tc358768-v2-0-242b9d5f703a@ideasonboard.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-In-Reply-To: <20230816-tc358768-v2-0-242b9d5f703a@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        Wed, 16 Aug 2023 13:00:36 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A4226A6;
+        Wed, 16 Aug 2023 10:00:34 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-26b7c16556eso1295174a91.1;
+        Wed, 16 Aug 2023 10:00:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692205234; x=1692810034;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0PYaXMe/nlp8yVrrb6yGMJtqNU4p8cj6vJCqISzfbDQ=;
+        b=aE+Zc0+bDMFXuytHHOEjtSFikOls6o9h64eXNmdVlBVceWkTRtD3SClPyn5NvcCHDH
+         VdxNW84FhE49loir0qeW0lQtI+Q5jMwYRxNJyiuktIvm7ZKWN81TW5Ws54wLTWP11zez
+         Xb9TntzGuMTXfESjdkD4yeAjM7mtHqZ+ZEEc+1NBo7f7YycOcY5BzqlFgUMxJkVUJi9k
+         5Utf/Rk5AEfneFqoRwwh1lJsYIU74yBULDdZ1mXJwfgbWDEC4r6jQjV5Uprt3LHSutqD
+         pxMXg9LZ5Dujpp5Ah6+f5eFjtch7vP2VB89BKTLAZ08qanlgKrOEXxa36egphaQhqoQY
+         RMdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692205234; x=1692810034;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0PYaXMe/nlp8yVrrb6yGMJtqNU4p8cj6vJCqISzfbDQ=;
+        b=RvY1XZu/UsUXRSodnhEEHCeNHqsXylYWMur6zdhQUfmL012Rlb/iiUBXSYVkgBW0+S
+         EUEeEApcATtyGUS3YtcEX8xRSoBeWk5MWpeRDxgYFQ4PK889KWG+CbDE4r+twZpFNLI4
+         BVAJkXU4vhp7kKwjE8Zof9RyhAE1zyx15owk0lRGrpXjAvnZeB8X6Ls2G+Esc6gQlEDV
+         djvgGtj9aXGTBhxK7nNNH5oDTvZBTgiWelIdiguwy1lCXbyng7ySVzpvepwKPNBdubNH
+         CecZptrVg9xV5eQR9aPUOekVwKQOVoiaPNRc0Tqph2RMISKUu34rBp/Szfri9beG6CQx
+         ItAA==
+X-Gm-Message-State: AOJu0Yy5yU8qQ7NsP+nZq6mlNeB0qJuSKtQ5GJGCL27mhzxvvOElSuEg
+        3iKE/BggSVPDhCyU70m4+1E=
+X-Google-Smtp-Source: AGHT+IGkennMBgjBNmFDn/FXs93MyYPFOqjjMuHUvzYfQ/6a0Z5X49K9MASilFYVNVNKBZxze8QtNg==
+X-Received: by 2002:a17:90a:fd14:b0:268:42a2:35db with SMTP id cv20-20020a17090afd1400b0026842a235dbmr1903541pjb.48.1692205234144;
+        Wed, 16 Aug 2023 10:00:34 -0700 (PDT)
+Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
+        by smtp.gmail.com with ESMTPSA id n32-20020a17090a2ca300b00262d9b4b527sm12327087pjd.52.2023.08.16.10.00.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 10:00:33 -0700 (PDT)
+From:   Chengfeng Ye <dg573847474@gmail.com>
+To:     vkoul@kernel.org, sugaya.taichi@socionext.com,
+        orito.takao@socionext.com, len.baker@gmx.com,
+        jaswinder.singh@linaro.org
+Cc:     dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Chengfeng Ye <dg573847474@gmail.com>
+Subject: [PATCH v2] dmaengine: milbeaut-hdmac: Fix potential deadlock on &mc->vc.lock
+Date:   Wed, 16 Aug 2023 17:00:13 +0000
+Message-Id: <20230816170013.4262-1-dg573847474@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,32 +68,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/08/2023 14:25, Tomi Valkeinen wrote:
-> This series contains various fixes and cleanups for TC358768. The target
-> of this work is to get TC358768 working on Toradex's AM62 based board,
-> which has the following display pipeline:
-> 
-> AM62 DPI -> TC358768 -> LT8912B -> HDMI connector
-> 
-> The main thing the series does is to improve the DSI HSW, HFP and VSDly
-> calculations.
-> 
->   Tomi
-> 
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> ---
-> Changes in v2:
-> - Add "drm/tegra: rgb: Parameterize V- and H-sync polarities" so that
->    Tegra can configure the polarities correctly.
-> - Add "drm/bridge: tc358768: Default to positive h/v syncs" as we don't
->    (necessarily) have the polarities set in the mode.
-> - Drop "drm/bridge: tc358768: Add DRM_BRIDGE_ATTACH_NO_CONNECTOR
->    support" as it's not needed for DRM_BRIDGE_ATTACH_NO_CONNECTOR
->    support.
-> - Link to v1: https://lore.kernel.org/r/20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com
+As &mc->vc.lock is acquired by milbeaut_hdmac_interrupt() under irq
+context, other acquisition of the same lock under process context should
+disable irq, otherwise deadlock could happen if the irq preempts the
+execution of process context code while the lock is held in process context
+on the same CPU.
 
-Looks like I forgot to add the reviewed-bys from Peter. Sorry about 
-that! Will add to v3.
+milbeaut_hdmac_chan_config(), milbeaut_hdmac_chan_resume() and
+milbeaut_hdmac_chan_pause() are such callback functions not disable irq by
+default.
 
-  Tomi
+Possible deadlock scenario:
+milbeaut_hdmac_chan_config()
+    -> spin_lock(&mc->vc.lock)
+        <hard interruption>
+        -> milbeaut_hdmac_interrupt()
+        -> spin_lock(&mc->vc.lock); (deadlock here)
+
+This flaw was found by an experimental static analysis tool I am developing
+for irq-related deadlock.
+
+The tentative patch fixes the potential deadlock by spin_lock_irqsave() in
+the three callback functions to disable irq while lock is held.
+
+Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
+---
+Change in V2:
+- Also change &mc->vc.lock to &vc->lock for uniformity consideration
+
+---
+ drivers/dma/milbeaut-hdmac.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/dma/milbeaut-hdmac.c b/drivers/dma/milbeaut-hdmac.c
+index 1b0a95892627..5c664c8c10f5 100644
+--- a/drivers/dma/milbeaut-hdmac.c
++++ b/drivers/dma/milbeaut-hdmac.c
+@@ -214,10 +214,11 @@ milbeaut_hdmac_chan_config(struct dma_chan *chan, struct dma_slave_config *cfg)
+ {
+ 	struct virt_dma_chan *vc = to_virt_chan(chan);
+ 	struct milbeaut_hdmac_chan *mc = to_milbeaut_hdmac_chan(vc);
++	unsigned long flags;
+ 
+-	spin_lock(&mc->vc.lock);
++	spin_lock_irqsave(&vc->lock, flags);
+ 	mc->cfg = *cfg;
+-	spin_unlock(&mc->vc.lock);
++	spin_unlock_irqrestore(&vc->lock, flags);
+ 
+ 	return 0;
+ }
+@@ -226,13 +227,14 @@ static int milbeaut_hdmac_chan_pause(struct dma_chan *chan)
+ {
+ 	struct virt_dma_chan *vc = to_virt_chan(chan);
+ 	struct milbeaut_hdmac_chan *mc = to_milbeaut_hdmac_chan(vc);
++	unsigned long flags;
+ 	u32 val;
+ 
+-	spin_lock(&mc->vc.lock);
++	spin_lock_irqsave(&vc->lock, flags);
+ 	val = readl_relaxed(mc->reg_ch_base + MLB_HDMAC_DMACA);
+ 	val |= MLB_HDMAC_PB;
+ 	writel_relaxed(val, mc->reg_ch_base + MLB_HDMAC_DMACA);
+-	spin_unlock(&mc->vc.lock);
++	spin_unlock_irqrestore(&vc->lock, flags);
+ 
+ 	return 0;
+ }
+@@ -241,13 +243,14 @@ static int milbeaut_hdmac_chan_resume(struct dma_chan *chan)
+ {
+ 	struct virt_dma_chan *vc = to_virt_chan(chan);
+ 	struct milbeaut_hdmac_chan *mc = to_milbeaut_hdmac_chan(vc);
++	unsigned long flags;
+ 	u32 val;
+ 
+-	spin_lock(&mc->vc.lock);
++	spin_lock_irqsave(&vc->lock, flags);
+ 	val = readl_relaxed(mc->reg_ch_base + MLB_HDMAC_DMACA);
+ 	val &= ~MLB_HDMAC_PB;
+ 	writel_relaxed(val, mc->reg_ch_base + MLB_HDMAC_DMACA);
+-	spin_unlock(&mc->vc.lock);
++	spin_unlock_irqrestore(&vc->lock, flags);
+ 
+ 	return 0;
+ }
+-- 
+2.17.1
 
