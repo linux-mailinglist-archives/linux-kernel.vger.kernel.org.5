@@ -2,107 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A6177DFF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:04:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 331B777E000
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242867AbjHPLEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 07:04:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53006 "EHLO
+        id S238720AbjHPLIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 07:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244382AbjHPLDk (ORCPT
+        with ESMTP id S244268AbjHPLIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 07:03:40 -0400
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F742D45;
-        Wed, 16 Aug 2023 04:03:11 -0700 (PDT)
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-9923833737eso847694566b.3;
-        Wed, 16 Aug 2023 04:03:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692183733; x=1692788533;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cJU6KQ3PJKsFFkSrCzSUBY4MjtuY9BbjYXsDhDJBkXg=;
-        b=Wv1ChWiNhjbIBBSZSqlKABdFM9/5ox5WJ/Gnnf0WIM/Z8M0FoIfW4+1373dMmrYAip
-         F5n+f7Szp0J8ShDmfnV/6/jS9c3H9RwMoCkCaABipLperyLVCzbaPk78xeKGq6wR8tbE
-         wAXjmz1xOD69JqVHSciTvrBMFPPCPuc6UhmDqV4Q4U2W6P+TtlR+monNS9QWmIFVpJ9M
-         jOznVXEOHS2qACiL1lYt4xR5EsLrNgPXivygy8iA7RR1ZC9MGI+gVY5luviMmKke6J12
-         kF4KGSurGj+FDEAcv+J23hAjDgGmyFrDS//OhXj+7WeGL9pdS4urq3bZAvmiwRBwm0D3
-         6rCg==
-X-Gm-Message-State: AOJu0Yyg9n09nAOh79msJPOmiLk4M5cUHFgWEbzG/gxqA9Wdq5wEAcMC
-        LAfuQl7ZgvZW6c6IAaRqeKEBXQsRNg7Kpw==
-X-Google-Smtp-Source: AGHT+IFAQGmIJBKVXeFZIjDADVrbgYhoaJ3OX9d1+JK1G4mWPysrluNt+z2cbPv0Qc6lUD2Ph/vUPg==
-X-Received: by 2002:a17:906:b009:b0:99d:101b:8403 with SMTP id v9-20020a170906b00900b0099d101b8403mr1158873ejy.36.1692183732740;
-        Wed, 16 Aug 2023 04:02:12 -0700 (PDT)
-Received: from [192.168.1.58] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id z24-20020a170906241800b009934b1eb577sm8433429eja.77.2023.08.16.04.02.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 04:02:12 -0700 (PDT)
-Message-ID: <1882495c-b16b-10f0-2acf-ee86cf4e031b@kernel.org>
-Date:   Wed, 16 Aug 2023 13:02:11 +0200
+        Wed, 16 Aug 2023 07:08:11 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBA3E56
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 04:08:09 -0700 (PDT)
+Received: from kwepemm600013.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RQlgD5kYHzVk9b;
+        Wed, 16 Aug 2023 19:06:00 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 16 Aug 2023 19:08:04 +0800
+Subject: Re: Fwd: ubi: fastmap: Fix a series of wear leveling problems
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Linux MTD <linux-mtd@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <44f5a8f7-0bf4-c986-a0dc-dc12d0cb30ca@gmail.com>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <1ee21a88-0969-47f5-fa87-b5090fc7718f@huawei.com>
+Date:   Wed, 16 Aug 2023 19:08:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 00/14] tty: n_tty: cleanup
-Content-Language: en-US
-To:     gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230816105822.3685-1-jirislaby@kernel.org>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <20230816105822.3685-1-jirislaby@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <44f5a8f7-0bf4-c986-a0dc-dc12d0cb30ca@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.46]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bah, this series intermixed with old patches in one dir.
-
-Patches 1/4 2/4 3/4 4/4 are to be ignored.
-
-OTOH, 01/14 ... 04/14 are a correct part of this series.
-
-Do you want me to resend?
-
-On 16. 08. 23, 12:58, Jiri Slaby (SUSE) wrote:
-> This is another part (say part III.) of the previous type unification
-> across the tty layer[1]. This time, in n_tty line discipline. Apart from
-> type changes, this series contains a larger set of refactoring of the
-> code. Namely, separating hairy code into single functions for better
-> readability.
+在 2023/8/16 17:56, Bagas Sanjaya 写道:
+Hi,
+> Hi,
 > 
-> [1] https://lore.kernel.org/all/20230810091510.13006-1-jirislaby@kernel.org/
+> I notice a bug report with proposed fixes on Bugzilla [1]. Quoting from it
+> (only the first problem that is quoted):
 > 
-> Note this is completely independent on "part II." (tty_buffer cleanup),
-> so those two can be applied in any order.
+>> Problem 1: large erase counter for single fastmap data PEB
+>>
+>> Config:
+>> x86_64 qemu
+>> flash: nandsim
+>> CONFIG_MTD_UBI_WL_THRESHOLD=128
+>> CONFIG_MTD_UBI_FASTMAP=y
+>> ubi->beb_rsvd_pebs=0
+>>
+>> Running fsstress on ubifs for 3h(fastmap data PEB has large erase counter than others):
+>> =========================================================
+>> from              to     count      min      avg      max
+>> ---------------------------------------------------------
+>> 0        ..        9:        0        0        0        0
+>> 10       ..       99:      532       84       92       99
+>> 100      ..      999:    15787      100      147      229
+>> 1000     ..     9999:       64     4699     4765     4826
+>> 10000    ..    99999:        0        0        0        0
+>> 100000   ..      inf:        1   272935   272935   272935
+>> ---------------------------------------------------------
+>> Total               :    16384       84      180   272935
+>> PEB 8031(ec=272935) is always taken for fastmap data.
+>>
+>> After fix, running fsstress on ubifs for 12h(no pool reservation), no individual peb has big erase counter:
+>> =========================================================
+>> from              to     count      min      avg      max
+>> ---------------------------------------------------------
+>> 0        ..        9:        0        0        0        0
+>> 10       ..       99:        0        0        0        0
+>> 100      ..      999:    16320      609      642      705
+>> 1000     ..     9999:        0        0        0        0
+>> 10000    ..    99999:       64    18176    18234    18303
+>> 100000   ..      inf:        0        0        0        0
+>> ---------------------------------------------------------
+>> Total               :    16384      609      710    18303
 > 
-> Jiri Slaby (SUSE) (14):
->    tty: n_tty: make flow of n_tty_receive_buf_common() a bool
->    tty: n_tty: use output character directly
->    tty: n_tty: use 'retval' for writes' retvals
->    tty: n_tty: use time_is_before_jiffies() in n_tty_receive_overrun()
->    tty: n_tty: make n_tty_data::num_overrun unsigned
->    tty: n_tty: use MASK() for masking out size bits
->    tty: n_tty: move canon handling to a separate function
->    tty: n_tty: move newline handling to a separate function
->    tty: n_tty: remove unsigned char casts from character constants
->    tty: n_tty: simplify chars_in_buffer()
->    tty: n_tty: use u8 for chars and flags
->    tty: n_tty: unify counts to size_t
->    tty: n_tty: extract ECHO_OP processing to a separate function
->    tty: n_tty: deduplicate copy code in n_tty_receive_buf_real_raw()
+> See Bugzilla for the full thread (with other problems mentioned) and
+> attached patch series that fixes them.
 > 
->   drivers/tty/n_tty.c | 551 +++++++++++++++++++++++---------------------
->   1 file changed, 284 insertions(+), 267 deletions(-)
+> Zhihao: I asked you on BZ to send your patches to linux-mtd list,
+> but you didn't respond there. Would you like to send them for
+> review?
 > 
 
--- 
-js
-suse labs
+Sorry for the delayed response. Yes, I have sent the fix patches in 
+https://patchwork.ozlabs.org/project/linux-mtd/list/?series=368534.
+Any suggestions are welcomed.
+
+
+> Thanks.
+> 
+> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217787
+> 
 
