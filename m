@@ -2,160 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5D377D85F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 04:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA5777D85D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 04:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241271AbjHPCUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 22:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241235AbjHPCUB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S241206AbjHPCUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 15 Aug 2023 22:20:01 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9928019B9
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:20:00 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99bf91956cdso741378166b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:20:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692152399; x=1692757199;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V37BsPFrQfflT/FozBg7eajhwQW33aYWS46wbu2Ypkg=;
-        b=0QZSUunPFCDBu7ePJO+ZUAJzTXgigsi5VNYuL05PmuqaCgP+zWcsDOoK4uBnj+Gg1B
-         xiu4JLzGNSuShm+gtMpqjUgpqeK36gFrPFC8krbioG1dOUspb6EXb8NiXABp6ifpZvJL
-         nBWvhdyDy9Cjrc6JGod54iQ1PqCr9i3QhL/7EAY9AgeqxMV1VMzo01SQtoKrD56q6GEc
-         iljoQajqNzWVfbgnMusqhIDqOZrGH6GWVvoplEdL5ZrGaEs37M9t4k1R5zgdAMLawa1A
-         7qFUznQjxAotmuX9LT0Xu8BuoXq3POeGNydhcfsOZ/7mojILhRLmA8/S2vhzLXnFN7qA
-         p1xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692152399; x=1692757199;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V37BsPFrQfflT/FozBg7eajhwQW33aYWS46wbu2Ypkg=;
-        b=A1jcmOLSeaXUSpXEncJ+0j1IHk1pXNmMTequ7529otHxwDguvSx41ctDhfgs7Zn7in
-         oWtqsuiRw+HUCLE5Y1OegddJ+aCaH46dRrx2sFE52KgwONefpdLLvtcLrThVkrg22zqV
-         kap0jFL4SCGwebDDVgagg0m4flcULZETt3are3tcuNZV7QPgSf3EsGcOJ394+g6unlu3
-         v9TaOIIXSSkw34+IyWMo1epiVkBu7B1eNdHrGFvmGCt0C2DuPpMJ0QamFBm1kFq+mmZj
-         W7/EeiuxmF6I16j0CDGyFmbk27CWNfQB9TF6zEaAxKgMO+/SPLcFD8E8f04cQ44SIQw1
-         aUNQ==
-X-Gm-Message-State: AOJu0Yx+zvb/hJz9FyQFKtUy0RGUbtNXm370pIu/cWqfpXzH1fSAvBCx
-        Fju4QRMgOWzRSVJFCfumlzWcQpaVKKVxCyeDJzbFRg==
-X-Google-Smtp-Source: AGHT+IGju8euBER6YklL00LW/Ec3/FON2TX1HNNygdv92iS7R2wg8oOA36FqPIeuOss8xS3y2AIWArv/piWWChe07I4=
-X-Received: by 2002:a17:906:9bd4:b0:988:f1ec:7400 with SMTP id
- de20-20020a1709069bd400b00988f1ec7400mr323021ejc.36.1692152398846; Tue, 15
- Aug 2023 19:19:58 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241268AbjHPCTm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 15 Aug 2023 22:19:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 167F310C3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:19:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A62FF65466
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:19:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0707FC433C7;
+        Wed, 16 Aug 2023 02:19:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692152379;
+        bh=shV+iYA7ut2oA2tvBRQwaaEfQePJeM63FpWOFvBMNzw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=opILOkjnSzAtikHhouPRe/B1MGm/T8bpR5tBJ5LMf7oVz1E33jcjs979N0Q23wffY
+         WQUyazv/GKGdaL/9WIyAWCMxibCNMJjBM2vXQ2Ho9DJB3dFtEMCFu27rswcxhU/Jpy
+         XT554ZE57pZi8PnnVVk+l2TQhnKMlsEN/5/BiWOVokFOVMo6G8Q3FtFT371d+YnwT4
+         ND2yQxEdQKpVGs30MPq9WrZ8K2nIkW/XjFj0WClhpXoRkb7T8595G40Po6wOHVA9fJ
+         JNJe9hzeJe5tshfqzxwHiD1VqJyvUW4c4xtJj0WdnJ9YHdqZ62w2slFjgIRpF9uBM8
+         RtkNIipr5YD2A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 9AEFACE0592; Tue, 15 Aug 2023 19:19:38 -0700 (PDT)
+Date:   Tue, 15 Aug 2023 19:19:38 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [paulmck-rcu:dev.2023.08.14a 49/51]
+ kernel/rcu/rcutorture.c:24:10: fatal error: linux/rcu_notifier.h: No such
+ file or directory
+Message-ID: <a5fa35dc-6244-41ef-9f5b-08aa497d9a74@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <202308160930.YEekR3Wf-lkp@intel.com>
 MIME-Version: 1.0
-References: <CAJD7tkYZxjAHrodVDK=wmz-sULJrq2VhC_5ecRP7T-KiaOcTuw@mail.gmail.com>
- <CALvZod46Cz_=5UgiyAKM+VgKyk=KJCqDqXu91=9uHy7-2wk53g@mail.gmail.com>
- <CAJD7tkY-ezyYebvcs=8Z_zrw2UVW8jf2WvP1G8tu2rT=2sMnAA@mail.gmail.com>
- <CALvZod5fH9xu_+6x85K38f63GfKGWD1LqtD2R4d09xmDtLB7ew@mail.gmail.com>
- <ZNdEaw2nktq1NfmH@dhcp22.suse.cz> <CAJD7tkaFHgc3eN1K1wYsQFWMLu4+Frf9DJ-5HOja2nC20Es9Dw@mail.gmail.com>
- <ZNrDWqfjXtAYhnvT@slm.duckdns.org> <CAJD7tkYBFz-gZ2QsHxUMT=t0KNXs66S-zzMPebadHx9zaG0Q3w@mail.gmail.com>
- <ZNrITZVTf2EILRJq@slm.duckdns.org> <CAJD7tkaXwoF-faApweAmm7Db7jAuS3EO7hVvdyVtqW_rE+T9Vg@mail.gmail.com>
- <ZNrLO5PAEZw4yjI9@slm.duckdns.org> <CAJD7tkYgCySTX28zK9GZiWwsabR4nv7M2hQ57y12si-fqtv7zg@mail.gmail.com>
- <CALvZod6KRxiDzrppCgx+=SHg2+96nFE5crwXCKwe9PZbWM_6cQ@mail.gmail.com>
- <CAJD7tkaUzhvZPohpo1F8TUKRPuXH7bjDeg9VCzN2CbywQbRutQ@mail.gmail.com> <CALvZod6HUtYhDaXiwXSrcwfxLSrZ37sZhKY1Mg4kmpDFk13aYw@mail.gmail.com>
-In-Reply-To: <CALvZod6HUtYhDaXiwXSrcwfxLSrZ37sZhKY1Mg4kmpDFk13aYw@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 15 Aug 2023 19:19:20 -0700
-Message-ID: <CAJD7tkYzr2cg-aQ899vfqB4jR7iP83t8f-Z4AH8d9iW-yw-nnQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Ivan Babrou <ivan@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202308160930.YEekR3Wf-lkp@intel.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 6:14=E2=80=AFPM Shakeel Butt <shakeelb@google.com> =
-wrote:
->
-> On Tue, Aug 15, 2023 at 5:29=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> >
-> [...]
-> > >
-> > > I thought we already reached the decision on how to proceed here. Let
-> > > me summarize what I think we should do:
-> > >
-> > > 1. Completely remove the sync flush from stat files read from userspa=
-ce.
-> > > 2. Provide a separate way/interface to explicitly flush stats for
-> > > users who want more accurate stats and can pay the cost. This is
-> > > similar to the stat_refresh interface.
-> > > 3. Keep the 2 sec periodic stats flusher.
-> >
-> > I think this solution is suboptimal to be honest, I think we can do bet=
-ter.
-> >
-> > With recent improvements to spinlocks/mutexes, and flushers becoming
-> > sleepable, I think a better solution would be to remove unified
-> > flushing and let everyone only flush the subtree they care about. Sync
-> > flushing becomes much better (unless you're flushing root ofc), and
-> > concurrent flushing wouldn't cause too many problems (ideally no
-> > thundering herd, and rstat lock can be dropped at cpu boundaries in
-> > cgroup_rstat_flush_locked()).
-> >
-> > If we do this, stat reads can be much faster as Ivan demonstrated with
-> > his patch that only flushes the cgroup being read, and we do not
-> > sacrifice accuracy as we never skip flushing. We also do not need a
-> > separate interface for explicit refresh.
-> >
-> > In all cases, we need to keep the 2 sec periodic flusher. What we need
-> > to figure out if we remove unified flushing is:
-> >
-> > 1. Handling stats_flush_threshold.
-> > 2. Handling flush_next_time.
-> >
-> > Both of these are global now, and will need to be adapted to
-> > non-unified non-global flushing.
->
-> The only thing we are disagreeing on is (1) the complete removal of
-> sync flush and an explicit flush interface versus (2) keep doing the
-> sync flush of the subtree.
->
-> To me (1) seems more optimal particularly for the server use-case
-> where a node controller reads stats of root and as well as cgroups of
-> a couple of top levels (we actually do this internally). Doing flush
-> once explicitly and then reading the stats for all such cgroups seems
-> better to me.
+On Wed, Aug 16, 2023 at 09:55:30AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2023.08.14a
+> head:   a90c4cbc91475bd5df35f712a954972fbfff40a1
+> commit: 37730a9ba11627b63d8108dd8b3061ea2ee04df9 [49/51] rcutorture: Add test of RCU CPU stall notifiers
+> config: sh-allmodconfig (https://download.01.org/0day-ci/archive/20230816/202308160930.YEekR3Wf-lkp@intel.com/config)
+> compiler: sh4-linux-gcc (GCC) 12.3.0
+> reproduce: (https://download.01.org/0day-ci/archive/20230816/202308160930.YEekR3Wf-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202308160930.YEekR3Wf-lkp@intel.com/
+> 
+> All errors (new ones prefixed by >>):
+> 
+> >> kernel/rcu/rcutorture.c:24:10: fatal error: linux/rcu_notifier.h: No such file or directory
+>       24 | #include <linux/rcu_notifier.h>
+>          |          ^~~~~~~~~~~~~~~~~~~~~~
+>    compilation terminated.
 
-The problem in (1) is that first of all it's a behavioral change, we
-start having explicit staleness in the stats, and userspace needs to
-adapt by explicitly requesting a flush. A node controller can be
-enlightened to do so, but on a system with a lot of cgroups, if you
-flush once explicitly and iterate through all cgroups, the flush will
-be stale by the time you reach the last cgroup. Keep in mind there are
-also users that read their own stats, figuring out which users need to
-flush explicitly vs. read cached stats is a problem.
+You would think that I would remember "git add".  ;-)
 
-Taking a step back, the total work that needs to be done does not
-change with (2). A node controller iterating cgroups and reading their
-stats will do the same amount of flushing, it will just be distributed
-across multiple read syscalls, so shorter intervals in kernel space.
+Does the patch below fix things up?
 
-There are also in-kernel flushers (e.g. reclaim and dirty throttling)
-that will benefit from (2) by reading more accurate stats without
-having to flush the entire tree. The behavior is currently
-indeterministic, you may get fresh or stale stats, you may flush one
-cgroup or 100 cgroups.
+							Thanx, Paul
 
-I think with (2) we make less compromises in terms of accuracy and
-determinism, and it's a less disruptive change to userspace.
+------------------------------------------------------------------------
+
+commit 2b7e462695eee212f81f7000af4f4af2523ece35
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Tue Aug 15 19:17:50 2023 -0700
+
+    fixup! rcu: Add RCU CPU stall notifier
+    
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/include/linux/rcu_notifier.h b/include/linux/rcu_notifier.h
+new file mode 100644
+index 000000000000..ebf371364581
+--- /dev/null
++++ b/include/linux/rcu_notifier.h
+@@ -0,0 +1,32 @@
++/* SPDX-License-Identifier: GPL-2.0+ */
++/*
++ * Read-Copy Update notifiers, initially RCU CPU stall notifier.
++ * Separate from rcupdate.h to avoid #include loops.
++ *
++ * Copyright (C) 2023 Paul E. McKenney.
++ */
++
++#ifndef __LINUX_RCU_NOTIFIER_H
++#define __LINUX_RCU_NOTIFIER_H
++
++// Actions for RCU CPU stall notifier calls.
++#define RCU_STALL_NOTIFY_NORM	1
++#define RCU_STALL_NOTIFY_EXP	2
++
++#ifdef CONFIG_RCU_STALL_COMMON
++
++#include <linux/notifier.h>
++#include <linux/types.h>
++
++int rcu_stall_chain_notifier_register(struct notifier_block *n);
++int rcu_stall_chain_notifier_unregister(struct notifier_block *n);
++
++#else // #ifdef CONFIG_RCU_STALL_COMMON
++
++// No RCU CPU stall warnings in Tiny RCU.
++static inline int rcu_stall_chain_notifier_register(struct notifier_block *n) { return -EEXIST; }
++static inline int rcu_stall_chain_notifier_unregister(struct notifier_block *n) { return -ENOENT; }
++
++#endif // #else // #ifdef CONFIG_RCU_STALL_COMMON
++
++#endif /* __LINUX_RCU_NOTIFIER_H */
