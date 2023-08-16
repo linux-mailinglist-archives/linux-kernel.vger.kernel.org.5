@@ -2,150 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9223B77EC43
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:53:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF7D77EC47
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346671AbjHPVw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 17:52:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45714 "EHLO
+        id S236987AbjHPVyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 17:54:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236408AbjHPVwa (ORCPT
+        with ESMTP id S1346678AbjHPVxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 17:52:30 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73ED31FD0;
-        Wed, 16 Aug 2023 14:52:29 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 349951F85D;
-        Wed, 16 Aug 2023 21:52:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692222748; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xguN9t/SjGklflT204Mw1GXNW/IQjQio3dunDAplZj8=;
-        b=ZiQ7Z6NL0p77OBXg9zwcN6MqB8WITOcEpmxoGvcz+XPOPjlO5r+d9nXkDGbv27wdToWpfJ
-        XlUJZOdv8HJDXrYGR5F7oCLubRVE0gbVZIHpsRx4DYzxEmppNUadDDEqQ25t1UcSijtQVn
-        P09S5ack4BnFiogGQxb/6WOfeAyq/B0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692222748;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xguN9t/SjGklflT204Mw1GXNW/IQjQio3dunDAplZj8=;
-        b=3NUHQFPdO27jxtzU8l/4mH6EyCNvgX65ozUOYFaY/XViL90DiILT3rISTsYKFmSxJaMd/A
-        k3vOfSo10Zbyr5CQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 250F21353E;
-        Wed, 16 Aug 2023 21:52:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id XoH/CBxF3WTgRwAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 16 Aug 2023 21:52:28 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id A2B62A0769; Wed, 16 Aug 2023 23:52:27 +0200 (CEST)
-Date:   Wed, 16 Aug 2023 23:52:27 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Bhatnagar, Rishabh" <risbhat@amazon.com>
-Cc:     Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
-        jack@suse.com, linux-ext4@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Park, SeongJae" <sjpark@amazon.com>
-Subject: Re: Tasks stuck jbd2 for a long time
-Message-ID: <20230816215227.jlvmqasfbc73asi4@quack3>
-References: <153d081d-e738-b916-4f72-364b2c1cc36a@amazon.com>
- <20230816022851.GH2247938@mit.edu>
- <17b6398c-859e-4ce7-b751-8688a7288b47@amazon.com>
- <20230816145310.giogco2nbzedgak2@quack3>
- <e716473e-7251-7a81-fa5e-6bf6ba34e49f@amazon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e716473e-7251-7a81-fa5e-6bf6ba34e49f@amazon.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Wed, 16 Aug 2023 17:53:35 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C83182716
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:53:33 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-583c49018c6so88924357b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:53:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692222813; x=1692827613;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5U/ye/HLLHU/JJfiRkVc60C30cItgmeRYpMYP9FcKiM=;
+        b=PWKIkyBQUmD6JPUwrnxbzNd/8go2kuU6pqHijYG6MCKbS9kxanLME/QPzswYYRp4Va
+         WoUU6LxZ914BeCpkNYWlb+cvhi3jLBPQKu1t3sDe6WOzE2HQspYB65pEcFCznl+c1mPs
+         fO9uXz3YD1XBECwkDUz2fn6669jnR+3PObslQ1IYmj1cdnShetOhqL3bhPjmz8vdQoFF
+         91b6xWQXOXFioytRPTeMWM55Png+68nEIeEGxz56vStWZUOkG0+E4/w+5qoqo8nSHopv
+         6N006dtsCweGdCw7Ot56OdHWsfE8zfsKhZ+OYDvh6bth827Dw6EByt9TbhXBcSnrTz9k
+         xYvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692222813; x=1692827613;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5U/ye/HLLHU/JJfiRkVc60C30cItgmeRYpMYP9FcKiM=;
+        b=aRVwd+wPiZDpXnHPqQUpvNjjYfENu+ChUFLAZBHXKwOQwfgej5J+UPnh4l/vLp17qq
+         6aNmRvrwGHmnrEchUgf0AEOKBvJW9jITAe/unFSJbjidf+gDOCrDe6KznCYFzkkSgXHG
+         r93I+ml8+zsvFBQcLexUHfw9KtCVGDFnl+ZLkIVxK85/FPTEic/C5tXV11UEDmF4BNj5
+         UjPbnNpWI+HAdVlDOOcu8dwu637Cjd4P/Yj8cN+FYAr4ohbZgemrDzsJyvoXjv2Iuw7v
+         gUkIKM2enF438f6uZ6yXu87uCwYFrwKlTw7ZXexltlvdHi7xvU2/MtRgAqzscxZP0KvN
+         gwFw==
+X-Gm-Message-State: AOJu0Yzn8So4dj5/QnqEwA0gFjvT6pkP0hFNy9kCMH3ZabrlyT7SXLSb
+        lBeQ5cy5S6LVBXuEANZdfqbz3w4eqNg=
+X-Google-Smtp-Source: AGHT+IGQotSeqquzPZzglE1yO40ugG8Roq/D5aKi1TxCw/8m7cn22zOorE24QGwVCCegSkXo40u2q2Wy9yM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:ae52:0:b0:58c:8c9f:c05a with SMTP id
+ g18-20020a81ae52000000b0058c8c9fc05amr40828ywk.9.1692222813109; Wed, 16 Aug
+ 2023 14:53:33 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 14:53:31 -0700
+In-Reply-To: <20230719144131.29052-10-binbin.wu@linux.intel.com>
+Mime-Version: 1.0
+References: <20230719144131.29052-1-binbin.wu@linux.intel.com> <20230719144131.29052-10-binbin.wu@linux.intel.com>
+Message-ID: <ZN1FW7krxOVs9uA8@google.com>
+Subject: Re: [PATCH v10 9/9] KVM: x86: Expose LAM feature to userspace VMM
+From:   Sean Christopherson <seanjc@google.com>
+To:     Binbin Wu <binbin.wu@linux.intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
+        David.Laight@aculab.com, robert.hu@linux.intel.com,
+        guang.zeng@intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 16-08-23 11:32:47, Bhatnagar, Rishabh wrote:
-> On 8/16/23 7:53 AM, Jan Kara wrote:
-> > CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> > On Tue 15-08-23 20:57:14, Bhatnagar, Rishabh wrote:
-> > > On 8/15/23 7:28 PM, Theodore Ts'o wrote:
-> > > > CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> > > > 
-> > > > 
-> > > > 
-> > > > It would be helpful if you can translate address in the stack trace to
-> > > > line numbers.  See [1] and the script in
-> > > > ./scripts/decode_stacktrace.sh in the kernel sources.  (It is
-> > > > referenced in the web page at [1].)
-> > > > 
-> > > > [1] https://docs.kernel.org/admin-guide/bug-hunting.html
-> > > > 
-> > > > Of course, in order to interpret the line numbers, we'll need a
-> > > > pointer to the git repo of your kernel sources and the git commit ID
-> > > > you were using that presumably corresponds to 5.10.184-175.731.amzn2.x86_64.
-> > > > 
-> > > > The stack trace for which I am particularly interested is the one for
-> > > > the jbd2/md0-8 task, e.g.:
-> > > Thanks for checking Ted.
-> > > 
-> > > We don't have fast_commit feature enabled. So it should correspond to this
-> > > line:
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/fs/jbd2/commit.c?h=linux-5.10.y#n496
-> > > 
-> > > > >         Not tainted 5.10.184-175.731.amzn2.x86_64 #1
-> > > > > "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > > > > task:jbd2/md0-8      state:D stack:    0 pid: 8068 ppid:     2
-> > > > > flags:0x00004080
-> > > > > Call Trace:
-> > > > > __schedule+0x1f9/0x660
-> > > > >    schedule+0x46/0xb0
-> > > > >    jbd2_journal_commit_transaction+0x35d/0x1880 [jbd2]  <--------- line #?
-> > > > >    ? update_load_avg+0x7a/0x5d0
-> > > > >    ? add_wait_queue_exclusive+0x70/0x70
-> > > > >    ? lock_timer_base+0x61/0x80
-> > > > >    ? kjournald2+0xcf/0x360 [jbd2]
-> > > > >    kjournald2+0xcf/0x360 [jbd2]
-> > > > Most of the other stack traces you refenced are tasks that are waiting
-> > > > for the transaction commit to complete so they can proceed with some
-> > > > file system operation.  The stack traces which have
-> > > > start_this_handle() in them are examples of this going on.  Stack
-> > > > traces of tasks that do *not* have start_this_handle() would be
-> > > > specially interesting.
-> > > I see all other stacks apart from kjournald have "start_this_handle".
-> > That would be strange. Can you post full output of "echo w
-> > > /proc/sysrq-trigger" to dmesg, ideally passed through scripts/faddr2line as
-> > Ted suggests. Thanks!
+s/Expose/Advertise
+
+And I would add an "enable" in there somehwere, because to Kai's point earlier in
+the series about kvm_cpu_cap_has(), the guest can't actually use LAM until this
+patch.  Sometimes we do just say "Advertise", but typically only for features
+where there's not virtualization support, e.g. AVX instructions where the guest
+can use them irrespective of what KVM says it supports.
+
+This?
+
+KVM: x86: Advertise and enable LAM (user and supervisor)
+
+On Wed, Jul 19, 2023, Binbin Wu wrote:
+> From: Robert Hoo <robert.hu@linux.intel.com>
 > 
-> Sure i'll try to collect that. The system freezes when such a situation
-> happens and i'm not able
-> to collect much information. I'll try to crash the kernel and collect kdump
-> and see if i can get that info.
-
-Thanks!
-
-> Can low available memory be a reason for a thread to not be able to close
-> the transaction handle for a long time?
-> Maybe some writeback thread starts the handle but is not able to complete
-> writeback?
-
-Well, even that would be a bug but low memory conditions are certainly some
-of less tested paths so it is possible there's a bug lurking there.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> LAM feature is enumerated by CPUID.7.1:EAX.LAM[bit 26].
+> Expose the feature to userspace as the final step after the following
+> supports:
+> - CR4.LAM_SUP virtualization
+> - CR3.LAM_U48 and CR3.LAM_U57 virtualization
+> - Check and untag 64-bit linear address when LAM applies in instruction
+>   emulations and VMExit handlers.
+> 
+> Exposing SGX LAM support is not supported yet. SGX LAM support is enumerated
+> in SGX's own CPUID and there's no hard requirement that it must be supported
+> when LAM is reported in CPUID leaf 0x7.
+> 
+> Signed-off-by: Robert Hoo <robert.hu@linux.intel.com>
+> Signed-off-by: Binbin Wu <binbin.wu@linux.intel.com>
+> Reviewed-by: Jingqi Liu <jingqi.liu@intel.com>
+> Reviewed-by: Chao Gao <chao.gao@intel.com>
+> Reviewed-by: Kai Huang <kai.huang@intel.com>
+> Tested-by: Xuelian Guo <xuelian.guo@intel.com>
+> ---
+>  arch/x86/kvm/cpuid.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 7ebf3ce1bb5f..21d525b01d45 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -645,7 +645,7 @@ void kvm_set_cpu_caps(void)
+>  	kvm_cpu_cap_mask(CPUID_7_1_EAX,
+>  		F(AVX_VNNI) | F(AVX512_BF16) | F(CMPCCXADD) |
+>  		F(FZRM) | F(FSRS) | F(FSRC) |
+> -		F(AMX_FP16) | F(AVX_IFMA)
+> +		F(AMX_FP16) | F(AVX_IFMA) | F(LAM)
+>  	);
+>  
+>  	kvm_cpu_cap_init_kvm_defined(CPUID_7_1_EDX,
+> -- 
+> 2.25.1
+> 
