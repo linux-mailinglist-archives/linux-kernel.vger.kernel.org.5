@@ -2,53 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F36D677EB47
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4613D77EB53
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346334AbjHPVDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 17:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57296 "EHLO
+        id S1346352AbjHPVEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 17:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346384AbjHPVCx (ORCPT
+        with ESMTP id S1346418AbjHPVE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 17:02:53 -0400
+        Wed, 16 Aug 2023 17:04:28 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F042270A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:02:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235382736
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:04:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0C89266EDF
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 21:02:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA0BCC433C8;
-        Wed, 16 Aug 2023 21:02:50 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B21B866EE7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 21:04:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0189C433C7;
+        Wed, 16 Aug 2023 21:04:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692219771;
-        bh=wE8YRwdB9MfE4hhH0w6yLhSm+34TieTMC2SFyVcLFQY=;
+        s=k20201202; t=1692219860;
+        bh=mMTfeKxGVaY+Llzxiq+JdTAw0bShPwSNTGJpRtPVghU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W/y2T+fSgzDTkPSbODwXG3ejmV0kctnK/J0GLFDwT5V1t/YRY5wzbOJaiTiQ2l2ae
-         Wl8EUl04GCKrEyvE+QamQ4qf53QtIMWBi90XsMhP7rcYFDmFczwAwtxhQ1I97R7ZWh
-         64Hs0+JCRiPfBR17N2sJjJLlwjQN5r7fOJaZm9DGJ0Pc8n8tFtC4A3EbSAUTqwtUEw
-         NJwbOc/QwwUfA7D6SN7M9iTZx5XrBPkfRtgKALlBsd1LMbiE2mJB6Q1Bemjbv6+rDA
-         6Mb3ik2Qk9Ti6rF4v5VTJK87STF5I6/p3kYd/rOgt8/AS19CEkehFjJy/tLQYkUSf1
-         sPVM4fD/Lxk8Q==
-Date:   Wed, 16 Aug 2023 14:02:49 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, baron@akamai.com, rostedt@goodmis.org,
-        ardb@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, christian@bricart.de,
-        song@kernel.org, mcgrof@kernel.org
-Subject: Re: [PATCH v2] x86/static_call: Fix __static_call_fixup()
-Message-ID: <20230816210249.7jk6wmxatfz7riwr@treble>
-References: <20230815230809.GA973560@hirez.programming.kicks-ass.net>
- <20230816104419.GA982867@hirez.programming.kicks-ass.net>
+        b=J9BPGJFQQwO12dgLBeIPuJpXSTPAa2GDKIUiYQx/xfKLQw2UgZ7KoJ3Vk5bt6V4or
+         d2o3C11X45pJJiMlwRMwyyrgQCwrA+UDzJxLGbQJbqmdFjdhfC9iLzoYZaef4h2X02
+         zKFtRjYl7gTrjMZ/69YiLq/1vqYwo6QEN1LSQhttjOqRmDs2NP/CcknbiJTc0LuEKU
+         YFlnnxUrmyqNGiFprF5HTH37CB8iyaJmpY6Usqp/YYFbH8VeZJfbfgOf4eiAgXjZ7V
+         +YhWtQTtG8rjemiuXGvqoSHfe/YD9bkzk3Eg07j4tQMCZYnthC7lauH6rZqcVVKVUL
+         TaSU9kNIinIsQ==
+Date:   Wed, 16 Aug 2023 15:04:17 -0600
+From:   Keith Busch <kbusch@kernel.org>
+To:     Genes Lists <lists@sapience.com>
+Cc:     linux-kernel@vger.kernel.org, axboe@kernel.dk, sagi@grimberg.me,
+        linux-nvme@lists.infradead.org, hch@lst.de
+Subject: Re: Possible nvme regression in 6.4.11
+Message-ID: <ZN050TFnKZ54LJ5v@kbusch-mbp.dhcp.thefacebook.com>
+References: <5f968b95-6b1c-4d6f-aac7-5d54f66834a8@sapience.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230816104419.GA982867@hirez.programming.kicks-ass.net>
+In-Reply-To: <5f968b95-6b1c-4d6f-aac7-5d54f66834a8@sapience.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -58,23 +54,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 12:44:19PM +0200, Peter Zijlstra wrote:
+On Wed, Aug 16, 2023 at 04:39:34PM -0400, Genes Lists wrote:
+> Also reported to bugzilla [1]
 > 
-> Christian reported spurious module load crashes after some of Song's
-> module memory layout patches.
+> Failure happens on 1 laptop with samsung ssd.
 > 
-> Turns out that if the very last instruction on the very last page of the
-> module is a 'JMP __x86_return_thunk' then __static_call_fixup() will
-> trip a fault and die.
+> Boot log manually transcribed:
 > 
-> And while the module rework made this slightly more likely to happen,
-> it's always been possible.
+> kernel: nvme nvme0: controller is down; will reset: CSTS:0xffffffff,
+> PCI_STATUS=0xffff
+> kernel: nvme nvme0: Does your device have a faulty power saving mode
+> enabled?
+> kernel: nvme nvme0: try "nvme_core.default_ps_max_latency_us=0
+> pcie_aspm=off" and report a bug
+> kernel: nvme 0000:04:00.0: Unable to change power state from D3cold to D0,
+> device inaccessible
+> kernel: nvme nvme0: Disabling device after reset failure: -19
+> mount[353]: mount /sysroot: can't read suprtblock on /dev/nvme0n1p5.
+> mount[353]:       dmesg(1) may have more information after failed moutn
+> system call.
+> kernel: nvme0m1: detected capacity change from 2000409264 to 0
+> kernel: EXT4-fs (nvme0n1p5): unable to read superblock
+> systemd([1]: sysroot.mount: Mount process exited, code=exited, status=32/n/a
+> ...
 > 
-> Fixes: ee88d363d156 ("x86,static_call: Use alternative RET encoding")
-> Reported-by: Christian Bricart <christian@bricart.de>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> All kernels are upstream, untainted and compiled on Arch using:
+> 
+>  gcc version 13.2.1
+> 
+> Kernels Tested:
+>  - 6.4.10 - works fine
+>  - 6.4.11 - fails
+>  - 6.5-rc6 - fails
+>  - 6.4.11 + nvme_core.default_ps_max_latency_us=0 pcie_aspm=off - fails
+>  - 6.4.11 with 1 revert below - fails
+> 
+>     Revert "nvme-pci: add NVME_QUIRK_BOGUS_NID for Samsung PM9B1 256G and
+> 512G"
+>     This reverts commit 061fbf64825fb47367bbb6e0a528611f08119473.
 
-Acked-by: Josh Poimboeuf <jpoimboe@kernel.org>
+It sounds like you can recreate this. Since .10 worked and .11 doesn't,
+could you bisect the git commits? It looks like it will take 7 steps
+between those two versions.
 
--- 
-Josh
+I don't think there are any nvme specific patches that could contribute
+to what you're seeing, it's more likely some lower level platform patch
+if a kernel change really did cause the regression. None of the recent
+commits really stood out to me, so bisect is what I'd recommend.
