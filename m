@@ -2,145 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5B677EAE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 22:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3459477EAEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 22:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346207AbjHPUlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 16:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
+        id S1346204AbjHPUm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 16:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346210AbjHPUkw (ORCPT
+        with ESMTP id S1346290AbjHPUmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 16:40:52 -0400
-Received: from us-smtp-delivery-44.mimecast.com (unknown [207.211.30.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 336FE2727
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:40:41 -0700 (PDT)
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-511-UVej7SCuNTaMZOsoaiiO-A-1; Wed, 16 Aug 2023 16:40:24 -0400
-X-MC-Unique: UVej7SCuNTaMZOsoaiiO-A-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AF6A2185A78B;
-        Wed, 16 Aug 2023 20:40:23 +0000 (UTC)
-Received: from hog (unknown [10.39.192.31])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1C9E9140E962;
-        Wed, 16 Aug 2023 20:40:21 +0000 (UTC)
-Date:   Wed, 16 Aug 2023 22:40:20 +0200
-From:   Sabrina Dubroca <sd@queasysnail.net>
-To:     "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, richardcochran@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next v1 4/5] net: macsec: introduce mdo_insert_tx_tag
-Message-ID: <ZN00NB7RayXAl80f@hog>
-References: <20230811153249.283984-1-radu-nicolae.pirea@oss.nxp.com>
- <20230811153249.283984-5-radu-nicolae.pirea@oss.nxp.com>
+        Wed, 16 Aug 2023 16:42:20 -0400
+Received: from ale.deltatee.com (ale.deltatee.com [204.191.154.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E55E2716;
+        Wed, 16 Aug 2023 13:42:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:From:References:Cc:To:
+        MIME-Version:Date:Message-ID:content-disposition;
+        bh=sw8EX7W/LW/Jwme06SDZwl0frTKXlowZ9/wflHHWXPQ=; b=Aqu7s3SdwVz/lN2At96Rmazjj1
+        8cWtZYYC1CTExE9ndC23BXoWFlx7H+PTgI7FHH7n6mxNqBAuSP5gjdehoXJQGpylYhWao/NPMdm21
+        YhDMGKTMlJsCZxdpvdB9ClM2D62zF4GkBPIek643q7j/SI5+H+oRlmgIhtX69GAURgtvGQg7XHu3H
+        jyPs7ZJZpfw6FqM/4EM9hEaGS+GbPs3ZuRnhvKUxa+P89mDtz9/p3uIpQlcaVo1ss+VSweWUDI081
+        a/+5sGu9eLe6lpOGHgslbYPvrSYXrabwF26KeVSLL8AKawtkaBvee4kwjzFTcW7u4sSifW3HRUk+f
+        MPJw7dig==;
+Received: from d75-158-34-12.abhsia.telus.net ([75.158.34.12] helo=[192.168.11.155])
+        by ale.deltatee.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <logang@deltatee.com>)
+        id 1qWNKz-00DCsd-UK; Wed, 16 Aug 2023 14:41:54 -0600
+Message-ID: <36368b25-0c13-107b-d1ba-77df7fac036d@deltatee.com>
+Date:   Wed, 16 Aug 2023 14:41:51 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230811153249.283984-5-radu-nicolae.pirea@oss.nxp.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Yajun Deng <yajun.deng@linux.dev>, kurt.schwemmer@microsemi.com,
+        jdmason@kudzu.us, dave.jiang@intel.com, allenbh@gmail.com
+Cc:     linux-pci@vger.kernel.org, ntb@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20230816083305.1426718-1-yajun.deng@linux.dev>
+From:   Logan Gunthorpe <logang@deltatee.com>
+In-Reply-To: <20230816083305.1426718-1-yajun.deng@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 75.158.34.12
+X-SA-Exim-Rcpt-To: yajun.deng@linux.dev, kurt.schwemmer@microsemi.com, jdmason@kudzu.us, dave.jiang@intel.com, allenbh@gmail.com, linux-pci@vger.kernel.org, ntb@lists.linux.dev, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: logang@deltatee.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] ntb_hw_switchtec: Fix shift-out-of-bounds in
+ switchtec_ntb_mw_set_trans
+X-SA-Exim-Version: 4.2.1 (built Sat, 13 Feb 2021 17:57:42 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2023-08-11, 18:32:48 +0300, Radu Pirea (NXP OSS) wrote:
-> Offloading MACsec in PHYs requires inserting the SecTAG and the ICV in
-> the ethernet frame. This operation will increase the frame size with 32
-> bytes.
-
-"up to 32 bytes"?
-
-The SecTAG and ICV can both be shorter, at least with the software
-implementation.
 
 
-[...]
-> +static struct sk_buff *insert_tx_tag(struct sk_buff *skb,
-> +				     struct net_device *dev)
-> +{
-[...]
-> +
-> +	ctx.secy = &macsec->secy;
-> +	ctx.skb = skb;
+On 2023-08-16 02:33, Yajun Deng wrote:
+> There is a kernel API ntb_mw_clear_trans() would pass 0 to both addr and
+> size. This would make xlate_pos negative.
+> 
+> [   23.734156] switchtec switchtec0: MW 0: part 0 addr 0x0000000000000000 size 0x0000000000000000
+> [   23.734158] ================================================================================
+> [   23.734172] UBSAN: shift-out-of-bounds in drivers/ntb/hw/mscc/ntb_hw_switchtec.c:293:7
+> [   23.734418] shift exponent -1 is negative
+> 
+> Ensuring xlate_pos is a positive or zero before BIT.
+> 
+> Fixes: 1e2fd202f859 ("ntb_hw_switchtec: Check for alignment of the buffer in mw_set_trans()")
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 
-I think it would be a bit more readable to just pass the skb to
- ->mdo_insert_tx_tag instead of adding it to the context.
+That makes sense. Thanks!
 
-> +
-> +	err = ops->mdo_insert_tx_tag(&ctx);
-> +	if (err)
-> +		goto cleanup;
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
 
-[...]
-> @@ -3403,6 +3470,13 @@ static netdev_tx_t macsec_start_xmit(struct sk_buff *skb,
->  		skb_dst_drop(skb);
->  		dst_hold(&md_dst->dst);
->  		skb_dst_set(skb, &md_dst->dst);
-> +
-> +		skb = insert_tx_tag(skb, dev);
-> +		if (IS_ERR(skb)) {
-> +			dev->stats.tx_dropped++;
-
-That should probably use DEV_STATS_INC (see commit
-32d0a49d36a2 ("macsec: use DEV_STATS_INC()")).
-
-> +			return NETDEV_TX_OK;
-> +		}
-> +
->  		skb->dev = macsec->real_dev;
->  		return dev_queue_xmit(skb);
->  	}
-> @@ -4137,6 +4211,11 @@ static int macsec_newlink(struct net *net, struct net_device *dev,
->  			if (err)
->  				goto del_dev;
->  		}
-> +
-> +		dev->needed_headroom -= MACSEC_NEEDED_HEADROOM;
-> +		dev->needed_headroom += ops->needed_headroom;
-> +		dev->needed_tailroom -= MACSEC_NEEDED_TAILROOM;
-> +		dev->needed_tailroom += ops->needed_tailroom;
-
-If the driver doesn't set ops->needed_headroom, we'll subtract
-MACSEC_NEEDED_HEADROOM and not add anything back. Is that correct for
-all existing drivers? (and same for tailroom)
-
-You set needed_tailroom to 0 in your driver, but the commit message
-for this patch says that the HW needs space for the ICV. I'm a bit
-puzzled by this, especially since MACSEC_NEEDED_TAILROOM already
-reserves space for the ICV.
-
-Also, since this is pattern repeated twice more (with a sign change)
-in macsec_update_offload, we could probably stuff this into a helper
-(either modifying dev->needed_headroom directly, or returning the
-value to add/subtract).
-
->  	}
->  
-
-[...]
-> @@ -302,6 +303,10 @@ struct macsec_ops {
->  	int (*mdo_get_tx_sa_stats)(struct macsec_context *ctx);
->  	int (*mdo_get_rx_sc_stats)(struct macsec_context *ctx);
->  	int (*mdo_get_rx_sa_stats)(struct macsec_context *ctx);
-> +	/* Offload tag */
-> +	int (*mdo_insert_tx_tag)(struct macsec_context *ctx);
-> +	int needed_headroom;
-> +	int needed_tailroom;
-
-unsigned?
-
->  };
-
--- 
-Sabrina
-
+Logan
