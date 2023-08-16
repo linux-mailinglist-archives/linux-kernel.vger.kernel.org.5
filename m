@@ -2,68 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6154177EA52
+	by mail.lfdr.de (Postfix) with ESMTP id B531F77EA53
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 22:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345879AbjHPUE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 16:04:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36330 "EHLO
+        id S1346014AbjHPUEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 16:04:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344763AbjHPUER (ORCPT
+        with ESMTP id S237492AbjHPUEY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 16:04:17 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95215E55
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:04:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=wzBDW3Wc5hk0OfboVj+g7WZUiK4x0cKMEeegm+uAsyM=; b=gqhJHlsAmoO07vwPpYb6/uEuTF
-        uoSbgT1KYS4PzYsWahJrcfkIU5zaimYAHEK3ppbgIicNiVmegzsPll+TeI2nMSbMzo/74NAfNQfWV
-        QQqriFfZoDIWukQmq1Bas/p3a/YULx3DdC5WbbtfgAGW0HskdnJXt9Bu4xT6iIKDlHc/X732ivH7z
-        rcYehzhiy5SpNTbZE+QZuQ3tqeADF3OqRBwMdZw8kYNTFbYJaPjMl2c/F52RRN3DBPLkgoOZ9/L9h
-        WP0CYIwdMrSmyeoRPDRBrtqxsxagY7MiRVTfaJN94aZH7DR9E20xoXNZQDfFVCd6i+C+H5D1rTmpu
-        Jvm7+6sg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qWMkP-00DFa1-2n;
-        Wed, 16 Aug 2023 20:04:06 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4CC2C3001FD;
-        Wed, 16 Aug 2023 22:04:05 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3A15D20FCB7B4; Wed, 16 Aug 2023 22:04:05 +0200 (CEST)
-Date:   Wed, 16 Aug 2023 22:04:05 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mike Galbraith <umgwanakikbuti@gmail.com>
-Cc:     Chen Yu <yu.c.chen@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        oe-lkp@lists.linux.dev, lkp@intel.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [tip:sched/eevdf] [sched/fair]  e0c2ff903c:
- phoronix-test-suite.blogbench.Write.final_score -34.8% regression
-Message-ID: <20230816200405.GA998718@hirez.programming.kicks-ass.net>
-References: <202308101628.7af4631a-oliver.sang@intel.com>
- <ZNWKuccyWnS3UJjK@chenyu5-mobl2.bbrouter>
- <ZNWgAeN/EVS/vOLi@chenyu5-mobl2.bbrouter>
- <20230814132935.GK776869@hirez.programming.kicks-ass.net>
- <bd96d883d0d1575ebbee4323f4396596adb0ad09.camel@gmail.com>
- <20230816123716.GI980931@hirez.programming.kicks-ass.net>
- <20230816134059.GC982867@hirez.programming.kicks-ass.net>
- <3d10fbfb0171cc017e19adf39fa97a3160a76206.camel@gmail.com>
+        Wed, 16 Aug 2023 16:04:24 -0400
+Received: from mx4.sionneau.net (mx4.sionneau.net [51.15.250.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A19E55;
+        Wed, 16 Aug 2023 13:04:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sionneau.net;
+        s=selectormx4; t=1692216259;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0QjcSWERrvlydgwZfM2ctqBNZ+6TXFZnAAhKEjv9P6M=;
+        b=HPFxFrFagO06p3gelWZM5mfgZdRRAZNqK2YFuIlYqBYx43p1pz18GDu+ruxmbs1Eg22Y3o
+        N142k6tRNMsMHqc6cjE+ECwUQL2vv9GBsvA95BmPe/n0RMvD+rwEucmKWj2p2sNix2hU5h
+        JAsmw/RmnMYls0OzDliWE4i9rDdjZ50=
+Received: from fallen-ThinkPad-X260.hotspot.hub-one.net (<unknown> [37.169.176.143])
+        by mx4.sionneau.net (OpenSMTPD) with ESMTPSA id d6809c2a (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Wed, 16 Aug 2023 20:04:18 +0000 (UTC)
+From:   Yann Sionneau <yann@sionneau.net>
+To:     Andi Shyti <andi.shyti@kernel.org>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Michal Simek <michal.simek@amd.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Yann Sionneau <yann@sionneau.net>
+Subject: [PATCH 0/4] i2c: devm_pinctrl_get() usage fixes
+Date:   Wed, 16 Aug 2023 22:04:06 +0200
+Message-Id: <20230816200410.62131-1-yann@sionneau.net>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3d10fbfb0171cc017e19adf39fa97a3160a76206.camel@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,41 +59,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 05:38:20PM +0200, Mike Galbraith wrote:
-> On Wed, 2023-08-16 at 15:40 +0200, Peter Zijlstra wrote:
-> > On Wed, Aug 16, 2023 at 02:37:16PM +0200, Peter Zijlstra wrote:
-> > > On Mon, Aug 14, 2023 at 08:32:55PM +0200, Mike Galbraith wrote:
-> > > 
-> > > > --- a/kernel/sched/fair.c
-> > > > +++ b/kernel/sched/fair.c
-> > > > @@ -875,6 +875,12 @@ static struct sched_entity *pick_eevdf(s
-> > > >         if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
-> > > >                 curr = NULL;
-> > > >  
-> > > > +       /*
-> > > > +        * Once selected, run the task to parity to avoid overscheduling.
-> > > > +        */
-> > > > +       if (sched_feat(RUN_TO_PARITY) && curr)
-> > > > +               return curr;
-> > > > +
-> > > >         while (node) {
-> > > >                 struct sched_entity *se = __node_2_se(node);
-> > > >  
-> > > 
-> > > So I read it wrong last night... but I rather like this idea. But
-> > > there's something missing. When curr starts a new slice it should
-> > > probably do a full repick and not stick with it.
-> > > 
-> > > Let me poke at this a bit.. nice
-> > 
-> > Something like so.. it shouldn't matter much now, but might make a
-> > difference once we start mixing different slice lengths.
-> 
-> Hm, that stash the deadline trick _seems_ to have cured the reason I
-> was inspired to added that XXX hunk.. no 'ew, that's a tad harsh'
-> latency penalty in sight <knocks wood>.
-> 
-> Here's hoping test bots don't have a cow. 
+Most of the patches just remove the check for NULL for devm_pinctrl_get()
+return value since it cannot return NULL.
 
-You want to write up a Changelog for this, or should I attempt to write
-one?
+One patch also sets back rinfo->pinctrl to NULL when devm_pinctrl_get()
+returns an error instead of a valid pointer and the driver does not bail
+out.
+This last change prevents core i2c code to dereference invalid pointer
+because it checks for rinfo->pinctrl validity with "if (rinfo->pinctrl)"
+before dereferencing it.
+
+Yann Sionneau (4):
+  i2c: mv64xxx: devm_pinctrl_get() cannot return NULL
+  i2c: at91-master: devm_pinctrl_get() cannot return NULL
+  i2c: i2c-cadence: Reset pinctrl to NULL in case devm_pinctrl_get()
+    fails
+  i2c: imx: devm_pinctrl_get() cannot return NULL
+
+ drivers/i2c/busses/i2c-at91-master.c | 2 +-
+ drivers/i2c/busses/i2c-cadence.c     | 1 +
+ drivers/i2c/busses/i2c-imx.c         | 2 +-
+ drivers/i2c/busses/i2c-mv64xxx.c     | 2 --
+ 4 files changed, 3 insertions(+), 4 deletions(-)
+
+-- 
+2.34.1
+
