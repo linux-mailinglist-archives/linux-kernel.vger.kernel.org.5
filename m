@@ -2,75 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA5177ED7E
+	by mail.lfdr.de (Postfix) with ESMTP id E52AF77ED7F
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 00:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347053AbjHPW5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 18:57:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39074 "EHLO
+        id S1347059AbjHPW5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 18:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347013AbjHPW5O (ORCPT
+        with ESMTP id S1347050AbjHPW5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 18:57:14 -0400
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C102698;
-        Wed, 16 Aug 2023 15:57:09 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 95D0B240003;
-        Wed, 16 Aug 2023 22:57:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1692226628;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pFOA/J/kGOq5kjmjh+ySEHDrfyJ+jQg9HCMLA+yWcNw=;
-        b=CCrYCVlmwGGBOj7z/zkaC+bRe/+z5PM4RIPjSD0aMuBMa9GrsDNKh7jL/wahiBuqxpRIAg
-        HrV0excNGzp6+2E5BNRSCgq5zYzRD4m8vDbyCi/MIgmE9b23PdSbU1h0hNVpq9v/eIqOAM
-        I3U3YfIq+9MxS9VLusIvCpycjBi2Pw8yBeIWetkQ8n42AZCPUnHsJ9YUWmQlHsXrqLfbo9
-        saDvHCWqMAICLnBJ3nHHOjf7mUeX/jMxjMfvHz/KX07z8bxYxmD0vKRQBQ0OAEP7HUmH1x
-        Ua4S+/0+xc/s6Ljo8vxfV4Yr/MblUGyaxLVx6YEUllVPTYNf7zWu52G7t/RO+A==
-Date:   Thu, 17 Aug 2023 00:57:05 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Sven Schnelle <svens@stackframe.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: Re: [PATCH] rtc: ds2404: Convert to GPIO descriptors
-Message-ID: <169222659255.112288.18244763922545129118.b4-ty@bootlin.com>
-References: <20230807-descriptors-rtc-v1-1-ce0f9187576e@linaro.org>
+        Wed, 16 Aug 2023 18:57:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06CA92698;
+        Wed, 16 Aug 2023 15:57:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 983E5647E9;
+        Wed, 16 Aug 2023 22:57:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1B48C433C8;
+        Wed, 16 Aug 2023 22:57:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692226649;
+        bh=yYTCJSHKsQ+dHxVY+jZwCxQdt2vj5Cs53HcdgRkS9n0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=q6/+N5/2K0alaUvfFZKpLkyus02mepGXBSMW38/YPkVTebOoDZchfDEcYGS4wrb/p
+         VPU5Jw9mznK5fPBKFCldUwrwZVB/wJTc5FrMdeiU5QZD320jMDuGglsVvy6wfu511o
+         uPDX6y3eZzC7rkYbZKP2jApp16mPCfN1PyPo+mU8ceLxQeCPjswIG+CIlCjDVYjD0+
+         ChGORRyZSe3NBjrbwT/7LUMBk1jEWMlidpzJjGQBTP7pEqwWtYiellXjyvkQbIpnzS
+         XpUiacVCZc5tem0PR1FsSDjtfWWrJLxQRXu4HWftegfPp68Ro62fn153cnNrT6GUJs
+         OhCsi+LvLrdxg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 7E237CE0593; Wed, 16 Aug 2023 15:57:28 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 15:57:28 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, Joel <agnel.joel@gmail.com>,
+        rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3] rcutorture: Copy out ftrace into its own console file
+Message-ID: <6a234118-1ad2-4e22-ad80-f35a1dab8f03@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230815190949.GA3207581@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230807-descriptors-rtc-v1-1-ce0f9187576e@linaro.org>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230815190949.GA3207581@google.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Mon, 07 Aug 2023 09:31:06 +0200, Linus Walleij wrote:
-> This converts the DS2404 to use GPIO descriptors instead of
-> hard-coded global GPIO numbers.
+On Tue, Aug 15, 2023 at 07:09:49PM +0000, Joel Fernandes (Google) wrote:
+> When debugging, it can be difficult to quickly find the ftrace dump
+> within the console log, which in turn makes it difficult to process it
+> independent of the result of the console output.  This commit therefore
+> copies the contents of the buffers into its own file to make it easier
+> to locate and process the ftrace dump. The original ftrace dump is still
+> available in the console log in cases where it is more convenient to
+> process it there, for example, when you have a script that processes
+> console output as well as ftrace-dump data.
 > 
-> The platform data can be deleted because there are no in-tree
-> users and it only contained GPIO numbers which are now
-> passed using descriptor tables (or device tree or ACPI).
+> Also handle the case of multiple ftrace dumps potentially showing up in the
+> log. Example for a file like [1], it will extract as [2].
 > 
-> [...]
+> [1]:
+> foo
+> foo
+> Dumping ftrace buffer:
+> ---------------------------------
+> blah
+> blah
+> ---------------------------------
+> more
+> bar
+> baz
+> Dumping ftrace buffer:
+> ---------------------------------
+> blah2
+> blah2
+> ---------------------------------
+> bleh
+> bleh
+> 
+> [2]:
+> 
+> Ftrace dump 1:
+> blah
+> blah
+> 
+> Ftrace dump 2:
+> blah2
+> blah2
+> 
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Applied, thanks!
+Very good, and I did queue this one.
 
-[1/1] rtc: ds2404: Convert to GPIO descriptors
-      commit: d890cfc25fe9421ffdff3a9ea678172addb36762
+I fixed the indentation of the awk script.  Perhaps your text editor is
+being too smart for our good?  ;-)
 
-Best regards,
+							Thanx, Paul
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> ---
+> v2->v3: Updates from Paul. Also handle multiple ftrace dumps.
+> 
+>  .../selftests/rcutorture/bin/functions.sh     | 24 +++++++++++++++++++
+>  .../selftests/rcutorture/bin/parse-console.sh |  7 ++++++
+>  2 files changed, 31 insertions(+)
+>  mode change 100644 => 100755 tools/testing/selftests/rcutorture/bin/functions.sh
+> 
+> diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
+> old mode 100644
+> new mode 100755
+> index b8e2ea23cb3f..a5c74e508e41
+> --- a/tools/testing/selftests/rcutorture/bin/functions.sh
+> +++ b/tools/testing/selftests/rcutorture/bin/functions.sh
+> @@ -331,3 +331,30 @@ specify_qemu_net () {
+>  		echo $1 -net none
+>  	fi
+>  }
+> +
+> +# Extract the ftrace output from the console log output
+> +# The ftrace output in the original logs look like:
+> +# Dumping ftrace buffer:
+> +# ---------------------------------
+> +# [...]
+> +# ---------------------------------
+> +extract_ftrace_from_console() {
+> +        awk '
+> +        /Dumping ftrace buffer:/ {
+> +        buffer_count++
+> +        print "Ftrace dump " buffer_count ":"
+> +        capture = 1
+> +        next
+> +    }
+> +    /---------------------------------/ {
+> +        if(capture == 1) {
+> +            capture = 2
+> +            next
+> +        } else if(capture == 2) {
+> +            capture = 0
+> +            print ""
+> +        }
+> +    }
+> +    capture == 2
+> +    ' "$1";
+> +}
+> diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
+> index 9ab0f6bc172c..e3d2f69ec0fb 100755
+> --- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
+> +++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
+> @@ -182,3 +182,10 @@ if ! test -s $file.diags
+>  then
+>  	rm -f $file.diags
+>  fi
+> +
+> +# Call extract_ftrace_from_console function, if the output is empty,
+> +# don't create $file.ftrace. Otherwise output the results to $file.ftrace
+> +extract_ftrace_from_console $file > $file.ftrace
+> +if [ ! -s $file.ftrace ]; then
+> +	rm -f $file.ftrace
+> +fi
+> -- 
+> 2.41.0.694.ge786442a9b-goog
+> 
