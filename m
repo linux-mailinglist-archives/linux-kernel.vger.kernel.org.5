@@ -2,241 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E97577E38F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:28:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 504C777E392
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343610AbjHPO12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 10:27:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41758 "EHLO
+        id S1343620AbjHPO2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 10:28:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343688AbjHPO1V (ORCPT
+        with ESMTP id S1343653AbjHPO1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 10:27:21 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81CC72705;
-        Wed, 16 Aug 2023 07:27:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=12sOJIm+x6ia2Tol/RQD3pz06O8YQaOp4XAGIcYNGak=; b=MyKeOwO48f7aS0xKZYq2oCE+XL
-        O3p7bUIx8p1CkTKg72k5dzwt6hCMwQzY8UeEIfAGFp2uOQF9uiIGHwy6qFaRwBO6ktGkV6HjRWG+F
-        XXJMZfxo0RqVLpBFJ5rUdSctbOshpvw/OjkqTdONTBp6uz8mb3aioSQXOIW+XR1thxttIAO74qOPv
-        0AJd4k62UObsQCUKq64TWyCOGJaCDISEQ6HHRBeAjxYdLBlFpNf6A/kL6ZMNr3J7uILL9kAIRnOPW
-        wo0RZ8nzWDIrdBh4Ks6EyYnpPsukH2bxkSgymFQbua8+CewhucqAB32vtTE/eBoOOVHE6U2iOBL/w
-        1g1lqsJw==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qWHUS-000JaR-K5; Wed, 16 Aug 2023 16:27:16 +0200
-Received: from [85.1.206.226] (helo=pc-102.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qWHUR-000Vt1-8R; Wed, 16 Aug 2023 16:27:15 +0200
-Subject: Re: [PATCH v5 bpf 0/4] lwt: fix return values of BPF ops
-To:     Yan Zhai <yan@cloudflare.com>, bpf@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Thomas Graf <tgraf@suug.ch>,
-        Jordan Griege <jgriege@cloudflare.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, stable@vger.kernel.org
-References: <cover.1692153515.git.yan@cloudflare.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9ac9d459-9bc3-bcee-b912-3ab66d2a7fe7@iogearbox.net>
-Date:   Wed, 16 Aug 2023 16:27:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <cover.1692153515.git.yan@cloudflare.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/27002/Wed Aug 16 09:38:26 2023)
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 10:27:48 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048F72715
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:27:47 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-589c6dc8670so65869027b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:27:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692196066; x=1692800866;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ocFVuDAoYa76ZBIYvekfvcCSNlPl+8WKQ7zX3J4QGgs=;
+        b=nCDyOoH0oySdjuEsVcz9lUQEbt0d5xVy4T04c2jCprIc8UdB2GwFoxZz1UihZ+8CPg
+         RchUF9UVRX/0ijV1r23vCJ9RJtbt225PJnFS1+zPdaWLb69pEXxa5GMMopLuXBVh3+R1
+         sI1GJOp8Yub6sMF0nBNjzN7CFf+Ii5MjUbyJkFBmWMRnnNLk4rtsozCNHU3XROmtlzk3
+         ETsES3u+oZGHW5tIJukvZ7SakW0f6EChxmcX5V1bkjju+6zhsKN2qR3r722lg/ESZznc
+         2ErdicH2oyAau+bkEu+pVQQa95zmnDny8w93x0oGM2RRgSu4R1tHE8vQN35d1UBO1auN
+         uxsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692196066; x=1692800866;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ocFVuDAoYa76ZBIYvekfvcCSNlPl+8WKQ7zX3J4QGgs=;
+        b=FO5k0NLX7oBa495oMJYjrmi/vlPw/j4WbPFuCJGMP4TahxJDhieFL2avdhgVuw3vYX
+         9daYyqtR7hk3krLDQyLB6VkfpnRFMyHZi4iBcNXX8M9SKaM0uQAZlClKU9lztKlofR+K
+         0KFUTIcri/vK1BL65c4HCWVGBXyV2Xn/LnsaNrM/VLUqzn6QKW0bQ/y5uexAcm5Oi/Kr
+         BlObMhlE4Elqi31KIgu9xGPtlM8sjbc9wSIVtvu3t+D3CSquKgDuipHquYI+C0t/Mlxa
+         4amgkKyocPxeDfGA5pROk9SduKJfTPtNu4nkT9D8fANuc5pKD63H9k/8OAQQP0ivWcBD
+         MWTA==
+X-Gm-Message-State: AOJu0Yx7l2OSzlRDJfXQ6lQL5H+ah53wSM1CK+L0aoA+J8rN9Rs0nrxZ
+        efcKxac4trsO49sBy96BEtujp7/7CdA=
+X-Google-Smtp-Source: AGHT+IGmENvyzABpuuLUU3IFL4Ul5a1yBeBSAE3t8ZD0pBQsXUo3eUdpcxEPHaxQ0CpfwWt/G+VCpF8iq3g=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:4524:0:b0:58c:8552:458d with SMTP id
+ s36-20020a814524000000b0058c8552458dmr28452ywa.3.1692196066288; Wed, 16 Aug
+ 2023 07:27:46 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 07:27:44 -0700
+In-Reply-To: <a7ecab8d-a77c-77eb-68cb-383de569fe6d@linux.intel.com>
+Mime-Version: 1.0
+References: <20230719024558.8539-1-guang.zeng@intel.com> <20230719024558.8539-5-guang.zeng@intel.com>
+ <ZNwGKPnTY7hRRy+S@google.com> <a7ecab8d-a77c-77eb-68cb-383de569fe6d@linux.intel.com>
+Message-ID: <ZNzc4FMukTamEseJ@google.com>
+Subject: Re: [PATCH v2 4/8] KVM: x86: Add X86EMUL_F_INVTLB and pass it in em_invlpg()
+From:   Sean Christopherson <seanjc@google.com>
+To:     Binbin Wu <binbin.wu@linux.intel.com>
+Cc:     Zeng Guang <guang.zeng@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        H Peter Anvin <hpa@zytor.com>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yan,
-
-On 8/16/23 4:54 AM, Yan Zhai wrote:
-> lwt xmit hook does not expect positive return values in function
-> ip_finish_output2 and ip6_finish_output. However, BPF programs can
-> directly return positive statuses such like NET_XMIT_DROP, NET_RX_DROP,
-> and etc to the caller. Such return values would make the kernel continue
-> processing already freed skbs and eventually panic.
+On Wed, Aug 16, 2023, Binbin Wu wrote:
 > 
-> This set fixes the return values from BPF ops to unexpected continue
-> processing, and checks strictly on the correct continue condition for
-> future proof. In addition, add missing selftests for BPF_REDIRECT
-> and BPF_REROUTE cases for BPF-CI.
 > 
-> v4: https://lore.kernel.org/bpf/ZMD1sFTW8SFiex+x@debian.debian/T/
-> v3: https://lore.kernel.org/bpf/cover.1690255889.git.yan@cloudflare.com/
-> v2: https://lore.kernel.org/netdev/ZLdY6JkWRccunvu0@debian.debian/
-> v1: https://lore.kernel.org/bpf/ZLbYdpWC8zt9EJtq@debian.debian/
-> 
-> changes since v4:
->   * fixed same error on BPF_REROUTE path
->   * re-implemented selftests under BPF-CI requirement
+> On 8/16/2023 7:11 AM, Sean Christopherson wrote:
+> > On Wed, Jul 19, 2023, Zeng Guang wrote:
+> > > diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+> > > index 8e706d19ae45..9b4b3ce6d52a 100644
+> > > --- a/arch/x86/kvm/emulate.c
+> > > +++ b/arch/x86/kvm/emulate.c
+> > > @@ -3443,8 +3443,10 @@ static int em_invlpg(struct x86_emulate_ctxt *ctxt)
+> > >   {
+> > >   	int rc;
+> > >   	ulong linear;
+> > > +	unsigned max_size;
+> > 	unsigned int
+> Let me think why I use 'unsigned'...
+> It's because the exist code uses 'unsigned'.
+> I suppose it is considered bad practice?
 
-BPF CI failed: https://github.com/kernel-patches/bpf/actions/runs/5874202507/job/15929012788
+Yeah, use "unsigned int" when writing new code.
 
-Looks like due to dummy device issue. Either you might need to add this to
-the tools/testing/selftests/bpf/config* or perhaps just use veth instead for
-link_err dev.
+> I will cleanup the exist code as well. Is it OK to cleanup it
+> opportunistically inside this patch?
 
-Error from the above link:
+No, don't bother cleaning up existing usage.  If a patch touches the "bad" code,
+then by all means do an opportunistic cleanup.  But we have too much "legacy" code
+in KVM for a wholesale cleanup of bare unsigned usage to be worth the churn and
+git blame pollution.  See also:
 
-Notice: Success: 370/3177, Skipped: 21, Failed: 2
-Error: #131 lwt_redirect
-   Error: #131 lwt_redirect
-   test_lwt_redirect:PASS:pthread_create 0 nsec
-Error: #131/1 lwt_redirect/lwt_redirect_normal
-   Error: #131/1 lwt_redirect/lwt_redirect_normal
-   test_lwt_redirect_run:PASS:netns_create 0 nsec
-   open_netns:PASS:malloc token 0 nsec
-   open_netns:PASS:open /proc/self/ns/net 0 nsec
-   open_netns:PASS:open netns fd 0 nsec
-   open_netns:PASS:setns 0 nsec
-   test_lwt_redirect_run:PASS:setns 0 nsec
-   open_tuntap:PASS:open(/dev/net/tun) 0 nsec
-   open_tuntap:PASS:ioctl(TUNSETIFF) 0 nsec
-   open_tuntap:PASS:fcntl(O_NONBLOCK) 0 nsec
-   setup_redirect_target:PASS:open_tuntap 0 nsec
-   setup_redirect_target:PASS:if_nametoindex 0 nsec
-   setup_redirect_target:FAIL:ip link add link_err type dummy unexpected error: 512 (errno 0)
-   test_lwt_redirect_normal:FAIL:setup_redirect_target unexpected setup_redirect_target: actual -1 < expected 0
-   close_netns:PASS:setns 0 nsec
-Error: #131/2 lwt_redirect/lwt_redirect_normal_nomac
-   Error: #131/2 lwt_redirect/lwt_redirect_normal_nomac
-   test_lwt_redirect_run:PASS:netns_create 0 nsec
-   open_netns:PASS:malloc token 0 nsec
-   open_netns:PASS:open /proc/self/ns/net 0 nsec
-   open_netns:PASS:open netns fd 0 nsec
-   open_netns:PASS:setns 0 nsec
-   test_lwt_redirect_run:PASS:setns 0 nsec
-   open_tuntap:PASS:open(/dev/net/tun) 0 nsec
-   open_tuntap:PASS:ioctl(TUNSETIFF) 0 nsec
-   open_tuntap:PASS:fcntl(O_NONBLOCK) 0 nsec
-   setup_redirect_target:PASS:open_tuntap 0 nsec
-   setup_redirect_target:PASS:if_nametoindex 0 nsec
-   setup_redirect_target:FAIL:ip link add link_err type dummy unexpected error: 512 (errno 0)
-   test_lwt_redirect_normal_nomac:FAIL:setup_redirect_target unexpected setup_redirect_target: actual -1 < expected 0
-   close_netns:PASS:setns 0 nsec
-Error: #131/3 lwt_redirect/lwt_redirect_dev_down
-   Error: #131/3 lwt_redirect/lwt_redirect_dev_down
-   test_lwt_redirect_run:PASS:netns_create 0 nsec
-   open_netns:PASS:malloc token 0 nsec
-   open_netns:PASS:open /proc/self/ns/net 0 nsec
-   open_netns:PASS:open netns fd 0 nsec
-   open_netns:PASS:setns 0 nsec
-   test_lwt_redirect_run:PASS:setns 0 nsec
-   open_tuntap:PASS:open(/dev/net/tun) 0 nsec
-   open_tuntap:PASS:ioctl(TUNSETIFF) 0 nsec
-   open_tuntap:PASS:fcntl(O_NONBLOCK) 0 nsec
-   setup_redirect_target:PASS:open_tuntap 0 nsec
-   setup_redirect_target:PASS:if_nametoindex 0 nsec
-   setup_redirect_target:FAIL:ip link add link_err type dummy unexpected error: 512 (errno 0)
-   __test_lwt_redirect_dev_down:FAIL:setup_redirect_target unexpected setup_redirect_target: actual -1 < expected 0
-   close_netns:PASS:setns 0 nsec
-Error: #131/4 lwt_redirect/lwt_redirect_dev_down_nomac
-   Error: #131/4 lwt_redirect/lwt_redirect_dev_down_nomac
-   test_lwt_redirect_run:PASS:netns_create 0 nsec
-   open_netns:PASS:malloc token 0 nsec
-   open_netns:PASS:open /proc/self/ns/net 0 nsec
-   open_netns:PASS:open netns fd 0 nsec
-   open_netns:PASS:setns 0 nsec
-   test_lwt_redirect_run:PASS:setns 0 nsec
-   open_tuntap:PASS:open(/dev/net/tun) 0 nsec
-   open_tuntap:PASS:ioctl(TUNSETIFF) 0 nsec
-   open_tuntap:PASS:fcntl(O_NONBLOCK) 0 nsec
-   setup_redirect_target:PASS:open_tuntap 0 nsec
-   setup_redirect_target:PASS:if_nametoindex 0 nsec
-   setup_redirect_target:FAIL:ip link add link_err type dummy unexpected error: 512 (errno 0)
-   __test_lwt_redirect_dev_down:FAIL:setup_redirect_target unexpected setup_redirect_target: actual -1 < expected 0
-   close_netns:PASS:setns 0 nsec
-Error: #131/5 lwt_redirect/lwt_redirect_dev_carrier_down
-   Error: #131/5 lwt_redirect/lwt_redirect_dev_carrier_down
-   test_lwt_redirect_run:PASS:netns_create 0 nsec
-   open_netns:PASS:malloc token 0 nsec
-   open_netns:PASS:open /proc/self/ns/net 0 nsec
-   open_netns:PASS:open netns fd 0 nsec
-   open_netns:PASS:setns 0 nsec
-   test_lwt_redirect_run:PASS:setns 0 nsec
-   open_tuntap:PASS:open(/dev/net/tun) 0 nsec
-   open_tuntap:PASS:ioctl(TUNSETIFF) 0 nsec
-   open_tuntap:PASS:fcntl(O_NONBLOCK) 0 nsec
-   setup_redirect_target:PASS:open_tuntap 0 nsec
-   setup_redirect_target:PASS:if_nametoindex 0 nsec
-   setup_redirect_target:FAIL:ip link add link_err type dummy unexpected error: 512 (errno 0)
-   test_lwt_redirect_dev_carrier_down:FAIL:setup_redirect_target unexpected setup_redirect_target: actual -1 < expected 0
-   close_netns:PASS:setns 0 nsec
-   test_lwt_redirect:PASS:pthread_join 0 nsec
-Error: #132 lwt_reroute
-   Error: #132 lwt_reroute
-   test_lwt_reroute:PASS:pthread_create 0 nsec
-Error: #132/1 lwt_reroute/lwt_reroute_normal_xmit
-   Error: #132/1 lwt_reroute/lwt_reroute_normal_xmit
-   test_lwt_reroute_run:PASS:netns_create 0 nsec
-   open_netns:PASS:malloc token 0 nsec
-   open_netns:PASS:open /proc/self/ns/net 0 nsec
-   open_netns:PASS:open netns fd 0 nsec
-   open_netns:PASS:setns 0 nsec
-   test_lwt_reroute_run:PASS:setns 0 nsec
-   open_tuntap:PASS:open(/dev/net/tun) 0 nsec
-   open_tuntap:PASS:ioctl(TUNSETIFF) 0 nsec
-   open_tuntap:PASS:fcntl(O_NONBLOCK) 0 nsec
-   setup:PASS:open_tun 0 nsec
-   setup:PASS:if_nametoindex 0 nsec
-   setup:FAIL:ip link add link_err type dummy unexpected error: 512 (errno 0)
-   test_lwt_reroute_normal_xmit:FAIL:setup_reroute unexpected setup_reroute: actual -1 < expected 0
-   close_netns:PASS:setns 0 nsec
-Error: #132/2 lwt_reroute/lwt_reroute_qdisc_dropped
-   Error: #132/2 lwt_reroute/lwt_reroute_qdisc_dropped
-   test_lwt_reroute_run:PASS:netns_create 0 nsec
-   open_netns:PASS:malloc token 0 nsec
-   open_netns:PASS:open /proc/self/ns/net 0 nsec
-   open_netns:PASS:open netns fd 0 nsec
-   open_netns:PASS:setns 0 nsec
-   test_lwt_reroute_run:PASS:setns 0 nsec
-   open_tuntap:PASS:open(/dev/net/tun) 0 nsec
-   open_tuntap:PASS:ioctl(TUNSETIFF) 0 nsec
-   open_tuntap:PASS:fcntl(O_NONBLOCK) 0 nsec
-   setup:PASS:open_tun 0 nsec
-   setup:PASS:if_nametoindex 0 nsec
-   setup:FAIL:ip link add link_err type dummy unexpected error: 512 (errno 0)
-   test_lwt_reroute_qdisc_dropped:FAIL:setup_reroute unexpected setup_reroute: actual -1 < expected 0
-   close_netns:PASS:setns 0 nsec
-   test_lwt_reroute:PASS:pthread_join 0 nsec
-Test Results:
-              bpftool: PASS
-           test_progs: FAIL (returned 1)
-             shutdown: CLEAN
-Error: Process completed with exit code 1.
+https://lore.kernel.org/all/ZNvIRS%2FYExLtGO2B@google.com
 
-Thanks,
-Daniel
+> > > diff --git a/arch/x86/kvm/kvm_emulate.h b/arch/x86/kvm/kvm_emulate.h
+> > > index c0e48f4fa7c4..c944055091e1 100644
+> > > --- a/arch/x86/kvm/kvm_emulate.h
+> > > +++ b/arch/x86/kvm/kvm_emulate.h
+> > > @@ -93,6 +93,7 @@ struct x86_instruction_info {
+> > >   #define X86EMUL_F_FETCH			BIT(1)
+> > >   #define X86EMUL_F_BRANCH		BIT(2)
+> > >   #define X86EMUL_F_IMPLICIT		BIT(3)
+> > > +#define X86EMUL_F_INVTLB		BIT(4)
+> > Why F_INVTLB instead of X86EMUL_F_INVLPG?  Ah, because LAM is ignored for the
+> > linear address in the INVPCID and INVVPID descriptors.  Hrm.
+> > 
+> > I think my vote is to call this X86EMUL_F_INVLPG even though *in theory* it's not
+> > strictly limited to INVLPG.  Odds are good KVM's emulator will never support
+> > INVPCID or INVVPID,
+> One case is kvm_handle_invpcid() is in the common kvm x86 code.
+> LAM doesn't apply to the address in descriptor of invpcid though, but I am
+> not sure if there will be the need for SVM in the future.
+
+Right, but the emulator itself doesn't handle INVPCID or INVVPID, so there's no
+direct "conflict" at this time.
+
+> But for now, F_INVLPG is OK if you think F_INVTLB brings confusion.
+
+Yeah, please use F_INVLPG unless someone has a strong objection.
