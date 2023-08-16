@@ -2,171 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8A477D7D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 03:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD70977D7DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 03:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237779AbjHPBpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 21:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39036 "EHLO
+        id S241134AbjHPBry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 21:47:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234800AbjHPBpL (ORCPT
+        with ESMTP id S241130AbjHPBrZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 21:45:11 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E0F10D1;
-        Tue, 15 Aug 2023 18:45:07 -0700 (PDT)
-Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RQW7x2R34zNmrj;
-        Wed, 16 Aug 2023 09:41:33 +0800 (CST)
-Received: from [10.67.110.218] (10.67.110.218) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 16 Aug 2023 09:45:04 +0800
-Message-ID: <32583a11-9cbd-9b4d-34be-551babed6f51@huawei.com>
-Date:   Wed, 16 Aug 2023 09:45:04 +0800
+        Tue, 15 Aug 2023 21:47:25 -0400
+Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB99710D1;
+        Tue, 15 Aug 2023 18:47:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1692150439;
+        bh=BK6RrXMOHnq0creOrmIb5agZk8D1dC+Yg1U4t9PQcsw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=GDh/4YMZnxK/Cz3qAcKS2/RF8d4jZOlXI0gYngHX75TVtlFkQkaKvo3wxG1Co4hHZ
+         +YcGnN4H1v989A8lz6gBXL1Od5GQ8mymicBZVVNwlqW+KISiQXmKIDe6a4Nj6SYGW5
+         g9TFGsT2U6hv4O4Nz7830kBl7EXofkhbVtg3Q3WE=
+Received: from localhost.localdomain ([39.156.73.12])
+        by newxmesmtplogicsvrszb1-0.qq.com (NewEsmtp) with SMTP
+        id BCDB1A5D; Wed, 16 Aug 2023 09:47:13 +0800
+X-QQ-mid: xmsmtpt1692150433t9zall2if
+Message-ID: <tencent_E3B23E2EC954865F61474B10790C7C84E009@qq.com>
+X-QQ-XMAILINFO: MyIXMys/8kCtJSFYZFoLP8e8CGwpg7mImHiK9fNuvkAhFSbOT7+93QomZINSAF
+         +C5r1S270qqBegrcIjOtLUh2+Lyg8dmk40DQ+ElmcxLn1J70681aU2cf8bc40hxyrFq9SoQj4T1K
+         FOA54pM7Z4SoJ2CLNI9DRgvxCU+KW2yE3pXN0ARAUS6ILsCZ/MBc9bdCA1LSRgvETqOSNNglTEiL
+         niKTumRtUsAwmSwgrgjPssWqJaFMjrwRUk36azP9fRdoDifDSvwGjQtjZiDYMKqcchYb8225V5dt
+         OASlFEhwXQQnY2yyPqsXG+1VozjiucSftpQjNRke8i4PKn+mbYgn+9M5OGNlGXkCNDsLXXBEL9TI
+         /NHRIyeFgbT2Ujzfevw2qbfWRKzgqnz1p2kQfV5lFqjQPB8tsjpWKteCO9qMYKz9wKx2wrUvGBwh
+         HPURcyFR8wHwTrEqp5tpY0I3RNVJmWb8KK669X/4Ce9LA5t0tHZD+6WT18hK01NuP2QVzTPz0vSX
+         /j0Ap8nsMA6tsvTHKSvD7L/QzvkmDgSfIGx3E3pXk5aWOsxqvy0J3/l5b2t3MAzAgMAEKOAjiUcS
+         +QpgaN10rogbraKqBOnvt7+8P3WsltKWlqQnJYSN37M95yb1kqgyxjhRkbH0GYMydA11kScXQzmB
+         UGJkC81IMIZZvs4rqjbaVU4t1OMy2wPO00a/3s1AXotGVMMyqAech04ol0WACjkx8WXChPCgpT7m
+         ICeUtfYnKw8RUMzxHIdeQyYhNuwZSWQvE/Ccpns1mnyIgQShoX5yy0daNMQ/gYvZ40UhSySQ5lsS
+         59nf43saW6uTBnI8GQVq4PH/xS8a0hc2LSPRm+O75uXWn+5h8loxb3gmqqLyFXLT40L2ruGPAPwH
+         JN5hWUCl4i/nYxrJmE5CIojqloJvkQk4iTYxrdPaQnoFKQSz7P8QdAGPLeyldMdJZLw9ksJRcLd2
+         DaGYjQfmvjpa5tYwpXbzKC1/yHxkFjKlijgfobogJ9wykFobagM+ic6Dnr4hJMXy1Mq4ifMoHRWN
+         quhZiE7wQBVprkgJit
+X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     daniel@iogearbox.net
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, martin.lau@linux.dev,
+        mykolal@fb.com, rongtao@cestc.cn, rtoax@foxmail.com,
+        sdf@google.com, shuah@kernel.org, song@kernel.org, yhs@fb.com
+Subject: Re: [PATCH bpf-next v3] selftests/bpf: trace_helpers.c: optimize kallsyms cache
+Date:   Wed, 16 Aug 2023 09:47:13 +0800
+X-OQ-MSGID: <20230816014713.27759-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <d1ad0b4d-574c-15e5-928f-2d9acc30dfe1@iogearbox.net>
+References: <d1ad0b4d-574c-15e5-928f-2d9acc30dfe1@iogearbox.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH] tracing: Fix memleak due to race between current_tracer
- and trace
-Content-Language: en-US
-To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>
-CC:     <fweisbec@gmail.com>, <mingo@elte.hu>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>
-References: <20230808092905.2936459-1-zhengyejian1@huawei.com>
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-In-Reply-To: <20230808092905.2936459-1-zhengyejian1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.110.218]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,RDNS_DYNAMIC,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/8 17:29, Zheng Yejian wrote:
-> Kmemleak report a leak in graph_trace_open():
-> 
->    unreferenced object 0xffff0040b95f4a00 (size 128):
->      comm "cat", pid 204981, jiffies 4301155872 (age 99771.964s)
->      hex dump (first 32 bytes):
->        e0 05 e7 b4 ab 7d 00 00 0b 00 01 00 00 00 00 00 .....}..........
->        f4 00 01 10 00 a0 ff ff 00 00 00 00 65 00 10 00 ............e...
->      backtrace:
->        [<000000005db27c8b>] kmem_cache_alloc_trace+0x348/0x5f0
->        [<000000007df90faa>] graph_trace_open+0xb0/0x344
->        [<00000000737524cd>] __tracing_open+0x450/0xb10
->        [<0000000098043327>] tracing_open+0x1a0/0x2a0
->        [<00000000291c3876>] do_dentry_open+0x3c0/0xdc0
->        [<000000004015bcd6>] vfs_open+0x98/0xd0
->        [<000000002b5f60c9>] do_open+0x520/0x8d0
->        [<00000000376c7820>] path_openat+0x1c0/0x3e0
->        [<00000000336a54b5>] do_filp_open+0x14c/0x324
->        [<000000002802df13>] do_sys_openat2+0x2c4/0x530
->        [<0000000094eea458>] __arm64_sys_openat+0x130/0x1c4
->        [<00000000a71d7881>] el0_svc_common.constprop.0+0xfc/0x394
->        [<00000000313647bf>] do_el0_svc+0xac/0xec
->        [<000000002ef1c651>] el0_svc+0x20/0x30
->        [<000000002fd4692a>] el0_sync_handler+0xb0/0xb4
->        [<000000000c309c35>] el0_sync+0x160/0x180
-> 
-> The root cause is descripted as follows:
-> 
->    __tracing_open() {  // 1. File 'trace' is being opened;
->      ...
->      *iter->trace = *tr->current_trace;  // 2. Tracer 'function_graph' is
->                                          //    currently set;
->      ...
->      iter->trace->open(iter);  // 3. Call graph_trace_open() here,
->                                //    and memory are allocated in it;
->      ...
->    }
-> 
->    s_start() {  // 4. The opened file is being read;
->      ...
->      *iter->trace = *tr->current_trace;  // 5. If tracer is switched to
->                                          //    'nop' or others, then memory
->                                          //    in step 3 are leaked!!!
->      ...
->    }
-> 
-> To fix it, in s_start(), close tracer before switching then reopen the
-> new tracer after switching.
-> 
-> Fixes: d7350c3f4569 ("tracing/core: make the read callbacks reentrants")
-> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
-> ---
->   kernel/trace/trace.c | 9 ++++++++-
->   1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index b8870078ef58..d50a0227baa3 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -4213,8 +4213,15 @@ static void *s_start(struct seq_file *m, loff_t *pos)
->   	 * will point to the same string as current_trace->name.
->   	 */
->   	mutex_lock(&trace_types_lock);
-> -	if (unlikely(tr->current_trace && iter->trace->name != tr->current_trace->name))
-> +	if (unlikely(tr->current_trace && iter->trace->name != tr->current_trace->name)) {
-> +		/* Close iter->trace before switching to the new current tracer */
-> +		if (iter->trace->close)
-> +			iter->trace->close(iter);
+Thanks, Daniel.
 
-Hi, kasan report an issue related to this patch in v5.10, I'll handle
-it and then send V2 if the patch needs to be changed.
+I just submit v4[0], make sure most cases we don't need the realloc() path to
+begin with, and check strdup() return value.
 
-   BUG: KASAN: use-after-free in graph_trace_close+0x78/0x7c
-   Read of size 8 at addr ffff204054ca8f00 by task cat/193541
-   [...]
-   Call trace:
-    dump_backtrace+0x0/0x3e4
-    show_stack+0x20/0x2c
-    dump_stack+0x140/0x198
-    print_address_description.constprop.0+0x2c/0x1fc
-    __kasan_report+0xe0/0x140
-    kasan_report+0x44/0x5c
-    __asan_report_load8_noabort+0x34/0x60
-    graph_trace_close+0x78/0x7c
-    wakeup_trace_close+0x3c/0x54
-    s_start+0x4f4/0x794
-    seq_read_iter+0x210/0xd90
-    seq_read+0x288/0x410
-    vfs_read+0x13c/0x41c
-    ksys_read+0xf4/0x1e0
-    __arm64_sys_read+0x74/0xa4
-    el0_svc_common.constprop.0+0xfc/0x394
-    do_el0_svc+0xac/0xec
-    el0_svc+0x20/0x30
-    el0_sync_handler+0xb0/0xb4
-    el0_sync+0x160/0x180
+[0] https://lore.kernel.org/lkml/tencent_59C74613113F0C728524B2A82FE5540A5E09@qq.com/
 
-   Allocated by task 193541:
-    kasan_save_stack+0x28/0x60
-    __kasan_kmalloc.constprop.0+0xa4/0xd0
-    kasan_kmalloc+0x10/0x20
-    kmem_cache_alloc_trace+0x2ec/0x5f0
-    graph_trace_open+0xb0/0x344
-    __tracing_open+0x450/0xb10
-    tracing_open+0x1a0/0x2a0
-    do_dentry_open+0x3c0/0xdc0
-    vfs_open+0x98/0xd0
-    do_open+0x520/0x8d0
-
->   		*iter->trace = *tr->current_trace;
-> +		/* Reopen the new current tracer */
-> +		if (iter->trace->open)
-> +			iter->trace->open(iter);
-> +	}
->   	mutex_unlock(&trace_types_lock);
->   
->   #ifdef CONFIG_TRACER_MAX_TRACE
+Rong Tao
 
