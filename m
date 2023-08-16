@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A5177E7D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E6F77E7D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345268AbjHPRlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 13:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38342 "EHLO
+        id S1344386AbjHPRnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 13:43:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345261AbjHPRlE (ORCPT
+        with ESMTP id S1344906AbjHPRnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 13:41:04 -0400
-Received: from GBR01-CWL-obe.outbound.protection.outlook.com (mail-cwlgbr01on2094.outbound.protection.outlook.com [40.107.11.94])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9217F270D;
-        Wed, 16 Aug 2023 10:41:01 -0700 (PDT)
+        Wed, 16 Aug 2023 13:43:33 -0400
+Received: from GBR01-CWL-obe.outbound.protection.outlook.com (mail-cwlgbr01on2135.outbound.protection.outlook.com [40.107.11.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC5C272C;
+        Wed, 16 Aug 2023 10:43:28 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OVsRBpXbpth8gqkg0dWTqP8PhvUvPYEMXSpJeehfQ6iT1szNtTOH1Gi1ugmV4VwiMZ7mSUkOSLPDQv0MnUDayPQTxiOofyvimx7JwEs09+Zl8aSXEPdcLoNrNCcdkDVrQXLXH7zsRCwRaP7oaAl9/CWooLJNvytOeB6dewN5J6+uSGBhmX0ohULQh3c4bH6EXT5FQwKWoMgsNwzQx7yxcCmSwkdyMK6TpUyAH8Z8EKdKkFduCtEQ0BxYESp76EK1RGb1ZwuWvryn6PimNQ0A7jVQhCvDZ8Zi/O28SIzBltTAmjwoBd58TmSbqsvtZrOuOgMqMyw6lPXeSKIPy6j1jQ==
+ b=ONCD0a7oqCIkkX0/wBNOGw6RycRq6FYJ2xQOCLgB0+wWQ4DjwRaopt14dCGbZe8bYCx0s6+LC/ObfNrUrteciCOJ6swgp1VTXiZncBj4l6Qf33X09XKpYNlnSUF4EO+eJytNSp7GsislAk+gDks3NaYzRaPnyJZ2rVmS5wHchYNkZeKyx/BAz79rwiyj46hqD7asLDepU4WyhcVHe+lzaxbPq3TBy5nGsW5+wykfUkf+NS2okuHXR0O7GEV97lytFHsDvv9T3wfC3vUBaXU4WAeWNaoutxgJP7F3bzmjEl0bglFnDv3f9Tra+DaME4CgNEEi8ZJDzwIVB2U00RqLxQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tZ9G26NqQoceFpaXIYrc74TwM4e/bj4fgeUFVHtnuXg=;
- b=BndcF9ruVGmkyOo0FjiL9liFQvCPIJLwnLopewu5IuFdrPMvGAy6J2bwl+1sIrYQBKzeQxjzxqpvQAz8nlQxGHnC0eLr5yY+/4X8ztptQFEM0x0Kb0LPqZql24IWKbkGfSxxiHdOWbiEP0tsR6JM+q8ITmVGtWOfkttWaoqm56J/g5TCrWTXq80pbRCNPrPi4zt96OEsELMqQiQaiAbMwcO5t982Mw0+6mX7YT3veScsuVcamj9OsfcJs5FjotpD+DRNPwwq/8ifxt5vU5YBYRS77g8ZbGQ7t7zgaIdoFQYhrtIFnk+Ij+o4n+0q4JoG6f9NfxVOmzUnR8AdgeMJqg==
+ bh=mFDSMvjptutU4+zeceh6fJuTjEt7MWcIHAX2nkji6tY=;
+ b=OkA1j99QVYtbv4An49oVWQG18BWVXPhis0ZMG84TTa/jFVj1VmvPchI/Y4fZUFg2I02fyd3EEONElzHMn6TXormULJeXSdqliFu1ynBL8YLG/ltZ0HJcXTexnPIpeXMjaiDQJ+bgByxLE5JWMucGwf2BzbBhItW7pnQdJV09LH9X4nja8z+uC0j2cgiTuE8Xa1vUYEwzbzdJhlptoQI9xTF7VPQ2PuPhBpgedJyfQuLJOXQFAtdjOpc5BfgLFae4r0Dtqb0IxBKXSsKBuvc3T0DEQ4CA5Y2X2vsMPUZ4WcXodD+IgMzgVHYFuwQKjac7gAZCjg5lgmrBRsgsBwUvaA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
  dkim=pass header.d=garyguo.net; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tZ9G26NqQoceFpaXIYrc74TwM4e/bj4fgeUFVHtnuXg=;
- b=eJPSb+osb6o4rUlVsI1JfDG/XYDopWQkvLUNXUSuzKyWC0iAF3HLNhMYy9/ZviERiJ0YpWGqBXSA0T58tWXXfKWwqALL8Fw99DTHgJcjO6fnegjfzfI5FlTAriWkLHvxGibXNFuTOXjrwL3ERh24g7znyn0PYYWFQpfzqjIHlD8=
+ bh=mFDSMvjptutU4+zeceh6fJuTjEt7MWcIHAX2nkji6tY=;
+ b=Yp8kuYvlCm78B/raADWECWKFqYpKE9HqYmN+YH7SDGtZNoGbC3J0ugztK96hPn7kH0TozSMpLGuD9CRnZryWmQg3mUqR56KBgEvaKEb4P7PfEmXdlG7D1jm+1sxNyJp+btPA4Pg8Lk84IV8rj6nG75Aei9MrxbN3tOzEBAT6zEk=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=garyguo.net;
 Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:253::10)
  by CWXP265MB5275.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:190::7) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.29; Wed, 16 Aug
- 2023 17:40:59 +0000
+ 2023 17:43:26 +0000
 Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
  ([fe80::6d3e:8fe2:6cdb:6d3f]) by LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
  ([fe80::6d3e:8fe2:6cdb:6d3f%5]) with mapi id 15.20.6678.029; Wed, 16 Aug 2023
- 17:40:59 +0000
-Date:   Wed, 16 Aug 2023 18:40:55 +0100
+ 17:43:26 +0000
+Date:   Wed, 16 Aug 2023 18:43:24 +0100
 From:   Gary Guo <gary@garyguo.net>
-To:     Benno Lossin <benno.lossin@proton.me>
+To:     Benno Lossin <benno.lossin@proton.me>,
+        Asahi Lina <lina@asahilina.net>
 Cc:     Miguel Ojeda <ojeda@kernel.org>,
         Wedson Almeida Filho <wedsonaf@gmail.com>,
         Alex Gaynor <alex.gaynor@gmail.com>,
@@ -52,74 +53,76 @@ Cc:     Miguel Ojeda <ojeda@kernel.org>,
         Alice Ryhl <aliceryhl@google.com>,
         Andreas Hindborg <nmi@metaspace.dk>,
         rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev, Asahi Lina <lina@asahilina.net>
-Subject: Re: [PATCH v4 03/13] rust: add derive macro for `Zeroable`
-Message-ID: <20230816184055.400b067d.gary@garyguo.net>
-In-Reply-To: <20230814084602.25699-4-benno.lossin@proton.me>
+        patches@lists.linux.dev,
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Subject: Re: [PATCH v4 08/13] rust: init: Add functions to create array
+ initializers
+Message-ID: <20230816184324.41a91d73.gary@garyguo.net>
+In-Reply-To: <20230814084602.25699-9-benno.lossin@proton.me>
 References: <20230814084602.25699-1-benno.lossin@proton.me>
-        <20230814084602.25699-4-benno.lossin@proton.me>
+        <20230814084602.25699-9-benno.lossin@proton.me>
 X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: LO4P123CA0618.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:314::20) To LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+X-ClientProxiedBy: LO4P123CA0174.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:18a::17) To LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
  (2603:10a6:600:253::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: LO2P265MB5183:EE_|CWXP265MB5275:EE_
-X-MS-Office365-Filtering-Correlation-Id: 08298017-b80a-4fc0-bd93-08db9e7ff39e
+X-MS-Office365-Filtering-Correlation-Id: c0af7908-ad23-416c-c323-08db9e804b7b
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: braGjTwJATA6Zte5Ib3+8d9grmgrUdehrF8CRGXCaTnwbGoXeiY30+ay8wPqCh9kHAspoO0ZOPWUtdDMwDFs90NhyMDPXYfjtT7SfDNd8QEJc4D+gYz+KoY+mV+E09aUOR7+H81t/bdSU1x4Z4yLTgn3DxALEChgB4YUpvd40xaccSyI+I90SJ9v/DV5xtMzFiDy1G9Fztd9d4M/akM+NUrAU1zQknuwUr7RyRZpXfzjBR7JkYorp7EDNGf116T908w5FczZDgdikvemADFawLLYcs+v9b8tQsWugheMz4tkohz/4YR677POPPUzJrAxg19FeaydZbxYEIWIrLprmISp21k2f04sX04I79Sn36oaeyY6OeQW6OZPFE1GniXKWC3P503XATrJhnb9XHxTSoNY7RwuVJnHNSAmUycuTdj8z7C8d2Ax+K5JTg3RJ0jqWK6G0Sf6jxVaBJqeLuuPlwUI1UssscgeutSUTPcS2awDfFBhQN96IuNLZGrArKucNL7NceewMhX0D7lJLDkSVVw8voZFYar3kaUbCnr6T9QxPncBzpwnbzDjf3ydp+ekrQSrChAaf59vYtsAdsaKr1Me/xMY2dveCsp26tmHifs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(39830400003)(396003)(346002)(451199024)(1800799009)(186009)(2906002)(83380400001)(7416002)(86362001)(478600001)(6506007)(36756003)(6486002)(2616005)(6666004)(1076003)(6512007)(26005)(5660300002)(41300700001)(54906003)(316002)(66946007)(66556008)(66476007)(6916009)(8676002)(8936002)(4326008)(66574015)(38100700002)(81973001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: fZa2r08K5xomz8yRBREww2uk7W0K/S710itN4Wuq1AoSvEV8I2jzWuR/dA4J50m04bRwgfytVjVB76fW585ys7XEx/N32AifD3iSorixiXWKUDNcqBGvyDx8gkCjEJoHGy4TwBdWi2getSYcCVxcPnDBkhXUCPWqZ9adF84KmIvbvW0JBxMOvQnrlguI3EBTinX5TF5Lzs/BSFoX3JeZ7mU6IFpOYjBeZ/y9ZqibaVWM1fVlK4n7RufaOzGo5M/dONFdvh4aQe8mxZcaVWNg51MfvPZe12ZlqlM8zgIymiZX+5FIyb0nS/jllmxgcyxvLNx0D6ds5b0CPWAF0vnIbGPvfAlvfA9mmjM3URl4a0yV1TrQmN3Uku6TOBE8wWnIENEBYw7wwsHVV3NaIeXoOtUXe4Kp8OxElwE5oAVo/8MFbVtjh0kPU3Jsbe/lfk8/OQJY6xI48NjjJcDmBfhUA12wYtfzwr+T56UKJU+8SIDx2/Oz0FjxuTg0rXwiIPJkETHbDlbcpPTjCSnmhppZcj/FuvrNXgCUslIQKNq8tXtt71jhqfCgy2Fia/2pYYOg
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(39830400003)(396003)(346002)(451199024)(1800799009)(186009)(2906002)(83380400001)(7416002)(86362001)(478600001)(6506007)(36756003)(6486002)(2616005)(1076003)(6512007)(26005)(5660300002)(41300700001)(54906003)(316002)(66946007)(66556008)(66476007)(110136005)(8676002)(8936002)(4326008)(66574015)(38100700002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?azJaTk9pcHF2V3lDb3VYZkJHVzZqZXdHcmlhSDJDUGVxalF3WW1tQklGS0Fi?=
- =?utf-8?B?YkQ2dk4zdzMzakh1V0xZdXRxYnBxYmJvVEFURytNNWNKTFFWSXV6L3k5WUpv?=
- =?utf-8?B?Um96OUdKK0pRbXVYaW1WWjdEWEhRZDVVazB1MEM0MjFpMVVXaFRGbGcvSThy?=
- =?utf-8?B?R3J5NE5vSzlHc1R4YTAzb1BOWEd2bVFnZG5lNUpPY055N01PMUdOWHNvNk5C?=
- =?utf-8?B?VFhWSm1iVk8rRzRXSUZTMG9vb2xkWWhUSndQUU5saUhnblduZEFON2p1UDZG?=
- =?utf-8?B?ZUNtVktTcVdvV2NNQzl3VlFyYzFGejdoYTJLSnllRnBpNU1qK0FTcHJtY3FN?=
- =?utf-8?B?cTErT0YrL0RNeXNDVzdDMm9jNXRNbXc3bW1MZmUzSUw3ekpnZEdnL3VIUk1E?=
- =?utf-8?B?VFBUb1pCd3FtelFTeHBmODV6VWpjWTNyeEpabTZ4OStkOCtrc2JWeG1ncmwx?=
- =?utf-8?B?M2ZuQ3RtR1M1cmJ4YkFvYUc3U09nUUN5NXBrWU1QNWFDT09YbjJFU3ptK3Ji?=
- =?utf-8?B?SDBlTHJRNjY5aW1rejFpOC9EZWJRdExQeWdrbmxSZWdId3pVdkFYK2NPb0Ev?=
- =?utf-8?B?WkF0L24zWTY2RCtWRVFsWDNveVJscjdVdWd6TDBlcVU3dmNMY1BJeGw0QjVp?=
- =?utf-8?B?ZmMwZE9Vc1AvaVNvdnhLRHlMRnV6dUR4eDFpL0pMQjVoOXdGbW40bkc5UFh6?=
- =?utf-8?B?OGdZRTdEY284OXpqbWt6U3FSZU02a0hGR0Q1amoySzhEZGtONWNINUF5VmxZ?=
- =?utf-8?B?bFRtbCtQZW5LbzRNSnQ4SlJFbk1RVllyYWNHV3QvZG9BMjNqUGxGL1ZjdWJ5?=
- =?utf-8?B?Tlc0VTdvd3F1ZGNCcjA2OWpVRXJLM1YwMkJ3U1h6cWFXUHlmeXJsSndKWHVr?=
- =?utf-8?B?akVzUmROSk5Ic2RCSk53NHFmWHRPRFFzWFI4REhhUDZ3WkFyMm5xVjVxditR?=
- =?utf-8?B?c0d2NUdhQlEvazN6MHRHbDRpeEo5OXhlVGlzNVFhalFsYWJIUHRzMzNVRWRX?=
- =?utf-8?B?cDhrYnVmcnF2L01Vd1daQkxKWnFDbEJFWXhnZUw2VTVFbVRoaTJmQzM4U3NX?=
- =?utf-8?B?ZW1LOHJjVDl0cHdUeU93WUMxY1JWSm1Oc1lZcUlSUVpWSkw0L3BZK1Q2NWFK?=
- =?utf-8?B?Mkp6ZE9TR3lZZElKY1hNTGJKdVpXWm10NTZoeXhSVThNeW93N0JpUmRtWnBh?=
- =?utf-8?B?L2tuVXdYZFNRZUc4NjQyUE5UajRGc0d5VmZ2ZlhONk5CZ2ZweVExSnpINW5o?=
- =?utf-8?B?ekxJdnkrT2R1cm1hNlpPNTdJd1EveUVQTWMvUkUrbDI5SlhOUExoL3BHbnRz?=
- =?utf-8?B?U2tGWHZVOElTY3BDT1QvWmx1bXcwNmhQbEhFT2NzR3dQamVRa3NMUGQ0WnR6?=
- =?utf-8?B?TktRU0svelRJYXhWKzJVMk5mNWRXUDc5Z3JXOG90eWRUZEdwdHhvRVVURFR1?=
- =?utf-8?B?Z01YVnJKUkFROWlSYUU4S01kZURkV1ArZ1BEOGZSL2VLb0txb0xVNVVGdkdL?=
- =?utf-8?B?WWRjODNXaFFwTkpINzFXanEwcWM3d2VmLzdnY0Y5d0R4ckNBUzh3QSt1ZjhT?=
- =?utf-8?B?S2VhaFUvSEg0OFJSc0NDMW9aaEdQMm9Oak1iYUx4WlZqUmcxMjl6RzJvN3Fs?=
- =?utf-8?B?VUpIMnN5eUZMaFY3U3QzV0sxaGtxQm1YTUh4N092aTF6MHFpMi9nTW14SlBK?=
- =?utf-8?B?TFpMcjM5cDZSQkNzVGZ0ZDFnSXVxOHdNNWZMT3FQN21hUHpoaDY2Y3piMitl?=
- =?utf-8?B?VkJIMFNXL21vc0RxbTBUUktvNTBBdTYrUi9raFJRckp6TU9pem8yeXdKNmgw?=
- =?utf-8?B?cHU2eWZ0cnFtQVB3NjNvUXd2RnNpNnNDNUQwekxVcTltM0VhNHBOa1o3YjhE?=
- =?utf-8?B?OTNKZHZuVXBVSzcxdUpUaHFBT1hIZlV0M0Z0NE5RbTNZK0xIUnhuUmxFd2RX?=
- =?utf-8?B?TlFQd2VFOVU4ZERIZm1DTTIxWHZKaXB4NkFsZjhCRy9oQVFZdkVGZlhlbms3?=
- =?utf-8?B?R094aGNWdU43T3o3MlBVaE1PNjlRUHFEeUhJQUVlcU82WEorK2hyUm1ySjg3?=
- =?utf-8?B?Q2NLcDgwRW1yYUdCOTNMR2g4cVRiVUNxMjd6aDN3MVcvYkFFckJMTEY0czFT?=
- =?utf-8?Q?Ypd4TvWqkaRpB9jwL2y3Z/YKb?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SDRVQW5CZTc3MnUyR1ZRT05WQTlkckRpbjRlNERqbWIya2Y1WENvd3cxSXZm?=
+ =?utf-8?B?ZW81NG1BQ0ROTEFFb2tlVGdFOEZPbXkzWUVueHk0U1E3RWxPOHIwbE1KTE9T?=
+ =?utf-8?B?b2t1NHhMSENJQlgzV1RGNnJSZTBxa2xIa1hzalRwdG1mei8zRnkxOVFpdGlS?=
+ =?utf-8?B?K1NYYjgrekxGZ2syckNpemJrazBjVmQxNVA3dFF1NEFESGI0VUNmVHFycXhL?=
+ =?utf-8?B?WFJvSGRVc28vNUZRZW5KRXRiQjlFa1JLOHVrMWxyYmJPUHBRQmpSN1JsQTZK?=
+ =?utf-8?B?a0tNTkp2bEpVd3ZzZlpEV2Y5N3B1MUJCQ1NFMXNQakFxYkZLYnJNQXlRbUFT?=
+ =?utf-8?B?cHlyTTNVaEw2NzZOUEFlTGFHMnQrbnpjQ0F3UmU4b2xZS2RsRVB2YkxmT2c5?=
+ =?utf-8?B?UDFQQ3ZpRXgzeG1UU0tOalcwWjZtNUxFTkNEN2JFbCtTd2kxZGZBc0pYRTEr?=
+ =?utf-8?B?SGt4NzBFRFI5UVpTWWhRSHdUbXpTT1VUVTVKcmNnMExhZFRhNUlmdEFrOVM3?=
+ =?utf-8?B?d1U1Wjk2NEZua3NZcVRmOXovWktKS3l2ejRrUy9VaUVHd2VMaTdDY2lGR0xX?=
+ =?utf-8?B?c1lUOTlVNW1UMXZUVEdmK2sxd2dZaWltdWxETURBK3ZVbWxnQjFTQk52WGtk?=
+ =?utf-8?B?RGlxN25YN3ZtNXowVjFUSGVCMUFqR0E2VmxFRG5sRU9BNUFBanZQMEE2Vkxn?=
+ =?utf-8?B?ZnJpZElUUFh3VEtqMjBSeENCeWFKRXRFVFkzamQxQ3RqczN3RHVNVjNlRnox?=
+ =?utf-8?B?Sm5GOEtFM0g3a09oMjV0eE9jUnVaRFZhM2ZjNWExV3JFOFFyaEM1Si9RVHcv?=
+ =?utf-8?B?cmFldmdGTjIzd2N2alF0UHBadUFXQ04wOTM1Z1luelByQmhaaUJLT3BGRFdw?=
+ =?utf-8?B?em91NnZjM1JJOGVrVHhKVU5UdC82aVRvRERudU14aklEOGphNHh5QVVSK0xK?=
+ =?utf-8?B?TlJ3VmVTazFxY0NpMFJsWGJYTloyZm5jeFJwNG03WmwxQkhHYUNlRjlyZDdh?=
+ =?utf-8?B?eENUbzdUb0JhWUR4eVU2N0xmeHFncFdpWlpMOXFIaXJZS0tqcTNyczlDVW5J?=
+ =?utf-8?B?Q3hTTWcwRHE0Z3I1VVNwL1NYSWg5KytobFdNTVl2bmt1U1Vsa214NkdoYTBN?=
+ =?utf-8?B?aGJyQlNwOCtOZWVvMFFxczJHOWhqWHpVRUZtR2psb0FxMCtoTnpyRmFDUVhQ?=
+ =?utf-8?B?Z0lqWFJJZ25ER0lkQjNoTEJSTm56NGhodWloOGRZaktPM0JsdTJYc3ZwL3NJ?=
+ =?utf-8?B?NERnNUZvejFwSERQWEpDbTRnY2ZZcjZKc09OZFZnSCtJd3k1d0dYKzNwNkpW?=
+ =?utf-8?B?eEFLeTNiQzhTL25XNVZQc2dXRDYxOXFLOFhObXdUTVN2QWorV0E5OG1sL2V6?=
+ =?utf-8?B?T0lXd0FDQitvMSsvMjhVcUtPUFY5QVFTTEc2ODJVUXJqbFJ4Y3duZzV1ZTBr?=
+ =?utf-8?B?ZVdhZTNRRnpFeXI0Tk85cDZ0SHp5MXVEd3YzTmM5R1pHeDdHbWdYMjhEeHVW?=
+ =?utf-8?B?S2JyRDRJckV2YjROb3RTcnZpRlpTN01iSlc2czdLbXdyNlZEOExEdGI5YnNq?=
+ =?utf-8?B?K0xQektYZXZRYm9oc1JsL1lwVVQxenpjUU8wcE9zWWVMMkc5L0I2Mjc5VktN?=
+ =?utf-8?B?cWVVc1Rvenkvamozck5JTEZuYmx6VzlURllGblpOYTF4S2JIS1RuQUVueHA3?=
+ =?utf-8?B?VlQvTGFkYlVqeHliVVFvVWlmSDdIa3F4Wk1OR1d2YUdMaUVyY1VvWlF4cmFB?=
+ =?utf-8?B?LzlKekFkK3lmVHZwQjQyYjVIWm52T25jS0pya0J6Q0pyaEJBM0NGL3hrVnZB?=
+ =?utf-8?B?TGFYT29FTkwxMFZwb29xdGpXK1RNNTNaem5QNnd6RjUvQ1lrQXdkQnRhZmEw?=
+ =?utf-8?B?aWtoS3ZyWmprLy93LzFzWGZZMHhHZVA2aE5qY1M4QzBLN2J5alkveFBLQTQw?=
+ =?utf-8?B?NzNXckdWdHVreXZJQ3d4VnNtVktLOWlmcHFPZmhIZVdkT3Bxa3JPR2ZLUUZp?=
+ =?utf-8?B?ODFvY1lwdDI0S2FaRnRITzhWTVMzcWlzdkVxYk10WVdLZnJUYm5qd0ZpMnA4?=
+ =?utf-8?B?SmhWVmQ3NCtUVVNhbVFMOFdVVDhyNW9QbzkzZHoyMjV2bVVkN0cwOXlOSEtk?=
+ =?utf-8?Q?E7B3Th8wkSWvt0N9v389JA4Z+?=
 X-OriginatorOrg: garyguo.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 08298017-b80a-4fc0-bd93-08db9e7ff39e
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0af7908-ad23-416c-c323-08db9e804b7b
 X-MS-Exchange-CrossTenant-AuthSource: LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 17:40:58.9929
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 17:43:26.3770
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KQEHtsiyIogqQpUnnjQ8m6u5Bp47j1YxQES31E3LgtqCmvkCuLUClSMOzlX9l0kRf/Fct0y1paJ/zw18lBDpaw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: qfiNuclwTycImrTZ2FfRJUq3yybuWSF0GUDg2R9M82auUf45lsWdebXT2M3raIj+E6UVarTACFixHa6wrCW9cQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB5275
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -131,249 +134,169 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Aug 2023 08:46:41 +0000
+On Mon, 14 Aug 2023 08:47:15 +0000
 Benno Lossin <benno.lossin@proton.me> wrote:
 
-> Add a derive proc-macro for the `Zeroable` trait. The macro supports
-> structs where every field implements the `Zeroable` trait. This way
-> `unsafe` implementations can be avoided.
->=20
-> The macro is split into two parts:
-> - a proc-macro to parse generics into impl and ty generics,
-> - a declarative macro that expands to the impl block.
+> Add two functions `pin_init_array_from_fn` and `init_array_from_fn` that
+> take a function that generates initializers for `T` from usize, the added
+> functions then return an initializer for `[T; N]` where every element is
+> initialized by an element returned from the generator function.
 >=20
 > Suggested-by: Asahi Lina <lina@asahilina.net>
+> Reviewed-by: Bj=C3=B6rn Roy Baron <bjorn3_gh@protonmail.com>
+> Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+> Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 > Signed-off-by: Benno Lossin <benno.lossin@proton.me>
-
-Reviewed-by: Gary Guo <gary@garyguo.net>
-
 > ---
 > v3 -> v4:
-> - add support for `+` in `quote!`.
+> - changed example size from 1_000_000_000 to 1_000,
+> - made functions unwind-safe by using a ScopeGuard,
+> - added Reviewed-by from Martin.
 >=20
 > v2 -> v3:
-> - change derive behavior, instead of adding `Zeroable` bounds for every
->   field, add them only for generic type parameters,
-> - still check that every field implements `Zeroable`,
-> - removed Reviewed-by's due to changes.
+> - changed doctest: instead of printing the array, assert the length,
+> - added Reviewed-by's from Alice.
 >=20
 > v1 -> v2:
-> - fix Zeroable path,
-> - add Reviewed-by from Gary and Bj=C3=B6rn.
+> - fix warnings and errors in doctests,
+> - replace dropping loop with `drop_in_place` and `slice_from_raw_parts_mu=
+t`
+>   inside of `{pin_}init_array_from_fn` functions.
 >=20
->  rust/kernel/init/macros.rs | 35 ++++++++++++++++++
->  rust/kernel/prelude.rs     |  2 +-
->  rust/macros/lib.rs         | 20 +++++++++++
->  rust/macros/quote.rs       | 12 +++++++
->  rust/macros/zeroable.rs    | 72 ++++++++++++++++++++++++++++++++++++++
->  5 files changed, 140 insertions(+), 1 deletion(-)
->  create mode 100644 rust/macros/zeroable.rs
+>  rust/kernel/init.rs | 88 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 88 insertions(+)
 >=20
-> diff --git a/rust/kernel/init/macros.rs b/rust/kernel/init/macros.rs
-> index 9182fdf99e7e..78091756dec0 100644
-> --- a/rust/kernel/init/macros.rs
-> +++ b/rust/kernel/init/macros.rs
-> @@ -1215,3 +1215,38 @@ macro_rules! __init_internal {
->          );
->      };
+> diff --git a/rust/kernel/init.rs b/rust/kernel/init.rs
+> index 460f808ebf84..b54f32017d00 100644
+> --- a/rust/kernel/init.rs
+> +++ b/rust/kernel/init.rs
+> @@ -212,6 +212,7 @@
+>  use crate::{
+>      error::{self, Error},
+>      sync::UniqueArc,
+> +    types::ScopeGuard,
+>  };
+>  use alloc::boxed::Box;
+>  use core::{
+> @@ -875,6 +876,93 @@ pub fn uninit<T, E>() -> impl Init<MaybeUninit<T>, E=
+> {
+>      unsafe { init_from_closure(|_| Ok(())) }
 >  }
-> +
-> +#[doc(hidden)]
-> +#[macro_export]
-> +macro_rules! __derive_zeroable {
-> +    (parse_input:
-> +        @sig(
-> +            $(#[$($struct_attr:tt)*])*
-> +            $vis:vis struct $name:ident
-> +            $(where $($whr:tt)*)?
-> +        ),
-> +        @impl_generics($($impl_generics:tt)*),
-> +        @ty_generics($($ty_generics:tt)*),
-> +        @body({
-> +            $(
-> +                $(#[$($field_attr:tt)*])*
-> +                $field:ident : $field_ty:ty
-> +            ),* $(,)?
-> +        }),
-> +    ) =3D> {
-> +        // SAFETY: every field type implements `Zeroable` and padding by=
-tes may be zero.
-> +        #[automatically_derived]
-> +        unsafe impl<$($impl_generics)*> $crate::init::Zeroable for $name=
-<$($ty_generics)*>
-> +        where
-> +            $($($whr)*)?
-> +        {}
-> +        const _: () =3D {
-> +            fn assert_zeroable<T: ?::core::marker::Sized + $crate::init:=
-:Zeroable>() {}
-> +            fn ensure_zeroable<$($impl_generics)*>()
-> +                where $($($whr)*)?
-> +            {
-> +                $(assert_zeroable::<$field_ty>();)*
-> +            }
-> +        };
-> +    };
-> +}
-> diff --git a/rust/kernel/prelude.rs b/rust/kernel/prelude.rs
-> index c28587d68ebc..ae21600970b3 100644
-> --- a/rust/kernel/prelude.rs
-> +++ b/rust/kernel/prelude.rs
-> @@ -18,7 +18,7 @@
->  pub use alloc::{boxed::Box, vec::Vec};
 > =20
->  #[doc(no_inline)]
-> -pub use macros::{module, pin_data, pinned_drop, vtable};
-> +pub use macros::{module, pin_data, pinned_drop, vtable, Zeroable};
-> =20
->  pub use super::build_assert;
-> =20
-> diff --git a/rust/macros/lib.rs b/rust/macros/lib.rs
-> index b4bc44c27bd4..fd7a815e68a8 100644
-> --- a/rust/macros/lib.rs
-> +++ b/rust/macros/lib.rs
-> @@ -11,6 +11,7 @@
->  mod pin_data;
->  mod pinned_drop;
->  mod vtable;
-> +mod zeroable;
-> =20
->  use proc_macro::TokenStream;
-> =20
-> @@ -343,3 +344,22 @@ pub fn paste(input: TokenStream) -> TokenStream {
->      paste::expand(&mut tokens);
->      tokens.into_iter().collect()
->  }
-> +
-> +/// Derives the [`Zeroable`] trait for the given struct.
-> +///
-> +/// This can only be used for structs where every field implements the [=
-`Zeroable`] trait.
+> +/// Initializes an array by initializing each element via the provided i=
+nitializer.
 > +///
 > +/// # Examples
 > +///
 > +/// ```rust
-> +/// #[derive(Zeroable)]
-> +/// pub struct DriverData {
-> +///     id: i64,
-> +///     buf_ptr: *mut u8,
-> +///     len: usize,
-> +/// }
+> +/// use kernel::{error::Error, init::init_array_from_fn};
+> +/// let array: Box<[usize; 1_000]>=3D Box::init::<Error>(init_array_from=
+_fn(|i| i)).unwrap();
+> +/// assert_eq!(array.len(), 1_000);
 > +/// ```
-> +#[proc_macro_derive(Zeroable)]
-> +pub fn derive_zeroable(input: TokenStream) -> TokenStream {
-> +    zeroable::derive(input)
-> +}
-> diff --git a/rust/macros/quote.rs b/rust/macros/quote.rs
-> index dddbb4e6f4cb..33a199e4f176 100644
-> --- a/rust/macros/quote.rs
-> +++ b/rust/macros/quote.rs
-> @@ -124,6 +124,18 @@ macro_rules! quote_spanned {
->          ));
->          quote_spanned!(@proc $v $span $($tt)*);
->      };
-> +    (@proc $v:ident $span:ident ; $($tt:tt)*) =3D> {
-> +        $v.push(::proc_macro::TokenTree::Punct(
-> +                ::proc_macro::Punct::new(';', ::proc_macro::Spacing::Alo=
-ne)
-> +        ));
-> +        quote_spanned!(@proc $v $span $($tt)*);
-> +    };
-> +    (@proc $v:ident $span:ident + $($tt:tt)*) =3D> {
-> +        $v.push(::proc_macro::TokenTree::Punct(
-> +                ::proc_macro::Punct::new('+', ::proc_macro::Spacing::Alo=
-ne)
-> +        ));
-> +        quote_spanned!(@proc $v $span $($tt)*);
-> +    };
->      (@proc $v:ident $span:ident $id:ident $($tt:tt)*) =3D> {
->          $v.push(::proc_macro::TokenTree::Ident(::proc_macro::Ident::new(=
-stringify!($id), $span)));
->          quote_spanned!(@proc $v $span $($tt)*);
-> diff --git a/rust/macros/zeroable.rs b/rust/macros/zeroable.rs
-> new file mode 100644
-> index 000000000000..0d605c46ab3b
-> --- /dev/null
-> +++ b/rust/macros/zeroable.rs
-> @@ -0,0 +1,72 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +use crate::helpers::{parse_generics, Generics};
-> +use proc_macro::{TokenStream, TokenTree};
-> +
-> +pub(crate) fn derive(input: TokenStream) -> TokenStream {
-> +    let (
-> +        Generics {
-> +            impl_generics,
-> +            ty_generics,
-> +        },
-> +        mut rest,
-> +    ) =3D parse_generics(input);
-> +    // This should be the body of the struct `{...}`.
-> +    let last =3D rest.pop();
-> +    // Now we insert `Zeroable` as a bound for every generic parameter i=
-n `impl_generics`.
-> +    let mut new_impl_generics =3D Vec::with_capacity(impl_generics.len()=
-);
-> +    // Are we inside of a generic where we want to add `Zeroable`?
-> +    let mut in_generic =3D !impl_generics.is_empty();
-> +    // Have we already inserted `Zeroable`?
-> +    let mut inserted =3D false;
-> +    // Level of `<>` nestings.
-> +    let mut nested =3D 0;
-> +    for tt in impl_generics {
-> +        match &tt {
-> +            // If we find a `,`, then we have finished a generic/constan=
-t/lifetime parameter.
-> +            TokenTree::Punct(p) if nested =3D=3D 0 && p.as_char() =3D=3D=
- ',' =3D> {
-> +                if in_generic && !inserted {
-> +                    new_impl_generics.extend(quote! { : ::kernel::init::=
-Zeroable });
-> +                }
-> +                in_generic =3D true;
-> +                inserted =3D false;
-> +                new_impl_generics.push(tt);
-> +            }
-> +            // If we find `'`, then we are entering a lifetime.
-> +            TokenTree::Punct(p) if nested =3D=3D 0 && p.as_char() =3D=3D=
- '\'' =3D> {
-> +                in_generic =3D false;
-> +                new_impl_generics.push(tt);
-> +            }
-> +            TokenTree::Punct(p) if nested =3D=3D 0 && p.as_char() =3D=3D=
- ':' =3D> {
-> +                new_impl_generics.push(tt);
-> +                if in_generic {
-> +                    new_impl_generics.extend(quote! { ::kernel::init::Ze=
-roable + });
-> +                    inserted =3D true;
-> +                }
-> +            }
-> +            TokenTree::Punct(p) if p.as_char() =3D=3D '<' =3D> {
-> +                nested +=3D 1;
-> +                new_impl_generics.push(tt);
-> +            }
-> +            TokenTree::Punct(p) if p.as_char() =3D=3D '>' =3D> {
-> +                assert!(nested > 0);
-> +                nested -=3D 1;
-> +                new_impl_generics.push(tt);
-> +            }
-> +            _ =3D> new_impl_generics.push(tt),
+> +pub fn init_array_from_fn<I, const N: usize, T, E>(
+> +    mut make_init: impl FnMut(usize) -> I,
+> +) -> impl Init<[T; N], E>
+> +where
+> +    I: Init<T, E>,
+> +{
+> +    let init =3D move |slot: *mut [T; N]| {
+> +        let slot =3D slot.cast::<T>();
+> +        // Counts the number of initialized elements and when dropped dr=
+ops that many elements from
+> +        // `slot`.
+> +        let mut init_count =3D ScopeGuard::new_with_data(0, |i| {
+> +            // We now free every element that has been initialized befor=
+e:
+> +            // SAFETY: The loop initialized exactly the values from 0..i=
+ and since we
+> +            // return `Err` below, the caller will consider the memory a=
+t `slot` as
+> +            // uninitialized.
+> +            unsafe { ptr::drop_in_place(ptr::slice_from_raw_parts_mut(sl=
+ot, i)) };
+> +        });
+> +        for i in 0..N {
+> +            let init =3D make_init(i);
+> +            // SAFETY: since 0 <=3D `i` < N, it is still in bounds of `[=
+T; N]`.
+> +            let ptr =3D unsafe { slot.add(i) };
+> +            // SAFETY: The pointer is derived from `slot` and thus satis=
+fies the `__init`
+> +            // requirements.
+> +            unsafe { init.__init(ptr) }?;
+> +            *init_count +=3D 1;
 > +        }
-> +    }
-> +    assert_eq!(nested, 0);
-> +    if in_generic && !inserted {
-> +        new_impl_generics.extend(quote! { : ::kernel::init::Zeroable });
-> +    }
-> +    quote! {
-> +        ::kernel::__derive_zeroable!(
-> +            parse_input:
-> +                @sig(#(#rest)*),
-> +                @impl_generics(#(#new_impl_generics)*),
-> +                @ty_generics(#(#ty_generics)*),
-> +                @body(#last),
-> +        );
-> +    }
+> +        init_count.dismiss();
+> +        Ok(())
+> +    };
+> +    // SAFETY: The initializer above initializes every element of the ar=
+ray. On failure it drops
+> +    // any initialized elements and returns `Err`.
+> +    unsafe { init_from_closure(init) }
 > +}
+> +
+> +/// Initializes an array by initializing each element via the provided i=
+nitializer.
+> +///
+> +/// # Examples
+> +///
+> +/// ```rust
+> +/// use kernel::{sync::{Arc, Mutex}, init::pin_init_array_from_fn, new_m=
+utex};
+> +/// let array: Arc<[Mutex<usize>; 1_000]>=3D
+> +///     Arc::pin_init(pin_init_array_from_fn(|i| new_mutex!(i))).unwrap(=
+);
+> +/// assert_eq!(array.len(), 1_000);
+> +/// ```
+> +pub fn pin_init_array_from_fn<I, const N: usize, T, E>(
+> +    mut make_init: impl FnMut(usize) -> I,
+> +) -> impl PinInit<[T; N], E>
+> +where
+> +    I: PinInit<T, E>,
+> +{
+> +    let init =3D move |slot: *mut [T; N]| {
+> +        let slot =3D slot.cast::<T>();
+> +        // Counts the number of initialized elements and when dropped dr=
+ops that many elements from
+> +        // `slot`.
+> +        let mut init_count =3D ScopeGuard::new_with_data(0, |i| {
+> +            // We now free every element that has been initialized befor=
+e:
+> +            // SAFETY: The loop initialized exactly the values from 0..i=
+ and since we
+> +            // return `Err` below, the caller will consider the memory a=
+t `slot` as
+> +            // uninitialized.
+> +            unsafe { ptr::drop_in_place(ptr::slice_from_raw_parts_mut(sl=
+ot, i)) };
+> +        });
+> +        for i in 0..N {
+> +            let init =3D make_init(i);
+> +            // SAFETY: since 0 <=3D `i` < N, it is still in bounds of `[=
+T; N]`.
+> +            let ptr =3D unsafe { slot.add(i) };
+> +            // SAFETY: The pointer is derived from `slot` and thus satis=
+fies the `__init`
+> +            // requirements.
+> +            unsafe { init.__pinned_init(ptr) }?;
+> +            *init_count +=3D 1;
+> +        }
+> +        init_count.dismiss();
+> +        Ok(())
+> +    };
+> +    // SAFETY: The initializer above initializes every element of the ar=
+ray. On failure it drops
+> +    // any initialized elements and returns `Err`.
+> +    unsafe { pin_init_from_closure(init) }
+> +}
+> +
+
+I wonder instead of two nearly identical function, whether this could
+be a single type that returns a struct which is Init if the initializer
+is (would need patch 11).
+
+>  // SAFETY: Every type can be initialized by-value.
+>  unsafe impl<T, E> Init<T, E> for T {
+>      unsafe fn __init(self, slot: *mut T) -> Result<(), E> {
 
