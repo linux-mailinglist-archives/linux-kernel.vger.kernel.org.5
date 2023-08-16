@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9CF77E8B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C59EB77E8BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345537AbjHPS2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 14:28:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52108 "EHLO
+        id S1345268AbjHPS3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 14:29:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345603AbjHPS15 (ORCPT
+        with ESMTP id S1345514AbjHPS3o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 14:27:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 939C92D62;
-        Wed, 16 Aug 2023 11:27:31 -0700 (PDT)
+        Wed, 16 Aug 2023 14:29:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6619412C
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:29:43 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E3C5165251;
-        Wed, 16 Aug 2023 18:27:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E4A6C433C8;
-        Wed, 16 Aug 2023 18:27:28 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 03CA96649F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 18:29:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F76DC433C7;
+        Wed, 16 Aug 2023 18:29:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692210449;
-        bh=Fg2XRsx4gyYp75jugZem87t39C7lGAKLhehiSRy0yPE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=uBGQJT8EM5FdwmbALcSATSzwZ1asOC8rvnZWoKy5nxj+nC2k1P9eA0JXFmGi6rPbp
-         YvgiImdy/e7sdRF+iSNGW9KiKi7uZIjtPj0XJGf8v7qvGvQ+qxOfVnbe3qxvIuotF6
-         uLj3GnB+Ii1Tf++aO/gI1vo+Azi44l6dvkyzpk7fMxm1e/6ue5dfLsYrEH92e9gYPp
-         En76RXbuPa/Szz65A5vgarSYK/iMGdyKNrZ1cyCzR5xUnsHo7i0pPuXaUXTaH+pnz7
-         fVz/T5KSl8zt6a5gdVP7GqCklvdogVi5dUoV+wBxxkGI65AJDlbbhjp5X4DsmWM4mM
-         niJPe7KmPSjQw==
-Date:   Wed, 16 Aug 2023 12:28:30 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Anil Gurumurthy <anil.gurumurthy@qlogic.com>,
-        Sudarsana Kalluru <sudarsana.kalluru@qlogic.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] scsi: bfa: Replace one-element array with
- flexible-array member in struct fc_rscn_pl_s
-Message-ID: <ZN0VTpDBOSVHGayb@work>
+        s=k20201202; t=1692210582;
+        bh=RGFy40LqyqVXhr2GAjk13ra/WdLLa4vI9Yi3XWkgKko=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AF8rteB9kiNdsg6NGVRKKDaJzv/qcm406PKbGPkScyy7R+mjWon4QGS3c9N0uuFPv
+         BwIQclctng/n5twC13WvaHCtcWBh1qjin0Mbq3sE0U5WxpoiXC4Wvwo3XWxih8lHho
+         H0oGpkJETyPra3KTQVL0TJHl7JteMytb08EcReXGrLu+peccNx4UB9WnGssnWCxTRX
+         4TPdeOXHvtKJCzjX4Ck/nzdZkcGTcDsmR2SmZ0aEuvKKuD9Qn6wKc4q3gey/KERpY1
+         XOgs3t3TYmeW/nTr6/HwymnxG+fWblYn85gQU2ie6MrM3m3lFn9H9eOI2OiNhtX73b
+         JwOmBI8nICSvg==
+Date:   Wed, 16 Aug 2023 11:29:40 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Nikolay Borisov <nik.borisov@suse.com>, X86 ML <x86@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/srso: Correct the mitigation status when SMT is
+ disabled
+Message-ID: <20230816182940.xw67h5xbilqpb5au@treble>
+References: <20230814202545.GKZNqNybUnKv+xyrtP@fat_crate.local>
+ <20230814205300.krikym7jeckehqik@treble>
+ <20230814211727.GLZNqZ5+flxtyaDjMQ@fat_crate.local>
+ <20230815095724.GBZNtMBPUJSEegviJN@fat_crate.local>
+ <20230815195831.2opbgrznnpszaa32@treble>
+ <20230815201753.GGZNvdcbPHXtEXn4As@fat_crate.local>
+ <20230815212751.xhsyn7iwj2gwpuk5@treble>
+ <20230816083057.GCZNyJQVARsxD3rNAm@fat_crate.local>
+ <20230816160757.oegndrcnf2fvt7l3@treble>
+ <20230816173531.GMZN0I40DEFE38Zxuz@fat_crate.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230816173531.GMZN0I40DEFE38Zxuz@fat_crate.local>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One-element and zero-length arrays are deprecated. So, replace
-one-element array in struct fc_rscn_pl_s with flexible-array member.
+On Wed, Aug 16, 2023 at 07:35:31PM +0200, Borislav Petkov wrote:
+> On Wed, Aug 16, 2023 at 09:07:57AM -0700, Josh Poimboeuf wrote:
+> > In this case srso_show_state() is never called, so the following code
+> > can't run:
+> > 
+> > +	if (boot_cpu_has(X86_FEATURE_SRSO_NO)) {
+> > +		if (sched_smt_active())
+> > +			return sysfs_emit(buf, "Not affected\n");
+> 
+> Ofc it can. If something has set X86_FEATURE_SRSO_NO early, before the
+> bug bits detection happens, then you get:
+> 
+> $ cat /sys/devices/system/cpu/vulnerabilities/spec_rstack_overflow
+> Not affected
 
-This results in no differences in binary output.
+No, if the bug bit isn't set then that comes from cpu_show_common():
 
-Link: https://github.com/KSPP/linux/issues/339
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/scsi/bfa/bfa_fc.h      | 2 +-
- drivers/scsi/bfa/bfa_fcbuild.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+static ssize_t cpu_show_common(struct device *dev, struct device_attribute *attr,
+			       char *buf, unsigned int bug)
+{
+	if (!boot_cpu_has_bug(bug))
+		return sysfs_emit(buf, "Not affected\n");
 
-diff --git a/drivers/scsi/bfa/bfa_fc.h b/drivers/scsi/bfa/bfa_fc.h
-index a12d693065ce..1091aa428533 100644
---- a/drivers/scsi/bfa/bfa_fc.h
-+++ b/drivers/scsi/bfa/bfa_fc.h
-@@ -800,7 +800,7 @@ struct fc_rscn_pl_s {
- 	u8	command;
- 	u8	pagelen;
- 	__be16	payldlen;
--	struct fc_rscn_event_s event[1];
-+	struct fc_rscn_event_s event[];
- };
- 
- /*
-diff --git a/drivers/scsi/bfa/bfa_fcbuild.c b/drivers/scsi/bfa/bfa_fcbuild.c
-index 773c84af784c..52303e8c716d 100644
---- a/drivers/scsi/bfa/bfa_fcbuild.c
-+++ b/drivers/scsi/bfa/bfa_fcbuild.c
-@@ -1051,7 +1051,7 @@ fc_rscn_build(struct fchs_s *fchs, struct fc_rscn_pl_s *rscn,
- 	rscn->event[0].format = FC_RSCN_FORMAT_PORTID;
- 	rscn->event[0].portid = s_id;
- 
--	return sizeof(struct fc_rscn_pl_s);
-+	return struct_size(rscn, event, 1);
- }
- 
- u16
 -- 
-2.34.1
-
+Josh
