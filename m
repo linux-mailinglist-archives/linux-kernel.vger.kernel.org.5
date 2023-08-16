@@ -2,67 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D1677D8E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 05:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 426B277D8E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 05:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241516AbjHPDNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 23:13:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51860 "EHLO
+        id S241519AbjHPDOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 23:14:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241504AbjHPDMo (ORCPT
+        with ESMTP id S241518AbjHPDOZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 23:12:44 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EBAF5E6B;
-        Tue, 15 Aug 2023 20:12:42 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 37G3CKl5018070;
-        Wed, 16 Aug 2023 05:12:20 +0200
-Date:   Wed, 16 Aug 2023 05:12:20 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        shuah <shuah@kernel.org>
-Subject: Re: [GIT PULL] nolibc changes for 6.6-rc1
-Message-ID: <20230816031220.GA18057@1wt.eu>
-References: <20230806172245.GA26239@1wt.eu>
- <3efa3710-4e8b-d187-a24d-ff85858e37fe@linuxfoundation.org>
- <20230815143540.GA15075@1wt.eu>
- <29590d7b-40fd-0426-75c6-36667e344f6c@linuxfoundation.org>
- <9950607c-cafe-c011-7d5f-76a8a971beb0@linuxfoundation.org>
- <ZNvIkD1oxZENVkoe@1wt.eu>
- <85a03aa3-3d6e-3b16-d113-7d7f5a84bfb4@linuxfoundation.org>
+        Tue, 15 Aug 2023 23:14:25 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B6621FCA
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 20:14:24 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-114-154.bstnma.fios.verizon.net [173.48.114.154])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37G3EDq2007378
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Aug 2023 23:14:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1692155655; bh=11fFMirtmlzyNHMunrTtQshjI+RpiVwN3aW54ZoIbqk=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=pXnlBXxejSyY2HHgnrij4xFWn6qda7dxgzggC6GDt8hz/SFBdZ7RNadwGSDvIeHja
+         zdS3RSpdK3H2yAqRG6VRqcv2v8HsUc324LJ9hq8o4ViCHV4Az0ncDyJfcIg4txbQtu
+         jEPw69R1i43b1zEp4ybNpEv+LaWFz7RPuc0+yeOI+77aUeOmVl5Us1YzVTe9y/ale3
+         kHtgvuopOUTavQ5oFO+n6IaqcA8ZNE9tZfhHwIA4xqqMXvAPYXTWilNHS+sP0iGadr
+         mIcF1PppOTwnvln/+WofxBxaQaKsMuWth0UYRj4cmBT8ArT0bOUmSl3TJqqSwtwPg9
+         BvU48p1PoSz/A==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id C18E515C0292; Tue, 15 Aug 2023 23:14:13 -0400 (EDT)
+Date:   Tue, 15 Aug 2023 23:14:13 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 06/13] ext4: remove redundant check of count
+Message-ID: <20230816031413.GN2247938@mit.edu>
+References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
+ <20230629120044.1261968-7-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <85a03aa3-3d6e-3b16-d113-7d7f5a84bfb4@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230629120044.1261968-7-shikemeng@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 03:06:39PM -0600, Shuah Khan wrote:
-> Pull worked fine and my verify_fixes script failed on the following patches.
+On Thu, Jun 29, 2023 at 08:00:37PM +0800, Kemeng Shi wrote:
+> Remove zero check of count which is always non-zero.
 > 
-> Commit: 6c931bf0c732 ("selftests/nolibc: avoid buffer underrun in space printing")
-> 	Fixes tag: Fixes: 8a27526f49f9 ("selftests/nolibc: add EXPECT_PTREQ, EXPECT_PTRNE and EXPECT_PTRER")
-> 	Has these problem(s):
-> 		- Target SHA1 does not exist
-> Commit: 40f12898b479 ("tools/nolibc/stdio: add setvbuf() to set buffering mode")
-> 	Fixes tag: Fixes: ecb7fe2cd610 ("selftests: line buffer test program's stdout")
-> 	Has these problem(s):
-> 		- Target SHA1 does not exist
-> 
-> 
-> Will you be able to add the right commit IDs and resend the pull, so there
-> are no mistakes if I guess it wrong.
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
-Will do, many thanks for the check!
-Willy
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
