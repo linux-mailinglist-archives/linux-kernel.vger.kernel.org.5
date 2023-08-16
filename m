@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 774C977DD4E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A44477DD52
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:32:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243315AbjHPJao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 05:30:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
+        id S243357AbjHPJbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 05:31:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243437AbjHPJac (ORCPT
+        with ESMTP id S243418AbjHPJbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 05:30:32 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E7926A1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:30:31 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2DFAB40E0140;
-        Wed, 16 Aug 2023 09:30:30 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id d7ePAOSzahNX; Wed, 16 Aug 2023 09:30:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1692178227; bh=P6NhbwykV33BYuwxgNIWya2/w0ZvTwkFQjVCfw8K6js=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QU1or508FycqFDuv+O8i4Uny9FoAOlEp0TMZNyRjsBRNGCdiENV3itTqwc0hMe1ub
-         8JeHBG3g36HkjIHyv3wDgEpBg4vIaC+psLVC1dWIh6sdYLuWIEQDBuxhhF6Rz5tjx2
-         tChu0PgO/WUY7xJzVx03+V+KjqyHJ8MrKfAd6CXbqqxuJtgZcQx/4ZQb0h4bp/a0x4
-         88pygUnHEzrJKgY/6KHc2aFwq0Rf8+93n+aJvcxl1aPwBREfVYZn57hK0xe4i66Na/
-         Id36jX03n8j2h95wipIXebwkTDLKDvW4sd87iZxZZLEubqDcSawVG/THcpPOWyK3Yp
-         ANY49t/fPoyqDfsPh+kb8t4rYCLjLGMkDTb7U5ges08lV9ay/N3G3jM9mjwWzhMXYn
-         +AChUem+48p6Nf6eoFwUCCggz/3jME4yramG2I/XsWuiArMPsXOlq1UGKQWvudEDzw
-         dVp8RK5QxzUztSFWRrd3WyZH6pc+PzNu6PjjPOxmqpRFHamiYjcbI2w8PBKRw5rtwy
-         k6tPUfylKZk/1b+73KskU6UbrVfD1vvEZ0UlqzW+DTp0j2oYam4KmdKFP84THhLrk0
-         5o3ohNHNYAwQibZicrdeXGY7KoTVhOi9PpnXh0ZhjX5YgYSVRdzjz3TSk31lqmc7vh
-         2tp7tSkNWNBMeceEBIc0J4vc=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        Wed, 16 Aug 2023 05:31:37 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E8526A5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:31:35 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 948A42190B;
+        Wed, 16 Aug 2023 09:31:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1692178294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KSpvao0+AYUlFxQUQTlQ0ZllhVu7LrSH3/zVj8PuOtw=;
+        b=D8mT1slEzFoOishvpI1xLZR2wwz5KBM8YXatMbO7AJPZrGtgJGmqKr+OFfSnOLANo+uttu
+        sqEr6zLVNaWLtt27HxoZTa4+4sqsrDQMhmHNhpFnfNLqBkPnqRhQiuyRg7gfZsK4ERyuR5
+        GiTsIN+1xdATZackCISehgqYvEntNnI=
+Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9B22140E0196;
-        Wed, 16 Aug 2023 09:30:20 +0000 (UTC)
-Date:   Wed, 16 Aug 2023 11:30:15 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Karol Herbst <kherbst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH] drm/nouveau/disp: fix use-after-free in error handling
- of nouveau_connector_create
-Message-ID: <20230816093015.GDZNyXJ28y9uspb4Mr@fat_crate.local>
-References: <20230814144933.3956959-1-kherbst@redhat.com>
+        by relay2.suse.de (Postfix) with ESMTPS id 1B8CB2C143;
+        Wed, 16 Aug 2023 09:31:34 +0000 (UTC)
+Date:   Wed, 16 Aug 2023 11:31:32 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Enlin Mu <enlinmu@gmail.com>
+Cc:     Yunlong Xing <yunlong.xing@unisoc.com>, senozhatsky@chromium.org,
+        rostedt@goodmis.org, john.ogness@linutronix.de,
+        linux-kernel@vger.kernel.org, enlin.mu@unisoc.com,
+        yunlong.xing23@gmail.com
+Subject: Re: [PATCH] printk: export symbols for debug modules
+Message-ID: <ZNyXdDlruiQAQeMl@alley>
+References: <20230815020711.2604939-1-yunlong.xing@unisoc.com>
+ <ZNuDxFGoXPCwECyt@alley>
+ <CAAfh-jM0B2Cn579B0CkCrW44pJGGvjs112K+oMuViib+jDKafg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230814144933.3956959-1-kherbst@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAfh-jM0B2Cn579B0CkCrW44pJGGvjs112K+oMuViib+jDKafg@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 04:49:32PM +0200, Karol Herbst wrote:
-> We can't simply free the connector after calling drm_connector_init on it.
-> We need to clean up the drm side first.
-> 
-> It might not fix all regressions from 2b5d1c29f6c4 ("drm/nouveau/disp:
-> PIOR DP uses GPIO for HPD, not PMGR AUX interrupts"), but at least it
-> fixes a memory corruption in error handling related to that commit.
-> 
-> Link: https://lore.kernel.org/lkml/20230806213107.GFZNARG6moWpFuSJ9W@fat_crate.local/
-> Fixes: 95983aea8003 ("drm/nouveau/disp: add connector class")
-> Signed-off-by: Karol Herbst <kherbst@redhat.com>
-> ---
->  drivers/gpu/drm/nouveau/nouveau_connector.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
+On Wed 2023-08-16 09:24:29, Enlin Mu wrote:
+> Petr Mladek <pmladek@suse.com> 于2023年8月15日周二 21:55写道：
+> >
+> > On Tue 2023-08-15 10:07:11, Yunlong Xing wrote:
+> > > From: Enlin Mu <enlin.mu@unisoc.com>
+> > >
+> > > the module is out-of-tree, it saves kernel logs when panic
+> > >
+> > > Signed-off-by: Enlin Mu <enlin.mu@unisoc.com>
+> >
+> > I am fine with it. After all, this API seems to here for
+> > similar purposes.
+> Thanks.
+> >
+> > Acked-by: Petr Mladek <pmladek@suse.com>
+> >
+> > Of course, it would be better to maintain the module in upstream.
+> > Is there any chance to get it upstream? It seems that it
+> > is GPL-compatible so...
+> Yes, currently under development. Once the code debugging is stable,
+> it will be pushed to the community.
 
-This one ontop of -rc5 doesn't help, unfortunately.
+Great.
 
-Thx.
+One more thing which came to my mind.
 
--- 
-Regards/Gruss,
-    Boris.
+The log buffer contains the plain text and "id" of the related
+metadata. Namely, there is always an "unsigned long" before
+each message, see struct prb_data_block.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+You might consider using the kmsg_dump API. It has been added
+for this purpose. It allows to read and store the messages
+one by one. And the messages are formatted the same way
+as on console or by dmesg.
+
+The registered dumpers are automatically called in panic().
+See kmsg_dump(KMSG_DUMP_PANIC) in panic().
+
+There are few users of this API. Look for kmsg_dump_register()
+to get some inspiration.
+
+Best Regards,
+Petr
