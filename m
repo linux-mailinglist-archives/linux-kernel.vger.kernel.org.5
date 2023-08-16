@@ -2,393 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7837577E50A
+	by mail.lfdr.de (Postfix) with ESMTP id C13F877E50B
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 17:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344135AbjHPPXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 11:23:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
+        id S1344160AbjHPPXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 11:23:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344118AbjHPPWt (ORCPT
+        with ESMTP id S1344153AbjHPPW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 11:22:49 -0400
-Received: from pegase1.c-s.fr (unknown [90.115.179.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9498D1BF7
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 08:22:38 -0700 (PDT)
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4RQsMH2K6jz9vL9;
-        Wed, 16 Aug 2023 17:22:35 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 5kOEcEuuu5pO; Wed, 16 Aug 2023 17:22:35 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4RQsMH1gmgz9vKS;
-        Wed, 16 Aug 2023 17:22:35 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 362AD8B76C;
-        Wed, 16 Aug 2023 17:22:35 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id SQM5-JyOtWXe; Wed, 16 Aug 2023 17:22:35 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.25.230.108])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 176528B763;
-        Wed, 16 Aug 2023 17:22:35 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37GFMVt3218460
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 17:22:31 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37GFMVRa218459;
-        Wed, 16 Aug 2023 17:22:31 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 2/2] powerpc/83xx: Split usb.c
-Date:   Wed, 16 Aug 2023 17:22:17 +0200
-Message-ID: <75712b54bf9cb85ab10e47cd2772cd2a098ca895.1692199324.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <2cb498f637e082a4af8032311fad3cae84d6aa5d.1692199324.git.christophe.leroy@csgroup.eu>
-References: <2cb498f637e082a4af8032311fad3cae84d6aa5d.1692199324.git.christophe.leroy@csgroup.eu>
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692199335; l=9596; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=A4BvlPMJVraAKq9MnbiUdrim0l0a49yOTS5e8kNmkfc=; b=48Rmiu+HrCWxrBJ95XhFOvHSatd+jRz+EItvSgYtXjNPuz0NrpLjlYwYv4mqBM04fg3M9mQwe pzr0+i5NR18DaoKpyg7u11SPASw/vJvV5YgbMckTjdN6r2zZUTWDjAO
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_FAIL,SPF_HELO_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 11:22:57 -0400
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2695010C7
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 08:22:54 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id B2C8624002B
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 17:22:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
+        t=1692199365; bh=NREnd7UbRKli9nwhAUt6QP6b7ggS9yX8hW3zlVDQ2Xs=;
+        h=Mime-Version:Subject:From:Date:Cc:Message-Id:To:From;
+        b=mRNYZP1gjC/ARPAbbf9gh36vWi2mvcXcHZMV1KZ7CXJyhPIG4rqIClnW2krhr9c/J
+         3OD+4p3FdzqwN3WJliBIMl1IG8P4e3NqmEnO/I3QUJObompB9qP7G5Li6LMnFKi6/s
+         yXPnIJqWEtGIXWHj2C/Tfdc0xAPbdlewX9Km8OuBtN3xQOGvpiG1hDoGSQLbDi4wcj
+         FGFyEnisgTEnPk6IBLn/KJ1hUsBzwyW/Mjt52arDIUMGJkROpPoMsQAUOd9Pj7OW0e
+         b4+TU14TSxlpCrr1a+qh+oIPw8PWBP/7JzkXZcq60B8ORoSVAFG4WxOOuOtTyhxFa5
+         +oV0W2SiN4N6A==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4RQsMS0tN7z9rxL;
+        Wed, 16 Aug 2023 17:22:43 +0200 (CEST)
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_DA91F584-71C9-442C-B454-2CF84A9985CC";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
+Subject: Re: [PATCH] auxdisplay: hd44780: move cursor home after clear display
+ command
+From:   Christian Meusel <christian.meusel@posteo.de>
+In-Reply-To: <20230722140743.fe710f4f12c344f07d879c88@hugovil.com>
+Date:   Wed, 16 Aug 2023 15:22:30 +0000
+Cc:     me@davidreaver.com,
+        =?utf-8?Q?Lars_P=C3=B6schel?= <poeschel@lemonage.de>,
+        linux-kernel@vger.kernel.org, geert@linux-m68k.org
+Message-Id: <EC4DEACC-70E6-4E98-9A56-780F3E4079BA@posteo.de>
+References: <20230706185100.84322-1-hugo@hugovil.com>
+ <CANiq72kZ0cHxCKkm_781G__9tJxYCw3tpJarqvLOFB4Jw6ZONw@mail.gmail.com>
+ <20230706154937.1380bdcf9d84e1cff78911fa@hugovil.com>
+ <7eb2d50baf269310e51854f700936e94@lemonage.de>
+ <86wmysknde.fsf@davidreaver.com>
+ <CANiq72nO04+2BcwBe_P0uD8pXJtTMG3djAFAj5Ucez6VvT4g7g@mail.gmail.com>
+ <20230722140743.fe710f4f12c344f07d879c88@hugovil.com>
+To:     Hugo Villeneuve <hugo@hugovil.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-usb.c contains three independent parts with no common part.
 
-Split it.
+--Apple-Mail=_DA91F584-71C9-442C-B454-2CF84A9985CC
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/platforms/83xx/Makefile          |   3 +
- .../platforms/83xx/{usb.c => usb_831x.c}      | 118 ------------------
- arch/powerpc/platforms/83xx/usb_834x.c        |  90 +++++++++++++
- arch/powerpc/platforms/83xx/usb_837x.c        |  58 +++++++++
- 4 files changed, 151 insertions(+), 118 deletions(-)
- rename arch/powerpc/platforms/83xx/{usb.c => usb_831x.c} (51%)
- create mode 100644 arch/powerpc/platforms/83xx/usb_834x.c
- create mode 100644 arch/powerpc/platforms/83xx/usb_837x.c
+Hello everyone,
 
-diff --git a/arch/powerpc/platforms/83xx/Makefile b/arch/powerpc/platforms/83xx/Makefile
-index 6b4013e01b3b..2590ac4dcec4 100644
---- a/arch/powerpc/platforms/83xx/Makefile
-+++ b/arch/powerpc/platforms/83xx/Makefile
-@@ -13,3 +13,6 @@ obj-$(CONFIG_MPC836x_RDK)	+= mpc836x_rdk.o
- obj-$(CONFIG_MPC837x_RDB)	+= mpc837x_rdb.o
- obj-$(CONFIG_ASP834x)		+= asp834x.o
- obj-$(CONFIG_KMETER1)		+= km83xx.o
-+obj-$(CONFIG_PPC_MPC831x)	+= usb_831x.o
-+obj-$(CONFIG_PPC_MPC834x)	+= usb_834x.o
-+obj-$(CONFIG_PPC_MPC837x)	+= usb_837x.o
-diff --git a/arch/powerpc/platforms/83xx/usb.c b/arch/powerpc/platforms/83xx/usb_831x.c
-similarity index 51%
-rename from arch/powerpc/platforms/83xx/usb.c
-rename to arch/powerpc/platforms/83xx/usb_831x.c
-index d5ad6cff9bd8..28c24e90f022 100644
---- a/arch/powerpc/platforms/83xx/usb.c
-+++ b/arch/powerpc/platforms/83xx/usb_831x.c
-@@ -17,81 +17,6 @@
- 
- #include "mpc83xx.h"
- 
--#ifdef CONFIG_PPC_MPC834x
--int __init mpc834x_usb_cfg(void)
--{
--	unsigned long sccr, sicrl, sicrh;
--	void __iomem *immap;
--	struct device_node *np = NULL;
--	int port0_is_dr = 0, port1_is_dr = 0;
--	const void *prop, *dr_mode;
--
--	immap = ioremap(get_immrbase(), 0x1000);
--	if (!immap)
--		return -ENOMEM;
--
--	/* Read registers */
--	/* Note: DR and MPH must use the same clock setting in SCCR */
--	sccr = in_be32(immap + MPC83XX_SCCR_OFFS) & ~MPC83XX_SCCR_USB_MASK;
--	sicrl = in_be32(immap + MPC83XX_SICRL_OFFS) & ~MPC834X_SICRL_USB_MASK;
--	sicrh = in_be32(immap + MPC83XX_SICRH_OFFS) & ~MPC834X_SICRH_USB_UTMI;
--
--	np = of_find_compatible_node(NULL, NULL, "fsl-usb2-dr");
--	if (np) {
--		sccr |= MPC83XX_SCCR_USB_DRCM_11;  /* 1:3 */
--
--		prop = of_get_property(np, "phy_type", NULL);
--		port1_is_dr = 1;
--		if (prop &&
--		    (!strcmp(prop, "utmi") || !strcmp(prop, "utmi_wide"))) {
--			sicrl |= MPC834X_SICRL_USB0 | MPC834X_SICRL_USB1;
--			sicrh |= MPC834X_SICRH_USB_UTMI;
--			port0_is_dr = 1;
--		} else if (prop && !strcmp(prop, "serial")) {
--			dr_mode = of_get_property(np, "dr_mode", NULL);
--			if (dr_mode && !strcmp(dr_mode, "otg")) {
--				sicrl |= MPC834X_SICRL_USB0 | MPC834X_SICRL_USB1;
--				port0_is_dr = 1;
--			} else {
--				sicrl |= MPC834X_SICRL_USB1;
--			}
--		} else if (prop && !strcmp(prop, "ulpi")) {
--			sicrl |= MPC834X_SICRL_USB1;
--		} else {
--			pr_warn("834x USB PHY type not supported\n");
--		}
--		of_node_put(np);
--	}
--	np = of_find_compatible_node(NULL, NULL, "fsl-usb2-mph");
--	if (np) {
--		sccr |= MPC83XX_SCCR_USB_MPHCM_11; /* 1:3 */
--
--		prop = of_get_property(np, "port0", NULL);
--		if (prop) {
--			if (port0_is_dr)
--				pr_warn("834x USB port0 can't be used by both DR and MPH!\n");
--			sicrl &= ~MPC834X_SICRL_USB0;
--		}
--		prop = of_get_property(np, "port1", NULL);
--		if (prop) {
--			if (port1_is_dr)
--				pr_warn("834x USB port1 can't be used by both DR and MPH!\n");
--			sicrl &= ~MPC834X_SICRL_USB1;
--		}
--		of_node_put(np);
--	}
--
--	/* Write back */
--	out_be32(immap + MPC83XX_SCCR_OFFS, sccr);
--	out_be32(immap + MPC83XX_SICRL_OFFS, sicrl);
--	out_be32(immap + MPC83XX_SICRH_OFFS, sicrh);
--
--	iounmap(immap);
--	return 0;
--}
--#endif /* CONFIG_PPC_MPC834x */
--
--#ifdef CONFIG_PPC_MPC831x
- int __init mpc831x_usb_cfg(void)
- {
- 	u32 temp;
-@@ -201,46 +126,3 @@ int __init mpc831x_usb_cfg(void)
- 	of_node_put(np);
- 	return ret;
- }
--#endif /* CONFIG_PPC_MPC831x */
--
--#ifdef CONFIG_PPC_MPC837x
--int __init mpc837x_usb_cfg(void)
--{
--	void __iomem *immap;
--	struct device_node *np = NULL;
--	const void *prop;
--	int ret = 0;
--
--	np = of_find_compatible_node(NULL, NULL, "fsl-usb2-dr");
--	if (!np || !of_device_is_available(np)) {
--		of_node_put(np);
--		return -ENODEV;
--	}
--	prop = of_get_property(np, "phy_type", NULL);
--
--	if (!prop || (strcmp(prop, "ulpi") && strcmp(prop, "serial"))) {
--		pr_warn("837x USB PHY type not supported\n");
--		of_node_put(np);
--		return -EINVAL;
--	}
--
--	/* Map IMMR space for pin and clock settings */
--	immap = ioremap(get_immrbase(), 0x1000);
--	if (!immap) {
--		of_node_put(np);
--		return -ENOMEM;
--	}
--
--	/* Configure clock */
--	clrsetbits_be32(immap + MPC83XX_SCCR_OFFS, MPC837X_SCCR_USB_DRCM_11,
--			MPC837X_SCCR_USB_DRCM_11);
--
--	/* Configure pin mux for ULPI/serial */
--	clrsetbits_be32(immap + MPC83XX_SICRL_OFFS, MPC837X_SICRL_USB_MASK,
--			MPC837X_SICRL_USB_ULPI);
--
--	iounmap(immap);
--	of_node_put(np);
--	return ret;
--}
--#endif /* CONFIG_PPC_MPC837x */
-diff --git a/arch/powerpc/platforms/83xx/usb_834x.c b/arch/powerpc/platforms/83xx/usb_834x.c
-new file mode 100644
-index 000000000000..3a8d6c662d06
---- /dev/null
-+++ b/arch/powerpc/platforms/83xx/usb_834x.c
-@@ -0,0 +1,90 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Freescale 83xx USB SOC setup code
-+ *
-+ * Copyright (C) 2007 Freescale Semiconductor, Inc.
-+ * Author: Li Yang
-+ */
-+
-+#include <linux/stddef.h>
-+#include <linux/kernel.h>
-+#include <linux/errno.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/io.h>
-+
-+#include <sysdev/fsl_soc.h>
-+
-+#include "mpc83xx.h"
-+
-+int __init mpc834x_usb_cfg(void)
-+{
-+	unsigned long sccr, sicrl, sicrh;
-+	void __iomem *immap;
-+	struct device_node *np = NULL;
-+	int port0_is_dr = 0, port1_is_dr = 0;
-+	const void *prop, *dr_mode;
-+
-+	immap = ioremap(get_immrbase(), 0x1000);
-+	if (!immap)
-+		return -ENOMEM;
-+
-+	/* Read registers */
-+	/* Note: DR and MPH must use the same clock setting in SCCR */
-+	sccr = in_be32(immap + MPC83XX_SCCR_OFFS) & ~MPC83XX_SCCR_USB_MASK;
-+	sicrl = in_be32(immap + MPC83XX_SICRL_OFFS) & ~MPC834X_SICRL_USB_MASK;
-+	sicrh = in_be32(immap + MPC83XX_SICRH_OFFS) & ~MPC834X_SICRH_USB_UTMI;
-+
-+	np = of_find_compatible_node(NULL, NULL, "fsl-usb2-dr");
-+	if (np) {
-+		sccr |= MPC83XX_SCCR_USB_DRCM_11;  /* 1:3 */
-+
-+		prop = of_get_property(np, "phy_type", NULL);
-+		port1_is_dr = 1;
-+		if (prop &&
-+		    (!strcmp(prop, "utmi") || !strcmp(prop, "utmi_wide"))) {
-+			sicrl |= MPC834X_SICRL_USB0 | MPC834X_SICRL_USB1;
-+			sicrh |= MPC834X_SICRH_USB_UTMI;
-+			port0_is_dr = 1;
-+		} else if (prop && !strcmp(prop, "serial")) {
-+			dr_mode = of_get_property(np, "dr_mode", NULL);
-+			if (dr_mode && !strcmp(dr_mode, "otg")) {
-+				sicrl |= MPC834X_SICRL_USB0 | MPC834X_SICRL_USB1;
-+				port0_is_dr = 1;
-+			} else {
-+				sicrl |= MPC834X_SICRL_USB1;
-+			}
-+		} else if (prop && !strcmp(prop, "ulpi")) {
-+			sicrl |= MPC834X_SICRL_USB1;
-+		} else {
-+			pr_warn("834x USB PHY type not supported\n");
-+		}
-+		of_node_put(np);
-+	}
-+	np = of_find_compatible_node(NULL, NULL, "fsl-usb2-mph");
-+	if (np) {
-+		sccr |= MPC83XX_SCCR_USB_MPHCM_11; /* 1:3 */
-+
-+		prop = of_get_property(np, "port0", NULL);
-+		if (prop) {
-+			if (port0_is_dr)
-+				pr_warn("834x USB port0 can't be used by both DR and MPH!\n");
-+			sicrl &= ~MPC834X_SICRL_USB0;
-+		}
-+		prop = of_get_property(np, "port1", NULL);
-+		if (prop) {
-+			if (port1_is_dr)
-+				pr_warn("834x USB port1 can't be used by both DR and MPH!\n");
-+			sicrl &= ~MPC834X_SICRL_USB1;
-+		}
-+		of_node_put(np);
-+	}
-+
-+	/* Write back */
-+	out_be32(immap + MPC83XX_SCCR_OFFS, sccr);
-+	out_be32(immap + MPC83XX_SICRL_OFFS, sicrl);
-+	out_be32(immap + MPC83XX_SICRH_OFFS, sicrh);
-+
-+	iounmap(immap);
-+	return 0;
-+}
-diff --git a/arch/powerpc/platforms/83xx/usb_837x.c b/arch/powerpc/platforms/83xx/usb_837x.c
-new file mode 100644
-index 000000000000..726935bb6e2d
---- /dev/null
-+++ b/arch/powerpc/platforms/83xx/usb_837x.c
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Freescale 83xx USB SOC setup code
-+ *
-+ * Copyright (C) 2007 Freescale Semiconductor, Inc.
-+ * Author: Li Yang
-+ */
-+
-+#include <linux/stddef.h>
-+#include <linux/kernel.h>
-+#include <linux/errno.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/io.h>
-+
-+#include <sysdev/fsl_soc.h>
-+
-+#include "mpc83xx.h"
-+
-+int __init mpc837x_usb_cfg(void)
-+{
-+	void __iomem *immap;
-+	struct device_node *np = NULL;
-+	const void *prop;
-+	int ret = 0;
-+
-+	np = of_find_compatible_node(NULL, NULL, "fsl-usb2-dr");
-+	if (!np || !of_device_is_available(np)) {
-+		of_node_put(np);
-+		return -ENODEV;
-+	}
-+	prop = of_get_property(np, "phy_type", NULL);
-+
-+	if (!prop || (strcmp(prop, "ulpi") && strcmp(prop, "serial"))) {
-+		pr_warn("837x USB PHY type not supported\n");
-+		of_node_put(np);
-+		return -EINVAL;
-+	}
-+
-+	/* Map IMMR space for pin and clock settings */
-+	immap = ioremap(get_immrbase(), 0x1000);
-+	if (!immap) {
-+		of_node_put(np);
-+		return -ENOMEM;
-+	}
-+
-+	/* Configure clock */
-+	clrsetbits_be32(immap + MPC83XX_SCCR_OFFS, MPC837X_SCCR_USB_DRCM_11,
-+			MPC837X_SCCR_USB_DRCM_11);
-+
-+	/* Configure pin mux for ULPI/serial */
-+	clrsetbits_be32(immap + MPC83XX_SICRL_OFFS, MPC837X_SICRL_USB_MASK,
-+			MPC837X_SICRL_USB_ULPI);
-+
-+	iounmap(immap);
-+	of_node_put(np);
-+	return ret;
-+}
--- 
-2.41.0
+>> I will wait a while in case Christian or somebody else wants to test
+>> it, and send it for 6.6.
 
+I finally managed to test this patch with our hardware and I'm seeing =
+the same expected behavior as beforehand.
+
+When executing David's test sequence with a EH002004A [1], I'm getting =
+garbled contents when shifting with '\x1b[LR'. But this also happens =
+with the version of the driver we're currently using, does not look =
+related to this patch and might be an issue with our display model.
+
+
+Best regards,
+
+Christian
+
+
+--
+[1] =
+https://www.winstar.com.tw/pt/products/oled-module/oled-character-display/=
+20x4-oled.html
+
+--Apple-Mail=_DA91F584-71C9-442C-B454-2CF84A9985CC
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEIhqZz/J2souq/IKUfmJl21on4+EFAmTc6bYACgkQfmJl21on
+4+FDHxAAvhC3E+kzVGyCuQZ943zKODLu4toUnWdaKKFYnMRZcTKOWwE+zEEYlhP+
+WIh/oeyZgqSM+HwrfRfh8uD1Qya9gBRS0LhAaKH7lMOmlyz9LE7eKixVDiaI24Gw
+m3E0OsQhMofBXD6EArN4mMKADYMp2z8PwTBRjVT5eAJwH/d9bcj2vdj7aXoeMgXZ
+y3JEDsb27gJ1K37Nh+b42v6TvZVKAEUxk1K2GpmJQVGF3+fhivTf59idkS/neuBY
+9tYMcw3ubkNtDMFaH0vBpawD9qgDe5qMaCl7CJ84kUbf4pPP4TkvLCpt6VvWtSRh
+BsE+wX8aQU58U4Todic7Hbp/xegthuPiKq8SglxYfg3TitvwE0TSnocbtVsBO0pB
+9V46Pu0zUCC7HyL7gYaWDTx7bFKpeEdkFo3Ck77hh/ciD77MhA8bFU77wCR29Mxm
+uDUzmobwXf/E4DiJRa/RmM3yfP4b0PtqQtX2fnDBTTsN3ATcSkL1XvgkQsZbKktr
+0dKwXTPCAPc0S+BssCb/T2NdIyuSZnvdInCVA7FaAGV4MMaMyLape0VA3pZ6uO49
+8t408xyvocUsTGWoKu6NVRDCOtEUGHjxz44cCd2hBZNpmV7G95rQIqIBVQCptH4+
+IWVNzQ6opIJdVTrAIbYKAnT2ddtC6cCvAEJ2tQY29Km4z2CebTI=
+=ARi7
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_DA91F584-71C9-442C-B454-2CF84A9985CC--
