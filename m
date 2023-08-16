@@ -2,92 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E87A777E779
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48ACD77E77A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345175AbjHPRU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 13:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41086 "EHLO
+        id S1345182AbjHPRVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 13:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345163AbjHPRUb (ORCPT
+        with ESMTP id S1345174AbjHPRUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 13:20:31 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1D726AB
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:20:26 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qWKBi-0002k8-Mk; Wed, 16 Aug 2023 19:20:06 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qWKBd-0015eP-F2; Wed, 16 Aug 2023 19:20:01 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qWKBc-00DYfr-LE; Wed, 16 Aug 2023 19:20:00 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Eddie James <eajames@linux.ibm.com>, Joel Stanley <joel@jms.id.au>,
-        Jeremy Kerr <jk@ozlabs.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alistar Popple <alistair@popple.id.au>, linux-fsi@lists.ozlabs.org,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org
-Subject: [PATCH] fsi: i2cr: Switch to use struct i2c_driver's .probe()
-Date:   Wed, 16 Aug 2023 19:19:44 +0200
-Message-Id: <20230816171944.123705-1-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.40.1
+        Wed, 16 Aug 2023 13:20:53 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0544F26B5
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:20:52 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe2d152f62so11146587e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:20:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692206450; x=1692811250;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2EaI/gthp6oGSH/3KSg6Ply6CEER8r1o/EsLEDlma6U=;
+        b=z2/kjlne3CTStkK0lY2xsnOqxqG9n5e+//lQejSfnOJAsmfD2aLACUSP21yM17DsD9
+         H4bhDPLLlj6bO7ZiGc3cSpvLmX9SJAVB7xoJBuehe/E1LwHExtKmazgF5aiCwKwpd10g
+         KF0tLhJH6Ts4Ll4d5kpAT3Bf3XDZsPKOLGBxTRnoIdBFaO4nZ83znz6kjYu5vnOhbzSb
+         6pEpL42vFhuug1lzxky5oEhx3x4JMeYaRvR8s4PW7ljZK68++a+2vRlx0PAali81Z6Bu
+         yJ7DeANCKRFC3mBg6Ceu60YOAMYbEoT5Zhzxhy/XGbjR49/74Y/V8f+E1UA7xEN3YYNM
+         5rBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692206450; x=1692811250;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2EaI/gthp6oGSH/3KSg6Ply6CEER8r1o/EsLEDlma6U=;
+        b=kOObZ8tKgcYXa2L9TIFtHIvoDpdfPUnZgGHAKIINHoaqgzuG11t5JiAqPnJ1XP2X8S
+         c3cK36yrLZihSGs+zA8z0JAtuK2CUPEy+Yz6yZVpoTxCYr6VBn9ZItJdGJZBXWTGrupt
+         33qkqbYM3jhORG7bha8yJ+IRhixP2c4FseX7fBI4w02xmCKpVmhnte9DcbS/6ipDFJap
+         X7MbXm15fz3D90LGRidl+WxJjh5wqnuLbOlEUocfYf/bp9lqhB/zW42eKtN7fT66s9fL
+         6fn+kOG021j3EpJRjHxOS0IwXPCROz7JOIIiJq9GhvUBcbDrQkXJ3JjWL61o97PKrEOi
+         GMkw==
+X-Gm-Message-State: AOJu0YzVgMXOpBIIJZOc1x0xZECJGOr5o+4GVkezmgbhCG1NllmuK3qP
+        e0hdG4NdGAwdXBvnephrerpllQ==
+X-Google-Smtp-Source: AGHT+IHh5Bh4ZjfpgQq5HwyN9tyHh7F81amGdgQVD5axVUoUVSjHTKdXyRimYjj2PMxeEuPy+MX7qQ==
+X-Received: by 2002:a05:6512:250a:b0:4f9:556b:93c2 with SMTP id be10-20020a056512250a00b004f9556b93c2mr2351126lfb.1.1692206450298;
+        Wed, 16 Aug 2023 10:20:50 -0700 (PDT)
+Received: from [192.168.1.101] (abxi8.neoplus.adsl.tpnet.pl. [83.9.2.8])
+        by smtp.gmail.com with ESMTPSA id a3-20020a056512020300b004fdda72ec16sm406496lfo.274.2023.08.16.10.20.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 10:20:49 -0700 (PDT)
+Message-ID: <eaed15ca-5c0b-420e-a11e-007ef5608019@linaro.org>
+Date:   Wed, 16 Aug 2023 19:20:48 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 04/14] media: qcom: camss: Pass icc bandwidth table as
+ a platform parameter
+Content-Language: en-US
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, rfoss@kernel.org,
+        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
+        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
+        andrey.konovalov@linaro.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230814162907.3878421-1-bryan.odonoghue@linaro.org>
+ <20230814162907.3878421-5-bryan.odonoghue@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230814162907.3878421-5-bryan.odonoghue@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1051; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=wo9hR2BjWdL9hjjE317gsXX6geCTrTXD/PgBXWB4lVE=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBk3QUrJQVScMu9Tv9CBsX65YmoEuVxmhPtqCech k2h2iCtylGJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZN0FKwAKCRCPgPtYfRL+ TiMbB/9ubQpDNL8lOGZbjjNfqzdHBw4P+XV/vciE0nJd6okLHs/Vz07y9gAjN0TGsQOVZOmDwhf nmXblVOyLhdxJO7tKomTkhrh6ATwe/R4syEiAweb5nNZFtoNwjoHtz75FiiS/084zmRJwIQzUZo neBcFDE41E6GJ4IyyBoR3vYMKwc+eSn7xO1QnMt9flKLaAudEflH7y1LhtDPK7kjxPEyu1/nwaV CVTG7tVFCE3cv1/gmnlnYcQbqQkESs4Gvo54AG+wnVwiV/v1gv5MbKKwA6UHB6ITFAbItWcV2+p k0Tx0ZuDynWo3BawIqgNCEyOhVYXs8fij3uNXZjXlm+q3zFV
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct i2c_driver::probe_new is about to go away. Switch the driver to
-use the probe callback with the same prototype.
+On 14.08.2023 18:28, Bryan O'Donoghue wrote:
+> Pass the bandwidth table as a platform parameter not if/else derived
+> pointer to the static table.
+> 
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> ---
+>  drivers/media/platform/qcom/camss/camss.c | 29 +++++++----------------
+>  drivers/media/platform/qcom/camss/camss.h |  3 ++-
+>  2 files changed, 11 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
+> index 68eb45b2c0aaa..1a195eb4298a5 100644
+> --- a/drivers/media/platform/qcom/camss/camss.c
+> +++ b/drivers/media/platform/qcom/camss/camss.c
+> @@ -1484,21 +1484,15 @@ static int camss_configure_pd(struct camss *camss)
+>  static int camss_icc_get(struct camss *camss)
+>  {
+>  	const struct resources_icc *icc_res;
+> -	int nbr_icc_paths = 0;
+>  	int i;
+>  
+> -	if (camss->version == CAMSS_8250) {
+> -		icc_res = &icc_res_sm8250[0];
+> -		nbr_icc_paths =	ICC_SM8250_COUNT;
+> -	}
+> +	icc_res = camss->res->icc_res;
+Would initializing at declaration time fit in 100 chars?
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
-Hello,
+lgtm otherwise
 
-this driver appeared in next just today. I intend to drop .probe_new
-from struct i2c_driver after v6.6-rc1, so it would be great if this
-patch would go in together with the commit adding this driver.
-
-Thanks
-Uwe
-
- drivers/fsi/fsi-master-i2cr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/fsi/fsi-master-i2cr.c b/drivers/fsi/fsi-master-i2cr.c
-index 61659c27a973..40f1f4d231e5 100644
---- a/drivers/fsi/fsi-master-i2cr.c
-+++ b/drivers/fsi/fsi-master-i2cr.c
-@@ -301,7 +301,7 @@ static const struct of_device_id i2cr_ids[] = {
- MODULE_DEVICE_TABLE(of, i2cr_ids);
+Konrad
  
- static struct i2c_driver i2cr_driver = {
--	.probe_new = i2cr_probe,
-+	.probe = i2cr_probe,
- 	.remove = i2cr_remove,
- 	.driver = {
- 		.name = "fsi-master-i2cr",
-
-base-commit: 53e89e3e4490d6630a68e61a3cb478e7a7f2ce8b
--- 
-2.40.1
-
