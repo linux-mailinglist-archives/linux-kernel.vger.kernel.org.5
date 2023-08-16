@@ -2,169 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8345E77E10F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 14:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3CDA77E122
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 14:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244952AbjHPMEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 08:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53108 "EHLO
+        id S244967AbjHPMJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 08:09:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244990AbjHPME2 (ORCPT
+        with ESMTP id S230149AbjHPMIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 08:04:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30CC42121;
-        Wed, 16 Aug 2023 05:04:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692187467; x=1723723467;
-  h=message-id:date:subject:to:references:from:in-reply-to:
-   content-transfer-encoding:mime-version;
-  bh=Ll7UvJB5CV31469/d/BJt54nenooFuPTE7nvuqLi9a8=;
-  b=KrN7vwneWLZhYMxDJSKg5u18bEVx1FJV/cVaktUesdP0IH97zNxQqyWj
-   bZPclo95VjiSmNTC1YeUz4hqjiBqs0+SWeKMIeb+Vo8/jJP7CKfJjEZuV
-   b/oMBCnOsjVrWclB0LDMhysG8RILnNhzV4d+52JA0dUgEMLvWdf7ldlHc
-   fhLsYTrcbYAZYmwnFYrVfj3+Zibv7w10zn80hStjzj6Q43LdZG3G4SXA0
-   E6RdNnNHTp4jtr5XfvtVwTGHkTiVr05BNwee82diqa73EBHAIwUY2cftA
-   vgQhyFkrX0vwZ3/s0zPY8V3SNxg2KBTiCrw4LjI7TEP4R9sLfBhSR+zOC
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="352838153"
-X-IronPort-AV: E=Sophos;i="6.01,176,1684825200"; 
-   d="scan'208";a="352838153"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 05:04:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="769161301"
-X-IronPort-AV: E=Sophos;i="6.01,176,1684825200"; 
-   d="scan'208";a="769161301"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga001.jf.intel.com with ESMTP; 16 Aug 2023 05:04:25 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 16 Aug 2023 05:04:25 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Wed, 16 Aug 2023 05:04:25 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.44) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Wed, 16 Aug 2023 05:04:25 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V3o3IWLsLhkVZ2QvIItiSViRaJJ/9bieY6B3G9hat0KYcne54gNbOX/QUcqstOM99TeNiy5MHKOT93Ary1ZjiLaNWpQhYtJw5aOyO1Jb4CCminHh7/l0LnlfQvYDOmm1lki0rmF9wzwGCHnMs6GuQ2RKgDc5E6Hrkl9kV13qnYtcR8s8g3H4qdyyHTAjWOry9JY55h1A0cYIfBWU37hsD15JFeRx7OFu/IzBqT1KBZdpGrGEihN6bFprOWJxt0SRHeaqq0suLXNmRcguPNmHu+C4Co4/N8ONRbB+pokJ59U83R93SvKCDLJdJlmCwOBPTCzVMRv+lqLYeOJq5+WYjA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WTka6RKPcgP5buvcb4PBnw5VybHQx1EoEle9A0K8c3c=;
- b=WTKBGV1xtd7teSrOd5Ky0x86wtdGV68iNJlXPNNfqzM1eUVKuzOK0IeFS76hO1ylZW4tXrA88bGYPMz2YKUeYaPK8oQK0qCcJFA6RPeRDZN6YmWMONLiETO4zHESyJH8O3h7LxuKEFauz1HxDIYYX64DU2qxZ2rX7gqFCjr0m0UE8LQZBPK85isfYFnlnTvIuCVXFI9mi67racISzJ8AuobFtXhwzD+R+SUWCjQ1Kr75JZ2EnFr5vYKE6zNLXXQxsDKOSL+ZZbFVExZvhncT3CfE0i3yM9SLP9xf7FKmG/DBp+ZtQ5qXz81r9ybBxUESe8n8RX275B+cNAkZG9GYzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
- by CH3PR11MB7761.namprd11.prod.outlook.com (2603:10b6:610:151::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.29; Wed, 16 Aug
- 2023 12:04:23 +0000
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::221b:d422:710b:c9e6]) by CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::221b:d422:710b:c9e6%3]) with mapi id 15.20.6678.029; Wed, 16 Aug 2023
- 12:04:23 +0000
-Message-ID: <4412ad3c-ebed-40a4-8f4e-83bb1b53b686@intel.com>
-Date:   Wed, 16 Aug 2023 20:04:11 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] madvise:madvise_free_pte_range(): don't use
- mapcount() against large folio for sharing check
-Content-Language: en-US
-To:     Daniel Gomez <da.gomez@samsung.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vishal.moola@gmail.com" <vishal.moola@gmail.com>,
-        "wangkefeng.wang@huawei.com" <wangkefeng.wang@huawei.com>,
-        "minchan@kernel.org" <minchan@kernel.org>,
-        "yuzhao@google.com" <yuzhao@google.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "ryan.roberts@arm.com" <ryan.roberts@arm.com>,
-        "shy828301@gmail.com" <shy828301@gmail.com>
-References: <20230808020917.2230692-1-fengwei.yin@intel.com>
- <20230808020917.2230692-4-fengwei.yin@intel.com>
- <CGME20230815132509eucas1p1b34b2852a9c4efe743c8da82867c4cc3@eucas1p1.samsung.com>
- <4jvrmdpyteny5vaqmcrctzrovap2oy2zuukybbhfqyqbbb5xmy@ufgxufss2ngw>
- <2bfa1931-1fc6-5d6f-cba1-c7a9eb8a279a@intel.com>
- <svdxtqiihsjwcbxjp67s6cteprhoxgypf7rjrk2v73ppyn2ogp@ee4ru6vgspl4>
-From:   "Yin, Fengwei" <fengwei.yin@intel.com>
-In-Reply-To: <svdxtqiihsjwcbxjp67s6cteprhoxgypf7rjrk2v73ppyn2ogp@ee4ru6vgspl4>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2PR04CA0018.apcprd04.prod.outlook.com
- (2603:1096:4:197::9) To CO1PR11MB4820.namprd11.prod.outlook.com
- (2603:10b6:303:6f::8)
+        Wed, 16 Aug 2023 08:08:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 224FF212F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:07:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692187674;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RLf6S0T96oznBLM7lxtJRSYVbgCb11fuIkm3JcQCYVo=;
+        b=VAjO6SXEEhk2Y0YZPChvFBis/8fAszPMaLtSZIxlXB1DzXh25LZLOn+GRXueZ/i4MtqA1r
+        k+ggBZNu5nAvMuNNZrq4AfRc6SDvqB5ASTE5WtErv+IO3WRb59Rlws3zetml6yLafWVvZ0
+        SktDI3KrkeTwR+AnHkevPboa1NTm9CU=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-682-q3V6zIy1Mhy66h5iqLFzhw-1; Wed, 16 Aug 2023 08:07:52 -0400
+X-MC-Unique: q3V6zIy1Mhy66h5iqLFzhw-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3704B280D21A;
+        Wed, 16 Aug 2023 12:07:52 +0000 (UTC)
+Received: from warthog.procyon.org.com (unknown [10.42.28.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 496D3492C14;
+        Wed, 16 Aug 2023 12:07:49 +0000 (UTC)
+From:   David Howells <dhowells@redhat.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Howells <dhowells@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@list.de>,
+        Christian Brauner <christian@brauner.io>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] iov_iter: Convert the iterator macros into inline funcs
+Date:   Wed, 16 Aug 2023 13:07:39 +0100
+Message-ID: <20230816120741.534415-1-dhowells@redhat.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB4820:EE_|CH3PR11MB7761:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8fd93e40-385c-4ae8-e8f8-08db9e50edd5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SuPF5ZTtMbp2i+a4RBYTZK/FWTycc3S5CF0EaDQtILcnL5lEDNjIzIMLrgZ8vaDulKtiQhLhqTFMiRsUazwR4D4pEjfLUYqxOsga6eZ5EOmea4O97ytujxMFfaSTHInh34HKusU9poToJt9d9po3PzJUmOTe4it174uc+EoCd5bHU7cuau8iYpGPxfV1xFct/PimupnFAXYkg85KWdVX4PHXBwp2F07vj693YbZgMGhP3HxaZ90eS8e//BAP7xrIwC88/REe0AVD3ZQVdNH5EPfpSpoPxwL3EvfwAbZ1wsN5cxBinX70tRoNc/nSEK4krLQ+DoDhlOHOHbftnD1K/nOM3HgO+LBGaiMl8tY8fhkrkOvPXR5qysqpP0Lqfo4k6LXGKq1piMG1E1qmldl4wTUf/TUa6e7A/b829W3UWO0DjEpFq+nhLBKwII7GzmPo57+wad3pu03ITxLR9GiiQr7cXDN+NqnozIQED1iyliRkVrhPDFp1Ae9h8iXBEDWqCd+ta5wXU3gZ7q7NmgVnMLp61Psrtc9cYp4QpPzqzE13DqdP4Nt08FmcmOnWviuvF/k9mvah4LlzW8dOfG0YmLyQT+X1J+h6KJYtB7u1+XVaEQ0bTCl6JJ1qEBhBElKngx3FFP76PWfs6oB2+k2Nzw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(366004)(346002)(376002)(1800799009)(451199024)(186009)(316002)(921005)(66946007)(110136005)(66476007)(66556008)(966005)(41300700001)(5660300002)(38100700002)(31686004)(8676002)(8936002)(82960400001)(2906002)(83380400001)(26005)(478600001)(7416002)(86362001)(6512007)(53546011)(31696002)(6506007)(36756003)(6666004)(2616005)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K0E5TFNsMUxCTzF1NVFsOUlXWkN3RW1rYlhabkdQeHJvZnAxdDZpYzJzN2wz?=
- =?utf-8?B?U044QTUydVdPQkl1dS9CL3J3T0lPRm1sV2dZa3ZKM2s3WmtXM3NkY1dLUGk0?=
- =?utf-8?B?ODFiRWdUOXgrR2puamRubnIxRmlNRXl1QlFWaWQ1eVc0SFM3cG4zWXFsdmpa?=
- =?utf-8?B?VThlcEx4SElVWHFKRFBmaDBFeW55eURyWWlmYTJvTGttaXRpOFc3UzZCWkpJ?=
- =?utf-8?B?ZUNBaThKRSt2Nk5EaVQycWZ6UDFYTVpLcnBOeHVmSlh1Kzl1QWk4NGVzSnVM?=
- =?utf-8?B?OG9YdDNIMmpGbUkrYXFva2Zxd0VqOFZCY0t3bERUMW5qRm01U2lVQ0FENVBD?=
- =?utf-8?B?Yi9ZM3FlQWQ5elR0aENlMkZsZWwzbkNhQkRveU8vTXlnVmw2RlAvSE9DUmFn?=
- =?utf-8?B?YTEyQnNWN1FNTXA4TGNhNnFJMGJNcFh4VVVtKzcxcWhxekpkYUNnZVh3WENk?=
- =?utf-8?B?blpVQjVraHFuV1hBaVdxYVZMZmh6M2dGWCtpRjhDcVpZNk1YaDdCM1d0TGpZ?=
- =?utf-8?B?KzdsT0x1VWhJTjRwOHp2OXljQnhiME1TRG1IaStPRklLcjk5SkxseVNKc05E?=
- =?utf-8?B?UFp4Wi9xaysvZFBvYmFBNnMyc1RaWHNoSGlETHhDWW41eDh4Y1hXMnVpYnhP?=
- =?utf-8?B?RDlKcE5TU0w4NTNqQ1lhNXZVZHVZL3g1R1hpRFdxQjRmUUpoQVd3QnluTXZG?=
- =?utf-8?B?bW1mQTRSZ2hIb3ZFREFrQ1lJYWREL0dNSlNxR1ZMNFNTWDdVM3pNdS8veDNW?=
- =?utf-8?B?Y2RrVTB5WEFNWFJ6RERmZzEwcFhxMmhIWjlCVUJhVGxuVjRkRWw2MURNcThX?=
- =?utf-8?B?ZVlxMmlmRUFMSDZkL3N1bFFCZ1hKeThrN1ZTWFdDU3Zhc3NPYldjTUc2ZXRv?=
- =?utf-8?B?ZUNrZ3A0UHhlQzMvdE5USys1VlJnM040RVFGaWgyb3JGQmpqUGZZSFM5TEp4?=
- =?utf-8?B?Zzg3S0NvMVR0K0drcWxpMUtoSE9BSFo2WkxhaXVXRUQ1K0FVNVdSUkhaVDcz?=
- =?utf-8?B?UEtoQUgzTUlLSlhwbExEVEpKM0ZxVHQxWW1mZkoyZEx4ZXNVRlpWTE9FKy9q?=
- =?utf-8?B?K3RKci81dFRRd0VvWEV5Ukk0YTBwQ25yWDNLbU9nS2dMRjlMWWl3eFhuVkNT?=
- =?utf-8?B?YXJuM0JWRllNck5hOEVPdjNNYmR5UUFPMVZQV3NaQWlQdG1YTUhCTXdJcnpn?=
- =?utf-8?B?VnZNK0NRemE3K0JhSGxkMmxtMWRRWTNkWU5sS21Qc0Fqa3FXZkpGYldQRjhs?=
- =?utf-8?B?U3lHdzNFRWovdGc3RjE3MEFDczZNZkQwUnBvWVhlUFVVOThSeFQ5aWlmVHda?=
- =?utf-8?B?MjRGWVVqYjBxSE9xOXZKRzRwSjVKNkYvZW9LR1NnMW95akwxWFJDcWVUNW5v?=
- =?utf-8?B?Rnh1R0RaWTRvd1VyOWdmbWd6WFdnU2R0YnplOTc0dzlkbEZxK3Jtb0VDQ09p?=
- =?utf-8?B?ZlZVREprbUdWSi9aYzh1WnF0VjVTckVoUjZhMVIvb0NCNllIQjA4akwxR2dR?=
- =?utf-8?B?VGpDajFzUWg1REVETzUzNGllbFp1Z3o0R09tbUlvQjlyQ2NCVG4wWlNHRWYy?=
- =?utf-8?B?YW5CNS9zQjkyTUV2eU1OL2pDTEhMcjB1dFY4SVdqUjZWVUFFd3JUb3diOXYx?=
- =?utf-8?B?TzB2RWpmZW5LQ3NaQUp6WmZuVlloNmlMYnRJa1ZWWmN0clltUmk1aURidzFC?=
- =?utf-8?B?aDQ0eDlFaHRQOXlzTUMwbjlHbkJNeGdBTU9kUVYxd1NGK1V6ZCtONXp2VW85?=
- =?utf-8?B?QWowbjdpbFBWYkcrbHBVOVBLUlo2RlBNWVZUVDR6bzJKKzJPd1FpaTF0cDkz?=
- =?utf-8?B?Y3YwM1RPSWlGbU5EbUNvZGt5cXFIMDdYVWNlOXNFVjFFdUgzVjlZVUROUUZ6?=
- =?utf-8?B?THFYK3NqOVk3dEcxcEtkS0V3SGswMDNWYnM2WURpTlRHcEp6V3BNbzQ4SE9I?=
- =?utf-8?B?LzkzMDRRVWlITXh6SDgvTG9mQktOY2dZbWdTT2xKcGNPbm9JdkpRWGZyM2Js?=
- =?utf-8?B?a1Z4Tk9NYkZGOUs1RHV6WVBlSUo4UVQ5OFlKTnY4a1VLZXo4Znk2OE1zOWtD?=
- =?utf-8?B?ZkZBWXVIOFBJQjdWR0FoVURibWhzRklRZ01MQzI4YTJ0QXJudnE2MGJ5cXI5?=
- =?utf-8?B?d1IwQXBpSFhicEhIN29XU3NFckdXR0tPOVQ0ZHNYNzhCOERnMHUrLzNOa0Ex?=
- =?utf-8?B?ZlE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8fd93e40-385c-4ae8-e8f8-08db9e50edd5
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 12:04:22.9408
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: A8OTouyBi0MTo5WPnVRlP+GCrlvbb8JHYNWn7gX5Rk5n9r3la4wowbKdJvX6euXpPxvFp4mZRgH0NxrcXmgGNQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7761
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -172,122 +64,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Al, Linus,
 
+Here are a couple of patches to try and clean up the iov_iter iteration
+stuff.
 
-On 8/16/2023 7:44 PM, Daniel Gomez wrote:
-> On Wed, Aug 16, 2023 at 07:30:35AM +0800, Yin Fengwei wrote:
->>
->>
->> On 8/15/23 21:25, Daniel Gomez wrote:
->>> Hi Yin,
->>> On Tue, Aug 08, 2023 at 10:09:17AM +0800, Yin Fengwei wrote:
->>>> Commit 98b211d6415f ("madvise: convert madvise_free_pte_range() to use a
->>>> folio") replaced the page_mapcount() with folio_mapcount() to check
->>>> whether the folio is shared by other mapping.
->>>>
->>>> It's not correct for large folios. folio_mapcount() returns the total
->>>> mapcount of large folio which is not suitable to detect whether the folio
->>>> is shared.
->>>>
->>>> Use folio_estimated_sharers() which returns a estimated number of shares.
->>>> That means it's not 100% correct. It should be OK for madvise case here.
->>>
->>> I'm trying to understand why it should be ok for madvise this change, so
->>> I hope it's okay to ask you few questions.
->>>
->>> folio_mapcount() calculates the total maps for all the subpages of a
->>> folio. However, the folio_estimated_sharers does it only for the first
->>> subpage making it not true for large folios. Then, wouldn't this change
->>> drop support for large folios?
->> I saw David explained this very well in another mail.
->>
->>>
->>> Seems like folio_entire_mapcount() is not accurate either because of it
->>> does not inclue PTE-mapped sub-pages which I think we need here. Hence,
->>> the folio_mapcount(). Could this be something missing in the test side?
->>>
->>> I tried to replicate the setup with CONFIG_TRANSPARENT_HUGEPAGE but
->>> seems like I'm not able to do it:
->>>
->>> ./cow
->>> # [INFO] detected THP size: 2048 KiB
->>> # [INFO] detected hugetlb size: 2048 KiB
->>> # [INFO] detected hugetlb size: 1048576 KiB
->>> # [INFO] huge zeropage is enabled
->>> TAP version 13
->>> 1..166
->>> # [INFO] Anonymous memory tests in private mappings
->>> # [RUN] Basic COW after fork() ... with base page
->>> not ok 1 MADV_NOHUGEPAGE failed
->>> # [RUN] Basic COW after fork() ... with swapped out base page
->>> not ok 2 MADV_NOHUGEPAGE failed
->>> # [RUN] Basic COW after fork() ... with THP
->>> not ok 3 MADV_HUGEPAGE failed
->>> # [RUN] Basic COW after fork() ... with swapped-out THP
->>> not ok 4 MADV_HUGEPAGE failed
->>> # [RUN] Basic COW after fork() ... with PTE-mapped THP
->>> not ok 5 MADV_HUGEPAGE failed
->>> # [RUN] Basic COW after fork() ... with swapped-out, PTE-mapped THP
->>> not ok 6 MADV_HUGEPAGE failed
->>> ...
->> Can you post the MADV_PAGEOUT and PTE-mapped THP related testing result?
->> And I suppose swap need be enabled also for the testing.
-> 
-> You may find a dump of the logs in the link below with system information. Let me
-> know if you find something wrong in my setup or if you need something else.
-> Besides CONFIG_TRANSPARENT_HUGEPAGE, CONFIG_SWAP is also enabled in the kernel.
-> 
-> https://gitlab.com/-/snippets/2584135
-> 
-> Also, strace reports ENOSYS for MADV_*:
-> madvise(0x7f2912465000, 4096, MADV_NOHUGEPAGE) = -1 ENOSYS (Function not implemented)
-> madvise(0x7f2912000000, 2097152, MADV_HUGEPAGE) = -1 ENOSYS (Function not implemented)
-O. The problem here is MADV_HUGEPAGE/MADV_NOHUGEPAGE doesn't work.
-Do you have CONFIG_ADVISE_SYSCALLS enabled?
+The first patch converts the iov_iter iteration macros to always-inline
+functions to make the code easier to follow.  It uses function pointers,
+but they should get optimised away.  The priv2 argument should likewise get
+optimised away if unused.
 
+The second patch makes _copy_from_iter() and copy_page_from_iter_atomic()
+handle the ->copy_mc flag earlier and not in the step function.  This flag
+is only set by the coredump code and only with a BVEC iterator, so we can
+have special out-of-line handling for this that uses iterate_bvec() rather
+than iterate_and_advance() - thereby avoiding repeated checks on it in a
+multi-element iterator.
 
-Regards
-Yin, Fengwei
+Further changes I could make:
 
-> 
-> 
->>
->>
->> Regards
->> Yin, Fengwei
->>
->>>
->>>
->>> Daniel
->>>>
->>>> User-visible effects is that the THP is skipped when user call madvise.
->>>> But the correct behavior is THP should be split and processed then.
->>>>
->>>> NOTE: this change is a temporary fix to reduce the user-visible effects
->>>> before the long term fix from David is ready.
->>>>
->>>> Fixes: 98b211d6415f ("madvise: convert madvise_free_pte_range() to use a folio")
->>>> Cc: stable@vger.kernel.org
->>>> Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
->>>> Reviewed-by: Yu Zhao <yuzhao@google.com>
->>>> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
->>>> ---
->>>>  mm/madvise.c | 2 +-
->>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/mm/madvise.c b/mm/madvise.c
->>>> index 49af35e2d99a..4dded5d27e7e 100644
->>>> --- a/mm/madvise.c
->>>> +++ b/mm/madvise.c
->>>> @@ -683,7 +683,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->>>>  		if (folio_test_large(folio)) {
->>>>  			int err;
->>>>
->>>> -			if (folio_mapcount(folio) != 1)
->>>> +			if (folio_estimated_sharers(folio) != 1)
->>>>  				break;
->>>>  			if (!folio_trylock(folio))
->>>>  				break;
->>>> --
->>>> 2.39.2
->>> >
+ (1) Add an 'ITER_OTHER' type and an ops table pointer and have
+     iterate_and_advance2(), iov_iter_advance(), iov_iter_revert(),
+     etc. jump through it if it sees ITER_OTHER type.  This would allow
+     types for, say, scatterlist, bio list, skbuff to be added without
+     further expanding the core.
+
+ (2) Move the ITER_XARRAY type to being an ITER_OTHER type.  This would
+     shrink the core iterators quite a lot and reduce the stack usage as
+     the xarray walking stuff wouldn't be there.
+
+ (3) Move the iterate_*() functions into a header file so that bespoke
+     iterators can be created elsewhere.  For instance, rbd has an
+     optimisation that requires it to scan to the buffer it is given to see
+     if it is all zeros.  It would be nice if this could use
+     iterate_and_advance() - but that's buried inside lib/iov_iter.c.
+
+Anyway, the overall changes in compiled function size for these patches on
+x86_64 look like:
+
+	__copy_from_iter_mc                      new 0xd6
+	__export_symbol_iov_iter_init            inc 0x3 -> 0x8 +0x5
+	_copy_from_iter                          inc 0x36e -> 0x380 +0x12
+	_copy_from_iter_flushcache               inc 0x359 -> 0x364 +0xb
+	_copy_from_iter_nocache                  dcr 0x36a -> 0x33e -0x2c
+	_copy_mc_to_iter                         inc 0x3a7 -> 0x3bc +0x15
+	_copy_to_iter                            dcr 0x358 -> 0x34a -0xe
+	copy_page_from_iter_atomic.part.0        inc 0x3cf -> 0x3d4 +0x5
+	copy_page_to_iter_nofault.part.0         dcr 0x3f1 -> 0x3a9 -0x48
+	copyin                                   del 0x30
+	copyout                                  del 0x2d
+	copyout_mc                               del 0x2b
+	csum_and_copy_from_iter                  dcr 0x3e8 -> 0x3e5 -0x3
+	csum_and_copy_to_iter                    dcr 0x46a -> 0x446 -0x24
+	iov_iter_zero                            dcr 0x34f -> 0x338 -0x17
+	memcpy_from_iter.isra.0                  del 0x1f
+
+with __copy_from_iter_mc() being the out-of-line handling for ->copy_mc.
+
+I've pushed the patches here also:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=iov-cleanup
+
+David
+
+Changes
+=======
+ver #3)
+ - Use min_t(size_t,) not min() to avoid a warning on Hexagon.
+ - Inline all the step functions.
+ - Added a patch to better handle copy_mc.
+
+ver #2)
+ - Rebased on top of Willy's changes in linux-next.
+ - Change the checksum argument to the iteration functions to be a general
+   void* and use it to pass iter->copy_mc flag to memcpy_from_iter_mc() to
+   avoid using a function pointer.
+ - Arrange the end of the iterate_*() functions to look the same to give
+   the optimiser the best chance.
+ - Make iterate_and_advance() a wrapper around iterate_and_advance2().
+ - Adjust iterate_and_advance2() to use if-else-if-else-if-else rather than
+   switch(), to put ITER_BVEC before KVEC and to mark UBUF and IOVEC as
+   likely().
+ - Move "iter->count += progress" into iterate_and_advance2() from the
+   iterate functions.
+ - Mark a number of the iterator helpers with __always_inline.
+ - Fix _copy_from_iter_flushcache() to use memcpy_from_iter_flushcache()
+   not memcpy_from_iter().
+
+Link: https://lore.kernel.org/r/3710261.1691764329@warthog.procyon.org.uk/ # v1
+Link: https://lore.kernel.org/r/855.1692047347@warthog.procyon.org.uk/ # v2
+
+David Howells (2):
+  iov_iter: Convert iterate*() to inline funcs
+  iov_iter: Don't deal with iter->copy_mc in memcpy_from_iter_mc()
+
+ lib/iov_iter.c | 627 ++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 386 insertions(+), 241 deletions(-)
+
