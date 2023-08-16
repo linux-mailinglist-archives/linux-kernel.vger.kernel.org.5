@@ -2,191 +2,451 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E76B77DD17
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B065577DD1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243254AbjHPJPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 05:15:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35142 "EHLO
+        id S243258AbjHPJQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 05:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243284AbjHPJP1 (ORCPT
+        with ESMTP id S243343AbjHPJQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 05:15:27 -0400
-Received: from out-1.mta0.migadu.com (out-1.mta0.migadu.com [91.218.175.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A55173F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:15:25 -0700 (PDT)
-Message-ID: <9091fa43-1c38-58f4-b23d-7705fc647293@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1692177324;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7hzRwpdWY8QIffBbn0D1YNeGrZzAgPJoF3wC1s2tY6M=;
-        b=XQBooO+R0LjluBdeAtLEQNXIFeBN6MY67jQWB2CEMoSSKsz6vpgkY7xN3PgdYHvND952wE
-        zbN7gPLjguh29PjLy9NxSKmPOg6mpSL4T4Lb/CHidSINUwBe4GZclVHq6q37qptqGvi60P
-        oZky3NRnyqPGtUHfvHfoJCW9oQhl8x0=
-Date:   Wed, 16 Aug 2023 17:15:14 +0800
+        Wed, 16 Aug 2023 05:16:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C271F1BF8
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:16:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692177389; x=1723713389;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=knuhoFKUl6Pz4tZXnacTE1Js/uWiW3lDaCHfqAKkGY8=;
+  b=lJDOKuHGjy07GG+HQQ/1PxFCxl8gGORa+qO7fKDaz/ym1ZDKC4eafwUp
+   BibIKG2o4PQjg2LXco1KVuwxGPoQ+3GNCK3npToJR2pqZ+u4Yo1DPdS7d
+   aOeajLmXDGrC20MAbHgUH97usZxCK8wy+ewsteKLBFd4ELNmo4W4a8hcS
+   l0ion1tFKhUmrzS4Jka259jABd5yeageefWAi1G5M4xO3fSBN/Iz7RhdS
+   HRM7NgrTX8rAxkLKKnw3f5nTHbr0EyiY5r+fGOg1K3TWBVzY8h7tLu/HJ
+   7oSRtcYHNOPkRP0zAq2g/Tw92WguJ2mdRv0d16+pZ1dJFFd5onYxmIT40
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="376212683"
+X-IronPort-AV: E=Sophos;i="6.01,176,1684825200"; 
+   d="scan'208";a="376212683"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 02:16:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="799499697"
+X-IronPort-AV: E=Sophos;i="6.01,176,1684825200"; 
+   d="scan'208";a="799499697"
+Received: from krchrist-mobl2.ger.corp.intel.com (HELO fedora..) ([10.249.254.184])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 02:16:25 -0700
+From:   =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>
+To:     intel-xe@lists.freedesktop.org
+Cc:     =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Danilo Krummrich <dakr@redhat.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Oak Zeng <oak.zeng@intel.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Francois Dugast <francois.dugast@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] Documentation/gpu: VM_BIND locking document
+Date:   Wed, 16 Aug 2023 11:15:47 +0200
+Message-ID: <20230816091547.2982-1-thomas.hellstrom@linux.intel.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Subject: Re: [PATCH] null_blk: fix poll request timeout handling
-Content-Language: en-US
-To:     David Howells <dhowells@redhat.com>
-Cc:     axboe@kernel.dk, kch@nvidia.com, damien.lemoal@opensource.wdc.com,
-        bvanassche@acm.org, nj.shetty@samsung.com, kbusch@kernel.org,
-        zhouchengming@bytedance.com, akinobu.mita@gmail.com,
-        shinichiro.kawasaki@wdc.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230815060443.660263-1-chengming.zhou@linux.dev>
- <23383.1692087575@warthog.procyon.org.uk>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <23383.1692087575@warthog.procyon.org.uk>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/15 16:19, David Howells wrote:
-> chengming.zhou@linux.dev wrote:
-> 
->> From: Chengming Zhou <zhouchengming@bytedance.com>
->>
->> When doing io_uring benchmark on /dev/nullb0, it's easy to crash the
->> kernel if poll requests timeout triggered, as reported by David. [1]
->>
->> BUG: kernel NULL pointer dereference, address: 0000000000000008
->> Workqueue: kblockd blk_mq_timeout_work
->> RIP: 0010:null_timeout_rq+0x4e/0x91
->> Call Trace:
->>  ? __die_body+0x1a/0x5c
->>  ? page_fault_oops+0x6f/0x9c
->>  ? kernelmode_fixup_or_oops+0xc6/0xd6
->>  ? __bad_area_nosemaphore+0x44/0x1eb
->>  ? exc_page_fault+0xe2/0xf4
->>  ? asm_exc_page_fault+0x22/0x30
->>  ? null_timeout_rq+0x4e/0x91
->>  blk_mq_handle_expired+0x31/0x4b
->>  bt_iter+0x68/0x84
->>  ? bt_tags_iter+0x81/0x81
->>  __sbitmap_for_each_set.constprop.0+0xb0/0xf2
->>  ? __blk_mq_complete_request_remote+0xf/0xf
->>  bt_for_each+0x46/0x64
->>  ? __blk_mq_complete_request_remote+0xf/0xf
->>  ? percpu_ref_get_many+0xc/0x2a
->>  blk_mq_queue_tag_busy_iter+0x14d/0x18e
->>  blk_mq_timeout_work+0x95/0x127
->>  process_one_work+0x185/0x263
->>  worker_thread+0x1b5/0x227
->>  ? rescuer_thread+0x287/0x287
->>  kthread+0xfa/0x102
->>  ? kthread_complete_and_exit+0x1b/0x1b
->>  ret_from_fork+0x22/0x30
->>
->> This is indeed a race problem between null_timeout_rq() and null_poll().
->>
->> null_poll()				null_timeout_rq()
->>   spin_lock(&nq->poll_lock)
->>   list_splice_init(&nq->poll_list, &list)
->>   spin_unlock(&nq->poll_lock)
->>
->>   while (!list_empty(&list))
->>     req = list_first_entry()
->>     list_del_init()
->>     ...
->>     blk_mq_add_to_batch()
->>     // req->rq_next = NULL
->> 					spin_lock(&nq->poll_lock)
->>
->> 					// rq->queuelist->next == NULL
->> 					list_del_init(&rq->queuelist)
->>
->> 					spin_unlock(&nq->poll_lock)
->>
->> What's worse is that we don't call blk_mq_complete_request_remote()
->> before blk_mq_add_to_batch(), so these completed requests have wrong
->> rq->state == MQ_RQ_IN_FLIGHT. We can easily check this using bpftrace:
->>
->> ```
->> bpftrace -e 'kretfunc:null_blk:null_poll {
->>   $iob=(struct io_comp_batch *)args->iob;
->>   @[$iob->req_list->state]=count();
->> }'
->>
->> @[1]: 51708
->> ```
->>
->> Fix these problems by setting requests state to MQ_RQ_COMPLETE under
->> nq->poll_lock protection, in which null_timeout_rq() can safely detect
->> this race and early return.
->>
->> [1] https://lore.kernel.org/all/3893581.1691785261@warthog.procyon.org.uk/
->>
->> Fixes: 0a593fbbc245 ("null_blk: poll queue support")
->> Reported-by: David Howells <dhowells@redhat.com>
->> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> 
-> Okay, the oops no longer seems to happen, so on that basis:
-> 
-> Tested-by: David Howells <dhowells@redhat.com>
-> 
+Add the first version of the VM_BIND locking document which is
+intended to be part of the xe driver upstreaming agreement.
 
-Yes, this patch just fixes the kernel oops when request timeout happened.
+The document describes and discuss the locking used during exec-
+functions, evicton and for userptr gpu-vmas. Intention is to be using the
+same nomenclature as the drm-vm-bind-async.rst.
 
-> 
-> However, running:
-> 
-> 	./fio/t/io_uring -n4 /dev/nullb0
-> 
-> and then interrupting it with ctrl-C after a while dumps a whole load of
-> messages into the dmesg log (excerpt attached).  It seems wrong that the user
-> should be able to generate a dump like this just by interrupting - but I guess
-> as it's null_blk it probably doesn't matter.
+v2:
+- s/gvm/gpu_vm/g (Rodrigo Vivi)
+- Clarify the userptr seqlock with a pointer to mm/mmu_notifier.c
+  (Rodrigo Vivi)
+- Adjust commit message accordingly.
+- Add SPDX license header.
 
-I can reproduce it, maybe an issue in io_uring. Although io_uring will reap
-all pending requests when task exit, it seems that it will block for some
-seconds before doing reap, so timeout happen. I'm not sure, just some guess ;-)
+Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Signed-off-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
+---
+ Documentation/gpu/drm-vm-bind-locking.rst | 351 ++++++++++++++++++++++
+ 1 file changed, 351 insertions(+)
+ create mode 100644 Documentation/gpu/drm-vm-bind-locking.rst
 
-Thanks.
+diff --git a/Documentation/gpu/drm-vm-bind-locking.rst b/Documentation/gpu/drm-vm-bind-locking.rst
+new file mode 100644
+index 000000000000..b813961a9ec2
+--- /dev/null
++++ b/Documentation/gpu/drm-vm-bind-locking.rst
+@@ -0,0 +1,351 @@
++.. SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++
++===============
++VM_BIND locking
++===============
++
++This document attempts to describe what's needed to get VM_BIND locking right,
++including the userptr mmu_notifier locking and it will also discuss some
++optimizations to get rid of the looping through of all userptr mappings and
++external / shared object mappings that is needed in the simplest
++implementation. It will also discuss some implications for faulting gpu_vms.
++
++Nomenclature
++============
++
++* ``Context``: GPU execution context.
++* ``gpu_vm``: Abstraction of a virtual GPU address space with
++  meta-data. Typically one per client (DRM file-private), or one per
++  context.
++* ``gpu_vma``: Abstraction of a GPU address range within a gpu_vm with
++  associated meta-data. The backing storage of a gpu_vma can either be
++  a gem buffer object or anonymous pages mapped also into the CPU
++  address space for the process.
++* ``userptr gpu_vma or just userptr``: A gpu_vma, the backing store of
++  which is anonymous pages as described above.
++* ``revalidating``: Revalidating a gpu_vma means making the latest version
++  of the backing store resident and making sure the gpu_vma's
++  page-table entries point to that backing store.
++* ``dma_fence``: A struct dma_fence that is similar to a struct completion
++  and which tracks GPU activity. When the GPU activity is finished,
++  the dma_fence signals.
++* ``dma_resv``: A struct dma_resv (AKA reservation object) that is used
++  to track GPU activity in the form of multiple dma_fences on a
++  gpu_vm or a gem buffer object. The dma_resv contains an array / list
++  of dma_fences and a lock that needs to be held when adding
++  additional dma_fences to the dma_resv. The lock is of a type that
++  allows deadlock-safe locking of multiple dma_resvs in arbitrary order.
++* ``exec function``: An exec function is a function that revalidates all
++  affected gpu_vmas, submits a GPU command batch and registers the
++  dma_fence representing the GPU command's activity with all affected
++  dma_resvs. For completeness, although not covered by this document,
++  it's worth mentioning that an exec function may also be the
++  revalidation worker that is used by some drivers in compute /
++  long-running mode.
++* ``local object``: A GEM object which is local to a gpu_vm. Shared gem
++  objects also share the gpu_vm's dma_resv.
++* ``shared object``: AKA external object: A GEM object which may be shared
++  by multiple gpu_vms and whose backing storage may be shared with
++  other drivers.
++
++
++Introducing the locks
++=====================
++
++One of the benefits of VM_BIND is that local GEM objects share the gpu_vm's
++dma_resv object and hence the dma_resv lock. So even with a huge
++number of local GEM objects, only one lock is needed to make the exec
++sequence atomic.
++
++The following locks and locking orders are used:
++
++* The ``gpu_vm->lock`` (optionally an rwsem). Protects how the gpu_vm is
++  partitioned into gpu_vmas, protects the gpu_vm's list of external objects,
++  and can also with some simplification protect the gpu_vm's list of
++  userptr gpu_vmas. With the CPU mm analogy this would correspond to the
++  mmap_lock.
++* The ``userptr_seqlock``. This lock is taken in read mode for each
++  userptr gpu_vma on the gpu_vm's userptr list, and in write mode during mmu
++  notifier invalidation. This is not a real seqlock but described in
++  ``mm/mmu_notifier.c` as a "Collision-retry read-side/write-side
++  'lock' a lot like a seqcount, however this allows multiple
++  write-sides to hold it at once...". The read side critical section
++  is enclosed by ``mmu_interval_read_begin() /
++  mmu_interval_read_retry()`` with ``mmu_interval_read_begin()``
++  sleeping uninterruptibly if the write side is held.
++  The write side is held by the core mm while calling mmu interval
++  invalidation notifiers.
++* The ``gpu_vm->resv`` lock. Protects the gpu_vm's list of gpu_vmas needing
++  rebinding, and also the residency of all the gpu_vm's local GEM object.
++* The ``gpu_vm->userptr_notifier_lock``. This is an rwsem that is taken in read
++  mode during exec and write mode during a mmu notifier invalidation. In
++  the absence of a separate page-table lock, this lock can serve
++  together with the gpu_vm's dma_resv lock as a page-table lock. More on
++  this below. The userptr notifier lock is per gpu_vm.
++* The ``gpu_vm->page_table_lock``. Protects the gpu_vm's page-table updates. For
++  simplicity the gpu_vm's dma_resv lock can be reused as page-table lock.
++
++There are certain optimizations described below that require
++additional locks. More on that later.
++
++.. code-block:: C
++
++   dma_resv_lock(&gpu_vm->resv);
++
++   for_each_gpu_vma_on_revalidate_list(gpu_vm, &gpu_vma) {
++		revalidate_gpu_vma(&gpu_vma);
++		remove_from_revalidate_list(&gpu_vma);
++   }
++
++   add_dependencies(&gpu_job, &gpu_vm->resv);
++   job_dma_fence = gpu_submit(&gpu_job));
++
++   add_dma_fence(job_dma_fence, &gpu_vm->resv);
++   dma_resv_unlock(&gpu_vm->resv);
++
++Eviction of one of these local objects will then be something like the
++following:
++
++.. code-block:: C
++
++   obj = get_object_from_lru();
++
++   dma_resv_lock(obj->resv);
++   for_each_gpu_vma_of_obj(obj, &gpu_vma);
++		put_gpu_vma_on_revalidate_list(&gpu_vma);
++
++   add_dependencies(&eviction_job, &obj->resv);
++   job_dma_fence = gpu_submit(&eviction_job);
++   add_dma_fence(&obj->resv, job_dma_fence);
++
++   dma_resv_unlock(&obj->resv);
++   put_object(obj);
++
++Note that since the object is local to the gpu_vm, it will share the gpu_vm's
++``dma_resv`` lock so that ``obj->resv == gpu_vm->resv``. Invalidated gpu_vmas are put
++on the gpu_vm's revalidation list, which is protected by ``gpu_vm->resv``, which
++is always locked while evicting, due to the above equality.
++
++For VM_BIND gpu_vms, gpu_vmas don't need to be unbound before eviction,
++Since the eviction blit or copy will wait for GPU idle, any attempt by
++the GPU to access freed memory through the gpu_vma will be preceded by
++a new exec function, which will make sure the gpu_vma is
++revalidated. The eviction code holding the object's dma_resv while
++revalidating will ensure a new exec function may not race with the eviction.
++
++Introducing external (or shared) buffer objects
++===============================================
++
++Since shared buffer objects may be shared by multiple gpu_vm's they
++can't share their reservation object with a single gpu_vm, but will rather
++have a reservation object of their own. The shared objects bound to a
++gpu_vm using one or many
++gpu_vmas are therefore typically put on a per-gpu_vm list which is
++protected by the gpu_vm lock. One could in theory protect it also with
++the ``gpu_vm->resv``, but since the list of dma_resvs to take is typically
++built before the ``gpu_vm->resv`` is locked due to a limitation in
++the current locking helpers, that is typically not done. Also see
++below for userptr gpu_vmas.
++
++At eviction time we now need to invalidate *all* gpu_vmas of a shared
++object, but we can no longer be certain that we hold the gpu_vm's
++dma_resv of all the object's gpu_vmas. We can only be certain that we
++hold the object's private dma_resv. We can trylock the dma_resvs for
++the affected gpu_vm's but that might be unnecessarily complex. If we
++have a ww_acquire context at hand at eviction time we can also perform
++sleeping locks of those dma_resvs but that could cause expensive
++rollbacks. One option is to just mark the invalidated gpu_vmas with a bool
++which is inspected on the next exec function, when the gpu_vm's
++dma_resv and the object's dma_resv is held, and the invalidated
++gpu_vmas could then be put on the gpu_vm's list of invalidated
++gpu_vmas. That bool would then, although being per-gpu_vma formally be
++protected by the object's dma_resv.
++
++The exec function would then look something like the following:
++
++.. code-block:: C
++
++   read_lock(&gpu_vm->lock);
++
++   dma_resv_lock(&gpu_vm->resv);
++
++   // Shared object list is protected by the gpu_vm->lock.
++   for_each_shared_obj(gpu_vm, &obj) {
++		dma_resv_lock(&obj->resv);
++		move_marked_gpu_vmas_to_revalidate_gpu_vma_list(obj, &gpu_vm);
++   }
++
++   for_each_gpu_vma_to_revalidate(gpu_vm, &gpu_vma) {
++		revalidate_gpu_vma(&gpu_vma);
++		remove_from_revalidate_list(&gpu_vma);
++   }
++
++   add_dependencies(&gpu_job, &gpu_vm->resv);
++   job_dma_fence = gpu_submit(&gpu_job));
++
++   add_dma_fence(job_dma_fence, &gpu_vm->resv);
++   for_each_shared_obj(gpu_vm, &obj)
++          add_dma_fence(job_dma_fence, &obj->resv);
++   dma_resv_unlock_all_resv_locks();
++
++   read_unlock(&gpu_vm->lock);
++
++And the corresponding shared-object aware eviction would look like:
++
++.. code-block:: C
++
++   obj = get_object_from_lru();
++
++   dma_resv_lock(obj->resv);
++   for_each_gpu_vma_of_obj(obj, &gpu_vma);
++		if (object_is_vm_local(obj))
++		             put_gpu_vma_on_revalidate_list(&gpu_vma, &gpu_vm);
++		else
++		             mark_gpu_vma_for_revalidation(&gpu_vma);
++
++   add_dependencies(&eviction_job, &obj->resv);
++   job_dma_fence = gpu_submit(&eviction_job);
++   add_dma_fence(&obj->resv, job_dma_fence);
++
++   dma_resv_unlock(&obj->resv);
++   put_object(obj);
++
++Yet another option is to put the gpu_vmas to be invalidated on a separate
++gpu_vm list protected by a lower level lock that can be taken both at eviction
++time and at transfer-to-revalidate list time. The details are not in
++this document, but this for reference implemented in the Intel xe
++driver.
++
++Introducing userptr gpu_vmas
++============================
++
++A userptr gpu_vma is a gpu_vma that, instead of mapping a buffer object to a
++GPU virtual address range, directly maps a CPU mm range of anonymous-
++or file page-cache pages.
++A very simple approach would be to just pin the pages using
++pin_user_pages() at bind time and unpin them at unbind time, but this
++creates a Denial-Of-Service vector since a single user-space process
++would be able to pin down all of system memory, which is not
++desirable. (For special use-cases and with proper accounting pinning might
++still be a desirable feature, though). What we need to do in the general case is
++to obtain a reference to the desired pages, make sure we are notified
++using a MMU notifier just before the CPU mm unmaps the pages, dirty
++them if they are not mapped read-only to the GPU, and then drop the reference.
++When we are notified by the MMU notifier that CPU mm is about to drop the
++pages, we need to stop GPU access to the pages,
++GPU page-table and make sure that before the next time the GPU tries to access
++whatever is now present in the CPU mm range, we unmap the old pages
++from the GPU page tables and repeat the process of obtaining new page
++references. Note that when the core mm decides to laundry pages, we get such
++an unmap MMU notification and can mark the pages dirty again before the
++next GPU access. We also get similar MMU notifications for NUMA accounting
++which the GPU driver doesn't really need to care about, but so far
++it's proven difficult to exclude certain notifications.
++
++Using a MMU notifier for device DMA (and other methods) is described in
++`this document
++<https://docs.kernel.org/core-api/pin_user_pages.html#case-3-mmu-notifier-registration-with-or-without-page-faulting-hardware>`_.
++
++Now the method of obtaining struct page references using
++get_user_pages() unfortunately can't be used under a dma_resv lock
++since that would violate the locking order of the dma_resv lock vs the
++mmap_lock that is grabbed when resolving a CPU pagefault. This means the gpu_vm's
++list of userptr gpu_vmas needs to be protected by an outer lock, and this
++is the first time we strictly need the gpu_vm->lock. While it was
++previously used also to protect the list of the gpu_vm's shared objects,
++we could in theory have used the gpu_vm->resv for that.
++
++The MMU interval seqlock for a userptr gpu_vma is used in the following
++way:
++
++.. code-block:: C
++
++   down_read(&gpu_vm->lock);
++
++   retry:
++
++   // Note: mmu_interval_read_begin() blocks until there is no
++   // invalidation notifier running anymore.
++   seq = mmu_interval_read_begin(&gpu_vma->userptr_interval);
++   if (seq != gpu_vma->saved_seq) {
++           obtain_new_page_pointers(&gpu_vma);
++	   dma_resv_lock(&gpu_vm->resv);
++	   put_gpu_vma_on_revalidate_list(&gpu_vma, &gpu_vm);
++	   dma_resv_unlock(&gpu_vm->resv);
++	   gpu_vma->saved_seq = seq;
++   }
++
++   // The usual revalidation goes here.
++
++   // Final userptr sequence validation may not happen before the
++   // submission dma_fence is added to the gpu_vm's resv, from the POW
++   // of the MMU invalidation notifier. Hence the
++   // userptr_notifier_lock that will make them appear atomic.
++
++   add_dependencies(&gpu_job, &gpu_vm->resv);
++   down_read(&gpu_vm->userptr_notifier_lock);
++   if (mmu_interval_read_retry(&gpu_vma->userptr_interval, gpu_vma->saved_seq)) {
++          up_read(&gpu_vm->userptr_notifier_lock);
++	  goto retry;
++   }
++
++   job_dma_fence = gpu_submit(&gpu_job));
++
++   add_dma_fence(job_dma_fence, &gpu_vm->resv);
++
++   for_each_shared_obj(gpu_vm, &obj)
++          add_dma_fence(job_dma_fence, &obj->resv);
++
++   dma_resv_unlock_all_resv_locks();
++   up_read(&gpu_vm->userptr_notifier_lock);
++   up_read(&gpu_vm->lock);
++
++The code between ``mmu_interval_read_begin()`` and the
++``mmu_interval_read_retry()`` marks the read side critical section of
++what we call the ``userptr_seqlock``. In reality the gpu_vm's userptr
++gpu_vma list is looped through, and the check is done for *all* of its
++userptr gpu_vmas, although we only show a single one here.
++
++The userptr gpu_vma MMU invalidation notifier might be called from
++reclaim context and, again to avoid locking order violations, we can't
++take any dma_resv lock nor the gpu_vm->lock from within it.
++
++.. code-block:: C
++
++  bool gpu_vma_userptr_invalidate(userptr_interval, cur_seq)
++  {
++          // Make sure the exec function either sees the new sequence
++	  // and backs off or we wait for the dma-fence:
++
++          down_write(&gpu_vm->userptr_notifier_lock);
++	  mmu_interval_set_seq(userptr_interval, cur_seq);
++	  up_write(&gpu_vm->userptr_notifier_lock);
++
++	  dma_resv_wait_timeout(&gpu_vm->resv, DMA_RESV_USAGE_BOOKKEEP,
++		                false, MAX_SCHEDULE_TIMEOUT);
++	  return true;
++  }
++
++When this invalidation notifier returns, the GPU can no longer be
++accessing the old pages of the userptr gpu_vma and needs to redo the page-binding
++before a new GPU submission can succeed.
++
++Optimizing gpu_vma iteration
++----------------------------
++
++Iterating through all of a gpu_vm's userptr gpu_vmas to check the validity
++on each exec function may be very costly. There is a scheme to avoid
++this and only iterate through the userptr gpu_vmas that actually saw an
++invalidation notifier call since the last exec. T
++
++TODO: describe that scheme here. It's implemented in the xe driver.
++
++Locking for page-table updates at bind- and unbind time
++=======================================================
++
++TODO.
++
++Recoverable page-fault implications
++===================================
++
++TODO.
+-- 
+2.41.0
 
-> 
-> David
-> ---
-> null_blk: rq 00000000bb2d3264 timed out
-> timeout error, dev nullb0, sector 328372624 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
-> null_blk: rq 00000000abcc1075 timed out
-> timeout error, dev nullb0, sector 378610072 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
-> null_blk: rq 00000000d4bdc71f timed out
-> timeout error, dev nullb0, sector 185005312 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
-> null_blk: rq 00000000f4ffddee timed out
-> timeout error, dev nullb0, sector 206118608 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
-> null_blk: rq 000000001e68b709 timed out
-> timeout error, dev nullb0, sector 310381160 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
-> null_blk: rq 00000000bfeafe97 timed out
-> timeout error, dev nullb0, sector 52036480 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
-> null_blk: rq 00000000aa67d21c timed out
-> timeout error, dev nullb0, sector 22746448 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
-> null_blk: rq 00000000faec1291 timed out
-> timeout error, dev nullb0, sector 391201440 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
-> null_blk: rq 00000000c634428c timed out
-> timeout error, dev nullb0, sector 237216136 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
-> null_blk: rq 0000000077f91a5d timed out
-> timeout error, dev nullb0, sector 453778912 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
-> null_blk: rq 000000003076467c timed out
-> null_blk: rq 000000009c172678 timed out
-> null_blk: rq 000000002df50b48 timed out
-> null_blk: rq 00000000e4c66900 timed out
-> null_blk: rq 0000000082606e31 timed out
-> null_blk: rq 00000000fe21ffdc timed out
-> null_blk: rq 000000005e5c5173 timed out
-> null_blk: rq 00000000b0a0d20c timed out
-> null_blk: rq 000000008c729e47 timed out
-> null_blk: rq 00000000970f75a0 timed out
-> null_blk: rq 000000002ad3c45a timed out
-> 
