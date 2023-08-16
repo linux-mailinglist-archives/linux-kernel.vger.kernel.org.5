@@ -2,120 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D260777EAC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 22:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B149777EACB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 22:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346166AbjHPUdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 16:33:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47522 "EHLO
+        id S1346161AbjHPUgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 16:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346247AbjHPUdJ (ORCPT
+        with ESMTP id S1346180AbjHPUgJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 16:33:09 -0400
-Received: from out02.mta.xmission.com (out02.mta.xmission.com [166.70.13.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B26126BB
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:33:04 -0700 (PDT)
-Received: from in02.mta.xmission.com ([166.70.13.52]:51116)
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1qWNCP-001osj-Ga; Wed, 16 Aug 2023 14:33:01 -0600
-Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:40368 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1qWNCO-00B6Ui-Ma; Wed, 16 Aug 2023 14:33:01 -0600
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     David Laight <David.Laight@ACULAB.COM>,
-        Petr Skocik <pskocik@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marco Elver <elver@google.com>,
+        Wed, 16 Aug 2023 16:36:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5B82708
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:35:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692218122;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8oUR7dATEA9GXbFeybfh8Kk00mHSoSorpZF1PcQEdPw=;
+        b=Ylb7Jmr1gVo0g34UKYEGlDpYpcQ28b6l2lfzs0sFrB4VTG4GV1nz/3NfM4U9ESrGID5rvU
+        fxw6A8pUUQlRYhkRpuQ4V5a+3KgottQsWEU03/bpTL6vOZ/nVlu2EBFQJo5904168cpBmz
+        WlFqspawVObBPI8sjPzqZRau6Nx1FT4=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-7-2T0FB_1HO5SCDKlfnSHo-Q-1; Wed, 16 Aug 2023 16:35:18 -0400
+X-MC-Unique: 2T0FB_1HO5SCDKlfnSHo-Q-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CC6C83C0F685;
+        Wed, 16 Aug 2023 20:35:17 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CF6EF492C14;
+        Wed, 16 Aug 2023 20:35:15 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAHk-=wjFrVp6srTBsMKV8LBjCEO0bRDYXm-KYrq7oRk0TGr6HA@mail.gmail.com>
+References: <CAHk-=wjFrVp6srTBsMKV8LBjCEO0bRDYXm-KYrq7oRk0TGr6HA@mail.gmail.com> <03730b50cebb4a349ad8667373bb8127@AcuMS.aculab.com> <20230816120741.534415-1-dhowells@redhat.com> <20230816120741.534415-3-dhowells@redhat.com> <608853.1692190847@warthog.procyon.org.uk> <3dabec5643b24534a1c1c51894798047@AcuMS.aculab.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dhowells@redhat.com, David Laight <David.Laight@aculab.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@list.de>,
+        Christian Brauner <christian@brauner.io>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20221122161240.137570-1-pskocik@gmail.com>
-        <202211220913.AF86992@keescook>
-        <d2d508b7-f267-0fe6-1b56-4292c95355a7@gmail.com>
-        <878rai7u0l.fsf@email.froward.int.ebiederm.org>
-        <336ae9be-c66c-d87f-61fe-b916e9f04ffc@gmail.com>
-        <87pm3t2rvl.fsf@email.froward.int.ebiederm.org>
-        <87jzu12pjh.fsf_-_@email.froward.int.ebiederm.org>
-        <20230814140652.GA30596@redhat.com> <20230814154351.GA4203@redhat.com>
-        <3b14ae8091e3403bbc4ef1bee6dcf4f6@AcuMS.aculab.com>
-        <20230815151149.GA29072@redhat.com>
-Date:   Wed, 16 Aug 2023 15:32:26 -0500
-In-Reply-To: <20230815151149.GA29072@redhat.com> (Oleg Nesterov's message of
-        "Tue, 15 Aug 2023 17:11:50 +0200")
-Message-ID: <87fs4ig23p.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+Subject: Re: [PATCH v3 2/2] iov_iter: Don't deal with iter->copy_mc in memcpy_from_iter_mc()
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1qWNCO-00B6Ui-Ma;;;mid=<87fs4ig23p.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX1/03hSznMFp9LtVGdXJGlIQ7ZUXkm5I7t0=
-X-SA-Exim-Connect-IP: 68.227.168.167
-X-SA-Exim-Mail-From: ebiederm@xmission.com
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <665723.1692218114.1@warthog.procyon.org.uk>
+Date:   Wed, 16 Aug 2023 21:35:14 +0100
+Message-ID: <665724.1692218114@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Virus: No
-X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Oleg Nesterov <oleg@redhat.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 221 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.8 (1.7%), b_tie_ro: 2.6 (1.2%), parse: 0.73
-        (0.3%), extract_message_metadata: 2.1 (0.9%), get_uri_detail_list:
-        0.56 (0.3%), tests_pri_-2000: 2.9 (1.3%), tests_pri_-1000: 1.99 (0.9%),
-         tests_pri_-950: 1.04 (0.5%), tests_pri_-900: 0.81 (0.4%),
-        tests_pri_-200: 0.72 (0.3%), tests_pri_-100: 2.5 (1.1%),
-        tests_pri_-90: 48 (21.8%), check_bayes: 47 (21.3%), b_tokenize: 4.0
-        (1.8%), b_tok_get_all: 6 (2.5%), b_comp_prob: 1.20 (0.5%),
-        b_tok_touch_all: 33 (15.1%), b_finish: 0.78 (0.4%), tests_pri_0: 143
-        (64.4%), check_dkim_signature: 0.39 (0.2%), check_dkim_adsp: 3.8
-        (1.7%), poll_dns_idle: 1.78 (0.8%), tests_pri_10: 1.66 (0.7%),
-        tests_pri_500: 6 (2.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] signal: Fix the error return of kill -1
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oleg Nesterov <oleg@redhat.com> writes:
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-> On 08/15, David Laight wrote:
->>
->> or maybe even:
->> 	} else {
->> 		struct task_struct * p;
->> 		int err;
->> 		ret = -ESRCH;
->>
->> 		for_each_process(p) {
->> 			if (task_pid_vnr(p) > 1 &&
->> 					!same_thread_group(p, current)) {
->> 				err = group_send_sig_info(sig, info, p,
->> 							  PIDTYPE_MAX);
->> 				if (ret)
->> 					ret = err;
->
-> Hmm, indeed ;)
->
-> and "err" can be declared inside the loop.
+> > What about ITER_BVEC_MC ??
+> 
+> That probably would be the best option. Just make it a proper
+> ITER_xyz, instead of an odd sub-case for one ITER (but set up in such
+> a way that it looks like it might happen for other ITER_xyz cases).
 
-We can't remove the success case, from my posted patch.
+I'm not sure that buys us anything.  It would then require every call to
+iov_iter_is_bvec()[*] to check for two values instead of one - including in
+iterate_and_advance() - and *still* we'd have to have the special-casing in
+_copy_from_iter() and copy_page_from_iter_atomic().
 
-A signal is considered as successfully delivered if at least
-one process receives it.
+The issue is that ITER_xyz changes the iteration function - but we don't
+actually want to do that; rather, we need to change the step function.
 
-That is something the current code for kill -1 actually gets
-wrong (but hides because it ignores -EPERM).
+David
 
-Otherwise yes I expect we can simplify the use of variables as
-suggested.
-
-Eric
+[*] There's a bunch of them outside of iov_iter.c.
 
