@@ -2,141 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67EEF77DC39
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E9977DC2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242952AbjHPI1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 04:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40876 "EHLO
+        id S242887AbjHPI0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 04:26:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242894AbjHPI1E (ORCPT
+        with ESMTP id S242585AbjHPI02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 04:27:04 -0400
-Received: from mx07-00376f01.pphosted.com (mx07-00376f01.pphosted.com [185.132.180.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A9C1FD0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 01:27:01 -0700 (PDT)
-Received: from pps.filterd (m0168889.ppops.net [127.0.0.1])
-        by mx07-00376f01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37G7djRc002497;
-        Wed, 16 Aug 2023 09:26:40 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :content-transfer-encoding:content-type:mime-version; s=
-        dk201812; bh=19ixKAhNl7+WOPUD0wln6v/uvI4+uMfDHBK/ikFaX84=; b=LpI
-        yvDEY3NBalSodgcotR40d/Sjg3wZ03V1bWgDTqK7GXw1+fbIBBB4fBZqPf5VbA/r
-        ismQJa+OB0HgbAvAGq9TtpTIqJekSB235T4DtrSBhR3ouqEaEVFBj1vF0WYV9Zlj
-        89cz3XWnIB/qDCo6hTLc7VFHGlggGrwtdN2twM575yBOz3rdGLjK5Q+rLWwHDAqp
-        1O1x37pktuVFqBjaZuH+5GzCHFxsxAtf003cdZCO1lEmDeBX/4ShZVJ5HH7Pd0wT
-        Me6tWwv8/GAEdFADs6xiMWZpUHqFkrPY4pX8Lxhb4Y5mWA+XLej8tnCUPaGgPqma
-        IzPj/tLKUQfOfkgN6Cw==
-Received: from hhmail05.hh.imgtec.org ([217.156.249.195])
-        by mx07-00376f01.pphosted.com (PPS) with ESMTPS id 3se25ttutw-8
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 16 Aug 2023 09:26:40 +0100 (BST)
-Received: from HHMAIL05.hh.imgtec.org (10.100.10.120) by
- HHMAIL05.hh.imgtec.org (10.100.10.120) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 16 Aug 2023 09:26:30 +0100
-Received: from GBR01-LO4-obe.outbound.protection.outlook.com (104.47.85.112)
- by email.imgtec.com (10.100.10.121) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Wed, 16 Aug 2023 09:26:30 +0100
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FFulrcLZuurmx/LB3ReyQP9oJ/QtdDK2wh9Aw5K4FhbFny9PIEtK3NrQ9ZR+i0ZegaY6oYFaj7GIwraQZkVBiRRFphd764XUG4z7Z1Ug+WYCSCt9iB4foDgGWZ1FCDJCITRn71sUT5BwAMhQoNp69oPnUIOWUiYwRWGThEJqhBBPhSyYK5l3E8b3J0mLnpXgvtP8b582SHGmJGyl0DxwK0sEXlpbxcecpVfZL3T+FsBc5dQFCqtamkUpOWduqKFwCCFuqU2ErOPHNDC4W56Wbo9PfcfsAlBDtzXHHrIi9K37ThWWFU++ZlhzipmbZfKlsVExSUqee5S5RTC/P6AB4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=19ixKAhNl7+WOPUD0wln6v/uvI4+uMfDHBK/ikFaX84=;
- b=Us60y22JE3NEBaxVORYNba+jUd5TG+jzu2GzLibjC4WenJRY15Al/9rTW6SGApkE3gl6Srg9Rw4vYzEQhWKicrCwAcSKmaxgzJfxOmPZnJwSzikbDtmTUwgFIcc4rKCQeBNVW7/tytKl2njsFg8XkfH2ZD1pvK3VwaX2m+pipf89I1nui35bV6vQ6oywJ+W1fbSL3qt6iiyqmcBt/p2f5NJ5/IqE7QxzSwrjRW0VPnl0bVfailsU17VJ3l5zuoSMqvsYqISjSo5KbW6fl19gHSzWTExFIe8G65+E3gNJQXnO95guZJtHTF/TpbFFQ+rNO3u8nuUzc10+AqzIMXA/QA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
- dkim=pass header.d=imgtec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=19ixKAhNl7+WOPUD0wln6v/uvI4+uMfDHBK/ikFaX84=;
- b=biYw29He0/vDS2MK+DT2HgDQKuLKnJ4NV8OKcqc1U4ZEyRlK1D8Czg3JaWOY9nyBg4mS9mvW4SCfil1MazJ8c8iTME36q+nGXaydO4zUm6IZMLIeywt5NCiOCN6+ta6tt26Ba4A8vSsVgsjcm7KN1EeVY56MLvW0aqJFi71MjPU=
-Received: from CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:170::9)
- by LNXP265MB2491.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:130::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.29; Wed, 16 Aug
- 2023 08:26:28 +0000
-Received: from CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
- ([fe80::ee4f:2d71:fe8a:ffdf]) by CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
- ([fe80::ee4f:2d71:fe8a:ffdf%7]) with mapi id 15.20.6678.022; Wed, 16 Aug 2023
- 08:26:28 +0000
-From:   Sarah Walker <sarah.walker@imgtec.com>
-To:     <dri-devel@lists.freedesktop.org>
-CC:     <frank.binns@imgtec.com>, <donald.robson@imgtec.com>,
-        <boris.brezillon@collabora.com>, <faith.ekstrand@collabora.com>,
-        <airlied@gmail.com>, <daniel@ffwll.ch>,
-        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-        <tzimmermann@suse.de>, <afd@ti.com>, <hns@goldelico.com>,
-        <matthew.brost@intel.com>, <christian.koenig@amd.com>,
-        <luben.tuikov@amd.com>, <dakr@redhat.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 17/17] arm64: dts: ti: k3-am62-main: Add GPU device node [DO NOT MERGE]
-Date:   Wed, 16 Aug 2023 09:25:32 +0100
-Message-Id: <20230816082531.164695-18-sarah.walker@imgtec.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230816082531.164695-1-sarah.walker@imgtec.com>
-References: <20230816082531.164695-1-sarah.walker@imgtec.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: LO3P265CA0023.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:387::10) To CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:400:170::9)
+        Wed, 16 Aug 2023 04:26:28 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8858D1990;
+        Wed, 16 Aug 2023 01:26:27 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 08:26:25 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1692174386;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D5Uo85dlChXiK1e7VOp+AQdIs8SHZzORk/Gf/7Po0gY=;
+        b=vvzkT8cZIWvKKpoafhrHBB0EvECJqCy3HOtNKtHHGa5gtwOofoBYVJHrDjs+G2aQJWA5cs
+        crX7U0GbrrKCtzflf2hYwqaR/VdK6jDHF7P1oLEoZUSD+l3IlSv6MReEOdwuYC4VXKZY8v
+        Q//9heXPlibT9N5Mlhx9aqNHVL47QSjyMtofRDObBu5tCPwnVTvymDZg2zFvptlSIZkq4Q
+        qlbBCBfpFXZo+EIvkjSzTIbgJTCv/RH19OOVS7dCfHeuCDjVm0RhfExIZoUkrWCod3JgFt
+        Vx9eEXSrzn2d9pm/vyjYXHBfoAhMM0hlNx/ATRR3zbvi+GsNKt0QlWUAuEj6jQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1692174386;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D5Uo85dlChXiK1e7VOp+AQdIs8SHZzORk/Gf/7Po0gY=;
+        b=KQeEmaEtXMLBxbkGf+kVuX1J/ONMEeazGLNhs+5NRyY1nUdZI0Ve9IjXibDf7VcgLM/PZi
+        rkXM9RNBPrArUnCg==
+From:   "tip-bot2 for Alexey Kardashevskiy" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/sev] x86/sev: Do not handle #VC for DR7 read/write
+Cc:     Alexey Kardashevskiy <aik@amd.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>,
+        Carlos Bilbao <carlos.bilbao@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Pankaj Gupta <pankaj.gupta@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230816022122.981998-1-aik@amd.com>
+References: <20230816022122.981998-1-aik@amd.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CWLP265MB4817:EE_|LNXP265MB2491:EE_
-X-MS-Office365-Filtering-Correlation-Id: eda277a0-8a1f-49f1-42b4-08db9e327ca3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: e/bYRM+0Psu4V24+xIEKmInu2NR95hlwOReEuxNUDdaZs5qHvGC+Q2F9GtKKHrbMH6qKHeWsKOMbcwsxeY71c37BEnQMNUlgS9AGEGj7KJrk/DwcNTn0wygthLykduk9KH/slAG7JpJkujvksbCMZ+YvGUQhfnrxy0QacUe4drLYCh9GUkjwzFbEbZoRl2hsojvGsexsHZMcpDdgrWb9s2F93MUjfsqMkMZW5i1QLx9qbIyfbv8Flio78N9uUN1h6PGd+G/GpffYPdU9mPLWINxqPFX4sWzVafo6coCH88BCjSGkNuiRJo3/HWVbCwd+OKhRzgY69pq6E9WI8ttRkAAKDLjiYqn+UQTvGzEPZsRlGgjy5cEyl6mQYBV10DMG2I6G4sWPlguMWZL1fXbkV/Gx/nAYT+rv1T86ewY2wegLLyruvcym5Mv5Yo0vMolQppUjuBXm61GXkTGVNIpGl5aMFr/f25iED8xdTB9sOnwvQFLBqHGo6dleaO2gmIRbqRLm1SmAlm+fRPLguklMVrw9qrZ/63uZS0h1hXpO278cGFJJ2akMZyEfxo1V3X7/s/Zu/dbvx4IBbzsMwAsqNZXTTDv/bJcKIrtcXI4aIAYGUO+PlOT5JI3uxtGK03UF
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(396003)(39850400004)(346002)(136003)(1800799009)(451199024)(186009)(6666004)(66476007)(66556008)(66946007)(6512007)(6486002)(6506007)(4744005)(2906002)(478600001)(1076003)(26005)(6916009)(7416002)(5660300002)(2616005)(83380400001)(41300700001)(316002)(44832011)(52116002)(8936002)(4326008)(8676002)(38350700002)(38100700002)(36756003)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?G35JdvDxC1RqpErl4dK+QqW5JXhmUfbtxFgXGsuOMzaeoc8IqQtY51uaCmWB?=
- =?us-ascii?Q?KYRVpRmhbxDBm59rcmE0HpLWF1Sn8r5RHuszUiBtR6kFb2DEDT9exaN7QE/4?=
- =?us-ascii?Q?0uwQ2D1SNYOXWrLI5eKCtpN5TBmLPyswMxH5xn1RXfNUfVbefHhyW4APEG0p?=
- =?us-ascii?Q?YmwN/2HstvJamHURs5cTtj7Upbtomin2LRUNvnLW9hW8bd9BjwuG9E+SVXLM?=
- =?us-ascii?Q?8cErKu3RFvPhfI0YiNoGVqGuYP3DxdUVxXy8bWdHtwGoZYbbOQ8H9sMQqzzC?=
- =?us-ascii?Q?/J93b5vLR4Ncpw7Q1JxChYkN5X1qEdjGQdyF+U3W5I/QuKFbjoNQG8niiiqD?=
- =?us-ascii?Q?qP24KtNLeVMA3x+Nz+LFxXipIW30A7tBZjawYtAgsa4JPDQOUZYUDrg+rOkG?=
- =?us-ascii?Q?bh1/KmcVv0AUQyvf/XnDSB7VLF3rkwnfNsDSbWLXFgPwh6/NSRonSIxkZMqI?=
- =?us-ascii?Q?02IKQ7AWZ6NmQp2aVULwU3W4NwduVDqJFkZvbmK58ioe/cIoJQ/a5lElLyYs?=
- =?us-ascii?Q?F/8RC8p1vptYmA1g4AzW1AYl4z3XdUp26IrIud34+ntnViY7Ma0h0JzNSnGM?=
- =?us-ascii?Q?M0cK29f8iekXCr5AQUGcIfneuX1/Ol5DqioR87Ci5ybO8JA9/nlGHR0i4GPA?=
- =?us-ascii?Q?XoKRYkAjugdxL0e8pakgItvIcQwR+7LWznu8G6xppVez1a0yEN2Y7HxhpGXL?=
- =?us-ascii?Q?h65r7QxnpZr8yisUkzqBY/QNiUoJ/IB1wCaWfK31TwGfWFy2vTWtHfcPJ5FW?=
- =?us-ascii?Q?HcHU7vdtiUHGWhNM0Rf0EoXgtdd7WqL1G+eI5plESxGdaubhK+qMQf1T+51L?=
- =?us-ascii?Q?2whkhIvhn3MiL+mMdOsDlq2/hP4uzqWb+42+tWjM/nvyul2NGANZZA+IQ+h3?=
- =?us-ascii?Q?e/mYc9R9Yg2VkWOHqqXeM3FgXNnG1QiDf8TXGPodiG4V/oU1PS///xZDvYpN?=
- =?us-ascii?Q?LiDVtZ9hynAOzsAg1A6hD/ZSRMzqmfh+cAq9fKF8CYF3dh0yh1AZCBTnwq6t?=
- =?us-ascii?Q?77b2WdPTcCS5yWMb/41wbAhxXEN09sDkpC5uT6Nm/BMT2ysF8mv3YkOMp5Eh?=
- =?us-ascii?Q?wYS3yo8B9cUZW7yyWshHa7l64zCSywTpPlGhvaIginZp57HMOth+JB/eiOlC?=
- =?us-ascii?Q?jmPyzmJRE6qToZcyLT5QIL0hJyzIbjIpzBlfcRvZm7rJkZBwHPZtDRxk4yEA?=
- =?us-ascii?Q?P7NjpbV26eosGuhb+neDvmFMO/p2B87FiDLI0Ld70HGYmNf7bRO09/YjPBbp?=
- =?us-ascii?Q?Vq30ZFC1ELsXGGzD+RKuFvm+8LsS+JjhUx4+8e62vYDrnvXuZMzXW6z5lwj+?=
- =?us-ascii?Q?R8ZNXnIEbV1r+wzQUYVPgqUy3OjSl4oKzZ6U2ywpu5Esk13VoIJ7eEhI6YlA?=
- =?us-ascii?Q?4I31gR2oGmKMHsiu5+EmL4taITIBbOWReD1rg4lnVsnSAb/8tQeHaVpCBiz3?=
- =?us-ascii?Q?p9AVuiiRhTNxY1HR+lld43NTtOivDmZ/i/kwgALW6cID9bzY5Jp2ZYVVMsMK?=
- =?us-ascii?Q?SYcqF3ResvlRGQ9ciTdeT6LySHFFNGwnB5zbd99lBsLOeSxNcqxBQVed6vof?=
- =?us-ascii?Q?oDbwt0ogKiiPfLYZvIPkHBEZe+2rqBk27g7phlw3ss9Th4VLVEzsxkx6NSxS?=
- =?us-ascii?Q?4w=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: eda277a0-8a1f-49f1-42b4-08db9e327ca3
-X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 08:26:28.0758
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vJMmZndo07aegubgiwX9EYiAneSD9PlQbgtYgwEm3SDjrVdvZiAEKQCWlxB+l00rd/XfSS3/Lf0aWDlRP8CzmQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LNXP265MB2491
-X-OriginatorOrg: imgtec.com
-X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
-X-Proofpoint-ORIG-GUID: 47LhXC64DeIFMvTxJuBGnEq0L8IqHiZy
-X-Proofpoint-GUID: 47LhXC64DeIFMvTxJuBGnEq0L8IqHiZy
+Message-ID: <169217438542.27769.5398729789133595994.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -147,36 +68,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the Series AXE GPU node to the AM62 device tree.
+The following commit has been merged into the x86/sev branch of tip:
 
-Changes since v4:
-- Remove interrupt name
-- Make property order consistent across dts and bindings doc
-- Fixed formatting (replaced spaces with tabs)
+Commit-ID:     e221804dad4e6fe3a0cf192ba3c42cd2f328bdac
+Gitweb:        https://git.kernel.org/tip/e221804dad4e6fe3a0cf192ba3c42cd2f328bdac
+Author:        Alexey Kardashevskiy <aik@amd.com>
+AuthorDate:    Wed, 16 Aug 2023 12:21:22 +10:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Wed, 16 Aug 2023 10:13:42 +02:00
 
-Signed-off-by: Sarah Walker <sarah.walker@imgtec.com>
+x86/sev: Do not handle #VC for DR7 read/write
+
+With MSR_AMD64_SEV_DEBUG_SWAP enabled, the guest is not expected to
+receive a #VC for reads or writes of DR7.
+
+Update the SNP_FEATURES_PRESENT mask with MSR_AMD64_SNP_DEBUG_SWAP so
+an SNP guest doesn't gracefully terminate during SNP feature negotiation
+if MSR_AMD64_SEV_DEBUG_SWAP is enabled.
+
+Since a guest is not expected to receive a #VC on DR7 accesses when
+MSR_AMD64_SEV_DEBUG_SWAP is enabled, return an error from the #VC
+handler in this situation.
+
+Signed-off-by: Alexey Kardashevskiy <aik@amd.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Reviewed-by: Carlos Bilbao <carlos.bilbao@amd.com>
+Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+Reviewed-by: Pankaj Gupta <pankaj.gupta@amd.com>
+Link: https://lore.kernel.org/r/20230816022122.981998-1-aik@amd.com
 ---
- arch/arm64/boot/dts/ti/k3-am62-main.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ arch/x86/boot/compressed/sev.c | 2 +-
+ arch/x86/kernel/sev.c          | 6 ++++++
+ 2 files changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-index 2488e3a537fe..b55bb3d0556e 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-@@ -913,4 +913,13 @@ mcasp2: audio-controller@2b20000 {
- 		power-domains = <&k3_pds 192 TI_SCI_PD_EXCLUSIVE>;
- 		status = "disabled";
- 	};
+diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
+index c3e343b..e83e710 100644
+--- a/arch/x86/boot/compressed/sev.c
++++ b/arch/x86/boot/compressed/sev.c
+@@ -365,7 +365,7 @@ static void enforce_vmpl0(void)
+  * by the guest kernel. As and when a new feature is implemented in the
+  * guest kernel, a corresponding bit should be added to the mask.
+  */
+-#define SNP_FEATURES_PRESENT (0)
++#define SNP_FEATURES_PRESENT	MSR_AMD64_SNP_DEBUG_SWAP
+ 
+ void snp_check_features(void)
+ {
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index 1ee7bed..d380c93 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -1575,6 +1575,9 @@ static enum es_result vc_handle_dr7_write(struct ghcb *ghcb,
+ 	long val, *reg = vc_insn_get_rm(ctxt);
+ 	enum es_result ret;
+ 
++	if (sev_status & MSR_AMD64_SNP_DEBUG_SWAP)
++		return ES_VMM_ERROR;
 +
-+	gpu: gpu@fd00000 {
-+		compatible = "ti,am62-gpu", "img,powervr-seriesaxe";
-+		reg = <0x00 0x0fd00000 0x00 0x20000>;
-+		clocks = <&k3_clks 187 0>;
-+		clock-names = "core";
-+		interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
-+		power-domains = <&k3_pds 187 TI_SCI_PD_EXCLUSIVE>;
-+	};
- };
--- 
-2.41.0
-
+ 	if (!reg)
+ 		return ES_DECODE_FAILED;
+ 
+@@ -1612,6 +1615,9 @@ static enum es_result vc_handle_dr7_read(struct ghcb *ghcb,
+ 	struct sev_es_runtime_data *data = this_cpu_read(runtime_data);
+ 	long *reg = vc_insn_get_rm(ctxt);
+ 
++	if (sev_status & MSR_AMD64_SNP_DEBUG_SWAP)
++		return ES_VMM_ERROR;
++
+ 	if (!reg)
+ 		return ES_DECODE_FAILED;
+ 
