@@ -2,86 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AEA477DB3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 09:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8102D77DB45
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 09:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242456AbjHPHjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 03:39:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37798 "EHLO
+        id S242471AbjHPHjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 03:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242440AbjHPHis (ORCPT
+        with ESMTP id S242470AbjHPHjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 03:38:48 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ACFF10FF
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 00:38:47 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2AE8940E0145;
-        Wed, 16 Aug 2023 07:38:45 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 2ArqFugcEgMk; Wed, 16 Aug 2023 07:38:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1692171522; bh=vL5+kIWXkEVH6CBWgwYCFaNCsnJM5VBQ3ljb61UVHRc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RB1HWHZa1JVnfhxLRujVku1OvBO3x5WnHvDSSt50QazZ4wPDXb58QISP5dfp0ZCFS
-         JkdhhMW/UYIBj9xsLlonzNybhnR52Q7A3gX+c1IKJjnf6JZBaBcijqdNQ+KUc39NTi
-         1kbXdzh38qYxqn3cwRv6wVtWP9e/ZUt6CRwYyKJ0b8bQkHTD+dKuBuPSGg/15++IzQ
-         rTO+eeRRI1RaZka6CkGsDZaHRXMCZO/7gHU1QgOyvJ4JDUw8MPf1ky9dMppY12dzqw
-         54TI0M0TYjOPp8V5590V68WYr3uMbbqiC9XMBRkcfvu6hdNkOeY/FnhT8RfE2ooV/a
-         Ee2aUivn8K+8L9FrbOGz++X87KjIlT/2xoCndY4ctfbBN97mlHdXGaw7cqWBjNn721
-         g0GcSVrYRq8oB5H83w9LzHiYiAYtx/i0iE041vriLsN0lY92g7pOApc5w9HLZdxOT5
-         4/h96d1ctyyMhWlx/TAcQg5tfRwF2nMFxnnWDKTWv77fGO0DVQTSm5Qoir7nlJQ9uY
-         O7Y/0KmHFFlwpnba8kEnBVsc6Qpoezvo46jbUZzPFQzzmSNkzrNp6eG+l7MuWt0PK+
-         KiugJiAmd5XtACH3AZSasfcttR/tMmQ66LjUHSbB0Q15FAuJhsBFdlACjKt6y7q1r6
-         aiyP8pu2OXv1ody7oSwcc6h4=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        Wed, 16 Aug 2023 03:39:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE9110FF;
+        Wed, 16 Aug 2023 00:39:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8E8E840E0196;
-        Wed, 16 Aug 2023 07:38:33 +0000 (UTC)
-Date:   Wed, 16 Aug 2023 09:38:28 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
-        Andrew.Cooper3@citrix.com, jpoimboe@kernel.org,
-        gregkh@linuxfoundation.org, nik.borisov@suse.com
-Subject: Re: [PATCH v2 05/11] x86/cpu: Clean up SRSO return thunk mess
-Message-ID: <20230816073828.GAZNx89HT8mYCOxvV1@fat_crate.local>
-References: <20230814114426.057251214@infradead.org>
- <20230814121148.842775684@infradead.org>
- <20230815212931.GA3863294@dev-arch.thelio-3990X>
- <20230815224348.GE971582@hirez.programming.kicks-ass.net>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2B83D62DBA;
+        Wed, 16 Aug 2023 07:39:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F71EC433C8;
+        Wed, 16 Aug 2023 07:39:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692171556;
+        bh=/riLcTIr82d0TsMzt8Qndom9rYRqAJfK7qtF6pzxk9I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XL5N5MReFrUVSXJi3ai0bu/+Qiuo7A8gZIuvSahgwnBPHvOTR8p76eDbfy6fesN96
+         6Ltf/NFV4XfJ2le4WsgbEsXciordf+x7AnMD3SIdlcHHNfd6/UwSqHrHSZgjmRZjPx
+         85RO82tQ8BWL86lI090A9W43lG49vzqL93v3sVTFYlhPK0MYBYEK8rLw9MfPUNwIK1
+         Qq0Mw6QVpBQ0KcOCh7JJXItFDgJvdG4azZg16ed0rEzL36VqLOA5gc5SFOopMOX2fs
+         5FUjHAePtPPgTWO7LSFIGjme5hj8copwUwaoZEpW4gtqib6HI93WKm5MaecNSUvstf
+         A5PZdV7EGUXsA==
+Date:   Wed, 16 Aug 2023 09:39:14 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Greg KH <greg@kroah.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the driver-core tree
+Message-ID: <wc5qj6vs6ij3lzucweifimxjhxfuagm7neixm3qian6hqufqqy@kfa67cvi2g3n>
+References: <20230815172454.138a386b@canb.auug.org.au>
+ <2023081546-unpaved-important-3d18@gregkh>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ksno2ipmtsqylt7v"
 Content-Disposition: inline
-In-Reply-To: <20230815224348.GE971582@hirez.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <2023081546-unpaved-important-3d18@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 12:43:48AM +0200, Peter Zijlstra wrote:
-> Yeah, Boris and me fixed that yesterday evening or so. I'm not sure
-> I still have the diffs, but Boris should have them all somewhere.
 
-Even better - all the urgent fixes I've accumulated so far are coming up
-in tip's x86/urgent.  I'd appreciate people testing it.
+--ksno2ipmtsqylt7v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thx.
+Hi Greg
 
--- 
-Regards/Gruss,
-    Boris.
+On Tue, Aug 15, 2023 at 05:21:35PM +0200, Greg KH wrote:
+> On Tue, Aug 15, 2023 at 05:24:54PM +1000, Stephen Rothwell wrote:
+> > Hi all,
+> >=20
+> > After merging the driver-core tree, today's linux-next build (x86_64
+> > allmodconfig) failed like this:
+> >=20
+> > ERROR: modpost: missing MODULE_LICENSE() in drivers/base/test/root-devi=
+ce-test.o
+> > ERROR: modpost: missing MODULE_LICENSE() in drivers/base/test/platform-=
+device-test.o
+> >=20
+> > Caused by commits
+> >=20
+> >   06188bc80ccb ("drivers: base: Add basic devm tests for root devices")
+> >   b4cc44301b9d ("drivers: base: Add basic devm tests for platform devic=
+es")
+> >=20
+> > I have used the driver-core tree from next-20230809 for today.
+>=20
+> Ick, obviously no one tested these somehow :(
 
-https://people.kernel.org/tglx/notes-about-netiquette
+kunit compiles those tests builtin by default
+
+> Maxime, can you send me a fix, or I can just revert the changes for now
+> and wait for a new series?
+
+I just sent fixes
+
+Maxime
+
+--ksno2ipmtsqylt7v
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZNx9IQAKCRDj7w1vZxhR
+xUw/AQDs2AuheVnJgCuujrb4UWbehNy6N+kl3QiNF+OE/qKE4QD/QW+lXIbQJFSI
+JoirQKtLaMBhNwXmLrCXXkZ9peu5OAU=
+=q2Kz
+-----END PGP SIGNATURE-----
+
+--ksno2ipmtsqylt7v--
