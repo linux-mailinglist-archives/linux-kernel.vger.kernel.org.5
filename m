@@ -2,141 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5219377E988
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E001A77E991
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345764AbjHPTUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 15:20:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37294 "EHLO
+        id S1345774AbjHPTVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 15:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345827AbjHPTUg (ORCPT
+        with ESMTP id S1345822AbjHPTVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 15:20:36 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B643B270D;
-        Wed, 16 Aug 2023 12:20:35 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-5650ef42f6dso4292618a12.0;
-        Wed, 16 Aug 2023 12:20:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692213635; x=1692818435;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=j8KexCVPN58oQfCMNw6Q77uo6Q5lWvRmRjYDYyBoPEU=;
-        b=TbgGV6W+n5Cl2TBu50xpf/gq4v1qLtSv1skCnXG/Ez2El0jaVyMCUmbPIW4ctaGsHK
-         PXg6n80jCJyEVj3uN+ZVgBBxjdH3bTSK4b2tjBdbKvvU1DSveJ60mrJlxJekJ+W41SvI
-         bxDTJQ3zDe3xfskDnL+6I1jr2Z6yffTXE5VQ7HRPAy94Dqje30C5ZF0ky+X6CZom6pnX
-         Cg5xyxah78qxN7POHQuEQRrVZvTnn7TfAwZfucMjhODDfuyfwvaowPmI//XilyALbg8x
-         Ekmt7G2zfTUSt9mGba+P/AjXt55CY41ZKpdtDRsmTUGBoBn56kufK8ppwNhZUsjQdxf4
-         MChg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692213635; x=1692818435;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=j8KexCVPN58oQfCMNw6Q77uo6Q5lWvRmRjYDYyBoPEU=;
-        b=XoatsicUxz1cYrTvCLKOeBKyce6l+onllyqnPGhZJ+msSk9BuupVVURgAJCG1/tLQO
-         7rw1Cx+W3P0Pnn4IHfcRpiWWPjqxoImoBXjXbrwu/Uvmv5+2q0FqgDJCVysoExnR9Ifk
-         +y9QzmyJDaFLBOEbTV7PUGjOSWZ0w16ZhbmswHmYeiqeWZ4Pu1MX31Cm1eRd9X1ezp/0
-         VC38ir5fHuBCCMGC7bDfZ1MIgnk9aCo+Z0+0y2jrNsH+I49WCA+nNY919AR73dR9v+OB
-         pNd9dLM1kG8xQOJ7N5kj8BQLHk4wMEz2VV2KATaGU0TC4Vo++CaPyN0TDZECe/grVBzH
-         FXmQ==
-X-Gm-Message-State: AOJu0YzQlmWDRnXl8NCHqiFN6O3saDnr0SmwHzSdiAway6/G8/7R+53R
-        1DzFiq+s+mPYJ7ujhvEdvwA=
-X-Google-Smtp-Source: AGHT+IEML5RCzWxUXjFy4wo2ClKMUOuaMXg1QLrP0lyCB0iK9aIt7g8uyWHUU5SQoe3qy4tBa9ilNA==
-X-Received: by 2002:a17:90b:50b:b0:268:2127:6cb6 with SMTP id r11-20020a17090b050b00b0026821276cb6mr2188704pjz.16.1692213635033;
-        Wed, 16 Aug 2023 12:20:35 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:93bd])
-        by smtp.gmail.com with ESMTPSA id b19-20020a17090ae39300b002682523653asm85605pjz.49.2023.08.16.12.20.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 12:20:34 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 16 Aug 2023 09:20:32 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Vishal Chourasia <vishalc@linux.ibm.com>
-Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        joshdon@google.com, brho@google.com, pjt@google.com,
-        derkling@google.com, haoluo@google.com, dvernet@meta.com,
-        dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@meta.com, Andrea Righi <andrea.righi@canonical.com>
-Subject: Re: [PATCH 12/34] sched_ext: Implement BPF extensible scheduler class
-Message-ID: <ZN0hgFJcnJiyKJjJ@slm.duckdns.org>
-References: <20230711011412.100319-1-tj@kernel.org>
- <20230711011412.100319-13-tj@kernel.org>
- <ZNy256C0DqfpSMz5@li-05afa54c-330e-11b2-a85c-e3f3aa0db1e9.ibm.com>
+        Wed, 16 Aug 2023 15:21:32 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 566ED2712;
+        Wed, 16 Aug 2023 12:21:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=WOFR2dyMXGgZOwEoo4r/Gt4dkAbaIPtVpYgYz2QKgAs=; b=T+BrsXdRCiFOaTl9HYTjeC7onn
+        55EMZM5LqF/qaKh15MGH9e44CrEHqARQgmpTMamSyBJe3tj1CGoNNudd/uSabZNEK1j3ugm3P7lfl
+        0861tlANnwZNgkt2D3XOowEKW5KYCykbb1M8ZYQiyR4Wc3ytyW8JtnpR/S8+IfA9ZMnJzzhMzEzKl
+        yGSJDJDGw35X6l+0C8VdOmAx2puHY3bZXq6g3SGijsKVX1/UjLF+Acba6JayZSqqT5Q+AlOAklepI
+        XajZjtLEZKsl0TvrIwUcld9jtcRNvCYaV0LYS3QEAbW2H0SYne/RCOpD7cqzbdavuK21q0KfUtunO
+        GAfne/HA==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qWM58-004sgL-1j;
+        Wed, 16 Aug 2023 19:21:26 +0000
+Message-ID: <5c8f7140-2121-2468-9b3f-aa8191b3e63c@infradead.org>
+Date:   Wed, 16 Aug 2023 12:21:25 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZNy256C0DqfpSMz5@li-05afa54c-330e-11b2-a85c-e3f3aa0db1e9.ibm.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 2/2] media: ivsc: Add ACPI dependency
+Content-Language: en-US
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-media@vger.kernel.org
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-next@vger.kernel.org, Wentong Wu <wentong.wu@intel.com>,
+        Zhifeng Wang <zhifeng.wang@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20230816133526.3859456-1-sakari.ailus@linux.intel.com>
+ <20230816133526.3859456-3-sakari.ailus@linux.intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230816133526.3859456-3-sakari.ailus@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Vishal.
 
-On Wed, Aug 16, 2023 at 05:15:43PM +0530, Vishal Chourasia wrote:
-> > +static inline bool task_on_scx(struct task_struct *p)
-> > +{
-> > +	return scx_enabled() && p->sched_class == &ext_sched_class;
-> > +}
-> While building the kernel, I encountered the following warning:
+
+On 8/16/23 06:35, Sakari Ailus wrote:
+> The IVSC driver only works in ACPI systems so make it depend on ACPI.
 > 
-> {KERNEL_SRC}/kernel/sched/core.c: In function ‘__task_prio’:
-> {KERNEL_SRC}/kernel/sched/core.c:170:25: warning: passing argument 1 of ‘task_on_scx’ discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
->   170 |         if (task_on_scx(p))
->       |                         ^
-> In file included from {KERNEL_SRC}/kernel/sched/sched.h:3593,
->                  from {KERNEL_SRC}/kernel/sched/core.c:86:
-> {KERNEL_SRC}/kernel/sched/ext.h:124:52: note: expected ‘struct task_struct *’ but argument is of type ‘const struct task_struct *’
->   124 | static inline bool task_on_scx(struct task_struct *p)
->       |                                ~~~~~~~~~~~~~~~~~~~~^
+> Compiling it elsewhere has little if any value.
 > 
-> To address this warning, I'd suggest modifying the signature of `task_on_scx` to
-> accept `task_struct` argument as `const`. The proposed change is as follows: 
-> 
-> diff --git a/kernel/sched/ext.h b/kernel/sched/ext.h
-> index 405037a4e6ce..e9c699a87770 100644
-> --- a/kernel/sched/ext.h
-> +++ b/kernel/sched/ext.h
-> @@ -121,7 +121,7 @@ DECLARE_STATIC_KEY_FALSE(__scx_switched_all);
->  
->  DECLARE_STATIC_KEY_FALSE(scx_ops_cpu_preempt);
->  
-> -static inline bool task_on_scx(struct task_struct *p)
-> +static inline bool task_on_scx(const struct task_struct *p)
->  {
->         return scx_enabled() && p->sched_class == &ext_sched_class;
->  }
-> @@ -214,7 +214,7 @@ bool scx_prio_less(const struct task_struct *a, const struct task_struct *b,
->  #define scx_enabled()          false
->  #define scx_switched_all()     false
->  
-> -static inline bool task_on_scx(struct task_struct *p) { return false; }
-> +static inline bool task_on_scx(const struct task_struct *p) { return false; }
->  static inline void scx_pre_fork(struct task_struct *p) {}
->  static inline int scx_fork(struct task_struct *p) { return 0; }
->  static inline void scx_post_fork(struct task_struct *p) {}
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Fixes: 29006e196a56 ("media: pci: intel: ivsc: Add CSI submodule")
+> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-Yeah, this is already fixed in the github repo by the following commit:
-
- https://github.com/sched-ext/sched_ext/commit/56b278fa8b5136457993f7389e34070d35f17e8a
-
-The fix will be included in the next iteration.
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
 Thanks.
 
+> ---
+>  drivers/media/pci/intel/ivsc/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/pci/intel/ivsc/Kconfig b/drivers/media/pci/intel/ivsc/Kconfig
+> index ec4ade92f583..413053175df7 100644
+> --- a/drivers/media/pci/intel/ivsc/Kconfig
+> +++ b/drivers/media/pci/intel/ivsc/Kconfig
+> @@ -3,7 +3,7 @@
+>  
+>  config INTEL_VSC
+>  	tristate "Intel Visual Sensing Controller"
+> -	depends on INTEL_MEI
+> +	depends on INTEL_MEI && ACPI
+>  	help
+>  	  This adds support for Intel Visual Sensing Controller (IVSC).
+>  
+
 -- 
-tejun
+~Randy
