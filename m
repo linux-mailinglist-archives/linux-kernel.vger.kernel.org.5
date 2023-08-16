@@ -2,134 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8ED877E769
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD8E77E771
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345116AbjHPRPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 13:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48538 "EHLO
+        id S1345157AbjHPRQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 13:16:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345185AbjHPRPN (ORCPT
+        with ESMTP id S1345168AbjHPRQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 13:15:13 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A647526A4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:15:12 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-77dcff76e35so81508039f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:15:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1692206112; x=1692810912;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=i7pZ8yXv877xqgWHoGs7GnAl1TuvEBADR0sH782/8U8=;
-        b=ON1qj7hzWcby1d53aWfkaayYoCVQPcUlGlMszWIXfnKqPOVZkDoBvKhasvcTUdjeU/
-         xbPnlk815G0BzzeedvPkotEJg5nVD00UYV5RJu/wyqT7dUnXewOnWfWiyHv9Gaf3avY2
-         yFUOWxNV35R3JrfJuQBrZdMwEkhnH2nlbARVE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692206112; x=1692810912;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i7pZ8yXv877xqgWHoGs7GnAl1TuvEBADR0sH782/8U8=;
-        b=VdOXF3helVkyC5zt4zb9vbscd3ltVNzKtUi6N4nh5OQtil701hDBJxh35w+h4oWPsZ
-         lrz/Zs2t+Wq57yrarfnYM4GZHhfZmeCLolgaLzta7jwajWNnrMcUOA19zPayTIOI+X8X
-         sJOobqdF5qUgE/ENnK2/mqkOzOmpP7VlgfrOllJZTF/+JLW/t2s66MX3ab+XQPxVunhY
-         3p6L25HFfBLave7PVo/m6U7pTJmZ6X5twjFc85DQe3I26+0aPhOXT3nLSFzXBfpyNP0v
-         cRxZpbYyDFgaNDL04M0t/sdIoUHqnjXe+pZDlDo8YV16Rdf2cCmVV0DH6cY8y471PS06
-         5c9g==
-X-Gm-Message-State: AOJu0YyKfww3it9Iv4GBjTfjqavCa6VgFucPWwHtzuNg75VVx0xpAH7h
-        2l/zNhLR4FR7Sizm5PrzwshV8w==
-X-Google-Smtp-Source: AGHT+IFsVDC5ag7WEIVMgg2Z2P5NR6QcXCAPC6Ahd7mWp5AmaHyYRTxHfuzvfLXohNFvnq72lFsxng==
-X-Received: by 2002:a05:6602:3983:b0:783:63e8:3bfc with SMTP id bw3-20020a056602398300b0078363e83bfcmr4086982iob.0.1692206112087;
-        Wed, 16 Aug 2023 10:15:12 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id c15-20020a5ea90f000000b0078680780694sm4640181iod.34.2023.08.16.10.15.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 10:15:11 -0700 (PDT)
-Message-ID: <343469cf-47a3-c8de-dc61-dbcf41e5757c@linuxfoundation.org>
-Date:   Wed, 16 Aug 2023 11:15:11 -0600
+        Wed, 16 Aug 2023 13:16:16 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BCD2D48;
+        Wed, 16 Aug 2023 10:16:13 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37GCMFPf026499;
+        Wed, 16 Aug 2023 17:15:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=zhkaB++sZDMq2yanj4e1JbYu42RN6uvd1pKF9zJHIZo=;
+ b=JMP48rz/0Bzyzxpc1z//LFHnHF6VmQRM8qnKLyz//YLATs0DBCRAHGJxcWrT6zAvvBA1
+ VGfk5cR5ltG7BnphZtYNl5VsHzHr0raLU8FARTtOrmcHWP2VuMBBZY2oEoXo/A5Q6OtU
+ 7WRJ/fXotoZcOrcP7xCiKc4xFzLeaKcuNi0lcSMlWZzxbod5ngBEjj1gD/TH22Kwk/w4
+ naGacPbUc4U7HGhRMkWDJJF+eThXAOg/DkNDWudOHrWWV8PWqTQkfT1rnEPH6AdF/0+V
+ LAR8aAl4VGIrf/wuNIn5JqWj4H/K1LtKIvi71AnKiV3MsML4E7c6C1YpIdN9rdv8pcM+ BA== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sg83rbd0a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 17:15:41 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37GHFeIX002878
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 17:15:40 GMT
+Received: from quicinc.com (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 16 Aug
+ 2023 10:15:39 -0700
+Date:   Wed, 16 Aug 2023 10:15:38 -0700
+From:   Guru Das Srinagesh <quic_gurus@quicinc.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Nicolas Schier" <nicolas@fjasle.eu>,
+        Kees Cook <keescook@chromium.org>,
+        "Bjorn Andersson" <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, Will Deacon <will@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        <quic_pkondeti@quicinc.com>, <u.kleine-koenig@pengutronix.de>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH v2 0/1] Add add-maintainer.py script
+Message-ID: <20230816171538.GB26279@quicinc.com>
+References: <cover.1691049436.git.quic_gurus@quicinc.com>
+ <20230810185526.GC31860@quicinc.com>
+ <4d94d0fd-72d4-0196-3a30-3e1efb9f5aca@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/3] selftests: cachestat: use proper syscall number macro
-Content-Language: en-US
-To:     Andre Przywara <andre.przywara@arm.com>,
-        Shuah Khan <shuah@kernel.org>, Nhat Pham <nphamcs@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230815155612.2535947-1-andre.przywara@arm.com>
- <20230815155612.2535947-3-andre.przywara@arm.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20230815155612.2535947-3-andre.przywara@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <4d94d0fd-72d4-0196-3a30-3e1efb9f5aca@linaro.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: rlUvw-RXrUOWd5u-0bjWn0IL_MERk8Rr
+X-Proofpoint-ORIG-GUID: rlUvw-RXrUOWd5u-0bjWn0IL_MERk8Rr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-16_17,2023-08-15_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=630
+ malwarescore=0 spamscore=0 suspectscore=0 bulkscore=0 priorityscore=1501
+ clxscore=1015 mlxscore=0 phishscore=0 impostorscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2308160152
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/15/23 09:56, Andre Przywara wrote:
-> At the moment the cachestat syscall number is hard coded into the test
-> source code.
-> Remove that and replace it with the proper __NR_cachestat macro.
-> That ensures compatibility should other architectures pick a different
-> number.
+Thanks for the comments, Krzysztof.
+
+On Aug 15 2023 23:06, Krzysztof Kozlowski wrote:
+> On 10/08/2023 20:55, Guru Das Srinagesh wrote:
+> > On Aug 03 2023 01:23, Guru Das Srinagesh wrote:
+> >> When pushing patches to upstream, the `get_maintainer.pl` script is used to
+> >> determine whom to send the patches to. Instead of having to manually process
+> >> the output of the script, add a wrapper script to do that for you.
+> >>
+> >> The add-maintainer.py script adds maintainers (and mailing lists) to a patch,
+> >> editing it in-place.
+> > 
+> > Could I request reviews from the other maintainers as well, please? Just to see
+> > if I should continue working on this script or if the `b4` tool obviates the
+> > need for such a script.
 > 
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> ---
->   tools/testing/selftests/cachestat/test_cachestat.c | 7 +++----
->   1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/cachestat/test_cachestat.c b/tools/testing/selftests/cachestat/test_cachestat.c
-> index 54d09b820ed4b..a5a4ac8dcb76c 100644
-> --- a/tools/testing/selftests/cachestat/test_cachestat.c
-> +++ b/tools/testing/selftests/cachestat/test_cachestat.c
-> @@ -19,7 +19,6 @@ static const char * const dev_files[] = {
->   	"/dev/zero", "/dev/null", "/dev/urandom",
->   	"/proc/version", "/proc"
->   };
-> -static const int cachestat_nr = 451;
->   
->   void print_cachestat(struct cachestat *cs)
->   {
-> @@ -126,7 +125,7 @@ bool test_cachestat(const char *filename, bool write_random, bool create,
->   		}
->   	}
->   
-> -	syscall_ret = syscall(cachestat_nr, fd, &cs_range, &cs, 0);
-> +	syscall_ret = syscall(__NR_cachestat, fd, &cs_range, &cs, 0);
->   
->   	ksft_print_msg("Cachestat call returned %ld\n", syscall_ret);
->   
-> @@ -152,7 +151,7 @@ bool test_cachestat(const char *filename, bool write_random, bool create,
->   			ksft_print_msg("fsync fails.\n");
->   			ret = false;
->   		} else {
-> -			syscall_ret = syscall(cachestat_nr, fd, &cs_range, &cs, 0);
-> +			syscall_ret = syscall(__NR_cachestat, fd, &cs_range, &cs, 0);
->   
->   			ksft_print_msg("Cachestat call (after fsync) returned %ld\n",
->   				syscall_ret);
-> @@ -213,7 +212,7 @@ bool test_cachestat_shmem(void)
->   		goto close_fd;
->   	}
->   
-> -	syscall_ret = syscall(cachestat_nr, fd, &cs_range, &cs, 0);
-> +	syscall_ret = syscall(__NR_cachestat, fd, &cs_range, &cs, 0);
->   
->   	if (syscall_ret) {
->   		ksft_print_msg("Cachestat returned non-zero.\n");
+> I send a bit of patches but I use very simple workflow. It is really
+> simple, so simple, that I was always surprised how people can make their
+> life difficult with some complicated process to send patches... and then
+> obviously skip some maintainers, because of that process.
 
+Exactly - this script aims to solve precisely that problem. It fills the gap
+between running `get_maintainers.pl` and having to manually edit its output to
+add "To: " and "Cc: " and somehow incorporate it in the body of the patch(es).
 
-Thank you. Applied to linux-kselftest next for Linux 6.6-rc1
+With this script, the workflow would be as simple as:
 
-thanks,
--- Shuah
+  1. Generate patches using `git format-patch`
+  2. Run `add-maintainer.py` on the above patches
+  3. `git send-email` the patches.
+
+That's it - no need to manually work with email addresses.
+  
+> I almost always feed git send-email with addresses from
+> scripts/get_maintainers.pl. This tool would not bring any benefits to my
+> simple workflow.
+
+In the light of the 3-step workflow I've envisioned above, could you please
+elaborate why not? If anything, it will only save a developer's time.
+
+> For newcomers, OTOH, I would either recommend simple workflow or just
+> use b4. Why? Because if you cannot use git-send-email, then it means
+> your email setup will make your life difficult and adding maintainers to
+> existing patch won't help you.
+
+You've mentioned a "simple workflow" many times - could you please share more
+details on the steps you follow in your workflow for sending patches?
+
+> This tool depends on the command line and shell interface of
+> scripts/get_maintainers.pl which is another reason why it might not be a
+> good idea.
+
+Could you please elaborate on why depending on the output of
+`get_maintainer.pl` is a bad idea? It's what everyone uses, no?
+
+Thank you.
+
+Guru Das.
