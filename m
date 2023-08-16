@@ -2,114 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 355D177E371
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8133077E376
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245749AbjHPOUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 10:20:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47576 "EHLO
+        id S1343568AbjHPOV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 10:21:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343564AbjHPOU1 (ORCPT
+        with ESMTP id S1343563AbjHPOVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 10:20:27 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB13E1FC8
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:20:25 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-68874dec6c6so1909783b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:20:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692195625; x=1692800425;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=i1oB5KGOGGLmV8Hyuw5qnVZxUUxc0xqzMrgN+ZeuyH4=;
-        b=ZWxhwbj3Flt0bO9lmrGhVUO1z+viu7lhI7DFNndVfioCj9WPrrs6Tufw6Mn7SGYGq1
-         4M0GGXiHXdtmAshh8/EEgts4uwl3YmCLx4XdYUMuU3ocYkYU/MxiIvKgdBQ1Mrq7V7He
-         P+IUoQ/KVu/PkEylxmDHU0SdZtLrAFZpnn6c8eNNRH5phOpdhpqZVwRBh+Ehri+tOoLY
-         rKqYhyJLG0YWOFi9MD+JnUBd0ThjY3cZW7UzRFetJPEm2RltcoJdolGVljIEVxkpO177
-         1hbSnmPn5dhUtbExAbJNqHfEGI2IQ1mpv2jaeYlmy806HVaWgQgSgk1yVbf25ABk94vN
-         yX7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692195625; x=1692800425;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i1oB5KGOGGLmV8Hyuw5qnVZxUUxc0xqzMrgN+ZeuyH4=;
-        b=U9CFPrr+DK12WRjNJMkeI52dJQViBBPU9Qc1cYP3x4h2AJlqIShPOzi/Ob+1ly4OeN
-         lTyC27YwTLAwOLyHtEoylOl1LR5WyFLcb4qTh10a3S1eulS9Qy2q4ONTKau7A+12xXWe
-         3lT60Oaz9er6CKtw/uepZmsyE8jz/B+TFSinw+MN8CufruffSjYS26YcEWIO8UmZdVvj
-         o30ayb4b2O2A8XGAz/+Srso8iMCgoAPbb10fqWwkZlnM85Jb8BiAXWfEEJ7RgZgnOps3
-         KBKpfS8GEHPhrty6flHgbRpumf+EFCDhe4bQpe2WyPv0RE+/56siy/vhcOk7PWh+/r6q
-         rq7g==
-X-Gm-Message-State: AOJu0YyG8TLZBL2LBKNn3PxkYZt7bvf6J61eDvgpNNzG87Y9z6zVQnjh
-        gyKqykVmURnXqF7bvyBWsp1GULNEUqY=
-X-Google-Smtp-Source: AGHT+IHOZY+1RtbT+IwGQsfEVWjr8BXEVN7ReSuu487cknuQa9n8HgvNydglPHkYuZK0Jgji8yN7fuLP8qQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:aa7:8884:0:b0:686:df16:f887 with SMTP id
- z4-20020aa78884000000b00686df16f887mr949855pfe.6.1692195625320; Wed, 16 Aug
- 2023 07:20:25 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 07:20:23 -0700
-In-Reply-To: <6370c12ff6ec2c22ed5e1f1f37c1cf38a820a342.camel@intel.com>
-Mime-Version: 1.0
-References: <20230815203653.519297-1-seanjc@google.com> <20230815203653.519297-2-seanjc@google.com>
- <6370c12ff6ec2c22ed5e1f1f37c1cf38a820a342.camel@intel.com>
-Message-ID: <ZNzbJ9Y+8Uon327c@google.com>
-Subject: Re: [PATCH v3 01/15] KVM: x86: Add a framework for enabling
- KVM-governed x86 features
-From:   Sean Christopherson <seanjc@google.com>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Guang Zeng <guang.zeng@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Yuan Yao <yuan.yao@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 10:21:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D0042705;
+        Wed, 16 Aug 2023 07:21:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692195690; x=1723731690;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=uYNnrWNlBgb9NC8j+cpeuVgiEEZ6uB4cvWrMtU2oYm4=;
+  b=Nd8u6XQ7z1RK5bc4WSbzHjkgou8mAcUbJ8CTkn5ur9KuXbBMxhraBXal
+   u9McnvjK89ZCCp8+Md9+hb8Oy5ObwNRitK5qJNAIZ3hMEEzZNn7huZVkR
+   zS5fvC4nbFNCN0QVlFbAJwgy6RQvCoZZtqAZ78yBNP66vJ/arbSiWRhlb
+   72qolizpDw2IKx6qsoQt5ktRKIOYk5endDdtVleBcnt20sXPvJ2/U9Bdo
+   9rKU9++1uvWokWYX/cthcu/MTLG8foONue4+S5HuqH8CrSXXDAj05jdQ9
+   Xvyh6P5cJ5BVn6+Er5rYT5c3uoxsA4AcS28lhLCGlceD1B1Ug6fNxWTfL
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="352134018"
+X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
+   d="scan'208";a="352134018"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 07:21:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="980756995"
+X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
+   d="scan'208";a="980756995"
+Received: from ilivshiz-mobl.ger.corp.intel.com ([10.251.211.105])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 07:21:28 -0700
+Date:   Wed, 16 Aug 2023 17:21:26 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/14] tty: n_tty: use 'retval' for writes' retvals
+In-Reply-To: <20230816105822.3685-7-jirislaby@kernel.org>
+Message-ID: <b0771d71-dff4-31d-7edb-01056d4c29@linux.intel.com>
+References: <20230816105822.3685-1-jirislaby@kernel.org> <20230816105822.3685-7-jirislaby@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023, Kai Huang wrote:
-> > diff --git a/arch/x86/kvm/governed_features.h b/arch/x86/kvm/governed_features.h
-> > new file mode 100644
-> > index 000000000000..40ce8e6608cd
-> > --- /dev/null
-> > +++ b/arch/x86/kvm/governed_features.h
-> > @@ -0,0 +1,9 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#if !defined(KVM_GOVERNED_FEATURE) || defined(KVM_GOVERNED_X86_FEATURE)
-> > +BUILD_BUG()
-> > +#endif
-> > +
-> > +#define KVM_GOVERNED_X86_FEATURE(x) KVM_GOVERNED_FEATURE(X86_FEATURE_##x)
-> > +
-> > +#undef KVM_GOVERNED_X86_FEATURE
-> > +#undef KVM_GOVERNED_FEATURE
-> 
-> Nit:
-> 
-> Do you want to move the very last
-> 
-> 	#undef KVM_GOVERNED_FEATURE
-> 
-> out of "governed_features.h", but to the place(s) where the macro is defined?
-> 
-> Yes there will be multiple:
-> 
-> 	#define KVM_GOVERNED_FEATURE(x)	...
-> 	#include "governed_features.h"
-> 	#undef KVM_GOVERNED_FEATURE
-> 
-> But this looks clearer to me.
+On Wed, 16 Aug 2023, Jiri Slaby (SUSE) wrote:
 
-I agree the symmetry looks better, but doing the #undef in governed_features.h
-is much more robust.  E.g. having the #undef in the header makes it all but impossible
-to have a bug where we forget to #undef KVM_GOVERNED_FEATURE.  Or worse, have two
-bugs where we forget to #undef and then also forget to #define in a later include
-and consume the stale #define.
+> We have a separate misnomer 'c' to hold the retuned value from
+> tty->ops->write(). Instead, use already defined and properly typed
+> 'retval'.
+> 
+> We have another variable 'num' to serve the same purpose in the OPOST
+> branch. We can use this 'retval' too. But just clear it in case of
+> EAGAIN.
+> 
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+> ---
+>  drivers/tty/n_tty.c | 30 ++++++++++++++----------------
+>  1 file changed, 14 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
+> index f6fa4dbdf78f..e293d87b5362 100644
+> --- a/drivers/tty/n_tty.c
+> +++ b/drivers/tty/n_tty.c
+> @@ -2335,7 +2335,6 @@ static ssize_t n_tty_write(struct tty_struct *tty, struct file *file,
+>  {
+>  	const u8 *b = buf;
+>  	DEFINE_WAIT_FUNC(wait, woken_wake_function);
+> -	int c;
+>  	ssize_t retval = 0;
+>  
+>  	/* Job control check -- must be done at start (POSIX.1 7.1.1.4). */
+> @@ -2362,15 +2361,16 @@ static ssize_t n_tty_write(struct tty_struct *tty, struct file *file,
+>  		}
+>  		if (O_OPOST(tty)) {
+>  			while (nr > 0) {
+> -				ssize_t num = process_output_block(tty, b, nr);
+> -				if (num < 0) {
+> -					if (num == -EAGAIN)
+> -						break;
+> -					retval = num;
+> -					goto break_out;
+> +				retval = process_output_block(tty, b, nr);
+> +				if (retval == -EAGAIN) {
+> +					retval = 0;
+> +					break;
+>  				}
+> -				b += num;
+> -				nr -= num;
+> +				if (retval < 0)
+> +					goto break_out;
+> +
+> +				b += retval;
+> +				nr -= retval;
+>  				if (nr == 0)
+>  					break;
+>  				if (process_output(*b, tty) < 0)
+> @@ -2384,16 +2384,14 @@ static ssize_t n_tty_write(struct tty_struct *tty, struct file *file,
+>  
+>  			while (nr > 0) {
+>  				mutex_lock(&ldata->output_lock);
+> -				c = tty->ops->write(tty, b, nr);
+> +				retval = tty->ops->write(tty, b, nr);
+>  				mutex_unlock(&ldata->output_lock);
+> -				if (c < 0) {
+> -					retval = c;
+> +				if (retval < 0)
+>  					goto break_out;
+> -				}
+> -				if (!c)
+> +				if (!retval)
+>  					break;
+> -				b += c;
+> -				nr -= c;
+> +				b += retval;
+> +				nr -= retval;
 
-And I also want to follow the pattern used by kvm-x86-ops.h.
+Type might be better but these two don't look like a major improvement... 
+To me it seems obvious there exists some variable name that is better than 
+c or retval for this purpose. ;-)
+
+-- 
+ i.
+
