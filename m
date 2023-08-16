@@ -2,118 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBEC77E9C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A96877E9C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345837AbjHPTga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 15:36:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54452 "EHLO
+        id S1345701AbjHPTiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 15:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345826AbjHPTgR (ORCPT
+        with ESMTP id S1345844AbjHPThh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 15:36:17 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 484EA270C;
-        Wed, 16 Aug 2023 12:36:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=QxcHYEXSEj/KJ+FSI5KmSWw0t70fxjKqE05cLmLc4gg=; b=lHRwkJOmRglxwZ3Wo7qKJoYuDq
-        ++x4k/xLJZbnx+/fwIytW6J2lhyheAYXnLHPLxU6auxEaBbtYvB8BZ+pKK6MuXiEd9GqgmTagZ8o0
-        962N4AEESI9tv1nuxGTKfBqNuR1sXOf9FoWADFuk8Wj0lIvKhGPr0w3zeG6rA9xjrAY4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qWMJB-004J93-AI; Wed, 16 Aug 2023 21:35:57 +0200
-Date:   Wed, 16 Aug 2023 21:35:57 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC net] Revert "net: phy: Fix race condition on link status
- change"
-Message-ID: <b5ae4bc5-20cb-470b-988c-86353592f1c9@lunn.ch>
-References: <20230816180944.19262-1-fancer.lancer@gmail.com>
+        Wed, 16 Aug 2023 15:37:37 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393611FE1;
+        Wed, 16 Aug 2023 12:37:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692214656; x=1723750656;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=e78L0+6Q02AMApoSzmAbj75FvmXVPcNEt8S1vbncVXo=;
+  b=Bibx8xDyZ81NvK5aU+3LcGLp+Q3k7F/YGgdiBXuR1aaefa6wv71bXes7
+   eZphGaP9hce/qDidH6rFF85hV0Ra8SGeiQ0+QyBqxSDnbnY+cq7SGLu+I
+   ZupdL6hfKfwuV6EC2vR9dU7+kjsJDFuzeSBsW+xbMU+oD7jDEFs9oS1j1
+   584Kf5yyxfCGGNitC7anfTeR87UwvUUr9tR83SX/rQx23d1F0VIbHp2Oh
+   NTUVoIkbGU0ikN006b2cYvqhVH/pDy4QKLJiC1GgA5qDe1gj4HtARrCog
+   6enjuvVdeCTrKuWfoCRf6OQFdOa9d3bPvd3nB6jV0qJugy4FCbcMePGbA
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="403598291"
+X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
+   d="scan'208";a="403598291"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 12:37:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="824344977"
+X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
+   d="scan'208";a="824344977"
+Received: from pnukala-mobl1.amr.corp.intel.com (HELO [10.209.74.99]) ([10.209.74.99])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 12:37:35 -0700
+Message-ID: <d24f4ee9-798b-44e2-bafc-67808e38e72a@linux.intel.com>
+Date:   Wed, 16 Aug 2023 12:37:34 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230816180944.19262-1-fancer.lancer@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] PCI: hv: Fix a crash in hv_pci_restore_msi_msg()
+ during hibernation
+Content-Language: en-US
+To:     Dexuan Cui <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "kw@linux.com" <kw@linux.com>, KY Srinivasan <kys@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "lpieralisi@kernel.org" <lpieralisi@kernel.org>,
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "helgaas@kernel.org" <helgaas@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230816175939.21566-1-decui@microsoft.com>
+ <402a0ea4-7944-4f00-a06d-a14578859384@linux.intel.com>
+ <SA1PR21MB13352A1D7C4575CB83CE47A1BF15A@SA1PR21MB1335.namprd21.prod.outlook.com>
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <SA1PR21MB13352A1D7C4575CB83CE47A1BF15A@SA1PR21MB1335.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 09:09:40PM +0300, Serge Semin wrote:
-> Protecting the phy_driver.drv->handle_interrupt() callback invocation by
-> the phy_device.lock mutex causes all the IRQ-capable PHY drivers to lock
-> the mutex twice thus deadlocking on the next calls thread:
-> IRQ: phy_interrupt()
->      +-> mutex_lock(&phydev->lock); <-------------+
->          drv->handle_interrupt()                  | Deadlock due to the
->          +-> phy_error()                          + nested PHY-device
->              +-> phy_process_error()              | mutex lock
->                  +-> mutex_lock(&phydev->lock); <-+
->                      phydev->state = PHY_ERROR;
->                      mutex_unlock(&phydev->lock);
->          mutex_unlock(&phydev->lock);
-> 
-> The problem can be easily reproduced just by calling phy_error() from the
-> any PHY-device interrupt handler.
 
-https://elixir.bootlin.com/linux/v6.5-rc6/source/drivers/net/phy/phy.c#L1201
+On 8/16/2023 12:30 PM, Dexuan Cui wrote:
+>> From: Kuppuswamy Sathyanarayanan
+>> <sathyanarayanan.kuppuswamy@linux.intel.com>
+>> Sent: Wednesday, August 16, 2023 11:12 AM
+>> [...]
+>> On 8/16/2023 10:59 AM, Dexuan Cui wrote:
+>>> When a Linux VM with an assigned PCI device runs on Hyper-V, if the PCI
+>>> device driver is not loaded yet (i.e. MSI-X/MSI is not enabled on the
+>>> device yet), doing a VM hibernation triggers a panic in
+>>> hv_pci_restore_msi_msg() -> msi_lock_descs(&pdev->dev), because
+>>> pdev->dev.msi.data is still NULL.
+>>>
+>>> Avoid the panic by checking if MSI-X/MSI is enabled.
+>>>
+>>> Fixes: dc2b453290c4 ("PCI: hv: Rework MSI handling")
+>>> Signed-off-by: Dexuan Cui <decui@microsoft.com>
+>>> ---
+>>>
+>>> Changes in v2:
+>>>       Replaced the test "if (!pdev->dev.msi.data)" with
+>>> 		      "if (!pdev->msi_enabled && !pdev->msix_enabled)".
+>>>         Thanks Michael!
+>>>       Updated the changelog accordingly.
+>>>
+>>>    drivers/pci/controller/pci-hyperv.c | 3 +++
+>>>    1 file changed, 3 insertions(+)
+>>>
+>>> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-
+>> hyperv.c
+>>> index 2d93d0c4f10d..bed3cefdaf19 100644
+>>> --- a/drivers/pci/controller/pci-hyperv.c
+>>> +++ b/drivers/pci/controller/pci-hyperv.c
+>>> @@ -3983,6 +3983,9 @@ static int hv_pci_restore_msi_msg(struct pci_dev
+>> *pdev, void *arg)
+>>>    	struct msi_desc *entry;
+>>>    	int ret = 0;
+>>>
+>>> +	if (!pdev->msi_enabled && !pdev->msix_enabled)
+>>> +		return 0;
+>> Isn't this is a error condition? Don't you want to return error here?
+> This is not an error.  If a PCI device driver is not loaded or not installed,
+> MSI-X/MSI is not enabled on the device, so pdev->msi_enabled is 0
+> and pdev->msix_enabled is 0. In this case, it's still legit for a user to request
+> the system (i.e. here it's a Linux VM running on Hyper-V) to hibernate -- in
+> this case, we should not try to save/restore the MSI/MSI-X state, and we
+> should not let the hibernation fail; here we should just ignore the device
+> by returning a success ("return 0;").
 
-/**
- * phy_error - enter ERROR state for this PHY device
- * @phydev: target phy_device struct
- *
- * Moves the PHY to the ERROR state in response to a read
- * or write error, and tells the controller the link is down.
- * Must not be called from interrupt context, or while the
- * phydev->lock is held.
- */
-void phy_error(struct phy_device *phydev)
-{
-	WARN_ON(1);
-	phy_process_error(phydev);
-}
-EXPORT_SYMBOL(phy_error);
+Got it. Looks good to me.
 
-It is clearly documented you should not do this.
+Reviewed-by: sathyanarayanan.kuppuswamy@linux.intel.com
 
-[Goes and looks]
-
-Ah, there are lots of examples of
-
-micrel.c-	irq_status = phy_read(phydev, LAN8814_INTS);
-micrel.c-	if (irq_status < 0) {
-micrel.c:		phy_error(phydev);
-micrel.c-		return IRQ_NONE;
-micrel.c-	}
-
-I actually think phy_error() is broken here. The general pattern is
-that the mutex is locked before calling into the driver. So we
-actually want phy_error() to be safe to use with the lock already
-taken. The exceptions when the lock is not held is stuff outside of
-PHY operation, like HWMON, and suspend and resume, plus probe.
-
-So i suggest you change phy_process_error() to remove the lock. Maybe
-add a test to ensure the lock is actually held, and do a phydev_err()
-if not.
-
-The comment about interrupt context is also probably bogus. phylib
-only uses threaded interrupts, and it is safe to block in this
-context.
-
-	Andrew
+>
+>>> +
+>>>    	msi_lock_descs(&pdev->dev);
+>>>    	msi_for_each_desc(entry, &pdev->dev, MSI_DESC_ASSOCIATED) {
+>>>    		irq_data = irq_get_irq_data(entry->irq);
