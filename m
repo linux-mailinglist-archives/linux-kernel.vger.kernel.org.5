@@ -2,277 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 298A577E4F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 17:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8056377E503
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 17:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344081AbjHPPVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 11:21:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46820 "EHLO
+        id S1344155AbjHPPWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 11:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344130AbjHPPV2 (ORCPT
+        with ESMTP id S1344148AbjHPPWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 11:21:28 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73F632736
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 08:21:22 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fe0c566788so10538798e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 08:21:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1692199281; x=1692804081;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yo+bJl+y4f/gcBpiSV3BMiHVoCuXZGbyDLViIJN4HNU=;
-        b=woCGuL35AXyt6Hws5akvROlF7RqebS9eOYXxHntzLeGYVk1NTV0JRHtHtiO3R5vUpJ
-         /E3V4iORbL295JckGqfv6muslFFEb3myhBYmvFMBP6Mz2Qmi0ZaHuXIPB6T5SZ//1xWa
-         QXnna47bdllgzRJcsO5lD5J7lUBa6Bo8Y0qNs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692199281; x=1692804081;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yo+bJl+y4f/gcBpiSV3BMiHVoCuXZGbyDLViIJN4HNU=;
-        b=YS1GYs0CnSizTlAD5m4FatX28DrTTkpxAMOiAtReSo8eBKrSVYtIcxnyrUedXlSL0Z
-         hu3Z6Yo4kWonchenEuWyObNA+PDMu8riR/SNdalIey4qHcREX+eJ3odPTCUhQqeb1bSK
-         qioHffqzAOpDagCZe6AnJnztT8oLBlSkTKCbJ4pDaoJE7TIOgN3lhbkhYJZvSMMgeIVh
-         8J2TsLYobLn1ulSrHQK+uzu2Yzcn+mMgGX+fabVqDfQU9ckydHL5qgoog987NqvdrboQ
-         rr8PVVHOuKoXpvyxCovnWsRFeZM8+VIYjnX7zo2O3109bTrNaQZvr/Qf9k0/woQqG615
-         CepQ==
-X-Gm-Message-State: AOJu0Ywr/hW1V1IF82Y9kFWQnW3eaNclu2YiV8bd8gDou3vxtqJauQoS
-        BGkMZflAoR5zjWJX9xUuXZhwI/n1BNmD8vNy+Avpew==
-X-Google-Smtp-Source: AGHT+IGOaEOXBm5YJbq2Nr3ga0OHEs0BPsZyI6sJDQwGTEIIZLfE3bIwVhGo62MewvuCU7hiVbW3/zj70F4NdmA6V5o=
-X-Received: by 2002:a19:675b:0:b0:4fb:8aeb:d9be with SMTP id
- e27-20020a19675b000000b004fb8aebd9bemr1593548lfj.30.1692199280579; Wed, 16
- Aug 2023 08:21:20 -0700 (PDT)
+        Wed, 16 Aug 2023 11:22:41 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F721987;
+        Wed, 16 Aug 2023 08:22:32 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37GFMC1M112777;
+        Wed, 16 Aug 2023 10:22:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1692199332;
+        bh=AaaVtVTqX2Nn4tIHGRAQK7zVdynaBfAeuskWD0vfCWU=;
+        h=From:To:CC:Subject:Date;
+        b=CXA3r0XgHOPUzeamJsInnZi9yazTrtPbWG1QTHuAudUTY+w3Gqzg8QgYjdkXacC6F
+         zOVuJ+ppCNjH+7VuwuKduc/TtyYAtFMMvKuHDIbtAju9SswsgqgRSpBVxV9BXKG5vM
+         4cB9ZFjfYZDxHl1ibPNdV6b/kue2ZpIoxlowFTfI=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37GFMCmj012127
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 16 Aug 2023 10:22:12 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 16
+ Aug 2023 10:22:12 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 16 Aug 2023 10:22:11 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37GFMAtl124178;
+        Wed, 16 Aug 2023 10:22:11 -0500
+From:   Devarsh Thakkar <devarsht@ti.com>
+To:     <mchehab@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <hverkuil-cisco@xs4all.nl>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <laurent.pinchart@ideasonboard.com>, <eugen.hristev@collabora.com>,
+        <ezequiel@vanguardiasur.com.ar>, <u.kleine-koenig@pengutronix.de>,
+        <sakari.ailus@linux.intel.com>, <praneeth@ti.com>, <nm@ti.com>,
+        <vigneshr@ti.com>, <a-bhatia1@ti.com>, <j-luthra@ti.com>,
+        <b-brnich@ti.com>, <detheridge@ti.com>, <p-mantena@ti.com>,
+        <vijayp@ti.com>, <devarsht@ti.com>
+Subject: [PATCH v3 0/4] Add V4L2 M2M Driver for E5010 JPEG Encoder
+Date:   Wed, 16 Aug 2023 20:52:06 +0530
+Message-ID: <20230816152210.4080779-1-devarsht@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <cover.1692153515.git.yan@cloudflare.com> <9ac9d459-9bc3-bcee-b912-3ab66d2a7fe7@iogearbox.net>
-In-Reply-To: <9ac9d459-9bc3-bcee-b912-3ab66d2a7fe7@iogearbox.net>
-From:   Yan Zhai <yan@cloudflare.com>
-Date:   Wed, 16 Aug 2023 10:21:09 -0500
-Message-ID: <CAO3-Pbp5kopV+AOFZqJuJjiBFqkBTLM9Ga0JR1iU9kig7pqA8w@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf 0/4] lwt: fix return values of BPF ops
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Thomas Graf <tgraf@suug.ch>,
-        Jordan Griege <jgriege@cloudflare.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 9:27=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.n=
-et> wrote:
->
-> Hi Yan,
->
-> On 8/16/23 4:54 AM, Yan Zhai wrote:
-> > lwt xmit hook does not expect positive return values in function
-> > ip_finish_output2 and ip6_finish_output. However, BPF programs can
-> > directly return positive statuses such like NET_XMIT_DROP, NET_RX_DROP,
-> > and etc to the caller. Such return values would make the kernel continu=
-e
-> > processing already freed skbs and eventually panic.
-> >
-> > This set fixes the return values from BPF ops to unexpected continue
-> > processing, and checks strictly on the correct continue condition for
-> > future proof. In addition, add missing selftests for BPF_REDIRECT
-> > and BPF_REROUTE cases for BPF-CI.
-> >
-> > v4: https://lore.kernel.org/bpf/ZMD1sFTW8SFiex+x@debian.debian/T/
-> > v3: https://lore.kernel.org/bpf/cover.1690255889.git.yan@cloudflare.com=
-/
-> > v2: https://lore.kernel.org/netdev/ZLdY6JkWRccunvu0@debian.debian/
-> > v1: https://lore.kernel.org/bpf/ZLbYdpWC8zt9EJtq@debian.debian/
-> >
-> > changes since v4:
-> >   * fixed same error on BPF_REROUTE path
-> >   * re-implemented selftests under BPF-CI requirement
->
-> BPF CI failed: https://github.com/kernel-patches/bpf/actions/runs/5874202=
-507/job/15929012788
->
-> Looks like due to dummy device issue. Either you might need to add this t=
-o
-> the tools/testing/selftests/bpf/config* or perhaps just use veth instead =
-for
-> link_err dev.
->
-It is indeed the dummy driver issue. I will update the config. Thanks
-for notifying me, now I know where to look at build results.
+This adds support for V4L2 M2M based driver for E5010 JPEG Encoder
+which is a stateful JPEG encoder from Imagination technologies
+and is present in TI AM62A SoC.
 
-Yan
+v4l2-compliance test :
+Link: https://gist.github.com/devarsht/17348fc509fe375a630a798196edbb73
 
-> Error from the above link:
->
-> Notice: Success: 370/3177, Skipped: 21, Failed: 2
-> Error: #131 lwt_redirect
->    Error: #131 lwt_redirect
->    test_lwt_redirect:PASS:pthread_create 0 nsec
-> Error: #131/1 lwt_redirect/lwt_redirect_normal
->    Error: #131/1 lwt_redirect/lwt_redirect_normal
->    test_lwt_redirect_run:PASS:netns_create 0 nsec
->    open_netns:PASS:malloc token 0 nsec
->    open_netns:PASS:open /proc/self/ns/net 0 nsec
->    open_netns:PASS:open netns fd 0 nsec
->    open_netns:PASS:setns 0 nsec
->    test_lwt_redirect_run:PASS:setns 0 nsec
->    open_tuntap:PASS:open(/dev/net/tun) 0 nsec
->    open_tuntap:PASS:ioctl(TUNSETIFF) 0 nsec
->    open_tuntap:PASS:fcntl(O_NONBLOCK) 0 nsec
->    setup_redirect_target:PASS:open_tuntap 0 nsec
->    setup_redirect_target:PASS:if_nametoindex 0 nsec
->    setup_redirect_target:FAIL:ip link add link_err type dummy unexpected =
-error: 512 (errno 0)
->    test_lwt_redirect_normal:FAIL:setup_redirect_target unexpected setup_r=
-edirect_target: actual -1 < expected 0
->    close_netns:PASS:setns 0 nsec
-> Error: #131/2 lwt_redirect/lwt_redirect_normal_nomac
->    Error: #131/2 lwt_redirect/lwt_redirect_normal_nomac
->    test_lwt_redirect_run:PASS:netns_create 0 nsec
->    open_netns:PASS:malloc token 0 nsec
->    open_netns:PASS:open /proc/self/ns/net 0 nsec
->    open_netns:PASS:open netns fd 0 nsec
->    open_netns:PASS:setns 0 nsec
->    test_lwt_redirect_run:PASS:setns 0 nsec
->    open_tuntap:PASS:open(/dev/net/tun) 0 nsec
->    open_tuntap:PASS:ioctl(TUNSETIFF) 0 nsec
->    open_tuntap:PASS:fcntl(O_NONBLOCK) 0 nsec
->    setup_redirect_target:PASS:open_tuntap 0 nsec
->    setup_redirect_target:PASS:if_nametoindex 0 nsec
->    setup_redirect_target:FAIL:ip link add link_err type dummy unexpected =
-error: 512 (errno 0)
->    test_lwt_redirect_normal_nomac:FAIL:setup_redirect_target unexpected s=
-etup_redirect_target: actual -1 < expected 0
->    close_netns:PASS:setns 0 nsec
-> Error: #131/3 lwt_redirect/lwt_redirect_dev_down
->    Error: #131/3 lwt_redirect/lwt_redirect_dev_down
->    test_lwt_redirect_run:PASS:netns_create 0 nsec
->    open_netns:PASS:malloc token 0 nsec
->    open_netns:PASS:open /proc/self/ns/net 0 nsec
->    open_netns:PASS:open netns fd 0 nsec
->    open_netns:PASS:setns 0 nsec
->    test_lwt_redirect_run:PASS:setns 0 nsec
->    open_tuntap:PASS:open(/dev/net/tun) 0 nsec
->    open_tuntap:PASS:ioctl(TUNSETIFF) 0 nsec
->    open_tuntap:PASS:fcntl(O_NONBLOCK) 0 nsec
->    setup_redirect_target:PASS:open_tuntap 0 nsec
->    setup_redirect_target:PASS:if_nametoindex 0 nsec
->    setup_redirect_target:FAIL:ip link add link_err type dummy unexpected =
-error: 512 (errno 0)
->    __test_lwt_redirect_dev_down:FAIL:setup_redirect_target unexpected set=
-up_redirect_target: actual -1 < expected 0
->    close_netns:PASS:setns 0 nsec
-> Error: #131/4 lwt_redirect/lwt_redirect_dev_down_nomac
->    Error: #131/4 lwt_redirect/lwt_redirect_dev_down_nomac
->    test_lwt_redirect_run:PASS:netns_create 0 nsec
->    open_netns:PASS:malloc token 0 nsec
->    open_netns:PASS:open /proc/self/ns/net 0 nsec
->    open_netns:PASS:open netns fd 0 nsec
->    open_netns:PASS:setns 0 nsec
->    test_lwt_redirect_run:PASS:setns 0 nsec
->    open_tuntap:PASS:open(/dev/net/tun) 0 nsec
->    open_tuntap:PASS:ioctl(TUNSETIFF) 0 nsec
->    open_tuntap:PASS:fcntl(O_NONBLOCK) 0 nsec
->    setup_redirect_target:PASS:open_tuntap 0 nsec
->    setup_redirect_target:PASS:if_nametoindex 0 nsec
->    setup_redirect_target:FAIL:ip link add link_err type dummy unexpected =
-error: 512 (errno 0)
->    __test_lwt_redirect_dev_down:FAIL:setup_redirect_target unexpected set=
-up_redirect_target: actual -1 < expected 0
->    close_netns:PASS:setns 0 nsec
-> Error: #131/5 lwt_redirect/lwt_redirect_dev_carrier_down
->    Error: #131/5 lwt_redirect/lwt_redirect_dev_carrier_down
->    test_lwt_redirect_run:PASS:netns_create 0 nsec
->    open_netns:PASS:malloc token 0 nsec
->    open_netns:PASS:open /proc/self/ns/net 0 nsec
->    open_netns:PASS:open netns fd 0 nsec
->    open_netns:PASS:setns 0 nsec
->    test_lwt_redirect_run:PASS:setns 0 nsec
->    open_tuntap:PASS:open(/dev/net/tun) 0 nsec
->    open_tuntap:PASS:ioctl(TUNSETIFF) 0 nsec
->    open_tuntap:PASS:fcntl(O_NONBLOCK) 0 nsec
->    setup_redirect_target:PASS:open_tuntap 0 nsec
->    setup_redirect_target:PASS:if_nametoindex 0 nsec
->    setup_redirect_target:FAIL:ip link add link_err type dummy unexpected =
-error: 512 (errno 0)
->    test_lwt_redirect_dev_carrier_down:FAIL:setup_redirect_target unexpect=
-ed setup_redirect_target: actual -1 < expected 0
->    close_netns:PASS:setns 0 nsec
->    test_lwt_redirect:PASS:pthread_join 0 nsec
-> Error: #132 lwt_reroute
->    Error: #132 lwt_reroute
->    test_lwt_reroute:PASS:pthread_create 0 nsec
-> Error: #132/1 lwt_reroute/lwt_reroute_normal_xmit
->    Error: #132/1 lwt_reroute/lwt_reroute_normal_xmit
->    test_lwt_reroute_run:PASS:netns_create 0 nsec
->    open_netns:PASS:malloc token 0 nsec
->    open_netns:PASS:open /proc/self/ns/net 0 nsec
->    open_netns:PASS:open netns fd 0 nsec
->    open_netns:PASS:setns 0 nsec
->    test_lwt_reroute_run:PASS:setns 0 nsec
->    open_tuntap:PASS:open(/dev/net/tun) 0 nsec
->    open_tuntap:PASS:ioctl(TUNSETIFF) 0 nsec
->    open_tuntap:PASS:fcntl(O_NONBLOCK) 0 nsec
->    setup:PASS:open_tun 0 nsec
->    setup:PASS:if_nametoindex 0 nsec
->    setup:FAIL:ip link add link_err type dummy unexpected error: 512 (errn=
-o 0)
->    test_lwt_reroute_normal_xmit:FAIL:setup_reroute unexpected setup_rerou=
-te: actual -1 < expected 0
->    close_netns:PASS:setns 0 nsec
-> Error: #132/2 lwt_reroute/lwt_reroute_qdisc_dropped
->    Error: #132/2 lwt_reroute/lwt_reroute_qdisc_dropped
->    test_lwt_reroute_run:PASS:netns_create 0 nsec
->    open_netns:PASS:malloc token 0 nsec
->    open_netns:PASS:open /proc/self/ns/net 0 nsec
->    open_netns:PASS:open netns fd 0 nsec
->    open_netns:PASS:setns 0 nsec
->    test_lwt_reroute_run:PASS:setns 0 nsec
->    open_tuntap:PASS:open(/dev/net/tun) 0 nsec
->    open_tuntap:PASS:ioctl(TUNSETIFF) 0 nsec
->    open_tuntap:PASS:fcntl(O_NONBLOCK) 0 nsec
->    setup:PASS:open_tun 0 nsec
->    setup:PASS:if_nametoindex 0 nsec
->    setup:FAIL:ip link add link_err type dummy unexpected error: 512 (errn=
-o 0)
->    test_lwt_reroute_qdisc_dropped:FAIL:setup_reroute unexpected setup_rer=
-oute: actual -1 < expected 0
->    close_netns:PASS:setns 0 nsec
->    test_lwt_reroute:PASS:pthread_join 0 nsec
-> Test Results:
->               bpftool: PASS
->            test_progs: FAIL (returned 1)
->              shutdown: CLEAN
-> Error: Process completed with exit code 1.
->
-> Thanks,
-> Daniel
+E5010 JPEG Encoder Manual tests :
 
+Performance:
+Link: https://gist.github.com/devarsht/ef5aba211aae45166681b8b4418d4e65
 
+Functionality:
+Link: https://gist.github.com/devarsht/bfef1e3ead8e858b09cbf418aea753e8
 
---=20
+Compression Quality:
+Link: https://gist.github.com/devarsht/345df9bf7157b4ca094293760e257451
 
-Yan
+Multi Instance:
+Link: https://gist.github.com/devarsht/4b4d734eeb9e0e616837c0836ddbc769
+
+Devarsh Thakkar (4):
+  dt-bindings: media: Add bindings for Imagination E5010 JPEG Encoder
+    driver
+  media: imagination: Add E5010 JPEG Encoder driver
+  arm64: dts: ti: k3-am62a : Add E5010 JPEG Encoder
+  arm64: defconfig: Enable E5010 JPEG Encoder
+
+ .../bindings/media/img,e5010-jpeg-enc.yaml    |   81 +
+ MAINTAINERS                                   |    7 +
+ arch/arm64/boot/dts/ti/k3-am62a-main.dtsi     |   11 +
+ arch/arm64/boot/dts/ti/k3-am62a.dtsi          |    2 +
+ arch/arm64/configs/defconfig                  |  117 +-
+ drivers/media/platform/Kconfig                |    1 +
+ drivers/media/platform/Makefile               |    1 +
+ drivers/media/platform/imagination/Kconfig    |   12 +
+ drivers/media/platform/imagination/Makefile   |    3 +
+ .../platform/imagination/e5010-core-regs.h    |  585 ++++++
+ .../platform/imagination/e5010-jpeg-enc-hw.c  |  320 ++++
+ .../platform/imagination/e5010-jpeg-enc-hw.h  |   42 +
+ .../platform/imagination/e5010-jpeg-enc.c     | 1678 +++++++++++++++++
+ .../platform/imagination/e5010-jpeg-enc.h     |  169 ++
+ .../platform/imagination/e5010-mmu-regs.h     |  311 +++
+ 15 files changed, 3265 insertions(+), 75 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+ create mode 100644 drivers/media/platform/imagination/Kconfig
+ create mode 100644 drivers/media/platform/imagination/Makefile
+ create mode 100644 drivers/media/platform/imagination/e5010-core-regs.h
+ create mode 100644 drivers/media/platform/imagination/e5010-jpeg-enc-hw.c
+ create mode 100644 drivers/media/platform/imagination/e5010-jpeg-enc-hw.h
+ create mode 100644 drivers/media/platform/imagination/e5010-jpeg-enc.c
+ create mode 100644 drivers/media/platform/imagination/e5010-jpeg-enc.h
+ create mode 100644 drivers/media/platform/imagination/e5010-mmu-regs.h
+
+---
+Changelog:
+V1->V2: 
+No change (sending dt-binding and driver together)
+
+V2->V3:
+- Add DONOTMERGE patches for dts and defconfig
+- Update driver with below changes :
+  - Correct license headers
+  - Use more generic name core instead of jasper for base registers
+  - Add Comment for forward declarations
+  - Simplify quantization table calculations
+  - Use v4l2_apply_frmsize_constraints for updating framesize and remove unrequired functions
+  - Place TODO at top of file and in commit message too
+  - Use dev_err_probe helper in probe function
+  - Fix return value checking for failure scenarios in probe function
+  - Use v4l2_err/info/warn helpers instead of dev_err/info/warn helpers
+  - Fix unexpected indentation
+  - Correct commit message
+- Update dt-bindings with below changes :
+  - Add vendor specific compatible 
+  - Fix commit title and message
+  - Update reg names
+  - Update clocks to 1
+  - Fix dts example with proper naming
+-- 
+2.34.1
+
