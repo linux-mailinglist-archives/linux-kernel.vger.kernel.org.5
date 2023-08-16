@@ -2,69 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E6D77E0BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA1877E0C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244757AbjHPLry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 07:47:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56720 "EHLO
+        id S244781AbjHPLtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 07:49:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244768AbjHPLr2 (ORCPT
+        with ESMTP id S244769AbjHPLtG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 07:47:28 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F17E2121
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 04:47:27 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4ff8cf11b90so1784091e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 04:47:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692186445; x=1692791245;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XdVIooP7Ho7O4vx5CwmajztmNRsl01Hr+hDUfrzHogc=;
-        b=xxhn6TRzANpoGLRb2/aK/u4KUe0U1w9sDFilaQQHByky4S5QHKbsJp8JwisGl80UNi
-         FcQgaKhIevk/vspB39SFEvmkcJkUvrBqeVrIFy3oovYYqgLYy7G+dhgOaRzFwFlKhkRH
-         ZxDDTCO7dLbm0Ai0us0JCpFx5A3uQkWdSFL6PMsqRav2pp1jV/Id4rx/RIyN9LK9Jawb
-         XRTy1n0q7JhRCZDcwyiLjIWVlbAU3lyVrBdmDWPMu6Oupfn9Up5tZxJ+D8JJy5qGMMus
-         kEjaYA651WD9LhA81gCBAZzWsuDlYF4T126pvF/K1cz5EYf+Y0p+yMuri7uL3rHrFx9D
-         XTDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692186445; x=1692791245;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XdVIooP7Ho7O4vx5CwmajztmNRsl01Hr+hDUfrzHogc=;
-        b=lPUo6MFusTAFLg/GYewL5V+dSW506vjGpBHaBwCm6xxqkUqA6J4bmZUuyrLEP+dRqa
-         cfCJRwolCkW568/km9b71fusSGgE66+NgRrRJQ6/dz7gbMmo4PYXPI4KWL14Z/k72mbI
-         wyVmJ5Q7ga50Tk8Tprd5WVNxoy1qwrcNMdKJP7CITB9uR38XzVZh05Y0X4ykTq0cYDRc
-         ebBFbk5yLGPO3n/zsdZDVr08nwpmnGsy7+tp9iZ42XO2UIeFx9FZdedLRwj4+ea2cN9N
-         O7W74886MqtBKx9UG3RfGxM7XMxkDxh5apRT00DgIPB0airK38b2JgzGadcO4HShHTBR
-         V+dQ==
-X-Gm-Message-State: AOJu0Yx8y3OSxnyAevnXo6MYXQlJK/qNmivWsHKY2s02VxyY7Xq4xi9G
-        +hWygwUjsjZTbaRBFo4I5YTnKw==
-X-Google-Smtp-Source: AGHT+IHInKejBBDdX5k76fJuLZ7aKj8UaU3udDXP0w2kVMdO5TH/+uC0Y5X8xwSDsdjaT9pkk/IcoQ==
-X-Received: by 2002:a05:6512:128b:b0:4f8:6625:f2ca with SMTP id u11-20020a056512128b00b004f86625f2camr1769155lfs.61.1692186445122;
-        Wed, 16 Aug 2023 04:47:25 -0700 (PDT)
-Received: from uffe-tuxpro14.. (h-94-254-63-18.NA.cust.bahnhof.se. [94.254.63.18])
-        by smtp.gmail.com with ESMTPSA id a15-20020a056512374f00b004fddaddeb63sm2895683lfs.137.2023.08.16.04.47.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 04:47:24 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Christian Lohle <cloehle@hyperstone.com>,
-        linux-kernel@vger.kernel.org,
-        Christian Loehle <CLoehle@hyperstone.com>
-Subject: [PATCH] mmc: core: Fix error propagation for some ioctl commands
-Date:   Wed, 16 Aug 2023 13:47:12 +0200
-Message-Id: <20230816114712.25093-1-ulf.hansson@linaro.org>
+        Wed, 16 Aug 2023 07:49:06 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7B60B110;
+        Wed, 16 Aug 2023 04:49:04 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1EA4C1063;
+        Wed, 16 Aug 2023 04:49:45 -0700 (PDT)
+Received: from e127643.arm.com (unknown [10.57.4.137])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 738C43F64C;
+        Wed, 16 Aug 2023 04:49:00 -0700 (PDT)
+From:   James Clark <james.clark@arm.com>
+To:     linux-perf-users@vger.kernel.org, irogers@google.com,
+        john.g.garry@oracle.com, renyu.zj@linux.alibaba.com,
+        acme@kernel.org
+Cc:     James Clark <james.clark@arm.com>, Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Haixin Yu <yuhaixin.yhx@linux.alibaba.com>,
+        Nick Forrington <nick.forrington@arm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Sohom Datta <sohomdatta1@gmail.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v6 0/6] perf vendor events arm64: Update N2 and V2 metrics and events using Arm telemetry repo
+Date:   Wed, 16 Aug 2023 12:47:42 +0100
+Message-Id: <20230816114841.1679234-1-james.clark@arm.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,104 +59,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Userspace has currently has no way of checking the internal R1 response
-error bits for some commands. This is a problem for some commands, like
-RPMB for example. Typically, we may detect that the busy completion
-successfully has ended, while in fact the card did not complete the
-requested operation.
+This is a completely new approach from V3 [1], although the metrics and
+event descriptions are autogenerated, the topdown metrics have been
+manually edited to use #no_stall_errata (now directly comparing on the
+CPUID in v5). This removes the need to duplicate the whole set of JSONs
+when only the topdown metrics are different between N2 and V2.
 
-To fix the problem, let's always poll with CDM13 for these commands and
-during the polling aggregate the R1 response bits. Before completing the
-ioctl request, let's propagate the R1 response bits too.
+The CPU ID comparison function still needs to change so that the new
+literal can compare on versions, but now no change is needed to mapfile
+or the PMU event generation code because we still only support one
+set of JSONs per CPU.
 
-Cc: Avri Altman <avri.altman@wdc.com>
-Co-developed-by: Christian Loehle <CLoehle@hyperstone.com>
-Signed-off-by: Christian Loehle <CLoehle@hyperstone.com>
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
----
+[1]: https://lore.kernel.org/lkml/20230711100218.1651995-1-james.clark@arm.com/
 
-Christian, I took the liberty of re-working your previous patch [1]. But rather
-than keeping your authorship I added you as a co-developer. Please tell me if
-you prefer differently.
+------
 
-Kind regards
-Uffe
+Changes since v5:
+  * Split patch 5 into one to add the new expression builtin and one to
+    update the Arm metric formulas
+  * Make _get_cpuid() still return an error if reading the file fails
+  * Improve the return value comment on strcmp_cpuid_str()
+  * Remove the "The events json file with the highest matching version
+    is used." comment because that was only true in v2
+  * Drop patch 1 because it was applied (I kept patch 4 even though it
+    was applied so that there is some context)
 
-[1]
-https://lore.kernel.org/all/26d178dcfc2f4b7d9010145d0c051394@hyperstone.com/ 
+Changes since v4:
+  * Replace the #no_stall_errata literal with a more generic function
+    for comparing CPU IDs. This will hopefully keep configuration out
+    of the code and inside the JSONs
 
----
- drivers/mmc/core/block.c | 31 ++++++++++++++++++++-----------
- 1 file changed, 20 insertions(+), 11 deletions(-)
+Changes since v3:
+  * Instead of duplicating all the metrics, add a new expression
+    literal that can be used to share the same metrics between N2 and V2
+  * Move tests to arch/arm64/tests
+  * Remove changes from jevents.py and mapfile.csv
 
-diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-index b6f4be25b31b..62a8aacc996c 100644
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@ -179,6 +179,7 @@ static void mmc_blk_rw_rq_prep(struct mmc_queue_req *mqrq,
- 			       struct mmc_queue *mq);
- static void mmc_blk_hsq_req_done(struct mmc_request *mrq);
- static int mmc_spi_err_check(struct mmc_card *card);
-+static int mmc_blk_busy_cb(void *cb_data, bool *busy);
- 
- static struct mmc_blk_data *mmc_blk_get(struct gendisk *disk)
- {
-@@ -470,7 +471,7 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *card, struct mmc_blk_data *md,
- 	struct mmc_data data = {};
- 	struct mmc_request mrq = {};
- 	struct scatterlist sg;
--	bool r1b_resp, use_r1b_resp = false;
-+	bool r1b_resp;
- 	unsigned int busy_timeout_ms;
- 	int err;
- 	unsigned int target_part;
-@@ -551,8 +552,7 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *card, struct mmc_blk_data *md,
- 	busy_timeout_ms = idata->ic.cmd_timeout_ms ? : MMC_BLK_TIMEOUT_MS;
- 	r1b_resp = (cmd.flags & MMC_RSP_R1B) == MMC_RSP_R1B;
- 	if (r1b_resp)
--		use_r1b_resp = mmc_prepare_busy_cmd(card->host, &cmd,
--						    busy_timeout_ms);
-+		mmc_prepare_busy_cmd(card->host, &cmd, busy_timeout_ms);
- 
- 	mmc_wait_for_req(card->host, &mrq);
- 	memcpy(&idata->ic.response, cmd.resp, sizeof(cmd.resp));
-@@ -605,19 +605,28 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *card, struct mmc_blk_data *md,
- 	if (idata->ic.postsleep_min_us)
- 		usleep_range(idata->ic.postsleep_min_us, idata->ic.postsleep_max_us);
- 
--	/* No need to poll when using HW busy detection. */
--	if ((card->host->caps & MMC_CAP_WAIT_WHILE_BUSY) && use_r1b_resp)
--		return 0;
--
- 	if (mmc_host_is_spi(card->host)) {
- 		if (idata->ic.write_flag || r1b_resp || cmd.flags & MMC_RSP_SPI_BUSY)
- 			return mmc_spi_err_check(card);
- 		return err;
- 	}
--	/* Ensure RPMB/R1B command has completed by polling with CMD13. */
--	if (idata->rpmb || r1b_resp)
--		err = mmc_poll_for_busy(card, busy_timeout_ms, false,
--					MMC_BUSY_IO);
-+
-+	/*
-+	 * Ensure RPMB, writes and R1B responses are completed by polling with
-+	 * CMD13. Note that, usually we don't need to poll when using HW busy
-+	 * detection, but here it's needed since some commands may indicate the
-+	 * error through the R1 status bits.
-+	 */
-+	if (idata->rpmb || idata->ic.write_flag || r1b_resp) {
-+		struct mmc_blk_busy_data cb_data;
-+
-+		cb_data.card = card;
-+		cb_data.status = 0;
-+		err = __mmc_poll_for_busy(card->host, 0, busy_timeout_ms,
-+					  &mmc_blk_busy_cb, &cb_data);
-+
-+		idata->ic.response[0] = cb_data.status;
-+	}
- 
- 	return err;
- }
+Changes since v2:
+  * version -> variant in second commit message
+  * Add a bit more detail about version matching in the second commit
+    message
+  * Update the comments in pmu-events/arch/arm64/mapfile.csv to say that
+    variant and revision fields are now used
+  * Increase the CC list
+
+Changes since v1:
+  * Split last change into two so it doesn't hit the mailing list size
+    limit
+
+James Clark (6):
+  perf arm64: Allow version comparisons of CPU IDs
+  perf test: Add a test for the new Arm CPU ID comparison behavior
+  perf vendor events arm64: Update scale units and descriptions of
+    common topdown metrics
+  perf jevents: Add a new expression builtin strcmp_cpuid_str()
+  perf vendor events arm64: Update stall_slot workaround for N2 r0p3
+  perf vendor events arm64: Update N2 and V2 metrics and events using
+    Arm telemetry repo
+
+ tools/perf/arch/arm64/include/arch-tests.h    |   3 +
+ tools/perf/arch/arm64/tests/Build             |   1 +
+ tools/perf/arch/arm64/tests/arch-tests.c      |   4 +
+ tools/perf/arch/arm64/tests/cpuid-match.c     |  38 ++
+ tools/perf/arch/arm64/util/header.c           |  67 +++-
+ tools/perf/arch/arm64/util/pmu.c              |  18 +-
+ .../arch/arm64/arm/neoverse-n2-v2/branch.json |   8 -
+ .../arch/arm64/arm/neoverse-n2-v2/bus.json    |  18 +-
+ .../arch/arm64/arm/neoverse-n2-v2/cache.json  | 155 --------
+ .../arm64/arm/neoverse-n2-v2/exception.json   |  45 ++-
+ .../arm/neoverse-n2-v2/fp_operation.json      |  22 ++
+ .../arm64/arm/neoverse-n2-v2/general.json     |  10 +
+ .../arm64/arm/neoverse-n2-v2/instruction.json | 143 -------
+ .../arm64/arm/neoverse-n2-v2/l1d_cache.json   |  54 +++
+ .../arm64/arm/neoverse-n2-v2/l1i_cache.json   |  14 +
+ .../arm64/arm/neoverse-n2-v2/l2_cache.json    |  50 +++
+ .../arm64/arm/neoverse-n2-v2/l3_cache.json    |  22 ++
+ .../arm64/arm/neoverse-n2-v2/ll_cache.json    |  10 +
+ .../arch/arm64/arm/neoverse-n2-v2/memory.json |  39 +-
+ .../arm64/arm/neoverse-n2-v2/metrics.json     | 365 ++++++++++--------
+ .../arm64/arm/neoverse-n2-v2/pipeline.json    |  23 --
+ .../arm64/arm/neoverse-n2-v2/retired.json     |  30 ++
+ .../arch/arm64/arm/neoverse-n2-v2/spe.json    |  12 +-
+ .../arm/neoverse-n2-v2/spec_operation.json    | 110 ++++++
+ .../arch/arm64/arm/neoverse-n2-v2/stall.json  |  30 ++
+ .../arch/arm64/arm/neoverse-n2-v2/sve.json    |  50 +++
+ .../arch/arm64/arm/neoverse-n2-v2/tlb.json    |  66 ++++
+ .../arch/arm64/arm/neoverse-n2-v2/trace.json  |  27 +-
+ tools/perf/pmu-events/arch/arm64/sbsa.json    |  24 +-
+ tools/perf/pmu-events/metric.py               |  17 +-
+ tools/perf/util/expr.c                        |  18 +
+ tools/perf/util/expr.h                        |   1 +
+ tools/perf/util/expr.l                        |   1 +
+ tools/perf/util/expr.y                        |   8 +-
+ tools/perf/util/pmu.c                         |  17 +
+ tools/perf/util/pmu.h                         |   1 +
+ 36 files changed, 923 insertions(+), 598 deletions(-)
+ create mode 100644 tools/perf/arch/arm64/tests/cpuid-match.c
+ delete mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/branch.json
+ delete mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/fp_operation.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/general.json
+ delete mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/instruction.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/l1d_cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/l1i_cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/l2_cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/l3_cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/ll_cache.json
+ delete mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/pipeline.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/retired.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/spec_operation.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/stall.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/sve.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/arm/neoverse-n2-v2/tlb.json
+
 -- 
 2.34.1
 
