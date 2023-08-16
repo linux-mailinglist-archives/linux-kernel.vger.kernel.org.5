@@ -2,212 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4240577DD13
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E76B77DD17
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243244AbjHPJO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 05:14:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53054 "EHLO
+        id S243254AbjHPJPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 05:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243231AbjHPJOj (ORCPT
+        with ESMTP id S243284AbjHPJP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 05:14:39 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0FCA7173F;
-        Wed, 16 Aug 2023 02:14:38 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E4CC01063;
-        Wed, 16 Aug 2023 02:15:18 -0700 (PDT)
-Received: from [10.57.2.104] (unknown [10.57.2.104])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 952E63F64C;
-        Wed, 16 Aug 2023 02:14:34 -0700 (PDT)
-Message-ID: <fc71f840-8c4e-eeac-580b-5e0065a4cbee@arm.com>
-Date:   Wed, 16 Aug 2023 10:14:33 +0100
+        Wed, 16 Aug 2023 05:15:27 -0400
+Received: from out-1.mta0.migadu.com (out-1.mta0.migadu.com [91.218.175.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A55173F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:15:25 -0700 (PDT)
+Message-ID: <9091fa43-1c38-58f4-b23d-7705fc647293@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1692177324;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7hzRwpdWY8QIffBbn0D1YNeGrZzAgPJoF3wC1s2tY6M=;
+        b=XQBooO+R0LjluBdeAtLEQNXIFeBN6MY67jQWB2CEMoSSKsz6vpgkY7xN3PgdYHvND952wE
+        zbN7gPLjguh29PjLy9NxSKmPOg6mpSL4T4Lb/CHidSINUwBe4GZclVHq6q37qptqGvi60P
+        oZky3NRnyqPGtUHfvHfoJCW9oQhl8x0=
+Date:   Wed, 16 Aug 2023 17:15:14 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v5 3/6] perf test: Add a test for the new Arm CPU ID
- comparison behavior
+Subject: Re: [PATCH] null_blk: fix poll request timeout handling
 Content-Language: en-US
-To:     John Garry <john.g.garry@oracle.com>,
-        linux-perf-users@vger.kernel.org, irogers@google.com,
-        renyu.zj@linux.alibaba.com
-Cc:     Will Deacon <will@kernel.org>, Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Nick Forrington <nick.forrington@arm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Sohom Datta <sohomdatta1@gmail.com>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-References: <20230811144017.491628-1-james.clark@arm.com>
- <20230811144017.491628-4-james.clark@arm.com>
- <3c382d80-7666-8207-a534-0b20807d3f6c@oracle.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <3c382d80-7666-8207-a534-0b20807d3f6c@oracle.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     axboe@kernel.dk, kch@nvidia.com, damien.lemoal@opensource.wdc.com,
+        bvanassche@acm.org, nj.shetty@samsung.com, kbusch@kernel.org,
+        zhouchengming@bytedance.com, akinobu.mita@gmail.com,
+        shinichiro.kawasaki@wdc.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230815060443.660263-1-chengming.zhou@linux.dev>
+ <23383.1692087575@warthog.procyon.org.uk>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <23383.1692087575@warthog.procyon.org.uk>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 15/08/2023 10:47, John Garry wrote:
-> On 11/08/2023 15:39, James Clark wrote:
->> Now that variant and revision fields are taken into account the behavior
->> is slightly more complicated so add a test to ensure that this behaves
->> as expected.
+On 2023/8/15 16:19, David Howells wrote:
+> chengming.zhou@linux.dev wrote:
+> 
+>> From: Chengming Zhou <zhouchengming@bytedance.com>
 >>
->> Signed-off-by: James Clark <james.clark@arm.com>
->> ---
->>   tools/perf/arch/arm64/include/arch-tests.h |  3 ++
->>   tools/perf/arch/arm64/tests/Build          |  1 +
->>   tools/perf/arch/arm64/tests/arch-tests.c   |  4 +++
->>   tools/perf/arch/arm64/tests/cpuid-match.c  | 38 ++++++++++++++++++++++
->>   4 files changed, 46 insertions(+)
->>   create mode 100644 tools/perf/arch/arm64/tests/cpuid-match.c
+>> When doing io_uring benchmark on /dev/nullb0, it's easy to crash the
+>> kernel if poll requests timeout triggered, as reported by David. [1]
 >>
->> diff --git a/tools/perf/arch/arm64/include/arch-tests.h
->> b/tools/perf/arch/arm64/include/arch-tests.h
->> index 452b3d904521..474d7cf5afbd 100644
->> --- a/tools/perf/arch/arm64/include/arch-tests.h
->> +++ b/tools/perf/arch/arm64/include/arch-tests.h
->> @@ -2,6 +2,9 @@
->>   #ifndef ARCH_TESTS_H
->>   #define ARCH_TESTS_H
->>   +struct test_suite;
->> +
->> +int test__cpuid_match(struct test_suite *test, int subtest);
->>   extern struct test_suite *arch_tests[];
->>     #endif
->> diff --git a/tools/perf/arch/arm64/tests/Build
->> b/tools/perf/arch/arm64/tests/Build
->> index a61c06bdb757..e337c09e7f56 100644
->> --- a/tools/perf/arch/arm64/tests/Build
->> +++ b/tools/perf/arch/arm64/tests/Build
->> @@ -2,3 +2,4 @@ perf-y += regs_load.o
->>   perf-$(CONFIG_DWARF_UNWIND) += dwarf-unwind.o
->>     perf-y += arch-tests.o
->> +perf-y += cpuid-match.o
->> diff --git a/tools/perf/arch/arm64/tests/arch-tests.c
->> b/tools/perf/arch/arm64/tests/arch-tests.c
->> index ad16b4f8f63e..74932e72c727 100644
->> --- a/tools/perf/arch/arm64/tests/arch-tests.c
->> +++ b/tools/perf/arch/arm64/tests/arch-tests.c
->> @@ -3,9 +3,13 @@
->>   #include "tests/tests.h"
->>   #include "arch-tests.h"
->>   +
->> +DEFINE_SUITE("arm64 CPUID matching", cpuid_match);
->> +
->>   struct test_suite *arch_tests[] = {
->>   #ifdef HAVE_DWARF_UNWIND_SUPPORT
->>       &suite__dwarf_unwind,
->>   #endif
->> +    &suite__cpuid_match,
->>       NULL,
->>   };
->> diff --git a/tools/perf/arch/arm64/tests/cpuid-match.c
->> b/tools/perf/arch/arm64/tests/cpuid-match.c
->> new file mode 100644
->> index 000000000000..af0871b54ae7
->> --- /dev/null
->> +++ b/tools/perf/arch/arm64/tests/cpuid-match.c
->> @@ -0,0 +1,38 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +#include <linux/compiler.h>
->> +
->> +#include "arch-tests.h"
->> +#include "tests/tests.h"
->> +#include "util/header.h"
->> +
->> +int test__cpuid_match(struct test_suite *test __maybe_unused,
->> +                 int subtest __maybe_unused)
->> +{
->> +    /* midr with no leading zeros matches */
->> +    if (strcmp_cpuid_str("0x410fd0c0", "0x00000000410fd0c0"))
->> +        return -1;
->> +    /* Upper case matches */
->> +    if (strcmp_cpuid_str("0x410fd0c0", "0x00000000410FD0C0"))
->> +        return -1;
->> +    /* r0p0 = r0p0 matches */
->> +    if (strcmp_cpuid_str("0x00000000410fd480", "0x00000000410fd480"))
->> +        return -1;
->> +    /* r0p1 > r0p0 matches */
->> +    if (strcmp_cpuid_str("0x00000000410fd480", "0x00000000410fd481"))
->> +        return -1;
->> +    /* r1p0 > r0p0 matches*/
->> +    if (strcmp_cpuid_str("0x00000000410fd480", "0x00000000411fd480"))
->> +        return -1;
->> +    /* r0p0 < r0p1 doesn't match */
->> +    if (!strcmp_cpuid_str("0x00000000410fd481", "0x00000000410fd480"))
->> +        return -1;
->> +    /* r0p0 < r1p0 doesn't match */
->> +    if (!strcmp_cpuid_str("0x00000000411fd480", "0x00000000410fd480"))
->> +        return -1;
->> +    /* Different CPU doesn't match */
->> +    if (!strcmp_cpuid_str("0x00000000410fd4c0", "0x00000000430f0af0"))
->> +        return -1;
->> +
->> +    return 0;
->> +}
->> +
+>> BUG: kernel NULL pointer dereference, address: 0000000000000008
+>> Workqueue: kblockd blk_mq_timeout_work
+>> RIP: 0010:null_timeout_rq+0x4e/0x91
+>> Call Trace:
+>>  ? __die_body+0x1a/0x5c
+>>  ? page_fault_oops+0x6f/0x9c
+>>  ? kernelmode_fixup_or_oops+0xc6/0xd6
+>>  ? __bad_area_nosemaphore+0x44/0x1eb
+>>  ? exc_page_fault+0xe2/0xf4
+>>  ? asm_exc_page_fault+0x22/0x30
+>>  ? null_timeout_rq+0x4e/0x91
+>>  blk_mq_handle_expired+0x31/0x4b
+>>  bt_iter+0x68/0x84
+>>  ? bt_tags_iter+0x81/0x81
+>>  __sbitmap_for_each_set.constprop.0+0xb0/0xf2
+>>  ? __blk_mq_complete_request_remote+0xf/0xf
+>>  bt_for_each+0x46/0x64
+>>  ? __blk_mq_complete_request_remote+0xf/0xf
+>>  ? percpu_ref_get_many+0xc/0x2a
+>>  blk_mq_queue_tag_busy_iter+0x14d/0x18e
+>>  blk_mq_timeout_work+0x95/0x127
+>>  process_one_work+0x185/0x263
+>>  worker_thread+0x1b5/0x227
+>>  ? rescuer_thread+0x287/0x287
+>>  kthread+0xfa/0x102
+>>  ? kthread_complete_and_exit+0x1b/0x1b
+>>  ret_from_fork+0x22/0x30
+>>
+>> This is indeed a race problem between null_timeout_rq() and null_poll().
+>>
+>> null_poll()				null_timeout_rq()
+>>   spin_lock(&nq->poll_lock)
+>>   list_splice_init(&nq->poll_list, &list)
+>>   spin_unlock(&nq->poll_lock)
+>>
+>>   while (!list_empty(&list))
+>>     req = list_first_entry()
+>>     list_del_init()
+>>     ...
+>>     blk_mq_add_to_batch()
+>>     // req->rq_next = NULL
+>> 					spin_lock(&nq->poll_lock)
+>>
+>> 					// rq->queuelist->next == NULL
+>> 					list_del_init(&rq->queuelist)
+>>
+>> 					spin_unlock(&nq->poll_lock)
+>>
+>> What's worse is that we don't call blk_mq_complete_request_remote()
+>> before blk_mq_add_to_batch(), so these completed requests have wrong
+>> rq->state == MQ_RQ_IN_FLIGHT. We can easily check this using bpftrace:
+>>
+>> ```
+>> bpftrace -e 'kretfunc:null_blk:null_poll {
+>>   $iob=(struct io_comp_batch *)args->iob;
+>>   @[$iob->req_list->state]=count();
+>> }'
+>>
+>> @[1]: 51708
+>> ```
+>>
+>> Fix these problems by setting requests state to MQ_RQ_COMPLETE under
+>> nq->poll_lock protection, in which null_timeout_rq() can safely detect
+>> this race and early return.
+>>
+>> [1] https://lore.kernel.org/all/3893581.1691785261@warthog.procyon.org.uk/
+>>
+>> Fixes: 0a593fbbc245 ("null_blk: poll queue support")
+>> Reported-by: David Howells <dhowells@redhat.com>
+>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 > 
-> Would it be possible to put this in core test code, since x86 also
-> supports strcmp_cpuid_str()?
+> Okay, the oops no longer seems to happen, so on that basis:
+> 
+> Tested-by: David Howells <dhowells@redhat.com>
 > 
 
-That's how I started, but Ian suggested to move it to an arch specific
-folder because that's what it was testing.
+Yes, this patch just fixes the kernel oops when request timeout happened.
 
-We could still add test__cpuid_match() in the x86 folder rather than
-adding it with #ifdefs, but I don't think it needs to be done here
-because I haven't touched the x86 code.
+> 
+> However, running:
+> 
+> 	./fio/t/io_uring -n4 /dev/nullb0
+> 
+> and then interrupting it with ctrl-C after a while dumps a whole load of
+> messages into the dmesg log (excerpt attached).  It seems wrong that the user
+> should be able to generate a dump like this just by interrupting - but I guess
+> as it's null_blk it probably doesn't matter.
 
-> Maybe we would have an structure per arch of cpuids and expected
-> results, like
+I can reproduce it, maybe an issue in io_uring. Although io_uring will reap
+all pending requests when task exit, it seems that it will block for some
+seconds before doing reap, so timeout happen. I'm not sure, just some guess ;-)
+
+Thanks.
+
 > 
-> struct cpuid_match {
->     char *cpuid1;
->     char *cpuid1;
->     int expected_result;
-> };
+> David
+> ---
+> null_blk: rq 00000000bb2d3264 timed out
+> timeout error, dev nullb0, sector 328372624 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
+> null_blk: rq 00000000abcc1075 timed out
+> timeout error, dev nullb0, sector 378610072 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
+> null_blk: rq 00000000d4bdc71f timed out
+> timeout error, dev nullb0, sector 185005312 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
+> null_blk: rq 00000000f4ffddee timed out
+> timeout error, dev nullb0, sector 206118608 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
+> null_blk: rq 000000001e68b709 timed out
+> timeout error, dev nullb0, sector 310381160 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
+> null_blk: rq 00000000bfeafe97 timed out
+> timeout error, dev nullb0, sector 52036480 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
+> null_blk: rq 00000000aa67d21c timed out
+> timeout error, dev nullb0, sector 22746448 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
+> null_blk: rq 00000000faec1291 timed out
+> timeout error, dev nullb0, sector 391201440 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
+> null_blk: rq 00000000c634428c timed out
+> timeout error, dev nullb0, sector 237216136 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
+> null_blk: rq 0000000077f91a5d timed out
+> timeout error, dev nullb0, sector 453778912 op 0x0:(READ) flags 0xe00000 phys_seg 1 prio class 2
+> null_blk: rq 000000003076467c timed out
+> null_blk: rq 000000009c172678 timed out
+> null_blk: rq 000000002df50b48 timed out
+> null_blk: rq 00000000e4c66900 timed out
+> null_blk: rq 0000000082606e31 timed out
+> null_blk: rq 00000000fe21ffdc timed out
+> null_blk: rq 000000005e5c5173 timed out
+> null_blk: rq 00000000b0a0d20c timed out
+> null_blk: rq 000000008c729e47 timed out
+> null_blk: rq 00000000970f75a0 timed out
+> null_blk: rq 000000002ad3c45a timed out
 > 
-> 
-> #ifdef ARM64
->  cpuid_match_array[] = {
->     {"0x410fd0c0", "0x00000000410FD0C0", -1},
->     {"0x00000000410fd480", "0x00000000410fd480", -1},
->     ...
->     {} /* sentinel */
-> 
-> };
-> #else if defined(X86)
->  cpuid_match_array[] = {
->     {....}
->     ...
->     {} /* sentinel */
-> 
-> };
-> #else
-> /* no support */
-> #endif
-> 
-> Thanks,
-> John
