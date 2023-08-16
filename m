@@ -2,75 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D52277E65B
+	by mail.lfdr.de (Postfix) with ESMTP id 932CA77E65C
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344676AbjHPQ1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 12:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54982 "EHLO
+        id S1344685AbjHPQ1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 12:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344716AbjHPQ04 (ORCPT
+        with ESMTP id S1344734AbjHPQ1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 12:26:56 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCEF1B4;
-        Wed, 16 Aug 2023 09:26:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4231761756;
-        Wed, 16 Aug 2023 16:26:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DBA7C433C8;
-        Wed, 16 Aug 2023 16:26:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1692203209;
-        bh=XBmNXo56o9zWOdDYjFcNbBLRq5ZXa2vRzhhpN3dm3EQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YhdbozxPAhs2Yjhn4jGX9FtyIO1su/3cx8O7NteSl4+NQY/KxUj8plyvENUHsZixj
-         8tMw05jXKvqkjpj6OQx3ydO1LxY8ogqNzyQ9QbUfwtF3xsr6OWzygcTEPswPS/+ys6
-         fwathhk3ZlHbfsnzN7xEsMsBBu3TFvig8l9vJH9o=
-Date:   Wed, 16 Aug 2023 18:26:47 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.1 000/149] 6.1.46-rc1 review
-Message-ID: <2023081631-uproar-tapered-2221@gregkh>
-References: <20230813211718.757428827@linuxfoundation.org>
- <b392e1a8-b987-4993-bd45-035db9415a6e@roeck-us.net>
+        Wed, 16 Aug 2023 12:27:02 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998721B4
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 09:27:01 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-76d1dc1ebfdso1783485a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 09:27:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692203221; x=1692808021;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6f27s+Wx+pCW5RRcZkqOBNW0HED0Cz6eU7OxX3HyNik=;
+        b=FAgOhxhO3dwvhjhio2XKGFgsM0+HfIgj3q1ChYnRzYJuRwtJIgyS/KLSQFqHd/ll3U
+         1VlBd129z3vWntft2xlS2vsHBk16LzIkDE1r3kwodVKSH5nsKVKWsRKAkg5+mhmJbNua
+         2RCp5cSUSFmU+QD0rPS3oNwzk2ZiaqA5PJivj3c24pnWXhceYCxCQJ0m5/ZTSjdGCwtB
+         Gipg9sNmA7/GmKFJ3R97fDndFisoZshFVmrQRb+lsL69ARfwXcptzhZMiFNO7I8r05Gh
+         s1PqfWHdQtogqyOdBtGafO+thLPuJWEaNRWwgaRB4dPrjx0hy3OX5ov93UOW7KQQTWHZ
+         OR2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692203221; x=1692808021;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6f27s+Wx+pCW5RRcZkqOBNW0HED0Cz6eU7OxX3HyNik=;
+        b=ZaJ0Z6DQAQMBVPMDmEzGsWcVAZ3CJhpdC5yvGPyaXOXNd82j0hssOrGMdbK7K0Y+A7
+         UMzc4FwPDyA8EZivUrkwn1f6XK3IgdRftflX0ulAgxZlnwz/xwIl1j/KNTJEWLX0FWHg
+         g9+7jh+u/WaNG1l0hNjCxWK/KZ24JY92rgjfNROEQkPk8arSGGX27kgAhV5vRKu2S7kE
+         Gt7sMXGTnmEb9j3NzZ9VTltMTFSjesT8J7edwPdwlaImvhGG1YoikyrdKNALWLoZRbG5
+         uNUURpdWCUWnASqycktnWfYtz4C3ogPMixExtwWvK5tNejED0cL0SUVboZ1X15HgqXTh
+         1ZiQ==
+X-Gm-Message-State: AOJu0Yxbqr9Je2dUHRwLP6QAlhFulX3RAvchy2iWQPy1h661gT/5YKLc
+        PEha560uAPfRRsHOPT/HTycbKmh7C3Cn9rfoM83FnA==
+X-Google-Smtp-Source: AGHT+IE2s1Q6441rknpJ44fk3rDX1cxX8JweaKnu0+1b94qtJnFJis3dzfKVmtrglJAqPmBMRNJeEh4LCzVinAA4qyw=
+X-Received: by 2002:a05:6214:d64:b0:636:3f18:4c2b with SMTP id
+ 4-20020a0562140d6400b006363f184c2bmr125290qvs.29.1692203220632; Wed, 16 Aug
+ 2023 09:27:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b392e1a8-b987-4993-bd45-035db9415a6e@roeck-us.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230726090628.1784-1-dg573847474@gmail.com>
+In-Reply-To: <20230726090628.1784-1-dg573847474@gmail.com>
+From:   Jassi Brar <jaswinder.singh@linaro.org>
+Date:   Wed, 16 Aug 2023 11:26:50 -0500
+Message-ID: <CAJe_ZhcN7P7z_W9r5RZ6qA5qLRkXzC3cw7+Vj3GXGyw5HuFxgw@mail.gmail.com>
+Subject: Re: [PATCH RESEND] dmaengine: milbeaut-hdmac: Fix potential deadlock
+ on &mc->vc.lock
+To:     Chengfeng Ye <dg573847474@gmail.com>
+Cc:     vkoul@kernel.org, sugaya.taichi@socionext.com,
+        orito.takao@socionext.com, len.baker@gmx.com,
+        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 07:04:57AM -0700, Guenter Roeck wrote:
-> On Sun, Aug 13, 2023 at 11:17:25PM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 6.1.46 release.
-> > There are 149 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Tue, 15 Aug 2023 21:16:53 +0000.
-> > Anything received after that time might be too late.
-> 
-> Booting with f2fs root file systems still crashes in this release
-> candidate. Would it make sense to mark f2fs as broken in v6.1.y ?
+On Wed, 26 Jul 2023 at 04:06, Chengfeng Ye <dg573847474@gmail.com> wrote:
+>
+> As &mc->vc.lock is acquired by milbeaut_hdmac_interrupt() under irq
+> context, other acquisition of the same lock under process context should
+> disable irq, otherwise deadlock could happen if the irq preempts the
+> execution of process context code while the lock is held in process context
+> on the same CPU.
+>
+> milbeaut_hdmac_chan_config(), milbeaut_hdmac_chan_resume() and
+> milbeaut_hdmac_chan_pause() are such callback functions not disable irq by
+> default.
+>
+> Possible deadlock scenario:
+> milbeaut_hdmac_chan_config()
+>     -> spin_lock(&mc->vc.lock)
+>         <hard interruption>
+>         -> milbeaut_hdmac_interrupt()
+>         -> spin_lock(&mc->vc.lock); (deadlock here)
+>
+> This flaw was found by an experimental static analysis tool I am developing
+> for irq-related deadlock.
+>
+> The tentative patch fixes the potential deadlock by spin_lock_irqsave() in
+> the three callback functions to disable irq while lock is held.
+>
+> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
+> ---
+>  drivers/dma/milbeaut-hdmac.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/dma/milbeaut-hdmac.c b/drivers/dma/milbeaut-hdmac.c
+> index 1b0a95892627..6151c830ff6e 100644
+> --- a/drivers/dma/milbeaut-hdmac.c
+> +++ b/drivers/dma/milbeaut-hdmac.c
+> @@ -214,10 +214,11 @@ milbeaut_hdmac_chan_config(struct dma_chan *chan, struct dma_slave_config *cfg)
+>  {
+>         struct virt_dma_chan *vc = to_virt_chan(chan);
+>         struct milbeaut_hdmac_chan *mc = to_milbeaut_hdmac_chan(vc);
+> +       unsigned long flags;
+>
+> -       spin_lock(&mc->vc.lock);
+> +       spin_lock_irqsave(&mc->vc.lock, flags);
+>
+while at it, maybe also use vc->lock, instead of mc->vc.lock here and
+in other two places, just like the rest of driver.
 
-Ick, yeah, let me dig into this next week and figure out what went
-wrong...
+Acked-by: Jassi Brar <jaswinder.singh@linaro.org>
 
-greg k-h
+thanks.
