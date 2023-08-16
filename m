@@ -2,87 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF0677E909
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 070E777E8CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345638AbjHPStR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 14:49:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47520 "EHLO
+        id S1345571AbjHPSgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 14:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345634AbjHPSsw (ORCPT
+        with ESMTP id S1345562AbjHPSgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 14:48:52 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F01E26AB
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:48:51 -0700 (PDT)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37GIjKgM019745;
-        Wed, 16 Aug 2023 18:48:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=HGRgSwAZpEdiyidr/28SwniT8wJgFtVIIsMtwRj/8Hk=;
- b=CsmHQChadG9jm2Q3U6DzEYj8B6Rw0qAOgQ+vVKGInqAzDyacR8SoyXPnYMF15XWSSB3y
- tQKUQ/9/fDhuplc+UU8+DLGRQMMrXpX0iuaN0c47Ssl8R/HdTlchD1jv3pjlf8wT48Ja
- cBshdk4fyN1sUVnjN/EYBzsDaGUrMQJlXVqipFJuXKFrhIvLXzAg49mjHLH3SuoM/866
- M/qjDDlw7IVlBPsfWZH8/8Kic6DwTLJ7LZp/nyXgIbEgcctJIU9eFrof6E3OiaWNQSTZ
- GrNwzom2gtwT6sjzYhYgltWAk+1x2n9/bel71AiAKnhSzGb8RoIV6anHfqRqK5ZZQ/J1 nw== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sh40x81c3-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 18:48:34 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37GHtI5s003446;
-        Wed, 16 Aug 2023 18:33:03 GMT
-Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3semdsqsf4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 18:33:03 +0000
-Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
-        by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37GIX25D36307466
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Aug 2023 18:33:02 GMT
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 64E3A58043;
-        Wed, 16 Aug 2023 18:33:02 +0000 (GMT)
-Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1F37E58059;
-        Wed, 16 Aug 2023 18:33:02 +0000 (GMT)
-Received: from [9.61.54.222] (unknown [9.61.54.222])
-        by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 16 Aug 2023 18:33:02 +0000 (GMT)
-Message-ID: <1b841ade-20c0-d239-d8ae-2bb4426fefa8@linux.ibm.com>
-Date:   Wed, 16 Aug 2023 13:33:01 -0500
+        Wed, 16 Aug 2023 14:36:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DCE2112
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:35:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692210932;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YicN3BrABqygzYT0JyJvS0gbqDwVQpD3oveyBcfJmnk=;
+        b=JKJ4ByDyoTmmFklUHJDjfTct3Z/MWeMJXwhIV8wIuqNMPSZjHfoprdGMzCdDw5Sfo6x+DA
+        cYGXwsU1eAEFP2dOx58ACzRV1KyT/XBtXsFLDD+6tuaF2jhJdFxD1JZmf68G62dyiKxl37
+        it/BigRpECMdCsQf0yTRpXyN08Qa/e0=
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
+ [209.85.166.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-553-IeEBu_7xMfqRPLh4OSfHrw-1; Wed, 16 Aug 2023 14:35:30 -0400
+X-MC-Unique: IeEBu_7xMfqRPLh4OSfHrw-1
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-34acd680349so1720355ab.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:35:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692210929; x=1692815729;
+        h=content-transfer-encoding:mime-version:organization:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YicN3BrABqygzYT0JyJvS0gbqDwVQpD3oveyBcfJmnk=;
+        b=QWER3eqCDIIgzyHuRmSZguADr1vdJQ7+PXdhs4vVicZtOJ0WJ6iSI0mq+vublkH8T8
+         G6M6wofucgFJgTMR1/uqQ2Qz6OGCHEdSmR1WbDm5i2qragfHvC7jbFyuiHfJbOf21K5Q
+         eLBKKFPbIVee9gwGTtIpfCFhvbkamuUHtOgngkdKCWEdZD0dcAg8tfH+MbgH2P8WuSMv
+         B5I70nnXwdEhklok3s+cpXXnFqdSLagRcjEZt7mwyBEhuRNu7VArd2mD2k4Z6d8ZiAx4
+         jCjwWmDdIAPvZTkD+0r4hTE0EBrNaG2xC8etvS9FYcHU9epQMgrcE8YLMf90GxnI0wfc
+         T10A==
+X-Gm-Message-State: AOJu0YxXj22OslZRbIYsKwP0qqgrV6hL1qjk8jCS7K63iwpFHdrU7RmQ
+        hnBSwN32fQo3VdJmkyuboVD0EvakapucmXrDJQ8lOiakGablWAPQUI+g4LJcRHXs+5jJ9hetVS5
+        mOhza7g2oKRVNdZ+HDLsiasHB
+X-Received: by 2002:a05:6e02:1cab:b0:349:98eb:3637 with SMTP id x11-20020a056e021cab00b0034998eb3637mr4274288ill.15.1692210929640;
+        Wed, 16 Aug 2023 11:35:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGfVGBTGBXsFsdSkBf85ThQ5KUX9iDTcIbx6c4WRwD/3RMx2jwpY86m0KcUWMT6fJQZ0mcatg==
+X-Received: by 2002:a05:6e02:1cab:b0:349:98eb:3637 with SMTP id x11-20020a056e021cab00b0034998eb3637mr4274268ill.15.1692210929341;
+        Wed, 16 Aug 2023 11:35:29 -0700 (PDT)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id p8-20020a92c108000000b0034ab3bfd8f2sm1145706ile.40.2023.08.16.11.35.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 11:35:28 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 12:35:28 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] vfio: align capability structures
+Message-ID: <20230816123528.33dd0bff.alex.williamson@redhat.com>
+In-Reply-To: <20230809203144.2880050-1-stefanha@redhat.com>
+References: <20230809203144.2880050-1-stefanha@redhat.com>
+Organization: Red Hat
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] fsi: i2cr: Switch to use struct i2c_driver's .probe()
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Joel Stanley <joel@jms.id.au>, Jeremy Kerr <jk@ozlabs.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alistar Popple <alistair@popple.id.au>, linux-fsi@lists.ozlabs.org,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org
-References: <20230816171944.123705-1-u.kleine-koenig@pengutronix.de>
-Content-Language: en-US
-From:   Eddie James <eajames@linux.ibm.com>
-In-Reply-To: <20230816171944.123705-1-u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: yauwYME-gy79HOYH6MC0xO5uI9Jmvvj3
-X-Proofpoint-ORIG-GUID: yauwYME-gy79HOYH6MC0xO5uI9Jmvvj3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-16_18,2023-08-15_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=941 clxscore=1011
- bulkscore=0 adultscore=0 lowpriorityscore=0 mlxscore=0 phishscore=0
- priorityscore=1501 spamscore=0 malwarescore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308160163
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -90,44 +80,188 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 8/16/23 12:19, Uwe Kleine-König wrote:
-> struct i2c_driver::probe_new is about to go away. Switch the driver to
-> use the probe callback with the same prototype.
+Hey Jason,
 
+Would you mind tossing an ack for the iommufd touch that you suggested
+here?  Thanks,
 
-Thanks!
+Alex
 
+On Wed,  9 Aug 2023 16:31:44 -0400
+Stefan Hajnoczi <stefanha@redhat.com> wrote:
 
-Reviewed-by: Eddie James <eajames@linux.ibm.com>
-
-
->
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> The VFIO_DEVICE_GET_INFO, VFIO_DEVICE_GET_REGION_INFO, and
+> VFIO_IOMMU_GET_INFO ioctls fill in an info struct followed by capability
+> structs:
+> 
+>   +------+---------+---------+-----+
+>   | info | caps[0] | caps[1] | ... |
+>   +------+---------+---------+-----+
+> 
+> Both the info and capability struct sizes are not always multiples of
+> sizeof(u64), leaving u64 fields in later capability structs misaligned.
+> 
+> Userspace applications currently need to handle misalignment manually in
+> order to support CPU architectures and programming languages with strict
+> alignment requirements.
+> 
+> Make life easier for userspace by ensuring alignment in the kernel. This
+> is done by padding info struct definitions and by copying out zeroes
+> after capability structs that are not aligned.
+> 
+> The new layout is as follows:
+> 
+>   +------+---------+---+---------+-----+
+>   | info | caps[0] | 0 | caps[1] | ... |
+>   +------+---------+---+---------+-----+
+> 
+> In this example caps[0] has a size that is not multiples of sizeof(u64),
+> so zero padding is added to align the subsequent structure.
+> 
+> Adding zero padding between structs does not break the uapi. The memory
+> layout is specified by the info.cap_offset and caps[i].next fields
+> filled in by the kernel. Applications use these field values to locate
+> structs and are therefore unaffected by the addition of zero padding.
+> 
+> Note that code that copies out info structs with padding is updated to
+> always zero the struct and copy out as many bytes as userspace
+> requested. This makes the code shorter and avoids potential information
+> leaks by ensuring padding is initialized.
+> 
+> Originally-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
 > ---
-> Hello,
->
-> this driver appeared in next just today. I intend to drop .probe_new
-> from struct i2c_driver after v6.6-rc1, so it would be great if this
-> patch would go in together with the commit adding this driver.
->
-> Thanks
-> Uwe
->
->   drivers/fsi/fsi-master-i2cr.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/fsi/fsi-master-i2cr.c b/drivers/fsi/fsi-master-i2cr.c
-> index 61659c27a973..40f1f4d231e5 100644
-> --- a/drivers/fsi/fsi-master-i2cr.c
-> +++ b/drivers/fsi/fsi-master-i2cr.c
-> @@ -301,7 +301,7 @@ static const struct of_device_id i2cr_ids[] = {
->   MODULE_DEVICE_TABLE(of, i2cr_ids);
->   
->   static struct i2c_driver i2cr_driver = {
-> -	.probe_new = i2cr_probe,
-> +	.probe = i2cr_probe,
->   	.remove = i2cr_remove,
->   	.driver = {
->   		.name = "fsi-master-i2cr",
->
-> base-commit: 53e89e3e4490d6630a68e61a3cb478e7a7f2ce8b
+> v3:
+> - Also align capability structs in drivers/iommu/iommufd/vfio_compat.c
+>   [Jason]
+> 
+>  include/uapi/linux/vfio.h           |  2 ++
+>  drivers/iommu/iommufd/vfio_compat.c |  2 ++
+>  drivers/vfio/pci/vfio_pci_core.c    | 11 ++---------
+>  drivers/vfio/vfio_iommu_type1.c     | 11 ++---------
+>  drivers/vfio/vfio_main.c            |  6 ++++++
+>  5 files changed, 14 insertions(+), 18 deletions(-)
+> 
+> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+> index 20c804bdc09c..8fe85f5c7b61 100644
+> --- a/include/uapi/linux/vfio.h
+> +++ b/include/uapi/linux/vfio.h
+> @@ -217,6 +217,7 @@ struct vfio_device_info {
+>  	__u32	num_regions;	/* Max region index + 1 */
+>  	__u32	num_irqs;	/* Max IRQ index + 1 */
+>  	__u32   cap_offset;	/* Offset within info struct of first cap */
+> +	__u32   pad;
+>  };
+>  #define VFIO_DEVICE_GET_INFO		_IO(VFIO_TYPE, VFIO_BASE + 7)
+>  
+> @@ -1304,6 +1305,7 @@ struct vfio_iommu_type1_info {
+>  #define VFIO_IOMMU_INFO_CAPS	(1 << 1)	/* Info supports caps */
+>  	__u64	iova_pgsizes;	/* Bitmap of supported page sizes */
+>  	__u32   cap_offset;	/* Offset within info struct of first cap */
+> +	__u32   pad;
+>  };
+>  
+>  /*
+> diff --git a/drivers/iommu/iommufd/vfio_compat.c b/drivers/iommu/iommufd/vfio_compat.c
+> index fe02517c73cc..6c810bf80f99 100644
+> --- a/drivers/iommu/iommufd/vfio_compat.c
+> +++ b/drivers/iommu/iommufd/vfio_compat.c
+> @@ -483,6 +483,8 @@ static int iommufd_vfio_iommu_get_info(struct iommufd_ctx *ictx,
+>  			rc = cap_size;
+>  			goto out_put;
+>  		}
+> +		cap_size = ALIGN(cap_size, sizeof(u64));
+> +
+>  		if (last_cap && info.argsz >= total_cap_size &&
+>  		    put_user(total_cap_size, &last_cap->next)) {
+>  			rc = -EFAULT;
+> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
+> index 20d7b69ea6ff..e2ba2a350f6c 100644
+> --- a/drivers/vfio/pci/vfio_pci_core.c
+> +++ b/drivers/vfio/pci/vfio_pci_core.c
+> @@ -920,24 +920,17 @@ static int vfio_pci_ioctl_get_info(struct vfio_pci_core_device *vdev,
+>  				   struct vfio_device_info __user *arg)
+>  {
+>  	unsigned long minsz = offsetofend(struct vfio_device_info, num_irqs);
+> -	struct vfio_device_info info;
+> +	struct vfio_device_info info = {};
+>  	struct vfio_info_cap caps = { .buf = NULL, .size = 0 };
+> -	unsigned long capsz;
+>  	int ret;
+>  
+> -	/* For backward compatibility, cannot require this */
+> -	capsz = offsetofend(struct vfio_iommu_type1_info, cap_offset);
+> -
+>  	if (copy_from_user(&info, arg, minsz))
+>  		return -EFAULT;
+>  
+>  	if (info.argsz < minsz)
+>  		return -EINVAL;
+>  
+> -	if (info.argsz >= capsz) {
+> -		minsz = capsz;
+> -		info.cap_offset = 0;
+> -	}
+> +	minsz = min_t(size_t, info.argsz, sizeof(info));
+>  
+>  	info.flags = VFIO_DEVICE_FLAGS_PCI;
+>  
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index ebe0ad31d0b0..f812c475a626 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -2762,27 +2762,20 @@ static int vfio_iommu_dma_avail_build_caps(struct vfio_iommu *iommu,
+>  static int vfio_iommu_type1_get_info(struct vfio_iommu *iommu,
+>  				     unsigned long arg)
+>  {
+> -	struct vfio_iommu_type1_info info;
+> +	struct vfio_iommu_type1_info info = {};
+>  	unsigned long minsz;
+>  	struct vfio_info_cap caps = { .buf = NULL, .size = 0 };
+> -	unsigned long capsz;
+>  	int ret;
+>  
+>  	minsz = offsetofend(struct vfio_iommu_type1_info, iova_pgsizes);
+>  
+> -	/* For backward compatibility, cannot require this */
+> -	capsz = offsetofend(struct vfio_iommu_type1_info, cap_offset);
+> -
+>  	if (copy_from_user(&info, (void __user *)arg, minsz))
+>  		return -EFAULT;
+>  
+>  	if (info.argsz < minsz)
+>  		return -EINVAL;
+>  
+> -	if (info.argsz >= capsz) {
+> -		minsz = capsz;
+> -		info.cap_offset = 0; /* output, no-recopy necessary */
+> -	}
+> +	minsz = min_t(size_t, info.argsz, sizeof(info));
+>  
+>  	mutex_lock(&iommu->lock);
+>  	info.flags = VFIO_IOMMU_INFO_PGSIZES;
+> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
+> index f0ca33b2e1df..2850478301d2 100644
+> --- a/drivers/vfio/vfio_main.c
+> +++ b/drivers/vfio/vfio_main.c
+> @@ -1172,6 +1172,9 @@ struct vfio_info_cap_header *vfio_info_cap_add(struct vfio_info_cap *caps,
+>  	void *buf;
+>  	struct vfio_info_cap_header *header, *tmp;
+>  
+> +	/* Ensure that the next capability struct will be aligned */
+> +	size = ALIGN(size, sizeof(u64));
+> +
+>  	buf = krealloc(caps->buf, caps->size + size, GFP_KERNEL);
+>  	if (!buf) {
+>  		kfree(caps->buf);
+> @@ -1205,6 +1208,9 @@ void vfio_info_cap_shift(struct vfio_info_cap *caps, size_t offset)
+>  	struct vfio_info_cap_header *tmp;
+>  	void *buf = (void *)caps->buf;
+>  
+> +	/* Capability structs should start with proper alignment */
+> +	WARN_ON(!IS_ALIGNED(offset, sizeof(u64)));
+> +
+>  	for (tmp = buf; tmp->next; tmp = buf + tmp->next - offset)
+>  		tmp->next += offset;
+>  }
+
