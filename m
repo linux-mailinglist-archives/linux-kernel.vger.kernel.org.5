@@ -2,217 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B8177E3C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E5A77E3C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343719AbjHPOiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 10:38:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43624 "EHLO
+        id S1343730AbjHPOjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 10:39:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343752AbjHPOhy (ORCPT
+        with ESMTP id S1343753AbjHPOiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 10:37:54 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8275E2D5F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:37:46 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bdc19b782aso32083335ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:37:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20221208.gappssmtp.com; s=20221208; t=1692196666; x=1692801466;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jX0eyRgUBnlJvg52xTw9Xc/nvpJnbIOrZesRtyij778=;
-        b=VADZ6ppYOIa12yuHDDWB5op2QcT1ODlbktFBmeFlKBoEMxCqDrHzlC57HCdHM53VZk
-         nGobevQw5NR9tdtnclAESo5/bqz2RjxBOH+/5ozgRSmZjDK/8MSp0wYJo0onv64L6T/4
-         ij0Qc9KG4iqGvAY9QHMAlvDyevSJLWPIrZxuKwhXi0NBgHH3BuSRPxrE6kA4R7dMipF3
-         UvYtMXp/9a0HA/yKHx3EeAjfklPYz2PMqqsOYhzJLOKAN4wv3z/zR3SWG6COhDN4yoEm
-         XU5DbUI4Ym4HEuBQx9VCk5wy5N16kCRrk6DcFRgAS62yilcVX30qkFM+mOqKS7tQCNeR
-         h3+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692196666; x=1692801466;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jX0eyRgUBnlJvg52xTw9Xc/nvpJnbIOrZesRtyij778=;
-        b=N/gublXBS+p2Rl1i/AdSuGvIxJNyrFKUv9A7r+MkyuBSrmbqzhY/j/nEDOH2wmZq6i
-         I9HFSkWvbQY4sLLh+46yLPeKvJ2nOTDpwEkRO6mKE2WF+4hLjFsY4C3Uf7tE2BTb4570
-         TRpuGwmJG0nIvrT1BVCXXSo9HoAHxWO8qgKWtEwArQEo7LGuwfcXL2js6cUdJbEU8BKz
-         4RlQkoOzJqaODL0SePxK5iT6BHyrGincz50E1WL/HGyZIS+BaJonk8NBVXZa0n1xGf2L
-         R5cs/6+old4UPLDsNUkQfb5HBrlg0zr4MqA6bIHum9nACPkgVyz8Lcs+mAhYoTqTWs3F
-         rKEg==
-X-Gm-Message-State: AOJu0YwXuMRzhEBZ5htvIqJqsg6aKxHTIPwR6BXE/pF2W0YDxE4qcRFj
-        UdofhMidGVIynvNNO7R8c6xs+w==
-X-Google-Smtp-Source: AGHT+IGcLRV9xPE8O/Y0r7BvxOGUyPtSc05frmq3YqIOYUpUlkYPwvMsDcG3F9VECZ6GEmz4LjGLJQ==
-X-Received: by 2002:a17:903:44e:b0:1bb:fffd:63d8 with SMTP id iw14-20020a170903044e00b001bbfffd63d8mr1911272plb.36.1692196665787;
-        Wed, 16 Aug 2023 07:37:45 -0700 (PDT)
-Received: from localhost ([135.180.227.0])
-        by smtp.gmail.com with ESMTPSA id iw10-20020a170903044a00b001bdd7579b5dsm7164476plb.240.2023.08.16.07.37.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 07:37:44 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 07:37:44 -0700 (PDT)
-X-Google-Original-Date: Wed, 16 Aug 2023 07:37:42 PDT (-0700)
-Subject:     Re: [PATCH] asm-generic: partially revert "Unify uapi bitsperlong.h for arm64, riscv and loongarch"
-In-Reply-To: <20230811204930.1529925-1-arnd@kernel.org>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, yangtiezhu@loongson.cn,
-        loongarch@lists.linux.dev, kernel@xen0n.name,
-        chenhuacai@kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        nathan@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     arnd@kernel.org
-Message-ID: <mhng-2cdb59cc-0177-47a9-af49-06d8853f56aa@palmer-ri-x1c9>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 10:38:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F2E2D41;
+        Wed, 16 Aug 2023 07:38:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 96D6863FD9;
+        Wed, 16 Aug 2023 14:38:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42698C433C8;
+        Wed, 16 Aug 2023 14:38:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692196692;
+        bh=wAA3WePHJSoHVgxkU3KiZytlFD8F7FCW7Hbk/uZSCGo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NVgNgu63cFaxLiCNMANcOgomGY8QLmO2yCAxa2dxkePn/NytnJ+DTy9SWCLuaJfW+
+         +L8tjYp4N/Fm8dLgNAgPzWDGFG75XFs2EyOG4lUXHIlV2HEDjvdsH+hBrT1vm7K8fq
+         HZ1DRuI15yUS+YZht81PvOGYAEqlPyOHJS3ENImGY4pyn2tuERq95nJimDaokPLow8
+         x5uza3VFZ4xkpk52basr8ay5Jm6RpO6XyR60P9+vG81EBelMkPoQQSJnuNyIM3YCPh
+         5WxR+xGZDQbH8A035fcewFXyxwHS7M8jva14J2nauC4v1yPvFDkxGaCSvQ16Uycjzc
+         sxtvpoxnDuMTA==
+Date:   Wed, 16 Aug 2023 15:38:07 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Mihai.Sain@microchip.com
+Cc:     claudiu.beznea@tuxon.dev, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        Nicolas.Ferre@microchip.com, Cristian.Birsan@microchip.com,
+        alexandre.belloni@bootlin.com, andre.przywara@arm.com,
+        Jerry.Ray@microchip.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Andrei.Simion@microchip.com
+Subject: Re: [PATCH] ARM: dts: at91: sama5d29_curiosity: Add device tree for
+ sama5d29_curiosity board
+Message-ID: <20230816-asleep-move-ab8746612698@spud>
+References: <20230804101043.4063-1-mihai.sain@microchip.com>
+ <127fc712-d924-f27f-5449-33385e89d6c3@tuxon.dev>
+ <PH8PR11MB6804E49B5946F4A9D60837E18213A@PH8PR11MB6804.namprd11.prod.outlook.com>
+ <98d01db3-3eba-0731-0dd9-4310ed293bd6@tuxon.dev>
+ <PH8PR11MB6804B1C6466C7A450A180D1D8215A@PH8PR11MB6804.namprd11.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="TC0LRDS6Pz+cbGoi"
+Content-Disposition: inline
+In-Reply-To: <PH8PR11MB6804B1C6466C7A450A180D1D8215A@PH8PR11MB6804.namprd11.prod.outlook.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Aug 2023 13:49:07 PDT (-0700), arnd@kernel.org wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Unifying the asm-generic headers across 32-bit and 64-bit architectures
-> based on the compiler provided macros was a good idea and appears to work
-> with all user space, but it caused a regression when building old kernels
-> on systems that have the new headers installed in /usr/include, as this
-> combination trips an inconsistency in the kernel's own tools/include
-> headers that are a mix of userspace and kernel-internal headers.
->
-> This affects kernel builds on arm64, riscv64 and loongarch64 systems that
-> might end up using the "#define __BITS_PER_LONG 32" default from the old
-> tools headers. Backporting the commit into stable kernels would address
-> this, but it would still break building kernels without that backport,
-> and waste time for developers trying to understand the problem.
->
-> arm64 build machines are rather common, and on riscv64 this can also
-> happen in practice, but loongarch64 is probably new enough to not
-> be used much for building old kernels, so only revert the bits
-> for arm64 and riscv.
->
-> Link: https://lore.kernel.org/all/20230731160402.GB1823389@dev-arch.thelio-3990X/
-> Reported-by: Nathan Chancellor <nathan@kernel.org>
-> Fixes: 8386f58f8deda ("asm-generic: Unify uapi bitsperlong.h for arm64, riscv and loongarch")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/arm64/include/uapi/asm/bitsperlong.h     | 24 +++++++++++++++++++
->  arch/riscv/include/uapi/asm/bitsperlong.h     | 14 +++++++++++
->  .../arch/arm64/include/uapi/asm/bitsperlong.h | 24 +++++++++++++++++++
->  .../arch/riscv/include/uapi/asm/bitsperlong.h | 14 +++++++++++
 
-Acked-by: Palmer Dabbelt <palmer@rivosinc.com> # RISC-V
+--TC0LRDS6Pz+cbGoi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->  4 files changed, 76 insertions(+)
->  create mode 100644 arch/arm64/include/uapi/asm/bitsperlong.h
->  create mode 100644 arch/riscv/include/uapi/asm/bitsperlong.h
->  create mode 100644 tools/arch/arm64/include/uapi/asm/bitsperlong.h
->  create mode 100644 tools/arch/riscv/include/uapi/asm/bitsperlong.h
->
-> diff --git a/arch/arm64/include/uapi/asm/bitsperlong.h b/arch/arm64/include/uapi/asm/bitsperlong.h
-> new file mode 100644
-> index 0000000000000..485d60bee26ca
-> --- /dev/null
-> +++ b/arch/arm64/include/uapi/asm/bitsperlong.h
-> @@ -0,0 +1,24 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +/*
-> + * Copyright (C) 2012 ARM Ltd.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-> + */
-> +#ifndef __ASM_BITSPERLONG_H
-> +#define __ASM_BITSPERLONG_H
-> +
-> +#define __BITS_PER_LONG 64
-> +
-> +#include <asm-generic/bitsperlong.h>
-> +
-> +#endif	/* __ASM_BITSPERLONG_H */
-> diff --git a/arch/riscv/include/uapi/asm/bitsperlong.h b/arch/riscv/include/uapi/asm/bitsperlong.h
-> new file mode 100644
-> index 0000000000000..7d0b32e3b7017
-> --- /dev/null
-> +++ b/arch/riscv/include/uapi/asm/bitsperlong.h
-> @@ -0,0 +1,14 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
-> +/*
-> + * Copyright (C) 2012 ARM Ltd.
-> + * Copyright (C) 2015 Regents of the University of California
-> + */
-> +
-> +#ifndef _UAPI_ASM_RISCV_BITSPERLONG_H
-> +#define _UAPI_ASM_RISCV_BITSPERLONG_H
-> +
-> +#define __BITS_PER_LONG (__SIZEOF_POINTER__ * 8)
-> +
-> +#include <asm-generic/bitsperlong.h>
-> +
-> +#endif /* _UAPI_ASM_RISCV_BITSPERLONG_H */
-> diff --git a/tools/arch/arm64/include/uapi/asm/bitsperlong.h b/tools/arch/arm64/include/uapi/asm/bitsperlong.h
-> new file mode 100644
-> index 0000000000000..485d60bee26ca
-> --- /dev/null
-> +++ b/tools/arch/arm64/include/uapi/asm/bitsperlong.h
-> @@ -0,0 +1,24 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +/*
-> + * Copyright (C) 2012 ARM Ltd.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-> + */
-> +#ifndef __ASM_BITSPERLONG_H
-> +#define __ASM_BITSPERLONG_H
-> +
-> +#define __BITS_PER_LONG 64
-> +
-> +#include <asm-generic/bitsperlong.h>
-> +
-> +#endif	/* __ASM_BITSPERLONG_H */
-> diff --git a/tools/arch/riscv/include/uapi/asm/bitsperlong.h b/tools/arch/riscv/include/uapi/asm/bitsperlong.h
-> new file mode 100644
-> index 0000000000000..0b9b58b57ff6e
-> --- /dev/null
-> +++ b/tools/arch/riscv/include/uapi/asm/bitsperlong.h
-> @@ -0,0 +1,14 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (C) 2012 ARM Ltd.
-> + * Copyright (C) 2015 Regents of the University of California
-> + */
-> +
-> +#ifndef _UAPI_ASM_RISCV_BITSPERLONG_H
-> +#define _UAPI_ASM_RISCV_BITSPERLONG_H
-> +
-> +#define __BITS_PER_LONG (__SIZEOF_POINTER__ * 8)
-> +
-> +#include <asm-generic/bitsperlong.h>
-> +
-> +#endif /* _UAPI_ASM_RISCV_BITSPERLONG_H */
+On Wed, Aug 16, 2023 at 09:05:19AM +0000, Mihai.Sain@microchip.com wrote:
+> Hi Claudiu,
+>=20
+> ----------------------
+>=20
+> Hi, Mihai,
+>=20
+> On 8/10/23 09:47, Mihai.Sain@microchip.com wrote:
+> >> +&i2s0 {
+> >> +     pinctrl-names =3D "default";
+> >> +     pinctrl-0 =3D <&pinctrl_i2s0_default>;
+> >> +     status =3D "okay";
+> > I see no sound bindings on DT. Is there any reason for having this here?
+> > # i2s0 bus is wired to RPi 40-pin connector. I want to have this node a=
+nd its pinctrl here.
+> > # i2c1, flx4-spi, pwm0, uart1 are also wired to Rpi connector, and are =
+defined here.
+> > # The same logic we apply also for mikroBUS sockets: i2c, pwm, spi and =
+uart nodes are defined here.
+> >
+>=20
+> Can you use it (either with user space tools or other kernel consumers) w=
+/o additional device tree bindings?
+> # Yes. We have added in dt-overlay the codec which uses the i2s0 and i2c1=
+ nodes and pinctrls.
+
+Can you please fix your mail client so that your replies are properly
+quoted? I don't understand who is saying what here.
+
+--TC0LRDS6Pz+cbGoi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNzfTgAKCRB4tDGHoIJi
+0mskAQDqB7yvGCNZL5HLPqbFd4miuOsz8BFLD9vxbjY5k+x9XAD+NKe0JvyQzcBk
+MW+H0TBbpXXo7VMYE0ttbiSKddZE1QI=
+=X1ZD
+-----END PGP SIGNATURE-----
+
+--TC0LRDS6Pz+cbGoi--
