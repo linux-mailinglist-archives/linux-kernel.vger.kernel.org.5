@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B38977ECAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 00:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9012177ECB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 00:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346658AbjHPWAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 18:00:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35252 "EHLO
+        id S1346700AbjHPWCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 18:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346731AbjHPV7d (ORCPT
+        with ESMTP id S1346695AbjHPWBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 17:59:33 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFDC5273B
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:59:10 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3751740E0196;
-        Wed, 16 Aug 2023 21:59:09 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id a_D12V2y8vn3; Wed, 16 Aug 2023 21:59:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1692223146; bh=GhV8skxV+ZlV8WuCqPSMhGjJ4Q8tYVm2/02sN87iMMc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d2Ve5XAnju859+SwuP0qsfxDpQODpOnuS800BWGrBieXZYkRaRdiEVZMrRmOFHky9
-         ACB+v2u5jwtJKTAJ6WiWld3wBxYMpwwtOIFC/2kkIgJKCzqGrbDx1GPXZDGcIEtIJ0
-         iHG63OTIqlTZCD9Lj/YEuZFvCDTGIEn4hCzzaEkGyW+ktVOpqhF6o5ffSYRAdD7p/t
-         YyX17xxuUhXBedM/K1O9OfkEPrxEb6HH96SmIjsDDO2uUxc0e1b7LF8U9yZHtpXloj
-         wUNXT3wj2KP12ZtmHSSW4curdZ6xM52KgVkFGHVfTpIx2fk3iwR2egF2neXYru27wM
-         j7wLmWG6XlDAbZJRtze09ftGtR1m8bPpebLIOjLx7ltl4xJdzPp6j/C9oXZ5L8l/S/
-         wPzuxNEjR4+A2M5kyfQcf7yaeHnY86iW7u5k65MKtVwcBZoWr8KjmbMJI6r+yH8O+A
-         bHp7S8lE/VU++YeYAaOf/wBoHWAHT6aYkwFGxM0EJlKih2Vm9j43EvmFILtR2qcMRH
-         iv2EfiWPn9CcJ0qAgC5LsCZvTfzhxK5uZxyJ/E5v6/rbZCUMGT+4G7Ter4sR+5PYAS
-         T4VAS+XbNEHoxghBd4GhwV0JmDqc2GwzXwx0RzQyHVR3T9AY8beGVXLx4jSVWvyzTX
-         o5XRI/7Eymh7Z9fxMyvRErOM=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9905940E0140;
-        Wed, 16 Aug 2023 21:59:01 +0000 (UTC)
-Date:   Wed, 16 Aug 2023 23:58:54 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jim Mattson <jmattson@google.com>
-Cc:     dave.hansen@intel.com, linux-kernel@vger.kernel.org,
-        stable@kernel.org, x86@kernel.org
-Subject: Re: [PATCH 1/2] x86/microcode/AMD: Load late on both threads too
-Message-ID: <20230816215854.GWZN1GniMWRL0GnyVh@fat_crate.local>
-References: <12a12721-239b-457e-1ff7-f98c02cb7abe@intel.com>
- <20230816201700.589822-1-jmattson@google.com>
- <20230816211821.GUZN09HTGo+yQ2+jd7@fat_crate.local>
- <CALMp9eR1Ub78MZwdZn178d4OXPu3Au=faBgVGe6ty6ARV+nK8g@mail.gmail.com>
- <20230816213025.GVZN0/8cjvLebNANTq@fat_crate.local>
- <CALMp9eRT4xCrK3Up_1bQuBZNd_2ZKLFqgamvP4BtA+HuC1driQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CALMp9eRT4xCrK3Up_1bQuBZNd_2ZKLFqgamvP4BtA+HuC1driQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 18:01:54 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B7B90
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:01:53 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-68893256397so368910b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:01:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692223313; x=1692828113;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VBWbG2QXVJxk1xBNtiZNPqeLW4yQOwcqBAAuTBoWz9U=;
+        b=7yK6nlaM2bwfZv5iDk55eg/lYYmEMSRwr5atiJ9WsovSYfY6fGKBta1lCVV5aYmckx
+         8yiK7t4Mnw7iEtfTm+A/AS/UWyV04DZ6eCMFcUlVCTukikXQ2nQReiDspIg0QLMfdeNh
+         Vo+mRcwX4BB4+cwTZFtze9vU0E+AIPXkdiAa6jK0c+CSjkqfh5EhgZJqArNlxkT67s1N
+         FOX1ciMZYoN69DRgFDrhaIo7CdclnhjU1gKdTZxxtN5RVk3JXGBAEo4f+yAy1mlhKWT/
+         dk28REorXDFlkSUKQVLek5hAhV4UWkkuGsfDVY9gXz0+ZnZpwmJFLzSnZpP0RWB2NaPS
+         1rDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692223313; x=1692828113;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VBWbG2QXVJxk1xBNtiZNPqeLW4yQOwcqBAAuTBoWz9U=;
+        b=g6VivbWWB4U4L59bGVRavtBrBltwlOAUy7oNjwSZQOLSGcjTYwscNwCB8CrNq7dAuG
+         1UjilBgC50J9+hyJrkFWkC1PRjvt1hJqbQ4kO3Er+8hOLnCj1ybnfNm5bHjVIRffpaFM
+         6dm7vrXQ3vBSo3iagjwCPBrLgUVatI1I2rKITkg8YCjEIK+TqsED7up5wRki4QHaqWg1
+         2PZ3i/H9Ri8J8z6jSrzmjmiUceTdWNyV9pQU0Row4bdTHYf63gNh4etmHkAzCl7EiKyj
+         uBD0D9A3EDykPrPbtGzecCG8FMwQ7quRih2DPNqsY6echmXbVsLs2G8U4WpwLlGf7YPM
+         R5Cw==
+X-Gm-Message-State: AOJu0Yw4EfPHX3YSG5C476yGn5Lw1DmwnnebME/rSthRX+DaIOdHKGOJ
+        B762oRHd+Cpl4uQRcw6vUFxkurkyl2A=
+X-Google-Smtp-Source: AGHT+IECGuILJhGG7M10tme6mh4YKaUBjEHoQvuTjBLw+EFSHmvpxYXkTjIEzuG1aw08h29gjmonNn4jiJY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:9a0:b0:687:5274:da17 with SMTP id
+ u32-20020a056a0009a000b006875274da17mr414480pfg.2.1692223312805; Wed, 16 Aug
+ 2023 15:01:52 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 15:01:51 -0700
+In-Reply-To: <20230719144131.29052-8-binbin.wu@linux.intel.com>
+Mime-Version: 1.0
+References: <20230719144131.29052-1-binbin.wu@linux.intel.com> <20230719144131.29052-8-binbin.wu@linux.intel.com>
+Message-ID: <ZN1HT61WM0Pmxqmr@google.com>
+Subject: Re: [PATCH v10 7/9] KVM: VMX: Implement and wire get_untagged_addr()
+ for LAM
+From:   Sean Christopherson <seanjc@google.com>
+To:     Binbin Wu <binbin.wu@linux.intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
+        David.Laight@aculab.com, robert.hu@linux.intel.com,
+        guang.zeng@intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 02:36:57PM -0700, Jim Mattson wrote:
-> Doesn't this render that attestation misleading, since the microcode
-> patch may not have been loaded on all logical processors?
+On Wed, Jul 19, 2023, Binbin Wu wrote:
+> +	return (sign_extend64(gva, lam_bit) & ~BIT_ULL(63)) | (gva & BIT_ULL(63));
 
-For that it doesn't matter because the microcode engine is shared
-between the two threads. The updated microcode revision is shown on any
-of the two threads so you can load on one only. And we did this for
-years.
+Almost forgot.  Please add a comment explaning how LAM untags the address,
+specifically the whole bit 63 preservation.  The logic is actually straightforward,
+but the above looks way more complex than it actually is.  This?
 
-Only recently we started loading on both and we will be doing that from
-now on.
-
-What could be problematic is if it simply fails loading on some cores
-- regardless of SMT - but that would be problematic not only to SEV-SNP
-attestation but to the general system health. tglx has some patches
-which verify what has been successfully loaded where so hopefully we'll
-be verifying more in that area.
-
-HTH.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+	/*
+	 * Untag the address by sign-extending the LAM bit, but NOT to bit 63.
+	 * Bit 63 is retained from the raw virtual address so that untagging
+	 * doesn't change a user access to a supervisor access, and vice versa.
+	 */
