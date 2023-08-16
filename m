@@ -2,130 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 504C777E392
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4D977E39F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343620AbjHPO2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 10:28:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33978 "EHLO
+        id S1343624AbjHPOcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 10:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343653AbjHPO1s (ORCPT
+        with ESMTP id S1343657AbjHPOcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 10:27:48 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048F72715
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:27:47 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-589c6dc8670so65869027b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:27:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692196066; x=1692800866;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ocFVuDAoYa76ZBIYvekfvcCSNlPl+8WKQ7zX3J4QGgs=;
-        b=nCDyOoH0oySdjuEsVcz9lUQEbt0d5xVy4T04c2jCprIc8UdB2GwFoxZz1UihZ+8CPg
-         RchUF9UVRX/0ijV1r23vCJ9RJtbt225PJnFS1+zPdaWLb69pEXxa5GMMopLuXBVh3+R1
-         sI1GJOp8Yub6sMF0nBNjzN7CFf+Ii5MjUbyJkFBmWMRnnNLk4rtsozCNHU3XROmtlzk3
-         ETsES3u+oZGHW5tIJukvZ7SakW0f6EChxmcX5V1bkjju+6zhsKN2qR3r722lg/ESZznc
-         2ErdicH2oyAau+bkEu+pVQQa95zmnDny8w93x0oGM2RRgSu4R1tHE8vQN35d1UBO1auN
-         uxsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692196066; x=1692800866;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ocFVuDAoYa76ZBIYvekfvcCSNlPl+8WKQ7zX3J4QGgs=;
-        b=FO5k0NLX7oBa495oMJYjrmi/vlPw/j4WbPFuCJGMP4TahxJDhieFL2avdhgVuw3vYX
-         9daYyqtR7hk3krLDQyLB6VkfpnRFMyHZi4iBcNXX8M9SKaM0uQAZlClKU9lztKlofR+K
-         0KFUTIcri/vK1BL65c4HCWVGBXyV2Xn/LnsaNrM/VLUqzn6QKW0bQ/y5uexAcm5Oi/Kr
-         BlObMhlE4Elqi31KIgu9xGPtlM8sjbc9wSIVtvu3t+D3CSquKgDuipHquYI+C0t/Mlxa
-         4amgkKyocPxeDfGA5pROk9SduKJfTPtNu4nkT9D8fANuc5pKD63H9k/8OAQQP0ivWcBD
-         MWTA==
-X-Gm-Message-State: AOJu0Yx7l2OSzlRDJfXQ6lQL5H+ah53wSM1CK+L0aoA+J8rN9Rs0nrxZ
-        efcKxac4trsO49sBy96BEtujp7/7CdA=
-X-Google-Smtp-Source: AGHT+IGmENvyzABpuuLUU3IFL4Ul5a1yBeBSAE3t8ZD0pBQsXUo3eUdpcxEPHaxQ0CpfwWt/G+VCpF8iq3g=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:4524:0:b0:58c:8552:458d with SMTP id
- s36-20020a814524000000b0058c8552458dmr28452ywa.3.1692196066288; Wed, 16 Aug
- 2023 07:27:46 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 07:27:44 -0700
-In-Reply-To: <a7ecab8d-a77c-77eb-68cb-383de569fe6d@linux.intel.com>
-Mime-Version: 1.0
-References: <20230719024558.8539-1-guang.zeng@intel.com> <20230719024558.8539-5-guang.zeng@intel.com>
- <ZNwGKPnTY7hRRy+S@google.com> <a7ecab8d-a77c-77eb-68cb-383de569fe6d@linux.intel.com>
-Message-ID: <ZNzc4FMukTamEseJ@google.com>
-Subject: Re: [PATCH v2 4/8] KVM: x86: Add X86EMUL_F_INVTLB and pass it in em_invlpg()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     Zeng Guang <guang.zeng@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        H Peter Anvin <hpa@zytor.com>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 10:32:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 555C82716
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:32:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E01186630E
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:32:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFB66C433C8;
+        Wed, 16 Aug 2023 14:32:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692196322;
+        bh=GcEwYp6TztIvoHV57BX8j32YSSYSJBrx3eIgVWF2nqY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PqWr121xIoP7vi6BlvLBd/qEb9E8WAk2HdhVddrPIhNNgJt7IyXj4ZJj5sFB2B8U+
+         CqnYgNKOmmtvz6o7yAbT28ObYlrqTJeDeNN/qZC5lw8+c4TvS0XBlz2NinymaF8QBN
+         ghw1Aqfc7RRlhv8g1RN40KzzyqBmAxkB49uCHStKVoyPQhzC+n5k38upYkzpsONnyY
+         K0hF6ytFaZ0tWgljEd06phVIXifpuEcBe4qlQL2V+eTzXGE30/bPjUu4vYN9dV14qP
+         NuA++LIC75rUhmGEQqTzKT6ocRqec76TiAyowXSKU2SSptNWqKv5xioVcT8yJnFrPv
+         jDEyf5ZF4DKqg==
+Date:   Wed, 16 Aug 2023 15:31:57 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Spickett <David.Spickett@arm.com>
+Subject: Re: [PATCH] arm64/ptrace: Ensure that the task sees ZT writes on
+ first use
+Message-ID: <b903e4ce-83c9-4fa0-ac95-8378c436d846@sirena.org.uk>
+References: <20230814-arm64-zt-ptrace-first-use-v1-1-fc8e8022140f@kernel.org>
+ <20230816142219.GA13526@willie-the-truck>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="s4rNUHRjF2KWGoco"
+Content-Disposition: inline
+In-Reply-To: <20230816142219.GA13526@willie-the-truck>
+X-Cookie: Old soldiers never die.  Young ones do.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023, Binbin Wu wrote:
-> 
-> 
-> On 8/16/2023 7:11 AM, Sean Christopherson wrote:
-> > On Wed, Jul 19, 2023, Zeng Guang wrote:
-> > > diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-> > > index 8e706d19ae45..9b4b3ce6d52a 100644
-> > > --- a/arch/x86/kvm/emulate.c
-> > > +++ b/arch/x86/kvm/emulate.c
-> > > @@ -3443,8 +3443,10 @@ static int em_invlpg(struct x86_emulate_ctxt *ctxt)
-> > >   {
-> > >   	int rc;
-> > >   	ulong linear;
-> > > +	unsigned max_size;
-> > 	unsigned int
-> Let me think why I use 'unsigned'...
-> It's because the exist code uses 'unsigned'.
-> I suppose it is considered bad practice?
 
-Yeah, use "unsigned int" when writing new code.
+--s4rNUHRjF2KWGoco
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I will cleanup the exist code as well. Is it OK to cleanup it
-> opportunistically inside this patch?
+On Wed, Aug 16, 2023 at 03:22:19PM +0100, Will Deacon wrote:
+> On Mon, Aug 14, 2023 at 10:27:51PM +0100, Mark Brown wrote:
 
-No, don't bother cleaning up existing usage.  If a patch touches the "bad" code,
-then by all means do an opportunistic cleanup.  But we have too much "legacy" code
-in KVM for a wholesale cleanup of bare unsigned usage to be worth the churn and
-git blame pollution.  See also:
+> > @@ -1182,6 +1187,8 @@ static int zt_set(struct task_struct *target,
+> >  	if (ret =3D=3D 0)
+> >  		target->thread.svcr |=3D SVCR_ZA_MASK;
+> > =20
+> > +	set_tsk_thread_flag(target, TIF_SME);
 
-https://lore.kernel.org/all/ZNvIRS%2FYExLtGO2B@google.com
+> Hmm, this is now weirdly inconsistent with za_set(), which doesn't touch
+> the thread flag unless the regset copy succeeds. Is that intentional?
 
-> > > diff --git a/arch/x86/kvm/kvm_emulate.h b/arch/x86/kvm/kvm_emulate.h
-> > > index c0e48f4fa7c4..c944055091e1 100644
-> > > --- a/arch/x86/kvm/kvm_emulate.h
-> > > +++ b/arch/x86/kvm/kvm_emulate.h
-> > > @@ -93,6 +93,7 @@ struct x86_instruction_info {
-> > >   #define X86EMUL_F_FETCH			BIT(1)
-> > >   #define X86EMUL_F_BRANCH		BIT(2)
-> > >   #define X86EMUL_F_IMPLICIT		BIT(3)
-> > > +#define X86EMUL_F_INVTLB		BIT(4)
-> > Why F_INVTLB instead of X86EMUL_F_INVLPG?  Ah, because LAM is ignored for the
-> > linear address in the INVPCID and INVVPID descriptors.  Hrm.
-> > 
-> > I think my vote is to call this X86EMUL_F_INVLPG even though *in theory* it's not
-> > strictly limited to INVLPG.  Odds are good KVM's emulator will never support
-> > INVPCID or INVVPID,
-> One case is kvm_handle_invpcid() is in the common kvm x86 code.
-> LAM doesn't apply to the address in descriptor of invpcid though, but I am
-> not sure if there will be the need for SVM in the future.
+Not particularly, it's just a product of the more complex parsing that
+ZA needs due to the variable size and optional payload.  Either way is
+fine so long as we allocated the storage but it would be better if they
+were consistent, I'll update this to match what ZA does.
 
-Right, but the emulator itself doesn't handle INVPCID or INVVPID, so there's no
-direct "conflict" at this time.
+--s4rNUHRjF2KWGoco
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> But for now, F_INVLPG is OK if you think F_INVTLB brings confusion.
+-----BEGIN PGP SIGNATURE-----
 
-Yeah, please use F_INVLPG unless someone has a strong objection.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTc3dwACgkQJNaLcl1U
+h9AtVgf9HS5c0fIU8LG6aCTVzGi9dcQfpW6cnpakre3AJZCpNHjXZpBOM0Zg6F2A
+4ZkPLxjQHzc3NtHxV1cmUq2L1+wGGRdQGQAXRFioQ6wrDPCepA9QYTG+gsn6k2Ba
+9Ov7Vtrj0aCCTaWYDlSxECVSFehAnIYmiWKrDiba4FC4m1/uk//9yh5gEmO3Z1P/
+YcMC46CH7WQKlDSTJmzgJeeDc7osxd/o0VA34Prt7/POCpmP8F2VrCnQXbL9tQpG
+9zXadPU+Hvb8ice3WEU/Uc0z50XIIg/lyfob4Q+XfJL46LM+L+voA2Ae4RhPT0AV
++tRQlAiDPBoOZd3/xbKRTuEuUp40+A==
+=Hdmf
+-----END PGP SIGNATURE-----
+
+--s4rNUHRjF2KWGoco--
