@@ -2,150 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF4677ED39
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 00:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C88D277ED41
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 00:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346835AbjHPWgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 18:36:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44452 "EHLO
+        id S1346960AbjHPWhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 18:37:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346886AbjHPWgG (ORCPT
+        with ESMTP id S1346882AbjHPWgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 18:36:06 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D6F1980
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:36:04 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99de884ad25so184100366b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:36:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692225363; x=1692830163;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HQmT7Uh6sWQfVX+jY524yxLYNHKGsl2fBek6097smRE=;
-        b=HE9ACyuPPztqNyPxMJQxaWvmISJrT2O9wxlj6I3goqtgzDkkUS1kgXt+rhwzwpNVau
-         vgAcjEFeg8oZ2Y7Qn54zx6x10dTczteNXnJCK8dJiC8IdA1AnK98T4udBeNNZDHmCxT8
-         TesHS7tlAyWIfqrRXQ5Bq0wKxcgC92lmxlUCOADGVHL1AYWe9PWf+1vxj7oSPUonsg4N
-         8bexPQjNfdrbICA/7tpvLEd7RzKCdazkK1XZJ5tw9Iull4sR7NqpzIELjVlqslZvIoz+
-         FNMUm9u69u6T8dHHa6ghSukbVowSf6hc6Z+mTkLJdHWWEHWESEj5KRZkM2SrzOr7eUp8
-         wLnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692225363; x=1692830163;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HQmT7Uh6sWQfVX+jY524yxLYNHKGsl2fBek6097smRE=;
-        b=D9AyTC4OxvpZcTNNtM8CxI6Z2jYiBn3iu7JVSKnpIGgJODaMpFyI2ThtKabzZWChUf
-         9tut1LEsP0Scq9Z0/CxNI7YBIhkdcXiCqaTa/od0cqYv/zvJ9bHSB2Wl1BqiwHsFvu74
-         +R/7xEfGAQGhTDFF+DZpQFZYEtW2vjBjn8p2N5GG0Lb9SfexvWfp9fmJBoD6XiwJ0GWE
-         4pn4XJhDNfcHmYJcW+nMl6JmtFcd+uK8T028sePLNm103D9llKVl9pCNgoqugvOteavb
-         YpxFUVWCHEGpgU79raRRKGt0BNEMxHdItEkJiN3Ac+QcCBsg73Jxi6d814lvhJod4gbE
-         0lQA==
-X-Gm-Message-State: AOJu0Yzbfq/rwvdjrAwejTY2Gf/bgNIZyIbGOnNIXTBV1mXQlRh5TqZ5
-        QRMhg064mpYiPgMBmZaGfzdZEPaVe5hpl0Sc48H0wNssmH+KSSEhwvezbQ==
-X-Google-Smtp-Source: AGHT+IEMFyFOdyFVoQT+XlqGRpULwvmyipNra1bP9KYmfqYJt1udtszGG/fZE+m1+7FS8iRCYv31nvmhnFivxhOxM1w=
-X-Received: by 2002:a17:907:78c2:b0:99a:e756:57bf with SMTP id
- kv2-20020a17090778c200b0099ae75657bfmr2349406ejc.7.1692225362689; Wed, 16 Aug
- 2023 15:36:02 -0700 (PDT)
+        Wed, 16 Aug 2023 18:36:48 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CEAC1B2;
+        Wed, 16 Aug 2023 15:36:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692225407; x=1723761407;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=l1mTJmkp/kRwh+y4bLd5HMMSqSBCJpk7nRJ+5MwFhoU=;
+  b=CE2/7hdUwRnfQHYn0FnREXd6MK7aWpgmXiptCQItfhHpjOhujv4NANk7
+   mB1uzUOMyQ8ZeaGE6LunJ82aYt6Fglvi4bMrthDlE0OZbCNI/K/mvMm4L
+   sF9/+jbOuPy7XSuJTGuJctHw2ydYlly7ssmk+2v/P6GC0A7l0LXjVMj6r
+   61T43WPU3gV0Pl7YuNKasYQW4ODZI09n4OgJRJFudzGJOvyGIE/Yyp++q
+   mdoiCUNCDuvqLU9PEPRT2ZPXMX8GoTm27EDccVWwIpXESJ9iO7U2jSYOw
+   chPCD6mzrIr60NOVjKmc77qNQ2vfp+O42sT0e+tJJejJzkJ282iRuROvN
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="375422278"
+X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
+   d="scan'208";a="375422278"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 15:36:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="908162810"
+X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
+   d="scan'208";a="908162810"
+Received: from gokunbor-mobl1.amr.corp.intel.com (HELO [10.255.229.16]) ([10.255.229.16])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 15:36:46 -0700
+Message-ID: <fd7b559d-4a3a-4938-937b-bfcd5a7b315b@linux.intel.com>
+Date:   Wed, 16 Aug 2023 15:36:46 -0700
 MIME-Version: 1.0
-References: <CAJD7tkYBFz-gZ2QsHxUMT=t0KNXs66S-zzMPebadHx9zaG0Q3w@mail.gmail.com>
- <ZNrITZVTf2EILRJq@slm.duckdns.org> <CAJD7tkaXwoF-faApweAmm7Db7jAuS3EO7hVvdyVtqW_rE+T9Vg@mail.gmail.com>
- <ZNrLO5PAEZw4yjI9@slm.duckdns.org> <CAJD7tkYgCySTX28zK9GZiWwsabR4nv7M2hQ57y12si-fqtv7zg@mail.gmail.com>
- <CALvZod6KRxiDzrppCgx+=SHg2+96nFE5crwXCKwe9PZbWM_6cQ@mail.gmail.com>
- <CAJD7tkaUzhvZPohpo1F8TUKRPuXH7bjDeg9VCzN2CbywQbRutQ@mail.gmail.com>
- <CALvZod6HUtYhDaXiwXSrcwfxLSrZ37sZhKY1Mg4kmpDFk13aYw@mail.gmail.com>
- <CAJD7tkYzr2cg-aQ899vfqB4jR7iP83t8f-Z4AH8d9iW-yw-nnQ@mail.gmail.com>
- <CALvZod441xBoXzhqLWTZ+xnqDOFkHmvrzspr9NAr+nybqXgS-A@mail.gmail.com> <ZN0eqq4hLRYQPHCI@slm.duckdns.org>
-In-Reply-To: <ZN0eqq4hLRYQPHCI@slm.duckdns.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 16 Aug 2023 15:35:26 -0700
-Message-ID: <CAJD7tkYSk-73c1=5vmuRdykAQO=pJSkQFgRqkpdfnh7f-Zufkw@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Shakeel Butt <shakeelb@google.com>, Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Ivan Babrou <ivan@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 1/9] ACPI: Add comments to clarify some #ifdef
+ statements
+Content-Language: en-US
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-acpi@vger.kernel.org, Iain Lane <iain@orangesquash.org.uk>,
+        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>
+References: <20230816204143.66281-1-mario.limonciello@amd.com>
+ <20230816204143.66281-2-mario.limonciello@amd.com>
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20230816204143.66281-2-mario.limonciello@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 12:08=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Wed, Aug 16, 2023 at 10:11:20AM -0700, Shakeel Butt wrote:
-> > These options are not white and black and there can be something in
-> > between but let me be very clear on what I don't want and would NACK.
->
-> I'm not a big fan of interfaces with hidden states. What you're proposing
-> isn't strictly that but it's still a bit nasty. So, if we can get by with=
-out
-> doing that, that'd be great.
 
-Agreed. I will try to send patches soon implementing option (2) above,
-basically removing unified flushing. I will try to document any
-potential regressions that may happen and how we may fix them. Ideally
-we see no regressions.
+On 8/16/2023 1:41 PM, Mario Limonciello wrote:
+> With nested #ifdef statements it's sometimes difficult to tell
+> which code goes with which statement.  One comment was wrong,
+> so fix it and add another comment to clarify another.
 
+I would explain what is wrong clearly in the commit log. I see this file has
+many #ifdefs without comments. Do you want to fix them all?
+
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+> v9->v10:
+>   * no changes
+> ---
+>   include/linux/acpi.h | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> > I don't want a global sleepable lock which can be taken by potentially
-> > any application running on the system. We have seen similar global
-> > locks causing isolation and priority inversion issues in production.
-> > So, not another lock which needs to be taken under extreme condition
-> > (reading stats under OOM) by a high priority task (node controller)
-> > and might be held by a low priority task.
->
-> Yeah, this is a real concern. Those priority inversions do occur and can =
-be
-> serious but causing serious problems under memory pressure usually requir=
-es
-> involving memory allocations and IOs. Here, it's just all CPU. So, at lea=
-st
-> in OOM conditions, this shouldn't be in the way (the system wouldn't have
-> anything else to do anyway).
->
-> It is true that this still can lead to priority through CPU competition t=
-ho.
-> However, that problem isn't necessarily solved by what you're suggesting
-> either unless you want to restrict explicit flushing based on permissions
-> which is another can of worms.
-
-Right. Also in the case of a mutex, if we disable preemption while
-holding the mutex, this makes sure that whoever holding the mutex does
-not starve waiters. Essentially the difference would be that waiters
-will sleep with the mutex instead of spinning, but the mutex holder
-itself wouldn't sleep.
-
-I will make this a separate patch, just in case it's too
-controversial. Switching the spinlock to a mutex should not block
-removing unified flushing.
-
->
-> My preference is not exposing this in user interface. This is mostly aris=
-ing
-> from internal implementation details and isn't what users necessarily car=
-e
-> about. There are many things we can do on the kernel side to make trade-o=
-ffs
-> among overhead, staleness and priority inversions. If we make this an
-> explicit userland interface behavior, we get locked into that semantics
-> which we'll likely regret in some future.
->
-
-Yeah that's what I am trying to do here as well.  I will try to follow
-up on this discussion with patches soon.
-
-Thanks everyone!
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index 641dc48439873..0d5277b7c6323 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -1117,10 +1117,10 @@ static inline void arch_reserve_mem_area(acpi_physical_address addr,
+>   					  size_t size)
+>   {
+>   }
+> -#endif /* CONFIG_X86 */
+> +#endif /* CONFIG_IA64 */
+>   #else
+>   #define acpi_os_set_prepare_sleep(func, pm1a_ctrl, pm1b_ctrl) do { } while (0)
+> -#endif
+> +#endif /* CONFIG_ACPI */
+>   
+>   #if defined(CONFIG_ACPI) && defined(CONFIG_PM)
+>   int acpi_dev_suspend(struct device *dev, bool wakeup);
