@@ -2,146 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E1F77EBF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C4177EBF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346559AbjHPVhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 17:37:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37726 "EHLO
+        id S1346555AbjHPVhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 17:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346567AbjHPVhX (ORCPT
+        with ESMTP id S1346558AbjHPVhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 17:37:23 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86435271D
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:37:21 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-c5f98fc4237so5429959276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:37:21 -0700 (PDT)
+        Wed, 16 Aug 2023 17:37:12 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 069CEDC
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:37:11 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so4634a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:37:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692221840; x=1692826640;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ejxqzA0nYjrZRnMKwnhLcgXrQ2P2LYweIT/bMyk60lY=;
-        b=RrNiMXlD1Xu3g5PS6FJYi8VPQl/VyhrX9axybtGz0VMrpLdNfNj+6ruSGV2icqHgX/
-         br6FCHcHZ/vmiTXaKqjdvfds90xPuC64roG3fwkPu3n0wR50fkPtJ0+oxU9j0MkI4opd
-         4HCoxnxi5YKRFo4JBgX254Q+nxvLAAH3111AnEGP64T7PVC0pPONRj9ywx+KKDpUwsfI
-         /cuSyBHleUTaSscQa6rBaXVkQs0fmG58lNQXz+QifxI7/4UYAl9S+RK6NEtpliLwjev/
-         PGI7YKy0TALCWjLvG1DkR8h4JGObL/xLbAzmjPYbOk8soCbsyPR2FUQbN2AjJl0blI0u
-         uLxA==
+        d=google.com; s=20221208; t=1692221829; x=1692826629;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YuS/h2vqI/TNPK9231HrTTQYLYSfNx8VEdjhqDSvM3I=;
+        b=helse5TTvzZY/qTqKQTbEcpAcGKVIMSS+veWN85WXQrNlm0siGnScoCzZD8MCsfECD
+         QRihKUKeWHsfQOiwE7tw4K5WXklYPEvemLJRonlY9rOTUM4asY1XTTJLHUfmM+X/9uP0
+         DtiOoLukejrn0fRTSEqBLlrK3Qc3TRXlxrUPe9PJH1uOZ3eAHeSAdYdC6j1z7HGes60Q
+         687SyPBO5UmoiCTaTl7OwfNMfMVIE3TQKQPWUOC/UtiHM3/idR9wIXXZGyuYGMVhJ3sJ
+         KYnqYhs1WMpyGkC3Hd/l9VKbAhdzEc6L3xP0G2YLesEfmsU3SjFzU/32QfUxWGbfjXqO
+         zLdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692221841; x=1692826641;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ejxqzA0nYjrZRnMKwnhLcgXrQ2P2LYweIT/bMyk60lY=;
-        b=Dh2KosGmh1PoDat1exLfqbC99OXyXBUfyToJB2/k3Gm8E/h8q+5zCkholPGLyQQOfz
-         QynUaK7Z41XU9r2m2xKDzIhhcADXNPX0dQjvQ9sOG3f930amq3F7s/MSlwHfBLQVLe7Z
-         TBx6r1y3l2jEAA4bYgGCZUaunzwmel1/Wjrmac8/wbboh5HGUSHMFy4J3qme0Z2GBD+4
-         Z3TKZmPHUOsgAjLzCpnCveD24Q+YvX9HNW+29sOscdH0J8yw5dWs0ecPfHa52XGu1B8Y
-         NFuxB8yh+6F2FCynNAopWPijourJP3ywlHaa7aTBLIH3QPIvWtYGraZi48Ge9RkHdnjU
-         Rm+A==
-X-Gm-Message-State: AOJu0Yw1bCcFmUFqFGjCiMsOhAcebq39LQrHyp6g/ivFcSGnpKxXICnd
-        zjX456hTBCi8iG66eT4qhcYZRbkYF3Ub3LvnlBBkoQ==
-X-Google-Smtp-Source: AGHT+IEXIYL+AcHEeM++Dwh/la7lz/ucVonzMbgPxkaPzqH2S+PheP9EI3e24nTjFn9mp0NLcNvWyDOIKSTdWMhqmrs=
-X-Received: by 2002:a25:7703:0:b0:d0d:8359:c159 with SMTP id
- s3-20020a257703000000b00d0d8359c159mr2922931ybc.45.1692221840779; Wed, 16 Aug
- 2023 14:37:20 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692221829; x=1692826629;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YuS/h2vqI/TNPK9231HrTTQYLYSfNx8VEdjhqDSvM3I=;
+        b=C6qI6kylyp3MdH3sDihPCZ4fDtjDZbHKOzf5+G3aEEliuggJQpjGbkqLV3iLxsloxw
+         sQ4gicJaSAyfue0g9RtJG+Bj5emvAYbZkhBrNYRSed2huWWN6FnZ5cpYLsP5MzOjyY47
+         CfHor9QmzcLZKCi7BO757Mmg2DawNiuYtVtmL6aGiMjuaTSk2wK4Kvuh+JqTytHK9m7A
+         31A5ifDcip/tJu838vdLNqp56Lbb2QAuD0T7EVhxrECQTHDtdxqW0v9zCzYiCJ/PPLpc
+         Lotc0KZJkHVFr4q+6znmuvEQuGrEergasxG1trYsWathPx8W+XXmBwvDBy5a3bEF5gZm
+         6BKw==
+X-Gm-Message-State: AOJu0Ywj7fhP4tS4C7AcQJ1qSyoBi/xeZpW2A75+6XSGsCc0PDdvDCw3
+        lPBz/Z3FeEoQlKgRSc6WyfkNXJBrcaAAJsZjxLClQjD549eZiTvpXsg=
+X-Google-Smtp-Source: AGHT+IFLzRtJKBX8YjOUOQM+tpZWRF1Q+hVPwQ6nUbKCf8DPEnAyUtLixog8aRzSs9I/KwfH16HW7TOFPbSEzOxVvp0=
+X-Received: by 2002:a50:a45b:0:b0:523:bdc9:48a9 with SMTP id
+ v27-20020a50a45b000000b00523bdc948a9mr36864edb.0.1692221829436; Wed, 16 Aug
+ 2023 14:37:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230811214853.8623-1-giulio.benetti@benettiengineering.com>
- <CAPDyKForXMxANUrvOUfEtiRsXYPJ8MbfPBdJB6zu49QfeJfS8A@mail.gmail.com> <630d9eff-c6b5-a019-ba27-5c18824f7b89@benettiengineering.com>
-In-Reply-To: <630d9eff-c6b5-a019-ba27-5c18824f7b89@benettiengineering.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 16 Aug 2023 23:36:43 +0200
-Message-ID: <CAPDyKFq9VpSDuD1itDPZ0cYdRJuHvYcK=+Si-u1YkDqQhBAcQQ@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-esdhc-imx: improve ESDHC_FLAG_ERR010450
-To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Haibo Chen <haibo.chen@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Jim Reinhart <jimr@tekvox.com>,
-        James Autry <jautry@tekvox.com>,
-        Matthew Maron <matthewm@tekvox.com>
+References: <12a12721-239b-457e-1ff7-f98c02cb7abe@intel.com>
+ <20230816201700.589822-1-jmattson@google.com> <20230816211821.GUZN09HTGo+yQ2+jd7@fat_crate.local>
+ <CALMp9eR1Ub78MZwdZn178d4OXPu3Au=faBgVGe6ty6ARV+nK8g@mail.gmail.com> <20230816213025.GVZN0/8cjvLebNANTq@fat_crate.local>
+In-Reply-To: <20230816213025.GVZN0/8cjvLebNANTq@fat_crate.local>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Wed, 16 Aug 2023 14:36:57 -0700
+Message-ID: <CALMp9eRT4xCrK3Up_1bQuBZNd_2ZKLFqgamvP4BtA+HuC1driQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] x86/microcode/AMD: Load late on both threads too
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     dave.hansen@intel.com, linux-kernel@vger.kernel.org,
+        stable@kernel.org, x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Aug 2023 at 19:14, Giulio Benetti
-<giulio.benetti@benettiengineering.com> wrote:
+On Wed, Aug 16, 2023 at 2:30=E2=80=AFPM Borislav Petkov <bp@alien8.de> wrot=
+e:
 >
-> Hello Ulf, and All,
+> On Wed, Aug 16, 2023 at 02:23:52PM -0700, Jim Mattson wrote:
+> > Specifically, "Security Version Numbers (SVNs) of the currently
+> > executing platform firmware and microcode."
 >
-> +Cc Andrew Lunn,
+> Yes, I know the microcode revision is part of the attestation.
 >
-> On 16/08/23 11:52, Ulf Hansson wrote:
-> > On Fri, 11 Aug 2023 at 23:49, Giulio Benetti
-> > <giulio.benetti@benettiengineering.com> wrote:
-> >>
-> >> Errata ERR010450 only shows up if voltage is 1.8V, but if the device is
-> >> supplied by 3v3 the errata can be ignored. So let's check for if quirk
-> >> SDHCI_QUIRK2_NO_1_8_V is defined or not before limiting the frequency.
-> >>
-> >> Sponsored by: Tekvox Inc.
-> >
-> > Didn't know we have this kind of tag. Can you point me to the
-> > documentation of it?
+> What exactly are you asking?
 >
-> I've been pointed by Andew Lunn almost the same question here:
-> https://lore.kernel.org/lkml/859ff6a9-3ba9-ea2e-7b85-01813c5df0dd@broadcom.com/t/
->
-> and also asked to update:
-> Documentation/process/submitting-patches.rst
->
-> I've taken inspiration by this commit:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=73c289bac05919286f8c7e1660fcaf6ec0468363
->
-> where there is "Sponsored by:" and not "Sponsored-by:" otherwise
-> checkpatch.pl script complains about it.
->
-> Other commits already have that sort of tag.
+> If you don't state your question, how do you expect me to answer?
 
-Yes, but that seems silly to me.
+Doesn't this render that attestation misleading, since the microcode
+patch may not have been loaded on all logical processors?
 
-We should not be using tags in this way. First there needs to be an
-agreement of what kind of tags we should allow in the commit messages,
-before we start using them.
-
+--
+> Regards/Gruss,
+>     Boris.
 >
-> I could add Sponsored-by tag documentation and in checkpatch.pl script
-> as well as other possible scripts where required as pointed by Andrew.
->
-> I think this is a good way to give credits to companies that sponsor
-> patches and it could be more interesting for companies in general to
-> pay someone to upstream patches because they have their name on it.
-> Otherwise it's not an everyday task to add a driver from scratch
-> and write in the top comment that is sponsored by some company.
-> Also now there is SPDX so that part would be dropped too.
->
-> What do you All think about this? Do I go for a RFC patchset to add
-> the Sponsored-by: tag?
-
-My opinion is just one voice here, so at this point it doesn't really
-matter what I think.
-
-If *you* think this is a good idea, I encourage you to submit an RFC
-to the kernel docs for this. In this way we can collect the comments
-and see if people think this is a good idea.
-
-That said, do you want me to apply $subject patch without the tag or
-would you rather proceed with submitting an RFC first?
-
-[...]
-
-Kind regards
-Uffe
+> https://people.kernel.org/tglx/notes-about-netiquette
