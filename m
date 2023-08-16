@@ -2,138 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF09977E1BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 14:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D3D77E1C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 14:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245276AbjHPMhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 08:37:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38146 "EHLO
+        id S245281AbjHPMhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 08:37:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244388AbjHPMhK (ORCPT
+        with ESMTP id S244571AbjHPMh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 08:37:10 -0400
-Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E851D1FDC;
-        Wed, 16 Aug 2023 05:37:09 -0700 (PDT)
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        Wed, 16 Aug 2023 08:37:29 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69EF21FF9
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:37:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=meButugzK+c8b7F/2W247t2wjtoumPjf98JrcWTnXLk=; b=clHXquPzLZPNUfJ/MkxaqbYb3Y
+        I2vcp4UlQJFz7KT+/RXOOlNFUMtMsUK6prRFwzZKkrTHa+lIasMeLbY0824nvgbF7e8LOn1gDRFGB
+        hyU4qzRQpF2Tcxyml4YJOBtlQLIW7GpJ5dP55DkKjVrzt9Z5c5ANn7Ugp8ePPz/6kJMAeeQl98FQv
+        deIeS42+iR/FLxgKMT5ILnoR+gfjqE81YZLe4q+nQJ8xW9FJHNp0RcW9dTFCv0MHvQsIL6obrDMDu
+        iEcpsffCybCb0CfnY8DAGLUKuQoJluykptTZ+Wt62rIuyfWiULmEfFqh+BImwUhQK23YETX+V8679
+        MbJTmnWA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qWFm0-00CzLf-2c;
+        Wed, 16 Aug 2023 12:37:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.3ffe.de (Postfix) with ESMTPSA id 3514AA06;
-        Wed, 16 Aug 2023 14:37:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-        t=1692189428;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vJfh6GC8aHch959POkYyqkTUnj4NnXdjMKw7FcRwKoc=;
-        b=u8hsom4F23QN+Q0vmRp43G18VGyk4NagNu0MBrNjIj82pxXy7IdgNV1LyTKVVledQSz0Mr
-        yWqNrOj03deQUT0jvO8ZmrKfCDriYz9ymRcOGi9FU2T5d0Wbs/p088U7l0anJN/JvEFOu0
-        gEvQd+3d60Qg3aElZTBAvP9OJPTrCzb1vUnAhZJGSMps6CWM1kQ58UFp+laD9NR5/rcw1n
-        C1tWsUsHbPCaeKpN9GnRRcpO5a6NkVK9RA7baa99xytvA59XKaUtFl0ZpgUs+d54oRVXFg
-        NgpVc/pmdUwmfzBl1mXRHjIQvgjjrtSl+fT8m9Qo4GCuwQtGVtSDq9dtjW841A==
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 32ED13001FD;
+        Wed, 16 Aug 2023 14:37:16 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1AB6A2C2FDF3F; Wed, 16 Aug 2023 14:37:16 +0200 (CEST)
+Date:   Wed, 16 Aug 2023 14:37:16 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mike Galbraith <umgwanakikbuti@gmail.com>
+Cc:     Chen Yu <yu.c.chen@intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [tip:sched/eevdf] [sched/fair]  e0c2ff903c:
+ phoronix-test-suite.blogbench.Write.final_score -34.8% regression
+Message-ID: <20230816123716.GI980931@hirez.programming.kicks-ass.net>
+References: <202308101628.7af4631a-oliver.sang@intel.com>
+ <ZNWKuccyWnS3UJjK@chenyu5-mobl2.bbrouter>
+ <ZNWgAeN/EVS/vOLi@chenyu5-mobl2.bbrouter>
+ <20230814132935.GK776869@hirez.programming.kicks-ass.net>
+ <bd96d883d0d1575ebbee4323f4396596adb0ad09.camel@gmail.com>
 MIME-Version: 1.0
-Date:   Wed, 16 Aug 2023 14:37:07 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        "Miquel Raynal )" <miquel.raynal@bootlin.com>,
-        "Richard Weinberger )" <richard@nod.at>,
-        "Vignesh Raghavendra )" <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Subject: Re: [PATCH v2,1/2] mtd: spi-nor: giga: gd25lq64c: Disable quad mode
- according to bus width
-In-Reply-To: <0011a25a-e096-73ac-9800-9d8e35efdc8b@linaro.org>
-References: <20230816104245.2676965-1-hsinyi@chromium.org>
- <6702bac712daab13698b9bb9ad81d49e@walle.cc>
- <5911201a-f703-abbd-3c7b-769f70df08a8@linaro.org>
- <80ec748f37f40ae5c3c3c5d1602681b3@walle.cc>
- <0011a25a-e096-73ac-9800-9d8e35efdc8b@linaro.org>
-Message-ID: <ecfe1bc6799755d1f2c6f94b8cb59b27@walle.cc>
-X-Sender: michael@walle.cc
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bd96d883d0d1575ebbee4323f4396596adb0ad09.camel@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Aug 14, 2023 at 08:32:55PM +0200, Mike Galbraith wrote:
 
->>>> like a fundamental problem and that commit 39d1e3340c73 ("mtd: 
->>>> spi-nor:
->>>> Fix clearing of QE bit on lock()/unlock()") is broken in that 
->>>> regard.
->>> 
->>> what's wrong with the mentioned commit?
->> 
->>         } else if (nor->params->quad_enable) {
->>                 /*
->>                  * If the Status Register 2 Read command (35h) is not
->>                  * supported, we should at least be sure we don't
->>                  * change the value of the SR2 Quad Enable bit.
->>                  *
->>                  * We can safely assume that when the Quad Enable 
->> method is
->>                  * set, the value of the QE bit is one, as a 
->> consequence of the
->>                  * nor->params->quad_enable() call.
->>                  *
->>                  * We can safely assume that the Quad Enable bit is 
->> present in
->>                  * the Status Register 2 at BIT(1). According to the 
->> JESD216
->>                  * revB standard, BFPT DWORDS[15], bits 22:20, the 
->> 16-bit
->>                  * Write Status (01h) command is available just for 
->> the cases
->>                  * in which the QE bit is described in SR2 at BIT(1).
->>                  */
->>                 sr_cr[1] = SR2_QUAD_EN_BIT1;
->>         } else {
->>                 sr_cr[1] = 0;
->>         }
->> 
->> "We can safely assume that when the Quad Enable method..". We cannot, 
->> if we
->> don't have 4 I/O lines. The quad_enable is just the op how to do it, 
->> but not
->> *if* can do it. It seems to be missing the same check as the
->> spi_nor_quad_enable(). But I'm not sure if it's that simple.
->> 
-> 
-> I see. Then extending the if condition should do the trick, as
-> spi_nor_write_16bit_sr_and_check() is called after setup. Something
-> like:
-> 
-> if (spi_nor_get_protocol_width(nor->read_proto) == 4 &&
->     spi_nor_get_protocol_width(nor->write_proto) == 4 &&
->     nor->params->quad_enable)
-> 
-> Is this what Hsin-Yi is hitting?
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -875,6 +875,12 @@ static struct sched_entity *pick_eevdf(s
+>  	if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
+>  		curr = NULL;
+>  
+> +	/*
+> +	 * Once selected, run the task to parity to avoid overscheduling.
+> +	 */
+> +	if (sched_feat(RUN_TO_PARITY) && curr)
+> +		return curr;
+> +
+>  	while (node) {
+>  		struct sched_entity *se = __node_2_se(node);
+>  
 
-Hopefully :)
+So I read it wrong last night... but I rather like this idea. But
+there's something missing. When curr starts a new slice it should
+probably do a full repick and not stick with it.
 
--michael
+Let me poke at this a bit.. nice
 
