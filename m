@@ -2,127 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF80577E997
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D4877E99A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345801AbjHPTXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 15:23:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38654 "EHLO
+        id S1345802AbjHPTY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 15:24:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345650AbjHPTXI (ORCPT
+        with ESMTP id S1345810AbjHPTY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 15:23:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6FC51FCE;
-        Wed, 16 Aug 2023 12:23:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Wed, 16 Aug 2023 15:24:28 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C45461FCE;
+        Wed, 16 Aug 2023 12:24:27 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1706240E0193;
+        Wed, 16 Aug 2023 19:24:26 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 4uDNsU_7N1mE; Wed, 16 Aug 2023 19:24:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1692213863; bh=kWCMNXNC+b+d4lKUIGbGSVb7+WbXyP3FVVhE4xWxZOQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ce1V+inLjqNAFaYi+CNmHmvDKtqvcocwEEZfD/0ZIahf+91pRriquLRRqPJsFnLbU
+         olBc9Dd/pYcYufuO1wOSnarmuAUN06bUdBdzctnSonzhJhrMRLGSAeu56nH10Wcbyd
+         KstUUq/EmCx/xWDHrYxbV7aO5pLiHe6K9OULGUbnerEULYsv14hJRJ3NSoHuwlCV0Y
+         nJKr7bCzMDzDX97Ave2KThpb2eYJG9PBOL8cd12FoaUOTeBk0T3VhNSyl3doVTGtmu
+         rTkXvxgYpEnVlxXhudgDFoqw/Tsb/qzJ5gTwTDc8qSk5OIq0u/NMSFSlKUPLPKX4WB
+         lhrVIWxwabdOmzO11opzD2nMOFZgqxdGzpk+SLKexyEAL5gpS35laPUK2uvtarx5IG
+         VYrTWpVeWhJ7xzelNBG71W8dQ2/0/DZxToKcPVApwHVwBDI50OU5zp4DJaalEay4hT
+         5XWuddHI23yo57Q6Bilu0DJKFzBy+QekiDPwCtvZ7GWtqmcJfZxuAzh08ZkerB+kSX
+         vZXtoViUMZAjiy4HjXRj4PuWH2dDD3vouUTMm2tvfAtrow9ZGK02za5M+U0yBHpDCb
+         9fc8Vuu8CEkShHroALdsU2MmS96QAIXCQNsBZsZq1ptnIO3U3VtKrEzMnT9CH6WV0v
+         2Mmop8jBCWrwRvsw7LN06N1w=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 57EBD61E0C;
-        Wed, 16 Aug 2023 19:23:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3976BC433C8;
-        Wed, 16 Aug 2023 19:23:05 +0000 (UTC)
-Date:   Wed, 16 Aug 2023 15:23:08 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Zheng Yejian <zhengyejian1@huawei.com>
-Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        <laijs@cn.fujitsu.com>, <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>
-Subject: Re: [PATCH] tracing: Fix race when concurrently splice_read
- trace_pipe
-Message-ID: <20230816152308.5f887721@gandalf.local.home>
-In-Reply-To: <0b83d0e5-5fe6-0cfb-4695-23c2cb86526d@huawei.com>
-References: <20230810123905.1531061-1-zhengyejian1@huawei.com>
-        <20230811204257.99df8ba60d591f5bace38615@kernel.org>
-        <f7af687f-2376-fede-fa22-f776811c48f1@huawei.com>
-        <20230811152413.76d5b72e@gandalf.local.home>
-        <0b83d0e5-5fe6-0cfb-4695-23c2cb86526d@huawei.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 77CAB40E0140;
+        Wed, 16 Aug 2023 19:24:18 +0000 (UTC)
+Date:   Wed, 16 Aug 2023 21:24:13 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-tip-commits@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [tip: x86/urgent] x86/cpu: Clean up SRSO return thunk mess
+Message-ID: <20230816192413.GPZN0iXRRpOGKVMm47@fat_crate.local>
+References: <20230814121148.842775684@infradead.org>
+ <169217251663.27769.14430226618442726061.tip-bot2@tip-bot2>
+ <20230816185839.GA3843691@dev-arch.thelio-3990X>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230816185839.GA3843691@dev-arch.thelio-3990X>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 12 Aug 2023 10:22:43 +0800
-Zheng Yejian <zhengyejian1@huawei.com> wrote:
+On Wed, Aug 16, 2023 at 11:58:39AM -0700, Nathan Chancellor wrote:
+> but it obviously gets fixed by commit a3fd3ac0a605 ("x86/cpu: Rename
+> srso_(.*)_alias to srso_alias_\1") so it is probably fine. I only
+> noticed it because I cherry-picked the first five changes to my patched
+> -next tree.
 
->
-> >>>> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> >>>> index b8870078ef58..f169d33b948f 100644
-> >>>> --- a/kernel/trace/trace.c
-> >>>> +++ b/kernel/trace/trace.c
-> >>>> @@ -7054,14 +7054,16 @@ static ssize_t tracing_splice_read_pipe(struct file *filp,
-> >>>>    	if (ret <= 0)
-> >>>>    		goto out_err;
-> >>>>    
-> >>>> -	if (!iter->ent && !trace_find_next_entry_inc(iter)) {
-> >>>> +	trace_event_read_lock();
-> >>>> +	trace_access_lock(iter->cpu_file);
-> >>>> +
-> >>>> +	if (!trace_find_next_entry_inc(iter)) {  
-> >>>
-> >>> It seems you skips '!iter->ent' check. Is there any reason for this change?  
-> >>
-> >> IIUC, 'iter->ent' may be the entry that was found but not consumed
-> >> in last call tracing_splice_read_pipe(), and in this call, 'iter->ent'
-> >> may have being consumed, so we may should find a new 'iter->ent' before
-> >> printing it in tracing_fill_pipe_page(), see following reduced codes:  
-> > 
-> > And if it wasn't consumed? We just lost it?  
-> 
-> If 'iter->ent' was not consumed, trace_find_next_entry_inc() will find
-> it again, will it?
-> 
-> -- Zheng Yejian
-> 
-> >   
-> >>
-> >>     tracing_splice_read_pipe() {
-> >>       if (!iter->ent && !trace_find_next_entry_inc(iter)) {  // 1. find
-> >> entry here
-> >>           ... ...
-> >>       }
-> >>       tracing_fill_pipe_page() {
-> >>         for (;;) {
-> >>           ... ...
-> >>           ret = print_trace_line(iter);  // 2. print entry
-> >>           ... ...  
-> > 
-> > You missed:
-> > 
-> >             count = trace_seq_used(&iter->seq) - save_len;
-> >             if (rem < count) {
-> >                  rem = 0;
-> >                  iter->seq.seq.len = save_len;
-> > 
-> > Where the above just threw away what was printed in the above
-> > "print_trace_line()", and it never went to console.
-> > 
-> >                  break;
-> >             }
-> >   
-> 
-> Thanks for pointing this out!
+Gah, and I meant to merge that hunk into the right one when fixing the
+32-bit builds.
 
-Just to get this moving again, I believe we should add a ref count to
-trace_pipe and the per_cpu trace_pipes, where if they are opened, nothing else can read it.
+So how did you trigger it? You do builds of every patch? Because that's
+the !CONFIG_CPU_SRSO case.
 
-Opening trace_pipe locks all per_cpu ref counts, if any of them are open,
-then the trace_pipe open will fail (and releases any ref counts it had
-taken).
+Oh well, lemme rebase and fix it.
 
-Opening a per_cpu trace_pipe will up the ref count for just that CPU
-buffer. This will allow multiple tasks to read different per_cpu trace_pipe
-files, but will prevent the main trace_pipe file from being opened.
+Thx for letting me know.
 
-Does that work for this?
+-- 
+Regards/Gruss,
+    Boris.
 
--- Steve
+https://people.kernel.org/tglx/notes-about-netiquette
