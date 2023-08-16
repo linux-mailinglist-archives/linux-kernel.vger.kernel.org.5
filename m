@@ -2,346 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B949477DF39
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8FA77DE1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243950AbjHPKpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 06:45:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48846 "EHLO
+        id S243682AbjHPKEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 06:04:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244031AbjHPKo5 (ORCPT
+        with ESMTP id S243669AbjHPKEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 06:44:57 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A993E26B7
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:44:42 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:5d0c:f209:12a7:4ce5])
-        by baptiste.telenet-ops.be with bizsmtp
-        id aAkf2A00U45ualL01Akfjy; Wed, 16 Aug 2023 12:44:40 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qWE0v-000orA-AD;
-        Wed, 16 Aug 2023 12:44:39 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qWDAx-00677O-7f;
-        Wed, 16 Aug 2023 11:50:51 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Magnus Damm <magnus.damm@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v3 41/41] drm: renesas: shmobile: Add DT support
-Date:   Wed, 16 Aug 2023 11:50:48 +0200
-Message-Id: <b905d10d1025bdadd55ea60c7b6ab66254f4eac1.1692178020.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1692178020.git.geert+renesas@glider.be>
-References: <cover.1692178020.git.geert+renesas@glider.be>
+        Wed, 16 Aug 2023 06:04:14 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF0AC1;
+        Wed, 16 Aug 2023 03:04:12 -0700 (PDT)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RQkGG4Dl6z1GDcH;
+        Wed, 16 Aug 2023 18:02:46 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 16 Aug 2023 18:04:06 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, <bpf@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH net-next v7 0/6] introduce page_pool_alloc() related API
+Date:   Wed, 16 Aug 2023 18:01:07 +0800
+Message-ID: <20230816100113.41034-1-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT support, by:
-  1. Creating a panel bridge from DT, and attaching it to the encoder,
-  2. Replacing the custom connector with a bridge connector,
-  3. Obtaining clock configuration based on the compatible value.
+In [1] & [2] & [3], there are usecases for veth and virtio_net
+to use frag support in page pool to reduce memory usage, and it
+may request different frag size depending on the head/tail
+room space for xdp_frame/shinfo and mtu/packet size. When the
+requested frag size is large enough that a single page can not
+be split into more than one frag, using frag support only have
+performance penalty because of the extra frag count handling
+for frag support.
 
-Note that for now the driver uses a fixed clock configuration selecting
-the bus clock, as the current code to select other clock inputs needs
-changes to support any other SoCs than SH7724.
+So this patchset provides a page pool API for the driver to
+allocate memory with least memory utilization and performance
+penalty when it doesn't know the size of memory it need
+beforehand.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v3:
-  - No changes,
+1. https://patchwork.kernel.org/project/netdevbpf/patch/d3ae6bd3537fbce379382ac6a42f67e22f27ece2.1683896626.git.lorenzo@kernel.org/
+2. https://patchwork.kernel.org/project/netdevbpf/patch/20230526054621.18371-3-liangchen.linux@gmail.com/
+3. https://github.com/alobakin/linux/tree/iavf-pp-frag
 
-v2:
-  - Use devm_drm_of_get_bridge(),
-  - Don't print bridge->of_node on failure, as this field depends on
-    CONFIG_OF.
+V7: Fix a compile error, a few typo and use kernel-doc syntax.
 
-Notes:
-  - SH-Mobile AG5 (SH73A0) support is untested.
-  - Unbind crashes when drm_encoder_cleanup() calls drm_bridge_detach(),
-    as the bridge (allocated by devm_drm_panel_bridge_add()) has already
-    been freed by that time. This is a known issue with the bridge code.
----
- .../gpu/drm/renesas/shmobile/shmob_drm_crtc.c | 56 ++++++++++++++-----
- .../gpu/drm/renesas/shmobile/shmob_drm_crtc.h |  1 +
- .../gpu/drm/renesas/shmobile/shmob_drm_drv.c  | 27 ++++++++-
- .../gpu/drm/renesas/shmobile/shmob_drm_drv.h  |  6 ++
- 4 files changed, 74 insertions(+), 16 deletions(-)
+V6: Add a PP_FLAG_PAGE_SPLIT_IN_DRIVER flag to fail the page_pool
+    creation for 32-bit arch with 64-bit DMA when driver tries to
+    do the page splitting itself, adjust the requested size to
+    include head/tail room in veth, and rebased on the latest
+    next-net.
 
-diff --git a/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c b/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c
-index 729028a15efae00c..2e2f37b9d0a4bafa 100644
---- a/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c
-+++ b/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c
-@@ -9,12 +9,16 @@
- 
- #include <linux/clk.h>
- #include <linux/media-bus-format.h>
-+#include <linux/of.h>
-+#include <linux/of_graph.h>
- #include <linux/pm_runtime.h>
- 
- #include <drm/drm_atomic.h>
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_atomic_state_helper.h>
- #include <drm/drm_atomic_uapi.h>
-+#include <drm/drm_bridge.h>
-+#include <drm/drm_bridge_connector.h>
- #include <drm/drm_crtc.h>
- #include <drm/drm_crtc_helper.h>
- #include <drm/drm_fb_dma_helper.h>
-@@ -23,6 +27,7 @@
- #include <drm/drm_gem_dma_helper.h>
- #include <drm/drm_modeset_helper.h>
- #include <drm/drm_modeset_helper_vtables.h>
-+#include <drm/drm_panel.h>
- #include <drm/drm_probe_helper.h>
- #include <drm/drm_simple_kms_helper.h>
- #include <drm/drm_vblank.h>
-@@ -35,10 +40,6 @@
- #include "shmob_drm_plane.h"
- #include "shmob_drm_regs.h"
- 
--/*
-- * TODO: panel support
-- */
--
- /* -----------------------------------------------------------------------------
-  * Page Flip
-  */
-@@ -201,7 +202,7 @@ static void shmob_drm_crtc_atomic_enable(struct drm_crtc *crtc,
- {
- 	struct shmob_drm_crtc *scrtc = to_shmob_crtc(crtc);
- 	struct shmob_drm_device *sdev = to_shmob_device(crtc->dev);
--	const struct shmob_drm_interface_data *idata = &sdev->pdata->iface;
-+	unsigned int clk_div = sdev->config.clk_div;
- 	struct device *dev = sdev->dev;
- 	u32 value;
- 	int ret;
-@@ -223,17 +224,17 @@ static void shmob_drm_crtc_atomic_enable(struct drm_crtc *crtc,
- 	lcdc_write(sdev, LDPMR, 0);
- 
- 	value = sdev->lddckr;
--	if (idata->clk_div) {
-+	if (clk_div) {
- 		/* FIXME: sh7724 can only use 42, 48, 54 and 60 for the divider
- 		 * denominator.
- 		 */
- 		lcdc_write(sdev, LDDCKPAT1R, 0);
--		lcdc_write(sdev, LDDCKPAT2R, (1 << (idata->clk_div / 2)) - 1);
-+		lcdc_write(sdev, LDDCKPAT2R, (1 << (clk_div / 2)) - 1);
- 
--		if (idata->clk_div == 1)
-+		if (clk_div == 1)
- 			value |= LDDCKR_MOSEL;
- 		else
--			value |= idata->clk_div;
-+			value |= clk_div;
- 	}
- 
- 	lcdc_write(sdev, LDDCKR, value);
-@@ -406,7 +407,7 @@ int shmob_drm_crtc_create(struct shmob_drm_device *sdev)
- }
- 
- /* -----------------------------------------------------------------------------
-- * Encoder
-+ * Legacy Encoder
-  */
- 
- static bool shmob_drm_encoder_mode_fixup(struct drm_encoder *encoder,
-@@ -435,9 +436,14 @@ static const struct drm_encoder_helper_funcs encoder_helper_funcs = {
- 	.mode_fixup = shmob_drm_encoder_mode_fixup,
- };
- 
-+/* -----------------------------------------------------------------------------
-+ * Encoder
-+ */
-+
- int shmob_drm_encoder_create(struct shmob_drm_device *sdev)
- {
- 	struct drm_encoder *encoder = &sdev->encoder;
-+	struct drm_bridge *bridge;
- 	int ret;
- 
- 	encoder->possible_crtcs = 1;
-@@ -447,13 +453,30 @@ int shmob_drm_encoder_create(struct shmob_drm_device *sdev)
- 	if (ret < 0)
- 		return ret;
- 
--	drm_encoder_helper_add(encoder, &encoder_helper_funcs);
-+	if (sdev->pdata) {
-+		drm_encoder_helper_add(encoder, &encoder_helper_funcs);
-+		return 0;
-+	}
-+
-+	/* Create a panel bridge */
-+	bridge = devm_drm_of_get_bridge(sdev->dev, sdev->dev->of_node, 0, 0);
-+	if (IS_ERR(bridge))
-+		return PTR_ERR(bridge);
-+
-+	/* Attach the bridge to the encoder */
-+	ret = drm_bridge_attach(encoder, bridge, NULL,
-+				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
-+	if (ret) {
-+		dev_err(sdev->dev, "failed to attach bridge: %pe\n",
-+			ERR_PTR(ret));
-+		return ret;
-+	}
- 
- 	return 0;
- }
- 
- /* -----------------------------------------------------------------------------
-- * Connector
-+ * Legacy Connector
-  */
- 
- static inline struct shmob_drm_connector *to_shmob_connector(struct drm_connector *connector)
-@@ -563,13 +586,20 @@ shmob_drm_connector_init(struct shmob_drm_device *sdev,
- 	return connector;
- }
- 
-+/* -----------------------------------------------------------------------------
-+ * Connector
-+ */
-+
- int shmob_drm_connector_create(struct shmob_drm_device *sdev,
- 			       struct drm_encoder *encoder)
- {
- 	struct drm_connector *connector;
- 	int ret;
- 
--	connector = shmob_drm_connector_init(sdev, encoder);
-+	if (sdev->pdata)
-+		connector = shmob_drm_connector_init(sdev, encoder);
-+	else
-+		connector = drm_bridge_connector_init(&sdev->ddev, encoder);
- 	if (IS_ERR(connector)) {
- 		dev_err(sdev->dev, "failed to created connector: %pe\n",
- 			connector);
-diff --git a/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.h b/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.h
-index 89a0746f9a35807d..16e1712dd04e0f2b 100644
---- a/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.h
-+++ b/drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.h
-@@ -29,6 +29,7 @@ struct shmob_drm_crtc {
- 	wait_queue_head_t flip_wait;
- };
- 
-+/* Legacy connector */
- struct shmob_drm_connector {
- 	struct drm_connector base;
- 	struct drm_encoder *encoder;
-diff --git a/drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.c b/drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.c
-index 58a16efde4e3cb4f..c1833d4b28652cbf 100644
---- a/drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.c
-+++ b/drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.c
-@@ -11,6 +11,7 @@
- #include <linux/io.h>
- #include <linux/mm.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm.h>
- #include <linux/pm_runtime.h>
-@@ -174,11 +175,13 @@ static int shmob_drm_remove(struct platform_device *pdev)
- static int shmob_drm_probe(struct platform_device *pdev)
- {
- 	struct shmob_drm_platform_data *pdata = pdev->dev.platform_data;
-+	const struct shmob_drm_config *config;
- 	struct shmob_drm_device *sdev;
- 	struct drm_device *ddev;
- 	int ret;
- 
--	if (pdata == NULL) {
-+	config = of_device_get_match_data(&pdev->dev);
-+	if (!config && !pdata) {
- 		dev_err(&pdev->dev, "no platform data\n");
- 		return -EINVAL;
- 	}
-@@ -194,7 +197,13 @@ static int shmob_drm_probe(struct platform_device *pdev)
- 
- 	ddev = &sdev->ddev;
- 	sdev->dev = &pdev->dev;
--	sdev->pdata = pdata;
-+	if (config) {
-+		sdev->config = *config;
-+	} else {
-+		sdev->pdata = pdata;
-+		sdev->config.clk_source = pdata->clk_source;
-+		sdev->config.clk_div = pdata->iface.clk_div;
-+	}
- 	spin_lock_init(&sdev->irq_lock);
- 
- 	platform_set_drvdata(pdev, sdev);
-@@ -203,7 +212,7 @@ static int shmob_drm_probe(struct platform_device *pdev)
- 	if (IS_ERR(sdev->mmio))
- 		return PTR_ERR(sdev->mmio);
- 
--	ret = shmob_drm_setup_clocks(sdev, pdata->clk_source);
-+	ret = shmob_drm_setup_clocks(sdev, sdev->config.clk_source);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -251,11 +260,23 @@ static int shmob_drm_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
-+static const struct shmob_drm_config shmob_arm_config = {
-+	.clk_source = SHMOB_DRM_CLK_BUS,
-+	.clk_div = 5,
-+};
-+
-+static const struct of_device_id shmob_drm_of_table[] __maybe_unused = {
-+	{ .compatible = "renesas,r8a7740-lcdc",	.data = &shmob_arm_config, },
-+	{ .compatible = "renesas,sh73a0-lcdc",	.data = &shmob_arm_config, },
-+	{ /* sentinel */ }
-+};
-+
- static struct platform_driver shmob_drm_platform_driver = {
- 	.probe		= shmob_drm_probe,
- 	.remove		= shmob_drm_remove,
- 	.driver		= {
- 		.name	= "shmob-drm",
-+		.of_match_table = of_match_ptr(shmob_drm_of_table),
- 		.pm	= &shmob_drm_pm_ops,
- 	},
- };
-diff --git a/drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.h b/drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.h
-index 18907e5ace51c681..088ac5381e91e61a 100644
---- a/drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.h
-+++ b/drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.h
-@@ -20,9 +20,15 @@ struct clk;
- struct device;
- struct drm_device;
- 
-+struct shmob_drm_config {
-+	enum shmob_drm_clk_source clk_source;
-+	unsigned int clk_div;
-+};
-+
- struct shmob_drm_device {
- 	struct device *dev;
- 	const struct shmob_drm_platform_data *pdata;
-+	struct shmob_drm_config config;
- 
- 	void __iomem *mmio;
- 	struct clk *clock;
+v5 RFC: Add a new page_pool_cache_alloc() API, and other minor
+        change as discussed in v4. As there seems to be three
+        comsumers that might be made use of the new API, so
+        repost it as RFC and CC the relevant authors to see
+        if the new API fits their need.
+
+V4. Fix a typo and add a patch to update document about frag
+    API, PAGE_POOL_DMA_USE_PP_FRAG_COUNT is not renamed yet
+    as we may need a different thread to discuss that.
+
+V3: Incorporate changes from the disscusion with Alexander,
+    mostly the inline wraper, PAGE_POOL_DMA_USE_PP_FRAG_COUNT
+    change split to separate patch and comment change.
+V2: Add patch to remove PP_FLAG_PAGE_FRAG flags and mention
+    virtio_net usecase in the cover letter.
+V1: Drop RFC tag and page_pool_frag patch.
+
+Yunsheng Lin (6):
+  page_pool: frag API support for 32-bit arch with 64-bit DMA
+  page_pool: unify frag_count handling in page_pool_is_last_frag()
+  page_pool: remove PP_FLAG_PAGE_FRAG
+  page_pool: introduce page_pool[_cache]_alloc() API
+  page_pool: update document about frag API
+  net: veth: use newly added page pool API for veth with xdp
+
+ Documentation/networking/page_pool.rst        |   4 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     |   2 -
+ .../net/ethernet/hisilicon/hns3/hns3_enet.c   |   3 +-
+ .../marvell/octeontx2/nic/otx2_common.c       |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |   3 +-
+ drivers/net/veth.c                            |  25 +-
+ drivers/net/wireless/mediatek/mt76/mac80211.c |   2 +-
+ include/net/page_pool/helpers.h               | 219 ++++++++++++++++--
+ include/net/page_pool/types.h                 |  38 +--
+ net/core/page_pool.c                          |  30 +--
+ net/core/skbuff.c                             |   2 +-
+ 11 files changed, 261 insertions(+), 69 deletions(-)
+
 -- 
-2.34.1
+2.33.0
 
