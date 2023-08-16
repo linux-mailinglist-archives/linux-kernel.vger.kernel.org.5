@@ -2,153 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F17A77D8A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 04:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E224177D8AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 04:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241401AbjHPCzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 22:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59094 "EHLO
+        id S241335AbjHPC4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 22:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241426AbjHPCzd (ORCPT
+        with ESMTP id S241432AbjHPCz6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 22:55:33 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC6722698
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:55:25 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-6424c61c80eso19667136d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:55:25 -0700 (PDT)
+        Tue, 15 Aug 2023 22:55:58 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE492212D;
+        Tue, 15 Aug 2023 19:55:56 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6887b3613e4so371190b3a.3;
+        Tue, 15 Aug 2023 19:55:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1692154525; x=1692759325;
+        d=gmail.com; s=20221208; t=1692154556; x=1692759356;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PlkFhJjPZ+nVOvUd+Bq8Pm9xKRLhY4/ZIov2TViDPGA=;
-        b=u0crk9vGr/nqq4DRoRfsmHXKIisixdAHqHTsS1KMoVwfubQuVk0JmLH7NclBlUCzwP
-         GVP/G00X4Kfqdn6GNdCAunGqtZAtgZ0V0eUK0jkq68HAlYeRZeYac/6KOjVfyyxP/QjU
-         lFKCEbNa2yP5IuAQCD/x011qQerffKA17z1cU=
+        bh=eMBvumhvLAcNW2VdiOT2JRAO7dR7SftnCzpdqfmYU4w=;
+        b=nmNA1f8ez305if3CHZZYl9Nt1AyL2s/SkqEiWW4k1RWk6fRSrDi6ZCTocFCEAX84Dw
+         g/9MvC4gaDYPbZWsQ+PXcC2OheiFO8r/X0wX1fhKdSYWjaDfEjhIu47Q1Ls1Q722aqzo
+         6nn7DS2Wn1NRXb0S7tOXkVc+VtuOUYB9/bBjyE3XwTQW2fXD80RGUXgnVRc+wl65zrBZ
+         7x0jbSNFh1SMcoZe/HDFJNIYl1R/zC6HkrsIOD0EfjialjBJI0q9ZiFWaO4ZZEdtIjEH
+         8FV+8KRx2p83Nk96BTZ0wbimGQW1VoHTroEAEutB5xpOaM0p6nXhlfESkCLXN5QAYSbJ
+         fovw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692154525; x=1692759325;
+        d=1e100.net; s=20221208; t=1692154556; x=1692759356;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PlkFhJjPZ+nVOvUd+Bq8Pm9xKRLhY4/ZIov2TViDPGA=;
-        b=ZHwVE7suF/OycN15v6SVDxImrsJVlm/kcnqT4wd5vaZDRElFQyFNKwhkXA/Q3tdH/d
-         5xDDfeOQ9iTT9rxJxfoJoe1qqHeMH1GaVTa24z4+/N8pVtPWI8LoQNXuEqlGQJAnbW5W
-         PSbvH8O00AFtwPRglAWBVgjCy87ibusfm8ZcuFaqpBc3y1FmSN1Y7DG+x5X8U0BSyIvT
-         nMNrQjHgvfpRZFMHYdrOoBvBJr5848jFqELGNlNCOmwCn/QIwP95wMKySjJtGhnN89g5
-         D7WFBygrphqBV/K7k+WXB0u4wGnV6uj/Jj/2GEObi1+DHQHNfNj1ZTIHtnQugkLPF9ym
-         W2uQ==
-X-Gm-Message-State: AOJu0YzZ8d8mULFiX0XzGLoA6MJNf9M6VOyYAeUvBb/T+135cpy4Eejd
-        pH/iObGx6P7IBlEdkMf2NT29qw==
-X-Google-Smtp-Source: AGHT+IER30di/frjLmSfjBFxrbvcoUh8ENJ/K3XUUSW6J703Xp97ZRzLzUrHCHHTK6WJ/FNFpTmFmg==
-X-Received: by 2002:a05:6214:500b:b0:63d:580:9c68 with SMTP id jo11-20020a056214500b00b0063d05809c68mr5481820qvb.32.1692154524793;
-        Tue, 15 Aug 2023 19:55:24 -0700 (PDT)
-Received: from debian.debian ([140.141.197.139])
-        by smtp.gmail.com with ESMTPSA id i4-20020a0cf384000000b006300722883fsm4576015qvk.33.2023.08.15.19.55.23
+        bh=eMBvumhvLAcNW2VdiOT2JRAO7dR7SftnCzpdqfmYU4w=;
+        b=WNA5N0WqQYziM+SWNeoYEiZ4N0S3Wl88M9yNm0K1SELDXQaeul7zC0wjc53KXMSfGS
+         NIFxbttSjwBZ9jtrXJhIZF00OyyzATGHDl8+pG6TXE8fZe4pmhRFCS+bdSyP+kaF8ZgM
+         2auJY4E9CgRcDUi06PsUwyHEH0YAUhygmZ0DVdqjvXt8gyX2KyjxE2FtRlA6kMOeBhM3
+         vZhpUcvYAiOzrj3sJQwlarEgCBqWQ8Pab+hyzGjjBj6C8IfpQMXpsJi+JqZTD3ciOuUa
+         b5/0OoTqqlCzvY4sxNR+avDKooPDhiD7vMBo7mYtBZFKxbzD7jQE6hHRbc8FSY4yop6d
+         41+g==
+X-Gm-Message-State: AOJu0Yw3fB8ZGSUdCPUd4UmOPjhKpbe7Gq2qnSS3ZdWfzkb3nxc7LMRn
+        E0Nb+n29x8FR0Ghn41yE2vU=
+X-Google-Smtp-Source: AGHT+IGMG0b8hw9E9pVqFs67EQ1NHeGnmgKfBzeTjct+uJV5PfxjDRIerS+hy/XTpLU1uN70LuO/oQ==
+X-Received: by 2002:a05:6a20:ce8f:b0:140:3aa:e2ce with SMTP id if15-20020a056a20ce8f00b0014003aae2cemr834476pzb.42.1692154556175;
+        Tue, 15 Aug 2023 19:55:56 -0700 (PDT)
+Received: from atom0118 ([2405:201:c009:58e9:6a8f:3187:b8c8:1572])
+        by smtp.gmail.com with ESMTPSA id n21-20020aa79055000000b006878c00537bsm9994766pfo.120.2023.08.15.19.55.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 19:55:24 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 19:55:21 -0700
-From:   Yan Zhai <yan@cloudflare.com>
-To:     bpf@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Yan Zhai <yan@cloudflare.com>, Thomas Graf <tgraf@suug.ch>,
-        Jordan Griege <jgriege@cloudflare.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, stable@vger.kernel.org
-Subject: [PATCH v5 bpf 2/4] lwt: check LWTUNNEL_XMIT_CONTINUE strictly
-Message-ID: <fb1092883824cec55e31f69c7f8fae86e48fd445.1692153515.git.yan@cloudflare.com>
-References: <cover.1692153515.git.yan@cloudflare.com>
+        Tue, 15 Aug 2023 19:55:55 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 08:25:50 +0530
+From:   Atul Kumar Pant <atulpant.linux@gmail.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     eparis@redhat.com, audit@vger.kernel.org,
+        linux-kernel@vger.kernel.org, shuah@kernel.org
+Subject: Re: [PATCH v1] kernel: Add space before parenthesis and around '=',
+ "==" and '<'
+Message-ID: <20230816025550.GD57274@atom0118>
+References: <20230815204553.52261-1-atulpant.linux@gmail.com>
+ <aecb4e94bc65928c674b6a083e7fd489.paul@paul-moore.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1692153515.git.yan@cloudflare.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <aecb4e94bc65928c674b6a083e7fd489.paul@paul-moore.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LWTUNNEL_XMIT_CONTINUE is implicitly assumed in ip(6)_finish_output2,
-such that any positive return value from a xmit hook could cause
-unexpected continue behavior, despite that related skb may have been
-freed. This could be error-prone for future xmit hook ops, particularly
-if dst_output statuses are directly returned.
+On Tue, Aug 15, 2023 at 06:09:19PM -0400, Paul Moore wrote:
+> On Aug 15, 2023 Atul Kumar Pant <atulpant.linux@gmail.com> wrote:
+> > 
+> > Fixes following checkpatch.pl issue:
+> > ERROR: space required before the open parenthesis '('
+> > ERROR: spaces required around that '='
+> > ERROR: spaces required around that '<'
+> > ERROR: spaces required around that '=='
+> > 
+> > Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
+> > ---
+> >  kernel/acct.c        |  2 +-
+> >  kernel/auditfilter.c | 16 ++++++++--------
+> >  kernel/auditsc.c     |  2 +-
+> >  3 files changed, 10 insertions(+), 10 deletions(-)
+> 
+> I changed the subject line to "audit: add space before parenthesis and
+> around '=', "==", and '<'" as the "audit:" prefix is more appropriate
+> and I'm a believer of the Oxford Comma.  Otherwise it looks fine and I
+> just merged it into audit/next, thanks.
 
-To make the code safer, redefine LWTUNNEL_XMIT_CONTINUE value to
-distinguish from dst_output statuses and check the continue
-condition explicitly.
+	Thank you for your comments. Do I need to change commit message now?
 
-Fixes: 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure")
-Suggested-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Yan Zhai <yan@cloudflare.com>
----
- include/net/lwtunnel.h | 5 ++++-
- net/ipv4/ip_output.c   | 2 +-
- net/ipv6/ip6_output.c  | 2 +-
- 3 files changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/include/net/lwtunnel.h b/include/net/lwtunnel.h
-index 6f15e6fa154e..53bd2d02a4f0 100644
---- a/include/net/lwtunnel.h
-+++ b/include/net/lwtunnel.h
-@@ -16,9 +16,12 @@
- #define LWTUNNEL_STATE_INPUT_REDIRECT	BIT(1)
- #define LWTUNNEL_STATE_XMIT_REDIRECT	BIT(2)
- 
-+/* LWTUNNEL_XMIT_CONTINUE should be distinguishable from dst_output return
-+ * values (NET_XMIT_xxx and NETDEV_TX_xxx in linux/netdevice.h) for safety.
-+ */
- enum {
- 	LWTUNNEL_XMIT_DONE,
--	LWTUNNEL_XMIT_CONTINUE,
-+	LWTUNNEL_XMIT_CONTINUE = 0x100,
- };
- 
- 
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index 6ba1a0fafbaa..a6e4c82615d7 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -216,7 +216,7 @@ static int ip_finish_output2(struct net *net, struct sock *sk, struct sk_buff *s
- 	if (lwtunnel_xmit_redirect(dst->lwtstate)) {
- 		int res = lwtunnel_xmit(skb);
- 
--		if (res < 0 || res == LWTUNNEL_XMIT_DONE)
-+		if (res != LWTUNNEL_XMIT_CONTINUE)
- 			return res;
- 	}
- 
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index 1e8c90e97608..016b0a513259 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -113,7 +113,7 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
- 	if (lwtunnel_xmit_redirect(dst->lwtstate)) {
- 		int res = lwtunnel_xmit(skb);
- 
--		if (res < 0 || res == LWTUNNEL_XMIT_DONE)
-+		if (res != LWTUNNEL_XMIT_CONTINUE)
- 			return res;
- 	}
- 
--- 
-2.30.2
-
+> 
+> --
+> paul-moore.com
