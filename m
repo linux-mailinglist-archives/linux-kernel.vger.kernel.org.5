@@ -2,80 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 106EE77E622
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F3077E62A
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344484AbjHPQPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 12:15:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58114 "EHLO
+        id S1344623AbjHPQPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 12:15:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239186AbjHPQOj (ORCPT
+        with ESMTP id S1344709AbjHPQPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 12:14:39 -0400
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF203C1;
-        Wed, 16 Aug 2023 09:14:37 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D7B23E0003;
-        Wed, 16 Aug 2023 16:14:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1692202476;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wxb2+0NuQXqPTqCzWBM9tyO1GBBf/uc5NPp8bPde8qw=;
-        b=b/pMTa51xIYRnwpKkFCTWY5zYauco1/597mwff19OnJLg/C9V3AE8TkzFacRAkKQcZniss
-        F9jOrrwK5GVWDYpXAdKysdfGCx3ryK9tLSW8GJycJUyE3zajYCqfL5TYLMWPb2A6XjVUpj
-        df+oWtZRpmrkMIaWn7e2SjVjavUNkgltwtEc6aibrbuCPqgpAQRInWtoRMr3cKuiRpfWR3
-        kPD8MT/DbK1OhgvPIzx0HuUikLUoIWriB6YQiFfCXPU1JFhReVJxXQWXZ7zUT2I98B8PXs
-        OENAhj6fZtc48C5uFBypqC2zw4eJEzaK8eh1RUyxczB3h9Z+lF1fT8HtcXGDWg==
-Date:   Wed, 16 Aug 2023 18:14:35 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Benson Leung <bleung@chromium.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Brian Norris <briannorris@chromium.org>
-Subject: Re: [PATCH 0/7] rtc: Add support for limited alarm timer offsets
-Message-ID: <20230816161435bd2bbd4a@mail.local>
-References: <20230816133936.2150294-1-linux@roeck-us.net>
- <20230816150353137debc5@mail.local>
- <8079bdf4-f790-451b-a2c2-be4e23c0c3a1@roeck-us.net>
+        Wed, 16 Aug 2023 12:15:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D76232735;
+        Wed, 16 Aug 2023 09:15:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1361261E6B;
+        Wed, 16 Aug 2023 16:15:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33AFDC433C8;
+        Wed, 16 Aug 2023 16:15:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692202528;
+        bh=OMgLR3TAr3QUpgpqAJtIIBRt8Ct7rrg/kr/lcSjos2A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=b5QxCJ4xFGNgNBzb1URIai5wj/jPmfXILqlqMg96XnhR+6JhOdcdZWjwVZf7fNnGn
+         ZcSY37sRWskbbb5NtiJVNFZQjSPlYDUdMxV55kh0kCa50tU3skqHbHbAYm0nj4lYfG
+         MnQcihtAidaY58rJ+sdV9oF0oturZ8BOctRNsGJAbgE72Pu5/MJRYeqhU5ZRr29FTN
+         NQkQBEiH8sQEqj7HpbBwdT4Tos/PCr6adj0RVR/JK/zy8PwukC4gtR+uZE5asUZ2e2
+         IVus2ObAFRrlsOjgrXaKqOq06bxqPQyq2mSBUR6msqI4NoviScZMfaNJrFcZDkqpK7
+         IYjw33VtVQPtQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id EAB1E404DF; Wed, 16 Aug 2023 13:15:24 -0300 (-03)
+Date:   Wed, 16 Aug 2023 13:15:24 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     linux-perf-users@vger.kernel.org, irogers@google.com,
+        john.g.garry@oracle.com, renyu.zj@linux.alibaba.com,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Haixin Yu <yuhaixin.yhx@linux.alibaba.com>,
+        Nick Forrington <nick.forrington@arm.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Sohom Datta <sohomdatta1@gmail.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v6 3/6] perf vendor events arm64: Update scale units and
+ descriptions of common topdown metrics
+Message-ID: <ZNz2HO/NGsz+2Qaa@kernel.org>
+References: <20230816114841.1679234-1-james.clark@arm.com>
+ <20230816114841.1679234-4-james.clark@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8079bdf4-f790-451b-a2c2-be4e23c0c3a1@roeck-us.net>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230816114841.1679234-4-james.clark@arm.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/08/2023 08:50:12-0700, Guenter Roeck wrote:
-> > I'm fine with the series, however, this doesn't solve the issue for RTCs
-> > that have an absolute limit on the alarm (as opposed to an offset to the
-> > current time/date).
-> > 
+Em Wed, Aug 16, 2023 at 12:47:45PM +0100, James Clark escreveu:
+> Metrics will be published here [1] going forwards, but they have
+> slightly different scale units. To allow autogenerated metrics to be
+> added more easily, update the scale units to match.
 > 
-> I thought that is checked by rtc_valid_range() in rtc_set_alarm().
-> Am I missing something ? Of course that assumes that the absolute
-> maximum alarm timeout matches range_max, but I didn't find any
-> drivers where that would not be the case.
+> The more detailed descriptions have also been taken and added to the
+> common file.
 > 
+> [1]: https://gitlab.arm.com/telemetry-solution/telemetry-solution/-/tree/main/data/pmu/cpu/
 
-There are RTCs where this is not the case. When this is far away in the
-future enough, the usual solution is to clip range_max which works but
-is not really great intellectually.
+This one I had cherry-picked and is already in perf-tools-next, I
+applied the others locally, will wait till later to see if people
+ack/object.
+
+- Arnaldo
+ 
+> Acked-by: Ian Rogers <irogers@google.com>
+> Reviewed-by: John Garry <john.g.garry@oracle.com>
+> Signed-off-by: James Clark <james.clark@arm.com>
+> ---
+>  tools/perf/pmu-events/arch/arm64/sbsa.json | 24 +++++++++++-----------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/tools/perf/pmu-events/arch/arm64/sbsa.json b/tools/perf/pmu-events/arch/arm64/sbsa.json
+> index f90b338261ac..4eed79a28f6e 100644
+> --- a/tools/perf/pmu-events/arch/arm64/sbsa.json
+> +++ b/tools/perf/pmu-events/arch/arm64/sbsa.json
+> @@ -1,34 +1,34 @@
+>  [
+>      {
+> -        "MetricExpr": "stall_slot_frontend / (#slots * cpu_cycles)",
+> -        "BriefDescription": "Frontend bound L1 topdown metric",
+> +        "MetricExpr": "100 * (stall_slot_frontend / (#slots * cpu_cycles))",
+> +        "BriefDescription": "This metric is the percentage of total slots that were stalled due to resource constraints in the frontend of the processor.",
+>          "DefaultMetricgroupName": "TopdownL1",
+>          "MetricGroup": "Default;TopdownL1",
+>          "MetricName": "frontend_bound",
+> -        "ScaleUnit": "100%"
+> +        "ScaleUnit": "1percent of slots"
+>      },
+>      {
+> -        "MetricExpr": "(1 - op_retired / op_spec) * (1 - stall_slot / (#slots * cpu_cycles))",
+> -        "BriefDescription": "Bad speculation L1 topdown metric",
+> +        "MetricExpr": "100 * ((1 - op_retired / op_spec) * (1 - stall_slot / (#slots * cpu_cycles)))",
+> +        "BriefDescription": "This metric is the percentage of total slots that executed operations and didn't retire due to a pipeline flush.\nThis indicates cycles that were utilized but inefficiently.",
+>          "DefaultMetricgroupName": "TopdownL1",
+>          "MetricGroup": "Default;TopdownL1",
+>          "MetricName": "bad_speculation",
+> -        "ScaleUnit": "100%"
+> +        "ScaleUnit": "1percent of slots"
+>      },
+>      {
+> -        "MetricExpr": "(op_retired / op_spec) * (1 - stall_slot / (#slots * cpu_cycles))",
+> -        "BriefDescription": "Retiring L1 topdown metric",
+> +        "MetricExpr": "100 * ((op_retired / op_spec) * (1 - stall_slot / (#slots * cpu_cycles)))",
+> +        "BriefDescription": "This metric is the percentage of total slots that retired operations, which indicates cycles that were utilized efficiently.",
+>          "DefaultMetricgroupName": "TopdownL1",
+>          "MetricGroup": "Default;TopdownL1",
+>          "MetricName": "retiring",
+> -        "ScaleUnit": "100%"
+> +        "ScaleUnit": "1percent of slots"
+>      },
+>      {
+> -        "MetricExpr": "stall_slot_backend / (#slots * cpu_cycles)",
+> -        "BriefDescription": "Backend Bound L1 topdown metric",
+> +        "MetricExpr": "100 * (stall_slot_backend / (#slots * cpu_cycles))",
+> +        "BriefDescription": "This metric is the percentage of total slots that were stalled due to resource constraints in the backend of the processor.",
+>          "DefaultMetricgroupName": "TopdownL1",
+>          "MetricGroup": "Default;TopdownL1",
+>          "MetricName": "backend_bound",
+> -        "ScaleUnit": "100%"
+> +        "ScaleUnit": "1percent of slots"
+>      }
+>  ]
+> -- 
+> 2.34.1
+> 
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+
+- Arnaldo
