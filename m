@@ -2,144 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3835D77DCE0
+	by mail.lfdr.de (Postfix) with ESMTP id 826F777DCE1
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243180AbjHPI7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 04:59:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41046 "EHLO
+        id S243185AbjHPI7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 04:59:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243165AbjHPI6p (ORCPT
+        with ESMTP id S243175AbjHPI64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 04:58:45 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA4A1990
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 01:58:43 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5257f2c0773so1053182a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 01:58:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google; t=1692176322; x=1692781122;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TBVLZWW4k19jCQWKycvded1nNFPSzR3otgm6sEXkniU=;
-        b=BEaALTIoQNz5OxjB1gIK7MSHwVnhahh62pwc4x/pjkmrvl+LoihC9+JVf3SFWAbfEM
-         e02ARV/+FwXYIjg1uAumB5xLeyLbAHl6IMm1RK+5GseZN6DJmYN0jYq4fRRq557G204A
-         frzk4zCkqH+TpPmA2CFRK39ci2bsi3mDJsXAA=
+        Wed, 16 Aug 2023 04:58:56 -0400
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F40B1990;
+        Wed, 16 Aug 2023 01:58:55 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-4fe8c16c1b4so9731322e87.2;
+        Wed, 16 Aug 2023 01:58:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692176322; x=1692781122;
+        d=1e100.net; s=20221208; t=1692176333; x=1692781133;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TBVLZWW4k19jCQWKycvded1nNFPSzR3otgm6sEXkniU=;
-        b=XQUfm+rpurt2gYHaniPxkncpEiMF6+i+9Ogfl8u0lTUo21e4EbWOSV5CSNHvixzqbZ
-         /LugNBfp5FsOYxkrtIcA7vmZWhnysDxMIu0XgP152DQSoDh5HPbszVrIVrrXeOn+kIqB
-         1VDLH2UCciQajOAAcs1A3qK5Kod6V5sS+oZjfjvYuOz4VRPFH7HU3khpHamARdkHEqa6
-         dYEzQmZhA2ZknUllXTwfi4kvlVIj/o71noMGSreRZf+LPBbD3mOhNUu0XrSQNJPNl5Zx
-         cEeq1x86Ceok56y1B66YqAFz9cmeVwaOxj8FrIhbWXBjgl6bUJbKWmEgbxzo8PYdd+Ri
-         KLXg==
-X-Gm-Message-State: AOJu0Yw1ptUXNXumPxc/yDeFQOAAEXzhhmZIbV2D+4Ka+o5dwLvrxwha
-        GyCxRBKu6jj0YYPKBJII2rDgSg==
-X-Google-Smtp-Source: AGHT+IHf/PdnrorhK1FAvJtndFcxXmWbhU3HODQZY/m00yi43QKWPNuFDETogXUZlqJ4OgaFCqN++Q==
-X-Received: by 2002:aa7:d1ce:0:b0:523:d1e0:7079 with SMTP id g14-20020aa7d1ce000000b00523d1e07079mr1050045edp.21.1692176322346;
-        Wed, 16 Aug 2023 01:58:42 -0700 (PDT)
-Received: from [172.16.11.116] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id l10-20020aa7c3ca000000b005255ddb67c7sm4306722edr.40.2023.08.16.01.58.41
+        bh=sTJkrXWbhfgYd8DHDtHDl47GwVqiYFhKhamj/qCPvn4=;
+        b=frJnwDZuiJ7GUuUnGu86WKskx5TWrl7t2OqI4wX90NjTrdfKKUWFeTw3L1/C7ocMCc
+         4bKivJXsHCtscykXAxLXF4qukgbbQapgrwAQ5eROyzODQThEksnObVEhS/tYuQcialGo
+         3N7FAE9aXV3gY/dTb+IeTa3JiELuORn0gNu4NSFl86URvtJUU17w0B4ojITcQ3RqLusS
+         i6Y9gmCdJFNffuS7CdTHzSfkrlY4fJkwEDkkZj4s0I1sZQH7tO1Lt59dzIc5uNfjvVTN
+         SygXr1MsKYaxli6GSLEi70RGKQ7VNC3fLtHQ9f4+Pwt8FsVxUeCavR4cty7V/qrhWHyZ
+         6Lxw==
+X-Gm-Message-State: AOJu0YwrIAywmTr4WgiCR3Z7Q7tWwasNgNaEthZq5wxAyOlg1SPntfki
+        UMVY+NcSaKLm89tHprEBiodNjTdctgIfrA==
+X-Google-Smtp-Source: AGHT+IHd2vfqi2Alc5nJPaoOZNy/cYIYAP1J0s3YddftE1EP8JVnXPTjpfbmz5Y7DL6Eg+tNanhnhg==
+X-Received: by 2002:a05:6512:554:b0:4fe:7e7f:1333 with SMTP id h20-20020a056512055400b004fe7e7f1333mr1072406lfl.6.1692176333013;
+        Wed, 16 Aug 2023 01:58:53 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id b3-20020aa7df83000000b005233609e39dsm7998716edy.30.2023.08.16.01.58.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 01:58:41 -0700 (PDT)
-Message-ID: <cd4a78f5-a9fc-640a-8ebf-02969620abc4@rasmusvillemoes.dk>
-Date:   Wed, 16 Aug 2023 10:58:40 +0200
+        Wed, 16 Aug 2023 01:58:52 -0700 (PDT)
+Message-ID: <00de3273-9433-138d-b659-826457e6a008@kernel.org>
+Date:   Wed, 16 Aug 2023 10:58:51 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: cleanup: Make no_free_ptr() __must_check
-Content-Language: en-US, da
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dan.j.williams@intel.com, linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
-References: <20230815105204.GA927051@hirez.programming.kicks-ass.net>
- <fcc8a158-f6e4-8963-782f-ba04b47350b8@rasmusvillemoes.dk>
- <20230815135339.GA966323@hirez.programming.kicks-ass.net>
- <a68424ff-b5e5-4dab-5705-5b63084c98eb@rasmusvillemoes.dk>
- <CAHk-=wiOXePAqytCk6JuiP6MeePL6ksDYptE54hmztiGLYihjA@mail.gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-In-Reply-To: <CAHk-=wiOXePAqytCk6JuiP6MeePL6ksDYptE54hmztiGLYihjA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 34/36] tty: gdm724x: convert counts to size_t
+Content-Language: en-US
+To:     David Laight <David.Laight@ACULAB.COM>,
+        Nathan Chancellor <nathan@kernel.org>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>
+References: <20230810091510.13006-1-jirislaby@kernel.org>
+ <20230810091510.13006-35-jirislaby@kernel.org>
+ <20230815172247.GA1690054@dev-arch.thelio-3990X>
+ <937e14c1-d884-0b6e-595a-e8aaa3d09025@kernel.org>
+ <bdbdfdaad3a842d2837ac9d15ef2ab25@AcuMS.aculab.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <bdbdfdaad3a842d2837ac9d15ef2ab25@AcuMS.aculab.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/08/2023 10.00, Linus Torvalds wrote:
-> On Wed, 16 Aug 2023 at 07:23, Rasmus Villemoes <linux@rasmusvillemoes.dk> wrote:
+On 16. 08. 23, 10:40, David Laight wrote:
+> From: Jiri Slaby
+>> Sent: Wednesday, August 16, 2023 7:47 AM
 >>
->> Ah, ok, I thought the purpose was to ensure the p expression gets
->> evaluated. Well, we can still do without the temp var and weird comma or
->> statement expressions:
+>> On 15. 08. 23, 19:22, Nathan Chancellor wrote:
+>>> On Thu, Aug 10, 2023 at 11:15:08AM +0200, Jiri Slaby (SUSE) wrote:
+>>>> Unify the type of tty_operations::write() counters with the 'count'
+>>>> parameter. I.e. use size_t for them.
+>>>>
+>>>> This includes changing constants to UL to keep min() and avoid min_t().
+>>>
+>>> This patch appears to cause a warning/error on 32-bit architectures now
+>>> due to this part of the change, as size_t is 'unsigned int' there:
+>>
+>> Right, this is my brain fart thinking ulong is the same as size_t
+>> everywhere. No, size_t is uint on 32bit.
+>>
+>> I will fix this -- kernel build bot seems to be slow -- it didn't find
+>> the issue out in my queue, nor in tty-testing.
 > 
-> Well, the statement expression version with that types temporary
-> pointer was much better than yours, which just randomly returns 'void
-> *' and then lets the user assign it to any random pointer with no
-> warning.
-> 
-> But I think you can add just a 'typeof(p)' cast to it and that should
-> work out ok. 
+> 'Vote up' my patches to minmax.h that make this all work.
+> Then it won't care provided both values have the same signedness.
+> (or, with patch 5, are non-negative 31bit compile time constants.)
 
-Yes, that was an omission, and probably any version will need to have
-that cast.
+Oh yeah, that [1] looks great. Why should one care in min(4096, 
+sizeof()) after all…
 
-> But all of those macros seem to be fundamentally buggy because 'p'
-> gets evaluated twice. It could have side effects, even when just
-> having its address taken.
+So what's the current status of those?
 
-True. I don't know how I convinced myself that & behaved like sizeof(),
-probably because I ran with my first "this seems to just be to ensure p
-gets evaluated" interpretation. For my own education, '&(foo[bar])' is
-by definition equivalent to 'foo + bar', and both foo and bar can be
-mostly arbitrary expressions (subject to one being a pointer and the
-other an integer). Similarly for &(*foo).
+[1] 
+https://lore.kernel.org/all/b4ce9dad748e489f9314a2dc95615033@AcuMS.aculab.com/
 
-> At that point the whole "comma or statement expression" discussion is
-> entirely immaterial.
-> 
-> So I think it needs to be something like
-> 
->   #define __get_and_free_ptr(p) \
->       ({ __auto_type __ptr = &(p); \
->          __auto_type __val = *__ptr; \
->          *__ptr = NULL;  __val; })
-> 
-> to deal with the "assign NULL and return old value without double evaluation".
-> 
-> And then you can have a wrapper macro to do the __must_check part,
-> something like
-> 
->   static inline __must_check
->   const volatile void * __must_check_fn(const volatile void *val)
->   { return val; }
-> 
->     #define no_free_ptr(p) \
->         ((typeof(p)) __must_check_fn(__get_and_free_ptr(p)))
-> 
-> the above is entirely untested. Of course.
-
-I think it should work, the final cast both gives the right type and
-removes any unwanted const or volatile qualifiers. It's the same thing
-we ended up doing in overflow.h.
-
-While I'm embarrassing myself in public: since p is really only supposed
-to be a local auto variable with __cleanup attribute, one could throw in
-some ## games to try to prevent no_free_ptr() from being used on other
-kinds of lvalues, something like adding "extern int bla_ ## p ## _bla;"
-inside __get_and_free_ptr().
-
-Rasmus
+thanks,
+-- 
+js
+suse labs
 
