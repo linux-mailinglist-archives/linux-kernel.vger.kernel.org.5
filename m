@@ -2,184 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5CEE77EAFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 22:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9B477EAFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 22:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346237AbjHPUqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 16:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37174 "EHLO
+        id S1346242AbjHPUrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 16:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346245AbjHPUqE (ORCPT
+        with ESMTP id S1346281AbjHPUrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 16:46:04 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD28D1FCE
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:46:01 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3198d2745feso1295611f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:46:01 -0700 (PDT)
+        Wed, 16 Aug 2023 16:47:07 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D342711
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:47:05 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso5199774a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:47:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692218760; x=1692823560;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TkXb2WGp3h74munhQBcxJdaPjXLiOtVi3bcX2GvRbiM=;
-        b=LnidPeWZ68hHT3vmVcrWLwEKcFkq4CDLvdUzfp+NwBdRsr9XftyyY8sjU5NiqaEzyx
-         JtjKantdFtlrT1PmvexQZIm8pfBY9kYjLtnhOnvVlwNLbPKKZksZly9mmsZxYQrahmWf
-         PdwrmHNfKwY4crutRgaYeGUCH/Wd+uW2V5/4uJk8fULsAb1vPg6v9MxHuCDuGZ9JCW+i
-         XBcvpY8OJSiAUU/y767JR9wWz99jKRFR2HJu/XT1P8NGNlNpavXRY8XkxZvYgl6ThLkG
-         BnNFEdhTj1JWmtKH5AuFzd7248fjW0pRn57++uI2elg/nkNzKQKJm5E3D3tjPpahwmEA
-         DmZg==
+        d=chromium.org; s=google; t=1692218825; x=1692823625;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xFQfU8aEhvmJ8mwzz0baeIXueaOetJfmys9es6pphgI=;
+        b=DGE1T9Sbej9zcyzxPncroG5xoKAEuMJ//ezL87vF3Oa3Bd2qLrgbqfpLpjcpD6/6tH
+         8w29PWs65ltgc3x7CDqLhbMrMhNgwssMWZk7+q8ou/SFj3ICsEmLGvZc74CkhkNy5rP/
+         DiBw4qqelMcXE0I9O+Y6RVA57NXXf/gEo17P0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692218760; x=1692823560;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TkXb2WGp3h74munhQBcxJdaPjXLiOtVi3bcX2GvRbiM=;
-        b=dxVuHjoT3nh0KE4uhhMO2ojvBZ6/sOOTu7FTtkAn5a57CEc5xQAdA5rDZS+3UWN3ba
-         /nAd2HnDOGvKE60ppi75QzC8S3qJdL2Mide9ylnwuQFTMilKpJzh7OAMlU2tXMmTvK+4
-         AkXuUnwN4OCVS6o7jOdvtYGLvPL8Zv1VSAPSyno70BMjnlv8Gjp4cqou9D/E8m6pOcov
-         4089Wai5pcD59jZp3WaEiHT2gP4Iu+sJpg4zKJEb748tuexTu9NKD8y0pqzFafWExpbp
-         TKye2qD+n2woMlZ69MhUxJj+Bb+lZRGuxcpSgSAiXUx+F1K6l10r/mKMQqyxVhpqBqZH
-         DpSg==
-X-Gm-Message-State: AOJu0Ywmlf/+6istUycn4YlES2woXFFQ9k98Qdnbn95+9r7FR7FQQ+9J
-        kWBTsmv4J3bWzBApbsZsWjSJLw==
-X-Google-Smtp-Source: AGHT+IESQMA85nb+JSfmJKhTWpUYk+N9FpiLZfwfyUrSPcDBPNyxrQUaYqAZtwGjVEqX1pP5dYPRPQ==
-X-Received: by 2002:a5d:444b:0:b0:317:5f04:c3de with SMTP id x11-20020a5d444b000000b003175f04c3demr1871081wrr.4.1692218760145;
-        Wed, 16 Aug 2023 13:46:00 -0700 (PDT)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id x4-20020a5d4904000000b003143801f8d8sm22450450wrq.103.2023.08.16.13.45.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 13:45:59 -0700 (PDT)
-Message-ID: <80324fb7-3d2a-ecd3-f1ca-9745a366eb0a@linaro.org>
-Date:   Wed, 16 Aug 2023 22:45:58 +0200
+        d=1e100.net; s=20221208; t=1692218825; x=1692823625;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xFQfU8aEhvmJ8mwzz0baeIXueaOetJfmys9es6pphgI=;
+        b=FC/E6heSpH6aBp5ZKIORnk+3Ofd8xto1QVFFREPu4KN7hPu7i1MyvdfcR9I4ykJ6zN
+         cKkag5Vfgt12dSX/3jctLGw1Q31vBCqzKUwGWqqPgeBW1XCpaJmB1JhZbm2pvBKxWh2D
+         mslrIN20tDPijefsCzYVcFfTWZwRGKDQfGsjbbOWxrWJ8lUAJrkkEAPzM5uLNXRR+LGa
+         Fw8wjEWmAelTpoIyCrGSPjYu24CmNSNa62z+dHRxsW2K305XynJkT45mCE/uxydaov1T
+         XxTS1Cs7hF3hLuHBEr/sdm+CAqK8kDvFgcZYm8bqalBzqDoIl3IL/Hjte8GYUsUxYBjK
+         J7/g==
+X-Gm-Message-State: AOJu0YzBOsUKvnoxG7gxgtazGxdIyZAfsPUgX4LuslXbMSmyChTjRcZ4
+        ZhE3m6sX9a8efXGfeiG7IsApkg==
+X-Google-Smtp-Source: AGHT+IES1w4tkDFKq5YcFhAKHa+deut5kxN8giMZyI/wU5w9EzUk6JiwbFumYG0twm1YJmzwvUs7mQ==
+X-Received: by 2002:a05:6a20:160b:b0:138:1c5b:24c3 with SMTP id l11-20020a056a20160b00b001381c5b24c3mr3917200pzj.49.1692218825365;
+        Wed, 16 Aug 2023 13:47:05 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id r17-20020a62e411000000b0068874e1faf2sm2359224pfh.56.2023.08.16.13.47.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 13:47:04 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 13:47:04 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Kalle Valo <kvalo@kernel.org>
+Cc:     Justin Stitt <justinstitt@google.com>,
+        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] wifi: ipw2x00: refactor to use kstrtoul
+Message-ID: <202308161346.23B40C1569@keescook>
+References: <20230802-wifi-ipw2x00-refactor-v2-1-d33f765e9cd5@google.com>
+ <202308040120.183400A04@keescook>
+ <87wmybjhyh.fsf@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 1/1] thermal/drivers/imx_sc_thermal: return -EAGAIN when
- SCFW turn off resource
-Content-Language: en-US
-To:     Frank Li <Frank.li@nxp.com>, Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
-References: <20230712210505.1536416-1-Frank.Li@nxp.com>
- <f1d4ed62-8d01-173f-6e41-4671228782fd@linaro.org>
- <ZLGDhOffQwh7xW/n@lizhi-Precision-Tower-5810>
- <7eacc4da-ab14-3df5-2864-44a7262bac27@linaro.org>
- <ZNz5Drb+EVLjWxRV@lizhi-Precision-Tower-5810>
- <dd42952c-4dea-ea57-7ad2-73fa159d265d@linaro.org>
- <ZN0CVa9or/FltHJM@lizhi-Precision-Tower-5810>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <ZN0CVa9or/FltHJM@lizhi-Precision-Tower-5810>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87wmybjhyh.fsf@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/08/2023 19:07, Frank Li wrote:
-> On Wed, Aug 16, 2023 at 06:47:17PM +0200, Daniel Lezcano wrote:
->> On 16/08/2023 18:28, Frank Li wrote:
->>> On Wed, Aug 16, 2023 at 10:44:32AM +0200, Daniel Lezcano wrote:
->>>>
->>>> Hi Frank,
->>>>
->>>> sorry for the delay
->>>>
->>>> On 14/07/2023 19:19, Frank Li wrote:
->>>>> On Thu, Jul 13, 2023 at 02:49:54PM +0200, Daniel Lezcano wrote:
->>>>>> On 12/07/2023 23:05, Frank Li wrote:
->>>>>>> Avoid endless print following message when SCFW turns off resource.
->>>>>>>      [ 1818.342337] thermal thermal_zone0: failed to read out thermal zone (-1)
->>>>>>>
->>>>>>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
->>>>>>> ---
->>>>>>>      drivers/thermal/imx_sc_thermal.c | 4 +++-
->>>>>>>      1 file changed, 3 insertions(+), 1 deletion(-)
->>>>>>>
->>>>>>> diff --git a/drivers/thermal/imx_sc_thermal.c b/drivers/thermal/imx_sc_thermal.c
->>>>>>> index 8d6b4ef23746..0533d58f199f 100644
->>>>>>> --- a/drivers/thermal/imx_sc_thermal.c
->>>>>>> +++ b/drivers/thermal/imx_sc_thermal.c
->>>>>>> @@ -58,7 +58,9 @@ static int imx_sc_thermal_get_temp(struct thermal_zone_device *tz, int *temp)
->>>>>>>      	hdr->size = 2;
->>>>>>>      	ret = imx_scu_call_rpc(thermal_ipc_handle, &msg, true);
->>>>>>> -	if (ret)
->>>>>>> +	if (ret == -EPERM) /* NO POWER */
->>>>>>> +		return -EAGAIN;
->>>>>>
->>>>>> Isn't there a chain call somewhere when the resource is turned off, so the
->>>>>> thermal zone can be disabled?
->>>>>
->>>>> A possible place in drivers/firmware/imx/scu-pd.c. but I am not sure how to
->>>>> get thermal devices. I just found a API thermal_zone_get_zone_by_name(). I
->>>>> am not sure if it is good to depend on "name", which add coupling between
->>>>> two drivers and if there are external thermal devices(such as) has the
->>>>> same name, it will wrong turn off.
->>>>
->>>> Correct
->>>>
->>>>> If add power domain notification in thermal driver, I am not how to get
->>>>> other devices's pd in thermal driver.
->>>>>
->>>>> Any example I can refer?
->>>>>
->>>>> Or this is simple enough solution.
->>>>
->>>> The solution works for removing the error message but it does not solve the
->>>> root cause of the issue. The thermal zone keeps monitoring while the sensor
->>>> is down.
->>>>
->>>> So the question is why the sensor is shut down if it is in use?
->>>
->>> Do you know if there are any code I reference? I supposed it is quite common.
->>
->> Sorry, I don't get your comment
->>
->> What I meant is why is the sensor turned off if it is in use ?
+On Fri, Aug 04, 2023 at 12:05:26PM +0300, Kalle Valo wrote:
+> Kees Cook <keescook@chromium.org> writes:
 > 
-> One typical example is cpu hotplug. The sensor is located CPU power domain.
-> If CPU hotplug off,  CPU power domain will be turn off.
+> > On Wed, Aug 02, 2023 at 01:23:06AM +0000, Justin Stitt wrote:
+> >> The current implementation seems to reinvent what `kstrtoul` already does
+> >> in terms of functionality and error handling. Remove uses of `simple_strtoul()`
+> >> in favor of `kstrtoul()`.
+> >> 
+> >> There is the following note at `lib/vsprintf.c:simple_strtoull()` which
+> >> further backs this change:
+> >> | * This function has caveats. Please use kstrtoull (or kstrtoul) instead.
+> >> 
+> >> And here, simple_str* are explicitly deprecated [3].
+> >> 
+> >> This patch also removes an instance of the deprecated `strncpy` which helps [2].
+> >> 
+> >> Link: https://lore.kernel.org/all/202308011602.3CC1C0244C@keescook/ [1]
+> >> Link: https://github.com/KSPP/linux/issues/90 [2]
+> >> Link:
+> >> https://docs.kernel.org/process/deprecated.html#simple-strtol-simple-strtoll-simple-strtoul-simple-strtoull
+> >> [3]
+> >> Cc: linux-hardening@vger.kernel.org
+> >> Suggested-by: Kees Cook <keescook@chromium.org>
+> >> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> >
+> > This looks correct to me. I would be curious to hear back from the intel
+> > folks if the interface continues to work correctly with real hardware.
+> >
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
 > 
-> It doesn't make sensor keep monitor such sensor when CPU already power off.
-> It doesn't make sensor to keep CPU power on just because want to get sensor
-> data.
-> 
-> Anthor example is GPU, if there are GPU0 and GPU1. Most case just GPU0
-> work.  GPU1 may turn off when less loading.
-> 
-> Ideally, thermal can get notification from power domain driver.
-> when such power domain turn off,  disable thermal zone.
-> 
-> So far, I have not idea how to do that.
+> This is ancient hardware, not sure if anyone even have a working setup.
+> And even if they would have one I doubt anyone uses this sysfs interface
+> for anything.
 
-Ulf,
-
-do you have a guidance to link the thermal zone and the power domain in 
-order to get a poweron/off notification leading to enable/disable the 
-thermal zone ?
-
-
+Just a quick ping; is this patch ready to land?
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
+Kees Cook
