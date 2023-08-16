@@ -2,194 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E5B77D771
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 03:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6DE77D788
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 03:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240967AbjHPBMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 21:12:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41948 "EHLO
+        id S240999AbjHPBO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 21:14:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240950AbjHPBLq (ORCPT
+        with ESMTP id S240996AbjHPBOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 21:11:46 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AD81FFC;
-        Tue, 15 Aug 2023 18:11:44 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37G0NZZl007291;
-        Wed, 16 Aug 2023 01:11:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=MNG5KkkR3jovt42cqzoeDXo5inoaPLVdB2gOOiaXm6Q=;
- b=pWzgBvVIFLaEELVVj237G8B8hLT/RB8drAPQXMqu/GOh1N3opxGg2zdT+0lkc87+MWOG
- p/MSbDKVg1x/2t3rJppdmgWL7kgqEfedB2XW6pV5Jy9P+ebQLdMMTWJYF+CWaMKPBjzI
- AzkLd7PZGgDBsx5he481eQUTe3kN+DW/QHUWgYMkILYAJPmv+DUs8jf5gUnLY6cNkf28
- v/QE+aV/hfqzotgnBBGcZH/yvUI1ICzH7GFfyuLEaV7hJzEvx+EMnS3g6zXO1qI8Efus
- myyLdCfgqUKGJBsg1rEYhCBDMKp4QdN64szaKpq2hlru2Q5SE6IHmi61NgB0rz9KTaXn KA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sfuj8jjyv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 01:11:02 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37G1B1Er010255
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 01:11:01 GMT
-Received: from [10.110.95.218] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 15 Aug
- 2023 18:11:00 -0700
-Message-ID: <6ad025c1-e3f3-52cd-570b-309081604646@quicinc.com>
-Date:   Tue, 15 Aug 2023 18:11:00 -0700
+        Tue, 15 Aug 2023 21:14:44 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F057D211E
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 18:14:43 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-40c72caec5cso157981cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 18:14:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692148483; x=1692753283;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kVVaJzAMOPLs4F5EbaziKRc8Rzjn1Gof//6KpkJlzlQ=;
+        b=Vyshv/iyYwR/oFEOKc1JYHMUrHXFkWIoQxeD1rRWIN0P1XogOx5MjMYvYkUY6T9etq
+         Zyy+W6dszX02xqzVxcGnzkiWibtt560W+RPTXwER5Qmf0ZZx6l3Swf03vaNrgkidKm5V
+         Ej/KmVtxqPaC0pd4xGzE58TL6WJ5bPesj0D801i/T+wyBZfYfcBz9gQF8xBvFFT6Vqpb
+         uJQox/dXljUPbaHHuiQofbJMHJgJpluHl5tdkpEyPgxbT4CQBHktXf2KCsM0dFTCMBwz
+         kn8NICYHPgpjhsrh4cNbGwSHhulF3tQ+l22DrSd/Dz81D2atgZBtsQPqUUYRbZqq3sKU
+         di6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692148483; x=1692753283;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kVVaJzAMOPLs4F5EbaziKRc8Rzjn1Gof//6KpkJlzlQ=;
+        b=ihefUlEWWTwxH+BFx4pFxC9omndWVIZjU4STx1IdNua5h7+D93LOJ79v/6ZhENaCFb
+         s/IhFVnB5PVY9mjeoDMdwBr2+Q5LMuGk3wc2Dd8HHwK4mxEA79qS1dKvSvBoovwjsPPg
+         iAx8TMWhR5DAJtnP5gMjGbMnqXVIB3hOJa08qvWmqpmexY+d8hcRmSGyt2wWvdIF8SVD
+         7IkMNMqFjSFizBQjwyL3dLRKmZx1azLB/8/IZNCON0oMXM2yanad7KbJrpULorwwEEqz
+         6scJwoy62QZl+FAih8L67K7xEOl5jOd/BnFwsbi3k7izF0azYtPVRNrJpVzQV+D8ec3j
+         1nfA==
+X-Gm-Message-State: AOJu0Yz89K9JUauDAiZcblmv4OnkS0ohRWaUuTrG0hlB1/HnSGQ4Kb4I
+        DEPO2cQTZIx4gYgWae1RDCR5Z/3Fy/xgSLSWksZFCg==
+X-Google-Smtp-Source: AGHT+IH8TYko1Bh6ENJiY9cnctcLBXofliPDjplhGZbCyU2pM4y2EIXq+p6ecUUKdPOKf9+5dRJChmOai1+wd5cANig=
+X-Received: by 2002:ac8:4e86:0:b0:3f5:2006:50f1 with SMTP id
+ 6-20020ac84e86000000b003f5200650f1mr130504qtp.12.1692148483063; Tue, 15 Aug
+ 2023 18:14:43 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v4 29/32] sound: soc: qcom: q6usb: Add headphone jack for
- offload connection status
-Content-Language: en-US
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <agross@kernel.org>, <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <srinivas.kandagatla@linaro.org>,
-        <bgoswami@quicinc.com>, <Thinh.Nguyen@synopsys.com>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-usb@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <quic_jackp@quicinc.com>, <oneukum@suse.com>,
-        <albertccwang@google.com>, <o-takashi@sakamocchi.jp>
-References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
- <20230725023416.11205-30-quic_wcheng@quicinc.com>
- <987394fd-9724-aa42-37fe-be9707565405@linux.intel.com>
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <987394fd-9724-aa42-37fe-be9707565405@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: _-ik-IFztGgXyv3fxcKE9byQnGZGGBLW
-X-Proofpoint-GUID: _-ik-IFztGgXyv3fxcKE9byQnGZGGBLW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-15_22,2023-08-15_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- spamscore=0 malwarescore=0 priorityscore=1501 phishscore=0
- lowpriorityscore=0 mlxlogscore=999 bulkscore=0 impostorscore=0
- clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308160009
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <CAJD7tkYZxjAHrodVDK=wmz-sULJrq2VhC_5ecRP7T-KiaOcTuw@mail.gmail.com>
+ <CALvZod46Cz_=5UgiyAKM+VgKyk=KJCqDqXu91=9uHy7-2wk53g@mail.gmail.com>
+ <CAJD7tkY-ezyYebvcs=8Z_zrw2UVW8jf2WvP1G8tu2rT=2sMnAA@mail.gmail.com>
+ <CALvZod5fH9xu_+6x85K38f63GfKGWD1LqtD2R4d09xmDtLB7ew@mail.gmail.com>
+ <ZNdEaw2nktq1NfmH@dhcp22.suse.cz> <CAJD7tkaFHgc3eN1K1wYsQFWMLu4+Frf9DJ-5HOja2nC20Es9Dw@mail.gmail.com>
+ <ZNrDWqfjXtAYhnvT@slm.duckdns.org> <CAJD7tkYBFz-gZ2QsHxUMT=t0KNXs66S-zzMPebadHx9zaG0Q3w@mail.gmail.com>
+ <ZNrITZVTf2EILRJq@slm.duckdns.org> <CAJD7tkaXwoF-faApweAmm7Db7jAuS3EO7hVvdyVtqW_rE+T9Vg@mail.gmail.com>
+ <ZNrLO5PAEZw4yjI9@slm.duckdns.org> <CAJD7tkYgCySTX28zK9GZiWwsabR4nv7M2hQ57y12si-fqtv7zg@mail.gmail.com>
+ <CALvZod6KRxiDzrppCgx+=SHg2+96nFE5crwXCKwe9PZbWM_6cQ@mail.gmail.com> <CAJD7tkaUzhvZPohpo1F8TUKRPuXH7bjDeg9VCzN2CbywQbRutQ@mail.gmail.com>
+In-Reply-To: <CAJD7tkaUzhvZPohpo1F8TUKRPuXH7bjDeg9VCzN2CbywQbRutQ@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 15 Aug 2023 18:14:30 -0700
+Message-ID: <CALvZod6HUtYhDaXiwXSrcwfxLSrZ37sZhKY1Mg4kmpDFk13aYw@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Ivan Babrou <ivan@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pierre,
+On Tue, Aug 15, 2023 at 5:29=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+[...]
+> >
+> > I thought we already reached the decision on how to proceed here. Let
+> > me summarize what I think we should do:
+> >
+> > 1. Completely remove the sync flush from stat files read from userspace=
+.
+> > 2. Provide a separate way/interface to explicitly flush stats for
+> > users who want more accurate stats and can pay the cost. This is
+> > similar to the stat_refresh interface.
+> > 3. Keep the 2 sec periodic stats flusher.
+>
+> I think this solution is suboptimal to be honest, I think we can do bette=
+r.
+>
+> With recent improvements to spinlocks/mutexes, and flushers becoming
+> sleepable, I think a better solution would be to remove unified
+> flushing and let everyone only flush the subtree they care about. Sync
+> flushing becomes much better (unless you're flushing root ofc), and
+> concurrent flushing wouldn't cause too many problems (ideally no
+> thundering herd, and rstat lock can be dropped at cpu boundaries in
+> cgroup_rstat_flush_locked()).
+>
+> If we do this, stat reads can be much faster as Ivan demonstrated with
+> his patch that only flushes the cgroup being read, and we do not
+> sacrifice accuracy as we never skip flushing. We also do not need a
+> separate interface for explicit refresh.
+>
+> In all cases, we need to keep the 2 sec periodic flusher. What we need
+> to figure out if we remove unified flushing is:
+>
+> 1. Handling stats_flush_threshold.
+> 2. Handling flush_next_time.
+>
+> Both of these are global now, and will need to be adapted to
+> non-unified non-global flushing.
 
-On 7/25/2023 2:10 AM, Pierre-Louis Bossart wrote:
-> 
-> 
-> On 7/25/23 04:34, Wesley Cheng wrote:
->> The headphone jack framework has a well defined intrastructure for
-> 
-> infrastructure
-> 
->> notifying userspace entities through input devices.  Expose a jack device
->> that carries information about if an offload capable device is connected.
->> Applications can further identify specific offloading information through
->> other SND kcontrols.
-> 
-> What if you connect a set of USB speakers? Would they show as a
-> headphone/headset?
-> 
+The only thing we are disagreeing on is (1) the complete removal of
+sync flush and an explicit flush interface versus (2) keep doing the
+sync flush of the subtree.
 
-For now, let me modify the patch to send a HEADPHONE event.  We don't 
-support the capture/record path as of now, so it doesn't make sense to 
-generate a HEADSET event (which exposes both MIC and HEADPHONE).
-
-When you plug in any USB audio device we'd generate this snd jack event. 
-  Main purpose was to notify that the offload path is potentially available.
-
-Thanks
-Wesley Cheng
-
->> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
->> ---
->>   sound/soc/qcom/qdsp6/q6usb.c | 17 +++++++++++++++--
->>   1 file changed, 15 insertions(+), 2 deletions(-)
->>
->> diff --git a/sound/soc/qcom/qdsp6/q6usb.c b/sound/soc/qcom/qdsp6/q6usb.c
->> index e4ccb9d912b0..860dff8c1438 100644
->> --- a/sound/soc/qcom/qdsp6/q6usb.c
->> +++ b/sound/soc/qcom/qdsp6/q6usb.c
->> @@ -20,6 +20,7 @@
->>   #include <sound/pcm_params.h>
->>   #include <sound/asound.h>
->>   #include <sound/q6usboffload.h>
->> +#include <sound/jack.h>
->>   
->>   #include "q6dsp-lpass-ports.h"
->>   #include "q6afe.h"
->> @@ -37,6 +38,7 @@ struct q6usb_status {
->>   struct q6usb_port_data {
->>   	struct q6afe_usb_cfg usb_cfg;
->>   	struct snd_soc_usb *usb;
->> +	struct snd_soc_jack hs_jack;
->>   	struct q6usb_offload priv;
->>   	struct mutex mutex;
->>   	unsigned long available_card_slot;
->> @@ -279,6 +281,7 @@ static const struct snd_kcontrol_new q6usb_offload_control = {
->>   /* Build a mixer control for a UAC connector control (jack-detect) */
->>   static void q6usb_connector_control_init(struct snd_soc_component *component)
->>   {
->> +	struct q6usb_port_data *data = dev_get_drvdata(component->dev);
->>   	int ret;
->>   
->>   	ret = snd_ctl_add(component->card->snd_card,
->> @@ -290,6 +293,11 @@ static void q6usb_connector_control_init(struct snd_soc_component *component)
->>   				snd_ctl_new1(&q6usb_offload_dev_ctrl, component));
->>   	if (ret < 0)
->>   		return;
->> +
->> +	ret = snd_soc_card_jack_new(component->card, "USB offload",
->> +					SND_JACK_HEADSET, &data->hs_jack);
-> 
-> not all USB devices are headsets...
-> 
->> +	if (ret)
->> +		return;
->>   }
->>   
->>   static int q6usb_audio_ports_of_xlate_dai_name(struct snd_soc_component *component,
->> @@ -322,7 +330,10 @@ static int q6usb_alsa_connection_cb(struct snd_soc_usb *usb, int card_idx,
->>   
->>   	mutex_lock(&data->mutex);
->>   	if (connected) {
->> -		snd_soc_dapm_enable_pin(dapm, "USB_RX_BE");
->> +		if (!data->available_card_slot) {
->> +			snd_soc_dapm_enable_pin(dapm, "USB_RX_BE");
->> +			snd_jack_report(data->hs_jack.jack, 1);
->> +		}
->>   		/*
->>   		 * Update the latest USB headset plugged in, if session is
->>   		 * idle.
->> @@ -338,8 +349,10 @@ static int q6usb_alsa_connection_cb(struct snd_soc_usb *usb, int card_idx,
->>   		clear_bit(card_idx, &data->available_card_slot);
->>   		data->status[card_idx].num_pcm = 0;
->>   		data->status[card_idx].chip_index = 0;
->> -		if (!data->available_card_slot)
->> +		if (!data->available_card_slot) {
->>   			snd_soc_dapm_disable_pin(dapm, "USB_RX_BE");
->> +			snd_jack_report(data->hs_jack.jack, 0);
->> +		}
->>   	}
->>   	snd_soc_dapm_sync(dapm);
->>   	mutex_unlock(&data->mutex);
+To me (1) seems more optimal particularly for the server use-case
+where a node controller reads stats of root and as well as cgroups of
+a couple of top levels (we actually do this internally). Doing flush
+once explicitly and then reading the stats for all such cgroups seems
+better to me.
