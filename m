@@ -2,164 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B3377ECBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 00:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F1577ECBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 00:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346746AbjHPWGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 18:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41052 "EHLO
+        id S1346752AbjHPWIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 18:08:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242448AbjHPWFa (ORCPT
+        with ESMTP id S1346750AbjHPWIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 18:05:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23DC826AD
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:05:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UyMlVsySCN0Jx6lE67WHs7khNsl6mnl5e8ThdgyztOo=; b=XOhFJl2tl49bvGiQbffIoFYh5+
-        f8d7k5GtYOyYGA7dQO3uQKmJO8PqBNhRsZ/yEIUfdVRS793BMTxduCnkdTsU6BqHxwXTdMvQ8Nl+J
-        +1KbxsgGvxlxTHvk+tmv64CZ7U0PpP/8qL4gXp96p0bA2rfCWRcFwK30Pfl/J4lBG45Egno/FmJ+Q
-        LxX249DsWmItd9LcUYCXNEpBfIl2J5WH9M/vg7Thr/SAg2M+h4BUoI1N9YN6HDs9Vxo/TNf9EKEAK
-        9zmKL5bYbmhp2ZLUu/CzuMF6D2SmLvIU2F69FKrsm1Sm8EwGlJAztn7rfA/mKn4AZqqh5ZGRFqpwC
-        j54F1cbw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qWOdj-00H9lF-Cu; Wed, 16 Aug 2023 22:05:19 +0000
-Date:   Wed, 16 Aug 2023 23:05:19 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Hugh Dickins <hughd@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yang Shi <shy828301@gmail.com>
-Subject: Re: [PATCH RFC v3] mm: Proper document tail pages fields for folio
-Message-ID: <ZN1IH/8JxkkOU5Ec@casper.infradead.org>
-References: <20230815212547.431693-1-peterx@redhat.com>
- <b887e764-ffa3-55ee-3c44-69cb15f8a115@redhat.com>
- <ZN0YSOQmSR/voPVO@casper.infradead.org>
- <ae8ea59e-3081-072b-faa0-b67a5d5af047@redhat.com>
+        Wed, 16 Aug 2023 18:08:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA3AB2705
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:08:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692223696; x=1723759696;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Lll5KAQi4W7vfzba71CF5AHgH0JmiwGvHE7bYnj7pIw=;
+  b=Tvovckp8wkr6e7ktxcDpV5NbpVkk2/pVh6XHewYS8UhXSSB5RcbD5Tje
+   B2t0ikB5iG5nELpNhnIRvXLlH6X/4Xj5YkdThOk+cinlDXvpE2Hx23nQp
+   dKWksaSBX20nbV+5M2qWdLl8G9Yj/W3ImsLaiujI1Nvf9a7An+9tx2BVQ
+   IzWfEZOl+iS6hEWWq7guc7HJw/vr1Jfwrjf+pHjTmxg7hEv3pPq5Y/hWT
+   6yFn3PvBmqvTKb/pejlOAHbacusKdN+Vv+S2LWlFIawq7OoiEie7UDqsW
+   jvouJo02mK151sPH+/mTdFo4cUtZPniCebA879vXUKZzNFlNHhEry5qV+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="436550451"
+X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
+   d="scan'208";a="436550451"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 15:08:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="824385593"
+X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
+   d="scan'208";a="824385593"
+Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 16 Aug 2023 15:08:13 -0700
+Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qWOgW-0000bZ-1A;
+        Wed, 16 Aug 2023 22:08:12 +0000
+Date:   Thu, 17 Aug 2023 06:07:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Stuart Hayes <stuart.w.hayes@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Tanjore Suresh <tansuresh@google.com>,
+        Martin Belanger <Martin.Belanger@dell.com>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Keith Busch <kbusch@kernel.org>, Lukas Wunner <lukas@wunner.de>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Stuart Hayes <stuart.w.hayes@gmail.com>
+Subject: Re: [PATCH] driver core: shut down devices asynchronously
+Message-ID: <202308170534.naCLTFzQ-lkp@intel.com>
+References: <20230816154518.3487-1-stuart.w.hayes@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ae8ea59e-3081-072b-faa0-b67a5d5af047@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230816154518.3487-1-stuart.w.hayes@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 08:51:49PM +0200, David Hildenbrand wrote:
-> On 16.08.23 20:41, Matthew Wilcox wrote:
-> > On Wed, Aug 16, 2023 at 03:33:30PM +0200, David Hildenbrand wrote:
-> > > My simple tests passed so far. If there isn't something obvious missing,
-> > > I can do more testing and send this as an official patch.
-> > 
-> > I think you missed one:
-> > 
-> > +++ b/mm/swapfile.c
-> > @@ -1490,7 +1490,7 @@ int swp_swapcount(swp_entry_t entry)
-> > 
-> >          page = vmalloc_to_page(p->swap_map + offset);
-> >          offset &= ~PAGE_MASK;
-> > -       VM_BUG_ON(page_private(page) != SWP_CONTINUED);
-> > +       VM_BUG_ON(page_swap_entry(page).val != SWP_CONTINUED);
-> 
-> That falls under the "weird handling of SWP_CONTINUED using vmalloced
-> pages". So different user of page_private().
-> 
-> Note that we don't even store swap entries in there but extended swap
-> counts.
+Hi Stuart,
 
-Ah, right.  I see now.
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on driver-core/driver-core-testing]
+[also build test WARNING on driver-core/driver-core-next driver-core/driver-core-linus linus/master v6.5-rc6 next-20230816]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Stuart-Hayes/driver-core-shut-down-devices-asynchronously/20230816-234737
+base:   driver-core/driver-core-testing
+patch link:    https://lore.kernel.org/r/20230816154518.3487-1-stuart.w.hayes%40gmail.com
+patch subject: [PATCH] driver core: shut down devices asynchronously
+config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20230817/202308170534.naCLTFzQ-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230817/202308170534.naCLTFzQ-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308170534.naCLTFzQ-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/base/core.c:4762:6: warning: no previous prototype for 'shutdown_dev_work' [-Wmissing-prototypes]
+    4762 | void shutdown_dev_work(struct work_struct *work)
+         |      ^~~~~~~~~~~~~~~~~
 
 
-Not necessarily as part of this patch, but it got me wondering ...
-should we do this?  And then maybe we could remove folio_swap_entry()
-and folio_set_swap_entry() and just use folio->swap directly.
+vim +/shutdown_dev_work +4762 drivers/base/core.c
 
+  4761	
+> 4762	void shutdown_dev_work(struct work_struct *work)
+  4763	{
+  4764		struct shutdown_work *sd_work = container_of(work, struct shutdown_work, work);
+  4765		struct shutdown_work *child_sd_work;
+  4766		struct device *dev = sd_work->dev;
+  4767	
+  4768		/*
+  4769		 * wait for child devices to finish shutdown
+  4770		 */
+  4771		list_for_each_entry(child_sd_work, &sd_work->children, node) {
+  4772			wait_for_completion(&child_sd_work->complete);
+  4773		}
+  4774	
+  4775		if (dev) {
+  4776			/*
+  4777			 * Make sure the device is off the kset list, in the
+  4778			 * event that dev->*->shutdown() doesn't remove it.
+  4779			 */
+  4780			spin_lock(&devices_kset->list_lock);
+  4781			list_del_init(&dev->kobj.entry);
+  4782			spin_unlock(&devices_kset->list_lock);
+  4783	
+  4784			shutdown_device(dev, dev->parent);
+  4785		}
+  4786	
+  4787		complete(&sd_work->complete);
+  4788	}
+  4789	
 
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 3880b3f2e321..e23d1356e504 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -266,6 +266,14 @@ static inline struct page *encoded_page_ptr(struct encoded_page *page)
- 	return (struct page *)(~ENCODE_PAGE_BITS & (unsigned long)page);
- }
- 
-+/*
-+ * A swap entry has to fit into a "unsigned long", as the entry is hidden
-+ * in the "index" field of the swapper address space.
-+ */
-+typedef struct {
-+	unsigned long val;
-+} swp_entry_t;
-+
- /**
-  * struct folio - Represents a contiguous set of bytes.
-  * @flags: Identical to the page flags.
-@@ -276,7 +284,7 @@ static inline struct page *encoded_page_ptr(struct encoded_page *page)
-  * @index: Offset within the file, in units of pages.  For anonymous memory,
-  *    this is the index from the beginning of the mmap.
-  * @private: Filesystem per-folio data (see folio_attach_private()).
-- *    Used for swp_entry_t if folio_test_swapcache().
-+ * @swap: Used for swp_entry_t if folio_test_swapcache().
-  * @_mapcount: Do not access this member directly.  Use folio_mapcount() to
-  *    find out how many times this folio is mapped by userspace.
-  * @_refcount: Do not access this member directly.  Use folio_ref_count()
-@@ -319,7 +327,10 @@ struct folio {
- 			};
- 			struct address_space *mapping;
- 			pgoff_t index;
--			void *private;
-+			union {
-+				void *private;
-+				swp_entry_t swap;
-+			};
- 			atomic_t _mapcount;
- 			atomic_t _refcount;
- #ifdef CONFIG_MEMCG
-@@ -1158,14 +1169,6 @@ enum tlb_flush_reason {
- 	NR_TLB_FLUSH_REASONS,
- };
- 
-- /*
--  * A swap entry has to fit into a "unsigned long", as the entry is hidden
--  * in the "index" field of the swapper address space.
--  */
--typedef struct {
--	unsigned long val;
--} swp_entry_t;
--
- /**
-  * enum fault_flag - Fault flag definitions.
-  * @FAULT_FLAG_WRITE: Fault was a write fault.
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index bb5adc604144..59b0f37eae5b 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -335,13 +335,12 @@ struct swap_info_struct {
- 
- static inline swp_entry_t folio_swap_entry(struct folio *folio)
- {
--	swp_entry_t entry = { .val = page_private(&folio->page) };
--	return entry;
-+	return folio->swap;
- }
- 
- static inline void folio_set_swap_entry(struct folio *folio, swp_entry_t entry)
- {
--	folio->private = (void *)entry.val;
-+	folio->swap = entry;
- }
- 
- /* linux/mm/workingset.c */
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
