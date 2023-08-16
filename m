@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F6977DB10
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 09:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7799977DB13
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 09:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242375AbjHPHWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 03:22:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60368 "EHLO
+        id S242384AbjHPHXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 03:23:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242379AbjHPHWb (ORCPT
+        with ESMTP id S242416AbjHPHXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 03:22:31 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC3DC2117
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 00:22:28 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fe501e0b4cso58445215e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 00:22:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=wowsignal-io.20221208.gappssmtp.com; s=20221208; t=1692170547; x=1692775347;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3vDeZ9sAL2XfqwLLHhYqTBuGA7XemTxu1Dgf9vMBANY=;
-        b=YNwFh/CZl6Y1aAsyLaExSWO4SaEaI/1hZPtdvbGJKXOur3CBIL3mIxhQ1kyR7gNz0/
-         dMJh+OztB//yFRThq2cR4xX/m62X8N+ucK9phdVQTUj0ISWbcQuCHm0OW92CiIw/imsf
-         5RQyOiRZm3uFJarWzBJ3cCtYL8PNMtRv6XP1thhnytVzAUT5g4j26++Lkqa9mTOI2juo
-         yeVfnwOFsu85qJVhEdafUNnRTNPgyRDxiMNpdDW01QVrFlw9W4tPyzlg3dEJYXQ5rfaC
-         i/jWfgNb8jEt7yVENyIo60Gjp47wQpLtoHjzs2NdQVL+Sl97Dy2T5CMbDcgqry+tozyt
-         GUZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692170547; x=1692775347;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3vDeZ9sAL2XfqwLLHhYqTBuGA7XemTxu1Dgf9vMBANY=;
-        b=chkGFtr9Vh7E9ZicbT7yxrn646VSpoRKZRsgkHIwptIJNSHf+DbkKGv8gVHGrSgk1Y
-         ZVHewGYwovGiqL9tYVgIOJJih06DT4LdahF6Xzd3RHBh39VFLhcs2bVTlNZA40XWKEcf
-         RDUv+7vTK08Sgq2NtAJwH70mddRGQQm7jiyj1QkJ9GpmyaxHqLn8+39urllAPNxIVsU6
-         zZY9sWz+YYoWNR5Ae9tKWfehSQBqxfEgPKQMnjz2yAwPwDbdvcyWXyjZmKPKyOBl7HwT
-         Zg8Be+c4fUa149+ihGYlLmO3DxLHN7bh1+hmU0PRqGDhPrrB651xfRv3464IRNXiI0Xh
-         il+g==
-X-Gm-Message-State: AOJu0YwwZYFv32n2bdcTuEE2yu24dZThRYb7w+IhjFYtBcJBZpoXuSD1
-        PdA+1TKGUR+xi860StUOfNg1BQ==
-X-Google-Smtp-Source: AGHT+IGy6kFbupZaNOki9+UOmwg+uZxOM6PYn7UJ1AdKLKltOEBk8YpBMGzAzKAavALkAC1UmtD3XQ==
-X-Received: by 2002:a7b:c5c8:0:b0:3fd:2d42:9392 with SMTP id n8-20020a7bc5c8000000b003fd2d429392mr683551wmk.4.1692170546837;
-        Wed, 16 Aug 2023 00:22:26 -0700 (PDT)
-Received: from localhost (212-51-140-210.fiber7.init7.net. [212.51.140.210])
-        by smtp.gmail.com with ESMTPSA id g7-20020a7bc4c7000000b003fbdd5d0758sm20091816wmk.22.2023.08.16.00.22.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 00:22:26 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 09:22:25 +0200
-From:   Adam Sindelar <adam@wowsignal.io>
-To:     Hou Tao <houtao@huaweicloud.com>
-Cc:     bpf@vger.kernel.org, Adam Sindelar <ats@fb.com>,
-        David Vernet <void@manifault.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        KP Singh <kpsingh@chromium.org>, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Florent Revest <revest@chromium.org>
-Subject: Re: [PATCH bpf-next v5] libbpf: Expose API to consume one ring at a
- time
-Message-ID: <ZNx5Meh0doxdXs4H@Momo.fritz.box>
-References: <20230728093346.673994-1-adam@wowsignal.io>
- <7c792532-4474-b523-08f9-f82fb57f1b09@huaweicloud.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7c792532-4474-b523-08f9-f82fb57f1b09@huaweicloud.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 03:23:04 -0400
+Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4318810C0;
+        Wed, 16 Aug 2023 00:23:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
+        s=default2211; h=To:References:Message-Id:Content-Transfer-Encoding:Cc:Date:
+        In-Reply-To:From:Subject:Mime-Version:Content-Type:Sender:Reply-To:Content-ID
+        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=19wNukchLNZN0X4BtCFwuraW6co2nA0L6OybOEKuK5o=;
+        b=YpNByOB7g1IeEdiFV3iyCqTmeHxRkXVPCM3MQO1wt1Ns/37QoLBuTNDcbRj7Q0jxudCwuubWM9E
+        QFRwLXTTz4fx+k7kp5fwULyg12M2nNMm8MI5cWF/ta+/3RwElmDJE86zQOpKuJXVF35J0ahG6avpe
+        E0gnMtU8iZUnK7NOAjjNcehgEgIRfwtNNvMbwXMhkCeM55cgwLCgyEmizU/JMkdms7cxV30vhahf4
+        BdqmYVoSiAyOmUMCzUexKIf/U5XXyNuvqAXqrVTamc4OUF1vwSgjwcBEj9degPrODmzSCWpoRSICJ
+        P7jwylFy7oDDEbU9h9uSoEREx8hUbxgkaBcQ==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <sean@geanix.com>)
+        id 1qWArr-0004Ll-VD; Wed, 16 Aug 2023 09:22:59 +0200
+Received: from [2a06:4004:10df:0:1cda:5a2e:6344:82ff] (helo=smtpclient.apple)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sean@geanix.com>)
+        id 1qWArr-0004Ez-FQ; Wed, 16 Aug 2023 09:22:59 +0200
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.600.7\))
+Subject: Re: [PATCH v2] i2c: stm32f7: Add atomic_xfer method to driver
+From:   Sean Nyekjaer <sean@geanix.com>
+In-Reply-To: <5E10F2AD-6D7E-4F2F-ACEB-B6FD3C71C85D@geanix.com>
+Date:   Wed, 16 Aug 2023 09:22:48 +0200
+Cc:     Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-i2c@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <CB5067F1-28CC-4011-A6FF-0695916D764C@geanix.com>
+References: <20230718105435.2641207-1-sean@geanix.com>
+ <20230802100709.GB2156918@gnbcxd0016.gnb.st.com>
+ <5E10F2AD-6D7E-4F2F-ACEB-B6FD3C71C85D@geanix.com>
+To:     Alain Volmat <alain.volmat@foss.st.com>
+X-Mailer: Apple Mail (2.3731.600.7)
+X-Authenticated-Sender: sean@geanix.com
+X-Virus-Scanned: Clear (ClamAV 0.103.8/27001/Tue Aug 15 09:40:17 2023)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 06:51:25PM +0800, Hou Tao wrote:
-> 
-Hi, sorry for potentially dumb question, but should I do anything else
-after someone acks it? This is a minor patch for a userland component,
-but it's really helpful IMO - is anything preventing this getting merged
-at this point?
+Hi Alain,
 
-Thanks,
-Adam
+> On 16 Aug 2023, at 09.02, Sean Nyekjaer <sean@geanix.com> wrote:
+>=20
 
-> On 7/28/2023 5:33 PM, Adam Sindelar wrote:
-> > We already provide ring_buffer__epoll_fd to enable use of external
-> > polling systems. However, the only API available to consume the ring
-> > buffer is ring_buffer__consume, which always checks all rings. When
-> > polling for many events, this can be wasteful.
-> >
-> > Signed-off-by: Adam Sindelar <adam@wowsignal.io>
-> 
-> Acked-by: Hou Tao <houtao1@huawei.com>
-> 
+[ =E2=80=A6 ]
+
+>>> _dev {
+>>> u32 dnf_dt;
+>>> u32 dnf;
+>>> struct stm32f7_i2c_alert *alert;
+>>> + bool atomic;
+>>=20
+>> I am wondering if this atomic really needs to be within the struct.
+>> It could well be given as last arg of stm32f7_i2c_xfer_core and
+>> stm32f7_i2c_xfer functions.
+>=20
+> Agree.
+
+Scratch that=E2=80=A6
+The atomic was included in the struct because it=E2=80=99s also used in =
+the isr function, as the isr function is calling stm32f7_i2c_xfer_msg()
+
+/Sean
+
