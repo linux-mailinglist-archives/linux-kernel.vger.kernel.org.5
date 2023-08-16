@@ -2,67 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D38F77E41C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22AA477E424
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244137AbjHPOt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 10:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50864 "EHLO
+        id S1343796AbjHPOwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 10:52:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233478AbjHPOtD (ORCPT
+        with ESMTP id S1343832AbjHPOw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 10:49:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF08B10E9
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:49:01 -0700 (PDT)
+        Wed, 16 Aug 2023 10:52:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15449269F;
+        Wed, 16 Aug 2023 07:52:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 764F8669FE
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:49:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 838C5C433C7;
-        Wed, 16 Aug 2023 14:48:58 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 503B66446C;
+        Wed, 16 Aug 2023 14:52:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E7B4C433C8;
+        Wed, 16 Aug 2023 14:52:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692197340;
-        bh=5orDRygPlvZ4yVEGQF5hK8JtQyCELRkheE2WtCwrV/g=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=gtz89zNPXRQTDcGTXRk35M4L05w+jqnAaLlsIAJ1nt+JJEziAwoAkCIo56zeJpH6i
-         /MekK3Q/ccbXyomfOYZY4hW9nqbr9tmAYrQ8jGkO68AftAt4mtmIkHubb53+74oZWl
-         Tx59kJO5ij0DEpyH5D0nwRSw+ZDyxTtrY1pbe6IVPCaG6a3j9SDfnERGEmbvXtnOP0
-         i2ZOCfSNDpOAtlSyO++T0ngAV2hHcpIoQZEY4cLX6wxp69uyVC6SRbUSiar5jKRht4
-         mxz1Ru1ably6Z7zQCNDaxa0X4RTPqwQqsBp5sdA3A9XBtUy6tMuQlL0S/v0QY7Mgsy
-         7rg+BYLvybQbw==
-Message-ID: <d1b510a0-139a-285d-1a80-2592ea98b0d6@kernel.org>
-Date:   Wed, 16 Aug 2023 16:48:56 +0200
+        s=k20201202; t=1692197542;
+        bh=fat3YRkJ698LrzyB//w21t8rmRjCywBbXiHxRzGdUno=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hHi+1jKDwMfZwE/SevvBX8z46X1OOUyX1rEe6JiZAzCqNYUtLMHaoZ4C8kv6wnTvK
+         iPl2RGLRTSrFXUK2TYh/POo3hdhb49WH3Dy9DMzMZJ0Dkc722ZR8PJ8dVSrrH9GYG4
+         zhI3aDKjii38dm4Dn6kq4dojT3OtU+h40ZLlmBebVRQkiC3OllVoykGbBN+nawlrIp
+         Op+KM4APObfQg4+jF50msCWIQ0OM+7Z+Gaep4VsaJ7EDkglv1PGaZdQN2KeCFipEHl
+         TCiUy0yd7dXvmUYQagsvxOu8tAe5Uf7Jwfy7epAGRkjDEnO8ldgY1bpKO7Lm66Rnyo
+         R15mlfHN7fxMA==
+Date:   Wed, 16 Aug 2023 15:52:16 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     dmitry.torokhov@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, rydberg@bitmath.org,
+        u.kleine-koenig@pengutronix.de, linus.walleij@linaro.org,
+        Jonathan.Cameron@huawei.com, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, heiko@sntech.de
+Subject: Re: [PATCH 1/4] dt-bindings: touchscreen: convert neonode,zforce to
+ json-schema
+Message-ID: <20230816-customary-service-8d9c5e5dbf1b@spud>
+References: <20230815182948.212575-1-andreas@kemnade.info>
+ <20230815182948.212575-2-andreas@kemnade.info>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     hawk@kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wander Lairson Costa <wander@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        kernel-team <kernel-team@cloudflare.com>,
-        Yan Zhai <yan@cloudflare.com>
-Subject: Re: [RFC PATCH 2/2] softirq: Drop the warning from
- do_softirq_post_smp_call_flush().
-Content-Language: en-US
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>
-References: <20230814093528.117342-1-bigeasy@linutronix.de>
- <20230814093528.117342-3-bigeasy@linutronix.de>
- <25de7655-6084-e6b9-1af6-c47b3d3b7dc1@kernel.org>
-From:   Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <25de7655-6084-e6b9-1af6-c47b3d3b7dc1@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-10.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="XuJizLR0HvgWZrq8"
+Content-Disposition: inline
+In-Reply-To: <20230815182948.212575-2-andreas@kemnade.info>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -70,97 +65,157 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--XuJizLR0HvgWZrq8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 15/08/2023 14.08, Jesper Dangaard Brouer wrote:
-> 
-> 
-> On 14/08/2023 11.35, Sebastian Andrzej Siewior wrote:
->> This is an undesired situation and it has been attempted to avoid the
->> situation in which ksoftirqd becomes scheduled. This changed since
->> commit d15121be74856 ("Revert "softirq: Let ksoftirqd do its job"")
->> and now a threaded interrupt handler will handle soft interrupts at its
->> end even if ksoftirqd is pending. That means that they will be processed
->> in the context in which they were raised.
-> 
-> $ git describe --contains d15121be74856
-> v6.5-rc1~232^2~4
-> 
-> That revert basically removes the "overload" protection that was added
-> to cope with DDoS situations in Aug 2016 (Cc. Cloudflare).  As described
-> in https://git.kernel.org/torvalds/c/4cd13c21b207 ("softirq: Let
-> ksoftirqd do its job") in UDP overload situations when UDP socket
-> receiver runs on same CPU as ksoftirqd it "falls-off-an-edge" and almost
-> doesn't process packets (because softirq steals CPU/sched time from UDP
-> pid).  Warning Cloudflare (Cc) as this might affect their production
-> use-cases, and I recommend getting involved to evaluate the effect of
-> these changes.
-> 
+On Tue, Aug 15, 2023 at 08:29:45PM +0200, Andreas Kemnade wrote:
+> Convert Neonode infrared touchscreen controller binding to DT schema.
+>=20
+> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> ---
+>  .../input/touchscreen/neonode,zforce.yaml     | 67 +++++++++++++++++++
+>  .../bindings/input/touchscreen/zforce_ts.txt  | 34 ----------
+>  2 files changed, 67 insertions(+), 34 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/n=
+eonode,zforce.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/z=
+force_ts.txt
+>=20
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/neonode,=
+zforce.yaml b/Documentation/devicetree/bindings/input/touchscreen/neonode,z=
+force.yaml
+> new file mode 100644
+> index 000000000000..1c45adb2407a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/touchscreen/neonode,zforce.=
+yaml
+> @@ -0,0 +1,67 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/touchscreen/neonode,zforce.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Neonode infrared touchscreen controller
+> +
+> +maintainers:
+> +  - Heiko Stuebner <heiko.stuebner@bqreaders.com>
 
-I did some testing on net-next (with commit d15121be74856 ("Revert 
-"softirq: Let ksoftirqd do its job"") using UDP pktgen + udp_sink.
+It;d be good to CC the person you're volunteering! I've done so.
 
-And I observe the old overload issue occur again, where userspace 
-process (udp_sink) process very few packets when running on *same* CPU 
-as the NAPI-RX/IRQ processing.  The perf report "comm" clearly shows 
-that NAPI runs in the context of the "udp_sink" process, stealing its 
-sched time. (Same CPU around 3Kpps and diff CPU 1722Kpps, see details 
-below).
-What happens are that NAPI takes 64 packets and queue them to the 
-udp_sink process *socket*, the udp_sink process *wakeup* process 1 
-packet from socket queue and on exit (__local_bh_enable_ip) runs softirq 
-that starts NAPI (to again process 64 packets... repeat).
+> +
+> +properties:
+> +  compatible:
+> +    const: neonode,zforce
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +
+> +  irq-gpios:
+> +    maxItems: 1
+> +
+> +  x-size:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  y-size:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  vdd-supply: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - reset-gpios
+> +  - x-size
+> +  - y-size
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    i2c {
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +
+> +        touchscreen@50 {
+> +            compatible =3D "neonode,zforce";
+> +            reg =3D <0x50>;
+> +            interrupts =3D <2 0>;
+> +            vdd-supply =3D <&reg_zforce_vdd>;
+> +
+> +            reset-gpios =3D <&gpio5 9 0>; /* RST */
+> +            irq-gpios =3D <&gpio5 6 0>; /* IRQ, optional */
+> +
+> +            x-size =3D <800>;
+> +            y-size =3D <600>;
+> +        };
+> +    };
+> +...
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/zforce_t=
+s.txt b/Documentation/devicetree/bindings/input/touchscreen/zforce_ts.txt
+> deleted file mode 100644
+> index e3c27c4fd9c8..000000000000
+> --- a/Documentation/devicetree/bindings/input/touchscreen/zforce_ts.txt
+> +++ /dev/null
+> @@ -1,34 +0,0 @@
+> -* Neonode infrared touchscreen controller
+> -
+> -Required properties:
+> -- compatible: must be "neonode,zforce"
+> -- reg: I2C address of the chip
+> -- interrupts: interrupt to which the chip is connected
+> -- reset-gpios: reset gpio the chip is connected to
+> -- x-size: horizontal resolution of touchscreen
+> -- y-size: vertical resolution of touchscreen
+> -
+> -Optional properties:
+> -- irq-gpios : interrupt gpio the chip is connected to
+> -- vdd-supply: Regulator controlling the controller supply
+> -
+> -Example:
+> -
+> -	i2c@00000000 {
+> -		/* ... */
+> -
+> -		zforce_ts@50 {
+> -			compatible =3D "neonode,zforce";
+> -			reg =3D <0x50>;
+> -			interrupts =3D <2 0>;
+> -			vdd-supply =3D <&reg_zforce_vdd>;
+> -
+> -			reset-gpios =3D <&gpio5 9 0>; /* RST */
+> -			irq-gpios =3D <&gpio5 6 0>; /* IRQ, optional */
+> -
+> -			x-size =3D <800>;
+> -			y-size =3D <600>;
+> -		};
+> -
+> -		/* ... */
+> -	};
+> --=20
+> 2.39.2
+>=20
 
+--XuJizLR0HvgWZrq8
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> I do realize/acknowledge that the reverted patch caused other latency
-> issues, given it was a "big-hammer" approach affecting other softirq
-> processing (as can be seen by e.g. the watchdog fixes patches).
-> Thus, the revert makes sense, but how to regain the "overload"
-> protection such that RX networking cannot starve processes reading from
-> the socket? (is this what Sebastian's patchset does?)
-> 
+-----BEGIN PGP SIGNATURE-----
 
-I'm no expert in sched / softirq area of the kernel, but I'm willing to 
-help out testing different solution that can regain the "overload" 
-protection e.g. avoid packet processing "falls-of-an-edge" (and thus 
-opens the kernel to be DDoS'ed easily).
-Is this what Sebastian's patchset does?
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZNzioAAKCRB4tDGHoIJi
+0ngPAP0XNuegxE0/FAnGqyyDeOPFvc4WqIxAUmXfZsG7b1zB1AEAy+5fvdsKnJnN
+tEXK/o8iAYOJgrCP6oA6Pdsqh+XIyAQ=
+=WkCD
+-----END PGP SIGNATURE-----
 
-
-> 
-> Thread link for people Cc'ed: 
-> https://lore.kernel.org/all/20230814093528.117342-1-bigeasy@linutronix.de/#r
-
---Jesper
-(some testlab results below)
-
-[udp_sink] 
-https://github.com/netoptimizer/network-testing/blob/master/src/udp_sink.c
-
-
-When udp_sink runs on same CPU and NAPI/softirq
-  - UdpInDatagrams: 2,948 packets/sec
-
-$ nstat -n && sleep 1 && nstat
-#kernel
-IpInReceives                    2831056            0.0
-IpInDelivers                    2831053            0.0
-UdpInDatagrams                  2948               0.0
-UdpInErrors                     2828118            0.0
-UdpRcvbufErrors                 2828118            0.0
-IpExtInOctets                   130206496          0.0
-IpExtInNoECTPkts                2830576            0.0
-
-When udp_sink runs on another CPU than NAPI-RX.
-  - UdpInDatagrams: 1,722,307 pps
-
-$ nstat -n && sleep 1 && nstat
-#kernel
-IpInReceives                    2318560            0.0
-IpInDelivers                    2318562            0.0
-UdpInDatagrams                  1722307            0.0
-UdpInErrors                     596280             0.0
-UdpRcvbufErrors                 596280             0.0
-IpExtInOctets                   106634256          0.0
-IpExtInNoECTPkts                2318136            0.0
-
-
+--XuJizLR0HvgWZrq8--
