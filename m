@@ -2,167 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 278B877DA7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 08:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B040977DA7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 08:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242115AbjHPGbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 02:31:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
+        id S242134AbjHPGdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 02:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242062AbjHPGaq (ORCPT
+        with ESMTP id S242062AbjHPGcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 02:30:46 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9523D1FC1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 23:30:44 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 849A81063;
-        Tue, 15 Aug 2023 23:31:25 -0700 (PDT)
-Received: from [10.162.40.18] (a077893.blr.arm.com [10.162.40.18])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 21AEB3F762;
-        Tue, 15 Aug 2023 23:30:39 -0700 (PDT)
-Message-ID: <294158a2-19cf-66f0-ea27-a0243f99f907@arm.com>
-Date:   Wed, 16 Aug 2023 12:00:36 +0530
+        Wed, 16 Aug 2023 02:32:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1441BF8;
+        Tue, 15 Aug 2023 23:32:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692167552; x=1723703552;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=ZDPmeYrMaXMu6/13j5mQ5fIZnvYVckh6htfiRlsnx+k=;
+  b=TJPD0xIPII21sEiG6AbnmaPyCgXsIcxZ6OiyRV3LeX6h4Ft8e5+F5nZ5
+   xaBK1SJ9dbnjOeVUCThSbGatvLWFjCNIosGmmoXnLSmg1aaz/gKvvFabg
+   9T9L0wcUcWFsYDKehx2M1eDLH41gsdzPRjP4yxuX7KTBxR6VH+Y+4Eb8H
+   +lFz+SAM3fTSvuE36TEoYU7s4QlexoP7b2qwPYLDKvMk07kKRrkxoQdO+
+   /huRsSMi1pALlTPhDXFjw8KtJwWUCi0leazf70aeTf2BFLYSOkEi2E2rT
+   0X14ewVEvqG9+Big/XPJGqAoaomFi6aZ9kMO2j+n5WalGMP7hXqbYuXlG
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="352781939"
+X-IronPort-AV: E=Sophos;i="6.01,176,1684825200"; 
+   d="scan'208";a="352781939"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 23:32:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="737175905"
+X-IronPort-AV: E=Sophos;i="6.01,176,1684825200"; 
+   d="scan'208";a="737175905"
+Received: from ilivshiz-mobl.ger.corp.intel.com ([10.251.211.105])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 23:32:30 -0700
+Date:   Wed, 16 Aug 2023 09:32:22 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Babu Moger <babu.moger@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
+Subject: Re: [PATCH 1/7] selftests/resctrl: Ensure the benchmark commands
+ fits to its array
+In-Reply-To: <a64114de-0a95-4ed8-aa06-b30a948fee6c@intel.com>
+Message-ID: <ff136876-449-2d6a-b4dd-13ece5f3e12@linux.intel.com>
+References: <20230808091625.12760-1-ilpo.jarvinen@linux.intel.com> <20230808091625.12760-2-ilpo.jarvinen@linux.intel.com> <9e56779c-4df0-654f-08e1-b27e0dd6b2ac@intel.com> <12ce6b7a-292c-6f27-809e-a7cbb810f596@linux.intel.com>
+ <a64114de-0a95-4ed8-aa06-b30a948fee6c@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH V4 1/4] arm_pmu: acpi: Refactor
- arm_spe_acpi_register_device()
-Content-Language: en-US
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
-        yangyicong@huawei.com, Sami Mujawar <sami.mujawar@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-References: <20230808082247.383405-1-anshuman.khandual@arm.com>
- <20230808082247.383405-2-anshuman.khandual@arm.com>
- <9d22520a-3450-0e75-59a2-035209f239e6@arm.com>
- <20230811101201.GA6827@willie-the-truck>
- <7920ce3b-15ee-c8d8-a7c0-59009620073c@arm.com>
- <20230811110035.GA6993@willie-the-truck>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20230811110035.GA6993@willie-the-truck>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; BOUNDARY="8323329-574612940-1692167079=:1780"
+Content-ID: <f5d7949-d8c-b283-91fb-b0fbaf8de9b@linux.intel.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
+--8323329-574612940-1692167079=:1780
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <732a985-dfec-39b3-b879-e614f8ab52ed@linux.intel.com>
 
-On 8/11/23 16:30, Will Deacon wrote:
-> On Fri, Aug 11, 2023 at 03:55:43PM +0530, Anshuman Khandual wrote:
->>
->>
->> On 8/11/23 15:42, Will Deacon wrote:
->>> On Fri, Aug 11, 2023 at 02:13:42PM +0530, Anshuman Khandual wrote:
->>>> On 8/8/23 13:52, Anshuman Khandual wrote:
->>>>> +	/*
->>>>> +	 * Sanity check all the GICC tables for the same interrupt
->>>>> +	 * number. For now, only support homogeneous ACPI machines.
->>>>> +	 */
->>>>> +	for_each_possible_cpu(cpu) {
->>>>> +		struct acpi_madt_generic_interrupt *gicc;
->>>>> +
->>>>> +		gicc = acpi_cpu_get_madt_gicc(cpu);
->>>>> +		if (gicc->header.length < len)
->>>>> +			return gsi ? -ENXIO : 0;
->>>>> +
->>>>> +		this_gsi = parse_gsi(gicc);
->>>>> +		if (!this_gsi)
->>>>> +			return gsi ? -ENXIO : 0;
->>>>> +
->>>>> +		this_hetid = find_acpi_cpu_topology_hetero_id(cpu);
->>>>> +		if (!gsi) {
->>>>> +			hetid = this_hetid;
->>>>> +			gsi = this_gsi;
->>>>> +		} else if (hetid != this_hetid || gsi != this_gsi) {
->>>>> +			pr_warn("ACPI: %s: must be homogeneous\n", pdev->name);
->>>>> +			return -ENXIO;
->>>>> +		}
->>>>> +	}
->>>>
->>>> As discussed on the previous version i.e V3 thread, will move the
->>>> 'this_gsi' check after parse_gsi(), inside if (!gsi) conditional
->>>> block. This will treat subsequent cpu parse_gsi()'s failure as a
->>>> mismatch thus triggering the pr_warn() message.
->>>>
->>>> diff --git a/drivers/perf/arm_pmu_acpi.c b/drivers/perf/arm_pmu_acpi.c
->>>> index 845683ca7c64..6eae772d6298 100644
->>>> --- a/drivers/perf/arm_pmu_acpi.c
->>>> +++ b/drivers/perf/arm_pmu_acpi.c
->>>> @@ -98,11 +98,11 @@ arm_acpi_register_pmu_device(struct platform_device *pdev, u8 len,
->>>>                         return gsi ? -ENXIO : 0;
->>>>  
->>>>                 this_gsi = parse_gsi(gicc);
->>>> -               if (!this_gsi)
->>>> -                       return gsi ? -ENXIO : 0;
->>>> -
->>>>                 this_hetid = find_acpi_cpu_topology_hetero_id(cpu);
->>>>                 if (!gsi) {
->>>> +                       if (!this_gsi)
->>>> +                               return 0;
->>>
->>> Why do you need this hunk?
->>
->> Otherwise '0' gsi on all cpus would just clear the above homogeneity
->> test, and end up in acpi_register_gsi() making it fail, but with the
->> following warning before returning with -ENXIO.
->>
->> irq = acpi_register_gsi(NULL, gsi, ACPI_LEVEL_SENSITIVE, ACPI_ACTIVE_HIGH);
->> if (irq < 0) {
->> 	pr_warn("ACPI: %s Unable to register interrupt: %d\n", pdev->name, gsi);
->> 	return -ENXIO;
->> }
+On Tue, 15 Aug 2023, Reinette Chatre wrote:
+> On 8/15/2023 2:10 AM, Ilpo Järvinen wrote:
+> >> ps. Unless you have an updated email address that works, could you please
+> >> remove Sai's email from future submissions?
+> > 
+> > It's auto-added by git send-email machinery. I guess I can try to make 
+> > an exception to my usual workflow by sending only to manually specified To 
+> > addresses (if I remember). Perhaps one day I'll write a tool to filter out
+> > the addresses from git send-email generated ones but as is I don't have 
+> > one.
+> > 
 > 
-> Ah gotcha, thanks.
-> 
->> Is this behaviour better than returning 0 after detecting '0' gsi in
->> the first cpu to avoid the above mentioned scenario ? Although 0 gsi
->> followed by non-zero ones will still end up warning about a mismatch.
-> 
-> Can we move the check _after_ the loop, then? That way, we still detect
-> mismatches but we'll quietly return 0 if nobody has an interrupt.
+> Which git send-email machinery are you referring to? If I understand correctly
+> it does not automatically pick addresses but you can provide custom commands to
+> it that can do it.
 
-Sure, will fold in the following changes instead. 
+Ah sorry, it is actually scripts/get_maintainer.pl automation I use with 
+git send-email to figure out where to send the patches besides the --to & 
+--cc entries I provided. For this patch, get_maintainer.pl returns this 
+list:
 
-diff --git a/drivers/perf/arm_pmu_acpi.c b/drivers/perf/arm_pmu_acpi.c
-index 845683ca7c64..d7beb035345a 100644
---- a/drivers/perf/arm_pmu_acpi.c
-+++ b/drivers/perf/arm_pmu_acpi.c
-@@ -98,9 +98,6 @@ arm_acpi_register_pmu_device(struct platform_device *pdev, u8 len,
-                        return gsi ? -ENXIO : 0;
- 
-                this_gsi = parse_gsi(gicc);
--               if (!this_gsi)
--                       return gsi ? -ENXIO : 0;
--
-                this_hetid = find_acpi_cpu_topology_hetero_id(cpu);
-                if (!gsi) {
-                        hetid = this_hetid;
-@@ -111,6 +108,15 @@ arm_acpi_register_pmu_device(struct platform_device *pdev, u8 len,
-                }
-        }
- 
-+       /*
-+        * This is a special case where no cpu on
-+        * the system has the interrupt and which
-+        * could not have been detected via above
-+        * homogeneous mismatch test.
-+        */
-+       if (!this_gsi)
-+               return 0;
-+
-        irq = acpi_register_gsi(NULL, gsi, ACPI_LEVEL_SENSITIVE, ACPI_ACTIVE_HIGH);
-        if (irq < 0) {
-                pr_warn("ACPI: %s Unable to register interrupt: %d\n", pdev->name, gsi);
+Fenghua Yu <fenghua.yu@intel.com> (supporter:RDT - RESOURCE ALLOCATION,blamed_fixes:1/1=100%)
+Reinette Chatre <reinette.chatre@intel.com> (supporter:RDT - RESOURCE ALLOCATION)
+Shuah Khan <shuah@kernel.org> (maintainer:KERNEL SELFTEST FRAMEWORK,blamed_fixes:1/1=100%)
+Babu Moger <babu.moger@amd.com> (blamed_fixes:1/1=100%)
+Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com> (blamed_fixes:1/1=100%)
+linux-kernel@vger.kernel.org (open list:RDT - RESOURCE ALLOCATION)
+linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
+
+...which includes Sai's address (not much I can do about that, it's 
+immutably crafted into git history that those lines were once touched by 
+Sai). I've thought of writing yet another wrapper to filter out known 
+failing addresses but until that's done, either I need to (remember to) 
+manually send the series w/o get_maintainer.pl automation or accept a few 
+failures here and there.
+
+-- 
+ i.
+--8323329-574612940-1692167079=:1780--
