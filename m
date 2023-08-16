@@ -2,94 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C4177EBF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5A377EBFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346555AbjHPVhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 17:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52010 "EHLO
+        id S1346569AbjHPVkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 17:40:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346558AbjHPVhM (ORCPT
+        with ESMTP id S239250AbjHPVj2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 17:37:12 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 069CEDC
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:37:11 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so4634a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:37:10 -0700 (PDT)
+        Wed, 16 Aug 2023 17:39:28 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA9F1FE3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:39:27 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-589a45c1b0fso92343047b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:39:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692221829; x=1692826629;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YuS/h2vqI/TNPK9231HrTTQYLYSfNx8VEdjhqDSvM3I=;
-        b=helse5TTvzZY/qTqKQTbEcpAcGKVIMSS+veWN85WXQrNlm0siGnScoCzZD8MCsfECD
-         QRihKUKeWHsfQOiwE7tw4K5WXklYPEvemLJRonlY9rOTUM4asY1XTTJLHUfmM+X/9uP0
-         DtiOoLukejrn0fRTSEqBLlrK3Qc3TRXlxrUPe9PJH1uOZ3eAHeSAdYdC6j1z7HGes60Q
-         687SyPBO5UmoiCTaTl7OwfNMfMVIE3TQKQPWUOC/UtiHM3/idR9wIXXZGyuYGMVhJ3sJ
-         KYnqYhs1WMpyGkC3Hd/l9VKbAhdzEc6L3xP0G2YLesEfmsU3SjFzU/32QfUxWGbfjXqO
-         zLdw==
+        d=google.com; s=20221208; t=1692221967; x=1692826767;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dgfv9XpiXMzsq2kLywbyVX/AZp8i35sYGiNA5Uju+Tg=;
+        b=B3mPwfTrF1Ige4phc1lVSf7W1iqdnDLezfu/Ms6Scp4jsTZmzB8Vfhv4DjxvTlOZcs
+         tk9VlKRIXH/RwiRpno3xlRg+kYX83WMe3fSZqxLsQk8WKCjS3QrUPun6+6rZd3biMiEj
+         ZG5kCeCarobtr+BZHlkQj9h7xwP4ChxqgVGCxRNAks9MBaH2PoN9TO+DMTtcDE8Js0xd
+         33v65vYmTZ13eJmIkbsGN9AMOKxl5rl/FHmo+ofyFjDDjj5uScL02oYID9O494OUmQQa
+         ZMvGjuUfwo8WSY4vIfUiJkdlTULm7UYdPh65MmP5xyig/2Fz+behqtWgnayNAE3uRygV
+         KUJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692221829; x=1692826629;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YuS/h2vqI/TNPK9231HrTTQYLYSfNx8VEdjhqDSvM3I=;
-        b=C6qI6kylyp3MdH3sDihPCZ4fDtjDZbHKOzf5+G3aEEliuggJQpjGbkqLV3iLxsloxw
-         sQ4gicJaSAyfue0g9RtJG+Bj5emvAYbZkhBrNYRSed2huWWN6FnZ5cpYLsP5MzOjyY47
-         CfHor9QmzcLZKCi7BO757Mmg2DawNiuYtVtmL6aGiMjuaTSk2wK4Kvuh+JqTytHK9m7A
-         31A5ifDcip/tJu838vdLNqp56Lbb2QAuD0T7EVhxrECQTHDtdxqW0v9zCzYiCJ/PPLpc
-         Lotc0KZJkHVFr4q+6znmuvEQuGrEergasxG1trYsWathPx8W+XXmBwvDBy5a3bEF5gZm
-         6BKw==
-X-Gm-Message-State: AOJu0Ywj7fhP4tS4C7AcQJ1qSyoBi/xeZpW2A75+6XSGsCc0PDdvDCw3
-        lPBz/Z3FeEoQlKgRSc6WyfkNXJBrcaAAJsZjxLClQjD549eZiTvpXsg=
-X-Google-Smtp-Source: AGHT+IFLzRtJKBX8YjOUOQM+tpZWRF1Q+hVPwQ6nUbKCf8DPEnAyUtLixog8aRzSs9I/KwfH16HW7TOFPbSEzOxVvp0=
-X-Received: by 2002:a50:a45b:0:b0:523:bdc9:48a9 with SMTP id
- v27-20020a50a45b000000b00523bdc948a9mr36864edb.0.1692221829436; Wed, 16 Aug
- 2023 14:37:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <12a12721-239b-457e-1ff7-f98c02cb7abe@intel.com>
- <20230816201700.589822-1-jmattson@google.com> <20230816211821.GUZN09HTGo+yQ2+jd7@fat_crate.local>
- <CALMp9eR1Ub78MZwdZn178d4OXPu3Au=faBgVGe6ty6ARV+nK8g@mail.gmail.com> <20230816213025.GVZN0/8cjvLebNANTq@fat_crate.local>
-In-Reply-To: <20230816213025.GVZN0/8cjvLebNANTq@fat_crate.local>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Wed, 16 Aug 2023 14:36:57 -0700
-Message-ID: <CALMp9eRT4xCrK3Up_1bQuBZNd_2ZKLFqgamvP4BtA+HuC1driQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] x86/microcode/AMD: Load late on both threads too
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     dave.hansen@intel.com, linux-kernel@vger.kernel.org,
-        stable@kernel.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20221208; t=1692221967; x=1692826767;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dgfv9XpiXMzsq2kLywbyVX/AZp8i35sYGiNA5Uju+Tg=;
+        b=KdEXJSRkwn5Hl7RWrgWU7hF45edXJnMVks4403b756qwIkbSAbfQQwYlAlDm3Bo3Ia
+         TPdSoHOhGF+ZhYK+H4OwTWAG71tdAitDd/SCBcAwtKKj70jFFYjGWI2PkXlYlKEvXALC
+         YTVUMO+YOZY0Ny1B08ZXQ1GnpeLgetwUYBdKWrcmOdO/DeiP39bI/Bpc+ExHaCrzEHxp
+         HL69URMWf3OiFpUcU3IA7QhKthcM9QNRmYpa3HZZQTx9PPqUG6mL+adNTAQ8XTE+/DoH
+         nFcIJ/Z4Dh1ic+QXbQt5c/n0x7XB0EB+GgvP4EAkJ53xe/pWifUvcwFtUz/emb2PhV9R
+         IQAQ==
+X-Gm-Message-State: AOJu0Yx896amDNK571wMNESKkU7juu71VCu3bzzhd7KQtnnPJprJf6Vm
+        acEEbjgJSmPZEWZT+VEkfNhjjkSKfBj/A1vQ6A==
+X-Google-Smtp-Source: AGHT+IEVHWg7faDJGpLl8t8qRgynXOF8x/oPuFyxnuV6asqFbVWol9ZvrF92XF57cIBZH1l24F8+JcpNC2abmYHuJg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a81:ae66:0:b0:589:9ebc:4bfc with SMTP
+ id g38-20020a81ae66000000b005899ebc4bfcmr41356ywk.9.1692221967232; Wed, 16
+ Aug 2023 14:39:27 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 21:39:24 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAAtC3WQC/x3NwQrCMAyA4VcZORtYW5zFVxEPpctcQNuQFHWMv
+ bvF43f5/x2MlMngOuyg9GbjWjrcaYC8pvIg5Lkb/OjDGN2E1rRk2TBpXlHqh1QyyjO1perLUCy gklTjVnXDeE4ux+lCsw/Qm6K08Pf/u92P4wcoxlPwfwAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692221966; l=1607;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=30eCBoYcInKFNOcnuhFfYjRixFwqc2selXbnOKgw6dI=; b=xDzKLH1yz1jxJwierFXeVLUgiJfBIeQIt+nXl5gaKMxMfmxMDGzOJZDP9cseijM4Ywj0ktUp1
+ Q2cOTSB+/0pDQWF0iqwsPv7ZIS9SsHY6BJ5okfK8iTSE6218SV8h728
+X-Mailer: b4 0.12.3
+Message-ID: <20230816-strncpy-arch-powerpc-platforms-ps3-repository-v1-1-88283b02fb09@google.com>
+Subject: [PATCH] powerpc/ps3: refactor strncpy usage
+From:   Justin Stitt <justinstitt@google.com>
+To:     Geoff Levand <geoff@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 2:30=E2=80=AFPM Borislav Petkov <bp@alien8.de> wrot=
-e:
->
-> On Wed, Aug 16, 2023 at 02:23:52PM -0700, Jim Mattson wrote:
-> > Specifically, "Security Version Numbers (SVNs) of the currently
-> > executing platform firmware and microcode."
->
-> Yes, I know the microcode revision is part of the attestation.
->
-> What exactly are you asking?
->
-> If you don't state your question, how do you expect me to answer?
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-Doesn't this render that attestation misleading, since the microcode
-patch may not have been loaded on all logical processors?
+`make_first_field()` should use similar implementation to `make_field()`
+due to memcpy having more obvious behavior here. The end result yields
+the same behavior as the previous `strncpy`-based implementation
+including the NUL-padding.
 
+Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note:
+This follows up on a previous RFC which can be found here:
+https://lore.kernel.org/all/20230811-strncpy-arch-powerpc-platforms-ps3-v1-0-301052a5663e@google.com/
+---
+ arch/powerpc/platforms/ps3/repository.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/powerpc/platforms/ps3/repository.c b/arch/powerpc/platforms/ps3/repository.c
+index 205763061a2d..1abe33fbe529 100644
+--- a/arch/powerpc/platforms/ps3/repository.c
++++ b/arch/powerpc/platforms/ps3/repository.c
+@@ -73,9 +73,9 @@ static void _dump_node(unsigned int lpar_id, u64 n1, u64 n2, u64 n3, u64 n4,
+ 
+ static u64 make_first_field(const char *text, u64 index)
+ {
+-	u64 n;
++	u64 n = 0;
+ 
+-	strncpy((char *)&n, text, 8);
++	memcpy((char *)&n, text, strnlen(text, sizeof(n)));
+ 	return PS3_VENDOR_ID_NONE + (n >> 32) + index;
+ }
+ 
+
+---
+base-commit: 2ccdd1b13c591d306f0401d98dedc4bdcd02b421
+change-id: 20230816-strncpy-arch-powerpc-platforms-ps3-repository-85a1c867ed23
+
+Best regards,
 --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
+Justin Stitt <justinstitt@google.com>
+
