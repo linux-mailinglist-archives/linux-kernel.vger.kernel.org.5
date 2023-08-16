@@ -2,134 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F57477D721
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 02:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C5277D723
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 02:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240840AbjHPAid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 20:38:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55094 "EHLO
+        id S240848AbjHPAjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 20:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240831AbjHPAiF (ORCPT
+        with ESMTP id S240849AbjHPAis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 20:38:05 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935B5BF;
-        Tue, 15 Aug 2023 17:38:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692146277;
-        bh=rosYWlrI4t8faM1fS957HJl/UNmmlb1l7OR8EeMZW24=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Vv+64eFWO4zKY0uvcFyF0dpfMVO6vG6OVQ3u5fy4g5897tNVJlygkniN2fJzwO+fa
-         6Lf5jiWzSgNj9SGsD+UlVrN2fODZ9oN086h3MXAWQ5Dofs1uLZaRx0/ZUkQ0CqbY0q
-         ybIZD/zn5F/R/gDZz+cQ2by0Asd8CZVrOvSPJMZSK3356Ngk5wV+7Q/VKsRQHgJDg7
-         NffUoD2GHzYp8UpPZfm1rEbszm2waZYIruyroEySohwoK7yk6NrGonJ7/B+Ajo6Uw9
-         xLHMsyN3wQGLoH09KQU3ZPD42dHdqh2R3ujs+jXE+z6xQjsCt21Fte/lqSlU+feZqo
-         0e+jAc77jY9qA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RQTkX249Bz4wxN;
-        Wed, 16 Aug 2023 10:37:55 +1000 (AEST)
-Date:   Wed, 16 Aug 2023 10:37:51 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Georg Ottinger <g.ottinger@gmx.at>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the ext3 tree
-Message-ID: <20230816103751.13f217a8@canb.auug.org.au>
+        Tue, 15 Aug 2023 20:38:48 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A1D1BFB
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 17:38:46 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VptSxww_1692146323;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0VptSxww_1692146323)
+          by smtp.aliyun-inc.com;
+          Wed, 16 Aug 2023 08:38:44 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     tglx@linutronix.de
+Cc:     mingo@redhat.com, steve.wahl@hpe.com, justin.ernst@hpe.com,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH -next] x86/apic: clean up one inconsistent indenting
+Date:   Wed, 16 Aug 2023 08:38:42 +0800
+Message-Id: <20230816003842.116574-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/2aLrO901fVUIKWWqFTtcN/5";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/2aLrO901fVUIKWWqFTtcN/5
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+arch/x86/kernel/apic/x2apic_uv_x.c:113 early_get_pnodeid() warn: inconsistent indenting
 
-Hi all,
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ arch/x86/kernel/apic/x2apic_uv_x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-After merging the ext3 tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
+index 1cedb2519938..cfd4a1c1aec9 100644
+--- a/arch/x86/kernel/apic/x2apic_uv_x.c
++++ b/arch/x86/kernel/apic/x2apic_uv_x.c
+@@ -110,7 +110,7 @@ static void __init early_get_pnodeid(void)
+ 	} else if (UVH_RH_GAM_ADDR_MAP_CONFIG) {
+ 		union uvh_rh_gam_addr_map_config_u  m_n_config;
+ 
+-	m_n_config.v = uv_early_read_mmr(UVH_RH_GAM_ADDR_MAP_CONFIG);
++		m_n_config.v = uv_early_read_mmr(UVH_RH_GAM_ADDR_MAP_CONFIG);
+ 		uv_cpuid.n_skt = m_n_config.s.n_skt;
+ 		if (is_uv(UV3))
+ 			uv_cpuid.m_skt = m_n_config.s3.m_skt;
+-- 
+2.20.1.7.g153144c
 
-In file included from include/linux/kernel.h:30,
-                 from arch/x86/include/asm/percpu.h:27,
-                 from arch/x86/include/asm/preempt.h:6,
-                 from include/linux/preempt.h:79,
-                 from include/linux/spinlock.h:56,
-                 from include/linux/wait.h:9,
-                 from include/linux/wait_bit.h:8,
-                 from include/linux/fs.h:6,
-                 from include/linux/highmem.h:5,
-                 from include/linux/bvec.h:10,
-                 from include/linux/blk_types.h:10,
-                 from include/linux/buffer_head.h:12,
-                 from fs/ext2/xattr.c:57:
-fs/ext2/xattr.c: In function 'ext2_xattr_set2':
-fs/ext2/xattr.c:748:42: error: format '%d' expects argument of type 'int', =
-but argument 2 has type 'ext2_fsblk_t' {aka 'long unsigned int'} [-Werror=
-=3Dformat=3D]
-  748 |                         ea_idebug(inode, "creating block %d", block=
-);
-      |                                          ^~~~~~~~~~~~~~~~~~~  ~~~~~
-      |                                                               |
-      |                                                               ext2_=
-fsblk_t {aka long unsigned int}
-include/linux/printk.h:427:25: note: in definition of macro 'printk_index_w=
-rap'
-  427 |                 _p_func(_fmt, ##__VA_ARGS__);                      =
-     \
-      |                         ^~~~
-include/linux/printk.h:129:17: note: in expansion of macro 'printk'
-  129 |                 printk(fmt, ##__VA_ARGS__);             \
-      |                 ^~~~~~
-fs/ext2/xattr.c:88:33: note: in expansion of macro 'no_printk'
-   88 | # define ea_idebug(inode, f...) no_printk(f)
-      |                                 ^~~~~~~~~
-fs/ext2/xattr.c:748:25: note: in expansion of macro 'ea_idebug'
-  748 |                         ea_idebug(inode, "creating block %d", block=
-);
-      |                         ^~~~~~~~~
-fs/ext2/xattr.c:748:59: note: format string is defined here
-  748 |                         ea_idebug(inode, "creating block %d", block=
-);
-      |                                                          ~^
-      |                                                           |
-      |                                                           int
-      |                                                          %ld
-
-Caused by commit
-
-  38e38567c5bd ("ext2: fix datatype of block number in ext2_xattr_set2()")
-
-I have used the ext3 tree from next-20230815 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/2aLrO901fVUIKWWqFTtcN/5
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTcGl8ACgkQAVBC80lX
-0Gxc2gf/SvEty4U6GCMjGxljcgLN3o7dIZf6R7sYQzL2Lk7FGGFHdEkYdDUPXWfE
-cD3tSC4hKDl1QBQGbvm4cy2fU7ZtafpCg+YuQdlBpmzMtKPDsGTTnDv4ZhEZGwx1
-RtGQpVX3xcF5ApeXbpZ0ARrOvn3ixOlw9ke2+qRLsZA/S3/G7C9MnwmNMZrOOUeG
-8e4tT1IX2qbwiPZc9IFdFzqdiTLgwJ4KNOZDybtqpYTfC/jBFbt68wcfJa7TwzxX
-ip/7mcJnzX/CI8IlkHW10YOBbE0vuRcaZe6na3wRTmyX/khNaZTGpEo97cOAEwAo
-v/7vzuqD6i8eXHURYWqrnLT8rUfJmg==
-=9ZPO
------END PGP SIGNATURE-----
-
---Sig_/2aLrO901fVUIKWWqFTtcN/5--
