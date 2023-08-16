@@ -2,151 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C95BD77DCF9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 112D677DCFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243215AbjHPJI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 05:08:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39108 "EHLO
+        id S243219AbjHPJJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 05:09:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243214AbjHPJIJ (ORCPT
+        with ESMTP id S234317AbjHPJJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 05:08:09 -0400
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78851BF8
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:08:08 -0700 (PDT)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-589e590af61so46361087b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:08:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1692176888; x=1692781688;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B4E6y+EsBZT+xa8sFtpV5pHAhyhxp/Z2XFWH1I0j3iY=;
-        b=k2SpWvwJV96h7cjYIgbcAulHgYn/SeqI69Ta92U7nJxV/Rb2epbSBTK4byp3Rmssvy
-         ei8z6iSXMVHSuo9TokjCpvjSPGSrbC84gYidM3i3g2t2yLwwqI0qSiIS5IREK77PLAPb
-         JKNt6V7YGovc6cwJIsYByqMXtZP+eQ71Ncz/boUHrTWcDW0vrseG6ObaXC55iGJ3BvD2
-         cCbgJSKNYm+8nN5DwbzLHiT6PrS43DOORmHJ6jQZmgT9DYcEHzk9+Mddz98cGsejuLB6
-         v/Cj7qogF/GlfA7E8JYrq+Zx+JiQ3Ms3KjTm++H++s6mQB+KMUbKKtiu7aNL5ZUcuFiu
-         YH9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692176888; x=1692781688;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=B4E6y+EsBZT+xa8sFtpV5pHAhyhxp/Z2XFWH1I0j3iY=;
-        b=BDAGol61tOq6EXqK1ENNjR5vNVUtc3BVcM7GEzYML3sUtRxYkFABGYSqLE7wKJxXRz
-         cq62LzOAFJyCEyU3d2cJc9UjXtA7XlYF0m91BvpPwtcbpjP4lGHVp/s1C57cwZPJWf8e
-         pCtjOyj2hYyYrPu8y//CigpEiRI4Q7oxdNyDWWbBNsDe/CuJbAk8UrKCk6Ui3RdV2DtH
-         l8J39MpQk01PhtqF9uYmmKS4YSjGDoG3Uag+55Fk3B14eSd527hRU0gigS6dI2EApwaq
-         1/VqWuI0CW8IWR3CH3j4f7crpIkdcAr2Zn6c4QJ9VZF30vN50kybgo0EFJsZhEOL+lfw
-         cwdw==
-X-Gm-Message-State: AOJu0Yys9Fxw6kdu9cycMq8w0U90PYmXFttZ1AL3OYvpIC1+z78ezBde
-        TvLeM3X0Pk44H3k936QlIXsyFY8SD5irGBtDZctw+A==
-X-Google-Smtp-Source: AGHT+IHs3/3TrKxg3s9PVZt7PqVQ46mOv8b7b4u/wLYVkSAhu+ZR5b9bIvK6MhNsKqncE6TPb64oJar7x9WLjBTwuTA=
-X-Received: by 2002:a0d:d649:0:b0:583:7564:49de with SMTP id
- y70-20020a0dd649000000b00583756449demr1616392ywd.3.1692176887862; Wed, 16 Aug
- 2023 02:08:07 -0700 (PDT)
+        Wed, 16 Aug 2023 05:09:00 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816761FC1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:08:59 -0700 (PDT)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37G8vvVQ016284;
+        Wed, 16 Aug 2023 09:08:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=pp1; bh=m9NJXJg+PF9lp0cCAnigukkIHa2Iqv41yOUlO4r6Lio=;
+ b=gd7m6+sJM/yTD9Mgm9a2nSXIufQuEfzvUIm3+tlrz3nRfsO6kXkjh1GOeMJ/GIx01kNf
+ R2oiqtxLpDWeUCiTeNhGhdG3FbIdNQOTfLpwfGVw2MXhDuTwAX+xWbkmk7na+A0gJt5s
+ W4ikaubv2woArpBsD3RJm+1hAAd4JR3Jk8EqIrkiSbW2l0v/RLxv96d3/4MKMbrIH3xF
+ gpC3QIsvPH59ofNQ2CifLfppFB7/GkkVcy1xZGdWlzK1jlPBfVHv6buU0XBwDWWuHVQ4
+ zpXH7UuyIJaIcmJWjpgQJ7ngGbm39TWyyQp60U4rQQAGQlk1Tk/i0ZIXgvJx2GsHNR5Q ew== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sgude8eys-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 09:08:57 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37G7IGRJ013240;
+        Wed, 16 Aug 2023 09:08:55 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sepmjtpn1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 09:08:55 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37G98quu15729396
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 16 Aug 2023 09:08:52 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 99D622004B;
+        Wed, 16 Aug 2023 09:08:52 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7607D20043;
+        Wed, 16 Aug 2023 09:08:52 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Wed, 16 Aug 2023 09:08:52 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] few fixes for synthetic trace events
+References: <20230810060538.1350348-1-svens@linux.ibm.com>
+Date:   Wed, 16 Aug 2023 11:08:52 +0200
+In-Reply-To: <20230810060538.1350348-1-svens@linux.ibm.com> (Sven Schnelle's
+        message of "Thu, 10 Aug 2023 08:05:35 +0200")
+Message-ID: <yt9dcyzn9wwr.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-References: <20230803092308.79197-1-lma@semihalf.com>
-In-Reply-To: <20230803092308.79197-1-lma@semihalf.com>
-From:   Lukasz Majczak <lma@semihalf.com>
-Date:   Wed, 16 Aug 2023 11:07:56 +0200
-Message-ID: <CAFJ_xbqoVjXQXJZ0krbsRqUOe3hLNubi12r_q=idSgkfeV=LRQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/dp_mst: Fix NULL deref in get_mst_branch_device_by_guid_helper()
-To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc:     Guenter Roeck <linux@roeck-us.net>, upstream@semihalf.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: HTJsd4y80ILPnZH-PQWGIm_iT7lAfZxv
+X-Proofpoint-ORIG-GUID: HTJsd4y80ILPnZH-PQWGIm_iT7lAfZxv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-16_07,2023-08-15_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ mlxlogscore=999 malwarescore=0 suspectscore=0 mlxscore=0 clxscore=1015
+ spamscore=0 priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308160080
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-czw., 3 sie 2023 o 11:23 Lukasz Majczak <lma@semihalf.com> napisa=C5=82(a):
->
-> Check mgr->mst_primary, before passing it to
-> the get_mst_branch_device_by_guid_helper(), otherwise NULL dereference
-> may occur in the call to memcpy() and cause:
->
-> [12579.365869] BUG: kernel NULL pointer dereference, address: 00000000000=
-00049
-> [12579.365878] #PF: supervisor read access in kernel mode
-> [12579.365880] #PF: error_code(0x0000) - not-present page
-> [12579.365882] PGD 0 P4D 0
-> [12579.365887] Oops: 0000 [#1] PREEMPT SMP NOPTI
-> ...
-> [12579.365895] Workqueue: events_long drm_dp_mst_up_req_work
-> [12579.365899] RIP: 0010:memcmp+0xb/0x29
-> [12579.365921] Call Trace:
-> [12579.365927] get_mst_branch_device_by_guid_helper+0x22/0x64
-> [12579.365930] drm_dp_mst_up_req_work+0x137/0x416
-> [12579.365933] process_one_work+0x1d0/0x419
-> [12579.365935] worker_thread+0x11a/0x289
-> [12579.365938] kthread+0x13e/0x14f
-> [12579.365941] ? process_one_work+0x419/0x419
-> [12579.365943] ? kthread_blkcg+0x31/0x31
-> [12579.365946] ret_from_fork+0x1f/0x30
->
-> Similar check is done in e.g: drm_dp_mst_topology_get_mstb_validated().
->
-> Fixes: 5e93b8208d3c ("drm/dp/mst: move GUID storage from mgr, port to onl=
-y mst branch")
-> Cc: <stable@vger.kernel.org> # 4.14+
-> Signed-off-by: Lukasz Majczak <lma@semihalf.com>
-> ---
->  drivers/gpu/drm/display/drm_dp_mst_topology.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/gpu/drm/display/drm_dp_mst_topology.c b/drivers/gpu/=
-drm/display/drm_dp_mst_topology.c
-> index ed96cfcfa304..703cd97b1d11 100644
-> --- a/drivers/gpu/drm/display/drm_dp_mst_topology.c
-> +++ b/drivers/gpu/drm/display/drm_dp_mst_topology.c
-> @@ -2595,19 +2595,19 @@ static struct drm_dp_mst_branch *
->  drm_dp_get_mst_branch_device_by_guid(struct drm_dp_mst_topology_mgr *mgr=
-,
->                                      const uint8_t *guid)
->  {
-> -       struct drm_dp_mst_branch *mstb;
-> +       struct drm_dp_mst_branch *mstb =3D NULL;
->         int ret;
->
->         /* find the port by iterating down */
->         mutex_lock(&mgr->lock);
-> -
-> -       mstb =3D get_mst_branch_device_by_guid_helper(mgr->mst_primary, g=
-uid);
-> -       if (mstb) {
-> -               ret =3D drm_dp_mst_topology_try_get_mstb(mstb);
-> -               if (!ret)
-> -                       mstb =3D NULL;
-> +       if (mgr->mst_primary) {
-> +               mstb =3D get_mst_branch_device_by_guid_helper(mgr->mst_pr=
-imary, guid);
-> +               if (mstb) {
-> +                       ret =3D drm_dp_mst_topology_try_get_mstb(mstb);
-> +                       if (!ret)
-> +                               mstb =3D NULL;
-> +               }
->         }
-> -
->         mutex_unlock(&mgr->lock);
->         return mstb;
->  }
-> --
-> 2.41.0.640.ga95def55d0-goog
->
-Hi,
+Sven Schnelle <svens@linux.ibm.com> writes:
 
-Is there anything more I should do regarding these changes?
+> Hi Steven,
+>
+> I'm now sending these patches in one patchset, because the second patch
+> has a dependeny on the union vs. cast fix.
+>
+> Changes in v3:
+> - remove superfluous struct around union trace_synth_field
+>
+> Changes in v2:
+> - cosmetic changes
+> - add struct trace_dynamic_info to include/linux/trace_events.h
+>
+> Sven Schnelle (3):
+>   tracing/synthetic: use union instead of casts
+>   tracing/synthetic: skip first entry for stack traces
+>   tracing/synthetic: allocate one additional element for size
+>
+>  include/linux/trace_events.h      |  11 ++++
+>  kernel/trace/trace.h              |   8 +++
+>  kernel/trace/trace_events_synth.c | 103 ++++++++++++------------------
+>  3 files changed, 60 insertions(+), 62 deletions(-)
 
-Best regards,
-Lukasz
+Gentle ping? We're still seeing a lot of KASAN warnings.
