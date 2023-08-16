@@ -2,115 +2,412 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B439377ED13
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 00:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5490D77ED18
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 00:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346914AbjHPW2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 18:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47214 "EHLO
+        id S1346916AbjHPW3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 18:29:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238854AbjHPW2Q (ORCPT
+        with ESMTP id S1346965AbjHPW3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 18:28:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDD31B2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:28:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692224895; x=1723760895;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=kyFu1gHVA0K1mMAFKa5XAi319UUEFBC3qTEukoxXqO4=;
-  b=WSSXUUoKyOyF2u2PQ4u81ZOJEC4c5Qo7jmeqfSsvwgVToxFa21GPiDqr
-   aXmNgWFyh3xH2Cc759fqycYO3ecMOvJqXN3yOLMWjtj8YRYT1tcnmDs3S
-   JHR61ILtdNRpPOy/K+rXy8LkiGMYOYc1JmxLp/mYu9v2DGrM57GbyBEzC
-   CY2QTTBSX9zE7fxUcp/p9eWcIVuzpHP5BmOjFxSQOi6bhr3AhgrYpMtoV
-   dx0zU8/Fh+l0FrSIAVbcBSDKuPJ4Zfa3qG7UjQjzhr1fA7GnBF4Y8yns5
-   iBxM2eC5fbTYJtUhmRexaiqKXFktYD4jYpgJSePmcyc5rktfHY8QqrPCO
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="372652532"
-X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="372652532"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 15:28:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="727901751"
-X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="727901751"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 16 Aug 2023 15:28:13 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWOzt-0000cP-01;
-        Wed, 16 Aug 2023 22:28:13 +0000
-Date:   Thu, 17 Aug 2023 06:27:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Hao Luo <haoluo@google.com>
-Subject: kernel/cgroup/rstat.c:166:22: warning: no previous declaration for
- 'bpf_rstat_flush'
-Message-ID: <202308170617.MHUk8MPr-lkp@intel.com>
+        Wed, 16 Aug 2023 18:29:35 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE6C2698
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:29:31 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-76d71bd8b95so71983885a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:29:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1692224971; x=1692829771;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Bnw8GWbCg3crUhqUm6aNJ8qcR6RWaAljcB9fPeXaiCk=;
+        b=kw2QXMO6h7ym2gO3C2r/+y2XxsoBcL4Waeslybe8w3HSyjPDWq75hk0lk+lhFckhGg
+         c6O8f5MCrr9U8b9gJ4qaboGVqWZJLoX/vn9nDRuloYGozawzOp9JyaI9zKQVpsvYtCZj
+         OAocu+UWCSx38MVShPJb3WDi+bo6ZxOx3ZOc0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692224971; x=1692829771;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bnw8GWbCg3crUhqUm6aNJ8qcR6RWaAljcB9fPeXaiCk=;
+        b=aWuTS8i9mGpUD/4TA3hxUNth+uwxxZdBjwh+f1z/HDss4PIBORwPL+mhPCrmOjeLPD
+         mLg9Ab9vtO6UEzKOST4CxpJtbvaJ3fUXPAAXYMtzDxkjXT88hS08WXEPlys9zANMrW8Z
+         krLYS6LkfCH6s9wacQz/4xK5yVhSa7+2GlfIExvO26p+K02EgxI/9xy4A28Jx+bKPd4A
+         2hAaERAANzUNS8cJ3MNMWQZdC6RHUhPLsKg5tbDheAK1RnbbmnCwRP2O8a90bWTczNY3
+         NluMu7Vt5OOZkj4wqk9LZkAKbaHd/vayfdFdOVQjDwEQlhthgNFIUw8gbFzqjI5M4KUP
+         OtxA==
+X-Gm-Message-State: AOJu0Yykhfs4OaT/VeAcD5VzCiU9CnhqrGyYnEoLYhOsPN0rAUYAt1F+
+        4+76RBPsjtiobp7k5tCjC2VddQ==
+X-Google-Smtp-Source: AGHT+IGNlj4ULxg5SjJ87GebvTE9fNDwtkuNFuQbP3LlsqQUhEIiMgjIitBNPkj7dX2HlulsHZ+RoA==
+X-Received: by 2002:a05:620a:3d15:b0:76d:75b2:968c with SMTP id tq21-20020a05620a3d1500b0076d75b2968cmr1562604qkn.75.1692224970670;
+        Wed, 16 Aug 2023 15:29:30 -0700 (PDT)
+Received: from localhost (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id h19-20020a05620a10b300b007682af2c8aasm4736009qkk.126.2023.08.16.15.29.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 15:29:30 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 18:29:29 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Subject: Re: [PATCH 5.10 00/68] 5.10.191-rc1 review
+Message-ID: <20230816222929.GC1455425@joel-ThinkPad-X1-Carbon-4th>
+References: <20230813211708.149630011@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230813211708.149630011@linuxfoundation.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
-commit: a319185be9f5ad13c2a296d448ac52ffe45d194c cgroup: bpf: enable bpf programs to integrate with rstat
-date:   12 months ago
-config: i386-randconfig-r025-20230817 (https://download.01.org/0day-ci/archive/20230817/202308170617.MHUk8MPr-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce: (https://download.01.org/0day-ci/archive/20230817/202308170617.MHUk8MPr-lkp@intel.com/reproduce)
+Hi Greg,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308170617.MHUk8MPr-lkp@intel.com/
+On Sun, Aug 13, 2023 at 11:19:01PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.191 release.
+> There are 68 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Tue, 15 Aug 2023 21:16:53 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.191-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
 
-All warnings (new ones prefixed by >>):
+I had sent these with the SHA:
+https://lore.kernel.org/stable/20230814033934.1165010-1-joel@joelfernandes.org/#t
 
->> kernel/cgroup/rstat.c:166:22: warning: no previous declaration for 'bpf_rstat_flush' [-Wmissing-declarations]
-    __weak noinline void bpf_rstat_flush(struct cgroup *cgrp,
-                         ^~~~~~~~~~~~~~~
+Can it be applied for next release or should I resend?
+
+thanks,
+
+ - Joel
 
 
-vim +/bpf_rstat_flush +166 kernel/cgroup/rstat.c
-
-   147	
-   148	/*
-   149	 * A hook for bpf stat collectors to attach to and flush their stats.
-   150	 * Together with providing bpf kfuncs for cgroup_rstat_updated() and
-   151	 * cgroup_rstat_flush(), this enables a complete workflow where bpf progs that
-   152	 * collect cgroup stats can integrate with rstat for efficient flushing.
-   153	 *
-   154	 * A static noinline declaration here could cause the compiler to optimize away
-   155	 * the function. A global noinline declaration will keep the definition, but may
-   156	 * optimize away the callsite. Therefore, __weak is needed to ensure that the
-   157	 * call is still emitted, by telling the compiler that we don't know what the
-   158	 * function might eventually be.
-   159	 *
-   160	 * __diag_* below are needed to dismiss the missing prototype warning.
-   161	 */
-   162	__diag_push();
-   163	__diag_ignore_all("-Wmissing-prototypes",
-   164			  "kfuncs which will be used in BPF programs");
-   165	
- > 166	__weak noinline void bpf_rstat_flush(struct cgroup *cgrp,
-   167					     struct cgroup *parent, int cpu)
-   168	{
-   169	}
-   170	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> thanks,
+> 
+> greg k-h
+> 
+> -------------
+> Pseudo-Shortlog of commits:
+> 
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>     Linux 5.10.191-rc1
+> 
+> Eric Dumazet <edumazet@google.com>
+>     sch_netem: fix issues in netem_change() vs get_dist_table()
+> 
+> Masahiro Yamada <masahiroy@kernel.org>
+>     alpha: remove __init annotation from exported page_is_ram()
+> 
+> Nilesh Javali <njavali@marvell.com>
+>     scsi: qedf: Fix firmware halt over suspend and resume
+> 
+> Nilesh Javali <njavali@marvell.com>
+>     scsi: qedi: Fix firmware halt over suspend and resume
+> 
+> Zhu Wang <wangzhu9@huawei.com>
+>     scsi: core: Fix possible memory leak if device_add() fails
+> 
+> Zhu Wang <wangzhu9@huawei.com>
+>     scsi: snic: Fix possible memory leak if device_add() fails
+> 
+> Alexandra Diupina <adiupina@astralinux.ru>
+>     scsi: 53c700: Check that command slot is not NULL
+> 
+> Michael Kelley <mikelley@microsoft.com>
+>     scsi: storvsc: Fix handling of virtual Fibre Channel timeouts
+> 
+> Tony Battersby <tonyb@cybernetics.com>
+>     scsi: core: Fix legacy /proc parsing buffer overflow
+> 
+> Pablo Neira Ayuso <pablo@netfilter.org>
+>     netfilter: nf_tables: report use refcount overflow
+> 
+> Ming Lei <ming.lei@redhat.com>
+>     nvme-rdma: fix potential unbalanced freeze & unfreeze
+> 
+> Ming Lei <ming.lei@redhat.com>
+>     nvme-tcp: fix potential unbalanced freeze & unfreeze
+> 
+> Josef Bacik <josef@toxicpanda.com>
+>     btrfs: set cache_block_group_error if we find an error
+> 
+> Christoph Hellwig <hch@lst.de>
+>     btrfs: don't stop integrity writeback too early
+> 
+> Nick Child <nnac123@linux.ibm.com>
+>     ibmvnic: Handle DMA unmapping of login buffs in release functions
+> 
+> Nick Child <nnac123@linux.ibm.com>
+>     ibmvnic: Unmap DMA login rsp buffer on send login fail
+> 
+> Nick Child <nnac123@linux.ibm.com>
+>     ibmvnic: Enforce stronger sanity checks on login response
+> 
+> Daniel Jurgens <danielj@nvidia.com>
+>     net/mlx5: Allow 0 for total host VFs
+> 
+> Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>     dmaengine: mcf-edma: Fix a potential un-allocated memory access
+> 
+> Jie Wang <wangjie125@huawei.com>
+>     net: hns3: add wait until mac link down
+> 
+> Jie Wang <wangjie125@huawei.com>
+>     net: hns3: refactor hclge_mac_link_status_wait for interface reuse
+> 
+> Li Yang <leoyang.li@nxp.com>
+>     net: phy: at803x: remove set/get wol callbacks for AR8032
+> 
+> Felix Fietkau <nbd@nbd.name>
+>     wifi: cfg80211: fix sband iftype data lookup for AP_VLAN
+> 
+> Douglas Miller <doug.miller@cornelisnetworks.com>
+>     IB/hfi1: Fix possible panic during hotplug remove
+> 
+> Andrew Kanner <andrew.kanner@gmail.com>
+>     drivers: net: prevent tun_build_skb() to exceed the packet size limit
+> 
+> Eric Dumazet <edumazet@google.com>
+>     dccp: fix data-race around dp->dccps_mss_cache
+> 
+> Ziyang Xuan <william.xuanziyang@huawei.com>
+>     bonding: Fix incorrect deletion of ETH_P_8021AD protocol vid from slaves
+> 
+> Florian Westphal <fw@strlen.de>
+>     tunnels: fix kasan splat when generating ipv4 pmtu error
+> 
+> Eric Dumazet <edumazet@google.com>
+>     net/packet: annotate data-races around tp->status
+> 
+> Nathan Chancellor <nathan@kernel.org>
+>     mISDN: Update parameter type of dsp_cmx_send()
+> 
+> Ido Schimmel <idosch@nvidia.com>
+>     selftests: forwarding: tc_flower: Relax success criterion
+> 
+> Ido Schimmel <idosch@nvidia.com>
+>     selftests: forwarding: Switch off timeout
+> 
+> Ido Schimmel <idosch@nvidia.com>
+>     selftests: forwarding: Skip test when no interfaces are specified
+> 
+> Ido Schimmel <idosch@nvidia.com>
+>     selftests: forwarding: ethtool_extended_state: Skip when using veth pairs
+> 
+> Ido Schimmel <idosch@nvidia.com>
+>     selftests: forwarding: ethtool: Skip when using veth pairs
+> 
+> Ido Schimmel <idosch@nvidia.com>
+>     selftests: forwarding: Add a helper to skip test when using veth pairs
+> 
+> Mark Brown <broonie@kernel.org>
+>     selftests/rseq: Fix build with undefined __weak
+> 
+> Florian Westphal <fw@strlen.de>
+>     netfilter: nf_tables: don't skip expired elements during walk
+> 
+> Karol Herbst <kherbst@redhat.com>
+>     drm/nouveau/disp: Revert a NULL check inside nouveau_connector_get_modes
+> 
+> Arnd Bergmann <arnd@arndb.de>
+>     x86: Move gds_ucode_mitigated() declaration to header
+> 
+> Arnd Bergmann <arnd@arndb.de>
+>     x86/speculation: Add cpu_show_gds() prototype
+> 
+> Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+>     x86/mm: Fix VDSO and VVAR placement on 5-level paging machines
+> 
+> Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+>     x86/cpu/amd: Enable Zenbleed fix for AMD Custom APU 0405
+> 
+> Nick Desaulniers <ndesaulniers@google.com>
+>     x86/srso: Fix build breakage with the LLVM linker
+> 
+> Prashanth K <quic_prashk@quicinc.com>
+>     usb: common: usb-conn-gpio: Prevent bailing out if initial role is none
+> 
+> Elson Roy Serrao <quic_eserrao@quicinc.com>
+>     usb: dwc3: Properly handle processing of pending events
+> 
+> Alan Stern <stern@rowland.harvard.edu>
+>     usb-storage: alauda: Fix uninit-value in alauda_check_media()
+> 
+> Qi Zheng <zhengqi.arch@bytedance.com>
+>     binder: fix memory leak in binder_init()
+> 
+> Yiyuan Guo <yguoaz@gmail.com>
+>     iio: cros_ec: Fix the allocation size for cros_ec_command
+> 
+> Aleksa Sarai <cyphar@cyphar.com>
+>     io_uring: correct check for O_TMPFILE
+> 
+> Ryusuke Konishi <konishi.ryusuke@gmail.com>
+>     nilfs2: fix use-after-free of nilfs_root in dirtying inodes via iput
+> 
+> Thomas Gleixner <tglx@linutronix.de>
+>     x86/pkeys: Revert a5eff7259790 ("x86/pkeys: Add PKRU value to init_fpstate")
+> 
+> Colin Ian King <colin.i.king@gmail.com>
+>     radix tree test suite: fix incorrect allocation size for pthreads
+> 
+> Tao Ren <rentao.bupt@gmail.com>
+>     hwmon: (pmbus/bel-pfe) Enable PMBUS_SKIP_STATUS_CHECK for pfe1100
+> 
+> Melissa Wen <mwen@igalia.com>
+>     drm/amd/display: check attr flag before set cursor degamma on DCN3+
+> 
+> Boris Brezillon <boris.brezillon@collabora.com>
+>     drm/shmem-helper: Reset vma->vm_ops before calling dma_buf_mmap()
+> 
+> Karol Herbst <kherbst@redhat.com>
+>     drm/nouveau/gr: enable memory loads on helper invocation on all channels
+> 
+> Andrea Parri <parri.andrea@gmail.com>
+>     riscv,mmio: Fix readX()-to-delay() ordering
+> 
+> Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+>     dmaengine: pl330: Return DMA_PAUSED when transaction is paused
+> 
+> Ilya Leoshkevich <iii@linux.ibm.com>
+>     selftests/bpf: Fix sk_assign on s390x
+> 
+> Yonghong Song <yhs@fb.com>
+>     selftests/bpf: Workaround verification failure for fexit_bpf2bpf/func_replace_return_code
+> 
+> Andrii Nakryiko <andrii@kernel.org>
+>     selftests/bpf: make test_align selftest more robust
+> 
+> Andrii Nakryiko <andrii@kernel.org>
+>     bpf: aggressively forget precise markings during state checkpointing
+> 
+> Andrii Nakryiko <andrii@kernel.org>
+>     bpf: stop setting precise in current state
+> 
+> Andrii Nakryiko <andrii@kernel.org>
+>     bpf: allow precision tracking for programs with subprogs
+> 
+> Maciej Żenczykowski <maze@google.com>
+>     ipv6: adjust ndisc_is_useropt() to also return true for PIO
+> 
+> Sergei Antonov <saproj@gmail.com>
+>     mmc: moxart: read scr register without changing byte order
+> 
+> Jason A. Donenfeld <Jason@zx2c4.com>
+>     wireguard: allowedips: expand maximum node depth
+> 
+> 
+> -------------
+> 
+> Diffstat:
+> 
+>  Makefile                                           |   4 +-
+>  arch/alpha/kernel/setup.c                          |   3 +-
+>  arch/riscv/include/asm/mmio.h                      |  16 +-
+>  arch/x86/entry/vdso/vma.c                          |   4 +-
+>  arch/x86/include/asm/processor.h                   |   2 +
+>  arch/x86/kernel/cpu/amd.c                          |   1 +
+>  arch/x86/kernel/cpu/common.c                       |   5 -
+>  arch/x86/kernel/vmlinux.lds.S                      |  12 +-
+>  arch/x86/kvm/x86.c                                 |   2 -
+>  arch/x86/mm/pkeys.c                                |   6 -
+>  drivers/android/binder.c                           |   1 +
+>  drivers/android/binder_alloc.c                     |   6 +
+>  drivers/android/binder_alloc.h                     |   1 +
+>  drivers/dma/mcf-edma.c                             |  13 +-
+>  drivers/dma/pl330.c                                |  18 ++-
+>  drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp.c   |   7 +-
+>  drivers/gpu/drm/drm_gem_shmem_helper.c             |   6 +
+>  drivers/gpu/drm/nouveau/nouveau_connector.c        |   2 +-
+>  drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgf100.h  |   1 +
+>  drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk104.c  |   4 +-
+>  drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk110.c  |  10 ++
+>  drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk110b.c |   1 +
+>  drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk208.c  |   1 +
+>  drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgm107.c  |   1 +
+>  drivers/hwmon/pmbus/bel-pfe.c                      |  16 +-
+>  .../common/cros_ec_sensors/cros_ec_sensors_core.c  |   2 +-
+>  drivers/infiniband/hw/hfi1/chip.c                  |   1 +
+>  drivers/isdn/mISDN/dsp.h                           |   2 +-
+>  drivers/isdn/mISDN/dsp_cmx.c                       |   2 +-
+>  drivers/isdn/mISDN/dsp_core.c                      |   2 +-
+>  drivers/mmc/host/moxart-mmc.c                      |   8 +-
+>  drivers/net/bonding/bond_main.c                    |   4 +-
+>  .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    |  24 ++-
+>  drivers/net/ethernet/ibm/ibmvnic.c                 |  38 ++++-
+>  drivers/net/ethernet/mellanox/mlx5/core/sriov.c    |   3 +-
+>  drivers/net/phy/at803x.c                           |   2 -
+>  drivers/net/tun.c                                  |   2 +-
+>  drivers/net/wireguard/allowedips.c                 |   8 +-
+>  drivers/net/wireguard/selftest/allowedips.c        |  16 +-
+>  drivers/nvme/host/rdma.c                           |   3 +-
+>  drivers/nvme/host/tcp.c                            |   3 +-
+>  drivers/scsi/53c700.c                              |   2 +-
+>  drivers/scsi/qedf/qedf_main.c                      |  18 +++
+>  drivers/scsi/qedi/qedi_main.c                      |  18 +++
+>  drivers/scsi/raid_class.c                          |   1 +
+>  drivers/scsi/scsi_proc.c                           |  30 ++--
+>  drivers/scsi/snic/snic_disc.c                      |   1 +
+>  drivers/scsi/storvsc_drv.c                         |   4 -
+>  drivers/usb/common/usb-conn-gpio.c                 |   6 +-
+>  drivers/usb/dwc3/gadget.c                          |   9 +-
+>  drivers/usb/storage/alauda.c                       |  12 +-
+>  fs/btrfs/extent-tree.c                             |   5 +-
+>  fs/btrfs/extent_io.c                               |   7 +-
+>  fs/nilfs2/inode.c                                  |   8 +
+>  fs/nilfs2/segment.c                                |   2 +
+>  fs/nilfs2/the_nilfs.h                              |   2 +
+>  include/linux/cpu.h                                |   2 +
+>  include/net/cfg80211.h                             |   3 +
+>  include/net/netfilter/nf_tables.h                  |  31 +++-
+>  io_uring/io_uring.c                                |   6 +-
+>  kernel/bpf/verifier.c                              | 175 +++++++++++++++++++--
+>  net/dccp/output.c                                  |   2 +-
+>  net/dccp/proto.c                                   |  10 +-
+>  net/ipv4/ip_tunnel_core.c                          |   2 +-
+>  net/ipv6/ndisc.c                                   |   3 +-
+>  net/netfilter/nf_tables_api.c                      | 175 +++++++++++++--------
+>  net/netfilter/nft_flow_offload.c                   |   6 +-
+>  net/netfilter/nft_immediate.c                      |   8 +-
+>  net/netfilter/nft_objref.c                         |   8 +-
+>  net/netfilter/nft_set_hash.c                       |   2 -
+>  net/netfilter/nft_set_pipapo.c                     |  18 ++-
+>  net/netfilter/nft_set_rbtree.c                     |   2 -
+>  net/packet/af_packet.c                             |  16 +-
+>  net/sched/sch_netem.c                              |  59 +++----
+>  tools/testing/radix-tree/regression1.c             |   2 +-
+>  tools/testing/selftests/bpf/prog_tests/align.c     |  36 +++--
+>  tools/testing/selftests/bpf/prog_tests/sk_assign.c |  25 ++-
+>  tools/testing/selftests/bpf/progs/connect4_prog.c  |   2 +-
+>  tools/testing/selftests/bpf/progs/test_sk_assign.c |  11 ++
+>  .../selftests/bpf/progs/test_sk_assign_libbpf.c    |   3 +
+>  tools/testing/selftests/net/forwarding/ethtool.sh  |   2 +
+>  .../net/forwarding/ethtool_extended_state.sh       |   2 +
+>  tools/testing/selftests/net/forwarding/lib.sh      |  16 ++
+>  tools/testing/selftests/net/forwarding/settings    |   1 +
+>  .../testing/selftests/net/forwarding/tc_flower.sh  |   8 +-
+>  tools/testing/selftests/rseq/Makefile              |   4 +-
+>  tools/testing/selftests/rseq/rseq.c                |   2 +
+>  87 files changed, 737 insertions(+), 293 deletions(-)
+> 
+> 
