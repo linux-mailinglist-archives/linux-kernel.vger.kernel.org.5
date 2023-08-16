@@ -2,128 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 051A477E962
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D3277E96B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345718AbjHPTIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 15:08:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34908 "EHLO
+        id S1345726AbjHPTJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 15:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345710AbjHPTIa (ORCPT
+        with ESMTP id S1345710AbjHPTJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 15:08:30 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72FC22701;
-        Wed, 16 Aug 2023 12:08:29 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-268299d5d9fso3853288a91.1;
-        Wed, 16 Aug 2023 12:08:29 -0700 (PDT)
+        Wed, 16 Aug 2023 15:09:14 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 301B92709
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 12:09:09 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3197a71a9c0so106626f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 12:09:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692212909; x=1692817709;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oW5kqtKHBtVyg+Cd9YlZqPw+sEx2elEdwRVNVT4N6wk=;
-        b=Gxeh8t9SikI1Mq11KBvKw76Om5qOdzGfIoltkKpAUl4vymSeUkeUy3KcgEcVZONd0o
-         ijkR7PG61Z3sSrP7FjFfnMxlSJnkX2ePVH7AQ/YnoJZk/wJ0+/kOSMWT9ggracNjb5eN
-         9/0yGwRSVDsvyu6XWfUmnQrNW51C2xDY45mYkllYGl1OMVGJ7vYfJHzRFZWVscJ9AByi
-         mKkgeGOShggi0VSnfUbEIE/7BE1SnYI2G1ygiW4yJikjYAJj7oYP7/9G9zUwSBqTezyO
-         YubAzVgBcAKx9ORYgcSg6yQUbIJ6DHYMTz3+erxAwxF2kyTXRzbjI6VOswRPo9JyTyB4
-         FZig==
+        d=linaro.org; s=google; t=1692212947; x=1692817747;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=09PKymi2INrdrlOMABU+GEUt5jt78IgIuvixujEnKUM=;
+        b=vRWRLII6GKEsk7DVcD8uEi9WUCy+goBHYUKeOGlYF15KCbc2bwu37qSuMHzMrqZb70
+         w5ZRlk+9Cs1N0YFpNBqXxNnOgPr3lvnaKA9dvFdCnvDp1H9aMAirBIgVX/c4KQzp2JOL
+         vBiXFhg2ekRvp+0uIMBac+tCKUSICTgLSJSBlxl99+7YkoYhQFmjlReC67o4T8ctSmvX
+         7hnakN4JPZY9ymEV6hRX3GXLHWgFU9nGluWvbjR2VmkUlR6ctD+3pwQscvmDhfBEGpsB
+         bIegSmJbJguUQ4sxpwVf7NtDhNT8EPBPtws9cRBWOydUnA3uwHIBL3RdsP5IND6fNQ7i
+         Ss1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692212909; x=1692817709;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oW5kqtKHBtVyg+Cd9YlZqPw+sEx2elEdwRVNVT4N6wk=;
-        b=gYGs1JP7+nPItNh5NaLQ/1VZPWY9tvC1cjc3rvl995I6WqDTByJhfe4VNwcqWiCUjn
-         Tqgg5D9ylYuT8exV25RAYhgtDytIvVdln6eAvigeQxUY/DZA/FsXfe5Ee6RJtS4CZIte
-         jjJW6wyGbiyce5OATGNqOz6hmZ2CV93VHugWIDKwGXnytRIVTM1pz30t6+HEwWZBkvss
-         4hI6uG5PNLCcM3YJZxX2pkymW0Nm3WK9S1+to/jk4pgoxAWrfJCjxDOUv8EAhvbgwR8+
-         Xw5IuJJ1WDeE5CB89UOjuWR1c9pwelzOhCB4siZuh6lmWE+MjjJ1dEArA7tJhVdEaUDE
-         FUVw==
-X-Gm-Message-State: AOJu0Yz+6bJoHJvFvyGoZ6Tcz8H2mp0+fMpUIu+4Fqa8lozPGP05EyQB
-        8oq6CLYYMVcHj6ezoe8OpT8=
-X-Google-Smtp-Source: AGHT+IFMRgjqD6qS9RDkcPNKp+sp42EgRrn2cqRuywDmeHhg+7JiW8v5/V0EJlDvSLbC2qPcJRPEOw==
-X-Received: by 2002:a17:90a:cc01:b0:263:f5fa:cf1b with SMTP id b1-20020a17090acc0100b00263f5facf1bmr2161321pju.30.1692212908713;
-        Wed, 16 Aug 2023 12:08:28 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:93bd])
-        by smtp.gmail.com with ESMTPSA id z2-20020a17090a1fc200b0026b46ad94c9sm90263pjz.24.2023.08.16.12.08.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 12:08:28 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 16 Aug 2023 09:08:26 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Ivan Babrou <ivan@cloudflare.com>
-Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
-Message-ID: <ZN0eqq4hLRYQPHCI@slm.duckdns.org>
-References: <CAJD7tkYBFz-gZ2QsHxUMT=t0KNXs66S-zzMPebadHx9zaG0Q3w@mail.gmail.com>
- <ZNrITZVTf2EILRJq@slm.duckdns.org>
- <CAJD7tkaXwoF-faApweAmm7Db7jAuS3EO7hVvdyVtqW_rE+T9Vg@mail.gmail.com>
- <ZNrLO5PAEZw4yjI9@slm.duckdns.org>
- <CAJD7tkYgCySTX28zK9GZiWwsabR4nv7M2hQ57y12si-fqtv7zg@mail.gmail.com>
- <CALvZod6KRxiDzrppCgx+=SHg2+96nFE5crwXCKwe9PZbWM_6cQ@mail.gmail.com>
- <CAJD7tkaUzhvZPohpo1F8TUKRPuXH7bjDeg9VCzN2CbywQbRutQ@mail.gmail.com>
- <CALvZod6HUtYhDaXiwXSrcwfxLSrZ37sZhKY1Mg4kmpDFk13aYw@mail.gmail.com>
- <CAJD7tkYzr2cg-aQ899vfqB4jR7iP83t8f-Z4AH8d9iW-yw-nnQ@mail.gmail.com>
- <CALvZod441xBoXzhqLWTZ+xnqDOFkHmvrzspr9NAr+nybqXgS-A@mail.gmail.com>
+        d=1e100.net; s=20221208; t=1692212947; x=1692817747;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=09PKymi2INrdrlOMABU+GEUt5jt78IgIuvixujEnKUM=;
+        b=J/cErAO6bcrvZHWt6HqkkbgWMx4wmU42LsNe3IEumdoUtuzcOg/nZclWWJuAIPAth9
+         dmW3mcOWDhGrR8gZMYFILisBfXwxDEtlPsfiJWwIThh0FFubghL/YK3m3skL10YUlpGl
+         EdwWHWmFQ6XtI/Db/73egDdl4EEv7DhUYLNjUdNBGJRr17omEf6DFbYLwmSXc1bBDzyl
+         EYQXYTkMrS03dbezepCbFgHGSkCAfrxUAPzP7gELV2fR5DJfnMDaJ5ZiKvwTOHygR6na
+         bHAyf7Y0FR8afsAXdNdKYs9dLjetnCum/3SSjj9f7ZxNYU1W4RBFXGe1GEv+6AXil9KN
+         46CA==
+X-Gm-Message-State: AOJu0Yz6Aju4dV4a/Z8mZb0gDMbShTC9rTOSOrXYr+bmcvzg6wOn8lsz
+        2uY/JzaLsptVlz2IbWTHc6bGwg==
+X-Google-Smtp-Source: AGHT+IFHhd2ahj51VAR9JLJ+iyux43T6WsIdy2vxZYFdi6uZTG4tab97q9GBhPFtAwOZyRek0RsH/Q==
+X-Received: by 2002:adf:f805:0:b0:316:f4b9:a952 with SMTP id s5-20020adff805000000b00316f4b9a952mr360625wrp.31.1692212947623;
+        Wed, 16 Aug 2023 12:09:07 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id m9-20020a05600c280900b003fe539b83f2sm259821wmb.42.2023.08.16.12.09.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 12:09:06 -0700 (PDT)
+Message-ID: <5332efa6-621c-a338-09e7-dfcc86f898ca@linaro.org>
+Date:   Wed, 16 Aug 2023 20:09:05 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod441xBoXzhqLWTZ+xnqDOFkHmvrzspr9NAr+nybqXgS-A@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v1 04/14] media: qcom: camss: Pass icc bandwidth table as
+ a platform parameter
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, rfoss@kernel.org,
+        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
+        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
+        andrey.konovalov@linaro.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230814162907.3878421-1-bryan.odonoghue@linaro.org>
+ <20230814162907.3878421-5-bryan.odonoghue@linaro.org>
+ <eaed15ca-5c0b-420e-a11e-007ef5608019@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <eaed15ca-5c0b-420e-a11e-007ef5608019@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 16/08/2023 18:20, Konrad Dybcio wrote:
+>> +	icc_res = camss->res->icc_res;
+> Would initializing at declaration time fit in 100 chars?
 
-On Wed, Aug 16, 2023 at 10:11:20AM -0700, Shakeel Butt wrote:
-> These options are not white and black and there can be something in
-> between but let me be very clear on what I don't want and would NACK.
+Ah yeah, that would be nice.
 
-I'm not a big fan of interfaces with hidden states. What you're proposing
-isn't strictly that but it's still a bit nasty. So, if we can get by without
-doing that, that'd be great.
-
-> I don't want a global sleepable lock which can be taken by potentially
-> any application running on the system. We have seen similar global
-> locks causing isolation and priority inversion issues in production.
-> So, not another lock which needs to be taken under extreme condition
-> (reading stats under OOM) by a high priority task (node controller)
-> and might be held by a low priority task.
-
-Yeah, this is a real concern. Those priority inversions do occur and can be
-serious but causing serious problems under memory pressure usually requires
-involving memory allocations and IOs. Here, it's just all CPU. So, at least
-in OOM conditions, this shouldn't be in the way (the system wouldn't have
-anything else to do anyway).
-
-It is true that this still can lead to priority through CPU competition tho.
-However, that problem isn't necessarily solved by what you're suggesting
-either unless you want to restrict explicit flushing based on permissions
-which is another can of worms.
-
-My preference is not exposing this in user interface. This is mostly arising
-from internal implementation details and isn't what users necessarily care
-about. There are many things we can do on the kernel side to make trade-offs
-among overhead, staleness and priority inversions. If we make this an
-explicit userland interface behavior, we get locked into that semantics
-which we'll likely regret in some future.
-
-Thanks.
-
--- 
-tejun
+---
+bod
