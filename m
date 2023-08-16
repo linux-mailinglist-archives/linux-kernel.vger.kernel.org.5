@@ -2,95 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A6177E64A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1388977E651
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344672AbjHPQY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 12:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46630 "EHLO
+        id S1344021AbjHPQ0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 12:26:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344665AbjHPQY2 (ORCPT
+        with ESMTP id S1344100AbjHPQZg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 12:24:28 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8441990;
-        Wed, 16 Aug 2023 09:24:26 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3090d3e9c92so5857213f8f.2;
-        Wed, 16 Aug 2023 09:24:26 -0700 (PDT)
+        Wed, 16 Aug 2023 12:25:36 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC823272B
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 09:25:32 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fe8a158fcbso48085655e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 09:25:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692203065; x=1692807865;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qAgSwqBs7l/IQbeGRgXFIlPuf71cshQlwnalgFiUTo4=;
-        b=XB4dL9Z55LDr6ld6X6jbIvAfGS4YkrCsVRTM8EMVsSBJd6BgB9/AtJrUuBO4d2e9U2
-         xaVFhNysWs9DtT/S+YcXP+bzFldKulberD9DDVtMT54so9wK8LL4bsL30TL+z1c5IkAv
-         Dm+DyymYtFksh5T57KF4Yhp37TJMVuqgDFwIuqWnV+2hdr9HAT+7z9cLDgPX1tFPu4/S
-         b7eHBVcCBvUEbvHIq49+Peuo+UAHffD68mEqIBWbi/nlFaQqWqQuD3N9IeEjyUezPsYh
-         NhDtjiZSqUOnJS2I3Abvv+S6pnCzS//OkjETHpS6tQlSt7t1PeApoOh8ouHX3wMuxlhp
-         D9iA==
+        d=linaro.org; s=google; t=1692203131; x=1692807931;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=08B+ShI7xrrN5X88VrSc2sfz7TBWkw8FJeF7CumSbag=;
+        b=WU8Ohxl7XC8aAQCY6gaC4M7nujPuhmMcqm9o+3KtSZNuHlbXpGYPN/o+dA62H0Bv7k
+         iHvelKaABBbNWwSa+5lo3OpKW8wQQ4hRrOYffMVSWcHq4mHKeRPzojG2WDQbTu6NI+ll
+         cmYGdykzrHtTqsWnzrOOdlyERYWvh4HnxLsggRX0WmCmjHqiLCJg7T1aKx1hjn0uyedn
+         C2wePv67sOSdJwdgiL9R/8TeNkwThTZiRXk/jbufruq9xmByq601akaend3ZoDenLwcD
+         ir/VSP6i6ZbdazRrMCW2Q9TUEr20FTp8y5/wwV7pc6clBxag4XW92LkH7PQyUv6Se1Em
+         3L/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692203065; x=1692807865;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qAgSwqBs7l/IQbeGRgXFIlPuf71cshQlwnalgFiUTo4=;
-        b=SztOe0mag3oNzgULEjZuHlW8A308Mc9gHg0MUMXCKGI/IANABSkpU3ajHHCnaaON2c
-         9EFXTXESClumIK3GUdaxoh8luP3CXt5COmCIVp4SCzw7mHtIRrh7dBcRBDiY3jzsXxjB
-         qs7rHKSvkQKeE1BYq4eGEMSLc/ufyfTF4m0BnuA+pH2vNOksLk3Jq64M065x/uasJ4og
-         k+QewugUWafSIsKcz3TEzkgnkhbtRJrdMHM+apO2Fm+PnSh91O0KZvF4Btwm13z74pc5
-         yd1Y7aPIYhSleZHgFlPGuZ3uWhqCrFbFimfnYyTo7RiG9+lRgYwQ8uAAoOgK0TFa37zs
-         NncA==
-X-Gm-Message-State: AOJu0YzrGi7TWKH3+uozNFDFNqe9D/FodS0sgHFI4L0FZhEsk60HdN/5
-        96jWVkwSDioBYWYsiQHzfayV8FzRocY=
-X-Google-Smtp-Source: AGHT+IEi/xQCaxdZxOdEliKraJYTgkvCK+ChOXGacZjHADhzQS1C+PsGJ0laBzOvFRfCkil7xFZ+9g==
-X-Received: by 2002:a5d:474c:0:b0:317:618a:c72 with SMTP id o12-20020a5d474c000000b00317618a0c72mr1910812wrs.64.1692203064711;
-        Wed, 16 Aug 2023 09:24:24 -0700 (PDT)
-Received: from localhost (p200300e41f1bd600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f1b:d600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id l18-20020a5d4112000000b003144b95e1ecsm21763549wrp.93.2023.08.16.09.24.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 09:24:24 -0700 (PDT)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     linux-tegra@vger.kernel.org, Rayyan Ansari <rayyan@ansari.sh>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: tegra: Enable IOMMU for host1x on Tegra132
-Date:   Wed, 16 Aug 2023 18:24:23 +0200
-Message-ID: <169220305601.3328500.2515040658604852888.b4-ty@nvidia.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230810214543.16235-1-rayyan@ansari.sh>
-References: <20230810214543.16235-1-rayyan@ansari.sh>
+        d=1e100.net; s=20221208; t=1692203131; x=1692807931;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=08B+ShI7xrrN5X88VrSc2sfz7TBWkw8FJeF7CumSbag=;
+        b=Hi8/VLGI6Bm7daWaoUcOfNj7uMLByzLWvKFZz1I79wGGteffjSh8T7cz3qNayqex/e
+         ax2d9Dr5yozmtRbny1I8nmJnJgSfrFwKr4j1M7aVO6ioGknplMULAzUdlb1xYIHg6tjA
+         SBYItBRd2jsmNKJHMVnRdQilTyTCkTrAA0LvoSjPhwVtUWhlrQMY4bw/bsXBZ9e3Nsu3
+         jCuz9IUy/ZSeZxAjAGpYnfXLCio/s4TwInqpc8DVQSx9Olc9HlAKOZY3P8iGTuuViVFb
+         Q/Pvpcw22EAIXoyYQt3cPNZn6iwcSFfdnWmBoFyPDduSkexubhb1Gtzdof4iBJye57YU
+         QF0w==
+X-Gm-Message-State: AOJu0YxeTP87Ac5TsVVbnJ8sSHR6aoYNOe5Lw1GAfrrzmUIYlL+y4pGd
+        Nx7QRW9JwKoYzETV8bhJJ3Fl1g==
+X-Google-Smtp-Source: AGHT+IGgD7U5dlhpBPbYmCPv5P83ayzCohsiJSs0Azcg9o8gUOJhbXugj2UuZQBo5tDzBEA3lZtIYw==
+X-Received: by 2002:a05:600c:3797:b0:3fe:5501:d282 with SMTP id o23-20020a05600c379700b003fe5501d282mr1966098wmr.34.1692203131198;
+        Wed, 16 Aug 2023 09:25:31 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id n5-20020a05600c294500b003fbaade0735sm24687785wmd.19.2023.08.16.09.25.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 09:25:30 -0700 (PDT)
+Message-ID: <c53f99db-353a-26c3-3b0a-3a3befbed528@linaro.org>
+Date:   Wed, 16 Aug 2023 18:25:30 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v5 05/11] ACPI: thermal: Carry out trip point updates
+ under zone lock
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+References: <13318886.uLZWGnKmhe@kreacher> <4503814.LvFx2qVVIh@kreacher>
+ <2236767.iZASKD2KPV@kreacher>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <2236767.iZASKD2KPV@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
-
-
-On Thu, 10 Aug 2023 22:45:41 +0100, Rayyan Ansari wrote:
-> Add the iommu property to the host1x node to register it with its
-> swgroup.
+On 07/08/2023 20:08, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
+> There is a race condition between acpi_thermal_trips_update() and
+> acpi_thermal_check_fn(), because the trip points may get updated while
+> the latter is running which in theory may lead to inconsistent results.
+> For example, if two trips are updated together, using the temperature
+> value of one of them from before the update and the temperature value
+> of the other one from after the update may not lead to the expected
+> outcome.
 > 
+> Moreover, if thermal_get_trend() runs when a trip points update is in
+> progress, it may end up using stale trip point temperatures.
+> 
+> To address this, make acpi_thermal_trips_update() call
+> thermal_zone_device_adjust() to carry out the trip points update and
+> provide a new  acpi_thermal_adjust_thermal_zone() wrapper around
+> __acpi_thermal_trips_update() as the callback function for the latter.
+> 
+> While at it, change the acpi_thermal_trips_update() return data type
+> to void as that function always returns 0 anyway.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
 
-Applied, thanks!
+[ ... ]
 
-[1/1] arm64: tegra: Enable IOMMU for host1x on Tegra132
-      commit: ffca3ccbe50e12a83facfc7e9beabd1851345fa0
+>   {
+> -	int i, ret = acpi_thermal_trips_update(tz, ACPI_TRIPS_INIT);
+>   	bool valid;
+> +	int i;
+>   
+> -	if (ret)
+> -		return ret;
+> +	__acpi_thermal_trips_update(tz, ACPI_TRIPS_INIT);
+>   
+>   	valid = tz->trips.critical.valid |
+>   		tz->trips.hot.valid |
+> @@ -710,6 +732,7 @@ static struct thermal_zone_device_ops ac
+>   	.get_trend = thermal_get_trend,
+>   	.hot = acpi_thermal_zone_device_hot,
+>   	.critical = acpi_thermal_zone_device_critical,
+> +	.update = acpi_thermal_adjust_thermal_zone,
 
-Best regards,
+It is too bad we have to add a callback in the core code just for this 
+driver.
+
+I'm wondering if it is not possible to get rid of it ?
+
+Is it possible to use an internal lock for the ACPI driver to solve the 
+race issue above ?
+
+
+
 -- 
-Thierry Reding <treding@nvidia.com>
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
