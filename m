@@ -2,68 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D97E77DC8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E0877DCAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242944AbjHPIig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 04:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59572 "EHLO
+        id S243095AbjHPIsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 04:48:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243002AbjHPIhj (ORCPT
+        with ESMTP id S243119AbjHPIsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 04:37:39 -0400
-Received: from frasgout13.his.huawei.com (unknown [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 569653C18;
-        Wed, 16 Aug 2023 01:36:45 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4RQh5Q4x4Gz9xrq8;
-        Wed, 16 Aug 2023 16:24:58 +0800 (CST)
-Received: from [10.81.209.179] (unknown [10.81.209.179])
-        by APP1 (Coremail) with SMTP id LxC2BwBXCrpvitxk8zz3AA--.58903S2;
-        Wed, 16 Aug 2023 09:36:13 +0100 (CET)
-Message-ID: <98959e3d-7543-4a8e-9712-05a3ba04d2c8@huaweicloud.com>
-Date:   Wed, 16 Aug 2023 10:35:56 +0200
+        Wed, 16 Aug 2023 04:48:05 -0400
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2039.outbound.protection.outlook.com [40.92.99.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330B4359B;
+        Wed, 16 Aug 2023 01:38:34 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ACsuwz4zb3JiGPYLrMdkiTm4uHu+W6puVjbnt1WJM5zPZARBSD47U+/4bfIwuyuge2Q0kKwQEu8cHt8rDOtAX+/hIbA1JGFKANk9mjQPGMNZmjfgy5QcSK/8svWUnJD4A+0Lx5Dku+Bq10ZSDTV7PXOxTfHUDenn+oEh2oY6Yd1OVrUpBFyT6N6+vGGp1p1MR8TBM463BKZzNgDQ104FIk706aWWtj7j/2aOUidgyKnJ4Vp7jFotugiLZTIQ6OJtc5D6LSHK7WMClL7Izxb6Hdux3lJGIHyU4Uu9tmTc9pYDLoDo5lWkC7d9Xk4zh+bNh3YqU6HEKSV0zEGnQ87t/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1LR9EsHbIxNGf0536/ZuM3XSSPTPgM+gsCGik20cIRQ=;
+ b=Vy/qSK1yges+6yGmtopvI3wHReC/6uQGaNy8/fUia5WRAQLwrvldW63qEp0lOaVA5pYdRI6rpkiH0WOFHw3EtBsrevj0irFpHWCdhgP53+cuJPaGPSJWDbEms7j/ZQHtwstvksih3tm6DTUkQyiEaxJrRBn4zfp6uqZER1glYii3raf/sL2+aS+dL6f3xFOcA/GdUg+O9IY5YoQA7FzEeizOvmSBVK6lF4w9VurvPZh27/uCbAH6GQ+Sct1I64NMHRVDNGBTXtsfl0AKtMW600kIfo6AIEsaAqr7hdWDKKR2GrA6txAejtcbP3AFXOgdzqsyxH6oLJGSQOHPkliHQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1LR9EsHbIxNGf0536/ZuM3XSSPTPgM+gsCGik20cIRQ=;
+ b=jAo/h9QcU451CpG4a3J08FlpKQuDvUz/RRxN7Gu3m3ChGAcnuqXyjdHmfn41e/gP/YOAbg26oFMElXFWRNTeZ7TLblRixfT1SPlV7IsR4sVmeT3Z4UxEj3Zey5UPClOVSNgtbIoI+9TAcmdf+oNuwwA9mcEmoWzfqxRyk6P8POtk5XkOzty0d/JORSiVUxvC5zPbCiz9dA7c/GpVvER5H+iVeHhBho2DJ+fxTclbZOVTTX8Yk4oIWurKhkVn63lOvXUVJ3EUpBET1iz6W1TbCaoSET/dEFsmXpp32HZb9stY9OUs6zOGGcCWp864LC7DWysuFjzggtlLqGrsEVx11w==
+Received: from OS3P286MB2599.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:1fa::8)
+ by TYCP286MB1610.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:183::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.29; Wed, 16 Aug
+ 2023 08:38:30 +0000
+Received: from OS3P286MB2599.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::6966:de19:27ae:5c4a]) by OS3P286MB2599.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::6966:de19:27ae:5c4a%6]) with mapi id 15.20.6678.029; Wed, 16 Aug 2023
+ 08:38:30 +0000
+From:   Riwen Lu <luriwen@hotmail.com>
+To:     jikos@kernel.org, benjamin.tissoires@redhat.com,
+        dmitry.torokhov@gmail.com, linux@weissschuh.net,
+        hdegoede@redhat.com, rrangel@chromium.org,
+        u.kleine-koenig@pengutronix.de
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sergeantsagara@protonmail.com, Riwen Lu <luriwen@kylinos.cn>
+Subject: [PATCH v2] HID: i2c-hid: use print_hex_dump_debug to print report descriptor
+Date:   Wed, 16 Aug 2023 16:38:19 +0800
+Message-ID: <OS3P286MB259916DCE3D992135FF05F4CB115A@OS3P286MB2599.JPNP286.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <TYCP286MB2607175E9C15DB17A2102AEAB114A@TYCP286MB2607.JPNP286.PROD.OUTLOOK.COM>
+References: <TYCP286MB2607175E9C15DB17A2102AEAB114A@TYCP286MB2607.JPNP286.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [HVFTEIYtjYvB0MALWX/0NjRoDf469JhN]
+X-ClientProxiedBy: TYCP301CA0058.JPNP301.PROD.OUTLOOK.COM
+ (2603:1096:400:384::7) To OS3P286MB2599.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:604:1fa::8)
+X-Microsoft-Original-Message-ID: <20230816083819.28410-1-luriwen@hotmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC][PATCH v2 03/13] integrity/digest_cache: Add functions to
- populate and search
-Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>, corbet@lwn.net,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-        pbrobinson@gmail.com, zbyszek@in.waw.pl, hch@lst.de,
-        mjg59@srcf.ucam.org, pmatilai@redhat.com, jannh@google.com,
-        Roberto Sassu <roberto.sassu@huawei.com>
-References: <20230812104616.2190095-1-roberto.sassu@huaweicloud.com>
- <20230812104616.2190095-4-roberto.sassu@huaweicloud.com>
- <CUSFPINBGDSS.DQ0I19Z9FNR4@suppilovahvero>
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-In-Reply-To: <CUSFPINBGDSS.DQ0I19Z9FNR4@suppilovahvero>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LxC2BwBXCrpvitxk8zz3AA--.58903S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxtr4ftw4kKFyUCry5ZFWfuFg_yoW3Jr1fpa
-        s7CF1UKr4rZr13Gw17AF1ayr1SvryvqF47Gw45Wr1ayr4DZr10y3W8Aw1UWFy5Jr48Wa12
-        yF4jgr15ur1UXaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgALBF1jj46tmwAAsE
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,PDS_RDNS_DYNAMIC_FP,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_NONE autolearn=no
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: OS3P286MB2599:EE_|TYCP286MB1610:EE_
+X-MS-Office365-Filtering-Correlation-Id: c9c58db6-db68-46b6-420b-08db9e342b30
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: C1fqPwHGeq7vmSXD5/8EaXM3eikx2irrju5pVQr4SW/4nE8fdXTgVWiLi+QZYoqHyj2FEga1/sWiNkJTwB9pZAYvGQNLKXt/pwvMmew2mbyLKE9fh9gj4R8VyBCcMqJwVnnDqCD3nRTdJ8EQMqsU0wMx9IpMVRQNcwrmwyfhVNO3SszTjcZiza1CT/NQ/rmAJvJPQTJOPx7MCWC1J2/jTl9Ehwd3lWZhvlqDpZwZdZXVZJ83QBiYw8NeiMJAxKaOq8hdF9O6YQuukbSEs2jPn2/MqIxfk18rM3UtYFvLQB84h8u7fVbbDDJG9SF80MLl9NsWIbKaJha8r7rGhcPNR5ZbbTWnB0mgwbWpsLY4UpdfJXUlNqYFxtPiDNcKhdo3FTg2OKI1R+U8VR+4R9BYrD6MU6busW7dmAlDwPTn2synrCfDiKEroi1llP6ptKtaYTlKhQhybopqPQuIASut1FSnDmjnMNA+YldR3/reCFryMrr5jIrVY4k+Vox79+DCQO4XgVT29+LYCpEdW2bOTMD0Hm6Juzwzl8UpCk95Uf1TFIeTBBy17b3AFBwxBOeu
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/u4tDRfoBZYleX7Fk8BFJljaxI2wM92o4GFJi6EVH5tK5dhdNgNr2lR083kO?=
+ =?us-ascii?Q?JClgLIKoehN1SKi9hDgu9s9NpBQ6a/r5DSM7ESjDGU+U8aZ2ViyW99aqUYLE?=
+ =?us-ascii?Q?syPgYVIjJnfhIymlkcYLtTHJCAOUv3w9RlxsPnjaZOEjeINZPPXG4qBX17fQ?=
+ =?us-ascii?Q?nYK9rcoL6v5WVICJBfQa2gD/ZzuoAf46vsbZGVk5d4OeEmx9zmQzMgJkEbAl?=
+ =?us-ascii?Q?vqnFjhFFOel4Z3p/vgsWQkf4F9i4uO+Hk12jRwhsndsTHSgCUuNjq4PYFosD?=
+ =?us-ascii?Q?wo+vaYvSfMeRG8rSmQdbdcC1bskEHefxtv2bR7b2mz/CFNnZaZO5qMavRUFD?=
+ =?us-ascii?Q?XJd09hCWBhKse3LQ6FswkwYy2g1OjPku8BDBh3WVJITcpX6/fa5jAnEpppOl?=
+ =?us-ascii?Q?FPYRCxJERYkU0QQBZx5ai+e2yXXEVGta0l4UIHswqdc1xFwzEMwiFJY6ygvF?=
+ =?us-ascii?Q?65Y/EvhwLEK60EMI7rHTr2MGMtpcnhCbagm7Y6PUTXlRh20wArXZurbxYID0?=
+ =?us-ascii?Q?uKjHJ+Zeq4rwM/dcKIaq8oO6lUTLqvuGxE+33TlBLtdWC/ew475TMg+My23b?=
+ =?us-ascii?Q?zxnTc01qRnZwwk7jez3O8q3eWMQcLJDQCuDxX0FZiS64FNrT8mQl/UlOhHsr?=
+ =?us-ascii?Q?i9blO7vTUIVK/Y9ubJcnr+yTBGI6QNWc1uJARkseIOS5yVyN96cTOB/0e3/j?=
+ =?us-ascii?Q?HJgMOvYaRoS6jYoP9ImdiQpGTWbP9ycilItZ8r/LNZhxPnt5vzuRiKcAPThz?=
+ =?us-ascii?Q?sWM5thC4J8swmifxiPMAFA0XjwUZIFETE0Da7459pUXdt+mQFZ/D0cX9JEnU?=
+ =?us-ascii?Q?Cer/M0LiMlV8i/dhCevWXnv5Tpi+39K6wXr0AfNR0ysXUN1EVEXV1lvN4Xet?=
+ =?us-ascii?Q?JEuHY1KyJ1lDG4wz+AXxaPp6CJtJuxOcrT2mG9mlyUEpPQcLWVom2/bSfxhS?=
+ =?us-ascii?Q?olVGYGYEXWRuf5Hr4YwJ7OQnDVJPmsz3+0aRzdh3xRvkPiuCBPRUE1VHjh57?=
+ =?us-ascii?Q?T87nekDm+703VjDlWtWIDwewqL/J98HG6U7XWXFZIttYtLoXK6UUrL+XAHdB?=
+ =?us-ascii?Q?qrpsHz4CitFp/QdL0DAw9QtzDehc7rYP5cEQKAIToUvRw70rziwz7azw2p2b?=
+ =?us-ascii?Q?IzpQfdLkB98d1NK4TJ4ChKkz2Mb37MRxd5hqZHfnZO9a7iMA1cCZT3pDMSSU?=
+ =?us-ascii?Q?a/iLOecVv9oKW9YIx8Fq+KkpyEp8oqYDR/ZEAg=3D=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-05f45.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: c9c58db6-db68-46b6-420b-08db9e342b30
+X-MS-Exchange-CrossTenant-AuthSource: OS3P286MB2599.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 08:38:30.6448
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCP286MB1610
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,220 +107,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/2023 7:13 PM, Jarkko Sakkinen wrote:
-> On Sat Aug 12, 2023 at 1:46 PM EEST, Roberto Sassu wrote:
->> From: Roberto Sassu <roberto.sassu@huawei.com>
->>
->> Add digest_cache_init_htable(), to size a hash table depending on the
->> number of digests to be added to the cache.
->>
->> Add digest_cache_add() and digest_cache_lookup() to respectively add and
->> lookup a digest in the digest cache.
->>
->> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
->> ---
->>   security/integrity/digest_cache.c | 131 ++++++++++++++++++++++++++++++
->>   security/integrity/digest_cache.h |  24 ++++++
->>   2 files changed, 155 insertions(+)
->>
->> diff --git a/security/integrity/digest_cache.c b/security/integrity/digest_cache.c
->> index 4201c68171a..d14d84b804b 100644
->> --- a/security/integrity/digest_cache.c
->> +++ b/security/integrity/digest_cache.c
->> @@ -315,3 +315,134 @@ struct digest_cache *digest_cache_get(struct dentry *dentry,
->>   
->>   	return iint->dig_user;
->>   }
->> +
->> +/**
->> + * digest_cache_init_htable - Allocate and initialize the hash table
->> + * @digest_cache: Digest cache
->> + * @num_digests: Number of digests to add to the digest cache
->> + *
->> + * This function allocates and initializes the hash table. Its size is
->> + * determined by the number of digests to add to the digest cache, known
->> + * at this point by the parser calling this function.
->> + *
->> + * Return: Zero on success, a negative value otherwise.
->> + */
->> +int digest_cache_init_htable(struct digest_cache *digest_cache,
->> +			     u64 num_digests)
->> +{
->> +	int i;
->> +
->> +	if (!digest_cache)
->> +		return 0;
->> +
->> +	digest_cache->num_slots = num_digests / DIGEST_CACHE_HTABLE_DEPTH;
->> +	if (!digest_cache->num_slots)
->> +		digest_cache->num_slots = 1;
->> +
->> +	digest_cache->slots = kmalloc_array(num_digests,
->> +					    sizeof(*digest_cache->slots),
->> +					    GFP_KERNEL);
->> +	if (!digest_cache->slots)
->> +		return -ENOMEM;
->> +
->> +	for (i = 0; i < digest_cache->num_slots; i++)
->> +		INIT_HLIST_HEAD(&digest_cache->slots[i]);
->> +
->> +	pr_debug("Initialized %d hash table slots for digest list %s\n",
->> +		 digest_cache->num_slots, digest_cache->path_str);
->> +	return 0;
->> +}
->> +
->> +/**
->> + * digest_cache_add - Add a new digest to the digest cache
->> + * @digest_cache: Digest cache
->> + * @digest: Digest to add
->> + *
->> + * This function, invoked by a digest list parser, adds a digest extracted
->> + * from a digest list to the digest cache.
->> + *
->> + * Return: Zero on success, a negative value on error.
-> 
-> Nit: previous had a different phrasing "a negative value otherwise".
-> 
-> I would suggest "a POSIX error code otherwise" for both.
+From: Riwen Lu <luriwen@kylinos.cn>
 
-Ok.
+The format '%*ph' print up to 64 bytes long as a hex string with ' '
+sepatator. Usually the size of report descriptor is larger than 64
+bytes, so consider using print_hex_dump_debug to print out all of it for
+better debugging.
 
->> + */
->> +int digest_cache_add(struct digest_cache *digest_cache, u8 *digest)
->> +{
->> +	struct digest_cache_entry *entry;
->> +	unsigned int key;
->> +	int digest_len;
->> +
->> +	if (!digest_cache)
->> +		return 0;
->> +
->> +	digest_len = hash_digest_size[digest_cache->algo];
->> +
->> +	entry = kmalloc(sizeof(*entry) + digest_len, GFP_KERNEL);
->> +	if (!entry)
->> +		return -ENOMEM;
->> +
->> +	memcpy(entry->digest, digest, digest_len);
->> +
->> +	key = digest_cache_hash_key(digest, digest_cache->num_slots);
->> +	hlist_add_head(&entry->hnext, &digest_cache->slots[key]);
->> +	pr_debug("Add digest %s:%*phN from digest list %s\n",
->> +		 hash_algo_name[digest_cache->algo], digest_len, digest,
->> +		 digest_cache->path_str);
->> +	return 0;
->> +}
->> +
->> +/**
->> + * digest_cache_lookup - Searches a digest in the digest cache
->> + * @digest_cache: Digest cache
->> + * @digest: Digest to search
->> + * @algo: Algorithm of the digest to search
->> + * @pathname: Path of the file whose digest is looked up
->> + *
->> + * This function, invoked by IMA or EVM, searches the calculated digest of
->> + * a file or file metadata in the digest cache acquired with
->> + * digest_cache_get().
->> + *
->> + * Return: Zero if the digest is found, a negative value if not.
->> + */
->> +int digest_cache_lookup(struct digest_cache *digest_cache, u8 *digest,
->> +			enum hash_algo algo, const char *pathname)
->> +{
->> +	struct digest_cache_entry *entry;
->> +	unsigned int key;
->> +	int digest_len;
->> +	int search_depth = 0;
->> +
->> +	if (!digest_cache)
->> +		return -ENOENT;
->> +
->> +	if (digest_cache->algo == HASH_ALGO__LAST) {
->> +		pr_debug("Algorithm not set for digest list %s\n",
->> +			 digest_cache->path_str);
->> +		return -ENOENT;
->> +	}
->> +
->> +	digest_len = hash_digest_size[digest_cache->algo];
->> +
->> +	if (algo != digest_cache->algo) {
->> +		pr_debug("Algo mismatch for file %s, digest %s:%*phN in digest list %s (%s)\n",
->> +			 pathname, hash_algo_name[algo], digest_len, digest,
->> +			 digest_cache->path_str,
->> +			 hash_algo_name[digest_cache->algo]);
->> +		return -ENOENT;
->> +	}
->> +
->> +	key = digest_cache_hash_key(digest, digest_cache->num_slots);
->> +
->> +	hlist_for_each_entry_rcu(entry, &digest_cache->slots[key], hnext) {
->> +		if (!memcmp(entry->digest, digest, digest_len)) {
->> +			pr_debug("Cache hit at depth %d for file %s, digest %s:%*phN in digest list %s\n",
->> +				 search_depth, pathname, hash_algo_name[algo],
->> +				 digest_len, digest, digest_cache->path_str);
->> +			return 0;
->> +		}
->> +
->> +		search_depth++;
->> +	}
->> +
->> +	pr_debug("Cache miss for file %s, digest %s:%*phN in digest list %s\n",
->> +		 pathname, hash_algo_name[algo], digest_len, digest,
->> +		 digest_cache->path_str);
->> +	return -ENOENT;
->> +}
->> diff --git a/security/integrity/digest_cache.h b/security/integrity/digest_cache.h
->> index ff88e8593c6..01cd70f9850 100644
->> --- a/security/integrity/digest_cache.h
->> +++ b/security/integrity/digest_cache.h
->> @@ -66,6 +66,11 @@ static inline unsigned int digest_cache_hash_key(u8 *digest,
->>   void digest_cache_free(struct digest_cache *digest_cache);
->>   struct digest_cache *digest_cache_get(struct dentry *dentry,
->>   				      struct integrity_iint_cache *iint);
->> +int digest_cache_init_htable(struct digest_cache *digest_cache,
->> +			     u64 num_digests);
->> +int digest_cache_add(struct digest_cache *digest_cache, u8 *digest);
->> +int digest_cache_lookup(struct digest_cache *digest_cache, u8 *digest,
->> +			enum hash_algo algo, const char *pathname);
->>   #else
->>   static inline void digest_cache_free(struct digest_cache *digest_cache)
->>   {
->> @@ -77,5 +82,24 @@ digest_cache_get(struct dentry *dentry, struct integrity_iint_cache *iint)
->>   	return NULL;
->>   }
->>   
->> +static inline int digest_cache_init_htable(struct digest_cache *digest_cache,
->> +					   u64 num_digests)
->> +{
->> +	return -EOPNOTSUPP;
->> +}
->> +
->> +static inline int digest_cache_add(struct digest_cache *digest_cache,
->> +				   u8 *digest)
->> +{
->> +	return -EOPNOTSUPP;
->> +}
->> +
->> +static inline int digest_cache_lookup(struct digest_cache *digest_cache,
->> +				      u8 *digest, enum hash_algo algo,
->> +				      const char *pathname)
->> +{
->> +	return -ENOENT;
->> +}
->> +
->>   #endif /* CONFIG_INTEGRITY_DIGEST_CACHE */
->>   #endif /* _DIGEST_CACHE_H */
->> -- 
->> 2.34.1
-> 
-> Why all this complexity instead of using xarray?
-> 
-> https://docs.kernel.org/core-api/xarray.html
+Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
 
-Uhm, did I get correctly from the documentation that it isn't the 
-optimal solution for hash tables?
+---
+v1->v2:
+ - Add a prefix for the hex dump.
+---
+ drivers/hid/i2c-hid/i2c-hid-core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Thanks
-
-Roberto
+diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+index efbba0465eef..fd82e9042da5 100644
+--- a/drivers/hid/i2c-hid/i2c-hid-core.c
++++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+@@ -772,7 +772,9 @@ static int i2c_hid_parse(struct hid_device *hid)
+ 		}
+ 	}
+ 
+-	i2c_hid_dbg(ihid, "Report Descriptor: %*ph\n", rsize, rdesc);
++	i2c_hid_dbg(ihid, "Report Descriptor\n");
++	print_hex_dump_debug("Report Descriptor: ", DUMP_PREFIX_OFFSET, 16, 1,
++			rdesc, rsize, false);
+ 
+ 	ret = hid_parse_report(hid, rdesc, rsize);
+ 	if (!use_override)
+-- 
+2.25.1
 
