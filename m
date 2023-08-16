@@ -2,158 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B3677D714
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 02:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 198E877D71B
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 02:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240774AbjHPA3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 20:29:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48224 "EHLO
+        id S240828AbjHPAfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 20:35:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240766AbjHPA3n (ORCPT
+        with ESMTP id S240783AbjHPAfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 20:29:43 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E89E6B
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 17:29:41 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bcf2de59cso778664166b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 17:29:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692145780; x=1692750580;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Cf96gEUuffZ5bugLPGNyrmA+1QjENgh5PWJjdIlY5k8=;
-        b=Roa+zIv+mNU/NtciKeNsOa6uM75uCp+S0VtC8PYEb+ILU6Z2WoUMzfAiQer5N5DYfa
-         0d7dDd1UyioRCzkGgdkIHUDv3RjUiWIzB1V3ou7d64b0bTzbcOhCrHsbRQsd9dl8h7IY
-         axTFam5oPj7T1b09AEAmcI4/Coq6t0G4v0qmyH0BkN9oLhrpmds+rLaJNjcyQ3XMhDvl
-         dZvzpFARC/WYs+JeQyofxaP46UVf9VdGfXHNdgdichb3HG0Z03ZvIQSnwBeAoHG7dqo5
-         yY+Gksx+Dpsq/QyXNfQnwd51qr2HPA1Eohy7B5ID7ZOKuk4GuXOEbH19knKLmtxt3lIZ
-         WrIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692145780; x=1692750580;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Cf96gEUuffZ5bugLPGNyrmA+1QjENgh5PWJjdIlY5k8=;
-        b=T6ok8E4QBpO+8CpLQoOmqFNdwHbOAdeoDGx2+aJlFmdthZ8Zdwy9yEoTRKp/W1VUQT
-         uxy8SFLijXNh1HPHdTfeOCrxXBzv5znGN86SolHJHdYjnEkwmxz/s8jrkdjwDJMmQj4U
-         Pu705PWCBzi3HXOq6y43ERuzIybL36ietH183Lm/wmF8L+efLaabOR9xUAnBMxWz4OKM
-         sWIJ4fT66SBX1e1WIgyK3Fc5BCpYl95Ldada9eWb57ToVFF1yFkQnT9ieLC3B6LLW765
-         W6dmdodiLkQnxE71EPLNdl1Le7TpQlQk/eKfIcallxPkr3RaFUd+/y+i8JbmIOaeYsr/
-         3U8w==
-X-Gm-Message-State: AOJu0YxAIU1xnA6+pMfdqDB1q1Qrd70pdgHTDZwJi1VorENNab5RwJZn
-        FkH98ENEAeaxNdWg7+KQn9mgMIo4xLFVf846x9i+mA==
-X-Google-Smtp-Source: AGHT+IET4IObBwFCzpP3WD/a21iSZnldxBuBe2UDZwpFgxUiZEsIeMr8bLYT7X1W29/8Vf7CE5ZXknc+XvfschltiJk=
-X-Received: by 2002:a17:907:7893:b0:99c:b65b:54ed with SMTP id
- ku19-20020a170907789300b0099cb65b54edmr167636ejc.60.1692145779622; Tue, 15
- Aug 2023 17:29:39 -0700 (PDT)
+        Tue, 15 Aug 2023 20:35:09 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D546CE6B;
+        Tue, 15 Aug 2023 17:35:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692146108; x=1723682108;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=8f2iATa2xEdHMvk63Q2DKkqtOyMKfE9XSsgVimDXLjw=;
+  b=l5mAKEN9Vd1We5pBI/8+CLUs1NtUDQShseXKcGVEMIor5he0Yo+sqls/
+   88UUg+tEse86z4TYl93ierEybkmfncK164AqsMK/W9fpnaw5tOyeYELZV
+   Ls32ruiKTtDyScrKxV322wQcvH952hwPjfSFBY80VxeP4FDlLxOZ9uArp
+   L7pc5ODwaCDJFoCwf9fKSIT8pwamvJ83oHkJ0mr+WbkmoDvNIj59KglMt
+   9cOCU78IsEuj/ffg4cgjqH05NrZzCGyRfG1F8nWNpbPDizATbVMw8dNb9
+   uyL8MB3LGmeSMCgx06LmrheXAKE+4x3Lwq8LX/AarrAH8hpqiWMpc9FOZ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="438753898"
+X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
+   d="scan'208";a="438753898"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 17:35:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="824042590"
+X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
+   d="scan'208";a="824042590"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.212.45]) ([10.254.212.45])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 17:35:02 -0700
+Message-ID: <c6c6a390-d1d1-a5f7-cbdb-2120043eceec@linux.intel.com>
+Date:   Wed, 16 Aug 2023 08:35:00 +0800
 MIME-Version: 1.0
-References: <CAJD7tkYZxjAHrodVDK=wmz-sULJrq2VhC_5ecRP7T-KiaOcTuw@mail.gmail.com>
- <CALvZod46Cz_=5UgiyAKM+VgKyk=KJCqDqXu91=9uHy7-2wk53g@mail.gmail.com>
- <CAJD7tkY-ezyYebvcs=8Z_zrw2UVW8jf2WvP1G8tu2rT=2sMnAA@mail.gmail.com>
- <CALvZod5fH9xu_+6x85K38f63GfKGWD1LqtD2R4d09xmDtLB7ew@mail.gmail.com>
- <ZNdEaw2nktq1NfmH@dhcp22.suse.cz> <CAJD7tkaFHgc3eN1K1wYsQFWMLu4+Frf9DJ-5HOja2nC20Es9Dw@mail.gmail.com>
- <ZNrDWqfjXtAYhnvT@slm.duckdns.org> <CAJD7tkYBFz-gZ2QsHxUMT=t0KNXs66S-zzMPebadHx9zaG0Q3w@mail.gmail.com>
- <ZNrITZVTf2EILRJq@slm.duckdns.org> <CAJD7tkaXwoF-faApweAmm7Db7jAuS3EO7hVvdyVtqW_rE+T9Vg@mail.gmail.com>
- <ZNrLO5PAEZw4yjI9@slm.duckdns.org> <CAJD7tkYgCySTX28zK9GZiWwsabR4nv7M2hQ57y12si-fqtv7zg@mail.gmail.com>
- <CALvZod6KRxiDzrppCgx+=SHg2+96nFE5crwXCKwe9PZbWM_6cQ@mail.gmail.com>
-In-Reply-To: <CALvZod6KRxiDzrppCgx+=SHg2+96nFE5crwXCKwe9PZbWM_6cQ@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 15 Aug 2023 17:29:03 -0700
-Message-ID: <CAJD7tkaUzhvZPohpo1F8TUKRPuXH7bjDeg9VCzN2CbywQbRutQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Ivan Babrou <ivan@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Cc:     baolu.lu@linux.intel.com, joro@8bytes.org,
+        alex.williamson@redhat.com, kevin.tian@intel.com,
+        robin.murphy@arm.com, cohuck@redhat.com, eric.auger@redhat.com,
+        nicolinc@nvidia.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
+        peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com
+Subject: Re: [PATCH v4 11/12] iommu/vt-d: Implement hw_info for iommu
+ capability query
+To:     Jason Gunthorpe <jgg@nvidia.com>, Yi Liu <yi.l.liu@intel.com>
+References: <20230724111335.107427-1-yi.l.liu@intel.com>
+ <20230724111335.107427-12-yi.l.liu@intel.com> <ZNuoWRH/HthxsLMd@nvidia.com>
+Content-Language: en-US
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <ZNuoWRH/HthxsLMd@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 5:23=E2=80=AFPM Shakeel Butt <shakeelb@google.com> =
-wrote:
->
-> +Ivan
->
-> On Mon, Aug 14, 2023 at 5:51=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> >
-> > On Mon, Aug 14, 2023 at 5:48=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote=
-:
-> > >
-> > > Hello,
-> > >
-> > > On Mon, Aug 14, 2023 at 05:39:15PM -0700, Yosry Ahmed wrote:
-> > > > I believe dropping unified flushing, if possible of course, may fix
-> > > > both problems.
-> > >
-> > > Yeah, flushing the whole tree for every stat read will push up the bi=
-g O
-> > > complexity of the operation. It shouldn't be too bad because only wha=
-t's
-> > > updated since the last read will need flushing but if you have a real=
-ly big
-> > > machine with a lot of constantly active cgroups, you're still gonna f=
-eel it.
-> > > So, yeah, drop that and switch the global lock to mutex and we should=
- all be
-> > > good?
-> >
-> > I hope so, but I am not sure.
-> >
-> > The unified flushing was added initially to mitigate a thundering herd
-> > problem from concurrent in-kernel flushers (e.g. concurrent reclaims),
-> > but back then flushing was atomic so we had to keep the spinlock held
-> > for a long time. I think it should be better now, but I am hoping
-> > Shakeel will chime in since he added the unified flushing originally.
-> >
-> > We also need to agree on what to do about stats_flushing_threshold and
-> > flush_next_time since they're both global now (since all flushing is
-> > global).
-> >
->
-> I thought we already reached the decision on how to proceed here. Let
-> me summarize what I think we should do:
->
-> 1. Completely remove the sync flush from stat files read from userspace.
-> 2. Provide a separate way/interface to explicitly flush stats for
-> users who want more accurate stats and can pay the cost. This is
-> similar to the stat_refresh interface.
-> 3. Keep the 2 sec periodic stats flusher.
+On 2023/8/16 0:31, Jason Gunthorpe wrote:
+> On Mon, Jul 24, 2023 at 04:13:33AM -0700, Yi Liu wrote:
+>> Add intel_iommu_hw_info() to report cap_reg and ecap_reg information.
+>>
+>> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
+>> Signed-off-by: Nicolin Chen<nicolinc@nvidia.com>
+>> Signed-off-by: Yi Liu<yi.l.liu@intel.com>
+>> ---
+>>   drivers/iommu/intel/iommu.c  | 19 +++++++++++++++++++
+>>   include/uapi/linux/iommufd.h | 23 +++++++++++++++++++++++
+>>   2 files changed, 42 insertions(+)
+> I would like to pick this patch out of this series to go with the main
+> get_info stuff so that we have drivers implementing what is merged. I
+> made the trivial fixup.
+> 
+> Lu are you OK?
 
-I think this solution is suboptimal to be honest, I think we can do better.
+Yes.
 
-With recent improvements to spinlocks/mutexes, and flushers becoming
-sleepable, I think a better solution would be to remove unified
-flushing and let everyone only flush the subtree they care about. Sync
-flushing becomes much better (unless you're flushing root ofc), and
-concurrent flushing wouldn't cause too many problems (ideally no
-thundering herd, and rstat lock can be dropped at cpu boundaries in
-cgroup_rstat_flush_locked()).
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
 
-If we do this, stat reads can be much faster as Ivan demonstrated with
-his patch that only flushes the cgroup being read, and we do not
-sacrifice accuracy as we never skip flushing. We also do not need a
-separate interface for explicit refresh.
-
-In all cases, we need to keep the 2 sec periodic flusher. What we need
-to figure out if we remove unified flushing is:
-
-1. Handling stats_flush_threshold.
-2. Handling flush_next_time.
-
-Both of these are global now, and will need to be adapted to
-non-unified non-global flushing.
+Best regards,
+baolu
