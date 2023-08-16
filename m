@@ -2,201 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92CFE77EDD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 01:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 078DF77EDD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 01:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347177AbjHPX1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 19:27:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42960 "EHLO
+        id S1347185AbjHPXcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 19:32:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347176AbjHPX1t (ORCPT
+        with ESMTP id S1347189AbjHPXcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 19:27:49 -0400
-Received: from mail-pl1-f206.google.com (mail-pl1-f206.google.com [209.85.214.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC54271E
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 16:27:47 -0700 (PDT)
-Received: by mail-pl1-f206.google.com with SMTP id d9443c01a7336-1bc49d0cb4aso84587595ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 16:27:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692228467; x=1692833267;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PAODHEKlkohyVW4SPU/mzzjLtNTRD9df5tm0JKFVRoM=;
-        b=jUDVKRMKTqjYaBzwWd7xdLT+EoNFRbUbwTkHh2DdBkcayDkEjWm9cGfJLJKUFWzDx/
-         XeCBjF9toLnOITTuo7DsVzT+8Z7bUB+yt/C6Js9huPsITi5/ELDtuTREKGYfn0J8nNaP
-         Rgb9xXeTW8X7cE1CPGgMHAlWDqzzoqkiI5fOk//FsQl3pJkFL8uRA2hDelkdoS/gwHjc
-         utkg6Vi16/ZP314rSk+AFjHm858FWfc2cYEHu3tfhFS3NrxxcntqE3+EEdbwNNIll1w0
-         KL6kV5r9MHq40+wqn4ec5eYRR0HRhhq0MtvzF9jgdWIzqbJgMNVmYS2WOc62i5kvLd7o
-         kbag==
-X-Gm-Message-State: AOJu0YyJ32i9C93u+rhPjDdJQWznVvg7wbwnZqhLJ1q3b4c/0HzRRxMg
-        HsXKW4NGqBNMA4uxnNU+S4B9ZiVgiXkOaSTZtvx6sD0ztP5e
-X-Google-Smtp-Source: AGHT+IEVKJaNYWhsLc8jTBq2cwXfDEnAiIer4Ho7bobQt0yn5iTbUe7aSmJ6XKe0ibJTzIG5RgoIruxRyMGV2FDmDHgDfLBB37dR
+        Wed, 16 Aug 2023 19:32:02 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0AAE12720;
+        Wed, 16 Aug 2023 16:32:00 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1152)
+        id 32840211F61A; Wed, 16 Aug 2023 16:31:59 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 32840211F61A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1692228719;
+        bh=J6mAVcuDUUkGCq7a0/n68XNrg34IWu48uqF8U0WpAm0=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=UAHmt4NDP8ojpDlHQ7mmfTrBhz6yBDALkfRASJl8rpxed90SBL69nHszacBg/ijpD
+         +3t4AODe3l90DjlPAMRZIM1J8sHzttOHyMRb+ZBcNobzelIn2ll8NU26zPrwK0UfUb
+         Oh8xeqwChGFhBkCGk3AF8bWMPEqMUJDD1i7Bzf8o=
+Received: from localhost (localhost [127.0.0.1])
+        by linux.microsoft.com (Postfix) with ESMTP id 2C00230705BA;
+        Wed, 16 Aug 2023 16:31:59 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 16:31:59 -0700 (PDT)
+From:   Shyam Saini <shyamsaini@linux.microsoft.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+cc:     linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        op-tee@lists.trustedfirmware.org, linux-scsi@vger.kernel.org,
+        =?ISO-8859-15?Q?Alex_Benn=E9e?= <alex.bennee@linaro.org>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Tyler Hicks <code@tyhicks.com>,
+        "Srivatsa S . Bhat" <srivatsa@csail.mit.edu>,
+        Paul Moore <paul@paul-moore.com>,
+        Allen Pais <apais@linux.microsoft.com>
+Subject: Re: [RFC, PATCH 1/1] rpmb: add Replay Protected Memory Block (RPMB)
+ driver
+In-Reply-To: <CAPDyKFoBC+GaGerGDEAjg9q4ayV9mMBKkfFk3nO-zcQzOZ_H6Q@mail.gmail.com>
+Message-ID: <b875892c-1777-d84a-987e-1b0d5ac29df@linux.microsoft.com>
+References: <20230722014037.42647-1-shyamsaini@linux.microsoft.com> <20230722014037.42647-2-shyamsaini@linux.microsoft.com> <CAPDyKFoBC+GaGerGDEAjg9q4ayV9mMBKkfFk3nO-zcQzOZ_H6Q@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:2302:b0:1bf:794:9e8f with SMTP id
- d2-20020a170903230200b001bf07949e8fmr564090plh.7.1692228467435; Wed, 16 Aug
- 2023 16:27:47 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 16:27:47 -0700
-In-Reply-To: <000000000000f59fa505fe48748f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ae2d46060312a494@google.com>
-Subject: Re: [syzbot] [ext4?] INFO: task hung in __writeback_inodes_sb_nr (6)
-From:   syzbot <syzbot+38d04642cea49f3a3d2e@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linkinjeon@kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sj1557.seo@samsung.com,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="656392-1707973189-1692228719=:10222"
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-HEAD commit:    4853c74bd7ab Merge tag 'parisc-for-6.5-rc7' of git://git.k..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=178eb2efa80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=aa796b6080b04102
-dashboard link: https://syzkaller.appspot.com/bug?extid=38d04642cea49f3a3d2e
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171242cfa80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17934703a80000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/fef982ba26aa/disk-4853c74b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/633875549882/vmlinux-4853c74b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a1d2d81c82f6/bzImage-4853c74b.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/45ecbb86ca49/mount_4.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+38d04642cea49f3a3d2e@syzkaller.appspotmail.com
-
-INFO: task syz-executor359:5018 blocked for more than 143 seconds.
-      Not tainted 6.5.0-rc6-syzkaller-00036-g4853c74bd7ab #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor359 state:D stack:27216 pid:5018  ppid:5015   flags:0x00004002
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5381 [inline]
- __schedule+0xee1/0x59f0 kernel/sched/core.c:6710
- schedule+0xe7/0x1b0 kernel/sched/core.c:6786
- wb_wait_for_completion+0x1ae/0x270 fs/fs-writeback.c:192
- __writeback_inodes_sb_nr+0x1d8/0x270 fs/fs-writeback.c:2650
- sync_filesystem fs/sync.c:54 [inline]
- sync_filesystem+0xb6/0x280 fs/sync.c:30
- generic_shutdown_super+0x74/0x480 fs/super.c:472
- kill_block_super+0x64/0xb0 fs/super.c:1417
- deactivate_locked_super+0x9a/0x170 fs/super.c:330
- deactivate_super+0xde/0x100 fs/super.c:361
- cleanup_mnt+0x222/0x3d0 fs/namespace.c:1254
- task_work_run+0x14d/0x240 kernel/task_work.c:179
- ptrace_notify+0x10c/0x130 kernel/signal.c:2376
- ptrace_report_syscall include/linux/ptrace.h:411 [inline]
- ptrace_report_syscall_exit include/linux/ptrace.h:473 [inline]
- syscall_exit_work kernel/entry/common.c:252 [inline]
- syscall_exit_to_user_mode_prepare+0x120/0x220 kernel/entry/common.c:279
- __syscall_exit_to_user_mode_work kernel/entry/common.c:284 [inline]
- syscall_exit_to_user_mode+0xd/0x50 kernel/entry/common.c:297
- do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f497ef65487
-RSP: 002b:00007ffdd57d4148 EFLAGS: 00000206 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007f497ef65487
-RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007ffdd57d4200
-RBP: 00007ffdd57d4200 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000206 R12: 00007ffdd57d5270
-R13: 00005555566da6c0 R14: 431bde82d7b634db R15: 00007ffdd57d5290
- </TASK>
-
-Showing all locks held in the system:
-1 lock held by rcu_tasks_kthre/13:
- #0: ffffffff8c9a67f0 (rcu_tasks.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x2c/0xe20 kernel/rcu/tasks.h:522
-1 lock held by rcu_tasks_trace/14:
- #0: ffffffff8c9a64f0 (rcu_tasks_trace.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x2c/0xe20 kernel/rcu/tasks.h:522
-1 lock held by khungtaskd/27:
- #0: ffffffff8c9a7400 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x340 kernel/locking/lockdep.c:6615
-3 locks held by kworker/u4:2/34:
-2 locks held by getty/4774:
- #0: ffff88802cdfa098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x24/0x80 drivers/tty/tty_ldisc.c:243
- #1: ffffc900015c02f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xfcb/0x1480 drivers/tty/n_tty.c:2187
-1 lock held by syz-executor359/5018:
- #0: ffff88807b0e80e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: deactivate_super+0xd6/0x100 fs/super.c:360
-
-=============================================
-
-NMI backtrace for cpu 1
-CPU: 1 PID: 27 Comm: khungtaskd Not tainted 6.5.0-rc6-syzkaller-00036-g4853c74bd7ab #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- nmi_cpu_backtrace+0x277/0x380 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x2ac/0x310 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
- watchdog+0xf29/0x11b0 kernel/hung_task.c:379
- kthread+0x33a/0x430 kernel/kthread.c:389
- ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 34 Comm: kworker/u4:2 Not tainted 6.5.0-rc6-syzkaller-00036-g4853c74bd7ab #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Workqueue: writeback wb_workfn (flush-7:0)
-RIP: 0010:__sanitizer_cov_trace_pc+0x0/0x70 kernel/kcov.c:200
-Code: a6 27 99 02 66 0f 1f 44 00 00 f3 0f 1e fa 48 8b be b0 01 00 00 e8 b0 ff ff ff 31 c0 c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 <f3> 0f 1e fa 65 8b 05 dd b0 7d 7e 89 c1 48 8b 34 24 81 e1 00 01 00
-RSP: 0018:ffffc90000ab74e8 EFLAGS: 00000206
-RAX: 0000000000000000 RBX: ffffea0001c90174 RCX: ffffffff81fa92f9
-RDX: ffff8880136fbb80 RSI: 0000000000000000 RDI: 0000000000000005
-RBP: 0000000000000001 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000003 R11: 1ffffffff1936441 R12: 0000000000000003
-R13: 0000000000000200 R14: 0000000000000003 R15: ffffea0001c90140
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055fded888928 CR3: 0000000028191000 CR4: 0000000000350ef0
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
- atomic_dec_and_test include/linux/atomic/atomic-instrumented.h:1375 [inline]
- page_ref_dec_and_test include/linux/page_ref.h:210 [inline]
- put_page_testzero include/linux/mm.h:1028 [inline]
- folio_put_testzero include/linux/mm.h:1033 [inline]
- folio_put include/linux/mm.h:1439 [inline]
- grow_dev_page fs/buffer.c:1093 [inline]
- grow_buffers fs/buffer.c:1123 [inline]
- __getblk_slow+0x4b7/0x720 fs/buffer.c:1150
- __getblk_gfp fs/buffer.c:1445 [inline]
- __bread_gfp+0x215/0x310 fs/buffer.c:1479
- sb_bread include/linux/buffer_head.h:351 [inline]
- exfat_get_dentry_set+0x283/0xc10 fs/exfat/dir.c:878
- __exfat_write_inode+0x2c0/0x9e0 fs/exfat/inode.c:45
- exfat_write_inode+0xad/0x130 fs/exfat/inode.c:94
- write_inode fs/fs-writeback.c:1456 [inline]
- __writeback_single_inode+0xa81/0xe70 fs/fs-writeback.c:1668
- writeback_sb_inodes+0x599/0x1010 fs/fs-writeback.c:1894
- wb_writeback+0x2a5/0xa90 fs/fs-writeback.c:2070
- wb_do_writeback fs/fs-writeback.c:2217 [inline]
- wb_workfn+0x29c/0xfd0 fs/fs-writeback.c:2257
- process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2600
- worker_thread+0x687/0x1110 kernel/workqueue.c:2751
- kthread+0x33a/0x430 kernel/kthread.c:389
- ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
-INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.463 msecs
+--656392-1707973189-1692228719=:10222
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8BIT
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Hi Ulf,
+
+> On Sat, 22 Jul 2023 at 03:41, Shyam Saini
+> <shyamsaini@linux.microsoft.com> wrote:
+>>
+>> From: Alex Bennée <alex.bennee@linaro.org>
+>>
+>> [This is patch 1 from [1] Alex's submission and this RPMB layer was
+>> originally proposed by [2]Thomas Winkler ]
+>>
+>> A number of storage technologies support a specialised hardware
+>> partition designed to be resistant to replay attacks. The underlying
+>> HW protocols differ but the operations are common. The RPMB partition
+>> cannot be accessed via standard block layer, but by a set of specific
+>> commands: WRITE, READ, GET_WRITE_COUNTER, and PROGRAM_KEY. Such a
+>> partition provides authenticated and replay protected access, hence
+>> suitable as a secure storage.
+>>
+>> The initial aim of this patch is to provide a simple RPMB Driver which
+>> can be accessed by Linux's optee driver to facilitate fast-path for
+>> RPMB access to optee OS(secure OS) during the boot time. [1] Currently,
+>> Optee OS relies on user-tee supplicant to access eMMC RPMB partition.
+>>
+>> A TEE device driver can claim the RPMB interface, for example, via
+>> class_interface_register(). The RPMB driver provides a series of
+>> operations for interacting with the device.
+>
+> I don't quite follow this. More exactly, how will the TEE driver know
+> what RPMB device it should use?
+
+I don't have complete code to for this yet, but i think OP-TEE driver
+should register with RPMB subsystem and then we can have eMMC/UFS/NVMe
+specific implementation for RPMB operations.
+
+Linux optee driver can handle RPMB frames and pass it to RPMB subsystem
+
+[1] U-Boot has mmc specific implementation
+
+I think OPTEE-OS has CFG_RPMB_FS_DEV_ID option
+CFG_RPMB_FS_DEV_ID=1 for /dev/mmcblk1rpmb, but in case if a
+system has multiple RPMB devices such as UFS/eMMC/NVMe, one them
+should be declared as secure storage and optee should access that one 
+only.
+
+Sumit, do you have suggestions for this ?
+
+
+>>
+>>   * program_key - a one time operation for setting up a new device
+>>   * get_capacity - introspect the device capacity
+>>   * get_write_counter - check the write counter
+>>   * write_blocks - write a series of blocks to the RPMB device
+>>   * read_blocks - read a series of blocks from the RPMB device
+>>
+>> The detailed operation of implementing the access is left to the TEE
+>> device driver itself.
+>>
+>> The framing details and HW specific bits (JDEC vs NVME frames) are
+>> left to the lower level TEE driver to worry about.
+>>
+>> Without kernel fast path to RPMB access doesn't work when IMA try to
+>> extend ftpm's PCR registers.
+>>
+>> This fast-path would require additional work in linux optee driver and
+>> as well as in MMC driver.
+>>
+>> [1] https://lore.kernel.org/lkml/20220405093759.1126835-2-alex.bennee@linaro.org/
+>> [2] https://lore.kernel.org/linux-mmc/1478548394-8184-2-git-send-email-tomas.winkler@intel.com/
+>> [3] https://optee.readthedocs.io/en/latest/architecture/secure_storage.html
+>>
+>> Signed-off-by: Alex Bennée <alex.bennee@linaro.org>
+>> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+>> Signed-off-by: Shyam Saini <shyamsaini@linux.microsoft.com>
+>>
+>
+> [...]
+>
+>> +/**
+>> + * rpmb_dev_find_device() - return first matching rpmb device
+>> + * @data: data for the match function
+>> + * @match: the matching function
+>> + *
+>> + * Return: matching rpmb device or NULL on failure
+>> + */
+>> +static
+>> +struct rpmb_dev *rpmb_dev_find_device(const void *data,
+>> +                                     int (*match)(struct device *dev,
+>> +                                                  const void *data))
+>> +{
+>> +       struct device *dev;
+>> +
+>> +       dev = class_find_device(&rpmb_class, NULL, data, match);
+>> +
+>> +       return dev ? to_rpmb_dev(dev) : NULL;
+>> +}
+>> +
+>> +struct device_with_target {
+>> +       const struct device *dev;
+>> +       u8 target;
+>> +};
+>> +
+>> +static int match_by_parent(struct device *dev, const void *data)
+>> +{
+>> +       const struct device_with_target *d = data;
+>> +       struct rpmb_dev *rdev = to_rpmb_dev(dev);
+>> +
+>> +       return (d->dev && dev->parent == d->dev && rdev->target == d->target);
+>> +}
+>> +
+>> +/**
+>> + * rpmb_dev_find_by_device() - retrieve rpmb device from the parent device
+>> + * @parent: parent device of the rpmb device
+>> + * @target: RPMB target/region within the physical device
+>> + *
+>> + * Return: NULL if there is no rpmb device associated with the parent device
+>> + */
+>> +struct rpmb_dev *rpmb_dev_find_by_device(struct device *parent, u8 target)
+>> +{
+>> +       struct device_with_target t;
+>> +
+>> +       if (!parent)
+>> +               return NULL;
+>> +
+>> +       t.dev = parent;
+>> +       t.target = target;
+>> +
+>> +       return rpmb_dev_find_device(&t, match_by_parent);
+>> +}
+>> +EXPORT_SYMBOL_GPL(rpmb_dev_find_by_device);
+>
+> Is this what the TEE driver would be calling to find the rpmb device/partition?
+
+yes, that's the idea.
+
+>> +
+>> +/**
+>> + * rpmb_dev_unregister() - unregister RPMB partition from the RPMB subsystem
+>> + * @rdev: the rpmb device to unregister
+>> + * Return:
+>> + * *        0 on success
+>> + * *        -EINVAL on wrong parameters
+>> + */
+>> +int rpmb_dev_unregister(struct rpmb_dev *rdev)
+>> +{
+>> +       if (!rdev)
+>> +               return -EINVAL;
+>> +
+>> +       mutex_lock(&rdev->lock);
+>> +       rpmb_cdev_del(rdev);
+>
+> I can't find the function above. I guess it should be included as a
+> part of the patch too?
+
+Sorry for the confusion, this is leftover from original version
+Will be removed in next iteration.
+
+>> +       device_del(&rdev->dev);
+>> +       mutex_unlock(&rdev->lock);
+>> +
+>> +       rpmb_dev_put(rdev);
+>> +
+>> +       return 0;
+>> +}
+>> +EXPORT_SYMBOL_GPL(rpmb_dev_unregister);
+>
+> [...]
+>
+>> +/**
+>> + * rpmb_dev_register - register RPMB partition with the RPMB subsystem
+>> + * @dev: storage device of the rpmb device
+>> + * @target: RPMB target/region within the physical device
+>> + * @ops: device specific operations
+>> + *
+>> + * Return: a pointer to rpmb device
+>> + */
+>> +struct rpmb_dev *rpmb_dev_register(struct device *dev, u8 target,
+>> +                                  const struct rpmb_ops *ops)
+>> +{
+>> +       struct rpmb_dev *rdev;
+>> +       int id;
+>> +       int ret;
+>> +
+>> +       if (!dev || !ops)
+>> +               return ERR_PTR(-EINVAL);
+>> +
+>> +       if (!ops->program_key)
+>> +               return ERR_PTR(-EINVAL);
+>> +
+>> +       if (!ops->get_capacity)
+>> +               return ERR_PTR(-EINVAL);
+>> +
+>> +       if (!ops->get_write_counter)
+>> +               return ERR_PTR(-EINVAL);
+>> +
+>> +       if (!ops->write_blocks)
+>> +               return ERR_PTR(-EINVAL);
+>> +
+>> +       if (!ops->read_blocks)
+>> +               return ERR_PTR(-EINVAL);
+>> +
+>> +       rdev = kzalloc(sizeof(*rdev), GFP_KERNEL);
+>> +       if (!rdev)
+>> +               return ERR_PTR(-ENOMEM);
+>> +
+>> +       id = ida_simple_get(&rpmb_ida, 0, 0, GFP_KERNEL);
+>> +       if (id < 0) {
+>> +               ret = id;
+>> +               goto exit;
+>> +       }
+>> +
+>> +       mutex_init(&rdev->lock);
+>> +       rdev->ops = ops;
+>> +       rdev->id = id;
+>> +       rdev->target = target;
+>> +
+>> +       dev_set_name(&rdev->dev, "rpmb%d", id);
+>> +       rdev->dev.class = &rpmb_class;
+>> +       rdev->dev.parent = dev;
+>> +
+>> +       rpmb_cdev_prepare(rdev);
+>
+> Ditto.
+
+same as my last comment
+>> +
+>> +       ret = device_register(&rdev->dev);
+>> +       if (ret)
+>> +               goto exit;
+>> +
+>> +       rpmb_cdev_add(rdev);
+>
+> Ditto.
+
+same as above.
+
+>> +
+>> +       dev_dbg(&rdev->dev, "registered device\n");
+>> +
+>> +       return rdev;
+>> +
+>> +exit:
+>> +       if (id >= 0)
+>> +               ida_simple_remove(&rpmb_ida, id);
+>> +       kfree(rdev);
+>> +       return ERR_PTR(ret);
+>> +}
+>> +EXPORT_SYMBOL_GPL(rpmb_dev_register);
+>> +
+>
+> [...]
+>
+
+
+[1] https://source.denx.de/u-boot/u-boot/-/commit/4853ad3e13e21462a86e09caee4ea27ae68e764b
+
+Best Regards,
+Shyam
+--656392-1707973189-1692228719=:10222--
