@@ -2,147 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4E977EAAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 22:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2A377EAB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 22:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346125AbjHPU1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 16:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50832 "EHLO
+        id S1346136AbjHPU26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 16:28:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346124AbjHPU13 (ORCPT
+        with ESMTP id S1346124AbjHPU20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 16:27:29 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7712B268D
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:27:27 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-58cd9d9dbf5so3784397b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:27:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692217646; x=1692822446;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=o6nAd4B+hY09XKdSdHx5sCH4iOSgPQT2h6trGlM+vNA=;
-        b=dveIXLQA89ZUWYHabJVtI3oEEzpIr9fV/lirVBfekKiFOXn1lGgA2uPGEcOlkOZjBD
-         a1aBpoGF8QaJMHqlLM0UKvL9kaKpzS6zyOvmB6Zbc1eS7EEJ6VlfQkXyzLpNQhfG3OEw
-         eCGtvZNYLyrmkoj5+tJuw3HMFHCP3sqPuk8fbd3spP0mYw93n9H7+8N80JmbfIs4qiXv
-         pYw7bvDGtSSGmN6GSey1TNwmTvBJC5JMT671NM0B4mgv/BXoWeH/4YzxKbh3yB570fS0
-         aJREuoDn9t0m4s+z3u9TOwbz2TQ5vLr7L5z9o4q0UsNVHdnnboFQwrHaMLNNgfIPCdb7
-         au3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692217646; x=1692822446;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=o6nAd4B+hY09XKdSdHx5sCH4iOSgPQT2h6trGlM+vNA=;
-        b=ivFxnlty4W1IuekIa7V3yqfAjNaZIs7frHAKQgALYkdWKyfK1vHkFjivnHYIlKKQN3
-         iNDDgjfVEjabyPOZ4YA+esIXdQRHRzbsbqMhr7Ut1FuQHqTGBW1qtyt8Y8tPfg9CksPQ
-         g8DWTODkz+/soHr6dXcpihnpiUP1UPFFcni4sFeqE+jNIj1u6DsyIcAL7hPXDzXSaYGs
-         VjVVjYJZZARdJXiD9JRQYd51jZzDa+pzt1IUQmCq9QoyJ17/lrsttBW5rmKBrnXBZPpb
-         KRZxDhstnbZOGMhDNZ6NEP0dfJbVPkngoYec2X0MXb+I+OrjIxV0qgA1RYIcQagaNJWW
-         aXsg==
-X-Gm-Message-State: AOJu0Yyd6o1pRSXWJH002eM4LAXzZ9UET/mpTGFEn70T95pUArMw1nZ7
-        OlqvVji5qFAcCCuCutLL06ueqw==
-X-Google-Smtp-Source: AGHT+IEO5uc8CKDzvfrW8shdjb35Kp27HpuCfrFDLQV5dylLk8ofwbkbKcaFpgjeKtRhrvd/mx2svA==
-X-Received: by 2002:a0d:d641:0:b0:56c:e5a3:3e09 with SMTP id y62-20020a0dd641000000b0056ce5a33e09mr850661ywd.15.1692217646555;
-        Wed, 16 Aug 2023 13:27:26 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id z16-20020a81c210000000b005463e45458bsm4189762ywc.123.2023.08.16.13.27.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 13:27:25 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 13:27:17 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-cc:     Jens Axboe <axboe@kernel.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Hugh Dickins <hughd@google.com>, Hannes Reineke <hare@suse.de>,
-        linux-mm@kvack.org, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] block: Remove special-casing of compound pages
-In-Reply-To: <20230814144100.596749-1-willy@infradead.org>
-Message-ID: <94635da5-ce28-a8fb-84e3-7a9f5240fe6a@google.com>
-References: <20230814144100.596749-1-willy@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 16:28:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AECC26A0;
+        Wed, 16 Aug 2023 13:28:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ED583651DC;
+        Wed, 16 Aug 2023 20:28:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B776C433C7;
+        Wed, 16 Aug 2023 20:28:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692217701;
+        bh=yf25bicjIxz7p5iTZ7Dqx9bZgB66p7ZsNKtdIgM1exM=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=ebVrwvzD+buuQK53Q8z0GiOCnS2jSV+3peLErmUKaYpssZaJXqVpWu6EuRR4Q2OMe
+         +vWIJxPxLesV+wZRs/9fDfgeFt82HeTj6obUoQ5wBBK9YfrNGDo3/HbyluKAcq/VRI
+         2pkok435Zuuxwe3oTWqLQ9PK1hT8wHhjBRiggAVqpM4wb+Ti0ZktRuj8MZhUwRGCAq
+         94omYkqu/unRfHIpWyp2/C9BMCtt5EcpzLox3S9SS21CmtxcqlyQrnGd6yVJ2MhIg/
+         S8t7Iw1T6Ji71wEKHRZpIuqqX0N0MbXMiWA2sUjlHpvSXGDaPF0cGCq+8qR2ORPVSx
+         DsDL2ly5IUiCA==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 16 Aug 2023 23:28:15 +0300
+Message-Id: <CUU93XA8UKMG.X15YWDK533GB@suppilovahvero>
+Cc:     <isaku.yamahata@gmail.com>, "Michael Roth" <michael.roth@amd.com>,
+        "Paolo Bonzini" <pbonzini@redhat.com>,
+        "Sean Christopherson" <seanjc@google.com>, <erdemaktas@google.com>,
+        "Sagi Shahar" <sagis@google.com>,
+        "David Matlack" <dmatlack@google.com>,
+        "Kai Huang" <kai.huang@intel.com>,
+        "Zhi Wang" <zhi.wang.linux@gmail.com>, <chen.bo@intel.com>,
+        <linux-coco@lists.linux.dev>,
+        "Chao Peng" <chao.p.peng@linux.intel.com>,
+        "Ackerley Tng" <ackerleytng@google.com>,
+        "Vishal Annapurve" <vannapurve@google.com>,
+        "Yuan Yao" <yuan.yao@linux.intel.com>,
+        "Xu Yilun" <yilun.xu@intel.com>,
+        "Quentin Perret" <qperret@google.com>, <wei.w.wang@intel.com>,
+        "Fuad Tabba" <tabba@google.com>
+Subject: Re: [PATCH 4/8] KVM: gmem: protect kvm_mmu_invalidate_end()
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     <isaku.yamahata@intel.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+X-Mailer: aerc 0.14.0
+References: <cover.1692119201.git.isaku.yamahata@intel.com>
+ <b37fb13a9aeb8683d5fdd5351cdc5034639eb2bb.1692119201.git.isaku.yamahata@intel.com>
+In-Reply-To: <b37fb13a9aeb8683d5fdd5351cdc5034639eb2bb.1692119201.git.isaku.yamahata@intel.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-a.k.a "Fix rare user data corruption when using THP" :)
-
-On Mon, 14 Aug 2023, Matthew Wilcox (Oracle) wrote:
-
-> The special casing was originally added in pre-git history; reproducing
-> the commit log here:
-> 
-> > commit a318a92567d77
-> > Author: Andrew Morton <akpm@osdl.org>
-> > Date:   Sun Sep 21 01:42:22 2003 -0700
-> >
-> >     [PATCH] Speed up direct-io hugetlbpage handling
-> >
-> >     This patch short-circuits all the direct-io page dirtying logic for
-> >     higher-order pages.  Without this, we pointlessly bounce BIOs up to
-> >     keventd all the time.
-> 
-> In the last twenty years, compound pages have become used for more than
-> just hugetlb.  Rewrite these functions to operate on folios instead
-> of pages and remove the special case for hugetlbfs; I don't think
-> it's needed any more (and if it is, we can put it back in as a call
-> to folio_test_hugetlb()).
-> 
-> This was found by inspection; as far as I can tell, this bug can lead
-> to pages used as the destination of a direct I/O read not being marked
-> as dirty.  If those pages are then reclaimed by the MM without being
-> dirtied for some other reason, they won't be written out.  Then when
-> they're faulted back in, they will not contain the data they should.
-> It'll take a pretty unusual setup to produce this problem with several
-> races all going the wrong way.
-> 
-> This problem predates the folio work; it could for example have been
-> triggered by mmaping a THP in tmpfs and using that as the target of an
-> O_DIRECT read.
-> 
-> Fixes: 800d8c63b2e98 ("shmem: add huge pages support")
-
-No. It's a good catch, but bug looks specific to the folio work to me.
-
-Almost all shmem pages are dirty from birth, even as soon as they are
-brought back from swap; so it is not necessary to re-mark them dirty.
-
-The exceptions are pages allocated to holes when faulted: so you did
-get me worried as to whether khugepaged could collapse a pmd-ful of
-those into a THP without marking the result as dirty.
-
-But no, in v6.5-rc6 the collapse_file() success path has
-	if (is_shmem)
-		folio_mark_dirty(folio);
-and in v5.10 the same appears as
-		if (is_shmem)
-			set_page_dirty(new_page);
-
-(IIRC, that or marking pmd dirty was missed from early shmem THP
-support, but fairly soon corrected, and backported to stable then.
-I have a faint memory of versions which assembled pmd_dirty from
-collected pte_dirtys.)
-
-And the !is_shmem case is for CONFIG_READ_ONLY_THP_FOR_FS: writing
-into those pages, by direct IO or whatever, is already prohibited.
-
-It's dem dirty (or not dirty) folios dat's the trouble!
-
-Hugh
-
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+On Tue Aug 15, 2023 at 8:18 PM EEST,  wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> kvm_mmu_invalidate_end() updates struct kvm::mmu_invalidate_in_progress
+> and it's protected by kvm::mmu_lock.  call kvm_mmu_invalidate_end() befor=
+e
+> unlocking it. Not after the unlock.
+>
+> Fixes: 8e9009ca6d14 ("KVM: Introduce per-page memory attributes")
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
 > ---
->  block/bio.c | 46 ++++++++++++++++++++++++----------------------
->  1 file changed, 24 insertions(+), 22 deletions(-)
+>  virt/kvm/kvm_main.c | 15 ++++++++++++++-
+>  1 file changed, 14 insertions(+), 1 deletion(-)
+>
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 8bfeb615fc4d..49380cd62367 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -535,6 +535,7 @@ struct kvm_mmu_notifier_range {
+>  	} arg;
+>  	gfn_handler_t handler;
+>  	on_lock_fn_t on_lock;
+> +	on_unlock_fn_t before_unlock;
+>  	on_unlock_fn_t on_unlock;
+>  	bool flush_on_ret;
+>  	bool may_block;
+> @@ -629,6 +630,8 @@ static __always_inline int __kvm_handle_hva_range(str=
+uct kvm *kvm,
+>  		kvm_flush_remote_tlbs(kvm);
+> =20
+>  	if (locked) {
+> +		if (!IS_KVM_NULL_FN(range->before_unlock))
+> +			range->before_unlock(kvm);
+>  		KVM_MMU_UNLOCK(kvm);
+>  		if (!IS_KVM_NULL_FN(range->on_unlock))
+>  			range->on_unlock(kvm);
+> @@ -653,6 +656,7 @@ static __always_inline int kvm_handle_hva_range(struc=
+t mmu_notifier *mn,
+>  		.arg.pte	=3D pte,
+>  		.handler	=3D handler,
+>  		.on_lock	=3D (void *)kvm_null_fn,
+> +		.before_unlock	=3D (void *)kvm_null_fn,
+>  		.on_unlock	=3D (void *)kvm_null_fn,
+>  		.flush_on_ret	=3D true,
+>  		.may_block	=3D false,
+> @@ -672,6 +676,7 @@ static __always_inline int kvm_handle_hva_range_no_fl=
+ush(struct mmu_notifier *mn
+>  		.end		=3D end,
+>  		.handler	=3D handler,
+>  		.on_lock	=3D (void *)kvm_null_fn,
+> +		.before_unlock	=3D (void *)kvm_null_fn,
+>  		.on_unlock	=3D (void *)kvm_null_fn,
+>  		.flush_on_ret	=3D false,
+>  		.may_block	=3D false,
+> @@ -776,6 +781,7 @@ static int kvm_mmu_notifier_invalidate_range_start(st=
+ruct mmu_notifier *mn,
+>  		.end		=3D range->end,
+>  		.handler	=3D kvm_mmu_unmap_gfn_range,
+>  		.on_lock	=3D kvm_mmu_invalidate_begin,
+> +		.before_unlock	=3D (void *)kvm_null_fn,
+>  		.on_unlock	=3D kvm_arch_guest_memory_reclaimed,
+>  		.flush_on_ret	=3D true,
+>  		.may_block	=3D mmu_notifier_range_blockable(range),
+> @@ -815,6 +821,8 @@ static int kvm_mmu_notifier_invalidate_range_start(st=
+ruct mmu_notifier *mn,
+> =20
+>  void kvm_mmu_invalidate_end(struct kvm *kvm)
+>  {
+> +	lockdep_assert_held_write(&kvm->mmu_lock);
+> +
+>  	/*
+>  	 * This sequence increase will notify the kvm page fault that
+>  	 * the page that is going to be mapped in the spte could have
+> @@ -846,6 +854,7 @@ static void kvm_mmu_notifier_invalidate_range_end(str=
+uct mmu_notifier *mn,
+>  		.end		=3D range->end,
+>  		.handler	=3D (void *)kvm_null_fn,
+>  		.on_lock	=3D kvm_mmu_invalidate_end,
+> +		.before_unlock	=3D (void *)kvm_null_fn,
+>  		.on_unlock	=3D (void *)kvm_null_fn,
+>  		.flush_on_ret	=3D false,
+>  		.may_block	=3D mmu_notifier_range_blockable(range),
+> @@ -2433,6 +2442,8 @@ static __always_inline void kvm_handle_gfn_range(st=
+ruct kvm *kvm,
+>  		kvm_flush_remote_tlbs(kvm);
+> =20
+>  	if (locked) {
+> +		if (!IS_KVM_NULL_FN(range->before_unlock))
+> +			range->before_unlock(kvm);
+>  		KVM_MMU_UNLOCK(kvm);
+>  		if (!IS_KVM_NULL_FN(range->on_unlock))
+>  			range->on_unlock(kvm);
+> @@ -2447,6 +2458,7 @@ static int kvm_vm_set_mem_attributes(struct kvm *kv=
+m, unsigned long attributes,
+>  		.end =3D end,
+>  		.handler =3D kvm_mmu_unmap_gfn_range,
+>  		.on_lock =3D kvm_mmu_invalidate_begin,
+> +		.before_unlock	=3D (void *)kvm_null_fn,
+>  		.on_unlock =3D (void *)kvm_null_fn,
+>  		.flush_on_ret =3D true,
+>  		.may_block =3D true,
+> @@ -2457,7 +2469,8 @@ static int kvm_vm_set_mem_attributes(struct kvm *kv=
+m, unsigned long attributes,
+>  		.arg.attributes =3D attributes,
+>  		.handler =3D kvm_arch_post_set_memory_attributes,
+>  		.on_lock =3D (void *)kvm_null_fn,
+> -		.on_unlock =3D kvm_mmu_invalidate_end,
+> +		.before_unlock =3D kvm_mmu_invalidate_end,
+> +		.on_unlock =3D (void *)kvm_null_fn,
+>  		.may_block =3D true,
+>  	};
+>  	unsigned long i;
+> --=20
+> 2.25.1
+
+Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+
+BR, Jarkko
