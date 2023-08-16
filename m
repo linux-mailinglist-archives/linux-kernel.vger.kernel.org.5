@@ -2,331 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 125AE77E257
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75CF877E25C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245427AbjHPNPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 09:15:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        id S245430AbjHPNRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:17:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245465AbjHPNPi (ORCPT
+        with ESMTP id S245198AbjHPNRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 09:15:38 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED84A2711;
-        Wed, 16 Aug 2023 06:15:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692191735; x=1723727735;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=CLai+YNN3OujjOwMSs+ewWzyb1YQrY4aGWQEsGhHt0M=;
-  b=cq1hE1Z/NvrMFCkfcB+pJBeGU0OxziYSfeI42hlOaVBhcDmfyTYwCLFz
-   ulTOtr6xFbsA/+XaszqaRvMiPUWKeVUIJOxj0HhVUIJFezXVvmQISg99E
-   xPknfp7/qGKZQpOrmVRX3RwNOEOzYiMOVI206qlm02KYmn5tPsq/I7tNX
-   ID5jP/t/w1/x/zpSOw7MFsP6ZCQPDuJPFdoJiVG8c4o4lPQ64wtQbrSz7
-   ixM0HJM0bcVkYBB/v5lC7luu2IuePnECR2CgQCyxQdeNTOppZDyDqxKoz
-   q/5HIZoHHQZkULWTkU/CzhnOnN/4/OhkpYYI+KUQ4VWXSkZhk34ZGZLHC
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="352854180"
-X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
-   d="scan'208";a="352854180"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 06:15:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="734204567"
-X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
-   d="scan'208";a="734204567"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 16 Aug 2023 06:15:26 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWGMr-0000K0-29;
-        Wed, 16 Aug 2023 13:15:22 +0000
-Date:   Wed, 16 Aug 2023 21:14:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>, akpm@linux-foundation.org,
-        david@fromorbit.com, tkhai@ya.ru, vbabka@suse.cz,
-        roman.gushchin@linux.dev, djwong@kernel.org, brauner@kernel.org,
-        paulmck@kernel.org, tytso@mit.edu, steven.price@arm.com,
-        cel@kernel.org, senozhatsky@chromium.org, yujie.liu@intel.com,
-        gregkh@linuxfoundation.org, muchun.song@linux.dev,
-        joel@joelfernandes.org, christian.koenig@amd.com
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        dri-devel@lists.freedesktop.org, linux-fsdevel@vger.kernel.org,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: Re: [PATCH 1/5] mm: move some shrinker-related function declarations
- to mm/internal.h
-Message-ID: <202308162118.motJd6aG-lkp@intel.com>
-References: <20230816083419.41088-2-zhengqi.arch@bytedance.com>
+        Wed, 16 Aug 2023 09:17:05 -0400
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 262B31BFB;
+        Wed, 16 Aug 2023 06:17:02 -0700 (PDT)
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37G9HZ92006710;
+        Wed, 16 Aug 2023 15:16:35 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=jsHo/ihgFYCOIGCHbTa9POhm1lQRQXAOCQAEy92C/gc=; b=nm
+        l1ZymMVeYMLFF8iXGrVjIRUYzEERJsXsr/9dY6v2bZt5qJUt7xA4jhdwbAI3zRaQ
+        TwwJVRay3dXZpjkSFhBmT1stu2/jmQh+FYoPC8h3YaPet69KjUEWHw782WXzi/Mx
+        aax1SQqzibX5mRqeeqvngqX/kEU/qeHC1kbBlzfHTqVIvhIxZyUvBEIrCRmhglu1
+        c9Isj47+pYrtOhO7a9py8ZpUuFR+s8Q4G9mmisCfwPv+fXIKUlgvLtV3WTDLT0FR
+        HJMCZFKt+2rAsx7fI1tS2cwWyKTQXfqxADfaC0LLcMhFn18VQw/6IyfcR4uJbXLv
+        6VG9j3eI7VsUC9f0ZPAA==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3sguptsbre-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 15:16:35 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 92DA310005D;
+        Wed, 16 Aug 2023 15:16:33 +0200 (CEST)
+Received: from Webmail-eu.st.com (eqndag1node4.st.com [10.75.129.133])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5B96C23D3F6;
+        Wed, 16 Aug 2023 15:16:33 +0200 (CEST)
+Received: from [10.201.22.206] (10.201.22.206) by EQNDAG1NODE4.st.com
+ (10.75.129.133) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 16 Aug
+ 2023 15:16:32 +0200
+Message-ID: <f93fd404-2c66-cde0-ea9c-06390db015b8@foss.st.com>
+Date:   Wed, 16 Aug 2023 15:16:31 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230816083419.41088-2-zhengqi.arch@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] remoteproc: stm32: fix incorrect optional pointers
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        "Dan Carpenter" <dan.carpenter@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        Fabien Dessenne <fabien.dessenne@st.com>,
+        Ludovic Barre <ludovic.barre@st.com>,
+        Loic Pallardy <loic.pallardy@st.com>,
+        <linux-remoteproc@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230724195704.2432382-1-arnd@kernel.org>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Organization: STMicroelectronics
+In-Reply-To: <20230724195704.2432382-1-arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.201.22.206]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To EQNDAG1NODE4.st.com
+ (10.75.129.133)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-16_12,2023-08-15_02,2023-05-22_02
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qi,
+Hello Arnd,
 
-kernel test robot noticed the following build warnings:
+On 7/24/23 21:56, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Compile-testing without CONFIG_OF shows that the of_match_ptr() macro
+> was used incorrectly here:
+> 
+> drivers/remoteproc/stm32_rproc.c:662:34: warning: unused variable 'stm32_rproc_match' [-Wunused-const-variable]
+> 
+> As in almost every driver, the solution is simply to remove the
+> use of this macro. The same thing happened with the deprecated
+> SIMPLE_DEV_PM_OPS(), but the corresponding warning was already shut
+> up with __maybe_unused annotations, so fix those as well by using the
+> correct DEFINE_SIMPLE_DEV_PM_OPS() macros and removing the extraneous
+> __maybe_unused modifiers. For completeness, also add a pm_ptr() to let
+> the PM ops be eliminated completely when CONFIG_PM is turned off.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202307242300.ia82qBTp-lkp@intel.com
+> Fixes: 03bd158e1535e ("remoteproc: stm32: use correct format strings on 64-bit")
+> Fixes: 410119ee29b6c ("remoteproc: stm32: wakeup the system by wdg irq")
+> Fixes: 13140de09cc2d ("remoteproc: stm32: add an ST stm32_rproc driver")
 
-[auto build test WARNING on brauner-vfs/vfs.all]
-[also build test WARNING on linus/master v6.5-rc6 next-20230816]
-[cannot apply to akpm-mm/mm-everything drm-misc/drm-misc-next vfs-idmapping/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The checkpatch complains here as you put 13 char instead of 12 for the sha1.
+I don't know if this can generate issue for scripts...
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Qi-Zheng/mm-move-some-shrinker-related-function-declarations-to-mm-internal-h/20230816-163833
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git vfs.all
-patch link:    https://lore.kernel.org/r/20230816083419.41088-2-zhengqi.arch%40bytedance.com
-patch subject: [PATCH 1/5] mm: move some shrinker-related function declarations to mm/internal.h
-config: riscv-randconfig-r015-20230816 (https://download.01.org/0day-ci/archive/20230816/202308162118.motJd6aG-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20230816/202308162118.motJd6aG-lkp@intel.com/reproduce)
+w or w/o the fix:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308162118.motJd6aG-lkp@intel.com/
+acked-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
 
-All warnings (new ones prefixed by >>):
+Thanks!
+Arnaud
 
-                                            ~~~~~~~~~~ ^
-   In file included from mm/shrinker_debug.c:7:
-   In file included from include/linux/memcontrol.h:13:
-   In file included from include/linux/cgroup.h:26:
-   In file included from include/linux/kernel_stat.h:9:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/riscv/include/asm/io.h:136:
-   include/asm-generic/io.h:751:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           insw(addr, buffer, count);
-           ^~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/io.h:105:53: note: expanded from macro 'insw'
-   #define insw(addr, buffer, count) __insw(PCI_IOBASE + (addr), buffer, count)
-                                            ~~~~~~~~~~ ^
-   In file included from mm/shrinker_debug.c:7:
-   In file included from include/linux/memcontrol.h:13:
-   In file included from include/linux/cgroup.h:26:
-   In file included from include/linux/kernel_stat.h:9:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/riscv/include/asm/io.h:136:
-   include/asm-generic/io.h:759:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           insl(addr, buffer, count);
-           ^~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/io.h:106:53: note: expanded from macro 'insl'
-   #define insl(addr, buffer, count) __insl(PCI_IOBASE + (addr), buffer, count)
-                                            ~~~~~~~~~~ ^
-   In file included from mm/shrinker_debug.c:7:
-   In file included from include/linux/memcontrol.h:13:
-   In file included from include/linux/cgroup.h:26:
-   In file included from include/linux/kernel_stat.h:9:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/riscv/include/asm/io.h:136:
-   include/asm-generic/io.h:768:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           outsb(addr, buffer, count);
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/io.h:118:55: note: expanded from macro 'outsb'
-   #define outsb(addr, buffer, count) __outsb(PCI_IOBASE + (addr), buffer, count)
-                                              ~~~~~~~~~~ ^
-   In file included from mm/shrinker_debug.c:7:
-   In file included from include/linux/memcontrol.h:13:
-   In file included from include/linux/cgroup.h:26:
-   In file included from include/linux/kernel_stat.h:9:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/riscv/include/asm/io.h:136:
-   include/asm-generic/io.h:777:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           outsw(addr, buffer, count);
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/io.h:119:55: note: expanded from macro 'outsw'
-   #define outsw(addr, buffer, count) __outsw(PCI_IOBASE + (addr), buffer, count)
-                                              ~~~~~~~~~~ ^
-   In file included from mm/shrinker_debug.c:7:
-   In file included from include/linux/memcontrol.h:13:
-   In file included from include/linux/cgroup.h:26:
-   In file included from include/linux/kernel_stat.h:9:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/riscv/include/asm/io.h:136:
-   include/asm-generic/io.h:786:2: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           outsl(addr, buffer, count);
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/riscv/include/asm/io.h:120:55: note: expanded from macro 'outsl'
-   #define outsl(addr, buffer, count) __outsl(PCI_IOBASE + (addr), buffer, count)
-                                              ~~~~~~~~~~ ^
-   In file included from mm/shrinker_debug.c:7:
-   In file included from include/linux/memcontrol.h:13:
-   In file included from include/linux/cgroup.h:26:
-   In file included from include/linux/kernel_stat.h:9:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/riscv/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/riscv/include/asm/io.h:136:
-   include/asm-generic/io.h:1134:55: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-           return (port > MMIO_UPPER_LIMIT) ? NULL : PCI_IOBASE + port;
-                                                     ~~~~~~~~~~ ^
->> mm/shrinker_debug.c:174:5: warning: no previous prototype for function 'shrinker_debugfs_add' [-Wmissing-prototypes]
-   int shrinker_debugfs_add(struct shrinker *shrinker)
-       ^
-   mm/shrinker_debug.c:174:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   int shrinker_debugfs_add(struct shrinker *shrinker)
-   ^
-   static 
->> mm/shrinker_debug.c:249:16: warning: no previous prototype for function 'shrinker_debugfs_detach' [-Wmissing-prototypes]
-   struct dentry *shrinker_debugfs_detach(struct shrinker *shrinker,
-                  ^
-   mm/shrinker_debug.c:249:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   struct dentry *shrinker_debugfs_detach(struct shrinker *shrinker,
-   ^
-   static 
->> mm/shrinker_debug.c:265:6: warning: no previous prototype for function 'shrinker_debugfs_remove' [-Wmissing-prototypes]
-   void shrinker_debugfs_remove(struct dentry *debugfs_entry, int debugfs_id)
-        ^
-   mm/shrinker_debug.c:265:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   void shrinker_debugfs_remove(struct dentry *debugfs_entry, int debugfs_id)
-   ^
-   static 
-   16 warnings generated.
-
-
-vim +/shrinker_debugfs_add +174 mm/shrinker_debug.c
-
-bbf535fd6f06b94 Roman Gushchin     2022-05-31  173  
-5035ebc644aec92 Roman Gushchin     2022-05-31 @174  int shrinker_debugfs_add(struct shrinker *shrinker)
-5035ebc644aec92 Roman Gushchin     2022-05-31  175  {
-5035ebc644aec92 Roman Gushchin     2022-05-31  176  	struct dentry *entry;
-e33c267ab70de42 Roman Gushchin     2022-05-31  177  	char buf[128];
-5035ebc644aec92 Roman Gushchin     2022-05-31  178  	int id;
-5035ebc644aec92 Roman Gushchin     2022-05-31  179  
-47a7c01c3efc658 Qi Zheng           2023-06-09  180  	lockdep_assert_held(&shrinker_rwsem);
-5035ebc644aec92 Roman Gushchin     2022-05-31  181  
-5035ebc644aec92 Roman Gushchin     2022-05-31  182  	/* debugfs isn't initialized yet, add debugfs entries later. */
-5035ebc644aec92 Roman Gushchin     2022-05-31  183  	if (!shrinker_debugfs_root)
-5035ebc644aec92 Roman Gushchin     2022-05-31  184  		return 0;
-5035ebc644aec92 Roman Gushchin     2022-05-31  185  
-5035ebc644aec92 Roman Gushchin     2022-05-31  186  	id = ida_alloc(&shrinker_debugfs_ida, GFP_KERNEL);
-5035ebc644aec92 Roman Gushchin     2022-05-31  187  	if (id < 0)
-5035ebc644aec92 Roman Gushchin     2022-05-31  188  		return id;
-5035ebc644aec92 Roman Gushchin     2022-05-31  189  	shrinker->debugfs_id = id;
-5035ebc644aec92 Roman Gushchin     2022-05-31  190  
-e33c267ab70de42 Roman Gushchin     2022-05-31  191  	snprintf(buf, sizeof(buf), "%s-%d", shrinker->name, id);
-5035ebc644aec92 Roman Gushchin     2022-05-31  192  
-5035ebc644aec92 Roman Gushchin     2022-05-31  193  	/* create debugfs entry */
-5035ebc644aec92 Roman Gushchin     2022-05-31  194  	entry = debugfs_create_dir(buf, shrinker_debugfs_root);
-5035ebc644aec92 Roman Gushchin     2022-05-31  195  	if (IS_ERR(entry)) {
-5035ebc644aec92 Roman Gushchin     2022-05-31  196  		ida_free(&shrinker_debugfs_ida, id);
-5035ebc644aec92 Roman Gushchin     2022-05-31  197  		return PTR_ERR(entry);
-5035ebc644aec92 Roman Gushchin     2022-05-31  198  	}
-5035ebc644aec92 Roman Gushchin     2022-05-31  199  	shrinker->debugfs_entry = entry;
-5035ebc644aec92 Roman Gushchin     2022-05-31  200  
-2124f79de6a9096 John Keeping       2023-04-18  201  	debugfs_create_file("count", 0440, entry, shrinker,
-5035ebc644aec92 Roman Gushchin     2022-05-31  202  			    &shrinker_debugfs_count_fops);
-2124f79de6a9096 John Keeping       2023-04-18  203  	debugfs_create_file("scan", 0220, entry, shrinker,
-bbf535fd6f06b94 Roman Gushchin     2022-05-31  204  			    &shrinker_debugfs_scan_fops);
-5035ebc644aec92 Roman Gushchin     2022-05-31  205  	return 0;
-5035ebc644aec92 Roman Gushchin     2022-05-31  206  }
-5035ebc644aec92 Roman Gushchin     2022-05-31  207  
-e33c267ab70de42 Roman Gushchin     2022-05-31  208  int shrinker_debugfs_rename(struct shrinker *shrinker, const char *fmt, ...)
-e33c267ab70de42 Roman Gushchin     2022-05-31  209  {
-e33c267ab70de42 Roman Gushchin     2022-05-31  210  	struct dentry *entry;
-e33c267ab70de42 Roman Gushchin     2022-05-31  211  	char buf[128];
-e33c267ab70de42 Roman Gushchin     2022-05-31  212  	const char *new, *old;
-e33c267ab70de42 Roman Gushchin     2022-05-31  213  	va_list ap;
-e33c267ab70de42 Roman Gushchin     2022-05-31  214  	int ret = 0;
-e33c267ab70de42 Roman Gushchin     2022-05-31  215  
-e33c267ab70de42 Roman Gushchin     2022-05-31  216  	va_start(ap, fmt);
-e33c267ab70de42 Roman Gushchin     2022-05-31  217  	new = kvasprintf_const(GFP_KERNEL, fmt, ap);
-e33c267ab70de42 Roman Gushchin     2022-05-31  218  	va_end(ap);
-e33c267ab70de42 Roman Gushchin     2022-05-31  219  
-e33c267ab70de42 Roman Gushchin     2022-05-31  220  	if (!new)
-e33c267ab70de42 Roman Gushchin     2022-05-31  221  		return -ENOMEM;
-e33c267ab70de42 Roman Gushchin     2022-05-31  222  
-47a7c01c3efc658 Qi Zheng           2023-06-09  223  	down_write(&shrinker_rwsem);
-e33c267ab70de42 Roman Gushchin     2022-05-31  224  
-e33c267ab70de42 Roman Gushchin     2022-05-31  225  	old = shrinker->name;
-e33c267ab70de42 Roman Gushchin     2022-05-31  226  	shrinker->name = new;
-e33c267ab70de42 Roman Gushchin     2022-05-31  227  
-e33c267ab70de42 Roman Gushchin     2022-05-31  228  	if (shrinker->debugfs_entry) {
-e33c267ab70de42 Roman Gushchin     2022-05-31  229  		snprintf(buf, sizeof(buf), "%s-%d", shrinker->name,
-e33c267ab70de42 Roman Gushchin     2022-05-31  230  			 shrinker->debugfs_id);
-e33c267ab70de42 Roman Gushchin     2022-05-31  231  
-e33c267ab70de42 Roman Gushchin     2022-05-31  232  		entry = debugfs_rename(shrinker_debugfs_root,
-e33c267ab70de42 Roman Gushchin     2022-05-31  233  				       shrinker->debugfs_entry,
-e33c267ab70de42 Roman Gushchin     2022-05-31  234  				       shrinker_debugfs_root, buf);
-e33c267ab70de42 Roman Gushchin     2022-05-31  235  		if (IS_ERR(entry))
-e33c267ab70de42 Roman Gushchin     2022-05-31  236  			ret = PTR_ERR(entry);
-e33c267ab70de42 Roman Gushchin     2022-05-31  237  		else
-e33c267ab70de42 Roman Gushchin     2022-05-31  238  			shrinker->debugfs_entry = entry;
-e33c267ab70de42 Roman Gushchin     2022-05-31  239  	}
-e33c267ab70de42 Roman Gushchin     2022-05-31  240  
-47a7c01c3efc658 Qi Zheng           2023-06-09  241  	up_write(&shrinker_rwsem);
-e33c267ab70de42 Roman Gushchin     2022-05-31  242  
-e33c267ab70de42 Roman Gushchin     2022-05-31  243  	kfree_const(old);
-e33c267ab70de42 Roman Gushchin     2022-05-31  244  
-e33c267ab70de42 Roman Gushchin     2022-05-31  245  	return ret;
-e33c267ab70de42 Roman Gushchin     2022-05-31  246  }
-e33c267ab70de42 Roman Gushchin     2022-05-31  247  EXPORT_SYMBOL(shrinker_debugfs_rename);
-e33c267ab70de42 Roman Gushchin     2022-05-31  248  
-26e239b37ebdfd1 Joan Bruguera Micó 2023-05-03 @249  struct dentry *shrinker_debugfs_detach(struct shrinker *shrinker,
-26e239b37ebdfd1 Joan Bruguera Micó 2023-05-03  250  				       int *debugfs_id)
-5035ebc644aec92 Roman Gushchin     2022-05-31  251  {
-badc28d4924bfed Qi Zheng           2023-02-02  252  	struct dentry *entry = shrinker->debugfs_entry;
-badc28d4924bfed Qi Zheng           2023-02-02  253  
-47a7c01c3efc658 Qi Zheng           2023-06-09  254  	lockdep_assert_held(&shrinker_rwsem);
-5035ebc644aec92 Roman Gushchin     2022-05-31  255  
-e33c267ab70de42 Roman Gushchin     2022-05-31  256  	kfree_const(shrinker->name);
-14773bfa70e67f4 Tetsuo Handa       2022-07-20  257  	shrinker->name = NULL;
-e33c267ab70de42 Roman Gushchin     2022-05-31  258  
-26e239b37ebdfd1 Joan Bruguera Micó 2023-05-03  259  	*debugfs_id = entry ? shrinker->debugfs_id : -1;
-badc28d4924bfed Qi Zheng           2023-02-02  260  	shrinker->debugfs_entry = NULL;
-badc28d4924bfed Qi Zheng           2023-02-02  261  
-badc28d4924bfed Qi Zheng           2023-02-02  262  	return entry;
-5035ebc644aec92 Roman Gushchin     2022-05-31  263  }
-5035ebc644aec92 Roman Gushchin     2022-05-31  264  
-26e239b37ebdfd1 Joan Bruguera Micó 2023-05-03 @265  void shrinker_debugfs_remove(struct dentry *debugfs_entry, int debugfs_id)
-26e239b37ebdfd1 Joan Bruguera Micó 2023-05-03  266  {
-26e239b37ebdfd1 Joan Bruguera Micó 2023-05-03  267  	debugfs_remove_recursive(debugfs_entry);
-26e239b37ebdfd1 Joan Bruguera Micó 2023-05-03  268  	ida_free(&shrinker_debugfs_ida, debugfs_id);
-26e239b37ebdfd1 Joan Bruguera Micó 2023-05-03  269  }
-26e239b37ebdfd1 Joan Bruguera Micó 2023-05-03  270  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/remoteproc/stm32_rproc.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+> index 98234b44f0389..9d9b13530f78a 100644
+> --- a/drivers/remoteproc/stm32_rproc.c
+> +++ b/drivers/remoteproc/stm32_rproc.c
+> @@ -921,7 +921,7 @@ static void stm32_rproc_remove(struct platform_device *pdev)
+>  	rproc_free(rproc);
+>  }
+>  
+> -static int __maybe_unused stm32_rproc_suspend(struct device *dev)
+> +static int stm32_rproc_suspend(struct device *dev)
+>  {
+>  	struct rproc *rproc = dev_get_drvdata(dev);
+>  	struct stm32_rproc *ddata = rproc->priv;
+> @@ -932,7 +932,7 @@ static int __maybe_unused stm32_rproc_suspend(struct device *dev)
+>  	return 0;
+>  }
+>  
+> -static int __maybe_unused stm32_rproc_resume(struct device *dev)
+> +static int stm32_rproc_resume(struct device *dev)
+>  {
+>  	struct rproc *rproc = dev_get_drvdata(dev);
+>  	struct stm32_rproc *ddata = rproc->priv;
+> @@ -943,16 +943,16 @@ static int __maybe_unused stm32_rproc_resume(struct device *dev)
+>  	return 0;
+>  }
+>  
+> -static SIMPLE_DEV_PM_OPS(stm32_rproc_pm_ops,
+> -			 stm32_rproc_suspend, stm32_rproc_resume);
+> +static DEFINE_SIMPLE_DEV_PM_OPS(stm32_rproc_pm_ops,
+> +				stm32_rproc_suspend, stm32_rproc_resume);
+>  
+>  static struct platform_driver stm32_rproc_driver = {
+>  	.probe = stm32_rproc_probe,
+>  	.remove_new = stm32_rproc_remove,
+>  	.driver = {
+>  		.name = "stm32-rproc",
+> -		.pm = &stm32_rproc_pm_ops,
+> -		.of_match_table = of_match_ptr(stm32_rproc_match),
+> +		.pm = pm_ptr(&stm32_rproc_pm_ops),
+> +		.of_match_table = stm32_rproc_match,
+>  	},
+>  };
+>  module_platform_driver(stm32_rproc_driver);
