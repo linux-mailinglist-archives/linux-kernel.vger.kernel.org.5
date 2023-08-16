@@ -2,66 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A2177EB33
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D9177EB39
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346313AbjHPVA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 17:00:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
+        id S1346326AbjHPVBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 17:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346360AbjHPVAm (ORCPT
+        with ESMTP id S1346320AbjHPVBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 17:00:42 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7F82736
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:00:36 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d62a7776f69so5742460276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:00:36 -0700 (PDT)
+        Wed, 16 Aug 2023 17:01:20 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C3B2711
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:01:19 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-26b2beae166so3061694a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:01:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692219636; x=1692824436;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mEKCsNAdQtsP5aYZXuXtRCirnaLNuizB4J6R93XEmoU=;
-        b=MD16cjoR0K1HMlo0H/xbNVvBx5YSivolQqz/f7DPhaxbb0pBoZ5vpRco9aTKjQNeOq
-         Bbldshr40dC8nnhFfQQpBpWIwGc2S9sD0RKBlUwrehKJGuUi1yNZqOgoa2VjGLFGe5x8
-         7YvpmqXmRe9A6FtgxQ4ZeKxUjjBPN6VwzXq/JbxANwzdHgRYRz2Vqepa3jXTb4a+ksth
-         DyL3gu6oLgOTm/JrphBHF3TynJG6g3/pAim7l3pG0qRYQ9ZUPJXQPam6BLurLLhzzGEZ
-         IMR5NQNVOJ7nLv8so8JlkvNC1zRHpGtYOi5uCy7FGIuAHXuprn96m627q9ZaXKqlZTjg
-         Mwkg==
+        d=chromium.org; s=google; t=1692219679; x=1692824479;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tueXu0Ns+Bnh4f2pFBmSiDXwjez31Lg3bE/m1p/Z7F8=;
+        b=h4cypbZYEWuj6qfKg7BYlroI0Rq4iT9ZorXDMReDLbo9Wu+H21+QzHnh6cn+uH7FUH
+         m5V6a0iKZYYt87hSYYjH4w5codj5mGYhURlwquaQ2fLaO+V47hqsxsbbhePO+MorB7XS
+         d5+G+FTLYfTttycSUwBFJbf4BSCr7mVis1t/k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692219636; x=1692824436;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mEKCsNAdQtsP5aYZXuXtRCirnaLNuizB4J6R93XEmoU=;
-        b=VeYvhjtEscuzT579ycpIwyB5gSK7Skdo285904xnxjbU6CvmkuQk6yKzfeZW5lgcPh
-         KAv1UvZmyFRYh99Yu11PEi8cTbA2NFUiRKkzmpBqwUxP4sAFsteLySXyW5hfREKnu0DF
-         a9PolBco/ZuUhfKFQFSSFLb/gbvFN61ERrgcF+9fpGq1tIBsfrpmMmFaJiPjUnoh3D22
-         fb0iD0kEu7yhXKGk+5HMiviQx2kGq6jPfwrMayAZyzQTImU6ZvTXNAdOBBI9lTlI2fqV
-         pA0OUh0VVEwm8NW+kMIt2zOWYQN0L9Vras+UTUMaGOMu6aZzuA6XnSNpYa9GNyysonw2
-         TfhA==
-X-Gm-Message-State: AOJu0YyyWY7uyEwOYiBWpdFA7IZGzSBYPBHiQMdxQNFDCWSPD7Hp567R
-        +xqyzF7kusE73vUIbI0Iw0YDpVteGUg=
-X-Google-Smtp-Source: AGHT+IGtmkH20GX7f4dZ9plMJAihmnuy0mIGZ1YWKc/0uhrE3EJ6VKwRoOa33zghHSgI7WW2mrPYn78qvqU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:d84c:0:b0:d62:e781:5f02 with SMTP id
- p73-20020a25d84c000000b00d62e7815f02mr44598ybg.13.1692219636034; Wed, 16 Aug
- 2023 14:00:36 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 14:00:23 -0700
-In-Reply-To: <20230719144131.29052-2-binbin.wu@linux.intel.com>
-Mime-Version: 1.0
-References: <20230719144131.29052-1-binbin.wu@linux.intel.com> <20230719144131.29052-2-binbin.wu@linux.intel.com>
-Message-ID: <ZN0454peMb3z/0Bg@google.com>
-Subject: Re: [PATCH v10 1/9] KVM: x86/mmu: Use GENMASK_ULL() to define __PT_BASE_ADDR_MASK
-From:   Sean Christopherson <seanjc@google.com>
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
-        David.Laight@aculab.com, robert.hu@linux.intel.com,
-        guang.zeng@intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20221208; t=1692219679; x=1692824479;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tueXu0Ns+Bnh4f2pFBmSiDXwjez31Lg3bE/m1p/Z7F8=;
+        b=AzkISdj5lFnBV2LnXLV7DG3M6TzS0VcKTnHwg7IuKFuZeNw5LkW8Zg9FQ1JShvjxCV
+         1BQHTF1JM2VH0K8lja2UMqokmgJqa/llnBMJpbdwcwyriGLQpjjvfIuOBnpYl6EEAA8O
+         dUhFannVNR7WwSaxP4CFP7OUOKwMA8NHxfyPwIZxO0ECYCDpiw4dZ4IL8tgm25bC/P8y
+         xxbBRb6FnvjdWLB2m6uDGiOTw7WLEoq1S9lF1+ePQyiHEf9Lcty8YesY6F0VNckMKgs0
+         KNIM5MlAAOon8C2dLxA7Nv3tz2XT3pvL6BbqNPri2/VFNZveyVZg7aG/WZwga0d1cJ3n
+         2HIw==
+X-Gm-Message-State: AOJu0Yw940R5cltN8YoIUUCuV00UCRAQT/h/AHDcQIxiWRQ4TPpEZrhD
+        HKi04O/qLfZjouLExSHahBB+hQ==
+X-Google-Smtp-Source: AGHT+IEoTqsAY9X4d8zG8oJVSKdkfpXWnoDJkiEA4AHkAlofDdq5E5GGVkNjWu2cpshxXS33CUofZw==
+X-Received: by 2002:a17:90a:f40d:b0:263:287e:3991 with SMTP id ch13-20020a17090af40d00b00263287e3991mr2358405pjb.22.1692219678711;
+        Wed, 16 Aug 2023 14:01:18 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id h18-20020a17090aea9200b00263f41a655esm161046pjz.43.2023.08.16.14.01.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 14:01:18 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Justin Stitt <justinstitt@google.com>
+Cc:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] um: refactor deprecated strncpy to memcpy
+Date:   Wed, 16 Aug 2023 14:01:14 -0700
+Message-Id: <169221967233.1236805.5075481446836951537.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230809-arch-um-v3-1-f63e1122d77e@google.com>
+References: <20230809-arch-um-v3-1-f63e1122d77e@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,62 +73,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023, Binbin Wu wrote:
-> Use GENMASK_ULL() to define __PT_BASE_ADDR_MASK.
-
-Using GENMASK_ULL() is an opportunistic cleanup, it is not the main purpose for
-this patch.  The main purpose is to extract the maximum theoretical mask for guest
-MAXPHYADDR so that it can be used to strip bits from CR3.
-
-And rather than bury the actual use in "KVM: x86: Virtualize CR3.LAM_{U48,U57}",
-I think it makes sense to do the masking in this patch.  That change only becomes
-_necessary_ when LAM comes along, but it's completely valid without LAM.
-
-That will also provide a place to explain why we decided to unconditionally mask
-the pgd (it's harmless for 32-bit guests, querying 64-bit mode would be more
-expensive, and for EPT the mask isn't tied to guest mode).  And it should also
-explain that using PT_BASE_ADDR_MASK would actually be wrong (PAE has 64-bit
-elements _except_ for CR3).
-
-E.g. end up with a shortlog for this patch along the lines of:
-
-  KVM: x86/mmu: Drop non-PA bits when getting GFN for guest's PGD
-
-and write the changelog accordingly.
-
-> No functional change intended.
+On Wed, 09 Aug 2023 18:19:32 +0000, Justin Stitt wrote:
+> Use `memcpy` since `console_buf` is not expected to be NUL-terminated
+> and it more accurately describes what is happening with the buffers
+> `console_buf` and `string` as per Kees' analysis [1].
 > 
-> Signed-off-by: Binbin Wu <binbin.wu@linux.intel.com>
-> ---
->  arch/x86/kvm/mmu/mmu_internal.h | 1 +
->  arch/x86/kvm/mmu/paging_tmpl.h  | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
+> Also mark char buffer as `__nonstring` as per Kees' suggestion [2].
 > 
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> index d39af5639ce9..7d2105432d66 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -21,6 +21,7 @@ extern bool dbg;
->  #endif
->  
->  /* Page table builder macros common to shadow (host) PTEs and guest PTEs. */
-> +#define __PT_BASE_ADDR_MASK GENMASK_ULL(51, 12)
->  #define __PT_LEVEL_SHIFT(level, bits_per_level)	\
->  	(PAGE_SHIFT + ((level) - 1) * (bits_per_level))
->  #define __PT_INDEX(address, level, bits_per_level) \
-> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-> index 0662e0278e70..00c8193f5991 100644
-> --- a/arch/x86/kvm/mmu/paging_tmpl.h
-> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
-> @@ -62,7 +62,7 @@
->  #endif
->  
->  /* Common logic, but per-type values.  These also need to be undefined. */
-> -#define PT_BASE_ADDR_MASK	((pt_element_t)(((1ULL << 52) - 1) & ~(u64)(PAGE_SIZE-1)))
-> +#define PT_BASE_ADDR_MASK	((pt_element_t)__PT_BASE_ADDR_MASK)
->  #define PT_LVL_ADDR_MASK(lvl)	__PT_LVL_ADDR_MASK(PT_BASE_ADDR_MASK, lvl, PT_LEVEL_BITS)
->  #define PT_LVL_OFFSET_MASK(lvl)	__PT_LVL_OFFSET_MASK(PT_BASE_ADDR_MASK, lvl, PT_LEVEL_BITS)
->  #define PT_INDEX(addr, lvl)	__PT_INDEX(addr, lvl, PT_LEVEL_BITS)
-> -- 
-> 2.25.1
+> This change now makes it more clear what this code does and that
+> `console_buf` is not expected to be NUL-terminated.
 > 
+> [...]
+
+Applied to for-next/hardening, thanks!
+
+[1/1] um: refactor deprecated strncpy to memcpy
+      https://git.kernel.org/kees/c/be8dffa04de3
+
+Take care,
+
+-- 
+Kees Cook
+
