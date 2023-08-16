@@ -2,133 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A22BF77E338
+	by mail.lfdr.de (Postfix) with ESMTP id EBB9C77E339
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244993AbjHPOIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 10:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
+        id S245281AbjHPOIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 10:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244204AbjHPOHz (ORCPT
+        with ESMTP id S242867AbjHPOHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 10:07:55 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2058.outbound.protection.outlook.com [40.107.21.58])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BEC26B5
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:07:53 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=alsTJrqeSsRsGNoN/2qhPZ+krNOExJsY9L7JLdBuewAsCk3c1tABWi5LKA0F0RrhAGb5FaBV0X//7sZEaoo1PQbO4WrjRDMDQ0ZabMtKLZBUhRvrD7mdkuQxKuVgok1ln3HCHhDIsWAz5wO75wnjuRXS53Q8l/tUjwqLYkdedO+EUUU9vupl2aVyvBMEtUVWE4EEE6Yj9vtshYqc5XA48BJa3fpgjVLPC3NUs7YVz3Ac5Q/GY+pEMUVqxwnneZI5YNSexlftlf0pkhU0O0fOwPvfgESFe94sMRaXEqMt/M9wLRVW8S2gGU6VMuTJ1RRIp21JX89tHtinWOxQYidbyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Xuvn4i45cvbcfisnvDoRqP4JjHw+tmZS3tHfQnk/s2E=;
- b=LEGdFUCsXnandyhpcV3+vcIkTiakEHk8Is0BSTu6y1oZWgsZ6jJtlg0Mw7woL/f/BJkKHuEAgNNSm3CLBY7BUXY3MuxeGXtyJ5F/8YObTYPmYknu9fpIDM5J+/R7YSSQdgrmoF7p09YcrMbHyeb/I/VIN99cg7ShAttBDGux+1BkLkmVfGXl42ILqZ0vlTE1MszAPJYGqCcF3Itha2pdSmPnBjdEh5O5Jz44SXk3Z/6Ktg+mPSZvcs1mcNR3C5IQ9HJqx+GuGszbfF0ukmJDNly4opJn6vFh/Unr71BLS2isSpUilqG74Yq8tgBS1y8ye6IyzqZpGLxoaFD0lG0hGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
- dkim=pass header.d=siemens.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Xuvn4i45cvbcfisnvDoRqP4JjHw+tmZS3tHfQnk/s2E=;
- b=nSRff++NwekPmZ7T7iYTVt6qhgogMAzq+Dn1Vb/7OUNDQ0ij1ZUDOcFm0LFRaJwPjuISmxRjiN/0KTyQrFzEtc4RYffoKZ+XdTi1wGinnGeUCj2rITUE3zQiTiy6l/VkUdroFvqtga3u8SPK2cQYWIiGi8KkUvG7sd09QSyMN8bn9MdtLFGipJCiXa90LkYUHveO/Osd24J0A10qKB60au04JxEfas+xN7Cf3MphZRZC2dY7tqcWh8v9Ym+9bsEuEk+mAjF1LEWKXFB46Amy3tmWkyHZZsTcX4FTbMuY3PjbDgVmy9uqU4+nNWa4bp+beV5R/WafOWHXyalaCE8kyg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siemens.com;
-Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:588::19)
- by AS8PR10MB7230.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:61a::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Wed, 16 Aug
- 2023 14:07:48 +0000
-Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::7f20:d403:b43d:12e2]) by AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::7f20:d403:b43d:12e2%3]) with mapi id 15.20.6678.025; Wed, 16 Aug 2023
- 14:07:48 +0000
-Message-ID: <1fd4b729-3896-48b6-865e-85b4f1ba5ee9@siemens.com>
-Date:   Wed, 16 Aug 2023 16:07:46 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 0/5] introduce tee-based EFI Runtime Variable Service
-Content-Language: en-US
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Masahisa Kojima <masahisa.kojima@linaro.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org
-References: <20230807025343.1939-1-masahisa.kojima@linaro.org>
- <CAC_iWjLU+mVtG4uGVoEJSJwuE0=GVcfJgi=h3QX54=fh2P4EAg@mail.gmail.com>
- <660cec45-d0d1-433f-b58e-a22a07a289fb@siemens.com>
- <CADQ0-X_dJag7EuEEEgCZrnJNNH9Va77mxmGYA9vPFw9DkoB-AA@mail.gmail.com>
- <CAC_iWjLzaSBz3_j=rz73QLCBX_YouCL+KBvR7sXMFFMQA3pOPg@mail.gmail.com>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-In-Reply-To: <CAC_iWjLzaSBz3_j=rz73QLCBX_YouCL+KBvR7sXMFFMQA3pOPg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR3P281CA0185.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a4::18) To AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:20b:588::19)
+        Wed, 16 Aug 2023 10:07:54 -0400
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C528BE48
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:07:52 -0700 (PDT)
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-76c9334baedso402507485a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:07:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692194872; x=1692799672;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a6y1TC7cBo2QfNhr6teNP7YTGsh50NU2RBX8x/ID4jo=;
+        b=k4kgB5TT3mRfC05CUMGFC+Azf/RFy0MlvRJq92FMWZQGbHW1k7ZxB1719KKTe+h963
+         CZIvfEfFFWFTQwzaKFyFUe8V6wVvQ8lkSYPBRY+A8vkbL328qhWXOJuk9V6gt4VP+f0X
+         GdNYmK5fJrDuyzjXrXPDzHgml88XNrbQARw/vjvj0O4IkQIVQqg5KVTy+62xUrgp9AER
+         DIhuHr/+USZsg/Whvidv59AdF2hFn0n9edxgeq6kcgZEXsY38BvFOyLQw0ZKM9eU59Ta
+         /C5h6NY1o+L/NmRYMBv6vID1aFXaOSSlDxdKueo7I8mUGRh+DYnWy8lPO1G00GNCGzqI
+         Y4xA==
+X-Gm-Message-State: AOJu0Yw7lIUDrZQAdEerQbyZI0PjR/eVfQ0Y7xhE6BOmJw59tOLOSiFx
+        0HaN782KYyAS2h78uV/0+JU=
+X-Google-Smtp-Source: AGHT+IE+NWFmX+qIyW0PC5n9y8nxfSsDzg/oazw5Ld8X12ERVYf0LYnO7mEwbKLJNdBTxrFnemOJLA==
+X-Received: by 2002:a05:620a:254c:b0:767:ad42:cc32 with SMTP id s12-20020a05620a254c00b00767ad42cc32mr1660477qko.2.1692194871761;
+        Wed, 16 Aug 2023 07:07:51 -0700 (PDT)
+Received: from maniforge ([2620:10d:c091:400::5:6eb])
+        by smtp.gmail.com with ESMTPSA id i15-20020a05620a074f00b0076c60b95b87sm4428533qki.96.2023.08.16.07.07.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 07:07:50 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 09:07:48 -0500
+From:   David Vernet <void@manifault.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: kernel/bpf/cpumask.c:41:21: warning: no previous declaration for
+ 'bpf_cpumask_create'
+Message-ID: <20230816140748.GA759901@maniforge>
+References: <202308162115.Hn23vv3n-lkp@intel.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS4PR10MB6181:EE_|AS8PR10MB7230:EE_
-X-MS-Office365-Filtering-Correlation-Id: ed547862-537f-4917-f7bd-08db9e622be9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HoH/AYgX2czoA+S2MDkusMja5+R4r52oxo5DxM/Om/ESNMlTqrxf8ljvoAF15s30W+EVYVe1XgLsDzGtdqF13vHS1ccRveF7nSgSdhKorARyIPf/dUK5qdTOqud+XgxehZSjabroTR/ZJ+shAYSE+pY7lnpRvkPdOTOsdidVJzNTmmnoBYgAWLIAyxSwW8ULb76f/pcPvzOHSmhSyn5eP48z0pv0Hr6yuEtz+bbtNOAlzn3EWqv3ujvKMyPD5b6IttxmeAZA+m0Gv40BjKCCR+nXyoR1EbhhjFWEiUm++AWbhi4EnEcn1kHD5MvQ+4ndG9RY2W59vfVsGnwnZmURXhJ2mG8wxWl7FQGQgseiMIgOAEezHs8WFQqf4ay+vGckY5FnhwHq9WbMx5UUwU0gBNj7RHBdAB0ElgGy+o5H8D1qV4x6uey3khAEjjeh9eaQBKI5u7A2b3NxQ1PA7kxh+Y69l60mCSZRwmu3uoQpbLsEMJz25WIYj0mhoD20+VlYi786c7fTgtNdCBfrOdl30I7J0Z7GRX/wlhHfNUkXHarEoiHJsO8iZHBDDYOeeK6oSoZaPvw3U9Lp44v6p6HKqzsnuyVq7BQshSgI/0J4IEd9QrMIjiXk9/CxFLbKswCVEZ4ZFoNCT0jdYlLITUy7nQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(376002)(366004)(346002)(39860400002)(1800799009)(186009)(451199024)(2906002)(7416002)(2616005)(26005)(31696002)(86362001)(53546011)(36756003)(6512007)(6486002)(6506007)(82960400001)(38100700002)(83380400001)(478600001)(66476007)(54906003)(66946007)(66556008)(110136005)(44832011)(316002)(8936002)(4326008)(8676002)(31686004)(41300700001)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SllJWkpHeXlQUDh4UzZ4SjZQekNNS2YvVGJxVnNzb045V0lmY2s2VG83QnVT?=
- =?utf-8?B?c3k4QjNnOTRQd2k1WWM4aFFvdFc1TWNQeFBLUjUxMWpmUTJmSnJkdFVyZ1dY?=
- =?utf-8?B?VDJTaTVuVkk1dWdmZkhWUHhodkhPQ29wMWhXYURSSXIzcTI0dm1pYURVSzRj?=
- =?utf-8?B?eG00Sy83aW9FOEN5WVFDRWhXRHdNdlBnZG9OMFZveWFQS1ViVXlibmFtVE9j?=
- =?utf-8?B?enpPYWlYazlIN2xEYW1rQzAyejBmbXZxYmR5SE5QU20veUtvdzVPcThKcTZp?=
- =?utf-8?B?QmpudDFxc2NhQUFiZUZySkpWVkJDZkl5MmVDbGJia1ZseHZ1YWFRT1p3clEz?=
- =?utf-8?B?clFCbVZBZU1Yb1h0VHFBaVZvd3djWFdlcFloMlA3ckRSN2tKYjN2RVhUMEpu?=
- =?utf-8?B?U0FFeERmb2NIYmNWUzVEUkduL0pJdGU2cXFiQlFueUVrWFprVGtPVVR5dnZX?=
- =?utf-8?B?L2M0NWNEcXpyTVFCNW40T3orY1RhZ0hYcGFRdkhaMHRmMjdPQm1SMFJIeCtl?=
- =?utf-8?B?S2dqVXFTdmUyWWFacFNhNTZBa0c0d2lSMXNsMUllMFlaYlY0SHR0MnBaTFVF?=
- =?utf-8?B?VkF2V2U3WUt0S3ZjeWNUR0RJeG5yaW5ER2hhQ21iSXcxR2QyUEFMOEcwODVz?=
- =?utf-8?B?Z1V5T2wvUU9iQmorL0FIY3Vmbk1DQXkzSXdoQldDc0tZYU1NTG43bVUzc25J?=
- =?utf-8?B?eldEMmFyRHpyOGpMUm1oYWxoM1RLUCszakNYTllDbFJIN3UzUXQ2YnBWV2VR?=
- =?utf-8?B?MjVGc1Rvb0dHMTMyVDByYStjcVpLL1NhcVk3YlQvb0xJRHcrMjhoOGVFa2VC?=
- =?utf-8?B?MTFudEViamVzYkx4OVBSV2hhM3hLa0ZreXJGcFVDMW5wcytZMk5UdE5BRk00?=
- =?utf-8?B?Q0UwdzVEMmpzNnF6NUpub1pqbHNSbzhyVzBXcUZSeTBDYjdEQlpoUnpLLzJO?=
- =?utf-8?B?cUtzTUtGM0lrU0dGdlVabi8rSGhYMWRxS0s2akR1c2J5dzZoOHhvcEplS2Fp?=
- =?utf-8?B?YVNidS9XcnpLN2tBckhJalBwTkExZlNNUk1kUDk3VVdxWFhVVEdES3RISEJm?=
- =?utf-8?B?NlJDK3owdlNiYi9iNXJaMUx3RjMzZ3k2UWNEQ29PNVlaSDNOV2tvMXVXSzlM?=
- =?utf-8?B?b3dXbjc5U2Y4Q3pyOFlIZlE4S2xFRmhNZ3YxaVV2WmI5UXVmSnhUUHEraWkw?=
- =?utf-8?B?UXdJbDdtUlVMckN4QldyWnRPZVA4Q2o1dEZFVHNMcHRUemJBQUdNQTBPa1VP?=
- =?utf-8?B?M3dRUEovMVhUQ2g1aWhTcGtsS2FWRE1Lb0VPVm9MRGFwU01UQUN1Rm1wUHhU?=
- =?utf-8?B?Mmd0c1BzWVlpaWlyaUE3Y3JtUVhYTGNoWGZMaUsyKzRNeWRIOHV6WVpKek40?=
- =?utf-8?B?SE1NQ1gzYWFLVy9JblVkMHhmZFBmbmpwMkpyVFM3OXNVbDd0NjVGMEpvRy9W?=
- =?utf-8?B?dDJxdnFqSktOMWEvbWZRVE9ycmN0YmVJcWkzaFhPaUx2aG5VQjZQS1Q5WjdJ?=
- =?utf-8?B?emI1Z3hpVlZINnJ0K0lOd0dHdmU2QUxGS2VMU0lNVGpjTlpXdURSVVFSNjZy?=
- =?utf-8?B?akpxYkpEMWlnQm5qVzhtblNBTHArejZPQzU0ZDZlb3JqL1ZLc3BnajBQS09z?=
- =?utf-8?B?UENUb1J0TFJ0QWd0a1FOTmZZUk1TdDREK01XaGsydnBiMzVTSW9PSWVBU3Rr?=
- =?utf-8?B?dnpRb0FELzB4TktGN3JYTEppSEZWekZxNWR1cWNrMjNWZGt6U3h6aGM5MklT?=
- =?utf-8?B?WVBhR0ZZeEhYOXpYUzRaYXJBdTdtT2lrdE1RZS9sdnl5NUdGWEhxaDBGcWZ6?=
- =?utf-8?B?VkF4dHhqdUpWYTEybzVGS21BTXZzUjNpbFRXUm5IZEQ3K3NBY3ArREN4Skk2?=
- =?utf-8?B?QVUzL0VINGNJQmQvWnErL3BCcldpQ0hqZkQ2bkgvM1paU1ZEc1NuWVgwZVQ4?=
- =?utf-8?B?RDBYa2t0SDllYkJoa2hkMEt0TjQzNk0rTGo3VHRnT2RIOVhOek15dGFObUJ4?=
- =?utf-8?B?L3lhRGZycy9oTW9SV3duQi9QTnI0a0plcDA0ZERMQnNReFdiZ1Z6QlBJZXlG?=
- =?utf-8?B?LzVHSlltVHZhSzUya1ZqcU12ZGYwZGR6N1MvTk00dmh1Q084ZEVLUmc4SDBu?=
- =?utf-8?B?K0pQSlRVckhkdkN3d0JpOW0zdnI1cE9oQVNtSmhBQ3dWZjN6U1VrRlJUdG5T?=
- =?utf-8?B?MEE9PQ==?=
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed547862-537f-4917-f7bd-08db9e622be9
-X-MS-Exchange-CrossTenant-AuthSource: AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 14:07:48.5603
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: P97eVk9q+mGj59rK1m1Wf/rIDQZk00iHDu+XcqIH0bv4v/Qb2nz33THUIqn+cELPgNmbeUritCEfCOGImgPmCA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR10MB7230
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202308162115.Hn23vv3n-lkp@intel.com>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
         URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -136,69 +62,281 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.08.23 13:58, Ilias Apalodimas wrote:
-> On Tue, 15 Aug 2023 at 05:41, Masahisa Kojima
-> <masahisa.kojima@linaro.org> wrote:
->>
->> Hi Jan,
->>
->> 2023年8月15日(火) 2:23 Jan Kiszka <jan.kiszka@siemens.com>:
->>>
->>> On 14.08.23 11:24, Ilias Apalodimas wrote:
->>>> Hi Jan,
->>>>
->>>> On Mon, 7 Aug 2023 at 05:53, Masahisa Kojima <masahisa.kojima@linaro.org> wrote:
->>>>>
->>>>> This series introduces the tee based EFI Runtime Variable Service.
->>>>>
->>>>> The eMMC device is typically owned by the non-secure world(linux in
->>>>> this case). There is an existing solution utilizing eMMC RPMB partition
->>>>> for EFI Variables, it is implemented by interacting with
->>>>> OP-TEE, StandaloneMM(as EFI Variable Service Pseudo TA), eMMC driver
->>>>> and tee-supplicant. The last piece is the tee-based variable access
->>>>> driver to interact with OP-TEE and StandaloneMM.
->>>>>
->>>>> Changelog:
->>>>> v7 -> v8
->>>>> Only patch #3 "efi: Add tee-based EFI variable driver" is updated.
->>>>> - fix typos
->>>>> - refactor error handling, direct return if applicable
->>>>> - use devm_add_action_or_reset() for closing of tee context/session
->>>>> - remove obvious comment
->>>>
->>>> Any chance you can run this and see if it solves your issues?
->>>>
->>>
->>> I also need [1], and I still need a cleanup script before terminating
->>> the tee-supplicant, right?
->>
->>
->> Yes, we need patch[1] and a cleanup script.
->> Sorry, I should note in the cover letter.
->>
->>> And if need some service in the initrd
->>> already, I still need to start the supplicant there and transfer its
->>> ownership to systemd later on?
->>
->> Yes.
->>
->>> These patches here only make life easier
->>> if the supplicant is started by systemd, after efivarfs has been
->>> mounted, correct?
+On Wed, Aug 16, 2023 at 09:25:30PM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
+> commit: 516f4d3397c9e90f4da04f59986c856016269aa1 bpf: Enable cpumasks to be queried and used as kptrs
+> date:   7 months ago
+> config: x86_64-randconfig-x076-20230816 (https://download.01.org/0day-ci/archive/20230816/202308162115.Hn23vv3n-lkp@intel.com/config)
+> compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+> reproduce: (https://download.01.org/0day-ci/archive/20230816/202308162115.Hn23vv3n-lkp@intel.com/reproduce)
 > 
-> Not systemd specifically.  Any tool that can signal
-> <dev>/driver/unbind would work.  Sumit is just reusing the default
-> unbind notification mechanism
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202308162115.Hn23vv3n-lkp@intel.com/
 > 
+> All warnings (new ones prefixed by >>):
+> 
+> >> kernel/bpf/cpumask.c:41:21: warning: no previous declaration for 'bpf_cpumask_create' [-Wmissing-declarations]
+>     struct bpf_cpumask *bpf_cpumask_create(void)
 
-I was referring to the boot ordering topic, not the shutdown issue.
+Meh, more noise from lkp because of kfuncs. It would be nice if as a
+courtesy, these warnings were fixed before they got turned on and the
+email list got spammed 7 months after the commit landed; especially
+given that this is essentially redundant with -Wmissing-prototypes.
 
-The latter has now a nicer way to trigger the device shutdown prior to
-killing tee-supplicant, but you still need to do that explicitly, no?
+Anyways, the solution here is to just add the following around all
+kfuncs that already have -Wmissing-prototypes disabled:
 
-Jan
+__diag_push();
+__diag_ignore_all("-Wmissing-declarations",
+                  "Global kfuncs as their definitions will be in BTF");
 
--- 
-Siemens AG, Technology
-Linux Expert Center
+I'll send out a patch that adds this around all kfuncs so we can avoid
+all of these warnings in one go.
 
+>                         ^~~~~~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:55:21: warning: no previous declaration for 'bpf_cpumask_acquire' [-Wmissing-declarations]
+>     struct bpf_cpumask *bpf_cpumask_acquire(struct bpf_cpumask *cpumask)
+>                         ^~~~~~~~~~~~~~~~~~~
+>    kernel/bpf/cpumask.c:61:21: warning: no previous declaration for 'bpf_cpumask_kptr_get' [-Wmissing-declarations]
+>     struct bpf_cpumask *bpf_cpumask_kptr_get(struct bpf_cpumask **cpumaskp)
+>                         ^~~~~~~~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:79:6: warning: no previous declaration for 'bpf_cpumask_release' [-Wmissing-declarations]
+>     void bpf_cpumask_release(struct bpf_cpumask *cpumask)
+>          ^~~~~~~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:91:5: warning: no previous declaration for 'bpf_cpumask_first' [-Wmissing-declarations]
+>     u32 bpf_cpumask_first(const struct cpumask *cpumask)
+>         ^~~~~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:96:5: warning: no previous declaration for 'bpf_cpumask_first_zero' [-Wmissing-declarations]
+>     u32 bpf_cpumask_first_zero(const struct cpumask *cpumask)
+>         ^~~~~~~~~~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:101:6: warning: no previous declaration for 'bpf_cpumask_set_cpu' [-Wmissing-declarations]
+>     void bpf_cpumask_set_cpu(u32 cpu, struct bpf_cpumask *cpumask)
+>          ^~~~~~~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:109:6: warning: no previous declaration for 'bpf_cpumask_clear_cpu' [-Wmissing-declarations]
+>     void bpf_cpumask_clear_cpu(u32 cpu, struct bpf_cpumask *cpumask)
+>          ^~~~~~~~~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:117:6: warning: no previous declaration for 'bpf_cpumask_test_cpu' [-Wmissing-declarations]
+>     bool bpf_cpumask_test_cpu(u32 cpu, const struct cpumask *cpumask)
+>          ^~~~~~~~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:125:6: warning: no previous declaration for 'bpf_cpumask_test_and_set_cpu' [-Wmissing-declarations]
+>     bool bpf_cpumask_test_and_set_cpu(u32 cpu, struct bpf_cpumask *cpumask)
+>          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:133:6: warning: no previous declaration for 'bpf_cpumask_test_and_clear_cpu' [-Wmissing-declarations]
+>     bool bpf_cpumask_test_and_clear_cpu(u32 cpu, struct bpf_cpumask *cpumask)
+>          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:141:6: warning: no previous declaration for 'bpf_cpumask_setall' [-Wmissing-declarations]
+>     void bpf_cpumask_setall(struct bpf_cpumask *cpumask)
+>          ^~~~~~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:146:6: warning: no previous declaration for 'bpf_cpumask_clear' [-Wmissing-declarations]
+>     void bpf_cpumask_clear(struct bpf_cpumask *cpumask)
+>          ^~~~~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:151:6: warning: no previous declaration for 'bpf_cpumask_and' [-Wmissing-declarations]
+>     bool bpf_cpumask_and(struct bpf_cpumask *dst,
+>          ^~~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:158:6: warning: no previous declaration for 'bpf_cpumask_or' [-Wmissing-declarations]
+>     void bpf_cpumask_or(struct bpf_cpumask *dst,
+>          ^~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:165:6: warning: no previous declaration for 'bpf_cpumask_xor' [-Wmissing-declarations]
+>     void bpf_cpumask_xor(struct bpf_cpumask *dst,
+>          ^~~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:172:6: warning: no previous declaration for 'bpf_cpumask_equal' [-Wmissing-declarations]
+>     bool bpf_cpumask_equal(const struct cpumask *src1, const struct cpumask *src2)
+>          ^~~~~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:177:6: warning: no previous declaration for 'bpf_cpumask_intersects' [-Wmissing-declarations]
+>     bool bpf_cpumask_intersects(const struct cpumask *src1, const struct cpumask *src2)
+>          ^~~~~~~~~~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:182:6: warning: no previous declaration for 'bpf_cpumask_subset' [-Wmissing-declarations]
+>     bool bpf_cpumask_subset(const struct cpumask *src1, const struct cpumask *src2)
+>          ^~~~~~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:187:6: warning: no previous declaration for 'bpf_cpumask_empty' [-Wmissing-declarations]
+>     bool bpf_cpumask_empty(const struct cpumask *cpumask)
+>          ^~~~~~~~~~~~~~~~~
+> >> kernel/bpf/cpumask.c:192:6: warning: no previous declaration for 'bpf_cpumask_full' [-Wmissing-declarations]
+>     bool bpf_cpumask_full(const struct cpumask *cpumask)
+>          ^~~~~~~~~~~~~~~~
+>    kernel/bpf/cpumask.c:197:6: warning: no previous declaration for 'bpf_cpumask_copy' [-Wmissing-declarations]
+>     void bpf_cpumask_copy(struct bpf_cpumask *dst, const struct cpumask *src)
+>          ^~~~~~~~~~~~~~~~
+>    kernel/bpf/cpumask.c:202:5: warning: no previous declaration for 'bpf_cpumask_any' [-Wmissing-declarations]
+>     u32 bpf_cpumask_any(const struct cpumask *cpumask)
+>         ^~~~~~~~~~~~~~~
+>    kernel/bpf/cpumask.c:207:5: warning: no previous declaration for 'bpf_cpumask_any_and' [-Wmissing-declarations]
+>     u32 bpf_cpumask_any_and(const struct cpumask *src1, const struct cpumask *src2)
+>         ^~~~~~~~~~~~~~~~~~~
+> 
+> 
+> vim +/bpf_cpumask_create +41 kernel/bpf/cpumask.c
+> 
+>     36	
+>     37	__diag_push();
+>     38	__diag_ignore_all("-Wmissing-prototypes",
+>     39			  "Global kfuncs as their definitions will be in BTF");
+>     40	
+>   > 41	struct bpf_cpumask *bpf_cpumask_create(void)
+>     42	{
+>     43		struct bpf_cpumask *cpumask;
+>     44	
+>     45		cpumask = bpf_mem_alloc(&bpf_cpumask_ma, sizeof(*cpumask));
+>     46		if (!cpumask)
+>     47			return NULL;
+>     48	
+>     49		memset(cpumask, 0, sizeof(*cpumask));
+>     50		refcount_set(&cpumask->usage, 1);
+>     51	
+>     52		return cpumask;
+>     53	}
+>     54	
+>   > 55	struct bpf_cpumask *bpf_cpumask_acquire(struct bpf_cpumask *cpumask)
+>     56	{
+>     57		refcount_inc(&cpumask->usage);
+>     58		return cpumask;
+>     59	}
+>     60	
+>   > 61	struct bpf_cpumask *bpf_cpumask_kptr_get(struct bpf_cpumask **cpumaskp)
+>     62	{
+>     63		struct bpf_cpumask *cpumask;
+>     64	
+>     65		/* The BPF memory allocator frees memory backing its caches in an RCU
+>     66		 * callback. Thus, we can safely use RCU to ensure that the cpumask is
+>     67		 * safe to read.
+>     68		 */
+>     69		rcu_read_lock();
+>     70	
+>     71		cpumask = READ_ONCE(*cpumaskp);
+>     72		if (cpumask && !refcount_inc_not_zero(&cpumask->usage))
+>     73			cpumask = NULL;
+>     74	
+>     75		rcu_read_unlock();
+>     76		return cpumask;
+>     77	}
+>     78	
+>   > 79	void bpf_cpumask_release(struct bpf_cpumask *cpumask)
+>     80	{
+>     81		if (!cpumask)
+>     82			return;
+>     83	
+>     84		if (refcount_dec_and_test(&cpumask->usage)) {
+>     85			migrate_disable();
+>     86			bpf_mem_free(&bpf_cpumask_ma, cpumask);
+>     87			migrate_enable();
+>     88		}
+>     89	}
+>     90	
+>   > 91	u32 bpf_cpumask_first(const struct cpumask *cpumask)
+>     92	{
+>     93		return cpumask_first(cpumask);
+>     94	}
+>     95	
+>   > 96	u32 bpf_cpumask_first_zero(const struct cpumask *cpumask)
+>     97	{
+>     98		return cpumask_first_zero(cpumask);
+>     99	}
+>    100	
+>  > 101	void bpf_cpumask_set_cpu(u32 cpu, struct bpf_cpumask *cpumask)
+>    102	{
+>    103		if (!cpu_valid(cpu))
+>    104			return;
+>    105	
+>    106		cpumask_set_cpu(cpu, (struct cpumask *)cpumask);
+>    107	}
+>    108	
+>  > 109	void bpf_cpumask_clear_cpu(u32 cpu, struct bpf_cpumask *cpumask)
+>    110	{
+>    111		if (!cpu_valid(cpu))
+>    112			return;
+>    113	
+>    114		cpumask_clear_cpu(cpu, (struct cpumask *)cpumask);
+>    115	}
+>    116	
+>  > 117	bool bpf_cpumask_test_cpu(u32 cpu, const struct cpumask *cpumask)
+>    118	{
+>    119		if (!cpu_valid(cpu))
+>    120			return false;
+>    121	
+>    122		return cpumask_test_cpu(cpu, (struct cpumask *)cpumask);
+>    123	}
+>    124	
+>  > 125	bool bpf_cpumask_test_and_set_cpu(u32 cpu, struct bpf_cpumask *cpumask)
+>    126	{
+>    127		if (!cpu_valid(cpu))
+>    128			return false;
+>    129	
+>    130		return cpumask_test_and_set_cpu(cpu, (struct cpumask *)cpumask);
+>    131	}
+>    132	
+>  > 133	bool bpf_cpumask_test_and_clear_cpu(u32 cpu, struct bpf_cpumask *cpumask)
+>    134	{
+>    135		if (!cpu_valid(cpu))
+>    136			return false;
+>    137	
+>    138		return cpumask_test_and_clear_cpu(cpu, (struct cpumask *)cpumask);
+>    139	}
+>    140	
+>  > 141	void bpf_cpumask_setall(struct bpf_cpumask *cpumask)
+>    142	{
+>    143		cpumask_setall((struct cpumask *)cpumask);
+>    144	}
+>    145	
+>  > 146	void bpf_cpumask_clear(struct bpf_cpumask *cpumask)
+>    147	{
+>    148		cpumask_clear((struct cpumask *)cpumask);
+>    149	}
+>    150	
+>  > 151	bool bpf_cpumask_and(struct bpf_cpumask *dst,
+>    152			     const struct cpumask *src1,
+>    153			     const struct cpumask *src2)
+>    154	{
+>    155		return cpumask_and((struct cpumask *)dst, src1, src2);
+>    156	}
+>    157	
+>  > 158	void bpf_cpumask_or(struct bpf_cpumask *dst,
+>    159			    const struct cpumask *src1,
+>    160			    const struct cpumask *src2)
+>    161	{
+>    162		cpumask_or((struct cpumask *)dst, src1, src2);
+>    163	}
+>    164	
+>  > 165	void bpf_cpumask_xor(struct bpf_cpumask *dst,
+>    166			     const struct cpumask *src1,
+>    167			     const struct cpumask *src2)
+>    168	{
+>    169		cpumask_xor((struct cpumask *)dst, src1, src2);
+>    170	}
+>    171	
+>  > 172	bool bpf_cpumask_equal(const struct cpumask *src1, const struct cpumask *src2)
+>    173	{
+>    174		return cpumask_equal(src1, src2);
+>    175	}
+>    176	
+>  > 177	bool bpf_cpumask_intersects(const struct cpumask *src1, const struct cpumask *src2)
+>    178	{
+>    179		return cpumask_intersects(src1, src2);
+>    180	}
+>    181	
+>  > 182	bool bpf_cpumask_subset(const struct cpumask *src1, const struct cpumask *src2)
+>    183	{
+>    184		return cpumask_subset(src1, src2);
+>    185	}
+>    186	
+>  > 187	bool bpf_cpumask_empty(const struct cpumask *cpumask)
+>    188	{
+>    189		return cpumask_empty(cpumask);
+>    190	}
+>    191	
+>  > 192	bool bpf_cpumask_full(const struct cpumask *cpumask)
+>    193	{
+>    194		return cpumask_full(cpumask);
+>    195	}
+>    196	
+>  > 197	void bpf_cpumask_copy(struct bpf_cpumask *dst, const struct cpumask *src)
+>    198	{
+>    199		cpumask_copy((struct cpumask *)dst, src);
+>    200	}
+>    201	
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
