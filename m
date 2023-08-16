@@ -2,85 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71CD777E61D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C4477E620
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344555AbjHPQOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 12:14:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39612 "EHLO
+        id S1344585AbjHPQOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 12:14:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344524AbjHPQNd (ORCPT
+        with ESMTP id S1344537AbjHPQNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 12:13:33 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0537C114;
-        Wed, 16 Aug 2023 09:13:32 -0700 (PDT)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37GG8uBL001767;
-        Wed, 16 Aug 2023 16:13:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=e/XIqBPQAX7LPDVtIPmKHP8dCZhB0WFNu7PUiJVkDCE=;
- b=q0/VFjCwQ4CBBIfB0rMgbQ4o9lXiPstzTMnbys0ylIv8QDa4yrwGbSgZoLQAdNfSnyev
- GzZiAJHR5PDty0XGu4RmeJQ5aTNL7tQx+ZyXUNPeFvAVtJyQK1bT2qjrXT4K2C9hQQsM
- Wygv5KnFutqIP/Y6y5Ltgk/VpKLaUhfo4/VIspWb+vLM3h8OCTQICkB2msWScF/PAfcB
- dReTXQCK0eiWOJrUljzJUSx/qLPo2Akz/L1CpNiD0M8CeKy8ct6X0DoamLcd7EvQ6KLS
- l5cXD6GNXp8stuMZKE/sq6/VpuDwAr/Tdtqs1wySE31tORIMzdpb1BruPuMoHxpQTPT6 Og== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sh1eq0ghs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 16:13:29 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37GFBow9002418;
-        Wed, 16 Aug 2023 16:13:26 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sendne8t6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 16:13:26 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37GGDPDM6816370
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Aug 2023 16:13:25 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6223958065;
-        Wed, 16 Aug 2023 16:13:25 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B5D1558055;
-        Wed, 16 Aug 2023 16:13:24 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.190.160])
-        by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 16 Aug 2023 16:13:24 +0000 (GMT)
-Message-ID: <f7df1bfc9a2ef4900dccb01ab81aa1fa9aaa6eb9.camel@linux.ibm.com>
-Subject: Re: [PATCH v2] s390/ipl: fix virtual vs physical address confusion
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-integrity@vger.kernel.org
-Date:   Wed, 16 Aug 2023 12:13:24 -0400
-In-Reply-To: <20230816132942.2540411-1-agordeev@linux.ibm.com>
-References: <20230816132942.2540411-1-agordeev@linux.ibm.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 3j84uwq5RE8h16KqQZwa0cEzBsZ6o6P_
-X-Proofpoint-GUID: 3j84uwq5RE8h16KqQZwa0cEzBsZ6o6P_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-16_16,2023-08-15_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
- impostorscore=0 suspectscore=0 priorityscore=1501 adultscore=0 spamscore=0
- mlxlogscore=999 mlxscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308160140
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Wed, 16 Aug 2023 12:13:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C0DC1;
+        Wed, 16 Aug 2023 09:13:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CA43A668E6;
+        Wed, 16 Aug 2023 16:13:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D199C433CB;
+        Wed, 16 Aug 2023 16:13:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692202424;
+        bh=jQYkHke0soALnUJjyWhSomyPV+FCVP+1SeSCb3FbXOU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=E95UyglSfjGh70zmgdrz9PuWxugktCPAibLPoeYD7HudlBxBHUVGconbZTClPaGQT
+         YiBbUSoS3HXz/UvzvZ0IQ7tU5X+8fyclyy7Jup/6xrQuP0fH9Pjil/uTumQ9YNVnrd
+         Yk91C0hybar5bRetasNsCH98BehTR1DnjCvmJ8T8E2x9fxNxs5QoR8rnqknYACirL6
+         /RgXbHwxzWY0IYrRnmT2+7uXvqk8/GmNY8FBp6nPNvv4b6v+ZDQdIZ/seR89h5A0C5
+         R6LD2QqOhF4DgHrpeeVnMGdpEmGH7pUeSaeXbrgtWQz451pjwF9W423Ausf2cv0/Co
+         1MJDM/CCRXbFQ==
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-4fe457ec6e7so10852250e87.3;
+        Wed, 16 Aug 2023 09:13:44 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yz0TgPgYNznEtZ2snLR+AlRdmOyyFN4FQ5osE2TOwL49SNpcBl2
+        zrIlT6z5GrJDmDzS1XdGYmpAXIBtRZbl215jHrU=
+X-Google-Smtp-Source: AGHT+IH2dhnFu0Q1LfTXp6RIYUoemBWEdNHjsqGUy3Y72+Q1zbElBwtqAk2WUeVzE/x67wGpArXmFqVhwYrSL0evH/o=
+X-Received: by 2002:ac2:58c9:0:b0:4fe:1dc8:7ec with SMTP id
+ u9-20020ac258c9000000b004fe1dc807ecmr1759609lfo.37.1692202422172; Wed, 16 Aug
+ 2023 09:13:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230814020045.51950-1-chenhuacai@loongson.cn>
+ <20230814020045.51950-2-chenhuacai@loongson.cn> <18b9119c-cbc8-42a1-a313-9154d73c9841@paulmck-laptop>
+ <CAAhV-H7t46hD1k18-sLYQA8h=M+ROdyMnT7gRtEGoRwKKBUZUA@mail.gmail.com>
+ <CALm+0cWkQ8j_jiOSOuSsR9LbKPUL5cxRrONVxeNgSM5f1nDxMQ@mail.gmail.com>
+ <CAAhV-H6S3Scu-Mf7E3aaqySytY4xDgjXrWc=fXSbr4i7R+-GDA@mail.gmail.com>
+ <CALm+0cUpqONZOEHbc85d-Z5cC=P5LSeOAGuCCOukpTagLxnXWw@mail.gmail.com>
+ <CAAhV-H7J6Rj99M6rxoFCEKu4G6NQPX9-N0a3-2GjEwbr+tbwQw@mail.gmail.com>
+ <CALm+0cVdaXn5+4veu2NDwdi7htm=KY4ca+Eh54TwnN_6Xjs8TA@mail.gmail.com>
+ <CAAhV-H6ejw=8afS0jmmQvKUrCw=qZm_P6SA0A+tuvvb8bsq4-Q@mail.gmail.com> <D3AFC0E7-9E6C-43F2-B9F5-3AC498B14F0F@gmail.com>
+In-Reply-To: <D3AFC0E7-9E6C-43F2-B9F5-3AC498B14F0F@gmail.com>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Thu, 17 Aug 2023 00:13:29 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6XPmDFEKGwjcbv57jRwpUvZ76PcmJjxN50Dpbq+-QgKA@mail.gmail.com>
+Message-ID: <CAAhV-H6XPmDFEKGwjcbv57jRwpUvZ76PcmJjxN50Dpbq+-QgKA@mail.gmail.com>
+Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
+To:     Alan Huang <mmpgouride@gmail.com>
+Cc:     Z qiang <qiang.zhang1211@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,90 +88,177 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-08-16 at 15:29 +0200, Alexander Gordeev wrote:
-> The value of ipl_cert_list_addr boot variable contains
-> a physical address, which is used directly. That works
-> because virtual and physical address spaces are currently
-> the same, but otherwise it is wrong.
-> 
-> While at it, fix also a comment for the platform keyring.
-> 
-> Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
-> ---
->  arch/s390/kernel/machine_kexec_file.c             | 4 ++--
->  arch/s390/kernel/setup.c                          | 2 +-
->  security/integrity/platform_certs/load_ipl_s390.c | 4 ++--
->  3 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/s390/kernel/machine_kexec_file.c b/arch/s390/kernel/machine_kexec_file.c
-> index 2df94d32140c..8d207b82d9fe 100644
-> --- a/arch/s390/kernel/machine_kexec_file.c
-> +++ b/arch/s390/kernel/machine_kexec_file.c
-> @@ -188,7 +188,7 @@ static int kexec_file_add_ipl_report(struct kimage *image,
->  	data->memsz = ALIGN(data->memsz, PAGE_SIZE);
->  	buf.mem = data->memsz;
->  
-> -	ptr = (void *)ipl_cert_list_addr;
-> +	ptr = __va(ipl_cert_list_addr);
->  	end = ptr + ipl_cert_list_size;
->  	ncerts = 0;
->  	while (ptr < end) {
-> @@ -200,7 +200,7 @@ static int kexec_file_add_ipl_report(struct kimage *image,
->  
->  	addr = data->memsz + data->report->size;
->  	addr += ncerts * sizeof(struct ipl_rb_certificate_entry);
-> -	ptr = (void *)ipl_cert_list_addr;
-> +	ptr = __va(ipl_cert_list_addr);
->  	while (ptr < end) {
->  		len = *(unsigned int *)ptr;
->  		ptr += sizeof(len);
-> diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-> index 393dd8385506..c744104e4a9c 100644
-> --- a/arch/s390/kernel/setup.c
-> +++ b/arch/s390/kernel/setup.c
-> @@ -875,7 +875,7 @@ static void __init log_component_list(void)
->  		pr_info("Linux is running with Secure-IPL enabled\n");
->  	else
->  		pr_info("Linux is running with Secure-IPL disabled\n");
-> -	ptr = (void *) early_ipl_comp_list_addr;
-> +	ptr = __va(early_ipl_comp_list_addr);
->  	end = (void *) ptr + early_ipl_comp_list_size;
->  	pr_info("The IPL report contains the following components:\n");
->  	while (ptr < end) {
-> diff --git a/security/integrity/platform_certs/load_ipl_s390.c b/security/integrity/platform_certs/load_ipl_s390.c
-> index e769dcb7ea94..c7c381a9ddaa 100644
-> --- a/security/integrity/platform_certs/load_ipl_s390.c
-> +++ b/security/integrity/platform_certs/load_ipl_s390.c
-> @@ -22,8 +22,8 @@ static int __init load_ipl_certs(void)
->  
->  	if (!ipl_cert_list_addr)
->  		return 0;
-> -	/* Copy the certificates to the system keyring */
-> -	ptr = (void *) ipl_cert_list_addr;
-> +	/* Copy the certificates to the platform keyring */
-> +	ptr = __va(ipl_cert_list_addr);
->  	end = ptr + ipl_cert_list_size;
->  	while ((void *) ptr < end) {
->  		len = *(unsigned int *) ptr;
+Hi, Alan,
 
-ipl_cert_list_addr is defined as an unsigned long.  At this point, the
-changes are simple cleanup of removing "(void *)" and replacing it with
-__va().
+On Wed, Aug 16, 2023 at 11:57=E2=80=AFPM Alan Huang <mmpgouride@gmail.com> =
+wrote:
+>
+> >>>>>>>>>
+> >>>>>>>>> Currently rcu_cpu_stall_reset() set rcu_state.jiffies_stall to =
+one check
+> >>>>>>>>> period later, i.e. jiffies + rcu_jiffies_till_stall_check(). Bu=
+t jiffies
+> >>>>>>>>> is only updated in the timer interrupt, so when kgdb_cpu_enter(=
+) begins
+> >>>>>>>>> to run there may already be nearly one rcu check period after j=
+iffies.
+> >>>>>>>>> Since all interrupts are disabled during kgdb_cpu_enter(), jiff=
+ies will
+> >>>>>>>>> not be updated. When kgdb_cpu_enter() returns, rcu_state.jiffie=
+s_stall
+> >>>>>>>>> maybe already gets timeout.
+> >>>>>>>>>
+> >>>>>>>>> We can set rcu_state.jiffies_stall to two rcu check periods lat=
+er, e.g.
+> >>>>>>>>> jiffies + (rcu_jiffies_till_stall_check() * 2) in rcu_cpu_stall=
+_reset()
+> >>>>>>>>> to avoid this problem. But this isn't a complete solution becau=
+se kgdb
+> >>>>>>>>> may take a very long time in irq disabled context.
+> >>>>>>>>>
+> >>>>>>>>> Instead, update jiffies at the beginning of rcu_cpu_stall_reset=
+() can
+> >>>>>>>>> solve all kinds of problems.
+> >>>>>>>>
+> >>>>>>>> Would it make sense for there to be a kgdb_cpu_exit()?  In that =
+case,
+> >>>>>>>> the stalls could simply be suppressed at the beginning of the de=
+bug
+> >>>>>>>> session and re-enabled upon exit, as is currently done for sysrq=
+ output
+> >>>>>>>> via rcu_sysrq_start() and rcu_sysrq_end().
+> >>>>>>> Thank you for your advice, but that doesn't help. Because
+> >>>>>>> rcu_sysrq_start() and rcu_sysrq_end() try to suppress the warning=
+s
+> >>>>>>> during sysrq, but kgdb already has no warnings during kgdb_cpu_en=
+ter()
+> >>>>>>> since it is executed in irq disabled context. Instead, this patch
+> >>>>>>> wants to suppress the warnings *after* kgdb_cpu_enter() due to a =
+very
+> >>>>>>> old jiffies value.
+> >>>>>>>
+> >>>>>>
+> >>>>>> Hello, Huacai
+> >>>>>>
+> >>>>>> Is it possible to set  the rcu_cpu_stall_suppress is true in
+> >>>>>> dbg_touch_watchdogs()
+> >>>>>> and reset the rcu_cpu_stall_suppress at the beginning and end of t=
+he
+> >>>>>> RCU grace period?
+> >>>>> This is possible but not the best: 1, kgdb is not the only caller o=
+f
+> >>>>> rcu_cpu_stall_reset(); 2, it is difficult to find the "end" to rese=
+t
+> >>>>> rcu_cpu_stall_suppress.
+> >>>>>
+> >>>>
+> >>>> You can replace rcu_state.jiffies_stall update by setting rcu_cpu_st=
+all_suppress
+> >>>> in rcu_cpu_stall_reset(),  and reset rcu_cpu_stall_suppress in rcu_g=
+p_init() and
+> >>>> rcu_gp_cleanup().
+> >>> What's the advantage compared with updating jiffies? Updating jiffies
+> >>> seems more straight forward.
+> >>>
+> >>
+> >> In do_update_jiffies_64(), need to acquire jiffies_lock raw spinlock,
+> >> like you said, kgdb is not the only caller of rcu_cpu_stall_reset(),
+> >> the rcu_cpu_stall_reset() maybe invoke in NMI  (arch/x86/platform/uv/u=
+v_nmi.c)
+> > Reset rcu_cpu_stall_suppress in rcu_gp_init()/rcu_gp_cleanup() is
+> > still not so good to me, because it does a useless operation in most
+> > cases. Moreover, the rcu core is refactored again and again, something
+> > may be changed in future.
+> >
+> > If  do_update_jiffies_64() cannot be used in NMI context, can we
+>
+> What about updating jiffies in dbg_touch_watchdogs or adding a wrapper wh=
+ich updates
+> both jiffies and jiffies_stall?
+This can solve the kgdb problem, but I found that most callers of
+rcu_cpu_stall_reset() are in irq disabled context so they may meet
+similar problems. Modifying rcu_cpu_stall_reset() can solve all of
+them.
 
-From arch/s390/include/asm/page.h:
-#define __pa(x)                 ((unsigned long)(x))
-#define __va(x)                 ((void *)(unsigned long)(x))
+But due to the NMI issue, from my point of view, setting jiffies_stall
+to jiffies + 300*HZ is the best solution now. :)
 
-So, Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-
-I'm trying to understand if there is a difference between the other
-archs and s390; and whether a similar change is needed for the other
-archs.  Loading certificates on the other archs call kmalloc to
-allocate memory for the certs. Is the memory being allocated on x390
-using kmalloc?
-
--- 
-thanks,
-
-Mimi
-
+Huacai
+>
+> > consider my old method [1]?
+> > https://lore.kernel.org/rcu/CAAhV-H7j9Y=3DVvRLm8thLw-EX1PGqBA9YfT4G1AN7=
+ucYS=3DiP+DQ@mail.gmail.com/T/#t
+> >
+> > Of course we should set rcu_state.jiffies_stall large enough, so we
+> > can do like this:
+> >
+> > void rcu_cpu_stall_reset(void)
+> > {
+> >  WRITE_ONCE(rcu_state.jiffies_stall,
+> > -   jiffies + rcu_jiffies_till_stall_check());
+> > +   jiffies + 300 * HZ);
+> > }
+> >
+> > 300s is the largest timeout value, and I think 300s is enough here in p=
+ractice.
+> >
+> > Huacai
+> >
+> >>
+> >> Thanks
+> >> Zqiang
+> >>
+> >>
+> >>> Huacai
+> >>>
+> >>>>
+> >>>> Thanks
+> >>>> Zqiang
+> >>>>
+> >>>>>
+> >>>>>> or set rcupdate.rcu_cpu_stall_suppress_at_boot=3D1 in bootargs can
+> >>>>>> suppress RCU stall
+> >>>>>> in booting.
+> >>>>> This is also possible, but it suppresses all kinds of stall warning=
+s,
+> >>>>> which is not what we want.
+> >>>>>
+> >>>>> Huacai
+> >>>>>>
+> >>>>>>
+> >>>>>> Thanks
+> >>>>>> Zqiang
+> >>>>>>
+> >>>>>>
+> >>>>>>>
+> >>>>>>> Huacai
+> >>>>>>>
+> >>>>>>>>
+> >>>>>>>>                                                        Thanx, Pa=
+ul
+> >>>>>>>>
+> >>>>>>>>> Cc: stable@vger.kernel.org
+> >>>>>>>>> Fixes: a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall =
+detection in rcu_cpu_stall_reset()")
+> >>>>>>>>> Reported-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+> >>>>>>>>> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> >>>>>>>>> ---
+> >>>>>>>>> kernel/rcu/tree_stall.h | 1 +
+> >>>>>>>>> 1 file changed, 1 insertion(+)
+> >>>>>>>>>
+> >>>>>>>>> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> >>>>>>>>> index b10b8349bb2a..1c7b540985bf 100644
+> >>>>>>>>> --- a/kernel/rcu/tree_stall.h
+> >>>>>>>>> +++ b/kernel/rcu/tree_stall.h
+> >>>>>>>>> @@ -153,6 +153,7 @@ static void panic_on_rcu_stall(void)
+> >>>>>>>>>  */
+> >>>>>>>>> void rcu_cpu_stall_reset(void)
+> >>>>>>>>> {
+> >>>>>>>>> +     do_update_jiffies_64(ktime_get());
+> >>>>>>>>>      WRITE_ONCE(rcu_state.jiffies_stall,
+> >>>>>>>>>                 jiffies + rcu_jiffies_till_stall_check());
+> >>>>>>>>> }
+> >>>>>>>>> --
+> >>>>>>>>> 2.39.3
+>
+>
