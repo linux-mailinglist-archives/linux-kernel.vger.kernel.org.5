@@ -2,205 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6404777E3DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9D177E3DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343760AbjHPOjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 10:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50452 "EHLO
+        id S1343777AbjHPOjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 10:39:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343749AbjHPOjU (ORCPT
+        with ESMTP id S1343780AbjHPOj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 10:39:20 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40757272E
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:38:52 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-26b0b4a7cccso4500257a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:38:52 -0700 (PDT)
+        Wed, 16 Aug 2023 10:39:29 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 084BA2D65
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:39:03 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d637af9a981so7317809276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:39:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20221208.gappssmtp.com; s=20221208; t=1692196728; x=1692801528;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+        d=google.com; s=20221208; t=1692196741; x=1692801541;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=z7kyCuHl1t/gCCGpNTbA3hwFj/lf6SuaKvtbsxGuDBs=;
-        b=dZxL0Ptmo/RfqSZAnaNdMqEON3wvqTtz9rCCZbGwRlxrXd7njXeZ9MC0HoDMQnzbMm
-         Mbp7gkbEr8As7DndYa19Nv36eYd2hToSSCFzF826MiTxJFQPanB3TDkisU5ug1n2xO0x
-         lqvfBU8gjYGcjvzm7z1KhnYi76zAKQMvLjSkKN8VKcgO7yrfcLxnnczFGmL7s8fYvGKe
-         iupXY/7su7eB4Qp8Ot15WegMitq0aXkC7C2B4amBqtpQq9iCTqbSvz7oVYvokSqAF4SL
-         qE7Cmnt2iThlim9z5xca3mEZ27llu2nfrUpa7hwX8WY7UkN0OSfjH/LjoRTW/fMpY9+M
-         GNdA==
+        bh=jX7V1lWluewhSh6VMm5HNZIM42OiPORMFCW/iRk3n2s=;
+        b=cccuvca16nyqVbTT+p9NSMZsvpgmLzaCavWmkhGRspARsQI445ljxYnl/xM9pXE9iq
+         kI1541LdnXukuAuL73uLvN7Z7Lk0yrcLeeThM7TABW+xSp+QemBd0jzVoR/ZWyJfKz9O
+         MwzWLAaDVQZGFMq9TF/+TfgKNe1ajrgF8PYwJVDSP1jDRVxXWvs0VFjyXdI+wEs9UqZp
+         5WEpenVLKOKBbAentiDPY7WJq7kFfz14K0uY1+hJzNr/QtnnDD8VqI2z3K0ex2OSncm2
+         X9qrvzbUrOYBzk5wstwOwcINpjuqoXdeccyAWWi4yAdY6B5HA1LeEsQ6+5pVY8Ur1LQx
+         RoKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692196728; x=1692801528;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z7kyCuHl1t/gCCGpNTbA3hwFj/lf6SuaKvtbsxGuDBs=;
-        b=H8GRkrwqU7bv1wijG2wu1NcEJmQMk6Z3POs/kdARZou5rLJtX762QWRn5kj7YiTlQU
-         4AouUymxIdCOTEK+n8k8QvMJ9JJZDG7COXNW4ViQI+Vlrir5htq8GEv5AT+bUwMQ3Na7
-         C9f6ETgsGC/0z0ngsoLt8lkU06xh2H0r0zrIsYkFH2ydaiQ9xrAuOQf3hMX1P6vQkrgs
-         r6PJkqkkIKuP/NxZ6SQZxN709Ovq9yFbuDADkXxGj/F73mSK2L1CM0e11C1zp6+ySd+k
-         8PTeVpP33BGtJNHMIhEkJCONihQ/89cN3DkvGDv9ao7fWuze7rQLNAIEVXSSrlYeJE52
-         dJvw==
-X-Gm-Message-State: AOJu0Yyej90IGsrxBW0BrRfBVCCfPVuUK7lMmzJtTH2CVOCu9CptFWFi
-        9quxphR5X5Aih8jiQwjaec/eoA==
-X-Google-Smtp-Source: AGHT+IG9lm23RRLom/xb7C80klG2aDXB0ZwUgcZV4fsV/hyXYHdBd19S4I3YH9SwHqrCXPj4TdemSQ==
-X-Received: by 2002:a17:90a:f982:b0:26b:4e59:57e7 with SMTP id cq2-20020a17090af98200b0026b4e5957e7mr1730234pjb.43.1692196727793;
-        Wed, 16 Aug 2023 07:38:47 -0700 (PDT)
-Received: from localhost ([135.180.227.0])
-        by smtp.gmail.com with ESMTPSA id gi23-20020a17090b111700b0025645ce761dsm13120399pjb.35.2023.08.16.07.38.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 07:38:47 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 07:38:47 -0700 (PDT)
-X-Google-Original-Date: Wed, 16 Aug 2023 07:38:45 PDT (-0700)
-Subject:     Re: [PATCH 00/17] -Wmissing-prototype warning fixes
-In-Reply-To: <20230810141947.1236730-1-arnd@kernel.org>
-CC:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, mattst88@gmail.com,
-        vgupta@kernel.org, linux@armlinux.org.uk,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, guoren@kernel.org,
-        bcain@quicinc.com, chenhuacai@kernel.org, kernel@xen0n.name,
-        geert@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de,
-        dinguyen@kernel.org, jonas@southpole.se,
-        stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
-        James.Bottomley@HansenPartnership.com, deller@gmx.de,
-        mpe@ellerman.id.au, christophe.leroy@csgroup.eu, hca@linux.ibm.com,
-        glaubitz@physik.fu-berlin.de, x86@kernel.org, bp@alien8.de,
-        jcmvbkbc@gmail.com, axboe@kernel.dk, sudipm.mukherjee@gmail.com,
-        martin.petersen@oracle.com, richard@nod.at, bhelgaas@google.com,
-        masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
-        linux@roeck-us.net, Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-next@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kbuild@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     arnd@kernel.org
-Message-ID: <mhng-ce493a2d-71e9-440f-84d0-522a4f694bbe@palmer-ri-x1c9>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1692196741; x=1692801541;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=jX7V1lWluewhSh6VMm5HNZIM42OiPORMFCW/iRk3n2s=;
+        b=IZ7EKnqM4WJYU6IXCkN9Fhx8Y20zzJ3D7TIIyKtVa/MLVvyiBQ9HMaY9l+gNz1l8VO
+         UqbcVt28+nFvxDPNE+5mlR6Ni/DRjWH48MUnoF1xynJFyu+0ChC7mRxKdFiz9HquEBey
+         vr66WBTmGFpS566Ku0CQA53PXAsvJ3JZA3QTc8N3iMhCCW/C8hd+XYAssuDbxCJinwF9
+         6fizXHATNjX5mUoXFxqZo8Y+tzt51+IpS2sGW8+SxbjNEe+7FNn3P0nHXtKcg5t5A4/7
+         YxW2ITv7S1aHzlzW7UF6mEQMxNikDe8gLP0+LcR6dTw/ZBRtFIjAZtX8yo2gW3LZ+StH
+         Yndg==
+X-Gm-Message-State: AOJu0Yx1X3wmUP43IbBpMtHMiR0oXo3pPyu7jagUwydyLIlcbKAYKlNj
+        gpVnENWMh144dnpyeRjHtZ5bZA22JBE=
+X-Google-Smtp-Source: AGHT+IGLS18VtpS5sotDPXKkkyKkV2lBpEJVX+jOkjIePdxefddQ5MDvZSPMjSRTbXRFZc1ZcLoclXrAX0E=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:b901:0:b0:d71:36b5:e9ee with SMTP id
+ x1-20020a25b901000000b00d7136b5e9eemr33704ybj.8.1692196740878; Wed, 16 Aug
+ 2023 07:39:00 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 07:38:59 -0700
+In-Reply-To: <e2662efe-9c53-77de-836c-a29076d3ccdc@linux.intel.com>
+Mime-Version: 1.0
+References: <20230719024558.8539-1-guang.zeng@intel.com> <20230719024558.8539-3-guang.zeng@intel.com>
+ <ZNwBeN8mGr1sJJ6i@google.com> <e2662efe-9c53-77de-836c-a29076d3ccdc@linux.intel.com>
+Message-ID: <ZNzfgxTnB6KYWENg@google.com>
+Subject: Re: [PATCH v2 2/8] KVM: x86: Use a new flag for branch instructions
+From:   Sean Christopherson <seanjc@google.com>
+To:     Binbin Wu <binbin.wu@linux.intel.com>
+Cc:     Zeng Guang <guang.zeng@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        H Peter Anvin <hpa@zytor.com>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 07:19:18 PDT (-0700), arnd@kernel.org wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Most of the patches I sent so far for the -Wmissing-prototype warnings
-> have made it into linux-next now. There are a few that I'm resending
-> now as nobody has picked them up, and then a number of fixes that I
-> found while test-building across all architectures rather than just the
-> ones I usually test.
->
-> The first 15 patches in this series should be uncontroversial, so
-> I expect that either a subsystem maintainer or Andrew Morton can
-> apply these directly.
->
-> For the last two patches, these might still need some debate about how
-> to handle them. I added a Kconfig option to turn off most of the missing
-> prototype warnings in the architectures that nobody has fixed yet,
-> see patch 16 for those. The last patch does cause some known warnings
-> and likely unknown ones for architectures other than x86 and arm,
-> so applying it now will bring new problems, but not applying it also
-> means that new warnings creep in, so I think this is mainly a question
-> of what the best timing is for having this in linux-next.
->
-> Arnd Bergmann (17):
->   [RESEND] jffs2: mark __jffs2_dbg_superblock_counts() static
->   [RESEND] irq_work: consolidate arch_irq_work_raise prototypes
->   [RESEND] ida: make 'ida_dump' static
->   pci: sysfs: move declarations to linux/pci.h
->   swim3: mark swim3_init() static
->   macintosh/ams: mark ams_init() static
->   scsi: qlogicpti: mark qlogicpti_info() static
->   microblaze: mark flush_dcache_folio() inline
->   parport: gsc: mark init function static
->   zorro: include zorro.h in names.c
->   scsi: gvp11: remove unused gvp11_setup() function
->   time: make sysfs_get_uname() function visible in header
->   stackleak: add declarations for global functions
->   kprobes: unify kprobes_exceptions_nofify() prototypes
->   arch: fix asm-offsets.c building with -Wmissing-prototypes
->   [RFC] arch: turn -Wmissing-prototypes off conditionally
->   [RFC] Makefile.extrawarn: turn on missing-prototypes again
->
->  arch/alpha/Kbuild                        |  2 ++
->  arch/alpha/include/asm/pci.h             |  3 ---
->  arch/alpha/kernel/asm-offsets.c          |  2 +-
->  arch/alpha/lib/Makefile                  |  1 +
->  arch/arc/Kbuild                          |  2 ++
->  arch/arc/include/asm/kprobes.h           |  3 ---
->  arch/arm/include/asm/irq_work.h          |  2 --
->  arch/arm/include/asm/kprobes.h           |  2 --
->  arch/arm64/include/asm/irq_work.h        |  2 --
->  arch/arm64/include/asm/kprobes.h         |  2 --
->  arch/csky/Kbuild                         |  2 ++
->  arch/csky/include/asm/irq_work.h         |  2 +-
->  arch/hexagon/Kbuild                      |  2 ++
->  arch/ia64/Kbuild                         |  2 ++
->  arch/ia64/include/asm/kprobes.h          |  2 --
->  arch/ia64/kernel/asm-offsets.c           |  2 +-
->  arch/ia64/lib/Makefile                   |  1 +
->  arch/loongarch/Kbuild                    |  2 ++
->  arch/loongarch/kernel/asm-offsets.c      | 12 ++++++++++++
->  arch/m68k/Kbuild                         |  2 ++
->  arch/m68k/lib/Makefile                   |  1 +
->  arch/microblaze/Kbuild                   |  2 ++
->  arch/microblaze/include/asm/cacheflush.h |  2 +-
->  arch/mips/Kbuild                         |  2 ++
->  arch/mips/boot/compressed/Makefile       |  3 ++-
->  arch/mips/include/asm/kprobes.h          |  2 --
->  arch/nios2/Kbuild                        |  2 ++
->  arch/nios2/lib/Makefile                  |  1 +
->  arch/openrisc/Kbuild                     |  2 ++
->  arch/parisc/Kbuild                       |  2 ++
->  arch/parisc/lib/Makefile                 |  1 +
->  arch/powerpc/include/asm/irq_work.h      |  1 -
->  arch/powerpc/include/asm/kprobes.h       |  2 --
->  arch/riscv/include/asm/irq_work.h        |  2 +-
->  arch/s390/include/asm/irq_work.h         |  2 --
->  arch/s390/include/asm/kprobes.h          |  2 --
->  arch/sh/Kbuild                           |  2 ++
->  arch/sh/boot/compressed/Makefile         |  1 +
->  arch/sh/include/asm/kprobes.h            |  2 --
->  arch/sparc/Kbuild                        |  2 ++
->  arch/sparc/include/asm/kprobes.h         |  2 --
->  arch/sparc/kernel/asm-offsets.c          | 13 ++-----------
->  arch/sparc/lib/Makefile                  |  1 +
->  arch/sparc/prom/Makefile                 |  1 +
->  arch/x86/include/asm/irq_work.h          |  1 -
->  arch/x86/include/asm/kprobes.h           |  2 --
->  arch/xtensa/Kbuild                       |  2 ++
->  arch/xtensa/boot/lib/Makefile            |  2 ++
->  drivers/block/swim3.c                    |  2 +-
->  drivers/macintosh/ams/ams-core.c         |  2 +-
->  drivers/parport/parport_gsc.c            |  2 +-
->  drivers/scsi/gvp11.c                     |  5 -----
->  drivers/scsi/qlogicpti.c                 |  2 +-
->  drivers/zorro/names.c                    |  1 +
->  fs/jffs2/debug.c                         |  2 +-
->  include/linux/irq_work.h                 |  3 +++
->  include/linux/kprobes.h                  |  4 ++++
->  include/linux/pci.h                      |  5 +++++
->  include/linux/stackleak.h                |  6 ++++++
->  init/Kconfig                             | 10 ++++++++++
->  kernel/time/tick-internal.h              |  3 ++-
->  lib/test_ida.c                           |  2 +-
->  scripts/Makefile.extrawarn               |  5 +++--
->  63 files changed, 101 insertions(+), 63 deletions(-)
+On Wed, Aug 16, 2023, Binbin Wu wrote:
+>=20
+>=20
+> On 8/16/2023 6:51 AM, Sean Christopherson wrote:
+> > Branch *targets*, not branch instructions.
+> >=20
+> > On Wed, Jul 19, 2023, Zeng Guang wrote:
+> > > From: Binbin Wu <binbin.wu@linux.intel.com>
+> > >=20
+> > > Use the new flag X86EMUL_F_BRANCH instead of X86EMUL_F_FETCH in
+> > > assign_eip(), since strictly speaking it is not behavior of instructi=
+on
+> > > fetch.
+> > Eh, I'd just drop this paragraph, as evidenced by this code existing as=
+-is for
+> > years, we wouldn't introduce X86EMUL_F_BRANCH just because resolving a =
+branch
+> > target isn't strictly an instruction fetch.
+> >=20
+> > > Another reason is to distinguish instruction fetch and execution of b=
+ranch
+> > > instruction for feature(s) that handle differently on them.
+> > Similar to the shortlog, it's about computing the branch target, not ex=
+ecuting a
+> > branch instruction.  That distinction matters, e.g. a Jcc that is not t=
+aken will
+> > *not* follow the branch target, but the instruction is still *executed*=
+.  And there
+> > exist instructions that compute branch targets, but aren't what most pe=
+ople would
+> > typically consider a branch instruction, e.g. XBEGIN.
+> >=20
+> > > Branch instruction is not data access instruction, so skip checking a=
+gainst
+> > > execute-only code segment as instruction fetch.
+> > Rather than call out individual use case, I would simply state that as =
+of this
+> > patch, X86EMUL_F_BRANCH and X86EMUL_F_FETCH are identical as far as KVM=
+ is
+> > concernered.  That let's the reader know that (a) there's no intended c=
+hange in
+> > behavior and (b) that the intent is to effectively split all consumptio=
+n of
+> > X86EMUL_F_FETCH into (X86EMUL_F_FETCH | X86EMUL_F_BRANCH).
+>=20
+> How about this:
+>=20
+> =C2=A0=C2=A0=C2=A0 KVM: x86: Use a new flag for branch targets
+>=20
+> =C2=A0=C2=A0=C2=A0 Use the new flag X86EMUL_F_BRANCH instead of X86EMUL_F=
+_FETCH in
+> assign_eip()
+> =C2=A0=C2=A0=C2=A0 to distinguish instruction fetch and branch target com=
+putation for
+> feature(s)
 
-Acked-by: Palmer Dabbelt <palmer@rivosinc.com> # RISC-V
+Just "features", i.e. no parentheses...
+
+> =C2=A0=C2=A0=C2=A0 that handle differently on them.
+
+...and tack on ", e.g. LASS and LAM." at the end.  There's zero reason not =
+to more
+explicitly call out why the flag is being added.  Trying to predict the fut=
+ure in
+changelogs is generally discouraged, but having understandable changelogs i=
+s more
+important.
+
+> =C2=A0=C2=A0=C2=A0 As of this patch, X86EMUL_F_BRANCH and X86EMUL_F_FETCH=
+ are identical as
+> far as
+> =C2=A0=C2=A0=C2=A0 KVM is concernered.
+>=20
+> =C2=A0=C2=A0=C2=A0 No functional change intended.
+
+Heh, you need to fix whatever is forcefully wrapping lines, but other than =
+the
+nit above, the content itself is good.
