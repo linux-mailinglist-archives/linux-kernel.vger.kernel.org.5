@@ -2,76 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68BDA77D909
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 05:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF11277D912
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 05:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241571AbjHPD2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 23:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38944 "EHLO
+        id S241548AbjHPDbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 23:31:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241535AbjHPD14 (ORCPT
+        with ESMTP id S241608AbjHPDaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 23:27:56 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8858E199D
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 20:27:54 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3a3efebcc24so5178008b6e.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 20:27:54 -0700 (PDT)
+        Tue, 15 Aug 2023 23:30:20 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171B926BB;
+        Tue, 15 Aug 2023 20:29:10 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id d9443c01a7336-1bddac1b7bfso19517045ad.0;
+        Tue, 15 Aug 2023 20:29:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692156474; x=1692761274;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xwjgK2dfjusAmnPgA0cwl3aotLdxMSAMr7Xpy27yFbM=;
-        b=O8/Btqw/e0heP0IILDuZlus/a/5n9Uiwh2vCGO8r9IeJN+7IHqW1bbDbEC4xF4BK1q
-         XMD3ouBXgaFT87rNGhqfzw6DZ6yOdDAlRb+HcIDqnA0JQLK+GHsjxkFEDpgXa5vZYMWW
-         xHKROFMcxwd6op5eZIG7CMNGn5s0IfhdnV+evF+9PRpKq65pc1u44K7/CJKkWRvvsU9C
-         x5HKhiN8c+28G9zmirabjQvQuDKWTGaDhPzroHZK/cAl+rDCQcg8yTm/8231iIU/Tv6m
-         IBRbK2F3S0oDGDBKnVzqvO80rQxuro9sXgso5y3boFdVaLehTvk/Hn8XbokRObOPPsDc
-         or1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692156474; x=1692761274;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1692156550; x=1692761350;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xwjgK2dfjusAmnPgA0cwl3aotLdxMSAMr7Xpy27yFbM=;
-        b=VgBJKU2mOpu/sDlaXVQwA/XmS/7vw7k1VQ7TZY1K9+9bJ9QjGEO5fKh47/7bOIejH0
-         cCknx2fNti9c9YGTOtDvmcbYwA60VB3MVgaaZXGWNKM+qNDV/kqTWziZM5lC8cZfmC6n
-         THP9nppJDgzrhXtHFXUHE/RBLFCVRR3cCMAw5K3CFJTqvJbBxlGBoW/QdkzK70KPi8oi
-         k/ervtm1PP1IFxmHT4D5/vkX/pfXksKfslQ4fKiOr9kmaqR38WSVNeYmswMHGr1znBdj
-         gPdywurko7GWlVA1fmzUx3P+171RzzOawErEGMwX5VV3CfmKaP/c+xi6XR5YhWzxGWg8
-         unZw==
-X-Gm-Message-State: AOJu0Yx/3mii7koHQwaAD9m2EOqakpff/xVpMI3Og/ztZAD8Y6XGER6x
-        JRXb/RcL8U2BJDLi0iR9q9U=
-X-Google-Smtp-Source: AGHT+IHNRfcN9HhzdykwL4I8izOHAzCPXZDBx+2HEKdktKDD/pF+0DDW+LZpTgGz/B2qltEShoqhFw==
-X-Received: by 2002:a05:6358:9490:b0:134:c279:c829 with SMTP id i16-20020a056358949000b00134c279c829mr1271417rwb.18.1692156473689;
-        Tue, 15 Aug 2023 20:27:53 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id q3-20020a63ae03000000b00563ff7d9c4bsm11014268pgf.73.2023.08.15.20.27.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 20:27:53 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 02B52821D995; Wed, 16 Aug 2023 10:27:49 +0700 (WIB)
-Date:   Wed, 16 Aug 2023 10:27:49 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Andrew Randrianasulu <randrianasulu@gmail.com>,
-        lkml <linux-kernel@vger.kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Michael Kelley <mikelley@microsoft.com>
-Subject: Re: Build failure in 6.5-rcX ?
-Message-ID: <ZNxCNRzvDN87_MIf@debian.me>
-References: <CA+rFky5xK35402EGQ-6VqxT-arR7SWLAcp2PyB1xK9ZGRqhs2A@mail.gmail.com>
+        bh=lEj0mBQfdRbRzSN3O+Uxwh388GZNZtY3hJehezBw8Tk=;
+        b=SUzyW+CK6xwBBdd141aQTNgs5M0ctYOmHsTvc0rxmpBGYEjUQECTAhLJ3HjH16xHTv
+         XQzOjTGT6YbkcakFSg7ns92IoN3ZsjWW666LMcZ7gnWF6isMv3xV8VWzVwPVVKcBW6Jw
+         ujnCwOGwe71LqzwY/tuCeZ0o4qtKmdhYzBQMGahYfQTOVlkGhTNSBV/eXLQOrsxDbMpR
+         j9UAG06LAEc5Dk1LqXqya1a9vedo1e8UnMONVcPV9KLtr5vwuc+nrEgvpGwRYjU3dMmf
+         6+swqjp+vlqklLDY8/+fYgo2NDNi+aOMm/QHc97nqmyl7/pnZARUvaVWugvF7Lw4UHxc
+         Wptw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692156550; x=1692761350;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=lEj0mBQfdRbRzSN3O+Uxwh388GZNZtY3hJehezBw8Tk=;
+        b=RUtjIPUBeiL2gOGmfpz7FyFyg11OpzrD0snJUUgDCAlpZZDTM5HJfnat4/e458WjnM
+         MYz6bR7/sTw027xz9BxoSaTJsTT9ZhHM/dom3/Dy0Hz7aCOvqjvT+YY4lnJAr/9fjjOe
+         Y07JnGbKKD5FTmqc+S5PyZj4m2ZsScnVsihsDAr5knzllZmqQq10zrDlmiBYCUUAGPst
+         sjIwplHmhcPv7zbNRLKPSPpRjKaZcJcggmCON1uG02DCI+na1rvlneUOVwlT4rXplCwi
+         OD/SZMEPxbSYOorAcdZKs99IJZnf/yumLP4ZErFv/o4utV1GnUS3fwrXD6hqXJe31cdv
+         4uUw==
+X-Gm-Message-State: AOJu0YxQeGc/HWUI5GE+1NIoXWpjvdYVTCoTecC7hzPYDmrQv4C4/O1W
+        yk5JXz2OJtHvxsqMW7ZGBmE=
+X-Google-Smtp-Source: AGHT+IGvmST2diMC63PU988FBHP7pMvA1OsAloTkdMPgjoTMMurYdMU6kLVUyUqi8Q5XWH7le4R0lw==
+X-Received: by 2002:a17:902:e74c:b0:1bc:56c3:ebb6 with SMTP id p12-20020a170902e74c00b001bc56c3ebb6mr1120655plf.8.1692156549878;
+        Tue, 15 Aug 2023 20:29:09 -0700 (PDT)
+Received: from [192.168.255.10] ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id a11-20020a170902b58b00b001b83e624eecsm11889924pls.81.2023.08.15.20.29.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Aug 2023 20:29:08 -0700 (PDT)
+Message-ID: <6979eae9-53c3-5dad-7d3e-d256d5252271@gmail.com>
+Date:   Wed, 16 Aug 2023 11:29:01 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ixZCtGygK7ok2r5u"
-Content-Disposition: inline
-In-Reply-To: <CA+rFky5xK35402EGQ-6VqxT-arR7SWLAcp2PyB1xK9ZGRqhs2A@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.2.2
+Subject: Re: [PATCH v3] KVM: x86/pmu: Add documentation for fixed ctr on PMU
+ filter
+To:     Sean Christopherson <seanjc@google.com>,
+        Jinrong Liang <cloudliang@tencent.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Like Xu <likexu@tencent.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230531075052.43239-1-cloudliang@tencent.com>
+From:   JinrongLiang <ljr.kernel@gmail.com>
+In-Reply-To: <20230531075052.43239-1-cloudliang@tencent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -79,78 +79,68 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---ixZCtGygK7ok2r5u
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Gentle ping.
 
-On Fri, Aug 11, 2023 at 11:39:06PM +0300, Andrew Randrianasulu wrote:
-> I was trying to crosscompile linux git
->=20
-> 9106536c1aa37bcf60202ad93bb8b94bcd29f3f0
->=20
-> Unfortunately I got this error:
->=20
-> =3D=3D=3D=3D
-> bash-5.1$ make ARCH=3Dx86_64 CROSS_COMPILE=3Dx86_64-unknown-linux-gnu-
->   CALL    scripts/checksyscalls.sh
->   DESCEND objtool
->   INSTALL libsubcmd_headers
->   CHK     kernel/kheaders_data.tar.xz
->   UPD     include/generated/utsversion.h
->   CC      init/version-timestamp.o
->   LD      .tmp_vmlinux.kallsyms1
-> arch/x86/kernel/irq.o: In function `__common_interrupt':
-> irq.c:(.text+0x1727): undefined reference to `irq_regs'
-> irq.c:(.text+0x172f): undefined reference to `irq_regs'
-> irq.c:(.text+0x179a): undefined reference to `irq_regs'
-> arch/x86/kernel/irq.o: In function `__sysvec_x86_platform_ipi':
-> irq.c:(.text+0x1897): undefined reference to `irq_regs'
-> irq.c:(.text+0x189f): undefined reference to `irq_regs'
-> arch/x86/kernel/irq.o:irq.c:(.text+0x194a): more undefined references
-> to `irq_regs' follow
-> make[2]: *** [scripts/Makefile.vmlinux:36: vmlinux] =D0=9E=D1=88=D0=B8=D0=
-=B1=D0=BA=D0=B0 1
-> make[1]: *** [/dev/shm/linux-2.6/Makefile:1250: vmlinux] =D0=9E=D1=88=D0=
-=B8=D0=B1=D0=BA=D0=B0 2
-> make: *** [Makefile:234: __sub-make] =D0=9E=D1=88=D0=B8=D0=B1=D0=BA=D0=B0=
- 2
->=20
-> =3D=3D=3D=3D
->=20
-> config attached.
->=20
-> I use binutils 2.25.1 and gcc 7.5.0 targeting x86_64-unknown-linux-gnu-
->=20
-> so my compile line was
->=20
->  make ARCH=3Dx86_64 CROSS_COMPILE=3Dx86_64-unknown-linux-gnu- -j8
->=20
-> after adding crosscompiler into PATH
->=20
-> I tried to rebuild with make clean, but issue still here.
->=20
+在 2023/5/31 15:50, Jinrong Liang 写道:
+> From: Jinrong Liang <cloudliang@tencent.com>
+> 
+> Update the documentation for the KVM_SET_PMU_EVENT_FILTER ioctl
+> to include a detailed description of how fixed performance events
+> are handled in the pmu filter. The action and fixed_counter_bitmap
+> members of the pmu filter to determine whether fixed performance
+> events can be programmed by the guest. This information is helpful
+> for correctly configuring the fixed_counter_bitmap and action fields
+> to filter fixed performance events.
+> 
+> Suggested-by: Like Xu <likexu@tencent.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Link: https://lore.kernel.org/oe-kbuild-all/202304150850.rx4UDDsB-lkp@intel.com
+> Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
+> ---
+> 
+> v3:
+> - Rebased to 5c291b93e5d6(tag: kvm-x86-next-2023.04.26)
+> - Revise documentation to enhance user understanding. (Sean)
+> - Post this patch separately from the selftests changes. (Sean)
+> 
+> v2:
+> - Wrap the code from the documentation in a block of code; (Bagas Sanjaya)
+> 
+> v1:
+> https://lore.kernel.org/kvm/20230414110056.19665-5-cloudliang@tencent.com
+> 
+>   Documentation/virt/kvm/api.rst | 18 ++++++++++++++++++
+>   1 file changed, 18 insertions(+)
+> 
+> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> index a69e91088d76..9f680eb89b2b 100644
+> --- a/Documentation/virt/kvm/api.rst
+> +++ b/Documentation/virt/kvm/api.rst
+> @@ -5122,6 +5122,24 @@ Valid values for 'action'::
+>     #define KVM_PMU_EVENT_ALLOW 0
+>     #define KVM_PMU_EVENT_DENY 1
+>   
+> +Via this API, KVM userspace can also control the behavior of the VM's fixed
+> +counters (if any) by configuring the "action" and "fixed_counter_bitmap" fields.
+> +
+> +Specifically, KVM follows the following pseudo-code when determining whether to
+> +allow the guest FixCtr[i] to count its pre-defined fixed event::
+> +
+> +  FixCtr[i]_is_allowed = (action == ALLOW) && (bitmap & BIT(i)) ||
+> +    (action == DENY) && !(bitmap & BIT(i));
+> +  FixCtr[i]_is_denied = !FixCtr[i]_is_allowed;
+> +
+> +KVM always consumes fixed_counter_bitmap, it's userspace's responsibility to
+> +ensure fixed_counter_bitmap is set correctly, e.g. if userspace wants to define
+> +a filter that only affects general purpose counters.
+> +
+> +Note, the "events" field also applies to fixed counters' hardcoded event_select
+> +and unit_mask values.  "fixed_counter_bitmap" has higher priority than "events"
+> +if there is a contradiction between the two.
+> +
+>   4.121 KVM_PPC_SVM_OFF
+>   ---------------------
+> 
+> 
+> base-commit: 5c291b93e5d665380dbecc6944973583f9565ee5
 
-What system are you running your kernel builds?
-
-And in the future, please run make with V=3D1. Also, try prepending it with
-LC_ALL=3Den_US.UTF-8 to set compilation messages to English instead of your
-language, as people here can understand what's going wrong.
-
-Thanks.
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---ixZCtGygK7ok2r5u
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZNxCMQAKCRD2uYlJVVFO
-o8VuAQDNa9qlwXFRnSZbbKtZ7icrbEDzReQg4z1UfrVIxgXGFgEAkC0Krl879SJT
-khsDJxpSpWbzDWDk9unN6rPoH9p9NAg=
-=e+2E
------END PGP SIGNATURE-----
-
---ixZCtGygK7ok2r5u--
