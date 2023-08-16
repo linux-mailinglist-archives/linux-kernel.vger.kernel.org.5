@@ -2,319 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 423DA77E8C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 127C877E8C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345543AbjHPSbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 14:31:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48774 "EHLO
+        id S1345545AbjHPScA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 14:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345542AbjHPSbU (ORCPT
+        with ESMTP id S1345540AbjHPSbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 14:31:20 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DDF712C;
-        Wed, 16 Aug 2023 11:31:19 -0700 (PDT)
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37GH4hXk026626;
-        Wed, 16 Aug 2023 18:30:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-03-30;
- bh=+3SZUdONXjlS319Oegol8BO6E9fNHpAsos9cud0jAiw=;
- b=jwCgVkxvkEMsGN8SvvhqaOG9yP5GX34Rqn+b5b83Ojk0SHyQtnHbepYLzD/xUvCYSQfY
- 6hg6sCvcsr6ACWBAPlCMLU9EeWWJpX6iCNCN006tS7a4JRtjOmsNzNv7rlI9CbFPyLIJ
- bjMOnERj2rRCkXkQRqXuGA460tanSUd97wP58fXw0fr3BTnJebBLNvoKeMLt+UvXLVzl
- +ahYposVNx7UX90e2T3eREww54vSCI3SUxayr/6Zi89RgatBl1vNDh5W14DxzImf53Zk
- 6fpX7DI0OYFoUY8VVm5Nae3mI29iCvkN3wDojjOtkTLttF/0T8UDzeh+xaAtzKqKLEQM 0A== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3se2xwquv2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Aug 2023 18:30:36 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37GIIaca019766;
-        Wed, 16 Aug 2023 18:30:34 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2103.outbound.protection.outlook.com [104.47.70.103])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3sey3x4fwe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Aug 2023 18:30:34 +0000
+        Wed, 16 Aug 2023 14:31:25 -0400
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2041.outbound.protection.outlook.com [40.107.100.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5024519A1;
+        Wed, 16 Aug 2023 11:31:23 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZTJsG8LmxQ5SzIP1LRfhfTfSzCO2Lv7oFsc2LXQDK+wHTATw1aH/Jo1v8U+fr8dG1fa1KfCG0V+s8MbALx3Lwz50XQrPEt6Zl/d06D+xoQN0Q2vrSv5Fu3VB1U4Mt4dV3f6q6L4ADsXaIQ8XU90K9xKauhTfKDW2VoZQnInlBJ/0hGiq12WQGRM5H5+VVjOSh16IvekKfJcmuZj8mnIhFzZ3SFG5KBHajeCeqE95DXHx+YMIBRUeEgpUPQz1K+LSJTvGa/c3JkCAAG0Ef4WGKurz7g7XsEdUiTgCglhcOo+WVJRcfreclaFfYYDM/4LWKoXD4nqwYYuEbbfanZp0Wg==
+ b=L+8JuXEvxF8VSyPTLTSfzzzlRe14LL6QggDbDCxjzBf7b+89pMAxxU57C2z8kyYzdMK8x05KcFEdAU3M+ZJ0WL5POxkN3O3BSaweiUFxQ8BnsABueRC1Vp/UhoIFNpfqQo42r69BS8/bcSPf5tLrvup8Tjl+SypDi77PDkd6/OkgLg3Us71lYhgeYPWe1Ho7BaKxo8CgNEXLZExNaqTLBD1uUlD9iauP84VxQKfmqS40QiGDEo95uaUGo3kHTODTLncCadgXiPoNYZ170NUQxPVGVfdhU1XQ6EJa/2ej8NsVjQExurw0Ubimb99CtLppplbCp8AhyxmScnNteY9lhw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+3SZUdONXjlS319Oegol8BO6E9fNHpAsos9cud0jAiw=;
- b=WW30Ccfgnpstys10ZomV67FpZkmJMagX/pWfuTUBtqk7897tPfko7gxQuRjLhfczrC7jcz10OJU7EqbNb/GKRyNOCvVI0bXH6O+0uR2EVTJ0qHopeMayv4ZtNTpkpnskg0/PzCd/+0T//Klt9h73uPgofNmn8tTWcmxT+wLmdYFylUkDRj9Y6bMVHGQ75qbXUlOfwrwJPOgdj1MG8z2LeDIw0sNb6CMUUAnSfkIol4aTkX3A3bhy0e0ijjW0oIEZww18hMEEDB3laJbEPHBBRpYa7uiXX3j2SqfnnuqnqR1Psc8A3Y/J5NmwnxKF3GsL4+q2OKJBwp+y2hiqGbJD3Q==
+ bh=3BnfSgAaPgCFNbDNytPDTdgaGyTZ0n9K+idJLqt10Cs=;
+ b=iVQCWQZb4BgSQEFHGvFAnr0PsXFpnKkRHaupR2hCsd/IvtAkC/PPYUfaACfPdvfQC6D99rSb53cpKqUQ0Lo5O8sGnw04312vu2zU/a9RelInRMxXELWl42ZAKNBzgnlzjTr0E4RwW8q3An4S20BDwUcNny+ryHc6nIlLCk+Qswk2ZBIO+r9XD7WiUiBRpA2iYgf7DMQeX1QALaVng1+gGMtRPLNybj2V3GRxNqZ7A0ax7rhdfQvvArsGIlccPmkw1qI5e4sj6DiH3tielK147WKHinMQz7opYEDLwMPEeJ1tO6E/79Mvh6aknDN+56y1bbV2NkR/ozvBWkhS01dB9A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+3SZUdONXjlS319Oegol8BO6E9fNHpAsos9cud0jAiw=;
- b=DSYealW+Lm8+MjjtQgZekpKsE6b6OUsS7Fau/9JslhgW5eyEHMcJtzDZDG/pOORbo57zKg+t76yTrZ+j+chNlCE3vZnC4Kh3jV8f7jutULsBLlLV8rslgm1Bmfyv0VqtI3Wl6GVUWD2QT2iDDeUUvJsx604+RdacaX29yWujDrk=
-Received: from SN6PR10MB3022.namprd10.prod.outlook.com (2603:10b6:805:d8::25)
- by PH7PR10MB6555.namprd10.prod.outlook.com (2603:10b6:510:206::20) with
+ bh=3BnfSgAaPgCFNbDNytPDTdgaGyTZ0n9K+idJLqt10Cs=;
+ b=J2vmuHssah3UYksvcMACznZCOW1nLrdK5Jwb5NF8cBxr9CFhkErECQfpOcotxRWZR51uSMs7QBF3UKfnOUuHX1bEdL/xMkWhDlw/gk5yZjteSe1U++OeIO9Aj5AzykN/8SxrqbeK5WGiORh55FoIVoBqMex3Lng2OAhz6EtjZwls5CLE1fyPLQNIji7zJmCbGyW222tNmDx3PdbzDPrdvmkSoJvRRH3KAmtyAA85BNf9FJERw1l1AYLlWJQP7RUu4YMXgTAx9MFO1UT4ZCQY4Ba5SjDbkAswIipC3g/EBAKfZu4M8hUZ540c0bifb/j5Q8jGzJHBatSn48WmdLsYCA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CY5PR12MB6201.namprd12.prod.outlook.com (2603:10b6:930:26::16)
+ by MW4PR12MB7117.namprd12.prod.outlook.com (2603:10b6:303:221::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.30; Wed, 16 Aug
- 2023 18:30:32 +0000
-Received: from SN6PR10MB3022.namprd10.prod.outlook.com
- ([fe80::26d3:6f41:6415:8c35]) by SN6PR10MB3022.namprd10.prod.outlook.com
- ([fe80::26d3:6f41:6415:8c35%3]) with mapi id 15.20.6678.025; Wed, 16 Aug 2023
- 18:30:32 +0000
-Date:   Wed, 16 Aug 2023 14:30:29 -0400
-From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-To:     Peng Zhang <zhangpeng.00@bytedance.com>
-Cc:     willy@infradead.org, michael.christie@oracle.com,
-        surenb@google.com, npiggin@gmail.com, corbet@lwn.net,
-        mathieu.desnoyers@efficios.com, avagin@gmail.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, brauner@kernel.org, peterz@infradead.org
-Subject: Re: [PATCH 04/11] maple_tree: Introduce interfaces __mt_dup() and
- mt_dup()
-Message-ID: <20230816183029.5rpkbgp2umebrjh5@revolver>
-Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-        Peng Zhang <zhangpeng.00@bytedance.com>, willy@infradead.org,
-        michael.christie@oracle.com, surenb@google.com, npiggin@gmail.com,
-        corbet@lwn.net, mathieu.desnoyers@efficios.com, avagin@gmail.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, brauner@kernel.org, peterz@infradead.org
-References: <20230726080916.17454-1-zhangpeng.00@bytedance.com>
- <20230726080916.17454-5-zhangpeng.00@bytedance.com>
- <20230726160354.konsgq6hidj7gr5u@revolver>
- <beaab8b4-180c-017d-bd8d-8766196f302a@bytedance.com>
- <20230731162714.4x3lzymuyvu2mter@revolver>
- <3f4e73cc-1a98-95a8-9ab2-47797d236585@bytedance.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3f4e73cc-1a98-95a8-9ab2-47797d236585@bytedance.com>
-User-Agent: NeoMutt/20220429
-X-ClientProxiedBy: YT4PR01CA0162.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:ac::28) To SN6PR10MB3022.namprd10.prod.outlook.com
- (2603:10b6:805:d8::25)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Wed, 16 Aug
+ 2023 18:31:20 +0000
+Received: from CY5PR12MB6201.namprd12.prod.outlook.com
+ ([fe80::87fb:3736:7ec4:b260]) by CY5PR12MB6201.namprd12.prod.outlook.com
+ ([fe80::87fb:3736:7ec4:b260%4]) with mapi id 15.20.6678.029; Wed, 16 Aug 2023
+ 18:31:19 +0000
+Message-ID: <e8a414f0-ac55-9ac1-b115-94daa5914a9c@nvidia.com>
+Date:   Wed, 16 Aug 2023 14:31:15 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.9.0
+Subject: Re: [PATCH net v1] virtio_net: Introduce skb_vnet_common_hdr to avoid
+ typecasting
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Simon Horman <horms@kernel.org>
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Bodong Wang <bodong@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+References: <20230814171845.65930-1-feliu@nvidia.com>
+ <ZNtYpohWyjnb883M@vergenet.net>
+ <05348d62-586c-4b1f-40bd-5541caca0947@nvidia.com>
+ <ZNunz1hbqPKpcOgA@vergenet.net>
+ <CAF=yD-L+d34Uuvt3sOFOnxXhMmoMXNfHzcaSPk=t1PtiPUHZ1g@mail.gmail.com>
+ <f9f3c150-2b5e-7bd0-1c1a-062bd1f16fcd@nvidia.com>
+ <64dce2f2b99f5_23f1f82949f@willemb.c.googlers.com.notmuch>
+From:   Feng Liu <feliu@nvidia.com>
+In-Reply-To: <64dce2f2b99f5_23f1f82949f@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DS7PR03CA0190.namprd03.prod.outlook.com
+ (2603:10b6:5:3b6::15) To CY5PR12MB6201.namprd12.prod.outlook.com
+ (2603:10b6:930:26::16)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR10MB3022:EE_|PH7PR10MB6555:EE_
-X-MS-Office365-Filtering-Correlation-Id: f699c897-674f-4283-50c6-08db9e86dfe0
+X-MS-TrafficTypeDiagnostic: CY5PR12MB6201:EE_|MW4PR12MB7117:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6eaf0462-d11b-4a2d-8c26-08db9e86fc14
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tgq/0MyFqdaAn+gtRgbgIuRphIF3ZYejVgSX3MV5KcQKXsV/jXclbZ2piuWjDNasDzSirRWMpAkgznXigyCkqPoVtvXTSI1MK7N4xQyrHO6tnnmehNYC0fmIUTzNwuaL+WfNw5OTV+Cfs9j0Tp9HKAVT5QIY71dgZ6veDzBcumzHT6fTgrdLbUv0bJ6TOK14R1OkZPDwHg7PLAJm2CHteuQ1l4SdaYicRdCCPEFf+SoKCqcTZfboCuJfdYNk6mQpK7G5hoj08JqM5w94yDuyYc8c40VkCe8WutjRnVP3DvUbxo68whm/EHlCZrPMAdi5zpROXMLCfbvwMsAI/szF7T1W3jPNJixjqcW9HQz8tYD6j9jPVAEZ9/+/zXV2UNGtjwIqjUoIXem6vMLQyha+6nzX4qXNytpNJwhmfrs8SMXN02H/UUOy1AFJ5jN2t+5VE/g9tlCEmC7rr1nqmx0MHteKRqKBEIm7GaZEk9Oluz/IJGjGwvampyDlVjrngwQxJ3j71fisZGqF8wm9DjTs1YK30C+Pbgvvqqcxg9NlYrBJDOmi4MrHay31VeQCOPnA
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB3022.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(136003)(39860400002)(396003)(366004)(346002)(1800799009)(186009)(451199024)(38100700002)(66946007)(66556008)(66476007)(316002)(478600001)(7416002)(2906002)(41300700001)(8936002)(8676002)(4326008)(83380400001)(5660300002)(6512007)(9686003)(6486002)(6666004)(6506007)(1076003)(26005)(6916009)(86362001)(33716001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 244sFdBLJDtohsWz/lT0aWp86rfAfvSaQsXeLq/wd1TevKdlVXsWQGQmOgWMLEqpZewGAXD3HaXckga1DSqBr7wkM3VALS0mmwgzQjoG7F9aT5MhtjW92QuT/h4btpC2lsyFVDwfzBjchzDj2BcJhMG/8fF0W959sb2/WOjzLs85SApTjtxrEAfbvub0drPd+Uvf91GWi1VGtHK6C8N3y4xR591b9qPSM+09xrvnfKBvoCW5PNJsL7Vq58bXTEu2FiaUtIPSQKzWz/1RGBVGjHs8xIi6dlGinkvLxeDuE2kl3HYGp/I1WtvY5Ri7XkSE4HkzqO+6e72Hp4Bv8sYk6gK+o8wuymfxl7bScZXWifG72YMENjvGc0ToiQub3B8CraK9ppcmci/810U0MD36YBQlCw8uFWu8uLolJpkT0ZQbz8OpCzvyRO2QwPBmma4ueAT0XWLDFMWk3zFnxfNwwZxeaWUdG6kIBUIkiSykkfgEhucgQGf3vsnnTVDVpTyqEQXtwrsviI0ex0Kj0KlgsQz6VP8dHoajosRtCpdH6MokQuNGTqwJc/4SK9Y0d4aGL7elKro6IfT26H+++ZsQe0XgUWw6nyyA0Iv8qKgrfGDSf7L8mMYYerT1i0bCcfGK4ZlccwKPI0xMxkxTmVrrvA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6201.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(396003)(376002)(136003)(366004)(451199024)(1800799009)(186009)(316002)(54906003)(66946007)(110136005)(66476007)(66556008)(41300700001)(5660300002)(38100700002)(31686004)(8676002)(4326008)(8936002)(2906002)(83380400001)(26005)(478600001)(7416002)(86362001)(6512007)(31696002)(6506007)(36756003)(6666004)(2616005)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RF4eqNima9vox/kXpwd90CPnUoTXC96MY4MpFODgw2UgUHnsB+J3dZ/7ay7h?=
- =?us-ascii?Q?/572vx2E/I3wb0QUrFLifwbKpPlm1klQ9viE0dRomPQyNbJD1/2iUV99qZdQ?=
- =?us-ascii?Q?zAxQGiDrvQ6xzsnz08Mh1Tseq/X8tWYY2tln8PYSg9U4hteNBZt9hXY7ceTl?=
- =?us-ascii?Q?L7H00ekrpdLVA1DE1GBTL+518cpP8TK7Pv3grX0jvDCWby7AXITrrFmLHOqP?=
- =?us-ascii?Q?9Q2OTRPQWtfDnITYIQ2Pq/S6jMBJCzgsviL9bXACF2M4ngnkEpih64TuToEf?=
- =?us-ascii?Q?sKC/Rh/gbYU/nLwOm0NyjnyxEuxkgdhD8f5n6k7fapYFEIJlaCLPQs0KGVgR?=
- =?us-ascii?Q?dz7FqRmIn6gbVO8JiTYjufDMYL4QU/UqTzRlkNdS+YWRwKuL0KoTtRWVHYJ9?=
- =?us-ascii?Q?a6EbEHIB3NpHLPkCj/UfAvXiZl4vFMHOdsiuKwD/enmJCoW/mB1X2cQQtK//?=
- =?us-ascii?Q?Rr6vYLl/5scK0CMIGKlIZFq3dOkcncPDczn9wtbcOX1/PRge/kDKlo4A3i7V?=
- =?us-ascii?Q?+OM9OHnYc5De8gq5lj/dn+IqTBRb++mC4Re2zXebIiZbdH+ER8aB/NhHf9rB?=
- =?us-ascii?Q?t0HdrpKoo+9ZC09bCzWsVnEjRrq6zexF3iKJxEYo+8Tme+FyTMiF6YD34Tg7?=
- =?us-ascii?Q?GDQDixy9XxWRW/DuQrkFWzbgKridpHB+8iwaEJL2eiV4SGH9mlaZJ151AqTX?=
- =?us-ascii?Q?KDhKkqgf1pLLYk0tEXBtLwFwmIme2iDNWbqMse+fdxCXqdXMeEuMkKxnZ8zX?=
- =?us-ascii?Q?aL96ob6/h38QcalVA7v/d87marTGFyjbJMzRthiA4ao2VLq2SH7qOFjh5THL?=
- =?us-ascii?Q?26Iv0c6S0yiVWo35hXsE60o1i9iSbzHiBkyX5zvckplS0T6cwDbLJQz7EiA/?=
- =?us-ascii?Q?9EDt9x8SIUJoaIgAevfVSOi+h3/sq6SecbvMR0kpYHZdzMwFX6U+IOp49XCA?=
- =?us-ascii?Q?6u0+4RoQAr8ppHxaarI7NHURNF/XTfD60Y6A/35lqp0J1MmiJGmgNMMk5ojj?=
- =?us-ascii?Q?XCl7kv0yoC7RAxZeWRy4Do3j0JnFtG9Kn1S/YPJvJviAi41hor4KsXu8wpfJ?=
- =?us-ascii?Q?9k/rKV8NbQEawgnpkHEizScCBqd68+bfWEJzZQhmRpihW23n25IPuVbMorU0?=
- =?us-ascii?Q?I4yg8eleBZkXIPMZFl0C447Jj8VSyiMz3qLwXacr8qYwOX+NjKG9D7mtXgfD?=
- =?us-ascii?Q?fs3ofXqwsMU+EIumN4BwRum/GHpMSanJ8VFncsQVcEXxNBbj50Jk4LntyH5+?=
- =?us-ascii?Q?opkYtStJn5zfhhXAwn5bu7/y0q39fSU5FlVW2AnXAu0Z3FHx753hE2GF4wiH?=
- =?us-ascii?Q?ZePG7A0dNUc2YimZ3o1bUIconIM9hyvaU7xSVXh6rtAOxtyGydjcAmXpTWKk?=
- =?us-ascii?Q?jenP9DF42ns3O4w5gIaM0cD0CzXC/Hs2VZxGR2shrPQVS83y+qYdejCeNOq0?=
- =?us-ascii?Q?pQYWK81hsYWWJqE/TfUE1yaOL1pOd1Fs1KcvLDl/xYze7Oi3Icr7/m342wR1?=
- =?us-ascii?Q?tLVTJ+xk3uFJTLK55sQJTIC54iUw3Z9ZDybU/OZ+fea/M261bJ2bSH/E/Q5x?=
- =?us-ascii?Q?WayUpKC16VDk86mnAvct1XKdO1rsHzBEJyaXoWg8?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?PM6ZPiyqujMPwpEUdIyKgA6UUxRXbgiJfmTmgdGNhtu5SLrelkda0wd3dm0i?=
- =?us-ascii?Q?2oqosUDaKJH1meuVZuLEk6mOJdgm3Cpk35qTkJYnHffVaFB31sMqBMU0PyDo?=
- =?us-ascii?Q?4awiVSMBYPnvpeF9MAGnliRrKzSXwS51B3RVlRbDypMzFH1SFxZMaVj6O64X?=
- =?us-ascii?Q?pkYTyPQ3OzMFArMJG9v1yg3m23H7P7TofK2QC8b9LFaYWtHH/V8oUdTdDxSH?=
- =?us-ascii?Q?aSvqyX8EHLCwJG+tqpHsA2KHOuK5baxaaSh0VEJImGlFM+J4TrIL4kO92AIe?=
- =?us-ascii?Q?OgQHbArXWAOD6n5dAllY5UJ3NNC4ZUT1r0HiDQeIR5BddgV2cu5wRW3yOgYj?=
- =?us-ascii?Q?Tr0vlmS3tYL6jKdChlOu5LDjKGtkNyOFUNl6u/r+xzjnuHSGNaPjOuQ1dQdp?=
- =?us-ascii?Q?OnYBQdwNc7La408070dUQg6oZmwTsDp7LZ8tfIghK8XhgDTjdU8+v8jYoSgU?=
- =?us-ascii?Q?/3SF8j7tg6dglXGjz2ASjFWslt+0euiGrG06n1ZgTdrgZ75kEC23hhko4G1M?=
- =?us-ascii?Q?zsJx4b7rmL3X3pSy0flRGra4fqauGHtKLr9aR+8XEqwfOrJl885TROoD8z/m?=
- =?us-ascii?Q?HSCIqLWANQnbNQYqLubyFKMwEobaIYahRNjKTOW/vOChPHxGDRDWiIP0IPk2?=
- =?us-ascii?Q?FxaYGVWjH9O8/CThE2qRevKZBMf1qmrTo+NNFZmpD8ycfNgdkAQTtlJ9Q+Ld?=
- =?us-ascii?Q?1YeMea50bm15aKtZfjxlVgFotNje4f8HzE6qllA0yNNwLj4dEY4yV6+3u+yz?=
- =?us-ascii?Q?5T6aAlYoX4Yq2PG5TRs1HglVAn2cwUv+4Wgz5TclvXXAPyUUtbDOBEnM/UdU?=
- =?us-ascii?Q?l6UiDean3m5hrTaij3R/TaQ/VzrAZjPoI+cmtCRQeYnVxePz9Qb9wfVNzEiN?=
- =?us-ascii?Q?v9JMa/4Ptw04lXHMkLFaOi8xk+C5AJqNtH5jumND58ZhSCEBnc2pWAfRqrtV?=
- =?us-ascii?Q?nlK+6ZezMN5qh6htfYnH/uMH50mwdH7fysGIwohoN1DE1O+xTgxk3iQtCNn9?=
- =?us-ascii?Q?/SaoUh+2n5CaHXYXFDcGXROGBBZtpW6PKJPMTjt/IcyhSUZdAxgwths8vLSz?=
- =?us-ascii?Q?2mQAJhK0?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f699c897-674f-4283-50c6-08db9e86dfe0
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB3022.namprd10.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QVM5ZHlOOG51REMySVpHMDFDNmRkVE9pK21xSDlMNytSWjM2Z2NmcnNUVmxK?=
+ =?utf-8?B?UXJsaGQ1VWFZTWR5THFrN0s5MVRYOXJVYjlRdHFzVWlTNXZ0bEhtOC8veGRY?=
+ =?utf-8?B?N0FDb1ZVK0pvTjVkZy9JRFg3Z2VXZ0ppa2lRMVNKRGpRUkI4NlR0bmZQQ1BD?=
+ =?utf-8?B?eHpxdEtDZ3hyWDRjQ0E4RkM4cW1hUUJZRHNEUW1qNHRwT3ViZmhXdllkdTBD?=
+ =?utf-8?B?ekhYOGJzTXJIcFlZdDJTWTZiczgrKy9WYkJCOEszMXBCVG5qYjZjTHZpWUUv?=
+ =?utf-8?B?UkZGMmxjRlgyTWhJNWlDWTNkQ2RKMXNGVmVYdnpieW9WTzF6eVpBSnlVYmYz?=
+ =?utf-8?B?SE9aMU5zdGJlSkJVcVFyN0VqR1BEOXJncFY0V1dqQ3NZMmRvWjNESERDYnJY?=
+ =?utf-8?B?UHQwbElDMElOd2JXMjJLOGsxZXVKR3VSYWRmM21JTmtZQUwvc0JoUEN0N2Iz?=
+ =?utf-8?B?MEd6K1ZTYmN5UlFWWlB5MXBlZXVKWE1ob2VvMzJ4WUJXS282d0VVeXN1Ykt1?=
+ =?utf-8?B?d0l3T1NQM1Nic0Z2UVhvL1BleUpscWZhZGh6YkcwMVBiVEE3Q1dpRS9RR2ZZ?=
+ =?utf-8?B?MEZsdkNwUTRTaUZiQjNkMVhNYjVHR2lidmtSNXNyQjlsTzh1V3dMTGZWNW5P?=
+ =?utf-8?B?UU5xRjVObVdKNHBudzFiLzZxRGcyVTJWazhkV2FUVkd1VVNPUnBZeUxSUjlY?=
+ =?utf-8?B?M0VuSzluVnVRUW9NalNOWFlscDZ4VnIyTTRRU1hkSWVhQUtQdDkwMS9zRzNp?=
+ =?utf-8?B?ZUppOFV3c3ljOHB2VFJBcnBJZE4rZG1yb1gvYlRyREZNNUJOQkxUU3Bwd3Zm?=
+ =?utf-8?B?RjFjRGtsN1l4MEFrQm9TUml5Z2dtT3BKRkhJWE5EN05WY2NuWURKaTVMUlpz?=
+ =?utf-8?B?cVVUb3p1aHNxNU9yVjNrTktTWFdsNFZ6dy9qWVFsVGQ3L2RJWEo3SlIvbmhi?=
+ =?utf-8?B?OXdoZ0R6VGdITUJZL1lzSk0yaEFJdUhHYTdVbnVNNkVPcWwzeWxDTUhYUGtQ?=
+ =?utf-8?B?NjZLMk5HWDZ3YTZXRTdWaGwrcmhObEQraFUwbTRoSTNTejNlaU9WNWhZZExk?=
+ =?utf-8?B?emF2dEllOHBCdC8zMWdqMW1DOVA3MDd6WFY1enVRdWJhTTNyOXlyaHFNaDBT?=
+ =?utf-8?B?ekpDQ0xnRDZOWXNwalNneDQwK3pZbGJhVXMyNnR4dU9HSWpwUXA3cGlNMUxN?=
+ =?utf-8?B?bWwrY21qTHRFS0NDaUpud0g2ZVBTTUJOREhuRFRtakVTb05Td1hiejVDVzRK?=
+ =?utf-8?B?ZXd2eXdqM2FWRmUzSzg3R3krT3Y0d0oyQkVRa0pNOC90OVIrbnZkSnMxSy9M?=
+ =?utf-8?B?NVU3NDIyV2RMSGdHdGtjWU9naXd3dlZZZmdOVWtqbU45ODIyZno1NnZPckZQ?=
+ =?utf-8?B?Vitqbm5ESUdQN0RNcVVwaExrd0lUYWcvRGpRbGhkTE4xVjZ5VHlkV1RQUnFn?=
+ =?utf-8?B?OWJwWUZFd1prYURtMjBOazZoV3IxSlkwaVdRdW9tbmFEY1NXTTJHNlkxaXox?=
+ =?utf-8?B?NE44M2VEVEM1RjRUQVhEUW00VHA4dlVjZVUrd29MLyt0TTZxamREM0ZRNGdL?=
+ =?utf-8?B?RFM0ZkVyb0c0V1RPb1ZHLzNLNlpVaFk1eVRwUE9kZHlrbnVxTTNJZjhYc3BS?=
+ =?utf-8?B?eTRMcFpHeVo4ZWVVNGJnQjlUd3pKYm4vb1FjbCtYSTRNaENPeGtROEtJZi95?=
+ =?utf-8?B?cnl0NnMzTkxYem5obVhydWJqM1BtVFI3Z3ErN3NISTN3SWRVRlJHM1VmY1Z6?=
+ =?utf-8?B?Sk90UUpIMGRHRkM1NmlId0V1aHpMbzRLL0FVdFRRS0ptZ3ZqKzNtOEJvZTdl?=
+ =?utf-8?B?ZUZHS2RmdDB4RnNMVEhaYlNaeWhBY2VSK0JWK1g2cjJvaUIvU2padmUwRVp2?=
+ =?utf-8?B?NmhtU1BaMk5UMVJneW50TlR4OUVOUWFqdG4zUmJKOHVVSVBGK2VLVCtFRVJE?=
+ =?utf-8?B?U3J6V0tLOWVoYjQ0Uk12TG9VczdET28wWEFVQ0NKMzJhRCs4NmNNRDZGRlpm?=
+ =?utf-8?B?WDFKMGY3ZmFneUovV0NMbVhyTXNadEtSbzRVRGpaVEl3R3k4dkRWbEpidUsz?=
+ =?utf-8?B?TFZQaWUzM0R5c1RKTngyeERKdlJYQUYyR1dYbldOdFdNRVE3MDBPekswcVds?=
+ =?utf-8?Q?7atX2aynV0Tjcx2GiT85Igl3e?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6eaf0462-d11b-4a2d-8c26-08db9e86fc14
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6201.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 18:30:32.3467
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 18:31:19.6413
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 26g6wnxRz3xjJFQo0zJorhRbul28sHoA91o7DE36ugOYGeDhyPBdVfeBNeQ41Ue7RlyUcz3+46WKq8hP+N0RUQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6555
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-16_18,2023-08-15_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- spamscore=0 mlxscore=0 adultscore=0 bulkscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308160162
-X-Proofpoint-ORIG-GUID: cs85a8WdDXXjvYgtQ-B7y5wwHaOfM3VU
-X-Proofpoint-GUID: cs85a8WdDXXjvYgtQ-B7y5wwHaOfM3VU
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: /CkO+cylfKnslvAcZabqhA4xZFxP2jPh/rdgE0b/xEbVOOGlq+2IqSb1XbY9lVR1zKtuKJNstmxF9qDRpjTz+A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7117
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Peng Zhang <zhangpeng.00@bytedance.com> [230816 09:42]:
+
+
+On 2023-08-16 a.m.10:53, Willem de Bruijn wrote:
+> External email: Use caution opening links or attachments
 > 
 > 
-...
+>>
+>> Thanks for the detailed explanation.
+>>
+>> I kept virtio_net_hdr_mrg_rxbuf and virtio_net_hdr_v1_hash structures in
+>> virtio_net.h, which can be forward compatible with existing user
+>> applications which use these structures.
+> 
+> They're UAPI, so we cannot modify or remove them anyway.
+> 
+> Which is exactly why we want to be careful with adding anything new.
+> 
+ok
 
-> > > > > +/**
-> > > > > + * __mt_dup(): Duplicate a maple tree
-> > > > > + * @mt: The source maple tree
-> > > > > + * @new: The new maple tree
-> > > > > + * @gfp: The GFP_FLAGS to use for allocations
-> > > > > + *
-> > > > > + * This function duplicates a maple tree using a faster method than traversing
-> > > > > + * the source tree and inserting entries into the new tree one by one. The user
-> > > > > + * needs to lock the source tree manually. Before calling this function, @new
-> > > > > + * must be an empty tree or an uninitialized tree. If @mt uses an external lock,
-> > > > > + * we may also need to manually set @new's external lock using
-> > > > > + * mt_set_external_lock().
-> > > > > + *
-> > > > > + * Return: 0 on success, -ENOMEM if memory could not be allocated.
-> > > > > + */
-> > > > > +int __mt_dup(struct maple_tree *mt, struct maple_tree *new, gfp_t gfp)
-> > > > 
-> > > > We use mas_ for things that won't handle the locking and pass in a maple
-> > > > state.  Considering the leaves need to be altered once this is returned,
-> > > > I would expect passing in a maple state should be feasible?
-> > > But we don't really need mas here. What do you think the state of mas
-> > > should be when this function returns? Make it point to the first entry,
-> > > or the last entry?
-> > 
-> > I would write it to point to the first element so that the call to
-> > replace the first element can just do that without an extra walk and
-> > document the maple state end point.
-> Unfortunately, this does not seem to be convenient. Users usually use
-> mas_for_each() to replace elements. If we set mas to the first element,
-> the first call to mas_find() in mas_for_each() will get the next
-> element.
+>> virtio_net_hdr_v1_hash cannot use virtio_net_hdr as the first member,
+>> because in virtio_net_hdr_v1, csum_start and csum_offset are stored in
+>> union as a structure, and virtio_net_hdr cannot be used instead.
+> 
+> Oh right. That wasn't always the case, or the reason for this.
+> Not super relevant but, commit ed9ecb0415b9 has the history
+> 
+>      virtio: Don't expose legacy net features when VIRTIO_NET_NO_LEGACY defined.
+> 
+>      In particular, the virtio header always has the u16 num_buffers field.
+>      We define a new 'struct virtio_net_hdr_v1' for this (rather than
+>      simply calling it 'struct virtio_net_hdr', to avoid nasty type errors
+>      if some parts of a project define VIRTIO_NET_NO_LEGACY and some don't.
+> 
+>      Transitional devices (which can't define VIRTIO_NET_NO_LEGACY) will
+>      have to keep using struct virtio_net_hdr_mrg_rxbuf, which has the same
+>      byte layout as struct virtio_net_hdr_v1.
+> 
+> The union was added to overload csum use on tx with RSC use on rx, in
+> commit 22b436c9b568. I don't quite follow why there now are three
+> structs, rather than two. The first two seem to both implement csum
+> partial. Anyway, not super important here.
+>ok
 
-This sounds like the need for another iterator specifically for
-duplicating.
+>> In addition, I put this new structure virtio_net_common_hdr in uapi,
+>> hoping it could be used in future user space application to avoid
+>> potential risks caused by type coercion (such as the problems mentioned
+>> in the patch description ). So I think it should be in this header file.
+>> What do you think?
+> 
+> Adding anything to UAPI has a high bar. Do you have a concrete use
+> case for this?
+
+In the scene of with and without VIRTIO_NET_F_HASH_REPORT feature, this 
+patch has been tested on my setup, and the function is ok.
 
 > 
-> There may also be other scenarios where the user does not necessarily
-> have to replace every element.
+> This does seem mostly a helper to simplify kernel logic to me, which
+> is better kept in non-UAPI headers.
+OK, will change it.
 
-Do you mean a limit or elements that need to be skipped?  We could have
-a limit on the iteration.
-
-> 
-> Finally, getting the first element in __mt_dup() requires an additional
-> check to check whether the first element has already been recorded. Such
-> a check will be performed at each leaf node, which is unnecessary
-> overhead.
-> 
-> Of course, the first reason is the main reason, which prevents us from
-> using mas_for_each(). So I don't want to record the first element.
-
-
-I don't like the interface because it can easily be misunderstood and
-used incorrectly.  I don't know how to make a cleaner interface, but
-I've gone through a few thoughts:
-
-The first was hide _all of it_ in a new iterator:
-mas_dup_each(old, new, old_entry) {
-	if (don't_dup(old_entry)) {
-		mas_erase(new);
-		continue;
-	}
-
-	mas_dup_insert(new, new_entry);
-}
-
-This iterator would check if mas_is_start(old) and dup the tree in that
-event.  Leave the both new trees pointing to the first element and set
-old_entry.  I don't know how to handle the failure in duplicating the
-tree in this case - I guess we could return old_entry = NULL and check
-if mas_is_err(old) after the loop.  Do you see a problem with this?
-
-
-The second idea was an init of the old tree.  This is closest to what you
-have:
-
-if (mas_dup_init(old, new))
-	goto -ENOMEM;
-
-mas_dup_each(old, new) {
-	if (don't_dup(old_entry)) {
-		mas_erase(new);
-		continue;
-	}
-
-	mas_dup_insert(new, new_entry);
-}
-
-This would duplicate the tree at the start and leave both pointing at
-the first element so that mas_dup_each() could start on that element.
-Each subsequent call would go to the next element in both maple states.
-It sounds like you don't want this for performance reasons?  Although
-looking at mas_find() today, I think this could still work since we are
-checking the maple state for a lot.
-
-Both ideas could be even faster than what you have if we handle the
-special cases of mas_is_none()/mas_is_ptr() in a smarter way because we
-don't need to be as worried about the entry point of the maple state as
-much as we do with mas_find()/mas_for_each().  I mean, is it possible to
-get to a mas_is_none() or mas_is_ptr() on duplicating a tree?  How do we
-handle these users?
-
-Both ideas still suffer from someone saying "Gee, that {insert function
-name here} is used in the forking code, so I can totally use that in my
-code because that's how it work!"  and find out it works for the limited
-testing they do.  Then it fails later and the emails start flying.
-
-
-I almost think we should do something like this on insert:
-
-void mas_dup_insert(old, new, new_entry) {
-	WARN_ON_ONCE(old == new);
-	WARN_ON_ONCE(old->index != new->index);
-	WARN_ON_ONCE(old->last != new->last);
-	...
-}
-
-This would at least _require_ someone to have two maple states and
-hopefully think twice on using it where it should not be used.
-
-The bottom line is that this code is close to what we need to make
-forking better, but I fear the misuse of the interface.
-
-Something else to think about:
-In the work items for the Maple Tree, there is a plan to have an enum to
-specify the type of write that is going to happen.  The idea was for
-mas_preallocate() to set this type of write so we can just go right to
-the correct function.  We could use that here and set the maple state
-write type to a direct replacement.
-
-Thanks,
-Liam
