@@ -2,108 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 112D677DCFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACBFD77DD03
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243219AbjHPJJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 05:09:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42378 "EHLO
+        id S243160AbjHPJMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 05:12:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234317AbjHPJJA (ORCPT
+        with ESMTP id S237338AbjHPJMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 05:09:00 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816761FC1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:08:59 -0700 (PDT)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37G8vvVQ016284;
-        Wed, 16 Aug 2023 09:08:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : references : date : in-reply-to : message-id : mime-version :
- content-type; s=pp1; bh=m9NJXJg+PF9lp0cCAnigukkIHa2Iqv41yOUlO4r6Lio=;
- b=gd7m6+sJM/yTD9Mgm9a2nSXIufQuEfzvUIm3+tlrz3nRfsO6kXkjh1GOeMJ/GIx01kNf
- R2oiqtxLpDWeUCiTeNhGhdG3FbIdNQOTfLpwfGVw2MXhDuTwAX+xWbkmk7na+A0gJt5s
- W4ikaubv2woArpBsD3RJm+1hAAd4JR3Jk8EqIrkiSbW2l0v/RLxv96d3/4MKMbrIH3xF
- gpC3QIsvPH59ofNQ2CifLfppFB7/GkkVcy1xZGdWlzK1jlPBfVHv6buU0XBwDWWuHVQ4
- zpXH7UuyIJaIcmJWjpgQJ7ngGbm39TWyyQp60U4rQQAGQlk1Tk/i0ZIXgvJx2GsHNR5Q ew== 
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sgude8eys-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 09:08:57 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37G7IGRJ013240;
-        Wed, 16 Aug 2023 09:08:55 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sepmjtpn1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 09:08:55 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37G98quu15729396
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Aug 2023 09:08:52 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 99D622004B;
-        Wed, 16 Aug 2023 09:08:52 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7607D20043;
-        Wed, 16 Aug 2023 09:08:52 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed, 16 Aug 2023 09:08:52 +0000 (GMT)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] few fixes for synthetic trace events
-References: <20230810060538.1350348-1-svens@linux.ibm.com>
-Date:   Wed, 16 Aug 2023 11:08:52 +0200
-In-Reply-To: <20230810060538.1350348-1-svens@linux.ibm.com> (Sven Schnelle's
-        message of "Thu, 10 Aug 2023 08:05:35 +0200")
-Message-ID: <yt9dcyzn9wwr.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        Wed, 16 Aug 2023 05:12:14 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E1B041BF8;
+        Wed, 16 Aug 2023 02:12:12 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 87BE11063;
+        Wed, 16 Aug 2023 02:12:53 -0700 (PDT)
+Received: from [10.57.2.104] (unknown [10.57.2.104])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 418583F64C;
+        Wed, 16 Aug 2023 02:12:09 -0700 (PDT)
+Message-ID: <a82cc9a8-7700-fe71-cb0f-dc65eefcc22f@arm.com>
+Date:   Wed, 16 Aug 2023 10:12:07 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: HTJsd4y80ILPnZH-PQWGIm_iT7lAfZxv
-X-Proofpoint-ORIG-GUID: HTJsd4y80ILPnZH-PQWGIm_iT7lAfZxv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-16_07,2023-08-15_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=999 malwarescore=0 suspectscore=0 mlxscore=0 clxscore=1015
- spamscore=0 priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308160080
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v5 2/6] perf arm64: Allow version comparisons of CPU IDs
+Content-Language: en-US
+To:     John Garry <john.g.garry@oracle.com>,
+        linux-perf-users@vger.kernel.org, irogers@google.com,
+        renyu.zj@linux.alibaba.com
+Cc:     Will Deacon <will@kernel.org>, Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Nick Forrington <nick.forrington@arm.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Sohom Datta <sohomdatta1@gmail.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+References: <20230811144017.491628-1-james.clark@arm.com>
+ <20230811144017.491628-3-james.clark@arm.com>
+ <d6b702fa-0b7b-63d4-cd84-eed4387663a7@oracle.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <d6b702fa-0b7b-63d4-cd84-eed4387663a7@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sven Schnelle <svens@linux.ibm.com> writes:
 
-> Hi Steven,
->
-> I'm now sending these patches in one patchset, because the second patch
-> has a dependeny on the union vs. cast fix.
->
-> Changes in v3:
-> - remove superfluous struct around union trace_synth_field
->
-> Changes in v2:
-> - cosmetic changes
-> - add struct trace_dynamic_info to include/linux/trace_events.h
->
-> Sven Schnelle (3):
->   tracing/synthetic: use union instead of casts
->   tracing/synthetic: skip first entry for stack traces
->   tracing/synthetic: allocate one additional element for size
->
->  include/linux/trace_events.h      |  11 ++++
->  kernel/trace/trace.h              |   8 +++
->  kernel/trace/trace_events_synth.c | 103 ++++++++++++------------------
->  3 files changed, 60 insertions(+), 62 deletions(-)
 
-Gentle ping? We're still seeing a lot of KASAN warnings.
+On 15/08/2023 10:35, John Garry wrote:
+> On 11/08/2023 15:39, James Clark wrote:
+>> Currently variant and revision fields are masked out of the MIDR so
+>> it's not possible to compare different versions of the same CPU.
+>> In a later commit a workaround will be removed just for N2 r0p3, so
+>> enable comparisons on version.
+>>
+>> This has the side effect of changing the MIDR stored in the header of
+>> the perf.data file to no longer have masked version fields. It also
+>> affects the lookups in mapfile.csv, but as that currently only has
+>> zeroed version fields, it has no actual effect. The mapfile.csv
+>> documentation also states to zero the version fields, so unless this
+>> isn't done it will continue to have no effect.
+>>
+> 
+> This looks ok apart from a couple of comments, below.
+> 
+> Thanks,
+> John
+> 
+>> Signed-off-by: James Clark <james.clark@arm.com>
+>> ---
+>>   tools/perf/arch/arm64/util/header.c | 64 ++++++++++++++++++++++-------
+>>   1 file changed, 50 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/tools/perf/arch/arm64/util/header.c
+>> b/tools/perf/arch/arm64/util/header.c
+>> index 80b9f6287fe2..8f74e801e1ab 100644
+>> --- a/tools/perf/arch/arm64/util/header.c
+>> +++ b/tools/perf/arch/arm64/util/header.c
+>> @@ -1,3 +1,6 @@
+>> +#include <linux/kernel.h>
+>> +#include <linux/bits.h>
+>> +#include <linux/bitfield.h>
+>>   #include <stdio.h>
+>>   #include <stdlib.h>
+>>   #include <perf/cpumap.h>
+>> @@ -10,14 +13,12 @@
+>>     #define MIDR "/regs/identification/midr_el1"
+>>   #define MIDR_SIZE 19
+>> -#define MIDR_REVISION_MASK      0xf
+>> -#define MIDR_VARIANT_SHIFT      20
+>> -#define MIDR_VARIANT_MASK       (0xf << MIDR_VARIANT_SHIFT)
+>> +#define MIDR_REVISION_MASK      GENMASK(3, 0)
+>> +#define MIDR_VARIANT_MASK    GENMASK(23, 20)
+>>     static int _get_cpuid(char *buf, size_t sz, struct perf_cpu_map
+>> *cpus)
+>>   {
+>>       const char *sysfs = sysfs__mountpoint();
+>> -    u64 midr = 0;
+>>       int cpu;
+>>         if (!sysfs || sz < MIDR_SIZE)
+>> @@ -44,21 +45,11 @@ static int _get_cpuid(char *buf, size_t sz, struct
+>> perf_cpu_map *cpus)
+>>           }
+>>           fclose(file);
+>>   -        /* Ignore/clear Variant[23:20] and
+>> -         * Revision[3:0] of MIDR
+>> -         */
+>> -        midr = strtoul(buf, NULL, 16);
+>> -        midr &= (~(MIDR_VARIANT_MASK | MIDR_REVISION_MASK));
+>> -        scnprintf(buf, MIDR_SIZE, "0x%016lx", midr);
+>>           /* got midr break loop */
+>>           break;
+>>       }
+>>         perf_cpu_map__put(cpus);
+>> -
+>> -    if (!midr)
+>> -        return EINVAL;
+> 
+> Is there a reason to drop this check?
+> 
+> As I see, it is still checked in perf_pmu__getcpudid() ->
+> get_cpuid_str() -> _get_cpuid(), and we don't zero the buf allocated in
+> _get_cpuid()
+> 
+
+Ah yes, now if all the files fail to open or read then buf will be
+uninitialized. I make it so that it will return EINVAL unless the
+fgets() succeeds, but I don't think we need to add the strtoul() back in?
+
+>> -
+>>       return 0;
+>>   }
+>>   @@ -99,3 +90,48 @@ char *get_cpuid_str(struct perf_pmu *pmu)
+>>         return buf;
+>>   }
+>> +
+>> +/*
+>> + * Return 0 if idstr is a higher or equal to version of the same part as
+>> + * mapcpuid.
+> 
+> And what other values may be returned? If just 0/1, then can we have a
+> bool return value?
+> 
+
+I don't think that's best for consistency. All the other CPU ID
+comparison functions return the strcmp style return values which is the
+reverse of booleans. We could change them all to bool, but it would be a
+big change, and they'd still have strcmp in the name which suggests
+-1/0/1 return values (although -1 is never used here).
+
+I will add to the comment that 1 is returned for a comparison failure
+thought. That is missing.
+
+>> + *
+>> + * Therefore, if mapcpuid has 0 for revision and variant then any
+>> version of
+>> + * idstr will match as long as it's the same CPU type.
+>> + */
+>> +int strcmp_cpuid_str(const char *mapcpuid, const char *idstr)
+>> +{
+>> +    u64 map_id = strtoull(mapcpuid, NULL, 16);
+>> +    char map_id_variant = FIELD_GET(MIDR_VARIANT_MASK, map_id);
+>> +    char map_id_revision = FIELD_GET(MIDR_REVISION_MASK, map_id);
+>> +    u64 id = strtoull(idstr, NULL, 16);
+>> +    char id_variant = FIELD_GET(MIDR_VARIANT_MASK, id);
+>> +    char id_revision = FIELD_GET(MIDR_REVISION_MASK, id);
+>> +    u64 id_fields = ~(MIDR_VARIANT_MASK | MIDR_REVISION_MASK);
+>> +
+>> +    /* Compare without version first */
+>> +    if ((map_id & id_fields) != (id & id_fields))
+>> +        return 1;
+>> +
+>> +    /*
+>> +     * ID matches, now compare version.
+>> +     *
+>> +     * Arm revisions (like r0p0) are compared here like two digit semver
+>> +     * values eg. 1.3 < 2.0 < 2.1 < 2.2. The events json file with the
+>> +     * highest matching version is used.
+>> +     *
+>> +     *  r = high value = 'Variant' field in MIDR
+>> +     *  p = low value  = 'Revision' field in MIDR
+>> +     *
+>> +     */
+>> +    if (id_variant > map_id_variant)
+>> +        return 0;
+>> +
+>> +    if (id_variant == map_id_variant && id_revision >= map_id_revision)
+>> +        return 0;
+>> +
+>> +    /*
+>> +     * variant is less than mapfile variant or variants are the same but
+>> +     * the revision doesn't match. Return no match.
+>> +     */
+>> +    return 1;
+>> +}
+> 
