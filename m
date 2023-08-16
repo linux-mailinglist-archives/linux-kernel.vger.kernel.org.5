@@ -2,157 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F19DF77E71C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB4C77E71F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345017AbjHPQ6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 12:58:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34430 "EHLO
+        id S1345024AbjHPQ72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 12:59:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345055AbjHPQ6e (ORCPT
+        with ESMTP id S1345021AbjHPQ64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 12:58:34 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64B81BE7;
-        Wed, 16 Aug 2023 09:58:31 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 082113200936;
-        Wed, 16 Aug 2023 12:58:26 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 16 Aug 2023 12:58:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjusaka.me; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1692205106; x=1692291506; bh=bqqqxjVQXB11bXS2XPDSYy3H/z1FMuEH1+F
-        +yhBNcXM=; b=SpGcFI9tty5G9XxTIQp3m6j1v9g7Rc+qHIb5y47g7gC6r0+95eY
-        +X+ZSJi+X0Dxakt4z2FYC2C4DqK0ylAhgjHgVdEP2s4W3dL49EhSfVcu1VvvB/Yp
-        iHiffyxaZI6Qz8LlZeX5SwRgnapi5xZqp0wfYFk9C+BbySVny8N8wi+LFBysjpKB
-        LPI1VHIOzflT3dZmwW8wI0GIj1YlhKCQWpBy2mQ1qcnobS1Y1pgxEKcZHvM+HDGC
-        IAN8LTbyBQIHsmu87bLmJFcC0Ctu3mnGAO8N8t5MYvCUyFNApef30btJhD4+pjlx
-        3QDLHg7vCkw+mUodUjzm+oFT6va+yzeKciQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1692205106; x=1692291506; bh=bqqqxjVQXB11bXS2XPDSYy3H/z1FMuEH1+F
-        +yhBNcXM=; b=dSXAhvZyD1Sz+sOQ3jiijy0iUP53HYcBiZP2hGb3arMwbXBe7S8
-        KxRPuWgfAp0WTOQrJBRLRUDkLJ7DO0tXCBgODTGcaZU0FFONSpiIpiOilPzF2aJ4
-        ZcVMzU6OyGB4JshhmAoM9SmBQttKYuGubGqypLM0+c124+53N1Rb3qq75ECJJOFT
-        Nux9CJL6fjoiCPTY8k5dCL+sCfJZihdtEquH9S2GsPS+G2/javkjTdhTVRS8Bj3I
-        1tSyjvGtxnoHpwZH384e8BtvEe9VouYSvNsGKh2ZlnXOREIRuGVzTzDJWcdEPsuL
-        vCRTPD4+7620a0NJfy2EK6MMBkoF3mBPw6w==
-X-ME-Sender: <xms:MgDdZGJYKhzEkNmosz2m88L_QOMyOQHl5WZPng0N--h88yITaDq3Mg>
-    <xme:MgDdZOLJvceuiltx6y0I9R0j6gOlnWULTMtP8WlIWMGUP--z29YQiupKCP1X9xygF
-    ZKCbQzlbgzxZ5uz9tY>
-X-ME-Received: <xmr:MgDdZGtZ6J7ncVdtmCiy3Ltu2xHIZqL8wZsyuikDtO_hDDNp_-u8mRJIN2dMofbk9A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddtledguddtlecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomhepofgr
-    nhhjuhhsrghkrgcuoehmvgesmhgrnhhjuhhsrghkrgdrmhgvqeenucggtffrrghtthgvrh
-    hnpeehheevjeeiudegledtleevuddufedttdekudfgteejjeetfeejleejffdtvdeugeen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmvgesmh
-    grnhhjuhhsrghkrgdrmhgv
-X-ME-Proxy: <xmx:MgDdZLagy-aPeEAMS0OSIjhUPaOQntc9XLR_qTYYc2qVM_l34zZcng>
-    <xmx:MgDdZNa1Im85TOLkeBt9i3gWwp-qwmfxU6WxKY7CDNqcbmGB_-py6Q>
-    <xmx:MgDdZHBMVDd02v-SsyL6JXDEPT9AP77lQijOkPSa3Gwqcn1tIVyiJA>
-    <xmx:MgDdZDBbVpaQiNItVk7nTG8Ez2anmqSlo6xWg_kAVLEO4hJgL0-vWA>
-Feedback-ID: i3ea9498d:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 16 Aug 2023 12:58:19 -0400 (EDT)
-Message-ID: <82771f1c-9659-4aaa-bded-62bef6082bf8@manjusaka.me>
-Date:   Thu, 17 Aug 2023 00:58:05 +0800
+        Wed, 16 Aug 2023 12:58:56 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 172AB1FC3;
+        Wed, 16 Aug 2023 09:58:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=D2PHbo0EsztXcxRMSJk7ynouAeB9gcGPg6mbvGpkXA4=; b=IIimy8fCNOMjHgos9lmvKWQNPN
+        iGfrBehzONu1qS59k07b7d4+YSOY2ES5Aa2jREQdOhs5mWLvtcfwYgxILvNudfv0eYVQkIJxW95Yk
+        XobtiM/k/tdcKCxBA1aJOlkWkNqejmVyaWPqRJuNgFntjhyXIukStAHGGuTyjp4dsnwcjcs98gekD
+        x44e8cIyPL4NusHQsHlnHIgs4uU+PeSFnM/k2a90xxF8w0H+negx/xJajaBc0oEmc6l8tJYisMz9J
+        igd+Wzzy1mk9gk+BofvAr7NQMVqAxiIltqf8KOQx4Lt+R4vEKZyUTcevJ660YH5X2Za6s4c2S8TSk
+        JxYep2EQ==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qWJqw-000AGF-TS; Wed, 16 Aug 2023 18:58:38 +0200
+Received: from [85.1.206.226] (helo=pc-102.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qWJqv-000SBc-R0; Wed, 16 Aug 2023 18:58:37 +0200
+Subject: Re: [PATCH bpf-next v4] selftests/bpf: trace_helpers.c: optimize
+ kallsyms cache
+To:     Rong Tao <rtoax@foxmail.com>, sdf@google.com, andrii@kernel.org
+Cc:     rongtao@cestc.cn, Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "open list:BPF [SELFTESTS] (Test Runners & Infrastructure)" 
+        <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <tencent_59C74613113F0C728524B2A82FE5540A5E09@qq.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <60da4749-3009-0e40-90bd-90cd03395e45@iogearbox.net>
+Date:   Wed, 16 Aug 2023 18:58:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] tracepoint: add new `tcp:tcp_ca_event` trace event
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Joe Perches <joe@perches.com>, edumazet@google.com,
-        bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
-        ncardwell@google.com, netdev@vger.kernel.org, pabeni@redhat.com
-References: <CANn89iKQXhqgOTkSchH6Bz-xH--pAoSyEORBtawqBTvgG+dFig@mail.gmail.com>
- <20230812201249.62237-1-me@manjusaka.me>
- <20230812205905.016106c0@rorschach.local.home>
- <20230812210140.117da558@rorschach.local.home>
- <20230812210450.53464a78@rorschach.local.home>
- <6bfa88099fe13b3fd4077bb3a3e55e3ae04c3b5d.camel@perches.com>
- <20230812215327.1dbd30f3@rorschach.local.home>
- <a587dac9e02cfde669743fd54ab41a3c6014c5e9.camel@perches.com>
- <8b0f2d2b-c5a0-4654-9cc0-78873260a881@manjusaka.me>
- <20230816110206.13980573@gandalf.local.home>
+In-Reply-To: <tencent_59C74613113F0C728524B2A82FE5540A5E09@qq.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-From:   Manjusaka <me@manjusaka.me>
-In-Reply-To: <20230816110206.13980573@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/27002/Wed Aug 16 09:38:26 2023)
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/16 23:02, Steven Rostedt wrote:
-> On Wed, 16 Aug 2023 14:09:06 +0800
-> Manjusaka <me@manjusaka.me> wrote:
+On 8/16/23 3:36 AM, Rong Tao wrote:
+> From: Rong Tao <rongtao@cestc.cn>
 > 
->>> +# trace include files use a completely different grammar
->>> +		next if ($realfile =~ m{(?:include/trace/events/|/trace\.h$/)});
->>> +
->>>  # check multi-line statement indentation matches previous line
->>>  		if ($perl_version_ok &&
->>>  		    $prevline =~ /^\+([ \t]*)((?:$c90_Keywords(?:\s+if)\s*)|(?:$Declare\s*)?(?:$Ident|\(\s*\*\s*$Ident\s*\))\s*|(?:\*\s*)*$Lval\s*=\s*$Ident\s*)\(.*(\&\&|\|\||,)\s*$/) {
->>>
->>>
->>>   
->>
->> Actually, I'm not sure this is the checkpatch style issue or my code style issue.
->>
->> Seems wired.
+> Static ksyms often have problems because the number of symbols exceeds the
+> MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
+> commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
+> the problem somewhat, but it's not the perfect way.
 > 
-> The TRACE_EVENT() macro has its own style. I need to document it, and
-> perhaps one day get checkpatch to understand it as well.
+> This commit uses dynamic memory allocation, which completely solves the
+> problem caused by the limitation of the number of kallsyms.
 > 
-> The TRACE_EVENT() typically looks like:
+> Acked-by: Stanislav Fomichev <sdf@google.com>
+> Signed-off-by: Rong Tao <rongtao@cestc.cn>
+> ---
+> v4: Make sure most cases we don't need the realloc() path to begin with,
+>      and check strdup() return value.
+> v3: https://lore.kernel.org/lkml/tencent_50B4B2622FE7546A5FF9464310650C008509@qq.com/
+>      Do not use structs and judge ksyms__add_symbol function return value.
+> v2: https://lore.kernel.org/lkml/tencent_B655EE5E5D463110D70CD2846AB3262EED09@qq.com/
+>      Do the usual len/capacity scheme here to amortize the cost of realloc, and
+>      don't free symbols.
+> v1: https://lore.kernel.org/lkml/tencent_AB461510B10CD484E0B2F62E3754165F2909@qq.com/
+> ---
+>   tools/testing/selftests/bpf/trace_helpers.c | 46 ++++++++++++++++-----
+>   1 file changed, 36 insertions(+), 10 deletions(-)
 > 
-> 
-> TRACE_EVENT(name,
-> 
-> 	TP_PROTO(int arg1, struct foo *arg2, struct bar *arg3),
-> 
-> 	TP_ARGS(arg1, arg2, arg3),
-> 
-> 	TP_STRUCT__entry(
-> 		__field(	int,		field1				)
-> 		__array(	char,		mystring,	MYSTRLEN	)
-> 		__string(	filename,	arg3->name			)
-> 	),
-> 
-> 	TP_fast_assign(
-> 		__entry->field1 = arg1;
-> 		memcpy(__entry->mystring, arg2->string);
-> 		__assign_str(filename, arg3->name);
-> 	),
-> 
-> 	TP_printk("field1=%d mystring=%s filename=%s",
-> 		__entry->field1, __entry->mystring, __get_str(filename))
-> );
-> 
-> The TP_STRUCT__entry() should be considered more of a "struct" layout than
-> a macro layout, and that's where checkpatch gets confused. The spacing
-> makes it much easier to see the fields and their types.
-> 
-> -- Steve
+> diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
+> index f83d9f65c65b..a1461508925e 100644
+> --- a/tools/testing/selftests/bpf/trace_helpers.c
+> +++ b/tools/testing/selftests/bpf/trace_helpers.c
+> @@ -18,10 +18,35 @@
+>   #define TRACEFS_PIPE	"/sys/kernel/tracing/trace_pipe"
+>   #define DEBUGFS_PIPE	"/sys/kernel/debug/tracing/trace_pipe"
+>   
+> -#define MAX_SYMS 400000
+> -static struct ksym syms[MAX_SYMS];
+> +static struct ksym *syms;
+> +static int sym_cap;
+>   static int sym_cnt;
+>   
+> +static int ksyms__add_symbol(const char *name, unsigned long addr)
+> +{
+> +	void *tmp;
+> +	unsigned int new_cap;
+> +
+> +	if (sym_cnt + 1 > sym_cap) {
+> +		new_cap = sym_cap * 4 / 3;
+> +		tmp = realloc(syms, sizeof(struct ksym) * new_cap);
+> +		if (!tmp)
+> +			return -ENOMEM;
+> +		syms = tmp;
+> +		sym_cap = new_cap;
+> +	}
+> +
+> +	tmp = strdup(name);
+> +	if (!tmp)
+> +		return -ENOMEM;
+> +	syms[sym_cnt].addr = addr;
+> +	syms[sym_cnt].name = tmp;
+> +
+> +	sym_cnt++;
+> +
+> +	return 0;
+> +}
 
-Thanks for the explain!
+Since this patch is about improving the load_kallsyms_refresh(), I mentioned in the v3
+that it would also be good to have the counterpart to release the allocated memory once
+the test concluded or upon error given it's dynamically allocated.
 
-So could I keep the current code without any code style change?
+>   static int ksym_cmp(const void *p1, const void *p2)
+>   {
+>   	return ((struct ksym *)p1)->addr - ((struct ksym *)p2)->addr;
+> @@ -33,9 +58,14 @@ int load_kallsyms_refresh(void)
+>   	char func[256], buf[256];
+>   	char symbol;
+>   	void *addr;
+> -	int i = 0;
+> +	int ret;
+>   
+> +	/* Make sure most cases we don't need the realloc() path to begin with */
+> +	sym_cap = 400000;
+>   	sym_cnt = 0;
+> +	syms = malloc(sizeof(struct ksym) * sym_cap);
+> +	if (!syms)
+> +		return -ENOMEM;
+>   
+>   	f = fopen("/proc/kallsyms", "r");
+>   	if (!f)
+> @@ -46,15 +76,11 @@ int load_kallsyms_refresh(void)
+>   			break;
+>   		if (!addr)
+>   			continue;
+> -		if (i >= MAX_SYMS)
+> -			return -EFBIG;
+> -
+> -		syms[i].addr = (long) addr;
+> -		syms[i].name = strdup(func);
+> -		i++;
+> +		ret = ksyms__add_symbol(func, (unsigned long)addr);
+> +		if (ret)
+> +			return ret;
+>   	}
+>   	fclose(f);
+> -	sym_cnt = i;
+>   	qsort(syms, sym_cnt, sizeof(struct ksym), ksym_cmp);
+>   	return 0;
+>   }
+> 
 
-I think it would be a good idea to fix the checkpatch.pl script in another patch
+Thanks,
+Daniel
