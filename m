@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A5577D93F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 05:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54ADA77D944
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 05:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241677AbjHPDsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 23:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41340 "EHLO
+        id S241669AbjHPDtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 23:49:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241685AbjHPDrm (ORCPT
+        with ESMTP id S241721AbjHPDsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 23:47:42 -0400
+        Tue, 15 Aug 2023 23:48:43 -0400
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D19268F
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 20:47:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB32B26B5
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 20:48:42 -0700 (PDT)
 Received: from cwcc.thunk.org (pool-173-48-114-154.bstnma.fios.verizon.net [173.48.114.154])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37G3lUXt020958
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37G3mSDu021439
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Aug 2023 23:47:31 -0400
+        Tue, 15 Aug 2023 23:48:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1692157652; bh=EuRGbxNOM6AB4uAEJSNky4ZCBYjzEQE6GET5vvFq+iI=;
+        t=1692157710; bh=hUzwQJl5RN4rIkMyxl8oq92C3HzQoNiR3B7m+Aaaryc=;
         h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=ZvxTeciwf1cN5BXLEqBzGS7TeULnV7N0hT2vGn+dpg8ZbOZWkE+tuewzVS3VciGPS
-         0xGAbyjA2gmWsOhprWchxpmDZVhu7Lr5PfbW2dFtiUvbT56q9V5P6gmUfuZ7zSkmqO
-         UGQhyd/re9pz5tfjqSRKpc6I31iOLVgUZ7tGb2tMCUkedMmHhUIpH1xE0Qmkong+kK
-         EpiknmSelavD+MzjCDRaUSMjja+ASz0FhxKM90eYb/Rk1mV/AwsM5JQ0ACroBGAp3M
-         rNhMDuTKc8vI8zVTaI982+yIr9tyi1xXHhSwZxtUmv4qvIiiDp0RdTUZibYFmaWzdP
-         MeUQLAU0REkYw==
+        b=L+AJ09/JC7WlGrvti1dXRf02zqahyEfLPPr7CkaXNBSGlTbpd5BQjKBUDXGnTW/Uz
+         8aPR/rH1QkBz3DFn0RZ5GDZZ5AuYON7ghq9LRqCIFtmwwc0bGnTC0WjS+B3iWb+pva
+         Q7qLce/aF/nKRfEwGwGA5ICrg0AT5P8vQxJNk/fOEmoWV3gWYnDAeBtYNgj8mwynrx
+         yuPCAOFuKPJ+VqbEXXviXfgM3w5uH5kKNL/m80dhu6OfDYA1QUtRadPaV+CzKJOvYB
+         kJ5JA54qyHBBZCm+VIh4oP/Yw8c/C7CjpqTO2rytspeXrkvpprii7BvpqRqRu4wNtg
+         kLg4Ml9pcbysQ==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 7F21B15C0292; Tue, 15 Aug 2023 23:47:30 -0400 (EDT)
-Date:   Tue, 15 Aug 2023 23:47:30 -0400
+        id 3E83515C0292; Tue, 15 Aug 2023 23:48:28 -0400 (EDT)
+Date:   Tue, 15 Aug 2023 23:48:28 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
 To:     Kemeng Shi <shikemeng@huaweicloud.com>
 Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/13] ext4: remove unnecessary check for avoiding
- multiple update_backups in ext4_flex_group_add
-Message-ID: <20230816034730.GT2247938@mit.edu>
+Subject: Re: [PATCH 13/13] ext4: remove unnecessary initialization of count2
+ in set_flexbg_block_bitmap
+Message-ID: <20230816034828.GU2247938@mit.edu>
 References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
- <20230629120044.1261968-13-shikemeng@huaweicloud.com>
+ <20230629120044.1261968-14-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230629120044.1261968-13-shikemeng@huaweicloud.com>
+In-Reply-To: <20230629120044.1261968-14-shikemeng@huaweicloud.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
@@ -56,14 +56,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 29, 2023 at 08:00:43PM +0800, Kemeng Shi wrote:
-> Commit 0acdb8876fead ("ext4: don't call update_backups() multiple times
-> for the same bg") add check in ext4_flex_group_add to avoid call
-> update_backups multiple times for block group descriptors in the same
-> group descriptor block. However, we have already call update_backups in
-> block step, so the added check is unnecessary.
+On Thu, Jun 29, 2023 at 08:00:44PM +0800, Kemeng Shi wrote:
+> We always overwrite count2 to "EXT4_CLUSTERS_PER_GROUP(sb) -
+> (first_cluster - start)" after its initialization in for loop
+> initialization statement .
+> Just remove unnecessary initialization of count2.
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
-I'm having trouble understaind this comit.  What do you mean by the
-"block step" in the last paragraph?
-
-					- Ted
+Reviewed-by: Theodore Ts'o <tytso@mit.edu>
