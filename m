@@ -2,149 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3309877EC1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D306577EC23
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346627AbjHPVow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 17:44:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53590 "EHLO
+        id S1346636AbjHPVpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 17:45:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346660AbjHPVob (ORCPT
+        with ESMTP id S1346658AbjHPVpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 17:44:31 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1270C273A
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:44:27 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5646e695ec1so10509063a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:44:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692222266; x=1692827066;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7aJZe8+CPSzm1uQ31UW15d4LYpFiin9OTY1YmG5+H2o=;
-        b=5FnFmr0h3gjr+/vpDpnpYnX5gIhkCQ4jEG1gSS7nJJAppTjOcaxDoFqgcIXvY7h/d2
-         a0Z47gC4syP1XGsTzyh5eMyJLZbwtKk3CUWhffe/MVgdDpWHQAuEIm1I5rQHuRHFYYMf
-         nM5zBOKmA3EySxHeLEUE5+NIC03+C0EyBB+5/L0q52W0pvV+wkx34CLyQpHOzOjRnD9B
-         jJ4qq54VpzsihbVPJ2cNOpCllRUgbLASkaNsh45bNmQMTg9OBKIZuW9WvD/b/f4VgPWJ
-         KHXEETo1KapA27A1ayPOROfeBJdqOYlYOZ/Bl0RzPNZXUGaF2Y9pIpzesy8dGvI7mnjM
-         CjXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692222266; x=1692827066;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7aJZe8+CPSzm1uQ31UW15d4LYpFiin9OTY1YmG5+H2o=;
-        b=bnvJaFxTE0Nk7rh2d/2YWb7nrJPnN7tasz7AKZI5gx209kH87LpdETEq8gOpEev9A3
-         GuY9F01YIelN8H5BNCwiOmWTGv4nVO+hP2KnJSdq1kuNd9UvuR8lMi8gw0EhG+qhc9xp
-         2Z0Gyf1uLoBwoPQP4iCO2s5uOnLI+CRGXfNnN6b3TOe+ZzseF1XoJ8VuR3mjTDMaJhdb
-         vqiGoK5dgvBMHxObXaJR01UsEyAECPelEk0aCoXzTd8JZrSx3iranehl/JMpo81dR4rY
-         qOS6JYZe64VFUfYqK0EES+uyuWBOb4f8rR3ae3Rabef5rbGUXkRgjvPimgNMvGcmGnVy
-         KzcA==
-X-Gm-Message-State: AOJu0YzmW3LFhkSXntKwhgaJjPz+GvXSLDP+ybTfVTqQ8jIanv5Te/XA
-        edH+x+JPKEnk+I7aEsDUcnTHl/Wx1ZI=
-X-Google-Smtp-Source: AGHT+IHQ5b8bXt+vgSEAeURRHYKMC28i0AKm9/yVRY0BGqX1G7iOdGibZ10hhforoeesRKRFiCL3cxRmWJI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:715b:0:b0:567:c791:ce64 with SMTP id
- b27-20020a63715b000000b00567c791ce64mr159671pgn.8.1692222266642; Wed, 16 Aug
- 2023 14:44:26 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 14:44:24 -0700
-In-Reply-To: <20230719144131.29052-6-binbin.wu@linux.intel.com>
-Mime-Version: 1.0
-References: <20230719144131.29052-1-binbin.wu@linux.intel.com> <20230719144131.29052-6-binbin.wu@linux.intel.com>
-Message-ID: <ZN1DOHiIS618oeuY@google.com>
-Subject: Re: [PATCH v10 5/9] KVM: x86: Virtualize CR3.LAM_{U48,U57}
-From:   Sean Christopherson <seanjc@google.com>
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
-        David.Laight@aculab.com, robert.hu@linux.intel.com,
-        guang.zeng@intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Wed, 16 Aug 2023 17:45:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B6F1FD0;
+        Wed, 16 Aug 2023 14:45:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F1FC866F4E;
+        Wed, 16 Aug 2023 21:45:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49EEFC433C7;
+        Wed, 16 Aug 2023 21:45:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692222317;
+        bh=FjJQ3p3L3eCOYP4PSkk8u0kx6dsnOGxRl/CDOO3tYyA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hSH5hvzYYGtyaoIj4t79y+qQhdlp1pZqtXj+OR8/Gw7LPDoPONk4h7IidEVbJvkK4
+         aQZ1UOViIbHH5bccc8h1e0EuAm/u+mWcdrRghM0rqZvwBJVnM8Zeq7kIcKCLYvvxVZ
+         y1+1ZKwmJThchORtbv8kUXHgRZ2oQpu7oGOKR/xv58j9BkVFcmwOjkLXuxssmgM8zo
+         3RvDOabvQ/dUZe86voiH1qTDaKqzi0oCO+Er+ulAnC0ygsIJxs+eCzk7H6ppxkPDjS
+         pVqiQ8JjXFw7LEr7CseKTDBQxU4WC2LjjvFrQVXcR9fN4DW3k1C/Hfmg+Dk6PUi5l9
+         f03KQHJB6YXKg==
+Date:   Wed, 16 Aug 2023 14:45:15 -0700
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        linux-pci@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Moshe Shemesh <moshe@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] net/mlx5: Convert PCI error values to generic errnos
+Message-ID: <ZN1Da7oOOKQ/FnxI@x130>
+References: <20230814132721.26608-1-ilpo.jarvinen@linux.intel.com>
+ <20230814223232.GA195681@bhelgaas>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230814223232.GA195681@bhelgaas>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023, Binbin Wu wrote:
-> Add support to allow guests to set two new CR3 non-address control bits for
-> guests to enable the new Intel CPU feature Linear Address Masking (LAM) on user
-> pointers.
+On 14 Aug 17:32, Bjorn Helgaas wrote:
+>On Mon, Aug 14, 2023 at 04:27:20PM +0300, Ilpo Järvinen wrote:
+>> mlx5_pci_link_toggle() returns mix PCI specific error codes and generic
+>> errnos.
+>>
+>> Convert the PCI specific error values to generic errno using
+>> pcibios_err_to_errno() before returning them.
+>>
+>> Fixes: eabe8e5e88f5 ("net/mlx5: Handle sync reset now event")
+>> Fixes: 212b4d7251c1 ("net/mlx5: Wait for firmware to enable CRS before pci_restore_state")
+>> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+>>
+>> ---
+>>
+>> Maintainers beware, this will conflict with read+write -> set/clear_word
+>> fixes in pci.git/pcie-rmw. As such, it might be the easiest for Bjorn to
+>> take it instead of net people.
+>
+>I provisionally rebased and applied it on pci/pcie-rmw.  Take a look
+>and make sure I didn't botch it -- I also found a case in
+>mlx5_check_dev_ids() that looks like it needs the same conversion.
+>
+>The commit as applied is below.
+>
+>If networking folks would prefer to take this, let me know and I can
+>drop it.
+>
 
-Same feedback as the LAM_SUP patch.
+I Just took this patch into my mlx5 submission queue and sent it to netdev
+tree, please drop it from your tree.
 
-> ---
->  arch/x86/kvm/cpuid.h   | 3 +++
->  arch/x86/kvm/mmu.h     | 8 ++++++++
->  arch/x86/kvm/mmu/mmu.c | 2 +-
->  arch/x86/kvm/vmx/vmx.c | 3 ++-
->  4 files changed, 14 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
-> index 8b26d946f3e3..274f41d2250b 100644
-> --- a/arch/x86/kvm/cpuid.h
-> +++ b/arch/x86/kvm/cpuid.h
-> @@ -285,6 +285,9 @@ static __always_inline bool guest_can_use(struct kvm_vcpu *vcpu,
->  
->  static inline bool kvm_vcpu_is_legal_cr3(struct kvm_vcpu *vcpu, unsigned long cr3)
->  {
-> +	if (guest_can_use(vcpu, X86_FEATURE_LAM))
-> +		cr3 &= ~(X86_CR3_LAM_U48 | X86_CR3_LAM_U57);
-> +
->  	return kvm_vcpu_is_legal_gpa(vcpu, cr3);
->  }
->  
-> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-> index 92d5a1924fc1..e92395e6b876 100644
-> --- a/arch/x86/kvm/mmu.h
-> +++ b/arch/x86/kvm/mmu.h
-> @@ -144,6 +144,14 @@ static inline unsigned long kvm_get_active_pcid(struct kvm_vcpu *vcpu)
->  	return kvm_get_pcid(vcpu, kvm_read_cr3(vcpu));
->  }
->  
-> +static inline unsigned long kvm_get_active_cr3_lam_bits(struct kvm_vcpu *vcpu)
-> +{
-> +	if (!guest_can_use(vcpu, X86_FEATURE_LAM))
-> +		return 0;
-> +
-> +	return kvm_read_cr3(vcpu) & (X86_CR3_LAM_U48 | X86_CR3_LAM_U57);
-> +}
-> +
->  static inline void kvm_mmu_load_pgd(struct kvm_vcpu *vcpu)
->  {
->  	u64 root_hpa = vcpu->arch.mmu->root.hpa;
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index ec169f5c7dce..0285536346c1 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -3819,7 +3819,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
->  	hpa_t root;
->  
->  	root_pgd = kvm_mmu_get_guest_pgd(vcpu, mmu);
-> -	root_gfn = root_pgd >> PAGE_SHIFT;
-> +	root_gfn = (root_pgd & __PT_BASE_ADDR_MASK) >> PAGE_SHIFT;
+Thanks for the patch,
+Saeed.
 
-And as mentioned previously, this should be in the patch that adds __PT_BASE_ADDR_MASK.
-
->  	if (mmu_check_root(vcpu, root_gfn))
->  		return 1;
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index a0d6ea87a2d0..bcee5dc3dd0b 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -3358,7 +3358,8 @@ static void vmx_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa,
->  			update_guest_cr3 = false;
->  		vmx_ept_load_pdptrs(vcpu);
->  	} else {
-> -		guest_cr3 = root_hpa | kvm_get_active_pcid(vcpu);
-> +		guest_cr3 = root_hpa | kvm_get_active_pcid(vcpu) |
-> +		            kvm_get_active_cr3_lam_bits(vcpu);
->  	}
->  
->  	if (update_guest_cr3)
-> -- 
-> 2.25.1
-> 
