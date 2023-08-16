@@ -2,76 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB13477D87E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 04:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B6177D884
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 04:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241314AbjHPCe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 22:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46804 "EHLO
+        id S241330AbjHPCn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 22:43:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241358AbjHPCeV (ORCPT
+        with ESMTP id S241325AbjHPCnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 22:34:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 861001FDF
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:34:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 21AF76218F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:34:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55073C433C8;
-        Wed, 16 Aug 2023 02:34:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692153259;
-        bh=ILKLaDUtT4i0mLelpGeGRXNq7uFDFZtIQuCu+6LzedM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PuEwZD18a+rqpN6UCHqN06Yf4QFXzCf+Tf9BmBrmkdCIJIBCkmqCsmctg8RBclgVV
-         eeJ+SYK6N9DCir13+XKXkYpNE2bQADoV0p/40qnnWkJHP36HH+HrbQ+bFVF9Fqgplx
-         yHaAEud6GmX6qIiZUfKLdWRTaigIhI8lZHajJkH0voVHAqrsnVB8sVPdXSAvr74x6/
-         Dgjv5w1tw8+EDOVn/ADghbjLDzGul6s0ijY+EliEvC9HwKzz4V/bPL+WTS5uWtBH3u
-         qgVAdGdMYD0LNKeUrjsx5RUv+HnPyy/8Oz3mAc7KcT+dPzKz9dxem/5i4jwiECgZe/
-         GhkZZCkJUUk5w==
-Date:   Tue, 15 Aug 2023 19:34:17 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daniel Rosenberg <drosen@google.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        Jaegeuk Kim <jaegeuk@kernel.org>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/1] Add 16K Support for f2fs
-Message-ID: <20230816023417.GA899@sol.localdomain>
-References: <20230816011432.1966838-1-drosen@google.com>
+        Tue, 15 Aug 2023 22:43:40 -0400
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0665D212B
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:43:37 -0700 (PDT)
+X-AuditID: a67dfc5b-d85ff70000001748-09-64dc37d8d9e5
+Date:   Wed, 16 Aug 2023 11:40:41 +0900
+From:   Byungchul Park <byungchul@sk.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kernel_team@skhynix.com, akpm@linux-foundation.org,
+        namit@vmware.com, xhao@linux.alibaba.com,
+        mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
+        david@redhat.com, peterz@infradead.org, luto@kernel.org,
+        dave.hansen@linux.intel.com
+Subject: Re: [RFC 2/2] mm: Defer TLB flush by keeping both src and dst folios
+ at migration
+Message-ID: <20230816024041.GA16281@system.software.com>
+References: <20230804061850.21498-1-byungchul@sk.com>
+ <20230804061850.21498-3-byungchul@sk.com>
+ <877cpx9jsx.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <20230816001307.GA44941@system.software.com>
+ <87r0o37qcn.fsf@yhuang6-desk2.ccr.corp.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230816011432.1966838-1-drosen@google.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <87r0o37qcn.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEIsWRmVeSWpSXmKPExsXC9ZZnoe4N8zspBiu+W1nMWb+GzeLFhnZG
+        i6/rfzFbPP3Ux2JxedccNot7a/6zWpzftZbVYsfSfUwW13c9ZLQ43nuAyeL3D6DsnClWFidn
+        TWZx4PVYsKnUY/MKLY/Fe14yeWxa1cnmsenTJHaPEzN+s3jsfGjpMe9koMf7fVfZPLb+svP4
+        vEnO4938t2wBPFFcNimpOZllqUX6dglcGZemLmIuOCBecf7cG/YGxlahLkZODgkBE4k3kycx
+        w9i9V3YwgdgsAqoSC1ecYQWx2QTUJW7c+AlWIyKgIfFp4XJ2EJtZYBuTxIJ7DiC2sECMxIkt
+        n8F6eQUsJG73f2fsYuTiEBL4wSixf9cVNoiEoMTJmU9YIJq1JG78ewnUwAFkS0ss/8cBEuYU
+        sJP4fnIy2HxRAWWJA9uOM4HMkRBoZpdYsO0CE8ShkhIHV9xgmcAoMAvJ2FlIxs5CGLuAkXkV
+        o1BmXlluYmaOiV5GZV5mhV5yfu4mRmBMLav9E72D8dOF4EOMAhyMSjy8DAtvpwixJpYVV+Ye
+        YpTgYFYS4e3hvZUixJuSWFmVWpQfX1Sak1p8iFGag0VJnNfoW3mKkEB6YklqdmpqQWoRTJaJ
+        g1OqgTH41o5iuUvNTd0XFK/sWl2QIML57+q8TywTsiW0lzr/4Fv9OVVKzfPFO/fTP6s+xSRt
+        +styo56NgWf+m74FG7eIL/49JbBp3yMdIe/tSbz3lBznMHPFJRjwLdbU8vBP5nVZ+jopYrd2
+        Uq22mnZyw15u9fj6TxMcfqv9LdFdy+gaEHy96++iG0osxRmJhlrMRcWJAFun5sulAgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJLMWRmVeSWpSXmKPExsXC5WfdrHvD/E6Kwf1F2hZz1q9hs3ixoZ3R
+        4uv6X8wWTz/1sVgcnnuS1eLyrjlsFvfW/Ge1OL9rLavFjqX7mCyu73rIaHG89wCTxe8fQNk5
+        U6wsTs6azOLA57FgU6nH5hVaHov3vGTy2LSqk81j06dJ7B4nZvxm8dj50NJj3slAj/f7rrJ5
+        LH7xgclj6y87j8+b5DzezX/LFsAbxWWTkpqTWZZapG+XwJVxaeoi5oID4hXnz71hb2BsFepi
+        5OSQEDCR6L2ygwnEZhFQlVi44gwriM0moC5x48ZPZhBbREBD4tPC5ewgNrPANiaJBfccQGxh
+        gRiJE1s+g/XyClhI3O7/ztjFyMUhJPCDUWL/ritsEAlBiZMzn7BANGtJ3Pj3EqiBA8iWllj+
+        jwMkzClgJ/H95GSw+aICyhIHth1nmsDIOwtJ9ywk3bMQuhcwMq9iFMnMK8tNzMwx1SvOzqjM
+        y6zQS87P3cQIjJBltX8m7mD8ctn9EKMAB6MSDy/DwtspQqyJZcWVuYcYJTiYlUR4e3hvpQjx
+        piRWVqUW5ccXleakFh9ilOZgURLn9QpPTRASSE8sSc1OTS1ILYLJMnFwSjUwRp15zp1wz2DL
+        8uQzoV9VHsUrbQ5zmJDwuqj/yqWsdc5R1748bkpZp25l0n3q+9OtlYymHIsCFyYXeQUrfFJQ
+        fp8c+qpbU3N3acX87UfUdd/tiz74e/XFA5W/3srfUC128LnJdvvNSn61rwoO6lrXPJk1Zu6f
+        duGN9OlD7Oc2CWz69XK7yf9pbEosxRmJhlrMRcWJAFSHrKWMAgAA
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 06:14:31PM -0700, Daniel Rosenberg via Linux-f2fs-devel wrote:
-> F2fs filesystems currently have two large restrictions around block size.
-> The block size must equal the page size, and the block size must be 4096.
+On Wed, Aug 16, 2023 at 09:01:12AM +0800, Huang, Ying wrote:
+> Byungchul Park <byungchul@sk.com> writes:
 > 
-> The following patch, along with the associated f2fs-tools patch set, relax the
-> latter restriction, allowing you to use 16K block size f2fs on a 16K page size
-> system. It does not allow mounting 4K block size f2fs on a 16k page system.
+> > On Tue, Aug 15, 2023 at 09:27:26AM +0800, Huang, Ying wrote:
+> >> Byungchul Park <byungchul@sk.com> writes:
+> >> 
+> >> > Implementation of CONFIG_MIGRC that stands for 'Migration Read Copy'.
+> >> >
+> >> > We always face the migration overhead at either promotion or demotion,
+> >> > while working with tiered memory e.g. CXL memory and found out TLB
+> >> > shootdown is a quite big one that is needed to get rid of if possible.
+> >> >
+> >> > Fortunately, TLB flush can be defered or even skipped if both source and
+> >> > destination of folios during migration are kept until all TLB flushes
+> >> > required will have been done, of course, only if the target PTE entries
+> >> > have read only permission, more precisely speaking, don't have write
+> >> > permission. Otherwise, no doubt the folio might get messed up.
+> >> >
+> >> > To achieve that:
+> >> >
+> >> >    1. For the folios that have only non-writable TLB entries, prevent
+> >> >       TLB flush by keeping both source and destination of folios during
+> >> >       migration, which will be handled later at a better time.
+> >> >
+> >> >    2. When any non-writable TLB entry changes to writable e.g. through
+> >> >       fault handler, give up CONFIG_MIGRC mechanism so as to perform
+> >> >       TLB flush required right away.
+> >> >
+> >> >    3. TLB flushes can be skipped if all TLB flushes required to free the
+> >> >       duplicated folios have been done by any reason, which doesn't have
+> >> >       to be done from migrations.
+> >> >
+> >> >    4. Adjust watermark check routine, __zone_watermark_ok(), with the
+> >> >       number of duplicated folios because those folios can be freed
+> >> >       and obtained right away through appropreate TLB flushes.
+> >> >
+> >> >    5. Perform TLB flushes and free the duplicated folios pending the
+> >> >       flushes if page allocation routine is in trouble due to memory
+> >> >       pressure, even more aggresively for high order allocation.
+> >> 
+> >> Is the optimization restricted for page migration only?  Can it be used
+> >> for other places?  Like page reclaiming?
+> >
+> > Just to make sure, are you talking about the (5) description? For now,
+> > it's performed at the beginning of __alloc_pages_slowpath(), say, before
+> > page recaiming. Do you think it'd be meaningful to perform it during page
+> > reclaiming? Or do you mean something else?
 > 
-> Doing that would require a lot more work, requiring a refactor of all block
-> sized struct similar to the userspace patches, as well as handling the block
-> reading/writing at sub page boundaries. As far as I know, buffer_heads are
-> still the main way this is handled in other filesystems. Is there a different
-> option there? I know there's a general desire to move away from buffer_heads,
-> but I don't know of any replacements covering that use case. And it would feel
-> a bit silly to not be able to read older filesystems from a 16k system...
+> Not for (5).  TLB needs to be flushed during page reclaiming too.  Can
+> similar method be used to reduce TLB flushing there too?
 
-iomap is the replacement for buffer heads.  See https://lwn.net/Articles/935934
+Hm.. The mechanism can be used in any places where page mapping is
+changing but it requires not to have write permission that might mess up
+consistancy with more than one copy of page.
 
-- Eric
+JFYI, one of future works is to detect read mostly pages and turn them
+to read only to make use of them iff it gives a better performance.
+
+	Byungchul
