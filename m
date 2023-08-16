@@ -2,135 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE56E77E72C
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD4377E72B
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345038AbjHPRCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 13:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53458 "EHLO
+        id S1345032AbjHPRCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 13:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345054AbjHPRCh (ORCPT
+        with ESMTP id S1345043AbjHPRCc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 13:02:37 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733B11FF3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:02:35 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4fe55d70973so71965e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:02:35 -0700 (PDT)
+        Wed, 16 Aug 2023 13:02:32 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D37511FC3;
+        Wed, 16 Aug 2023 10:02:31 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-40ff45065c9so43500161cf.0;
+        Wed, 16 Aug 2023 10:02:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692205354; x=1692810154;
+        d=gmail.com; s=20221208; t=1692205351; x=1692810151;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XvtaCAZpWBCbX7owOsA0570OIhxpXllLFEya1k96P1s=;
-        b=jukU8b7GbHaHTWnc5zZf4mcxlI/r2Ly0TwruGfWV09BR05hSCM5U0Ek0YDapgd6Pgx
-         NsGeMbSDmaz2hGAObqVZYc3GIBKkNsKGI5iA0uBTJ0zdpgEMR2iCfLClYFWSR0FaRSX4
-         1O6bC0LdGSEIpvAcBal/kLizeilleUrCAp0dLvg3DtZ2VyKJ7Q2prbeoLIyjCvNfLguN
-         /D5D2eXbvp1FJBzq6tLbVrvijWDqfp6VtyA85isk0LqDdRGPcgyjKRwhbiDnhLKNjkM0
-         fX8GpUivLDfqWfaAg4iyR7Ty6H9XHfi8JfWBhI7FN6dkmtIc6uYaOfhfupreLoSCa3ZU
-         NOXw==
+        bh=PdAgqwIs/VGfOupDO23C6dNgP/OHW6B0MhZ1Oxj+X5Y=;
+        b=GQuA2rmOZj6QrMftACG2sgHrso5fTH4m1FPF5fB1h+D2TVdAMhVnI9tnRZJTBKLuDr
+         r6OsIe1uU0EPyYgDf0SRLbBY2UK8QPIjXtjGfG4XliRpoYbHEddPlLA7REe3j1HvaNVA
+         U5acpMDHZHm50YiL91XyNmT4ovohwy8pOy5Z6afTkOI2pQN6suhiIKZFkgQPYSfto00x
+         vbT5baXZKMVC/spGIYrVRuWPVBoZug5X3P0OuXu47dleGvMIJ78R+F+eMAip2pWbxIzC
+         Md0LZdavcTA2d5FATLmYGY4U6uR+kWrxAYB0yc6/xUtOAlL9jk62v0ltoJjKEXtPwBM0
+         TK6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692205354; x=1692810154;
+        d=1e100.net; s=20221208; t=1692205351; x=1692810151;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=XvtaCAZpWBCbX7owOsA0570OIhxpXllLFEya1k96P1s=;
-        b=ixadYZ3vMcrwwUlZUA6Q3dbo0Xu8hIIAUciDWiH375jsq4NUdDcJPniZSnr9nDqZym
-         YBVZlys0zL6CfBjq19qoPHQ45zwQyyxPcy4gZVewH1Nr/qbE50ICEgoRpsxBAJVxXnKh
-         kOaEi46g7AsPSMr3EBhtFtkNvV4+7YR4ODHbBgVvAS49aOpe3Mc6eT9J7wWb/FEuH59o
-         2XcIo0vkF2Pd5pL3LGxjb65ZLGYUC2oXpj7HKuJc6X4lXuOuJRDnYPUPalJ5pDCrL5GT
-         52sRwSvvJmjXA46sU9wjeCepsoK15FCVeDusgiU03XVtxakKHuVFUcO22iahruD536V1
-         pHxw==
-X-Gm-Message-State: AOJu0YwGmszo+1KJeB4d7TjGqU/Q+dYj4haUgJFv9EMHvdpIB6hly4Pa
-        7wzXG0mIQ08ky4vg4xh2o58mMihrUZfc34PyEb/hZA==
-X-Google-Smtp-Source: AGHT+IE9bpUVq8gnNZwAlGp+qrG+Dexf0/F5+dY2V4YioQVhEA9o+MBKco54FpLsQCYAVxY6FLAiZzohj1xYM5PhdwQ=
-X-Received: by 2002:a05:6512:a87:b0:4fb:7d09:ec75 with SMTP id
- m7-20020a0565120a8700b004fb7d09ec75mr124704lfu.4.1692205353687; Wed, 16 Aug
- 2023 10:02:33 -0700 (PDT)
+        bh=PdAgqwIs/VGfOupDO23C6dNgP/OHW6B0MhZ1Oxj+X5Y=;
+        b=TOUfLyve2ZF+VmAedePKI1p2d3oD1GW+/htlcQx75qt4sEwaVm8zBM+UPHZ/+lKrqR
+         W05geR+6UNjGqr+hKzLsoSixs2Hmhaym9730TtKI7mo4HZzNHVFHv//96CxWZbY3VbEc
+         RuyW9XDAPewPG2f+nDc4TVt2azdXzVaRrS2XzZdWkkLspGoD2af6xbIktC2mZKeCVbkt
+         x8+Q8Ug3uv7PTBPdU0dV9BB/F51bzpMbzn7mEc6i3rWurg5+wWeBXDBj2+9qqgr1FiZ/
+         NSABjGAc3S9lb/B8ZB8CjgkBypZoS4zXPFeP/IvNsGMK5ZhUEghIvJmFv8lTWP6SgmHj
+         3FZg==
+X-Gm-Message-State: AOJu0Yx7QMQOrrzLXB3hnZt3xsRf62b8A7F46OnWW2oWjVIisMQCipOE
+        I32H7kQ2s/lqWFcvT6tDAZORA8leaB32zDj9xcETwv9Ia76YVg==
+X-Google-Smtp-Source: AGHT+IGjN9tq2Vz/+k/ni08nnKTEeDQJaqNC/9k6hyCnw3Qdp8KGJtGfyBEFdYlIJhdn17tbB60r6F6a+hALlnBSJiA=
+X-Received: by 2002:a05:622a:1052:b0:400:95e4:a311 with SMTP id
+ f18-20020a05622a105200b0040095e4a311mr3428306qte.24.1692205350947; Wed, 16
+ Aug 2023 10:02:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230814125643.59334-1-linyunsheng@huawei.com>
- <20230814125643.59334-2-linyunsheng@huawei.com> <CAC_iWjKMLoUu4bctrWtK46mpyhQ7LoKe4Nm2t8jZVMM0L9O2xA@mail.gmail.com>
- <06e89203-9eaf-99eb-99de-e5209819b8b3@huawei.com>
-In-Reply-To: <06e89203-9eaf-99eb-99de-e5209819b8b3@huawei.com>
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date:   Wed, 16 Aug 2023 20:01:57 +0300
-Message-ID: <CAC_iWjJ4Pi7Pj9Rm13y4aXBB3RsP9pTsfRf_A-OraXKwaO_xGA@mail.gmail.com>
-Subject: Re: [PATCH net-next v6 1/6] page_pool: frag API support for 32-bit
- arch with 64-bit DMA
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        linux-rdma@vger.kernel.org
+References: <20230726090628.1784-1-dg573847474@gmail.com> <CAJe_ZhcN7P7z_W9r5RZ6qA5qLRkXzC3cw7+Vj3GXGyw5HuFxgw@mail.gmail.com>
+In-Reply-To: <CAJe_ZhcN7P7z_W9r5RZ6qA5qLRkXzC3cw7+Vj3GXGyw5HuFxgw@mail.gmail.com>
+From:   Chengfeng Ye <dg573847474@gmail.com>
+Date:   Thu, 17 Aug 2023 01:02:18 +0800
+Message-ID: <CAAo+4rUbqMtDRoVpUBy_oUTJPC-A_o5AGp5PHebwoBjxWs3BRQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND] dmaengine: milbeaut-hdmac: Fix potential deadlock
+ on &mc->vc.lock
+To:     Jassi Brar <jaswinder.singh@linaro.org>
+Cc:     vkoul@kernel.org, sugaya.taichi@socionext.com,
+        orito.takao@socionext.com, len.baker@gmx.com,
+        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Aug 2023 at 15:49, Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> On 2023/8/16 19:26, Ilias Apalodimas wrote:
-> > Hi Yunsheng
-> >
-> > On Mon, 14 Aug 2023 at 15:59, Yunsheng Lin <linyunsheng@huawei.com> wrote:
-> >>
-> >> Currently page_pool_alloc_frag() is not supported in 32-bit
-> >> arch with 64-bit DMA because of the overlap issue between
-> >> pp_frag_count and dma_addr_upper in 'struct page' for those
-> >> arches, which seems to be quite common, see [1], which means
-> >> driver may need to handle it when using frag API.
-> >
-> > That wasn't so common. IIRC it was a single TI platform that was breaking?
->
-> I am not so sure about that as grepping 'ARM_LPAE' has a long
-> list for that.
+> while at it, maybe also use vc->lock, instead of mc->vc.lock here and
+> in other two places, just like the rest of driver.
 
-Shouldn't we be grepping for CONFIG_ARCH_DMA_ADDR_T_64BIT and
-PHYS_ADDR_T_64BIT to find the affected platforms?  Why LPAE?
+Thanks for the review, v2 patch is just sent to address the problem.
 
->
-> >
-> >>
-> >> In order to simplify the driver's work when using frag API
-> >> this patch allows page_pool_alloc_frag() to call
-> >> page_pool_alloc_pages() to return pages for those arches.
-> >
-> > Do we have any use cases of people needing this?  Those architectures
-> > should be long dead and although we have to support them in the
-> > kernel,  I don't personally see the advantage of adjusting the API to
-> > do that.  Right now we have a very clear separation between allocating
-> > pages or fragments.   Why should we hide a page allocation under a
-> > frag allocation?  A driver writer can simply allocate pages for those
-> > boards.  Am I the only one not seeing a clean win here?
->
-> It is also a part of removing the per page_pool PP_FLAG_PAGE_FRAG flag
-> in this patchset.
-
-Yes, that happens *because* of this patchset.  I am not against the
-change.  In fact, I'll have a closer look tomorrow.  I am just trying
-to figure out if we really need it.  When the recycling patches were
-introduced into page pool we had a very specific reason.  Due to the
-XDP verifier we *had* to allocate a packet per page.  That was
-expensive so we added the recycling capabilities to compensate and get
-some performance back. Eventually we added page fragments and had a
-very clear separation on the API.
-
-Regards
-/Ilias
->
-> >
-> > Thanks
-> > /Ilias
-> >
+Thanks,
+Chengfeng
