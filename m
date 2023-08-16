@@ -2,51 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECBE77E274
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D854777E276
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240913AbjHPNWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 09:22:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40676 "EHLO
+        id S245477AbjHPNXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:23:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245560AbjHPNWC (ORCPT
+        with ESMTP id S245494AbjHPNWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 09:22:02 -0400
+        Wed, 16 Aug 2023 09:22:50 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D4E2D7C;
-        Wed, 16 Aug 2023 06:21:31 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A522D4A;
+        Wed, 16 Aug 2023 06:22:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B8B38623F2;
-        Wed, 16 Aug 2023 13:21:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF727C433CC;
-        Wed, 16 Aug 2023 13:21:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 58F8561F76;
+        Wed, 16 Aug 2023 13:22:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E2B1C433C8;
+        Wed, 16 Aug 2023 13:22:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692192072;
-        bh=c/AsJKAYiK5cfA/yUi+poAFIxx8uFMOtFJmdzHpvbwo=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=HtAoShS/lD/Ofpby+Kted1LjwTR0aBZUKkEcBnXJ7JGY3pzWvun/p1qDzQCixu4zX
-         mrTd8ALIl/Ocm3RP6QADu3MkEJX6oT5xmTI8fJsrujmC3rr9dGbmrEugnW3edhOm6e
-         NLvHUhPmB3eXYjC4ncqIsTcDHyElZPS9DbTOVO4dykm4CB7oBDkrCuMyQOt623cLIz
-         URHKIuR9HJkFfLCjCm/MFBVd4EOYO/NMx4r7cFxfQL6E++jHjc3zvelMMoEbVbO6Xf
-         UxWSQlhV/1UDy+IObCU5d1NyO4IbCapUP6mA/f5iB5GMnM/mrxH2Oi7v4yun0bUkQy
-         3acbAXtuXejVg==
-Date:   Wed, 16 Aug 2023 15:21:08 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Nils Tonnaett <ntonnatt@ccrma.Stanford.EDU>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rahul Rameshbabu <sergeantsagara@protonmail.com>
-Subject: Re: [PATCH v2] HID: apple: Add "Hailuck" to the list of non-apple
- keyboards
-In-Reply-To: <20230815201959.17569-1-ntonnatt@ccrma.stanford.edu>
-Message-ID: <nycvar.YFH.7.76.2308161521020.14207@cbobk.fhfr.pm>
-References: <20230811202932.30413-1-ntonnatt@ccrma.stanford.edu> <20230815201959.17569-1-ntonnatt@ccrma.stanford.edu>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        s=k20201202; t=1692192138;
+        bh=amUpVQjeWoSDfniN2IZ2yTaOcc0OwonZMQJboz3mWX0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cOmd4JaP5aVf90GKb8pydqb3saU1d7DRY3ptppWrcGic7IwfpPb8oV7mxHMA3Dawz
+         BUoMmThR4BDqOrUBn3HqDTj/pIlfWeOoWIUPZ2qT38Vz+9Pyi6HvfEp+jTQEzcgLqW
+         T4NEkQI01h/f63HsmpZQ0qXClo5gs5YiczUVOXiD6c+5tN7oIVKW9ZDHlkluwg50zu
+         tJWrqDx4rC3pTngc3aJZPHy0yPnuthLb/bdGrBsMSPtvo3YvXyq6E4e4HHX+8Wu2Bt
+         YRay3CvvdC0hteSL3bjx0uQyPakVpOrBdLhBA9gMjuE1RG1516HyT65nho1nbRghAE
+         cgNH8lMLLN33g==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 50465404DF; Wed, 16 Aug 2023 10:22:15 -0300 (-03)
+Date:   Wed, 16 Aug 2023 10:22:15 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Fangrui Song <maskray@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Carsten Haitzler <carsten.haitzler@arm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Rob Herring <robh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, llvm@lists.linux.dev,
+        Wang Nan <wangnan0@huawei.com>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        He Kuang <hekuang@huawei.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>
+Subject: Re: [PATCH v1 2/4] perf trace: Migrate BPF augmentation to use a
+ skeleton
+Message-ID: <ZNzNh9Myua1xjNuL@kernel.org>
+References: <20230810184853.2860737-1-irogers@google.com>
+ <20230810184853.2860737-3-irogers@google.com>
+ <ZNuK1TFwdjyezV3I@kernel.org>
+ <CAP-5=fURf+vv3TA4cRx1MiV3DDp=3wo0g5dBYH43DKtPhNZQsQ@mail.gmail.com>
+ <ZNzK70eH3ISoL8r0@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNzK70eH3ISoL8r0@kernel.org>
+X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -56,37 +92,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Aug 2023, Nils Tonnaett wrote:
-
-> Powzan keyboards KB750 and KB770 identify as
-> "Hailuck Co.,Ltd USB Keyboard". Adding "Hailuck" to the list
-> of non-apple keyboards fixes function keys for these models.
+Em Wed, Aug 16, 2023 at 10:11:11AM -0300, Arnaldo Carvalho de Melo escreveu:
+> Just taking notes about things to work on top of what is in
+> tmp.perf-tools-next, that will move to perf-tools-next soon:
 > 
-> Signed-off-by: Nils Tonnaett <ntonnatt@ccrma.stanford.edu>
-> ---
-> V1 -> V2:
-> 	- Start commit message subject with HID: apple: instead of hid:
-> 	- Comma terminate last member of array
+> We need to make these libbpf error messages appear only in verbose mode,
+> and probably have a hint about unprivileged BPF, a quick attempt failed
+> after several attempts at getting privileges :-\
 > 
->  drivers/hid/hid-apple.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hid/hid-apple.c b/drivers/hid/hid-apple.c
-> index d7b932925730..3ca45975c686 100644
-> --- a/drivers/hid/hid-apple.c
-> +++ b/drivers/hid/hid-apple.c
-> @@ -343,7 +343,8 @@ static const struct apple_non_apple_keyboard non_apple_keyboards[] = {
->  	{ "SONiX USB DEVICE" },
->  	{ "Keychron" },
->  	{ "AONE" },
-> -	{ "GANSS" }
-> +	{ "GANSS" },
-> +	{ "Hailuck" },
->  };
+> Probably attaching to tracepoints is off limits to !root even with
+> /proc/sys/kernel/unprivileged_bpf_disabled set to zero.
 
-Applied, thanks.
+yep, the libbpf sys_bpf call to check if it could load a basic BPF
+bytecode (prog_type=BPF_PROG_TYPE_SOCKET_FILTER, insn_cnt=2) succeeds,
+but then, later we manage to create the maps, etc to then stumble on 
 
--- 
-Jiri Kosina
-SUSE Labs
+bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_PERCPU_ARRAY, key_size=4, value_size=8272, max_entries=1, map_flags=0, inner_map_fd=0, map_name="augmented_args_", map_ifindex=0, btf_fd=0, btf_key_type_id=0, btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 7
+bpf(BPF_BTF_LOAD, {btf="\237\353\1\0\30\0\0\0\0\0\0\0000\0\0\0000\0\0\0\t\0\0\0\1\0\0\0\0\0\0\1"..., btf_log_buf=NULL, btf_size=81, btf_log_size=0, btf_log_level=0}, 32) = -1 EPERM (Operation not permitted)
+
+and:
+
+bpf(BPF_PROG_LOAD, {prog_type=BPF_PROG_TYPE_TRACEPOINT, insn_cnt=2, insns=0x1758340, license="GPL", log_level=0, log_size=0, log_buf=NULL, kern_version=KERNEL_VERSION(6, 4, 7), prog_flags=0, prog_name="syscall_unaugme", prog_ifindex=0, expected_attach_type=BPF_CGROUP_INET_INGRESS, prog_btf_fd=0, func_info_rec_size=0, func_info=NULL, func_info_cnt=0, line_info_rec_size=0, line_info=NULL, line_info_cnt=0, attach_btf_id=0, attach_prog_fd=0, fd_array=NULL}, 144) = -1 EPERM (Operation not permitted)
+
+So 'perf trace' should just not try to load the augmented_raw_syscalls
+BPF skel for !root.
+
+- Arnaldo
+
+[acme@quaco perf-tools-next]$ strace -e bpf perf trace -vv -e open* sleep 1
+bpf(BPF_PROG_LOAD, {prog_type=BPF_PROG_TYPE_SOCKET_FILTER, insn_cnt=2, insns=0x7ffe95185300, license="GPL", log_level=0, log_size=0, log_buf=NULL, kern_version=KERNEL_VERSION(0, 0, 0), prog_flags=0, prog_name="", prog_ifindex=0, expected_attach_type=BPF_CGROUP_INET_INGRESS, prog_btf_fd=0, func_info_rec_size=0, func_info=NULL, func_info_cnt=0, line_info_rec_size=0, line_info=NULL, line_info_cnt=0, attach_btf_id=0, attach_prog_fd=0}, 116) = 3
+bpf(BPF_PROG_LOAD, {prog_type=BPF_PROG_TYPE_SOCKET_FILTER, insn_cnt=2, insns=0x7ffe951854a0, license="GPL", log_level=0, log_size=0, log_buf=NULL, kern_version=KERNEL_VERSION(0, 0, 0), prog_flags=0, prog_name="", prog_ifindex=0, expected_attach_type=BPF_CGROUP_INET_INGRESS, prog_btf_fd=0, func_info_rec_size=0, func_info=NULL, func_info_cnt=0, line_info_rec_size=0, line_info=NULL, line_info_cnt=0, attach_btf_id=0, attach_prog_fd=0, fd_array=NULL}, 144) = 3
+bpf(BPF_BTF_LOAD, {btf="\237\353\1\0\30\0\0\0\0\0\0\0\20\0\0\0\20\0\0\0\5\0\0\0\1\0\0\0\0\0\0\1"..., btf_log_buf=NULL, btf_size=45, btf_log_size=0, btf_log_level=0}, 32) = -1 EPERM (Operation not permitted)
+bpf(BPF_PROG_LOAD, {prog_type=BPF_PROG_TYPE_SOCKET_FILTER, insn_cnt=2, insns=0x7ffe95185110, license="GPL", log_level=0, log_size=0, log_buf=NULL, kern_version=KERNEL_VERSION(0, 0, 0), prog_flags=0, prog_name="libbpf_nametest"}, 64) = 3
+bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_HASH, key_size=4, value_size=1, max_entries=64, map_flags=0, inner_map_fd=0, map_name="pids_filtered", map_ifindex=0, btf_fd=0, btf_key_type_id=0, btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 3
+bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_PROG_ARRAY, key_size=4, value_size=4, max_entries=512, map_flags=0, inner_map_fd=0, map_name="syscalls_sys_en", map_ifindex=0, btf_fd=0, btf_key_type_id=0, btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 4
+bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_PROG_ARRAY, key_size=4, value_size=4, max_entries=512, map_flags=0, inner_map_fd=0, map_name="syscalls_sys_ex", map_ifindex=0, btf_fd=0, btf_key_type_id=0, btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 5
+bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_PERF_EVENT_ARRAY, key_size=4, value_size=4, max_entries=4096, map_flags=0, inner_map_fd=0, map_name="__augmented_sys", map_ifindex=0, btf_fd=0, btf_key_type_id=0, btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 6
+bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_PERCPU_ARRAY, key_size=4, value_size=8272, max_entries=1, map_flags=0, inner_map_fd=0, map_name="augmented_args_", map_ifindex=0, btf_fd=0, btf_key_type_id=0, btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 7
+bpf(BPF_BTF_LOAD, {btf="\237\353\1\0\30\0\0\0\0\0\0\0000\0\0\0000\0\0\0\t\0\0\0\1\0\0\0\0\0\0\1"..., btf_log_buf=NULL, btf_size=81, btf_log_size=0, btf_log_level=0}, 32) = -1 EPERM (Operation not permitted)
+bpf(BPF_PROG_LOAD, {prog_type=BPF_PROG_TYPE_TRACEPOINT, insn_cnt=2, insns=0x1758340, license="GPL", log_level=0, log_size=0, log_buf=NULL, kern_version=KERNEL_VERSION(6, 4, 7), prog_flags=0, prog_name="syscall_unaugme", prog_ifindex=0, expected_attach_type=BPF_CGROUP_INET_INGRESS, prog_btf_fd=0, func_info_rec_size=0, func_info=NULL, func_info_cnt=0, line_info_rec_size=0, line_info=NULL, line_info_cnt=0, attach_btf_id=0, attach_prog_fd=0, fd_array=NULL}, 144) = -1 EPERM (Operation not permitted)
+bpf(BPF_PROG_LOAD, {prog_type=BPF_PROG_TYPE_TRACEPOINT, insn_cnt=2, insns=0x1758340, license="GPL", log_level=1, log_size=16777215, log_buf="", kern_version=KERNEL_VERSION(6, 4, 7), prog_flags=0, prog_name="syscall_unaugme", prog_ifindex=0, expected_attach_type=BPF_CGROUP_INET_INGRESS, prog_btf_fd=0, func_info_rec_size=0, func_info=NULL, func_info_cnt=0, line_info_rec_size=0, line_info=NULL, line_info_cnt=0, attach_btf_id=0, attach_prog_fd=0, fd_array=NULL}, 144) = -1 EPERM (Operation not permitted)
+libbpf: prog 'syscall_unaugmented': BPF program load failed: Operation not permitted
+libbpf: prog 'syscall_unaugmented': failed to load: -1
+libbpf: failed to load object 'augmented_raw_syscalls_bpf'
+libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -1
+Failed to load augmented syscalls BPF skeleton: Operation not permitted
+Using CPUID GenuineIntel-6-8E-A
+intel_pt default config: tsc,mtc,mtc_period=3,psb_period=3,pt,branch
+Error:	No permissions to read /sys/kernel/tracing//events/raw_syscalls/sys_(enter|exit)
+Hint:	Try 'sudo mount -o remount,mode=755 /sys/kernel/tracing/'
+
++++ exited with 255 +++
+[acme@quaco perf-tools-next]$
 
