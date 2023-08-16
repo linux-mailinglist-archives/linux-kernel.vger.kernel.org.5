@@ -2,204 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEAA377E4A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 17:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD3177E4AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 17:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343988AbjHPPGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 11:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48348 "EHLO
+        id S1343990AbjHPPHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 11:07:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343976AbjHPPGJ (ORCPT
+        with ESMTP id S1344001AbjHPPGm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 11:06:09 -0400
-Received: from mx.treblig.org (unknown [IPv6:2a00:1098:5b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E47A10FF;
-        Wed, 16 Aug 2023 08:06:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
-        ; s=bytemarkmx; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID
-        :Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID
-        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
-        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
-        :List-Post:List-Owner:List-Archive;
-        bh=5c5yqBvUHR1tbkw5FNjWvNPlWqNPbuTio9zLcbP9tSY=; b=c/qWeKRZA8ojurTR+jgKTP8r2O
-        utXDNsJQV3vFVQs+pLQ90w+GEDH3fo+sC9Neyv3jco+MnVgFD7aIhYgzjrNvCXv9g0XbfSAA7SJRr
-        Kh1xjACBHjJhPKnR5NYRzR/NCLkD6b+DEOTpbP6H8XNjznunS5KBWsnKmoZEVxnIo3XBgCbSBZRpx
-        2vpJwq+UBrW2bGBkpwIS17jIa8Czb6myNooiST8M3oE3uLoKTiQUF2Lzej/olNYE2pSq4AKL2PY/f
-        XWTZlXRaWM+CAjSR6OV01aH/3sZO6CciGYVO7mrJFtSm21UX60QU+pBETYYua5Ltcdxocc1qc+6hA
-        0uNEB7ZA==;
-Received: from dg by mx.treblig.org with local (Exim 4.94.2)
-        (envelope-from <dg@treblig.org>)
-        id 1qWI5x-007Gfb-UI; Wed, 16 Aug 2023 15:06:01 +0000
-Date:   Wed, 16 Aug 2023 15:06:01 +0000
-From:   "Dr. David Alan Gilbert" <dave@treblig.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Theodore Ts'o <tytso@mit.edu>, hch@lst.de,
-        adilger.kernel@dilger.ca, song@kernel.org,
-        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ext4@vger.kernel.org
-Subject: Re: 6.5.0rc5 fs hang - ext4? raid?
-Message-ID: <ZNzl2Sq9UJ3FiTgV@gallifrey>
-References: <ZNqWfQPTScJDkmpX@gallifrey>
- <20230815125146.GA1508930@mit.edu>
- <ZNt11WbPn7LCXPvB@gallifrey>
- <ZNu668KGiNcwCSVe@gallifrey>
- <ZNwm7Mo9yv7uIkno@gallifrey>
- <324fc71c-dead-4418-af81-6817e1f41c39@kernel.dk>
- <ZNzg1/zhxYV2EkBX@gallifrey>
+        Wed, 16 Aug 2023 11:06:42 -0400
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D77ED1B2;
+        Wed, 16 Aug 2023 08:06:40 -0700 (PDT)
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-76c8dd2ce79so576805185a.1;
+        Wed, 16 Aug 2023 08:06:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692198399; x=1692803199;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6jqc6aMsBDwBmUNU3rpDBpCQQ7XOglMYzfoxP1qWU7c=;
+        b=g9P8esmroviBMY7U2EiZWy+SJRbgn6qgYpZ7U/shkKjiYgGJklPLg38V29wddiTROz
+         7Lkshoh0vk5841+mVhL7NGDV3q8/yq79mZX5kWqBQ6dVpxW8+fC3bRpB0X5OTLCYN+Ch
+         95+VzDb+gZW8c5OfT9CODZw2avlub+oNLva6hVhv9Gkg9QTouBtmFBees/SGCCi7XRNA
+         wmvuwICAKF5xuUGbhTed0gv7PimV/ZpfqWDw0uh/ugBUQPKaYN7GpQRPrp5yno9JTYBi
+         FrwuVJdKEQdEJbjbaKnq0yygJ59MMO4V432bhWr9syoi5IIUgtBlLylIL1bNPD0JQ0vD
+         ezqw==
+X-Gm-Message-State: AOJu0YzhmCYH302vsTx+sfMaj9mLWZRrtGqMMdAoHNBRS2Ij5b6lSvFW
+        mBL36UDbvlEpin4Svyo1Ckx8+gkhFjpF+FgA
+X-Google-Smtp-Source: AGHT+IHMXDbnFK1oON4WwW5wW59PgJKtV3UWTSir6qLDhl6lh3I1+7fSHlKwjfPioVNCeg+4aK6p5w==
+X-Received: by 2002:a37:e115:0:b0:76d:3558:6e8d with SMTP id c21-20020a37e115000000b0076d35586e8dmr2344824qkm.69.1692198399612;
+        Wed, 16 Aug 2023 08:06:39 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:6eb])
+        by smtp.gmail.com with ESMTPSA id k19-20020ac84793000000b004055c555d2dsm4530388qtq.21.2023.08.16.08.06.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 08:06:39 -0700 (PDT)
+From:   David Vernet <void@manifault.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, kernel test robot <lkp@intel.com>
+Subject: [PATCH bpf-next] bpf: Disable -Wmissing-declarations for globally-linked kfuncs
+Date:   Wed, 16 Aug 2023 10:06:34 -0500
+Message-ID: <20230816150634.1162838-1-void@manifault.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <ZNzg1/zhxYV2EkBX@gallifrey>
-X-Chocolate: 70 percent or better cocoa solids preferably
-X-Operating-System: Linux/5.10.0-23-amd64 (x86_64)
-X-Uptime: 15:04:18 up 41 days, 35 min,  2 users,  load average: 0.00, 0.00,
- 0.00
-User-Agent: Mutt/2.0.5 (2021-01-21)
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Dr. David Alan Gilbert (dave@treblig.org) wrote:
-> * Jens Axboe (axboe@kernel.dk) wrote:
-> > On 8/15/23 7:31 PM, Dr. David Alan Gilbert wrote:
-> > > (Copying in Christoph and Jens)
-> > > 
-> > > * Dr. David Alan Gilbert (dave@treblig.org) wrote:
-> > >> * Dr. David Alan Gilbert (dave@treblig.org) wrote:
-> > >>> * Theodore Ts'o (tytso@mit.edu) wrote:
-> > >>>> On Mon, Aug 14, 2023 at 09:02:53PM +0000, Dr. David Alan Gilbert wrote:
-> > >>>>> dg         29594   29592  0 18:40 pts/0    00:00:00 /usr/bin/ar --plugin /usr/libexec/gcc/x86_64-redhat-linux/13/liblto_plugin.so -csrDT src/intel/perf/libintel_perf.a src/intel/perf/libintel_perf.a.p/meson-generated_.._intel_perf_metrics.c.o src/intel/perf/libintel_perf.a.p/intel_perf.c.o src/intel/perf/libintel_perf.a.p/intel_perf_query.c.o src/intel/perf/libintel_perf.a.p/intel_perf_mdapi.c.o
-> > >>>>>
-> > >>>>> [root@dalek dg]# cat /proc/29594/stack 
-> > >>>>> [<0>] md_super_wait+0xa2/0xe0
-> > >>>>> [<0>] md_bitmap_unplug+0xd2/0x120
-> > >>>>> [<0>] flush_bio_list+0xf3/0x100 [raid1]
-> > >>>>> [<0>] raid1_unplug+0x3b/0xb0 [raid1]
-> > >>>>> [<0>] __blk_flush_plug+0xd7/0x150
-> > >>>>> [<0>] blk_finish_plug+0x29/0x40
-> > >>>>> [<0>] ext4_do_writepages+0x401/0xc90
-> > >>>>> [<0>] ext4_writepages+0xad/0x180
-> > >>>>
-> > >>>> If you want a few seconds and try grabbing cat /proc/29594/stack
-> > >>>> again, what does the stack trace stay consistent as above?
-> > >>>
-> > >>> I'll get back to that and retry it.
-> > >>
-> > >> Yeh, the stack is consistent; this time around it's an 'ar' in a kernel
-> > >> build:
-> > >>
-> > >> [root@dalek dg]# cat /proc/17970/stack
-> > >> [<0>] md_super_wait+0xa2/0xe0
-> > >> [<0>] md_bitmap_unplug+0xad/0x120
-> > >> [<0>] flush_bio_list+0xf3/0x100 [raid1]
-> > >> [<0>] raid1_unplug+0x3b/0xb0 [raid1]
-> > >> [<0>] __blk_flush_plug+0xd7/0x150
-> > >> [<0>] blk_finish_plug+0x29/0x40
-> > >> [<0>] ext4_do_writepages+0x401/0xc90
-> > >> [<0>] ext4_writepages+0xad/0x180
-> > >> [<0>] do_writepages+0xd2/0x1e0
-> > >> [<0>] filemap_fdatawrite_wbc+0x63/0x90
-> > >> [<0>] __filemap_fdatawrite_range+0x5c/0x80
-> > >> [<0>] ext4_release_file+0x74/0xb0
-> > >> [<0>] __fput+0xf5/0x2a0
-> > >> [<0>] task_work_run+0x5d/0x90
-> > >> [<0>] exit_to_user_mode_prepare+0x1e6/0x1f0
-> > >> [<0>] syscall_exit_to_user_mode+0x1b/0x40
-> > >> [<0>] do_syscall_64+0x6c/0x90
-> > >> [<0>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> > >> [root@dalek dg]# cat /proc/17970/stack
-> > >> [<0>] md_super_wait+0xa2/0xe0
-> > >> [<0>] md_bitmap_unplug+0xad/0x120
-> > >> [<0>] flush_bio_list+0xf3/0x100 [raid1]
-> > >> [<0>] raid1_unplug+0x3b/0xb0 [raid1]
-> > >> [<0>] __blk_flush_plug+0xd7/0x150
-> > >> [<0>] blk_finish_plug+0x29/0x40
-> > >> [<0>] ext4_do_writepages+0x401/0xc90
-> > >> [<0>] ext4_writepages+0xad/0x180
-> > >> [<0>] do_writepages+0xd2/0x1e0
-> > >> [<0>] filemap_fdatawrite_wbc+0x63/0x90
-> > >> [<0>] __filemap_fdatawrite_range+0x5c/0x80
-> > >> [<0>] ext4_release_file+0x74/0xb0
-> > >> [<0>] __fput+0xf5/0x2a0
-> > >> [<0>] task_work_run+0x5d/0x90
-> > >> [<0>] exit_to_user_mode_prepare+0x1e6/0x1f0
-> > >> [<0>] syscall_exit_to_user_mode+0x1b/0x40
-> > >> [<0>] do_syscall_64+0x6c/0x90
-> > >> [<0>] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> > >>
-> > >>>> Also, if you have iostat installed (usually part of the sysstat
-> > >>>> package), does "iostat 1" show any I/O activity on the md device?
-> > >>
-> > >> iostat is showing something odd, most devices are at 0,
-> > >> except for 3 of the dm's that are stuck at 100% utilisation with
-> > >> apparently nothing going on:
-> > >>
-> > >> avg-cpu:  %user   %nice %system %iowait  %steal   %idle
-> > >>            0.06    0.00    0.03   53.06    0.00   46.84
-> > >>
-> > >> Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s  %drqm d_await dareq-sz     f/s f_await  aqu-sz  %util
-> > >> ...
-> > >> dm-16            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00 100.00
-> > >> dm-17            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00 100.00
-> > >> dm-18            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00   0.00
-> > >> dm-19            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00   0.00
-> > >> dm-2             0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00   0.00
-> > >> dm-20            0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00    0.00    0.00 100.00
-> > >> ....
-> > >>
-> > >> dm-20 is the /dev/mapper/main-more which is the RAID on which the
-> > >> fs runs, 16 and 17 are main-more_rmeta_0 and main-more_rimage_0
-> > >> so something screwy is going on there.
-> > > 
-> > > I've just finished a bisect of this hang, and got to:
-> > > 
-> > > 615939a2ae734e3e68c816d6749d1f5f79c62ab7 is the first bad commit
-> > > commit 615939a2ae734e3e68c816d6749d1f5f79c62ab7
-> > > Author: Christoph Hellwig <hch@lst.de>
-> > > Date:   Fri May 19 06:40:48 2023 +0200
-> > > 
-> > >     blk-mq: defer to the normal submission path for post-flush requests
-> > > 
-> > >     Requests with the FUA bit on hardware without FUA support need a post
-> > >     flush before returning to the caller, but they can still be sent using
-> > >     the normal I/O path after initializing the flush-related fields and
-> > >     end I/O handler.
-> > > 
-> > >     Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > >     Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-> > >     Link: https://lore.kernel.org/r/20230519044050.107790-6-hch@lst.de
-> > >     Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> > 
-> > Can you try and pull in:
-> > 
-> > https://git.kernel.dk/cgit/linux/commit/?h=block-6.5&id=5ff3213a5387e076af2b87f796f94b36965e8c3a
-> > 
-> > and see if that helps?
-> 
-> <testing....>
+We recently got an lkp warning about missing declarations, as in e.g.
+[0]. This warning is largely redundant with -Wmissing-prototypes, which
+we already disable for kfuncs that have global linkage and are meant to
+be exported in BTF, and called from BPF programs. Let's also disable
+-Wmissing-declarations for kfuncs. For what it's worth, I wasn't able to
+reproduce the warning even on W <= 3, so I can't actually be 100% sure
+this fixes the issue.
 
-Yes it seems to fix it - thanks!
+[0]: https://lore.kernel.org/all/202308162115.Hn23vv3n-lkp@intel.com/
 
-Dave
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308162115.Hn23vv3n-lkp@intel.com/
+Signed-off-by: David Vernet <void@manifault.com>
+---
+ Documentation/bpf/kfuncs.rst                          | 4 +++-
+ kernel/bpf/bpf_iter.c                                 | 2 ++
+ kernel/bpf/cpumask.c                                  | 2 ++
+ kernel/bpf/helpers.c                                  | 2 ++
+ kernel/bpf/map_iter.c                                 | 2 ++
+ kernel/cgroup/rstat.c                                 | 2 ++
+ kernel/trace/bpf_trace.c                              | 2 ++
+ net/bpf/test_run.c                                    | 2 ++
+ net/core/filter.c                                     | 4 ++++
+ net/core/xdp.c                                        | 2 ++
+ net/ipv4/fou_bpf.c                                    | 2 ++
+ net/netfilter/nf_conntrack_bpf.c                      | 2 ++
+ net/netfilter/nf_nat_bpf.c                            | 2 ++
+ net/xfrm/xfrm_interface_bpf.c                         | 2 ++
+ tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c | 2 ++
+ 15 files changed, 33 insertions(+), 1 deletion(-)
 
-> Dave
-> 
-> > -- 
-> > Jens Axboe
-> > 
-> -- 
->  -----Open up your eyes, open up your mind, open up your code -------   
-> / Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-> \        dave @ treblig.org |                               | In Hex /
->  \ _________________________|_____ http://www.treblig.org   |_______/
+diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
+index 0d2647fb358d..62ce5a7b92b4 100644
+--- a/Documentation/bpf/kfuncs.rst
++++ b/Documentation/bpf/kfuncs.rst
+@@ -36,10 +36,12 @@ prototype in a header for the wrapper kfunc.
+ 
+ An example is given below::
+ 
+-        /* Disables missing prototype warnings */
++        /* Disables missing prototypes and declarations warnings */
+         __diag_push();
+         __diag_ignore_all("-Wmissing-prototypes",
+                           "Global kfuncs as their definitions will be in BTF");
++        __diag_ignore_all("-Wmissing-declarations",
++                          "Global kfuncs as their definitions will be in BTF");
+ 
+         __bpf_kfunc struct task_struct *bpf_find_get_task_by_vpid(pid_t nr)
+         {
+diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
+index 96856f130cbf..b8def6e4e5e8 100644
+--- a/kernel/bpf/bpf_iter.c
++++ b/kernel/bpf/bpf_iter.c
+@@ -785,6 +785,8 @@ struct bpf_iter_num_kern {
+ __diag_push();
+ __diag_ignore_all("-Wmissing-prototypes",
+ 		  "Global functions as their definitions will be in vmlinux BTF");
++__diag_ignore_all("-Wmissing-declarations",
++		  "Global functions as their definitions will be in vmlinux BTF");
+ 
+ __bpf_kfunc int bpf_iter_num_new(struct bpf_iter_num *it, int start, int end)
+ {
+diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
+index 6983af8e093c..111b0e062e7f 100644
+--- a/kernel/bpf/cpumask.c
++++ b/kernel/bpf/cpumask.c
+@@ -37,6 +37,8 @@ static bool cpu_valid(u32 cpu)
+ __diag_push();
+ __diag_ignore_all("-Wmissing-prototypes",
+ 		  "Global kfuncs as their definitions will be in BTF");
++__diag_ignore_all("-Wmissing-declarations",
++		  "Global kfuncs as their definitions will be in BTF");
+ 
+ /**
+  * bpf_cpumask_create() - Create a mutable BPF cpumask.
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index eb91cae0612a..6d2f84371892 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1885,6 +1885,8 @@ void bpf_rb_root_free(const struct btf_field *field, void *rb_root,
+ __diag_push();
+ __diag_ignore_all("-Wmissing-prototypes",
+ 		  "Global functions as their definitions will be in vmlinux BTF");
++__diag_ignore_all("-Wmissing-declarations",
++		  "Global functions as their definitions will be in vmlinux BTF");
+ 
+ __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
+ {
+diff --git a/kernel/bpf/map_iter.c b/kernel/bpf/map_iter.c
+index 6fc9dae9edc8..f7c7c5044630 100644
+--- a/kernel/bpf/map_iter.c
++++ b/kernel/bpf/map_iter.c
+@@ -196,6 +196,8 @@ late_initcall(bpf_map_iter_init);
+ __diag_push();
+ __diag_ignore_all("-Wmissing-prototypes",
+ 		  "Global functions as their definitions will be in vmlinux BTF");
++__diag_ignore_all("-Wmissing-declarations",
++		  "Global functions as their definitions will be in vmlinux BTF");
+ 
+ __bpf_kfunc s64 bpf_map_sum_elem_count(const struct bpf_map *map)
+ {
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index 2542c21b6b6d..f5231a58ad3c 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -162,6 +162,8 @@ static struct cgroup *cgroup_rstat_cpu_pop_updated(struct cgroup *pos,
+ __diag_push();
+ __diag_ignore_all("-Wmissing-prototypes",
+ 		  "kfuncs which will be used in BPF programs");
++__diag_ignore_all("-Wmissing-declarations",
++		  "kfuncs which will be used in BPF programs");
+ 
+ __weak noinline void bpf_rstat_flush(struct cgroup *cgrp,
+ 				     struct cgroup *parent, int cpu)
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 792445e1f3f0..1fa197aa428c 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1224,6 +1224,8 @@ static const struct bpf_func_proto bpf_get_func_arg_cnt_proto = {
+ __diag_push();
+ __diag_ignore_all("-Wmissing-prototypes",
+ 		  "kfuncs which will be used in BPF programs");
++__diag_ignore_all("-Wmissing-declarations",
++		  "kfuncs which will be used in BPF programs");
+ 
+ /**
+  * bpf_lookup_user_key - lookup a key by its serial
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 57a7a64b84ed..38aedb720a52 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -506,6 +506,8 @@ static int bpf_test_finish(const union bpf_attr *kattr,
+ __diag_push();
+ __diag_ignore_all("-Wmissing-prototypes",
+ 		  "Global functions as their definitions will be in vmlinux BTF");
++__diag_ignore_all("-Wmissing-declarations",
++		  "Global functions as their definitions will be in vmlinux BTF");
+ __bpf_kfunc int bpf_fentry_test1(int a)
+ {
+ 	return a + 1;
+diff --git a/net/core/filter.c b/net/core/filter.c
+index a094694899c9..c2b32b94c6bd 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -11727,6 +11727,8 @@ bpf_sk_base_func_proto(enum bpf_func_id func_id)
+ __diag_push();
+ __diag_ignore_all("-Wmissing-prototypes",
+ 		  "Global functions as their definitions will be in vmlinux BTF");
++__diag_ignore_all("-Wmissing-declarations",
++		  "Global functions as their definitions will be in vmlinux BTF");
+ __bpf_kfunc int bpf_dynptr_from_skb(struct sk_buff *skb, u64 flags,
+ 				    struct bpf_dynptr_kern *ptr__uninit)
+ {
+@@ -11808,6 +11810,8 @@ late_initcall(bpf_kfunc_init);
+ __diag_push();
+ __diag_ignore_all("-Wmissing-prototypes",
+ 		  "Global functions as their definitions will be in vmlinux BTF");
++__diag_ignore_all("-Wmissing-declarations",
++		  "Global functions as their definitions will be in vmlinux BTF");
+ 
+ /* bpf_sock_destroy: Destroy the given socket with ECONNABORTED error code.
+  *
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index a70670fe9a2d..3d14e7be411d 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -699,6 +699,8 @@ struct xdp_frame *xdpf_clone(struct xdp_frame *xdpf)
+ __diag_push();
+ __diag_ignore_all("-Wmissing-prototypes",
+ 		  "Global functions as their definitions will be in vmlinux BTF");
++__diag_ignore_all("-Wmissing-declarations",
++		  "Global functions as their definitions will be in vmlinux BTF");
+ 
+ /**
+  * bpf_xdp_metadata_rx_timestamp - Read XDP frame RX timestamp.
+diff --git a/net/ipv4/fou_bpf.c b/net/ipv4/fou_bpf.c
+index 3760a14b6b57..2b394703770a 100644
+--- a/net/ipv4/fou_bpf.c
++++ b/net/ipv4/fou_bpf.c
+@@ -25,6 +25,8 @@ enum bpf_fou_encap_type {
+ __diag_push();
+ __diag_ignore_all("-Wmissing-prototypes",
+ 		  "Global functions as their definitions will be in BTF");
++__diag_ignore_all("-Wmissing-declarations",
++		  "Global functions as their definitions will be in BTF");
+ 
+ /* bpf_skb_set_fou_encap - Set FOU encap parameters
+  *
+diff --git a/net/netfilter/nf_conntrack_bpf.c b/net/netfilter/nf_conntrack_bpf.c
+index c7a6114091ae..e24e2e4b2d49 100644
+--- a/net/netfilter/nf_conntrack_bpf.c
++++ b/net/netfilter/nf_conntrack_bpf.c
+@@ -233,6 +233,8 @@ static int _nf_conntrack_btf_struct_access(struct bpf_verifier_log *log,
+ __diag_push();
+ __diag_ignore_all("-Wmissing-prototypes",
+ 		  "Global functions as their definitions will be in nf_conntrack BTF");
++__diag_ignore_all("-Wmissing-declarations",
++		  "Global functions as their definitions will be in nf_conntrack BTF");
+ 
+ /* bpf_xdp_ct_alloc - Allocate a new CT entry
+  *
+diff --git a/net/netfilter/nf_nat_bpf.c b/net/netfilter/nf_nat_bpf.c
+index 141ee7783223..e903a6eb732e 100644
+--- a/net/netfilter/nf_nat_bpf.c
++++ b/net/netfilter/nf_nat_bpf.c
+@@ -15,6 +15,8 @@
+ __diag_push();
+ __diag_ignore_all("-Wmissing-prototypes",
+ 		  "Global functions as their definitions will be in nf_nat BTF");
++__diag_ignore_all("-Wmissing-declarations",
++		  "Global functions as their definitions will be in nf_nat BTF");
+ 
+ /* bpf_ct_set_nat_info - Set source or destination nat address
+  *
+diff --git a/net/xfrm/xfrm_interface_bpf.c b/net/xfrm/xfrm_interface_bpf.c
+index d74f3fd20f2b..d40060bcc398 100644
+--- a/net/xfrm/xfrm_interface_bpf.c
++++ b/net/xfrm/xfrm_interface_bpf.c
+@@ -30,6 +30,8 @@ struct bpf_xfrm_info {
+ __diag_push();
+ __diag_ignore_all("-Wmissing-prototypes",
+ 		  "Global functions as their definitions will be in xfrm_interface BTF");
++__diag_ignore_all("-Wmissing-declarations",
++		  "Global functions as their definitions will be in xfrm_interface BTF");
+ 
+ /* bpf_skb_get_xfrm_info - Get XFRM metadata
+  *
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index cefc5dd72573..201a41cd47e5 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -42,6 +42,8 @@ struct bpf_testmod_struct_arg_4 {
+ __diag_push();
+ __diag_ignore_all("-Wmissing-prototypes",
+ 		  "Global functions as their definitions will be in bpf_testmod.ko BTF");
++__diag_ignore_all("-Wmissing-declarations",
++		  "Global functions as their definitions will be in bpf_testmod.ko BTF");
+ 
+ noinline int
+ bpf_testmod_test_struct_arg_1(struct bpf_testmod_struct_arg_2 a, int b, int c) {
 -- 
- -----Open up your eyes, open up your mind, open up your code -------   
-/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-\        dave @ treblig.org |                               | In Hex /
- \ _________________________|_____ http://www.treblig.org   |_______/
+2.41.0
+
