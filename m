@@ -2,109 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DEBA77E32A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1C377E330
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343489AbjHPOBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 10:01:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34214 "EHLO
+        id S245749AbjHPOEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 10:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240035AbjHPOBR (ORCPT
+        with ESMTP id S1343500AbjHPODv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 10:01:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A1D26B2;
-        Wed, 16 Aug 2023 07:01:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E3F5C63B1D;
-        Wed, 16 Aug 2023 14:01:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5197C433C8;
-        Wed, 16 Aug 2023 14:01:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692194474;
-        bh=nkuNJD8/UhNnfzOiQfXb1n2ZySormYlxsckz1notOVU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j/jdHixKRtiJEdVAw3WGGDLItBfxL8Q5pSZCCQC/5zMtToRi+/YPYr5dXWDDfsl00
-         P/I+ssx6H7ylfZytajye1OlAemCDBiRwVxGdZgtfQsXJifLp9+Vn4nKQDxfJLY+cEC
-         Dde/x+0WMyaBggFuNjqBurUlPoatXEf9UKZ3xv5hxYzDHBx6S5gUJxM7k0KSaYnKb9
-         k6rlH5Z6J4ZMx1KHJoV1yjEV58vD2gT9mS0sbGaAgyFaNe1HqECrz0tfkurqOetI3b
-         tPtfmCAXicOFEi+YaZIz9acAt7r6DuGmTpNgLO9rm63idrZX5SgVhR1VKZ5WTxmVVg
-         87Ecspxmhsh3A==
-Date:   Wed, 16 Aug 2023 07:01:12 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     rostedt@goodmis.org, senozhatsky@chromium.org,
-        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        ndesaulniers@google.com, trix@redhat.com,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        patches@lists.linux.dev, stable@vger.kernel.org
-Subject: Re: [PATCH v2] lib: test_scanf: Add explicit type cast to result
- initialization in test_number_prefix()
-Message-ID: <20230816140112.GA2109327@dev-arch.thelio-3990X>
-References: <20230807-test_scanf-wconstant-conversion-v2-1-839ca39083e1@kernel.org>
- <ZNysmicYHHQ3f1Ck@alley>
+        Wed, 16 Aug 2023 10:03:51 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0681226B2;
+        Wed, 16 Aug 2023 07:03:49 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF7A5D75;
+        Wed, 16 Aug 2023 07:04:30 -0700 (PDT)
+Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 318B43F762;
+        Wed, 16 Aug 2023 07:03:48 -0700 (PDT)
+Message-ID: <e51863c0-496b-9630-e61a-2faa74356118@arm.com>
+Date:   Wed, 16 Aug 2023 15:03:46 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNysmicYHHQ3f1Ck@alley>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v6 2/4] perf: arm_cspmu: Support implementation specific
+ filters
+Content-Language: en-US
+To:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Besar Wicaksono <bwicaksono@nvidia.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+References: <20230815063526.9022-1-ilkka@os.amperecomputing.com>
+ <20230815063526.9022-3-ilkka@os.amperecomputing.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20230815063526.9022-3-ilkka@os.amperecomputing.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Petr,
-
-On Wed, Aug 16, 2023 at 01:01:46PM +0200, Petr Mladek wrote:
-> On Mon 2023-08-07 08:36:28, Nathan Chancellor wrote:
-> > A recent change in clang allows it to consider more expressions as
-> > compile time constants, which causes it to point out an implicit
-> > conversion in the scanf tests:
-> > 
-> >   lib/test_scanf.c:661:2: warning: implicit conversion from 'int' to 'unsigned char' changes value from -168 to 88 [-Wconstant-conversion]
-> >     661 |         test_number_prefix(unsigned char,       "0xA7", "%2hhx%hhx", 0, 0xa7, 2, check_uchar);
-> >         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >   lib/test_scanf.c:609:29: note: expanded from macro 'test_number_prefix'
-> >     609 |         T result[2] = {~expect[0], ~expect[1]};                                 \
-> >         |                       ~            ^~~~~~~~~~
-> >   1 warning generated.
-> > 
-> > The result of the bitwise negation is the type of the operand after
-> > going through the integer promotion rules, so this truncation is
-> > expected but harmless, as the initial values in the result array get
-> > overwritten by _test() anyways. Add an explicit cast to the expected
-> > type in test_number_prefix() to silence the warning. There is no
-> > functional change, as all the tests still pass with GCC 13.1.0 and clang
-> > 18.0.0.
-> > 
-> > Cc: stable@vger.kernel.org
-> > Closes: https://github.com/ClangBuiltLinux/linux/issues/1899
+On 15/08/2023 07:35, Ilkka Koskinen wrote:
+> ARM Coresight PMU architecture specification [1] defines PMEVTYPER and
+> PMEVFILT* registers as optional in Chapter 2.1. Moreover, implementers may
+> choose to use PMIMPDEF* registers (offset: 0xD80-> 0xDFF) to filter the
+> events. Add support for those by adding implementation specific filter
+> callback function.
 > 
-> "Closes:" is not a valid tag. It was proposed and rejected in the end.
-> I replaced it with "Link:" as suggested by ./scripts/checkpatch.pl/
-
-I don't really care about "Closes:" vs. "Link:", either is fine with me,
-but checkpatch.pl did not warn me about it and I still see commit
-44c31888098a ("checkpatch: allow Closes tags with links") in mainline
-and -next that explicitly allows this (and even requires Closes: instead
-of Link: when following Reported-by:).
-
-> > Link: https://github.com/llvm/llvm-project/commit/610ec954e1f81c0e8fcadedcd25afe643f5a094e
-> > Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> [1] https://developer.arm.com/documentation/ihi0091/latest
 > 
-> Reviewed-by: Petr Mladek <pmladek@suse.com>
+> Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+> Reviewed-by: Besar Wicaksono <bwicaksono@nvidia.com>
+
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+
+> ---
+>   drivers/perf/arm_cspmu/arm_cspmu.c | 12 ++++++++----
+>   drivers/perf/arm_cspmu/arm_cspmu.h |  3 +++
+>   2 files changed, 11 insertions(+), 4 deletions(-)
 > 
-> The patch has been pushed into printk/linux.git, branch for-6.6.
+> diff --git a/drivers/perf/arm_cspmu/arm_cspmu.c b/drivers/perf/arm_cspmu/arm_cspmu.c
+> index 6387cbad7a7d..94f6856ec786 100644
+> --- a/drivers/perf/arm_cspmu/arm_cspmu.c
+> +++ b/drivers/perf/arm_cspmu/arm_cspmu.c
+> @@ -116,6 +116,9 @@ static unsigned long arm_cspmu_cpuhp_state;
+>   
+>   static DEFINE_MUTEX(arm_cspmu_lock);
+>   
+> +static void arm_cspmu_set_ev_filter(struct arm_cspmu *cspmu,
+> +				    struct hw_perf_event *hwc, u32 filter);
+> +
+>   static struct acpi_apmt_node *arm_cspmu_apmt_node(struct device *dev)
+>   {
+>   	return *(struct acpi_apmt_node **)dev_get_platdata(dev);
+> @@ -450,6 +453,7 @@ static int arm_cspmu_init_impl_ops(struct arm_cspmu *cspmu)
+>   	CHECK_DEFAULT_IMPL_OPS(impl_ops, event_type);
+>   	CHECK_DEFAULT_IMPL_OPS(impl_ops, event_filter);
+>   	CHECK_DEFAULT_IMPL_OPS(impl_ops, event_attr_is_visible);
+> +	CHECK_DEFAULT_IMPL_OPS(impl_ops, set_ev_filter);
+>   
+>   	return 0;
+>   }
+> @@ -811,9 +815,9 @@ static inline void arm_cspmu_set_event(struct arm_cspmu *cspmu,
+>   	writel(hwc->config, cspmu->base0 + offset);
+>   }
+>   
+> -static inline void arm_cspmu_set_ev_filter(struct arm_cspmu *cspmu,
+> -					   struct hw_perf_event *hwc,
+> -					   u32 filter)
+> +static void arm_cspmu_set_ev_filter(struct arm_cspmu *cspmu,
+> +					struct hw_perf_event *hwc,
+> +					u32 filter)
+>   {
+>   	u32 offset = PMEVFILTR + (4 * hwc->idx);
+>   
+> @@ -845,7 +849,7 @@ static void arm_cspmu_start(struct perf_event *event, int pmu_flags)
+>   		arm_cspmu_set_cc_filter(cspmu, filter);
+>   	} else {
+>   		arm_cspmu_set_event(cspmu, hwc);
+> -		arm_cspmu_set_ev_filter(cspmu, hwc, filter);
+> +		cspmu->impl.ops.set_ev_filter(cspmu, hwc, filter);
+>   	}
+>   
+>   	hwc->state = 0;
+> diff --git a/drivers/perf/arm_cspmu/arm_cspmu.h b/drivers/perf/arm_cspmu/arm_cspmu.h
+> index e5c6dff2ce7f..274ca3d10578 100644
+> --- a/drivers/perf/arm_cspmu/arm_cspmu.h
+> +++ b/drivers/perf/arm_cspmu/arm_cspmu.h
+> @@ -104,6 +104,9 @@ struct arm_cspmu_impl_ops {
+>   	u32 (*event_type)(const struct perf_event *event);
+>   	/* Decode filter value from configs */
+>   	u32 (*event_filter)(const struct perf_event *event);
+> +	/* Set event filter */
+> +	void (*set_ev_filter)(struct arm_cspmu *cspmu,
+> +			      struct hw_perf_event *hwc, u32 filter);
+>   	/* Hide/show unsupported events */
+>   	umode_t (*event_attr_is_visible)(struct kobject *kobj,
+>   					 struct attribute *attr, int unused);
 
-Thanks a lot for the review and acceptance!
-
-Cheers,
-Nathan
