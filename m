@@ -2,87 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D731B77DC1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A48877DC16
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242882AbjHPIW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 04:22:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48894 "EHLO
+        id S242871AbjHPIWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 04:22:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242902AbjHPIWk (ORCPT
+        with ESMTP id S242852AbjHPIWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 04:22:40 -0400
-Received: from frasgout12.his.huawei.com (unknown [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B35E21BE8;
-        Wed, 16 Aug 2023 01:22:36 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4RQgkd2NsDz9v7Jj;
-        Wed, 16 Aug 2023 16:08:41 +0800 (CST)
-Received: from [10.81.209.179] (unknown [10.81.209.179])
-        by APP1 (Coremail) with SMTP id LxC2BwAn27okh9xkzRb3AA--.62650S2;
-        Wed, 16 Aug 2023 09:22:07 +0100 (CET)
-Message-ID: <84159dc8-d2e5-4c10-9910-b329500862e0@huaweicloud.com>
-Date:   Wed, 16 Aug 2023 10:21:54 +0200
+        Wed, 16 Aug 2023 04:22:25 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 757551BE8;
+        Wed, 16 Aug 2023 01:22:23 -0700 (PDT)
+Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RQgyC4yFrztRxt;
+        Wed, 16 Aug 2023 16:18:43 +0800 (CST)
+Received: from [10.67.110.108] (10.67.110.108) by
+ kwepemi500012.china.huawei.com (7.221.188.12) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 16 Aug 2023 16:22:19 +0800
+Message-ID: <da60b15e-693d-a62f-b517-3e7f1c6466f2@huawei.com>
+Date:   Wed, 16 Aug 2023 16:22:19 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC][PATCH v2 02/13] integrity: Introduce a digest cache
-Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>, corbet@lwn.net,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-        pbrobinson@gmail.com, zbyszek@in.waw.pl, hch@lst.de,
-        mjg59@srcf.ucam.org, pmatilai@redhat.com, jannh@google.com,
-        Roberto Sassu <roberto.sassu@huawei.com>
-References: <20230812104616.2190095-1-roberto.sassu@huaweicloud.com>
- <20230812104616.2190095-3-roberto.sassu@huaweicloud.com>
- <CUSFHQGJ3I8F.WBL3ZYT3U5FB@suppilovahvero>
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-In-Reply-To: <CUSFHQGJ3I8F.WBL3ZYT3U5FB@suppilovahvero>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LxC2BwAn27okh9xkzRb3AA--.62650S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYj7kC6x804xWl14x267AKxVW5JVWrJwAF
-        c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
-        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xv
-        wVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjc
-        xK6I8E87Iv6xkF7I0E14v26r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr
-        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
-        04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_
-        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbG2Nt
-        UUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQALBF1jj5KudAAAs3
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH] cpufreq: cppc: Add missing error pointer check
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <rafael@kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230816030549.849824-1-liaochang1@huawei.com>
+ <20230816034630.a4hvsj373q6aslk3@vireshk-i7>
+ <8fea501c-b950-17bd-c710-c923b9af6e62@huawei.com>
+ <20230816081708.o36cvwi3wwh62cmu@vireshk-i7>
+From:   "Liao, Chang" <liaochang1@huawei.com>
+In-Reply-To: <20230816081708.o36cvwi3wwh62cmu@vireshk-i7>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.110.108]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemi500012.china.huawei.com (7.221.188.12)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,PDS_RDNS_DYNAMIC_FP,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/14/2023 7:03 PM, Jarkko Sakkinen wrote:
-> On Sat Aug 12, 2023 at 1:46 PM EEST, Roberto Sassu wrote:
->> From: Roberto Sassu <roberto.sassu@huawei.com>
+
+
+在 2023/8/16 16:17, Viresh Kumar 写道:
+> On 16-08-23, 15:27, Liao, Chang wrote:
+>> Hi Viresh,
 >>
->> Introduce the digest cache, a structure holding a hash table of digests,
->> extracted from a digest list. Its pointer is stored in the iint of the
+>> 在 2023/8/16 11:46, Viresh Kumar 写道:
+>>> On 16-08-23, 03:05, Liao Chang wrote:
+>>>> The function cppc_freq_invariance_init() may failed to create
+>>>> kworker_fie, make it more robust by checking the return value to prevent
+>>>> an invalid pointer dereference in kthread_destroy_worker(), which called
+>>>> from cppc_freq_invariance_exit().
+>>>>
+>>>> Signed-off-by: Liao Chang <liaochang1@huawei.com>
+>>>> ---
+>>>>  drivers/cpufreq/cppc_cpufreq.c | 21 ++++++++++++++-------
+>>>>  1 file changed, 14 insertions(+), 7 deletions(-)
+>>>
+>>> I think why it was designed this way was to make the driver work,
+>>> without invariance support, in the worst case instead of just failing
+>>> completely. The invariance thing is a good to have feature, but not
+>>> really necessary and so failing probing the driver for that isn't
+>>> worth it. We should print all error messages though.
+>>>
+>> Thanks for pointing that out. I think you are right that the kworker created
+>> in the cppc driver is not the only arch_freq_scale updater, the ARCH provided
+>> updater has more priority than the driver, so the driver should still work even
+>> without kworker_fie supports.
+>>
+>> If that is the case, i think the best thing to do is checking the error pointer
+>> and printing an error message before calling kthread_destroy() in cppc_freq_invariance_exit(),
+>> this is because at that point, it is really necessary to ensure the kworker_fie has
+>> been initialized as expected, otherwise it will raise a NULL pointer exception.
 > 
-> What is iint? I honestly don't know what it is. I first thought that it
-> was "int" typoed.
+> Or just set fie_disabled to true ?
+Yes, I agree.
 
-Ops. It is the integrity_iint_cache structure, to retain the 
-integrity-specific state of an inode. Will explain that in the next version.
+> 
+>> I hope this makes sense, thanks.
+> 
+> It does.
+> 
 
-Thanks
-
-Roberto
-
+-- 
+BR
+Liao, Chang
