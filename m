@@ -2,93 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB29777DA37
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 08:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 283D077DA44
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 08:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242035AbjHPGIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 02:08:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36096 "EHLO
+        id S242033AbjHPGJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 02:09:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242061AbjHPGH4 (ORCPT
+        with ESMTP id S242007AbjHPGJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 02:07:56 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDE52710
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 23:07:40 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe32016bc8so55830815e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 23:07:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692166059; x=1692770859;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FsYZ939dcLj42q9uy/F44+/jrXXmiBF/awHAuWPvXAk=;
-        b=uoJ+LTaG3QZMIz/ZFLv0qitRtNF1EyLtA5yKAhtE0OP5ZF3SDoPOryh+VBT2oJIdZR
-         HzuvuvrrGmTfQcJWx1qjBb82be5InQkZkimokkpc6WFYWTThE03x5RDOF5i5RzbiufBU
-         k8bruS4aN0nVlwIpq8CMZtnJRo2kutK1aW4gPOHB6XhQ3t/UTuABsHe/EblA5UzRhSOe
-         BVMNFLuhMUuF+/2bR5fOkHe93l6aaymbU8tgOUAMFb22GQXtRrUOmxzN7Nq+6AFNp2Hv
-         XXo7PP2XgKMS7EhbP3na6XXN9z+/DXSh4vMwE06+Pp6o+J9lk3wdK2NEgkjDbwWXLFn2
-         gSUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692166059; x=1692770859;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FsYZ939dcLj42q9uy/F44+/jrXXmiBF/awHAuWPvXAk=;
-        b=DGoxjtVrBQhC34XQ2CuVdX4/rv4anUGfrCKHZ7sPvG+PtYGchdOOg2AtQySRCvrCZC
-         Dx1RfzTDZe3oWJIaPvYn3nNDag3D20Q48fCkZYLdpfh35eaTItV1EFSO9ldjMkQFZZ8Z
-         IhaSk7+xb++Nb7m+Ah/XCpSRI4YpEA15M05vhCZ4WYUJwn5FWnRVdgyKcXvAyQFJ2Q+E
-         +kVjHF6cMk5hnbGthnzt7wWZ6IxzrixtD90LmCQFTIYE+gJzstRTRRFLfZPmauLxdCy6
-         F7EHffmxSGCK9D0tLyc5V1oYSA78qRhQ3xBuv2BByTLDB8byWGo5j0A+SgpmXRqxHwB8
-         wjLQ==
-X-Gm-Message-State: AOJu0YxD3S0bhSw54b5HZc97DFVHj1z7f+wCfEb3Juv+/uDG9WLh83ql
-        4thYKsMIaBIuaX/RaLNa/iKGzw==
-X-Google-Smtp-Source: AGHT+IER5sMU2fdIlArto/rLhBPLokkQ2ZvUUXeHU0aH2Ely9ASzANipMTVKXsFzMCMuJLWXHwMwYQ==
-X-Received: by 2002:adf:dd84:0:b0:317:4bdc:6f34 with SMTP id x4-20020adfdd84000000b003174bdc6f34mr710578wrl.64.1692166059333;
-        Tue, 15 Aug 2023 23:07:39 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.214.188])
-        by smtp.gmail.com with ESMTPSA id w2-20020a5d6802000000b003197c2316ecsm7456530wru.112.2023.08.15.23.07.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 23:07:38 -0700 (PDT)
-Message-ID: <5ec6669f-454f-5c50-7ab2-522940f2c57e@linaro.org>
-Date:   Wed, 16 Aug 2023 08:07:36 +0200
+        Wed, 16 Aug 2023 02:09:22 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6F210C0;
+        Tue, 15 Aug 2023 23:09:19 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7CCCA5C04FA;
+        Wed, 16 Aug 2023 02:09:16 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 16 Aug 2023 02:09:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjusaka.me; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1692166156; x=1692252556; bh=zlzqembgfhE0WkCCU6cyrn0gHCOoJpWxWoa
+        DKK5MxFk=; b=QLKUstjdzno7jr4QviuCbeDyYe6U1eHEDfJhLa1Nm3YHwaIjwiI
+        qbWj0LbSvY6RBxQGkNuk6uxVkCDA42450Jm/sGZy9NlsyNK4fkAFWbpi/uzHRkjF
+        i0csvib4E0aF8JIcL+HXIbSV+Bw76nHZ3Man7dtQFEziw5t8f/vnescwOOvdy7Nz
+        pTVljhjBLg3uRh7tU2/dVgc51J/kGnvPCqW9URefic3sKZVHf+8KzNHYktqHWZpl
+        FM5bcZGtMbTUepgjXPjPiJCvhmJMC2e3LxO4KKAaXFA262FFMq3vGmYWJMyf8gLo
+        b1UOd4Aei1ipsdaiMdh9jauigYnfo1jaopQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1692166156; x=1692252556; bh=zlzqembgfhE0WkCCU6cyrn0gHCOoJpWxWoa
+        DKK5MxFk=; b=tGoRKzMFyaC/cY44HOj2rx4RX6fGRZllZAxUAdHiGxXkWGeUzU2
+        R//aC1HQGSQfMy/fLIpHli7fNMfPS0q0EM0AZYFOeh+gIdwQamyaPxlCDD94eWcw
+        oEGeIdfrWuivdD8qiknSQnvrBTGvT8yxV4+8wvue4v8rLT402elOPokiQKDeU6Mf
+        G32wmbm9PBE29s1m6663qHnAEu/BtsG4wcKhnMc3xQ6j54g5JLTSIKjC9EcGDIoC
+        /KiUW6DnG3zley+nK/SSU2CWlwZp6UILPRGXGMkv6fXjDOKL36m0PypITdEL/fxU
+        Rf4U3ixEfPznMAcKqw7KQkwLeTnzW9zT0+g==
+X-ME-Sender: <xms:C2jcZF0oKtYAAScnklLhmTavcaKuD7LTbiBteHF22PYSvbXODHt6ow>
+    <xme:C2jcZMHZ6DPvsUla2HVKrmXF6hJKe8Gw-NeA7ZAh8MZOZjUg5v074-NAWaae4KjgS
+    vt0PVXyNBQLMPR7C9A>
+X-ME-Received: <xmr:C2jcZF51FGGqkvgZE1I2jzSgMdZPnQPs4Ov9gCUpX7RJjXafNgAgEUKepilp4jxF_Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddtkedguddthecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomhepofgr
+    nhhjuhhsrghkrgcuoehmvgesmhgrnhhjuhhsrghkrgdrmhgvqeenucggtffrrghtthgvrh
+    hnpeehheevjeeiudegledtleevuddufedttdekudfgteejjeetfeejleejffdtvdeugeen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmvgesmh
+    grnhhjuhhsrghkrgdrmhgv
+X-ME-Proxy: <xmx:C2jcZC3Zs7LV2ZWhE68Wq7UI9dPVblgUgPByUvmuhfWWy2NtyNG9hQ>
+    <xmx:C2jcZIGqcSNsaeiuCPX5EoP1Zm-gYSp-Gpsv8jKoT_4TTiHqCIM3ag>
+    <xmx:C2jcZD8baMQE24wcA1oz-SlYyD7vgGpRb5wlqLacUTXfCWpuOlW7qQ>
+    <xmx:DGjcZL97x-VkNyWsoWxlPeXlPCQmt5MABnMoDThElg5LBrIr2MkrFQ>
+Feedback-ID: i3ea9498d:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 16 Aug 2023 02:09:11 -0400 (EDT)
+Message-ID: <8b0f2d2b-c5a0-4654-9cc0-78873260a881@manjusaka.me>
+Date:   Wed, 16 Aug 2023 14:09:06 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH linux dev-6.1 v1 1/2] dt-bindings: arm: aspeed: add Meta
- Yosemite 4 board
-To:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
-        openbmc@lists.ozlabs.org, patrick@stwcx.xyz,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20230816060547.40489-1-Delphine_CC_Chiu@wiwynn.com>
- <20230816060547.40489-2-Delphine_CC_Chiu@wiwynn.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] tracepoint: add new `tcp:tcp_ca_event` trace event
+To:     Joe Perches <joe@perches.com>, Steven Rostedt <rostedt@goodmis.org>
+Cc:     edumazet@google.com, bpf@vger.kernel.org, davem@davemloft.net,
+        dsahern@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, mhiramat@kernel.org,
+        ncardwell@google.com, netdev@vger.kernel.org, pabeni@redhat.com
+References: <CANn89iKQXhqgOTkSchH6Bz-xH--pAoSyEORBtawqBTvgG+dFig@mail.gmail.com>
+ <20230812201249.62237-1-me@manjusaka.me>
+ <20230812205905.016106c0@rorschach.local.home>
+ <20230812210140.117da558@rorschach.local.home>
+ <20230812210450.53464a78@rorschach.local.home>
+ <6bfa88099fe13b3fd4077bb3a3e55e3ae04c3b5d.camel@perches.com>
+ <20230812215327.1dbd30f3@rorschach.local.home>
+ <a587dac9e02cfde669743fd54ab41a3c6014c5e9.camel@perches.com>
 Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230816060547.40489-2-Delphine_CC_Chiu@wiwynn.com>
+From:   Manjusaka <me@manjusaka.me>
+In-Reply-To: <a587dac9e02cfde669743fd54ab41a3c6014c5e9.camel@perches.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/08/2023 08:05, Delphine CC Chiu wrote:
-> Document the new compatibles used on Meta Yosemite 4.
+On 2023/8/13 10:08, Joe Perches wrote:
+> On Sat, 2023-08-12 at 21:53 -0400, Steven Rostedt wrote:
+>> On Sat, 12 Aug 2023 18:17:17 -0700
+>> Joe Perches <joe@perches.com> wrote:
+>>
+>>>> I forgot to say "for TRACE_EVENT() macros". This is not about what
+>>>> checkpatch says about other code.  
+>>>
+>>> trace has its own code style and checkpatch needs another
+>>> parsing mechanism just for it, including the alignment to
+>>> open parenthesis test.
+>>
+>> If you have a template patch to add the parsing mechanism, I'd be happy
+>> to try to fill in the style.
 > 
-> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+> There is no checkpatch mechanism per se.  It's all ad-hoc.
+> 
+> Perhaps something like this though would work well enough
+> as it just avoids all the other spacing checks and such.
+> ---
+>  scripts/checkpatch.pl | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 528f619520eb9..3017f4dd09fd2 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -3947,6 +3947,9 @@ sub process {
+>  			}
+>  		}
+>  
+> +# trace include files use a completely different grammar
+> +		next if ($realfile =~ m{(?:include/trace/events/|/trace\.h$/)});
+> +
+>  # check multi-line statement indentation matches previous line
+>  		if ($perl_version_ok &&
+>  		    $prevline =~ /^\+([ \t]*)((?:$c90_Keywords(?:\s+if)\s*)|(?:$Declare\s*)?(?:$Ident|\(\s*\*\s*$Ident\s*\))\s*|(?:\*\s*)*$Lval\s*=\s*$Ident\s*)\(.*(\&\&|\|\||,)\s*$/) {
+> 
+> 
+> 
 
-I don't understand this patch prefix and why we are Cc-ed on some v6.1
-work. Please split your downstream work not to involve upstream.
+Actually, I'm not sure this is the checkpatch style issue or my code style issue.
 
-Best regards,
-Krzysztof
+Seems wired.
 
