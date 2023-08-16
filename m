@@ -2,179 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C41877E23D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA6777E240
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245281AbjHPNLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 09:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55476 "EHLO
+        id S245395AbjHPNME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:12:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245393AbjHPNLR (ORCPT
+        with ESMTP id S245419AbjHPNLt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 09:11:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EDC1BFB;
-        Wed, 16 Aug 2023 06:11:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5328D61C4E;
-        Wed, 16 Aug 2023 13:11:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C04BC433C9;
-        Wed, 16 Aug 2023 13:11:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692191475;
-        bh=zWuvXK7QMRZXyxcMioldJT+UNyw10JlwQNc8/I5Yezk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GTWI0SxKGp1wEgqfo7YBE5wtsKMlhEew8Ab06byaIFdkUrz50ik8wuvOe4ce2cHvg
-         jwfFc0nHs36ks6Kv+rPzQ5qXPcm2pqp0WIUjd2yVM0PvfsaMnx+yjoHQNfLw9g5+Or
-         xwLPPV+4eTmXDPIy9UWP3x/Px/GmK3VxuG9concy7gKpLchjOE85KsrrrbNj3TrbTZ
-         74Alulf+4B6X7JC2m1k6nWK+Ae7nFFPADkX2Sak6GQ46OBd7NqADHdZzUjSnrpD/If
-         Gqn5UL12zGEvZ3cz+19OWWnuSHYpTZmHVJ/6+itKxvJSkj/tBhv3SoroJ9StX5jJuN
-         u0sluyTu4ywbQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id BA6CF404DF; Wed, 16 Aug 2023 10:11:11 -0300 (-03)
-Date:   Wed, 16 Aug 2023 10:11:11 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Fangrui Song <maskray@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Carsten Haitzler <carsten.haitzler@arm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Rob Herring <robh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, llvm@lists.linux.dev,
-        Wang Nan <wangnan0@huawei.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        He Kuang <hekuang@huawei.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>
-Subject: Re: [PATCH v1 2/4] perf trace: Migrate BPF augmentation to use a
- skeleton
-Message-ID: <ZNzK70eH3ISoL8r0@kernel.org>
-References: <20230810184853.2860737-1-irogers@google.com>
- <20230810184853.2860737-3-irogers@google.com>
- <ZNuK1TFwdjyezV3I@kernel.org>
- <CAP-5=fURf+vv3TA4cRx1MiV3DDp=3wo0g5dBYH43DKtPhNZQsQ@mail.gmail.com>
+        Wed, 16 Aug 2023 09:11:49 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E9D1BFB
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:11:23 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-26b44247115so1941672a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:11:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1692191483; x=1692796283;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7y+FGla4ZqarJpsY9rL6fJ+tM9ztKi60WDdpJ1g+IXE=;
+        b=fsm/Z/ak+zuFz6543kEjTWDmVmFDFGkCxSiQA9p+6ruCdw9Uo+s8f1m7XMOiWar8XQ
+         91ONLABndc8fHMjvnH0f4jsYoMKNEWwOMBEnQ0oLsy7+UBeHNSfF0vry2NcMfcdJTrTS
+         vm9o3WQio1gP8LRejs/Cu7K61qUbL/LZFAdrWJhkilDgW/mnRwiEExx6ZFgrtL6lj8Q2
+         6Q/qaVGZNetg4dlHPuE6C5H4mFlcQW4G9+VItj7Ciai/tukYrLB4cFyCbDmQNtVUc2lf
+         zSyw1XjyzVJlhMO/Mk9qY07LD2nDCkKTCXBHfZ2bntqv84f4VM6qS9E1+MJS2ioAT/Ev
+         c+5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692191483; x=1692796283;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=7y+FGla4ZqarJpsY9rL6fJ+tM9ztKi60WDdpJ1g+IXE=;
+        b=MD4vfYxuoWoez5ApUerG02WGcXwYH7l7T70vxNpoKeCAE9YJ06M9QM2Fxj+fkjmEEI
+         ScSP4z980Z8fTFZlJkbenIdywSrNsytxprX6SQXnD0b8VExHKzxcD4xcYDYt3nY0AF/H
+         10Al8QKq/DuArbOQN2Un1yyb3EPyWTRDPww8xzZjTqgeu7lzW3sArWuShfWLB3xOlMml
+         hy11KZ/9XWAOOCLfEtpr/HfiEUKln5LNJmgeXhUl82s25ue2Wwkds6gGb3d4ip5U3Hcm
+         BHMRLwmEfNWBgzatAcb2dfjMiLDl7JUBN3MUCY0sHWR2R9TcN/y27n2BFRGiply030xC
+         4b7g==
+X-Gm-Message-State: AOJu0YwRtFxwEo9WLt/XhThKN047WHdDzHOgKF+oumVO8ZGDZwyatyTB
+        FF0GwHMMV8wL0WbusBC8wjymvw==
+X-Google-Smtp-Source: AGHT+IEhtIhiYveh9oLegEn5CX8U4HyvOiK88j2387qNBXnQtj2zYvVJZn9ewmGPBGrq9IlVrtu1Xw==
+X-Received: by 2002:a17:90b:1e07:b0:268:fb85:3b2 with SMTP id pg7-20020a17090b1e0700b00268fb8503b2mr1246851pjb.7.1692191483350;
+        Wed, 16 Aug 2023 06:11:23 -0700 (PDT)
+Received: from [10.254.252.111] ([139.177.225.249])
+        by smtp.gmail.com with ESMTPSA id u10-20020a17090ae00a00b0026b3f76a063sm7261968pjy.44.2023.08.16.06.11.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 06:11:23 -0700 (PDT)
+Message-ID: <6babc4c1-0f0f-f0b1-1d45-311448af8d70@bytedance.com>
+Date:   Wed, 16 Aug 2023 21:11:15 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fURf+vv3TA4cRx1MiV3DDp=3wo0g5dBYH43DKtPhNZQsQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH 06/11] maple_tree: Introduce mas_replace_entry() to
+ directly replace an entry
+To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+        Peng Zhang <zhangpeng.00@bytedance.com>, avagin@gmail.com,
+        npiggin@gmail.com, mathieu.desnoyers@efficios.com,
+        peterz@infradead.org, michael.christie@oracle.com,
+        surenb@google.com, brauner@kernel.org, willy@infradead.org,
+        akpm@linux-foundation.org, corbet@lwn.net,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-doc@vger.kernel.org
+References: <20230726080916.17454-1-zhangpeng.00@bytedance.com>
+ <20230726080916.17454-7-zhangpeng.00@bytedance.com>
+ <20230726160843.hpl4razxiikqbuxy@revolver>
+ <20aab1af-c183-db94-90d7-5e5425e3fd80@bytedance.com>
+ <20230731164854.vbndc2z2mqpw53in@revolver>
+From:   Peng Zhang <zhangpeng.00@bytedance.com>
+In-Reply-To: <20230731164854.vbndc2z2mqpw53in@revolver>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Aug 15, 2023 at 07:34:08AM -0700, Ian Rogers escreveu:
-> On Tue, Aug 15, 2023, 7:25 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> >                 bpf_object__for_each_program(prog, trace.skel->obj) {
-> >                         if (prog != trace.skel->progs.sys_enter && prog !=
-> > trace.skel->progs.sys_exit)
-> >                                 bpf_program__set_autoattach(prog,
-> > /*autoattach=*/false);
-> >                 }
-> >
-> > So that we don't have to add new lines disabling attachment when adding
-> > support for other pointer receiving syscalls.
- 
-> Makes sense. Thanks,
 
-Just taking notes about things to work on top of what is in
-tmp.perf-tools-next, that will move to perf-tools-next soon:
 
-We need to make these libbpf error messages appear only in verbose mode,
-and probably have a hint about unprivileged BPF, a quick attempt failed
-after several attempts at getting privileges :-\
+在 2023/8/1 00:48, Liam R. Howlett 写道:
+> * Peng Zhang <zhangpeng.00@bytedance.com> [230731 08:39]:
+>>
+>>
+>> 在 2023/7/27 00:08, Liam R. Howlett 写道:
+>>> * Peng Zhang <zhangpeng.00@bytedance.com> [230726 04:10]:
+>>>> If mas has located a specific entry, it may be need to replace this
+>>>> entry, so introduce mas_replace_entry() to do this. mas_replace_entry()
+>>>> will be more efficient than mas_store*() because it doesn't do many
+>>>> unnecessary checks.
+>>>>
+>>>> This function should be inline, but more functions need to be moved to
+>>>> the header file, so I didn't do it for the time being.
+>>>
+>>> I am really nervous having no checks here.  I get that this could be
+>>> used for duplicating the tree more efficiently, but having a function
+>>> that just swaps a value in is very dangerous - especially since it is
+>>> decoupled from the tree duplication code.
+>> I've thought about this, and I feel like this is something the user
+>> should be guaranteed. If the user is not sure whether to use it,
+>> mas_store() can be used instead.
+> 
+> Documentation often isn't up to date and even more rarely read.
+> mas_replace_entry() does not give a hint of a requirement for a specific
+> state to the mas.  This is not acceptable.
+> 
+> The description of the function also doesn't say anything about a
+> requirement of the maple state, just that it replaces an already
+> existing entry.  You have to read the notes to find out that 'mas must
+> already locate an existing entry'.
+> 
+>> And we should provide this interface
+>> because it has better performance.
+> 
+> How much better is the performance?  There's always a trade off but
+> without numbers, this is hard to justify.
+I have implemented a new version of this pachset, and I will post it
+soon.
 
-Probably attaching to tracepoints is off limits to !root even with
-/proc/sys/kernel/unprivileged_bpf_disabled set to zero.
+I tested the benefits of mas_replace_entry() in userspace.
+The test code is attached at the end.
 
-[acme@quaco perf-tools-next]$ perf trace ls
-libbpf: Failed to bump RLIMIT_MEMLOCK (err = -1), you might need to do it explicitly!
-libbpf: Error in bpf_object__probe_loading():Operation not permitted(1). Couldn't load trivial BPF program. Make sure your kernel supports BPF (CONFIG_BPF_SYSCALL=y) and/or that RLIMIT_MEMLOCK is set to big enough value.
-libbpf: failed to load object 'augmented_raw_syscalls_bpf'
-libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -1
-Error:	No permissions to read /sys/kernel/tracing//events/raw_syscalls/sys_(enter|exit)
-Hint:	Try 'sudo mount -o remount,mode=755 /sys/kernel/tracing/'
+Run three times:
+mas_replace_entry(): 2.7613050s 2.7120030s 2.7274200s
+mas_store():         3.8451260s 3.8113200s 3.9334160s
 
-[acme@quaco perf-tools-next]$
+Using mas_store() reduces the performance of duplicating VMAs by about
+41%.
 
-[acme@quaco perf-tools-next]$ perf trace -e open* sleep 1
-libbpf: Failed to bump RLIMIT_MEMLOCK (err = -1), you might need to do it explicitly!
-libbpf: Error in bpf_object__probe_loading():Operation not permitted(1). Couldn't load trivial BPF program. Make sure your kernel supports BPF (CONFIG_BPF_SYSCALL=y) and/or that RLIMIT_MEMLOCK is set to big enough value.
-libbpf: failed to load object 'augmented_raw_syscalls_bpf'
-libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -1
-Error:	No permissions to read /sys/kernel/tracing//events/raw_syscalls/sys_(enter|exit)
-Hint:	Try 'sudo mount -o remount,mode=755 /sys/kernel/tracing/'
+So I think mas_replace_entry() is necessary. We can describe it in more
+detail in the documentation to prevent users from misusing it.
 
-[acme@quaco perf-tools-next]$ sudo mount -o remount,mode=755 /sys/kernel/tracing/
-[sudo] password for acme:
-[acme@quaco perf-tools-next]$ perf trace -e open* sleep 1
-libbpf: Failed to bump RLIMIT_MEMLOCK (err = -1), you might need to do it explicitly!
-libbpf: Error in bpf_object__probe_loading():Operation not permitted(1). Couldn't load trivial BPF program. Make sure your kernel supports BPF (CONFIG_BPF_SYSCALL=y) and/or that RLIMIT_MEMLOCK is set to big enough value.
-libbpf: failed to load object 'augmented_raw_syscalls_bpf'
-libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -1
-Error:	No permissions to read /sys/kernel/tracing//events/raw_syscalls/sys_(enter|exit)
-Hint:	Try 'sudo mount -o remount,mode=755 /sys/kernel/tracing/'
 
-[acme@quaco perf-tools-next]$ sudo mount -o remount,mode=755 /sys/kernel/debug
-[acme@quaco perf-tools-next]$ perf trace -e open* sleep 1
-libbpf: Failed to bump RLIMIT_MEMLOCK (err = -1), you might need to do it explicitly!
-libbpf: Error in bpf_object__probe_loading():Operation not permitted(1). Couldn't load trivial BPF program. Make sure your kernel supports BPF (CONFIG_BPF_SYSCALL=y) and/or that RLIMIT_MEMLOCK is set to big enough value.
-libbpf: failed to load object 'augmented_raw_syscalls_bpf'
-libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -1
-Error:	No permissions to read /sys/kernel/tracing//events/raw_syscalls/sys_(enter|exit)
-Hint:	Try 'sudo mount -o remount,mode=755 /sys/kernel/tracing/'
+static noinline void __init bench_forking(struct maple_tree *mt)
+{
+	struct maple_tree newmt;
+	int i, nr_entries = 134, nr_fork = 80000, ret;
+	void *val;
+	MA_STATE(mas, mt, 0, 0);
+	MA_STATE(newmas, &newmt, 0, 0);
+	clock_t start;
+	clock_t end;
+	double cpu_time_used = 0;
 
-[acme@quaco perf-tools-next]$ sudo sh -c "echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled"
-[acme@quaco perf-tools-next]$ perf trace -e open* sleep 1
-libbpf: prog 'syscall_unaugmented': BPF program load failed: Operation not permitted
-libbpf: prog 'syscall_unaugmented': failed to load: -1
-libbpf: failed to load object 'augmented_raw_syscalls_bpf'
-libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -1
-Error:	No permissions to read /sys/kernel/tracing//events/raw_syscalls/sys_(enter|exit)
-Hint:	Try 'sudo mount -o remount,mode=755 /sys/kernel/tracing/'
+	for (i = 0; i <= nr_entries; i++)
+		mtree_store_range(mt, i*10, i*10 + 5,
+				  xa_mk_value(i), GFP_KERNEL);
 
-[acme@quaco perf-tools-next]$ cat /proc/sys/kernel/unprivileged_bpf_disabled
-0
-[acme@quaco perf-tools-next]$
-[acme@quaco perf-tools-next]$
-[acme@quaco perf-tools-next]$ cat /proc/sys/kernel/perf_event_paranoid
-2
-[acme@quaco perf-tools-next]$ sudo sh -c "echo -1 > /proc/sys/kernel/perf_event_paranoid"
-[acme@quaco perf-tools-next]$ perf trace -e open* sleep 1
-libbpf: prog 'syscall_unaugmented': BPF program load failed: Operation not permitted
-libbpf: prog 'syscall_unaugmented': failed to load: -1
-libbpf: failed to load object 'augmented_raw_syscalls_bpf'
-libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -1
-Error:	No permissions to read /sys/kernel/tracing//events/raw_syscalls/sys_(enter|exit)
-Hint:	Try 'sudo mount -o remount,mode=755 /sys/kernel/tracing/'
+	for (i = 0; i < nr_fork; i++) {
+		mt_set_non_kernel(99999);
 
-[acme@quaco perf-tools-next]$
+		start = clock();
+		mt_init_flags(&newmt, MT_FLAGS_ALLOC_RANGE);
+		mas_lock(&newmas);
+		mas_lock(&mas);
+		ret = __mt_dup(mt, &newmt, GFP_NOWAIT | __GFP_NOWARN);
+		if (ret) {
+			pr_err("OOM!");
+			BUG_ON(1);
+		}
 
+		mas_set(&newmas, 0);
+		mas_for_each(&newmas, val, ULONG_MAX) {
+			mas_replace_entry(&newmas, val);
+		}
+
+		mas_unlock(&mas);
+		mas_unlock(&newmas);
+		end = clock();
+		cpu_time_used += ((double) (end - start));
+
+		mas_destroy(&newmas);
+		mt_validate(&newmt);
+		mt_set_non_kernel(0);
+		mtree_destroy(&newmt);
+	}
+	printf("time consumption:%.7fs\n", cpu_time_used / CLOCKS_PER_SEC);
+}
+
+
+> 
+>>>
+>>>>
+>>>> Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
+>>>> ---
+>>>>    include/linux/maple_tree.h |  1 +
+>>>>    lib/maple_tree.c           | 25 +++++++++++++++++++++++++
+>>>>    2 files changed, 26 insertions(+)
+>>>>
+>>>> diff --git a/include/linux/maple_tree.h b/include/linux/maple_tree.h
+>>>> index 229fe78e4c89..a05e9827d761 100644
+>>>> --- a/include/linux/maple_tree.h
+>>>> +++ b/include/linux/maple_tree.h
+>>>> @@ -462,6 +462,7 @@ struct ma_wr_state {
+>>>>    void *mas_walk(struct ma_state *mas);
+>>>>    void *mas_store(struct ma_state *mas, void *entry);
+>>>> +void mas_replace_entry(struct ma_state *mas, void *entry);
+>>>>    void *mas_erase(struct ma_state *mas);
+>>>>    int mas_store_gfp(struct ma_state *mas, void *entry, gfp_t gfp);
+>>>>    void mas_store_prealloc(struct ma_state *mas, void *entry);
+>>>> diff --git a/lib/maple_tree.c b/lib/maple_tree.c
+>>>> index efac6761ae37..d58572666a00 100644
+>>>> --- a/lib/maple_tree.c
+>>>> +++ b/lib/maple_tree.c
+>>>> @@ -5600,6 +5600,31 @@ void *mas_store(struct ma_state *mas, void *entry)
+>>>>    }
+>>>>    EXPORT_SYMBOL_GPL(mas_store);
+>>>> +/**
+>>>> + * mas_replace_entry() - Replace an entry that already exists in the maple tree
+>>>> + * @mas: The maple state
+>>>> + * @entry: The entry to store
+>>>> + *
+>>>> + * Please note that mas must already locate an existing entry, and the new entry
+>>>> + * must not be NULL. If these two points cannot be guaranteed, please use
+>>>> + * mas_store*() instead, otherwise it will cause an internal error in the maple
+>>>> + * tree. This function does not need to allocate memory, so it must succeed.
+>>>> + */
+>>>> +void mas_replace_entry(struct ma_state *mas, void *entry)
+>>>> +{
+>>>> +	void __rcu **slots;
+>>>> +
+>>>> +#ifdef CONFIG_DEBUG_MAPLE_TREE
+>>>> +	MAS_WARN_ON(mas, !mte_is_leaf(mas->node));
+>>>> +	MAS_WARN_ON(mas, !entry);
+>>>> +	MAS_WARN_ON(mas, mas->offset >= mt_slots[mte_node_type(mas->node)]);
+>>>> +#endif
+>>>> +
+>>>> +	slots = ma_slots(mte_to_node(mas->node), mte_node_type(mas->node));
+>>>> +	rcu_assign_pointer(slots[mas->offset], entry);
+>>>> +}
+>>>> +EXPORT_SYMBOL_GPL(mas_replace_entry);
+>>>> +
+>>>>    /**
+>>>>     * mas_store_gfp() - Store a value into the tree.
+>>>>     * @mas: The maple state
+>>>> -- 
+>>>> 2.20.1
+>>>>
