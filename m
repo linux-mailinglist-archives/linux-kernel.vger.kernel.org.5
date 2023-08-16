@@ -2,51 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D9EA77ED9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 01:03:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF58177ED9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 01:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347105AbjHPXDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 19:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40536 "EHLO
+        id S1347114AbjHPXEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 19:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347141AbjHPXCs (ORCPT
+        with ESMTP id S1347121AbjHPXDj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 19:02:48 -0400
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4011C13E;
-        Wed, 16 Aug 2023 16:02:44 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 61A41FF803;
-        Wed, 16 Aug 2023 23:02:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1692226962;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=meWsXWevQCtvrHRPJ8sgj2UFrD4CpP2D8gx89hSEKDM=;
-        b=dYBMzIvk/ugjUgxaKLnLl17aCfLrXb46/6Oy58+MICqTA3Y2d9NPHhkvW5s+tU8zAkeItV
-        W8MAIGxj36xxA1+RufFg8479HuTHtzTLY2GMw4fdr8vtr9D2jUvFHNmypX5q40JosUZXML
-        svxvvzZN1RCH3xYiUUuaEoAU4BXFMMronoZZs9EzUd7p3vXomQeGcORZC9malppnDAaojd
-        dCtZpuhW0gPGzxya5BKvxztSCn9jFMBjAeGSM2RrfxMkOX/Qgm1Wnd+oVDl+zA2wPFbIuK
-        Hy904Iv4lEHrQwenQDyo7Z54ZezidfIDlL5Tg3GR91VYWl9TkBUNief94FIx4Q==
-Date:   Thu, 17 Aug 2023 01:02:41 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Hugo Villeneuve <hugo@hugovil.com>
-Cc:     Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rtc: pcf2127: remove unused function argument
-Message-ID: <169222693690.116276.14219540728439019564.b4-ty@bootlin.com>
-References: <20230801190432.3340545-1-hugo@hugovil.com>
+        Wed, 16 Aug 2023 19:03:39 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6C626BB;
+        Wed, 16 Aug 2023 16:03:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692226994; x=1723762994;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HwATJyz9dflMduy9fzEYBXYap5gEJS8QjgqdRKD1bnk=;
+  b=UERyuVym0XkkKkWN62xW3dFF2usgb9dYD44Wl+hVJRzLlkp6Ron32R81
+   AC//KFKIN/eQaHn+33tDTh5JUxSI5At5J6SVJtgGd3lAOmny+p+Eegbxw
+   fo/rGxg2ULdfuSL8G6PfPkE7GJVd6f7w9MgxchlrMfR3fLYfVcuhCO/lw
+   +pRsg9UpRzT9iV2L9cIKGRx/6ENg4DufnGh46Z9Ef8TRnblwywtH8ZSCD
+   sscXcS1IVWxdhP4h1zHD8fAZyUYhDLXALLY/wLET0IjlzLh7ZRRslSwn7
+   z20l05AX3u47gdq1mOJ7eu6WsqnqcSbQxcdD4ABt42rD2Vq5gDdFpxbAK
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="357628427"
+X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
+   d="scan'208";a="357628427"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 16:03:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="1065017276"
+X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
+   d="scan'208";a="1065017276"
+Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
+  by fmsmga005.fm.intel.com with ESMTP; 16 Aug 2023 16:03:11 -0700
+Date:   Thu, 17 Aug 2023 07:03:10 +0800
+From:   Yuan Yao <yuan.yao@linux.intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zeng Guang <guang.zeng@intel.com>,
+        Yuan Yao <yuan.yao@intel.com>
+Subject: Re: [PATCH v3 09/15] KVM: nSVM: Use KVM-governed feature framework
+ to track "TSC scaling enabled"
+Message-ID: <20230816230310.qfa347ujhkj25vqj@yy-desk-7060>
+References: <20230815203653.519297-1-seanjc@google.com>
+ <20230815203653.519297-10-seanjc@google.com>
+ <20230816063531.rq7tyrvceln5q4du@yy-desk-7060>
+ <ZNzSymgZqozT7Tno@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230801190432.3340545-1-hugo@hugovil.com>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+In-Reply-To: <ZNzSymgZqozT7Tno@google.com>
+User-Agent: NeoMutt/20171215
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,25 +67,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 16, 2023 at 06:44:42AM -0700, Sean Christopherson wrote:
+> On Wed, Aug 16, 2023, Yuan Yao wrote:
+> > On Tue, Aug 15, 2023 at 01:36:47PM -0700, Sean Christopherson wrote:
+> > > @@ -2981,7 +2982,8 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
+> > >
+> > >  		svm->tsc_ratio_msr = data;
+> > >
+> > > -		if (svm->tsc_scaling_enabled && is_guest_mode(vcpu))
+> > > +		if (guest_can_use(vcpu, X86_FEATURE_TSCRATEMSR) &&
+> > > +		    is_guest_mode(vcpu))
+> >
+> > I prefer (is_guest_mode(vcpu) && ....), so I can skip them more quickly LOL.
+> > but anyway depends on you :-)
+>
+> For this series, I want to do as much of a straight replacement as possible, i.e.
+> not change any ordering unless it's "necessary".
 
-On Tue, 01 Aug 2023 15:04:32 -0400, Hugo Villeneuve wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
-> drivers/rtc/rtc-pcf2127.c: In function ‘pcf2127_probe’:
-> drivers/rtc/rtc-pcf2127.c:635:32: warning: unused parameter ‘name’ [-Wunused-parameter]
->   635 |     int alarm_irq, const char *name, bool is_pcf2127)
->       |                    ~~~~~~~~~~~~^~~~
-> 
-> [...]
-
-Applied, thanks!
-
-[1/1] rtc: pcf2127: remove unused function argument
-      commit: 58dffa96e62ccf30ecba718f124ce822ddc1150a
-
-Best regards,
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Yeah, I'm fine with this.
