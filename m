@@ -2,106 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F041077E2D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D967A77E2DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245689AbjHPNkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 09:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45368 "EHLO
+        id S245632AbjHPNlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:41:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245614AbjHPNjx (ORCPT
+        with ESMTP id S245692AbjHPNks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 09:39:53 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79718B9;
-        Wed, 16 Aug 2023 06:39:52 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bdbbede5d4so43268625ad.2;
-        Wed, 16 Aug 2023 06:39:52 -0700 (PDT)
+        Wed, 16 Aug 2023 09:40:48 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD282D60
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:40:41 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d63c0a6568fso6290718276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:40:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692193192; x=1692797992;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d76yf0kkuPRC+AKKl4TWbiPw6wxbxULc4AbwlRwABp4=;
-        b=ofao/P4CjXWnKglZi97/m/ldfLwEYmeJpsXEgm7iicojJ3kBRebh/1vvCmwoBXXF/8
-         cSVzLXbJtOZlNzHGWCoDKIFPYKCWfPhcJndcZScTasqitnrju39Zcp5VtvhoTSC3byZ1
-         JiSAQf/ZsU9KrQ755WkaOAFsQA5WP6PIBDdw6nlC4yGn4jgf2i08f/F6RRNZrCJqa/FI
-         Q3io3+ha2Jv5OcvQVkGTFP4hRDJsqHmWwJKj38gTx+M59Oqx17R4crASBxO154cFnFT8
-         eUKQAN67DT8g6cpuwgUPuB37j1fF19G9dTCyo/NdNpsHYLdtUUhmRy9pO6IB9Ei5NJaN
-         y3JA==
+        d=linaro.org; s=google; t=1692193241; x=1692798041;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=uW3Lzg0G0ukvtpwGKKg+qtuDKg0FVtuflLIlmeo8bN8=;
+        b=oZpRJpvRd2EjO2z7st8fP82ZF0z+F8XMZd6CEC4Akp0AyW5oLcP3COxI0/dxXXj0aC
+         uGuH/7R26eGcSkIsGoB0PF3OB0kC8lThxICjpcwL1Yc/TZLHnqMlwtpJR3Bw+wxYyuaH
+         sXS8SdL5TZstYI3btQdzsTD+ez6/futektEUaHEpD6u2fiQ7f9J4zGkH6a2b/z7ojrdR
+         ZE8GIE4fYhyH1IBcFN509pvt6IXev1j4uWirb08syYFzBuASjzXVsNFxfvPXNkAm5RNs
+         41eKbZ9m8SV5BTQDUDgSdVz8214YRA9W5+SNwtu2F65ggOFE0GkDUfFuZVwnrp6cTcnn
+         gOYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692193192; x=1692797992;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=d76yf0kkuPRC+AKKl4TWbiPw6wxbxULc4AbwlRwABp4=;
-        b=ORLiyIQr/0NJUbQFeOGuYVoNz/wMNzSewh+l3iy89qy+87Kry3AsIsVxvBZ7CT8/qy
-         aBe1zPT0LXmpFZYDClZ8JA0RkkCBt6NDwfzbsh2CT2PJuh5TZxwWNKJYhwg9nOIsZ0Pi
-         SEQoGvpWm+NXsWij64pGzUUYNWkJeUkkk6gan+tKl5/I+nVic6dTMBiXXqKnVEoY2kfp
-         o2SJGOuLaLx51wIagddfpSx6hnCKAzBEnmXmCLAFTx+G5q0yrRJoY3tcaHABtja0QPwc
-         o3FDIx6uJ09GO0+qmuHl2eijmcjdyiz35ejCuLtC8K5XIDxdY6q0Rgbzpa+/sxG6g65u
-         oPlA==
-X-Gm-Message-State: AOJu0YytodPJ93WD9NMtowgKbmAJIEJWYC24TartIZgxNEovX5vN9urg
-        zHLpYrcFw6O1QHeNUpd/djI=
-X-Google-Smtp-Source: AGHT+IFD5zg4/aOd5Hc54/80YC6ZfwUPWqQT0UFrjbGHBB+jwT4nylLCL6IFSKVOJfuFyOkdH3deNw==
-X-Received: by 2002:a17:902:c245:b0:1be:f53c:7d0e with SMTP id 5-20020a170902c24500b001bef53c7d0emr1326538plg.17.1692193191918;
-        Wed, 16 Aug 2023 06:39:51 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q23-20020a170902bd9700b001b03f208323sm13136251pls.64.2023.08.16.06.39.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 06:39:51 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Benson Leung <bleung@chromium.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Brian Norris <briannorris@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 7/7] rtc: rzn1: Report maximum alarm limit to rtc core
-Date:   Wed, 16 Aug 2023 06:39:36 -0700
-Message-Id: <20230816133936.2150294-8-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230816133936.2150294-1-linux@roeck-us.net>
-References: <20230816133936.2150294-1-linux@roeck-us.net>
+        d=1e100.net; s=20221208; t=1692193241; x=1692798041;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uW3Lzg0G0ukvtpwGKKg+qtuDKg0FVtuflLIlmeo8bN8=;
+        b=OgpN8d198LG0p+92mogbinotKCh4c7sISOcEl4HbqzEJrOI8zAdURDi+d9fWlPXntc
+         3Xpn7KiDWVDKziSvnufK+uGIjrGqVGNBUKMT13N7EqjHkmwuTQeWrnR22NYLbfTXUuQB
+         /RrlrF2ZXge0p6iXY9HhTvjWIuRiyc/85I0x4Et0C4NtediwuTcJQOAMn/Io7PKsyXO+
+         h9rdurl0g0OdUvMON9IjQyZu3B5sKDacsd7fBJoNtGSg+fy0TTVpID7AFI/l8XwIgxeW
+         JMQgekfQzLLei417Nz1YXcZYfP9ZZC13B+2pGwd9SkZMBmyi4Da+WSg0tKR5Rtk2mTlF
+         Cr+Q==
+X-Gm-Message-State: AOJu0Ywgl28VB7SFppTZjM43tzjfBEbTbhmeDoyYnPcvgfN/f9O6/YGc
+        G2bimzIr3jZ1KASsf8qt6FahYBo8UJJqf74t82YeIg==
+X-Google-Smtp-Source: AGHT+IFNL56vtxDQRoreDk45OGBhvFCcV6wVgeoLWkPDigEeck6H4HmGis5nHvN0MbHwyvDBAYyT59QoiBLg/FrsP3Q=
+X-Received: by 2002:a25:d4cb:0:b0:d4c:f456:d563 with SMTP id
+ m194-20020a25d4cb000000b00d4cf456d563mr1825605ybf.8.1692193240831; Wed, 16
+ Aug 2023 06:40:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+References: <1692192264-18515-1-git-send-email-quic_krichai@quicinc.com> <1692192264-18515-3-git-send-email-quic_krichai@quicinc.com>
+In-Reply-To: <1692192264-18515-3-git-send-email-quic_krichai@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 16 Aug 2023 16:40:28 +0300
+Message-ID: <CAA8EJpoi0BkuQZef=v3JxB-axXe+jB0bEWCmsk1ZJYiaWiuevw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] arm64: dts: qcom: sm8450: Add opp table support to PCIe
+To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc:     manivannan.sadhasivam@linaro.org, helgaas@kernel.org,
+        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
+        quic_ramkri@quicinc.com, quic_parass@quicinc.com,
+        krzysztof.kozlowski@linaro.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RZN1 only supports alarms up to one week in the future.
-Report the limit to the RTC core.
+On Wed, 16 Aug 2023 at 16:25, Krishna chaitanya chundru
+<quic_krichai@quicinc.com> wrote:
+>
+> PCIe needs to choose the appropriate performance state of RPMH power
+> domain based upon the PCIe gen speed.
+>
+> So let's add the OPP table support to specify RPMH performance states.
+>
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/sm8450.dtsi | 47 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> index 595533a..c77a683 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> @@ -1803,7 +1803,28 @@
+>                         pinctrl-names = "default";
+>                         pinctrl-0 = <&pcie0_default_state>;
+>
+> +                       operating-points-v2 = <&pcie0_opp_table>;
+> +
+>                         status = "disabled";
+> +
+> +                       pcie0_opp_table: opp-table {
+> +                               compatible = "operating-points-v2";
+> +
+> +                               opp-2500000 {
 
-Cc: Brian Norris <briannorris@chromium.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- drivers/rtc/rtc-rzn1.c | 1 +
- 1 file changed, 1 insertion(+)
+As a random suggestion: these frequencies are calculated by the
+driver. It might be easier to use opp-level for the PCIe generation
+instead.
 
-diff --git a/drivers/rtc/rtc-rzn1.c b/drivers/rtc/rtc-rzn1.c
-index dca736caba85..c2cc3774ebb8 100644
---- a/drivers/rtc/rtc-rzn1.c
-+++ b/drivers/rtc/rtc-rzn1.c
-@@ -351,6 +351,7 @@ static int rzn1_rtc_probe(struct platform_device *pdev)
- 
- 	rtc->rtcdev->range_min = RTC_TIMESTAMP_BEGIN_2000;
- 	rtc->rtcdev->range_max = RTC_TIMESTAMP_END_2099;
-+	rtc->rtcdev->range_max_offset = 7 * 86400;
- 	rtc->rtcdev->ops = &rzn1_rtc_ops;
- 	set_bit(RTC_FEATURE_ALARM_RES_MINUTE, rtc->rtcdev->features);
- 	clear_bit(RTC_FEATURE_UPDATE_INTERRUPT, rtc->rtcdev->features);
+This way this OPP entry can become:
+
+opp-1 {
+    opp-level = <1>;
+    required-opps = <&rpmhpd_opp_low_svs>;
+};
+
+> +                                       opp-hz = /bits/ 64 <2500000>;
+> +                                       required-opps = <&rpmhpd_opp_low_svs>;
+> +                               };
+> +
+> +                               opp-5000000 {
+> +                                       opp-hz = /bits/ 64 <5000000>;
+> +                                       required-opps = <&rpmhpd_opp_low_svs>;
+> +                               };
+> +
+> +                               opp-8000000 {
+> +                                       opp-hz = /bits/ 64 <8000000>;
+> +                                       required-opps = <&rpmhpd_opp_nom>;
+> +                               };
+> +                       };
+>                 };
+>
+>                 pcie0_phy: phy@1c06000 {
+> @@ -1915,7 +1936,33 @@
+>                         pinctrl-names = "default";
+>                         pinctrl-0 = <&pcie1_default_state>;
+>
+> +                       operating-points-v2 = <&pcie1_opp_table>;
+> +
+>                         status = "disabled";
+> +
+> +                       pcie1_opp_table: opp-table {
+> +                               compatible = "operating-points-v2";
+> +
+> +                               opp-2500000 {
+> +                                       opp-hz = /bits/ 64 <2500000>;
+> +                                       required-opps = <&rpmhpd_opp_low_svs>;
+> +                               };
+> +
+> +                               opp-5000000 {
+> +                                       opp-hz = /bits/ 64 <5000000>;
+> +                                       required-opps = <&rpmhpd_opp_low_svs>;
+> +                               };
+> +
+> +                               opp-8000000 {
+> +                                       opp-hz = /bits/ 64 <8000000>;
+> +                                       required-opps = <&rpmhpd_opp_low_svs>;
+> +                               };
+> +
+> +                               opp-16000000 {
+> +                                       opp-hz = /bits/ 64 <16000000>;
+> +                                       required-opps = <&rpmhpd_opp_nom>;
+> +                               };
+> +                       };
+>                 };
+>
+>                 pcie1_phy: phy@1c0f000 {
+> --
+> 2.7.4
+>
+
+
 -- 
-2.39.2
-
+With best wishes
+Dmitry
