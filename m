@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3059877DFB8
+	by mail.lfdr.de (Postfix) with ESMTP id 8456177DFB9
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbjHPK4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 06:56:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59560 "EHLO
+        id S244309AbjHPK4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 06:56:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244123AbjHPKzt (ORCPT
+        with ESMTP id S244125AbjHPKzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 06:55:49 -0400
+        Wed, 16 Aug 2023 06:55:50 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3446613E;
-        Wed, 16 Aug 2023 03:55:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF3E13E;
+        Wed, 16 Aug 2023 03:55:49 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C26E464FFF;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4AFE564C77;
+        Wed, 16 Aug 2023 10:55:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0BDFC433C8;
         Wed, 16 Aug 2023 10:55:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22BBCC433CA;
-        Wed, 16 Aug 2023 10:55:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692183347;
-        bh=aK6+S+7t1XjbCYZWYAvH3oq+O1bDCKqIuzMFLq9adSI=;
+        s=k20201202; t=1692183348;
+        bh=VEJwLY7hoPdNX4XnvykJ3RU6LGaAEAvuCCAn2+uGWxk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WUO/agXF5SJIYVd1b6FJjwrV7WG6+KA44ikB9ADlRtGzhz8Y3j3RBJR65ub6k3WX8
-         bqS2qtSZs7TnVKFDUK2wUf/MbpfcsRpn57Ier2lyVswAvOmYjj8WIIKcg867g933yI
-         Ou94V3Bxt6le/PVQPvgImqDtW15uouZ/dTIiJTrOkl5xQGaM9T3mhEFS+4tjkIJJjs
-         DX65uX66bXc1z+Ej5vCkYWZ4mDry+v2ztAN7eQGWxJNElUFsfDDDtkV8kDei3trSnB
-         OJTqM22wtZDw0rorE3So9zuV98cBWFsKWqPxa3rsrEGRLkRBSKN+/CUCX3mPKOWhSD
-         qbXmTWls0LSAA==
+        b=f2XDJqTl/pi4RpIiL4mEcVSC4RFSFu6dF9VdWLJNMGOyt1fMTbKbHwaOaU15B4Rs8
+         NpLR5QsCB3Szt52ZVkdxT9ju8/sxRQp8yZ7eyZufL0ja6nDcq4IF/mBlbzanRcaoMg
+         3YHR9LyFfb8cmb5tuzWKcb4imdnlivnrntNKaqWX4bmY92Z+BV0ceawAVY78ev2ucL
+         wftcYbM/6RR2wVbf3LiW41SX32BBkut/iNUFfb/mrVmne1G3qmQy6j4jkp5WHdC0m7
+         /w6TFbX/MT5a2mcSHyofaE34a+ryKAjro+N0UFW5/S5FC6/hgv2/WeKERpxLuxnmjW
+         wlVtmqR8WfEIQ==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Subject: [PATCH 09/10] tty: tty_buffer: initialize variables in initializers already
-Date:   Wed, 16 Aug 2023 12:55:29 +0200
-Message-ID: <20230816105530.3335-10-jirislaby@kernel.org>
+Subject: [PATCH 10/10] tty: tty_buffer: invert conditions in __tty_buffer_request_room()
+Date:   Wed, 16 Aug 2023 12:55:30 +0200
+Message-ID: <20230816105530.3335-11-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230816105530.3335-1-jirislaby@kernel.org>
 References: <20230816105530.3335-1-jirislaby@kernel.org>
@@ -54,38 +54,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It makes the code both more compact, and more understandable.
+We are used to handle "bad" states in the 'if's in the kernel. Refactor
+(invert the two conditions in) __tty_buffer_request_room(), so that the
+code returns from the fast paths immediately instead of postponing to
+the heavy end of the function.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 ---
- drivers/tty/tty_buffer.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+ drivers/tty/tty_buffer.c | 44 ++++++++++++++++++++--------------------
+ 1 file changed, 22 insertions(+), 22 deletions(-)
 
 diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
-index 414bb7f9155f..44c0adaec850 100644
+index 44c0adaec850..5f6d0cf67571 100644
 --- a/drivers/tty/tty_buffer.c
 +++ b/drivers/tty/tty_buffer.c
-@@ -262,17 +262,10 @@ static int __tty_buffer_request_room(struct tty_port *port, size_t size,
- 				     bool flags)
- {
- 	struct tty_bufhead *buf = &port->buf;
--	struct tty_buffer *b, *n;
--	size_t left;
--	bool change;
-+	struct tty_buffer *n, *b = buf->tail;
-+	size_t left = (b->flags ? 1 : 2) * b->size - b->used;
-+	bool change = !b->flags && flags;
+@@ -266,28 +266,28 @@ static int __tty_buffer_request_room(struct tty_port *port, size_t size,
+ 	size_t left = (b->flags ? 1 : 2) * b->size - b->used;
+ 	bool change = !b->flags && flags;
  
--	b = buf->tail;
--	if (!b->flags)
--		left = 2 * b->size - b->used;
--	else
--		left = b->size - b->used;
--
--	change = !b->flags && flags;
- 	if (change || left < size) {
- 		/* This is the slow path - looking for new buffers to use */
- 		n = tty_buffer_alloc(port, size);
+-	if (change || left < size) {
+-		/* This is the slow path - looking for new buffers to use */
+-		n = tty_buffer_alloc(port, size);
+-		if (n != NULL) {
+-			n->flags = flags;
+-			buf->tail = n;
+-			/*
+-			 * Paired w/ acquire in flush_to_ldisc() and lookahead_bufs()
+-			 * ensures they see all buffer data.
+-			 */
+-			smp_store_release(&b->commit, b->used);
+-			/*
+-			 * Paired w/ acquire in flush_to_ldisc() and lookahead_bufs()
+-			 * ensures the latest commit value can be read before the head
+-			 * is advanced to the next buffer.
+-			 */
+-			smp_store_release(&b->next, n);
+-		} else if (change)
+-			size = 0;
+-		else
+-			size = left;
+-	}
++	if (!change && left >= size)
++		return size;
++
++	/* This is the slow path - looking for new buffers to use */
++	n = tty_buffer_alloc(port, size);
++	if (n == NULL)
++		return change ? 0 : left;
++
++	n->flags = flags;
++	buf->tail = n;
++	/*
++	 * Paired w/ acquire in flush_to_ldisc() and lookahead_bufs()
++	 * ensures they see all buffer data.
++	 */
++	smp_store_release(&b->commit, b->used);
++	/*
++	 * Paired w/ acquire in flush_to_ldisc() and lookahead_bufs()
++	 * ensures the latest commit value can be read before the head
++	 * is advanced to the next buffer.
++	 */
++	smp_store_release(&b->next, n);
++
+ 	return size;
+ }
+ 
 -- 
 2.41.0
 
