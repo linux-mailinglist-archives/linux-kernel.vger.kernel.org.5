@@ -2,100 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7052E77DB67
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 09:54:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A272A77DB77
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 09:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242542AbjHPHy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 03:54:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49012 "EHLO
+        id S242567AbjHPHze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 03:55:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232747AbjHPHx4 (ORCPT
+        with ESMTP id S242614AbjHPHzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 03:53:56 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8E5AB196;
-        Wed, 16 Aug 2023 00:53:53 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.170])
-        by gateway (Coremail) with SMTP id _____8Cxc_CQgNxkbwwZAA--.51565S3;
-        Wed, 16 Aug 2023 15:53:52 +0800 (CST)
-Received: from [10.20.42.170] (unknown [10.20.42.170])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxLCOPgNxkttJbAA--.9822S3;
-        Wed, 16 Aug 2023 15:53:51 +0800 (CST)
-Message-ID: <624efb22-8723-d813-0943-edab2870b51d@loongson.cn>
-Date:   Wed, 16 Aug 2023 15:53:51 +0800
+        Wed, 16 Aug 2023 03:55:21 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98FF26A9;
+        Wed, 16 Aug 2023 00:55:17 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 07:55:14 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1692172515;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NgvPMkdo6adZocli65oddA0uD+22Gh9QHc+5yviNzU8=;
+        b=eg21/HzeCKNBYp4FLRNsvFT3blHgJnJJyVBgLJLu6ymw2W0iv988Ngds1ggcIEKDzVySmp
+        G7HituYoSpExwjpUQN+IpSmgad9bGuhFqm26YrblbLubg2MHt0rOAyXC6u5qcb1UEGioDx
+        DuwJroB1cNQQg64q1YAT+4JvlfmN5y9bkKMTf0SJKP2fl4lf4g5qj+uDVGpLNJ24R9Bi63
+        gGjOAHulUzGGwg3/8dnBJLrnpbsc6f2taf0FdSglg3Bu+Tdstrw184BOLeHTMHQyvL6XK3
+        kITbBPGcUllZyKX5nkjFJqGcqms2F9ZyniDQHx12ReAJ/eRYlrwx9r6AsuCsZw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1692172515;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NgvPMkdo6adZocli65oddA0uD+22Gh9QHc+5yviNzU8=;
+        b=FgkULZ+Zrsrsy/9/W+hy5W64K+fwVjxZtxFlRvxT0pWgCzCP1jl02ZZTGoBdrbkH46Qth6
+        00IAVSonN5qQXWAQ==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/cpu/kvm: Provide UNTRAIN_RET_VM
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230814121149.109557833@infradead.org>
+References: <20230814121149.109557833@infradead.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH v2 5/5] KVM: Unmap pages only when it's indeed
- protected for NUMA migration
-Content-Language: en-US
-To:     Yan Zhao <yan.y.zhao@intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        pbonzini@redhat.com, mike.kravetz@oracle.com, apopple@nvidia.com,
-        jgg@nvidia.com, rppt@kernel.org, akpm@linux-foundation.org,
-        kevin.tian@intel.com, david@redhat.com
-References: <ZNXq9M/WqjEkfi3x@yzhao56-desk.sh.intel.com>
- <ZNZshVZI5bRq4mZQ@google.com> <ZNnPF4W26ZbAyGto@yzhao56-desk.sh.intel.com>
- <ZNpZDH9//vk8Rqvo@google.com> <ZNra3eDNTaKVc7MT@yzhao56-desk.sh.intel.com>
- <ZNuQ0grC44Dbh5hS@google.com>
- <107cdaaf-237f-16b9-ebe2-7eefd2b21f8f@loongson.cn>
- <c8ccc8f1-300a-09be-db6b-df2a1dedd4cf@loongson.cn>
- <ZNxbLPG8qbs1FjhM@yzhao56-desk.sh.intel.com>
- <42ff33c7-ec50-1310-3e57-37e8283b9b16@loongson.cn>
- <ZNx4OoRQvyh3A0BL@yzhao56-desk.sh.intel.com>
-From:   bibo mao <maobibo@loongson.cn>
-In-Reply-To: <ZNx4OoRQvyh3A0BL@yzhao56-desk.sh.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxLCOPgNxkttJbAA--.9822S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj9xXoWrKw1DGr48WrWDZFykKw13WrX_yoW3Krg_u3
-        yrGr9rKw45GrW7ta12yF4UXrW2gF1rWFWDZ3y09ay2g343Ja48JrWxGas7XFy2y34rGF98
-        Crn0va1fW3yavosvyTuYvTs0mTUanT9S1TB71UUUUjJqnTZGkaVYY2UrUUUUj1kv1TuYvT
-        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUbqkYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4UJVWxJr1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
-        6r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
-        1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxG
-        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVW8ZVWrXwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4U
-        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07joc_-UUU
-        UU=
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <169217251477.27769.1201631042444536455.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/urgent branch of tip:
 
+Commit-ID:     ad63073765fa394665bcb54660cc997f05b704d4
+Gitweb:        https://git.kernel.org/tip/ad63073765fa394665bcb54660cc997f05b704d4
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Mon, 14 Aug 2023 13:44:35 +02:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Wed, 16 Aug 2023 09:39:16 +02:00
 
-在 2023/8/16 15:18, Yan Zhao 写道:
-> On Wed, Aug 16, 2023 at 03:29:22PM +0800, bibo mao wrote:
->>> Flush must be done before kvm->mmu_lock is unlocked, otherwise,
->>> confusion will be caused when multiple threads trying to update the
->>> secondary MMU.
->> Since tlb flush is delayed after all pte entries are cleared, and currently
->> there is no tlb flush range supported for secondary mmu. I do know why there
->> is confusion before or after kvm->mmu_lock.
-> 
-> Oh, do you mean only do kvm_unmap_gfn_range() in .invalidate_range_end()?
-yes, it is just sketchy thought for numa balance scenery, 
-do kvm_unmap_gfn_range() in invalidate_range_end rather than
-invalidate_range_start.
+x86/cpu/kvm: Provide UNTRAIN_RET_VM
+
+Similar to how it doesn't make sense to have UNTRAIN_RET have two
+untrain calls, it also doesn't make sense for VMEXIT to have an extra
+IBPB call.
+
+This cures VMEXIT doing potentially unret+IBPB or double IBPB.
+Also, the (SEV) VMEXIT case seems to have been overlooked.
+
+Redefine the meaning of the synthetic IBPB flags to:
+
+ - ENTRY_IBPB     -- issue IBPB on entry  (was: entry + VMEXIT)
+ - IBPB_ON_VMEXIT -- issue IBPB on VMEXIT
+
+And have 'retbleed=ibpb' set *BOTH* feature flags to ensure it retains
+the previous behaviour and issues IBPB on entry+VMEXIT.
+
+The new 'srso=ibpb_vmexit' option only sets IBPB_ON_VMEXIT.
+
+Create UNTRAIN_RET_VM specifically for the VMEXIT case, and have that
+check IBPB_ON_VMEXIT.
+
+All this avoids having the VMEXIT case having to check both ENTRY_IBPB
+and IBPB_ON_VMEXIT and simplifies the alternatives.
+
+Fixes: fb3bd914b3ec ("x86/srso: Add a Speculative RAS Overflow mitigation")
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20230814121149.109557833@infradead.org
+---
+ arch/x86/include/asm/nospec-branch.h | 11 +++++++++++
+ arch/x86/kernel/cpu/bugs.c           |  1 +
+ arch/x86/kvm/svm/vmenter.S           |  7 ++-----
+ 3 files changed, 14 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+index 5285c8e..c55cc24 100644
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -299,6 +299,17 @@
+ #endif
+ .endm
  
-> Then check if PROT_NONE is set in primary MMU before unmap?
-> Looks like a good idea, I need to check if it's feasible.
-> Thanks!
-> 
-> 
-
++.macro UNTRAIN_RET_VM
++#if defined(CONFIG_CPU_UNRET_ENTRY) || defined(CONFIG_CPU_IBPB_ENTRY) || \
++	defined(CONFIG_CALL_DEPTH_TRACKING) || defined(CONFIG_CPU_SRSO)
++	VALIDATE_UNRET_END
++	ALTERNATIVE_3 "",						\
++		      CALL_UNTRAIN_RET, X86_FEATURE_UNRET,		\
++		      "call entry_ibpb", X86_FEATURE_IBPB_ON_VMEXIT,	\
++		      __stringify(RESET_CALL_DEPTH), X86_FEATURE_CALL_DEPTH
++#endif
++.endm
++
+ .macro UNTRAIN_RET_FROM_CALL
+ #if defined(CONFIG_CPU_UNRET_ENTRY) || defined(CONFIG_CPU_IBPB_ENTRY) || \
+ 	defined(CONFIG_CALL_DEPTH_TRACKING)
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index 6f3e195..9026e3f 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -1054,6 +1054,7 @@ do_cmd_auto:
+ 
+ 	case RETBLEED_MITIGATION_IBPB:
+ 		setup_force_cpu_cap(X86_FEATURE_ENTRY_IBPB);
++		setup_force_cpu_cap(X86_FEATURE_IBPB_ON_VMEXIT);
+ 		mitigate_smt = true;
+ 		break;
+ 
+diff --git a/arch/x86/kvm/svm/vmenter.S b/arch/x86/kvm/svm/vmenter.S
+index 265452f..ef2ebab 100644
+--- a/arch/x86/kvm/svm/vmenter.S
++++ b/arch/x86/kvm/svm/vmenter.S
+@@ -222,10 +222,7 @@ SYM_FUNC_START(__svm_vcpu_run)
+ 	 * because interrupt handlers won't sanitize 'ret' if the return is
+ 	 * from the kernel.
+ 	 */
+-	UNTRAIN_RET
+-
+-	/* SRSO */
+-	ALTERNATIVE "", "call entry_ibpb", X86_FEATURE_IBPB_ON_VMEXIT
++	UNTRAIN_RET_VM
+ 
+ 	/*
+ 	 * Clear all general purpose registers except RSP and RAX to prevent
+@@ -362,7 +359,7 @@ SYM_FUNC_START(__svm_sev_es_vcpu_run)
+ 	 * because interrupt handlers won't sanitize RET if the return is
+ 	 * from the kernel.
+ 	 */
+-	UNTRAIN_RET
++	UNTRAIN_RET_VM
+ 
+ 	/* "Pop" @spec_ctrl_intercepted.  */
+ 	pop %_ASM_BX
