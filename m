@@ -2,94 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9016077E910
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB0577E917
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345656AbjHPSvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 14:51:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56168 "EHLO
+        id S1345663AbjHPSw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 14:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345654AbjHPSvR (ORCPT
+        with ESMTP id S1345695AbjHPSwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 14:51:17 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D427426B7
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:51:16 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3178dd771ceso6062862f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:51:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1692211875; x=1692816675;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZaKaeU51JPSPyvo4LO/gtZBA5F2n47wdQ6cksSuHE10=;
-        b=fActoLYapvYatp3BhqIIHFa7afpVUfbRmNLj+3diEzvHES+AYjublIkhtmIOX9kg+Y
-         gF0sFYtTPoeu6+U9v7D6JyEtUHF/XcjF8Qu4L8o8ftiwiy8vdZuS3YJKoYljq6C7Zp8U
-         XapjcDw7BAY+29BhsfAA7mfdmQuqWLm7Tv9u4=
+        Wed, 16 Aug 2023 14:52:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49AE226AB
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:51:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692211913;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TWMUD9VRtXw5rrwEDxNTidyXxZLugXghgZFLCJyJsoc=;
+        b=FCM5/foJc0tU9nEI/Wdb34NaS2PA6nBGedqlYyxW7YTsoUKp4SvboIXonvcohp5Ammlyik
+        xvhwz84IJGhbM+o+QG0OGPlsuDzVynjz+28k/BuMee06Ci3A6wN8Lk9JfAcxGysunaZar0
+        YFMAsoPq54vToZS5C2OPUolIjZ4n8W0=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-558-4hDNJ4DxNgeQtmVzTRFHgA-1; Wed, 16 Aug 2023 14:51:52 -0400
+X-MC-Unique: 4hDNJ4DxNgeQtmVzTRFHgA-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-317b30fedb0so4029939f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:51:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692211875; x=1692816675;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZaKaeU51JPSPyvo4LO/gtZBA5F2n47wdQ6cksSuHE10=;
-        b=TZKtHeKwjvT37okP6/j6IdWv6ju2YR9dvugmHvgHbKEdRvStW6GZVCgTGIP4Mf62P2
-         PidHiIuW7nEWu8H+VZAfRPVVcIzLXQ63OaI0fsTLL8mEPYN2jU+pRCK21MTO4heAucZ4
-         1HOGi7Pzc4Fxb14egq7VEM+RN1MOyX0s0IYgfsJDYJK0IaIW40H5EF8D29zwMSKxQXOj
-         rB/vIHQcrkCIcr+AB0NWi4Q/xDyo7/NS3a4+8SuDYI31XjQflRYcAADRZGa1xBJUdGPU
-         wTcYON4WMauU5QkQ1EUxs/V09DMqbiTNqKEMEszUUGHqn47OUe8oqu8NDaepdRvjBgK2
-         1KQg==
-X-Gm-Message-State: AOJu0YwEljN3+wqgixxe4hAfnoCEci5zE7r02O/XlNHCl3ti9PJ8RyM0
-        OiPjhFW/gQ9tD1P4TDx/tcyKihw07rNZZhVeWZvajfTJ
-X-Google-Smtp-Source: AGHT+IGQBcOww0EHncWKWsVZYdAPaRlqBepye8QH5aARMX67LlaTvsHaVKFRDDe1RUPa7ylikJjblQ==
-X-Received: by 2002:a5d:4084:0:b0:319:67ac:4191 with SMTP id o4-20020a5d4084000000b0031967ac4191mr1856822wrp.37.1692211875044;
-        Wed, 16 Aug 2023 11:51:15 -0700 (PDT)
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
-        by smtp.gmail.com with ESMTPSA id f8-20020a17090624c800b009894b476310sm8773484ejb.163.2023.08.16.11.51.13
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20221208; t=1692211911; x=1692816711;
+        h=content-transfer-encoding:in-reply-to:organization:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TWMUD9VRtXw5rrwEDxNTidyXxZLugXghgZFLCJyJsoc=;
+        b=GeDJUi3Sd1ukEnwZ8qPRuXgJHXD5CKochMHzIelBhiIJgQYJyWnlSkwcK3wgaO2VuR
+         itiVYPbccQqQEzcXfyo5IX5tr/HMFk/RN3nbpcdMy5gjv8vrsaVNVHi+qPKVCXzkZ0eM
+         yfE08YhW5K2q26Nx6d1nEUZ9Hz6fxwNLormkx3rJUn9BCZ/xBRms3IPf7Ay5K00g9mQV
+         inpU7lrjB0AWX/ZtiZ4NXI/Xo/qmC6q61ohaL5CfC8dpjfkmopGr/pGrK285Pg9gNbgd
+         zhubqYEk5j2Hw8gefpb408imkR10/8ciJH1DEn3aQiC1NnTHp4XC/sqQnRCZilXv24F7
+         vWig==
+X-Gm-Message-State: AOJu0YzFN/HLsUWFwMz7qz+Th2NyXSjFGqfjxjWbd03Ax/xu/UXivwcE
+        FrYOomFSD9LCYg/p4kj0kixEQa7NDF1zxpzOYRhMRFw9k4eq0UMElF0LoekpFFY91spq4a8vEbd
+        ehvfLvJZArFbeCAL2FiBDHGKh
+X-Received: by 2002:a5d:61cb:0:b0:319:72f8:7244 with SMTP id q11-20020a5d61cb000000b0031972f87244mr2417296wrv.45.1692211911088;
+        Wed, 16 Aug 2023 11:51:51 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEkw36gfcTqZLfGe6fvzuvk3c/0RMFriiw5wDtDf1AXCImRHO+Rgy+5/Lzlo6c2Vejeu3Bgcw==
+X-Received: by 2002:a5d:61cb:0:b0:319:72f8:7244 with SMTP id q11-20020a5d61cb000000b0031972f87244mr2417280wrv.45.1692211910741;
+        Wed, 16 Aug 2023 11:51:50 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c74b:8b00:5520:fa3c:c527:592f? (p200300cbc74b8b005520fa3cc527592f.dip0.t-ipconnect.de. [2003:cb:c74b:8b00:5520:fa3c:c527:592f])
+        by smtp.gmail.com with ESMTPSA id t18-20020adff612000000b00317b0155502sm22222551wrp.8.2023.08.16.11.51.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 11:51:14 -0700 (PDT)
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-51d95aed33aso9268336a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:51:13 -0700 (PDT)
-X-Received: by 2002:a05:6402:1854:b0:525:69ec:e1c8 with SMTP id
- v20-20020a056402185400b0052569ece1c8mr1797634edy.40.1692211873612; Wed, 16
- Aug 2023 11:51:13 -0700 (PDT)
+        Wed, 16 Aug 2023 11:51:50 -0700 (PDT)
+Message-ID: <ae8ea59e-3081-072b-faa0-b67a5d5af047@redhat.com>
+Date:   Wed, 16 Aug 2023 20:51:49 +0200
 MIME-Version: 1.0
-References: <03730b50cebb4a349ad8667373bb8127@AcuMS.aculab.com>
- <20230816120741.534415-1-dhowells@redhat.com> <20230816120741.534415-3-dhowells@redhat.com>
- <608853.1692190847@warthog.procyon.org.uk> <3dabec5643b24534a1c1c51894798047@AcuMS.aculab.com>
-In-Reply-To: <3dabec5643b24534a1c1c51894798047@AcuMS.aculab.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 16 Aug 2023 18:50:56 +0000
-X-Gmail-Original-Message-ID: <CAHk-=wjFrVp6srTBsMKV8LBjCEO0bRDYXm-KYrq7oRk0TGr6HA@mail.gmail.com>
-Message-ID: <CAHk-=wjFrVp6srTBsMKV8LBjCEO0bRDYXm-KYrq7oRk0TGr6HA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] iov_iter: Don't deal with iter->copy_mc in memcpy_from_iter_mc()
-To:     David Laight <David.Laight@aculab.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@list.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH RFC v3] mm: Proper document tail pages fields for folio
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Hugh Dickins <hughd@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yang Shi <shy828301@gmail.com>
+References: <20230815212547.431693-1-peterx@redhat.com>
+ <b887e764-ffa3-55ee-3c44-69cb15f8a115@redhat.com>
+ <ZN0YSOQmSR/voPVO@casper.infradead.org>
+Content-Language: en-US
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <ZN0YSOQmSR/voPVO@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Aug 2023 at 14:19, David Laight <David.Laight@aculab.com> wrote:
->
-> What about ITER_BVEC_MC ??
+On 16.08.23 20:41, Matthew Wilcox wrote:
+> On Wed, Aug 16, 2023 at 03:33:30PM +0200, David Hildenbrand wrote:
+>> My simple tests passed so far. If there isn't something obvious missing,
+>> I can do more testing and send this as an official patch.
+> 
+> I think you missed one:
+> 
+> +++ b/mm/swapfile.c
+> @@ -1490,7 +1490,7 @@ int swp_swapcount(swp_entry_t entry)
+> 
+>          page = vmalloc_to_page(p->swap_map + offset);
+>          offset &= ~PAGE_MASK;
+> -       VM_BUG_ON(page_private(page) != SWP_CONTINUED);
+> +       VM_BUG_ON(page_swap_entry(page).val != SWP_CONTINUED);
 
-That probably would be the best option. Just make it a proper
-ITER_xyz, instead of an odd sub-case for one ITER (but set up in such
-a way that it looks like it might happen for other ITER_xyz cases).
+That falls under the "weird handling of SWP_CONTINUED using vmalloced 
+pages". So different user of page_private().
 
-                Linus
+Note that we don't even store swap entries in there but extended swap 
+counts.
+
+> 
+>          do {
+>                  page = list_next_entry(page, lru);
+> 
+> I'm not smart enough to understand the use of the one in
+> add_swap_count_continuation().  Maybe that also needs to be fixed?
+
+No, that's independent of THP_SWAP, we're not working on the memmap of 
+the THP but some weird extension of swap counts.
+
+Thanks for having a look!
+
+-- 
+Cheers,
+
+David / dhildenb
+
