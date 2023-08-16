@@ -2,444 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A0277DD77
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7EDE77DD80
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243421AbjHPJjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 05:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
+        id S243432AbjHPJl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 05:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243351AbjHPJjn (ORCPT
+        with ESMTP id S243351AbjHPJkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 05:39:43 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B2D13E;
-        Wed, 16 Aug 2023 02:39:40 -0700 (PDT)
-Received: from [IPV6:2405:201:0:21ea:73f6:2283:f432:3936] (unknown [IPv6:2405:201:0:21ea:73f6:2283:f432:3936])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: shreeya)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4E4CE66071DF;
-        Wed, 16 Aug 2023 10:39:32 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1692178779;
-        bh=f1VqzkUzd6qxjYJQ57s+hzeAAoTbE5E5LX9b0VNYtCg=;
-        h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-        b=bWtTrQuHFCKKH565ZRcQZoWb0b7Y6YSj7nPsqf9K5TWxFiDSRm037UbcXufiA/2dl
-         XWgB+nx1okTTSn0lABiYcRrtIh55zKliGsk7Lh6dtVAO2OhsKr34evTi4zC6IZB2fq
-         SQp1y3nPIcz146TpZD/UerPxgUD4vWocU7p3lxygjrF212UggvUk1pzSHIg2E7lpbh
-         Omg83I5MTu5l4tCX6e8XGzvI9FsULgdVoJ9jhLpCtDdI0QYuxKd4RLJ69LLd/ng6AB
-         0l8tSMDbbJQVF6pLEMzVnyrH67IQ92yZFMgWTSDz9RzZuc4qlFTMvu9rj3rC/3V6zG
-         ksdhNx8W1G2YQ==
-Message-ID: <6283c4b1-2513-207d-4ed6-fdabf3f3880e@collabora.com>
-Date:   Wed, 16 Aug 2023 15:09:27 +0530
+        Wed, 16 Aug 2023 05:40:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 238422705
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:39:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692178798;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FFBldxIxVEKk73g4QkQjpL3ZIahoGA8LCqEDtviYvlo=;
+        b=eVf3A1F9f2rgULYHlbp69sD3wmuN+fRYkN6zNWcWxHKeC6Ze8sV+lDMm+xnOpN6l2qhNPE
+        9UtZBXvZWb8dVA3hrJSkzKsgt2R134ZHSJXf/k4y796+QIoXaaITzNXDLp7Gu/HR6CkvGv
+        jPyw0EoT8zcF3vU2oAppSR2ZMe2g/80=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-74-0QgXxr1GPYa46oXJZjgHDA-1; Wed, 16 Aug 2023 05:39:55 -0400
+X-MC-Unique: 0QgXxr1GPYa46oXJZjgHDA-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3178ddc3d94so3700178f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:39:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692178794; x=1692783594;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FFBldxIxVEKk73g4QkQjpL3ZIahoGA8LCqEDtviYvlo=;
+        b=baOzIylQg9dZmJ7FreNMxncMBdP2r2+wPgN0EH2CGmR5+3Jk0TkfSOBPc/QgDbcNZQ
+         FIH8+0k/Ud1vdwFPhCKVmLhW8yPhPXBQIkusiY90hL3T+xDPs1ft3OLHSEJsFkM7Fbp0
+         V6OnGgnX4guKxkWH1g/61GXV66QgmYjS9XsA+utTIszKt/Q6QIEMR8TmJq4xIiSra3iG
+         hgPGDhZE3/L519VsTFJNyN2pjZSrV5LCEXnG+Phc+Sla5G/lB1n7f3w60K8CeEnIGLRI
+         r6LqntUhrGP3wPWgLZ2eaeH/E+slou7c6dCXIDV/6cFix9O9jcjHZEFdksO1mFN+OuNn
+         YJqg==
+X-Gm-Message-State: AOJu0Yzct4EVPjDWXmm+DMdUAxpgGyHBqD+XJh31tN9G9w2dMG4kkJoD
+        CaoXc/7wL0mboJb5kvWIVHigy32FOv+HoNLomyvd8Eo9wJRG+TeUTlP3ENiGakBTHruLAYgB3Zm
+        cnXj7lOT1QqZdRcKHR5PYWgyS
+X-Received: by 2002:a5d:5350:0:b0:30e:3caa:971b with SMTP id t16-20020a5d5350000000b0030e3caa971bmr940173wrv.51.1692178794035;
+        Wed, 16 Aug 2023 02:39:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFRFIhnThxW0BbPGIEJTHC8cYHE/astUjt339LTkbvSoWyXFKTf7BU6uWrnGn27t/0dYCxcOg==
+X-Received: by 2002:a5d:5350:0:b0:30e:3caa:971b with SMTP id t16-20020a5d5350000000b0030e3caa971bmr940162wrv.51.1692178793602;
+        Wed, 16 Aug 2023 02:39:53 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c74b:8b00:5520:fa3c:c527:592f? (p200300cbc74b8b005520fa3cc527592f.dip0.t-ipconnect.de. [2003:cb:c74b:8b00:5520:fa3c:c527:592f])
+        by smtp.gmail.com with ESMTPSA id z7-20020adfd0c7000000b00317afc7949csm20109208wrh.50.2023.08.16.02.39.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 02:39:53 -0700 (PDT)
+Message-ID: <ad33c7f1-8c7c-27b6-7c2e-adbb349f2dff@redhat.com>
+Date:   Wed, 16 Aug 2023 11:39:52 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-From:   Shreeya Patel <shreeya.patel@collabora.com>
-Subject: Re: [PATCH 5.17 127/298] driver core: Fix wait_for_device_probe() &
- deferred_probe_timeout interaction
-To:     saravanak@google.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, John Stultz <jstultz@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Basil Eljuse <Basil.Eljuse@arm.com>,
-        Ferry Toth <fntoth@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        linux-pm@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        "gustavo.padovan@collabora.com" <gustavo.padovan@collabora.com>,
-        =?UTF-8?Q?Ricardo_Ca=c3=b1uelo_Navarro?= 
-        <ricardo.canuelo@collabora.com>,
-        Guillaume Charles Tucker <guillaume.tucker@collabora.com>,
-        usama.anjum@collabora.com, kernelci@lists.linux.dev
-References: <20220613094924.913340374@linuxfoundation.org>
- <20220613094928.793712131@linuxfoundation.org>
+Subject: Re: [PATCH v2] proc/ksm: add ksm stats to /proc/pid/smaps
 Content-Language: en-US
-In-Reply-To: <20220613094928.793712131@linuxfoundation.org>
+To:     Stefan Roesch <shr@devkernel.io>
+Cc:     kernel-team@fb.com, akpm@linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, hannes@cmpxchg.org,
+        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20230811162803.1361989-1-shr@devkernel.io>
+ <43d64aee-4bd9-bba0-9434-55cec26bd9dc@redhat.com>
+ <qvqwmsysdy3p.fsf@devbig1114.prn1.facebook.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <qvqwmsysdy3p.fsf@devbig1114.prn1.facebook.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/06/22 15:40, Greg Kroah-Hartman wrote:
-> From: Saravana Kannan<saravanak@google.com>
->
-> [ Upstream commit 5ee76c256e928455212ab759c51d198fedbe7523 ]
->
-> Mounting NFS rootfs was timing out when deferred_probe_timeout was
-> non-zero [1].  This was because ip_auto_config() initcall times out
-> waiting for the network interfaces to show up when
-> deferred_probe_timeout was non-zero. While ip_auto_config() calls
-> wait_for_device_probe() to make sure any currently running deferred
-> probe work or asynchronous probe finishes, that wasn't sufficient to
-> account for devices being deferred until deferred_probe_timeout.
->
-> Commit 35a672363ab3 ("driver core: Ensure wait_for_device_probe() waits
-> until the deferred_probe_timeout fires") tried to fix that by making
-> sure wait_for_device_probe() waits for deferred_probe_timeout to expire
-> before returning.
->
-> However, if wait_for_device_probe() is called from the kernel_init()
-> context:
->
-> - Before deferred_probe_initcall() [2], it causes the boot process to
->    hang due to a deadlock.
->
-> - After deferred_probe_initcall() [3], it blocks kernel_init() from
->    continuing till deferred_probe_timeout expires and beats the point of
->    deferred_probe_timeout that's trying to wait for userspace to load
->    modules.
->
-> Neither of this is good. So revert the changes to
-> wait_for_device_probe().
->
-> [1] -https://lore.kernel.org/lkml/TYAPR01MB45443DF63B9EF29054F7C41FD8C60@TYAPR01MB4544.jpnprd01.prod.outlook.com/
-> [2] -https://lore.kernel.org/lkml/YowHNo4sBjr9ijZr@dev-arch.thelio-3990X/
-> [3] -https://lore.kernel.org/lkml/Yo3WvGnNk3LvLb7R@linutronix.de/
+On 15.08.23 19:10, Stefan Roesch wrote:
+> 
+> David Hildenbrand <david@redhat.com> writes:
+> 
+>> Sorry for the late reply, Gmail once again decided to classify your mails as
+>> spam (for whatever reason).
+>>
+>> On 11.08.23 18:28, Stefan Roesch wrote:
+>>> With madvise and prctl KSM can be enabled for different VMA's. Once it
+>>> is enabled we can query how effective KSM is overall. However we cannot
+>>> easily query if an individual VMA benefits from KSM.
+>>> This commit adds a KSM section to the /prod/<pid>/smaps file. It reports
+>>> how many of the pages are KSM pages.
+>>> Here is a typical output:
+>>> 7f420a000000-7f421a000000 rw-p 00000000 00:00 0
+>>> Size:             262144 kB
+>>> KernelPageSize:        4 kB
+>>> MMUPageSize:           4 kB
+>>> Rss:               51212 kB
+>>> Pss:                8276 kB
+>>> Shared_Clean:        172 kB
+>>> Shared_Dirty:      42996 kB
+>>> Private_Clean:       196 kB
+>>> Private_Dirty:      7848 kB
+>>> Referenced:        15388 kB
+>>> Anonymous:         51212 kB
+>>> KSM:               41376 kB
+>>> LazyFree:              0 kB
+>>> AnonHugePages:         0 kB
+>>> ShmemPmdMapped:        0 kB
+>>> FilePmdMapped:         0 kB
+>>> Shared_Hugetlb:        0 kB
+>>> Private_Hugetlb:       0 kB
+>>> Swap:             202016 kB
+>>> SwapPss:            3882 kB
+>>> Locked:                0 kB
+>>> THPeligible:    0
+>>> ProtectionKey:         0
+>>> ksm_state:          0
+>>> ksm_skip_base:      0
+>>> ksm_skip_count:     0
+>>> VmFlags: rd wr mr mw me nr mg anon
+>>> This information also helps with the following workflow:
+>>> - First enable KSM for all the VMA's of a process with prctl.
+>>> - Then analyze with the above smaps report which VMA's benefit the most
+>>> - Change the application (if possible) to add the corresponding madvise
+>>> calls for the VMA's that benefit the most
+>>> Signed-off-by: Stefan Roesch <shr@devkernel.io>
+>>> ---
+>>>    Documentation/filesystems/proc.rst | 3 +++
+>>>    fs/proc/task_mmu.c                 | 5 +++++
+>>>    2 files changed, 8 insertions(+)
+>>> diff --git a/Documentation/filesystems/proc.rst
+>>> b/Documentation/filesystems/proc.rst
+>>> index 7897a7dafcbc..4ef3c0bbf16a 100644
+>>> --- a/Documentation/filesystems/proc.rst
+>>> +++ b/Documentation/filesystems/proc.rst
+>>> @@ -461,6 +461,7 @@ Memory Area, or VMA) there is a series of lines such as the following::
+>>>        Private_Dirty:         0 kB
+>>>        Referenced:          892 kB
+>>>        Anonymous:             0 kB
+>>> +    KSM:                   0 kB
+>>>        LazyFree:              0 kB
+>>>        AnonHugePages:         0 kB
+>>>        ShmemPmdMapped:        0 kB
+>>> @@ -501,6 +502,8 @@ accessed.
+>>>    a mapping associated with a file may contain anonymous pages: when MAP_PRIVATE
+>>>    and a page is modified, the file page is replaced by a private anonymous copy.
+>>>    +"KSM" shows the amount of anonymous memory that has been de-duplicated.
+>>
+>>
+>> How do we want to treat memory that has been deduplicated into the shared
+>> zeropage?
+>>
+>> It would also match this description.
+>>
+>> See in mm-stable:
+>>
+>> commit 30ff6ed9a65c7e73545319fc15f7bcf9c52457eb
+>> Author: xu xin <xu.xin16@zte.com.cn>
+>> Date:   Tue Jun 13 11:09:28 2023 +0800
+>>
+>>      ksm: support unsharing KSM-placed zero pages
+>>
+>>      Patch series "ksm: support tracking KSM-placed zero-pages", v10.
+> 
+> I see two approaches how to deal with zero page:
+>   - If zero page is not enabled, it works as is
+>   - If enabled
+>      - Document that zero page is accounted for the current vma or
+>      - Pass in the pte from smaps_pte_entry() to smaps_account() so we can
+>      determine if this is a zero page.
 
-Hi Saravana, Greg,
+That's probably the right thing to do: make the stat return the same 
+value independent of the usage of the shared zeropage.
 
+>      I'm not sure what to do about smaps_pmd_entry in that case. We
+>      probably don't care about compund pages.
 
-KernelCI found this patch causes the baseline.bootrr.deferred-probe-empty test to fail on r8a77960-ulcb,
-see the following details for more information.
+No, KSM only places the shared zeropage for PTEs, no need to handle PMDs.
 
-KernelCI dashboard link:
-https://linux.kernelci.org/test/plan/id/64d2a6be8c1a8435e535b264/
+-- 
+Cheers,
 
-Error messages from the logs :-
+David / dhildenb
 
-+ UUID=11236495_1.5.2.4.5
-+ set +x
-+ export 'PATH=/opt/bootrr/libexec/bootrr/helpers:/lava-11236495/1/../bin:/sbin:/usr/sbin:/bin:/usr/bin'
-+ cd /opt/bootrr/libexec/bootrr
-+ sh helpers/bootrr-auto
-e6800000.ethernet	
-e6700000.dma-controller	
-e7300000.dma-controller	
-e7310000.dma-controller	
-ec700000.dma-controller	
-ec720000.dma-controller	
-fea20000.vsp	
-feb00000.display	
-fea28000.vsp	
-fea30000.vsp	
-fe9a0000.vsp	
-fe9af000.fcp	
-fea27000.fcp	
-fea2f000.fcp	
-fea37000.fcp	
-sound	
-ee100000.mmc	
-ee140000.mmc	
-ec500000.sound	
-/lava-11236495/1/../bin/lava-test-case
-<8>[   17.476741] <LAVA_SIGNAL_TESTCASE TEST_CASE_ID=deferred-probe-empty RESULT=fail>
-
-Test case failing :-
-Baseline Bootrr deferred-probe-empty test -https://github.com/kernelci/bootrr/blob/main/helpers/bootrr-generic-tests
-
-Regression Reproduced :-
-
-Lava job after reverting the commit 5ee76c256e92
-https://lava.collabora.dev/scheduler/job/11292890
-
-
-Bisection report from KernelCI can be found at the bottom of the email.
-
-Thanks,
-Shreeya Patel
-
-#regzbot introduced: 5ee76c256e92
-#regzbot title: KernelCI: Multiple devices deferring on r8a77960-ulcb
-
----------------------------------------------------------------------------------------------------------------------------------------------------
-
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **
-* If you do send a fix, please include this trailer: *
-* Reported-by: "kernelci.org bot" <bot@...> *
-* *
-* Hope this helps! *
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-stable-rc/linux-5.10.y bisection: baseline.bootrr.deferred-probe-empty 
-on r8a77960-ulcb
-
-Summary:
-Start: 686c84f2f136 Linux 5.10.189-rc1
-Plain log: 
-https://storage.kernelci.org/stable-rc/linux-5.10.y/v5.10.188-183-g686c84f2f1364/arm64/defconfig/gcc-10/lab-collabora/baseline-r8a77960-ulcb.txt
-HTML log: 
-https://storage.kernelci.org/stable-rc/linux-5.10.y/v5.10.188-183-g686c84f2f1364/arm64/defconfig/gcc-10/lab-collabora/baseline-r8a77960-ulcb.html
-Result: 71cbce75031a driver core: Fix wait_for_device_probe() & 
-deferred_probe_timeout interaction
-
-Checks:
-revert: PASS
-verify: PASS
-
-Parameters:
-Tree: stable-rc
-URL: 
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.10.y
-Target: r8a77960-ulcb
-CPU arch: arm64
-Lab: lab-collabora
-Compiler: gcc-10
-Config: defconfig
-Test case: baseline.bootrr.deferred-probe-empty
-
-Breaking commit found:
-
--------------------------------------------------------------------------------
-commit 71cbce75031aed26c72c2dc8a83111d181685f1b
-Author: Saravana Kannan <saravanak@...>
-Date: Fri Jun 3 13:31:37 2022 +0200
-
-driver core: Fix wait_for_device_probe() & deferred_probe_timeout 
-interaction
-
-[ Upstream commit 5ee76c256e928455212ab759c51d198fedbe7523 ]
-
-Mounting NFS rootfs was timing out when deferred_probe_timeout was
-non-zero [1]. This was because ip_auto_config() initcall times out
-waiting for the network interfaces to show up when
-deferred_probe_timeout was non-zero. While ip_auto_config() calls
-wait_for_device_probe() to make sure any currently running deferred
-probe work or asynchronous probe finishes, that wasn't sufficient to
-account for devices being deferred until deferred_probe_timeout.
-
-Commit 35a672363ab3 ("driver core: Ensure wait_for_device_probe() waits
-until the deferred_probe_timeout fires") tried to fix that by making
-sure wait_for_device_probe() waits for deferred_probe_timeout to expire
-before returning.
-
-However, if wait_for_device_probe() is called from the kernel_init()
-context:
-
-- Before deferred_probe_initcall() [2], it causes the boot process to
-hang due to a deadlock.
-
-- After deferred_probe_initcall() [3], it blocks kernel_init() from
-continuing till deferred_probe_timeout expires and beats the point of
-deferred_probe_timeout that's trying to wait for userspace to load
-modules.
-
-Neither of this is good. So revert the changes to
-wait_for_device_probe().
-
-[1] - 
-https://lore.kernel.org/lkml/TYAPR01MB45443DF63B9EF29054F7C41FD8C60@TYAPR01MB4544.jpnprd01.prod.outlook.com/
-[2] - https://lore.kernel.org/lkml/YowHNo4sBjr9ijZr@dev-arch.thelio-3990X/
-[3] - https://lore.kernel.org/lkml/Yo3WvGnNk3LvLb7R@linutronix.de/
-
-Fixes: 35a672363ab3 ("driver core: Ensure wait_for_device_probe() waits 
-until the deferred_probe_timeout fires")
-Cc: John Stultz <jstultz@...>
-Cc: "David S. Miller" <davem@...>
-Cc: Alexey Kuznetsov <kuznet@...>
-Cc: Hideaki YOSHIFUJI <yoshfuji@...>
-Cc: Jakub Kicinski <kuba@...>
-Cc: Rob Herring <robh@...>
-Cc: Geert Uytterhoeven <geert@...>
-Cc: Yoshihiro Shimoda <yoshihiro.shimoda.uh@...>
-Cc: Robin Murphy <robin.murphy@...>
-Cc: Andy Shevchenko <andy.shevchenko@...>
-Cc: Sudeep Holla <sudeep.holla@...>
-Cc: Andy Shevchenko <andriy.shevchenko@...>
-Cc: Naresh Kamboju <naresh.kamboju@...>
-Cc: Basil Eljuse <Basil.Eljuse@...>
-Cc: Ferry Toth <fntoth@...>
-Cc: Arnd Bergmann <arnd@...>
-Cc: Anders Roxell <anders.roxell@...>
-Cc: linux-pm@...
-Reported-by: Nathan Chancellor <nathan@...>
-Reported-by: Sebastian Andrzej Siewior <bigeasy@...>
-Tested-by: Geert Uytterhoeven <geert+renesas@...>
-Acked-by: John Stultz <jstultz@...>
-Signed-off-by: Saravana Kannan <saravanak@...>
-Link: https://lore.kernel.org/r/20220526034609.480766-2-saravanak@google.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@...>
-Reviewed-by: Rafael J. Wysocki <rafael@...>
-Signed-off-by: Linus Torvalds <torvalds@...>
-Signed-off-by: Sasha Levin <sashal@...>
-
-diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index 4f4e8aedbd2c..f9d9f1ad9215 100644
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -250,7 +250,6 @@ DEFINE_SHOW_ATTRIBUTE(deferred_devs);
-
-int driver_deferred_probe_timeout;
-EXPORT_SYMBOL_GPL(driver_deferred_probe_timeout);
--static DECLARE_WAIT_QUEUE_HEAD(probe_timeout_waitqueue);
-
-static int __init deferred_probe_timeout_setup(char *str)
-{
-@@ -302,7 +301,6 @@ static void deferred_probe_timeout_work_func(struct 
-work_struct *work)
-list_for_each_entry(p, &deferred_probe_pending_list, deferred_probe)
-dev_info(p->device, "deferred probe pending\n");
-mutex_unlock(&deferred_probe_mutex);
-- wake_up_all(&probe_timeout_waitqueue);
-}
-static DECLARE_DELAYED_WORK(deferred_probe_timeout_work, 
-deferred_probe_timeout_work_func);
-
-@@ -706,9 +704,6 @@ int driver_probe_done(void)
-*/
-void wait_for_device_probe(void)
-{
-- /* wait for probe timeout */
-- wait_event(probe_timeout_waitqueue, !driver_deferred_probe_timeout);
--
-/* wait for the deferred probe workqueue to finish */
-flush_work(&deferred_probe_work);
--------------------------------------------------------------------------------
-
-
-Git bisection log:
-
--------------------------------------------------------------------------------
-git bisect start
-# good: [2c85ebc57b3e1817b6ce1a6b703928e113a90442] Linux 5.10
-git bisect good 2c85ebc57b3e1817b6ce1a6b703928e113a90442
-# bad: [686c84f2f136412631eb684b064def993a96a8cc] Linux 5.10.189-rc1
-git bisect bad 686c84f2f136412631eb684b064def993a96a8cc
-# good: [88f1b613c37fbd3c4171f5a9decdcd12ae704637] Bluetooth: cmtp: fix 
-possible panic when cmtp_init_sockets() fails
-git bisect good 88f1b613c37fbd3c4171f5a9decdcd12ae704637
-# bad: [6c5742372b2d5d36de129439e26eda05aab54652] Input: snvs_pwrkey - 
-fix SNVS_HPVIDR1 register address
-git bisect bad 6c5742372b2d5d36de129439e26eda05aab54652
-# good: [07280d2c3f33d47741f42411eb8c976b70c6657a] random: make more 
-consistent use of integer types
-git bisect good 07280d2c3f33d47741f42411eb8c976b70c6657a
-# bad: [2fc7f18ba2f98d15f174ce8e25a5afa46926eb55] tools headers: Remove 
-broken definition of __LITTLE_ENDIAN
-git bisect bad 2fc7f18ba2f98d15f174ce8e25a5afa46926eb55
-# bad: [c2ae49a113a5344232f1ebb93bcf18bbd11e9c39] net: dsa: 
-lantiq_gswip: Fix refcount leak in gswip_gphy_fw_list
-git bisect bad c2ae49a113a5344232f1ebb93bcf18bbd11e9c39
-# good: [c1b08aa568e829b743affe5d3231e6de28b7609e] ASoC: samsung: Use 
-dev_err_probe() helper
-git bisect good c1b08aa568e829b743affe5d3231e6de28b7609e
-# good: [97a9ec86ccb4e336ecde46db42b59b2ff7e0d719] drm/nouveau/clk: Fix 
-an incorrect NULL check on list iterator
-git bisect good 97a9ec86ccb4e336ecde46db42b59b2ff7e0d719
-# good: [572211d631d7665c6690b5a6cb80436f8c368dc1] pwm: lp3943: Fix duty 
-calculation in case period was clamped
-git bisect good 572211d631d7665c6690b5a6cb80436f8c368dc1
-# good: [8f49e1694cbc29e76d5028267c1978cc2630e494] bpf: Fix probe read 
-error in ___bpf_prog_run()
-git bisect good 8f49e1694cbc29e76d5028267c1978cc2630e494
-# bad: [3660db29b0305f9a1d95979c7af0f5db6ea99f5d] iommu/arm-smmu: fix 
-possible null-ptr-deref in arm_smmu_device_probe()
-git bisect bad 3660db29b0305f9a1d95979c7af0f5db6ea99f5d
-# good: [04622d631826ba483ae3a0b8a71c745d8e21453d] gpio: pca953x: use 
-the correct register address to do regcache sync
-git bisect good 04622d631826ba483ae3a0b8a71c745d8e21453d
-# bad: [32be2b805a1a13ccc68bd209ec3ae198dd3ba5d6] perf c2c: Fix sorting 
-in percent_rmt_hitm_cmp()
-git bisect bad 32be2b805a1a13ccc68bd209ec3ae198dd3ba5d6
-# good: [c1f0187025905e9981000d44a92e159468b561a8] scsi: sd: Fix 
-potential NULL pointer dereference
-git bisect good c1f0187025905e9981000d44a92e159468b561a8
-# bad: [71cbce75031aed26c72c2dc8a83111d181685f1b] driver core: Fix 
-wait_for_device_probe() & deferred_probe_timeout interaction
-git bisect bad 71cbce75031aed26c72c2dc8a83111d181685f1b
-# good: [b8fac8e321044a9ac50f7185b4e9d91a7745e4b0] tipc: check attribute 
-length for bearer name
-git bisect good b8fac8e321044a9ac50f7185b4e9d91a7745e4b0
-# first bad commit: [71cbce75031aed26c72c2dc8a83111d181685f1b] driver 
-core: Fix wait_for_device_probe() & deferred_probe_timeout interaction
--------------------------------------------------------------------------------
-
-
-> Fixes: 35a672363ab3 ("driver core: Ensure wait_for_device_probe() waits until the deferred_probe_timeout fires")
-> Cc: John Stultz<jstultz@google.com>
-> Cc: "David S. Miller"<davem@davemloft.net>
-> Cc: Alexey Kuznetsov<kuznet@ms2.inr.ac.ru>
-> Cc: Hideaki YOSHIFUJI<yoshfuji@linux-ipv6.org>
-> Cc: Jakub Kicinski<kuba@kernel.org>
-> Cc: Rob Herring<robh@kernel.org>
-> Cc: Geert Uytterhoeven<geert@linux-m68k.org>
-> Cc: Yoshihiro Shimoda<yoshihiro.shimoda.uh@renesas.com>
-> Cc: Robin Murphy<robin.murphy@arm.com>
-> Cc: Andy Shevchenko<andy.shevchenko@gmail.com>
-> Cc: Sudeep Holla<sudeep.holla@arm.com>
-> Cc: Andy Shevchenko<andriy.shevchenko@linux.intel.com>
-> Cc: Naresh Kamboju<naresh.kamboju@linaro.org>
-> Cc: Basil Eljuse<Basil.Eljuse@arm.com>
-> Cc: Ferry Toth<fntoth@gmail.com>
-> Cc: Arnd Bergmann<arnd@arndb.de>
-> Cc: Anders Roxell<anders.roxell@linaro.org>
-> Cc:linux-pm@vger.kernel.org
-> Reported-by: Nathan Chancellor<nathan@kernel.org>
-> Reported-by: Sebastian Andrzej Siewior<bigeasy@linutronix.de>
-> Tested-by: Geert Uytterhoeven<geert+renesas@glider.be>
-> Acked-by: John Stultz<jstultz@google.com>
-> Signed-off-by: Saravana Kannan<saravanak@google.com>
-> Link:https://lore.kernel.org/r/20220526034609.480766-2-saravanak@google.com
-> Signed-off-by: Greg Kroah-Hartman<gregkh@linuxfoundation.org>
-> Reviewed-by: Rafael J. Wysocki<rafael@kernel.org>
-> Signed-off-by: Linus Torvalds<torvalds@linux-foundation.org>
-> Signed-off-by: Sasha Levin<sashal@kernel.org>
-> ---
->   drivers/base/dd.c | 5 -----
->   1 file changed, 5 deletions(-)
->
-> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> index 977e94cf669e..86fd2ea35656 100644
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -257,7 +257,6 @@ DEFINE_SHOW_ATTRIBUTE(deferred_devs);
->   
->   int driver_deferred_probe_timeout;
->   EXPORT_SYMBOL_GPL(driver_deferred_probe_timeout);
-> -static DECLARE_WAIT_QUEUE_HEAD(probe_timeout_waitqueue);
->   
->   static int __init deferred_probe_timeout_setup(char *str)
->   {
-> @@ -312,7 +311,6 @@ static void deferred_probe_timeout_work_func(struct work_struct *work)
->   	list_for_each_entry(p, &deferred_probe_pending_list, deferred_probe)
->   		dev_info(p->device, "deferred probe pending\n");
->   	mutex_unlock(&deferred_probe_mutex);
-> -	wake_up_all(&probe_timeout_waitqueue);
->   }
->   static DECLARE_DELAYED_WORK(deferred_probe_timeout_work, deferred_probe_timeout_work_func);
->   
-> @@ -720,9 +718,6 @@ int driver_probe_done(void)
->    */
->   void wait_for_device_probe(void)
->   {
-> -	/* wait for probe timeout */
-> -	wait_event(probe_timeout_waitqueue, !driver_deferred_probe_timeout);
-> -
->   	/* wait for the deferred probe workqueue to finish */
->   	flush_work(&deferred_probe_work);
->   
