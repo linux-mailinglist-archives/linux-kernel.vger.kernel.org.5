@@ -2,186 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F6677ED64
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 00:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDBA77ED60
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 00:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347031AbjHPWri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 18:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42998 "EHLO
+        id S1347014AbjHPWrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 18:47:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347096AbjHPWr3 (ORCPT
+        with ESMTP id S1347012AbjHPWq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 18:47:29 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11452271F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:47:18 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-40c72caec5cso125601cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:47:18 -0700 (PDT)
+        Wed, 16 Aug 2023 18:46:58 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0F01BF3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:46:57 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1bb29dc715bso3954765ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 15:46:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692226038; x=1692830838;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gmAfMTPz4eh29CLf8sk04qA9x8l/5iZhtjn1NdNuQus=;
-        b=wIBTRZDkz6UQoktGyqxoTeEQiN6IHsdC3DKvn5H/h2iBRaohFe6JXoyF0NoAg/2tBp
-         pRlR+f/oy57QNKyAN14VMwjBN74w57rH/wr/BPlQeKkBa94KsFYRDmoYjCTp8kCV6hzO
-         DoGfbSoSyB9LY2seA1Dqat7bdi9sSxxPWwU1cnXjLX5zzGwDp7FWLBUSyJX7sehzokvT
-         GAUMhsc9pZ1Ooyt7lUb0tKj/6Nk4Xi5Q5zftKU53KqgbmokxHTGTOWITXYBDivdT4Ob9
-         l/z7ZDuqhiAy8tYSstQMSnht+l47Z0hVa9IsskRBLmlp7Ij+82KBTY14k7C8V66GPHLc
-         dxhQ==
+        d=google.com; s=20221208; t=1692226016; x=1692830816;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=n7a+uEDA5jWim2WjEe90Wh2lZxzibPYDcHdGrkYhrCo=;
+        b=3rWoeQRrMGgmiQAR59dF+dosUKDEIxpMJHcGetrQmAYhK7t/p+kJTyRyARgg6NFdIM
+         SFj6HTnU3/0HTfd8+Pi25DdHz547vqeGA+sMkVjSFICq45apap82cKChchDfpHsxqiY3
+         Cq67uWauPB+TPSB6IjaPnJqQCsmSpnVmdcOEsswdT61h1ykcZn/PWvOExXraCT51rvUB
+         Ris6ap9kzZYPhw2d0ojgodh7k26ZB9f6S/JZKn9sb0ph0bf1g4AB0mkykRAyYdH/cX6q
+         4hIgZFneL3wAUEmB3o5iHkiOy3y7bkTXxFew/qBiP5eM7Sph6BdaRAQ1IL0drcyMelIW
+         +Hug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692226038; x=1692830838;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gmAfMTPz4eh29CLf8sk04qA9x8l/5iZhtjn1NdNuQus=;
-        b=eI++1E/DCUfkTkw0PjeyAyErzJdo3Rg+XaPbD9E3ASUyIHIC0NGqDlZhIJ+We1iWCy
-         EUrruwW8snh+2iIbgD3kVr71B9ywVI/+xUVIf0eHvLYbAayf7elWNsEPLzr9aDnEtbTd
-         9hcm6JPsVhAeY7FwjedEgbVfMJcA1JFQrclgex06WQXIxP6ZPqtaOHLnfYI4eZnXeZ6d
-         vcF0KeWiz9QLHHSOBUudje5A2rk0krD5QV/7XjrH38kwciAAD8/GTpjnaWG/5/P+aFng
-         IVHKs4LxNFYYnBSa3wQtpOsF2Yf0EJ62AnuIkUx2Lg/75oYfXhNHc9aCqADPwWh9walh
-         5njw==
-X-Gm-Message-State: AOJu0YyDTgXCzCf28WO5iDA3HyzsAjcdsGMhzH2BS9Qc+o8+8BCy66Ee
-        ReAwReN8aXdM4ERZvSfuR1kV+cJNla8wxcStJ4oUjg==
-X-Google-Smtp-Source: AGHT+IGKhVtNgZhUpSQYcnybxaqwvR/y997m77QY4GFoPXa9zfEq+ZbGp4ISpTVoDw/ZKneDf0Bl3pDyVZg2gBas0+c=
-X-Received: by 2002:ac8:118b:0:b0:40f:ec54:973 with SMTP id
- d11-20020ac8118b000000b0040fec540973mr93254qtj.22.1692226037853; Wed, 16 Aug
- 2023 15:47:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230814-memfd-vm-noexec-uapi-fixes-v2-0-7ff9e3e10ba6@cyphar.com>
- <20230814-memfd-vm-noexec-uapi-fixes-v2-4-7ff9e3e10ba6@cyphar.com>
- <CALmYWFvxLee5+RyLh=vo6kpwMVS-_C7BJ9kmTPDa2tetgHOHPw@mail.gmail.com> <ZNxiLe_jkXpxh3QU@codewreck.org>
-In-Reply-To: <ZNxiLe_jkXpxh3QU@codewreck.org>
-From:   Jeff Xu <jeffxu@google.com>
-Date:   Wed, 16 Aug 2023 15:46:41 -0700
-Message-ID: <CALmYWFvk5N2p4_ANzq0NrcLaMRHrYqpNxzHWi8kvD59aC5ayhg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] memfd: replace ratcheting feature from
- vm.memfd_noexec with hierarchy
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Aleksa Sarai <cyphar@cyphar.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Verkamp <dverkamp@chromium.org>,
-        Christian Brauner <brauner@kernel.org>, stable@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20221208; t=1692226016; x=1692830816;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n7a+uEDA5jWim2WjEe90Wh2lZxzibPYDcHdGrkYhrCo=;
+        b=DmP3Wp1qTe5A7li2FYlMRRK7pXaS70ye8LKf56hKnHXvnrvkQiwU7RjEvcN/2ZRQjZ
+         RDmhV+QbSOlwCHP5XXmbKKtGt9ehWQeNg3z0LNVuBxu52DcZGxsQSd/OYS/UXbNJHzNJ
+         V3fwpW8IS4U2dJwKZ7P0uCw4w7VTnTmLZKtOyjkr0G7ak3BYpOTFk3RTSUePlDuhoeZR
+         ROFR71Fo7+zuFqTWKLG1O9yPq2d4q9y4ZfVXSQkAEtZJNStC9h+rl6Lv3Ki/iOtmsvvs
+         q11nzEcl1SK4JcqVbcJvuv3c737xmviAcCKbSgCsuyVkpQBbzoLFH5cfbSjgwMFE5eJm
+         kxTA==
+X-Gm-Message-State: AOJu0YzPaXM91Pt9OkHWfjDDhGNPRjZbPPtpd4Rzs95i0rWmGY7anc27
+        5a2pGElqbnuNcxAVPepgTBB6iB4zai0=
+X-Google-Smtp-Source: AGHT+IH0EciIyG+E7fGItbQPNlQ+YZpngXRdFj7vCBCg/vY89U8Bdg91XCR3378skcS2onG2JHZ9RKdEjr8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:27cd:b0:1bc:73a6:8be7 with SMTP id
+ km13-20020a17090327cd00b001bc73a68be7mr186093plb.3.1692226016567; Wed, 16 Aug
+ 2023 15:46:56 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 15:46:55 -0700
+In-Reply-To: <20230801002127.534020-5-mizhang@google.com>
+Mime-Version: 1.0
+References: <20230801002127.534020-1-mizhang@google.com> <20230801002127.534020-5-mizhang@google.com>
+Message-ID: <ZN1R31uo4FGQfKrQ@google.com>
+Subject: Re: [PATCH v3 4/6] KVM: Documentation: Add the missing description
+ for tdp_mmu_root_count into kvm_mmu_page
+From:   Sean Christopherson <seanjc@google.com>
+To:     Mingwei Zhang <mizhang@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kai Huang <kai.huang@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Ben Gardon <bgardon@google.com>, Xu Yilun <yilun.xu@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 10:44=E2=80=AFPM Dominique Martinet
-<asmadeus@codewreck.org> wrote:
->
-> Jeff Xu wrote on Tue, Aug 15, 2023 at 10:13:18PM -0700:
-> > > Given that it is possible for CAP_SYS_ADMIN users to create executabl=
-e
-> > > binaries without memfd_create(2) and without touching the host
-> > > filesystem (not to mention the many other things a CAP_SYS_ADMIN proc=
-ess
-> > > would be able to do that would be equivalent or worse), it seems stra=
-nge
-> > > to cause a fair amount of headache to admins when there doesn't appea=
-r
-> > > to be an actual security benefit to blocking this. There appear to be
-> > > concerns about confused-deputy-esque attacks[2] but a confused deputy=
- that
-> > > can write to arbitrary sysctls is a bigger security issue than
-> > > executable memfds.
-> > >
-> > Something to point out: The demo code might be enough to prove your
-> > case in other distributions, however, in ChromeOS, you can't run this
-> > code. The executable in ChromeOS are all from known sources and
-> > verified at boot.
-> > If an attacker could run this code in ChromeOS, that means the
-> > attacker already acquired arbitrary code execution through other ways,
-> > at that point, the attacker no longer needs to create/find an
-> > executable memfd, they already have the vehicle. You can't use an
-> > example of an attacker already running arbitrary code to prove that
-> > disable downgrading is useless.
-> > I agree it is a big problem that an attacker already can modify a
-> > sysctl.  Assuming this can happen by controlling arguments passed into
-> > sysctl, at the time, the attacker might not have full arbitrary code
-> > execution yet, that is the reason the original design is so
-> > restrictive.
->
-> I don't understand how you can say an attacker cannot run arbitrary code
-> within a process here, yet assert that they'd somehow run memfd_create +
-> execveat on it if this sysctl is lowered -- the two look equivalent to
-> me?
->
-It might require multiple steps for this attack, one possible scenario:
-1> control a write primitive in CAP_SYSADMIN process's memory,  change
-arguments of sysctl call, and downgrade the setting for memfd, e.g. change
-it=3D0 to revert to old behavior (by default creating executable memfd)
-2> control a non-privileged process that creates and writes to
-memfd, and write the contents with the binary that the
-attacker wants. This process just needs non-executable memfd, but
-isn't updated yet.
-3> Confuse a non-privilege process to execute the memfd the attacker
-wrote in step 2.
+On Tue, Aug 01, 2023, Mingwei Zhang wrote:
+> Add the description of tdp_mmu_root_count into kvm_mmu_page description and
+> combine it with the description of root_count. tdp_mmu_root_count is an
+> atomic counter used only in TDP MMU. Update the doc.
+> 
+> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+> Reviewed-by: Kai Huang <kai.huang@intel.com>
+> ---
+>  Documentation/virt/kvm/x86/mmu.rst | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/virt/kvm/x86/mmu.rst b/Documentation/virt/kvm/x86/mmu.rst
+> index 17d90974204e..40daf8beb9b1 100644
+> --- a/Documentation/virt/kvm/x86/mmu.rst
+> +++ b/Documentation/virt/kvm/x86/mmu.rst
+> @@ -229,10 +229,14 @@ Shadow pages contain the following information:
+>      can be calculated from the gfn field when used.  In addition, when
+>      role.direct is set, KVM does not track access permission for each of the
+>      gfn. See role.direct and gfn.
+> -  root_count:
+> -    A counter keeping track of how many hardware registers (guest cr3 or
+> -    pdptrs) are now pointing at the page.  While this counter is nonzero, the
+> -    page cannot be destroyed.  See role.invalid.
+> +  root_count / tdp_mmu_root_count:
+> +     root_count is a reference counter for root shadow pages in Shadow MMU.
+> +     vCPUs elevate the refcount when getting a shadow page that will be used as
+> +     a root page, i.e. page that will be loaded into hardware directly (CR3,
+> +     PDPTRs, nCR3 EPTP). Root pages cannot be destroyed while their refcount is
+> +     non-zero. See role.invalid. tdp_mmu_root_count is similar but exclusively
+> +     used in TDP MMU as an atomic refcount. When the value is non-zero, it
+> +     allows vCPUs acquire references while holding mmu_lock for read.
 
-In chromeOS, because all the executables are from verified sources,
-attackers typically can't easily use the step 3 alone (without step
-2),  and memfd was such a hole that enables an unverified executable.
+That last sentence is wrong.  *vCPUs* can't acquire references while holding
+mmu_lock for read.  And actually, they don't ever put references while holding
+for read either.  vCPUs *must* hold mmu_lock for write to obtain a new root,
+Not putting references while holding mmu_lock for read is mostly an implementation
+quirk.
 
-In the original design, downgrading is not allowed, the attack chain
-of 2/3 is completely blocked.  With this new approach, attackers will
-try to find an additional step (step 1) to make the old attack (step 2
-and 3) working again. It is difficult but I can't say it is
-impossible.
+Maybe replace it with this?
 
-> CAP_SYS_ADMIN is a kludge of a capability that pretty much gives root as
-> soon as you can run arbitrary code (just have a look at the various
-> container escape example when the capability is given); I see little
-> point in trying to harden just this here.
-
-I'm not an expert in containers, if the industry is giving up on
-privileged containers, then the reasoning makes sense.
-From ChromeOS point of view, we don't use runc currently, so I think
-it makes more sense for runc users to drive these features.  The
-original design is with runc's in mind, and even privileged containers
-can't downgrade its own setting.
-
-> It'd make more sense to limit all sysctl modifications in the context
-> you're thinking of through e.g. selinux or another LSM.
->
-I agree,  when I think more about this.
-Security features fit LSM better, LSM can do additional "allow/deny"
-on otherwise allowed behavior from user space code. Based on that,
-"disallow downgrading" fits LSM better.  Also from the same reasoning,
-I have second thoughts on the "=3D2", originally the "MEMFD_EXE was left
-out due to the thinking, if user code explicitly setting MEMFD_EXE,
-sysctl should not block it, it is the work of LSM. However, the "=3D2"
-has evolved to block MEMFD_EXE completely ... alas .. it might be too
-late to revert this, if this is what devs want, it can be that way.
-
-Thanks
-Best regards,
--Jeff
-
-
-
-
--Jeff
-
-> (in the context of users making their own containers, my suggestion is
-> always to never use CAP_SYS_ADMIN, or if they must give it to a separate
-> minimal container where they can limit user interaction)
->
->
-> FWIW, I also think the proposed =3D2 behaviour makes more sense, but this
-> is something we already discussed last month so I won't come back to it
-> as not really involved here.
->
-> --
-> Dominique Martinet | Asmadeus
+    tdp_mmu_root_count is similar but exclusively used in the TDP MMU as an
+    atomic refcount (select TDP MMU flows walk all roots while holding mmu_lock
+    for read, e.g. when clearing dirty bits).
