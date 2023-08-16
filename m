@@ -2,94 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7799977DB13
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 09:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD04877DB14
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 09:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242384AbjHPHXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 03:23:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44738 "EHLO
+        id S242391AbjHPHX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 03:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242416AbjHPHXE (ORCPT
+        with ESMTP id S242425AbjHPHXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 03:23:04 -0400
-Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4318810C0;
-        Wed, 16 Aug 2023 00:23:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-        s=default2211; h=To:References:Message-Id:Content-Transfer-Encoding:Cc:Date:
-        In-Reply-To:From:Subject:Mime-Version:Content-Type:Sender:Reply-To:Content-ID
-        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=19wNukchLNZN0X4BtCFwuraW6co2nA0L6OybOEKuK5o=;
-        b=YpNByOB7g1IeEdiFV3iyCqTmeHxRkXVPCM3MQO1wt1Ns/37QoLBuTNDcbRj7Q0jxudCwuubWM9E
-        QFRwLXTTz4fx+k7kp5fwULyg12M2nNMm8MI5cWF/ta+/3RwElmDJE86zQOpKuJXVF35J0ahG6avpe
-        E0gnMtU8iZUnK7NOAjjNcehgEgIRfwtNNvMbwXMhkCeM55cgwLCgyEmizU/JMkdms7cxV30vhahf4
-        BdqmYVoSiAyOmUMCzUexKIf/U5XXyNuvqAXqrVTamc4OUF1vwSgjwcBEj9degPrODmzSCWpoRSICJ
-        P7jwylFy7oDDEbU9h9uSoEREx8hUbxgkaBcQ==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <sean@geanix.com>)
-        id 1qWArr-0004Ll-VD; Wed, 16 Aug 2023 09:22:59 +0200
-Received: from [2a06:4004:10df:0:1cda:5a2e:6344:82ff] (helo=smtpclient.apple)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sean@geanix.com>)
-        id 1qWArr-0004Ez-FQ; Wed, 16 Aug 2023 09:22:59 +0200
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.600.7\))
-Subject: Re: [PATCH v2] i2c: stm32f7: Add atomic_xfer method to driver
-From:   Sean Nyekjaer <sean@geanix.com>
-In-Reply-To: <5E10F2AD-6D7E-4F2F-ACEB-B6FD3C71C85D@geanix.com>
-Date:   Wed, 16 Aug 2023 09:22:48 +0200
-Cc:     Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-i2c@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <CB5067F1-28CC-4011-A6FF-0695916D764C@geanix.com>
-References: <20230718105435.2641207-1-sean@geanix.com>
- <20230802100709.GB2156918@gnbcxd0016.gnb.st.com>
- <5E10F2AD-6D7E-4F2F-ACEB-B6FD3C71C85D@geanix.com>
-To:     Alain Volmat <alain.volmat@foss.st.com>
-X-Mailer: Apple Mail (2.3731.600.7)
-X-Authenticated-Sender: sean@geanix.com
-X-Virus-Scanned: Clear (ClamAV 0.103.8/27001/Tue Aug 15 09:40:17 2023)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 03:23:37 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323AC10DC
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 00:23:35 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99d90ffed68so801462166b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 00:23:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google; t=1692170613; x=1692775413;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sEFICaToFyzUXkOG2roGq++utI+eaCie/kUBC7rJak0=;
+        b=KqetDW6z02ZI9nse8ru2airlMkf2Lplckz3bcD8QF65+G7Le81HBHYK79jvlX8eeLj
+         jVGhMy8uMnbfGk9riSvXxxIzgV+Kucj508RV8Fs3my2QamH5CTw1AzFJH2Lr2BcLtk7C
+         1LLP76vs4x6sKVqm/DjO9cTAuz6OgZju+5mbA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692170613; x=1692775413;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sEFICaToFyzUXkOG2roGq++utI+eaCie/kUBC7rJak0=;
+        b=Nyy/ipioGqbQUejZ0lhXiTyXTl0gZPdnJQAwdirKdASeZF/W3WydgApbrprqfewZJz
+         le5CyFRwlkFhsal/PGmSBzdXTr8H9LSkkDIOH9ox26EuFpwrmpz3QZ0YeB4G6kSCy2bU
+         pQDAPjn/9vCGPNhEOUyMsDZ4PaOVL0RSr8TC9hUyCS3DbEHG0A0i5/i3MbSIGVPtHDP2
+         Zjb/3kLe84HwzY8DZXVmN2jGsgzdoYFNseTbBX8SDIfYTRi9z/G5Htoj8BUplaCaLCed
+         xJWISUvP5lum8Qji55ky/v1zhI3XgakKSfjjcJDeYAcy2CxMWeKachk6N6X+uOoYSDpn
+         H8NQ==
+X-Gm-Message-State: AOJu0YwhLvaYpYmoBHzNfMKGplu/f0BBmHbtV/g/GwjFemSjgrpYwsxg
+        2tb07YFYgUZ2YHgTWWKQhaBreQ==
+X-Google-Smtp-Source: AGHT+IGdqnVbCzppnlmNw8LNRK91Cd5HvbWHi+Mlu+TupBLCfQuYAyI0f1oM68K46ZMxbPckXFf82w==
+X-Received: by 2002:a17:907:a42a:b0:988:d841:7f90 with SMTP id sg42-20020a170907a42a00b00988d8417f90mr4218211ejc.27.1692170613526;
+        Wed, 16 Aug 2023 00:23:33 -0700 (PDT)
+Received: from [172.16.11.116] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id cw13-20020a170906c78d00b00992e265495csm8041803ejb.212.2023.08.16.00.23.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 00:23:32 -0700 (PDT)
+Message-ID: <a68424ff-b5e5-4dab-5705-5b63084c98eb@rasmusvillemoes.dk>
+Date:   Wed, 16 Aug 2023 09:23:31 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: cleanup: Make no_free_ptr() __must_check
+Content-Language: en-US, da
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dan.j.williams@intel.com, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>
+References: <20230815105204.GA927051@hirez.programming.kicks-ass.net>
+ <fcc8a158-f6e4-8963-782f-ba04b47350b8@rasmusvillemoes.dk>
+ <20230815135339.GA966323@hirez.programming.kicks-ass.net>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+In-Reply-To: <20230815135339.GA966323@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alain,
+On 15/08/2023 15.53, Peter Zijlstra wrote:
+> On Tue, Aug 15, 2023 at 01:28:37PM +0200, Rasmus Villemoes wrote:
+>
+>> Also, isn't it more complicated than necessary? Can we get rid of the
+>> inner stmt expr and tmp var by just making it
+>>
+>>   ((void) (p), ((typeof(p))__no_free_ptr((void **)&(p)))
+>>
+>> which is more or less the whole reason comma expressions is a thing.
+> 
+> Ah, so the point of the statement expression before the comma is to
+> validate that (p) is in fact a pointer, and to that effect we assign it
+> to a 'void *' temporary.
+> 
+> If that case is invalid, we'll get a compile fail with a dodgy message.
+> 
+> I did this, because (void **)&(p) looses type integrity due to the cast.
+> 
+> But yeah, I suppose it all needs a wee comment.
 
-> On 16 Aug 2023, at 09.02, Sean Nyekjaer <sean@geanix.com> wrote:
->=20
+Ah, ok, I thought the purpose was to ensure the p expression gets
+evaluated. Well, we can still do without the temp var and weird comma or
+statement expressions:
 
-[ =E2=80=A6 ]
+static inline __must_check void * __no_free_ptr(void **pp, const void
+*must_be_pointer_dummy)
+{ void *p = *pp; *pp = NULL; return p; }
 
->>> _dev {
->>> u32 dnf_dt;
->>> u32 dnf;
->>> struct stm32f7_i2c_alert *alert;
->>> + bool atomic;
->>=20
->> I am wondering if this atomic really needs to be within the struct.
->> It could well be given as last arg of stm32f7_i2c_xfer_core and
->> stm32f7_i2c_xfer functions.
->=20
-> Agree.
+#define no_free_ptr(p) (__no_free_ptr((void **)&(p), p) )
 
-Scratch that=E2=80=A6
-The atomic was included in the struct because it=E2=80=99s also used in =
-the isr function, as the isr function is calling stm32f7_i2c_xfer_msg()
-
-/Sean
+Rasmus
 
