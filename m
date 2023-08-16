@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F0077E8AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD2B77E8AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345534AbjHPS0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 14:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34044 "EHLO
+        id S242561AbjHPS1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 14:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345530AbjHPS0X (ORCPT
+        with ESMTP id S1345610AbjHPS1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 14:26:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFE310C1;
-        Wed, 16 Aug 2023 11:26:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C88E6271D;
-        Wed, 16 Aug 2023 18:26:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3A3AC433C9;
-        Wed, 16 Aug 2023 18:26:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692210381;
-        bh=3lwZH0aCkN4fuwrTeQAhsYruTaew5rtoMeyWR8imUko=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QK3Ss4gYQANpF0kfjVDMhwPaCBnN7jcXmU+ud+rNTZoFKIrBrSXEwPGVGIBxSuBVa
-         WPNXG6eJZ3FhK9KAyp3GfSYJ/zb+pE+4rCQknlaNheucXLhnJ67mh3RWIhFfKZTGL8
-         uXPBJpIcABURnESDC2XbooGsuC9LHy75ijzMgREdvGtpEQg9D9hhP7mVnrfKs6wg5o
-         GOpKTl8nyoHQ5Shobze8RiECk2mqQteHONzc9PyVM6x2gHC7QohvJDw2aydMjS7K0r
-         di+cOUZk4aPspJCVQsxXx0I5aMt2LWQ+6+xgwfkyKddkNk49YFt7sLHwaNqVbtpCJJ
-         jeHDFcRu2mgxQ==
-Date:   Wed, 16 Aug 2023 19:26:12 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v4 07/36] arm64/gcs: Provide copy_to_user_gcs()
-Message-ID: <60eeefc9-96db-4d4a-b0e4-751cba540471@sirena.org.uk>
-References: <20230807-arm64-gcs-v4-0-68cfa37f9069@kernel.org>
- <20230807-arm64-gcs-v4-7-68cfa37f9069@kernel.org>
- <ZNZjdXTJw2p5vh7C@arm.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tm7DmRva30JRxCzT"
-Content-Disposition: inline
-In-Reply-To: <ZNZjdXTJw2p5vh7C@arm.com>
-X-Cookie: Old soldiers never die.  Young ones do.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Wed, 16 Aug 2023 14:27:30 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C8E92D69
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:27:01 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-589f986ab8aso2523977b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:27:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692210410; x=1692815210;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=S6as3BxJpUCbqcYsYLfwqrd6wpI3WguOJqonU+8LSLc=;
+        b=z0c2F/G/8ZqCH25VdVy3+VNDQI8CZeomkJY3XdzlkKQh/JwPUa5Z1o9g74b4z1pxiH
+         wRYVTVuqobGllrdShttdO/QSk1CkCvnHciCc+U6yeBKeMn+G8bMhR+kKrlyHuLI78mgH
+         /xhC9LfsawjIy7OW5AbgBlur6CBQyM9oq+7T98ppgngF3OFCO5C4JO0Ati2/MimQ3z9U
+         GEv8Fn8BOAvyhA3xgcd9vgY4844c7XHjvtPwYSJ8J0FHRfSxmOZ7IyzbNBghkWgIAK5u
+         svFaihEPiZ2b4puUHNUBBfwTU3sl64Ck6rlz10eKKLgLmoxIB/j85T+jNUpMtdvqTLcr
+         FPWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692210410; x=1692815210;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S6as3BxJpUCbqcYsYLfwqrd6wpI3WguOJqonU+8LSLc=;
+        b=HwISsZ9isD+azjcS6UvTGOStYNasozA+SEzlJJ51p4/Mbmdmmm1mgNyhNy3anMrmSv
+         +AC7A3qmPfmUPBg7radnK04qmdN51lRy9go5+xq0UH/GG/TfTrKt8Gfgy2GqTVL3jRkU
+         MerubPvYQ4f6/x/M83v7ZtJtYAskf3hxNfkZTsFiBtgLeoYuY8wRfrN5CFAsOpGO939v
+         5RsXW2Xt5PtKwijEFEMls/u1K7MVnjqfktLBsW2pNNw4fCJdr/XjqdLTsgqwrkXmGMK5
+         gpT3RtoT7pz79uYes6phPjrNtOebKjR2Y+LOTgJafiWNNqBzQy7E7X7nJ6w/82itW7Tt
+         X6Jg==
+X-Gm-Message-State: AOJu0YwhfmQEW2x1N54X2m/t5NFsEwQ8udIqhVV1+93YLGNpjnV6bmKn
+        1Lp3pb5XoAVTubcyChOEA2o4HgS+lfVFA5VJ8g==
+X-Google-Smtp-Source: AGHT+IGHa/5g87NdPEOq2wAtPaDB0w/dWc4EOap0B976E0FRPaTqbUwY726ZhRQ4H+6EEHfTB93fXA2tnit2luAlDA==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a81:4316:0:b0:58c:e8da:4d1a with SMTP
+ id q22-20020a814316000000b0058ce8da4d1amr8918ywa.2.1692210410645; Wed, 16 Aug
+ 2023 11:26:50 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 18:26:44 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAOMU3WQC/5WNSw6DMAwFr4K8riuSlo+64h4Vi5Q4YAkIilFUh
+ Lh7Azfo7s0s3uwgFJgEXtkOgSIL+zmBvmXQDWbuCdkmBp3rR16rAqNnizZwpCA4rRYnswguwyZ
+ p4GnNyiOh1lXuqHLWqRLS2xLI8fcqvdvEA8vqw3aFozrt/42oUOHHlK6rS1vQk5re+36ke+cna I/j+AGL1kKx3wAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692210409; l=1749;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=8lAIhnmpRVK+py4l8xzNXorgfe03DykVYWVS/7qh4fw=; b=ktG2rQbNbxM+rTl/KVl5MI/PcP0u3a40de2Mqg6Bm+oJeBznguW1yO4lm/q5TFtmA7hRZT6nf
+ DixvkgTw1w3BeuZDW/cwGzcjia8AwOtJnFMUleRe1Ten7DKqdvdMwwp
+X-Mailer: b4 0.12.3
+Message-ID: <20230816-void-drivers-mtd-maps-physmap-versatile-v2-1-433a25272bfa@google.com>
+Subject: [PATCH v2] mtd: maps: fix -Wvoid-pointer-to-enum-cast warning
+From:   Justin Stitt <justinstitt@google.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,42 +82,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When building with clang 18 I see the following warning:
+|       drivers/mtd/maps/physmap-versatile.c:209:25: warning: cast to smaller
+|               integer type 'enum versatile_flashprot' from 'const void *' [-Wvoid-pointer-to-enum-cast]
+|         209 |                 versatile_flashprot = (enum versatile_flashprot)devid->data;
 
---tm7DmRva30JRxCzT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is due to the fact that `devid->data` is a void* while `enum versatile_flashprot`
+has the size of an int.
 
-On Fri, Aug 11, 2023 at 05:36:05PM +0100, Catalin Marinas wrote:
-> On Mon, Aug 07, 2023 at 11:00:12PM +0100, Mark Brown wrote:
-> > +static inline int copy_to_user_gcs(unsigned long __user *addr,
-> > +				   unsigned long *val,
-> > +				   int count)
+Cast `devid->data` to a uintptr_t to silence the above warning for clang
+builds using W=1.
 
-> I think it makes more sense to have a put_user_gcs() of a single
-> element. I've only seen it used with 2 elements in the signal code but
-> we could as well do two put_user_gcs() calls (as we do for other stuff
-> that we push to the signal frame).
+Link: https://github.com/ClangBuiltLinux/linux/issues/1910
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Changes in v2:
+- Use more accurate commit message (thanks Krzysztof)
+- Link to v1: https://lore.kernel.org/r/20230815-void-drivers-mtd-maps-physmap-versatile-v1-1-ba6fc86d5e4e@google.com
+---
+ drivers/mtd/maps/physmap-versatile.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Right, it's just the two element array in the signals code and the one
-element for the context token in map_shadow_stack().  I can refactor to
-a single read/write operation, I'd originally written it that way but I
-wasn't thrilled with either writing a load of fun macros to mirror the
-way vanilla put_user() is written or having code that looked very
-different to the other similarly named functions were done.
+diff --git a/drivers/mtd/maps/physmap-versatile.c b/drivers/mtd/maps/physmap-versatile.c
+index a1b8b7b25f88..d65cf8833771 100644
+--- a/drivers/mtd/maps/physmap-versatile.c
++++ b/drivers/mtd/maps/physmap-versatile.c
+@@ -206,7 +206,7 @@ int of_flash_probe_versatile(struct platform_device *pdev,
+ 		if (!sysnp)
+ 			return -ENODEV;
+ 
+-		versatile_flashprot = (enum versatile_flashprot)devid->data;
++		versatile_flashprot = (uintptr_t)devid->data;
+ 		rmap = syscon_node_to_regmap(sysnp);
+ 		of_node_put(sysnp);
+ 		if (IS_ERR(rmap))
 
---tm7DmRva30JRxCzT
-Content-Type: application/pgp-signature; name="signature.asc"
+---
+base-commit: 2ccdd1b13c591d306f0401d98dedc4bdcd02b421
+change-id: 20230815-void-drivers-mtd-maps-physmap-versatile-2270fe7fdf16
 
------BEGIN PGP SIGNATURE-----
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTdFMMACgkQJNaLcl1U
-h9DYQQf+Nxve6dTX12KVeA30x+OuPZrZ9604olhrpuQpYtFjAW9Y1s1V/zuJQfpi
-m2RUZwNwL8KLj0HHROEn6zCjxEWEgWDmYL0jocaZPRXfaXYATOaeKq/4ZNuZPTz0
-T8WOwgOm1V+Oojr0s9tTF3eeU+TbqH2Pjn54/5nAm3/ZO3A3K/NA3aG1qVRgUg30
-KC4cwnyO6b+WqMiy4HglvqDJiCFZXFEw8yTpaLuznzdX/t6qZ+XIkuiqDKn/ek2M
-Gzey1zWBfgdiqCsZDxAb+7rOoEnnyLh8qxMRQWzZCCEb2y/qihOUuFcyPsimZ8mU
-avhuox/i9muYxS6uDyrWVVaaN2t4bg==
-=OnPi
------END PGP SIGNATURE-----
-
---tm7DmRva30JRxCzT--
