@@ -2,101 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7707E77E9C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B2677E9D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345843AbjHPTjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 15:39:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38748 "EHLO
+        id S1345916AbjHPTkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 15:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345927AbjHPTi7 (ORCPT
+        with ESMTP id S1345872AbjHPTju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 15:38:59 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C6AB273C
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 12:38:50 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-407db3e9669so3481cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 12:38:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692214729; x=1692819529;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JNDp3i2bBwoOV1rWtC/ohzjbdWhzdLjzTZ59sTAggCU=;
-        b=zauDROUUKvcs8lCQ/BfV9kcQA4HIORrUlzsCcdVtdntWypJgGELZqZcEPLioY0DX1d
-         UZTL8VoPIfEhBk0xRjDcyf9AqwQrbV0warNe/Q5irckHL//x2ua7KFrsy9YP53ps8gIr
-         Y25/CTQUJBZxNty4Qz8tQDZf36+O091toHhi80CCb7b0XTD8jR2DttEpmTMY19WOJcyO
-         X/hU+x6DLfL7tVILoR3oXr77fDuqp4wQ7rgEtiSf+7j/37CGM66AepJOf4st574goUhl
-         hcJa09xtf3ESJfDOe4BfolpD04dXesNC+RWoz2KCs0hYYa9GxZoWxlWIbPdJwYStxD+G
-         47tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692214729; x=1692819529;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JNDp3i2bBwoOV1rWtC/ohzjbdWhzdLjzTZ59sTAggCU=;
-        b=GeJ4GDERyS1Xw5e/flc4wFYIL1CGi9Rl/JrQ5nllahR1QvgP/XfjOGQEQYx1UWf24N
-         chMkw6YWvHcCcxnaduhyl4XiSN6fdz54OAcOcVzzA+6Q60ERsWhMjBxHVrYtrtEUG6JV
-         qJToBagXuNDzL2f7WBuJvBmv8f+Qh2nlsUaCMa+fhPVN1Vjhk1tSgiUhBKKpeW5yOjq1
-         Nz6KzCW9P/O+K56/m8Zn45ogh+i5o8SE70yzZEcwIMVZnTM2ovcESvkoCAnvtCl4h848
-         t6p9kD17/qHl+QARCaRy9NsSg3TUvdn9HJMM3QATu5pQgj1ikLBUcNlUWY+GL0sOJGvB
-         FGiw==
-X-Gm-Message-State: AOJu0YyX1Mw5sE/9m3TPNWBl/U/2V+l1hO9gJtIJ4YNa7WCBWnn2QAVw
-        rWD71KHVwBfaVDVtZkXZYuXWt+xlXGIstl/Le1gBxw==
-X-Google-Smtp-Source: AGHT+IFpIaCPqotOsX3UISM7uhBPq1XQaPa+MtAyjklx4cxfSxVons1e1QLTn7tMSjl7u9VZ5PpbIJ+PhOxSqkDX0oM=
-X-Received: by 2002:ac8:5e48:0:b0:403:a43d:be41 with SMTP id
- i8-20020ac85e48000000b00403a43dbe41mr53686qtx.20.1692214729529; Wed, 16 Aug
- 2023 12:38:49 -0700 (PDT)
+        Wed, 16 Aug 2023 15:39:50 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7762720;
+        Wed, 16 Aug 2023 12:39:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=XBrGNwityOqu1WOq5YiirS65EdsM79s51TK3CZzvdPo=; b=Wz2FwOW2Pki0Qtv8KBCjFX0XUA
+        yeQ4kHE1vTiLeQcSC+0MgUF6WLhlF66hBVUuBKjAiiHon8WqWEM9JAM2aBREPEX/rrwsZAplUI272
+        CFZw2I4KPyEWixNrzbnblRG9Z+KgqJwAmHql5X+BSFZk722nDM272/Nuwbc0hc2pdBUo=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qWMMj-004JBZ-Hs; Wed, 16 Aug 2023 21:39:37 +0200
+Date:   Wed, 16 Aug 2023 21:39:37 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Walle <michael@walle.cc>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: mdio: mdio-bitbang: Fix C45 read/write protocol
+Message-ID: <898c8b42-c3ad-4c2c-8903-c25f58a4d079@lunn.ch>
+References: <20230816180656.18780-1-fancer.lancer@gmail.com>
 MIME-Version: 1.0
-References: <169199898909.1782217.10899362240465838600.stgit@dwillia2-xfh.jf.intel.com>
- <169199900677.1782217.12516417657696965559.stgit@dwillia2-xfh.jf.intel.com>
- <CAAH4kHbRkFdmdQyPHjOjnnyuYXPLT2GKmQTE8fU9aDFMtri8ew@mail.gmail.com>
- <64dab7a322eef_2138e29421@dwillia2-xfh.jf.intel.com.notmuch>
- <ed962dc3-1e7e-8959-7921-365fae705594@amd.com> <64dbe8079511b_47b57294de@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-In-Reply-To: <64dbe8079511b_47b57294de@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-From:   Dionna Amalie Glaze <dionnaglaze@google.com>
-Date:   Wed, 16 Aug 2023 12:38:38 -0700
-Message-ID: <CAAH4kHaM_hUPNFLpg-2unnBFL5b_ZYrrj=ZuYub9kR_CxVkqdQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] virt: sevguest: Prep for kernel internal {get, get_ext}_report()
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>, linux-coco@lists.linux.dev,
-        Borislav Petkov <bp@alien8.de>,
-        Brijesh Singh <brijesh.singh@amd.com>, peterz@infradead.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230816180656.18780-1-fancer.lancer@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Definitely, instead it was this comment from James that gave me pause:
->
-> "To get a bit off topic, I'm not sure derived keys are much use.  The
-> problem is in SNP that by the time the PSP does the derivation, the key
-> is both tied to the physical system and derived from a measurement too
-> general to differentiate between VM images (so one VM could read
-> another VMs stored secrets)."
->
+On Wed, Aug 16, 2023 at 09:06:52PM +0300, Serge Semin wrote:
+> Based on the original code semantic in case of Clause 45 MDIO, the address
+> command is supposed to be followed by the command sending the MMD address,
+> not the CSR address. The commit 002dd3de097c ("net: mdio: mdio-bitbang:
+> Separate C22 and C45 transactions") has erroneously broken that. So most
+> likely due to an unfortunate variable name it switched the code to sending
+> the CSR address. In our case it caused the protocol malfunction so the
+> read operation always failed with the turnaround bit always been driven to
+> one by PHY instead of zero. Fix that by getting back the correct
+> behaviour: sending MMD address command right after the regular address
+> command.
 
-Key derivation on AMD SEV-SNP is not necessarily tied to a physical
-system with the introduction of VLEK-based attestation. It's now tied
-to a CSP's fleet of machines. We can use key derivation in the SVSM as
-a basis for further key derivation based on measurement registers, so
-the utility increases to provide something like persisted sealed data
-that can only be unsealed when the SVSM witnesses a particular runtime
-measurement configuration.
-We can use NIST 800-90A Rev. 1 for combining keys from the PSP with
-measurement register values for example.
+I'm actually surprised we have not got more reports of me breaking
+MDIO with this patchset. I did test bit-banging, but only for C22.
 
-> http://lore.kernel.org/r/c6576d1682b576ba47556478a98f397ed518a177.camel@HansenPartnership.com
+> Fixes: 002dd3de097c ("net: mdio: mdio-bitbang: Separate C22 and C45 transactions")
+> Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-
-
---
--Dionna Glaze, PhD (she/her)
+    Andrew
