@@ -2,266 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 070E777E8CE
+	by mail.lfdr.de (Postfix) with ESMTP id 5109877E8CF
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345571AbjHPSgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 14:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35766 "EHLO
+        id S1345577AbjHPSgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 14:36:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345562AbjHPSgU (ORCPT
+        with ESMTP id S1345584AbjHPSgw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 14:36:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DCE2112
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:35:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692210932;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YicN3BrABqygzYT0JyJvS0gbqDwVQpD3oveyBcfJmnk=;
-        b=JKJ4ByDyoTmmFklUHJDjfTct3Z/MWeMJXwhIV8wIuqNMPSZjHfoprdGMzCdDw5Sfo6x+DA
-        cYGXwsU1eAEFP2dOx58ACzRV1KyT/XBtXsFLDD+6tuaF2jhJdFxD1JZmf68G62dyiKxl37
-        it/BigRpECMdCsQf0yTRpXyN08Qa/e0=
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
- [209.85.166.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-553-IeEBu_7xMfqRPLh4OSfHrw-1; Wed, 16 Aug 2023 14:35:30 -0400
-X-MC-Unique: IeEBu_7xMfqRPLh4OSfHrw-1
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-34acd680349so1720355ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:35:30 -0700 (PDT)
+        Wed, 16 Aug 2023 14:36:52 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB9DE7F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:36:51 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-407db3e9669so42941cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:36:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692211010; x=1692815810;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a4wm+KpE7eNa/tlHVtHxXV1/09kgKr7KwT0DZo5eN5c=;
+        b=tQfHJ/L32F6Jr3+MdbqSNqp9r/c29AmJm0EZbdmgWcmyb2DCIR8sBLcmL6dqnnAGgr
+         SZ/mZPdTdtGVFQm6Pv1mSBI3eDHzRuobDWlYjiUWSdByIqH+ONbmu84TRsc8H03hHAvQ
+         FMTKe9MLgom6xNDBgk/r++bem0/J76W4UpxLNNrbu75GsqxceGNBulXhX/2gjWsMfNuY
+         Pq3iihUFeKflvpotcDkDT4CriI5KknDRRxTnZXwdAN3+9R1nioNfKS9wd3xycc0rBaNP
+         V/j2wu1dI2kIu50gPN7/hdsAMyzuo7L0tLZaglz5PYjv1KKjljwJBs4LRm7tZ31RyQAv
+         jkmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692210929; x=1692815729;
-        h=content-transfer-encoding:mime-version:organization:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YicN3BrABqygzYT0JyJvS0gbqDwVQpD3oveyBcfJmnk=;
-        b=QWER3eqCDIIgzyHuRmSZguADr1vdJQ7+PXdhs4vVicZtOJ0WJ6iSI0mq+vublkH8T8
-         G6M6wofucgFJgTMR1/uqQ2Qz6OGCHEdSmR1WbDm5i2qragfHvC7jbFyuiHfJbOf21K5Q
-         eLBKKFPbIVee9gwGTtIpfCFhvbkamuUHtOgngkdKCWEdZD0dcAg8tfH+MbgH2P8WuSMv
-         B5I70nnXwdEhklok3s+cpXXnFqdSLagRcjEZt7mwyBEhuRNu7VArd2mD2k4Z6d8ZiAx4
-         jCjwWmDdIAPvZTkD+0r4hTE0EBrNaG2xC8etvS9FYcHU9epQMgrcE8YLMf90GxnI0wfc
-         T10A==
-X-Gm-Message-State: AOJu0YxXj22OslZRbIYsKwP0qqgrV6hL1qjk8jCS7K63iwpFHdrU7RmQ
-        hnBSwN32fQo3VdJmkyuboVD0EvakapucmXrDJQ8lOiakGablWAPQUI+g4LJcRHXs+5jJ9hetVS5
-        mOhza7g2oKRVNdZ+HDLsiasHB
-X-Received: by 2002:a05:6e02:1cab:b0:349:98eb:3637 with SMTP id x11-20020a056e021cab00b0034998eb3637mr4274288ill.15.1692210929640;
-        Wed, 16 Aug 2023 11:35:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGfVGBTGBXsFsdSkBf85ThQ5KUX9iDTcIbx6c4WRwD/3RMx2jwpY86m0KcUWMT6fJQZ0mcatg==
-X-Received: by 2002:a05:6e02:1cab:b0:349:98eb:3637 with SMTP id x11-20020a056e021cab00b0034998eb3637mr4274268ill.15.1692210929341;
-        Wed, 16 Aug 2023 11:35:29 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id p8-20020a92c108000000b0034ab3bfd8f2sm1145706ile.40.2023.08.16.11.35.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 11:35:28 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 12:35:28 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] vfio: align capability structures
-Message-ID: <20230816123528.33dd0bff.alex.williamson@redhat.com>
-In-Reply-To: <20230809203144.2880050-1-stefanha@redhat.com>
-References: <20230809203144.2880050-1-stefanha@redhat.com>
-Organization: Red Hat
+        d=1e100.net; s=20221208; t=1692211010; x=1692815810;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a4wm+KpE7eNa/tlHVtHxXV1/09kgKr7KwT0DZo5eN5c=;
+        b=H7UjJ4lBfEf8nFWktKM5b43oGKOGxldhiG8UAmIXiUbo1rPFTjHchQiZmf+rZNVYBc
+         U96LmtbVIiD5QNuhgIxeMAduiE41Hl4TitFQpLfLhZbq3Esza6sqIpDfSePWf3RcP7b6
+         yXRxUyBlfdKqqenONHgt/T5bIB71KmdUeHq506hIsbtww6sxyuf9vMQLkA+wyXDBYFPC
+         grJDEEdH4w2c6uQjg+kOqHZnEk6xEFSlsArJTyi9aSBpaDiur4Qio+2jWNPUmOVFvjqt
+         aS91QFzzOdVDmbrbNAhmmrSQoI/kQ+Lx72RGs1GD5v/TmFDJ5NH6Yzh3Joj6cE2zxnN6
+         cS0w==
+X-Gm-Message-State: AOJu0YxufWB0K7HvWcm5dLy6p87tIWeJ6J3wKWTFARDU4RBJJ6w2/U/j
+        ZlxgMYtBzJeoP77L4dSuLcRVI7dSFohgop1//m2zvw==
+X-Google-Smtp-Source: AGHT+IGGl+mvJgrMFGu/vHQy9ub+bO649kNj/MyMwugE5GMjyM7i6xYVwCd73ytOqsFOVU7DRDQNRATYM5+OHsbemyM=
+X-Received: by 2002:a05:622a:6:b0:410:4135:4e0 with SMTP id
+ x6-20020a05622a000600b00410413504e0mr29986qtw.27.1692211010510; Wed, 16 Aug
+ 2023 11:36:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <ZNvUxbmMpa4IR/pc@kernel.org>
+In-Reply-To: <ZNvUxbmMpa4IR/pc@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 16 Aug 2023 11:36:39 -0700
+Message-ID: <CAP-5=fWQ62VBhbNL96DdTEERU7fQy_sbx8xTBKXpdDNp15jAhg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] perf tests trace+probe_vfs_getname.sh: Accept quotes
+ surrounding the filename
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 15, 2023 at 12:40=E2=80=AFPM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> With augmented_raw_syscalls transformed into a BPF skel made the output h=
+ave a "
+> around the filenames, which is not what the old perf probe vfs_getname
+> method of obtaining filenames did, so accept the augmented way, with the
+> quotes.
+>
+> At this point probably removing all the logic for the vfs_getname method
+> is in order, will do it at some point.
+>
+> For now lets accept with/without quotes and make that test pass.
+>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Ian Rogers <irogers@google.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Link: https://lore.kernel.org/lkml/
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-Hey Jason,
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-Would you mind tossing an ack for the iommufd touch that you suggested
-here?  Thanks,
+Thanks,
+Ian
 
-Alex
-
-On Wed,  9 Aug 2023 16:31:44 -0400
-Stefan Hajnoczi <stefanha@redhat.com> wrote:
-
-> The VFIO_DEVICE_GET_INFO, VFIO_DEVICE_GET_REGION_INFO, and
-> VFIO_IOMMU_GET_INFO ioctls fill in an info struct followed by capability
-> structs:
-> 
->   +------+---------+---------+-----+
->   | info | caps[0] | caps[1] | ... |
->   +------+---------+---------+-----+
-> 
-> Both the info and capability struct sizes are not always multiples of
-> sizeof(u64), leaving u64 fields in later capability structs misaligned.
-> 
-> Userspace applications currently need to handle misalignment manually in
-> order to support CPU architectures and programming languages with strict
-> alignment requirements.
-> 
-> Make life easier for userspace by ensuring alignment in the kernel. This
-> is done by padding info struct definitions and by copying out zeroes
-> after capability structs that are not aligned.
-> 
-> The new layout is as follows:
-> 
->   +------+---------+---+---------+-----+
->   | info | caps[0] | 0 | caps[1] | ... |
->   +------+---------+---+---------+-----+
-> 
-> In this example caps[0] has a size that is not multiples of sizeof(u64),
-> so zero padding is added to align the subsequent structure.
-> 
-> Adding zero padding between structs does not break the uapi. The memory
-> layout is specified by the info.cap_offset and caps[i].next fields
-> filled in by the kernel. Applications use these field values to locate
-> structs and are therefore unaffected by the addition of zero padding.
-> 
-> Note that code that copies out info structs with padding is updated to
-> always zero the struct and copy out as many bytes as userspace
-> requested. This makes the code shorter and avoids potential information
-> leaks by ensuring padding is initialized.
-> 
-> Originally-by: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
 > ---
-> v3:
-> - Also align capability structs in drivers/iommu/iommufd/vfio_compat.c
->   [Jason]
-> 
->  include/uapi/linux/vfio.h           |  2 ++
->  drivers/iommu/iommufd/vfio_compat.c |  2 ++
->  drivers/vfio/pci/vfio_pci_core.c    | 11 ++---------
->  drivers/vfio/vfio_iommu_type1.c     | 11 ++---------
->  drivers/vfio/vfio_main.c            |  6 ++++++
->  5 files changed, 14 insertions(+), 18 deletions(-)
-> 
-> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> index 20c804bdc09c..8fe85f5c7b61 100644
-> --- a/include/uapi/linux/vfio.h
-> +++ b/include/uapi/linux/vfio.h
-> @@ -217,6 +217,7 @@ struct vfio_device_info {
->  	__u32	num_regions;	/* Max region index + 1 */
->  	__u32	num_irqs;	/* Max IRQ index + 1 */
->  	__u32   cap_offset;	/* Offset within info struct of first cap */
-> +	__u32   pad;
->  };
->  #define VFIO_DEVICE_GET_INFO		_IO(VFIO_TYPE, VFIO_BASE + 7)
->  
-> @@ -1304,6 +1305,7 @@ struct vfio_iommu_type1_info {
->  #define VFIO_IOMMU_INFO_CAPS	(1 << 1)	/* Info supports caps */
->  	__u64	iova_pgsizes;	/* Bitmap of supported page sizes */
->  	__u32   cap_offset;	/* Offset within info struct of first cap */
-> +	__u32   pad;
->  };
->  
->  /*
-> diff --git a/drivers/iommu/iommufd/vfio_compat.c b/drivers/iommu/iommufd/vfio_compat.c
-> index fe02517c73cc..6c810bf80f99 100644
-> --- a/drivers/iommu/iommufd/vfio_compat.c
-> +++ b/drivers/iommu/iommufd/vfio_compat.c
-> @@ -483,6 +483,8 @@ static int iommufd_vfio_iommu_get_info(struct iommufd_ctx *ictx,
->  			rc = cap_size;
->  			goto out_put;
->  		}
-> +		cap_size = ALIGN(cap_size, sizeof(u64));
-> +
->  		if (last_cap && info.argsz >= total_cap_size &&
->  		    put_user(total_cap_size, &last_cap->next)) {
->  			rc = -EFAULT;
-> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-> index 20d7b69ea6ff..e2ba2a350f6c 100644
-> --- a/drivers/vfio/pci/vfio_pci_core.c
-> +++ b/drivers/vfio/pci/vfio_pci_core.c
-> @@ -920,24 +920,17 @@ static int vfio_pci_ioctl_get_info(struct vfio_pci_core_device *vdev,
->  				   struct vfio_device_info __user *arg)
->  {
->  	unsigned long minsz = offsetofend(struct vfio_device_info, num_irqs);
-> -	struct vfio_device_info info;
-> +	struct vfio_device_info info = {};
->  	struct vfio_info_cap caps = { .buf = NULL, .size = 0 };
-> -	unsigned long capsz;
->  	int ret;
->  
-> -	/* For backward compatibility, cannot require this */
-> -	capsz = offsetofend(struct vfio_iommu_type1_info, cap_offset);
-> -
->  	if (copy_from_user(&info, arg, minsz))
->  		return -EFAULT;
->  
->  	if (info.argsz < minsz)
->  		return -EINVAL;
->  
-> -	if (info.argsz >= capsz) {
-> -		minsz = capsz;
-> -		info.cap_offset = 0;
-> -	}
-> +	minsz = min_t(size_t, info.argsz, sizeof(info));
->  
->  	info.flags = VFIO_DEVICE_FLAGS_PCI;
->  
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index ebe0ad31d0b0..f812c475a626 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -2762,27 +2762,20 @@ static int vfio_iommu_dma_avail_build_caps(struct vfio_iommu *iommu,
->  static int vfio_iommu_type1_get_info(struct vfio_iommu *iommu,
->  				     unsigned long arg)
->  {
-> -	struct vfio_iommu_type1_info info;
-> +	struct vfio_iommu_type1_info info = {};
->  	unsigned long minsz;
->  	struct vfio_info_cap caps = { .buf = NULL, .size = 0 };
-> -	unsigned long capsz;
->  	int ret;
->  
->  	minsz = offsetofend(struct vfio_iommu_type1_info, iova_pgsizes);
->  
-> -	/* For backward compatibility, cannot require this */
-> -	capsz = offsetofend(struct vfio_iommu_type1_info, cap_offset);
-> -
->  	if (copy_from_user(&info, (void __user *)arg, minsz))
->  		return -EFAULT;
->  
->  	if (info.argsz < minsz)
->  		return -EINVAL;
->  
-> -	if (info.argsz >= capsz) {
-> -		minsz = capsz;
-> -		info.cap_offset = 0; /* output, no-recopy necessary */
-> -	}
-> +	minsz = min_t(size_t, info.argsz, sizeof(info));
->  
->  	mutex_lock(&iommu->lock);
->  	info.flags = VFIO_IOMMU_INFO_PGSIZES;
-> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
-> index f0ca33b2e1df..2850478301d2 100644
-> --- a/drivers/vfio/vfio_main.c
-> +++ b/drivers/vfio/vfio_main.c
-> @@ -1172,6 +1172,9 @@ struct vfio_info_cap_header *vfio_info_cap_add(struct vfio_info_cap *caps,
->  	void *buf;
->  	struct vfio_info_cap_header *header, *tmp;
->  
-> +	/* Ensure that the next capability struct will be aligned */
-> +	size = ALIGN(size, sizeof(u64));
-> +
->  	buf = krealloc(caps->buf, caps->size + size, GFP_KERNEL);
->  	if (!buf) {
->  		kfree(caps->buf);
-> @@ -1205,6 +1208,9 @@ void vfio_info_cap_shift(struct vfio_info_cap *caps, size_t offset)
->  	struct vfio_info_cap_header *tmp;
->  	void *buf = (void *)caps->buf;
->  
-> +	/* Capability structs should start with proper alignment */
-> +	WARN_ON(!IS_ALIGNED(offset, sizeof(u64)));
-> +
->  	for (tmp = buf; tmp->next; tmp = buf + tmp->next - offset)
->  		tmp->next += offset;
+>  tools/perf/tests/shell/trace+probe_vfs_getname.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/tests/shell/trace+probe_vfs_getname.sh b/tools/pe=
+rf/tests/shell/trace+probe_vfs_getname.sh
+> index 3697f054ce1903ac..4014487cf4d933da 100755
+> --- a/tools/perf/tests/shell/trace+probe_vfs_getname.sh
+> +++ b/tools/perf/tests/shell/trace+probe_vfs_getname.sh
+> @@ -20,7 +20,7 @@ skip_if_no_perf_trace || exit 2
+>  trace_open_vfs_getname() {
+>         evts=3D"$(echo "$(perf list syscalls:sys_enter_open* 2>/dev/null =
+| grep -E 'open(at)? ' | sed -r 's/.*sys_enter_([a-z]+) +\[.*$/\1/')" | sed=
+ ':a;N;s:\n:,:g')"
+>         perf trace -e $evts touch $file 2>&1 | \
+> -       grep -E " +[0-9]+\.[0-9]+ +\( +[0-9]+\.[0-9]+ ms\): +touch/[0-9]+=
+ open(at)?\((dfd: +CWD, +)?filename: +${file}, +flags: CREAT\|NOCTTY\|NONBL=
+OCK\|WRONLY, +mode: +IRUGO\|IWUGO\) +=3D +[0-9]+$"
+> +       grep -E " +[0-9]+\.[0-9]+ +\( +[0-9]+\.[0-9]+ ms\): +touch/[0-9]+=
+ open(at)?\((dfd: +CWD, +)?filename: +\"?${file}\"?, +flags: CREAT\|NOCTTY\=
+|NONBLOCK\|WRONLY, +mode: +IRUGO\|IWUGO\) +=3D +[0-9]+$"
 >  }
-
+>
+>
+> --
+> 2.41.0
+>
