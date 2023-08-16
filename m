@@ -2,105 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B72477DCCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1759477DCD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243145AbjHPIwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 04:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45788 "EHLO
+        id S243153AbjHPIxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 04:53:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243173AbjHPIwR (ORCPT
+        with ESMTP id S243240AbjHPIxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 04:52:17 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C7DA26B1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 01:52:14 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe1fc8768aso62870825e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 01:52:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692175933; x=1692780733;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZF/nTYGo6AW2Li21Ls1m8D3SKJzTrxJCZtlOZBDuU7k=;
-        b=gtqKb9bOjk1bosBMYoHQt15/YI3AowGeIPy7hx2pMkR+bxlJSMT96PCo6XaJF/0CY+
-         5awBgQOqscd33S46Fpoc9oDU7iNHIwrgT0s0/g6KWvKQJOSEfMUU75yKvEWJC7g9cSAn
-         8tArOgt9Ykq0WgEvBQfayMkOkW9cdCppdF/QfCOlTMwRcmoIBbKuikjXvLyR86WdRdvg
-         tGZyRDP1oVVqB82zxEtcBdDn3jGt3fcaANqcaz/Pcu2SEg7cD9xTSa/LWwL7I8820nnE
-         wsN+6E0s3Foa9qIDOjksQls1sQSrbUl7Z+GH3KrEydLRO0zPbFAMJ+GJKdQF73hnnKZk
-         YjXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692175933; x=1692780733;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZF/nTYGo6AW2Li21Ls1m8D3SKJzTrxJCZtlOZBDuU7k=;
-        b=Z4PsGsJqzLyXv+oB1xtVPYL8HP1VSl20mquf9D3LjGVv7Dv3i099HJ6hBE2EljZy6G
-         p1GWVQ09pL2ZPo/3s9Kr/eQUKu1aVI8b2yEBfe8+DIJLBqJRZh+faFfaMFjMR3UkyG9l
-         d2n/CV4a9NTjnd/AwGDamnNDxIHb3v/2AFF80hUHPP1o85rj/waTHT7GGYYHoEcpdbAY
-         sBam9Vh4k5MQaEHMr/BQn7376Y0i0bzqJh4PVpK1q1jQk6KmwF34a1JNaRlQosovZgBQ
-         wPgG9xkBdzFoB+VUMcv25c+V6K7J8rOznOGkhY/y5M/fNipr1oX01lrdgmlJE5+BvrbJ
-         1Nug==
-X-Gm-Message-State: AOJu0YzXA6PopbuIpS8ayBe8lm4VIv12KB/+3RQdbpYiDCAa6U3tRRMA
-        +Al+fSMh9hsDxN4zIzBYbuAcMg==
-X-Google-Smtp-Source: AGHT+IFU7+fWoHJZgaDyV1OqwMo/9sJ3P6CAcyUM64PehXJvMQe4Ai52t2bXxImv6lcC98UcBoHxsQ==
-X-Received: by 2002:a05:600c:289:b0:3f7:f2d0:b904 with SMTP id 9-20020a05600c028900b003f7f2d0b904mr905156wmk.8.1692175932743;
-        Wed, 16 Aug 2023 01:52:12 -0700 (PDT)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id t15-20020a7bc3cf000000b003fe601a7d46sm23473464wmj.45.2023.08.16.01.52.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 01:52:12 -0700 (PDT)
-Message-ID: <69a2bef8-efcc-2ca2-debd-201555833e43@linaro.org>
-Date:   Wed, 16 Aug 2023 10:52:11 +0200
+        Wed, 16 Aug 2023 04:53:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07431198C;
+        Wed, 16 Aug 2023 01:53:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9931D66345;
+        Wed, 16 Aug 2023 08:53:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 940A6C433C7;
+        Wed, 16 Aug 2023 08:53:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692176006;
+        bh=W6H+YmdxNnL5Y2clvk2f8BlKz84U9aaSlefeeFikQRE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=F3rhb0tzadu2284PcYbX+zLkzqhCL6c//bRfYIALors43WF0RgNfJOXrvXChMOqcn
+         G/GuNU0X+NOXjL79+Ln4GGOZMvaWNTYKzUJ2080CRpt+LmsEOmQd1dvKpM0ODW6kl0
+         xnY2eAogaoLXyl/ZTjDSNDuwwQqTyASZzc+waYlbaQi1VirIq44jQAW3CbGdTophof
+         K5O/Y6M2Sh+8A48fhDO+aTNtI+dRlD0gWF9Yla+c+uYuh/I8o+JSw1tX9DOZFDeR5N
+         zNfKLk05mXwMS4N00Vv9jsgkgmK5HmpqF08LotDFdMT1PGVNkESelLIpyzuM4Qbegr
+         XOpwtiJYNUFSQ==
+From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] tty: gdm724x: use min_t() for size_t varable and a constant
+Date:   Wed, 16 Aug 2023 10:53:22 +0200
+Message-ID: <20230816085322.22065-1-jirislaby@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] thermal/drivers/sun8i: Free calibration nvmem after
- reading it
-Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20230719-thermal-sun8i-free-nvmem-v1-1-f553d5afef79@kernel.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20230719-thermal-sun8i-free-nvmem-v1-1-f553d5afef79@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/07/2023 02:58, Mark Brown wrote:
-> The sun8i thermal driver reads calibration data via the nvmem API at
-> startup, updating the device configuration and not referencing the data
-> again.  Rather than explicitly freeing the nvmem data the driver relies
-> on devm_ to release it, even though the data is never referenced again.
-> The allocation is still tracked so it's not leaked but this is notable
-> when looking at the code and is a little wasteful so let's instead
-> explicitly free the nvmem after we're done with it.
-> 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+My thinking was that ulong is the same as size_t everywhere. No, size_t
+is uint on 32bit. So the below commit introduced a build warning on
+32bit:
+.../gdm724x/gdm_tty.c:165:24: warning: comparison of distinct pointer types ('typeof (2048UL) *' (aka 'unsigned long *') and 'typeof (remain) *' (aka 'unsigned int *'))
 
-Applied, thanks
+To fix this, partially revert the commit (remove constants' suffixes)
+and switch to min_t() in this case instead.
 
+/me would hope for Z (or alike) suffix for constants.
 
+Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+Fixes: c3e5c706aefc (tty: gdm724x: convert counts to size_t)
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308151953.rNNnAR2N-lkp@intel.com/
+---
+ drivers/staging/gdm724x/gdm_tty.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/staging/gdm724x/gdm_tty.c b/drivers/staging/gdm724x/gdm_tty.c
+index 67d9bf41e836..32b2e817ff04 100644
+--- a/drivers/staging/gdm724x/gdm_tty.c
++++ b/drivers/staging/gdm724x/gdm_tty.c
+@@ -17,9 +17,9 @@
+ #define GDM_TTY_MAJOR 0
+ #define GDM_TTY_MINOR 32
+ 
+-#define WRITE_SIZE 2048UL
++#define WRITE_SIZE 2048
+ 
+-#define MUX_TX_MAX_SIZE 2048UL
++#define MUX_TX_MAX_SIZE 2048
+ 
+ static inline bool gdm_tty_ready(struct gdm *gdm)
+ {
+@@ -159,7 +159,7 @@ static ssize_t gdm_tty_write(struct tty_struct *tty, const u8 *buf, size_t len)
+ 		return -ENODEV;
+ 
+ 	while (remain) {
+-		size_t sending_len = min(MUX_TX_MAX_SIZE, remain);
++		size_t sending_len = min_t(size_t, MUX_TX_MAX_SIZE, remain);
+ 		gdm->tty_dev->send_func(gdm->tty_dev->priv_dev,
+ 					(void *)(buf + sent_len),
+ 					sending_len,
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+2.41.0
 
