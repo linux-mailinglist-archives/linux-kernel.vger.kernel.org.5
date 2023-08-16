@@ -2,96 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DD977E37E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F6377E389
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343582AbjHPOZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 10:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40208 "EHLO
+        id S1343603AbjHPO04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 10:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343570AbjHPOY4 (ORCPT
+        with ESMTP id S1343602AbjHPO0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 10:24:56 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A5B1999
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:24:54 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-26b4a9205e3so1991650a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:24:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20221208.gappssmtp.com; s=20221208; t=1692195894; x=1692800694;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=P1WGFmUFQbZk1gRHuf5U7fgkfS57PmP0h28a+2hxBjY=;
-        b=TyRLJKa3FRbKLMywDuW3EZSOaSUQIruIgQtIvZ92NVMkkM5rR/MwpfvAA8FjAtDW4X
-         yNe+1P2ChHs7RznxBsVp1jRBIhMlMJaPFj/YFwYPdKjnykvgOY003h21AolAjtrbnJQl
-         t2LL6KbDixm30xvFehhjYS2JBej485WINZu8sMI4JM3HA9D04PwsBiK2o4I4Z3T0XKGZ
-         tIAoq0VztDy1Z74F3iYcV+RZoKjyEvKlyeT/kaRCqH/CZ0oXtmuWc3Ms+niqCoYP+wpW
-         EpniaXrcdWyDiv0fI4ZWpnFRtVE7OqQYhWpzndgNYGSFRuk2DmioWCZ8rbZN2gNBzd8Y
-         uK8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692195894; x=1692800694;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P1WGFmUFQbZk1gRHuf5U7fgkfS57PmP0h28a+2hxBjY=;
-        b=h5HE6Za4tWkHW82kEwXV4UFFRYt4vQqrfsrbt5Dh9xmcfdhY9IBp3qRYdqUTN3+YCP
-         vzFTLZQI+/AudydlGfBYWSHASsVnlTwUMCrIkETBX2A+WQIEETXZMioB5UN1zK8/ZGQw
-         1MS+nxiSk4BPpUZkoYLnnw/9zANVc0ASgJoqueeplyEf6VVq7b/NPFuQz0+Zbg4qabs7
-         nFdyhMYj36FNVwrvt5tnRLwnFaGq7qSeIVXOp8rIdBQzb1EXT5Ns6HTRYTr0WwbPT0o5
-         plcL/Zj++PqQeZHW99vOKWmq5Q19goQl3TdH64WRmyHD5jCVpItexIuIU8/oWVD4DVae
-         IExw==
-X-Gm-Message-State: AOJu0YyQdAGP/BtR+ZpqjJoZVwOxcctBrpXAKa7+dxG8DA55P9gAegWf
-        brWZi2V0dcS4HRbttbaqIj2VGg==
-X-Google-Smtp-Source: AGHT+IEhASnnPuidtpatB9VyiPbNp+Q1/lOfH92sBonVT/ZVG3ZNut3Q7QzPxS1bxTjDaUN5y/MjHg==
-X-Received: by 2002:a17:90b:681:b0:268:15dd:c5c7 with SMTP id m1-20020a17090b068100b0026815ddc5c7mr1328421pjz.40.1692195893982;
-        Wed, 16 Aug 2023 07:24:53 -0700 (PDT)
-Received: from localhost ([135.180.227.0])
-        by smtp.gmail.com with ESMTPSA id fs11-20020a17090af28b00b00263987a50fcsm13247424pjb.22.2023.08.16.07.24.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 07:24:53 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 07:24:53 -0700 (PDT)
-X-Google-Original-Date: Wed, 16 Aug 2023 07:24:51 PDT (-0700)
-Subject:     Re: [PATCH 0/2] Misc RISC-V timer driver improvements
-In-Reply-To: <20230710131902.1459180-1-apatel@ventanamicro.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>,
-        daniel.lezcano@linaro.org, tglx@linutronix.de,
-        atishp@atishpatra.org, ajones@ventanamicro.com,
-        sunilvl@ventanamicro.com, Conor Dooley <conor@kernel.org>,
-        anup@brainfault.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, apatel@ventanamicro.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     apatel@ventanamicro.com
-Message-ID: <mhng-5adf3416-5d04-4a55-a6bb-1fbe921f9f48@palmer-ri-x1c9>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Wed, 16 Aug 2023 10:26:39 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC541999;
+        Wed, 16 Aug 2023 07:26:37 -0700 (PDT)
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37GDHGWA002228;
+        Wed, 16 Aug 2023 16:26:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=szXQJpt
+        kKizXSfwXSxIj1fEKQa8MbeyLm6VyELkCJP8=; b=eDXXTE+kNc8l575O6SYJRbx
+        Q64U+Q2QfzVvBMbbcsz/6S8w395jRmLR8VkA2xerleMO4xW2D09rsYq4/36avVM2
+        5oCAXH4Fy9wFyaNxqE26563DkeQxzekw8GXDJqZtp8iBSMnQL0Sh4EuzZOQFkZu8
+        jWzW0umKGWEyoGvB7ChfVoX/l8g0V11y3LeHoROQSWs/mbgNfax0tt4KOQ5/siZV
+        UpPaT9BQMd8OOKIPu3XOW9lctPrblJ8y7AZmjJr8+IklNcGRbPz47xDce4viyyx4
+        TIT/++f0Vu7Ya2/6NzOQMS/XuXMELH/cZMYgJ2Zowt3AOZy9Ev/c9nOncfB+svA=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3sgth628tk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 16:26:24 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3E382100061;
+        Wed, 16 Aug 2023 16:26:22 +0200 (CEST)
+Received: from Webmail-eu.st.com (eqndag1node4.st.com [10.75.129.133])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 35C3824C447;
+        Wed, 16 Aug 2023 16:26:22 +0200 (CEST)
+Received: from localhost (10.252.20.29) by EQNDAG1NODE4.st.com (10.75.129.133)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 16 Aug
+ 2023 16:26:21 +0200
+From:   Thomas BOURGOIN <thomas.bourgoin@foss.st.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     Thomas BOURGOIN <thomas.bourgoin@foss.st.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Lionel Debieve <lionel.debieve@foss.st.com>
+Subject: [PATCH] ARM: dts: stm32: add HASH on stm32mp131
+Date:   Wed, 16 Aug 2023 16:26:17 +0200
+Message-ID: <20230816142617.2625802-1-thomas.bourgoin@foss.st.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.252.20.29]
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To EQNDAG1NODE4.st.com
+ (10.75.129.133)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-16_14,2023-08-15_02,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 Jul 2023 06:19:00 PDT (-0700), apatel@ventanamicro.com wrote:
-> This series does two improvements to the RISC-V timer driver:
-> 1) Keep timer interrupt enable state in-sync with interrupt subsystem
-> 2) Increase rating of clock event device when Sstc is available
->
-> These patches can also be found in the riscv_timer_imp_v1 branch at:
-> https://github.com/avpatel/linux.git
->
-> Anup Patel (2):
->   clocksource: timer-riscv: Don't enable/disable timer interrupt
->   clocksource: timer-riscv: Increase rating of clock_event_device for
->     Sstc
->
->  drivers/clocksource/timer-riscv.c | 17 +++++++++++++++--
->  1 file changed, 15 insertions(+), 2 deletions(-)
+From: Lionel Debieve <lionel.debieve@foss.st.com>
 
-Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+Add the HASH support on stm32mp131.
 
-in case the clock folks want to pick these up.  Otherwise I'll look more 
-closely and take them via the RISC-V tree.  Thanks!
+Signed-off-by: Lionel Debieve <lionel.debieve@foss.st.com>
+Signed-off-by: Thomas Bourgoin <thomas.bourgoin@foss.st.com>
+---
+ arch/arm/boot/dts/st/stm32mp131.dtsi | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/arch/arm/boot/dts/st/stm32mp131.dtsi b/arch/arm/boot/dts/st/stm32mp131.dtsi
+index 672f3b7735a2..4e4f64cfb75b 100644
+--- a/arch/arm/boot/dts/st/stm32mp131.dtsi
++++ b/arch/arm/boot/dts/st/stm32mp131.dtsi
+@@ -1210,6 +1210,17 @@ timer {
+ 			};
+ 		};
+ 
++		hash: hash@54003000 {
++			compatible = "st,stm32mp13-hash";
++			reg = <0x54003000 0x400>;
++			interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&rcc HASH1>;
++			resets = <&rcc HASH1_R>;
++			dmas = <&mdma 30 0x2 0x1000a02 0x0 0x0>;
++			dma-names = "in";
++			status = "disabled";
++		};
++
+ 		mdma: dma-controller@58000000 {
+ 			compatible = "st,stm32h7-mdma";
+ 			reg = <0x58000000 0x1000>;
+-- 
+2.25.1
+
