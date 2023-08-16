@@ -2,146 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E97C677D734
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 02:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E78877D737
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 02:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240903AbjHPAuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 20:50:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33302 "EHLO
+        id S240891AbjHPAvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 20:51:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240899AbjHPAuT (ORCPT
+        with ESMTP id S240949AbjHPAvH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 20:50:19 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C6F2122
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 17:50:15 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RQTz91PzDzrS81;
-        Wed, 16 Aug 2023 08:48:53 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 16 Aug 2023 08:50:13 +0800
-Message-ID: <2a834c28-2122-482a-9db6-8b8572932b10@huawei.com>
-Date:   Wed, 16 Aug 2023 08:50:12 +0800
+        Tue, 15 Aug 2023 20:51:07 -0400
+Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5982121
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 17:51:05 -0700 (PDT)
+Received: from eig-obgw-6001a.ext.cloudfilter.net ([10.0.30.140])
+        by cmsmtp with ESMTP
+        id W0l6q2CO3DKaKW4kaqMHzW; Wed, 16 Aug 2023 00:51:04 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id W4kZqBC8kyB3AW4kZqHBMl; Wed, 16 Aug 2023 00:51:03 +0000
+X-Authority-Analysis: v=2.4 cv=UZlC9YeN c=1 sm=1 tr=0 ts=64dc1d77
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=CGo6wCm4IADRok0f:21 a=IkcTkHD0fZMA:10 a=UttIx32zK-AA:10 a=wYkD_t78qR0A:10
+ a=z8Z5iky-Q3P00n-VfiYA:9 a=QEXdDO2ut3YA:10 a=tNK2v2ls7fuFGmW9SST8:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:Subject
+        :From:Cc:To:MIME-Version:Date:Message-ID:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ymVDh2vVYAFrzF7WLvlKXgvKijVcMrrqDbKZfN/hxtI=; b=pyiUu4GK8H7pB0uHxbs4Eevl0k
+        Jot9BuhrT1A6Y3NQAcz81wAh/v/lLw6/ML2bX4kEHY/rAlzwFAT4z6RzN8zK3IeNlV/bf2i7y75KJ
+        Ur3O/5KhgPvpGxP4HOnFgBbm6nCGblOdY5qSFX94Zsml0ITF974XKlyHtW2jB75kQwJ6DE8AryIXt
+        r6lywhCLb6m1kmDULn19IrEHbBTN+yMHI+lRoyAJd8CKVwPlkzhncujHn/jIj4SPVg+K2e3+IIg55
+        X2LVgTXHSq/ww3qYr6UFGLqWaEeZ5eY8kR06bSWSKNRqcCRKXN5eSo27OGYDIN0x/JOhTLPuRafRv
+        FyAPYb7g==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:43022 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qW4kY-001ica-34;
+        Tue, 15 Aug 2023 19:51:02 -0500
+Message-ID: <6e3fddfe-2d31-72fa-ac2b-3b7fa4e6fe08@embeddedor.com>
+Date:   Tue, 15 Aug 2023 18:52:06 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] mm: migrate: use a folio in add_page_for_migration()
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
 Content-Language: en-US
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        "Huang, Ying" <ying.huang@intel.com>
-CC:     Zi Yan <ziy@nvidia.com>, Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        David Hildenbrand <david@redhat.com>
-References: <F2621E68-F36E-493C-8619-ADFE05050823@nvidia.com>
- <d184ba78-97d1-a264-fc31-87dfdbe6fdff@huawei.com>
- <de0100e4-d673-428b-8d50-11ae2b7a9641@huawei.com>
- <5BBFF5D3-3416-4C0E-9FDD-655661657D67@nvidia.com>
- <a34778cb-61dd-4853-9961-afd7568cd0f7@huawei.com>
- <20230809205316.GA3537@monkey> <20230809224424.GB3537@monkey>
- <2da95492-079b-43b1-a950-d290984a21c0@huawei.com>
- <20230810162920.GA4734@monkey>
- <87wmxx7y9j.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <20230815211226.GA4150@monkey>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <20230815211226.GA4150@monkey>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+To:     Brian Norris <briannorris@chromium.org>,
+        Kalle Valo <kvalo@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [RFC] wifi: mwifiex: Asking for some light on this, please :)
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qW4kY-001ica-34
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:43022
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfE3tsdRnh+b6iGAKQnE7NvCVjyePUx2unbrwljjJoEkud5gl58xBMRI/V0EyDVbyARkT4lEoASG87yulnGyURdDRzzuUzFtjurcrQUN++7uhE7v2ELwW
+ +Dac3iuT41g3/xXGONv/LhRkckN3Rg4oUqcoxMBOowgR0tVD5IjlgxoEe0vPo7CB/WmBFm6f6EsrDgh8+cESfgrdW/3shk22aAvSawEOB0uymGNjai1tncCk
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all,
+
+While working on flex-array transformations I ran into the following
+implementation:
+
+drivers/net/wireless/marvell/mwifiex/fw.h:775:
+struct mwifiex_ie_types_rxba_sync {
+	struct mwifiex_ie_types_header header;
+	u8 mac[ETH_ALEN];
+	u8 tid;
+	u8 reserved;
+	__le16 seq_num;
+	__le16 bitmap_len;
+	u8 bitmap[1];
+} __packed;
+
+`bitmap` is currently being used as a fake-flex array and we should
+transform it into a proper flexible-array member.
+
+However, while doing that, I noticed something in the following function
+that's not clear to me and I wanted to ask you for feedback:
+
+drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c:907:
+void mwifiex_11n_rxba_sync_event(struct mwifiex_private *priv,
+				 u8 *event_buf, u16 len)
+{
+	struct mwifiex_ie_types_rxba_sync *tlv_rxba = (void *)event_buf;
+	u16 tlv_type, tlv_len;
+	struct mwifiex_rx_reorder_tbl *rx_reor_tbl_ptr;
+	u8 i, j;
+	u16 seq_num, tlv_seq_num, tlv_bitmap_len;
+	int tlv_buf_left = len;
+	int ret;
+	u8 *tmp;
+
+	mwifiex_dbg_dump(priv->adapter, EVT_D, "RXBA_SYNC event:",
+			 event_buf, len);
+	while (tlv_buf_left >= sizeof(*tlv_rxba)) {
+		tlv_type = le16_to_cpu(tlv_rxba->header.type);
+		tlv_len  = le16_to_cpu(tlv_rxba->header.len);
+		if (tlv_type != TLV_TYPE_RXBA_SYNC) {
+			mwifiex_dbg(priv->adapter, ERROR,
+				    "Wrong TLV id=0x%x\n", tlv_type);
+			return;
+		}
+
+		tlv_seq_num = le16_to_cpu(tlv_rxba->seq_num);
+		tlv_bitmap_len = le16_to_cpu(tlv_rxba->bitmap_len);
+		mwifiex_dbg(priv->adapter, INFO,
+			    "%pM tid=%d seq_num=%d bitmap_len=%d\n",
+			    tlv_rxba->mac, tlv_rxba->tid, tlv_seq_num,
+			    tlv_bitmap_len);
+
+		rx_reor_tbl_ptr =
+			mwifiex_11n_get_rx_reorder_tbl(priv, tlv_rxba->tid,
+						       tlv_rxba->mac);
+		if (!rx_reor_tbl_ptr) {
+			mwifiex_dbg(priv->adapter, ERROR,
+				    "Can not find rx_reorder_tbl!");
+			return;
+		}
+
+		for (i = 0; i < tlv_bitmap_len; i++) {
+			for (j = 0 ; j < 8; j++) {
+				if (tlv_rxba->bitmap[i] & (1 << j)) {
+					seq_num = (MAX_TID_VALUE - 1) &
+						(tlv_seq_num + i * 8 + j);
+
+					mwifiex_dbg(priv->adapter, ERROR,
+						    "drop packet,seq=%d\n",
+						    seq_num);
+
+					ret = mwifiex_11n_rx_reorder_pkt
+					(priv, seq_num, tlv_rxba->tid,
+					 tlv_rxba->mac, 0, NULL);
+
+					if (ret)
+						mwifiex_dbg(priv->adapter,
+							    ERROR,
+							    "Fail to drop packet");
+				}
+			}
+		}
+
+		tlv_buf_left -= (sizeof(*tlv_rxba) + tlv_len);
+		tmp = (u8 *)tlv_rxba + tlv_len + sizeof(*tlv_rxba);
+		
+What's the relation between tlv_len, sizeof(*tlv_rxba) and tlv_bitmap_len?
+
+Isn't `sizeof(*tlv_rxba) + tlv_len` and `tlv_len + sizeof(*tlv_rxba)`
+double-counting some fields in `struct mwifiex_ie_types_rxba_sync`?
+
+Shouldn't this be something like this, instead (before the flex-array
+transformation, of course):
+
+-               tlv_buf_left -= (sizeof(*tlv_rxba) + tlv_len);
+-               tmp = (u8 *)tlv_rxba + tlv_len + sizeof(*tlv_rxba);
++               tlv_buf_left -= (sizeof(*tlv_rxba) + tlv_bitmap_len - 1);
++               tmp = (u8 *)tlv_rxba + tlv_bitmap_len + sizeof(*tlv_rxba - 1);
 
 
-On 2023/8/16 5:12, Mike Kravetz wrote:
-> On 08/15/23 11:58, Huang, Ying wrote:
->> Mike Kravetz <mike.kravetz@oracle.com> writes:
->>
->>> On 08/10/23 09:49, Kefeng Wang wrote:
->>>>
->>>>
->>>> On 2023/8/10 6:44, Mike Kravetz wrote:
->>>>> On 08/09/23 13:53, Mike Kravetz wrote:
->>>>>> On 08/09/23 20:37, Kefeng Wang wrote:
->>>>>>>>
->>>>>>>> Cc Mike to help us clarify the expected behavior of hugetlb.
->>>>>>>>
->>>>>>>> Hi Mike, what is the expected behavior, if a user tries to use move_pages()
->>>>>>>> to migrate a non head page of a hugetlb page?
->>>>>>>
->>>>>>> Could you give some advise, thanks
->>>>>>>
->>>>>>
->>>>>> Sorry, I was away for a while.
->>>>>>
->>>>>> It seems unfortunate that move_pages says the passed user addresses
->>>>>> should be aligned to page boundaries.  However, IIUC this is not checked
->>>>>> or enforced.  Otherwise, passing a hugetlb page should return the same
->>>>>> error.
->>>>>>
->>>>>> One thought would be that hugetlb mappings should behave the same
->>>>>> non-hugetlb mappings.  If passed the address of a hugetlb tail page, align
->>>>>> the address to a hugetlb boundary and migrate the page.  This changes the
->>>>>> existing behavior.  However, it would be hard to imagine anyone depending
->>>>>> on this.
->>>>>>
->>>>>> After taking a closer look at the add_page_for_migration(), it seems to
->>>>>> just ignore passed tail pages and do nothing for such passed addresses.
->>>>>> Correct?  Or, am I missing something?  Perhaps that is behavior we want/
->>>>>> need to preserve?
->>>>>
->>>>> My mistake, status -EACCES is returned when passing a tail page of a
->>>>> hugetlb page.
->>>>>
->>>>
->>>> As mentioned in previous mail， before e66f17ff7177 ("mm/hugetlb: take
->>>> page table lock in follow_huge_pmd()") in v4.0, follow_page() will
->>>> return NULL on tail page for Huagetlb page, so move_pages() will return
->>>> -ENOENT errno, but after that commit, -EACCES is returned.
->>>>
->>>> Meanwhile, the behavior of THP/HUGETLB is different, the whole THP will be
->>>> migrated on a tail page, but HUGETLB will return -EACCES(after v4.0)
->>>> or -ENOENT(before v4.0) on tail page.
->>>>
->>>>> Back to the question of 'What is the expected behavior if a tail page is
->>>>> passed?'.  I do not think we have defined an expected behavior.  If
->>>>> anything is 'expected' I would say it is -EACCES as returned today.
->>>>>
->>>>
->>>> My question is,
->>>>
->>>> Should we keep seem behavior between HUGETLB and THP, or only change the
->>>> errno from -EACCES to -ENOENT/-EBUSY.
->>>
->>> Just to be clear.  When you say "keep seem behavior between HUGETLB and THP",
->>> are you saying that you would like hugetlb to perform migration of the entire
->>> hugetlb page if a tail page is passed?
->>>
->>> IMO, this would be ideal as it would mean that hugetlb and THP behave the same
->>> when passed the address of a tail page.  The fewer places where hugetlb
->>> behavior diverges, the better.  However, this does change behavior.
->>
->> A separate patch will be needed for behavior change.
->>
-> 
-> Correct.
-> 
-> Since the goal of this series is to convert to folios, we should maintain the
-> existing behavior and errno (-EACCES).  In a subsequent patch, we can
-> change behavior.
-> 
-> That would be my suggestion.
+		tlv_rxba = (struct mwifiex_ie_types_rxba_sync *)tmp;
+	}
+}
 
+Thanks in advance for any feedback!
 
-Thanks all, will following the suggestion and re-post.
+--
+Gustavo
