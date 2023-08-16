@@ -2,92 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E0377E2FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB33F77E2EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245695AbjHPNrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 09:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50112 "EHLO
+        id S245677AbjHPNnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:43:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245331AbjHPNqg (ORCPT
+        with ESMTP id S1343518AbjHPNnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 09:46:36 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5120C125
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:46:35 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 15:46:30 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692193592;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tWBUMviS5VnX2ujsjiJgOkWFPLAfF3BRWa0qwcg/2UQ=;
-        b=YmdxAecjJ9Jv8YgXQiFSXjq8dA80P2ELfVFO9G+5BrZOafgHuRYGH0+F+O3qW2Is/KzTN2
-        swRjSI/czZmOatruXCPuwaogQ3CTZK6EEHHsA9Ki86TR61yeolEdNVLGK8Mf15zbvrUGvq
-        dmaV6FDUxYwgMCONDHWV2AbiBXHyNaMXcfUq9dQSPyjqUWdpWYGnj9D+0rLhnCYAT3lFWR
-        hbfoxbZN/6LzfYBxt5ARMArqdbu6cb13dmwjW0492szhOgCEWbG7/UWd1o1CFTXwmE0j0I
-        4hT90YOnIuIqS2giiiGFVepe4CIHu6MdNALJ+LVOLGeVDADclh119y78yRrn8g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692193592;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tWBUMviS5VnX2ujsjiJgOkWFPLAfF3BRWa0qwcg/2UQ=;
-        b=3aqUIAhHPgp+VJJbmJeR5UNNXOfHU5MrCSbg4wIXF9jRKYZDRXPYWhwOQaWdK/2Ndge3A3
-        NTNopKUyuIv6rtAA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        bsegall@google.com, boqun.feng@gmail.com, swood@redhat.com,
-        bristot@redhat.com, dietmar.eggemann@arm.com, mingo@redhat.com,
-        jstultz@google.com, juri.lelli@redhat.com, mgorman@suse.de,
-        rostedt@goodmis.org, vschneid@redhat.com,
-        vincent.guittot@linaro.org, longman@redhat.com, will@kernel.org
-Subject: Re: [PATCH 0/6] locking/rtmutex: Avoid PI state recursion through
- sched_submit_work()
-Message-ID: <20230816134630.KO12Djeh@linutronix.de>
-References: <20230815110121.117752409@infradead.org>
- <20230815161557.GK214207@hirez.programming.kicks-ass.net>
- <20230816085826.zfXjhNmj@linutronix.de>
- <20230816094257.GE980931@hirez.programming.kicks-ass.net>
- <20230816101902.Pz8wdats@linutronix.de>
+        Wed, 16 Aug 2023 09:43:07 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92C8D30E0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:42:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692193369; x=1723729369;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=DDaqR8jxXrDXXR9QxQxqg4qA72d+XQzUFNNFvJlV6zg=;
+  b=DK5dfPJwfbR1Tci7KqfiBz8rw5L4dmjUKjOvh5KqgcOzLRyTFg381k9t
+   p782gSiUymXIU/swAZnybXEVseNXT8+nSW74ZRJe2khF9uRlGt1+b/1qZ
+   UqxUuiaRMsOYzjAG3PaZXna4Gv2aYxFBo++09SBNIHu5X0JH8uMRpvtSc
+   dM6aoBCU1lSBezFlOQEp5lyR1t09rZl6q6tgMxjvC1GY+jGrLzm7XE6uF
+   QSzaW8QQvGe3KV1tTGIZkKunP7RyGoSDHGgKqdzVagXzhh2PNAlpSAbv3
+   Lw0yRgAKQvI3nMP8VcodU3J+2JlSmvAO+GGRoc3yGP+k2EQkqK0vXgDVh
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="436435605"
+X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
+   d="scan'208";a="436435605"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 06:42:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="711118952"
+X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
+   d="scan'208";a="711118952"
+Received: from himal-super-server.iind.intel.com ([10.145.169.168])
+  by orsmga006.jf.intel.com with ESMTP; 16 Aug 2023 06:42:45 -0700
+From:   Himal Prasad Ghimiray <himal.prasad.ghimiray@intel.com>
+Cc:     Himal Prasad Ghimiray <himal.prasad.ghimiray@intel.com>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Badal Nilawar <badal.nilawar@intel.com>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] fault-inject: Include linux/types.h by default.
+Date:   Wed, 16 Aug 2023 19:17:48 +0530
+Message-Id: <20230816134748.979231-1-himal.prasad.ghimiray@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230816101902.Pz8wdats@linutronix.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-16 12:19:04 [+0200], To Peter Zijlstra wrote:
-> On 2023-08-16 11:42:57 [+0200], Peter Zijlstra wrote:
-> > Not the same -- this is namespace_lock(), right? That's a regular rwsem
-> > afaict and that *should* be good. Clearly I messed something up.
-> 
-> Most likely. I do see it also fom inode_lock() which does down_write().
-> I see it only to originate from rwbase_write_lock().
+Functions should_fail_alloc_page, should_failslab, and __should_failslab
+are declared irrespective of CONFIG_FAULT_INJECTION. These functions use
+bool and gfp_t types, which are treated as unknown when
+CONFIG_FAULT_INJECTION is disabled because the inclusion of linux/types.h
+is missing.
 
-I've been looking at what you did and what we had.
-I'm not sure if your additional debug/assert code figured it out or me
-looking at it, but in rwbase_write_lock() for down_write(), we had this
-beauty with a comment that you made go away:
+Fixes: 6ff1cb355e62 ("[PATCH] fault-injection capabilities infrastructure")
 
-|        * Take the rtmutex as a first step. For rwsem this will also
-|        * invoke sched_submit_work() to flush IO and workers.
-|	 */
-|         if (rwbase_rtmutex_lock_state(rtm, state))
+Cc: Lucas De Marchi <lucas.demarchi@intel.com>
+Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc: Badal Nilawar <badal.nilawar@intel.com>
+Cc: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Himal Prasad Ghimiray <himal.prasad.ghimiray@intel.com>
+---
+ include/linux/fault-inject.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-for rw_semaphore we don't have any explicit rwbase_sched_submit_work()
-but relied on this one. Now that I look at it again,
-rwbase_rtmutex_lock_state() can succeed in the fast path so we don't
-flush/ invoke rwbase_pre_schedule().
-So you rightfully removed the comment as it was misleading but we do
-need that rwbase_pre_schedule() thingy before
-raw_spin_lock_irqsave(&rtm->wait_lock).
+diff --git a/include/linux/fault-inject.h b/include/linux/fault-inject.h
+index 481abf530b3c..f83ab2b6cd08 100644
+--- a/include/linux/fault-inject.h
++++ b/include/linux/fault-inject.h
+@@ -2,9 +2,10 @@
+ #ifndef _LINUX_FAULT_INJECT_H
+ #define _LINUX_FAULT_INJECT_H
+ 
++#include <linux/types.h>
++
+ #ifdef CONFIG_FAULT_INJECTION
+ 
+-#include <linux/types.h>
+ #include <linux/debugfs.h>
+ #include <linux/configfs.h>
+ #include <linux/ratelimit.h>
+-- 
+2.25.1
 
-Sebastian
