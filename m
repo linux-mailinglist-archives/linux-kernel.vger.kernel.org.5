@@ -2,99 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A2F977E87B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E6D77E883
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345437AbjHPSQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 14:16:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
+        id S1345449AbjHPSQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 14:16:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345436AbjHPSPn (ORCPT
+        with ESMTP id S1345439AbjHPSQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 14:15:43 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645551FE1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:15:40 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-40c72caec5cso39861cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 11:15:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692209739; x=1692814539;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h5WHncL+NG8/EGnOvIE/3MtfpypgNb51JThBcIlgM4w=;
-        b=ET+Vb8tYv7aoDwFhM7rocg5+RUzuxXqNmOQaNF472bvN+K6+JDNWGRdrJFbKhy4K7A
-         2NGPB1IizI62yJfSZaPKIpjZNhLdyfaJ3Jt4/xeahmgIuMnacZLMVXEQUunHAhKVOsHz
-         26lJqPfQ3oMUxHCAs+zbGMqcLmlThPJGsN+F4JqSZ0J028ueNQQnar24LXG5N8vmqlFN
-         /hc8Plx0V2264fTN5N1OYaOxmV4YRc7wbdiUUD6NRYTLo0lv9/M0xDo7MnRM5zVcB3Lo
-         gLHYdlAY1I6zMoqbWcxjvAT5DRbqkFpp0hrkTytNJ7AyAmw/TR7OjP1LJNL1bPB9qmlv
-         iL0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692209739; x=1692814539;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h5WHncL+NG8/EGnOvIE/3MtfpypgNb51JThBcIlgM4w=;
-        b=jUrCKYBfXBuUuhd4d0C8r4nTK7lbpnGNklKb13CY0RemFT4D/8c+x0IiDcFfqhInzF
-         IyR7jS+LVQTys1PolCb1L0wExuQAVj9YXQMqF5EX7DMaA330qmLjqWavdzPQ+nny97C/
-         uAJ07QOt18lrqAl4ZeSN+KjP7/y6jR48Q1bWTyLGlosEXu6kOqkfEKW5uA1HCLfi6AUg
-         +PcgdlEo8GyZ0Jj1Gsg+XIte9UiDZAW7f3vI/tMoiCnbG8hDsNFS/karItFyDpAPgtC2
-         gH/YA/1rMtcIw+fVeQUheOYgMIbGT2SXbpeKbRQIwo+lstoX9VRmWyjaOG37+uFCGJRp
-         t4Xw==
-X-Gm-Message-State: AOJu0YzbexJQWCaW0U7+n0Iww2ehLk05+5dpBZ0xH3FVXaCPgovhG9Tj
-        dNBh9v8VcqvjJC9W/pqg8QYcOfo41a5lOVDfqRAoJw==
-X-Google-Smtp-Source: AGHT+IEVVX01Dl2MYshWhp3P+Wo6tjf41wb26ZeQ9/oeXmQL18Ncb+xA8iegrsfbk+CSW7AhlMd4GQtPY2lkuHcTlC4=
-X-Received: by 2002:a05:622a:f:b0:403:affb:3c03 with SMTP id
- x15-20020a05622a000f00b00403affb3c03mr44357qtw.10.1692209739289; Wed, 16 Aug
- 2023 11:15:39 -0700 (PDT)
+        Wed, 16 Aug 2023 14:16:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F98DE4C;
+        Wed, 16 Aug 2023 11:16:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 33BEE65BC3;
+        Wed, 16 Aug 2023 18:16:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C596DC433C7;
+        Wed, 16 Aug 2023 18:15:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692209762;
+        bh=TgK016C/w5t6JQKrQP4E8mcD6V8oPi/S+UCWzSu2Rbc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=djQMSkkoGjtLgUNe6JiG+uUbjTG+u7ie7eym1Qc/s0ITrVmBOvMdk78mSJmK4ub/N
+         BH/UchLawIzBNwHe6rSkOxpgF+9ayCmXUe+Jm7bBi6IIIFDF2HmzCsSA8IKIPjtzYy
+         vqUXL/PRWiYVHhJKMQDXe+LpZ7bDavgxVmYjSYwsV4NqVBdnLJnwgUEnP9jySYJcMj
+         UlvkUii28ef0E+WUplhkuFmFDfhE+PqklMByDsCChsqfuljh2qr6ywU/K+qtnnWyZy
+         aaaXhGNFfTCa6SGlKE6Cz/VqFo4RwngUUKGxQ6a30H5DdMlCF9ksxaqQXcnOfoRwXX
+         NWfU0nIwFHXfw==
+Date:   Wed, 16 Aug 2023 19:15:53 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 18/36] arm64/gcs: Context switch GCS state for EL0
+Message-ID: <28a61b5f-db65-427e-8e92-60dd61549da5@sirena.org.uk>
+References: <20230807-arm64-gcs-v4-0-68cfa37f9069@kernel.org>
+ <20230807-arm64-gcs-v4-18-68cfa37f9069@kernel.org>
+ <ZNZUerbrJmzqZzJw@arm.com>
 MIME-Version: 1.0
-References: <20230810184853.2860737-1-irogers@google.com> <20230810184853.2860737-3-irogers@google.com>
- <ZNuK1TFwdjyezV3I@kernel.org> <CAP-5=fURf+vv3TA4cRx1MiV3DDp=3wo0g5dBYH43DKtPhNZQsQ@mail.gmail.com>
- <ZNzK70eH3ISoL8r0@kernel.org> <ZNzNh9Myua1xjNuL@kernel.org> <ZNz0bmclvZPg5Y/X@kernel.org>
-In-Reply-To: <ZNz0bmclvZPg5Y/X@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 16 Aug 2023 11:15:27 -0700
-Message-ID: <CAP-5=fXVB25QzS3vj76DkVuQMGD1OrNq2jWB6vfr45N+j072fQ@mail.gmail.com>
-Subject: Re: [PATCH v1 2/4] perf trace: Migrate BPF augmentation to use a skeleton
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Fangrui Song <maskray@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Carsten Haitzler <carsten.haitzler@arm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Rob Herring <robh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, llvm@lists.linux.dev,
-        Wang Nan <wangnan0@huawei.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        He Kuang <hekuang@huawei.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="w/BKAb+ClmJrMdeD"
+Content-Disposition: inline
+In-Reply-To: <ZNZUerbrJmzqZzJw@arm.com>
+X-Cookie: Old soldiers never die.  Young ones do.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,197 +80,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 9:08=E2=80=AFAM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Wed, Aug 16, 2023 at 10:22:15AM -0300, Arnaldo Carvalho de Melo escrev=
-eu:
-> > Em Wed, Aug 16, 2023 at 10:11:11AM -0300, Arnaldo Carvalho de Melo escr=
-eveu:
-> > > Just taking notes about things to work on top of what is in
-> > > tmp.perf-tools-next, that will move to perf-tools-next soon:
->
-> > > We need to make these libbpf error messages appear only in verbose mo=
-de,
-> > > and probably have a hint about unprivileged BPF, a quick attempt fail=
-ed
-> > > after several attempts at getting privileges :-\
->
-> > > Probably attaching to tracepoints is off limits to !root even with
-> > > /proc/sys/kernel/unprivileged_bpf_disabled set to zero.
->
-> > yep, the libbpf sys_bpf call to check if it could load a basic BPF
-> > bytecode (prog_type=3DBPF_PROG_TYPE_SOCKET_FILTER, insn_cnt=3D2) succee=
-ds,
-> > but then, later we manage to create the maps, etc to then stumble on
->
-> > bpf(BPF_MAP_CREATE, {map_type=3DBPF_MAP_TYPE_PERCPU_ARRAY, key_size=3D4=
-, value_size=3D8272, max_entries=3D1, map_flags=3D0, inner_map_fd=3D0, map_=
-name=3D"augmented_args_", map_ifindex=3D0, btf_fd=3D0, btf_key_type_id=3D0,=
- btf_value_type_id=3D0, btf_vmlinux_value_type_id=3D0, map_extra=3D0}, 72) =
-=3D 7
-> > bpf(BPF_BTF_LOAD, {btf=3D"\237\353\1\0\30\0\0\0\0\0\0\0000\0\0\0000\0\0=
-\0\t\0\0\0\1\0\0\0\0\0\0\1"..., btf_log_buf=3DNULL, btf_size=3D81, btf_log_=
-size=3D0, btf_log_level=3D0}, 32) =3D -1 EPERM (Operation not permitted)
->
-> > and:
->
-> > bpf(BPF_PROG_LOAD, {prog_type=3DBPF_PROG_TYPE_TRACEPOINT, insn_cnt=3D2,=
- insns=3D0x1758340, license=3D"GPL", log_level=3D0, log_size=3D0, log_buf=
-=3DNULL, kern_version=3DKERNEL_VERSION(6, 4, 7), prog_flags=3D0, prog_name=
-=3D"syscall_unaugme", prog_ifindex=3D0, expected_attach_type=3DBPF_CGROUP_I=
-NET_INGRESS, prog_btf_fd=3D0, func_info_rec_size=3D0, func_info=3DNULL, fun=
-c_info_cnt=3D0, line_info_rec_size=3D0, line_info=3DNULL, line_info_cnt=3D0=
-, attach_btf_id=3D0, attach_prog_fd=3D0, fd_array=3DNULL}, 144) =3D -1 EPER=
-M (Operation not permitted)
->
-> > So 'perf trace' should just not try to load the augmented_raw_syscalls
-> > BPF skel for !root.
->
-> Not really, I insisted and it is (was?) possible to make it work,
-> testing on some other machine and after having to change the permissions
-> recursively on tracefs (before a remount with mode=3D755 seemed to
-> work?).
->
-> I managed to make it work for !root, BPF collecting the pointer args for
-> openat, access (perf trace looks for syscall signatures and reuses BPF
-> progs for the ones matching one of the explicitely provided)
-> clock_namosleep, etc.
->
-> (re)Reading Documentation/admin-guide/perf-security.rst and getting it
-> into the hints system of 'perf trace' may make this process simpler and
-> safer, by using a group, etc. But it is possible, great!
->
-> I didn't even had to touch /proc/sys/kernel/unprivileged_bpf_disabled,
-> just the capabilities for the perf binary (which is a pretty big window,
-> but way smaller than touching /proc/sys/kernel/unprivileged_bpf_disabled)=
-.
->
-> So now we need to get BUILD_BPF_SKEL=3D1 to be the default but just emit =
-a
-> warning when what is needed isn't available, just like with other
-> features, in that case 'perf trace' continues as today, no pointer arg
-> contents collection.
->
-> Unfortunately it is too late in the process for v6.6 even, so as soon as
-> perf-tools-next becomes perf-tools and we reopen it for v6.7 the first
-> patch should be this build BPF skels if what is needed is available.
 
-Thanks Arnaldo! I think targeting this for 6.7 makes sense and thanks
-for diving around all the permission issues.
+--w/BKAb+ClmJrMdeD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Ian
+On Fri, Aug 11, 2023 at 04:32:10PM +0100, Catalin Marinas wrote:
+> On Mon, Aug 07, 2023 at 11:00:23PM +0100, Mark Brown wrote:
 
-> I'll also check if we can enable BUILD_BPF_SKEL=3D1 in the distro package=
-s
-> so that we collect some info from them about possible problems.
->
-> What I have is now in perf-tools-next, so should get into linux-next and
-> hopefully help in testing it, IIRC there are CIs that enable
-> BUILD_BPF_SKEL=3D1.
->
-> - Arnaldo
->
-> [acme@five ~]$ uname -a
-> Linux five 6.2.15-100.fc36.x86_64 #1 SMP PREEMPT_DYNAMIC Thu May 11 16:51=
-:53 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
-> [acme@five ~]$ id
-> uid=3D1000(acme) gid=3D1000(acme) groups=3D1000(acme),10(wheel) context=
-=3Dunconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
-> [acme@five ~]$ perf trace sleep 1
->          ? (         ): sleep/980735  ... [continued]: execve())         =
-                                  =3D 0
->      0.031 ( 0.002 ms): sleep/980735 brk()                               =
-                                  =3D 0x55c621548000
->      0.039 ( 0.001 ms): sleep/980735 arch_prctl(option: 0x3001, arg2: 0x7=
-ffeb8a6a460)                      =3D -1 EINVAL (Invalid argument)
->      0.058 ( 0.006 ms): sleep/980735 access(filename: "/etc/ld.so.preload=
-", mode: R)                       =3D -1 ENOENT (No such file or directory)
->      0.068 ( 0.005 ms): sleep/980735 openat(dfd: CWD, filename: "/etc/ld.=
-so.cache", flags: RDONLY|CLOEXEC) =3D 3
->      0.074 ( 0.002 ms): sleep/980735 newfstatat(dfd: 3, filename: "", sta=
-tbuf: 0x7ffeb8a69680, flag: 4096) =3D 0
->      0.077 ( 0.006 ms): sleep/980735 mmap(len: 54771, prot: READ, flags: =
-PRIVATE, fd: 3)                   =3D 0x7f6b95ad9000
->      0.084 ( 0.001 ms): sleep/980735 close(fd: 3)                        =
-                                  =3D 0
->      0.094 ( 0.006 ms): sleep/980735 openat(dfd: CWD, filename: "/lib64/l=
-ibc.so.6", flags: RDONLY|CLOEXEC) =3D 3
->      0.101 ( 0.002 ms): sleep/980735 read(fd: 3, buf: 0x7ffeb8a697e8, cou=
-nt: 832)                          =3D 832
->      0.105 ( 0.001 ms): sleep/980735 pread64(fd: 3, buf: 0x7ffeb8a693e0, =
-count: 784, pos: 64)              =3D 784
->      0.107 ( 0.001 ms): sleep/980735 pread64(fd: 3, buf: 0x7ffeb8a69380, =
-count: 80, pos: 848)              =3D 80
->      0.110 ( 0.001 ms): sleep/980735 pread64(fd: 3, buf: 0x7ffeb8a69330, =
-count: 68, pos: 928)              =3D 68
->      0.113 ( 0.002 ms): sleep/980735 newfstatat(dfd: 3, filename: "", sta=
-tbuf: 0x7ffeb8a69680, flag: 4096) =3D 0
->      0.115 ( 0.003 ms): sleep/980735 mmap(len: 8192, prot: READ|WRITE, fl=
-ags: PRIVATE|ANONYMOUS)           =3D 0x7f6b95ad7000
->      0.122 ( 0.001 ms): sleep/980735 pread64(fd: 3, buf: 0x7ffeb8a692d0, =
-count: 784, pos: 64)              =3D 784
->      0.126 ( 0.006 ms): sleep/980735 mmap(len: 2104720, prot: READ, flags=
-: PRIVATE|DENYWRITE, fd: 3)       =3D 0x7f6b95800000
->      0.133 ( 0.013 ms): sleep/980735 mmap(addr: 0x7f6b95828000, len: 1523=
-712, prot: READ|EXEC, flags: PRIVATE|FIXED|DENYWRITE, fd: 3, off: 0x28000) =
-=3D 0x7f6b95828000
->      0.147 ( 0.008 ms): sleep/980735 mmap(addr: 0x7f6b9599c000, len: 3604=
-48, prot: READ, flags: PRIVATE|FIXED|DENYWRITE, fd: 3, off: 0x19c000) =3D 0=
-x7f6b9599c000
->      0.156 ( 0.010 ms): sleep/980735 mmap(addr: 0x7f6b959f4000, len: 2457=
-6, prot: READ|WRITE, flags: PRIVATE|FIXED|DENYWRITE, fd: 3, off: 0x1f3000) =
-=3D 0x7f6b959f4000
->      0.171 ( 0.005 ms): sleep/980735 mmap(addr: 0x7f6b959fa000, len: 3214=
-4, prot: READ|WRITE, flags: PRIVATE|FIXED|ANONYMOUS) =3D 0x7f6b959fa000
->      0.182 ( 0.001 ms): sleep/980735 close(fd: 3)                        =
-                                  =3D 0
->      0.193 ( 0.003 ms): sleep/980735 mmap(len: 12288, prot: READ|WRITE, f=
-lags: PRIVATE|ANONYMOUS)          =3D 0x7f6b95ad4000
->      0.199 ( 0.001 ms): sleep/980735 arch_prctl(option: SET_FS, arg2: 0x7=
-f6b95ad4740)                      =3D 0
->      0.202 ( 0.001 ms): sleep/980735 set_tid_address(tidptr: 0x7f6b95ad4a=
-10)                               =3D 980735 (sleep)
->      0.204 ( 0.001 ms): sleep/980735 set_robust_list(head: 0x7f6b95ad4a20=
-, len: 24)                        =3D 0
->      0.206 ( 0.001 ms): sleep/980735 rseq(rseq: 0x7f6b95ad50e0, rseq_len:=
- 32, sig: 1392848979)             =3D 0
->      0.277 ( 0.010 ms): sleep/980735 mprotect(start: 0x7f6b959f4000, len:=
- 16384, prot: READ)               =3D 0
->      0.306 ( 0.007 ms): sleep/980735 mprotect(start: 0x55c61fa4a000, len:=
- 4096, prot: READ)                =3D 0
->      0.320 ( 0.010 ms): sleep/980735 mprotect(start: 0x7f6b95b1c000, len:=
- 8192, prot: READ)                =3D 0
->      0.340 ( 0.002 ms): sleep/980735 prlimit64(resource: STACK, old_rlim:=
- 0x7ffeb8a6a1c0)                  =3D 0
->      0.349 ( 0.009 ms): sleep/980735 munmap(addr: 0x7f6b95ad9000, len: 54=
-771)                              =3D 0
->      0.381 ( 0.002 ms): sleep/980735 getrandom(ubuf: 0x7f6b959ff4d8, len:=
- 8, flags: NONBLOCK)              =3D 8
->      0.386 ( 0.001 ms): sleep/980735 brk()                               =
-                                  =3D 0x55c621548000
->      0.388 ( 0.006 ms): sleep/980735 brk(brk: 0x55c621569000)            =
-                                  =3D 0x55c621569000
->      0.403 ( 0.012 ms): sleep/980735 openat(dfd: CWD, filename: "", flags=
-: RDONLY|CLOEXEC)                 =3D 3
->      0.417 ( 0.003 ms): sleep/980735 newfstatat(dfd: 3, filename: "", sta=
-tbuf: 0x7f6b959f9b80, flag: 4096) =3D 0
->      0.422 ( 0.008 ms): sleep/980735 mmap(len: 224096080, prot: READ, fla=
-gs: PRIVATE, fd: 3)               =3D 0x7f6b88200000
->      0.436 ( 0.002 ms): sleep/980735 close(fd: 3)                        =
-                                  =3D 0
->      0.480 (1000.041 ms): sleep/980735 clock_nanosleep(rqtp: { .tv_sec: 1=
-, .tv_nsec: 0 }, rmtp: 0x7ffeb8a6a450) =3D 0
->   1000.552 ( 0.003 ms): sleep/980735 close(fd: 1)                        =
-                                  =3D 0
->   1000.558 ( 0.002 ms): sleep/980735 close(fd: 2)                        =
-                                  =3D 0
->   1000.565 (         ): sleep/980735 exit_group()                        =
-                                  =3D ?
-> [acme@five ~]$ getcap ~/bin/perf
-> /var/home/acme/bin/perf cap_perfmon,cap_bpf=3Dep
-> [acme@five ~]$ cat /proc/sys/kernel/unprivileged_bpf_disabled
-> 2
-> [acme@five ~]$ cat /proc/sys/kernel/perf_event_paranoid
-> -1
-> [acme@five ~]$
+> > +		gcs_free(current);
+> > +		current->thread.gcs_el0_mode = 0;
+> > +		write_sysreg_s(0, SYS_GCSCRE0_EL1);
+> > +		write_sysreg_s(0, SYS_GCSPR_EL0);
+> > +	}
+> > +}
+
+> Do we need and isb() or there's one on this path? If it's only EL0
+> making use of this register, we should be fine with the ERET before
+> returning to user. Not sure whether the kernel uses this, GCSSTTR
+> doesn't need it.
+
+They're only used by EL0, at EL1 we do read GCSPR for signal handling
+but AIUI that shouldn't be any more of an issue than it is for the
+TPIDRs which we don't have a barrier for.  It's possible I'm
+misunderstanding though.
+
+> > +	/*
+> > +	 * Ensure that GCS changes are observable by/from other PEs in
+> > +	 * case of migration.
+> > +	 */
+> > +	if (task_gcs_el0_enabled(current) || task_gcs_el0_enabled(next))
+> > +		gcsb_dsync();
+
+> What's this barrier for? The spec (at least the version I have) only
+> talks about accesses, nothing to do with the registers that we context
+> switch here.
+
+Right, it's for the GCS memory rather than the registers.  I'm fairly
+sure it's excessive but but was erring on the side of caution until I
+have convinced myself that the interactions between GCS barriers and
+regular barriers were doing the right thing, until we have physical
+implementations to contend with I'd guess the practical impact will be
+minimal.
+
+--w/BKAb+ClmJrMdeD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTdElkACgkQJNaLcl1U
+h9AWogf/YEdfvtUHD2e4VQoupNYTIQwE4lzBKY5h7rikxnt03b6khOwEnmScy/XC
+1TB3W5zmAGwyJdWCumepeAk5BTRzsKZWV9cdvP0YvcmTlzMqj/1ueNfpHfEu0NQs
+Udxb7QLhxyd8wdlIZn+ycumv7YnckO8stcBNRbenMRsLqKpTsXlM3zcsul9zvSPK
+zWPmyj/57XvYpeEmXgL+2zyLRmGfWEQB97ImfCgO0EkoAxFA6TUugdIAa6g0DWoO
+hZKEu0+mqQUN0RTXOLAqYQXJLGD2lVzT5G3L8HTPyR2GNZIruqNzD+8ZkhSSMm51
+QjFuF+aVfUlZwpNuSsl7bhqHNJmB5w==
+=8c8E
+-----END PGP SIGNATURE-----
+
+--w/BKAb+ClmJrMdeD--
