@@ -2,140 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D1977E210
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD4777E214
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245061AbjHPNBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 09:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39544 "EHLO
+        id S245173AbjHPNBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:01:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238513AbjHPNAr (ORCPT
+        with ESMTP id S245317AbjHPNBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 09:00:47 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6231D1BFB;
-        Wed, 16 Aug 2023 06:00:45 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1FCDBD75;
-        Wed, 16 Aug 2023 06:01:26 -0700 (PDT)
-Received: from [192.168.178.38] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E5B2D3F6C4;
-        Wed, 16 Aug 2023 06:00:41 -0700 (PDT)
-Message-ID: <07436e93-7339-e91c-b169-f0ad89cdbc29@arm.com>
-Date:   Wed, 16 Aug 2023 15:00:31 +0200
+        Wed, 16 Aug 2023 09:01:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235342117
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:00:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692190856;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JL9XHCcHn9+lzn3csLfA/07hiNGl99qLxrzUXZlZiMU=;
+        b=CMYD8dFjSI7u01vLA2WbsRQ8g22bq/SAEriyUdMTLBVRXXzsfhnWF63Sabd09o+DYcm9N8
+        yv2iq3jwWHPKkhfNKprmpAWYiaLPpVEuBzTZ/0SJptfmwZvxhC6Sbtwc5tEroGrREHq4FK
+        OpvVdJfAFgyug0jL0GDUxkdktEtsUHw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-669-Zdu0GcBbNlWDvx1senW_nQ-1; Wed, 16 Aug 2023 09:00:51 -0400
+X-MC-Unique: Zdu0GcBbNlWDvx1senW_nQ-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 09950185A7A3;
+        Wed, 16 Aug 2023 13:00:50 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 491CA492C14;
+        Wed, 16 Aug 2023 13:00:48 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <03730b50cebb4a349ad8667373bb8127@AcuMS.aculab.com>
+References: <03730b50cebb4a349ad8667373bb8127@AcuMS.aculab.com> <20230816120741.534415-1-dhowells@redhat.com> <20230816120741.534415-3-dhowells@redhat.com>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     dhowells@redhat.com, Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@list.de>,
+        "Christian Brauner" <christian@brauner.io>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Jeff Layton" <jlayton@kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] iov_iter: Don't deal with iter->copy_mc in memcpy_from_iter_mc()
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 00/12] Introduce runtime modifiable Energy Model
-Content-Language: en-US
-To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, rafael@kernel.org
-Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
-        amit.kachhap@gmail.com, daniel.lezcano@linaro.org,
-        viresh.kumar@linaro.org, len.brown@intel.com, pavel@ucw.cz,
-        Pierre.Gondois@arm.com, ionela.voinescu@arm.com,
-        mhiramat@kernel.org
-References: <20230721155022.2339982-1-lukasz.luba@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <20230721155022.2339982-1-lukasz.luba@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <608852.1692190847.1@warthog.procyon.org.uk>
+Date:   Wed, 16 Aug 2023 14:00:47 +0100
+Message-ID: <608853.1692190847@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/07/2023 17:50, Lukasz Luba wrote:
-> Hi all,
+David Laight <David.Laight@ACULAB.COM> wrote:
+
 > 
-> This patch set adds a new feature which allows to modify Energy Model (EM)
-> power values at runtime. It will allow to better reflect power model of
-> a recent SoCs and silicon. Different characteristics of the power usage
-> can be leveraged and thus better decisions made during task placement in EAS.
-> 
-> It's part of feature set know as Dynamic Energy Model. It has been presented
-> and discussed recently at OSPM2023 [3]. This patch set implements the 1st
-> improvement for the EM.
-> 
-> The concepts:
-> 1. The CPU power usage can vary due to the workload that it's running or due
-> to the temperature of the SoC. The same workload can use more power when the
-> temperature of the silicon has increased (e.g. due to hot GPU or ISP).
-> In such situation or EM can be adjusted and reflect the fact of increased
-> power usage. That power increase is due to a factor called static power
-> (sometimes called simply: leakage). The CPUs in recent SoCs are different.
-> We have heterogeneous SoCs with 3 (or even 4) different microarchitectures.
-> They are also built differently with High Performance (HP) cells or
-> Low Power (LP) cells. They are affected by the temperature increase
-> differently: HP cells have bigger leakage. The SW model can leverage that
-> knowledge.
+> Couldn't the relevant code directly call __copy_from_iter_mc() ?
+> Or a version then checked iov_is_copy_mc() and then fell
+> back to the standard function.
 
-IMHO it's important to note that this feature will add support for a
-'single EM which can be changed during runtime according to the
-workload' design.
-Instead of the 'single and during the entire runtime static EM' design
-we have today.
-It won't support a 'multiple EMs and tasks can choose which model to use
-based on some form of classification' design.
+No, because the marked iterator is handed by the coredump code to
+__kernel_write_iter() and thence on to who-knows-what driver - which will call
+copy_from_iter() or some such.  $DRIVER shouldn't need to know about
+->copy_mc.
 
-> 2. It is also possible to change the EM to better reflect the currently
-> running workload. Usually the EM is derived from some average power values
-> taken from experiments with benchmark (e.g. Dhrystone). The model derived
-> from such scenario might not represent properly the workloads usually running
-> on the device. Therefore, runtime modification of the EM allows to switch to
-> a different model, when there is a need.
-> 3. The EM can be adjusted after boot, when all the modules are loaded and
-> more information about the SoC is available e.g. chip binning. This would help
-> to better reflect the silicon characteristics. Thus, this EM modification
-> API allows it now. It wasn't possible in the past and the EM had to be
-> 'set in stone'.
+One thing I do wonder about, though, is what should happen if they call, say,
+csum_and_copy_from_iter()?  That doesn't have an _mc variant.  Or what if they
+extract the pages and operate directly on those?
 
-Testing perspective:
-
-I know that there is a test module with which we can test the new
-em_dev_update_perf_domain() together with CPU hotplug etc.
-
-What's missing is IMHO a test case showing the benefit of this new
-feature for at least one of the use-cases (1. - 3.) described above.
-
-Would it be possible to test a workload W at normal temperature with
-EM_1 then head up the system and use EM_2 and spot performance/energy
-consumption benefits against a vanilla system (case 1.) on Pixel6? This
-would actually proof that this more on code complexity pays off.
-
---
-
-We know that Google uses something similar in there Android kernel for
-Pixel7 (CONFIG_PIXEL_EM). The EM is chosen from different EM profiles in
-find_energy_efficient_cpu() -> compute_energy() -> em_cpu_energy().
-
-In case we would have evidence that Google is switching their
-proprietary implementation to this mainline one in the Android kernel
-this would definitely also boost the confidence that we do need this
-feature in mainline right now.
-
-> Some design details:
-> The internal mechanisms for the memory allocation are handled internally in the 
-> EM. Kernel modules can just call the new API to update the EM data and the 
-> new memory would be provided and owned by the EM. The EM memory is used by
-> EAS, which impacts those design decisions. The EM writers are protected by
-> a mutex. This new runtime modified EM table is protected using RCU mechanism,
-> which fits the current EAS hot path (which already uses RCU read lock).
-> The unregister API handles only non-CPU (e.g. GPU, ISP) devices and uses the
-> same mutex as EM modifiers to make sure the memory is safely freed.
-> 
-> More detailed explanation and background can be found in presentations
-> during LPC2022 [1][2] or in the documentation patches.
-> 
-> The time cost to update EM for 11 OPPs can be found here [6]. It's roughly
-> 1.5us per 1 OPP while doing this on Little CPU at max frequency (1.8GHz).
-
-I would list those results in this cover letter in a processed form and
-also mention the target platform (Pixel6).
-
-[...]
+David
 
