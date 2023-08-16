@@ -2,223 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBA877D8F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 05:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9274877D8F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 05:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241535AbjHPDUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 23:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50860 "EHLO
+        id S241543AbjHPDVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 23:21:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241565AbjHPDUk (ORCPT
+        with ESMTP id S241545AbjHPDV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 23:20:40 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5052129;
-        Tue, 15 Aug 2023 20:20:38 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RQYL73CScz4f4XWp;
-        Wed, 16 Aug 2023 11:20:31 +0800 (CST)
-Received: from [10.174.178.55] (unknown [10.174.178.55])
-        by APP4 (Coremail) with SMTP id gCh0CgAH5KaAQNxkadhGAw--.61247S3;
-        Wed, 16 Aug 2023 11:20:34 +0800 (CST)
-Subject: Re: [PATCH v3 2/2] hexdump: add a new dump prefix DUMP_PREFIX_CUSTOM
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org
-References: <20230811074922.1388-1-thunder.leizhen@huaweicloud.com>
- <20230811074922.1388-3-thunder.leizhen@huaweicloud.com>
- <ZNuMGyJ2x21RpVyR@alley>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
-Message-ID: <167a4aee-7a9d-a024-7594-97b84146196c@huaweicloud.com>
-Date:   Wed, 16 Aug 2023 11:20:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Tue, 15 Aug 2023 23:21:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA98268F;
+        Tue, 15 Aug 2023 20:21:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692156086; x=1723692086;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=rmyzQPkQsHgwSTF/oayLJ1Rn63HIRPbUUReMD5vaGUg=;
+  b=UNC62hxbzRPyZTzIah+IS47Ml6YHX54dCfdhr3cdFYp+X9TIXMieXj17
+   ATJ905zbyHzzfYyUycXK4iU9xrqGBINzk9PznT8G3eU/vDMvjAEe2vQGk
+   P3TT+kKwVQDnqJDizKqc1/mKlFUcAygk8UfUNALDpuHPuS8xNqbreWhR7
+   VMbhVSn4UtXea1uslUfxLqRcfKDr4g4US4/TchmhLXU2f+Ic/ljdZq2sd
+   8MJ39JfaOquVCjQCuquhcn7W7LT2F8VMHpM7NFfMFwJTAy/kF+bKIARiU
+   +0OIsRASurq9eDFLgY2tqhqQ9FuNDx31CmLOZbZT0SDaHQKSjOpqFwWBb
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="375200364"
+X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
+   d="scan'208";a="375200364"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 20:21:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="980570545"
+X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
+   d="scan'208";a="980570545"
+Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
+  by fmsmga006.fm.intel.com with ESMTP; 15 Aug 2023 20:21:23 -0700
+Date:   Wed, 16 Aug 2023 11:21:23 +0800
+From:   Yuan Yao <yuan.yao@linux.intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zeng Guang <guang.zeng@intel.com>,
+        Yuan Yao <yuan.yao@intel.com>
+Subject: Re: [PATCH v3 06/15] KVM: x86: Use KVM-governed feature framework to
+ track "XSAVES enabled"
+Message-ID: <20230816032123.tzoijkrqbui65c44@yy-desk-7060>
+References: <20230815203653.519297-1-seanjc@google.com>
+ <20230815203653.519297-7-seanjc@google.com>
+ <20230816025841.hp4lortav6lzwyuy@yy-desk-7060>
 MIME-Version: 1.0
-In-Reply-To: <ZNuMGyJ2x21RpVyR@alley>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAH5KaAQNxkadhGAw--.61247S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxKw4rKrW5Aw4DWrWUtry8Grg_yoW7uw13pF
-        9xGFy5KFZ7Xw1xWw1xXFWUGr1Yk3yDCFy8Kryqyw18Cay2gF9xJw1kGFW3CFy5CryFv3Zr
-        Jr17trn0gr15C3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
-X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230816025841.hp4lortav6lzwyuy@yy-desk-7060>
+User-Agent: NeoMutt/20171215
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 16, 2023 at 10:58:41AM +0800, Yuan Yao wrote:
+> On Tue, Aug 15, 2023 at 01:36:44PM -0700, Sean Christopherson wrote:
+> > Use the governed feature framework to track if XSAVES is "enabled", i.e.
+> > if XSAVES can be used by the guest.  Add a comment in the SVM code to
+> > explain the very unintuitive logic of deliberately NOT checking if XSAVES
+> > is enumerated in the guest CPUID model.
+> >
+> > No functional change intended.
+> >
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >  arch/x86/include/asm/kvm_host.h  |  1 -
+> >  arch/x86/kvm/governed_features.h |  1 +
+> >  arch/x86/kvm/svm/svm.c           | 17 ++++++++++++---
+> >  arch/x86/kvm/vmx/vmx.c           | 36 ++++++++++++++++----------------
+> >  arch/x86/kvm/x86.c               |  4 ++--
+> >  5 files changed, 35 insertions(+), 24 deletions(-)
+> >
+> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> > index 60d430b4650f..9f57aa33798b 100644
+> > --- a/arch/x86/include/asm/kvm_host.h
+> > +++ b/arch/x86/include/asm/kvm_host.h
+> > @@ -746,7 +746,6 @@ struct kvm_vcpu_arch {
+> >  	u64 smi_count;
+> >  	bool at_instruction_boundary;
+> >  	bool tpr_access_reporting;
+> > -	bool xsaves_enabled;
+> >  	bool xfd_no_write_intercept;
+> >  	u64 ia32_xss;
+> >  	u64 microcode_version;
+> > diff --git a/arch/x86/kvm/governed_features.h b/arch/x86/kvm/governed_features.h
+> > index b29c15d5e038..b896a64e4ac3 100644
+> > --- a/arch/x86/kvm/governed_features.h
+> > +++ b/arch/x86/kvm/governed_features.h
+> > @@ -6,6 +6,7 @@ BUILD_BUG()
+> >  #define KVM_GOVERNED_X86_FEATURE(x) KVM_GOVERNED_FEATURE(X86_FEATURE_##x)
+> >
+> >  KVM_GOVERNED_X86_FEATURE(GBPAGES)
+> > +KVM_GOVERNED_X86_FEATURE(XSAVES)
+> >
+> >  #undef KVM_GOVERNED_X86_FEATURE
+> >  #undef KVM_GOVERNED_FEATURE
+> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> > index 6aaa3c7b4578..d67f6e23dcd2 100644
+> > --- a/arch/x86/kvm/svm/svm.c
+> > +++ b/arch/x86/kvm/svm/svm.c
+> > @@ -4273,9 +4273,20 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+> >  	struct vcpu_svm *svm = to_svm(vcpu);
+> >  	struct kvm_cpuid_entry2 *best;
+> >
+> > -	vcpu->arch.xsaves_enabled = guest_cpuid_has(vcpu, X86_FEATURE_XSAVE) &&
+> > -				    boot_cpu_has(X86_FEATURE_XSAVE) &&
+> > -				    boot_cpu_has(X86_FEATURE_XSAVES);
+> > +	/*
+> > +	 * SVM doesn't provide a way to disable just XSAVES in the guest, KVM
+> > +	 * can only disable all variants of by disallowing CR4.OSXSAVE from
+> > +	 * being set.  As a result, if the host has XSAVE and XSAVES, and the
+> > +	 * guest has XSAVE enabled, the guest can execute XSAVES without
+> > +	 * faulting.  Treat XSAVES as enabled in this case regardless of
+> > +	 * whether it's advertised to the guest so that KVM context switches
+> > +	 * XSS on VM-Enter/VM-Exit.  Failure to do so would effectively give
+> > +	 * the guest read/write access to the host's XSS.
+> > +	 */
+> > +	if (boot_cpu_has(X86_FEATURE_XSAVE) &&
+> > +	    boot_cpu_has(X86_FEATURE_XSAVES) &&
+> > +	    guest_cpuid_has(vcpu, X86_FEATURE_XSAVE))
+> > +		kvm_governed_feature_set(vcpu, X86_FEATURE_XSAVES);
+> >
+> >  	/* Update nrips enabled cache */
+> >  	svm->nrips_enabled = kvm_cpu_cap_has(X86_FEATURE_NRIPS) &&
+> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > index 22975cc949b7..6314ca32a5cf 100644
+> > --- a/arch/x86/kvm/vmx/vmx.c
+> > +++ b/arch/x86/kvm/vmx/vmx.c
+> > @@ -4543,16 +4543,19 @@ vmx_adjust_secondary_exec_control(struct vcpu_vmx *vmx, u32 *exec_control,
+> >   * based on a single guest CPUID bit, with a dedicated feature bit.  This also
+> >   * verifies that the control is actually supported by KVM and hardware.
+> >   */
+> > -#define vmx_adjust_sec_exec_control(vmx, exec_control, name, feat_name, ctrl_name, exiting) \
+> > -({									 \
+> > -	bool __enabled;							 \
+> > -									 \
+> > -	if (cpu_has_vmx_##name()) {					 \
+> > -		__enabled = guest_cpuid_has(&(vmx)->vcpu,		 \
+> > -					    X86_FEATURE_##feat_name);	 \
+> > -		vmx_adjust_secondary_exec_control(vmx, exec_control,	 \
+> > -			SECONDARY_EXEC_##ctrl_name, __enabled, exiting); \
+> > -	}								 \
+> > +#define vmx_adjust_sec_exec_control(vmx, exec_control, name, feat_name, ctrl_name, exiting)	\
+> > +({												\
+> > +	struct kvm_vcpu *__vcpu = &(vmx)->vcpu;							\
+> > +	bool __enabled;										\
+> > +												\
+> > +	if (cpu_has_vmx_##name()) {								\
+> > +		if (kvm_is_governed_feature(X86_FEATURE_##feat_name))				\
+> > +			__enabled = guest_can_use(__vcpu, X86_FEATURE_##feat_name);		\
+> > +		else										\
+> > +			__enabled = guest_cpuid_has(__vcpu, X86_FEATURE_##feat_name);		\
+> > +		vmx_adjust_secondary_exec_control(vmx, exec_control, SECONDARY_EXEC_##ctrl_name,\
+> > +						  __enabled, exiting);				\
+> > +	}											\
+> >  })
+> >
+> >  /* More macro magic for ENABLE_/opt-in versus _EXITING/opt-out controls. */
+> > @@ -4612,10 +4615,7 @@ static u32 vmx_secondary_exec_control(struct vcpu_vmx *vmx)
+> >  	if (!enable_pml || !atomic_read(&vcpu->kvm->nr_memslots_dirty_logging))
+> >  		exec_control &= ~SECONDARY_EXEC_ENABLE_PML;
+> >
+> > -	if (cpu_has_vmx_xsaves())
+> > -		vmx_adjust_secondary_exec_control(vmx, &exec_control,
+> > -						  SECONDARY_EXEC_ENABLE_XSAVES,
+> > -						  vcpu->arch.xsaves_enabled, false);
+> > +	vmx_adjust_sec_exec_feature(vmx, &exec_control, xsaves, XSAVES);
+> >
+> >  	/*
+> >  	 * RDPID is also gated by ENABLE_RDTSCP, turn on the control if either
+> > @@ -4634,6 +4634,7 @@ static u32 vmx_secondary_exec_control(struct vcpu_vmx *vmx)
+> >  						  SECONDARY_EXEC_ENABLE_RDTSCP,
+> >  						  rdpid_or_rdtscp_enabled, false);
+> >  	}
+> > +
+> >  	vmx_adjust_sec_exec_feature(vmx, &exec_control, invpcid, INVPCID);
+> >
+> >  	vmx_adjust_sec_exec_exiting(vmx, &exec_control, rdrand, RDRAND);
+> > @@ -7745,10 +7746,9 @@ static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+> >  	 * to the guest.  XSAVES depends on CR4.OSXSAVE, and CR4.OSXSAVE can be
+> >  	 * set if and only if XSAVE is supported.
+> >  	 */
+> > -	vcpu->arch.xsaves_enabled = kvm_cpu_cap_has(X86_FEATURE_XSAVES) &&
+> > -				    boot_cpu_has(X86_FEATURE_XSAVE) &&
+> > -				    guest_cpuid_has(vcpu, X86_FEATURE_XSAVE) &&
+> > -				    guest_cpuid_has(vcpu, X86_FEATURE_XSAVES);
+> > +	if (boot_cpu_has(X86_FEATURE_XSAVE) &&
+> > +	    guest_cpuid_has(vcpu, X86_FEATURE_XSAVE))
+>
+> Should above 2 be X86_FEATURE_XSAVES ? XSAVE and XSAVES have different
+> cpuid definition.
+> Otherwise X86_FEATURE_XSAVES is allowed in governor even XSAVES
+> is not exposed to guest cpuid, with unnecessary context switches.
 
+Oh! false alarm.
+I just forgot that kvm_governed_feature_check_and_set() does checks
+on kvm cpu cap and guest cpuid set, thus no problem.
 
-On 2023/8/15 22:30, Petr Mladek wrote:
-> Added Kees and hardening mailing list into Cc.
-> 
-> On Fri 2023-08-11 15:49:21, thunder.leizhen@huaweicloud.com wrote:
->> From: Zhen Lei <thunder.leizhen@huawei.com>
->>
->> Currently, function print_hex_dump() supports three dump prefixes:
->> DUMP_PREFIX_NONE, DUMP_PREFIX_ADDRESS and DUMP_PREFIX_OFFSET. But for some
->> usage scenarios, they don't work perfectly. For example, dump the content
->> of one task's stack. In order to quickly identify a stack frame,
->> DUMP_PREFIX_ADDRESS is preferred. But without boot option no_hash_pointers
->> , DUMP_PREFIX_ADDRESS just print the 32-bit hash value.
->>
->> dump memory at sp=ffff800080903aa0:
->> 00000000a00a1d32: 80903ac0 ffff8000 8feeae24 ffffc356
->> 000000007993ef27: 9811c000 ffff0d98 8ad2e500 ffff0d98
->> 00000000b1a0b2de: 80903b30 ffff8000 8ff3a618 ffffc356
->> ... ...
->> 00000000a7a9048b: 9810b3c0 ffff0d98 00000000 00000000
->> 0000000011cda415: 80903cb0 ffff8000 00000000 00000000
->> 000000002dbdf9cd: 981f8400 ffff0d98 00000001 00000000
->>
->> On the other hand, printing multiple 64-bit addresses is redundant when
->> the 'sp' value is already printed. Generally, we do not dump more than
->> 64 KiB memory. It is sufficient to print only the lower 16 bits of the
->> address.
->>
->> dump memory at sp=ffff800080883a90:
->> 3a90: 80883ac0 ffff8000 3d8e936c ffffbd5b
->> 3aa0: 5833f000 ffff3580 00000001 00000000
->> 3ab0: 40299840 ffff3580 590dfa00 ffff3580
->> 3ac0: 80883b30 ffff8000 3d938b28 ffffbd5b
->> 3ad0: 40877180 ffff3580 590dfa00 ffff3580
->> 3ae0: 4090f600 ffff3580 80883cb0 ffff8000
->> 3af0: 00000010 00000000 00000000 00000000
->> 3b00: 4090f700 ffff3580 00000001 00000000
->>
->> Let's add DUMP_PREFIX_CUSTOM, allows users to make some adjustments to
->> their needs.
->>
->> For example:
->> pr_info("dump memory at sp=%px:\n", sp);
->> print_hex_dump(KERN_INFO, "%s%16hx: %s\n",
->>                DUMP_PREFIX_CUSTOM, 16, 1, sp, 16, false);
->> print_hex_dump(KERN_INFO, "%s%16x: %s\n",
->>                DUMP_PREFIX_CUSTOM, 16, 1, sp, 16, false);
->> print_hex_dump(KERN_INFO, "%s%px: %s\n",
->>                DUMP_PREFIX_CUSTOM, 16, 1, sp, 16, false);
-> 
-> IMHO, this is pretty bad interface.
-> 
->   + From the user POV:
-> 
->     It is far from clear what values will be passed for the given
->     printf format. It can be docummented but...
-> 
-> 
->   + From the security POV:
-> 
->     The compiler could not check if the printk() parameters
->     match the format. I mean if the number of types of
->     the parameters are correct.
+Reviewed-by: Yuan Yao <yuan.yao@intel.com>
 
-Yes, it has these problems. So, back to v2, how about add DUMP_PREFIX_ADDRESS_LOW16?
-Or named DUMP_PREFIX_ADDR16 or others. Or change the format of DUMP_PREFIX_ADDRESS
-from "%p" to "%px"，Or add DUMP_PREFIX_RAWADDR. Or keep the status quo.
-
-Also, do you have any comments on patch 1/2?
-
-> 
-> 
-> Best Regards,
-> Petr
-> 
->> dump memory at sp=ffff80008091baa0:
->>             baa0: c0 ba 91 80 00 80 ff ff d4 38 16 ce fc a7 ff ff
->>         8091baa0: c0 ba 91 80 00 80 ff ff d4 38 16 ce fc a7 ff ff
->> ffff80008091baa0: c0 ba 91 80 00 80 ff ff d4 38 16 ce fc a7 ff ff
->>
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> ---
->>  include/linux/printk.h |  3 ++-
->>  lib/hexdump.c          | 16 ++++++++++++++++
->>  2 files changed, 18 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/linux/printk.h b/include/linux/printk.h
->> index 8ef499ab3c1ed2e..23779dcc4836414 100644
->> --- a/include/linux/printk.h
->> +++ b/include/linux/printk.h
->> @@ -704,7 +704,8 @@ extern const struct file_operations kmsg_fops;
->>  enum {
->>  	DUMP_PREFIX_NONE,
->>  	DUMP_PREFIX_ADDRESS,
->> -	DUMP_PREFIX_OFFSET
->> +	DUMP_PREFIX_OFFSET,
->> +	DUMP_PREFIX_CUSTOM
->>  };
->>  extern int hex_dump_to_buffer(const void *buf, size_t len, int rowsize,
->>  			      int groupsize, char *linebuf, size_t linebuflen,
->> diff --git a/lib/hexdump.c b/lib/hexdump.c
->> index 1064706d57c15ed..fa4a44543a946b8 100644
->> --- a/lib/hexdump.c
->> +++ b/lib/hexdump.c
->> @@ -232,6 +232,11 @@ EXPORT_SYMBOL(hex_dump_to_buffer);
->>   * @level: kernel log level (e.g. KERN_DEBUG)
->>   * @prefix_str: string to prefix each line with;
->>   *  caller supplies trailing spaces for alignment if desired
->> + *  OR
->> + *  the custom format string of DUMP_PREFIX_CUSTOM;
->> + *  Corresponding to three parameters in fixed order:
->> + *  <string: level> <pointer: address> <string: converted data>
->> + *  For example: "%s%04hx: %s\n", "%s%.8x: %s\n", "%s%px: %s\n"
->>   * @prefix_type: controls whether prefix of an offset, address, or none
->>   *  is printed (%DUMP_PREFIX_OFFSET, %DUMP_PREFIX_ADDRESS, %DUMP_PREFIX_NONE)
->>   * @rowsize: number of bytes to print per line; must be 16 or 32
->> @@ -257,6 +262,14 @@ EXPORT_SYMBOL(hex_dump_to_buffer);
->>   * 0009ab42: 40 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f  @ABCDEFGHIJKLMNO
->>   * Example output using %DUMP_PREFIX_ADDRESS and 4-byte mode:
->>   * ffffffff88089af0: 73727170 77767574 7b7a7978 7f7e7d7c  pqrstuvwxyz{|}~.
->> + *
->> + * E.g.:
->> + *   print_hex_dump(KERN_DEBUG, "%s%04hx: %s\n", DUMP_PREFIX_CUSTOM,
->> + *		    16, 1, frame->data, frame->len, false);
->> + *   %04hx --> Only the lower 16 bits of the address are printed.
->> + *
->> + * Example output using %DUMP_PREFIX_CUSTOM and 1-byte mode:
->> + * 3aa0: c0 3a 8d 80 00 80 ff ff d4 38 16 1d 94 a6 ff ff
->>   */
->>  void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
->>  		    int rowsize, int groupsize,
->> @@ -292,6 +305,9 @@ void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
->>  			}
->>  			printk("%s%s%0*x: %s\n", level, prefix_str, width, i, linebuf);
->>  			break;
->> +		case DUMP_PREFIX_CUSTOM:
->> +			printk(prefix_str, level, ptr + i, linebuf);
->> +			break;
->>  		default:
->>  			printk("%s%s%s\n", level, prefix_str, linebuf);
->>  			break;
->> -- 
->> 2.34.1
-> .
-> 
-
--- 
-Regards,
-  Zhen Lei
-
+>
+> > +		kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_XSAVES);
+> >
+> >  	vmx_setup_uret_msrs(vmx);
+> >
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index eba35d43e3fe..34945c7dba38 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -1016,7 +1016,7 @@ void kvm_load_guest_xsave_state(struct kvm_vcpu *vcpu)
+> >  		if (vcpu->arch.xcr0 != host_xcr0)
+> >  			xsetbv(XCR_XFEATURE_ENABLED_MASK, vcpu->arch.xcr0);
+> >
+> > -		if (vcpu->arch.xsaves_enabled &&
+> > +		if (guest_can_use(vcpu, X86_FEATURE_XSAVES) &&
+> >  		    vcpu->arch.ia32_xss != host_xss)
+> >  			wrmsrl(MSR_IA32_XSS, vcpu->arch.ia32_xss);
+> >  	}
+> > @@ -1047,7 +1047,7 @@ void kvm_load_host_xsave_state(struct kvm_vcpu *vcpu)
+> >  		if (vcpu->arch.xcr0 != host_xcr0)
+> >  			xsetbv(XCR_XFEATURE_ENABLED_MASK, host_xcr0);
+> >
+> > -		if (vcpu->arch.xsaves_enabled &&
+> > +		if (guest_can_use(vcpu, X86_FEATURE_XSAVES) &&
+> >  		    vcpu->arch.ia32_xss != host_xss)
+> >  			wrmsrl(MSR_IA32_XSS, host_xss);
+> >  	}
+> > --
+> > 2.41.0.694.ge786442a9b-goog
+> >
