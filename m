@@ -2,85 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 885E277DE19
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AC7577DE28
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243662AbjHPKEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 06:04:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45102 "EHLO
+        id S243729AbjHPKFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 06:05:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243717AbjHPKD5 (ORCPT
+        with ESMTP id S243775AbjHPKFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 06:03:57 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7075DC1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:03:56 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id EA9ED40E0140;
-        Wed, 16 Aug 2023 10:03:54 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id xZBDBaXCll6W; Wed, 16 Aug 2023 10:03:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1692180232; bh=oHVGfQmdLztoSjvTf1LFJ+5NoFHy0dpxilKjS5Iw1vo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=floOfcHckZfB6EmQGcU1bY0eevy710qB37uSuHVHdRSE/YmdhAwkCVj9b2S+WIMRz
-         xMtpvhMWWw6TFsbjN/nfBWUxNZLL5zFIRu47ejORZThUn9ec9bC6qKrrlp6KWTRz9x
-         f0p4szVPLH3VQXVg4FV95LMQXvjRq2HY+G80BLT81DjVfWBJXFGYEpHi96zPbw1rcv
-         67csx543h6x7ySs0+BAU1sp07zS/imWSP5Tm4lVwP+ynfdGLfM3Cg3BnHAWS1soxsA
-         FyiUJ6A27fxV8ddt7cZZbC7zT1rys2eoleIpaVgprPLLkJ9sUMGWbj/2Aq88bLzJeY
-         KTFx/0nsoGNCNLH3pBvRT39kVY5dsr7FHaz9mcAZl1f/IaJyo1+kw3/YIWq/hmgzEL
-         3S3S+hZcPbRXEbIkxkVhs5tSPOvghM97rxLJ02UNCeiB12TJm0hBw1VnC0d1H4szGI
-         x/BWCRBk2ZDzCDkRLWUW/lfmIsXIb5EI1zcF0l6ENsQ3R3yvEoYdr23x6r/H2AHCn+
-         yl8d4cp1aP3+fAAxJwrl9puIWL3P3lZa0RlRA57EgtxeTEDqwJVwDN7bvUtg1kErzF
-         tT4NDQCTvOUxi8FO9oUEFYudxSiJjyWzKics4rA5SIa78a6zhEwyoKkgMjT1gjzFZJ
-         2gevMpv8SARz2nguG+Wo4Qr8=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 867B540E0193;
-        Wed, 16 Aug 2023 10:03:45 +0000 (UTC)
-Date:   Wed, 16 Aug 2023 12:03:44 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Karol Herbst <kherbst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH] drm/nouveau/disp: fix use-after-free in error handling
- of nouveau_connector_create
-Message-ID: <20230816100344.GEZNyfAIt0CJa+g6Sj@fat_crate.local>
-References: <20230814144933.3956959-1-kherbst@redhat.com>
- <20230816093015.GDZNyXJ28y9uspb4Mr@fat_crate.local>
- <CACO55tu8ab-rxCzxFXbUh4Z=W9E-1f8sH6BVd=P+16dQ9PQNjg@mail.gmail.com>
+        Wed, 16 Aug 2023 06:05:06 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB27C1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:05:02 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-307d20548adso5620481f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:05:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692180301; x=1692785101;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AXexP5J2IB86LOs7JUU2PjEMrJazlbcjbHMuFD834+M=;
+        b=i4mEovXgQd4EmL17YmGNfmx7BiPnJ8rYLqIZVgELKnIDaVjme+nSNmkXBgq1r01riU
+         D9jbtq5YKdgzJp04nLuzumD2SCASPuHNpMfdgvpST4bKpzUlOEAXFur+pFGWF+hqxYfu
+         dMhtF4P7BJngyc1ERtiYgY2Dt+bC7gy48nYIx7wtOAQjsuDZCQdO505WLSoUWAZSE/Ye
+         wIwjgJXh2y0sxy7BO3+KAcUnDeFiZMFwg9Q03O7zL8vUSnoBOMhQ5QYE0H78MnJWHE9d
+         pgcWzLp3BH5AvxDi555Rn/cPWDq0L2GALv3NqaeiQ0a98rN3QbWRhq3FhZVnu/QDV+/7
+         BLZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692180301; x=1692785101;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AXexP5J2IB86LOs7JUU2PjEMrJazlbcjbHMuFD834+M=;
+        b=MVzVV5jJS21SIhRSGjt1ODkLFlV/D9EY0dBHZFp6kOar6LgPjVNMKDATlIFlsmpGgG
+         Kv9TvGujsI/kX1R73BQ6udOeY96X3b1v6YTOsIduyqNO34/QfUOkmSUGkG5l2Iv6veq1
+         r5sz9QZAPFdalqwRN8wNkpH0YH82KO6IEhYzQHzdjQU5Ikf5SM7YHg/UZ0ZQ7GFEcTkg
+         WbSkiLk4163VuedBEPxY3S0/FWc+OYgx+5Ahq05WasqPjKe8ZVhfTNt5HSn8msoJqglb
+         cRBcW1mG+QFvwN3AO/0ijRgaz6LZhMkFZG5f+zLeZrF0PTWSXdPMuepW7jzWjVMjV8Tx
+         +eoA==
+X-Gm-Message-State: AOJu0YzMWXMVeVIu3PQVYWbVRoDOLX20t6NnlHnmIYebC4Pva1TOBc8x
+        Br93hpjSDAq9QYGmwX4z+Zuo8g==
+X-Google-Smtp-Source: AGHT+IE7WTr4mwMLvR3/of6jx6jHLQJNhj1JGefVICNU1EcR9Md8dsCZ3SrFuXbKjenuHFR0Jnl06w==
+X-Received: by 2002:adf:d0c3:0:b0:319:62ba:5d08 with SMTP id z3-20020adfd0c3000000b0031962ba5d08mr994283wrh.33.1692180301070;
+        Wed, 16 Aug 2023 03:05:01 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id d10-20020a056000114a00b00301a351a8d6sm20552461wrx.84.2023.08.16.03.05.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 03:05:00 -0700 (PDT)
+Message-ID: <47417e4b-f230-7182-5cb5-c76b34b635c0@linaro.org>
+Date:   Wed, 16 Aug 2023 12:04:59 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CACO55tu8ab-rxCzxFXbUh4Z=W9E-1f8sH6BVd=P+16dQ9PQNjg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH RESEND RESEND] thermal/of: support thermal zones w/o trips
+ subnode
+Content-Language: en-US
+To:     Icenowy Zheng <zhengxingda@iscas.ac.cn>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        Icenowy Zheng <uwu@icenowy.me>
+References: <20230722122534.2279689-1-zhengxingda@iscas.ac.cn>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <20230722122534.2279689-1-zhengxingda@iscas.ac.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 11:51:50AM +0200, Karol Herbst wrote:
-> Mind sharing your kernel logs with that patch applied? I suspect your
-> system boots up but you might just not have the connector available or
-> something? It could be that you have one of those GPUs affected by the
-> original change and then we'd have to figure out what to do with that.
+On 22/07/2023 14:25, Icenowy Zheng wrote:
+> From: Icenowy Zheng <uwu@icenowy.me>
+> 
+> Although the current device tree binding of thermal zones require the
+> trips subnode, the binding in kernel v5.15 does not require it, and many
+> device trees shipped with the kernel, for example,
+> allwinner/sun50i-a64.dtsi and mediatek/mt8183-kukui.dtsi in ARM64, still
+> comply to the old binding and contain no trips subnode.
+> 
+> Allow the code to successfully register thermal zones w/o trips subnode
+> for DT binding compatibility now.
+> 
+> Furtherly, the inconsistency between DTs and bindings should be resolved
+> by either adding empty trips subnode or dropping the trips subnode
+> requirement.
+> 
+> Fixes: d0c75fa2c17f ("thermal/of: Initialize trip points separately")
+> Signed-off-by: Icenowy Zheng <uwu@icenowy.me>
+> ---
+> 
+> Unfortunately the code gets dropped by mailing lists again and again...
+> 
+> Sorry for the disturbance.
+> 
+>   drivers/thermal/thermal_of.c | 17 +++++++++++------
+>   1 file changed, 11 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
+> index 6fb14e521197..2c76df847e84 100644
+> --- a/drivers/thermal/thermal_of.c
+> +++ b/drivers/thermal/thermal_of.c
+> @@ -127,15 +127,17 @@ static struct thermal_trip *thermal_of_trips_init(struct device_node *np, int *n
+>   
+>   	trips = of_get_child_by_name(np, "trips");
+>   	if (!trips) {
+> -		pr_err("Failed to find 'trips' node\n");
+> -		return ERR_PTR(-EINVAL);
+> +		pr_debug("Failed to find 'trips' node\n");
+> +		*ntrips = 0;
 
-Lemme do the KASAN run you requested first. It is an old and slooow box,
-the grandma. :-)
+set ntrips at the beginning of the function.
+
+> +		return NULL;
+
+return ERR_PTR(-ENXIO);
+
+>   	}
+>   
+>   	count = of_get_child_count(trips);
+>   	if (!count) {
+> -		pr_err("No trip point defined\n");
+> -		ret = -EINVAL;
+> -		goto out_of_node_put;
+> +		pr_debug("No trip point defined\n");
+> +		of_node_put(trips);
+> +		*ntrips = 0;
+> +		return NULL;
+
+Why not keep goto out_of_node_put ?
+
+>   	}
+>   
+>   	tt = kzalloc(sizeof(*tt) * count, GFP_KERNEL);
+> @@ -519,7 +521,10 @@ static struct thermal_zone_device *thermal_of_zone_register(struct device_node *
+
+
+The function should check the return value of thermal_of_trips_init()
+
+If this one returns -ENXIO, it should pr_warn().
+
+>   	of_ops->bind = thermal_of_bind;
+>   	of_ops->unbind = thermal_of_unbind;
+>   
+> -	mask = GENMASK_ULL((ntrips) - 1, 0);
+> +	if (ntrips)
+> +		mask = GENMASK_ULL((ntrips) - 1, 0);
+> +	else
+> +		mask = 0;
+
+	mask = ntrips ? GENMASK_ULL((ntrips) - 1, 0) : 0;
+
+>   	tz = thermal_zone_device_register_with_trips(np->name, trips, ntrips,
+>   						     mask, data, of_ops, tzp,
 
 -- 
-Regards/Gruss,
-    Boris.
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
