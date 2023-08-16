@@ -2,133 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6DE77D788
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 03:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E775677D785
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 03:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240999AbjHPBO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 21:14:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53050 "EHLO
+        id S240986AbjHPBO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 21:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240996AbjHPBOo (ORCPT
+        with ESMTP id S240988AbjHPBOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 21:14:44 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F057D211E
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 18:14:43 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-40c72caec5cso157981cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 18:14:43 -0700 (PDT)
+        Tue, 15 Aug 2023 21:14:38 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3922121
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 18:14:37 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d6b66b41232so2557379276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 18:14:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692148483; x=1692753283;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kVVaJzAMOPLs4F5EbaziKRc8Rzjn1Gof//6KpkJlzlQ=;
-        b=Vyshv/iyYwR/oFEOKc1JYHMUrHXFkWIoQxeD1rRWIN0P1XogOx5MjMYvYkUY6T9etq
-         Zyy+W6dszX02xqzVxcGnzkiWibtt560W+RPTXwER5Qmf0ZZx6l3Swf03vaNrgkidKm5V
-         Ej/KmVtxqPaC0pd4xGzE58TL6WJ5bPesj0D801i/T+wyBZfYfcBz9gQF8xBvFFT6Vqpb
-         uJQox/dXljUPbaHHuiQofbJMHJgJpluHl5tdkpEyPgxbT4CQBHktXf2KCsM0dFTCMBwz
-         kn8NICYHPgpjhsrh4cNbGwSHhulF3tQ+l22DrSd/Dz81D2atgZBtsQPqUUYRbZqq3sKU
-         di6Q==
+        d=google.com; s=20221208; t=1692148476; x=1692753276;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=H9VD/R3G+MRr4pzWPFKTK91k5G484Ke6ASD3dpiheZk=;
+        b=7SGqYnHcvzgKqDQAOT64GfSHs8LSnxqu4EdXwePI/U0odcpJhxnbXwnY/Pij2PVe0P
+         svipqTfLgv56/AMAz9ICoYJqkC7QIUZfasne9wgDdmsHSC8OH8H41yUTx6DP92cYmaCn
+         /zbPoMlul7yqVynoW0xkkpH446u7aYYw63jIgEyplEzhLp9Jl+0Ecd67xiKNkOf01yXr
+         zE3/gNBZU1SN+oAOWRZNI50/pOurCPTZXcG6/OkNdloQjgmr4ZnHDq76m6SEzSgAgQdh
+         Odn8JWDs2AVnkgibZNfGmtlHIQnkCL3uwBB9JPzPT2V2fy9qhJvwun31Ej+hL1HwjHJi
+         tASQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692148483; x=1692753283;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kVVaJzAMOPLs4F5EbaziKRc8Rzjn1Gof//6KpkJlzlQ=;
-        b=ihefUlEWWTwxH+BFx4pFxC9omndWVIZjU4STx1IdNua5h7+D93LOJ79v/6ZhENaCFb
-         s/IhFVnB5PVY9mjeoDMdwBr2+Q5LMuGk3wc2Dd8HHwK4mxEA79qS1dKvSvBoovwjsPPg
-         iAx8TMWhR5DAJtnP5gMjGbMnqXVIB3hOJa08qvWmqpmexY+d8hcRmSGyt2wWvdIF8SVD
-         7IkMNMqFjSFizBQjwyL3dLRKmZx1azLB/8/IZNCON0oMXM2yanad7KbJrpULorwwEEqz
-         6scJwoy62QZl+FAih8L67K7xEOl5jOd/BnFwsbi3k7izF0azYtPVRNrJpVzQV+D8ec3j
-         1nfA==
-X-Gm-Message-State: AOJu0Yz89K9JUauDAiZcblmv4OnkS0ohRWaUuTrG0hlB1/HnSGQ4Kb4I
-        DEPO2cQTZIx4gYgWae1RDCR5Z/3Fy/xgSLSWksZFCg==
-X-Google-Smtp-Source: AGHT+IH8TYko1Bh6ENJiY9cnctcLBXofliPDjplhGZbCyU2pM4y2EIXq+p6ecUUKdPOKf9+5dRJChmOai1+wd5cANig=
-X-Received: by 2002:ac8:4e86:0:b0:3f5:2006:50f1 with SMTP id
- 6-20020ac84e86000000b003f5200650f1mr130504qtp.12.1692148483063; Tue, 15 Aug
- 2023 18:14:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAJD7tkYZxjAHrodVDK=wmz-sULJrq2VhC_5ecRP7T-KiaOcTuw@mail.gmail.com>
- <CALvZod46Cz_=5UgiyAKM+VgKyk=KJCqDqXu91=9uHy7-2wk53g@mail.gmail.com>
- <CAJD7tkY-ezyYebvcs=8Z_zrw2UVW8jf2WvP1G8tu2rT=2sMnAA@mail.gmail.com>
- <CALvZod5fH9xu_+6x85K38f63GfKGWD1LqtD2R4d09xmDtLB7ew@mail.gmail.com>
- <ZNdEaw2nktq1NfmH@dhcp22.suse.cz> <CAJD7tkaFHgc3eN1K1wYsQFWMLu4+Frf9DJ-5HOja2nC20Es9Dw@mail.gmail.com>
- <ZNrDWqfjXtAYhnvT@slm.duckdns.org> <CAJD7tkYBFz-gZ2QsHxUMT=t0KNXs66S-zzMPebadHx9zaG0Q3w@mail.gmail.com>
- <ZNrITZVTf2EILRJq@slm.duckdns.org> <CAJD7tkaXwoF-faApweAmm7Db7jAuS3EO7hVvdyVtqW_rE+T9Vg@mail.gmail.com>
- <ZNrLO5PAEZw4yjI9@slm.duckdns.org> <CAJD7tkYgCySTX28zK9GZiWwsabR4nv7M2hQ57y12si-fqtv7zg@mail.gmail.com>
- <CALvZod6KRxiDzrppCgx+=SHg2+96nFE5crwXCKwe9PZbWM_6cQ@mail.gmail.com> <CAJD7tkaUzhvZPohpo1F8TUKRPuXH7bjDeg9VCzN2CbywQbRutQ@mail.gmail.com>
-In-Reply-To: <CAJD7tkaUzhvZPohpo1F8TUKRPuXH7bjDeg9VCzN2CbywQbRutQ@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 15 Aug 2023 18:14:30 -0700
-Message-ID: <CALvZod6HUtYhDaXiwXSrcwfxLSrZ37sZhKY1Mg4kmpDFk13aYw@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Ivan Babrou <ivan@cloudflare.com>
+        d=1e100.net; s=20221208; t=1692148476; x=1692753276;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=H9VD/R3G+MRr4pzWPFKTK91k5G484Ke6ASD3dpiheZk=;
+        b=hSRgwjNhgcaxOKliFha60/rtEFF/D2tGibvf8DUIVtEu1DObGMn+aU1KupTs/nEH8A
+         g+qfgZQ96Gtjw5ghdqtTwkqWCfh6DXAvkNBDNBUC/ws4TQKJkWvTYts73Q5vTE6qVttW
+         qJvkhecggkLNSqZ8Jq3E4gvMtSQL8xrSwfrRv+iuRyY6Ir3fh6t4YK4qcN6Zhmtdgcus
+         FwhGY8S3NJNI1uXIgGDGJHvFS1G96Mo0hslqoORfcN75rl/WJFdpxmg1xrdfKxilDggb
+         2Xzf14lLfA6bWENFqDNmVgZqL7DnTUwRHbkInvSRQJUuvDVCqIM8SbnLDNAMGC8TCGgM
+         P3BQ==
+X-Gm-Message-State: AOJu0Ywhyg59Tr5Y+QTJy8lGgaW8f4wWb0tb52+T1L2C7g5j+Ww/BIXm
+        owX5wWuXlj2pzLLCkBoKNuafLgy/Y3A=
+X-Google-Smtp-Source: AGHT+IHRLlIGGNwPaRpxAIIhl1cJ1s0NCl5PXS5Bil58d1WAv6OI7FtfbwHuY4ImazllyImjOZPmj1JFiGc=
+X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:201:19fa:33cd:f272:37ec])
+ (user=drosen job=sendgmr) by 2002:a05:6902:a08:b0:d42:5cb6:31ff with SMTP id
+ cb8-20020a0569020a0800b00d425cb631ffmr6364ybb.8.1692148476757; Tue, 15 Aug
+ 2023 18:14:36 -0700 (PDT)
+Date:   Tue, 15 Aug 2023 18:14:31 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
+Message-ID: <20230816011432.1966838-1-drosen@google.com>
+Subject: [PATCH 0/1] Add 16K Support for f2fs
+From:   Daniel Rosenberg <drosen@google.com>
+To:     linux-f2fs-devel@lists.sourceforge.net
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Daniel Rosenberg <drosen@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 5:29=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-[...]
-> >
-> > I thought we already reached the decision on how to proceed here. Let
-> > me summarize what I think we should do:
-> >
-> > 1. Completely remove the sync flush from stat files read from userspace=
-.
-> > 2. Provide a separate way/interface to explicitly flush stats for
-> > users who want more accurate stats and can pay the cost. This is
-> > similar to the stat_refresh interface.
-> > 3. Keep the 2 sec periodic stats flusher.
->
-> I think this solution is suboptimal to be honest, I think we can do bette=
-r.
->
-> With recent improvements to spinlocks/mutexes, and flushers becoming
-> sleepable, I think a better solution would be to remove unified
-> flushing and let everyone only flush the subtree they care about. Sync
-> flushing becomes much better (unless you're flushing root ofc), and
-> concurrent flushing wouldn't cause too many problems (ideally no
-> thundering herd, and rstat lock can be dropped at cpu boundaries in
-> cgroup_rstat_flush_locked()).
->
-> If we do this, stat reads can be much faster as Ivan demonstrated with
-> his patch that only flushes the cgroup being read, and we do not
-> sacrifice accuracy as we never skip flushing. We also do not need a
-> separate interface for explicit refresh.
->
-> In all cases, we need to keep the 2 sec periodic flusher. What we need
-> to figure out if we remove unified flushing is:
->
-> 1. Handling stats_flush_threshold.
-> 2. Handling flush_next_time.
->
-> Both of these are global now, and will need to be adapted to
-> non-unified non-global flushing.
+F2fs filesystems currently have two large restrictions around block size.
+The block size must equal the page size, and the block size must be 4096.
 
-The only thing we are disagreeing on is (1) the complete removal of
-sync flush and an explicit flush interface versus (2) keep doing the
-sync flush of the subtree.
+The following patch, along with the associated f2fs-tools patch set, relax the
+latter restriction, allowing you to use 16K block size f2fs on a 16K page size
+system. It does not allow mounting 4K block size f2fs on a 16k page system.
 
-To me (1) seems more optimal particularly for the server use-case
-where a node controller reads stats of root and as well as cgroups of
-a couple of top levels (we actually do this internally). Doing flush
-once explicitly and then reading the stats for all such cgroups seems
-better to me.
+Doing that would require a lot more work, requiring a refactor of all block
+sized struct similar to the userspace patches, as well as handling the block
+reading/writing at sub page boundaries. As far as I know, buffer_heads are
+still the main way this is handled in other filesystems. Is there a different
+option there? I know there's a general desire to move away from buffer_heads,
+but I don't know of any replacements covering that use case. And it would feel
+a bit silly to not be able to read older filesystems from a 16k system...
+
+Daniel Rosenberg (1):
+  ANDROID: f2fs: Support Block Size == Page Size
+
+ fs/f2fs/data.c          |  2 +-
+ fs/f2fs/node.c          |  2 +-
+ fs/f2fs/super.c         |  4 +--
+ include/linux/f2fs_fs.h | 69 ++++++++++++++++++++++++-----------------
+ 4 files changed, 45 insertions(+), 32 deletions(-)
+
+
+base-commit: 0cc81b1ad51287847e494e055e5d3426f95e7921
+-- 
+2.41.0.694.ge786442a9b-goog
+
