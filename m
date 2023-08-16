@@ -2,111 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F9B477EAFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 22:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3AD877EB00
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 22:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346242AbjHPUrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 16:47:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46310 "EHLO
+        id S1346245AbjHPUsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 16:48:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346281AbjHPUrH (ORCPT
+        with ESMTP id S1346264AbjHPUsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 16:47:07 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D342711
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:47:05 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso5199774a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:47:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692218825; x=1692823625;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xFQfU8aEhvmJ8mwzz0baeIXueaOetJfmys9es6pphgI=;
-        b=DGE1T9Sbej9zcyzxPncroG5xoKAEuMJ//ezL87vF3Oa3Bd2qLrgbqfpLpjcpD6/6tH
-         8w29PWs65ltgc3x7CDqLhbMrMhNgwssMWZk7+q8ou/SFj3ICsEmLGvZc74CkhkNy5rP/
-         DiBw4qqelMcXE0I9O+Y6RVA57NXXf/gEo17P0=
+        Wed, 16 Aug 2023 16:48:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 192A41BE6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:47:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692218837;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e3IvmL0y1viiHXLAUyfip1yCYlhOkZ7NLyhRvcY+CDk=;
+        b=FsUH+oiW3E50ApXcID/vYkII47qSeguEf4kg9k04Y644PtGQHVbYIM3RqVSDA554JAdl2w
+        C73o9NWGLyOwjA0u018LeN7RYVX6dlPuDbVSTBSUkMej+TNoEwXaYhGWaNx1bZFZAaDTE8
+        qZvk/CZYgYwb9ffcyPFn9iIRsTUuD6w=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-373-bm5P9yeAPb-zRCWryskSQg-1; Wed, 16 Aug 2023 16:47:14 -0400
+X-MC-Unique: bm5P9yeAPb-zRCWryskSQg-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-76d7a1b2a9eso38301785a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 13:47:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692218825; x=1692823625;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xFQfU8aEhvmJ8mwzz0baeIXueaOetJfmys9es6pphgI=;
-        b=FC/E6heSpH6aBp5ZKIORnk+3Ofd8xto1QVFFREPu4KN7hPu7i1MyvdfcR9I4ykJ6zN
-         cKkag5Vfgt12dSX/3jctLGw1Q31vBCqzKUwGWqqPgeBW1XCpaJmB1JhZbm2pvBKxWh2D
-         mslrIN20tDPijefsCzYVcFfTWZwRGKDQfGsjbbOWxrWJ8lUAJrkkEAPzM5uLNXRR+LGa
-         Fw8wjEWmAelTpoIyCrGSPjYu24CmNSNa62z+dHRxsW2K305XynJkT45mCE/uxydaov1T
-         XxTS1Cs7hF3hLuHBEr/sdm+CAqK8kDvFgcZYm8bqalBzqDoIl3IL/Hjte8GYUsUxYBjK
-         J7/g==
-X-Gm-Message-State: AOJu0YzBOsUKvnoxG7gxgtazGxdIyZAfsPUgX4LuslXbMSmyChTjRcZ4
-        ZhE3m6sX9a8efXGfeiG7IsApkg==
-X-Google-Smtp-Source: AGHT+IES1w4tkDFKq5YcFhAKHa+deut5kxN8giMZyI/wU5w9EzUk6JiwbFumYG0twm1YJmzwvUs7mQ==
-X-Received: by 2002:a05:6a20:160b:b0:138:1c5b:24c3 with SMTP id l11-20020a056a20160b00b001381c5b24c3mr3917200pzj.49.1692218825365;
-        Wed, 16 Aug 2023 13:47:05 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id r17-20020a62e411000000b0068874e1faf2sm2359224pfh.56.2023.08.16.13.47.04
+        d=1e100.net; s=20221208; t=1692218834; x=1692823634;
+        h=mime-version:user-agent:content-transfer-encoding:organization
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e3IvmL0y1viiHXLAUyfip1yCYlhOkZ7NLyhRvcY+CDk=;
+        b=UJndLX1fwHDvIc8NOZIREKcbqBaJ7qYhvpZhN5ox5KyXzaegQ55lonIimU627pmzvb
+         MwLg8c2mhceMWPf2rgq6Zpbn5kmI1jL4AFZyNDcg4Pl6H0IOBsuYMrA484XXm2S+lycB
+         M+Yu/uchhVECyHGBWR+IhMBQnqzb3qcGhc3n4RR08cYByEoyg/vMSaDWfKDEtloIKYdv
+         Aqlf9LNLyP0R+tFlOu3KfqcssS3YpqrXiAKgk+e6u/N9C9ImWbCuwOpRs82DS2RbGEjR
+         CmF/Emc8igORe+j+AkAD+firg/+V9lU9J3UKHq4raZlbgxSd2MoJRg1462OTvgEyM7ve
+         f9hw==
+X-Gm-Message-State: AOJu0YxIoNqTKZ4YEqu5BpCJkkM5yfklsO4F8uVW/dyEgnFJ31wSgFEC
+        MSUkxzrDEEtSbdabbZvKfp0elxxBqplRDCvazfSF4g8Utoiu/VeyCjXav4EBVZY4chGKYVzimSr
+        qpnP8IdfDmIqg/+/ZcrdjcqnN
+X-Received: by 2002:a05:622a:1210:b0:403:e895:155b with SMTP id y16-20020a05622a121000b00403e895155bmr3853832qtx.34.1692218834031;
+        Wed, 16 Aug 2023 13:47:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEey1QVl493qQLI7bMS4KR7ZC4Pq5U6vCDQZyZMtY+jGAPCQ+P+AzAMGob1aMDWpaV//+fi6g==
+X-Received: by 2002:a05:622a:1210:b0:403:e895:155b with SMTP id y16-20020a05622a121000b00403e895155bmr3853816qtx.34.1692218833802;
+        Wed, 16 Aug 2023 13:47:13 -0700 (PDT)
+Received: from ?IPv6:2600:4040:5c7d:5f00::feb? ([2600:4040:5c7d:5f00::feb])
+        by smtp.gmail.com with ESMTPSA id w8-20020ac84d08000000b0040b8ba13701sm4735297qtv.52.2023.08.16.13.47.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 13:47:04 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 13:47:04 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Kalle Valo <kvalo@kernel.org>
-Cc:     Justin Stitt <justinstitt@google.com>,
-        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] wifi: ipw2x00: refactor to use kstrtoul
-Message-ID: <202308161346.23B40C1569@keescook>
-References: <20230802-wifi-ipw2x00-refactor-v2-1-d33f765e9cd5@google.com>
- <202308040120.183400A04@keescook>
- <87wmybjhyh.fsf@kernel.org>
+        Wed, 16 Aug 2023 13:47:13 -0700 (PDT)
+Message-ID: <a612e9d4560aa3827114339b1ea92f0181550eca.camel@redhat.com>
+Subject: Re: [PATCH] drm/nouveau/disp: fix use-after-free in error handling
+ of nouveau_connector_create
+From:   Lyude Paul <lyude@redhat.com>
+To:     Karol Herbst <kherbst@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Ben Skeggs <bskeggs@redhat.com>, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, Borislav Petkov <bp@alien8.de>,
+        Takashi Iwai <tiwai@suse.de>
+Date:   Wed, 16 Aug 2023 16:47:12 -0400
+In-Reply-To: <20230814144933.3956959-1-kherbst@redhat.com>
+References: <20230814144933.3956959-1-kherbst@redhat.com>
+Organization: Red Hat Inc.
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.3 (3.48.3-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wmybjhyh.fsf@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 04, 2023 at 12:05:26PM +0300, Kalle Valo wrote:
-> Kees Cook <keescook@chromium.org> writes:
-> 
-> > On Wed, Aug 02, 2023 at 01:23:06AM +0000, Justin Stitt wrote:
-> >> The current implementation seems to reinvent what `kstrtoul` already does
-> >> in terms of functionality and error handling. Remove uses of `simple_strtoul()`
-> >> in favor of `kstrtoul()`.
-> >> 
-> >> There is the following note at `lib/vsprintf.c:simple_strtoull()` which
-> >> further backs this change:
-> >> | * This function has caveats. Please use kstrtoull (or kstrtoul) instead.
-> >> 
-> >> And here, simple_str* are explicitly deprecated [3].
-> >> 
-> >> This patch also removes an instance of the deprecated `strncpy` which helps [2].
-> >> 
-> >> Link: https://lore.kernel.org/all/202308011602.3CC1C0244C@keescook/ [1]
-> >> Link: https://github.com/KSPP/linux/issues/90 [2]
-> >> Link:
-> >> https://docs.kernel.org/process/deprecated.html#simple-strtol-simple-strtoll-simple-strtoul-simple-strtoull
-> >> [3]
-> >> Cc: linux-hardening@vger.kernel.org
-> >> Suggested-by: Kees Cook <keescook@chromium.org>
-> >> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> >
-> > This looks correct to me. I would be curious to hear back from the intel
-> > folks if the interface continues to work correctly with real hardware.
-> >
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> 
-> This is ancient hardware, not sure if anyone even have a working setup.
-> And even if they would have one I doubt anyone uses this sysfs interface
-> for anything.
+Reviewed-by: Lyude Paul <lyude@redhat.com>
 
-Just a quick ping; is this patch ready to land?
+On Mon, 2023-08-14 at 16:49 +0200, Karol Herbst wrote:
+> We can't simply free the connector after calling drm_connector_init on it=
+.
+> We need to clean up the drm side first.
+>=20
+> It might not fix all regressions from 2b5d1c29f6c4 ("drm/nouveau/disp:
+> PIOR DP uses GPIO for HPD, not PMGR AUX interrupts"), but at least it
+> fixes a memory corruption in error handling related to that commit.
+>=20
+> Link: https://lore.kernel.org/lkml/20230806213107.GFZNARG6moWpFuSJ9W@fat_=
+crate.local/
+> Fixes: 95983aea8003 ("drm/nouveau/disp: add connector class")
+> Signed-off-by: Karol Herbst <kherbst@redhat.com>
+> ---
+>  drivers/gpu/drm/nouveau/nouveau_connector.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_connector.c b/drivers/gpu/dr=
+m/nouveau/nouveau_connector.c
+> index a2e0033e8a260..622f6eb9a8bfd 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_connector.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_connector.c
+> @@ -1408,8 +1408,7 @@ nouveau_connector_create(struct drm_device *dev,
+>  		ret =3D nvif_conn_ctor(&disp->disp, nv_connector->base.name, nv_connec=
+tor->index,
+>  				     &nv_connector->conn);
+>  		if (ret) {
+> -			kfree(nv_connector);
+> -			return ERR_PTR(ret);
+> +			goto drm_conn_err;
+>  		}
+> =20
+>  		ret =3D nvif_conn_event_ctor(&nv_connector->conn, "kmsHotplug",
+> @@ -1426,8 +1425,7 @@ nouveau_connector_create(struct drm_device *dev,
+>  			if (ret) {
+>  				nvif_event_dtor(&nv_connector->hpd);
+>  				nvif_conn_dtor(&nv_connector->conn);
+> -				kfree(nv_connector);
+> -				return ERR_PTR(ret);
+> +				goto drm_conn_err;
+>  			}
+>  		}
+>  	}
+> @@ -1475,4 +1473,9 @@ nouveau_connector_create(struct drm_device *dev,
+> =20
+>  	drm_connector_register(connector);
+>  	return connector;
+> +
+> +drm_conn_err:
+> +	drm_connector_cleanup(connector);
+> +	kfree(nv_connector);
+> +	return ERR_PTR(ret);
+>  }
 
--- 
-Kees Cook
+--=20
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
+
