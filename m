@@ -2,162 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A91177D820
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 04:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49CCC77D82E
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 04:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241184AbjHPCIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 22:08:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59896 "EHLO
+        id S241200AbjHPCKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 22:10:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241179AbjHPCHa (ORCPT
+        with ESMTP id S241199AbjHPCKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 22:07:30 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3952129
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:07:28 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bdca7cc28dso31613725ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:07:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692151648; x=1692756448;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=1cgPRSiv90OT3/SJL8ZMyRGl4jaRnBiBcYOX7OaylDE=;
-        b=sQMCdgdwxL3T4OXi4BlV/8FePNPTCIivYKVkWn7lRRSmnv5c9qZy5fs29K/KOgn29Y
-         O8HjNk71YBIgx74M3jMGU3NLOjIFS9rRDybcVMBz2bJESPp8ZeMJf139+YR9x/hnzLdK
-         D0Gv8oY475Le4AEIkHqSSKHQQo7i5EhKKU06ctzgup9rZYddS9+agRyqLXUdQKd3X3+P
-         K3GWm8qR+KCTSWmkUrwFHmWiaduwlS7z6JNuRPhqqDNHTDMq3oYDQ2T7uc9wG8tD2bZV
-         IWvkM3M+XBkk+S50u1wastmv7g7ljregVsfk60vECo7OjFjmkfrl3z5hhUIg5CxY2zhR
-         0drw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692151648; x=1692756448;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1cgPRSiv90OT3/SJL8ZMyRGl4jaRnBiBcYOX7OaylDE=;
-        b=RyBxfybfeO0m4V85u0BR2rxLFGftBMnHvcayXDYbANNZdczsxHF48nyUiAQ8iOfDw3
-         jYsksGjBsAtDblIcZGXokV18r/lgOH5DOeqhvJBZDOvSdkHip40gQRR+kq0nWaNT+gMu
-         sOp3TNKQ+/hoEmYaUnISe+nTM59lNtPYq/iu+Umnk578Ht0Ss/aEsCFJHGm+f2juBSd7
-         hxD3lcwRII6a3U48kKnPK/aJ73ZYzKhwEe6hKuzqGMHiZRxsuP6EtuObYL7l1G6WPXYT
-         vk3IgAxviE6ehJmzfYxC8iTQTlcb3z47OlIWHKaPN3fAQEnCqLJs0lQoCUKcO4Fs8Zap
-         dfyw==
-X-Gm-Message-State: AOJu0YxWda/5onSt/CzGRGG1aKwHpTbMNb5mHl4FeIcJWYVoPi0Vzq+f
-        5TC+T4uhoY3dnmw71wDN6AFLtg==
-X-Google-Smtp-Source: AGHT+IFCPpYmyWaib0MQfDL563rBcVuQf0cRysHOx8FVJ+qFoWVHApR2PRs6Is19nR5cTTuzLoiwuw==
-X-Received: by 2002:a17:903:2796:b0:1b8:8223:8bdd with SMTP id jw22-20020a170903279600b001b882238bddmr692922plb.59.1692151647664;
-        Tue, 15 Aug 2023 19:07:27 -0700 (PDT)
-Received: from leoy-huanghe.lan ([150.230.248.162])
-        by smtp.gmail.com with ESMTPSA id l2-20020a170902f68200b001b8943b37a5sm11673061plg.24.2023.08.15.19.07.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Aug 2023 19:07:27 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 10:07:15 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Guo Ren <guoren@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Ming Wang <wangming01@loongson.cn>,
-        Eric Lin <eric.lin@sifive.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Ivan Babrou <ivan@cloudflare.com>,
-        Fangrui Song <maskray@google.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 0/6] perf parse-regs: Refactor architecture functions
-Message-ID: <20230816020715.GA135657@leoy-huanghe.lan>
-References: <20230606014559.21783-1-leo.yan@linaro.org>
- <CAP-5=fV1m440mKc0R=m5C4N2NtoiixchtnpX2eR3PA_5hXbqEQ@mail.gmail.com>
- <ZNvCxM/ULdUfzHtR@kernel.org>
- <ZNvHx+KxIL6JzEl/@kernel.org>
- <ZNvJdsVmmAWLmfH6@kernel.org>
- <ZNvKjeFkXY8ezf9e@kernel.org>
+        Tue, 15 Aug 2023 22:10:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C642128
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:10:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5788E64B5B
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:10:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id ADB7CC4339A;
+        Wed, 16 Aug 2023 02:10:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692151822;
+        bh=LEZiyAZvEFf3DpLJrZwKPIG/qGDBJjfBRWr7FWdg6v4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=JoOoEOO8DdvoFLVXg0WWZwr2HzVw1Tp6xisYS2s61PcO6pHtdD+Z2+9ysQm9Y/d8d
+         hScf63lQjbCqNflmQvPLRZIGqD63balgLlZkB7XMIzDUgiL5moEveLQQJljPFTq4vD
+         1Vr2+QbJPPFBF0B27lxVuVqjtPNicCPdIJ8qsBXbNgi5vij1QFRLjPQ/5azjfomfU2
+         +bfGgMFdc3mxWqXBGDuhOcFdPEbMMAwZLrS91lm8tis0hTk+Vdkqx7zUM5+Ue2ypBb
+         GyCcthQbC3MALJ83ktiZ58vN3ClJ1tUVqsezMLEpeqToJhcZJ8kxe6qefsBIOOYfWY
+         EIYl+WtKPVaZw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 92F15C395C5;
+        Wed, 16 Aug 2023 02:10:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZNvKjeFkXY8ezf9e@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] qed: remove unused 'resp_size' calculation
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169215182259.21752.4980057098192603283.git-patchwork-notify@kernel.org>
+Date:   Wed, 16 Aug 2023 02:10:22 +0000
+References: <20230814074512.1067715-1-arnd@kernel.org>
+In-Reply-To: <20230814074512.1067715-1-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     aelior@marvell.com, manishc@marvell.com, arnd@arndb.de,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, nathan@kernel.org, ndesaulniers@google.com,
+        trix@redhat.com, Yuval.Mintz@qlogic.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 03:57:17PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Aug 15, 2023 at 03:52:38PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Tue, Aug 15, 2023 at 03:45:27PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > > Agreed, applied to perf-tools-next, sorry for the delay.
-> > > 
-> > > Had to add this to make 'perf test python' to work. Please run 'perf
-> > > test' before sending patches.
-> > 
-> > One more, please also do a 'make -C tools/perf build-test', with it I
-> > caught this:
-> > 
-> >          make_no_libunwind_O: cd . && make NO_LIBUNWIND=1 FEATURES_DUMP=/var/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP -j32 O=/tmp/tmp.yeEGyQq2HR DESTDIR=/tmp/tmp.ITgoO16jjH
-> > cd . && make NO_LIBUNWIND=1 FEATURES_DUMP=/var/home/acme/git/perf-tools-next/tools/perf/BUILD_TEST_FEATURE_DUMP -j32 O=/tmp/tmp.yeEGyQq2HR DESTDIR=/tmp/tmp.ITgoO16jjH
-> 
-> +#include "util/env.h"
-> 
-> As now we need it for perf_env__arch(ui->machine->env)
+Hello:
 
-Sorry for inconvenience.
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-I saw this patch series has been picked into the branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/log/?h=tmp.perf-tools-next
-
-If want me to follow up, let me know.  Thank you!
-
-> >   CC      /tmp/tmp.yeEGyQq2HR/util/expr-flex.o
-> > util/unwind-libdw.c: In function ‘memory_read’:
-> > util/unwind-libdw.c:173:28: error: implicit declaration of function ‘perf_env__arch’ [-Werror=implicit-function-declaration]
-> >   173 |         const char *arch = perf_env__arch(ui->machine->env);
-> >       |                            ^~~~~~~~~~~~~~
-> > util/unwind-libdw.c:173:28: error: initialization of ‘const char *’ from ‘int’ makes pointer from integer without a cast [-Werror=int-conversion]
-> > util/unwind-libdw.c: In function ‘unwind__get_entries’:
-> > util/unwind-libdw.c:258:28: error: initialization of ‘const char *’ from ‘int’ makes pointer from integer without a cast [-Werror=int-conversion]
-> >   258 |         const char *arch = perf_env__arch(ui_buf.machine->env);
-> >       |                            ^~~~~~~~~~~~~~
-> > cc1: all warnings being treated as errors
-> > make[6]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:98: /tmp/tmp.yeEGyQq2HR/util/unwind-libdw.o] Error 1
-> > make[6]: *** Waiting for unfinished jobs....
-> > make[5]: *** [/var/home/acme/git/perf-tools-next/tools/build/Makefile.build:150: util] Error 2
-> > make[4]: *** [Makefile.perf:662: /tmp/tmp.yeEGyQq2HR/perf-in.o] Error 2
-> > make[4]: *** Waiting for unfinished jobs....
-> >   CC      /tmp/tmp.yeEGyQq2HR/pmu-events/pmu-events.o
-> >   LD      /tmp/tmp.yeEGyQq2HR/pmu-events/pmu-events-in.o
-> > make[3]: *** [Makefile.perf:238: sub-make] Error 2
-> > make[2]: *** [Makefile:70: all] Error 2
-> > make[1]: *** [tests/make:337: make_no_libunwind_O] Error 1
-> > make: *** [Makefile:103: build-test] Error 2
-> > make: Leaving directory '/var/home/acme/git/perf-tools-next/tools/perf'
-> > 
-> > real	1m29.784s
-> > user	10m41.597s
-> > sys	2m55.948s
-> > ⬢[acme@toolbox perf-tools-next]$
-> > 
-> > I'm trying to fix
+On Mon, 14 Aug 2023 09:45:03 +0200 you wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> -- 
+> Newer versions of clang warn about this variable being assigned but
+> never used:
 > 
-> - Arnaldo
+> drivers/net/ethernet/qlogic/qed/qed_vf.c:63:67: error: parameter 'resp_size' set but not used [-Werror,-Wunused-but-set-parameter]
+> 
+> [...]
+
+Here is the summary with links:
+  - qed: remove unused 'resp_size' calculation
+    https://git.kernel.org/netdev/net-next/c/7a456b894ea5
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
