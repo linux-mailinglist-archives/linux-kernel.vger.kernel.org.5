@@ -2,99 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D66077E51B
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 17:26:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B271477E521
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 17:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344148AbjHPPZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 11:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44380 "EHLO
+        id S1344081AbjHPP2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 11:28:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344232AbjHPPZv (ORCPT
+        with ESMTP id S1344169AbjHPP2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 11:25:51 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648422D5B
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 08:25:19 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 17:25:11 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692199513;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EVPM886Qe3x7UJz3Gzy49EbAzA76HOo0JdP62G5H7JY=;
-        b=JrwsxYpyF+ZVSMx2ccg38N3b7WUpDzTOx3KGPHZ4CGm37nn7FsXqHTQLJqbMZZtgci9jy5
-        PsTJ71dmf4K6w+001BnDd6tI9cDZ+Z1zKMSSGTsDv8YCBd+xze8C5mUjdf7u/6N+ygEOgW
-        vHHKQnyFD4RYyZYK1anANigHC4zt4JguafrUH5EH4s4+1zbOr+W9O+bv3OSjJiXs5OWSvP
-        PG58iINSQCIXQM4Cpi/O9+aAaArTjjIC0m4QJvjxUF4yw9thhR5uISG0FO/w+zzrgs21mV
-        VHXp0lvP66nU6mlbNXr3/PPhceSkQ7YVUAutp6LfElgtoa5C6XJy2Wb5Xi9M6Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692199513;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EVPM886Qe3x7UJz3Gzy49EbAzA76HOo0JdP62G5H7JY=;
-        b=Vg1h3nQKhw1dZKkRgmQOgD3F3v/R4bfK4nKhoUGgkLzZjMVtPE/qSBicYI5rKSZEAR+IIS
-        73xx9r2RN7+orACQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        bsegall@google.com, boqun.feng@gmail.com, swood@redhat.com,
-        bristot@redhat.com, dietmar.eggemann@arm.com, mingo@redhat.com,
-        jstultz@google.com, juri.lelli@redhat.com, mgorman@suse.de,
-        rostedt@goodmis.org, vschneid@redhat.com,
-        vincent.guittot@linaro.org, longman@redhat.com, will@kernel.org
-Subject: Re: [PATCH 0/6] locking/rtmutex: Avoid PI state recursion through
- sched_submit_work()
-Message-ID: <20230816152511.J9pAmJzz@linutronix.de>
-References: <20230815110121.117752409@infradead.org>
- <20230815161557.GK214207@hirez.programming.kicks-ass.net>
- <20230816085826.zfXjhNmj@linutronix.de>
- <20230816094257.GE980931@hirez.programming.kicks-ass.net>
- <20230816101902.Pz8wdats@linutronix.de>
- <20230816134630.KO12Djeh@linutronix.de>
- <20230816145818.GA989936@hirez.programming.kicks-ass.net>
- <20230816152231.GD982867@hirez.programming.kicks-ass.net>
+        Wed, 16 Aug 2023 11:28:17 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B102102
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 08:28:14 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 6D4DA100004;
+        Wed, 16 Aug 2023 18:28:12 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 6D4DA100004
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1692199692;
+        bh=WE0hIh5RLBABYfVTZR+pWZ3G2DbPLavvbNDma5RqYUQ=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=OCAU+WoGGr5mo0/LaK5uScFYuclofAwnb4U5NcZP09BHntYjGIu+wflQrFBroWvHX
+         wJXcFYrNS+P+oYbadIOkI+K1ukx0KDD3WdsxRllCeGkwstPc4fOMHBDonmbQUVJq2Y
+         FVX9BdLrBGSUUx4USXQuqqzzi8PLJsHZpQGb/c/+y6rAeqXkxExUaTiatMonfuswXb
+         wCydyTOKhrCwFcvCAqJZWJqLljy4nmWCWWTMtkOTzoyv48zxHHkDlWcVKeafb+blkF
+         YaIvFDD1+MqmXtKvrpTc4X4hCGweaFQ5n+8suyqCAH7f5S9cKF94F0CyznkhPfL55V
+         jRqXxwJxEaquA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Wed, 16 Aug 2023 18:28:12 +0300 (MSK)
+Received: from [192.168.1.146] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 16 Aug 2023 18:28:11 +0300
+Message-ID: <b619ef58-06c3-c61a-bb0f-ba243a4a2ade@sberdevices.ru>
+Date:   Wed, 16 Aug 2023 18:28:11 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230816152231.GD982867@hirez.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v1] mtd: spinand: micron: correct parameters
+To:     Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <kernel@sberdevices.ru>
+References: <20230815161024.810729-1-mmkurbanov@sberdevices.ru>
+ <0f54b3dd-1fce-4f81-8652-d50fe1bb3873@kontron.de>
+Content-Language: en-US
+From:   Martin Kurbanov <mmkurbanov@sberdevices.ru>
+In-Reply-To: <0f54b3dd-1fce-4f81-8652-d50fe1bb3873@kontron.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 179287 [Aug 16 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: MMKurbanov@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 526 526 7a6a9b19f6b9b3921b5701490f189af0e0cd5310, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2, FromAlignment: s, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/16 12:02:00 #21629266
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-16 17:22:31 [+0200], Peter Zijlstra wrote:
-> On Wed, Aug 16, 2023 at 04:58:18PM +0200, Peter Zijlstra wrote:
-> 
-> > I've ended up with the below, but it is quite horrible.. but let me go
-> > stare at the futex wreckage before trying to clean things up.
-> 
-> OK, I think the below covers the simple case, now lets see if I can make
-> sense of futex_wait_requeue_pi()... :/
-> 
-> ---
-> --- a/kernel/futex/pi.c
-> +++ b/kernel/futex/pi.c
-> @@ -1002,6 +1002,12 @@ int futex_lock_pi(u32 __user *uaddr, uns
->  		goto no_block;
->  	}
->  
-> +	/*
-> +	 * Must be done before we enqueue the waiter, here is unfortunately
-> +	 * under the hb lock, but that *should* work.
-> +	 */
-> +	rt_mutex_pre_schedule();
+Hi Frieder.
 
-but this will do sched_submit_work() which you don't need for futex at
-all. It should be a nop (as in nothing will happen) but still.
+On 16.08.2023 10:21, Frieder Schrempf wrote:
+> I'm okay with 1. and with adjusting region->offset to 4. But I don't
+> really get why we want to restrict the free oob data to the
+> non-ECC-protected area only. Is this specific to Micron? Other SPI NAND
+> drivers also spread the free area over both, the ECC-protected and the
+> non-protected bytes. Why do it differently here?
 
->  	rt_mutex_init_waiter(&rt_waiter);
->  
->  	/*
+We encountered a problem with the JFFS2 file system: JFFS2 marks erased
+blocks with a marker to avoid re-erasing them. To do this, it writes
+a special marker (cleanmarker) in the free OOB area. And if this OOB
+area is protected by ECC, the ECC will be written. However, during
+the next write to the main area of the same block, the ECC will be
+incorrect because it's necessary to program both the main area and
+the OOB area at one programming time, so that the ECC parity code can
+be calculated properly. Other SPI NAND flash also susceptible to
+this problem.
 
-Sebastian
+-- 
+Best Regards,
+Martin Kurbanov
