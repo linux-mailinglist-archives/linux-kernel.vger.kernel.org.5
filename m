@@ -2,443 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 139F377E29E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15C177E2AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:35:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245561AbjHPNbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 09:31:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56646 "EHLO
+        id S245337AbjHPNeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:34:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245555AbjHPNay (ORCPT
+        with ESMTP id S245356AbjHPNeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 09:30:54 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC0E1BFB;
-        Wed, 16 Aug 2023 06:30:52 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4ff9121fd29so1023345e87.3;
-        Wed, 16 Aug 2023 06:30:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692192651; x=1692797451;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1La09uYnQwF+ELqGB0y6QxP4PF0DZTy5Vy26QkMl9BA=;
-        b=ALxkeDw+Y87a5F/shZw4aJqTAc3jtVqFjA9Df5B6CQZao+LqtAjQFe7/W/d5LKzoiR
-         MNpAi1bOLSjb4OyHsc5LSXETqFHKIXGTzj9M+rTP9z1s8iqYDbF0t8YXi83a1Paj9kbC
-         i2oGuZezl9wyG7zrWDqtk8bOD5GCKyZOnwHozyOW90hqH4BcuucUyd9ZHcDTIcqPhop8
-         M9Ga2RTMgZs858W6VARk5PdAioD2AelZQMDqwxx8fI0wzroe2BcjBGNktOdurHbe/REd
-         qdkILszWgjBhDUoczFKhB2orbvdlOUqu8n1YCM0OC5wI0fJNdX1rZtZpydhqCFHhKSEW
-         N0iQ==
+        Wed, 16 Aug 2023 09:34:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D349E123
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:33:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692192815;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Sa0+x7EXRi4IXTjVM59CpmyQzx6tOI8j4jqQQJalqrw=;
+        b=c1DlE0+KGDHAhEmM8N7LoWG+/8FjLxlcErXnnrLMGiYyyB08fuDdQ0791ZBFmpJWypmk2w
+        V/CtSEE7oe1eGt6wAnGRPFXWQmMLzOhyrNSmZyaSYXeck3bNx7PndK/AzyyMzI/CwOv2RR
+        m27grtfLKKMtrqZJ+ADT8rNB24oByPA=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-50-kJjlMdEhNbmqVq7pER1EUA-1; Wed, 16 Aug 2023 09:33:34 -0400
+X-MC-Unique: kJjlMdEhNbmqVq7pER1EUA-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fe1cdf2024so40144095e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:33:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692192651; x=1692797451;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1La09uYnQwF+ELqGB0y6QxP4PF0DZTy5Vy26QkMl9BA=;
-        b=NoE6uQa6shg8yLePVt0zIy/pO8y1qDHmyeDBXFvCPJjFeltioX7d4k2ZWYJMe+tpCA
-         U6sJ+dnCWFU9B3KWLLPKxryZkUU2TbKOUtGNXaGlwYmG39DZLJ4btH9rhz3NGKtkula1
-         I+OsphX6abSzmeBs7BMav3+xiqAx4SLbRfkDp15GTFyOMYIkLJMILT8x7Rvk35rzU0PR
-         CHHye/5XFf+msvaOAhiMKJbFNqKJ0jABi8gNggh4mKtI/B4lKP2MN7ylfJ57liSXRejv
-         rwxaPYQd8E9jPaYtiFRTfEKfIAoMKnGBW3W/9R+B2i25iKKEmkorc1PU5pJpfuiI6bBR
-         wlQg==
-X-Gm-Message-State: AOJu0Yzu936L4CQ8uhh774Tfx4DtR3PYDrAQ6cuC/PXy7IsYIk3LnBg2
-        dT7gE8jqQ/FiSKGGxDYYRzg=
-X-Google-Smtp-Source: AGHT+IFyGJN0/eJQGGcNn73G2qxKM72Oy0p2q1cP0Lij4A1TPrtFp6fUcieBnvXZOo/SjeuIeJE0hA==
-X-Received: by 2002:ac2:5bdb:0:b0:4fb:9497:b2a5 with SMTP id u27-20020ac25bdb000000b004fb9497b2a5mr1382324lfn.21.1692192650310;
-        Wed, 16 Aug 2023 06:30:50 -0700 (PDT)
-Received: from mobilestation ([93.157.254.210])
-        by smtp.gmail.com with ESMTPSA id p22-20020ac246d6000000b004fe1cd8201bsm2933285lfo.133.2023.08.16.06.30.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 06:30:49 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 16:30:46 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Subject: Re: [PATCH 4/5] net: stmmac: Add glue layer for Loongson-1 SoC
-Message-ID: <spt2blizwad4tdp4cjf7bzffd3mr6456nlz4c4vgjrblx34gqj@bkwhyeqph4do>
-References: <20230812151135.1028780-1-keguang.zhang@gmail.com>
- <20230812151135.1028780-5-keguang.zhang@gmail.com>
+        d=1e100.net; s=20221208; t=1692192813; x=1692797613;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Sa0+x7EXRi4IXTjVM59CpmyQzx6tOI8j4jqQQJalqrw=;
+        b=DJD1w6mnvd2H8dYfqXURqQCOes+9SFLLRZ+77XFXGP35eja3avs5SIi/76uq9lRQ6/
+         sLYdgH3o2cUE7XkZw3ysnpa0CJG45SCTano+40QX2xZokGWbysPGMY8Ty2vg0XYVW2pI
+         MoPqmqGCKldvnc0OFDvb4wPeJTu6t/5gwbp3n86QvCSuCs+TuJdcejJUF4AiX9CSQQgE
+         YT7nNiIuVlkOjlOTZi8jZ+EtqSSgRp3d5nKNew77RJu4to77EDWi8ZkHeLJlA7qfr1rh
+         yWCj5JvXDsOLNRlPWfgmjQwW5TsaUuNwIET2WapLq+Wq6nfBtwgValnqUTYM+E13cO3p
+         k9pQ==
+X-Gm-Message-State: AOJu0YwnLwwjUOHo5JWmfXCCU6+Cs81bwhIS2e1zu4PJ1uLWu6ZCBYQK
+        O0UCphnW4eApRwbN/SR1iwW5lcYnZEiThBeTZw2l6yaZbMFwKztwg/KJ9CADv3zl1DjYA/OUjbO
+        D0pQKYI1Zf373EUMEJ6Xf6KWq
+X-Received: by 2002:a05:600c:3784:b0:3fb:dbd0:a7ea with SMTP id o4-20020a05600c378400b003fbdbd0a7eamr1465990wmr.37.1692192813396;
+        Wed, 16 Aug 2023 06:33:33 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFjNJST7TXDwcOWPe2Ad/HweRVZ3L40JuHAZHXd+y6Yqt71pQM3nkvyNCJOZx/ehNZO6aLqqw==
+X-Received: by 2002:a05:600c:3784:b0:3fb:dbd0:a7ea with SMTP id o4-20020a05600c378400b003fbdbd0a7eamr1465966wmr.37.1692192812977;
+        Wed, 16 Aug 2023 06:33:32 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c74b:8b00:5520:fa3c:c527:592f? (p200300cbc74b8b005520fa3cc527592f.dip0.t-ipconnect.de. [2003:cb:c74b:8b00:5520:fa3c:c527:592f])
+        by smtp.gmail.com with ESMTPSA id i9-20020a05600c290900b003fe539b83f2sm24286719wmd.42.2023.08.16.06.33.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 06:33:32 -0700 (PDT)
+Message-ID: <b887e764-ffa3-55ee-3c44-69cb15f8a115@redhat.com>
+Date:   Wed, 16 Aug 2023 15:33:30 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230812151135.1028780-5-keguang.zhang@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org
+Cc:     Hugh Dickins <hughd@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yang Shi <shy828301@gmail.com>
+References: <20230815212547.431693-1-peterx@redhat.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH RFC v3] mm: Proper document tail pages fields for folio
+In-Reply-To: <20230815212547.431693-1-peterx@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 12, 2023 at 11:11:34PM +0800, Keguang Zhang wrote:
-> This glue driver is created based on the arch-code
-> implemented earlier with the platform-specific settings.
-> 
-> Use syscon for SYSCON register access.
-> 
-> Partialy based on the previous work by Serge Semin.
-> 
-> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> ---
->  drivers/net/ethernet/stmicro/stmmac/Kconfig   |  11 +
->  drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
->  .../ethernet/stmicro/stmmac/dwmac-loongson1.c | 257 ++++++++++++++++++
->  3 files changed, 269 insertions(+)
->  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> index 06c6871f8788..a2b9e289aa36 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> @@ -239,6 +239,17 @@ config DWMAC_INTEL_PLAT
->  	  the stmmac device driver. This driver is used for the Intel Keem Bay
->  	  SoC.
->  
-> +config DWMAC_LOONGSON1
-> +	tristate "Loongson1 GMAC support"
-> +	default MACH_LOONGSON32
-> +	depends on OF && (MACH_LOONGSON32 || COMPILE_TEST)
-> +	help
-> +	  Support for ethernet controller on Loongson1 SoC.
-> +
-> +	  This selects Loongson1 SoC glue layer support for the stmmac
-> +	  device driver. This driver is used for Loongson1-based boards
-> +	  like Loongson LS1B/LS1C.
-> +
->  config DWMAC_TEGRA
->  	tristate "NVIDIA Tegra MGBE support"
->  	depends on ARCH_TEGRA || COMPILE_TEST
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
-> index 5b57aee19267..80e598bd4255 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/Makefile
-> +++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
-> @@ -29,6 +29,7 @@ obj-$(CONFIG_DWMAC_SUNXI)	+= dwmac-sunxi.o
->  obj-$(CONFIG_DWMAC_SUN8I)	+= dwmac-sun8i.o
->  obj-$(CONFIG_DWMAC_DWC_QOS_ETH)	+= dwmac-dwc-qos-eth.o
->  obj-$(CONFIG_DWMAC_INTEL_PLAT)	+= dwmac-intel-plat.o
-> +obj-$(CONFIG_DWMAC_LOONGSON1)	+= dwmac-loongson1.o
->  obj-$(CONFIG_DWMAC_GENERIC)	+= dwmac-generic.o
->  obj-$(CONFIG_DWMAC_IMX8)	+= dwmac-imx.o
->  obj-$(CONFIG_DWMAC_TEGRA)	+= dwmac-tegra.o
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
-> new file mode 100644
-> index 000000000000..368d6cd2cb78
-> --- /dev/null
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
-> @@ -0,0 +1,257 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Loongson-1 DWMAC glue layer
-> + *
-> + * Copyright (C) 2011-2023 Keguang Zhang <keguang.zhang@gmail.com>
-> + */
-> +
-> +#include <linux/mfd/syscon.h>
-> +#include <linux/module.h>
-> +#include <linux/phy.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +
-> +#include "stmmac.h"
-> +#include "stmmac_platform.h"
-> +
-> +/* Loongson-1 SYSCON Registers */
-> +#define LS1X_SYSCON0		(0x0)
-> +#define LS1X_SYSCON1		(0x4)
-> +
-> +struct ls1x_dwmac_syscon {
-> +	const struct reg_field *reg_fields;
-> +	unsigned int nr_reg_fields;
-> +	int (*syscon_init)(struct plat_stmmacenet_data *plat);
-> +};
-> +
-> +struct ls1x_dwmac {
-> +	struct device *dev;
-> +	struct plat_stmmacenet_data *plat_dat;
-> +	const struct ls1x_dwmac_syscon *syscon;
-> +	struct regmap *regmap;
-> +	struct regmap_field *regmap_fields[];
-> +};
-> +
-> +enum ls1b_dwmac_syscon_regfield {
-> +	GMAC1_USE_UART1,
-> +	GMAC1_USE_UART0,
-> +	GMAC1_SHUT,
-> +	GMAC0_SHUT,
-> +	GMAC1_USE_TXCLK,
-> +	GMAC0_USE_TXCLK,
-> +	GMAC1_USE_PWM23,
-> +	GMAC0_USE_PWM01,
-> +};
-> +
-> +enum ls1c_dwmac_syscon_regfield {
-> +	GMAC_SHUT,
-> +	PHY_INTF_SELI,
-> +};
-> +
-> +const struct reg_field ls1b_dwmac_syscon_regfields[] = {
-> +	[GMAC1_USE_UART1]	= REG_FIELD(LS1X_SYSCON0, 4, 4),
-> +	[GMAC1_USE_UART0]	= REG_FIELD(LS1X_SYSCON0, 3, 3),
-> +	[GMAC1_SHUT]		= REG_FIELD(LS1X_SYSCON1, 13, 13),
-> +	[GMAC0_SHUT]		= REG_FIELD(LS1X_SYSCON1, 12, 12),
-> +	[GMAC1_USE_TXCLK]	= REG_FIELD(LS1X_SYSCON1, 3, 3),
-> +	[GMAC0_USE_TXCLK]	= REG_FIELD(LS1X_SYSCON1, 2, 2),
-> +	[GMAC1_USE_PWM23]	= REG_FIELD(LS1X_SYSCON1, 1, 1),
-> +	[GMAC0_USE_PWM01]	= REG_FIELD(LS1X_SYSCON1, 0, 0)
-> +};
-> +
-> +const struct reg_field ls1c_dwmac_syscon_regfields[] = {
-> +	[GMAC_SHUT]		= REG_FIELD(LS1X_SYSCON0, 6, 6),
-> +	[PHY_INTF_SELI]		= REG_FIELD(LS1X_SYSCON1, 28, 30)
-> +};
+On 15.08.23 23:25, Peter Xu wrote:
+> Tail page struct reuse is over-comlicated.  Not only because we have
 
-Emm, using regmap fields looks so over-complicated in this case seeing
-you only need to set/clear several bits in the syscon. What about
-defining macros with the particular flag as it's already done in the
-"asm/mach-loongson32/regs-mux.h" file and using regmap_update_bits()?
+It is complicated, agreed.
 
-> +
+With the ->private for THP_SWAP gone, we would have to document less.
+Stating that 4*4byte / 4*8 byte are available after flags+head would
+be sufficient and I'd even drop the table.
 
-> +static int ls1b_dwmac_syscon_init(struct plat_stmmacenet_data *plat)
-> +{
 
-As I already told you this part is better to be called from the
-plat_stmmacenet_data.fix_mac_speed() because PHY interface mode can
-differ from one interface open cycle to another as per the phylink
-design.
+> implicit uses of tail page fields (mapcounts, or private for thp swap
+> support, etc., that we may still use in the page structs, 
 
-> +	struct ls1x_dwmac *dwmac = plat->bsp_priv;
-> +	struct regmap_field **regmap_fields = dwmac->regmap_fields;
-> +
+Instead of documenting that thp swap should no longer touch the private
+field of tail pages, maybe we can indeed fix that quite easily.
 
-> +	if (plat->bus_id) {
+My simple tests passed so far. If there isn't something obvious missing,
+I can do more testing and send this as an official patch.
 
-Using bus_id doesn't look correct to determine the CSRs responsible
-for the interface mode selection because it's calculated based on the
-DT ethernet-alias which doesn't guarantee to have a particular device
-assigned with the alias. Alias node can be absent after all. What
-could be better in this case is for instance to use the regs physical
-address. Any better idea?
 
-> +		regmap_field_write(regmap_fields[GMAC1_USE_UART1], 1);
-> +		regmap_field_write(regmap_fields[GMAC1_USE_UART0], 1);
-> +
-> +		switch (plat->phy_interface) {
-> +		case PHY_INTERFACE_MODE_RGMII:
-> +			regmap_field_write(regmap_fields[GMAC1_USE_TXCLK], 0);
-> +			regmap_field_write(regmap_fields[GMAC1_USE_PWM23], 0);
-> +			break;
-> +		case PHY_INTERFACE_MODE_MII:
-> +			regmap_field_write(regmap_fields[GMAC1_USE_TXCLK], 1);
-> +			regmap_field_write(regmap_fields[GMAC1_USE_PWM23], 1);
-> +			break;
-> +		default:
-> +			dev_err(dwmac->dev, "Unsupported PHY mode %u\n",
-> +				plat->phy_interface);
-> +			return -EOPNOTSUPP;
-> +		}
-> +
-> +		regmap_field_write(regmap_fields[GMAC1_SHUT], 0);
-> +	} else {
-> +		switch (plat->phy_interface) {
-> +		case PHY_INTERFACE_MODE_RGMII:
-> +			regmap_field_write(regmap_fields[GMAC0_USE_TXCLK], 0);
-> +			regmap_field_write(regmap_fields[GMAC0_USE_PWM01], 0);
-> +			break;
-> +		case PHY_INTERFACE_MODE_MII:
-> +			regmap_field_write(regmap_fields[GMAC0_USE_TXCLK], 1);
-> +			regmap_field_write(regmap_fields[GMAC0_USE_PWM01], 1);
-> +			break;
-> +		default:
-> +			dev_err(dwmac->dev, "Unsupported PHY mode %u\n",
-> +				plat->phy_interface);
-> +			return -EOPNOTSUPP;
-> +		}
-> +
-> +		regmap_field_write(regmap_fields[GMAC0_SHUT], 0);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int ls1c_dwmac_syscon_init(struct plat_stmmacenet_data *plat)
-> +{
-> +	struct ls1x_dwmac *dwmac = plat->bsp_priv;
-> +	struct regmap_field **regmap_fields = dwmac->regmap_fields;
-> +
-> +	if (plat->phy_interface == PHY_INTERFACE_MODE_RMII) {
-> +		regmap_field_write(regmap_fields[PHY_INTF_SELI], 0x4);
-> +	} else {
-> +		dev_err(dwmac->dev, "Unsupported PHY-mode %u\n",
-> +			plat->phy_interface);
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	regmap_field_write(regmap_fields[GMAC_SHUT], 0);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct ls1x_dwmac_syscon ls1b_dwmac_syscon = {
-> +	.reg_fields = ls1b_dwmac_syscon_regfields,
-> +	.nr_reg_fields = ARRAY_SIZE(ls1b_dwmac_syscon_regfields),
-> +	.syscon_init = ls1b_dwmac_syscon_init,
-> +};
-> +
-> +static const struct ls1x_dwmac_syscon ls1c_dwmac_syscon = {
-> +	.reg_fields = ls1c_dwmac_syscon_regfields,
-> +	.nr_reg_fields = ARRAY_SIZE(ls1c_dwmac_syscon_regfields),
-> +	.syscon_init = ls1c_dwmac_syscon_init,
-> +};
-> +
-> +static int ls1x_dwmac_init(struct platform_device *pdev, void *priv)
-> +{
-> +	struct ls1x_dwmac *dwmac = priv;
-> +	int ret;
-> +
+ From ec0f8b0dd8fb81c316b6a4c5fc9ae7563e625404 Mon Sep 17 00:00:00 2001
+From: David Hildenbrand <david@redhat.com>
+Date: Wed, 16 Aug 2023 13:14:45 +0200
+Subject: [PATCH] mm/swap: stop using page->private on tail pages for THP_SWAP
 
-> +	ret = devm_regmap_field_bulk_alloc(dwmac->dev, dwmac->regmap,
-> +					   dwmac->regmap_fields,
-> +					   dwmac->syscon->reg_fields,
-> +					   dwmac->syscon->nr_reg_fields);
+Let's stop using page->private on tail pages, making it possible to
+just unconditionally reuse that field in the tail pages of large folios.
 
-Please see my first comment about this.
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+  arch/arm64/mm/mteswap.c |  5 +++--
+  include/linux/swap.h    |  9 +++++++++
+  mm/huge_memory.c        | 15 ++++++---------
+  mm/memory.c             |  2 +-
+  mm/rmap.c               |  2 +-
+  mm/swap_state.c         |  4 ++--
+  mm/swapfile.c           |  4 ++--
+  7 files changed, 24 insertions(+), 17 deletions(-)
 
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (dwmac->syscon->syscon_init) {
-> +		ret = dwmac->syscon->syscon_init(dwmac->plat_dat);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id ls1x_dwmac_syscon_match[] = {
-> +	{ .compatible = "loongson,ls1b-syscon", .data = &ls1b_dwmac_syscon },
-> +	{ .compatible = "loongson,ls1c-syscon", .data = &ls1c_dwmac_syscon },
-> +	{ }
-> +};
-> +
-> +static int ls1x_dwmac_probe(struct platform_device *pdev)
-> +{
-> +	struct plat_stmmacenet_data *plat_dat;
-> +	struct stmmac_resources stmmac_res;
-> +	struct device_node *syscon_np;
-> +	const struct of_device_id *match;
-> +	struct regmap *regmap;
-> +	struct ls1x_dwmac *dwmac;
-> +	const struct ls1x_dwmac_syscon *syscon;
-> +	size_t size;
-> +	int ret;
-> +
-> +	ret = stmmac_get_platform_resources(pdev, &stmmac_res);
-> +	if (ret)
-> +		return ret;
-> +
+diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
+index cd508ba80ab1..a31833e3ddc5 100644
+--- a/arch/arm64/mm/mteswap.c
++++ b/arch/arm64/mm/mteswap.c
+@@ -33,8 +33,9 @@ int mte_save_tags(struct page *page)
+  
+  	mte_save_page_tags(page_address(page), tag_storage);
+  
+-	/* page_private contains the swap entry.val set in do_swap_page */
+-	ret = xa_store(&mte_pages, page_private(page), tag_storage, GFP_KERNEL);
++	/* lookup the swap entry.val from the page */
++	ret = xa_store(&mte_pages, page_swap_entry(page).val, tag_storage,
++		       GFP_KERNEL);
+  	if (WARN(xa_is_err(ret), "Failed to store MTE tags")) {
+  		mte_free_tag_storage(tag_storage);
+  		return xa_err(ret);
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index bb5adc604144..84fe0e94f5cd 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -339,6 +339,15 @@ static inline swp_entry_t folio_swap_entry(struct folio *folio)
+  	return entry;
+  }
+  
++static inline swp_entry_t page_swap_entry(struct page *page)
++{
++	struct folio *folio = page_folio(page);
++	swp_entry_t entry = folio_swap_entry(folio);
++
++	entry.val += page - &folio->page;
++	return entry;
++}
++
+  static inline void folio_set_swap_entry(struct folio *folio, swp_entry_t entry)
+  {
+  	folio->private = (void *)entry.val;
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 0b709d2c46c6..f7e04cbcb063 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2451,18 +2451,15 @@ static void __split_huge_page_tail(struct page *head, int tail,
+  	page_tail->index = head->index + tail;
+  
+  	/*
+-	 * page->private should not be set in tail pages with the exception
+-	 * of swap cache pages that store the swp_entry_t in tail pages.
+-	 * Fix up and warn once if private is unexpectedly set.
+-	 *
+-	 * What of 32-bit systems, on which folio->_pincount overlays
+-	 * head[1].private?  No problem: THP_SWAP is not enabled on 32-bit, and
+-	 * pincount must be 0 for folio_ref_freeze() to have succeeded.
++	 * page->private should not be set in tail pages. Fix up and warn once
++	 * if private is unexpectedly set.
+  	 */
+-	if (!folio_test_swapcache(page_folio(head))) {
+-		VM_WARN_ON_ONCE_PAGE(page_tail->private != 0, page_tail);
++	if (unlikely(page_tail->private)) {
++		VM_WARN_ON_ONCE_PAGE(true, page_tail);
+  		page_tail->private = 0;
+  	}
++	if (PageSwapCache(head))
++		set_page_private(page_tail, (unsigned long)head->private + tail);
+  
+  	/* Page flags must be visible before we make the page non-compound. */
+  	smp_wmb();
+diff --git a/mm/memory.c b/mm/memory.c
+index d003076b218d..ff13242c1589 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3882,7 +3882,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+  		 * changed.
+  		 */
+  		if (unlikely(!folio_test_swapcache(folio) ||
+-			     page_private(page) != entry.val))
++			     page_swap_entry(page).val != entry.val))
+  			goto out_page;
+  
+  		/*
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 1f04debdc87a..ec7f8e6c9e48 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1647,7 +1647,7 @@ static bool try_to_unmap_one(struct folio *folio, struct vm_area_struct *vma,
+  			 */
+  			dec_mm_counter(mm, mm_counter(&folio->page));
+  		} else if (folio_test_anon(folio)) {
+-			swp_entry_t entry = { .val = page_private(subpage) };
++			swp_entry_t entry = page_swap_entry(subpage);
+  			pte_t swp_pte;
+  			/*
+  			 * Store the swap location in the pte.
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index 01f15139b7d9..450819934e34 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -100,6 +100,7 @@ int add_to_swap_cache(struct folio *folio, swp_entry_t entry,
+  
+  	folio_ref_add(folio, nr);
+  	folio_set_swapcache(folio);
++	folio_set_swap_entry(folio, entry);
+  
+  	do {
+  		xas_lock_irq(&xas);
+@@ -113,7 +114,6 @@ int add_to_swap_cache(struct folio *folio, swp_entry_t entry,
+  				if (shadowp)
+  					*shadowp = old;
+  			}
+-			set_page_private(folio_page(folio, i), entry.val + i);
+  			xas_store(&xas, folio);
+  			xas_next(&xas);
+  		}
+@@ -154,9 +154,9 @@ void __delete_from_swap_cache(struct folio *folio,
+  	for (i = 0; i < nr; i++) {
+  		void *entry = xas_store(&xas, shadow);
+  		VM_BUG_ON_PAGE(entry != folio, entry);
+-		set_page_private(folio_page(folio, i), 0);
+  		xas_next(&xas);
+  	}
++	folio->private = 0;
+  	folio_clear_swapcache(folio);
+  	address_space->nrpages -= nr;
+  	__node_stat_mod_folio(folio, NR_FILE_PAGES, -nr);
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index d46933adf789..bd9d904671b9 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -3369,7 +3369,7 @@ struct swap_info_struct *swp_swap_info(swp_entry_t entry)
+  
+  struct swap_info_struct *page_swap_info(struct page *page)
+  {
+-	swp_entry_t entry = { .val = page_private(page) };
++	swp_entry_t entry = page_swap_entry(page);
+  	return swp_swap_info(entry);
+  }
+  
+@@ -3384,7 +3384,7 @@ EXPORT_SYMBOL_GPL(swapcache_mapping);
+  
+  pgoff_t __page_file_index(struct page *page)
+  {
+-	swp_entry_t swap = { .val = page_private(page) };
++	swp_entry_t swap = page_swap_entry(page);
+  	return swp_offset(swap);
+  }
+  EXPORT_SYMBOL_GPL(__page_file_index);
+-- 
+2.41.0
 
-> +	/* Probe syscon */
-> +	syscon_np = of_parse_phandle(pdev->dev.of_node, "syscon", 0);
 
-it's vendor-specific property so it is supposed to have a
-vendor-specific prefix and possibly ls1-specific name.
+-- 
+Cheers,
 
-> +	if (!syscon_np)
-> +		return -ENODEV;
-> +
-> +	match = of_match_node(ls1x_dwmac_syscon_match, syscon_np);
-> +	if (!match) {
-> +		of_node_put(syscon_np);
-> +		return -EINVAL;
-> +	}
-> +	syscon = (const struct ls1x_dwmac_syscon *)match->data;
-> +
-> +	regmap = syscon_node_to_regmap(syscon_np);
-> +	of_node_put(syscon_np);
-> +	if (IS_ERR(regmap)) {
-> +		ret = PTR_ERR(regmap);
-> +		dev_err(&pdev->dev, "Unable to map syscon: %d\n", ret);
-> +		return ret;
-> +	}
+David / dhildenb
 
-or you can use syscon_regmap_lookup_by_phandle(). Using
-of_match_node() doesn't seem necessary since it's unlikely to have
-moee than one system controller available on the LS1b or LS1c chips.
-
-> +
-> +	size = syscon->nr_reg_fields * sizeof(struct regmap_field *);
-> +	dwmac = devm_kzalloc(&pdev->dev, sizeof(*dwmac) + size, GFP_KERNEL);
-> +	if (!dwmac)
-> +		return -ENOMEM;
-> +
-> +	plat_dat = stmmac_probe_config_dt(pdev, stmmac_res.mac);
-> +	if (IS_ERR(plat_dat)) {
-> +		dev_err(&pdev->dev, "dt configuration failed\n");
-> +		return PTR_ERR(plat_dat);
-> +	}
-> +
-> +	plat_dat->bsp_priv = dwmac;
-> +	plat_dat->init = ls1x_dwmac_init;
-> +	dwmac->dev = &pdev->dev;
-> +	dwmac->plat_dat = plat_dat;
-> +	dwmac->syscon = syscon;
-> +	dwmac->regmap = regmap;
-> +
-> +	ret = stmmac_pltfr_probe(pdev, plat_dat, &stmmac_res);
-> +	if (ret)
-> +		goto err_remove_config_dt;
-> +
-> +	return 0;
-> +
-> +err_remove_config_dt:
-
-> +	if (pdev->dev.of_node)
-
-Is this conditional statement necessary here?
-
--Serge
-
-> +		stmmac_remove_config_dt(pdev, plat_dat);
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct of_device_id ls1x_dwmac_match[] = {
-> +	{ .compatible = "loongson,ls1b-dwmac" },
-> +	{ .compatible = "loongson,ls1c-dwmac" },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(of, ls1x_dwmac_match);
-> +
-> +static struct platform_driver ls1x_dwmac_driver = {
-> +	.probe = ls1x_dwmac_probe,
-> +	.remove_new = stmmac_pltfr_remove,
-> +	.driver = {
-> +		.name = "loongson1-dwmac",
-> +		.of_match_table = ls1x_dwmac_match,
-> +	},
-> +};
-> +module_platform_driver(ls1x_dwmac_driver);
-> +
-> +MODULE_AUTHOR("Keguang Zhang <keguang.zhang@gmail.com>");
-> +MODULE_DESCRIPTION("Loongson1 DWMAC glue layer");
-> +MODULE_LICENSE("GPL");
-> -- 
-> 2.39.2
-> 
