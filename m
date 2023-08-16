@@ -2,175 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEDBE77EC12
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9700477EC17
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346594AbjHPVmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 17:42:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43200 "EHLO
+        id S1346609AbjHPVnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 17:43:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346628AbjHPVls (ORCPT
+        with ESMTP id S1346675AbjHPVnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 17:41:48 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C972D4B
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:41:36 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58cf42a3313so11183697b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:41:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692222095; x=1692826895;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TsYuTaSOsfwoUfIhRlrKvY32E50+S15G9LijBCHGyrU=;
-        b=Jucm9s2GWuF08tuKKlcouSI/r5ZfGZfg4Cf8kO7ENSxpx2LLd2Mccj4JJ/nRYnBp2g
-         o52Xy79FlQlvRobKzgaBMdk/udiMgR1loB8R9vm2TpzYJIYP+LfEUCFvpJ2cGWJfzI/L
-         MEBpYmdpR0GtbARk3kTRy4s/EN+RJtZHkxc9nzZvZ6IA5zyJdVLtDg21L8qnkUwwrZm9
-         Vaqs5HSLtJdQE/HOOVsPhf5trydIU4Ju0dUajd5QVgxcHU80XiaP0oRJhfSSy4f7Me3o
-         XNtVY7jzhUVe56QYeYRXad6ZrA5cUYTWXhMbgAGX0KGqDyxoBZEIyUp2xkLt9CAMwgts
-         jtKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692222095; x=1692826895;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TsYuTaSOsfwoUfIhRlrKvY32E50+S15G9LijBCHGyrU=;
-        b=XicPpjRPRhDyg+X9LNsUOtc4/eccx/FDZDJpctLDLD496kiDERtyZxqf6ekRvQFFkH
-         UfOVHB8txuLs2RVK5RmkUd9qOFPnYFN8EVVQRerhoq/YLBF7nB8bZ6LryaT+zuXSlQVG
-         25RGMPt1VZP4Kp/MH/U2sC9puJpx60Faej4JGaMe8q3KafgfRzUGl75g/JkaeXAozXIO
-         oCT86fiqVgBH5EKJZ+gwInqmLZlO5zy46yZa58di3pbq44ffyVvJxlMhn6CyibNo8tCh
-         Yf7vD8/e28psm4JS8IvxSFUksiyb8hHdUaCB8+VKk2qxWDFRXoJVb36ZlMUFSHb/Sfkg
-         aIVw==
-X-Gm-Message-State: AOJu0YxCk0yMLM78M/t0c+ihsKX9Wr3Zod2nOCgkOjdPEqBCx+6q3JmR
-        Z4e4D/uHK7YkPOq/41bmzKfnQ3Rho8w=
-X-Google-Smtp-Source: AGHT+IEiKexpH65z/3ob4P3GzM4VmLMOzuc++j2jgqrwf3M6ZzbavNQxJ65hw7yzlCAttFXohCNW7FMqdMw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:4524:0:b0:58c:74ec:3394 with SMTP id
- s36-20020a814524000000b0058c74ec3394mr47263ywa.5.1692222095367; Wed, 16 Aug
- 2023 14:41:35 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 14:41:33 -0700
-In-Reply-To: <20230719144131.29052-5-binbin.wu@linux.intel.com>
-Mime-Version: 1.0
-References: <20230719144131.29052-1-binbin.wu@linux.intel.com> <20230719144131.29052-5-binbin.wu@linux.intel.com>
-Message-ID: <ZN1CjTQ0zWiOxk6j@google.com>
-Subject: Re: [PATCH v10 4/9] KVM: x86: Virtualize CR4.LAM_SUP
-From:   Sean Christopherson <seanjc@google.com>
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
-        David.Laight@aculab.com, robert.hu@linux.intel.com,
-        guang.zeng@intel.com
+        Wed, 16 Aug 2023 17:43:05 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2107.outbound.protection.outlook.com [40.107.220.107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735CA2D51;
+        Wed, 16 Aug 2023 14:42:56 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Tld7+Kprkv5mGU8/5CI0lvD9QU7B5iJEeflM/SyOj9IaBdVl7Bi/wjfOUENmyytgDXac8Aiwp0RHK85zhUEhD6te8n30kKmROQHyBmbdqj0VTWtu4P8B3ioK4W+9OgERc23VJs7b2g4sPC47O4gUjxNXed6ZfRpOQY3/8PFPbFUgZmMsUEt7IkP10udKyImCt4m7v+mekTz9RsUHzJHflqC8BNzj1WFD49IQfKco2Qus8T5YFXQxvAkeeKTPCWJ2u/CQHEkBXRE+TJ7pFsBzyLUaLWQOcUKlODwV3qXiWtOKXkhNu3x1OIwhW/yexskFSFIvO+Nh68n8YOtyR6L+Gw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=188KSm1m/U/vx8ewbaTDBxLquEgbmnJOxn/tnqtxKtQ=;
+ b=NG7+KzStbGkYU/rAJMKDHYiqo08fqkSwz7vUd/vGMjrrlPY0NKAW9P7+TEpUvglGwJZbA/kSNDZlEK/73Mi9i9TwE60hYKyyAtOfA4hlfKNT0aeQpKKkss1y/C0XxV60Z2spOJOL+Fi8WzcqNCBUfmH+XbtvL07DTFIyoLtIUf7qagoViwrIGAwyjuc9DExDwu9GAHZSRanCrKQl7XIsNeZryeiSKq3BTyPZBOqasZDtKPJtPvrBVqE0XIAwZkqK2ygYD90q0zg1pXQAUgcFKz2vOgMod2U+BxUtv8wC5KZlkPg1wdmblHWseJYNBtVyDVB7XIH6hth9cqulMZeLvA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=188KSm1m/U/vx8ewbaTDBxLquEgbmnJOxn/tnqtxKtQ=;
+ b=HL7wYRjrQV1tMXHhCbP8RhO/xPovEBCQFferH5a7UUr32S9KhhlqdRoi/pieQciiC5Cnw3sS1dTBlnKf9gVLDd50gwgo4egmoPAAXlh7aJTDx+mm3NcUQ12m+LIiHVeXlF7+CQwCQ97H/0oVBR4zpQR6AvPZN0LQXwxL+wtiaU8=
+Received: from SA1PR21MB1335.namprd21.prod.outlook.com (2603:10b6:806:1f2::11)
+ by BL1PR21MB3307.namprd21.prod.outlook.com (2603:10b6:208:39c::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6723.3; Wed, 16 Aug
+ 2023 21:42:52 +0000
+Received: from SA1PR21MB1335.namprd21.prod.outlook.com
+ ([fe80::b05:d4ac:60ff:3b3f]) by SA1PR21MB1335.namprd21.prod.outlook.com
+ ([fe80::b05:d4ac:60ff:3b3f%4]) with mapi id 15.20.6723.002; Wed, 16 Aug 2023
+ 21:42:52 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     Tianyu Lan <ltykernel@gmail.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>
+CC:     Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>
+Subject: RE: [PATCH v6 7/8] x86/hyperv: Add smp support for SEV-SNP guest
+Thread-Topic: [PATCH v6 7/8] x86/hyperv: Add smp support for SEV-SNP guest
+Thread-Index: AQHZ0FqX2flvsZmbjEGkAW9ysR5KtK/tcwIw
+Date:   Wed, 16 Aug 2023 21:42:52 +0000
+Message-ID: <SA1PR21MB1335F165EF353A24E4CCF6F0BF15A@SA1PR21MB1335.namprd21.prod.outlook.com>
+References: <20230816155850.1216996-1-ltykernel@gmail.com>
+ <20230816155850.1216996-8-ltykernel@gmail.com>
+In-Reply-To: <20230816155850.1216996-8-ltykernel@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=b6a21c53-9bd2-49f2-8a98-15b655f09bf5;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-08-16T21:37:29Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR21MB1335:EE_|BL1PR21MB3307:EE_
+x-ms-office365-filtering-correlation-id: 4654d696-5911-4350-fc44-08db9ea1be87
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wk34XNBgSV5m7s6BF+hYxXd45cbCEg6ooXiYvzsk3O4QUo9Bd0/43BwvqSQ7soFZsqIX0tXZo0/UyVZnRvDJz2kpim9FcWh0vf9QpFi1M9rpWjCkJRhuD36ayw9cy/xnq0x3jO6iBAnomDOis1WQEUywiKCaOV+jhefg/TUW5ecFeGJoXX+vM1m/RZ0BSmEfUCRGkImGCPR6fSjaT5B4Ty7M6VJJ7Bb4GAwThuBzrpVRfFjajAzbOTxJDmhPsJId6VnmldJKd9EmTfmMWKS40oeXjKIkUyv7JyztwA5YwT7lfuFcj/hgvlrt9A6ZGI/NyLuxV7ogCa4mQqpE1zGagGZ/3oaq4PO7inCVk0rdSUBVWrvvSO4Ucmi0y5nrmHgDrV3O5vcYvYFXF7b0+yieSgF0Aja0mN+uhGpODKxV4LHVmier6yOxXn9TIDBEDNKVa8Fexi1SWW4PVOWJ2s5zUi6JBlF/CVyjWC9CRMkfLVRVrGOpv+0RuWVlTMcTd8Q40DgcnqwuLdLtXnrPRqAS3k9vhbC1UGSBTMKZ8w46qpfmtUX+MhOc0SlVsi2dGpF4Fw9s5YKZRerrvgrZxHXa/FD3kg5j9gMrdmyc9XSZgoL5eorltJHX+tt5idhoZkFzSL0l17wi+1B1F0qaLgA32rKGvh6DAgL0hPiOFOQpyaj69Te/YtQsCDJMiYCcJaXQpCPffA0o3+mNZX4nHRUtgw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR21MB1335.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(376002)(346002)(136003)(396003)(451199024)(186009)(1800799009)(9686003)(8676002)(38100700002)(5660300002)(122000001)(52536014)(82950400001)(921005)(316002)(38070700005)(66946007)(66446008)(66556008)(41300700001)(7416002)(82960400001)(8936002)(76116006)(64756008)(4326008)(55016003)(6636002)(66476007)(33656002)(86362001)(8990500004)(2906002)(54906003)(71200400001)(6506007)(10290500003)(12101799020)(110136005)(7696005)(478600001)(107886003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?B4rOfIMomSBJs71AAjKwLzkuceCeXhmNvsY0tfbWW9+KK1x3E5eh5JK7L2tv?=
+ =?us-ascii?Q?KI4ws3odNYTvHgoI+1vUNfkrUpUeC4q9WJ4WvsKq7B/2uT1Iy08RmrcQx3Sj?=
+ =?us-ascii?Q?6Qx7N2H/GGBLHqQ41IqBx195Wo+oaJkHPnPBvOJa697y6vGT1Vol/cB1QLOu?=
+ =?us-ascii?Q?pGzWJBJyqHslahsUH4jVFKlLlJn70ydMDZrDCEpWhnscAxnpTpbzjseGx+yG?=
+ =?us-ascii?Q?KmTv1IxFD5vLi/wm4lalLsTKYWFjPdw9pCoXE/urQX8bCYThcGhY13IF7kvE?=
+ =?us-ascii?Q?0j3sohUWBjUdJWqeFGUPAQwGplO2cbHe94BIOE4/PwkkIo1UYHEn6DVxwCuX?=
+ =?us-ascii?Q?OIc0OP9ScR5gZePfBfyol2Dx5ITXsGrCpxCNkd/552vt7PwQUP7fzIWcemSo?=
+ =?us-ascii?Q?7/wbYY/P3ZpPBHpKUdvQ5SZRsTIFLbe1Xe1faLLXl/FyJg0SHFPIiNG/MEkG?=
+ =?us-ascii?Q?U5HuurB2rxz0hH0ofI45CRoITDvsy4hx/29SdN+yPXH97a1/zTscnxvH50yz?=
+ =?us-ascii?Q?o3YZqS+9rQ4heqYxjM3bNcCJYSBwp/sK7yIGWSiwjlKZ9rlLKiyjaVf4E79L?=
+ =?us-ascii?Q?vyxRZ81zrsIMLkr6tZ2dx+Vlt3Y0UD6bHruRFOS4nRYhlTYDbF9Bp7yqL9re?=
+ =?us-ascii?Q?eXxyuatBL2MlZq1xSEOC6f0Q9mQNTqcMmN1ZQgHkNgkNPenZPFiCrO38LAJN?=
+ =?us-ascii?Q?hVRuQQZ8UE8FMfUxLx2cYvBeEPkeDEMHj4v2oXf28YdiZYzYT5+zZNYGDl1D?=
+ =?us-ascii?Q?0AsrI1TNgg0/tRL8ucAURB91/TuLs66D6cj/MAwYhsy3Kg/qYf429sEDte7k?=
+ =?us-ascii?Q?YBj5OgQUZjyYk6EB3Pi+KV0MduauQE3ku3P+qW4utMRffVPyRKI61IumQTw6?=
+ =?us-ascii?Q?/8V3VcGV8e14u1n0c1JfVKER45cwtIFlVGst5gQG2HvyxmOqsEjqi4h9ztdp?=
+ =?us-ascii?Q?e1GTYoKEwc2ZxiZXeG9Ma5P+xal09WupgqEOxTqytKc3Y4Z7M7hDlkO+qc2l?=
+ =?us-ascii?Q?muY6Co5LGn9E32KVkLPW/CxiXbMfobRP1SUsds2orMLMGlaGQtYsZC0tgT3z?=
+ =?us-ascii?Q?uiOZMczi+twqwnPgWZChHXL9C/b2Eh434pYN5/ZxPz2p3QabHfLpOh7UBN8D?=
+ =?us-ascii?Q?KQ5T9bC3tKagNZuOy/l/TLR9SZtnF3modyoVYrWEPIWXnUY5lmAKjSeNIzod?=
+ =?us-ascii?Q?Eau9abA+sfgw9EdtZrYBiludk+KQ7ILV/syDdt1N5fLINYndiBvMwRudLMlS?=
+ =?us-ascii?Q?q76xmOBuSmaxnNJYOv//doF2Sv88suwQjZJFW6NoRZLANRjanzmGdRrk+oHD?=
+ =?us-ascii?Q?HLPFiXZCH0P9zepbkSHLtmFCgW6ZBJ1R7BUZUCNiao5FQg+BvYfo7w7gFVlZ?=
+ =?us-ascii?Q?5P9KYPAXnfjN/Rxyjm6FMqxPgXrLHkiQ59p/xbH/YsQgmniSdog7A4nKYaiy?=
+ =?us-ascii?Q?FhLoudxB8beJ9V2okR0cVqKmkM1iQmyWOlWr6g/dkm9peIQMmznIiB5xvBCx?=
+ =?us-ascii?Q?5f0/T8Euii1KXBI8x34GFe/UzucGsUllkUsuP+SjL6JhVdQSrtEXH4kUIIqm?=
+ =?us-ascii?Q?aJuL2i67ApuJ+F0FPnkFxXII+MVSzU0vO4SP+r6reF6c+tnpmkkcWM+E6KXF?=
+ =?us-ascii?Q?ey0ZW08vmY8VdasbRkQUVNs=3D?=
 Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR21MB1335.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4654d696-5911-4350-fc44-08db9ea1be87
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Aug 2023 21:42:52.6480
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wecH1QCJoUfQckmLu52x3F8ZIHYPAPqMCZkn/Pu51Oz217gddUR1J6qXSOg/N1dAVpo3V4DhBiJczVpzwGLywA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR21MB3307
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch doesn't virtualize LAM_SUP, it simply allows the guest to enable
-CR4.LAM_SUP (ignoring that that's not possible at this point because KVM will
-reject CR4 values that *KVM* doesn't support).
+> From: Tianyu Lan <ltykernel@gmail.com>
+> Sent: Wednesday, August 16, 2023 8:59 AM
+> [...]
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -295,6 +295,16 @@ static void __init hv_smp_prepare_cpus(unsigned
+> int max_cpus)
+>=20
+>  	native_smp_prepare_cpus(max_cpus);
+>  [...]
+> +	if (hv_isolation_type_en_snp())
+> +		apic->wakeup_secondary_cpu_64 =3D hv_snp_boot_ap;
+> +
+> +	if (!hv_root_partition)
+> +		return;
 
-Actually virtualizing LAM_SUP requires the bits from "KVM: VMX: Implement and wire
-get_untagged_addr() for LAM".  You can still separate LAM_SUP from LAM_U*, but
-these patches should come *after* the get_untagged_addr() hook is added.  The
-first of LAM_SUP vs. LAM_U* can then implement vmx_get_untagged_addr(), and simply
-return the raw gva in the "other" case.  E.g. if you add LAM_SUP first, the code
-can be:
+Can the above be changed to:
 
-	if (!(gva & BIT_ULL(63))) {
-		/* KVM doesn't yet virtualize LAM_U{48,57}. */
-		return false;
-	} else {
-		if (!kvm_is_cr4_bit_set(vcpu, X86_CR4_LAM_SUP))
-			return gva;
-
-		lam_bit = kvm_is_cr4_bit_set(vcpu, X86_CR4_LA57) ? 56 : 47;
+	if (hv_isolation_type_en_snp()) {
+		apic->wakeup_secondary_cpu_64 =3D hv_snp_boot_ap;
+		return;
 	}
 
-On Wed, Jul 19, 2023, Binbin Wu wrote:
-> From: Robert Hoo <robert.hu@linux.intel.com>
-> 
-> Add support to allow guests to set the new CR4 control bit for guests to enable
-> the new Intel CPU feature Linear Address Masking (LAM) on supervisor pointers.
-> 
-> LAM modifies the checking that is applied to 64-bit linear addresses, allowing
-> software to use of the untranslated address bits for metadata and masks the
-> metadata bits before using them as linear addresses to access memory. LAM uses
-> CR4.LAM_SUP (bit 28) to configure LAM for supervisor pointers. LAM also changes
-> VMENTER to allow the bit to be set in VMCS's HOST_CR4 and GUEST_CR4 for
-> virtualization. Note CR4.LAM_SUP is allowed to be set even not in 64-bit mode,
-> but it will not take effect since LAM only applies to 64-bit linear addresses.
-> 
-> Move CR4.LAM_SUP out of CR4_RESERVED_BITS and its reservation depends on vcpu
-> supporting LAM feature or not. Leave the bit intercepted to prevent guest from
-> setting CR4.LAM_SUP bit if LAM is not exposed to guest as well as to avoid vmread
-> every time when KVM fetches its value, with the expectation that guest won't
-> toggle the bit frequently.
-> 
-> Set CR4.LAM_SUP bit in the emulated IA32_VMX_CR4_FIXED1 MSR for guests to allow
-> guests to enable LAM for supervisor pointers in nested VMX operation.
-> 
-> Hardware is not required to do TLB flush when CR4.LAM_SUP toggled, KVM doesn't
-> need to emulate TLB flush based on it.
-> There's no other features/vmx_exec_controls connection, no other code needed in
-> {kvm,vmx}_set_cr4().
-> 
-> Signed-off-by: Robert Hoo <robert.hu@linux.intel.com>
-> Co-developed-by: Binbin Wu <binbin.wu@linux.intel.com>
-> Signed-off-by: Binbin Wu <binbin.wu@linux.intel.com>
-> Reviewed-by: Chao Gao <chao.gao@intel.com>
-> Reviewed-by: Kai Huang <kai.huang@intel.com>
-> Tested-by: Xuelian Guo <xuelian.guo@intel.com>
-> ---
->  arch/x86/include/asm/kvm_host.h | 3 ++-
->  arch/x86/kvm/vmx/vmx.c          | 3 +++
->  arch/x86/kvm/x86.h              | 2 ++
->  3 files changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index e8e1101a90c8..881a0be862e1 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -125,7 +125,8 @@
->  			  | X86_CR4_PGE | X86_CR4_PCE | X86_CR4_OSFXSR | X86_CR4_PCIDE \
->  			  | X86_CR4_OSXSAVE | X86_CR4_SMEP | X86_CR4_FSGSBASE \
->  			  | X86_CR4_OSXMMEXCPT | X86_CR4_LA57 | X86_CR4_VMXE \
-> -			  | X86_CR4_SMAP | X86_CR4_PKE | X86_CR4_UMIP))
-> +			  | X86_CR4_SMAP | X86_CR4_PKE | X86_CR4_UMIP \
-> +			  | X86_CR4_LAM_SUP))
->  
->  #define CR8_RESERVED_BITS (~(unsigned long)X86_CR8_TPR)
->  
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index ae47303c88d7..a0d6ea87a2d0 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -7646,6 +7646,9 @@ static void nested_vmx_cr_fixed1_bits_update(struct kvm_vcpu *vcpu)
->  	cr4_fixed1_update(X86_CR4_UMIP,       ecx, feature_bit(UMIP));
->  	cr4_fixed1_update(X86_CR4_LA57,       ecx, feature_bit(LA57));
->  
-> +	entry = kvm_find_cpuid_entry_index(vcpu, 0x7, 1);
-> +	cr4_fixed1_update(X86_CR4_LAM_SUP,    eax, feature_bit(LAM));
+(please also see the below)
+
 > +
->  #undef cr4_fixed1_update
->  }
->  
-> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-> index 82e3dafc5453..24e2b56356b8 100644
-> --- a/arch/x86/kvm/x86.h
-> +++ b/arch/x86/kvm/x86.h
-> @@ -528,6 +528,8 @@ bool kvm_msr_allowed(struct kvm_vcpu *vcpu, u32 index, u32 type);
->  		__reserved_bits |= X86_CR4_VMXE;        \
->  	if (!__cpu_has(__c, X86_FEATURE_PCID))          \
->  		__reserved_bits |= X86_CR4_PCIDE;       \
-> +	if (!__cpu_has(__c, X86_FEATURE_LAM))           \
-> +		__reserved_bits |= X86_CR4_LAM_SUP;     \
->  	__reserved_bits;                                \
->  })
->  
-> -- 
-> 2.25.1
-> 
+>  #ifdef CONFIG_X86_64
+>  	for_each_present_cpu(i) {
+>  		if (i =3D=3D 0)
+> @@ -502,8 +512,7 @@ static void __init ms_hyperv_init_platform(void)
+>=20
+>  # ifdef CONFIG_SMP
+>  	smp_ops.smp_prepare_boot_cpu =3D hv_smp_prepare_boot_cpu;
+> -	if (hv_root_partition)
+> -		smp_ops.smp_prepare_cpus =3D hv_smp_prepare_cpus;
+> +	smp_ops.smp_prepare_cpus =3D hv_smp_prepare_cpus;
+
+IMO it's better if we don't unconditionally change smp_ops.smp_prepare_cpus=
+.
+
+How about this:
+	if (hv_root_partition || hv_isolation_type_en_snp())
+		smp_ops.smp_prepare_cpus =3D hv_smp_prepare_cpus;
