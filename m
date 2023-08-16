@@ -2,247 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E9877DDB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47EF77DDC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243503AbjHPJsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 05:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41240 "EHLO
+        id S243507AbjHPJuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 05:50:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243570AbjHPJs0 (ORCPT
+        with ESMTP id S243590AbjHPJt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 05:48:26 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE4526AB
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:48:22 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-51cff235226so13210134a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:48:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692179301; x=1692784101;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LBkJe7BITaKSmj7NiH7cTlx5O0LFMlCti7ye0ReeYvA=;
-        b=ZhXGC1pe7MXcatVqk42uv90DXCLLN1dl+fKZ0yEYJw5sld7cwXzDF1HqpjIp1bsLSH
-         2gCPkc7Z+eujaWXvJe7JmGn406fHKJQou92oM1d5NuygnhE3CVZSd9B/DkT7JiBQ1+Y1
-         SKgxgFlNPRV8HU6EPC6hB/Q5xCQZZdTqUuIj6MgK3U5y4ELjC+ashE1UMhhoiUUzZ+aU
-         3wqlQxOSr9V/H2KJlXQ+aNIHNvKSJmyS/WiIX6DnKN+KiMlOAN7t7JYoqCArxlW3MaEV
-         +T9kUbeCsmMHv+2mU8XhUDiZPXex5T4UX9YRHHiGcCGlwjZLYk+Yzyhn8ZWp1ev6lgFw
-         BAyA==
+        Wed, 16 Aug 2023 05:49:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84654DF
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:49:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692179348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0OFZQ+OXvyBmwhhAQyMup8CjhNg5bEgDX0bYoSJ7Q74=;
+        b=dC2SrTETPC+oOgeVRPeIzXwzqLIzbkq6QXNqm8toAMvB0hCjyLLDns/9sA1+6oPPqXgseA
+        dN9Zx6jh/2PWD+JPjS3EifHdr2uQDyS4u2Ne9XJ/D6Zr79jvH06cJf+lCDFLJfjIhTKabe
+        kmCn+PQdB86qBvEGZINY/ux5qwFJLJE=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-558-Jb-BAB34MReGLPMkb3GZng-1; Wed, 16 Aug 2023 05:49:07 -0400
+X-MC-Unique: Jb-BAB34MReGLPMkb3GZng-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2b9c548bc66so63189081fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:49:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692179301; x=1692784101;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LBkJe7BITaKSmj7NiH7cTlx5O0LFMlCti7ye0ReeYvA=;
-        b=cFkHLw7jP04762GtfO0UYPuHjxy13kHXhDr4lKXmq7ennBWQnvQmsSaKGPr6erak6j
-         U5s24JGKtCHbtqAixoa63lLHEW2rBbcC7ZAbit8pH+gBgJzUXcbfNq90M7EOvrDEQNSL
-         N7seT/zo4Yj7xMDti9kxexholozPLbvG6Rb4wXAoJj7UmRtwFvcbmQaCUlFCLfrDx9Fo
-         5crg5V4BcLYcEtF9oLcvWO/LYwbqyV8XYxLqneQRXxa7vwVvuvqaX7R4UIi/SOoi4HIY
-         F4Nv/NTw2uaO3AaeryeOU9ad0T5rFJEeX0je5171fWG4403am67wrYiUJiNiasrhxJk0
-         JbOw==
-X-Gm-Message-State: AOJu0YwQDUK/JrvI/htbcaPon8amUfvDij4LMZNYiUoaWHzOZHkcdd0i
-        YD1abj+uaknV7x/JQ3N/s46d5/2w1A3f8w==
-X-Google-Smtp-Source: AGHT+IEk2/EHFHtBeJHuE+9roAWrYHFL7uR3nraac6e7mEuQqUjE8c+5HnRYPHkOpgJl+PArX9qSWw==
-X-Received: by 2002:a05:6402:11ce:b0:522:ddeb:cdcb with SMTP id j14-20020a05640211ce00b00522ddebcdcbmr5559574edw.18.1692179300904;
-        Wed, 16 Aug 2023 02:48:20 -0700 (PDT)
-Received: from ?IPV6:2a00:e180:15f4:7600:6260:d6f0:1ba4:569e? ([2a00:e180:15f4:7600:6260:d6f0:1ba4:569e])
-        by smtp.gmail.com with ESMTPSA id q9-20020a056402040900b0051dd19d6d6esm8145539edv.73.2023.08.16.02.48.19
+        d=1e100.net; s=20221208; t=1692179345; x=1692784145;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0OFZQ+OXvyBmwhhAQyMup8CjhNg5bEgDX0bYoSJ7Q74=;
+        b=TMne4XCYGCTmZ9LLtzWggtGFIjelGiVbYuUKaUlvqzl1CaYWej+xT2p3apbk+/yiaD
+         OSYjM8dTIEJQeZwHaYaVg1x+doa8+NzxjLx718cryw0eUW69v98K3Xu9JDt71jFqIYna
+         ndKTKecIzacUWZFVnzth/gK7aM+nHa+cqBUmmBaM+Knm30hbUowHDQM+87i4yZJAcN1R
+         La3otDpI1LVRPhwhiJ91sCugn5Z0kCTdrnWfJwzGRpKm/Zvt3UQ4Lt0EOS/x1AnaZECM
+         016JGF4pXK26BrUPLZ5vBY8lNTDZz59UYvxFP1qYR44LHXP//4sr9n99uB9o8h0vD1PY
+         HAMw==
+X-Gm-Message-State: AOJu0Yyq2iY1BWF5ofKMFQwjJkD6P7izcdUSi8YaCRe8r9IXuXcl6PsK
+        kqFH4XvNKFMTZIXsM7Z85XaVoYSMyuLNG33YEOMzgC88i9rqjimO25eeZuIF4o7MKXAIp9NySnm
+        pn2A8MZcnfRHJZUBDe2npsicr
+X-Received: by 2002:a2e:b285:0:b0:2b4:5cad:f246 with SMTP id 5-20020a2eb285000000b002b45cadf246mr1107452ljx.7.1692179345766;
+        Wed, 16 Aug 2023 02:49:05 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFAcVWmuJNfrQc1yoLpfalLlUny5Yyp2MgsmtGtaEdKirncc0n7pb9TlVylBlmWwHsFeOVlgw==
+X-Received: by 2002:a2e:b285:0:b0:2b4:5cad:f246 with SMTP id 5-20020a2eb285000000b002b45cadf246mr1107428ljx.7.1692179345278;
+        Wed, 16 Aug 2023 02:49:05 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c74b:8b00:5520:fa3c:c527:592f? (p200300cbc74b8b005520fa3cc527592f.dip0.t-ipconnect.de. [2003:cb:c74b:8b00:5520:fa3c:c527:592f])
+        by smtp.gmail.com with ESMTPSA id o13-20020a05600c378d00b003fe2de3f94fsm20525323wmr.12.2023.08.16.02.49.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 02:48:20 -0700 (PDT)
-Message-ID: <55088d5f-b241-8121-4ac5-e3b0c7cc53c5@gmail.com>
-Date:   Wed, 16 Aug 2023 11:48:19 +0200
+        Wed, 16 Aug 2023 02:49:04 -0700 (PDT)
+Message-ID: <ded3c4dc-2df9-2ef2-add0-c17f0cdfaf32@redhat.com>
+Date:   Wed, 16 Aug 2023 11:49:03 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v4 2/4] drm/amdgpu: Rework coredump to use memory
- dynamically
 Content-Language: en-US
-To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        "Sharma, Shashank" <Shashank.Sharma@amd.com>
-Cc:     pierre-eric.pelloux-prayer@amd.com,
-        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
-        =?UTF-8?Q?Timur_Krist=c3=b3f?= <timur.kristof@gmail.com>,
-        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
-        kernel-dev@igalia.com, Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
-        alexander.deucher@amd.com, christian.koenig@amd.com
-References: <20230815195100.294458-1-andrealmeid@igalia.com>
- <20230815195100.294458-3-andrealmeid@igalia.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-In-Reply-To: <20230815195100.294458-3-andrealmeid@igalia.com>
+To:     Yan Zhao <yan.y.zhao@intel.com>
+Cc:     John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        pbonzini@redhat.com, seanjc@google.com, mike.kravetz@oracle.com,
+        apopple@nvidia.com, jgg@nvidia.com, rppt@kernel.org,
+        akpm@linux-foundation.org, kevin.tian@intel.com,
+        Mel Gorman <mgorman@techsingularity.net>
+References: <20230810085636.25914-1-yan.y.zhao@intel.com>
+ <41a893e1-f2e7-23f4-cad2-d5c353a336a3@redhat.com>
+ <ZNSyzgyTxubo0g/D@yzhao56-desk.sh.intel.com>
+ <6b48a161-257b-a02b-c483-87c04b655635@redhat.com>
+ <1ad2c33d-95e1-49ec-acd2-ac02b506974e@nvidia.com>
+ <846e9117-1f79-a5e0-1b14-3dba91ab8033@redhat.com>
+ <d0ad2642-6d72-489e-91af-a7cb15e75a8a@nvidia.com>
+ <ZNnvPuRUVsUl5umM@yzhao56-desk.sh.intel.com>
+ <4271b91c-90b7-4b48-b761-b4535b2ae9b7@nvidia.com>
+ <f523af84-59de-5b57-a3f3-f181107de197@redhat.com>
+ <ZNyRnU+KynjCzwRm@yzhao56-desk.sh.intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [RFC PATCH v2 0/5] Reduce NUMA balance caused TLB-shootdowns in a
+ VM
+In-Reply-To: <ZNyRnU+KynjCzwRm@yzhao56-desk.sh.intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 15.08.23 um 21:50 schrieb André Almeida:
-> Instead of storing coredump information inside amdgpu_device struct,
-> move if to a proper separated struct and allocate it dynamically. This
-> will make it easier to further expand the logged information.
->
-> Signed-off-by: André Almeida <andrealmeid@igalia.com>
+On 16.08.23 11:06, Yan Zhao wrote:
+> On Wed, Aug 16, 2023 at 09:43:40AM +0200, David Hildenbrand wrote:
+>> On 15.08.23 04:34, John Hubbard wrote:
+>>> On 8/14/23 02:09, Yan Zhao wrote:
+>>> ...
+>>>>> hmm_range_fault()-based memory management in particular might benefit
+>>>>> from having NUMA balancing disabled entirely for the memremap_pages()
+>>>>> region, come to think of it. That seems relatively easy and clean at
+>>>>> first glance anyway.
+>>>>>
+>>>>> For other regions (allocated by the device driver), a per-VMA flag
+>>>>> seems about right: VM_NO_NUMA_BALANCING ?
+>>>>>
+>>>> Thanks a lot for those good suggestions!
+>>>> For VMs, when could a per-VMA flag be set?
+>>>> Might be hard in mmap() in QEMU because a VMA may not be used for DMA until
+>>>> after it's mapped into VFIO.
+>>>> Then, should VFIO set this flag on after it maps a range?
+>>>> Could this flag be unset after device hot-unplug?
+>>>>
+>>>
+>>> I'm hoping someone who thinks about VMs and VFIO often can chime in.
+>>
+>> At least QEMU could just set it on the applicable VMAs (as said by Yuan Yao,
+>> using madvise).
+>>
+>> BUT, I do wonder what value there would be for autonuma to still be active
+> Currently MADV_* is up to 25
+> 	#define MADV_COLLAPSE   25,
+> while madvise behavior is of type "int". So it's ok.
+> 
+> But vma->vm_flags is of "unsigned long", so it's full at least on 32bit platform.
 
-Shashank can you take a look at this one?
+I remember there were discussions to increase it also for 32bit. If 
+that's required, we might want to go down that path.
 
-Thanks,
-Christian.
+But do 32bit architectures even care about NUMA hinting? If not, just 
+ignore them ...
 
-> ---
-> v4: change kmalloc to kzalloc
-> ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu.h        | 14 +++--
->   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 63 ++++++++++++++--------
->   2 files changed, 49 insertions(+), 28 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> index 9c6a332261ab..0d560b713948 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> @@ -1088,11 +1088,6 @@ struct amdgpu_device {
->   	uint32_t                        *reset_dump_reg_list;
->   	uint32_t			*reset_dump_reg_value;
->   	int                             num_regs;
-> -#ifdef CONFIG_DEV_COREDUMP
-> -	struct amdgpu_task_info         reset_task_info;
-> -	bool                            reset_vram_lost;
-> -	struct timespec64               reset_time;
-> -#endif
->   
->   	bool                            scpm_enabled;
->   	uint32_t                        scpm_status;
-> @@ -1105,6 +1100,15 @@ struct amdgpu_device {
->   	uint32_t			aid_mask;
->   };
->   
-> +#ifdef CONFIG_DEV_COREDUMP
-> +struct amdgpu_coredump_info {
-> +	struct amdgpu_device		*adev;
-> +	struct amdgpu_task_info         reset_task_info;
-> +	struct timespec64               reset_time;
-> +	bool                            reset_vram_lost;
-> +};
-> +#endif
-> +
->   static inline struct amdgpu_device *drm_to_adev(struct drm_device *ddev)
->   {
->   	return container_of(ddev, struct amdgpu_device, ddev);
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> index bf4781551f88..b5b879bcc5c9 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-> @@ -4799,12 +4799,17 @@ static int amdgpu_reset_reg_dumps(struct amdgpu_device *adev)
->   	return 0;
->   }
->   
-> -#ifdef CONFIG_DEV_COREDUMP
-> +#ifndef CONFIG_DEV_COREDUMP
-> +static void amdgpu_coredump(struct amdgpu_device *adev, bool vram_lost,
-> +			    struct amdgpu_reset_context *reset_context)
-> +{
-> +}
-> +#else
->   static ssize_t amdgpu_devcoredump_read(char *buffer, loff_t offset,
->   		size_t count, void *data, size_t datalen)
->   {
->   	struct drm_printer p;
-> -	struct amdgpu_device *adev = data;
-> +	struct amdgpu_coredump_info *coredump = data;
->   	struct drm_print_iterator iter;
->   	int i;
->   
-> @@ -4818,21 +4823,21 @@ static ssize_t amdgpu_devcoredump_read(char *buffer, loff_t offset,
->   	drm_printf(&p, "**** AMDGPU Device Coredump ****\n");
->   	drm_printf(&p, "kernel: " UTS_RELEASE "\n");
->   	drm_printf(&p, "module: " KBUILD_MODNAME "\n");
-> -	drm_printf(&p, "time: %lld.%09ld\n", adev->reset_time.tv_sec, adev->reset_time.tv_nsec);
-> -	if (adev->reset_task_info.pid)
-> +	drm_printf(&p, "time: %lld.%09ld\n", coredump->reset_time.tv_sec, coredump->reset_time.tv_nsec);
-> +	if (coredump->reset_task_info.pid)
->   		drm_printf(&p, "process_name: %s PID: %d\n",
-> -			   adev->reset_task_info.process_name,
-> -			   adev->reset_task_info.pid);
-> +			   coredump->reset_task_info.process_name,
-> +			   coredump->reset_task_info.pid);
->   
-> -	if (adev->reset_vram_lost)
-> +	if (coredump->reset_vram_lost)
->   		drm_printf(&p, "VRAM is lost due to GPU reset!\n");
-> -	if (adev->num_regs) {
-> +	if (coredump->adev->num_regs) {
->   		drm_printf(&p, "AMDGPU register dumps:\nOffset:     Value:\n");
->   
-> -		for (i = 0; i < adev->num_regs; i++)
-> +		for (i = 0; i < coredump->adev->num_regs; i++)
->   			drm_printf(&p, "0x%08x: 0x%08x\n",
-> -				   adev->reset_dump_reg_list[i],
-> -				   adev->reset_dump_reg_value[i]);
-> +				   coredump->adev->reset_dump_reg_list[i],
-> +				   coredump->adev->reset_dump_reg_value[i]);
->   	}
->   
->   	return count - iter.remain;
-> @@ -4840,14 +4845,32 @@ static ssize_t amdgpu_devcoredump_read(char *buffer, loff_t offset,
->   
->   static void amdgpu_devcoredump_free(void *data)
->   {
-> +	kfree(data);
->   }
->   
-> -static void amdgpu_reset_capture_coredumpm(struct amdgpu_device *adev)
-> +static void amdgpu_coredump(struct amdgpu_device *adev, bool vram_lost,
-> +			    struct amdgpu_reset_context *reset_context)
->   {
-> +	struct amdgpu_coredump_info *coredump;
->   	struct drm_device *dev = adev_to_drm(adev);
->   
-> -	ktime_get_ts64(&adev->reset_time);
-> -	dev_coredumpm(dev->dev, THIS_MODULE, adev, 0, GFP_NOWAIT,
-> +	coredump = kzalloc(sizeof(*coredump), GFP_NOWAIT);
-> +
-> +	if (!coredump) {
-> +		DRM_ERROR("%s: failed to allocate memory for coredump\n", __func__);
-> +		return;
-> +	}
-> +
-> +	coredump->reset_vram_lost = vram_lost;
-> +
-> +	if (reset_context->job && reset_context->job->vm)
-> +		coredump->reset_task_info = reset_context->job->vm->task_info;
-> +
-> +	coredump->adev = adev;
-> +
-> +	ktime_get_ts64(&coredump->reset_time);
-> +
-> +	dev_coredumpm(dev->dev, THIS_MODULE, coredump, 0, GFP_NOWAIT,
->   		      amdgpu_devcoredump_read, amdgpu_devcoredump_free);
->   }
->   #endif
-> @@ -4955,15 +4978,9 @@ int amdgpu_do_asic_reset(struct list_head *device_list_handle,
->   					goto out;
->   
->   				vram_lost = amdgpu_device_check_vram_lost(tmp_adev);
-> -#ifdef CONFIG_DEV_COREDUMP
-> -				tmp_adev->reset_vram_lost = vram_lost;
-> -				memset(&tmp_adev->reset_task_info, 0,
-> -						sizeof(tmp_adev->reset_task_info));
-> -				if (reset_context->job && reset_context->job->vm)
-> -					tmp_adev->reset_task_info =
-> -						reset_context->job->vm->task_info;
-> -				amdgpu_reset_capture_coredumpm(tmp_adev);
-> -#endif
-> +
-> +				amdgpu_coredump(tmp_adev, vram_lost, reset_context);
-> +
->   				if (vram_lost) {
->   					DRM_INFO("VRAM is lost due to GPU reset!\n");
->   					amdgpu_inc_vram_lost(tmp_adev);
+> 
+>> for the remainder of the hypervisor. If there is none, a prctl() would be
+>> better.
+> Add a new field in "struct vma_numab_state" in vma, and use prctl() to
+> update this field?
+
+Rather a global toggle per MM, no need to update individual VMAs -- if 
+we go down that prctl() path.
+
+No need to consume more memory for VMAs.
+
+[...]
+
+>> We already do have a mechanism in QEMU to get notified when longterm-pinning
+>> in the kernel might happen (and, therefore, MADV_DONTNEED must not be used):
+>> * ram_block_discard_disable()
+>> * ram_block_uncoordinated_discard_disable()
+> Looks this ram_block_discard allow/disallow state is global rather than per-VMA
+> in QEMU.
+
+Yes. Once you transition into "discard of any kind disabled", you can go 
+over all guest memory VMAs (RAMBlock) and issue an madvise() for them. 
+(or alternatively, do the prctl() once )
+
+We'll also have to handle new guest memory being created afterwards, but 
+that is easy.
+
+Once we transition to "no discarding disabled", you can go over all 
+guest memory VMAs (RAMBlock) and issue an madvise() for them again (or 
+alternatively, do the prctl() once).
+
+> So, do you mean that let kernel provide a per-VMA allow/disallow mechanism, and
+> it's up to the user space to choose between per-VMA and complex way or
+> global and simpler way?
+
+QEMU could do either way. The question would be if a per-vma settings 
+makes sense for NUMA hinting.
+
+-- 
+Cheers,
+
+David / dhildenb
 
