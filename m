@@ -2,128 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D94FC77DA6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 08:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D209077DA6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 08:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242100AbjHPGV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 02:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47680 "EHLO
+        id S242105AbjHPGXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 02:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242094AbjHPGVg (ORCPT
+        with ESMTP id S242148AbjHPGW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 02:21:36 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14341FE6;
-        Tue, 15 Aug 2023 23:21:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692166892;
-        bh=/iSCmK2tnYDnc36gyD4blrwQea0I/4VHBMzwnihB6dA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gC3GNo1zQWWIZhRbfOc4LpUpupSaUBcnOIIzcFg/Kcj5Z7Bugegg1AzLdpQjXvdq0
-         q8VKfXZi59Xz37Ro3GBgviDLYOg+9h6V/IzDJcDXyThhjOf/A84TVfS9zQFwuffSHm
-         v4UpEuE/lRXMBrxXJeZaCakWQKJrwqd06qkUKK3TOrJgb58+xyTTi7x3fQXiXM6gTj
-         pANV8oTlDsrAsFJu9P31+MgoRbbChn2o2d7ds3flNo18i3N0ugtnwQIHdEgAAnKhTq
-         tCy5VdL/ukOwFZ4b/19bvf/eoRjfYfoNRQ1KtDqFAmcVYwTdtIkipYhzWehyXbz0Cf
-         uefmXUWh6iovw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RQdLz34vjz4wb0;
-        Wed, 16 Aug 2023 16:21:31 +1000 (AEST)
-Date:   Wed, 16 Aug 2023 16:21:28 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>, Joerg Roedel <joro@8bytes.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <jroedel@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Yi Liu <yi.l.liu@intel.com>
-Subject: linux-next: manual merge of the iommufd tree with the iommu tree
-Message-ID: <20230816162128.58ef5475@canb.auug.org.au>
+        Wed, 16 Aug 2023 02:22:58 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B9126BA;
+        Tue, 15 Aug 2023 23:22:49 -0700 (PDT)
+Received: from leknes.fjasle.eu ([46.142.99.55]) by mrelayeu.kundenserver.de
+ (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1McZfZ-1pu4Lu1i3h-00cwFg; Wed, 16 Aug 2023 08:22:27 +0200
+Received: from fjasle.eu (localhost [IPv6:::1])
+        by leknes.fjasle.eu (Postfix) with ESMTP id DD8153F75F;
+        Wed, 16 Aug 2023 08:22:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
+        t=1692166944; bh=0X0b4/DNHjk0hc/ShiDY9InFUbbXZZ3LbjU8MO8jZ5A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QOPTqsSROZj4VGRL5WnpejEyrzXdUV7IwZILPADlgqv24nVvdMgRyqWxwacpMUEL4
+         DoTBGbPnxA2es/w4sXCo3Cn+wacswVnOjp3Uv9Vofb9nAFUqRrPko+BcEXP2MdroCw
+         4BykCy9FsT5PdzoxuldSURVcVa/35jHoFQnBpbVI=
+From:   Nicolas Schier <nicolas@fjasle.eu>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kernel@vger.kernel.org, Nicolas Schier <n.schier@avm.de>
+Subject: [PATCH] MAINTAINERS: Add usr/ (initramfs generation) to KBUILD
+Date:   Wed, 16 Aug 2023 08:22:19 +0200
+Message-Id: <20230816062219.1086685-1-nicolas@fjasle.eu>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+qfPmgKRJ2GBp4NPXf/ebuy";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:5efYKn7F2za0bzOch2sK3zAAJMCZclTVtXWsbnQ1krjrYI1HvjA
+ ItpwXZOHlEH7CZKWOeyHJVNXxBVRuGjaFobL2njp/+kaTNB9f2eSvLPAjiq5uRfBJdTGf1B
+ QKqY8+S7hZMJEAv8QLxl1DDjt6j9jAc42EW5o3hFEO1mm8UCex1Q1b11scmJZdEASrjV8AF
+ 2X0ttwuG1ZEIeMPE4GxyA==
+UI-OutboundReport: notjunk:1;M01:P0:l5/JpwWrnlE=;97cEQn4stRO/L91iAFV+/X+orNW
+ D3vUIRxtDaDi5yV959b6EbJ6DgCY1SjUzdk3g3Jcl8MGGJlD6gHARipyobENz+0P7t3Czi/KO
+ DeigjkcMx6ocVOCOmSVAOzw7ZdN5q/eDuiTa6fCFkugSmLx/3VgODm1ypL6h2A5SZ+cUI2QAo
+ N3j1k4mb3sQ/MQXcSYaNzv5MyoYToxmucZ5MuE8hjaIUMetB7aDPpCAgQpG9/fWyxiwjQAVE+
+ Prp5EMuMYST9xtzaY3HjcFgCuhAl0g9so6qc/XKxFYKoTBrXFb/FcIQ2x73MjTtg9t7BkiLP4
+ tn8onQ7tTZBbxCUONXa91jCYHLrZFtXz9G3LJ2/L6ctcFAbIeQfdLt2IslMG+LQ20nCAETFpi
+ zo9ilHDvZRu+C3sTBPRRYoAhiC55V4J4lgAbjEL/rzpZlNZT3F7DIXC+DK6HEWPsCPw4A1kyZ
+ O0rS9gg71vGHlctXWQjo+8roiFX8sgLjXrlt4j/wFqp6CWK6aJ7xgvbqwjw3hl7HyhcwdVGXW
+ okVCEyqdVxUL2Ka1DpQU6pf+G/yO7Sych3hztnURM4Lw1UwxocAUiZXcNW1LUJKyIraMuhWi2
+ hrgQZKQh4TgW9851PAvMlLUf6h+JbYn4Fj8XFzNZeeMaOsSdbJiQ3WrO9zqBLxmHhC4tYaPzX
+ REHMjNJy/NHqKu0vYx+iPhwSC/SAbjiCcX3WE23tAb4yJOJlG5XinDrVixPqdmUGTkzlOZLd+
+ QaRus/u/lVBp2G2GNwtPtN/DCttyy23bQl8E1PuRrdApOArBCUZV0oAXyRgPbC0RgVh3FFVvO
+ GglQsC3u8Du9vF+0Gl8ZMB5iaA8u2x4n1iNIK50psRjeq615kbaAw9HBopJXk+cjv15sCCGPC
+ 2ZvjP26QHOSI4Hw==
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        T_SPF_TEMPERROR,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+qfPmgKRJ2GBp4NPXf/ebuy
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Nicolas Schier <n.schier@avm.de>
 
-Hi all,
+Add scripts for generating initramfs to KBUILD, to prevent idling of
+patches for usr/.
 
-Today's linux-next merge of the iommufd tree got a conflict in:
+Signed-off-by: Nicolas Schier <n.schier@avm.de>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-  include/linux/iommu.h
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d516295978a4..eff293e8d3bf 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11296,6 +11296,7 @@ F:	scripts/dummy-tools/
+ F:	scripts/mk*
+ F:	scripts/mod/
+ F:	scripts/package/
++F:	usr/
+ 
+ KERNEL HARDENING (not covered by other areas)
+ M:	Kees Cook <keescook@chromium.org>
+-- 
+2.39.2
 
-between commit:
-
-  2b4de976b360 ("iommu: Pass in the iommu_device to probe for in bus_iommu_=
-probe()")
-
-from the iommu tree and commit:
-
-  c64805327b7d ("iommu: Move dev_iommu_ops() to private header")
-
-from the iommufd tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/linux/iommu.h
-index 411ce9b998dc,f2d6a3989713..000000000000
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@@ -460,19 -459,7 +469,8 @@@ static inline void iommu_iotlb_gather_i
-  	};
-  }
- =20
-- static inline const struct iommu_ops *dev_iommu_ops(struct device *dev)
-- {
-- 	/*
-- 	 * Assume that valid ops must be installed if iommu_probe_device()
-- 	 * has succeeded. The device ops are essentially for internal use
-- 	 * within the IOMMU subsystem itself, so we should be able to trust
-- 	 * ourselves not to misuse the helper.
-- 	 */
-- 	return dev->iommu->iommu_dev->ops;
-- }
--=20
- -extern int bus_iommu_probe(const struct bus_type *bus);
- +extern int bus_iommu_probe(const struct bus_type *bus,
- +			   struct iommu_device *iommu);
-  extern bool iommu_present(const struct bus_type *bus);
-  extern bool device_iommu_capable(struct device *dev, enum iommu_cap cap);
-  extern bool iommu_group_has_isolated_msi(struct iommu_group *group);
-
---Sig_/+qfPmgKRJ2GBp4NPXf/ebuy
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTcaugACgkQAVBC80lX
-0GxlcQf/dIAfWrW9jtxjgUQEvcmNC1uwLl/YnkdZ8o2nYrs/TlAVEJWVCs13x8N8
-8AJ/kBKRqeQserJif6ZGnLS/DaOGETD9fcsiOqn0y9FTTMNoCFO40p+Wo59Wro/V
-aJqrJzKhm5+w+uSjW7YmbKtRy2VSRXFXbOtXGj2ZKKGMFeFSb30UOm6npG/J8s1v
-+GL94NlP3os6NE4FEjRcvlSOuDHF49gyvxGy/Iy6rG3XzZz6Ez8m/kadMDuxoiTH
-ZGYpGhvTNXa3EvYsaqBkpZjgzIAZ0w85NQJ+Vr6wYSZlmNa2AtLO6ZNVWAgoWKEk
-Cz2VH/+beViwD4N4+3L9VxByzw2zzQ==
-=bglV
------END PGP SIGNATURE-----
-
---Sig_/+qfPmgKRJ2GBp4NPXf/ebuy--
