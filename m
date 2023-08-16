@@ -2,142 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F56677E2DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2087377E2EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245606AbjHPNmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 09:42:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36732 "EHLO
+        id S245686AbjHPNnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:43:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245660AbjHPNlo (ORCPT
+        with ESMTP id S1343497AbjHPNnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 09:41:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E612A2D73
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:41:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AvZJrYevqOe0SxYwi0hYlseZ1CJ5Fk5Gk4FXzqItAQs=; b=vXmofc+rGbDzLr/hZFbSG7KSKn
-        k0/sVDjUeqSkKDigAbVCLKjKVRwul+jDZDOL4ptgVku3La6kd8YXnsAI5VzHDt8MUVChWiF+P4xy0
-        5hfrOVIr58UeOD09g3kAop5HK7KpBJx0kICCmoAI8HxNFpYMGjTt16hSTg+1pb2ti5IPkJcQTH35x
-        lbf6cJnj2He9l+M8LQwqVzv3kvbVlUOtb3WgDIOimoVYYqPFrQe69gK2zmwAh+Rw4ciVwHGCDfiuQ
-        qc0dzZaoJnK/pLiwDcR9UdICcdJEKWDrY5l6516qzMwC6QditnMFiIARnUHWcHbbSFAwI3sjUMmAm
-        VkrB7Xww==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qWGlg-00Ex0s-J3; Wed, 16 Aug 2023 13:41:00 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 09C1D3001FD;
-        Wed, 16 Aug 2023 15:41:00 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E46A9203B4384; Wed, 16 Aug 2023 15:40:59 +0200 (CEST)
-Date:   Wed, 16 Aug 2023 15:40:59 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mike Galbraith <umgwanakikbuti@gmail.com>
-Cc:     Chen Yu <yu.c.chen@intel.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        oe-lkp@lists.linux.dev, lkp@intel.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [tip:sched/eevdf] [sched/fair]  e0c2ff903c:
- phoronix-test-suite.blogbench.Write.final_score -34.8% regression
-Message-ID: <20230816134059.GC982867@hirez.programming.kicks-ass.net>
-References: <202308101628.7af4631a-oliver.sang@intel.com>
- <ZNWKuccyWnS3UJjK@chenyu5-mobl2.bbrouter>
- <ZNWgAeN/EVS/vOLi@chenyu5-mobl2.bbrouter>
- <20230814132935.GK776869@hirez.programming.kicks-ass.net>
- <bd96d883d0d1575ebbee4323f4396596adb0ad09.camel@gmail.com>
- <20230816123716.GI980931@hirez.programming.kicks-ass.net>
+        Wed, 16 Aug 2023 09:43:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A2142D6A
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:41:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692193274;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jN9TOD4A/0Qw8dNB02SZeeOMSlTj43nwfdVrkfW3Nrw=;
+        b=EdefF9cxNksDJhAU7fQ3Z6KgTlgmZlMp4oM5+qxaTYQ87z19/Ky6Z5XmrTH0TVxI8yb1ua
+        nEPKYBLQs30Hpsua2GeD9fJ/0cSTTharjxnJS98rnkmA8eDNgx3z8DHpS2V8pkPs90+Zk/
+        v01mf2IqlihuxjvgTPUw7G4dwRAcac4=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-398-jZxhNr4JOS6fKUkOCC-9RQ-1; Wed, 16 Aug 2023 09:41:12 -0400
+X-MC-Unique: jZxhNr4JOS6fKUkOCC-9RQ-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-76ce59841d5so912706085a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:41:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692193272; x=1692798072;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jN9TOD4A/0Qw8dNB02SZeeOMSlTj43nwfdVrkfW3Nrw=;
+        b=ZH1sLdRvrjo1F9RrVa1xqLgsbwL7+EshXIm/UZVasCJ1v9i7gJHwFAqPaUv3Ix39m8
+         lqBog/Y6F+rpFsCIIDD5esDZnn9u6sPZ6yu3bFrniH9hVLPWBrHaCZUXLMaekkwvp0Cp
+         zfLlT9eSe6StzelYGEVpy/MttqLxgNkElPVoAYOBYXdahYTGxy6GaOO1nl6COPP/aXUv
+         /8j9PVzEDabxCVltmlI1D89lgDJi6WsuNQ1egKPYSWsTGYUAjCGVsHRLZ8yM6dGGCtY5
+         yeHVsG/muyziwrFm+KFaem/2ZmeeY9fSyidgdPq93CiaQnzkZ/wqCJ58WmaoPnsmHXMH
+         ifgQ==
+X-Gm-Message-State: AOJu0Yz69k6mZJ6HpgvG8NYnEHNY8JyrouOxKXUATsvI3ixqaat0a6Ke
+        cnXBTOMmsCuze2sTzUfeHYOHh0R963xG9AtaW6kljNC1ZltrRFq8mnQFa5Fi6X8wgbYPGWiwUSR
+        brWkIS4Z+uGTguLQ5/HT5YRTa
+X-Received: by 2002:a0c:f5c8:0:b0:635:fb19:2ebd with SMTP id q8-20020a0cf5c8000000b00635fb192ebdmr2093301qvm.13.1692193272093;
+        Wed, 16 Aug 2023 06:41:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHaHYffXAFhTd9CZKBPQvUZnBh/Jw60Onr4ZL78JsygR0WcnheSxJMVeodMGwp8PDoLFTRlaw==
+X-Received: by 2002:a0c:f5c8:0:b0:635:fb19:2ebd with SMTP id q8-20020a0cf5c8000000b00635fb192ebdmr2093286qvm.13.1692193271857;
+        Wed, 16 Aug 2023 06:41:11 -0700 (PDT)
+Received: from fedora (g2.ign.cz. [91.219.240.8])
+        by smtp.gmail.com with ESMTPSA id y3-20020a0cd983000000b0062ffbf23c22sm4844318qvj.131.2023.08.16.06.41.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 06:41:11 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Roman Mamedov <rm+bko@romanrm.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux KVM <kvm@vger.kernel.org>, Borislav Petkov <bp@alien8.de>
+Subject: Re: Fwd: kvm: Windows Server 2003 VM fails to work on 6.1.44 (works
+ fine on 6.1.43)
+In-Reply-To: <87il9f5eg1.fsf@redhat.com>
+References: <8cc000d5-9445-d6f1-f02e-4629a4a59e0e@gmail.com>
+ <87o7j75g0g.fsf@redhat.com> <87il9f5eg1.fsf@redhat.com>
+Date:   Wed, 16 Aug 2023 15:41:08 +0200
+Message-ID: <87cyzn5cln.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230816123716.GI980931@hirez.programming.kicks-ass.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 02:37:16PM +0200, Peter Zijlstra wrote:
-> On Mon, Aug 14, 2023 at 08:32:55PM +0200, Mike Galbraith wrote:
-> 
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -875,6 +875,12 @@ static struct sched_entity *pick_eevdf(s
-> >  	if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
-> >  		curr = NULL;
-> >  
-> > +	/*
-> > +	 * Once selected, run the task to parity to avoid overscheduling.
-> > +	 */
-> > +	if (sched_feat(RUN_TO_PARITY) && curr)
-> > +		return curr;
-> > +
-> >  	while (node) {
-> >  		struct sched_entity *se = __node_2_se(node);
-> >  
-> 
-> So I read it wrong last night... but I rather like this idea. But
-> there's something missing. When curr starts a new slice it should
-> probably do a full repick and not stick with it.
-> 
-> Let me poke at this a bit.. nice
+Vitaly Kuznetsov <vkuznets@redhat.com> writes:
 
-Something like so.. it shouldn't matter much now, but might make a
-difference once we start mixing different slice lengths.
+> Vitaly Kuznetsov <vkuznets@redhat.com> writes:
+>
+>> Bagas Sanjaya <bagasdotme@gmail.com> writes:
+>>
+>>> Hi,
+>>>
+>>> I notice a regression report on Bugzilla [1]. Quoting from it:
+>>>
+>>>> Hello,
+>>>> 
+>>>> I have a virtual machine running the old Windows Server 2003. On kernels 6.1.44 and 6.1.45, the QEMU VNC window stays dark, not switching to any of the guest's video modes and the VM process uses only ~64 MB of RAM of the assigned 2 GB, indefinitely. It's like the VM is paused/halted/stuck before even starting. The process can be killed successfully and then restarted again (with the same result), so it is not deadlocked in kernel or the like.
+>>>> 
+>>>> Kernel 6.1.43 works fine.
+>>>> 
+>>>> I have also tried downgrading CPU microcode from 20230808 to 20230719, but that did not help.
+>>>> 
+>>>> The CPU is AMD Ryzen 5900. I suspect some of the newly added mitigations may be the culprit?
+>>>
+>>> See Bugzilla for the full thread.
+>>>
+>>> Anyway, I'm adding it to regzbot as stable-specific regression:
+>>>
+>>> #regzbot introduced: v6.1.43..v6.1.44 https://bugzilla.kernel.org/show_bug.cgi?id=217799
+>>> #regzbot title: Windows Server 2003 VM boot hang (only 64MB RAM allocated)
+>>>
+>>> Thanks.
+>>>
+>>> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217799
+>>
+>> From KVM's PoV, I don't see any KVM/x86 patches v6.1.44..v6.1.45 
+>
+> Oh, sorry, my bad, in the description of the BZ it is said that 6.1.44
+> is already broken, so it's most likely srso stuff then:
+>
+> dd5f2ef16e3c x86: fix backwards merge of GDS/SRSO bit
+> 4f25355540ad x86/srso: Tie SBPB bit setting to microcode patch detection
+> 77cf32d0dbfb x86/srso: Add a forgotten NOENDBR annotation
+> c7f2cd045542 x86/srso: Fix return thunks in generated code
+> c9ae63d773ca x86/srso: Add IBPB on VMEXIT
+> 79c8091888ef x86/srso: Add IBPB
+> 98f62883e751 x86/srso: Add SRSO_NO support
+> 9139f4b6dd4f x86/srso: Add IBPB_BRTYPE support
+> ac41e90d8daa x86/srso: Add a Speculative RAS Overflow mitigation
 
----
- kernel/sched/fair.c     | 12 ++++++++++++
- kernel/sched/features.h |  1 +
- 2 files changed, 13 insertions(+)
+Sean's https://lore.kernel.org/all/20230811155255.250835-1-seanjc@google.com/
+(alteady in 'tip') can actually be related and I see it was already
+tagged for stable@. Can anyone check if it really helps?
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index fe5be91c71c7..128a78f3f264 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -873,6 +873,13 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
- 	if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
- 		curr = NULL;
- 
-+	/*
-+	 * Once selected, run a task until it either becomes non-eligible or
-+	 * until it gets a new slice. See the HACK in set_next_entity().
-+	 */
-+	if (sched_feat(RUN_TO_PARITY) && curr && curr->vlag == curr->deadline)
-+		return curr;
-+
- 	while (node) {
- 		struct sched_entity *se = __node_2_se(node);
- 
-@@ -5168,6 +5175,11 @@ set_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
- 		update_stats_wait_end_fair(cfs_rq, se);
- 		__dequeue_entity(cfs_rq, se);
- 		update_load_avg(cfs_rq, se, UPDATE_TG);
-+		/*
-+		 * HACK, stash a copy of deadline at the point of pick in vlag,
-+		 * which isn't used until dequeue.
-+		 */
-+		se->vlag = se->deadline;
- 	}
- 
- 	update_stats_curr_start(cfs_rq, se);
-diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index 61bcbf5e46a4..f770168230ae 100644
---- a/kernel/sched/features.h
-+++ b/kernel/sched/features.h
-@@ -6,6 +6,7 @@
-  */
- SCHED_FEAT(PLACE_LAG, true)
- SCHED_FEAT(PLACE_DEADLINE_INITIAL, true)
-+SCHED_FEAT(RUN_TO_PARITY, true)
- 
- /*
-  * Prefer to schedule the task we woke last (assuming it failed
+> dec3b91f2c4b x86/cpu, kvm: Add support for CPUID_80000021_EAX
+>
+> it would still be great to try to bisect to the particular patch causing
+> the issue.
+
+-- 
+Vitaly
+
