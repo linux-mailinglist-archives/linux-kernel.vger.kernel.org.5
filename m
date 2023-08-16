@@ -2,179 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE76A77EBE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 010EA77EBED
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346534AbjHPVdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 17:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53478 "EHLO
+        id S1346537AbjHPVeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 17:34:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346567AbjHPVck (ORCPT
+        with ESMTP id S1346540AbjHPVdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 17:32:40 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2100.outbound.protection.outlook.com [40.107.236.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C041FD0;
-        Wed, 16 Aug 2023 14:32:39 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iqVsYRphWLZSDh1T245PAtTuy2hjbce0es8hPIaYnTovd/eiXLfn+OyI9Irg+IhZdGVtDsbJ3mVXouES1wEIPkXXRZsPrQDmDfQCsbGL8Ac4Lggwn9k+gHm3ITZZOaqtVO2RKZ+KbENTKg1VKOWmmZdVdZUJEEqYp0pKb43otnionWT3bzgeVBcSz7PB3KdHJv9eBiV30vrHPvJhp5lduusmqA/tRTm2O9+GaZP34lRI7XLQliAWuOCD85p+CGcAlsTtyk+COFrj5GeS8KEaqGGMS1kW7cQtTzNPaZcQjEZ1CAO8oINk27EVoHj06NkSdUuTGKXok2/8dZNZJ3fQeQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7JwFyo46ZwXrrGeaxWfX8gE79kSiMqZpx3mpOHSXazA=;
- b=fE5W8yx7w+qiKGrlW7v0tISDUaFUebg2ERIMJLZUKjmmqXHiV65OxdT0lBJbuYUHU24NVbnwsr4qm4O2u6HoTFB91LUzAJeIXN6qs82iRp88p4Tu5GvIahGCGDUxmcZivjPVMCInnbGG/iseWpe0RGXAGcQaIElRZaYh8xjZf2WsC4vrupA+pukoHSgYr/5wFXi5YDBMcUU84/d/4j1W1FMFYgHu3Z5Ye7vgKsnJKEVQdywigqtYLvAcIv5YlgV/Dd8HcmxiTRHSkUJ4/GJkwEa/DqbSWLFuxGEQMDj2oRpjGDl11rBMtcHBxcEYvYEG4wFjd/A/egQsis4Dtz/33g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7JwFyo46ZwXrrGeaxWfX8gE79kSiMqZpx3mpOHSXazA=;
- b=ARKzvV+SOBZyJzhARi/QOlK3dP2bbU1VUgqt2j4NtVgE0KnFxVNTy+oBocFfTielcCW1/cMr3826773U5YI2dNcNny1qdl8C67DVKQJDlNyHyXSJ3Z0Gwda1dkICD4T/65TzNf/+cvvbbDghLH76rxWJPNDt2T44Zwp+YHNUHu4=
-Received: from SA1PR21MB1335.namprd21.prod.outlook.com (2603:10b6:806:1f2::11)
- by PH0PR21MB1325.namprd21.prod.outlook.com (2603:10b6:510:100::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6723.4; Wed, 16 Aug
- 2023 21:32:36 +0000
-Received: from SA1PR21MB1335.namprd21.prod.outlook.com
- ([fe80::b05:d4ac:60ff:3b3f]) by SA1PR21MB1335.namprd21.prod.outlook.com
- ([fe80::b05:d4ac:60ff:3b3f%4]) with mapi id 15.20.6723.002; Wed, 16 Aug 2023
- 21:32:36 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Tianyu Lan <ltykernel@gmail.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-CC:     Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Wed, 16 Aug 2023 17:33:36 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902FCFD
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:33:35 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-55c7bb27977so10694181a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:33:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692221615; x=1692826415;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R+TNqWL3d830bw7UoUAlSK6Sb5FH192ad4TUZHubzgU=;
+        b=Ye/CkwTjUSmFbX6Do7XI3SmnObPHrYSKXFu2VxwwjrUMLbXuP81wPEjaSZA6hLG7xJ
+         H9Ye4kjEjc9PbBQ65xhUx+XO8t6fp6diRYbfVG0qj9aDzzCiCLl5lHFlibOx/YJr3TiR
+         YBxncdSZFih+IdWF483R5YgRd9H1QoIZysStM/sl9HxrZTEeh0/9IYyNwk++eHvLZzg1
+         Cb15vhTT2GPsOMXwW9iN66Y+4Meuwrip/U9FMs7oxf92Y4QM6I8iPqsD7Y6HOGDtGvNp
+         qq2EUmmUKt2u0Zr8R5UKjlans9AArANtYHTTdObKaN5yLNcro7sUDl8KsYl473CaT/lj
+         wN/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692221615; x=1692826415;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=R+TNqWL3d830bw7UoUAlSK6Sb5FH192ad4TUZHubzgU=;
+        b=bR7qUNYysYQJpqQhd1hFMb2s5pJ4SvR6S4mL2VQKtVQ6LsxP2XYn/LYUM+8mWssjgd
+         sz04xDqKqjS2Y8L4ROmHMBucUTTe+PwO5ugf0gt4uCYG8h6DA9p2WmP0qBozzSlXx7SF
+         UInMQ0F4kTfnP0aLXGpMJhjGh+qmlpeBQLDTPY4cs5p4jnn6saiSHU2RdbwjzqqbZk9X
+         8i1DqRQZgiLYSAUjdcDcII70rkPioitGIb5jj+PfoCnRbjZs+s0ATUZLOzwn4C3B+K7z
+         Ow157DppvaeWQ5aB0LL7blAGo5x3eKCppead3fB6wlD7M6Oveim+ZKY35+/FLw8SKOHA
+         ubCg==
+X-Gm-Message-State: AOJu0Yyor0pcuAmbeD1Jz98drVFVWN8ZfA4zGn1l6w6pnoTSb2mw0Lqa
+        hsdfyZvB3atd5CGGj8Ca6j9WeKrEGdY=
+X-Google-Smtp-Source: AGHT+IGoGttkM+52JHfW4vjzHpYt1gmW/FzEhFkV1A2LWOlA2lsD9OluFklRDzhtF3myS73FHvakF6b87Cc=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:3e4c:0:b0:563:dced:3f35 with SMTP id
+ l73-20020a633e4c000000b00563dced3f35mr808531pga.4.1692221615018; Wed, 16 Aug
+ 2023 14:33:35 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 14:33:33 -0700
+In-Reply-To: <aa17648c001704d83dcf641c1c7e9894e65eb87a.camel@intel.com>
+Mime-Version: 1.0
+References: <20230719144131.29052-1-binbin.wu@linux.intel.com>
+ <20230719144131.29052-4-binbin.wu@linux.intel.com> <c4faf38ea79e0f4eb3d35d26c018cd2bfe9fe384.camel@intel.com>
+ <66235c55-05ac-edd5-c45e-df1c42446eb3@linux.intel.com> <aa17648c001704d83dcf641c1c7e9894e65eb87a.camel@intel.com>
+Message-ID: <ZN1Ardu9GRx7KlAV@google.com>
+Subject: Re: [PATCH v10 3/9] KVM: x86: Use KVM-governed feature framework to
+ track "LAM enabled"
+From:   Sean Christopherson <seanjc@google.com>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     "binbin.wu@linux.intel.com" <binbin.wu@linux.intel.com>,
+        Chao Gao <chao.gao@intel.com>,
+        "David.Laight@ACULAB.COM" <David.Laight@aculab.com>,
+        Guang Zeng <guang.zeng@intel.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        vkuznets <vkuznets@redhat.com>
-Subject: RE: [PATCH v6 5/8] x86/hyperv: Use vmmcall to implement Hyper-V
- hypercall in sev-snp enlightened guest
-Thread-Topic: [PATCH v6 5/8] x86/hyperv: Use vmmcall to implement Hyper-V
- hypercall in sev-snp enlightened guest
-Thread-Index: AQHZ0FqWwwhYTLc5ZE2nEAVJ3M8pkq/tcATQ
-Date:   Wed, 16 Aug 2023 21:32:36 +0000
-Message-ID: <SA1PR21MB1335D07F52F526341E5709D5BF15A@SA1PR21MB1335.namprd21.prod.outlook.com>
-References: <20230816155850.1216996-1-ltykernel@gmail.com>
- <20230816155850.1216996-6-ltykernel@gmail.com>
-In-Reply-To: <20230816155850.1216996-6-ltykernel@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=7ba6b65b-c122-4aba-86b8-8d23f91f73cd;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-08-16T21:26:47Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR21MB1335:EE_|PH0PR21MB1325:EE_
-x-ms-office365-filtering-correlation-id: 6f37e5c6-a0a7-4649-5b37-08db9ea04f0b
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: XEISWCblQbJpOAsv5jgvpP4s1OK3cKVL2Vbbjman83pzS1lhsk0jrx8SSGwIXBKq8cx/+sPAZT6Ycxo5WQ9PSg3X278sG5ePyQpb/eeAOkaaLGK00bEuG90TjRVd5R4U4CljfU5OrGwwdM+nvfcW7LUxQHW60ANipVmrZ0KEzANFCQY4jCh2jAyN20pIyXe4/fdF4XsUfuITK6q47Jh63MO9JdSKwD423lkgcT0aIue5Hq0hNODeWsfo2vpPbGOZu+wO2zUSpELNhoqW00wOHZd2vXdM3C4kfyZLaj11Ye/KSKQJ4cUbdqQFcQkfe1OO34DTjpyqWx/4zt23xeLGZOtVSZs4kk+gQ4O7xI+VPQDC9WUBxz9VDkyEeXO5tlSno513QWwfpizpkZiPDyr//gvzcfJJVwAX0VcDq6UPqnr/DN2YGd/FIqc2a9loB8ZZtrUKEO4vE8hz8VTK7QVfkRaCyjGgcpcSDn4scLG8rlYFeXUNVNguml9fwlfVeAoNM6MX4IvLJfkQ7HnQX+VsoiKM0UQaQu0ZoCpRDC/oFepAGmoCl5Y1P+b73JATE72mr+Gr7LT+eCdeKAz2MlSiGntu4UA16P1eHU77WTMFI3xILGSFnREkQnTGo6dOm8uC9hi15dqjWS42G08qdLqmX/6IKe2komQdMRZal65rITHuH2UGXuOa22jkT2v8klXqBQQFgSXLFU1tCUZwaZa1Pw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR21MB1335.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(39860400002)(346002)(136003)(451199024)(186009)(1800799009)(66446008)(4326008)(86362001)(2906002)(82960400001)(82950400001)(83380400001)(110136005)(5660300002)(478600001)(921005)(38100700002)(38070700005)(122000001)(8676002)(8990500004)(7416002)(52536014)(8936002)(54906003)(71200400001)(33656002)(66556008)(41300700001)(66946007)(7696005)(6636002)(9686003)(76116006)(66476007)(64756008)(10290500003)(12101799020)(6506007)(55016003)(316002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?zxHRP0Lo/h3qfoJhzlDP6cC38y1n3mnnqpYU6PCRvEop0oR+VfwBmwMzfQx/?=
- =?us-ascii?Q?uuTFi3ynTXW0+Lfkcphegdf8FcA0h6EgzUZe0IrxB5fWc7RvPJv+b+NQqeK5?=
- =?us-ascii?Q?5stW6iP/ORx7BW0Z85VXZC7R7w9hy3ppAmOwKKZ/51eex7A919KD7oeqdM8C?=
- =?us-ascii?Q?MDqGJsa8PdBoPjn3Sv0YPvolaP6mfA4SnyyLsHww7KGpintNzMvqMGhsm/n3?=
- =?us-ascii?Q?BEaWaoHAxrpTETTT9CasjnTDpjZSpCjAqCcXis5Qa4/bDvyh9np8I1Ge3zkK?=
- =?us-ascii?Q?EqjMbTM1CndFAbuziBF+qscsd7kazhDPanSWfYqsyaIgx1yFkJcJO+ojbno1?=
- =?us-ascii?Q?9P13+es/FcVSCDcTudxNIazEkdV/MY2igmMmIhqJDiz4pHLDl53jWMIYa3P4?=
- =?us-ascii?Q?3oZn1Eh6L2M2jIFW2Jme7LNTcrIq1vjMaQ6R1xBZE/Mh08qHh7erO5mioOo2?=
- =?us-ascii?Q?Uo390T2SXm9c95aex+AA42rJjcD7otek6SaowvvkCtUMydRcQeHYnr/8hqw3?=
- =?us-ascii?Q?jWngz+KtBv2RBEB1oP58qgJcZSlVLiyHaVW3k5jTQ2BaNwfhrBx7YuENhsGr?=
- =?us-ascii?Q?2ItG1RVx04vgmMagDYUczBqE9HRc9iLJtPsfLGlnM45y0yhkjtoF3Q/LzB/p?=
- =?us-ascii?Q?s68RBtyHxCsgoHLpipFMVxEJvr+PTp6JBE+zlUiPHkUdbbIDBDj6+4rTVULT?=
- =?us-ascii?Q?Z10Zdrb211BslouHfcQH5qp3xHPXepWc84pzj5rrCj8XvyfFl0iYA/DfNj4X?=
- =?us-ascii?Q?8BNjkClbKVswO9cAoRSenCRsBPEgBng8UaK9R73BvW1vddqvaCS8ROLK39hm?=
- =?us-ascii?Q?omKnAGvQB/gtjd3Zq66ysO3PhDm9+hnX6wnMpyLYECgg9HK53LEBXlRTcsQ8?=
- =?us-ascii?Q?nPMe3dwv38bA4AN9cy3S3khnHPMGKsnwIpbTiBTmnGVdW0+VJ6aS+GMSQqV/?=
- =?us-ascii?Q?WdQNXgK80ZPsLie7Ff2pRUiRXoA/EMa1UsZqP9naIDK1qR6CQA3FmhH+LqQX?=
- =?us-ascii?Q?DttMvr+MhFyXVY4r8hgbtlxqQJLz58T1SU3w6JWhTurVBswU0OxviY9xdXHy?=
- =?us-ascii?Q?G0WmiVmKWIfZj8cK4xiWcsFFyGQgcdYMGhzj2wF8tnqAOAF7dgCiypuUGtpo?=
- =?us-ascii?Q?68cw2slfXvIMoiSksZ/DvWuXsrGJcIv+le1Ag9lAOlMJsH2bvpkdChgn4Vug?=
- =?us-ascii?Q?Zrh+kUVl2mKLKmewdtnnDQbt7YwwdfVL+I090B+ktsOff83njuhqBYmVEQlN?=
- =?us-ascii?Q?WAxnLxXCTkKe1EA0ZJeiPS3KCUDS/m7+QTAiFwMG+K5gvLqKSgqbFjqJKnnW?=
- =?us-ascii?Q?GDa4Dk1b+8euiecxEQOyTzKQokJWatHdba/IWOWs7M3DVnCiFkt0dmGfKkzC?=
- =?us-ascii?Q?AOJ9Oujr3sYmjoALSTMz8ZjkJLMxMbRQQbWtBRX13JoKIHU//57jYWaDUjEr?=
- =?us-ascii?Q?imgQSii6+7Rbok8dOwSn4tAho88l0eONvM3UBbwbjaIPULAQRltt/0jDKNrt?=
- =?us-ascii?Q?srFz3IzQ9Sr3INcgtZbtJKWBA0dKlk5K/h3xqsh1u6ZCNxHPHUkh14gl0AUL?=
- =?us-ascii?Q?A2Cn/eCwlNVICanqCFtu2v50Jx7krxpdjxVHzvfknLaB6mnS/5pYskIWQVCx?=
- =?us-ascii?Q?PASD6la32BrPU5eS3xaV/dc=3D?=
-Content-Type: text/plain; charset="us-ascii"
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "robert.hu@linux.intel.com" <robert.hu@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR21MB1335.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f37e5c6-a0a7-4649-5b37-08db9ea04f0b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Aug 2023 21:32:36.0541
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AVkwauXk+HK5USau5EeOig6vZT1i4loZ7vbNU+U/yxez/d96Tz1yJpVuQ69F8aRL/o1u3iMh/SdfDriTkncAFA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR21MB1325
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Tianyu Lan <ltykernel@gmail.com>
-> Sent: Wednesday, August 16, 2023 8:59 AM
-> [...]
-> --- a/arch/x86/include/asm/mshyperv.h
-> +++ b/arch/x86/include/asm/mshyperv.h
-> @@ -59,16 +59,25 @@ static inline u64 hv_do_hypercall(u64 control, void
-> *input, void *output)
->  	u64 hv_status;
+On Wed, Aug 16, 2023, Kai Huang wrote:
 >=20
->  #ifdef CONFIG_X86_64
-> -	if (!hv_hypercall_pg)
-> -		return U64_MAX;
-> +	if (hv_isolation_type_en_snp()) {
+> > > > --- a/arch/x86/kvm/vmx/vmx.c
+> > > > +++ b/arch/x86/kvm/vmx/vmx.c
+> > > > @@ -7783,6 +7783,9 @@ static void vmx_vcpu_after_set_cpuid(struct k=
+vm_vcpu *vcpu)
+> > > >   		vmx->msr_ia32_feature_control_valid_bits &=3D
+> > > >   			~FEAT_CTL_SGX_LC_ENABLED;
+> > > >  =20
+> > > > +	if (boot_cpu_has(X86_FEATURE_LAM))
+> > > > +		kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_LAM);
+> > > > +
+> > > If you want to use boot_cpu_has(), it's better to be done at your las=
+t patch to
+> > > only set the cap bit when boot_cpu_has() is true, I suppose.
+> > Yes, but new version of kvm_governed_feature_check_and_set() of=20
+> > KVM-governed feature framework will check against kvm_cpu_cap_has() as =
+well.
+> > I will remove the if statement and call=20
+> > kvm_governed_feature_check_and_set()=C2=A0 directly.
+> > https://lore.kernel.org/kvm/20230815203653.519297-2-seanjc@google.com/
+> >=20
+>=20
+> I mean kvm_cpu_cap_has() checks against the host CPUID directly while her=
+e you
+> are using boot_cpu_has().  They are not the same. =C2=A0
+>=20
+> If LAM should be only supported when boot_cpu_has() is true then it seems=
+ you
+> can just only set the LAM cap bit when boot_cpu_has() is true.  As you al=
+so
+> mentioned above the kvm_governed_feature_check_and_set() here internally =
+does
+> kvm_cpu_cap_has().
 
-I got a build failure:
+That's covered by the last patch:
 
-In file included from arch/x86/hyperv/hv_spinlock.c:15:
-./arch/x86/include/asm/mshyperv.h: In function 'hv_do_hypercall':
-./arch/x86/include/asm/mshyperv.h:69:6: error: implicit declaration of func=
-tion 'hv_isolation_type_en_snp' [-Werror=3Dimplicit-function-declaration]
-   69 |  if (hv_isolation_type_en_snp()) {
-      |      ^~~~~~~~~~~~~~~~~~~~~~~~
-
-In arch/x86/include/asm/mshyperv.h, we do have=20
-	extern bool hv_isolation_type_en_snp(void);
-but it's defined at a late place. I think we need to move it to before=20
-hv_do_hypercall().
-
-We also have=20
-	extern bool hv_isolation_type_en_snp(void);
-in include/asm-generic/mshyperv.h, but that header file
-is included at the end of arch/x86/include/asm/mshyperv.h.
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index e961e9a05847..06061c11d74d 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -677,7 +677,7 @@ void kvm_set_cpu_caps(void)
+        kvm_cpu_cap_mask(CPUID_7_1_EAX,
+                F(AVX_VNNI) | F(AVX512_BF16) | F(CMPCCXADD) |
+                F(FZRM) | F(FSRS) | F(FSRC) |
+-               F(AMX_FP16) | F(AVX_IFMA)
++               F(AMX_FP16) | F(AVX_IFMA) | F(LAM)
+        );
+=20
+        kvm_cpu_cap_init_kvm_defined(CPUID_7_1_EDX,
 
 
-> +		__asm__ __volatile__("mov %4, %%r8\n"
-> +				     "vmmcall"
-> +				     : "=3Da" (hv_status),
-> ASM_CALL_CONSTRAINT,
-> +				       "+c" (control), "+d" (input_address)
-> +				     :  "r" (output_address)
-> +				     : "cc", "memory", "r8", "r9", "r10", "r11");
+Which highlights a problem with activating a goverened feature before said =
+feature
+is actually supported by KVM: it's all kinds of confusing.
 
+It'll generate a more churn in git history, but I think we should first ena=
+ble
+LAM without a goverened feature, and then activate a goverened feature late=
+r on.
+Using a goverened feature is purely an optimization, i.e. the series needs =
+to be
+function without using a governed feature.
+
+That should yield an easier-to-review series on all fronts: the initial sup=
+ports
+won't have any more hidden dependencies than absolutely necessary, switchin=
+g to
+a goverened feature should be a very mechanical conversion (if it's not, th=
+at's
+a red flag), and last but not least, it makes it super easy to make a judgm=
+ent
+call as to whether using a governed feature flag is justified, because all =
+of the
+users will be in scope.
+
+TL;DR: Do the whole goverened feature thing dead last.
