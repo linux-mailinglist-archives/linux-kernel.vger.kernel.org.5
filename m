@@ -2,146 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D854777E276
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B079477E27F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245477AbjHPNXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 09:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
+        id S245512AbjHPNYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245494AbjHPNWu (ORCPT
+        with ESMTP id S236213AbjHPNYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 09:22:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A522D4A;
-        Wed, 16 Aug 2023 06:22:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 58F8561F76;
-        Wed, 16 Aug 2023 13:22:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E2B1C433C8;
-        Wed, 16 Aug 2023 13:22:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692192138;
-        bh=amUpVQjeWoSDfniN2IZ2yTaOcc0OwonZMQJboz3mWX0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cOmd4JaP5aVf90GKb8pydqb3saU1d7DRY3ptppWrcGic7IwfpPb8oV7mxHMA3Dawz
-         BUoMmThR4BDqOrUBn3HqDTj/pIlfWeOoWIUPZ2qT38Vz+9Pyi6HvfEp+jTQEzcgLqW
-         T4NEkQI01h/f63HsmpZQ0qXClo5gs5YiczUVOXiD6c+5tN7oIVKW9ZDHlkluwg50zu
-         tJWrqDx4rC3pTngc3aJZPHy0yPnuthLb/bdGrBsMSPtvo3YvXyq6E4e4HHX+8Wu2Bt
-         YRay3CvvdC0hteSL3bjx0uQyPakVpOrBdLhBA9gMjuE1RG1516HyT65nho1nbRghAE
-         cgNH8lMLLN33g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 50465404DF; Wed, 16 Aug 2023 10:22:15 -0300 (-03)
-Date:   Wed, 16 Aug 2023 10:22:15 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Fangrui Song <maskray@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Carsten Haitzler <carsten.haitzler@arm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Rob Herring <robh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, llvm@lists.linux.dev,
-        Wang Nan <wangnan0@huawei.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        He Kuang <hekuang@huawei.com>,
-        Brendan Gregg <brendan.d.gregg@gmail.com>
-Subject: Re: [PATCH v1 2/4] perf trace: Migrate BPF augmentation to use a
- skeleton
-Message-ID: <ZNzNh9Myua1xjNuL@kernel.org>
-References: <20230810184853.2860737-1-irogers@google.com>
- <20230810184853.2860737-3-irogers@google.com>
- <ZNuK1TFwdjyezV3I@kernel.org>
- <CAP-5=fURf+vv3TA4cRx1MiV3DDp=3wo0g5dBYH43DKtPhNZQsQ@mail.gmail.com>
- <ZNzK70eH3ISoL8r0@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNzK70eH3ISoL8r0@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 09:24:40 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7367DE52;
+        Wed, 16 Aug 2023 06:24:39 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37GCoEUW003362;
+        Wed, 16 Aug 2023 13:24:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=nXu1UOlIJBj2DB2mFC39b978sSoHBtJOzsnlTqY7Mi0=;
+ b=XEM4YbiXvVc1BL4OWlYi1/TR2gdRrBNXQVUkF9clcU86fAZXX8cXiaICLLc5jYMMPzzp
+ OHRmpil2jCrgmdfwz4CMW9NAQ2cwx+FZuNqOVeYPWD1kuRcfRnX7dE5Y/9oEDSaUG+gM
+ auGubyt1HoAIh9RPU0AgoM7rrMO7iywbrix3X9m76WlvQ4uzjVTfDUoc7wzW5r46965D
+ W1hVnGlPWnWucFfg8ElGg4/eAqKWRnBC0FXg/E/iV70gzmJrfqL9igAIEi7sesqHIepX
+ J/sZvNXvB5qrKqH3y8uLvOvDZyhleqCPx4pKOvtwSocioLicCvPRbUK3R/Aru+Xos2ld nA== 
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sg66htvey-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 13:24:35 +0000
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 37GDOWTN014751;
+        Wed, 16 Aug 2023 13:24:32 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3se35keufq-1;
+        Wed, 16 Aug 2023 13:24:32 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37GDOWnf014744;
+        Wed, 16 Aug 2023 13:24:32 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-krichai-hyd.qualcomm.com [10.213.110.112])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 37GDOWrp014742;
+        Wed, 16 Aug 2023 13:24:32 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 4058933)
+        id 6C4B54BC0; Wed, 16 Aug 2023 18:54:31 +0530 (+0530)
+From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
+        quic_parass@quicinc.com, krzysztof.kozlowski@linaro.org,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Subject: [PATCH v2 0/3] PCI: qcom: Add support for OPP
+Date:   Wed, 16 Aug 2023 18:54:21 +0530
+Message-Id: <1692192264-18515-1-git-send-email-quic_krichai@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: fLkRo0G9eRpYV0IeJa_d2V6FbuAd-YDR
+X-Proofpoint-GUID: fLkRo0G9eRpYV0IeJa_d2V6FbuAd-YDR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-16_12,2023-08-15_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
+ mlxscore=0 lowpriorityscore=0 bulkscore=0 phishscore=0 clxscore=1015
+ priorityscore=1501 malwarescore=0 impostorscore=0 mlxlogscore=493
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308160114
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Aug 16, 2023 at 10:11:11AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Just taking notes about things to work on top of what is in
-> tmp.perf-tools-next, that will move to perf-tools-next soon:
-> 
-> We need to make these libbpf error messages appear only in verbose mode,
-> and probably have a hint about unprivileged BPF, a quick attempt failed
-> after several attempts at getting privileges :-\
-> 
-> Probably attaching to tracepoints is off limits to !root even with
-> /proc/sys/kernel/unprivileged_bpf_disabled set to zero.
+This patch adds support for OPP to vote for the performance state of RPMH
+power domain based upon GEN speed it PCIe got enumerated.
 
-yep, the libbpf sys_bpf call to check if it could load a basic BPF
-bytecode (prog_type=BPF_PROG_TYPE_SOCKET_FILTER, insn_cnt=2) succeeds,
-but then, later we manage to create the maps, etc to then stumble on 
+Before link up PCIe driver will vote for the maximum performance state.
 
-bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_PERCPU_ARRAY, key_size=4, value_size=8272, max_entries=1, map_flags=0, inner_map_fd=0, map_name="augmented_args_", map_ifindex=0, btf_fd=0, btf_key_type_id=0, btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 7
-bpf(BPF_BTF_LOAD, {btf="\237\353\1\0\30\0\0\0\0\0\0\0000\0\0\0000\0\0\0\t\0\0\0\1\0\0\0\0\0\0\1"..., btf_log_buf=NULL, btf_size=81, btf_log_size=0, btf_log_level=0}, 32) = -1 EPERM (Operation not permitted)
+Changes from v1:
+	- Addressed comments from Krzysztof Kozlowski.
+	- Added the rpmhpd_opp_xxx phandle as suggested by pavan.
+	- Added dev_pm_opp_set_opp API call which was missed on previous patch.
 
-and:
+Krishna chaitanya chundru (3):
+  dt-bindings: pci: qcom: Add binding for operating-points-v2
+  arm64: dts: qcom: sm8450: Add opp table support to PCIe
+  PCI: qcom: Add OPP support for speed based performance state of RPMH
 
-bpf(BPF_PROG_LOAD, {prog_type=BPF_PROG_TYPE_TRACEPOINT, insn_cnt=2, insns=0x1758340, license="GPL", log_level=0, log_size=0, log_buf=NULL, kern_version=KERNEL_VERSION(6, 4, 7), prog_flags=0, prog_name="syscall_unaugme", prog_ifindex=0, expected_attach_type=BPF_CGROUP_INET_INGRESS, prog_btf_fd=0, func_info_rec_size=0, func_info=NULL, func_info_cnt=0, line_info_rec_size=0, line_info=NULL, line_info_cnt=0, attach_btf_id=0, attach_prog_fd=0, fd_array=NULL}, 144) = -1 EPERM (Operation not permitted)
+ .../devicetree/bindings/pci/qcom,pcie.yaml         |  4 ++
+ arch/arm64/boot/dts/qcom/sm8450.dtsi               | 47 +++++++++++++++
+ drivers/pci/controller/dwc/pcie-qcom.c             | 67 ++++++++++++++++++++++
+ 3 files changed, 118 insertions(+)
 
-So 'perf trace' should just not try to load the augmented_raw_syscalls
-BPF skel for !root.
-
-- Arnaldo
-
-[acme@quaco perf-tools-next]$ strace -e bpf perf trace -vv -e open* sleep 1
-bpf(BPF_PROG_LOAD, {prog_type=BPF_PROG_TYPE_SOCKET_FILTER, insn_cnt=2, insns=0x7ffe95185300, license="GPL", log_level=0, log_size=0, log_buf=NULL, kern_version=KERNEL_VERSION(0, 0, 0), prog_flags=0, prog_name="", prog_ifindex=0, expected_attach_type=BPF_CGROUP_INET_INGRESS, prog_btf_fd=0, func_info_rec_size=0, func_info=NULL, func_info_cnt=0, line_info_rec_size=0, line_info=NULL, line_info_cnt=0, attach_btf_id=0, attach_prog_fd=0}, 116) = 3
-bpf(BPF_PROG_LOAD, {prog_type=BPF_PROG_TYPE_SOCKET_FILTER, insn_cnt=2, insns=0x7ffe951854a0, license="GPL", log_level=0, log_size=0, log_buf=NULL, kern_version=KERNEL_VERSION(0, 0, 0), prog_flags=0, prog_name="", prog_ifindex=0, expected_attach_type=BPF_CGROUP_INET_INGRESS, prog_btf_fd=0, func_info_rec_size=0, func_info=NULL, func_info_cnt=0, line_info_rec_size=0, line_info=NULL, line_info_cnt=0, attach_btf_id=0, attach_prog_fd=0, fd_array=NULL}, 144) = 3
-bpf(BPF_BTF_LOAD, {btf="\237\353\1\0\30\0\0\0\0\0\0\0\20\0\0\0\20\0\0\0\5\0\0\0\1\0\0\0\0\0\0\1"..., btf_log_buf=NULL, btf_size=45, btf_log_size=0, btf_log_level=0}, 32) = -1 EPERM (Operation not permitted)
-bpf(BPF_PROG_LOAD, {prog_type=BPF_PROG_TYPE_SOCKET_FILTER, insn_cnt=2, insns=0x7ffe95185110, license="GPL", log_level=0, log_size=0, log_buf=NULL, kern_version=KERNEL_VERSION(0, 0, 0), prog_flags=0, prog_name="libbpf_nametest"}, 64) = 3
-bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_HASH, key_size=4, value_size=1, max_entries=64, map_flags=0, inner_map_fd=0, map_name="pids_filtered", map_ifindex=0, btf_fd=0, btf_key_type_id=0, btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 3
-bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_PROG_ARRAY, key_size=4, value_size=4, max_entries=512, map_flags=0, inner_map_fd=0, map_name="syscalls_sys_en", map_ifindex=0, btf_fd=0, btf_key_type_id=0, btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 4
-bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_PROG_ARRAY, key_size=4, value_size=4, max_entries=512, map_flags=0, inner_map_fd=0, map_name="syscalls_sys_ex", map_ifindex=0, btf_fd=0, btf_key_type_id=0, btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 5
-bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_PERF_EVENT_ARRAY, key_size=4, value_size=4, max_entries=4096, map_flags=0, inner_map_fd=0, map_name="__augmented_sys", map_ifindex=0, btf_fd=0, btf_key_type_id=0, btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 6
-bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_PERCPU_ARRAY, key_size=4, value_size=8272, max_entries=1, map_flags=0, inner_map_fd=0, map_name="augmented_args_", map_ifindex=0, btf_fd=0, btf_key_type_id=0, btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 7
-bpf(BPF_BTF_LOAD, {btf="\237\353\1\0\30\0\0\0\0\0\0\0000\0\0\0000\0\0\0\t\0\0\0\1\0\0\0\0\0\0\1"..., btf_log_buf=NULL, btf_size=81, btf_log_size=0, btf_log_level=0}, 32) = -1 EPERM (Operation not permitted)
-bpf(BPF_PROG_LOAD, {prog_type=BPF_PROG_TYPE_TRACEPOINT, insn_cnt=2, insns=0x1758340, license="GPL", log_level=0, log_size=0, log_buf=NULL, kern_version=KERNEL_VERSION(6, 4, 7), prog_flags=0, prog_name="syscall_unaugme", prog_ifindex=0, expected_attach_type=BPF_CGROUP_INET_INGRESS, prog_btf_fd=0, func_info_rec_size=0, func_info=NULL, func_info_cnt=0, line_info_rec_size=0, line_info=NULL, line_info_cnt=0, attach_btf_id=0, attach_prog_fd=0, fd_array=NULL}, 144) = -1 EPERM (Operation not permitted)
-bpf(BPF_PROG_LOAD, {prog_type=BPF_PROG_TYPE_TRACEPOINT, insn_cnt=2, insns=0x1758340, license="GPL", log_level=1, log_size=16777215, log_buf="", kern_version=KERNEL_VERSION(6, 4, 7), prog_flags=0, prog_name="syscall_unaugme", prog_ifindex=0, expected_attach_type=BPF_CGROUP_INET_INGRESS, prog_btf_fd=0, func_info_rec_size=0, func_info=NULL, func_info_cnt=0, line_info_rec_size=0, line_info=NULL, line_info_cnt=0, attach_btf_id=0, attach_prog_fd=0, fd_array=NULL}, 144) = -1 EPERM (Operation not permitted)
-libbpf: prog 'syscall_unaugmented': BPF program load failed: Operation not permitted
-libbpf: prog 'syscall_unaugmented': failed to load: -1
-libbpf: failed to load object 'augmented_raw_syscalls_bpf'
-libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -1
-Failed to load augmented syscalls BPF skeleton: Operation not permitted
-Using CPUID GenuineIntel-6-8E-A
-intel_pt default config: tsc,mtc,mtc_period=3,psb_period=3,pt,branch
-Error:	No permissions to read /sys/kernel/tracing//events/raw_syscalls/sys_(enter|exit)
-Hint:	Try 'sudo mount -o remount,mode=755 /sys/kernel/tracing/'
-
-+++ exited with 255 +++
-[acme@quaco perf-tools-next]$
+-- 
+2.7.4
 
