@@ -2,95 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA2277E696
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9DB377E648
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 18:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234913AbjHPQi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 12:38:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60748 "EHLO
+        id S1344662AbjHPQY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 12:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344858AbjHPQiM (ORCPT
+        with ESMTP id S1344692AbjHPQYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 12:38:12 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E33B30DE;
-        Wed, 16 Aug 2023 09:37:48 -0700 (PDT)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37GGUY4Z005019;
-        Wed, 16 Aug 2023 16:37:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=Ibp385JnoBcZ6jvg2AaVJonO5BuqByUnlv1udXjKaA4=;
- b=BwGd5E24Vvw82i8FoMpCj0ACugqOmN7VwqxtsJV9XrSeb0HNcR79HcVuYFOP8sNprRpl
- lE1RsCvlkpGBfCfAyzIGEd/8HmfEsWTc3YAAVfTh3G1AkZbI45q9ABa6yMBF+Dt4sgYL
- iptvNVgqfBMg+LNiisL7WgumIHywgWZ+CU5H7v35U5iTxMi0BbJISA4rUaLx43yNTR2n
- a7jPKezAO1feX4UeAZ+BvY8yWeFWqiXM9zXsHoNeb84zETEApUVi6UAbTS/AL6gkq3FK
- t67+Tp0WWW2XbKes6Zt+179ZfhbCghoDIIcaO9k7Qw/BqlyJmRgE0Mg7yldD7MBXIsYn 4A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sh21s8cpy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 16:37:24 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37GGUWdv004929;
-        Wed, 16 Aug 2023 16:37:24 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sh21s8cfj-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 16:37:24 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37GGKigo001107;
-        Wed, 16 Aug 2023 16:23:43 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3semsyencw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 16:23:43 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37GGNeFi59638210
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Aug 2023 16:23:40 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BB64B2004B;
-        Wed, 16 Aug 2023 16:23:40 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E47D520040;
-        Wed, 16 Aug 2023 16:23:38 +0000 (GMT)
-Received: from in.ibm.com (unknown [9.179.28.56])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed, 16 Aug 2023 16:23:38 +0000 (GMT)
-Date:   Wed, 16 Aug 2023 21:53:36 +0530
-From:   Mahesh J Salgaonkar <mahesh@linux.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev <linuxppc-dev@ozlabs.org>,
-        Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 1/2] powerpc/rtas: Rename rtas_error_rc to
- rtas_generic_errno
-Message-ID: <xzsx7qc3el674iyy2lsn3adm7j2vh5xj6cjaqxgjm6lwcjiz5u@evoqbrvhqf26>
-Reply-To: mahesh@linux.ibm.com
-References: <169138864808.65607.6576358707894823512.stgit@jupiter>
- <877cpxdksx.fsf@mail.lhotse>
+        Wed, 16 Aug 2023 12:24:09 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 519D5271F;
+        Wed, 16 Aug 2023 09:24:06 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-31781e15a0cso5903203f8f.3;
+        Wed, 16 Aug 2023 09:24:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692203045; x=1692807845;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3WPKmjKH3vI30hmWADxPP6Gm0i0g8LtfW4X1PKpkKa4=;
+        b=UGf8wUSXm0E0xb23PNDIC1bdvQoDWqY7o6SXj/w2aN/diHZK4TTX0nlQo7zroOXJQe
+         qt1MUbmt5lJr3ywys+JVkWbzL6yQTvzk55WCCV8dEnUpc/aNPgID2zbNEWqrsrvm+lGx
+         TxwYeumOMcfAXj+YiRYXde6RPbXDLrnJMU5JrzDRYTGT7Znuwy9KT9wLY4hUtWRTmPZR
+         DMFWQ3XWeIoc/bSBuN6LbjQaCFgxBNXcePrx7HlWaImJNqlmIASdSyd4WmKv1faiyJDx
+         47l+yh6SUUw0tu4VR9omAVfzQ+I2mmhHjry3nl+Etp8HjeTK2ncF91xwY/lZ4lsLEn/R
+         XpXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692203045; x=1692807845;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3WPKmjKH3vI30hmWADxPP6Gm0i0g8LtfW4X1PKpkKa4=;
+        b=fG8TuCL3B+/nOYT4kW87Fsq/gQBtobyrggr0vGp4V0smstrwRM8jETC5XttDSnk7MS
+         6L7oeA6Hr5kbgy/5tAABNBCJIL0kZ0yJuMtke3Imm03WJyNMZ89UJw9NF3QgHXlZwwsE
+         +NqxZ+hRHqm7ShEts0rVyod+bTunJ7URdBgvHRba807EMdbAWM8m908+bh/JgBc9zVLk
+         q4SrQyi5m4I0pF3AQbz/jNdJ43OIap8DUKi2d8dzayUsPTcoMh8cssUHcDjTrFY7pLki
+         YnJAcNIl4uE/ErY8frMcQMBV69J14G3XMnc0PPwzF38f3BeSOBuk2lm2qNAnkdgmN10N
+         G4vw==
+X-Gm-Message-State: AOJu0Yxum2lo1oGcPGE4jlQVeXIrOthX/5OZjoOBsNEXpUeexo3uge0V
+        C2iGEK8Pb77bSghjuMW55XrzVuiwMjg=
+X-Google-Smtp-Source: AGHT+IE5j7r351lRqM+YIViVxYVvGqlCu/bv3u6+eUUwYtCuj2rkPBE0tZ2K+AseRmi61d4HTJCX1A==
+X-Received: by 2002:a5d:6b84:0:b0:317:cff4:7357 with SMTP id n4-20020a5d6b84000000b00317cff47357mr1931657wrx.20.1692203044513;
+        Wed, 16 Aug 2023 09:24:04 -0700 (PDT)
+Received: from orome (p200300e41f1bd600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f1b:d600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id e13-20020adfe7cd000000b003180fdf5589sm21981770wrn.6.2023.08.16.09.24.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 09:24:03 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 18:24:01 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Rayyan Ansari <rayyan@ansari.sh>
+Cc:     linux-tegra@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: tegra: Enable IOMMU for host1x on Tegra132
+Message-ID: <ZNz4IZ8lSXlGIZb_@orome>
+References: <20230810214543.16235-1-rayyan@ansari.sh>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jfBf7x5cY9mempMY"
 Content-Disposition: inline
-In-Reply-To: <877cpxdksx.fsf@mail.lhotse>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 5Q9Eaz1-EdTThe7l4u5wwMMxXKFFoBwM
-X-Proofpoint-ORIG-GUID: mtVxtPi6sB5V_LpbvsquRhNrQKhxLoNv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-16_17,2023-08-15_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- phishscore=0 spamscore=0 bulkscore=0 adultscore=0 clxscore=1015
- mlxlogscore=999 impostorscore=0 malwarescore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308160145
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <20230810214543.16235-1-rayyan@ansari.sh>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -98,136 +77,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-15 13:52:14 Tue, Michael Ellerman wrote:
-> Mahesh Salgaonkar <mahesh@linux.ibm.com> writes:
-> > rtas_generic_errno() function will convert the generic rtas return codes
-> > into errno.
-> 
-> I don't see the point of renaming it, it just creates unnecessary churn.
-> The existing name seems OK to me.
 
-Sure. Will revert back to existing name.
+--jfBf7x5cY9mempMY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> ...
-> 
-> > diff --git a/arch/powerpc/include/asm/rtas.h b/arch/powerpc/include/asm/rtas.h
-> > index 3abe15ac79db1..5572a0a2f6e18 100644
-> > --- a/arch/powerpc/include/asm/rtas.h
-> > +++ b/arch/powerpc/include/asm/rtas.h
-> > @@ -202,7 +202,9 @@ typedef struct {
-> >  #define RTAS_USER_REGION_SIZE (64 * 1024)
-> >  
-> >  /* RTAS return status codes */
-> > -#define RTAS_BUSY		-2    /* RTAS Busy */
-> > +#define RTAS_HARDWARE_ERROR	(-1)  /* Hardware Error */
-> > +#define RTAS_BUSY		(-2)  /* RTAS Busy */
-> 
-> Are the brackets necessary?
+On Thu, Aug 10, 2023 at 10:45:41PM +0100, Rayyan Ansari wrote:
+> Add the iommu property to the host1x node to register it with its
+> swgroup.
+>=20
+> Signed-off-by: Rayyan Ansari <rayyan@ansari.sh>
+> ---
+>  arch/arm64/boot/dts/nvidia/tegra132.dtsi | 2 ++
+>  1 file changed, 2 insertions(+)
 
-During v5 changset I received offline review comment to add brackets,
-hence continued here as well. I can take it away if Nathan is fine with
-it.
+Do you happen to have a Tegra132 device that you can test upstream Linux
+on? Just asking out of curiosity because these devices are becoming very
+rare these days and it'd be good to know if people are still using these
+and that recent Linux kernels are still running on them.
 
-> 
-> > +#define RTAS_INVALID_PARAMETER	(-3)  /* Invalid indicator/domain/sensor etc. */
-> >  #define RTAS_EXTENDED_DELAY_MIN	9900
-> >  #define RTAS_EXTENDED_DELAY_MAX	9905
-> >  
-> > @@ -212,6 +214,11 @@ typedef struct {
-> >  #define RTAS_THREADS_ACTIVE     -9005 /* Multiple processor threads active */
-> >  #define RTAS_OUTSTANDING_COPROC -9006 /* Outstanding coprocessor operations */
-> >  
-> > +/* statuses specific to get-sensor-state */
-> > +#define RTAS_SLOT_UNISOLATED		(-9000)
-> > +#define RTAS_SLOT_NOT_UNISOLATED	(-9001)
-> > +#define RTAS_SLOT_NOT_USABLE		(-9002)
-> 
-> These aren't specific to get-sensor-state.
-> 
-> They're used by at least: ibm,manage-flash-image, ibm,activate-firmware,
-> ibm,configure-connector, set-indicator etc.
-> 
-> They have different meanings for those calls. I think you're best to
-> just leave the constant values in rtas_error_rc().
+Thierry
 
-Sure, I will leave them as constant in rtas_error_rc() and move these
-three #defines to drivers/pci/hotplug/rpaphp_pci.c in 2/2 patch where it
-makes sense.
+--jfBf7x5cY9mempMY
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 
-> >  /* RTAS event classes */
-> >  #define RTAS_INTERNAL_ERROR		0x80000000 /* set bit 0 */
-> >  #define RTAS_EPOW_WARNING		0x40000000 /* set bit 1 */
-> > @@ -425,6 +432,7 @@ extern int rtas_set_indicator(int indicator, int index, int new_value);
-> >  extern int rtas_set_indicator_fast(int indicator, int index, int new_value);
-> >  extern void rtas_progress(char *s, unsigned short hex);
-> >  int rtas_ibm_suspend_me(int *fw_status);
-> > +int rtas_generic_errno(int rtas_rc);
-> >  
-> >  struct rtc_time;
-> >  extern time64_t rtas_get_boot_time(void);
-> > diff --git a/arch/powerpc/kernel/rtas.c b/arch/powerpc/kernel/rtas.c
-> > index c087eeee320ff..80b6099e8ce20 100644
-> > --- a/arch/powerpc/kernel/rtas.c
-> > +++ b/arch/powerpc/kernel/rtas.c
-> > @@ -1330,33 +1330,34 @@ bool __ref rtas_busy_delay(int status)
-> >  }
-> >  EXPORT_SYMBOL_GPL(rtas_busy_delay);
-> >  
-> > -static int rtas_error_rc(int rtas_rc)
-> > +int rtas_generic_errno(int rtas_rc)
-> >  {
-> >  	int rc;
-> >  
-> >  	switch (rtas_rc) {
-> > -		case -1: 		/* Hardware Error */
-> > -			rc = -EIO;
-> > -			break;
-> > -		case -3:		/* Bad indicator/domain/etc */
-> > -			rc = -EINVAL;
-> > -			break;
-> > -		case -9000:		/* Isolation error */
-> > -			rc = -EFAULT;
-> > -			break;
-> > -		case -9001:		/* Outstanding TCE/PTE */
-> > -			rc = -EEXIST;
-> > -			break;
-> > -		case -9002:		/* No usable slot */
-> > -			rc = -ENODEV;
-> > -			break;
-> > -		default:
-> > -			pr_err("%s: unexpected error %d\n", __func__, rtas_rc);
-> > -			rc = -ERANGE;
-> > -			break;
-> > +	case RTAS_HARDWARE_ERROR:	/* Hardware Error */
-> > +		rc = -EIO;
-> > +		break;
-> > +	case RTAS_INVALID_PARAMETER:	/* Bad indicator/domain/etc */
-> > +		rc = -EINVAL;
-> > +		break;
-> > +	case RTAS_SLOT_UNISOLATED:	/* Isolation error */
-> > +		rc = -EFAULT;
-> > +		break;
-> > +	case RTAS_SLOT_NOT_UNISOLATED:	/* Outstanding TCE/PTE */
-> > +		rc = -EEXIST;
-> > +		break;
-> > +	case RTAS_SLOT_NOT_USABLE:	/* No usable slot */
-> > +		rc = -ENODEV;
-> > +		break;
-> > +	default:
-> > +		pr_err("%s: unexpected error %d\n", __func__, rtas_rc);
-> > +		rc = -ERANGE;
-> > +		break;
-> >  	}
-> >  	return rc;
-> >  }
-> > +EXPORT_SYMBOL(rtas_generic_errno);
->   
-> Should be GPL.
+-----BEGIN PGP SIGNATURE-----
 
-Will fix it in next revision.
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmTc+CEACgkQ3SOs138+
+s6F5vA//TPAbrdWP/7n9SHdSG/ExqNDo/+BLmflFRbk4ZyxM5DxTNMkOYtbcU6lx
+7mKudSObBXxd7tu+RzE0D2HCd91IYlW3+U9IGfKYumpIVnBwsrKpmgmxG2577re+
+fgTxhiV2HjUSoTenDLGUV21o8qp8/MQJsJfo+ZLdUWFK4E+3AX4rFF9+vyfUVhVc
+Cn6mYbw/VXsK3os4gXtpUzswT1QABZks3bG/eNctyZsjlia5W7WOVCIMh01C+7LV
+Ow7sHhfnzJGJL9OjGdSFzZjm8DJw99Kpu73ObJPR/RDQZuVP2qzuXH28S9+eJMYZ
+qdCmsgPMcyTpqU4jHKtlT9K/Tv9qz7G4tqpMZWpLueEenqLEiduN5Q94fEAS1xui
+Q26ymOk45cxUV/ww2bIN47EIt7DX2LYAe//qGk554c3z+MbypertT0ppXsdVIAZf
+bqF497EK8wNCU6aHEc2U1iMNk17Do8h/b2HLkZkjuj/YVm3HW+iguBbIB4JioLGY
+nLNkchrhp3RRdFyAIbA4FrZuIEuqOOp1nGtwo+bcr0zFph+jyvMsinG0fXXJNwEs
+ktKmaVZpGMMyVFMcKvCVs9i+TYwHq+OOmVkYmlHzfEYoTxC2EYySIbWzOlFjLu+q
+8uE6NSbjOU8tqOOzHgtyd8eCxogbdzuUShte3RhqsPkqgCbAJDg=
+=20YM
+-----END PGP SIGNATURE-----
 
-Thanks for your review.
--- 
-Mahesh J Salgaonkar
+--jfBf7x5cY9mempMY--
