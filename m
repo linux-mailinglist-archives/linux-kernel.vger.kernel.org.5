@@ -2,137 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8D977DF9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C6D77DFAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 12:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243934AbjHPKu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 06:50:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40004 "EHLO
+        id S244006AbjHPK4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 06:56:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244202AbjHPKuf (ORCPT
+        with ESMTP id S232470AbjHPKzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 06:50:35 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4079271F
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:50:06 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6bca38a6618so5364499a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 03:50:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692182930; x=1692787730;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t5m5UzpJlRLvwZeV0suPAl3MejkzVUOiX3hWF9GgbnY=;
-        b=SIZLCfPs9aH+YpE486zaXOdb61mkGGRDh9Y8KutGAeY79M/EAAssMwEC1dEJFKORid
-         aS8a3Nq4ZpKa0X48K9jI3bApIT3qdGNFG7llYR2u7+sipMAY5fnjL83o6jOE/lWM+g+W
-         HhSkWp5jOVUkOIpugI9BUetX2MdSzoOqA3U7o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692182930; x=1692787730;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t5m5UzpJlRLvwZeV0suPAl3MejkzVUOiX3hWF9GgbnY=;
-        b=LOHV5z+gYMq0ff3jvIIXzD/adB+tiuWH6b3x1lFhySkHgXoklLlWMTAwc+cUIOqfM4
-         pc1qbrvRi2idU0WkRsmHAfMempRJMBr1s9YvBRHnunJZ/rEoxv021h4py809NcQ/CKAn
-         SOUNP7TXQwm7TJ3lRoDvqUGgzshUxrPwU9HlBn4F2Sh0m9kmKJg4NxQ5C5OaUlC1rgog
-         mjCdjGlcQST3buPKQsbyRVzpdJmijjxYMy+wlmXEZArmGVBzdRSPtjBctkwFF7v1IQDw
-         Bwp/q4h5oJh2kQbZciYLU7BHPrD20i4ezybGyXRZHb8dIYOugf5m2ATtUKBBIW5RJFcW
-         bCvA==
-X-Gm-Message-State: AOJu0Yzg+Qi9CyBnxAmTqRHHE3ICYYhCKP4OuuT+OKGrplausZuGheZj
-        R5KLt2vt/kV+FfFTDTSvojCSqWvbdvhPYUYsUUdjDg==
-X-Google-Smtp-Source: AGHT+IHw+Hn5+HaHJOx4yIHLzCbxLXGJi1570SOwBYj4CutbHBvqVodnckZLDA7MEapvrG2f0e1muho0h/AXY5oEx2o=
-X-Received: by 2002:a9d:77c9:0:b0:6b9:1917:b2f3 with SMTP id
- w9-20020a9d77c9000000b006b91917b2f3mr1353972otl.33.1692182930471; Wed, 16 Aug
- 2023 03:48:50 -0700 (PDT)
+        Wed, 16 Aug 2023 06:55:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7886A1985;
+        Wed, 16 Aug 2023 03:55:34 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0AC5E63FBB;
+        Wed, 16 Aug 2023 10:55:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 552ADC433C7;
+        Wed, 16 Aug 2023 10:55:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692183333;
+        bh=lBmJFR9M91wfxaDPJazty0XSheTV8bspCpNfjNPkkTM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DquIEfCm4Jd3ngGUqDmln57RQgyDEer1IAtPW0YWFz6L+z/q7g/A9Rm9eq0QAM1Jx
+         gcrqKvUYBo5b6p/C3orCPSbIWkdfDhspXuStx+1HDDAtcNEZv68rX96CPn9IQSY0xi
+         J23E+ypfKrzLU6G1JPUE4A8gJomyQe6ulfnWy8MMPRLs/R1sZF4WUanP+43fFRYO6H
+         /j0zs6A78QAFfu5m5oNh9CFc+FPi7462B7LZnt7dKoo1hncLPEXveAWTbF4+GsahTg
+         sMsf4Nxj9j8c17yR2uRseW3CFiUsbilxw0TJvNmA5IanQ+2cHwHQVYCwqMsvQPkX0U
+         Zp94KIR4BbqHw==
+From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+Subject: [PATCH 00/10] tty: tty_buffer: cleanup
+Date:   Wed, 16 Aug 2023 12:55:20 +0200
+Message-ID: <20230816105530.3335-1-jirislaby@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230815154412.713846-1-hsinyi@chromium.org> <202A0C36-D1F6-4BB4-BDEC-F36A76B757A2@walle.cc>
- <CAJMQK-iw7ikyHKPPC8+hnpXuRq-_nq_N+21BKgWxD2nx=vAeJA@mail.gmail.com> <fb85c288-2ea9-3343-ff19-cd58940b44ec@linaro.org>
-In-Reply-To: <fb85c288-2ea9-3343-ff19-cd58940b44ec@linaro.org>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Wed, 16 Aug 2023 18:48:24 +0800
-Message-ID: <CAJMQK-h+j-uFvqqC9-ri_ciTBV=v5F8u2u6SBSArD8m+dONFyg@mail.gmail.com>
-Subject: Re: [PATCH 0/4] Add a property to override the quad mode
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Michael Walle <michael@walle.cc>,
-        Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        "Miquel Raynal )" <miquel.raynal@bootlin.com>,
-        "Richard Weinberger )" <richard@nod.at>,
-        "Vignesh Raghavendra )" <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 3:19=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 15/08/2023 19:21, Hsin-Yi Wang wrote:
-> > On Tue, Aug 15, 2023 at 11:59=E2=80=AFPM Michael Walle <michael@walle.c=
-c> wrote:
-> >>
-> >> Hi,
-> >>
-> >>> On gigadevice gd25lq64c, the quad mode is enabled after BFPT is parse=
-d.
-> >>> According to datasheet[1], Quad enable (QE) bit needs to be set to 0 =
-to
-> >>> use write protection (WP) pin. It also recommends setting default val=
-ue of
-> >>> QE to 0 to avoid a potential short issue.
-> >>
-> >> So you are using either dual or single io mode. Why can't you use the =
-device tree property spi-{tx,rx}-bus-width?
-> >
-> > I tried setting spi-tx-bus-width and spi-rx-bus-width to either 0 or 1
-> > and WP still doesn't work.
-> > For this chip, quad_enable will be set to spi_nor_sr2_bit1_quad_enable
-> > (QER flag is BFPT_DWORD15_QER_SR2_BIT1_BUGGY)[1]
-> >
-> > spi_nor_write_sr_and_check() calls
-> > spi_nor_write_16bit_sr_and_check()[2] and the function sets QE bit if
-> > quad_enable is not NULL.
-> >
-> > [1] https://elixir.bootlin.com/linux/latest/source/drivers/mtd/spi-nor/=
-sfdp.c#L575
-> > [2] https://elixir.bootlin.com/linux/latest/source/drivers/mtd/spi-nor/=
-core.c#L879
-> >
-> > Setting spi-{tx,rx}-bus-width still falls to this function and cases.
->
-> with tx/rx bus width =3D 2, how quad mode is still possible? IOW, why do
-> you need new property? You wrote here about driver, but I ask about
-> bindings.
->
-This may be a bug in the driver that setting spi-{tx,rx}-bus-width
-still enables the QE bit. I proposed another method in the chip's
-fixup to deal with this issue instead of creating a new binding
-property.
-v2: https://lore.kernel.org/lkml/20230816104245.2676965-1-hsinyi@chromium.o=
-rg/
+This is another part (say part II.) of the previous type unification
+across the tty layer[1]. This time, in tty_buffer. Apart from type
+changes, this series contains a larger set of refactoring of the code.
+Namely, unification of byte stuffing into the tty buffers into a single
+function.
 
+[1] https://lore.kernel.org/all/20230810091510.13006-1-jirislaby@kernel.org/
 
-> Best regards,
-> Krzysztof
->
+Jiri Slaby (SUSE) (10):
+  tty: tty_buffer: switch data type to u8
+  tty: tty_buffer: use struct_size() in tty_buffer_alloc()
+  tty: tty_buffer: unify tty_insert_flip_string_{fixed_flag,flags}()
+  tty: tty_buffer: warn if losing flags in
+    __tty_insert_flip_string_flags()
+  tty: tty_buffer: switch insert functions to size_t
+  tty: tty_buffer: let tty_prepare_flip_string() return size_t
+  tty: tty_buffer: use __tty_insert_flip_string_flags() in
+    tty_insert_flip_char()
+  tty: tty_buffer: better types in __tty_buffer_request_room()
+  tty: tty_buffer: initialize variables in initializers already
+  tty: tty_buffer: invert conditions in __tty_buffer_request_room()
+
+ Documentation/driver-api/tty/tty_buffer.rst |   7 +-
+ drivers/tty/tty_buffer.c                    | 169 ++++++--------------
+ include/linux/tty_buffer.h                  |   4 +-
+ include/linux/tty_flip.h                    |  64 ++++++--
+ 4 files changed, 111 insertions(+), 133 deletions(-)
+
+-- 
+2.41.0
+
