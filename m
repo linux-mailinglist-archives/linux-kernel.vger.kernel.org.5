@@ -2,343 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B610D77DD5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0666077DD59
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243382AbjHPJe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 05:34:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39620 "EHLO
+        id S243369AbjHPJdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 05:33:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243386AbjHPJeJ (ORCPT
+        with ESMTP id S233717AbjHPJdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 05:34:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE2CE5;
-        Wed, 16 Aug 2023 02:34:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BD9D2653C3;
-        Wed, 16 Aug 2023 09:34:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D58CC433CA;
-        Wed, 16 Aug 2023 09:34:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692178447;
-        bh=exBvvM9Xe0+XAAmP3FlK0GMKGRK6vXAOiedQHW1hwoQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=H5+Kzqc6q+Cnbo/oaZpfnyTT/us8MA2wTEoe7iP46IkmViclv6jnI7zCBwlTxPZxT
-         L6gze42nUIKp+eLWyShRTMpof0oYQ6IYlBcmr4db6NsrXRz/dzFJphZgnlw7SkPd92
-         jPo8RWYO0Z1YdL6PVCEJLz8ZK2lIBrEFwT4LzdIKom94/uDGAWBJWXUQvNiyG+Zc2i
-         06E20l0W1vaj/UOmLgIwNay6lzNS3GEkPP5ah4pyQRzZhnPdBsCl1w7T1rBznnE3ky
-         uUcV3tRAVd7I4W+jLJoKAkL0JP/q0hX07GiXUfmng1F0z6HVB+zTYT1Njv4hEBTLoW
-         ewOOJOq7BXtSQ==
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5233deb7cb9so7849152a12.3;
-        Wed, 16 Aug 2023 02:34:07 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yw5H1CZkBA18CXO4UMggkUyReRY3cOm6hWPFktkq6aGSrf4+O6W
-        t9pfL/J/LY3tUd5d97RB6awaeoY0j5qC/su2iKk=
-X-Google-Smtp-Source: AGHT+IHbcWbbGM82C6cauYJgTiSVn1vz1MMlCByG+bUlgaOSjqFXcjHal0DyDCjvm2xpeHPIuX0KnByInyc3rAD/X/M=
-X-Received: by 2002:a05:6402:2028:b0:523:b665:e494 with SMTP id
- ay8-20020a056402202800b00523b665e494mr1077207edb.15.1692178445324; Wed, 16
- Aug 2023 02:34:05 -0700 (PDT)
+        Wed, 16 Aug 2023 05:33:23 -0400
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD59E5;
+        Wed, 16 Aug 2023 02:33:20 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 041C420009;
+        Wed, 16 Aug 2023 09:33:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1692178399;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ahiKUG4ELV8s8vqlHeOD+FzGlkj+d7bpl2dX7VNQ2lY=;
+        b=hotXudvLx55S8gv39V8Oj/ihqoY3rjnVCBfpU/KdQgMLlxn5DdMuIvXKcamuIfb2J7yp6n
+        QtzU/64TIUQsAhOpGbSVs1NohmhxPbeY1HRLQrrRa/7mYPWeSNrQYe2wsAYYr5hxg8ywJ2
+        OzSJ2w7aP00Zzxxu41czONozyMkkZ4RXsZ6d72IR0/XC+kSekuw0A66QH5rjhEmX90fuK9
+        vjhsewkr02Uvxu8FPO6L3xg3ZCmpIiU9dZPOovsZTXXqEaD7un9OT+7CP8470zanmRCo0c
+        2aUoX34+WDWcYHD+1jgu1/BQNwSS4+MvKHl+wC2oj8ntFg84qNBUdjB/w1v6JQ==
+Message-ID: <a083aaec-648e-9541-aa42-f1e79b598059@bootlin.com>
+Date:   Wed, 16 Aug 2023 11:33:55 +0200
 MIME-Version: 1.0
-References: <20230814020045.51950-1-chenhuacai@loongson.cn>
- <20230814020045.51950-2-chenhuacai@loongson.cn> <18b9119c-cbc8-42a1-a313-9154d73c9841@paulmck-laptop>
- <CAAhV-H7t46hD1k18-sLYQA8h=M+ROdyMnT7gRtEGoRwKKBUZUA@mail.gmail.com>
- <CALm+0cWkQ8j_jiOSOuSsR9LbKPUL5cxRrONVxeNgSM5f1nDxMQ@mail.gmail.com>
- <CAAhV-H6S3Scu-Mf7E3aaqySytY4xDgjXrWc=fXSbr4i7R+-GDA@mail.gmail.com> <CALm+0cUpqONZOEHbc85d-Z5cC=P5LSeOAGuCCOukpTagLxnXWw@mail.gmail.com>
-In-Reply-To: <CALm+0cUpqONZOEHbc85d-Z5cC=P5LSeOAGuCCOukpTagLxnXWw@mail.gmail.com>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Wed, 16 Aug 2023 17:33:53 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7J6Rj99M6rxoFCEKu4G6NQPX9-N0a3-2GjEwbr+tbwQw@mail.gmail.com>
-Message-ID: <CAAhV-H7J6Rj99M6rxoFCEKu4G6NQPX9-N0a3-2GjEwbr+tbwQw@mail.gmail.com>
-Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
-To:     Z qiang <qiang.zhang1211@gmail.com>
-Cc:     paulmck@kernel.org, Huacai Chen <chenhuacai@loongson.cn>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3 1/2] net: phylink: add a function to resume phy alone
+ to fix resume issue with WoL enabled
+Content-Language: en-US
+From:   =?UTF-8?Q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
+To:     Clark Wang <xiaoning.wang@nxp.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "peppe.cavallaro@st.com" <peppe.cavallaro@st.com>,
+        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
+        "joabreu@synopsys.com" <joabreu@synopsys.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20230202081559.3553637-1-xiaoning.wang@nxp.com>
+ <83a8fb89ac7a69d08c9ea1422dade301dcc87297.camel@redhat.com>
+ <Y/c+MQtgtKFDjEZF@shell.armlinux.org.uk>
+ <HE1PR0402MB2939A09FD54E72C80C19A467F3AB9@HE1PR0402MB2939.eurprd04.prod.outlook.com>
+ <Y/dIoAqWfazh9k6F@shell.armlinux.org.uk>
+ <152ee4d9-800e-545a-c2c6-08b03e9d1301@bootlin.com>
+ <ZNUQOS49kP5uTgqx@shell.armlinux.org.uk>
+ <AM0PR04MB5089BA7465245F67458641DEF310A@AM0PR04MB5089.eurprd04.prod.outlook.com>
+ <7483089a-ae0f-8e8b-e059-57f6e06591de@bootlin.com>
+In-Reply-To: <7483089a-ae0f-8e8b-e059-57f6e06591de@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alexis.lothore@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Qiang,
+On 8/16/23 10:06, Alexis Lothoré wrote:
+> Hello Clark,
+> sorry for the late reply
+> 
+> On 8/11/23 05:39, Clark Wang wrote:
+>> Hi Alexis,
+>>
+>> I am so sorry. Clement happened to be busy at the end of March, and I was busy with other projects later, so this issue was shelved.
+>> If you have now taken over the job. I can work with you to solve this problem.
+> 
+> No worries :)
+> 
+>> The information he gave me at that time was saying "My need is for the PCS to be configured before the stmmac_hw_setup() is phylink_major_config().". So the reason why his patch put phylink_start() before stmmac_hw_setup() is to ensure to execute the phylink_mac_initial_config() function in phylink_start() before MAC reset, right?
+> 
+> Yes, I think you summed it up right. And Russell raised the issue that this
+> early,whole phylink setup could lead to other issues because stmmac HW was not
+> initialized yet while phylink is now ready
+>>
+>> But his patch only changed stmmac_open(), that is, it only affected the sequence after the first startup.
+>> Have you tested the system suspend/resume?
+> 
+> From my understanding, that's indeed a second issue (only affecting the start
+> path, not the resume path), after the first one (whole phylink start).
+> I did not try your series yet since I wanted to get sure about the series status
+> first, and did not play with suspend/resume on the RZN1 platform. My current
+> understanding is that your series only affects the suspend/resume path, but its
+> concept (allowing initializing only the phy, not the whole phylink machine, for
+> fixed link) may be usable for the start path on RZN1 too (which is where Clement
+> encountered issues because of lacking RXC)
+> 
+> I'll pick your series and play with it on RZN1 to check how it can fit the use
+> case and get back to you
 
-On Wed, Aug 16, 2023 at 1:09=E2=80=AFPM Z qiang <qiang.zhang1211@gmail.com>=
- wrote:
->
-> >
-> > Hi, Qiang,
-> >
-> > On Wed, Aug 16, 2023 at 11:16=E2=80=AFAM Z qiang <qiang.zhang1211@gmail=
-.com> wrote:
-> > >
-> > > >
-> > > > Hi, Paul,
-> > > >
-> > > > On Tue, Aug 15, 2023 at 12:15=E2=80=AFAM Paul E. McKenney <paulmck@=
-kernel.org> wrote:
-> > > > >
-> > > > > On Mon, Aug 14, 2023 at 10:00:45AM +0800, Huacai Chen wrote:
-> > > > > > The KGDB initial breakpoint gets an rcu stall warning after com=
-mit
-> > > > > > a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detecti=
-on in
-> > > > > > rcu_cpu_stall_reset()").
-> > > > > >
-> > > > > > [   53.452051] rcu: INFO: rcu_preempt self-detected stall on CP=
-U
-> > > > > > [   53.487950] rcu:     3-...0: (1 ticks this GP) idle=3D0e2c/1=
-/0x4000000000000000 softirq=3D375/375 fqs=3D8
-> > > > > > [   53.528243] rcu:     (t=3D12297 jiffies g=3D-995 q=3D1 ncpus=
-=3D4)
-> > > > > > [   53.564840] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.5.0-=
-rc2+ #4848
-> > > > > > [   53.603005] Hardware name: Loongson Loongson-3A5000-HV-7A200=
-0-1w-V0.1-CRB/Loongson-LS3A5000-7A2000-1w-CRB-V1.21, BIOS Loongson-UDK2018-=
-V2.0.05099-beta8 08
-> > > > > > [   53.682062] pc 9000000000332100 ra 90000000003320f4 tp 90000=
-001000a0000 sp 90000001000a3710
-> > > > > > [   53.724934] a0 9000000001d4b488 a1 0000000000000000 a2 00000=
-00000000001 a3 0000000000000000
-> > > > > > [   53.768179] a4 9000000001d526c8 a5 90000001000a38f0 a6 00000=
-0000000002c a7 0000000000000000
-> > > > > > [   53.810751] t0 00000000000002b0 t1 0000000000000004 t2 90000=
-0000131c9c0 t3 fffffffffffffffa
-> > > > > > [   53.853249] t4 0000000000000080 t5 90000001002ac190 t6 00000=
-00000000004 t7 9000000001912d58
-> > > > > > [   53.895684] t8 0000000000000000 u0 90000000013141a0 s9 00000=
-00000000028 s0 9000000001d512f0
-> > > > > > [   53.937633] s1 9000000001d51278 s2 90000001000a3798 s3 90000=
-000019fc410 s4 9000000001d4b488
-> > > > > > [   53.979486] s5 9000000001d512f0 s6 90000000013141a0 s7 00000=
-00000000078 s8 9000000001d4b450
-> > > > > > [   54.021175]    ra: 90000000003320f4 kgdb_cpu_enter+0x534/0x6=
-40
-> > > > > > [   54.060150]   ERA: 9000000000332100 kgdb_cpu_enter+0x540/0x6=
-40
-> > > > > > [   54.098347]  CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=3DCC DACM=
-=3DCC -WE)
-> > > > > > [   54.136621]  PRMD: 0000000c (PPLV0 +PIE +PWE)
-> > > > > > [   54.172192]  EUEN: 00000000 (-FPE -SXE -ASXE -BTE)
-> > > > > > [   54.207838]  ECFG: 00071c1c (LIE=3D2-4,10-12 VS=3D7)
-> > > > > > [   54.242503] ESTAT: 00000800 [INT] (IS=3D11 ECode=3D0 EsubCod=
-e=3D0)
-> > > > > > [   54.277996]  PRID: 0014c011 (Loongson-64bit, Loongson-3A5000=
--HV)
-> > > > > > [   54.313544] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.5.0-=
-rc2+ #4848
-> > > > > > [   54.430170] Stack : 0072617764726148 0000000000000000 900000=
-0000223504 90000001000a0000
-> > > > > > [   54.472308]         9000000100073a90 9000000100073a98 000000=
-0000000000 9000000100073bd8
-> > > > > > [   54.514413]         9000000100073bd0 9000000100073bd0 900000=
-0100073a00 0000000000000001
-> > > > > > [   54.556018]         0000000000000001 9000000100073a98 998282=
-71f24e961a 90000001002810c0
-> > > > > > [   54.596924]         0000000000000001 0000000000010003 000000=
-0000000000 0000000000000001
-> > > > > > [   54.637115]         ffff8000337cdb80 0000000000000001 000000=
-0006360000 900000000131c9c0
-> > > > > > [   54.677049]         0000000000000000 0000000000000000 900000=
-00017b4c98 9000000001912000
-> > > > > > [   54.716394]         9000000001912f68 9000000001913000 900000=
-0001912f70 00000000000002b0
-> > > > > > [   54.754880]         90000000014a8840 0000000000000000 900000=
-000022351c 0000000000000000
-> > > > > > [   54.792372]         00000000000002b0 000000000000000c 000000=
-0000000000 0000000000071c1c
-> > > > > > [   54.829302]         ...
-> > > > > > [   54.859163] Call Trace:
-> > > > > > [   54.859165] [<900000000022351c>] show_stack+0x5c/0x180
-> > > > > > [   54.918298] [<90000000012f6100>] dump_stack_lvl+0x60/0x88
-> > > > > > [   54.949251] [<90000000012dd5d8>] rcu_dump_cpu_stacks+0xf0/0x=
-148
-> > > > > > [   54.981116] [<90000000002d2fb8>] rcu_sched_clock_irq+0xb78/0=
-xe60
-> > > > > > [   55.012744] [<90000000002e47cc>] update_process_times+0x6c/0=
-xc0
-> > > > > > [   55.044169] [<90000000002f65d4>] tick_sched_timer+0x54/0x100
-> > > > > > [   55.075488] [<90000000002e5174>] __hrtimer_run_queues+0x154/=
-0x240
-> > > > > > [   55.107347] [<90000000002e6288>] hrtimer_interrupt+0x108/0x2=
-a0
-> > > > > > [   55.139112] [<9000000000226418>] constant_timer_interrupt+0x=
-38/0x60
-> > > > > > [   55.170749] [<90000000002b3010>] __handle_irq_event_percpu+0=
-x50/0x160
-> > > > > > [   55.203141] [<90000000002b3138>] handle_irq_event_percpu+0x1=
-8/0x80
-> > > > > > [   55.235064] [<90000000002b9d54>] handle_percpu_irq+0x54/0xa0
-> > > > > > [   55.266241] [<90000000002b2168>] generic_handle_domain_irq+0=
-x28/0x40
-> > > > > > [   55.298466] [<9000000000aba95c>] handle_cpu_irq+0x5c/0xa0
-> > > > > > [   55.329749] [<90000000012f7270>] handle_loongarch_irq+0x30/0=
-x60
-> > > > > > [   55.361476] [<90000000012f733c>] do_vint+0x9c/0x100
-> > > > > > [   55.391737] [<9000000000332100>] kgdb_cpu_enter+0x540/0x640
-> > > > > > [   55.422440] [<9000000000332b64>] kgdb_handle_exception+0x104=
-/0x180
-> > > > > > [   55.452911] [<9000000000232478>] kgdb_loongarch_notify+0x38/=
-0xa0
-> > > > > > [   55.481964] [<900000000026b4d4>] notify_die+0x94/0x100
-> > > > > > [   55.509184] [<90000000012f685c>] do_bp+0x21c/0x340
-> > > > > > [   55.562475] [<90000000003315b8>] kgdb_compiled_break+0x0/0x2=
-8
-> > > > > > [   55.590319] [<9000000000332e80>] kgdb_register_io_module+0x1=
-60/0x1c0
-> > > > > > [   55.618901] [<9000000000c0f514>] configure_kgdboc+0x154/0x1c=
-0
-> > > > > > [   55.647034] [<9000000000c0f5e0>] kgdboc_probe+0x60/0x80
-> > > > > > [   55.674647] [<9000000000c96da8>] platform_probe+0x68/0x100
-> > > > > > [   55.702613] [<9000000000c938e0>] really_probe+0xc0/0x340
-> > > > > > [   55.730528] [<9000000000c93be4>] __driver_probe_device+0x84/=
-0x140
-> > > > > > [   55.759615] [<9000000000c93cdc>] driver_probe_device+0x3c/0x=
-120
-> > > > > > [   55.787990] [<9000000000c93e8c>] __device_attach_driver+0xcc=
-/0x160
-> > > > > > [   55.817145] [<9000000000c91290>] bus_for_each_drv+0x90/0x100
-> > > > > > [   55.845654] [<9000000000c94328>] __device_attach+0xa8/0x1a0
-> > > > > > [   55.874145] [<9000000000c925f0>] bus_probe_device+0xb0/0xe0
-> > > > > > [   55.902572] [<9000000000c8ec7c>] device_add+0x65c/0x860
-> > > > > > [   55.930635] [<9000000000c96704>] platform_device_add+0x124/0=
-x2c0
-> > > > > > [   55.959669] [<9000000001452b38>] init_kgdboc+0x58/0xa0
-> > > > > > [   55.987677] [<900000000022015c>] do_one_initcall+0x7c/0x1e0
-> > > > > > [   56.016134] [<9000000001420f1c>] kernel_init_freeable+0x22c/=
-0x2a0
-> > > > > > [   56.045128] [<90000000012f923c>] kernel_init+0x20/0x124
-> > > > > >
-> > > > > > Currently rcu_cpu_stall_reset() set rcu_state.jiffies_stall to =
-one check
-> > > > > > period later, i.e. jiffies + rcu_jiffies_till_stall_check(). Bu=
-t jiffies
-> > > > > > is only updated in the timer interrupt, so when kgdb_cpu_enter(=
-) begins
-> > > > > > to run there may already be nearly one rcu check period after j=
-iffies.
-> > > > > > Since all interrupts are disabled during kgdb_cpu_enter(), jiff=
-ies will
-> > > > > > not be updated. When kgdb_cpu_enter() returns, rcu_state.jiffie=
-s_stall
-> > > > > > maybe already gets timeout.
-> > > > > >
-> > > > > > We can set rcu_state.jiffies_stall to two rcu check periods lat=
-er, e.g.
-> > > > > > jiffies + (rcu_jiffies_till_stall_check() * 2) in rcu_cpu_stall=
-_reset()
-> > > > > > to avoid this problem. But this isn't a complete solution becau=
-se kgdb
-> > > > > > may take a very long time in irq disabled context.
-> > > > > >
-> > > > > > Instead, update jiffies at the beginning of rcu_cpu_stall_reset=
-() can
-> > > > > > solve all kinds of problems.
-> > > > >
-> > > > > Would it make sense for there to be a kgdb_cpu_exit()?  In that c=
-ase,
-> > > > > the stalls could simply be suppressed at the beginning of the deb=
-ug
-> > > > > session and re-enabled upon exit, as is currently done for sysrq =
-output
-> > > > > via rcu_sysrq_start() and rcu_sysrq_end().
-> > > > Thank you for your advice, but that doesn't help. Because
-> > > > rcu_sysrq_start() and rcu_sysrq_end() try to suppress the warnings
-> > > > during sysrq, but kgdb already has no warnings during kgdb_cpu_ente=
-r()
-> > > > since it is executed in irq disabled context. Instead, this patch
-> > > > wants to suppress the warnings *after* kgdb_cpu_enter() due to a ve=
-ry
-> > > > old jiffies value.
-> > > >
-> > >
-> > > Hello, Huacai
-> > >
-> > > Is it possible to set  the rcu_cpu_stall_suppress is true in
-> > > dbg_touch_watchdogs()
-> > > and reset the rcu_cpu_stall_suppress at the beginning and end of the
-> > > RCU grace period?
-> > This is possible but not the best: 1, kgdb is not the only caller of
-> > rcu_cpu_stall_reset(); 2, it is difficult to find the "end" to reset
-> > rcu_cpu_stall_suppress.
-> >
->
-> You can replace rcu_state.jiffies_stall update by setting rcu_cpu_stall_s=
-uppress
-> in rcu_cpu_stall_reset(),  and reset rcu_cpu_stall_suppress in rcu_gp_ini=
-t() and
-> rcu_gp_cleanup().
-What's the advantage compared with updating jiffies? Updating jiffies
-seems more straight forward.
+And I think I did not read answers in proper order, because by checking
+Russell's answer to my initial message, I find indeed the lengthy discussion
+about the same kind of issue occurring in [1], with a proposal which may be more
+generic (adding a flag to let know the MAC driver that an external clock is needed)
 
-Huacai
+[1] https://lore.kernel.org/netdev/ZNS8LEiuwsv660EC@shell.armlinux.org.uk/
+> 
+> Thanks !
+> Alexis
+> 
+>> In the resume process, phylink_major_config() is called in phylink_resolve(). It is a work. In some cases on some of our platforms, this work may not be executed in time, which will lead to the lack of RXC, which will cause the MAC reset to fail.
+>>
+>> Best Regards,
+>> Clark Wang
+>>
+>>> -----Original Message-----
+>>> From: Russell King <linux@armlinux.org.uk>
+>>> Sent: 2023年8月11日 0:29
+>>> To: Alexis Lothoré <alexis.lothore@bootlin.com>
+>>> Cc: Clark Wang <xiaoning.wang@nxp.com>; Paolo Abeni
+>>> <pabeni@redhat.com>; peppe.cavallaro@st.com;
+>>> alexandre.torgue@foss.st.com; joabreu@synopsys.com;
+>>> davem@davemloft.net; edumazet@google.com; kuba@kernel.org;
+>>> mcoquelin.stm32@gmail.com; andrew@lunn.ch; hkallweit1@gmail.com;
+>>> netdev@vger.kernel.org; linux-stm32@st-md-mailman.stormreply.com;
+>>> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
+>>> dl-linux-imx <linux-imx@nxp.com>; Thomas Petazzoni
+>>> <thomas.petazzoni@bootlin.com>
+>>> Subject: Re: [PATCH V3 1/2] net: phylink: add a function to resume phy alone to
+>>> fix resume issue with WoL enabled
+>>>
+>>> On Thu, Aug 10, 2023 at 06:10:04PM +0200, Alexis Lothoré wrote:
+>>>> Hello Clark, Russell,
+>>>>
+>>>> On 2/23/23 12:06, Russell King (Oracle) wrote:
+>>>>> On Thu, Feb 23, 2023 at 10:27:06AM +0000, Clark Wang wrote:
+>>>>>> Hi Russel,
+>>>>>>
+>>>>>> I have sent the V4 patch set yesterday.
+>>>>>> You can check it from:
+>>> https://lore.ker/
+>>> nel.org%2Flinux-arm-kernel%2F20230222092636.1984847-2-xiaoning.wang%4
+>>> 0nxp.com%2FT%2F&data=05%7C01%7Cxiaoning.wang%40nxp.com%7Ccc3388
+>>> b42e244474ceb608db99bedff0%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0
+>>> %7C0%7C638272817295048537%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4
+>>> wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7
+>>> C%7C%7C&sdata=k3kDU5bfPF6eVBjhEAKbUmbO%2FU%2BwwBCMRVW0%2B
+>>> w5a0D0%3D&reserved=0
+>>>>>>
+>>>>>
+>>>>> Ah yes, sent while net-next is closed.
+>>>>>
+>>>>> Have you had any contact with Clément Léger ? If not, please can you
+>>>>> reach out to Clément, because he has virtually the same problem. I
+>>>>> don't want to end up with a load of different fixes in the mainline
+>>>>> kernel for the same "we need the PHY clock enabled on stmmac" problem
+>>>>> from different people.
+>>>>
+>>>> I am resuming Clement's initial efforts on RZN1 GMAC interface, which
+>>> indeed is
+>>>> in need of an early PCS initialization mechanism too ([1]).
+>>>>
+>>>>> Please try to come up with one patch set between you both to fix this.
+>>>>>
+>>>>> (effectively, that's a temporary NAK on your series.)>
+>>>>
+>>>> I would like to know if this series is still ongoing/alive ? I have checked for
+>>>> follow-ups after V4 sent by Clark ([2]), but did not find anything. Clement
+>>>> handed me over the topic right when Russell suggested to discuss this shared
+>>>> need, so I am not sure if any mutualization discussion has happened yet ?
+>>>>
+>>>> If not, what would be the next steps ? Based on my understanding and
+>>> comments on
+>>>> the [2] v3, I feel that Clark's series would be a good starting point. In order
+>>>> to be able to use it in both series, we could possibly make it less specific to
+>>>> the "resume" mechanism (basically, phylink_phy_resume() =>
+>>>> phylink_phy_early_start() ) ? It would then prevent [1] from moving the whole
+>>>> phylink_start() in stmmac_main too early (see issue raised by Russell) and
+>>> allow
+>>>> to just call phylink_phy_early_start() early enough, while still being usable in
+>>>> the resume scenario raised by Clark. Or am I missing bigger issues with
+>>> current
+>>>> series ?
+>>>
+>>> The whole thing died a death as soon as I suggested that the two parties
+>>> work together, so currently as far as I'm concerned, the issue is dead
+>>> and no patches have been merged to fix it.
+>>>
+>>> As I stated, I don't want to merge one solution, and then have the other
+>>> solution then come along later... the simple answer would have been for
+>>> party A to test party B's changes to see whether they solved the
+>>> problem, but clearly that never happened.
+>>>
+>>> If there's an unwillingness to work together to solve a common problem,
+>>> then the problem will remain unsolved.
+>>>
+>>> Note that we also have an ongoing discussion because of the AR803x PHYs
+>>> and their default-enabled hibernation mode, for which I've proposed
+>>> this patch. I haven't considered whether it should impact the resume
+>>> problem - it probably _should_ and it should probably cause the PHY to
+>>> resume outputting its clock when it resumes (which should have already
+>>> happened by the time stmmac begins resuming.)
+>>>
+>>> However, as no one seems prepared to constructively comment on either
+>>> my proposal nor (so far) the patch, there's no guarantee that we'll
+>>> merge the change below.
+>>>
+>>> So, right now I've no idea what's going to become of stmmac and its
+>>> requirement to have RXC always present. It seems there's multiple
+>>> issues that that requirement causes.
+>>>
+>>> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+>>> b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+>>> index fcab363d8dfa..a954f1d61709 100644
+>>> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+>>> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+>>> @@ -1254,6 +1254,11 @@ static int stmmac_phy_setup(struct stmmac_priv
+>>> *priv)
+>>>                       ~(MAC_10HD | MAC_100HD | MAC_1000HD);
+>>>       priv->phylink_config.mac_managed_pm = true;
+>>>
+>>> +     /* stmmac always requires a receive clock in order for things like
+>>> +      * hardware reset to work.
+>>> +      */
+>>> +     priv->phylink_config.mac_requires_rxc = true;
+>>> +
+>>>       phylink = phylink_create(&priv->phylink_config, fwnode,
+>>>                                mode, &stmmac_phylink_mac_ops);
+>>>       if (IS_ERR(phylink))
+>>> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
+>>> index 13c4121fa309..619a63a0d14f 100644
+>>> --- a/drivers/net/phy/at803x.c
+>>> +++ b/drivers/net/phy/at803x.c
+>>> @@ -990,7 +990,8 @@ static int at803x_hibernation_mode_config(struct
+>>> phy_device *phydev)
+>>>       /* The default after hardware reset is hibernation mode enabled. After
+>>>        * software reset, the value is retained.
+>>>        */
+>>> -     if (!(priv->flags & AT803X_DISABLE_HIBERNATION_MODE))
+>>> +     if (!(priv->flags & AT803X_DISABLE_HIBERNATION_MODE) &&
+>>> +         !(phydev->dev_flags & PHY_F_RXC_ALWAYS_ON))
+>>>               return 0;
+>>>
+>>>       return at803x_debug_reg_mask(phydev,
+>>> AT803X_DEBUG_REG_HIB_CTRL,
+>>> diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
+>>> index 4f1c8bb199e9..6568a2759101 100644
+>>> --- a/drivers/net/phy/phylink.c
+>>> +++ b/drivers/net/phy/phylink.c
+>>> @@ -1830,6 +1830,8 @@ static int phylink_bringup_phy(struct phylink *pl,
+>>> struct phy_device *phy,
+>>>  static int phylink_attach_phy(struct phylink *pl, struct phy_device *phy,
+>>>                             phy_interface_t interface)
+>>>  {
+>>> +     u32 flags = 0;
+>>> +
+>>>       if (WARN_ON(pl->cfg_link_an_mode == MLO_AN_FIXED ||
+>>>                   (pl->cfg_link_an_mode == MLO_AN_INBAND &&
+>>>                    phy_interface_mode_is_8023z(interface) && !pl->sfp_bus)))
+>>> @@ -1838,7 +1840,10 @@ static int phylink_attach_phy(struct phylink *pl,
+>>> struct phy_device *phy,
+>>>       if (pl->phydev)
+>>>               return -EBUSY;
+>>>
+>>> -     return phy_attach_direct(pl->netdev, phy, 0, interface);
+>>> +     if (pl->config.mac_requires_rxc)
+>>> +             flags |= PHY_F_RXC_ALWAYS_ON;
+>>> +
+>>> +     return phy_attach_direct(pl->netdev, phy, flags, interface);
+>>>  }
+>>>
+>>>  /**
+>>> @@ -1941,6 +1946,9 @@ int phylink_fwnode_phy_connect(struct phylink *pl,
+>>>               pl->link_config.interface = pl->link_interface;
+>>>       }
+>>>
+>>> +     if (pl->config.mac_requires_rxc)
+>>> +             flags |= PHY_F_RXC_ALWAYS_ON;
+>>> +
+>>>       ret = phy_attach_direct(pl->netdev, phy_dev, flags,
+>>>                               pl->link_interface);
+>>>       phy_device_free(phy_dev);
+>>> diff --git a/include/linux/phy.h b/include/linux/phy.h
+>>> index ba08b0e60279..79df5e01707d 100644
+>>> --- a/include/linux/phy.h
+>>> +++ b/include/linux/phy.h
+>>> @@ -761,6 +761,7 @@ struct phy_device {
+>>>
+>>>  /* Generic phy_device::dev_flags */
+>>>  #define PHY_F_NO_IRQ         0x80000000
+>>> +#define PHY_F_RXC_ALWAYS_ON  BIT(30)
+>>>
+>>>  static inline struct phy_device *to_phy_device(const struct device *dev)
+>>>  {
+>>> diff --git a/include/linux/phylink.h b/include/linux/phylink.h
+>>> index 789c516c6b4a..a83c1a77338f 100644
+>>> --- a/include/linux/phylink.h
+>>> +++ b/include/linux/phylink.h
+>>> @@ -204,6 +204,7 @@ enum phylink_op_type {
+>>>   * @poll_fixed_state: if true, starts link_poll,
+>>>   *                 if MAC link is at %MLO_AN_FIXED mode.
+>>>   * @mac_managed_pm: if true, indicate the MAC driver is responsible for
+>>> PHY PM.
+>>> + * @mac_requires_rxc: if true, the MAC always requires a receive clock from
+>>> PHY.
+>>>   * @ovr_an_inband: if true, override PCS to MLO_AN_INBAND
+>>>   * @get_fixed_state: callback to execute to determine the fixed link state,
+>>>   *                if MAC link is at %MLO_AN_FIXED mode.
+>>> @@ -216,6 +217,7 @@ struct phylink_config {
+>>>       enum phylink_op_type type;
+>>>       bool poll_fixed_state;
+>>>       bool mac_managed_pm;
+>>> +     bool mac_requires_rxc;
+>>>       bool ovr_an_inband;
+>>>       void (*get_fixed_state)(struct phylink_config *config,
+>>>                               struct phylink_link_state *state);
+>>>
+>>> --
+>>> RMK's Patch system:
+>>> https://www.ar/
+>>> mlinux.org.uk%2Fdeveloper%2Fpatches%2F&data=05%7C01%7Cxiaoning.wan
+>>> g%40nxp.com%7Ccc3388b42e244474ceb608db99bedff0%7C686ea1d3bc2b4c6
+>>> fa92cd99c5c301635%7C0%7C0%7C638272817295048537%7CUnknown%7CT
+>>> WFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJ
+>>> XVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=%2FLZFtiTfr1ZM%2B7OZ%2FM7I
+>>> JkZH42DVgcNMZx8VohBSv38%3D&reserved=0
+>>> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> 
 
->
-> Thanks
-> Zqiang
->
-> >
-> > > or set rcupdate.rcu_cpu_stall_suppress_at_boot=3D1 in bootargs can
-> > > suppress RCU stall
-> > > in booting.
-> > This is also possible, but it suppresses all kinds of stall warnings,
-> > which is not what we want.
-> >
-> > Huacai
-> > >
-> > >
-> > > Thanks
-> > > Zqiang
-> > >
-> > >
-> > > >
-> > > > Huacai
-> > > >
-> > > > >
-> > > > >                                                         Thanx, Pa=
-ul
-> > > > >
-> > > > > > Cc: stable@vger.kernel.org
-> > > > > > Fixes: a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall =
-detection in rcu_cpu_stall_reset()")
-> > > > > > Reported-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
-> > > > > > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> > > > > > ---
-> > > > > >  kernel/rcu/tree_stall.h | 1 +
-> > > > > >  1 file changed, 1 insertion(+)
-> > > > > >
-> > > > > > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> > > > > > index b10b8349bb2a..1c7b540985bf 100644
-> > > > > > --- a/kernel/rcu/tree_stall.h
-> > > > > > +++ b/kernel/rcu/tree_stall.h
-> > > > > > @@ -153,6 +153,7 @@ static void panic_on_rcu_stall(void)
-> > > > > >   */
-> > > > > >  void rcu_cpu_stall_reset(void)
-> > > > > >  {
-> > > > > > +     do_update_jiffies_64(ktime_get());
-> > > > > >       WRITE_ONCE(rcu_state.jiffies_stall,
-> > > > > >                  jiffies + rcu_jiffies_till_stall_check());
-> > > > > >  }
-> > > > > > --
-> > > > > > 2.39.3
-> > > > > >
+-- 
+Alexis Lothoré, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
