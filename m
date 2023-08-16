@@ -2,113 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D94E77DD8A
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7BF77DDA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243443AbjHPJnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 05:43:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52814 "EHLO
+        id S243482AbjHPJpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 05:45:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243304AbjHPJnM (ORCPT
+        with ESMTP id S239461AbjHPJox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 05:43:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A1513E
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:43:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9tBh8YZnHJRmwQirAC6iVUYo9SGPgNOE19QJmeUHp0o=; b=R0/KWNsvaMh6SZKVoRYeSLDXep
-        T5T8uT5SgcKsQ/yQxEdLUZm7wkcEWYPyTwck1P291rxM1A7tPPLTdNalq0zXajjc3YFQeimrPGx2O
-        vLR/rFH7HnpqzK+1BKMuFr5Byn9/QFlLe2IlaWtWXDTHAaywxtmRLXD3xXkZZpiGmBblMhaMLQRNg
-        ByJAJYU2rRAN16papDZWx6hLpgWia1grCvKWyTNLPRss2EJH6nA99bNxeDpDYZsCXD+tAZuGeGg3c
-        2SbEwW2r1FcyU7Y5arwbGe7bRqXKZaFoQxzlYRymYZRXhRSGh/ZJm5Mxovss6YWPM++aorQz+UlZN
-        frDSBcaw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qWD3J-00Dv9y-LM; Wed, 16 Aug 2023 09:42:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3C11C30020C;
-        Wed, 16 Aug 2023 11:42:57 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1EC802C8D7776; Wed, 16 Aug 2023 11:42:57 +0200 (CEST)
-Date:   Wed, 16 Aug 2023 11:42:57 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        bsegall@google.com, boqun.feng@gmail.com, swood@redhat.com,
-        bristot@redhat.com, dietmar.eggemann@arm.com, mingo@redhat.com,
-        jstultz@google.com, juri.lelli@redhat.com, mgorman@suse.de,
-        rostedt@goodmis.org, vschneid@redhat.com,
-        vincent.guittot@linaro.org, longman@redhat.com, will@kernel.org
-Subject: Re: [PATCH 0/6] locking/rtmutex: Avoid PI state recursion through
- sched_submit_work()
-Message-ID: <20230816094257.GE980931@hirez.programming.kicks-ass.net>
-References: <20230815110121.117752409@infradead.org>
- <20230815161557.GK214207@hirez.programming.kicks-ass.net>
- <20230816085826.zfXjhNmj@linutronix.de>
+        Wed, 16 Aug 2023 05:44:53 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E780E74
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:44:52 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99357737980so835602266b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:44:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692179090; x=1692783890;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+8zand1bf++dDgXm+FjYcnuIBuhLXkX3zFM+5SMeXGc=;
+        b=HRYFoxGjBZzXBdTkpHd73l2h3v/JuuD2i1kNBqAwYjOdIpHBBSZoy5H9X8PTFnyZNa
+         qBvUGytxHcEACJtKntItMDimW+GC0SsKZvM97Q5F0ucWIMEyKbI4KcI9ctspDyBVDDrY
+         RapzgyftLuS63fDgcmoBmvBXAYmliy4rGchDoK15Pluse8JQDskGGz7oWHbu+x5VshoD
+         B9wii+pAmee+v+Q0pFAUVCKvhBg6m4AuTzt3nZkbnPMc3zrRFbW4HzvORRg9MQtcFD1/
+         CG3oLBDo1J8nwI/0byiDkt7NTABA1yLSDt+AN5+YpPSI5EVr/uJ9uTniZc6PxMLb7VIk
+         W23Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692179090; x=1692783890;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+8zand1bf++dDgXm+FjYcnuIBuhLXkX3zFM+5SMeXGc=;
+        b=BoaIqGxVGAzhD+vk/VG2llycyv8w926pDbaxeJH/qPTWCGO0UP5EH4qpUG+fMUlBcc
+         E6IjOadFMwVNxwM37Gnx0v2Uj+lxXSwGDEwBir1d/64uvkiWXbXS+yy+rmteOSYllbne
+         DMQFtZ/gCIx45PzE00agnFkCC7PU4eaSr9C94rTaZbacYjH8JmbFwgCqIPULIyOmtqIj
+         cLqeUXJ9Z1lCuAK2mzBwZU1Su634j4ddz6YVyE7rU+HKiA86t4zEucR5a+zcFP0NmFu1
+         uc4qEK8sIqjjj+8tERpYvMC+Ww71U1AQbIWcQK9yhcuwIT8pi/TKRZaIHyY7BD54Va3n
+         TIoQ==
+X-Gm-Message-State: AOJu0YwwJQDvARapqTU8qTTyTUMeVR4xKZegloQvt9VwleWqcVLrRoVA
+        9ythvab01E+6OyfXfuflbsY=
+X-Google-Smtp-Source: AGHT+IEHjvlHvnzDZrz7U+x+ynkgWAIb4qZcKYYFRjnG3NOZ2EpwdYWyFkZxj65jMbqaDEqTu/83Uw==
+X-Received: by 2002:a17:906:4999:b0:999:26d3:b815 with SMTP id p25-20020a170906499900b0099926d3b815mr1234651eju.64.1692179090211;
+        Wed, 16 Aug 2023 02:44:50 -0700 (PDT)
+Received: from ?IPV6:2a00:e180:15f4:7600:6260:d6f0:1ba4:569e? ([2a00:e180:15f4:7600:6260:d6f0:1ba4:569e])
+        by smtp.gmail.com with ESMTPSA id y22-20020a17090668d600b0099bcdfff7cbsm8200410ejr.160.2023.08.16.02.44.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 02:44:49 -0700 (PDT)
+Message-ID: <fd477ce4-1726-b5a1-1826-8cc5245fcf89@gmail.com>
+Date:   Wed, 16 Aug 2023 11:44:48 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230816085826.zfXjhNmj@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] drm/amdgpu/gmc6: fix in case the PCI BAR is larger than
+ the actual amount of vram
+Content-Language: en-US
+To:     Alex Deucher <alexdeucher@gmail.com>, hongao <hongao@uniontech.com>
+Cc:     Xinhui.Pan@amd.com, amd-gfx@lists.freedesktop.org,
+        lijo.lazar@amd.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, mario.limonciello@amd.com,
+        daniel@ffwll.ch, alexander.deucher@amd.com, airlied@gmail.com
+References: <20230815065445.25576-1-hongao@uniontech.com>
+ <CADnq5_N8nHV5ub0qf6ihU=+QKXOFfM4AnWbYmWf=EG8SbJXa8A@mail.gmail.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+In-Reply-To: <CADnq5_N8nHV5ub0qf6ihU=+QKXOFfM4AnWbYmWf=EG8SbJXa8A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 10:58:26AM +0200, Sebastian Andrzej Siewior wrote:
-> On 2023-08-15 18:15:57 [+0200], Peter Zijlstra wrote:
-> > N/m - 0day found a problem. Futex-PI trips the rt_mutex_schedule()
-> > assertion for not passing through rt_mutex_pre_schedule().
-> > 
-> > I'll go try and untangle that...
-> Is this the same as
+Wait a second.
 
-Not the same -- this is namespace_lock(), right? That's a regular rwsem
-afaict and that *should* be good. Clearly I messed something up.
+This is unnecessary because we have this check in 
+amdgpu_gmc_vram_location():
 
-Thanks!
+         if (mc->real_vram_size < mc->visible_vram_size)
+                 mc->visible_vram_size = mc->real_vram_size;
 
-> | ------------[ cut here ]------------
-> | WARNING: CPU: 3 PID: 995 at kernel/sched/core.c:7155 rt_mutex_schedule+0x52/0x60
-> | Modules linked in:
-> | CPU: 3 PID: 995 Comm: mount Tainted: G        W          6.5.0-rc6-rt2+ #228
-> | Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> | RIP: 0010:rt_mutex_schedule+0x52/0x60
-> | Code: 00 00 00 e8 b0 80 ff ff 31 ff e8 a9 99 cb 00 bf 01 00 00 00 e8 3f 6d ff ff 48 8b 03 a9 08 00 08 00 75 db 5b e9 6f 82 cc 00 90 <0f> 0b 90 eb c6 66 0f 1f 84 00 00 0
-> | RSP: 0018:ffffc90001043e28 EFLAGS: 00010246
-> | RAX: ffff888107ab8040 RBX: 0000000000000202 RCX: 0000000000000000
-> | RDX: 0000000000000000 RSI: ffffffff82460bfd RDI: 00000000ffffffff
-> | RBP: ffffffff827e8fe0 R08: 0000000000000001 R09: 0000000000000001
-> | R10: 0000000000000000 R11: 0000000000000001 R12: ffffffff827e8fe8
-> | R13: 0000000000000002 R14: 0000000000000000 R15: ffff888107ab8040
-> | FS:  00007fb36281e840(0000) GS:ffff88817b4c0000(0000) knlGS:0000000000000000
-> | CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> | CR2: 00007fb3629702a0 CR3: 0000000108210000 CR4: 00000000003506e0
-> | Call Trace:
-> |  <TASK>
-> |  ? __warn+0x90/0x200
-> |  ? rt_mutex_schedule+0x52/0x60
-> |  ? report_bug+0x1c5/0x1f0
-> |  ? handle_bug+0x3b/0x70
-> |  ? exc_invalid_op+0x13/0x60
-> |  ? asm_exc_invalid_op+0x16/0x20
-> |  ? rt_mutex_schedule+0x52/0x60
-> |  rwbase_write_lock+0xc1/0x230
-> |  do_lock_mount+0x4c/0x200
-> |  ? __x86_return_thunk+0x5/0x10
-> |  path_mount+0x8a7/0xb00
-> |  __x64_sys_mount+0xf1/0x140
-> |  do_syscall_64+0x44/0x90
-> |  entry_SYSCALL_64_after_hwframe+0x74/0xde
-> 
-> Sebastian
+
+Which makes sure that the visible VRAM size is never larger than the 
+actual size for all HW generations.
+
+Regards,
+Christian.
+
+Am 15.08.23 um 17:50 schrieb Alex Deucher:
+> Applied.  Thanks!
+>
+> On Tue, Aug 15, 2023 at 3:13 AM hongao <hongao@uniontech.com> wrote:
+>> [why]
+>> limit visible_vram_size to real_vram_size in case
+>> the PCI BAR is larger than the actual amount of vram.
+>>
+>> Signed-off-by: hongao <hongao@uniontech.com>
+>> ---
+>>   drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c
+>> index b7dad4e67813..c0de7496bfd1 100644
+>> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c
+>> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c
+>> @@ -320,6 +320,8 @@ static int gmc_v6_0_mc_init(struct amdgpu_device *adev)
+>>          adev->gmc.aper_base = pci_resource_start(adev->pdev, 0);
+>>          adev->gmc.aper_size = pci_resource_len(adev->pdev, 0);
+>>          adev->gmc.visible_vram_size = adev->gmc.aper_size;
+>> +       if (adev->gmc.visible_vram_size > adev->gmc.real_vram_size)
+>> +               adev->gmc.visible_vram_size = adev->gmc.real_vram_size;
+>>
+>>          /* set the gart size */
+>>          if (amdgpu_gart_size == -1) {
+>> --
+>> 2.20.1
+>>
+
