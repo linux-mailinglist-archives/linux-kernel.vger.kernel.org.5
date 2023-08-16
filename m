@@ -2,173 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FFD477D7CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 03:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8A477D7D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 03:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241120AbjHPBjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 21:39:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36846 "EHLO
+        id S237779AbjHPBpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 21:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241110AbjHPBjP (ORCPT
+        with ESMTP id S234800AbjHPBpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 21:39:15 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FEFF1FDE;
-        Tue, 15 Aug 2023 18:39:14 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37G1WQHV006698;
-        Wed, 16 Aug 2023 01:38:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=koRzxrmeNQzJ9pi6tjKMz8jrP9wCwbUXOe6N2acoMR8=;
- b=cUrakPLbQ1xfArW5yKWNrWezJ52VtZO1F/+tWlQnq4iP0dACVaRZC2LOtty80ILyMN53
- nq/eS2GE95FAYYEbd7eC0ZZhWpIb1fNi76cJJLXoEEcnyTSRk7/EfOtRj3lr4G1fdlRR
- 1C3fiC9rmIJs9bsMq/lyVic6NTYIWkZR2pnuZYXFogqETacbbminN/5e6ynRq8rgo8uR
- Vmbs3+2u0ch+MCslaxAvceIBot8vuQnnCRdCOuvTMMGJz/sF2ccB7Bf02b7u2nKMFkNX
- hHryA0pQpvfS3wCT43X+9vc9+iHsBSdX+G/Q6Y8lonjETtd6yZxS+oUqHhwInc/QR8Vo jQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sfuhujk7r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 01:38:47 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37G1ck9X021595
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 01:38:46 GMT
-Received: from [10.110.95.218] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 15 Aug
- 2023 18:38:44 -0700
-Message-ID: <d42b4db3-d36d-d8fd-90ca-e00c2151195c@quicinc.com>
-Date:   Tue, 15 Aug 2023 18:38:44 -0700
+        Tue, 15 Aug 2023 21:45:11 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E0F10D1;
+        Tue, 15 Aug 2023 18:45:07 -0700 (PDT)
+Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RQW7x2R34zNmrj;
+        Wed, 16 Aug 2023 09:41:33 +0800 (CST)
+Received: from [10.67.110.218] (10.67.110.218) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 16 Aug 2023 09:45:04 +0800
+Message-ID: <32583a11-9cbd-9b4d-34be-551babed6f51@huawei.com>
+Date:   Wed, 16 Aug 2023 09:45:04 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v4 31/32] sound: usb: card: Allow for rediscovery of
- connected USB SND devices
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH] tracing: Fix memleak due to race between current_tracer
+ and trace
 Content-Language: en-US
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <agross@kernel.org>, <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <mathias.nyman@intel.com>, <gregkh@linuxfoundation.org>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
-        <tiwai@suse.com>, <srinivas.kandagatla@linaro.org>,
-        <bgoswami@quicinc.com>, <Thinh.Nguyen@synopsys.com>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>
+CC:     <fweisbec@gmail.com>, <mingo@elte.hu>,
         <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-usb@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        <quic_jackp@quicinc.com>, <oneukum@suse.com>,
-        <albertccwang@google.com>, <o-takashi@sakamocchi.jp>
-References: <20230725023416.11205-1-quic_wcheng@quicinc.com>
- <20230725023416.11205-32-quic_wcheng@quicinc.com>
- <671a524d-b4c8-78d8-33de-40170a23d189@linux.intel.com>
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <671a524d-b4c8-78d8-33de-40170a23d189@linux.intel.com>
+        <linux-trace-kernel@vger.kernel.org>
+References: <20230808092905.2936459-1-zhengyejian1@huawei.com>
+From:   Zheng Yejian <zhengyejian1@huawei.com>
+In-Reply-To: <20230808092905.2936459-1-zhengyejian1@huawei.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Pa7zWAzvySZs5rUBazuPdUgsyvuZC4bf
-X-Proofpoint-ORIG-GUID: Pa7zWAzvySZs5rUBazuPdUgsyvuZC4bf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-15_22,2023-08-15_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
- impostorscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0 phishscore=0
- mlxscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=999 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308160013
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.110.218]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pierre,
-
-On 7/25/2023 2:15 AM, Pierre-Louis Bossart wrote:
+On 2023/8/8 17:29, Zheng Yejian wrote:
+> Kmemleak report a leak in graph_trace_open():
 > 
+>    unreferenced object 0xffff0040b95f4a00 (size 128):
+>      comm "cat", pid 204981, jiffies 4301155872 (age 99771.964s)
+>      hex dump (first 32 bytes):
+>        e0 05 e7 b4 ab 7d 00 00 0b 00 01 00 00 00 00 00 .....}..........
+>        f4 00 01 10 00 a0 ff ff 00 00 00 00 65 00 10 00 ............e...
+>      backtrace:
+>        [<000000005db27c8b>] kmem_cache_alloc_trace+0x348/0x5f0
+>        [<000000007df90faa>] graph_trace_open+0xb0/0x344
+>        [<00000000737524cd>] __tracing_open+0x450/0xb10
+>        [<0000000098043327>] tracing_open+0x1a0/0x2a0
+>        [<00000000291c3876>] do_dentry_open+0x3c0/0xdc0
+>        [<000000004015bcd6>] vfs_open+0x98/0xd0
+>        [<000000002b5f60c9>] do_open+0x520/0x8d0
+>        [<00000000376c7820>] path_openat+0x1c0/0x3e0
+>        [<00000000336a54b5>] do_filp_open+0x14c/0x324
+>        [<000000002802df13>] do_sys_openat2+0x2c4/0x530
+>        [<0000000094eea458>] __arm64_sys_openat+0x130/0x1c4
+>        [<00000000a71d7881>] el0_svc_common.constprop.0+0xfc/0x394
+>        [<00000000313647bf>] do_el0_svc+0xac/0xec
+>        [<000000002ef1c651>] el0_svc+0x20/0x30
+>        [<000000002fd4692a>] el0_sync_handler+0xb0/0xb4
+>        [<000000000c309c35>] el0_sync+0x160/0x180
 > 
-> On 7/25/23 04:34, Wesley Cheng wrote:
->> In case of notifying SND platform drivers of connection events, some of
->> these use cases, such as offloading, require an ASoC USB backend device to
->> be initialized before the events can be handled.  If the USB backend device
->> has not yet been probed, this leads to missing initial USB audio device
->> connection events.
->>
->> Expose an API that traverses the usb_chip array for connected devices, and
->> to call the respective connection callback registered to the SND platform
->> driver.
->>
->> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
->> ---
->>   sound/usb/card.c | 19 +++++++++++++++++++
->>   sound/usb/card.h |  2 ++
->>   2 files changed, 21 insertions(+)
->>
->> diff --git a/sound/usb/card.c b/sound/usb/card.c
->> index 365f6d978608..27a89aaa0bf3 100644
->> --- a/sound/usb/card.c
->> +++ b/sound/usb/card.c
->> @@ -170,6 +170,25 @@ struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
->>   }
->>   EXPORT_SYMBOL_GPL(snd_usb_find_suppported_substream);
->>   
->> +/*
->> + * in case the platform driver was not ready at the time of USB SND
->> + * device connect, expose an API to discover all connected USB devices
->> + * so it can populate any dependent resources/structures.
->> + */
->> +void snd_usb_rediscover_devices(void)
->> +{
->> +	int i;
->> +
->> +	mutex_lock(&register_mutex);
->> +	for (i = 0; i < SNDRV_CARDS; i++) {
->> +		if (usb_chip[i])
->> +			if (platform_ops && platform_ops->connect_cb)
->> +				platform_ops->connect_cb(usb_chip[i]);
+> The root cause is descripted as follows:
 > 
-> what happens if the USB device is removed while the platform device adds
-> a port?
+>    __tracing_open() {  // 1. File 'trace' is being opened;
+>      ...
+>      *iter->trace = *tr->current_trace;  // 2. Tracer 'function_graph' is
+>                                          //    currently set;
+>      ...
+>      iter->trace->open(iter);  // 3. Call graph_trace_open() here,
+>                                //    and memory are allocated in it;
+>      ...
+>    }
 > 
-> This sounds super-racy to me. It's the same set of problems we're having
-> between audio and display/DRM, I would be surprised if this function
-> dealt with all corner cases of insertion/removal, bind/unbind.
+>    s_start() {  // 4. The opened file is being read;
+>      ...
+>      *iter->trace = *tr->current_trace;  // 5. If tracer is switched to
+>                                          //    'nop' or others, then memory
+>                                          //    in step 3 are leaked!!!
+>      ...
+>    }
 > 
+> To fix it, in s_start(), close tracer before switching then reopen the
+> new tracer after switching.
+> 
+> Fixes: d7350c3f4569 ("tracing/core: make the read callbacks reentrants")
+> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+> ---
+>   kernel/trace/trace.c | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index b8870078ef58..d50a0227baa3 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -4213,8 +4213,15 @@ static void *s_start(struct seq_file *m, loff_t *pos)
+>   	 * will point to the same string as current_trace->name.
+>   	 */
+>   	mutex_lock(&trace_types_lock);
+> -	if (unlikely(tr->current_trace && iter->trace->name != tr->current_trace->name))
+> +	if (unlikely(tr->current_trace && iter->trace->name != tr->current_trace->name)) {
+> +		/* Close iter->trace before switching to the new current tracer */
+> +		if (iter->trace->close)
+> +			iter->trace->close(iter);
 
-The chip array entries are all populated and removed while under the 
-register_mutex, so going over your race condition, we should see:
+Hi, kasan report an issue related to this patch in v5.10, I'll handle
+it and then send V2 if the patch needs to be changed.
 
-Thread#1:
-q6usb_component_probe()
---> snd_soc_usb_add_port()
-   --> snd_usb_rediscover_devices()
-     --> mutex_lock(register_mutex)
+   BUG: KASAN: use-after-free in graph_trace_close+0x78/0x7c
+   Read of size 8 at addr ffff204054ca8f00 by task cat/193541
+   [...]
+   Call trace:
+    dump_backtrace+0x0/0x3e4
+    show_stack+0x20/0x2c
+    dump_stack+0x140/0x198
+    print_address_description.constprop.0+0x2c/0x1fc
+    __kasan_report+0xe0/0x140
+    kasan_report+0x44/0x5c
+    __asan_report_load8_noabort+0x34/0x60
+    graph_trace_close+0x78/0x7c
+    wakeup_trace_close+0x3c/0x54
+    s_start+0x4f4/0x794
+    seq_read_iter+0x210/0xd90
+    seq_read+0x288/0x410
+    vfs_read+0x13c/0x41c
+    ksys_read+0xf4/0x1e0
+    __arm64_sys_read+0x74/0xa4
+    el0_svc_common.constprop.0+0xfc/0x394
+    do_el0_svc+0xac/0xec
+    el0_svc+0x20/0x30
+    el0_sync_handler+0xb0/0xb4
+    el0_sync+0x160/0x180
 
-Thread#2
---> usb_audio_disconnect()
-   --> mutex_lock(register_mutex)
+   Allocated by task 193541:
+    kasan_save_stack+0x28/0x60
+    __kasan_kmalloc.constprop.0+0xa4/0xd0
+    kasan_kmalloc+0x10/0x20
+    kmem_cache_alloc_trace+0x2ec/0x5f0
+    graph_trace_open+0xb0/0x344
+    __tracing_open+0x450/0xb10
+    tracing_open+0x1a0/0x2a0
+    do_dentry_open+0x3c0/0xdc0
+    vfs_open+0x98/0xd0
+    do_open+0x520/0x8d0
 
-So either thread#1 or thread#2 will complete first.  If
-
-Thread#1 completes before thread#2:
-   SOC USB will notify DPCM backend of the device connection.  Shortly 
-after, once thread#2 runs, we will get a disconnect event for the 
-connected device.
-
-Thread#2 completes before thread#1:
-   Then during snd_usb_rediscover_devices() we won't notify of any 
-connection for that particular chip index.
-
-Thanks
-Wesley Cheng
+>   		*iter->trace = *tr->current_trace;
+> +		/* Reopen the new current tracer */
+> +		if (iter->trace->open)
+> +			iter->trace->open(iter);
+> +	}
+>   	mutex_unlock(&trace_types_lock);
+>   
+>   #ifdef CONFIG_TRACER_MAX_TRACE
 
