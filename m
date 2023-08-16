@@ -2,177 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF3177D829
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 04:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A29C77D831
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 04:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241194AbjHPCKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 22:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59710 "EHLO
+        id S241206AbjHPCMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 22:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241200AbjHPCKo (ORCPT
+        with ESMTP id S241242AbjHPCMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 22:10:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB84C1;
-        Tue, 15 Aug 2023 19:10:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692151843; x=1723687843;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=g5DE3UPzOn/3axSiUxrACU9/8H54KjKSPMGZUrH+Zxc=;
-  b=ilu6K4apcQly7pcD3A4597T1rOmqGzIks3TYvHh6SLVZLxku9r0Ev15r
-   klzrt+Hwr7L2EADNi37cOYmcpCDlqD5zfHkhL7/BjRJuEbzqYvwj/qCyK
-   UwWFG9i9CHMGlZfyo+lc6ssUIzMGVNM2jo2ZAMKPwCTYItNumkPFaKNtW
-   vCK3IQ4u4+XoKNx5S0XHQ2bFTXqFk4TvXQ8Cu77nqbH4AtROWRk9pMGDM
-   uh6QqFZQ+VkyJRgWHqStMDpVQcGHJ5vD9qa1OFSIr1nvq8LQh/1W84dIe
-   H1YWmNlxhuaLk7CyFlnw6XpMxnGl634fRXpWDpeqo/nqtthZgxs8Tiio+
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="458773598"
-X-IronPort-AV: E=Sophos;i="6.01,175,1684825200"; 
-   d="scan'208";a="458773598"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Aug 2023 19:10:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="877583772"
-Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.76])
-  by fmsmga001.fm.intel.com with ESMTP; 15 Aug 2023 19:10:44 -0700
-Date:   Wed, 16 Aug 2023 10:10:40 +0800
-From:   Yuan Yao <yuan.yao@linux.intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zeng Guang <guang.zeng@intel.com>,
-        Yuan Yao <yuan.yao@intel.com>
-Subject: Re: [PATCH v3 02/15] KVM: x86/mmu: Use KVM-governed feature
- framework to track "GBPAGES enabled"
-Message-ID: <20230816021040.tl2r5luajsqbb5al@yy-desk-7060>
-References: <20230815203653.519297-1-seanjc@google.com>
- <20230815203653.519297-3-seanjc@google.com>
+        Tue, 15 Aug 2023 22:12:09 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C742A212D;
+        Tue, 15 Aug 2023 19:11:50 -0700 (PDT)
+Received: from dggpeml500006.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RQWkn2hYJzNml3;
+        Wed, 16 Aug 2023 10:08:17 +0800 (CST)
+Received: from [10.174.176.127] (10.174.176.127) by
+ dggpeml500006.china.huawei.com (7.185.36.76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 16 Aug 2023 10:11:48 +0800
+Subject: Re: [PATCH 5.4 00/39] 5.4.254-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <stable@vger.kernel.org>
+CC:     <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
+        <rwarsow@gmx.de>, <conor@kernel.org>
+References: <20230813211704.796906808@linuxfoundation.org>
+From:   luomeng <luomeng12@huawei.com>
+Message-ID: <511a8f49-b521-3405-e9d3-607ccde656bf@huawei.com>
+Date:   Wed, 16 Aug 2023 10:11:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230815203653.519297-3-seanjc@google.com>
-User-Agent: NeoMutt/20171215
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230813211704.796906808@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.127]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500006.china.huawei.com (7.185.36.76)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 01:36:40PM -0700, Sean Christopherson wrote:
-> Use the governed feature framework to track whether or not the guest can
-> use 1GiB pages, and drop the one-off helper that wraps the surprisingly
-> non-trivial logic surrounding 1GiB page usage in the guest.
->
-> No functional change intended.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/cpuid.c             | 17 +++++++++++++++++
->  arch/x86/kvm/governed_features.h |  2 ++
->  arch/x86/kvm/mmu/mmu.c           | 20 +++-----------------
->  3 files changed, 22 insertions(+), 17 deletions(-)
->
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 4ba43ae008cb..67e9f79fe059 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -312,11 +312,28 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->  {
->  	struct kvm_lapic *apic = vcpu->arch.apic;
->  	struct kvm_cpuid_entry2 *best;
-> +	bool allow_gbpages;
->
->  	BUILD_BUG_ON(KVM_NR_GOVERNED_FEATURES > KVM_MAX_NR_GOVERNED_FEATURES);
->  	bitmap_zero(vcpu->arch.governed_features.enabled,
->  		    KVM_MAX_NR_GOVERNED_FEATURES);
->
-> +	/*
-> +	 * If TDP is enabled, let the guest use GBPAGES if they're supported in
-> +	 * hardware.  The hardware page walker doesn't let KVM disable GBPAGES,
-> +	 * i.e. won't treat them as reserved, and KVM doesn't redo the GVA->GPA
-> +	 * walk for performance and complexity reasons.  Not to mention KVM
-> +	 * _can't_ solve the problem because GVA->GPA walks aren't visible to
-> +	 * KVM once a TDP translation is installed.  Mimic hardware behavior so
-> +	 * that KVM's is at least consistent, i.e. doesn't randomly inject #PF.
-> +	 * If TDP is disabled, honor *only* guest CPUID as KVM has full control
-> +	 * and can install smaller shadow pages if the host lacks 1GiB support.
-> +	 */
-> +	allow_gbpages = tdp_enabled ? boot_cpu_has(X86_FEATURE_GBPAGES) :
-> +				      guest_cpuid_has(vcpu, X86_FEATURE_GBPAGES);
+Tested on arm64 and x86 for 5.4.254-rc1,
 
-tdp_enabled only changes at kvm_configure_mmu() when hardware setup for
-VMX and SVM, so:
+Kernel 
+repo:https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.4.y
+Version: 5.4.254-rc1
+Commit: 89e2e795021f6c31714341452eb5e5ef0e0f420f
+Compiler: gcc version 7.3.0 (GCC)
 
-Reviewed-by: Yuan Yao <yuan.yao@intel.com>
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8971
+passed: 8971
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
 
-> +	if (allow_gbpages)
-> +		kvm_governed_feature_set(vcpu, X86_FEATURE_GBPAGES);
-> +
->  	best = kvm_find_cpuid_entry(vcpu, 1);
->  	if (best && apic) {
->  		if (cpuid_entry_has(best, X86_FEATURE_TSC_DEADLINE_TIMER))
-> diff --git a/arch/x86/kvm/governed_features.h b/arch/x86/kvm/governed_features.h
-> index 40ce8e6608cd..b29c15d5e038 100644
-> --- a/arch/x86/kvm/governed_features.h
-> +++ b/arch/x86/kvm/governed_features.h
-> @@ -5,5 +5,7 @@ BUILD_BUG()
->
->  #define KVM_GOVERNED_X86_FEATURE(x) KVM_GOVERNED_FEATURE(X86_FEATURE_##x)
->
-> +KVM_GOVERNED_X86_FEATURE(GBPAGES)
-> +
->  #undef KVM_GOVERNED_X86_FEATURE
->  #undef KVM_GOVERNED_FEATURE
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 5bdda75bfd10..9e4cd8b4a202 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -4779,28 +4779,13 @@ static void __reset_rsvds_bits_mask(struct rsvd_bits_validate *rsvd_check,
->  	}
->  }
->
-> -static bool guest_can_use_gbpages(struct kvm_vcpu *vcpu)
-> -{
-> -	/*
-> -	 * If TDP is enabled, let the guest use GBPAGES if they're supported in
-> -	 * hardware.  The hardware page walker doesn't let KVM disable GBPAGES,
-> -	 * i.e. won't treat them as reserved, and KVM doesn't redo the GVA->GPA
-> -	 * walk for performance and complexity reasons.  Not to mention KVM
-> -	 * _can't_ solve the problem because GVA->GPA walks aren't visible to
-> -	 * KVM once a TDP translation is installed.  Mimic hardware behavior so
-> -	 * that KVM's is at least consistent, i.e. doesn't randomly inject #PF.
-> -	 */
-> -	return tdp_enabled ? boot_cpu_has(X86_FEATURE_GBPAGES) :
-> -			     guest_cpuid_has(vcpu, X86_FEATURE_GBPAGES);
-> -}
-> -
->  static void reset_guest_rsvds_bits_mask(struct kvm_vcpu *vcpu,
->  					struct kvm_mmu *context)
->  {
->  	__reset_rsvds_bits_mask(&context->guest_rsvd_check,
->  				vcpu->arch.reserved_gpa_bits,
->  				context->cpu_role.base.level, is_efer_nx(context),
-> -				guest_can_use_gbpages(vcpu),
-> +				guest_can_use(vcpu, X86_FEATURE_GBPAGES),
->  				is_cr4_pse(context),
->  				guest_cpuid_is_amd_or_hygon(vcpu));
->  }
-> @@ -4877,7 +4862,8 @@ static void reset_shadow_zero_bits_mask(struct kvm_vcpu *vcpu,
->  	__reset_rsvds_bits_mask(shadow_zero_check, reserved_hpa_bits(),
->  				context->root_role.level,
->  				context->root_role.efer_nx,
-> -				guest_can_use_gbpages(vcpu), is_pse, is_amd);
-> +				guest_can_use(vcpu, X86_FEATURE_GBPAGES),
-> +				is_pse, is_amd);
->
->  	if (!shadow_me_mask)
->  		return;
-> --
-> 2.41.0.694.ge786442a9b-goog
->
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8971
+passed: 8971
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
+
+在 2023/8/14 5:19, Greg Kroah-Hartman 写道:
+> This is the start of the stable review cycle for the 5.4.254 release.
+> There are 39 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Tue, 15 Aug 2023 21:16:53 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.254-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+> -------------
+> Pseudo-Shortlog of commits:
+> 
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>      Linux 5.4.254-rc1
+> 
+> Eric Dumazet <edumazet@google.com>
+>      sch_netem: fix issues in netem_change() vs get_dist_table()
+> 
+> Masahiro Yamada <masahiroy@kernel.org>
+>      alpha: remove __init annotation from exported page_is_ram()
+> 
+> Zhu Wang <wangzhu9@huawei.com>
+>      scsi: core: Fix possible memory leak if device_add() fails
+> 
+> Zhu Wang <wangzhu9@huawei.com>
+>      scsi: snic: Fix possible memory leak if device_add() fails
+> 
+> Alexandra Diupina <adiupina@astralinux.ru>
+>      scsi: 53c700: Check that command slot is not NULL
+> 
+> Michael Kelley <mikelley@microsoft.com>
+>      scsi: storvsc: Fix handling of virtual Fibre Channel timeouts
+> 
+> Tony Battersby <tonyb@cybernetics.com>
+>      scsi: core: Fix legacy /proc parsing buffer overflow
+> 
+> Pablo Neira Ayuso <pablo@netfilter.org>
+>      netfilter: nf_tables: report use refcount overflow
+> 
+> Ming Lei <ming.lei@redhat.com>
+>      nvme-rdma: fix potential unbalanced freeze & unfreeze
+> 
+> Ming Lei <ming.lei@redhat.com>
+>      nvme-tcp: fix potential unbalanced freeze & unfreeze
+> 
+> Josef Bacik <josef@toxicpanda.com>
+>      btrfs: set cache_block_group_error if we find an error
+> 
+> Christoph Hellwig <hch@lst.de>
+>      btrfs: don't stop integrity writeback too early
+> 
+> Nick Child <nnac123@linux.ibm.com>
+>      ibmvnic: Handle DMA unmapping of login buffs in release functions
+> 
+> Daniel Jurgens <danielj@nvidia.com>
+>      net/mlx5: Allow 0 for total host VFs
+> 
+> Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>      dmaengine: mcf-edma: Fix a potential un-allocated memory access
+> 
+> Felix Fietkau <nbd@nbd.name>
+>      wifi: cfg80211: fix sband iftype data lookup for AP_VLAN
+> 
+> Douglas Miller <doug.miller@cornelisnetworks.com>
+>      IB/hfi1: Fix possible panic during hotplug remove
+> 
+> Andrew Kanner <andrew.kanner@gmail.com>
+>      drivers: net: prevent tun_build_skb() to exceed the packet size limit
+> 
+> Eric Dumazet <edumazet@google.com>
+>      dccp: fix data-race around dp->dccps_mss_cache
+> 
+> Ziyang Xuan <william.xuanziyang@huawei.com>
+>      bonding: Fix incorrect deletion of ETH_P_8021AD protocol vid from slaves
+> 
+> Eric Dumazet <edumazet@google.com>
+>      net/packet: annotate data-races around tp->status
+> 
+> Nathan Chancellor <nathan@kernel.org>
+>      mISDN: Update parameter type of dsp_cmx_send()
+> 
+> Mark Brown <broonie@kernel.org>
+>      selftests/rseq: Fix build with undefined __weak
+> 
+> Karol Herbst <kherbst@redhat.com>
+>      drm/nouveau/disp: Revert a NULL check inside nouveau_connector_get_modes
+> 
+> Arnd Bergmann <arnd@arndb.de>
+>      x86: Move gds_ucode_mitigated() declaration to header
+> 
+> Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+>      x86/mm: Fix VDSO and VVAR placement on 5-level paging machines
+> 
+> Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+>      x86/cpu/amd: Enable Zenbleed fix for AMD Custom APU 0405
+> 
+> Prashanth K <quic_prashk@quicinc.com>
+>      usb: common: usb-conn-gpio: Prevent bailing out if initial role is none
+> 
+> Elson Roy Serrao <quic_eserrao@quicinc.com>
+>      usb: dwc3: Properly handle processing of pending events
+> 
+> Alan Stern <stern@rowland.harvard.edu>
+>      usb-storage: alauda: Fix uninit-value in alauda_check_media()
+> 
+> Qi Zheng <zhengqi.arch@bytedance.com>
+>      binder: fix memory leak in binder_init()
+> 
+> Yiyuan Guo <yguoaz@gmail.com>
+>      iio: cros_ec: Fix the allocation size for cros_ec_command
+> 
+> Ryusuke Konishi <konishi.ryusuke@gmail.com>
+>      nilfs2: fix use-after-free of nilfs_root in dirtying inodes via iput
+> 
+> Thomas Gleixner <tglx@linutronix.de>
+>      x86/pkeys: Revert a5eff7259790 ("x86/pkeys: Add PKRU value to init_fpstate")
+> 
+> Colin Ian King <colin.i.king@gmail.com>
+>      radix tree test suite: fix incorrect allocation size for pthreads
+> 
+> Karol Herbst <kherbst@redhat.com>
+>      drm/nouveau/gr: enable memory loads on helper invocation on all channels
+> 
+> Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+>      dmaengine: pl330: Return DMA_PAUSED when transaction is paused
+> 
+> Maciej Żenczykowski <maze@google.com>
+>      ipv6: adjust ndisc_is_useropt() to also return true for PIO
+> 
+> Sergei Antonov <saproj@gmail.com>
+>      mmc: moxart: read scr register without changing byte order
+> 
+> 
+> -------------
+> 
+> Diffstat:
+> 
+>   Makefile                                           |   4 +-
+>   arch/alpha/kernel/setup.c                          |   3 +-
+>   arch/x86/entry/vdso/vma.c                          |   4 +-
+>   arch/x86/include/asm/processor.h                   |   2 +
+>   arch/x86/kernel/cpu/amd.c                          |   1 +
+>   arch/x86/kernel/cpu/common.c                       |   5 -
+>   arch/x86/kvm/x86.c                                 |   2 -
+>   arch/x86/mm/pkeys.c                                |   6 -
+>   drivers/android/binder.c                           |   1 +
+>   drivers/android/binder_alloc.c                     |   6 +
+>   drivers/android/binder_alloc.h                     |   1 +
+>   drivers/dma/mcf-edma.c                             |  13 +-
+>   drivers/dma/pl330.c                                |  18 ++-
+>   drivers/gpu/drm/nouveau/nouveau_connector.c        |   2 +-
+>   drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgf100.h  |   1 +
+>   drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk104.c  |   4 +-
+>   drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk110.c  |  10 ++
+>   drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk110b.c |   1 +
+>   drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgk208.c  |   1 +
+>   drivers/gpu/drm/nouveau/nvkm/engine/gr/ctxgm107.c  |   1 +
+>   .../common/cros_ec_sensors/cros_ec_sensors_core.c  |   2 +-
+>   drivers/infiniband/hw/hfi1/chip.c                  |   1 +
+>   drivers/isdn/mISDN/dsp.h                           |   2 +-
+>   drivers/isdn/mISDN/dsp_cmx.c                       |   2 +-
+>   drivers/isdn/mISDN/dsp_core.c                      |   2 +-
+>   drivers/mmc/host/moxart-mmc.c                      |   8 +-
+>   drivers/net/bonding/bond_main.c                    |   4 +-
+>   drivers/net/ethernet/ibm/ibmvnic.c                 |  15 +-
+>   drivers/net/ethernet/mellanox/mlx5/core/sriov.c    |   3 +-
+>   drivers/net/tun.c                                  |   2 +-
+>   drivers/nvme/host/rdma.c                           |   3 +-
+>   drivers/nvme/host/tcp.c                            |   3 +-
+>   drivers/scsi/53c700.c                              |   2 +-
+>   drivers/scsi/raid_class.c                          |   1 +
+>   drivers/scsi/scsi_proc.c                           |  30 ++--
+>   drivers/scsi/snic/snic_disc.c                      |   1 +
+>   drivers/scsi/storvsc_drv.c                         |   4 -
+>   drivers/usb/common/usb-conn-gpio.c                 |   6 +-
+>   drivers/usb/dwc3/gadget.c                          |   9 +-
+>   drivers/usb/storage/alauda.c                       |   9 +-
+>   fs/btrfs/extent-tree.c                             |   5 +-
+>   fs/btrfs/extent_io.c                               |   7 +-
+>   fs/nilfs2/inode.c                                  |   8 +
+>   fs/nilfs2/segment.c                                |   2 +
+>   fs/nilfs2/the_nilfs.h                              |   2 +
+>   include/net/cfg80211.h                             |   3 +
+>   include/net/netfilter/nf_tables.h                  |  31 +++-
+>   net/dccp/output.c                                  |   2 +-
+>   net/dccp/proto.c                                   |  10 +-
+>   net/ipv6/ndisc.c                                   |   3 +-
+>   net/netfilter/nf_tables_api.c                      | 166 +++++++++++++--------
+>   net/netfilter/nft_flow_offload.c                   |   6 +-
+>   net/netfilter/nft_objref.c                         |   8 +-
+>   net/packet/af_packet.c                             |  16 +-
+>   net/sched/sch_netem.c                              |  59 ++++----
+>   tools/testing/radix-tree/regression1.c             |   2 +-
+>   tools/testing/selftests/rseq/Makefile              |   4 +-
+>   tools/testing/selftests/rseq/rseq.c                |   2 +
+>   58 files changed, 337 insertions(+), 194 deletions(-)
+> 
+> 
+> .
+> 
