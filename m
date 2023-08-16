@@ -2,115 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C210077E861
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE9077E866
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 20:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345053AbjHPSLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 14:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47224 "EHLO
+        id S1345301AbjHPSMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 14:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344392AbjHPSKm (ORCPT
+        with ESMTP id S1345460AbjHPSME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 14:10:42 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4398FE4C;
-        Wed, 16 Aug 2023 11:10:41 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id DAC321F74A;
-        Wed, 16 Aug 2023 18:10:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1692209439; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GA+lA+X5klcJsHYhvodnqY7nRG/CebjFbGv9hxHM5Mo=;
-        b=QmB5iDu8SPF3+fvpVS5SddkhGCWu9OPoorDmgLqq/rPnNKIZba9FNwHbFJGaiONa4iIsCB
-        P7kS1oTxBpBqUUpCeL6TiaT5IqYWQlKI1SS1/ulcSbdpkw9Cb2RkFXKLvkFLiaYAIkgMZx
-        nWmdZKFewpA5kIl7cDgtjKrQTxnOr3o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1692209439;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GA+lA+X5klcJsHYhvodnqY7nRG/CebjFbGv9hxHM5Mo=;
-        b=sh5hran2dYylPF3oJPzpcJgLlHVK7RoopWqScxu7qWwqbP8THRHQVXjL0UWXC3WvHE4t+U
-        r76LLZUhPy2Oq4BA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9F25C133F2;
-        Wed, 16 Aug 2023 18:10:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ooOzIB8R3WR/ZgAAMHmgww
-        (envelope-from <krisman@suse.de>); Wed, 16 Aug 2023 18:10:39 +0000
-From:   Gabriel Krisman Bertazi <krisman@suse.de>
-To:     Jeff Moyer <jmoyer@redhat.com>
-Cc:     matteorizzo@google.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        axboe@kernel.dk, asml.silence@gmail.com, corbet@lwn.net,
-        akpm@linux-foundation.org, keescook@chromium.org,
-        ribalda@chromium.org, rostedt@goodmis.org, jannh@google.com,
-        chenhuacai@kernel.org, gpiccoli@igalia.com, ldufour@linux.ibm.com,
-        evn@google.com, poprdi@google.com, jordyzomer@google.com,
-        andres@anarazel.de
-Subject: Re: [PATCH v4] io_uring: add a sysctl to disable io_uring system-wide
-In-Reply-To: <x49wmxuub14.fsf@segfault.boston.devel.redhat.com> (Jeff Moyer's
-        message of "Wed, 16 Aug 2023 13:55:51 -0400")
-Organization: SUSE
-References: <x49wmxuub14.fsf@segfault.boston.devel.redhat.com>
-Date:   Wed, 16 Aug 2023 14:10:38 -0400
-Message-ID: <87cyzm504h.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Wed, 16 Aug 2023 14:12:04 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC25E4C;
+        Wed, 16 Aug 2023 11:12:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692209523; x=1723745523;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=W1Z9/8uHetpktSbdkYvJ/MSVXwG6SiarpQeMufwFmCA=;
+  b=j7uEMHOt2Js1sO8Pwa/tRPNk+J6Nzk6v3xBa0F17SkqEiNcVRAhVZoX3
+   +VYSGYD0uEdS7N7SH5BU3RS3Z35zJ/H3nzkR/GTUxkUiWHBOO1QVT2Y76
+   ULPIzerPqRNbnVjSEK810RVjM/FYhBOtGigwvHnA+y42iMe/uN5pdkIxv
+   QmT+kqYj0S8b0bn0JLRJ4s61hU1EAN+uM3KyTAUqkApl5q0S6W9WxxrP2
+   C2y9YTJc4s7y9PkjU2+FH82dgzJuwz8O9GKYbSA54oxKBO2KeItVk4FPG
+   iCNXqqnElN4QxV2JuBVMRlZg2MHAOnwHWP9o4f0NDX4avLdMpWr6/4Kzv
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="352190998"
+X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
+   d="scan'208";a="352190998"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 11:12:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="737379091"
+X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
+   d="scan'208";a="737379091"
+Received: from pnukala-mobl1.amr.corp.intel.com (HELO [10.209.74.99]) ([10.209.74.99])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 11:12:02 -0700
+Message-ID: <402a0ea4-7944-4f00-a06d-a14578859384@linux.intel.com>
+Date:   Wed, 16 Aug 2023 11:12:01 -0700
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] PCI: hv: Fix a crash in hv_pci_restore_msi_msg()
+ during hibernation
+Content-Language: en-US
+To:     Dexuan Cui <decui@microsoft.com>, tglx@linutronix.de, jgg@ziepe.ca,
+        bhelgaas@google.com, haiyangz@microsoft.com, kw@linux.com,
+        kys@microsoft.com, linux-hyperv@vger.kernel.org,
+        linux-pci@vger.kernel.org, lpieralisi@kernel.org,
+        mikelley@microsoft.com, robh@kernel.org, wei.liu@kernel.org,
+        helgaas@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20230816175939.21566-1-decui@microsoft.com>
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20230816175939.21566-1-decui@microsoft.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jeff Moyer <jmoyer@redhat.com> writes:
 
-> From: Matteo Rizzo <matteorizzo@google.com>
+On 8/16/2023 10:59 AM, Dexuan Cui wrote:
+> When a Linux VM with an assigned PCI device runs on Hyper-V, if the PCI
+> device driver is not loaded yet (i.e. MSI-X/MSI is not enabled on the
+> device yet), doing a VM hibernation triggers a panic in
+> hv_pci_restore_msi_msg() -> msi_lock_descs(&pdev->dev), because
+> pdev->dev.msi.data is still NULL.
 >
-> Introduce a new sysctl (io_uring_disabled) which can be either 0, 1, or
-> 2. When 0 (the default), all processes are allowed to create io_uring
-> instances, which is the current behavior.  When 1, io_uring creation is
-> disabled (io_uring_setup() will fail with -EPERM) for processes not in
-> the kernel.io_uring_group group.  When 2, calls to io_uring_setup() fail
-> with -EPERM regardless of privilege.
+> Avoid the panic by checking if MSI-X/MSI is enabled.
 >
-> Signed-off-by: Matteo Rizzo <matteorizzo@google.com>
-> [JEM: modified to add io_uring_group]
-> Signed-off-by: Jeff Moyer <jmoyer@redhat.com>
->
+> Fixes: dc2b453290c4 ("PCI: hv: Rework MSI handling")
+> Signed-off-by: Dexuan Cui <decui@microsoft.com>
 > ---
-> v4:
 >
-> * Add a kernel.io_uring_group sysctl to hold a group id that is allowed
->   to use io_uring.  One thing worth pointing out is that, when a group
->   is specified, only users in that group can create an io_uring.  That
->   means that if the root user is not in that group, root can not make
->   use of io_uring.
-
-Rejecting root if it's not in the group doesn't make much sense to
-me. Of course, root can always just add itself to the group, so it is
-not a security feature. But I'd expect 'sudo <smth>' to not start giving
-EPERM based on user group settings.  Can you make CAP_SYS_ADMIN
-always allowed for option 1?
-
->   I also wrote unit tests for liburing.  I'll post that as well if there
->   is consensus on this approach.
-
-I'm fine with this approach as it allow me to easily reject non-root users.
-
--- 
-Gabriel Krisman Bertazi
+> Changes in v2:
+>      Replaced the test "if (!pdev->dev.msi.data)" with
+> 		      "if (!pdev->msi_enabled && !pdev->msix_enabled)".
+>        Thanks Michael!
+>      Updated the changelog accordingly.
+>
+>   drivers/pci/controller/pci-hyperv.c | 3 +++
+>   1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+> index 2d93d0c4f10d..bed3cefdaf19 100644
+> --- a/drivers/pci/controller/pci-hyperv.c
+> +++ b/drivers/pci/controller/pci-hyperv.c
+> @@ -3983,6 +3983,9 @@ static int hv_pci_restore_msi_msg(struct pci_dev *pdev, void *arg)
+>   	struct msi_desc *entry;
+>   	int ret = 0;
+>   
+> +	if (!pdev->msi_enabled && !pdev->msix_enabled)
+> +		return 0;
+Isn't this is a error condition? Don't you want to return error here?
+> +
+>   	msi_lock_descs(&pdev->dev);
+>   	msi_for_each_desc(entry, &pdev->dev, MSI_DESC_ASSOCIATED) {
+>   		irq_data = irq_get_irq_data(entry->irq);
