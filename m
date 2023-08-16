@@ -2,85 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD8E77E771
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792EC77E772
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345157AbjHPRQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 13:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49282 "EHLO
+        id S1345156AbjHPRRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 13:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345168AbjHPRQQ (ORCPT
+        with ESMTP id S1345211AbjHPRRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 13:16:16 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BCD2D48;
-        Wed, 16 Aug 2023 10:16:13 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37GCMFPf026499;
-        Wed, 16 Aug 2023 17:15:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=zhkaB++sZDMq2yanj4e1JbYu42RN6uvd1pKF9zJHIZo=;
- b=JMP48rz/0Bzyzxpc1z//LFHnHF6VmQRM8qnKLyz//YLATs0DBCRAHGJxcWrT6zAvvBA1
- VGfk5cR5ltG7BnphZtYNl5VsHzHr0raLU8FARTtOrmcHWP2VuMBBZY2oEoXo/A5Q6OtU
- 7WRJ/fXotoZcOrcP7xCiKc4xFzLeaKcuNi0lcSMlWZzxbod5ngBEjj1gD/TH22Kwk/w4
- naGacPbUc4U7HGhRMkWDJJF+eThXAOg/DkNDWudOHrWWV8PWqTQkfT1rnEPH6AdF/0+V
- LAR8aAl4VGIrf/wuNIn5JqWj4H/K1LtKIvi71AnKiV3MsML4E7c6C1YpIdN9rdv8pcM+ BA== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sg83rbd0a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 17:15:41 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37GHFeIX002878
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 17:15:40 GMT
-Received: from quicinc.com (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 16 Aug
- 2023 10:15:39 -0700
-Date:   Wed, 16 Aug 2023 10:15:38 -0700
-From:   Guru Das Srinagesh <quic_gurus@quicinc.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Nicolas Schier" <nicolas@fjasle.eu>,
-        Kees Cook <keescook@chromium.org>,
-        "Bjorn Andersson" <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, Will Deacon <will@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        <quic_pkondeti@quicinc.com>, <u.kleine-koenig@pengutronix.de>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH v2 0/1] Add add-maintainer.py script
-Message-ID: <20230816171538.GB26279@quicinc.com>
-References: <cover.1691049436.git.quic_gurus@quicinc.com>
- <20230810185526.GC31860@quicinc.com>
- <4d94d0fd-72d4-0196-3a30-3e1efb9f5aca@linaro.org>
+        Wed, 16 Aug 2023 13:17:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2019898
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:17:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692206252; x=1723742252;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=LKQdHGRVLc9A40yfPh9cHYyCaP7borev+ApE2p8roUE=;
+  b=T66RyHh8IU8uNbM7TYXhC6kZ0IhR2VY7crmMTZSiea3SbpIJz8vAIfgp
+   CPphK8xJP779JjNLh37iwxHTH2HWGvUDFRWagJodMizycBO9h72OKq4Cu
+   nS/CMldOTScP6QD06H97FG3zbKhqRzPYXODZ4aWFNPX3jcUel8fzVExAl
+   JZv0rTyBDNz2iaOvBZm6QmtSPt+1X8kxb/yDqK2s8OvHVaZ6en851EDeU
+   i9ulyC+hwARguivKDOt6lgQnyirGCo1+oWgLooU7Ds3n9ldFVOq/e0bQi
+   RXFJJwOAOOWUFl0qjcN8UuanBFOOyWXhvtlAhM7YzDNi8Vw/1GW4Dcxg9
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="372594943"
+X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
+   d="scan'208";a="372594943"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 10:17:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="769278000"
+X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
+   d="scan'208";a="769278000"
+Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 16 Aug 2023 10:17:22 -0700
+Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qWK93-0000SZ-2c;
+        Wed, 16 Aug 2023 17:17:21 +0000
+Date:   Thu, 17 Aug 2023 01:17:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        x86@kernel.org, "Borislav Petkov (AMD)" <bp@alien8.de>
+Subject: [tip:x86/urgent 8/15] arch/x86/lib/retpoline.o: warning: objtool:
+ srso_untrain_ret+0xd: call without frame pointer save/setup
+Message-ID: <202308170133.1Ix5PpIZ-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4d94d0fd-72d4-0196-3a30-3e1efb9f5aca@linaro.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: rlUvw-RXrUOWd5u-0bjWn0IL_MERk8Rr
-X-Proofpoint-ORIG-GUID: rlUvw-RXrUOWd5u-0bjWn0IL_MERk8Rr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-16_17,2023-08-15_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=630
- malwarescore=0 spamscore=0 suspectscore=0 bulkscore=0 priorityscore=1501
- clxscore=1015 mlxscore=0 phishscore=0 impostorscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308160152
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,61 +63,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the comments, Krzysztof.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+head:   d80c3c9de067e08498d9bbfef7ab0b716fe4cc05
+commit: 4ae68b26c3ab5a82aa271e6e9fc9b1a06e1d6b40 [8/15] objtool/x86: Fix SRSO mess
+config: x86_64-randconfig-x015-20230816 (https://download.01.org/0day-ci/archive/20230817/202308170133.1Ix5PpIZ-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230817/202308170133.1Ix5PpIZ-lkp@intel.com/reproduce)
 
-On Aug 15 2023 23:06, Krzysztof Kozlowski wrote:
-> On 10/08/2023 20:55, Guru Das Srinagesh wrote:
-> > On Aug 03 2023 01:23, Guru Das Srinagesh wrote:
-> >> When pushing patches to upstream, the `get_maintainer.pl` script is used to
-> >> determine whom to send the patches to. Instead of having to manually process
-> >> the output of the script, add a wrapper script to do that for you.
-> >>
-> >> The add-maintainer.py script adds maintainers (and mailing lists) to a patch,
-> >> editing it in-place.
-> > 
-> > Could I request reviews from the other maintainers as well, please? Just to see
-> > if I should continue working on this script or if the `b4` tool obviates the
-> > need for such a script.
-> 
-> I send a bit of patches but I use very simple workflow. It is really
-> simple, so simple, that I was always surprised how people can make their
-> life difficult with some complicated process to send patches... and then
-> obviously skip some maintainers, because of that process.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308170133.1Ix5PpIZ-lkp@intel.com/
 
-Exactly - this script aims to solve precisely that problem. It fills the gap
-between running `get_maintainers.pl` and having to manually edit its output to
-add "To: " and "Cc: " and somehow incorporate it in the body of the patch(es).
+All warnings (new ones prefixed by >>):
 
-With this script, the workflow would be as simple as:
+>> arch/x86/lib/retpoline.o: warning: objtool: srso_untrain_ret+0xd: call without frame pointer save/setup
 
-  1. Generate patches using `git format-patch`
-  2. Run `add-maintainer.py` on the above patches
-  3. `git send-email` the patches.
 
-That's it - no need to manually work with email addresses.
-  
-> I almost always feed git send-email with addresses from
-> scripts/get_maintainers.pl. This tool would not bring any benefits to my
-> simple workflow.
+objdump-func vmlinux.o srso_untrain_ret:
+0000 0000000000000000 <srso_untrain_ret_alias>:
+0000    0:	66 90                	xchg   %ax,%ax
+0002    2:	0f ae e8             	lfence
+0005    5:	e9 00 00 00 00       	jmp    a <__pcpu_unique_p4_running>	6: R_X86_64_PLT32	__x86_return_thunk-0x4
+0000 00000000000000be <srso_untrain_ret>:
+0000   be:	48                   	rex.W
+0001   bf:	b8                   	.byte 0xb8
 
-In the light of the 3-step workflow I've envisioned above, could you please
-elaborate why not? If anything, it will only save a developer's time.
-
-> For newcomers, OTOH, I would either recommend simple workflow or just
-> use b4. Why? Because if you cannot use git-send-email, then it means
-> your email setup will make your life difficult and adding maintainers to
-> existing patch won't help you.
-
-You've mentioned a "simple workflow" many times - could you please share more
-details on the steps you follow in your workflow for sending patches?
-
-> This tool depends on the command line and shell interface of
-> scripts/get_maintainers.pl which is another reason why it might not be a
-> good idea.
-
-Could you please elaborate on why depending on the output of
-`get_maintainer.pl` is a bad idea? It's what everyone uses, no?
-
-Thank you.
-
-Guru Das.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
