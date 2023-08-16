@@ -2,94 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBD477E36D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 355D177E371
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343558AbjHPOTS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 16 Aug 2023 10:19:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43318 "EHLO
+        id S245749AbjHPOUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 10:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343596AbjHPOTL (ORCPT
+        with ESMTP id S1343564AbjHPOU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 10:19:11 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F691FC8
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:19:09 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-160-am2Q3tsvNK6quVH2Mj_lpQ-1; Wed, 16 Aug 2023 15:19:06 +0100
-X-MC-Unique: am2Q3tsvNK6quVH2Mj_lpQ-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 16 Aug
- 2023 15:19:02 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Wed, 16 Aug 2023 15:19:02 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'David Howells' <dhowells@redhat.com>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Christoph Hellwig" <hch@list.de>,
-        Christian Brauner <christian@brauner.io>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 2/2] iov_iter: Don't deal with iter->copy_mc in
- memcpy_from_iter_mc()
-Thread-Topic: [PATCH v3 2/2] iov_iter: Don't deal with iter->copy_mc in
- memcpy_from_iter_mc()
-Thread-Index: AQHZ0DpP/l59sWTPXU+UuQ9VGbJikq/s16Kg///6foCAACRpIA==
-Date:   Wed, 16 Aug 2023 14:19:02 +0000
-Message-ID: <3dabec5643b24534a1c1c51894798047@AcuMS.aculab.com>
-References: <03730b50cebb4a349ad8667373bb8127@AcuMS.aculab.com>
- <20230816120741.534415-1-dhowells@redhat.com>
- <20230816120741.534415-3-dhowells@redhat.com>
- <608853.1692190847@warthog.procyon.org.uk>
-In-Reply-To: <608853.1692190847@warthog.procyon.org.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 10:20:27 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB13E1FC8
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:20:25 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-68874dec6c6so1909783b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 07:20:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692195625; x=1692800425;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=i1oB5KGOGGLmV8Hyuw5qnVZxUUxc0xqzMrgN+ZeuyH4=;
+        b=ZWxhwbj3Flt0bO9lmrGhVUO1z+viu7lhI7DFNndVfioCj9WPrrs6Tufw6Mn7SGYGq1
+         4M0GGXiHXdtmAshh8/EEgts4uwl3YmCLx4XdYUMuU3ocYkYU/MxiIvKgdBQ1Mrq7V7He
+         P+IUoQ/KVu/PkEylxmDHU0SdZtLrAFZpnn6c8eNNRH5phOpdhpqZVwRBh+Ehri+tOoLY
+         rKqYhyJLG0YWOFi9MD+JnUBd0ThjY3cZW7UzRFetJPEm2RltcoJdolGVljIEVxkpO177
+         1hbSnmPn5dhUtbExAbJNqHfEGI2IQ1mpv2jaeYlmy806HVaWgQgSgk1yVbf25ABk94vN
+         yX7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692195625; x=1692800425;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=i1oB5KGOGGLmV8Hyuw5qnVZxUUxc0xqzMrgN+ZeuyH4=;
+        b=U9CFPrr+DK12WRjNJMkeI52dJQViBBPU9Qc1cYP3x4h2AJlqIShPOzi/Ob+1ly4OeN
+         lTyC27YwTLAwOLyHtEoylOl1LR5WyFLcb4qTh10a3S1eulS9Qy2q4ONTKau7A+12xXWe
+         3lT60Oaz9er6CKtw/uepZmsyE8jz/B+TFSinw+MN8CufruffSjYS26YcEWIO8UmZdVvj
+         o30ayb4b2O2A8XGAz/+Srso8iMCgoAPbb10fqWwkZlnM85Jb8BiAXWfEEJ7RgZgnOps3
+         KBKpfS8GEHPhrty6flHgbRpumf+EFCDhe4bQpe2WyPv0RE+/56siy/vhcOk7PWh+/r6q
+         rq7g==
+X-Gm-Message-State: AOJu0YyG8TLZBL2LBKNn3PxkYZt7bvf6J61eDvgpNNzG87Y9z6zVQnjh
+        gyKqykVmURnXqF7bvyBWsp1GULNEUqY=
+X-Google-Smtp-Source: AGHT+IHOZY+1RtbT+IwGQsfEVWjr8BXEVN7ReSuu487cknuQa9n8HgvNydglPHkYuZK0Jgji8yN7fuLP8qQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:aa7:8884:0:b0:686:df16:f887 with SMTP id
+ z4-20020aa78884000000b00686df16f887mr949855pfe.6.1692195625320; Wed, 16 Aug
+ 2023 07:20:25 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 07:20:23 -0700
+In-Reply-To: <6370c12ff6ec2c22ed5e1f1f37c1cf38a820a342.camel@intel.com>
+Mime-Version: 1.0
+References: <20230815203653.519297-1-seanjc@google.com> <20230815203653.519297-2-seanjc@google.com>
+ <6370c12ff6ec2c22ed5e1f1f37c1cf38a820a342.camel@intel.com>
+Message-ID: <ZNzbJ9Y+8Uon327c@google.com>
+Subject: Re: [PATCH v3 01/15] KVM: x86: Add a framework for enabling
+ KVM-governed x86 features
+From:   Sean Christopherson <seanjc@google.com>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Guang Zeng <guang.zeng@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Yuan Yao <yuan.yao@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells
-> Sent: Wednesday, August 16, 2023 2:01 PM
+On Wed, Aug 16, 2023, Kai Huang wrote:
+> > diff --git a/arch/x86/kvm/governed_features.h b/arch/x86/kvm/governed_features.h
+> > new file mode 100644
+> > index 000000000000..40ce8e6608cd
+> > --- /dev/null
+> > +++ b/arch/x86/kvm/governed_features.h
+> > @@ -0,0 +1,9 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#if !defined(KVM_GOVERNED_FEATURE) || defined(KVM_GOVERNED_X86_FEATURE)
+> > +BUILD_BUG()
+> > +#endif
+> > +
+> > +#define KVM_GOVERNED_X86_FEATURE(x) KVM_GOVERNED_FEATURE(X86_FEATURE_##x)
+> > +
+> > +#undef KVM_GOVERNED_X86_FEATURE
+> > +#undef KVM_GOVERNED_FEATURE
 > 
-> David Laight <David.Laight@ACULAB.COM> wrote:
+> Nit:
 > 
-> >
-> > Couldn't the relevant code directly call __copy_from_iter_mc() ?
-> > Or a version then checked iov_is_copy_mc() and then fell
-> > back to the standard function.
+> Do you want to move the very last
 > 
-> No, because the marked iterator is handed by the coredump code to
-> __kernel_write_iter() and thence on to who-knows-what driver - which will call
-> copy_from_iter() or some such.  $DRIVER shouldn't need to know about
-> ->copy_mc.
+> 	#undef KVM_GOVERNED_FEATURE
+> 
+> out of "governed_features.h", but to the place(s) where the macro is defined?
+> 
+> Yes there will be multiple:
+> 
+> 	#define KVM_GOVERNED_FEATURE(x)	...
+> 	#include "governed_features.h"
+> 	#undef KVM_GOVERNED_FEATURE
+> 
+> But this looks clearer to me.
 
-What about ITER_BVEC_MC ??
+I agree the symmetry looks better, but doing the #undef in governed_features.h
+is much more robust.  E.g. having the #undef in the header makes it all but impossible
+to have a bug where we forget to #undef KVM_GOVERNED_FEATURE.  Or worse, have two
+bugs where we forget to #undef and then also forget to #define in a later include
+and consume the stale #define.
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+And I also want to follow the pattern used by kvm-x86-ops.h.
