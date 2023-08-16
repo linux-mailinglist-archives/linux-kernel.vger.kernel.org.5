@@ -2,133 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0BD977E430
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F194F77E437
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 16:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343817AbjHPOxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 10:53:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48420 "EHLO
+        id S233213AbjHPOyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 10:54:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343809AbjHPOxN (ORCPT
+        with ESMTP id S1343824AbjHPOxp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 10:53:13 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282941B2;
-        Wed, 16 Aug 2023 07:53:12 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E0A401F74A;
-        Wed, 16 Aug 2023 14:53:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692197590; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e6p8B2qHAhO+4Bo+PrWAmkYx5z4jltAW7Z7Qv9o2vZk=;
-        b=avPkAqRNnaAp2mUSR1nMrhF9hD6Aw2ow25bz2ddM73lxny9+oI6b562dQoJVPvHLx17AE0
-        aKuGXoXuwPMWfmpFl+/Ps1LwucBwywIu7mITLHH5mMpMAvhMGOW+XlfwLVughWfP3TF7YI
-        kJvEV+TCXUetiFiBPLZZfLfbq/0yOH8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692197590;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e6p8B2qHAhO+4Bo+PrWAmkYx5z4jltAW7Z7Qv9o2vZk=;
-        b=b+hylV0NVQtNTsqtGwkqBKgKcMIZEnzrkukusdId1li6df093GN6wSMmLK0QLxeHERzon8
-        v6aZ2zn1tZFeNeDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D1C0E1353E;
-        Wed, 16 Aug 2023 14:53:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id AMgmM9bi3GT+BwAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 16 Aug 2023 14:53:10 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 66B0FA0769; Wed, 16 Aug 2023 16:53:10 +0200 (CEST)
-Date:   Wed, 16 Aug 2023 16:53:10 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     "Bhatnagar, Rishabh" <risbhat@amazon.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, jack@suse.com,
-        linux-ext4@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Park, SeongJae" <sjpark@amazon.com>
-Subject: Re: Tasks stuck jbd2 for a long time
-Message-ID: <20230816145310.giogco2nbzedgak2@quack3>
-References: <153d081d-e738-b916-4f72-364b2c1cc36a@amazon.com>
- <20230816022851.GH2247938@mit.edu>
- <17b6398c-859e-4ce7-b751-8688a7288b47@amazon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <17b6398c-859e-4ce7-b751-8688a7288b47@amazon.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 10:53:45 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7502610FF;
+        Wed, 16 Aug 2023 07:53:40 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-76754b9eac0so447950385a.0;
+        Wed, 16 Aug 2023 07:53:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692197619; x=1692802419;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C/F+yO89r+58XA2jTJmqFV7AKNI1UXlByvHmUmA3sA4=;
+        b=hJ0JNR07O6hNfvI0xZ2K57RdwwA+zhGGvgN1u5MeIJpwg2g6A38rxQYYtjMTc+DrIQ
+         OQKQIzsh/kXj6LBcKPZHjh6TDJjQoyZR9sv/ZFs1MrH/0YQbtE8WdYpPg89JB9m9u9j8
+         y/u5h/wRwaSktqnNv6AeWOnq16To/G5M8xOsJ4xwE5+6U03REY4mPgeLMapCOdBPycHL
+         JEq5/GHZ+7CMff1ABYwHMm7pYN1NFal7znvXjmINFymH4O7Fe5T77dnWF9Ir/tCqjnF7
+         mqH+Pdma8Ou779VNhqk7dP7ET2SKLB2szR+/7oxYyeGGm6ZxG5QXiGhmus7LtSaOPOCl
+         7lcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692197619; x=1692802419;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=C/F+yO89r+58XA2jTJmqFV7AKNI1UXlByvHmUmA3sA4=;
+        b=TwJPZDWuQ6yYY3cc8JdtNTnPKLnQ5HMJxRVb5Tbcqp5vU9uTXeesq8k8d1XLfMCkL6
+         HTYXPE0c0+vOSezD1Fbzjbsv4Kdcl8FZy37ySmwhl/yPZ5sq6zCudMslHNq21dZZx+O8
+         IZ1GCJIO5voIS+ZsHBL0ygMyJvLWC/BtF1ZkPokbjG7ZeDMCytoMfRHpTWajCU26cLpc
+         27Dt93OTiewquyX96CHaxXQuup86akms3WyObXNv557ksbh7P88fgaLoBRhUGCWhAtQR
+         gNUTu1bu086oBc8u/Qtb4HY2gakPe4/doqBlsdVJDtxMTyZol8vZgJs+Azv+KxqZhkgW
+         8AEQ==
+X-Gm-Message-State: AOJu0Yx/S7N5QQyji3faY5MWaDCWgGkWBeKhv1RofwYMY4AgJs5LxVxm
+        GqZh9oqyulmIKnOtUXeS01A=
+X-Google-Smtp-Source: AGHT+IE/ongpvCQd3F2ohVavPqcLH2c3ICTQBale59UpK8GdXCBun10dc4tTmVJGODuMRW1RyyVMpQ==
+X-Received: by 2002:a05:620a:b8d:b0:76c:9ad6:8199 with SMTP id k13-20020a05620a0b8d00b0076c9ad68199mr1789963qkh.77.1692197619528;
+        Wed, 16 Aug 2023 07:53:39 -0700 (PDT)
+Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
+        by smtp.gmail.com with ESMTPSA id f23-20020a05620a15b700b0076cf0c4eecbsm4469821qkk.0.2023.08.16.07.53.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 07:53:38 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 10:53:38 -0400
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     Feng Liu <feliu@nvidia.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Simon Horman <horms@kernel.org>
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Bodong Wang <bodong@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Message-ID: <64dce2f2b99f5_23f1f82949f@willemb.c.googlers.com.notmuch>
+In-Reply-To: <f9f3c150-2b5e-7bd0-1c1a-062bd1f16fcd@nvidia.com>
+References: <20230814171845.65930-1-feliu@nvidia.com>
+ <ZNtYpohWyjnb883M@vergenet.net>
+ <05348d62-586c-4b1f-40bd-5541caca0947@nvidia.com>
+ <ZNunz1hbqPKpcOgA@vergenet.net>
+ <CAF=yD-L+d34Uuvt3sOFOnxXhMmoMXNfHzcaSPk=t1PtiPUHZ1g@mail.gmail.com>
+ <f9f3c150-2b5e-7bd0-1c1a-062bd1f16fcd@nvidia.com>
+Subject: Re: [PATCH net v1] virtio_net: Introduce skb_vnet_common_hdr to avoid
+ typecasting
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 15-08-23 20:57:14, Bhatnagar, Rishabh wrote:
-> On 8/15/23 7:28 PM, Theodore Ts'o wrote:
-> > CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
 > > 
+> > Since legacy virtio will no longer be modified, I don't think there is
+> > much value is exposing this new union as UAPI. I do appreciate the
+> > benefit to the implementation.
 > > 
-> > 
-> > It would be helpful if you can translate address in the stack trace to
-> > line numbers.  See [1] and the script in
-> > ./scripts/decode_stacktrace.sh in the kernel sources.  (It is
-> > referenced in the web page at [1].)
-> > 
-> > [1] https://docs.kernel.org/admin-guide/bug-hunting.html
-> > 
-> > Of course, in order to interpret the line numbers, we'll need a
-> > pointer to the git repo of your kernel sources and the git commit ID
-> > you were using that presumably corresponds to 5.10.184-175.731.amzn2.x86_64.
-> > 
-> > The stack trace for which I am particularly interested is the one for
-> > the jbd2/md0-8 task, e.g.:
+> > [1] https://patches.linaro.org/project/netdev/patch/20210208185558.995292-3-willemdebruijn.kernel@gmail.com/
+> Hi, William and Simon
 > 
-> Thanks for checking Ted.
+> Thanks for the detailed explanation.
 > 
-> We don't have fast_commit feature enabled. So it should correspond to this
-> line:
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/fs/jbd2/commit.c?h=linux-5.10.y#n496
-> 
-> > 
-> > >        Not tainted 5.10.184-175.731.amzn2.x86_64 #1
-> > > "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > > task:jbd2/md0-8      state:D stack:    0 pid: 8068 ppid:     2
-> > > flags:0x00004080
-> > > Call Trace:
-> > > __schedule+0x1f9/0x660
-> > >   schedule+0x46/0xb0
-> > >   jbd2_journal_commit_transaction+0x35d/0x1880 [jbd2]  <--------- line #?
-> > >   ? update_load_avg+0x7a/0x5d0
-> > >   ? add_wait_queue_exclusive+0x70/0x70
-> > >   ? lock_timer_base+0x61/0x80
-> > >   ? kjournald2+0xcf/0x360 [jbd2]
-> > >   kjournald2+0xcf/0x360 [jbd2]
-> > Most of the other stack traces you refenced are tasks that are waiting
-> > for the transaction commit to complete so they can proceed with some
-> > file system operation.  The stack traces which have
-> > start_this_handle() in them are examples of this going on.  Stack
-> > traces of tasks that do *not* have start_this_handle() would be
-> > specially interesting.
-> I see all other stacks apart from kjournald have "start_this_handle".
+> I kept virtio_net_hdr_mrg_rxbuf and virtio_net_hdr_v1_hash structures in 
+> virtio_net.h, which can be forward compatible with existing user 
+> applications which use these structures.
 
-That would be strange. Can you post full output of "echo w
->/proc/sysrq-trigger" to dmesg, ideally passed through scripts/faddr2line as
-Ted suggests. Thanks!
+They're UAPI, so we cannot modify or remove them anyway.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Which is exactly why we want to be careful with adding anything new.
+ 
+> virtio_net_hdr_v1_hash cannot use virtio_net_hdr as the first member, 
+> because in virtio_net_hdr_v1, csum_start and csum_offset are stored in 
+> union as a structure, and virtio_net_hdr cannot be used instead.
+
+Oh right. That wasn't always the case, or the reason for this.
+Not super relevant but, commit ed9ecb0415b9 has the history
+
+    virtio: Don't expose legacy net features when VIRTIO_NET_NO_LEGACY defined.
+
+    In particular, the virtio header always has the u16 num_buffers field.
+    We define a new 'struct virtio_net_hdr_v1' for this (rather than
+    simply calling it 'struct virtio_net_hdr', to avoid nasty type errors
+    if some parts of a project define VIRTIO_NET_NO_LEGACY and some don't.
+
+    Transitional devices (which can't define VIRTIO_NET_NO_LEGACY) will
+    have to keep using struct virtio_net_hdr_mrg_rxbuf, which has the same
+    byte layout as struct virtio_net_hdr_v1.
+
+The union was added to overload csum use on tx with RSC use on rx, in
+commit 22b436c9b568. I don't quite follow why there now are three
+structs, rather than two. The first two seem to both implement csum
+partial. Anyway, not super important here.
+
+> In addition, I put this new structure virtio_net_common_hdr in uapi, 
+> hoping it could be used in future user space application to avoid 
+> potential risks caused by type coercion (such as the problems mentioned 
+> in the patch description ). So I think it should be in this header file.
+> What do you think?
+
+Adding anything to UAPI has a high bar. Do you have a concrete use
+case for this?
+
+This does seem mostly a helper to simplify kernel logic to me, which
+is better kept in non-UAPI headers.
