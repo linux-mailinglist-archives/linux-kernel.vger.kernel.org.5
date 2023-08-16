@@ -2,75 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF11277D912
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 05:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8998677D91D
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 05:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241548AbjHPDbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 23:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53274 "EHLO
+        id S241637AbjHPDfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 23:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241608AbjHPDaU (ORCPT
+        with ESMTP id S241675AbjHPDc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 23:30:20 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171B926BB;
-        Tue, 15 Aug 2023 20:29:10 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id d9443c01a7336-1bddac1b7bfso19517045ad.0;
-        Tue, 15 Aug 2023 20:29:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692156550; x=1692761350;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lEj0mBQfdRbRzSN3O+Uxwh388GZNZtY3hJehezBw8Tk=;
-        b=SUzyW+CK6xwBBdd141aQTNgs5M0ctYOmHsTvc0rxmpBGYEjUQECTAhLJ3HjH16xHTv
-         XQzOjTGT6YbkcakFSg7ns92IoN3ZsjWW666LMcZ7gnWF6isMv3xV8VWzVwPVVKcBW6Jw
-         ujnCwOGwe71LqzwY/tuCeZ0o4qtKmdhYzBQMGahYfQTOVlkGhTNSBV/eXLQOrsxDbMpR
-         j9UAG06LAEc5Dk1LqXqya1a9vedo1e8UnMONVcPV9KLtr5vwuc+nrEgvpGwRYjU3dMmf
-         6+swqjp+vlqklLDY8/+fYgo2NDNi+aOMm/QHc97nqmyl7/pnZARUvaVWugvF7Lw4UHxc
-         Wptw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692156550; x=1692761350;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=lEj0mBQfdRbRzSN3O+Uxwh388GZNZtY3hJehezBw8Tk=;
-        b=RUtjIPUBeiL2gOGmfpz7FyFyg11OpzrD0snJUUgDCAlpZZDTM5HJfnat4/e458WjnM
-         MYz6bR7/sTw027xz9BxoSaTJsTT9ZhHM/dom3/Dy0Hz7aCOvqjvT+YY4lnJAr/9fjjOe
-         Y07JnGbKKD5FTmqc+S5PyZj4m2ZsScnVsihsDAr5knzllZmqQq10zrDlmiBYCUUAGPst
-         sjIwplHmhcPv7zbNRLKPSPpRjKaZcJcggmCON1uG02DCI+na1rvlneUOVwlT4rXplCwi
-         OD/SZMEPxbSYOorAcdZKs99IJZnf/yumLP4ZErFv/o4utV1GnUS3fwrXD6hqXJe31cdv
-         4uUw==
-X-Gm-Message-State: AOJu0YxQeGc/HWUI5GE+1NIoXWpjvdYVTCoTecC7hzPYDmrQv4C4/O1W
-        yk5JXz2OJtHvxsqMW7ZGBmE=
-X-Google-Smtp-Source: AGHT+IGvmST2diMC63PU988FBHP7pMvA1OsAloTkdMPgjoTMMurYdMU6kLVUyUqi8Q5XWH7le4R0lw==
-X-Received: by 2002:a17:902:e74c:b0:1bc:56c3:ebb6 with SMTP id p12-20020a170902e74c00b001bc56c3ebb6mr1120655plf.8.1692156549878;
-        Tue, 15 Aug 2023 20:29:09 -0700 (PDT)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id a11-20020a170902b58b00b001b83e624eecsm11889924pls.81.2023.08.15.20.29.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 20:29:08 -0700 (PDT)
-Message-ID: <6979eae9-53c3-5dad-7d3e-d256d5252271@gmail.com>
-Date:   Wed, 16 Aug 2023 11:29:01 +0800
+        Tue, 15 Aug 2023 23:32:56 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2084.outbound.protection.outlook.com [40.107.255.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C47A2712;
+        Tue, 15 Aug 2023 20:31:45 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EB0zkkVoBAT7VmcIh380LXcpLkWCi088z6vAJHACJXKAQ4z57eKFCNbxwG+cwtz41zFmytSpbScdSkSfXRq43l0j7dvDT73b0D6FUNdo8VEeC6z2+XbnyhqVCdQwQud0ntF535HZYnequVJMVrfT74/yhyA1xaSF3DQ4YND4udp9iiuDG6KOqkPZw3J6aobSji8DVc7a6Idr637pkunZlaeUb2jw94E0AQSyBbNyEzXQoH7sjCmPkcemj1R8+Rw1uNcNORY981s/k0cgbfhBa2BP/uviz8ko1lkdCgkQIbn/EuU6+zRizpmuYBlmh5nVwoW10BZxF4f0qrKfE64MGw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ATd8aUqFCTFkpiBNPDzM14dQZl5km+8PheWzRJoENeg=;
+ b=mSIkh9gT6kd26sAeLMD30j5G5momEYQ+e0Q/FfC/Iu56fQjYucmMX7GtyS2UwUbA1rjEEwfPSBR5bmngqeaKpCUjiWFxzUQWKkYQ/mynNXuDEgDo5LDWKgKdh9bYOuDV9DT4a8Y+9bF2QPRPR5Aqunt4P2t42f86SD3x3bfMgSijuHwPLAgnLC/V1PxZA+OLiOD8c2D7ABu/SonWYeV2JpCPFUHBs+aBfNZ3U97UVYU8ugl9nFhxBL1t8Y/S+RMb4/wG4u41xEyk70UFNZgFIlQNVfCjtfabtyw3KAi9BAuPqyShlqS8p+S4LQAb5uHvjKvRXXRAFesjeJukJk5s+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
+ (p=quarantine sp=quarantine pct=100) action=quarantine
+ header.from=wiwynn.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ATd8aUqFCTFkpiBNPDzM14dQZl5km+8PheWzRJoENeg=;
+ b=bAurM1hOB9Ux/ybFbqaE9hjzBbZb+edYr2lqe8w4ElaMsrk4UfR7MQ3nit8EIBxMJTjURR1C6x3nso9lTny3UNwN609hqMggnkMstLxHbvnObOirDNBc5kum+feRA1UYbvw1z5q8AOH+I2P8EC1pHTjFJJN8Y1enFRjK4LD1xXCnQtbcMCt0SZXL0x5JSnAfeZLqXu410eYlnIt/ASjZmRJHHO4ih3OrXudgqvHHOscVWNir/S4rre3sBhc4TRmhu4u9F8RLHd8N4nOOrIPrNfprJw9eEN9q3O/RWGfTNUVf6xm9/jjrxZyuNDcVQtWOlAOmHhcEJeLLaeHJE7rm/g==
+Received: from PU1PR01CA0042.apcprd01.prod.exchangelabs.com
+ (2603:1096:803:16::30) by SI2PR04MB5669.apcprd04.prod.outlook.com
+ (2603:1096:4:1a4::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Wed, 16 Aug
+ 2023 03:31:38 +0000
+Received: from PSAAPC01FT064.eop-APC01.prod.protection.outlook.com
+ (2603:1096:803:16:cafe::52) by PU1PR01CA0042.outlook.office365.com
+ (2603:1096:803:16::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.33 via Frontend
+ Transport; Wed, 16 Aug 2023 03:31:38 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
+ smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
+Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
+ designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.20.1.79; helo=localhost.localdomain;
+Received: from localhost.localdomain (211.20.1.79) by
+ PSAAPC01FT064.mail.protection.outlook.com (10.13.38.172) with Microsoft SMTP
+ Server id 15.20.6699.14 via Frontend Transport; Wed, 16 Aug 2023 03:31:36
+ +0000
+From:   Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+To:     patrick@stwcx.xyz
+Cc:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v10 0/2] ARM: dts: Facebook Yosemite 4 platform
+Date:   Wed, 16 Aug 2023 11:31:30 +0800
+Message-Id: <20230816033134.3750232-1-Delphine_CC_Chiu@wiwynn.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.2.2
-Subject: Re: [PATCH v3] KVM: x86/pmu: Add documentation for fixed ctr on PMU
- filter
-To:     Sean Christopherson <seanjc@google.com>,
-        Jinrong Liang <cloudliang@tencent.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Like Xu <likexu@tencent.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230531075052.43239-1-cloudliang@tencent.com>
-From:   JinrongLiang <ljr.kernel@gmail.com>
-In-Reply-To: <20230531075052.43239-1-cloudliang@tencent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PSAAPC01FT064:EE_|SI2PR04MB5669:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 733bd0a5-e97c-4a2f-efe3-08db9e094c12
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PBg/S868v1o9aNfPq5THhev/eJHgN8qiIEGZJDn8NvvJgb9pvEQo9ZXXP0Joynf8ty1FkaK7nF21LglpPZxdncdL459RnVUAJzvepjG5yxJctAYFCyJanecdGNHlJAcH1BvQ9f2UukInZWC0Ygu2EeanHh0KddQc0VcK8RMWjbDpMzO9qkgmN74gX2wDZOjNCPg/YLvLwH1U9NU06CM2j1Ud4ORXPvo34WAt+RhwewlsZhMDFZVqV2AKxXQmbvE10p9GWAZqTnC91V129dCcoXb57bk/2G9wHQ3SO8yoLWT1HTkyMGFRYBxsdSy3TSDiBAybuSciIbbiBoN9pebSGmOwvw6GrcdBTaOXh2HUH0LQOPPhLe2QUncHWuX5b6p0SSqKJD6qNL00qsTa/szWEmg1ZbSaLEUheAWAh/f/vDrY8tFxcDaZhHKPHfG+PunQdSfBhozOXSnHjeyRAlLT2+4TIVXcyVr4N/En0s4ww4LkDnKQcGnLW0bcbYuMJj/6s9WeBKFU2R/Jw2Aj71qbH1fHRBQXmO2JsJuD8oNJaGEu8gKWfJMmhlGXe+RylXzcfjTYZM+eyp2ac1ZzRiAnuEBVhSrcERSKnEpyEIq/5NkCmX/Cdg1pNvkQkgjpubi13V2JDWHOo6oX+yOdrC4uNc+GupcDwVAz/HqSZ0Q5CcXpyPeumoRv1ohuat4aHOURXBPqtPZw/GKa65qImlZzhg==
+X-Forefront-Antispam-Report: CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(376002)(39860400002)(396003)(346002)(136003)(47680400002)(1800799009)(82310400011)(451199024)(186009)(46966006)(36840700001)(6666004)(36736006)(54906003)(70586007)(70206006)(6512007)(6486002)(6506007)(2906002)(478600001)(1076003)(336012)(26005)(9316004)(6916009)(7416002)(5660300002)(2616005)(956004)(83380400001)(41300700001)(316002)(47076005)(36860700001)(8936002)(4326008)(82740400003)(8676002)(81166007)(356005)(36756003)(86362001)(40480700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: wiwynn.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 03:31:36.4855
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 733bd0a5-e97c-4a2f-efe3-08db9e094c12
+X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
+X-MS-Exchange-CrossTenant-AuthSource: PSAAPC01FT064.eop-APC01.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR04MB5669
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,69 +98,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add linux device tree entry related to
+Yosemite 4 specific devices connected to BMC SoC.
 
-Gentle ping.
+Changelog:
+v10 - Change to 128MB flash layout from 64MB
+ v9 - Remove mac2/mac3 duplicated setting about no-hw-checksum
+ v8 - Add description of Yosemite 4
+    - Remove unsupported ncsi config
+    - Revise i2c-mux config
+    - Correct power sensor i2c address
+    - Restore i2c 11 bus-frequency to default
+ v7 - Revise changelog format
+ v6 - Change project name from yosemitev4 to yosemite4
+ v5 - Revise rtc setting
+    - Remove duplicated multi-master setting
+ v4 - Resend with cover letter
+ v3 - Revise the bootargs to stdout-path
+    - Revise i2c devices
+ v2 - Revise the DTS node name
+ v1 - Add binding document
 
-在 2023/5/31 15:50, Jinrong Liang 写道:
-> From: Jinrong Liang <cloudliang@tencent.com>
-> 
-> Update the documentation for the KVM_SET_PMU_EVENT_FILTER ioctl
-> to include a detailed description of how fixed performance events
-> are handled in the pmu filter. The action and fixed_counter_bitmap
-> members of the pmu filter to determine whether fixed performance
-> events can be programmed by the guest. This information is helpful
-> for correctly configuring the fixed_counter_bitmap and action fields
-> to filter fixed performance events.
-> 
-> Suggested-by: Like Xu <likexu@tencent.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/oe-kbuild-all/202304150850.rx4UDDsB-lkp@intel.com
-> Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
-> ---
-> 
-> v3:
-> - Rebased to 5c291b93e5d6(tag: kvm-x86-next-2023.04.26)
-> - Revise documentation to enhance user understanding. (Sean)
-> - Post this patch separately from the selftests changes. (Sean)
-> 
-> v2:
-> - Wrap the code from the documentation in a block of code; (Bagas Sanjaya)
-> 
-> v1:
-> https://lore.kernel.org/kvm/20230414110056.19665-5-cloudliang@tencent.com
-> 
->   Documentation/virt/kvm/api.rst | 18 ++++++++++++++++++
->   1 file changed, 18 insertions(+)
-> 
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> index a69e91088d76..9f680eb89b2b 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -5122,6 +5122,24 @@ Valid values for 'action'::
->     #define KVM_PMU_EVENT_ALLOW 0
->     #define KVM_PMU_EVENT_DENY 1
->   
-> +Via this API, KVM userspace can also control the behavior of the VM's fixed
-> +counters (if any) by configuring the "action" and "fixed_counter_bitmap" fields.
-> +
-> +Specifically, KVM follows the following pseudo-code when determining whether to
-> +allow the guest FixCtr[i] to count its pre-defined fixed event::
-> +
-> +  FixCtr[i]_is_allowed = (action == ALLOW) && (bitmap & BIT(i)) ||
-> +    (action == DENY) && !(bitmap & BIT(i));
-> +  FixCtr[i]_is_denied = !FixCtr[i]_is_allowed;
-> +
-> +KVM always consumes fixed_counter_bitmap, it's userspace's responsibility to
-> +ensure fixed_counter_bitmap is set correctly, e.g. if userspace wants to define
-> +a filter that only affects general purpose counters.
-> +
-> +Note, the "events" field also applies to fixed counters' hardcoded event_select
-> +and unit_mask values.  "fixed_counter_bitmap" has higher priority than "events"
-> +if there is a contradiction between the two.
-> +
->   4.121 KVM_PPC_SVM_OFF
->   ---------------------
-> 
-> 
-> base-commit: 5c291b93e5d665380dbecc6944973583f9565ee5
+Delphine CC Chiu (2):
+  dt-bindings: arm: aspeed: add Facebook Yosemite 4 board
+  ARM: dts: aspeed: yosemite4: add Facebook Yosemite 4 BMC
+
+ .../bindings/arm/aspeed/aspeed.yaml           |   1 +
+ arch/arm/boot/dts/aspeed/Makefile             |   1 +
+ .../aspeed/aspeed-bmc-facebook-yosemite4.dts  | 624 ++++++++++++++++++
+ 3 files changed, 626 insertions(+)
+ create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-yosemite4.dts
+
+-- 
+2.25.1
 
