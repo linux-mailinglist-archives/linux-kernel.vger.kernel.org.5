@@ -2,69 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4BBE77EA03
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D1D77EA17
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 21:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345922AbjHPTzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 15:55:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56074 "EHLO
+        id S1345950AbjHPTzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 15:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345901AbjHPTy4 (ORCPT
+        with ESMTP id S1345953AbjHPTzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 15:54:56 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03908E56
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 12:54:55 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fe32ec7201so3025e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 12:54:54 -0700 (PDT)
+        Wed, 16 Aug 2023 15:55:32 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED7BE55
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 12:55:31 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58caf216c55so4204597b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 12:55:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692215693; x=1692820493;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hjHULN60LOK6sMroIvytXpZMa57ES8qNRCsKudjX8T0=;
-        b=e0cb4tMwDk5FMZ86vb49ETWHd7bZ0WItpn8UQPzDfIe1jbynr1yxDbCITBLCuDZOFl
-         XmaIRuUvZgLO0dWdUFHtetnDPcNDt6PpBPdPBM3vpcyoTX0ExaGkN/fc8Ty5mymP4fpN
-         o2MouqVjylabsIg7eyRaF+qilh4Q4yjVPJQZx0kI+y5D8bfKG0Ium/eBFF9i4tGGHksP
-         tAofU+M1r+VYnVIf2iEmJDaigIkyvsuaO+LDLugfcNbVzYgN/qQyut8q9EJqTT75egsR
-         sybKjUaHddllcd8qRgFvuD5V+gO0wBj5GDntBd06/civOlppWuD/mtwmvJyNd+rmVZRP
-         /uaw==
+        d=google.com; s=20221208; t=1692215731; x=1692820531;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=N67WiS7/3sb8Cj5N6RzDQuOPr7zI0dDToiYbr0rmgmw=;
+        b=qqAMPQ5GdxbgdBzVIb7T7A7AxjWjb8DZommfyeV76VQL2kkVv7tkNkJUQ06TRq8XnT
+         waLMQoVGcBnknva0JTqjv8UZ6Q+wYnClzOw4zyn+P5Ngf3Q6q6Cwk2hfakEIaqveWx8P
+         jZ/xK08v011Lo51sEevdEdRGkUqTHL/QXB1gJnUCRoKect4TDA2Sc283QbDuly1TgYla
+         7GtIvdLrfvitpRwndHWgT14eFK2AP78lTlIxPi7aMm16JurApTs+jnKNpgETgQfCyxeY
+         dql2gk9AN8kJCTSa0Tf0acm/kTGEVr94Od1hnkrMQeCIIDi2UMgZnvcJa9mI5IEpOKer
+         nAmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692215693; x=1692820493;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hjHULN60LOK6sMroIvytXpZMa57ES8qNRCsKudjX8T0=;
-        b=LuP1uvgLkvfVMAvNOI7GRD9bBgpF+drEJlakbQp7EkApVOtfk+53LkgRPCIi/VBIJG
-         INfqWGQpFFWHZYlGrtyNGJDhqXsljKXA3WfHBfG74u86cGuAQVDQF/j/ZF3nzW7T4KGn
-         IvKRGdIelwvJbXEIc716vbERVMOlWMfUgVWJHyqGy8LcOHileQqENXyyWGr6NzTqXiWa
-         39/avnFy+McaIqj5+Ttf/gwAuqAVy0q5ilok4EBPAgowZIJJibbGw2jFOfi3BUPtfs31
-         /l/skdilwxwwxRloTy10xG7X6y+CHIay4WNf41rbmuSCcRl8cE0Ns3X+QXdspnC8AUxz
-         I6KQ==
-X-Gm-Message-State: AOJu0YxUj96u/q05P18B5L6DKBVOC7pBEQchY27W7MQ1A2fTXWbml/3a
-        lF1atKTj1u48WxImOmq0TVHoFNX7SMXxK1PeTX+hRA==
-X-Google-Smtp-Source: AGHT+IFPfs6lZhWG6fWNy5jBPku/jodi0a7zo8JNNUQnt8oIZUUqIwbRxTcO715QlvgAOk7BEKFAL9odg5VViqJe+7w=
-X-Received: by 2002:a05:600c:4708:b0:3f6:f4b:d4a6 with SMTP id
- v8-20020a05600c470800b003f60f4bd4a6mr1362wmo.7.1692215693407; Wed, 16 Aug
- 2023 12:54:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230814132309.32641-1-rf@opensource.cirrus.com> <20230814132309.32641-6-rf@opensource.cirrus.com>
-In-Reply-To: <20230814132309.32641-6-rf@opensource.cirrus.com>
-From:   Rae Moar <rmoar@google.com>
-Date:   Wed, 16 Aug 2023 15:54:41 -0400
-Message-ID: <CA+GJov6haKmH5Hyt=Pck8kUim8k0X+sNNWGjK4huMRYBDuOpBA@mail.gmail.com>
-Subject: Re: [PATCH v4 05/10] kunit: string-stream: Add cases for
- string_stream newline appending
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     brendan.higgins@linux.dev, davidgow@google.com,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        d=1e100.net; s=20221208; t=1692215731; x=1692820531;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N67WiS7/3sb8Cj5N6RzDQuOPr7zI0dDToiYbr0rmgmw=;
+        b=iVNBNjYY+dE2aHBwnrByRAoqjgruDdavFMmjLKnckzZ8Ib4ejiq2WHF8cV955W1dwH
+         c1sOo+0Q0KV4CarbT6f0i6VR2IXaqZ2DjYErhAe/pPhIXjaEt+J79sDHvne1UFabGEn7
+         6aRAtXG54yYcg9S3vGTXBhHZWrT8S5Zm7+N8E3ciW54fmRkW0vGR3P2ye5oVmVrpi5HL
+         PrykThVb8BOvemm6XA4PhU2wnb30olnRuOTxAyi0ktjnYQlKnuWVPtedKf9u5OgO2U1X
+         r1Uzp4/6Jra2v//3sfgjRCJL6uznpzrDn+NKUm58Y+4PW4611Rjg6gSG4thspxTw5fr9
+         lEbw==
+X-Gm-Message-State: AOJu0YzPH3AE7MZFm3tfLPophl8PSFMU7aFP6/ZVH+bX+AnLFFoZR1X/
+        5+tkrwS59oZ82BlgqY+G4TbAZpUKB2iTwrN3iA==
+X-Google-Smtp-Source: AGHT+IH1FY4dJduz6fzigREg8tgE5e/JoOxQTJRQ+4NUOdZQ3sjCJGTYtxjEsAd879DrJol6J6MNGzXEiww4uT8XAA==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a81:ac16:0:b0:586:e91a:46c2 with SMTP
+ id k22-20020a81ac16000000b00586e91a46c2mr10910ywh.4.1692215731117; Wed, 16
+ Aug 2023 12:55:31 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 19:55:29 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIALAp3WQC/x2NywqEMAwAf0Vy3kBbwcf+yrKHYqLmYC2pFkX8d
+ 4u3mcvMBYlVOMG3ukA5S5I1FLGfCobZh4lRqDg442rT2QbzKoSkklkTTnEvvOAm4UTl6CMretP Vzg7U99RC6UTlUY738fvf9wNunyWqcwAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692215730; l=1587;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=1YZyFhkuynphmxg7TZPqc+HCfPgAHdsuqMCKaSpuV/U=; b=bBQyQBouy2hNFI2Y+MZ5b8WiXWffYYC1ZHRHShS4JwLZXQ5M+xDLuy36HSKM9qv3Feh2sFmcI
+ EcULJCqRSxRDiOcyGlXjVSpYurYZS4f1tLMAnsNdkAn4PX9rVhH0Fj0
+X-Mailer: b4 0.12.3
+Message-ID: <20230816-void-drivers-gpu-drm-tiny-repaper-v1-1-9d8d10f0d52f@google.com>
+Subject: [PATCH] drm/repaper: fix -Wvoid-pointer-to-enum-cast warning
+From:   Justin Stitt <justinstitt@google.com>
+To:     "=?utf-8?q?Noralf_Tr=C3=B8nnes?=" <noralf@tronnes.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,113 +78,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 9:23=E2=80=AFAM Richard Fitzgerald
-<rf@opensource.cirrus.com> wrote:
->
-> Add test cases for testing the string_stream feature that appends a
-> newline to strings that do not already end with a newline.
->
-> string_stream_no_auto_newline_test() tests with this feature disabled.
-> Newlines should not be added or dropped.
->
-> string_stream_auto_newline_test() tests with this feature enabled.
-> Newlines should be added to lines that do not end with a newline.
->
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+When building with clang 18 I see the following warning:
+|       drivers/gpu/drm/tiny/repaper.c:952:11: warning: cast to smaller integer
+|       type 'enum repaper_model' from 'const void *' [-Wvoid-pointer-to-enum-cast]
+|         952 |                 model = (enum repaper_model)match;
+|
 
-Hello!
+This is due to the fact that `match` is a void* while `enum repaper_model`
+has the size of an int.
 
-These two cases seem very clean to me. I appreciate the organization
-and commenting on the tests.
+Add uintptr_t cast to silence clang warning while also keeping enum cast
+for readability and consistency with other `model` assignment just a
+few lines below:
+|       model = (enum repaper_model)spi_id->driver_data;
 
-Reviewed-by: Rae Moar <rmoar@google.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1910
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+ drivers/gpu/drm/tiny/repaper.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks!
--Rae
+diff --git a/drivers/gpu/drm/tiny/repaper.c b/drivers/gpu/drm/tiny/repaper.c
+index c2677d081a7b..165f2099e7d8 100644
+--- a/drivers/gpu/drm/tiny/repaper.c
++++ b/drivers/gpu/drm/tiny/repaper.c
+@@ -949,7 +949,7 @@ static int repaper_probe(struct spi_device *spi)
+ 
+ 	match = device_get_match_data(dev);
+ 	if (match) {
+-		model = (enum repaper_model)match;
++		model = (enum repaper_model)(uintptr_t)match;
+ 	} else {
+ 		spi_id = spi_get_device_id(spi);
+ 		model = (enum repaper_model)spi_id->driver_data;
 
-> ---
->  lib/kunit/string-stream-test.c | 51 ++++++++++++++++++++++++++++++++++
->  1 file changed, 51 insertions(+)
->
-> diff --git a/lib/kunit/string-stream-test.c b/lib/kunit/string-stream-tes=
-t.c
-> index efe13e3322b5..46c2ac162fe8 100644
-> --- a/lib/kunit/string-stream-test.c
-> +++ b/lib/kunit/string-stream-test.c
-> @@ -23,6 +23,7 @@ static void string_stream_init_test(struct kunit *test)
->         KUNIT_EXPECT_TRUE(test, list_empty(&stream->fragments));
->         KUNIT_EXPECT_PTR_EQ(test, stream->test, test);
->         KUNIT_EXPECT_EQ(test, stream->gfp, GFP_KERNEL);
-> +       KUNIT_EXPECT_FALSE(test, stream->append_newlines);
->
->         KUNIT_EXPECT_TRUE(test, string_stream_is_empty(stream));
->  }
-> @@ -226,12 +227,62 @@ static void string_stream_append_empty_string_test(=
-struct kunit *test)
->         KUNIT_EXPECT_STREQ(test, string_stream_get_string(stream), "Add t=
-his line");
->  }
->
-> +/* Adding strings without automatic newline appending */
-> +static void string_stream_no_auto_newline_test(struct kunit *test)
-> +{
-> +       struct string_stream *stream;
-> +
-> +       stream =3D alloc_string_stream(test, GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, stream);
-> +
-> +       /*
-> +        * Add some strings with and without newlines. All formatted
-> +        * newlines should be preserved. No extra newlines should be
-> +        * added.
-> +        */
-> +       string_stream_add(stream, "One");
-> +       string_stream_add(stream, "Two\n");
-> +       string_stream_add(stream, "%s\n", "Three");
-> +       string_stream_add(stream, "Four");
-> +       KUNIT_EXPECT_STREQ(test, string_stream_get_string(stream),
-> +                          "OneTwo\nThree\nFour");
-> +}
-> +
-> +/* Adding strings with automatic newline appending */
-> +static void string_stream_auto_newline_test(struct kunit *test)
-> +{
-> +       struct string_stream *stream;
-> +
-> +       stream =3D alloc_string_stream(test, GFP_KERNEL);
-> +       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, stream);
-> +
-> +       string_stream_set_append_newlines(stream, true);
-> +       KUNIT_EXPECT_TRUE(test, stream->append_newlines);
-> +
-> +       /*
-> +        * Add some strings with and without newlines. Newlines should
-> +        * be appended to lines that do not end with \n, but newlines
-> +        * resulting from the formatting should not be changed.
-> +        */
-> +       string_stream_add(stream, "One");
-> +       string_stream_add(stream, "Two\n");
-> +       string_stream_add(stream, "%s\n", "Three");
-> +       string_stream_add(stream, "%s", "Four\n");
-> +       string_stream_add(stream, "Five\n%s", "Six");
-> +       string_stream_add(stream, "Seven\n\n");
-> +       string_stream_add(stream, "Eight");
-> +       KUNIT_EXPECT_STREQ(test, string_stream_get_string(stream),
-> +                          "One\nTwo\nThree\nFour\nFive\nSix\nSeven\n\nEi=
-ght\n");
-> +}
-> +
->  static struct kunit_case string_stream_test_cases[] =3D {
->         KUNIT_CASE(string_stream_init_test),
->         KUNIT_CASE(string_stream_line_add_test),
->         KUNIT_CASE(string_stream_variable_length_line_test),
->         KUNIT_CASE(string_stream_append_test),
->         KUNIT_CASE(string_stream_append_empty_string_test),
-> +       KUNIT_CASE(string_stream_no_auto_newline_test),
-> +       KUNIT_CASE(string_stream_auto_newline_test),
->         {}
->  };
->
-> --
-> 2.30.2
->
+---
+base-commit: 2ccdd1b13c591d306f0401d98dedc4bdcd02b421
+change-id: 20230816-void-drivers-gpu-drm-tiny-repaper-a08321cd99d7
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
