@@ -2,123 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D671377D9ED
+	by mail.lfdr.de (Postfix) with ESMTP id 8C63977D9EC
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 07:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241967AbjHPFou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 01:44:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45138 "EHLO
+        id S241962AbjHPFor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 01:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241950AbjHPFol (ORCPT
+        with ESMTP id S241947AbjHPFoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 01:44:41 -0400
-Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D63F94
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 22:44:39 -0700 (PDT)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 76401C009; Wed, 16 Aug 2023 07:44:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1692164677; bh=4gbF64ZAps2tu8Us8hVmy7bZFfqOLG3YAt1/kY1ChvI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gxpolGnipyoWx6NOs1Wo2RpVLOc+yxa4jjFF12DjfWBz8Auah8rAfmB8pHTN3YuGu
-         eLs5+UdNOMA9lhc71/oJTy2R9g1UIO11cPq2Z3tkaFLxJ8ytoyZ1pVn6wYv0CqbjFr
-         QpIfTqw060s51OxpvNjQ7V49+nI3W2kebtvnxWk2IDtleiW+HeT/l/ukow9vtA+qRD
-         vk8aWqdxw5A0qVyTGqm7i3CwvQY5nlCPAJH/04DeMhfpdFUmnOlmz9lFpuk6tOvyLG
-         lgvW9zea711VF9wFQMFXnZbbkOe8AalL/QbxF4gTQAC1p1k/tUxJlwSAyQ8RPrBpiB
-         Gik41FMsf2v9Q==
+        Wed, 16 Aug 2023 01:44:30 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF6E94
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 22:44:29 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b974031aeaso96328021fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 22:44:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692164667; x=1692769467;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=p1Cm3rJor+XGdM+JIjydBHGbLEQZZ1g1LuWvc+gZ0Ws=;
+        b=aRueGjQacY6wEgWZGOweUYdzMfdD0aYJNkkXYRhF4sNem4ZuqZ0eALGamCCY9cRVfd
+         CeN4vPFV/aBN+BL3bnrRR5hZyZxd33Umc7ORjtrImrxYofsVh5EBK7/gu0PK/0iIJgzm
+         L4PA1UjhUYi9DEp/canKyjkmCSrJb5pe5YZhWU9xGHfzzWHhgDfKGjHnUwCI0YLnvSvK
+         /PrwgXJHZi1TIZIMhnT9eZu3MxYscEwUqAPzV8FxWt39NH2GbQ67x2sVhrcG4e+hhN6O
+         Q1ZwScyBzhZcfAKpMIs90B/oKNmGIhgqH5pFU4cPxfs7YKG34yJYCrscL7bwF9Sge9TJ
+         fTzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692164667; x=1692769467;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=p1Cm3rJor+XGdM+JIjydBHGbLEQZZ1g1LuWvc+gZ0Ws=;
+        b=MUGf3AXYBKR1Jju725yWvKta7j5yNC6QuJ0qjWDyQDoDpSB16JM0A9cxb/QNMyD1d+
+         kWBMHJSmulMnWsT+enU9/QQymGfmtBvXbmpawYv3fl0KOsejdwUyMW6s/IM/vsUJ3mNq
+         uQUWbDUsa7/PXuOyRKFAn3jLjdZLeIVW5X8Uo1QxkkQm7PUY0crrORULedpt0zkR3QZs
+         RhuLHogYKpGcPG4OrHhDPLlrA6oqcfH2MJd2xgpwzYeTBEfkhKG+28i4MZ9/RsZxsW3/
+         2hm99Qz+WmULYkM7MYjxyAq1S7Fhf9xLM9g8xHGF7xuq8GPCi9H0adDmyjhAsqhvI1hO
+         3Yag==
+X-Gm-Message-State: AOJu0YyaPe/vpQFqchWmnhNSzQRvlOMygrcxavBBcdTlciaG6j3kEGI6
+        lrusXEz5wbKE8cgkBKC+gWJgyA==
+X-Google-Smtp-Source: AGHT+IENB/+/1yCrgGPWlxAVOLiWjZiIUENth9HghBcpRunhKp0CjXWEK4UXuzlDgMFSy68BFO/+ZA==
+X-Received: by 2002:a2e:9b0d:0:b0:2b9:e501:a6a6 with SMTP id u13-20020a2e9b0d000000b002b9e501a6a6mr819956lji.30.1692164667394;
+        Tue, 15 Aug 2023 22:44:27 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.214.188])
+        by smtp.gmail.com with ESMTPSA id k3-20020a5d6283000000b00317643a93f4sm19907832wru.96.2023.08.15.22.44.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Aug 2023 22:44:26 -0700 (PDT)
+Message-ID: <a77403f5-8b99-3012-3843-1999ee8d12ce@linaro.org>
+Date:   Wed, 16 Aug 2023 07:44:25 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v4 2/3] dt-bindings: usb: snps,dwc3: Add
+ runtime-suspend-on-usb-suspend property
+Content-Language: en-US
+To:     Elson Roy Serrao <quic_eserrao@quicinc.com>,
+        gregkh@linuxfoundation.org, Thinh.Nguyen@synopsys.com,
+        rogerq@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+References: <20230814185043.9252-1-quic_eserrao@quicinc.com>
+ <20230814185043.9252-3-quic_eserrao@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230814185043.9252-3-quic_eserrao@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
-Received: from odin (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id 2C5C1C009;
-        Wed, 16 Aug 2023 07:44:32 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1692164676; bh=4gbF64ZAps2tu8Us8hVmy7bZFfqOLG3YAt1/kY1ChvI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Le9BCk3BgokIeFhQZ+E2qn5OLRfVeXZzjZj6lNANgyEGwg69oTq4rzoHh3BlR2+ky
-         VK9y9v0mZn9j0gHRq4yv8ICwuk5hMQqiuVQv1K7ifIlEASm3suPqJ8iJLyHZVw4yDL
-         mAWxPdPvf505aXF6nXW8ZOLxRLR9y/01xn948nv0roYzxswTm08gkUYHE6offRFNMr
-         ANBAlzKf0paytsaUQdQ2/XLSVoIwjgEsXq4IAIGcnXPkoCpzDSwfk8t8Wm/4tyKCNM
-         ect0SxgtjREzw1KK+2kTc+huXX6/Xf0xmSgO9ulctpEPmqUgJpVa0OFv9UKN8Doo0g
-         p2bvpBnLDL9ug==
-Received: from localhost (odin [local])
-        by odin (OpenSMTPD) with ESMTPA id 014ee523;
-        Wed, 16 Aug 2023 05:44:28 +0000 (UTC)
-Date:   Wed, 16 Aug 2023 14:44:13 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Jeff Xu <jeffxu@google.com>
-Cc:     Aleksa Sarai <cyphar@cyphar.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Verkamp <dverkamp@chromium.org>,
-        Christian Brauner <brauner@kernel.org>, stable@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] memfd: replace ratcheting feature from
- vm.memfd_noexec with hierarchy
-Message-ID: <ZNxiLe_jkXpxh3QU@codewreck.org>
-References: <20230814-memfd-vm-noexec-uapi-fixes-v2-0-7ff9e3e10ba6@cyphar.com>
- <20230814-memfd-vm-noexec-uapi-fixes-v2-4-7ff9e3e10ba6@cyphar.com>
- <CALmYWFvxLee5+RyLh=vo6kpwMVS-_C7BJ9kmTPDa2tetgHOHPw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CALmYWFvxLee5+RyLh=vo6kpwMVS-_C7BJ9kmTPDa2tetgHOHPw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jeff Xu wrote on Tue, Aug 15, 2023 at 10:13:18PM -0700:
-> > Given that it is possible for CAP_SYS_ADMIN users to create executable
-> > binaries without memfd_create(2) and without touching the host
-> > filesystem (not to mention the many other things a CAP_SYS_ADMIN process
-> > would be able to do that would be equivalent or worse), it seems strange
-> > to cause a fair amount of headache to admins when there doesn't appear
-> > to be an actual security benefit to blocking this. There appear to be
-> > concerns about confused-deputy-esque attacks[2] but a confused deputy that
-> > can write to arbitrary sysctls is a bigger security issue than
-> > executable memfds.
-> >
-> Something to point out: The demo code might be enough to prove your
-> case in other distributions, however, in ChromeOS, you can't run this
-> code. The executable in ChromeOS are all from known sources and
-> verified at boot.
-> If an attacker could run this code in ChromeOS, that means the
-> attacker already acquired arbitrary code execution through other ways,
-> at that point, the attacker no longer needs to create/find an
-> executable memfd, they already have the vehicle. You can't use an
-> example of an attacker already running arbitrary code to prove that
-> disable downgrading is useless.
-> I agree it is a big problem that an attacker already can modify a
-> sysctl.  Assuming this can happen by controlling arguments passed into
-> sysctl, at the time, the attacker might not have full arbitrary code
-> execution yet, that is the reason the original design is so
-> restrictive.
+On 14/08/2023 20:50, Elson Roy Serrao wrote:
+> This property allows dwc3 runtime suspend when bus suspend interrupt
+> is received even with cable connected. This would allow the dwc3
+> controller to enter low power mode during bus suspend scenario.
+> 
+> This property would particularly benefit dwc3 IPs where hibernation is
+> not enabled and the dwc3 low power mode entry/exit is handled by the
+> glue driver. The assumption here is that the platform using this dt
+> property is capable of detecting resume events to bring the controller
+> out of suspend.
+> 
+> Signed-off-by: Elson Roy Serrao <quic_eserrao@quicinc.com>
+> ---
+>  Documentation/devicetree/bindings/usb/snps,dwc3.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> index a696f23730d3..e19a60d06d2b 100644
+> --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
+> @@ -403,6 +403,11 @@ properties:
+>      description:
+>        Enable USB remote wakeup.
+>  
+> +  snps,runtime-suspend-on-usb-suspend:
+> +    description:
+> +      If True then dwc3 runtime suspend is allowed during bus suspend
+> +      case even with the USB cable connected.
 
-I don't understand how you can say an attacker cannot run arbitrary code
-within a process here, yet assert that they'd somehow run memfd_create +
-execveat on it if this sysctl is lowered -- the two look equivalent to
-me?
+This was no tested... but anyway, this is no a DT property but OS
+policy. There is no such thing as "runtime suspend" in the hardware,
+because you describe one particular OS.
 
-CAP_SYS_ADMIN is a kludge of a capability that pretty much gives root as
-soon as you can run arbitrary code (just have a look at the various
-container escape example when the capability is given); I see little
-point in trying to harden just this here.
-It'd make more sense to limit all sysctl modifications in the context
-you're thinking of through e.g. selinux or another LSM.
-
-(in the context of users making their own containers, my suggestion is
-always to never use CAP_SYS_ADMIN, or if they must give it to a separate
-minimal container where they can limit user interaction)
+Sorry, no a DT property, drop the change entirely.
 
 
-FWIW, I also think the proposed =2 behaviour makes more sense, but this
-is something we already discussed last month so I won't come back to it
-as not really involved here.
+Best regards,
+Krzysztof
 
--- 
-Dominique Martinet | Asmadeus
