@@ -2,124 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C73D177DCF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C95BD77DCF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243172AbjHPJHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 05:07:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40448 "EHLO
+        id S243215AbjHPJI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 05:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243022AbjHPJHh (ORCPT
+        with ESMTP id S243214AbjHPJIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 05:07:37 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB0D19A4;
-        Wed, 16 Aug 2023 02:07:36 -0700 (PDT)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37G3jWvo017037;
-        Wed, 16 Aug 2023 02:07:26 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=a6w+d+NKHXM64yo+EW8SiLVMC8o1+XmhvT/M9ZyrlKk=;
- b=ladfCfTA3PEl8myWKtiRGdnwesfBZ4nzV2b12TOtfaO57P/IEhYpo11fMURJs0Qg9Ghf
- 2FrSfdgvryyMl/p6eGkT8ObPZ+ssO8BkYFhTPhfghoj2n+jdwcVre9CBk7TPa32Gnekr
- ni3kDXG+91SHfHPPY31uOZjpfhwTXV0jL+YYq6EfSIB4+jjgVvtH8uG3W5yER9AsZ0lA
- 1LvuvhLQyiXP5FqdS9yH+48zXJ/t4dqFQxTO5Qw74kZfHZ75V3gBnLzukDjuFQdrACXE
- i85XwR6AqjnO5es5iHwz4ryIIkBZmeG6WmNoljOIUdzoI5oA+/lAJxzin7mqm6VfF4df Hw== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3sgptkrw8x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 02:07:26 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 16 Aug
- 2023 02:07:24 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Wed, 16 Aug 2023 02:07:24 -0700
-Received: from marvell-OptiPlex-7090.marvell.com (unknown [10.28.36.165])
-        by maili.marvell.com (Postfix) with ESMTP id 7D9643F7043;
-        Wed, 16 Aug 2023 02:07:20 -0700 (PDT)
-From:   Ratheesh Kannoth <rkannoth@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <rkannoth@marvell.com>,
-        "Alexander Lobakin" <aleksander.lobakin@intel.com>
-Subject: [PATCH v2 net] octeontx2-pf: fix page_pool creation fail for rings > 32k
-Date:   Wed, 16 Aug 2023 14:37:18 +0530
-Message-ID: <20230816090718.2481252-1-rkannoth@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 16 Aug 2023 05:08:09 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78851BF8
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:08:08 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-589e590af61so46361087b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:08:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf.com; s=google; t=1692176888; x=1692781688;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B4E6y+EsBZT+xa8sFtpV5pHAhyhxp/Z2XFWH1I0j3iY=;
+        b=k2SpWvwJV96h7cjYIgbcAulHgYn/SeqI69Ta92U7nJxV/Rb2epbSBTK4byp3Rmssvy
+         ei8z6iSXMVHSuo9TokjCpvjSPGSrbC84gYidM3i3g2t2yLwwqI0qSiIS5IREK77PLAPb
+         JKNt6V7YGovc6cwJIsYByqMXtZP+eQ71Ncz/boUHrTWcDW0vrseG6ObaXC55iGJ3BvD2
+         cCbgJSKNYm+8nN5DwbzLHiT6PrS43DOORmHJ6jQZmgT9DYcEHzk9+Mddz98cGsejuLB6
+         v/Cj7qogF/GlfA7E8JYrq+Zx+JiQ3Ms3KjTm++H++s6mQB+KMUbKKtiu7aNL5ZUcuFiu
+         YH9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692176888; x=1692781688;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B4E6y+EsBZT+xa8sFtpV5pHAhyhxp/Z2XFWH1I0j3iY=;
+        b=BDAGol61tOq6EXqK1ENNjR5vNVUtc3BVcM7GEzYML3sUtRxYkFABGYSqLE7wKJxXRz
+         cq62LzOAFJyCEyU3d2cJc9UjXtA7XlYF0m91BvpPwtcbpjP4lGHVp/s1C57cwZPJWf8e
+         pCtjOyj2hYyYrPu8y//CigpEiRI4Q7oxdNyDWWbBNsDe/CuJbAk8UrKCk6Ui3RdV2DtH
+         l8J39MpQk01PhtqF9uYmmKS4YSjGDoG3Uag+55Fk3B14eSd527hRU0gigS6dI2EApwaq
+         1/VqWuI0CW8IWR3CH3j4f7crpIkdcAr2Zn6c4QJ9VZF30vN50kybgo0EFJsZhEOL+lfw
+         cwdw==
+X-Gm-Message-State: AOJu0Yys9Fxw6kdu9cycMq8w0U90PYmXFttZ1AL3OYvpIC1+z78ezBde
+        TvLeM3X0Pk44H3k936QlIXsyFY8SD5irGBtDZctw+A==
+X-Google-Smtp-Source: AGHT+IHs3/3TrKxg3s9PVZt7PqVQ46mOv8b7b4u/wLYVkSAhu+ZR5b9bIvK6MhNsKqncE6TPb64oJar7x9WLjBTwuTA=
+X-Received: by 2002:a0d:d649:0:b0:583:7564:49de with SMTP id
+ y70-20020a0dd649000000b00583756449demr1616392ywd.3.1692176887862; Wed, 16 Aug
+ 2023 02:08:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: Sig4uvGjuF9BDwIfz_e4Frf2RFlURHnS
-X-Proofpoint-GUID: Sig4uvGjuF9BDwIfz_e4Frf2RFlURHnS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-16_07,2023-08-15_02,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230803092308.79197-1-lma@semihalf.com>
+In-Reply-To: <20230803092308.79197-1-lma@semihalf.com>
+From:   Lukasz Majczak <lma@semihalf.com>
+Date:   Wed, 16 Aug 2023 11:07:56 +0200
+Message-ID: <CAFJ_xbqoVjXQXJZ0krbsRqUOe3hLNubi12r_q=idSgkfeV=LRQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/dp_mst: Fix NULL deref in get_mst_branch_device_by_guid_helper()
+To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc:     Guenter Roeck <linux@roeck-us.net>, upstream@semihalf.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-octeontx2 driver calls page_pool_create() during driver probe()
-and fails if queue size > 32k. Page pool infra uses these buffers
-as shock absorbers for burst traffic. These pages are pinned down
-over time as working sets varies, due to the recycling nature
-of page pool, given page pool (currently) don't have a shrinker
-mechanism, the pages remain pinned down in ptr_ring.
-Instead of clamping page_pool size to 32k at
-most, limit it even more to 2k to avoid wasting memory.
+czw., 3 sie 2023 o 11:23 Lukasz Majczak <lma@semihalf.com> napisa=C5=82(a):
+>
+> Check mgr->mst_primary, before passing it to
+> the get_mst_branch_device_by_guid_helper(), otherwise NULL dereference
+> may occur in the call to memcpy() and cause:
+>
+> [12579.365869] BUG: kernel NULL pointer dereference, address: 00000000000=
+00049
+> [12579.365878] #PF: supervisor read access in kernel mode
+> [12579.365880] #PF: error_code(0x0000) - not-present page
+> [12579.365882] PGD 0 P4D 0
+> [12579.365887] Oops: 0000 [#1] PREEMPT SMP NOPTI
+> ...
+> [12579.365895] Workqueue: events_long drm_dp_mst_up_req_work
+> [12579.365899] RIP: 0010:memcmp+0xb/0x29
+> [12579.365921] Call Trace:
+> [12579.365927] get_mst_branch_device_by_guid_helper+0x22/0x64
+> [12579.365930] drm_dp_mst_up_req_work+0x137/0x416
+> [12579.365933] process_one_work+0x1d0/0x419
+> [12579.365935] worker_thread+0x11a/0x289
+> [12579.365938] kthread+0x13e/0x14f
+> [12579.365941] ? process_one_work+0x419/0x419
+> [12579.365943] ? kthread_blkcg+0x31/0x31
+> [12579.365946] ret_from_fork+0x1f/0x30
+>
+> Similar check is done in e.g: drm_dp_mst_topology_get_mstb_validated().
+>
+> Fixes: 5e93b8208d3c ("drm/dp/mst: move GUID storage from mgr, port to onl=
+y mst branch")
+> Cc: <stable@vger.kernel.org> # 4.14+
+> Signed-off-by: Lukasz Majczak <lma@semihalf.com>
+> ---
+>  drivers/gpu/drm/display/drm_dp_mst_topology.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/display/drm_dp_mst_topology.c b/drivers/gpu/=
+drm/display/drm_dp_mst_topology.c
+> index ed96cfcfa304..703cd97b1d11 100644
+> --- a/drivers/gpu/drm/display/drm_dp_mst_topology.c
+> +++ b/drivers/gpu/drm/display/drm_dp_mst_topology.c
+> @@ -2595,19 +2595,19 @@ static struct drm_dp_mst_branch *
+>  drm_dp_get_mst_branch_device_by_guid(struct drm_dp_mst_topology_mgr *mgr=
+,
+>                                      const uint8_t *guid)
+>  {
+> -       struct drm_dp_mst_branch *mstb;
+> +       struct drm_dp_mst_branch *mstb =3D NULL;
+>         int ret;
+>
+>         /* find the port by iterating down */
+>         mutex_lock(&mgr->lock);
+> -
+> -       mstb =3D get_mst_branch_device_by_guid_helper(mgr->mst_primary, g=
+uid);
+> -       if (mstb) {
+> -               ret =3D drm_dp_mst_topology_try_get_mstb(mstb);
+> -               if (!ret)
+> -                       mstb =3D NULL;
+> +       if (mgr->mst_primary) {
+> +               mstb =3D get_mst_branch_device_by_guid_helper(mgr->mst_pr=
+imary, guid);
+> +               if (mstb) {
+> +                       ret =3D drm_dp_mst_topology_try_get_mstb(mstb);
+> +                       if (!ret)
+> +                               mstb =3D NULL;
+> +               }
+>         }
+> -
+>         mutex_unlock(&mgr->lock);
+>         return mstb;
+>  }
+> --
+> 2.41.0.640.ga95def55d0-goog
+>
+Hi,
 
-This have been tested on octeontx2 CN10KA hardware.
-TCP and UDP tests using iperf shows not performance regressions.
+Is there anything more I should do regarding these changes?
 
-Fixes: b2e3406a38f0 ("octeontx2-pf: Add support for page pool")
-Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-Reviewed-by: Sunil Goutham <sgoutham@marvell.com>
-Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
----
-
-ChangeLogs:
-
-vi->v2: Commit message changes and typo fixes
-v0->v1: Commit message changes.
----
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c | 2 +-
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-index 77c8f650f7ac..fc8a1220eb39 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-@@ -1432,7 +1432,7 @@ int otx2_pool_init(struct otx2_nic *pfvf, u16 pool_id,
- 	}
- 
- 	pp_params.flags = PP_FLAG_PAGE_FRAG | PP_FLAG_DMA_MAP;
--	pp_params.pool_size = numptrs;
-+	pp_params.pool_size = OTX2_PAGE_POOL_SZ;
- 	pp_params.nid = NUMA_NO_NODE;
- 	pp_params.dev = pfvf->dev;
- 	pp_params.dma_dir = DMA_FROM_DEVICE;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-index ba8091131ec0..f6fea43617ff 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-@@ -30,6 +30,8 @@
- #include <rvu_trace.h>
- #include "qos.h"
- 
-+#define OTX2_PAGE_POOL_SZ 2048
-+
- /* IPv4 flag more fragment bit */
- #define IPV4_FLAG_MORE				0x20
- 
--- 
-2.25.1
-
+Best regards,
+Lukasz
