@@ -2,52 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF6077D857
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 04:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5D377D85F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 04:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241258AbjHPCS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 22:18:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50624 "EHLO
+        id S241271AbjHPCUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 22:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241292AbjHPCSO (ORCPT
+        with ESMTP id S241235AbjHPCUB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 22:18:14 -0400
-Received: from mail-pl1-f208.google.com (mail-pl1-f208.google.com [209.85.214.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF99211D
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:17:53 -0700 (PDT)
-Received: by mail-pl1-f208.google.com with SMTP id d9443c01a7336-1bdcdbc356dso39547895ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:17:53 -0700 (PDT)
+        Tue, 15 Aug 2023 22:20:01 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9928019B9
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:20:00 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99bf91956cdso741378166b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 19:20:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692152399; x=1692757199;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V37BsPFrQfflT/FozBg7eajhwQW33aYWS46wbu2Ypkg=;
+        b=0QZSUunPFCDBu7ePJO+ZUAJzTXgigsi5VNYuL05PmuqaCgP+zWcsDOoK4uBnj+Gg1B
+         xiu4JLzGNSuShm+gtMpqjUgpqeK36gFrPFC8krbioG1dOUspb6EXb8NiXABp6ifpZvJL
+         nBWvhdyDy9Cjrc6JGod54iQ1PqCr9i3QhL/7EAY9AgeqxMV1VMzo01SQtoKrD56q6GEc
+         iljoQajqNzWVfbgnMusqhIDqOZrGH6GWVvoplEdL5ZrGaEs37M9t4k1R5zgdAMLawa1A
+         7qFUznQjxAotmuX9LT0Xu8BuoXq3POeGNydhcfsOZ/7mojILhRLmA8/S2vhzLXnFN7qA
+         p1xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692152273; x=1692757073;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=X1uA/aWqWfQQStzLak2n/ZM3Onur8CIAEdPF1VtgWpg=;
-        b=jjiJ2wQJ1cRmmF4BpSVjddBQ5NGXGUZm0mqPkuMQqZKC9VF6U0lVN+HZTbX6fWzuBz
-         VjGC0kZ/pi8Tda7u+GomINZSk4fIQ9DyVIVjxrouBTbkEbBAjstp4JXNmBCQ6Yo9AoTh
-         s6LTykxLj/lWdaa6AYgRyOC57+5woHM9cGqiWvzzE868GHLgatO8VzjvI3jCYRs6+esM
-         WGGpNwRENsyvdaXo5mIYqW+wLJdhcumfKbmFEAVOmhlnaMyYpC/kj3pJ8dfjOHssDqdS
-         +DHZCPza2DJphhqt2fhJuXx8e0FZd2uJGyWd5GVMUAWERHr3ApJ8sxR/xfPzoVB0sayl
-         d3hA==
-X-Gm-Message-State: AOJu0YyylJ6WRiffsT9vO8SSZoi7cwHbTQP8ivOoveFWgrC4TM9Rsc8A
-        2C+NSGlgYXu9vv8+vVLTl0+zRI2AkW37FJ6Rn3smzwP4WDn9
-X-Google-Smtp-Source: AGHT+IHu4UHeL0j053E/P8XFSlVdjgzsz6kM4pt+NYnBY5oPhox6ysb1cFKGQRsvXxHZ/KGdNzMLVdA/WiOm037V12sXcxZoyAVW
+        d=1e100.net; s=20221208; t=1692152399; x=1692757199;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V37BsPFrQfflT/FozBg7eajhwQW33aYWS46wbu2Ypkg=;
+        b=A1jcmOLSeaXUSpXEncJ+0j1IHk1pXNmMTequ7529otHxwDguvSx41ctDhfgs7Zn7in
+         oWtqsuiRw+HUCLE5Y1OegddJ+aCaH46dRrx2sFE52KgwONefpdLLvtcLrThVkrg22zqV
+         kap0jFL4SCGwebDDVgagg0m4flcULZETt3are3tcuNZV7QPgSf3EsGcOJ394+g6unlu3
+         v9TaOIIXSSkw34+IyWMo1epiVkBu7B1eNdHrGFvmGCt0C2DuPpMJ0QamFBm1kFq+mmZj
+         W7/EeiuxmF6I16j0CDGyFmbk27CWNfQB9TF6zEaAxKgMO+/SPLcFD8E8f04cQ44SIQw1
+         aUNQ==
+X-Gm-Message-State: AOJu0Yx+zvb/hJz9FyQFKtUy0RGUbtNXm370pIu/cWqfpXzH1fSAvBCx
+        Fju4QRMgOWzRSVJFCfumlzWcQpaVKKVxCyeDJzbFRg==
+X-Google-Smtp-Source: AGHT+IGju8euBER6YklL00LW/Ec3/FON2TX1HNNygdv92iS7R2wg8oOA36FqPIeuOss8xS3y2AIWArv/piWWChe07I4=
+X-Received: by 2002:a17:906:9bd4:b0:988:f1ec:7400 with SMTP id
+ de20-20020a1709069bd400b00988f1ec7400mr323021ejc.36.1692152398846; Tue, 15
+ Aug 2023 19:19:58 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:da88:b0:1b8:a555:7615 with SMTP id
- j8-20020a170902da8800b001b8a5557615mr224890plx.9.1692152273063; Tue, 15 Aug
- 2023 19:17:53 -0700 (PDT)
-Date:   Tue, 15 Aug 2023 19:17:52 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002455cc060300e766@google.com>
-Subject: [syzbot] [block?] [hfs?] general protection fault in blk_stat_add
-From:   syzbot <syzbot+a6eebfd633f0f4630a40@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <CAJD7tkYZxjAHrodVDK=wmz-sULJrq2VhC_5ecRP7T-KiaOcTuw@mail.gmail.com>
+ <CALvZod46Cz_=5UgiyAKM+VgKyk=KJCqDqXu91=9uHy7-2wk53g@mail.gmail.com>
+ <CAJD7tkY-ezyYebvcs=8Z_zrw2UVW8jf2WvP1G8tu2rT=2sMnAA@mail.gmail.com>
+ <CALvZod5fH9xu_+6x85K38f63GfKGWD1LqtD2R4d09xmDtLB7ew@mail.gmail.com>
+ <ZNdEaw2nktq1NfmH@dhcp22.suse.cz> <CAJD7tkaFHgc3eN1K1wYsQFWMLu4+Frf9DJ-5HOja2nC20Es9Dw@mail.gmail.com>
+ <ZNrDWqfjXtAYhnvT@slm.duckdns.org> <CAJD7tkYBFz-gZ2QsHxUMT=t0KNXs66S-zzMPebadHx9zaG0Q3w@mail.gmail.com>
+ <ZNrITZVTf2EILRJq@slm.duckdns.org> <CAJD7tkaXwoF-faApweAmm7Db7jAuS3EO7hVvdyVtqW_rE+T9Vg@mail.gmail.com>
+ <ZNrLO5PAEZw4yjI9@slm.duckdns.org> <CAJD7tkYgCySTX28zK9GZiWwsabR4nv7M2hQ57y12si-fqtv7zg@mail.gmail.com>
+ <CALvZod6KRxiDzrppCgx+=SHg2+96nFE5crwXCKwe9PZbWM_6cQ@mail.gmail.com>
+ <CAJD7tkaUzhvZPohpo1F8TUKRPuXH7bjDeg9VCzN2CbywQbRutQ@mail.gmail.com> <CALvZod6HUtYhDaXiwXSrcwfxLSrZ37sZhKY1Mg4kmpDFk13aYw@mail.gmail.com>
+In-Reply-To: <CALvZod6HUtYhDaXiwXSrcwfxLSrZ37sZhKY1Mg4kmpDFk13aYw@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 15 Aug 2023 19:19:20 -0700
+Message-ID: <CAJD7tkYzr2cg-aQ899vfqB4jR7iP83t8f-Z4AH8d9iW-yw-nnQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcg: provide accurate stats for userspace reads
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Ivan Babrou <ivan@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,132 +84,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Aug 15, 2023 at 6:14=E2=80=AFPM Shakeel Butt <shakeelb@google.com> =
+wrote:
+>
+> On Tue, Aug 15, 2023 at 5:29=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
+m> wrote:
+> >
+> [...]
+> > >
+> > > I thought we already reached the decision on how to proceed here. Let
+> > > me summarize what I think we should do:
+> > >
+> > > 1. Completely remove the sync flush from stat files read from userspa=
+ce.
+> > > 2. Provide a separate way/interface to explicitly flush stats for
+> > > users who want more accurate stats and can pay the cost. This is
+> > > similar to the stat_refresh interface.
+> > > 3. Keep the 2 sec periodic stats flusher.
+> >
+> > I think this solution is suboptimal to be honest, I think we can do bet=
+ter.
+> >
+> > With recent improvements to spinlocks/mutexes, and flushers becoming
+> > sleepable, I think a better solution would be to remove unified
+> > flushing and let everyone only flush the subtree they care about. Sync
+> > flushing becomes much better (unless you're flushing root ofc), and
+> > concurrent flushing wouldn't cause too many problems (ideally no
+> > thundering herd, and rstat lock can be dropped at cpu boundaries in
+> > cgroup_rstat_flush_locked()).
+> >
+> > If we do this, stat reads can be much faster as Ivan demonstrated with
+> > his patch that only flushes the cgroup being read, and we do not
+> > sacrifice accuracy as we never skip flushing. We also do not need a
+> > separate interface for explicit refresh.
+> >
+> > In all cases, we need to keep the 2 sec periodic flusher. What we need
+> > to figure out if we remove unified flushing is:
+> >
+> > 1. Handling stats_flush_threshold.
+> > 2. Handling flush_next_time.
+> >
+> > Both of these are global now, and will need to be adapted to
+> > non-unified non-global flushing.
+>
+> The only thing we are disagreeing on is (1) the complete removal of
+> sync flush and an explicit flush interface versus (2) keep doing the
+> sync flush of the subtree.
+>
+> To me (1) seems more optimal particularly for the server use-case
+> where a node controller reads stats of root and as well as cgroups of
+> a couple of top levels (we actually do this internally). Doing flush
+> once explicitly and then reading the stats for all such cgroups seems
+> better to me.
 
-syzbot found the following issue on:
+The problem in (1) is that first of all it's a behavioral change, we
+start having explicit staleness in the stats, and userspace needs to
+adapt by explicitly requesting a flush. A node controller can be
+enlightened to do so, but on a system with a lot of cgroups, if you
+flush once explicitly and iterate through all cgroups, the flush will
+be stale by the time you reach the last cgroup. Keep in mind there are
+also users that read their own stats, figuring out which users need to
+flush explicitly vs. read cached stats is a problem.
 
-HEAD commit:    21ef7b1e17d0 Add linux-next specific files for 20230809
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1475a7a5a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=28e9e38cc16e8f0
-dashboard link: https://syzkaller.appspot.com/bug?extid=a6eebfd633f0f4630a40
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1489cffda80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13bd2969a80000
+Taking a step back, the total work that needs to be done does not
+change with (2). A node controller iterating cgroups and reading their
+stats will do the same amount of flushing, it will just be distributed
+across multiple read syscalls, so shorter intervals in kernel space.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/e961d9a9b52d/disk-21ef7b1e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/f5c9bb17b02c/vmlinux-21ef7b1e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ebef5bdf7465/bzImage-21ef7b1e.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/3565b37f1a37/mount_0.gz
+There are also in-kernel flushers (e.g. reclaim and dirty throttling)
+that will benefit from (2) by reading more accurate stats without
+having to flush the entire tree. The behavior is currently
+indeterministic, you may get fresh or stale stats, you may flush one
+cgroup or 100 cgroups.
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1273906ba80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1173906ba80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1673906ba80000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a6eebfd633f0f4630a40@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
-CPU: 1 PID: 22 Comm: ksoftirqd/1 Not tainted 6.5.0-rc5-next-20230809-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:hlist_unhashed_lockless include/linux/list.h:963 [inline]
-RIP: 0010:timer_pending include/linux/timer.h:168 [inline]
-RIP: 0010:blk_stat_is_active block/blk-stat.h:133 [inline]
-RIP: 0010:blk_stat_add+0x168/0x4f0 block/blk-stat.c:66
-Code: 48 bd 00 00 00 00 00 fc ff df 4d 63 f6 4a 8d 04 f5 00 8a 3b 8c 48 89 44 24 08 e8 73 09 7f fd 48 8d 7b 18 48 89 f8 48 c1 e8 03 <80> 3c 28 00 0f 85 ca 02 00 00 48 8b 43 18 48 85 c0 0f 84 0d 01 00
-RSP: 0018:ffffc900001c7d10 EFLAGS: 00010206
-RAX: 0000000000000003 RBX: 0000000000000000 RCX: 0000000000000100
-RDX: ffff888017643b80 RSI: ffffffff8408be0d RDI: 0000000000000018
-RBP: dffffc0000000000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000022000
-R13: 00000000000195cc R14: 0000000000000001 R15: ffff88801c78d690
-FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005555562206f8 CR3: 000000001be4a000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __blk_mq_end_request_acct block/blk-mq.c:1013 [inline]
- __blk_mq_end_request block/blk-mq.c:1022 [inline]
- blk_mq_end_request+0x2fd/0x3c0 block/blk-mq.c:1038
- lo_complete_rq+0x1c4/0x270 drivers/block/loop.c:370
- blk_complete_reqs+0xb2/0xf0 block/blk-mq.c:1114
- __do_softirq+0x218/0x965 kernel/softirq.c:553
- run_ksoftirqd kernel/softirq.c:921 [inline]
- run_ksoftirqd+0x31/0x60 kernel/softirq.c:913
- smpboot_thread_fn+0x67d/0xa00 kernel/smpboot.c:164
- kthread+0x33a/0x430 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:hlist_unhashed_lockless include/linux/list.h:963 [inline]
-RIP: 0010:timer_pending include/linux/timer.h:168 [inline]
-RIP: 0010:blk_stat_is_active block/blk-stat.h:133 [inline]
-RIP: 0010:blk_stat_add+0x168/0x4f0 block/blk-stat.c:66
-Code: 48 bd 00 00 00 00 00 fc ff df 4d 63 f6 4a 8d 04 f5 00 8a 3b 8c 48 89 44 24 08 e8 73 09 7f fd 48 8d 7b 18 48 89 f8 48 c1 e8 03 <80> 3c 28 00 0f 85 ca 02 00 00 48 8b 43 18 48 85 c0 0f 84 0d 01 00
-RSP: 0018:ffffc900001c7d10 EFLAGS: 00010206
-
-RAX: 0000000000000003 RBX: 0000000000000000 RCX: 0000000000000100
-RDX: ffff888017643b80 RSI: ffffffff8408be0d RDI: 0000000000000018
-RBP: dffffc0000000000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000022000
-R13: 00000000000195cc R14: 0000000000000001 R15: ffff88801c78d690
-FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005555562206f8 CR3: 000000001be4a000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	48 bd 00 00 00 00 00 	movabs $0xdffffc0000000000,%rbp
-   7:	fc ff df
-   a:	4d 63 f6             	movslq %r14d,%r14
-   d:	4a 8d 04 f5 00 8a 3b 	lea    -0x73c47600(,%r14,8),%rax
-  14:	8c
-  15:	48 89 44 24 08       	mov    %rax,0x8(%rsp)
-  1a:	e8 73 09 7f fd       	call   0xfd7f0992
-  1f:	48 8d 7b 18          	lea    0x18(%rbx),%rdi
-  23:	48 89 f8             	mov    %rdi,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	80 3c 28 00          	cmpb   $0x0,(%rax,%rbp,1) <-- trapping instruction
-  2e:	0f 85 ca 02 00 00    	jne    0x2fe
-  34:	48 8b 43 18          	mov    0x18(%rbx),%rax
-  38:	48 85 c0             	test   %rax,%rax
-  3b:	0f                   	.byte 0xf
-  3c:	84                   	.byte 0x84
-  3d:	0d                   	.byte 0xd
-  3e:	01 00                	add    %eax,(%rax)
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+I think with (2) we make less compromises in terms of accuracy and
+determinism, and it's a less disruptive change to userspace.
