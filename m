@@ -2,68 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A544277E02E
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D9E77E038
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244483AbjHPLUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 07:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52718 "EHLO
+        id S244485AbjHPLYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 07:24:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244507AbjHPLUf (ORCPT
+        with ESMTP id S244405AbjHPLXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 07:20:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8EE42112;
-        Wed, 16 Aug 2023 04:20:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4AF6C60C7E;
-        Wed, 16 Aug 2023 11:20:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B80BC433C7;
-        Wed, 16 Aug 2023 11:20:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1692184832;
-        bh=7PKd8VailiTG+UcQPQzzVSV0JwGb9yH8OHJSaPVa+e8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a2Wi6WJORBB/BYftBKtLHHDNb0y0zBdaV39QWOIaHGy0uqrbKbRhH8vrSQouH9zut
-         ubgkwIaT7VUDWye2z5rz3MPZ7pCSrgCsVqDWY/BaAxPt4mbLnOBe+zYV38EW8q4984
-         xaSkneNxcl8sfMG+m0i3SByD3vFAz2gbAmq71CNk=
-Date:   Wed, 16 Aug 2023 13:20:30 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/14] tty: n_tty: cleanup
-Message-ID: <2023081610-define-reason-2e99@gregkh>
-References: <20230816105822.3685-1-jirislaby@kernel.org>
- <1882495c-b16b-10f0-2acf-ee86cf4e031b@kernel.org>
+        Wed, 16 Aug 2023 07:23:44 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1F5822123
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 04:23:43 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 123341063;
+        Wed, 16 Aug 2023 04:24:24 -0700 (PDT)
+Received: from [10.57.90.114] (unknown [10.57.90.114])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 62AD13F762;
+        Wed, 16 Aug 2023 04:23:41 -0700 (PDT)
+Message-ID: <2e076cb5-1e31-10b2-9f33-79a825ac9c11@arm.com>
+Date:   Wed, 16 Aug 2023 12:23:30 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1882495c-b16b-10f0-2acf-ee86cf4e031b@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] perf: ARM_SMMU_V3_PMU should depend on ARM_SMMU_V3
+Content-Language: en-GB
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <0f8ac07472f4161c71247742acb2303f9cf91396.1692113438.git.geert+renesas@glider.be>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <0f8ac07472f4161c71247742acb2303f9cf91396.1692113438.git.geert+renesas@glider.be>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 01:02:11PM +0200, Jiri Slaby wrote:
-> Bah, this series intermixed with old patches in one dir.
+On 2023-08-15 16:36, Geert Uytterhoeven wrote:
+> There is no point in monitoring transactions passing through the SMMU
+> when ARM Ltd. System MMU Version 3 (SMMUv3) Support is disabled.
+> Hence replace the dependency on ARM64 by a dependency on ARM_SMMU_V3
+> (which implies the former).
 > 
-> Patches 1/4 2/4 3/4 4/4 are to be ignored.
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> This caught my eye after commit 7c3f204e544dfa37 ("perf/smmuv3: Remove
+> build dependency on ACPI") in arm64/for-next/core.
 > 
-> OTOH, 01/14 ... 04/14 are a correct part of this series.
+> Perhaps my understanding is wrong? Is there anything to monitor when
+> ARM_SMMU_V3=n?
+
+Yes, at least TBU event 1 still counts bypass transactions even when the 
+SMMU is disabled, so PMCGs can be useful as basic traffic monitors in 
+their own right. Plus the original design intent was that PMCGs may also 
+be implemented by other things that interact with the SMMU, like 
+ATS-capable PCIe root complexes, or devices with their own internal 
+TLBs, thus they could potentially count any manner of 
+implementation-defined events that aren't necessarily related to SMMU 
+translation.
+
+Thanks,
+Robin.
+
+>   drivers/perf/Kconfig | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Do you want me to resend?
-
-Please resend, b4 will try to pick up all the patches in this series and
-get confused :(
-
-thanks,
-
-greg k-h
+> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
+> index 273d67ecf6d2530f..c33324692fbf0141 100644
+> --- a/drivers/perf/Kconfig
+> +++ b/drivers/perf/Kconfig
+> @@ -92,7 +92,7 @@ config ARM_PMU_ACPI
+>   
+>   config ARM_SMMU_V3_PMU
+>   	 tristate "ARM SMMUv3 Performance Monitors Extension"
+> -	 depends on ARM64 || (COMPILE_TEST && 64BIT)
+> +	 depends on ARM_SMMU_V3 || (COMPILE_TEST && 64BIT)
+>   	 depends on GENERIC_MSI_IRQ
+>   	   help
+>   	   Provides support for the ARM SMMUv3 Performance Monitor Counter
