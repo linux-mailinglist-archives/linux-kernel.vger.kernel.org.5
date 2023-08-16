@@ -2,157 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E5777E0FE
+	by mail.lfdr.de (Postfix) with ESMTP id A0FAD77E0FF
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 14:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244934AbjHPMAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 08:00:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47282 "EHLO
+        id S244993AbjHPMA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 08:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244935AbjHPMAG (ORCPT
+        with ESMTP id S244959AbjHPMAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 08:00:06 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2063.outbound.protection.outlook.com [40.107.243.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600692112
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:00:04 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f2SVyxxmAZ8iG9f4N545cpWsmg+8pi6BNW6YmFYVkwWn3DapN/Ot+9uPihTN/WceN45OArG5WLIUV5GnaERnibjv6KqlmU29axns9aaI9ppACFUYZuCo6fqtT1rXhIC10RKQ5gAGhCbxYuMM3iQcruvRviDinaTn4qPb93HayFwOzwd2AM65pVGpD5PnCg25LeyqmhLCJNtRKVqSG19cZq9kMbcwbKts7fU5YJG/XpGnyYm1xggFEZj9L4DtSBU6P0yK6EPa6tMOotsb+fHvcLe3/06QPtfOXxWBsfZs+wpCDPHlj3M79nmiVlDNvL4vw2TvQNYxWQuZBGOmDCmjhQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aNeMqioYb+FLPCKuGDCsdgK+YsAd1NeM87xOI2i7ewU=;
- b=ar5NfkAr6/7QPvV7KI9MLYdkI/kRae31ZZkGuXgkay3SM63TpYbtw8Lb6Y9zLuZAz+d7AM0QDYa+CHRAZoYpxEMYAwWr83ySwIX51LInikt9766YaEYzpbRg4b8usbTmuNZnBB+XT9srDAIdplhpfe4SjnBTuR0q9ADN7y5KrkJvUXLIw5qpMbgAbzxRzLAk3r41OI0x7Jy4nCMteUZoAHbkLC5vKaMI5U+4BAMHbu/bjudv2ijE9jBt72mfHglHhPl8ZwDvZp4vFFXMA4S6/6gAbqmDmOuEQtyygI8YlVFVjSZx5Y0QlT/6z6lekBx1pLdXFTeGoGqrXSbx4I7I5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aNeMqioYb+FLPCKuGDCsdgK+YsAd1NeM87xOI2i7ewU=;
- b=lyRr7m0L4BQJ3iSqZ4qtBrYwcY+y1jDqLDsKvKpWrQHTL5iJOwyRd0wLOpiz8NaxUkRtVC6mrtEFwJUSodjbOudds9wNbZGYdGK7C88ZQKfuzdu4KPhbzTxjsfy4/L++C5FqdWO9I/muN8/S2aEIF5eDyOT/wYjs1QtJEkr5BxU7V/Vn4PJffpOWV+ts2gHvwh5v/UEbnC1qyavQDly5q8KhSEKA1dOTG0dqQTB64JWhE2yCSEsQYEqQ1qUp0J6Z22wYxVBgAubf8a722D1GKDJiL38YatZVY2eHwulElrtdTM9Mix8G6wRKoNDFfvOrLBxZpS6jzXIjmmPHH3XZqA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by PH8PR12MB6961.namprd12.prod.outlook.com (2603:10b6:510:1bc::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Wed, 16 Aug
- 2023 12:00:01 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6678.025; Wed, 16 Aug 2023
- 12:00:01 +0000
-Date:   Wed, 16 Aug 2023 08:59:59 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Nicolin Chen <nicolinc@nvidia.com>
-Cc:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
-        jean-philippe@linaro.org, apopple@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux.dev
-Subject: Re: [PATCH] iommu/arm-smmu-v3: Add a configurable
- tlbi_range_max_n_shift for TLBI
-Message-ID: <ZNy6Pw/Jxn6jsIxl@nvidia.com>
-References: <20230814215701.5455-1-nicolinc@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230814215701.5455-1-nicolinc@nvidia.com>
-X-ClientProxiedBy: YT4PR01CA0332.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:10a::6) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Wed, 16 Aug 2023 08:00:16 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636542112
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:00:15 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fe426b86a8so60182065e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 05:00:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692187214; x=1692792014;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JXusQSBkKgzmVX0cQPtu5qS7/vO7l9owbd70EUmEIf0=;
+        b=BO0hYI+W5qp8L20ACZN9H5+4SPrMLXinnG5qBz5wd2WDyBHSsUVNdQIJreJUSNu9Bd
+         SsoxPP15yROXQXoR5IRKazEK/gZraQRJQLEPhNY/+nW2dIQp6jFAcNEsc7wKg/QmoLUE
+         KCp+v6YHUOHa3Nfq3F1R4qtaWDyZyCOnWJWSASqX2+aHBe6U20MFadhLoeeVsAVrTwTN
+         yWz3WTWT03e+ERzJFEak6tGARjzYVGw04Db47Q5uArI1Tu1QqtUJLEeAeNHoaC/h1MaT
+         Vjo2K3KdFuOvmUq5bV04lHp1ssmhuX/uNafuTGYFVQYTLekj1JKN7VI0gYkzUtRQ4bdw
+         ws0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692187214; x=1692792014;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JXusQSBkKgzmVX0cQPtu5qS7/vO7l9owbd70EUmEIf0=;
+        b=jgdyGtjnkABG/9R3WgrpY7mhb1ZDVO6Vf+XZGTpH1EuhkYbp/j4/SAs/4BqbUuRhvT
+         4LizuI0Gy/PE8a5ZJgvZqHyIXgaXQVHzU64eVDtZxojcjKjpBGllEOuZQRrsQwaerxKI
+         c4rHRIVSIJfRjmCvNN87c5WOG+hHyxmgeKESYVt11YdD6CjNWynV0LyFUHGps0aRtbu3
+         N2IC+S9qIRUdB6BiSo05Lv7c1bqXD+TLm+wx0/nx7O+jqxESCbz0zn7uFQ1tfUe3ZrnQ
+         a7jNvgQPgB5dgmLn5XbSwoNfmMMuN+aYBbXidIMDyvRdQxq6SilJxTG8STstV71uqYRk
+         17vg==
+X-Gm-Message-State: AOJu0YzqfDCkTcFbz7Cvw56jOusqMF33BA4immDkvhYwj9or7LHrv5GY
+        gCuBVCQUNaNG0+cK19o5VqlPIw==
+X-Google-Smtp-Source: AGHT+IEkAgTt7hKMOaQ6eYP4JU/vbFh5Hmk8g6lwro0vswB6yuqUEdRn3DD5J4Aav2PMognFo3JdPQ==
+X-Received: by 2002:adf:e3c1:0:b0:317:73d3:441a with SMTP id k1-20020adfe3c1000000b0031773d3441amr1268070wrm.46.1692187213814;
+        Wed, 16 Aug 2023 05:00:13 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id b2-20020adfde02000000b0031416362e23sm21092572wrm.3.2023.08.16.05.00.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 05:00:13 -0700 (PDT)
+Message-ID: <540b263a-3a1e-fd09-c6c2-18371e460e5e@linaro.org>
+Date:   Wed, 16 Aug 2023 13:00:10 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH8PR12MB6961:EE_
-X-MS-Office365-Filtering-Correlation-Id: cb83c7f8-5196-4cc3-1874-08db9e5051e3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BeQ2i9a4ZD1gQ8JEvmbnKnn9AyI7JsRj3C/METRVotboW4ZafRXqKoS5qD8E7AvSshPW612bjniN6cVmFpijDthWzlpfKpz1vps9+LmBLsbfbqQ+ldyMyzXqcYhczSZMuQhPmgKKRbCXfwOYGUgJdtWKTABThU3orNvuHs9RebSdX9quGaJehgqF/ViylZMuybPduuNzQLE2T3RQYH6/lOFOw/77uMANRuEowInXvngjuFYnaILGW31rNPqrIzgjhoxogMDeIkM0SLoO+GV6BhkSig8DeqaLk+RaD0jvqi9EckzE1Tjqe7C7KaLXo3bilsc2+BOHquCLtz06RSdfNFCsvf8zDG/DxQ+r9CxCFWDOtAC1xZV4zlAQfRudeP1W2bpj6Q88blzKUgX7QNpeXRXs6tsC/EzNa68tEQ2M0BQQ85wb6TJUjVYVxZP7wGOIkrOkt5Vt1TsK872TbfOoFxDGfqzor8gYXuIuwVNreT51GpTrvbpJftjah5CUDBQRKofNryGM+2pjCli3N2um6CdHtm2DDf3PpAPrm4S9zlCcnGQOlxfORsQPYPAY90Hm
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(366004)(346002)(376002)(1800799009)(451199024)(186009)(316002)(6636002)(66946007)(66476007)(66556008)(37006003)(41300700001)(5660300002)(38100700002)(8676002)(4326008)(8936002)(6862004)(2906002)(83380400001)(26005)(478600001)(86362001)(6512007)(6506007)(36756003)(2616005)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CO2qtIz8kGPknedRT1/X7shE6s4CBWopJHKgtjzw8wQuo2s23RqCmpx9MP9w?=
- =?us-ascii?Q?UrHrmaOX7iEOl2BENCqY7Z9jZw9QkhV86Ev63hWB7VBxpvKKQvyzusjSus/e?=
- =?us-ascii?Q?9yKDzHyuabTq+wf4/ttMTJzamHIejllwPb3U7OvHG9vijIy6d/otPz2Q4CpH?=
- =?us-ascii?Q?YxfsUE27WvVGK73el4bHMucs3Kp79i1cbyiibmQbYna3QErBizdSOLTsHTbB?=
- =?us-ascii?Q?JcVeEomtb+4yri2sQ0ZWy8lITYqckpr/NeU12opb8ZQOVCghuBTkpJkl8x5x?=
- =?us-ascii?Q?7lWNYDv2zXsgH3Qt+/JQqFIZcJqp/CSKZZYnghJFLgjTg5eWvkL0kuQsbIr2?=
- =?us-ascii?Q?ZNNWcq9W8cq9dnYtMD9etvaddVoHLyiCpDmz/AnHNDPVkvg6JJx0jg2plo/f?=
- =?us-ascii?Q?ElrkjdoV88xKCVNx1UglayFXHxHUelLnOIZnwO3hHaQE0jyLLzwYnRr6iObc?=
- =?us-ascii?Q?dlfS8fvXyJ9gBeZ7p1A/gyjoJQLX2THT+q9k5K+lprcf+YIWGJJgZO2BLigH?=
- =?us-ascii?Q?kFffbq2aSWDiFczqgNIFD8hreh8SkEU6syp7JI4Z34tU43g0XSUVCD6R4fk7?=
- =?us-ascii?Q?GLplKSrv8/S+bjxH4tpWf8l+9F5VEeM3NE3o28l/QAvfGq0RP0XD0BCAK44e?=
- =?us-ascii?Q?0EBIZUwsiecT9XXGiLVzAITcY2LYMsDYInMHtUYRk0EzPo4npXUr33icMljf?=
- =?us-ascii?Q?2xdKUef7ggfI+q0Ub5wzr0ar7AiCwpx0GS9JZOJEZH0PHTSJHYZbtKsoSeDi?=
- =?us-ascii?Q?LM2KvKqtpaUu8JQaSBjOoJm4FBahW6mGNayL5h68XiRTk+L5hWTEzvu8heP4?=
- =?us-ascii?Q?hrkPJ80ynZScEmn2nvVznWblv/RujG2+NuFtPTXimtqHiveJ/A+RgHij7+z4?=
- =?us-ascii?Q?PpKQ2tdx5UnzJQfPmN+hNngPuZUpozJBpaJQWUB1pyzjsCbTY01zGpG7aEFg?=
- =?us-ascii?Q?rGSDy6rq6t1+o3a+gDrNfweT8DmRrLWCYW43swtpR5HO9QZJwBkqs8O2EbWc?=
- =?us-ascii?Q?bWs9jyJ27+26sbcB4+DEVedQ4D3PWkkmrqtIQ/H6aII+ytlc4JPA+Aa+YRfI?=
- =?us-ascii?Q?2SXbJCeMvlF8qGdkqKf0bSF8QOpIOO2cN44jDTvhO8nWRUwVxU4DrShL7kFL?=
- =?us-ascii?Q?JTVb7qdCTI9pGMRXAfEBSjjmFxOeVqEjVMkjFuCzjPZqAId8g+qkuy2VD3jE?=
- =?us-ascii?Q?2JXWz494WER1a1+aPNMpQphCYBvE1N6X8Fej+qdUIzw2JyEsY1pArpG22jHi?=
- =?us-ascii?Q?MV8Y1uNttoATEyzaev4XyzVAr1Vak1qkqJF0A8bP5CGplEkC0P9KiffkmANK?=
- =?us-ascii?Q?2FHGS/NhbZfnzkpsiFVe4jN9RLy5n1rQHdHGoGqQSrn6Z29Eu/yPBwI9qL81?=
- =?us-ascii?Q?fn3+nvyU1a8dqENhXNh6VkJCvVPeg4SKp7Swj/Dncy75Hzgi4g0dMdw3MRwD?=
- =?us-ascii?Q?5wVwZOY2F9r1dDi77C91fVjDeBr0MEJ1vvNL3wY+VY2StXEZQ7cOfxnLompo?=
- =?us-ascii?Q?QVY/ySsHLyoUZkAVZIE/ZYRcmTXhpC8G54Um/V0MrTiYeHqsA7wqSSTqSiFi?=
- =?us-ascii?Q?ccJ48U2a7D6YR3h2Nl/9cHPhVDOh/55MNlPsUrRC?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cb83c7f8-5196-4cc3-1874-08db9e5051e3
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 12:00:01.3122
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +a96l3yHTM71Pyb2RIw3upO0Ud262oF32c93ETDrzZTvMbJc/bes84avx7xN1r+X
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6961
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH 01/33] MAINTAINERS: Add Qualcomm Iris video accelerator
+ driver
+Content-Language: en-US
+To:     Dikshita Agarwal <quic_dikshita@quicinc.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        stanimir.k.varbanov@gmail.com, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, mchehab@kernel.org,
+        hans.verkuil@cisco.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
+ <1690550624-14642-2-git-send-email-quic_vgarodia@quicinc.com>
+ <c29d5e28-5b9d-1327-0feb-e5ed27afcd3a@infradead.org>
+ <b4de638e-9cab-2662-92b0-e2d1a18018a1@quicinc.com>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <b4de638e-9cab-2662-92b0-e2d1a18018a1@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 02:57:01PM -0700, Nicolin Chen wrote:
-> +static ssize_t tlbi_range_max_n_shift_show(struct device *dev,
-> +					   struct device_attribute *attr,
-> +					   char *buf)
-> +{
-> +	struct arm_smmu_device *smmu = dev_get_drvdata(dev->parent);
-> +
-> +	return sprintf(buf, "%u\n", smmu->tlbi_range_max_n_shift);
-> +}
+On 14/08/2023 19:44, Dikshita Agarwal wrote:
+> 
+> 
+> On 7/29/2023 4:18 AM, Randy Dunlap wrote:
+>>
+>>
+>> On 7/28/23 06:23, Vikash Garodia wrote:
+>>> Add an entry for Iris video encoder/decoder accelerator driver.
+>>>
+>>> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
+>>> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
+>>> ---
+>>>   MAINTAINERS | 10 ++++++++++
+>>>   1 file changed, 10 insertions(+)
+>>>
+>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>> index 3be1bdf..ea633b2 100644
+>>> --- a/MAINTAINERS
+>>> +++ b/MAINTAINERS
+>>> @@ -17671,6 +17671,16 @@ T:	git git://linuxtv.org/media_tree.git
+>>>   F:	Documentation/devicetree/bindings/media/*venus*
+>>>   F:	drivers/media/platform/qcom/venus/
+>>>   
+>>> +QUALCOMM IRIS VIDEO ACCELERATOR DRIVER
+>>
+>> This entry should immediately follow:
+>> QUALCOMM IPQ4019 VQMMC REGULATOR DRIVER
+>>
+>> to keep the file in alphabetical order.
+>>
+> Sure, will fix this in next version.
 
-sysfs_emit and missing newline
+I think TBH before we see a next version, there needs to be a conclusive 
+argument on why a new driver - instead of an update to the existing 
+venus - is the way to go.
 
-> +static ssize_t tlbi_range_max_n_shift_store(struct device *dev,
-> +					    struct device_attribute *attr,
-> +					    const char *buf, size_t size)
-> +{
-> +	struct arm_smmu_device *smmu = dev_get_drvdata(dev->parent);
-> +	unsigned int max_n_shift;
-> +	int ret;
-> +
-> +	ret = kstrtou32(buf, 0, &max_n_shift);
-> +	if (ret)
-> +		return ret;
-> +	if (max_n_shift > VA_BITS || max_n_shift < PAGE_SHIFT)
-> +		return -EINVAL;
-> +	smmu->tlbi_range_max_n_shift = max_n_shift;
-> +	return size;
+We have an ongoing corpus of working code that people use. The attempt 
+to at least _try_ to integrate 8550 and beyond to upstream venus should 
+be made.
 
-This seems convoluted for a uapi, you should just make it
-'invalidate_threshold' in bytes or something simpler.
+If it fails, then we can discuss a branched driver.
 
-> +
-> +static struct attribute_group arm_smmu_group = {
-> +	.name = "arm-smmu-v3",
-> +	.attrs = arm_smmu_attrs,
-> +};
+Its not up to me but, that's certainly my honest and unvarnished input.
 
-Do we really need the subdirectory?
+Instead of investing time in V2 - please invest time in upstream venus 
+or make the technical argument conclusively _prior_ to V2 as to why V2 
+and beyond is the "only" way forward for 8550 and beyond.
 
-Jason
+---
+bod
+
