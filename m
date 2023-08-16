@@ -2,104 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8DB177D750
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 03:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 195EA77D759
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 03:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240915AbjHPBFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 15 Aug 2023 21:05:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40228 "EHLO
+        id S240937AbjHPBH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 15 Aug 2023 21:07:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240914AbjHPBFC (ORCPT
+        with ESMTP id S240922AbjHPBHb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 15 Aug 2023 21:05:02 -0400
-Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECEF02121
-        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 18:04:59 -0700 (PDT)
-Received: from eig-obgw-5005a.ext.cloudfilter.net ([10.0.29.234])
-        by cmsmtp with ESMTP
-        id W3Vwq2uuTDKaKW4y3qMf8P; Wed, 16 Aug 2023 01:04:59 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id W4y2qz1uBMmPRW4y2qPYR5; Wed, 16 Aug 2023 01:04:58 +0000
-X-Authority-Analysis: v=2.4 cv=Zvv+lv3G c=1 sm=1 tr=0 ts=64dc20ba
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=CGo6wCm4IADRok0f:21 a=IkcTkHD0fZMA:10 a=UttIx32zK-AA:10 a=wYkD_t78qR0A:10
- a=-CxxCmWrHlzNBdYEcfkA:9 a=QEXdDO2ut3YA:10 a=tNK2v2ls7fuFGmW9SST8:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=2i1IKbwyq4nmaQGUx4rtQmCpr+E2DER/NqyPi/Lp9mA=; b=hEMtrgxc6PeY85pBLbSne6CJLU
-        Gv/U2izM/t/70F7hxmRjJIn1j1Ko+66CTDW/cw9+qjXRolEwska9jT5FEhd07futnHqKzokFQaQA7
-        oavqIYyMYgmekwdXHHfmUAaMQitzVrH1YxLTzhmmn3MAEo8HohRGb8EBDuUaL7U5VAmHp0Ws97wWg
-        BOMaZxaVfs0gwauP6+G0WCdK+UGnx4mAtwVrQCyywRTMlkJ4NuX6G19nOaitkBYelP0Y+itb+d46l
-        Mh5U+HqCV7g/e3L32z5DrKIj2G6aNjEgvFZaNSxoVcQPbOYyIeSLc7rW4g93ctfi5mqmezrRb7MM7
-        oyXn830w==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:49498 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qW4y1-001tFE-1r;
-        Tue, 15 Aug 2023 20:04:57 -0500
-Message-ID: <e4969e7e-e9d7-67c2-a24e-c9e9be655570@embeddedor.com>
-Date:   Tue, 15 Aug 2023 19:06:00 -0600
+        Tue, 15 Aug 2023 21:07:31 -0400
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2084.outbound.protection.outlook.com [40.107.102.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B4C2117;
+        Tue, 15 Aug 2023 18:07:30 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kiCol0YbXbOxqIrtagup8QJJcoZDb+opJTJLJ2AEBWv60/sFLsK5mEAcOQwyEJagDuK64rQmWIoxqeiaG+aJ96Sp4E8lDeQGDBgwKvgJDPz76qzROElmfDD+NjejPoBmt9MROJ/Y9NlY227NckBFwVsKUTUbvIYqp9OJ8+F2/1hbRZwQUwluoykA3dmlObasaW+jlHZS2BpILzTZwHJ8MgkMl3WtNgzVTvDO6ln2GZRBzHfoZv6W1hzP9yqkldoquc4KQjdLIcxI5cTFKesPHKjKWW24kjP/ULPyjtOEsRaG/kd/29A82nziOvnjNRKXG6YgEnCQL6EygnHm9NY+yw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VO43WMxVwBQOR0GKacWmNXRAkl9yMJTuTfrnYCTuPK8=;
+ b=dIAbJBheAswirrN8gEl/zm3TQzsKTK3s/q0iPirtRMJ6rsr5lkNeSD0gHMm9gJZ/t/AWN+o1fn2Z4YR50PgYhZo7iobpsEUIIapd0bu931z+i7v1z1GeOUJOmHSDBdCwFa8SedBRCScU5SabH3mfqS46ewDxbnWI/FaXgY1UTkIv40kUMSmVW/RiGwxBIb+A1rAqyUeOJ59TOHv8Mz19qNOMY2Yi4GgrwmhgNu2gbGSadSfKGtcQmAMOT9BilhgaKrJaCGY1U1+Yaa0ZjuhUIYLd5Qv9FnsDEvPIJhUX/2xmHdcuWUg5ga2mn2PO+grYOw70odPAljAURmAcc13t0A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VO43WMxVwBQOR0GKacWmNXRAkl9yMJTuTfrnYCTuPK8=;
+ b=ru4TvJb+65/ykPvpSP7lxm2cKZsfx/9dIW9wuIVpKQoNND1hPk+8C20yZL0jYCk/bHIUjQnIuq8d67xfGB27iOOzXkQhVuvpqzITk1vVrLUUi87cLlybOqQ4IvKL+jy6FhtWpvO6ZbgfcmFF9RjUL2J4HFq3h3/3wemxGbPvE1GD2yzZarzjbrsYH0/mC7hHc+H49r7Ix6ww/eRErqKbBZcXKCDR2zhGKBNhJr8L58zFCWa5zbFtMcPHSUiLTs+ZnsOy2KduCZvVvv4r/jrfLrxZ/0nW7vrVyVuo3Dq6qNDCLfLcv+tl43zX+5jZzUDMbSevntH4fQ+yg6NRS1/eEQ==
+Received: from MW3PR05CA0009.namprd05.prod.outlook.com (2603:10b6:303:2b::14)
+ by IA1PR12MB8468.namprd12.prod.outlook.com (2603:10b6:208:445::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Wed, 16 Aug
+ 2023 01:07:27 +0000
+Received: from CO1NAM11FT095.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:2b:cafe::9b) by MW3PR05CA0009.outlook.office365.com
+ (2603:10b6:303:2b::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.14 via Frontend
+ Transport; Wed, 16 Aug 2023 01:07:27 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ CO1NAM11FT095.mail.protection.outlook.com (10.13.174.179) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.52 via Frontend Transport; Wed, 16 Aug 2023 01:07:26 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Tue, 15 Aug 2023
+ 18:07:10 -0700
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Tue, 15 Aug
+ 2023 18:07:10 -0700
+Received: from Asurada-Nvidia (10.127.8.10) by mail.nvidia.com (10.129.68.6)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Tue, 15 Aug 2023 18:07:08 -0700
+Date:   Tue, 15 Aug 2023 18:07:07 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Yi Liu <yi.l.liu@intel.com>, <joro@8bytes.org>,
+        <alex.williamson@redhat.com>, <kevin.tian@intel.com>,
+        <robin.murphy@arm.com>, <baolu.lu@linux.intel.com>,
+        <cohuck@redhat.com>, <eric.auger@redhat.com>,
+        <kvm@vger.kernel.org>, <mjrosato@linux.ibm.com>,
+        <chao.p.peng@linux.intel.com>, <yi.y.sun@linux.intel.com>,
+        <peterx@redhat.com>, <jasowang@redhat.com>,
+        <shameerali.kolothum.thodi@huawei.com>, <lulu@redhat.com>,
+        <suravee.suthikulpanit@amd.com>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <zhenzhong.duan@intel.com>
+Subject: Re: [PATCH v7 3/4] iommufd: Add IOMMU_GET_HW_INFO
+Message-ID: <ZNwYxJg0u7jAZRff@Asurada-Nvidia>
+References: <20230811071501.4126-1-yi.l.liu@intel.com>
+ <20230811071501.4126-4-yi.l.liu@intel.com>
+ <ZNuogZV2eEeVwNX4@nvidia.com>
+ <ZNu2XWS0BERqykIA@Asurada-Nvidia>
+ <ZNvEAWF8ljWHrcws@nvidia.com>
+ <ZNvJph2AHKroujFe@Asurada-Nvidia>
+ <ZNvKZWcqrjp34zpe@nvidia.com>
+ <ZNvKuCFqCCWwIR24@Asurada-Nvidia>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC] wifi: mwifiex: Asking for some light on this, please :)
-Content-Language: en-US
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To:     Brian Norris <briannorris@chromium.org>,
-        Kalle Valo <kvalo@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-References: <6e3fddfe-2d31-72fa-ac2b-3b7fa4e6fe08@embeddedor.com>
-In-Reply-To: <6e3fddfe-2d31-72fa-ac2b-3b7fa4e6fe08@embeddedor.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1qW4y1-001tFE-1r
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:49498
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfOW3PPKdVScmYFjMX+PHrm+l56/l53ZDtHy8JM9mBbcMrGUqO94Xl20zD4IogOBCYiPps8dqoXo/0FHo1oidOIypV0/PxvgrCB3RdYdy25m/A/Psm5hN
- pvJHQcs93opbX3tQbVEAXqvB0+8CJWF1BlS6qSAq6YI5rDB3MUCDSNhRsPSWLID7pWP1JhSxwjqYDyhGXldM8yHwv8dvpyIgTz8aXWnwhTU2UC/r+2ss6Ots
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZNvKuCFqCCWwIR24@Asurada-Nvidia>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT095:EE_|IA1PR12MB8468:EE_
+X-MS-Office365-Filtering-Correlation-Id: d5dd849b-0a5f-43f6-c91e-08db9df52837
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +q0H6H8CeG9rRTA+2IPqAyPMgs7lPK+7wr5zN1GaWSzFu0dI0C28pgp/RqJaVyDUN04BmXZbzx3hrGbFLTghnurkWbSeEyQJ+eSGNjK3TMqzQot7gKcrLlLKTh28wTOczo+xra9pfkS5HtIkVnV8bqc+Ox04lpY0GEMUvesp14MEbG/EPQshdWsx5KlYLgzFBZkDKAwoi5UhCtDvC/HgSjlUyQ5QS0JEXqqJTJxlzdGGZhhH0ehFLm718i4Hx7D/MscMwHkojZTwCrsUMqIdV+AaBuvOGKd8aDjxz4rCqNlmx7uPVduzjZ04CyqF4rsduEETaldzg3KDpn7wBD9+GvZoy68C7Jsi2YmaqOmgcseWQTQMvlo4yJtVtLPLYo04D7AQSZZaR+1VdXRw8KY6Sg/kDI9/XZNprZFoSAN3YTFrdKZv7njuZ32CIlaRUBK2TDWdJIxVX1u+COtAwh8TDRz70RoCR+uGWw6BpwX2r07iDIGpnxnoMEbrJVsztV1/a2YKsm4axeAh7Sy4XR6kfZZTJDWGB0iSMpOJbn3UcYaWhgX7/6hHPAhGHIya5O50viJ/wgLYNl0D9Kd9fRXKv1y7IeS5odI8/K4Lum3fYXmKmwag7L+FxvEPu+JXDFM3sZBWXZ4GNUuvTdGeqpxHailybGodVYxsDdkkNl12JiLGumqyEA4YdAOD5X7E0Uj8pStQBgeqHb9g5W7gWP1VWk3J10d+mCrwV+Lukoqu/24=
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(136003)(396003)(39860400002)(376002)(451199024)(186009)(1800799009)(82310400011)(36840700001)(40470700004)(46966006)(2906002)(40480700001)(426003)(336012)(316002)(6862004)(6636002)(478600001)(26005)(41300700001)(5660300002)(36860700001)(4326008)(70586007)(55016003)(8676002)(70206006)(54906003)(8936002)(9686003)(47076005)(86362001)(40460700003)(82740400003)(7416002)(7636003)(33716001)(356005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Aug 2023 01:07:26.9256
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d5dd849b-0a5f-43f6-c91e-08db9df52837
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT095.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8468
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 15, 2023 at 11:58:04AM -0700, Nicolin Chen wrote:
+> On Tue, Aug 15, 2023 at 03:56:37PM -0300, Jason Gunthorpe wrote:
+> > On Tue, Aug 15, 2023 at 11:53:26AM -0700, Nicolin Chen wrote:
+> > > > 	ops = dev_iommu_ops(idev->dev);
+> > > > 	if (!ops->hw_info) {
+> > > > 		data = ops->hw_info(idev->dev, &data_len, &cmd->out_data_type);
+> > > 
+> > > It should be:
+> > >  	if (ops->hw_info) {
+> > 
+> > Hmm, the test suite probably needs some more stuff then too since it
+> > passed like that :)
+> 
+> Ack. I will see what I can do.
 
+It actually reports errors when hw_info is defined (and it would
+get an IOMMU_HW_INFO_TYPE_NONE.
 
-On 8/15/23 18:52, Gustavo A. R. Silva wrote:
+#ok 62 iommufd_ioas.two_mock_domain.ioas_area_auto_destroy
+# #  RUN           iommufd_ioas.two_mock_domain.get_hw_info ...
+# iommufd: iommufd_utils.h:368: _test_cmd_get_hw_info: Assertion `cmd.out_data_type == IOMMU_HW_INFO_TYPE_SELFTEST' failed.
+# # get_hw_info: Test terminated by assertion
 
-> +               tmp = (u8 *)tlv_rxba + tlv_bitmap_len + sizeof(*tlv_rxba - 1);
+By removing mock_domain_hw_info() to test the other path, simply
+there would be a kernel crash.
 
-I meant:
+So, I think that we are fine.
 
-	tmp = (u8 *)tlv_rxba + tlv_bitmap_len + sizeof(*tlv_rxba) - 1;
-
---
-Gustavo
+Thanks
+Nicolin
