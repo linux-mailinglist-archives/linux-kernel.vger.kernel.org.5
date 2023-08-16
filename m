@@ -2,178 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C655377DCC3
+	by mail.lfdr.de (Postfix) with ESMTP id 7D23E77DCC2
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 10:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243136AbjHPIvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 04:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52060 "EHLO
+        id S243113AbjHPIve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 04:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243181AbjHPIvS (ORCPT
+        with ESMTP id S243211AbjHPIva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 04:51:18 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1D52700;
-        Wed, 16 Aug 2023 01:51:12 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37G7ND39023571;
-        Wed, 16 Aug 2023 08:51:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=PSzcVYQ2yZTnZcul0dm5Q6PpJl+Zobzq+LZzBLE9u9M=;
- b=GXofoVZUDA3TbJlbJQYxCtzliBXPW0O91oZ0AxjIx+nlDW/6A4x606uGy9ESC3izK1cu
- Ns4BjrCtHrhUDJgoMGf24BWuIpCqZWfTC8oo9XzoD6CJfMa2kh6d9HAApAHSmYnBv7He
- TdgXaUqzxf5RAhfrn/8X4q7aqHb9dcCvdvJ/uroAGrW6mbNP0YgtAYQqiaLwILu1bCbV
- 8qNxNvrQ/6CvM8KY2UDci5QGTVpEWboGnirr68F5JtUCnHlILTbplCkSh90qeOBfjoSn
- 46kPTTfNa/QUaWwfY6e80ukynf9zPz9diDKizPD/1KEcM8IqcDEtfre5Iqw4lo8CUwKb 5w== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sgmkkrqnf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 08:51:04 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37G8p33v021917
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 16 Aug 2023 08:51:03 GMT
-Received: from [10.218.41.203] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 16 Aug
- 2023 01:50:58 -0700
-Message-ID: <1a914071-d000-eaad-7941-30589f8e1da3@quicinc.com>
-Date:   Wed, 16 Aug 2023 14:20:55 +0530
+        Wed, 16 Aug 2023 04:51:30 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E574198E
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 01:51:21 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-2680eee423aso3443344a91.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 01:51:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1692175881; x=1692780681;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=bZbysPazkjRhmks1IeUNmvykR7eRQx0d/X7/8WZ+7ns=;
+        b=UNktGYDPEt7aDrm/3sA72EUocrwVrFxHkHcCoE/h5yVVwlW6TUBPnPa7MeA/k8PchC
+         zH76nNw08VwxLaOSl2ML/AXULrFg7GGtsNwnJ3JSR0dN7mFMEIG1BV5mdkIXCYf31GXR
+         QXJquhubfzlxBWBCianFswA+r/PIe+SQJ9FS9/2pC+2805M6sQDjJ7Y0bMFyYR1mVmG4
+         13lS9h7MJPK6CQAgEyEVSuESePPhxagMyt8begU0x5QA5VfVTMwmufvFgGDbCwLiYdBw
+         pTlBNMh7x8oNc8trpHE80It9ElW6RkDvognWqNcY4KpL8g8AAO+oPPX6y71QGZgj2Yhw
+         81lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692175881; x=1692780681;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bZbysPazkjRhmks1IeUNmvykR7eRQx0d/X7/8WZ+7ns=;
+        b=WZHwwGGjj5B7gH2w3FfnMdv75yjnzmbIOkTfZkyYzkROuf+QYZjLMwLOX+5bQEFope
+         xUuDA6D/ViYUBh/F6PwQOIpCQzXkH1u74U85yC4CicQAzIPRPNnHQfSGmFmCLokHoox1
+         QR9JRawom8lcwuSdWTFGVirENzXCkm7BTy6+urLiXAa9Q5L+200GKCp6LgM31oqjnra6
+         Iaakf8gHqIeecnxROpe3JiF36fva2mmB17/Ba3ahll4B2sF6Q8nJgKlg57DQzIv5ddYZ
+         /DsUvDNedYMqM2NTnXJE/PKbrKVVrF8JD9zPbA9jlQC5pAoZxelQDOtfwNDuwcrlqyy+
+         yeew==
+X-Gm-Message-State: AOJu0Yzs7mSSYRL7Qyho69YrBaU5hszTmT1yNHR0cb5cLQ7+Nqqtni/0
+        GSUAEeOvyTPi3r+uZh67HTS9dX3HWNJmtQSIN/9W1Q==
+X-Google-Smtp-Source: AGHT+IFsUZjyjXObg+iLKULtW6QOLkO4lbcerlgQV/yiCE7R3y6zgmYqGlZG84cBFdQiPnKL0lhOGKv2qnM9Ci5QGeo=
+X-Received: by 2002:a17:90a:15d0:b0:269:1860:c3bd with SMTP id
+ w16-20020a17090a15d000b002691860c3bdmr714615pjd.19.1692175880812; Wed, 16 Aug
+ 2023 01:51:20 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v1 2/3] arm64: dts: qcom: sm8450: Add opp table support to
- PCIe
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <manivannan.sadhasivam@linaro.org>
-CC:     <helgaas@kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_vbadigan@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_skananth@quicinc.com>, <quic_ramkri@quicinc.com>,
-        <quic_parass@quicinc.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
+References: <20230802193155.2170935-1-Naresh.Solanki@9elements.com>
+ <20230808-stand-cheddar-b76b0b7509a0@spud> <eced746a-1181-bd8f-6828-4a4eeb79727c@roeck-us.net>
+ <20230808-esquire-epidemic-f9bd74ffde25@spud> <CABqG17jm938MaEeqS03WeryVWSRBS7Bqq2Vwq9SL4QOGqXU43A@mail.gmail.com>
+ <b3eebd2b-c73b-fdc7-2b2b-07e97db26d92@linaro.org>
+In-Reply-To: <b3eebd2b-c73b-fdc7-2b2b-07e97db26d92@linaro.org>
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+Date:   Wed, 16 Aug 2023 14:21:10 +0530
+Message-ID: <CABqG17hgU44H9KbALy_336Sb+YOiEOzbnAihiox1OEuVnNiayQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] dt-bindings: hwmon: Add Infineon TDA38640
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Conor Dooley <conor@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        krzysztof.kozlowski+dt@linaro.org,
         Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-References: <1692102408-7010-1-git-send-email-quic_krichai@quicinc.com>
- <1692102408-7010-3-git-send-email-quic_krichai@quicinc.com>
- <7fe554e9-27c3-9af4-8167-ae4329c40eb7@linaro.org>
-From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <7fe554e9-27c3-9af4-8167-ae4329c40eb7@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: nEBcBHbGBzTTarXPtVQwoH4lU1xgeFAn
-X-Proofpoint-GUID: nEBcBHbGBzTTarXPtVQwoH4lU1xgeFAn
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-16_07,2023-08-15_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
- adultscore=0 clxscore=1015 mlxscore=0 malwarescore=0 lowpriorityscore=0
- mlxlogscore=922 spamscore=0 phishscore=0 impostorscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308160078
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        linux-hwmon@vger.kernel.org,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Krzysztof,
 
-On 8/15/2023 6:01 PM, Krzysztof Kozlowski wrote:
-> On 15/08/2023 14:26, Krishna chaitanya chundru wrote:
->> PCIe needs to choose the appropriate performance state of RPMH power
->> domain based upon the PCIe gen speed.
-> This explanation should be also in bindings patch, otherwise why would
-> we consider the bindings patch?
-I will update binding patch with this information.
+On Tue, 15 Aug 2023 at 01:02, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
 >
->> So, let's add the OPP table support to specify RPMH performance states.
->>
->> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/sm8450.dtsi | 47 ++++++++++++++++++++++++++++++++++++
->>   1 file changed, 47 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
->> index 595533a..681ea9c 100644
->> --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
->> @@ -381,6 +381,49 @@
->>   		};
->>   	};
->>   
->> +	pcie0_opp_table: opp-table-pcie0 {
->> +		compatible = "operating-points-v2";
->> +
->> +		opp-2500000 {
->> +			opp-hz = /bits/ 64 <2500000>;
->> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
->> +		};
->> +
->> +		opp-5000000 {
->> +			opp-hz = /bits/ 64 <5000000>;
->> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
->> +		};
->> +
->> +		opp-8000000 {
->> +			opp-hz = /bits/ 64 <8000000>;
->> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
->> +		};
->> +	};
->> +
->> +	pcie1_opp_table: opp-table-pcie1 {
->> +		compatible = "operating-points-v2";
->> +
->> +		opp-2500000 {
->> +			opp-hz = /bits/ 64 <2500000>;
->> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
->> +		};
->> +
->> +		opp-5000000 {
->> +			opp-hz = /bits/ 64 <5000000>;
->> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
->> +		};
->> +
->> +		opp-8000000 {
->> +			opp-hz = /bits/ 64 <8000000>;
->> +			opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
->> +		};
->> +
->> +		opp-16000000 {
->> +			opp-hz = /bits/ 64 <16000000>;
->> +			opp-level = <RPMH_REGULATOR_LEVEL_NOM>;
->> +		};
->> +	};
->> +
->>   	reserved_memory: reserved-memory {
->>   		#address-cells = <2>;
->>   		#size-cells = <2>;
->> @@ -1803,6 +1846,8 @@
->>   			pinctrl-names = "default";
->>   			pinctrl-0 = <&pcie0_default_state>;
->>   
->> +			operating-points-v2 = <&pcie0_opp_table>;
-> Why the table is not here? Is it shared with multiple devices?
+> On 11/08/2023 18:00, Naresh Solanki wrote:
+> > Hi,
+> >
+> > On Tue, 8 Aug 2023 at 19:58, Conor Dooley <conor@kernel.org> wrote:
+> >>
+> >> On Tue, Aug 08, 2023 at 07:10:08AM -0700, Guenter Roeck wrote:
+> >>> On 8/8/23 04:46, Conor Dooley wrote:
+> >>>> On Wed, Aug 02, 2023 at 09:31:51PM +0200, Naresh Solanki wrote:
+> >>>>> From: Patrick Rudolph <patrick.rudolph@9elements.com>
+> >>>>>
+> >>>>> The TDA38640 chip has different output control mechanisms depending on
+> >>>>> its mode of operation. When the chip is in SVID mode, only
+> >>>>> hardware-based output control is supported via ENABLE pin. However, when
+> >>>>> it operates in PMBus mode, software control works perfectly.
+> >>>>>
+> >>>>> To enable software control as a workaround in SVID mode, add the DT
+> >>>>> property 'infineon,en-svid-control'. This property will enable the
+> >>>>> workaround, which utilizes ENABLE pin polarity flipping for output when
+> >>>>> the chip is in SVID mode.
+> >>>>
+> >>>> Why do you need a custom property for this? How come it is not possible
+> >>>> to determine what bus you are on?
+> >>>>
+> >>>
+> >>> That is not the point. Yes, it can be detected if the control method is
+> >>> PMBus or SVID. However, in SVID mode, SVID is supposed to control the
+> >>> output, not PMBUs. This is bypassed by controlling the polarity of the
+> >>> (physical) output enable signal. We do _not_ want this enabled automatically
+> >>> in SVID mode. Its side effects on random boards using this chip are unknown.
+> >>> Thus, this needs a property which specifically enables this functionality
+> >>> for users who _really_ need to use it and (hopefully) know what they are
+> >>> doing.
+> >>
+> >> Hmm, reading this it makes a lot more sense why this is a property - I
+> >> guess I just struggled to understand the commit message here,
+> >> particularly what the benefit of using the workaround is. I'm still
+> >> having difficulty parsing the commit & property text though - its
+> >> unclear to me when you would need to use it - so I will stay out
+> >> of the way & let Rob or Krzysztof handle things.
+> >
+> > To provide context, my system employs a unique power sequence
+> > strategy utilizing a BMC (Baseboard Management Controller),
+> > rendering the reliance on the ENABLE pin unnecessary.
+> > In this configuration, the ENABLE pin is grounded in the hardware.
+> > While most regulators facilitate PMBus Operation for output control,
+> > the TDA38640 chip, when in SVID mode, is constrained by the
+> > ENABLE pin to align with Intel specifications.
+> > My communication with Infineon confirmed that the recommended
+> > approach is to invert the Enable Pin for my use case.
+> >
+> > Since this is not typically the use case for most setup & hence DT property
+> > is must for enabling the special case.
+> >
+> > For further insight into my setup's power sequence strategy, you can
+> > refer to the following link: https://github.com/9elements/pwrseqd
+> >
+>
+> This justifies to me the property, but still you described desired
+> driver behavior, not the hardware characteristic. Don't describe what
+> you want to control, but describe the entire system.
+I guess by entire system you mean how the regulators(including
+TDA38640) connected & operated in our setup ?
 
-I will move the table to here in the next patch.
-
-- KC
-
+Regards,
+Naresh
 >
 > Best regards,
 > Krzysztof
