@@ -2,85 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B6677DD32
+	by mail.lfdr.de (Postfix) with ESMTP id 28F9D77DD30
 	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243336AbjHPJVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 05:21:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39322 "EHLO
+        id S243311AbjHPJVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 05:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243292AbjHPJVE (ORCPT
+        with ESMTP id S243288AbjHPJVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 05:21:04 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4E91BF8
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:21:02 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mtapsc-7-tOIxv-NvMECBkHxU2QaG3g-1; Wed, 16 Aug 2023 10:20:00 +0100
-X-MC-Unique: tOIxv-NvMECBkHxU2QaG3g-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 16 Aug
- 2023 10:18:03 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Wed, 16 Aug 2023 10:18:03 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Jiri Slaby' <jirislaby@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>
-Subject: RE: [PATCH 34/36] tty: gdm724x: convert counts to size_t
-Thread-Topic: [PATCH 34/36] tty: gdm724x: convert counts to size_t
-Thread-Index: AQHZ0A2Smc/5XT+NnUuSfmLwyiVGwq/smYqg///1V4CAABGqoA==
-Date:   Wed, 16 Aug 2023 09:18:03 +0000
-Message-ID: <9c4a831ae5284aec887ea60d4dda2b8c@AcuMS.aculab.com>
-References: <20230810091510.13006-1-jirislaby@kernel.org>
- <20230810091510.13006-35-jirislaby@kernel.org>
- <20230815172247.GA1690054@dev-arch.thelio-3990X>
- <937e14c1-d884-0b6e-595a-e8aaa3d09025@kernel.org>
- <bdbdfdaad3a842d2837ac9d15ef2ab25@AcuMS.aculab.com>
- <00de3273-9433-138d-b659-826457e6a008@kernel.org>
-In-Reply-To: <00de3273-9433-138d-b659-826457e6a008@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 16 Aug 2023 05:21:02 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65562135;
+        Wed, 16 Aug 2023 02:21:00 -0700 (PDT)
+Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RQjGc22pNzFqg5;
+        Wed, 16 Aug 2023 17:18:00 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.2) by
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 16 Aug 2023 17:20:57 +0800
+From:   Junxian Huang <huangjunxian6@hisilicon.com>
+To:     <jgg@nvidia.com>, <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
+Subject: [PATCH for-next 0/3] RDMA/hns: Add more debugging information for rdma-tool
+Date:   Wed, 16 Aug 2023 17:18:09 +0800
+Message-ID: <20230816091812.2899366-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.2]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500006.china.huawei.com (7.221.188.68)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSmlyaSBTbGFieQ0KPiBTZW50OiBXZWRuZXNkYXksIEF1Z3VzdCAxNiwgMjAyMyA5OjU5
-IEFNDQouLi4NCj4gPiAnVm90ZSB1cCcgbXkgcGF0Y2hlcyB0byBtaW5tYXguaCB0aGF0IG1ha2Ug
-dGhpcyBhbGwgd29yay4NCj4gPiBUaGVuIGl0IHdvbid0IGNhcmUgcHJvdmlkZWQgYm90aCB2YWx1
-ZXMgaGF2ZSB0aGUgc2FtZSBzaWduZWRuZXNzLg0KPiA+IChvciwgd2l0aCBwYXRjaCA1LCBhcmUg
-bm9uLW5lZ2F0aXZlIDMxYml0IGNvbXBpbGUgdGltZSBjb25zdGFudHMuKQ0KPiANCj4gT2ggeWVh
-aCwgdGhhdCBbMV0gbG9va3MgZ3JlYXQuIFdoeSBzaG91bGQgb25lIGNhcmUgaW4gbWluKDQwOTYs
-DQo+IHNpemVvZigpKSBhZnRlciBhbGzigKYNCj4gDQo+IFNvIHdoYXQncyB0aGUgY3VycmVudCBz
-dGF0dXMgb2YgdGhvc2U/DQoNCldhaXRpbmcuLi4gOi0oDQoNClRoZSBvbmx5IGNvbW1lbnQgaXMg
-ZnJvbSBMaW51cyB3aG8gcmVhbGx5IGRvZXNuJ3QgbGlrZSB0aGUgaWRlYQ0KdGhhdCBtaW4oc2ln
-bmVkX3ZhciwgNHUpIHNob3VsZCBiZSB0aGUgc2FtZSBhcyBtaW4oc2lnbmVkX3ZhciwgNCkuDQpJ
-IHRoaW5rIGhlIGlzIG9rIHdpdGggbWluKHVuc2lnbmVkX3ZhciwgNCkgdGhvdWdoLg0KDQpUaGUg
-bWluX3QodTE2LC4uLikgSSBxdW90ZWQgZnJvbSB0aGUgY29uc29sZSBidWZmZXIgY29kZSBpcw0K
-YSByZWFsIGJ1ZyB0aGF0IHdhcyBpZGVudGlmaWVkIGJ5IHNvbWVvbmUgZWxzZSBsYXN0IHdlZWsu
-DQoNClJlYWxseSBtaW5fdCgpIGlzIGp1c3QgYW4gYWNjaWRlbnQgd2FpdGluZyB0byBoYXBwZW4u
-DQoNCglEYXZpZA0KDQo+IA0KPiBbMV0NCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsL2I0
-Y2U5ZGFkNzQ4ZTQ4OWY5MzE0YTJkYzk1NjE1MDMzQEFjdU1TLmFjdWxhYi5jb20vDQo+IA0KPiB0
-aGFua3MsDQo+IC0tDQo+IGpzDQo+IHN1c2UgbGFicw0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3Mg
-TGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQ
-VCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+1. #1: The first patch supports dumping QP/CQ/MR context entirely in raw
+       data with rdma-tool.
+
+2. #2: The second patch supports query of HW stats with rdma-tool.
+
+3. #3: The last patch supports query of SW stats with rdma-tool.
+
+Chengchang Tang (3):
+  RDMA/hns: Dump whole QP/CQ/MR resource in raw
+  RDMA/hns: Support hns HW stats
+  RDMA/hns: Support hns SW stats
+
+ drivers/infiniband/hw/hns/hns_roce_ah.c       |   6 +-
+ drivers/infiniband/hw/hns/hns_roce_cmd.c      |  19 ++-
+ drivers/infiniband/hw/hns/hns_roce_cq.c       |  15 +-
+ drivers/infiniband/hw/hns/hns_roce_device.h   |  50 ++++++
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c    |  59 +++++++
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h    |   1 +
+ drivers/infiniband/hw/hns/hns_roce_main.c     | 152 +++++++++++++++++-
+ drivers/infiniband/hw/hns/hns_roce_mr.c       |  26 ++-
+ drivers/infiniband/hw/hns/hns_roce_pd.c       |  10 +-
+ drivers/infiniband/hw/hns/hns_roce_qp.c       |   8 +-
+ drivers/infiniband/hw/hns/hns_roce_restrack.c |  75 +--------
+ drivers/infiniband/hw/hns/hns_roce_srq.c      |   6 +-
+ 12 files changed, 325 insertions(+), 102 deletions(-)
+
+--
+2.30.0
 
