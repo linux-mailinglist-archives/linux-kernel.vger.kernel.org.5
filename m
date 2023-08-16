@@ -2,73 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E637577EC32
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A442F77EC34
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 23:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346648AbjHPVsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 17:48:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37132 "EHLO
+        id S1346653AbjHPVsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 17:48:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346644AbjHPVsY (ORCPT
+        with ESMTP id S1346647AbjHPVsg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 17:48:24 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7EA1FD0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:48:23 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5232ce75e26so1682a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:48:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692222502; x=1692827302;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pALAd9Pbd4YTL2fLKKBiq1e3CrfvbQPC79yqd1ReOvU=;
-        b=MeD8631ZfLMMLqS78Y0ZUmwDSwjvRsHo5vwZVROQ+pWwsQ10wbwX3gF2IVqRmGs8bF
-         Un8oErjMbaPgNutCGu3ybRi2nVN5mNxyC2i/U/MubzMQFwvNnrVD6WdRXLkR1TCfO4go
-         /fOQzmvsrh2xG61aRbtjRj2XbHUSHSsKynD9D4yU3VJvpf0JY+8pMKwzGb618JEqeFLC
-         877lJxGSSkG0w7zVL5OOIw+bsk+xCV07aTESzxs5djwzn47FgYvJxBQ5MGIfMXqklr1K
-         TsZnlXzWyvbvXursHosfSwzrVO+skiT3ZTUVPZTlmRbjE62DT2HqtjkoPR0EJ9mmIXLo
-         u5Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692222502; x=1692827302;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pALAd9Pbd4YTL2fLKKBiq1e3CrfvbQPC79yqd1ReOvU=;
-        b=jFiaIDn8EvfMez9mLNZadAnut7RCEX6JDZcgBXBxdlpy4Yft58DMNn/q0ROJvjtw70
-         lxMJ8w9JzmRd6yQ/aeM72jkHcPbiSVYSXxo7X2Sk/UA/YoZtEloXYl0IzlOfZXt4sg9p
-         53Vo5Z/gE66XEUs7RuNV5/j6ShUO+67FBWRnthtAShlVNH1s97H0eNIgnAc86ptvGqCS
-         9JxQjKuMsZA5iKxvBpCMS/0sy0lv6IRZhbl0nZzUbp3FlH294GWsef1w+jFQNapeG88z
-         CV9KpK3GM7HnUlmHAggYHCph4Uu8lxuphzKPP1x3ZsKvdhMZIUKCyo1YCOjiaVUap4kU
-         +xaQ==
-X-Gm-Message-State: AOJu0Yy8Afh9Z26dYCeQZpa1PGx0Cxvggb5zToRpfo2ttRRsulKtuL7T
-        c+ThFYwxPbXhjVhUegj1zSOkq80CLeCqg25rwAflgg==
-X-Google-Smtp-Source: AGHT+IEcaOfALPggGelM3bPJnf7VZEInjtJc1J4uLKLiFnTicO7hYJjiRdcGRm/grhg7AcqNgSkOU+2vvWbTn/jOhp4=
-X-Received: by 2002:a50:9b19:0:b0:522:4741:d992 with SMTP id
- o25-20020a509b19000000b005224741d992mr37164edi.4.1692222501966; Wed, 16 Aug
- 2023 14:48:21 -0700 (PDT)
+        Wed, 16 Aug 2023 17:48:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF681FD0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 14:48:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B06C664A94
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 21:48:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6791C433C7;
+        Wed, 16 Aug 2023 21:48:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692222514;
+        bh=lOD4of92Yqzs1nQqhDlx76+eG/5BWIU7aTIpbq8gn4k=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Vl5VJYrsuyY/57/PDlIgChDsRWGn1g2fN44qigsvTN4n1YC5edvcGq41uz60AoZOC
+         nhR2ZzFqEp+Ca9ilb0QckZfLvhAu0RUj68INVo/nVYAcULwxhjRNAr21Esb2Q5jOIe
+         DTmjHX2v242lJBvxPN0QwkrQjJbVtpbjHU3v5avGm3sJFdjLiab/pt+4ZQR7VVzBz8
+         0suKq7LXYzR/UnkE401Cj9ergqawpzp4KGi6wYy0uEAnw/Fn13+ctXtXctQ2dQJbK/
+         H79qqP3TOs2tAoEUqbIy6KuXE9CI9boPu42IVK4DqU5XdUkbk2t83pdDSsVejnQPNV
+         9TAu6z+aqLN9Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 57737404DF; Wed, 16 Aug 2023 18:48:31 -0300 (-03)
+Date:   Wed, 16 Aug 2023 18:48:31 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/1] perf bpf_skel augmented_raw_syscalls: Cap the socklen
+ parameter using &= sizeof(saddr)
+Message-ID: <ZN1ELw41wQE5zDrK@kernel.org>
 MIME-Version: 1.0
-References: <20230812210053.2325091-1-zokeefe@google.com> <PUZP153MB06358FF02518EF3B279F5DD4BE16A@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
- <CAAa6QmSrwe2m4MjS9mGO+DeGNGSv=B2uZ72EAxnZk2jsDh39rQ@mail.gmail.com>
- <ZNp7JDaPhT3Se4de@casper.infradead.org> <CAAa6QmSN4NhaDL0DQsRd-F8HTnCCjq1ULRNk88LAA9gVbDXE4g@mail.gmail.com>
- <ZNrh6w9ICu4rMrhV@casper.infradead.org> <PUZP153MB063529C4869A7A666C275B23BE15A@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
-In-Reply-To: <PUZP153MB063529C4869A7A666C275B23BE15A@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
-From:   "Zach O'Keefe" <zokeefe@google.com>
-Date:   Wed, 16 Aug 2023 14:47:45 -0700
-Message-ID: <CAAa6QmRrnRHEEQMMYe20GLXj7g+LVVHVRAKUdSLy=jUW=khb2A@mail.gmail.com>
-Subject: Re: [EXTERNAL] [PATCH] mm/thp: fix "mm: thp: kill __transhuge_page_enabled()"
-To:     Saurabh Singh Sengar <ssengar@microsoft.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Yang Shi <shy828301@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,22 +58,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> We have a out of tree driver that maps huge pages through a file handle a=
-nd
-> relies on -> huge_fault. It used to work in 5.19 kernels but 6.1 changed =
-this
-> behaviour.
->
-> I don=E2=80=99t think reverting the earlier behaviour of fault_path for h=
-uge pages should
-> impact kernel negatively.
->
-> Do you think we can restore this earlier behaviour of kernel to allow pag=
-e fault
-> for huge pages via ->huge_fault.
+This works with:
 
-That seems reasonable to me. I think using the existence of a
-->huge_fault() handler as a predicate to return "true" makes sense to
-me. The "normal" flow for file-backed memory along fault path still
-needs to return "false", so that we correctly fallback to ->fault()
-handler. Unless there are objections, I can do that in a v2.
+  $ clang -v
+  clang version 14.0.5 (Fedora 14.0.5-2.fc36)
+  $
+
+But not with:
+
+  $ clang -v
+  clang version 16.0.6 (Fedora 16.0.6-2.fc38)
+  $
+
+  [root@quaco ~]# perf trace -e connect*,sendto* ping -c 10 localhost
+  libbpf: prog 'sys_enter_sendto': BPF program load failed: Permission denied
+  libbpf: prog 'sys_enter_sendto': -- BEGIN PROG LOAD LOG --
+  reg type unsupported for arg#0 function sys_enter_sendto#59
+  0: R1=ctx(off=0,imm=0) R10=fp0
+  ; int sys_enter_sendto(struct syscall_enter_args *args)
+  0: (bf) r6 = r1                       ; R1=ctx(off=0,imm=0) R6_w=ctx(off=0,imm=0)
+  1: (b7) r1 = 0                        ; R1_w=0
+  ; int key = 0;
+  2: (63) *(u32 *)(r10 -4) = r1         ; R1_w=0 R10=fp0 fp-8=0000????
+  3: (bf) r2 = r10                      ; R2_w=fp0 R10=fp0
+  ;
+  4: (07) r2 += -4                      ; R2_w=fp-4
+  ; return bpf_map_lookup_elem(&augmented_args_tmp, &key);
+  5: (18) r1 = 0xffff8de5a5b8bc00       ; R1_w=map_ptr(off=0,ks=4,vs=8272,imm=0)
+  7: (85) call bpf_map_lookup_elem#1    ; R0_w=map_value_or_null(id=1,off=0,ks=4,vs=8272,imm=0)
+  8: (bf) r7 = r0                       ; R0_w=map_value_or_null(id=1,off=0,ks=4,vs=8272,imm=0) R7_w=map_value_or_null(id=1,off=0,ks=4,vs=8272,imm=0)
+  9: (b7) r0 = 1                        ; R0_w=1
+  ; if (augmented_args == NULL)
+  10: (15) if r7 == 0x0 goto pc+25      ; R7_w=map_value(off=0,ks=4,vs=8272,imm=0)
+  ; unsigned int socklen = args->args[5];
+  11: (79) r1 = *(u64 *)(r6 +56)        ; R1_w=scalar() R6_w=ctx(off=0,imm=0)
+  ;
+  12: (bf) r2 = r1                      ; R1_w=scalar(id=2) R2_w=scalar(id=2)
+  13: (67) r2 <<= 32                    ; R2_w=scalar(smax=9223372032559808512,umax=18446744069414584320,var_off=(0x0; 0xffffffff00000000),s32_min=0,s32_max=0,u32_max=0)
+  14: (77) r2 >>= 32                    ; R2_w=scalar(umax=4294967295,var_off=(0x0; 0xffffffff))
+  15: (b7) r8 = 128                     ; R8=128
+  ; if (socklen > sizeof(augmented_args->saddr))
+  16: (25) if r2 > 0x80 goto pc+1       ; R2=scalar(umax=128,var_off=(0x0; 0xff))
+  17: (bf) r8 = r1                      ; R1=scalar(id=2) R8_w=scalar(id=2)
+  ; const void *sockaddr_arg = (const void *)args->args[4];
+  18: (79) r3 = *(u64 *)(r6 +48)        ; R3_w=scalar() R6=ctx(off=0,imm=0)
+  ; bpf_probe_read(&augmented_args->saddr, socklen, sockaddr_arg);
+  19: (bf) r1 = r7                      ; R1_w=map_value(off=0,ks=4,vs=8272,imm=0) R7=map_value(off=0,ks=4,vs=8272,imm=0)
+  20: (07) r1 += 64                     ; R1_w=map_value(off=64,ks=4,vs=8272,imm=0)
+  ; bpf_probe_read(&augmented_args->saddr, socklen, sockaddr_arg);
+  21: (bf) r2 = r8                      ; R2_w=scalar(id=2) R8_w=scalar(id=2)
+  22: (85) call bpf_probe_read#4
+  R2 min value is negative, either use unsigned or 'var &= const'
+  processed 22 insns (limit 1000000) max_states_per_insn 0 total_states 1 peak_states 1 mark_read 1
+  -- END PROG LOAD LOG --
+  libbpf: prog 'sys_enter_sendto': failed to load: -13
+  libbpf: failed to load object 'augmented_raw_syscalls_bpf'
+  libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -13
+
+So use the suggested &= variant since sizeof(saddr) == 128 bytes.
+
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+index 0586c4118656d3e4..9c1d0b271b20f693 100644
+--- a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
++++ b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+@@ -187,8 +187,7 @@ int sys_enter_connect(struct syscall_enter_args *args)
+         if (augmented_args == NULL)
+                 return 1; /* Failure: don't filter */
+ 
+-	if (socklen > sizeof(augmented_args->saddr))
+-		socklen = sizeof(augmented_args->saddr);
++	socklen &= sizeof(augmented_args->saddr) - 1;
+ 
+ 	bpf_probe_read(&augmented_args->saddr, socklen, sockaddr_arg);
+ 
+@@ -206,8 +205,7 @@ int sys_enter_sendto(struct syscall_enter_args *args)
+         if (augmented_args == NULL)
+                 return 1; /* Failure: don't filter */
+ 
+-	if (socklen > sizeof(augmented_args->saddr))
+-		socklen = sizeof(augmented_args->saddr);
++	socklen &= sizeof(augmented_args->saddr) - 1;
+ 
+ 	bpf_probe_read(&augmented_args->saddr, socklen, sockaddr_arg);
+ 
+-- 
+2.41.0
+
