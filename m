@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6AAB77E0EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 378E077E0D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244924AbjHPLw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 07:52:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54136 "EHLO
+        id S244822AbjHPLwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 07:52:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244902AbjHPLwG (ORCPT
+        with ESMTP id S244863AbjHPLv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 07:52:06 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15872128
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 04:52:04 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fe8242fc4dso55687385e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 04:52:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692186723; x=1692791523;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kTUJIqUuvJpBEpmv4Fc4n2cbYwvZtXF9XlgfvfufwVo=;
-        b=T3sdARg0nYPapz3ox/SJbjs2LShMs9XEyARdb+QyUWd1UaYcM5eLoV1P1oxiBRlB/z
-         LLoMQySwr5gu01MKqJr2HUKh/Kc3DttbYXwisck//WgPQjHh5BaJksHur1qIRtVtEnCQ
-         gLsYnda5WjlUSAS5lLg0dX731KJUZQInbP06EefR8cEnv8elAqE/YgONzDk9JSYlaIDv
-         1X/GK/IYFMYZb1jYYRjMvgo+CjMKhbXvftEqRB7szZrHhZGD30ja5/ssagQwE8c+Ladz
-         l155JlTy5TWUxlQqx8yikXnqWdSI3PINEJfqw14z/6NKceGeaNOXz1Kzkk/A76m5dpMd
-         o72g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692186723; x=1692791523;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kTUJIqUuvJpBEpmv4Fc4n2cbYwvZtXF9XlgfvfufwVo=;
-        b=Y2NmKigpLHhc3IH2FClSZ1IRsPbEA9VZHi8JoZJzvyPeEvV/cIEPTKN2RLVRpn0A+H
-         txx9nZ+pqOg3EsHNWa/5dQpzagrGUYkRtar4wePWNR3Fsehb0otGRAEPCNSpnARi/FBo
-         tP6GmWabdjiLWnwYXgi+NtZ6PoGMHAIFSqMBofGhLx4xffVza1lOxeJ/3LTC4fGGnAdD
-         S9OvXFnP+B8ly+12F/SxshGXq6e1b28NE4e1Hf4AP3UhLf1dZo6x8cOECs+y6SOgtTob
-         LWrn0Xl9Gtwu8xoPl8WQCLZH7aj0k4fwmkUk9E70e0nNuBEjHN5GfobO4XdxuCrfiMBM
-         JYVw==
-X-Gm-Message-State: AOJu0YwtAL0P1NL4vZGzH88gz6E1fI005cBgkhpPsmw3mn6FiUhtyoYY
-        V97Y6ueVbQIMdFoUh/lwO/ePsw==
-X-Google-Smtp-Source: AGHT+IHvnASHedvOmPzr/nGlmoJv0wA6pOFu6rLk5qzIr/3ZASVR4rjqKOHbS4uv69pak+c2ma/oww==
-X-Received: by 2002:a05:600c:1d06:b0:3fe:26bf:65ea with SMTP id l6-20020a05600c1d0600b003fe26bf65eamr1244603wms.29.1692186723184;
-        Wed, 16 Aug 2023 04:52:03 -0700 (PDT)
-Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id fk3-20020a05600c0cc300b003fc05b89e5bsm21280663wmb.34.2023.08.16.04.52.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 04:52:02 -0700 (PDT)
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        lee@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        sboyd@kernel.org, luca.weiss@fairphone.com
-Cc:     bryan.odonoghue@linaro.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v9 7/7] arm64: dts: qcom: qrb5165-rb5: Switch on TCPM orientation-switch for usb_1_qmpphy
-Date:   Wed, 16 Aug 2023 12:51:51 +0100
-Message-ID: <20230816115151.501736-8-bryan.odonoghue@linaro.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230816115151.501736-1-bryan.odonoghue@linaro.org>
-References: <20230816115151.501736-1-bryan.odonoghue@linaro.org>
+        Wed, 16 Aug 2023 07:51:56 -0400
+Received: from mail.3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9882123;
+        Wed, 16 Aug 2023 04:51:53 -0700 (PDT)
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.3ffe.de (Postfix) with ESMTPSA id 8DD34FF;
+        Wed, 16 Aug 2023 13:51:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+        t=1692186711;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=voA621rn/w6ng91/WNUkg3Fq3sBx04GR1UpiWeO6YOE=;
+        b=xdW4qarkIR6s8uneKejcpImybQnhai0Hxo78vhi8SpoX2C0XsJhS+0XWwTuGfDtk1LKH7c
+        RYlfWnw9pR3NBb5kTgKFaLgYdtZC3BHEDD9ktCRhte1jyLSdXpL0bCl3cvggFaeMLspymG
+        doLPJE+UrqA7k8BzAWspVOvM4y7+/Nb6W58kXRXThMZlI4aNxIsr4qshQD9ssDBjLPOCra
+        j7zWBk1g6uKrI6iioG6eemY6Ho1bnk5vg3otGQz90K5P6STNrAIjS3ktDFymG8jEEn78fc
+        vksmZAiTpSKTBaY4meGr7ZRBZux5Ox9Ru4xCmLyZvQ59XVE3bt25L4Zif0VvHw==
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Date:   Wed, 16 Aug 2023 13:51:51 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        "Miquel Raynal )" <miquel.raynal@bootlin.com>,
+        "Richard Weinberger )" <richard@nod.at>,
+        "Vignesh Raghavendra )" <vigneshr@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: Re: [PATCH v2,1/2] mtd: spi-nor: giga: gd25lq64c: Disable quad mode
+ according to bus width
+In-Reply-To: <20230816104245.2676965-1-hsinyi@chromium.org>
+References: <20230816104245.2676965-1-hsinyi@chromium.org>
+Message-ID: <6702bac712daab13698b9bb9ad81d49e@walle.cc>
+X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -75,58 +75,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch on USB orientation-switching for usb_1_qmp via TCPM. Detecting the
-orientation switch is required to get the PHY to reset and bring-up the PHY
-with the CC lines set to the appropriate lane.
+Am 2023-08-16 12:38, schrieb Hsin-Yi Wang:
+> gd25lq64c has Quad Enable Requirement flag parsed as
+> BFPT_DWORD15_QER_SR2_BIT1_BUGGY in BFPT, even if spi-{rx/tx}-bus-width
+> set as non QUAD, eg. 0, 1, 2... Thus quad_enable will not be NULL and
+> quad enable (QE) bit will be set to 1 by default. According to
+> datasheet[1], if QE bit is enabled, WP pin will become IO pin and the
+> system can't use write protection feature, and it's also not 
+> recommended
+> to set QE bit to 1[1].
+> 
+> Add a post_bfpt fixup that reads spi-rx-bus-width to remove quad_enable
+> if the width is set to below QUAD mode.
+> 
+> [1]
+> https://www.gigadevice.com.cn/Public/Uploads/uploadfile/files/20220714/DS-00012-GD25LQ64C-Rev3.4.pdf
+> page 13
+> 
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+>  drivers/mtd/spi-nor/gigadevice.c | 28 +++++++++++++++++++++++++++-
+>  1 file changed, 27 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/gigadevice.c 
+> b/drivers/mtd/spi-nor/gigadevice.c
+> index d57ddaf1525b3..8ea89e1858f9b 100644
+> --- a/drivers/mtd/spi-nor/gigadevice.c
+> +++ b/drivers/mtd/spi-nor/gigadevice.c
+> @@ -33,6 +33,31 @@ static const struct spi_nor_fixups gd25q256_fixups = 
+> {
+>  	.post_bfpt = gd25q256_post_bfpt,
+>  };
+> 
+> +static int
+> +gd25lq64c_post_bfpt(struct spi_nor *nor,
+> +		    const struct sfdp_parameter_header *bfpt_header,
+> +		    const struct sfdp_bfpt *bfpt)
+> +{
+> +	struct device_node *np = spi_nor_get_flash_node(nor);
+> +	u32 value;
+> +
+> +	/*
+> +	 * Even if spi-{tx,rx}-bus-width is set to DUAL mode, due to the QER
+> +	 * flag parsed from BFPT is BFPT_DWORD15_QER_SR2_BIT1_BUGGY, so the
+> +	 * quad_enable will be set and QE bit set to 1.
+> +	 */
+> +	if (!of_property_read_u32(np, "spi-rx-bus-width", &value)) {
+> +		if (value <= 2)
+> +			nor->params->quad_enable = NULL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static struct spi_nor_fixups gd25lq64c_fixups = {
+> +	.post_bfpt = gd25lq64c_post_bfpt,
 
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
----
- arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 12 ++++++++++++
- arch/arm64/boot/dts/qcom/sm8250.dtsi     |  1 +
- 2 files changed, 13 insertions(+)
+No. Please fix it in the core and not just for this part. To me it seems
+like a fundamental problem and that commit 39d1e3340c73 ("mtd: spi-nor:
+Fix clearing of QE bit on lock()/unlock()") is broken in that regard.
+Tudor?
 
-diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-index 3e34f4e2af14a..b878d765f8c42 100644
---- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-+++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-@@ -1290,6 +1290,11 @@ &usb_1_qmpphy {
- 
- 	vdda-phy-supply = <&vreg_l9a_1p2>;
- 	vdda-pll-supply = <&vreg_l18a_0p92>;
-+	orientation-switch;
-+};
-+
-+&usb_1_qmpphy_out {
-+	remote-endpoint = <&pm8150b_typec_mux_in>;
- };
- 
- &usb_2 {
-@@ -1374,6 +1379,13 @@ pm8150b_role_switch_in: endpoint {
- 					remote-endpoint = <&usb_1_role_switch_out>;
- 				};
- 			};
-+
-+			port@1 {
-+				reg = <1>;
-+				pm8150b_typec_mux_in: endpoint {
-+					remote-endpoint = <&usb_1_qmpphy_out>;
-+				};
-+			};
- 		};
- 	};
- };
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index 733de2fd5e753..fe29b3da90c19 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -3620,6 +3620,7 @@ ports {
- 
- 				port@0 {
- 					reg = <0>;
-+					usb_1_qmpphy_out: endpoint {};
- 				};
- 
- 				port@1 {
--- 
-2.41.0
-
+-michael
