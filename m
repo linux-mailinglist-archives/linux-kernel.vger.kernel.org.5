@@ -2,103 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8538C77E785
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 949C077E78C
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 19:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345199AbjHPRYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 13:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53460 "EHLO
+        id S1345142AbjHPR1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 13:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345202AbjHPRXz (ORCPT
+        with ESMTP id S1345202AbjHPR10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 13:23:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6E0E55
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:23:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E4C2B61DC0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 17:23:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 184C8C433C7;
-        Wed, 16 Aug 2023 17:23:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692206633;
-        bh=QdESuSYnL8AsE26Bme+ZtkoXkjk2KxVm4wYp+9LcAt8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aVAdaz4QQvvfZS8r6Ev1hVPnCBGdi7GtkXz8CO2CHkmosyC7vMnJL04duQHYAi1wo
-         CGVhRxCFvb1ajS0kdvi6gmcrqt4p0dlA1fv5CcCo+8IykTorg5LwRrv14TjLDKnmPv
-         YCvc+Sb3bTscnoGfHR0/KWHh1GgD5KYn7zj27TCtHrcdwVTcCdXtfFsGn9mYE1odlm
-         KkFo1l+TQKxw/+WNCf1Ug/KOSLhSYRdLw/YoBoZAuyapfIfqeX6khBIQsIPs/NsI9P
-         cK6pGxUT2i3d+D4YL5nM28o9RuaByjrTH/G4gxsAYUHmLJCzKaujZacY6yZ/ElHdFr
-         fGVHwn8r0L3HA==
-Date:   Wed, 16 Aug 2023 18:23:48 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        patches@opensource.cirrus.com,
-        Maciej Strozek <mstrozek@opensource.cirrus.com>
-Subject: Re: [PATCH 2/2] ASoC: cs35l56: Read firmware uuid from a device
- property instead of _SUB
-Message-ID: <df6c3dc2-e530-46f6-b4c8-0619ae23a794@sirena.org.uk>
-References: <20230816164906.42-1-rf@opensource.cirrus.com>
- <20230816164906.42-3-rf@opensource.cirrus.com>
- <c3e42efc-9ddc-4788-85f7-cfa350d75d43@sirena.org.uk>
- <b244708a-414e-1f56-61a0-7c183f8ff45e@opensource.cirrus.com>
+        Wed, 16 Aug 2023 13:27:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A689E55
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 10:27:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692206845; x=1723742845;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=yMiVYYxGzyMe2PR89NcT2PwERTyiuhQhQBH6aPrJE4g=;
+  b=hMghbmoEewkOqqX7sMZ87L+SiKjI9+QHMB2qEEyGX15UcVJxTG8ZyAG1
+   jjkUs17KXh8NfdEREwvG7fEwzLeiLcKC/T0LrJDP8vh05HEcZSI3Qe+I/
+   fq4qkBC93MMyEDMKbgIMXRfqyNFokwNqyREkK62b9Cw4UvD3wGqwgavcX
+   96+51UX+nnJuSWxMGmgMaPTqlc5vSoEWHigTp2oMa+WGC8s6hnVLjZVvw
+   YPoK72p9Acr31WAJT+4h64T62V68pqvO6caBARPOyO/xBfX/vO90uxb0a
+   7reXe+WWLuN80iLSnTd+sq/Xm5in80AxdoqScqhqKn5jImbMVMiiIStdp
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="362742340"
+X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
+   d="scan'208";a="362742340"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 10:27:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="684148238"
+X-IronPort-AV: E=Sophos;i="6.01,177,1684825200"; 
+   d="scan'208";a="684148238"
+Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 16 Aug 2023 10:27:22 -0700
+Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qWKIk-0000Sx-0X;
+        Wed, 16 Aug 2023 17:27:22 +0000
+Date:   Thu, 17 Aug 2023 01:27:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: net/bpf/test_run.c:303:15: warning: no previous declaration for
+ 'bpf_kfunc_call_memb_release'
+Message-ID: <202308170136.QmDPx82O-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="v+mClJTOr4lcjffQ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b244708a-414e-1f56-61a0-7c183f8ff45e@opensource.cirrus.com>
-X-Cookie: Old soldiers never die.  Young ones do.
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Kumar,
 
---v+mClJTOr4lcjffQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+FYI, the error/warning still remains.
 
-On Wed, Aug 16, 2023 at 06:09:52PM +0100, Richard Fitzgerald wrote:
-> On 16/8/23 18:03, Mark Brown wrote:
-> > On Wed, Aug 16, 2023 at 05:49:06PM +0100, Richard Fitzgerald wrote:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
+commit: 8218ccb5bd68976ed5d75028ef50c13a857eee25 selftests/bpf: Add tests for kfunc register offset checks
+date:   1 year, 5 months ago
+config: x86_64-randconfig-x012-20230816 (https://download.01.org/0day-ci/archive/20230817/202308170136.QmDPx82O-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce: (https://download.01.org/0day-ci/archive/20230817/202308170136.QmDPx82O-lkp@intel.com/reproduce)
 
-> > > There is also a need to support instantiating this driver using software
-> > > nodes. This is for systems where the CS35L56 is a back-end device and the
-> > > ACPI refers only to the front-end audio device - there will not be any ACPI
-> > > references to CS35L56.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308170136.QmDPx82O-lkp@intel.com/
 
-> > Are there any existing systems (or might there be given that the driver
-> > is in released kernels already) which rely on _SUB?
+All warnings (new ones prefixed by >>):
 
-> No. Nothing has been released with CS35L56.
+   net/bpf/test_run.c:206:14: warning: no previous declaration for 'bpf_fentry_test1' [-Wmissing-declarations]
+    int noinline bpf_fentry_test1(int a)
+                 ^~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:213:14: warning: no previous declaration for 'bpf_fentry_test2' [-Wmissing-declarations]
+    int noinline bpf_fentry_test2(int a, u64 b)
+                 ^~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:218:14: warning: no previous declaration for 'bpf_fentry_test3' [-Wmissing-declarations]
+    int noinline bpf_fentry_test3(char a, int b, u64 c)
+                 ^~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:223:14: warning: no previous declaration for 'bpf_fentry_test4' [-Wmissing-declarations]
+    int noinline bpf_fentry_test4(void *a, char b, int c, u64 d)
+                 ^~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:228:14: warning: no previous declaration for 'bpf_fentry_test5' [-Wmissing-declarations]
+    int noinline bpf_fentry_test5(u64 a, void *b, short c, int d, u64 e)
+                 ^~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:233:14: warning: no previous declaration for 'bpf_fentry_test6' [-Wmissing-declarations]
+    int noinline bpf_fentry_test6(u64 a, void *b, short c, int d, void *e, u64 f)
+                 ^~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:242:14: warning: no previous declaration for 'bpf_fentry_test7' [-Wmissing-declarations]
+    int noinline bpf_fentry_test7(struct bpf_fentry_test_t *arg)
+                 ^~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:247:14: warning: no previous declaration for 'bpf_fentry_test8' [-Wmissing-declarations]
+    int noinline bpf_fentry_test8(struct bpf_fentry_test_t *arg)
+                 ^~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:252:14: warning: no previous declaration for 'bpf_modify_return_test' [-Wmissing-declarations]
+    int noinline bpf_modify_return_test(int a, int *b)
+                 ^~~~~~~~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:258:14: warning: no previous declaration for 'bpf_kfunc_call_test1' [-Wmissing-declarations]
+    u64 noinline bpf_kfunc_call_test1(struct sock *sk, u32 a, u64 b, u32 c, u64 d)
+                 ^~~~~~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:263:14: warning: no previous declaration for 'bpf_kfunc_call_test2' [-Wmissing-declarations]
+    int noinline bpf_kfunc_call_test2(struct sock *sk, u32 a, u32 b)
+                 ^~~~~~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:268:24: warning: no previous declaration for 'bpf_kfunc_call_test3' [-Wmissing-declarations]
+    struct sock * noinline bpf_kfunc_call_test3(struct sock *sk)
+                           ^~~~~~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:291:1: warning: no previous declaration for 'bpf_kfunc_call_test_acquire' [-Wmissing-declarations]
+    bpf_kfunc_call_test_acquire(unsigned long *scalar_ptr)
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:299:15: warning: no previous declaration for 'bpf_kfunc_call_test_release' [-Wmissing-declarations]
+    noinline void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p)
+                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> net/bpf/test_run.c:303:15: warning: no previous declaration for 'bpf_kfunc_call_memb_release' [-Wmissing-declarations]
+    noinline void bpf_kfunc_call_memb_release(struct prog_test_member *p)
+                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:345:15: warning: no previous declaration for 'bpf_kfunc_call_test_pass_ctx' [-Wmissing-declarations]
+    noinline void bpf_kfunc_call_test_pass_ctx(struct __sk_buff *skb)
+                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:349:15: warning: no previous declaration for 'bpf_kfunc_call_test_pass1' [-Wmissing-declarations]
+    noinline void bpf_kfunc_call_test_pass1(struct prog_test_pass1 *p)
+                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:353:15: warning: no previous declaration for 'bpf_kfunc_call_test_pass2' [-Wmissing-declarations]
+    noinline void bpf_kfunc_call_test_pass2(struct prog_test_pass2 *p)
+                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:357:15: warning: no previous declaration for 'bpf_kfunc_call_test_fail1' [-Wmissing-declarations]
+    noinline void bpf_kfunc_call_test_fail1(struct prog_test_fail1 *p)
+                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:361:15: warning: no previous declaration for 'bpf_kfunc_call_test_fail2' [-Wmissing-declarations]
+    noinline void bpf_kfunc_call_test_fail2(struct prog_test_fail2 *p)
+                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:365:15: warning: no previous declaration for 'bpf_kfunc_call_test_fail3' [-Wmissing-declarations]
+    noinline void bpf_kfunc_call_test_fail3(struct prog_test_fail3 *p)
+                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:369:15: warning: no previous declaration for 'bpf_kfunc_call_test_mem_len_pass1' [-Wmissing-declarations]
+    noinline void bpf_kfunc_call_test_mem_len_pass1(void *mem, int mem__sz)
+                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:373:15: warning: no previous declaration for 'bpf_kfunc_call_test_mem_len_fail1' [-Wmissing-declarations]
+    noinline void bpf_kfunc_call_test_mem_len_fail1(void *mem, int len)
+                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   net/bpf/test_run.c:377:15: warning: no previous declaration for 'bpf_kfunc_call_test_mem_len_fail2' [-Wmissing-declarations]
+    noinline void bpf_kfunc_call_test_mem_len_fail2(u64 *mem, int len)
+                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-And nobody's going to pick up a kernel with the old binding when they're
-putting together a product?  If we're going to make this change it
-should be sent as a fix in order to minimise the risk of that happening
-but this patch doesn't apply against for-6.5, could you rebase please?
 
---v+mClJTOr4lcjffQ
-Content-Type: application/pgp-signature; name="signature.asc"
+vim +/bpf_kfunc_call_memb_release +303 net/bpf/test_run.c
 
------BEGIN PGP SIGNATURE-----
+   302	
+ > 303	noinline void bpf_kfunc_call_memb_release(struct prog_test_member *p)
+   304	{
+   305	}
+   306	
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTdBiQACgkQJNaLcl1U
-h9AwiQf9H6t3O03JUodNHMdEYNm7NMS9jN/Mdov3ejbqZreMqcjwICluPuixXxSx
-KjEcrQhr/zmFHd569MLWNJ0rkyWoYUOyVS8NAfMmvWpGFGbZtlY/omtwAdefh0v4
-2yNtmVIPaay58PXqv51rPog/3g7uP03kRUwdNY8LKBWJ7mT6SmqzwVxpgzl8Wv9G
-1bERXadY3EUQwcKV8njkXDVAdouHKhEU0FINLflDD4WIdvxwGbBvWt0iHGvcgvOH
-gU0sLDkaZiIz4bbnywn8RoYun5LcvHgvFYyrJQcK9VpMLBpzGgCHM/uY1zfVsimQ
-bqmNmWDeOEP75fgE/jAKFxIEMaLeLw==
-=l2IT
------END PGP SIGNATURE-----
-
---v+mClJTOr4lcjffQ--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
