@@ -2,174 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46AC377DA0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 07:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE29977DA0F
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 07:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241843AbjHPF4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 01:56:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37946 "EHLO
+        id S241887AbjHPF5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 01:57:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241822AbjHPFzy (ORCPT
+        with ESMTP id S241956AbjHPF4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 01:55:54 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7439AE56;
-        Tue, 15 Aug 2023 22:55:53 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99c1d03e124so754907366b.2;
-        Tue, 15 Aug 2023 22:55:53 -0700 (PDT)
+        Wed, 16 Aug 2023 01:56:50 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5972B2123
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 22:56:48 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-525597d891fso4381677a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 15 Aug 2023 22:56:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692165352; x=1692770152;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6aZkOL7SjZGnUHAIvEt/YDknB7+2gxb44+woju4e+uE=;
-        b=VfCom1umUhKMEoU/+uHAV8huhuxTS3rkeuRK8CgGS4Pf/0CTvzwkECTCCDk0Nz8fYJ
-         ZZwtkJuX4W3UOGSquDKAByWKGnq6kkeoW+l8JP3MOKY/nu3d8hsm5OQx3/P2yfLrBbnu
-         3z5awkUHCDiAGeng8HrzdRBzgarA0HmQEtvoEAT7+4oKmYqPuqnXmlMk+jjFTlPlMNs8
-         lBy632wiFdEarOdwxdnWDGbxjB/UJdfJFF9XdgK9RgQVln/1VrKM3lVuVg7/eZua2Fyt
-         YzWi4KzHUqWcbOY+IxfQ9wQAUz1Ic6Mn7vmooNKeN0HCI7gcNF0jBcHSDGRtrxTYkR3R
-         GrJg==
+        d=ionos.com; s=google; t=1692165406; x=1692770206;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QzayyJZrpiuik7Awn0EQI35WlV9Oze6Arm7htxVYask=;
+        b=fhV4xYgvE3lIh8gfbuMeh8o3oNXgNx5hLj56Bw2mERpz9/+bu1LPWzhHkB8lR4GOvb
+         DViGP7bfiWDmPiXnCmlTqTnAYEaI8mAVymkWiTtRpMusqMHYAY/8Hz0eRIjPO1xVJ2q0
+         gD8c7kLGL6Yl1xnVAHFflUImrilMZ9qU3zBsR1l/2MvQGCb0BY5xrf/3lMah3w8SOOQy
+         M93i48vtjFTzv8sdCXUcalR+tfJ41124R1bUJcxjenVEN9Whte8ZBHdG63Q0zp7bOdv0
+         dQ6GQn3GsGfGN5Ofo5RTLqeDQ1YsenJPEffAvBV9hP6iP07VUjJPZ3CB86kpSGvFiEvG
+         /R3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692165352; x=1692770152;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6aZkOL7SjZGnUHAIvEt/YDknB7+2gxb44+woju4e+uE=;
-        b=GJi3JcALOSR/H54/S9tbcGkG/zVcD6pQGEYRZ+DZFjbH5PATHPb1UwD4qwistTOn/s
-         LFcCIoOBScHTckEw/xrm/sHzuaax5d3ZGTYKNSdiIkHMjvC2+XpBnj0WOj07+l5r4DCo
-         fMc2sJ0iVvlDUj4VRvh5/PCcCUw/8mmg9Oor0exHHjtLtFoFrVJXDvVOESQfXc5UsCEo
-         yljUrf0esddL0Z1qDMPSQS8kJwywEGvQbimQcNzgdymoRiuftJDhmxyTq6CozJDUQJbf
-         qDYtKGHBk/clU/y6RigoT2G8uPvn+0Rc7gXG5o3+SJXkKmhIEtONTfTtgr5vBd8lKez1
-         Ky3Q==
-X-Gm-Message-State: AOJu0YywSJBQhSav/G8DWl7diATbYMVr8Sz1uju7YsZQwwiDtQ7asuMo
-        BfT98Jqzq1k3gJ4yz3RI7H8=
-X-Google-Smtp-Source: AGHT+IF4cQjPHPsGP77huoi8BSKDn99dS/edqLrfBHnOmj+6zJvC5sm7DmueoS1E10YGpHFIdUgYtQ==
-X-Received: by 2002:a17:906:259:b0:991:ed4e:1c84 with SMTP id 25-20020a170906025900b00991ed4e1c84mr667070ejl.25.1692165351663;
-        Tue, 15 Aug 2023 22:55:51 -0700 (PDT)
-Received: from ?IPV6:2a00:e180:15f4:7600:d198:bace:ace6:651f? ([2a00:e180:15f4:7600:d198:bace:ace6:651f])
-        by smtp.gmail.com with ESMTPSA id a9-20020a170906190900b00992c92af6easm8031662eje.161.2023.08.15.22.55.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Aug 2023 22:55:51 -0700 (PDT)
-Message-ID: <d1831afd-9e02-fbc9-69f7-e8f044f35ee0@gmail.com>
-Date:   Wed, 16 Aug 2023 07:55:49 +0200
+        d=1e100.net; s=20221208; t=1692165406; x=1692770206;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QzayyJZrpiuik7Awn0EQI35WlV9Oze6Arm7htxVYask=;
+        b=Me9UqIKU12vjiV0hGycNc2KImHNY4TxrcRVtsFTwyZWBSvIhyjLOKmEgZ1SfECoZ0L
+         W3CPamqsKIuyCaQMIoDnrG/Q1J8EvwqYVFkHH5TC6c/QajajCjUOVii73oQGLYOUUkny
+         jhprMxU+AywSLTnbBU0VhzjNa9dQSFqLKO8TCUG+GiqyzFlXND7NJ4JEIekcyMmoINWm
+         25miKt2KuWyKJF8PEMllIe5iR7ev6hVGLm7mepdrmNyu4pypTWed8pSB6AMSwTFF29EG
+         vfS7LPD39N84e79LwW9hElSKYSo/7977fs/3vCmNsXywjxmlURUnYGtJMggmpxxDZDEe
+         zm2Q==
+X-Gm-Message-State: AOJu0YzJXpyGFVbQjfjvyrdK/hjZeXMuu/NEYRwGXkfn72iMHWTViYs2
+        zkoa/k1tWq2J1DBU6ZuB9l8yWVXlqjBGFtBd8cQeOw==
+X-Google-Smtp-Source: AGHT+IFf15M1gi7SSH3751Yics0V/U6f9ZEbkW8+Huwx9M2Cw5kwU8GJbbQexKCDmi58IVfcuKTugtAGJQERrf0uG14=
+X-Received: by 2002:aa7:d443:0:b0:523:b225:701a with SMTP id
+ q3-20020aa7d443000000b00523b225701amr725956edr.11.1692165406677; Tue, 15 Aug
+ 2023 22:56:46 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] drm/amdgpu: register a dirty framebuffer callback for
- fbcon
-Content-Language: en-US
-To:     Hamza Mahfooz <hamza.mahfooz@amd.com>,
-        amd-gfx@lists.freedesktop.org
-Cc:     Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Guchun Chen <guchun.chen@amd.com>,
-        dri-devel@lists.freedesktop.org,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>
-References: <20230815172700.255596-1-hamza.mahfooz@amd.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-In-Reply-To: <20230815172700.255596-1-hamza.mahfooz@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230816022210.2501228-1-lizhijian@fujitsu.com>
+In-Reply-To: <20230816022210.2501228-1-lizhijian@fujitsu.com>
+From:   Jinpu Wang <jinpu.wang@ionos.com>
+Date:   Wed, 16 Aug 2023 07:56:36 +0200
+Message-ID: <CAMGffE=uzdnCjewjXXm67js9mgeWYUbBAJ3J2VTh_QZYosoaww@mail.gmail.com>
+Subject: Re: [PATCH] drivers/rnbd: restore sysfs interface to rnbd-client
+To:     Li Zhijian <lizhijian@fujitsu.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        axboe@kernel.dk, Ivan Orlov <ivan.orlov0322@gmail.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Am 15.08.23 um 19:26 schrieb Hamza Mahfooz:
-> fbcon requires that we implement &drm_framebuffer_funcs.dirty.
-> Otherwise, the framebuffer might take a while to flush (which would
-> manifest as noticeable lag). However, we can't enable this callback for
-> non-fbcon cases since it might cause too many atomic commits to be made
-> at once. So, implement amdgpu_dirtyfb() and only enable it for fbcon
-> framebuffers on devices that support atomic KMS.
+On Wed, Aug 16, 2023 at 4:22=E2=80=AFAM Li Zhijian <lizhijian@fujitsu.com> =
+wrote:
 >
-> Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
-> Cc: Mario Limonciello <mario.limonciello@amd.com>
-> Cc: stable@vger.kernel.org # 6.1+
-> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2519
-> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
-> ---
-> v2: update variable names
-> ---
->   drivers/gpu/drm/amd/amdgpu/amdgpu_display.c | 26 ++++++++++++++++++++-
->   1 file changed, 25 insertions(+), 1 deletion(-)
+> Commit 137380c0ec40 renamed 'rnbd-client' to 'rnbd_client', this changed
+> sysfs interface to /sys/devices/virtual/rnbd_client/ctl/map_device
+> from /sys/devices/virtual/rnbd-client/ctl/map_device.
 >
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-> index d20dd3f852fc..d3b59f99cb7c 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
-> @@ -38,6 +38,8 @@
->   #include <linux/pci.h>
->   #include <linux/pm_runtime.h>
->   #include <drm/drm_crtc_helper.h>
-> +#include <drm/drm_damage_helper.h>
-> +#include <drm/drm_drv.h>
->   #include <drm/drm_edid.h>
->   #include <drm/drm_fb_helper.h>
->   #include <drm/drm_gem_framebuffer_helper.h>
-> @@ -532,11 +534,29 @@ bool amdgpu_display_ddc_probe(struct amdgpu_connector *amdgpu_connector,
->   	return true;
->   }
->   
-> +static int amdgpu_dirtyfb(struct drm_framebuffer *fb, struct drm_file *file,
-> +			  unsigned int flags, unsigned int color,
-> +			  struct drm_clip_rect *clips, unsigned int num_clips)
-> +{
-> +
-> +	if (strcmp(fb->comm, "[fbcon]"))
-> +		return -ENOSYS;
-
-Once more to the v2 of this patch: Tests like those are a pretty big 
-NO-GO for upstreaming.
-
-Regards,
-Christian.
-
-> +
-> +	return drm_atomic_helper_dirtyfb(fb, file, flags, color, clips,
-> +					 num_clips);
-> +}
-> +
->   static const struct drm_framebuffer_funcs amdgpu_fb_funcs = {
->   	.destroy = drm_gem_fb_destroy,
->   	.create_handle = drm_gem_fb_create_handle,
->   };
->   
-> +static const struct drm_framebuffer_funcs amdgpu_fb_funcs_atomic = {
-> +	.destroy = drm_gem_fb_destroy,
-> +	.create_handle = drm_gem_fb_create_handle,
-> +	.dirty = amdgpu_dirtyfb
-> +};
-> +
->   uint32_t amdgpu_display_supported_domains(struct amdgpu_device *adev,
->   					  uint64_t bo_flags)
->   {
-> @@ -1139,7 +1159,11 @@ static int amdgpu_display_gem_fb_verify_and_init(struct drm_device *dev,
->   	if (ret)
->   		goto err;
->   
-> -	ret = drm_framebuffer_init(dev, &rfb->base, &amdgpu_fb_funcs);
-> +	if (drm_drv_uses_atomic_modeset(dev))
-> +		ret = drm_framebuffer_init(dev, &rfb->base,
-> +					   &amdgpu_fb_funcs_atomic);
-> +	else
-> +		ret = drm_framebuffer_init(dev, &rfb->base, &amdgpu_fb_funcs);
->   
->   	if (ret)
->   		goto err;
-
+> CC: Ivan Orlov <ivan.orlov0322@gmail.com>
+> CC: "Md. Haris Iqbal" <haris.iqbal@ionos.com>
+> CC: Jack Wang <jinpu.wang@ionos.com>
+> Fixes: 137380c0ec40 ("block/rnbd: make all 'class' structures const")
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+oh, right, thx for the fix.
+Acked-by: Jack Wang <jinpu.wang@ionos.com>
+> ---
+>  drivers/block/rnbd/rnbd-clt-sysfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/block/rnbd/rnbd-clt-sysfs.c b/drivers/block/rnbd/rnb=
+d-clt-sysfs.c
+> index c36d8b1ceeed..39887556cf95 100644
+> --- a/drivers/block/rnbd/rnbd-clt-sysfs.c
+> +++ b/drivers/block/rnbd/rnbd-clt-sysfs.c
+> @@ -25,7 +25,7 @@
+>
+>  static struct device *rnbd_dev;
+>  static const struct class rnbd_dev_class =3D {
+> -       .name =3D "rnbd_client",
+> +       .name =3D "rnbd-client",
+>  };
+>  static struct kobject *rnbd_devs_kobj;
+>
+> --
+> 2.29.2
+>
