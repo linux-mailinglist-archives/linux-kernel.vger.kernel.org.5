@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1727777E049
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1FDE77E048
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 13:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244495AbjHPLZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 07:25:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44946 "EHLO
+        id S244489AbjHPLZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 07:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244501AbjHPLZt (ORCPT
+        with ESMTP id S244500AbjHPLZt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 16 Aug 2023 07:25:49 -0400
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64152112
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 04:25:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F1232121
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 04:25:48 -0700 (PDT)
 Received: from [127.0.1.1] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A6B842C6;
-        Wed, 16 Aug 2023 13:24:31 +0200 (CEST)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E72ECC85;
+        Wed, 16 Aug 2023 13:24:32 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1692185072;
-        bh=rDtSbCFK4Vgju6/miaeziwh9ZHaoTMTPVjC2mZd4HU8=;
-        h=From:Subject:Date:To:Cc:From;
-        b=SZQoKKzkT7/Vd/GP8Usm8CqZBOf52reqeGijecZADVCJDA0BNNnIyDhu0S6iN2aQW
-         1YL8Es1yNik8s8XtLbwgNsiR+Qofh2wMgRukoaECozSG66xRr0KJorqN7SidthIN8Q
-         +WnSB4wKkWr/fpM/p2qqqfU8iD1lc7VYwaPV13hU=
+        s=mail; t=1692185073;
+        bh=ZXPuvKRX9sprHbo4Gpv06P7fu4Zcz2YshqV8Y8PC7RA=;
+        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+        b=pwUcqjDnjxDTPJOB5LLs42TFguNy6jxlko33YjqoNsEeFgPRLO+sMpQe+MjneSCmS
+         jXOX5nOCp+qAG0A34L8Dws5VSN7LOQCu4vAYW+OHJ3KYfynaGT7+4cnLY41xKyggXn
+         NTpeemrgY8dg5Lxm/4NTzmg/CC/7TufY0OM5Tso8=
 From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Subject: [PATCH v2 00/12] drm/bridge: tc358768: Fixes and timings
- improvements
-Date:   Wed, 16 Aug 2023 14:25:03 +0300
-Message-Id: <20230816-tc358768-v2-0-242b9d5f703a@ideasonboard.com>
+Date:   Wed, 16 Aug 2023 14:25:04 +0300
+Subject: [PATCH v2 01/12] drm/tegra: rgb: Parameterize V- and H-sync
+ polarities
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIABCy3GQC/23MOw7CMBBF0a1EU2PkH45DxT5QCn/GZApiZEcRK
- MreMakp79PT2aBiIaxw7TYouFKlPLeQpw7C5OYHMoqtQXKpuOWaLUFdbG8sE94MesAkUUVo91f
- BRO+Duo+tJ6pLLp9DXsVv/YOsgnEmXIpa+95K428U0dU8++xKPIf8hHHf9y+Lz4wFpwAAAA==
+Message-Id: <20230816-tc358768-v2-1-242b9d5f703a@ideasonboard.com>
+References: <20230816-tc358768-v2-0-242b9d5f703a@ideasonboard.com>
+In-Reply-To: <20230816-tc358768-v2-0-242b9d5f703a@ideasonboard.com>
 To:     Andrzej Hajda <andrzej.hajda@intel.com>,
         Neil Armstrong <neil.armstrong@linaro.org>,
         Robert Foss <rfoss@kernel.org>,
@@ -53,21 +52,21 @@ Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         Thierry Reding <treding@nvidia.com>,
         Thierry Reding <thierry.reding@gmail.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2032;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1843;
  i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=rDtSbCFK4Vgju6/miaeziwh9ZHaoTMTPVjC2mZd4HU8=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBk3LIvVkXSNQGsHo5ZVWtDf5BPepuuKTTJ+aos0
- TDv6F7TDcOJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZNyyLwAKCRD6PaqMvJYe
- 9a7lD/9ZXEPLzbglC3iST/q7zVGJgUg29lHDChq27pJ6Y66/M1cyQBvqEMtZgeS8fb8hM+TDVmw
- Qr4NhUMviBl14gzAOzJAgxBxIlIVVBIQIo7jnPixrBt0/fNFlj91fjsZY3rJKdnvz0Vy5qf0chz
- 8FZuTjz1wFjJeROo9Pc6SIAh3l+2wUFZVK3DzWr6qbrJJIjjOaMqx0kIC9TZ/OuMzjYEL5gSTYA
- 2N0T2hjGj28CeDdOKJchvCwnJy0AjrmnylMUYNvO5/bQZGiF/AG1R0ppWwfrMePwmNmIDiY6Z0s
- 76HM7IcAdOCQOvz9+2AI7nBdpn2wg0YgR1QBJzUHECcN0/Ryqay884Q5mpRpVdGafHF/103B7t5
- lNlzp56NxPW8m87xMvDMWFsDBOYQ2npwlh3D/CcXN6S7rPJKZuiI6sDdQS6a08W7eGXdAyCFO7Y
- KEvBefMMVz+HDPh9TLUBkJ1rLZUesLJX5zOSqpMNMsT36Z5nPV7lzrKQd3BDDa/ZhP8zeWXg8n3
- WZu47eOHyxD1dftLqExAdaJ3v7GHcK1I9sZgoyvMXkc0lamPkvYRC3Qt3l1jg8Wa2GajfdzokFO
- +es86uMpop4UvVespYnC40KICgQCSJ29e2TKM/hOofvtdMAk0qJ1gXcL0k5OzKbReOUa6v5Cdod
- 2EPwgJO5eVEvVvw==
+ bh=GghajFVwAuY/jQ2Sbjd3Hk+E+RHO699TYVsqwsh7V5U=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBk3LIzXTggTDUU/b8Y6cxIrzc6YDU8xIreubHaS
+ CQ3so3qymqJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZNyyMwAKCRD6PaqMvJYe
+ 9VcdD/4jtfA+Exg74OnSyr8FP5u4K+47fKDod2jyMhDssy7Kef6F1jPQT03bTGO17A+ZP5HHVAo
+ lY7Tx5scXojq/ofDRswxIIOb2T+f4aLt4dXXzr/GT2d082MpktW828ql2CHrFPuJF5kTvlh3lSJ
+ RFF++8d/0nSGoouc9rj/U8suKN82Y1b9cCxslavCtdDEn35TcBcfkczuCEQZqlNB8D/GP1udZnD
+ hQZzGI5n/unYbWUKWc6xlHUAOdCUwixdwhliD8Canu0f6HuwUJ+8iVf2tXxQzrQqkxB6NDmCYMB
+ OypfGci0wzVR6f9H9wKjuFYFNyb+Sz8SL3iiiZBlJcYOIMIhHr3klqezZ97MjucrkkZ4x8vzsWo
+ wCk/WRt89ygZs8rnucd971ov0RhfCILDBYBASTRdfwt7It/yjdxS7liUqCwUit3eSyj/sN46MHx
+ 678datOimyls8RsUcCKPGEyUsVWFcCqbX2PmFQaJR15sgHMk3yOVIHb97XxkwW/lZfu5Gc0cEKU
+ lFuxWj9sSh5JxDOqEszaySboqTZj6uJKuzobn5VvnAiR9yKlDOr4G6VB2tZpNdLTvB4D+iMYe/F
+ O4qAonbYqFMTvkbaIGP53lv22bAIhtNde+UoTInM6Dd9RSyk//fQHKousjHBlQaTj6U9yYFRRHN
+ 5RLBpLtAFSJHM7Q==
 X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
  fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -80,54 +79,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series contains various fixes and cleanups for TC358768. The target
-of this work is to get TC358768 working on Toradex's AM62 based board,
-which has the following display pipeline:
+From: Thierry Reding <treding@nvidia.com>
 
-AM62 DPI -> TC358768 -> LT8912B -> HDMI connector
+The polarities of the V- and H-sync signals are encoded as flags in the
+display mode, so use the existing information to setup the signals for
+the RGB interface.
 
-The main thing the series does is to improve the DSI HSW, HFP and VSDly
-calculations.
-
- Tomi
-
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+[tomi.valkeinen@ideasonboard.com: default to positive sync]
 Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 ---
-Changes in v2:
-- Add "drm/tegra: rgb: Parameterize V- and H-sync polarities" so that
-  Tegra can configure the polarities correctly.
-- Add "drm/bridge: tc358768: Default to positive h/v syncs" as we don't
-  (necessarily) have the polarities set in the mode.
-- Drop "drm/bridge: tc358768: Add DRM_BRIDGE_ATTACH_NO_CONNECTOR
-  support" as it's not needed for DRM_BRIDGE_ATTACH_NO_CONNECTOR
-  support.
-- Link to v1: https://lore.kernel.org/r/20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com
+ drivers/gpu/drm/tegra/rgb.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
----
-Thierry Reding (1):
-      drm/tegra: rgb: Parameterize V- and H-sync polarities
+diff --git a/drivers/gpu/drm/tegra/rgb.c b/drivers/gpu/drm/tegra/rgb.c
+index 79566c9ea8ff..fc66bbd913b2 100644
+--- a/drivers/gpu/drm/tegra/rgb.c
++++ b/drivers/gpu/drm/tegra/rgb.c
+@@ -99,6 +99,7 @@ static void tegra_rgb_encoder_disable(struct drm_encoder *encoder)
+ 
+ static void tegra_rgb_encoder_enable(struct drm_encoder *encoder)
+ {
++	struct drm_display_mode *mode = &encoder->crtc->state->adjusted_mode;
+ 	struct tegra_output *output = encoder_to_output(encoder);
+ 	struct tegra_rgb *rgb = to_rgb(output);
+ 	u32 value;
+@@ -108,10 +109,19 @@ static void tegra_rgb_encoder_enable(struct drm_encoder *encoder)
+ 	value = DE_SELECT_ACTIVE | DE_CONTROL_NORMAL;
+ 	tegra_dc_writel(rgb->dc, value, DC_DISP_DATA_ENABLE_OPTIONS);
+ 
+-	/* XXX: parameterize? */
++	/* configure H- and V-sync signal polarities */
+ 	value = tegra_dc_readl(rgb->dc, DC_COM_PIN_OUTPUT_POLARITY(1));
+-	value &= ~LVS_OUTPUT_POLARITY_LOW;
+-	value &= ~LHS_OUTPUT_POLARITY_LOW;
++
++	if (mode->flags & DRM_MODE_FLAG_NHSYNC)
++		value |= LHS_OUTPUT_POLARITY_LOW;
++	else
++		value &= ~LHS_OUTPUT_POLARITY_LOW;
++
++	if (mode->flags & DRM_MODE_FLAG_NVSYNC)
++		value |= LVS_OUTPUT_POLARITY_LOW;
++	else
++		value &= ~LVS_OUTPUT_POLARITY_LOW;
++
+ 	tegra_dc_writel(rgb->dc, value, DC_COM_PIN_OUTPUT_POLARITY(1));
+ 
+ 	/* XXX: parameterize? */
 
-Tomi Valkeinen (11):
-      drm/bridge: tc358768: Fix use of uninitialized variable
-      drm/bridge: tc358768: Fix bit updates
-      drm/bridge: tc358768: Cleanup PLL calculations
-      drm/bridge: tc358768: Use struct videomode
-      drm/bridge: tc358768: Print logical values, not raw register values
-      drm/bridge: tc358768: Use dev for dbg prints, not priv->dev
-      drm/bridge: tc358768: Rename dsibclk to hsbyteclk
-      drm/bridge: tc358768: Clean up clock period code
-      drm/bridge: tc358768: Fix tc358768_ns_to_cnt()
-      drm/bridge: tc358768: Attempt to fix DSI horizontal timings
-      drm/bridge: tc358768: Default to positive h/v syncs
-
- drivers/gpu/drm/bridge/tc358768.c | 381 ++++++++++++++++++++++++++++----------
- drivers/gpu/drm/tegra/rgb.c       |  16 +-
- 2 files changed, 295 insertions(+), 102 deletions(-)
----
-base-commit: 4d49d87b3606369c6e29b9d051892ee1a6fc4e75
-change-id: 20230804-tc358768-1b6949ef2e3d
-
-Best regards,
 -- 
-Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+2.34.1
 
