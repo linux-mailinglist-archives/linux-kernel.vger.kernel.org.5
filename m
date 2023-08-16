@@ -2,146 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 330CE77DB2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 09:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C8077DB38
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 09:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242440AbjHPHet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 03:34:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37706 "EHLO
+        id S242466AbjHPHgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 03:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240945AbjHPHeV (ORCPT
+        with ESMTP id S242456AbjHPHgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 03:34:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9593710C3;
-        Wed, 16 Aug 2023 00:34:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692171260; x=1723707260;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=i2KSDtaf0K2fVxZGa8dg9sBvHTwUi68y2Lww1KdM/7c=;
-  b=e3BKwIZ7tDqbQhp/Es1FyCrTXsDHTf2oVI/YfNyX0Yub8jiHzR40SQCn
-   wEOdgNyUWysPk90PYqKD9TAbXPc9lIkqGOK6Htt9tTisSEl6ZGmjVy4n6
-   Uv8agc4pa6XOINrNjtlTVaNL50RcNlrRz9Zdoopcd+q+IkfvQKJJxF0Ba
-   Or21wWU6j5LKzT+jsh4lYyphEsPwG0lwt6OPZ/FAkZ3QCgY1GAbItHIJp
-   VPQou240UuEciZK9U609M68Haxz91CEAj/dhOLJ6MSMIgvgkf6/zqj2pp
-   pxA5+IDmkRAzpIIfPk5sMBAUPVmuVEmFgvyFpSvYFA85ULm0nl40t+3ja
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="369938983"
-X-IronPort-AV: E=Sophos;i="6.01,176,1684825200"; 
-   d="scan'208";a="369938983"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 00:34:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="980640920"
-X-IronPort-AV: E=Sophos;i="6.01,176,1684825200"; 
-   d="scan'208";a="980640920"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.52]) ([10.238.10.52])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 00:34:17 -0700
-Message-ID: <e2662efe-9c53-77de-836c-a29076d3ccdc@linux.intel.com>
-Date:   Wed, 16 Aug 2023 15:34:15 +0800
+        Wed, 16 Aug 2023 03:36:21 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6B710C8;
+        Wed, 16 Aug 2023 00:36:19 -0700 (PDT)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37G3mWI2002776;
+        Wed, 16 Aug 2023 09:36:05 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=/U0DPhfgxKLwSl5AGYdxKKmhtbKYxf8AYN+Ii1NUbKQ=; b=1j
+        7WQhSmCySTbCXDklb0Z1lt7tr0DhGOsBsJELXg6s4WW2/dh3JF9iVPTyZ44rhWHq
+        oXxJLtzF1AhO5NIxNerXhA4/fciSLuqGAYwb3E/uws2ZOfsvoqWMI4lzzNbNMte1
+        Ub0IFKfqF9vM+AS8XLEiGsdyQg8WPdGGamnZAlbC9dePIofoQV7dMbnrkhq97F3m
+        NWdWudhND9uWBFYuc5bUB9pZVQpz+6C9qCp2S5usKw/lR4zoRY7nJfhG4LmrrVkp
+        HB+731OZuaHQfumbP9mPdD2fiZOy7KfcY/PY5FG+vuxDVolKxVQ+U6sn1EYD/SII
+        ykgfs1l/8Lk7smUq/3hA==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3sgpvgs02q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Aug 2023 09:36:05 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 505C410005D;
+        Wed, 16 Aug 2023 09:36:04 +0200 (CEST)
+Received: from Webmail-eu.st.com (eqndag1node4.st.com [10.75.129.133])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 417E02194D1;
+        Wed, 16 Aug 2023 09:36:04 +0200 (CEST)
+Received: from [10.201.21.122] (10.201.21.122) by EQNDAG1NODE4.st.com
+ (10.75.129.133) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Wed, 16 Aug
+ 2023 09:36:03 +0200
+Message-ID: <8a23e34b-4feb-f294-7b64-31ce78efbed0@foss.st.com>
+Date:   Wed, 16 Aug 2023 09:36:02 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 2/8] KVM: x86: Use a new flag for branch instructions
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Zeng Guang <guang.zeng@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        H Peter Anvin <hpa@zytor.com>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20230719024558.8539-1-guang.zeng@intel.com>
- <20230719024558.8539-3-guang.zeng@intel.com> <ZNwBeN8mGr1sJJ6i@google.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <ZNwBeN8mGr1sJJ6i@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v8 0/4] Add display support on the stm32f746-disco board
+Content-Language: en-US
+To:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     Philippe Cornu <philippe.cornu@foss.st.com>,
+        <michael@amarulasolutions.com>,
+        Amarula patchwork <linux-amarula@amarulasolutions.com>,
+        Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20230814132844.113312-1-dario.binacchi@amarulasolutions.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+In-Reply-To: <20230814132844.113312-1-dario.binacchi@amarulasolutions.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.201.21.122]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To EQNDAG1NODE4.st.com
+ (10.75.129.133)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-16_05,2023-08-15_02,2023-05-22_02
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Dario
 
+On 8/14/23 15:28, Dario Binacchi wrote:
+> The series adds support for the display on the stm32f746-disco board.
+> 
+> Changes in v8:
+> - Add the patch [3/4] "ARM: dts: stm32: rename mmc_vcard to vcc-3v3 on stm32f746-disco" to
+>    th series.
+> - Add the 'power-supply' property to panel-rgb node.
+> - Move backlight and panel-rgb nodes after the vcc-3v3 node.
+> 
+> Changes in v7:
+> - Add 'Reviewed-by' tags I forgot in v6.
+>    https://lore.kernel.org/linux-arm-kernel/20230629083726.84910-1-dario.binacchi@amarulasolutions.com/T/
+> 
+> Changes in v6:
+> - Remove dma nodes from stm32f746-disco.dts, they are not used by LTDC,
+>    so there is no need to enable them.
+> 
+> Changes in v5:
+> I am confident that framebuffer sizing is a real requirement for STM32 boards,
+> but I need some time to understand if and how to introduce this functionality.
+> Therefore, I drop the following patches to allow the series to be fully merged:
+>   - [4/6] dt-bindings: display: stm32-ltdc: add optional st,fb-bpp property
+>   - [5/6] ARM: dts: stm32: set framebuffer bit depth on stm32f746-disco
+>   - [6/6] drm/stm: set framebuffer bit depth through DTS property
+> 
+> Changes in v4:
+> - Use DTS property instead of module parameter to set the framebuffer bit depth.
+> 
+> Changes in v3:
+> - rename ltdc-pins-a-0 to ltdc-0.
+> - drop [4/6] dt-bindings: display: simple: add Rocktech RK043FN48H
+>    Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next):
+>    https://cgit.freedesktop.org/drm/drm-misc/commit/?id=c42a37a27c777d63961dd634a30f7c887949491a
+> - drop [5/6] drm/panel: simple: add support for Rocktech RK043FN48H panel
+>    Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
+>    https://cgit.freedesktop.org/drm/drm-misc/commit/?id=13cdd12a9f934158f4ec817cf048fcb4384aa9dc
+> 
+> Dario Binacchi (4):
+>    ARM: dts: stm32: add ltdc support on stm32f746 MCU
+>    ARM: dts: stm32: add pin map for LTDC on stm32f7
+>    ARM: dts: stm32: rename mmc_vcard to vcc-3v3 on stm32f746-disco
+>    ARM: dts: stm32: support display on stm32f746-disco board
+> 
+>   arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi | 35 ++++++++++++++++
+>   arch/arm/boot/dts/st/stm32f746-disco.dts  | 50 +++++++++++++++++++++--
+>   arch/arm/boot/dts/st/stm32f746.dtsi       | 10 +++++
+>   3 files changed, 92 insertions(+), 3 deletions(-)
+> 
 
-On 8/16/2023 6:51 AM, Sean Christopherson wrote:
-> Branch *targets*, not branch instructions.
->
-> On Wed, Jul 19, 2023, Zeng Guang wrote:
->> From: Binbin Wu <binbin.wu@linux.intel.com>
->>
->> Use the new flag X86EMUL_F_BRANCH instead of X86EMUL_F_FETCH in
->> assign_eip(), since strictly speaking it is not behavior of instruction
->> fetch.
-> Eh, I'd just drop this paragraph, as evidenced by this code existing as-is for
-> years, we wouldn't introduce X86EMUL_F_BRANCH just because resolving a branch
-> target isn't strictly an instruction fetch.
->
->> Another reason is to distinguish instruction fetch and execution of branch
->> instruction for feature(s) that handle differently on them.
-> Similar to the shortlog, it's about computing the branch target, not executing a
-> branch instruction.  That distinction matters, e.g. a Jcc that is not taken will
-> *not* follow the branch target, but the instruction is still *executed*.  And there
-> exist instructions that compute branch targets, but aren't what most people would
-> typically consider a branch instruction, e.g. XBEGIN.
->
->> Branch instruction is not data access instruction, so skip checking against
->> execute-only code segment as instruction fetch.
-> Rather than call out individual use case, I would simply state that as of this
-> patch, X86EMUL_F_BRANCH and X86EMUL_F_FETCH are identical as far as KVM is
-> concernered.  That let's the reader know that (a) there's no intended change in
-> behavior and (b) that the intent is to effectively split all consumption of
-> X86EMUL_F_FETCH into (X86EMUL_F_FETCH | X86EMUL_F_BRANCH).
+Series applied on stm32-next.
 
-How about this:
-
-     KVM: x86: Use a new flag for branch targets
-
-     Use the new flag X86EMUL_F_BRANCH instead of X86EMUL_F_FETCH in 
-assign_eip()
-     to distinguish instruction fetch and branch target computation for 
-feature(s)
-     that handle differently on them.
-
-     As of this patch, X86EMUL_F_BRANCH and X86EMUL_F_FETCH are 
-identical as far as
-     KVM is concernered.
-
-     No functional change intended.
-
-
->> Signed-off-by: Binbin Wu <binbin.wu@linux.intel.com>
->> Signed-off-by: Zeng Guang <guang.zeng@intel.com>
->> ---
->>   arch/x86/kvm/emulate.c     | 5 +++--
->>   arch/x86/kvm/kvm_emulate.h | 1 +
->>   2 files changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
->> index 3ddfbc99fa4f..8e706d19ae45 100644
->> --- a/arch/x86/kvm/emulate.c
->> +++ b/arch/x86/kvm/emulate.c
->> @@ -721,7 +721,8 @@ static __always_inline int __linearize(struct x86_emulate_ctxt *ctxt,
->>   		    (flags & X86EMUL_F_WRITE))
->>   			goto bad;
->>   		/* unreadable code segment */
->> -		if (!(flags & X86EMUL_F_FETCH) && (desc.type & 8) && !(desc.type & 2))
->> +		if (!(flags & (X86EMUL_F_FETCH | X86EMUL_F_BRANCH))
->> +			&& (desc.type & 8) && !(desc.type & 2))
-> Put the && on the first line, and align indendation.
-I should have been more careful on the alignment & indentation.
-Will update it. Thanks.
-
->
-> 		/* unreadable code segment */
-> 		if (!(flags & (X86EMUL_F_FETCH | X86EMUL_F_BRANCH)) &&
-> 		    (desc.type & 8) && !(desc.type & 2))
-> 			goto bad;
-
+Thanks!!
+Alex
