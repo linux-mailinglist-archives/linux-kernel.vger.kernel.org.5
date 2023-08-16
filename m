@@ -2,179 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D967A77E2DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F56677E2DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 15:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245632AbjHPNlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 09:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49182 "EHLO
+        id S245606AbjHPNmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 09:42:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245692AbjHPNks (ORCPT
+        with ESMTP id S245660AbjHPNlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 09:40:48 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD282D60
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:40:41 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d63c0a6568fso6290718276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:40:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692193241; x=1692798041;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uW3Lzg0G0ukvtpwGKKg+qtuDKg0FVtuflLIlmeo8bN8=;
-        b=oZpRJpvRd2EjO2z7st8fP82ZF0z+F8XMZd6CEC4Akp0AyW5oLcP3COxI0/dxXXj0aC
-         uGuH/7R26eGcSkIsGoB0PF3OB0kC8lThxICjpcwL1Yc/TZLHnqMlwtpJR3Bw+wxYyuaH
-         sXS8SdL5TZstYI3btQdzsTD+ez6/futektEUaHEpD6u2fiQ7f9J4zGkH6a2b/z7ojrdR
-         ZE8GIE4fYhyH1IBcFN509pvt6IXev1j4uWirb08syYFzBuASjzXVsNFxfvPXNkAm5RNs
-         41eKbZ9m8SV5BTQDUDgSdVz8214YRA9W5+SNwtu2F65ggOFE0GkDUfFuZVwnrp6cTcnn
-         gOYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692193241; x=1692798041;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uW3Lzg0G0ukvtpwGKKg+qtuDKg0FVtuflLIlmeo8bN8=;
-        b=OgpN8d198LG0p+92mogbinotKCh4c7sISOcEl4HbqzEJrOI8zAdURDi+d9fWlPXntc
-         3Xpn7KiDWVDKziSvnufK+uGIjrGqVGNBUKMT13N7EqjHkmwuTQeWrnR22NYLbfTXUuQB
-         /RrlrF2ZXge0p6iXY9HhTvjWIuRiyc/85I0x4Et0C4NtediwuTcJQOAMn/Io7PKsyXO+
-         h9rdurl0g0OdUvMON9IjQyZu3B5sKDacsd7fBJoNtGSg+fy0TTVpID7AFI/l8XwIgxeW
-         JMQgekfQzLLei417Nz1YXcZYfP9ZZC13B+2pGwd9SkZMBmyi4Da+WSg0tKR5Rtk2mTlF
-         Cr+Q==
-X-Gm-Message-State: AOJu0Ywgl28VB7SFppTZjM43tzjfBEbTbhmeDoyYnPcvgfN/f9O6/YGc
-        G2bimzIr3jZ1KASsf8qt6FahYBo8UJJqf74t82YeIg==
-X-Google-Smtp-Source: AGHT+IFNL56vtxDQRoreDk45OGBhvFCcV6wVgeoLWkPDigEeck6H4HmGis5nHvN0MbHwyvDBAYyT59QoiBLg/FrsP3Q=
-X-Received: by 2002:a25:d4cb:0:b0:d4c:f456:d563 with SMTP id
- m194-20020a25d4cb000000b00d4cf456d563mr1825605ybf.8.1692193240831; Wed, 16
- Aug 2023 06:40:40 -0700 (PDT)
+        Wed, 16 Aug 2023 09:41:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E612A2D73
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 06:41:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=AvZJrYevqOe0SxYwi0hYlseZ1CJ5Fk5Gk4FXzqItAQs=; b=vXmofc+rGbDzLr/hZFbSG7KSKn
+        k0/sVDjUeqSkKDigAbVCLKjKVRwul+jDZDOL4ptgVku3La6kd8YXnsAI5VzHDt8MUVChWiF+P4xy0
+        5hfrOVIr58UeOD09g3kAop5HK7KpBJx0kICCmoAI8HxNFpYMGjTt16hSTg+1pb2ti5IPkJcQTH35x
+        lbf6cJnj2He9l+M8LQwqVzv3kvbVlUOtb3WgDIOimoVYYqPFrQe69gK2zmwAh+Rw4ciVwHGCDfiuQ
+        qc0dzZaoJnK/pLiwDcR9UdICcdJEKWDrY5l6516qzMwC6QditnMFiIARnUHWcHbbSFAwI3sjUMmAm
+        VkrB7Xww==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qWGlg-00Ex0s-J3; Wed, 16 Aug 2023 13:41:00 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 09C1D3001FD;
+        Wed, 16 Aug 2023 15:41:00 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E46A9203B4384; Wed, 16 Aug 2023 15:40:59 +0200 (CEST)
+Date:   Wed, 16 Aug 2023 15:40:59 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mike Galbraith <umgwanakikbuti@gmail.com>
+Cc:     Chen Yu <yu.c.chen@intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [tip:sched/eevdf] [sched/fair]  e0c2ff903c:
+ phoronix-test-suite.blogbench.Write.final_score -34.8% regression
+Message-ID: <20230816134059.GC982867@hirez.programming.kicks-ass.net>
+References: <202308101628.7af4631a-oliver.sang@intel.com>
+ <ZNWKuccyWnS3UJjK@chenyu5-mobl2.bbrouter>
+ <ZNWgAeN/EVS/vOLi@chenyu5-mobl2.bbrouter>
+ <20230814132935.GK776869@hirez.programming.kicks-ass.net>
+ <bd96d883d0d1575ebbee4323f4396596adb0ad09.camel@gmail.com>
+ <20230816123716.GI980931@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <1692192264-18515-1-git-send-email-quic_krichai@quicinc.com> <1692192264-18515-3-git-send-email-quic_krichai@quicinc.com>
-In-Reply-To: <1692192264-18515-3-git-send-email-quic_krichai@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 16 Aug 2023 16:40:28 +0300
-Message-ID: <CAA8EJpoi0BkuQZef=v3JxB-axXe+jB0bEWCmsk1ZJYiaWiuevw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] arm64: dts: qcom: sm8450: Add opp table support to PCIe
-To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Cc:     manivannan.sadhasivam@linaro.org, helgaas@kernel.org,
-        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
-        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
-        quic_ramkri@quicinc.com, quic_parass@quicinc.com,
-        krzysztof.kozlowski@linaro.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230816123716.GI980931@hirez.programming.kicks-ass.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Aug 2023 at 16:25, Krishna chaitanya chundru
-<quic_krichai@quicinc.com> wrote:
->
-> PCIe needs to choose the appropriate performance state of RPMH power
-> domain based upon the PCIe gen speed.
->
-> So let's add the OPP table support to specify RPMH performance states.
->
-> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/sm8450.dtsi | 47 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 47 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-> index 595533a..c77a683 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
-> @@ -1803,7 +1803,28 @@
->                         pinctrl-names = "default";
->                         pinctrl-0 = <&pcie0_default_state>;
->
-> +                       operating-points-v2 = <&pcie0_opp_table>;
-> +
->                         status = "disabled";
-> +
-> +                       pcie0_opp_table: opp-table {
-> +                               compatible = "operating-points-v2";
-> +
-> +                               opp-2500000 {
+On Wed, Aug 16, 2023 at 02:37:16PM +0200, Peter Zijlstra wrote:
+> On Mon, Aug 14, 2023 at 08:32:55PM +0200, Mike Galbraith wrote:
+> 
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -875,6 +875,12 @@ static struct sched_entity *pick_eevdf(s
+> >  	if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
+> >  		curr = NULL;
+> >  
+> > +	/*
+> > +	 * Once selected, run the task to parity to avoid overscheduling.
+> > +	 */
+> > +	if (sched_feat(RUN_TO_PARITY) && curr)
+> > +		return curr;
+> > +
+> >  	while (node) {
+> >  		struct sched_entity *se = __node_2_se(node);
+> >  
+> 
+> So I read it wrong last night... but I rather like this idea. But
+> there's something missing. When curr starts a new slice it should
+> probably do a full repick and not stick with it.
+> 
+> Let me poke at this a bit.. nice
 
-As a random suggestion: these frequencies are calculated by the
-driver. It might be easier to use opp-level for the PCIe generation
-instead.
+Something like so.. it shouldn't matter much now, but might make a
+difference once we start mixing different slice lengths.
 
-This way this OPP entry can become:
+---
+ kernel/sched/fair.c     | 12 ++++++++++++
+ kernel/sched/features.h |  1 +
+ 2 files changed, 13 insertions(+)
 
-opp-1 {
-    opp-level = <1>;
-    required-opps = <&rpmhpd_opp_low_svs>;
-};
-
-> +                                       opp-hz = /bits/ 64 <2500000>;
-> +                                       required-opps = <&rpmhpd_opp_low_svs>;
-> +                               };
-> +
-> +                               opp-5000000 {
-> +                                       opp-hz = /bits/ 64 <5000000>;
-> +                                       required-opps = <&rpmhpd_opp_low_svs>;
-> +                               };
-> +
-> +                               opp-8000000 {
-> +                                       opp-hz = /bits/ 64 <8000000>;
-> +                                       required-opps = <&rpmhpd_opp_nom>;
-> +                               };
-> +                       };
->                 };
->
->                 pcie0_phy: phy@1c06000 {
-> @@ -1915,7 +1936,33 @@
->                         pinctrl-names = "default";
->                         pinctrl-0 = <&pcie1_default_state>;
->
-> +                       operating-points-v2 = <&pcie1_opp_table>;
-> +
->                         status = "disabled";
-> +
-> +                       pcie1_opp_table: opp-table {
-> +                               compatible = "operating-points-v2";
-> +
-> +                               opp-2500000 {
-> +                                       opp-hz = /bits/ 64 <2500000>;
-> +                                       required-opps = <&rpmhpd_opp_low_svs>;
-> +                               };
-> +
-> +                               opp-5000000 {
-> +                                       opp-hz = /bits/ 64 <5000000>;
-> +                                       required-opps = <&rpmhpd_opp_low_svs>;
-> +                               };
-> +
-> +                               opp-8000000 {
-> +                                       opp-hz = /bits/ 64 <8000000>;
-> +                                       required-opps = <&rpmhpd_opp_low_svs>;
-> +                               };
-> +
-> +                               opp-16000000 {
-> +                                       opp-hz = /bits/ 64 <16000000>;
-> +                                       required-opps = <&rpmhpd_opp_nom>;
-> +                               };
-> +                       };
->                 };
->
->                 pcie1_phy: phy@1c0f000 {
-> --
-> 2.7.4
->
-
-
--- 
-With best wishes
-Dmitry
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index fe5be91c71c7..128a78f3f264 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -873,6 +873,13 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
+ 	if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
+ 		curr = NULL;
+ 
++	/*
++	 * Once selected, run a task until it either becomes non-eligible or
++	 * until it gets a new slice. See the HACK in set_next_entity().
++	 */
++	if (sched_feat(RUN_TO_PARITY) && curr && curr->vlag == curr->deadline)
++		return curr;
++
+ 	while (node) {
+ 		struct sched_entity *se = __node_2_se(node);
+ 
+@@ -5168,6 +5175,11 @@ set_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ 		update_stats_wait_end_fair(cfs_rq, se);
+ 		__dequeue_entity(cfs_rq, se);
+ 		update_load_avg(cfs_rq, se, UPDATE_TG);
++		/*
++		 * HACK, stash a copy of deadline at the point of pick in vlag,
++		 * which isn't used until dequeue.
++		 */
++		se->vlag = se->deadline;
+ 	}
+ 
+ 	update_stats_curr_start(cfs_rq, se);
+diff --git a/kernel/sched/features.h b/kernel/sched/features.h
+index 61bcbf5e46a4..f770168230ae 100644
+--- a/kernel/sched/features.h
++++ b/kernel/sched/features.h
+@@ -6,6 +6,7 @@
+  */
+ SCHED_FEAT(PLACE_LAG, true)
+ SCHED_FEAT(PLACE_DEADLINE_INITIAL, true)
++SCHED_FEAT(RUN_TO_PARITY, true)
+ 
+ /*
+  * Prefer to schedule the task we woke last (assuming it failed
