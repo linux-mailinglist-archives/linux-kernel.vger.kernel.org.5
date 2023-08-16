@@ -2,120 +2,530 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 982B877DD47
-	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB6177DD49
+	for <lists+linux-kernel@lfdr.de>; Wed, 16 Aug 2023 11:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243323AbjHPJ3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 05:29:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49674 "EHLO
+        id S243332AbjHPJ3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 05:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243315AbjHPJ2h (ORCPT
+        with ESMTP id S243315AbjHPJ30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 05:28:37 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 511C426A4;
-        Wed, 16 Aug 2023 02:28:36 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Wed, 16 Aug 2023 05:29:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B23926A1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 02:29:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0E7882186F;
-        Wed, 16 Aug 2023 09:28:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1692178115; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3v+/Wi405rsVGzzaExajmDFKvpMN/i7HI4eeAj0pfWU=;
-        b=XkJanD5yZJgl8bb9mkFXnFDcEx4sySY7RY+x5ufziG1rwpF/bMKnVLphGL1drSm2Y6Ey8r
-        2lT7PhBYmm0ZAupI2KUGviMcxa/21SjJBIra0ZxJQkCpVdaBiqoa3mUzdAlXW/yT1gA5IA
-        GDxpTfIoyVkJNqCuwQ7H1OWX7j/+sB0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1692178115;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3v+/Wi405rsVGzzaExajmDFKvpMN/i7HI4eeAj0pfWU=;
-        b=ULIR+MRWe5CidH1YupjqjCLKpm8hhUkOrppAkcxLSc/mnMVX09az9R0PI4dEpRV+H4MjkQ
-        YJ1HkDHmpT3oQfCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F29F9133F2;
-        Wed, 16 Aug 2023 09:28:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Uq0mO8KW3GTYTQAAMHmgww
-        (envelope-from <dwagner@suse.de>); Wed, 16 Aug 2023 09:28:34 +0000
-Date:   Wed, 16 Aug 2023 11:28:44 +0200
-From:   Daniel Wagner <dwagner@suse.de>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Chaitanya Kulkarni <kch@nvidia.com>,
-        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Hannes Reinecke <hare@suse.de>,
-        James Smart <jsmart2021@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: Re: [PATCH blktests v3 13/13] nvme: Introduce
- nvmet_target_{setup/cleanup} common code
-Message-ID: <lfr3tkzz3sqnsw4y7sqyxc42ptvzkyfqfpeko6gzs42jdgjl2d@u5fbzjksbztd>
-References: <20230811093614.28005-1-dwagner@suse.de>
- <20230811093614.28005-14-dwagner@suse.de>
- <58d299c4-84e1-603d-6c99-15d0484f9609@grimberg.me>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A03F061F24
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 09:29:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18E7CC433C8;
+        Wed, 16 Aug 2023 09:29:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692178163;
+        bh=vVwfPV5woVtP7LppxWgtbAl4TSQQ/5HqpxocmnvObjg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qFZ2eaPZIc6SYZZshZzHVFp+CzEBuTufg8c+6NI69Hag7gfhV3MRJREyvj3/A06n7
+         RWj1rB4egOpDou5/kJxwOCENnfVkGuqouHtfugt3I/3MBpsJxQkZO1ihBmkrSn5bFL
+         mJ1I3IdVdagMDzpSsnlSG89RWxTCyM+81If5Z4xWuy7nIEUxWN865k/wKeXFpc+LcZ
+         MOXUTEL1RW4CcPjdpticdTXGO/25EIFNSNIhLhsdwPCQov3y/GMv+5AdfxZ4a8jWra
+         DcQHUi4FOjb9ZAfMk2bzi7ghJP5NHcS8g2XVKSeA4P2CkfQidFJmJ703ZNohaJeWh1
+         DgFMK3HvbxxEA==
+Date:   Wed, 16 Aug 2023 11:29:17 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Roger Quadros <rogerq@kernel.org>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, vladimir.oltean@nxp.com, s-vadapalli@ti.com,
+        srk@ti.com, vigneshr@ti.com, p-varis@ti.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Ratheesh Kannoth <rkannoth@marvell.com>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        gerhard@engleder-embedded.com
+Subject: Re: [PATCH] net: ethernet: ti: am65-cpsw: add mqprio qdisc offload
+ in channel mode
+Message-ID: <ZNyW7SnxwTVoCLor@vergenet.net>
+References: <20230815082105.24549-1-rogerq@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <58d299c4-84e1-603d-6c99-15d0484f9609@grimberg.me>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230815082105.24549-1-rogerq@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 13, 2023 at 05:55:48PM +0300, Sagi Grimberg wrote:
-> > --- a/tests/nvme/003
-> > +++ b/tests/nvme/003
-> > @@ -22,15 +22,9 @@ test() {
-> >   	_setup_nvmet
-> > -	local loop_dev
-> >   	local port
-> > -	port="$(_create_nvmet_port "${nvme_trtype}")"
-> > -
-> > -	loop_dev="$(losetup -f)"
-> > -
-> > -	_create_nvmet_subsystem "${def_subsysnqn}" "${loop_dev}"
-> > -	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
-> > +	port="$(_nvmet_target_setup --blkdev=device)"
-> >   	_nvme_connect_subsys "${nvme_trtype}" nqn.2014-08.org.nvmexpress.discovery
-> > @@ -46,9 +40,8 @@ test() {
-> >   	fi
-> >   	_nvme_disconnect_subsys nqn.2014-08.org.nvmexpress.discovery
-> > -	_remove_nvmet_subsystem_from_port "${port}" "${def_subsysnqn}"
-> > -	_remove_nvmet_subsystem "${def_subsysnqn}"
-> > -	_remove_nvmet_port "${port}"
-> > +
-> > +	_nvmet_target_cleanup "${port}"
+On Tue, Aug 15, 2023 at 11:21:05AM +0300, Roger Quadros wrote:
+
++ Ratheesh Kannoth <rkannoth@marvell.com>
+  "Russell King (Oracle)" <linux@armlinux.org.uk>
+  gerhard@engleder-embedded.com
+
+> From: Grygorii Strashko <grygorii.strashko@ti.com>
 > 
-> It is very very strange that _setup returns a port
-> which is passed to _cleanup...
+> This patch adds MQPRIO Qdisc offload in full 'channel' mode which allows
+> not only setting up pri:tc mapping, but also configuring TX shapers on
+> external port FIFOs. The K3 CPSW MQPRIO Qdisc offload is expected to work
+> with VLAN/priority tagged packets. Non-tagged packets have to be mapped
+> only to TC0.
+> 
+> - TX traffic classes must be rated starting from TC that has highest
+> priority and with no gaps
+> - Traffic classes are used starting from 0, that has highest priority
+> - min_rate defines Committed Information Rate (guaranteed)
+> - max_rate defines Excess Information Rate (non guaranteed) and offloaded
+> as (max_rate[i] - tcX_min_rate[i])
+> - VLAN/priority tagged packets mapped to TC0 will exit switch with VLAN tag
+> priority 0
+> 
+> The configuration example:
+>  ethtool -L eth1 tx 5
+>  ethtool --set-priv-flags eth1 p0-rx-ptype-rrobin off
+> 
+>  tc qdisc add dev eth1 parent root handle 100: mqprio num_tc 3 \
+>  map 0 0 1 2 0 0 0 0 0 0 0 0 0 0 0 0 \
+>  queues 1@0 1@1 1@2 hw 1 mode channel \
+>  shaper bw_rlimit min_rate 0 100mbit 200mbit max_rate 0 101mbit 202mbit
+> 
+>  tc qdisc replace dev eth2 handle 100: parent root mqprio num_tc 1 \
+>  map 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 queues 1@0 hw 1
+> 
+>  ip link add link eth1 name eth1.100 type vlan id 100
+>  ip link set eth1.100 type vlan egress 0:0 1:1 2:2 3:3 4:4 5:5 6:6 7:7
+> 
+> In the above example two ports share the same TX CPPI queue 0 for low
+> priority traffic. 3 traffic classes are defined for eth1 and mapped to:
+> TC0 - low priority, TX CPPI queue 0 -> ext Port 1 fifo0, no rate limit
+> TC1 - prio 2, TX CPPI queue 1 -> ext Port 1 fifo1, CIR=100Mbit/s, EIR=1Mbit/s
+> TC2 - prio 3, TX CPPI queue 2 -> ext Port 1 fifo2, CIR=200Mbit/s, EIR=2Mbit/s
+> 
+> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
 
-This is the only information the _cleanup helper needs and that is why
-it survived the refactoring so far.
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-> I think that _cleanup should simply remove all
-> ports, and that setup should not return a port
-> to begin with.
-
-This assumes that blktests is the single user and can blindly remove
-everything. I would like to play nice here and only cleanup resources
-blktests actually allocates.
-
-> If someone needs the actual port number, then it
-> should either not use this _setup helper or
-> query it somehow.
-
-I try to figure out how to implement such a query helper then.
+> ---
+>  drivers/net/ethernet/ti/am65-cpsw-nuss.c |   3 +
+>  drivers/net/ethernet/ti/am65-cpsw-qos.c  | 295 ++++++++++++++++++++++-
+>  drivers/net/ethernet/ti/am65-cpsw-qos.h  |  14 ++
+>  3 files changed, 311 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> index bebcfd5e6b57..fc5810ae803a 100644
+> --- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> +++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+> @@ -632,6 +632,9 @@ static int am65_cpsw_nuss_ndo_slave_open(struct net_device *ndev)
+>  	/* restore vlan configurations */
+>  	vlan_for_each(ndev, cpsw_restore_vlans, port);
+>  
+> +	/* Initialize QoS */
+> +	am65_cpsw_qos_mqprio_init(port);
+> +
+>  	phylink_start(port->slave.phylink);
+>  
+>  	return 0;
+> diff --git a/drivers/net/ethernet/ti/am65-cpsw-qos.c b/drivers/net/ethernet/ti/am65-cpsw-qos.c
+> index eced87fa261c..a82ca2e09561 100644
+> --- a/drivers/net/ethernet/ti/am65-cpsw-qos.c
+> +++ b/drivers/net/ethernet/ti/am65-cpsw-qos.c
+> @@ -17,9 +17,12 @@
+>  
+>  #define AM65_CPSW_REG_CTL			0x004
+>  #define AM65_CPSW_PN_REG_CTL			0x004
+> +#define AM65_CPSW_PN_REG_TX_PRI_MAP		0x018
+> +#define AM65_CPSW_PN_REG_RX_PRI_MAP		0x020
+>  #define AM65_CPSW_PN_REG_FIFO_STATUS		0x050
+>  #define AM65_CPSW_PN_REG_EST_CTL		0x060
+>  #define AM65_CPSW_PN_REG_PRI_CIR(pri)		(0x140 + 4 * (pri))
+> +#define AM65_CPSW_PN_REG_PRI_EIR(pri)		(0x160 + 4 * (pri))
+>  
+>  /* AM65_CPSW_REG_CTL register fields */
+>  #define AM65_CPSW_CTL_EST_EN			BIT(18)
+> @@ -56,6 +59,12 @@ enum timer_act {
+>  	TACT_SKIP_PROG,		/* just buffer can be updated */
+>  };
+>  
+> +/* number of traffic classes (FIFOs) per port */
+> +#define AM65_CPSW_PN_TC_NUM			8
+> +#define AM65_CPSW_PN_TX_PRI_MAP_DEFAULT		0x76543210
+> +
+> +static int am65_cpsw_setup_mqprio(struct net_device *ndev, void *type_data);
+> +
+>  static int am65_cpsw_port_est_enabled(struct am65_cpsw_port *port)
+>  {
+>  	return port->qos.est_oper || port->qos.est_admin;
+> @@ -541,7 +550,6 @@ static void am65_cpsw_est_link_up(struct net_device *ndev, int link_speed)
+>  	ktime_t cur_time;
+>  	s64 delta;
+>  
+> -	port->qos.link_speed = link_speed;
+>  	if (!am65_cpsw_port_est_enabled(port))
+>  		return;
+>  
+> @@ -795,6 +803,8 @@ int am65_cpsw_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
+>  		return am65_cpsw_tc_query_caps(ndev, type_data);
+>  	case TC_SETUP_QDISC_TAPRIO:
+>  		return am65_cpsw_setup_taprio(ndev, type_data);
+> +	case TC_SETUP_QDISC_MQPRIO:
+> +		return am65_cpsw_setup_mqprio(ndev, type_data);
+>  	case TC_SETUP_BLOCK:
+>  		return am65_cpsw_qos_setup_tc_block(ndev, type_data);
+>  	default:
+> @@ -802,10 +812,15 @@ int am65_cpsw_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
+>  	}
+>  }
+>  
+> +static void am65_cpsw_tx_pn_shaper_link_up(struct am65_cpsw_port *port);
+> +
+>  void am65_cpsw_qos_link_up(struct net_device *ndev, int link_speed)
+>  {
+>  	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
+>  
+> +	port->qos.link_speed = link_speed;
+> +	am65_cpsw_tx_pn_shaper_link_up(port);
+> +
+>  	if (!IS_ENABLED(CONFIG_TI_AM65_CPSW_TAS))
+>  		return;
+>  
+> @@ -937,3 +952,281 @@ void am65_cpsw_qos_tx_p0_rate_init(struct am65_cpsw_common *common)
+>  		       host->port_base + AM65_CPSW_PN_REG_PRI_CIR(tx_ch));
+>  	}
+>  }
+> +
+> +static void am65_cpsw_tx_pn_shaper_apply(struct am65_cpsw_port *port)
+> +{
+> +	struct am65_cpsw_mqprio *p_mqprio = &port->qos.mqprio;
+> +	struct am65_cpsw_common *common = port->common;
+> +	struct tc_mqprio_qopt_offload *mqprio;
+> +	bool shaper_en;
+> +	u32 rate_mbps;
+> +	int i;
+> +
+> +	mqprio = &p_mqprio->mqprio_hw;
+> +	shaper_en = p_mqprio->shaper_en && !p_mqprio->shaper_susp;
+> +
+> +	for (i = 0; i < mqprio->qopt.num_tc; i++) {
+> +		rate_mbps = 0;
+> +		if (shaper_en) {
+> +			rate_mbps = mqprio->min_rate[i] * 8 / 1000000;
+> +			rate_mbps = am65_cpsw_qos_tx_rate_calc(rate_mbps,
+> +							       common->bus_freq);
+> +		}
+> +
+> +		writel(rate_mbps,
+> +		       port->port_base + AM65_CPSW_PN_REG_PRI_CIR(i));
+> +	}
+> +
+> +	for (i = 0; i < mqprio->qopt.num_tc; i++) {
+> +		rate_mbps = 0;
+> +		if (shaper_en && mqprio->max_rate[i]) {
+> +			rate_mbps = mqprio->max_rate[i] - mqprio->min_rate[i];
+> +			rate_mbps = rate_mbps * 8 / 1000000;
+> +			rate_mbps = am65_cpsw_qos_tx_rate_calc(rate_mbps,
+> +							       common->bus_freq);
+> +		}
+> +
+> +		writel(rate_mbps,
+> +		       port->port_base + AM65_CPSW_PN_REG_PRI_EIR(i));
+> +	}
+> +}
+> +
+> +static void am65_cpsw_tx_pn_shaper_link_up(struct am65_cpsw_port *port)
+> +{
+> +	struct am65_cpsw_mqprio *p_mqprio = &port->qos.mqprio;
+> +	struct am65_cpsw_common *common = port->common;
+> +	bool shaper_susp = false;
+> +
+> +	if (!p_mqprio->enable || !p_mqprio->shaper_en)
+> +		return;
+> +
+> +	if (p_mqprio->max_rate_total > port->qos.link_speed)
+> +		shaper_susp = true;
+> +
+> +	if (p_mqprio->shaper_susp == shaper_susp)
+> +		return;
+> +
+> +	if (shaper_susp)
+> +		dev_info(common->dev,
+> +			 "Port%u: total shaper tx rate > link speed - suspend shaper\n",
+> +			 port->port_id);
+> +	else
+> +		dev_info(common->dev,
+> +			 "Port%u: link recover - resume shaper\n",
+> +			 port->port_id);
+> +
+> +	p_mqprio->shaper_susp = shaper_susp;
+> +	am65_cpsw_tx_pn_shaper_apply(port);
+> +}
+> +
+> +void am65_cpsw_qos_mqprio_init(struct am65_cpsw_port *port)
+> +{
+> +	struct am65_cpsw_host *host = am65_common_get_host(port->common);
+> +	struct am65_cpsw_mqprio *p_mqprio = &port->qos.mqprio;
+> +	struct tc_mqprio_qopt_offload *mqprio;
+> +	u32 tx_prio_map = 0, rx_prio_map;
+> +	int i, fifo;
+> +
+> +	mqprio = &p_mqprio->mqprio_hw;
+> +	rx_prio_map = readl(host->port_base + AM65_CPSW_PN_REG_RX_PRI_MAP);
+> +
+> +	if (p_mqprio->enable) {
+> +		for (i = 0; i < AM65_CPSW_PN_TC_NUM; i++) {
+> +			fifo = mqprio->qopt.prio_tc_map[i];
+> +			tx_prio_map |= fifo << (4 * i);
+> +		}
+> +
+> +		netdev_set_num_tc(port->ndev, mqprio->qopt.num_tc);
+> +		for (i = 0; i < mqprio->qopt.num_tc; i++) {
+> +			netdev_set_tc_queue(port->ndev, i,
+> +					    mqprio->qopt.count[i],
+> +					    mqprio->qopt.offset[i]);
+> +			if (!i) {
+> +				p_mqprio->tc0_q = mqprio->qopt.offset[i];
+> +				rx_prio_map &= ~(0x7 << (4 * p_mqprio->tc0_q));
+> +			}
+> +		}
+> +	} else {
+> +		/* restore default configuration */
+> +		netdev_reset_tc(port->ndev);
+> +		tx_prio_map = AM65_CPSW_PN_TX_PRI_MAP_DEFAULT;
+> +		rx_prio_map |= p_mqprio->tc0_q << (4 * p_mqprio->tc0_q);
+> +		p_mqprio->tc0_q = 0;
+> +	}
+> +
+> +	writel(tx_prio_map,
+> +	       port->port_base + AM65_CPSW_PN_REG_TX_PRI_MAP);
+> +	writel(rx_prio_map,
+> +	       host->port_base + AM65_CPSW_PN_REG_RX_PRI_MAP);
+> +
+> +	am65_cpsw_tx_pn_shaper_apply(port);
+> +}
+> +
+> +static int am65_cpsw_mqprio_verify(struct am65_cpsw_port *port,
+> +				   struct tc_mqprio_qopt_offload *mqprio)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < mqprio->qopt.num_tc; i++) {
+> +		unsigned int last = mqprio->qopt.offset[i] +
+> +				    mqprio->qopt.count[i];
+> +
+> +		if (mqprio->qopt.offset[i] >= port->ndev->real_num_tx_queues ||
+> +		    !mqprio->qopt.count[i] ||
+> +		    last >  port->ndev->real_num_tx_queues)
+> +			return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int am65_cpsw_mqprio_verify_shaper(struct am65_cpsw_port *port,
+> +					  struct tc_mqprio_qopt_offload *mqprio,
+> +					  u64 *max_rate)
+> +{
+> +	struct am65_cpsw_common *common = port->common;
+> +	u64 min_rate_total = 0, max_rate_total = 0;
+> +	u32 min_rate_msk = 0, max_rate_msk = 0;
+> +	bool has_min_rate, has_max_rate;
+> +	int num_tc, i;
+> +
+> +	has_min_rate = !!(mqprio->flags & TC_MQPRIO_F_MIN_RATE);
+> +	has_max_rate = !!(mqprio->flags & TC_MQPRIO_F_MAX_RATE);
+> +
+> +	if (!has_min_rate && has_max_rate)
+> +		return -EOPNOTSUPP;
+> +
+> +	if (!has_min_rate)
+> +		return 0;
+> +
+> +	num_tc = mqprio->qopt.num_tc;
+> +
+> +	for (i = num_tc - 1; i >= 0; i--) {
+> +		u32 ch_msk;
+> +
+> +		if (mqprio->min_rate[i])
+> +			min_rate_msk |= BIT(i);
+> +		min_rate_total +=  mqprio->min_rate[i];
+> +
+> +		if (has_max_rate) {
+> +			if (mqprio->max_rate[i])
+> +				max_rate_msk |= BIT(i);
+> +			max_rate_total +=  mqprio->max_rate[i];
+> +
+> +			if (!mqprio->min_rate[i] && mqprio->max_rate[i]) {
+> +				dev_err(common->dev, "TX tc%d rate max>0 but min=0\n",
+> +					i);
+> +				return -EINVAL;
+> +			}
+> +
+> +			if (mqprio->max_rate[i] &&
+> +			    mqprio->max_rate[i] < mqprio->min_rate[i]) {
+> +				dev_err(common->dev, "TX tc%d rate min(%llu)>max(%llu)\n",
+> +					i, mqprio->min_rate[i],
+> +					mqprio->max_rate[i]);
+> +				return -EINVAL;
+> +			}
+> +		}
+> +
+> +		ch_msk = GENMASK(num_tc - 1, i);
+> +		if ((min_rate_msk & BIT(i)) && (min_rate_msk ^ ch_msk)) {
+> +			dev_err(common->dev, "TX Min rate limiting has to be enabled sequentially hi->lo tx_rate_msk%x\n",
+> +				min_rate_msk);
+> +			return -EINVAL;
+> +		}
+> +
+> +		if ((max_rate_msk & BIT(i)) && (max_rate_msk ^ ch_msk)) {
+> +			dev_err(common->dev, "TX max rate limiting has to be enabled sequentially hi->lo tx_rate_msk%x\n",
+> +				max_rate_msk);
+> +			return -EINVAL;
+> +		}
+> +	}
+> +	min_rate_total *= 8;
+> +	min_rate_total /= 1000 * 1000;
+> +	max_rate_total *= 8;
+> +	max_rate_total /= 1000 * 1000;
+> +
+> +	if (port->qos.link_speed != SPEED_UNKNOWN) {
+> +		if (min_rate_total > port->qos.link_speed) {
+> +			dev_err(common->dev, "TX rate min exceed %llu link speed %d\n",
+> +				min_rate_total, port->qos.link_speed);
+> +			return -EINVAL;
+> +		}
+> +
+> +		if (max_rate_total > port->qos.link_speed) {
+> +			dev_err(common->dev, "TX rate max exceed %llu link speed %d\n",
+> +				max_rate_total, port->qos.link_speed);
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	*max_rate = max_t(u64, min_rate_total, max_rate_total);
+> +
+> +	return 0;
+> +}
+> +
+> +static int am65_cpsw_setup_mqprio(struct net_device *ndev, void *type_data)
+> +{
+> +	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
+> +	struct tc_mqprio_qopt_offload *mqprio = type_data;
+> +	struct am65_cpsw_common *common = port->common;
+> +	struct am65_cpsw_mqprio *p_mqprio;
+> +	bool has_min_rate;
+> +	int num_tc, ret;
+> +	u64 max_rate;
+> +
+> +	p_mqprio = &port->qos.mqprio;
+> +
+> +	if (!mqprio->qopt.hw)
+> +		goto skip_check;
+> +
+> +	if (mqprio->mode != TC_MQPRIO_MODE_CHANNEL)
+> +		return -EOPNOTSUPP;
+> +
+> +	num_tc = mqprio->qopt.num_tc;
+> +	if (num_tc > AM65_CPSW_PN_TC_NUM)
+> +		return -ERANGE;
+> +
+> +	if ((mqprio->flags & TC_MQPRIO_F_SHAPER) &&
+> +	    mqprio->shaper != TC_MQPRIO_SHAPER_BW_RATE)
+> +		return -EOPNOTSUPP;
+> +
+> +	ret = am65_cpsw_mqprio_verify(port, mqprio);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = am65_cpsw_mqprio_verify_shaper(port, mqprio, &max_rate);
+> +	if (ret)
+> +		return ret;
+> +
+> +skip_check:
+> +	ret = pm_runtime_get_sync(common->dev);
+> +	if (ret < 0) {
+> +		pm_runtime_put_noidle(common->dev);
+> +		return ret;
+> +	}
+> +
+> +	if (mqprio->qopt.hw) {
+> +		memcpy(&p_mqprio->mqprio_hw, mqprio, sizeof(*mqprio));
+> +		has_min_rate = !!(mqprio->flags & TC_MQPRIO_F_MIN_RATE);
+> +		p_mqprio->enable = 1;
+> +		p_mqprio->shaper_en = has_min_rate;
+> +		p_mqprio->shaper_susp = !has_min_rate;
+> +		p_mqprio->max_rate_total = max_rate;
+> +	} else {
+> +		unsigned int tc0_q = p_mqprio->tc0_q;
+> +
+> +		memset(p_mqprio, 0, sizeof(*p_mqprio));
+> +		p_mqprio->mqprio_hw.qopt.num_tc = AM65_CPSW_PN_TC_NUM;
+> +		p_mqprio->tc0_q = tc0_q;
+> +	}
+> +
+> +	if (!netif_running(ndev))
+> +		goto exit_put;
+> +
+> +	am65_cpsw_qos_mqprio_init(port);
+> +
+> +exit_put:
+> +	pm_runtime_put(common->dev);
+> +	return 0;
+> +}
+> diff --git a/drivers/net/ethernet/ti/am65-cpsw-qos.h b/drivers/net/ethernet/ti/am65-cpsw-qos.h
+> index 0cc2a3b3d7f9..247a42788687 100644
+> --- a/drivers/net/ethernet/ti/am65-cpsw-qos.h
+> +++ b/drivers/net/ethernet/ti/am65-cpsw-qos.h
+> @@ -7,8 +7,10 @@
+>  
+>  #include <linux/netdevice.h>
+>  #include <net/pkt_sched.h>
+> +#include <net/pkt_cls.h>
+>  
+>  struct am65_cpsw_common;
+> +struct am65_cpsw_port;
+>  
+>  struct am65_cpsw_est {
+>  	int buf;
+> @@ -16,6 +18,16 @@ struct am65_cpsw_est {
+>  	struct tc_taprio_qopt_offload taprio;
+>  };
+>  
+> +struct am65_cpsw_mqprio {
+> +	struct tc_mqprio_qopt_offload mqprio_hw;
+> +	u64 max_rate_total;
+> +
+> +	unsigned enable:1;
+> +	unsigned shaper_en:1;
+> +	unsigned shaper_susp:1;
+> +	unsigned tc0_q:3;
+> +};
+> +
+>  struct am65_cpsw_ale_ratelimit {
+>  	unsigned long cookie;
+>  	u64 rate_packet_ps;
+> @@ -26,6 +38,7 @@ struct am65_cpsw_qos {
+>  	struct am65_cpsw_est *est_oper;
+>  	ktime_t link_down_time;
+>  	int link_speed;
+> +	struct am65_cpsw_mqprio mqprio;
+>  
+>  	struct am65_cpsw_ale_ratelimit ale_bc_ratelimit;
+>  	struct am65_cpsw_ale_ratelimit ale_mc_ratelimit;
+> @@ -35,6 +48,7 @@ int am65_cpsw_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
+>  			       void *type_data);
+>  void am65_cpsw_qos_link_up(struct net_device *ndev, int link_speed);
+>  void am65_cpsw_qos_link_down(struct net_device *ndev);
+> +void am65_cpsw_qos_mqprio_init(struct am65_cpsw_port *port);
+>  int am65_cpsw_qos_ndo_tx_p0_set_maxrate(struct net_device *ndev, int queue, u32 rate_mbps);
+>  void am65_cpsw_qos_tx_p0_rate_init(struct am65_cpsw_common *common);
+>  
+> 
+> base-commit: 52a93d39b17dc7eb98b6aa3edb93943248e03b2f
+> -- 
+> 2.34.1
+> 
+> 
