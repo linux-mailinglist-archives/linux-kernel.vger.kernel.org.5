@@ -2,65 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0A777FC56
+	by mail.lfdr.de (Postfix) with ESMTP id 864F777FC57
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353736AbjHQQrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 12:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41076 "EHLO
+        id S1353742AbjHQQrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 12:47:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353768AbjHQQrh (ORCPT
+        with ESMTP id S1353771AbjHQQrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 12:47:37 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 864E72D70;
-        Thu, 17 Aug 2023 09:47:35 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bdbf10333bso14545ad.1;
-        Thu, 17 Aug 2023 09:47:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692290855; x=1692895655;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CWIzmdgMapcbGgpVke3UkRQJiQcMwAi+LRj3MGvxzRI=;
-        b=p3vmZb8qvObOMImgF79TKmULYdKEau/42SZHphKqWKX7e2eF75LmxMlxsh3WM29HUj
-         sDIjNbIGGKP33Vf1lFbN/2YWhwhy+iINnp3PyI6bgtdNbTFm5VtN9jkcMR8z+6TsP1eQ
-         wNlliBEJ8VmDhXrwHn4jOZz7zxTt/MZsZmf3X+z25nkQ5rGaCnsK67kn0vb8PhgYBXMY
-         KEqjnWUbw2XEq78ECeVNRGjLamlpSOemofu2K4us9oSeKiE8wZDvo9NoCZAe4wrMq0RP
-         J07Fx0DWAJUlwZb2ZnsO5ZiXnq8ocSGLNIGGE4j344Q8r0JU6y4ZE3/c0MXUbsKAxEKJ
-         u/ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692290855; x=1692895655;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CWIzmdgMapcbGgpVke3UkRQJiQcMwAi+LRj3MGvxzRI=;
-        b=eMNUTJyn/cx7A7qcgXesWJLxOrrWOmUiGfnqoz9xKfNFN1lc0JFxQt1n1NnWyS6F1V
-         35kS9DQCm++nZQs+F689jgKh1HYWWONwXLeYR5ATfH/VFUe6DMA2W3oPnzLnPnmqkxe2
-         pIR+LZk1OMtn1O6DkrHpEIUH2eKYxkGgyH5/s2a3loSFRxctuKfMRCGgLB7s2Cv1v2sw
-         BJ1d+rf9aZD/mFxPf/pOLxD4DFqmkHk60PxkvwrxglVUeadxvuLZJjYBZdKlvI08RWEc
-         tTRRLVvUcBCNFXjsGCPZnMxyxxKOE8uAOQH/c8wUJ1/Q1VINDUQOxAuJUyXglXDQgjOA
-         Zf0A==
-X-Gm-Message-State: AOJu0YzWCPB5AQjlBL4hqH7OJdnsmwBXwzrXiabEObrMJDhB3pcIR+e4
-        JypFLpedtPEfwctToLmJYxnvS9SAtpo=
-X-Google-Smtp-Source: AGHT+IG6bkb3XvTBvAh+Bhb9+K3nr45uh51KT7CzdevKx0aTklO6qH+QhrtGTchamMSjyrNJVQq+cA==
-X-Received: by 2002:a17:903:25cf:b0:1b8:8dbd:e1a0 with SMTP id jc15-20020a17090325cf00b001b88dbde1a0mr5356648plb.13.1692290854805;
-        Thu, 17 Aug 2023 09:47:34 -0700 (PDT)
-Received: from localhost (fwdproxy-prn-012.fbsv.net. [2a03:2880:ff:c::face:b00c])
-        by smtp.gmail.com with ESMTPSA id f4-20020a170902e98400b001bdc8a5e96csm7722346plb.169.2023.08.17.09.47.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 09:47:34 -0700 (PDT)
-From:   Nhat Pham <nphamcs@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     hannes@cmpxchg.org, kernel-team@meta.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [PATCH] workingset: ensure memcg is valid for recency check
-Date:   Thu, 17 Aug 2023 09:47:33 -0700
-Message-Id: <20230817164733.2475092-1-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 17 Aug 2023 12:47:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D229273F;
+        Thu, 17 Aug 2023 09:47:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1B37D658F9;
+        Thu, 17 Aug 2023 16:47:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2448EC433C9;
+        Thu, 17 Aug 2023 16:47:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692290861;
+        bh=S1u9Zd2p2ct/ztBtxvHnHmKyOh9+7SZn3m/BiYXFwLY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GHmNPkW60c8iMPszrpYG3/NYv3hHJHYWQcF8frhbCrR46XJfWtn/xhrX3vwQMHEDj
+         996OttZVINb2W2tYfXi4oK3HeHQu2cAhNR34/JJdGJMs10+U3iyGAW0aMA39I5bjDe
+         RDCeMs206RMcscACula8cgAPaN96J/hzm+zKZg25LOipqppnmzu2M1gIjfZtNgPPB6
+         F218CfrVbFZQS3bo6TRnayZQeCZk5qJSYEoJoO0PVP6rWWw4ldGsAk+U/i0O/TEyfA
+         GA4hG8wv6xyfR1YW4Bxab1YgNsxTZgY4zRyCLgRuVmz3pYWH/MS3ATakXW1ZgKhg8Q
+         u7pC06KodvaPg==
+Date:   Thu, 17 Aug 2023 09:47:39 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     sandeen@redhat.com,
+        syzbot <syzbot+27eece6916b914a49ce7@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com
+Subject: Re: [syzbot] [ext4?] kernel panic: EXT4-fs (device loop0): panic
+ forced after error (3)
+Message-ID: <20230817164739.GC1483@sol.localdomain>
+References: <000000000000530e0d060312199e@google.com>
+ <20230817142103.GA2247938@mit.edu>
+ <81f96763-51fe-8ea1-bf81-cd67deed9087@redhat.com>
+ <20230817161118.GC2247938@mit.edu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230817161118.GC2247938@mit.edu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,189 +63,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In eviction recency check, we are currently not holding a local
-reference to the memcg that the refaulted folio belonged to when it was
-evicted. This could cause serious memcg lifetime issues, for e.g in the
-memcg hierarchy traversal done in mem_cgroup_get_nr_swap_pages(). This
-has occurred in production:
+On Thu, Aug 17, 2023 at 12:11:18PM -0400, Theodore Ts'o wrote:
+> On Thu, Aug 17, 2023 at 09:47:48AM -0500, Eric Sandeen wrote:
+> > 
+> > Just to play devil's advocate here - (sorry) - I don't see this as any
+> > different from any other "malicious" filesystem image.
+> > 
+> > I've never been a fan of the idea that malicious images are real security
+> > threats, but whether the parking lot USB stick paniced the box in an
+> > unexpected way or "on purpose," the result is the same ...
+> > 
+> > I wonder if it might make sense to put EXT4_MOUNT_ERRORS_PANIC under a
+> > sysctl or something, so that admins can enable it only when needed.
+> 
+> Well, if someone is stupid enough to plug in a parking lot USB stick
+> into their system, they get everything they deserve.  And a forced
+> panic isn't going to lead a more privilege escalation attack, so I
+> really don't see a problem if a file system which is marked "panic on
+> error", well, causes a panic.  It's a good way of (harmlessly)
+> punishing stupid user tricks.  :-)
+> 
+> The other way of thinking about it is that if your threat model
+> includes an attacker with physical access to the server with a USB
+> port, attacks include a cable which has a USB port on one side, and a
+> 120V/240V AC mains plug on the the other.  This will very likely cause
+> a system shutdown, even if they don't have automount enabled.   :-)
+> 
 
-[ 155757.793456] BUG: kernel NULL pointer dereference, address: 00000000000000c0
-[ 155757.807568] #PF: supervisor read access in kernel mode
-[ 155757.818024] #PF: error_code(0x0000) - not-present page
-[ 155757.828482] PGD 401f77067 P4D 401f77067 PUD 401f76067 PMD 0
-[ 155757.839985] Oops: 0000 [#1] SMP
-[ 155757.846444] CPU: 7 PID: 1380944 Comm: ThriftSrv-pri3- Kdump: loaded Tainted: G S                 6.4.3-0_fbk1_rc0_594_g8d0cbcaa67ba #1
-[ 155757.870808] Hardware name: Wiwynn Twin Lakes MP/Twin Lakes Passive MP, BIOS YMM16 05/24/2021
-[ 155757.887870] RIP: 0010:mem_cgroup_get_nr_swap_pages+0x3d/0xb0
-[ 155757.899377] Code: 29 19 4a 02 48 39 f9 74 63 48 8b 97 c0 00 00 00 48 8b b7 58 02 00 00 48 2b b7 c0 01 00 00 48 39 f0 48 0f 4d c6 48 39 d1 74 42 <48> 8b b2 c0 00 00 00 48 8b ba 58 02 00 00 48 2b ba c0 01 00 00 48
-[ 155757.937125] RSP: 0018:ffffc9002ecdfbc8 EFLAGS: 00010286
-[ 155757.947755] RAX: 00000000003a3b1c RBX: 000007ffffffffff RCX: ffff888280183000
-[ 155757.962202] RDX: 0000000000000000 RSI: 0007ffffffffffff RDI: ffff888bbc2d1000
-[ 155757.976648] RBP: 0000000000000001 R08: 000000000000000b R09: ffff888ad9cedba0
-[ 155757.991094] R10: ffffea0039c07900 R11: 0000000000000010 R12: ffff888b23a7b000
-[ 155758.005540] R13: 0000000000000000 R14: ffff888bbc2d1000 R15: 000007ffffc71354
-[ 155758.019991] FS:  00007f6234c68640(0000) GS:ffff88903f9c0000(0000) knlGS:0000000000000000
-[ 155758.036356] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 155758.048023] CR2: 00000000000000c0 CR3: 0000000a83eb8004 CR4: 00000000007706e0
-[ 155758.062473] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 155758.076924] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[ 155758.091376] PKRU: 55555554
-[ 155758.096957] Call Trace:
-[ 155758.102016]  <TASK>
-[ 155758.106502]  ? __die+0x78/0xc0
-[ 155758.112793]  ? page_fault_oops+0x286/0x380
-[ 155758.121175]  ? exc_page_fault+0x5d/0x110
-[ 155758.129209]  ? asm_exc_page_fault+0x22/0x30
-[ 155758.137763]  ? mem_cgroup_get_nr_swap_pages+0x3d/0xb0
-[ 155758.148060]  workingset_test_recent+0xda/0x1b0
-[ 155758.157133]  workingset_refault+0xca/0x1e0
-[ 155758.165508]  filemap_add_folio+0x4d/0x70
-[ 155758.173538]  page_cache_ra_unbounded+0xed/0x190
-[ 155758.182919]  page_cache_sync_ra+0xd6/0x1e0
-[ 155758.191738]  filemap_read+0x68d/0xdf0
-[ 155758.199495]  ? mlx5e_napi_poll+0x123/0x940
-[ 155758.207981]  ? __napi_schedule+0x55/0x90
-[ 155758.216095]  __x64_sys_pread64+0x1d6/0x2c0
-[ 155758.224601]  do_syscall_64+0x3d/0x80
-[ 155758.232058]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-[ 155758.242473] RIP: 0033:0x7f62c29153b5
-[ 155758.249938] Code: e8 48 89 75 f0 89 7d f8 48 89 4d e0 e8 b4 e6 f7 ff 41 89 c0 4c 8b 55 e0 48 8b 55 e8 48 8b 75 f0 8b 7d f8 b8 11 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 33 44 89 c7 48 89 45 f8 e8 e7 e6 f7 ff 48 8b
-[ 155758.288005] RSP: 002b:00007f6234c5ffd0 EFLAGS: 00000293 ORIG_RAX: 0000000000000011
-[ 155758.303474] RAX: ffffffffffffffda RBX: 00007f628c4e70c0 RCX: 00007f62c29153b5
-[ 155758.318075] RDX: 000000000003c041 RSI: 00007f61d2986000 RDI: 0000000000000076
-[ 155758.332678] RBP: 00007f6234c5fff0 R08: 0000000000000000 R09: 0000000064d5230c
-[ 155758.347452] R10: 000000000027d450 R11: 0000000000000293 R12: 000000000003c041
-[ 155758.362044] R13: 00007f61d2986000 R14: 00007f629e11b060 R15: 000000000027d450
-[ 155758.376661]  </TASK>
+Eric S. is correct that for a filesystem image to enable panic on error, support
+for panic on error should have to be properly consented to by the kernel
+configuration, for example through an fs.allow_panic_on_error sysctl.
 
-This patch fixes the issue by getting a local reference inside
-unpack_shadow().
+It can be argued that this not important, or not worth implementing when the
+default will need to remain 1 for backwards compatibility.  Or even that
+syzkaller should work around it in the mean time.  But it is incorrect to write
+"This is fundamentally a syzbot bug."
 
-Fixes: f78dfc7b77d5 ("workingset: fix confusion around eviction vs refault container")
-Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-Cc: stable@vger.kernel.org
----
- mm/workingset.c | 57 ++++++++++++++++++++++++++++++-------------------
- 1 file changed, 35 insertions(+), 22 deletions(-)
-
-diff --git a/mm/workingset.c b/mm/workingset.c
-index da58a26d0d4d..c20b26bb6cb1 100644
---- a/mm/workingset.c
-+++ b/mm/workingset.c
-@@ -206,10 +206,11 @@ static void *pack_shadow(int memcgid, pg_data_t *pgdat, unsigned long eviction,
- 	return xa_mk_value(eviction);
- }
- 
--static void unpack_shadow(void *shadow, int *memcgidp, pg_data_t **pgdat,
--			  unsigned long *evictionp, bool *workingsetp)
-+static void unpack_shadow(void *shadow, struct mem_cgroup **memcgp,
-+			pg_data_t **pgdat, unsigned long *evictionp, bool *workingsetp)
- {
- 	unsigned long entry = xa_to_value(shadow);
-+	struct mem_cgroup *memcg;
- 	int memcgid, nid;
- 	bool workingset;
- 
-@@ -220,7 +221,24 @@ static void unpack_shadow(void *shadow, int *memcgidp, pg_data_t **pgdat,
- 	memcgid = entry & ((1UL << MEM_CGROUP_ID_SHIFT) - 1);
- 	entry >>= MEM_CGROUP_ID_SHIFT;
- 
--	*memcgidp = memcgid;
-+	/*
-+	 * Look up the memcg associated with the stored ID. It might
-+	 * have been deleted since the folio's eviction.
-+	 *
-+	 * Note that in rare events the ID could have been recycled
-+	 * for a new cgroup that refaults a shared folio. This is
-+	 * impossible to tell from the available data. However, this
-+	 * should be a rare and limited disturbance, and activations
-+	 * are always speculative anyway. Ultimately, it's the aging
-+	 * algorithm's job to shake out the minimum access frequency
-+	 * for the active cache.
-+	 */
-+	memcg = mem_cgroup_from_id(memcgid);
-+	if (memcg && css_tryget(&memcg->css))
-+		*memcgp = memcg;
-+	else
-+		*memcgp = NULL;
-+
- 	*pgdat = NODE_DATA(nid);
- 	*evictionp = entry;
- 	*workingsetp = workingset;
-@@ -262,15 +280,16 @@ static void *lru_gen_eviction(struct folio *folio)
- static bool lru_gen_test_recent(void *shadow, bool file, struct lruvec **lruvec,
- 				unsigned long *token, bool *workingset)
- {
--	int memcg_id;
- 	unsigned long min_seq;
- 	struct mem_cgroup *memcg;
- 	struct pglist_data *pgdat;
- 
--	unpack_shadow(shadow, &memcg_id, &pgdat, token, workingset);
-+	unpack_shadow(shadow, &memcg, &pgdat, token, workingset);
-+	if (!mem_cgroup_disabled() && !memcg)
-+		return false;
- 
--	memcg = mem_cgroup_from_id(memcg_id);
- 	*lruvec = mem_cgroup_lruvec(memcg, pgdat);
-+	mem_cgroup_put(memcg);
- 
- 	min_seq = READ_ONCE((*lruvec)->lrugen.min_seq[file]);
- 	return (*token >> LRU_REFS_WIDTH) == (min_seq & (EVICTION_MASK >> LRU_REFS_WIDTH));
-@@ -421,36 +440,29 @@ bool workingset_test_recent(void *shadow, bool file, bool *workingset)
- 	unsigned long refault_distance;
- 	unsigned long workingset_size;
- 	unsigned long refault;
--	int memcgid;
- 	struct pglist_data *pgdat;
- 	unsigned long eviction;
- 
- 	if (lru_gen_enabled())
- 		return lru_gen_test_recent(shadow, file, &eviction_lruvec, &eviction, workingset);
- 
--	unpack_shadow(shadow, &memcgid, &pgdat, &eviction, workingset);
--	eviction <<= bucket_order;
--
-+	unpack_shadow(shadow, &eviction_memcg, &pgdat, &eviction, workingset);
- 	/*
--	 * Look up the memcg associated with the stored ID. It might
--	 * have been deleted since the folio's eviction.
-+	 * When memcg is enabled, we only get !memcg here if the
-+	 * eviction group has been deleted. In that case, ignore
-+	 * the refault.
- 	 *
--	 * Note that in rare events the ID could have been recycled
--	 * for a new cgroup that refaults a shared folio. This is
--	 * impossible to tell from the available data. However, this
--	 * should be a rare and limited disturbance, and activations
--	 * are always speculative anyway. Ultimately, it's the aging
--	 * algorithm's job to shake out the minimum access frequency
--	 * for the active cache.
-+	 * When memcg is disabled, we always get NULL since there
-+	 * is no root_mem_cgroup for !CONFIG_MEMCG. Continue; the
-+	 * mem_cgroup_lruvec() will get us the global lruvec.
- 	 *
--	 * XXX: On !CONFIG_MEMCG, this will always return NULL; it
--	 * would be better if the root_mem_cgroup existed in all
-+	 * XXX: It would be better if the root_mem_cgroup existed in all
- 	 * configurations instead.
- 	 */
--	eviction_memcg = mem_cgroup_from_id(memcgid);
- 	if (!mem_cgroup_disabled() && !eviction_memcg)
- 		return false;
- 
-+	eviction <<= bucket_order;
- 	eviction_lruvec = mem_cgroup_lruvec(eviction_memcg, pgdat);
- 	refault = atomic_long_read(&eviction_lruvec->nonresident_age);
- 
-@@ -493,6 +505,7 @@ bool workingset_test_recent(void *shadow, bool file, bool *workingset)
- 		}
- 	}
- 
-+	mem_cgroup_put(eviction_memcg);
- 	return refault_distance <= workingset_size;
- }
- 
--- 
-2.34.1
-
+- Eric
