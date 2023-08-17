@@ -2,101 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E079677F1D3
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4CB77F1D2
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348750AbjHQIIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 04:08:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60856 "EHLO
+        id S1348741AbjHQIID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 04:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348792AbjHQIH5 (ORCPT
+        with ESMTP id S1348767AbjHQIHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 04:07:57 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7A52D5D;
-        Thu, 17 Aug 2023 01:07:56 -0700 (PDT)
+        Thu, 17 Aug 2023 04:07:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7824B30C1;
+        Thu, 17 Aug 2023 01:07:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692259676; x=1723795676;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=KychCsHzKBpmzeBVOBfgQM/sUcx1OtGZqhI1w+uM8yI=;
-  b=nWWNYuLA4WrTxzem1/8hq5GFaN01YiH2SyE1BFGHsPv9ActEtIb7GjNk
-   z6A5n6uoGLAgaRfwwjdyRfralEwdVvBUtjvoNaodOSfbE1+JYCfil9EyH
-   myu8pTfcTCi2frCHgvdLg6n4oPDYyyNhDVZAT8LaL4FuuXFnG6yWMMoK8
-   YJC3eEnyx1WGis4jSmg8GVtmoE6dJ1nxAc2p0BpmXSZcNUbq/frXqjTYP
-   +HU6IQbQ+c9l/UVc6+INr+GmwbD1TiImbwF4Ies2+jCFECX+vqStp1GLc
-   2WE7Z8zeVwBw2DkzUoytk7Zk7QNAJ3iO2FKJK/dQ1yremWuCLQ2IY3MGL
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="362896132"
+  t=1692259657; x=1723795657;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=oQUdF+oJMm6aBKGxgfq9tfveb09R6sP9jV92mZIe/Fs=;
+  b=SvWRpsQmXZoCtJ4e/JeV5sa7TXaTWAKj89UGkKU02p9kzfIcqUdIJRNQ
+   uEXNw/WzPvZaCA1fkgR1KltPf4/fv6Cm69N5Sj0TkmIyFN5oGyTNFs6Z5
+   Cf+lI/UJpCPY2N84EC6BEHtYNTCuAafBCP3QDCR2XPy9zczMbjpatTKJ9
+   LWzohPsZCYU3c13hQo0cRo7ZBsqIfhEsVgat54kWYWyB++7mIcYyngRj7
+   6kBiS/HREF+fimwvAT2T/ZjV3R3EEEdx2Vh3AV/Khi0j/6hz0QAM+W5bk
+   QJsoFtN+5T2hj/1dV4RD5IoLQeS6/w5DoD5HiyQvtz7JrSHxZBE3WnF1f
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="403724494"
 X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="362896132"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 01:07:55 -0700
+   d="scan'208";a="403724494"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 01:07:36 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="769522322"
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="1065153257"
 X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="769522322"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 17 Aug 2023 01:07:47 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWY2i-0000vz-10;
-        Thu, 17 Aug 2023 08:07:45 +0000
-Date:   Thu, 17 Aug 2023 16:06:52 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bhavya Kapoor <b-kapoor@ti.com>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, nm@ti.com,
-        vigneshr@ti.com, kristo@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, b-kapoor@ti.com
-Subject: Re: [PATCH] arm64: dts: ti: k3-j784s4-evm: Add support for MCAN
- interfaces
-Message-ID: <202308171509.khN4qjEZ-lkp@intel.com>
-References: <20230816193533.25722-1-b-kapoor@ti.com>
+   d="scan'208";a="1065153257"
+Received: from mylly.fi.intel.com (HELO [10.237.72.62]) ([10.237.72.62])
+  by fmsmga005.fm.intel.com with ESMTP; 17 Aug 2023 01:07:34 -0700
+Message-ID: <97d62909-551b-4abd-a743-5be09e617665@linux.intel.com>
+Date:   Thu, 17 Aug 2023 11:07:33 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230816193533.25722-1-b-kapoor@ti.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] i2c: designware: add support for pinctrl for recovery
+To:     Yann Sionneau <yann@sionneau.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>,
+        Andi Shyti <andi.shyti@kernel.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yann Sionneau <ysionneau@kalray.eu>
+References: <20230816095015.23705-1-yann@sionneau.net>
+Content-Language: en-US
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+In-Reply-To: <20230816095015.23705-1-yann@sionneau.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhavya,
+Hi
 
-kernel test robot noticed the following build errors:
+On 8/16/23 12:50, Yann Sionneau wrote:
+> From: Yann Sionneau <ysionneau@kalray.eu>
+> 
+> Currently if the SoC needs pinctrl to switch the SCL and SDA
+> from the I2C function to GPIO function, the recovery won't work.
+> 
+> scl-gpio = <>;
+> sda-gpio = <>;
+> 
+> Are not enough for some SoCs to have a working recovery.
+> Some need:
+> 
+> scl-gpio = <>;
+> sda-gpio = <>;
+> pinctrl-names = "default", "recovery";
+> pinctrl-0 = <&i2c_pins_hw>;
+> pinctrl-1 = <&i2c_pins_gpio>;
+> 
+> The driver was not filling rinfo->pinctrl with the device node
+> pinctrl data which is needed by generic recovery code.
+> 
+> Tested-by: Yann Sionneau <ysionneau@kalray.eu>
+> Signed-off-by: Yann Sionneau <ysionneau@kalray.eu>
 
-[auto build test ERROR on robh/for-next]
-[also build test ERROR on linus/master v6.5-rc6 next-20230817]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Tested-by from author is needless. Expectation is that author has tested 
+the patch while not always true :-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Bhavya-Kapoor/arm64-dts-ti-k3-j784s4-evm-Add-support-for-MCAN-interfaces/20230817-033647
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/20230816193533.25722-1-b-kapoor%40ti.com
-patch subject: [PATCH] arm64: dts: ti: k3-j784s4-evm: Add support for MCAN interfaces
-config: arm64-randconfig-r032-20230817 (https://download.01.org/0day-ci/archive/20230817/202308171509.khN4qjEZ-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230817/202308171509.khN4qjEZ-lkp@intel.com/reproduce)
+> @@ -905,6 +906,15 @@ static int i2c_dw_init_recovery_info(struct dw_i2c_dev *dev)
+>   		return PTR_ERR(gpio);
+>   	rinfo->sda_gpiod = gpio;
+>   
+> +	rinfo->pinctrl = devm_pinctrl_get(dev->dev);
+> +	if (IS_ERR(rinfo->pinctrl)) {
+> +		if (PTR_ERR(rinfo->pinctrl) == -EPROBE_DEFER)
+> +			return PTR_ERR(rinfo->pinctrl);
+> +
+> +		rinfo->pinctrl = NULL;
+> +		dev_info(dev->dev, "can't get pinctrl, bus recovery might not work\n");
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308171509.khN4qjEZ-lkp@intel.com/
+I think dev_dbg() suits better here or is it needed at all? End user may 
+not be able to do anything when sees this in dmesg. I.e. more like 
+development time dev_dbg() information.
 
-All errors (new ones prefixed by >>):
+Does i2c-core-base.c: i2c_gpio_init_pinctrl_recovery() already do 
+dev_info() print when pinctrl & GPIO are set properly making above also 
+kind of needless?
 
->> Error: arch/arm64/boot/dts/ti/k3-j784s4-evm.dts:897.1-10 syntax error
->> FATAL ERROR: Unable to parse input tree
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Jarkko
