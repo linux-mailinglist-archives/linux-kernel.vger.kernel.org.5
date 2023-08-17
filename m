@@ -2,138 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8A277FAF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A7E77FAEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353227AbjHQPiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 11:38:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48858 "EHLO
+        id S1352649AbjHQPhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 11:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353288AbjHQPiT (ORCPT
+        with ESMTP id S1353249AbjHQPhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 11:38:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8602D6D
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:38:18 -0700 (PDT)
+        Thu, 17 Aug 2023 11:37:12 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B2142D6D
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:37:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692286698; x=1723822698;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=AF6Jp9zpxQK52mVav7l7mei07u6LPV0nf5nfuhvoi3E=;
-  b=edBaSNoqC5l/3Nu0DpljFgnTf8u12GOMI8AMIccn0Sbk0/v/GRQDpgOF
-   REDfqLTub4UXrKyM+hZvXNS4nSmIIZZmnh21VXEG7e90NQGV5oNRFZZHu
-   7wqKu8MSXJN68SYlE5vMEb2KLXxX442ubJ6K3HoitOXPZIhf67dq9u1Gm
-   B9mmzqOuRWeHKPNOLrMgT9nDwqLJKnnm9D5WokAkp7WnPZ3dBET5ljSJH
-   GATHHNaZK8CJIh/KjNz8rUAoBZNK7sTLh0eCaAa/KznNRWAJDmISkAj1u
-   xdEkd9uO/gtQSIvBnvoES9W1O2cMPJqev5rkKBEwtAMz+TmtJq59v5RcR
+  t=1692286631; x=1723822631;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3g9NYsPL+yeZ8JoAC5ihq7mnEDzWlgJBSNW9r1Fnobk=;
+  b=O+v8Rprys1eM83HFIzLztxD+eOODcVMWGW26Vaf8i8EpIVneXqo4FWi7
+   w3a3xyKdcgzk75yaQ8RN5Rv1P7mA9PWZnk83qTxj0sLDp3sv5yjopLmzc
+   vLlS/eWtR0Id2wadOBUxoVjXcoKQaxzkSqeiafCy1o329qCy/CKBHginw
+   j+AJG2S/bIer9iZnp5vqPVP0DwetyMxh5CpMspwueDSheYO6NTs2W7YbF
+   ocY4XxPDAV5awXAwq/tw6gBTi/kJEs24cnTMlybEso4LgYM3NCeZCrPSH
+   V6nhAuF/ElSlwK6jwqbtb05K9IBgk7u4jF5RV2+928zDxO6bmxE6IQWwH
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="459204652"
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="375627309"
 X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="459204652"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 08:36:26 -0700
+   d="scan'208";a="375627309"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 08:37:05 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="764139341"
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="1065297207"
 X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="764139341"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 17 Aug 2023 08:36:23 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWf2r-0001HW-33;
-        Thu, 17 Aug 2023 15:36:21 +0000
-Date:   Thu, 17 Aug 2023 23:35:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Quinn Tran <qutran@marvell.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Nilesh Javali <njavali@marvell.com>
-Subject: drivers/scsi/qla2xxx/qla_isr.c:3724: warning: Function parameter or
- member 'rsp_q_in' not described in 'qla_chk_cont_iocb_avail'
-Message-ID: <202308172330.ram2SwC7-lkp@intel.com>
+   d="scan'208";a="1065297207"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga005.fm.intel.com with ESMTP; 17 Aug 2023 08:37:03 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qWf3W-000CIe-0O;
+        Thu, 17 Aug 2023 18:37:02 +0300
+Date:   Thu, 17 Aug 2023 18:37:01 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH] bitmap: optimize bitmap_remap()
+Message-ID: <ZN4+nZwBu317dVjz@smile.fi.intel.com>
+References: <20230815235934.47782-1-yury.norov@gmail.com>
+ <ZN3qQPeFtdZQrLE4@smile.fi.intel.com>
+ <ZN3qlCd+TcYiZg+s@smile.fi.intel.com>
+ <ZN4tB7jkQrX/TKnh@yury-ThinkPad>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZN4tB7jkQrX/TKnh@yury-ThinkPad>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
-commit: c019cd656e717349ff22d0c41d6fbfc773f48c52 scsi: qla2xxx: edif: Fix dropped IKE message
-date:   1 year, 1 month ago
-config: i386-randconfig-i002-20230817 (https://download.01.org/0day-ci/archive/20230817/202308172330.ram2SwC7-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20230817/202308172330.ram2SwC7-lkp@intel.com/reproduce)
+On Thu, Aug 17, 2023 at 07:21:59AM -0700, Yury Norov wrote:
+> On Thu, Aug 17, 2023 at 12:38:28PM +0300, Andy Shevchenko wrote:
+> > On Thu, Aug 17, 2023 at 12:37:05PM +0300, Andy Shevchenko wrote:
+> > > On Tue, Aug 15, 2023 at 04:59:34PM -0700, Yury Norov wrote:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308172330.ram2SwC7-lkp@intel.com/
+...
 
-All warnings (new ones prefixed by >>):
+> > > >  		int n = bitmap_pos_to_ord(old, oldbit, nbits);
+> > > >  
+> > > > +		bit = (n < 0) ? oldbit :	/* identity map */
+> > > 
+> > > Can't you also optimize this case?
+> > > 
+> > > Something like
+> > > 
+> > >   bitmap_xor(tmp, old, new) // maybe even better approach, dunno
+> > 
+> > >   bitmap_empty(tmp) // can be replaced by find first bit
+> > 
+> > Or reuse bitmap_weight()...
+> 
+> That way it wouldn't work,
 
->> drivers/scsi/qla2xxx/qla_isr.c:3724: warning: Function parameter or member 'rsp_q_in' not described in 'qla_chk_cont_iocb_avail'
+Why not? AFAIU there are two cases when we may copy:
+1) the new mapping is empty;
+2) the old == new.
 
+The other cases we need to remap.
 
-vim +3724 drivers/scsi/qla2xxx/qla_isr.c
+The case 2) is easy with xor and weight.
 
-e84067d7430107 Duane Grigsby 2017-06-21  3713  
-fac2807946c10b Quinn Tran    2021-06-23  3714  /**
-fac2807946c10b Quinn Tran    2021-06-23  3715   * qla_chk_cont_iocb_avail - check for all continuation iocbs are available
-fac2807946c10b Quinn Tran    2021-06-23  3716   *   before iocb processing can start.
-fac2807946c10b Quinn Tran    2021-06-23  3717   * @vha: host adapter pointer
-fac2807946c10b Quinn Tran    2021-06-23  3718   * @rsp: respond queue
-fac2807946c10b Quinn Tran    2021-06-23  3719   * @pkt: head iocb describing how many continuation iocb
-fac2807946c10b Quinn Tran    2021-06-23  3720   * Return: 0 all iocbs has arrived, xx- all iocbs have not arrived.
-fac2807946c10b Quinn Tran    2021-06-23  3721   */
-fac2807946c10b Quinn Tran    2021-06-23  3722  static int qla_chk_cont_iocb_avail(struct scsi_qla_host *vha,
-c019cd656e7173 Quinn Tran    2022-07-12  3723  	struct rsp_que *rsp, response_t *pkt, u32 rsp_q_in)
-fac2807946c10b Quinn Tran    2021-06-23 @3724  {
-c019cd656e7173 Quinn Tran    2022-07-12  3725  	int start_pkt_ring_index;
-c019cd656e7173 Quinn Tran    2022-07-12  3726  	u32 iocb_cnt = 0;
-fac2807946c10b Quinn Tran    2021-06-23  3727  	int rc = 0;
-fac2807946c10b Quinn Tran    2021-06-23  3728  
-fac2807946c10b Quinn Tran    2021-06-23  3729  	if (pkt->entry_count == 1)
-fac2807946c10b Quinn Tran    2021-06-23  3730  		return rc;
-fac2807946c10b Quinn Tran    2021-06-23  3731  
-fac2807946c10b Quinn Tran    2021-06-23  3732  	/* ring_index was pre-increment. set it back to current pkt */
-fac2807946c10b Quinn Tran    2021-06-23  3733  	if (rsp->ring_index == 0)
-fac2807946c10b Quinn Tran    2021-06-23  3734  		start_pkt_ring_index = rsp->length - 1;
-fac2807946c10b Quinn Tran    2021-06-23  3735  	else
-fac2807946c10b Quinn Tran    2021-06-23  3736  		start_pkt_ring_index = rsp->ring_index - 1;
-fac2807946c10b Quinn Tran    2021-06-23  3737  
-c019cd656e7173 Quinn Tran    2022-07-12  3738  	if (rsp_q_in < start_pkt_ring_index)
-c019cd656e7173 Quinn Tran    2022-07-12  3739  		/* q in ptr is wrapped */
-c019cd656e7173 Quinn Tran    2022-07-12  3740  		iocb_cnt = rsp->length - start_pkt_ring_index + rsp_q_in;
-fac2807946c10b Quinn Tran    2021-06-23  3741  	else
-c019cd656e7173 Quinn Tran    2022-07-12  3742  		iocb_cnt = rsp_q_in - start_pkt_ring_index;
-fac2807946c10b Quinn Tran    2021-06-23  3743  
-c019cd656e7173 Quinn Tran    2022-07-12  3744  	if (iocb_cnt < pkt->entry_count)
-fac2807946c10b Quinn Tran    2021-06-23  3745  		rc = -EIO;
-fac2807946c10b Quinn Tran    2021-06-23  3746  
-c019cd656e7173 Quinn Tran    2022-07-12  3747  	ql_dbg(ql_dbg_init, vha, 0x5091,
-c019cd656e7173 Quinn Tran    2022-07-12  3748  	       "%s - ring %p pkt %p entry count %d iocb_cnt %d rsp_q_in %d rc %d\n",
-c019cd656e7173 Quinn Tran    2022-07-12  3749  	       __func__, rsp->ring, pkt, pkt->entry_count, iocb_cnt, rsp_q_in, rc);
-fac2807946c10b Quinn Tran    2021-06-23  3750  
-fac2807946c10b Quinn Tran    2021-06-23  3751  	return rc;
-fac2807946c10b Quinn Tran    2021-06-23  3752  }
-fac2807946c10b Quinn Tran    2021-06-23  3753  
+diff --git a/lib/bitmap.c b/lib/bitmap.c
+index 24284caadbcc..917eea5219ac 100644
+--- a/lib/bitmap.c
++++ b/lib/bitmap.c
+@@ -958,7 +958,7 @@ EXPORT_SYMBOL(bitmap_parse);
+  * gets mapped to (returns) @ord value 3 in this example, that means
+  * that bit 7 is the 3rd (starting with 0th) set bit in @buf.
+  *
+- * The bit positions 0 through @bits are valid positions in @buf.
++ * The bit positions 0 through @nbits are valid positions in @buf.
+  */
+ static int bitmap_pos_to_ord(const unsigned long *buf, unsigned int pos, unsigned int nbits)
+ {
+@@ -1008,17 +1008,30 @@ void bitmap_remap(unsigned long *dst, const unsigned long *src,
+ 
+ 	if (dst == src)		/* following doesn't handle inplace remaps */
+ 		return;
+-	bitmap_zero(dst, nbits);
++
++	bitmap_xor(dst, old, new, nbits);
++	if (bitmap_empty(dst, nbits))
++		goto identity_map;
+ 
+ 	w = bitmap_weight(new, nbits);
++	if (w == 0)
++		goto identity_map;
++
++	bitmap_zero(dst, nbits);
++
+ 	for_each_set_bit(oldbit, src, nbits) {
+ 		int n = bitmap_pos_to_ord(old, oldbit, nbits);
+ 
+-		if (n < 0 || w == 0)
++		if (n < 0)
+ 			set_bit(oldbit, dst);	/* identity map */
+ 		else
+ 			set_bit(find_nth_bit(new, nbits, n % w), dst);
+ 	}
++
++	return;
++
++identity_map:
++	bitmap_copy(dst, src, nbits);
+ }
+ EXPORT_SYMBOL(bitmap_remap);
 
-:::::: The code at line 3724 was first introduced by commit
-:::::: fac2807946c10b9a509b9c348afd442fa823c5f7 scsi: qla2xxx: edif: Add extraction of auth_els from the wire
+But this gives +89 bytes on x86_64... :-(
 
-:::::: TO: Quinn Tran <qutran@marvell.com>
-:::::: CC: Martin K. Petersen <martin.petersen@oracle.com>
+Inside the loop we can also break when n gets equal to w, but it seems
+a special case (we don't need bitmap_weight_from() for that, do we?).
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+With Best Regards,
+Andy Shevchenko
+
+
