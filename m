@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CB9780176
+	by mail.lfdr.de (Postfix) with ESMTP id D92A1780177
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355960AbjHQXDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 19:03:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49660 "EHLO
+        id S1355966AbjHQXDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 19:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355891AbjHQXDG (ORCPT
+        with ESMTP id S1355979AbjHQXDP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 19:03:06 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA601FC3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:03:05 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2ba1e9b1fa9so4462341fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:03:05 -0700 (PDT)
+        Thu, 17 Aug 2023 19:03:15 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF7335A1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:03:11 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4ff9121fd29so377874e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:03:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692313383; x=1692918183;
+        d=linaro.org; s=google; t=1692313390; x=1692918190;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
         bh=KohSaVbVTZzw51hU080rc6/yBBZBjNRiH2rTqSdtLwA=;
-        b=aEN8Z+oCxLhOchl7ZInJjqMS6/8gDE6EnAsPgIKnrqGgTSl3Wt6uM3AlSsmPUNy+dC
-         SqRQ7tbMI10tWghedG5dZlFQJ6Jv3JCm6rPThZw0Rc69eVsq4qwsbX5yTGiZYWQ4WpPo
-         hQ8lyiCANk9ehrf7h/B2j0hI3gRmFvAx1zsUlOjadavGo6VVTOkQKJUUM3aIEOgxbjqy
-         s4cw8Pe6gRkNcPFU5cYAO0oOiPfzd9gQ0vtNzHMon6H2Cv8YbQCNy1f2iirAnAaLlz6B
-         GY2CRAj1+7aLjxFBuFDhHu9OlQFkThfPgXC52bIjJuWx30YzKJ0ZH6JMqgW/sNqIDx9m
-         XMEg==
+        b=Fof3Acoia7VG4nhAUoI/nfrGuonJnuAOuLTuxr4ifWkBep3jTwsZKCvWMSh4AvndpG
+         trV6p3y5uWJ0aEKg9s8EiJORJ/EP4s69g424Jk97fDuHlZqb2n45XmAfy9vurcT0weSh
+         G5lrDhwTny3/mdaReAoSN8pWdxsEFbm9/lWAx6F8CmYOatCY8DzUODWaCHADNiNRblNJ
+         RxPAVA8I8QwkTdzrQvhhHOWp9RSjkC9SUVJCFaDo5rfzgiSzWYdoulQkQPfhUwKqwGeX
+         fe5jNLQUkCBMNIMlJ1IFYlS8vlIZf+zofWZMXZHsR/9e1KPOPcJwbiuu3wJicckDIN8U
+         889Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692313383; x=1692918183;
+        d=1e100.net; s=20221208; t=1692313390; x=1692918190;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
         bh=KohSaVbVTZzw51hU080rc6/yBBZBjNRiH2rTqSdtLwA=;
-        b=k6hsIlMzAOF1eOzag5gOKF7lvxH5ylhsIAistuYadrwZ9zaKlIyprdg1KEUgN3sbp6
-         EJC5fpKZM5FKB+T8Zldu7AH8eXhvUfAoLcHWjcS+Nv1q5cnb/RN+MR/8EbBaH6iI9feU
-         AxQdyBxLMoh0KxqZEKcFQp0pA40w4Kf0aKmxSV1GWIu5FtJ4+pvtqHhlq+ElQWvif4lk
-         WgkUGHOpqRlsPQtbX8NOfSxkPihPDCR/z9G9K4+YQeKhLEqLtDEK83o3cleSmg+UOD+X
-         P1vWJ2WSroeeh5OWVf1lgBa+PiKpXB9ZiEnUnto68eatrGN165XXNZnch7g8C8cq+JUF
-         tQeg==
-X-Gm-Message-State: AOJu0YyCs0VCcMttXhgUEt2XjSElRmXR2vAgX1sSOEpGIvfkHVFtklMu
-        jR6ZmdK2qobYDwDojM/oRw3rMQ==
-X-Google-Smtp-Source: AGHT+IFi6YsmAxWY/zGr+OrYTTVldPLE8ota51ql1lreUnqGP7ONPxvXxMz37s8wDRCVvFPh0BZp5g==
-X-Received: by 2002:a05:6512:3490:b0:4fd:fadb:e6e4 with SMTP id v16-20020a056512349000b004fdfadbe6e4mr513322lfr.69.1692313383542;
-        Thu, 17 Aug 2023 16:03:03 -0700 (PDT)
+        b=Jlx8EZp9vTyk0lWKvhw3QBvmR8YWIbpq3QPuL5GQyQ5tTvD0jZqjCr8oTvRD3wg9z9
+         OG8p3cPyXxXKnAJYlsxWXqjJ+41VtMv+l69QqdglvvE8TT6IG7po/mPB8WP+kCw7EMyS
+         13XMmTyRAIF+r5f/kF/cZXcWeITxW8S8AmSBxBZKWDb500w4PbrzO+hDwVXe53adwIKG
+         yMb+5FuFdvKwYKpuWZWMt1p+cxe/jehgy5BmO+AR/IydwNnPyGv2fVr1mN/qrsz08yhg
+         XCVWP2H15NLXTj8t/WZ+F9p+Fj1x8mc/oMz5p0QT9rMVnp0sVycc/1kdIx5etIWNWzkg
+         gBhw==
+X-Gm-Message-State: AOJu0Yx0YEYBPM3RlSV0Vz1RQU/zvgS/bVwy4v557HX+p5a6hA2HychY
+        jMPaatL6IFfUh2jIBerqkbBZ8Q==
+X-Google-Smtp-Source: AGHT+IEsPKiYiAI9yScvyF/DuR+/ExSEEAU+QEx8uhb/3wDAjFfUrvIb5f02SKlt45rVQZXgly+RRg==
+X-Received: by 2002:a05:6512:324d:b0:4ff:9aaa:6e3e with SMTP id c13-20020a056512324d00b004ff9aaa6e3emr441535lfr.41.1692313390043;
+        Thu, 17 Aug 2023 16:03:10 -0700 (PDT)
 Received: from [192.168.1.101] (abxh52.neoplus.adsl.tpnet.pl. [83.9.1.52])
-        by smtp.gmail.com with ESMTPSA id n26-20020ac2491a000000b004fa52552c7csm84540lfi.151.2023.08.17.16.03.02
+        by smtp.gmail.com with ESMTPSA id n26-20020ac2491a000000b004fa52552c7csm84540lfi.151.2023.08.17.16.03.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Aug 2023 16:03:03 -0700 (PDT)
-Message-ID: <7579df7c-aa73-4d8e-ac93-13d575b6745f@linaro.org>
-Date:   Fri, 18 Aug 2023 01:03:01 +0200
+        Thu, 17 Aug 2023 16:03:09 -0700 (PDT)
+Message-ID: <662c9de8-6298-4eb0-ae84-d0cb4ea34a17@linaro.org>
+Date:   Fri, 18 Aug 2023 01:03:09 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] arm64: dts: qcom: sa8775p-ride: Describe sgmii_phy0
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sa8775p-ride: Describe sgmii_phy1
  irq
 Content-Language: en-US
 To:     Andrew Halaney <ahalaney@redhat.com>, andersson@kernel.org
@@ -63,7 +63,7 @@ Cc:     agross@kernel.org, robh+dt@kernel.org,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, brgl@bgdev.pl
 References: <20230817213815.638189-1-ahalaney@redhat.com>
- <20230817213815.638189-2-ahalaney@redhat.com>
+ <20230817213815.638189-3-ahalaney@redhat.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -100,7 +100,7 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230817213815.638189-2-ahalaney@redhat.com>
+In-Reply-To: <20230817213815.638189-3-ahalaney@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
