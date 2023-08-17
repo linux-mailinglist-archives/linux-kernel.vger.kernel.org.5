@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4E277FA9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 485F977FA9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353125AbjHQPUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 11:20:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60128 "EHLO
+        id S1353139AbjHQPUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 11:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353155AbjHQPU2 (ORCPT
+        with ESMTP id S1353157AbjHQPU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 17 Aug 2023 11:20:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3992724;
-        Thu, 17 Aug 2023 08:20:25 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD5E2D74;
+        Thu, 17 Aug 2023 08:20:26 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5C20462A95;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 98AD865940;
         Thu, 17 Aug 2023 15:20:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BE2E0C433C9;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E8BDBC43395;
         Thu, 17 Aug 2023 15:20:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692285624;
-        bh=NfOEJNXNpKdohlsC54VKkIQeTA+pi3oxUi+fegoDms8=;
+        s=k20201202; t=1692285625;
+        bh=qR6kigngMHcRwuRvA7J2U593va9JFSML77bkafy5IPQ=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=m8k+4yi2KrnIbAyVLtanud5zOz3gxKdpBrYc9Mf9cyIM4WavnCq9eC7pDs7mzBU9p
-         0iUb1aMrMfOmL63sVcYJXcV1ohvZLl20XkmXXfEnx1SQ49VAQ/h57j0+kleqMSh8ni
-         JDGmmQ98Fb64QnoDYZwFBnGmO5dH0cXz7wrmMm1dE1GWs0ZzsFCltU1Apj5FnMtmw5
-         fXnjSMv1JDc41jpDIBEImh68wCD7vZM4Xil3uJ+tpXyQiLQpJhtg+pz623hVRlpRx8
-         TnogrILg9tx8B9MUsmqzCO4a5zGCGbJTiZ5rsC0jqrD/AjrPLkhFwsRZUroAN7i9Yy
-         ggJuQfvg8tDfg==
+        b=jt0wKcZDmE5NOyOJT0HC5QwXnRO0aqMe3XhQMCQivbQgcWq/a6TnuQxhPUG2V3y6y
+         QUo9JC9e8TYNLH2KxgAns8ojt3vdIufLXNoepPipIq8tZ5roJbQe1QxfkJg+QPUjXy
+         hAOOgK5QuQ0Dhy1hFUMk+dBflRBK4g6BhZmebBtoWkPqQO/qY/T39b7Y1E8/LKxvFR
+         aieKn/nNBaiwFIFgbrjEOi9iA8VFWA+pLJLiQsZBxmCUYA9l0sR/385r5z3GF3msiM
+         tzCN/TuI8z/d6FqLYeQRftBm8iiJCOSBjfoTsU6iZblqCyrp7Otp3IKi2Qwc3GYCdE
+         fRnK71TCk9wsQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A4A61E1F65A;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D06B7E26D3B;
         Thu, 17 Aug 2023 15:20:24 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH V2 0/2] riscv: stack: Fixup independent softirq/irq stack for
- CONFIG_FRAME_POINTER=n
+Subject: Re: [PATCH v5] riscv: Handle zicsr/zifencei issue between gcc and
+ binutils
 From:   patchwork-bot+linux-riscv@kernel.org
-Message-Id: <169228562466.20811.13415270526946490389.git-patchwork-notify@kernel.org>
+Message-Id: <169228562484.20811.14246462375671910714.git-patchwork-notify@kernel.org>
 Date:   Thu, 17 Aug 2023 15:20:24 +0000
-References: <20230716001506.3506041-1-guoren@kernel.org>
-In-Reply-To: <20230716001506.3506041-1-guoren@kernel.org>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     linux-riscv@lists.infradead.org, palmer@rivosinc.com,
-        paul.walmsley@sifive.com, falcon@tinylab.org, bjorn@kernel.org,
-        conor.dooley@microchip.com, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        guoren@linux.alibaba.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230809165648.21071-1-xingmingzheng@iscas.ac.cn>
+In-Reply-To: <20230809165648.21071-1-xingmingzheng@iscas.ac.cn>
+To:     Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+Cc:     linux-riscv@lists.infradead.org, conor@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, nathan@kernel.org, ndesaulniers@google.com,
+        trix@redhat.com, bmeng@tinylab.org, guoren@kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        stable@vger.kernel.org, conor.dooley@microchip.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -64,47 +64,22 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to riscv/linux.git (fixes)
+This patch was applied to riscv/linux.git (fixes)
 by Palmer Dabbelt <palmer@rivosinc.com>:
 
-On Sat, 15 Jul 2023 20:15:04 -0400 you wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
-> 
-> The independent softirq/irq stack uses s0 to save & restore sp, but s0
-> would be corrupted when CONFIG_FRAME_POINTER=n. So add s0 in the clobber
-> list to fix the problem.
-> 
-> <+0>:     addi    sp,sp,-32
-> <+2>:     sd      s0,16(sp)
-> <+4>:     sd      s1,8(sp)
-> <+6>:     sd      ra,24(sp)
-> <+8>:     sd      s2,0(sp)
-> <+10>:    mv      s0,a0		--> compiler allocate s0 for a0 when CONFIG_FRAME_POINTER=n
-> <+12>:    jal     ra,0xffffffff800bc0ce <irqentry_enter>
-> <+16>:    ld      a5,56(tp) # 0x38
-> <+20>:    lui     a4,0x4
-> <+22>:    mv      s1,a0
-> <+24>:    xor     a5,a5,sp
-> <+28>:    bgeu    a5,a4,0xffffffff800bc092 <do_irq+88>
-> <+32>:    auipc   s2,0x5d
-> <+36>:    ld      s2,1118(s2) # 0xffffffff801194b8 <irq_stack_ptr>
-> <+40>:    add     s2,s2,a4
-> <+42>:    addi    sp,sp,-8
-> <+44>:    sd      ra,0(sp)
-> <+46>:    addi    sp,sp,-8
-> <+48>:    sd      s0,0(sp)
-> <+50>:    addi    s0,sp,16	--> our code clobber the s0
-> <+52>:    mv      sp,s2
-> <+54>:    mv      a0,s0		--> a0 got wrong value for handle_riscv_irq
-> <+56>:    jal     ra,0xffffffff800bbb3a <handle_riscv_irq>
+On Thu, 10 Aug 2023 00:56:48 +0800 you wrote:
+> Binutils-2.38 and GCC-12.1.0 bumped[0][1] the default ISA spec to the newer
+> 20191213 version which moves some instructions from the I extension to the
+> Zicsr and Zifencei extensions. So if one of the binutils and GCC exceeds
+> that version, we should explicitly specifying Zicsr and Zifencei via -march
+> to cope with the new changes. but this only occurs when binutils >= 2.36
+> and GCC >= 11.1.0. It's a different story when binutils < 2.36.
 > 
 > [...]
 
 Here is the summary with links:
-  - [V2,1/2] riscv: stack: Fixup independent irq stack for CONFIG_FRAME_POINTER=n
-    https://git.kernel.org/riscv/c/8d0be64154cf
-  - [V2,2/2] riscv: stack: Fixup independent softirq stack for CONFIG_FRAME_POINTER=n
-    https://git.kernel.org/riscv/c/ebc9cb03b21e
+  - [v5] riscv: Handle zicsr/zifencei issue between gcc and binutils
+    https://git.kernel.org/riscv/c/ca09f772ccca
 
 You are awesome, thank you!
 -- 
