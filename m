@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 717DD780162
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 00:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADB5780165
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 00:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355943AbjHQW4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 18:56:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55264 "EHLO
+        id S1355992AbjHQW4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 18:56:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355938AbjHQW4H (ORCPT
+        with ESMTP id S1355940AbjHQW4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 18:56:07 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE983592;
-        Thu, 17 Aug 2023 15:55:47 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1bdc19b782aso2721895ad.0;
-        Thu, 17 Aug 2023 15:55:47 -0700 (PDT)
+        Thu, 17 Aug 2023 18:56:08 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB823594;
+        Thu, 17 Aug 2023 15:55:49 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bf1935f6c2so2389855ad.1;
+        Thu, 17 Aug 2023 15:55:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692312947; x=1692917747;
+        d=gmail.com; s=20221208; t=1692312948; x=1692917748;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MTlnm6sGIO31jUGXUD0CO65f2YiL6ybxcsMLmHiDeHU=;
-        b=kwlm7mNhxTgprppiKt7Pvjl1pFLb5htxS+x3HzcvYrhNovyMFHGVCvlMGSWusXGkXs
-         2jGxl8bnzrbEkrEqrt1+IDWh4VroLHYpInimpsCWCb2nAK/WcXBF6iynFxVtHSV1RAf/
-         yCOm1qAPxdGASYIxKVdp2uORGTmQ2lCg2I88BOKJWkZRk01qeguSAH4HABEjPZ4rq+R3
-         y1AbcPXaCccPPYyEzpl+1h4KuvzlXvGYFaczGtk89OTAi2H0WJqJTE0K2L5/JqAtDO8K
-         3olNb9zkqfHiXQAt/QXW2aPxuB18SVxMRvbIFTntlnsRsqkf/jbe7w+V1KLt6Mxx6XJq
-         niOQ==
+        bh=t6uAKnykE3/ora4oCsRY4juR6xwaJtjAdt7QYyhHpdk=;
+        b=dc79vIJ/WE76Iq/R8Hs//FI+ZVKEBsQG/wRy6+H3AS3pjo5mxFFWHPjcr+uC0+9SZV
+         O0LQHcTD3LaoAcJ3St+DFoNawCOow0fdMF3SRtxiPJ9LZs+SfXyloexmeYD7u8PT+qe5
+         ExTUHE80thV6RImHv4GQ4Q+yZWDYLfY6SMn8JhfSFqPDvcFDDBRBfEkwMNlFnCnKMGrb
+         SCovuXYCH6b4HOa99WCrHQppVyzffxzYRU7Ftvjg+gKXfizlWEEYIflT24IiVYnJHoCe
+         B2rAkPP4XBKm3+GzAzPYWryR2jorrEye1wj079OmczNuBlIligdNxkV4zjD+MGp0+nw5
+         9MlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692312947; x=1692917747;
+        d=1e100.net; s=20221208; t=1692312948; x=1692917748;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=MTlnm6sGIO31jUGXUD0CO65f2YiL6ybxcsMLmHiDeHU=;
-        b=cS72ZSjFR7DvEvFDjG59DqhYYjt+FwWMXRx9mbwMzI9znX5LsMfyTTWG1gH4dvoe/0
-         GWQImAbeHLmGR4n2A6wvuqOFNxgj0vbQCVvP4ayu0pgVtqO0CwAycWER4zonx24rAkww
-         h/27SMFwoldYDAsd7ogYpZ8LcGViqCRZhiXxDYtyX7e1HSWT5cSJz43n9/TxwKSoUhuC
-         w/QYOyW3PxWfvAhcGegYeYuhizD8T6rp6OJIN/HJvuqWI4AmVo2Yc0kSd3saVwwmUIJc
-         H69Vnw6qcnTP0OwzKIKieeHvJtPGjgPtsjv/wFTgD8dL0YyU1JXMwemXyAE491NOrXGZ
-         2Shw==
-X-Gm-Message-State: AOJu0YxXPlMAq1ng8+q9RikSNFgnn+YkK8fnBtyTN7reK4mggKeN7Tq5
-        RzGkBkHadAomeYXTkMbdNgY=
-X-Google-Smtp-Source: AGHT+IFn+oYy10wGoisjfnlfb0srVFvmaNBXWiaTt2UPVed+845FW9/w9Oa4qB0bN7y41x6tmth99g==
-X-Received: by 2002:a17:903:2644:b0:1b5:5059:e733 with SMTP id je4-20020a170903264400b001b55059e733mr705405plb.17.1692312947173;
-        Thu, 17 Aug 2023 15:55:47 -0700 (PDT)
+        bh=t6uAKnykE3/ora4oCsRY4juR6xwaJtjAdt7QYyhHpdk=;
+        b=b7421w9u12KkF4Rw7/Up4PtVSIeeAM9KhxA5A72E6vtZhjoYdNU2kYFkUtFRW2yx/G
+         cHIQDxhdXyCMeu4UUKiHy4UL3tSXoBZTEM1T6CZTAXrowN1k3BZg2CkOsJWEHsQJFZTb
+         tBsgVpSSy/h5joV6360sIFB+eEYAM6HNwO4eRS5eNd0D1iNdPMSNkBlMzPGF7KNqtDaU
+         XKLWEGhAUrCRNqXTFRNaIRNsXJ9qDr+q2gTn3dNj6k8q/YZ+m5ce5qfIZsgkcSz5D5lk
+         5t26SqQ4X9cPUjG0mgbXUdTIDRejHQ+bS9j9Bzx5kyC6BfECqwKNmaLfCUEHXIcYPgNx
+         p2ZA==
+X-Gm-Message-State: AOJu0YzKYXQiIoXt+eDGUL6Ss6eAHpzV/RrSwJBOPfhK4fDzkbCEGiPo
+        ep2vUMX00+ZNPim3c5SlykA=
+X-Google-Smtp-Source: AGHT+IHxHgBCh+okSlstB38ITdbHEzRb7AOaLFKIZ6UTfREW8hAnGtFjaVRP6mnij4jiZY9TIvb8Sw==
+X-Received: by 2002:a17:902:f0c4:b0:1bb:cd5a:ba53 with SMTP id v4-20020a170902f0c400b001bbcd5aba53mr3814702pla.14.1692312948529;
+        Thu, 17 Aug 2023 15:55:48 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j15-20020a170902da8f00b001bba7aab826sm287927plx.163.2023.08.17.15.55.46
+        by smtp.gmail.com with ESMTPSA id y23-20020a170902b49700b001bb9aadfb04sm282269plr.220.2023.08.17.15.55.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 15:55:46 -0700 (PDT)
+        Thu, 17 Aug 2023 15:55:48 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
 From:   Guenter Roeck <linux@roeck-us.net>
 To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
@@ -62,9 +62,9 @@ Cc:     Alessandro Zummo <a.zummo@towertech.it>,
         linux-kernel@vger.kernel.org,
         Brian Norris <briannorris@chromium.org>,
         Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH v2 5/7] rtc: tps6586x: Report maximum alarm limit to rtc core
-Date:   Thu, 17 Aug 2023 15:55:35 -0700
-Message-Id: <20230817225537.4053865-6-linux@roeck-us.net>
+Subject: [PATCH v2 6/7] rtc: ds1305: Report maximum alarm limit to rtc core
+Date:   Thu, 17 Aug 2023 15:55:36 -0700
+Message-Id: <20230817225537.4053865-7-linux@roeck-us.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230817225537.4053865-1-linux@roeck-us.net>
 References: <20230817225537.4053865-1-linux@roeck-us.net>
@@ -81,29 +81,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tps6586x only supports alarms up to 16,383 seconds in the future.
-Report the limit to the RTC core.
+DS1305 only supports alarms up to 24 hours in the future.
+Report the limit to the RTC core, and use the reported limit
+to validate the requested alarm time when setting it.
+
+If the alarm is too large when trying to set an alarm, return -ERANGE
+instead of -EDOM to align with error codes returned by other rtc drivers.
 
 Cc: Brian Norris <briannorris@chromium.org>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
 v2: Rename range_max_offset -> alarm_offset_max
+    Use the new variable to validate the limit when setting the alarm
 
- drivers/rtc/rtc-tps6586x.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/rtc/rtc-ds1305.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/rtc/rtc-tps6586x.c b/drivers/rtc/rtc-tps6586x.c
-index 9f14e2475747..20faf08c254c 100644
---- a/drivers/rtc/rtc-tps6586x.c
-+++ b/drivers/rtc/rtc-tps6586x.c
-@@ -252,6 +252,7 @@ static int tps6586x_rtc_probe(struct platform_device *pdev)
+diff --git a/drivers/rtc/rtc-ds1305.c b/drivers/rtc/rtc-ds1305.c
+index ed9360486953..d4de401548b4 100644
+--- a/drivers/rtc/rtc-ds1305.c
++++ b/drivers/rtc/rtc-ds1305.c
+@@ -336,8 +336,8 @@ static int ds1305_set_alarm(struct device *dev, struct rtc_wkalrm *alm)
+ 	/* make sure alarm fires within the next 24 hours */
+ 	if (later <= now)
+ 		return -EINVAL;
+-	if ((later - now) > 24 * 60 * 60)
+-		return -EDOM;
++	if ((later - now) > ds1305->rtc->alarm_offset_max)
++		return -ERANGE;
  
- 	rtc->rtc->ops = &tps6586x_rtc_ops;
- 	rtc->rtc->range_max = (1ULL << 30) - 1; /* 30-bit seconds */
-+	rtc->rtc->alarm_offset_max = ALM1_VALID_RANGE_IN_SEC;
- 	rtc->rtc->start_secs = mktime64(2009, 1, 1, 0, 0, 0);
- 	rtc->rtc->set_start_time = true;
+ 	/* disable alarm if needed */
+ 	if (ds1305->ctrl[0] & DS1305_AEI0) {
+@@ -691,6 +691,7 @@ static int ds1305_probe(struct spi_device *spi)
+ 	ds1305->rtc->ops = &ds1305_ops;
+ 	ds1305->rtc->range_min = RTC_TIMESTAMP_BEGIN_2000;
+ 	ds1305->rtc->range_max = RTC_TIMESTAMP_END_2099;
++	ds1305->rtc->alarm_offset_max = 24 * 60 * 60;
  
+ 	ds1305_nvmem_cfg.priv = ds1305;
+ 	status = devm_rtc_register_device(ds1305->rtc);
 -- 
 2.39.2
 
