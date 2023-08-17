@@ -2,180 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E28B77F6F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6037577F6FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351030AbjHQM7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 08:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37100 "EHLO
+        id S1351035AbjHQM7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 08:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351029AbjHQM6w (ORCPT
+        with ESMTP id S1351029AbjHQM7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 08:58:52 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F23522D7E;
-        Thu, 17 Aug 2023 05:58:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692277131; x=1723813131;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=KrypkWV1dHYb49zfPyAXomQ6ntXuDb7YJdmm+yorAKc=;
-  b=DdEvBC0l4kQN6ttdYWfhOJDAyr8XKLFx+3A8g1i9z+KpEV1x/nbxzNI6
-   ixn1Qbwyh/RUQFQ3s32b0So1h+umVu4Qh5HEM9Hvj5aY3RbTk5TN+dK2n
-   IgLNv01ginXpOQX7ucsSl5NSJbpwupamcA7AGPfhzU4MDtCNba/u4dcRZ
-   yN2dlbxnxq5aw8lQd3B5VC8Ns3etaxe2i4SuvhuUibjrCszIBXLLmsUnG
-   VN82Kv1Lrtrx1txgL6RGUb3Ef92oXWba2fN647pZrlnrCdfCCvBHENxtm
-   3uY/H0rzH6ReG/YUygVP4dBDLhhvkPzhBdUbuZCEsMFxzLcdEljN4Xsav
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="371706872"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="371706872"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 05:58:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="858224570"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="858224570"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP; 17 Aug 2023 05:58:46 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qWcaJ-00COmW-2o;
-        Thu, 17 Aug 2023 15:58:43 +0300
-Date:   Thu, 17 Aug 2023 15:58:43 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Marcus Folkesson <marcus.folkesson@gmail.com>
-Cc:     Kent Gustavsson <kent@minoris.se>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Cosmin Tanislav <demonsingur@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Ramona Bolboaca <ramona.bolboaca@analog.com>,
-        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        William Breathitt Gray <william.gray@linaro.org>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 6/6] iio: adc: mcp3911: add support for the whole
- MCP39xx family
-Message-ID: <ZN4Zg235AdYwI70E@smile.fi.intel.com>
-References: <20230817120518.153728-1-marcus.folkesson@gmail.com>
- <20230817120518.153728-6-marcus.folkesson@gmail.com>
+        Thu, 17 Aug 2023 08:59:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC002D7D
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:59:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F7E6654DF
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 12:59:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DB0EC433C7;
+        Thu, 17 Aug 2023 12:59:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692277148;
+        bh=R5xWVhGaqe3fyx1qAmc2v07cy3zdEsK2dL8tPBNYbFA=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=oUQf0bOci4aVgFAfWTK3InT1QMVple3HEHNf2OZsiNGJ0W7fyYeN79FYH+FXefYgz
+         ip2Ddeo7eEmzjgb4KsRm86SvxdghWm/warxN1EKlmEprfZ9IRXYvV4rNeBgq2zfLQ7
+         H6zFrotzDdRSQ/vUN+Wvkqnrw+5VauEvIu2KzmERlM81iSe07ACXyqLj1YbFYF8fq/
+         yZYn8861rRRZAoN2jGsQoqsFU7R67VKdiJlGj4AzY1QjC40db3y839/6h4rwt1qM4E
+         xD+zMx9Dc5DIG0DjiAFLkM6dQRC3XeK0ZsWVekJDdh0PHjdB2aiC1Dh+0D6LigVy1v
+         wZxNatTcgBx+g==
+From:   Lee Jones <lee@kernel.org>
+To:     lee@kernel.org, thor.thayer@linux.intel.com,
+        ckeepax@opensource.cirrus.com, rf@opensource.cirrus.com,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        Zhu Wang <wangzhu9@huawei.com>
+In-Reply-To: <20230808130023.202700-1-wangzhu9@huawei.com>
+References: <20230808130023.202700-1-wangzhu9@huawei.com>
+Subject: Re: (subset) [PATCH -next 0/8] mfd: remove redundant
+ of_match_ptr()
+Message-Id: <169227714711.1041251.13985138202504208865.b4-ty@kernel.org>
+Date:   Thu, 17 Aug 2023 13:59:07 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817120518.153728-6-marcus.folkesson@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 02:05:18PM +0200, Marcus Folkesson wrote:
-> Microchip does have many similar chips, add support for those.
+On Tue, 08 Aug 2023 21:00:15 +0800, Zhu Wang wrote:
+> The driver depends on CONFIG_OF, so it is not necessary to use
+> of_match_ptr() here. We remove of_match_ptr() here.
 > 
-> The new supported chips are:
->   - microchip,mcp3910
->   - microchip,mcp3912
->   - microchip,mcp3913
->   - microchip,mcp3914
->   - microchip,mcp3918
->   - microchip,mcp3919
+> Zhu Wang (8):
+>   mfd: rsmu_i2c: remove redundant of_match_ptr()
+>   mfd: altera-a10sr: remove redundant of_match_ptr()
+>   mfd: rsmu_spi: remove redundant of_match_ptr()
+>   mfd: act8945a: remove redundant of_match_ptr()
+>   mfd: stpmic1: remove redundant of_match_ptr()
+>   mfd: hi655x-pmic: remove redundant of_match_ptr()
+>   mfd: lochnagar-i2c: remove redundant of_match_ptr()
+>   mfd: rn5t618: remove redundant of_match_ptr()
+> 
+> [...]
 
-...
+Applied, thanks!
 
-> +static int mcp3910_set_offset(struct mcp3911 *adc, int channel, int val)
-> +{
+[1/8] mfd: rsmu_i2c: remove redundant of_match_ptr()
+      commit: f2a34ca84bbb1ca3c4eb68134e5612b94038cf70
+[2/8] mfd: altera-a10sr: remove redundant of_match_ptr()
+      commit: 511a6aec5229b4d3fe3ef45067b51ab8eaa52a2c
+[3/8] mfd: rsmu_spi: remove redundant of_match_ptr()
+      commit: 9ca9f37cea730283be34ed8f418b97be6778e1f3
+[4/8] mfd: act8945a: remove redundant of_match_ptr()
+      commit: 523b0a5912a64c80ac806adb24e736140cb68024
+[5/8] mfd: stpmic1: remove redundant of_match_ptr()
+      commit: 475db34fa3e77b2f78a131c987d04a3a07a7b31d
+[7/8] mfd: lochnagar-i2c: remove redundant of_match_ptr()
+      commit: 6d5c5c855c6f48678070bd4760d302143bcfa724
+[8/8] mfd: rn5t618: remove redundant of_match_ptr()
+      commit: d98edddb79885a4c46cbf5bfcd57cc0e8a72a57b
 
-	unsigned int mask = MCP3910_CONFIG0_EN_OFFCAL;
-
-> +	int ret;
-> +
-> +	/* Write offset */
-> +	ret = mcp3911_write(adc, MCP3910_OFFCAL(channel), val, 3);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Enable offset */
-> +	return mcp3911_update(adc, MCP3910_REG_CONFIG0,
-> +			      MCP3910_CONFIG0_EN_OFFCAL,
-> +			      MCP3910_CONFIG0_EN_OFFCAL, 3);
-
-	return mcp3911_update(adc, MCP3910_REG_CONFIG0, mask, mask, 3);
-
-> +}
-
-...
-
-> +static int mcp3911_set_offset(struct mcp3911 *adc, int channel, int val)
-> +{
-
-As per above.
-
-> +}
-
-...
-
-> +static int mcp3910_set_osr(struct mcp3911 *adc, u32 val)
-> +{
-
-	unsigned int mask = MCP3910_CONFIG0_OSR;
-
-> +	int osr = FIELD_PREP(MCP3910_CONFIG0_OSR, val);
-> +
-> +	return mcp3911_update(adc, MCP3910_REG_CONFIG0,
-> +			      MCP3910_CONFIG0_OSR, osr, 3);
-
-	return mcp3911_update(adc, MCP3910_REG_CONFIG0, mask, osr, 3);
-
-> +}
-
-...
-
-> +static int mcp3911_set_osr(struct mcp3911 *adc, u32 val)
-
-In the similar way.
-
-...
-
-> +static int mcp3910_set_scale(struct mcp3911 *adc, int channel, u32 val)
-> +{
-> +	return mcp3911_update(adc, MCP3910_REG_GAIN,
-> +			      MCP3911_GAIN_MASK(channel),
-> +			      MCP3911_GAIN_VAL(channel, val), 3);
-> +}
-> +
-> +static int mcp3911_set_scale(struct mcp3911 *adc, int channel, u32 val)
-> +{
-> +	return mcp3911_update(adc, MCP3911_REG_GAIN,
-> +			      MCP3911_GAIN_MASK(channel),
-> +			      MCP3911_GAIN_VAL(channel, val), 1);
-> +}
-
-These can be also converted, but I don't see much difference
-(same LoC amount, similar readability).
-
-...
-
-> +	/* Disable offset to ignore any old values in offset register */
-> +	return mcp3911_update(adc, MCP3910_REG_CONFIG0,
-> +			      MCP3910_CONFIG0_EN_OFFCAL,
-> +			      MCP3910_CONFIG0_EN_OFFCAL, 3);
-
-This is a dup code with some of mcp3910_set_offset(). Perhaps a helper?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+--
+Lee Jones [李琼斯]
 
