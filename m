@@ -2,155 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C464577F23C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B052677F23F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348940AbjHQId0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 04:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53394 "EHLO
+        id S1348907AbjHQIeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 04:34:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348901AbjHQIdI (ORCPT
+        with ESMTP id S1349031AbjHQIdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 04:33:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0858813D;
-        Thu, 17 Aug 2023 01:33:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692261187; x=1723797187;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=qZsIhhJX19J3NvVa2MXhgOu7cU+WST5BMLKkx34w6mU=;
-  b=ZMnU5rVg4rW6j7JTXi0yWP+a1KPHYf74wdQqK7L/xOWXadfcqev8pfHl
-   kQkmLK6u4yMExYgTNQlyJwMZxpDzVfrzTZDQgWuXJJcd4UKyiRmlrRNcZ
-   GFtE4z8I0VoFASvzqry3bigZAE3efPK4H+ieG2WLKT00DYgPE/ZX8B88X
-   hRgQUPjN9eAmBA9ejbjChvHZdNh56a8ACuwIFXGRI5yyxHPIIf3zUim1o
-   +dAnkc0PkiBN+a5072VB2dmeGPsgYlyd33io7+9EBlSU2KmUL+sronwCO
-   8vH8uVD2pq3Gi8dF13YZ+58yJG4yRHCpy05gSfrYPGoCCA0pU4NLdYdSk
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="353066902"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="353066902"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 01:32:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="763972332"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="763972332"
-Received: from lababeix-mobl1.ger.corp.intel.com ([10.251.212.52])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 01:32:30 -0700
-Date:   Thu, 17 Aug 2023 11:32:28 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
-Subject: Re: [PATCH 5/7] selftests/resctrl: Use pointers to build benchmark
- cmd and make it const
-In-Reply-To: <bacc2e6f-f747-ec65-b23b-4275d1cac018@intel.com>
-Message-ID: <c8b7118c-5830-98a0-5ae-66072e384b3@linux.intel.com>
-References: <20230808091625.12760-1-ilpo.jarvinen@linux.intel.com> <20230808091625.12760-6-ilpo.jarvinen@linux.intel.com> <f300a52c-d65f-fd74-18ce-7d37e76d144f@intel.com> <dd83f672-b9fc-cd79-10ff-70651d4822af@linux.intel.com> <87183b24-f343-2420-9bda-f1012e7195a1@intel.com>
- <f22efaf4-d87f-d3c4-b986-7d326c912a18@linux.intel.com> <bacc2e6f-f747-ec65-b23b-4275d1cac018@intel.com>
+        Thu, 17 Aug 2023 04:33:45 -0400
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD3C1BD4;
+        Thu, 17 Aug 2023 01:33:40 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-99bcf3c8524so168631266b.0;
+        Thu, 17 Aug 2023 01:33:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692261219; x=1692866019;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DV+51nG4XiGuXDD21Bk0S4x/fufuHRaJ2bgQpqeNG1w=;
+        b=BUxUq3EYA8SuK4f983K8Vr3VsP3XrtrIYixNPCXBYeB76L7sBy8hsb9uqkaP5Qsdua
+         YIktzh5o/yGrynrCz6i5RaupM/ecVKCw1y7p5cNSd5hhGhyShK0PLLM4MX8EisQwS6QZ
+         o/UMIs/PEolq7kcbpsiL6OhrcA47dBwOu1rr2/PlZuA/+rvGFEnlE6nRnZZ6T3iXquLL
+         RfjFTd4ZgPfDq7l4VnPzOsOjfhJynnpnVGOiFTz/gdqRItkMNoSjUm52TEBdy145tXTT
+         BSv3ksLzygRt3Y4v4sMuickZetOusKLhCU85uZNZN3IgUcqmC4HVurIEaHad7oGVnOfE
+         UxMA==
+X-Gm-Message-State: AOJu0YzygfUxrgrsp5EXAhUbnWuL5UciRPE7OjkA0yDpzarS+vk+85lt
+        Mw5r0SbmYcykJ03NFlfoGrA=
+X-Google-Smtp-Source: AGHT+IFF7yfv2VJErpteiD85j75Wa6YPduJX5bVBide3GMy3Na5+GURGy3p9cHb8LNFiL8w6UuK/yw==
+X-Received: by 2002:a17:906:2204:b0:998:bac1:3bdd with SMTP id s4-20020a170906220400b00998bac13bddmr3203809ejs.2.1692261219032;
+        Thu, 17 Aug 2023 01:33:39 -0700 (PDT)
+Received: from [192.168.64.157] (bzq-219-42-90.isdn.bezeqint.net. [62.219.42.90])
+        by smtp.gmail.com with ESMTPSA id o12-20020a17090608cc00b00993004239a4sm9733096eje.215.2023.08.17.01.33.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Aug 2023 01:33:38 -0700 (PDT)
+Message-ID: <cb468a17-c653-b257-8f5d-bf5981c22de5@grimberg.me>
+Date:   Thu, 17 Aug 2023 11:33:36 +0300
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-1487371549-1692254509=:1692"
-Content-ID: <4fe2f0c1-789b-aaed-9bec-c4a3a3c7fdec@linux.intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH blktests v3 13/13] nvme: Introduce
+ nvmet_target_{setup/cleanup} common code
+Content-Language: en-US
+To:     Daniel Wagner <dwagner@suse.de>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, Chaitanya Kulkarni <kch@nvidia.com>,
+        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Hannes Reinecke <hare@suse.de>,
+        James Smart <jsmart2021@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>
+References: <20230811093614.28005-1-dwagner@suse.de>
+ <20230811093614.28005-14-dwagner@suse.de>
+ <58d299c4-84e1-603d-6c99-15d0484f9609@grimberg.me>
+ <lfr3tkzz3sqnsw4y7sqyxc42ptvzkyfqfpeko6gzs42jdgjl2d@u5fbzjksbztd>
+From:   Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <lfr3tkzz3sqnsw4y7sqyxc42ptvzkyfqfpeko6gzs42jdgjl2d@u5fbzjksbztd>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-1487371549-1692254509=:1692
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-Content-ID: <54a614b0-59d6-b2d-7a23-58126f223bbe@linux.intel.com>
-
-On Wed, 16 Aug 2023, Reinette Chatre wrote:
-> On 8/16/2023 12:13 AM, Ilpo Järvinen wrote:
-> > On Tue, 15 Aug 2023, Reinette Chatre wrote:
-> >> On 8/15/2023 2:42 AM, Ilpo Järvinen wrote:
-> >>> On Mon, 14 Aug 2023, Reinette Chatre wrote:
-> >>>>
-> >>>> On 8/8/2023 2:16 AM, Ilpo Järvinen wrote:
+>> It is very very strange that _setup returns a port
+>> which is passed to _cleanup...
 > 
-> ...
-> >>>>> diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-> >>>>> index bcd0d2060f81..ddb1e83a3a64 100644
-> >>>>> --- a/tools/testing/selftests/resctrl/resctrl.h
-> >>>>> +++ b/tools/testing/selftests/resctrl/resctrl.h
-> >>>>> @@ -6,6 +6,7 @@
-> >>>>>  #include <math.h>
-> >>>>>  #include <errno.h>
-> >>>>>  #include <sched.h>
-> >>>>> +#include <stdint.h>
-> >>>>>  #include <stdlib.h>
-> >>>>>  #include <unistd.h>
-> >>>>>  #include <string.h>
-> >>>>> @@ -38,7 +39,14 @@
-> >>>>>  
-> >>>>>  #define END_OF_TESTS	1
-> >>>>>  
-> >>>>> +#define BENCHMARK_ARGS		64
-> >>>>> +
-> >>>>> +/* Approximate %zu max length */
-> >>>>> +#define SIZE_MAX_DECIMAL_SIZE	(sizeof(SIZE_MAX) * 8 / 3 + 2)
-> >>>>> +
-> >>>>> +/* Define default span both as integer and string, these should match */
-> >>>>>  #define DEFAULT_SPAN		(250 * MB)
-> >>>>> +#define DEFAULT_SPAN_STR	"262144000"
-> >>>>
-> >>>> I think above hardcoding can be eliminated by using asprintf()? This
-> >>>> does allocate memory though so I would like to understand why one
-> >>>> goal is to not dynamically allocate memory.
-> >>>
-> >>> Because it's simpler on the _free() side_. If there's no allocation, no 
-> >>> free() is needed.
-> >>>
-> >>> Only challenge that remains is the int -> string conversion for the 
-> >>> default span which can be either done like in the patch or using some 
-> >>> preprocessor trickery to convert the number to string. If you prefer the 
-> >>> latter, I can change to that so it's not hardcoded both as int and string.
-> >>>
-> >>
-> >> This manual int->string sounds like the trickery to me and can be avoided
-> >> by just using asprintf(). I understand that no free() is needed when no
-> >> memory is allocated but it looks to me as though these allocations can
-> >> be symmetrical - allocate the memory before the tests are run and free it
-> >> after?
-> > 
-> > It could be symmetrical but that means I'll be doing unnecessary alloc if 
-> > -b is provided which I assume you're against given your comment on always 
-> > creating copy of cmd in CMT test's case.
+> This is the only information the _cleanup helper needs and that is why
+> it survived the refactoring so far.
+
+Doesn't change the fact that it is awkward.
+
+>> I think that _cleanup should simply remove all
+>> ports, and that setup should not return a port
+>> to begin with.
 > 
-> I seemed to have lost track here ... could you please elaborate where the
-> unnecessary alloc will be?
+> This assumes that blktests is the single user and can blindly remove
+> everything. I would like to play nice here and only cleanup resources
+> blktests actually allocates.
 
-If there's what you call "symmetry", it implies the code always does 
-alloc. However, the logic in main() is such that when -b is provided, no 
-default benchmark command needs to be assigned, so no alloc for span is 
-necessary. Thus, there either is unnecessary alloc with -b or _no 
-symmetry_.
+I suggest that the test records resources that it is using
+and destroy them in the cleanup (IIRC Shinichiro did something
+similar with the modules in some other place).
 
-But I've already converted to asprintf() so no need to continue this 
-discussion.
-
-> > I think I'll use similar resolution to this as CMT test does, it has an 
-> > extra variable which is NULL in when -b is provided so free() is no-op
-> > on that path. Then I can use asprintf().
-> > 
+>> If someone needs the actual port number, then it
+>> should either not use this _setup helper or
+>> query it somehow.
 > 
-> Reinette
-> 
+> I try to figure out how to implement such a query helper then.
 
--- 
- i.
---8323329-1487371549-1692254509=:1692--
+That would probably be needed when a test wants to cherry-pick
+which stuff it is destroying. But on the other hand, in this
+case it also doesn't make sense that this test will be using
+the default basic setup function. So I don't think it is
+very much needed.
