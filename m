@@ -2,147 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9FDC77F9D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45ABB77F9A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352415AbjHQO4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 10:56:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34982 "EHLO
+        id S1352270AbjHQOt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 10:49:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352414AbjHQO4D (ORCPT
+        with ESMTP id S1352336AbjHQOtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 10:56:03 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9239F30E3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:56:01 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 65776139F;
-        Thu, 17 Aug 2023 07:47:37 -0700 (PDT)
-Received: from [10.57.3.165] (unknown [10.57.3.165])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E01543F6C4;
-        Thu, 17 Aug 2023 07:46:54 -0700 (PDT)
-Message-ID: <c9bef0cd-18a0-ffc0-15c5-3db388275c46@arm.com>
-Date:   Thu, 17 Aug 2023 15:46:53 +0100
+        Thu, 17 Aug 2023 10:49:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EFB63A94
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:48:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692283673;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9oGZA/sseErZDodfZN5CQ2lHc0bZoWdbDZNY06uW8a8=;
+        b=BB4PoeRhMQkEObFrZbgfZ9FbhF3MbJY58jF95G2bO/CGeV8nq2ZaEZk6ycGo+s7XZRY7iC
+        QWqmfOieCoR9E1yNkBru5aeUeWoAH5TECGUrpC2Rt2KUFbh/Y9Ctpzg8qm6CZ5ksR3KEdD
+        TtLYnmgyY0SffiSWaWSVP4HgcTgqs2E=
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
+ [209.85.166.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-423-2KjcTTNDNvSySwQOfwk6ng-1; Thu, 17 Aug 2023 10:47:51 -0400
+X-MC-Unique: 2KjcTTNDNvSySwQOfwk6ng-1
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-34916ad5387so69136115ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:47:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692283670; x=1692888470;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9oGZA/sseErZDodfZN5CQ2lHc0bZoWdbDZNY06uW8a8=;
+        b=UY2PfUJ6SblISm7d1QmDH3EBWF2Y32kZRB9jWkuQQamKRaW9AGyOq3TqivDhf3x6sP
+         C8U7aqBWgB7j3p40AJ8+6XkTq48UgoUnNOUjBxVzQrqsm/J4dKSapleo0jHzNP6xdmfq
+         rE51sbBgYvkvjdqpVU/T4xNa4o6L6GORA/QBIKphtaG6iD2e6J5cgGs/h4+2YrOBE1E0
+         MLsjNtvKtT5z9x2TDGSnluJ61ynNiQGWGeMUN4QkpBgCBOeMK6kIp7fpHCmHUtS5HfhP
+         DaJzYFrU6g82w6StJNpJARNnPZaIqvz3Ud0mRE6q3zkg8mlbiVeWcvUYlycdd8OOjoi8
+         nk7w==
+X-Gm-Message-State: AOJu0YyNdh3UMZGUR8IX5MI8AKhAmC8e123zsP5OQx27Ed+CEOV+Nebs
+        h2qSsqKJLWfkbsREvaAZx9iMmlDShKtlmSIJbYBquKBFWWmfPWgDt9uwp8BbMGvIiijV4EB4o8H
+        WLhRpYsytz1v3m23rYgaLzEt7
+X-Received: by 2002:a05:6e02:1253:b0:34b:f3b:77b5 with SMTP id j19-20020a056e02125300b0034b0f3b77b5mr2475667ilq.30.1692283670611;
+        Thu, 17 Aug 2023 07:47:50 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGrQH+8rKQJl51yXYMvIpUQalzEERVfGo2BzoJLpqamdYa+T7EHfujOKoGDdR3fZK6apXThIA==
+X-Received: by 2002:a05:6e02:1253:b0:34b:f3b:77b5 with SMTP id j19-20020a056e02125300b0034b0f3b77b5mr2475650ilq.30.1692283670364;
+        Thu, 17 Aug 2023 07:47:50 -0700 (PDT)
+Received: from [10.0.0.71] (sandeen.net. [63.231.237.45])
+        by smtp.gmail.com with ESMTPSA id l28-20020a02cd9c000000b0042acf389ac8sm4783835jap.130.2023.08.17.07.47.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Aug 2023 07:47:49 -0700 (PDT)
+Message-ID: <81f96763-51fe-8ea1-bf81-cd67deed9087@redhat.com>
+Date:   Thu, 17 Aug 2023 09:47:48 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH 2/2] coresight: core: fix memory leak in dict->fwnode_list
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Reply-To: sandeen@redhat.com
+Subject: Re: [syzbot] [ext4?] kernel panic: EXT4-fs (device loop0): panic
+ forced after error (3)
 Content-Language: en-US
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Junhao He <hejunhao3@huawei.com>, mike.leach@linaro.org,
-        leo.yan@linaro.org
-Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        jonathan.cameron@huawei.com, yangyicong@huawei.com,
-        prime.zeng@hisilicon.com
-References: <20230817085937.55590-1-hejunhao3@huawei.com>
- <20230817085937.55590-3-hejunhao3@huawei.com>
- <16d7c933-ef2f-682e-742e-641c6a076ac0@arm.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <16d7c933-ef2f-682e-742e-641c6a076ac0@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-8.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Theodore Ts'o <tytso@mit.edu>,
+        syzbot <syzbot+27eece6916b914a49ce7@syzkaller.appspotmail.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com
+References: <000000000000530e0d060312199e@google.com>
+ <20230817142103.GA2247938@mit.edu>
+From:   Eric Sandeen <esandeen@redhat.com>
+In-Reply-To: <20230817142103.GA2247938@mit.edu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 17/08/2023 15:39, Suzuki K Poulose wrote:
-> On 17/08/2023 09:59, Junhao He wrote:
->> There are memory leaks reported by kmemleak:
->> ...
->> unreferenced object 0xffff2020103c3200 (size 256):
->>    comm "insmod", pid 4476, jiffies 4294978252 (age 50072.536s)
->>    hex dump (first 32 bytes):
->>      10 60 40 06 28 20 ff ff 10 c0 59 06 20 20 ff ff  .`@.( ....Y.  ..
->>      10 e0 47 06 28 20 ff ff 10 00 49 06 28 20 ff ff  ..G.( ....I.( ..
->>    backtrace:
->>      [<0000000034ec4724>] __kmem_cache_alloc_node+0x2f8/0x348
->>      [<0000000057fbc15d>] __kmalloc_node_track_caller+0x5c/0x110
->>      [<00000055d5e34b>] krealloc+0x8c/0x178
->>      [<00000000a4635beb>] coresight_alloc_device_name+0x128/0x188
->> [coresight]
->>      [<00000000a92ddfee>] funnel_cs_ops+0x10/0xfffffffffffedaa0
->> [coresight_funnel]
->>      [<00000000449e20f8>] dynamic_funnel_ids+0x80/0xfffffffffffed840
->> [coresight_funnel]
->> ...
+On 8/17/23 9:21 AM, Theodore Ts'o wrote:
+> On Wed, Aug 16, 2023 at 03:48:49PM -0700, syzbot wrote:
+>> Hello,
 >>
->> when remove driver, the golab variables defined by the macro
->> DEFINE_CORESIGHT_DEVLIST will be released, dict->nr_idx and
->> dict->fwnode_list are cleared to 0. The lifetime of the golab
->> variable has ended. So the buffer pointer is lost.
+>> syzbot found the following issue on:
 >>
->> Use the callback of devm_add_action_or_reset() to free memory.
-> 
-> Thanks for the report. But please see below:
-> 
+>> HEAD commit:    ae545c3283dc Merge tag 'gpio-fixes-for-v6.5-rc6' of git://..
+>> git tree:       upstream
+>> console+strace: https://syzkaller.appspot.com/x/log.txt?x=13e5d553a80000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=171b698bc2e613cf
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=27eece6916b914a49ce7
+>> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13433207a80000
+>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=109cd837a80000
 >>
->> Fixes: 0f5f9b6ba9e1 ("coresight: Use platform agnostic names")
->> Signed-off-by: Junhao He <hejunhao3@huawei.com>
->> ---
->>   drivers/hwtracing/coresight/coresight-core.c | 20 +++++++++++++++++++-
->>   1 file changed, 19 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-core.c
->> b/drivers/hwtracing/coresight/coresight-core.c
->> index 9fabe00a40d6..6849faad697d 100644
->> --- a/drivers/hwtracing/coresight/coresight-core.c
->> +++ b/drivers/hwtracing/coresight/coresight-core.c
->> @@ -1756,6 +1756,20 @@ bool coresight_loses_context_with_cpu(struct
->> device *dev)
->>   }
->>   EXPORT_SYMBOL_GPL(coresight_loses_context_with_cpu);
->>   +void coresight_release_dev_list(void *data)
->> +{
->> +    struct coresight_dev_list *dict = data;
->> +
->> +    mutex_lock(&coresight_mutex);
->> +
->> +    if (dict->nr_idx) {
->> +        kfree(dict->fwnode_list);
->> +        dict->nr_idx = 0;
->> +    }
->> +
->> +    mutex_unlock(&coresight_mutex);
->> +}
->> +
->>   /*
->>    * coresight_alloc_device_name - Get an index for a given device in the
->>    * device index list specific to a driver. An index is allocated for a
->> @@ -1766,12 +1780,16 @@
->> EXPORT_SYMBOL_GPL(coresight_loses_context_with_cpu);
->>   char *coresight_alloc_device_name(struct coresight_dev_list *dict,
->>                     struct device *dev)
->>   {
->> -    int idx;
->> +    int idx, ret;
->>       char *name = NULL;
->>       struct fwnode_handle **list;
->>         mutex_lock(&coresight_mutex);
->>   +    ret = devm_add_action_or_reset(dev, coresight_release_dev_list,
->> dict);
->> +    if (ret)
->> +        goto done;
+>> EXT4-fs error (device loop0): ext4_validate_block_bitmap:430: comm syz-executor211: bg 0: block 46: invalid block bitmap
+>> Kernel panic - not syncing: EXT4-fs (device loop0): panic forced after error
 > 
-> This looks wrong. The devlist should be only released on the "driver"
-> unload, not on every device release. The list retains the fwnode to
-> assign the same name for a device, if it is re-probed (e.g., due to
-> -EPROBE_DEFER error).
+> #syz invalid
 > 
-> Suzuki
+> This is fundamentally a syzbot bug.  The file system is horrifically
+> corrupted, *and* the superblock has the "panic on error" (aka "panic
+> onfile system corruption") bit set.
+> 
+> This can be desireable because in a failover situation, if the file
+> system is found to be corrupted, you *want* the primary server to
+> fail, and let the secondary server to take over.  This is a technique
+> which is decades old.
+
+Just to play devil's advocate here - (sorry) - I don't see this as any 
+different from any other "malicious" filesystem image.
+
+I've never been a fan of the idea that malicious images are real 
+security threats, but whether the parking lot USB stick paniced the box 
+in an unexpected way or "on purpose," the result is the same ...
+
+I wonder if it might make sense to put EXT4_MOUNT_ERRORS_PANIC under a 
+sysctl or something, so that admins can enable it only when needed.
+
+Sorry for stealing another 5 minutes of your life.
+
+-Eric
+
+> So this is Working As Intended, and is a classic example of (a) if you
+> are root, you can force the file system to crash, and (b) a classic
+> example of syzbot noise.  (Five minutes of my life that I'm never
+> getting back.  :-)
+> 
+> 						- Ted
+> 
 > 
 
-I think in that case my suggestion to change it to devm_krealloc_array
-might be wrong then. Probably worth putting an explicit comment there in
-case someone tries to tidy up all the non devm allocators to devm ones.
-
-But how do you release a single device without releasing the whole driver?
-
-James
