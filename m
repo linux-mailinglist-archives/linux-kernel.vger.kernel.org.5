@@ -2,129 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35CC677FDF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9405577FDF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354469AbjHQShA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 14:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45430 "EHLO
+        id S1354485AbjHQSiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 14:38:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354478AbjHQSgp (ORCPT
+        with ESMTP id S1354536AbjHQSh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 14:36:45 -0400
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2079.outbound.protection.outlook.com [40.107.212.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 579412D59
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:36:43 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hxtzCte5TfzHctYj17+Bw9+zTYx4X03gvXyxcqa1yD07JASgb3ts3+kAN85sdEnRmwmMcXoeqXjNboJ4h92RIHUnM+9di4nu4TQoagL53MMoC8CGkhFI6ipGykIdTC3xm7K3y0AV+z55n31BrWviBAG8ilK6uKJ3g7sTCECZ3XTCDItq4xErN2wQm22eVhH5n0tRHlZjMQoLT0/iB5h2xRsI58MhJPqpi6HgpSXTK25Q8x9oNblpc5WNrKKWI7iPS6b8Qwdm1yZNcOIruvwRcXpenr7oPa032VHDZFtBaLtg3Q9mjGEKVhlenbgiYHBjtlSfWj00duaZTr/X30GulQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OzBpGDeVQqC38vAD2xI2mFjRS8ge609yqAWohJWMd08=;
- b=RGTKGVexvHX6wch4exY2ocZMaTNy8Q1inzDR3HkQyG0VkSsl7RtuhgHmwsOFgEVoM+OF/ZXO9W83OStM2wO3HxvwnwZ5ABrHny27u8UJ7MwdqkvwelNSKeoVcZ6W4mgGjAp7oluS3vse6bqxBWqx9ctkPj12PZBRNcTnYtUcGJBoYDRuyhjZSvsJp3uclLNMrtdKhHin3yLYP5/DAzv2RKXUKMDxiuBB3AKuxkbTWZwHum16K1LJHxugCV0EoOIzq066Nq4gGdDFd8f718mJpBOQLRjxFEJY6cl6Mub2Hp95E6c0VmT8SzTYqTonWttxRWjWA4HG5Zau7ZKawrDEmA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OzBpGDeVQqC38vAD2xI2mFjRS8ge609yqAWohJWMd08=;
- b=oB/QBmWNxE8IfPqCxNjzW5Fs3yz6a3hVdF+oigzW7gMAUXfgUBzyIBXtp1zRIVfv/QIloccqB9n/JnttJo5+9uQ7DV7q+oiGuTv+yF+nSt9Zudk/f2XeHTZWTTkfL6r1voWNp8dBcgSs/hDoIs1DpXQsRPNTlNkvg73vybw9IZ1WtIf7h+kp8fDPFNBjL542PkZoT07zUWC4akxgB0mabPwG73MRbzOCoRUASNYTpT4HTN7jpKsyWUECSycjjbx+x4czNVrGb6SRpCWtEmBv/gqVAa5rJq5SWbZLMKbbCHYf2sL5+hohm8gzuY4+MVNUkomPHzP5DbbXMTnVt0Fp+Q==
-Received: from SA1P222CA0084.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:35e::25)
- by PH7PR12MB8124.namprd12.prod.outlook.com (2603:10b6:510:2ba::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Thu, 17 Aug
- 2023 18:36:41 +0000
-Received: from SA2PEPF000015C6.namprd03.prod.outlook.com
- (2603:10b6:806:35e:cafe::3) by SA1P222CA0084.outlook.office365.com
- (2603:10b6:806:35e::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.17 via Frontend
- Transport; Thu, 17 Aug 2023 18:36:41 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SA2PEPF000015C6.mail.protection.outlook.com (10.167.241.196) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6699.15 via Frontend Transport; Thu, 17 Aug 2023 18:36:40 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 17 Aug 2023
- 11:36:21 -0700
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Thu, 17 Aug
- 2023 11:36:20 -0700
-Received: from Asurada-Nvidia (10.127.8.10) by mail.nvidia.com (10.129.68.9)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Thu, 17 Aug 2023 11:36:20 -0700
-Date:   Thu, 17 Aug 2023 11:36:18 -0700
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     <will@kernel.org>, <robin.murphy@arm.com>, <jgg@nvidia.com>
-CC:     <joro@8bytes.org>, <jean-philippe@linaro.org>,
-        <apopple@nvidia.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>
-Subject: Re: [PATCH v2] iommu/arm-smmu-v3: Add a user-configurable
- tlb_invalidate_threshold
-Message-ID: <ZN5oojF6vKOKB/eI@Asurada-Nvidia>
-References: <20230816204350.29150-1-nicolinc@nvidia.com>
+        Thu, 17 Aug 2023 14:37:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7552D58;
+        Thu, 17 Aug 2023 11:37:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8B97465E4E;
+        Thu, 17 Aug 2023 18:37:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE641C433C8;
+        Thu, 17 Aug 2023 18:37:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692297473;
+        bh=J1tPV6jQIewMY9GqKdF7CJ1Ugw1zr8eM5AVuLf/L0g8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=IeaDQ5ERihR/mIysXnv/euGcikJX6N1dufHVNiLHh+YxAVAIQ/8/IQaLAt3aWCy00
+         nh+0CbFcyLMPCGk3gpdDbk2VuPLV7pib8vvzSgnNmIsHfIh75rPwzjDyom955V72Au
+         2TPoMD5w6+CAX40KY4dWbtqLJQpbH8X2CCMZhbDfIG/z3+NygYUCJZ1BqjfQ+1wg63
+         li3/Z6cNFwZIsbm1cCoZBa6AVLemYj9aBf6IdBDMkY6lOiFC0K8OA4nFTcHSUS7ki6
+         wS2rczHZlyEbAfAlmD8UAJCtcNPvXDHRzfrKqAWxBjIrE0VY56idLvrmC3Fv/lun6J
+         YMP91lQ6DFSog==
+Message-ID: <df8fdd4a-490f-6b2a-03b6-0333e3302dce@kernel.org>
+Date:   Thu, 17 Aug 2023 20:37:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230816204350.29150-1-nicolinc@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF000015C6:EE_|PH7PR12MB8124:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0b347fb6-5d85-4194-0c47-08db9f50e62a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 76iWY9Ke8JapGx8GyXecPVFBozTJE5qwhcG/TNecYZfDahEGidPvAiSdRYCju4RLLNwYqAuDgwpjtM5CW9TZzsU+COQGVIAmD/m29KyTEQmtxaAlieC1JyWgJ6i4teWSNB1hfn63houjbBXbcW7TYtkXGG6fwJZ06Dlo46rKgviCYi4yeEef6xRPoZLic8WRDeRF4fNsxwFLaWhrs8Svv2jhRqyS9yz4JM8spdgxjjwn//sKjQ/IJkagERTSwQ9UHVCMmrh92wBvx5MCTdXj2nsc520eioaAVBIZmgWI1FwqgIK0VW/LGdiGZZsUjniopsQsiuT+XG+fFYG6ZWAC7b1XDDplwSbNvtbY5uQhO9LCABZBTrOZlypmnPMRlVY2J6fi3OSBhxWdiGF+rNHlNUeat+NyOaot0hf/Xl7y91m6+Au5cjSKsUtje6csqECIe1VPn4l+pKJYWYIduA/a+fiWE4ReyRL+1rVM5U2SUD94o6/OsfMtlf6ei0lKJjxqVFD3T9ihKLpEu3opcYiu+AVsf58Z5CfQnngwvGhYoMnbHVJupLw/3RYTnHoyM6BCSeVrJIS3kOH6xXkd+rpXtQJ4/7erhQcff7Yw87Sksd9UQ/D2OmBoygl/YGRuDW26Pwp7M2WV+w/I0muELWWS2xF1LelxrHhluN94Vtyl7Us0jOv7K1a06I95Alov9qygghV0homQnMkA1qWpv1RecgThUxfZVqq9GFs8Az3v/xVWMXTcv1aJWGuRNX8xZgnA
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(136003)(39860400002)(346002)(1800799009)(186009)(82310400011)(451199024)(36840700001)(40470700004)(46966006)(55016003)(40480700001)(40460700003)(47076005)(426003)(83380400001)(2906002)(336012)(36860700001)(70206006)(70586007)(26005)(54906003)(6636002)(316002)(478600001)(5660300002)(110136005)(4326008)(9686003)(41300700001)(8936002)(8676002)(86362001)(82740400003)(33716001)(356005)(7636003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2023 18:36:40.9366
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b347fb6-5d85-4194-0c47-08db9f50e62a
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF000015C6.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8124
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: struct_size() using sizeof() vs offsetof()
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+References: <74e8cf91-d095-33e3-c548-34d80b691089@kernel.org>
+ <202308161913.91369D4A@keescook>
+ <09b4a2ce-da74-3a19-6961-67883f634d98@kernel.org>
+ <f12c6f14-66c4-6afb-e768-fa7abcfd1bbc@embeddedor.com>
+Content-Language: en-US
+From:   Alejandro Colomar <alx@kernel.org>
+Organization: Linux
+In-Reply-To: <f12c6f14-66c4-6afb-e768-fa7abcfd1bbc@embeddedor.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------Xh7qrg5HpYoyXwFXOw9K6fJj"
+X-Spam-Status: No, score=-11.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 01:43:50PM -0700, Nicolin Chen wrote:
- 
-> When receiving an __arm_smmu_tlb_inv_range() call with a large size, there
-> could be a long latency at this function call: one part is coming from a
-> large software overhead in the routine of building commands, and the other
-> part is coming from CMDQ hardware consuming the large number of commands.
-> This latency could be significantly large on an SMMU that does not support
-> range invalidation commands, i.e. no ARM_SMMU_FEAT_RANGE_INV.
-> 
-> One way to optimize this is to replace a large number of VA invalidation
-> commands with one single per-asid invalidation command, when the requested
-> size reaches a threshold. This threshold can be configurable depending on
-> the SMMU implementaion.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------Xh7qrg5HpYoyXwFXOw9K6fJj
+Content-Type: multipart/mixed; boundary="------------ThNUh2l6BvNzlwUntttNYjTA";
+ protected-headers="v1"
+From: Alejandro Colomar <alx@kernel.org>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+ Kees Cook <keescook@chromium.org>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, linux-hardening@vger.kernel.org
+Message-ID: <df8fdd4a-490f-6b2a-03b6-0333e3302dce@kernel.org>
+Subject: Re: struct_size() using sizeof() vs offsetof()
+References: <74e8cf91-d095-33e3-c548-34d80b691089@kernel.org>
+ <202308161913.91369D4A@keescook>
+ <09b4a2ce-da74-3a19-6961-67883f634d98@kernel.org>
+ <f12c6f14-66c4-6afb-e768-fa7abcfd1bbc@embeddedor.com>
+In-Reply-To: <f12c6f14-66c4-6afb-e768-fa7abcfd1bbc@embeddedor.com>
 
-I'm rethinking about this size-based threshold, since what really
-affects the latency is the number of the invalidation commands in
-the request. So having an npages-based threshold might be optimal,
-though the idea and implementation would be similar.
+--------------ThNUh2l6BvNzlwUntttNYjTA
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Thanks
-Nicolin
+Hi Gustavo,
+
+On 2023-08-17 18:05, Gustavo A. R. Silva wrote:
+>=20
+>> -               tp_c =3D kzalloc(sizeof(*tp_c), GFP_KERNEL);
+>> +               tp_c =3D kzalloc(struct_size(tp_c, hlist->ht, 1), GFP_=
+KERNEL);
+>=20
+> I just sent a fix[1].
+>=20
+> Thanks for reporting this! :)
+
+:-)
+
+> --
+> Gustavo
+>=20
+> [1] https://lore.kernel.org/linux-hardening/ZN5DvRyq6JNz20l1@work/
+
+Please CC me in that thread.  I want to know when the patch is installed,=
+ to
+prepare my own against that tree.
+
+Cheers,
+Alex
+
+--=20
+<http://www.alejandro-colomar.es/>
+GPG key fingerprint: A9348594CE31283A826FBDD8D57633D441E25BB5
+
+
+--------------ThNUh2l6BvNzlwUntttNYjTA--
+
+--------------Xh7qrg5HpYoyXwFXOw9K6fJj
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmTeaPcACgkQnowa+77/
+2zIl5w/+OKSRGZm51bd3xnO2rIs1JY0VYPGOkZw27tBxPTE2tGOJs+A6gnLL5ZLw
+K8f4GrCOb9Edhr1To+Li7mu1dQ0nyWgmHr3gOslUT7w1z5x7pRGGhMPVRzAf9f+Z
+DA8EPt1/OIhL1UVgraGkSArFTFo2dYgJ3eADMwfHNc7w2nUEqtL6wJAjTqayYMTj
+AzYxTpwG0yP1Kg2FZ7U5ddUfm/mJDoXfbsc9emCcYVHhaozZfvEjOLaf3FrzxOnh
+sFDHcdccYk7WTVxsVAd3S8L7OlIeQKN7S7lTYt+xR72yWKr0Oz05XWCWV5Qg0efT
+XCGDE01ux24dkI8xJaEwxUUoG2kAsxHgB0NrJClCUBYayj0GS9hSNiVdJxcNBqY+
+zhHvufnyCOnpzptd/7beIe/cqio1uS/WXV4DEC3MNVAsGLCj6fC0R1v2dDpV5Mpo
+cwXiQidg9sGZuznUTyV20WNbCHBZ4QalODkhbNQHtSQZ8422SXfQIse0EUYoGxoE
+qJLGazO2bQJRa9+wka94s+d9GL9ey8govd9vHZY+oI7XsvYIjAcOrBM1R4n3KGqz
+a4BmCqhZs3lYEE9xiWz6VBC0YXJQQDci061q3yAf+3Sne2cm7ktzE+yQU3SHAsBy
+3nd/pi6YkQZANQA9v9rnukPIULVQ1IehhyQ8hhR41kINAIqv54Q=
+=MET1
+-----END PGP SIGNATURE-----
+
+--------------Xh7qrg5HpYoyXwFXOw9K6fJj--
