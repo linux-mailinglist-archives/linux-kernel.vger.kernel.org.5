@@ -2,135 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCB377EEC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 03:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C98677EED4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 03:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347578AbjHQBjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 21:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34764 "EHLO
+        id S1347585AbjHQBrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 21:47:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347628AbjHQBjK (ORCPT
+        with ESMTP id S229747AbjHQBqr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 21:39:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A782727;
-        Wed, 16 Aug 2023 18:39:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692236343; x=1723772343;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=rjFoVQ+i/auaKfZH1GFgqJ4tgf113B3swFTHm5legAI=;
-  b=Gh68rhkYLyd3ssta8aWC5R4uyQT5kWNb+2EyADIssSPVzwriH8Mc0aHY
-   PV0uboueStYCXRzthpxAy7jc46oKhRYFWFxIeHcCQQYLt1nJbSyLaSEbz
-   q5tbwUhYnHzar9JHLaWy2kga012jykKnlRFfivSgxSo3pI1PAWSEQGzIA
-   COEj/BSYyHbXU+jwfPgWi7QrYDaMAQKw12xcdFZtJyoV5B6xL5yen4xSC
-   jT2+3VRc14AkH8lFVPuE6duTOF0hVMrWWKvRFzVlDTGyZwQs98ZcLlFV0
-   oIsjpul/M6dPrPLQGNCFaal8pwDsnifrJGc/jeuf/xDzqmh2ODunsdwQO
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="371589341"
-X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="371589341"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 18:39:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="737507511"
-X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="737507511"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.52]) ([10.238.10.52])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 18:39:01 -0700
-Message-ID: <998ebc6b-4654-f0d3-dc49-b2208635db48@linux.intel.com>
-Date:   Thu, 17 Aug 2023 09:38:58 +0800
+        Wed, 16 Aug 2023 21:46:47 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1616C2723;
+        Wed, 16 Aug 2023 18:46:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=M/qvZh1sqwluQKeK6M4PiqwvLV9ejkgNBmKISK2HN/8=; b=Wat5/UeeLuy4BttcNEfglFgoVc
+        B5o5CyB045TmSU8TINFIfnU2c2c/ohegAFxnTUWd1FOCGminra5Ar9/M2DSIVLGfFQMZtRmMo/DrP
+        j3agpQ5JxmbudAgYlH60C9h0FefXX8E2LEk7Hsg3MNLeMM9ZrP3QIBhlLbRvHzTtNUJQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qWS5q-004Kox-3o; Thu, 17 Aug 2023 03:46:34 +0200
+Date:   Thu, 17 Aug 2023 03:46:34 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     nick.hawkins@hpe.com
+Cc:     christophe.jaillet@wanadoo.fr, simon.horman@corigine.com,
+        verdun@hpe.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/5] net: hpe: Add GXP UMAC Driver
+Message-ID: <01e96219-4f0c-4259-9398-bc2e6bc1794f@lunn.ch>
+References: <20230816215220.114118-1-nick.hawkins@hpe.com>
+ <20230816215220.114118-5-nick.hawkins@hpe.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 2/8] KVM: x86: Use a new flag for branch instructions
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Zeng Guang <guang.zeng@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        H Peter Anvin <hpa@zytor.com>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20230719024558.8539-1-guang.zeng@intel.com>
- <20230719024558.8539-3-guang.zeng@intel.com> <ZNwBeN8mGr1sJJ6i@google.com>
- <e2662efe-9c53-77de-836c-a29076d3ccdc@linux.intel.com>
- <ZNzfgxTnB6KYWENg@google.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <ZNzfgxTnB6KYWENg@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230816215220.114118-5-nick.hawkins@hpe.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> +static int umac_ioctl(struct net_device *ndev, struct ifreq *ifr, int cmd)
+> +{
+> +	if (!netif_running(ndev))
+> +		return -EINVAL;
+> +
+> +	if (!ndev->phydev)
+> +		return -ENODEV;
+> +
+> +	return phy_mii_ioctl(ndev->phydev, ifr, cmd);
+
+Sometimes power management does not allow it, but can you use phy_do_ioctl()?
+
+> +static int umac_init_hw(struct net_device *ndev)
 
 
-On 8/16/2023 10:38 PM, Sean Christopherson wrote:
-> On Wed, Aug 16, 2023, Binbin Wu wrote:
->>
->> On 8/16/2023 6:51 AM, Sean Christopherson wrote:
->>> Branch *targets*, not branch instructions.
->>>
->>> On Wed, Jul 19, 2023, Zeng Guang wrote:
->>>> From: Binbin Wu <binbin.wu@linux.intel.com>
->>>>
->>>> Use the new flag X86EMUL_F_BRANCH instead of X86EMUL_F_FETCH in
->>>> assign_eip(), since strictly speaking it is not behavior of instruction
->>>> fetch.
->>> Eh, I'd just drop this paragraph, as evidenced by this code existing as-is for
->>> years, we wouldn't introduce X86EMUL_F_BRANCH just because resolving a branch
->>> target isn't strictly an instruction fetch.
->>>
->>>> Another reason is to distinguish instruction fetch and execution of branch
->>>> instruction for feature(s) that handle differently on them.
->>> Similar to the shortlog, it's about computing the branch target, not executing a
->>> branch instruction.  That distinction matters, e.g. a Jcc that is not taken will
->>> *not* follow the branch target, but the instruction is still *executed*.  And there
->>> exist instructions that compute branch targets, but aren't what most people would
->>> typically consider a branch instruction, e.g. XBEGIN.
->>>
->>>> Branch instruction is not data access instruction, so skip checking against
->>>> execute-only code segment as instruction fetch.
->>> Rather than call out individual use case, I would simply state that as of this
->>> patch, X86EMUL_F_BRANCH and X86EMUL_F_FETCH are identical as far as KVM is
->>> concernered.  That let's the reader know that (a) there's no intended change in
->>> behavior and (b) that the intent is to effectively split all consumption of
->>> X86EMUL_F_FETCH into (X86EMUL_F_FETCH | X86EMUL_F_BRANCH).
->> How about this:
->>
->>      KVM: x86: Use a new flag for branch targets
->>
->>      Use the new flag X86EMUL_F_BRANCH instead of X86EMUL_F_FETCH in
->> assign_eip()
->>      to distinguish instruction fetch and branch target computation for
->> feature(s)
-> Just "features", i.e. no parentheses...
->
->>      that handle differently on them.
-> ...and tack on ", e.g. LASS and LAM." at the end.
-OK, but only LASS here, since LAM only applies to addresses for data 
-accesses, i.e, no need to distingush the two flag.
+> +{
+> +	} else {
+> +		value |= UMAC_CFG_FULL_DUPLEX;
+> +
+> +		if (ndev->phydev->speed == SPEED_1000) {
 
-> There's zero reason not to more
-> explicitly call out why the flag is being added.  Trying to predict the future in
-> changelogs is generally discouraged, but having understandable changelogs is more
-> important.
->
->>      As of this patch, X86EMUL_F_BRANCH and X86EMUL_F_FETCH are identical as
->> far as
->>      KVM is concernered.
->>
->>      No functional change intended.
-> Heh, you need to fix whatever is forcefully wrapping lines, but other than the
-> nit above, the content itself is good.
-Sure, I think the wrapping lines due to additional intendations I added, 
-it should be OK in changelog.
+I'm pretty sure i pointed this out once before. It is not safe to
+access phydev members outside of the adjust link callback.
 
+> +static int umac_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+> +{
+> +	struct umac_priv *umac = netdev_priv(ndev);
+> +	struct umac_tx_desc_entry *ptxdesc;
+> +	unsigned int length;
+> +	u8 *pframe;
+> +
+> +	ptxdesc = &umac->tx_descs->entrylist[umac->tx_cur];
+> +	pframe = umac->tx_descs->framelist[umac->tx_cur];
+> +
+> +	length = skb->len;
+> +	if (length > 1514) {
+> +		netdev_err(ndev, "send data %d bytes > 1514, clamp it to 1514\n",
+> +			   skb->len);
 
+Than should be rate limited.
+
+Also, if you chop the end of the packet, it is going to be useless. It
+is better to drop it, to improve your goodput.
+
+> +		length = 1514;
+> +	}
+> +
+> +	memset(pframe, 0, UMAC_MAX_FRAME_SIZE);
+> +	memcpy(pframe, skb->data, length);
+
+Is this cached or uncached memory? uncached is expansive so you want
+to avoid touching it twice. Depending on how busy your cache is,
+touching it twice might cause it to expelled from L1 on the first
+write, so you could be writing to L2 twice for no reason. Do the math
+and calculate the tail space you need to zero.
+
+I would also suggest you look at the page pool code and use that for
+all you buffer handling. It is likely to be more efficient than what
+you have here.
+
+> +static int umac_setup_phy(struct net_device *ndev)
+> +{
+> +	struct umac_priv *umac = netdev_priv(ndev);
+> +	struct platform_device *pdev = umac->pdev;
+> +	struct device_node *phy_handle;
+> +	phy_interface_t interface;
+> +	struct device_node *eth_ports_np;
+> +	struct device_node *port_np;
+> +	int ret;
+> +	int i;
+> +
+> +	/* Get child node ethernet-ports. */
+> +	eth_ports_np = of_get_child_by_name(pdev->dev.of_node, "ethernet-ports");
+> +	if (!eth_ports_np) {
+> +		dev_err(&pdev->dev, "No ethernet-ports child node found!\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	for (i = 0; i < NUMBER_OF_PORTS; i++) {
+> +		/* Get port@i of node ethernet-ports */
+> +		port_np = gxp_umac_get_eth_child_node(eth_ports_np, i);
+> +		if (!port_np)
+> +			break;
+> +
+> +		if (i == INTERNAL_PORT) {
+> +			phy_handle = of_parse_phandle(port_np, "phy-handle", 0);
+> +			if (phy_handle) {
+> +				umac->int_phy_dev = of_phy_find_device(phy_handle);
+> +				if (!umac->int_phy_dev)
+> +					return -ENODEV;
+
+You appear to find the PHY, and then do nothing with it?
+
+    Andrew
