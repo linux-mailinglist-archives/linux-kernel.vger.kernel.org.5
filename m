@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED2C377F453
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 12:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F71377F455
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 12:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349770AbjHQKaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 06:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48082 "EHLO
+        id S1349810AbjHQKbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 06:31:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243667AbjHQK3j (ORCPT
+        with ESMTP id S1349903AbjHQKbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 06:29:39 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDC32D54;
-        Thu, 17 Aug 2023 03:29:38 -0700 (PDT)
-Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5BDB2497;
-        Thu, 17 Aug 2023 12:28:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1692268102;
-        bh=6t44jZbV72pjMZfcadFePl+MnE7XEaDfJ7ot64scjQo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=bn87AhZaQEb2SRNlqE7cMGIc3hfOxut76mah7mCTgwui0BZcVj/6i+X1DUibb3b86
-         xLi1awt7rQoGhEA+ceCbZ10TJkujNFK9/mNLjia1cICBn7Qp5YPFjUI0aMVU0tv4UO
-         nt2K5NorZOlYDZ5zapWwyWI0Xwy7MvsxLhuiE4Pw=
-Message-ID: <6d552603-a8ae-44db-2598-46017d047566@ideasonboard.com>
-Date:   Thu, 17 Aug 2023 13:29:33 +0300
+        Thu, 17 Aug 2023 06:31:32 -0400
+Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C322D5A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 03:31:30 -0700 (PDT)
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-342-Nc7mE_lqP3uzAdE5X4GxPA-1; Thu, 17 Aug 2023 06:31:26 -0400
+X-MC-Unique: Nc7mE_lqP3uzAdE5X4GxPA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1528B3C100A2;
+        Thu, 17 Aug 2023 10:31:26 +0000 (UTC)
+Received: from hog (unknown [10.39.192.31])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 54F5CC15BAD;
+        Thu, 17 Aug 2023 10:31:24 +0000 (UTC)
+Date:   Thu, 17 Aug 2023 12:31:23 +0200
+From:   Sabrina Dubroca <sd@queasysnail.net>
+To:     "Radu Pirea (OSS)" <radu-nicolae.pirea@oss.nxp.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, richardcochran@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC net-next v1 4/5] net: macsec: introduce mdo_insert_tx_tag
+Message-ID: <ZN32-0fwIMtrc9lu@hog>
+References: <20230811153249.283984-1-radu-nicolae.pirea@oss.nxp.com>
+ <20230811153249.283984-5-radu-nicolae.pirea@oss.nxp.com>
+ <ZN00NB7RayXAl80f@hog>
+ <c28591b1-812f-b593-ef83-72e972d5b7bd@oss.nxp.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] i2c: Make I2C_ATR invisible
-Content-Language: en-US
-To:     Luca Ceresoli <luca.ceresoli@bootlin.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Wolfram Sang <wsa@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <588d302477cb7e6b30b52ee6448807324c57b88a.1692113321.git.geert+renesas@glider.be>
- <20230817094512.38b3d45b@booty>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-In-Reply-To: <20230817094512.38b3d45b@booty>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <c28591b1-812f-b593-ef83-72e972d5b7bd@oss.nxp.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,42 +55,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/08/2023 10:45, Luca Ceresoli wrote:
-> Hi Geert,
+2023-08-17, 11:25:36 +0300, Radu Pirea (OSS) wrote:
 > 
-> On Tue, 15 Aug 2023 17:29:11 +0200
-> Geert Uytterhoeven <geert+renesas@glider.be> wrote:
 > 
->> I2C Address Translator (ATR) support is not a stand-alone driver, but a
->> library.  All of its users select I2C_ATR.  Hence there is no need for
->> the user to enable this symbol manually, except when compile-testing.
->>
->> Fixes: a076a860acae77bb ("media: i2c: add I2C Address Translator (ATR) support")
->> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
->> ---
->> Do we care yet about out-of-tree drivers that need this functionality?
->> ---
->>   drivers/i2c/Kconfig | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/i2c/Kconfig b/drivers/i2c/Kconfig
->> index c6d1a345ea6d8aee..9388823bb0bb960c 100644
->> --- a/drivers/i2c/Kconfig
->> +++ b/drivers/i2c/Kconfig
->> @@ -72,7 +72,7 @@ config I2C_MUX
->>   source "drivers/i2c/muxes/Kconfig"
->>   
->>   config I2C_ATR
->> -	tristate "I2C Address Translator (ATR) support"
->> +	tristate "I2C Address Translator (ATR) support" if COMPILE_TEST
+> On 16.08.2023 23:40, Sabrina Dubroca wrote:
+> > 2023-08-11, 18:32:48 +0300, Radu Pirea (NXP OSS) wrote:
+> > > Offloading MACsec in PHYs requires inserting the SecTAG and the ICV in
+> > > the ethernet frame. This operation will increase the frame size with 32
+> > > bytes.
+> > 
+> > "up to 32 bytes"?
 > 
-> Either as-is, or with an anonymous tristate:
+> Yes, up to 32 bytes.
 > 
-> Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+> > 
+> > The SecTAG and ICV can both be shorter, at least with the software
+> > implementation.
+> > 
+> > 
+> > [...]
+> > > +static struct sk_buff *insert_tx_tag(struct sk_buff *skb,
+> > > +				     struct net_device *dev)
+> > > +{
+> > [...]
+> > > +
+> > > +	ctx.secy = &macsec->secy;
+> > > +	ctx.skb = skb;
+> > 
+> > I think it would be a bit more readable to just pass the skb to
+> >   ->mdo_insert_tx_tag instead of adding it to the context.
+> 
+> Since this function requires only the skb and the phydev, I would move
+> mdo_insert_tx_tag from macsec_ops to a new structure called mascec_tag. What
+> do you think about this?
 
-Yes, I'm also fine either way:
+I think it's ok to leave it in macsec_ops.
 
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+[...]
+> > > @@ -4137,6 +4211,11 @@ static int macsec_newlink(struct net *net, struct net_device *dev,
+> > >   			if (err)
+> > >   				goto del_dev;
+> > >   		}
+> > > +
+> > > +		dev->needed_headroom -= MACSEC_NEEDED_HEADROOM;
+> > > +		dev->needed_headroom += ops->needed_headroom;
+> > > +		dev->needed_tailroom -= MACSEC_NEEDED_TAILROOM;
+> > > +		dev->needed_tailroom += ops->needed_tailroom;
+> > 
+> > If the driver doesn't set ops->needed_headroom, we'll subtract
+> > MACSEC_NEEDED_HEADROOM and not add anything back. Is that correct for
+> > all existing drivers? (and same for tailroom)
+> 
+> It should be. However, I will do this operation only for the PHYs that needs
+> to parse a tag.
+> 
+> > 
+> > You set needed_tailroom to 0 in your driver, but the commit message
+> > for this patch says that the HW needs space for the ICV. I'm a bit
+> > puzzled by this, especially since MACSEC_NEEDED_TAILROOM already
+> > reserves space for the ICV.
+> 
+> The 32 bytes headroom will compensate for 0 bytes tailroom.
 
-  Tomi
+Ok.
+
+
+One more question about the ordering of patches in this series: is
+macsec offload with your device functional without this and the final
+patch? Otherwise, I would put this patch first, and then the driver
+patches (either collapsed into a single patch, or preferably split out
+if there's a reasonable way to do it -- patch 3 is really huge and
+hard to review).
+
+-- 
+Sabrina
 
