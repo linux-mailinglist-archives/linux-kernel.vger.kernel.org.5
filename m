@@ -2,63 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0BD77EED6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 03:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB8777EEE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 03:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347591AbjHQBrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 21:47:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52122 "EHLO
+        id S1347560AbjHQB4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 21:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347574AbjHQBrV (ORCPT
+        with ESMTP id S1347467AbjHQBz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 21:47:21 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8453F2D4A;
-        Wed, 16 Aug 2023 18:47:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=fA9/4GjzRzfFeQHH2JEuBMFts3R9va35mVQUMFm585U=; b=niMIhE1zWPmYDPa8PnuAFoGN/H
-        ldtthxYfX/mU+/PhupyptrzECQuZ3q0N0N4qlE0rDpQfjtSfbn3KFxZmz0yYj5DI3pxLaFHdHO0J7
-        eC/OQX6A8OIL2RPhXK4Hanl6SdGjcgtrtRkaj50s7J3bV793u3w6vw1tYDbGKouoN8n8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qWS6R-004Kpm-63; Thu, 17 Aug 2023 03:47:11 +0200
-Date:   Thu, 17 Aug 2023 03:47:11 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     nick.hawkins@hpe.com
-Cc:     christophe.jaillet@wanadoo.fr, simon.horman@corigine.com,
-        verdun@hpe.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        Wed, 16 Aug 2023 21:55:57 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B800E48;
+        Wed, 16 Aug 2023 18:55:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692237356; x=1723773356;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=an4OihAbsi8ksvlnSt9o6Jgc9iKxzwGw/cFTct/opko=;
+  b=g25BgoknmQK1Zz8Kg6HW3Oju1naaX2JExJX2qeiCu7q0Zz/H40eTvRvi
+   4nO4nXEMfc3ALXVHA9MYhmLhiUKjnhJhUJMxOzttlgNSI9lbIQg6Iumg0
+   qQPn8v9m0VmC0u4BGUVaKyFLOndu5lUG5unXsDGBbGwVF+HEFtAmg8vKf
+   66kohfXoJ1IinFMGfPoP2cxp+erMqTWRpfq7L0VEgI3dmATIiuvHqReI7
+   6uQd9kSoWtrxi7ZQwTsSBDGT4bAFfFG4iN72PYrW9qrp9fQhd6NTR5pQy
+   gs2vLZO0jnH2SSWXUl63bbbXtggP3QyMztHQ1+S2BN/qryGp9JuqWysla
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="376426060"
+X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
+   d="scan'208";a="376426060"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 18:55:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="848710883"
+X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
+   d="scan'208";a="848710883"
+Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 16 Aug 2023 18:55:52 -0700
+Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qWSEq-0000i1-05;
+        Thu, 17 Aug 2023 01:55:52 +0000
+Date:   Thu, 17 Aug 2023 09:55:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Asmaa Mnebhi <asmaa@nvidia.com>, andy.shevchenko@gmail.com,
+        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, brgl@bgdev.pl,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/5] MAINTAINERS: HPE: Add GXP UMAC Networking Files
-Message-ID: <0a40f057-f8cb-464d-8f5e-34614de26c01@lunn.ch>
-References: <20230816215220.114118-1-nick.hawkins@hpe.com>
- <20230816215220.114118-6-nick.hawkins@hpe.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Asmaa Mnebhi <asmaa@nvidia.com>
+Subject: Re: [PATCH v2 2/2] gpio: mlxbf3: Support add_pin_ranges()
+Message-ID: <202308170926.sCNjFYJH-lkp@intel.com>
+References: <20230816154442.8417-3-asmaa@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230816215220.114118-6-nick.hawkins@hpe.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230816154442.8417-3-asmaa@nvidia.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 04:52:20PM -0500, nick.hawkins@hpe.com wrote:
-> From: Nick Hawkins <nick.hawkins@hpe.com>
-> 
-> List the files added for supporting the UMAC networking on GXP.
-> 
-> Signed-off-by: Nick Hawkins <nick.hawkins@hpe.com>
+Hi Asmaa,
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+kernel test robot noticed the following build warnings:
 
-    Andrew
+[auto build test WARNING on linusw-pinctrl/devel]
+[also build test WARNING on linusw-pinctrl/for-next brgl/gpio/for-next linus/master v6.5-rc6 next-20230816]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Asmaa-Mnebhi/pinctrl-mlxbf3-Remove-gpio_disable_free/20230816-234711
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git devel
+patch link:    https://lore.kernel.org/r/20230816154442.8417-3-asmaa%40nvidia.com
+patch subject: [PATCH v2 2/2] gpio: mlxbf3: Support add_pin_ranges()
+config: i386-buildonly-randconfig-r005-20230817 (https://download.01.org/0day-ci/archive/20230817/202308170926.sCNjFYJH-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce: (https://download.01.org/0day-ci/archive/20230817/202308170926.sCNjFYJH-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308170926.sCNjFYJH-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/gpio/gpio-mlxbf3.c:164:6: warning: unused variable 'ret' [-Wunused-variable]
+           int ret;
+               ^
+   1 warning generated.
+
+
+vim +/ret +164 drivers/gpio/gpio-mlxbf3.c
+
+   160	
+   161	static int mlxbf3_gpio_add_pin_ranges(struct gpio_chip *chip)
+   162	{
+   163		unsigned int id = 0;
+ > 164		int ret;
+   165	
+   166		if (chip->ngpio % MLXBF3_GPIO_MAX_PINS_PER_BLOCK)
+   167			id = 1;
+   168	
+   169		return gpiochip_add_pin_range(chip, "MLNXBF34:00",
+   170				chip->base, id * MLXBF3_GPIO_MAX_PINS_PER_BLOCK,
+   171				chip->ngpio);
+   172	}
+   173	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
