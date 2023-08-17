@@ -2,59 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7E277FC79
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CAD77FC89
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353814AbjHQREi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 13:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47084 "EHLO
+        id S1353448AbjHQRHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 13:07:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353815AbjHQREW (ORCPT
+        with ESMTP id S1353833AbjHQRH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 13:04:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944A630C2;
-        Thu, 17 Aug 2023 10:04:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3260961F16;
-        Thu, 17 Aug 2023 17:04:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FA81C433C7;
-        Thu, 17 Aug 2023 17:04:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692291859;
-        bh=IUsc1dlDugnr6ByC8ySX3bNJAeDpRdUJA6/XtcW0ZB4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=r3Z+lRPlDnQqU2+3I3DThI66ZNzutA3ShL/STD5dNv27ogS7aOGEkI4XbDU3KrkdM
-         uoaavOVO4f2S2hnn1PmSNNovQbcXWx+JtMz0ygn+/JM2GQs/Ih3Q8iQHTZJJ4Ws8bA
-         bPZnHSQBoV61Ex+Yerm+n9IV5e+emUPUe875OxlHqhxi4dLbK/o4Jp2CgRL5JB0XBm
-         ffx4cBNoUhk4VrX3EncBVzVt19n/z8p2XXV8TFPSzEcsYVwhpiJS+xugEHhLEJfJeB
-         BiLNr7ufNOncsadja8vx/OZ+xmxKlZkwgBzS4vIITOg3/UxGoWkwFgB+BkRrUK/TuQ
-         SVzxTAX3PmmOQ==
-Date:   Thu, 17 Aug 2023 12:04:17 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Achal Verma <a-verma1@ti.com>
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof Wilczy_ski <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] PCI: j721e: Add support to build pci-j721e as a
- kernel module
-Message-ID: <20230817170417.GA320486@bhelgaas>
+        Thu, 17 Aug 2023 13:07:27 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B2830C2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:07:25 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-407db3e9669so8651cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:07:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692292045; x=1692896845;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wOrR6jLvPvNePyIC/+imo6fGglOwhNPI+mbMxjZ0VQw=;
+        b=mbmVCvZpWFNNWlbr5PyQeTm/nq6fYbpjeO9BfgwZxNpukj4mobAKlDUiQHt7H+VrtW
+         auYi6sKPedNwPgnshaQiGZn50kRJ3L+uq+AtDp3dN4Hn3DqO4Gdd4FYzguzbCJDsR1ZU
+         kn7+C6mGcepD3Nn3SwZiIvqmKoi7Da0UgG7rvfa/GxSHR2Dtd+UuBIr08uR8rpOvGJio
+         GhWXowPd/IGl1l1BU4J4SGcYDyYA+sP+1nSae2UnbsoKWTyPE7EKqCIOSWszqYbYL5Gu
+         l+/eq6ewzEEuE2VFCqydXhBCswHci6Azi7ktHX11tOD8kXHi1g8lOBOkGeozWk33tcG4
+         thiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692292045; x=1692896845;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wOrR6jLvPvNePyIC/+imo6fGglOwhNPI+mbMxjZ0VQw=;
+        b=YxC87YCKe1HDlFf94Ik++MGdYVBKfm5/9UhT3tNyCiNpt+YE8lhVg6NRrMTMx8i/V6
+         zh+tSgOTbWkA6B4MFy9IK56U0QCNQo2UyVlFL5AIzRaIlOHycPWsvCFtopLWa5PSUsF1
+         1p5dEeYu/LHCYr75UTvxFGKrPzfH3dlOqmjD/5SiWUYgR3BaKO65MBdDxIE+uQQ2z/HS
+         K9qhe6AciwBq3XGUFLzlcgASbBDeTtr9W99jQIxC5mCuXQ5GOIFc2cf8FVNynAYrG4uG
+         U4nuNqYxdlowh90OZqM/nro2cHsiLNYXjpiXHh9MWxI1O7tyJnSgGVXtlXGendNwA0vW
+         0PWw==
+X-Gm-Message-State: AOJu0YxpXaPk76F8HYKu/8sHu8nJeMSZe9rCJ95r1zETCmJTwDsNaE7e
+        Lqu0OdAryhJ7D6wfH+NsK2zHgWYoe9wdOL3Wz9utlw==
+X-Google-Smtp-Source: AGHT+IG2FLtDtq9HHsFn8+IjnWSDn8a6ohvAB7pmeSpQ35VRAU2wtAHnE9fn4vA6v1FfKxnHC3jWjVzJpaNgMlwuE1s=
+X-Received: by 2002:a05:622a:180e:b0:3e0:c2dd:fd29 with SMTP id
+ t14-20020a05622a180e00b003e0c2ddfd29mr12369qtc.4.1692292044789; Thu, 17 Aug
+ 2023 10:07:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20230818000321.1.Ibca43cc8d1bcad3ac3deef5726b9745128aea634@changeid>
+ <928822fd-642a-5ca7-7b42-dc7885f3cf51@arm.com>
+In-Reply-To: <928822fd-642a-5ca7-7b42-dc7885f3cf51@arm.com>
+From:   Michael Shavit <mshavit@google.com>
+Date:   Fri, 18 Aug 2023 01:06:48 +0800
+Message-ID: <CAKHBV27bsDWsS_dUsj=xdTfnc0CDhcH+0ZLZ2z481BZMsBQX4w@mail.gmail.com>
+Subject: Re: [PATCH] iommu/arm-smmu-v3: Simplify stage selection logic
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     iommu@lists.linux.dev, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Tomas Krcka <krckatom@amazon.de>,
+        Will Deacon <will@kernel.org>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230817120823.1158766-3-a-verma1@ti.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,81 +78,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 05:38:23PM +0530, Achal Verma wrote:
-> pci-j721e driver can be build as a in-built kernel driver only, which is
-> not required as it is not used during boot time in most cases.
-> This change add support to build pci-j721e as a kernel loadable module.
->=20
-> J721e PCIe controller can work in both host mode and end-point mode.
-> In order to enable host mode driver and endpoint driver to be built
-> independently either as built-in or kernel module, the pcie-j721e.c driver
-> is refactored into following components:
->=20
-> 1) pci-j721e-host.c: Driver used when PCIe controller has to be
-> initialized in host mode.
->=20
-> 2) pci-j721e-ep.c: Driver used when PCIe controller has to be
-> initialized in endpoint mode.
->=20
-> 3) pci-j721e.c: contains common code required in both modes.
+On Fri, Aug 18, 2023 at 12:35=E2=80=AFAM Robin Murphy <robin.murphy@arm.com=
+> wrote:
+>
+> The reason it's like this is because of arm_smmu_enable_nesting(), which
+> *is* the additional thing that's going on with the stage selection logic.
+>
+> Thanks,
+> Robin.
 
-Sounds like at least two commits (I'm not sure what the best order
-would be):
+Right, but arm_smmu_enable_nesting isn't involved in this computation
+at this point in the flow.
 
-  1) Split into separate host mode and endpoint mode drivers
-
-  2) Make both drivers tristate
-
-It looks like you implement both module loading and removal.  Do we
-now think removal of these modules is safe?  IIRC there used to be a
-question related to irq_desc lifetimes, e.g., there's some discussion
-here: https://lore.kernel.org/linux-pci/87k085xekg.wl-maz@kernel.org/
-
-The ability to *load* drivers as modules is definitely useful.  The
-ability to *remove* them is useful for developers but not really
-useful for users.
-
-But I guess j721e_pcie_remove() already exists, so maybe you're not
-changing anything as far as irq_desc lifetimes=06
-
-Since you're splitting into new files, maybe this is an opportunity to
-fix my naming mistake of suggesting a "pci-" prefix instead of
-"pcie-"?
-
-Bjorn
-
->  config PCI_J721E_HOST
-> -	bool "TI J721E PCIe controller (host mode)"
-> +	tristate "TI J721E PCIe controller (host mode)"
->  	depends on OF
->  	select PCIE_CADENCE_HOST
->  	select PCI_J721E
-> @@ -56,7 +56,7 @@ config PCI_J721E_HOST
->  	  core.
-> =20
->  config PCI_J721E_EP
-> -	bool "TI J721E PCIe controller (endpoint mode)"
-> +	tristate "TI J721E PCIe controller (endpoint mode)"
->  	depends on OF
->  	depends on PCI_ENDPOINT
->  	select PCIE_CADENCE_EP
-
-> +static struct platform_driver j721e_pcie_ep_driver =3D {
-> +	.probe  =3D j721e_pcie_probe,
-> +	.remove_new =3D j721e_pcie_remove,
-> +	.driver =3D {
-> +		.name	=3D "j721e-pcie-ep",
-> +		.of_match_table =3D of_j721e_pcie_ep_match,
-> +		.suppress_bind_attrs =3D true,
-> +	},
-> +};
-
-> +static struct platform_driver j721e_pcie_host_driver =3D {
-> +	.probe  =3D j721e_pcie_probe,
-> +	.remove_new =3D j721e_pcie_remove,
-> +	.driver =3D {
-> +		.name	=3D "j721e-pcie-host",
-> +		.of_match_table =3D of_j721e_pcie_host_match,
-> +		.suppress_bind_attrs =3D true,
-> +	},
-> +};
+arm_smmu_enable_nesting returns early if smmu_domain->smmu isn't set,
+and smmu_domain->smmu is only set after arm_smmu_domain_finalise.
+So at this point, smmu_domain->stage is being initialized for the
+first time. If this code is responsible for handling some special
+nesting case, then it's probably not working as intended.
