@@ -2,75 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55CA777FED4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 22:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5C077FED9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 22:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354683AbjHQUC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 16:02:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53878 "EHLO
+        id S1354726AbjHQUGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 16:06:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354717AbjHQUCZ (ORCPT
+        with ESMTP id S1349592AbjHQUGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 16:02:25 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE7535A1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 13:02:21 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-407db3e9669so8891cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 13:02:21 -0700 (PDT)
+        Thu, 17 Aug 2023 16:06:09 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A3C830DF
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 13:06:06 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bef089ac8aso1610295ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 13:06:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692302541; x=1692907341;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZFt42+2gL2zS27EyJiumcQJzSPb9Kj8mX4pG71zx5cw=;
-        b=JeEPJFThFtK7b6jYwe7zK72koT1k9KkeHpiFPJ1aRPzOL9oY6vKDr3BSOZoLEbtizJ
-         Faulh/e/+MOgduHk0RrucQCigvVUys2uGZPsgkaKG7ggxeQ2Q6SIbiE3UFC0X5LSz6DR
-         /3uvEDap0anA8Ibix8KixmMZl4KuKYTvn6avYKILdWvbhZPBnESwBXLjiqrS73/4uy6t
-         4hqy8HdMOqKjbYhf+EbLjT1wqvs+yOGIJ6tXWJNOOG47x9iNH49Z1H7EhySv84DVy5hw
-         JwShuWqZmI4uoPbF/i06RvThRAfJKnhDyoIORcVFFVDmMtjOruBuLioebzarH/PG9U4I
-         ZWdA==
+        d=chromium.org; s=google; t=1692302766; x=1692907566;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZbsxO4EunJBczn5K/qVWQc9X0kVNu3YHxV88CwvQfAo=;
+        b=bb7QBUe3bTaz2B2jMyMl56SJDnlsnftgVjMEogpwFzd7cb/Ocv2M7yWlKTUK//A+XT
+         sl3doHdTYBEIeGe8ER5o9AjcQaLtk/dkoP5fZXCQZB6w9bmo9UXfASSzdguyOiCal+Ja
+         +uGlklc5Pobah5m6SxwT6rNxF4+m41uvS0oFk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692302541; x=1692907341;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZFt42+2gL2zS27EyJiumcQJzSPb9Kj8mX4pG71zx5cw=;
-        b=lNLeV1m6wuH/37ZhmH1uSOp1V2WpbaZcunNNOYqoUMriHjBleSo+i4LJp4con2U94y
-         gX83dpvD38virSnywUGL5yyHNhuR0A1wwO6Vuitxk6ed6ff0q7wgNgMdR+xkKxcbA+e2
-         PVV3Y0n0iMJjWZjDj26Oc2xYlk9Dbox76KbmU6S3+EAotkreEQFr218cS7CEYoIBhl9F
-         IUSDBYy7OUqSv5fLP74u7CSpxuWF/t5gGEONKXRTSthmS3t8kH1nVmiGHJPWXf0DxhdA
-         6XWtPqjvtCE4o6XgAHJV5904cnwYdVaZifXCVj1W9eFLiN7kdtsRjOFQYJEtg9+aaor+
-         YfIQ==
-X-Gm-Message-State: AOJu0YxAEp/doZ9Eyz1ZYk7P2OqyIKPfp2GyMBf3P4JGgiWgFanQBcQh
-        Jsb1VX39Ip9AXylzvEkYSbTA4+LEpBTeW7KJYrh7mA==
-X-Google-Smtp-Source: AGHT+IFKVDsEm40DpNxOCwSLvwnLvwZxtsNsrzNj7h+GuWaQru6FfNFZY2mW5my5vxT5y/BgsxrAAmWifVAAfGYJwNQ=
-X-Received: by 2002:ac8:7dd0:0:b0:403:eeb9:a76 with SMTP id
- c16-20020ac87dd0000000b00403eeb90a76mr6835qte.17.1692302540780; Thu, 17 Aug
- 2023 13:02:20 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692302766; x=1692907566;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZbsxO4EunJBczn5K/qVWQc9X0kVNu3YHxV88CwvQfAo=;
+        b=C2JDqj32Yjya9FPYC/iKtCWbYYs075JGx0g+XDU4kbvwxIoxOynmQDwO5tOzaWgaPk
+         RFv8dp8XuQ+ETWBpKiu+PFwRykzucnEDGCVYzWeJP7wBsR5RDEgKflMci2gqEwNacqLf
+         dinuleobJuP3krvox/CbC8mV374nCff7Y1aJQpvsZX+KC49qDbWWDlO2nk6bFZxrUWkM
+         sRHDedcDmk3SzWkgJV93XXAd0JeHpE72mec2Juyybw98coTGy2ozyTmbuQ4vfga93594
+         hvz3BtLQkPaoLVQX3N3Lsyz+hR72xpaV70vAgfNkVHP344Y3/Kl4oNOLJTg4gxOuwMC1
+         Ke9Q==
+X-Gm-Message-State: AOJu0Yxci1GJP2+2OcNXi8Z2QXMUl0LYUnhuxgMk7mjdiKptil12qNy7
+        my00RGyJetES9A10Ov+1aeg8/Q==
+X-Google-Smtp-Source: AGHT+IFvOpj41A5JYl6PjF6P3Rg1fHwaar9j0sl1Dy+YcFnDkvyGkeNGyVRne93EWm8OkeJhGUQqUQ==
+X-Received: by 2002:a17:903:2287:b0:1bc:18e5:2c82 with SMTP id b7-20020a170903228700b001bc18e52c82mr535587plh.36.1692302766095;
+        Thu, 17 Aug 2023 13:06:06 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id jb11-20020a170903258b00b001b6a27dff99sm154872plb.159.2023.08.17.13.06.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 13:06:05 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Miguel Ojeda <ojeda@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] Compiler Attributes: counted_by: Adjust name and identifier expansion
+Date:   Thu, 17 Aug 2023 13:06:03 -0700
+Message-Id: <20230817200558.never.077-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <bvrhe2tpsts2azaroq4ubp2slawmop6orndsswrewuscw3ugvk@kmemmrttsnc7>
-In-Reply-To: <bvrhe2tpsts2azaroq4ubp2slawmop6orndsswrewuscw3ugvk@kmemmrttsnc7>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 17 Aug 2023 13:02:08 -0700
-Message-ID: <CALvZod4C7+q+wF6UYRq5Ud75o8PevUExHVs_kFZ9sDbzQbqM3A@mail.gmail.com>
-Subject: Re: [PATCH v3] selftests: cgroup: fix test_kmem_memcg_deletion kernel
- mem check
-To:     Lucas Karpinski <lkarpins@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2201; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=yMkCTHZHP/BRFycnWTEzZlu5l2QK06etjGosbVrVIT4=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBk3n2r1CgP3Mc6pKxyHkZYiaBqAOVNY4uUihf1S
+ xpexulDGQCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZN59qwAKCRCJcvTf3G3A
+ Juk5D/0fRxpeHUoylQN5bw44Q4bDNoPclBzKqlpYMfYTeS/vBf3t02TO2Oh4sBmPxyMa/pdcRMD
+ n6Z4w4GOgxAitAfrDNMuqyFEyvp4insRTwwoTKl1kNhaYJu22bIw0CWngvRv4upSqODjUrB+ale
+ 7oSuCuUohlqq62sibdTRlYqhtpYymI7/hEx4W/hrGg5Xr+i9DCeK0o+Wn48uzyrYuWRJ2cZIb5o
+ lFR7wItH03McdWGnQq6cowK0bX3UJTnH9BQ+WeoKeJNGq489fi/IaZtAaDiLR2dIkr9TP+B93El
+ bi+vAqYsZXxpmmYd6rUqiLAordhRuaL70ZH7gNN1BxQ3GFQdAiR2VEffxF1RA3vucM1LgQVY91P
+ YCyAKovCM02kXBx9l1KQxzL6hyrhTgXHbQ+GehYjTMnDzcL7KKoSPaphXnczGgPet+FZ0Zt87uq
+ DJbJ3RmRxIVA0GG4G0Ll24+wpbJhMYVRYIJIiB1KgQy5zhshHOJOtlmG0GuzimTTnxUAibE6uF/
+ tlMOVVHDy66Z1Ag3mB8UwMFf7Y3qhJUtpHDPQhhZuKXvXwZviXFJ/q+VsavNT7xl6BqXwu9a4X7
+ fqyZPju0U/35nmQBgq9imr7gRVDLLenkPpbmprm8iPz0ZrQ1u9PXcaRpiLrS9C6m54f3RiFG2vp
+ 77E2RG1 raQeW3CQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,15 +86,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 12:58=E2=80=AFPM Lucas Karpinski <lkarpins@redhat.c=
-om> wrote:
->
-> Currently, not all kernel memory usage is being accounted for. This
-> commit switches to using the kernel entry within memory.stat which
-> already includes kernel_stack, pagetables, and slab. The kernel entry
-> also includes vmalloc and other additional kernel memory use cases which
-> were missing.
->
-> Signed-off-by: Lucas Karpinski <lkarpins@redhat.com>
+GCC and Clang's current RFCs name this attribute "counted_by", and have
+moved away from using a string for the member name. Update the kernel's
+macros to match. Additionally provide a UAPI no-op macro for UAPI structs
+that will gain annotations.
 
-Acked-by: Shakeel Butt <shakeelb@google.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Fixes: dd06e72e68bc ("Compiler Attributes: Add __counted_by macro")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ include/linux/compiler_attributes.h | 26 +++++++++++++-------------
+ include/uapi/linux/stddef.h         |  4 ++++
+ 2 files changed, 17 insertions(+), 13 deletions(-)
+
+diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
+index 00efa35c350f..74716a407aac 100644
+--- a/include/linux/compiler_attributes.h
++++ b/include/linux/compiler_attributes.h
+@@ -94,6 +94,19 @@
+ # define __copy(symbol)
+ #endif
+ 
++/*
++ * Optional: only supported since gcc >= 14
++ * Optional: only supported since clang >= 17
++ *
++ *   gcc: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108896
++ * clang: https://reviews.llvm.org/D148381
++ */
++#if __has_attribute(__counted_by__)
++# define __counted_by(member)		__attribute__((__counted_by__(member)))
++#else
++# define __counted_by(member)
++#endif
++
+ /*
+  * Optional: not supported by gcc
+  * Optional: only supported since clang >= 14.0
+@@ -129,19 +142,6 @@
+ # define __designated_init
+ #endif
+ 
+-/*
+- * Optional: only supported since gcc >= 14
+- * Optional: only supported since clang >= 17
+- *
+- *   gcc: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108896
+- * clang: https://reviews.llvm.org/D148381
+- */
+-#if __has_attribute(__element_count__)
+-# define __counted_by(member)		__attribute__((__element_count__(#member)))
+-#else
+-# define __counted_by(member)
+-#endif
+-
+ /*
+  * Optional: only supported since clang >= 14.0
+  *
+diff --git a/include/uapi/linux/stddef.h b/include/uapi/linux/stddef.h
+index 7837ba4fe728..7c3fc3980881 100644
+--- a/include/uapi/linux/stddef.h
++++ b/include/uapi/linux/stddef.h
+@@ -45,3 +45,7 @@
+ 		TYPE NAME[]; \
+ 	}
+ #endif
++
++#ifndef __counted_by
++#define __counted_by(m)
++#endif
+-- 
+2.34.1
+
