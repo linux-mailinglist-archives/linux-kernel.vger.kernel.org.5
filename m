@@ -2,81 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DB077FEEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 22:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6A577FEEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 22:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354824AbjHQUR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 16:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52342 "EHLO
+        id S1354669AbjHQUUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 16:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354392AbjHQURS (ORCPT
+        with ESMTP id S1345854AbjHQUTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 16:17:18 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E519359C
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 13:17:16 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5646868b9e7so308593a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 13:17:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692303436; x=1692908236;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KU+yygDiyP0ELbBFxmC0szeJUfwpE0TiBmbPQ8YXVAs=;
-        b=zNA3vpDDz1KyBjk9Ob5BUHexoZIGyPiAf/jYnuCLTrIqL4j8d6uRJul5dmw74Bh5Hq
-         SeyuGFaDDWqXuIHXDZA8/MCkbxdNniW3sClCvGAJwf+6uB9P9YBYZucziWA+uHZ9V3aQ
-         ry1zwBbNsGxEkazo8EH9jBDiVKZ6gZuLtJp6BpHlGyFW2+HSz0J3LwOKAJBm5+Sbpzzh
-         1dOvxxvTnzFRJ0DUIV9Np2zj6Wx5KXBVohTo0UHZTaxclJriOTeM0q8Ral8VlimAaMPU
-         HI0tbM5WA3rH/97lmAIvs2Vj+Px3wTzwhMfDsgg9wXUriOKOFynRHp9VmuR+kHhQtls9
-         snsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692303436; x=1692908236;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=KU+yygDiyP0ELbBFxmC0szeJUfwpE0TiBmbPQ8YXVAs=;
-        b=TbFtmr34WyuzVTj8xwiTh75yQjaVPCEddDXO+giwYD9LY88OjP0KjkEWX1vy6fg3my
-         IO0EsIsOraP7He3M9SKApmT0kDIixZBOm/7Bp8lC+wLxJVRb3XXP/jBJXKIcqINfuM5A
-         51CLOFYHDJf6kWLXRkgxG4hVLauZg4ea+vsazQF9WA+jJNb/wEM9Db+KcXjhnWnvQjGd
-         hrJlbWJFpTfPN5pgRf9SW9pr6k8/8/z+AJe1rbajkzKLa4jdiGF7ElSPuBENYggQ4pwX
-         F/ghTnkRfCXQt//t33QbtNvba1AbToOBlK8rec/IgdsditNynj9I5xjOvQj+ie58i1Ml
-         us9w==
-X-Gm-Message-State: AOJu0YyqlFAdj43FKvWrDUZ+YWV9QeYCEDTQXZTbnyJTOFmCkKHe5gjt
-        IBpg1Obwz5gAV8rkOQyFNWFujsXIywM=
-X-Google-Smtp-Source: AGHT+IFijHumwatVu7On9K+vpmmEsXcAinTeAqe7rw5Domph+e00oHTgIyy4LP9oPODs9OGpTVBlFLzjQh0=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:b00f:0:b0:565:dddd:1f65 with SMTP id
- h15-20020a63b00f000000b00565dddd1f65mr61039pgf.7.1692303435763; Thu, 17 Aug
- 2023 13:17:15 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 13:17:14 -0700
-In-Reply-To: <CAFg_LQXuBfCD6ypmOLS4NhBCPrLXTpetYWGqFDSnKgQa0R6_gA@mail.gmail.com>
-Mime-Version: 1.0
-References: <20230810090945.16053-1-cloudliang@tencent.com>
- <20230810090945.16053-4-cloudliang@tencent.com> <20230814234926.GD2257301@ls.amr.corp.intel.com>
- <CAFg_LQXuBfCD6ypmOLS4NhBCPrLXTpetYWGqFDSnKgQa0R6_gA@mail.gmail.com>
-Message-ID: <ZN6ASsmAO2007KJM@google.com>
-Subject: Re: [PATCH v6 3/6] KVM: selftests: Introduce __kvm_pmu_event_filter
- to improved event filter settings
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jinrong Liang <ljr.kernel@gmail.com>
-Cc:     Isaku Yamahata <isaku.yamahata@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Aaron Lewis <aaronlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Jinrong Liang <cloudliang@tencent.com>,
-        linux-kselftest@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        Thu, 17 Aug 2023 16:19:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DDE5359C;
+        Thu, 17 Aug 2023 13:19:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2058563036;
+        Thu, 17 Aug 2023 20:19:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F15F4C433C7;
+        Thu, 17 Aug 2023 20:19:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692303581;
+        bh=iMf2k4nTwKFBthKBVaGzMKaPqXWT9IOPKgKnd4BzqjY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TyEDhq5CPlrq0hhaapkmPTDUQ7x5K7LNM9h1XUK2NoxspiSXD6mv6WyZzvGd6ueTQ
+         aIcX3SCtQjjvNC+zwsNBZKRiSd+M8yig7hs0HgsHwjfeouMOEZbt1y8BfTRs8hTg8/
+         FvjVqVQS0s74XYLm+elhrOYmTEo8DS91FPkaRiYydWzgXk6sJlg+8U6bXyi2iLkj/B
+         a1l1Ig2BZ8DoODRiYc5VcQGfUe6Ry23QfpwL1nzEvlHEw91qSM16lcOapSUvPNczvR
+         Xm14YmbXlOFW9BEPsIg/sxAIkElQKOB5ewcDfAby4mXKM8gIbRSRKht4QvfGHq6Ja5
+         VwHlg53H4v4PA==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        David Howells <dhowells@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Nayna Jain <nayna@linux.ibm.com>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        keyrings@vger.kernel.org
+Subject: [GIT PULL] tpmdd changes for v6.6
+Date:   Thu, 17 Aug 2023 20:19:35 +0000
+Message-Id: <20230817201935.31399-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,104 +60,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023, Jinrong Liang wrote:
-> Isaku Yamahata <isaku.yamahata@gmail.com> =E4=BA=8E2023=E5=B9=B48=E6=9C=
-=8815=E6=97=A5=E5=91=A8=E4=BA=8C 07:49=E5=86=99=E9=81=93=EF=BC=9A
-> >
-> > On Thu, Aug 10, 2023 at 05:09:42PM +0800,
-> > Jinrong Liang <ljr.kernel@gmail.com> wrote:
-> >
-> > > From: Jinrong Liang <cloudliang@tencent.com>
-> > >
-> > > Add custom "__kvm_pmu_event_filter" structure to improve pmu event
-> > > filter settings. Simplifies event filter setup by organizing event
-> > > filter parameters in a cleaner, more organized way.
-> > >
-> > > Suggested-by: Sean Christopherson <seanjc@google.com>
-> > > Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
-> > > ---
-> > >  .../kvm/x86_64/pmu_event_filter_test.c        | 182 +++++++++-------=
---
-> > >  1 file changed, 90 insertions(+), 92 deletions(-)
-> > >
-> > > diff --git a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test=
-.c b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-> > > index 5ac05e64bec9..94f5a89aac40 100644
-> > > --- a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-> > > +++ b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-> > > @@ -28,6 +28,10 @@
-> > >
-> > >  #define NUM_BRANCHES 42
-> > >
-> > > +/* Matches KVM_PMU_EVENT_FILTER_MAX_EVENTS in pmu.c */
-> > > +#define MAX_FILTER_EVENTS            300
-> >
-> > Can we simply use KVM_PMU_EVENT_FILTER_MAX_EVENTS and remove MAX_FILTER=
-_EVENTS?
->=20
-> I didn't find the definition of KVM_PMU_EVENT_FILTER_MAX_EVENTS in
-> selftests. KVM_PMU_EVENT_FILTER_MAX_EVENTS is defined in pmu.c. To use
-> it, we need to define it in selftests.
+  Merge tag 'nfsd-6.5-4' of git://git.kernel.org/pub/scm/linux/kernel/git/cel/linux (2023-08-17 16:38:48 +0200)
 
-Huh.  That seems like something that should be enumerated to userspace.
+are available in the Git repository at:
 
-> > > +#define MAX_TEST_EVENTS              10
-> > > +
-> > >  /*
-> > >   * This is how the event selector and unit mask are stored in an AMD
-> > >   * core performance event-select register. Intel's format is similar=
-,
-> > > @@ -69,21 +73,33 @@
-> > >
-> > >  #define INST_RETIRED EVENT(0xc0, 0)
-> > >
-> > > +struct __kvm_pmu_event_filter {
-> > > +     __u32 action;
-> > > +     __u32 nevents;
-> > > +     __u32 fixed_counter_bitmap;
-> > > +     __u32 flags;
-> > > +     __u32 pad[4];
-> > > +     __u64 events[MAX_FILTER_EVENTS];
-> > > +};
-> > > +
-> >
-> > Is this same to struct kvm_pmu_event_filter?
->=20
-> In tools/arch/x86/include/uapi/asm/kvm.h
->=20
-> /* for KVM_CAP_PMU_EVENT_FILTER */
-> struct kvm_pmu_event_filter {
-> __u32 action;
-> __u32 nevents;
-> __u32 fixed_counter_bitmap;
-> __u32 flags;
-> __u32 pad[4];
-> __u64 events[];
-> };
+  git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git tags/tpmdd-v6.6
 
-To more directly answer Isaku's question:
+for you to fetch changes up to 218a2680624cba1611e3dfc7d9b646d240e5f855:
 
-They're *basically* the same, and have an identical layout, but the struct =
-defined
-by KVM uses a flexible array because the number of events comes from usersp=
-ace
-and forcing userspace to create an 1KiB+ object just to define a single eve=
-nt
-filter would be obnoxious.
+  certs: Reference revocation list for all keyrings (2023-08-17 20:12:41 +0000)
 
-There are alternatives, e.g. using an struct overlay to set a single entry:
+----------------------------------------------------------------
+Hi,
 
-	struct {
-		struct kvm_msrs header;
-		struct kvm_msr_entry entry;
-	} buffer =3D {};
+Contents:
 
-	memset(&buffer, 0, sizeof(buffer));
-	buffer.header.nmsrs =3D 1;
-	buffer.entry.index =3D msr_index;
-	buffer.entry.data =3D msr_value;
+- Restrict linking of keys to .ima and .evm keyrings based on
+  digitalSignature attribute in the certificate.
+- PowerVM: load machine owner keys into the .machine [1] keyring.
+- PowerVM: load module signing keys into the secondary trusted keyring
+  (keys blessed by the vendor).
+- tpm_tis_spi: half-duplex transfer mode
+- tpm_tis: retry corrupted transfers
+- Apply revocation list (.mokx) to an all system keyrings (e.g. .machine
+  keyring).
 
-but that gets annoying (and IMO confusing) because of the nested structs.
+[1] https://blogs.oracle.com/linux/post/the-machine-keyring
 
-I'll massage the changelog to callout the alternative, and why it's undesir=
-able.
+BR, Jarkko
+
+----------------------------------------------------------------
+Alexander Steffen (3):
+      tpm_tis: Move CRC check to generic send routine
+      tpm_tis: Use responseRetry to recover from data transfer errors
+      tpm_tis: Resend command to recover from data transfer errors
+
+Azeem Shaikh (1):
+      KEYS: Replace all non-returning strlcpy with strscpy
+
+Colin Ian King (1):
+      tpm: remove redundant variable len
+
+Eric Snowberg (3):
+      KEYS: DigitalSignature link restriction
+      integrity: Enforce digitalSignature usage in the ima and evm keyrings
+      certs: Reference revocation list for all keyrings
+
+Jarkko Sakkinen (1):
+      tpm_tis: Revert "tpm_tis: Disable interrupts on ThinkPad T490s"
+
+Krishna Yarlagadda (1):
+      tpm_tis_spi: Add hardware wait polling
+
+Li Zetao (1):
+      tpm/tpm_tis_synquacer: Use module_platform_driver macro to simplify the code
+
+Nayna Jain (6):
+      integrity: PowerVM support for loading CA keys on machine keyring
+      integrity: ignore keys failing CA restrictions on non-UEFI platform
+      integrity: remove global variable from machine_keyring.c
+      integrity: check whether imputed trust is enabled
+      integrity: PowerVM machine keyring enablement
+      integrity: PowerVM support for loading third party code signing keys
+
+ Documentation/admin-guide/kernel-parameters.txt    |  7 ++
+ certs/system_keyring.c                             | 91 +++++++++++++++++++--
+ crypto/asymmetric_keys/restrict.c                  | 44 ++++++++++
+ drivers/char/tpm/eventlog/tpm1.c                   |  3 +-
+ drivers/char/tpm/tpm_tis.c                         | 93 +---------------------
+ drivers/char/tpm/tpm_tis_core.c                    | 60 ++++++++++----
+ drivers/char/tpm/tpm_tis_core.h                    |  1 +
+ drivers/char/tpm/tpm_tis_spi_main.c                | 91 ++++++++++++++++++++-
+ drivers/char/tpm/tpm_tis_synquacer.c               | 18 +----
+ include/crypto/public_key.h                        | 12 +++
+ include/keys/system_keyring.h                      | 14 ++++
+ security/integrity/Kconfig                         |  4 +-
+ security/integrity/digsig.c                        |  6 +-
+ security/integrity/evm/Kconfig                     |  3 +-
+ security/integrity/ima/Kconfig                     |  3 +-
+ security/integrity/integrity.h                     |  5 +-
+ .../integrity/platform_certs/keyring_handler.c     | 19 ++++-
+ .../integrity/platform_certs/keyring_handler.h     | 10 +++
+ security/integrity/platform_certs/load_powerpc.c   | 34 ++++++++
+ .../integrity/platform_certs/machine_keyring.c     | 22 ++++-
+ security/keys/request_key_auth.c                   |  2 +-
+ 21 files changed, 394 insertions(+), 148 deletions(-)
