@@ -2,117 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1327077EF2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 04:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D716477EF30
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 04:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347677AbjHQCoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 22:44:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34506 "EHLO
+        id S1347692AbjHQCth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 22:49:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347685AbjHQCno (ORCPT
+        with ESMTP id S1347688AbjHQCtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 22:43:44 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F61B26AA
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 19:43:42 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RR8T36jXTz4f3kFD
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:43:35 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP4 (Coremail) with SMTP id gCh0CgB3VKdZid1k_vaUAw--.42597S2;
-        Thu, 17 Aug 2023 10:43:38 +0800 (CST)
-Subject: Re: [PATCH 2/2] mm/page_alloc: remove unnecessary parameter batch of
- nr_pcp_free
-To:     Chris Li <chrisl@kernel.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
-        mgorman@techsingularity.net, david@redhat.com, willy@infradead.org
-References: <20230809100754.3094517-1-shikemeng@huaweicloud.com>
- <20230809100754.3094517-3-shikemeng@huaweicloud.com>
- <ZNu6D+1y3agQRZgr@google.com>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <29681039-7a68-609e-4d3c-0bd91ca632bd@huaweicloud.com>
-Date:   Thu, 17 Aug 2023 10:43:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        Wed, 16 Aug 2023 22:49:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC07326AA
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 19:49:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692240552; x=1723776552;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=wTX+p+umyHhi1qed7dXceQx9nKp3lKNrLWrY5JrYcwQ=;
+  b=Q5/64RTzC+BVRh/MSmi6ikq/CKuoIAbIalVIq0YhQE0Y1s4FMq1pfAaA
+   1qYnWhRO/7xeL8sLNEAJbmWSn7NfESziItamwVo9KQ0zW/YJgnne7xc9Z
+   B3d7+WBn6I25vpvri5R22f1P6cjBOQbUEcZDxvuDSgOgDatodOxRqevik
+   UTTVO2i9mLN1WrR1/PjinPRZGiCzPFrRtPRISMz8qkKN/0XXxtVMy8TsY
+   8qy422KJ6Xr9tHfuR4vCSU60QvU7Ds30K/XfoG+BzLhSumbOy4BE7qku2
+   GNMwXcHKwoM22keP2yTrUz7nDwWrIzQS6D1bRTt2+AQfUIdtFyS6Xq65x
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="375461677"
+X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
+   d="scan'208";a="375461677"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 19:49:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="980966946"
+X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
+   d="scan'208";a="980966946"
+Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 16 Aug 2023 19:49:10 -0700
+Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qWT4Q-0000kZ-0o;
+        Thu, 17 Aug 2023 02:49:10 +0000
+Date:   Thu, 17 Aug 2023 10:48:39 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: kernel/bpf/helpers.c:1882:7: warning: no previous declaration for
+ 'bpf_cast_to_kern_ctx'
+Message-ID: <202308171055.NJBXQriP-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <ZNu6D+1y3agQRZgr@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgB3VKdZid1k_vaUAw--.42597S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFy8Cr15KFW7XrWftry7Jrb_yoW8CFW3pr
-        WkXan2kF18Jw1jk397Jw4DX34Utw4rtFyDG3yY934YvF13Gr9a9FWIkr90vF18GrWkWF40
-        9rs8t34rAa1UAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
+commit: fd264ca020948a743e4c36731dfdecc4a812153c bpf: Add a kfunc to type cast from bpf uapi ctx to kernel ctx
+date:   9 months ago
+config: x86_64-randconfig-x012-20230816 (https://download.01.org/0day-ci/archive/20230817/202308171055.NJBXQriP-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce: (https://download.01.org/0day-ci/archive/20230817/202308171055.NJBXQriP-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308171055.NJBXQriP-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   kernel/bpf/helpers.c:1757:7: warning: no previous declaration for 'bpf_obj_new_impl' [-Wmissing-declarations]
+    void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
+          ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1771:6: warning: no previous declaration for 'bpf_obj_drop_impl' [-Wmissing-declarations]
+    void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
+         ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1792:6: warning: no previous declaration for 'bpf_list_push_front' [-Wmissing-declarations]
+    void bpf_list_push_front(struct bpf_list_head *head, struct bpf_list_node *node)
+         ^~~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1797:6: warning: no previous declaration for 'bpf_list_push_back' [-Wmissing-declarations]
+    void bpf_list_push_back(struct bpf_list_head *head, struct bpf_list_node *node)
+         ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1815:23: warning: no previous declaration for 'bpf_list_pop_front' [-Wmissing-declarations]
+    struct bpf_list_node *bpf_list_pop_front(struct bpf_list_head *head)
+                          ^~~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1820:23: warning: no previous declaration for 'bpf_list_pop_back' [-Wmissing-declarations]
+    struct bpf_list_node *bpf_list_pop_back(struct bpf_list_head *head)
+                          ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1831:21: warning: no previous declaration for 'bpf_task_acquire' [-Wmissing-declarations]
+    struct task_struct *bpf_task_acquire(struct task_struct *p)
+                        ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1843:21: warning: no previous declaration for 'bpf_task_kptr_get' [-Wmissing-declarations]
+    struct task_struct *bpf_task_kptr_get(struct task_struct **pp)
+                        ^~~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1874:6: warning: no previous declaration for 'bpf_task_release' [-Wmissing-declarations]
+    void bpf_task_release(struct task_struct *p)
+         ^~~~~~~~~~~~~~~~
+>> kernel/bpf/helpers.c:1882:7: warning: no previous declaration for 'bpf_cast_to_kern_ctx' [-Wmissing-declarations]
+    void *bpf_cast_to_kern_ctx(void *obj)
+          ^~~~~~~~~~~~~~~~~~~~
 
 
-on 8/16/2023 1:46 AM, Chris Li wrote:
-> Hi Kemeng,
-> 
-> Since I am discussing the other patch in this series, I might just commend on this one
-> as well.
-> 
-> On Wed, Aug 09, 2023 at 06:07:54PM +0800, Kemeng Shi wrote:
->> We get batch from pcp and just pass it to nr_pcp_free immediately. Get
->> batch from pcp inside nr_pcp_free to remove unnecessary parameter batch.
->>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->> ---
->>  mm/page_alloc.c | 8 +++-----
->>  1 file changed, 3 insertions(+), 5 deletions(-)
->>
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index 1ddcb2707d05..bb1d14e806ad 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -2376,10 +2376,10 @@ static bool free_unref_page_prepare(struct page *page, unsigned long pfn,
->>  	return true;
->>  }
->>  
->> -static int nr_pcp_free(struct per_cpu_pages *pcp, int high, int batch,
->> -		       bool free_high)
->> +static int nr_pcp_free(struct per_cpu_pages *pcp, int high, bool free_high)
->>  {
->>  	int min_nr_free, max_nr_free;
->> +	int batch = READ_ONCE(pcp->batch);
-> 
-> Because nr_pcp_free is static and has only one caller. This function gets inlined
-> at the caller's side. I verified that on X86_64 compiled code.
-> 
-> So this fix in my opinion is not worthwhile to fix. It will produce the same
-> machine code. One minor side effect is that it will hide the commit under it
-> in "git blame".
-> 
-Hi Chris, thank for the reply. Except to reduce argument to pass, this patch also
-tries make code look little cleaner. I think it's always better to reduce variable
-scope and keep relevant code tight. In this case, we know batch is from
-per_cpu_pages during reading nr_pcp_free alone rather than search caller to find it
-out. And more callers of nr_pcp_free in fulture is free from pass pcp->batch. And so
-on. Anyway, this patch definely gains a little without lost in my opinion.:) With it
-makes sense to you.
+vim +/bpf_cast_to_kern_ctx +1882 kernel/bpf/helpers.c
 
-> Chris
-> 
+  1881	
+> 1882	void *bpf_cast_to_kern_ctx(void *obj)
+  1883	{
+  1884		return obj;
+  1885	}
+  1886	
 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
