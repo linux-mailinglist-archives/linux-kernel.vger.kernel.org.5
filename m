@@ -2,182 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B23AE77F14E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 09:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A81277F153
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 09:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348533AbjHQHfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 03:35:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50092 "EHLO
+        id S1348543AbjHQHgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 03:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348443AbjHQHer (ORCPT
+        with ESMTP id S235451AbjHQHfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 03:34:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330E02D76;
-        Thu, 17 Aug 2023 00:34:34 -0700 (PDT)
+        Thu, 17 Aug 2023 03:35:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F301812B;
+        Thu, 17 Aug 2023 00:35:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692257674; x=1723793674;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=rmF20ILiRewNhKSKPQF88rzUPRQH7W1WYihsAEsRiP8=;
-  b=XfrVECgJ6HgtnY+j6QPm0hOXYqC+70ZbZQePyYpwBqEZUllelDxKdad8
-   cw1FMljBlSsed+TO2cZjlM6sAAsj4iTMwGF8pmC8npBcc3sENkByTRX5v
-   J69vtSVHTUAzqKTOVna34B1v9BfMUv8agazXJ5PWG1hpS6LGJ5xbhEyVj
-   djDbIQEFM11HSFzajfPmSvvujliE8na1cmeRW+GP9kguG4tudMvc8aL/o
-   tkjtUHC5MhEyFXJEM/dpJlqxf7cRA4FnahF6Vrd9+AQr5J11tDpxL0P2/
-   BSq+PWmgA+aScnbH/+Nu2gE/chf+Ae8eYRK3y2EJsSlFOuAyNpGRIz5w9
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="403719190"
+  t=1692257751; x=1723793751;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=iJ+ERG1HMyhW/gOaZ67rW5tiVlX3e0f1StDiN46AJgE=;
+  b=jmvoS8FFtFaqg69bgYDXH38fRqpeg/5UU4TMMbYKEPXT/albyJOuNwwW
+   5H5AxW1KS9bZNhQLeeFzJhE1tfh/PYKj/AD2Eh5cOqf3GExB+Q82K8gtm
+   /dwOyOSm/CNwYHZfNax+/LbSL+xjiMzad7Zri9OFkvTDkW9d8fek7AuXq
+   PKgERxhzvNKorerMOFjXVrI5p9SmdolTt8FJingXRx810DohUHzqQjnES
+   qnrk5L9J0jYCryw7s/rUP/oioJD1LqVqOmXxvY6br3jIeTvCPLfwvfU+v
+   Fx5cZHFMgIvTGg+b3mMH/nroYJv+/tz8mCxGyzcpqlK/M+PFwWui9koPi
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="375505545"
 X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="403719190"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 00:34:18 -0700
+   d="scan'208";a="375505545"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 00:35:50 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="734568293"
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="908309223"
 X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="734568293"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga002.jf.intel.com with ESMTP; 17 Aug 2023 00:33:59 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 17 Aug 2023 00:33:58 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 17 Aug 2023 00:33:58 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.173)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 17 Aug 2023 00:33:53 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X/ZdOpeYb+D68XHZ+0e8FCWVsc8h3gjZJ5sAHr20kq108BCOLoUbg7Ci1bjjs7i/bOlsH3+rxDepWV2P8MU8z+b0nVhw4Eqi7yFCXi8d6nvnD+1dcxxqrdXftpIOOf0j+1HGq/86sCkLXsvflM43TRLf6YeZPl/8PRw7WpOdUO5Y+3oEb7ID4jTHoIG9ddaZP3OE/0Xvg4YrjHLZ2aC6DZVlb+mwTcrz5m+kvG+PRDH7PsU56mWYo+NJ95DQXPESNUe3NxV7CtYmkTBD0VrId2TAEJrIs2CIT9W767rLlM8nGkNZXIKA/rZhRcNoYt//4yEQ/L/iPwKN9BCJ2nFhXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rmF20ILiRewNhKSKPQF88rzUPRQH7W1WYihsAEsRiP8=;
- b=mTrnissekBTZY165hos67Ep6aiWSk6UBv/M3b3ZLtUIpex0N08gLhZS5y3/SoSgww395p+T4W2JQZMN68G1pJy3pLqlLquFuUT6R6soBedVi9vJuh5qKDPNpLAanEhfkwiVTidMDE12TSR8SUBuvPK+B7GLA69E3HAdUhGT8SNKmaJgUoaJWlJ5bGOVDn+05HW95KuZCcfhZmk4lFMnm7yL3mqla/u+fIRDfRzyqavGOvJ0z5jg6ihqSDY3hAfZN/uNQJu9BihO3nxf+pxl5BV+UIwOCSsEmHMjL8sXOGbLP4xbqhhl9S9tHJc3o1DsrO8mh7QJ3oYCnCZfEoFP6rg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by PH7PR11MB7571.namprd11.prod.outlook.com (2603:10b6:510:27e::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.30; Thu, 17 Aug
- 2023 07:33:51 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::dcf3:7bac:d274:7bed]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::dcf3:7bac:d274:7bed%4]) with mapi id 15.20.6678.029; Thu, 17 Aug 2023
- 07:33:51 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
-CC:     "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>
-Subject: RE: [PATCH v8 5/5] iommu/vt-d: Implement hw_info for iommu capability
- query
-Thread-Topic: [PATCH v8 5/5] iommu/vt-d: Implement hw_info for iommu
- capability query
-Thread-Index: AQHZ0DswxtbPVo4wXkmPSUNmERqb9q/uGcyw
-Date:   Thu, 17 Aug 2023 07:33:51 +0000
-Message-ID: <BN9PR11MB5276D1526A8F929813244C4E8C1AA@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20230816121349.104436-1-yi.l.liu@intel.com>
- <20230816121349.104436-6-yi.l.liu@intel.com>
-In-Reply-To: <20230816121349.104436-6-yi.l.liu@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|PH7PR11MB7571:EE_
-x-ms-office365-filtering-correlation-id: 855d37ae-c59a-4a8b-5a62-08db9ef44da1
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WfDjiLr5+K57qVo8lAIq+URr4AT/UO0D57pAZyibCwiiq+dnkIzCOFiOXQW5DcLtRM1+u6CJDnyEWKKOac0jSg1mQnGMNB005ibiPLRXZFRGNkS4LAH3Y2g8mEaDrR40CxiC+G+mao+N3mK7CC/ZLQeoNxiPHNWbzsGtSB1TIa3ekN11RGp4lLF7dMfi/jwoU4Z3zgKmepzd+9KwEVl1xnrOUxfHs51qxl0ivslQrS9fpffjNPxO6Urr5E1mdW7csofgUl3cI/y+83K2zzlY9jQpJtefHHl81PzoMdeS85Wfp4uB9ItTMi/DoI90bwc0C+pn4PhiasLxv07Pm604qF3y81MjAQmxlI6XK2sJ+kuFhxLdWA9kpD0/uhBYEulbr0f9d++QLl02UoNbw7IeCLHI77CKdnVu2LJb6N0WIN2NUadWbxqyA3k+Zibpxd3gN0JuqxXf4lqvq1Utr6pems0hbS9lXLQVd2p6+oIPDaJQmobsu42JaJEEgb1MiiNncOn+VPb450a1xP7BJdSH2b55mcq1PFWg8s+V8lvzhK7T6Gy97UZNu3Q8R1B47tSXU53pWqOB7qix4NJouqP8IO+9eiMkPcGBiMRJNzITlaYPDnTSSuJUpQRx0gXAXJnw
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(346002)(39860400002)(396003)(1800799009)(186009)(451199024)(55016003)(66556008)(64756008)(66476007)(38070700005)(38100700002)(76116006)(54906003)(66446008)(82960400001)(316002)(478600001)(122000001)(110136005)(66946007)(7416002)(2906002)(52536014)(41300700001)(4326008)(8676002)(8936002)(5660300002)(9686003)(71200400001)(7696005)(6506007)(26005)(558084003)(86362001)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?upbnSABoNq1zNn+9RKfccSa/0jBH+kltHVlGBbc5Jty7ACoPlSfDOVHbCKuq?=
- =?us-ascii?Q?8pcVoKdRGR3nsQ4MD2D5dMVTHrxlXIBy4fIICMDAr8L5q2QLwxKAoZ5L0fz3?=
- =?us-ascii?Q?fyinKu193A5kCUoKVupf3rsKFHk4IlEkNecoXsV1Wn+wPYdIvCDAlFifVwA/?=
- =?us-ascii?Q?HYtbwPB3zamQfByZBU9IIxQPiuH+J9FtclPpWqZ1QVNkPQJO1OxScKzCmk1N?=
- =?us-ascii?Q?SW0V6A7HSat48+YUhSpgCzhs1FgCoQXdziI78ZZBl6FEok6f46fGlal9b2FN?=
- =?us-ascii?Q?A3p96XitnHlpkMbtwAT8RtZmadorLQEMIhj1U62ULvN4XMEsLvmSnjcYMhTW?=
- =?us-ascii?Q?UnwCQsaGbD22yETVTBoE43uGTwfdG4rolmD9kivKq6vcO7eGea1rMWwtDg+6?=
- =?us-ascii?Q?9VMAbXotq5bQZiuuz80++gF10qGNPAW9cWgpzhcBabNOaRYIKlqG7iikE/L7?=
- =?us-ascii?Q?elONWw87azY+ynoBRnjMfNizeuOqBM+e3BDhMUOG+TZFMyvbKCRcKfzD3Uy/?=
- =?us-ascii?Q?1pkjfB7Pk2+1AWVDZHgVfVmnSk5vbEgCXMGko32cnRfoePEia9xYrybp95tx?=
- =?us-ascii?Q?ETWD6p5WsOmalqPC60VEj+V2TtHI0PKFoGEbF0gtrfkdiW/DJqI8ACngWgbS?=
- =?us-ascii?Q?YacZzAmBHaWgOF4YYCfBF861eqxdpz/gO3IGytlkAT7Kdvw1idOr++jgIlYI?=
- =?us-ascii?Q?/Iu06cCaZcy29ou9fes00d5lh2PgbYLuyKa2uolHfIwt26qL5NhLhWNizc3u?=
- =?us-ascii?Q?rbnMJqmplqmGycUpFgTJN1NU+Cr1BuMBrwXnjaC8LAYwMPqe6T2+8rUd8xGE?=
- =?us-ascii?Q?Bfb8qPRQRrtHbilmMk3RkkSgujJmyPvPj6zRu7v6yrtp8kyQgO4bM4cQApcv?=
- =?us-ascii?Q?gf7cfHtrIjcse9106BuslqIp0Fae9IQ1Z1f+zkE/CpF6ZamKwH7tLZAiVk0v?=
- =?us-ascii?Q?MKKqN0S2fQsaT5wpaBEoZFQ/ed1Xp/9puGI1ch+nit4scJkfa3VVIbVvqaXz?=
- =?us-ascii?Q?wuCPb3czr6XSBIUHOl+5/eGGwjiqyRL+mEuQuiSWGouu0ggaM0/8wIhtRL9l?=
- =?us-ascii?Q?yhnYKZwXHAhT7eYN0hrTIiEwh667w2hN1gABUAPQA2mV/+8gkjjA9RqLDTsz?=
- =?us-ascii?Q?WQyscIxHxmjIHmwTNt+5R430ZQK672Sih069oL1gcObntBQoBsPNyKFuDEph?=
- =?us-ascii?Q?NShJU1He2lhIg0BOpS6FRX3bXrEkTPZxwsDKLMMBGOwAlbx/p3gLihqeECLW?=
- =?us-ascii?Q?DfhBxlgcUClE3K6pS4Nx97BmMY6YSwV4aYu+2GptnTebPuQltdMuHlbYKFwn?=
- =?us-ascii?Q?Hd3OsqJdcG9f+dFoXFeeJfbILcSs9r4KhNoH9xwzYKHRWMrOQKh/Bj1Ko9kc?=
- =?us-ascii?Q?GjAiZVse+VSKTlSz1+74h8RYrcPDILHDmROIZAH35O3Wg+f7hYxfU4EXQGzE?=
- =?us-ascii?Q?Bq20Kn4HJe4X5oWm3EGGqY+OYUgEldsWSxQqsnrECuKCgDmzsVeV4oRSKw/7?=
- =?us-ascii?Q?mD87hDII2GohzUFqov+zTNoqbpg3TOUNz8ncG0h8XkaAeLa4TumXRDZuSAbt?=
- =?us-ascii?Q?njhGMtkojoMigljsMuF3P6pL2TtIVTx6swvsMekV?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+   d="scan'208";a="908309223"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.40.107])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 00:35:48 -0700
+Message-ID: <d802a8c9-aca1-ea47-f4c9-1d76e0fae9c9@intel.com>
+Date:   Thu, 17 Aug 2023 10:35:43 +0300
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 855d37ae-c59a-4a8b-5a62-08db9ef44da1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Aug 2023 07:33:51.4193
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Y9zmGFKoS1vM1P6shoFImJepx8vtiZQfCNVvKDkykJ41qXVkmhWHDrorXNzoAS/y0agyfag2bAv9/ZHtkyIVkg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7571
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.14.0
+Subject: Re: [PATCH v8] mmc: sdhci-of-dwcmshc: Add runtime PM operations
+To:     Liming Sun <limings@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        David Thompson <davthompson@nvidia.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <79137159a833c164ea8ea3f05d8d6d9537db2f42.1683747334.git.limings@nvidia.com>
+ <20230817010608.211329-1-limings@nvidia.com>
+Content-Language: en-US
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20230817010608.211329-1-limings@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Liu, Yi L <yi.l.liu@intel.com>
-> Sent: Wednesday, August 16, 2023 8:14 PM
->=20
-> Add intel_iommu_hw_info() to report cap_reg and ecap_reg information.
->=20
-> Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
-> Signed-off-by: Yi Liu <yi.l.liu@intel.com>
+On 17/08/23 04:06, Liming Sun wrote:
+> This commit implements the runtime PM operations to disable eMMC
+> card clock when idle.
+> 
+> Reviewed-by: David Thompson <davthompson@nvidia.com>
+> Signed-off-by: Liming Sun <limings@nvidia.com>
+> ---
+> v7->v8:
+>     - Address Ulf's comment (option-1);
+>     - Updates for Adrian;s comment to remove the force_suspend/resume
+>       in dwcmshc_resume()/dwcmshc_suspend(); Add comments for
+>       dwcmshc_resume()/dwcmshc_suspend();
+> v6->v7:
+>     - Address Ulf's comment;
+> v5->v6:
+>     - Address Adrian's more comments and add coordination between
+>       runtime PM and system PM;
+> v4->v5:
+>     - Address Adrian's comment to move the pm_enable to the end to
+>       avoid race;
+> v3->v4:
+>     - Fix compiling reported by 'kernel test robot';
+> v2->v3:
+>     - Revise the commit message;
+> v1->v2:
+>     Updates for comments from Ulf:
+>     - Make the runtime PM logic generic for sdhci-of-dwcmshc;
+> v1: Initial version.
+> ---
+>  drivers/mmc/host/sdhci-of-dwcmshc.c | 76 +++++++++++++++++++++++++++--
+>  1 file changed, 73 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> index e68cd87998c8..2196218c9d79 100644
+> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
+> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+> +#include <linux/pm_runtime.h>
+>  #include <linux/reset.h>
+>  #include <linux/sizes.h>
+>  
+> @@ -548,9 +549,13 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>  
+>  	host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
+>  
+> +	pm_runtime_get_noresume(dev);
+> +	pm_runtime_set_active(dev);
+> +	pm_runtime_enable(dev);
+> +
+>  	err = sdhci_setup_host(host);
+>  	if (err)
+> -		goto err_clk;
+> +		goto err_rpm;
+>  
+>  	if (rk_priv)
+>  		dwcmshc_rk35xx_postinit(host, priv);
+> @@ -559,10 +564,15 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>  	if (err)
+>  		goto err_setup_host;
+>  
+> +	pm_runtime_put(dev);
+> +
+>  	return 0;
+>  
+>  err_setup_host:
+>  	sdhci_cleanup_host(host);
+> +err_rpm:
+> +	pm_runtime_disable(dev);
+> +	pm_runtime_put_noidle(dev);
+>  err_clk:
+>  	clk_disable_unprepare(pltfm_host->clk);
+>  	clk_disable_unprepare(priv->bus_clk);
+> @@ -594,6 +604,10 @@ static int dwcmshc_remove(struct platform_device *pdev)
+>  }
+>  
+>  #ifdef CONFIG_PM_SLEEP
+> +/*
+> + * Note, runtime suspend changes only SDHCI_CLOCK_CARD_EN which has no effect on
+> + * system suspend.
+> + */
 
-Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+This comment isn't needed since pm_runtime_get_sync() will
+always runtime resume the device if needed.
+
+>  static int dwcmshc_suspend(struct device *dev)
+>  {
+>  	struct sdhci_host *host = dev_get_drvdata(dev);
+> @@ -602,9 +616,11 @@ static int dwcmshc_suspend(struct device *dev)
+>  	struct rk35xx_priv *rk_priv = priv->priv;
+>  	int ret;
+>  
+> +	pm_runtime_get_sync(dev);
+
+This needs a corresponding pm_runtime_put() at the end of dwcmshc_resume().
+
+> +
+>  	ret = sdhci_suspend_host(host);
+>  	if (ret)
+> -		return ret;
+> +		goto err_suspend;
+>  
+>  	clk_disable_unprepare(pltfm_host->clk);
+>  	if (!IS_ERR(priv->bus_clk))
+> @@ -614,9 +630,15 @@ static int dwcmshc_suspend(struct device *dev)
+>  		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
+>  					   rk_priv->rockchip_clks);
+>  
+> +err_suspend:
+> +	pm_runtime_put_noidle(dev);
+>  	return ret;
+>  }
+>  
+> +/*
+> + * Note, system resume leaves SDHCI_CLOCK_INT_EN off which is consistent with
+> + * either runtime suspended or runtime resumed.
+> + */
+
+As above, this comment isn't needed.
+
+>  static int dwcmshc_resume(struct device *dev)
+
+
+As mentioned above, dwcmshc_resume() needs a pm_runtime_put()
+to balance the pm_runtime_get_sync().
+
+Could fix up the error path too, but that should be a
+separate prior patch.
+
+Probably end up looking like:
+
+
+diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
+index 20aa9b6327d2..c9b020b7a3f6 100644
+--- a/drivers/mmc/host/sdhci-of-dwcmshc.c
++++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+@@ -652,17 +652,33 @@ static int dwcmshc_resume(struct device *dev)
+ 	if (!IS_ERR(priv->bus_clk)) {
+ 		ret = clk_prepare_enable(priv->bus_clk);
+ 		if (ret)
+-			return ret;
++			goto disable_clk;
+ 	}
+ 
+ 	if (rk_priv) {
+ 		ret = clk_bulk_prepare_enable(RK35xx_MAX_CLKS,
+ 					      rk_priv->rockchip_clks);
+ 		if (ret)
+-			return ret;
++			goto disable_bus_clk;
+ 	}
+ 
+-	return sdhci_resume_host(host);
++	ret = sdhci_resume_host(host);
++	if (ret)
++		goto disable_rockchip_clks;
++
++	pm_runtime_put(dev);
++
++	return 0;
++
++disable_rockchip_clks:
++	if (rk_priv)
++		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS, rk_priv->rockchip_clks);
++disable_bus_clk:
++	if (!IS_ERR(priv->bus_clk))
++		clk_disable_unprepare(priv->bus_clk);
++disable_clk:
++	clk_disable_unprepare(pltfm_host->clk);
++	return ret;
+ }
+ #endif
+ 
+
+
+
+>  {
+>  	struct sdhci_host *host = dev_get_drvdata(dev);
+> @@ -646,7 +668,55 @@ static int dwcmshc_resume(struct device *dev)
+>  }
+>  #endif
+>  
+> -static SIMPLE_DEV_PM_OPS(dwcmshc_pmops, dwcmshc_suspend, dwcmshc_resume);
+> +#ifdef CONFIG_PM
+> +
+> +static void dwcmshc_enable_card_clk(struct sdhci_host *host)
+> +{
+> +	u16 ctrl;
+> +
+> +	ctrl = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> +	if ((ctrl & SDHCI_CLOCK_INT_EN) && !(ctrl & SDHCI_CLOCK_CARD_EN)) {
+> +		ctrl |= SDHCI_CLOCK_CARD_EN;
+> +		sdhci_writew(host, ctrl, SDHCI_CLOCK_CONTROL);
+> +	}
+> +}
+> +
+> +static void dwcmshc_disable_card_clk(struct sdhci_host *host)
+> +{
+> +	u16 ctrl;
+> +
+> +	ctrl = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+> +	if (ctrl & SDHCI_CLOCK_CARD_EN) {
+> +		ctrl &= ~SDHCI_CLOCK_CARD_EN;
+> +		sdhci_writew(host, ctrl, SDHCI_CLOCK_CONTROL);
+> +	}
+> +}
+> +
+> +static int dwcmshc_runtime_suspend(struct device *dev)
+> +{
+> +	struct sdhci_host *host = dev_get_drvdata(dev);
+> +
+> +	dwcmshc_disable_card_clk(host);
+> +
+> +	return 0;
+> +}
+> +
+> +static int dwcmshc_runtime_resume(struct device *dev)
+> +{
+> +	struct sdhci_host *host = dev_get_drvdata(dev);
+> +
+> +	dwcmshc_enable_card_clk(host);
+> +
+> +	return 0;
+> +}
+> +
+> +#endif
+> +
+> +static const struct dev_pm_ops dwcmshc_pmops = {
+> +	SET_SYSTEM_SLEEP_PM_OPS(dwcmshc_suspend, dwcmshc_resume)
+> +	SET_RUNTIME_PM_OPS(dwcmshc_runtime_suspend,
+> +			   dwcmshc_runtime_resume, NULL)
+> +};
+>  
+>  static struct platform_driver sdhci_dwcmshc_driver = {
+>  	.driver	= {
+
