@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C74A677EE3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 02:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D64CC77EE3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 02:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347358AbjHQAa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 20:30:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42164 "EHLO
+        id S1347323AbjHQAa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 20:30:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347329AbjHQAaf (ORCPT
+        with ESMTP id S1347331AbjHQAag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 20:30:35 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248D7272C
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 17:30:34 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d730a22484aso587682276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 17:30:34 -0700 (PDT)
+        Wed, 16 Aug 2023 20:30:36 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D95A10F0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 17:30:35 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-589e5e46735so56415917b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 17:30:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692232233; x=1692837033;
+        d=google.com; s=20221208; t=1692232234; x=1692837034;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=p5AVWhdLdq92AtHjXfrvRAhqFYTQ8rzt+av6leDSxig=;
-        b=6YSihL71lWgouUO/mSZlnJIqsVWU0t8EUJZUcY4kpRinwQnibsi30lL19o/067zYqx
-         NP3jhndiF60n0Hj7ZHPVrE/7S6vfaPGr8n4XtBQmVhPyskYQ+2JZgpgh/3hxEMxpEglK
-         74bfyyR3COJxLz2Gkvif2unrCFKewmHAK3PaH0RC3PSbEa0SOp+i9OHlD4rECrAIYtzv
-         s0IclNp5A0l6tJKtos3y5WPxudsHLorXzWZK/8nGLvLeuZGo9/l5urm3KxsssJJS6TaH
-         Q81hdlsGdxVvjcpaWM2aJZ0wqTipFqk3uHbNSQOgi41yCCBadFvM4TQV8KOfVH7BhFcY
-         VLFA==
+        bh=mex/dnvNjwvv3cz9/YanI8OBgPSgiYyAz0HGHhAeol4=;
+        b=pv1Q5St4yi9vCvJ/2N8qASCe/iqlLZhX0iyo78sYkUa3vd6I0xqei3JV5Hwtn4I1ch
+         XeBIJCcDJMQ02vTKYh31FX58dsTQvl/NRk+qQa4Q0gPmhj20Zi9Bh87LTByxzj59qr2O
+         RyNAuWbOg7Txw4ZGldZ5Yu+uVjq52gtJbPD3ddaQJvwx+9UkigBCDCNcOdRWdSCWqoV5
+         cfH8j+nqb6L5pvjjWFNxf37U5roRbFx+fgmZpPmFps4YewwbW1rgB9x56cXO812IoRFp
+         TzbxNTuOYL+55lYB9EyObL16fOHJYNkfio1B9EnPrFwGU+WRdPuprxTPF3LR3I4eMtLF
+         WUKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692232233; x=1692837033;
+        d=1e100.net; s=20221208; t=1692232234; x=1692837034;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=p5AVWhdLdq92AtHjXfrvRAhqFYTQ8rzt+av6leDSxig=;
-        b=BXTWCU6AerGkbmuznLa7qiXm4G56eivLeQsBYO6V1wojgZXf+1PO8MhvVlXCO1RyFv
-         k/0dxgCsnZ/qCXhv0HZyvy6p6WodCE2axISU2LOZyC0M9Nm+qDtSOLo6lU0TpmPOnMRW
-         /s3d1I/2/L29SrdQc4W7/d0lKx1i73I9IamXgnbvvYIwcBp1WndGJ3eoI8IwLN0KvMTO
-         k3/F2iUayPZujKqVgCwAGNcjSlEBRefce0BMsD+XO+gA1t1b2q8QnMD8xwCcUFZMKPqj
-         jjeD2X3VsMR9RXV9TCBJZvDEt2d9L2ZbKtxv5pkxUKBvImVl08XTXo1Bpi6hn463hJio
-         uyZw==
-X-Gm-Message-State: AOJu0YxpKIqhHcRGY5ufoO59fOh833M7ySz1cvWJtoA/swdhNK00eU6r
-        YARRj6zbP/2WtWXkGaHZSZRyqA93i8bY
-X-Google-Smtp-Source: AGHT+IElcJgd6OEK6WsLtSqwCDbHFpQVk1NVpVhp/ioqgJwLe1DFcFjqYIWtYwJz7x3wfLN8H7uF9sToSnuG
+        bh=mex/dnvNjwvv3cz9/YanI8OBgPSgiYyAz0HGHhAeol4=;
+        b=B+IdLS0lti8Luy4lduuJwdJdPTxkveK6Yh5BRZjTOgnZvhyBlCxMseu+QLeknRQHUB
+         kh6wS07LYB3D46CeyVTFB7Q9tYJ1zRUEgDM8TGbJQtGCzvS89x14KqZr2CyGYTHb6ELS
+         Yl+LQecwWpQAaCe1UciilQ2u9kWEAAE1EITpcao417zY6PVhhT1/1rq3J4s/OmsZQ9BL
+         kRL4cRJiWne/YzcnvsK1ASZTkqronuwmYzbWT+Ga1RO+8k3MehPsbSq5Q5LNLUEVfQ8L
+         bbo9R/wDfXRfImes/rOhvmcaqf7ziD0sHOLqQAhx52Jp3c3HgPjhBHItQIerJl22sqTB
+         9eFg==
+X-Gm-Message-State: AOJu0Ywcil/2eu0IEeckNFAXHJAYlDfLOK/fl9msiZvhZJXEDTgBN4h8
+        GeQg9CvuTlIcZzGAVQSbNEIPFn5M8Qis
+X-Google-Smtp-Source: AGHT+IEGmTZ+oaTOH/In34DFDperlCh3+zJ9gyAHYMSQVXUAWM3r/4BOJL9eO8DWsHoD00EhvU/ijFUXAjR8
 X-Received: from rananta-linux.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:22b5])
- (user=rananta job=sendgmr) by 2002:a25:76c2:0:b0:ca3:3341:6315 with SMTP id
- r185-20020a2576c2000000b00ca333416315mr25049ybc.0.1692232233287; Wed, 16 Aug
- 2023 17:30:33 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 00:30:18 +0000
+ (user=rananta job=sendgmr) by 2002:a81:c70c:0:b0:57a:118a:f31 with SMTP id
+ m12-20020a81c70c000000b0057a118a0f31mr46286ywi.7.1692232234354; Wed, 16 Aug
+ 2023 17:30:34 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 00:30:19 +0000
 In-Reply-To: <20230817003029.3073210-1-rananta@google.com>
 Mime-Version: 1.0
 References: <20230817003029.3073210-1-rananta@google.com>
 X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
-Message-ID: <20230817003029.3073210-2-rananta@google.com>
-Subject: [PATCH v5 01/12] KVM: arm64: PMU: Introduce a helper to set the
- guest's PMU
+Message-ID: <20230817003029.3073210-3-rananta@google.com>
+Subject: [PATCH v5 02/12] KVM: arm64: PMU: Set the default PMU for the guest
+ on vCPU reset
 From:   Raghavendra Rao Ananta <rananta@google.com>
 To:     Oliver Upton <oliver.upton@linux.dev>,
         Marc Zyngier <maz@kernel.org>
@@ -82,97 +82,117 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Reiji Watanabe <reijiw@google.com>
 
-Introduce a new helper function to set the guest's PMU
-(kvm->arch.arm_pmu), and use it when the guest's PMU needs
-to be set. This helper will make it easier for the following
-patches to modify the relevant code.
+The following patches will use the number of counters information
+from the arm_pmu and use this to set the PMCR.N for the guest
+during vCPU reset. However, since the guest is not associated
+with any arm_pmu until userspace configures the vPMU device
+attributes, and a reset can happen before this event, call
+kvm_arm_support_pmu_v3() just before doing the reset.
 
 No functional change intended.
 
 Signed-off-by: Reiji Watanabe <reijiw@google.com>
 Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
 ---
- arch/arm64/kvm/pmu-emul.c | 52 +++++++++++++++++++++++++++------------
- 1 file changed, 36 insertions(+), 16 deletions(-)
+ arch/arm64/kvm/pmu-emul.c |  9 +--------
+ arch/arm64/kvm/reset.c    | 18 +++++++++++++-----
+ include/kvm/arm_pmu.h     |  6 ++++++
+ 3 files changed, 20 insertions(+), 13 deletions(-)
 
 diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
-index 5606509724787..0ffd1efa90c07 100644
+index 0ffd1efa90c07..b87822024828a 100644
 --- a/arch/arm64/kvm/pmu-emul.c
 +++ b/arch/arm64/kvm/pmu-emul.c
-@@ -865,6 +865,32 @@ static bool pmu_irq_is_valid(struct kvm *kvm, int irq)
+@@ -865,7 +865,7 @@ static bool pmu_irq_is_valid(struct kvm *kvm, int irq)
  	return true;
  }
  
-+static int kvm_arm_set_vm_pmu(struct kvm *kvm, struct arm_pmu *arm_pmu)
-+{
-+	lockdep_assert_held(&kvm->arch.config_lock);
-+
-+	if (!arm_pmu) {
-+		/*
-+		 * No PMU set, get the default one.
-+		 *
-+		 * The observant among you will notice that the supported_cpus
-+		 * mask does not get updated for the default PMU even though it
-+		 * is quite possible the selected instance supports only a
-+		 * subset of cores in the system. This is intentional, and
-+		 * upholds the preexisting behavior on heterogeneous systems
-+		 * where vCPUs can be scheduled on any core but the guest
-+		 * counters could stop working.
-+		 */
-+		arm_pmu = kvm_pmu_probe_armpmu();
-+		if (!arm_pmu)
-+			return -ENODEV;
-+	}
-+
-+	kvm->arch.arm_pmu = arm_pmu;
-+
-+	return 0;
-+}
-+
- static int kvm_arm_pmu_v3_set_pmu(struct kvm_vcpu *vcpu, int pmu_id)
+-static int kvm_arm_set_vm_pmu(struct kvm *kvm, struct arm_pmu *arm_pmu)
++int kvm_arm_set_vm_pmu(struct kvm *kvm, struct arm_pmu *arm_pmu)
  {
- 	struct kvm *kvm = vcpu->kvm;
-@@ -884,9 +910,13 @@ static int kvm_arm_pmu_v3_set_pmu(struct kvm_vcpu *vcpu, int pmu_id)
- 				break;
- 			}
+ 	lockdep_assert_held(&kvm->arch.config_lock);
  
--			kvm->arch.arm_pmu = arm_pmu;
-+			ret = kvm_arm_set_vm_pmu(kvm, arm_pmu);
-+			if (ret) {
-+				WARN_ON(ret);
-+				break;
-+			}
-+
- 			cpumask_copy(kvm->arch.supported_cpus, &arm_pmu->supported_cpus);
--			ret = 0;
- 			break;
- 		}
- 	}
-@@ -908,20 +938,10 @@ int kvm_arm_pmu_v3_set_attr(struct kvm_vcpu *vcpu, struct kvm_device_attr *attr)
+@@ -937,13 +937,6 @@ int kvm_arm_pmu_v3_set_attr(struct kvm_vcpu *vcpu, struct kvm_device_attr *attr)
+ 	if (vcpu->arch.pmu.created)
  		return -EBUSY;
  
- 	if (!kvm->arch.arm_pmu) {
--		/*
--		 * No PMU set, get the default one.
--		 *
--		 * The observant among you will notice that the supported_cpus
--		 * mask does not get updated for the default PMU even though it
--		 * is quite possible the selected instance supports only a
--		 * subset of cores in the system. This is intentional, and
--		 * upholds the preexisting behavior on heterogeneous systems
--		 * where vCPUs can be scheduled on any core but the guest
--		 * counters could stop working.
--		 */
--		kvm->arch.arm_pmu = kvm_pmu_probe_armpmu();
--		if (!kvm->arch.arm_pmu)
--			return -ENODEV;
-+		int ret = kvm_arm_set_vm_pmu(kvm, NULL);
-+
+-	if (!kvm->arch.arm_pmu) {
+-		int ret = kvm_arm_set_vm_pmu(kvm, NULL);
+-
+-		if (ret)
+-			return ret;
+-	}
+-
+ 	switch (attr->attr) {
+ 	case KVM_ARM_VCPU_PMU_V3_IRQ: {
+ 		int __user *uaddr = (int __user *)(long)attr->addr;
+diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
+index bc8556b6f4590..4c20f1ccd0789 100644
+--- a/arch/arm64/kvm/reset.c
++++ b/arch/arm64/kvm/reset.c
+@@ -206,6 +206,7 @@ static int kvm_vcpu_enable_ptrauth(struct kvm_vcpu *vcpu)
+  */
+ int kvm_reset_vcpu(struct kvm_vcpu *vcpu)
+ {
++	struct kvm *kvm = vcpu->kvm;
+ 	struct vcpu_reset_state reset_state;
+ 	int ret;
+ 	bool loaded;
+@@ -216,6 +217,18 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu)
+ 	vcpu->arch.reset_state.reset = false;
+ 	spin_unlock(&vcpu->arch.mp_state_lock);
+ 
++	/*
++	 * When the vCPU has a PMU, but no PMU is set for the guest
++	 * yet, set the default one.
++	 */
++	if (kvm_vcpu_has_pmu(vcpu) && unlikely(!kvm->arch.arm_pmu)) {
++		ret = -EINVAL;
++		if (kvm_arm_support_pmu_v3())
++			ret = kvm_arm_set_vm_pmu(kvm, NULL);
 +		if (ret)
 +			return ret;
++	}
++
+ 	/* Reset PMU outside of the non-preemptible section */
+ 	kvm_pmu_vcpu_reset(vcpu);
+ 
+@@ -257,11 +270,6 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu)
+ 		} else {
+ 			pstate = VCPU_RESET_PSTATE_EL1;
+ 		}
+-
+-		if (kvm_vcpu_has_pmu(vcpu) && !kvm_arm_support_pmu_v3()) {
+-			ret = -EINVAL;
+-			goto out;
+-		}
+ 		break;
  	}
  
- 	switch (attr->attr) {
+diff --git a/include/kvm/arm_pmu.h b/include/kvm/arm_pmu.h
+index 847da6fc27139..66a2f8477641e 100644
+--- a/include/kvm/arm_pmu.h
++++ b/include/kvm/arm_pmu.h
+@@ -100,6 +100,7 @@ void kvm_vcpu_pmu_restore_host(struct kvm_vcpu *vcpu);
+ })
+ 
+ u8 kvm_arm_pmu_get_pmuver_limit(void);
++int kvm_arm_set_vm_pmu(struct kvm *kvm, struct arm_pmu *arm_pmu);
+ 
+ #else
+ struct kvm_pmu {
+@@ -172,6 +173,11 @@ static inline u8 kvm_arm_pmu_get_pmuver_limit(void)
+ 	return 0;
+ }
+ 
++static inline int kvm_arm_set_vm_pmu(struct kvm *kvm, struct arm_pmu *arm_pmu)
++{
++	return -ENODEV;
++}
++
+ #endif
+ 
+ #endif
 -- 
 2.41.0.694.ge786442a9b-goog
 
