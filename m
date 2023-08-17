@@ -2,126 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1E277F7D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A570777F84F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351459AbjHQNeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 09:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43554 "EHLO
+        id S1351630AbjHQOEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 10:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351582AbjHQNeL (ORCPT
+        with ESMTP id S1351756AbjHQOEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 09:34:11 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD84114;
-        Thu, 17 Aug 2023 06:34:00 -0700 (PDT)
-Received: from kwepemi500015.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RRQs26t64zVk4s;
-        Thu, 17 Aug 2023 21:31:50 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by kwepemi500015.china.huawei.com
- (7.221.188.92) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 17 Aug
- 2023 21:33:57 +0800
-From:   Lu Wei <luwei32@huawei.com>
-To:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <wsa+renesas@sang-engineering.com>,
-        <tglx@linutronix.de>, <peterz@infradead.org>, <maheshb@google.com>,
-        <fw@strlen.de>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net] ipvlan: Fix a reference count leak warning in ipvlan_ns_exit()
-Date:   Thu, 17 Aug 2023 22:54:49 +0800
-Message-ID: <20230817145449.141827-1-luwei32@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 17 Aug 2023 10:04:41 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF26819E
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:04:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692281080; x=1723817080;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Q2oPBcPCOcbDb80I+Q8C7q8UEzQrIeUnHlIFkRLbMJE=;
+  b=DwFrRD3IriinLmW4iqsdnbXEiCSlFwBeki2jnwN44pGcLv3ouxZnT1xa
+   JsO/JI65lf1WuP/2F7S73yCfbBfv9YUA/ALawmSKZ3tEA3QEUpJsDVASu
+   p7+CJElx/NfEsrL/aJliOg0/jEr/Y3b7y7wSYb6LYl7HVaE+vqH7KQFJe
+   iVoWvJr7mf6Rg1vPzBfdAT2CTLscSbcYHqp3KhdyavohLlACoCGTbpN1o
+   IhA9yzqY5lMG39/KnkYxaNFIx6Db/xN6S5qyQc1ckYZHV4/kEnGRDfQCt
+   T9rj/Zfo61rOzw2fwsLWe9hisnShd9jTZCHiHIymnf8SYKDLZJnv7NZ7o
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="439185922"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="439185922"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 06:28:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="824633291"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="824633291"
+Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 17 Aug 2023 06:28:58 -0700
+Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qWd3T-0001AH-3A;
+        Thu, 17 Aug 2023 13:28:53 +0000
+Date:   Thu, 17 Aug 2023 21:28:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/firmware/efi/libstub/alignedmem.c:27: warning: Function
+ parameter or member 'memory_type' not described in
+ 'efi_allocate_pages_aligned'
+Message-ID: <202308172116.yPoBelLU-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.101.6]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500015.china.huawei.com (7.221.188.92)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two network devices(veth1 and veth3) in ns1, and ipvlan1 with
-L3S mode and ipvlan2 with L2 mode are created based on them as
-figure (1). In this case, ipvlan_register_nf_hook() will be called to
-register nf hook which is needed by ipvlans in L3S mode in ns1 and value
-of ipvl_nf_hook_refcnt is set to 1.
+Hi Ard,
 
-(1)
-           ns1                           ns2
-      ------------                  ------------
+First bad commit (maybe != root cause):
 
-   veth1--ipvlan1 (L3S)
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
+commit: 9cf42bca30e98a1c6c9e8abf876940a551eaa3d1 efi: libstub: use EFI_LOADER_CODE region when moving the kernel in memory
+date:   9 months ago
+config: x86_64-rhel-8.3 (https://download.01.org/0day-ci/archive/20230817/202308172116.yPoBelLU-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230817/202308172116.yPoBelLU-lkp@intel.com/reproduce)
 
-   veth3--ipvlan2 (L2)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308172116.yPoBelLU-lkp@intel.com/
 
-(2)
-           ns1                           ns2
-      ------------                  ------------
+All warnings (new ones prefixed by >>):
 
-   veth1--ipvlan1 (L3S)
+>> drivers/firmware/efi/libstub/alignedmem.c:27: warning: Function parameter or member 'memory_type' not described in 'efi_allocate_pages_aligned'
 
-         ipvlan2 (L2)                  veth3
-     |                                  |
-     |------->-------->--------->--------
-                    migrate
 
-When veth3 migrates from ns1 to ns2 as figure (2), veth3 will register in
-ns2 and calls call_netdevice_notifiers with NETDEV_REGISTER event:
+vim +27 drivers/firmware/efi/libstub/alignedmem.c
 
-dev_change_net_namespace
-    call_netdevice_notifiers
-        ipvlan_device_event
-            ipvlan_migrate_l3s_hook
-                ipvlan_register_nf_hook(newnet)      (I)
-                ipvlan_unregister_nf_hook(oldnet)    (II)
+43b1df0e013c25 Ard Biesheuvel 2020-03-27   7  
+43b1df0e013c25 Ard Biesheuvel 2020-03-27   8  /**
+43b1df0e013c25 Ard Biesheuvel 2020-03-27   9   * efi_allocate_pages_aligned() - Allocate memory pages
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  10   * @size:	minimum number of bytes to allocate
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  11   * @addr:	On return the address of the first allocated page. The first
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  12   *		allocated page has alignment EFI_ALLOC_ALIGN which is an
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  13   *		architecture dependent multiple of the page size.
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  14   * @max:	the address that the last allocated memory page shall not
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  15   *		exceed
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  16   * @align:	minimum alignment of the base of the allocation
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  17   *
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  18   * Allocate pages as EFI_LOADER_DATA. The allocated pages are aligned according
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  19   * to @align, which should be >= EFI_ALLOC_ALIGN. The last allocated page will
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  20   * not exceed the address given by @max.
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  21   *
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  22   * Return:	status code
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  23   */
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  24  efi_status_t efi_allocate_pages_aligned(unsigned long size, unsigned long *addr,
+9cf42bca30e98a Ard Biesheuvel 2022-08-02  25  					unsigned long max, unsigned long align,
+9cf42bca30e98a Ard Biesheuvel 2022-08-02  26  					int memory_type)
+43b1df0e013c25 Ard Biesheuvel 2020-03-27 @27  {
 
-In function ipvlan_migrate_l3s_hook(), ipvl_nf_hook_refcnt in ns1 is not 0
-since veth1 with ipvlan1 still in ns1, (I) and (II) will be called to
-register nf_hook in ns2 and unregister nf_hook in ns1. As a result,
-ipvl_nf_hook_refcnt in ns1 is decreased incorrectly and this in ns2
-is increased incorrectly. When the second net namespace is removed, a
-reference count leak warning in ipvlan_ns_exit() will be triggered.
+:::::: The code at line 27 was first introduced by commit
+:::::: 43b1df0e013c25abb536699f46d0e9f291b586a0 efi/libstub: Add API function to allocate aligned memory
 
-This patch add a check before ipvlan_migrate_l3s_hook() is called. The
-warning can be triggered as follows:
+:::::: TO: Ard Biesheuvel <ardb@kernel.org>
+:::::: CC: Ard Biesheuvel <ardb@kernel.org>
 
-$ ip netns add ns1
-$ ip netns add ns2
-$ ip netns exec ns1 ip link add veth1 type veth peer name veth2
-$ ip netns exec ns1 ip link add veth3 type veth peer name veth4
-$ ip netns exec ns1 ip link add ipv1 link veth1 type ipvlan mode l3s
-$ ip netns exec ns1 ip link add ipv2 link veth3 type ipvlan mode l2
-$ ip netns exec ns1 ip link set veth3 netns ns2
-$ ip net del ns2
-
-Fixes: 3133822f5ac1 ("ipvlan: use pernet operations and restrict l3s hooks to master netns")
-Signed-off-by: Lu Wei <luwei32@huawei.com>
----
- drivers/net/ipvlan/ipvlan_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ipvlan/ipvlan_main.c b/drivers/net/ipvlan/ipvlan_main.c
-index b15dd9a3ad54..1b55928e89b8 100644
---- a/drivers/net/ipvlan/ipvlan_main.c
-+++ b/drivers/net/ipvlan/ipvlan_main.c
-@@ -748,7 +748,8 @@ static int ipvlan_device_event(struct notifier_block *unused,
- 
- 		write_pnet(&port->pnet, newnet);
- 
--		ipvlan_migrate_l3s_hook(oldnet, newnet);
-+		if (port->mode == IPVLAN_MODE_L3S)
-+			ipvlan_migrate_l3s_hook(oldnet, newnet);
- 		break;
- 	}
- 	case NETDEV_UNREGISTER:
 -- 
-2.31.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
