@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F907801BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 091C07801C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356121AbjHQXgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 19:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50182 "EHLO
+        id S1356133AbjHQXg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 19:36:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356192AbjHQXgt (ORCPT
+        with ESMTP id S1356194AbjHQXgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 19:36:49 -0400
+        Thu, 17 Aug 2023 19:36:51 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54D73595;
-        Thu, 17 Aug 2023 16:36:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFD330D6;
+        Thu, 17 Aug 2023 16:36:49 -0700 (PDT)
 Received: from notapiano.myfiosgateway.com (zone.collabora.co.uk [167.235.23.81])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2EDA666071EB;
-        Fri, 18 Aug 2023 00:36:45 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1895E6606F65;
+        Fri, 18 Aug 2023 00:36:46 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1692315406;
-        bh=2KgVTEnaEFVbuvK2kyzQ8wdw/iggAoQVGyxWLHJ7ACs=;
+        s=mail; t=1692315408;
+        bh=bJX979j7kxO5Jm5jmek5RyQM0H5/ySZgeQ9XD18Us7E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c8dsZ2snflxQGWX61ASKPuDSIeNWkmINuXabd0PDRmomM22DXa1pYlvb565Lr4Wo/
-         yQRQcYAC/my5dZzIuD7fcEWuKUELPNmAtnkkKup3gPCRQ7b6NgWvtRA6sgA9GUMSnu
-         H/mePYez8jJVB5vPpW9Gi7wtSPC5Qpbvb35bdTGjmOs+MfsV0FJrPG59XXOPxLzg+T
-         ryoskDfwG3MJDIgOYnH1gGxAu+2rRg4lJJPwt136TlffuPPFGRAUC2qY947d//eMUa
-         GztmxJjmaOZOncXuDnfP67v8d6/4sdL9J9RgkUu63CE2+BvMle4cc0zDDbwvCKHq8Q
-         ArIPfURrG/OVA==
+        b=jE7P4rrg2ElpbasKSToQsaxSvebmJQr8l1O4cg/XTUncAzVW7I89O7uUNyf/230aE
+         +fuaMbM2AMKBQb5/VPk5z3gNW70rMY3NVhHQwQL1vp8CyjnodlT/x+uS39K29g8sx1
+         ZimlKKPcamU5Ywqxgu83qEhiXEo8NLTko6+MRs/kyE2/BmohW9RFc+tgt8NktOjHaD
+         jNkWEZN2Bsl7Wubtzzocd8pmi/UZ8QSGh86fepVViVJIalooFNboF/KEEy9Pa19ydG
+         SPa32MkOe6x/XmV5u9W/hxyDURDh9tfMHIxHNUNbVTWTo4I2PZ5t6G/2HgJWrPnpXc
+         c2TetPwmXQTyA==
 From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
         <nfraprado@collabora.com>
 To:     Rob Herring <robh+dt@kernel.org>,
@@ -41,11 +41,11 @@ Cc:     Mark Brown <broonie@kernel.org>, kernelci@lists.linux.dev,
         Guenter Roeck <groeck@chromium.org>, kernel@collabora.com,
         Bjorn Andersson <andersson@kernel.org>,
         =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/3] dt: dt-extract-compatibles: Add flag for driver matching compatibles
-Date:   Thu, 17 Aug 2023 19:35:26 -0400
-Message-ID: <20230817233635.2306377-3-nfraprado@collabora.com>
+        <nfraprado@collabora.com>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v2 3/3] kselftest: Add new test for detecting unprobed Devicetree devices
+Date:   Thu, 17 Aug 2023 19:35:27 -0400
+Message-ID: <20230817233635.2306377-4-nfraprado@collabora.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230817233635.2306377-1-nfraprado@collabora.com>
 References: <20230817233635.2306377-1-nfraprado@collabora.com>
@@ -61,131 +61,243 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new flag, '--driver-match', to the dt-extract-compatibles script
-that causes it to only print out compatibles that are expected to match
-a driver. This output can then be used by tests to detect device probe
-failures.
+Introduce a new kselftest to detect devices that were declared in the
+Devicetree, and are expected to be probed by a driver, but weren't.
 
-In order to filter the compatibles down to only ones that will match to
-a driver, the following is considered:
-- A compatible needs to show up in a driver's of_match_table for it to
-  be matched to a driver
-- Compatibles that are used in both of_match_table and OF_DECLARE type
-  macros can't be expected to match to a driver and so are ignored.
-  One exception is CLK_OF_DECLARE_DRIVER, since it indicates that a
-  driver will also later probe, so compatibles in this macro are not
-  ignored.
+The test uses two lists: a list of compatibles that can match a
+Devicetree device to a driver, and a list of compatibles that should be
+ignored. The first is automatically generated by the
+dt-extract-compatibles script, and is run as part of building this test.
+The list of compatibles to ignore is a hand-crafted list to capture the
+few exceptions of compatibles that are expected to match a driver but
+not be bound to it.
 
 Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 
 ---
 
 Changes in v2:
-- Added this commit
+- Switched output to be in KTAP format
+- Changed Makefile to make use of the dt-extract-compatibles instead of
+  the Coccinelle script
+- Dropped compatibles from compatible_ignore_list that are now already
+  filtered out by extraction script
+- Added early exit if /proc/device-tree is not present
 
- scripts/dtc/dt-extract-compatibles | 57 +++++++++++++++++++++++++-----
- 1 file changed, 48 insertions(+), 9 deletions(-)
+ tools/testing/selftests/Makefile              |  1 +
+ tools/testing/selftests/dt/.gitignore         |  1 +
+ tools/testing/selftests/dt/Makefile           | 21 +++++
+ .../selftests/dt/compatible_ignore_list       |  1 +
+ tools/testing/selftests/dt/ktap_helpers.sh    | 57 +++++++++++++
+ .../selftests/dt/test_unprobed_devices.sh     | 79 +++++++++++++++++++
+ 6 files changed, 160 insertions(+)
+ create mode 100644 tools/testing/selftests/dt/.gitignore
+ create mode 100644 tools/testing/selftests/dt/Makefile
+ create mode 100644 tools/testing/selftests/dt/compatible_ignore_list
+ create mode 100644 tools/testing/selftests/dt/ktap_helpers.sh
+ create mode 100755 tools/testing/selftests/dt/test_unprobed_devices.sh
 
-diff --git a/scripts/dtc/dt-extract-compatibles b/scripts/dtc/dt-extract-compatibles
-index 2b6d228602e8..bd07477dd144 100755
---- a/scripts/dtc/dt-extract-compatibles
-+++ b/scripts/dtc/dt-extract-compatibles
-@@ -7,11 +7,15 @@ import re
- import argparse
- 
- 
--def parse_of_declare_macros(data):
-+def parse_of_declare_macros(data, include_driver_macros=True):
- 	""" Find all compatible strings in OF_DECLARE() style macros """
- 	compat_list = []
- 	# CPU_METHOD_OF_DECLARE does not have a compatible string
--	for m in re.finditer(r'(?<!CPU_METHOD_)(IRQCHIP|OF)_(DECLARE|MATCH)(_DRIVER)?\(.*?\)', data):
-+	if include_driver_macros:
-+		re_macros = r'(?<!CPU_METHOD_)(IRQCHIP|OF)_(DECLARE|MATCH)(_DRIVER)?\(.*?\)'
-+	else:
-+		re_macros = r'(?<!CPU_METHOD_)(IRQCHIP|OF)_(DECLARE|MATCH)\(.*?\)'
-+	for m in re.finditer(re_macros, data):
- 		try:
- 			compat = re.search(r'"(.*?)"', m[0])[1]
- 		except:
-@@ -22,24 +26,52 @@ def parse_of_declare_macros(data):
- 	return compat_list
- 
- 
--def parse_of_device_id(data):
-+def parse_of_device_id(data, match_table_list=None):
- 	""" Find all compatible strings in of_device_id structs """
- 	compat_list = []
--	for m in re.finditer(r'of_device_id(\s+\S+)?\s+\S+\[\](\s+\S+)?\s*=\s*({.*?);', data):
--		compat_list += re.findall(r'\.compatible\s+=\s+"(\S+)"', m[3])
-+	for m in re.finditer(r'of_device_id(\s+\S+)?\s+(\S+)\[\](\s+\S+)?\s*=\s*({.*?);', data):
-+		if match_table_list is not None and m[2] not in match_table_list:
-+			continue
-+		compat_list += re.findall(r'\.compatible\s+=\s+"(\S+)"', m[4])
- 
- 	return compat_list
- 
- 
--def parse_compatibles(file):
-+def parse_of_match_table(data):
-+	""" Find all driver's of_match_table """
-+	match_table_list = []
-+	for m in re.finditer(r'\.of_match_table\s+=\s+(of_match_ptr\()?([a-zA-Z0-9_-]+)', data):
-+		match_table_list.append(m[2])
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index 42806add0114..e8823097698c 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -18,6 +18,7 @@ TARGETS += drivers/dma-buf
+ TARGETS += drivers/s390x/uvdevice
+ TARGETS += drivers/net/bonding
+ TARGETS += drivers/net/team
++TARGETS += dt
+ TARGETS += efivarfs
+ TARGETS += exec
+ TARGETS += fchmodat2
+diff --git a/tools/testing/selftests/dt/.gitignore b/tools/testing/selftests/dt/.gitignore
+new file mode 100644
+index 000000000000..f6476c9f2884
+--- /dev/null
++++ b/tools/testing/selftests/dt/.gitignore
+@@ -0,0 +1 @@
++compatible_list
+diff --git a/tools/testing/selftests/dt/Makefile b/tools/testing/selftests/dt/Makefile
+new file mode 100644
+index 000000000000..62dc00ee4978
+--- /dev/null
++++ b/tools/testing/selftests/dt/Makefile
+@@ -0,0 +1,21 @@
++PY3 = $(shell which python3 2>/dev/null)
 +
-+	return match_table_list
++ifneq ($(PY3),)
 +
++TEST_PROGS := test_unprobed_devices.sh
++TEST_GEN_FILES := compatible_list
++TEST_FILES := compatible_ignore_list ktap_helpers.sh
 +
-+def parse_compatibles(file, compat_ignore_list):
- 	with open(file, 'r', encoding='utf-8') as f:
- 		data = f.read().replace('\n', '')
- 
--	compat_list = parse_of_declare_macros(data)
--	compat_list += parse_of_device_id(data)
-+	if compat_ignore_list is not None:
-+		# For a compatible in the DT to be matched to a driver it needs to show
-+		# up in a driver's of_match_table
-+		match_table_list = parse_of_match_table(data)
-+		compat_list = parse_of_device_id(data, match_table_list)
++include ../lib.mk
 +
-+		compat_list = [compat for compat in compat_list if compat not in compat_ignore_list]
-+	else:
-+		compat_list = parse_of_declare_macros(data)
-+		compat_list += parse_of_device_id(data)
- 
- 	return compat_list
- 
-+def parse_compatibles_to_ignore(file):
-+	with open(file, 'r', encoding='utf-8') as f:
-+		data = f.read().replace('\n', '')
++$(OUTPUT)/compatible_list:
++	$(top_srcdir)/scripts/dtc/dt-extract-compatibles -d $(top_srcdir) > $@
 +
-+	# Compatibles that show up in OF_DECLARE macros can't be expected to
-+	# match a driver, except for the _DRIVER ones.
-+	return parse_of_declare_macros(data, include_driver_macros=False)
++else
 +
++all: no_py3_warning
 +
- def print_compat(filename, compatibles):
- 	if not compatibles:
- 		return
-@@ -63,10 +95,17 @@ if __name__ == "__main__":
- 	ap = argparse.ArgumentParser()
- 	ap.add_argument("cfile", type=str, nargs='*', help="C source files or directories to parse")
- 	ap.add_argument('-H', '--with-filename', help="Print filename with compatibles", action="store_true")
-+	ap.add_argument('-d', '--driver-match', help="Only print compatibles that should match to a driver", action="store_true")
- 	args = ap.parse_args()
- 
- 	show_filename = args.with_filename
-+	compat_ignore_list = None
++no_py3_warning:
++	@echo "Missing python3. This test will be skipped."
 +
-+	if args.driver_match:
-+		compat_ignore_list = []
-+		for f in files_to_parse(args.cfile):
-+			compat_ignore_list.extend(parse_compatibles_to_ignore(f))
- 
- 	for f in files_to_parse(args.cfile):
--		compat_list = parse_compatibles(f)
-+		compat_list = parse_compatibles(f, compat_ignore_list)
- 		print_compat(f, compat_list)
++endif
+diff --git a/tools/testing/selftests/dt/compatible_ignore_list b/tools/testing/selftests/dt/compatible_ignore_list
+new file mode 100644
+index 000000000000..1323903feca9
+--- /dev/null
++++ b/tools/testing/selftests/dt/compatible_ignore_list
+@@ -0,0 +1 @@
++simple-mfd
+diff --git a/tools/testing/selftests/dt/ktap_helpers.sh b/tools/testing/selftests/dt/ktap_helpers.sh
+new file mode 100644
+index 000000000000..27e89a31e602
+--- /dev/null
++++ b/tools/testing/selftests/dt/ktap_helpers.sh
+@@ -0,0 +1,57 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# Copyright (c) 2023 Collabora Ltd
++#
++# Helpers for outputting in KTAP format
++#
++KTAP_TESTNO=1
++
++ktap_print_header() {
++	echo "TAP version 13"
++}
++
++ktap_set_plan() {
++	num_tests="$1"
++
++	echo "1..$num_tests"
++}
++
++ktap_skip_all() {
++	echo -n "1..0 # SKIP "
++	echo $@
++}
++
++__ktap_test() {
++	result="$1"
++	description="$2"
++	directive="$3" # optional
++
++	local directive_str=
++	[[ ! -z "$directive" ]] && directive_str="# $directive"
++
++	echo $result $KTAP_TESTNO $description $directive_str
++
++	KTAP_TESTNO=$((KTAP_TESTNO+1))
++}
++
++ktap_test_pass() {
++	description="$1"
++
++	result="ok"
++	__ktap_test "$result" "$description"
++}
++
++ktap_test_skip() {
++	description="$1"
++
++	result="ok"
++	directive="SKIP"
++	__ktap_test "$result" "$description" "$directive"
++}
++
++ktap_test_fail() {
++	description="$1"
++
++	result="not ok"
++	__ktap_test "$result" "$description"
++}
+diff --git a/tools/testing/selftests/dt/test_unprobed_devices.sh b/tools/testing/selftests/dt/test_unprobed_devices.sh
+new file mode 100755
+index 000000000000..b523767cdbfb
+--- /dev/null
++++ b/tools/testing/selftests/dt/test_unprobed_devices.sh
+@@ -0,0 +1,79 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# Copyright (c) 2023 Collabora Ltd
++#
++# Based on Frank Rowand's dt_stat script.
++#
++# This script tests for devices that were declared on the Devicetree and are
++# expected to bind to a driver, but didn't.
++#
++# To achieve this, two lists are used:
++# * a list of the compatibles that can be matched by a Devicetree node
++# * a list of compatibles that should be ignored
++#
++
++DIR="$(dirname $(readlink -f "$0"))"
++
++source "${DIR}"/ktap_helpers.sh
++
++PDT=/proc/device-tree/
++COMPAT_LIST="${DIR}"/compatible_list
++IGNORE_LIST="${DIR}"/compatible_ignore_list
++
++KSFT_PASS=0
++KSFT_FAIL=1
++KSFT_SKIP=4
++
++ktap_print_header
++
++if [[ ! -d "${PDT}" ]]; then
++	ktap_skip_all "${PDT} doesn't exist."
++	exit "${KSFT_SKIP}"
++fi
++
++nodes_compatible=$(
++	for node_compat in $(find ${PDT} -name compatible); do
++		node=$(dirname "${node_compat}")
++		# Check if node is available
++		[[ -e "${node}"/status && $(tr -d '\000' < "${node}"/status) != "okay" ]] && continue
++		echo "${node}" | sed -e 's|\/proc\/device-tree||'
++	done | sort
++	)
++
++nodes_dev_bound=$(
++	IFS=$'\n'
++	for uevent in $(find /sys/devices -name uevent); do
++		if [[ -d "$(dirname "${uevent}")"/driver ]]; then
++			grep '^OF_FULLNAME=' "${uevent}" | sed -e 's|OF_FULLNAME=||'
++		fi
++	done
++	)
++
++num_tests=$(echo ${nodes_compatible} | wc -w)
++ktap_set_plan "${num_tests}"
++
++retval="${KSFT_PASS}"
++for node in ${nodes_compatible}; do
++	if ! echo "${nodes_dev_bound}" | grep -E -q "(^| )${node}( |\$)"; then
++		compatibles=$(tr '\000' '\n' < "${PDT}"/"${node}"/compatible)
++
++		for compatible in ${compatibles}; do
++			if grep -x -q "${compatible}" "${IGNORE_LIST}"; then
++				continue
++			fi
++
++			if grep -x -q "${compatible}" "${COMPAT_LIST}"; then
++				ktap_test_fail "${node}"
++				retval="${KSFT_FAIL}"
++				continue 2
++			fi
++		done
++		ktap_test_skip "${node}"
++	else
++		ktap_test_pass "${node}"
++	fi
++
++done
++
++exit "${retval}"
 -- 
 2.41.0
 
