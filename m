@@ -2,175 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EBA77EF35
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 04:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA13777EF39
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 04:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347706AbjHQC4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 22:56:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43520 "EHLO
+        id S1347712AbjHQC5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 22:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347622AbjHQCzg (ORCPT
+        with ESMTP id S1347759AbjHQC5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 22:55:36 -0400
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06CD2727;
-        Wed, 16 Aug 2023 19:55:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1692240930; x=1723776930;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=30Beq54q7ADpDnC+tSWlstg3shUN0pO2iAl675AR83s=;
-  b=pJKW2HhZjaeo1jDDQXK8aackVwJxtkfNDlS90i0LMGYyh10cq5NBId4j
-   r1tazM5wQlbTTfBoRUbMCODcmrL04Ibyd5UhdkLGRLD+dOFM66kX8SML9
-   RbY90CxLeByk+slolyINGmHij5mwiW5uJKRfLOw6tOx2qTX69yOYJHGEL
-   6sSyirEazq7J2ksODnx4Veult4KNQv9Zpn0mXjuTQ2lWHicUIC/CD1X5m
-   uNnOVBeDw6aRwpFSSFqIu9sgpYnQlFjtj1lHY7y83nRRmiobhwyTqFqBY
-   VK+C8E3+gf48+kTvVjspdXdRJgnhipcSEwgfxBDHpuI0SZy2hP8//m+GA
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.01,178,1684771200"; 
-   d="scan'208";a="241218473"
-Received: from mail-mw2nam12lp2049.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.49])
-  by ob1.hgst.iphmx.com with ESMTP; 17 Aug 2023 10:55:29 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mKh3vG1QROvmbBbxDo5AwbGcWoVRFl0h6Xqv6JD78gjpSoWTUNWktII/qur0J/cakwGQQgL85/1dkYbVRwxBrDPBYcSeRoXls9+nP02HpClz24vK6ZqeVDZ5VDVTj+mAmv+W16yAlgT2JmfqNah8rmlEZFGKSjpd1wk1VrR5PuGghB+UpuVUs5zvVUrTPbZothMvummMh87Gdb/Etu0CeN44D1R6Es7bMDJyzu/KT8DCiKexUFY+QOtkBkGIRsVwDnXRxVpc5EG93+jcnvojWGg7FISW+s8/TcHPp0aVU/ZJmlfNKDW6yLkGfAXoq73ZbUQTGmgXC4bP5/a1iURBsw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=30Beq54q7ADpDnC+tSWlstg3shUN0pO2iAl675AR83s=;
- b=OYnryRaDwXMibp1MqaCnYOOQxAiVMugmrg9fUE9lENxWYerM9KYSZh46MiRFpBDTb4xdJpV6a8YzOKiRm3A/V0CGZm+rZi8PLL8HjWuVsqa7tCF0KpE3i4R6ZoAC9eMxqmnnCplF/BwysFmz0U2sM+QjL4gpR1A27IQy3hk9Yt2HUvyveKlAo2boB1PqVD5u+7lWtopcZ4/UM3P4rE8h9MQEFl8kEaQPLW+UCEil0s7lZ7P3TQY3dDq+hocC0qAjhD0F61ZRUfheOs+2qcHR55mk5t2Ah7wFqUDTXhwiMcpZoCmhS4zcpNMLF28xjnhlvstCC03Zs8v/gp07vSK+kQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Wed, 16 Aug 2023 22:57:01 -0400
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB902D5E;
+        Wed, 16 Aug 2023 19:56:50 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5862a6ae535so70618327b3.0;
+        Wed, 16 Aug 2023 19:56:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=30Beq54q7ADpDnC+tSWlstg3shUN0pO2iAl675AR83s=;
- b=W0yIg6evDlWjpHYPMwGRhdxwwPVW57AaVjtMMudsaRjaqfN7R6y9gwcOzWB0Tg8OS3sNaeFBVnxmaKDh+TuOc5xJxMGI6zdOstxagUFBjURXTF9yN8W7PVXnNGbrXLCeIrdvsitRSbgIMXvTEc5aBZmufQGYAyBhh3r+W/0cSEU=
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com (2603:10b6:8:f::6) by
- PH0PR04MB7429.namprd04.prod.outlook.com (2603:10b6:510:8::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6678.29; Thu, 17 Aug 2023 02:55:26 +0000
-Received: from DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::f92a:6d40:fe94:34e9]) by DM8PR04MB8037.namprd04.prod.outlook.com
- ([fe80::f92a:6d40:fe94:34e9%7]) with mapi id 15.20.6678.031; Thu, 17 Aug 2023
- 02:55:26 +0000
-From:   Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-To:     Daniel Wagner <dwagner@suse.de>
-CC:     "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        James Smart <jsmart2021@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: Re: [PATCH blktests v2 00/12] Switch to allowed_host
-Thread-Topic: [PATCH blktests v2 00/12] Switch to allowed_host
-Thread-Index: AQHZy3uxzZvUupgtrkSugC1ZrGM0Tq/kn9aAgAAMToCACSlbAA==
-Date:   Thu, 17 Aug 2023 02:55:25 +0000
-Message-ID: <glfjkah5e54ymq75lp46akttuqrsccigb445nchcpe4ahixzxk@5al3wjxify5d>
-References: <20230810111317.25273-1-dwagner@suse.de>
- <xpoocad2nthor6naxp35h5qiz3oqxpijp5qds5qao6aguh6fp5@6fyygawm7kfq>
- <2u7xe3szftmoeicayxahqt6r44lgkwl6owvmlkjpby4mqvu6hh@pq2gfkgw6p6e>
-In-Reply-To: <2u7xe3szftmoeicayxahqt6r44lgkwl6owvmlkjpby4mqvu6hh@pq2gfkgw6p6e>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM8PR04MB8037:EE_|PH0PR04MB7429:EE_
-x-ms-office365-filtering-correlation-id: 345f93c9-6547-4dd7-ba3c-08db9ecd6867
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5G+lssk7XVsiXGv8rxnkPhwFdjH+cM/i/8jn54B8eMP/4xC/UvdtitOvgtpd4V1W9/2aJG2DywvmrfGtVpqd7JDlW7G57YBCF9BNDTleDajxojjbn8PWqI56y+lHCNFoLw4iPycYHHoaum4NCwpmoW5UWYf5RY79YLWDc8R29wOKc9gzlEOwS0Op2dwi+6FlmpM9NoYNEoOVcVpVQnn2VEk754v1i+Vo873tNFcMYWCeAiVi7rTvpplZwnUOxyrBl4OZ5T3O891SotanOdTmRd+paNKTUDTzZ5EbYkxNJEZPoLLktqR+sUF73IkY4pYao6XHT9djSGP9rCclJcXmW3sYP8MMLH+VSjvsrdHAuiUQtmyBKm4EYfQ7aS5jrrAZC2OXh5Acc3KAc8ZtbD+Xr7XSbwvS2ljxGFASqSXLi4xuQ+U5C+vE//ZLslm370ADwy5BD79iLL6D+YD3XBrKgabGRGyng+wo7OBoFV6LTsIpLTleNlhx6qWjYdwKS8Lfvx74PoVzQQ9r3icpd1zwVeWUV0yj8UxgGwveL+CbtFs0nYVSqFpw1/WB4KGrv7YusLxW2j2tk+0jLFNV1Rc2Il1hJIHaNc1qr8RJiduMt5A+tiQiXeI680NsZn9xHHvS
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR04MB8037.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(39860400002)(346002)(136003)(366004)(376002)(451199024)(1800799009)(186009)(316002)(54906003)(6916009)(91956017)(66556008)(66946007)(66476007)(64756008)(76116006)(66446008)(122000001)(5660300002)(41300700001)(44832011)(38100700002)(38070700005)(4326008)(8936002)(8676002)(33716001)(82960400001)(26005)(2906002)(4744005)(83380400001)(478600001)(7416002)(86362001)(9686003)(6512007)(6506007)(71200400001)(6486002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?fs6xS+Hvd9yMqALbMGejgOXOaueLgym3hsQAuKTXJPsqPRdg+QCGhRywOURs?=
- =?us-ascii?Q?FQYtWR0RkZOnobNov3Zp8YzPIAZo0CWFLE49S31rG4uDKm6JLT9EbZYI6+w/?=
- =?us-ascii?Q?Y9IGFTTOdBMvqiY7AEgiUUw9QmhX+XJvyeuVy9MROvzxLKDgG++Iyt5wU3Gt?=
- =?us-ascii?Q?lSvMplxuT1OM4b8LlwGLk5ep3tBpMAhgoel5PcT75NMvVF5gn49ci13SJEsd?=
- =?us-ascii?Q?kX21ytK9ux78JLY/PAfAeW0I6KR0IVmSetFiqjvVzqxKvdqkAQ0DhODyCvXf?=
- =?us-ascii?Q?gavMDJvAYDgZykA313QnDk+J4o5SUX77Q3KiryDvHTiv4yK3gdnD+L0zIygo?=
- =?us-ascii?Q?LysEFCyXp+06n7gKtmD+hNg7yvEtyZOtdG9uPFruCzdt29axPT1dHS2+dJFn?=
- =?us-ascii?Q?1JkNbHnxr73TKo6zJBNb1hchZTdNPH18iS9J9X+n0JOcp4ZwTjWBrdccncgG?=
- =?us-ascii?Q?fTYrWkqru9PeHXVJMduw+jiblf0nL89UMnwV+AJF81SjZux6ZFuClAMaevss?=
- =?us-ascii?Q?hqJ5uVz+dtlAEKCO2utk4QJqjD7Ui3AurK2wdV7s8xDi0ANYySCOPtelBTfE?=
- =?us-ascii?Q?ZpGdxKmhQivHeL9Owpmw+J2iHGOt3H0OkKnAytmIotWSySnfQu8WeB+lwWw5?=
- =?us-ascii?Q?KzsG1VeI07igOJQcUVzBeCfDRqALdi1NnDonKbfwsplPUq+hNZWdIHLD0koz?=
- =?us-ascii?Q?aPUiwt2WBNzWgfCV+Vs6QaNYHo/b8C8PCss1pRfOC9k8IQGXglffRruf7l6v?=
- =?us-ascii?Q?0H8uf6D53GbDXDelXTs/7ZzI4mX9ciAsN6byu4Au9yr+WeWdmhVZPSMZaW9j?=
- =?us-ascii?Q?Hl/Ws19Mye/ux1NrpsiWQ4C7SKAllE3ftIh7QF03iht0rZbWwOjJURrBD/nd?=
- =?us-ascii?Q?7+GjgFRFjbJH3ln25c2TNgR4rgKM22k4UsFkBBCRMMP4BWHDdHncMLejSwIx?=
- =?us-ascii?Q?iKdQyAWVXbBmBb6UxOCQ3D/J1Nu5uw0N9DQYuwzrM09d0TeecJLNPDdqm7zf?=
- =?us-ascii?Q?lBPtu4feYZCqjPGy9cKUAXjUAnlz+aJXaFwyMcUk406/AJjE419xc4fWw1SQ?=
- =?us-ascii?Q?VXbNFCHYeGBJnhtciUJh8jWBvjXvSz2dDfYiRkVUcd0EvRXSS0z/jxjOb8c2?=
- =?us-ascii?Q?LviiCZ96qrlDq2hTvaKn45Y7pleHyruda3XAuKL1on/Ym0tzExaHYhRbyBpn?=
- =?us-ascii?Q?cLuGdu7rr8OTIiYwrf91f0f7w9QuM6Dqs/Hq+WdFq1ie+x4KVjc9drbeJ7Sl?=
- =?us-ascii?Q?+iZ3sFjsGnB2jkTe3GOs+9up2pXocwZ3S/yUEbmKxkOmiNBz70nzFb3NqXmj?=
- =?us-ascii?Q?hQ26VRyZT0H5i9s/n4xcuzVxb5k5mm1oW6hcAijCLlBnAhJPPOo5qKC55eMW?=
- =?us-ascii?Q?AyZsHE40gKb/GnI9wh41w7xvElxQkzDwNq4yifLOvbXuCENrhvpI7Ihgwd74?=
- =?us-ascii?Q?6Dy8mluT0DwC0Zy5MbhhjGRTtkhlSDdGggKrtT9VLVBMT3qLF+5Cy9yyesea?=
- =?us-ascii?Q?S5XlqYL6hXMCkRJMxsxpLjtCiiffYgwVA37+VngghiXnTDn3fPIRDd6nZR+P?=
- =?us-ascii?Q?g4jmwbfabRP/ZkUso6B7ydreSmtk5NMZ2Yt50Pm0YZES4aPnVrdY3msFR7XN?=
- =?us-ascii?Q?+Ujz4Lr6/cs3emuiuppj+y8=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <FC48C73C72C338469C59890FCAE0B430@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20221208; t=1692241009; x=1692845809;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BfnhS8cUb8GoNRJIvYqauF7SihQC0CPjejzZeRQgsAU=;
+        b=Me7ULkhseFqx4TBsDIe127ajql9iF+PzyM6967hsSTRq2WCIxbhpxucYxPcgN5Qs3o
+         6WZ58VeS+FQnTZUICO6uxzNqtbEUYIZLCJ4JujinwJeX6wI+zsaPPSag7dxgQmYaBzV6
+         o3FBvXGNd6r0YRbAZzvwY8zxtCvYxmncyIPOialkogDuq4/vJnGnWagvbcc5iAmd1Wm2
+         H7pLz4jk8HUXhcjY7hfz6ZujXCc2i0qZD2ELnPJlqbg8HQsWNKWXwF8RyinKDze7Pi0+
+         cSTiAVCTsFKTdFRYBEZNEZ7uEwpnGnUpZ8XhnU8TKcsybDK0Fh4kkukV7S3O1x0RmT5i
+         LVrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692241009; x=1692845809;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BfnhS8cUb8GoNRJIvYqauF7SihQC0CPjejzZeRQgsAU=;
+        b=QdfQlCUZvRLOJ9nZTuduSLkD0uKXw6DddfWXdzAB/uyP6/T2fcsl1aff83VEz7iebV
+         J/816gYNKY7sPbrmIik/o+B9/j7bHWqZERZJi0IbTwgMoILzuHrk9ynSKCngKgnSFaM+
+         bWpJ+NOsNMJH8rsY5ZsXo5SJU3ZzBYjuGv4PQ0NaZZA05UZE9k/EJ7cIvgmUqtIuqR2g
+         zhb5wXJ3qPRChqgONAn8EzkFjrzezqqfFLnFWyVMMmxd+UXSpxHHgH8B3qKXEJuCW3K7
+         cr3mFHI+nVcI3JJQW8fDyh0+WVoHxgdvVF2hU9lCLU4+sdKmvk7vspZhATS5U9NfIM8O
+         94pw==
+X-Gm-Message-State: AOJu0Yx1+rEsEQNZqoDgt4tOCfP3bRpNoXO8y7jkgVYOaUUiragaLYNi
+        Sb4a7SZg4dzOEcOPYmd0EBHQpsOXKxKHAYT7xDBYlQ5UZk66eOqRwyU=
+X-Google-Smtp-Source: AGHT+IH2+d+/Fe6gURluHyKSTJhQcU5e4YCRM3Qaq+Wb7O3ekCuK0/KbXx9ZDaC+TKvZaUx1X+cbkp0SXM/Wzuif4/c=
+X-Received: by 2002:a0d:e253:0:b0:584:61df:45e8 with SMTP id
+ l80-20020a0de253000000b0058461df45e8mr3531796ywe.13.1692241009393; Wed, 16
+ Aug 2023 19:56:49 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?ilg1QekVhuiyhpzTOrpYrizydo+gwv5FafgiBg4y53v0FwzIVGNsweZVXwue?=
- =?us-ascii?Q?fB2HW7WpROVlj9ksLndqsUq3b90JL2RQqEidC15axm0iPQK14WRieE+EHvJA?=
- =?us-ascii?Q?vicWUklkwnGxY1zGMnzTI2jcVkxw3jiP670E/qB4JKQ3ey6LfXKLgYACbJcI?=
- =?us-ascii?Q?FmlAyPLiJJEsOWsolx1SqadSocxsE4rW6+zKkcLLig6hiSigHyxdofpjw6GF?=
- =?us-ascii?Q?ijUI62UAbo8Jy8ii6G4NhEvFYYSJLwyFDrfmPSR+AAkFQpRNse7rINnExJv9?=
- =?us-ascii?Q?QgKqs/XzhkY0XgFTqV5CeD4icG1wIDxc9cTqDZ/Hv/aF9i4TXU1Hjs7iV/0b?=
- =?us-ascii?Q?dIvWrxi1/aP6TmKV2d4D9hlW6DkthGT7SV7PiEFKW37KL+JcGyogo2QPPQu+?=
- =?us-ascii?Q?zY6pmOGp0badEC/qBdWb3Mk5M1JU/XGfuVmJ2lcY3gJw09nnlUDnKlfu9I16?=
- =?us-ascii?Q?CiJYEeYcd8oh2gUHIFxDVBQb/lf7TyVjPpOOZ50pYhZPA9Of2GmT2gKh1SX3?=
- =?us-ascii?Q?2S7elaglYp9+EWWOdw4uCB/Ifxuii08PYq+E2JVRvfKF7ZpD7nAT918wHZPs?=
- =?us-ascii?Q?gBhHKa9u8QKaQNqDJHaUfATk0ZfhyIwzpAt8FK9uC4jOh6jGA6qm+p7vfSg0?=
- =?us-ascii?Q?VHdQh/v1mcTza9awOnRyOjsh9lPd8ngwaz6TatQ2rvbr+yDzJibyszVo+SC/?=
- =?us-ascii?Q?T6zyuK880UENIrbgtSahazjhMtsuu7t2iX0s+3WjMYsP5Rsz0HBNLkAErKTk?=
- =?us-ascii?Q?KziRrMnrsAs7fa1n6stDJ8eRngPShOP516sHyDm//Gx7QuG8j9nTX1fano5U?=
- =?us-ascii?Q?57oD2+Zwf4YI/oWdf/kWsMJIzaScKEcen0L7cNkUwICSSKS7uiaYQqbOY7Ja?=
- =?us-ascii?Q?d23uE9JspBo7l9IT8GCbAy5IcUteqqogePTBSdD1oYcNsTHZGauOyH8sAuEe?=
- =?us-ascii?Q?/38rkXDVtL5t8Lsp8FkFVw=3D=3D?=
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR04MB8037.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 345f93c9-6547-4dd7-ba3c-08db9ecd6867
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Aug 2023 02:55:25.9682
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qwwezbtBxUg62uva4/CewFmf/qwVNvcC6sphbX/ntfnCWtRWAnhqgrft4DpRd9OIpq/0WDTU8JqujBBenZaLB/FHEBtf53TT/uDyIlS+r1Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7429
+References: <20230815084713.1627520-1-zhoubinbin@loongson.cn> <20230815-certainly-sprang-209024530924@spud>
+In-Reply-To: <20230815-certainly-sprang-209024530924@spud>
+From:   Binbin Zhou <zhoubb.aaron@gmail.com>
+Date:   Thu, 17 Aug 2023 10:56:37 +0800
+Message-ID: <CAMpQs4+68Ow4-rubj2ySiRiU7d0jc1F3GOsXqxaZdT27PZSuxg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: interrupt-controller: loongson,liointc: Fix
+ warnings about reg and interrupt description
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Binbin Zhou <zhoubinbin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, diasyzhang@tencent.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aug 11, 2023 / 09:00, Daniel Wagner wrote:
-[...]
-> BTW, what do you think about removing nvme/006 and nvme/007? They are
-> basically doing nothing anymore except setting up a target with either
-> device or file backing. We exercise this code now in all the other
-> tests. So this is bit redundant IMO.
+Hi Conor:
 
-I think the test cases are meaningful. They confirm that target set up feat=
-ure
-is working good. When other test cases fail, we can refer nvme/006 and nvme=
-/007
-results and see if the failure cause is in target set up or not.=
+Thanks for your reply.
+
+On Tue, Aug 15, 2023 at 10:20=E2=80=AFPM Conor Dooley <conor@kernel.org> wr=
+ote:
+>
+> Hey,
+>
+> On Tue, Aug 15, 2023 at 04:47:13PM +0800, Binbin Zhou wrote:
+> > As we know, some Loongson-2K CPUs are single-core, e.g. Loongson-2K0500=
+,
+> > and the "isr1" means routing interrupts to core1, which should be
+> > optional. So add maxItems/minItems limits to reg/reg-names.
+> > Also, The interrupt-names attribute represents a list of parent
+> > interrupt names that should change with interrupts.
+>
+> This should have been with the other series that introduces the users
+> probably so that things make more sense to the reader.
+
+I was under the impression that the mips Loongson-2K1000 was also
+required for this patch, so I committed it separately.
+Maybe my commit should still be described in more detail.
+
+>
+> > Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+> > ---
+> >  .../interrupt-controller/loongson,liointc.yaml     | 14 ++++++--------
+> >  1 file changed, 6 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/interrupt-controller/loo=
+ngson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller=
+/loongson,liointc.yaml
+> > index 00b570c82903..adb428211a72 100644
+> > --- a/Documentation/devicetree/bindings/interrupt-controller/loongson,l=
+iointc.yaml
+> > +++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,l=
+iointc.yaml
+> > @@ -11,7 +11,7 @@ maintainers:
+> >
+> >  description: |
+> >    This interrupt controller is found in the Loongson-3 family of chips=
+ and
+> > -  Loongson-2K1000 chip, as the primary package interrupt controller wh=
+ich
+> > +  Loongson-2K series chips, as the primary package interrupt controlle=
+r which
+> >    can route local I/O interrupt to interrupt lines of cores.
+> >
+> >  allOf:
+> > @@ -33,6 +33,7 @@ properties:
+> >        - const: main
+> >        - const: isr0
+> >        - const: isr1
+> > +    minItems: 2
+> >
+> >    interrupt-controller: true
+> >
+> > @@ -45,11 +46,9 @@ properties:
+> >    interrupt-names:
+> >      description: List of names for the parent interrupts.
+> >      items:
+> > -      - const: int0
+> > -      - const: int1
+> > -      - const: int2
+> > -      - const: int3
+> > +      pattern: int[0-3]
+>
+> From a quick look at the new devicetrees, I don't understand the
+> ordering relaxation. Do you actually have a system that only has, for
+> example, int3?
+
+For a better understanding, allow me to first explain the composition
+of the interrupt routing register:
+It is an 8 bit register that is divided into two parts:
+0-3 : The processor core vector number of the route, this part is
+handled in the code.
+4-7 : The processor core interrupt pin vector number for routing, i.e.
+int0-int3.
+Each intx can handle 32 interrupt sources.
+
+For example, in Loongson-2K1000/Loongson-2K0500, there are a total of
+64 interrupt sources, and we need to route them to two intx.
+
+We don't mandate which interrupt vector number must be used, in our
+practice the tendency is to start with int0.
+It is worth noting that we must follow the following correspondence:
+interrupt->interrupt-names
+2->int0
+3->int1
+4->int2
+5->int3
+
+>
+> Also, as the interrupt-names are not required, changing the ordering
+> here is not ABI compatible AFAICT. Does that have any fallout?
+
+Oh, this should be another point that needs to be modified, the
+interrupt-names should be required. because in the driver code the
+parent interrupts are fetched through of_irq_get_byname().
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/dri=
+vers/irqchip/irq-loongson-liointc.c?h=3Dv6.5-rc6#n345
+
+        for (i =3D 0; i < LIOINTC_NUM_PARENT; i++) {
+                parent_irq[i] =3D of_irq_get_byname(node, parent_names[i]);
+                if (parent_irq[i] > 0)
+                        have_parent =3D TRUE;
+        }
+        if (!have_parent)
+                return -ENODEV;
+
+Also the way liointc-2.0 is written in the dts does not match the dt-bindin=
+g.
+The dts using loongson,liointc-2.0 are:
+arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi (mips Loongson-2K1000)
+arch/loongarch/boot/dts/loongson-2k0500.dtsi
+arch/loongarch/boot/dts/loongson-2k1000.dtsi
+arch/loongarch/boot/dts/loongson-2k2000.dtsi
+
+               liointc0: interrupt-controller@1fe01400 {
+......
+                        interrupts =3D <2>;
+                        interrupt-names =3D "int0";
+                        loongson,parent_int_map =3D <0xffffffff>, /* int0 *=
+/
+                                                <0x00000000>, /* int1 */
+                                                <0x00000000>, /* int2 */
+                                                <0x00000000>; /* int3 */
+                };
+
+                liointc1: interrupt-controller@1fe01440 {
+....
+                       interrupts =3D <3>;
+                        interrupt-names =3D "int1";
+                        loongson,parent_int_map =3D <0x00000000>, /* int0 *=
+/
+                                                <0xffffffff>, /* int1 */
+                                                <0x00000000>, /* int2 */
+                                                <0x00000000>; /* int3 */
+                };
+
+We split the two intx into two nodes because of register definitions
+etc. There is the following WARNING at liointc1:
+
+      arch/loongarch/boot/dts/loongson-2k1000-ref.dtb:
+interrupt-controller@1fe01440: interrupt-names:0: 'int0' was expected
+            From schema:
+Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yam=
+l
+      arch/loongarch/boot/dts/loongson-2k1000-ref.dtb:
+interrupt-controller@1fe01440: Unevaluated properties are not allowed
+('interrupt-names' was unexpected)
+            From schema:
+Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yam=
+l
+
+But actually, in liointc1, we only need int1.
+
+Thanks.
+Binbin
+
+>
+> Thanks,
+> Conor.
+>
+> >      minItems: 1
+> > +    maxItems: 4
+> >
+> >    '#interrupt-cells':
+> >      const: 2
+> > @@ -73,7 +72,6 @@ required:
+> >    - '#interrupt-cells'
+> >    - loongson,parent_int_map
+> >
+> > -
+> >  unevaluatedProperties: false
+> >
+> >  if:
+> > @@ -86,7 +84,8 @@ if:
+> >  then:
+> >    properties:
+> >      reg:
+> > -      minItems: 3
+> > +      minItems: 2
+> > +      maxItems: 3
+> >
+> >    required:
+> >      - reg-names
+> > @@ -113,7 +112,6 @@ examples:
+> >                                  <0x0f000000>, /* int1 */
+> >                                  <0x00000000>, /* int2 */
+> >                                  <0x00000000>; /* int3 */
+> > -
+> >      };
+> >
+> >  ...
+> > --
+> > 2.39.3
+> >
