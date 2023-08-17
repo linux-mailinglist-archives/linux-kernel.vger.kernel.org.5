@@ -2,64 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F6477FB44
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F20377FB4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353353AbjHQPx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 11:53:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52390 "EHLO
+        id S1353389AbjHQPze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 11:55:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353371AbjHQPxR (ORCPT
+        with ESMTP id S1353467AbjHQPz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 11:53:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6354630D4
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:53:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E8D6B6242D
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 15:53:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 282D8C433C7;
-        Thu, 17 Aug 2023 15:53:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692287595;
-        bh=GI7bsJEXllKrx04dcqP4aAQbJejYQRK+vrqF+j3kz2k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AxuV6tErwgyi8sPCCLm58zhxU877tvhj+jq+WWyXMzzT2g/Fqcqoz5REAQQdr0fPq
-         WUdyNHwncnCzDz64b0J19R1lk6T3HrsE3tpEt8D7Oj+qIch7l+7bbM8OEMPHobCIPF
-         jMzn+PoKlcg2z0XNQuVqkJtysGBAUH9mBy9t9FjrcWx0qgqxLSndFXcHY1fa+JuiIU
-         tg0CFwnO//Ddkt4LzR0z2SSlN3NlLnXvscOgPQKvCJc03fODY8378SRss3+NIPf9uV
-         2GtmI9yucV1IeFa/DSSAKVvV9KkOpF3dMqATGrLNOc9AIYytT+GVXYnLtB3CzWf5r2
-         ZQ82e505w/sdw==
-Date:   Thu, 17 Aug 2023 08:53:14 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Justin Lai <justinlai0215@realtek.com>
-Cc:     <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH net-next v3 1/2] net/ethernet/realtek: Add Realtek
- automotive PCIe driver code
-Message-ID: <20230817085314.1c8b567f@kernel.org>
-In-Reply-To: <20230815143756.106623-2-justinlai0215@realtek.com>
-References: <20230815143756.106623-1-justinlai0215@realtek.com>
-        <20230815143756.106623-2-justinlai0215@realtek.com>
+        Thu, 17 Aug 2023 11:55:26 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 013F035A5
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:54:53 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-643909db8f4so5230136d6.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:54:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692287693; x=1692892493;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sdyk/H9C92iJ/nBsFz7KxfsAvK+nt2wqCERHewxGWDU=;
+        b=cSQl7yt9otQXr+oR1mB0nAUMSggLBbl+x+yeuUh1BRvaPLY+5BVUHA9XY5vpaXnLwQ
+         I+HaTYsLWZHnC7qtaOHGmjwLl2/5BHmdv59N00yHP6YIcH7jJklGoMStSDd1TVKHohCi
+         pampRnwpD239s80gaLdHchFzC+a0w1oyAyFF1jWVzncrcQ0lgekpayKIU84Rd1wDjF4I
+         2/9khJ3u2ek6tzpqBd6IcgbZJC/89kWqNXeD8h1HeTAz3F/rP/W+L+zXszK4BEOLJ0b4
+         3bbWj4Gz0sm0DQOMRz2udncq5GAXL9t8Thff9BLCqlRWq9CksSuetZI7++mKz8RzoAHd
+         WVkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692287693; x=1692892493;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sdyk/H9C92iJ/nBsFz7KxfsAvK+nt2wqCERHewxGWDU=;
+        b=AWIVBGVuaQoeQneXX4oPdBrhuvwOUODwNgvs32mT4nnl8asoelmZPnNSj3uFh7MP9D
+         yGRc1YO0IHrxPbMqyJcmesctMNCqgW/BUENRNAYQVTxvCPXbAorUWG0jWjXc2Rr80Sgr
+         dao0ONr0nxh6h2VwNnF2w13JcgwZgOewSDhQd8q8KFvtuuesFheqNRCPvO5GFPZ5HGvp
+         F0zZmqbN9MSGKO9pSr9kGu8TMvt5YSSUmcO0IRCHG85KFaUCZhHXd2QobL/mhBnQgADW
+         wi1tjD2byu2RjyfSaZWuhex+cjj9ug3ER3xtIYy2evkf7vCbZIQEHQrpF3K6jK9ZF+18
+         Nl8w==
+X-Gm-Message-State: AOJu0Yzh4Nr5HS1Lm2KNTCqiX2u9n2UuY0FsGZhKLVVxAlo8f1kEGyoU
+        u3IhK0rRjappmPfL5Ejp/31tDCvOac9z5SZSh7OKkw==
+X-Google-Smtp-Source: AGHT+IHBoKIXOzw8g/P24SXKwipUqCn2o2dUKOdGE5ZCNm3euEjtUFmlPq+7vYSmTIjnuxYVtNffFqtgOHvxVmtNMww=
+X-Received: by 2002:a0c:e094:0:b0:61b:65f4:2a15 with SMTP id
+ l20-20020a0ce094000000b0061b65f42a15mr4345292qvk.12.1692287692656; Thu, 17
+ Aug 2023 08:54:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <CA+G9fYvFD-kE0+EGWkwcnR1DXRxh7p7OwQThJ6KWxYWVROJ4+A@mail.gmail.com>
+In-Reply-To: <CA+G9fYvFD-kE0+EGWkwcnR1DXRxh7p7OwQThJ6KWxYWVROJ4+A@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 17 Aug 2023 08:54:41 -0700
+Message-ID: <CAKwvOd=h4aFisiY0w0awKkxk+i-aJM5+QbExYnboqzojLigx1Q@mail.gmail.com>
+Subject: Re: landlock: fs_test: fs_test.c:4524:9: error: initializer element
+ is not a compile-time constant
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     clang-built-linux <llvm@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
+        lkft-triage@lists.linaro.org, Shuah Khan <shuah@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Richard Weinberger <richard@nod.at>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Aug 2023 22:37:55 +0800 Justin Lai wrote:
->  .../net/ethernet/realtek/rtase/rtase_main.c   | 2696 +++++++++++++++++
->  5 files changed, 3127 insertions(+)
+On Thu, Aug 17, 2023 at 3:51=E2=80=AFAM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
+>
+> While building selftests landlock following warnings / errors noticed on =
+the
+> Linux next with clang-17.
+>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>
+> Build errors:
+> ------------
+> landlock/fs_test
+> fs_test.c:4524:9: error: initializer element is not a compile-time consta=
+nt
 
-Please try to make this patch smaller, usually breaking out ethtool
-operations and any offloads to separate patches does the trick.
-Keep in mind the driver must be operational after each patch.
+Hi Naresh,
+Can you tell me more about your specific version of clang-17?
+
+I believe a fix of mine to clang should address this. It landed in
+clang-18, and was backported to clang-17 recently.
+https://github.com/llvm/llvm-project-release-prs/commit/0b2d5b967d983757938=
+97295d651f58f6fbd3034
+
+I suspect your clang-17 might need a rebuild.  Thanks for the report.
+
+>  4524 |         .mnt =3D mnt_tmp,
+>       |                ^~~~~~~
+> 1 error generated.
+>
+> Links:
+>  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2U69ue7AaypfY7e=
+RU4UUygecrDx/
+>
+> Steps to reproduce:
+> tuxmake --runtime podman --target-arch arm64 --toolchain clang-17
+> --kconfig https://storage.tuxsuite.com/public/linaro/lkft/builds/2U69ue7A=
+aypfY7eRU4UUygecrDx/config
+> LLVM=3D1 LLVM_IAS=3D1 dtbs dtbs-legacy headers kernel kselftest modules
+>
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
+>
+
+
+--=20
+Thanks,
+~Nick Desaulniers
