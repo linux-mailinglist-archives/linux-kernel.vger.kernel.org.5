@@ -2,80 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A19877F0C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 08:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5635377F0C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 08:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348288AbjHQGwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 02:52:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40046 "EHLO
+        id S1348264AbjHQGyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 02:54:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348319AbjHQGwQ (ORCPT
+        with ESMTP id S1348341AbjHQGyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 02:52:16 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21D72102;
-        Wed, 16 Aug 2023 23:52:15 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 08:52:11 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692255133;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=t6HGqXEI6+kkXONW2Fb2KoG1iVUbBSrioJF3EbDG7tE=;
-        b=CIwZsCHYaj/8QAzvV3U8EsooaPHCKnhTWfJh8ZIBK0Nf0pHgbTyeEvD4rUaVLtIQcQuURq
-        024/5gHsrZSbUB50tzzllorJnXbtq4WS6mll5Toco4SQ3zm+eiAxAF2R6CKaeTruEscpZR
-        oU9qQ5IRSqSwV+cwEVApQInC8kFEhlpJ45XkR1PEoxoM1tsbcDuW2k+q83Bb3Pb1Y9tZ0D
-        TxmJ/aLhAFnDQURGqa4U56wrNOIkIWrTVhd3zLXZoZYnYyBP78eLaL8SoG0x5bmUgGAKLm
-        ZfbKlzJRbWnt4JS2WR/l8Kyfn2rWZjMdgfeb1lu4oEaj66iDLPQ6O8FyOZZaBA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692255133;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=t6HGqXEI6+kkXONW2Fb2KoG1iVUbBSrioJF3EbDG7tE=;
-        b=qyiQhIx09SVXTUctmvjhLVNTzYKrsZ5u9HQ6CxLAqSO2NphDFyU1brdhNduUBPuleLv6f0
-        /23IYZV5tJQI/KBg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Chengfeng Ye <dg573847474@gmail.com>
-Cc:     hare@suse.de, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        dave@stgolabs.net, satishkh@cisco.com, sebaddel@cisco.com,
-        kartilak@cisco.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] scsi: fcoe: Fix potential deadlock on
- &fip->ctlr_lock
-Message-ID: <20230817065211.ajz8zcev@linutronix.de>
-References: <20230816155524.5913-1-dg573847474@gmail.com>
+        Thu, 17 Aug 2023 02:54:03 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 76CA82102
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 23:54:01 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37H6r0omD007140, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37H6r0omD007140
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 17 Aug 2023 14:53:00 +0800
+Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Thu, 17 Aug 2023 14:53:20 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Thu, 17 Aug 2023 14:53:20 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
+ RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
+ 15.01.2375.007; Thu, 17 Aug 2023 14:53:20 +0800
+From:   =?utf-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
+        <stanley_chang@realtek.com>
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] phy: realtek: Realtek PHYs should depend on ARCH_REALTEK
+Thread-Topic: [PATCH] phy: realtek: Realtek PHYs should depend on ARCH_REALTEK
+Thread-Index: AQHZ0E08ScgrpcreG0KiXxOIOuSUw6/tvaCw///IwICAAIfRAA==
+Date:   Thu, 17 Aug 2023 06:53:20 +0000
+Message-ID: <9a7ba7ac11f745ee8d80da105ba79811@realtek.com>
+References: <202308161422.37GEMlZkA018197@rtits1.realtek.com.tw>
+ <6c02765f89eb4455806b895a6e0cb763@realtek.com> <ZN3CQ1Y3yC9p/01Y@matsya>
+In-Reply-To: <ZN3CQ1Y3yC9p/01Y@matsya>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.190.159]
+x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230816155524.5913-1-dg573847474@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-16 15:55:24 [+0000], Chengfeng Ye wrote:
-> These flaws were found by an experimental static analysis tool I am
-> developing for irq-related deadlock.
-
-So you did not use lockdep or is the code path so unlikely that nobody
-stumbled upon it before?
-
-> The patch fix the potential deadlocks by spin_lock_irqsave() to
-> disable hard irq.
-
-Shouldn't this have
-
-Fixes: 794d98e77f590 ("[SCSI] libfcoe: retry rejected FLOGI to another FCF if possible")
-
-?
-
-> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
-
-Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-
-Sebastian
+PiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGh5L3JlYWx0ZWsvS2NvbmZpZw0KPiA+ID4gYi9k
+cml2ZXJzL3BoeS9yZWFsdGVrL0tjb25maWcgaW5kZXgNCj4gPiA+IDY1MGUyMGVkNjlhZjQxZDIu
+Ljc1YWM3ZTdjMzFhZWM2ZjIgMTAwNjQ0DQo+ID4gPiAtLS0gYS9kcml2ZXJzL3BoeS9yZWFsdGVr
+L0tjb25maWcNCj4gPiA+ICsrKyBiL2RyaXZlcnMvcGh5L3JlYWx0ZWsvS2NvbmZpZw0KPiA+ID4g
+QEAgLTIsNiArMiw5IEBADQo+ID4gPiAgIw0KPiA+ID4gICMgUGh5IGRyaXZlcnMgZm9yIFJlYWx0
+ZWsgcGxhdGZvcm1zICAjDQo+ID4gPiArDQo+ID4gPiAraWYgQVJDSF9SRUFMVEVLIHx8IENPTVBJ
+TEVfVEVTVA0KPiA+ID4gKw0KPiA+ID4gIGNvbmZpZyBQSFlfUlRLX1JURF9VU0IyUEhZDQo+ID4g
+PiAgICAgICAgIHRyaXN0YXRlICJSZWFsdGVrIFJURCBVU0IyIFBIWSBUcmFuc2NlaXZlciBEcml2
+ZXIiDQo+ID4gPiAgICAgICAgIGRlcGVuZHMgb24gVVNCX1NVUFBPUlQNCj4gPiA+IEBAIC0yNSwz
+ICsyOCw1IEBAIGNvbmZpZyBQSFlfUlRLX1JURF9VU0IzUEhZDQo+ID4gPiAgICAgICAgICAgVGhl
+IERIQyAoZGlnaXRhbCBob21lIGNlbnRlcikgUlREIHNlcmllcyBTb0NzIHVzZWQgdGhlDQo+IFN5
+bm9wc3lzDQo+ID4gPiAgICAgICAgICAgRFdDMyBVU0IgSVAuIFRoaXMgZHJpdmVyIHdpbGwgZG8g
+dGhlIFBIWSBpbml0aWFsaXphdGlvbg0KPiA+ID4gICAgICAgICAgIG9mIHRoZSBwYXJhbWV0ZXJz
+Lg0KPiA+ID4gKw0KPiA+ID4gK2VuZGlmICMgQVJDSF9SRUFMVEVLIHx8IENPTVBJTEVfVEVTVA0K
+PiA+DQo+ID4gVGhhbmtzIGZvciB5b3VyIHBhdGNoLg0KPiA+IFdoeSBub3QgdXNlICJkZXBlbmRz
+IG9uIj8NCj4gPiBkZXBlbmRzIG9uIEFSQ0hfTUVESUFURUsgfHwgQ09NUElMRV9URVNUDQo+IA0K
+PiBJIHRoaW5rIHRoaXMgcGF0Y2ggaXMgYmV0dGVyLCB0aGlzIHdheSBhbGwgZnV0dXJlIHJ0ZWsg
+ZHJpdmVycyB3aWxsIGJlIGZpeGVkIGFzIHdlbGwsDQo+IG5vIG5lZWQgdG8gYWRkIGZvciBlYWNo
+IGRyaXZlcg0KPiANCk9rLCB0aGFua3MsDQpTdGFubGV5DQoNCg0K
