@@ -2,114 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17AD077EFA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 05:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A109277EFA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 05:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347904AbjHQDsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 23:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48836 "EHLO
+        id S1347914AbjHQDv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 23:51:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347903AbjHQDsa (ORCPT
+        with ESMTP id S245313AbjHQDvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 23:48:30 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26943103;
-        Wed, 16 Aug 2023 20:48:29 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b9a2033978so110260531fa.0;
-        Wed, 16 Aug 2023 20:48:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692244107; x=1692848907;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K3w6+ValknIZL5F9vEmecXcGoDK6EBlpFUwRFiDyGM0=;
-        b=PeGO8Az9u4nPdFtI95aulIUFWaVYVWEkF8cL/dgVQKd6XVONfJ+m9ObksF7hLdYD7w
-         UY9JFmS4UFXbHwkMZxI83XW9MszaY98l8u2unq+FJaFM/BS9LEVMPmgoF0M69bOeung9
-         z5qR4K+47vH5cDdZLpwUKk/y0k+j8gdcEq9tdT910FgaYIDq53Xc+ntW7fPDCTfM+DHx
-         FBagcg6ZeaJd1gn0S2KHLXApjwBAwsUQXzXPNgXvHD/ALj2B380bEXWOnIGZTgurABdD
-         V8+rnk5UagN9jw/4Sfaz6ocskmweocXondmDKUpOQ8Wvv4udoPkhhwN/vDKYw9pC9wYN
-         uYQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692244107; x=1692848907;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K3w6+ValknIZL5F9vEmecXcGoDK6EBlpFUwRFiDyGM0=;
-        b=EVB94PPtEAsrXO2ngvyWBbm6QyDmlSytlEUh2KmKuZBLOcgw6PsD8JyZj43u03Ns5O
-         W5JxjFXbQG8tPdcaFMZIqraaKhfDayjtC3BmCCRdN2gzKBUjRlNKgfS7jCPRnWFr1L5H
-         prbG1kw7//zJUQC5rncU8h9TnHc1TeFbmhfifPbiuBiMnZ/lJH92LlVK/aoFm8dRR5Be
-         A5O9vYVrbhObN4aAJR3UhVuPqkqmMqYOalE0gEsSWvt1YfkyppBeH8SAH0ATOFCKy2hd
-         U3ey6FRRKqhvjNzhdC3fd0rkamWRRcuHVYOdO3+gKk7CqG851q+8m6dOtVQzI+Mnh/8K
-         wcTA==
-X-Gm-Message-State: AOJu0YwGSgBSYy9KuXaxNoM9BOH9XoKeeDuYdcJGNYXrg76Ftk6aEMVH
-        iVMjMyQzGYrBTv5yBsEBYQWuay4J4Uoq55jJWHE=
-X-Google-Smtp-Source: AGHT+IFHV377ryqduaCsrWxJK5JovByUd2R0rY7H9fKsuYhumQ2znajlM0VmXLcvd6LqALxiECWvWqTCRWPD4+DMTKQ=
-X-Received: by 2002:a2e:b609:0:b0:2b6:cff1:cd1c with SMTP id
- r9-20020a2eb609000000b002b6cff1cd1cmr3046851ljn.34.1692244107236; Wed, 16 Aug
- 2023 20:48:27 -0700 (PDT)
+        Wed, 16 Aug 2023 23:51:17 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A1326A8;
+        Wed, 16 Aug 2023 20:51:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692244276; x=1723780276;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xwI3wmGXcs0Evg0bbeV61o6vXuck4y6AiG6Pb05I7Qw=;
+  b=R+aqwDL3I7WVp2gFIFijYWh3RnDkRw33xVBsCD/JVEkAdNftMqnonZ52
+   6W/+ZaijgawHtNBXNUDMm2EPJip4AV5gzfUD2GFZ7X5YalhFjc7lDyrx5
+   2r7iRka/CvgO6wrHzmqFxQED1Nds/yNqkXir6SpfzgtUWZ2RdvgxcL1o5
+   YOv/Bu+AJwSh5C0oJk0dTCbmHsML2Q0duNoRXMROxhReal+RP+/ytFNz2
+   yNj4q4GfJ5OBlqUrCELSWL58Jg81mHXLqV3uP0go1h9LDGzq3NPGgfEcz
+   ImdAoIQjqZz7ZNCdgpouPrf/xgVnebcjnZIguy9Zde0puDldch0LtflnS
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="353020864"
+X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
+   d="scan'208";a="353020864"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 20:51:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="763875568"
+X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
+   d="scan'208";a="763875568"
+Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 16 Aug 2023 20:51:11 -0700
+Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qWU2R-0000lx-0m;
+        Thu, 17 Aug 2023 03:51:11 +0000
+Date:   Thu, 17 Aug 2023 11:50:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+        manivannan.sadhasivam@linaro.org
+Cc:     oe-kbuild-all@lists.linux.dev, helgaas@kernel.org,
+        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
+        quic_ramkri@quicinc.com, quic_parass@quicinc.com,
+        krzysztof.kozlowski@linaro.org,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v1] PCI: qcom: Add sysfs entry to change link speed
+ dynamically
+Message-ID: <202308171155.o5viLJ3O-lkp@intel.com>
+References: <1692239684-12697-1-git-send-email-quic_krichai@quicinc.com>
 MIME-Version: 1.0
-References: <20230816150634.1162838-1-void@manifault.com> <2d530dec-e6c2-5e3a-ccf2-d65039a9969d@linux.dev>
-In-Reply-To: <2d530dec-e6c2-5e3a-ccf2-d65039a9969d@linux.dev>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 16 Aug 2023 20:48:16 -0700
-Message-ID: <CAADnVQKtWkPWMG+F-Tkf3YXeMnC=Xwi8GA5xJMaqi725tgHSTw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Disable -Wmissing-declarations for
- globally-linked kfuncs
-To:     Yonghong Song <yonghong.song@linux.dev>
-Cc:     David Vernet <void@manifault.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@meta.com>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1692239684-12697-1-git-send-email-quic_krichai@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 8:38=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
->
->
->
-> On 8/16/23 8:06 AM, David Vernet wrote:
-> > We recently got an lkp warning about missing declarations, as in e.g.
-> > [0]. This warning is largely redundant with -Wmissing-prototypes, which
-> > we already disable for kfuncs that have global linkage and are meant to
-> > be exported in BTF, and called from BPF programs. Let's also disable
-> > -Wmissing-declarations for kfuncs. For what it's worth, I wasn't able t=
-o
-> > reproduce the warning even on W <=3D 3, so I can't actually be 100% sur=
-e
-> > this fixes the issue.
-> >
-> > [0]: https://lore.kernel.org/all/202308162115.Hn23vv3n-lkp@intel.com/
->
-> Okay, I just got a similar email to [0] which complains
->    bpf_obj_new_impl, ..., bpf_cast_to_kern_ctx
-> missing declarations.
->
-> In the email, the used compiler is
-> compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
->
-> Unfortunately, I did not have gcc-7 to verify this.
-> Also, what is the minimum gcc version kernel supports? 5.1?
+Hi Krishna,
 
-pahole and BTF might be broken in such old GCC too.
-Maybe we should add:
-config BPF_SYSCALL
-        depends on GCC_VERSION >=3D 90000 || CLANG_VERSION >=3D 130000
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on pci/next]
+[also build test WARNING on pci/for-linus linus/master v6.5-rc6 next-20230816]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Krishna-chaitanya-chundru/PCI-qcom-Add-sysfs-entry-to-change-link-speed-dynamically/20230817-103734
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+patch link:    https://lore.kernel.org/r/1692239684-12697-1-git-send-email-quic_krichai%40quicinc.com
+patch subject: [PATCH v1] PCI: qcom: Add sysfs entry to change link speed dynamically
+config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20230817/202308171155.o5viLJ3O-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230817/202308171155.o5viLJ3O-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308171155.o5viLJ3O-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/pci/controller/dwc/pcie-qcom.c:249:13: warning: 'qcom_pcie_opp_update' used but never defined
+     249 | static void qcom_pcie_opp_update(struct qcom_pcie *pcie);
+         |             ^~~~~~~~~~~~~~~~~~~~
+
+
+vim +/qcom_pcie_opp_update +249 drivers/pci/controller/dwc/pcie-qcom.c
+
+   247	
+   248	static void qcom_pcie_icc_update(struct qcom_pcie *pcie);
+ > 249	static void qcom_pcie_opp_update(struct qcom_pcie *pcie);
+   250	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
