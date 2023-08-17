@@ -2,166 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A4777F407
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 12:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8248677F409
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 12:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349920AbjHQKDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 06:03:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36598 "EHLO
+        id S1349867AbjHQKFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 06:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349885AbjHQKD2 (ORCPT
+        with ESMTP id S1349973AbjHQKFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 06:03:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA28173F;
-        Thu, 17 Aug 2023 03:03:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692266607; x=1723802607;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bOMVKVIhDrLQfNR2KI5p28svytC8+8UPx7CiwqE8lTo=;
-  b=IyJzCPw2WK++dGtK4Ks1CWQd5/cA/bnkyenllJaT7RFrCEgWMIsH6KIq
-   kTBd8p1PpMCwaQygiKF0KyGJFcnretwxxvLvCCIWjqCoCGOLgoDEn+v4n
-   psRWGEQrORW5OccqAkrbhrwNpj/jf1IPfKBKpYYJ1bsvJ67exilpWGKFc
-   IOEJi+2ZN2MXiMs883UjrI/BGYQzrhvLEMvZ61aCegJeHaF+XC2mpzoQ6
-   fAEqsI9yMOCeD6RzRDtD6hwHskwnMq9oHqWn14CNULX0SqYJtVFqeacRY
-   0KHgRhXCmeYFf1ezrLJlGBhksHwImkqU1GNSnZgAI2YIOO9ljoKK5h7vn
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="352355974"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="352355974"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 03:03:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="858177291"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="858177291"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP; 17 Aug 2023 03:03:24 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qWZqc-006ND8-1W;
-        Thu, 17 Aug 2023 13:03:22 +0300
-Date:   Thu, 17 Aug 2023 13:03:22 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v5] gpio: consumer: new virtual driver
-Message-ID: <ZN3wauUBENDd7aRU@smile.fi.intel.com>
-References: <20230815185650.152968-1-brgl@bgdev.pl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230815185650.152968-1-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 17 Aug 2023 06:05:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209CC2D61
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 03:04:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 912E766860
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:04:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF8F1C433C7;
+        Thu, 17 Aug 2023 10:04:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692266697;
+        bh=W1jtb9kryF03zGezQ0pFDhPp1SJkF/jrhW+cT+eIlSQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FN4Un9Sg//ad7XLVVZgBBvXK0Sn95lIzpAQwILtk9wyxiVlJE/MyuGmGpTRhTKJCq
+         uaM89Fb64+xlgQOQ9yBk6oZhKOrrPhMc9ZXJ5OvagsHIQVb7SIHij0khzUzMJ7jHs3
+         5zOZSxDuu+gWPmAd4/+w7vSYmUk48QlJCc3Nz44dAa95YmIsAlZ9qb+Qv96Mj3RN29
+         8KX383jcdGqxD+stkclCrtqawhpGdWgKpi2QnwggNFLmp17tNdj5gix1rgPmOKirOI
+         mh8dhezdHP0Iqt8IShCkgdI+4J5LbK5/6XeJpSAJ9+yU0e4nSkY+M+dkTVj6SJS6Jw
+         g7fJ8i4i/I7rA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qWZs6-005eA6-EC;
+        Thu, 17 Aug 2023 11:04:54 +0100
+Date:   Thu, 17 Aug 2023 11:04:54 +0100
+Message-ID: <86ttsyf0hl.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+Cc:     linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, eauger@redhat.com,
+        miguel.luis@oracle.com, darren@os.amperecomputing.com,
+        scott@os.amperecomputing.com,
+        Christoffer Dall <Christoffer.Dall@arm.com>
+Subject: Re: [PATCH 2/2] KVM: arm64: timers: Adjust CVAL of a ptimer across guest entry and exits
+In-Reply-To: <0c5fb304-8c69-80c3-6f1e-487828554244@os.amperecomputing.com>
+References: <20230817060314.535987-1-gankulkarni@os.amperecomputing.com>
+        <20230817060314.535987-3-gankulkarni@os.amperecomputing.com>
+        <87bkf6oyyt.wl-maz@kernel.org>
+        <0c5fb304-8c69-80c3-6f1e-487828554244@os.amperecomputing.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: gankulkarni@os.amperecomputing.com, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, eauger@redhat.com, miguel.luis@oracle.com, darren@os.amperecomputing.com, scott@os.amperecomputing.com, Christoffer.Dall@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 08:56:50PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> The GPIO subsystem has a serious problem with undefined behavior and
-> use-after-free bugs on hot-unplug of GPIO chips. This can be considered a
-> corner-case by some as most GPIO controllers are enabled early in the
-> boot process and live until the system goes down but most GPIO drivers
-> do allow unbind over sysfs, many are loadable modules that can be (force)
-> unloaded and there are also GPIO devices that can be dynamically detached,
-> for instance CP2112 which is a USB GPIO expender.
-> 
-> Bugs can be triggered both from user-space as well as by in-kernel users.
-> We have the means of testing it from user-space via the character device
-> but the issues manifest themselves differently in the kernel.
-> 
-> This is a proposition of adding a new virtual driver - a configurable
-> GPIO consumer that can be configured over configfs (similarly to
-> gpio-sim).
-> 
-> The configfs interface allows users to create dynamic GPIO lookup tables
-> that are registered with the GPIO subsystem. Every config group
-> represents a consumer device. Every sub-group represents a single GPIO
-> lookup. The device can work in three modes: just keeping the line
-> active, toggling it every second or requesting its interrupt and
-> reporting edges. Every lookup allows to specify the key, offset and
-> flags as per the lookup struct defined in linux/gpio/machine.h.
-> 
-> The module together with gpio-sim allows to easily trigger kernel
-> hot-unplug errors. A simple use-case is to create a simulated chip,
-> setup the consumer to lookup one of its lines in 'monitor' mode, unbind
-> the simulator, unbind the consumer and observe the fireworks in dmesg.
-> 
-> This driver is aimed as a helper in tackling the hot-unplug problem in
-> GPIO as well as basis for future regression testing once the fixes are
-> upstream.
+On Thu, 17 Aug 2023 10:27:55 +0100,
+Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com> wrote:
+>=20
+>=20
+> Hi Marc,
+>=20
+> On 17-08-2023 01:57 pm, Marc Zyngier wrote:
+> > [Fixing Christoffer's email address]
+>=20
+> Thanks.
+> >=20
+> > On Thu, 17 Aug 2023 07:03:14 +0100,
+> > Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com> wrote:
+> >>=20
+> >> As per FEAT_ECV, when HCR_EL2.{E2H, TGE} =3D=3D {1, 1}, Enhanced Count=
+er
+> >> Virtualization functionality is disabled and CNTPOFF_EL2 value is trea=
+ted
+> >> as zero. On VHE host, E2H and TGE are set, hence it is required
+> >> to adjust CVAL by incrementing it by CNTPOFF_EL2 after guest
+> >> exit to avoid false physical timer interrupts and also
+> >> decrement/restore CVAL before the guest entry.
+> >=20
+> > No, this is wrong. Neither E2H nor TGE have any impact on writing to
+> > CNTPOFF_EL2, nor does it have an impact on CNTP_CVAL_EL0. Just read
+> > the pseudocode to convince yourself.
+> >=20
+> > CNTPOFF_EL2 is applied at exactly two points: when SW is reading
+> > CNTPCT_EL0 from EL1 while {E2H,TGE}=3D=3D{1, 0} and when the HW is
+> > comparing CNTPCT_EL0 with the CNTP_CVAL_EL0. In both cases the offset
+> > is subtracted from the counter. And that's the point where the running
+> > EL matters. Which means that CNTPOFF_EL2 behaves exactly like
+> > CNTVOFF_EL2. No ifs, no buts.
+>=20
+> As per ARM ARM (ARM DDI 0487J.a page D11-5989)
+> "When FEAT_ECV is implemented, the CNTPOFF_EL2 register allows an
+> offset to be applied to the physical counter, as viewed from EL1 and
+> EL0, and to the EL1 physical timer. The functionality of this 64-bit
+> register is affected by CNTHCTL_EL2.ECV."
+>=20
+> As per ARM ARM (ARM DDI 0487J.a page D19-7857)
+> "When HCR_EL2.{E2H, TGE} =3D=3D {1, 1} or SCR_EL3.{NS, EEL2} =3D=3D {0, 0=
+}, then
+> Enhanced Counter Virtualization functionality is disabled."
 
-...
+I think this is just bad writing. The functionality isn't disabled,
+since you can access CNTPOFF_EL2. It is just that, as for CNTVOFF, the
+offset isn't applied to reads of the physical counter.
 
-> +	struct gpio_consumer_device *dev = lookup->parent;
-> +
-> +	guard(mutex)(&dev->lock);
-> +
-> +	return sprintf(page, "%s\n", lookup->key);
+>=20
+> "The EL1 physical timer interrupt is triggered when ((PCount<63:0> -
+> CNTPOFF_EL2<63:0>) - PCVal<63:0>) is greater than or equal to 0."
+>=20
+> As per ARM ARM (ARM DDI 0487J.a page D19-7938)
+> "When EL2 is implemented and enabled in the current Security state,
+> the physical counter uses a fixed physical offset of *zero* if any of
+> the following are true:
+> =E2=80=A2 CNTHCTL_EL2.ECV is 0.
+> =E2=80=A2 SCR_EL3.ECVEn is 0.
+> =E2=80=A2 HCR_EL2.{E2H, TGE} is {1, 1}."
+>=20
+> In VHE host hypervisor, E2H=3DTGE=3D1 hence ECV is disabled and Ptimer
+> interrupt is triggered based on PCount<63:0> - PCVal<63:0>
 
-...
+ECV is *not* disabled. It is just that CNTPOFF isn't applied to the
+counter as viewed from EL2.
 
-> +static ssize_t
-> +gpio_consumer_lookup_config_offset_show(struct config_item *item, char *page)
-> +{
-> +	struct gpio_consumer_lookup *lookup = to_gpio_consumer_lookup(item);
-> +	struct gpio_consumer_device *dev = lookup->parent;
-> +	unsigned int offset;
-> +
-> +	scoped_guard(mutex, &dev->lock)
-> +		offset = lookup->offset;
-> +
-> +	return sprintf(page, "%d\n", offset);
+>=20
+> Since cval is set by Guest as per offsetted PCounter value and pCount
+> is not subtracted by CNTPOFF when in VHE-L0, results in cval becoming
+> much lesser than physical counter(bumped up since CNTPOFF is zero) and
+> timer interrupt trigger condition is met falsely.
 
-Consistently it can be simplified same way
+Again, you're misreading the spec. When the guest reads the counter,
+it reads something that is offset by CNTPOFF. When the guest programs
+CVAL, it is an offset from the value it has read. When the HW compares
+the physical counter to CVAL, it applies CNTPOFF to the counter.
 
-	guard(mutex)(&dev->lock);
+There is no context to these things, and the value of TGE should not
+matter. And even if it did, at the point where we enter the guest,
+everything should be hunky dory: the HW has all the information, and
+no interrupt should fire if the offseted counter is less than the
+deadline.
 
-	return sprintf(page, "%d\n", lookup->offset);
+Again, this is exactly like CNTVOFF.
 
-BUT. Thinking about this more. With guard() we put sprintf() inside the lock,
-which is suboptimal from runtime point of view. So, I think now that all these
-should actually use scoped_guard() rather than guard().
+> There is no issue/impact on cval due to ECV, however it can be/is
+> manipulated to handle this on and off of CNTPOFF/ECV.
+>=20
+> IIUC, CNTPOFF and CNTVOFF are not same as per specification.
 
-> +}
+We clearly are reading different things in the spec, as I cannot see
+*any* difference in how they are described. If your HW has built them
+differently, you have a problem.
 
-...
+Thanks,
 
-> +	guard(mutex)(&dev->lock);
-> +
-> +	return lookup->flags;
+	M.
 
-...
-
-> +static ssize_t
-> +gpio_consumer_lookup_config_transitory_show(struct config_item *item,
-> +					    char *page)
-> +{
-
-> +	enum gpio_lookup_flags flags;
-> +
-> +	flags = gpio_consumer_lookup_get_flags(item);
-
-This is perfectly one line < 80 characters.
-
-> +	return sprintf(page, "%s\n", flags & GPIO_TRANSITORY ? "1" : "0");
-> +}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+--=20
+Without deviation from the norm, progress is not possible.
