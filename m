@@ -2,158 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C7977F379
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF99D77F37B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349707AbjHQJdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 05:33:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36314 "EHLO
+        id S1349676AbjHQJeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 05:34:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349721AbjHQJdD (ORCPT
+        with ESMTP id S1349709AbjHQJdj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 05:33:03 -0400
-Received: from mta-65-226.siemens.flowmailer.net (mta-65-226.siemens.flowmailer.net [185.136.65.226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66CAC2D67
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 02:33:01 -0700 (PDT)
-Received: by mta-65-226.siemens.flowmailer.net with ESMTPSA id 202308170933006e807fb0f53e694efa
-        for <linux-kernel@vger.kernel.org>;
-        Thu, 17 Aug 2023 11:33:01 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
- d=siemens.com; i=daniel.starke@siemens.com;
- h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc:References:In-Reply-To;
- bh=mpS6vMW8falEVR0dEmK3ruSSJW5x6c4Qp2+AWzGHpC8=;
- b=GYwY4kYCtsixqUVhbQtHFfRxAyF1kf8vhLVbg8ndFv6Wr2cPJ3bVKN9Qs2H8Qy9i6XcK5s
- uIC+Vx6iVcJEKMFZpNs7JgCcr08ElnXV4ptWmh4SCkNubMqZ3/szoMUO0s46cgnwQSvTCsSk
- w7jdMbAchugCxB/tngaSZ0DLuHWpk=;
-From:   "D. Starke" <daniel.starke@siemens.com>
-To:     linux-serial@vger.kernel.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, ilpo.jarvinen@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org,
-        Daniel Starke <daniel.starke@siemens.com>
-Subject: [PATCH v6 9/9] tty: n_gsm: add restart flag to extended ioctl config
-Date:   Thu, 17 Aug 2023 11:32:31 +0200
-Message-Id: <20230817093231.2317-9-daniel.starke@siemens.com>
-In-Reply-To: <20230817093231.2317-1-daniel.starke@siemens.com>
-References: <20230817093231.2317-1-daniel.starke@siemens.com>
+        Thu, 17 Aug 2023 05:33:39 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DE410E9
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 02:33:38 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37H9X7lX034365;
+        Thu, 17 Aug 2023 04:33:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1692264787;
+        bh=d2bi7xNYpv55A4isbPGmzxy/NzcyeROLai+rcJ2ZKQU=;
+        h=From:To:CC:Subject:Date;
+        b=gsir96fWlC7tKz09rwUFsctiJKcq+OXRF6eckgPOlyIn4sxwHt1ptHGwWEczLvmGR
+         8ajcu98YP/s5LI637inxJ0RAvWZCOA56u1vnS5C3DvUCpLLI+NqILDgI9TsnvhAN96
+         KHgc2pYmT3kVvyj/xi6YkrSXj6oXUhstiOrJ7at4=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37H9X71I047196
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 17 Aug 2023 04:33:07 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 17
+ Aug 2023 04:33:07 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 17 Aug 2023 04:33:07 -0500
+Received: from LT5CG31242FY.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37H9X0gY101760;
+        Thu, 17 Aug 2023 04:33:01 -0500
+From:   Shenghao Ding <shenghao-ding@ti.com>
+To:     <broonie@kernel.org>, <robh+dt@kernel.org>, <lgirdwood@gmail.com>,
+        <perex@perex.cz>, <pierre-louis.bossart@linux.intel.com>
+CC:     <kevin-lu@ti.com>, <13916275206@139.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <liam.r.girdwood@intel.com>, <mengdong.lin@intel.com>,
+        <baojun.xu@ti.com>, <thomas.gfeller@q-drop.com>, <peeyush@ti.com>,
+        <navada@ti.com>, <tiwai@suse.de>, <gentuser@gmail.com>,
+        Shenghao Ding <shenghao-ding@ti.com>
+Subject: [PATCH v1] ASoC: tas2781: fixed register access error when switching to other chips
+Date:   Thu, 17 Aug 2023 17:32:56 +0800
+Message-ID: <20230817093257.951-1-shenghao-ding@ti.com>
+X-Mailer: git-send-email 2.33.0.windows.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Flowmailer-Platform: Siemens
-Feedback-ID: 519:519-314044:519-21489:flowmailer
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Starke <daniel.starke@siemens.com>
+fixed register access error when switching to other tas2781 -- refresh the page
+inside regmap on the switched tas2781
 
-Currently, changing the parameters of the n_gsm mux gives no direct control
-to the user whether this should trigger a mux reset or not. The decision is
-solely made by the driver based on the assumption which parameter changes
-are compatible or not. Therefore, the user has no means to perform an
-automatic mux reset after parameter configuration for non-conflicting
-changes.
+Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
-Add the parameter 'flags' to 'gsm_config_ext' to force a mux reset after
-ioctl setting regardless of whether the changes made require this or not
-by setting this to 'GSM_FL_RESTART'. This is done similar to
-'GSM_FL_RESTART' in gsm_dlci_config.flags.
-
-Note that 'GSM_FL_RESTART' is currently the only allowed flag to allow
-additions here.
-
-Signed-off-by: Daniel Starke <daniel.starke@siemens.com>
 ---
- drivers/tty/n_gsm.c         | 23 +++++++++++++++++++++++
- include/uapi/linux/gsmmux.h |  5 ++++-
- 2 files changed, 27 insertions(+), 1 deletion(-)
+Changes in v1:
+ - fixed register access error when switching to other tas2781
+---
+ sound/soc/codecs/tas2781-comlib.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-v5 -> v6:
-No changes. This was previously patch 10/10. Patch 9/10 has been removed.
-
-Link: https://lore.kernel.org/all/2023081644-stiffness-division-215b@gregkh/
-Link: https://lore.kernel.org/all/20230517155704.5701-10-daniel.starke@siemens.com/
-
-diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index 47905803f8f9..8ecc7b138c05 100644
---- a/drivers/tty/n_gsm.c
-+++ b/drivers/tty/n_gsm.c
-@@ -3422,6 +3422,7 @@ static void gsm_copy_config_ext_values(struct gsm_mux *gsm,
+diff --git a/sound/soc/codecs/tas2781-comlib.c b/sound/soc/codecs/tas2781-comlib.c
+index a88c6c28a394..ffb26e4a7e2f 100644
+--- a/sound/soc/codecs/tas2781-comlib.c
++++ b/sound/soc/codecs/tas2781-comlib.c
+@@ -57,16 +57,17 @@ static int tasdevice_change_chn_book(struct tasdevice_priv *tas_priv,
  
- static int gsm_config_ext(struct gsm_mux *gsm, struct gsm_config_ext *ce)
- {
-+	bool need_restart = false;
- 	unsigned int i;
+ 		if (client->addr != tasdev->dev_addr) {
+ 			client->addr = tasdev->dev_addr;
+-			if (tasdev->cur_book == book) {
+-				ret = regmap_write(map,
+-					TASDEVICE_PAGE_SELECT, 0);
+-				if (ret < 0) {
+-					dev_err(tas_priv->dev, "%s, E=%d\n",
+-						__func__, ret);
+-					goto out;
+-				}
++			/* All tas2781s share the same regmap, clear the page
++			 * inside regmap once switching to another tas2781.
++			 * Register 0 at any pages and any books inside tas2781
++			 * is the same one for page-switching.
++			 */
++			ret = regmap_write(map, TASDEVICE_PAGE_SELECT, 0);
++			if (ret < 0) {
++				dev_err(tas_priv->dev, "%s, E=%d\n",
++					__func__, ret);
++				goto out;
+ 			}
+-			goto out;
+ 		}
  
- 	/*
-@@ -3431,6 +3432,20 @@ static int gsm_config_ext(struct gsm_mux *gsm, struct gsm_config_ext *ce)
- 	for (i = 0; i < ARRAY_SIZE(ce->reserved); i++)
- 		if (ce->reserved[i])
- 			return -EINVAL;
-+	if (ce->flags & ~GSM_FL_RESTART)
-+		return -EINVAL;
-+
-+	/* Requires care */
-+	if (ce->flags & GSM_FL_RESTART)
-+		need_restart = true;
-+
-+	/*
-+	 * Close down what is needed, restart and initiate the new
-+	 * configuration. On the first time there is no DLCI[0]
-+	 * and closing or cleaning up is not necessary.
-+	 */
-+	if (need_restart)
-+		gsm_cleanup_mux(gsm, true);
- 
- 	/*
- 	 * Setup the new configuration values
-@@ -3438,6 +3453,14 @@ static int gsm_config_ext(struct gsm_mux *gsm, struct gsm_config_ext *ce)
- 	gsm->wait_config = ce->wait_config ? true : false;
- 	gsm->keep_alive = ce->keep_alive;
- 
-+	if (gsm->dead) {
-+		int ret = gsm_activate_mux(gsm);
-+		if (ret)
-+			return ret;
-+		if (gsm->initiator)
-+			gsm_dlci_begin_open(gsm->dlci[0]);
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/include/uapi/linux/gsmmux.h b/include/uapi/linux/gsmmux.h
-index 3bd6f03a8293..4c878d84dbda 100644
---- a/include/uapi/linux/gsmmux.h
-+++ b/include/uapi/linux/gsmmux.h
-@@ -11,6 +11,7 @@
-  * flags definition for n_gsm
-  *
-  * Used by:
-+ * struct gsm_config_ext.flags
-  * struct gsm_dlci_config.flags
-  */
- /* Forces a DLCI reset if set. Otherwise, a DLCI reset is only done if
-@@ -98,12 +99,14 @@ struct gsm_netconfig {
-  *
-  * @keep_alive:  Control channel keep-alive in 1/100th of a second (0 to disable).
-  * @wait_config: Wait for DLCI config before opening virtual link?
-+ * @flags:       Mux specific flags.
-  * @reserved:    For future use, must be initialized to zero.
-  */
- struct gsm_config_ext {
- 	__u32 keep_alive;
- 	__u32 wait_config;
--	__u32 reserved[6];
-+	__u32 flags;
-+	__u32 reserved[5];
- };
- 
- #define GSMIOC_GETCONF_EXT	_IOR('G', 5, struct gsm_config_ext)
+ 		if (tasdev->cur_book != book) {
 -- 
 2.34.1
 
