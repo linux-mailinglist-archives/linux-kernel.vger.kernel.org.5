@@ -2,356 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB36A77FDF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35CC677FDF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354457AbjHQSg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 14:36:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40194 "EHLO
+        id S1354469AbjHQShA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 14:37:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354499AbjHQSgL (ORCPT
+        with ESMTP id S1354478AbjHQSgp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 14:36:11 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE81358C
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:36:02 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so29341866b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:36:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692297360; x=1692902160;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WBS9wYJOGZO6RPvKwuPSgpbxq1EN3smSQy6tE1tHU9I=;
-        b=ihKDwyrHEfcmDVEaCRMqs0Ajrw8F55LitLdqxwy2N7eopJvWP4Mo7LqFHPdj+zaOaa
-         XivVFM0hlogzJhfvsfQ3JVEHhNl90c4aXxBe/3voojVsINiXiLAgK9vzgZ/idkeqR6wo
-         u8EJ/rh5VMIry61oYaKRsXJ+uIStmfn+IZ11fhdEpYM+r0WsP+RXnpt0nCgHTyGLhjLH
-         fZp6G9d/TR/j2MRfG/PP6g2RoqkOwMVigOFXB4AqvO0pDzzEqQH7NqfSVkd9uScdQxcL
-         sqfGAizSJZNi/7MB7XcYm9Mx/MgRIAG85T2XB0Dzkh1yuLcVnUEGN3JyfGzrx76miJwy
-         1BcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692297360; x=1692902160;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WBS9wYJOGZO6RPvKwuPSgpbxq1EN3smSQy6tE1tHU9I=;
-        b=MvtjoBwL5rfy9ueyqi46tBIcU7FO+bhuvW0XcI86KZEzQEQqpP7/xDzywibTX30ULW
-         irSoSUys3vUXwbTgjXhyI5M1zctvzsVn3+f9iXlYgAOu6J2bd6cqH2s44N8P9UN/vIeO
-         CLvvczjdCPTCQQF4EcPUIkQHontBM89BRsZbDib76BeI5Sp8HREDLd2A7ZBjTwagrIPl
-         /RGmFq6i1FidL+dGm9INmA+D1bdnjRQ44AQtzv+b2lCnHG4TW3Tu5vjLP/ZxDVV1Dx+F
-         D3kVPW7HRcoKo+NQ2mPTg2ZkUpbUQctytBVWbNea2e5iaNsBHGu5sYIGD6luxJPfKAa2
-         kXpQ==
-X-Gm-Message-State: AOJu0YyNBx7OVu/pXgQc4Fj804FmdhBRQKQlRQXyDjbmI0xtO5M9ZBhQ
-        YzTSoe5308d9B8kp1MrvF9IliQ==
-X-Google-Smtp-Source: AGHT+IEDIvCTrFdB1ShWf0WHc4tK5DUpGRm91TbCX7LMcZ3fR54EK9AHfY3CfFGlJE8wso5+ZjL5QQ==
-X-Received: by 2002:a17:907:3da0:b0:978:2b56:d76e with SMTP id he32-20020a1709073da000b009782b56d76emr4071139ejc.12.1692297360461;
-        Thu, 17 Aug 2023 11:36:00 -0700 (PDT)
-Received: from [10.10.15.130] ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id c8-20020a170906528800b009887f4e0291sm72247ejm.27.2023.08.17.11.35.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Aug 2023 11:35:59 -0700 (PDT)
-Message-ID: <ff1b04c3-c852-4e28-9054-3cebb4ca5d6e@linaro.org>
-Date:   Thu, 17 Aug 2023 21:35:58 +0300
+        Thu, 17 Aug 2023 14:36:45 -0400
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2079.outbound.protection.outlook.com [40.107.212.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 579412D59
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:36:43 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hxtzCte5TfzHctYj17+Bw9+zTYx4X03gvXyxcqa1yD07JASgb3ts3+kAN85sdEnRmwmMcXoeqXjNboJ4h92RIHUnM+9di4nu4TQoagL53MMoC8CGkhFI6ipGykIdTC3xm7K3y0AV+z55n31BrWviBAG8ilK6uKJ3g7sTCECZ3XTCDItq4xErN2wQm22eVhH5n0tRHlZjMQoLT0/iB5h2xRsI58MhJPqpi6HgpSXTK25Q8x9oNblpc5WNrKKWI7iPS6b8Qwdm1yZNcOIruvwRcXpenr7oPa032VHDZFtBaLtg3Q9mjGEKVhlenbgiYHBjtlSfWj00duaZTr/X30GulQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OzBpGDeVQqC38vAD2xI2mFjRS8ge609yqAWohJWMd08=;
+ b=RGTKGVexvHX6wch4exY2ocZMaTNy8Q1inzDR3HkQyG0VkSsl7RtuhgHmwsOFgEVoM+OF/ZXO9W83OStM2wO3HxvwnwZ5ABrHny27u8UJ7MwdqkvwelNSKeoVcZ6W4mgGjAp7oluS3vse6bqxBWqx9ctkPj12PZBRNcTnYtUcGJBoYDRuyhjZSvsJp3uclLNMrtdKhHin3yLYP5/DAzv2RKXUKMDxiuBB3AKuxkbTWZwHum16K1LJHxugCV0EoOIzq066Nq4gGdDFd8f718mJpBOQLRjxFEJY6cl6Mub2Hp95E6c0VmT8SzTYqTonWttxRWjWA4HG5Zau7ZKawrDEmA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OzBpGDeVQqC38vAD2xI2mFjRS8ge609yqAWohJWMd08=;
+ b=oB/QBmWNxE8IfPqCxNjzW5Fs3yz6a3hVdF+oigzW7gMAUXfgUBzyIBXtp1zRIVfv/QIloccqB9n/JnttJo5+9uQ7DV7q+oiGuTv+yF+nSt9Zudk/f2XeHTZWTTkfL6r1voWNp8dBcgSs/hDoIs1DpXQsRPNTlNkvg73vybw9IZ1WtIf7h+kp8fDPFNBjL542PkZoT07zUWC4akxgB0mabPwG73MRbzOCoRUASNYTpT4HTN7jpKsyWUECSycjjbx+x4czNVrGb6SRpCWtEmBv/gqVAa5rJq5SWbZLMKbbCHYf2sL5+hohm8gzuY4+MVNUkomPHzP5DbbXMTnVt0Fp+Q==
+Received: from SA1P222CA0084.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:35e::25)
+ by PH7PR12MB8124.namprd12.prod.outlook.com (2603:10b6:510:2ba::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Thu, 17 Aug
+ 2023 18:36:41 +0000
+Received: from SA2PEPF000015C6.namprd03.prod.outlook.com
+ (2603:10b6:806:35e:cafe::3) by SA1P222CA0084.outlook.office365.com
+ (2603:10b6:806:35e::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.17 via Frontend
+ Transport; Thu, 17 Aug 2023 18:36:41 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ SA2PEPF000015C6.mail.protection.outlook.com (10.167.241.196) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.15 via Frontend Transport; Thu, 17 Aug 2023 18:36:40 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 17 Aug 2023
+ 11:36:21 -0700
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Thu, 17 Aug
+ 2023 11:36:20 -0700
+Received: from Asurada-Nvidia (10.127.8.10) by mail.nvidia.com (10.129.68.9)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Thu, 17 Aug 2023 11:36:20 -0700
+Date:   Thu, 17 Aug 2023 11:36:18 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     <will@kernel.org>, <robin.murphy@arm.com>, <jgg@nvidia.com>
+CC:     <joro@8bytes.org>, <jean-philippe@linaro.org>,
+        <apopple@nvidia.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>
+Subject: Re: [PATCH v2] iommu/arm-smmu-v3: Add a user-configurable
+ tlb_invalidate_threshold
+Message-ID: <ZN5oojF6vKOKB/eI@Asurada-Nvidia>
+References: <20230816204350.29150-1-nicolinc@nvidia.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox
- VTDR6130
-Content-Language: en-GB
-To:     neil.armstrong@linaro.org,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@gmail.com>
-Cc:     quic_parellan@quicinc.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
- <dde2774e-6f0b-21d0-e9c9-4a5bd1eac4e8@linaro.org>
- <2f9a9450-438b-257d-759c-22b273a7b35d@quicinc.com>
- <c183d823-81d4-6d7c-98d9-649fa4041262@quicinc.com>
- <6c0dd9fd-5d8e-537c-804f-7a03d5899a07@linaro.org>
- <548b0333-103b-ac66-0fc5-f29e7cc50596@quicinc.com>
- <6e1f6cb7-7f88-48dc-b494-1a5e990e1a33@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <6e1f6cb7-7f88-48dc-b494-1a5e990e1a33@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230816204350.29150-1-nicolinc@nvidia.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF000015C6:EE_|PH7PR12MB8124:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0b347fb6-5d85-4194-0c47-08db9f50e62a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 76iWY9Ke8JapGx8GyXecPVFBozTJE5qwhcG/TNecYZfDahEGidPvAiSdRYCju4RLLNwYqAuDgwpjtM5CW9TZzsU+COQGVIAmD/m29KyTEQmtxaAlieC1JyWgJ6i4teWSNB1hfn63houjbBXbcW7TYtkXGG6fwJZ06Dlo46rKgviCYi4yeEef6xRPoZLic8WRDeRF4fNsxwFLaWhrs8Svv2jhRqyS9yz4JM8spdgxjjwn//sKjQ/IJkagERTSwQ9UHVCMmrh92wBvx5MCTdXj2nsc520eioaAVBIZmgWI1FwqgIK0VW/LGdiGZZsUjniopsQsiuT+XG+fFYG6ZWAC7b1XDDplwSbNvtbY5uQhO9LCABZBTrOZlypmnPMRlVY2J6fi3OSBhxWdiGF+rNHlNUeat+NyOaot0hf/Xl7y91m6+Au5cjSKsUtje6csqECIe1VPn4l+pKJYWYIduA/a+fiWE4ReyRL+1rVM5U2SUD94o6/OsfMtlf6ei0lKJjxqVFD3T9ihKLpEu3opcYiu+AVsf58Z5CfQnngwvGhYoMnbHVJupLw/3RYTnHoyM6BCSeVrJIS3kOH6xXkd+rpXtQJ4/7erhQcff7Yw87Sksd9UQ/D2OmBoygl/YGRuDW26Pwp7M2WV+w/I0muELWWS2xF1LelxrHhluN94Vtyl7Us0jOv7K1a06I95Alov9qygghV0homQnMkA1qWpv1RecgThUxfZVqq9GFs8Az3v/xVWMXTcv1aJWGuRNX8xZgnA
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(136003)(39860400002)(346002)(1800799009)(186009)(82310400011)(451199024)(36840700001)(40470700004)(46966006)(55016003)(40480700001)(40460700003)(47076005)(426003)(83380400001)(2906002)(336012)(36860700001)(70206006)(70586007)(26005)(54906003)(6636002)(316002)(478600001)(5660300002)(110136005)(4326008)(9686003)(41300700001)(8936002)(8676002)(86362001)(82740400003)(33716001)(356005)(7636003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2023 18:36:40.9366
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b347fb6-5d85-4194-0c47-08db9f50e62a
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF000015C6.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8124
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/08/2023 10:51, neil.armstrong@linaro.org wrote:
-> Hi Abhinav,
+On Wed, Aug 16, 2023 at 01:43:50PM -0700, Nicolin Chen wrote:
+ 
+> When receiving an __arm_smmu_tlb_inv_range() call with a large size, there
+> could be a long latency at this function call: one part is coming from a
+> large software overhead in the routine of building commands, and the other
+> part is coming from CMDQ hardware consuming the large number of commands.
+> This latency could be significantly large on an SMMU that does not support
+> range invalidation commands, i.e. no ARM_SMMU_FEAT_RANGE_INV.
 > 
-> On 14/08/2023 20:02, Abhinav Kumar wrote:
->> Hi Neil
->>
->> On 8/14/2023 1:01 AM, neil.armstrong@linaro.org wrote:
->>> Hi Abhinav,
->>>
->>> On 10/08/2023 18:26, Abhinav Kumar wrote:
->>>> Hi Neil
->>>>
->>>> On 8/3/2023 10:19 AM, Jessica Zhang wrote:
->>>>>
->>>>>
->>>>> On 7/31/2023 6:00 AM, Neil Armstrong wrote:
->>>>>> Hi,
->>>>>>
->>>>>> On 26/07/2023 00:56, Jessica Zhang wrote:
->>>>>>> Due to a recent introduction of the pre_enable_prev_first bridge 
->>>>>>> flag [1],
->>>>>>> the panel driver will be probed before the DSI is enabled, 
->>>>>>> causing the
->>>>>>> DCS commands to fail to send.
->>>>>>>
->>>>>>> Ensure that DSI is enabled before panel probe by setting the
->>>>>>> prepare_prev_first flag for the panel.
->>>>>>
->>>>>> Well this is specific to MSM DSI driver, it's not related at all 
->>>>>> to the panel.
->>>>>
->>>>
->>>> I dont fully agree this is a MSM DSI driver specific thing.
->>>>
->>>> If the panel can send its commands in its enable() callback, then 
->>>> this flag need not be set.
->>>>
->>>> When a panel sends its DCS commands in its pre_enable() callback, 
->>>> any DSI controller will need to be ON before that otherwise DCS 
->>>> commands cannot be sent.
->>>>
->>>> With this in mind, may I know why is this a MSM change and not a 
->>>> panel change?
->>>>
->>>> As per my discussion with Dmitry during the last sync up, we were 
->>>> aligned on this expectation.
->>>
->>> As of today, only the MSM DSI driver expects panels to have 
->>> prepare_prev_first because it's the first
->>> one calling pre_enable() before the DSI controller to be on, all 
->>> other DSI drivers I know
->>> still enables the DSI controller in mode_set() and thus can send 
->>> commands in pre_enable() which
->>> is a loose way to map the pre-video state for DSI panels...
->>>
->>
->> It looks like there are multiple panels already setting this flag so 
->> this panel will not be the first unless they were added to make those 
->> work with MSM (which seems unlikely)
->>
->> panel-samsung-s6d7aa0.c:        ctx->panel.prepare_prev_first = true;
->> panel-samsung-s6e3ha2.c:        ctx->panel.prepare_prev_first = true;
->> panel-samsung-s6e63j0x03.c:     ctx->panel.prepare_prev_first = true;
->> panel-samsung-s6e8aa0.c:        ctx->panel.prepare_prev_first = true;
->>
->> This is where I would like to understand a bit that if the panel sends 
->> out the ON commands in enable() instead of pre_enable() then, this 
->> flag will not be needed. So its also depends on the panel side and 
->> thats why
->> the bridge feeds of the panel's input in 
->> devm_drm_panel_bridge_add_typed()
->>
->> bridge->pre_enable_prev_first = panel->prepare_prev_first;
->>
->>> A panel driver should not depend on features of a DSI controller, 
->>> which is the case here
->>> with this patch. Today's expectation is to send DSI commands in 
->>> pre_enable() then when enabled
->>> expect to be in video mode when enable() is called.
->>>
->>
->> We are not depending on any feature as such. Any DSI controller , not 
->> just MSM's would need to be ON for DCS commands to be sent out in the 
->> panel's pre_enable() callback.
->>
->> Its not true that MSM is the only driver powering on the DSI 
->> controller in pre_enable(). Even MTK seems to be doing that
->>
->> mtk_dsi_bridge_atomic_pre_enable
->>
->> So I assume any panel which sends out commands in pre_enable() will 
->> not work with MTK as well.
-> 
-> Sending HS commands will always work on any controller, it's all about 
-> LP commands.
-> The Samsung panels you listed only send HS commands so they can use 
-> prepare_prev_first
-> and work on any controllers.
+> One way to optimize this is to replace a large number of VA invalidation
+> commands with one single per-asid invalidation command, when the requested
+> size reaches a threshold. This threshold can be configurable depending on
+> the SMMU implementaion.
 
-I think there is some misunderstanding there, supported by the 
-description of the flag.
+I'm rethinking about this size-based threshold, since what really
+affects the latency is the number of the invalidation commands in
+the request. So having an npages-based threshold might be optimal,
+though the idea and implementation would be similar.
 
-If I remember correctly, some hosts (sunxi) can not send DCS commands 
-after enabling video stream and switching to HS mode, see [1]. Thus, as 
-you know, most of the drivers have all DSI panel setup commands in 
-drm_panel_funcs::prepare() / drm_bridge_funcs::pre_enable() callbacks, 
-not paying attention whether these commands are to be sent in LP or in 
-HS mode.
-
-Previously DSI source drivers could power on the DSI link either in 
-mode_set() or in pre_enable() callbacks, with mode_set() being the hack 
-to make panel/bridge drivers to be able to send commands from their 
-prepare() / pre_enable() callbacks.
-
-With the prev_first flags being introduced, we have established that DSI 
-link should be enabled in DSI host's pre_enable() callback and switched 
-to HS mode (be it command or video) in the enable() callback.
-
-So far so good.
-
-Unfortunately this change is not fully backwards-compatible. This 
-requires that all DSI panels sending commands from prepare() should have 
-the prepare_prev_first flag. In some sense, all such patches might have 
-Fixes: 5ea6b1702781 ("drm/panel: Add prepare_prev_first flag to drm_panel").
-
-
-> None of the panels using LP commands uses prepare_prev_first:
-> 
-> $ grep prepare_prev_first `grep -l LPM drivers/gpu/drm/panel/panel-*`
-> $
-> 
-> Note that there's a smart move for VTDR6130 with the command mode 
-> introduced in 20230728011218.14630-1-parellan@quicinc.com,
-> in the way prepare_prev_first could only be set to true if command-mode 
-> is selected.
-> I'll accept that since it would be logical, video mode won't work 
-> anymore but by default
-> the panel would still work in command mode + prepare_prev_first.
-> 
->>
->>> The main reason is because some DSI controllers cannot send LP 
->>> commands after switching
->>> to video mode (allwinner for example), so we must take this into 
->>> account.
->>>
->>> For v6.6, I don't see other solutions than reverting 9e15123eca79 
->>> (reverting won't regress anything,
->>> because now it regresses also other panels on MSM platforms) and try 
->>> to find a proper solution for v6.7...
->>>
->>
->> No, I would prefer not to revert that. It will bring back special 
->> handling for the parade chip into MSM driver, something which I would 
->> prefer not to go back to. Powering on the DSI in modeset() was done 
->> only for the parade chip.
-> 
-> I understand, but this patch doesn't qualify as a fix for 9e15123eca79 
-> and is too late to be merged in drm-misc-next for v6.6,
-> and since 9e15123eca79 actually breaks some support it should be 
-> reverted (+ deps) since we are late in the rc cycles.
-
-If we go this way, we can never reapply these patches. There will be no 
-guarantee that all panel drivers are completely converted. We already 
-have a story without an observable end - DRM_BRIDGE_ATTACH_NO_CONNECTOR.
-
-I'd consider that the DSI driver is correct here and it is about the 
-panel drivers that require fixes patches. If you care about the 
-particular Fixes tag, I have provided one several lines above.
-
-> It's not a fatality or the end of the world, but this is an indirect fix 
-> and not way all this should be fixed.
-
-But why? It is the way all the panels are expected to be fixed: DSI 
-commands in prepare() => prepare_prev_first flag.
-And for the bridges, DSI commands in pre_enable() => 
-pre_enable_prev_first flag.
-
-> We already had the case for the lt9611 breakage, and it's the same case 
-> here.
-
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/drivers/gpu/drm/sun4i/sun6i_mipi_dsi.c#n776
-
-
-
-
-> 
-> Neil
-> 
->>
->>> Neil
->>>
->>>>
->>>> Thanks
->>>>
->>>> Abhinav
->>>>
->>>>> Hi Neil,
->>>>>
->>>>> I think there might be some confusion caused by the commit message 
->>>>> -- instead of "enabled before panel probe", it should be "enabled 
->>>>> before panel pre_enable()" as the panel on commands are sent during 
->>>>> prepare(), which is matched to bridge pre_enable().
->>>>>
->>>>> IIRC the general rule is that the panel driver should set the 
->>>>> prepare_prev_first flag if the on commands are sent during 
->>>>> pre_enable(), so I'll keep the code change but correct the commit 
->>>>> message if that's ok with you.
->>>>>
->>>>> Thanks,
->>>>>
->>>>
->>>>> Jessica Zhang
->>>>>
->>>>>>
->>>>>> Neil
->>>>>>
->>>>>>>
->>>>>>> [1] commit 4fb912e5e190 ("drm/bridge: Introduce 
->>>>>>> pre_enable_prev_first to alter bridge init order")
->>>
->>> It's not the right commit that cause regression here, it's :
->>>
->>> 9e15123eca79 drm/msm/dsi: Stop unconditionally powering up DSI hosts 
->>> at modeset
-
-Regression was caused by 9e15123eca79. But the real source of the 
-regression is 5ea6b1702781, which didn't update all panel drivers to 
-follow the expected sequence.
-
->>>
->>>>>>>
->>>>>>> Fixes: 2349183d32d8 ("drm/panel: add visionox vtdr6130 DSI panel 
->>>>>>> driver")
->>>>>>> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
->>>>>>> ---
->>>>>>>   drivers/gpu/drm/panel/panel-visionox-vtdr6130.c | 1 +
->>>>>>>   1 file changed, 1 insertion(+)
->>>>>>>
->>>>>>> diff --git a/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c 
->>>>>>> b/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c
->>>>>>> index bb0dfd86ea67..e1363e128e7e 100644
->>>>>>> --- a/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c
->>>>>>> +++ b/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c
->>>>>>> @@ -296,6 +296,7 @@ static int visionox_vtdr6130_probe(struct 
->>>>>>> mipi_dsi_device *dsi)
->>>>>>>       dsi->format = MIPI_DSI_FMT_RGB888;
->>>>>>>       dsi->mode_flags = MIPI_DSI_MODE_VIDEO | 
->>>>>>> MIPI_DSI_MODE_NO_EOT_PACKET |
->>>>>>>                 MIPI_DSI_CLOCK_NON_CONTINUOUS;
->>>>>>> +    ctx->panel.prepare_prev_first = true;
->>>>>>>       drm_panel_init(&ctx->panel, dev, 
->>>>>>> &visionox_vtdr6130_panel_funcs,
->>>>>>>                  DRM_MODE_CONNECTOR_DSI);
->>>>>>>
->>>>>>> ---
->>>>>>> base-commit: 28a5c036b05fc5c935cc72d76abd3589825ea9cd
->>>>>>> change-id: 20230717-visionox-vtdr-prev-first-e00ae02eec9f
->>>>>>>
->>>>>>> Best regards,
->>>>>>
->>>
-> 
-
--- 
-With best wishes
-Dmitry
-
+Thanks
+Nicolin
