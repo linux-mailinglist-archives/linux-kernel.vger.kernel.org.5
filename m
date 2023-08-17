@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC5777F223
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6704677F226
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348999AbjHQI3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 04:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53928 "EHLO
+        id S1349005AbjHQI3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 04:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348923AbjHQI2o (ORCPT
+        with ESMTP id S1348924AbjHQI2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 04:28:44 -0400
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690DF30D8
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:28:28 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R591e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0Vpz9R0e_1692260904;
-Received: from e18g06460.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Vpz9R0e_1692260904)
+        Thu, 17 Aug 2023 04:28:45 -0400
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DC2273C
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:28:30 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0Vpz9R1O_1692260905;
+Received: from e18g06460.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Vpz9R1O_1692260905)
           by smtp.aliyun-inc.com;
-          Thu, 17 Aug 2023 16:28:25 +0800
+          Thu, 17 Aug 2023 16:28:26 +0800
 From:   Gao Xiang <hsiangkao@linux.alibaba.com>
 To:     linux-erofs@lists.ozlabs.org
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Gao Xiang <hsiangkao@linux.alibaba.com>
-Subject: [PATCH 4/8] erofs: tidy up z_erofs_do_read_page()
-Date:   Thu, 17 Aug 2023 16:28:09 +0800
-Message-Id: <20230817082813.81180-4-hsiangkao@linux.alibaba.com>
+Subject: [PATCH 5/8] erofs: drop z_erofs_page_mark_eio()
+Date:   Thu, 17 Aug 2023 16:28:10 +0800
+Message-Id: <20230817082813.81180-5-hsiangkao@linux.alibaba.com>
 X-Mailer: git-send-email 2.24.4
 In-Reply-To: <20230817082813.81180-1-hsiangkao@linux.alibaba.com>
 References: <20230817082813.81180-1-hsiangkao@linux.alibaba.com>
@@ -41,117 +41,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- - Fix a typo: spiltted => split;
-
- - Move !EROFS_MAP_MAPPED and EROFS_MAP_FRAGMENT upwards;
-
- - Increase `split` in advance to avoid unnecessary repeat.
+It can be folded into z_erofs_onlinepage_endio() to simplify the code.
 
 Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 ---
- fs/erofs/zdata.c | 53 ++++++++++++++++++++++--------------------------
- 1 file changed, 24 insertions(+), 29 deletions(-)
+ fs/erofs/zdata.c | 29 +++++++++--------------------
+ 1 file changed, 9 insertions(+), 20 deletions(-)
 
 diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-index 30ecdfe41836..a200e99f7d4f 100644
+index a200e99f7d4f..4009283944ca 100644
 --- a/fs/erofs/zdata.c
 +++ b/fs/erofs/zdata.c
-@@ -980,49 +980,34 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
- 	struct erofs_map_blocks *const map = &fe->map;
- 	const loff_t offset = page_offset(page);
- 	bool tight = true, exclusive;
--	unsigned int cur, end, len, spiltted;
-+	unsigned int cur, end, len, split;
- 	int err = 0;
+@@ -143,22 +143,17 @@ static inline void z_erofs_onlinepage_split(struct page *page)
+ 	atomic_inc((atomic_t *)&page->private);
+ }
  
--	/* register locked file pages as online pages in pack */
- 	z_erofs_onlinepage_init(page);
+-static inline void z_erofs_page_mark_eio(struct page *page)
++static void z_erofs_onlinepage_endio(struct page *page, int err)
+ {
+-	int orig;
++	int orig, v;
++
++	DBG_BUGON(!PagePrivate(page));
  
--	spiltted = 0;
-+	split = 0;
- 	end = PAGE_SIZE;
- repeat:
--	cur = end - 1;
+ 	do {
+ 		orig = atomic_read((atomic_t *)&page->private);
+-	} while (atomic_cmpxchg((atomic_t *)&page->private, orig,
+-				orig | Z_EROFS_PAGE_EIO) != orig);
+-}
 -
--	if (offset + cur < map->m_la ||
--	    offset + cur >= map->m_la + map->m_llen) {
-+	if (offset + end - 1 < map->m_la ||
-+	    offset + end - 1 >= map->m_la + map->m_llen) {
- 		z_erofs_pcluster_end(fe);
--		map->m_la = offset + cur;
-+		map->m_la = offset + end - 1;
- 		map->m_llen = 0;
- 		err = z_erofs_map_blocks_iter(inode, map, 0);
- 		if (err)
- 			goto out;
--	} else if (fe->pcl) {
--		goto hitted;
- 	}
+-static inline void z_erofs_onlinepage_endio(struct page *page)
+-{
+-	unsigned int v;
++		v = (orig - 1) | (err ? Z_EROFS_PAGE_EIO : 0);
++	} while (atomic_cmpxchg((atomic_t *)&page->private, orig, v) != orig);
  
--	if ((map->m_flags & EROFS_MAP_MAPPED) &&
--	    !(map->m_flags & EROFS_MAP_FRAGMENT)) {
--		err = z_erofs_pcluster_begin(fe);
+-	DBG_BUGON(!PagePrivate(page));
+-	v = atomic_dec_return((atomic_t *)&page->private);
+ 	if (!(v & ~Z_EROFS_PAGE_EIO)) {
+ 		set_page_private(page, 0);
+ 		ClearPagePrivate(page);
+@@ -1066,9 +1061,7 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+ 		goto repeat;
+ 
+ out:
+-	if (err)
+-		z_erofs_page_mark_eio(page);
+-	z_erofs_onlinepage_endio(page);
++	z_erofs_onlinepage_endio(page, err);
+ 	return err;
+ }
+ 
+@@ -1171,9 +1164,7 @@ static void z_erofs_fill_other_copies(struct z_erofs_decompress_backend *be,
+ 			cur += len;
+ 		}
+ 		kunmap_local(dst);
 -		if (err)
--			goto out;
--	}
--hitted:
--	/*
--	 * Ensure the current partial page belongs to this submit chain rather
--	 * than other concurrent submit chains or the noio(bypass) chain since
--	 * those chains are handled asynchronously thus the page cannot be used
--	 * for inplace I/O or bvpage (should be processed in a strict order.)
--	 */
--	tight &= (fe->mode > Z_EROFS_PCLUSTER_FOLLOWED_NOINPLACE);
-+	cur = offset > map->m_la ? 0 : map->m_la - offset;
-+	/* bump split parts first to avoid several separate cases */
-+	++split;
- 
--	cur = end - min_t(erofs_off_t, offset + end - map->m_la, end);
- 	if (!(map->m_flags & EROFS_MAP_MAPPED)) {
- 		zero_user_segment(page, cur, end);
-+		tight = false;
- 		goto next_part;
+-			z_erofs_page_mark_eio(bvi->bvec.page);
+-		z_erofs_onlinepage_endio(bvi->bvec.page);
++		z_erofs_onlinepage_endio(bvi->bvec.page, err);
+ 		list_del(p);
+ 		kfree(bvi);
  	}
-+
- 	if (map->m_flags & EROFS_MAP_FRAGMENT) {
- 		erofs_off_t fpos = offset + cur - map->m_la;
- 
-@@ -1031,12 +1016,24 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
- 				EROFS_I(inode)->z_fragmentoff + fpos);
- 		if (err)
- 			goto out;
--		++spiltted;
- 		tight = false;
- 		goto next_part;
+@@ -1344,9 +1335,7 @@ static int z_erofs_decompress_pcluster(struct z_erofs_decompress_backend *be,
+ 		/* recycle all individual short-lived pages */
+ 		if (z_erofs_put_shortlivedpage(be->pagepool, page))
+ 			continue;
+-		if (err)
+-			z_erofs_page_mark_eio(page);
+-		z_erofs_onlinepage_endio(page);
++		z_erofs_onlinepage_endio(page, err);
  	}
  
--	exclusive = (!cur && (!spiltted || tight));
-+	if (!fe->pcl) {
-+		err = z_erofs_pcluster_begin(fe);
-+		if (err)
-+			goto out;
-+	}
-+
-+	/*
-+	 * Ensure the current partial page belongs to this submit chain rather
-+	 * than other concurrent submit chains or the noio(bypass) chain since
-+	 * those chains are handled asynchronously thus the page cannot be used
-+	 * for inplace I/O or bvpage (should be processed in a strict order.)
-+	 */
-+	tight &= (fe->mode > Z_EROFS_PCLUSTER_FOLLOWED_NOINPLACE);
-+	exclusive = (!cur && ((split <= 1) || tight));
- 	if (cur)
- 		tight &= (fe->mode >= Z_EROFS_PCLUSTER_FOLLOWED);
- 
-@@ -1049,8 +1046,6 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
- 		goto out;
- 
- 	z_erofs_onlinepage_split(page);
--	/* bump up the number of spiltted parts of a page */
--	++spiltted;
- 	if (fe->pcl->pageofs_out != (map->m_la & ~PAGE_MASK))
- 		fe->pcl->multibases = true;
- 	if (fe->pcl->length < offset + end - map->m_la) {
+ 	if (be->decompressed_pages != be->onstack_pages)
 -- 
 2.24.4
 
