@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F69277FB77
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2E977FBA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353448AbjHQQGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 12:06:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38068 "EHLO
+        id S1353541AbjHQQIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 12:08:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353492AbjHQQGo (ORCPT
+        with ESMTP id S1353506AbjHQQIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 12:06:44 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5764530F7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:06:42 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-202-WB12oNh9NZeEKc7yOwxybA-1; Thu, 17 Aug 2023 17:06:39 +0100
-X-MC-Unique: WB12oNh9NZeEKc7yOwxybA-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 17 Aug
- 2023 17:06:35 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 17 Aug 2023 17:06:35 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Linus Torvalds' <torvalds@linux-foundation.org>
-CC:     David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 2/2] iov_iter: Don't deal with iter->copy_mc in
- memcpy_from_iter_mc()
-Thread-Topic: [PATCH v3 2/2] iov_iter: Don't deal with iter->copy_mc in
- memcpy_from_iter_mc()
-Thread-Index: AQHZ0DpP/l59sWTPXU+UuQ9VGbJikq/s16Kg///6foCAACRpIIAA7PpbgABGFYCAAFYcAIAAGHiw///2TICAABg4YA==
-Date:   Thu, 17 Aug 2023 16:06:35 +0000
-Message-ID: <d8500b7f585d41628b9c53a9848d9875@AcuMS.aculab.com>
-References: <03730b50cebb4a349ad8667373bb8127@AcuMS.aculab.com>
- <20230816120741.534415-1-dhowells@redhat.com>
- <20230816120741.534415-3-dhowells@redhat.com>
- <608853.1692190847@warthog.procyon.org.uk>
- <3dabec5643b24534a1c1c51894798047@AcuMS.aculab.com>
- <CAHk-=wjFrVp6srTBsMKV8LBjCEO0bRDYXm-KYrq7oRk0TGr6HA@mail.gmail.com>
- <665724.1692218114@warthog.procyon.org.uk>
- <CAHk-=wg8G7teERgR7ExNUjHj0yx3dNRopjefnN3zOWWvYADXCw@mail.gmail.com>
- <d0232378a64a46659507e5c00d0c6599@AcuMS.aculab.com>
- <CAHk-=wi4wNm-2OjjhFEqm21xTNTvksmb5N4794isjkp9+FzngA@mail.gmail.com>
- <2190704172a5458eb909c9df59b6a556@AcuMS.aculab.com>
- <CAHk-=wj1WfFGxHs4k6pn5y6V8BYd3aqODCjqEmrTWP8XO78giw@mail.gmail.com>
-In-Reply-To: <CAHk-=wj1WfFGxHs4k6pn5y6V8BYd3aqODCjqEmrTWP8XO78giw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 17 Aug 2023 12:08:04 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C3C03A80
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:07:57 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:d85a:258d:2c59:b44])
+        by laurent.telenet-ops.be with bizsmtp
+        id ag7i2A0034QHFyo01g7i1C; Thu, 17 Aug 2023 18:07:55 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qWfX4-000uIf-BZ;
+        Thu, 17 Aug 2023 18:07:41 +0200
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1qWfXB-007YEb-P7;
+        Thu, 17 Aug 2023 18:07:41 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Russell King <linux@armlinux.org.uk>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH treewide 0/9] Remove obsolete IDE headers
+Date:   Thu, 17 Aug 2023 18:07:31 +0200
+Message-Id: <cover.1692288018.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogVGh1cnNkYXksIEF1Z3VzdCAxNywgMjAyMyA0
-OjMxIFBNDQouLi4NCj4gICAgICAgICBtb3Z6d2wgIC5MQzEoJXJpcCksICVlYXgNCj4gICAgICAg
-ICB0ZXN0bCAgICVlc2ksICVlc2kNCj4gICAgICAgICBtb3ZiICAgICQwLCAoJXJkaSkNCj4gICAg
-ICAgICBtb3ZiICAgICQxLCA0KCVyZGkpDQo+ICAgICAgICAgbW92dyAgICAlYXgsIDEoJXJkaSkN
-Cj4gICAgICAgICBtb3ZxICAgICQwLCA4KCVyZGkpDQo+ICAgICAgICAgbW92cSAgICAlcmR4LCAx
-NiglcmRpKQ0KPiAgICAgICAgIG1vdnEgICAgJXI4LCAyNCglcmRpKQ0KPiAgICAgICAgIG1vdnEg
-ICAgJXJjeCwgMzIoJXJkaSkNCj4gICAgICAgICBzZXRuZSAgIDMoJXJkaSkNCj4gDQo+IHdoaWNo
-IGlzIHRoYXQgZGlzZ3VzdGluZyAibW92ZSB0d28gYnl0ZXMgZnJvbSBtZW1vcnkiLCBhbmQgbWFr
-ZXMNCj4gYWJzb2x1dGVseSBubyBzZW5zZSBhcyBhIHdheSB0byAid3JpdGUgMiB6ZXJvIGJ5dGVz
-IjoNCj4gDQo+IC5MQzE6DQo+ICAgICAgICAgLmJ5dGUgICAwDQo+ICAgICAgICAgLmJ5dGUgICAw
-DQo+IA0KPiBJIHRoaW5rIHRoYXQncyBzb21lIG9kZCBnY2MgYnVnLCBhY3R1YWxseS4NCg0KSSBn
-ZXQgdGhhdCB3aXRoIHNvbWUgY29kZSwgYnV0IG5vdCBvdGhlcnMuDQpTZWVtcyB0byBkZXBlbmQg
-b24gcmFuZG9tIG90aGVyIHN0dWZmLg0KSGFwcGVucyBmb3I6DQoJc3RydWN0IHsgdW5zaWduZWQg
-Y2hhciB4OjcsIHk6MTsgfTsNCmJ1dCBub3QgaWYgSSBhZGQgYW55dGhpbmcgYWZ0ZXIgaWYgKHRo
-YXQgZ2V0cyB6ZXJvZWQpLg0KV2hpY2ggc2VlbXMgdG8gYmUgdGhlIG9wcG9zaXRlIG9mIHdoYXQg
-eW91IHNlZS4NCg0KSWYgSSB1c2UgZXhwbGljaXQgYXNzaWdubWVudHMgKHJhdGhlciB0aGFuIGFu
-IGluaXRpYWxpc2VyKQ0KSSBzdGlsbCBnZXQgbWVyZ2VkIHdyaXRlcyAoZXZlbiBpZiBub3QgYSBi
-aXRmaWVsZCkgYnV0IGFsc28NCmxvc2UgdGhlIG1lbW9yeSBhY2Nlc3MuDQoNCglEYXZpZA0KDQot
-DQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwg
-TWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2Fs
-ZXMpDQo=
+	Hi all,
 
+This patch series removes all unused <asm/ide.h> headers and
+<asm-generic/ide_iops.h>.  <asm/ide.h> was still included by 3 PATA
+drivers for m68k platforms, but without any real need.
+
+The first 5 patches have no dependencies.
+The last patch depends on the 3 pata patches.
+
+Thanks for your comments!
+
+Geert Uytterhoeven (9):
+  ARM: Remove <asm/ide.h>
+  parisc: Remove <asm/ide.h>
+  powerpc: Remove <asm/ide.h>
+  sparc: Remove <asm/ide.h>
+  asm-generic: Remove ide_iops.h
+  ata: pata_buddha: Remove #include <asm/ide.h>
+  ata: pata_falcon: Remove #include <asm/ide.h>
+  ata: pata_gayle: Remove #include <asm/ide.h>
+  m68k: Remove <asm/ide.h>
+
+ arch/arm/include/asm/ide.h     | 24 ---------
+ arch/m68k/include/asm/ide.h    | 67 -----------------------
+ arch/parisc/include/asm/ide.h  | 54 -------------------
+ arch/powerpc/include/asm/ide.h | 18 -------
+ arch/sparc/include/asm/ide.h   | 97 ----------------------------------
+ drivers/ata/pata_buddha.c      |  1 -
+ drivers/ata/pata_falcon.c      |  1 -
+ drivers/ata/pata_gayle.c       |  1 -
+ include/asm-generic/ide_iops.h | 39 --------------
+ 9 files changed, 302 deletions(-)
+ delete mode 100644 arch/arm/include/asm/ide.h
+ delete mode 100644 arch/m68k/include/asm/ide.h
+ delete mode 100644 arch/parisc/include/asm/ide.h
+ delete mode 100644 arch/powerpc/include/asm/ide.h
+ delete mode 100644 arch/sparc/include/asm/ide.h
+ delete mode 100644 include/asm-generic/ide_iops.h
+
+-- 
+2.34.1
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
