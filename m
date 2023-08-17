@@ -2,99 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6A777F8DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5996777F923
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351873AbjHQO0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 10:26:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36550 "EHLO
+        id S1351947AbjHQOcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 10:32:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351871AbjHQO0f (ORCPT
+        with ESMTP id S1351955AbjHQObw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 10:26:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B433E2701
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:25:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692282352;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YU1kedm3s1a6B75XQIpxvCnkzuYPmtz40YLYh/uOwp8=;
-        b=F7UVjKTPH5vwRiTxxVv5IhQY4q/1Tcod7ap72RJGc5Ruirf6xwk0XzAFULKAD78goyileP
-        U0n9HtfsZ6/bYJ3IIQV7eXfZh6qvhpyjvAzsnIgxowTUsdbabREMVk8QsFyLnWr8ARC3jB
-        dJTYoqCdMZZyoQnngqg8fNZcx2Y3y/8=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-480-mm_4aXBWMsOBdnAGOrWyqg-1; Thu, 17 Aug 2023 10:25:50 -0400
-X-MC-Unique: mm_4aXBWMsOBdnAGOrWyqg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8A1B029AA3B0;
-        Thu, 17 Aug 2023 14:25:46 +0000 (UTC)
-Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3EBEC1121314;
-        Thu, 17 Aug 2023 14:25:46 +0000 (UTC)
-From:   Jeff Moyer <jmoyer@redhat.com>
-To:     Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-Cc:     <dan.j.williams@intel.com>, <vishal.l.verma@intel.com>,
-        <dave.jiang@intel.com>, <ira.weiny@intel.com>,
-        <nvdimm@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <yusongping@huawei.com>, <artem.kuzin@huawei.com>
-Subject: Re: [PATCH] drivers: nvdimm: fix dereference after free
-References: <20230817114103.754977-1-konstantin.meskhidze@huawei.com>
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date:   Thu, 17 Aug 2023 10:31:33 -0400
-In-Reply-To: <20230817114103.754977-1-konstantin.meskhidze@huawei.com>
-        (Konstantin Meskhidze's message of "Thu, 17 Aug 2023 19:41:03 +0800")
-Message-ID: <x49jzttu4e2.fsf@segfault.boston.devel.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 17 Aug 2023 10:31:52 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F41DC2D76
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:31:50 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 891BFD75;
+        Thu, 17 Aug 2023 07:32:31 -0700 (PDT)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2B4583F6C4;
+        Thu, 17 Aug 2023 07:31:49 -0700 (PDT)
+Message-ID: <f397c79f-2b8a-7cbb-262e-e4b13ae57122@arm.com>
+Date:   Thu, 17 Aug 2023 15:31:40 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH 2/2] coresight: core: fix memory leak in dict->fwnode_list
+Content-Language: en-US
+To:     Junhao He <hejunhao3@huawei.com>, suzuki.poulose@arm.com,
+        mike.leach@linaro.org, leo.yan@linaro.org
+Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+        jonathan.cameron@huawei.com, yangyicong@huawei.com,
+        prime.zeng@hisilicon.com
+References: <20230817085937.55590-1-hejunhao3@huawei.com>
+ <20230817085937.55590-3-hejunhao3@huawei.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <20230817085937.55590-3-hejunhao3@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Konstantin Meskhidze <konstantin.meskhidze@huawei.com> writes:
 
-> 'nd_pmu->pmu.attr_groups' is dereferenced in function
-> 'nvdimm_pmu_free_hotplug_memory' call after it has been freed. Because in
-> function 'nvdimm_pmu_free_hotplug_memory' memory pointed by the fields of
-> 'nd_pmu->pmu.attr_groups' is deallocated it is necessary to call 'kfree'
-> after 'nvdimm_pmu_free_hotplug_memory'.
->
-> Co-developed-by: Ivanov Mikhail <ivanov.mikhail1@huawei-partners.com>
-> Signed-off-by: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+
+On 17/08/2023 09:59, Junhao He wrote:
+> There are memory leaks reported by kmemleak:
+> ...
+> unreferenced object 0xffff2020103c3200 (size 256):
+>   comm "insmod", pid 4476, jiffies 4294978252 (age 50072.536s)
+>   hex dump (first 32 bytes):
+>     10 60 40 06 28 20 ff ff 10 c0 59 06 20 20 ff ff  .`@.( ....Y.  ..
+>     10 e0 47 06 28 20 ff ff 10 00 49 06 28 20 ff ff  ..G.( ....I.( ..
+>   backtrace:
+>     [<0000000034ec4724>] __kmem_cache_alloc_node+0x2f8/0x348
+>     [<0000000057fbc15d>] __kmalloc_node_track_caller+0x5c/0x110
+>     [<00000055d5e34b>] krealloc+0x8c/0x178
+>     [<00000000a4635beb>] coresight_alloc_device_name+0x128/0x188 [coresight]
+>     [<00000000a92ddfee>] funnel_cs_ops+0x10/0xfffffffffffedaa0 [coresight_funnel]
+>     [<00000000449e20f8>] dynamic_funnel_ids+0x80/0xfffffffffffed840 [coresight_funnel]
+> ...
+> 
+> when remove driver, the golab variables defined by the macro
+> DEFINE_CORESIGHT_DEVLIST will be released, dict->nr_idx and
+> dict->fwnode_list are cleared to 0. The lifetime of the golab
+> variable has ended. So the buffer pointer is lost.
+> 
+> Use the callback of devm_add_action_or_reset() to free memory.
+> 
+> Fixes: 0f5f9b6ba9e1 ("coresight: Use platform agnostic names")
+> Signed-off-by: Junhao He <hejunhao3@huawei.com>
 > ---
->  drivers/nvdimm/nd_perf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/nvdimm/nd_perf.c b/drivers/nvdimm/nd_perf.c
-> index 14881c4e0..2b6dc80d8 100644
-> --- a/drivers/nvdimm/nd_perf.c
-> +++ b/drivers/nvdimm/nd_perf.c
-> @@ -307,10 +307,10 @@ int register_nvdimm_pmu(struct nvdimm_pmu *nd_pmu, struct platform_device *pdev)
->  	}
+>  drivers/hwtracing/coresight/coresight-core.c | 20 +++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+> index 9fabe00a40d6..6849faad697d 100644
+> --- a/drivers/hwtracing/coresight/coresight-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-core.c
+> @@ -1756,6 +1756,20 @@ bool coresight_loses_context_with_cpu(struct device *dev)
+>  }
+>  EXPORT_SYMBOL_GPL(coresight_loses_context_with_cpu);
 >  
->  	rc = perf_pmu_register(&nd_pmu->pmu, nd_pmu->pmu.name, -1);
->  	if (rc) {
-> -		kfree(nd_pmu->pmu.attr_groups);
->  		nvdimm_pmu_free_hotplug_memory(nd_pmu);
-> +		kfree(nd_pmu->pmu.attr_groups);
->  		return rc;
->  	}
+> +void coresight_release_dev_list(void *data)
+> +{
+> +	struct coresight_dev_list *dict = data;
+> +
+> +	mutex_lock(&coresight_mutex);
+> +
+> +	if (dict->nr_idx) {
+> +		kfree(dict->fwnode_list);
+> +		dict->nr_idx = 0;
+> +	}
+> +
+> +	mutex_unlock(&coresight_mutex);
+> +}
+> +
+>  /*
+>   * coresight_alloc_device_name - Get an index for a given device in the
+>   * device index list specific to a driver. An index is allocated for a
+> @@ -1766,12 +1780,16 @@ EXPORT_SYMBOL_GPL(coresight_loses_context_with_cpu);
+>  char *coresight_alloc_device_name(struct coresight_dev_list *dict,
+>  				  struct device *dev)
+>  {
+> -	int idx;
+> +	int idx, ret;
+>  	char *name = NULL;
+>  	struct fwnode_handle **list;
 >  
->  	pr_info("%s NVDIMM performance monitor support registered\n",
+>  	mutex_lock(&coresight_mutex);
+>  
+> +	ret = devm_add_action_or_reset(dev, coresight_release_dev_list, dict);
+> +	if (ret)
+> +		goto done;
+> +
 
-Reviewed-by: Jeff Moyer <jmoyer@redhat.com>
+Hi Junhao,
 
+Changing the list allocator to a devm one fixes the issue without having
+to add the callback:
+
+  -               list = krealloc_array(dict->fwnode_list,
+  +               list = devm_krealloc_array(dev, dict->fwnode_list,
+
+The callback stands out a bit and would make someone reading it wonder
+why only that one is done that way but all other allocations in
+Coresight avoid it.
+
+The nr_idx variable doesn't need to be zeroed because its backed by a
+static variable and is zeroed when the module is reloaded as far as I
+can see.
+
+Thanks
+James
+
+>  	idx = coresight_search_device_idx(dict, dev_fwnode(dev));
+>  	if (idx < 0) {
+>  		/* Make space for the new entry */
