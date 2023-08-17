@@ -2,297 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B870A77F2CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E55677F2CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349317AbjHQJKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 05:10:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54386 "EHLO
+        id S1349326AbjHQJLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 05:11:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349318AbjHQJKB (ORCPT
+        with ESMTP id S1349320AbjHQJKw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 05:10:01 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21719198E
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 02:09:58 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692263397;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gdd6en48U+LDOcM3KZoEr2Q34+pgyB8St54PrBtO7Dw=;
-        b=zg27N+PdpWwQniuQtONRZ5lDYk9hicVEAaxWvBmo7/cJLTmn18vSi92RofTa939ykOtafE
-        19ktxJikTtoC8yFy3b7VO7fTxiD3LwE2tYJNMYMkvSwFHSEc7NgwI+lb1CDh+tMHjGEQ+S
-        Unh+ZOafuJY7zRqUWlX9SykvOs9W6xI/T8kgZkpwZ6/TYBh25pc0HyEagAC+S95cJ+INEx
-        9K8F5PcHCfcnoHNGeoulSjtNVGCZ9NDTV/YquR9BU1excq8IviApfSdIj2gE4iIMiUJ+6q
-        C9HWvmFt+EcyK7jjhA16ICUaTIWiPSBgZZ2foXPbBjk1UFSpj+Cp8Tb1qiNg+A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692263397;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gdd6en48U+LDOcM3KZoEr2Q34+pgyB8St54PrBtO7Dw=;
-        b=/obUQhrlLcBgHpNOaoBhC/EmkALC4BMVs3cZvEjJabv2jT+evK/sQ15VpGMQYQw9JL6usA
-        bVkE1ZKev1z5LLBw==
-To:     "Brown, Len" <len.brown@intel.com>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "Gross, Jurgen" <jgross@suse.com>,
-        "mikelley@microsoft.com" <mikelley@microsoft.com>,
-        "arjan@linux.intel.com" <arjan@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "ray.huang@amd.com" <ray.huang@amd.com>,
-        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-        "Sivanich, Dimitri" <dimitri.sivanich@hpe.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>
-Subject: RE: [patch V3 27/40] x86/cpu: Provide a sane leaf 0xb/0x1f parser
-In-Reply-To: <MN0PR11MB601007E7DAE4C5FC86E58DB0E014A@MN0PR11MB6010.namprd11.prod.outlook.com>
-References: <20230802101635.459108805@linutronix.de>
- <20230802101934.258937135@linutronix.de>
- <8e5bbbc91ff9f74244efe916a4113999abc52213.camel@intel.com>
- <87350ogh7j.ffs@tglx> <87ttt3f0fu.ffs@tglx>
- <b8637c8c92751f791bf2eae7418977c0fd0c611d.camel@intel.com>
- <87il9hg67i.ffs@tglx>
- <MN0PR11MB6010CB72411BA723BEFC5565E017A@MN0PR11MB6010.namprd11.prod.outlook.com>
- <877cpxioua.ffs@tglx>
- <MN0PR11MB601007E7DAE4C5FC86E58DB0E014A@MN0PR11MB6010.namprd11.prod.outlook.com>
-Date:   Thu, 17 Aug 2023 11:09:56 +0200
-Message-ID: <87fs4ighln.ffs@tglx>
+        Thu, 17 Aug 2023 05:10:52 -0400
+Received: from mx0a-0014ca01.pphosted.com (mx0b-0014ca01.pphosted.com [208.86.201.193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D10A619A1;
+        Thu, 17 Aug 2023 02:10:49 -0700 (PDT)
+Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
+        by mx0b-0014ca01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37H6S0Ht019793;
+        Thu, 17 Aug 2023 02:10:38 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=
+        from:to:cc:subject:date:message-id:references:in-reply-to
+        :content-type:content-transfer-encoding:mime-version; s=
+        proofpoint; bh=iYNXO1UOt2AEMEXnjFa3s+ZmwY+51p0DdnQfLLFwOow=; b=I
+        21BMteLKs/Aj/T48QVGzUt/P8wunLghMdP8OxsSLLyDrPhTRf5g/maWQJPJMCBKE
+        3qE6B/d6QdCLToQF3zH6K/rlQHBHRhLbRPHDOwngoC+pltFreax2MqQExHfARVTk
+        qjcRlPCPcb4QCP0rYz4njBY+wqtbAHQ0Kh+MrcqDwrrggfoHJpOhkAFCMKFTzEpQ
+        38do3fdO8edxkhIJetv5863OBDTEU5vS3+Blqv8L+UQTRLb0qAD89VyiVRbm1qgK
+        WSjbH9Y+ml4gI/RgSh3EhR+ojH7s+td3hWAm0cDleLAVJBV8PjHfHAI/y6cbCDkq
+        kb+6Pq0AxeCy8ou+QGIiw==
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2171.outbound.protection.outlook.com [104.47.59.171])
+        by mx0b-0014ca01.pphosted.com (PPS) with ESMTPS id 3sfnffu2r3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 02:10:37 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cM/qknEGDKRdo1ua/BjUAl5ugYj/ErnyOZrzxicitlXh+ED044pbRDhJvOmosUSIBmdj19FQ7+uB+mnsfo5k5P0TG1+NasbWngIc64srjm5ggeWdt/j7KsgLoAz71eZYPB1wWkHzWNDlZw7y+BYaeQjWBKQ6IclZplbKta/4UZWhAH1aLk0sBDd/arrrJzr/jYfRB/Eu/ZQ5kWQcbOxp1m3fMIFXVDsbJrJkx1nIf6snR3Ju4kV7qWVVVgYsuXEU7bWniV5fZyyvao/+l5h7wG179zRBi0aKrWI3TLfybBkUr8H9Z69O8uDOJO0pyQjN6Pvq6bRAkQuBDB85Vt5jEw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iYNXO1UOt2AEMEXnjFa3s+ZmwY+51p0DdnQfLLFwOow=;
+ b=b1AWAqVRU8l367yNPySa+znbSNzF+evlNep22OYOfhdMPyXnOOU1pen1bRvKQoIzBC2DRS9GpcvD7Ti494a8zRBIyfMYQXOIlfSKU1C9F5LDGMg3TGOLaOuYBFcC3PMZjZUTQ0FsgqkyLnpNkcd3I1BNNaT8dJarDbBWuR3alTS/IVfecUnYHUivWVC2qKaTCb2adhONV3iMbviK8dDu0NPh0UQV9PR4eAugkcaCFUMhOixVs94v9UUt5VMqMmXYhMa2g+oUNQ3sFgsbbVqviP7x6Ut6ZCy+IapP7lPgxP1W6EvMdiG3a09Zaft0I2auM2rq5agqk9o20QhSYIuu1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
+ dkim=pass header.d=cadence.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iYNXO1UOt2AEMEXnjFa3s+ZmwY+51p0DdnQfLLFwOow=;
+ b=aRrzgFicWuzHqc0RxpzgSiYqGpXR86oFB37h26sr9Z3QKDhUzt+yQj/NHC1rglw2wXY+ttQTY3omMuWO/Ge+GFQc5Q8qLCX8nNHnKOIp2CJrSetvpjq91TFyHXfAdKsBOQhioTgnM+nASWr0lYq3PfUzOszQQinW6gYdGQXgrNQ=
+Received: from BYAPR07MB5381.namprd07.prod.outlook.com (2603:10b6:a03:6d::24)
+ by DS7PR07MB8352.namprd07.prod.outlook.com (2603:10b6:5:3a0::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Thu, 17 Aug
+ 2023 09:10:34 +0000
+Received: from BYAPR07MB5381.namprd07.prod.outlook.com
+ ([fe80::571d:f5d4:a9a4:dbb0]) by BYAPR07MB5381.namprd07.prod.outlook.com
+ ([fe80::571d:f5d4:a9a4:dbb0%4]) with mapi id 15.20.6678.029; Thu, 17 Aug 2023
+ 09:10:34 +0000
+From:   Pawel Laszczak <pawell@cadence.com>
+To:     Peter Chen <peter.chen@kernel.org>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH] usb: cdnsp: Fixes issue with dequeuing not queued
+ requests
+Thread-Topic: [PATCH] usb: cdnsp: Fixes issue with dequeuing not queued
+ requests
+Thread-Index: AQHZtWIUOnzlmDC91EyICLRPIn7cGq+4hxoAgABUPOCAA3K6gIAyDw7Q
+Date:   Thu, 17 Aug 2023 09:10:33 +0000
+Message-ID: <BYAPR07MB5381A0D4D62053442E34B275DD1AA@BYAPR07MB5381.namprd07.prod.outlook.com>
+References: <20230713081429.326660-1-pawell@cadence.com>
+ <20230714021436.GA2520702@nchen-desktop>
+ <BYAPR07MB5381BA3F7A34D18BC16B86DFDD34A@BYAPR07MB5381.namprd07.prod.outlook.com>
+ <20230716115529.GA2529084@nchen-desktop>
+In-Reply-To: <20230716115529.GA2529084@nchen-desktop>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccGF3ZWxsXGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctZTk5ZjczNDEtM2NkZC0xMWVlLWE4NzQtMDBiZTQzMTQxNTFlXGFtZS10ZXN0XGU5OWY3MzQyLTNjZGQtMTFlZS1hODc0LTAwYmU0MzE0MTUxZWJvZHkudHh0IiBzej0iMTg0NyIgdD0iMTMzMzY3MzcwMzEwMzAwMjU4IiBoPSJsNldzQ0Z2eURGTC9iZFZ2WW0wWjZCUUNDZXM9IiBpZD0iIiBibD0iMCIgYm89IjEiLz48L21ldGE+
+x-dg-rorf: true
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BYAPR07MB5381:EE_|DS7PR07MB8352:EE_
+x-ms-office365-filtering-correlation-id: 2eccfc2e-5b8f-45fc-64ef-08db9f01cff1
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qAb78dbMAj5Zn3SaxVxAJn9+1xz/VPZjBaS2TM9JfF16Kh3c/0XmDMVaRPcZ5VOY2/P+UqSCnWc7Rt0AoMtZ3+DjLhNx8SMrbbjijl+OoWBgJudy7tSPL4s51lASMlJEO+Y50WKQ7uYV0lPDZPUFw30DIlJ54UoqkRmPeGX14RTvA/lQXmGL/mVOIsOtO91sCVxSkLQmyIgkWFzyFmkZVv9YIw0qkbKrLSl3Ud81iuHsX0lYWWEzHZvYEt2bBiGMuqMSLysCqPEGO2RN/GPdw3IC5ANhDxZ3gjVcSIaAFmR6ST9zx6ba60UgWOAJr/Ty5DZocvNgYFyI1S5EyibNT+Kh9xHXch6mwQqb0AqdGt4aBxrAkrmAqte3vU0GJLwccaZIujijgGnxTNrzkt98p1D1z6Y3XzDJrW7TRtQ8b3EEYf9dBoW/E9sXU8q/g9lcAM2JFItou2oM1L6aFAQoqhb8Fe1kp3wmxaC0OHsWEcNpiBSiEVKlN57bwvIQhlujGT0LQBB/AoB6kcATZBwqr35JhLurSxc+uqpCZdEEzRIcHotmBzcC0ErkQExjDw0tl3P4nfMUh8wfLsOZtpErlq/YxsVVTJkraN21V6OuvMEqZR2eTuw/Yzo/egoFzI2P
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR07MB5381.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(396003)(376002)(366004)(136003)(451199024)(1800799009)(186009)(86362001)(33656002)(38070700005)(38100700002)(122000001)(55016003)(52536014)(5660300002)(66946007)(66446008)(66476007)(66556008)(478600001)(76116006)(6916009)(316002)(64756008)(6506007)(7696005)(71200400001)(54906003)(26005)(9686003)(41300700001)(4326008)(8936002)(8676002)(2906002)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?gVhOuB0N5EZWf0k8NRujkrDA7y1g3pBtCxZQfnZ2R0R5qEAglDS20yUi6iXn?=
+ =?us-ascii?Q?knlOi4LQn8QGEp/LB2M/I4O2v9cgd46G6goM5yQIg9dOQZsC8V6/jTabQpVD?=
+ =?us-ascii?Q?TGiKjSumwz3Zfx9218pcw3uSsXbsfTrlINpfaW5v6ucEqRYGSB7Y7D4UJ6yt?=
+ =?us-ascii?Q?L1+Ft7S76LXuMUm+tCPIu40puP4uDd1g4WKxvM0xYWy6q5/SsO6tMfaYR9mX?=
+ =?us-ascii?Q?2kM9ST3tnVEyysjYWzkbA5X9whGjQuwqEp1imsWVCtXr9hBJeJey7RQw8GGc?=
+ =?us-ascii?Q?qGda16FFIyk5KMN9o8dKNpH6nEvOgOX5Sbq3hlMHT7GzLLkEtgHg3TqkzcE/?=
+ =?us-ascii?Q?8yv839Bo9Jbgzq210XFaUETH57f3w6BK4P6HqhjaEno+q+alB2PFJv9lxElh?=
+ =?us-ascii?Q?SuuRqQdXPrO9yV0rCVimA2JbQsoyIf/NG+qytiD5VZttbu8Qj0sWl4SHEYo9?=
+ =?us-ascii?Q?sxia81Q/pnDVRUpK64MoVG9AUz5tux+n/uvYJZIPPgeBLh9rneVdghhY0kK7?=
+ =?us-ascii?Q?vS+UgUO46QKPsA7cqivqpIjzI1O82Doay5cYocau0Y907X7E3ArxNIsr/Ccz?=
+ =?us-ascii?Q?sVpke/bnl7/U5h02nUMyftqPYYqfE1XaBTm19wNLsOW2GmDxffqmaRKTm1r4?=
+ =?us-ascii?Q?VBptQQ+LJcmCDvbO3ZckMuocIhHCrKujONIi2zjieCfO7PtJw4TDlLDcjOB2?=
+ =?us-ascii?Q?fDv2DGRJJDNbXZJCtLQiKGDiRnkTEHAzA8Z6nNUOQP4E3w9ajD+cr31vYxCl?=
+ =?us-ascii?Q?E910Tt1MmCNJQvbbq3xOa4v0XOhRmYjjIr70XfQM4ZJPRe0BMOYZrw83U2JK?=
+ =?us-ascii?Q?PdsMHBOCu5n1RrrZM3T7jE74gCrSZjS/wax4vq7EaRXH5zMs+wT2YkhwWvaU?=
+ =?us-ascii?Q?Fcc4ISMB3BZPe4aSlVDJNOSxmzJ1xtAiELEmAfJEio6K/ujwbsVg4vx0QFEF?=
+ =?us-ascii?Q?kE6YguNL3zVPnTGSDbkfbefXD7TxshlpHTqsEMGXhxFxBoFzA8Mp19GZ2JOQ?=
+ =?us-ascii?Q?2lfSeBZP8K1LdITnOadOOzyG1D8Wq+5R2gwDV9dXGA4KaJRz1X594rpM7SR6?=
+ =?us-ascii?Q?MaHLafT6ahMVhynOZ+kRwMQzzIcgB4P24ePjBdc0GPfPrFI1MyHVHfOXWVSK?=
+ =?us-ascii?Q?ZBLAp0WYki9kGWJppDQOm9p4f7q2eq/cNlOS8P1Aka6gB+DTuW+OojQWkI4D?=
+ =?us-ascii?Q?AQzRpC83Nm/tiIJdzKQ1p8Kz9rG3z2BIqVekANjalGgjZxSLDGoW0xBa0k86?=
+ =?us-ascii?Q?ZyquF2P9sP5/dJH1FHvjHaDozpnnpSX8SxQfFmUudRsSezcCoF2WY0SBX1r2?=
+ =?us-ascii?Q?oLBUqyWO4OXps6Mga9f0KP0VGIdJosj/d3UqxYgKBnL4xZyzriZOrziyZYOW?=
+ =?us-ascii?Q?kfd+GCSFgSNebqstBc0U7MUV/+Io9EJmFdXBRy9JptwFFTQu3fiQUBmHPzja?=
+ =?us-ascii?Q?NHXLqhwvv96mv6zZ/xS5cnzgt7++SKewOWiqeJPhN5BTGq1oiZ5X0PMxj1xL?=
+ =?us-ascii?Q?I1Nly76r7WXtDDZczoAyEemhiL38+VoB2+ogHXURNzDndn1JDiNxgKogeV7x?=
+ =?us-ascii?Q?mBmHHJ3u+JEo44pOUaMkFEIcqb5lQ85OK4+RgKwE?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR07MB5381.namprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2eccfc2e-5b8f-45fc-64ef-08db9f01cff1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Aug 2023 09:10:33.5243
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZY2LntQCArVHNw1lZR6S1Rj5vb7FT31XyAHvSiqD5taiainA7b08Tx/o+j1tOBbCI0bqatVUT532oa0fjn/JKTwWNXXK/RdkUdekIqWNPQI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR07MB8352
+X-Proofpoint-GUID: vMm3du8KjkHcnm7JkRoPGBWf5wycpnU0
+X-Proofpoint-ORIG-GUID: vMm3du8KjkHcnm7JkRoPGBWf5wycpnU0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-17_03,2023-08-15_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 phishscore=0
+ impostorscore=0 mlxscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ mlxlogscore=730 suspectscore=0 malwarescore=0 lowpriorityscore=0
+ adultscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2306200000 definitions=main-2308170082
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Len!
 
-On Tue, Aug 15 2023 at 19:30, Len Brown wrote:
-> In retrospect, we under-specified what it means to enumerate a
-> CPUID.1F die, because it has been a constant battle to get the HW
-> people to *not* enumerate hidden die that software does not see.
+>> >
+>> >On 23-07-13 04:14:29, Pawel Laszczak wrote:
+>> >> Gadget ACM while unloading module try to dequeue not queued usb
+>> >> request which causes the kernel to crash.
+>> >> Patch adds extra condition to check whether usb request is
+>> >> processed by CDNSP driver.
+>> >>
+>> >
+>> >Why ACM does that?
 >
-> Indeed, we were equally guilty in not codifying an architectural
-> definition of "module" and "tile", which were placed into the CPUID.1F
-> definition mostly as place-holders with awareness of hardware
-> structures that were already in common use.  For example, there were
-> already module-scoped counters that were hard-coded, and enumerating
-> modules seems to be an to give architectural (re-usable) enumeration
-> to model-specific code.
+>Would you please explain which situation triggers it?
 
-Sure 0x1f is underspecified in terms of meaning of the intermediate
-levels, but it's perfectly parseable. Once there is information how to
-actually utilize MODULE or TILE for software decisions, then it can be
-implemented. Until then we still have to can parse it and otherwise just
-ignore it. Where is the problem?
+The sequence to trigger is simple:
+- Load modules (u_serial, f_acm and udc driver)
+- unload module
 
-> Second, failings of the Linux topology code...
+In my case the plug is attached to host.
+
+While unloading in the gs_console_disconnect function is involved
+which try dequeue the usb_request not queued.
+
+Without fix controller driver during dequeuing trees to make operation
+on not initialized field which causes the kernel to crash.
+
+Regards,
+Pawel
+
+>> >
+>> >> cc: <stable@vger.kernel.org>
+>> >> Fixes: 3d82904559f4 ("usb: cdnsp: cdns3 Add main part of Cadence
+>> >> USBSSP DRD Driver")
+>> >> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+>> >> ---
+>> >>  drivers/usb/cdns3/cdnsp-gadget.c | 3 +++
+>> >>  1 file changed, 3 insertions(+)
+>> >>
+>> >> diff --git a/drivers/usb/cdns3/cdnsp-gadget.c
+>> >> b/drivers/usb/cdns3/cdnsp-gadget.c
+>> >> index fff9ec9c391f..3a30c2af0c00 100644
+>> >> --- a/drivers/usb/cdns3/cdnsp-gadget.c
+>> >> +++ b/drivers/usb/cdns3/cdnsp-gadget.c
+>> >> @@ -1125,6 +1125,9 @@ static int cdnsp_gadget_ep_dequeue(struct
+>> >usb_ep *ep,
+>> >>  	unsigned long flags;
+>> >>  	int ret;
+>> >>
+>> >> +	if (request->status !=3D -EINPROGRESS)
+>> >> +		return 0;
+>> >> +
+>> >
+>> >Why not you use pending list which used at cdnsp_ep_enqueue to do this?
+>>
+>> It's just simpler and faster way - no other reasons.
 >
-> I agree with you that "thread_siblings" and "core_cpus" are the
-> different words for the same thing.  This will always be true because
-> the hardware architecture guarantees that SMT siblings are the next
-> level down from core.
-
-Right. So you "fix" was pure cosmetic.
-
-> But no such definition exists for "core_siblings".  It is impossible
-> to write correct software that reads "core_siblings" and takes any
-> action on it.  Those could be the CPUs inside a module, or inside a
-> die, or inside some other level that today's software can't possibly
-> know by name.
+>Okay, get it.
 >
-> On the other hand, die_cpus is clear -- the CPUs within a die.
-> Package_cpus -- the CPUs within a package.
-> Core_cpus -- the cpus within a core....
-> Words matter.
-
-Of course does terminology matter, but that's not the real problem.
-
-> Re: globally unique core_id
+>--
 >
-> I have 100% confidence that you can make the Linux kernel handle a
-> sparce globally unique core_id name space.  My concern is unknown
-> exposure to joe-random-user-space program that consumes the sysfs
-> representation.
-
-You simply can keep the current representation for proc and sysfs with
-the relative IDs and just make the kernel use unique core IDs. The
-kernel needs to be sane before you can even think about user space
-exposure.
-
->>> Secondly, with the obsolescence of CPUID.0b and its replacement with 
->>> CPUID.1F, the contract between The hardware and the software is that a 
->>> level can appear and can in between any existing levels.  (the only 
->>> exception is that SMT is married to core).
->
->> In theory, yes. But what's the practical relevance that there might
->> be a new level between CORE and MODULE or MODULE and TILE etc...?
->
->>> It is not possible For an old kernel to know the name or position of a 
->>> new level in the hierarchy, going forward.
->
->> Again, where is the practical problem? These new levels are not going
->> to be declared nilly willy and every other week, right?
->
-> It is irrelevant if a new level is of any practical use to Linux.
->
-> What is important is that Linux be able to parse and use the levels it
-> finds useful, while gracefully ignoring any that it doesn't care about
-> (or doesn't yet know about).
->
-> Yes, hardware folks can drop something into the ucode and the SDM w/o
-> us knowing ahead of time (see DieGrp in the June 2023 SDM).  Certainly
-> they can do it in well under the 4-year's notice we'd need if we were
-> to simply track the named levels in the SDM.
-
-That's a matter of education of the hardware people. Sure they can do
-whatever they want, but if they want us to provide primary support for
-the stuff they dream up, then they better go and tell us early enough.
-
->>> Today, this manifests with a (currently) latent bug that I caused.
->>> For I implemented die_id In the style of package_id, and I shouldn't 
->>> have followed that example.
->
->> You did NOT. You implemented die_id relative to the package, which
->> does not make it unique in the same way as core_id is relative to the
->> package and therefore not unique.
->
-> The point is that like package_id=0 on a single package system, I put
-> a die_id=0 attribute in sysfs even when NO "die" level is enumerated
-> in CPUID.1F.
->
-> That was a mistake.
-
-No. It's not a mistake. Conceptually the DIE level exists even if not
-enumerated. It consumes zero bits and therefore has size 1.
-
->>> Today, if CPUID.1F doesn't know anything about multiple DIE, Linux 
->>> conjurs up A die_id 0 in sysfs.  It should not.  The reason is that 
->>> when CPUID.1F enumerates A level that legacy code doesn't know about, 
->>> we can't possibly tell if it is above DIE, or below DIE.  If it is 
->>> above DIE, then our default die_id 0 is becomes bogus.
->
->>That's an implementation problem and the code I posted fixes this by
->>making die_id unique and taking the documented domain levels into
->>account.
->
-> Your code change does not fix the problem above.
-
-Why are all of you so fixated on domain levels which are not documented
-today? Either you know something which I don't know or you are just
-debating an academic problem to death.
-
->> So if 0x1f does not enumerate dies, then each package has one die and
->> the die ID is the same as the package ID. It's that simple.
->
-> Unfortunately, no.
->
-> Your code will be written and ship before level-X is defined.
->
-> A couple of years later, level-X is defined above die.  Your code runs
-> on new hardware that defines no packages, level-X, and no die.  How
-> many die-id's does this system have?
->
-> If you could see into the future, you'd answer that there are 2-die,
-> because There is one inside each level-X.
->
-> But since die isn't enumerated, and you don't know if a level-X is
-> defined to be above or below die, then you can't tell if level-X is
-> something containing die, or something contained-by die...
->
-> The proper solution is to not expose a die_id attribute in sysfs if
-> there is no die level enumerated in CPUID.1F.  When it is enumerated,
-> we get it right.  When it is not enumerated, we don't guess.
-
-The main problem is the kernel side itself. /proc/ /sys/ are things
-which can do conditinal exposure, but you can't do so in the kernel.
-
-Fact is that the APIC ID space is segmented to reflect the today
-decribed topology domains:
-
-     [PKG] [DIE] [TILE] [MODULE] [CORE] [THREAD]
-
-Each of them can occupy 0 or more bits. So using an internal
-representation for them which treats them as size one if not specified
-is the obvious and right thing to do.
-
-You cannot create a software monstrosity which makes everything
-conditional. It's neither workable nor maintainable. You need a
-consistent view independent of the enumerated levels in 0x1F and as a
-consequence you have to assume that the non-enumerated levels consume
-zero bits in the APIC ID space and have size one.
-
-If the hardware people fail to understand that software needs a
-consistent representation of these things, then we can give up and just
-refuse to parse 0x1f at all.
-
-Now lets look at your imaginary future systems enumeration:
-
-     [LEVELX] [CORE] [THREAD]
-
-You have to take LEVELX - even if unknown to the kernel - into account
-to evaluate the APID ID range which defines the package space.
-
-Otherwise you obviously just have to ignore it because yes, it's unknown
-between which domain levels this is going to sit.
-
-But this assumes that LEVELX is going to appear out of the blue just
-because the hardware people took the wrong pills. So it's our internal
-problem to educate them so this won't happen.
-
->> What do you win by removing them from the SDM?
->
-> When you give HW people enough rope to hang themselves, they will.
-
-You are not preventing this by removing the MODULE/TILE domains
-from the SDM.
-
-> Give them something vague in the SDM, and you've created a monster
-> that is interpreted differently by different hardware teams and no
-> validation team on the planet can figure out if the hardware is
-> correct or not.  Then the definition becomes how the OS (possibly not
-> Linux) happened to use that interface on some past chip -- and that
-> use is not documented in the SDM -- and down the rabbit hole you go...
->
-> When the SDM precisely documents the software/hardware interface, then
-> proper tests can be written, independent hardware teams are forced to
-> follow the same definition, and correct software can be written once
-> and never break.
-
-I agree with that sentiment in principle, but you lost this battle
-already because there is hardware which enumerates MODULE.
-
-[    0.212535] CPU topo: Thread    :     8
-[    0.212537] CPU topo: Core      :     8
-[    0.212539] CPU topo: Module    :     2
-
-So what are we going to do about that? Just pretend that it does not
-exist?
-
-Sure, we can do that. But I'm also 100% sure, that there is a meaning
-which goes beyond the pure physical description of the CPU.
-
-Yes, this description is not there today, but we still have to utilize
-the enumeration level for evaluating the APIC ID bit range which defines
-the package ID space.
-
-That does not mean that we have to put a meaning on that level by doing
-wild guesses. That'd be completely wrong and would cause the problems
-you are so worried about.
-
-Why has this even still to be debated? 0x1F support was merged more than
-four years ago and we are now indulging in debating academic problems of
-unknown levels appearing out of the blue in systems which ship today.
-
-There is a meaning to the existing levels, so time is better spent to
-get that documented.
-
-Thanks,
-
-        tglx
+>Thanks,
+>Peter Chen
