@@ -2,118 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4CB77F1D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 027D277F1E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:12:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348741AbjHQIID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 04:08:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57646 "EHLO
+        id S1348760AbjHQILp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 04:11:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348767AbjHQIHk (ORCPT
+        with ESMTP id S1348870AbjHQILh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 04:07:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7824B30C1;
-        Thu, 17 Aug 2023 01:07:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692259657; x=1723795657;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=oQUdF+oJMm6aBKGxgfq9tfveb09R6sP9jV92mZIe/Fs=;
-  b=SvWRpsQmXZoCtJ4e/JeV5sa7TXaTWAKj89UGkKU02p9kzfIcqUdIJRNQ
-   uEXNw/WzPvZaCA1fkgR1KltPf4/fv6Cm69N5Sj0TkmIyFN5oGyTNFs6Z5
-   Cf+lI/UJpCPY2N84EC6BEHtYNTCuAafBCP3QDCR2XPy9zczMbjpatTKJ9
-   LWzohPsZCYU3c13hQo0cRo7ZBsqIfhEsVgat54kWYWyB++7mIcYyngRj7
-   6kBiS/HREF+fimwvAT2T/ZjV3R3EEEdx2Vh3AV/Khi0j/6hz0QAM+W5bk
-   QJsoFtN+5T2hj/1dV4RD5IoLQeS6/w5DoD5HiyQvtz7JrSHxZBE3WnF1f
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="403724494"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="403724494"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 01:07:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="1065153257"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="1065153257"
-Received: from mylly.fi.intel.com (HELO [10.237.72.62]) ([10.237.72.62])
-  by fmsmga005.fm.intel.com with ESMTP; 17 Aug 2023 01:07:34 -0700
-Message-ID: <97d62909-551b-4abd-a743-5be09e617665@linux.intel.com>
-Date:   Thu, 17 Aug 2023 11:07:33 +0300
+        Thu, 17 Aug 2023 04:11:37 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92933359B
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:11:07 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3A41E40E0198;
+        Thu, 17 Aug 2023 08:10:50 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id dsaLMhCIx1WX; Thu, 17 Aug 2023 08:10:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1692259846; bh=KosVJk9TqczkP8Tl2l3dW2XQ5WUolMhM7fcHi7ojzPg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PU5ypwRfFRuvhSlxCMQUekpfoB5WweTKuJm0mBQoPMOQWdP4n0S9YrfgpFjmKuk1P
+         QWNXdhccvBmrtDS8jXal1WRQ6Cs6ARpOOtfRuyO8bSmMRLWlJYmAWF/EKLPgsOov8s
+         ESaeKMmD/bIe5sQkfrJ4IaDthABIwkc1h+ow5MIZoCmegbEadDfll65SI80znjUSRT
+         aaUtq6C/eRKqayz7C+4hl0cySihMGitBO03J9Eh9pvrauJJRvRCKlL7weImJu+nImm
+         tdqMkMVhK/ajM/RTvuEPMryu+LAR+ZfpxRaxWc/VE8L0pcbCL0ujTzZ2xTngCtnWfp
+         BEOB3tCNijR+xS6C1XF5YLhNmGAWtVFitaSiCoq533MC/U/mm8oMyyR/nbquY0BJGu
+         JB/cfcqAplTAsvaJHEgUmboiXtHcoZ01qJABEGFca8FEtrO/Vqx3fLFnHF8bz9II+a
+         ZkpldKqr9hYrjN84jg2IjvzZ9EPw04f3odYZq6pghCoJPjwqG9DcXGoKoCEeSLKly1
+         neUnP07G1Qh5UeawHGCrMz8Gr0BUzcDtXjC8FP0mFNcnvDyTEEJm/Ta33/T/af/4uN
+         /pkmFrLYGksUf8qL0Y9wwnQZObCJ/scvWds7wCM+ttEmamootGP4i8yb0mepHSh1lm
+         Mb1flELPwQJNd3aXYSOP+ngc=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4B8E340E0140;
+        Thu, 17 Aug 2023 08:10:39 +0000 (UTC)
+Date:   Thu, 17 Aug 2023 10:10:32 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Karol Herbst <kherbst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH] drm/nouveau/disp: fix use-after-free in error handling
+ of nouveau_connector_create
+Message-ID: <20230817081032.GAZN3V+NQ1blzQC2sU@fat_crate.local>
+References: <20230814144933.3956959-1-kherbst@redhat.com>
+ <20230816093015.GDZNyXJ28y9uspb4Mr@fat_crate.local>
+ <CACO55tu8ab-rxCzxFXbUh4Z=W9E-1f8sH6BVd=P+16dQ9PQNjg@mail.gmail.com>
+ <20230816145338.GIZNzi8o3d9x9bcPzX@fat_crate.local>
+ <CACO55ttasKLxBTmZjN-XBOuJFC7rng2PbLgxCT8WT6ukOZNGzQ@mail.gmail.com>
+ <20230816151252.GKZNzndDNySuWC+Vwz@fat_crate.local>
+ <CACO55tunC5mEu3Tw64rKLqNM6MN6d=N90kYQKYwXWNMB=ahDaw@mail.gmail.com>
+ <20230816221353.GXZN1KIXloRn8cGt5E@fat_crate.local>
+ <CACO55ts7430tAUDC+0qY0EZ5ReO=2Rjwj1SzHaBLodmyBgrUrw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] i2c: designware: add support for pinctrl for recovery
-To:     Yann Sionneau <yann@sionneau.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>,
-        Andi Shyti <andi.shyti@kernel.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yann Sionneau <ysionneau@kalray.eu>
-References: <20230816095015.23705-1-yann@sionneau.net>
-Content-Language: en-US
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-In-Reply-To: <20230816095015.23705-1-yann@sionneau.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CACO55ts7430tAUDC+0qY0EZ5ReO=2Rjwj1SzHaBLodmyBgrUrw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Thu, Aug 17, 2023 at 01:18:12AM +0200, Karol Herbst wrote:
+> do you have one of these? https://en.wikipedia.org/wiki/DMS-59
 
-On 8/16/23 12:50, Yann Sionneau wrote:
-> From: Yann Sionneau <ysionneau@kalray.eu>
-> 
-> Currently if the SoC needs pinctrl to switch the SCL and SDA
-> from the I2C function to GPIO function, the recovery won't work.
-> 
-> scl-gpio = <>;
-> sda-gpio = <>;
-> 
-> Are not enough for some SoCs to have a working recovery.
-> Some need:
-> 
-> scl-gpio = <>;
-> sda-gpio = <>;
-> pinctrl-names = "default", "recovery";
-> pinctrl-0 = <&i2c_pins_hw>;
-> pinctrl-1 = <&i2c_pins_gpio>;
-> 
-> The driver was not filling rinfo->pinctrl with the device node
-> pinctrl data which is needed by generic recovery code.
-> 
-> Tested-by: Yann Sionneau <ysionneau@kalray.eu>
-> Signed-off-by: Yann Sionneau <ysionneau@kalray.eu>
+Ah, DMS == Dual Monitor Solution :-)
 
-Tested-by from author is needless. Expectation is that author has tested 
-the patch while not always true :-)
+Yap, that's exactly what the GPU has. And the Y-cable is 2xDVI. It is
+a Dell workstation and it came this way, meaning I haven't done any
+changes there.
 
-> @@ -905,6 +906,15 @@ static int i2c_dw_init_recovery_info(struct dw_i2c_dev *dev)
->   		return PTR_ERR(gpio);
->   	rinfo->sda_gpiod = gpio;
->   
-> +	rinfo->pinctrl = devm_pinctrl_get(dev->dev);
-> +	if (IS_ERR(rinfo->pinctrl)) {
-> +		if (PTR_ERR(rinfo->pinctrl) == -EPROBE_DEFER)
-> +			return PTR_ERR(rinfo->pinctrl);
-> +
-> +		rinfo->pinctrl = NULL;
-> +		dev_info(dev->dev, "can't get pinctrl, bus recovery might not work\n");
+Thx.
 
-I think dev_dbg() suits better here or is it needed at all? End user may 
-not be able to do anything when sees this in dmesg. I.e. more like 
-development time dev_dbg() information.
+-- 
+Regards/Gruss,
+    Boris.
 
-Does i2c-core-base.c: i2c_gpio_init_pinctrl_recovery() already do 
-dev_info() print when pinctrl & GPIO are set properly making above also 
-kind of needless?
-
-Jarkko
+https://people.kernel.org/tglx/notes-about-netiquette
