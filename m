@@ -2,112 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C94DF77F25D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26FDB77F262
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349059AbjHQIoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 04:44:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47128 "EHLO
+        id S1349068AbjHQIqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 04:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349063AbjHQIoC (ORCPT
+        with ESMTP id S1349067AbjHQIqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 04:44:02 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18001BE7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:44:01 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-55b0e7efb1cso4449759a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:44:01 -0700 (PDT)
+        Thu, 17 Aug 2023 04:46:02 -0400
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5401BFB
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:46:00 -0700 (PDT)
+Received: by mail-vk1-xa2c.google.com with SMTP id 71dfb90a1353d-4882197e0ebso935149e0c.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:46:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692261841; x=1692866641;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fR5pG2U0zFVAXgwh49Fb4a1m5XkUhPxLBUBEsrZbP70=;
-        b=E5e/gAx7h9EuB5jHU91xKT217LmYKJt1fHHKqi8Ja6aAjs+rpyTX4jwk36pZL3155x
-         FX4II9kCVzDTDci+URUTmoV8fDv/IDwlt3B2fGDAST4ckNEjhCU7Ksgdfls11OMLJ/X2
-         l307nVljP7KK/RA59cYRys2bsqSeOkYzkAyBrxccQsTRa1pxH42e1R3s5rmF3niB4H2V
-         ScA77+uytHBl7AHZDXqyWJnt14lUGU858PbzdZyZQf9JIkH5CYi+FNALP/AFPG4hsJgI
-         8r+WNQmmcgAgpG6VU60S31W9d9rC8b9jUldOcB9zCSM06PnQ7wVXkpyGsOORJg8CJuQp
-         R96Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692261841; x=1692866641;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1692261960; x=1692866760;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fR5pG2U0zFVAXgwh49Fb4a1m5XkUhPxLBUBEsrZbP70=;
-        b=gAq0LKJbN+VdsIe13DDVH6LdK8SR8er7VTU0JZ23C4Kis9HSV99h2LGgx0jJZoRLdV
-         oMZp3HVL+XV354BEzqugsihSoF128r5EcgCW6++SBehqG8mje/PHxh82/BJrWReQVaIK
-         WmaTb5Pq2yVIREjBxl7bFnfZtqy6c0Zp/SLzzmtkU3qAm9dONSc2MDUT+uyC+lhdnemw
-         zkIQUefGhzB9gDzctKNLR01tPKozsfuLACwx/jY7oQOr+FCm/jKEJbjL3JYZ5B/+KcmC
-         TpLtJJKYtpJ3IBB/h2NVPUPN2gRTlIuxpBqH88hpyAfXn5Sne7AwF6ULRepucawxz5px
-         dVog==
-X-Gm-Message-State: AOJu0YyeOO3LGCMfCr+14M/Mjv37oTmuGbp5Pyc2w4NldP2rbu8ePySx
-        XrFJxeZaymrxgsPqsq7Mew3b7g==
-X-Google-Smtp-Source: AGHT+IGh/haHyCY6XRyeot4wtRP9PEqm3NELI02P19jxlZ5Ji+qTmnbf6VMZvmPdHiVPT/uUeA0CBQ==
-X-Received: by 2002:a05:6a21:819b:b0:135:4527:efcc with SMTP id pd27-20020a056a21819b00b001354527efccmr4303456pzb.46.1692261841234;
-        Thu, 17 Aug 2023 01:44:01 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id j17-20020a62b611000000b0067777e960d9sm12339594pff.155.2023.08.17.01.44.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 01:44:00 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 14:13:58 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Liao Chang <liaochang1@huawei.com>
-Cc:     rafael@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] cpufreq: Prefer to print cpuid in MIN/MAX QoS
- register error message
-Message-ID: <20230817084358.7gg4lsudfpv2ziso@vireshk-i7>
-References: <20230815014002.4132226-1-liaochang1@huawei.com>
+        bh=HqYCpJ77ukc6LNS1A4X/No1oC3nfzVx+pg4F8CfKxUc=;
+        b=BHw3mJbM4hiuKYmnePc4eJjfyuFoK/yRMWyAEy7IWaPgRQKpe059qpCObRoV/bBlwH
+         uKp+QwZnGCcAgbn6bXRqBpw0Tqecrmhy7Dt4tVldyFCdMlMBQxzMcWLkKMIkpx7I0CT/
+         MA7P6Z8cybRNmGJMtvbrQtbbTToOTVaG4Izsk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692261960; x=1692866760;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HqYCpJ77ukc6LNS1A4X/No1oC3nfzVx+pg4F8CfKxUc=;
+        b=Iuf71hjGzqH4LB7A5j81QVgm2fsOiIHL3dISSn/B4dtP2LVn1oVqKG8sxv4q8BAouR
+         XXkaE1VnjNsDnPxzZMGcgzy5/wDILpE5cT1h5xN4l+myB2IKWgR177TuQ6eCbbFGk9lA
+         IoAFqtWYpfncZGhIdE6YrXN/d9Hb2NTV3TOBYduyITk9F5O+lpWBk0i48097muemIy8l
+         ImntvK6m2aTPSY/xQ0hNE+Tg8pp5VlFmlXtm1ngd9JYm1zGd1sfTdbqpJd5oJZzIydBX
+         x8lyaDWIQg2Hnb2ZgXWRs/k+4sAGGPN2ypWm1fJyMw6/sEwsx7geTMuYmeyhVlGbHV+a
+         AuYA==
+X-Gm-Message-State: AOJu0YzEv99nK4z5CHrgCiCFt6ARxDQVx0Gy7YOYfsitO1XwvB19jBbu
+        fsuuf1cgvaJhLaLBmQEKATWg0Zb0+1mIMdzbFdkF8Q==
+X-Google-Smtp-Source: AGHT+IHXlDV52tzwpRP9Q+YvnVRJMnf3bkME2JfcNlfX9z20DgAbY8v2IRSoiHr9VM/ZIT8Hmy6flouitCaU4ecYlfQ=
+X-Received: by 2002:a1f:eac2:0:b0:48c:2b9f:ee1d with SMTP id
+ i185-20020a1feac2000000b0048c2b9fee1dmr609627vkh.16.1692261959110; Thu, 17
+ Aug 2023 01:45:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230815014002.4132226-1-liaochang1@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230530195132.2286163-1-bero@baylibre.com> <107678ff-c3d5-4c3a-ad0e-fa292a125daa@notapiano>
+ <a97efd71-23e2-5ac9-8d3d-427a431353c6@linaro.org>
+In-Reply-To: <a97efd71-23e2-5ac9-8d3d-427a431353c6@linaro.org>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Thu, 17 Aug 2023 16:45:48 +0800
+Message-ID: <CAGXv+5EFD_yMF7q0P5rqiRWeyRqm016Or8iB0niwj26HFVp93Q@mail.gmail.com>
+Subject: Re: [PATCH v4 0/5] Add LVTS support for mt8192
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>,
+        =?UTF-8?Q?Bernhard_Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
+        angelogioacchino.delregno@collabora.com, rafael@kernel.org,
+        amitk@kernel.org, rui.zhang@intel.com, matthias.bgg@gmail.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        rdunlap@infradead.org, ye.xingchen@zte.com.cn,
+        p.zabel@pengutronix.de, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        james.lo@mediatek.com, rex-bc.chen@mediatek.com,
+        abailon@baylibre.com, amergnat@baylibre.com, khilman@baylibre.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-08-23, 09:40, Liao Chang wrote:
-> When a cpufreq_policy is allocated, the cpus, related_cpus and real_cpus
-> of policy are still unset. Therefore, it is preferable to print the
-> passed 'cpu' parameter instead of a empty 'cpus' cpumask in error
-> message when registering MIN/MAX QoS notifier fails.
-> 
-> Signed-off-by: Liao Chang <liaochang1@huawei.com>
-> ---
->  drivers/cpufreq/cpufreq.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> index 50bbc969ffe5..a757f90aa9d6 100644
-> --- a/drivers/cpufreq/cpufreq.c
-> +++ b/drivers/cpufreq/cpufreq.c
-> @@ -1234,16 +1234,16 @@ static struct cpufreq_policy *cpufreq_policy_alloc(unsigned int cpu)
->  	ret = freq_qos_add_notifier(&policy->constraints, FREQ_QOS_MIN,
->  				    &policy->nb_min);
->  	if (ret) {
-> -		dev_err(dev, "Failed to register MIN QoS notifier: %d (%*pbl)\n",
-> -			ret, cpumask_pr_args(policy->cpus));
-> +		dev_err(dev, "Failed to register MIN QoS notifier: %d (CPU%u)\n",
-> +			ret, cpu);
->  		goto err_kobj_remove;
->  	}
->  
->  	ret = freq_qos_add_notifier(&policy->constraints, FREQ_QOS_MAX,
->  				    &policy->nb_max);
->  	if (ret) {
-> -		dev_err(dev, "Failed to register MAX QoS notifier: %d (%*pbl)\n",
-> -			ret, cpumask_pr_args(policy->cpus));
-> +		dev_err(dev, "Failed to register MAX QoS notifier: %d (CPU%u)\n",
-> +			ret, cpu);
->  		goto err_min_qos_notifier;
->  	}
+On Thu, Aug 17, 2023 at 4:49=E2=80=AFAM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+>
+>
+> Hi,
+>
+> On 16/08/2023 21:57, N=C3=ADcolas F. R. A. Prado wrote:
+>
+> [ ... ]
+>
+> > Hi Daniel,
+> >
+> > just a gentle reminder. As you've just applied [1], there are no longer=
+ any
+> > concerns with this series, and it'll provide both working interrupts an=
+d
+> > reliable thermal readings on MT8192.
+>
+> There are still concerns and questions in the series for patch2 and 3.
 
-Applied both the patches. Thanks.
+FWIW the readout errors raised in patch 3 were fixed by
 
--- 
-viresh
+"thermal/drivers/mediatek/lvts_thermal: Make readings valid in filtered mod=
+e"
+
+So I guess the remaining concern is on patch 2 about whether the noirq
+suspend callback should be used instead.
+
+ChenYu
