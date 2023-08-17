@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC82B77F30A
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD9477F308
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349421AbjHQJPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 05:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
+        id S1349471AbjHQJPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 05:15:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349522AbjHQJP2 (ORCPT
+        with ESMTP id S1349526AbjHQJP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 05:15:28 -0400
-Received: from mail-pl1-f208.google.com (mail-pl1-f208.google.com [209.85.214.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F20E2D69
+        Thu, 17 Aug 2023 05:15:29 -0400
+Received: from mail-pf1-f207.google.com (mail-pf1-f207.google.com [209.85.210.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0213590
         for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 02:15:08 -0700 (PDT)
-Received: by mail-pl1-f208.google.com with SMTP id d9443c01a7336-1bf0b05bbbeso12168105ad.0
+Received: by mail-pf1-f207.google.com with SMTP id d2e1a72fcca58-68927d7a832so1121717b3a.3
         for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 02:15:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692263707; x=1692868507;
+        d=1e100.net; s=20221208; t=1692263708; x=1692868508;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=CaAEoaqZiKgdatVqeSM6rwKu+YRM0SW+qEnc7EKsc7A=;
-        b=gw5y/Fu0vCHwEXDoIGCgO7ou7k6K4raV0PgRNFRp3siMjlU5ZY9rnNIP1x754pg25i
-         nbsY2d6KPXnXdj6Kzu4FB+UyYhWK2L5i1rbDhOqBl6ledJ9649vbXzxC53+k1eiPQpEV
-         WnLsxWxA6YN3JNpuIX6hidaVRoNXY8DxN6fOBMN5iJ4PNV4s+SfXXwcvOyBxGDDVa6Cp
-         wER92zrudQlCHkGd00AUVEcr+nBhQae9g37SshH0XEgAi8UFgQIoTrDPaCG+/26y538H
-         SZK4oeWDJIHblZXUAx/GYQWkvVDfHqLgUJeSj6W2G2SlToGNFR4VYa0zidHI7Fb/tf3X
-         S6uA==
-X-Gm-Message-State: AOJu0YyjCA5Tz4rMkpuYD5846evL6FStOe0KXsEY1x5rKzD1VJ7BfrRa
-        BOL45bh8tLkaEpPCsXuZo+aYbXegt4dDqliw+VSY8xIc4mim
-X-Google-Smtp-Source: AGHT+IEBGTiaTahQVxmEjCY2+VkgLpeBeP0bwIw7K41J6xrN6u3JZwXK6cS9ZFnywTkAFP3y1MWGMvTR+Wq4Qf4XEzvpxH+ErLWu
+        bh=FrSKJ1hMfYc0HJvnlnLqMezwfrEauUWTfXgiLXcGByc=;
+        b=F6xG5ZKNgN5OQcO4z47Na4K+WLgJ3nq6Wom+3WYFo6Jn+M8CaF7xasMiaC4y3T3gyp
+         7/X6YsoLPo0lIZ3YxLXnXeUOUcodwuqyE2uhmBrUWWtjTNe7VPWTQ3JdJAnElgWj+SfC
+         c0iiDa0UDNykhnu8tmqFEmk9fdaTk7hE2sUTP5PwSWbSTgYnNQ0JBzSnr8IRvH8GoLfj
+         t4aT2vbsg+VHcGjvfxM3tzhLDL2gyvoI7jBTs/hHzn/ko4s/psDVSK2jlDMvLmUzrxvC
+         hLXbgLAkN/DeI8xl9CAGaFCqsGqhjEhINGmWXbXq2kgofT4gn+JGgkvb2WM5YAkj1Mxf
+         or2Q==
+X-Gm-Message-State: AOJu0YyyxzdBu4qrX9ZAjMAoMUGWysMAqu5mmrlsgSD+RkVLHgPBghxb
+        eeP9XZCWjDg25QvVfymSfcO6drkiUWznihvuIT6DLs4T4j/z
+X-Google-Smtp-Source: AGHT+IHqXpyHbJPh5Ae1pyS5MZn7lR3OpDEZK/Pon+cryEb+qGQm1RmndB9TAtLoBF2d0V4AXRLZd2p7KbXXV/R4qCh003ED9HIi
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:41ca:b0:1b8:9eca:d6a7 with SMTP id
- u10-20020a17090341ca00b001b89ecad6a7mr1486530ple.7.1692263707666; Thu, 17 Aug
- 2023 02:15:07 -0700 (PDT)
+X-Received: by 2002:a05:6a00:18a9:b0:687:322c:b72e with SMTP id
+ x41-20020a056a0018a900b00687322cb72emr2271124pfh.5.1692263708137; Thu, 17 Aug
+ 2023 02:15:08 -0700 (PDT)
 Date:   Thu, 17 Aug 2023 02:15:07 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000029708206031ad94a@google.com>
-Subject: [syzbot] [kernel?] INFO: rcu detected stall in toggle_allocation_gate
-From:   syzbot <syzbot+52d2f6feb48dc7328968@syzkaller.appspotmail.com>
-To:     bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, x86@kernel.org
+Message-ID: <000000000000309fd406031ad936@google.com>
+Subject: [syzbot] [net?] BUG: soft lockup in mld_ifc_work
+From:   syzbot <syzbot+ab792e883bcbdd272d1d@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com, jhs@mojatatu.com,
+        jiri@resnulli.us, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com, vinicius.gomes@intel.com,
+        xiyou.wangcong@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -60,92 +61,90 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    950fe35831af Merge branch 'ipv6-expired-routes'
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13cc856ba80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fe63ad15dded26b6
-dashboard link: https://syzkaller.appspot.com/bug?extid=52d2f6feb48dc7328968
+HEAD commit:    46670259519f Merge tag 'for-6.5-rc2-tag' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=121f3a52a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=27e33fd2346a54b
+dashboard link: https://syzkaller.appspot.com/bug?extid=ab792e883bcbdd272d1d
 compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13d34703a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13a9a040680000
+
+Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/d3d4f3ce986f/disk-950fe358.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d5afd9c7f284/vmlinux-950fe358.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/1a203c65f0ae/bzImage-950fe358.xz
+disk image: https://storage.googleapis.com/syzbot-assets/bc182e825ac4/disk-46670259.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c4ddbdd1e588/vmlinux-46670259.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4858edcc7423/bzImage-46670259.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+52d2f6feb48dc7328968@syzkaller.appspotmail.com
+Reported-by: syzbot+ab792e883bcbdd272d1d@syzkaller.appspotmail.com
 
-rcu: INFO: rcu_preempt self-detected stall on CPU
-rcu: 	0-....: (1128 ticks this GP) idle=7504/1/0x4000000000000000 softirq=9033/9035 fqs=2245
-rcu: 	         hardirqs   softirqs   csw/system
-rcu: 	 number:        0          0            0
-rcu: 	cputime:    33937      18602         3669   ==> 52480(ms)
-rcu: 	(t=10500 jiffies g=8777 q=327 ncpus=2)
-CPU: 0 PID: 2848 Comm: kworker/u4:6 Not tainted 6.5.0-rc5-syzkaller-01605-g950fe35831af #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Workqueue: events_unbound toggle_allocation_gate
-RIP: 0010:__sanitizer_cov_trace_pc+0x60/0x70 kernel/kcov.c:225
-Code: 82 e0 15 00 00 83 f8 02 75 20 48 8b 8a e8 15 00 00 8b 92 e4 15 00 00 48 8b 01 48 83 c0 01 48 39 d0 73 07 48 89 01 48 89 34 c1 <c3> 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 f3 0f 1e fa 41 57
-RSP: 0018:ffffc90000007cf8 EFLAGS: 00000246
-RAX: 0000000000000000 RBX: ffff888067717000 RCX: 0000000000000100
-RDX: ffff888029910000 RSI: ffffffff885ba5a0 RDI: ffff8880677938d8
-RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000000 R11: ffffc90000007ff8 R12: ffff888067793800
-R13: 0000000000000000 R14: ffff88806b62a000 R15: ffff888067793818
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+watchdog: BUG: soft lockup - CPU#1 stuck for 246s! [kworker/1:10:6105]
+Modules linked in:
+irq event stamp: 148865
+hardirqs last  enabled at (148864): [<ffffffff8a40140a>] asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
+hardirqs last disabled at (148865): [<ffffffff8a32024e>] sysvec_apic_timer_interrupt+0xe/0xc0 arch/x86/kernel/apic/apic.c:1109
+softirqs last  enabled at (97838): [<ffffffff8901226a>] xt_write_recseq_end include/linux/netfilter/x_tables.h:397 [inline]
+softirqs last  enabled at (97838): [<ffffffff8901226a>] ip6t_do_table+0xcfa/0x1d20 net/ipv6/netfilter/ip6_tables.c:374
+softirqs last disabled at (97846): [<ffffffff882841c3>] __dev_queue_xmit+0x253/0x3f20 net/core/dev.c:4120
+CPU: 1 PID: 6105 Comm: kworker/1:10 Not tainted 6.5.0-rc2-syzkaller-00066-g46670259519f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
+Workqueue: mld mld_ifc_work
+RIP: 0010:find_entry_to_transmit+0xc/0x9f0 net/sched/sch_taprio.c:324
+Code: ff ff 48 89 ef e8 f4 d1 80 f9 e9 1b ff ff ff 48 89 ef e8 87 d2 80 f9 e9 35 ff ff ff 66 90 41 57 49 89 d7 41 56 41 55 41 54 55 <48> 89 f5 53 48 89 fb 48 81 ec a0 00 00 00 0f b6 84 24 e0 00 00 00
+RSP: 0018:ffffc900159c7398 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 561aeeb872888f2d RCX: 0000000000000000
+RDX: ffff88807ba51c00 RSI: ffff88804cbe4000 RDI: ffff88804c4d0280
+RBP: 561aeeb872888f01 R08: 561aeeb872888f2d R09: ffffc900159c7488
+R10: 561aeeb872888ec0 R11: 000000000000004e R12: 561aeeb8f2888ec1
+R13: ffff88804cbe4000 R14: ffff88807ba53400 R15: ffff88807ba51c00
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f5e85f05748 CR3: 0000000021fc2000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+CR2: ffffffffffffffd6 CR3: 0000000079510000 CR4: 0000000000350ee0
 Call Trace:
  <IRQ>
- taprio_dequeue_from_txq+0x3c0/0x8d0 net/sched/sch_taprio.c:726
- taprio_dequeue_tc_priority+0x289/0x4b0 net/sched/sch_taprio.c:798
- taprio_dequeue+0x12e/0x5f0 net/sched/sch_taprio.c:868
- dequeue_skb net/sched/sch_generic.c:292 [inline]
- qdisc_restart net/sched/sch_generic.c:397 [inline]
- __qdisc_run+0x1c4/0x19d0 net/sched/sch_generic.c:415
- qdisc_run include/net/pkt_sched.h:125 [inline]
- qdisc_run include/net/pkt_sched.h:122 [inline]
- net_tx_action+0x71e/0xc80 net/core/dev.c:5183
- __do_softirq+0x218/0x965 kernel/softirq.c:553
- invoke_softirq kernel/softirq.c:427 [inline]
- __irq_exit_rcu kernel/softirq.c:632 [inline]
- irq_exit_rcu+0xb7/0x120 kernel/softirq.c:644
- sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1109
  </IRQ>
  <TASK>
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
-RIP: 0010:__sanitizer_cov_trace_pc+0x3b/0x70 kernel/kcov.c:207
-Code: 81 e1 00 01 00 00 65 48 8b 14 25 80 b9 03 00 a9 00 01 ff 00 74 0e 85 c9 74 35 8b 82 04 16 00 00 85 c0 74 2b 8b 82 e0 15 00 00 <83> f8 02 75 20 48 8b 8a e8 15 00 00 8b 92 e4 15 00 00 48 8b 01 48
-RSP: 0018:ffffc9000c5af920 EFLAGS: 00000246
-RAX: 0000000000000000 RBX: ffffc9000c5afa70 RCX: 0000000000000000
-RDX: ffff888029910000 RSI: ffffffff8a2aa9a3 RDI: 0000000000000005
-RBP: ffffc9000c5afa94 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: ffffc9000c5afabc
-R13: 0000000000000000 R14: 000000000000b000 R15: ffffffff903ba200
- insn_get_modrm+0x203/0x730 arch/x86/lib/insn.c:363
- insn_get_sib+0x1ad/0x320 arch/x86/lib/insn.c:421
- insn_get_displacement+0x23a/0x680 arch/x86/lib/insn.c:464
- insn_get_immediate+0x550/0x1c50 arch/x86/lib/insn.c:632
- insn_get_length arch/x86/lib/insn.c:707 [inline]
- insn_decode+0x2ae/0x340 arch/x86/lib/insn.c:747
- text_poke_loc_init+0xc2/0x4d0 arch/x86/kernel/alternative.c:2315
- arch_jump_label_transform_queue+0x97/0x100 arch/x86/kernel/jump_label.c:138
- __jump_label_update+0x125/0x420 kernel/jump_label.c:475
- jump_label_update+0x32e/0x410 kernel/jump_label.c:829
- static_key_enable_cpuslocked+0x1b5/0x270 kernel/jump_label.c:205
- static_key_enable+0x1a/0x20 kernel/jump_label.c:218
- toggle_allocation_gate mm/kfence/core.c:831 [inline]
- toggle_allocation_gate+0xf4/0x250 mm/kfence/core.c:823
- process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2600
- worker_thread+0x687/0x1110 kernel/workqueue.c:2751
+ get_packet_txtime net/sched/sch_taprio.c:508 [inline]
+ taprio_enqueue_one+0x881/0x1640 net/sched/sch_taprio.c:577
+ taprio_enqueue+0x239/0x7e0 net/sched/sch_taprio.c:658
+ dev_qdisc_enqueue+0x3f/0x230 net/core/dev.c:3732
+ __dev_xmit_skb net/core/dev.c:3821 [inline]
+ __dev_queue_xmit+0x2202/0x3f20 net/core/dev.c:4169
+ dev_queue_xmit include/linux/netdevice.h:3088 [inline]
+ neigh_hh_output include/net/neighbour.h:528 [inline]
+ neigh_output include/net/neighbour.h:542 [inline]
+ ip6_finish_output2+0x1083/0x1b20 net/ipv6/ip6_output.c:135
+ __ip6_finish_output net/ipv6/ip6_output.c:196 [inline]
+ ip6_finish_output+0x485/0x11d0 net/ipv6/ip6_output.c:207
+ NF_HOOK_COND include/linux/netfilter.h:292 [inline]
+ ip6_output+0x243/0x890 net/ipv6/ip6_output.c:228
+ dst_output include/net/dst.h:458 [inline]
+ NF_HOOK.constprop.0+0xfd/0x540 include/linux/netfilter.h:303
+ mld_sendpack+0x715/0xd60 net/ipv6/mcast.c:1820
+ mld_send_cr net/ipv6/mcast.c:2121 [inline]
+ mld_ifc_work+0x756/0xcd0 net/ipv6/mcast.c:2653
+ process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2597
+ worker_thread+0x687/0x1110 kernel/workqueue.c:2748
  kthread+0x33a/0x430 kernel/kthread.c:389
  ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:296
+RIP: 0000:0x0
+Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+RSP: 0000:0000000000000000 EFLAGS: 00000000 ORIG_RAX: 0000000000000000
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
  </TASK>
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0 skipped: idling at native_safe_halt arch/x86/include/asm/irqflags.h:48 [inline]
+NMI backtrace for cpu 0 skipped: idling at arch_safe_halt arch/x86/include/asm/irqflags.h:86 [inline]
+NMI backtrace for cpu 0 skipped: idling at acpi_safe_halt+0x1b/0x20 drivers/acpi/processor_idle.c:112
 
 
 ---
@@ -158,10 +157,6 @@ https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
 If the bug is already fixed, let syzbot know by replying with:
 #syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
 
 If you want to overwrite bug's subsystems, reply with:
 #syz set subsystems: new-subsystem
