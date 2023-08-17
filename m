@@ -2,160 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 085DC77FDD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB4077FDD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354400AbjHQSYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 14:24:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58860 "EHLO
+        id S1354219AbjHQSZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 14:25:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354480AbjHQSX6 (ORCPT
+        with ESMTP id S1354539AbjHQSZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 14:23:58 -0400
-Received: from rcdn-iport-4.cisco.com (rcdn-iport-4.cisco.com [173.37.86.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3DA23C06;
-        Thu, 17 Aug 2023 11:23:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=3332; q=dns/txt; s=iport;
-  t=1692296613; x=1693506213;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=EAFmCMjCURKVOVoD03Cmoz021Qx7FN68afEqBii0SgA=;
-  b=Jc7fp++knzYmrMr7VNa+2ZT3tCvzh0QK14up38tkmI0RdSrgUkomDsy3
-   Q9OW4GJ2jCtkI1eKC/oMzZj1+WILZR2qDJZOzcbR+rnfdKNp+dhQv2Xwa
-   5bt/GYE+NgyDt5Ah8siC/l09+M1JGprNgqpQAGlRuBD6dqB2/rVjMmlHF
-   s=;
-X-IronPort-AV: E=Sophos;i="6.01,180,1684800000"; 
-   d="scan'208";a="102870598"
-Received: from rcdn-core-7.cisco.com ([173.37.93.143])
-  by rcdn-iport-4.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 18:22:21 +0000
-Received: from localhost.cisco.com ([10.193.101.253])
-        (authenticated bits=0)
-        by rcdn-core-7.cisco.com (8.15.2/8.15.2) with ESMTPSA id 37HIMCar015707
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 17 Aug 2023 18:22:20 GMT
-From:   Karan Tilak Kumar <kartilak@cisco.com>
-To:     sebaddel@cisco.com
-Cc:     arulponn@cisco.com, djhawar@cisco.com, gcboffa@cisco.com,
-        mkai2@cisco.com, satishkh@cisco.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Karan Tilak Kumar <kartilak@cisco.com>
-Subject: [PATCH] scsi: fnic: Replace sgreset tag with max_tag_id
-Date:   Thu, 17 Aug 2023 11:21:46 -0700
-Message-Id: <20230817182146.229059-1-kartilak@cisco.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 17 Aug 2023 14:25:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4113C11
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:24:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EBB7464E97
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 18:23:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FECEC433C7;
+        Thu, 17 Aug 2023 18:23:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692296624;
+        bh=f5ptGtZ/YpXtDqus4xfoEV65ews+Fja02Yil5w3snuA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ivwoZIfl3uUPq8IRMK8Ypt/YDj0SBGkEMppQln56UfPVMhvdwCoEj/F6dm96XQZm2
+         tjduUHGUljtnpuUM/hOHR4+R1u9K/g0BcSo0c8geobQjXI/9KIYyljRUcDobA+UpVL
+         69LeK0I4khQMuGnXwfYU3tyug3xjd3PHb4Ps5JSheLz0tjORPMNAOC/Kdv4kYGDXF6
+         XRDGpgqbMfx8PHnZDAFEUGg3Ul3iOo3FWrt3mcHC3sY/qBQixxKa8OWwB+u+Y5T94z
+         xQQrtG21YnzXL4Ol0z4WUZJCJQNGuxojasThhmjagjACVWcgmy1ZeMG+if4DsriHiq
+         nVoaW5HTsYdkQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 534B3404DF; Thu, 17 Aug 2023 15:23:41 -0300 (-03)
+Date:   Thu, 17 Aug 2023 15:23:41 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/1] perf trace: Use heuristic when deciding if a syscall
+ tracepoint "const char *" field is really a string
+Message-ID: <ZN5lrdeEdSMCn7hk@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-User: kartilak@cisco.com
-X-Outbound-SMTP-Client: 10.193.101.253, [10.193.101.253]
-X-Outbound-Node: rcdn-core-7.cisco.com
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sgreset is issued with a scsi command pointer.
-The device reset code assumes that it was issued
-on a hardware queue, and calls block multiqueue
-layer. However, the assumption is broken, and
-there is no hardware queue associated with the
-sgreset, and this leads to a crash due to a
-null pointer exception.
+'perf trace' tries to find BPF progs associated with a syscall that have
+a signature that is similar to syscalls without one to try and reuse,
+so, for instance, the 'open' signature can be reused with many other
+syscalls that have as its first arg a string.
 
-Fix the code to use the max_tag_id as a tag
-which does not overlap with the other tags
-issued by mid layer.
+It uses the tracefs events format file for finding a signature that can
+be reused, but then comes the "write" syscall with its second argument
+as a "const char *":
 
-Tested by running FC traffic for a few minutes,
-and by issuing sgreset on the device in parallel.
-Without the fix, the crash is observed right away.
-With this fix, no crash is observed.
+  # cat /sys/kernel/debug/tracing/events/syscalls/sys_enter_write/format
+  name: sys_enter_write
+  ID: 746
+  format:
+  	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
+  	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
+  	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
+  	field:int common_pid;	offset:4;	size:4;	signed:1;
 
-Reviewed-by: Sesidhar Baddela <sebaddel@cisco.com>
-Tested-by: Karan Tilak Kumar <kartilak@cisco.com>
-Signed-off-by: Karan Tilak Kumar <kartilak@cisco.com>
+  	field:int __syscall_nr;	offset:8;	size:4;	signed:1;
+  	field:unsigned int fd;	offset:16;	size:8;	signed:0;
+  	field:const char * buf;	offset:24;	size:8;	signed:0;
+  	field:size_t count;	offset:32;	size:8;	signed:0;
+
+  print fmt: "fd: 0x%08lx, buf: 0x%08lx, count: 0x%08lx", ((unsigned long)(REC->fd)), ((unsigned long)(REC->buf)), ((unsigned long)(REC->count))
+  #
+
+Which isn't a string (the man page for glibc has buf as "void *"), so we
+have to use the name of the argument as an heuristic, to consider a
+string just args that are "const char *" and that have in its name  the
+"path", "file", etc substrings.
+
+With that now it reuses:
+
+  [root@quaco ~]# perf trace -v --max-events=1 |& grep Reus
+  Reusing "open" BPF sys_enter augmenter for "stat"
+  Reusing "open" BPF sys_enter augmenter for "lstat"
+  Reusing "open" BPF sys_enter augmenter for "access"
+  Reusing "connect" BPF sys_enter augmenter for "accept"
+  Reusing "sendto" BPF sys_enter augmenter for "recvfrom"
+  Reusing "connect" BPF sys_enter augmenter for "bind"
+  Reusing "connect" BPF sys_enter augmenter for "getsockname"
+  Reusing "connect" BPF sys_enter augmenter for "getpeername"
+  Reusing "open" BPF sys_enter augmenter for "execve"
+  Reusing "open" BPF sys_enter augmenter for "truncate"
+  Reusing "open" BPF sys_enter augmenter for "chdir"
+  Reusing "open" BPF sys_enter augmenter for "mkdir"
+  Reusing "open" BPF sys_enter augmenter for "rmdir"
+  Reusing "open" BPF sys_enter augmenter for "creat"
+  Reusing "open" BPF sys_enter augmenter for "link"
+  Reusing "open" BPF sys_enter augmenter for "unlink"
+  Reusing "open" BPF sys_enter augmenter for "symlink"
+  Reusing "open" BPF sys_enter augmenter for "readlink"
+  Reusing "open" BPF sys_enter augmenter for "chmod"
+  Reusing "open" BPF sys_enter augmenter for "chown"
+  Reusing "open" BPF sys_enter augmenter for "lchown"
+  Reusing "open" BPF sys_enter augmenter for "mknod"
+  Reusing "open" BPF sys_enter augmenter for "statfs"
+  Reusing "open" BPF sys_enter augmenter for "pivot_root"
+  Reusing "open" BPF sys_enter augmenter for "chroot"
+  Reusing "open" BPF sys_enter augmenter for "acct"
+  Reusing "open" BPF sys_enter augmenter for "swapon"
+  Reusing "open" BPF sys_enter augmenter for "swapoff"
+  Reusing "open" BPF sys_enter augmenter for "delete_module"
+  Reusing "open" BPF sys_enter augmenter for "setxattr"
+  Reusing "open" BPF sys_enter augmenter for "lsetxattr"
+  Reusing "openat" BPF sys_enter augmenter for "fsetxattr"
+  Reusing "open" BPF sys_enter augmenter for "getxattr"
+  Reusing "open" BPF sys_enter augmenter for "lgetxattr"
+  Reusing "openat" BPF sys_enter augmenter for "fgetxattr"
+  Reusing "open" BPF sys_enter augmenter for "listxattr"
+  Reusing "open" BPF sys_enter augmenter for "llistxattr"
+  Reusing "open" BPF sys_enter augmenter for "removexattr"
+  Reusing "open" BPF sys_enter augmenter for "lremovexattr"
+  Reusing "fsetxattr" BPF sys_enter augmenter for "fremovexattr"
+  Reusing "open" BPF sys_enter augmenter for "mq_open"
+  Reusing "open" BPF sys_enter augmenter for "mq_unlink"
+  Reusing "fsetxattr" BPF sys_enter augmenter for "add_key"
+  Reusing "fremovexattr" BPF sys_enter augmenter for "request_key"
+  Reusing "fremovexattr" BPF sys_enter augmenter for "inotify_add_watch"
+  Reusing "fremovexattr" BPF sys_enter augmenter for "mkdirat"
+  Reusing "fremovexattr" BPF sys_enter augmenter for "mknodat"
+  Reusing "fremovexattr" BPF sys_enter augmenter for "fchownat"
+  Reusing "fremovexattr" BPF sys_enter augmenter for "futimesat"
+  Reusing "fremovexattr" BPF sys_enter augmenter for "newfstatat"
+  Reusing "fremovexattr" BPF sys_enter augmenter for "unlinkat"
+  Reusing "fremovexattr" BPF sys_enter augmenter for "linkat"
+  Reusing "open" BPF sys_enter augmenter for "symlinkat"
+  Reusing "fremovexattr" BPF sys_enter augmenter for "readlinkat"
+  Reusing "fremovexattr" BPF sys_enter augmenter for "fchmodat"
+  Reusing "fremovexattr" BPF sys_enter augmenter for "faccessat"
+  Reusing "fremovexattr" BPF sys_enter augmenter for "utimensat"
+  Reusing "connect" BPF sys_enter augmenter for "accept4"
+  Reusing "fremovexattr" BPF sys_enter augmenter for "name_to_handle_at"
+  Reusing "fremovexattr" BPF sys_enter augmenter for "renameat2"
+  Reusing "open" BPF sys_enter augmenter for "memfd_create"
+  Reusing "fremovexattr" BPF sys_enter augmenter for "execveat"
+  Reusing "fremovexattr" BPF sys_enter augmenter for "statx"
+  [root@quaco ~]#
+
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/lkml/
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- drivers/scsi/fnic/fnic.h      |  3 ++-
- drivers/scsi/fnic/fnic_scsi.c | 20 +++++++++-----------
- 2 files changed, 11 insertions(+), 12 deletions(-)
+ tools/perf/builtin-trace.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/scsi/fnic/fnic.h b/drivers/scsi/fnic/fnic.h
-index e51e92f932fa..93c68931a593 100644
---- a/drivers/scsi/fnic/fnic.h
-+++ b/drivers/scsi/fnic/fnic.h
-@@ -27,7 +27,7 @@
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index 3964cf44cdbcb3e8..e541d0e2777ab935 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -3398,6 +3398,19 @@ static struct bpf_program *trace__find_usable_bpf_prog_entry(struct trace *trace
+ 			if (strcmp(field->type, candidate_field->type))
+ 				goto next_candidate;
  
- #define DRV_NAME		"fnic"
- #define DRV_DESCRIPTION		"Cisco FCoE HBA Driver"
--#define DRV_VERSION		"1.6.0.55"
-+#define DRV_VERSION		"1.6.0.56"
- #define PFX			DRV_NAME ": "
- #define DFX                     DRV_NAME "%d: "
++			/*
++			 * This is limited in the BPF program but sys_write
++			 * uses "const char *" for its "buf" arg so we need to
++			 * use some heuristic that is kinda future proof...
++			 */
++			if (strcmp(field->type, "const char *") == 0 &&
++			    !(strstr(field->name, "name") ||
++			      strstr(field->name, "path") ||
++			      strstr(field->name, "file") ||
++			      strstr(field->name, "root") ||
++			      strstr(field->name, "description")))
++				goto next_candidate;
++
+ 			is_candidate = true;
+ 		}
  
-@@ -236,6 +236,7 @@ struct fnic {
- 	unsigned int wq_count;
- 	unsigned int cq_count;
- 
-+	struct mutex sgreset_mutex;
- 	struct dentry *fnic_stats_debugfs_host;
- 	struct dentry *fnic_stats_debugfs_file;
- 	struct dentry *fnic_reset_debugfs_file;
-diff --git a/drivers/scsi/fnic/fnic_scsi.c b/drivers/scsi/fnic/fnic_scsi.c
-index be89ce96df46..185142efee3d 100644
---- a/drivers/scsi/fnic/fnic_scsi.c
-+++ b/drivers/scsi/fnic/fnic_scsi.c
-@@ -2222,7 +2222,6 @@ int fnic_device_reset(struct scsi_cmnd *sc)
- 	struct reset_stats *reset_stats;
- 	int tag = rq->tag;
- 	DECLARE_COMPLETION_ONSTACK(tm_done);
--	int tag_gen_flag = 0;   /*to track tags allocated by fnic driver*/
- 	bool new_sc = 0;
- 
- 	/* Wait for rport to unblock */
-@@ -2252,17 +2251,17 @@ int fnic_device_reset(struct scsi_cmnd *sc)
- 	}
- 
- 	fnic_priv(sc)->flags = FNIC_DEVICE_RESET;
--	/* Allocate tag if not present */
- 
- 	if (unlikely(tag < 0)) {
- 		/*
--		 * Really should fix the midlayer to pass in a proper
--		 * request for ioctls...
-+		 * For device reset issued through sg3utils, we let
-+		 * only one LUN_RESET to go through and use a special
-+		 * tag equal to max_tag_id so that we don't have to allocate
-+		 * or free it. It won't interact with tags
-+		 * allocated by mid layer.
- 		 */
--		tag = fnic_scsi_host_start_tag(fnic, sc);
--		if (unlikely(tag == SCSI_NO_TAG))
--			goto fnic_device_reset_end;
--		tag_gen_flag = 1;
-+		mutex_lock(&fnic->sgreset_mutex);
-+		tag = fnic->fnic_max_tag_id;
- 		new_sc = 1;
- 	}
- 	io_lock = fnic_io_lock_hash(fnic, sc);
-@@ -2434,9 +2433,8 @@ int fnic_device_reset(struct scsi_cmnd *sc)
- 		  (u64)sc->cmnd[4] << 8 | sc->cmnd[5]),
- 		  fnic_flags_and_state(sc));
- 
--	/* free tag if it is allocated */
--	if (unlikely(tag_gen_flag))
--		fnic_scsi_host_end_tag(fnic, sc);
-+	if (new_sc)
-+		mutex_unlock(&fnic->sgreset_mutex);
- 
- 	FNIC_SCSI_DBG(KERN_DEBUG, fnic->lport->host,
- 		      "Returning from device reset %s\n",
 -- 
-2.31.1
+2.41.0
 
