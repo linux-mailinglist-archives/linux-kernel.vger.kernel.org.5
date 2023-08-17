@@ -2,67 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E85D877FFBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 23:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7D477FFBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 23:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355275AbjHQVWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 17:22:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46010 "EHLO
+        id S1355282AbjHQVWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 17:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355269AbjHQVVu (ORCPT
+        with ESMTP id S1355270AbjHQVVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 17 Aug 2023 17:21:50 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5ABE4C
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 14:21:48 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-589addee1c1so2737187b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 14:21:48 -0700 (PDT)
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46B5136
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 14:21:49 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-565439b6b3fso206534a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 14:21:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692307308; x=1692912108;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=bOsJhNQoYOmFJimTxaJ2mCEMh67hQeGjwrVTDjEnLSc=;
-        b=TPpXhy+K1amcpaItC/ed4ueSEE/vXLBV37L0U6/4TdOwYOXUGHidIxyLeJ855ApD3H
-         oDYlcUS74zFmYL6eH28+wHzC9YxLzFs+OpCV2DVcetcWTCbSVQNeYdQGSFK+FThsvMIY
-         RO5IXOiS6OvvhxNXyUGeYhTrePsgYMhEgiVMCbzKOjw30Y//ytN3kPRHEuK1kZVmG/AF
-         cDjGWNVEwq6K67K+cEVhDcyLj+94WUGZJEtvOokIPU9caXSIRCmyINJElm/IMjvnfEn6
-         m4Ju2t6PeSZWlALjduMmSKltL0B3e3YkiXr1p2dLRtCQxbjqWrEkRLaTikMyTyWNS12I
-         szMA==
+        d=chromium.org; s=google; t=1692307309; x=1692912109;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=J3DqWaHfahBV9Rbr3yh7KAOpaU1Qrxqc6I4ImPzrlLc=;
+        b=UQ7uRX4vRNQm5Z1sJYuCD7CcUxrybgqiowuOcHYmTIa+UxxHl+7ZiRrKxaJsYHKXSl
+         tghA3LlYPIhxoRFOaBp0d8yN1G+lOTQ7cPNzwU0zy8KoWJJ8FeqBZVPOZ9GXVcu+DC+a
+         WJuLP8C7DeUOx2LPkDjxFTZoe1hdtJHUVj33s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692307308; x=1692912108;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1692307309; x=1692912109;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=bOsJhNQoYOmFJimTxaJ2mCEMh67hQeGjwrVTDjEnLSc=;
-        b=TS86IaqJ2mCqDdPKpQypCacFC0nnm7wUvqVatW56/Nx2AwY43JrY6+WyN6Mou/at+Y
-         YGdEWN671wfTRD9Y6fIqc25aVZS3vn82Uw6i01Ceck3gjOAgnBa0kUKTgFdWcsCDDUHM
-         WcftLZK1/3gonGWA1mnpV5fYXvgYzKT9cZk5oh3VPw8ARoMjh7wOmrzxw6hnGvTE8Lzk
-         +AJwoDqlIdwZi8thTyZRyYykVFIYfGJtkt1c4GnYnteDbKijoS8FOjS3Ukwnth4iWXTN
-         cvtJqgWShi4/fGFpL5TBHLNPp3sM0t3zlx5RQqu8foQ8AEXjdzuDZcBUxPczXoGtuxuQ
-         P1uA==
-X-Gm-Message-State: AOJu0YxfPwhC0yC0aXtJF5cMJo5U91L4Igc04AIvMgJGlg/gA28Jscke
-        4X0HrI59pAIIJoRyDT55T/U2EMPbZjnLfC8002kwzpSM
-X-Google-Smtp-Source: AGHT+IGQXTWxmdciEZxIzZP/m4iBdXR2/9RjqgCWXFOWD1UKeTLBCsQK/MaM+1qERKqXAU3q08FpBTVkStU29ojPqmQ=
-X-Received: by 2002:a81:8a81:0:b0:58d:b9f3:adde with SMTP id
- a123-20020a818a81000000b0058db9f3addemr463939ywg.51.1692307307925; Thu, 17
- Aug 2023 14:21:47 -0700 (PDT)
+        bh=J3DqWaHfahBV9Rbr3yh7KAOpaU1Qrxqc6I4ImPzrlLc=;
+        b=N+EYKY//SYqLqU9wqfma+dUITjs/7AWcDeENUBNPgdNV66dwCb5PV3/ozqna4uKX4E
+         /uieChpsV6sxsm4rt446dGBUMaCufUE28wIgpH5F/2JoO0D0ku3v6GjW2M78s3uN83cX
+         5MxI3Jn6N8CkShUWS5N8njIEHR1RITgvpbLSFb5NKscSRRPpKkbvJ2ijGGQ93JWVlHYQ
+         6xA/C4dNZwMBb9Mub9lAm1TmxczE3D+UYB87VDuoeAOj6oIRivNP2vd9RhSHIcZZNE1B
+         ZqoSv3vLFZQwxy8ULrilBcHbQ+e1dXdnFv9JUKWtznZb2HSN+BUBi9vimZGB56IZCH0V
+         lgbQ==
+X-Gm-Message-State: AOJu0YxuYxFAIU/82kUO5dZRAwWZBdvOATjEQDYnWdSHW7ppNsW684KJ
+        kgWwkr+XIEcA98mBwPhj5IacMA==
+X-Google-Smtp-Source: AGHT+IGLTsZ7rAmRuWTP/8uOPKu4TBwkEbweRpAvs9I0Ep65lCmKl19f3lVNNKXui6CukdYTJl8/rA==
+X-Received: by 2002:a05:6a20:5493:b0:13e:43df:d043 with SMTP id i19-20020a056a20549300b0013e43dfd043mr1160826pzk.9.1692307309226;
+        Thu, 17 Aug 2023 14:21:49 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id h5-20020aa786c5000000b0064d57ecaa1dsm212143pfo.28.2023.08.17.14.21.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 14:21:48 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+Subject: [PATCH] io_uring/rsrc: Annotate struct io_mapped_ubuf with __counted_by
+Date:   Thu, 17 Aug 2023 14:21:47 -0700
+Message-Id: <20230817212146.never.853-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <CAGgoGu7Vim82Hu1JKc+m6cPkcn7+WWDFwK5P_YE6grFQS9E21Q@mail.gmail.com>
- <ZNm2ihdTojuPJM2f@debian.me> <CAGgoGu5XuHhVbnrNKBzhZyZH993bBHiLgjTrtyofvePZ-dxLow@mail.gmail.com>
- <CAGgoGu5iTE1xeupwTUUAcJv59294dNQJEf9oUWQKF72hrpFxRw@mail.gmail.com> <ZNwWNopPItNwKCTV@titan>
-In-Reply-To: <ZNwWNopPItNwKCTV@titan>
-From:   Fawad Lateef <fawadlateef@gmail.com>
-Date:   Thu, 17 Aug 2023 22:21:35 +0100
-Message-ID: <CAGgoGu4R2Y5Yj4zEQyekZK0Vkb+XpWg+mudmW3LNmfq3tCFDjw@mail.gmail.com>
-Subject: Re: Question regarding Linux-6.3.5 and Sunxi A20 NAND/NFC support
-To:     John Watts <contact@jookia.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux sunXi <linux-sunxi@lists.linux.dev>,
-        kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        boris.brezillon@collabora.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1124; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=gGwvg9zntWB1mDIg2ohTnF8pwVm/bQVoon3uykHOFBY=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBk3o9rT8q7sPkI7wrB2u8kChmsyKUfX13Pp+tuK
+ oLdx7grdI2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZN6PawAKCRCJcvTf3G3A
+ JgYUEACXsvCYFPjTGIHR6p6P5j6Q+CqT4ShBQzC+FAh246rLYugxhD6lIIPpdrTaHK4l5M9CzwO
+ GaAhIq3GI++x8bV8cMf+54lzehI5pc7jWE7EkU+klUDyGudmNuaOFHdaQmPG4OlwK92DnJ94AH7
+ S+jsgIFmk0IY0AJZzTGHDKBH/PPPJEW0Ncw68YUD0n0sVkb3zR3AWhiswF3HD0Ve/j98jTpxsQz
+ cinCJ/a6kCl4LYa7Skni+3AL2Kmt6dSTAvv2fD1aVKerTNpWIfZCHb0c5pEzQIlvEnBQMTvGMO8
+ 7bPlPGOs7+27ogbkBtban+QdipHMzaGvkbbMWGKYuU6ThfuaG41UQPRVuapuqdjch7hWocfnkfM
+ Ry+OdHte2BNoXP7WZPZD7iYhJh0XcOWTj8WQLVbXmTNC1fHhv6wIQymrL45b4luR2W8aNTs1rV3
+ H4Zbfps1xF50ZU76LImcqObF1FgYJHa1/vKm3oX3q93wMRD2VHzFwZsaCjcQVZCSVNRU2KrEMS/
+ j23mDxvATtLGv8SG5NPAi2za7QlL3I1jUYrYmzL7RAPmgzoyM9fr9cNRQ28nUl+e3dULnWPQfUn
+ 0GiO7o7orv/pWyfyHzZrhmIEKANpH8EhOHyRccTApqCjNBNcG3guRn0YKOdQKy7vsDsJX/cX7CY
+ 70L6BhK j2bZt81g==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,39 +85,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Aug 2023 at 01:20, John Watts <contact@jookia.org> wrote:
->
-> On Tue, Aug 15, 2023 at 11:01:02PM +0100, Fawad Lateef wrote:
-> > Hi everyone,
-> >
-> > Can someone guide me? I am not sure what I am missing here.
-> >
-> > I am trying to debug the code but I assume that the SUNXI NAND driver
-> > is supposed to be working and that something is missing from my
-> > changes and additions to the dts/dtsi for A20 SOM.
-> >
-> > Thanks in advance
->
-> Hi there Fawad,
->
-> I've hit this problem before and it's usually been because the pins are being
-> used by another peripheral already
->
-> Could you post the kernel log? It might have some notes on this.
->
-> John.
+Prepare for the coming implementation by GCC and Clang of the __counted_by
+attribute. Flexible array members annotated with __counted_by can have
+their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+functions).
 
-Hi John,
+As found with Coccinelle[1], add __counted_by for struct io_mapped_ubuf.
 
-Thanks for your help. I found the reason for my issue. I defined the
-pinctrl information under the "soc" next to "nfc" entry in
-sunxi-a20.dtsi which was messing it up.
+[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 
-I moved them inside the "pio" dtsi block and NAND is detected now.
-Though almost all blocks are reported as bad-blocks.  I am thinking
-that it's happening as I don't have partition information defined in
-DTS. Do you think that this is the reason for bad-blocks reporting?
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Pavel Begunkov <asml.silence@gmail.com>
+Cc: io-uring@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ io_uring/rsrc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
+diff --git a/io_uring/rsrc.h b/io_uring/rsrc.h
+index 8afa9ec66a55..8625181fb87a 100644
+--- a/io_uring/rsrc.h
++++ b/io_uring/rsrc.h
+@@ -54,7 +54,7 @@ struct io_mapped_ubuf {
+ 	u64		ubuf_end;
+ 	unsigned int	nr_bvecs;
+ 	unsigned long	acct_pages;
+-	struct bio_vec	bvec[];
++	struct bio_vec	bvec[] __counted_by(nr_bvecs);
+ };
+ 
+ void io_rsrc_node_ref_zero(struct io_rsrc_node *node);
+-- 
+2.34.1
 
-Fawad Lateef
