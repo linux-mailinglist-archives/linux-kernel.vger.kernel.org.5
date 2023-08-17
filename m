@@ -2,81 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E734877FF2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 22:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE5B77FF33
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 22:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354956AbjHQUfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 16:35:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
+        id S1354882AbjHQUmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 16:42:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354952AbjHQUfG (ORCPT
+        with ESMTP id S1354842AbjHQUlx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 16:35:06 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3EF2D5F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 13:35:05 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bdc243d62bso1735775ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 13:35:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692304504; x=1692909304;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZPpoBFJxQV1FmnNA1ExO85wT7EFUumxKCY6/YfojRcg=;
-        b=bn/SNk5ZryeOs6MsIqm2lPBXN41cDb3/QGC5P55X004CdeqSVSCRdatZAzBcEcjYdb
-         stwp4R+ewfJ7JTwLIqwkCV3tJiLzizVt84HuBYcgnJFtcFj0GJQTBLyc7oWoybuMwO8x
-         2fywOflA9vdtzdBg5fkUjF++hib8hmkvldui8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692304504; x=1692909304;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZPpoBFJxQV1FmnNA1ExO85wT7EFUumxKCY6/YfojRcg=;
-        b=FMdiEPQHP3nBzpcvXbreRemD93o124ekLBYVnoD9i1wXSwEYGe6FEI64Yo9p+2oOHV
-         5LvXD+sjfoBlpC+wflPfefqiWdDUhd1zLcXxeyfu5ORkGMWEl2rAHd4Ln8/0L5VS+KW8
-         Sva14GpFfZDfvKRfHLyjEHRUDNLMvNK6KIz0GdasjRQW1IWAgbr1n0O+Rju655AHOVgM
-         pSAsbNoYSl2+31NPeGoQ5ATH0bcpTS5fB8FgyYMqRoy0dIjFIEVr7/pu7q/vdpsJyAmr
-         R4AYJn5C8ASqc3UdSLgHy/tZfe3ajD/F3Vqctni+i+w5eRRBxxJA598RTxigCNtVQlR6
-         MwSA==
-X-Gm-Message-State: AOJu0YwQgOTBTy/ybLLCKBk4ylVWbfS7vthJgwcJM/undKSLTHC0xFCq
-        SMl6i++rlK1A1uRBNGnOefUa2w==
-X-Google-Smtp-Source: AGHT+IH/wjlRQwIcUDu6P8dS8WNcBHV9BkAXgGNUoicxFSF2suKwOUVA1FxwnyK44BV7mv7sOy9Glg==
-X-Received: by 2002:a17:902:ab49:b0:1bc:50f9:8f20 with SMTP id ij9-20020a170902ab4900b001bc50f98f20mr526235plb.23.1692304504393;
-        Thu, 17 Aug 2023 13:35:04 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id t8-20020a170902bc4800b001bbfa86ca3bsm190173plz.78.2023.08.17.13.35.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 13:35:03 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Kees Cook <keescook@chromium.org>, Eric Paris <eparis@redhat.com>,
-        audit@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: [PATCH] audit: Annotate struct audit_chunk with __counted_by
-Date:   Thu, 17 Aug 2023 13:35:02 -0700
-Message-Id: <20230817203501.never.279-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        Thu, 17 Aug 2023 16:41:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF9A2698;
+        Thu, 17 Aug 2023 13:41:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C6D5363027;
+        Thu, 17 Aug 2023 20:41:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25EC1C433C8;
+        Thu, 17 Aug 2023 20:41:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692304906;
+        bh=F3YoCa9AX5IU4zm/PWVodOypPnuwTog2jW78JrYQb94=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=G0Uz5qx3J/zGzqjH7I1+o49txj7XVckIVGcdV0ei5KJ1yN6LgrKDA7M3U1LdsjCvn
+         px5gcGL+RIQFTxnAaS0k5bjeNwF3Vkut8AtNhp8Gb3MvroAb5WPqkkbRQRu6drOf33
+         5WKg/0jC9yl7EUKqDG5FwQpZOKu2KOMVx3tgjZnRbUtYbrzKjh+POKpTL2Ke8zsde1
+         pNYXPHJinLuOkl6Jq1wm1ckU6WpSUPOZ7R2NYdbtd6wUMmyyGEOPS4bAlScPlrs1aB
+         TGrNqr+BOMnvkfxF4J3QbsfjoIwXs7bynwzVX+WZN9kzD/mBui41GNVhawERbOXmNz
+         q2UcLdU7UxWkg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id B138CCE0F13; Thu, 17 Aug 2023 13:41:45 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 13:41:45 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Christian Brauner <brauner@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: duplicate patch in the nolibc tree
+Message-ID: <01d517c4-d91b-4426-b7f2-2b1277f21d8c@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230817133811.0a73c624@canb.auug.org.au>
+ <e0af8d82-e099-49fa-9fbd-6f6bb63b7706@t-8ch.de>
+ <9cfb4fe4-162b-3f26-646b-71bed3493925@linuxfoundation.org>
+ <4c037ef2-9159-4528-8ecb-8596cb2a3889@paulmck-laptop>
+ <20230817193909.GA30505@1wt.eu>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1126; i=keescook@chromium.org;
- h=from:subject:message-id; bh=iQE6kV9vlsKmBgzVzqmUF6+idqkcwdK1Cb4L82t48W0=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBk3oR1DKnpFvGMUs179JIA9Rss1/2X8NIbWK6tU
- Cp06TDi2MmJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZN6EdQAKCRCJcvTf3G3A
- JpthEACZY6Pe31vgMRPz5j3xTaeQcZBYjzW4t81pvnkFt09XCmUhXE52Luo096CAIoh/RSN2HBC
- M99jsYStbgG9+65HFqlLEud091NVpH+BcyJhnPQEhjBu5wgClO93nLn/iHrD7DMUKK96p+Oozt/
- d01G4YPZ0WyQH4xuCKfdg5Tpp0AsusCwJcKrBTKkbE4+4nPH1jLfiNGA2hBk41cZtMXtobQUqik
- DnaL7akmF/2Ao3Hun+2GJ/K5eOkJcuuUuqSg2xgsrujou0sDpk5WaeCw9JeyHVQ3io9B5uE37Ub
- lxfsfQHAnQhfBdN116TutiuE8lyHg8x4D5+g2aUQKEBLWmwSRCS0UgtDh11vXC5A6mW/SEyXw5j
- G1fdPaxWys+MGFDr8rbC+yXMK5dlQ4lB4lUwULDhyhfnRgCMdsHHuoY6Qc4mLUN4627S9KxJV0g
- t7V2HNe93Ki9UBhN+WiuJQ+vM4ODPpyXhOVNhnhkrQDP5we6MvSa6f8PAhT0yVELMLk2ZgXT1YU
- 1TWfa8AwbwPqP/kbMgsfXI4mLjArAv/pVoMMN31Fd/W91MBoJXB0fY4UM0pPj2TARRKBmD9WSdp
- JyfjvHrUk54mJO6M3ygE84qZElWrMvHvbMBxM4XqFzAkpOj3QgdaFVXw3kCW8ermdyVINeTD8yu
- pcmHcWm L6nweQag==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230817193909.GA30505@1wt.eu>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,37 +67,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+On Thu, Aug 17, 2023 at 09:39:09PM +0200, Willy Tarreau wrote:
+> On Thu, Aug 17, 2023 at 11:46:57AM -0700, Paul E. McKenney wrote:
+> > On Thu, Aug 17, 2023 at 12:27:46PM -0600, Shuah Khan wrote:
+> > > On 8/17/23 10:30, Thomas Weißschuh wrote:
+> > > > On 2023-08-17 13:38:11+1000, Stephen Rothwell wrote:
+> > > > > The following commit is also in the vfs-brauner tree as a different commit
+> > > > > (but the same patch):
+> > > > > 
+> > > > >    ba859b2e419c ("selftests/nolibc: drop test chmod_net")
+> > > > > 
+> > > > > This is commit
+> > > > > 
+> > > > >    49319832de90 ("selftests/nolibc: drop test chmod_net")
+> > > > > 
+> > > > > in the vfs-brauner tree.
+> > > > 
+> > > > I think we can drop the patch from the nolibc tree.
+> > > > The patch is only really necessary in combination with
+> > > > commit 18e66ae67673 ("proc: use generic setattr() for /proc/$PID/net")
+> > > > which already is and should stay in the vfs tree.
+> > > 
+> > > Thomas,
+> > > 
+> > > Do the rest of the nolibc patches build without this if we were
+> > > to drop this patch? Dorpping requires rebase and please see below.
+> > > 
+> > > Willy, Paul,
+> > > 
+> > > How do we want to handle this so we can avoid rebasing to keep
+> > > the Commit IDs the same as one ones in Willy's nolibc branch?
+> > 
+> > The usual way would be for Willy to drop the patch, rebase, and republish
+> > his branch.  You would then discard the current branch and pull the
+> > new one.
+> > 
+> > > I would recommend dropping this commit from vfs-brauner if it
+> > > doesn't cause problems.
+> > 
+> > It might be good for nolibc patches to be going through Willy's tree.
+> 
+> It would indeed be more logical as a general rule. However, here I don't
+> care as I don't see any issue caused by dropping it, I can adapt to what
+> is most convenient for most of us.
+> 
+> Let's maybe just wait a little bit for Christian to suggest what he
+> prefers then we can adapt.
+> 
+> > Or does Christian have some situation where it is necessary to make
+> > a coordinated vfs/nolibc change?
+> 
+> I don't think there's any need for coordination on this one.
 
-As found with Coccinelle[1], add __counted_by for struct audit_chunk.
+It is always good when either option can be make to work.  ;-)
 
-[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-
-Cc: Paul Moore <paul@paul-moore.com>
-Cc: Eric Paris <eparis@redhat.com>
-Cc: audit@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- kernel/audit_tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/audit_tree.c b/kernel/audit_tree.c
-index e867c17d3f84..85a5b306733b 100644
---- a/kernel/audit_tree.c
-+++ b/kernel/audit_tree.c
-@@ -34,7 +34,7 @@ struct audit_chunk {
- 		struct list_head list;
- 		struct audit_tree *owner;
- 		unsigned index;		/* index; upper bit indicates 'will prune' */
--	} owners[];
-+	} owners[] __counted_by(count);
- };
- 
- struct audit_tree_mark {
--- 
-2.34.1
-
+							Thanx, Paul
