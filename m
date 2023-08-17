@@ -2,86 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0781777F48E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 12:55:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6852377F48C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 12:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350045AbjHQKya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 06:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53776 "EHLO
+        id S1350040AbjHQKy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 06:54:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350039AbjHQKyY (ORCPT
+        with ESMTP id S243780AbjHQKyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 06:54:24 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5622D6D
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 03:54:22 -0700 (PDT)
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com [209.85.160.199])
+        Thu, 17 Aug 2023 06:54:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C86D2D4A;
+        Thu, 17 Aug 2023 03:54:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id A1E4C3F20F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:54:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1692269660;
-        bh=tfrBTn5aw9WBFpulIl2FkiiYeLCLcY+Q8liv0C3YyXU=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=q20P3mcXBddMpip/1zThvM8WsBohYqJaFpqQbo6mi05M8+e0Zsq0j2lxjlmbYBiQz
-         RcfJkz7GYjp/ncSAEMPowA4I/mNOGz5sw4A4qgW66KAM+XHF+QaouwIwmsI8tqrV4t
-         YAIhsjZ4aCmgCPqOstcZf8+wOCAlIJ9ffByrJpvi2TsmMeAOZn/A/6M2IbBrQCg/ic
-         udoR9y55joow3/S59mczmzKJegODwZ02Hg/v8PLdRJTA9BaLnQD907K9DdWCpxzFjE
-         zt7m+a8kpr3jyZm567h9+R4RncOBPFrQkGAy2crrqyf4ssrY5W8tI6hdwFCbUEhnCR
-         8H0xYtyyvQwuw==
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-4100bd13cb7so7027871cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 03:54:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692269659; x=1692874459;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tfrBTn5aw9WBFpulIl2FkiiYeLCLcY+Q8liv0C3YyXU=;
-        b=Foq7hNUZ1CnA2/1Ta2yvXHs0xNfLhpHVrXisy2SrS5FwBBLB1PdOBRDJlcTMNgWT+Z
-         WY4N9jsSFbVIl6iclTs92HEYpNUz5OM5jXqK52zowPT2x/opkUTt4hoaYu4MBq7mTJkq
-         XJrqRRCgI5BcpUElz/5+OCo7tqQwEoI9EE7xBGRMml0gx2fP9ymIn/vKJObb8a8uo1Ag
-         kabI2YRrFNGuNGlm3tAksQHwit/h5dl3NOEjCfEtj1AEWuVQ0Xl83QGt3tQuDqJEDNyI
-         d10RkHoskd6cLoTW8jjW4xI/YtJwoQNixFr0nwRslJ6hW+/pAL4d4fS7XhowFqBPrgG8
-         oJfQ==
-X-Gm-Message-State: AOJu0YyXxZM+h0WyETGhfjPcq0KpAyJGYnH3ejSr52m7eaf6HLlnncwR
-        s1toXrJiHxeYtshjGfUg8c732LuuwYfHI4gSXTWVMnBWtQSpFZlYZ2JmlsuQg7md35dpWUsXkJP
-        I4q2I+908N/+NQ1oytaKaqDjzwAQLz/4nUrdn+pVBEmo+KGVFTGcwYkQnUA==
-X-Received: by 2002:ac8:5bc2:0:b0:3fd:ed14:6eb9 with SMTP id b2-20020ac85bc2000000b003fded146eb9mr3260427qtb.11.1692269659682;
-        Thu, 17 Aug 2023 03:54:19 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFv1MnQZQeMPx3fkfoeGq/Y4/E4/RysIhE1Eje7mgubqeP/CrgeIQz2wuLw2UolItH+H3bHH+0hmKY17ztU+vA=
-X-Received: by 2002:ac8:5bc2:0:b0:3fd:ed14:6eb9 with SMTP id
- b2-20020ac85bc2000000b003fded146eb9mr3260405qtb.11.1692269659432; Thu, 17 Aug
- 2023 03:54:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230814205719.79647-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20230814205719.79647-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20230814205719.79647-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Date:   Thu, 17 Aug 2023 12:54:02 +0200
-Message-ID: <CAJM55Z8mx5RNq5PVcBPqvw22qAqbJXjcYga_fvYdJe_LZynE3w@mail.gmail.com>
-Subject: Re: [PATCH v11 3/6] riscv: mm: dma-noncoherent: nonstandard cache
- operations support
-To:     Prabhakar <prabhakar.csengg@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Guo Ren <guoren@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-riscv@lists.infradead.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BB252639AD;
+        Thu, 17 Aug 2023 10:54:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C380C433C8;
+        Thu, 17 Aug 2023 10:54:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692269648;
+        bh=B2TtcfD8DgHSarpK0UHDsmnpRH+gYIewBTOs8qq34CE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QZOO2ewr5cLOEnMu+iTWKj2tNFf2Yks7dJLb3FthvDEAXQCCMMnlERijrriLnogmS
+         UhqAh+XRX5ElJjW5rzyEeJob9rk8ZMXy8Rmc/muAO0Q6LvXnL0GGyuSu/hdvncRZgr
+         n+S/PE6Et8BB1CByrZMWCPAsTs0XqM4GIVeYJhwOzBEmpsbnY/QHphKGx4SDfGTtjj
+         K6YQoO9smH/ZcHWQy+Z3oHmYsh2nGOkEYaAJjzppBC9hRFAgeJJ+/xD9/88xX5E1t9
+         zWImGSxzYmcp6Tl1EUY3hbM/ez060M2vBszxAfsF/76TepaeA33dj9PabuEt0AegIz
+         0opTCvqKBvn8g==
+Date:   Thu, 17 Aug 2023 12:54:05 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Jayesh Choudhary <j-choudhary@ti.com>
+Cc:     nm@ti.com, vigneshr@ti.com, afd@ti.com, rogerq@kernel.org,
+        s-vadapalli@ti.com, kristo@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        a-bhatia1@ti.com, r-ravikumar@ti.com, sabiya.d@ti.com,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v9 3/5] arm64: dts: ti: k3-j784s4-main: Add DSS and
+ DP-bridge node
+Message-ID: <aqfx7fj446gkyirhsiwijiuilhoao4hexmpjfxu4gojpujhbib@2wqzjuh3yz46>
+References: <20230803080441.367341-1-j-choudhary@ti.com>
+ <20230803080441.367341-4-j-choudhary@ti.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lqw2sj7oetk76z5f"
+Content-Disposition: inline
+In-Reply-To: <20230803080441.367341-4-j-choudhary@ti.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -91,225 +61,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Aug 2023 at 23:00, Prabhakar <prabhakar.csengg@gmail.com> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Introduce support for nonstandard noncoherent systems in the RISC-V
-> architecture. It enables function pointer support to handle cache
-> management in such systems.
->
-> This patch adds a new configuration option called
-> "RISCV_NONSTANDARD_CACHE_OPS." This option is a boolean flag that
-> depends on "RISCV_DMA_NONCOHERENT" and enables the function pointer
-> support for cache management in nonstandard noncoherent systems.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> Tested-by: Conor Dooley <conor.dooley@microchip.com> # tyre-kicking on a d1
+
+--lqw2sj7oetk76z5f
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Thu, Aug 03, 2023 at 01:34:39PM +0530, Jayesh Choudhary wrote:
+> From: Rahul T R <r-ravikumar@ti.com>
+>=20
+> Add DSS and DP-bridge node for J784S4 SoC. DSS IP in J784S4 is
+> same as DSS IP in J721E, so same compatible is being used.
+> The DP is Cadence MHDP8546.
+>=20
+> Signed-off-by: Rahul T R <r-ravikumar@ti.com>
+> [j-choudhary@ti.com: move dss & mhdp node together in main, fix dss node]
+> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
 > ---
-> v10 -> v11
-> * Changed data type of size from unsigned long to size_t
-> * Reworded doc for struct riscv_cache_ops
->
-> v9 -> v10
-> * Added __ro_after_init compiler attribute for noncoherent_cache_ops
-> * Renamed clean -> wback
-> * Renamed inval -> inv
-> * Renamed flush -> wback_inv
->
-> v8 -> v9
-> * New patch
-> ---
->  arch/riscv/Kconfig                       |  7 ++++
->  arch/riscv/include/asm/dma-noncoherent.h | 28 +++++++++++++++
->  arch/riscv/mm/dma-noncoherent.c          | 43 ++++++++++++++++++++++++
->  arch/riscv/mm/pmem.c                     | 13 +++++++
->  4 files changed, 91 insertions(+)
->  create mode 100644 arch/riscv/include/asm/dma-noncoherent.h
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index f52dd125ac5e..a629d383affb 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -269,6 +269,13 @@ config RISCV_DMA_NONCOHERENT
->         select ARCH_HAS_SYNC_DMA_FOR_DEVICE
->         select DMA_DIRECT_REMAP
->
-> +config RISCV_NONSTANDARD_CACHE_OPS
-> +       bool
-> +       depends on RISCV_DMA_NONCOHERENT
-> +       help
-> +         This enables function pointer support for non-standard noncoherent
-> +         systems to handle cache management.
+>  arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 63 ++++++++++++++++++++++
+>  1 file changed, 63 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot=
+/dts/ti/k3-j784s4-main.dtsi
+> index 446d7efa715f..824312b9ef9f 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> @@ -1741,4 +1741,67 @@ c71_3: dsp@67800000 {
+>  		resets =3D <&k3_reset 40 1>;
+>  		firmware-name =3D "j784s4-c71_3-fw";
+>  	};
 > +
->  config AS_HAS_INSN
->         def_bool $(as-instr,.insn r 51$(comma) 0$(comma) 0$(comma) t0$(comma) t0$(comma) zero)
->
-> diff --git a/arch/riscv/include/asm/dma-noncoherent.h b/arch/riscv/include/asm/dma-noncoherent.h
-> new file mode 100644
-> index 000000000000..2fc43f73f766
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/dma-noncoherent.h
-> @@ -0,0 +1,28 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (C) 2023 Renesas Electronics Corp.
-> + */
+> +	mhdp: bridge@a000000 {
+> +		compatible =3D "ti,j721e-mhdp8546";
+> +		reg =3D <0x0 0xa000000 0x0 0x30a00>,
+> +		      <0x0 0x4f40000 0x0 0x20>;
+> +		reg-names =3D "mhdptx", "j721e-intg";
+> +		clocks =3D <&k3_clks 217 11>;
+> +		interrupt-parent =3D <&gic500>;
+> +		interrupts =3D <GIC_SPI 614 IRQ_TYPE_LEVEL_HIGH>;
+> +		power-domains =3D <&k3_pds 217 TI_SCI_PD_EXCLUSIVE>;
+> +		status =3D "disabled";
 > +
-> +#ifndef __ASM_DMA_NONCOHERENT_H
-> +#define __ASM_DMA_NONCOHERENT_H
+> +		dp0_ports: ports {
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <0>;
+> +		};
+> +	};
 > +
-> +#include <linux/dma-direct.h>
-> +
-> +/*
-> + * struct riscv_nonstd_cache_ops - Structure for non-standard CMO function pointers
+> +	dss: dss@4a00000 {
+> +		compatible =3D "ti,j721e-dss";
 
-It seems you updated the name in this comment..
+As far as I can see, this compatible limits the (DPI) pixel clock to
+160MHz, but the TRM seems to mention that it's 600MHz?
 
-> + *
-> + * @wback: Function pointer for cache writeback
-> + * @inv: Function pointer for invalidating cache
-> + * @wback_inv: Function pointer for flushing the cache (writeback + invalidating)
-> + */
-> +struct riscv_cache_ops {
+Is it expected?
 
-..but not the actual struct. I don't have any opinion on which is the
-best name, but they should probably match.
+Maxime
 
-> +       void (*wback)(phys_addr_t paddr, size_t size);
-> +       void (*inv)(phys_addr_t paddr, size_t size);
-> +       void (*wback_inv)(phys_addr_t paddr, size_t size);
-> +};
-> +
-> +extern struct riscv_cache_ops noncoherent_cache_ops;
-> +
-> +void riscv_noncoherent_register_cache_ops(const struct riscv_cache_ops *ops);
-> +
-> +#endif /* __ASM_DMA_NONCOHERENT_H */
-> diff --git a/arch/riscv/mm/dma-noncoherent.c b/arch/riscv/mm/dma-noncoherent.c
-> index b6a1e9cc9339..853446525a19 100644
-> --- a/arch/riscv/mm/dma-noncoherent.c
-> +++ b/arch/riscv/mm/dma-noncoherent.c
-> @@ -9,13 +9,26 @@
->  #include <linux/dma-map-ops.h>
->  #include <linux/mm.h>
->  #include <asm/cacheflush.h>
-> +#include <asm/dma-noncoherent.h>
->
->  static bool noncoherent_supported __ro_after_init;
->
-> +struct riscv_cache_ops noncoherent_cache_ops __ro_after_init = {
-> +       .wback = NULL,
-> +       .inv = NULL,
-> +       .wback_inv = NULL,
-> +};
-> +
->  static inline void arch_dma_cache_wback(phys_addr_t paddr, size_t size)
->  {
->         void *vaddr = phys_to_virt(paddr);
->
-> +#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
-> +       if (unlikely(noncoherent_cache_ops.wback)) {
-> +               noncoherent_cache_ops.wback(paddr, size);
-> +               return;
-> +       }
-> +#endif
->         ALT_CMO_OP(clean, vaddr, size, riscv_cbom_block_size);
->  }
->
-> @@ -23,6 +36,13 @@ static inline void arch_dma_cache_inv(phys_addr_t paddr, size_t size)
->  {
->         void *vaddr = phys_to_virt(paddr);
->
-> +#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
-> +       if (unlikely(noncoherent_cache_ops.inv)) {
-> +               noncoherent_cache_ops.inv(paddr, size);
-> +               return;
-> +       }
-> +#endif
-> +
->         ALT_CMO_OP(inval, vaddr, size, riscv_cbom_block_size);
->  }
->
-> @@ -30,6 +50,13 @@ static inline void arch_dma_cache_wback_inv(phys_addr_t paddr, size_t size)
->  {
->         void *vaddr = phys_to_virt(paddr);
->
-> +#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
-> +       if (unlikely(noncoherent_cache_ops.wback_inv)) {
-> +               noncoherent_cache_ops.wback_inv(paddr, size);
-> +               return;
-> +       }
-> +#endif
-> +
->         ALT_CMO_OP(flush, vaddr, size, riscv_cbom_block_size);
->  }
->
-> @@ -49,6 +76,13 @@ void arch_dma_prep_coherent(struct page *page, size_t size)
->  {
->         void *flush_addr = page_address(page);
->
-> +#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
-> +       if (unlikely(noncoherent_cache_ops.wback_inv)) {
-> +               noncoherent_cache_ops.wback_inv(page_to_phys(page), size);
-> +               return;
-> +       }
-> +#endif
-> +
->         ALT_CMO_OP(flush, flush_addr, size, riscv_cbom_block_size);
->  }
->
-> @@ -74,3 +108,12 @@ void riscv_noncoherent_supported(void)
->              "Non-coherent DMA support enabled without a block size\n");
->         noncoherent_supported = true;
->  }
-> +
-> +void riscv_noncoherent_register_cache_ops(const struct riscv_cache_ops *ops)
-> +{
-> +       if (!ops)
-> +               return;
-> +
-> +       noncoherent_cache_ops = *ops;
-> +}
-> +EXPORT_SYMBOL_GPL(riscv_noncoherent_register_cache_ops);
-> diff --git a/arch/riscv/mm/pmem.c b/arch/riscv/mm/pmem.c
-> index 089df92ae876..c5fc5ec96f6d 100644
-> --- a/arch/riscv/mm/pmem.c
-> +++ b/arch/riscv/mm/pmem.c
-> @@ -7,15 +7,28 @@
->  #include <linux/libnvdimm.h>
->
->  #include <asm/cacheflush.h>
-> +#include <asm/dma-noncoherent.h>
->
->  void arch_wb_cache_pmem(void *addr, size_t size)
->  {
-> +#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
-> +       if (unlikely(noncoherent_cache_ops.wback)) {
-> +               noncoherent_cache_ops.wback(virt_to_phys(addr), size);
-> +               return;
-> +       }
-> +#endif
->         ALT_CMO_OP(clean, addr, size, riscv_cbom_block_size);
->  }
->  EXPORT_SYMBOL_GPL(arch_wb_cache_pmem);
->
->  void arch_invalidate_pmem(void *addr, size_t size)
->  {
-> +#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
-> +       if (unlikely(noncoherent_cache_ops.inv)) {
-> +               noncoherent_cache_ops.inv(virt_to_phys(addr), size);
-> +               return;
-> +       }
-> +#endif
->         ALT_CMO_OP(inval, addr, size, riscv_cbom_block_size);
->  }
->  EXPORT_SYMBOL_GPL(arch_invalidate_pmem);
-> --
-> 2.34.1
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+--lqw2sj7oetk76z5f
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZN38TQAKCRDj7w1vZxhR
+xdlfAP9njqMypScML1Ykj875V84t1+5ow6mZmYOpRyeoDeT1xQEA04z8y2wc3kZJ
+un7PaGDaHunD03IIUHZFHcK2vImQvAc=
+=D1tr
+-----END PGP SIGNATURE-----
+
+--lqw2sj7oetk76z5f--
