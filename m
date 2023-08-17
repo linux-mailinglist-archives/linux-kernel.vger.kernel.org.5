@@ -2,107 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C8A177FE15
+	by mail.lfdr.de (Postfix) with ESMTP id BEE5C77FE16
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354540AbjHQSrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 14:47:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37102 "EHLO
+        id S1354546AbjHQSrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 14:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239056AbjHQSrA (ORCPT
+        with ESMTP id S1354537AbjHQSrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 14:47:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A3B02D59;
-        Thu, 17 Aug 2023 11:46:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B198E63540;
-        Thu, 17 Aug 2023 18:46:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12A66C433C8;
-        Thu, 17 Aug 2023 18:46:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692298018;
-        bh=5/NS1z4J2PBo2ezppbVzIbfuP1XdafGF7B169Ez7FV8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=WqTRxH0hBVbOLjDMR3YrV585m80gzxINUXoSQO0jZlgdQ01/7pb0sDcTb4+oy6/L7
-         ZDP1EmI4I6qKWYvae2AkY7MOU/S/VkD4Y9R5vJZJYxplUtZJ0GD5heXeD5xfXcNZH5
-         6id9pYu+0WjRkMBk9LjgPtKnySTO+mc15pROlvYa0ubVWCLT0efCmArcP9oQPhNLB8
-         BwvFRHeV/v6HIhirngGRuXkH9MeM4Rl9qBcJvuV5JhNwCICLuH8pB39CVMwjARZSOp
-         5hqvEkEpRZs271KSk50fOvV3IFuT017K6qA9KTfbUIk4Xxa3c5313MqbQQWtCIL7g7
-         oC9HiVfYOvw5w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9D326CE0F13; Thu, 17 Aug 2023 11:46:57 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 11:46:57 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Willy Tarreau <w@1wt.eu>,
-        Christian Brauner <brauner@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patch in the nolibc tree
-Message-ID: <4c037ef2-9159-4528-8ecb-8596cb2a3889@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230817133811.0a73c624@canb.auug.org.au>
- <e0af8d82-e099-49fa-9fbd-6f6bb63b7706@t-8ch.de>
- <9cfb4fe4-162b-3f26-646b-71bed3493925@linuxfoundation.org>
+        Thu, 17 Aug 2023 14:47:13 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA21230DF
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:47:11 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-40a47e8e38dso47951cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:47:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692298031; x=1692902831;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qp0NthnNgNW9pfSHThKLiT0vLETnlkt+ybLcHDOCqv4=;
+        b=SkYHGMX7/zEdfpvdwe4xmc9VuoQk/4zI8atVm2UPl4vfiQR3+Q1ZTmmigkJ1hys9R2
+         72ylJcXolSwPy1jiNkipeMyj69Cvy4vaocaejOflWSnDdcXnL7qy4RfRbzgxgrSVeYeI
+         rzLLb+kAq1NXIyGcSdBgAfL1DycqepB8mj5GinLRziguoRexSfGEFB1HOcFfmo8yioO7
+         DbfJCZQ4N/HLAqghZP9t/2R0Wv3Tj7k+vfjp6CtwsBR/B7bhfYsmQCtpyNRjCWao2Cky
+         HOo9EnuJ45NfxkrL1nA7aJhK0HI+MSiAcq7N3vXiwJTD5eyOrkjS3XoACvdrjcfpwHCP
+         wwSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692298031; x=1692902831;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qp0NthnNgNW9pfSHThKLiT0vLETnlkt+ybLcHDOCqv4=;
+        b=MAD/lDrHlOGxSkL2G8QoqODqUWyqlbzreIvb0fTdljTMFSmTmHP10TQm9mDmmaFjco
+         GTjCBADqzFLELGWAbgk9DNGPoAb49H4rdeA2jnbCZJ6EWXCTjmx0YRCIOerUPjoezDpK
+         8EZxPEBrUif+ukxDhMvVVDGwGOqx477gclSkpoPA5NdVuMJSWOeXWSrEQMuA/BsPusaa
+         qWRlqznO2CvprxCfd/lPHZm0/IT2TwGWUipHZunO1v4q5FPw1DG9zL76+I8GG0QQJp8s
+         0Rqr280Y6WksfQW4TrzyqyEiZQAqK7xNNnaY1R5I+qBlVm3DgoQzcLcxV335a7adfQIT
+         wP+A==
+X-Gm-Message-State: AOJu0YzL15L5lXhfAVlXv++OEnr1C8sjJ+DGHxcZnPg5wpEjSuBfl+nQ
+        a4a5pxlhX34b/84j5k99vS86qr3XNWCv0J1aTVogC+FefR4brzyUvkWxlg==
+X-Google-Smtp-Source: AGHT+IFZ/uSZcg1BajBQOyeT8Pl3+X+FIqBWzWKGMibNfodAjD1s9ooWUoNoiPf30jzQjLSDDLXyyP0B37QQAlHaoF0=
+X-Received: by 2002:ac8:5844:0:b0:403:a43d:bd7d with SMTP id
+ h4-20020ac85844000000b00403a43dbd7dmr62062qth.4.1692298030746; Thu, 17 Aug
+ 2023 11:47:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9cfb4fe4-162b-3f26-646b-71bed3493925@linuxfoundation.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <ZN5lrdeEdSMCn7hk@kernel.org>
+In-Reply-To: <ZN5lrdeEdSMCn7hk@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 17 Aug 2023 11:46:59 -0700
+Message-ID: <CAP-5=fX8ipwPj_M6r3K=rZnYyVnW6VUYWARJhamFbphzLFxx+A@mail.gmail.com>
+Subject: Re: [PATCH 1/1] perf trace: Use heuristic when deciding if a syscall
+ tracepoint "const char *" field is really a string
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 12:27:46PM -0600, Shuah Khan wrote:
-> On 8/17/23 10:30, Thomas Weißschuh wrote:
-> > On 2023-08-17 13:38:11+1000, Stephen Rothwell wrote:
-> > > The following commit is also in the vfs-brauner tree as a different commit
-> > > (but the same patch):
-> > > 
-> > >    ba859b2e419c ("selftests/nolibc: drop test chmod_net")
-> > > 
-> > > This is commit
-> > > 
-> > >    49319832de90 ("selftests/nolibc: drop test chmod_net")
-> > > 
-> > > in the vfs-brauner tree.
-> > 
-> > I think we can drop the patch from the nolibc tree.
-> > The patch is only really necessary in combination with
-> > commit 18e66ae67673 ("proc: use generic setattr() for /proc/$PID/net")
-> > which already is and should stay in the vfs tree.
-> 
-> Thomas,
-> 
-> Do the rest of the nolibc patches build without this if we were
-> to drop this patch? Dorpping requires rebase and please see below.
-> 
-> Willy, Paul,
-> 
-> How do we want to handle this so we can avoid rebasing to keep
-> the Commit IDs the same as one ones in Willy's nolibc branch?
+On Thu, Aug 17, 2023 at 11:23=E2=80=AFAM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> 'perf trace' tries to find BPF progs associated with a syscall that have
+> a signature that is similar to syscalls without one to try and reuse,
+> so, for instance, the 'open' signature can be reused with many other
+> syscalls that have as its first arg a string.
+>
+> It uses the tracefs events format file for finding a signature that can
+> be reused, but then comes the "write" syscall with its second argument
+> as a "const char *":
+>
+>   # cat /sys/kernel/debug/tracing/events/syscalls/sys_enter_write/format
+>   name: sys_enter_write
+>   ID: 746
+>   format:
+>         field:unsigned short common_type;       offset:0;       size:2; s=
+igned:0;
+>         field:unsigned char common_flags;       offset:2;       size:1; s=
+igned:0;
+>         field:unsigned char common_preempt_count;       offset:3;       s=
+ize:1; signed:0;
+>         field:int common_pid;   offset:4;       size:4; signed:1;
+>
+>         field:int __syscall_nr; offset:8;       size:4; signed:1;
+>         field:unsigned int fd;  offset:16;      size:8; signed:0;
+>         field:const char * buf; offset:24;      size:8; signed:0;
+>         field:size_t count;     offset:32;      size:8; signed:0;
+>
+>   print fmt: "fd: 0x%08lx, buf: 0x%08lx, count: 0x%08lx", ((unsigned long=
+)(REC->fd)), ((unsigned long)(REC->buf)), ((unsigned long)(REC->count))
+>   #
+>
+> Which isn't a string (the man page for glibc has buf as "void *"), so we
+> have to use the name of the argument as an heuristic, to consider a
+> string just args that are "const char *" and that have in its name  the
+> "path", "file", etc substrings.
+>
+> With that now it reuses:
+>
+>   [root@quaco ~]# perf trace -v --max-events=3D1 |& grep Reus
+>   Reusing "open" BPF sys_enter augmenter for "stat"
+>   Reusing "open" BPF sys_enter augmenter for "lstat"
+>   Reusing "open" BPF sys_enter augmenter for "access"
+>   Reusing "connect" BPF sys_enter augmenter for "accept"
+>   Reusing "sendto" BPF sys_enter augmenter for "recvfrom"
+>   Reusing "connect" BPF sys_enter augmenter for "bind"
+>   Reusing "connect" BPF sys_enter augmenter for "getsockname"
+>   Reusing "connect" BPF sys_enter augmenter for "getpeername"
+>   Reusing "open" BPF sys_enter augmenter for "execve"
+>   Reusing "open" BPF sys_enter augmenter for "truncate"
+>   Reusing "open" BPF sys_enter augmenter for "chdir"
+>   Reusing "open" BPF sys_enter augmenter for "mkdir"
+>   Reusing "open" BPF sys_enter augmenter for "rmdir"
+>   Reusing "open" BPF sys_enter augmenter for "creat"
+>   Reusing "open" BPF sys_enter augmenter for "link"
+>   Reusing "open" BPF sys_enter augmenter for "unlink"
+>   Reusing "open" BPF sys_enter augmenter for "symlink"
+>   Reusing "open" BPF sys_enter augmenter for "readlink"
+>   Reusing "open" BPF sys_enter augmenter for "chmod"
+>   Reusing "open" BPF sys_enter augmenter for "chown"
+>   Reusing "open" BPF sys_enter augmenter for "lchown"
+>   Reusing "open" BPF sys_enter augmenter for "mknod"
+>   Reusing "open" BPF sys_enter augmenter for "statfs"
+>   Reusing "open" BPF sys_enter augmenter for "pivot_root"
+>   Reusing "open" BPF sys_enter augmenter for "chroot"
+>   Reusing "open" BPF sys_enter augmenter for "acct"
+>   Reusing "open" BPF sys_enter augmenter for "swapon"
+>   Reusing "open" BPF sys_enter augmenter for "swapoff"
+>   Reusing "open" BPF sys_enter augmenter for "delete_module"
+>   Reusing "open" BPF sys_enter augmenter for "setxattr"
+>   Reusing "open" BPF sys_enter augmenter for "lsetxattr"
+>   Reusing "openat" BPF sys_enter augmenter for "fsetxattr"
+>   Reusing "open" BPF sys_enter augmenter for "getxattr"
+>   Reusing "open" BPF sys_enter augmenter for "lgetxattr"
+>   Reusing "openat" BPF sys_enter augmenter for "fgetxattr"
+>   Reusing "open" BPF sys_enter augmenter for "listxattr"
+>   Reusing "open" BPF sys_enter augmenter for "llistxattr"
+>   Reusing "open" BPF sys_enter augmenter for "removexattr"
+>   Reusing "open" BPF sys_enter augmenter for "lremovexattr"
+>   Reusing "fsetxattr" BPF sys_enter augmenter for "fremovexattr"
+>   Reusing "open" BPF sys_enter augmenter for "mq_open"
+>   Reusing "open" BPF sys_enter augmenter for "mq_unlink"
+>   Reusing "fsetxattr" BPF sys_enter augmenter for "add_key"
+>   Reusing "fremovexattr" BPF sys_enter augmenter for "request_key"
+>   Reusing "fremovexattr" BPF sys_enter augmenter for "inotify_add_watch"
+>   Reusing "fremovexattr" BPF sys_enter augmenter for "mkdirat"
+>   Reusing "fremovexattr" BPF sys_enter augmenter for "mknodat"
+>   Reusing "fremovexattr" BPF sys_enter augmenter for "fchownat"
+>   Reusing "fremovexattr" BPF sys_enter augmenter for "futimesat"
+>   Reusing "fremovexattr" BPF sys_enter augmenter for "newfstatat"
+>   Reusing "fremovexattr" BPF sys_enter augmenter for "unlinkat"
+>   Reusing "fremovexattr" BPF sys_enter augmenter for "linkat"
+>   Reusing "open" BPF sys_enter augmenter for "symlinkat"
+>   Reusing "fremovexattr" BPF sys_enter augmenter for "readlinkat"
+>   Reusing "fremovexattr" BPF sys_enter augmenter for "fchmodat"
+>   Reusing "fremovexattr" BPF sys_enter augmenter for "faccessat"
+>   Reusing "fremovexattr" BPF sys_enter augmenter for "utimensat"
+>   Reusing "connect" BPF sys_enter augmenter for "accept4"
+>   Reusing "fremovexattr" BPF sys_enter augmenter for "name_to_handle_at"
+>   Reusing "fremovexattr" BPF sys_enter augmenter for "renameat2"
+>   Reusing "open" BPF sys_enter augmenter for "memfd_create"
+>   Reusing "fremovexattr" BPF sys_enter augmenter for "execveat"
+>   Reusing "fremovexattr" BPF sys_enter augmenter for "statx"
+>   [root@quaco ~]#
+>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Alan Maguire <alan.maguire@oracle.com>
+> Cc: Ian Rogers <irogers@google.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Link: https://lore.kernel.org/lkml/
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-The usual way would be for Willy to drop the patch, rebase, and republish
-his branch.  You would then discard the current branch and pull the
-new one.
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-> I would recommend dropping this commit from vfs-brauner if it
-> doesn't cause problems.
+Thanks,
+Ian
 
-It might be good for nolibc patches to be going through Willy's tree.
-
-Or does Christian have some situation where it is necessary to make
-a coordinated vfs/nolibc change?
-
-							Thanx, Paul
+> ---
+>  tools/perf/builtin-trace.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>
+> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+> index 3964cf44cdbcb3e8..e541d0e2777ab935 100644
+> --- a/tools/perf/builtin-trace.c
+> +++ b/tools/perf/builtin-trace.c
+> @@ -3398,6 +3398,19 @@ static struct bpf_program *trace__find_usable_bpf_=
+prog_entry(struct trace *trace
+>                         if (strcmp(field->type, candidate_field->type))
+>                                 goto next_candidate;
+>
+> +                       /*
+> +                        * This is limited in the BPF program but sys_wri=
+te
+> +                        * uses "const char *" for its "buf" arg so we ne=
+ed to
+> +                        * use some heuristic that is kinda future proof.=
+..
+> +                        */
+> +                       if (strcmp(field->type, "const char *") =3D=3D 0 =
+&&
+> +                           !(strstr(field->name, "name") ||
+> +                             strstr(field->name, "path") ||
+> +                             strstr(field->name, "file") ||
+> +                             strstr(field->name, "root") ||
+> +                             strstr(field->name, "description")))
+> +                               goto next_candidate;
+> +
+>                         is_candidate =3D true;
+>                 }
+>
+> --
+> 2.41.0
+>
