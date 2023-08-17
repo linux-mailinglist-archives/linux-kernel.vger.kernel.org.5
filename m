@@ -2,76 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0A977FFB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 23:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E85D877FFBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 23:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355216AbjHQVVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 17:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59814 "EHLO
+        id S1355275AbjHQVWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 17:22:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355253AbjHQVVZ (ORCPT
+        with ESMTP id S1355269AbjHQVVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 17:21:25 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73E7A136
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 14:21:23 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b9db1de50cso3542971fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 14:21:23 -0700 (PDT)
+        Thu, 17 Aug 2023 17:21:50 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5ABE4C
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 14:21:48 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-589addee1c1so2737187b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 14:21:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692307282; x=1692912082;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OeALbQx5LxBzM1MS6Rc6ll0OcowbkB9LP6Bj9ouPlmM=;
-        b=r2BSbs41E3psTG4zlT/6L4I1b03YBb00iebZ40WnpKqoJsQeLxPfPQILffi9Isyt5e
-         DIAVRDMitsROKjFFg3zhKIC+75cxN7MgdkMHAYGTrmznmd8R9V1sCiqNtee8tSYUfeSl
-         4hKjJOjZEuseG3873Mdya5l9Gp+7HLExt39/BpyyUJW1zPbOpY3gKT8d7WqGKybcnRJs
-         1uV0k7CPsgeOlVT6rg1yHqnyvtLLIoKU8/rWyCAs2KW/5dTrSBdx9Ketg27aOdMT/b+0
-         M/OJMmfqEyolSVetziGgawKhRc2djgMRUPxbYf3jNXN+mfm3IZJOpYUdwyfLi7tWGbtx
-         NeaQ==
+        d=gmail.com; s=20221208; t=1692307308; x=1692912108;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=bOsJhNQoYOmFJimTxaJ2mCEMh67hQeGjwrVTDjEnLSc=;
+        b=TPpXhy+K1amcpaItC/ed4ueSEE/vXLBV37L0U6/4TdOwYOXUGHidIxyLeJ855ApD3H
+         oDYlcUS74zFmYL6eH28+wHzC9YxLzFs+OpCV2DVcetcWTCbSVQNeYdQGSFK+FThsvMIY
+         RO5IXOiS6OvvhxNXyUGeYhTrePsgYMhEgiVMCbzKOjw30Y//ytN3kPRHEuK1kZVmG/AF
+         cDjGWNVEwq6K67K+cEVhDcyLj+94WUGZJEtvOokIPU9caXSIRCmyINJElm/IMjvnfEn6
+         m4Ju2t6PeSZWlALjduMmSKltL0B3e3YkiXr1p2dLRtCQxbjqWrEkRLaTikMyTyWNS12I
+         szMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692307282; x=1692912082;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OeALbQx5LxBzM1MS6Rc6ll0OcowbkB9LP6Bj9ouPlmM=;
-        b=FS9majtbLDWNRsE2hQAnH30Ews6wnTvCvTVF6bJg0DJ3A/cB7u2RE8kPev++pU/7ji
-         0AqcpQ0/hSe2a5t8glwryD8Idpr8QHM3vrBfW/ZmuuGvULp6Ijp4+beAW4PNzXToN9Zt
-         2iLzc1RSnHqkeFAxnJFrvE+5dNLcSawEvwn2phaWkm4Kl26J7u9ngUMKW8k21tYFxqkG
-         tG7soWCYixTtihBA/fAvv05Y+kFJiJggsZ12sFwp8QeVnipce+dl1tF2Z6pfw3PaUypu
-         BqCDFYJngBVfl59y3j7tXz9xWCs9mH83Hei2HplqgBVCka446zG00R2vz5FQUM1lNd+V
-         tNqw==
-X-Gm-Message-State: AOJu0YzfcMG71Dk4V2gEumbnZ8s3VeEE6R/1KyXoFO1eK31XVN5ZIVpf
-        MNfTqVewxwTkM5OGBfvknwCguWZj+qzeUqBy9TMbUw==
-X-Google-Smtp-Source: AGHT+IF/wiTT9wIP3+3ZHZmD8p/Ah3L5qulD8+FJwJ+Q2KQcVBd0I/M4ovMbQFsOqVAG3uMWNbarBRjmU6goY9fjd54=
-X-Received: by 2002:ac2:5226:0:b0:4ff:8aa7:185c with SMTP id
- i6-20020ac25226000000b004ff8aa7185cmr347546lfl.7.1692307281523; Thu, 17 Aug
- 2023 14:21:21 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692307308; x=1692912108;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bOsJhNQoYOmFJimTxaJ2mCEMh67hQeGjwrVTDjEnLSc=;
+        b=TS86IaqJ2mCqDdPKpQypCacFC0nnm7wUvqVatW56/Nx2AwY43JrY6+WyN6Mou/at+Y
+         YGdEWN671wfTRD9Y6fIqc25aVZS3vn82Uw6i01Ceck3gjOAgnBa0kUKTgFdWcsCDDUHM
+         WcftLZK1/3gonGWA1mnpV5fYXvgYzKT9cZk5oh3VPw8ARoMjh7wOmrzxw6hnGvTE8Lzk
+         +AJwoDqlIdwZi8thTyZRyYykVFIYfGJtkt1c4GnYnteDbKijoS8FOjS3Ukwnth4iWXTN
+         cvtJqgWShi4/fGFpL5TBHLNPp3sM0t3zlx5RQqu8foQ8AEXjdzuDZcBUxPczXoGtuxuQ
+         P1uA==
+X-Gm-Message-State: AOJu0YxfPwhC0yC0aXtJF5cMJo5U91L4Igc04AIvMgJGlg/gA28Jscke
+        4X0HrI59pAIIJoRyDT55T/U2EMPbZjnLfC8002kwzpSM
+X-Google-Smtp-Source: AGHT+IGQXTWxmdciEZxIzZP/m4iBdXR2/9RjqgCWXFOWD1UKeTLBCsQK/MaM+1qERKqXAU3q08FpBTVkStU29ojPqmQ=
+X-Received: by 2002:a81:8a81:0:b0:58d:b9f3:adde with SMTP id
+ a123-20020a818a81000000b0058db9f3addemr463939ywg.51.1692307307925; Thu, 17
+ Aug 2023 14:21:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230817211114.never.208-kees@kernel.org> <20230817211531.4193219-1-keescook@chromium.org>
-In-Reply-To: <20230817211531.4193219-1-keescook@chromium.org>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Thu, 17 Aug 2023 14:21:10 -0700
-Message-ID: <CAFhGd8ra6vpUvLc_Z7zRA8kVOzu7=o6b6vFL+QvcGi34-nVmFg@mail.gmail.com>
-Subject: Re: [PATCH 1/7] wifi: cfg80211: Annotate struct cfg80211_acl_data
- with __counted_by
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+References: <CAGgoGu7Vim82Hu1JKc+m6cPkcn7+WWDFwK5P_YE6grFQS9E21Q@mail.gmail.com>
+ <ZNm2ihdTojuPJM2f@debian.me> <CAGgoGu5XuHhVbnrNKBzhZyZH993bBHiLgjTrtyofvePZ-dxLow@mail.gmail.com>
+ <CAGgoGu5iTE1xeupwTUUAcJv59294dNQJEf9oUWQKF72hrpFxRw@mail.gmail.com> <ZNwWNopPItNwKCTV@titan>
+In-Reply-To: <ZNwWNopPItNwKCTV@titan>
+From:   Fawad Lateef <fawadlateef@gmail.com>
+Date:   Thu, 17 Aug 2023 22:21:35 +0100
+Message-ID: <CAGgoGu4R2Y5Yj4zEQyekZK0Vkb+XpWg+mudmW3LNmfq3tCFDjw@mail.gmail.com>
+Subject: Re: Question regarding Linux-6.3.5 and Sunxi A20 NAND/NFC support
+To:     John Watts <contact@jookia.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux sunXi <linux-sunxi@lists.linux.dev>,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        boris.brezillon@collabora.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,75 +71,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 2:16=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
-rote:
+On Wed, 16 Aug 2023 at 01:20, John Watts <contact@jookia.org> wrote:
 >
-> Prepare for the coming implementation by GCC and Clang of the __counted_b=
-y
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUND=
-S
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+> On Tue, Aug 15, 2023 at 11:01:02PM +0100, Fawad Lateef wrote:
+> > Hi everyone,
+> >
+> > Can someone guide me? I am not sure what I am missing here.
+> >
+> > I am trying to debug the code but I assume that the SUNXI NAND driver
+> > is supposed to be working and that something is missing from my
+> > changes and additions to the dts/dtsi for A20 SOM.
+> >
+> > Thanks in advance
 >
-> As found with Coccinelle[1], add __counted_by for struct cfg80211_acl_dat=
-a.
-> Additionally, since the element count member must be set before accessing
-> the annotated flexible array member, move its initialization earlier.
+> Hi there Fawad,
 >
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/c=
-ounted_by.cocci
+> I've hit this problem before and it's usually been because the pins are being
+> used by another peripheral already
 >
-> Cc: Johannes Berg <johannes@sipsolutions.net>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: linux-wireless@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Justin Stitt <justinstitt@google.com>
+> Could you post the kernel log? It might have some notes on this.
+>
+> John.
 
-> ---
->  include/net/cfg80211.h | 2 +-
->  net/wireless/nl80211.c | 3 +--
->  2 files changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
-> index d6fa7c8767ad..eb73b5af5d04 100644
-> --- a/include/net/cfg80211.h
-> +++ b/include/net/cfg80211.h
-> @@ -1282,7 +1282,7 @@ struct cfg80211_acl_data {
->         int n_acl_entries;
->
->         /* Keep it last */
-> -       struct mac_address mac_addrs[];
-> +       struct mac_address mac_addrs[] __counted_by(n_acl_entries);
->  };
->
->  /**
-> diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-> index 8bcf8e293308..80633e815311 100644
-> --- a/net/wireless/nl80211.c
-> +++ b/net/wireless/nl80211.c
-> @@ -4889,13 +4889,12 @@ static struct cfg80211_acl_data *parse_acl_data(s=
-truct wiphy *wiphy,
->         acl =3D kzalloc(struct_size(acl, mac_addrs, n_entries), GFP_KERNE=
-L);
->         if (!acl)
->                 return ERR_PTR(-ENOMEM);
-> +       acl->n_acl_entries =3D n_entries;
->
->         nla_for_each_nested(attr, info->attrs[NL80211_ATTR_MAC_ADDRS], tm=
-p) {
->                 memcpy(acl->mac_addrs[i].addr, nla_data(attr), ETH_ALEN);
->                 i++;
->         }
-> -
-> -       acl->n_acl_entries =3D n_entries;
->         acl->acl_policy =3D acl_policy;
->
->         return acl;
-> --
-> 2.34.1
->
+Hi John,
+
+Thanks for your help. I found the reason for my issue. I defined the
+pinctrl information under the "soc" next to "nfc" entry in
+sunxi-a20.dtsi which was messing it up.
+
+I moved them inside the "pio" dtsi block and NAND is detected now.
+Though almost all blocks are reported as bad-blocks.  I am thinking
+that it's happening as I don't have partition information defined in
+DTS. Do you think that this is the reason for bad-blocks reporting?
+
+Regards,
+
+Fawad Lateef
