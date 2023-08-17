@@ -2,104 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA76177F666
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9048577F669
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350841AbjHQM0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 08:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38254 "EHLO
+        id S1350851AbjHQM1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 08:27:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350822AbjHQM0N (ORCPT
+        with ESMTP id S1350844AbjHQM1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 08:26:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67B2271B;
-        Thu, 17 Aug 2023 05:26:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 39A2363833;
-        Thu, 17 Aug 2023 12:26:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBCD7C433C8;
-        Thu, 17 Aug 2023 12:26:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692275171;
-        bh=iFjwGysYvS9TYcoAfyXp1ESubsE34OY9xRbs/m27bGs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Rhzafjy+laiM2b1JZH/e0x4/aLebL2bnC2ifqd2UUIvPhTPjy42bOIRkPIcnKwqhD
-         1gdmm4HoMFq53xbYACwKkuN93EFqtHQmL5LHDA8sbB9iLoGjx0twxw4hVhzbn32slP
-         51YNS7ulyyEWLGp3XCES8LbudciVhjImt/4c1GdgCMSxZN1rkqLimwLMZEGXxLnfl+
-         g8ZcGB/ptyOydp8xJdT0FOAEuxWcHdYFF/reoSq6rfR4ViGO3mNmzz1mnvumcEedhm
-         ZW6chQp9kS5mU91KEH8kpMZHLP3VsflPb9HUYuGCJ0p0BOLEjdgf7B7XOpA7x505Fo
-         Us3YjK0qhIIVw==
-Date:   Thu, 17 Aug 2023 13:26:05 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
-        <nfraprado@collabora.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, cocci@inria.fr,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        kernelci@lists.linux.dev, Julia Lawall <Julia.Lawall@inria.fr>,
-        Bjorn Andersson <andersson@kernel.org>, kernel@collabora.com,
-        Guenter Roeck <groeck@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] kselftest: Add Devicetree unprobed devices test
-Message-ID: <117448a6-671e-4f30-90c6-808a319caf32@sirena.org.uk>
-References: <20230810202413.1780286-1-nfraprado@collabora.com>
- <20230810202413.1780286-3-nfraprado@collabora.com>
- <ZNY9sBgzrEQVVQT+@finisterre.sirena.org.uk>
- <b4b1f56b-94c0-4849-a7fc-9228b4e40dc7@notapiano>
+        Thu, 17 Aug 2023 08:27:16 -0400
+Received: from pegase1.c-s.fr (unknown [90.115.179.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124B32711
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:27:05 -0700 (PDT)
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4RRPQH3JTrz9wtX;
+        Thu, 17 Aug 2023 14:27:03 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id NgwxOGfKXmVl; Thu, 17 Aug 2023 14:27:03 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4RRPQH2d82z9wsV;
+        Thu, 17 Aug 2023 14:27:03 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 571D48B76C;
+        Thu, 17 Aug 2023 14:27:03 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 8-IGfLDVvTbu; Thu, 17 Aug 2023 14:27:03 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.19.54.59])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 192DB8B763;
+        Thu, 17 Aug 2023 14:27:03 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37HCQq0n329744
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 14:26:52 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37HCQkc9329733;
+        Thu, 17 Aug 2023 14:26:46 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] powerpc/8xx: Remove init_internal_rtc() to fix no previous prototype error
+Date:   Thu, 17 Aug 2023 14:26:45 +0200
+Message-ID: <0aa1141e18a84d926e199093204b37ec993f0c87.1692275185.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="KzMo14n8WZa6AeHL"
-Content-Disposition: inline
-In-Reply-To: <b4b1f56b-94c0-4849-a7fc-9228b4e40dc7@notapiano>
-X-Cookie: Walk softly and carry a BFG-9000.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692275204; l=2196; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=TOxDx12z/TGZafKDLRg+BU2FZSV7XBUmOHECQ+4c28k=; b=UTzebFk0M2gtEKaAW/lC4jL6Ix5dzIFrfwhC6U550fzSde5Wv8lazoa7oopchyRfdssNLBY4p nQsfuSzRvuEDq/wLQ0YooVlT9EGOg9qL9THicZ1z/kbcZTeGvu7wCNf
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,NO_DNS_FOR_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,T_SPF_TEMPERROR
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A W=1 build of mpc885_ads_defconfig throws the following error:
 
---KzMo14n8WZa6AeHL
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+  CC      arch/powerpc/platforms/8xx/m8xx_setup.o
+arch/powerpc/platforms/8xx/m8xx_setup.c:41:1: error: no previous prototype for 'init_internal_rtc' [-Werror=missing-prototypes]
+   41 | init_internal_rtc(void)
+      | ^~~~~~~~~~~~~~~~~
 
-On Fri, Aug 11, 2023 at 10:16:52AM -0400, N=EDcolas F. R. A. Prado wrote:
-> On Fri, Aug 11, 2023 at 02:54:56PM +0100, Mark Brown wrote:
+init_internal_rtc() was introduced by commit df34403dcaac ("[POWERPC]
+8xx: Add mpc885ads support and common mpc8xx files") as a weak
+function but has never been defined and/or used outside m8xx_setup.c
 
-> > This doesn't appear to produce KTAP output which is going to make it
-> > less useful for generic kselftest runners.
+As it is called only once there, just fold it into its caller and
+remove it.
 
-> Right, I'm going to need to rewrite it in C for that, but since I already=
- had
-> the shell script done, I decided to send it as is for the RFC, since I wa=
-nted to
-> get feedback on the general approach more than anything.
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/powerpc/platforms/8xx/m8xx_setup.c | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
 
-I'm not clear why KTAP would require C?
+diff --git a/arch/powerpc/platforms/8xx/m8xx_setup.c b/arch/powerpc/platforms/8xx/m8xx_setup.c
+index 3c5c4e08b6a9..2336b687bc96 100644
+--- a/arch/powerpc/platforms/8xx/m8xx_setup.c
++++ b/arch/powerpc/platforms/8xx/m8xx_setup.c
+@@ -36,17 +36,6 @@ static irqreturn_t timebase_interrupt(int irq, void *dev)
+ 	return IRQ_HANDLED;
+ }
+ 
+-/* per-board overridable init_internal_rtc() function. */
+-void __init __attribute__ ((weak))
+-init_internal_rtc(void)
+-{
+-	/* Disable the RTC one second and alarm interrupts. */
+-	clrbits16(&mpc8xx_immr->im_sit.sit_rtcsc, (RTCSC_SIE | RTCSC_ALE));
+-
+-	/* Enable the RTC */
+-	setbits16(&mpc8xx_immr->im_sit.sit_rtcsc, (RTCSC_RTF | RTCSC_RTE));
+-}
+-
+ static int __init get_freq(char *name, unsigned long *val)
+ {
+ 	struct device_node *cpu;
+@@ -117,7 +106,11 @@ void __init mpc8xx_calibrate_decr(void)
+ 	out_be32(&mpc8xx_immr->im_sitk.sitk_rtcsck, KAPWR_KEY);
+ 	out_be32(&mpc8xx_immr->im_sitk.sitk_tbk, KAPWR_KEY);
+ 
+-	init_internal_rtc();
++	/* Disable the RTC one second and alarm interrupts. */
++	clrbits16(&mpc8xx_immr->im_sit.sit_rtcsc, (RTCSC_SIE | RTCSC_ALE));
++
++	/* Enable the RTC */
++	setbits16(&mpc8xx_immr->im_sit.sit_rtcsc, (RTCSC_RTF | RTCSC_RTE));
+ 
+ 	/* Enabling the decrementer also enables the timebase interrupts
+ 	 * (or from the other point of view, to get decrementer interrupts
+-- 
+2.41.0
 
---KzMo14n8WZa6AeHL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTeEd0ACgkQJNaLcl1U
-h9Cj5Af9HvBEeATneL4L4KyaTje+eZTmz6+nPBWc0RUgYHS6rzYEV/ysoMSUEsQ9
-lmmBLxqkxBpTxeFCDpcXLKrul51oXqJY6fgcBAmoOgJ2rVilMDtFyENtYxNDNBc2
-VU7LDxtuHzhygehFFypWS3K/790bbVnQcTlIaZsjqOAHTUjsMwKiWYvH7BosmI5D
-NIsPNtaUtpuR/iDZRUQMRW8GLO97nM0W3ixvDeFh3smrV7BAmyzwZV7RN9v/Oj7d
-g8D6/vSOQNp3S3ZIe30M4XS3NMS1HpSgoAaQvWgyBQnVb/Xc+2oLiRzn6AAYqWUL
-kFEd0jI7Xpyk+f4GoHipOywNPTfUWw==
-=n2ds
------END PGP SIGNATURE-----
-
---KzMo14n8WZa6AeHL--
