@@ -2,121 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CBC77F67E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9BE77F682
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350885AbjHQMil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 08:38:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
+        id S1350893AbjHQMjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 08:39:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231683AbjHQMiP (ORCPT
+        with ESMTP id S231683AbjHQMi4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 08:38:15 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98503271F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:38:14 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-6418c819c3cso35634166d6.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:38:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692275893; x=1692880693;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jUdVhj0ALIzjhCaAziKr2GAojaQsEAHnyIShQwoSvjs=;
-        b=Ml1CrhZ42fDMxkxMto37w+tczDqJUjteWrLleKqCF2KvReoQMdR1bg/BP//xS/kpde
-         H3NZcnAJtGsSR1Xr4YtIQoTzj9r3bXZiASg8yj6GGj0L8AyystAmt4r64AYt5uWrgX1+
-         V2RGGyB59DHqeY/lxQi5SvJOF4ZDIJ+z/SNcU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692275893; x=1692880693;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jUdVhj0ALIzjhCaAziKr2GAojaQsEAHnyIShQwoSvjs=;
-        b=eCSm/H6AYrzI5FZlPacwsfWdKQmxHajfd8Pia8LUWrSqeAIha1sZm43dQ29YYU103z
-         cLjP6VCZOAlAZgSbKgGxkkXcjnG9Z/wD2uiVSXMaVzacwXQ6tayUmWDqoEG1T9bUQMgC
-         F6wt4jkWSkNyNRIote4tjxqJiq4g6cXaFgKlx/Ylg9iVREOtgaoGEFE05sV6EQyhFcvb
-         39dsPuBCJchX7cf/uRSq3vFduMAGRsFrO06f3ckO8LSddpfvQfV5vNrDF8h5AL7A4OwH
-         dimRr74AnanWWJ07baFVB9b6qk9eoRx08OX5nu9FMXK6UzjvSgAZciZWBuB13zJQIkff
-         H+DQ==
-X-Gm-Message-State: AOJu0YwUgccmicnfYqAYdsDCjZtgE3p7HNddhp5KXv4/4kQb+x6saif7
-        A7gJ75Tu0xFplzGg2VZ4ODaTFg==
-X-Google-Smtp-Source: AGHT+IEmdLIBX4TcduDSnebSMlZV9RYUgLFDw6JyS8Q64QUNaAtypqYuQsSEQOyKRfaSNE2ThLHmrw==
-X-Received: by 2002:a0c:aa96:0:b0:649:bf3:6dc0 with SMTP id f22-20020a0caa96000000b006490bf36dc0mr3988634qvb.39.1692275893731;
-        Thu, 17 Aug 2023 05:38:13 -0700 (PDT)
-Received: from denia.c.googlers.com (122.213.145.34.bc.googleusercontent.com. [34.145.213.122])
-        by smtp.gmail.com with ESMTPSA id o12-20020a05620a130c00b00767cd2dbd82sm5108761qkj.15.2023.08.17.05.38.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 05:38:13 -0700 (PDT)
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Thu, 17 Aug 2023 12:38:04 +0000
-Subject: [PATCH] media: uvcvideo: Fix power line control for a Chicony
- camera
+        Thu, 17 Aug 2023 08:38:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78182D57;
+        Thu, 17 Aug 2023 05:38:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692275934; x=1723811934;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=XKAlDtu8w5r2ImV3XxMTRJjxDaYlAichBPMvi13fXvc=;
+  b=VqsbESa+YHRjI9coof1u0zvfGUtLwbjTcar+YWRnAKkSD2c0kYWxjOiC
+   b8XU7V8aQhE1lSF1Oe5ae8JVwHZKMlhgtJ9lTdKNRwcIOPhMYzEo3JBPP
+   YjE0EzJ73tghqOnxlwzqnp8h8j94477VV+Hch5d3q9AauauQn6dRs3BBt
+   /7pV5zgUWZU016inb6dtw6jhGsvLzcqHs/yQXq5VAlgAvMaogjIoALsgD
+   3j7Kl17drHXKFELgi0qsHJLixqLNdWHWbMUS6XNXDqUbZBETTgkt5nurq
+   R1PaL7kzqnrpJoype5MoMDTPujLDaUkAjjOh/8GFiBBPVmlH8fVldJ+Km
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="403779073"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="403779073"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 05:38:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="981142718"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="981142718"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga006.fm.intel.com with ESMTP; 17 Aug 2023 05:38:52 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qWcH4-00BiQC-0y;
+        Thu, 17 Aug 2023 15:38:50 +0300
+Date:   Thu, 17 Aug 2023 15:38:50 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v5] gpio: consumer: new virtual driver
+Message-ID: <ZN4U2u9h0vVNmf9d@smile.fi.intel.com>
+References: <20230815185650.152968-1-brgl@bgdev.pl>
+ <ZN3wauUBENDd7aRU@smile.fi.intel.com>
+ <CAMRc=MdUWXZVnjkPqH2BZvDY0v-OOysQ=NMjwQEi1rt+16NEQQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230817-chicony-v1-1-76bde4d6ff6b@chromium.org>
-X-B4-Tracking: v=1; b=H4sIAKsU3mQC/x2N0QqDMAwAf0XybKDWzam/MnyoWboGRpQUZCL++
- +oejzu4AzKbcIaxOsB4kyyLFmjqCigFfTPKqzB451vXNw+kJLTojgO19+jdraMuQqnnkBlnC0r
- p6tdPRAsb6+VW4yjf/+U5necP/GwcPHUAAAA=
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ricardo Ribalda <ribalda@chromium.org>
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=MdUWXZVnjkPqH2BZvDY0v-OOysQ=NMjwQEi1rt+16NEQQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device does not implement the control properly.
+On Thu, Aug 17, 2023 at 02:14:04PM +0200, Bartosz Golaszewski wrote:
+> On Thu, Aug 17, 2023 at 12:03 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Tue, Aug 15, 2023 at 08:56:50PM +0200, Bartosz Golaszewski wrote:
 
-Fixes vl2-compliance error:
+...
 
-info: checking control 'Power Line Frequency' (0x00980918)
-fail: v4l2-test-controls.cpp(552): could not set valid menu item 3
+> > > +     struct gpio_consumer_device *dev = lookup->parent;
+> > > +
+> > > +     guard(mutex)(&dev->lock);
+> > > +
+> > > +     return sprintf(page, "%s\n", lookup->key);
 
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
-This camera, like other Chicony devices, do not implement properly the
-Power Line Frequency control.
+(1)
 
-This time, I do not have direct access to the device, just to the
-report, but since other devices from the same family are showing the
-same error, it is safe to assume that the same fix will work here.
----
- drivers/media/usb/uvc/uvc_driver.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+...
 
-diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 08fcd2ffa727..db2556e95b72 100644
---- a/drivers/media/usb/uvc/uvc_driver.c
-+++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -2592,6 +2592,15 @@ static const struct usb_device_id uvc_ids[] = {
- 	  .bInterfaceSubClass	= 1,
- 	  .bInterfaceProtocol	= 0,
- 	  .driver_info		= (kernel_ulong_t)&uvc_ctrl_power_line_limited },
-+	/* Chicony Electronics Co., Ltd */
-+	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
-+				| USB_DEVICE_ID_MATCH_INT_INFO,
-+	  .idVendor		= 0x04f2,
-+	  .idProduct		= 0xb67c,
-+	  .bInterfaceClass	= USB_CLASS_VIDEO,
-+	  .bInterfaceSubClass	= 1,
-+	  .bInterfaceProtocol	= 0,
-+	  .driver_info		= (kernel_ulong_t)&uvc_ctrl_power_line_limited },
- 	/* Chicony EasyCamera */
- 	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
- 				| USB_DEVICE_ID_MATCH_INT_INFO,
+> > > +static ssize_t
+> > > +gpio_consumer_lookup_config_offset_show(struct config_item *item, char *page)
+> > > +{
+> > > +     struct gpio_consumer_lookup *lookup = to_gpio_consumer_lookup(item);
+> > > +     struct gpio_consumer_device *dev = lookup->parent;
+> > > +     unsigned int offset;
+> > > +
+> > > +     scoped_guard(mutex, &dev->lock)
+> > > +             offset = lookup->offset;
+> > > +
+> > > +     return sprintf(page, "%d\n", offset);
+> >
+> > Consistently it can be simplified same way
+> >
+> >         guard(mutex)(&dev->lock);
+> >
+> >         return sprintf(page, "%d\n", lookup->offset);
+> >
+> > BUT. Thinking about this more. With guard() we put sprintf() inside the lock,
+> > which is suboptimal from runtime point of view. So, I think now that all these
+> > should actually use scoped_guard() rather than guard().
+> >
+> 
+> Precisely why I used a scoped guard here. Same elsewhere.
 
----
-base-commit: 4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
-change-id: 20230817-chicony-9c35f2046c6f
+So the 1) has to be amended then.
 
-Best regards,
+> > > +}
+
+...
+
+> > > +     enum gpio_lookup_flags flags;
+> > > +
+> > > +     flags = gpio_consumer_lookup_get_flags(item);
+> >
+> > This is perfectly one line < 80 characters.
+> 
+> There's nothing wrong with setting the variable on another line though.
+
+Why do we need 3 LoCs instead of a single one? Do you increase your line
+statistics? :-) I really would like to know the rationale behind this.
+
 -- 
-Ricardo Ribalda <ribalda@chromium.org>
+With Best Regards,
+Andy Shevchenko
+
 
