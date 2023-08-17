@@ -2,126 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A22E377F674
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50F877F678
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350871AbjHQMa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 08:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46938 "EHLO
+        id S1350880AbjHQMcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 08:32:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350881AbjHQMaB (ORCPT
+        with ESMTP id S1350873AbjHQMcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 08:30:01 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1E3271B;
-        Thu, 17 Aug 2023 05:30:00 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37HCSH3T025387;
-        Thu, 17 Aug 2023 12:29:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=4HzpTP7FNAMT9uAwevK5G07vm/QGlG2BcywlhBGJw0k=;
- b=kLbh0EqSZ3cxQ8J3HT6c4Ii69Yjo3mtmRNluD0vhG3ZRincOTTO2MgpDdcTl/62uFcFF
- 6RdF68p56IRPV9nF1kEsHPbdebc6EGt/aX9a41LKTd2hwm0g/mVP4GbPUY0Lc3CS8ozy
- ZaBPMFNIZEB2ctUGM4JOjP5CBu+Lzyvf9jgKsUPfasqkHSlhy9QPDPbptLZyMbPIjNjR
- DNTHXLqR+TbPf9pb09Ryk38uBPeLdIiuuiaHDqYDfkTPJKk60kaysIoJRBF7BELyXZnS
- gipZnQWtdVmEazaGUh1OsFLrMacEJR86hSYVz0E22nMeSvf/z2twcmEhqvo3P3i+4fbo lw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3shkgn05wx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Aug 2023 12:29:56 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37HCOM0o011665;
-        Thu, 17 Aug 2023 12:29:55 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3shkgn05wa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Aug 2023 12:29:55 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37HAZDd2018869;
-        Thu, 17 Aug 2023 12:29:54 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3seq41wdpu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Aug 2023 12:29:54 +0000
-Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
-        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37HCTrBb3080734
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Aug 2023 12:29:54 GMT
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BB1B958068;
-        Thu, 17 Aug 2023 12:29:53 +0000 (GMT)
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9671C58061;
-        Thu, 17 Aug 2023 12:29:53 +0000 (GMT)
-Received: from localhost (unknown [9.61.129.82])
-        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 17 Aug 2023 12:29:53 +0000 (GMT)
-From:   Nathan Lynch <nathanl@linux.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>, mahesh@linux.ibm.com
-Cc:     linuxppc-dev <linuxppc-dev@ozlabs.org>,
-        Tyrel Datwyler <tyreld@linux.ibm.com>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 1/2] powerpc/rtas: Rename rtas_error_rc to
- rtas_generic_errno
-In-Reply-To: <87zg2q5fs9.fsf@mail.lhotse>
-References: <169138864808.65607.6576358707894823512.stgit@jupiter>
- <877cpxdksx.fsf@mail.lhotse>
- <xzsx7qc3el674iyy2lsn3adm7j2vh5xj6cjaqxgjm6lwcjiz5u@evoqbrvhqf26>
- <87zg2q5fs9.fsf@mail.lhotse>
-Date:   Thu, 17 Aug 2023 07:29:53 -0500
-Message-ID: <87o7j5zwam.fsf@li-e15d104c-2135-11b2-a85c-d7ef17e56be6.ibm.com>
+        Thu, 17 Aug 2023 08:32:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB277271F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:31:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692275490;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=j+xsGM0xCcV9RwUrKQrUxI1E3eQXED1KqHZXvIE2BI4=;
+        b=Mp2znDCpx20zLTxH3+NDm97sUn13LBf8rHPOowdlhR/QnNQtPXniGYGk+lsKd96DGe5WqW
+        p5iMeAfJWRnhfvichh6O2imkAhvo5OV8iIO8UoctN6WdE41n+Ab1vOTTd39FzUC3N7Jp6r
+        BDtFbruMyFUbgE6mANxV2FHP8rciA5E=
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-527-iqslg-6BNMSQ47JrH3_UsQ-1; Thu, 17 Aug 2023 08:31:28 -0400
+X-MC-Unique: iqslg-6BNMSQ47JrH3_UsQ-1
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6b9c82f64b7so6096774a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:31:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692275487; x=1692880287;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j+xsGM0xCcV9RwUrKQrUxI1E3eQXED1KqHZXvIE2BI4=;
+        b=ipkCNkVP/xjo82YQsZKaCsn76l1caAGopHN3MB6p4BJop3ndJKa7IsG8k8460fMvB3
+         WA/fPFl6LwEMRaMjSdEBF01jciyaOnVAz/xXjDo2yKl9YEYfbU3CMwwKZEv0tWDcfPNX
+         RDGwI1y/XGOwYD89oLjh/FUMSbxfshNuni3V5RcfiAa3Pi8P5Eevps30gsnij2lG8nEj
+         nFaRV508XoCMSwz2CzeiYqbjGzYdN3SYgcHbJc4zfMqbiIAthWfHN6rEABTXRCm+hSkD
+         3ORqHSM/ogL2gIi4bihTnHto/vAA5dAyXRgpTNy7d9DcYMOIFdXELp1pZWz/qSQqRHb5
+         +lFw==
+X-Gm-Message-State: AOJu0YzCWdrl7HExbNUU5HYIj4Gozcf2KwPr2FRsUEUMeTTZaUu2YQFq
+        OR8CzvWcwbSzcJ26v7M+AlEtPI9BaYGyNbMpZQ8Wnyhca1hfqmQZnz0Es8gr/7c2Fk9Kbk1zW3p
+        EJ6vlPvZn+/0ISb9Ypg+gYtpG
+X-Received: by 2002:a05:6830:1314:b0:6bc:f328:696e with SMTP id p20-20020a056830131400b006bcf328696emr4382922otq.0.1692275487740;
+        Thu, 17 Aug 2023 05:31:27 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFbLMPcppybJV+jOD4Mzdj/MSx7jY9uLAskDT3+YlZ3091KhVbY1KfqBrUcpg47H2FQH6IE8A==
+X-Received: by 2002:a05:6830:1314:b0:6bc:f328:696e with SMTP id p20-20020a056830131400b006bcf328696emr4382911otq.0.1692275487502;
+        Thu, 17 Aug 2023 05:31:27 -0700 (PDT)
+Received: from localhost ([181.120.144.238])
+        by smtp.gmail.com with ESMTPSA id a9-20020a05683012c900b006b74bea76c0sm7126970otq.47.2023.08.17.05.31.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 05:31:27 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: Simple DRM frame buffer driver not working on Dell desktop with
+ Nvidia card
+In-Reply-To: <7287c4cc-2ac4-43a7-a60d-466d5299f576@molgen.mpg.de>
+References: <7287c4cc-2ac4-43a7-a60d-466d5299f576@molgen.mpg.de>
+Date:   Thu, 17 Aug 2023 14:31:24 +0200
+Message-ID: <87bkf5g89v.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: TeqLM47v-5tkhNdGU3T38VRBt8JITo02
-X-Proofpoint-GUID: 1YuDwTWJIanuaxXs99mqFgTHlJm_V3fe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-17_05,2023-08-17_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- priorityscore=1501 impostorscore=0 spamscore=0 malwarescore=0
- lowpriorityscore=0 phishscore=0 bulkscore=0 mlxscore=0 suspectscore=0
- mlxlogscore=917 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2308170109
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michael Ellerman <mpe@ellerman.id.au> writes:
+Paul Menzel <pmenzel@molgen.mpg.de> writes:
 
-> Mahesh J Salgaonkar <mahesh@linux.ibm.com> writes:
->> On 2023-08-15 13:52:14 Tue, Michael Ellerman wrote:
->>> Mahesh Salgaonkar <mahesh@linux.ibm.com> writes:
-> ...
->>> > diff --git a/arch/powerpc/include/asm/rtas.h b/arch/powerpc/include/asm/rtas.h
->>> > index 3abe15ac79db1..5572a0a2f6e18 100644
->>> > --- a/arch/powerpc/include/asm/rtas.h
->>> > +++ b/arch/powerpc/include/asm/rtas.h
->>> > @@ -202,7 +202,9 @@ typedef struct {
->>> >  #define RTAS_USER_REGION_SIZE (64 * 1024)
->>> >  
->>> >  /* RTAS return status codes */
->>> > -#define RTAS_BUSY		-2    /* RTAS Busy */
->>> > +#define RTAS_HARDWARE_ERROR	(-1)  /* Hardware Error */
->>> > +#define RTAS_BUSY		(-2)  /* RTAS Busy */
->>> 
->>> Are the brackets necessary?
->>
->> During v5 changset I received offline review comment to add brackets,
->> hence continued here as well. I can take it away if Nathan is fine with
->> it.
+Hello Paul,
+
+> Dear Linux folks,
 >
-> OK. I can't think of a context where the brackets are useful, but I'm
-> probably just not thinking hard enough. I don't really mind adding them,
-> I was just curious what the justification for them was.
+>
+> On the Dell OptiPlex 7021 with a dedicated Nvidia card, the monitor is 
+> only connect to that, Linux 6.1.39 does not display any messages, and 
+> the GRUB messages stay until the X.Org X Server starts.
+>
 
-It was my (mistaken) suggestion -- they're not needed.
+It's a known issue. The Nvidia proprietary driver doesn't register an
+emulated fbdev device and it relies on efifb to have fbcon/VT support.
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
