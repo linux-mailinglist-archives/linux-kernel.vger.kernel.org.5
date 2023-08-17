@@ -2,134 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 605E177F158
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 09:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 861D577F15C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 09:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348547AbjHQHh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 03:37:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41754 "EHLO
+        id S1348562AbjHQHjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 03:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348461AbjHQHhO (ORCPT
+        with ESMTP id S1348550AbjHQHjc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 03:37:14 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF932D5F;
-        Thu, 17 Aug 2023 00:37:08 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68878ca7ca0so1637366b3a.0;
-        Thu, 17 Aug 2023 00:37:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692257827; x=1692862627;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ULKXK6qR5c9VRBpWLFKmezxiq8+/JqbJFDTXkM6zgIY=;
-        b=ZtP8zijoeaZNhyrK2BOvwnFcaXAIBBAvfS34UhePeKzkACjxF3wIlN55Mi+h7MTU3W
-         lZZHqFb9n0QrLWraMNHQDriu5uAr0Gvc3ACPuk9aTgYUbXMnvE19Pi8Rhibvp2s7lIJH
-         Z+BQF0HSMpZpebLNtzB89ea3qhNTGpNFMI0YD73n8Cr1vlqkfymPfz5NK+BQIxDORFJa
-         A9NXFaStzLzyFb8/I6KDUOmXD0R1EbgnNdPyJ4BX8102iseWYuFsi4Wjzsdf6XJCKeRG
-         SEA0FHF/mLYBomK4PPLpuBwucWIogaqbbwCr0aqVvlS4qSaAVNmnoiYCjlXtseFS23AS
-         iFlg==
+        Thu, 17 Aug 2023 03:39:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3352D63
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 00:38:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692257922;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hNX6iGWfWtgznBVcEU39c4WOS7GjaLk+AhKULELPJ68=;
+        b=FQLJX+I4B8mOYlEOu5cPKDk/plSOgowWsYebbA5+HwGhqZz65c67Xp+j8NpPEIdSr2Fjmz
+        XXxLa6DCiIx+jSBJlGkPmIxb6yN99KBPFl7WnPxzqemjTFKuLeywFUDqry15oBGZU1mPcx
+        mUznIYeDcAzVYaO73vNSRQq5VZV8L4M=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-679-R9t15xypNBO2wFkKlvTsCw-1; Thu, 17 Aug 2023 03:38:41 -0400
+X-MC-Unique: R9t15xypNBO2wFkKlvTsCw-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-319652e9920so3206537f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 00:38:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692257827; x=1692862627;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ULKXK6qR5c9VRBpWLFKmezxiq8+/JqbJFDTXkM6zgIY=;
-        b=OGf6IoHSwd8UsYjT98AaZQ3qQh82Iswg2kuW7/l8IsJLcD+LFF5Z8gDCX7kAxE67Ed
-         b+TeL0YxCeo+OL2ifb2LjCsEeP2vYmvA65v8SbJRZ22IXX6FJlMOkqFdMn+C0LDZFu2p
-         UCklitz4cuYFeh+CuR/x9mxWidiFIY7XVyAEkpGHST2l49LkGSw/kPbAcGYrL/zr+NxS
-         Ve+JCQqSHmGpVhLhEN15ZTBeZt20AZajqVQ4yoz7sBzUTpMfkKhXCdv8uNiLN2L7XoMD
-         CO8tTHi6HS4Mu3xDTs8tsPssfqfdeo9DW3SJNWlsOxOUnswMyaAs/zZsvjzJcZucn4xl
-         jAOQ==
-X-Gm-Message-State: AOJu0Yx4csBXrIorN1z5BopdwRnonkz7uTzte2LgMcmDakzhxzNeVxc+
-        9oRSDMszS7Xixncrsi2nTXjmBRU/dps=
-X-Google-Smtp-Source: AGHT+IFp+VczPYtP3Lkrr7z+0huyXGBRexY3/CrU2WmTcbxAUUtzsgJARGI0oo0f2z2QG2r0NgEyIw==
-X-Received: by 2002:a05:6a20:4ca4:b0:12d:f1ac:e2cd with SMTP id fq36-20020a056a204ca400b0012df1ace2cdmr3073766pzb.32.1692257827512;
-        Thu, 17 Aug 2023 00:37:07 -0700 (PDT)
-Received: from sol ([220.235.36.234])
-        by smtp.gmail.com with ESMTPSA id p1-20020aa78601000000b00687260020b1sm781878pfn.72.2023.08.17.00.37.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 00:37:07 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 15:37:02 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 0/5] gpio: cdev: bail out of poll() if the device goes
- down
-Message-ID: <ZN3OHqzT3grSdefP@sol>
-References: <20230816122032.15548-1-brgl@bgdev.pl>
- <CACRpkdaTUi0r+nY12J8sLxmvfG2xRd+OMngcMiQkr5cqerevtA@mail.gmail.com>
- <ZN2k7gemanIpbyFh@sol>
- <CAMRc=MfwK6_m0N4cZqkpMX0Rka4WnWmtKTjq-cwbTR5+sjw9vw@mail.gmail.com>
+        d=1e100.net; s=20221208; t=1692257920; x=1692862720;
+        h=content-transfer-encoding:in-reply-to:organization:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hNX6iGWfWtgznBVcEU39c4WOS7GjaLk+AhKULELPJ68=;
+        b=LsJ3ZVtOepwyj5xld9G3TkAUb4VAdSMfakpCHkanxy2gMY62i4R6iETaX9z0DQoOIx
+         Tekk6zZ8hk6Al6yoQ2uNjL8tvGSRyP09UwpiMMnVX/owcilYYKRGk7kc3NgbKZ1A1qTS
+         prg6y2Q1Vo+/OhtdZdfh5PzxQ+qtiCKuiQIKEbHarcK4xn/ukKiyk0Ifvh31o0c6c6St
+         glsaM6kmursdB+joCYM2bVWkn2X/+qj5HnJC2IaLVXNfj/ucpLAvV5zAz5SJsIEDYh+q
+         rFaCLII8FzuN/jy/YIz5HmlpxZD4AOanYlHNWc2puLqrndJd4F8DcTrra+jCZyaUFZ4p
+         k8NA==
+X-Gm-Message-State: AOJu0YwxqvgjpI/VFCGQpdbDYI3V0UYDpSzp+9CAw8m+0yHXZcQtfAS/
+        tNRDhhEaFx5SJmKE5LVQSKgdZttHkeikj+nOh9Rmn74VwMzJr06PDwBCPFX/UrgHzlr7bwiHxBM
+        53EcisE6NnssJ1ZPDLHP3Wquu
+X-Received: by 2002:a5d:610e:0:b0:319:7b57:8dc5 with SMTP id v14-20020a5d610e000000b003197b578dc5mr3099290wrt.54.1692257920018;
+        Thu, 17 Aug 2023 00:38:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHMupVkiUckbZbPaywGKv1CUrex5iaNb0W6ic9ImLtpdoKy0/hM4FBYORaNqKg4S3FiZ2Pueg==
+X-Received: by 2002:a5d:610e:0:b0:319:7b57:8dc5 with SMTP id v14-20020a5d610e000000b003197b578dc5mr3099267wrt.54.1692257919567;
+        Thu, 17 Aug 2023 00:38:39 -0700 (PDT)
+Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
+        by smtp.gmail.com with ESMTPSA id z10-20020a5d4d0a000000b0031ad5a54bedsm1686403wrt.9.2023.08.17.00.38.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Aug 2023 00:38:38 -0700 (PDT)
+Message-ID: <5c9e52ab-d46a-c939-b48f-744b9875ce95@redhat.com>
+Date:   Thu, 17 Aug 2023 09:38:37 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MfwK6_m0N4cZqkpMX0Rka4WnWmtKTjq-cwbTR5+sjw9vw@mail.gmail.com>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH v2 0/5] Reduce NUMA balance caused TLB-shootdowns in a
+ VM
+To:     Yan Zhao <yan.y.zhao@intel.com>, John Hubbard <jhubbard@nvidia.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        mike.kravetz@oracle.com, apopple@nvidia.com, jgg@nvidia.com,
+        rppt@kernel.org, akpm@linux-foundation.org, kevin.tian@intel.com,
+        Mel Gorman <mgorman@techsingularity.net>,
+        alex.williamson@redhat.com
+References: <6b48a161-257b-a02b-c483-87c04b655635@redhat.com>
+ <1ad2c33d-95e1-49ec-acd2-ac02b506974e@nvidia.com>
+ <846e9117-1f79-a5e0-1b14-3dba91ab8033@redhat.com>
+ <d0ad2642-6d72-489e-91af-a7cb15e75a8a@nvidia.com>
+ <ZNnvPuRUVsUl5umM@yzhao56-desk.sh.intel.com>
+ <4271b91c-90b7-4b48-b761-b4535b2ae9b7@nvidia.com>
+ <f523af84-59de-5b57-a3f3-f181107de197@redhat.com>
+ <ZNyRnU+KynjCzwRm@yzhao56-desk.sh.intel.com>
+ <ded3c4dc-2df9-2ef2-add0-c17f0cdfaf32@redhat.com>
+ <37325c27-223d-400d-bd86-34bdbfb92a5f@nvidia.com>
+ <ZN2qg4cPC2hEgtmY@yzhao56-desk.sh.intel.com>
+Content-Language: en-US
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <ZN2qg4cPC2hEgtmY@yzhao56-desk.sh.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 09:27:37AM +0200, Bartosz Golaszewski wrote:
-> On Thu, Aug 17, 2023 at 6:41 AM Kent Gibson <warthog618@gmail.com> wrote:
-> >
-> > On Wed, Aug 16, 2023 at 11:41:06PM +0200, Linus Walleij wrote:
-> > > On Wed, Aug 16, 2023 at 2:20 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> > >
-> > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > > >
-> > > > Wake up all three wake queues (the one associated with the character
-> > > > device file, the one for V1 line events and the V2 line request one)
-> > > > when the underlying GPIO device is unregistered. This way we won't get
-> > > > stuck in poll() after the chip is gone as user-space will be forced to
-> > > > go back into a new system call and will see that gdev->chip is NULL.
-> > > >
-> > > > Bartosz Golaszewski (5):
-> > > >   gpio: cdev: ignore notifications other than line status changes
-> > > >   gpio: cdev: rename the notifier block and notify callback
-> > > >   gpio: cdev: wake up chardev poll() on device unbind
-> > > >   gpio: cdev: wake up linereq poll() on device unbind
-> > > >   gpio: cdev: wake up lineevent poll() on device unbind
-> > >
-> > > I see why this is needed and while the whole notification chain
-> > > is a bit clunky I really cannot think about anything better so:
-> > > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> > >
-> >
-> > The issue I have is with the repurposing/reuse of the existing notifier
-> > block that sends line changed events to the chardev.
-> > Correct me if I'm wrong, but now all line requests will receive those
-> > events as well.
-> > They have no business receiving those events, and it scales badly.
-> >
-> > My preference would be for a separate nb for the chip removal to keep
-> > those two classes of events distinct.
-> >
+On 17.08.23 07:05, Yan Zhao wrote:
+> On Wed, Aug 16, 2023 at 11:00:36AM -0700, John Hubbard wrote:
+>> On 8/16/23 02:49, David Hildenbrand wrote:
+>>> But do 32bit architectures even care about NUMA hinting? If not, just
+>>> ignore them ...
+>>
+>> Probably not!
+>>
+>> ...
+>>>> So, do you mean that let kernel provide a per-VMA allow/disallow
+>>>> mechanism, and
+>>>> it's up to the user space to choose between per-VMA and complex way or
+>>>> global and simpler way?
+>>>
+>>> QEMU could do either way. The question would be if a per-vma settings
+>>> makes sense for NUMA hinting.
+>>
+>>  From our experience with compute on GPUs, a per-mm setting would suffice.
+>> No need to go all the way to VMA granularity.
+>>
+> After an offline internal discussion, we think a per-mm setting is also
+> enough for device passthrough in VMs.
 > 
-> I would normally agree if there was a risk of abuse of those
-> notifications by drivers but this is all private to gpiolib. And line
-> requests that receive line state notifications simply ignore them.
-> This isn't a bottleneck codepath IMO so where's the issue? We would be
-> using a second notifier head of 40 bytes to struct gpio_device for no
-> reason.
-> 
+> BTW, if we want a per-VMA flag, compared to VM_NO_NUMA_BALANCING, do you
+> think it's of any value to providing a flag like VM_MAYDMA?
+> Auto NUMA balancing or other components can decide how to use it by
+> themselves.
 
-Yeah, this is a space/time trade-off, and you've gone with space over
-time.  I would select time over space.
-40 bytes per device is negligable, and there is never a case where the
-line request wants to see a change event - it either relates to a
-different request, or it was triggered by the request itself.
-Is there an echo in here ;-)?
+Short-lived DMA is not really the problem. The problem is long-term pinning.
 
+There was a discussion about letting user space similarly hint that 
+long-term pinning might/will happen.
+
+Because when long-term pinning a page we have to make sure to migrate it 
+off of ZONE_MOVABLE / MIGRATE_CMA.
+
+But the kernel prefers to place pages there.
+
+So with vfio in QEMU, we might preallocate memory for the guest and 
+place it on ZONE_MOVABLE/MIGRATE_CMA, just so long-term pinning has to 
+migrate all these fresh pages out of these areas again.
+
+So letting the kernel know about that in this context might also help.
+
+-- 
 Cheers,
-Kent.
+
+David / dhildenb
 
