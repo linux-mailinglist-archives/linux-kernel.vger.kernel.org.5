@@ -2,63 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B347E77F8DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BDA177F8E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351881AbjHQO14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 10:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49008 "EHLO
+        id S1351905AbjHQO17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 10:27:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351930AbjHQO1n (ORCPT
+        with ESMTP id S1351921AbjHQO1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 10:27:43 -0400
-Received: from pegase1.c-s.fr (unknown [90.115.179.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744182D76
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:27:42 -0700 (PDT)
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4RRS5T1wrFz9x7v;
-        Thu, 17 Aug 2023 16:27:41 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id JZV6txLA989B; Thu, 17 Aug 2023 16:27:41 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4RRS5T1DJcz9x7n;
-        Thu, 17 Aug 2023 16:27:41 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 26A268B76C;
-        Thu, 17 Aug 2023 16:27:41 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 12zksZKOPVCI; Thu, 17 Aug 2023 16:27:41 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.19.54.59])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DD3688B763;
-        Thu, 17 Aug 2023 16:27:40 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37HERT42446275
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 17 Aug 2023 16:27:29 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37HERTJ8446236;
-        Thu, 17 Aug 2023 16:27:29 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] powerpc/4xx: Add missing includes to fix no previous prototype errors
-Date:   Thu, 17 Aug 2023 16:27:23 +0200
-Message-ID: <c8253017e355638132737ff47936e290df8738d1.1692282432.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.41.0
+        Thu, 17 Aug 2023 10:27:36 -0400
+Received: from mx4.sionneau.net (mx4.sionneau.net [51.15.250.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABBAA2D79;
+        Thu, 17 Aug 2023 07:27:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sionneau.net;
+        s=selectormx4; t=1692282449;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=02Bq9s/NYUjphQGu1QxD81vJQgaivPeKOZxVDKAg+U4=;
+        b=L9F2STMPIiG8SUaDsPFNoToRD5b8bIXE+mWM82peCdftrXCG+zOgIi7wyoXXzYHNwjahsX
+        KNul/ps725SqhZ0lz0POqz+C7UKmpANZstA5GJYXgMwewJYhaewkmPb5t+dOPjfjc54vN0
+        1dqUilxMokbOXul3qOWRXcmQmDCFk+s=
+Received: from [192.168.43.126] (hen56-1_migr-78-240-185-16.fbx.proxad.net [78.240.185.16])
+        by mx4.sionneau.net (OpenSMTPD) with ESMTPSA id 7bda20a6 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Thu, 17 Aug 2023 14:27:29 +0000 (UTC)
+Message-ID: <685b10d2-7627-eea8-69e4-454af039fa5d@sionneau.net>
+Date:   Thu, 17 Aug 2023 16:27:26 +0200
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692282442; l=1777; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=yGTRAmMTYM0Y3spDgeN3QkgVKi9Gx46oVPN1AD83t74=; b=WYxGZjBxhhd1DmqCSQYw0oT0E4p4RUZpBkLFnaiOkgn8Z2A27j150A0CWsCDO5ShRC3OTwe2F e7J0OaJfqlNAn8UA+vdC4ceBaTr9rjdUA3yHQT7nkdcra7Uo/auAIyx
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] i2c: designware: add support for pinctrl for recovery
+Content-Language: en-US
+To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>,
+        Andi Shyti <andi.shyti@kernel.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yann Sionneau <ysionneau@kalray.eu>
+References: <20230816095015.23705-1-yann@sionneau.net>
+ <97d62909-551b-4abd-a743-5be09e617665@linux.intel.com>
+From:   Yann Sionneau <yann@sionneau.net>
+In-Reply-To: <97d62909-551b-4abd-a743-5be09e617665@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_FAIL,SPF_HELO_NONE autolearn=no
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLACK autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,54 +58,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A W=1 build of ppc40x_defconfig throws the followings errors:
+Hi
 
-  CC      arch/powerpc/platforms/4xx/uic.o
-arch/powerpc/platforms/4xx/uic.c:274:13: warning: no previous prototype for 'uic_init_tree' [-Wmissing-prototypes]
-  274 | void __init uic_init_tree(void)
-      |             ^~~~~~~~~~~~~
-arch/powerpc/platforms/4xx/uic.c:319:14: warning: no previous prototype for 'uic_get_irq' [-Wmissing-prototypes]
-  319 | unsigned int uic_get_irq(void)
-      |              ^~~~~~~~~~~
-  CC      arch/powerpc/platforms/4xx/machine_check.o
-  CC      arch/powerpc/platforms/4xx/soc.o
-arch/powerpc/platforms/4xx/soc.c:193:6: warning: no previous prototype for 'ppc4xx_reset_system' [-Wmissing-prototypes]
-  193 | void ppc4xx_reset_system(char *cmd)
-      |      ^~~~~~~~~~~~~~~~~~~
+Le 17/08/2023 à 10:07, Jarkko Nikula a écrit :
+> Hi
+>
+> On 8/16/23 12:50, Yann Sionneau wrote:
+>> From: Yann Sionneau <ysionneau@kalray.eu>
+>>
+>> Currently if the SoC needs pinctrl to switch the SCL and SDA
+>> from the I2C function to GPIO function, the recovery won't work.
+>>
+>> scl-gpio = <>;
+>> sda-gpio = <>;
+>>
+>> Are not enough for some SoCs to have a working recovery.
+>> Some need:
+>>
+>> scl-gpio = <>;
+>> sda-gpio = <>;
+>> pinctrl-names = "default", "recovery";
+>> pinctrl-0 = <&i2c_pins_hw>;
+>> pinctrl-1 = <&i2c_pins_gpio>;
+>>
+>> The driver was not filling rinfo->pinctrl with the device node
+>> pinctrl data which is needed by generic recovery code.
+>>
+>> Tested-by: Yann Sionneau <ysionneau@kalray.eu>
+>> Signed-off-by: Yann Sionneau <ysionneau@kalray.eu>
+>
+> Tested-by from author is needless. Expectation is that author has 
+> tested the patch while not always true :-)
+Ok, I just wanted to emphasize the fact that I have the device and I 
+tested the change with the device. Ack!
+>
+>> @@ -905,6 +906,15 @@ static int i2c_dw_init_recovery_info(struct 
+>> dw_i2c_dev *dev)
+>>           return PTR_ERR(gpio);
+>>       rinfo->sda_gpiod = gpio;
+>>   +    rinfo->pinctrl = devm_pinctrl_get(dev->dev);
+>> +    if (IS_ERR(rinfo->pinctrl)) {
+>> +        if (PTR_ERR(rinfo->pinctrl) == -EPROBE_DEFER)
+>> +            return PTR_ERR(rinfo->pinctrl);
+>> +
+>> +        rinfo->pinctrl = NULL;
+>> +        dev_info(dev->dev, "can't get pinctrl, bus recovery might 
+>> not work\n");
+>
+> I think dev_dbg() suits better here or is it needed at all? End user 
+> may not be able to do anything when sees this in dmesg. I.e. more like 
+> development time dev_dbg() information.
+I agree dev_dbg() is a better idea.
+>
+> Does i2c-core-base.c: i2c_gpio_init_pinctrl_recovery() already do 
+> dev_info() print when pinctrl & GPIO are set properly making above 
+> also kind of needless?
 
-Add missing includes to get the missing prototypes.
+Thanks for the review. In fact I had to use gdb to understand why the 
+recovery was not working. Because as you said, it only prints something 
+to say "everything looks ok!".
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Arnd Bergmann <arnd@arndb.de>
----
- arch/powerpc/platforms/4xx/soc.c | 1 +
- arch/powerpc/platforms/4xx/uic.c | 1 +
- 2 files changed, 2 insertions(+)
+I kind of prefer when it prints when something goes wrong.
 
-diff --git a/arch/powerpc/platforms/4xx/soc.c b/arch/powerpc/platforms/4xx/soc.c
-index f91df0827877..b2d940437a66 100644
---- a/arch/powerpc/platforms/4xx/soc.c
-+++ b/arch/powerpc/platforms/4xx/soc.c
-@@ -21,6 +21,7 @@
- #include <asm/dcr.h>
- #include <asm/dcr-regs.h>
- #include <asm/reg.h>
-+#include <asm/ppc4xx.h>
- 
- static u32 dcrbase_l2c;
- 
-diff --git a/arch/powerpc/platforms/4xx/uic.c b/arch/powerpc/platforms/4xx/uic.c
-index d667ad039bd3..e3e148b9dd18 100644
---- a/arch/powerpc/platforms/4xx/uic.c
-+++ b/arch/powerpc/platforms/4xx/uic.c
-@@ -24,6 +24,7 @@
- #include <asm/irq.h>
- #include <asm/io.h>
- #include <asm/dcr.h>
-+#include <asm/uic.h>
- 
- #define NR_UIC_INTS	32
- 
+But I let you decide what you think is the best.
+
 -- 
-2.41.0
+
+Yann
 
