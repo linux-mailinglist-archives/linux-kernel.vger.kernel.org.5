@@ -2,95 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E352877EF99
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 05:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D778D77EF9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 05:39:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347877AbjHQDim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1347883AbjHQDim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 16 Aug 2023 23:38:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45116 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347870AbjHQDiO (ORCPT
+        with ESMTP id S1347880AbjHQDil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 23:38:14 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F74D123;
-        Wed, 16 Aug 2023 20:38:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692243492;
-        bh=suVGXzZK1za3LotyI8GwsyflZ72PwO3Z4uf0t2QDh+I=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Pvz6ewJMjHkdKFIrStSp4T9noRHzqS2YVkLp5NsfVM0/QE2u+LCwiKBI4pNjqzq4c
-         3yxfP7YgSBfgQqRoADsYxV4Ticr9N6v4GgrWjtnuZ4ESrRWjHk8Xy3dXrHajJOyyVI
-         PgDZUIKPOw4xLt6ptyvZhG7NkI3UFdztZhWUb/2eV3sWrjXlAxBlqNUdVZrsqv3K0o
-         soTBecAGNbin7ATPw0sq6ksGW0smvgW5uNepEA4897gmMsfBZ7TS32jfqClncP8ihH
-         nDNIqpgBSdTyYLOJyGhtnsTnZ7NURBLCDrQCeAdCzvUIbYy9zhmY2GUKXs1t/Xab7V
-         fHYslwD+VsZgg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RR9h36glhz4wZx;
-        Thu, 17 Aug 2023 13:38:11 +1000 (AEST)
-Date:   Thu, 17 Aug 2023 13:38:11 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Shuah Khan <skhan@linuxfoundation.org>, Willy Tarreau <w@1wt.eu>,
-        Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?= <thomas@t-8ch.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?= <linux@weissschuh.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the nolibc tree
-Message-ID: <20230817133811.0a73c624@canb.auug.org.au>
+        Wed, 16 Aug 2023 23:38:41 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A8512686;
+        Wed, 16 Aug 2023 20:38:39 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RR9hT1Pq2z4f3jYR;
+        Thu, 17 Aug 2023 11:38:33 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP4 (Coremail) with SMTP id gCh0CgCHZKc7lt1kEAiYAw--.48250S2;
+        Thu, 17 Aug 2023 11:38:36 +0800 (CST)
+Subject: Re: [PATCH 11/13] ext4: correct gdblock calculation in
+ add_new_gdb_meta_bg to support non first group
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
+ <20230629120044.1261968-12-shikemeng@huaweicloud.com>
+ <20230816034543.GS2247938@mit.edu>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <29c9e94f-63b3-e757-9d6d-c9beaa0e0c19@huaweicloud.com>
+Date:   Thu, 17 Aug 2023 11:38:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/EGVuQwFWSy86H.a2DSRfRt_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230816034543.GS2247938@mit.edu>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: gCh0CgCHZKc7lt1kEAiYAw--.48250S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7trWUCw13ZrW7GFyUCr18uFg_yoW8AFy5pa
+        ykAFyrKFykJrW093ZrA3y0grZ5Cw18J3yUJry3Cr18Cwn8Gr1fKrn7XFyFq3Wa9F4fXr1Y
+        vr4rZ3srCr4kurDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/EGVuQwFWSy86H.a2DSRfRt_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-The following commit is also in the vfs-brauner tree as a different commit
-(but the same patch):
+on 8/16/2023 11:45 AM, Theodore Ts'o wrote:
+> On Thu, Jun 29, 2023 at 08:00:42PM +0800, Kemeng Shi wrote:
+>> In add_new_gdb_meta_bg, we assume that group could be non first
+>> group in meta block group as we call ext4_meta_bg_first_block_no
+>> to get first block of meta block group rather than call
+>> ext4_group_first_block_no for passed group directly. Then ext4_bg_has_super
+>> should be called with first group in meta group rather than new added
+>> group. Or we can call ext4_group_first_block_no instead of
+>> ext4_meta_bg_first_block_no to assume only first group of
+>> meta group will be passed.
+>> Either way, ext4_meta_bg_first_block_no will be useless and
+>> could be removed.
+> 
+> Unfortunately, I spent more time trying to understand the commit
+> description than the C code.  Perhaps this might be a better way of
+> describing the situation?
+> 
+Sorry for my poor language again, :( I will try to improve this.
+> The ext4_new descs() function calls ext4_meta_bg_first_block_no() with
+> the group paramter when the group is the first group of a meta_bg
+> (e.g., when (group % EXT4_DESC_PER_BLOCK) is zero.  So we can simplify
+> things a bit by removing ext4_meta_bg_first_block_no() and an open
+> coding its logic.
+> 
+> Does this make more sense to tou?
+> 
+This patch tries to correct gdbblock calculation in add_new_gdb_meta_bg
+in case group from caller is not the first group of meta_bg which is
+supposed to be handled by add_new_gdb_meta_bg.
+We should call ext4_bg_has_super with first group in meta_bg instead
+of group which could be non first group in meta_bg to calculate gdb
+of meta_bg.
+Fortunately, the only caller ext4_add_new_descs always call
+add_new_gdb_meta_bg with first group of meta_bg and no real issue
+will happen.
 
-  ba859b2e419c ("selftests/nolibc: drop test chmod_net")
 
-This is commit
+> 					- Ted
+> 
 
-  49319832de90 ("selftests/nolibc: drop test chmod_net")
-
-in the vfs-brauner tree.
-
-This duplication is causing a conflict.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/EGVuQwFWSy86H.a2DSRfRt_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTdliMACgkQAVBC80lX
-0Gwg7Qf9EcEq00U/ASm7iE2us0Gyqemp1k8pVEiIutTZA7CSv5gm3w8JGNld2u8Q
-s932Gpdax+ImhoX7nULCD5RYbgIL2xlPnnY49n7AjcvsrR9s1CC6yKJgFeDrH6TD
-fOfJcHRAwmwcNai2HPtBH7JVPNORE706mw6VpJiv/Z4q8GNblQWkdN58LwTjwzRQ
-+qvQqd4WbDdvBZN33HAcgzXQ/FsuHlomfXczzyfMsen6dcy+gH3g218w6dgEx5eS
-bFxPh8mv+hNihYrAUiAUdTerSa+eNnKGMkl6SUgOO8GlhjDxVlwtMLiUQjRAuZaW
-yXphxL06Ol8MRMq2W15PbH4Tbu7r7Q==
-=dNHK
------END PGP SIGNATURE-----
-
---Sig_/EGVuQwFWSy86H.a2DSRfRt_--
