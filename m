@@ -2,71 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58AAC77F670
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A22E377F674
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350862AbjHQM3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 08:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55910 "EHLO
+        id S1350871AbjHQMa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 08:30:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350867AbjHQM3T (ORCPT
+        with ESMTP id S1350881AbjHQMaB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 08:29:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20184271F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:29:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A963766EA9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 12:29:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CAACC433C7;
-        Thu, 17 Aug 2023 12:29:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692275357;
-        bh=zOJ5Vn8afCMHoM0g9p/wkMGQesUHcCwiemYIrx0LZTw=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=fWfk6XvNL3jYcifOSCH9LBF3guqrugP6N5HZW55U0YWVTamxCrHv9OWkupURdl0nL
-         ILbbEcr8otS2NgAEZoXQB+fUBvR0cnUtghqkAz59UcH2HS9rqKnQKmXyaJg0lnwqJ1
-         G2PPwXyCk8wonu3oW0hVE9oAFWc4jUAZDTkZdmWglyXkXGQJLQsZh6vNL/9KfPiQnC
-         4D42ENcYahVqCtsNC5TuVWeBOlz/Gkr4JUp24Q/dwO2MYCsYg4ItQqrs37VnxI3Bzn
-         WdLmzD+qQLsQsRecLuwexo+R5FGKWarzmVwd6OQ+jikmJL8QLF5lpBdpA//fepBv0o
-         8boY2WnSbmdFg==
-From:   Lee Jones <lee@kernel.org>
-To:     linux-kernel@vger.kernel.org, Lee Jones <lee@kernel.org>,
-        Ruan Jinjie <ruanjinjie@huawei.com>
-In-Reply-To: <20230808130003.4076702-1-ruanjinjie@huawei.com>
-References: <20230808130003.4076702-1-ruanjinjie@huawei.com>
-Subject: Re: (subset) [PATCH -next] mfd: tc3589x: Remove redundant
- of_match_ptr()
-Message-Id: <169227535616.1025957.13789465611029331682.b4-ty@kernel.org>
-Date:   Thu, 17 Aug 2023 13:29:16 +0100
+        Thu, 17 Aug 2023 08:30:01 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1E3271B;
+        Thu, 17 Aug 2023 05:30:00 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37HCSH3T025387;
+        Thu, 17 Aug 2023 12:29:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=4HzpTP7FNAMT9uAwevK5G07vm/QGlG2BcywlhBGJw0k=;
+ b=kLbh0EqSZ3cxQ8J3HT6c4Ii69Yjo3mtmRNluD0vhG3ZRincOTTO2MgpDdcTl/62uFcFF
+ 6RdF68p56IRPV9nF1kEsHPbdebc6EGt/aX9a41LKTd2hwm0g/mVP4GbPUY0Lc3CS8ozy
+ ZaBPMFNIZEB2ctUGM4JOjP5CBu+Lzyvf9jgKsUPfasqkHSlhy9QPDPbptLZyMbPIjNjR
+ DNTHXLqR+TbPf9pb09Ryk38uBPeLdIiuuiaHDqYDfkTPJKk60kaysIoJRBF7BELyXZnS
+ gipZnQWtdVmEazaGUh1OsFLrMacEJR86hSYVz0E22nMeSvf/z2twcmEhqvo3P3i+4fbo lw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3shkgn05wx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 12:29:56 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37HCOM0o011665;
+        Thu, 17 Aug 2023 12:29:55 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3shkgn05wa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 12:29:55 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37HAZDd2018869;
+        Thu, 17 Aug 2023 12:29:54 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3seq41wdpu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 12:29:54 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37HCTrBb3080734
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Aug 2023 12:29:54 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BB1B958068;
+        Thu, 17 Aug 2023 12:29:53 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9671C58061;
+        Thu, 17 Aug 2023 12:29:53 +0000 (GMT)
+Received: from localhost (unknown [9.61.129.82])
+        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 17 Aug 2023 12:29:53 +0000 (GMT)
+From:   Nathan Lynch <nathanl@linux.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>, mahesh@linux.ibm.com
+Cc:     linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Tyrel Datwyler <tyreld@linux.ibm.com>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8 1/2] powerpc/rtas: Rename rtas_error_rc to
+ rtas_generic_errno
+In-Reply-To: <87zg2q5fs9.fsf@mail.lhotse>
+References: <169138864808.65607.6576358707894823512.stgit@jupiter>
+ <877cpxdksx.fsf@mail.lhotse>
+ <xzsx7qc3el674iyy2lsn3adm7j2vh5xj6cjaqxgjm6lwcjiz5u@evoqbrvhqf26>
+ <87zg2q5fs9.fsf@mail.lhotse>
+Date:   Thu, 17 Aug 2023 07:29:53 -0500
+Message-ID: <87o7j5zwam.fsf@li-e15d104c-2135-11b2-a85c-d7ef17e56be6.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: TeqLM47v-5tkhNdGU3T38VRBt8JITo02
+X-Proofpoint-GUID: 1YuDwTWJIanuaxXs99mqFgTHlJm_V3fe
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-17_05,2023-08-17_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 impostorscore=0 spamscore=0 malwarescore=0
+ lowpriorityscore=0 phishscore=0 bulkscore=0 mlxscore=0 suspectscore=0
+ mlxlogscore=917 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2308170109
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 08 Aug 2023 21:00:02 +0800, Ruan Jinjie wrote:
-> The driver depends on CONFIG_OF, it is not necessary to use
-> of_match_ptr() here.
-> 
-> 
+Michael Ellerman <mpe@ellerman.id.au> writes:
 
-Applied, thanks!
+> Mahesh J Salgaonkar <mahesh@linux.ibm.com> writes:
+>> On 2023-08-15 13:52:14 Tue, Michael Ellerman wrote:
+>>> Mahesh Salgaonkar <mahesh@linux.ibm.com> writes:
+> ...
+>>> > diff --git a/arch/powerpc/include/asm/rtas.h b/arch/powerpc/include/asm/rtas.h
+>>> > index 3abe15ac79db1..5572a0a2f6e18 100644
+>>> > --- a/arch/powerpc/include/asm/rtas.h
+>>> > +++ b/arch/powerpc/include/asm/rtas.h
+>>> > @@ -202,7 +202,9 @@ typedef struct {
+>>> >  #define RTAS_USER_REGION_SIZE (64 * 1024)
+>>> >  
+>>> >  /* RTAS return status codes */
+>>> > -#define RTAS_BUSY		-2    /* RTAS Busy */
+>>> > +#define RTAS_HARDWARE_ERROR	(-1)  /* Hardware Error */
+>>> > +#define RTAS_BUSY		(-2)  /* RTAS Busy */
+>>> 
+>>> Are the brackets necessary?
+>>
+>> During v5 changset I received offline review comment to add brackets,
+>> hence continued here as well. I can take it away if Nathan is fine with
+>> it.
+>
+> OK. I can't think of a context where the brackets are useful, but I'm
+> probably just not thinking hard enough. I don't really mind adding them,
+> I was just curious what the justification for them was.
 
-[1/1] mfd: tc3589x: Remove redundant of_match_ptr()
-      commit: 85356d665015540338ce84cfeba6c37704cd1b22
-
---
-Lee Jones [李琼斯]
-
+It was my (mistaken) suggestion -- they're not needed.
