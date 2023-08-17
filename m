@@ -2,114 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA2F77FAD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5243B77FAD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352228AbjHQPcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 11:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47104 "EHLO
+        id S1352313AbjHQPeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 11:34:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352320AbjHQPcF (ORCPT
+        with ESMTP id S1352305AbjHQPeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 11:32:05 -0400
-Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D31A2D78;
-        Thu, 17 Aug 2023 08:32:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-        t=1692286322; bh=jhloUQX2E1J9+PoKe/QiW8FViWr4zfA5WBk4rOU7L6s=;
-        h=Date:From:To:Subject:X-My-GPG-KeyId:References:From;
-        b=llwTCSiy/meO+QCeWQcdDEJQ5tpXiV0KwZB3J88v8VDWtxp2VdxsS8cX9UmncP12U
-         jmHW0NO+61zt91X/btYyoWKBl2Lfz3KyyxL6JhqNFtWhVX3h1nte8PNJrbwytF0pPt
-         J1XCSFaxq0y0/YpklFws+VCQK38auNCD6z+ebeiI=
-Date:   Thu, 17 Aug 2023 17:32:02 +0200
-From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
-To:     Muhammed Efe Cetin <efectn@6tel.net>, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, heiko@sntech.de,
-        krzysztof.kozlowski+dt@linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, robh+dt@kernel.org,
-        sebastian.reichel@collabora.com
-Subject: Re: [PATCH 3/3] arm64: dts: rockchip: Add Orange Pi 5
-Message-ID: <qqx5tay4etbepyyy7hqdp2prtw4t3m57esulruevggw2yi4xqf@63a7v5vzodhs>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
-        Muhammed Efe Cetin <efectn@6tel.net>, conor+dt@kernel.org, devicetree@vger.kernel.org, heiko@sntech.de, 
-        krzysztof.kozlowski+dt@linaro.org, linux-arm-kernel@lists.infradead.org, 
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, robh+dt@kernel.org, 
-        sebastian.reichel@collabora.com
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <dz2i6ix6dphyu6dwsqgvx7byoxegmdlsc6dwhyxd3uffqus6jo@r6jnxz7jprdv>
- <20230817145756.161970-1-efectn@6tel.net>
- <czvylysw2shlmvryimwtaquz747jel5k4dzfel6kgijmome7py@d4exzabfp3ig>
+        Thu, 17 Aug 2023 11:34:18 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B1730C6
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:34:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1692286452;
+        bh=LYfwgFU7s5/MJa/0fx3LIMlynA7Gq4pgq2ulwVMJX50=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KSFEhy5rg5rmKjYX+AYz6MizEmYjryQpwGZJMUyNJSuMLRgkXWBn5Gm9btiP4gle9
+         LnRUi+U/Cdutmhhy2BZ6oZG7rP0XwzLH6r6zbHn4GS9h0pmTod7XfdcFgLXE10d5G5
+         pQjJ8fJ9Q8QK0Sld74PJXFbAltUj6bO+FaDUjXkLzYyQrSnXpyIg6TUK4Afv4LF9J4
+         6vlJihIzn3wYwAmnakMUdcB4CKtm74Vn3Ui9BpnloylkVpyqlXAjyOgpecTMoDfdcE
+         CjJfP5K6m+TYFo9Eyq+yO92dMs50nr6C1qjvfbq4J5mb952X1OKEOfJ36uUXzpeAl0
+         B6WdDBW1JhD3Q==
+Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RRTZD3GpJz1Ls2;
+        Thu, 17 Aug 2023 11:34:12 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>, x86@kernel.org
+Subject: [RFC PATCH 1/1] sched: ttwu_queue_cond: perform queued wakeups across different L2 caches
+Date:   Thu, 17 Aug 2023 11:35:15 -0400
+Message-Id: <20230817153515.143932-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <czvylysw2shlmvryimwtaquz747jel5k4dzfel6kgijmome7py@d4exzabfp3ig>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 05:30:04PM +0200, megi xff wrote:
-> 
-> On Thu, Aug 17, 2023 at 05:57:55PM +0300, Muhammed Efe Cetin wrote:
-> > 
-> > Hi, Ondřej
-> > 
-> > On 17.08.2023 16:57, Ondřej Jirman wrote:
-> > > Hi Muhammed,
-> > > 
-> > >>>> [...]
-> > >>>
-> > >>>> +	vcc_1v1_nldo_s3: vcc-1v1-nldo-s3-regulator {
-> > >>>> +		compatible = "regulator-fixed";
-> > >>>> +		regulator-name = "vcc_1v1_nldo_s3";
-> > >>>> +		regulator-always-on;
-> > >>>> +		regulator-boot-on;
-> > >>>> +		regulator-min-microvolt = <1100000>;
-> > >>>> +		regulator-max-microvolt = <1100000>;
-> > >>>> +		vin-supply = <&vcc5v0_sys>;
-> > >>>> +	};
-> > >>>
-> > >>> There's no such regulator on the board.
-> > >>
-> > >> It's connected to PMIC https://i.imgur.com/sVJdC5K.png
-> > > 
-> > > It's not a separate fixed regulator. It's a PMIC output from buck6 https://megous.com/dl/tmp/8630fa17407c75b9.png
-> > > 
-> > 
-> > I think it should be fixed regulator. It's used as vcc13-supply and
-> > vcc14-supply regulator on PMIC and it's same as other rk3588 boards.
-> 
-> Yes, BUCK6 output is input to some LDOs. If you make this a regulator-fixed,
-> BUCK6 will not get enabled when those LDOs are enabled, and the LDOs will not
-> work because they'll lack input power.
-> 
-> Your regulator-fixed does nothing to enable BUCK6 which is where vcc_1v1_nldo_s3
-> power rail is connected.
-> 
-> It only works for you now, because dcdc-reg6 is marked as regulator-always-on,
-> so it's already enabled when you need those dependent LDOs.
+Skipping queued wakeups for all logical CPUs sharing an LLC means that
+on a 192 cores AMD EPYC 9654 96-Core Processor (over 2 sockets), groups
+of 8 cores (16 hardware threads) end up grabbing runqueue locks of other
+runqueues within the same group for each wakeup, causing contention on
+the runqueue locks.
 
-And if other boards have this same HW setup and user separate DT node with
-regulator-fixed for this, they're broken, too.
+Improve this by only considering hardware threads sharing an L2 cache as
+candidates for skipping use of the queued wakeups.
 
-regards,
-	o.
+This results in the following benchmark improvements:
 
-> regards,
-> 	o.
-> 
-> > > So this is VDD2_DDR_S3. If you want to keep the alias, just add extra alias to
-> > > dcdc-reg6 like this:
-> > > 
-> > > 		...
-> > > 	vcc_1v1_nldo_s3: vdd2_ddr_s3: dcdc-reg6 {
-> > > 		...
-> > > 
-> > >>>
+    hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100
+
+from 49s to 34s. (30% speedup)
+
+And similarly with perf bench:
+
+    perf bench sched messaging -g 32 -p -t -l 100000
+
+from 10.9s to 7.4s (32% speedup)
+
+This was developed as part of the investigation into a weird regression
+reported by AMD where adding a raw spinlock in the scheduler context
+switch accelerated hackbench. It turned out that changing this raw
+spinlock for a loop of 10000x cpu_relax within do_idle() had similar
+benefits.
+
+This patch achieves a similar effect without busy waiting nor changing
+anything about runqueue selection on wakeup. It considers that only
+hardware threads sharing an L2 cache should skip the queued
+try-to-wakeup and directly grab the target runqueue lock, rather than
+allowing all hardware threads sharing an LLC to do so.
+
+I would be interested to hear feedback about performance impact of this
+patch (improvement or regression) on other workloads and hardware,
+especially for Intel CPUs. One thing that we might want to empirically
+figure out from the topology is whether there is a maximum number of
+hardware threads within an LLC below which it would make sense to use
+the LLC rather than L2 as group within which queued wakeups can be
+skipped.
+
+[ Only tested on AMD CPUs so far. ]
+
+Link: https://lore.kernel.org/r/09e0f469-a3f7-62ef-75a1-e64cec2dcfc5@amd.com
+Link: https://lore.kernel.org/lkml/20230725193048.124796-1-mathieu.desnoyers@efficios.com/
+Link: https://lore.kernel.org/lkml/20230810140635.75296-1-mathieu.desnoyers@efficios.com/
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <vschneid@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ben Segall <bsegall@google.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
+Cc: Aaron Lu <aaron.lu@intel.com>
+Cc: x86@kernel.org
+---
+ arch/Kconfig                   |  6 ++++++
+ arch/x86/Kconfig               |  1 +
+ drivers/base/Kconfig           |  1 +
+ include/linux/sched/topology.h |  3 ++-
+ kernel/sched/core.c            | 26 +++++++++++++++++++++++---
+ 5 files changed, 33 insertions(+), 4 deletions(-)
+
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 205fd23e0cad..e5aac1741712 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -340,6 +340,12 @@ config HAVE_ASM_MODVERSIONS
+ 	  <asm/asm-prototypes.h> to support the module versioning for symbols
+ 	  exported from assembly code.
+ 
++config HAVE_CLUSTERGROUP
++	bool
++	help
++	  This symbol should be selected by an architecture if it
++	  implements CPU clustergroup.
++
+ config HAVE_REGS_AND_STACK_ACCESS_API
+ 	bool
+ 	help
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index cb1031018afa..07813a1a9a58 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -299,6 +299,7 @@ config X86
+ 	select FUNCTION_ALIGNMENT_4B
+ 	imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
+ 	select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
++	select HAVE_CLUSTERGROUP
+ 
+ config INSTRUCTION_DECODER
+ 	def_bool y
+diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
+index 2b8fd6bb7da0..408aaf7a4bd1 100644
+--- a/drivers/base/Kconfig
++++ b/drivers/base/Kconfig
+@@ -218,6 +218,7 @@ config DMA_FENCE_TRACE
+ 
+ config GENERIC_ARCH_TOPOLOGY
+ 	bool
++	select HAVE_CLUSTERGROUP
+ 	help
+ 	  Enable support for architectures common topology code: e.g., parsing
+ 	  CPU capacity information from DT, usage of such information for
+diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+index 816df6cc444e..714386070463 100644
+--- a/include/linux/sched/topology.h
++++ b/include/linux/sched/topology.h
+@@ -178,7 +178,8 @@ extern void partition_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
+ cpumask_var_t *alloc_sched_domains(unsigned int ndoms);
+ void free_sched_domains(cpumask_var_t doms[], unsigned int ndoms);
+ 
+-bool cpus_share_cache(int this_cpu, int that_cpu);
++bool cpus_share_cluster(int this_cpu, int that_cpu);	/* Share L2. */
++bool cpus_share_cache(int this_cpu, int that_cpu);	/* Share LLC. */
+ 
+ typedef const struct cpumask *(*sched_domain_mask_f)(int cpu);
+ typedef int (*sched_domain_flags_f)(void);
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index a68d1276bab0..ce3402b81e5e 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3904,13 +3904,33 @@ void wake_up_if_idle(int cpu)
+ 	rcu_read_unlock();
+ }
+ 
++/*
++ * Query whether CPUs share LLC.
++ */
+ bool cpus_share_cache(int this_cpu, int that_cpu)
++{
++	return per_cpu(sd_llc_id, this_cpu) == per_cpu(sd_llc_id, that_cpu);
++}
++
++#ifdef CONFIG_HAVE_CLUSTERGROUP
++/*
++ * Query whether CPUs share L2 cache.
++ */
++bool cpus_share_cluster(int this_cpu, int that_cpu)
+ {
+ 	if (this_cpu == that_cpu)
+ 		return true;
+-
+-	return per_cpu(sd_llc_id, this_cpu) == per_cpu(sd_llc_id, that_cpu);
++	return cpumask_test_cpu(that_cpu, cpu_clustergroup_mask(this_cpu));
++}
++#else
++/*
++ * Fall-back on querying whether CPUs share LLC.
++ */
++bool cpus_share_cluster(int this_cpu, int that_cpu)
++{
++	return cpus_share_cache(this_cpu, that_cpu);
+ }
++#endif
+ 
+ static inline bool ttwu_queue_cond(struct task_struct *p, int cpu)
+ {
+@@ -3929,7 +3949,7 @@ static inline bool ttwu_queue_cond(struct task_struct *p, int cpu)
+ 	 * If the CPU does not share cache, then queue the task on the
+ 	 * remote rqs wakelist to avoid accessing remote data.
+ 	 */
+-	if (!cpus_share_cache(smp_processor_id(), cpu))
++	if (!cpus_share_cluster(smp_processor_id(), cpu))
+ 		return true;
+ 
+ 	if (cpu == smp_processor_id())
+-- 
+2.39.2
+
