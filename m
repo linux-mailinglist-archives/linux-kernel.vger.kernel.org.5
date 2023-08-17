@@ -2,40 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C453F77F062
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 08:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1A077F064
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 08:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348186AbjHQGHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 02:07:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49458 "EHLO
+        id S1348190AbjHQGIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 02:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348192AbjHQGGw (ORCPT
+        with ESMTP id S1348189AbjHQGIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 02:06:52 -0400
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A47B02D56;
-        Wed, 16 Aug 2023 23:06:50 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R881e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VpygmlG_1692252404;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0VpygmlG_1692252404)
-          by smtp.aliyun-inc.com;
-          Thu, 17 Aug 2023 14:06:47 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     alexander.deucher@amd.com
-Cc:     christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, jdelvare@suse.com, linux@roeck-us.net,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] drm/amd/pm: Fix unsigned expression compared with zero
-Date:   Thu, 17 Aug 2023 14:06:44 +0800
-Message-Id: <20230817060644.74477-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+        Thu, 17 Aug 2023 02:08:41 -0400
+Received: from out-36.mta1.migadu.com (out-36.mta1.migadu.com [IPv6:2001:41d0:203:375::24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C1651987
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 23:08:40 -0700 (PDT)
+Message-ID: <42d6b829-ab97-2b81-de2c-7551da13f913@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1692252516; h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Gy4Xdhm6JP810lhoDVOEnB7UsTV82pmc6PvGVvQdJi4=;
+        b=rG343MDNxBNV0uFba6XARJQssvBL3/SgJe/GirlWC/5lOA7PqDglHhz4hOVVvvVntz+xgl
+        lx9dTNZdoyR3uVhJPNyzxn4M2i75/SVJtueEFWdTKZ/cufK4uY74CJKdYHqWIhchj1xcLr
+        RtVfqe8b3BiOT2kxupCXrVWKZzUTSEA=
+Date:   Wed, 16 Aug 2023 23:08:29 -0700
 MIME-Version: 1.0
+Reply-To: yonghong.song@linux.dev
+Subject: Re: [PATCH bpf-next] bpf: Disable -Wmissing-declarations for
+ globally-linked kfuncs
+Content-Language: en-US
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     David Vernet <void@manifault.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@meta.com>,
+        kernel test robot <lkp@intel.com>
+References: <20230816150634.1162838-1-void@manifault.com>
+ <2d530dec-e6c2-5e3a-ccf2-d65039a9969d@linux.dev>
+ <CAADnVQKtWkPWMG+F-Tkf3YXeMnC=Xwi8GA5xJMaqi725tgHSTw@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQKtWkPWMG+F-Tkf3YXeMnC=Xwi8GA5xJMaqi725tgHSTw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -43,41 +65,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The val is defined as unsigned int type, if(val<0) is invalid, modify
-to int type.
 
-drivers/gpu/drm/amd/amdgpu/../pm/amdgpu_pm.c:2813 amdgpu_hwmon_show_power_input() warn: unsigned 'val' is never less than zero.
-drivers/gpu/drm/amd/amdgpu/../pm/amdgpu_pm.c:2800 amdgpu_hwmon_show_power_avg() warn: unsigned 'val' is never less than zero.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6181
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/gpu/drm/amd/pm/amdgpu_pm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 8/16/23 8:48 PM, Alexei Starovoitov wrote:
+> On Wed, Aug 16, 2023 at 8:38 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>
+>>
+>>
+>> On 8/16/23 8:06 AM, David Vernet wrote:
+>>> We recently got an lkp warning about missing declarations, as in e.g.
+>>> [0]. This warning is largely redundant with -Wmissing-prototypes, which
+>>> we already disable for kfuncs that have global linkage and are meant to
+>>> be exported in BTF, and called from BPF programs. Let's also disable
+>>> -Wmissing-declarations for kfuncs. For what it's worth, I wasn't able to
+>>> reproduce the warning even on W <= 3, so I can't actually be 100% sure
+>>> this fixes the issue.
+>>>
+>>> [0]: https://lore.kernel.org/all/202308162115.Hn23vv3n-lkp@intel.com/
+>>
+>> Okay, I just got a similar email to [0] which complains
+>>     bpf_obj_new_impl, ..., bpf_cast_to_kern_ctx
+>> missing declarations.
+>>
+>> In the email, the used compiler is
+>> compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+>>
+>> Unfortunately, I did not have gcc-7 to verify this.
+>> Also, what is the minimum gcc version kernel supports? 5.1?
+> 
+> pahole and BTF might be broken in such old GCC too.
+> Maybe we should add:
+> config BPF_SYSCALL
+>          depends on GCC_VERSION >= 90000 || CLANG_VERSION >= 130000
 
-diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-index 5b1d73b00ef7..fe490e5860d2 100644
---- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-+++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-@@ -2794,7 +2794,7 @@ static ssize_t amdgpu_hwmon_show_power_avg(struct device *dev,
- 					   struct device_attribute *attr,
- 					   char *buf)
- {
--	unsigned int val;
-+	int val;
- 
- 	val = amdgpu_hwmon_get_power(dev, AMDGPU_PP_SENSOR_GPU_AVG_POWER);
- 	if (val < 0)
-@@ -2807,7 +2807,7 @@ static ssize_t amdgpu_hwmon_show_power_input(struct device *dev,
- 					     struct device_attribute *attr,
- 					     char *buf)
- {
--	unsigned int val;
-+	int val;
- 
- 	val = amdgpu_hwmon_get_power(dev, AMDGPU_PP_SENSOR_GPU_INPUT_POWER);
- 	if (val < 0)
--- 
-2.20.1.7.g153144c
+Do you remember what kind of issues pahole/BTF have for
+< 9.0 gcc and < 13.0 clang?
 
