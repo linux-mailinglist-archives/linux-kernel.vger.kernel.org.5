@@ -2,129 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D92A1780177
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1030F780179
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355966AbjHQXDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 19:03:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45866 "EHLO
+        id S1355974AbjHQXFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 19:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355979AbjHQXDP (ORCPT
+        with ESMTP id S1356012AbjHQXEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 19:03:15 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF7335A1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:03:11 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4ff9121fd29so377874e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:03:11 -0700 (PDT)
+        Thu, 17 Aug 2023 19:04:54 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4924C272B
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:04:53 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-589c6dc8670so4155527b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:04:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692313390; x=1692918190;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KohSaVbVTZzw51hU080rc6/yBBZBjNRiH2rTqSdtLwA=;
-        b=Fof3Acoia7VG4nhAUoI/nfrGuonJnuAOuLTuxr4ifWkBep3jTwsZKCvWMSh4AvndpG
-         trV6p3y5uWJ0aEKg9s8EiJORJ/EP4s69g424Jk97fDuHlZqb2n45XmAfy9vurcT0weSh
-         G5lrDhwTny3/mdaReAoSN8pWdxsEFbm9/lWAx6F8CmYOatCY8DzUODWaCHADNiNRblNJ
-         RxPAVA8I8QwkTdzrQvhhHOWp9RSjkC9SUVJCFaDo5rfzgiSzWYdoulQkQPfhUwKqwGeX
-         fe5jNLQUkCBMNIMlJ1IFYlS8vlIZf+zofWZMXZHsR/9e1KPOPcJwbiuu3wJicckDIN8U
-         889Q==
+        d=google.com; s=20221208; t=1692313492; x=1692918292;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hS1zBff4CJqQpKtGoFuM9RpGEari+VKEFDh4dUpgboM=;
+        b=s4J6qYsVz0J2xQZkaXuMZImQpXQ7CPB0achUXpAbHqN4dGRHvpb7ZZYuPyvXsjtWY9
+         dx7ilbFHek6yGLM51YrtLWpfHagVFx1UAF6fKj8FSyJmXFZHsBK/qNBN3UjDmIRg9Hqa
+         zPLrgroMVWQoq+is4OF7N0ZtEB+Gf9afhpMGEq0V4wNVq1LSijkVK3Ic9D70tD6KuNPC
+         SDM5hjWkYjwX8deQ6Z+IiF8MBPp3qKyAyynaXuYNZsatSoDmmrC1G1OYjGjIOr3yMGn8
+         49H5ReDHqoJhANUeqSJURQDiZaRKc0Px+1gkQpifPJEm4vd6Zzbj+79a5phZoSttuNXN
+         Gyug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692313390; x=1692918190;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KohSaVbVTZzw51hU080rc6/yBBZBjNRiH2rTqSdtLwA=;
-        b=Jlx8EZp9vTyk0lWKvhw3QBvmR8YWIbpq3QPuL5GQyQ5tTvD0jZqjCr8oTvRD3wg9z9
-         OG8p3cPyXxXKnAJYlsxWXqjJ+41VtMv+l69QqdglvvE8TT6IG7po/mPB8WP+kCw7EMyS
-         13XMmTyRAIF+r5f/kF/cZXcWeITxW8S8AmSBxBZKWDb500w4PbrzO+hDwVXe53adwIKG
-         yMb+5FuFdvKwYKpuWZWMt1p+cxe/jehgy5BmO+AR/IydwNnPyGv2fVr1mN/qrsz08yhg
-         XCVWP2H15NLXTj8t/WZ+F9p+Fj1x8mc/oMz5p0QT9rMVnp0sVycc/1kdIx5etIWNWzkg
-         gBhw==
-X-Gm-Message-State: AOJu0Yx0YEYBPM3RlSV0Vz1RQU/zvgS/bVwy4v557HX+p5a6hA2HychY
-        jMPaatL6IFfUh2jIBerqkbBZ8Q==
-X-Google-Smtp-Source: AGHT+IEsPKiYiAI9yScvyF/DuR+/ExSEEAU+QEx8uhb/3wDAjFfUrvIb5f02SKlt45rVQZXgly+RRg==
-X-Received: by 2002:a05:6512:324d:b0:4ff:9aaa:6e3e with SMTP id c13-20020a056512324d00b004ff9aaa6e3emr441535lfr.41.1692313390043;
-        Thu, 17 Aug 2023 16:03:10 -0700 (PDT)
-Received: from [192.168.1.101] (abxh52.neoplus.adsl.tpnet.pl. [83.9.1.52])
-        by smtp.gmail.com with ESMTPSA id n26-20020ac2491a000000b004fa52552c7csm84540lfi.151.2023.08.17.16.03.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Aug 2023 16:03:09 -0700 (PDT)
-Message-ID: <662c9de8-6298-4eb0-ae84-d0cb4ea34a17@linaro.org>
-Date:   Fri, 18 Aug 2023 01:03:09 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: sa8775p-ride: Describe sgmii_phy1
- irq
-Content-Language: en-US
-To:     Andrew Halaney <ahalaney@redhat.com>, andersson@kernel.org
-Cc:     agross@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, brgl@bgdev.pl
-References: <20230817213815.638189-1-ahalaney@redhat.com>
- <20230817213815.638189-3-ahalaney@redhat.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230817213815.638189-3-ahalaney@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1692313492; x=1692918292;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hS1zBff4CJqQpKtGoFuM9RpGEari+VKEFDh4dUpgboM=;
+        b=fklDY68amMZm4Wf2X7dHWOOxX167SLkjvJFTyj+4gyL0AQci4kB1Z5/LiqwFsfA9rg
+         DmFhr7hrBh3zQoTq9FDdQv+FQdRzK6tOj0cTrTS9pp2ac4tUEV+W6eTJD/vAJXRNTIVz
+         YJKje2x5FxskerGE0HXQEY4kB9wtAEWafW371BGyeqg+LVxXloZnL3h7EG0qq8d1N6ZS
+         aw8bwcZ/CzVFXKB0WnvDsMn3G6UNJd0mkurTNHNFZn88L2nH2gejL8QpS8cZGNMs8ZCe
+         yZqYJeYjNvJ6OvpA2YgUib8ck2WKmusl9/cI1JTYp9Kz8tHkvo4mqq+mxaGOncSw/ajI
+         QM8g==
+X-Gm-Message-State: AOJu0YzSpQHobWezGb/cUBXaLc4mcU9t2VOzlr+yLvsjnMbA2+bVPHGI
+        c6R0LYCG0feRIMph1q3P+TFo8S3YGLg=
+X-Google-Smtp-Source: AGHT+IFVjzPu9bwWZynt8tGrMum+4+Vgkq5DJnwOx8y+2Me6QX9EXbE7NI7V7scAdmY748LFNaNxA+9V2e8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:ad01:0:b0:d74:347:1da with SMTP id
+ y1-20020a25ad01000000b00d74034701damr11495ybi.2.1692313492569; Thu, 17 Aug
+ 2023 16:04:52 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 16:04:50 -0700
+In-Reply-To: <20230814115108.45741-7-cloudliang@tencent.com>
+Mime-Version: 1.0
+References: <20230814115108.45741-1-cloudliang@tencent.com> <20230814115108.45741-7-cloudliang@tencent.com>
+Message-ID: <ZN6nkkZ7D/baOp+f@google.com>
+Subject: Re: [PATCH v3 06/11] KVM: selftests: Test consistency of CPUID with
+ num of fixed counters
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jinrong Liang <ljr.kernel@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Like Xu <likexu@tencent.com>,
+        David Matlack <dmatlack@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jinrong Liang <cloudliang@tencent.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.08.2023 23:37, Andrew Halaney wrote:
-> There's an irq hooked up, so let's describe it.
-> 
-> Prior to commit 9757300d2750
-> ("pinctrl: qcom: Add intr_target_width field to support increased number of interrupt targets")
-> one would not see the IRQ fire, despite some (invasive) debugging
-> showing that the GPIO was in fact asserted, resulting in the interface
-> staying down.
-> 
-> Now that the IRQ is properly routed we can describe it.
-> 
-> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+On Mon, Aug 14, 2023, Jinrong Liang wrote:
+> @@ -239,6 +272,14 @@ static void intel_test_counters_num(void)
+>  		if (!perf_caps[i])
+>  			test_oob_gp_counter(0, 2, perf_caps[i], 0);
+>  	}
+> +
+> +	for (ecx = 0;
+> +	     ecx <= kvm_cpu_property(X86_PROPERTY_PMU_FIXED_COUNTERS_BITMASK) + 1;
 
-Konrad
+This is the perfect time to use a local variable:
+
+	for (ecx = 0; ecx <= fixed_counters_bitmask; ecx++)
+
+> +	     ecx++) {
+> +		intel_test_oob_fixed_ctr(0, ecx, GP_VECTOR);
+> +		intel_test_oob_fixed_ctr(nr_fixed_counters, ecx, GP_VECTOR);
+> +		intel_test_oob_fixed_ctr(nr_fixed_counters + 1, ecx, GP_VECTOR);
+> +	}
+>  }
+>  
+>  int main(int argc, char *argv[])
+> -- 
+> 2.39.3
+> 
