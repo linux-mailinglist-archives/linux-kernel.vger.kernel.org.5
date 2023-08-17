@@ -2,125 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6861877F03D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 07:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CDC77F03F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 07:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348112AbjHQFgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 01:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45458 "EHLO
+        id S1348114AbjHQFgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 01:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348110AbjHQFgF (ORCPT
+        with ESMTP id S1348115AbjHQFgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 01:36:05 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D50E48
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 22:36:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692250564; x=1723786564;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=xyDvXu50Nwflcy6OBgzU9fv/e5QmHeAJoWXPBRuKuqE=;
-  b=IuvEyFVLqR91GnDIDJ07DXH268wOOiQsLvOzKk+FAumiyJ5ZHqR5u0x/
-   +5mvbBLjwiNJgXTnrx6pR7Fg5pGGx8lDnqapj1sG/Reh3bEtMr+oeNj+w
-   zQFE1KTPmVUKBFCuBFdUXIEq3srQTMZ316eih/jGsDAzfZsZotfXjglLW
-   ECz9FF4knmHUByjskWAqSZBtiwtMBtn+GWwE9XtjZQxoBVnUQidnn5EKC
-   6Rj1diu0zIDnIES0VbIaoJrFpoGiExVha7NNy6X3HaQ/JbWRECmp/DvMc
-   SdViaUC9K2RqYfFTg4QtfgIOpAfkGlJKvYp4I6ed0KkycXDULtxA/cRNB
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="376453560"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="376453560"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 22:36:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="878076802"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 16 Aug 2023 22:36:06 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWVft-0000pF-2v;
-        Thu, 17 Aug 2023 05:36:01 +0000
-Date:   Thu, 17 Aug 2023 13:35:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: kernel/bpf/helpers.c:1887:7: warning: no previous declaration for
- 'bpf_rdonly_cast'
-Message-ID: <202308171347.v9awguFg-lkp@intel.com>
+        Thu, 17 Aug 2023 01:36:42 -0400
+Received: from out-9.mta1.migadu.com (out-9.mta1.migadu.com [95.215.58.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55B9E48
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 22:36:40 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 14:36:30 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1692250599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uK+R0U0084E3+ioqd6qX+1HxBOQ0SxAv8VxEItq01Os=;
+        b=Jqkb1wEi/7vgZxbuen5SmpnYKbSOXIgjdeJGSP/y+QYeKVIyuF1ohqUDl0d8008q0t/1Z8
+        JbPbfpLfK8ypj7qtPJIo1s04RsmMqTkGBfroXM+6SAOr9lQDVAujg9dr2XZXPgDl9WcrHl
+        W7O2prqKtJMOGUec2EMR7YLg6iHqVRQ=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Naoya Horiguchi <naoya.horiguchi@linux.dev>
+To:     Tong Tiangen <tongtiangen@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Miaohe Lin <linmiaohe@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, wangkefeng.wang@huawei.com,
+        Guohanjun <guohanjun@huawei.com>
+Subject: Re: [RFC PATCH -next] mm: fix softlockup by replacing tasklist_lock
+ with RCU in for_each_process()
+Message-ID: <20230817053630.GA461822@ik1-406-35019.vs.sakura.ne.jp>
+References: <20230815130154.1100779-1-tongtiangen@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230815130154.1100779-1-tongtiangen@huawei.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
-commit: a35b9af4ec2c7f69286ef861fd2074a577e354cb bpf: Add a kfunc for generic type cast
-date:   9 months ago
-config: x86_64-randconfig-x012-20230816 (https://download.01.org/0day-ci/archive/20230817/202308171347.v9awguFg-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce: (https://download.01.org/0day-ci/archive/20230817/202308171347.v9awguFg-lkp@intel.com/reproduce)
+On Tue, Aug 15, 2023 at 09:01:54PM +0800, Tong Tiangen wrote:
+> We found a softlock issue in our test, analyzed the logs, and found that
+> the relevant CPU call trace as follows:
+> 
+> CPU0:
+>   _do_fork
+>     -> copy_process()
+>       -> write_lock_irq(&tasklist_lock)  //Disable irq,waiting for
+>       					 //tasklist_lock
+> 
+> CPU1:
+>   wp_page_copy()
+>     ->pte_offset_map_lock()
+>       -> spin_lock(&page->ptl);        //Hold page->ptl
+>     -> ptep_clear_flush()
+>       -> flush_tlb_others() ...
+>         -> smp_call_function_many()
+>           -> arch_send_call_function_ipi_mask()
+>             -> csd_lock_wait()         //Waiting for other CPUs respond
+> 	                               //IPI
+> 
+> CPU2:
+>   collect_procs_anon()
+>     -> read_lock(&tasklist_lock)       //Hold tasklist_lock
+>       ->for_each_process(tsk)
+>         -> page_mapped_in_vma()
+>           -> page_vma_mapped_walk()
+> 	    -> map_pte()
+>               ->spin_lock(&page->ptl)  //Waiting for page->ptl
+> 
+> We can see that CPU1 waiting for CPU0 respond IPI，CPU0 waiting for CPU2
+> unlock tasklist_lock, CPU2 waiting for CPU1 unlock page->ptl. As a result,
+> softlockup is triggered.
+> 
+> For collect_procs_anon(), we will not modify the tasklist, but only perform
+> read traversal. Therefore, we can use rcu lock instead of spin lock
+> tasklist_lock, from this, we can break the softlock chain above.
+> 
+> The same logic can also be applied to:
+>  - collect_procs_file()
+>  - collect_procs_fsdax()
+>  - collect_procs_ksm()
+>  - find_early_kill_thread()
+> 
+> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308171347.v9awguFg-lkp@intel.com/
+Hello Tiangen, thank you for finding the issue.
+mm/filemap.c mentions tasklist_lock in the comment about locking order,
 
-All warnings (new ones prefixed by >>):
+  * ->i_mmap_rwsem                                                      
+  *   ->tasklist_lock            (memory_failure, collect_procs_ao)     
 
-   kernel/bpf/helpers.c:1757:7: warning: no previous declaration for 'bpf_obj_new_impl' [-Wmissing-declarations]
-    void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
-          ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1771:6: warning: no previous declaration for 'bpf_obj_drop_impl' [-Wmissing-declarations]
-    void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
-         ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1792:6: warning: no previous declaration for 'bpf_list_push_front' [-Wmissing-declarations]
-    void bpf_list_push_front(struct bpf_list_head *head, struct bpf_list_node *node)
-         ^~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1797:6: warning: no previous declaration for 'bpf_list_push_back' [-Wmissing-declarations]
-    void bpf_list_push_back(struct bpf_list_head *head, struct bpf_list_node *node)
-         ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1815:23: warning: no previous declaration for 'bpf_list_pop_front' [-Wmissing-declarations]
-    struct bpf_list_node *bpf_list_pop_front(struct bpf_list_head *head)
-                          ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1820:23: warning: no previous declaration for 'bpf_list_pop_back' [-Wmissing-declarations]
-    struct bpf_list_node *bpf_list_pop_back(struct bpf_list_head *head)
-                          ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1831:21: warning: no previous declaration for 'bpf_task_acquire' [-Wmissing-declarations]
-    struct task_struct *bpf_task_acquire(struct task_struct *p)
-                        ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1843:21: warning: no previous declaration for 'bpf_task_kptr_get' [-Wmissing-declarations]
-    struct task_struct *bpf_task_kptr_get(struct task_struct **pp)
-                        ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1874:6: warning: no previous declaration for 'bpf_task_release' [-Wmissing-declarations]
-    void bpf_task_release(struct task_struct *p)
-         ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1882:7: warning: no previous declaration for 'bpf_cast_to_kern_ctx' [-Wmissing-declarations]
-    void *bpf_cast_to_kern_ctx(void *obj)
-          ^~~~~~~~~~~~~~~~~~~~
->> kernel/bpf/helpers.c:1887:7: warning: no previous declaration for 'bpf_rdonly_cast' [-Wmissing-declarations]
-    void *bpf_rdonly_cast(void *obj__ign, u32 btf_id__k)
-          ^~~~~~~~~~~~~~~
+so you can update this together?
+Otherwise looks good to me.
 
+Thanks,
+Naoya Horiguchi
 
-vim +/bpf_rdonly_cast +1887 kernel/bpf/helpers.c
-
-  1886	
-> 1887	void *bpf_rdonly_cast(void *obj__ign, u32 btf_id__k)
-  1888	{
-  1889		return obj__ign;
-  1890	}
-  1891	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+>  mm/ksm.c            |  4 ++--
+>  mm/memory-failure.c | 36 ++++++++++++++++++++++--------------
+>  2 files changed, 24 insertions(+), 16 deletions(-)
+> 
+> diff --git a/mm/ksm.c b/mm/ksm.c
+> index 6b7b8928fb96..dcbc0c7f68e7 100644
+> --- a/mm/ksm.c
+> +++ b/mm/ksm.c
+> @@ -2919,7 +2919,7 @@ void collect_procs_ksm(struct page *page, struct list_head *to_kill,
+>  		struct anon_vma *av = rmap_item->anon_vma;
+>  
+>  		anon_vma_lock_read(av);
+> -		read_lock(&tasklist_lock);
+> +		rcu_read_lock();
+>  		for_each_process(tsk) {
+>  			struct anon_vma_chain *vmac;
+>  			unsigned long addr;
+> @@ -2938,7 +2938,7 @@ void collect_procs_ksm(struct page *page, struct list_head *to_kill,
+>  				}
+>  			}
+>  		}
+> -		read_unlock(&tasklist_lock);
+> +		rcu_read_unlock();
+>  		anon_vma_unlock_read(av);
+>  	}
+>  }
+> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> index 7b01fffe7a79..6a02706043f4 100644
+> --- a/mm/memory-failure.c
+> +++ b/mm/memory-failure.c
+> @@ -546,24 +546,32 @@ static void kill_procs(struct list_head *to_kill, int forcekill, bool fail,
+>   * Find a dedicated thread which is supposed to handle SIGBUS(BUS_MCEERR_AO)
+>   * on behalf of the thread group. Return task_struct of the (first found)
+>   * dedicated thread if found, and return NULL otherwise.
+> - *
+> - * We already hold read_lock(&tasklist_lock) in the caller, so we don't
+> - * have to call rcu_read_lock/unlock() in this function.
+>   */
+>  static struct task_struct *find_early_kill_thread(struct task_struct *tsk)
+>  {
+>  	struct task_struct *t;
+> +	bool find = false;
+>  
+> +	rcu_read_lock();
+>  	for_each_thread(tsk, t) {
+>  		if (t->flags & PF_MCE_PROCESS) {
+> -			if (t->flags & PF_MCE_EARLY)
+> -				return t;
+> +			if (t->flags & PF_MCE_EARLY) {
+> +				find = true;
+> +				break;
+> +			}
+>  		} else {
+> -			if (sysctl_memory_failure_early_kill)
+> -				return t;
+> +			if (sysctl_memory_failure_early_kill) {
+> +				find = true;
+> +				break;
+> +			}
+>  		}
+>  	}
+> -	return NULL;
+> +	rcu_read_unlock();
+> +
+> +	if (!find)
+> +		t = NULL;
+> +
+> +	return t;
+>  }
+>  
+>  /*
+> @@ -609,7 +617,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
+>  		return;
+>  
+>  	pgoff = page_to_pgoff(page);
+> -	read_lock(&tasklist_lock);
+> +	rcu_read_lock();
+>  	for_each_process(tsk) {
+>  		struct anon_vma_chain *vmac;
+>  		struct task_struct *t = task_early_kill(tsk, force_early);
+> @@ -626,7 +634,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
+>  			add_to_kill_anon_file(t, page, vma, to_kill);
+>  		}
+>  	}
+> -	read_unlock(&tasklist_lock);
+> +	rcu_read_unlock();
+>  	anon_vma_unlock_read(av);
+>  }
+>  
+> @@ -642,7 +650,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
+>  	pgoff_t pgoff;
+>  
+>  	i_mmap_lock_read(mapping);
+> -	read_lock(&tasklist_lock);
+> +	rcu_read_lock();
+>  	pgoff = page_to_pgoff(page);
+>  	for_each_process(tsk) {
+>  		struct task_struct *t = task_early_kill(tsk, force_early);
+> @@ -662,7 +670,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
+>  				add_to_kill_anon_file(t, page, vma, to_kill);
+>  		}
+>  	}
+> -	read_unlock(&tasklist_lock);
+> +	rcu_read_unlock();
+>  	i_mmap_unlock_read(mapping);
+>  }
+>  
+> @@ -685,7 +693,7 @@ static void collect_procs_fsdax(struct page *page,
+>  	struct task_struct *tsk;
+>  
+>  	i_mmap_lock_read(mapping);
+> -	read_lock(&tasklist_lock);
+> +	rcu_read_lock();
+>  	for_each_process(tsk) {
+>  		struct task_struct *t = task_early_kill(tsk, true);
+>  
+> @@ -696,7 +704,7 @@ static void collect_procs_fsdax(struct page *page,
+>  				add_to_kill_fsdax(t, page, vma, to_kill, pgoff);
+>  		}
+>  	}
+> -	read_unlock(&tasklist_lock);
+> +	rcu_read_unlock();
+>  	i_mmap_unlock_read(mapping);
+>  }
+>  #endif /* CONFIG_FS_DAX */
+> -- 
+> 2.25.1
+> 
+> 
+> 
