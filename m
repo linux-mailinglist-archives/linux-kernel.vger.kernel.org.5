@@ -2,103 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA36177F330
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8899877F332
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349528AbjHQJZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 05:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39974 "EHLO
+        id S1349538AbjHQJZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 05:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349601AbjHQJZV (ORCPT
+        with ESMTP id S1349525AbjHQJZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 05:25:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF0DD2724;
-        Thu, 17 Aug 2023 02:25:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692264320; x=1723800320;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=diQgJhtqaTL9bBmQnRVPSp1k6/0glCwWzddX5p4Tyrc=;
-  b=XS2yupF/FjeoKJeotZ4CjJfIfgvQ2ptWNEnXoVtu/F7aeGQCMpN4r1zS
-   Fe1+Ezt9GzSR5eL8+rOanGu2VkI3DdZvhpEvPpckAxYpyJFIEIYKtIyrO
-   W33HpsmNDPoK9N67XOR0gA6BZjnUPG9YUp9TjCboU6IVkRnzhUyoPXaFT
-   7KD5BZiOU6gKBajXGVemtUJc9JIANFdujoeIpDeLDZb5YcDHs7NGSq79T
-   FjskvGjAc/ryJ03HcYINE2kj6JZBBAy1SVxerniaDsCEir5yywlXEU295
-   IDaKBc1TrQ7Kf/Hu5PcCePomOHdPlKU0DKmbUTVP8Zx/dAnJ/eCrfhlcU
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="376496506"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="376496506"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 02:25:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="878152230"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP; 17 Aug 2023 02:25:11 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qWZFZ-0054T5-2B;
-        Thu, 17 Aug 2023 12:25:05 +0300
-Date:   Thu, 17 Aug 2023 12:25:05 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v3] gpio: sim: simplify code with cleanup helpers
-Message-ID: <ZN3ncVjDn9ZXHOS5@smile.fi.intel.com>
-References: <20230812183635.5478-1-brgl@bgdev.pl>
- <ZNtT37d3eR6FcQyR@smile.fi.intel.com>
- <CAMRc=McqdnBBSe1QhyNEFCs3E+Qb_K-z1dT+B8+n2KvWajj5hA@mail.gmail.com>
+        Thu, 17 Aug 2023 05:25:25 -0400
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7EF273C;
+        Thu, 17 Aug 2023 02:25:21 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R241e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=guangguan.wang@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VpzO9uF_1692264316;
+Received: from 30.221.109.120(mailfrom:guangguan.wang@linux.alibaba.com fp:SMTPD_---0VpzO9uF_1692264316)
+          by smtp.aliyun-inc.com;
+          Thu, 17 Aug 2023 17:25:17 +0800
+Message-ID: <78348c02-6f5a-2d25-b417-089346f4d412@linux.alibaba.com>
+Date:   Thu, 17 Aug 2023 17:25:13 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH net-next 4/6] net/smc: support max connections per lgr
+ negotiation
+Content-Language: en-US
+To:     Jan Karcher <jaka@linux.ibm.com>, wenjia@linux.ibm.com,
+        kgraul@linux.ibm.com, tonylu@linux.alibaba.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     horms@kernel.org, alibuda@linux.alibaba.com,
+        guwen@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230816083328.95746-1-guangguan.wang@linux.alibaba.com>
+ <20230816083328.95746-5-guangguan.wang@linux.alibaba.com>
+ <dcbb9692-0494-1161-d873-ef67b3e7cb6d@linux.ibm.com>
+From:   Guangguan Wang <guangguan.wang@linux.alibaba.com>
+In-Reply-To: <dcbb9692-0494-1161-d873-ef67b3e7cb6d@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=McqdnBBSe1QhyNEFCs3E+Qb_K-z1dT+B8+n2KvWajj5hA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-13.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 09:09:55PM +0200, Bartosz Golaszewski wrote:
-> On Tue, Aug 15, 2023 at 12:31 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Sat, Aug 12, 2023 at 08:36:35PM +0200, Bartosz Golaszewski wrote:
 
+
+On 2023/8/17 14:42, Jan Karcher wrote:
+> 
+> 
+> On 16/08/2023 10:33, Guangguan Wang wrote:
 ...
-
-> > > -     mutex_lock(&chip->lock);
-> > > -     __assign_bit(offset, chip->value_map, value);
-> > > -     mutex_unlock(&chip->lock);
-> > > +     scoped_guard(mutex, &chip->lock)
-> > > +             __assign_bit(offset, chip->value_map, value);
-> >
-> > But this can also be guarded.
-> >
-> >         guard(mutex)(&chip->lock);
-> >
-> >         __assign_bit(offset, chip->value_map, value);
+>> @@ -1163,6 +1173,11 @@ int smc_clc_srv_v2x_features_validate(struct smc_clc_msg_proposal *pclc,
+>>   {
+>>       struct smc_clc_v2_extension *pclc_v2_ext;
+>>   +    /* default max conn is SMC_CONN_PER_LGR_MAX(255),
+>> +     * which is the default value in smc v1 and v2.0.
+>> +     */
 > 
-> Come on, this is total bikeshedding! I could produce ten arguments in
-> favor of the scoped variant.
+> I'm afraid this comment is not going to age well. You already put this to the define itself so i plea to remove it here.
 > 
-> Linus acked even the previous version and Peter says it looks right. I
-> will queue it unless some *real* issues come up.
+> Thank you.
+> - Jan
+> 
 
-I still think this will be, besides being shorter and nicer to read,
-more consistent with other simple use of "guard(); return ..." cases.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Get it, Thanks.
