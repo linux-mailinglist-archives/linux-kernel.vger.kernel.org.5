@@ -2,90 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DBE577F72C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4195377F713
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351291AbjHQNAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 09:00:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59998 "EHLO
+        id S1351167AbjHQNAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 09:00:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351123AbjHQNAM (ORCPT
+        with ESMTP id S1351085AbjHQNAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 09:00:12 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 452CB30D4;
-        Thu, 17 Aug 2023 06:00:10 -0700 (PDT)
-Received: from loongson.cn (unknown [10.2.5.185])
-        by gateway (Coremail) with SMTP id _____8BxyerTGd5k3oYZAA--.42938S3;
-        Thu, 17 Aug 2023 21:00:03 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.185])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxniPIGd5kmchcAA--.55665S32;
-        Thu, 17 Aug 2023 21:00:01 +0800 (CST)
-From:   Tianrui Zhao <zhaotianrui@loongson.cn>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
-        Mark Brown <broonie@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Oliver Upton <oliver.upton@linux.dev>, maobibo@loongson.cn,
-        Xi Ruoyao <xry111@xry111.site>, zhaotianrui@loongson.cn,
-        Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH v19 30/30] LoongArch: KVM: Add maintainers for LoongArch KVM
-Date:   Thu, 17 Aug 2023 20:59:51 +0800
-Message-Id: <20230817125951.1126909-31-zhaotianrui@loongson.cn>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230817125951.1126909-1-zhaotianrui@loongson.cn>
-References: <20230817125951.1126909-1-zhaotianrui@loongson.cn>
+        Thu, 17 Aug 2023 09:00:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C37E2D7D
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:59:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3A02F670C1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 12:59:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16B2DC433C9;
+        Thu, 17 Aug 2023 12:59:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692277198;
+        bh=JK9yO7HlZ/Rm0ILnilcihgvXOiw1VPVtfjFvXJWKYfI=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=aYPbFbEKIA1fHZ8TM5XOKLWwRpcR7eRWgYCjlkLxTgf44Vr4h+tjdM/+cpMSwW3f2
+         hGsPMq9bAFrhDAC2JZKQznB7bhCCPtg8CcFGpF2unxEGuJD5yBJb+OPt8x9NrQSNAb
+         SfHbq5Eq6ZjXXX61ztD4dp3nL572nFEC3GXRWywmF9z8VquBrue5Zl8rUhmW4CAVPs
+         LXgc65pA1ZlCYJ86UcIS4usKm7LkRBBRPX7MXSV0VBmuLM+flshOwtA7tCsPgEk+Ph
+         pBNGhq/tTGCJa2CgOxV4Gk16gFFevMAfWzqyuXQUwvnJyiMa8hUkyW3yPwwfNJkQow
+         tqEQUHEYx8xTg==
+Date:   Thu, 17 Aug 2023 13:59:53 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     thor.thayer@linux.intel.com, ckeepax@opensource.cirrus.com,
+        rf@opensource.cirrus.com, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org, Zhu Wang <wangzhu9@huawei.com>
+Subject: Re: (subset) [PATCH -next 0/8] mfd: remove redundant of_match_ptr()
+Message-ID: <20230817125953.GF986605@google.com>
+References: <20230808130023.202700-1-wangzhu9@huawei.com>
+ <169227714711.1041251.13985138202504208865.b4-ty@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8BxniPIGd5kmchcAA--.55665S32
-X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-        nUUI43ZEXa7xR_UUUUUUUUU==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <169227714711.1041251.13985138202504208865.b4-ty@kernel.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add maintainers for LoongArch KVM.
+On Thu, 17 Aug 2023, Lee Jones wrote:
 
-Acked-by: Huacai Chen <chenhuacai@loongson.cn>
-Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
----
- MAINTAINERS | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+> On Tue, 08 Aug 2023 21:00:15 +0800, Zhu Wang wrote:
+> > The driver depends on CONFIG_OF, so it is not necessary to use
+> > of_match_ptr() here. We remove of_match_ptr() here.
+> > 
+> > Zhu Wang (8):
+> >   mfd: rsmu_i2c: remove redundant of_match_ptr()
+> >   mfd: altera-a10sr: remove redundant of_match_ptr()
+> >   mfd: rsmu_spi: remove redundant of_match_ptr()
+> >   mfd: act8945a: remove redundant of_match_ptr()
+> >   mfd: stpmic1: remove redundant of_match_ptr()
+> >   mfd: hi655x-pmic: remove redundant of_match_ptr()
+> >   mfd: lochnagar-i2c: remove redundant of_match_ptr()
+> >   mfd: rn5t618: remove redundant of_match_ptr()
+> > 
+> > [...]
+> 
+> Applied, thanks!
+> 
+> [1/8] mfd: rsmu_i2c: remove redundant of_match_ptr()
+>       commit: f2a34ca84bbb1ca3c4eb68134e5612b94038cf70
+> [2/8] mfd: altera-a10sr: remove redundant of_match_ptr()
+>       commit: 511a6aec5229b4d3fe3ef45067b51ab8eaa52a2c
+> [3/8] mfd: rsmu_spi: remove redundant of_match_ptr()
+>       commit: 9ca9f37cea730283be34ed8f418b97be6778e1f3
+> [4/8] mfd: act8945a: remove redundant of_match_ptr()
+>       commit: 523b0a5912a64c80ac806adb24e736140cb68024
+> [5/8] mfd: stpmic1: remove redundant of_match_ptr()
+>       commit: 475db34fa3e77b2f78a131c987d04a3a07a7b31d
+> [7/8] mfd: lochnagar-i2c: remove redundant of_match_ptr()
+>       commit: 6d5c5c855c6f48678070bd4760d302143bcfa724
+> [8/8] mfd: rn5t618: remove redundant of_match_ptr()
+>       commit: d98edddb79885a4c46cbf5bfcd57cc0e8a72a57b
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 53b7ca804465..b1043a06f3ec 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11428,6 +11428,18 @@ F:	include/kvm/arm_*
- F:	tools/testing/selftests/kvm/*/aarch64/
- F:	tools/testing/selftests/kvm/aarch64/
- 
-+KERNEL VIRTUAL MACHINE FOR LOONGARCH (KVM/LoongArch)
-+M:	Tianrui Zhao <zhaotianrui@loongson.cn>
-+M:	Bibo Mao <maobibo@loongson.cn>
-+M:	Huacai Chen <chenhuacai@kernel.org>
-+L:	kvm@vger.kernel.org
-+L:	loongarch@lists.linux.dev
-+S:	Maintained
-+T:	git git://git.kernel.org/pub/scm/virt/kvm/kvm.git
-+F:	arch/loongarch/include/asm/kvm*
-+F:	arch/loongarch/include/uapi/asm/kvm*
-+F:	arch/loongarch/kvm/
-+
- KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)
- M:	Huacai Chen <chenhuacai@kernel.org>
- L:	linux-mips@vger.kernel.org
+Notice that 6 did not apply cleanly.
+
+Please rebase and resend.
+
 -- 
-2.39.1
-
+Lee Jones [李琼斯]
