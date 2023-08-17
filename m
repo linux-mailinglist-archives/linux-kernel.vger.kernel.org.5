@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 596B7780259
+	by mail.lfdr.de (Postfix) with ESMTP id 10584780258
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356591AbjHQX77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 19:59:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44242 "EHLO
+        id S1356584AbjHQX76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 19:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356418AbjHQX7T (ORCPT
+        with ESMTP id S1356409AbjHQX7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 19:59:19 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E80B23AAB
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:59:14 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6887480109bso325526b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:59:14 -0700 (PDT)
+        Thu, 17 Aug 2023 19:59:18 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E88CF26AA
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:59:13 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-689f1e81293so298320b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:59:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692316754; x=1692921554;
+        d=chromium.org; s=google; t=1692316753; x=1692921553;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CM3L26PWMAExR3lQXTcXbU6tlb1FTfdlreosiNsvPEE=;
-        b=HTrrZZ+wk74qL34Op1mlB1taurJkAnd7YsB6DcuhqPFWoY5BxKedYKyw/BVOzmxMFL
-         g30Pe4HkwYC69jPPfY81Upl2joAkDOLn7binq7aylyfOpUoPLa28nnHt6eNCAsaiaXSS
-         hUbFj7PjofegYErrFt2HTzB8fTUTdKU6OagXs=
+        bh=gXeYLQ2GewHlFPJZC58ZRexUVly60i4L9KNCW0nx6Zk=;
+        b=E4MvOk7kozY7pHeqkqrSE6Fx+b5wPjyeaDrCH6cnZYBce235iu8L1ggSupORngM/8A
+         l9Kk472IVYyHtUHSiQfr/qQxVCPz6cZa2dg6Po2U7LJdTM0a9vhPIc9OjPFnWaVjufYH
+         eZ+T3G7d6GgLHEUVUwZwmsqNG0lsBG9OxXjaE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692316754; x=1692921554;
+        d=1e100.net; s=20221208; t=1692316753; x=1692921553;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CM3L26PWMAExR3lQXTcXbU6tlb1FTfdlreosiNsvPEE=;
-        b=Tz/MlGPchmqcVGJbTFIE9puyFIifE3/RAIGkU0m8iwpPdsI3z4baQS/72Yg5cit3PB
-         vS2zmImvpmt0fhIi4FPqEkKHW0N+H2OSu/kaZ067LQgls54FT4znbM+DJnh9fTIZuzYd
-         so1e2byNtiW+T50pOwF4gmsdbrLO4ho0fJGEdAfCafHyuAzvOW7niaVim5Ed5jQTtgcq
-         I3f5fRlvPRxn+69fbnaOO1Ihz0sPhdUViAbsp6+jGoSqQeUS/ToMSXxiXwPtGo1LdShq
-         Th+CeylZ6cG2Y+ME+Hrf+1+D95/kKCFFqRo5aqOfSM/y7tENbNh0mTQr0JmeWKRm2fpM
-         ghqg==
-X-Gm-Message-State: AOJu0YzSsWAARqtwIBkQdOjKv30wba8rCTcj2rRQz2W0EzurTgdKz5Jo
-        /Oyx05sogt8C7tXKV2Xael/rGw==
-X-Google-Smtp-Source: AGHT+IGtcgNnZbWaCWdSXzGTxx8lAj3NvRd0lG+maqih7++bsMmfpiz36E56uky5QKHaPXs/1RnBBg==
-X-Received: by 2002:a05:6a20:3250:b0:122:c6c4:36b1 with SMTP id hm16-20020a056a20325000b00122c6c436b1mr1292709pzc.4.1692316754444;
-        Thu, 17 Aug 2023 16:59:14 -0700 (PDT)
+        bh=gXeYLQ2GewHlFPJZC58ZRexUVly60i4L9KNCW0nx6Zk=;
+        b=TxLeR9X6zRZuT+uQq9Qt5bCMEOZRWXLypdp1v5lqyDwxPzdS14hg8QZtJRSa1UOMUY
+         TZvyT1Q4nJMaX5wMdMW6yIm1K7c520QvVCTUXDGNTFpYQhCsmWDK5LF4dqnf2p1zh4um
+         V2orwEjK3z3J633dEo9gpdypQVPDSxpNZQatsTLhjFwDROh5yZk4n8ufzIlrIWKRHxe1
+         ZUiBorCTU7qGfdBDzNLAgdmPzQMt5Uy8ewJ7R97MeN2kaPcvtmxGifeoLqVHdlWgTqBH
+         EQUAdCPmLs4Cf2xjDPaLigXllHmvEfKdAdloEVjpZskcqlAmmwT25uJH/k0BVUzhmsQN
+         n5Jg==
+X-Gm-Message-State: AOJu0YyVCbs9ERLydKq8D11TrNVPEo1EXgB+iWMDplZyxQt8ApdpRjc/
+        10i3Y6CTFAiK0TLx5W+8qM1uSw==
+X-Google-Smtp-Source: AGHT+IH7ceqgTswqXpviM1ijV38NbJuVRRwA3pV9NT6hwNEYJSniFiTqu2wXcbZdz+XyqunOp8AoPg==
+X-Received: by 2002:a05:6a00:22d4:b0:687:60bf:aed9 with SMTP id f20-20020a056a0022d400b0068760bfaed9mr1146482pfj.24.1692316753316;
+        Thu, 17 Aug 2023 16:59:13 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id a22-20020a62e216000000b006875df4773fsm307299pfi.163.2023.08.17.16.59.05
+        by smtp.gmail.com with ESMTPSA id p18-20020aa78612000000b00682b299b6besm313473pfn.70.2023.08.17.16.59.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 16:59:12 -0700 (PDT)
+        Thu, 17 Aug 2023 16:59:09 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Vinod Koul <vkoul@kernel.org>
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -85,32 +85,32 @@ Cc:     Kees Cook <keescook@chromium.org>,
         linux-arm-msm@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com, llvm@lists.linux.dev,
         linux-hardening@vger.kernel.org
-Subject: [PATCH 15/21] dmaengine: tegra: Annotate struct tegra_dma_desc with __counted_by
-Date:   Thu, 17 Aug 2023 16:58:52 -0700
-Message-Id: <20230817235859.49846-15-keescook@chromium.org>
+Subject: [PATCH 16/21] dmaengine: tegra210-adma: Annotate struct tegra_adma with __counted_by
+Date:   Thu, 17 Aug 2023 16:58:53 -0700
+Message-Id: <20230817235859.49846-16-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230817235428.never.111-kees@kernel.org>
 References: <20230817235428.never.111-kees@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1306; i=keescook@chromium.org;
- h=from:subject; bh=IvCoDTUmPGIj+7qEwbz1ZUwbMaX1EfMB2pX6XS9uHHE=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBk3rRBfmj3qZYeUoE3VYSBxcgFtgqsG+6voaDsG
- dN7+tvlUR2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZN60QQAKCRCJcvTf3G3A
- Jg8fEACt1MzmrcCipsy/0n1aAT9hBbqUq5idN/BI2c3yHNHVpnIRI5GN1j7hOdImkZfcRTcOTFJ
- VUxhWitSM/ypDtTnX8pInDcpcIu9N4U+Uv2olN0raAq3sK4EZcADL/p0aPckt7B1JZjlIPD9F1Z
- OG+WAsV238be/ceJ4BkyWHI9QjMdcsxyLXZvv8kYFGxNbR+Q2BH33KwV39nvO/xtBtaxxMFkmMJ
- 3n8JUfQRVVjQmXT3b8UWREZN2S9RD7HaXr3QOVGM4KYaWc5vOPA410mtWrNpBmBUWLkcFraCJql
- BLUul3gf5WgSXSKOSBrzDFIkO9KIYxiRJ4HNItT5cRlbzW/IzY+cWiUwd0d0Z1HuLq2ualRyuM4
- sJgnDenKCrbgN6BrNEzBLFutAuzp0x9KxrorooWOaCnulXSBpCQDM/L2DCoK6EsmSBAF7qEDp27
- MOaEZlijjaJ4OMM0jgxuVCco5wpR9YTOPyPeESqX7QZUoCyGDBPVqPMg5SyBDL+5rStUEsW4riP
- jGHKZiuI0eaNMNa5VdHILPKgR/qXNZM6uNcfF9qgsUicTfY1ov8F+2CVIYB8e1Ka/Di+zeUra6o
- gyFd6zhW5eFnGFR90vPU3Gq/JAQmPESBS4YarQhrVCMJGZkllIB/I5nzaP9nIPCfsM9hTkcg81S asDsoiP0g9COZRQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1358; i=keescook@chromium.org;
+ h=from:subject; bh=7gJaGyTVYHakfTQ8Pwi03jgdcg+IqGAMLg/jFJNW6ns=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBk3rRBFwQjEveal+Z/8kFZsr8NHcKbhAWN9xXW2
+ 2bm6PiyF6eJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZN60QQAKCRCJcvTf3G3A
+ JhWBEAChmToUXNsq2WvY5LWUYGOYXucQ4BBFAeyV8EU/Ph5YetkT1Ejxps0eeDDEL+L9UUpivSe
+ +C9l1acyX7jUmoO7g3LI7ofXC9DYH/FlJ+tFAV7eWeP7LLjdgrBYyHMmSddzaCznsZ9os4v1ub7
+ Rdl+oRzDK//T++/1p19ABdLdwYob+S6o0ePH/GR338wixR2TmmypIBYnp6yrrw4YlLjUE/NlJ2b
+ Yu7U19kEiykr6dGefEteYvSZk1Hp62ql7B+hmLY3EeychRlJcdqcOrMofQLZ1VIESaMlC5XU0X1
+ hEYiKuEB22Uj0FPrF8P8q3U2w5qzFfQ4MPVi2rL6KIOiZUN8KJyoJGJlT4eyDcWMSmy5M7Ya1NE
+ tXCXuIFbd3kJu/chRYDvGHx1SOCiLUMveo8wvJDL3FzaSOmFqMMx5CyDWMHhMVPGsod/y5u0csZ
+ ehv9PysR1Vi53+riCsyVXtqI/GGdCI8SHEeRUiHyxGQ6h3aZsOGerZtfL93rwVJLxHApgWWC4Mb
+ 8TiDejq/mug5sOGQ+2vL1ae8SqkF+00KLgem2JFhPfET/9dbSOlo81vYhJnS94VtB5wYwz4cMNA
+ Hd4PZfscGp4gmCe3nDVghWnCrDMnx+SIX37w7Hj63aAOU3ZzYj4Gh7cfWGp40ESzjtcx4c4tRKH Fw8k579f9tNlntw==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -123,7 +123,7 @@ their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
 (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
 functions).
 
-As found with Coccinelle[1], add __counted_by for struct tegra_dma_desc.
+As found with Coccinelle[1], add __counted_by for struct tegra_adma.
 
 [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 
@@ -135,22 +135,22 @@ Cc: dmaengine@vger.kernel.org
 Cc: linux-tegra@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/dma/tegra186-gpc-dma.c | 2 +-
+ drivers/dma/tegra210-adma.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/tegra186-gpc-dma.c b/drivers/dma/tegra186-gpc-dma.c
-index 33b101001100..5e3d5f5d1e20 100644
---- a/drivers/dma/tegra186-gpc-dma.c
-+++ b/drivers/dma/tegra186-gpc-dma.c
-@@ -221,7 +221,7 @@ struct tegra_dma_desc {
- 	unsigned int sg_count;
- 	struct virt_dma_desc vd;
- 	struct tegra_dma_channel *tdc;
--	struct tegra_dma_sg_req sg_req[];
-+	struct tegra_dma_sg_req sg_req[] __counted_by(sg_count);
+diff --git a/drivers/dma/tegra210-adma.c b/drivers/dma/tegra210-adma.c
+index e557bada1510..cea33912a4c9 100644
+--- a/drivers/dma/tegra210-adma.c
++++ b/drivers/dma/tegra210-adma.c
+@@ -162,7 +162,7 @@ struct tegra_adma {
+ 	const struct tegra_adma_chip_data *cdata;
+ 
+ 	/* Last member of the structure */
+-	struct tegra_adma_chan		channels[];
++	struct tegra_adma_chan		channels[] __counted_by(nr_channels);
  };
  
- /*
+ static inline void tdma_write(struct tegra_adma *tdma, u32 reg, u32 val)
 -- 
 2.34.1
 
