@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0377077F1DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6843077F1D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348761AbjHQIJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 04:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40386 "EHLO
+        id S1348746AbjHQIJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 04:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348742AbjHQIJF (ORCPT
+        with ESMTP id S1348740AbjHQIJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 17 Aug 2023 04:09:05 -0400
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E77582701
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F38232D7F
         for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:08:58 -0700 (PDT)
-X-AuditID: a67dfc5b-d85ff70000001748-c3-64ddd598cf3a
+X-AuditID: a67dfc5b-d85ff70000001748-c5-64ddd598e29a
 From:   Byungchul Park <byungchul@sk.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     kernel_team@skhynix.com, akpm@linux-foundation.org,
@@ -23,32 +23,36 @@ Cc:     kernel_team@skhynix.com, akpm@linux-foundation.org,
         mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
         david@redhat.com, peterz@infradead.org, luto@kernel.org,
         dave.hansen@linux.intel.com
-Subject: [RFC v2 0/6] Reduce TLB flushes under some specific conditions
-Date:   Thu, 17 Aug 2023 17:05:53 +0900
-Message-Id: <20230817080559.43200-1-byungchul@sk.com>
+Subject: [RFC v2 1/6] mm/rmap: Recognize non-writable TLB entries during TLB batch flush
+Date:   Thu, 17 Aug 2023 17:05:54 +0900
+Message-Id: <20230817080559.43200-2-byungchul@sk.com>
 X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrMLMWRmVeSWpSXmKPExsXC9ZZnke6Mq3dTDC4cULWYs34Nm8WLDe2M
+In-Reply-To: <20230817080559.43200-1-byungchul@sk.com>
+References: <20230817080559.43200-1-byungchul@sk.com>
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNLMWRmVeSWpSXmKPExsXC9ZZnoe6Mq3dTDDYsU7OYs34Nm8WLDe2M
         Fl/X/2K2ePqpj8Xi8q45bBb31vxntTi/ay2rxY6l+5gsru96yGhxvPcAk8XvH0DZOVOsLE7O
         msziwOuxYFOpx+YVWh6L97xk8ti0qpPNY9OnSeweJ2b8ZvHY+dDSY97JQI/3+66yeWz9Zefx
-        eZOcx7v5b9kCeKK4bFJSczLLUov07RK4Mjac+MpY8EesYtHO7awNjB8Fuhg5OSQETCQe7NnF
-        DmPv3f6VGcRmE1CXuHHjJ5gtImAmcbD1D1ANFwezwDImibsHzrGCJIQF3CV2LpzK1MXIwcEi
-        oCoxraMSJMwrYCrxbdZJqJnyEqs3HGAG6ZUQ2MEm0fnuPlRCUuLgihssExi5FzAyrGIUyswr
-        y03MzDHRy6jMy6zQS87P3cQIDMpltX+idzB+uhB8iFGAg1GJh9dh150UIdbEsuLK3EOMEhzM
-        SiK8Pby3UoR4UxIrq1KL8uOLSnNSiw8xSnOwKInzGn0rTxESSE8sSc1OTS1ILYLJMnFwSjUw
-        Or7sXRjeliNVaW7BvcVq9kmJUuFc2bt5V+pK5WVNezsSZ95vWfCp0fnW1qd5MpIVugwnduTF
-        vMsJTA+6tSJ70wWBI7+2JAp+nK6u6x2cOId381PPm/JqPDscp/9zmmHzds3DsxJcKudm1NqU
-        JDUxCq6Yk3dgt9se6dsN7vuTf25lXC8nunOrEktxRqKhFnNRcSIA8i1n7UYCAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFLMWRmVeSWpSXmKPExsXC5WfdrDvj6t0Ug923JS3mrF/DZvFiQzuj
+        eZOcx7v5b9kCeKK4bFJSczLLUov07RK4Mlbe3MhUcESvomXWDMYGxvtqXYycHBICJhILD81i
+        h7E37LnGCGKzCahL3LjxkxnEFhEwkzjY+geohouDWWAZk8TdA+dYQRLCAhES+5Y8BWtgEVCV
+        mN82lwXE5hUwldiz6gHUUHmJ1RsOAA3i4OAEGrT5rypIWAio5MPedawgMyUELrNJPN19mRGi
+        XlLi4IobLBMYeRcwMqxiFMrMK8tNzMwx0cuozMus0EvOz93ECAziZbV/oncwfroQfIhRgINR
+        iYfXYdedFCHWxLLiytxDjBIczEoivD28t1KEeFMSK6tSi/Lji0pzUosPMUpzsCiJ8xp9K08R
+        EkhPLEnNTk0tSC2CyTJxcEo1MNY+3OTYNOXJsTsXbDgfP9x/5T+/291TCnqn5RV/F21Nefoo
+        795/xVaGjUaM96ZEPgnI+Z27Vyj3s1bM/5uz606emX2GW27W8vbCtGvBK07yne4IPGSzr9nZ
+        XWqeY3vMt03V7y7MCAoWvuv2fmZRID+TmGYS/5qPj9gM5f30jurdfn82jP2P8GolluKMREMt
+        5qLiRABVsmrZXgIAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrELMWRmVeSWpSXmKPExsXC5WfdrDvj6t0Ugw+/pS3mrF/DZvFiQzuj
         xdf1v5gtnn7qY7E4PPckq8XlXXPYLO6t+c9qcX7XWlaLHUv3MVlc3/WQ0eJ47wEmi98/gLJz
         plhZnJw1mcWBz2PBplKPzSu0PBbvecnksWlVJ5vHpk+T2D1OzPjN4rHzoaXHvJOBHu/3XWXz
-        WPziA5PH1l92Hp83yXm8m/+WLYA3issmJTUnsyy1SN8ugStjw4mvjAV/xCoW7dzO2sD4UaCL
-        kZNDQsBEYu/2r8wgNpuAusSNGz/BbBEBM4mDrX/Yuxi5OJgFljFJ3D1wjhUkISzgLrFz4VSm
-        LkYODhYBVYlpHZUgYV4BU4lvs06yQ8yUl1i94QDzBEaOBYwMqxhFMvPKchMzc0z1irMzKvMy
-        K/SS83M3MQJDbFntn4k7GL9cdj/EKMDBqMTD67DrTooQa2JZcWXuIUYJDmYlEd4e3lspQrwp
-        iZVVqUX58UWlOanFhxilOViUxHm9wlMThATSE0tSs1NTC1KLYLJMHJxSDYyOUeK3Sx/q1IRY
-        lWc4fz6z8MgE1s1XZ1U28fjO67ooyS0RlzfLagOXP0//w2ufpkfMr+4qf/Z3xt7O+YYzWO71
-        bj5YHHZCqfovX0eJWrnXtzJlZheR7E3hjfJL3O+tfphoIhfQ3bXFK+xD23/jz+ueHl2qcW6l
-        pe4rlq86lhFbVnrXB07X8VRiKc5INNRiLipOBADFyewTLQIAAA==
+        WPziA5PH1l92Hp83yXm8m/+WLYA3issmJTUnsyy1SN8ugStj5c2NTAVH9CpaZs1gbGC8r9bF
+        yMkhIWAisWHPNUYQm01AXeLGjZ/MILaIgJnEwdY/7F2MXBzMAsuYJO4eOMcKkhAWiJDYt+Qp
+        WAOLgKrE/La5LCA2r4CpxJ5VD9ghhspLrN5wAGgQBwcn0KDNf1VBwkJAJR/2rmOdwMi1gJFh
+        FaNIZl5ZbmJmjqlecXZGZV5mhV5yfu4mRmBILqv9M3EH45fL7ocYBTgYlXh4HXbdSRFiTSwr
+        rsw9xCjBwawkwtvDeytFiDclsbIqtSg/vqg0J7X4EKM0B4uSOK9XeGqCkEB6YklqdmpqQWoR
+        TJaJg1OqgTE+4q5e/bfvPSlK2VXf7JpnrpGwfrfxgXN2duMdjf2/5nxSmBGj+cj9xood2ic8
+        FpRdqMn8IBKR57Xobojn0w/+zd8tp4anO3BLCbb8/Ku5OTB2jeoXY1Y5o/vfjM4JrWt925Pl
+        Id0hHXBKt9ct0GobO4up7bt1zg8//ZgonbL/+bHDCr+271ViKc5INNRiLipOBAC0ccGjRQIA
+        AA==
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -59,75 +63,177 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Functionally, no change. This is a preparation for CONFIG_MIGRC that
+requires to recognize non-writable TLB entries and makes use of them to
+batch more aggressively or even skip TLB flushes.
 
-While I'm working with CXL memory, I have been facing migraion overhead
-esp. TLB shootdown on promotion or demotion between different tiers.
-Yeah.. most TLB shootdowns on migration through hinting fault can be
-avoided thanks to Huang Ying's work, commit 4d4b6d66db ("mm,unmap: avoid
-flushing TLB in batch if PTE is inaccessible").
+While at it, changed struct tlbflush_unmap's ->flush_required(boolean)
+to ->nr_flush_required(int) in order to take into account not only
+whether it has been requested or not, but also the exact number of the
+requests. That will be used in CONFIG_MIGRC implementation.
 
-However, it's only for ones using hinting fault. I thought it'd be much
-better if we have a general mechanism to reduce # of TLB flushes that
-we can apply to any type of migration. I tried it only for tiering
-migration for now tho.
-
-I'm suggesting a mechanism to reduce TLB flushes by keeping source and
-destination of folios participated in the migrations until all TLB
-flushes required are done, only if those folios are not mapped with
-write permission PTE entries at all.
-
-I saw the number of TLB full flush reduced over 50% and the performance
-a little bit improved but not that big with the workload I tested with,
-XSBench. However, I believe that it would help more with other ones or
-any real ones. It'd be appreciated to tell me if I'm missing something.
-
-	Byungchul
-
+Signed-off-by: Byungchul Park <byungchul@sk.com>
 ---
+ arch/x86/include/asm/tlbflush.h |  2 ++
+ arch/x86/mm/tlb.c               |  7 +++++++
+ include/linux/mm_types_task.h   |  4 ++--
+ include/linux/sched.h           |  1 +
+ mm/internal.h                   |  4 ++++
+ mm/rmap.c                       | 29 ++++++++++++++++++++++++-----
+ 6 files changed, 40 insertions(+), 7 deletions(-)
 
-Changes from RFC:
-
-	1. Fix a bug triggered when a destination folio at the previous
-	   migration becomes a source folio at the next migration,
-	   before the folio gets handled properly so that the folio can
-	   play with another migration. There was inconsistency in the
-	   folio's state. Fixed it.
-
-	2. Split the patch set into more pieces so that the folks can
-	   review better. (Feedbacked by Nadav Amit)
-
-	3. Fix a wrong usage of barrier e.g. smp_mb__after_atomic().
-	   (Feedbacked by Nadav Amit)
-
-	4. Tried to add sufficient comments to explain the patch set
-	   better. (Feedbacked by Nadav Amit)
-
-Byungchul Park (6):
-  mm/rmap: Recognize non-writable TLB entries during TLB batch flush
-  mm: Defer TLB flush by keeping both src and dst folios at migration
-  mm, migrc: Skip TLB flushes at the CPUs that already have been done
-  mm, migrc: Ajust __zone_watermark_ok() with the amount of pending
-    folios
-  mm, migrc: Add a sysctl knob to enable/disable MIGRC mechanism
-  mm, migrc: Implement internal allocator to minimize impact onto vm
-
- arch/x86/include/asm/tlbflush.h |   9 +
- arch/x86/mm/tlb.c               |  67 ++++++
- include/linux/mm.h              |  30 +++
- include/linux/mm_types.h        |  47 ++++
- include/linux/mm_types_task.h   |   4 +-
- include/linux/mmzone.h          |   6 +
- include/linux/sched.h           |   5 +
- init/Kconfig                    |  13 ++
- mm/internal.h                   |  14 ++
- mm/memory.c                     |  17 +-
- mm/migrate.c                    | 381 +++++++++++++++++++++++++++++++-
- mm/mm_init.c                    |   1 +
- mm/page_alloc.c                 |  19 ++
- mm/rmap.c                       | 133 ++++++++++-
- 14 files changed, 734 insertions(+), 12 deletions(-)
-
+diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
+index 75bfaa421030..63504cde364b 100644
+--- a/arch/x86/include/asm/tlbflush.h
++++ b/arch/x86/include/asm/tlbflush.h
+@@ -279,6 +279,8 @@ static inline void arch_tlbbatch_add_mm(struct arch_tlbflush_unmap_batch *batch,
+ }
+ 
+ extern void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
++extern void arch_tlbbatch_fold(struct arch_tlbflush_unmap_batch *bdst,
++			       struct arch_tlbflush_unmap_batch *bsrc);
+ 
+ static inline bool pte_flags_need_flush(unsigned long oldflags,
+ 					unsigned long newflags,
+diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+index 267acf27480a..69d145f1fff1 100644
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -1265,6 +1265,13 @@ void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
+ 	put_cpu();
+ }
+ 
++void arch_tlbbatch_fold(struct arch_tlbflush_unmap_batch *bdst,
++			struct arch_tlbflush_unmap_batch *bsrc)
++{
++	cpumask_or(&bdst->cpumask, &bdst->cpumask, &bsrc->cpumask);
++	cpumask_clear(&bsrc->cpumask);
++}
++
+ /*
+  * Blindly accessing user memory from NMI context can be dangerous
+  * if we're in the middle of switching the current user task or
+diff --git a/include/linux/mm_types_task.h b/include/linux/mm_types_task.h
+index 5414b5c6a103..6f3bb757eb46 100644
+--- a/include/linux/mm_types_task.h
++++ b/include/linux/mm_types_task.h
+@@ -59,8 +59,8 @@ struct tlbflush_unmap_batch {
+ 	 */
+ 	struct arch_tlbflush_unmap_batch arch;
+ 
+-	/* True if a flush is needed. */
+-	bool flush_required;
++	/* The number of flush requested. */
++	int nr_flush_required;
+ 
+ 	/*
+ 	 * If true then the PTE was dirty when unmapped. The entry must be
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index eed5d65b8d1f..2232b2cdfce8 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1322,6 +1322,7 @@ struct task_struct {
+ #endif
+ 
+ 	struct tlbflush_unmap_batch	tlb_ubc;
++	struct tlbflush_unmap_batch	tlb_ubc_nowr;
+ 
+ 	/* Cache last used pipe for splice(): */
+ 	struct pipe_inode_info		*splice_pipe;
+diff --git a/mm/internal.h b/mm/internal.h
+index 68410c6d97ac..b90d516ad41f 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -840,6 +840,7 @@ extern struct workqueue_struct *mm_percpu_wq;
+ void try_to_unmap_flush(void);
+ void try_to_unmap_flush_dirty(void);
+ void flush_tlb_batched_pending(struct mm_struct *mm);
++void fold_ubc_nowr(void);
+ #else
+ static inline void try_to_unmap_flush(void)
+ {
+@@ -850,6 +851,9 @@ static inline void try_to_unmap_flush_dirty(void)
+ static inline void flush_tlb_batched_pending(struct mm_struct *mm)
+ {
+ }
++static inline void fold_ubc_nowr(void)
++{
++}
+ #endif /* CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH */
+ 
+ extern const struct trace_print_flags pageflag_names[];
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 19392e090bec..d18460a48485 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -605,6 +605,22 @@ struct anon_vma *folio_lock_anon_vma_read(struct folio *folio,
+ }
+ 
+ #ifdef CONFIG_ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
++
++void fold_ubc_nowr(void)
++{
++	struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
++	struct tlbflush_unmap_batch *tlb_ubc_nowr = &current->tlb_ubc_nowr;
++
++	if (!tlb_ubc_nowr->nr_flush_required)
++		return;
++
++	arch_tlbbatch_fold(&tlb_ubc->arch, &tlb_ubc_nowr->arch);
++	tlb_ubc->writable = tlb_ubc->writable || tlb_ubc_nowr->writable;
++	tlb_ubc->nr_flush_required += tlb_ubc_nowr->nr_flush_required;
++	tlb_ubc_nowr->nr_flush_required = 0;
++	tlb_ubc_nowr->writable = false;
++}
++
+ /*
+  * Flush TLB entries for recently unmapped pages from remote CPUs. It is
+  * important if a PTE was dirty when it was unmapped that it's flushed
+@@ -615,11 +631,12 @@ void try_to_unmap_flush(void)
+ {
+ 	struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
+ 
+-	if (!tlb_ubc->flush_required)
++	fold_ubc_nowr();
++	if (!tlb_ubc->nr_flush_required)
+ 		return;
+ 
+ 	arch_tlbbatch_flush(&tlb_ubc->arch);
+-	tlb_ubc->flush_required = false;
++	tlb_ubc->nr_flush_required = 0;
+ 	tlb_ubc->writable = false;
+ }
+ 
+@@ -627,8 +644,9 @@ void try_to_unmap_flush(void)
+ void try_to_unmap_flush_dirty(void)
+ {
+ 	struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
++	struct tlbflush_unmap_batch *tlb_ubc_nowr = &current->tlb_ubc_nowr;
+ 
+-	if (tlb_ubc->writable)
++	if (tlb_ubc->writable || tlb_ubc_nowr->writable)
+ 		try_to_unmap_flush();
+ }
+ 
+@@ -644,15 +662,16 @@ void try_to_unmap_flush_dirty(void)
+ 
+ static void set_tlb_ubc_flush_pending(struct mm_struct *mm, pte_t pteval)
+ {
+-	struct tlbflush_unmap_batch *tlb_ubc = &current->tlb_ubc;
++	struct tlbflush_unmap_batch *tlb_ubc;
+ 	int batch;
+ 	bool writable = pte_dirty(pteval);
+ 
+ 	if (!pte_accessible(mm, pteval))
+ 		return;
+ 
++	tlb_ubc = pte_write(pteval) ? &current->tlb_ubc : &current->tlb_ubc_nowr;
+ 	arch_tlbbatch_add_mm(&tlb_ubc->arch, mm);
+-	tlb_ubc->flush_required = true;
++	tlb_ubc->nr_flush_required += 1;
+ 
+ 	/*
+ 	 * Ensure compiler does not re-order the setting of tlb_flush_batched
 -- 
 2.17.1
 
