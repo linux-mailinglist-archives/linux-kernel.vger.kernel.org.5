@@ -2,173 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FAE477FEB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 21:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB37C77FEB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 21:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243326AbjHQTrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 15:47:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50274 "EHLO
+        id S1354768AbjHQTve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 15:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352171AbjHQTqo (ORCPT
+        with ESMTP id S1354798AbjHQTvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 15:46:44 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 657102D61
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 12:46:43 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-56385c43eaeso220871a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 12:46:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692301603; x=1692906403;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=38OjwvLryGdRHNnQWvsk2mgWrNDTfqIkNTH/PDjk+4c=;
-        b=jxJyj8vSc6MVlvwD3uyMXulv8nXM55AWC9xP41lj7Vv/PPFEby+CxZdmmt0CNvuHOH
-         TH9kLw8p++GjtH1j8/hd4kIG8jRZEUotTPHb0Hfr4dtL2YfI+c1IZ9jhNcaIwS/Brv6b
-         KKXsVS5CPcB1ginpNzN2uXhSew0+N2RgepwQd5vEyqVnpItfJcK20+eUs46gU5e5NdLF
-         ZWoRgewhJBv+ehRh49D5L7rS22AyO0ub77AQOOLv1cNoT6y/F+Z3334WyDyrk7F7RMVc
-         e3DitMFKj1rOjnvoqpgM+cvYv93cUinXdWtPlw28mzywXfuQb+5s6w6+DaztqYxvwqgC
-         j7Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692301603; x=1692906403;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=38OjwvLryGdRHNnQWvsk2mgWrNDTfqIkNTH/PDjk+4c=;
-        b=ZYkh5NsfwBKD3HHaz+EGLA++uKngmu3uDlCDpAivkVmzDFnMH0tuOPjyPIltD1drMt
-         k7EaaGk+PTDCC1uMzbjFa3PBY2qSJCBJPT9qOz23WLu56CIwz+gZNlNUtP+z3BKATTGn
-         f4f++o3O0FjSBvCDMjK/hTFTcRStGCJKexUxri+ys2L7eqpODN09nsMfrMO6Nunfp3Hs
-         9B/MlIwHAlbNEy660SKanlybZ1ZvlmrsxZCMcHBDKtLoj4BmuhSQRZbM1vJzFIxP1VdR
-         r++C0lZChtunXqV0TwOICAOMRKemYeo0Sa6/JMWh5AYAHDYYYia85uR87Wqaq3QejS37
-         KoZQ==
-X-Gm-Message-State: AOJu0YwTkTysNe06VLBBIiNWnpP6E9ActgeofmMDuK3IZyupyjxp2Zav
-        TMrPm++AkLRpYq86WhWJ+v6WonPr0yk=
-X-Google-Smtp-Source: AGHT+IFBe9aniLvKThqqpWnXRIW+Ce6rpM3SxSMATIg5sCkf4FHEzKrUMBQUwCkNZWjSzdkkdkLSS3NKUoQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:295a:0:b0:565:dc04:c912 with SMTP id
- bu26-20020a63295a000000b00565dc04c912mr76598pgb.5.1692301602857; Thu, 17 Aug
- 2023 12:46:42 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 12:46:40 -0700
-In-Reply-To: <244a3f0b-16fd-eac8-f207-1dfe7859410b@linux.intel.com>
-Mime-Version: 1.0
-References: <20230719144131.29052-1-binbin.wu@linux.intel.com>
- <20230719144131.29052-4-binbin.wu@linux.intel.com> <c4faf38ea79e0f4eb3d35d26c018cd2bfe9fe384.camel@intel.com>
- <66235c55-05ac-edd5-c45e-df1c42446eb3@linux.intel.com> <aa17648c001704d83dcf641c1c7e9894e65eb87a.camel@intel.com>
- <ZN1Ardu9GRx7KlAV@google.com> <244a3f0b-16fd-eac8-f207-1dfe7859410b@linux.intel.com>
-Message-ID: <ZN55IJoxTMb1niP7@google.com>
-Subject: Re: [PATCH v10 3/9] KVM: x86: Use KVM-governed feature framework to
- track "LAM enabled"
-From:   Sean Christopherson <seanjc@google.com>
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     Kai Huang <kai.huang@intel.com>, Chao Gao <chao.gao@intel.com>,
-        "David.Laight@ACULAB.COM" <David.Laight@aculab.com>,
-        Guang Zeng <guang.zeng@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "robert.hu@linux.intel.com" <robert.hu@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Thu, 17 Aug 2023 15:51:23 -0400
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::222])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F390EE;
+        Thu, 17 Aug 2023 12:51:20 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7994040002;
+        Thu, 17 Aug 2023 19:51:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1692301879;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wHKQb0SmxhWjxqmZQ9159wjV4k0plINo8JRIiEa3nHs=;
+        b=JFPt83KuEKi5EXmtWYJ2Sj7oMl1X5lfc9+Ygp6fKL3/vVgjC5kdazP6TM8ysUERLH4ekbF
+        0Q266DWhwlmpstyDcBN9FE+sDXwSSps0+iEOHwdjyHbZsxd3h1G0yrzRml1UewEvK9SKPn
+        iaHl8D1N9pS6SSIrqQGA8hqKQChHemJhNb6MtD+8ZGq6J52dy0BgIyQIphHMqidrp6rT7L
+        +Gb/q9828ysKQfq8Q5ab/sJIZ+xWd4lU7VGI46BDWL0TBGsUJeOXKb+FfPIYBYBEpB2aCc
+        W3XyWrNnHl0p7CavaGgILZIoN7SgI+neNSLmzXVRs9/1Zyb5fE3QUVP4vmlFnw==
+Date:   Thu, 17 Aug 2023 21:51:17 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Benson Leung <bleung@chromium.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH 0/7] rtc: Add support for limited alarm timer offsets
+Message-ID: <202308171951177626a54c@mail.local>
+References: <20230816133936.2150294-1-linux@roeck-us.net>
+ <20230816150353137debc5@mail.local>
+ <8079bdf4-f790-451b-a2c2-be4e23c0c3a1@roeck-us.net>
+ <20230816161435bd2bbd4a@mail.local>
+ <6ffc915e-ca91-4b64-b7a5-f13f60df8b1d@roeck-us.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6ffc915e-ca91-4b64-b7a5-f13f60df8b1d@roeck-us.net>
+X-GND-Sasl: alexandre.belloni@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023, Binbin Wu wrote:
->=20
->=20
-> On 8/17/2023 5:33 AM, Sean Christopherson wrote:
-> > On Wed, Aug 16, 2023, Kai Huang wrote:
-> > > > > > --- a/arch/x86/kvm/vmx/vmx.c
-> > > > > > +++ b/arch/x86/kvm/vmx/vmx.c
-> > > > > > @@ -7783,6 +7783,9 @@ static void vmx_vcpu_after_set_cpuid(stru=
-ct kvm_vcpu *vcpu)
-> > > > > >    		vmx->msr_ia32_feature_control_valid_bits &=3D
-> > > > > >    			~FEAT_CTL_SGX_LC_ENABLED;
-> > > > > > +	if (boot_cpu_has(X86_FEATURE_LAM))
-> > > > > > +		kvm_governed_feature_check_and_set(vcpu, X86_FEATURE_LAM);
-> > > > > > +
-> > > > > If you want to use boot_cpu_has(), it's better to be done at your=
- last patch to
-> > > > > only set the cap bit when boot_cpu_has() is true, I suppose.
-> > > > Yes, but new version of kvm_governed_feature_check_and_set() of
-> > > > KVM-governed feature framework will check against kvm_cpu_cap_has()=
- as well.
-> > > > I will remove the if statement and call
-> > > > kvm_governed_feature_check_and_set()=C2=A0 directly.
-> > > > https://lore.kernel.org/kvm/20230815203653.519297-2-seanjc@google.c=
-om/
-> > > >=20
-> > > I mean kvm_cpu_cap_has() checks against the host CPUID directly while=
- here you
-> > > are using boot_cpu_has().  They are not the same.
-> > >=20
-> > > If LAM should be only supported when boot_cpu_has() is true then it s=
-eems you
-> > > can just only set the LAM cap bit when boot_cpu_has() is true.  As yo=
-u also
-> > > mentioned above the kvm_governed_feature_check_and_set() here interna=
-lly does
-> > > kvm_cpu_cap_has().
-> > That's covered by the last patch:
-> >=20
-> > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> > index e961e9a05847..06061c11d74d 100644
-> > --- a/arch/x86/kvm/cpuid.c
-> > +++ b/arch/x86/kvm/cpuid.c
-> > @@ -677,7 +677,7 @@ void kvm_set_cpu_caps(void)
-> >          kvm_cpu_cap_mask(CPUID_7_1_EAX,
-> >                  F(AVX_VNNI) | F(AVX512_BF16) | F(CMPCCXADD) |
-> >                  F(FZRM) | F(FSRS) | F(FSRC) |
-> > -               F(AMX_FP16) | F(AVX_IFMA)
-> > +               F(AMX_FP16) | F(AVX_IFMA) | F(LAM)
-> >          );
-> >          kvm_cpu_cap_init_kvm_defined(CPUID_7_1_EDX,
-> >=20
-> >=20
-> > Which highlights a problem with activating a goverened feature before s=
-aid feature
-> > is actually supported by KVM: it's all kinds of confusing.
-> >=20
-> > It'll generate a more churn in git history, but I think we should first=
- enable
-> > LAM without a goverened feature, and then activate a goverened feature =
-later on.
-> > Using a goverened feature is purely an optimization, i.e. the series ne=
-eds to be
-> > function without using a governed feature.
-> OK, then how about the second option which has been listed in your v9 pat=
-ch
-> series discussion.
-> https://lore.kernel.org/kvm/20230606091842.13123-1-binbin.wu@linux.intel.=
-com/T/#m16ee5cec4a46954f985cb6afedb5f5a3435373a1
->=20
-> Temporarily add a bool can_use_lam in kvm_vcpu_arch and use the bool
-> "can_use_lam" instead of guest_can_use(vcpu, X86_FEATURE_LAM).
-> and then put the patch of adopting "KVM-governed feature framework" to th=
-e
-> last.
+On 16/08/2023 12:12:14-0700, Guenter Roeck wrote:
+> On Wed, Aug 16, 2023 at 06:14:35PM +0200, Alexandre Belloni wrote:
+> > On 16/08/2023 08:50:12-0700, Guenter Roeck wrote:
+> > > > I'm fine with the series, however, this doesn't solve the issue for RTCs
+> > > > that have an absolute limit on the alarm (as opposed to an offset to the
+> > > > current time/date).
+> > > > 
+> > > 
+> > > I thought that is checked by rtc_valid_range() in rtc_set_alarm().
+> > > Am I missing something ? Of course that assumes that the absolute
+> > > maximum alarm timeout matches range_max, but I didn't find any
+> > > drivers where that would not be the case.
+> > > 
+> > 
+> > There are RTCs where this is not the case. When this is far away in the
+> > future enough, the usual solution is to clip range_max which works but
+> > is not really great intellectually.
+> > 
+> Do you have an example, by any chance ?
+> 
 
-No, just do the completely unoptimized, but functionally obvious thing:
+I'm sorry, I've been looking and I couldn't find it anymore. Don't
+bother with this for now.
 
-	if (kvm_cpu_cap_has(x86_FEATURE_LAM) &&
-	    guest_cpuid_has(vcpu, x86_FEATURE_LAM))
-		...
-
-I don't expect anyone to push back on using a governed feature, i.e. I don'=
-t expect
-to ever see a kernel release with the unoptimized code.  If someone is bise=
-cting
-or doing something *really* weird with their kernel management, then yes, t=
-hey
-might see suboptimal performance.
-
-Again, the goal is to separate the addition of functionality from the optim=
-ization
-of that functionality, e.g. to make it easier to review and understand each=
- change.
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
