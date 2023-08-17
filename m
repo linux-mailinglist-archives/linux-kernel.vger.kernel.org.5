@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F71377F455
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 12:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FD977F458
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 12:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349810AbjHQKbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 06:31:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53560 "EHLO
+        id S1349914AbjHQKdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 06:33:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349903AbjHQKbc (ORCPT
+        with ESMTP id S1349903AbjHQKdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 06:31:32 -0400
-Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C322D5A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 03:31:30 -0700 (PDT)
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-342-Nc7mE_lqP3uzAdE5X4GxPA-1; Thu, 17 Aug 2023 06:31:26 -0400
-X-MC-Unique: Nc7mE_lqP3uzAdE5X4GxPA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1528B3C100A2;
-        Thu, 17 Aug 2023 10:31:26 +0000 (UTC)
-Received: from hog (unknown [10.39.192.31])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 54F5CC15BAD;
-        Thu, 17 Aug 2023 10:31:24 +0000 (UTC)
-Date:   Thu, 17 Aug 2023 12:31:23 +0200
-From:   Sabrina Dubroca <sd@queasysnail.net>
-To:     "Radu Pirea (OSS)" <radu-nicolae.pirea@oss.nxp.com>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, richardcochran@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC net-next v1 4/5] net: macsec: introduce mdo_insert_tx_tag
-Message-ID: <ZN32-0fwIMtrc9lu@hog>
-References: <20230811153249.283984-1-radu-nicolae.pirea@oss.nxp.com>
- <20230811153249.283984-5-radu-nicolae.pirea@oss.nxp.com>
- <ZN00NB7RayXAl80f@hog>
- <c28591b1-812f-b593-ef83-72e972d5b7bd@oss.nxp.com>
+        Thu, 17 Aug 2023 06:33:31 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ACB8E2D54
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 03:33:29 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5FDFAD75;
+        Thu, 17 Aug 2023 03:34:10 -0700 (PDT)
+Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D3A323F64C;
+        Thu, 17 Aug 2023 03:33:27 -0700 (PDT)
+Message-ID: <e3782710-e631-6b5b-8bbc-568e37131c90@arm.com>
+Date:   Thu, 17 Aug 2023 11:33:26 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <c28591b1-812f-b593-ef83-72e972d5b7bd@oss.nxp.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/2] coresight: trbe: Allocate platform data per device
+Content-Language: en-US
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        James Clark <james.clark@arm.com>, hejunhao3@huawei.com
+Cc:     coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, jonathan.cameron@huawei.com,
+        leo.yan@linaro.org, mike.leach@linaro.org, linuxarm@huawei.com,
+        yangyicong@huawei.com, prime.zeng@hisilicon.com
+References: <20230814093813.19152-1-hejunhao3@huawei.com>
+ <20230816141008.535450-1-suzuki.poulose@arm.com>
+ <20230816141008.535450-2-suzuki.poulose@arm.com>
+ <9cd9f83c-7778-2d87-a175-a4cb7ceb8723@arm.com>
+ <3f681660-a0f0-20cb-b79b-7b2e2f6a1b5c@arm.com>
+ <d3a75551-8027-c95c-f83b-468877daf93d@arm.com>
+ <f8f8ce42-889c-9a6b-5f74-121bd9dc09b1@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <f8f8ce42-889c-9a6b-5f74-121bd9dc09b1@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,78 +54,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2023-08-17, 11:25:36 +0300, Radu Pirea (OSS) wrote:
+On 17/08/2023 11:16, Anshuman Khandual wrote:
 > 
 > 
-> On 16.08.2023 23:40, Sabrina Dubroca wrote:
-> > 2023-08-11, 18:32:48 +0300, Radu Pirea (NXP OSS) wrote:
-> > > Offloading MACsec in PHYs requires inserting the SecTAG and the ICV in
-> > > the ethernet frame. This operation will increase the frame size with 32
-> > > bytes.
-> > 
-> > "up to 32 bytes"?
+> On 8/17/23 15:31, Suzuki K Poulose wrote:
+>> On 17/08/2023 10:24, James Clark wrote:
+>>>
+>>>
+>>> On 17/08/2023 07:37, Anshuman Khandual wrote:
+>>>> Hi Suzuki,
+>>>>
+>>>> Seems like this patch is going to conflict with the below proposed change
+>>>>
+>>>> https://lore.kernel.org/all/20230817055405.249630-4-anshuman.khandual@arm.com/
+>>>>
+>>>> Please let me know how should we resolve this conflict.
+>>>
+>>> We could merge them both, with the fixes: one first, just to acknowledge
+>>> that there was a problem. But I suppose your one will have to be rebased
+>>> on top.
+>>>
+>>>>
+>>>> On 8/16/23 19:40, Suzuki K Poulose wrote:
+>>>>> Coresight TRBE driver shares a single platform data (which is empty btw).
+>>>>> However, with the commit 4e8fe7e5c3a5
+>>>>> ("coresight: Store pointers to connections rather than an array of them")
+>>>>> the coresight core would free up the pdata, resulting in multiple attempts
+>>>>> to free the same pdata for TRBE instances. Fix this by allocating a pdata per
+>>>>> coresight_device.
+>>>>>
+>>>>> Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
+>>>>
+>>>> The above mentioned commit i.e 4e8fe7e5c3a5 seems to be a more recent one which
+>>>> has triggered this problem. But would the problem be still there without that ?
+>>>> Else 'Fixes:' tag would need changing.
+>>>>
+>>>
+>>> Yes I think the fixes tag should point to 4e8fe7e5c3a5.
+>>
+>> Agreed, I will change the fixes tag and push this.
 > 
-> Yes, up to 32 bytes.
-> 
-> > 
-> > The SecTAG and ICV can both be shorter, at least with the software
-> > implementation.
-> > 
-> > 
-> > [...]
-> > > +static struct sk_buff *insert_tx_tag(struct sk_buff *skb,
-> > > +				     struct net_device *dev)
-> > > +{
-> > [...]
-> > > +
-> > > +	ctx.secy = &macsec->secy;
-> > > +	ctx.skb = skb;
-> > 
-> > I think it would be a bit more readable to just pass the skb to
-> >   ->mdo_insert_tx_tag instead of adding it to the context.
-> 
-> Since this function requires only the skb and the phydev, I would move
-> mdo_insert_tx_tag from macsec_ops to a new structure called mascec_tag. What
-> do you think about this?
+> In the first patch, the last hunk might not be required to fix the
+> IPI problem and in fact might be bit problematic as well. Besides,
 
-I think it's ok to leave it in macsec_ops.
+Please could you comment your concerns on the patch ?
 
-[...]
-> > > @@ -4137,6 +4211,11 @@ static int macsec_newlink(struct net *net, struct net_device *dev,
-> > >   			if (err)
-> > >   				goto del_dev;
-> > >   		}
-> > > +
-> > > +		dev->needed_headroom -= MACSEC_NEEDED_HEADROOM;
-> > > +		dev->needed_headroom += ops->needed_headroom;
-> > > +		dev->needed_tailroom -= MACSEC_NEEDED_TAILROOM;
-> > > +		dev->needed_tailroom += ops->needed_tailroom;
-> > 
-> > If the driver doesn't set ops->needed_headroom, we'll subtract
-> > MACSEC_NEEDED_HEADROOM and not add anything back. Is that correct for
-> > all existing drivers? (and same for tailroom)
-> 
-> It should be. However, I will do this operation only for the PHYs that needs
-> to parse a tag.
-> 
-> > 
-> > You set needed_tailroom to 0 in your driver, but the commit message
-> > for this patch says that the HW needs space for the ICV. I'm a bit
-> > puzzled by this, especially since MACSEC_NEEDED_TAILROOM already
-> > reserves space for the ICV.
-> 
-> The 32 bytes headroom will compensate for 0 bytes tailroom.
+Suzuki
 
-Ok.
-
-
-One more question about the ordering of patches in this series: is
-macsec offload with your device functional without this and the final
-patch? Otherwise, I would put this patch first, and then the driver
-patches (either collapsed into a single patch, or preferably split out
-if there's a reasonable way to do it -- patch 3 is really huge and
-hard to review).
-
--- 
-Sabrina
+> could you please hold off pushing this change into coresight tree
+> for some time ?
 
