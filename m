@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2695577FD77
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E13ED77FD7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354212AbjHQSDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 14:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34770 "EHLO
+        id S1354217AbjHQSEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 14:04:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354259AbjHQSCx (ORCPT
+        with ESMTP id S1354210AbjHQSE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 14:02:53 -0400
+        Thu, 17 Aug 2023 14:04:29 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8728D3592;
-        Thu, 17 Aug 2023 11:02:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92BE19A1;
+        Thu, 17 Aug 2023 11:04:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 179CD65601;
-        Thu, 17 Aug 2023 18:02:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAE3AC433C8;
-        Thu, 17 Aug 2023 18:02:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5003C63999;
+        Thu, 17 Aug 2023 18:04:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75A82C433C7;
+        Thu, 17 Aug 2023 18:04:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692295366;
-        bh=DtO22LLw6nxuLzrFYnPX0EK5d0+xOc6W1qNnbGMl+L0=;
+        s=k20201202; t=1692295467;
+        bh=BcEUikQnq7ddqq5xraAv8pC6uypqhdgGk0XNsDGkbvc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tPSoMlrm+9w9fRZDshdjk35UzqU364iII8J8yDGRUFIq9Y62FPIowhK48SZ68G6Yl
-         zJdD/mX5J3g5x8AbzlZ9GZioP9Ml+6elexPfZk6odFX4lEM+IVgraWfWt/qwQx3Sq6
-         t+v/3eIcTbZc48Qtwgi8+EWwZzPyPsO7bHsglmdH41GGFlmhTKp+wUjGHTnaZl+Igk
-         kiAdpIpPi8yADyrGgC5ChLOi/LGDwaN2/MTDz9XxaER6Fgt+nrOES070AR6/OpRlte
-         1OmH2R19HRe+DIxJlaeWPVXvA2AwsazIub9Nf85i3gK8J0yU3cZVeaDP4hu1FKAkZX
-         Omt5Cq1rv6fYA==
-Received: (nullmailer pid 1880406 invoked by uid 1000);
-        Thu, 17 Aug 2023 18:02:43 -0000
-Date:   Thu, 17 Aug 2023 13:02:43 -0500
+        b=BhsI/ke3HLx6K/DZpbWRlQvwjwtLBdMkbTzeFgRLJuJ24AZ37nU3B+miRYv60yQyy
+         3Bv/VCEyM11abBhNQd0dipzo3BujpWU3zzzJyLuRaZT9B93JF8V9f9lhRNGYO8i/RX
+         U982LLoUKtJ7CoqmBeHwJj1omKIRDeN9ibn6vjr4DAjlsyEaMKrY/Km5pQAf+C/uSX
+         jfyD8vkBuqrX63Wn/X/ogxFeOhfS6v3RLhP0dv8dnwE2R0NwwGzzTl35IktaVUWNJV
+         BfmSoQuM+otkCnDVKqXpbBw+yUd5FgEzp2UbBtwzdlUlCs2xdliL685nDnE5NoZJyY
+         j7ZtdNh6H7gsA==
+Received: (nullmailer pid 1888176 invoked by uid 1000);
+        Thu, 17 Aug 2023 18:04:25 -0000
+Date:   Thu, 17 Aug 2023 13:04:25 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     linux-serial@vger.kernel.org, gregkh@linuxfoundation.org,
-        jringle@gridpoint.com, devicetree@vger.kernel.org,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Lech Perczak <lech.perczak@camlingroup.com>,
-        linux-kernel@vger.kernel.org, tomasz.mon@camlingroup.com,
-        l.perczak@camlintechnologies.com,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        linux-gpio@vger.kernel.org, jirislaby@kernel.org,
-        stable@vger.kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Subject: Re: [PATCH v10 3/6] dt-bindings: sc16is7xx: Add property to change
- GPIO function
-Message-ID: <169229536296.1880302.10602217647307724813.robh@kernel.org>
-References: <20230807214556.540627-1-hugo@hugovil.com>
- <20230807214556.540627-4-hugo@hugovil.com>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 1/6] dt-bindings: interrupt-controller: qcom,pdc: Add
+ SDM670
+Message-ID: <169229546412.1888098.11242593336275855378.robh@kernel.org>
+References: <20230811-topic-tlmm_wakeup-v1-0-5616a7da1fff@linaro.org>
+ <20230811-topic-tlmm_wakeup-v1-1-5616a7da1fff@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230807214556.540627-4-hugo@hugovil.com>
+In-Reply-To: <20230811-topic-tlmm_wakeup-v1-1-5616a7da1fff@linaro.org>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -67,26 +66,14 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Mon, 07 Aug 2023 17:45:53 -0400, Hugo Villeneuve wrote:
-> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+On Fri, 11 Aug 2023 22:48:34 +0200, Konrad Dybcio wrote:
+> Like all other RPMh-enabled SoCs, SDM670 includes a PDC. Document it.
 > 
-> Some variants in this series of UART controllers have GPIO pins that
-> are shared between GPIO and modem control lines.
-> 
-> The pin mux mode (GPIO or modem control lines) can be set for each
-> ports (channels) supported by the variant.
-> 
-> This adds a property to the device tree to set the GPIO pin mux to
-> modem control lines on selected ports if needed.
-> 
-> Cc: <stable@vger.kernel.org> # 6.1.x
-> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> Reviewed-by: Lech Perczak <lech.perczak@camlingroup.com>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 > ---
->  .../bindings/serial/nxp,sc16is7xx.txt         | 46 +++++++++++++++++++
->  1 file changed, 46 insertions(+)
+>  Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Applied, thanks!
 
