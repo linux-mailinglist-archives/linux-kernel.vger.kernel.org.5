@@ -2,110 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD4577FF70
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 23:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE1C77FF71
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 23:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355116AbjHQVBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 17:01:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43778 "EHLO
+        id S1355124AbjHQVBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 17:01:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355119AbjHQVBB (ORCPT
+        with ESMTP id S1355123AbjHQVBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 17:01:01 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4FAD3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 14:01:00 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bba6a9b565so3217241fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 14:01:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gateworks-com.20221208.gappssmtp.com; s=20221208; t=1692306059; x=1692910859;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZeoBo3Vxb/EshwMcCgSTIf6m36vMo06kvicDB/Y5hQY=;
-        b=wiKNV8szwHJVWXuZWC+0JMmrijpCjmso/okaZuZp3vP8PzNOiCFKS1DGuHCukrTuID
-         ASpg2wKEzYP82O0HJ41Ddm27xtacbYSW92okQhi0j12iIEkkrL2FWrdvGe4YqtDzI5qA
-         wYZZRb8ujS/GP6l5tsGZklRQct+GtgGFlfgEkwSzA+Ad8O3swB+mjz0I4trDt8kMEeC7
-         gvg5hzR9DEe0+UHYwJWjsBh6n5UDnhT/FJfbS71IQHBgVvM6uO4rsXBFPqTK5ipm/emc
-         4f0RVGyuFHAGVICY4VTINfEbthQnfaL8yxc1Pddzp+bBIN+NXJodSsAPWv+rIYd/5mTN
-         OvQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692306059; x=1692910859;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZeoBo3Vxb/EshwMcCgSTIf6m36vMo06kvicDB/Y5hQY=;
-        b=k1jOJ3hqQUuomUDlXxweiJudCLiBJfNAy5ClAsvmvUEEwnb+tT3wtOvze/dounTpiV
-         uaWkM8nSzeugvmjnF/qAHfq4aRQH3kYgSnzxUPxfPjjBZ8GH62//UaIQ6qKQoFpo7SVk
-         W2pVi6qrCvi0/1SP+n13z1AZWFF35RvYMplHTpEg9vQYsSQqMj33epmBh9igEFy9vxg6
-         /Ll3rio6NgcU5HDbbpzub9E4fgiHp1YffjjuxQrAm4mKPrJS+v9Rf76WLNku3X/GewQu
-         2gkcyVd3Al2sPpqXTPkQCcOQoYJ593ZivJCUm+7tpRJICI9fcvFr4k0YxJCiqZE4xhCk
-         O7Pw==
-X-Gm-Message-State: AOJu0YzLAGwW7pnGDMWkqV+ssnbh6cUkWZhwBav3iQKNGO6nw3DueB+N
-        xFJTGbA8dZYLGUM1pdNx9NTwP/Z2nmMBILYakOke4g==
-X-Google-Smtp-Source: AGHT+IFRtxE5z3SLxeHMJAAAD7Xny2uI/enCW9Yws/prSoO4Y1+eutJcq1qW6/e4TYhN2sbf4fU4sQ6rI0Wp0o4NMhA=
-X-Received: by 2002:a2e:9943:0:b0:2b9:f13b:613c with SMTP id
- r3-20020a2e9943000000b002b9f13b613cmr443995ljj.2.1692306058686; Thu, 17 Aug
- 2023 14:00:58 -0700 (PDT)
+        Thu, 17 Aug 2023 17:01:06 -0400
+Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F8C26BB
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 14:01:05 -0700 (PDT)
+Received: from eig-obgw-5001a.ext.cloudfilter.net ([10.0.29.139])
+        by cmsmtp with ESMTP
+        id WdWMqXPIgWU1cWk76qLvfs; Thu, 17 Aug 2023 21:01:04 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id Wk75qPhYsZReaWk76qBjWT; Thu, 17 Aug 2023 21:01:04 +0000
+X-Authority-Analysis: v=2.4 cv=WtA4jPTv c=1 sm=1 tr=0 ts=64de8a90
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=UttIx32zK-AA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=VwQbUJbxAAAA:8 a=cm27Pg_UAAAA:8 a=HvF037n1xESchLcPDVoA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=YHBjgijmaD4FytE/JAxc5g4bMOnGx8oPkzLVVzXQwAs=; b=q5lYgpZG+tU76CLdUEYkkiVf+S
+        BIebq3Cjo897BpcjNlsYVrKBbsY5B+eu8hvya6JcvMe8GtUj7t5QQg+e8wD2pAP4ivkuUU3mcmmWU
+        1RNI/4p1FgRvP+oMLP5ELITHCBg0/paYSvsoXNQ2XCa9d3YuQelQyDm+9SBywqPB/lQVbxEarXPmi
+        oRnCVVFl2xvM/YTE4iNf4F7uHDuYROAPxj7wpbrJhXVYUghd5HhZ5PxjjtZ/VxFBM5gWDAXcAEp7a
+        LP5NZipgWQrw+Gx0msH93SAlVYX19wpVoFacSieCxjQO4Gyq7NEKTYkhZJY4DVNLGoWtg+sE5dJ7V
+        UCk/SDPA==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:38296 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qWk74-001RIE-0e;
+        Thu, 17 Aug 2023 16:01:02 -0500
+Message-ID: <75830fc8-82a6-6cf2-059d-4bea0fd4ed45@embeddedor.com>
+Date:   Thu, 17 Aug 2023 15:01:59 -0600
 MIME-Version: 1.0
-References: <20230724151640.555490-1-frieder@fris.de> <CAJ+vNU27A15eLWtFfHCOVn8JgawcgoGUAv2PhKmEf3wcoerPXg@mail.gmail.com>
- <CAOMZO5At6U9_JinNnumCqLMi2ER=3RZXDtsfdAEyjS35SvBaKQ@mail.gmail.com>
-In-Reply-To: <CAOMZO5At6U9_JinNnumCqLMi2ER=3RZXDtsfdAEyjS35SvBaKQ@mail.gmail.com>
-From:   Tim Harvey <tharvey@gateworks.com>
-Date:   Thu, 17 Aug 2023 14:00:45 -0700
-Message-ID: <CAJ+vNU2_W-4+mk53aMkh-jed=QkSJuLisTs4x-b8qMXd5JTGDQ@mail.gmail.com>
-Subject: Re: [PATCH v2] drm: bridge: samsung-dsim: Fix init during host transfer
-To:     Fabio Estevam <festevam@gmail.com>,
-        Frieder Schrempf <frieder@fris.de>
-Cc:     Inki Dae <inki.dae@samsung.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Marek Vasut <marex@denx.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Robert Foss <rfoss@kernel.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Adam Ford <aford173@gmail.com>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] interconnect: Annotate struct icc_path with __counted_by
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>,
+        Georgi Djakov <djakov@kernel.org>
+Cc:     linux-pm@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+References: <20230817204144.never.605-kees@kernel.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20230817204144.never.605-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qWk74-001RIE-0e
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:38296
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfOQ9HGNo848qJkC8K2WXXfZdk/5sFDAmShRIb603etwCnnWED2WYU/WG7BITy5kZH6Pml4/wwbURc7ZwLq9FExu7YHyfyXzMrsnw515m+ReFmiNHmV0b
+ bLEABc4AODTwuJLlA+SmMKBCjGyRs3ZJoXO2224WYV6mxhzgoBfh881OeWwWU03cA5RFk3bq/hsnVm0nTrbOiBmDGnBdSOWdVluHSV+QiY6+0QCuRIYRsoj0
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 1:59=E2=80=AFPM Fabio Estevam <festevam@gmail.com> =
-wrote:
->
-> Hi Tim,
->
-> On Thu, Aug 17, 2023 at 5:53=E2=80=AFPM Tim Harvey <tharvey@gateworks.com=
-> wrote:
->
-> > Frieder,
-> >
-> > Sorry for the delay. Yes this resolves the regression I ran into. I
-> > tested it on top of v6.5-rc6 on a gw72xx-0x with a DFROBOT DRF0678 7in
-> > 800x480 (Raspberry Pi) display which has the Toshiba TC358762
-> > compatible DSI to DBI bridge.
-> >
-> > Let's please get this into v6.5 as soon as possible.
->
-> Care to provide your Tested-by tag?
 
-Fabio,
 
-Yes, sorry:
-Tested-by: Tim Harvey <tharvey@gateworks.com> #
-imx8mm-venice-gw72xx-0x with toshiba tc358762 MIPI DSI bridge
+On 8/17/23 14:41, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct icc_path.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: Georgi Djakov <djakov@kernel.org>
+> Cc: linux-pm@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-best regards,
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Tim
+Thanks
+--
+Gustavo
+
+> ---
+>   drivers/interconnect/internal.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/interconnect/internal.h b/drivers/interconnect/internal.h
+> index f5f82a5c939e..b30856db523d 100644
+> --- a/drivers/interconnect/internal.h
+> +++ b/drivers/interconnect/internal.h
+> @@ -38,7 +38,7 @@ struct icc_req {
+>   struct icc_path {
+>   	const char *name;
+>   	size_t num_nodes;
+> -	struct icc_req reqs[];
+> +	struct icc_req reqs[] __counted_by(num_nodes);
+>   };
+>   
+>   #endif
