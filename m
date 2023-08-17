@@ -2,286 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E0C677EFB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 06:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E54177EFBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 06:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347959AbjHQEFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 00:05:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35586 "EHLO
+        id S1347967AbjHQEGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 00:06:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347955AbjHQEE7 (ORCPT
+        with ESMTP id S1348017AbjHQEGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 00:04:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD48271D;
-        Wed, 16 Aug 2023 21:04:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EC39D63827;
-        Thu, 17 Aug 2023 04:04:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C2F9C433B6;
-        Thu, 17 Aug 2023 04:04:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692245097;
-        bh=n93Y+NvoiCdhzO7vgtSvAbVtJcBfReB5Q3BzTXShkwQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BIf+jhuUQeg4/1MhgIg4CpsmvhqewTlGzKp/7gEX/5xk+BQQQ4xdVvLii9VcQTMjt
-         UiqozUyWJhbWbKRJ37rwMGZzFO5oQY7KUT73GX1KEUCxYSteEqO0LEC/NuIz0OgHir
-         iHX5wwf1/0AtJivlFSv9aCcwW4VEsySrslDYcCU+yHMMjwiHGT9T06zXRuYXdDR9nq
-         O8HTG7QBLuYU7E3pfE22GqpCDNNzHaZGbpBzt2aaB8hOp80EgjqgHVXqiyqH8oWRPB
-         +lBosP5l5Cx6uhbob5wtDGXHziWEkFwkwPYmlYAlD/w1WeaYpl/Z+gZyzvzxcOS8h/
-         PQGjp+OfVSCyw==
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5255da974c4so5637717a12.3;
-        Wed, 16 Aug 2023 21:04:57 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzRBKeg/NuqUpavhyBvC+BJ7uumYAlL9Vw9SPAnSSCyB5NHA6sp
-        /w0yvQVDZiGUNFM+N9xvIVyYAONWOHDcAOOLMN8=
-X-Google-Smtp-Source: AGHT+IHp+7TMt3Tj5/RPaWSXYWVOe5SbUojxP0adL9e0JxkaBOlBhmT7bkD3la7r7y1S8eA63rcp6wYS+uiFyY1ffsw=
-X-Received: by 2002:aa7:db45:0:b0:522:29ec:3e0a with SMTP id
- n5-20020aa7db45000000b0052229ec3e0amr3009174edt.28.1692245095417; Wed, 16 Aug
- 2023 21:04:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230814020045.51950-1-chenhuacai@loongson.cn>
- <20230814020045.51950-2-chenhuacai@loongson.cn> <18b9119c-cbc8-42a1-a313-9154d73c9841@paulmck-laptop>
- <CAAhV-H7t46hD1k18-sLYQA8h=M+ROdyMnT7gRtEGoRwKKBUZUA@mail.gmail.com>
- <CALm+0cWkQ8j_jiOSOuSsR9LbKPUL5cxRrONVxeNgSM5f1nDxMQ@mail.gmail.com>
- <CAAhV-H6S3Scu-Mf7E3aaqySytY4xDgjXrWc=fXSbr4i7R+-GDA@mail.gmail.com>
- <CALm+0cUpqONZOEHbc85d-Z5cC=P5LSeOAGuCCOukpTagLxnXWw@mail.gmail.com>
- <CAAhV-H7J6Rj99M6rxoFCEKu4G6NQPX9-N0a3-2GjEwbr+tbwQw@mail.gmail.com>
- <CALm+0cVdaXn5+4veu2NDwdi7htm=KY4ca+Eh54TwnN_6Xjs8TA@mail.gmail.com>
- <CAAhV-H6ejw=8afS0jmmQvKUrCw=qZm_P6SA0A+tuvvb8bsq4-Q@mail.gmail.com>
- <D3AFC0E7-9E6C-43F2-B9F5-3AC498B14F0F@gmail.com> <CAAhV-H6XPmDFEKGwjcbv57jRwpUvZ76PcmJjxN50Dpbq+-QgKA@mail.gmail.com>
- <2EB2D2A7-7C69-4E75-BF62-92309121B0A5@gmail.com>
-In-Reply-To: <2EB2D2A7-7C69-4E75-BF62-92309121B0A5@gmail.com>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Thu, 17 Aug 2023 12:04:42 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H49seuerPTqwh_KQxFBjSVAT6CjFE_8veifLyEZvvbTYg@mail.gmail.com>
-Message-ID: <CAAhV-H49seuerPTqwh_KQxFBjSVAT6CjFE_8veifLyEZvvbTYg@mail.gmail.com>
-Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
-To:     Alan Huang <mmpgouride@gmail.com>
-Cc:     Z qiang <qiang.zhang1211@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        Thu, 17 Aug 2023 00:06:01 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5B7272D
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 21:05:59 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-3179ed1dfbbso6311647f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 21:05:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jrtc27.com; s=gmail.jrtc27.user; t=1692245157; x=1692849957;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RPAvUFmMc6MHYhPtcS+J2Wjm5R9zwPAqvH6XS/X0hao=;
+        b=DOx//VT3uLRhMKZN1gvZ1e26MR0GD7yjJ1Uh+tgiJ+j0T+pf111e0oMTmi8jmQJZxn
+         Xfo8mfRy6RIEBDYYhD2/32oqIKdUL649MurhO4POndlvLkJ3bM9V+USg+Hrx/Z+kexZq
+         7hvC/W+pUlWMG4lleGbE3G20NaHhNwpnf7dB+1T1n2inx09RFpX+CK9hjSjieUkelE9T
+         jwHmeU1WHzYErWj/Tch/cK2mM8RN5N+xMiY3xnehx8OSGnTIYFMW8vk068IC8r8uvwaD
+         0v6Pw/SGwnilyihfyQTh19Fp3SFjpw9jocPMNod+RiquXGvkiyBSgAsaRMlSCzZd5/96
+         71ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692245157; x=1692849957;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RPAvUFmMc6MHYhPtcS+J2Wjm5R9zwPAqvH6XS/X0hao=;
+        b=QFkpatqoehN9D9Shmi3xyrTdQapVyIVx/pNSpLOqa2RLDNXgqJsFy3MHb1NKoEUqJo
+         8TiVzAuhBVnCaV50KkQv8SXZYdwR55egsr1LjmkU0uU7Ori4KJvEDjj5EBbky5cgwta7
+         oC3tyICbpzukCbs/4xtzKJshnc/hpIty1qr3cgTzSUs5VRy93A0BNpS1F7rFHfzm7waR
+         ZbAheSd4AY+VUOU3Zi0LBRU8pLPNCMdw4f0T8sLNC+poGFjtsmLdf4gHv7P50L4ERzNL
+         GCSsm0hx8xcP/s4WbYAbjlN4q0Yz8sqrVr9cU3tPSujkmgqREsNcf8s3jcLXit2xCKmW
+         8aRw==
+X-Gm-Message-State: AOJu0Yzfkoj9l+AoLATjQLoEDmMrFDwy/ULLJNPKEP8FLnd6thWjfbXt
+        QHa0CmilxpjqVhHF4BFOakI1nQ==
+X-Google-Smtp-Source: AGHT+IG7M1cue9DEYwFoKSeGNCqOcVuwwMifdF7sqjo7y0IqOhjGcIK5XPaod2BNxeerL82qeVFCEA==
+X-Received: by 2002:a05:6000:cd:b0:317:5e5e:60e0 with SMTP id q13-20020a05600000cd00b003175e5e60e0mr2939290wrx.28.1692245157358;
+        Wed, 16 Aug 2023 21:05:57 -0700 (PDT)
+Received: from smtpclient.apple ([131.111.5.246])
+        by smtp.gmail.com with ESMTPSA id j2-20020adfff82000000b003195504c754sm21581512wrr.31.2023.08.16.21.05.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 16 Aug 2023 21:05:57 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.600.7\))
+Subject: Re: [PATCH 00/10] RISC-V: Refactor instructions
+From:   Jessica Clarke <jrtc27@jrtc27.com>
+In-Reply-To: <12FAB5A9-5723-4A5B-8729-75D8A38921B9@jrtc27.com>
+Date:   Thu, 17 Aug 2023 05:05:45 +0100
+Cc:     Andrew Jones <ajones@ventanamicro.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, bpf@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
+        Ard Biesheuvel <ardb@kernel.org>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>, Nam Cao <namcaov@gmail.com>
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Message-Id: <46884D2C-F3AA-4A83-8295-AE5C0F58FE13@jrtc27.com>
+References: <20230803-master-refactor-instructions-v4-v1-0-2128e61fa4ff@rivosinc.com>
+ <20230804-2c57bddd6e87fdebc20ff9d5@orel> <ZM00UYDzEAz/JT3n@ghost>
+ <ZN1qXlLp6qfpBeGF@ghost> <12FAB5A9-5723-4A5B-8729-75D8A38921B9@jrtc27.com>
+To:     Charlie Jenkins <charlie@rivosinc.com>
+X-Mailer: Apple Mail (2.3731.600.7)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Alan,
-
-On Thu, Aug 17, 2023 at 12:52=E2=80=AFAM Alan Huang <mmpgouride@gmail.com> =
+On 17 Aug 2023, at 04:57, Jessica Clarke <jrtc27@jrtc27.com> wrote:
+>=20
+> On 17 Aug 2023, at 01:31, Charlie Jenkins <charlie@rivosinc.com> =
 wrote:
->
-> >>
-> >>>>>>>>>>>
-> >>>>>>>>>>> Currently rcu_cpu_stall_reset() set rcu_state.jiffies_stall t=
-o one check
-> >>>>>>>>>>> period later, i.e. jiffies + rcu_jiffies_till_stall_check(). =
-But jiffies
-> >>>>>>>>>>> is only updated in the timer interrupt, so when kgdb_cpu_ente=
-r() begins
-> >>>>>>>>>>> to run there may already be nearly one rcu check period after=
- jiffies.
-> >>>>>>>>>>> Since all interrupts are disabled during kgdb_cpu_enter(), ji=
-ffies will
-> >>>>>>>>>>> not be updated. When kgdb_cpu_enter() returns, rcu_state.jiff=
-ies_stall
-> >>>>>>>>>>> maybe already gets timeout.
-> >>>>>>>>>>>
-> >>>>>>>>>>> We can set rcu_state.jiffies_stall to two rcu check periods l=
-ater, e.g.
-> >>>>>>>>>>> jiffies + (rcu_jiffies_till_stall_check() * 2) in rcu_cpu_sta=
-ll_reset()
-> >>>>>>>>>>> to avoid this problem. But this isn't a complete solution bec=
-ause kgdb
-> >>>>>>>>>>> may take a very long time in irq disabled context.
-> >>>>>>>>>>>
-> >>>>>>>>>>> Instead, update jiffies at the beginning of rcu_cpu_stall_res=
-et() can
-> >>>>>>>>>>> solve all kinds of problems.
-> >>>>>>>>>>
-> >>>>>>>>>> Would it make sense for there to be a kgdb_cpu_exit()?  In tha=
-t case,
-> >>>>>>>>>> the stalls could simply be suppressed at the beginning of the =
-debug
-> >>>>>>>>>> session and re-enabled upon exit, as is currently done for sys=
-rq output
-> >>>>>>>>>> via rcu_sysrq_start() and rcu_sysrq_end().
-> >>>>>>>>> Thank you for your advice, but that doesn't help. Because
-> >>>>>>>>> rcu_sysrq_start() and rcu_sysrq_end() try to suppress the warni=
-ngs
-> >>>>>>>>> during sysrq, but kgdb already has no warnings during kgdb_cpu_=
-enter()
-> >>>>>>>>> since it is executed in irq disabled context. Instead, this pat=
-ch
-> >>>>>>>>> wants to suppress the warnings *after* kgdb_cpu_enter() due to =
-a very
-> >>>>>>>>> old jiffies value.
-> >>>>>>>>>
-> >>>>>>>>
-> >>>>>>>> Hello, Huacai
-> >>>>>>>>
-> >>>>>>>> Is it possible to set  the rcu_cpu_stall_suppress is true in
-> >>>>>>>> dbg_touch_watchdogs()
-> >>>>>>>> and reset the rcu_cpu_stall_suppress at the beginning and end of=
- the
-> >>>>>>>> RCU grace period?
-> >>>>>>> This is possible but not the best: 1, kgdb is not the only caller=
- of
-> >>>>>>> rcu_cpu_stall_reset(); 2, it is difficult to find the "end" to re=
-set
-> >>>>>>> rcu_cpu_stall_suppress.
-> >>>>>>>
-> >>>>>>
-> >>>>>> You can replace rcu_state.jiffies_stall update by setting rcu_cpu_=
-stall_suppress
-> >>>>>> in rcu_cpu_stall_reset(),  and reset rcu_cpu_stall_suppress in rcu=
-_gp_init() and
-> >>>>>> rcu_gp_cleanup().
-> >>>>> What's the advantage compared with updating jiffies? Updating jiffi=
-es
-> >>>>> seems more straight forward.
-> >>>>>
-> >>>>
-> >>>> In do_update_jiffies_64(), need to acquire jiffies_lock raw spinlock=
-,
-> >>>> like you said, kgdb is not the only caller of rcu_cpu_stall_reset(),
-> >>>> the rcu_cpu_stall_reset() maybe invoke in NMI  (arch/x86/platform/uv=
-/uv_nmi.c)
-> >>> Reset rcu_cpu_stall_suppress in rcu_gp_init()/rcu_gp_cleanup() is
-> >>> still not so good to me, because it does a useless operation in most
-> >>> cases. Moreover, the rcu core is refactored again and again, somethin=
-g
-> >>> may be changed in future.
-> >>>
-> >>> If  do_update_jiffies_64() cannot be used in NMI context, can we
-> >>
-> >> What about updating jiffies in dbg_touch_watchdogs or adding a wrapper=
- which updates
-> >> both jiffies and jiffies_stall?
-> > This can solve the kgdb problem, but I found that most callers of
-> > rcu_cpu_stall_reset() are in irq disabled context so they may meet
->
-> The duration of other contexts where interrupts are disabled may not be a=
-s long as in the case of kgdb=EF=BC=9F
->
-> > similar problems. Modifying rcu_cpu_stall_reset() can solve all of
-> > them.
-> >
-> > But due to the NMI issue, from my point of view, setting jiffies_stall
-> > to jiffies + 300*HZ is the best solution now. :)
->
-> If I understand correctly, the NMI issue is the deadlock issue? If so, pl=
-us the short duration of other irq disabled
-> contexts, it=E2=80=99s ok just update jiffies in dbg_touch_watchdogs.
->
-> Please correct me if anything wrong. :)
-The timeout value can be configured as short as 3 seconds, in this
-case other callers may also have problems.
+>>=20
+>> On Fri, Aug 04, 2023 at 10:24:33AM -0700, Charlie Jenkins wrote:
+>>> On Fri, Aug 04, 2023 at 12:28:28PM +0300, Andrew Jones wrote:
+>>>> On Thu, Aug 03, 2023 at 07:10:25PM -0700, Charlie Jenkins wrote:
+>>>>> There are numerous systems in the kernel that rely on directly
+>>>>> modifying, creating, and reading instructions. Many of these =
+systems
+>>>>> have rewritten code to do this. This patch will delegate all =
+instruction
+>>>>> handling into insn.h and reg.h. All of the compressed =
+instructions, RVI,
+>>>>> Zicsr, M, A instructions are included, as well as a subset of the =
+F,D,Q
+>>>>> extensions.
+>>>>>=20
+>>>>> ---
+>>>>> This is modifying code that =
+https://lore.kernel.org/lkml/20230731183925.152145-1-namcaov@gmail.com/
+>>>>> is also touching.
+>>>>>=20
+>>>>> ---
+>>>>> Testing:
+>>>>>=20
+>>>>> There are a lot of subsystems touched and I have not tested every
+>>>>> individual instruction. I did a lot of copy-pasting from the =
+RISC-V spec
+>>>>> so opcodes and such should be correct
+>>>>=20
+>>>> How about we create macros which generate each of the functions an
+>>>> instruction needs, e.g. riscv_insn_is_*(), etc. based on the output =
+of
+>>>> [1]. I know basically nothing about that project, but it looks like =
+it
+>>>> creates most the defines this series is creating from what we =
+[hope] to
+>>>> be an authoritative source. I also assume that if we don't like the
+>>>> current output format, then we could probably post patches to the =
+project
+>>>> to get the format we want. For example, we could maybe propose an =
+"lc"
+>>>> format for "Linux C".
+>>> That's a great idea, I didn't realize that existed!
+>> I have discovered that the riscv-opcodes repository is not in a state
+>> that makes it helpful. If it were workable, it would make it easy to
+>> include a "Linux C" format. I have had a pull request open on the =
+repo
+>> for two weeks now and the person who maintains the repo has not
+>> interacted.
+>=20
+> Huh? Andrew has replied to you twice on your PR, and was the last one =
+to
+> comment. That=E2=80=99s hardly =E2=80=9Chas not interacted=E2=80=9D.
+>=20
+>> At minimum, in order for it to be useful it would need an ability to
+>> describe the bit order of immediates in an instruction and include =
+script
+>> arguments to select which instructions should be included. There is a
+>> "C" format, but it is actually just a Spike format.
+>=20
+> So extend it? Or do something with QEMU=E2=80=99s equivalent that =
+expresses it.
 
-Huacai
->
-> >
-> > Huacai
-> >>
-> >>> consider my old method [1]?
-> >>> https://lore.kernel.org/rcu/CAAhV-H7j9Y=3DVvRLm8thLw-EX1PGqBA9YfT4G1A=
-N7ucYS=3DiP+DQ@mail.gmail.com/T/#t
-> >>>
-> >>> Of course we should set rcu_state.jiffies_stall large enough, so we
-> >>> can do like this:
-> >>>
-> >>> void rcu_cpu_stall_reset(void)
-> >>> {
-> >>> WRITE_ONCE(rcu_state.jiffies_stall,
-> >>> -   jiffies + rcu_jiffies_till_stall_check());
-> >>> +   jiffies + 300 * HZ);
-> >>> }
-> >>>
-> >>> 300s is the largest timeout value, and I think 300s is enough here in=
- practice.
-> >>>
-> >>> Huacai
-> >>>
-> >>>>
-> >>>> Thanks
-> >>>> Zqiang
-> >>>>
-> >>>>
-> >>>>> Huacai
-> >>>>>
-> >>>>>>
-> >>>>>> Thanks
-> >>>>>> Zqiang
-> >>>>>>
-> >>>>>>>
-> >>>>>>>> or set rcupdate.rcu_cpu_stall_suppress_at_boot=3D1 in bootargs c=
-an
-> >>>>>>>> suppress RCU stall
-> >>>>>>>> in booting.
-> >>>>>>> This is also possible, but it suppresses all kinds of stall warni=
-ngs,
-> >>>>>>> which is not what we want.
-> >>>>>>>
-> >>>>>>> Huacai
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>> Thanks
-> >>>>>>>> Zqiang
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> Huacai
-> >>>>>>>>>
-> >>>>>>>>>>
-> >>>>>>>>>>                                                       Thanx, P=
-aul
-> >>>>>>>>>>
-> >>>>>>>>>>> Cc: stable@vger.kernel.org
-> >>>>>>>>>>> Fixes: a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stal=
-l detection in rcu_cpu_stall_reset()")
-> >>>>>>>>>>> Reported-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
-> >>>>>>>>>>> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> >>>>>>>>>>> ---
-> >>>>>>>>>>> kernel/rcu/tree_stall.h | 1 +
-> >>>>>>>>>>> 1 file changed, 1 insertion(+)
-> >>>>>>>>>>>
-> >>>>>>>>>>> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.=
-h
-> >>>>>>>>>>> index b10b8349bb2a..1c7b540985bf 100644
-> >>>>>>>>>>> --- a/kernel/rcu/tree_stall.h
-> >>>>>>>>>>> +++ b/kernel/rcu/tree_stall.h
-> >>>>>>>>>>> @@ -153,6 +153,7 @@ static void panic_on_rcu_stall(void)
-> >>>>>>>>>>> */
-> >>>>>>>>>>> void rcu_cpu_stall_reset(void)
-> >>>>>>>>>>> {
-> >>>>>>>>>>> +     do_update_jiffies_64(ktime_get());
-> >>>>>>>>>>>     WRITE_ONCE(rcu_state.jiffies_stall,
-> >>>>>>>>>>>                jiffies + rcu_jiffies_till_stall_check());
-> >>>>>>>>>>> }
-> >>>>>>>>>>> --
-> >>>>>>>>>>> 2.39.3
->
->
+Note that every field already identifies the bit order (or, for the
+case of compressed instructions, register restrictions) since that=E2=80=99=
+s
+needed to produce the old LaTeX instruction set listings; that=E2=80=99s =
+why
+there=E2=80=99s jimm20 vs imm20, for example. One could surely encode =
+that in
+Python and generate the LaTeX strings from the Python, making the
+details of the encodings available elsewhere. Or just have your own
+mapping from name to whatever you need. But, either way, the
+information should all be there today in the input files, it=E2=80=99s =
+just a
+matter of extending the script to produce whatever you want from them.
+
+> Jess
+>=20
+>> Nonetheless, it
+>> seems like it is prohibitive to use it.
+>>>>=20
+>>>> I'd also recommend only importing the generated defines and =
+generating
+>>>> the functions that will actually have immediate consumers or are =
+part of
+>>>> a set of defines that have immediate consumers. Each consumer of =
+new
+>>>> instructions will be responsible for generating and importing the =
+defines
+>>>> and adding the respective macro invocations to generate the =
+functions.
+>>>> This series can also take that approach, i.e. convert one set of
+>>>> instructions at a time, each in a separate patch.
+>>> Since I was hand-writing everything and copying it wasn't too much
+>>> effort to just copy all of the instructions from a group. However, =
+from
+>>> a testing standpoint it makes sense to exclude instructions not yet =
+in
+>>> use.
+>>>>=20
+>>>> [1] https://github.com/riscv/riscv-opcodes
+>>>>=20
+>>>> Thanks,
+>>>> drew
+>>>>=20
+>>>>=20
+>>>>> , but the construction of every
+>>>>> instruction is not fully tested.
+>>>>>=20
+>>>>> vector: Compiled and booted
+>>>>>=20
+>>>>> jump_label: Ensured static keys function as expected.
+>>>>>=20
+>>>>> kgdb: Attempted to run the provided tests but they failed even =
+without
+>>>>> my changes
+>>>>>=20
+>>>>> module: Loaded and unloaded modules
+>>>>>=20
+>>>>> patch.c: Ensured kernel booted
+>>>>>=20
+>>>>> kprobes: Used a kprobing module to probe jalr, auipc, and branch
+>>>>> instructions
+>>>>>=20
+>>>>> nommu misaligned addresses: Kernel boots
+>>>>>=20
+>>>>> kvm: Ran KVM selftests
+>>>>>=20
+>>>>> bpf: Kernel boots. Most of the instructions are exclusively used =
+by BPF
+>>>>> but I am unsure of the best way of testing BPF.
+>>>>>=20
+>>>>> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+>>>>>=20
+>>>>> ---
+>>>>> Charlie Jenkins (10):
+>>>>>     RISC-V: Expand instruction definitions
+>>>>>     RISC-V: vector: Refactor instructions
+>>>>>     RISC-V: Refactor jump label instructions
+>>>>>     RISC-V: KGDB: Refactor instructions
+>>>>>     RISC-V: module: Refactor instructions
+>>>>>     RISC-V: Refactor patch instructions
+>>>>>     RISC-V: nommu: Refactor instructions
+>>>>>     RISC-V: kvm: Refactor instructions
+>>>>>     RISC-V: bpf: Refactor instructions
+>>>>>     RISC-V: Refactor bug and traps instructions
+>>>>>=20
+>>>>> arch/riscv/include/asm/bug.h             |   18 +-
+>>>>> arch/riscv/include/asm/insn.h            | 2744 =
++++++++++++++++++++++++++++---
+>>>>> arch/riscv/include/asm/reg.h             |   88 +
+>>>>> arch/riscv/kernel/jump_label.c           |   13 +-
+>>>>> arch/riscv/kernel/kgdb.c                 |   13 +-
+>>>>> arch/riscv/kernel/module.c               |   80 +-
+>>>>> arch/riscv/kernel/patch.c                |    3 +-
+>>>>> arch/riscv/kernel/probes/kprobes.c       |   13 +-
+>>>>> arch/riscv/kernel/probes/simulate-insn.c |  100 +-
+>>>>> arch/riscv/kernel/probes/uprobes.c       |    5 +-
+>>>>> arch/riscv/kernel/traps.c                |    9 +-
+>>>>> arch/riscv/kernel/traps_misaligned.c     |  218 +--
+>>>>> arch/riscv/kernel/vector.c               |    5 +-
+>>>>> arch/riscv/kvm/vcpu_insn.c               |  281 +--
+>>>>> arch/riscv/net/bpf_jit.h                 |  707 +-------
+>>>>> 15 files changed, 2825 insertions(+), 1472 deletions(-)
+>>>>> ---
+>>>>> base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+>>>>> change-id: 20230801-master-refactor-instructions-v4-433aa040da03
+>>>>> --=20
+>>>>> - Charlie
+>>>>>=20
+>>>>>=20
+>>>>> --=20
+>>>>> kvm-riscv mailing list
+>>>>> kvm-riscv@lists.infradead.org
+>>>>> http://lists.infradead.org/mailman/listinfo/kvm-riscv
+>>=20
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+
