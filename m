@@ -2,71 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B3077F2C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B870A77F2CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349291AbjHQJIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 05:08:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43854 "EHLO
+        id S1349317AbjHQJKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 05:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349311AbjHQJHn (ORCPT
+        with ESMTP id S1349318AbjHQJKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 05:07:43 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91D110C8
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 02:07:41 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 85A2740E0197;
-        Thu, 17 Aug 2023 09:07:39 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ZhJFlBXWW3dx; Thu, 17 Aug 2023 09:07:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1692263256; bh=Ell1ypaMYGjxyAwvIbYxQkvjnnCi3BqtvuAeFjrHE2k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iak+Znyr7MmErDT/5l69DBwaBgm0+SWi3WhpMGxnL/jaPxQgpSvQ0X6aBPBc5Ba9w
-         wJXW6g1fsF77pFzg+5w2cBgjlpjfr6aqb10FqYecRxRJwn6qnlMpukJEovK6XNpzcK
-         gc90adMKmocx0FSI8Z7tfRmfNSO9nlq409dFk6g6QHCePXajkusaI1QhdemLYb5qHb
-         0QLrVoBTaqQhudMg2lJKHHmFa+kb7nbwNB7+70WCF/TLN/iGegiB+oW+yE1G019WB/
-         dSXwUIMWT7WNvnYm2vYeo3A0zqAegjXmFhwnScAZHTYw9TIkxNYKjrMpkogJn7BqeT
-         oWt5VBUCPchkunNGISVz8LuYO4YEXSx+NwPeKtNTw9U0Mf66B/Id7ZhYC4EsuafhLu
-         7af1WjwA1lZrAQPdNTDt4kU+Zu9pY3Zyl+oHX7FtmgTS5VHxnGV2sowIPfLv7poiZ4
-         tpMTJMbIt3IAhiDIYXIAkEdI3s86xvEAO+nH4OBUadtymE5Mdr+CIf7Y0eXwJWW9b2
-         Mx6009qe9iUXFA0mK0UBy9ZDQ178iaOYKR1BdbXg2UfZWL1BE3obGYyxdy9cU9Qi6D
-         rQCZ2Jmc/6xBo/QlTwpkW5VBFyVyJKo4UkQYuSQHVl0p3+VHH32L7a5Fhgy6Ii/Bxv
-         yGooneRzFnbbhKBE+hQdd248=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9CD2940E00B0;
-        Thu, 17 Aug 2023 09:07:31 +0000 (UTC)
-Date:   Thu, 17 Aug 2023 11:07:27 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     Nikolay Borisov <nik.borisov@suse.com>, X86 ML <x86@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/srso: Correct the mitigation status when SMT is
- disabled
-Message-ID: <20230817090727.GBZN3jT0+gH2iTyeOF@fat_crate.local>
-References: <20230814211727.GLZNqZ5+flxtyaDjMQ@fat_crate.local>
- <20230815095724.GBZNtMBPUJSEegviJN@fat_crate.local>
- <20230815195831.2opbgrznnpszaa32@treble>
- <20230815201753.GGZNvdcbPHXtEXn4As@fat_crate.local>
- <20230815212751.xhsyn7iwj2gwpuk5@treble>
- <20230816083057.GCZNyJQVARsxD3rNAm@fat_crate.local>
- <20230816160757.oegndrcnf2fvt7l3@treble>
- <20230816173531.GMZN0I40DEFE38Zxuz@fat_crate.local>
- <20230816182940.xw67h5xbilqpb5au@treble>
- <20230816185830.GOZN0cVl/pJcZUiPGY@fat_crate.local>
+        Thu, 17 Aug 2023 05:10:01 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21719198E
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 02:09:58 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1692263397;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gdd6en48U+LDOcM3KZoEr2Q34+pgyB8St54PrBtO7Dw=;
+        b=zg27N+PdpWwQniuQtONRZ5lDYk9hicVEAaxWvBmo7/cJLTmn18vSi92RofTa939ykOtafE
+        19ktxJikTtoC8yFy3b7VO7fTxiD3LwE2tYJNMYMkvSwFHSEc7NgwI+lb1CDh+tMHjGEQ+S
+        Unh+ZOafuJY7zRqUWlX9SykvOs9W6xI/T8kgZkpwZ6/TYBh25pc0HyEagAC+S95cJ+INEx
+        9K8F5PcHCfcnoHNGeoulSjtNVGCZ9NDTV/YquR9BU1excq8IviApfSdIj2gE4iIMiUJ+6q
+        C9HWvmFt+EcyK7jjhA16ICUaTIWiPSBgZZ2foXPbBjk1UFSpj+Cp8Tb1qiNg+A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1692263397;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=gdd6en48U+LDOcM3KZoEr2Q34+pgyB8St54PrBtO7Dw=;
+        b=/obUQhrlLcBgHpNOaoBhC/EmkALC4BMVs3cZvEjJabv2jT+evK/sQ15VpGMQYQw9JL6usA
+        bVkE1ZKev1z5LLBw==
+To:     "Brown, Len" <len.brown@intel.com>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "Gross, Jurgen" <jgross@suse.com>,
+        "mikelley@microsoft.com" <mikelley@microsoft.com>,
+        "arjan@linux.intel.com" <arjan@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "ray.huang@amd.com" <ray.huang@amd.com>,
+        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
+        "Sivanich, Dimitri" <dimitri.sivanich@hpe.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>
+Subject: RE: [patch V3 27/40] x86/cpu: Provide a sane leaf 0xb/0x1f parser
+In-Reply-To: <MN0PR11MB601007E7DAE4C5FC86E58DB0E014A@MN0PR11MB6010.namprd11.prod.outlook.com>
+References: <20230802101635.459108805@linutronix.de>
+ <20230802101934.258937135@linutronix.de>
+ <8e5bbbc91ff9f74244efe916a4113999abc52213.camel@intel.com>
+ <87350ogh7j.ffs@tglx> <87ttt3f0fu.ffs@tglx>
+ <b8637c8c92751f791bf2eae7418977c0fd0c611d.camel@intel.com>
+ <87il9hg67i.ffs@tglx>
+ <MN0PR11MB6010CB72411BA723BEFC5565E017A@MN0PR11MB6010.namprd11.prod.outlook.com>
+ <877cpxioua.ffs@tglx>
+ <MN0PR11MB601007E7DAE4C5FC86E58DB0E014A@MN0PR11MB6010.namprd11.prod.outlook.com>
+Date:   Thu, 17 Aug 2023 11:09:56 +0200
+Message-ID: <87fs4ighln.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230816185830.GOZN0cVl/pJcZUiPGY@fat_crate.local>
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -76,49 +71,228 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Borislav Petkov (AMD)" <bp@alien8.de>
-Date: Tue, 15 Aug 2023 11:53:13 +0200
-Subject: [PATCH] x86/srso: Correct the mitigation status when SMT is disabled
+Len!
 
-Specify how is SRSO mitigated when SMT is disabled. Also, correct the
-SMT check for that.
+On Tue, Aug 15 2023 at 19:30, Len Brown wrote:
+> In retrospect, we under-specified what it means to enumerate a
+> CPUID.1F die, because it has been a constant battle to get the HW
+> people to *not* enumerate hidden die that software does not see.
+>
+> Indeed, we were equally guilty in not codifying an architectural
+> definition of "module" and "tile", which were placed into the CPUID.1F
+> definition mostly as place-holders with awareness of hardware
+> structures that were already in common use.  For example, there were
+> already module-scoped counters that were hard-coded, and enumerating
+> modules seems to be an to give architectural (re-usable) enumeration
+> to model-specific code.
 
-Fixes: e9fbc47b818b ("x86/srso: Disable the mitigation on unaffected configurations")
-Suggested-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20230814200813.p5czl47zssuej7nv@treble
----
- arch/x86/kernel/cpu/bugs.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Sure 0x1f is underspecified in terms of meaning of the intermediate
+levels, but it's perfectly parseable. Once there is information how to
+actually utilize MODULE or TILE for software decisions, then it can be
+implemented. Until then we still have to can parse it and otherwise just
+ignore it. Where is the problem?
 
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index 9026e3fe9f6c..f081d26616ac 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -2428,8 +2428,7 @@ static void __init srso_select_mitigation(void)
- 		 * Zen1/2 with SMT off aren't vulnerable after the right
- 		 * IBPB microcode has been applied.
- 		 */
--		if ((boot_cpu_data.x86 < 0x19) &&
--		    (!cpu_smt_possible() || (cpu_smt_control == CPU_SMT_DISABLED))) {
-+		if (boot_cpu_data.x86 < 0x19 && !cpu_smt_possible()) {
- 			setup_force_cpu_cap(X86_FEATURE_SRSO_NO);
- 			return;
- 		}
-@@ -2714,7 +2713,7 @@ static ssize_t retbleed_show_state(char *buf)
- static ssize_t srso_show_state(char *buf)
- {
- 	if (boot_cpu_has(X86_FEATURE_SRSO_NO))
--		return sysfs_emit(buf, "Not affected\n");
-+		return sysfs_emit(buf, "Mitigation: SMT disabled\n");
- 
- 	return sysfs_emit(buf, "%s%s\n",
- 			  srso_strings[srso_mitigation],
--- 
-2.42.0.rc0.25.ga82fb66fed25
+> Second, failings of the Linux topology code...
+>
+> I agree with you that "thread_siblings" and "core_cpus" are the
+> different words for the same thing.  This will always be true because
+> the hardware architecture guarantees that SMT siblings are the next
+> level down from core.
 
--- 
-Regards/Gruss,
-    Boris.
+Right. So you "fix" was pure cosmetic.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> But no such definition exists for "core_siblings".  It is impossible
+> to write correct software that reads "core_siblings" and takes any
+> action on it.  Those could be the CPUs inside a module, or inside a
+> die, or inside some other level that today's software can't possibly
+> know by name.
+>
+> On the other hand, die_cpus is clear -- the CPUs within a die.
+> Package_cpus -- the CPUs within a package.
+> Core_cpus -- the cpus within a core....
+> Words matter.
+
+Of course does terminology matter, but that's not the real problem.
+
+> Re: globally unique core_id
+>
+> I have 100% confidence that you can make the Linux kernel handle a
+> sparce globally unique core_id name space.  My concern is unknown
+> exposure to joe-random-user-space program that consumes the sysfs
+> representation.
+
+You simply can keep the current representation for proc and sysfs with
+the relative IDs and just make the kernel use unique core IDs. The
+kernel needs to be sane before you can even think about user space
+exposure.
+
+>>> Secondly, with the obsolescence of CPUID.0b and its replacement with 
+>>> CPUID.1F, the contract between The hardware and the software is that a 
+>>> level can appear and can in between any existing levels.  (the only 
+>>> exception is that SMT is married to core).
+>
+>> In theory, yes. But what's the practical relevance that there might
+>> be a new level between CORE and MODULE or MODULE and TILE etc...?
+>
+>>> It is not possible For an old kernel to know the name or position of a 
+>>> new level in the hierarchy, going forward.
+>
+>> Again, where is the practical problem? These new levels are not going
+>> to be declared nilly willy and every other week, right?
+>
+> It is irrelevant if a new level is of any practical use to Linux.
+>
+> What is important is that Linux be able to parse and use the levels it
+> finds useful, while gracefully ignoring any that it doesn't care about
+> (or doesn't yet know about).
+>
+> Yes, hardware folks can drop something into the ucode and the SDM w/o
+> us knowing ahead of time (see DieGrp in the June 2023 SDM).  Certainly
+> they can do it in well under the 4-year's notice we'd need if we were
+> to simply track the named levels in the SDM.
+
+That's a matter of education of the hardware people. Sure they can do
+whatever they want, but if they want us to provide primary support for
+the stuff they dream up, then they better go and tell us early enough.
+
+>>> Today, this manifests with a (currently) latent bug that I caused.
+>>> For I implemented die_id In the style of package_id, and I shouldn't 
+>>> have followed that example.
+>
+>> You did NOT. You implemented die_id relative to the package, which
+>> does not make it unique in the same way as core_id is relative to the
+>> package and therefore not unique.
+>
+> The point is that like package_id=0 on a single package system, I put
+> a die_id=0 attribute in sysfs even when NO "die" level is enumerated
+> in CPUID.1F.
+>
+> That was a mistake.
+
+No. It's not a mistake. Conceptually the DIE level exists even if not
+enumerated. It consumes zero bits and therefore has size 1.
+
+>>> Today, if CPUID.1F doesn't know anything about multiple DIE, Linux 
+>>> conjurs up A die_id 0 in sysfs.  It should not.  The reason is that 
+>>> when CPUID.1F enumerates A level that legacy code doesn't know about, 
+>>> we can't possibly tell if it is above DIE, or below DIE.  If it is 
+>>> above DIE, then our default die_id 0 is becomes bogus.
+>
+>>That's an implementation problem and the code I posted fixes this by
+>>making die_id unique and taking the documented domain levels into
+>>account.
+>
+> Your code change does not fix the problem above.
+
+Why are all of you so fixated on domain levels which are not documented
+today? Either you know something which I don't know or you are just
+debating an academic problem to death.
+
+>> So if 0x1f does not enumerate dies, then each package has one die and
+>> the die ID is the same as the package ID. It's that simple.
+>
+> Unfortunately, no.
+>
+> Your code will be written and ship before level-X is defined.
+>
+> A couple of years later, level-X is defined above die.  Your code runs
+> on new hardware that defines no packages, level-X, and no die.  How
+> many die-id's does this system have?
+>
+> If you could see into the future, you'd answer that there are 2-die,
+> because There is one inside each level-X.
+>
+> But since die isn't enumerated, and you don't know if a level-X is
+> defined to be above or below die, then you can't tell if level-X is
+> something containing die, or something contained-by die...
+>
+> The proper solution is to not expose a die_id attribute in sysfs if
+> there is no die level enumerated in CPUID.1F.  When it is enumerated,
+> we get it right.  When it is not enumerated, we don't guess.
+
+The main problem is the kernel side itself. /proc/ /sys/ are things
+which can do conditinal exposure, but you can't do so in the kernel.
+
+Fact is that the APIC ID space is segmented to reflect the today
+decribed topology domains:
+
+     [PKG] [DIE] [TILE] [MODULE] [CORE] [THREAD]
+
+Each of them can occupy 0 or more bits. So using an internal
+representation for them which treats them as size one if not specified
+is the obvious and right thing to do.
+
+You cannot create a software monstrosity which makes everything
+conditional. It's neither workable nor maintainable. You need a
+consistent view independent of the enumerated levels in 0x1F and as a
+consequence you have to assume that the non-enumerated levels consume
+zero bits in the APIC ID space and have size one.
+
+If the hardware people fail to understand that software needs a
+consistent representation of these things, then we can give up and just
+refuse to parse 0x1f at all.
+
+Now lets look at your imaginary future systems enumeration:
+
+     [LEVELX] [CORE] [THREAD]
+
+You have to take LEVELX - even if unknown to the kernel - into account
+to evaluate the APID ID range which defines the package space.
+
+Otherwise you obviously just have to ignore it because yes, it's unknown
+between which domain levels this is going to sit.
+
+But this assumes that LEVELX is going to appear out of the blue just
+because the hardware people took the wrong pills. So it's our internal
+problem to educate them so this won't happen.
+
+>> What do you win by removing them from the SDM?
+>
+> When you give HW people enough rope to hang themselves, they will.
+
+You are not preventing this by removing the MODULE/TILE domains
+from the SDM.
+
+> Give them something vague in the SDM, and you've created a monster
+> that is interpreted differently by different hardware teams and no
+> validation team on the planet can figure out if the hardware is
+> correct or not.  Then the definition becomes how the OS (possibly not
+> Linux) happened to use that interface on some past chip -- and that
+> use is not documented in the SDM -- and down the rabbit hole you go...
+>
+> When the SDM precisely documents the software/hardware interface, then
+> proper tests can be written, independent hardware teams are forced to
+> follow the same definition, and correct software can be written once
+> and never break.
+
+I agree with that sentiment in principle, but you lost this battle
+already because there is hardware which enumerates MODULE.
+
+[    0.212535] CPU topo: Thread    :     8
+[    0.212537] CPU topo: Core      :     8
+[    0.212539] CPU topo: Module    :     2
+
+So what are we going to do about that? Just pretend that it does not
+exist?
+
+Sure, we can do that. But I'm also 100% sure, that there is a meaning
+which goes beyond the pure physical description of the CPU.
+
+Yes, this description is not there today, but we still have to utilize
+the enumeration level for evaluating the APIC ID bit range which defines
+the package ID space.
+
+That does not mean that we have to put a meaning on that level by doing
+wild guesses. That'd be completely wrong and would cause the problems
+you are so worried about.
+
+Why has this even still to be debated? 0x1F support was merged more than
+four years ago and we are now indulging in debating academic problems of
+unknown levels appearing out of the blue in systems which ship today.
+
+There is a meaning to the existing levels, so time is better spent to
+get that documented.
+
+Thanks,
+
+        tglx
