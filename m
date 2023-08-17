@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8926B77F168
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 09:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 649BE77F16A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 09:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348579AbjHQHlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 03:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
+        id S1348589AbjHQHm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 03:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348630AbjHQHlT (ORCPT
+        with ESMTP id S1348618AbjHQHmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 03:41:19 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E2C2D66
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 00:41:18 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-44ac6638896so894357137.2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 00:41:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692258077; x=1692862877;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u9r3O4i6tomLTAdIVe1UKhoSaTbKeyjF0f89um1mCl8=;
-        b=pHyxXUCABX6H+QXxNz5VxJABpQcdeMUmrTgoYAW3uOu6BkrfvNRXBFEQCp4OYQsaTA
-         wZ5bEu/vLtt41TtGhjJEg4Om/C70lVHTsX8tWW0Vrkq9Ph7pg+yaY43iQ1YqlhVc5/8R
-         VM8ww4ldDiYAJ44cL0pT5eojmzMvCyexKDYJy6FBDkZJI0zREueZtQ3pFHLw5ImW5FtR
-         JcFR9UTyKwM0Qob2X+WEpWAaHiCltkG0QUdXi7KcIkL5RGZBrGYwQydIMgiSv3J/vbKu
-         TC0xBCf+cBIUXDk6Piktilyh2TD4wyXFkKK1CyahIcbV55pAKsGn88uifFTLq5iZ8ZEN
-         5pcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692258077; x=1692862877;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=u9r3O4i6tomLTAdIVe1UKhoSaTbKeyjF0f89um1mCl8=;
-        b=AbtPvCG0ktVwxKZxIKA/jjprMCkIgBV3ZeddAedK+aSODiG1VDzB2KKeAI9UwrK4Nt
-         GQhFtuk/5bU+U2sBZIjYAdS2KZT9QkKpXy6mR9MHTpDEPC7i+5zW8IyNyhmCTo+I3IdC
-         CqbWXbSWkxj711DzcSO0TrNuPvxa+jQSPyyIXPttqUi8vcyZ+KTO94aehu2Lc0lWNh6r
-         rrmET8bdfdYve7c28WOV88VspOLkvGCaXJMVeDFaeby8m6hV6R4DyQvMBEELT57PFA78
-         qUGKIeaowRo2BDGQSsR5Mw5idzpb1o5o/tFcUH/XOwkxz+aT+nf0PdAuxq2iXLY3H2+b
-         HtgQ==
-X-Gm-Message-State: AOJu0YxZIW1L18dMxjE+ZajxTaUERErlax1NkqDSx1hWk+AavllwSgro
-        USPLcZZi9lBImIudsOENahraj0sBsLSuxDL3VDWuGw==
-X-Google-Smtp-Source: AGHT+IHNBqUCtrNQSr3V74uvRzR/HtZIM2+7YsSXHqauz6IoyG278m2Mf7QI8vwq0wjOZNnyRzFndDOTqyiV8w+yZww=
-X-Received: by 2002:a67:f550:0:b0:445:91b:385d with SMTP id
- z16-20020a67f550000000b00445091b385dmr3522420vsn.12.1692258077169; Thu, 17
- Aug 2023 00:41:17 -0700 (PDT)
+        Thu, 17 Aug 2023 03:42:07 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668372D79;
+        Thu, 17 Aug 2023 00:42:02 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RRH5K5ft5z4f3wtJ;
+        Thu, 17 Aug 2023 15:41:57 +0800 (CST)
+Received: from [10.174.179.247] (unknown [10.174.179.247])
+        by APP4 (Coremail) with SMTP id gCh0CgD3hqlDz91k0bGlAw--.54630S3;
+        Thu, 17 Aug 2023 15:41:58 +0800 (CST)
+Message-ID: <acc72614-74bb-0230-a319-8b8d08c19ba5@huaweicloud.com>
+Date:   Thu, 17 Aug 2023 15:41:55 +0800
 MIME-Version: 1.0
-References: <20230816122032.15548-1-brgl@bgdev.pl> <CACRpkdaTUi0r+nY12J8sLxmvfG2xRd+OMngcMiQkr5cqerevtA@mail.gmail.com>
- <ZN2k7gemanIpbyFh@sol> <CAMRc=MfwK6_m0N4cZqkpMX0Rka4WnWmtKTjq-cwbTR5+sjw9vw@mail.gmail.com>
- <ZN3OHqzT3grSdefP@sol>
-In-Reply-To: <ZN3OHqzT3grSdefP@sol>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 17 Aug 2023 09:41:06 +0200
-Message-ID: <CAMRc=MfZ-5FKrtjrDTajHCu8n6q4dYyy-5R2AFDp2AKRem3YYw@mail.gmail.com>
-Subject: Re: [PATCH 0/5] gpio: cdev: bail out of poll() if the device goes down
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH] scsi: ata: Fix a race condition between scsi error
+ handler and ahci interrupt
+To:     Damien Le Moal <dlemoal@kernel.org>
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linan122@huawei.com, yukuai3@huawei.com, yi.zhang@huawei.com,
+        houtao1@huawei.com, yangerkun@huawei.com, jianghong011@huawei.com,
+        zhangcheng75@huawei.com, kangfenglong@huawei.com,
+        yangxingui@huawei.com
+References: <20230810014848.2148316-1-linan666@huaweicloud.com>
+ <25c1aca7-d885-0fff-2639-bb68a7dff44f@kernel.org>
+ <c2ae28b7-a105-9cd6-bf2e-63051a4000b0@huaweicloud.com>
+ <eb135aff-dc33-d559-1826-9284a22c095a@kernel.org>
+ <977879af-8603-82ae-07ad-38be3a27194d@huaweicloud.com>
+ <611dfd5e-33b7-12ad-5902-ad20edf3b02e@kernel.org>
+From:   Li Nan <linan666@huaweicloud.com>
+In-Reply-To: <611dfd5e-33b7-12ad-5902-ad20edf3b02e@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgD3hqlDz91k0bGlAw--.54630S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxGr45Cry8Jr1fKFyrAFy8Grg_yoWrKrykpF
+        Z5X3WqkFWDKFW0yw4Iv3W5ZFy0kr4fAFWjgF98J34xXryDtF1ftrW2kryq9Fy29ryYk34j
+        qr4jg393AF1rZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Sb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487
+        Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aV
+        AFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E
+        8cxan2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4I
+        kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+        WwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+        0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWr
+        Zr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
+        1UYxBIdaVFxhVjvjDU0xZFpf9x07UCXd8UUUUU=
+X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,69 +72,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 9:37=E2=80=AFAM Kent Gibson <warthog618@gmail.com> =
-wrote:
->
-> On Thu, Aug 17, 2023 at 09:27:37AM +0200, Bartosz Golaszewski wrote:
-> > On Thu, Aug 17, 2023 at 6:41=E2=80=AFAM Kent Gibson <warthog618@gmail.c=
-om> wrote:
-> > >
-> > > On Wed, Aug 16, 2023 at 11:41:06PM +0200, Linus Walleij wrote:
-> > > > On Wed, Aug 16, 2023 at 2:20=E2=80=AFPM Bartosz Golaszewski <brgl@b=
-gdev.pl> wrote:
-> > > >
-> > > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > > > >
-> > > > > Wake up all three wake queues (the one associated with the charac=
-ter
-> > > > > device file, the one for V1 line events and the V2 line request o=
-ne)
-> > > > > when the underlying GPIO device is unregistered. This way we won'=
-t get
-> > > > > stuck in poll() after the chip is gone as user-space will be forc=
-ed to
-> > > > > go back into a new system call and will see that gdev->chip is NU=
-LL.
-> > > > >
-> > > > > Bartosz Golaszewski (5):
-> > > > >   gpio: cdev: ignore notifications other than line status changes
-> > > > >   gpio: cdev: rename the notifier block and notify callback
-> > > > >   gpio: cdev: wake up chardev poll() on device unbind
-> > > > >   gpio: cdev: wake up linereq poll() on device unbind
-> > > > >   gpio: cdev: wake up lineevent poll() on device unbind
-> > > >
-> > > > I see why this is needed and while the whole notification chain
-> > > > is a bit clunky I really cannot think about anything better so:
-> > > > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> > > >
-> > >
-> > > The issue I have is with the repurposing/reuse of the existing notifi=
-er
-> > > block that sends line changed events to the chardev.
-> > > Correct me if I'm wrong, but now all line requests will receive those
-> > > events as well.
-> > > They have no business receiving those events, and it scales badly.
-> > >
-> > > My preference would be for a separate nb for the chip removal to keep
-> > > those two classes of events distinct.
-> > >
-> >
-> > I would normally agree if there was a risk of abuse of those
-> > notifications by drivers but this is all private to gpiolib. And line
-> > requests that receive line state notifications simply ignore them.
-> > This isn't a bottleneck codepath IMO so where's the issue? We would be
-> > using a second notifier head of 40 bytes to struct gpio_device for no
-> > reason.
-> >
->
-> Yeah, this is a space/time trade-off, and you've gone with space over
-> time.  I would select time over space.
-> 40 bytes per device is negligable, and there is never a case where the
-> line request wants to see a change event - it either relates to a
-> different request, or it was triggered by the request itself.
-> Is there an echo in here ;-)?
->
 
-Ok, I'll rework it for v2.
 
-Bart
+在 2023/8/15 10:41, Damien Le Moal 写道:
+> On 8/14/23 22:20, Li Nan wrote:
+>>
+>> 在 2023/8/14 15:50, Damien Le Moal 写道:
+>>> On 8/14/23 15:41, Li Nan wrote:
+>>>>> This is definitely not correct because EH may have been scheduled for a non
+>>>>> fatal action like a device revalidate or to get sense data for successful
+>>>>> commands. With this change, the port will NOT be frozen when a hard error IRQ
+>>>>> comes while EH is waiting to start, that is, while EH waits for all commands to
+>>>>> complete first.
+>>>>>
+>>>>
+>>>> Yeah, we should find a better way to fix it. Do you have any suggesstions?
+>>>>
+>>>>> Furthermore, if you get an IRQ that requires the port to be frozen, it means
+>>>>> that you had a failed command. In that case, the drive is in error state per
+>>>>> ATA specs and stops all communication until a read log 10h command is issued.
+>>>>> So you should never ever see 2 error IRQs one after the other. If you do, it
+>>>>> very likely means that you have buggy hardware.
+>>>>>
+>>>>> How do you get into this situation ? What adapter and disk are you using ?
+>>>>>
+>>>>
+>>>>    > How do you get into this situation ?
+>>>> The first IRQ is io error, the second IRQ is disk link flash break.
+>>>
+>>> What does "link flash break" mean ?
+>>>
+>>>>
+>>>>    > What adapter and disk are you using ?
+>>>> It is a disk developed by our company, but we think the same issue
+>>>> exists when using other disks.
+>>>
+>>> As I said, I find this situation highly suspect because if the first IRQ was to
+>>> signal an IO error that the drive reported, then per ATA specifications, the
+>>> drive should be in error mode and should NOT have transmitted any other FIS
+>>> after the SDB FIS that signaled the error. Nothing at all should come after that
+>>> error SDB FIS, until the host issues a read log 10h to get thee drive out of
+>>> error state.
+>>>
+>>> If this is a prototype device, I would recommend that you take an ATA bus trace
+>>> and verify the FIS traffic. Something fishy is going on with the drive in my
+>>> opinion.
+>>>
+>>
+>> Thank you for your patient explanation. I'm sorry I didn't explain the
+>> problem clearly before. After discussing with my colleagues who know
+>> more about dirvers, Let me re-describe the problem.
+>>
+>> The problem`s situation is the SATA link is quickly disconnected and
+>> connected. For example, when an I/O error is processed in error handling
+>> thread, the disk is manually removed and inserted, and the AHCI chip
+>> reports a hot plug interrupt.
+>>
+>> This scenario is not just an NCQ error, but a disk is removed and
+>> quickly inserted before the error processing is completed. For the error
+>> handling process, the disk status needs to be restored after the error
+>> handling is complete.
+> 
+> In your original email, you showed:
+> 
+> interrupt                            scsi_eh
+> 
+> ahci_error_intr
+>    =>ata_port_freeze
+>      =>__ata_port_freeze
+>        =>ahci_freeze (turn IRQ off)
+>      =>ata_port_abort
+>        =>ata_port_schedule_eh
+>          =>shost->host_eh_scheduled++;
+>          host_eh_scheduled = 1
+>                                       scsi_error_handler
+>                                         =>ata_scsi_error
+>                                           =>ata_scsi_port_error_handler
+>                                             =>ahci_error_handler
+>                                             . =>sata_pmp_error_handler
+>                                             .   =>ata_eh_thaw_port
+>                                             .     =>ahci_thaw (turn IRQ on)
+> ahci_error_intr                            .
+>    =>ata_port_freeze                        .
+>      =>__ata_port_freeze                    .
+>        =>ahci_freeze (turn IRQ off)         .
+>      =>ata_port_abort                       .
+>        =>ata_port_schedule_eh               .
+>          =>shost->host_eh_scheduled++;      .
+>          host_eh_scheduled = 2              .
+> 
+> But here, I do not understand how host_eh_scheduled can be incremented since the
+> shost state should still be SHOST_RECOVERY until scsi_restart_operations() is
+> called at the end of scsi_error_handler(), which is after ata_std_end_eh() is
+> executed toward the end of ata_scsi_port_error_handler().
+
+Yeah, shost state is still SHOST_RECOVERY during this period. But I 
+don't think this will affect host_eh_scheduled++.
+In scsi_host_set_state(), if (state == old state), it will return 0. So:
+   ata_port_schedule_eh
+    ata_std_sched_eh
+     scsi_schedule_eh
+      if (scsi_host_set_state(shost, SHOST_RECOVERY) == 0)  -> true
+       shost->host_eh_scheduled++
+
+> Not sure how what you are showing here can happen. Can you have a closer look ?
+> 
+>                                             =>ata_std_end_eh
+>                                               =>host->host_eh_scheduled = 0;
+> 
+> In any case, for you particular failure pattern, given that the disk "goes away"
+> while EH is running, I would expect the commands executed during EH (e.g. read
+> log 10h) to timeout, which would cause a reset and a revalidate after that. The
+
+
+If we remove the disk when EH is abount to end (after 'ahci_thaw'), the
+commands which needed to be executed on the disk has already been
+completed, and EH will not time out.
+
+> reset should clear the port interrupt error bits, which should allow everything
+> to recover after aborting all commands caught by the first EH run.
+> 
+
+-- 
+Thanks,
+Nan
+
