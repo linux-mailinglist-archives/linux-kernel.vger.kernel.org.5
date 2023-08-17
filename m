@@ -2,61 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 935FE77FF2C
+	by mail.lfdr.de (Postfix) with ESMTP id E734877FF2D
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 22:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354891AbjHQUfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 16:35:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33398 "EHLO
+        id S1354956AbjHQUfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 16:35:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347201AbjHQUew (ORCPT
+        with ESMTP id S1354952AbjHQUfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 16:34:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DB52698;
-        Thu, 17 Aug 2023 13:34:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6C76B63CA4;
-        Thu, 17 Aug 2023 20:34:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F655C433C7;
-        Thu, 17 Aug 2023 20:34:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692304490;
-        bh=EawwIHxts40KJgWHDnnf/ZI2tPV3YLGiiOHqM/k1B64=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Jt6WQ2g6JK9heq/R1CrwwHaDTtEzMSsyF8j1ktbc4MTrlAJ1lr9jmkiv03THTkrK7
-         5gVyfmZTA+lJK3lSBgJwOEfyfLiBiiV4mE9Q961arTKLnV4bJzZAl9f15wehQCnZAJ
-         JWBZ+HjhCjlgQTHfcM+Ijep9jpAoeRPmlcBgpdd02SeiyCAeecxYZ6pZDPqTV/NitS
-         bOJP0JEQ0lI3Us6XYyZvPE540EH/tRHpxt8Avn1HftB2vCDy31fspK8biHJmOr578O
-         XU068vJvmC+fxHwVH2JrvRDuga3F3qh9AnonqMWylQi0At09pUtm/7butpbU2vTsGj
-         lB6WEEpZemoMQ==
-Message-ID: <574d3a14-6b6e-3ad2-2ce3-48c9d76e205c@kernel.org>
-Date:   Thu, 17 Aug 2023 22:34:39 +0200
+        Thu, 17 Aug 2023 16:35:06 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3EF2D5F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 13:35:05 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bdc243d62bso1735775ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 13:35:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692304504; x=1692909304;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZPpoBFJxQV1FmnNA1ExO85wT7EFUumxKCY6/YfojRcg=;
+        b=bn/SNk5ZryeOs6MsIqm2lPBXN41cDb3/QGC5P55X004CdeqSVSCRdatZAzBcEcjYdb
+         stwp4R+ewfJ7JTwLIqwkCV3tJiLzizVt84HuBYcgnJFtcFj0GJQTBLyc7oWoybuMwO8x
+         2fywOflA9vdtzdBg5fkUjF++hib8hmkvldui8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692304504; x=1692909304;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZPpoBFJxQV1FmnNA1ExO85wT7EFUumxKCY6/YfojRcg=;
+        b=FMdiEPQHP3nBzpcvXbreRemD93o124ekLBYVnoD9i1wXSwEYGe6FEI64Yo9p+2oOHV
+         5LvXD+sjfoBlpC+wflPfefqiWdDUhd1zLcXxeyfu5ORkGMWEl2rAHd4Ln8/0L5VS+KW8
+         Sva14GpFfZDfvKRfHLyjEHRUDNLMvNK6KIz0GdasjRQW1IWAgbr1n0O+Rju655AHOVgM
+         pSAsbNoYSl2+31NPeGoQ5ATH0bcpTS5fB8FgyYMqRoy0dIjFIEVr7/pu7q/vdpsJyAmr
+         R4AYJn5C8ASqc3UdSLgHy/tZfe3ajD/F3Vqctni+i+w5eRRBxxJA598RTxigCNtVQlR6
+         MwSA==
+X-Gm-Message-State: AOJu0YwQgOTBTy/ybLLCKBk4ylVWbfS7vthJgwcJM/undKSLTHC0xFCq
+        SMl6i++rlK1A1uRBNGnOefUa2w==
+X-Google-Smtp-Source: AGHT+IH/wjlRQwIcUDu6P8dS8WNcBHV9BkAXgGNUoicxFSF2suKwOUVA1FxwnyK44BV7mv7sOy9Glg==
+X-Received: by 2002:a17:902:ab49:b0:1bc:50f9:8f20 with SMTP id ij9-20020a170902ab4900b001bc50f98f20mr526235plb.23.1692304504393;
+        Thu, 17 Aug 2023 13:35:04 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id t8-20020a170902bc4800b001bbfa86ca3bsm190173plz.78.2023.08.17.13.35.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 13:35:03 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Kees Cook <keescook@chromium.org>, Eric Paris <eparis@redhat.com>,
+        audit@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+Subject: [PATCH] audit: Annotate struct audit_chunk with __counted_by
+Date:   Thu, 17 Aug 2023 13:35:02 -0700
+Message-Id: <20230817203501.never.279-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH 2/4] linux/array_size.h: Add ARRAY_SIZE_OF_FIELD()
-Content-Language: en-US
-To:     Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>,
-        herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org
-Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
-        andriy.shevchenko@intel.com,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-References: <20230817143352.132583-1-lucas.segarra.fernandez@intel.com>
- <20230817143352.132583-3-lucas.segarra.fernandez@intel.com>
-From:   Alejandro Colomar <alx@kernel.org>
-Organization: Linux
-In-Reply-To: <20230817143352.132583-3-lucas.segarra.fernandez@intel.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------sAmmQOSg4fjhAOuWWb3mO1tT"
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1126; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=iQE6kV9vlsKmBgzVzqmUF6+idqkcwdK1Cb4L82t48W0=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBk3oR1DKnpFvGMUs179JIA9Rss1/2X8NIbWK6tU
+ Cp06TDi2MmJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZN6EdQAKCRCJcvTf3G3A
+ JpthEACZY6Pe31vgMRPz5j3xTaeQcZBYjzW4t81pvnkFt09XCmUhXE52Luo096CAIoh/RSN2HBC
+ M99jsYStbgG9+65HFqlLEud091NVpH+BcyJhnPQEhjBu5wgClO93nLn/iHrD7DMUKK96p+Oozt/
+ d01G4YPZ0WyQH4xuCKfdg5Tpp0AsusCwJcKrBTKkbE4+4nPH1jLfiNGA2hBk41cZtMXtobQUqik
+ DnaL7akmF/2Ao3Hun+2GJ/K5eOkJcuuUuqSg2xgsrujou0sDpk5WaeCw9JeyHVQ3io9B5uE37Ub
+ lxfsfQHAnQhfBdN116TutiuE8lyHg8x4D5+g2aUQKEBLWmwSRCS0UgtDh11vXC5A6mW/SEyXw5j
+ G1fdPaxWys+MGFDr8rbC+yXMK5dlQ4lB4lUwULDhyhfnRgCMdsHHuoY6Qc4mLUN4627S9KxJV0g
+ t7V2HNe93Ki9UBhN+WiuJQ+vM4ODPpyXhOVNhnhkrQDP5we6MvSa6f8PAhT0yVELMLk2ZgXT1YU
+ 1TWfa8AwbwPqP/kbMgsfXI4mLjArAv/pVoMMN31Fd/W91MBoJXB0fY4UM0pPj2TARRKBmD9WSdp
+ JyfjvHrUk54mJO6M3ygE84qZElWrMvHvbMBxM4XqFzAkpOj3QgdaFVXw3kCW8ermdyVINeTD8yu
+ pcmHcWm L6nweQag==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,127 +84,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------sAmmQOSg4fjhAOuWWb3mO1tT
-Content-Type: multipart/mixed; boundary="------------EkpoUnKeBvbrOyfa0IyZSoTF";
- protected-headers="v1"
-From: Alejandro Colomar <alx@kernel.org>
-To: Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>,
- herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org, qat-linux@intel.com,
- andriy.shevchenko@intel.com, Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
- Andy Shevchenko <andy.shevchenko@gmail.com>
-Message-ID: <574d3a14-6b6e-3ad2-2ce3-48c9d76e205c@kernel.org>
-Subject: Re: [PATCH 2/4] linux/array_size.h: Add ARRAY_SIZE_OF_FIELD()
-References: <20230817143352.132583-1-lucas.segarra.fernandez@intel.com>
- <20230817143352.132583-3-lucas.segarra.fernandez@intel.com>
-In-Reply-To: <20230817143352.132583-3-lucas.segarra.fernandez@intel.com>
+Prepare for the coming implementation by GCC and Clang of the __counted_by
+attribute. Flexible array members annotated with __counted_by can have
+their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+functions).
 
---------------EkpoUnKeBvbrOyfa0IyZSoTF
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+As found with Coccinelle[1], add __counted_by for struct audit_chunk.
 
-Hi Lucas,
+[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 
-On 2023-08-17 16:33, Lucas Segarra Fernandez wrote:
-> Introduce ARRAY_SIZE_OF_FIELD() in order to get the number of elements
-> of an array struct field.
->=20
-> Signed-off-by: Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.c=
-om>
-> Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> ---
->  include/linux/array_size.h | 8 ++++++++
->  1 file changed, 8 insertions(+)
->=20
-> diff --git a/include/linux/array_size.h b/include/linux/array_size.h
-> index 06d7d83196ca..37dac0473b5c 100644
-> --- a/include/linux/array_size.h
-> +++ b/include/linux/array_size.h
-> @@ -10,4 +10,12 @@
->   */
->  #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_ar=
-ray(arr))
-> =20
-> +/*
-> + * ARRAY_SIZE_OF_FIELD - get the number of elements of an array struct=
- field
-> + *
-> + * @TYPE: The structure containing the field of interest
-> + * @MEMBER: The array field to be sized
-> + */
-> +#define ARRAY_SIZE_OF_FIELD(TYPE, MEMBER) ARRAY_SIZE((((TYPE *)0)->MEM=
-BER))
+Cc: Paul Moore <paul@paul-moore.com>
+Cc: Eric Paris <eparis@redhat.com>
+Cc: audit@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ kernel/audit_tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Some comment about the name:
+diff --git a/kernel/audit_tree.c b/kernel/audit_tree.c
+index e867c17d3f84..85a5b306733b 100644
+--- a/kernel/audit_tree.c
++++ b/kernel/audit_tree.c
+@@ -34,7 +34,7 @@ struct audit_chunk {
+ 		struct list_head list;
+ 		struct audit_tree *owner;
+ 		unsigned index;		/* index; upper bit indicates 'will prune' */
+-	} owners[];
++	} owners[] __counted_by(count);
+ };
+ 
+ struct audit_tree_mark {
+-- 
+2.34.1
 
-ARRAY_SIZE() is rather ambiguous, as there's array_size()[1], which means=
- the
-number of bytes needed to represent the array.  I suggest a name based on=
-
-
--  _Lengthof()  It has been proposed to ISO C to get the number of elemen=
-ts
-                of an array:
-                <https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2529.p=
-df>.
-
--  sizeof_field()  The kernel macro for the size of a struct member
-
-So, how about lengthof_field()?
-
-
-Cheers,
-Alex
-
-
-[1]:  The definition of array_size() is here:
-
-$ grep -rnB10 define.array_size include/linux/overflow.h=20
-238-/**
-239- * array_size() - Calculate size of 2-dimensional array.
-240- * @a: dimension one
-241- * @b: dimension two
-242- *
-243- * Calculates size of 2-dimensional array: @a * @b.
-244- *
-245- * Returns: number of bytes needed to represent the array or SIZE_MAX=
- on
-246- * overflow.
-247- */
-248:#define array_size(a, b)	size_mul(a, b)
-
-
-> +
->  #endif  /* _LINUX_ARRAY_SIZE_H */
-
---=20
-<http://www.alejandro-colomar.es/>
-GPG key fingerprint: A9348594CE31283A826FBDD8D57633D441E25BB5
-
---------------EkpoUnKeBvbrOyfa0IyZSoTF--
-
---------------sAmmQOSg4fjhAOuWWb3mO1tT
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmTehGAACgkQnowa+77/
-2zLguQ/+PFo7wVSyTzIdvY+q2cLee6kZR3fi9uSP4D5dLInil3oEK4b446gt4oNi
-SdGzF+7A81HkZFE70xbrGjsC42ymR+Gqa/4PumYag/E2oYOuyq3esaLxzVtIJimn
-g2udYQA5UT/vf8uv0/GPW/53sy0eQatir9R2ns39BCO8uhdoIMqtwkiWY4HLYzd7
-l9WHdqwLlJGYga1O3P3blFIxhZhKlaR95RHUPiXtDyqH4+01rEjTXnWfEbXZT313
-22Ny03S5DB2bZ/XOJvyO2jzIE9rmVM4BqaL0CxXkmOIATTfayS8RglgCl2VT6EC6
-re66+FOOo6m6Ot/LHFJLTqIr03U9lzxH1OU15RWMoJjORcP8ejrQ6fV1SmLOqfrM
-m8sMnpIeW62bSw2RPslB+9G77FOuwPXouApEZa3vMUUgShJO6lfaLZ3deLMI+EyM
-9l5OHbjH5TidxxiWXGT+3KdRPPAdofn6vNOFsQ34GZ7deq3zWl6ftPfyjUoI4Ulw
-15RLh+MZZFVwO1xoNP3EGJSbIa+670C/0y6mj+NppvXFCrAZRWuA3n/CnZQVf1hP
-67KTBNt9LgTsaGUKkSlD5/VnPfQYvCtSOGmNXrDO7jioqysR/Fyo2slsM/PQ+0yK
-/xxYylN6MoBVNXcE+ZLySGoM1LdtNHcnXG4dAE0EUERr9NzsTPk=
-=xQQt
------END PGP SIGNATURE-----
-
---------------sAmmQOSg4fjhAOuWWb3mO1tT--
