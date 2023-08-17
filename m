@@ -2,106 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC9C77F977
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7830C77F97D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352091AbjHQOnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 10:43:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54282 "EHLO
+        id S1352159AbjHQOog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 10:44:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352172AbjHQOnI (ORCPT
+        with ESMTP id S1348900AbjHQOoD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 10:43:08 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E099235AE;
-        Thu, 17 Aug 2023 07:42:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=OMiKI4jtk8FwBYZzbzFjDcviyDfvdzucEUBtGpJRLB4=; b=qAMyom96AiG8ofa8Ebw1mhwCqm
-        P17CRDTepnjeUt7spFbn10pkXOniSXLiu9Tq8RjiswKShLCZWbV6bNaGxTvq00C1GHe/EuTrv2lSk
-        NLwdyx4ERt/hpp/wwtwLck4NSMfhJ2hET2l9dCs3HQxo5heE2rPYYFN2oL9IastoAvDHpdu+AfysD
-        Dnxol59HyWKE+QwvQMSSahpBfWp4JWZtecml7C1jE6DM+k75YOeev6+l2aDo9zQ+mHqjgBcaxU9g3
-        Lr/SNkUfOxJyC3FbayP0P8DDiYhvXLR82Hzggv9LaT5e49x6s2YtZSndI37QKmYtRSwnp6to1Ax5a
-        Ip+u00FQ==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qWeCO-006ZJL-0T;
-        Thu, 17 Aug 2023 14:42:08 +0000
-Message-ID: <a04507b2-f732-65cb-d69a-9da0400d3a4d@infradead.org>
-Date:   Thu, 17 Aug 2023 07:42:05 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v4] hid-mcp2200: added driver for GPIOs of MCP2200
-Content-Language: en-US
-To:     johannes@gnu-linux.rocks, jikos@kernel.org
-Cc:     benjamin.tissoires@redhat.com, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org, andi.shyti@kernel.org,
-        christophe.jaillet@wanadoo.fr, ak@it-klinger.de
-References: <20230817091505.213318-1-johannes@gnu-linux.rocks>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230817091505.213318-1-johannes@gnu-linux.rocks>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 17 Aug 2023 10:44:03 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40887BF
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:44:02 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c8f360a07a2so6463895276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:44:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692283441; x=1692888241;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CwKLIzNsGmYCYeaNQUPMnVVG/1S9ppv6MLlHe19WHG4=;
+        b=Yq6K71ySskdb/tA4/PSATW7eIevJr6C57vlvQaGJsyi7zYQpQLny2ZWSlwPC81SDVS
+         fxo273V6Mpn7jcsDEQp/aV8u6inkXtiOhWnUD1QxMkueUA24IMCo+wj9F5d3L8Tz2ql0
+         +poRT+MjE7PxMG8oRKcWUTxqVBwqLjmKsD4TGrVXAdh/VVNtJ8Q28UFWtMFdAClD26A2
+         CZX95XiKdWZ7+JN+DNXEWSnP/Xia9HanDeTxzVqe5me/8Je8Q91fX+32xZZAaKpSMgCo
+         S/jo0gxpm5ol6rprqhRbhH5vRgWS/D9M6M7JQ6QoFRPhINPOYqf5UaPRRwHK2whqDFQ/
+         Mm+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692283441; x=1692888241;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=CwKLIzNsGmYCYeaNQUPMnVVG/1S9ppv6MLlHe19WHG4=;
+        b=hbX0EbENJohZDSbhfejrmUb4tdratRzBjZrqqJFkx15QGfXpIw/xiVaSxlPAO6JHWf
+         6N3uXC6p4fAQn5b3+XGGAVTGeil2HhmViNAWU0STdFDXhR+855vFpqYVbCo4THx/WM7b
+         LqlsiNrT4Cy0SOTPZuSyMi9kFiKmTNnPzetEhAMt4hzPHb6LtY8XR0eqIS4XYu53m86P
+         GPEF6YS2hvHGXgKPHMq83nY3RwCMJT4ikQEBBA/CUJxDfCRR7cySX7536CuOF/9GXDEQ
+         mM4OqvN+zTLKf5yDfiHeWnIcL3Loub71hBrdvcFxyIKUxnOZO04ky09EBNM+Ua36tVae
+         YIWw==
+X-Gm-Message-State: AOJu0YxvZpc4EMSCIesyG89ilP6xeUYAUUbCH1i++ho1EaKc7TZG3Jn5
+        /AkoxFWQOjdHJuoJaqzPxtvo7TGhydc=
+X-Google-Smtp-Source: AGHT+IGv5kmA4V7HWvPwBi4qunmu9s0AbysyOBFEBOslQx0QvDCPTarwc6SoIn5+CXlKxKgkEkAEgBMxSk4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:ab08:0:b0:c61:7151:6727 with SMTP id
+ u8-20020a25ab08000000b00c6171516727mr60903ybi.10.1692283441519; Thu, 17 Aug
+ 2023 07:44:01 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 07:44:00 -0700
+In-Reply-To: <e4785596-f55c-edfb-89db-9d3ec12c4429@linux.intel.com>
+Mime-Version: 1.0
+References: <20230719144131.29052-1-binbin.wu@linux.intel.com>
+ <20230719144131.29052-8-binbin.wu@linux.intel.com> <ZN1HT61WM0Pmxqmr@google.com>
+ <e4785596-f55c-edfb-89db-9d3ec12c4429@linux.intel.com>
+Message-ID: <ZN4yMMdB3oGnliqa@google.com>
+Subject: Re: [PATCH v10 7/9] KVM: VMX: Implement and wire get_untagged_addr()
+ for LAM
+From:   Sean Christopherson <seanjc@google.com>
+To:     Binbin Wu <binbin.wu@linux.intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
+        David.Laight@aculab.com, robert.hu@linux.intel.com,
+        guang.zeng@intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
+On Thu, Aug 17, 2023, Binbin Wu wrote:
+>=20
+>=20
+> On 8/17/2023 6:01 AM, Sean Christopherson wrote:
+> > On Wed, Jul 19, 2023, Binbin Wu wrote:
+> > > +	return (sign_extend64(gva, lam_bit) & ~BIT_ULL(63)) | (gva & BIT_UL=
+L(63));
+> > Almost forgot.  Please add a comment explaning how LAM untags the addre=
+ss,
+> > specifically the whole bit 63 preservation.  The logic is actually stra=
+ightforward,
+> > but the above looks way more complex than it actually is.  This?
+> >=20
+> > 	/*
+> > 	 * Untag the address by sign-extending the LAM bit, but NOT to bit 63.
+> > 	 * Bit 63 is retained from the raw virtual address so that untagging
+> > 	 * doesn't change a user access to a supervisor access, and vice versa=
+.
+> > 	 */
+> OK.
+>=20
+> Besides it, I find I forgot adding the comments for the function. I will =
+add
+> it back if you don't object.
+>=20
+> +/*
+> + * Only called in 64-bit mode.
 
-On 8/17/23 02:15, johannes@gnu-linux.rocks wrote:
-> diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
-> index e11c1c803676..791cc5c8fa0d 100644
-> --- a/drivers/hid/Kconfig
-> +++ b/drivers/hid/Kconfig
-> @@ -1301,6 +1301,16 @@ config HID_MCP2221
->  	To compile this driver as a module, choose M here: the module
->  	will be called hid-mcp2221.ko.
->  
-> +config HID_MCP2200
-> +   tristate "Microchip MCP2200 HID USB-to-GPIO bridge"
-> +   depends on USB_HID
-> +   imply GPIOLIB
-> +   help
-> +   Provides GPIO functionality over USB-HID through MCP2200 device.
-> +
-> +   To compile this driver as a module, choose M here: the module
-> +   will be called hid-mcp2200.ko.
-> +
+This is no longer true.
 
-Please follow coding-style.rst for Kconfig files, copied here with
-an example:
+> + *
+> + * LAM has a modified canonical check when applicable:
+> + * LAM_S48=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 : [ 1 ][ metadata ][ 1 ]
+> + *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 63=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 47
+> + * LAM_U48=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 : [ 0 ][ metadata ][ 0 ]
+> + *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 63=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 47
+> + * LAM_S57=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 : [ 1 ][ metadata ][ 1 ]
+> + *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 63=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 56
+> + * LAM_U57 + 5-lvl paging : [ 0 ][ metadata ][ 0 ]
+> + *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 63=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 56
+> + * LAM_U57 + 4-lvl paging : [ 0 ][ metadata ][ 0...0 ]
+> + *=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 63=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 56..47
 
-10) Kconfig configuration files
--------------------------------
-
-For all of the Kconfig* configuration files throughout the source tree,
-the indentation is somewhat different.  Lines under a ``config`` definition
-are indented with one tab, while help text is indented an additional two
-spaces.  Example::
-
-  config AUDIT
-	bool "Auditing support"
-	depends on NET
-	help
-	  Enable auditing infrastructure that can be used with another
-	  kernel subsystem, such as SELinux (which requires this for
-	  logging of avc messages output).  Does not do system-call
-	  auditing without CONFIG_AUDITSYSCALL.
+I vote to not include the table, IMO it does more harm than good, e.g. I on=
+ly
+understood what the last U57+4-lvl entry is conveying after reading the sam=
+e
+figure in the ISE.  Again, the concept of masking bits 62:{56,47} is quite
+straightforward, and that's what this function handles.  The gory details o=
+f
+userspace not=20
 
 
->  config HID_KUNIT_TEST
->  	tristate "KUnit tests for HID" if !KUNIT_ALL_TESTS
->  	depends on KUNIT
+> + * Note that KVM masks the metadata in addresses, performs the (original=
+)
+> + * canonicality checking and then walks page table. This is slightly
+> + * different from hardware behavior but achieves the same effect.
+> + * Specifically, if LAM is enabled, the processor performs a modified
+> + * canonicality checking where the metadata are ignored instead of
+> + * masked. After the modified canonicality checking, the processor masks
+> + * the metadata before passing addresses for paging translation.
 
-thanks.
--- 
-~Randy
+Please drop this.  I don't think we can extrapolate exact hardware behavior=
+ from
+the ISE blurbs that say the masking is applied after the modified canonical=
+ity
+check.  Hardware/ucode could very well take the exact same approach as KVM,=
+ all
+that matters is that the behavior is architecturally correct.
+
+If we're concerned about the blurbs saying the masking is performed *after*=
+ the
+canonicality checks, e.g. this
+
+  After this modified canonicality check is performed, bits 62:48 are maske=
+d by
+  sign-extending the value of bit 47 (1)
+
+then the comment should focus on whether or not KVM adheres to the architec=
+ture
+(SDM), e.g.
+
+/*
+ * Note, the SDM states that the linear address is masked *after* the modif=
+ied
+ * canonicality check, whereas KVM masks (untags) the address and then perf=
+orms
+ * a "normal" canonicality check.  Functionally, the two methods are identi=
+cal,
+ * and when the masking occurs relative to the canonicality check isn't vis=
+ible
+ * to software, i.e. KVM's behavior doesn't violate the SDM.
+ */
