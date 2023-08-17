@@ -2,197 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EBF877F278
+	by mail.lfdr.de (Postfix) with ESMTP id E828777F279
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349124AbjHQIwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 04:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60538 "EHLO
+        id S1349129AbjHQIwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 04:52:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348831AbjHQIv0 (ORCPT
+        with ESMTP id S1348939AbjHQIvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 04:51:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2C0273C
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:51:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692262285; x=1723798285;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=A1niKEiLvCBbH2AAc2v6sPoLisTjYgM2SdVp2rWJEK0=;
-  b=gmIEXHIPOG3LDimajs8JtgckfggBxvqcy+4pEZkkm/33USGC7NBQodR3
-   +y17ww/4B5gNXSAizTxn6sKBV97bzFAHqTeJQk47yq2xCt1QKQ/C5LZl4
-   U9Qs9DC6NErKEQyjjjAie7bLaDYaG6yagspJDTvw5IJl0Z4e+tOtikSxG
-   mFXsXI7xwIQ7Mhqt+C8feqmgltyQDp0Mri10X9EXqOMj2yLJCHJU+1U73
-   MyOmyiC9WsTPc8caVzkm8jxU+l4Z3VWvLuE53FAkGaSwD6i/SU2BkF0u3
-   VAwWpwQGgSDWc3WnwJdKuusIYqlmBdCJVhrsYyv26xXNd3/kgMEjuX1KA
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="371652462"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="371652462"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 01:51:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="878137466"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 17 Aug 2023 01:51:25 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWYiu-0000yB-2O;
-        Thu, 17 Aug 2023 08:51:20 +0000
-Date:   Thu, 17 Aug 2023 16:51:00 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Justin Swartz <justin.swartz@risingedge.co.za>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: arch/powerpc/boot/decompress.c:132: undefined reference to
- `__decompress'
-Message-ID: <202308171639.9kwRxWZR-lkp@intel.com>
+        Thu, 17 Aug 2023 04:51:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255E0173F;
+        Thu, 17 Aug 2023 01:51:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F0FF64FCD;
+        Thu, 17 Aug 2023 08:51:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DEF2C433C7;
+        Thu, 17 Aug 2023 08:51:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692262296;
+        bh=Qd8rl4dDsBAmRMc4EimuxKehqH1wLQ4n81jy3UW3lsM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QZSSPTr7eM3f8k2zfZpHVWITTlizJVbw9j5zt2V7DY22lbOxShMS9fNDJQgT0GYdv
+         OffwRPFi1iSqxDTx6b1aoN7UzQvSHwXlHMesTH1rfWjkmTqIp6OAElAP/Wz16pDsXt
+         Cu5JfkmoG2UsvQJPvVUI4gDxf/h0lX+K9GgzyB+8aRZHTa9nhoARdwmfja79XlEehe
+         PD8q7Sk+8ibp91++S531fcW5ajdYTtHs0LWYJqD6ca4u5vJt7BMMk75YOTlu4h9kvx
+         ctOG1azQM4bTyO4BP8JrnW3yN+GDcxopUsAe8XtiD2PahKoFyEn6TnxIkBYGG6GogA
+         6ZvxT000XxJxQ==
+Date:   Thu, 17 Aug 2023 09:51:30 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Binbin Zhou <zhoubb.aaron@gmail.com>
+Cc:     Binbin Zhou <zhoubinbin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, diasyzhang@tencent.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: interrupt-controller: loongson,liointc: Fix
+ warnings about reg and interrupt description
+Message-ID: <20230817-relic-anyplace-4df08eb6b0a9@spud>
+References: <20230815084713.1627520-1-zhoubinbin@loongson.cn>
+ <20230815-certainly-sprang-209024530924@spud>
+ <CAMpQs4+68Ow4-rubj2ySiRiU7d0jc1F3GOsXqxaZdT27PZSuxg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="XGSBf4kp7vglWMW4"
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAMpQs4+68Ow4-rubj2ySiRiU7d0jc1F3GOsXqxaZdT27PZSuxg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Justin,
 
-First bad commit (maybe != root cause):
+--XGSBf4kp7vglWMW4
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
-commit: 788183a6e8b098b90e15214e800ae5194591018a docs: usb: fix literal block marker in usbmon verification example
-date:   1 year, 2 months ago
-config: powerpc-randconfig-r005-20230816 (https://download.01.org/0day-ci/archive/20230817/202308171639.9kwRxWZR-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230817/202308171639.9kwRxWZR-lkp@intel.com/reproduce)
+On Thu, Aug 17, 2023 at 10:56:37AM +0800, Binbin Zhou wrote:
+> Hi Conor:
+>=20
+> Thanks for your reply.
+>=20
+> On Tue, Aug 15, 2023 at 10:20=E2=80=AFPM Conor Dooley <conor@kernel.org> =
+wrote:
+> >
+> > Hey,
+> >
+> > On Tue, Aug 15, 2023 at 04:47:13PM +0800, Binbin Zhou wrote:
+> > > As we know, some Loongson-2K CPUs are single-core, e.g. Loongson-2K05=
+00,
+> > > and the "isr1" means routing interrupts to core1, which should be
+> > > optional. So add maxItems/minItems limits to reg/reg-names.
+> > > Also, The interrupt-names attribute represents a list of parent
+> > > interrupt names that should change with interrupts.
+> >
+> > This should have been with the other series that introduces the users
+> > probably so that things make more sense to the reader.
+>=20
+> I was under the impression that the mips Loongson-2K1000 was also
+> required for this patch, so I committed it separately.
+> Maybe my commit should still be described in more detail.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308171639.9kwRxWZR-lkp@intel.com/
+Ah, I just assumed, given the timing, that it was for the loongson
+stuff only.
 
-All errors (new ones prefixed by >>):
-
-   powerpc-linux-ld: warning: div64.o: missing .note.GNU-stack section implies executable stack
-   powerpc-linux-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-   powerpc-linux-ld: warning: arch/powerpc/boot/cuImage.mpc8544ds has a LOAD segment with RWX permissions
-   powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
->> arch/powerpc/boot/decompress.c:132: undefined reference to `__decompress'
+> > > Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+> > > ---
+> > >  .../interrupt-controller/loongson,liointc.yaml     | 14 ++++++------=
 --
-   powerpc-linux-ld: warning: div64.o: missing .note.GNU-stack section implies executable stack
-   powerpc-linux-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-   powerpc-linux-ld: warning: arch/powerpc/boot/cuImage.tqm8555 has a LOAD segment with RWX permissions
-   powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
->> arch/powerpc/boot/decompress.c:132: undefined reference to `__decompress'
---
-   powerpc-linux-ld: warning: div64.o: missing .note.GNU-stack section implies executable stack
-   powerpc-linux-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-   powerpc-linux-ld: warning: arch/powerpc/boot/cuImage.mpc8555cds has a LOAD segment with RWX permissions
-   powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
->> arch/powerpc/boot/decompress.c:132: undefined reference to `__decompress'
---
-   powerpc-linux-ld: warning: div64.o: missing .note.GNU-stack section implies executable stack
-   powerpc-linux-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-   powerpc-linux-ld: warning: arch/powerpc/boot/cuImage.mpc8572ds has a LOAD segment with RWX permissions
-   powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
->> arch/powerpc/boot/decompress.c:132: undefined reference to `__decompress'
---
-   powerpc-linux-ld: warning: div64.o: missing .note.GNU-stack section implies executable stack
-   powerpc-linux-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-   powerpc-linux-ld: warning: arch/powerpc/boot/cuImage.mpc8560ads has a LOAD segment with RWX permissions
-   powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
->> arch/powerpc/boot/decompress.c:132: undefined reference to `__decompress'
---
-   powerpc-linux-ld: warning: div64.o: missing .note.GNU-stack section implies executable stack
-   powerpc-linux-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-   powerpc-linux-ld: warning: arch/powerpc/boot/cuImage.tqm8548 has a LOAD segment with RWX permissions
-   powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
->> arch/powerpc/boot/decompress.c:132: undefined reference to `__decompress'
---
-   powerpc-linux-ld: warning: div64.o: missing .note.GNU-stack section implies executable stack
-   powerpc-linux-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-   powerpc-linux-ld: warning: arch/powerpc/boot/cuImage.tqm8540 has a LOAD segment with RWX permissions
-   powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
->> arch/powerpc/boot/decompress.c:132: undefined reference to `__decompress'
---
-   powerpc-linux-ld: warning: div64.o: missing .note.GNU-stack section implies executable stack
-   powerpc-linux-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-   powerpc-linux-ld: warning: arch/powerpc/boot/cuImage.tqm8541 has a LOAD segment with RWX permissions
-   powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
->> arch/powerpc/boot/decompress.c:132: undefined reference to `__decompress'
---
-   powerpc-linux-ld: warning: div64.o: missing .note.GNU-stack section implies executable stack
-   powerpc-linux-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-   powerpc-linux-ld: warning: arch/powerpc/boot/cuImage.mpc8548cds_32b has a LOAD segment with RWX permissions
-   powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
->> arch/powerpc/boot/decompress.c:132: undefined reference to `__decompress'
---
-   powerpc-linux-ld: warning: div64.o: missing .note.GNU-stack section implies executable stack
-   powerpc-linux-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-   powerpc-linux-ld: warning: arch/powerpc/boot/cuImage.mpc8541cds has a LOAD segment with RWX permissions
-   powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
->> arch/powerpc/boot/decompress.c:132: undefined reference to `__decompress'
---
-   powerpc-linux-ld: warning: div64.o: missing .note.GNU-stack section implies executable stack
-   powerpc-linux-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-   powerpc-linux-ld: warning: arch/powerpc/boot/cuImage.mpc8568mds has a LOAD segment with RWX permissions
-   powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
->> arch/powerpc/boot/decompress.c:132: undefined reference to `__decompress'
-..
+> > >  1 file changed, 6 insertions(+), 8 deletions(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/interrupt-controller/l=
+oongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controll=
+er/loongson,liointc.yaml
+> > > index 00b570c82903..adb428211a72 100644
+> > > --- a/Documentation/devicetree/bindings/interrupt-controller/loongson=
+,liointc.yaml
+> > > +++ b/Documentation/devicetree/bindings/interrupt-controller/loongson=
+,liointc.yaml
+> > > @@ -11,7 +11,7 @@ maintainers:
+> > >
+> > >  description: |
+> > >    This interrupt controller is found in the Loongson-3 family of chi=
+ps and
+> > > -  Loongson-2K1000 chip, as the primary package interrupt controller =
+which
+> > > +  Loongson-2K series chips, as the primary package interrupt control=
+ler which
+> > >    can route local I/O interrupt to interrupt lines of cores.
+> > >
+> > >  allOf:
+> > > @@ -33,6 +33,7 @@ properties:
+> > >        - const: main
+> > >        - const: isr0
+> > >        - const: isr1
+> > > +    minItems: 2
+> > >
+> > >    interrupt-controller: true
+> > >
+> > > @@ -45,11 +46,9 @@ properties:
+> > >    interrupt-names:
+> > >      description: List of names for the parent interrupts.
+> > >      items:
+> > > -      - const: int0
+> > > -      - const: int1
+> > > -      - const: int2
+> > > -      - const: int3
+> > > +      pattern: int[0-3]
+> >
+> > From a quick look at the new devicetrees, I don't understand the
+> > ordering relaxation. Do you actually have a system that only has, for
+> > example, int3?
+>=20
+> For a better understanding, allow me to first explain the composition
+> of the interrupt routing register:
+> It is an 8 bit register that is divided into two parts:
+> 0-3 : The processor core vector number of the route, this part is
+> handled in the code.
+> 4-7 : The processor core interrupt pin vector number for routing, i.e.
+> int0-int3.
+> Each intx can handle 32 interrupt sources.
+>=20
+> For example, in Loongson-2K1000/Loongson-2K0500, there are a total of
+> 64 interrupt sources, and we need to route them to two intx.
+>=20
+> We don't mandate which interrupt vector number must be used, in our
+> practice the tendency is to start with int0.
+> It is worth noting that we must follow the following correspondence:
+> interrupt->interrupt-names
+> 2->int0
+> 3->int1
+> 4->int2
+> 5->int3
+>=20
+> >
+> > Also, as the interrupt-names are not required, changing the ordering
+> > here is not ABI compatible AFAICT. Does that have any fallout?
+>=20
+> Oh, this should be another point that needs to be modified, the
+> interrupt-names should be required. because in the driver code the
+> parent interrupts are fetched through of_irq_get_byname().
+
+Yeah, that should probably be made required so.
+
+> Also the way liointc-2.0 is written in the dts does not match the dt-bind=
+ing.
+> The dts using loongson,liointc-2.0 are:
 
 
-vim +132 arch/powerpc/boot/decompress.c
+> arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi (mips Loongson-2K1000)
+> arch/loongarch/boot/dts/loongson-2k0500.dtsi
+> arch/loongarch/boot/dts/loongson-2k1000.dtsi
+> arch/loongarch/boot/dts/loongson-2k2000.dtsi
+>=20
+>                liointc0: interrupt-controller@1fe01400 {
+> ......
+>                         interrupts =3D <2>;
+>                         interrupt-names =3D "int0";
+>                         loongson,parent_int_map =3D <0xffffffff>, /* int0=
+ */
+>                                                 <0x00000000>, /* int1 */
+>                                                 <0x00000000>, /* int2 */
+>                                                 <0x00000000>; /* int3 */
+>                 };
+>=20
+>                 liointc1: interrupt-controller@1fe01440 {
+> ....
+>                        interrupts =3D <3>;
+>                         interrupt-names =3D "int1";
+>                         loongson,parent_int_map =3D <0x00000000>, /* int0=
+ */
+>                                                 <0xffffffff>, /* int1 */
+>                                                 <0x00000000>, /* int2 */
+>                                                 <0x00000000>; /* int3 */
+>                 };
+>=20
+> We split the two intx into two nodes because of register definitions
+> etc. There is the following WARNING at liointc1:
 
-1b7898ee276b39 Oliver O'Halloran 2016-09-22   97  
-1b7898ee276b39 Oliver O'Halloran 2016-09-22   98  /**
-1b7898ee276b39 Oliver O'Halloran 2016-09-22   99   * partial_decompress - decompresses part or all of a compressed buffer
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  100   * @inbuf:       input buffer
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  101   * @input_size:  length of the input buffer
-930a77c3ad79c3 Zhang Jianhua     2021-05-10  102   * @outbuf:      output buffer
-930a77c3ad79c3 Zhang Jianhua     2021-05-10  103   * @output_size: length of the output buffer
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  104   * @skip         number of output bytes to ignore
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  105   *
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  106   * This function takes compressed data from inbuf, decompresses and write it to
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  107   * outbuf. Once output_size bytes are written to the output buffer, or the
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  108   * stream is exhausted the function will return the number of bytes that were
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  109   * decompressed. Otherwise it will return whatever error code the decompressor
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  110   * reported (NB: This is specific to each decompressor type).
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  111   *
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  112   * The skip functionality is mainly there so the program and discover
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  113   * the size of the compressed image so that it can ask firmware (if present)
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  114   * for an appropriately sized buffer.
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  115   */
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  116  long partial_decompress(void *inbuf, unsigned long input_size,
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  117  	void *outbuf, unsigned long output_size, unsigned long _skip)
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  118  {
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  119  	int ret;
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  120  
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  121  	/*
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  122  	 * The skipped bytes needs to be included in the size of data we want
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  123  	 * to decompress.
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  124  	 */
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  125  	output_size += _skip;
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  126  
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  127  	decompressed_bytes = 0;
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  128  	output_buffer = outbuf;
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  129  	limit = output_size;
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  130  	skip = _skip;
-1b7898ee276b39 Oliver O'Halloran 2016-09-22  131  
-1b7898ee276b39 Oliver O'Halloran 2016-09-22 @132  	ret = __decompress(inbuf, input_size, NULL, flush, outbuf,
+Did you split it in two because of register definitions, or because
+there are physically two controllers on the SoC? Your comments earlier
+sound like there are physically two interrupt controllers, which would
+be a valid reason to split the nodes.
 
-:::::: The code at line 132 was first introduced by commit
-:::::: 1b7898ee276b39e54d870dc4ef3374f663d0b426 powerpc/boot: Use the pre-boot decompression API
+Thanks,
+Conor.
 
-:::::: TO: Oliver O'Halloran <oohall@gmail.com>
-:::::: CC: Michael Ellerman <mpe@ellerman.id.au>
+>       arch/loongarch/boot/dts/loongson-2k1000-ref.dtb:
+> interrupt-controller@1fe01440: interrupt-names:0: 'int0' was expected
+>             From schema:
+> Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.y=
+aml
+>       arch/loongarch/boot/dts/loongson-2k1000-ref.dtb:
+> interrupt-controller@1fe01440: Unevaluated properties are not allowed
+> ('interrupt-names' was unexpected)
+>             From schema:
+> Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.y=
+aml
+>=20
+> But actually, in liointc1, we only need int1.
+>=20
+> Thanks.
+> Binbin
+>=20
+> >
+> > Thanks,
+> > Conor.
+> >
+> > >      minItems: 1
+> > > +    maxItems: 4
+> > >
+> > >    '#interrupt-cells':
+> > >      const: 2
+> > > @@ -73,7 +72,6 @@ required:
+> > >    - '#interrupt-cells'
+> > >    - loongson,parent_int_map
+> > >
+> > > -
+> > >  unevaluatedProperties: false
+> > >
+> > >  if:
+> > > @@ -86,7 +84,8 @@ if:
+> > >  then:
+> > >    properties:
+> > >      reg:
+> > > -      minItems: 3
+> > > +      minItems: 2
+> > > +      maxItems: 3
+> > >
+> > >    required:
+> > >      - reg-names
+> > > @@ -113,7 +112,6 @@ examples:
+> > >                                  <0x0f000000>, /* int1 */
+> > >                                  <0x00000000>, /* int2 */
+> > >                                  <0x00000000>; /* int3 */
+> > > -
+> > >      };
+> > >
+> > >  ...
+> > > --
+> > > 2.39.3
+> > >
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--XGSBf4kp7vglWMW4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZN3fkgAKCRB4tDGHoIJi
+0qeiAQC48uJhGm5S0zx+3EjnM3KuMHRmghXyLuza1Y5CdbjqFQD+OuzLxoxk/izg
+946fONTVDL2++8emavM3aos75p0WEAY=
+=MxGk
+-----END PGP SIGNATURE-----
+
+--XGSBf4kp7vglWMW4--
