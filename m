@@ -2,62 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F14F077F1C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0377077F1DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348722AbjHQIG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 04:06:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34130 "EHLO
+        id S1348761AbjHQIJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 04:09:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348765AbjHQIGR (ORCPT
+        with ESMTP id S1348742AbjHQIJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 04:06:17 -0400
-Received: from pegase1.c-s.fr (unknown [90.115.179.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6DE2D59
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:06:16 -0700 (PDT)
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4RRHdL6Ss9z9xdY;
-        Thu, 17 Aug 2023 10:06:14 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id swgssWTPp0t3; Thu, 17 Aug 2023 10:06:14 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4RRHdL5sC1z9xdP;
-        Thu, 17 Aug 2023 10:06:14 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C58DB8B76C;
-        Thu, 17 Aug 2023 10:06:14 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id YFsI9s3G7F2V; Thu, 17 Aug 2023 10:06:14 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.19.54.59])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7D86C8B763;
-        Thu, 17 Aug 2023 10:06:14 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37H861dw271412
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 17 Aug 2023 10:06:01 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37H85v8A271408;
-        Thu, 17 Aug 2023 10:05:57 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH] powerpc/82xx: Remove CONFIG_8260 and CONFIG_8272
-Date:   Thu, 17 Aug 2023 10:05:49 +0200
-Message-ID: <80930252a5167f3cdaa7eb694074d75521a0bdf9.1692259495.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.41.0
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692259548; l=2641; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=bBQAUDFB8emqjWfemhB7A/6Y1IZAaNUK1OuI3o1EfMg=; b=v1JDOIosHLXFlWDCPY7GKQEcseWiyyI4tHS0o/5nYMgSZ+zm1rLBSvsgDjqXHmgUYJAHwFVzM G5do/Bf+8hZDcFGkJh9vVKrlGwDtaufvR5nRULusHIzczhSu91sFA97
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_FAIL,SPF_HELO_NONE autolearn=no
+        Thu, 17 Aug 2023 04:09:05 -0400
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E77582701
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:08:58 -0700 (PDT)
+X-AuditID: a67dfc5b-d85ff70000001748-c3-64ddd598cf3a
+From:   Byungchul Park <byungchul@sk.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     kernel_team@skhynix.com, akpm@linux-foundation.org,
+        ying.huang@intel.com, namit@vmware.com, xhao@linux.alibaba.com,
+        mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
+        david@redhat.com, peterz@infradead.org, luto@kernel.org,
+        dave.hansen@linux.intel.com
+Subject: [RFC v2 0/6] Reduce TLB flushes under some specific conditions
+Date:   Thu, 17 Aug 2023 17:05:53 +0900
+Message-Id: <20230817080559.43200-1-byungchul@sk.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrMLMWRmVeSWpSXmKPExsXC9ZZnke6Mq3dTDC4cULWYs34Nm8WLDe2M
+        Fl/X/2K2ePqpj8Xi8q45bBb31vxntTi/ay2rxY6l+5gsru96yGhxvPcAk8XvH0DZOVOsLE7O
+        msziwOuxYFOpx+YVWh6L97xk8ti0qpPNY9OnSeweJ2b8ZvHY+dDSY97JQI/3+66yeWz9Zefx
+        eZOcx7v5b9kCeKK4bFJSczLLUov07RK4Mjac+MpY8EesYtHO7awNjB8Fuhg5OSQETCQe7NnF
+        DmPv3f6VGcRmE1CXuHHjJ5gtImAmcbD1D1ANFwezwDImibsHzrGCJIQF3CV2LpzK1MXIwcEi
+        oCoxraMSJMwrYCrxbdZJqJnyEqs3HGAG6ZUQ2MEm0fnuPlRCUuLgihssExi5FzAyrGIUyswr
+        y03MzDHRy6jMy6zQS87P3cQIDMpltX+idzB+uhB8iFGAg1GJh9dh150UIdbEsuLK3EOMEhzM
+        SiK8Pby3UoR4UxIrq1KL8uOLSnNSiw8xSnOwKInzGn0rTxESSE8sSc1OTS1ILYLJMnFwSjUw
+        Or7sXRjeliNVaW7BvcVq9kmJUuFc2bt5V+pK5WVNezsSZ95vWfCp0fnW1qd5MpIVugwnduTF
+        vMsJTA+6tSJ70wWBI7+2JAp+nK6u6x2cOId381PPm/JqPDscp/9zmmHzds3DsxJcKudm1NqU
+        JDUxCq6Yk3dgt9se6dsN7vuTf25lXC8nunOrEktxRqKhFnNRcSIA8i1n7UYCAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFLMWRmVeSWpSXmKPExsXC5WfdrDvj6t0Ug923JS3mrF/DZvFiQzuj
+        xdf1v5gtnn7qY7E4PPckq8XlXXPYLO6t+c9qcX7XWlaLHUv3MVlc3/WQ0eJ47wEmi98/gLJz
+        plhZnJw1mcWBz2PBplKPzSu0PBbvecnksWlVJ5vHpk+T2D1OzPjN4rHzoaXHvJOBHu/3XWXz
+        WPziA5PH1l92Hp83yXm8m/+WLYA3issmJTUnsyy1SN8ugStjw4mvjAV/xCoW7dzO2sD4UaCL
+        kZNDQsBEYu/2r8wgNpuAusSNGz/BbBEBM4mDrX/Yuxi5OJgFljFJ3D1wjhUkISzgLrFz4VSm
+        LkYODhYBVYlpHZUgYV4BU4lvs06yQ8yUl1i94QDzBEaOBYwMqxhFMvPKchMzc0z1irMzKvMy
+        K/SS83M3MQJDbFntn4k7GL9cdj/EKMDBqMTD67DrTooQa2JZcWXuIUYJDmYlEd4e3lspQrwp
+        iZVVqUX58UWlOanFhxilOViUxHm9wlMThATSE0tSs1NTC1KLYLJMHJxSDYyOUeK3Sx/q1IRY
+        lWc4fz6z8MgE1s1XZ1U28fjO67ooyS0RlzfLagOXP0//w2ufpkfMr+4qf/Z3xt7O+YYzWO71
+        bj5YHHZCqfovX0eJWrnXtzJlZheR7E3hjfJL3O+tfphoIhfQ3bXFK+xD23/jz+ueHl2qcW6l
+        pe4rlq86lhFbVnrXB07X8VRiKc5INNRiLipOBADFyewTLQIAAA==
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,88 +59,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CONFIG_8272 is never used, remove it.
+Hi,
 
-CONFIG_8260 is redundant with CONFIG_PPC_82xx, remove it.
+While I'm working with CXL memory, I have been facing migraion overhead
+esp. TLB shootdown on promotion or demotion between different tiers.
+Yeah.. most TLB shootdowns on migration through hinting fault can be
+avoided thanks to Huang Ying's work, commit 4d4b6d66db ("mm,unmap: avoid
+flushing TLB in batch if PTE is inaccessible").
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+However, it's only for ones using hinting fault. I thought it'd be much
+better if we have a general mechanism to reduce # of TLB flushes that
+we can apply to any type of migration. I tried it only for tiering
+migration for now tho.
+
+I'm suggesting a mechanism to reduce TLB flushes by keeping source and
+destination of folios participated in the migrations until all TLB
+flushes required are done, only if those folios are not mapped with
+write permission PTE entries at all.
+
+I saw the number of TLB full flush reduced over 50% and the performance
+a little bit improved but not that big with the workload I tested with,
+XSBench. However, I believe that it would help more with other ones or
+any real ones. It'd be appreciated to tell me if I'm missing something.
+
+	Byungchul
+
 ---
- arch/powerpc/include/asm/cputable.h |  2 +-
- arch/powerpc/platforms/82xx/Kconfig | 25 ++++---------------------
- arch/powerpc/platforms/Kconfig      |  2 +-
- 3 files changed, 6 insertions(+), 23 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/cputable.h b/arch/powerpc/include/asm/cputable.h
-index 443a9d482b15..8765d5158324 100644
---- a/arch/powerpc/include/asm/cputable.h
-+++ b/arch/powerpc/include/asm/cputable.h
-@@ -252,7 +252,7 @@ static inline void cpu_feature_keys_init(void) { }
-  * This is also required by 52xx family.
-  */
- #if defined(CONFIG_SMP) || defined(CONFIG_MPC10X_BRIDGE) \
--	|| defined(CONFIG_PPC_83xx) || defined(CONFIG_8260) \
-+	|| defined(CONFIG_PPC_83xx) || defined(CONFIG_PPC_82xx) \
- 	|| defined(CONFIG_PPC_MPC52xx)
- #define CPU_FTR_COMMON                  CPU_FTR_NEED_COHERENT
- #else
-diff --git a/arch/powerpc/platforms/82xx/Kconfig b/arch/powerpc/platforms/82xx/Kconfig
-index 58e58b4f6a12..d9f1a2a83158 100644
---- a/arch/powerpc/platforms/82xx/Kconfig
-+++ b/arch/powerpc/platforms/82xx/Kconfig
-@@ -7,8 +7,8 @@ if PPC_82xx
- 
- config EP8248E
- 	bool "Embedded Planet EP8248E (a.k.a. CWH-PPC-8248N-VE)"
--	select 8272
--	select 8260
-+	select CPM2
-+	select PPC_INDIRECT_PCI if PCI
- 	select FSL_SOC
- 	select PHYLIB if NETDEVICES
- 	select MDIO_BITBANG if PHYLIB
-@@ -20,27 +20,10 @@ config EP8248E
- 
- config MGCOGE
- 	bool "Keymile MGCOGE"
--	select 8272
--	select 8260
-+	select CPM2
-+	select PPC_INDIRECT_PCI if PCI
- 	select FSL_SOC
- 	help
- 	  This enables support for the Keymile MGCOGE board.
- 
- endif
--
--config 8260
--	bool
--	depends on PPC_BOOK3S_32
--	select CPM2
--	select PPC_INDIRECT_PCI if PCI
--	help
--	  The MPC8260 is a typical embedded CPU made by Freescale.  Selecting
--	  this option means that you wish to build a kernel for a machine with
--	  an 8260 class CPU.
--
--config 8272
--	bool
--	select 8260
--	help
--	  The MPC8272 CPM has a different internal dpram setup than other CPM2
--	  devices
-diff --git a/arch/powerpc/platforms/Kconfig b/arch/powerpc/platforms/Kconfig
-index 3e2e252016f7..1fd253f92a77 100644
---- a/arch/powerpc/platforms/Kconfig
-+++ b/arch/powerpc/platforms/Kconfig
-@@ -251,7 +251,7 @@ config QE_GPIO
- 
- config CPM2
- 	bool "Enable support for the CPM2 (Communications Processor Module)"
--	depends on (FSL_SOC_BOOKE && PPC32) || 8260
-+	depends on (FSL_SOC_BOOKE && PPC32) || PPC_82xx
- 	select CPM
- 	select HAVE_PCI
- 	select GPIOLIB
+Changes from RFC:
+
+	1. Fix a bug triggered when a destination folio at the previous
+	   migration becomes a source folio at the next migration,
+	   before the folio gets handled properly so that the folio can
+	   play with another migration. There was inconsistency in the
+	   folio's state. Fixed it.
+
+	2. Split the patch set into more pieces so that the folks can
+	   review better. (Feedbacked by Nadav Amit)
+
+	3. Fix a wrong usage of barrier e.g. smp_mb__after_atomic().
+	   (Feedbacked by Nadav Amit)
+
+	4. Tried to add sufficient comments to explain the patch set
+	   better. (Feedbacked by Nadav Amit)
+
+Byungchul Park (6):
+  mm/rmap: Recognize non-writable TLB entries during TLB batch flush
+  mm: Defer TLB flush by keeping both src and dst folios at migration
+  mm, migrc: Skip TLB flushes at the CPUs that already have been done
+  mm, migrc: Ajust __zone_watermark_ok() with the amount of pending
+    folios
+  mm, migrc: Add a sysctl knob to enable/disable MIGRC mechanism
+  mm, migrc: Implement internal allocator to minimize impact onto vm
+
+ arch/x86/include/asm/tlbflush.h |   9 +
+ arch/x86/mm/tlb.c               |  67 ++++++
+ include/linux/mm.h              |  30 +++
+ include/linux/mm_types.h        |  47 ++++
+ include/linux/mm_types_task.h   |   4 +-
+ include/linux/mmzone.h          |   6 +
+ include/linux/sched.h           |   5 +
+ init/Kconfig                    |  13 ++
+ mm/internal.h                   |  14 ++
+ mm/memory.c                     |  17 +-
+ mm/migrate.c                    | 381 +++++++++++++++++++++++++++++++-
+ mm/mm_init.c                    |   1 +
+ mm/page_alloc.c                 |  19 ++
+ mm/rmap.c                       | 133 ++++++++++-
+ 14 files changed, 734 insertions(+), 12 deletions(-)
+
 -- 
-2.41.0
+2.17.1
 
