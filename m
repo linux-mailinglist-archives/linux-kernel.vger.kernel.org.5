@@ -2,52 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E16077F5E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B54277F602
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350498AbjHQMCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 08:02:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53248 "EHLO
+        id S244390AbjHQMFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 08:05:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350487AbjHQMB2 (ORCPT
+        with ESMTP id S1350720AbjHQMFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 08:01:28 -0400
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F442133
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:01:27 -0700 (PDT)
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1bbebf511abso92257975ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:01:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692273687; x=1692878487;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OBf6PY/869q31Lz3aUHUNyMKO6fNHdycIEIQJfeT+Qg=;
-        b=IptTbzYCNUgPwENZeUgDYImCr/ZU07asoqfwim6dbN6NIBwSFfB3QHrLDSavpWjnb3
-         2LkQII+yPwWx7DeoGEbZKNBuqflAWXh5IABdEzWEXeS7a1z1BPb89dblKqNipBoXEgfJ
-         zcFCQPsix7ANlVDERflqOBdEQFQG+seQgZrPLK7qdgvHFgXTTpe6/ryHBFc0SV1hOfdd
-         yBCTb7Tw8CaemwBkSamEmVwiJhMiuVFQWlmn6RvQHZjDvchTbGR3hr8/mf+LcbfQmVI7
-         MCQzDO7pAqjCQIRtaVieHKi0pxdw26Rttsn7lLCahRJjnXUlbmHjrCXlatG35PfyafBl
-         YuZA==
-X-Gm-Message-State: AOJu0YwgNn9nKhqIMZTc1gSBvaVJgerPClQGOLG8ZNcOP1vIOLN8RQl1
-        oXl8NjinENPQsZPcf8x/hKMUZYiOpzGiGxbjOtpMf9NOmHdJ
-X-Google-Smtp-Source: AGHT+IEHuY73Y/Rx+X9qZo9nR41hHIr96Sr5TsO/CzJaJL4kEkoEZdbOMGBga+DIw42xLYgFuPGtI+Kx9jgmPtyDIP2fbIGE+N74
+        Thu, 17 Aug 2023 08:05:04 -0400
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4663599;
+        Thu, 17 Aug 2023 05:04:39 -0700 (PDT)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1qWbjj-0001mN-0l;
+        Thu, 17 Aug 2023 12:04:23 +0000
+Date:   Thu, 17 Aug 2023 13:04:06 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Alexander Couzens <lynxis@fe80.eu>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH net-next] net: pcs: lynxi: fully reconfigure if link is down
+Message-ID: <e9831ec99acd5a8ab03c76fce87fa750c7041e60.1692273723.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:e743:b0:1b8:a555:3865 with SMTP id
- p3-20020a170902e74300b001b8a5553865mr1784086plf.6.1692273687259; Thu, 17 Aug
- 2023 05:01:27 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 05:01:27 -0700
-In-Reply-To: <20230817104037.1766-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fdf0fb06031d2ba3@google.com>
-Subject: Re: [syzbot] [kernel?] INFO: rcu detected stall in toggle_allocation_gate
-From:   syzbot <syzbot+52d2f6feb48dc7328968@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,20 +51,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On MT7988 When switching from 10GBase-R/5GBase-R/USXGMII to one of the
+interface modes provided by mtk-pcs-lynxi we need to make sure to
+always perform a full configuration of the PHYA.
+As the idea behind not doing that was mostly to prevent an existing link
+going down without any need for it to do so. Hence we can just always
+perform a full confinguration in case the link is down.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ drivers/net/pcs/pcs-mtk-lynxi.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-Reported-and-tested-by: syzbot+52d2f6feb48dc7328968@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         950fe358 Merge branch 'ipv6-expired-routes'
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=10fb456fa80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fe63ad15dded26b6
-dashboard link: https://syzkaller.appspot.com/bug?extid=52d2f6feb48dc7328968
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=147b456fa80000
-
-Note: testing is done by a robot and is best-effort only.
+diff --git a/drivers/net/pcs/pcs-mtk-lynxi.c b/drivers/net/pcs/pcs-mtk-lynxi.c
+index b0f3ede945d96..788c2ccde064e 100644
+--- a/drivers/net/pcs/pcs-mtk-lynxi.c
++++ b/drivers/net/pcs/pcs-mtk-lynxi.c
+@@ -108,8 +108,8 @@ static int mtk_pcs_lynxi_config(struct phylink_pcs *pcs, unsigned int neg_mode,
+ 				bool permit_pause_to_mac)
+ {
+ 	struct mtk_pcs_lynxi *mpcs = pcs_to_mtk_pcs_lynxi(pcs);
+-	bool mode_changed = false, changed;
+-	unsigned int rgc3, sgm_mode, bmcr;
++	bool mode_changed = false, changed, link;
++	unsigned int bm, rgc3, sgm_mode, bmcr;
+ 	int advertise, link_timer;
+ 
+ 	advertise = phylink_mii_c22_pcs_encode_advertisement(interface,
+@@ -117,6 +117,10 @@ static int mtk_pcs_lynxi_config(struct phylink_pcs *pcs, unsigned int neg_mode,
+ 	if (advertise < 0)
+ 		return advertise;
+ 
++	/* Check if link is currently up */
++	regmap_read(mpcs->regmap, SGMSYS_PCS_CONTROL_1, &bm);
++	link = !!(FIELD_GET(SGMII_BMSR, bm) & BMSR_LSTATUS);
++
+ 	/* Clearing IF_MODE_BIT0 switches the PCS to BASE-X mode, and
+ 	 * we assume that fixes it's speed at bitrate = line rate (in
+ 	 * other words, 1000Mbps or 2500Mbps).
+@@ -137,7 +141,10 @@ static int mtk_pcs_lynxi_config(struct phylink_pcs *pcs, unsigned int neg_mode,
+ 		bmcr = 0;
+ 	}
+ 
+-	if (mpcs->interface != interface) {
++	/* Do a full reconfiguration only if the link is down or the interface
++	 * mode has changed
++	 */
++	if (mpcs->interface != interface || !link) {
+ 		link_timer = phylink_get_link_timer_ns(interface);
+ 		if (link_timer < 0)
+ 			return link_timer;
+-- 
+2.41.0
