@@ -2,75 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44BC577F8CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8C077F8D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351859AbjHQOYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 10:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50740 "EHLO
+        id S1351866AbjHQO0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 10:26:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351955AbjHQOYe (ORCPT
+        with ESMTP id S1351868AbjHQO0K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 10:24:34 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92062D78
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:24:33 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5231410ab27so10126751a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:24:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692282272; x=1692887072;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/krrOzf32PMDRBi/P9qe9m671OONK8NSr+9AstJjJkE=;
-        b=jRYz2JZDAWxwzz3lJ8GRSGtOaugy+83BPiXOFkkPM6xQQdJaTZVzb2ycUbIT94kuEY
-         6p5Gyw9NDLBDv3NqHYJo8IkAKecBfQhUht9tN49XYJYZkd1w+5k7ruby2vTtYjE68u5b
-         9IKil9t4v7VhGRECEH4Ye10USDG0mGhjQW02mCAtXcXHOSJj2EdVn6l59ojpZzm3WrWR
-         pGe171882Q5odAcsTAlq2xrqaPlo4tAJp/a+q2XDMm5MvPyVt2TROvmHwwLLFPMon7+1
-         qlwM16AUUE/SHGFDxAlbbK5cg8AfqUD54RNGaTe0lsuwxytTApvlWTeItUaMy8L4blHZ
-         0Q4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692282272; x=1692887072;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/krrOzf32PMDRBi/P9qe9m671OONK8NSr+9AstJjJkE=;
-        b=aWDCn1gjBERbjkqq6iYeUtS//SBxnXJNub6cEKQQDd5mnicY+lLwnAHY6DhchIOl3+
-         3ug/PXUgDcjKpr5HWzcS7I2/D6atVvQiFAmkVaCLDwQL59w6e/KLIgvut22PyanadpKa
-         LCIOa7aYopO4TSQuqddg4SILVor+e+RNFCawSKH5HDN/TjbiBCZOJNwTNYgKltqtgvd1
-         zS80L0pFSjFDGZGGiFK7ghJ8NzB3x7xubRIrOpTs4kjMI3gsNS3oYgY8dL3KPh16aMHW
-         Q/N+D5imF1c57ne59WfIcpfJMGDuQrZMZfQF5bZ96zrPSWkHVZTybNcJcMc+t0Nq/Dwe
-         MhwQ==
-X-Gm-Message-State: AOJu0Yy0eFyKirMp8WQDdLhvhgd4jPPD5zfLo9vhBfC8lI47iAw7x3J7
-        HYsEXpVeFr0nIcpJmby+qomxnOLMud4EjlcLIic=
-X-Google-Smtp-Source: AGHT+IEp4cCuFlG0W3egOgU3UR3lcsCJgAX/+lkPQqDslfwoGUC6G3BhxvV4XKDiqWt471tJpCzDDzh9qMjz30AEcJs=
-X-Received: by 2002:aa7:d982:0:b0:523:2e30:aaea with SMTP id
- u2-20020aa7d982000000b005232e30aaeamr4213690eds.33.1692282271797; Thu, 17 Aug
- 2023 07:24:31 -0700 (PDT)
+        Thu, 17 Aug 2023 10:26:10 -0400
+Received: from pegase1.c-s.fr (unknown [90.115.179.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3FF62D76
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:26:08 -0700 (PDT)
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4RRS3g3hSxz9wrn;
+        Thu, 17 Aug 2023 16:26:07 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id KUkmeh0sFkNs; Thu, 17 Aug 2023 16:26:07 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4RRS3g2sr1z9wrl;
+        Thu, 17 Aug 2023 16:26:07 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5F07D8B76C;
+        Thu, 17 Aug 2023 16:26:07 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id hQ_dsETZXfsT; Thu, 17 Aug 2023 16:26:07 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.19.54.59])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2E4208B763;
+        Thu, 17 Aug 2023 16:26:07 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37HEQ206445864
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 16:26:02 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37HEPt0q445818;
+        Thu, 17 Aug 2023 16:25:55 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] powerpc/47x: Add prototype for mmu_init_secondary()
+Date:   Thu, 17 Aug 2023 16:25:49 +0200
+Message-ID: <e89d9927c926044e54fd056a849785f526c6414f.1692282340.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Received: by 2002:a05:6f02:8418:b0:51:35ae:ec4d with HTTP; Thu, 17 Aug 2023
- 07:24:31 -0700 (PDT)
-Reply-To: avamedicinemed3@gmail.com
-From:   Dr Ava Smith <acipqr@gmail.com>
-Date:   Thu, 17 Aug 2023 16:24:31 +0200
-Message-ID: <CACGB4dKL6GoE30n_=fa8NF+xCnb=ZcGV3WChtWi4x4jb3f9mEw@mail.gmail.com>
-Subject: From Dr Ava Smith from United States
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
-        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692282348; l=1005; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=y4MtXxcU/CLYY/EtZYOAASD5LB5BrZFf3sfN3Cc+IB0=; b=EiYYpSO+gQkYlnYN6efHgQZWyYz6PTS17/ghX4U8eDhBEXY/XuAExALjYn3RCfiCIHKIvzshj vNckpfsTqjLC9AvgdCVo49MKntTWmiaBGnOeVsrMHfs79NDafRL+EJA
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_FAIL,SPF_HELO_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A W=1 build of 44x/iss476-smp_defconfig gives:
+
+arch/powerpc/mm/nohash/44x.c:220:13: error: no previous prototype for 'mmu_init_secondary' [-Werror=missing-prototypes]
+  220 | void __init mmu_init_secondary(int cpu)
+      |             ^~~~~~~~~~~~~~~~~~
+
+That function is called from head_4xx.S
+
+Add a prototype in mmu_decl.h
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/powerpc/mm/mmu_decl.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/powerpc/mm/mmu_decl.h b/arch/powerpc/mm/mmu_decl.h
+index c6dccb4f06dc..7f9ff0640124 100644
+--- a/arch/powerpc/mm/mmu_decl.h
++++ b/arch/powerpc/mm/mmu_decl.h
+@@ -110,6 +110,7 @@ extern void MMU_init_hw(void);
+ void MMU_init_hw_patch(void);
+ unsigned long mmu_mapin_ram(unsigned long base, unsigned long top);
+ #endif
++void mmu_init_secondary(int cpu);
+ 
+ #ifdef CONFIG_PPC_E500
+ extern unsigned long map_mem_in_cams(unsigned long ram, int max_cam_idx,
 -- 
-Hello Dear
-My name is Dr Ava Smith,a medical doctor from United States.
-I have Dual citizenship which is English and French.
-I will share pictures and more details about me as soon as i get
-a response from you
-Thanks
-Ava
+2.41.0
+
