@@ -2,122 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F7B77F52B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 13:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE44F77F535
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 13:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350275AbjHQL0Z convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 17 Aug 2023 07:26:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60780 "EHLO
+        id S1350305AbjHQL2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 07:28:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350334AbjHQL0R (ORCPT
+        with ESMTP id S1350314AbjHQL1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 07:26:17 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22EB435A1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 04:25:37 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-71-dOULvA-BN-q2BWVbdPtlQg-1; Thu, 17 Aug 2023 12:25:35 +0100
-X-MC-Unique: dOULvA-BN-q2BWVbdPtlQg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 17 Aug
- 2023 12:25:32 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 17 Aug 2023 12:25:32 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'coolrrsh@gmail.com'" <coolrrsh@gmail.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>
-Subject: RE: [PATCH] dma: dmatest: Use div64_s64
-Thread-Topic: [PATCH] dma: dmatest: Use div64_s64
-Thread-Index: AQHZ0AeULU9mW46wa0OxWq5lt3Wbdq/uV53w
-Date:   Thu, 17 Aug 2023 11:25:32 +0000
-Message-ID: <ab54155f8ed241eabe006700eb4b4511@AcuMS.aculab.com>
-References: <20230816060400.3325-1-coolrrsh@gmail.com>
-In-Reply-To: <20230816060400.3325-1-coolrrsh@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 17 Aug 2023 07:27:33 -0400
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB31F30DC;
+        Thu, 17 Aug 2023 04:27:03 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-586a684e85aso81427547b3.2;
+        Thu, 17 Aug 2023 04:27:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692271618; x=1692876418;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cWtT4J/UvU2mn20j2V9lIhWo8J+pJELKqRIdHfBXPfM=;
+        b=s22DM1cpLtsnIs6q0oETWlIoRH48d5wuNYKyJyH0fuTmx5i9/JKywCfFWZmaZ7MoY3
+         FqOqzIbaFKoVIlLNLgUh861TToG2JB7+2xTG9aGc0JybDPvmizztxQgb4k2uHMTcN6Ql
+         nFLKLkqN93Zw+yAmIDWgX+v6bZzYogY6AjTHB2wO8ASQ8q3mvzl6x5wEgr/bmICKt+dg
+         XCagb5NYwoHiLNeJ2/EZ9M6qJTseq8dR2jN7Z3zw6xj5BkoXF+xdFsSKvdM99vRe8aLk
+         uCwqJspxy9CJ/WwAM3egbJwEjh0JWYIqYiAH/d3Htlb9JRJKLZTmOLcU5x46PZP36Vsq
+         KDPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692271618; x=1692876418;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cWtT4J/UvU2mn20j2V9lIhWo8J+pJELKqRIdHfBXPfM=;
+        b=O+IZZuD3koLxSmC046e9q5PN6fpbgf4Z/lbgQxGrzfdK+NDXahLnec+vNJ59o+S2YC
+         2IQ1LQcCZsT0hBGib0wqJFU/GdR5mT8S1SVopuSIJ3gxQfltSgIjpcPZ1AcpXuEIwDBo
+         /tRu3q2dgKEoy1M8VH+baLYBw70a9NtOG3DxT3jJdCUn9M62Gi1FzjKiNsrV9K7G3OmX
+         TpP88rnwLiZ8+7h+34HodrliAWC4ebZKIy/zrNvwujzVZWzhW/RPF9tvLhuKSU+TsWss
+         /dZSgQMwwpQjoG6I747/1luFANGe7jHLsyFQPOMo0tXOdaN06ycLaljb97Baklsu3N8y
+         di0A==
+X-Gm-Message-State: AOJu0Yy+utqQHiMfIDRBxQbwytghUYZG7zSqNe30MRtxpGlF0blqyGFO
+        fYJ4oE9s0K/w5w+Z54GAg1+v1L3P1OT84I/Hj70tjlR9Jtfbpvsl5Jc=
+X-Google-Smtp-Source: AGHT+IHO+D/5OQRsSAOd7+REd+X38EBECMRHb0qG3C9AnHXxvcDMmQgsJIJYaIRWyDVGke6p+gyvOBi+XuLyFh+iYj4=
+X-Received: by 2002:a0d:ce86:0:b0:577:3561:8a81 with SMTP id
+ q128-20020a0dce86000000b0057735618a81mr4616863ywd.22.1692271617961; Thu, 17
+ Aug 2023 04:26:57 -0700 (PDT)
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20230815084713.1627520-1-zhoubinbin@loongson.cn>
+ <20230815-certainly-sprang-209024530924@spud> <CAMpQs4+68Ow4-rubj2ySiRiU7d0jc1F3GOsXqxaZdT27PZSuxg@mail.gmail.com>
+ <20230817-relic-anyplace-4df08eb6b0a9@spud>
+In-Reply-To: <20230817-relic-anyplace-4df08eb6b0a9@spud>
+From:   Binbin Zhou <zhoubb.aaron@gmail.com>
+Date:   Thu, 17 Aug 2023 19:26:45 +0800
+Message-ID: <CAMpQs4+jdT5oANb0B-aRCL4JcsL6ufobK8siLdW3vS59K1MGkA@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: interrupt-controller: loongson,liointc: Fix
+ warnings about reg and interrupt description
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Binbin Zhou <zhoubinbin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, diasyzhang@tencent.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: coolrrsh@gmail.com
-> Sent: Wednesday, August 16, 2023 7:04 AM
-> 
-> From: Rajeshwar R Shinde <coolrrsh@gmail.com>
-> 
-> In the function do_div, the dividend is evaluated multiple times
-> so it can cause side effects. Therefore replace it with div64_s64.
+On Thu, Aug 17, 2023 at 4:51=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
+te:
+>
+> On Thu, Aug 17, 2023 at 10:56:37AM +0800, Binbin Zhou wrote:
+> > Hi Conor:
+> >
+> > Thanks for your reply.
+> >
+> > On Tue, Aug 15, 2023 at 10:20=E2=80=AFPM Conor Dooley <conor@kernel.org=
+> wrote:
+> > >
+> > > Hey,
+> > >
+> > > On Tue, Aug 15, 2023 at 04:47:13PM +0800, Binbin Zhou wrote:
+> > > > As we know, some Loongson-2K CPUs are single-core, e.g. Loongson-2K=
+0500,
+> > > > and the "isr1" means routing interrupts to core1, which should be
+> > > > optional. So add maxItems/minItems limits to reg/reg-names.
+> > > > Also, The interrupt-names attribute represents a list of parent
+> > > > interrupt names that should change with interrupts.
+> > >
+> > > This should have been with the other series that introduces the users
+> > > probably so that things make more sense to the reader.
+> >
+> > I was under the impression that the mips Loongson-2K1000 was also
+> > required for this patch, so I committed it separately.
+> > Maybe my commit should still be described in more detail.
+>
+> Ah, I just assumed, given the timing, that it was for the loongson
+> stuff only.
+>
+> > > > Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+> > > > ---
+> > > >  .../interrupt-controller/loongson,liointc.yaml     | 14 ++++++----=
+----
+> > > >  1 file changed, 6 insertions(+), 8 deletions(-)
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/interrupt-controller=
+/loongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-contro=
+ller/loongson,liointc.yaml
+> > > > index 00b570c82903..adb428211a72 100644
+> > > > --- a/Documentation/devicetree/bindings/interrupt-controller/loongs=
+on,liointc.yaml
+> > > > +++ b/Documentation/devicetree/bindings/interrupt-controller/loongs=
+on,liointc.yaml
+> > > > @@ -11,7 +11,7 @@ maintainers:
+> > > >
+> > > >  description: |
+> > > >    This interrupt controller is found in the Loongson-3 family of c=
+hips and
+> > > > -  Loongson-2K1000 chip, as the primary package interrupt controlle=
+r which
+> > > > +  Loongson-2K series chips, as the primary package interrupt contr=
+oller which
+> > > >    can route local I/O interrupt to interrupt lines of cores.
+> > > >
+> > > >  allOf:
+> > > > @@ -33,6 +33,7 @@ properties:
+> > > >        - const: main
+> > > >        - const: isr0
+> > > >        - const: isr1
+> > > > +    minItems: 2
+> > > >
+> > > >    interrupt-controller: true
+> > > >
+> > > > @@ -45,11 +46,9 @@ properties:
+> > > >    interrupt-names:
+> > > >      description: List of names for the parent interrupts.
+> > > >      items:
+> > > > -      - const: int0
+> > > > -      - const: int1
+> > > > -      - const: int2
+> > > > -      - const: int3
+> > > > +      pattern: int[0-3]
+> > >
+> > > From a quick look at the new devicetrees, I don't understand the
+> > > ordering relaxation. Do you actually have a system that only has, for
+> > > example, int3?
+> >
+> > For a better understanding, allow me to first explain the composition
+> > of the interrupt routing register:
+> > It is an 8 bit register that is divided into two parts:
+> > 0-3 : The processor core vector number of the route, this part is
+> > handled in the code.
+> > 4-7 : The processor core interrupt pin vector number for routing, i.e.
+> > int0-int3.
+> > Each intx can handle 32 interrupt sources.
+> >
+> > For example, in Loongson-2K1000/Loongson-2K0500, there are a total of
+> > 64 interrupt sources, and we need to route them to two intx.
+> >
+> > We don't mandate which interrupt vector number must be used, in our
+> > practice the tendency is to start with int0.
+> > It is worth noting that we must follow the following correspondence:
+> > interrupt->interrupt-names
+> > 2->int0
+> > 3->int1
+> > 4->int2
+> > 5->int3
+> >
+> > >
+> > > Also, as the interrupt-names are not required, changing the ordering
+> > > here is not ABI compatible AFAICT. Does that have any fallout?
+> >
+> > Oh, this should be another point that needs to be modified, the
+> > interrupt-names should be required. because in the driver code the
+> > parent interrupts are fetched through of_irq_get_byname().
+>
+> Yeah, that should probably be made required so.
+>
+> > Also the way liointc-2.0 is written in the dts does not match the dt-bi=
+nding.
+> > The dts using loongson,liointc-2.0 are:
+>
+>
+> > arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi (mips Loongson-2K100=
+0)
+> > arch/loongarch/boot/dts/loongson-2k0500.dtsi
+> > arch/loongarch/boot/dts/loongson-2k1000.dtsi
+> > arch/loongarch/boot/dts/loongson-2k2000.dtsi
+> >
+> >                liointc0: interrupt-controller@1fe01400 {
+> > ......
+> >                         interrupts =3D <2>;
+> >                         interrupt-names =3D "int0";
+> >                         loongson,parent_int_map =3D <0xffffffff>, /* in=
+t0 */
+> >                                                 <0x00000000>, /* int1 *=
+/
+> >                                                 <0x00000000>, /* int2 *=
+/
+> >                                                 <0x00000000>; /* int3 *=
+/
+> >                 };
+> >
+> >                 liointc1: interrupt-controller@1fe01440 {
+> > ....
+> >                        interrupts =3D <3>;
+> >                         interrupt-names =3D "int1";
+> >                         loongson,parent_int_map =3D <0x00000000>, /* in=
+t0 */
+> >                                                 <0xffffffff>, /* int1 *=
+/
+> >                                                 <0x00000000>, /* int2 *=
+/
+> >                                                 <0x00000000>; /* int3 *=
+/
+> >                 };
+> >
+> > We split the two intx into two nodes because of register definitions
+> > etc. There is the following WARNING at liointc1:
+>
+> Did you split it in two because of register definitions, or because
+> there are physically two controllers on the SoC? Your comments earlier
+> sound like there are physically two interrupt controllers, which would
+> be a valid reason to split the nodes.
 
-Nope, and even if it did it wouldn't matter here.
+Hi, Conor:
 
-> This fixes warning such as:
-> drivers/dma/dmatest.c:496:1-7:
-> WARNING: do_div() does a 64-by-32 division,
-> please consider using div64_s64 instead.
+Whoops, it looks like my description is still not clear enough.
 
-What you should really do is look carefully at the domain
-of the input values to see if the division can actually
-overflow.
+First of all, a chip has only one physical liointc.
 
-That message is basically incorrect.
+Unlike other chips, Loongson-2K1000/2K0500 has 64 interrupt sources,
+which requires two sets of registers to set the routing of all the
+interrupts, and correspondingly two nodes to describe them in dts.
+Concretely, in Loongson-2K1000/2K0500:
+     liointc0: indicates the routing of interrupt sources 0-31;
+     liointc1: indicates the routing of interrupt sources 32-63.
 
-The full 64x64 divide is horribly slow on all 32bit archs.
-It is even about twice as slow as the 64x32 divide on Intel
-x86 cpu in 64bit mode (regardless of the values).
+Others, such as Loongson-3A, have only 32 interrupt sources and need
+only one liointc node.
 
-	David
+For better understanding, I'll add a more detailed description, which
+should especially point out the 2K1000/2K0500 differences.
+For example, for reg-names description:
+main: interrupt routing registers
+isr0: low/high 32-bit interrupt status routed to CORE0.
+isr1: low/high 32-bit interrupt status routed to CORE1.
 
-> 
-> Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
-> ---
->  drivers/dma/dmatest.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/dma/dmatest.c b/drivers/dma/dmatest.c
-> index ffe621695e47..07042f239db8 100644
-> --- a/drivers/dma/dmatest.c
-> +++ b/drivers/dma/dmatest.c
-> @@ -9,6 +9,7 @@
-> 
->  #include <linux/err.h>
->  #include <linux/delay.h>
-> +#include <linux/math64.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/dmaengine.h>
->  #include <linux/freezer.h>
-> @@ -493,7 +494,7 @@ static unsigned long long dmatest_persec(s64 runtime, unsigned int val)
-> 
->  	per_sec *= val;
->  	per_sec = INT_TO_FIXPT(per_sec);
-> -	do_div(per_sec, runtime);
-> +	per_sec=div64_s64(per_sec, runtime);
-> 
->  	return per_sec;
->  }
-> --
-> 2.25.1
+Thanks.
+Binbin
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+>
+> Thanks,
+> Conor.
+>
+> >       arch/loongarch/boot/dts/loongson-2k1000-ref.dtb:
+> > interrupt-controller@1fe01440: interrupt-names:0: 'int0' was expected
+> >             From schema:
+> > Documentation/devicetree/bindings/interrupt-controller/loongson,liointc=
+.yaml
+> >       arch/loongarch/boot/dts/loongson-2k1000-ref.dtb:
+> > interrupt-controller@1fe01440: Unevaluated properties are not allowed
+> > ('interrupt-names' was unexpected)
+> >             From schema:
+> > Documentation/devicetree/bindings/interrupt-controller/loongson,liointc=
+.yaml
+> >
+> > But actually, in liointc1, we only need int1.
+> >
+> > Thanks.
+> > Binbin
+> >
+> > >
+> > > Thanks,
+> > > Conor.
+> > >
+> > > >      minItems: 1
+> > > > +    maxItems: 4
+> > > >
+> > > >    '#interrupt-cells':
+> > > >      const: 2
+> > > > @@ -73,7 +72,6 @@ required:
+> > > >    - '#interrupt-cells'
+> > > >    - loongson,parent_int_map
+> > > >
+> > > > -
+> > > >  unevaluatedProperties: false
+> > > >
+> > > >  if:
+> > > > @@ -86,7 +84,8 @@ if:
+> > > >  then:
+> > > >    properties:
+> > > >      reg:
+> > > > -      minItems: 3
+> > > > +      minItems: 2
+> > > > +      maxItems: 3
+> > > >
+> > > >    required:
+> > > >      - reg-names
+> > > > @@ -113,7 +112,6 @@ examples:
+> > > >                                  <0x0f000000>, /* int1 */
+> > > >                                  <0x00000000>, /* int2 */
+> > > >                                  <0x00000000>; /* int3 */
+> > > > -
+> > > >      };
+> > > >
+> > > >  ...
+> > > > --
+> > > > 2.39.3
+> > > >
