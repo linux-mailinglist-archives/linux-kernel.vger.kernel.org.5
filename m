@@ -2,106 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F787801A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A507801A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356059AbjHQXWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 19:22:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39406 "EHLO
+        id S1356067AbjHQXXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 19:23:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356063AbjHQXWT (ORCPT
+        with ESMTP id S1356128AbjHQXXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 19:22:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F265935A9;
-        Thu, 17 Aug 2023 16:22:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692314538; x=1723850538;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=jjim20PHoNcuWFjwQTxJ802NzhAvwG3kqWFOP4bvdkg=;
-  b=Xfx9DpapC1fnXVTp8NGGnogkZoCB82d4M/how0rpJStftf0h81LCo+AI
-   +Gp+BlO4NuhzoqbsSRvtdKs+kDP1OuUB1LMs2k3QcORu0nlu7wRkX57jF
-   EnE2U+ibgVO6Oykz5xK7XGrQ/UEFRfSdiNpnsZsDXJoyOznGCMxMwArsV
-   6a9p8e63177lFlkVaGUYgJCIre5MQJMrDpHYTPbMbh6nDWZm+tRJCrgcE
-   gUxtUHzO8WCX9RHf1FurjnYLybmyGj1x3SlIGsFKgXDdST98G5vfqxiBB
-   2ESh2GOILGuPCRm7vxJ9Nl/sTDUqphncP//T1BdXegXdQuCbBlEaOjPiV
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="376718395"
-X-IronPort-AV: E=Sophos;i="6.01,181,1684825200"; 
-   d="scan'208";a="376718395"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 16:22:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="728358086"
-X-IronPort-AV: E=Sophos;i="6.01,181,1684825200"; 
-   d="scan'208";a="728358086"
-Received: from lacoffin-mobl.amr.corp.intel.com (HELO [10.212.196.192]) ([10.212.196.192])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 16:22:16 -0700
-Message-ID: <3b1ca61c-fa3f-a802-6705-a8c1f37ad58f@intel.com>
-Date:   Thu, 17 Aug 2023 16:22:18 -0700
+        Thu, 17 Aug 2023 19:23:46 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74843592;
+        Thu, 17 Aug 2023 16:23:43 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C832F741;
+        Fri, 18 Aug 2023 01:22:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1692314548;
+        bh=2ci2ODvSHHVFwJqInqV3ww3u6hO/6wvKge8jSVGOA+Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T/QM6YH/N4ane/W98rZZRn7Te+dVAzjl141913f3K6sbda0WVnsML218mz4xlUXAW
+         fpWruzdWnXAlHyTN8C9X++NHZylnUkY7Qbz38SwOCSsqksXKJI4A8OuKboH6WNZ8gl
+         6ybGQMYZ1c4ivPvmJR2w053hblBGDXklG9uWKTjE=
+Date:   Fri, 18 Aug 2023 02:23:48 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/1] docs: submitting-patches: Add Sponsored-by tag
+ to give credits to who sponsored the patch
+Message-ID: <20230817232348.GC1175@pendragon.ideasonboard.com>
+References: <20230817220957.41582-1-giulio.benetti@benettiengineering.com>
+ <20230817220957.41582-2-giulio.benetti@benettiengineering.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 03/15] mshyperv: Introduce
- numa_node_to_proximity_domain_info
-Content-Language: en-US
-To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org
-Cc:     patches@lists.linux.dev, mikelley@microsoft.com, kys@microsoft.com,
-        wei.liu@kernel.org, haiyangz@microsoft.com, decui@microsoft.com,
-        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
-        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
-        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
-        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        will@kernel.org, catalin.marinas@arm.com
-References: <1692309711-5573-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1692309711-5573-4-git-send-email-nunodasneves@linux.microsoft.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <1692309711-5573-4-git-send-email-nunodasneves@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230817220957.41582-2-giulio.benetti@benettiengineering.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/17/23 15:01, Nuno Das Neves wrote:
-> +static inline union hv_proximity_domain_info
-> +numa_node_to_proximity_domain_info(int node)
-> +{
-> +	union hv_proximity_domain_info proximity_domain_info;
+Hi Giulio,
+
+On Fri, Aug 18, 2023 at 12:09:57AM +0200, Giulio Benetti wrote:
+> Sometimes it happens that a Company or a Physical Person sponsors the
+> creation and/or the upstreaming process of a patch, but at the moment
+> there is no way to give credits to it. There are some commit that include
+> a sort of tag "Sponsored by" without the dash to avoid
+> scripts/checkpatch.pl to complain but a real standard has not been defined.
+> With this patch let's try to define a method to give credits consistently
+> including an acknowledge from the sponsor. The goal is to improve
+> contributions from companies or physical persons that this way should gain
+> visibility in Linux kernel and so they should be more prone to let the
+> work done for them for to be upstreamed.
+
+Just adding one data point here, without judging on the merits of this
+proposal. I've been requested previously by customers to increase their
+visibility in the kernel development statistics, and the way we found to
+do so was to sign-off patches with
+
+Laurent Pinchart <laurent.pinchart+customer@ideasonboard.com>
+
+(where "customer" is to be replaced with the customer name).
+
+> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+> ---
+>  Documentation/process/submitting-patches.rst | 38 ++++++++++++++++++++
+>  1 file changed, 38 insertions(+)
+> 
+> diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
+> index efac910e2659..870e6b5def3f 100644
+> --- a/Documentation/process/submitting-patches.rst
+> +++ b/Documentation/process/submitting-patches.rst
+> @@ -600,6 +600,44 @@ process nor the requirement to Cc: stable@vger.kernel.org on all stable
+>  patch candidates. For more information, please read
+>  Documentation/process/stable-kernel-rules.rst.
+>  
+> +Using Sponsored-by:
+> +-------------------
 > +
-> +	if (node != NUMA_NO_NODE) {
-> +		proximity_domain_info.domain_id = node_to_pxm(node);
-> +		proximity_domain_info.flags.reserved = 0;
-> +		proximity_domain_info.flags.proximity_info_valid = 1;
-> +		proximity_domain_info.flags.proximity_preferred = 1;
-> +	} else {
-> +		proximity_domain_info.as_uint64 = 0;
-> +	}
+> +A Sponsored-by tag gives credit to who sponsored the creation and/or the
+> +upstreaming process of the patch. Sponsored-by can contain a company name or
+> +a physical person name. If a company sponsored the patch this is the form::
 > +
-> +	return proximity_domain_info;
-> +}
+> +	Company Name <mail@companyname.com>
+> +
+> +where the Company Name must be a valid Business Name at the time of sending the
+> +patch until the confirmation of the Sponsored-by tag, while the e-mail can be
+> +either a generic e-mail the company can be reached out or an e-mail of a person
+> +who has the rights inside it to confirm the Sponsored-by tag.
+> +
+> +If a physical person sponsored the patch the form must be same used in
+> +Signed-off-by tag::
+> +
+> +	Physical Person <physical.person@mail.com>
+> +
+> +In both cases, to prevent fake credits, either the company or the person should
+> +send an Acked-by tag placed right under Sponsored-by tag using the same form
+> +described above. So for example if the patch contains::
+> +
+> +	<changelog>
+> +
+> +	Sponsored-by: Company Name <mail@companyname.com>
+> +	Signed-off-by: Developer Name <developer.name@developername.com>
+> +
+> +The result including the answer from the sponsor must be::
+> +
+> +	<changelog>
+> +
+> +	Sponsored-by: Company Name <mail@companyname.com>
+> +	Acked-by: Company Name <mail@companyname.com>
+> +	Signed-off-by: Developer Name <developer.name@developername.com>
+> +
+> +This way the sponsor agrees to the usage of this tag using its name.
+> +
+>  .. _the_canonical_patch_format:
+>  
+>  The canonical patch format
 
-Pop quiz: What are the rules for the 30 bits of uninitialized data of
-proximity_domain_info.flags in the (node != NUMA_NO_NODE) case?
+-- 
+Regards,
 
-I actually don't know off the top of my head.  I generally avoid
-bitfields, but if they were normal stack-allocated variable space,
-they'd be garbage.
-
-I'd also *much* rather see the "as_uint64 = 0" coded up as a memset() or
-even explicitly zeroing all the same variables as the other half of the
-if().  As it stands, it's not 100% obvious that proximity_domain_info is
-64 bits and that .as_uint64=0 zeroes the whole thing.  It *WOULD* be
-totally obvious if it were a memset().
+Laurent Pinchart
