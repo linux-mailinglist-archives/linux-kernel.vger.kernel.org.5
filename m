@@ -2,148 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 861D577F15C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 09:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F66977F167
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 09:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348562AbjHQHjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 03:39:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55034 "EHLO
+        id S1348573AbjHQHlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 03:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348550AbjHQHjc (ORCPT
+        with ESMTP id S1348606AbjHQHlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 03:39:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3352D63
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 00:38:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692257922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hNX6iGWfWtgznBVcEU39c4WOS7GjaLk+AhKULELPJ68=;
-        b=FQLJX+I4B8mOYlEOu5cPKDk/plSOgowWsYebbA5+HwGhqZz65c67Xp+j8NpPEIdSr2Fjmz
-        XXxLa6DCiIx+jSBJlGkPmIxb6yN99KBPFl7WnPxzqemjTFKuLeywFUDqry15oBGZU1mPcx
-        mUznIYeDcAzVYaO73vNSRQq5VZV8L4M=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-679-R9t15xypNBO2wFkKlvTsCw-1; Thu, 17 Aug 2023 03:38:41 -0400
-X-MC-Unique: R9t15xypNBO2wFkKlvTsCw-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-319652e9920so3206537f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 00:38:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692257920; x=1692862720;
-        h=content-transfer-encoding:in-reply-to:organization:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        Thu, 17 Aug 2023 03:41:07 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1A5930C3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 00:40:59 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-52557cc5e7bso5788572a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 00:40:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1692258058; x=1692862858;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hNX6iGWfWtgznBVcEU39c4WOS7GjaLk+AhKULELPJ68=;
-        b=LsJ3ZVtOepwyj5xld9G3TkAUb4VAdSMfakpCHkanxy2gMY62i4R6iETaX9z0DQoOIx
-         Tekk6zZ8hk6Al6yoQ2uNjL8tvGSRyP09UwpiMMnVX/owcilYYKRGk7kc3NgbKZ1A1qTS
-         prg6y2Q1Vo+/OhtdZdfh5PzxQ+qtiCKuiQIKEbHarcK4xn/ukKiyk0Ifvh31o0c6c6St
-         glsaM6kmursdB+joCYM2bVWkn2X/+qj5HnJC2IaLVXNfj/ucpLAvV5zAz5SJsIEDYh+q
-         rFaCLII8FzuN/jy/YIz5HmlpxZD4AOanYlHNWc2puLqrndJd4F8DcTrra+jCZyaUFZ4p
-         k8NA==
-X-Gm-Message-State: AOJu0YwxqvgjpI/VFCGQpdbDYI3V0UYDpSzp+9CAw8m+0yHXZcQtfAS/
-        tNRDhhEaFx5SJmKE5LVQSKgdZttHkeikj+nOh9Rmn74VwMzJr06PDwBCPFX/UrgHzlr7bwiHxBM
-        53EcisE6NnssJ1ZPDLHP3Wquu
-X-Received: by 2002:a5d:610e:0:b0:319:7b57:8dc5 with SMTP id v14-20020a5d610e000000b003197b578dc5mr3099290wrt.54.1692257920018;
-        Thu, 17 Aug 2023 00:38:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHMupVkiUckbZbPaywGKv1CUrex5iaNb0W6ic9ImLtpdoKy0/hM4FBYORaNqKg4S3FiZ2Pueg==
-X-Received: by 2002:a5d:610e:0:b0:319:7b57:8dc5 with SMTP id v14-20020a5d610e000000b003197b578dc5mr3099267wrt.54.1692257919567;
-        Thu, 17 Aug 2023 00:38:39 -0700 (PDT)
-Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id z10-20020a5d4d0a000000b0031ad5a54bedsm1686403wrt.9.2023.08.17.00.38.38
+        bh=GQ/pzkMGOFMvffvVhYx2x+xo33IWshzsEC8qLYrj/uQ=;
+        b=d1cQ/BjPg1yi2uUWuTc22jq1iHRqEP/NNmdkiQe2gkvtRNhiKrbQjjtDTix+BAo/Nf
+         0q8pfiyLBmoiJvUYU+yDZl4hHLzE9AjCXUjw9wQlFA7UNsM32fgyC5fD5sfCzfRBYBU1
+         jbxT0YecM2HmMSveJ0g6VJHbFTlQk7hTDSqSSWmzdkFVq3UwWwMn9F2SfYFV8lCd3AXo
+         2RjJhJhbAN2Cy1yWt3BaFa8R/sKPCTW88uwB0OjWwy0S06ThftBaSACRBa2AoOxFjxFe
+         doH2pYc2XmqjF54ebQobUTlD8ikmFYKEQddtpcfYpqOWexqx31958FzUL3A6W5zLXpdT
+         kpdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692258058; x=1692862858;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=GQ/pzkMGOFMvffvVhYx2x+xo33IWshzsEC8qLYrj/uQ=;
+        b=DlMBNbLXkevNQ/5OR/CeYpee7nugv4jHhsH0hPPgGBcLvOjFjPvfPkRa1vp0uH0nAi
+         j9WXqj6LH+WiYy+ZcH4Pj+y9g+4Lh4rNsKLK/eQUgDj8gy3i2TbtaHwp/jDiZTh5qdPn
+         PfBllG9VtI8oZIjq2MK8vgLsjVXFuJR8ufmdyfNrfJt/lghNkRFIKzA+nW81Y12VPIhw
+         cLxqCE1iSBMlkr/beJ20BwI/En04YJYtEZkiL1sv8Cv+ufJWzx+DOigR0YtXhofCLdyq
+         LGbhl5GI/tTUcPQ+amj/Bwz6krYiNw4WRdVyl0anG2oWKk1tub25jjqwG/H8J/WnKZtP
+         okKw==
+X-Gm-Message-State: AOJu0Yy9s3gS/fAyJcgw45v40nQQt+dtORABSlC+rvWQFaeTt8W+tJ/L
+        2UzedE62Qg6iztrx/KbViNSXdw==
+X-Google-Smtp-Source: AGHT+IGf9rWZ9VohbsbOL72pJ0kHw3/hOLYWbEHXA0pN2GPS58vPMofCBOyp5A4Rss2bcsZNA/p6YQ==
+X-Received: by 2002:aa7:d6d8:0:b0:526:9cfb:c12 with SMTP id x24-20020aa7d6d8000000b005269cfb0c12mr978979edr.38.1692258057999;
+        Thu, 17 Aug 2023 00:40:57 -0700 (PDT)
+Received: from localhost (212095005038.public.telering.at. [212.95.5.38])
+        by smtp.gmail.com with ESMTPSA id d13-20020a05640208cd00b005259dd903e5sm1235721edz.67.2023.08.17.00.40.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Aug 2023 00:38:38 -0700 (PDT)
-Message-ID: <5c9e52ab-d46a-c939-b48f-744b9875ce95@redhat.com>
-Date:   Thu, 17 Aug 2023 09:38:37 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH v2 0/5] Reduce NUMA balance caused TLB-shootdowns in a
- VM
-To:     Yan Zhao <yan.y.zhao@intel.com>, John Hubbard <jhubbard@nvidia.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        mike.kravetz@oracle.com, apopple@nvidia.com, jgg@nvidia.com,
-        rppt@kernel.org, akpm@linux-foundation.org, kevin.tian@intel.com,
-        Mel Gorman <mgorman@techsingularity.net>,
-        alex.williamson@redhat.com
-References: <6b48a161-257b-a02b-c483-87c04b655635@redhat.com>
- <1ad2c33d-95e1-49ec-acd2-ac02b506974e@nvidia.com>
- <846e9117-1f79-a5e0-1b14-3dba91ab8033@redhat.com>
- <d0ad2642-6d72-489e-91af-a7cb15e75a8a@nvidia.com>
- <ZNnvPuRUVsUl5umM@yzhao56-desk.sh.intel.com>
- <4271b91c-90b7-4b48-b761-b4535b2ae9b7@nvidia.com>
- <f523af84-59de-5b57-a3f3-f181107de197@redhat.com>
- <ZNyRnU+KynjCzwRm@yzhao56-desk.sh.intel.com>
- <ded3c4dc-2df9-2ef2-add0-c17f0cdfaf32@redhat.com>
- <37325c27-223d-400d-bd86-34bdbfb92a5f@nvidia.com>
- <ZN2qg4cPC2hEgtmY@yzhao56-desk.sh.intel.com>
-Content-Language: en-US
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <ZN2qg4cPC2hEgtmY@yzhao56-desk.sh.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 17 Aug 2023 00:40:57 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 17 Aug 2023 09:40:56 +0200
+Message-Id: <CUUNEYUIT0RH.BEM9YN8OBG8E@otso>
+Cc:     "Andy Gross" <agross@kernel.org>,
+        "Bjorn Andersson" <andersson@kernel.org>,
+        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Konrad Dybcio" <konrad.dybcio@somainline.org>,
+        <~postmarketos/upstreaming@lists.sr.ht>,
+        <phone-devel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: pm7250b: make SID configurable
+From:   "Luca Weiss" <luca.weiss@fairphone.com>
+To:     "Luca Weiss" <luca.weiss@fairphone.com>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
+        "Dmitry Baryshkov" <dmitry.baryshkov@linaro.org>
+X-Mailer: aerc 0.15.2
+References: <20230407-pm7250b-sid-v1-0-fc648478cc25@fairphone.com>
+ <20230407-pm7250b-sid-v1-2-fc648478cc25@fairphone.com>
+ <f52524da-719b-790f-ad2c-0c3f313d9fe9@linaro.org>
+ <CSIE9TYTQUHL.3E769C2Y4RAAO@otso>
+ <c9eea8ec-b289-334c-9c0b-7c992184a265@linaro.org>
+ <CAA8EJpoSpytSTm=y7oPD_SC+0-bd735KEczR1JgMc7RuMZ+A+g@mail.gmail.com>
+ <CSIGK60CQSD8.1Q4SOANJRMASF@otso>
+ <9040e9bb-a16c-0186-edba-da986350340c@linaro.org>
+ <CSIK8F6MTIVE.2K2U2Q1LDA70H@otso>
+In-Reply-To: <CSIK8F6MTIVE.2K2U2Q1LDA70H@otso>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.08.23 07:05, Yan Zhao wrote:
-> On Wed, Aug 16, 2023 at 11:00:36AM -0700, John Hubbard wrote:
->> On 8/16/23 02:49, David Hildenbrand wrote:
->>> But do 32bit architectures even care about NUMA hinting? If not, just
->>> ignore them ...
->>
->> Probably not!
->>
->> ...
->>>> So, do you mean that let kernel provide a per-VMA allow/disallow
->>>> mechanism, and
->>>> it's up to the user space to choose between per-VMA and complex way or
->>>> global and simpler way?
->>>
->>> QEMU could do either way. The question would be if a per-vma settings
->>> makes sense for NUMA hinting.
->>
->>  From our experience with compute on GPUs, a per-mm setting would suffice.
->> No need to go all the way to VMA granularity.
->>
-> After an offline internal discussion, we think a per-mm setting is also
-> enough for device passthrough in VMs.
-> 
-> BTW, if we want a per-VMA flag, compared to VM_NO_NUMA_BALANCING, do you
-> think it's of any value to providing a flag like VM_MAYDMA?
-> Auto NUMA balancing or other components can decide how to use it by
-> themselves.
+Hi Krzysztof,
 
-Short-lived DMA is not really the problem. The problem is long-term pinning.
+On Wed May 10, 2023 at 1:27 PM CEST, Luca Weiss wrote:
+> On Wed May 10, 2023 at 12:05 PM CEST, Krzysztof Kozlowski wrote:
+> > On 10/05/2023 10:34, Luca Weiss wrote:
+> > > On Wed May 10, 2023 at 10:07 AM CEST, Dmitry Baryshkov wrote:
+> > >> On Wed, 10 May 2023 at 09:55, Krzysztof Kozlowski
+> > >> <krzysztof.kozlowski@linaro.org> wrote:
+> > >>>
+> > >>> On 10/05/2023 08:47, Luca Weiss wrote:
+> > >>>> Hi Krzysztof,
+> > >>>>
+> > >>>> On Fri Apr 7, 2023 at 10:27 AM CEST, Krzysztof Kozlowski wrote:
+> > >>>>> On 07/04/2023 09:45, Luca Weiss wrote:
+> > >>>>>> Like other Qualcomm PMICs the PM7250B can be used on different a=
+ddresses
+> > >>>>>> on the SPMI bus. Use similar defines like the PMK8350 to make th=
+is
+> > >>>>>> possible.
+> > >>>>>>
+> > >>>>>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> > >>>>>> ---
+> > >>>>>>  arch/arm64/boot/dts/qcom/pm7250b.dtsi | 23 ++++++++++++++++----=
+---
+> > >>>>>>  1 file changed, 16 insertions(+), 7 deletions(-)
+> > >>>>>>
+> > >>>>>> diff --git a/arch/arm64/boot/dts/qcom/pm7250b.dtsi b/arch/arm64/=
+boot/dts/qcom/pm7250b.dtsi
+> > >>>>>> index daa6f1d30efa..eeb476edc79a 100644
+> > >>>>>> --- a/arch/arm64/boot/dts/qcom/pm7250b.dtsi
+> > >>>>>> +++ b/arch/arm64/boot/dts/qcom/pm7250b.dtsi
+> > >>>>>> @@ -7,6 +7,15 @@
+> > >>>>>>  #include <dt-bindings/interrupt-controller/irq.h>
+> > >>>>>>  #include <dt-bindings/spmi/spmi.h>
+> > >>>>>>
+> > >>>>>> +/* This PMIC can be configured to be at different SIDs */
+> > >>>>>> +#ifndef PM7250B_SID
+> > >>>>>> +   #define PM7250B_SID 2
+> > >>>>>
+> > >>>>> Drop indentation, although anyway I am against this. Please don't=
+ bring
+> > >>>>> new patterns of this at least till we settle previous discussion.
+> > >>>>>
+> > >>>>> https://lore.kernel.org/linux-arm-msm/46658cbb-fff5-e98b-fdad-88f=
+a683a9c75@linaro.org/
+> > >>>>
+> > >>>> What's the outcome of the discussion? For this PMIC it's totally e=
+nough
+> > >>>> to have the SID configurable like in this patch, I don't think thi=
+s PMIC
+> > >>>> will be included twice in a board - at least I'm not aware of such=
+ a
+> > >>>> configuration.
+> > >>>
+> > >>> We did not reach consensus and I still disagree with complex macros=
+ or
+> > >>> macros depending on order of inclusion.
+> > >>
+> > >> I still think we should find a way to parametrise PMIC dtsi, however=
+ I
+> > >> agree with Krzysztof that complex CPP is not a way to go.
+> > >=20
+> > > What about the macro already used in-tree and proposed with this patc=
+h?
+> > > I wouldn't say this is a "complex macro" since it's just a single num=
+ber
+> > > being replaced in a few places.
+> >
+> > Are you talking about the macro to which I responded: "or macros
+> > depending on order of inclusion." or something else?
+>
+> I thought you mean with ..
+>
+> > >>> We did not reach consensus and I still disagree with complex macros=
+ or
+> > >>> macros depending on order of inclusion.
+>
+> .. the macros proprosed in the patch you linked (that version that also
+> adjusts the labels based on the SID).
+>
+> I was asking if the patch I sent (with #define PM7250B_SID) would be
+> okay to take in at least until the bigger discussion has come to a
+> conclusion, since we already have upstream occurances of such a macro so
+> it's not a new concept.
+>
+> Otherwise I'll just carry this patch in my local tree until this
+> situation has cleared up.
 
-There was a discussion about letting user space similarly hint that 
-long-term pinning might/will happen.
+Has any decision been made in the meantime whether we can get this patch
+in (at least until we have a better solution)?
 
-Because when long-term pinning a page we have to make sure to migrate it 
-off of ZONE_MOVABLE / MIGRATE_CMA.
+Imo since this patch isn't introducing any new concept that isn't
+already present upstream so shouldn't be a big problem..
 
-But the kernel prefers to place pages there.
+Regards
+Luca
 
-So with vfio in QEMU, we might preallocate memory for the guest and 
-place it on ZONE_MOVABLE/MIGRATE_CMA, just so long-term pinning has to 
-migrate all these fresh pages out of these areas again.
-
-So letting the kernel know about that in this context might also help.
-
--- 
-Cheers,
-
-David / dhildenb
+>
+> Regards
+> Luca
+>
+> >
+> > Best regards,
+> > Krzysztof
 
