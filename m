@@ -2,143 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D4177FD96
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6587B77FDC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354231AbjHQSOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 14:14:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46160 "EHLO
+        id S1354238AbjHQSWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 14:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354238AbjHQSOQ (ORCPT
+        with ESMTP id S1354385AbjHQSWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 14:14:16 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5394426A5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:14:15 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5232ce75e26so1154a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:14:15 -0700 (PDT)
+        Thu, 17 Aug 2023 14:22:17 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222333A80
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:21:48 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58ee4df08fbso1354117b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:21:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692296054; x=1692900854;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LwDKgeuDQ3yDX0vpP5yrJsNnDd62QRt5AHduSLOizpo=;
-        b=zPVWY7ImzUQAjZ6ug9gn47FS315cN5J3OSX4KN5vIYd+3I8lPC+E1EDUGgP0IELOLI
-         lSwlZ4/COpws7Y1O3au+KW/gnvcDdq9ZxcCEXP+SctjF5w3wq9BfH+FboPHOnW4SdMa+
-         gg22zIghHGPAz30ZD+AjCKojfsPy4/+RRFQaVH8gwe5FOUjp2PysGWszfuPjzoe36CvZ
-         D37f4YftXGjyu5edFV8XTNOOyEA2B21/DAnindpwQtNLmz1ryqTGzRnkBKSnxlSJoSz2
-         LcLJ2jvDzWHJRvm3EzmGDklURxquU+q3lxVRzWsoZrIS+LoUSSVKzLJfkUtNhHpWT9wa
-         Khuw==
+        d=google.com; s=20221208; t=1692296468; x=1692901268;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=P1Ja32sydfixX+83wX7h07TiF6qtFK7RLvIEmQEzvNQ=;
+        b=EGY/X/6YVNMl9wzbAPSer6AbPxtT5SVrmVIrLiBJ4HefEC6GJnzjLMx63wS78W8BZH
+         ZO9oTY/H9wO9usAxg5l79kKbNGet0y3WIkBtpAWsgCn7Hj+1NdW7fQhkCVSJxyVPT5yu
+         dlfwCrhLlEsovyvOhNMR7htDif1TP5vOX/VCy9+XPNJ0juLdtELvNQ45X4zZWNK6557O
+         1wW1MKBqJp+8NGvevNI48itGw+hQJj3lyhNkBQRxNx05/MvfElFUN4v24zbJ9cOiBaNr
+         IyfMdlMTbRNI8c5EpG4lObiBkYhELtMefggRYEu1hh/UywHXvZge7lz5/bxxYOP+3Ara
+         bOeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692296054; x=1692900854;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LwDKgeuDQ3yDX0vpP5yrJsNnDd62QRt5AHduSLOizpo=;
-        b=l6DITJ/CtT0aDOtxQggFygWqxAoAWwsSkrBcsz7Ik8e/8Jv4sYjOH9RnHhZE6XOeGP
-         NgV8MjxKsL9BJWjPovIAdfV7wwinDN7HGOzsduG+/U/NgtBIIvvy7hzRR0k5fnTVOCWq
-         /M3+nvvp5m51GKIDa1rKw//lq4h9/10Mk1OZB4LZxByIblMiFursLe/LOj2HS/CIqwdy
-         hPc3dZ/OR7gyMCL3T6vbbprzYAsehjdKPTtI7G50cR0Bsn6qwAj12GeX6wHCpG1I7ShN
-         dqNLEmRIZLZRFQRtM8UgaiSv2gACYyEW/Y6t04KfqADIiXH6aX9cwkbtV++NZt897cDN
-         hWEQ==
-X-Gm-Message-State: AOJu0YxThqNc7+tXXU0A2IvBZjmH4q3/e24VmlC151WlfsMCFQApnBYp
-        6G/9TXJ13wPe1tW0fubNjkivZ4n7/4GYwECSkVuBUuJusKD0dmNHpYA=
-X-Google-Smtp-Source: AGHT+IG44HNJtNBPQmMhWG+y988LlX5RCYoDcwPF/0YQawQk64rzt5DyU6j03E5dRJb29Eb+A7Q1/oyb5Dr1wpLNlIQ=
-X-Received: by 2002:a50:d4da:0:b0:523:193b:5587 with SMTP id
- e26-20020a50d4da000000b00523193b5587mr14812edj.6.1692296053641; Thu, 17 Aug
- 2023 11:14:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230812210053.2325091-1-zokeefe@google.com> <PUZP153MB06358FF02518EF3B279F5DD4BE16A@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
- <CAAa6QmSrwe2m4MjS9mGO+DeGNGSv=B2uZ72EAxnZk2jsDh39rQ@mail.gmail.com>
- <ZNp7JDaPhT3Se4de@casper.infradead.org> <CAAa6QmSN4NhaDL0DQsRd-F8HTnCCjq1ULRNk88LAA9gVbDXE4g@mail.gmail.com>
- <ZNrh6w9ICu4rMrhV@casper.infradead.org> <CAAa6QmTA8aADSYbpxXU8kne0KqyeY7fCw5_QYSj0T7bCtPKmfA@mail.gmail.com>
- <ZN4QFNZlx8mK9pQm@casper.infradead.org>
-In-Reply-To: <ZN4QFNZlx8mK9pQm@casper.infradead.org>
-From:   "Zach O'Keefe" <zokeefe@google.com>
-Date:   Thu, 17 Aug 2023 11:13:36 -0700
-Message-ID: <CAAa6QmTi99exY+NtNDZFi74cs7AB2xpaZ_kej3pSaZVdAtbrKA@mail.gmail.com>
-Subject: Re: [EXTERNAL] [PATCH] mm/thp: fix "mm: thp: kill __transhuge_page_enabled()"
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Saurabh Singh Sengar <ssengar@microsoft.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Yang Shi <shy828301@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20221208; t=1692296468; x=1692901268;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=P1Ja32sydfixX+83wX7h07TiF6qtFK7RLvIEmQEzvNQ=;
+        b=YmmehCvBpdS6GOeAom2BiEawmJU0dlkqL4HKbLS94GNsHr6D7LROGxMC5wZgAwzVX4
+         f87gqu1Zh5YhF4Nu2nucQm8dpNye2g/CapoYHaUY/Fe4HSFXhZRQ2lPNqJUL8oKBoDYC
+         sPQawUcDw8fFySWOjaQ9DdqXrBVLqflpZaVnBIUMa4leI+m1iHPl8vRvdxCeIBPdiZ4J
+         igINrs/l/SaphhJn6bpvj0dwFli6bQSYzURLdlEaHDGvWfDLi+UuEHzsdPv7Rvcjpdny
+         xOgWPcgzVdIx7nQaPBuMzg9Houf2G1/gxzjja/JOgJUi07TIKrqbPcrd34r27tkqkkdt
+         evtw==
+X-Gm-Message-State: AOJu0YytyMS9oGz+fFOt1gFiKFgxvp2iNKDF6A43fyEWlQv/OJJwasne
+        K1kvMxhEj/ahvpZRDwAZHhcYTavv0Ad5
+X-Google-Smtp-Source: AGHT+IG5oEIYVufYiNHO2XFMNMZIFA74NFPMUaOU4Q20FHYiA1poZhFU8Xuk/H5EktVEHQ/iC3xspN6l8hDZ
+X-Received: from mshavit.ntc.corp.google.com ([2401:fa00:95:20c:4a77:fd20:7069:bdf9])
+ (user=mshavit job=sendgmr) by 2002:a81:4304:0:b0:581:3939:59a2 with SMTP id
+ q4-20020a814304000000b00581393959a2mr2498ywa.3.1692296468378; Thu, 17 Aug
+ 2023 11:21:08 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 02:16:22 +0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
+Message-ID: <20230817182055.1770180-1-mshavit@google.com>
+Subject: [RFC PATCH v1 0/8] Install domain onto multiple smmus
+From:   Michael Shavit <mshavit@google.com>
+To:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     will@kernel.org, jgg@nvidia.com, nicolinc@nvidia.com,
+        tina.zhang@intel.com, jean-philippe@linaro.org,
+        robin.murphy@arm.com, Michael Shavit <mshavit@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 5:18=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Wed, Aug 16, 2023 at 02:31:06PM -0700, Zach O'Keefe wrote:
-> > On Mon, Aug 14, 2023 at 7:24=E2=80=AFPM Matthew Wilcox <willy@infradead=
-.org> wrote:
-> > > So if we find a large folio that is PMD mappable, and there's nothing
-> > > at vmf->pmd, we install a PMD-sized mapping at that spot.  If that
-> > > fails, we install the preallocated PTE table at vmf->pmd and continue=
- to
-> > > trying set one or more PTEs to satisfy this page fault.
-> >
-> > Aha! I see. I did not expect ->fault() to have this logic, as I had
-> > incorrectly thought (aka assumed) the pmd vs pte-mapping logic split
-> > at create_huge_pmd(); i.e. do_huge_pmd_anonymous_page(), or
-> > ->huge_fault(), or fallback to pte-mapping. It seems very weird to me
-> > that hugepage_vma_check() "artificially" says "no" to file and shmem
-> > along the fault path, so they can go and do their own thing in
-> > ->fault().
->
-> Wow, hugepage_vma_check() is a very complicated function.  I'm glad I
-> ignored it!
 
-Ya it's a tangly area. Far better now though, then before Yang
-centralized everything. But yes, now I need to figure out what to do
-with it..
+Hi all,
 
-> > IIUC then, there is a bug in smaps THPeligible code when
-> > CONFIG_READ_ONLY_THP_FOR_FS is not set. Not obvious, but apparently
-> > this config is (according to it's Kconfig desc) khugepaged-only, so it
-> > should be fine for it to be disabled, yet allow
-> > do_sync_mmap_readahead() to install a pmd for file-backed memory.
-> > hugepage_vma_check() will need to be patched to fix this.
->
-> I guess so ...
+This series refactors the arm-smmu-v3 driver to support attaching
+domains onto masters belonging to different smmu devices.
 
-The easiest and most satisfying way to handle this -- and I think we
-talked about this before -- is relaxing that complicated
-file_thp_enabled() check when the file's mapping supports large
-folios. I think that makes sense to me, though I don't know all the
-details fs-side. Will we need any hook to give fs the chance to update
-any internal state on collapse?
+The main objective of this series is allow further refactorings of
+arm-smmu-v3-sva. Specifically, we'd like to reach the state where:
+1. A single SVA domain is allocated per MM/ASID
+2. arm-smmu-v3-sva's set_dev_pasid implementation directly attaches that
+   SVA domain to different masters, regardless of whether those masters
+   belong to different smmus.
 
-> > But I have a larger question for you: should we care about
-> > /sys/kernel/mm/transparent_hugepage/enabled for file-fault? We
-> > currently don't. Seems weird that we can transparently get a hugepage
-> > when THP=3D"never". Also, if THP=3D"always", we might as well skip the
-> > VM_HUGEPAGE check, and try the final pmd install (and save khugepaged
-> > the trouble of attempting it later).
->
-> I deliberately ignored the humungous complexity of the THP options.
-> They're overgrown and make my brain hurt. [..]
+If armm-smmu-v3-sva is handed iommu_domains that have a 1:1 relationship
+with an MM struct, then it won't have to share a CD with multiple
+domains (or arm_smmu_mmu_notifiers). But to get there, the arm-smmu-v3
+driver must first support domains installed on multiple SMMU devices.
 
-Same
+This series depends on the CD table ownership refactor: https://lore.kernel.org/all/20230816131925.2521220-1-mshavit@google.com/
+as well as the VMID IDA patch: https://lore.kernel.org/all/169087904450.1290857.11726985177314533259.b4-ty@kernel.org/#r
 
-> [..] Instead, large folios are
-> adaptive; they observe the behaviour of the user program and choose based
-> on history what to do.  This is far superior to having a sysadmin tell
-> us what to do!
+This series is also available on gerrit: https://linux-review.googlesource.com/c/linux/kernel/git/torvalds/linux/+/24829/6
 
-I had written a bunch on this, but I arrived to the conclusion that
-(a) pmd-mapping here is ~ a free win, and (b) I'm not the best  person
-to argue for these knobs, given MADV_COLLAPSE ignores them entirely :P
+Thanks,
+Michael Shavit
 
-..But (sorry) what about MMF_DISABLE_THP?
+
+Michael Shavit (8):
+  iommu/arm-smmu-v3: Add list of installed_smmus
+  iommu/arm-smmu-v3: Perform invalidations over installed_smmus
+  iommu/arm-smmu-v3-sva: Allocate new ASID from installed_smmus
+  iommu/arm-smmu-v3: check smmu compatibility on attach
+  iommu/arm-smmu-v3: Add arm_smmu_device as a parameter to
+    domain_finalise
+  iommu/arm-smmu-v3: Free VMID when uninstalling domain from SMMU
+  iommu/arm-smmu-v3: check for domain initialization using pgtbl_ops
+  iommu/arm-smmu-v3: allow multi-SMMU domain installs.
+
+ .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  62 +++-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   | 348 +++++++++++++-----
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |  21 +-
+ 3 files changed, 320 insertions(+), 111 deletions(-)
+
+
+base-commit: 6eaae198076080886b9e7d57f4ae06fa782f90ef
+prerequisite-patch-id: f701e5ac2cce085366342edff287a35d1cb82b9c
+prerequisite-patch-id: c8d21ff19c2c1dd18799a6b83f483add654d187e
+prerequisite-patch-id: 6ebba95cb12a723645843b4bd1bc45c94779d853
+prerequisite-patch-id: 3f767e1c37d2996323c4f6d2a2d1912ab75281f7
+prerequisite-patch-id: 5a4109fa3e22e2399ad064951c2ca1aeba4a68f7
+prerequisite-patch-id: c4b3bd34b8be7afebd3e44bc4ec218d74753ce77
+prerequisite-patch-id: 6d89e53518d25ac983ac99786950ee1a558c271f
+prerequisite-patch-id: 447219e565cadc34b03db05dad58d8e5c4b5a382
+prerequisite-patch-id: 63adb2c3f97d4948d96a0d5960184f5ac814d7f7
+prerequisite-patch-id: e71195fcf1aa56d8ef9d7403b9e4492c17b8fb84
+prerequisite-patch-id: ba82add44850bf8fb271292020edb746aef93a65
+-- 
+2.42.0.rc1.204.g551eb34607-goog
+
