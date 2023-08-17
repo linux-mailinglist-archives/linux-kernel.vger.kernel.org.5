@@ -2,108 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0339977FF83
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 23:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0277F77FF7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 23:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355173AbjHQVHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 17:07:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46730 "EHLO
+        id S1355150AbjHQVGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 17:06:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355200AbjHQVGl (ORCPT
+        with ESMTP id S1355151AbjHQVFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 17:06:41 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6BE3589;
-        Thu, 17 Aug 2023 14:06:39 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe12baec61so2775595e9.2;
-        Thu, 17 Aug 2023 14:06:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692306398; x=1692911198;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IqBIkDX0Z+QaRubiEpu+YpXhCxIFhx3aowIzGghFpdM=;
-        b=a9jFM/2yeVae9w6AmWNNdM88+MO3GCJ3vIBzJnukg8W6LM+Wflzn4ERq7ieQrDuIcJ
-         kIaWDU4al32zzWltJMpI8hW6uAlDnwk+IsZe/QsittA4Vxqf+Ql8NnptHWEW1PPgsAnf
-         deAyBKzWc+7aJsIVMqAyUvW6AHgOAnyhyiq8xdu1Uwll0RCf2WJRrHoLoNHKat1otROg
-         ZKlJPV2ivYWAtflTpncT29NnXf2I7b/eewLyeCx+y0yUhhQHoW2cCVdZagYiYeSE0KOV
-         IycC/NK0/0BD4uQYNsvvpRlcxZW/jOr684h4+C94cmaP1YG38OYbz+N0bbtHCxjviCUG
-         sr8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692306398; x=1692911198;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IqBIkDX0Z+QaRubiEpu+YpXhCxIFhx3aowIzGghFpdM=;
-        b=Uu6bavv1Yne4Szv6jZW2OmJuQePQArZxWnC7lYer/ekwooGoN15K687HkuEeIfHKWJ
-         nSQ3f1m7B6/ZKGUk5gIQx+LFfJ9PQ1588PVTM9bBiy2OXQEPLXKtrSxU8UZDej17gSk7
-         kkqrATTeFlPCbo0cYasAWPWjNSBzsmMGOS/sEUB6cZQriiuQWRe7EX9FbQYd9MzjNRmf
-         5uMpwY32GeyiPcFLzwjp0abRmmWVcUqyiGojm4diTEDb9TXBGSEvICBPkhcpiP6DUPOz
-         JHdACVz/zVf1ose4NKi+6wBcIs7S0Y943zIMcUry7/JudSNDqXJ52SCZRS6zLS/wWvAQ
-         nruQ==
-X-Gm-Message-State: AOJu0YwTYQWMs/D4xw2691/1CT5esMa3qPRfeGrKQCco0YSNEoLOq74Q
-        B0OhJfaIV7AbMD65GVMPZqpXMsSp9rY=
-X-Google-Smtp-Source: AGHT+IG7dLLq+oI54NeNQ+YX0Xe9R4Qj4Q2cork8Cci1H0MEiGN2dbyhg9ghDnItmaO7j54yFVlC0Q==
-X-Received: by 2002:a7b:cc1a:0:b0:3fe:795:712a with SMTP id f26-20020a7bcc1a000000b003fe0795712amr619771wmh.27.1692306397649;
-        Thu, 17 Aug 2023 14:06:37 -0700 (PDT)
-Received: from localhost.localdomain (35.red-83-35-63.dynamicip.rima-tde.net. [83.35.63.35])
-        by smtp.gmail.com with ESMTPSA id b15-20020a05600c11cf00b003fe215e4492sm669727wmi.4.2023.08.17.14.06.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 14:06:37 -0700 (PDT)
-From:   Angel Iglesias <ang.iglesiasg@gmail.com>
-To:     linux-iio@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 2/2] iio: pressure: bmp280: Add support for BMP390
-Date:   Thu, 17 Aug 2023 23:05:22 +0200
-Message-ID: <a34c72a2027c4b98bd815e8cf01f56d69c5d1386.1692305434.git.ang.iglesiasg@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1692305434.git.ang.iglesiasg@gmail.com>
-References: <cover.1692305434.git.ang.iglesiasg@gmail.com>
+        Thu, 17 Aug 2023 17:05:36 -0400
+Received: from s.wrqvtbkv.outbound-mail.sendgrid.net (s.wrqvtbkv.outbound-mail.sendgrid.net [149.72.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E82C3592
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 14:05:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
+        h=mime-version:subject:references:from:in-reply-to:to:cc:content-type:
+        content-transfer-encoding:cc:content-type:from:subject:to;
+        s=s1; bh=cyiHqxPewOUpiLCgGfyzAGcRUj6oFW1nQmFKoVsPlwg=;
+        b=We1DvlBHISgTXv7m8zEcddU4iaI3+XfhW/TnucIxIffh7qASLlT8cIDlmR6a1o9WqrTD
+        4PWhu9Nr49a3liMAglWKJUFKaojc6uYLbMg2EP+bgp/wbwfWOSINr5OpWB8cpVRRDNboLg
+        2rAFk6X07A7TAuVnm5ugqUAecQ2cJF6h1PLkWgECQhoeYsPhgfH/dy7M6FRZ6mlJ1XWmrr
+        i6f++GVH2FtdbPbuKQK7oXT/SoRzTtsWuzMFHFq3HB299n0EWxqlm9ucxegt2SviUA0P3S
+        W2QH0d0uQ9bCSgKAjlQi3cncFgapqcytp6RdkTdIdFZV8j6kLZiYlzzzg4J3MV7A==
+Received: by filterdrecv-65f68489c8-qxj4s with SMTP id filterdrecv-65f68489c8-qxj4s-1-64DE8B9E-3
+        2023-08-17 21:05:34.1068273 +0000 UTC m=+8544571.152719573
+Received: from [192.168.1.50] (unknown)
+        by geopod-ismtpd-4 (SG) with ESMTP
+        id wpz1daj1Q02vwM5bH70FAA
+        Thu, 17 Aug 2023 21:05:33.924 +0000 (UTC)
+Message-ID: <c187cd65-b3fc-1ebb-86f9-cc41fe7512f3@kwiboo.se>
+Date:   Thu, 17 Aug 2023 21:05:34 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 3/3] arm64: dts: rockchip: Add Orange Pi 5
+Content-Language: en-US
+References: <cover.1692102057.git.efectn@6tel.net>
+ <a1eca379d151c3f91f4cd4e1751ba389096c4f13.1692102057.git.efectn@6tel.net>
+From:   Jonas Karlman <jonas@kwiboo.se>
+In-Reply-To: <a1eca379d151c3f91f4cd4e1751ba389096c4f13.1692102057.git.efectn@6tel.net>
+X-SG-EID: =?us-ascii?Q?TdbjyGynYnRZWhH+7lKUQJL+ZxmxpowvO2O9SQF5CwCVrYgcwUXgU5DKUU3QxA?=
+ =?us-ascii?Q?fZekEeQsTe+RrMu3cja6a0hyCiVY7Rd6FCVJxn9?=
+ =?us-ascii?Q?YKn6BxeQGSlAokbdSAyYThKQkTnDSrOvFFgJA3p?=
+ =?us-ascii?Q?LQHf163Os1yOJ8tkSFUilxG4VYIFwQsgViA14Oi?=
+ =?us-ascii?Q?hkHs+RYAQ9RcRJHI+icDtRIvgEFWxiJ0AozWXgf?=
+ =?us-ascii?Q?KA3IE3y1x8xJuEdCTYoNySCRs7vSzie=2F448SrF?=
+To:     Muhammed Efe Cetin <efectn@6tel.net>,
+        linux-rockchip@lists.infradead.org
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        heiko@sntech.de, sebastian.reichel@collabora.com
+X-Entity-ID: P7KYpSJvGCELWjBME/J5tg==
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds BMP390 device id to the supported ids on bmp380 sensor family
+On 2023-08-15 14:59, Muhammed Efe Cetin wrote:
+> Add initial support for OPi5 that includes support for USB2, PCIe2, Sata,
+> Sdmmc, SPI Flash, PMIC.
+> 
+> Signed-off-by: Muhammed Efe Cetin <efectn@6tel.net>
+> ---
+>  .../boot/dts/rockchip/rk3588s-orangepi-5.dts  | 873 ++++++++++++++++++
+>  1 file changed, 873 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts b/arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts
+> new file mode 100644
+> index 000000000000..85071084a207
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts
+> @@ -0,0 +1,873 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +
 
-Signed-off-by: Angel Iglesias <ang.iglesiasg@gmail.com>
+[...]
 
-diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
-index 67941a67e513..f2a63513e7eb 100644
---- a/drivers/iio/pressure/bmp280-core.c
-+++ b/drivers/iio/pressure/bmp280-core.c
-@@ -1225,7 +1225,7 @@ static int bmp380_chip_config(struct bmp280_data *data)
- 
- static const int bmp380_oversampling_avail[] = { 1, 2, 4, 8, 16, 32 };
- static const int bmp380_iir_filter_coeffs_avail[] = { 1, 2, 4, 8, 16, 32, 64, 128};
--static const int bmp380_chip_ids[] = { BMP380_CHIP_ID };
-+static const int bmp380_chip_ids[] = { BMP380_CHIP_ID, BMP390_CHIP_ID };
- 
- const struct bmp280_chip_info bmp380_chip_info = {
- 	.id_reg = BMP380_REG_ID,
-diff --git a/drivers/iio/pressure/bmp280.h b/drivers/iio/pressure/bmp280.h
-index d68745254340..bfb98e3a5596 100644
---- a/drivers/iio/pressure/bmp280.h
-+++ b/drivers/iio/pressure/bmp280.h
-@@ -293,6 +293,7 @@
- #define BMP180_CHIP_ID			0x55
- #define BMP280_CHIP_ID			0x58
- #define BME280_CHIP_ID			0x60
-+#define BMP390_CHIP_ID			0x60
- #define BMP280_SOFT_RESET_VAL		0xB6
- 
- /* BMP280 register skipped special values */
--- 
-2.41.0
+> +
+> +&sfc {
+> +	pinctrl-0 = <&fspim0_pins>;
+> +	pinctrl-names = "default";
+> +	max-freq = <100000000>;
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	status = "okay";
+> +
+> +	spi_flash: spi-flash@0 {
+
+Node should be named flash@0 to help SPI flash boot with U-Boot.
+
+Regards,
+Jonas
+
+> +		compatible = "jedec,spi-nor";
+> +		reg = <0x0>;
+> +		spi-max-frequency = <100000000>;
+> +		spi-tx-bus-width = <1>;
+> +		spi-rx-bus-width = <4>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		status = "okay";
+> +
+> +		partitions {
+> +			compatible = "fixed-partitions";
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +
+> +			loader@0 {
+> +				label = "loader";
+> +				reg = <0x0 0x1000000>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+
+[...]
 
