@@ -2,167 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DADE77F938
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF3CF77F967
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352010AbjHQOgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 10:36:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37484 "EHLO
+        id S1352124AbjHQOi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 10:38:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352003AbjHQOfe (ORCPT
+        with ESMTP id S1351990AbjHQOiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 10:35:34 -0400
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4159C2D74;
-        Thu, 17 Aug 2023 07:35:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=2mhf3+7pnlBduP+grrR6sjH7pJmDpqz8p+j4N+RtgnU=; b=eKtybZ8Kk9Ur57xSPvXeV4ZLiY
-        Ku6z5+YOYpSpZ/rjIjACudosdrWZmGF9/kRNGFlWMb5NwR+u8Kj7G39q1DB5pjR7QNm+9DTjo+akP
-        I1fOtAsvMN2r5MO9ul13wu52eo7nFG1c/fyMe9aE48y/wLARx6jbM/bNg89/J6z0dr+kKYGqsEm1/
-        qR+SLuuvdC+oB/BVUNsR8EUGSb4Es3+6QgRtvuwA9fdnBSi/chF7vTiUBBOezh8roNf9rYLkHq8R2
-        f5MGLz/HJKYtVCtZ92UN1ix1DH4WvxwEXQYvWbO8cYhko2iI/mIs20prVUwBxnkmirmiXU/ciAtkr
-        pv4R5SuQ==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qWe5w-000KAi-FX; Thu, 17 Aug 2023 16:35:28 +0200
-Received: from [85.1.206.226] (helo=pc-102.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1qWe5v-000Rs4-CP; Thu, 17 Aug 2023 16:35:27 +0200
-Subject: Re: [PATCH bpf-next] bpf: Disable -Wmissing-declarations for
- globally-linked kfuncs
-To:     David Vernet <void@manifault.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@meta.com>,
-        kernel test robot <lkp@intel.com>
-References: <20230816150634.1162838-1-void@manifault.com>
- <2d530dec-e6c2-5e3a-ccf2-d65039a9969d@linux.dev>
- <CAADnVQKtWkPWMG+F-Tkf3YXeMnC=Xwi8GA5xJMaqi725tgHSTw@mail.gmail.com>
- <20230817040107.GC1295964@maniforge>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <d49a61ba-10c0-2094-10c9-60a723776f04@iogearbox.net>
-Date:   Thu, 17 Aug 2023 16:35:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Thu, 17 Aug 2023 10:38:18 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 914BE2D74
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:38:16 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-31792ac0fefso6600525f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:38:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692283095; x=1692887895;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vcmi1whAad9h02nNDVeVHC4+C/O4Vuc5lp027jllJ/g=;
+        b=iZlaSUEJFUAYJWiJOZMeQQNGfEhTP4BS3yfnhMGerYrN+VuT2PdGd91wQcUZFblVrc
+         WdK65lFu4DDQ7JEKmZ161kwYrQug/PXAyztqbaomItSGAd1wdytC/kz56aGeRDQyxWuN
+         eNwKdgS/d2zRq5jOBcYQ/HXAs6kA5dDzInKGZ9kOiqlFCJHqSZhUHok/OIpNpSE1T3OW
+         GM4qwzyJdx25DxViWQ/WnTjKqTloyl7hnvVEZj7Mes/1banW8s7E4Mup4nQ+jcbfN1r2
+         0+GKcc26qrDAUZgllguIHNOCpleJni78zQSWPeMKShPIamDfym+reSRea5EQMpY4qsAD
+         eRcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692283095; x=1692887895;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Vcmi1whAad9h02nNDVeVHC4+C/O4Vuc5lp027jllJ/g=;
+        b=Iybn+ojykBrvp07T9m1wsXH14RVUXZqyOHzMzqKXYHBUoNZ6tsLAr7IfbWbQLg3txA
+         rfBvauq13V68AatLpVPYuyRAQZrLfG13+ATbNuMFQrSQ1eJ7jojB2pwp8L0TSnH84oZE
+         ow0/z891WGb+AdSeOykchOQH9drXfpEw8OLgo2CHnca5dzPY5rS3nqahh2Grajt41Y69
+         5RF3E63m+miZ3aIVCP+L/4B51jskEqOOatmEOUjWe3iQqRPQ4bSNAR5tEFSdND2k4Seg
+         NuE5+qI/PXG3Ez7++JJbvm2W/w1n+2UczulvFHPo7HL8j90bMr8a3ov48jKDjq5Stspn
+         9dUw==
+X-Gm-Message-State: AOJu0YxddYzPbnbkJxAxDWOW6xlpdwx1HSztT4uR6+sL7w3EHKeyjRYR
+        6tOhBdkYaHgloY+wS4N9zDI6BQ==
+X-Google-Smtp-Source: AGHT+IFF8vlscKL16vWcg27fvlDcmWJ9mfPAxw2HKXFE75Z9MtW/oElFzWiiWRF/3rBoOWfZlSIM3A==
+X-Received: by 2002:a5d:4cc8:0:b0:317:67bf:3387 with SMTP id c8-20020a5d4cc8000000b0031767bf3387mr4979948wrt.60.1692283095045;
+        Thu, 17 Aug 2023 07:38:15 -0700 (PDT)
+Received: from sagittarius-a.chello.ie (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id i8-20020a5d4388000000b0030647449730sm25218232wrq.74.2023.08.17.07.38.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 07:38:14 -0700 (PDT)
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+To:     rfoss@kernel.org, todor.too@gmail.com, bryan.odonoghue@linaro.org,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
+        andrey.konovalov@linaro.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 00/13] media: qcom: camss: Add parameter passing to remove several outstanding bugs
+Date:   Thu, 17 Aug 2023 15:37:59 +0100
+Message-ID: <20230817143812.677554-1-bryan.odonoghue@linaro.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-In-Reply-To: <20230817040107.GC1295964@maniforge>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.8/27003/Thu Aug 17 09:42:42 2023)
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/17/23 6:01 AM, David Vernet wrote:
-> On Wed, Aug 16, 2023 at 08:48:16PM -0700, Alexei Starovoitov wrote:
->> On Wed, Aug 16, 2023 at 8:38 PM Yonghong Song <yonghong.song@linux.dev> wrote:
->>> On 8/16/23 8:06 AM, David Vernet wrote:
->>>> We recently got an lkp warning about missing declarations, as in e.g.
->>>> [0]. This warning is largely redundant with -Wmissing-prototypes, which
->>>> we already disable for kfuncs that have global linkage and are meant to
->>>> be exported in BTF, and called from BPF programs. Let's also disable
->>>> -Wmissing-declarations for kfuncs. For what it's worth, I wasn't able to
->>>> reproduce the warning even on W <= 3, so I can't actually be 100% sure
->>>> this fixes the issue.
->>>>
->>>> [0]: https://lore.kernel.org/all/202308162115.Hn23vv3n-lkp@intel.com/
->>>
->>> Okay, I just got a similar email to [0] which complains
->>>     bpf_obj_new_impl, ..., bpf_cast_to_kern_ctx
->>> missing declarations.
->>>
->>> In the email, the used compiler is
->>> compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
->>>
->>> Unfortunately, I did not have gcc-7 to verify this.
->>> Also, what is the minimum gcc version kernel supports? 5.1?
->>
->> pahole and BTF might be broken in such old GCC too.
->> Maybe we should add:
->> config BPF_SYSCALL
->>          depends on GCC_VERSION >= 90000 || CLANG_VERSION >= 130000
-> 
-> It seems prudent to formally declare minimum compiler versions. Though
-> modern gcc and clang also support -Wmissing-declarations, so maybe we
-> should merge this patch regardless? Just unfortunate to have to add even
-> more boilerplate just to get the compiler off our backs.
+V2:
+- Replaces &camss->res with pointer to res - Konrad
+- Squashes patch for NULL removal - Konrad
+- Left suggestion on ICC initialisation points alone, doesn't seem to fit Konrad/bod
 
-Urgh, to restrict BPF syscall with such `depends on` would be super ugly. Why
-can't we just move this boilerplate behind a macro instead of copying this
-everywhere? For example the below on top of your patch builds just fine on my
-side:
+Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/linux-next-23-08-07-db410c-rb3-camss-dts-v3+maintenance-bugfixes-v2
 
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index df64cc642074..6a873a652001 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -83,6 +83,16 @@
-   */
-  #define __bpf_kfunc __used noinline
+V1:
+- I forgot to include patch # 14 in V0 of this series.
+  This patch leverages previous changes to unwind the fixed polling of
+  RDI[0..2] allowing driver data to articulate on a per-VFE basis how many
+  RDIs to poll.
 
-+#define __bpf_kfunc_start	\
-+	__diag_push();	\
-+	__diag_ignore_all("-Wmissing-prototypes",	\
-+			  "Global functions as their definitions will be in vmlinux BTF");	\
-+	__diag_ignore_all("-Wmissing-declarations",	\
-+			  "Global functions as their definitions will be in vmlinux BTF");
-+
-+#define __bpf_kfunc_end	\
-+	__diag_pop();
-+
-  /*
-   * Return the name of the passed struct, if exists, or halt the build if for
-   * example the structure gets renamed. In this way, developers have to revisit
-diff --git a/net/core/filter.c b/net/core/filter.c
-index c2b32b94c6bd..08dd0dd710dd 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -11724,11 +11724,7 @@ bpf_sk_base_func_proto(enum bpf_func_id func_id)
-  	return func;
-  }
+Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/linux-next-23-08-07-db410c-rb3-camss-dts-v3+maintenance-bugfixes-v1
 
--__diag_push();
--__diag_ignore_all("-Wmissing-prototypes",
--		  "Global functions as their definitions will be in vmlinux BTF");
--__diag_ignore_all("-Wmissing-declarations",
--		  "Global functions as their definitions will be in vmlinux BTF");
-+__bpf_kfunc_start
-  __bpf_kfunc int bpf_dynptr_from_skb(struct sk_buff *skb, u64 flags,
-  				    struct bpf_dynptr_kern *ptr__uninit)
-  {
-@@ -11754,7 +11750,7 @@ __bpf_kfunc int bpf_dynptr_from_xdp(struct xdp_buff *xdp, u64 flags,
+V0:
+This second series of bugfixes stacks ontop of the Fixes series sent earlier.
 
-  	return 0;
-  }
--__diag_pop();
-+__bpf_kfunc_end
+Link: https://lore.kernel.org/linux-arm-msm/20230814141007.3721197-1-bryan.odonoghue@linaro.org/T/#t
 
-  int bpf_dynptr_from_skb_rdonly(struct sk_buff *skb, u64 flags,
-  			       struct bpf_dynptr_kern *ptr__uninit)
+Rather than send both series as one giant series, I opted to send a pure
+Fixes series above, with this second series a non-backport series i.e. no
+Fixes tags in this series.
 
-Thanks,
-Daniel
+The existing CAMSS code relies on some hard-coded parameters buried inside
+of the driver, instead of passed via compat .data as arguably ought to be
+the case.
+
+This brittle model is an extending morass of spaghetti code. More than that
+in CAMSS Video Front Ends (VFEs) and the number of Raw Data Interfaces
+(RDIs) per VFE can vary from SoC to SoC. Indeed sm8250 has VFE and VFE Lite
+blocks which have a different number of RDIs per block.
+
+The use of defines as opposed to per-compat parameters inside of ISRs leads
+to either under-polling or over-polling the number of RDIs.
+
+On top of all of that we have some hard-coded statements for clock names
+which breaks easily.
+
+We can solve the under/over polling loop problem by transitioning loop
+controls from macros to parameters passed via probe().
+
+Similarly and unsurprisingly we can also solve the hard-coded clock problem
+by adding some string processing routines that take passed arguments.
+
+There is still some additional maintenance work to be done in this driver
+but before adding one more SoC the code needs to be made more extensible
+and less brittle.
+
+Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/commits/dc346c7f46c0680bcfb84fded6db97497fffe49a
+
+Bryan O'Donoghue (13):
+  media: qcom: camss: Amalgamate struct resource with struct
+    resource_ispif
+  media: qcom: camss: Start to move to module compat matched resources
+  media: qcom: camss: Pass icc bandwidth table as a platform parameter
+  media: qcom: camss: Pass remainder of variables as resources
+  media: qcom: camss: Pass line_num from compat resources
+  media: qcom: camss: Assign the correct number of RDIs per VFE
+  media: qcom: camss: Use >= CAMSS_SDM845 for vfe_get/vfe_put
+  media: qcom: camss: Untangle if/else spaghetti in camss
+  media: qcom: camss: Improve error printout on icc_get fail
+  media: qcom: camss: Allow clocks vfeN vfe_liteN or vfe_lite
+  media: qcom: camss: Functionally decompose CSIPHY clock lookups
+  media: qcom: camss: Add support for setting CSIPHY clock name csiphyX
+  media: qcom: camss: Support RDI3 for VFE 17x
+
+ .../media/platform/qcom/camss/camss-csid.c    |  24 +-
+ .../qcom/camss/camss-csiphy-3ph-1-0.c         |   8 +-
+ .../media/platform/qcom/camss/camss-csiphy.c  |  67 ++--
+ .../media/platform/qcom/camss/camss-ispif.c   |  32 +-
+ .../media/platform/qcom/camss/camss-ispif.h   |   4 +-
+ .../media/platform/qcom/camss/camss-vfe-170.c |  17 +-
+ .../media/platform/qcom/camss/camss-vfe-4-1.c |   2 -
+ .../media/platform/qcom/camss/camss-vfe-4-7.c |   2 -
+ .../media/platform/qcom/camss/camss-vfe-4-8.c |   2 -
+ .../media/platform/qcom/camss/camss-vfe-480.c |   5 +-
+ drivers/media/platform/qcom/camss/camss-vfe.c |  78 +++--
+ .../media/platform/qcom/camss/camss-video.c   |  16 +-
+ drivers/media/platform/qcom/camss/camss.c     | 293 +++++++++---------
+ drivers/media/platform/qcom/camss/camss.h     |  31 +-
+ 14 files changed, 322 insertions(+), 259 deletions(-)
+
+-- 
+2.41.0
+
