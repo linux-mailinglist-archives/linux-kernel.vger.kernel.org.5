@@ -2,147 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B5A77FE9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 21:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B0D77FE9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 21:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354499AbjHQThg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 17 Aug 2023 15:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35102 "EHLO
+        id S1354712AbjHQTkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 15:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354546AbjHQThS (ORCPT
+        with ESMTP id S1354217AbjHQTjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 15:37:18 -0400
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 761093581;
-        Thu, 17 Aug 2023 12:37:17 -0700 (PDT)
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-56d0deeca09so34939eaf.0;
-        Thu, 17 Aug 2023 12:37:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692301037; x=1692905837;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7rWDK3YMFLz6jEoVukuJVCuQ3K6Kw4XYAriV51DzVM0=;
-        b=U6qqCpEsyocOqxGP6CQBUBbY/XOwQQ4HQWJjTk53Fqr4zYEceQJ8hGQV3jJsmrf4J7
-         Z2lgtqJzeNVk9QDhVvU7dCaOmKr3hrMe03eOZr5QPKI72dWWyF1m8gFBifhhAbQ/jLMG
-         YynYm0LWrshb+HtuQ6Le7BNhZ3TQmHZbgpzKaBhA8a6AAZErd9DrRa0y+G2x0YCuRHpY
-         JGRpU5mb6Q/gAxbZToV7AGmcRtoJ7Je7nqV9sqA29gSvJUxGnDPi+DSfaTgk/Amy2S+v
-         G4EROOwC0eXMCyAz924sXcSkR8M7d53RVQlPSNjjD2pEVqk1KVWuM5dVFGJDlw/o3Ys4
-         LGdw==
-X-Gm-Message-State: AOJu0YwiO3yb6h2JZ3TmqBYmbC4c6I06ekkdoaJ9FTsu7+wuq96Odk6z
-        D8q9XWIkBJ4QUyTxiyeVd1nT2yIXLArtEJ+3BK8=
-X-Google-Smtp-Source: AGHT+IHmW3nJhT/diJGz89oLuTF0WvSNRwLAjIX0NdtbMfjM7FWvb6c9VBzAHAGTWQOiP8zOlORtYGC3KFctm15QVSY=
-X-Received: by 2002:a4a:e0cd:0:b0:56e:72e0:9c5f with SMTP id
- e13-20020a4ae0cd000000b0056e72e09c5fmr741165oot.1.1692301036711; Thu, 17 Aug
- 2023 12:37:16 -0700 (PDT)
+        Thu, 17 Aug 2023 15:39:54 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4E63110E9;
+        Thu, 17 Aug 2023 12:39:52 -0700 (PDT)
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 37HJd92U030534;
+        Thu, 17 Aug 2023 21:39:09 +0200
+Date:   Thu, 17 Aug 2023 21:39:09 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Christian Brauner <brauner@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: duplicate patch in the nolibc tree
+Message-ID: <20230817193909.GA30505@1wt.eu>
+References: <20230817133811.0a73c624@canb.auug.org.au>
+ <e0af8d82-e099-49fa-9fbd-6f6bb63b7706@t-8ch.de>
+ <9cfb4fe4-162b-3f26-646b-71bed3493925@linuxfoundation.org>
+ <4c037ef2-9159-4528-8ecb-8596cb2a3889@paulmck-laptop>
 MIME-Version: 1.0
-References: <20230817192537.GA322922@bhelgaas> <beb88d67-9437-4d7a-b1b0-a763583df17e@amd.com>
-In-Reply-To: <beb88d67-9437-4d7a-b1b0-a763583df17e@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 17 Aug 2023 21:37:05 +0200
-Message-ID: <CAJZ5v0hTJzBkTD64bHmREGymjn2oWPt8y=6bb6WVJm39Jr+ouw@mail.gmail.com>
-Subject: Re: [PATCH v12 9/9] ACPI: x86: s2idle: Enforce LPS0 constraints for
- PCI devices
-To:     "Limonciello, Mario" <mario.limonciello@amd.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-acpi@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Iain Lane <iain@orangesquash.org.uk>,
-        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4c037ef2-9159-4528-8ecb-8596cb2a3889@paulmck-laptop>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 9:30â€¯PM Limonciello, Mario
-<mario.limonciello@amd.com> wrote:
->
->
->
-> On 8/17/2023 2:25 PM, Bjorn Helgaas wrote:
-> > On Wed, Aug 16, 2023 at 03:41:43PM -0500, Mario Limonciello wrote:
-> >> Since commit 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
-> >> PCIe ports from modern machines (>=2015) are allowed to be put into D3 by
-> >> storing a value to the `bridge_d3` variable in the `struct pci_dev`
-> >> structure.
-> >> ...
-> >
-> >> +static void lpi_check_pci_dev(struct lpi_constraints *entry, struct pci_dev *pdev)
-> >> +{
-> >> +    pci_power_t target = entry->enabled ? entry->min_dstate : PCI_D0;
-> >> +
-> >> +    if (pdev->current_state == target)
-> >> +            return;
-> >> +
-> >> +    /* constraint of ACPI D3hot means PCI D3hot _or_ D3cold */
-> >> +    if (target == ACPI_STATE_D3_HOT &&
-> >
-> > ACPI_STATE_D3_HOT is not a valid pci_power_t value.
->
-> Based on this, kernel robot sparse complaints and your comments on v11's
-> last patch I am going to split off to another function that returns the
-> pci_power_t state based upon the situation and better comment the reason
-> for the D0 when not enabled.
->
-> >
-> >> +        (pdev->current_state == PCI_D3hot ||
-> >> +         pdev->current_state == PCI_D3cold))
-> >> +            return;
-> >> +
-> >> +    if (pm_debug_messages_on)
-> >> +            acpi_handle_info(entry->handle,
-> >> +                             "LPI: PCI device in %s, not in %s\n",
-> >> +                             acpi_power_state_string(pdev->current_state),
-> >> +                             acpi_power_state_string(target));
-> >> +
-> >> +    /* don't try with things that PCI core hasn't touched */
-> >> +    if (pdev->current_state == PCI_UNKNOWN) {
-> >> +            entry->handle = NULL;
-> >> +            return;
-> >> +    }
-> >> +
-> >> +    pci_set_power_state(pdev, target);
-> >
-> > It doesn't seem logical for a "check_constraints()" function that
-> > takes no parameters and returns nothing to actively set the PCI power
-> > state.
-> >
-> > lpi_check_constraints() returns nothing, and from the fact that it was
-> > previously only called when "pm_debug_messages_on", I infer that it
-> > should have no side effects.
-> >
-> > IMHO "lpi_check_constraints" is not a great name because "check"
-> > doesn't suggest anything specific about what it does.
-> > "dump_constraints()" -- fine.  "log_unmet_constraints()" -- fine
-> > (seems like the original intention of 726fb6b4f2a8 ("ACPI / PM: Check
-> > low power idle constraints for debug only"), which added it.
-> >
->
-> Great feedback, thanks.  I'm thinking to instead change it to:
->
-> lpi_enforce_constraints()
+On Thu, Aug 17, 2023 at 11:46:57AM -0700, Paul E. McKenney wrote:
+> On Thu, Aug 17, 2023 at 12:27:46PM -0600, Shuah Khan wrote:
+> > On 8/17/23 10:30, Thomas Weißschuh wrote:
+> > > On 2023-08-17 13:38:11+1000, Stephen Rothwell wrote:
+> > > > The following commit is also in the vfs-brauner tree as a different commit
+> > > > (but the same patch):
+> > > > 
+> > > >    ba859b2e419c ("selftests/nolibc: drop test chmod_net")
+> > > > 
+> > > > This is commit
+> > > > 
+> > > >    49319832de90 ("selftests/nolibc: drop test chmod_net")
+> > > > 
+> > > > in the vfs-brauner tree.
+> > > 
+> > > I think we can drop the patch from the nolibc tree.
+> > > The patch is only really necessary in combination with
+> > > commit 18e66ae67673 ("proc: use generic setattr() for /proc/$PID/net")
+> > > which already is and should stay in the vfs tree.
+> > 
+> > Thomas,
+> > 
+> > Do the rest of the nolibc patches build without this if we were
+> > to drop this patch? Dorpping requires rebase and please see below.
+> > 
+> > Willy, Paul,
+> > 
+> > How do we want to handle this so we can avoid rebasing to keep
+> > the Commit IDs the same as one ones in Willy's nolibc branch?
+> 
+> The usual way would be for Willy to drop the patch, rebase, and republish
+> his branch.  You would then discard the current branch and pull the
+> new one.
+> 
+> > I would recommend dropping this commit from vfs-brauner if it
+> > doesn't cause problems.
+> 
+> It might be good for nolibc patches to be going through Willy's tree.
 
-Don't even try to go this way, please.
+It would indeed be more logical as a general rule. However, here I don't
+care as I don't see any issue caused by dropping it, I can adapt to what
+is most convenient for most of us.
 
-Originally, the LPI constraints are there to indicate to Windows
-whether or not it should attempt to enter Connected/Modern Standby.
+Let's maybe just wait a little bit for Christian to suggest what he
+prefers then we can adapt.
 
-Because Linux doesn't do Modern Standby, it doesn't use the LPI
-constraints the way Windows does and it really shouldn't do that.
+> Or does Christian have some situation where it is necessary to make
+> a coordinated vfs/nolibc change?
 
-I think that the exercise here is to use the information from the
-constraints list as an indication whether or not a given PCI Root Port
-is supposed to be put into D3hot/cold on suspend-to-idle and this has
-nothing to do with enforcement.
+I don't think there's any need for coordination on this one.
+
+Thanks,
+willy
