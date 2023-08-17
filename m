@@ -2,80 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F385077F835
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1E277F7D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351630AbjHQN7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 09:59:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51410 "EHLO
+        id S1351459AbjHQNeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 09:34:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351625AbjHQN6s (ORCPT
+        with ESMTP id S1351582AbjHQNeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 09:58:48 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F76630E5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 06:58:41 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-102-95.bstnma.fios.verizon.net [173.48.102.95])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37HDwK2Q014905
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Aug 2023 09:58:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1692280702; bh=AueFLCI/dYPlx5hHmJno8//6FIyvyvJ3360BaxS/v3E=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=VB/HdIykyP8Jj4U9KRqcjtvxWDnhBUCBrDAQJUcQ7f+dQrqpvE9EeZ2G+AOSQYzdJ
-         cQ6yJby25uFR8DfQc7e1IAbu7Cen5/5NkMRFig+4zFmdM7MiQBSeg3N66SLz9w1dJk
-         Rd3sTE5STEDbyeSNPs9Jfw23KltqIt6loG/NtMdaIlgAdAbxPQ/4KEus+CNxhMte+t
-         59AUWFqjpSwewkPcxZCSH0WA8GBSO8enF8nLIvg5EdZba/6O2zTGXplhwth5Rjqnil
-         72Mv1cmjkugu/N5CYvG0foWRPG3qBulH/v4vuSFotIrvjWv0ugExI1F47QY0oRWMC4
-         S/ZELPWgKAMnw==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 9F9DB15C0501; Thu, 17 Aug 2023 09:58:20 -0400 (EDT)
-Date:   Thu, 17 Aug 2023 09:58:20 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/13] ext4: correct return value of ext4_convert_meta_bg
-Message-ID: <20230817135820.GX2247938@mit.edu>
-References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
- <20230629120044.1261968-4-shikemeng@huaweicloud.com>
- <20230816030044.GI2247938@mit.edu>
- <a7ea5edb-834d-091a-efe6-7d15a5a55338@huaweicloud.com>
+        Thu, 17 Aug 2023 09:34:11 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD84114;
+        Thu, 17 Aug 2023 06:34:00 -0700 (PDT)
+Received: from kwepemi500015.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RRQs26t64zVk4s;
+        Thu, 17 Aug 2023 21:31:50 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by kwepemi500015.china.huawei.com
+ (7.221.188.92) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 17 Aug
+ 2023 21:33:57 +0800
+From:   Lu Wei <luwei32@huawei.com>
+To:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <wsa+renesas@sang-engineering.com>,
+        <tglx@linutronix.de>, <peterz@infradead.org>, <maheshb@google.com>,
+        <fw@strlen.de>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH net] ipvlan: Fix a reference count leak warning in ipvlan_ns_exit()
+Date:   Thu, 17 Aug 2023 22:54:49 +0800
+Message-ID: <20230817145449.141827-1-luwei32@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a7ea5edb-834d-091a-efe6-7d15a5a55338@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemi500015.china.huawei.com (7.221.188.92)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 10:48:51AM +0800, Kemeng Shi wrote:
-> 
-> > errout:
-> > 	ret = ext4_journal_stop(handle);
-> > 	if (!err)
-> > 		ret = err;
-> > 	return ret;
-> > 
-> I think you mean:
-> errout:
-> 	ret = ext4_journal_stop(handle);
-> 	if (*err*)
-> 		ret = err;
-> 	return ret;
-> And I will fix in this way if I don't get wrong.
+There are two network devices(veth1 and veth3) in ns1, and ipvlan1 with
+L3S mode and ipvlan2 with L2 mode are created based on them as
+figure (1). In this case, ipvlan_register_nf_hook() will be called to
+register nf hook which is needed by ipvlans in L3S mode in ns1 and value
+of ipvl_nf_hook_refcnt is set to 1.
 
-Yes, that's what I meant.  Another way of putting it might be:
+(1)
+           ns1                           ns2
+      ------------                  ------------
 
-	ret = ext4_journal_stop(handle);
-	return (err ? err : ret);
+   veth1--ipvlan1 (L3S)
 
-				- Ted
+   veth3--ipvlan2 (L2)
+
+(2)
+           ns1                           ns2
+      ------------                  ------------
+
+   veth1--ipvlan1 (L3S)
+
+         ipvlan2 (L2)                  veth3
+     |                                  |
+     |------->-------->--------->--------
+                    migrate
+
+When veth3 migrates from ns1 to ns2 as figure (2), veth3 will register in
+ns2 and calls call_netdevice_notifiers with NETDEV_REGISTER event:
+
+dev_change_net_namespace
+    call_netdevice_notifiers
+        ipvlan_device_event
+            ipvlan_migrate_l3s_hook
+                ipvlan_register_nf_hook(newnet)      (I)
+                ipvlan_unregister_nf_hook(oldnet)    (II)
+
+In function ipvlan_migrate_l3s_hook(), ipvl_nf_hook_refcnt in ns1 is not 0
+since veth1 with ipvlan1 still in ns1, (I) and (II) will be called to
+register nf_hook in ns2 and unregister nf_hook in ns1. As a result,
+ipvl_nf_hook_refcnt in ns1 is decreased incorrectly and this in ns2
+is increased incorrectly. When the second net namespace is removed, a
+reference count leak warning in ipvlan_ns_exit() will be triggered.
+
+This patch add a check before ipvlan_migrate_l3s_hook() is called. The
+warning can be triggered as follows:
+
+$ ip netns add ns1
+$ ip netns add ns2
+$ ip netns exec ns1 ip link add veth1 type veth peer name veth2
+$ ip netns exec ns1 ip link add veth3 type veth peer name veth4
+$ ip netns exec ns1 ip link add ipv1 link veth1 type ipvlan mode l3s
+$ ip netns exec ns1 ip link add ipv2 link veth3 type ipvlan mode l2
+$ ip netns exec ns1 ip link set veth3 netns ns2
+$ ip net del ns2
+
+Fixes: 3133822f5ac1 ("ipvlan: use pernet operations and restrict l3s hooks to master netns")
+Signed-off-by: Lu Wei <luwei32@huawei.com>
+---
+ drivers/net/ipvlan/ipvlan_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ipvlan/ipvlan_main.c b/drivers/net/ipvlan/ipvlan_main.c
+index b15dd9a3ad54..1b55928e89b8 100644
+--- a/drivers/net/ipvlan/ipvlan_main.c
++++ b/drivers/net/ipvlan/ipvlan_main.c
+@@ -748,7 +748,8 @@ static int ipvlan_device_event(struct notifier_block *unused,
+ 
+ 		write_pnet(&port->pnet, newnet);
+ 
+-		ipvlan_migrate_l3s_hook(oldnet, newnet);
++		if (port->mode == IPVLAN_MODE_L3S)
++			ipvlan_migrate_l3s_hook(oldnet, newnet);
+ 		break;
+ 	}
+ 	case NETDEV_UNREGISTER:
+-- 
+2.31.1
+
