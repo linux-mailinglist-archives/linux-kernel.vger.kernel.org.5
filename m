@@ -2,157 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFEFC77EF21
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 04:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7F577EF25
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 04:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347646AbjHQCer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 22:34:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46020 "EHLO
+        id S1347657AbjHQCf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 22:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347645AbjHQCeW (ORCPT
+        with ESMTP id S1347655AbjHQCfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 22:34:22 -0400
-Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E071270C
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 19:34:21 -0700 (PDT)
-Received: from in02.mta.xmission.com ([166.70.13.52]:47378)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1qWSq3-00BPMO-Bt; Wed, 16 Aug 2023 20:34:19 -0600
-Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:55872 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1qWSq2-00Bjyz-Dy; Wed, 16 Aug 2023 20:34:19 -0600
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     David Laight <David.Laight@ACULAB.COM>,
-        Petr Skocik <pskocik@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marco Elver <elver@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-In-Reply-To: <20230816210634.GA10130@redhat.com> (Oleg Nesterov's message of
-        "Wed, 16 Aug 2023 23:06:34 +0200")
-References: <d2d508b7-f267-0fe6-1b56-4292c95355a7@gmail.com>
-        <878rai7u0l.fsf@email.froward.int.ebiederm.org>
-        <336ae9be-c66c-d87f-61fe-b916e9f04ffc@gmail.com>
-        <87pm3t2rvl.fsf@email.froward.int.ebiederm.org>
-        <87jzu12pjh.fsf_-_@email.froward.int.ebiederm.org>
-        <20230814140652.GA30596@redhat.com> <20230814154351.GA4203@redhat.com>
-        <3b14ae8091e3403bbc4ef1bee6dcf4f6@AcuMS.aculab.com>
-        <20230815151149.GA29072@redhat.com>
-        <87fs4ig23p.fsf@email.froward.int.ebiederm.org>
-        <20230816210634.GA10130@redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-Date:   Wed, 16 Aug 2023 21:33:35 -0500
-Message-ID: <87r0o2cs8w.fsf@email.froward.int.ebiederm.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1qWSq2-00Bjyz-Dy;;;mid=<87r0o2cs8w.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX18qmUS7mxKjiruU2gJ3d/yMsEExfWWS4aY=
-X-SA-Exim-Connect-IP: 68.227.168.167
-X-SA-Exim-Mail-From: ebiederm@xmission.com
+        Wed, 16 Aug 2023 22:35:13 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F2726B6;
+        Wed, 16 Aug 2023 19:35:12 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37H2Yp4H022386;
+        Thu, 17 Aug 2023 02:34:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=rCzluOKI0Lk0lfcL1JcHVEYhlSjayyn8DN/IyFNCaUU=;
+ b=SXmhu44jQnZ85yBfKnsMviDwesLumQeVDhJ9LPaZZ8n+3WtS6AlbujYfLgkV9rUatldm
+ asuMGQi8+K+SmxbE8pxkLIcLT4zYDf1VRAxlOwa9QSDXmbnhwuci7Tox3GYAcxs02LHl
+ F0IZ7XO5LFOyrd2SM0PgmlXcNQbagE+VCbdzxbPMuw56durYEvzizzmm7yTYy21iEAK3
+ S0dDIWbTjFnCQPoXQ5sMThuyCTGngJiwrS+pzuDLLSvmLFFsqbpS44wdZaXsKisU+4Ho
+ zCpvrkTcbicR9MX5gPSTzVZhVnVlPHKMV4Cjfm+WAyJ8Ub3unZU0NCHRatVA2kmnt/Wt SQ== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sgf5ub96d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 02:34:51 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 37H2Yl5C020718;
+        Thu, 17 Aug 2023 02:34:47 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3se35mdvyu-1;
+        Thu, 17 Aug 2023 02:34:47 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37H2YlcA020712;
+        Thu, 17 Aug 2023 02:34:47 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-krichai-hyd.qualcomm.com [10.213.110.112])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 37H2YlnX020709;
+        Thu, 17 Aug 2023 02:34:47 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 4058933)
+        id B79142A11; Thu, 17 Aug 2023 08:04:46 +0530 (+0530)
+From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
+        quic_parass@quicinc.com, krzysztof.kozlowski@linaro.org,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH v1] PCI: qcom: Add sysfs entry to change link speed dynamically
+Date:   Thu, 17 Aug 2023 08:04:43 +0530
+Message-Id: <1692239684-12697-1-git-send-email-quic_krichai@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: v1u6mfp2FZUsI_rTGmRrcaC_yfh-83TN
+X-Proofpoint-GUID: v1u6mfp2FZUsI_rTGmRrcaC_yfh-83TN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-16_21,2023-08-15_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 impostorscore=0
+ mlxscore=0 mlxlogscore=752 clxscore=1015 adultscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308170021
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Oleg Nesterov <oleg@redhat.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 355 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 11 (3.2%), b_tie_ro: 10 (2.8%), parse: 1.01
-        (0.3%), extract_message_metadata: 3.5 (1.0%), get_uri_detail_list:
-        1.31 (0.4%), tests_pri_-2000: 3.5 (1.0%), tests_pri_-1000: 2.7 (0.8%),
-        tests_pri_-950: 1.32 (0.4%), tests_pri_-900: 1.13 (0.3%),
-        tests_pri_-200: 0.93 (0.3%), tests_pri_-100: 3.5 (1.0%),
-        tests_pri_-90: 75 (21.1%), check_bayes: 73 (20.7%), b_tokenize: 7
-        (1.9%), b_tok_get_all: 6 (1.8%), b_comp_prob: 2.3 (0.6%),
-        b_tok_touch_all: 54 (15.2%), b_finish: 1.06 (0.3%), tests_pri_0: 229
-        (64.4%), check_dkim_signature: 0.63 (0.2%), check_dkim_adsp: 2.9
-        (0.8%), poll_dns_idle: 0.88 (0.2%), tests_pri_10: 3.2 (0.9%),
-        tests_pri_500: 10 (2.8%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] signal: Fix the error return of kill -1
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oleg Nesterov <oleg@redhat.com> writes:
+PCIe can operate on lower GEN speed if client decided based upon
+the bandwidth & latency requirements. To support dynamic GEN speed
+switch adding this sysfs support.
 
-> On 08/16, Eric W. Biederman wrote:
->>
->> Oleg Nesterov <oleg@redhat.com> writes:
->>
->> > On 08/15, David Laight wrote:
->> >>
->> >> or maybe even:
->> >> 	} else {
->> >> 		struct task_struct * p;
->> >> 		int err;
->> >> 		ret = -ESRCH;
->> >>
->> >> 		for_each_process(p) {
->> >> 			if (task_pid_vnr(p) > 1 &&
->> >> 					!same_thread_group(p, current)) {
->> >> 				err = group_send_sig_info(sig, info, p,
->> >> 							  PIDTYPE_MAX);
->> >> 				if (ret)
->> >> 					ret = err;
->> >
->> > Hmm, indeed ;)
->> >
->> > and "err" can be declared inside the loop.
->>
->> We can't remove the success case, from my posted patch.
->>
->> A signal is considered as successfully delivered if at least
->> one process receives it.
->
-> Yes.
->
-> Initially ret = -ESRCH.
->
-> Once group_send_sig_info() succeeds at least once (returns zero)
-> ret becomes 0.
->
-> After that
->
-> 	if (ret)
-> 		ret = err;
->
-> has no effect.
->
-> So if a signal is successfully delivered at least once the code
-> above returns zero.
+To change the GEN speed the link should be in L0, so first disable
+L0s & L1.
 
-Point.
+L0s needs to be disabled at both RC & EP because L0s entry is
+independent. For enabling L0s both ends of the link needs to support
+it, so first check if L0s is supported on both ends and then enable
+L0s.
 
-We should be consistent and ensure  __kill_pgrp_info uses
-the same code pattern, otherwise it will be difficult to
-see they use the same logic.
+This patch is dependent on "PCI: qcom: Add support for OPP"
+https://lore.kernel.org/linux-arm-msm/1692192264-18515-1-git-send-email-quic_krichai@quicinc.com/T/#t
 
-Does "if (ret) ret = err;" generate better code than "success |= !err"?
+Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+---
+ drivers/pci/controller/dwc/pcie-qcom.c | 141 +++++++++++++++++++++++++++++++++
+ 1 file changed, 141 insertions(+)
 
+diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+index 831d158..ad67d17 100644
+--- a/drivers/pci/controller/dwc/pcie-qcom.c
++++ b/drivers/pci/controller/dwc/pcie-qcom.c
+@@ -241,10 +241,150 @@ struct qcom_pcie {
+ 	const struct qcom_pcie_cfg *cfg;
+ 	struct dentry *debugfs;
+ 	bool suspended;
++	bool l0s_supported;
+ };
+ 
+ #define to_qcom_pcie(x)		dev_get_drvdata((x)->dev)
+ 
++static void qcom_pcie_icc_update(struct qcom_pcie *pcie);
++static void qcom_pcie_opp_update(struct qcom_pcie *pcie);
++
++static int qcom_pcie_disable_l0s(struct pci_dev *pdev, void *userdata)
++{
++	int lnkctl;
++
++	pci_read_config_dword(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCTL, &lnkctl);
++	lnkctl &= ~(PCI_EXP_LNKCTL_ASPM_L0S);
++	pci_write_config_word(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCTL, lnkctl);
++
++	return 0;
++}
++
++static int qcom_pcie_check_l0s_support(struct pci_dev *pdev, void *userdata)
++{
++	struct pci_dev *parent = pdev->bus->self;
++	struct qcom_pcie *pcie = userdata;
++	struct dw_pcie *pci = pcie->pci;
++	int lnkcap;
++
++	 /* check parent supports L0s */
++	if (parent) {
++		dev_err(pci->dev, "parent\n");
++		pci_read_config_dword(parent, pci_pcie_cap(parent) + PCI_EXP_LNKCAP,
++				  &lnkcap);
++		if (!(lnkcap & PCI_EXP_LNKCAP_ASPM_L0S)) {
++			dev_info(pci->dev, "Parent does not support L0s\n");
++			pcie->l0s_supported = false;
++			return 0;
++		}
++	}
++
++	pci_read_config_dword(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCAP,
++			  &lnkcap);
++	dev_err(pci->dev, "child %x\n", lnkcap);
++	if (!(lnkcap & PCI_EXP_LNKCAP_ASPM_L0S)) {
++		dev_info(pci->dev, "Device does not support L0s\n");
++		pcie->l0s_supported = false;
++		return 0;
++	}
++
++	return 0;
++}
++
++static int qcom_pcie_enable_l0s(struct pci_dev *pdev, void *userdata)
++{
++	int lnkctl;
++
++	pci_read_config_dword(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCTL, &lnkctl);
++	lnkctl |= (PCI_EXP_LNKCTL_ASPM_L0S);
++	pci_write_config_word(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCTL, lnkctl);
++
++	return 0;
++}
++
++static ssize_t qcom_pcie_speed_change_store(struct device *dev,
++			       struct device_attribute *attr,
++			       const char *buf,
++			       size_t count)
++{
++	unsigned int current_speed, target_speed, max_speed;
++	struct qcom_pcie *pcie = dev_get_drvdata(dev);
++	struct pci_bus *child, *root_bus = NULL;
++	struct dw_pcie_rp *pp = &pcie->pci->pp;
++	struct dw_pcie *pci = pcie->pci;
++	struct pci_dev *pdev;
++	u16 offset;
++	u32 val;
++	int ret;
++
++	list_for_each_entry(child, &pp->bridge->bus->children, node) {
++		if (child->parent == pp->bridge->bus) {
++			root_bus = child;
++			break;
++		}
++	}
++
++	pdev = root_bus->self;
++
++	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
++
++	val = readl(pci->dbi_base + offset + PCI_EXP_LNKCAP);
++	max_speed = FIELD_GET(PCI_EXP_LNKCAP_SLS, val);
++
++	val = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
++	current_speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, val);
++
++	ret = kstrtouint(buf, 10, &target_speed);
++	if (ret)
++		return ret;
++
++	if (target_speed > max_speed)
++		return -EINVAL;
++
++	if (current_speed == target_speed)
++		return count;
++
++	pci_walk_bus(pp->bridge->bus, qcom_pcie_disable_l0s, pcie);
++
++	/* Disable L1 */
++	val = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCTL);
++	val &= ~(PCI_EXP_LNKCTL_ASPM_L1);
++	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCTL, val);
++
++	/* Set target GEN speed */
++	val = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCTL2);
++	val &= ~PCI_EXP_LNKCTL2_TLS;
++	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCTL2, val | target_speed);
++
++	ret = pcie_retrain_link(pdev, true);
++	if (ret)
++		dev_err(dev, "Link retrain failed %d\n", ret);
++
++	/* Enable L1 */
++	val = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCTL);
++	val |= (PCI_EXP_LNKCTL_ASPM_L1);
++	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCTL, val);
++
++	pcie->l0s_supported = true;
++	pci_walk_bus(pp->bridge->bus, qcom_pcie_check_l0s_support, pcie);
++
++	if (pcie->l0s_supported)
++		pci_walk_bus(pp->bridge->bus, qcom_pcie_enable_l0s, pcie);
++
++	qcom_pcie_icc_update(pcie);
++
++	qcom_pcie_opp_update(pcie);
++
++	return count;
++}
++static DEVICE_ATTR_WO(qcom_pcie_speed_change);
++
++static struct attribute *qcom_pcie_attrs[] = {
++	&dev_attr_qcom_pcie_speed_change.attr,
++	NULL,
++};
++ATTRIBUTE_GROUPS(qcom_pcie);
++
+ static void qcom_ep_reset_assert(struct qcom_pcie *pcie)
+ {
+ 	gpiod_set_value_cansleep(pcie->reset, 1);
+@@ -1716,6 +1856,7 @@ static struct platform_driver qcom_pcie_driver = {
+ 		.of_match_table = qcom_pcie_match,
+ 		.pm = &qcom_pcie_pm_ops,
+ 		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
++		.dev_groups = qcom_pcie_groups,
+ 	},
+ };
+ builtin_platform_driver(qcom_pcie_driver);
+-- 
+2.7.4
 
-I think for both patterns the reader of the code is going to have to
-stop and think about what is going on to understand the logic.
-
-We should probably do something like:
-
-	/* 0 for success or the last error */
-	if (ret)
-        	ret = err;
-
-I am somewhat partial to keeping the variable "success" simply because
-while it's computation is clever it's use in generating the result is
-not, so it should be more comprehensible code.  Plus the variable
-success seems not to need a comment just a minute to stare at
-the code and confirm it works.
-
-Eric
