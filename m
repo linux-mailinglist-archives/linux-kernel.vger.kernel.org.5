@@ -2,51 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ECF37800E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 00:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1457800ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 00:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355686AbjHQWMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 18:12:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56412 "EHLO
+        id S1355688AbjHQWOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 18:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355745AbjHQWLv (ORCPT
+        with ESMTP id S1355731AbjHQWOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 18:11:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296CC3AB0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 15:11:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B863B667A0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 22:11:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4B6FC433C7;
-        Thu, 17 Aug 2023 22:11:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692310290;
-        bh=xYkc9kOTCIcKeJ+8XW4auGZeMtraRnqcSt+nuDUw4HQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bv6RTULYWvWSGgSFuVY4zIo7zIpF1+qyvDrZJqpu/LzsqRjKFxyI8znvYl/bc8C+l
-         oDMSL3NCHjH0CnnPOXHH/ZBWSGiZK4vYNydZHqw5tNf09yhMrhW2kbeSTC2ntxQFMQ
-         Lu5WKmYRM0TOV+0fpHxvMBBMW/p3+atl/tspXyjh+KBaHC8MSix56Jrt1PwuMVeEcF
-         rnG6WKnGbyOXty9mSPaQ1yQKF/whG8FFnP7eKtY9esww3yX2PgnZLIAGMHSX1PXqLD
-         Y1lWj8QFItqExZ5zZ6oXqBdqd9EdnpMB0R072Cm9BcpmJG4ZRutESMwa0VEgBbsAXc
-         8ra6pjwMgifHg==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pabeni@redhat.com
-Subject: [GIT PULL] Networking for v6.5-rc7
-Date:   Thu, 17 Aug 2023 15:11:29 -0700
-Message-ID: <20230817221129.1014945-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.41.0
+        Thu, 17 Aug 2023 18:14:33 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442A9CD
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 15:14:32 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fec1a30a1eso32425e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 15:14:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692310471; x=1692915271;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OzEx2Pvue1j+qHcvzRFUX2ohRGt7uIfYTLkJ/410OK8=;
+        b=liYZmjvgPFVrds6jM8JB6hvYYVI68/2rJv6D2q2DhjXhcTIyBGZSwkXmzTdQyEkOGG
+         p4SjVPOD5L64QMpSQzs+kONlHP9mGsQrbZrN1t64Mb8tC9bL/LBXIWM84BgW4FSRpB2T
+         pONNvWdbcFqibfHeJxuiWH4UVCIz/z7ZNFwWmDt1bWObTREY4YAmbX4UD0O8RMSMbpwK
+         qRD8pOT0Okz42C3SJKSwXK1ysUAktyrf213s4mrtWV/UgmtvD/8ZjzNl9YP0ev2aupt2
+         e5x7E+RwUWZsVPN/VdYlL7eN+1bBlM4fdn0Mr5juJgQz2Fb10Qr9X284xdn4gmFVIoO1
+         43MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692310471; x=1692915271;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OzEx2Pvue1j+qHcvzRFUX2ohRGt7uIfYTLkJ/410OK8=;
+        b=a90A5rJIl/L0IU8SVYzyh0s7PVF/bAf64nlpFOPoPLK78wuAE+/z5tywUR7SETcvz3
+         OHZcRa0wLFBW9oPjWKKtdzoVVnciR37Ds4Fc1PehuXm9ohW+Sz1QlXUMFSuTBESuPRer
+         KZD5Xmjobq6WXWT9v0PsW0k9FhVQ1LOTriOBL7JKVtvqkRW4lkDvBXeSn0AfCLnJoL79
+         RE8mGusAeqh82enTyywv4fgHcaWSnDEy3Y+6p86WR0NiKOf7uSka9qodoMjlYW1SxQf2
+         sBWT3ifz0vbTEjIDCKwsA8PISSllIBTMsnfN3GVn68ETeh3+nihbEoSymNpzq0Q8r7/W
+         MmrQ==
+X-Gm-Message-State: AOJu0Yz+uzGSs72xpE0kgMXgqa+6IxwiNirENXIhTPhISE2pogfkIJDC
+        Xy3OrNBUTU0xsXJcvLlGw4YzYb/R/nk80SQ3ZlvvXw==
+X-Google-Smtp-Source: AGHT+IF84UyU6w6Q7cDwMhnpC8ZzAnb76bktZgJUwKXrc2BTYvQuh5x72CLIUOGkAzjqqq5U8DQPVi8qqaVXZse1Fv4=
+X-Received: by 2002:a05:600c:3548:b0:3f1:73b8:b5fe with SMTP id
+ i8-20020a05600c354800b003f173b8b5femr17256wmq.3.1692310470664; Thu, 17 Aug
+ 2023 15:14:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230817191451.1026413-1-rmoar@google.com>
+In-Reply-To: <20230817191451.1026413-1-rmoar@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Fri, 18 Aug 2023 06:14:17 +0800
+Message-ID: <CABVgOS=d1cZoJWOEZ95_X1ozEBa6X7O91UyZTDmTtajtewD+dg@mail.gmail.com>
+Subject: Re: [PATCH] kunit: fix struct kunit_attr header
+To:     Rae Moar <rmoar@google.com>
+Cc:     shuah@kernel.org, brendan.higgins@linux.dev,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000007a32c2060325bc1c"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,242 +70,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus!
+--0000000000007a32c2060325bc1c
+Content-Type: text/plain; charset="UTF-8"
 
-The diffstat is a little massaged here, it's generated from the merge
-of x86/bugs, I merged x86/bugs on top of our previous merge point, and
-you already have those, so I _think_ this is exactly the diffstat
-you'll see when pulling..
+On Fri, 18 Aug 2023 at 03:15, Rae Moar <rmoar@google.com> wrote:
+>
+> Add parameter descriptions to struct kunit_attr header for the
+> parameters attr_default and print.
+>
+> Fixes: 39e92cb1e4a1 ("kunit: Add test attributes API structure")
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202308180127.VD7YRPGa-lkp@intel.com/
+>
+> Signed-off-by: Rae Moar <rmoar@google.com>
+> ---
 
-The following changes since commit 9ebbb29db9cae23e29881b9a268767d4baa53cdb:
+LGTM, Thanks.
 
-  Merge branch 'x86/bugs' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip (2023-08-10 18:18:25 -0700)
+Reviewed-by: David Gow <davidgow@google.com>
 
-are available in the Git repository at:
+Cheers,
+-- David
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-6.5-rc7
+>  lib/kunit/attributes.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/lib/kunit/attributes.c b/lib/kunit/attributes.c
+> index 5e3034b6be99..1b512f7e1838 100644
+> --- a/lib/kunit/attributes.c
+> +++ b/lib/kunit/attributes.c
+> @@ -30,6 +30,8 @@ enum print_ops {
+>   * attribute value
+>   * @filter: function to indicate whether a given attribute value passes a
+>   * filter
+> + * @attr_default: default attribute value used during filtering
+> + * @print: value of enum print_ops to indicate when to print attribute
+>   */
+>  struct kunit_attr {
+>         const char *name;
+>
+> base-commit: 582eb3aeed2d06b122fba95518b84506d3d4ceb9
+> --
+> 2.42.0.rc1.204.g551eb34607-goog
+>
 
-for you to fetch changes up to 820a38d8f2cb3a749ffb7bbde206acec9a387411:
+--0000000000007a32c2060325bc1c
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-  Merge branch '40GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue (2023-08-17 14:35:34 -0700)
-
-----------------------------------------------------------------
-Including fixes from ipsec and netfilter.
-
-No known outstanding regressions.
-
-Fixes to fixes:
-
- - virtio-net: set queues after driver_ok, avoid a potential race
-   added by recent fix
-
- - Revert "vlan: Fix VLAN 0 memory leak", it may lead to a warning
-   when VLAN 0 is registered explicitly
-
- - nf_tables:
-   - fix false-positive lockdep splat in recent fixes
-   - don't fail inserts if duplicate has expired (fix test failures)
-   - fix races between garbage collection and netns dismantle
-
-Current release - new code bugs:
-
- - mlx5: Fix mlx5_cmd_update_root_ft() error flow
-
-Previous releases - regressions:
-
- - phy: fix IRQ-based wake-on-lan over hibernate / power off
-
-Previous releases - always broken:
-
- - sock: fix misuse of sk_under_memory_pressure() preventing system
-   from exiting global TCP memory pressure if a single cgroup is under
-   pressure
-
- - fix the RTO timer retransmitting skb every 1ms if linear option
-   is enabled
-
- - af_key: fix sadb_x_filter validation, amment netlink policy
-
- - ipsec: fix slab-use-after-free in decode_session6()
-
- - macb: in ZynqMP resume always configure PS GTR for non-wakeup source
-
-Misc:
-
- - netfilter: set default timeout to 3 secs for sctp shutdown send and
-   recv state (from 300ms), align with protocol timers
-
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-
-----------------------------------------------------------------
-Abel Wu (1):
-      sock: Fix misuse of sk_under_memory_pressure()
-
-Alfred Lee (1):
-      net: dsa: mv88e6xxx: Wait for EEPROM done before HW reset
-
-Andrii Staikov (1):
-      i40e: fix misleading debug logs
-
-Artem Chernyshev (1):
-      broadcom: b44: Use b44_writephy() return value
-
-David S. Miller (2):
-      Merge tag 'ipsec-2023-08-15' of git://git.kernel.org/pub/scm/linux/kernel/git/klassert/ipsec
-      Merge tag 'nf-23-08-16' of https://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf
-
-Dragos Tatulea (1):
-      net/mlx5e: XDP, Fix fifo overrun on XDP_REDIRECT
-
-Edward Cree (2):
-      sfc: don't unregister flow_indr if it was never registered
-      sfc: don't fail probe if MAE/TC setup fails
-
-Eric Dumazet (1):
-      net: do not allow gso_size to be set to GSO_BY_FRAGS
-
-Florian Westphal (4):
-      netfilter: nf_tables: fix false-positive lockdep splat
-      netfilter: nf_tables: fix kdoc warnings after gc rework
-      netfilter: nf_tables: deactivate catchall elements in next generation
-      netfilter: nf_tables: don't fail inserts if duplicate has expired
-
-Herbert Xu (1):
-      xfrm: Silence warnings triggerable by bad packets
-
-Jakub Kicinski (4):
-      Merge branch 'octeon_ep-fixes-for-error-and-remove-paths'
-      net: openvswitch: reject negative ifindex
-      Merge tag 'mlx5-fixes-2023-08-16' of git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux
-      Merge branch '40GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue
-
-Jason Wang (1):
-      virtio-net: set queues after driver_ok
-
-Jason Xing (1):
-      net: fix the RTO timer retransmitting skb every 1ms if linear option is enabled
-
-Justin Chen (1):
-      net: phy: broadcom: stub c45 read/write for 54810
-
-Leon Romanovsky (2):
-      xfrm: delete offloaded policy
-      xfrm: don't skip free of empty state in acquire policy
-
-Liang Chen (1):
-      net: veth: Page pool creation error handling for existing pools only
-
-Lin Ma (5):
-      net: xfrm: Fix xfrm_address_filter OOB read
-      net: af_key: fix sadb_x_filter validation
-      net: xfrm: Amend XFRMA_SEC_CTX nla_policy structure
-      xfrm: add NULL check in xfrm_update_ae_params
-      xfrm: add forgotten nla_policy for XFRMA_MTIMER_THRESH
-
-Manish Chopra (1):
-      qede: fix firmware halt over suspend and resume
-
-Marcin Szycik (1):
-      ice: Block switchdev mode when ADQ is active and vice versa
-
-Michal Schmidt (4):
-      octeon_ep: fix timeout value for waiting on mbox response
-      octeon_ep: cancel tx_timeout_task later in remove sequence
-      octeon_ep: cancel ctrl_mbox_task after intr_poll_task
-      octeon_ep: cancel queued works in probe error path
-
-Pablo Neira Ayuso (3):
-      netfilter: nf_tables: fix GC transaction races with netns and netlink event exit path
-      netfilter: nf_tables: GC transaction race with netns dismantle
-      netfilter: nft_dynset: disallow object maps
-
-Petr Machata (1):
-      selftests: mirror_gre_changes: Tighten up the TTL test match
-
-Piotr Gardocki (1):
-      iavf: fix FDIR rule fields masks validation
-
-Prasad Pandit (1):
-      ipv6: fix indentation of a config attribute
-
-Radhey Shyam Pandey (1):
-      net: macb: In ZynqMP resume always configure PS GTR for non-wakeup source
-
-Russell King (Oracle) (1):
-      net: phy: fix IRQ-based wake-on-lan over hibernate / power off
-
-Shay Drory (1):
-      net/mlx5: Fix mlx5_cmd_update_root_ft() error flow
-
-Simon Horman (1):
-      mailmap: add entries for Simon Horman
-
-Sishuai Gong (1):
-      ipvs: fix racy memcpy in proc_do_sync_threshold
-
-Vlad Buslov (1):
-      Revert "vlan: Fix VLAN 0 memory leak"
-
-Xiang Yang (1):
-      net: pcs: Add missing put_device call in miic_create
-
-Xin Long (1):
-      netfilter: set default timeout to 3 secs for sctp shutdown send and recv state
-
-Zhengchao Shao (3):
-      xfrm: fix slab-use-after-free in decode_session6
-      ip6_vti: fix slab-use-after-free in decode_session6
-      ip_vti: fix potential slab-use-after-free in decode_session6
-
-Ziyang Xuan (1):
-      team: Fix incorrect deletion of ETH_P_8021AD protocol vid from slaves
-
- .mailmap                                           |  2 +
- Documentation/networking/nf_conntrack-sysctl.rst   |  4 +-
- drivers/net/dsa/mv88e6xxx/chip.c                   |  8 +++
- drivers/net/ethernet/broadcom/b44.c                |  8 +--
- drivers/net/ethernet/cadence/macb_main.c           |  9 ++-
- drivers/net/ethernet/intel/i40e/i40e_nvm.c         | 16 ++---
- drivers/net/ethernet/intel/iavf/iavf_ethtool.c     | 10 +++
- drivers/net/ethernet/intel/iavf/iavf_fdir.c        | 77 ++++++++++++++++++++--
- drivers/net/ethernet/intel/iavf/iavf_fdir.h        |  2 +
- drivers/net/ethernet/intel/ice/ice_eswitch.c       |  6 ++
- drivers/net/ethernet/intel/ice/ice_main.c          |  5 ++
- .../ethernet/marvell/octeon_ep/octep_ctrl_net.c    |  2 +-
- .../net/ethernet/marvell/octeon_ep/octep_main.c    |  9 +--
- drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h   |  2 +
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |  8 ++-
- drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c   | 10 ++-
- drivers/net/ethernet/qlogic/qede/qede_main.c       | 10 +++
- drivers/net/ethernet/sfc/ef100_nic.c               |  2 +-
- drivers/net/ethernet/sfc/tc.c                      |  2 +-
- drivers/net/pcs/pcs-rzn1-miic.c                    | 10 ++-
- drivers/net/phy/broadcom.c                         | 13 ++++
- drivers/net/phy/phy_device.c                       | 13 +---
- drivers/net/team/team.c                            |  4 +-
- drivers/net/veth.c                                 |  3 +-
- drivers/net/virtio_net.c                           |  4 +-
- include/linux/virtio_net.h                         |  4 ++
- include/net/netfilter/nf_tables.h                  |  1 +
- include/net/sock.h                                 |  6 ++
- include/net/xfrm.h                                 |  1 +
- net/8021q/vlan.c                                   |  3 +-
- net/core/sock.c                                    |  2 +-
- net/ipv4/ip_vti.c                                  |  4 +-
- net/ipv4/tcp_timer.c                               |  4 +-
- net/ipv6/Kconfig                                   |  2 +-
- net/ipv6/ip6_vti.c                                 |  4 +-
- net/key/af_key.c                                   |  4 +-
- net/netfilter/ipvs/ip_vs_ctl.c                     |  4 ++
- net/netfilter/nf_conntrack_proto_sctp.c            |  6 +-
- net/netfilter/nf_tables_api.c                      | 44 +++++++++++--
- net/netfilter/nft_dynset.c                         |  3 +
- net/netfilter/nft_set_pipapo.c                     | 38 +++++------
- net/openvswitch/datapath.c                         |  8 +--
- net/xfrm/xfrm_compat.c                             |  2 +-
- net/xfrm/xfrm_input.c                              | 22 +++----
- net/xfrm/xfrm_interface_core.c                     |  4 +-
- net/xfrm/xfrm_state.c                              |  8 +--
- net/xfrm/xfrm_user.c                               | 15 ++++-
- .../selftests/net/forwarding/mirror_gre_changes.sh |  3 +-
- 48 files changed, 313 insertions(+), 118 deletions(-)
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+ddIn9n5Jt6Z1o79zxraLMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBtHFwIgQZjer5K
+H+4Q+wns10k7qN+4wN2Uf+JsyOYjukaMEgdLErfA1wwtQ9uHkoYQZcWBuVVkQFa5hI+sqI2m1Weq
+riMCFSiU38s1tADdMX12IMfJRN60Nznhrw+nPyDRZqRhUTW24TwnHorkDnFPW8PHo7fAw4FrpI0n
+impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
+qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
+yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCB9
+OAd2gTBa0FRipnHEgCiaQhwn9ZNVRAsSZn4icSbybDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzA4MTcyMjE0MzFaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAbQMH9fSmqvwyUo2lwoOG
+QSID2+yCB5IPjRFaPECUkD/2AJEilqHiqgsRNHLyST4uUrOpcanfkWUctqcPH5dxEsytUuhuUw0K
+UzvLd2UwI1N7FoVi+DTJ1xAxX8nRVaVXJztjT08mGzrfLhEOodl9fSoY2f0KBPrBLjRs6yEamliz
+9VMCa1pfNdRZvDMPHieKE+2e1mnJsDv5StfA+VFitJzWr5i6ZWFg5mGDOyHEeFCT7MY/N6hsa32g
+TTKbVT5pIwdoqUIzXbBy07cWoTWcRTi5jm09eVYPu/Ytoh7UsAPRF2k3dWu2Jg2pmQQ+g5DfHXvP
+vs1CqjumyFvovWfPxg==
+--0000000000007a32c2060325bc1c--
