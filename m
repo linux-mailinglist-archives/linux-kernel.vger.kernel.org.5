@@ -2,82 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3115E77EFCB
+	by mail.lfdr.de (Postfix) with ESMTP id 84D1677EFCC
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 06:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347994AbjHQETp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 00:19:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
+        id S1347999AbjHQETq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 00:19:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237097AbjHQETT (ORCPT
+        with ESMTP id S1347985AbjHQETo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 00:19:19 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCDF3272B
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 21:19:14 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4ff933f9ca8so2003545e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 21:19:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1692245953; x=1692850753;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jfkifynCzRafY3XbR1SksUBb+gadM/LILOU5DSScwMs=;
-        b=d5XbRGfcFBw3RzLytstxp1COH8mGklyUnJoJpnLp1B+WmZwxxX9HYo/f9qxs228e3t
-         JV18dt68/KXd8PmpaxUrD1qIVSAJwF70pe3dCu4WbkeuGuteb4rG0mlKIXhrGeHrFL00
-         D2AVMTlpGxSI2Ey6wDDvqbTgMQC2wePpIcYrI=
+        Thu, 17 Aug 2023 00:19:44 -0400
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2970272D
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 21:19:42 -0700 (PDT)
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-26d1f0d9b3fso257409a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 21:19:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692245953; x=1692850753;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jfkifynCzRafY3XbR1SksUBb+gadM/LILOU5DSScwMs=;
-        b=dX0T+oRLD377GrDxipFGrs26ORQmZWfuVQEWiTpRBVF6P0sksyDH1BZh078UFulG9T
-         iOs/w2qhdIGiKYNxDly4sPSnPznM8s7SYSyBrXeIygep+T5q1CIiTFWwXOiahp7xXaP/
-         /+CLObnbldhYC9E8QIWML0afzaX2iLi7v9ZpX6fh8N0tiOz7HjGtpwK/Lz+FU+YKVo7C
-         DrjTOKgs4mFLptPdjnLUkrSCJMLcWgD6weAhEwwZlyZp6m74c/rUrTTS+mm+X1IwnTxy
-         vyIGtHIeSPIkkbrRJ8lknXxpyu34U1jPq2aIUDw1+di55vIpEMwLiqV8zwFQoixsnHQJ
-         tZxQ==
-X-Gm-Message-State: AOJu0YyKDGXyT3nG8lRBxmcmun/o53bgwVlcVhY0Abui9tJ/VlDMtY5s
-        CePB70pIuUx8aZjHHtGPDznHU8S+QCP/1PrgkVFCnUqj
-X-Google-Smtp-Source: AGHT+IFodulW9YMvMZNmHNkcV0tJUTf2cG48JxXzwdCFhQfveKXSPzfho4MJLfNdOAxo5MVaehKxXw==
-X-Received: by 2002:ac2:5bdb:0:b0:4fb:9497:b2a5 with SMTP id u27-20020ac25bdb000000b004fb9497b2a5mr2680283lfn.21.1692245952662;
-        Wed, 16 Aug 2023 21:19:12 -0700 (PDT)
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
-        by smtp.gmail.com with ESMTPSA id q9-20020a056402040900b0051dd19d6d6esm9268113edv.73.2023.08.16.21.19.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 16 Aug 2023 21:19:10 -0700 (PDT)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-523d0fab783so7560760a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 21:19:10 -0700 (PDT)
-X-Received: by 2002:aa7:c505:0:b0:51d:9db8:8257 with SMTP id
- o5-20020aa7c505000000b0051d9db88257mr3222687edq.30.1692245950059; Wed, 16 Aug
- 2023 21:19:10 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692245982; x=1692850782;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5174e1lhoEtAOJSx6OzZg8YIf4r3sHHxcBtCy/AqYyo=;
+        b=S+dI6AqSytXQGH4sc4ZZaCzxkIEI0wLPzGKAveeDOQ4j30tSgvHI+/v5SwYm7GZuVD
+         YKbg9FEfQ4VEZjKbCWikP71Gtoh8mnWUqtHiRWxl16pUCxzeFVVghtlTlTQCx2VSJo7e
+         zSfxrXdo61EyzFpXB0Nv2fIGtx+rnYjGYQj7ZITGKTAJ4tuz9QEZkv9WrqP3GIVn0khh
+         hqLKRrhaJZTMKZ23spMfNVxXBtUcbAMiutrKSECrv0zYegKLhiKnU3L3eawbjUi/L3CK
+         clbnYKLXwpw1iZcHHfp/uLIxDnvW5dfe2zI7trWARxD0KBZj2bhEvy3aB6PIXhIuHjLn
+         i1SA==
+X-Gm-Message-State: AOJu0YxK2BQH5A6N6rCgVectq8DHGMr1bfZwDsPNpwIKrAqfIkyjh3+q
+        KHqbASqqAV9/B7eCcJVc+KjbV7tSyosSUNjRrw+4lUAqmTRV
+X-Google-Smtp-Source: AGHT+IEZTSdaa9kcYRvTXFZpDfiX5p9rZQWqGwpWUOdqE4TBv2CeMoaYVGf46u3LVELNCiS2dd8ME/kduWdrJuI3NqGAvxNOuL9V
 MIME-Version: 1.0
-References: <03730b50cebb4a349ad8667373bb8127@AcuMS.aculab.com>
- <20230816120741.534415-1-dhowells@redhat.com> <20230816120741.534415-3-dhowells@redhat.com>
- <608853.1692190847@warthog.procyon.org.uk> <3dabec5643b24534a1c1c51894798047@AcuMS.aculab.com>
- <CAHk-=wjFrVp6srTBsMKV8LBjCEO0bRDYXm-KYrq7oRk0TGr6HA@mail.gmail.com> <665724.1692218114@warthog.procyon.org.uk>
-In-Reply-To: <665724.1692218114@warthog.procyon.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 17 Aug 2023 06:18:53 +0200
-X-Gmail-Original-Message-ID: <CAHk-=wg8G7teERgR7ExNUjHj0yx3dNRopjefnN3zOWWvYADXCw@mail.gmail.com>
-Message-ID: <CAHk-=wg8G7teERgR7ExNUjHj0yx3dNRopjefnN3zOWWvYADXCw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] iov_iter: Don't deal with iter->copy_mc in memcpy_from_iter_mc()
-To:     David Howells <dhowells@redhat.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@list.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="000000000000ba4113060316b66b"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Received: by 2002:a17:90a:c901:b0:26b:5182:d042 with SMTP id
+ v1-20020a17090ac90100b0026b5182d042mr837650pjt.2.1692245982314; Wed, 16 Aug
+ 2023 21:19:42 -0700 (PDT)
+Date:   Wed, 16 Aug 2023 21:19:42 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a60932060316b8f1@google.com>
+Subject: [syzbot] [net?] WARNING in dev_index_reserve
+From:   syzbot <syzbot+5ba06978f34abb058571@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, edumazet@google.com, hawk@kernel.org,
+        john.fastabend@gmail.com, kuba@kernel.org, leonro@nvidia.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,131 +57,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000ba4113060316b66b
-Content-Type: text/plain; charset="UTF-8"
+syzbot has bisected this issue to:
 
-On Wed, 16 Aug 2023 at 22:35, David Howells <dhowells@redhat.com> wrote:
->
-> I'm not sure that buys us anything.  It would then require every call to
-> iov_iter_is_bvec()[*] to check for two values instead of one
+commit 956db0a13b47df7f3d6d624394e602e8bf9b057e
+Author: Jakub Kicinski <kuba@kernel.org>
+Date:   Mon Aug 14 20:56:25 2023 +0000
 
-Well, that part is trivially fixable, and we should do that anyway for
-other reasons.
+    net: warn about attempts to register negative ifindex
 
-See the attached patch.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17f68f03a80000
+start commit:   950fe35831af Merge branch 'ipv6-expired-routes'
+git tree:       net-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=140e8f03a80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=100e8f03a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fe63ad15dded26b6
+dashboard link: https://syzkaller.appspot.com/bug?extid=5ba06978f34abb058571
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11be0117a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14950727a80000
 
-> The issue is that ITER_xyz changes the iteration function - but we don't
-> actually want to do that; rather, we need to change the step function.
+Reported-by: syzbot+5ba06978f34abb058571@syzkaller.appspotmail.com
+Fixes: 956db0a13b47 ("net: warn about attempts to register negative ifindex")
 
-Yeah, that may be the fundamental issue. But making the ITER_xyz flags
-be bit masks would help - partly exactly because it makes it so
-trivial yo say "for this set of ITER_xyz, do this".
-
-This patch only does that for the 'user_backed' thing, which was a similar case.
-
-Hmm?
-
-               Linus
-
---000000000000ba4113060316b66b
-Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
-Content-Disposition: attachment; filename="patch.diff"
-Content-Transfer-Encoding: base64
-Content-ID: <f_llenilwk0>
-X-Attachment-Id: f_llenilwk0
-
-IGRyaXZlcnMvaW5maW5pYmFuZC9ody9oZmkxL2ZpbGVfb3BzLmMgICAgfCAgMiArLQogZHJpdmVy
-cy9pbmZpbmliYW5kL2h3L3FpYi9xaWJfZmlsZV9vcHMuYyB8ICAyICstCiBpbmNsdWRlL2xpbnV4
-L3Vpby5oICAgICAgICAgICAgICAgICAgICAgIHwgMzYgKysrKysrKysrKysrKysrLS0tLS0tLS0t
-LS0tLS0tLS0KIGxpYi9pb3ZfaXRlci5jICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMSAt
-CiBzb3VuZC9jb3JlL3BjbV9uYXRpdmUuYyAgICAgICAgICAgICAgICAgIHwgIDQgKystLQogNSBm
-aWxlcyBjaGFuZ2VkLCAyMSBpbnNlcnRpb25zKCspLCAyNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1n
-aXQgYS9kcml2ZXJzL2luZmluaWJhbmQvaHcvaGZpMS9maWxlX29wcy5jIGIvZHJpdmVycy9pbmZp
-bmliYW5kL2h3L2hmaTEvZmlsZV9vcHMuYwppbmRleCBhNWFiMjJjZWRkNDEuLjc4OGZjMjQ5MjM0
-ZiAxMDA2NDQKLS0tIGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L2hmaTEvZmlsZV9vcHMuYworKysg
-Yi9kcml2ZXJzL2luZmluaWJhbmQvaHcvaGZpMS9maWxlX29wcy5jCkBAIC0yNjcsNyArMjY3LDcg
-QEAgc3RhdGljIHNzaXplX3QgaGZpMV93cml0ZV9pdGVyKHN0cnVjdCBraW9jYiAqa2lvY2IsIHN0
-cnVjdCBpb3ZfaXRlciAqZnJvbSkKIAogCWlmICghSEZJMV9DQVBfSVNfS1NFVChTRE1BKSkKIAkJ
-cmV0dXJuIC1FSU5WQUw7Ci0JaWYgKCFmcm9tLT51c2VyX2JhY2tlZCkKKwlpZiAoIXVzZXJfYmFj
-a2VkX2l0ZXIoZnJvbSkpCiAJCXJldHVybiAtRUlOVkFMOwogCWlkeCA9IHNyY3VfcmVhZF9sb2Nr
-KCZmZC0+cHFfc3JjdSk7CiAJcHEgPSBzcmN1X2RlcmVmZXJlbmNlKGZkLT5wcSwgJmZkLT5wcV9z
-cmN1KTsKZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW5maW5pYmFuZC9ody9xaWIvcWliX2ZpbGVfb3Bz
-LmMgYi9kcml2ZXJzL2luZmluaWJhbmQvaHcvcWliL3FpYl9maWxlX29wcy5jCmluZGV4IGVmODVi
-YzhkOTM4NC4uMDlhNmQ5MTIxYjNkIDEwMDY0NAotLS0gYS9kcml2ZXJzL2luZmluaWJhbmQvaHcv
-cWliL3FpYl9maWxlX29wcy5jCisrKyBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody9xaWIvcWliX2Zp
-bGVfb3BzLmMKQEAgLTIyNDQsNyArMjI0NCw3IEBAIHN0YXRpYyBzc2l6ZV90IHFpYl93cml0ZV9p
-dGVyKHN0cnVjdCBraW9jYiAqaW9jYiwgc3RydWN0IGlvdl9pdGVyICpmcm9tKQogCXN0cnVjdCBx
-aWJfY3R4dGRhdGEgKnJjZCA9IGN0eHRfZnAoaW9jYi0+a2lfZmlscCk7CiAJc3RydWN0IHFpYl91
-c2VyX3NkbWFfcXVldWUgKnBxID0gZnAtPnBxOwogCi0JaWYgKCFmcm9tLT51c2VyX2JhY2tlZCB8
-fCAhZnJvbS0+bnJfc2VncyB8fCAhcHEpCisJaWYgKCF1c2VyX2JhY2tlZF9pdGVyKGZyb20pIHx8
-ICFmcm9tLT5ucl9zZWdzIHx8ICFwcSkKIAkJcmV0dXJuIC1FSU5WQUw7CiAKIAlyZXR1cm4gcWli
-X3VzZXJfc2RtYV93cml0ZXYocmNkLCBwcSwgaXRlcl9pb3YoZnJvbSksIGZyb20tPm5yX3NlZ3Mp
-OwpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC91aW8uaCBiL2luY2x1ZGUvbGludXgvdWlvLmgK
-aW5kZXggZmY4MWU1Y2NhZWYyLi4yMzBkYTk3YTQyZDUgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGlu
-dXgvdWlvLmgKKysrIGIvaW5jbHVkZS9saW51eC91aW8uaApAQCAtMjEsMTIgKzIxLDEyIEBAIHN0
-cnVjdCBrdmVjIHsKIAogZW51bSBpdGVyX3R5cGUgewogCS8qIGl0ZXIgdHlwZXMgKi8KLQlJVEVS
-X0lPVkVDLAotCUlURVJfS1ZFQywKLQlJVEVSX0JWRUMsCi0JSVRFUl9YQVJSQVksCi0JSVRFUl9E
-SVNDQVJELAotCUlURVJfVUJVRiwKKwlJVEVSX0lPVkVDID0gMSwKKwlJVEVSX1VCVUYgPSAyLAor
-CUlURVJfS1ZFQyA9IDQsCisJSVRFUl9CVkVDID0gOCwKKwlJVEVSX1hBUlJBWSA9IDE2LAorCUlU
-RVJfRElTQ0FSRCA9IDMyLAogfTsKIAogI2RlZmluZSBJVEVSX1NPVVJDRQkxCS8vID09IFdSSVRF
-CkBAIC0zOSwxMSArMzksMTAgQEAgc3RydWN0IGlvdl9pdGVyX3N0YXRlIHsKIH07CiAKIHN0cnVj
-dCBpb3ZfaXRlciB7Ci0JdTggaXRlcl90eXBlOwotCWJvb2wgY29weV9tYzsKLQlib29sIG5vZmF1
-bHQ7CisJdTgJaXRlcl90eXBlOjYsCisJCWNvcHlfbWM6MSwKKwkJbm9mYXVsdDoxOwogCWJvb2wg
-ZGF0YV9zb3VyY2U7Ci0JYm9vbCB1c2VyX2JhY2tlZDsKIAl1bmlvbiB7CiAJCXNpemVfdCBpb3Zf
-b2Zmc2V0OwogCQlpbnQgbGFzdF9vZmZzZXQ7CkBAIC04NSw3ICs4NCw3IEBAIHN0cnVjdCBpb3Zf
-aXRlciB7CiAKIHN0YXRpYyBpbmxpbmUgY29uc3Qgc3RydWN0IGlvdmVjICppdGVyX2lvdihjb25z
-dCBzdHJ1Y3QgaW92X2l0ZXIgKml0ZXIpCiB7Ci0JaWYgKGl0ZXItPml0ZXJfdHlwZSA9PSBJVEVS
-X1VCVUYpCisJaWYgKGl0ZXItPml0ZXJfdHlwZSAmIElURVJfVUJVRikKIAkJcmV0dXJuIChjb25z
-dCBzdHJ1Y3QgaW92ZWMgKikgJml0ZXItPl9fdWJ1Zl9pb3ZlYzsKIAlyZXR1cm4gaXRlci0+X19p
-b3Y7CiB9CkBAIC0xMDgsMzIgKzEwNywzMiBAQCBzdGF0aWMgaW5saW5lIHZvaWQgaW92X2l0ZXJf
-c2F2ZV9zdGF0ZShzdHJ1Y3QgaW92X2l0ZXIgKml0ZXIsCiAKIHN0YXRpYyBpbmxpbmUgYm9vbCBp
-dGVyX2lzX3VidWYoY29uc3Qgc3RydWN0IGlvdl9pdGVyICppKQogewotCXJldHVybiBpb3ZfaXRl
-cl90eXBlKGkpID09IElURVJfVUJVRjsKKwlyZXR1cm4gaW92X2l0ZXJfdHlwZShpKSAmIElURVJf
-VUJVRjsKIH0KIAogc3RhdGljIGlubGluZSBib29sIGl0ZXJfaXNfaW92ZWMoY29uc3Qgc3RydWN0
-IGlvdl9pdGVyICppKQogewotCXJldHVybiBpb3ZfaXRlcl90eXBlKGkpID09IElURVJfSU9WRUM7
-CisJcmV0dXJuIGlvdl9pdGVyX3R5cGUoaSkgJiBJVEVSX0lPVkVDOwogfQogCiBzdGF0aWMgaW5s
-aW5lIGJvb2wgaW92X2l0ZXJfaXNfa3ZlYyhjb25zdCBzdHJ1Y3QgaW92X2l0ZXIgKmkpCiB7Ci0J
-cmV0dXJuIGlvdl9pdGVyX3R5cGUoaSkgPT0gSVRFUl9LVkVDOworCXJldHVybiBpb3ZfaXRlcl90
-eXBlKGkpICYgSVRFUl9LVkVDOwogfQogCiBzdGF0aWMgaW5saW5lIGJvb2wgaW92X2l0ZXJfaXNf
-YnZlYyhjb25zdCBzdHJ1Y3QgaW92X2l0ZXIgKmkpCiB7Ci0JcmV0dXJuIGlvdl9pdGVyX3R5cGUo
-aSkgPT0gSVRFUl9CVkVDOworCXJldHVybiBpb3ZfaXRlcl90eXBlKGkpICYgSVRFUl9CVkVDOwog
-fQogCiBzdGF0aWMgaW5saW5lIGJvb2wgaW92X2l0ZXJfaXNfZGlzY2FyZChjb25zdCBzdHJ1Y3Qg
-aW92X2l0ZXIgKmkpCiB7Ci0JcmV0dXJuIGlvdl9pdGVyX3R5cGUoaSkgPT0gSVRFUl9ESVNDQVJE
-OworCXJldHVybiBpb3ZfaXRlcl90eXBlKGkpICYgSVRFUl9ESVNDQVJEOwogfQogCiBzdGF0aWMg
-aW5saW5lIGJvb2wgaW92X2l0ZXJfaXNfeGFycmF5KGNvbnN0IHN0cnVjdCBpb3ZfaXRlciAqaSkK
-IHsKLQlyZXR1cm4gaW92X2l0ZXJfdHlwZShpKSA9PSBJVEVSX1hBUlJBWTsKKwlyZXR1cm4gaW92
-X2l0ZXJfdHlwZShpKSAmIElURVJfWEFSUkFZOwogfQogCiBzdGF0aWMgaW5saW5lIHVuc2lnbmVk
-IGNoYXIgaW92X2l0ZXJfcncoY29uc3Qgc3RydWN0IGlvdl9pdGVyICppKQpAQCAtMTQzLDcgKzE0
-Miw3IEBAIHN0YXRpYyBpbmxpbmUgdW5zaWduZWQgY2hhciBpb3ZfaXRlcl9ydyhjb25zdCBzdHJ1
-Y3QgaW92X2l0ZXIgKmkpCiAKIHN0YXRpYyBpbmxpbmUgYm9vbCB1c2VyX2JhY2tlZF9pdGVyKGNv
-bnN0IHN0cnVjdCBpb3ZfaXRlciAqaSkKIHsKLQlyZXR1cm4gaS0+dXNlcl9iYWNrZWQ7CisJcmV0
-dXJuIGktPml0ZXJfdHlwZSAmIChJVEVSX0lPVkVDIHwgSVRFUl9VQlVGKTsKIH0KIAogLyoKQEAg
-LTM3Niw3ICszNzUsNiBAQCBzdGF0aWMgaW5saW5lIHZvaWQgaW92X2l0ZXJfdWJ1ZihzdHJ1Y3Qg
-aW92X2l0ZXIgKmksIHVuc2lnbmVkIGludCBkaXJlY3Rpb24sCiAJKmkgPSAoc3RydWN0IGlvdl9p
-dGVyKSB7CiAJCS5pdGVyX3R5cGUgPSBJVEVSX1VCVUYsCiAJCS5jb3B5X21jID0gZmFsc2UsCi0J
-CS51c2VyX2JhY2tlZCA9IHRydWUsCiAJCS5kYXRhX3NvdXJjZSA9IGRpcmVjdGlvbiwKIAkJLnVi
-dWYgPSBidWYsCiAJCS5jb3VudCA9IGNvdW50LApkaWZmIC0tZ2l0IGEvbGliL2lvdl9pdGVyLmMg
-Yi9saWIvaW92X2l0ZXIuYwppbmRleCBlNGRjODA5ZDEwNzUuLjg1N2U2NjFkMTU1NCAxMDA2NDQK
-LS0tIGEvbGliL2lvdl9pdGVyLmMKKysrIGIvbGliL2lvdl9pdGVyLmMKQEAgLTI5MCw3ICsyOTAs
-NiBAQCB2b2lkIGlvdl9pdGVyX2luaXQoc3RydWN0IGlvdl9pdGVyICppLCB1bnNpZ25lZCBpbnQg
-ZGlyZWN0aW9uLAogCQkuaXRlcl90eXBlID0gSVRFUl9JT1ZFQywKIAkJLmNvcHlfbWMgPSBmYWxz
-ZSwKIAkJLm5vZmF1bHQgPSBmYWxzZSwKLQkJLnVzZXJfYmFja2VkID0gdHJ1ZSwKIAkJLmRhdGFf
-c291cmNlID0gZGlyZWN0aW9uLAogCQkuX19pb3YgPSBpb3YsCiAJCS5ucl9zZWdzID0gbnJfc2Vn
-cywKZGlmZiAtLWdpdCBhL3NvdW5kL2NvcmUvcGNtX25hdGl2ZS5jIGIvc291bmQvY29yZS9wY21f
-bmF0aXZlLmMKaW5kZXggOTVmYzU2ZTQwM2IxLi42NDJkY2VlYjgwZWUgMTAwNjQ0Ci0tLSBhL3Nv
-dW5kL2NvcmUvcGNtX25hdGl2ZS5jCisrKyBiL3NvdW5kL2NvcmUvcGNtX25hdGl2ZS5jCkBAIC0z
-NTI3LDcgKzM1MjcsNyBAQCBzdGF0aWMgc3NpemVfdCBzbmRfcGNtX3JlYWR2KHN0cnVjdCBraW9j
-YiAqaW9jYiwgc3RydWN0IGlvdl9pdGVyICp0bykKIAlpZiAocnVudGltZS0+c3RhdGUgPT0gU05E
-UlZfUENNX1NUQVRFX09QRU4gfHwKIAkgICAgcnVudGltZS0+c3RhdGUgPT0gU05EUlZfUENNX1NU
-QVRFX0RJU0NPTk5FQ1RFRCkKIAkJcmV0dXJuIC1FQkFERkQ7Ci0JaWYgKCF0by0+dXNlcl9iYWNr
-ZWQpCisJaWYgKCF1c2VyX2JhY2tlZF9pdGVyKHRvKSkKIAkJcmV0dXJuIC1FSU5WQUw7CiAJaWYg
-KHRvLT5ucl9zZWdzID4gMTAyNCB8fCB0by0+bnJfc2VncyAhPSBydW50aW1lLT5jaGFubmVscykK
-IAkJcmV0dXJuIC1FSU5WQUw7CkBAIC0zNTY3LDcgKzM1NjcsNyBAQCBzdGF0aWMgc3NpemVfdCBz
-bmRfcGNtX3dyaXRldihzdHJ1Y3Qga2lvY2IgKmlvY2IsIHN0cnVjdCBpb3ZfaXRlciAqZnJvbSkK
-IAlpZiAocnVudGltZS0+c3RhdGUgPT0gU05EUlZfUENNX1NUQVRFX09QRU4gfHwKIAkgICAgcnVu
-dGltZS0+c3RhdGUgPT0gU05EUlZfUENNX1NUQVRFX0RJU0NPTk5FQ1RFRCkKIAkJcmV0dXJuIC1F
-QkFERkQ7Ci0JaWYgKCFmcm9tLT51c2VyX2JhY2tlZCkKKwlpZiAoIXVzZXJfYmFja2VkX2l0ZXIo
-ZnJvbSkpCiAJCXJldHVybiAtRUlOVkFMOwogCWlmIChmcm9tLT5ucl9zZWdzID4gMTI4IHx8IGZy
-b20tPm5yX3NlZ3MgIT0gcnVudGltZS0+Y2hhbm5lbHMgfHwKIAkgICAgIWZyYW1lX2FsaWduZWQo
-cnVudGltZSwgaW92LT5pb3ZfbGVuKSkK
---000000000000ba4113060316b66b--
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
