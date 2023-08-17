@@ -2,90 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D35977EF96
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 05:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E352877EF99
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 05:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347868AbjHQDf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 23:35:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34468 "EHLO
+        id S1347877AbjHQDim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 23:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347857AbjHQDfX (ORCPT
+        with ESMTP id S1347870AbjHQDiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 23:35:23 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B83D2110;
-        Wed, 16 Aug 2023 20:35:21 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-688779ffcfdso1620882b3a.1;
-        Wed, 16 Aug 2023 20:35:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692243321; x=1692848121;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hBdpvPB6uEEiKinZQMEcCksuN2D5HSupo0xUfRm4FcY=;
-        b=AlZiXkWiw+M/HsFs9sJhfJbZdJwRhnd3KcWgFj6Q7AT9n/CIf2cSW0cimST1Eq2m+L
-         wsBBao3b//PSdL21lbs8nV/hXu+OdQBmyXDRIaF/lkYKMT285iU3dfFgZtgCOXcqCbkN
-         ot+AHVXdf87eOHj1oP7eUOUI8w+V5ZTfkcDXemiZDPqqpBP/+o9JXX+VDvAldHc3tzWv
-         GwE+TJxW7qC6MqpdJ4p2U8JpH3X2B/eXmA8Yya8pRK07t0K+AijpnjI3bHY2DxvtI1uJ
-         pTonduoRn7djY5QKfbJAqctzolm8Z5RVDlnp66flT0xNuSZ/1uEFY0ppYMkbhb5eq8kK
-         HIXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692243321; x=1692848121;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hBdpvPB6uEEiKinZQMEcCksuN2D5HSupo0xUfRm4FcY=;
-        b=OCqP/lvx/k1VrERWGe3PAxzsawac69yllgwXVbaDyVqqVwRBm8MWOjmgJMcGaTspOH
-         xMhkbZQKgdYbtvwjg2A5LdGUAnYKnFLwkPoEu/oFDQ73CskV/z5BWaGVKc8hS1mucU6/
-         X+N3UXmvVurPbhD2t2UPZ73Kq4/j+cIC72oB/7rGpkn/l7C3XVru290cGLeIT2RUfBnI
-         M/LMXJwHEgAW2X4KVQl6WeIeBYsBzMZfYRYBK4+jrtd/oduG4+CAL4Yk0SN/n/IOmWMp
-         gkvSBo+oCZiddbuarm9OqZggJk8Cf1COXSEG12mAnMw3HEDXzQIknClOLcZbq4C0wCbO
-         VblA==
-X-Gm-Message-State: AOJu0YwkueS0bip3mwXAuERnXSdO0MR5F96Ucmmf7n/gEEgbpPBsRnEI
-        0JOa1XZevtoKP946XNEC3x8=
-X-Google-Smtp-Source: AGHT+IHGyVbcG0vLhAhV+eZ25Nd06toC73NkFeyUgjw3avP214nrGFB8qJsgFdwuYb1MR009f2tS7A==
-X-Received: by 2002:a05:6a00:1912:b0:686:ec1d:18e5 with SMTP id y18-20020a056a00191200b00686ec1d18e5mr3943453pfi.28.1692243320916;
-        Wed, 16 Aug 2023 20:35:20 -0700 (PDT)
-Received: from localhost ([2600:1700:38c1:1d7f:f66d:4ff:fe3c:3ceb])
-        by smtp.gmail.com with ESMTPSA id j4-20020aa78d04000000b006884844dfcasm3404469pfe.20.2023.08.16.20.35.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 20:35:19 -0700 (PDT)
-Date:   Wed, 16 Aug 2023 20:35:16 -0700
-From:   Brian Norris <computersforpeace@gmail.com>
-To:     Robert Marko <robimarko@gmail.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, quic_gurus@quicinc.com,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_mojha@quicinc.com
-Subject: Re: [PATCH v3 1/4] dt-bindings: firmware: qcom,scm: support
- indicating SDI default state
-Message-ID: <ZN2VdHb95tE6RrZy@localhost>
-References: <20230816164641.3371878-1-robimarko@gmail.com>
+        Wed, 16 Aug 2023 23:38:14 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F74D123;
+        Wed, 16 Aug 2023 20:38:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692243492;
+        bh=suVGXzZK1za3LotyI8GwsyflZ72PwO3Z4uf0t2QDh+I=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Pvz6ewJMjHkdKFIrStSp4T9noRHzqS2YVkLp5NsfVM0/QE2u+LCwiKBI4pNjqzq4c
+         3yxfP7YgSBfgQqRoADsYxV4Ticr9N6v4GgrWjtnuZ4ESrRWjHk8Xy3dXrHajJOyyVI
+         PgDZUIKPOw4xLt6ptyvZhG7NkI3UFdztZhWUb/2eV3sWrjXlAxBlqNUdVZrsqv3K0o
+         soTBecAGNbin7ATPw0sq6ksGW0smvgW5uNepEA4897gmMsfBZ7TS32jfqClncP8ihH
+         nDNIqpgBSdTyYLOJyGhtnsTnZ7NURBLCDrQCeAdCzvUIbYy9zhmY2GUKXs1t/Xab7V
+         fHYslwD+VsZgg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RR9h36glhz4wZx;
+        Thu, 17 Aug 2023 13:38:11 +1000 (AEST)
+Date:   Thu, 17 Aug 2023 13:38:11 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Shuah Khan <skhan@linuxfoundation.org>, Willy Tarreau <w@1wt.eu>,
+        Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?= <thomas@t-8ch.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?= <linux@weissschuh.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the nolibc tree
+Message-ID: <20230817133811.0a73c624@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230816164641.3371878-1-robimarko@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/EGVuQwFWSy86H.a2DSRfRt_";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 06:45:38PM +0200, Robert Marko wrote:
-> IPQ5018 has SDI (Secure Debug Image) enabled by TZ by default, and that
-> means that WDT being asserted or just trying to reboot will hang the board
-> in the debug mode and only pulling the power and repowering will help.
-> Some IPQ4019 boards like Google WiFI have it enabled as well.
-> 
-> So, lets add a boolean property to indicate that SDI is enabled by default
-> and thus needs to be disabled by the kernel.
-> 
-> Signed-off-by: Robert Marko <robimarko@gmail.com>
+--Sig_/EGVuQwFWSy86H.a2DSRfRt_
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The series looks good to me. Thanks for doing this!
+Hi all,
 
-Reviewed-by: Brian Norris <computersforpeace@gmail.com>
+The following commit is also in the vfs-brauner tree as a different commit
+(but the same patch):
+
+  ba859b2e419c ("selftests/nolibc: drop test chmod_net")
+
+This is commit
+
+  49319832de90 ("selftests/nolibc: drop test chmod_net")
+
+in the vfs-brauner tree.
+
+This duplication is causing a conflict.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/EGVuQwFWSy86H.a2DSRfRt_
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTdliMACgkQAVBC80lX
+0Gwg7Qf9EcEq00U/ASm7iE2us0Gyqemp1k8pVEiIutTZA7CSv5gm3w8JGNld2u8Q
+s932Gpdax+ImhoX7nULCD5RYbgIL2xlPnnY49n7AjcvsrR9s1CC6yKJgFeDrH6TD
+fOfJcHRAwmwcNai2HPtBH7JVPNORE706mw6VpJiv/Z4q8GNblQWkdN58LwTjwzRQ
++qvQqd4WbDdvBZN33HAcgzXQ/FsuHlomfXczzyfMsen6dcy+gH3g218w6dgEx5eS
+bFxPh8mv+hNihYrAUiAUdTerSa+eNnKGMkl6SUgOO8GlhjDxVlwtMLiUQjRAuZaW
+yXphxL06Ol8MRMq2W15PbH4Tbu7r7Q==
+=dNHK
+-----END PGP SIGNATURE-----
+
+--Sig_/EGVuQwFWSy86H.a2DSRfRt_--
