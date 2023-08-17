@@ -2,66 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A1C77F3FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 12:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF3477F401
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 12:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349848AbjHQKCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 06:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32842 "EHLO
+        id S239903AbjHQKDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 06:03:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235501AbjHQKBq (ORCPT
+        with ESMTP id S1349977AbjHQKC7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 06:01:46 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B74512D61
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 03:01:45 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6877CD75;
-        Thu, 17 Aug 2023 03:02:26 -0700 (PDT)
-Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E97A83F64C;
-        Thu, 17 Aug 2023 03:01:43 -0700 (PDT)
-Message-ID: <7cd0970f-c8a4-dd99-c27f-542fef608249@arm.com>
-Date:   Thu, 17 Aug 2023 11:01:42 +0100
+        Thu, 17 Aug 2023 06:02:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E722D7D
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 03:02:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CA2AC64F45
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:02:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3C47C433C8;
+        Thu, 17 Aug 2023 10:02:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692266575;
+        bh=lW9/v/Opq7Tqu51ERKYkMPKnGxso6nLfK0q1mdCNrsU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=fI7bnbVMq3itrQOao9vU4L0SOVnvpnC9v0HOf/90utdAMXD4ugPN20wWc+t/bXjRI
+         aDciWdcxEh2EPGH9Ck/mvC08v8UONzzEBP3sK+wale3vF7oTIdQ/n3438lZYE4aguP
+         PKfYkWJKyf8QkysdjpsyYsqtbq6WGSEHBxrGgTSgpC9QOTy3mEf2j7E37PlIUj+InV
+         CEzi6C8uPkcQUSmmZv3DkgIizUgbS/mRHuPerBZFpCwUpcQ/cy0WSXCwWImqg67af5
+         UuL8dKaUevr7RZdbcaBznnP+u7Mja6HZHwnUbyATGQ88rL5JHiP7pjzWUtNRl98i2I
+         JGWKt2HarJEYA==
+From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To:     yunhui cui <cuiyunhui@bytedance.com>
+Cc:     conor.dooley@microchip.com, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, peterz@infradead.org,
+        mpe@ellerman.id.au, jpoimboe@kernel.org, mark.rutland@arm.com,
+        svens@linux.ibm.com, guoren@kernel.org, jszhang@kernel.org,
+        ebiederm@xmission.com, bjorn@rivosinc.com, heiko@sntech.de,
+        xianting.tian@linux.alibaba.com, mnissler@rivosinc.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [External] Re: [PATCH v2] riscv: Dump user opcode bytes on
+ fatal faults
+In-Reply-To: <CAEEQ3w=MgH82+BMpwmUHnUevMJsJUqgeBRWSZnU_iizMLK37UQ@mail.gmail.com>
+References: <20230329082950.726-1-cuiyunhui@bytedance.com>
+ <87v8dfqays.fsf@all.your.base.are.belong.to.us>
+ <CAEEQ3w=MgH82+BMpwmUHnUevMJsJUqgeBRWSZnU_iizMLK37UQ@mail.gmail.com>
+Date:   Thu, 17 Aug 2023 12:02:52 +0200
+Message-ID: <871qg29eb7.fsf@all.your.base.are.belong.to.us>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/2] coresight: trbe: Allocate platform data per device
-Content-Language: en-US
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, hejunhao3@huawei.com
-Cc:     coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, jonathan.cameron@huawei.com,
-        leo.yan@linaro.org, mike.leach@linaro.org, james.clark@arm.com,
-        linuxarm@huawei.com, yangyicong@huawei.com,
-        prime.zeng@hisilicon.com
-References: <20230814093813.19152-1-hejunhao3@huawei.com>
- <20230816141008.535450-1-suzuki.poulose@arm.com>
- <20230816141008.535450-2-suzuki.poulose@arm.com>
- <9cd9f83c-7778-2d87-a175-a4cb7ceb8723@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <9cd9f83c-7778-2d87-a175-a4cb7ceb8723@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/08/2023 07:37, Anshuman Khandual wrote:
-> Hi Suzuki,
-> 
-> Seems like this patch is going to conflict with the below proposed change
-> 
-> https://lore.kernel.org/all/20230817055405.249630-4-anshuman.khandual@arm.com/
-> 
-> Please let me know how should we resolve this conflict.
+yunhui cui <cuiyunhui@bytedance.com> writes:
 
-Please rebase your change on top of this one.
+> Hi Bj=C3=B6rn,
+>
+> On Wed, Aug 16, 2023 at 11:11=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@ker=
+nel.org> wrote:
+>>
+>> Hi Yunhui,
+>>
+>> Waking up the dead! ;-)
+>>
+>
+>>
+>> X86's show_opcodes() is used both for kernel oops:es, and userland
+>> unhandled signals. On RISC-V there's dump_kernel_instr() added in commit
+>> eb165bfa8eaf ("riscv: Add instruction dump to RISC-V splats").
+>>
+>> Wdyt about reworking that function, so that it works for userland epc as
+>> well? I think it's useful to have the surrounding instruction context,
+>> and not just on instruction.
+>
+> Okay,  Based on your suggestion, I'm going to rename dump_kernel_instr
+> to dump_instr. Like:
+> static void dump_instr(const char *loglvl, struct pt_regs *regs)
+> {
+> ...
+>                 if (user_mode(regs))
+>                         bad =3D get_user_nofault(val, &insns[i]);
+>                 else
+>                         bad =3D get_kernel_nofault(val, &insns[i]);
+> ...
+> }
+>
+> What do you think?
 
-Suzuki
+Yeah, looks good! Does that work for you?
 
 
+Bj=C3=B6rn
