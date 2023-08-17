@@ -2,58 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C4077F668
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD6177F66C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350837AbjHQM1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 08:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54938 "EHLO
+        id S1350855AbjHQM2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 08:28:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350900AbjHQM1L (ORCPT
+        with ESMTP id S1350913AbjHQM2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 08:27:11 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A251E271B;
-        Thu, 17 Aug 2023 05:27:09 -0700 (PDT)
-Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RRPL83spWztSHK;
-        Thu, 17 Aug 2023 20:23:28 +0800 (CST)
-Received: from [10.67.111.205] (10.67.111.205) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 17 Aug 2023 20:27:05 +0800
-Subject: Re: [PATCH v5 3/7] perf record: Move setting dummy tracking before
- record__init_thread_masks()
-From:   Yang Jihong <yangjihong1@huawei.com>
-To:     Ian Rogers <irogers@google.com>
-CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@kernel.org>, <namhyung@kernel.org>,
-        <kan.liang@linux.intel.com>, <james.clark@arm.com>,
-        <tmricht@linux.ibm.com>, <ak@linux.intel.com>,
-        <anshuman.khandual@arm.com>, <linux-kernel@vger.kernel.org>,
-        <linux-perf-users@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>
-References: <20230804020741.99806-1-yangjihong1@huawei.com>
- <20230804020741.99806-4-yangjihong1@huawei.com>
- <b8741176-dc9c-1ddb-6bb5-85293f3c61f7@intel.com>
- <CAP-5=fV2u+HwxwuCmz0uSo_dvbFAwwjvK_QvkorB+qbtMnwtZg@mail.gmail.com>
- <29111bbc-61af-4452-bf73-c3b32221989f@huawei.com>
-Message-ID: <753ead6a-3113-5e10-3249-09a33042b8f3@huawei.com>
-Date:   Thu, 17 Aug 2023 20:27:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Thu, 17 Aug 2023 08:28:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56891210D;
+        Thu, 17 Aug 2023 05:28:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E8BCD66EA9;
+        Thu, 17 Aug 2023 12:28:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D0DDC433C8;
+        Thu, 17 Aug 2023 12:28:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692275323;
+        bh=Q4jkaB2Wjtw4fT0NRjZYyMmUWOQgjyU51XqeLeC7dR8=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=Ac3paWwHJUn/paqyCgeLrPSxQLyqaDssAMmfHbb7GHLXjaXg0UjK6awQouVwKhbq6
+         D6PgfvGnWaDnG1pcxXYuRqX4VOFFnNaruoY+HM47TraiTwps+zWAGyjeNKQ4e4SCPu
+         TCUB5l45V1PAPuQiOqhOTR3YckozUX6l8WTqRHHCjnKKDl+mV731bxVZ4RERUT84F1
+         ydisBK+nYkJfRQenZR4K8GrKfiYX1RfGCk+C+ZHwmUhsVSpVcVKw110EblTA6aKpuU
+         MBK2qIbk8oitMhtJXH4Miocuq8gNDslEVYsMMI+IoEz3VVmxRheUNP3YvllmSVgwix
+         VBS+S5hMZsBjg==
+From:   Lee Jones <lee@kernel.org>
+To:     pavel@ucw.cz, lee@kernel.org, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zhu Wang <wangzhu9@huawei.com>
+In-Reply-To: <20230808111108.24262-1-wangzhu9@huawei.com>
+References: <20230808111108.24262-1-wangzhu9@huawei.com>
+Subject: Re: (subset) [PATCH -next] leds: remove redundant of_match_ptr()
+Message-Id: <169227532205.1025442.8435779800286880194.b4-ty@kernel.org>
+Date:   Thu, 17 Aug 2023 13:28:42 +0100
 MIME-Version: 1.0
-In-Reply-To: <29111bbc-61af-4452-bf73-c3b32221989f@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.111.205]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+X-Mailer: b4 0.12.2
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,36 +54,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 08 Aug 2023 19:11:08 +0800, Zhu Wang wrote:
+> The driver depends on CONFIG_OF, so it is not necessary to use
+> of_match_ptr() here. We remove both CONFIG_OF and of_match_ptr() here.
+> 
+> 
 
-On 2023/8/15 9:57, Yang Jihong wrote:
-> Hello,
-> 
-> On 2023/8/15 4:29, Ian Rogers wrote:
->> On Thu, Aug 3, 2023 at 11:58 PM Adrian Hunter 
->> <adrian.hunter@intel.com> wrote:
->>>
->>> On 4/08/23 05:07, Yang Jihong wrote:
->>>> When dummy tracking go system wide, the mmap cpu mask is changed.
->>
->> As previously commented, can we improve the quality of the function
->> names and commit messages? This sentence is particularly difficult to
->> understand, I don't understand it.
-> 
-> OK. The commit messages will be modified. Please check whether the 
-> following description is clear:
-> 
-> User space tasks can migrate between CPUs, so when tracing selected 
-> CPUs, sideband for all CPUs is needed. In this case set the cpu map of 
-> the evsel to all online CPUs. This may modify the original cpu map of 
-> the evlist.
-> Therefore, need to check whether the preceding scenario exists before 
-> record__init_thread_masks().
-> Dummy tracking has been set in record__open(), move it before 
-> record__init_thread_masks() and add a helper for unified processing.
-> 
-Ian, do you have any questions about the commit message above? If it's 
-okay, I'll send the next version as above.
+Applied, thanks!
 
-Thanks,
-Yang
+[1/1] leds: remove redundant of_match_ptr()
+      commit: 3d590af89b1e61568395ab37e9b5f88fd711f638
+
+--
+Lee Jones [李琼斯]
+
