@@ -2,119 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4EF77FD8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D661777FD95
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354201AbjHQSMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 14:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38314 "EHLO
+        id S1354227AbjHQSNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 14:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354222AbjHQSMB (ORCPT
+        with ESMTP id S1354290AbjHQSNs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 14:12:01 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C4A2D44
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:12:00 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d672f55d48dso152920276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:12:00 -0700 (PDT)
+        Thu, 17 Aug 2023 14:13:48 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E1226A5;
+        Thu, 17 Aug 2023 11:13:46 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-790f831c6fbso2089739f.2;
+        Thu, 17 Aug 2023 11:13:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692295919; x=1692900719;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=WDpEeeNNR0Nw6EuE4P52nYwvS2tr5AEnMgO9JS9l+5M=;
-        b=TaGbMUFBJl9KSgciaIgpVCisyqbCRpB7YYBG8v79mOmaHpt1tQW4gawLupbCsjGmej
-         z0M22Qkxwd6H5Xf9tezwcGzF2BEM0GiWrlMbrqI6y1DxAhLEHpA4LEFNbzzvaS5/USQK
-         lnCy83pmJ5KTWktENc5P093oPYM0W7geImacqNCB5v+MvPhMCV3KLqFUNdtuwxAttkjP
-         dtl8Pb8QNhuqq+jGhdU0UI1QD77M36OE/e70pTSQuPwf6Xf8AlWO0BYWDs6MfgyskmLc
-         s0mENOVB8d4jdzMDABjzbc2Nrq6t54AzWyred9TY2rPT9nehfBlceHHhguFaNgrKcA0v
-         avfA==
+        d=gmail.com; s=20221208; t=1692296025; x=1692900825;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NNiIeNiZVkiodyuRI98BZaqLSq/6qNHr5K1M+34Q4nE=;
+        b=paa7G8+rU6qTk+ip4Tl96m4M1cYXjZAUdJBMQyJ4gx0ujSyT+j/JQTwjfl+n1V7iLa
+         oiBLXU6ENNOOLuDUQEFdqtIreyS710ctT5Qw4NGAfVn88aQ26xBpJtXHmzHNVXvvSQx0
+         RJXe9aW5nFp+fBtNr4rXB4R/EVc+B+n+q537+/nkBl9cDPf7O572ef+0bmvh5dfv833T
+         5VGoxVIQiX3p3DE0DA+SetnPW4niXNPbc7LBOa/1rLQtNaJy7Drf1j0jFutr09kagoJS
+         jp8I9tKyozDZXC++I5m8z+86WbLFcdE/0yZFsV+SWVBHe7JJKJUHwAYZNTR2VVOFEnlp
+         KxTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692295919; x=1692900719;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WDpEeeNNR0Nw6EuE4P52nYwvS2tr5AEnMgO9JS9l+5M=;
-        b=Zspdd0Azkv6i67mDSD9mdcPb6XB+1dFm5INlBduBoIHEQtGo/G/GbpWwsTdlNV8Xgl
-         OHdQWLYxYzpIfA6lQkgel8e4OUD3WT20fjpvpQsq1+iclZp7pxSTNACtHDZ6+FHctybz
-         38npARWZ6qUSVE43XS4ElGsbE5Sz78GHnSFEP1/9fW7VNdM6xDQZX1rLa7p7qTKn7OWP
-         mm/a7VV80v44GQhCTwe2h0qwTCEVfE4Oxi1pXfclN+fBvyMja2yvJwPIRgVZVR70s6s7
-         m7eabj4Hnzvq4O+3KuomGFa1cWozTrCU2pCSTTE2YDm7pSxkbUx+UbaPu9EDRoACWyGI
-         hY7A==
-X-Gm-Message-State: AOJu0YweISPQu3uwVOs8KeuNQm3WJ87iY5sUBlAtBPbJFjikHiRYCXvI
-        tzlU7teZ65inrujAxSYhfLL8yLKZz3AE/JoJxRM=
-X-Google-Smtp-Source: AGHT+IHGCNqBSivcUqwjOFgkuqC7Ixw26kQNxulLbkpUGpA9QPWtOwJPpJ84qHhcCJciZbWLNwY8Ah3LFW97G3/jWMA=
-X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:ede8:d843:1818:cd60])
- (user=ndesaulniers job=sendgmr) by 2002:a25:e7ca:0:b0:d74:347:1e3 with SMTP
- id e193-20020a25e7ca000000b00d74034701e3mr4153ybh.9.1692295919476; Thu, 17
- Aug 2023 11:11:59 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 11:11:56 -0700
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAOti3mQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDC0Nz3YKC5PiK3Pw83RQjC4sUCwNjM0ODVCWg8oKi1LTMCrBR0bG1tQA SG74bWgAAAA==
-X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=UIrHvErwpgNbhCkRZAYSX0CFd/XFEwqX3D0xqtqjNug=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692295917; l=1306;
- i=ndesaulniers@google.com; s=20220923; h=from:subject:message-id;
- bh=KvMdBaUrJ04OP30COeFfEE9LlNaItBIz7QURy18B4Q4=; b=0evZ866zmAcV3WRRll2szvRKmqpke+TXcD3BeqNZENNAC0GzwFFUTYVL/l+EVlX7ETBXDWTYb
- 1ikpSuCMENIDTDAuHTqXGGIONyo6p216JYBb88Z9dqYHLzGgZbHiDDV
-X-Mailer: b4 0.12.3
-Message-ID: <20230817-ppc_xmon-v1-1-8cc2d51b9995@google.com>
-Subject: [PATCH] Revert "powerpc/xmon: Relax frame size for clang"
-From:   ndesaulniers@google.com
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Tom Rix <trix@redhat.com>
-Cc:     Joel Stanley <joel@jms.id.au>, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1692296025; x=1692900825;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NNiIeNiZVkiodyuRI98BZaqLSq/6qNHr5K1M+34Q4nE=;
+        b=j7pCXN3z3OvBNU5DHqdDvPCh5PO/38JkuP5ZNponnipJABc+9hzXR8cgCenzb39VAj
+         p+Mw6uV6XtRCMAe/tXRiMkU42Yatf2ENpRDDeUG4X4+lmrlLZaD9EIEbXUzr9yf9X15V
+         SfBan8AtnJ8FpHGE+Lpkt4hXdbq1gyLUmzdXctGi507FrOOpgKfUhZajn0/ZZ98sK357
+         AS0B/XhbFex9C0HgFh0eE826JlQsgYyRR5Wwo5kPnJs3lDbiPl2gA2e2V4DjxN1V06RT
+         ADqQbcGlUR3M3YzIbFQmJiuEDcXqYYwT/009MIXTG8jR5+ajALZX+HPtSqzSTJoY4qN0
+         9lrA==
+X-Gm-Message-State: AOJu0YzAioRG8on5EFg2GkdItGvjG0ljv8ZzLgm70moXmA4naVxJWS12
+        OQrc28qpdHNpl/jQfBvmssz6n48U41Mw6anE6h8=
+X-Google-Smtp-Source: AGHT+IH+6qMXbg+wZcswDSwfZhFKIOxTPfMlmMY7G/JHX+NB7tErP0gtwyZNDB862E03L5X1GZPHFAS+P4v8hc5EklI=
+X-Received: by 2002:a05:6e02:1d05:b0:349:796b:2299 with SMTP id
+ i5-20020a056e021d0500b00349796b2299mr413337ila.6.1692296025304; Thu, 17 Aug
+ 2023 11:13:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230817164733.2475092-1-nphamcs@gmail.com> <CAJD7tkYnhTOTR8OOzvmC4dbctEE951dfbAm=wZN7gEXvLNLRng@mail.gmail.com>
+In-Reply-To: <CAJD7tkYnhTOTR8OOzvmC4dbctEE951dfbAm=wZN7gEXvLNLRng@mail.gmail.com>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Thu, 17 Aug 2023 11:13:34 -0700
+Message-ID: <CAKEwX=PFMV0PE5WRw2C==pNCqTg7SaY+NFF59b=kZF0xbe8=9g@mail.gmail.com>
+Subject: Re: [PATCH] workingset: ensure memcg is valid for recency check
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
+        kernel-team@meta.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 9c87156cce5a63735d1218f0096a65c50a7a32aa.
+Thanks for the review, Yosry!
+On Thu, Aug 17, 2023 at 10:40=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com=
+> wrote:
+>
+> On Thu, Aug 17, 2023 at 9:47=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wro=
+te:
+> >
+> > In eviction recency check, we are currently not holding a local
+> > reference to the memcg that the refaulted folio belonged to when it was
+> > evicted. This could cause serious memcg lifetime issues, for e.g in the
+> > memcg hierarchy traversal done in mem_cgroup_get_nr_swap_pages(). This
+> > has occurred in production:
+>
+> Doesn't workingset_refault() call workingset_test_recent() under RCU?
+Yep we're under RCU protection. But the eviction_memcg is grabbed
+from a memcg id packed in the shadow - its reference count might
+go down to 0 in the meantime and get killed.
 
-I have not been able to reproduce the reported -Wframe-larger-than=
-warning (or disassembly) with clang-11 or clang-18.
+This pattern (tryget memcg inside RCU) is done in a couple
+other places too.
+> Shouldn't this guarantee the validity of the memcg?
+>
+> >
+> > [ 155757.793456] BUG: kernel NULL pointer dereference, address: 0000000=
+0000000c0
+> > [ 155757.807568] #PF: supervisor read access in kernel mode
+> > [ 155757.818024] #PF: error_code(0x0000) - not-present page
+> > [ 155757.828482] PGD 401f77067 P4D 401f77067 PUD 401f76067 PMD 0
+> > [ 155757.839985] Oops: 0000 [#1] SMP
+> > [ 155757.846444] CPU: 7 PID: 1380944 Comm: ThriftSrv-pri3- Kdump: loade=
+d Tainted: G S                 6.4.3-0_fbk1_rc0_594_g8d0cbcaa67ba #1
+> > [ 155757.870808] Hardware name: Wiwynn Twin Lakes MP/Twin Lakes Passive=
+ MP, BIOS YMM16 05/24/2021
+> > [ 155757.887870] RIP: 0010:mem_cgroup_get_nr_swap_pages+0x3d/0xb0
+> > [ 155757.899377] Code: 29 19 4a 02 48 39 f9 74 63 48 8b 97 c0 00 00 00 =
+48 8b b7 58 02 00 00 48 2b b7 c0 01 00 00 48 39 f0 48 0f 4d c6 48 39 d1 74 =
+42 <48> 8b b2 c0 00 00 00 48 8b ba 58 02 00 00 48 2b ba c0 01 00 00 48
+> > [ 155757.937125] RSP: 0018:ffffc9002ecdfbc8 EFLAGS: 00010286
+> > [ 155757.947755] RAX: 00000000003a3b1c RBX: 000007ffffffffff RCX: ffff8=
+88280183000
+> > [ 155757.962202] RDX: 0000000000000000 RSI: 0007ffffffffffff RDI: ffff8=
+88bbc2d1000
+> > [ 155757.976648] RBP: 0000000000000001 R08: 000000000000000b R09: ffff8=
+88ad9cedba0
+> > [ 155757.991094] R10: ffffea0039c07900 R11: 0000000000000010 R12: ffff8=
+88b23a7b000
+> > [ 155758.005540] R13: 0000000000000000 R14: ffff888bbc2d1000 R15: 00000=
+7ffffc71354
+> > [ 155758.019991] FS:  00007f6234c68640(0000) GS:ffff88903f9c0000(0000) =
+knlGS:0000000000000000
+> > [ 155758.036356] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [ 155758.048023] CR2: 00000000000000c0 CR3: 0000000a83eb8004 CR4: 00000=
+000007706e0
+> > [ 155758.062473] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 00000=
+00000000000
+> > [ 155758.076924] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 00000=
+00000000400
+> > [ 155758.091376] PKRU: 55555554
+> > [ 155758.096957] Call Trace:
+> > [ 155758.102016]  <TASK>
+> > [ 155758.106502]  ? __die+0x78/0xc0
+> > [ 155758.112793]  ? page_fault_oops+0x286/0x380
+> > [ 155758.121175]  ? exc_page_fault+0x5d/0x110
+> > [ 155758.129209]  ? asm_exc_page_fault+0x22/0x30
+> > [ 155758.137763]  ? mem_cgroup_get_nr_swap_pages+0x3d/0xb0
+> > [ 155758.148060]  workingset_test_recent+0xda/0x1b0
+> > [ 155758.157133]  workingset_refault+0xca/0x1e0
+> > [ 155758.165508]  filemap_add_folio+0x4d/0x70
+> > [ 155758.173538]  page_cache_ra_unbounded+0xed/0x190
+> > [ 155758.182919]  page_cache_sync_ra+0xd6/0x1e0
+> > [ 155758.191738]  filemap_read+0x68d/0xdf0
+> > [ 155758.199495]  ? mlx5e_napi_poll+0x123/0x940
+> > [ 155758.207981]  ? __napi_schedule+0x55/0x90
+> > [ 155758.216095]  __x64_sys_pread64+0x1d6/0x2c0
+> > [ 155758.224601]  do_syscall_64+0x3d/0x80
+> > [ 155758.232058]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
+> > [ 155758.242473] RIP: 0033:0x7f62c29153b5
+> > [ 155758.249938] Code: e8 48 89 75 f0 89 7d f8 48 89 4d e0 e8 b4 e6 f7 =
+ff 41 89 c0 4c 8b 55 e0 48 8b 55 e8 48 8b 75 f0 8b 7d f8 b8 11 00 00 00 0f =
+05 <48> 3d 00 f0 ff ff 77 33 44 89 c7 48 89 45 f8 e8 e7 e6 f7 ff 48 8b
+> > [ 155758.288005] RSP: 002b:00007f6234c5ffd0 EFLAGS: 00000293 ORIG_RAX: =
+0000000000000011
+> > [ 155758.303474] RAX: ffffffffffffffda RBX: 00007f628c4e70c0 RCX: 00007=
+f62c29153b5
+> > [ 155758.318075] RDX: 000000000003c041 RSI: 00007f61d2986000 RDI: 00000=
+00000000076
+> > [ 155758.332678] RBP: 00007f6234c5fff0 R08: 0000000000000000 R09: 00000=
+00064d5230c
+> > [ 155758.347452] R10: 000000000027d450 R11: 0000000000000293 R12: 00000=
+0000003c041
+> > [ 155758.362044] R13: 00007f61d2986000 R14: 00007f629e11b060 R15: 00000=
+0000027d450
+> > [ 155758.376661]  </TASK>
+> >
+> > This patch fixes the issue by getting a local reference inside
+> > unpack_shadow().
+> >
+> > Fixes: f78dfc7b77d5 ("workingset: fix confusion around eviction vs refa=
+ult container")
+> > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+> > Cc: stable@vger.kernel.org
+> > ---
+> >  mm/workingset.c | 57 ++++++++++++++++++++++++++++++-------------------
+> >  1 file changed, 35 insertions(+), 22 deletions(-)
+> >
+> > diff --git a/mm/workingset.c b/mm/workingset.c
+> > index da58a26d0d4d..c20b26bb6cb1 100644
+> > --- a/mm/workingset.c
+> > +++ b/mm/workingset.c
+> > @@ -206,10 +206,11 @@ static void *pack_shadow(int memcgid, pg_data_t *=
+pgdat, unsigned long eviction,
+> >         return xa_mk_value(eviction);
+> >  }
+> >
+>
+> > -static void unpack_shadow(void *shadow, int *memcgidp, pg_data_t **pgd=
+at,
+> > -                         unsigned long *evictionp, bool *workingsetp)
+> > +static void unpack_shadow(void *shadow, struct mem_cgroup **memcgp,
+> > +                       pg_data_t **pgdat, unsigned long *evictionp, bo=
+ol *workingsetp)
+>
+> We should probably document that we are returning a memcg with a ref
+> on it, or change the name to put "get" and "memcg" in there somewhere.
+> Alternatively we could separate the function that gets the memcg from
+> the shadow (e.g. get_memcg_from_shadow or so).
+Hmm I feel like unpack as a verb is good here. But I can add a small
+comment/documentation above the function to signify that this
+function holds a reference to the memcg, and a corresponding
+put call will be needed, if that helps.
+>
+> I would also hold an RCU read lock here so that the call to
+> mem_cgroup_from_id() is valid. I know all callers currently do, but it
+> may change later. Alternatively we can add an assertion or a warning.
+I prefer the assertion idea. But FWIW, mem_cgroup_from_id()
+already has a warning for this
+(WARN_ON_ONCE(!rcu_read_lock_held()))
 
-I don't know precisely when this was fixed in llvm, but it may be time
-to revert this.
-
-Closes: https://github.com/ClangBuiltLinux/linux/issues/252
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- arch/powerpc/xmon/Makefile | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/arch/powerpc/xmon/Makefile b/arch/powerpc/xmon/Makefile
-index d334de392e6c..7705aa74a24d 100644
---- a/arch/powerpc/xmon/Makefile
-+++ b/arch/powerpc/xmon/Makefile
-@@ -10,12 +10,6 @@ KCSAN_SANITIZE := n
- # Disable ftrace for the entire directory
- ccflags-remove-$(CONFIG_FUNCTION_TRACER) += $(CC_FLAGS_FTRACE)
- 
--ifdef CONFIG_CC_IS_CLANG
--# clang stores addresses on the stack causing the frame size to blow
--# out. See https://github.com/ClangBuiltLinux/linux/issues/252
--KBUILD_CFLAGS += -Wframe-larger-than=4096
--endif
--
- ccflags-$(CONFIG_PPC64) := $(NO_MINIMAL_TOC)
- 
- obj-y			+= xmon.o nonstdio.o spr_access.o xmon_bpts.o
-
----
-base-commit: 16931859a6500d360b90aeacab3b505a3560a3ed
-change-id: 20230817-ppc_xmon-d288d803610e
-
-Best regards,
--- 
-Nick Desaulniers <ndesaulniers@google.com>
-
+Seems redundant to me, especially if the reason why we care
+about unpack_shadow() being under RCU is for
+mem_cgroup_from_id() to be valid.
+>
+> >  {
+> >         unsigned long entry =3D xa_to_value(shadow);
+> > +       struct mem_cgroup *memcg;
+> >         int memcgid, nid;
+> >         bool workingset;
+> >
+> > @@ -220,7 +221,24 @@ static void unpack_shadow(void *shadow, int *memcg=
+idp, pg_data_t **pgdat,
+> >         memcgid =3D entry & ((1UL << MEM_CGROUP_ID_SHIFT) - 1);
+> >         entry >>=3D MEM_CGROUP_ID_SHIFT;
+> >
+> > -       *memcgidp =3D memcgid;
+> > +       /*
+> > +        * Look up the memcg associated with the stored ID. It might
+> > +        * have been deleted since the folio's eviction.
+> > +        *
+> > +        * Note that in rare events the ID could have been recycled
+> > +        * for a new cgroup that refaults a shared folio. This is
+> > +        * impossible to tell from the available data. However, this
+> > +        * should be a rare and limited disturbance, and activations
+> > +        * are always speculative anyway. Ultimately, it's the aging
+> > +        * algorithm's job to shake out the minimum access frequency
+> > +        * for the active cache.
+> > +        */
+> > +       memcg =3D mem_cgroup_from_id(memcgid);
+> > +       if (memcg && css_tryget(&memcg->css))
+> > +               *memcgp =3D memcg;
+> > +       else
+> > +               *memcgp =3D NULL;
+> > +
+> >         *pgdat =3D NODE_DATA(nid);
+> >         *evictionp =3D entry;
+> >         *workingsetp =3D workingset;
+> > @@ -262,15 +280,16 @@ static void *lru_gen_eviction(struct folio *folio=
+)
+> >  static bool lru_gen_test_recent(void *shadow, bool file, struct lruvec=
+ **lruvec,
+> >                                 unsigned long *token, bool *workingset)
+> >  {
+> > -       int memcg_id;
+> >         unsigned long min_seq;
+> >         struct mem_cgroup *memcg;
+> >         struct pglist_data *pgdat;
+> >
+> > -       unpack_shadow(shadow, &memcg_id, &pgdat, token, workingset);
+> > +       unpack_shadow(shadow, &memcg, &pgdat, token, workingset);
+> > +       if (!mem_cgroup_disabled() && !memcg)
+> > +               return false;
+> >
+> > -       memcg =3D mem_cgroup_from_id(memcg_id);
+> >         *lruvec =3D mem_cgroup_lruvec(memcg, pgdat);
+> > +       mem_cgroup_put(memcg);
+> >
+> >         min_seq =3D READ_ONCE((*lruvec)->lrugen.min_seq[file]);
+> >         return (*token >> LRU_REFS_WIDTH) =3D=3D (min_seq & (EVICTION_M=
+ASK >> LRU_REFS_WIDTH));
+> > @@ -421,36 +440,29 @@ bool workingset_test_recent(void *shadow, bool fi=
+le, bool *workingset)
+> >         unsigned long refault_distance;
+> >         unsigned long workingset_size;
+> >         unsigned long refault;
+> > -       int memcgid;
+> >         struct pglist_data *pgdat;
+> >         unsigned long eviction;
+> >
+> >         if (lru_gen_enabled())
+> >                 return lru_gen_test_recent(shadow, file, &eviction_lruv=
+ec, &eviction, workingset);
+> >
+> > -       unpack_shadow(shadow, &memcgid, &pgdat, &eviction, workingset);
+> > -       eviction <<=3D bucket_order;
+> > -
+> > +       unpack_shadow(shadow, &eviction_memcg, &pgdat, &eviction, worki=
+ngset);
+> >         /*
+> > -        * Look up the memcg associated with the stored ID. It might
+> > -        * have been deleted since the folio's eviction.
+> > +        * When memcg is enabled, we only get !memcg here if the
+> > +        * eviction group has been deleted. In that case, ignore
+> > +        * the refault.
+> >          *
+> > -        * Note that in rare events the ID could have been recycled
+> > -        * for a new cgroup that refaults a shared folio. This is
+> > -        * impossible to tell from the available data. However, this
+> > -        * should be a rare and limited disturbance, and activations
+> > -        * are always speculative anyway. Ultimately, it's the aging
+> > -        * algorithm's job to shake out the minimum access frequency
+> > -        * for the active cache.
+> > +        * When memcg is disabled, we always get NULL since there
+> > +        * is no root_mem_cgroup for !CONFIG_MEMCG. Continue; the
+> > +        * mem_cgroup_lruvec() will get us the global lruvec.
+> >          *
+> > -        * XXX: On !CONFIG_MEMCG, this will always return NULL; it
+> > -        * would be better if the root_mem_cgroup existed in all
+> > +        * XXX: It would be better if the root_mem_cgroup existed in al=
+l
+> >          * configurations instead.
+> >          */
+> > -       eviction_memcg =3D mem_cgroup_from_id(memcgid);
+> >         if (!mem_cgroup_disabled() && !eviction_memcg)
+> >                 return false;
+> >
+> > +       eviction <<=3D bucket_order;
+> >         eviction_lruvec =3D mem_cgroup_lruvec(eviction_memcg, pgdat);
+> >         refault =3D atomic_long_read(&eviction_lruvec->nonresident_age)=
+;
+> >
+> > @@ -493,6 +505,7 @@ bool workingset_test_recent(void *shadow, bool file=
+, bool *workingset)
+> >                 }
+> >         }
+> >
+> > +       mem_cgroup_put(eviction_memcg);
+> >         return refault_distance <=3D workingset_size;
+> >  }
+> >
+> > --
+> > 2.34.1
+> >
+> >
