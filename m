@@ -2,104 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 601C677FDD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 085DC77FDD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354432AbjHQSXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 14:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46984 "EHLO
+        id S1354400AbjHQSYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 14:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354443AbjHQSX2 (ORCPT
+        with ESMTP id S1354480AbjHQSX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 14:23:28 -0400
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21CD3C05
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:23:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:
-        In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=vJR/YE4jLhlvafKUQzTk10zMBj33RH6GySsj83iQLmk=; b=aMhn3nzymXpTHm8PA1f+ApsZxb
-        KxcM8oJThmbLXgVPEIGWMQUsjs7pTM9vUoxTAbd37ZjIsTCEl9e90MnKXlqtC6Xi428DqUnYYCEy3
-        TlnOMHgqto7NHhJt35qHDWIj91bkJWFRDEshH/gXKYS/OBLqd+r/KRe9Dw8uIv0lx5R31tCP1qZ/v
-        i5Zub+4BJN/30S3LmcpBGztGz4qxTn0kno+ykjQBRnFXeQjFaasZelp5ekqWqk33PLy7x/8AhFt8c
-        gZrAXxKRtdH2NEBetvOGNnXAjO82dkA2IbnFysXfw5qLluUIQRA82Sa/7xSbOt6TqgFXcqkgRGP0r
-        2SJYF9Hg==;
-Received: from [191.193.179.209] (helo=steammachine.lan)
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-        id 1qWhcP-0021I9-Tc; Thu, 17 Aug 2023 20:21:14 +0200
-From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
-To:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, pierre-eric.pelloux-prayer@amd.com,
-        =?UTF-8?q?=27Marek=20Ol=C5=A1=C3=A1k=27?= <maraeo@gmail.com>,
-        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
-        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
-        =?UTF-8?q?Timur=20Krist=C3=B3f?= <timur.kristof@gmail.com>,
-        Shashank Sharma <shashank.sharma@amd.com>,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
-Subject: [PATCH v5 5/5] drm/amdgpu: Create version number for coredumps
-Date:   Thu, 17 Aug 2023 15:20:50 -0300
-Message-ID: <20230817182050.205925-6-andrealmeid@igalia.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230817182050.205925-1-andrealmeid@igalia.com>
-References: <20230817182050.205925-1-andrealmeid@igalia.com>
+        Thu, 17 Aug 2023 14:23:58 -0400
+Received: from rcdn-iport-4.cisco.com (rcdn-iport-4.cisco.com [173.37.86.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3DA23C06;
+        Thu, 17 Aug 2023 11:23:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=3332; q=dns/txt; s=iport;
+  t=1692296613; x=1693506213;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=EAFmCMjCURKVOVoD03Cmoz021Qx7FN68afEqBii0SgA=;
+  b=Jc7fp++knzYmrMr7VNa+2ZT3tCvzh0QK14up38tkmI0RdSrgUkomDsy3
+   Q9OW4GJ2jCtkI1eKC/oMzZj1+WILZR2qDJZOzcbR+rnfdKNp+dhQv2Xwa
+   5bt/GYE+NgyDt5Ah8siC/l09+M1JGprNgqpQAGlRuBD6dqB2/rVjMmlHF
+   s=;
+X-IronPort-AV: E=Sophos;i="6.01,180,1684800000"; 
+   d="scan'208";a="102870598"
+Received: from rcdn-core-7.cisco.com ([173.37.93.143])
+  by rcdn-iport-4.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 18:22:21 +0000
+Received: from localhost.cisco.com ([10.193.101.253])
+        (authenticated bits=0)
+        by rcdn-core-7.cisco.com (8.15.2/8.15.2) with ESMTPSA id 37HIMCar015707
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 17 Aug 2023 18:22:20 GMT
+From:   Karan Tilak Kumar <kartilak@cisco.com>
+To:     sebaddel@cisco.com
+Cc:     arulponn@cisco.com, djhawar@cisco.com, gcboffa@cisco.com,
+        mkai2@cisco.com, satishkh@cisco.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Karan Tilak Kumar <kartilak@cisco.com>
+Subject: [PATCH] scsi: fnic: Replace sgreset tag with max_tag_id
+Date:   Thu, 17 Aug 2023 11:21:46 -0700
+Message-Id: <20230817182146.229059-1-kartilak@cisco.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Authenticated-User: kartilak@cisco.com
+X-Outbound-SMTP-Client: 10.193.101.253, [10.193.101.253]
+X-Outbound-Node: rcdn-core-7.cisco.com
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Even if there's nothing currently parsing amdgpu's coredump files, if
-we eventually have such tools they will be glad to find a version field
-to properly read the file.
+sgreset is issued with a scsi command pointer.
+The device reset code assumes that it was issued
+on a hardware queue, and calls block multiqueue
+layer. However, the assumption is broken, and
+there is no hardware queue associated with the
+sgreset, and this leads to a crash due to a
+null pointer exception.
 
-Create a version number to be displayed on top of coredump file, to be
-incremented when the file format or content get changed.
+Fix the code to use the max_tag_id as a tag
+which does not overlap with the other tags
+issued by mid layer.
 
-Signed-off-by: André Almeida <andrealmeid@igalia.com>
+Tested by running FC traffic for a few minutes,
+and by issuing sgreset on the device in parallel.
+Without the fix, the crash is observed right away.
+With this fix, no crash is observed.
+
+Reviewed-by: Sesidhar Baddela <sebaddel@cisco.com>
+Tested-by: Karan Tilak Kumar <kartilak@cisco.com>
+Signed-off-by: Karan Tilak Kumar <kartilak@cisco.com>
 ---
-v5: new patch
- drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 1 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h | 3 +++
- 2 files changed, 4 insertions(+)
+ drivers/scsi/fnic/fnic.h      |  3 ++-
+ drivers/scsi/fnic/fnic_scsi.c | 20 +++++++++-----------
+ 2 files changed, 11 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
-index 579b70a3cdab..e92c81ff27be 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
-@@ -192,6 +192,7 @@ static ssize_t amdgpu_devcoredump_read(char *buffer, loff_t offset,
- 	p = drm_coredump_printer(&iter);
+diff --git a/drivers/scsi/fnic/fnic.h b/drivers/scsi/fnic/fnic.h
+index e51e92f932fa..93c68931a593 100644
+--- a/drivers/scsi/fnic/fnic.h
++++ b/drivers/scsi/fnic/fnic.h
+@@ -27,7 +27,7 @@
  
- 	drm_printf(&p, "**** AMDGPU Device Coredump ****\n");
-+	drm_printf(&p, "version: " AMDGPU_COREDUMP_VERSION "\n");
- 	drm_printf(&p, "kernel: " UTS_RELEASE "\n");
- 	drm_printf(&p, "module: " KBUILD_MODNAME "\n");
- 	drm_printf(&p, "time: %lld.%09ld\n", coredump->reset_time.tv_sec, coredump->reset_time.tv_nsec);
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
-index 01e8183ade4b..ec3a409ec509 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
-@@ -88,6 +88,9 @@ struct amdgpu_reset_domain {
- };
+ #define DRV_NAME		"fnic"
+ #define DRV_DESCRIPTION		"Cisco FCoE HBA Driver"
+-#define DRV_VERSION		"1.6.0.55"
++#define DRV_VERSION		"1.6.0.56"
+ #define PFX			DRV_NAME ": "
+ #define DFX                     DRV_NAME "%d: "
  
- #ifdef CONFIG_DEV_COREDUMP
-+
-+#define AMDGPU_COREDUMP_VERSION "1"
-+
- struct amdgpu_coredump_info {
- 	struct amdgpu_device		*adev;
- 	struct amdgpu_task_info         reset_task_info;
+@@ -236,6 +236,7 @@ struct fnic {
+ 	unsigned int wq_count;
+ 	unsigned int cq_count;
+ 
++	struct mutex sgreset_mutex;
+ 	struct dentry *fnic_stats_debugfs_host;
+ 	struct dentry *fnic_stats_debugfs_file;
+ 	struct dentry *fnic_reset_debugfs_file;
+diff --git a/drivers/scsi/fnic/fnic_scsi.c b/drivers/scsi/fnic/fnic_scsi.c
+index be89ce96df46..185142efee3d 100644
+--- a/drivers/scsi/fnic/fnic_scsi.c
++++ b/drivers/scsi/fnic/fnic_scsi.c
+@@ -2222,7 +2222,6 @@ int fnic_device_reset(struct scsi_cmnd *sc)
+ 	struct reset_stats *reset_stats;
+ 	int tag = rq->tag;
+ 	DECLARE_COMPLETION_ONSTACK(tm_done);
+-	int tag_gen_flag = 0;   /*to track tags allocated by fnic driver*/
+ 	bool new_sc = 0;
+ 
+ 	/* Wait for rport to unblock */
+@@ -2252,17 +2251,17 @@ int fnic_device_reset(struct scsi_cmnd *sc)
+ 	}
+ 
+ 	fnic_priv(sc)->flags = FNIC_DEVICE_RESET;
+-	/* Allocate tag if not present */
+ 
+ 	if (unlikely(tag < 0)) {
+ 		/*
+-		 * Really should fix the midlayer to pass in a proper
+-		 * request for ioctls...
++		 * For device reset issued through sg3utils, we let
++		 * only one LUN_RESET to go through and use a special
++		 * tag equal to max_tag_id so that we don't have to allocate
++		 * or free it. It won't interact with tags
++		 * allocated by mid layer.
+ 		 */
+-		tag = fnic_scsi_host_start_tag(fnic, sc);
+-		if (unlikely(tag == SCSI_NO_TAG))
+-			goto fnic_device_reset_end;
+-		tag_gen_flag = 1;
++		mutex_lock(&fnic->sgreset_mutex);
++		tag = fnic->fnic_max_tag_id;
+ 		new_sc = 1;
+ 	}
+ 	io_lock = fnic_io_lock_hash(fnic, sc);
+@@ -2434,9 +2433,8 @@ int fnic_device_reset(struct scsi_cmnd *sc)
+ 		  (u64)sc->cmnd[4] << 8 | sc->cmnd[5]),
+ 		  fnic_flags_and_state(sc));
+ 
+-	/* free tag if it is allocated */
+-	if (unlikely(tag_gen_flag))
+-		fnic_scsi_host_end_tag(fnic, sc);
++	if (new_sc)
++		mutex_unlock(&fnic->sgreset_mutex);
+ 
+ 	FNIC_SCSI_DBG(KERN_DEBUG, fnic->lport->host,
+ 		      "Returning from device reset %s\n",
 -- 
-2.41.0
+2.31.1
 
