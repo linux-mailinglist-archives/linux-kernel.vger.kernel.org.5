@@ -2,104 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 066AB77FC29
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:32:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E3877FC2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352595AbjHQQcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 12:32:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58772 "EHLO
+        id S1352821AbjHQQdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 12:33:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353716AbjHQQby (ORCPT
+        with ESMTP id S1353690AbjHQQcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 12:31:54 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9717B30F6;
-        Thu, 17 Aug 2023 09:31:47 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-68871bbfe33so2340281b3a.0;
-        Thu, 17 Aug 2023 09:31:47 -0700 (PDT)
+        Thu, 17 Aug 2023 12:32:46 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9369D273F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:32:43 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6bd0a0a6766so44946a34.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:32:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692289907; x=1692894707;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gTUiG3Uzc8lBmEAdnNxTTIOVJ6aRIqmu+UQYdbs/0nA=;
-        b=AQLKDS97LyIhLPj8AD968FZ4So6lIlkG5PJiM8KpcuZOtsBXgm456iJWBEHuxIIWKs
-         WJBMLiVzdLJ7PmOPX4dHpxLTpPnT7VNTpM6X/3A3uLZwMKzlecaWhukti2KzonqVayFu
-         kQbe2GlzLvr+8DlCV3xzangFUoIxOmWFOVR6SiOQDXaxjunlEYDlShS9MlpkVbc6cziy
-         b9XlRsf4CpQ6XkvdY+622Pmvk7TJhDPr94xG9Ju1wcdyljYSogakTF6f/H33BrJnP+xE
-         pO8dUG7Y5q9R0NdsRv7uM77OOX7zc33foZmEBngPjQd/+pTrGjZWtCz8Al2+ZDyw96vR
-         SDJg==
+        d=mojatatu-com.20221208.gappssmtp.com; s=20221208; t=1692289963; x=1692894763;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S+vwsIIkApicUDYFNS7p6Sv0nA8tfIRKAQr/UoaAwtQ=;
+        b=0YyixNOhKxpiJUEKfO9Jahp9tCHjQ6Z4lZDOaoQdnQ6jXi66XBq2NQjBi9fKpsNNIu
+         ivs60Nom5cM0KemUBz9E23DmOnhsMFLA7C+SpMz4G5xkvstNeFz4ZAyZAsaVrMD8biPq
+         E1JKNPt6ZuB8IZ21HVzPzN4LvkuKd8jZgQiJJPUWvwHHuYew3eCBq0aHfA2xrxZLOZtI
+         B4uPk3YqT7EDIwVXAh1hyrktWzRLPy5COvpoJEHpV9ClIJ8G44phSUmY5eWjw1/VeCqk
+         cgMMyFbdXXawwRj36j0Fma4lVUP8XOL8/34ENz3ftQOZ05L5RXvmnxrj+VuPi5XU9gZ2
+         mmLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692289907; x=1692894707;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gTUiG3Uzc8lBmEAdnNxTTIOVJ6aRIqmu+UQYdbs/0nA=;
-        b=D8VywI8khNTfb5t+aGxRAKHtP3AgH6ywyr4H90FKtCWI8RgeKmslaDE4xWb/HsPe5n
-         4VoM25zmGtBI42j7+LPn8tk6mgxbzQQgZiJAREfHtuOb+TBzIZJuBq1X33tqTMmbS9v+
-         fbmYMdkUreW+GFe/JIDd1ulcOG0fnknmgXKopn3RnkmdxnVFc6lIHp1x8ZFqfLjb6Ud8
-         MMwiSMi+N4S2PN9vuoj2vkmo8zs7MyqcrlerlkHCuqV25f4spvWZyAQdRkS60qn/VbmO
-         SBPIkWXuKCMoKEnm8IHiRJffAjk0bjIL6HXZ71iEPIFzaXoorBZ5i8ioM8W4NDZ+w3Xp
-         0v3g==
-X-Gm-Message-State: AOJu0YwOTYxWxguNFamQ6KFzM2f1VrDcn4AcDD2qh+ZxKBQ81upwyHFh
-        ZWEIgVf/p8Jsid4S4OmWsGM=
-X-Google-Smtp-Source: AGHT+IGfp9I34QqYFtb6+LmvEd6QtCBofUGRvrNZtrU7IumAWH8guLp9JQ6RtHC2It+kh7Zb9gJztA==
-X-Received: by 2002:a05:6a00:17a5:b0:682:f529:6d69 with SMTP id s37-20020a056a0017a500b00682f5296d69mr52413pfg.7.1692289906899;
-        Thu, 17 Aug 2023 09:31:46 -0700 (PDT)
-Received: from fanta-System-Product-Name.. ([222.252.65.171])
-        by smtp.gmail.com with ESMTPSA id m7-20020aa79007000000b006887037cde6sm4212392pfo.60.2023.08.17.09.31.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 09:31:46 -0700 (PDT)
-From:   Anh Tuan Phan <tuananhlfc@gmail.com>
-To:     viro@zeniv.linux.org.uk, brauner@kernel.org
-Cc:     Anh Tuan Phan <tuananhlfc@gmail.com>,
-        linux-fsdevel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] fs/dcache: Replace printk and WARN_ON by WARN
-Date:   Thu, 17 Aug 2023 23:31:42 +0700
-Message-Id: <20230817163142.117706-1-tuananhlfc@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20221208; t=1692289963; x=1692894763;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S+vwsIIkApicUDYFNS7p6Sv0nA8tfIRKAQr/UoaAwtQ=;
+        b=cv9qrHbHT2EWJcGPpfgOyb60khSc/FKBjvGstWeIAoXZySKFXQguZlY+LqBG1WmS2c
+         pap4QFZbJxoFGXaw8SBV08j9SoWbrsUmOJfhVykTnYEnPpze8mge1QDf0TOM33Ypq1Oz
+         J0oKL4AbI3d68OagEeYVvFklRBnHXDPjeKh5lrBAIGnnKNElDVX0rw8XVur931GpzlJU
+         6EH1glyvliGBVc+kGCR5uxffIVeKN6l2X6BtgMNBQIOHgIGurXvOnB2fJcbLr3ZS6b5M
+         u1ftWrA8GxXfwQSiiWZDbdK3HBjtWnAD0QDFXHQ6B9+8Hztf11GdpBvBSOaJbyTSPr7I
+         5/DQ==
+X-Gm-Message-State: AOJu0YxPFUChYizEz+GbJsw5hPUbekkYyXROT0JEPbampV9OaCAcZEO4
+        7qpyx4SobNjeEReXiE2V/KdVeWvnLjhtVI+5fa3qJw==
+X-Google-Smtp-Source: AGHT+IFPKWksr+unyACwxPrN7wNn2ejufDgCpn6okIOqLFHF2UUxRjKicoGsY0oujrUyX1uKwjOQG70DCbI0QT1/t/U=
+X-Received: by 2002:a05:6358:9916:b0:129:c50d:6a37 with SMTP id
+ w22-20020a056358991600b00129c50d6a37mr6032724rwa.16.1692289962822; Thu, 17
+ Aug 2023 09:32:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <ZN5DvRyq6JNz20l1@work>
+In-Reply-To: <ZN5DvRyq6JNz20l1@work>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Date:   Thu, 17 Aug 2023 12:32:31 -0400
+Message-ID: <CAM0EoMmK0VK1=5SSHVm28zz2CUCamxJPXNukehqY955uP17VPQ@mail.gmail.com>
+Subject: Re: [PATCH][next] net: sched: cls_u32: Fix allocation in u32_init()
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use WARN instead of printk + WARN_ON as reported from coccinelle:
-./fs/dcache.c:1667:1-7: SUGGESTION: printk + WARN_ON can be just WARN
+On Thu, Aug 17, 2023 at 11:57=E2=80=AFAM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
+>
+> Replace struct_size() with sizeof(), and avoid allocating 8 too many
+> bytes.
+>
+> The following difference in binary output is expected and reflects the
+> desired change:
+>
+> | net/sched/cls_u32.o
+> | @@ -6148,7 +6148,7 @@
+> | include/linux/slab.h:599
+> |     2cf5:      mov    0x0(%rip),%rdi        # 2cfc <u32_init+0xfc>
+> |                        2cf8: R_X86_64_PC32     kmalloc_caches+0xc
+> |-    2cfc:      mov    $0x98,%edx
+> |+    2cfc:      mov    $0x90,%edx
+>
+> Fixes: d61491a51f7e ("net/sched: cls_u32: Replace one-element array with =
+flexible-array member")
+> Reported-by: Alejandro Colomar <alx@kernel.org>
+> Closes: https://lore.kernel.org/lkml/09b4a2ce-da74-3a19-6961-67883f634d98=
+@kernel.org/
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  net/sched/cls_u32.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/net/sched/cls_u32.c b/net/sched/cls_u32.c
+> index da4c179a4d41..6663e971a13e 100644
+> --- a/net/sched/cls_u32.c
+> +++ b/net/sched/cls_u32.c
+> @@ -366,7 +366,7 @@ static int u32_init(struct tcf_proto *tp)
+>         idr_init(&root_ht->handle_idr);
+>
+>         if (tp_c =3D=3D NULL) {
+> -               tp_c =3D kzalloc(struct_size(tp_c, hlist->ht, 1), GFP_KER=
+NEL);
+> +               tp_c =3D kzalloc(sizeof(*tp_c), GFP_KERNEL);
+>                 if (tp_c =3D=3D NULL) {
+>                         kfree(root_ht);
+>                         return -ENOBUFS;
 
-Signed-off-by: Anh Tuan Phan <tuananhlfc@gmail.com>
----
- fs/dcache.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/dcache.c b/fs/dcache.c
-index 52e6d5fdab6b..fd5f133b180e 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -1664,7 +1664,7 @@ static enum d_walk_ret umount_check(void *_data, struct dentry *dentry)
- 	if (dentry == _data && dentry->d_lockref.count == 1)
- 		return D_WALK_CONTINUE;
- 
--	printk(KERN_ERR "BUG: Dentry %p{i=%lx,n=%pd} "
-+	WARN(1, "BUG: Dentry %p{i=%lx,n=%pd} "
- 			" still in use (%d) [unmount of %s %s]\n",
- 		       dentry,
- 		       dentry->d_inode ?
-@@ -1673,7 +1673,6 @@ static enum d_walk_ret umount_check(void *_data, struct dentry *dentry)
- 		       dentry->d_lockref.count,
- 		       dentry->d_sb->s_type->name,
- 		       dentry->d_sb->s_id);
--	WARN_ON(1);
- 	return D_WALK_CONTINUE;
- }
- 
--- 
-2.34.1
+LGTM.
+Acked-by: Jamal Hadi Salim <jhs@mojatatu.com>
 
+cheers,
+jamal
+
+> 2.34.1
+>
