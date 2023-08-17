@@ -2,78 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81A9977F448
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 12:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7055077F44D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 12:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349356AbjHQK0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 06:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44626 "EHLO
+        id S1349496AbjHQK3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 06:29:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349978AbjHQKZr (ORCPT
+        with ESMTP id S243667AbjHQK26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 06:25:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B5F198C
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 03:25:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692267900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1IRxWEvpry+CMCB1V4M7R9Ft7ALq/o4jMyxueGSdGQE=;
-        b=R0OAnQOuu8/8bXUAwnNa+z8O2/l3UA8qrfGkVnugDNdx3uupdzSyWa16h/zU+lLoAT/nRb
-        6cYrdcF20Oq0/wybszRTa73raR6JIG6zmhrGxH4Gv0OFypwKZuiKn24bwvC1cdOtShtBq6
-        jbqMTtOipWBwbAekUjbPurHeWC5es8M=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-436-05VdWRIoN5WYZFepzLVdcQ-1; Thu, 17 Aug 2023 06:24:58 -0400
-X-MC-Unique: 05VdWRIoN5WYZFepzLVdcQ-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2b9b7375e49so17543921fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 03:24:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692267897; x=1692872697;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1IRxWEvpry+CMCB1V4M7R9Ft7ALq/o4jMyxueGSdGQE=;
-        b=D81JLGk5o/sKqEKPT+jZnzVEjwR9kwiHS6rGg+uDfXzHQJQC7pJlK3fDSZW/IUIKbV
-         MYVkwVycPnCkTUEx3dEKGnycOFy/SrHUuxAklcXFFLQcqGGs3kIvpoNTI/e6GSGDI9B1
-         1yDY8bDhXg1m8B22/U1UQfF1RNRv4A3KNQztE3g6FmiRi2AqjG1k+IZUk8CVFTa+0ZRF
-         sYHnGPXMi4GUwM/BFGI+T/PODwuJiWW54aNUcZycvsOio7nuJan6wQFSE//oiY2GUtCq
-         mzodJs1xWDJclzpuqO6mwXtTzOVPr9AukLjgSXMB3O3Llh/Zu7WB7Lf2hTD4hZjwKmmO
-         MX4g==
-X-Gm-Message-State: AOJu0YzpnzreoGAoTDzLFLj/nSaFp6Gah+aTmUiu3r7Co5cq4fl7gOvg
-        q+imJq3ejiRphHFpJ8i2bWkRPOxjbClA/d3jYZcz8Qa985wVgI8s0WOaPMn4fvjuQ4HCF6BXm6g
-        AsG7HwBD4JUKJKpfJrnUt9QVB6mGGiTfZWUIj3uQ3jGhHzB/Z/NE=
-X-Received: by 2002:a2e:511a:0:b0:2b9:7034:9bbe with SMTP id f26-20020a2e511a000000b002b970349bbemr2980380ljb.4.1692267896884;
-        Thu, 17 Aug 2023 03:24:56 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHBgIDULJ6Inl1Pke61/jYkvIRMPsZ4hSRwZSoxXgucJresEcAyxdEKMlWsoFg6hvKo7nHipu3sd9ZNJWFoGNg=
-X-Received: by 2002:a2e:511a:0:b0:2b9:7034:9bbe with SMTP id
- f26-20020a2e511a000000b002b970349bbemr2980368ljb.4.1692267896541; Thu, 17 Aug
- 2023 03:24:56 -0700 (PDT)
+        Thu, 17 Aug 2023 06:28:58 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E54192D5A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 03:28:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692268136; x=1723804136;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=om2Vk5mlEti0da9uJJIrCxlV+3A5C0gw1DoMRruO5As=;
+  b=jwxWt8+WcZ4FRgTCH9fc5XBHULk6jrvZcLMPlRFPoWQBqTh2tcV16flZ
+   bzkwclJy3axOppcWRDMFaCeF5mgHnc+YfXSkRiaTEa289tU1voRRSDNOG
+   L4gI2Gb+OViwHVsahk2qRMXEddzmEguZsLfioYQVDzQrFS8bM2cIoJQw6
+   SJX3Uzl++SVGg9boXav7LW/JaM9yfP60D++SC51V14P/AeTqqn1T6B0ry
+   QiPZ187xDs5aT/FqoALTAJ5mTb5RcGwPs3fcEFBIFPVf1sYRWhI19Mg5T
+   HgiwTK0i0o6kTKTQLCVThCxz2ZbtI9UrGyHwSfVX/93ecY6nHzu/X3Mjn
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="371676225"
+X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
+   d="scan'208";a="371676225"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 03:28:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="728093900"
+X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
+   d="scan'208";a="728093900"
+Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 17 Aug 2023 03:28:44 -0700
+Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qWaF9-00012j-2C;
+        Thu, 17 Aug 2023 10:28:43 +0000
+Date:   Thu, 17 Aug 2023 18:28:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/firmware/efi/libstub/efi-stub-helper.c:662: warning:
+ Function parameter or member 'out' not described in 'efi_load_initrd'
+Message-ID: <202308171819.5TP3lmj4-lkp@intel.com>
 MIME-Version: 1.0
-References: <CACO55tu8ab-rxCzxFXbUh4Z=W9E-1f8sH6BVd=P+16dQ9PQNjg@mail.gmail.com>
- <20230816145338.GIZNzi8o3d9x9bcPzX@fat_crate.local> <CACO55ttasKLxBTmZjN-XBOuJFC7rng2PbLgxCT8WT6ukOZNGzQ@mail.gmail.com>
- <20230816151252.GKZNzndDNySuWC+Vwz@fat_crate.local> <CACO55tunC5mEu3Tw64rKLqNM6MN6d=N90kYQKYwXWNMB=ahDaw@mail.gmail.com>
- <20230816221353.GXZN1KIXloRn8cGt5E@fat_crate.local> <CACO55ts7430tAUDC+0qY0EZ5ReO=2Rjwj1SzHaBLodmyBgrUrw@mail.gmail.com>
- <20230817081032.GAZN3V+NQ1blzQC2sU@fat_crate.local> <CACO55tv-dKnDzUYYFW+d2pNoAhEoEniUT=QAmD4-c_xKQw0cfw@mail.gmail.com>
- <CACO55tuWTYngfw+MZnan+U4eYyE+SvOWgxzffaCMNGQgriq3ig@mail.gmail.com> <20230817101129.GCZN3yUTWHkt22Jgec@fat_crate.local>
-In-Reply-To: <20230817101129.GCZN3yUTWHkt22Jgec@fat_crate.local>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Thu, 17 Aug 2023 12:24:45 +0200
-Message-ID: <CACO55tt9ZLKjaTyARXQ4VePgd41nYCQBn+wAGGDJRw1QV3hPBQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/nouveau/disp: fix use-after-free in error handling of nouveau_connector_create
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,30 +61,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 12:11=E2=80=AFPM Borislav Petkov <bp@alien8.de> wro=
-te:
->
-> On Thu, Aug 17, 2023 at 12:00:47PM +0200, Karol Herbst wrote:
-> > btw, what would help is to know where `nvkm_uconn_uevent` actually
-> > fails, or rather, are you running into this "/* TODO: support DP IRQ
-> > on ANX9805 and remove this hack. */" condition?
->
-> Send me a diff, I'll run it here and catch output over serial.
->
+Hi Ard,
 
-simply throw a
+First bad commit (maybe != root cause):
 
-printk(KERN_WARNING "nvkm_uconn_uevent %u\n", outp->info.location);
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
+commit: f4dc7fffa9873db50ec25624572f8217a6225de8 efi: libstub: unify initrd loading between architectures
+date:   11 months ago
+config: x86_64-rhel-8.3 (https://download.01.org/0day-ci/archive/20230817/202308171819.5TP3lmj4-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230817/202308171819.5TP3lmj4-lkp@intel.com/reproduce)
 
-inside drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c:104 after that
-mentioned comment.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308171819.5TP3lmj4-lkp@intel.com/
 
-> Thx.
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
->
+All warnings (new ones prefixed by >>):
 
+   drivers/firmware/efi/libstub/efi-stub-helper.c:559: warning: Function parameter or member 'initrd' not described in 'efi_load_initrd_dev_path'
+   drivers/firmware/efi/libstub/efi-stub-helper.c:559: warning: Excess function parameter 'load_addr' description in 'efi_load_initrd_dev_path'
+   drivers/firmware/efi/libstub/efi-stub-helper.c:559: warning: Excess function parameter 'load_size' description in 'efi_load_initrd_dev_path'
+>> drivers/firmware/efi/libstub/efi-stub-helper.c:662: warning: Function parameter or member 'out' not described in 'efi_load_initrd'
+
+
+vim +662 drivers/firmware/efi/libstub/efi-stub-helper.c
+
+f046fff8bc4c4d Ilias Apalodimas    2021-11-19  649  
+8c0a839c2bccb7 Heinrich Schuchardt 2020-06-16  650  /**
+8c0a839c2bccb7 Heinrich Schuchardt 2020-06-16  651   * efi_load_initrd() - Load initial RAM disk
+8c0a839c2bccb7 Heinrich Schuchardt 2020-06-16  652   * @image:	EFI loaded image protocol
+947228cb9f1a2c Atish Patra         2021-07-02  653   * @soft_limit:	preferred address for loading the initrd
+947228cb9f1a2c Atish Patra         2021-07-02  654   * @hard_limit:	upper limit address for loading the initrd
+8c0a839c2bccb7 Heinrich Schuchardt 2020-06-16  655   *
+8c0a839c2bccb7 Heinrich Schuchardt 2020-06-16  656   * Return:	status code
+8c0a839c2bccb7 Heinrich Schuchardt 2020-06-16  657   */
+f61900fd0ebf6c Arvind Sankar       2020-04-30  658  efi_status_t efi_load_initrd(efi_loaded_image_t *image,
+f61900fd0ebf6c Arvind Sankar       2020-04-30  659  			     unsigned long soft_limit,
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  660  			     unsigned long hard_limit,
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  661  			     const struct linux_efi_initrd **out)
+f61900fd0ebf6c Arvind Sankar       2020-04-30 @662  {
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  663  	efi_guid_t tbl_guid = LINUX_EFI_INITRD_MEDIA_GUID;
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  664  	efi_status_t status = EFI_SUCCESS;
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  665  	struct linux_efi_initrd initrd, *tbl;
+f61900fd0ebf6c Arvind Sankar       2020-04-30  666  
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  667  	if (!IS_ENABLED(CONFIG_BLK_DEV_INITRD) || efi_noinitrd)
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  668  		return EFI_SUCCESS;
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  669  
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  670  	status = efi_load_initrd_dev_path(&initrd, hard_limit);
+f61900fd0ebf6c Arvind Sankar       2020-04-30  671  	if (status == EFI_SUCCESS) {
+f61900fd0ebf6c Arvind Sankar       2020-04-30  672  		efi_info("Loaded initrd from LINUX_EFI_INITRD_MEDIA_GUID device path\n");
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  673  		if (initrd.size > 0)
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  674  			efi_measure_initrd(initrd.base, initrd.size);
+f61900fd0ebf6c Arvind Sankar       2020-04-30  675  	} else if (status == EFI_NOT_FOUND) {
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  676  		status = efi_load_initrd_cmdline(image, &initrd, soft_limit,
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  677  						 hard_limit);
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  678  		/* command line loader disabled or no initrd= passed? */
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  679  		if (status == EFI_UNSUPPORTED || status == EFI_NOT_READY)
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  680  			return EFI_SUCCESS;
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  681  		if (status == EFI_SUCCESS)
+f61900fd0ebf6c Arvind Sankar       2020-04-30  682  			efi_info("Loaded initrd from command line option\n");
+f61900fd0ebf6c Arvind Sankar       2020-04-30  683  	}
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  684  	if (status != EFI_SUCCESS)
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  685  		goto failed;
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  686  
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  687  	status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, sizeof(initrd),
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  688  			     (void **)&tbl);
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  689  	if (status != EFI_SUCCESS)
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  690  		goto free_initrd;
+f046fff8bc4c4d Ilias Apalodimas    2021-11-19  691  
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  692  	*tbl = initrd;
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  693  	status = efi_bs_call(install_configuration_table, &tbl_guid, tbl);
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  694  	if (status != EFI_SUCCESS)
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  695  		goto free_tbl;
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  696  
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  697  	if (out)
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  698  		*out = tbl;
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  699  	return EFI_SUCCESS;
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  700  
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  701  free_tbl:
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  702  	efi_bs_call(free_pool, tbl);
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  703  free_initrd:
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  704  	efi_free(initrd.size, initrd.base);
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  705  failed:
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  706  	efi_err("Failed to load initrd: 0x%lx\n", status);
+f61900fd0ebf6c Arvind Sankar       2020-04-30  707  	return status;
+f61900fd0ebf6c Arvind Sankar       2020-04-30  708  }
+14c574f35cfbc9 Arvind Sankar       2020-05-18  709  
+
+:::::: The code at line 662 was first introduced by commit
+:::::: f61900fd0ebf6c6b91719d63272a54f4d11051df efi/libstub: Unify initrd loading across architectures
+
+:::::: TO: Arvind Sankar <nivedita@alum.mit.edu>
+:::::: CC: Ard Biesheuvel <ardb@kernel.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
