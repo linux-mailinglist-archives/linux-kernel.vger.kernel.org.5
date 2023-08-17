@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C2077F6C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C6377F6C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350981AbjHQMub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 08:50:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57184 "EHLO
+        id S1350984AbjHQMvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 08:51:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350973AbjHQMt7 (ORCPT
+        with ESMTP id S1350991AbjHQMus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 08:49:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4FB42D70;
-        Thu, 17 Aug 2023 05:49:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692276598; x=1723812598;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=p0nuCy9DZYhec9JY4+aYto6MRU6VOezCWc58F5J5EUs=;
-  b=X6p5+0c61/NDxFCENm3aegGIreqqVd9WJcVRNeFHaxzvKNGMnnPiEp0v
-   SZ/kVC+HAdPaqvmHolQQQvHBT75XLyLRDIe3LPwoQjvxdL/o4GAVcKW79
-   Qf+sVMmd8UqTe5aiRqeCZI39of6sN7mOWtyzs2LzCiYELfDfX7fT5oaZy
-   UzpTC1ZYMdRsmHrmuR38xCSN8R8U6jUjOmicDGCqP0GGbAdM4L6DTfj4t
-   k4iobYZ5PyqJoINNmcV5ROYmP1brxVB/+5JkUuYvsMekQkFiMBlfJCn11
-   jweiFd9g6QSZ2RCz0eCrbQLTId4Q4rWC67uWvVBl44jVPHkF6ZgpzfSI3
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="439153837"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="439153837"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 05:49:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="824627981"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="824627981"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by FMSMGA003.fm.intel.com with ESMTP; 17 Aug 2023 05:49:53 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qWcRi-00C62B-2r;
-        Thu, 17 Aug 2023 15:49:50 +0300
-Date:   Thu, 17 Aug 2023 15:49:50 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Marcus Folkesson <marcus.folkesson@gmail.com>
-Cc:     Kent Gustavsson <kent@minoris.se>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Cosmin Tanislav <demonsingur@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Ramona Bolboaca <ramona.bolboaca@analog.com>,
-        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        William Breathitt Gray <william.gray@linaro.org>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 5/6] iio: adc: mcp3911: avoid ambiguity parameters in
- macros
-Message-ID: <ZN4XbrcrWtVRISP9@smile.fi.intel.com>
-References: <20230817120518.153728-1-marcus.folkesson@gmail.com>
- <20230817120518.153728-5-marcus.folkesson@gmail.com>
+        Thu, 17 Aug 2023 08:50:48 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF272D5F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:50:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1692276644;
+        bh=5oaoKNipVX6iSVnp72EenoIUu3tPuOJ8sGaIEin3KYY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=fLLVkqACp2syBanYmRdMWC0/3PUAgD5PRnAXsBRgSfThdw0GmtniHRUReakEKl7lW
+         mMiOdflnsx9uQp37PgaO+XKQKbMkstMXUl7qiEEvaYqbtPa+YVS0a9VJxKelxX0VBA
+         gFg2BPfvHjrHmS424o7LlcFhHwV1mJ2qIXhNzHouOorCgVWI5cVOW8PQTxL9WTE9p7
+         QCSPahZ4qbmpfIxijy7wslasj0jjI7PIbKV2CD3RFLr1hf21WbDxMvWGjvzAcYK9yc
+         Wf9NMNg6Sm/S6xESj4A7N5FQXnZdAdWuph+CjNf+ooInhrDPS2d7WZwJCbyhkOuo7E
+         8rg7gcwD7ZYSA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RRPxc3Wwtz4wy6;
+        Thu, 17 Aug 2023 22:50:44 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] powerpc/82xx: Remove pq2_init_pci
+In-Reply-To: <8b2db7c3c2c346aa8aa49507415c360d441e5bf5.1692259498.git.christophe.leroy@csgroup.eu>
+References: <8b2db7c3c2c346aa8aa49507415c360d441e5bf5.1692259498.git.christophe.leroy@csgroup.eu>
+Date:   Thu, 17 Aug 2023 22:50:44 +1000
+Message-ID: <871qg1est7.fsf@mail.lhotse>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817120518.153728-5-marcus.folkesson@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 02:05:17PM +0200, Marcus Folkesson wrote:
-> Name macro parameters after what they represent instead of 'x'.
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> Commit 859b21a008eb ("powerpc: drop PowerQUICC II Family ADS platform
+> support") removed last user of pq2_init_pci.
+>
+> Remove it.
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/platforms/82xx/pq2.c | 46 -------------------------------
+>  1 file changed, 46 deletions(-)
 
-"And make sure the evaluation of that will have no side effects."
+Haha, from my local tree:
 
-With that (or similar) added,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+$ show --stat dev/mpe
+commit d4268218b50422292cb5e1273cc6829fb3b22b5b
+Author:     Michael Ellerman <mpe@ellerman.id.au>
+AuthorDate: Wed Aug 16 14:06:50 2023 +1000
+Commit:     Michael Ellerman <mpe@ellerman.id.au>
+CommitDate: Wed Aug 16 14:08:47 2023 +1000
 
--- 
-With Best Regards,
-Andy Shevchenko
+    powerpc/82xx: Drop unused pq2 PCI code
+
+    The last caller of this code was removed when the pq2fads platform was
+    dropped in commit 859b21a008eb ("powerpc: drop PowerQUICC II Family ADS
+    platform support").
+
+    Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+
+ arch/powerpc/platforms/82xx/pq2.c | 46 ---------------------------------------
+ 1 file changed, 46 deletions(-)
 
 
+But I'll take yours because you sent it first.
+
+cheers
