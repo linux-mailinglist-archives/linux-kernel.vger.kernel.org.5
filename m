@@ -2,240 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 322E777FEA7
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 21:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CCDF77FEA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 21:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354723AbjHQTl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 15:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51180 "EHLO
+        id S1353428AbjHQTnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 15:43:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349518AbjHQTlv (ORCPT
+        with ESMTP id S1354447AbjHQTnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 15:41:51 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CEB410E9;
-        Thu, 17 Aug 2023 12:41:50 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-44ac6638896so39715137.2;
-        Thu, 17 Aug 2023 12:41:50 -0700 (PDT)
+        Thu, 17 Aug 2023 15:43:18 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75DA2D61
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 12:43:16 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bc0d39b52cso1369115ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 12:43:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692301309; x=1692906109;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6o4QPTC0x5SDosCyvtrKyF/pyOdwEWIkCSwmSE9crCQ=;
-        b=ZMOzeyUouQdyNGHF70N7yntux616ul35ERKtQpaxi4/ijoziRufBFbGkK5Cnr+1mmm
-         mN0IFwhWO8bL6B1ZwFsjV/i/847otg+MX4QFluNQ4aUGUdjGUdaPA4dGJZgeeEENWtDt
-         hP8iWXKJ/X4EqL0lFL3zw/AQCQG8Yw4Os0ZpeI6Cx2s6dh//loQS4AfdWCYMm7PBM5Z4
-         /gbQHBtO3rKeSg9KsyhXXsAda999cPcAFkPUsWlx7sIQI/dr9QSv3SO9ReR5JSZFEEtK
-         ClLqtQ3f0BlNqqE5AHJVW8NOAMdazzp7QkfntDJq9zhjR5W1oV0det02Cse1J/bEDhcM
-         j00Q==
+        d=chromium.org; s=google; t=1692301396; x=1692906196;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Si/xzp3b5Kfu8G0nSEoa+5klikTF3Mu0+jk3qoGOAuY=;
+        b=KxeY56i6e9bFm0eDLiKO1bFoDccJOZEBnJkV76FAX6YjulcKBu3jHRv3YQ70b3yGOe
+         PQJh1FpNvAgbEriTiPx4ICw9HDbU89czk8Hn2Uy1XwgXBObBtPrStXLnf09A8HsVeOuE
+         4EUrxiDykORt1gXd103esmYcKGNmvZD0Mt3TM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692301309; x=1692906109;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6o4QPTC0x5SDosCyvtrKyF/pyOdwEWIkCSwmSE9crCQ=;
-        b=kk+/Qh0z12uZ1Cb7FzsofGE0iYCzBilJg7CWG4SNLV9eGZrg+kfexzEHaNAuDjSj5X
-         3Q6ZGOQ89Zsz0yAEON4CwnQA/DjeYmk7wytvetJOXUHo2r2PAgSGcJq1QyYtmjhQsNRN
-         qIkxLoMKCvNklCagQAVMm3ejid+XCEZj+9P2FYjYzHpPxDYlyk50z0MLkQck01wo/qUH
-         JKhSFrHO8js3auuQBdWktTZTHYi04vupyEo9W/jU2w8fAj/PGnCos8D6y5e0JDsJG3LR
-         fqubgzI+vw3GphzwQysxKcIqesuDu0rxRKwDpZGyv0fkEFPqGsD54d3iBXcItmwwi9QZ
-         Nptw==
-X-Gm-Message-State: AOJu0Yzb/9NYCufeUiEOSS6GAwqu/mhoDlbKT89rYXJLnepPp48+wMI9
-        oiWn/jiLX4B1yvHkxJwD7kIlp1N7neYo1jclXD4=
-X-Google-Smtp-Source: AGHT+IHHfIA7dxyc20KQfKMQBSbPncIaUu8NMSiMdqRsLKcL2jrE/dIZfWA5GHpJeb5m7s63IJHmhetF85HFlpYgaF0=
-X-Received: by 2002:a05:6102:3565:b0:447:6965:7284 with SMTP id
- bh5-20020a056102356500b0044769657284mr896403vsb.8.1692301309467; Thu, 17 Aug
- 2023 12:41:49 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692301396; x=1692906196;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Si/xzp3b5Kfu8G0nSEoa+5klikTF3Mu0+jk3qoGOAuY=;
+        b=CqzyeV/nOh90bNDNPI2OlV+ok5I2yM5mfTJQ3hCEODG2EjmYhC1jQVk4EcBlSe0887
+         aSvXfsAbNycYp9nUO+7JHUqXgnZ8rDo3vYwBxbZs+c2Gjmhbt39T0hvTRhs0dNVk9jhU
+         kfdtlgJa2qVjm7UBIcnMXfholOSNWGV5u2xeWcUWSqRzy2jAyz0mX2CFS8UqDrPoFJGM
+         50NCe49LVdS9yiLoCYLa8XF2be6mdRGBQdsxmbEgqHBGkJFeO/WMHekHw7CDoSGKQ5gC
+         3KxHz5zZAhmnGJ5lDP5EUfLgspAk5uNeHTsv6Yvx1tqX2EKPJV9gF/onF5e9zxAgQWzZ
+         EIRA==
+X-Gm-Message-State: AOJu0Yy5mU1SsC7T0YxEpkv5T26RvT+fLQmznER3D2C9vMw9606QA4Yw
+        qYU3bZ5vxU3xPXGH7+NFMsIQqw==
+X-Google-Smtp-Source: AGHT+IF8sqhGihwt+Ap2J98YCk1tsnEznH8Rh7IBJbNautALI9sMLroMhoKNbFg4o8I8ywbZP133Aw==
+X-Received: by 2002:a17:903:1103:b0:1b8:17e8:5475 with SMTP id n3-20020a170903110300b001b817e85475mr416559plh.24.1692301396327;
+        Thu, 17 Aug 2023 12:43:16 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id e5-20020a170902744500b001bdc8a5e96csm137716plt.169.2023.08.17.12.43.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 12:43:15 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Andy Lutomirski <luto@amacapital.net>,
+        linux-hardening@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>, Will Drewry <wad@chromium.org>,
+        kernel test robot <lkp@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] seccomp: Add missing kerndoc notations
+Date:   Thu, 17 Aug 2023 12:43:05 -0700
+Message-Id: <20230817194302.never.378-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230809232851.1004023-1-alistair.francis@wdc.com>
- <20230810073457.GA26246@wunner.de> <CAKmqyKPm_BFnNxVLXCO_PVRDJaVb+XOj=kEEzXd+MgkwDiZhXA@mail.gmail.com>
- <20230812081526.GC9469@wunner.de> <2023081224-famished-devotion-6e0e@gregkh>
- <CAKmqyKPx9Oi-ZF0grdUzkHi5BjyyNQZ2r30vgShR6cOY9xZ9YQ@mail.gmail.com>
- <2023081543-clarify-deniable-8de8@gregkh> <CAKmqyKMHpo8MA9cRAzxWNT+P9poHCKbSpNF4yk8MrVg9+k8=_A@mail.gmail.com>
- <2023081538-grab-alongside-ce24@gregkh>
-In-Reply-To: <2023081538-grab-alongside-ce24@gregkh>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Thu, 17 Aug 2023 15:41:23 -0400
-Message-ID: <CAKmqyKOmYfWWxf-90k_VY_csehGhGp59HRx4uvO2ej=8XFtOig@mail.gmail.com>
-Subject: Re: [PATCH v3] PCI/DOE: Expose the DOE protocols via sysfs
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Lukas Wunner <lukas@wunner.de>, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, Jonathan.Cameron@huawei.com,
-        alex.williamson@redhat.com, christian.koenig@amd.com,
-        kch@nvidia.com, logang@deltatee.com, linux-kernel@vger.kernel.org,
-        Alistair Francis <alistair.francis@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2869; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=DEr99gvD9OSuIqfU7dmInPXq0QE7MMx8F00y6G7s5aQ=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBk3nhJaR0a0brdry5b9BAE4I8tunfkNG/oOi85j
+ U2lGl5v7E6JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZN54SQAKCRCJcvTf3G3A
+ Jg1bEACjXGJUFlyf3qhxRMCtND2MpTVw8GOlsxq5zdhG1hVcz9OjWnkOiACp6dpW+dWw767cI+X
+ 7XbbJy0YlR7Fd9Nx3gpWP1mBHEIOqQexioqPYvjEtQW0ruWJ6y4Ih6/v5RFTk8JoixpQArUOJHK
+ Yanfa32J2doWlnNsnAFcRq2BwmqzPsH7h4BT54zbr5S1ByjKgD3rHQzXyKcbhYEz0iLELa12mK9
+ /uvwfrrAoqWp7+UWQX2mDeZIWDaMeR4SlJV/M+/bjGrkixS+t7620YbugsuMXmR3eE3PP3pP2m4
+ B1W9/N3H5v1GOK7cksbUBOI03UJOwSc1rm4B1UfkDn+8wXaZz44wg96CUoFoTVNIr0wS44fe6X9
+ 2u/N9TkdSmp0C0NVq1imNOX9UYgLPOV1RzqHMPHaOBMfsk6CGVdBEDnmMWSih2eSXSNqbEQfjYh
+ OmW1cGqNYF3iZs4x5RVLfsydMaoN6HCH29HoLvzavxoePrJ2V0pg4MTKUMYkdYoiYgoQmFBFc2C
+ qaH4ZUDi9gXoCG1CleB7UE37hJVqkAcHTQ9x1lRLSO5W90R01K8fscoMhgAdwFojrnSQhLOvelC
+ kNtQj+t8cf/ETIeFpyWN7WOfYFVE9ZvLDRBXria8lnMe3fcB3ffGZZEiuUYpdrJawh4qZq+9TNx
+ saQFJl2 uQ+SwWOQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 4:10=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org=
-> wrote:
->
-> On Tue, Aug 15, 2023 at 03:50:31PM -0400, Alistair Francis wrote:
-> > On Tue, Aug 15, 2023 at 11:11=E2=80=AFAM Greg KH <gregkh@linuxfoundatio=
-n.org> wrote:
-> > >
-> > > On Tue, Aug 15, 2023 at 09:44:32AM -0400, Alistair Francis wrote:
-> > > > On Sat, Aug 12, 2023 at 4:26=E2=80=AFAM Greg KH <gregkh@linuxfounda=
-tion.org> wrote:
-> > > > >
-> > > > > On Sat, Aug 12, 2023 at 10:15:26AM +0200, Lukas Wunner wrote:
-> > > > > > On Thu, Aug 10, 2023 at 11:34:11AM -0400, Alistair Francis wrot=
-e:
-> > > > > > > On Thu, Aug 10, 2023 at 3:34???AM Lukas Wunner <lukas@wunner.=
-de> wrote:
-> > > > > > > > On Wed, Aug 09, 2023 at 07:28:51PM -0400, Alistair Francis =
-wrote:
-> > > > > > > > > --- a/drivers/pci/pci-sysfs.c
-> > > > > > > > > +++ b/drivers/pci/pci-sysfs.c
-> > > > > > > > > @@ -1226,6 +1227,12 @@ static int pci_create_resource_fil=
-es(struct pci_dev *pdev)
-> > > > > > > > >       int i;
-> > > > > > > > >       int retval;
-> > > > > > > > >
-> > > > > > > > > +#ifdef CONFIG_PCI_DOE
-> > > > > > > > > +     retval =3D doe_sysfs_init(pdev);
-> > > > > > > > > +     if (retval)
-> > > > > > > > > +             return retval;
-> > > > > > > > > +#endif
-> > > > > > > > > +
-> > > > > > > >
-> > > > > > > > The preferred way to expose PCI sysfs attributes nowadays i=
-s to add them
-> > > > > > > > to pci_dev_attr_groups[] and use the ->is_visible callback =
-to check
-> > > > > > > > whether they're applicable to a particular pci_dev.  The al=
-ternative
-> > > > > > > > via pci_create_resource_files() has race conditions which I=
- think
-> > > > > > > > still haven't been fixed. Bjorn recommended the ->is_visibl=
-e approach
-> > > > > > > > in response to the most recent attempt to fix the race:
-> > > > > > > >
-> > > > > > > > https://lore.kernel.org/linux-pci/20230427161458.GA249886@b=
-helgaas/
-> > > > > > >
-> > > > > > > The is_visible doen't seem to work in this case.
-> > > > > > >
-> > > > > > > AFAIK is_visible only applies to the attributes under the gro=
-up. Which
-> > > > > > > means that every PCIe device will see a `doe_protos` director=
-y, no
-> > > > > > > matter if DOE is supported.
-> > > > > >
-> > > > > > internal_create_group() in fs/sysfs/group.c does this:
-> > > > > >
-> > > > > >       if (grp->name) {
-> > > > > >                       ...
-> > > > > >                       kn =3D kernfs_create_dir_ns(kobj->sd, grp=
-->name, ...
-> > > > > >
-> > > > > > So I'm under the impression that if you set the ->name member o=
-f
-> > > > > > struct attribute_group, the attributes in that group appear und=
-er
-> > > > > > a directory of that name.
-> > > > > >
-> > > > > > In fact, the kernel-doc for struct attribute_group claims as mu=
-ch:
-> > > > > >
-> > > > > >  * struct attribute_group - data structure used to declare an a=
-ttribute group.
-> > > > > >  * @name:     Optional: Attribute group name
-> > > > > >  *            If specified, the attribute group will be created=
- in
-> > > > > >  *            a new subdirectory with this name.
-> > > > > >
-> > > > > > So I don't quite understand why you think that "every PCIe devi=
-ce will
-> > > > > > see a `doe_protos` directory, no matter if DOE is supported"?
-> > > > > >
-> > > > > > Am I missing something?
-> > > > >
-> > > > > I think the issue might be that the directory will be created eve=
-n if no
-> > > > > attributes are present in it due to the is_visable() check not re=
-turning
-> > > > > any valid files?
-> > > >
-> > > > Yes, that's what I'm seeing. I see the directory for all PCIe devic=
-es
-> > > >
-> > > > This is a WIP that I had:
-> > > > https://github.com/alistair23/linux/commit/61925cd174c31386eaa7e51e=
-3a1be606b38f847c
-> > > >
-> > > > >
-> > > > > If so, I had a patch somewhere around here where I was trying to =
-fix
-> > > > > that up:
-> > > > >         https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/dr=
-iver-core.git/commit/?h=3Ddebugfs_cleanup&id=3Df670945dfbaf353fe068544c31e3=
-fa45575da5b5
-> > > > > but it didn't seem to work properly and kept crashing.  I didn't =
-spend
-> > > > > much time on looking into it, but if this is an issue, I can work=
- on
-> > > > > fixing this properly.
-> > > >
-> > > > That patch sounds like it would fix the issue of empty directories
-> > > > that I'm seeing. Do you mind fixing it up properly?
-> > >
-> > > I am currently unable to do so due to travel and stuff for a few week=
-s,
-> > > sorry.  Feel free to take it and fix the boot crash that is seen with=
- it
-> > > and make it part of your patch series if you can't wait that long.
-> >
-> > No worries.
-> >
-> > It's much harder than I first thought though. There are currently lots
-> > of users who expect the group to remain even if empty, as they
-> > dynamically add/merge properties later. Which is what we end up doing
-> > for DOE as well
-> >
-> > I'll keep looking into this and see if I can figure something out.
->
-> Yeah, now that I think about it, that's where stuff fell apart for me as
-> well.  We should be able to create the group and then only create the
-> file when they are added/merged, so I bet I missed a codepath somewhere.
+The kerndoc for some struct member and function arguments were missing.
+Add them.
 
-Yeah, it's tricky.
+Cc: Andy Lutomirski <luto@amacapital.net>
+Cc: Will Drewry <wad@chromium.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308171742.AncabIG1-lkp@intel.com/
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ kernel/seccomp.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-The documentation for sysfs_merge_group() specifically says
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index d3fdc0086168..255999ba9190 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -110,11 +110,13 @@ struct seccomp_knotif {
+  * @flags: The flags for the new file descriptor. At the moment, only O_CLOEXEC
+  *         is allowed.
+  * @ioctl_flags: The flags used for the seccomp_addfd ioctl.
++ * @setfd: whether or not SECCOMP_ADDFD_FLAG_SETFD was set during notify_addfd
+  * @ret: The return value of the installing process. It is set to the fd num
+  *       upon success (>= 0).
+  * @completion: Indicates that the installing process has completed fd
+  *              installation, or gone away (either due to successful
+  *              reply, or signal)
++ * @list: list_head for chaining seccomp_kaddfd together.
+  *
+  */
+ struct seccomp_kaddfd {
+@@ -138,12 +140,12 @@ struct seccomp_kaddfd {
+  * structure is fairly large, we store the notification-specific stuff in a
+  * separate structure.
+  *
+- * @request: A semaphore that users of this notification can wait on for
+- *           changes. Actual reads and writes are still controlled with
+- *           filter->notify_lock.
++ * @requests: A semaphore that users of this notification can wait on for
++ *            changes. Actual reads and writes are still controlled with
++ *            filter->notify_lock.
++ * @flags: A set of SECCOMP_USER_NOTIF_FD_* flags.
+  * @next_id: The id of the next request.
+  * @notifications: A list of struct seccomp_knotif elements.
+- * @flags: A set of SECCOMP_USER_NOTIF_FD_* flags.
+  */
+ 
+ struct notification {
+@@ -558,6 +560,8 @@ static void __seccomp_filter_release(struct seccomp_filter *orig)
+  *			    drop its reference count, and notify
+  *			    about unused filters
+  *
++ * @tsk: task the filter should be released from.
++ *
+  * This function should only be called when the task is exiting as
+  * it detaches it from its filter tree. As such, READ_ONCE() and
+  * barriers are not needed here, as would normally be needed.
+@@ -577,6 +581,8 @@ void seccomp_filter_release(struct task_struct *tsk)
+ /**
+  * seccomp_sync_threads: sets all threads to use current's filter
+  *
++ * @flags: SECCOMP_FILTER_FLAG_* flags to set during sync.
++ *
+  * Expects sighand and cred_guard_mutex locks to be held, and for
+  * seccomp_can_sync_threads() to have returned success already
+  * without dropping the locks.
+-- 
+2.34.1
 
-This function returns an error if the group doesn't exist or any of the
-files already exist in that group, in which case none of the new files
-are created.
-
-as an empty group isn't created with your patch it doesn't work with
-sysfs_merge_group().
-
-I'm assuming we don't want to change those public functions by
-creating the group in sysfs_merge_group() if it isn't created.
-
-Creating the group is just creating the directory, so I don't see a
-way we can create the group without creating the directory
-
-Alistair
-
->
-> > Would an .attr_is_visible() function pointer for struct
-> > attribute_group something that the kernel would accept?
->
-> Worst case, yes, that would be acceptable.  But try to see where I
-> messed up on the original patch, it should be able to be done
-> automatically somehow...
->
-> thanks,
->
-> greg k-h
