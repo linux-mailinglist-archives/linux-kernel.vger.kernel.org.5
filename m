@@ -2,96 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6241377F16F
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 09:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 892E877F171
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 09:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348579AbjHQHpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 03:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53878 "EHLO
+        id S1348588AbjHQHqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 03:46:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348562AbjHQHpT (ORCPT
+        with ESMTP id S1348612AbjHQHp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 03:45:19 -0400
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7082E2D59;
-        Thu, 17 Aug 2023 00:45:16 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 345082000B;
-        Thu, 17 Aug 2023 07:45:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1692258315;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NU5V/SoFtbjbDTK+iK4TleJsud7mzfxbuVy/GuI/lko=;
-        b=Y39egPNIJBfK4k4dV+Wr5U/6BX5pj8dMSFr4N4/4/NYOnomSDxuvU+OTQ2ObovhTSrWLQT
-        8dE95DTjgMF+FSetBUMlr0RGrk0/0p7MTjs9mYO3mLto+5GLU077uN8w1LEQg6uS4fyBTR
-        pnEE0O78dNbPx8i5GiFlbe3gHh5A8zQvupAxzoWwlfJ5hWCmMwXQ2cpmF3eP0J+1wUM7HI
-        LgEbPLim++lhHUeeDZ3+47nbJY1SfNkZ6E/TARL10Kd+eeZ0d3y6WyyNt3TddWzxyHH0ZR
-        ct6DXYGTeYfSfJX/Ju+OoEsl8fKO5FhxWc2wJrmOsabk5E/WStsR9uPUp0OlyA==
-Date:   Thu, 17 Aug 2023 09:45:12 +0200
-From:   Luca Ceresoli <luca.ceresoli@bootlin.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Wolfram Sang <wsa@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: Make I2C_ATR invisible
-Message-ID: <20230817094512.38b3d45b@booty>
-In-Reply-To: <588d302477cb7e6b30b52ee6448807324c57b88a.1692113321.git.geert+renesas@glider.be>
-References: <588d302477cb7e6b30b52ee6448807324c57b88a.1692113321.git.geert+renesas@glider.be>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Thu, 17 Aug 2023 03:45:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2996E2D63;
+        Thu, 17 Aug 2023 00:45:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8074563436;
+        Thu, 17 Aug 2023 07:45:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CD9DC433C8;
+        Thu, 17 Aug 2023 07:45:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692258352;
+        bh=onKG4UaSIXvx73FVELXuTURmfyjPZd62E2Ggu8RV0UY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UBSyYwRq4ukM+F0TADNzRB2xmIXTJcxJ0yaWvaf8nHHyv0HwA4WqV406TOksPFasq
+         Pd0ZU1Q17HqL4fKlQb7bTcigZNc0/ETKGYy+XZdSQDvOCvBcbUDKijk/6GTZ3W2YnZ
+         pnDR+tgWaUw1GfmhJIm6GR4PI35UPBWktbp3sRWx0h+dfBjebD/9cWISc9+VLe3Mda
+         f//r5igfPaFWTfLj5pI9MJzGe6Byb1M0hl00nO5q9TYD6Vn+8YDpm+QdbbBm6ZBh87
+         hJovxgM7gqMvD6YRICJvi0UOTmqoXffJF1Csfs/rTDfm+rN3yQ+Amou0x2gcEboU5w
+         nc7PbHoWQHSUA==
+Date:   Thu, 17 Aug 2023 09:45:47 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     nick.hawkins@hpe.com
+Cc:     christophe.jaillet@wanadoo.fr, simon.horman@corigine.com,
+        andrew@lunn.ch, verdun@hpe.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/5] net: hpe: Add GXP UMAC Driver
+Message-ID: <ZN3QKyHoUNoN9dx5@vergenet.net>
+References: <20230816215220.114118-1-nick.hawkins@hpe.com>
+ <20230816215220.114118-5-nick.hawkins@hpe.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: luca.ceresoli@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230816215220.114118-5-nick.hawkins@hpe.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
-
-On Tue, 15 Aug 2023 17:29:11 +0200
-Geert Uytterhoeven <geert+renesas@glider.be> wrote:
-
-> I2C Address Translator (ATR) support is not a stand-alone driver, but a
-> library.  All of its users select I2C_ATR.  Hence there is no need for
-> the user to enable this symbol manually, except when compile-testing.
+On Wed, Aug 16, 2023 at 04:52:19PM -0500, nick.hawkins@hpe.com wrote:
+> From: Nick Hawkins <nick.hawkins@hpe.com>
 > 
-> Fixes: a076a860acae77bb ("media: i2c: add I2C Address Translator (ATR) support")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> Do we care yet about out-of-tree drivers that need this functionality?
-> ---
->  drivers/i2c/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> The GXP contains two Ethernet MACs that can be connected externally
+> to several physical devices. From an external interface perspective
+> the BMC provides two SERDES interface connections capable of either
+> SGMII or 1000Base-X operation. The BMC also provides a RMII interface
+> for sideband connections to external Ethernet controllers.
 > 
-> diff --git a/drivers/i2c/Kconfig b/drivers/i2c/Kconfig
-> index c6d1a345ea6d8aee..9388823bb0bb960c 100644
-> --- a/drivers/i2c/Kconfig
-> +++ b/drivers/i2c/Kconfig
-> @@ -72,7 +72,7 @@ config I2C_MUX
->  source "drivers/i2c/muxes/Kconfig"
->  
->  config I2C_ATR
-> -	tristate "I2C Address Translator (ATR) support"
-> +	tristate "I2C Address Translator (ATR) support" if COMPILE_TEST
+> The primary MAC (umac0) can be mapped to either SGMII/1000-BaseX
+> SERDES interface.  The secondary MAC (umac1) can be mapped to only
+> the second SGMII/1000-Base X Serdes interface or it can be mapped for
+> RMII sideband.
+> 
+> Signed-off-by: Nick Hawkins <nick.hawkins@hpe.com>
 
-Either as-is, or with an anonymous tristate:
+...
 
-Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+> diff --git a/drivers/net/ethernet/hpe/gxp-umac.c b/drivers/net/ethernet/hpe/gxp-umac.c
 
-Luca
+...
 
--- 
-Luca Ceresoli, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> +static int umac_init_mac_address(struct net_device *ndev)
+> +{
+> +	struct umac_priv *umac = netdev_priv(ndev);
+> +	struct platform_device *pdev = umac->pdev;
+> +	char addr[ETH_ALEN];
+> +	int err;
+> +
+> +	err = of_get_mac_address(pdev->dev.of_node, addr);
+> +	if (err)
+> +		netdev_err(ndev, "Failed to get address from device-tree: %d\n",
+> +			   err);
+> +		return -EINVAL;
+
+Hi Nick,
+
+it looks like there should be some {} involved in the condition above,
+else the function will return -EINVAL unconditionally.
+
+Flagged by W=1 builds with clang-16 and gcc-13.
+
+> +
+> +	if (is_valid_ether_addr(addr)) {
+> +		dev_addr_set(ndev, addr);
+> +		netdev_dbg(ndev,
+> +			   "Read MAC address %pM from DTB\n", ndev->dev_addr);
+> +	} else {
+> +		netdev_err(ndev, "Mac Address is Invalid");
+> +		return -EINVAL;
+> +	}
+> +
+> +	dev_addr_set(ndev, addr);
+> +	umac_set_mac_address(ndev, addr);
+> +
+> +	return 0;
+> +}
+
+...
