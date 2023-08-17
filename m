@@ -2,178 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92559780148
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 00:50:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94AEF78014B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 00:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355873AbjHQWtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 18:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54972 "EHLO
+        id S1355880AbjHQWuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 18:50:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355876AbjHQWto (ORCPT
+        with ESMTP id S1355946AbjHQWup (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 18:49:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B10432722
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 15:49:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692312582; x=1723848582;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=n//xZJgF+fdbBXtZJSi3l8HgglzPGjRalK3RG40kkdU=;
-  b=iIPA5JUfbZZ0gZy1js07+HQc9QiwifyN48tEB+yRufFjeOaYYwI6TYPd
-   rZTXBnbUabUH0I9Mle+5VVLmDrqcm/BB20saVlh+YNjr+U5Wi5utltCnB
-   KKgFOs9WO/Q8AJ64uS/q4qk3auNSoC+uHiK/Gjc7MoWiScjZyDQoc3XQ9
-   s1EALQ2MVzmoR/YRd4s8u1asU/Lw4oVjSHMnnBJ/GKWLbOjXEMLmvdgQn
-   Thz9H3CoXeubhDXpuNYNkxj16WaZR0pyx77ylXBgXLJBJAptQ3b+eOTZi
-   qzSQ0J6dS2mf8SaztBLRw0J/ohQj3eVEIqBMKBGKzP0+oPSvdPd3len23
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="403931303"
-X-IronPort-AV: E=Sophos;i="6.01,181,1684825200"; 
-   d="scan'208";a="403931303"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 15:49:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="858411464"
-X-IronPort-AV: E=Sophos;i="6.01,181,1684825200"; 
-   d="scan'208";a="858411464"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 17 Aug 2023 15:49:39 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWloB-0001XF-0A;
-        Thu, 17 Aug 2023 22:49:39 +0000
-Date:   Fri, 18 Aug 2023 06:48:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kashyap Desai <kashyap.desai@broadcom.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Leon Romanovsky <leon@kernel.org>,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:108: warning: Function
- parameter or member 'rcfw' not described in 'bnxt_re_is_fw_stalled'
-Message-ID: <202308180600.oOnkIAQV-lkp@intel.com>
+        Thu, 17 Aug 2023 18:50:45 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1973A8B
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 15:50:35 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2ba0f27a4c2so4564271fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 15:50:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692312634; x=1692917434;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iVkyNJg3PphN1aFHst+x/uPsu/nt3+ErhK8rBHrZocA=;
+        b=ap0VQB8ZKBwl6XEvWD5SFeBYu2yECxoysJkkoGqxufBM89fQl5eYer9jP5vTw9Rq7L
+         KsdGGWwDJAy473bNN0oNoGbmZ4lYnbxmFb3Z7iHOsGDxtpB5ROJrI59hIM1xTiSqM6T2
+         S7kJ2CtcXDnIy+2WwMI0vVFmksuxqvklawh9IZCkoMn0Kt2aMWdv3PV7XO8CKy7Xs7J7
+         wSW4V4wODbR3lb8zKheSh8WEUdIal91NgcbPzZHClPqsPt7cOdQYc3ggkLjwhFGOWioI
+         4yTDfjgrBZg21uCbl++VU18A9YMOIJkoFv4MTJy8cY/YANwinvPYuaIGHwSgy/zfxaS4
+         sc1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692312634; x=1692917434;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iVkyNJg3PphN1aFHst+x/uPsu/nt3+ErhK8rBHrZocA=;
+        b=DCPe1BQuXw8jAD3uzh8M1jkFIim341Wj8JY6deQz3JZtwWV133w1Y7c3y4XRM/Nd/9
+         0e2yEnqLaGNJRgye+9XJcaNlbgiGsmI41f52ckEQ5V0UYPVYKoUzNsx5c9T8mZW0dTDK
+         p8k60wEpTcQRmPitbMYdiUYvddzXYk0HXSg+0IBAUEJ6rlOigkLuyslE+wJWP56FIom4
+         27bvGSzl+B364NJ38I7RQrnP/qI/3bwFFMTtbQOlrDvWEoutGUfCpBcJhf2kbMxUEo0L
+         cvLHYi2+Xv0lh/q2dRn5Jln+TfZAGT/y++OT6aPCtMYciJkckfEAoLEqGrnYXfG95dSQ
+         rz8g==
+X-Gm-Message-State: AOJu0YwjhmuIYOwpFvZFWLhWrsXwsMBAQOWisZwQmzmUJ19/DXCbzr5y
+        jh7miciQ1swIS01s8D54WaEiIfmVsy/tng1rMUC/dfeAIREn3XCchK42ag==
+X-Google-Smtp-Source: AGHT+IF2fSy1PuSizmh8l+vrpF4pezpkGtIlU6Di+dxprUqflj5jAtv51MgJUSCrrriECsjzokpZM860MypWLyFyYuA=
+X-Received: by 2002:a2e:6a0e:0:b0:2b9:dfd1:3808 with SMTP id
+ f14-20020a2e6a0e000000b002b9dfd13808mr493660ljc.25.1692312633714; Thu, 17 Aug
+ 2023 15:50:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230817164733.2475092-1-nphamcs@gmail.com> <20230817190126.3155299-1-nphamcs@gmail.com>
+ <CAJD7tkaNo=0mkYKxrTwGNaJ33G1z7cYdWhNQNF3tQp_MKCh-uA@mail.gmail.com> <CAKEwX=Pt3ir0jpn+eRjzH=K49b0Y0_N1NnieLm0a0VwV1aCKKQ@mail.gmail.com>
+In-Reply-To: <CAKEwX=Pt3ir0jpn+eRjzH=K49b0Y0_N1NnieLm0a0VwV1aCKKQ@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Thu, 17 Aug 2023 15:49:57 -0700
+Message-ID: <CAJD7tkb1jMuCouyL8OX0434HK0Wx=Hyf9UnGVOH8fP7NxA8+Pw@mail.gmail.com>
+Subject: Re: [PATCH v2] workingset: ensure memcg is valid for recency check
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     Yu Zhao <yuzhao@google.com>, akpm@linux-foundation.org,
+        hannes@cmpxchg.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   16931859a6500d360b90aeacab3b505a3560a3ed
-commit: f0c875ff6293965a30aaeb02a0d19b293e11bc2b RDMA/bnxt_re: use firmware provided max request timeout
-date:   10 weeks ago
-config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230818/202308180600.oOnkIAQV-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230818/202308180600.oOnkIAQV-lkp@intel.com/reproduce)
+On Thu, Aug 17, 2023 at 3:43=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote=
+:
+>
+> On Thu, Aug 17, 2023 at 1:50 PM Yosry Ahmed <yosryahmed@google.com> wrote=
+:
+> >
+> > On Thu, Aug 17, 2023 at 12:01=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> =
+wrote:
+> > >
+> > > In eviction recency check, we are currently not holding a local
+> > > reference to the memcg that the refaulted folio belonged to when it w=
+as
+> > > evicted. This could cause serious memcg lifetime issues, for e.g in t=
+he
+> > > memcg hierarchy traversal done in mem_cgroup_get_nr_swap_pages(). Thi=
+s
+> > > has occurred in production:
+> > >
+> > > [ 155757.793456] BUG: kernel NULL pointer dereference, address: 00000=
+000000000c0
+> > > [ 155757.807568] #PF: supervisor read access in kernel mode
+> > > [ 155757.818024] #PF: error_code(0x0000) - not-present page
+> > > [ 155757.828482] PGD 401f77067 P4D 401f77067 PUD 401f76067 PMD 0
+> > > [ 155757.839985] Oops: 0000 [#1] SMP
+> > > [ 155757.846444] CPU: 7 PID: 1380944 Comm: ThriftSrv-pri3- Kdump: loa=
+ded Tainted: G S                 6.4.3-0_fbk1_rc0_594_g8d0cbcaa67ba #1
+> > > [ 155757.870808] Hardware name: Wiwynn Twin Lakes MP/Twin Lakes Passi=
+ve MP, BIOS YMM16 05/24/2021
+> > > [ 155757.887870] RIP: 0010:mem_cgroup_get_nr_swap_pages+0x3d/0xb0
+> > > [ 155757.899377] Code: 29 19 4a 02 48 39 f9 74 63 48 8b 97 c0 00 00 0=
+0 48 8b b7 58 02 00 00 48 2b b7 c0 01 00 00 48 39 f0 48 0f 4d c6 48 39 d1 7=
+4 42 <48> 8b b2 c0 00 00 00 48 8b ba 58 02 00 00 48 2b ba c0 01 00 00 48
+> > > [ 155757.937125] RSP: 0018:ffffc9002ecdfbc8 EFLAGS: 00010286
+> > > [ 155757.947755] RAX: 00000000003a3b1c RBX: 000007ffffffffff RCX: fff=
+f888280183000
+> > > [ 155757.962202] RDX: 0000000000000000 RSI: 0007ffffffffffff RDI: fff=
+f888bbc2d1000
+> > > [ 155757.976648] RBP: 0000000000000001 R08: 000000000000000b R09: fff=
+f888ad9cedba0
+> > > [ 155757.991094] R10: ffffea0039c07900 R11: 0000000000000010 R12: fff=
+f888b23a7b000
+> > > [ 155758.005540] R13: 0000000000000000 R14: ffff888bbc2d1000 R15: 000=
+007ffffc71354
+> > > [ 155758.019991] FS:  00007f6234c68640(0000) GS:ffff88903f9c0000(0000=
+) knlGS:0000000000000000
+> > > [ 155758.036356] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > [ 155758.048023] CR2: 00000000000000c0 CR3: 0000000a83eb8004 CR4: 000=
+00000007706e0
+> > > [ 155758.062473] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000=
+0000000000000
+> > > [ 155758.076924] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000=
+0000000000400
+> > > [ 155758.091376] PKRU: 55555554
+> > > [ 155758.096957] Call Trace:
+> > > [ 155758.102016]  <TASK>
+> > > [ 155758.106502]  ? __die+0x78/0xc0
+> > > [ 155758.112793]  ? page_fault_oops+0x286/0x380
+> > > [ 155758.121175]  ? exc_page_fault+0x5d/0x110
+> > > [ 155758.129209]  ? asm_exc_page_fault+0x22/0x30
+> > > [ 155758.137763]  ? mem_cgroup_get_nr_swap_pages+0x3d/0xb0
+> > > [ 155758.148060]  workingset_test_recent+0xda/0x1b0
+> > > [ 155758.157133]  workingset_refault+0xca/0x1e0
+> > > [ 155758.165508]  filemap_add_folio+0x4d/0x70
+> > > [ 155758.173538]  page_cache_ra_unbounded+0xed/0x190
+> > > [ 155758.182919]  page_cache_sync_ra+0xd6/0x1e0
+> > > [ 155758.191738]  filemap_read+0x68d/0xdf0
+> > > [ 155758.199495]  ? mlx5e_napi_poll+0x123/0x940
+> > > [ 155758.207981]  ? __napi_schedule+0x55/0x90
+> > > [ 155758.216095]  __x64_sys_pread64+0x1d6/0x2c0
+> > > [ 155758.224601]  do_syscall_64+0x3d/0x80
+> > > [ 155758.232058]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
+> > > [ 155758.242473] RIP: 0033:0x7f62c29153b5
+> > > [ 155758.249938] Code: e8 48 89 75 f0 89 7d f8 48 89 4d e0 e8 b4 e6 f=
+7 ff 41 89 c0 4c 8b 55 e0 48 8b 55 e8 48 8b 75 f0 8b 7d f8 b8 11 00 00 00 0=
+f 05 <48> 3d 00 f0 ff ff 77 33 44 89 c7 48 89 45 f8 e8 e7 e6 f7 ff 48 8b
+> > > [ 155758.288005] RSP: 002b:00007f6234c5ffd0 EFLAGS: 00000293 ORIG_RAX=
+: 0000000000000011
+> > > [ 155758.303474] RAX: ffffffffffffffda RBX: 00007f628c4e70c0 RCX: 000=
+07f62c29153b5
+> > > [ 155758.318075] RDX: 000000000003c041 RSI: 00007f61d2986000 RDI: 000=
+0000000000076
+> > > [ 155758.332678] RBP: 00007f6234c5fff0 R08: 0000000000000000 R09: 000=
+0000064d5230c
+> > > [ 155758.347452] R10: 000000000027d450 R11: 0000000000000293 R12: 000=
+000000003c041
+> > > [ 155758.362044] R13: 00007f61d2986000 R14: 00007f629e11b060 R15: 000=
+000000027d450
+> > > [ 155758.376661]  </TASK>
+> > >
+> > > This patch fixes the issue by getting a local reference inside
+> > > unpack_shadow().
+> > >
+> > > Fixes: f78dfc7b77d5 ("workingset: fix confusion around eviction vs re=
+fault container")
+> >
+> > Beyond mem_cgroup_get_nr_swap_pages(), we still use the eviction_memcg
+> > without grabbing a ref to it first in workingset_test_recent() (and in
+> > workingset_refault() before that) as well as lru_gen_test_recent().
+> >
+> > Wouldn't the fix go back even further? or am I misinterpreting the prob=
+lem?
+> Hmm I don't see eviction_memcg being used outside of *_test_recent
+> (the rest just uses memcg =3D folio_memcg(folio), which if I'm not mistak=
+en is
+> the memcg that is refaulting the folio into memory).
+>
+> Inside workingset_test_recent(), the only other place where eviction_memc=
+g
+> is used is for mem_cgroup_lruvec. This function call won't crash whether
+> eviction_memcg is valid or not.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308180600.oOnkIAQV-lkp@intel.com/
+If eviction_memcg is invalid because the memory was already freed, we
+are basically dereferencing garbage in mem_cgroup_lruvec() aren't we?
 
-All warnings (new ones prefixed by >>):
+> The crash only happens during
+> mem_cgroup_get_nr_swap_pages, which has an upward traversal from
+> eviction_memcg to root.
+>
+> Let me know if this does not make sense and/or is insufficient to ensure
+> safe upward traversal from eviction_memcg to root!
+> >
+> >
+> >
+> > > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+> > > Cc: stable@vger.kernel.org
+> > > ---
+> > >  mm/workingset.c | 65 ++++++++++++++++++++++++++++++++---------------=
+--
+> > >  1 file changed, 43 insertions(+), 22 deletions(-)
+> > >
+> > > diff --git a/mm/workingset.c b/mm/workingset.c
+> > > index da58a26d0d4d..03cadad4e484 100644
+> > > --- a/mm/workingset.c
+> > > +++ b/mm/workingset.c
+> > > @@ -206,10 +206,19 @@ static void *pack_shadow(int memcgid, pg_data_t=
+ *pgdat, unsigned long eviction,
+> > >         return xa_mk_value(eviction);
+> > >  }
+> > >
+> > > -static void unpack_shadow(void *shadow, int *memcgidp, pg_data_t **p=
+gdat,
+> > > -                         unsigned long *evictionp, bool *workingsetp=
+)
+> > > +/*
+> > > + * Unpacks the stored fields of a shadow entry into the given pointe=
+rs.
+> > > + *
+> > > + * The memcg pointer is only populated if the memcg recorded in the =
+shadow
+> > > + * entry is valid. In this case, a reference to the memcg will be ac=
+quired,
+> > > + * and a corresponding mem_cgroup_put() will be needed when we no lo=
+nger
+> > > + * need the memcg.
+> > > + */
+> > > +static void unpack_shadow(void *shadow, struct mem_cgroup **memcgp,
+> > > +                       pg_data_t **pgdat, unsigned long *evictionp, =
+bool *workingsetp)
+> > >  {
+> > >         unsigned long entry =3D xa_to_value(shadow);
+> > > +       struct mem_cgroup *memcg;
+> > >         int memcgid, nid;
+> > >         bool workingset;
+> > >
+> > > @@ -220,7 +229,24 @@ static void unpack_shadow(void *shadow, int *mem=
+cgidp, pg_data_t **pgdat,
+> > >         memcgid =3D entry & ((1UL << MEM_CGROUP_ID_SHIFT) - 1);
+> > >         entry >>=3D MEM_CGROUP_ID_SHIFT;
+> > >
+> > > -       *memcgidp =3D memcgid;
+> > > +       /*
+> > > +        * Look up the memcg associated with the stored ID. It might
+> > > +        * have been deleted since the folio's eviction.
+> > > +        *
+> > > +        * Note that in rare events the ID could have been recycled
+> > > +        * for a new cgroup that refaults a shared folio. This is
+> > > +        * impossible to tell from the available data. However, this
+> > > +        * should be a rare and limited disturbance, and activations
+> > > +        * are always speculative anyway. Ultimately, it's the aging
+> > > +        * algorithm's job to shake out the minimum access frequency
+> > > +        * for the active cache.
+> > > +        */
+> > > +       memcg =3D mem_cgroup_from_id(memcgid);
+> > > +       if (memcg && css_tryget(&memcg->css))
+> > > +               *memcgp =3D memcg;
+> > > +       else
+> > > +               *memcgp =3D NULL;
+> > > +
+> > >         *pgdat =3D NODE_DATA(nid);
+> > >         *evictionp =3D entry;
+> > >         *workingsetp =3D workingset;
+> > > @@ -262,15 +288,16 @@ static void *lru_gen_eviction(struct folio *fol=
+io)
+> > >  static bool lru_gen_test_recent(void *shadow, bool file, struct lruv=
+ec **lruvec,
+> > >                                 unsigned long *token, bool *workingse=
+t)
+> > >  {
+> > > -       int memcg_id;
+> > >         unsigned long min_seq;
+> > >         struct mem_cgroup *memcg;
+> > >         struct pglist_data *pgdat;
+> > >
+> > > -       unpack_shadow(shadow, &memcg_id, &pgdat, token, workingset);
+> > > +       unpack_shadow(shadow, &memcg, &pgdat, token, workingset);
+> > > +       if (!mem_cgroup_disabled() && !memcg)
+> > > +               return false;
+> >
+> > +Yu Zhao
+> >
+> > There is a change of behavior here, right?
+> >
+> > The existing code will continue if !mem_cgroup_disabled() && !memcg is
+> > true, and mem_cgroup_lruvec() will return the lruvec of the root
+> > memcg. Now we are just returning false.
+> >
+> > Is this intentional?
+> Oh right, there is. Should have cc-ed Yu Zhao as well, my bad.
+> get_maintainers.pl isn't always sufficient I guess :)
+>
+> But yeah, this behavioral change is intentional.
+>
+> Correct me if I'm wrong of course, but it seems like MGLRU should
+> follow the same pattern here. That is, once we return from unpack_shadow,
+> the possible scenarios are the same as prescribed in workingset_test_rece=
+nt:
+>
+> 1. If mem_cgroup is disabled, we can ignore this check.
+> 2. If mem_cgroup is enabled, then the only reason why we get NULL
+> memcg from unpack_shadow is if the eviction_memcg is no longer
+> valid.  We should not try to get its lruvec, or substitute it with the
+> root memcg, but return false right away (i.e not recent).
+> >
 
-   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:73: warning: Function parameter or member 'opcode' not described in 'bnxt_qplib_map_rc'
->> drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:108: warning: Function parameter or member 'rcfw' not described in 'bnxt_re_is_fw_stalled'
->> drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:108: warning: Function parameter or member 'cookie' not described in 'bnxt_re_is_fw_stalled'
-   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:108: warning: Function parameter or member 'opcode' not described in 'bnxt_re_is_fw_stalled'
-   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:108: warning: Function parameter or member 'cbit' not described in 'bnxt_re_is_fw_stalled'
-   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:140: warning: Function parameter or member 'rcfw' not described in '__wait_for_resp'
-   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:140: warning: Function parameter or member 'cookie' not described in '__wait_for_resp'
-   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:140: warning: Function parameter or member 'opcode' not described in '__wait_for_resp'
-   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:188: warning: Function parameter or member 'rcfw' not described in '__block_for_resp'
-   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:188: warning: Function parameter or member 'cookie' not described in '__block_for_resp'
-   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:188: warning: Function parameter or member 'opcode' not described in '__block_for_resp'
-   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:386: warning: Function parameter or member 'rcfw' not described in '__poll_for_resp'
-   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:386: warning: Function parameter or member 'cookie' not described in '__poll_for_resp'
-   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:386: warning: Function parameter or member 'opcode' not described in '__poll_for_resp'
-   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:484: warning: Function parameter or member 'rcfw' not described in '__bnxt_qplib_rcfw_send_message'
-   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:484: warning: Function parameter or member 'msg' not described in '__bnxt_qplib_rcfw_send_message'
-   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:566: warning: Function parameter or member 'rcfw' not described in 'bnxt_qplib_rcfw_send_message'
-   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:566: warning: Function parameter or member 'msg' not described in 'bnxt_qplib_rcfw_send_message'
-
-
-vim +108 drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-
-    55	
-    56	/**
-    57	 * bnxt_qplib_map_rc  -  map return type based on opcode
-    58	 * @opcode    -  roce slow path opcode
-    59	 *
-    60	 * In some cases like firmware halt is detected, the driver is supposed to
-    61	 * remap the error code of the timed out command.
-    62	 *
-    63	 * It is not safe to assume hardware is really inactive so certain opcodes
-    64	 * like destroy qp etc are not safe to be returned success, but this function
-    65	 * will be called when FW already reports a timeout. This would be possible
-    66	 * only when FW crashes and resets. This will clear all the HW resources.
-    67	 *
-    68	 * Returns:
-    69	 * 0 to communicate success to caller.
-    70	 * Non zero error code to communicate failure to caller.
-    71	 */
-    72	static int bnxt_qplib_map_rc(u8 opcode)
-  > 73	{
-    74		switch (opcode) {
-    75		case CMDQ_BASE_OPCODE_DESTROY_QP:
-    76		case CMDQ_BASE_OPCODE_DESTROY_SRQ:
-    77		case CMDQ_BASE_OPCODE_DESTROY_CQ:
-    78		case CMDQ_BASE_OPCODE_DEALLOCATE_KEY:
-    79		case CMDQ_BASE_OPCODE_DEREGISTER_MR:
-    80		case CMDQ_BASE_OPCODE_DELETE_GID:
-    81		case CMDQ_BASE_OPCODE_DESTROY_QP1:
-    82		case CMDQ_BASE_OPCODE_DESTROY_AH:
-    83		case CMDQ_BASE_OPCODE_DEINITIALIZE_FW:
-    84		case CMDQ_BASE_OPCODE_MODIFY_ROCE_CC:
-    85		case CMDQ_BASE_OPCODE_SET_LINK_AGGR_MODE:
-    86			return 0;
-    87		default:
-    88			return -ETIMEDOUT;
-    89		}
-    90	}
-    91	
-    92	/**
-    93	 * bnxt_re_is_fw_stalled   -	Check firmware health
-    94	 * @rcfw      -   rcfw channel instance of rdev
-    95	 * @cookie    -   cookie to track the command
-    96	 * @opcode    -   rcfw submitted for given opcode
-    97	 * @cbit      -   bitmap entry of cookie
-    98	 *
-    99	 * If firmware has not responded any rcfw command within
-   100	 * rcfw->max_timeout, consider firmware as stalled.
-   101	 *
-   102	 * Returns:
-   103	 * 0 if firmware is responding
-   104	 * -ENODEV if firmware is not responding
-   105	 */
-   106	static int bnxt_re_is_fw_stalled(struct bnxt_qplib_rcfw *rcfw,
-   107					 u16 cookie, u8 opcode, u16 cbit)
- > 108	{
-   109		struct bnxt_qplib_cmdq_ctx *cmdq;
-   110	
-   111		cmdq = &rcfw->cmdq;
-   112	
-   113		if (time_after(jiffies, cmdq->last_seen +
-   114			      (rcfw->max_timeout * HZ))) {
-   115			dev_warn_ratelimited(&rcfw->pdev->dev,
-   116					     "%s: FW STALL Detected. cmdq[%#x]=%#x waited (%d > %d) msec active %d ",
-   117					     __func__, cookie, opcode,
-   118					     jiffies_to_msecs(jiffies - cmdq->last_seen),
-   119					     rcfw->max_timeout * 1000,
-   120					     test_bit(cbit, cmdq->cmdq_bitmap));
-   121			return -ENODEV;
-   122		}
-   123	
-   124		return 0;
-   125	}
-   126	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I will leave this for Yu :)
