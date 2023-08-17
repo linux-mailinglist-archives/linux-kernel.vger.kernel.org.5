@@ -2,117 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A6A780171
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85CB9780176
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355950AbjHQXCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 19:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58882 "EHLO
+        id S1355960AbjHQXDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 19:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355891AbjHQXCF (ORCPT
+        with ESMTP id S1355891AbjHQXDG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 19:02:05 -0400
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B04E48;
-        Thu, 17 Aug 2023 16:02:04 -0700 (PDT)
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1bc3d94d40fso2777735ad.3;
-        Thu, 17 Aug 2023 16:02:04 -0700 (PDT)
+        Thu, 17 Aug 2023 19:03:06 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA601FC3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:03:05 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2ba1e9b1fa9so4462341fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:03:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692313383; x=1692918183;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KohSaVbVTZzw51hU080rc6/yBBZBjNRiH2rTqSdtLwA=;
+        b=aEN8Z+oCxLhOchl7ZInJjqMS6/8gDE6EnAsPgIKnrqGgTSl3Wt6uM3AlSsmPUNy+dC
+         SqRQ7tbMI10tWghedG5dZlFQJ6Jv3JCm6rPThZw0Rc69eVsq4qwsbX5yTGiZYWQ4WpPo
+         hQ8lyiCANk9ehrf7h/B2j0hI3gRmFvAx1zsUlOjadavGo6VVTOkQKJUUM3aIEOgxbjqy
+         s4cw8Pe6gRkNcPFU5cYAO0oOiPfzd9gQ0vtNzHMon6H2Cv8YbQCNy1f2iirAnAaLlz6B
+         GY2CRAj1+7aLjxFBuFDhHu9OlQFkThfPgXC52bIjJuWx30YzKJ0ZH6JMqgW/sNqIDx9m
+         XMEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692313324; x=1692918124;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SwtAWZyaQZccFsvrQPELO3aY17uRAQUdwXsYLsWxG84=;
-        b=IuvWzEElfJ+wiUBT+a71rux5kompS9TLuhSyoAzS67Vac7ERhMy7QPFqLVWA84T4Pl
-         4NxfXzJJTyb6ACUEPaCaTmz1DnF7g3ONT69tZL31Fkh0MkJd86qBV5NXlENDlhGl3Fg6
-         GI8hvJf8xCJpUr09hDx4+MGPxWqj190mQX9Gq6bJyPDtfOri7gVMIOwUPLFHQCS39yEI
-         qaZrMDF1prhSw1+JdF7tcbv7mGx0hQOrJ/aBPG3+NxHR9FTq1S170krhIRL4L8Xbh0Ss
-         1rqk04t1JIaa07rEbveoFmsEkF/0RjB2JBRYdhaPjsDrNPlZsrhLhuIcH49pb8JOljE1
-         89iw==
-X-Gm-Message-State: AOJu0YyF1bpmNvTZ61efcsBiXd10Rx9saF0Uq+UgtmeeCLtuAClILu3a
-        8RgiB9pU0lMMejDdOVcFtro=
-X-Google-Smtp-Source: AGHT+IG2BFK2vmrhXuy5TCdio2ggF+9peVt2is7fV6FO/H95rTuj26QpxJj97gw/YuQUb7+KJafrLg==
-X-Received: by 2002:a17:902:d510:b0:1b6:c229:c350 with SMTP id b16-20020a170902d51000b001b6c229c350mr1154091plg.18.1692313324012;
-        Thu, 17 Aug 2023 16:02:04 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id jg1-20020a17090326c100b001bb04755212sm290077plb.228.2023.08.17.16.02.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 16:02:03 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 23:01:46 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, patches@lists.linux.dev,
-        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
-        haiyangz@microsoft.com, decui@microsoft.com,
-        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
-        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
-        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
-        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        will@kernel.org, catalin.marinas@arm.com,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v2 13/15] uapi: hyperv: Add mshv driver headers hvhdk.h,
- hvhdk_mini.h, hvgdk.h, hvgdk_mini.h
-Message-ID: <ZN6m2gVmtVStuEfA@liuwe-devbox-debian-v2>
-References: <1692309711-5573-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1692309711-5573-14-git-send-email-nunodasneves@linux.microsoft.com>
+        d=1e100.net; s=20221208; t=1692313383; x=1692918183;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KohSaVbVTZzw51hU080rc6/yBBZBjNRiH2rTqSdtLwA=;
+        b=k6hsIlMzAOF1eOzag5gOKF7lvxH5ylhsIAistuYadrwZ9zaKlIyprdg1KEUgN3sbp6
+         EJC5fpKZM5FKB+T8Zldu7AH8eXhvUfAoLcHWjcS+Nv1q5cnb/RN+MR/8EbBaH6iI9feU
+         AxQdyBxLMoh0KxqZEKcFQp0pA40w4Kf0aKmxSV1GWIu5FtJ4+pvtqHhlq+ElQWvif4lk
+         WgkUGHOpqRlsPQtbX8NOfSxkPihPDCR/z9G9K4+YQeKhLEqLtDEK83o3cleSmg+UOD+X
+         P1vWJ2WSroeeh5OWVf1lgBa+PiKpXB9ZiEnUnto68eatrGN165XXNZnch7g8C8cq+JUF
+         tQeg==
+X-Gm-Message-State: AOJu0YyCs0VCcMttXhgUEt2XjSElRmXR2vAgX1sSOEpGIvfkHVFtklMu
+        jR6ZmdK2qobYDwDojM/oRw3rMQ==
+X-Google-Smtp-Source: AGHT+IFi6YsmAxWY/zGr+OrYTTVldPLE8ota51ql1lreUnqGP7ONPxvXxMz37s8wDRCVvFPh0BZp5g==
+X-Received: by 2002:a05:6512:3490:b0:4fd:fadb:e6e4 with SMTP id v16-20020a056512349000b004fdfadbe6e4mr513322lfr.69.1692313383542;
+        Thu, 17 Aug 2023 16:03:03 -0700 (PDT)
+Received: from [192.168.1.101] (abxh52.neoplus.adsl.tpnet.pl. [83.9.1.52])
+        by smtp.gmail.com with ESMTPSA id n26-20020ac2491a000000b004fa52552c7csm84540lfi.151.2023.08.17.16.03.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Aug 2023 16:03:03 -0700 (PDT)
+Message-ID: <7579df7c-aa73-4d8e-ac93-13d575b6745f@linaro.org>
+Date:   Fri, 18 Aug 2023 01:03:01 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1692309711-5573-14-git-send-email-nunodasneves@linux.microsoft.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] arm64: dts: qcom: sa8775p-ride: Describe sgmii_phy0
+ irq
+Content-Language: en-US
+To:     Andrew Halaney <ahalaney@redhat.com>, andersson@kernel.org
+Cc:     agross@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, brgl@bgdev.pl
+References: <20230817213815.638189-1-ahalaney@redhat.com>
+ <20230817213815.638189-2-ahalaney@redhat.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230817213815.638189-2-ahalaney@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 03:01:49PM -0700, Nuno Das Neves wrote:
-> Containing hypervisor ABI definitions to use in mshv driver.
+On 17.08.2023 23:37, Andrew Halaney wrote:
+> There's an irq hooked up, so let's describe it.
 > 
-> Version numbers for each file:
-> hvhdk.h		25212
-> hvhdk_mini.h	25294
-> hvgdk.h		25125
-> hvgdk_mini.h	25294
+> Prior to commit 9757300d2750
+> ("pinctrl: qcom: Add intr_target_width field to support increased number of interrupt targets")
+> one would not see the IRQ fire, despite some (invasive) debugging
+> showing that the GPIO was in fact asserted, resulting in the interface
+> staying down.
 > 
-> These are unstable interfaces and as such must be compiled independently
-> from published interfaces found in hyperv-tlfs.h.
+> Now that the IRQ is properly routed we can describe it.
 > 
-> These are in uapi because they will be used in the mshv ioctl API.
-> 
-> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
-> Acked-by: Wei Liu <wei.liu@kernel.org>
+> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-There were some concerns raised internally about the stability of the
-APIs when they are put into UAPI.
-
-I think this is still okay, for a few reasons:
-
-  1. When KVM was first introduced into the kernel tree, it was
-     experimental. It was only made stable after some time.
-  2. There are other experimental or unstable APIs in UAPI. They
-     are clearly marked so.
-  3. The coda file system, which has been in tree since 2008, has a
-     header file in UAPI which clearly marks as experimental.
-
-All in all introducing a set of unstable / experimental APIs under UAPI
-is not unheard of. Rules could've changed now, but I don't find any
-document under Documentation/.
-
-I think it will be valuable to have this driver in tree sooner rather
-than later, so that it can evolve with Linux kernel, and we can in turn
-go back to the hypervisor side to gradually stabilize the APIs.
-
-Greg, I'm told that you may have a strong opinion in this area. Please
-let me know what you think about this.
-
-KY, do you have an opinion here?
-
-Thanks,
-Wei.
+Konrad
