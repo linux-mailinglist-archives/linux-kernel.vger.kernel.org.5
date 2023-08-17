@@ -2,152 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5067D77F62D
+	by mail.lfdr.de (Postfix) with ESMTP id 06E2F77F62C
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350723AbjHQMOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 08:14:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33314 "EHLO
+        id S1350718AbjHQMOW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 17 Aug 2023 08:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350766AbjHQMNy (ORCPT
+        with ESMTP id S1350735AbjHQMNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 08:13:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FA62D5F;
-        Thu, 17 Aug 2023 05:13:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692274432; x=1723810432;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=YdKvmJkx0taZIMmCDlV5XFyXWw83oS68W0jEx0NbmOI=;
-  b=YH/BigJTsqjUyNShP4rKFlXcg0almWj2k3BZNejbu9mRKtxvVvZ922oR
-   GZXK6wDQ7+zgv+CpqQ3pJU0hZ6Z4Z7oe9amMo+e57RL/HUTQGYMdt652E
-   PMK+onaiA1lDJeQcm7xjYhy882HIAHMywytwapKPOY4uIN8hhrAQr7aEI
-   mSbRsogKQuQbDYl85RyecRsRDHawqx8mR+z2tp12iVb+UF0HMMml4Pbal
-   re1Lt18GSwWri7y8UnNLiIlQriDTg3hQF9TrzS3jfrfGHh29bI+W+oTii
-   cb6OPu5NIjDLmbGNQ8aJgwZaPpAOA4K1daZvqFaybac6LIFxRuLN3Byy9
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="371697383"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="371697383"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 05:13:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="684403101"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="684403101"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 17 Aug 2023 05:13:12 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 4D59ADE4; Thu, 17 Aug 2023 15:13:11 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, Hongren Zheng <i@zenithal.me>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v1 1/1] usbip: Use platform_device_register_full()
-Date:   Thu, 17 Aug 2023 15:13:00 +0300
-Message-Id: <20230817121300.501637-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
+        Thu, 17 Aug 2023 08:13:51 -0400
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245432727;
+        Thu, 17 Aug 2023 05:13:46 -0700 (PDT)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-56d0deeca09so1156057eaf.0;
+        Thu, 17 Aug 2023 05:13:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692274425; x=1692879225;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=35lrfKrc1jJmS1GksDSgsQkAe1/qYH5sZbvlKzuw6F0=;
+        b=ECq5Upo1NVakeioVKkf4Eaz2FG32K0uK9235hXLK58V8HYC8PBOyyL6FpKDGmQJlNd
+         +vWmi17+mZogE24FxSGmEAQjHp96wF86I1S6OHz7MhIUV07jsRbjZve7ES7RRWvJc+yk
+         irpWRO4QCcRrOVg6soFW0DT8c3JwvmaF+UFKo90yj5uhIVQl43e+IvzkkQnZtZpVCwlq
+         m/um7APIfGIvEkx/ZKngVSdeKyRfWCatYifSYG1q45i1ZGTXiDiUi25YccI423vBTSAx
+         6iKJG4/LwjHeNpkzrZMmghrCy403Rm/w3xt4G1tFzo1QRumdftV/mmBWlLZFoRAVHLwA
+         Rj3g==
+X-Gm-Message-State: AOJu0Yx9S9UzXwRaiSnIHb9lQE69D2abZOcJMncmvtOA1HoEwo+McTqV
+        L3vmJgvUPo0RVxRfTPx10TQflxagTUGnG/VmU2U=
+X-Google-Smtp-Source: AGHT+IEV3ZsCfY4D+eopVMXtQI0RCA0Ekyx5phmY3CkyIpLxnRc2AVJnQUHO4M1WGy62fNAG/4g5UuQsIu+ujKdgtf0=
+X-Received: by 2002:a4a:4305:0:b0:56e:72e0:9c5f with SMTP id
+ k5-20020a4a4305000000b0056e72e09c5fmr1435739ooj.1.1692274425389; Thu, 17 Aug
+ 2023 05:13:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230816223831.GA291481@bhelgaas> <6a91a3e1-61a2-4f33-ae01-ea4b5ad24ec6@amd.com>
+In-Reply-To: <6a91a3e1-61a2-4f33-ae01-ea4b5ad24ec6@amd.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 17 Aug 2023 14:13:34 +0200
+Message-ID: <CAJZ5v0i46b2th2iATB-Zsfhexcva8h_KAxYtUsGDHS_3zXnn-Q@mail.gmail.com>
+Subject: Re: [PATCH v11 9/9] PCI: ACPI: Use device constraints to decide PCI
+ target state fallback policy
+To:     "Limonciello, Mario" <mario.limonciello@amd.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-acpi@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Iain Lane <iain@orangesquash.org.uk>,
+        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code to create the child platform device is essentially the same as
-what platform_device_register_full() does, so change over to use
-that same function to reduce duplication.
+On Thu, Aug 17, 2023 at 3:26 AM Limonciello, Mario
+<mario.limonciello@amd.com> wrote:
+>
+>
+>
+> On 8/16/2023 5:38 PM, Bjorn Helgaas wrote:
+> > [I see that you just posted a v12 that doesn't touch drivers/pci at
+> > all.  I haven't looked at it yet, so maybe my questions/comments below
+> > are no longer relevant.]
+>
+> I'm not married to either approach but I think that you'll like the v12
+> approach better.
+>
+> Let me try to answer your questions anyway though because I think
+> they're still applicable for understanding of this issue.
+>
+> >
+> > On Wed, Aug 16, 2023 at 07:57:52AM -0500, Limonciello, Mario wrote:
+> >> On 8/15/2023 6:48 PM, Bjorn Helgaas wrote:
+> >>> On Wed, Aug 09, 2023 at 01:54:53PM -0500, Mario Limonciello wrote:
+> >>>> Since commit 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
+> >>>> PCIe ports from modern machines (>=2015) are allowed to be put into D3 by
+> >>>> storing a value to the `bridge_d3` variable in the `struct pci_dev`
+> >>>> structure.
+> >>>>
+> >>>> pci_power_manageable() uses this variable to indicate a PCIe port can
+> >>>> enter D3.
+> >>>> pci_pm_suspend_noirq() uses the return from pci_power_manageable() to
+> >>>> decide whether to try to put a device into its target state for a sleep
+> >>>> cycle via pci_prepare_to_sleep().
+> >>>>
+> >>>> For devices that support D3, the target state is selected by this policy:
+> >>>> 1. If platform_pci_power_manageable():
+> >>>>      Use platform_pci_choose_state()
+> >>>> 2. If the device is armed for wakeup:
+> >>>>      Select the deepest D-state that supports a PME.
+> >>>> 3. Else:
+> >>>>      Use D3hot.
+> >>>>
+> >>>> Devices are considered power manageable by the platform when they have
+> >>>> one or more objects described in the table in section 7.3 of the ACPI 6.5
+> >>>> specification.
+> >>>>
+> >>>> When devices are not considered power manageable; specs are ambiguous as
+> >>>> to what should happen.  In this situation Windows 11 leaves PCIe
+> >>>> ports in D0 while Linux puts them into D3 due to the above mentioned
+> >>>> commit.
+> >>>
+> >>> Why would we not use the same policy as Windows 11?
+> >>
+> >> That's what I'm aiming to do with my patch series.
+> >
+> > OK, help me out because I think I have a hint of how this works, but
+> > I'm still really confused.  Here's the sort of commit log I envision
+> > (but I know it's all wrong, so help me out):
+>
+> I was intentionally trying to leave the actual problem out of the commit
+> from your earlier feedback and just put it in the cover letter.
+>
+> But if it's better to keep in the commit message I'll return those details.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/usb/usbip/vhci_hcd.c | 42 +++++++++++-------------------------
- 1 file changed, 13 insertions(+), 29 deletions(-)
+It is.
 
-diff --git a/drivers/usb/usbip/vhci_hcd.c b/drivers/usb/usbip/vhci_hcd.c
-index 37d1fc34e8a5..101700c89461 100644
---- a/drivers/usb/usbip/vhci_hcd.c
-+++ b/drivers/usb/usbip/vhci_hcd.c
-@@ -1493,13 +1493,10 @@ static struct platform_driver vhci_driver = {
- 
- static void del_platform_devices(void)
- {
--	struct platform_device *pdev;
- 	int i;
- 
- 	for (i = 0; i < vhci_num_controllers; i++) {
--		pdev = vhcis[i].pdev;
--		if (pdev != NULL)
--			platform_device_unregister(pdev);
-+		platform_device_unregister(vhcis[i].pdev);
- 		vhcis[i].pdev = NULL;
- 	}
- 	sysfs_remove_link(&platform_bus.kobj, driver_name);
-@@ -1519,45 +1516,32 @@ static int __init vhci_hcd_init(void)
- 	if (vhcis == NULL)
- 		return -ENOMEM;
- 
--	for (i = 0; i < vhci_num_controllers; i++) {
--		vhcis[i].pdev = platform_device_alloc(driver_name, i);
--		if (!vhcis[i].pdev) {
--			i--;
--			while (i >= 0)
--				platform_device_put(vhcis[i--].pdev);
--			ret = -ENOMEM;
--			goto err_device_alloc;
--		}
--	}
--	for (i = 0; i < vhci_num_controllers; i++) {
--		void *vhci = &vhcis[i];
--		ret = platform_device_add_data(vhcis[i].pdev, &vhci, sizeof(void *));
--		if (ret)
--			goto err_driver_register;
--	}
--
- 	ret = platform_driver_register(&vhci_driver);
- 	if (ret)
- 		goto err_driver_register;
- 
- 	for (i = 0; i < vhci_num_controllers; i++) {
--		ret = platform_device_add(vhcis[i].pdev);
-+		struct platform_device_info pdevinfo = {
-+			.name = driver_name,
-+			.id = i,
-+			.data = &vhcis[i],
-+			.size_data = sizeof(void *),
-+		};
-+
-+		vhcis[i].pdev = platform_device_register_full(&pdevinfo);
-+		ret = PTR_ERR_OR_ZERO(vhcis[i].pdev);
- 		if (ret < 0) {
--			i--;
--			while (i >= 0)
--				platform_device_del(vhcis[i--].pdev);
-+			while (i--)
-+				platform_device_unregister(vhcis[i].pdev);
- 			goto err_add_hcd;
- 		}
- 	}
- 
--	return ret;
-+	return 0;
- 
- err_add_hcd:
- 	platform_driver_unregister(&vhci_driver);
- err_driver_register:
--	for (i = 0; i < vhci_num_controllers; i++)
--		platform_device_put(vhcis[i].pdev);
--err_device_alloc:
- 	kfree(vhcis);
- 	return ret;
- }
--- 
-2.40.0.1.gaa8946217a0b
+If you make a change in order to address a specific problem, that
+problem needs to be described in the changelog of the patch making
+that change.
 
+Anything else is more or less confusing IMO.
