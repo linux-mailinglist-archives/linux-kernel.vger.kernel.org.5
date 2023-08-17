@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7FA77FCD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E38477FCD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352978AbjHQRQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 13:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40122 "EHLO
+        id S1353688AbjHQRR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 13:17:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353881AbjHQRQU (ORCPT
+        with ESMTP id S1353481AbjHQRRW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 13:16:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3E5BF;
-        Thu, 17 Aug 2023 10:16:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692292579; x=1723828579;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=o6y1BWMjXV74XcSSqEAshBC+8ARHfDknIFta4VOIKeI=;
-  b=BMlf1mxqOuBaqf9AjT5fQ/ZbjjIwZSwWNkIny0Xcrp1Hso6P54u32261
-   HIUenyzN0dQ4p4TWFDPgV0RRbcRlEFm3BNpMrOsox1LgxdpWPSoLeLjsC
-   jvJ+2MJQaKurl/WL68I7EFzHHREfiJ1imvDi7gycKeTyFmkbp9MTpeee1
-   XybcTvP/BVylGIpWY56FvdtqKfNW5QoEWKkZPEwJstmOTbh9UAj0efkQa
-   bocUEIZq0I00PqtvIFnpQ3VNzfI6s3HY/rjpjY0ljZL6LMh+lQOO3ZiaS
-   J6wqopLeDbChLdgh4Db/bv7Ln90DFdVlqUa7/33mXF+CvYiXzTq9K2oHg
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="372866611"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="372866611"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 10:15:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="804770162"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="804770162"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP; 17 Aug 2023 10:15:55 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qWgbB-003a75-3B;
-        Thu, 17 Aug 2023 20:15:53 +0300
-Date:   Thu, 17 Aug 2023 20:15:53 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] of: dynamic: Move dead property list check into
- property add/update functions
-Message-ID: <ZN5Vyd22nwx0l5mM@smile.fi.intel.com>
-References: <20230801-dt-changeset-fixes-v2-0-c2b701579dee@kernel.org>
- <20230801-dt-changeset-fixes-v2-5-c2b701579dee@kernel.org>
- <ZNEPqwQ0H9srkxxq@smile.fi.intel.com>
- <20230817170934.GA1495946-robh@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817170934.GA1495946-robh@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 17 Aug 2023 13:17:22 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 861E7BF
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:17:21 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-34ba9d6561aso173625ab.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:17:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692292640; x=1692897440;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mSGKblR3OXJrnjJWxLl6H+gcDsbsJZ3wuLzAauLCVPY=;
+        b=pdbMCorYR90h1GxmM0EvND2ko9AWC4J/xp5mGuhJiLdSspKz4KwBjGLqFQtps7D40q
+         28rOpmKZB/3WFdHJQDiOWybkeAs6EGCooYG8PQ/iYhTQXaNsQgrtPjnJFe4XJoNivl04
+         QTnwZprpvC8GeG9Khycx5aFD9KUimbHCcXd8vTG8OfAwboZleROqNqvCKR1PIC01OxRv
+         dlpNTp+w2oCiOUezCwAEiLAAxvk/kFc1MTXPKOtFBdMrrmbvviLWAHdND9yLOV3LP41C
+         nymR7MGKEFwGWX2ujj397xl7RyXFUOnjFXB8GVSHoT1041w3Wc2bQwebaaoI0vtpovkx
+         lfUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692292640; x=1692897440;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mSGKblR3OXJrnjJWxLl6H+gcDsbsJZ3wuLzAauLCVPY=;
+        b=SbJzEfyYJMqE/deasEEK644BJp/zZKJh3/Zmt+eZWqCCLq6AvYTL0vQNWVieWKLRwm
+         RpYHV8TvI3NrMmzd6Hhj2Ip0aMuv/mFu/dvJlSpHGq4nxG4717ulLK0gIWQ3eOFlxJB+
+         cvh5k0LQGCiA0B/ynTWkH4nUnf/garGakKl/KBK/SYdSw1csQKT8kujno/ZzzydIEIxd
+         aMSvGQGmqKskNGW+7uKxcu+8bbeBXkcqgui2vbaYYGwU9amu7cmpcvO9SQfsHE9KGKlV
+         wYVg8uFz4IDyl0iUOuXJUxJxqt2XhK8OvQq61ZAjrA4/GVasPPrTQNjc92nGZHV7/SPE
+         xLaQ==
+X-Gm-Message-State: AOJu0Yw6wu1z7+EoKHBFJFqCFAufLv3vIhlWGHfnoLcbgFOA8qS0P8md
+        +xZ0/kHoWMXpplfhKEdYyBpSj/3fSpm5ow==
+X-Google-Smtp-Source: AGHT+IGe2iegOMwHHgT19hUvVPOKArg8EKL4EEAfjjAuPARY+lm7QDpCKkqyh4qHa1l+LeWMEXtnqg==
+X-Received: by 2002:a92:c249:0:b0:348:8ebc:f759 with SMTP id k9-20020a92c249000000b003488ebcf759mr239495ilo.6.1692292640636;
+        Thu, 17 Aug 2023 10:17:20 -0700 (PDT)
+Received: from smtpclient.apple ([103.149.144.245])
+        by smtp.gmail.com with ESMTPSA id t1-20020a056e02060100b0034a9a9a2016sm3228875ils.23.2023.08.17.10.17.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Aug 2023 10:17:20 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Clus Tom <ssunkkan@gmail.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH] Add support for more XMC series
+Date:   Fri, 18 Aug 2023 01:17:06 +0800
+Message-Id: <2F4A4D23-1C71-42B9-8B2C-06496F773BDA@gmail.com>
+References: <abd705350b650717dbbc187815d384e7@walle.cc>
+Cc:     miquel.raynal@bootlin.com, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org, pratyush@kernel.org, richard@nod.at,
+        tudor.ambarus@linaro.org, vigneshr@ti.com
+In-Reply-To: <abd705350b650717dbbc187815d384e7@walle.cc>
+To:     Michael Walle <michael@walle.cc>
+X-Mailer: iPhone Mail (20G75)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 12:09:34PM -0500, Rob Herring wrote:
-> On Mon, Aug 07, 2023 at 06:37:15PM +0300, Andy Shevchenko wrote:
-> > On Fri, Aug 04, 2023 at 04:41:55PM -0600, Rob Herring wrote:
 
-...
-
-> > Suggested-by: ? :-)
-> 
-> Humm, by me? The change in behavior and point of this patch comes from 
-> me. You've provided review comments which will get covered by a
-> Reviewed-by I presume.
-
-OK!
-
--- 
-With Best Regards,
-Andy Shevchenko
+Yes, I'm using the latest kernel.
 
 
+> =E5=9C=A8 2023=E5=B9=B48=E6=9C=8818=E6=97=A5=EF=BC=8C01:10=EF=BC=8CMichael=
+ Walle <michael@walle.cc> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> =EF=BB=BFHi,
+>=20
+>>> XMC parts seem to have SFDP tables and they should work out of the box
+>>> without any patches with the generic spi nor driver [1]. Therefore,
+>>> you don't need any entry at all.
+>> I think it is related to the PARSE_SFDP flag.
+>> The XMC flash part supports SFDP, so i don=E2=80=99t needto add
+>> NO_SFDP_FLAGS() macro.
+>=20
+> Correct. If the flash is working with PARSE_SFDP, it has SFDP and
+> all the information of the flash_info table is pulled from the SFDP
+> tables, except for the part name. Therefore, you don't need any entry
+> at all. The flash should just work out of the box. Are you using the
+> latest kernel?
+>=20
+> -michael
