@@ -2,70 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94AEF78014B
+	by mail.lfdr.de (Postfix) with ESMTP id E80F878014C
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 00:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355880AbjHQWuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 18:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48000 "EHLO
+        id S1355887AbjHQWuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 18:50:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355946AbjHQWup (ORCPT
+        with ESMTP id S1355959AbjHQWus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 18:50:45 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1973A8B
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 15:50:35 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2ba0f27a4c2so4564271fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 15:50:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692312634; x=1692917434;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iVkyNJg3PphN1aFHst+x/uPsu/nt3+ErhK8rBHrZocA=;
-        b=ap0VQB8ZKBwl6XEvWD5SFeBYu2yECxoysJkkoGqxufBM89fQl5eYer9jP5vTw9Rq7L
-         KsdGGWwDJAy473bNN0oNoGbmZ4lYnbxmFb3Z7iHOsGDxtpB5ROJrI59hIM1xTiSqM6T2
-         S7kJ2CtcXDnIy+2WwMI0vVFmksuxqvklawh9IZCkoMn0Kt2aMWdv3PV7XO8CKy7Xs7J7
-         wSW4V4wODbR3lb8zKheSh8WEUdIal91NgcbPzZHClPqsPt7cOdQYc3ggkLjwhFGOWioI
-         4yTDfjgrBZg21uCbl++VU18A9YMOIJkoFv4MTJy8cY/YANwinvPYuaIGHwSgy/zfxaS4
-         sc1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692312634; x=1692917434;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iVkyNJg3PphN1aFHst+x/uPsu/nt3+ErhK8rBHrZocA=;
-        b=DCPe1BQuXw8jAD3uzh8M1jkFIim341Wj8JY6deQz3JZtwWV133w1Y7c3y4XRM/Nd/9
-         0e2yEnqLaGNJRgye+9XJcaNlbgiGsmI41f52ckEQ5V0UYPVYKoUzNsx5c9T8mZW0dTDK
-         p8k60wEpTcQRmPitbMYdiUYvddzXYk0HXSg+0IBAUEJ6rlOigkLuyslE+wJWP56FIom4
-         27bvGSzl+B364NJ38I7RQrnP/qI/3bwFFMTtbQOlrDvWEoutGUfCpBcJhf2kbMxUEo0L
-         cvLHYi2+Xv0lh/q2dRn5Jln+TfZAGT/y++OT6aPCtMYciJkckfEAoLEqGrnYXfG95dSQ
-         rz8g==
-X-Gm-Message-State: AOJu0YwjhmuIYOwpFvZFWLhWrsXwsMBAQOWisZwQmzmUJ19/DXCbzr5y
-        jh7miciQ1swIS01s8D54WaEiIfmVsy/tng1rMUC/dfeAIREn3XCchK42ag==
-X-Google-Smtp-Source: AGHT+IF2fSy1PuSizmh8l+vrpF4pezpkGtIlU6Di+dxprUqflj5jAtv51MgJUSCrrriECsjzokpZM860MypWLyFyYuA=
-X-Received: by 2002:a2e:6a0e:0:b0:2b9:dfd1:3808 with SMTP id
- f14-20020a2e6a0e000000b002b9dfd13808mr493660ljc.25.1692312633714; Thu, 17 Aug
- 2023 15:50:33 -0700 (PDT)
+        Thu, 17 Aug 2023 18:50:48 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF3A2722;
+        Thu, 17 Aug 2023 15:50:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692312639;
+        bh=N0MG68vr3j3WzHFy4o59tufO8cRLEKLfPQJtpPpK5co=;
+        h=Date:From:To:Cc:Subject:From;
+        b=S8quNuPoKbXL/qyFp3Ec1QbG8wxOG12Bfq31wIpNtmKDKlo3P7R3QZe0To6j6ytNN
+         OeiVWYIVlmfZBw9C0UPJmot8jIG4U3vyvgIvESAkgQ+GLmV6kmo2A7IejfNLynqwHg
+         UqhZg9IbfJN3MrYcEln/CYU1Qaaojmjq2wYF2sbkD4PXhFAb+RgMjuN4KNhWvxlNX2
+         QcbelYTN91tTbkNTQEXSFvNWeiuzcn+dqQfLtxOFOLd38dGOTNxh3WPD6EHIpKL5Qv
+         D7A1q+rkhMmDqFOaqnVww/37x1B5z7fjFyUK16HDTybSdTTH3l+PL/cBv3lSA7YHRe
+         EQRLCIFPK0m4g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RRgFp5vfLz4wxy;
+        Fri, 18 Aug 2023 08:50:38 +1000 (AEST)
+Date:   Fri, 18 Aug 2023 08:50:38 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steven Whitehouse <swhiteho@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the gfs2 tree
+Message-ID: <20230818085038.31d7be4f@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20230817164733.2475092-1-nphamcs@gmail.com> <20230817190126.3155299-1-nphamcs@gmail.com>
- <CAJD7tkaNo=0mkYKxrTwGNaJ33G1z7cYdWhNQNF3tQp_MKCh-uA@mail.gmail.com> <CAKEwX=Pt3ir0jpn+eRjzH=K49b0Y0_N1NnieLm0a0VwV1aCKKQ@mail.gmail.com>
-In-Reply-To: <CAKEwX=Pt3ir0jpn+eRjzH=K49b0Y0_N1NnieLm0a0VwV1aCKKQ@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 17 Aug 2023 15:49:57 -0700
-Message-ID: <CAJD7tkb1jMuCouyL8OX0434HK0Wx=Hyf9UnGVOH8fP7NxA8+Pw@mail.gmail.com>
-Subject: Re: [PATCH v2] workingset: ensure memcg is valid for recency check
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     Yu Zhao <yuzhao@google.com>, akpm@linux-foundation.org,
-        hannes@cmpxchg.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: multipart/signed; boundary="Sig_/EaatebsaUIKeM3U+QPPPQ4i";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,238 +52,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 3:43=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote=
-:
->
-> On Thu, Aug 17, 2023 at 1:50 PM Yosry Ahmed <yosryahmed@google.com> wrote=
-:
-> >
-> > On Thu, Aug 17, 2023 at 12:01=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> =
-wrote:
-> > >
-> > > In eviction recency check, we are currently not holding a local
-> > > reference to the memcg that the refaulted folio belonged to when it w=
-as
-> > > evicted. This could cause serious memcg lifetime issues, for e.g in t=
-he
-> > > memcg hierarchy traversal done in mem_cgroup_get_nr_swap_pages(). Thi=
-s
-> > > has occurred in production:
-> > >
-> > > [ 155757.793456] BUG: kernel NULL pointer dereference, address: 00000=
-000000000c0
-> > > [ 155757.807568] #PF: supervisor read access in kernel mode
-> > > [ 155757.818024] #PF: error_code(0x0000) - not-present page
-> > > [ 155757.828482] PGD 401f77067 P4D 401f77067 PUD 401f76067 PMD 0
-> > > [ 155757.839985] Oops: 0000 [#1] SMP
-> > > [ 155757.846444] CPU: 7 PID: 1380944 Comm: ThriftSrv-pri3- Kdump: loa=
-ded Tainted: G S                 6.4.3-0_fbk1_rc0_594_g8d0cbcaa67ba #1
-> > > [ 155757.870808] Hardware name: Wiwynn Twin Lakes MP/Twin Lakes Passi=
-ve MP, BIOS YMM16 05/24/2021
-> > > [ 155757.887870] RIP: 0010:mem_cgroup_get_nr_swap_pages+0x3d/0xb0
-> > > [ 155757.899377] Code: 29 19 4a 02 48 39 f9 74 63 48 8b 97 c0 00 00 0=
-0 48 8b b7 58 02 00 00 48 2b b7 c0 01 00 00 48 39 f0 48 0f 4d c6 48 39 d1 7=
-4 42 <48> 8b b2 c0 00 00 00 48 8b ba 58 02 00 00 48 2b ba c0 01 00 00 48
-> > > [ 155757.937125] RSP: 0018:ffffc9002ecdfbc8 EFLAGS: 00010286
-> > > [ 155757.947755] RAX: 00000000003a3b1c RBX: 000007ffffffffff RCX: fff=
-f888280183000
-> > > [ 155757.962202] RDX: 0000000000000000 RSI: 0007ffffffffffff RDI: fff=
-f888bbc2d1000
-> > > [ 155757.976648] RBP: 0000000000000001 R08: 000000000000000b R09: fff=
-f888ad9cedba0
-> > > [ 155757.991094] R10: ffffea0039c07900 R11: 0000000000000010 R12: fff=
-f888b23a7b000
-> > > [ 155758.005540] R13: 0000000000000000 R14: ffff888bbc2d1000 R15: 000=
-007ffffc71354
-> > > [ 155758.019991] FS:  00007f6234c68640(0000) GS:ffff88903f9c0000(0000=
-) knlGS:0000000000000000
-> > > [ 155758.036356] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > [ 155758.048023] CR2: 00000000000000c0 CR3: 0000000a83eb8004 CR4: 000=
-00000007706e0
-> > > [ 155758.062473] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000=
-0000000000000
-> > > [ 155758.076924] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000=
-0000000000400
-> > > [ 155758.091376] PKRU: 55555554
-> > > [ 155758.096957] Call Trace:
-> > > [ 155758.102016]  <TASK>
-> > > [ 155758.106502]  ? __die+0x78/0xc0
-> > > [ 155758.112793]  ? page_fault_oops+0x286/0x380
-> > > [ 155758.121175]  ? exc_page_fault+0x5d/0x110
-> > > [ 155758.129209]  ? asm_exc_page_fault+0x22/0x30
-> > > [ 155758.137763]  ? mem_cgroup_get_nr_swap_pages+0x3d/0xb0
-> > > [ 155758.148060]  workingset_test_recent+0xda/0x1b0
-> > > [ 155758.157133]  workingset_refault+0xca/0x1e0
-> > > [ 155758.165508]  filemap_add_folio+0x4d/0x70
-> > > [ 155758.173538]  page_cache_ra_unbounded+0xed/0x190
-> > > [ 155758.182919]  page_cache_sync_ra+0xd6/0x1e0
-> > > [ 155758.191738]  filemap_read+0x68d/0xdf0
-> > > [ 155758.199495]  ? mlx5e_napi_poll+0x123/0x940
-> > > [ 155758.207981]  ? __napi_schedule+0x55/0x90
-> > > [ 155758.216095]  __x64_sys_pread64+0x1d6/0x2c0
-> > > [ 155758.224601]  do_syscall_64+0x3d/0x80
-> > > [ 155758.232058]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> > > [ 155758.242473] RIP: 0033:0x7f62c29153b5
-> > > [ 155758.249938] Code: e8 48 89 75 f0 89 7d f8 48 89 4d e0 e8 b4 e6 f=
-7 ff 41 89 c0 4c 8b 55 e0 48 8b 55 e8 48 8b 75 f0 8b 7d f8 b8 11 00 00 00 0=
-f 05 <48> 3d 00 f0 ff ff 77 33 44 89 c7 48 89 45 f8 e8 e7 e6 f7 ff 48 8b
-> > > [ 155758.288005] RSP: 002b:00007f6234c5ffd0 EFLAGS: 00000293 ORIG_RAX=
-: 0000000000000011
-> > > [ 155758.303474] RAX: ffffffffffffffda RBX: 00007f628c4e70c0 RCX: 000=
-07f62c29153b5
-> > > [ 155758.318075] RDX: 000000000003c041 RSI: 00007f61d2986000 RDI: 000=
-0000000000076
-> > > [ 155758.332678] RBP: 00007f6234c5fff0 R08: 0000000000000000 R09: 000=
-0000064d5230c
-> > > [ 155758.347452] R10: 000000000027d450 R11: 0000000000000293 R12: 000=
-000000003c041
-> > > [ 155758.362044] R13: 00007f61d2986000 R14: 00007f629e11b060 R15: 000=
-000000027d450
-> > > [ 155758.376661]  </TASK>
-> > >
-> > > This patch fixes the issue by getting a local reference inside
-> > > unpack_shadow().
-> > >
-> > > Fixes: f78dfc7b77d5 ("workingset: fix confusion around eviction vs re=
-fault container")
-> >
-> > Beyond mem_cgroup_get_nr_swap_pages(), we still use the eviction_memcg
-> > without grabbing a ref to it first in workingset_test_recent() (and in
-> > workingset_refault() before that) as well as lru_gen_test_recent().
-> >
-> > Wouldn't the fix go back even further? or am I misinterpreting the prob=
-lem?
-> Hmm I don't see eviction_memcg being used outside of *_test_recent
-> (the rest just uses memcg =3D folio_memcg(folio), which if I'm not mistak=
-en is
-> the memcg that is refaulting the folio into memory).
->
-> Inside workingset_test_recent(), the only other place where eviction_memc=
-g
-> is used is for mem_cgroup_lruvec. This function call won't crash whether
-> eviction_memcg is valid or not.
+--Sig_/EaatebsaUIKeM3U+QPPPQ4i
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-If eviction_memcg is invalid because the memory was already freed, we
-are basically dereferencing garbage in mem_cgroup_lruvec() aren't we?
+Hi all,
 
-> The crash only happens during
-> mem_cgroup_get_nr_swap_pages, which has an upward traversal from
-> eviction_memcg to root.
->
-> Let me know if this does not make sense and/or is insufficient to ensure
-> safe upward traversal from eviction_memcg to root!
-> >
-> >
-> >
-> > > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> > > Cc: stable@vger.kernel.org
-> > > ---
-> > >  mm/workingset.c | 65 ++++++++++++++++++++++++++++++++---------------=
---
-> > >  1 file changed, 43 insertions(+), 22 deletions(-)
-> > >
-> > > diff --git a/mm/workingset.c b/mm/workingset.c
-> > > index da58a26d0d4d..03cadad4e484 100644
-> > > --- a/mm/workingset.c
-> > > +++ b/mm/workingset.c
-> > > @@ -206,10 +206,19 @@ static void *pack_shadow(int memcgid, pg_data_t=
- *pgdat, unsigned long eviction,
-> > >         return xa_mk_value(eviction);
-> > >  }
-> > >
-> > > -static void unpack_shadow(void *shadow, int *memcgidp, pg_data_t **p=
-gdat,
-> > > -                         unsigned long *evictionp, bool *workingsetp=
-)
-> > > +/*
-> > > + * Unpacks the stored fields of a shadow entry into the given pointe=
-rs.
-> > > + *
-> > > + * The memcg pointer is only populated if the memcg recorded in the =
-shadow
-> > > + * entry is valid. In this case, a reference to the memcg will be ac=
-quired,
-> > > + * and a corresponding mem_cgroup_put() will be needed when we no lo=
-nger
-> > > + * need the memcg.
-> > > + */
-> > > +static void unpack_shadow(void *shadow, struct mem_cgroup **memcgp,
-> > > +                       pg_data_t **pgdat, unsigned long *evictionp, =
-bool *workingsetp)
-> > >  {
-> > >         unsigned long entry =3D xa_to_value(shadow);
-> > > +       struct mem_cgroup *memcg;
-> > >         int memcgid, nid;
-> > >         bool workingset;
-> > >
-> > > @@ -220,7 +229,24 @@ static void unpack_shadow(void *shadow, int *mem=
-cgidp, pg_data_t **pgdat,
-> > >         memcgid =3D entry & ((1UL << MEM_CGROUP_ID_SHIFT) - 1);
-> > >         entry >>=3D MEM_CGROUP_ID_SHIFT;
-> > >
-> > > -       *memcgidp =3D memcgid;
-> > > +       /*
-> > > +        * Look up the memcg associated with the stored ID. It might
-> > > +        * have been deleted since the folio's eviction.
-> > > +        *
-> > > +        * Note that in rare events the ID could have been recycled
-> > > +        * for a new cgroup that refaults a shared folio. This is
-> > > +        * impossible to tell from the available data. However, this
-> > > +        * should be a rare and limited disturbance, and activations
-> > > +        * are always speculative anyway. Ultimately, it's the aging
-> > > +        * algorithm's job to shake out the minimum access frequency
-> > > +        * for the active cache.
-> > > +        */
-> > > +       memcg =3D mem_cgroup_from_id(memcgid);
-> > > +       if (memcg && css_tryget(&memcg->css))
-> > > +               *memcgp =3D memcg;
-> > > +       else
-> > > +               *memcgp =3D NULL;
-> > > +
-> > >         *pgdat =3D NODE_DATA(nid);
-> > >         *evictionp =3D entry;
-> > >         *workingsetp =3D workingset;
-> > > @@ -262,15 +288,16 @@ static void *lru_gen_eviction(struct folio *fol=
-io)
-> > >  static bool lru_gen_test_recent(void *shadow, bool file, struct lruv=
-ec **lruvec,
-> > >                                 unsigned long *token, bool *workingse=
-t)
-> > >  {
-> > > -       int memcg_id;
-> > >         unsigned long min_seq;
-> > >         struct mem_cgroup *memcg;
-> > >         struct pglist_data *pgdat;
-> > >
-> > > -       unpack_shadow(shadow, &memcg_id, &pgdat, token, workingset);
-> > > +       unpack_shadow(shadow, &memcg, &pgdat, token, workingset);
-> > > +       if (!mem_cgroup_disabled() && !memcg)
-> > > +               return false;
-> >
-> > +Yu Zhao
-> >
-> > There is a change of behavior here, right?
-> >
-> > The existing code will continue if !mem_cgroup_disabled() && !memcg is
-> > true, and mem_cgroup_lruvec() will return the lruvec of the root
-> > memcg. Now we are just returning false.
-> >
-> > Is this intentional?
-> Oh right, there is. Should have cc-ed Yu Zhao as well, my bad.
-> get_maintainers.pl isn't always sufficient I guess :)
->
-> But yeah, this behavioral change is intentional.
->
-> Correct me if I'm wrong of course, but it seems like MGLRU should
-> follow the same pattern here. That is, once we return from unpack_shadow,
-> the possible scenarios are the same as prescribed in workingset_test_rece=
-nt:
->
-> 1. If mem_cgroup is disabled, we can ignore this check.
-> 2. If mem_cgroup is enabled, then the only reason why we get NULL
-> memcg from unpack_shadow is if the eviction_memcg is no longer
-> valid.  We should not try to get its lruvec, or substitute it with the
-> root memcg, but return false right away (i.e not recent).
-> >
+Commit
 
-I will leave this for Yu :)
+  584e70f20bd0 ("gfs2: prevent gfs2_logd from spinning")
+
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/EaatebsaUIKeM3U+QPPPQ4i
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTepD4ACgkQAVBC80lX
+0GyUkAf/VJMyppkf1m0Iz5Bb6dgZ5yLcb7GEFw6FpazUEF2dlvAoXATc5CrbJmse
+bKZzd+Wv/T9tbfYyFuP05y7EPQTNWJj948w1p7Cub4OpgU/CHTUsCJ0pnp9FA/9Z
+OhvQmSek7H+/au4zACxu5S3+LdpvQoVTZsHWfpMZKRumv4jRzPNNPGWKzkQKOLcw
+VBCExe3sTaoRIZB7b8gLUbc9c6c/5jSKKQNUu3o0XA8KUaj4qjdT9cFD/NunHGLe
+RcnawWB4DmQ9H7osKtadlBXyIZSr4e4Wo/wN/U05GNDiAgIdnVACtpXeATczgEBC
+eP1p5uGUzMPBHGOiSA+bC7+lh+s9SA==
+=mstx
+-----END PGP SIGNATURE-----
+
+--Sig_/EaatebsaUIKeM3U+QPPPQ4i--
