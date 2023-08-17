@@ -2,147 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9132977FB27
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B0377FB25
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353326AbjHQPtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 11:49:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49378 "EHLO
+        id S1345706AbjHQPtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 11:49:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353324AbjHQPtX (ORCPT
+        with ESMTP id S1353329AbjHQPsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 11:49:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600B730D4
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:48:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692287317;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YkNjMltfBCPur9SkBC24c2W5OLAmVkJHJQKlj/IHZtg=;
-        b=hDABF8ZhZ0cyk4D+j1oxSI3KmdSLLOPCj601hLdXkx2OFY9CJrjpY8fC0AUnDyXDmuuh4b
-        6wCNkgYV0fUO2vOo3Lm+lqHlBmFckXmFWvNhfgGJE6tzP1hHOWZIEq6thiBajh7DsuQeyz
-        FdSEjnoDkRcZlFkVVMZKGKhnmhmLAIQ=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-652-CWvoqjh-MMSR8JC9WejCVg-1; Thu, 17 Aug 2023 11:48:31 -0400
-X-MC-Unique: CWvoqjh-MMSR8JC9WejCVg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Thu, 17 Aug 2023 11:48:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB1330D1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:48:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8F4351C0726E;
-        Thu, 17 Aug 2023 15:48:30 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.39])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 91F872026D68;
-        Thu, 17 Aug 2023 15:48:28 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Thu, 17 Aug 2023 17:47:46 +0200 (CEST)
-Date:   Thu, 17 Aug 2023 17:47:43 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     David Laight <David.Laight@ACULAB.COM>,
-        Petr Skocik <pskocik@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Marco Elver <elver@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [PATCH] __kill_pgrp_info: simplify the calculation of return value
-Message-ID: <20230817154743.GA18674@redhat.com>
-References: <87pm3t2rvl.fsf@email.froward.int.ebiederm.org>
- <87jzu12pjh.fsf_-_@email.froward.int.ebiederm.org>
- <20230814140652.GA30596@redhat.com>
- <20230814154351.GA4203@redhat.com>
- <3b14ae8091e3403bbc4ef1bee6dcf4f6@AcuMS.aculab.com>
- <20230815151149.GA29072@redhat.com>
- <87fs4ig23p.fsf@email.froward.int.ebiederm.org>
- <20230816210634.GA10130@redhat.com>
- <87r0o2cs8w.fsf@email.froward.int.ebiederm.org>
- <871qg28esu.fsf@email.froward.int.ebiederm.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 319C165092
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 15:48:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07921C433C7;
+        Thu, 17 Aug 2023 15:48:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692287329;
+        bh=uk4TBZhJDCJb/PJgfGwfebt7sQtNGiZfM7nXbfcGbC4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=g1UCv6HKMAnBfD+Ylvjm/RzbmJ3983m4GeWrNiJmDc9+ZhSEAuQ22EkfYkgC5WO2e
+         OsQbNftPSyzFF4iDTSoCiDiYwxEkv2SCky786hVZhmVKgdlca5KPF0eo6Ae9Of0DQC
+         g/M+sVWBCKCySLzf6WygdfKnv0v/oJZjBvxU6HAPnv2UN2g+SixsTMrgZ7NNTeCNvm
+         9yaD3B5ri0wc63f0tAbnG54wdWLhANXmaQ8UO/yzwKzvIpuD5Px4XrK/3DWe8uVFZD
+         PNGBm37wzNzc79Hmb2gR5No5lm3VdCMJi9hyDZnkrnh6vrF76cSgOQ2o9PpKS5+RQH
+         5T54UTl+H5TYQ==
+Date:   Thu, 17 Aug 2023 08:48:48 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Michele Dalle Rive <dallerivemichele@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Greg KH <gregkh@linuxfoundation.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Davide Rovelli <davide.rovelli@usi.ch>,
+        rust-for-linux@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev
+Subject: Re: [RFC PATCH 0/7] Rust Socket abstractions
+Message-ID: <20230817084848.4871fc23@kernel.org>
+In-Reply-To: <CACETy0n0217=JOnHUWvxM_npDrdg4U=nzGYKqYbGFsvspjP6gg@mail.gmail.com>
+References: <20230814092302.1903203-1-dallerivemichele@gmail.com>
+        <2023081411-apache-tubeless-7bb3@gregkh>
+        <0e91e3be-abbb-4bf7-be05-ba75c7522736@lunn.ch>
+        <CACETy0=V9B8UOCi+BKfyrX06ca=WvC0Gvo_ouR=DjX=_-jhAwg@mail.gmail.com>
+        <e3b4164a-5392-4209-99e5-560bf96df1df@lunn.ch>
+        <CACETy0n0217=JOnHUWvxM_npDrdg4U=nzGYKqYbGFsvspjP6gg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871qg28esu.fsf@email.froward.int.ebiederm.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/16, Eric W. Biederman wrote:
->
-> > We should be consistent and ensure  __kill_pgrp_info uses
-> > the same code pattern, otherwise it will be difficult to
-> > see they use the same logic.
+On Thu, 17 Aug 2023 16:53:03 +0200 Michele Dalle Rive wrote:
+> in the last few days, I had the opportunity to discuss with some people from
+> the RustForLinux community.
+> 
+> I apologize for not being clear: the goal of these APIs was to give some
+> network support to, in particular, out-of-tree modules; they were not meant to
+> be used by a specific module that was planned to get upstreamed as well.
+> The idea behind this patch is that, as of now, Rust is not a viable option for
+> any OOT module that requires even the highest-level network support.
+> 
+> I am wondering whether the `net` subsystem is interested in reviewing, giving
+> feedback and eventually accepting code that is currently OOT-only.
 
-Hmm, agreed.
+This is a bit concerning. You can white out Rust in that and plonk in
+some corporate backed project people tried to cram into the kernel
+without understanding the community aspects. I'm not saying it's 
+the same but the tone reads the same.
 
-Then I think we should change __kill_pgrp_info() first, then "copy"
-this pattern into kill_something_info() in a separate patch.
+"The `net` subsystem" have given "the RustForLinux community" clear
+guidance on what a good integration starting point is. And now someone
+else from Rust comes in and talk about supporting OOT modules.
 
-> > I think for both patterns the reader of the code is going to have to
-> > stop and think about what is going on to understand the logic.
-
-Yes, although to me the current code looks less clear but this is subjective.
-
-But I agree this needs a comment. How about the patch below?
-
-
-From 753d4edd1f2f21f9f9181b9ff7394ed098d58ff6 Mon Sep 17 00:00:00 2001
-From: Oleg Nesterov <oleg@redhat.com>
-Date: Thu, 17 Aug 2023 17:38:55 +0200
-Subject: [PATCH] __kill_pgrp_info: simplify the calculation of return value
-
-No need to calculate/check the "success" variable, we can kill it and update
-retval in the main loop unless it is zero.
-
-Suggested-by: David Laight <David.Laight@ACULAB.COM>
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- kernel/signal.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
-
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 128e9bb3d1a2..c0acdfd4c81b 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -1460,16 +1460,21 @@ int group_send_sig_info(int sig, struct kernel_siginfo *info,
- int __kill_pgrp_info(int sig, struct kernel_siginfo *info, struct pid *pgrp)
- {
- 	struct task_struct *p = NULL;
--	int retval, success;
-+	int ret = -ESRCH;
- 
--	success = 0;
--	retval = -ESRCH;
- 	do_each_pid_task(pgrp, PIDTYPE_PGID, p) {
- 		int err = group_send_sig_info(sig, info, p, PIDTYPE_PGID);
--		success |= !err;
--		retval = err;
-+		/*
-+		 * If group_send_sig_info() succeeds at least once ret
-+		 * becomes 0 and after that the code below has no effect.
-+		 * Otherwise we return the last err or -ESRCH if this
-+		 * process group is empty.
-+		 */
-+		if (ret)
-+			ret = err;
- 	} while_each_pid_task(pgrp, PIDTYPE_PGID, p);
--	return success ? 0 : retval;
-+
-+	return ret;
- }
- 
- int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
--- 
-2.25.1.362.g51ebf55
-
-
+I thought the Rust was just shaking up the languages we use, not the
+fundamentals on how this project operates :|
