@@ -2,101 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE62A77EEEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 04:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AC777EEEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 04:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347615AbjHQCGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 22:06:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
+        id S234908AbjHQCH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 22:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347604AbjHQCF4 (ORCPT
+        with ESMTP id S229669AbjHQCHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 22:05:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F402D1FD0
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 19:05:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692237955; x=1723773955;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qS88+1x1dNYl+kZ3HVtR/OE/V3f4bomUd0O5kPlz9VE=;
-  b=BVpRVVB0822CPiJN17TnpwPMGMO6qHJEfvarypsi+mpySL/RuM2mqBbg
-   GUAFTi/keY3O8pZC3P93//+sE2/048QJKE7Jph2QgOyd6YM/vKLvq9a12
-   UtR+b3FvG3ZkTZSJ1daamfNVVnJsDqxal4zCJnqQgQXVC1T1m0obuTj4c
-   QvuKfck4imbYFuFnIrw2G2QXtov37p3mWztU+sxCSLeQwmNyKXl+IqRxw
-   uXiJFng693ZYiuWKlT0uaLafqqPBkk+awWVjUWUJX+JvbUT76d5HQn3Bp
-   x/PUVGMudwcogSivgcQgD8NR/4IMviqceQ88RW9sUFFHpsZor77TPrJCo
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="370158835"
-X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="370158835"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 19:05:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="858037664"
-X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="858037664"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 16 Aug 2023 19:05:53 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWSOW-0000iX-1B;
-        Thu, 17 Aug 2023 02:05:52 +0000
-Date:   Thu, 17 Aug 2023 10:05:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Thomas =?iso-8859-1?Q?Hellstr=F6m?= 
-        <thomas.hellstrom@linux.intel.com>, intel-xe@lists.freedesktop.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Matthew Brost <matthew.brost@intel.com>,
-        Thomas =?iso-8859-1?Q?Hellstr=F6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Francois Dugast <francois.dugast@intel.com>,
-        linux-kernel@vger.kernel.org, Oak Zeng <oak.zeng@intel.com>,
-        Danilo Krummrich <dakr@redhat.com>,
-        dri-devel@lists.freedesktop.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: Re: [PATCH v2] Documentation/gpu: VM_BIND locking document
-Message-ID: <202308170916.TGY7kBpM-lkp@intel.com>
-References: <20230816091547.2982-1-thomas.hellstrom@linux.intel.com>
+        Wed, 16 Aug 2023 22:07:52 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1A38D268F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 19:07:48 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37H26OJd8016210, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37H26OJd8016210
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 17 Aug 2023 10:06:25 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Thu, 17 Aug 2023 10:06:44 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Thu, 17 Aug 2023 10:06:44 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
+ RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
+ 15.01.2375.007; Thu, 17 Aug 2023 10:06:44 +0800
+From:   =?big5?B?U3RhbmxleSBDaGFuZ1up96h8vHdd?= <stanley_chang@realtek.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+CC:     "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] phy: realtek: Realtek PHYs should depend on ARCH_REALTEK
+Thread-Topic: [PATCH] phy: realtek: Realtek PHYs should depend on ARCH_REALTEK
+Thread-Index: AQHZ0E08ScgrpcreG0KiXxOIOuSUw6/tvaCw
+Date:   Thu, 17 Aug 2023 02:06:44 +0000
+Message-ID: <6c02765f89eb4455806b895a6e0cb763@realtek.com>
+References: <202308161422.37GEMlZkA018197@rtits1.realtek.com.tw>
+In-Reply-To: <202308161422.37GEMlZkA018197@rtits1.realtek.com.tw>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.190.159]
+x-kse-serverinfo: RTEXMBS01.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="big5"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230816091547.2982-1-thomas.hellstrom@linux.intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on drm-misc/drm-misc-next]
-[also build test WARNING on drm/drm-next drm-tip/drm-tip linus/master v6.5-rc6 next-20230816]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Thomas-Hellstr-m/Documentation-gpu-VM_BIND-locking-document/20230816-171911
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20230816091547.2982-1-thomas.hellstrom%40linux.intel.com
-patch subject: [PATCH v2] Documentation/gpu: VM_BIND locking document
-reproduce: (https://download.01.org/0day-ci/archive/20230817/202308170916.TGY7kBpM-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308170916.TGY7kBpM-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> Documentation/gpu/drm-vm-bind-locking.rst: WARNING: document isn't included in any toctree
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+SGkgR2VlcnQsDQoNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGh5L3JlYWx0ZWsvS2NvbmZpZyBi
+L2RyaXZlcnMvcGh5L3JlYWx0ZWsvS2NvbmZpZyBpbmRleA0KPiA2NTBlMjBlZDY5YWY0MWQyLi43
+NWFjN2U3YzMxYWVjNmYyIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3BoeS9yZWFsdGVrL0tjb25m
+aWcNCj4gKysrIGIvZHJpdmVycy9waHkvcmVhbHRlay9LY29uZmlnDQo+IEBAIC0yLDYgKzIsOSBA
+QA0KPiAgIw0KPiAgIyBQaHkgZHJpdmVycyBmb3IgUmVhbHRlayBwbGF0Zm9ybXMNCj4gICMNCj4g
+Kw0KPiAraWYgQVJDSF9SRUFMVEVLIHx8IENPTVBJTEVfVEVTVA0KPiArDQo+ICBjb25maWcgUEhZ
+X1JUS19SVERfVVNCMlBIWQ0KPiAgICAgICAgIHRyaXN0YXRlICJSZWFsdGVrIFJURCBVU0IyIFBI
+WSBUcmFuc2NlaXZlciBEcml2ZXIiDQo+ICAgICAgICAgZGVwZW5kcyBvbiBVU0JfU1VQUE9SVA0K
+PiBAQCAtMjUsMyArMjgsNSBAQCBjb25maWcgUEhZX1JUS19SVERfVVNCM1BIWQ0KPiAgICAgICAg
+ICAgVGhlIERIQyAoZGlnaXRhbCBob21lIGNlbnRlcikgUlREIHNlcmllcyBTb0NzIHVzZWQgdGhl
+IFN5bm9wc3lzDQo+ICAgICAgICAgICBEV0MzIFVTQiBJUC4gVGhpcyBkcml2ZXIgd2lsbCBkbyB0
+aGUgUEhZIGluaXRpYWxpemF0aW9uDQo+ICAgICAgICAgICBvZiB0aGUgcGFyYW1ldGVycy4NCj4g
+Kw0KPiArZW5kaWYgIyBBUkNIX1JFQUxURUsgfHwgQ09NUElMRV9URVNUDQoNClRoYW5rcyBmb3Ig
+eW91ciBwYXRjaC4NCldoeSBub3QgdXNlICJkZXBlbmRzIG9uIj8NCmRlcGVuZHMgb24gQVJDSF9N
+RURJQVRFSyB8fCBDT01QSUxFX1RFU1QNCg0KDQpUaGFua3MsDQpTdGFubGV5DQo=
