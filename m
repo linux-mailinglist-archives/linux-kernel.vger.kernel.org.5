@@ -2,169 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B3277F0D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 09:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C79677F0F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 09:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348353AbjHQHBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 03:01:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33780 "EHLO
+        id S1348379AbjHQHLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 03:11:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348396AbjHQHBO (ORCPT
+        with ESMTP id S1348361AbjHQHLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 03:01:14 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C7982102
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 00:01:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692255672; x=1723791672;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=7wTwt3y0WZOZEJFllL/V49QsYi0+tfVAFEDIYB7LPg4=;
-  b=RfC05H5GeyE8dVS0yqeMiS18uZYebx3scHXwTH6b5zPk6faYb/feOuns
-   tLjHDBovF2o/ANLtVYz3YbBLy7Vx9tIkptlpg26wpnHRt3Fh4e6F98HkC
-   MbMmSTgNjvKFYKauewjKDNieX/OoP3zWDTz+V+jDlIXWNF1Yu2e63qOFx
-   FLq0rmmTQ5GCCc78S6Y/tlaHG2LNMXdb1Rd8zB01k+5t48m/rRHDhqLjO
-   +hDKlSZr8IG77s2qOYBiTuHud4ykrFQvQljqOdO/OZzwDSn15493obrKL
-   8vgMsaUJnJGHRLWdyGCtpipA81RXP5V+MC1nUvzgQCMolETq8fguVqzAg
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="403711258"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="403711258"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 00:01:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="711421260"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="711421260"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 17 Aug 2023 00:01:10 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWX0H-0000sD-1u;
-        Thu, 17 Aug 2023 07:01:09 +0000
-Date:   Thu, 17 Aug 2023 15:00:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Thierry Reding <treding@nvidia.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Wolfram Sang <wsa-dev@sang-engineering.com>
-Subject: drivers/i2c/busses/i2c-tegra.c:297: warning: Function parameter or
- member 'dma_dev' not described in 'tegra_i2c_dev'
-Message-ID: <202308171405.qdGAJxjf-lkp@intel.com>
+        Thu, 17 Aug 2023 03:11:05 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32F82D44
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 00:11:00 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99bf3f59905so974151566b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 00:11:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1692256259; x=1692861059;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=10hrN69GNW7jEsK+iBtlLYcIuc/Ievar3/OKjhX+0P4=;
+        b=cYAqRqrFGqxtx5X++EX/SpDAvNsuRgefS9Ues4JEL15GQFDrFph+1a6Foy6xBSieyN
+         cjSO2ZKEAypjLOiPVGTtD/gQPi5oWEFyF8c/BYoYMAujD5VK4VvLEfGby3pJ6hIS0u+N
+         EZLVvf/96s3aA9hOB9OuStKj9KfTzq21Ws6cSTB2IP17Z4QbMgKpU/6K3XCr2+6QYFzP
+         IQX1NJOJ6jqgCEXo3OjG/JA2QRBlBDLjpdeCZYABzakGcMItmza1o2O2vQS0J0fsttat
+         lO9TwyzzYCGIefo4uqmylK3KPSdYVTl1T0eond1gPEb6dZHdarjtKXR1UW0jXKbv7qnk
+         FNEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692256259; x=1692861059;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=10hrN69GNW7jEsK+iBtlLYcIuc/Ievar3/OKjhX+0P4=;
+        b=TZMUckPU3T0Hitt8XLRnLYU8Zl0u5JhobxyFCO/s9KBFxdoM5AVNkF/2OGKbL+Zja1
+         CFO2i9eGTyTLAtX3JGY9sIv6jnuFXK2Cx6ayyNPkraYLs4T4X71o4TzI5wdFBQaN0job
+         NxJ7WcxVhByeLYJ+piJANBTs8O7gTVLYQ/BfvRIeYI5gLFtq5JMxuFwHQozHr0hHPX1m
+         Hed/ClKFLMx2WA9b7LQ1DK3q7nuzS0/i+yJoEyeMceBjKMYB8Y63sCs1t0ZUOPIDj//W
+         +9F+uiOVRplVMIjXanoIHWJUwz0KltJoA60uT4sjJtORqCTZH3kOqS/fHc0/pgJqxKZu
+         rBTQ==
+X-Gm-Message-State: AOJu0Yw3nBWowQGxjQiguqbDE8UMWsPAv8KYl+EX6rgE/1ohQMkjTBBj
+        cbrE1l12dzyljpReA/IDLQNShA==
+X-Google-Smtp-Source: AGHT+IEhSMzhYE0v4cwo8rnXfYnPMUytVW1oTxHU6/vvXlqg+cUZxbuDSTMTgUa3lnrofuowlLqbpg==
+X-Received: by 2002:a17:906:5195:b0:99d:f6e9:1cf8 with SMTP id y21-20020a170906519500b0099df6e91cf8mr3781695ejk.20.1692256259251;
+        Thu, 17 Aug 2023 00:10:59 -0700 (PDT)
+Received: from fedora.sec.9e.network (ip-095-222-150-251.um34.pools.vodafone-ip.de. [95.222.150.251])
+        by smtp.gmail.com with ESMTPSA id qn17-20020a170907211100b00992b510089asm9674361ejb.84.2023.08.17.00.10.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 00:10:58 -0700 (PDT)
+From:   Patrick Rudolph <patrick.rudolph@9elements.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-i2c@vger.kernel.org
+Cc:     naresh.solanki@9elements.com,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v15 0/4] Add support for Maxim MAX735x/MAX736x variants
+Date:   Thu, 17 Aug 2023 09:10:49 +0200
+Message-ID: <20230817071056.2125679-1-patrick.rudolph@9elements.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thierry,
+v15:
+- Clarified VDD usage on PCA9846 which has two VDD pins 
 
-First bad commit (maybe != root cause):
+v14:
+- Added comment for interrupt support
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
-commit: cdbf26251d3b35c4ccaea0c3a6de4318f727d3d2 i2c: tegra: Allocate DMA memory for DMA engine
-date:   10 months ago
-config: sparc-randconfig-r014-20230817 (https://download.01.org/0day-ci/archive/20230817/202308171405.qdGAJxjf-lkp@intel.com/config)
-compiler: sparc-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230817/202308171405.qdGAJxjf-lkp@intel.com/reproduce)
+v13:
+- Fix dt-binding
+- Fixed nits
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308171405.qdGAJxjf-lkp@intel.com/
+v12:
+- Add separate patch correcting interrupt support in dt-binding
+- Fix typo in commit message
+- Make vdd-supply non optional
 
-All warnings (new ones prefixed by >>):
+v11:
+- Fix dt-binding example
 
->> drivers/i2c/busses/i2c-tegra.c:297: warning: Function parameter or member 'dma_dev' not described in 'tegra_i2c_dev'
+v10:
+- Small updates to dt-bindings
+- Make vdd-supply optional
+- Drop MAX7357 enhanced mode configuration
 
+v9:
+- Fix 'then' not aligned with 'if' in dt-bindings
+- Split enhanced mode configuration into separate patch
+- Add MAX7357/MAX7358 register definitions
+- Rename config register defines
+- Update comments and explain non default config being applied on MAX7357
+- Check for I2C_FUNC_SMBUS_WRITE_BYTE_DATA functionality
 
-vim +297 drivers/i2c/busses/i2c-tegra.c
+v8:
+- Move allOf in dt-binding and use double negation
 
-6ad068ed63100f Laxman Dewangan     2012-08-19  228  
-db811ca0f48578 Colin Cross         2011-02-20  229  /**
-c990bbafdb11c6 Thierry Reding      2018-12-17  230   * struct tegra_i2c_dev - per device I2C context
-db811ca0f48578 Colin Cross         2011-02-20  231   * @dev: device reference for power management
-c990bbafdb11c6 Thierry Reding      2018-12-17  232   * @hw: Tegra I2C HW feature
-c990bbafdb11c6 Thierry Reding      2018-12-17  233   * @adapter: core I2C layer adapter information
-c990bbafdb11c6 Thierry Reding      2018-12-17  234   * @div_clk: clock reference for div clock of I2C controller
-586a97d907ac34 Dmitry Osipenko     2020-09-30  235   * @clocks: array of I2C controller clocks
-586a97d907ac34 Dmitry Osipenko     2020-09-30  236   * @nclocks: number of clocks in the array
-0604ee4aefa20f Thierry Reding      2018-12-17  237   * @rst: reset control for the I2C controller
-db811ca0f48578 Colin Cross         2011-02-20  238   * @base: ioremapped registers cookie
-86c92b9965ff17 Sowjanya Komatineni 2019-02-12  239   * @base_phys: physical base address of the I2C controller
-c990bbafdb11c6 Thierry Reding      2018-12-17  240   * @cont_id: I2C controller ID, used for packet header
-c990bbafdb11c6 Thierry Reding      2018-12-17  241   * @irq: IRQ number of transfer complete interrupt
-c990bbafdb11c6 Thierry Reding      2018-12-17  242   * @is_dvc: identifies the DVC I2C controller, has a different register layout
-c73178b93754ed Thierry Reding      2019-06-07  243   * @is_vi: identifies the VI I2C controller, has a different register layout
-db811ca0f48578 Colin Cross         2011-02-20  244   * @msg_complete: transfer completion notifier
-db811ca0f48578 Colin Cross         2011-02-20  245   * @msg_err: error code for completed message
-db811ca0f48578 Colin Cross         2011-02-20  246   * @msg_buf: pointer to current message data
-db811ca0f48578 Colin Cross         2011-02-20  247   * @msg_buf_remaining: size of unsent data in the message buffer
-94a5573f0719cf Dmitry Osipenko     2020-09-30  248   * @msg_read: indicates that the transfer is a read access
-50665d58db052b Akhil R             2021-12-10  249   * @timings: i2c timings information like bus frequency
-a99042e7d9fb5c Dmitry Osipenko     2020-09-30  250   * @multimaster_mode: indicates that I2C controller is in multi-master mode
-86c92b9965ff17 Sowjanya Komatineni 2019-02-12  251   * @tx_dma_chan: DMA transmit channel
-86c92b9965ff17 Sowjanya Komatineni 2019-02-12  252   * @rx_dma_chan: DMA receive channel
-86c92b9965ff17 Sowjanya Komatineni 2019-02-12  253   * @dma_phys: handle to DMA resources
-86c92b9965ff17 Sowjanya Komatineni 2019-02-12  254   * @dma_buf: pointer to allocated DMA buffer
-86c92b9965ff17 Sowjanya Komatineni 2019-02-12  255   * @dma_buf_size: DMA buffer size
-a99042e7d9fb5c Dmitry Osipenko     2020-09-30  256   * @dma_mode: indicates active DMA transfer
-86c92b9965ff17 Sowjanya Komatineni 2019-02-12  257   * @dma_complete: DMA completion notifier
-a99042e7d9fb5c Dmitry Osipenko     2020-09-30  258   * @atomic_mode: indicates active atomic transfer
-db811ca0f48578 Colin Cross         2011-02-20  259   */
-db811ca0f48578 Colin Cross         2011-02-20  260  struct tegra_i2c_dev {
-db811ca0f48578 Colin Cross         2011-02-20  261  	struct device *dev;
-db811ca0f48578 Colin Cross         2011-02-20  262  	struct i2c_adapter adapter;
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  263  
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  264  	const struct tegra_i2c_hw_feature *hw;
-dda9d6a8262cb1 Stephen Warren      2013-11-06  265  	struct reset_control *rst;
-f1c2ff98065dce Dmitry Osipenko     2020-09-30  266  	unsigned int cont_id;
-f1c2ff98065dce Dmitry Osipenko     2020-09-30  267  	unsigned int irq;
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  268  
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  269  	phys_addr_t base_phys;
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  270  	void __iomem *base;
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  271  
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  272  	struct clk_bulk_data clocks[2];
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  273  	unsigned int nclocks;
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  274  
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  275  	struct clk *div_clk;
-50665d58db052b Akhil R             2021-12-10  276  	struct i2c_timings timings;
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  277  
-db811ca0f48578 Colin Cross         2011-02-20  278  	struct completion msg_complete;
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  279  	size_t msg_buf_remaining;
-db811ca0f48578 Colin Cross         2011-02-20  280  	int msg_err;
-db811ca0f48578 Colin Cross         2011-02-20  281  	u8 *msg_buf;
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  282  
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  283  	struct completion dma_complete;
-86c92b9965ff17 Sowjanya Komatineni 2019-02-12  284  	struct dma_chan *tx_dma_chan;
-86c92b9965ff17 Sowjanya Komatineni 2019-02-12  285  	struct dma_chan *rx_dma_chan;
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  286  	unsigned int dma_buf_size;
-cdbf26251d3b35 Thierry Reding      2022-10-20  287  	struct device *dma_dev;
-86c92b9965ff17 Sowjanya Komatineni 2019-02-12  288  	dma_addr_t dma_phys;
-4be62340f3ce62 Dmitry Osipenko     2020-09-30  289  	void *dma_buf;
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  290  
-a99042e7d9fb5c Dmitry Osipenko     2020-09-30  291  	bool multimaster_mode;
-a99042e7d9fb5c Dmitry Osipenko     2020-09-30  292  	bool atomic_mode;
-a99042e7d9fb5c Dmitry Osipenko     2020-09-30  293  	bool dma_mode;
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  294  	bool msg_read;
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  295  	bool is_dvc;
-89e3748acd0bf6 Dmitry Osipenko     2020-09-30  296  	bool is_vi;
-db811ca0f48578 Colin Cross         2011-02-20 @297  };
-db811ca0f48578 Colin Cross         2011-02-20  298  
+v7:
+- Reworked the commit message, comments and renamed a struct
+  field. No functional change.
 
-:::::: The code at line 297 was first introduced by commit
-:::::: db811ca0f48578f9940f49f284ac81e336b264ad i2c: tegra: Add i2c support
+v6:
+- Fix typo in dt-bindings
 
-:::::: TO: Colin Cross <ccross@android.com>
-:::::: CC: Ben Dooks <ben-linux@fluff.org>
+v5:
+- Remove optional and make vdd-supply mandatory
+
+v4:
+- Add missing maxitems dt-bindings property
+
+v3:
+- Merge dt-bindings into i2c-mux-pca954x.yaml
+
+v2:
+- Move dt-bindings to separate file
+- Added support for MAX736x as they are very similar
+- Fixed an issue found by kernel test robot
+- Dropped max735x property and custom IRQ check
+- Added MAX7357 config register defines instead of magic values
+- Renamed vcc-supply to vdd-supply
+
+Patrick Rudolph (4):
+  dt-bindings: i2c: pca954x: Correct interrupt support
+  dt-bindings: i2c: Add Maxim MAX735x/MAX736x variants
+  i2c: muxes: pca954x: Add MAX735x/MAX736x support
+  i2c: muxes: pca954x: Add regulator support
+
+ .../bindings/i2c/i2c-mux-pca954x.yaml         | 46 ++++++++--
+ drivers/i2c/muxes/Kconfig                     |  6 +-
+ drivers/i2c/muxes/i2c-mux-pca954x.c           | 92 +++++++++++++++++--
+ 3 files changed, 129 insertions(+), 15 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.41.0
+
