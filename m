@@ -2,167 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C454B77FD36
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E427677FD43
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354094AbjHQRtk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 17 Aug 2023 13:49:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56662 "EHLO
+        id S1354099AbjHQRvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 13:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354118AbjHQRtV (ORCPT
+        with ESMTP id S1348454AbjHQRvS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 13:49:21 -0400
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48999FD;
-        Thu, 17 Aug 2023 10:49:20 -0700 (PDT)
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-56d67c5e87cso16958eaf.0;
-        Thu, 17 Aug 2023 10:49:20 -0700 (PDT)
+        Thu, 17 Aug 2023 13:51:18 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B26FD
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:51:17 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-407db3e9669so24711cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:51:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692294676; x=1692899476;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oivqyRvWG/YKwukNMhntDN6iZGmo8MOwJsjmKSG1WWk=;
+        b=IgixazWFvG4Yx9ahjzRT/HQ1hZbmEgwOV55ti+GwbM6Recb4vPU2+LuEVARoRyBeVQ
+         TVtiWNy7YpnZSpDjj253lIPBLtoUmLVZCFqMw82FUwiDgvYIM9ljWoLCVngzZMfLwtb7
+         UhRlW0bI4I7lUahmf0i6dDVzRaTW/w3ooxo2EGnub0ljhhd9UBmNOHRo9aSWwZm7MRfj
+         jua/1w3vvIUfJXkafCKuuZfWxaMg06hgVxi7Q3L1/VfNGcfPd2U9cOcIiuhHNRVpOdKg
+         tWRww30Fz7dne25sYpAojIqCxtV036Kfp2XsqXR4XLNsdry6Ef/80z3xobJghYLSl7ss
+         XDFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692294559; x=1692899359;
+        d=1e100.net; s=20221208; t=1692294676; x=1692899476;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=O3kJKBjM8HeUH9yQyk9NqrnEPzqgaX/ykR5hFJ5dGi8=;
-        b=eYaudM3LeYeTw6tWb8Q/36A3har7HQ9RReySYEZ4DninScxJucsxBJ8xwzZPqJHTMj
-         LULpKkvVQLlAM12sEj0PCmdSjGgZNA2GpBDEt+f2mo4Vd9XIAgPgmo/SCmJv1/Cf0Qce
-         01WhEjq5mA6dyo48b1Si7jjnmD8CcXy+pF9RA6IGhDdhrpGz6IINjlowU9zE3V+McSTG
-         BymyemvviHIH0Tg8m8Q7CGvE0U5gpOkmRhfjsthJBXfwio8pxOvLE8SIlYVf4W4Z+b1t
-         LsNIBdAhM3gymFWa8i9N90/tDCFF4VhBpA3czMKRpHP6Gq8IWxc96D7zj9tyDJW9OzyC
-         9GxA==
-X-Gm-Message-State: AOJu0Yw92kAZoCJ6OyN7hzY523ARN0UPOfEGoTQ4BAEFt74gO+XEX2Pz
-        mmVBSj2sl1v0qy6J2o+2TAa6xdpHCVbEMo79f0A=
-X-Google-Smtp-Source: AGHT+IHQAj18DF5FMKJCfqRgpf97T7Vbzi6PVutl3QcQI8lJuQ6AEmA6vxmsO8gwukYaA8PvCYSRlWNSVlkkXyYCgKI=
-X-Received: by 2002:a4a:d581:0:b0:56e:487f:8caa with SMTP id
- z1-20020a4ad581000000b0056e487f8caamr455288oos.1.1692294558381; Thu, 17 Aug
- 2023 10:49:18 -0700 (PDT)
+        bh=oivqyRvWG/YKwukNMhntDN6iZGmo8MOwJsjmKSG1WWk=;
+        b=ESd1eXit+M1nne1/MYevGg3mXbCh5X7sOCWbFiJnx8IBVZk1S276D41yK8xtnhw/K0
+         UfRYOJuCs1xlKQrVLkcipxC6EI5uxkpnAeJvxL1dDgH/4WD0D03b/z9upFM7wfn8LYlh
+         F6wg7WrSp97mgvXPGuFb0kUAqGt3EHxNU+9ur/t8XqAAfN2eXHdokI2iWjxPJPaC5l5R
+         kVedVmnXkHwstLg2fFV6Zt4BX+6VDIQ4MO0ImSkhpITrUUCQVEpLRN04fMvy2nDCjWv2
+         rpSIGbnZ/tP8wf7Kba+Hy8sbLp7as6SiL0nxVh1Rz2qh+x1WLXXfQTDOPl1R3YeYsaW6
+         l2uA==
+X-Gm-Message-State: AOJu0YwXP8oS8pzqC2TIX7B5BtxanZrXDr+TV8NIC8Qfu/+5y/zJwilG
+        7luK5cMSqpc9BIXXeB58ix9fzGZtIN/7Pcbn3RyRTQ==
+X-Google-Smtp-Source: AGHT+IF0lWSkbOiEZjnYKiS0dsWS8vHHxzK/J7u+QdeptFCKXMhkIM2ItVe7GHxbGF+d+2mks54FsPNdfs8xFc/QM+g=
+X-Received: by 2002:a05:622a:1448:b0:3f6:97b4:1a4d with SMTP id
+ v8-20020a05622a144800b003f697b41a4dmr16622qtx.23.1692294676306; Thu, 17 Aug
+ 2023 10:51:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230807154834.888328-1-quic_poza@quicinc.com>
-In-Reply-To: <20230807154834.888328-1-quic_poza@quicinc.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 17 Aug 2023 19:49:07 +0200
-Message-ID: <CAJZ5v0h_m_kzJfatUeDxwhECHJQH0H7S37aqBQannDFj2ptKEw@mail.gmail.com>
-Subject: Re: [PATCH v2] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast timer
-To:     Oza Pawandeep <quic_poza@quicinc.com>
-Cc:     sudeep.holla@arm.com, catalin.marinas@arm.com, will@kernel.org,
-        rafael@kernel.org, lenb@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, jiles@qti.qualcomm.com
+References: <20230817170656.731066-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20230817170656.731066-1-andriy.shevchenko@linux.intel.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 17 Aug 2023 10:51:04 -0700
+Message-ID: <CAP-5=fUn9wrgz13HHxq=BDBoOVXHfR-MT-xt5zLmy74oWhQONw@mail.gmail.com>
+Subject: Re: [rfc, PATCH v1 1/1] min_heap: Make use of cmp_func_t and
+ swap_func_t types
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 7, 2023 at 5:48 PM Oza Pawandeep <quic_poza@quicinc.com> wrote:
+On Thu, Aug 17, 2023 at 10:09=E2=80=AFAM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> Arm® Functional Fixed Hardware Specification defines LPI states, which provide
-> an architectural context loss flags field that can be used to describe the
-> context that might be lost when an LPI state is entered.
+> The types.h defines standard types for comparator and swap functions.
+> Convert min_heap to use it.
 >
-> - Core context Lost
->         - General purpose registers.
->         - Floating point and SIMD registers.
->         - System registers, include the System register based
->         - generic timer for the core.
->         - Debug register in the core power domain.
->         - PMU registers in the core power domain.
->         - Trace register in the core power domain.
-> - Trace context loss
-> - GICR
-> - GICD
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  include/linux/min_heap.h | 8 ++++----
+>  kernel/events/core.c     | 4 ++--
+>  lib/test_min_heap.c      | 6 +++---
+>  3 files changed, 9 insertions(+), 9 deletions(-)
 >
-> Qualcomm's custom CPUs preserves the architectural state,
-> including keeping the power domain for local timers active.
-> when core is power gated, the local timers are sufficient to
-> wake the core up without needing broadcast timer.
+> diff --git a/include/linux/min_heap.h b/include/linux/min_heap.h
+> index 44077837385f..14da37caa235 100644
+> --- a/include/linux/min_heap.h
+> +++ b/include/linux/min_heap.h
+> @@ -26,8 +26,8 @@ struct min_heap {
+>   */
+>  struct min_heap_callbacks {
+>         int elem_size;
+> -       bool (*less)(const void *lhs, const void *rhs);
+> -       void (*swp)(void *lhs, void *rhs);
+> +       cmp_func_t less;
+
+This looks wrong. A cmp_func_t will return -1, for less-than, 0 for
+equal, +1 for greater-than whilst the less function here is just
+providing less-than as true/false. This is done to avoid common
+pitfalls around minimum integer.
+
+> +       swap_func_t swp;
+
+Why pass a size argument when we're specifying the swap function to use any=
+way?
+
+Thanks,
+Ian
+
+>  };
 >
-> The patch fixes the evaluation of cpuidle arch_flags, and moves only to
-> broadcast timer if core context lost is defined in ACPI LPI.
->
-> Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
->
-> diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-> index bd68e1b7f29f..5493b044864f 100644
-> --- a/arch/arm64/include/asm/acpi.h
-> +++ b/arch/arm64/include/asm/acpi.h
-> @@ -9,6 +9,7 @@
->  #ifndef _ASM_ACPI_H
->  #define _ASM_ACPI_H
->
-> +#include <linux/cpuidle.h>
->  #include <linux/efi.h>
->  #include <linux/memblock.h>
->  #include <linux/psci.h>
-> @@ -42,6 +43,27 @@
->  #define ACPI_MADT_GICC_SPE  (offsetof(struct acpi_madt_generic_interrupt, \
->         spe_interrupt) + sizeof(u16))
->
-> +/*
-> + * Arm® Functional Fixed Hardware Specification Version 1.2.
-> + * Table 2: Arm Architecture context loss flags
-> + */
-> +#define CPUIDLE_CORE_CTXT              BIT(0) /* Core context Lost */
-> +
-> +#ifndef arch_update_idle_state_flags
-> +static __always_inline void arch_update_idle_state_flags(u32 arch_flags,
-> +                                                       unsigned int *sflags)
-> +{
-> +  if (arch_flags & CPUIDLE_CORE_CTXT) {
-> +       *sflags |= CPUIDLE_FLAG_TIMER_STOP;
-> +  }
-> +}
-> +#define arch_update_idle_state_flags arch_update_idle_state_flags
-> +#endif
-> +
-> +#define CPUIDLE_TRACE_CTXT             BIT(1) /* Trace context loss */
-> +#define CPUIDLE_GICR_CTXT              BIT(2) /* GICR */
-> +#define CPUIDLE_GICD_CTXT              BIT(3) /* GICD */
-> +
->  /* Basic configuration for ACPI */
->  #ifdef CONFIG_ACPI
->  pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
-> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-> index 9718d07cc2a2..420baec3465c 100644
-> --- a/drivers/acpi/processor_idle.c
-> +++ b/drivers/acpi/processor_idle.c
-> @@ -1221,8 +1221,7 @@ static int acpi_processor_setup_lpi_states(struct acpi_processor *pr)
->                 strscpy(state->desc, lpi->desc, CPUIDLE_DESC_LEN);
->                 state->exit_latency = lpi->wake_latency;
->                 state->target_residency = lpi->min_residency;
-> -               if (lpi->arch_flags)
-> -                       state->flags |= CPUIDLE_FLAG_TIMER_STOP;
-> +               arch_update_idle_state_flags(lpi->arch_flags, &state->flags);
->                 if (i != 0 && lpi->entry_method == ACPI_CSTATE_FFH)
->                         state->flags |= CPUIDLE_FLAG_RCU_IDLE;
->                 state->enter = acpi_idle_lpi_enter;
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index d584f94409e1..60f17c99465b 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -1471,6 +1471,15 @@ static inline int lpit_read_residency_count_address(u64 *address)
+>  /* Sift the element at pos down the heap. */
+> @@ -55,7 +55,7 @@ void min_heapify(struct min_heap *heap, int pos,
+>                 }
+>                 if (smallest =3D=3D parent)
+>                         break;
+> -               func->swp(smallest, parent);
+> +               func->swp(smallest, parent, func->elem_size);
+>                 if (smallest =3D=3D left)
+>                         pos =3D (pos * 2) + 1;
+>                 else
+> @@ -127,7 +127,7 @@ void min_heap_push(struct min_heap *heap, const void =
+*element,
+>                 parent =3D data + ((pos - 1) / 2) * func->elem_size;
+>                 if (func->less(parent, child))
+>                         break;
+> -               func->swp(parent, child);
+> +               func->swp(parent, child, func->elem_size);
+>         }
 >  }
->  #endif
 >
-> +#ifndef arch_update_idle_state_flags
-> +static __always_inline void arch_update_idle_state_flags(u32 arch_flags,
-> +                                                       unsigned int *sflags)
-> +{
-> +
-> +}
-> +#define arch_update_idle_state_flags arch_update_idle_state_flags
-> +#endif
-> +
->  #ifdef CONFIG_ACPI_PPTT
->  int acpi_pptt_cpu_is_thread(unsigned int cpu);
->  int find_acpi_cpu_topology(unsigned int cpu, int level);
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 4c72a41f11af..fa344b916290 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -3639,7 +3639,7 @@ void __perf_event_task_sched_out(struct task_struct=
+ *task,
+>         perf_cgroup_switch(next);
+>  }
+>
+> -static bool perf_less_group_idx(const void *l, const void *r)
+> +static int perf_less_group_idx(const void *l, const void *r)
+>  {
+>         const struct perf_event *le =3D *(const struct perf_event **)l;
+>         const struct perf_event *re =3D *(const struct perf_event **)r;
+> @@ -3647,7 +3647,7 @@ static bool perf_less_group_idx(const void *l, cons=
+t void *r)
+>         return le->group_index < re->group_index;
+>  }
+>
+> -static void swap_ptr(void *l, void *r)
+> +static void swap_ptr(void *l, void *r, int size)
+>  {
+>         void **lp =3D l, **rp =3D r;
+>
+> diff --git a/lib/test_min_heap.c b/lib/test_min_heap.c
+> index 7b01b4387cfb..63d0b2f6c060 100644
+> --- a/lib/test_min_heap.c
+> +++ b/lib/test_min_heap.c
+> @@ -11,17 +11,17 @@
+>  #include <linux/printk.h>
+>  #include <linux/random.h>
+>
+> -static __init bool less_than(const void *lhs, const void *rhs)
+> +static __init int less_than(const void *lhs, const void *rhs)
+>  {
+>         return *(int *)lhs < *(int *)rhs;
+>  }
+>
+> -static __init bool greater_than(const void *lhs, const void *rhs)
+> +static __init int greater_than(const void *lhs, const void *rhs)
+>  {
+>         return *(int *)lhs > *(int *)rhs;
+>  }
+>
+> -static __init void swap_ints(void *lhs, void *rhs)
+> +static __init void swap_ints(void *lhs, void *rhs, int size)
+>  {
+>         int temp =3D *(int *)lhs;
+>
 > --
-
-If I'm to apply this, an ACK from the ARM people is requisite.
-
-Thanks!
+> 2.40.0.1.gaa8946217a0b
+>
