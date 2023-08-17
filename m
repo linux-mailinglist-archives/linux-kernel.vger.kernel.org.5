@@ -2,78 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 892B377FD32
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CED077FD33
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354088AbjHQRq0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 17 Aug 2023 13:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
+        id S1354083AbjHQRr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 13:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345619AbjHQRp5 (ORCPT
+        with ESMTP id S1354103AbjHQRrI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 13:45:57 -0400
-Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 580F310C0;
-        Thu, 17 Aug 2023 10:45:56 -0700 (PDT)
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-56d26137095so13498eaf.1;
-        Thu, 17 Aug 2023 10:45:56 -0700 (PDT)
+        Thu, 17 Aug 2023 13:47:08 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AAF430F5
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:47:07 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-563f8e8a53dso67272a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:47:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692294426; x=1692899226;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TJUEN3/MzB2Leff/dyiCqwmONnMWLUZ1CWSo2+nWXtI=;
+        b=sfQibF0xOiKOYawtTfuu+kZdEG97V60HlcJNSZQDL1LcqOjTBae5UEmGIBcIdfzOw0
+         0IQyP9VOV6Xj1r7oZyukZ85JM/ELoL+zjpla7FoUQUYaoTG/9xJp1TFf0IGpOYyJCr1X
+         remZvGHZ7JWTTRxiVbz+OjKRFlW0+jER1+ATKD4A8NbIgEWc+NAJEye99wDBtWLmOVDH
+         pfFF9vxB1frwdZRc7YCbP31eDyolle/hs543IyffdieuoZyCCZcgUaq30Bx2qsi/E8DA
+         N/L/24xiQBj71SqTMyilTB12hTqHtQYTX/86tQvHXeHmFpUTe5IjhIumOi7Dt2vm392H
+         wyiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692294355; x=1692899155;
+        d=1e100.net; s=20221208; t=1692294426; x=1692899226;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BWkl0YmA+wanHY01YLpCh2cN9G0Tpk4oGgxO0aDzIBI=;
-        b=VUT6sVebulV3sQTuX38NQ4hVeErVg7o4HEGOxaJPWgqEJGIKWJWzNxb1mst2XzFTMm
-         oqhB9je8fpWxZv/bJE7GX3kuEex+Qnoskc6mnXVCwhH9oBQHa2rUwmBIVLk3dVzIcWOu
-         qNRgi0jHcPFZIvtOUk7CioRmu8CVnh6mCkwFmDTwy2aiAJo7GJEYoEHY4VWTb9Vgnvtc
-         ePKstRCg9QTMVJR9o+Xh2EBggSSiZSV0FSpI+9HmhRWqTFgucuA47PiTA+4h2QhK2dN5
-         Wj9tAHZF7goHxSahwolVkQyxsAHB8aPvnS49cNw8/Fcwb1lcGgc520KN2Bt+WbbYTTpW
-         XH4Q==
-X-Gm-Message-State: AOJu0YxyggZGoXnrrmV3RddaS6fxCUVmcX5QMvaz3O4XqhBIhOnjb6VT
-        Qr8ygrssZCbN6yQ3DdVKts9CtLOQ58PoSEs3dBs=
-X-Google-Smtp-Source: AGHT+IHhnk8rXE+lSWd/IZpennCiavRiILVG3sX6LXIqDYmGlCxj+jwVFD+6U8/RcrsuRpu1+OGpfUmxfHNZaD6cFLY=
-X-Received: by 2002:a05:6820:44a:b0:563:3b56:5dc1 with SMTP id
- p10-20020a056820044a00b005633b565dc1mr508056oou.0.1692294355599; Thu, 17 Aug
- 2023 10:45:55 -0700 (PDT)
+        bh=TJUEN3/MzB2Leff/dyiCqwmONnMWLUZ1CWSo2+nWXtI=;
+        b=HorIleU/1nxUD9tP+5B3M7dooFMtmRySEZ8+X/qe1OO/WVxxRkK4h63A4SgoeIMjbb
+         Rj4odWw1S/lZRPmLBOhxJb9k0sA/5iHVosvip9r6C7bri+S0oK+xIH5jia8iZ5ovQKH2
+         V5tcw0GXOQAd1aajcBFmh+K6aY+e1viOHSOKMfoTdaOCaHfifB9tuMXwvAQrjBnuopAc
+         0Pn0WyIt2roNOO0RssHsKpX/NWYCKfWmf4d/63fWtdWsBEbdpVp/McqmIHijoc7WZYlP
+         7oaMdZ8YuGNlUDSYrYb6iPeuWsuVDiKvw0q5fepc3rnh1g6xxFhyj9IrXXm87b77f0wl
+         KI/Q==
+X-Gm-Message-State: AOJu0Yx1Cil2+fI2BEGBEdAzxDcm8S9hjeEMRuzYtYcSdMiQAgT8UEwq
+        WiNei8GJ3MGceClvxXzIM1woDDgDGxJkG4Q+EP4=
+X-Google-Smtp-Source: AGHT+IHhoEkfZu+PvEzuaZxH9Qimc/cllC1ac7hKrtni4oIMC9XA4BdYVJPG66Or18T75ZkFpZzx36QmSyvKv3fzxhs=
+X-Received: by 2002:a17:90a:8c18:b0:26c:f769:829 with SMTP id
+ a24-20020a17090a8c1800b0026cf7690829mr93202pjo.28.1692294426422; Thu, 17 Aug
+ 2023 10:47:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <1690984066-31757-1-git-send-email-lixiaochun.2888@163.com> <SJ1PR11MB6083DA8FD0F3790DA04CF337FC0BA@SJ1PR11MB6083.namprd11.prod.outlook.com>
-In-Reply-To: <SJ1PR11MB6083DA8FD0F3790DA04CF337FC0BA@SJ1PR11MB6083.namprd11.prod.outlook.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 17 Aug 2023 19:45:44 +0200
-Message-ID: <CAJZ5v0ibftv6WK2fDRwe2CvYUWu0zLhMNM4Ud++C6E-Nbjh6ng@mail.gmail.com>
-Subject: Re: [PATCH v1] ACPI: extlog: Fix finding the generic error data for
- v3 structure
-To:     "Luck, Tony" <tony.luck@intel.com>,
-        Xiaochun Lee <lixiaochun.2888@163.com>
-Cc:     "lenb@kernel.org" <lenb@kernel.org>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "xiaocli@redhat.com" <xiaocli@redhat.com>,
-        "Huang, Adrian" <ahuang12@lenovo.com>,
-        "Li, Xiaochun" <lixc17@lenovo.com>
+References: <20230812210053.2325091-1-zokeefe@google.com> <PUZP153MB06358FF02518EF3B279F5DD4BE16A@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
+ <CAAa6QmSrwe2m4MjS9mGO+DeGNGSv=B2uZ72EAxnZk2jsDh39rQ@mail.gmail.com>
+ <ZNp7JDaPhT3Se4de@casper.infradead.org> <CAAa6QmSN4NhaDL0DQsRd-F8HTnCCjq1ULRNk88LAA9gVbDXE4g@mail.gmail.com>
+ <ZNrh6w9ICu4rMrhV@casper.infradead.org> <PUZP153MB063529C4869A7A666C275B23BE15A@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
+ <CAAa6QmRrnRHEEQMMYe20GLXj7g+LVVHVRAKUdSLy=jUW=khb2A@mail.gmail.com>
+In-Reply-To: <CAAa6QmRrnRHEEQMMYe20GLXj7g+LVVHVRAKUdSLy=jUW=khb2A@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 17 Aug 2023 10:46:54 -0700
+Message-ID: <CAHbLzko_xLiqkNgjA7DhVFBSW6qJdAwgfk557YKV+ZpwS2x16w@mail.gmail.com>
+Subject: Re: [EXTERNAL] [PATCH] mm/thp: fix "mm: thp: kill __transhuge_page_enabled()"
+To:     "Zach O'Keefe" <zokeefe@google.com>
+Cc:     Saurabh Singh Sengar <ssengar@microsoft.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 6:03 PM Luck, Tony <tony.luck@intel.com> wrote:
+On Wed, Aug 16, 2023 at 2:48=E2=80=AFPM Zach O'Keefe <zokeefe@google.com> w=
+rote:
 >
-> > Fix by using acpi_hest_get_payload( ) to find out the correct
-> > generic error data for v3 structure. The revision v300 generic
-> > error data is different from the old one, so for compatibility
-> > with old and new version, change to a new interface to locate
-> > the right memory error section that was defined in CPER.
+> > We have a out of tree driver that maps huge pages through a file handle=
+ and
+> > relies on -> huge_fault. It used to work in 5.19 kernels but 6.1 change=
+d this
+> > behaviour.
 > >
-> > Signed-off-by: Xiaochun Lee <lixc17@lenovo.com>
+> > I don=E2=80=99t think reverting the earlier behaviour of fault_path for=
+ huge pages should
+> > impact kernel negatively.
+> >
+> > Do you think we can restore this earlier behaviour of kernel to allow p=
+age fault
+> > for huge pages via ->huge_fault.
 >
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> That seems reasonable to me. I think using the existence of a
+> ->huge_fault() handler as a predicate to return "true" makes sense to
+> me. The "normal" flow for file-backed memory along fault path still
+> needs to return "false", so that we correctly fallback to ->fault()
+> handler. Unless there are objections, I can do that in a v2.
 
-Applied as 6.6 material, thanks!
+Sorry for chiming in late. I'm just back from vacation and trying to catch =
+up...
+
+IIUC the out-of-tree driver tries to allocate huge page and install
+PMD mapping via huge_fault() handler, but the cleanup of
+hugepage_vma_check() prevents this due to the check to
+VM_NO_KHUGEPAGED?
+
+So you would like to check whether a huge_fault() handler existed
+instead of vma_is_dax()?
