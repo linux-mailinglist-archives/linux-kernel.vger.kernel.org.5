@@ -2,163 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA087801A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F787801A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356052AbjHQXWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 19:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55690 "EHLO
+        id S1356059AbjHQXWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 19:22:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356057AbjHQXV4 (ORCPT
+        with ESMTP id S1356063AbjHQXWT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 19:21:56 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E7823590
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:21:55 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1bde50b4dc5so5109575ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:21:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692314514; x=1692919314;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=J/Ket07XbmLUgM3VqVLd+avv0k+hdZ+nbF7OKnE9uLA=;
-        b=C0/fo/TnxgkaozGTCbWg7JOuiOM2gCqolP7CiEHXYuJTHmXfCvzk/iIlGSuZ8mxOD4
-         9UDNt1pw+hHdn3ptUHCT4nS+KkjdMZndQVOPnsthBwS0kkPuEYfqmNYniayZQE2IurvE
-         lZzhNxZDcdfiJVkDC3/9YM5l3P4prfa3eLJMxtezrBmq/6r/jZ0QMLZJtn+TgcztaU+t
-         moMlzo14ss2izBJ7FYQICtap3WwMqic7TsqX1s8YdLwKdaxzqWAwXoJ4mvxpBHsZ1v/m
-         grhZYFd7Pi929N34j48X/G4H74IhUenSyOH2NcnwjdZfSe97zTehJ2CRaP+KtmVBntYp
-         69hQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692314514; x=1692919314;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=J/Ket07XbmLUgM3VqVLd+avv0k+hdZ+nbF7OKnE9uLA=;
-        b=h4UYS9jkMa0GgE/KN71JuL7/N4vAk7ioNxiv79sCoM5BCho4FxbUtT01x2cW/wBeL2
-         z9b4xOALDxgNfVBTVhtkBd0vS5R+u5lvybEZzVGEXbLFbrhkEq5uESnFfpXSON2BqCPM
-         Scz7onxaefCyFKAxLRPI+gtVHDD0wklU87JPwmb6WO8qchYfeW7YJe3r8ykuho30njPU
-         69stjgP8xfqAGhAXqgFyNbMsPds2d79zFbb36iKN6H2ErK/ekSLtrRuRK6WOQEsocE+r
-         GE/mAt4c7Iy1BWoBB1kf+BW9rlEoQ9IM6pz7I48kwZCL94V0sR90gVLz3zYDoHVt63p6
-         arMQ==
-X-Gm-Message-State: AOJu0Yw10gJ4nZCIF4C2W20bq7CIb+OKvaHMDXaktD0XrHmiakRhhiUC
-        V52tZzL8kKZFomXlkfJyRy6SdrxOido=
-X-Google-Smtp-Source: AGHT+IFwlRuZws0TUSBB0piRCroR1sbXv/PMBgDKcvlbHoPucUENcJYr+9Aq4nF/bE28mqN1lz5DU+tRajo=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:f145:b0:1bf:cc5:7b57 with SMTP id
- d5-20020a170902f14500b001bf0cc57b57mr305994plb.3.1692314514660; Thu, 17 Aug
- 2023 16:21:54 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 16:21:53 -0700
-In-Reply-To: <20230814115108.45741-9-cloudliang@tencent.com>
-Mime-Version: 1.0
-References: <20230814115108.45741-1-cloudliang@tencent.com> <20230814115108.45741-9-cloudliang@tencent.com>
-Message-ID: <ZN6rkW4DHFI1v1vL@google.com>
-Subject: Re: [PATCH v3 08/11] KVM: selftests: Test consistency of PMU MSRs
- with Intel PMU version
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jinrong Liang <ljr.kernel@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Like Xu <likexu@tencent.com>,
-        David Matlack <dmatlack@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jinrong Liang <cloudliang@tencent.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Thu, 17 Aug 2023 19:22:19 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F265935A9;
+        Thu, 17 Aug 2023 16:22:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692314538; x=1723850538;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=jjim20PHoNcuWFjwQTxJ802NzhAvwG3kqWFOP4bvdkg=;
+  b=Xfx9DpapC1fnXVTp8NGGnogkZoCB82d4M/how0rpJStftf0h81LCo+AI
+   +Gp+BlO4NuhzoqbsSRvtdKs+kDP1OuUB1LMs2k3QcORu0nlu7wRkX57jF
+   EnE2U+ibgVO6Oykz5xK7XGrQ/UEFRfSdiNpnsZsDXJoyOznGCMxMwArsV
+   6a9p8e63177lFlkVaGUYgJCIre5MQJMrDpHYTPbMbh6nDWZm+tRJCrgcE
+   gUxtUHzO8WCX9RHf1FurjnYLybmyGj1x3SlIGsFKgXDdST98G5vfqxiBB
+   2ESh2GOILGuPCRm7vxJ9Nl/sTDUqphncP//T1BdXegXdQuCbBlEaOjPiV
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="376718395"
+X-IronPort-AV: E=Sophos;i="6.01,181,1684825200"; 
+   d="scan'208";a="376718395"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 16:22:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="728358086"
+X-IronPort-AV: E=Sophos;i="6.01,181,1684825200"; 
+   d="scan'208";a="728358086"
+Received: from lacoffin-mobl.amr.corp.intel.com (HELO [10.212.196.192]) ([10.212.196.192])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 16:22:16 -0700
+Message-ID: <3b1ca61c-fa3f-a802-6705-a8c1f37ad58f@intel.com>
+Date:   Thu, 17 Aug 2023 16:22:18 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 03/15] mshyperv: Introduce
+ numa_node_to_proximity_domain_info
+Content-Language: en-US
+To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org
+Cc:     patches@lists.linux.dev, mikelley@microsoft.com, kys@microsoft.com,
+        wei.liu@kernel.org, haiyangz@microsoft.com, decui@microsoft.com,
+        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
+        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
+        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
+        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        will@kernel.org, catalin.marinas@arm.com
+References: <1692309711-5573-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1692309711-5573-4-git-send-email-nunodasneves@linux.microsoft.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <1692309711-5573-4-git-send-email-nunodasneves@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023, Jinrong Liang wrote:
-> @@ -341,6 +347,66 @@ static void intel_test_fixed_counters(void)
->  	}
->  }
->  
-> +static void intel_guest_check_pmu_version(uint8_t version)
+On 8/17/23 15:01, Nuno Das Neves wrote:
+> +static inline union hv_proximity_domain_info
+> +numa_node_to_proximity_domain_info(int node)
 > +{
-> +	switch (version) {
-> +	case 0:
-> +		GUEST_SYNC(wrmsr_safe(MSR_INTEL_ARCH_PMU_GPCTR, 0xffffull));
-> +	case 1:
-> +		GUEST_SYNC(wrmsr_safe(MSR_CORE_PERF_GLOBAL_CTRL, 0x1ull));
-> +	case 2:
-> +		/*
-> +		 * AnyThread Bit is only supported in version 3
-> +		 *
-> +		 * The strange thing is that when version=0, writing ANY-Any
-> +		 * Thread bit (bit 21) in MSR_P6_EVNTSEL0 and MSR_P6_EVNTSEL1
-> +		 * will not generate #GP. While writing ANY-Any Thread bit
-> +		 * (bit 21) in MSR_P6_EVNTSEL0+x (MAX_GP_CTR_NUM > x > 2) to
-> +		 * ANY-Any Thread bit (bit 21) will generate #GP.
-> +		 */
-> +		if (version == 0)
-> +			break;
+> +	union hv_proximity_domain_info proximity_domain_info;
 > +
-> +		GUEST_SYNC(wrmsr_safe(MSR_P6_EVNTSEL0,
-> +				      ARCH_PERFMON_EVENTSEL_ANY));
-> +		break;
-> +	default:
-> +		/* KVM currently supports up to pmu version 2 */
-> +		GUEST_SYNC(GP_VECTOR);
-
-This seems largely pointless, but I suppose it doesn't hurt anything.
-
+> +	if (node != NUMA_NO_NODE) {
+> +		proximity_domain_info.domain_id = node_to_pxm(node);
+> +		proximity_domain_info.flags.reserved = 0;
+> +		proximity_domain_info.flags.proximity_info_valid = 1;
+> +		proximity_domain_info.flags.proximity_preferred = 1;
+> +	} else {
+> +		proximity_domain_info.as_uint64 = 0;
 > +	}
 > +
-> +	GUEST_DONE();
+> +	return proximity_domain_info;
 > +}
-> +
-> +static void test_pmu_version_setup(struct kvm_vcpu *vcpu, uint8_t version,
-> +				   uint64_t expected)
-> +{
-> +	uint64_t msr_val = 0;
-> +
-> +	vcpu_set_cpuid_property(vcpu, X86_PROPERTY_PMU_VERSION, version);
-> +
-> +	vcpu_args_set(vcpu, 1, version);
-> +	while (run_vcpu(vcpu, &msr_val) != UCALL_DONE)
-> +		TEST_ASSERT_EQ(expected, msr_val);
-> +}
-> +
-> +static void intel_test_pmu_version(void)
-> +{
-> +	uint8_t unsupported_version = kvm_cpu_property(X86_PROPERTY_PMU_VERSION) + 1;
-> +	struct kvm_vcpu *vcpu;
-> +	struct kvm_vm *vm;
-> +	uint8_t version;
-> +
-> +	TEST_REQUIRE(kvm_cpu_property(X86_PROPERTY_PMU_NR_FIXED_COUNTERS) > 2);
-> +
-> +	for (version = 0; version <= unsupported_version; version++) {
-> +		vm = pmu_vm_create_with_one_vcpu(&vcpu,
-> +						 intel_guest_check_pmu_version);
-> +		test_pmu_version_setup(vcpu, version, GP_VECTOR);
 
-Why pass GP_VECTOR?  It's the _only_ expected result, just have the guest assert
-that it got a #GP...
+Pop quiz: What are the rules for the 30 bits of uninitialized data of
+proximity_domain_info.flags in the (node != NUMA_NO_NODE) case?
 
-> +		kvm_vm_free(vm);
+I actually don't know off the top of my head.  I generally avoid
+bitfields, but if they were normal stack-allocated variable space,
+they'd be garbage.
 
-Again, stop making half-baked helpers.
-
-> +	}
-> +}
-> +
->  int main(int argc, char *argv[])
->  {
->  	TEST_REQUIRE(get_kvm_param_bool("enable_pmu"));
-> @@ -353,6 +419,7 @@ int main(int argc, char *argv[])
->  	intel_test_arch_events();
->  	intel_test_counters_num();
->  	intel_test_fixed_counters();
-> +	intel_test_pmu_version();
->  
->  	return 0;
->  }
-> -- 
-> 2.39.3
-> 
+I'd also *much* rather see the "as_uint64 = 0" coded up as a memset() or
+even explicitly zeroing all the same variables as the other half of the
+if().  As it stands, it's not 100% obvious that proximity_domain_info is
+64 bits and that .as_uint64=0 zeroes the whole thing.  It *WOULD* be
+totally obvious if it were a memset().
