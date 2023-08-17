@@ -2,157 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9201777FEE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 22:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95DB077FEEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 22:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354818AbjHQUON convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 17 Aug 2023 16:14:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47546 "EHLO
+        id S1354824AbjHQUR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 16:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354392AbjHQUN6 (ORCPT
+        with ESMTP id S1354392AbjHQURS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 16:13:58 -0400
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 328D630DF;
-        Thu, 17 Aug 2023 13:13:57 -0700 (PDT)
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-56d67c5e87cso37785eaf.0;
-        Thu, 17 Aug 2023 13:13:57 -0700 (PDT)
+        Thu, 17 Aug 2023 16:17:18 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E519359C
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 13:17:16 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5646868b9e7so308593a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 13:17:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692303436; x=1692908236;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KU+yygDiyP0ELbBFxmC0szeJUfwpE0TiBmbPQ8YXVAs=;
+        b=zNA3vpDDz1KyBjk9Ob5BUHexoZIGyPiAf/jYnuCLTrIqL4j8d6uRJul5dmw74Bh5Hq
+         SeyuGFaDDWqXuIHXDZA8/MCkbxdNniW3sClCvGAJwf+6uB9P9YBYZucziWA+uHZ9V3aQ
+         ry1zwBbNsGxEkazo8EH9jBDiVKZ6gZuLtJp6BpHlGyFW2+HSz0J3LwOKAJBm5+Sbpzzh
+         1dOvxxvTnzFRJ0DUIV9Np2zj6Wx5KXBVohTo0UHZTaxclJriOTeM0q8Ral8VlimAaMPU
+         HI0tbM5WA3rH/97lmAIvs2Vj+Px3wTzwhMfDsgg9wXUriOKOFynRHp9VmuR+kHhQtls9
+         snsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692303236; x=1692908036;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EOOmb1fYQq61nhxtEFTLGG2RcS7GExUOqCV3eOpnV0g=;
-        b=jDX0mwaXFGiz67630thfsu5IOb5l6kW43G9vk4IRjwgk/SeANRRxuBuOJcHWim0cOr
-         cXEvNw0Qhkx14IskwPUbUtnUTpEXTx1yZMSmjr6bMhAjQi2B3AmvuuGpRhDDuUy4B3Bb
-         7WXNZ/fOKxCZR2DCuLN3NOJZG2pYLwI3dDMc1gjaiL/Ak2NVu8G//P/G0bswkgHx7IGn
-         6QTOoyIQhnuX9zk3FxL/JG8ksLZPXqX93TUlzqIXR8/ChfE7ps5kdlDXZNnw9DfXIEBW
-         UX5ZNMu2pbSmqGAi2Apm+BJpV6AJwLrqzAF2spcpu5qwqF1UWgch5WV0ZCCC/+IatjI3
-         XyRQ==
-X-Gm-Message-State: AOJu0YzK8REa2hq1bUU4lCkwmRp3gjTjWgxwqSeYhjXqybF9PTh1snuy
-        0mRwpTL82Vutafdn38f6xik81hIRH2dPvYCvSZMB1QvX
-X-Google-Smtp-Source: AGHT+IGjC9+wUR9A0gG3IWLckX1X6Q5UeD/Qk4UQ+t+dOUMjkRWCz3mvd18QlzJOJ50MjmHkAQQ79RUXJ/N5v2JoerM=
-X-Received: by 2002:a05:6820:44a:b0:563:3b56:5dc1 with SMTP id
- p10-20020a056820044a00b005633b565dc1mr886196oou.0.1692303236438; Thu, 17 Aug
- 2023 13:13:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230717195405.730869-1-srinivas.pandruvada@linux.intel.com> <20230717195405.730869-7-srinivas.pandruvada@linux.intel.com>
-In-Reply-To: <20230717195405.730869-7-srinivas.pandruvada@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 17 Aug 2023 22:13:45 +0200
-Message-ID: <CAJZ5v0juNDN+8ZiSLp4XT6yYHGMrKHfQK08ZX1EAaFx6f4PWXg@mail.gmail.com>
-Subject: Re: [PATCH v2 6/7] thermal/drivers/int340x: Support workload hint interrupts
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     daniel.lezcano@linaro.org, rafael@kernel.org, rui.zhang@intel.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1692303436; x=1692908236;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=KU+yygDiyP0ELbBFxmC0szeJUfwpE0TiBmbPQ8YXVAs=;
+        b=TbFtmr34WyuzVTj8xwiTh75yQjaVPCEddDXO+giwYD9LY88OjP0KjkEWX1vy6fg3my
+         IO0EsIsOraP7He3M9SKApmT0kDIixZBOm/7Bp8lC+wLxJVRb3XXP/jBJXKIcqINfuM5A
+         51CLOFYHDJf6kWLXRkgxG4hVLauZg4ea+vsazQF9WA+jJNb/wEM9Db+KcXjhnWnvQjGd
+         hrJlbWJFpTfPN5pgRf9SW9pr6k8/8/z+AJe1rbajkzKLa4jdiGF7ElSPuBENYggQ4pwX
+         F/ghTnkRfCXQt//t33QbtNvba1AbToOBlK8rec/IgdsditNynj9I5xjOvQj+ie58i1Ml
+         us9w==
+X-Gm-Message-State: AOJu0YyqlFAdj43FKvWrDUZ+YWV9QeYCEDTQXZTbnyJTOFmCkKHe5gjt
+        IBpg1Obwz5gAV8rkOQyFNWFujsXIywM=
+X-Google-Smtp-Source: AGHT+IFijHumwatVu7On9K+vpmmEsXcAinTeAqe7rw5Domph+e00oHTgIyy4LP9oPODs9OGpTVBlFLzjQh0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:b00f:0:b0:565:dddd:1f65 with SMTP id
+ h15-20020a63b00f000000b00565dddd1f65mr61039pgf.7.1692303435763; Thu, 17 Aug
+ 2023 13:17:15 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 13:17:14 -0700
+In-Reply-To: <CAFg_LQXuBfCD6ypmOLS4NhBCPrLXTpetYWGqFDSnKgQa0R6_gA@mail.gmail.com>
+Mime-Version: 1.0
+References: <20230810090945.16053-1-cloudliang@tencent.com>
+ <20230810090945.16053-4-cloudliang@tencent.com> <20230814234926.GD2257301@ls.amr.corp.intel.com>
+ <CAFg_LQXuBfCD6ypmOLS4NhBCPrLXTpetYWGqFDSnKgQa0R6_gA@mail.gmail.com>
+Message-ID: <ZN6ASsmAO2007KJM@google.com>
+Subject: Re: [PATCH v6 3/6] KVM: selftests: Introduce __kvm_pmu_event_filter
+ to improved event filter settings
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jinrong Liang <ljr.kernel@gmail.com>
+Cc:     Isaku Yamahata <isaku.yamahata@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Jinrong Liang <cloudliang@tencent.com>,
+        linux-kselftest@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 17, 2023 at 9:54 PM Srinivas Pandruvada
-<srinivas.pandruvada@linux.intel.com> wrote:
->
-> On thermal device interrupt, if the interrupt is generated for passing
-> workload hint, call the callback to pass notification to the user
-> space.
->
-> First call proc_thermal_check_wlt_intr() to check interrupt, if this
-> callback returns true, wake IRQ thread. Call
-> proc_thermal_wlt_intr_callback() to notify user space.
->
-> While here remove function pkg_thermal_schedule_work() and move the
-> processing to the caller. The function pkg_thermal_schedule_work() just
-> called schedule_delayed_work().
+On Tue, Aug 15, 2023, Jinrong Liang wrote:
+> Isaku Yamahata <isaku.yamahata@gmail.com> =E4=BA=8E2023=E5=B9=B48=E6=9C=
+=8815=E6=97=A5=E5=91=A8=E4=BA=8C 07:49=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > On Thu, Aug 10, 2023 at 05:09:42PM +0800,
+> > Jinrong Liang <ljr.kernel@gmail.com> wrote:
+> >
+> > > From: Jinrong Liang <cloudliang@tencent.com>
+> > >
+> > > Add custom "__kvm_pmu_event_filter" structure to improve pmu event
+> > > filter settings. Simplifies event filter setup by organizing event
+> > > filter parameters in a cleaner, more organized way.
+> > >
+> > > Suggested-by: Sean Christopherson <seanjc@google.com>
+> > > Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
+> > > ---
+> > >  .../kvm/x86_64/pmu_event_filter_test.c        | 182 +++++++++-------=
+--
+> > >  1 file changed, 90 insertions(+), 92 deletions(-)
+> > >
+> > > diff --git a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test=
+.c b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+> > > index 5ac05e64bec9..94f5a89aac40 100644
+> > > --- a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+> > > +++ b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+> > > @@ -28,6 +28,10 @@
+> > >
+> > >  #define NUM_BRANCHES 42
+> > >
+> > > +/* Matches KVM_PMU_EVENT_FILTER_MAX_EVENTS in pmu.c */
+> > > +#define MAX_FILTER_EVENTS            300
+> >
+> > Can we simply use KVM_PMU_EVENT_FILTER_MAX_EVENTS and remove MAX_FILTER=
+_EVENTS?
+>=20
+> I didn't find the definition of KVM_PMU_EVENT_FILTER_MAX_EVENTS in
+> selftests. KVM_PMU_EVENT_FILTER_MAX_EVENTS is defined in pmu.c. To use
+> it, we need to define it in selftests.
 
-This extra change is somewhat confusing.  I would move it to a separate patch.
+Huh.  That seems like something that should be enumerated to userspace.
 
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> ---
-> v2:
-> No change
->
->  .../processor_thermal_device_pci.c            | 33 ++++++++++++++-----
->  1 file changed, 24 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
-> index ee5a4c227d96..83177ed9db49 100644
-> --- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
-> +++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.c
-> @@ -115,27 +115,40 @@ static void proc_thermal_threshold_work_fn(struct work_struct *work)
->         proc_thermal_mmio_write(pci_info, PROC_THERMAL_MMIO_INT_ENABLE_0, 1);
->  }
->
-> -static void pkg_thermal_schedule_work(struct delayed_work *work)
-> +static irqreturn_t proc_thermal_irq_thread_handler(int irq, void *devid)
->  {
-> -       unsigned long ms = msecs_to_jiffies(notify_delay_ms);
-> +       struct proc_thermal_pci *pci_info = devid;
-> +
-> +       proc_thermal_wlt_intr_callback(pci_info->pdev, pci_info->proc_priv);
->
-> -       schedule_delayed_work(work, ms);
-> +       return IRQ_HANDLED;
->  }
->
->  static irqreturn_t proc_thermal_irq_handler(int irq, void *devid)
->  {
->         struct proc_thermal_pci *pci_info = devid;
-> +       struct proc_thermal_device *proc_priv;
-> +       int ret = IRQ_HANDLED;
->         u32 status;
->
-> +       proc_priv = pci_info->proc_priv;
-> +
-> +       if (proc_priv->mmio_feature_mask & PROC_THERMAL_FEATURE_WLT_HINT) {
-> +               if (proc_thermal_check_wlt_intr(pci_info->proc_priv))
-> +                       ret = IRQ_WAKE_THREAD;
-> +       }
-> +
->         proc_thermal_mmio_read(pci_info, PROC_THERMAL_MMIO_INT_STATUS_0, &status);
-> +       if (status) {
-> +               unsigned long ms = msecs_to_jiffies(notify_delay_ms);
->
-> -       /* Disable enable interrupt flag */
-> -       proc_thermal_mmio_write(pci_info, PROC_THERMAL_MMIO_INT_ENABLE_0, 0);
-> +               /* Disable enable interrupt flag */
-> +               proc_thermal_mmio_write(pci_info, PROC_THERMAL_MMIO_INT_ENABLE_0, 0);
-> +               schedule_delayed_work(&pci_info->work, ms);
-> +       }
->         pci_write_config_byte(pci_info->pdev, 0xdc, 0x01);
->
-> -       pkg_thermal_schedule_work(&pci_info->work);
-> -
-> -       return IRQ_HANDLED;
-> +       return ret;
->  }
->
->  static int sys_get_curr_temp(struct thermal_zone_device *tzd, int *temp)
-> @@ -269,7 +282,7 @@ static int proc_thermal_pci_probe(struct pci_dev *pdev, const struct pci_device_
->         }
->
->         ret = devm_request_threaded_irq(&pdev->dev, irq,
-> -                                       proc_thermal_irq_handler, NULL,
-> +                                       proc_thermal_irq_handler, proc_thermal_irq_thread_handler,
->                                         irq_flag, KBUILD_MODNAME, pci_info);
->         if (ret) {
->                 dev_err(&pdev->dev, "Request IRQ %d failed\n", pdev->irq);
-> @@ -383,6 +396,8 @@ static struct pci_driver proc_thermal_pci_driver = {
->
->  module_pci_driver(proc_thermal_pci_driver);
->
-> +MODULE_IMPORT_NS(INT340X_THERMAL);
-> +
->  MODULE_AUTHOR("Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>");
->  MODULE_DESCRIPTION("Processor Thermal Reporting Device Driver");
->  MODULE_LICENSE("GPL v2");
-> --
-> 2.38.1
->
+> > > +#define MAX_TEST_EVENTS              10
+> > > +
+> > >  /*
+> > >   * This is how the event selector and unit mask are stored in an AMD
+> > >   * core performance event-select register. Intel's format is similar=
+,
+> > > @@ -69,21 +73,33 @@
+> > >
+> > >  #define INST_RETIRED EVENT(0xc0, 0)
+> > >
+> > > +struct __kvm_pmu_event_filter {
+> > > +     __u32 action;
+> > > +     __u32 nevents;
+> > > +     __u32 fixed_counter_bitmap;
+> > > +     __u32 flags;
+> > > +     __u32 pad[4];
+> > > +     __u64 events[MAX_FILTER_EVENTS];
+> > > +};
+> > > +
+> >
+> > Is this same to struct kvm_pmu_event_filter?
+>=20
+> In tools/arch/x86/include/uapi/asm/kvm.h
+>=20
+> /* for KVM_CAP_PMU_EVENT_FILTER */
+> struct kvm_pmu_event_filter {
+> __u32 action;
+> __u32 nevents;
+> __u32 fixed_counter_bitmap;
+> __u32 flags;
+> __u32 pad[4];
+> __u64 events[];
+> };
+
+To more directly answer Isaku's question:
+
+They're *basically* the same, and have an identical layout, but the struct =
+defined
+by KVM uses a flexible array because the number of events comes from usersp=
+ace
+and forcing userspace to create an 1KiB+ object just to define a single eve=
+nt
+filter would be obnoxious.
+
+There are alternatives, e.g. using an struct overlay to set a single entry:
+
+	struct {
+		struct kvm_msrs header;
+		struct kvm_msr_entry entry;
+	} buffer =3D {};
+
+	memset(&buffer, 0, sizeof(buffer));
+	buffer.header.nmsrs =3D 1;
+	buffer.entry.index =3D msr_index;
+	buffer.entry.data =3D msr_value;
+
+but that gets annoying (and IMO confusing) because of the nested structs.
+
+I'll massage the changelog to callout the alternative, and why it's undesir=
+able.
