@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2133177F05A
+	by mail.lfdr.de (Postfix) with ESMTP id BE1EE77F05C
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 08:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348173AbjHQGEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 02:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47888 "EHLO
+        id S1348183AbjHQGEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 02:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348167AbjHQGDj (ORCPT
+        with ESMTP id S1348169AbjHQGDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 02:03:39 -0400
+        Thu, 17 Aug 2023 02:03:40 -0400
 Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2123.outbound.protection.outlook.com [40.107.93.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4502102
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 23:03:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809D32102
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 23:03:39 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JulC2HBUDFXOOlRmXUrsqZK9IQ5hvus4mmskRAWUZnGEubO5yQ42CtEwUFxiupCf7iz0BK3Q2QkXvKsW+eCIA4wSDylB7uU5lY7xpNtzk+5ygD0IGeshVFbroFmtkc43wS3wUCrqSc6LI2XFZ+UII9mj2g3P5LfQOHQX/VVf2tzfWknT1GqG+ybnIs3qP/+3bHMobyPuBbzod/GmRNYr6cFTDpCcvNN6kL13PyZIxfqTsJMjHU6m+1A6twxgbbhOrNK8GnsELBaDJ0Ug9tIvEfBCnT/P3UTPT0N8SDA7vwiFeeJiCHvYow/BD5wFtpOm5njOIyfmDXL8lvucsympXw==
+ b=Z/8+aNUyjFnZRV9xIeRWfyUx56UQhmU+QN5ey09Ii5amKv9kFs85RsxUaUZIT4FHFPWykEL8G2M6TRn8lnss4DULfnVlvQ2dQs0xAwK/SawhXJb/xQxLiRKunSmZ3XOZq1ih77gZ8GQUp93bx11+j4AslgVTZQ+auURhM+sk1tFHo4GPruRrRuF/e5/fpVY54kiXSFsMFEMVBRr/eAUWM/iL81HxBcZAvwcaCP9FQMyBsTpeNzWNsIcN8hLyhRmOyeO91aq+8JmNa5qD9i3Gjj8zmNIGvjTnBum1AdD/1dotWKtrqvTKdCT3vl2BLgKBwU1pj74WoJo1/wcQ2WJm1A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cOZw2EURdLDxgbCFLA4cIfp5eTLsDkKifig5lfBXwNI=;
- b=YMxFpSv8luoj1jMg0jmLalUJ0QRFF9anLhKOH1ffNyw2IJnzMymGLoJvCvo+w8ki5sbhOL8a+vnY7GKKFKWzLwKoQ2Y/zIysMDCCvC+UPGHW+o32/XV990BsiI9G+S+aeXybFnQXyLtoY7v8mKXbDM3AQRESz08XrbedeMzkXYl+zrt5dM7E+VuA5lvMDwuON4w8GsDc4dRaHCK6s3KhqUG1w6Og4dAH/rz/QrHjiehVBH74o5g2djCKJZqY2/OaUptmIHePz7jtPzsICc4IS7dALxHVwntv0XUrCKO4lA8ea/tfbMDyQnox7Ik/j3LL8yXkEgH5DmBaTc8ghMDOQw==
+ bh=9+zIxP64HjHqcRTk3elG+jLIYNbM2O1BZqY9Jh7iogY=;
+ b=WPOCVg7+VNt6h8FmyqhOXwSHLl2DJJcM7ORLXfuTvO1n9v/gLUsaWYb7GmjeBJSeE0NjoOuMO1fr64dJ24ycO5D/7khP5wCN+HJ1YqYoY/nHChvyD628yiqs8n1xqF44laEgBvsb9YWq9FP/e1/RpyawvjbUTuzaowsBnzEd4qR8EhgEwNH/eM7yfsOaghm6DdV++fFOgYn6QIuRa/5Yov0uNypx+LdmbR7bLvkGedsutHlWEszhED3AIJfaTjv9NIWsLUjv++ajn3Tr1OSP5nm+SL9daqiGKuPdfkkjv0y+PziKPC1t2TOdaoxCAG9ITdd2elfcMBAUQQwqTNyCCg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
  header.from=os.amperecomputing.com; dkim=pass
@@ -29,27 +29,27 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=os.amperecomputing.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cOZw2EURdLDxgbCFLA4cIfp5eTLsDkKifig5lfBXwNI=;
- b=f/WgRTxHA4M7ZyoQ3dSckLUyN88M2KO30vAtODYV01fjTjBVtQ8u0CasY6H4bDHiw+HbbvDZeUk1lk2h+FmCMLYG2dGtfCXKSN/ZMIQBhs8e37dQqCBrnFc5cUrx95iK71/gTo9OIjr9MoH37ktwIEHEw1EvdfO3TUilripkARw=
+ bh=9+zIxP64HjHqcRTk3elG+jLIYNbM2O1BZqY9Jh7iogY=;
+ b=CohPIIgjEurixkWGhVDsFacrHl3Oy5IuwDUMRJus4k2owDA1jySWikJdGAXJY7K2ad4DFMfkZ31WLDokoRGXnTY/b4OGsTgPWchGN+k9EZkgs7lvvLHRQa2X+Z4JLSHujaWUZRtllzn4VLSlk2lxZHN7QkUYf/SQ5NBQHV/HWZw=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
 Received: from DM8PR01MB6824.prod.exchangelabs.com (2603:10b6:8:23::24) by
  SA1PR01MB6592.prod.exchangelabs.com (2603:10b6:806:185::20) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6678.31; Thu, 17 Aug 2023 06:03:35 +0000
+ 15.20.6678.31; Thu, 17 Aug 2023 06:03:36 +0000
 Received: from DM8PR01MB6824.prod.exchangelabs.com
  ([fe80::d62f:d774:15b0:4a40]) by DM8PR01MB6824.prod.exchangelabs.com
  ([fe80::d62f:d774:15b0:4a40%4]) with mapi id 15.20.6678.029; Thu, 17 Aug 2023
- 06:03:35 +0000
+ 06:03:36 +0000
 From:   Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
 To:     linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
         linux-arm-kernel@lists.infradead.org, maz@kernel.org
 Cc:     christoffer.dall@linaro.org, eauger@redhat.com,
         miguel.luis@oracle.com, darren@os.amperecomputing.com,
         scott@os.amperecomputing.com, gankulkarni@os.amperecomputing.com
-Subject: [PATCH 1/2] KVM: arm64: timers: Move helper has_cntpoff to a header file
-Date:   Wed, 16 Aug 2023 23:03:13 -0700
-Message-Id: <20230817060314.535987-2-gankulkarni@os.amperecomputing.com>
+Subject: [PATCH 2/2] KVM: arm64: timers: Adjust CVAL of a ptimer across guest entry and exits
+Date:   Wed, 16 Aug 2023 23:03:14 -0700
+Message-Id: <20230817060314.535987-3-gankulkarni@os.amperecomputing.com>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20230817060314.535987-1-gankulkarni@os.amperecomputing.com>
 References: <20230817060314.535987-1-gankulkarni@os.amperecomputing.com>
@@ -61,51 +61,51 @@ X-ClientProxiedBy: CH2PR03CA0018.namprd03.prod.outlook.com
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DM8PR01MB6824:EE_|SA1PR01MB6592:EE_
-X-MS-Office365-Filtering-Correlation-Id: fa03734f-ecd0-4406-1664-08db9ee7b139
+X-MS-Office365-Filtering-Correlation-Id: 5ca9ed8a-fa8c-4ba0-cc25-08db9ee7b1d8
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jABkziO/VFX7cwmIas7CFX6VHx5XsHxZee/zhnjqoyUKgiYppa/B/X4BMG36K+IS+Zky+8T6D0Ffy61vJ/PpG/4FzGjR3pKQGmDaZaGkgFzETdqNlL8rBlAKTYdFBc1gKogkQ4oGH7J4zGYADaD1byMU5m4tdvitwnW2f6v2UggLCJylqx2K7wb9YgctvVUmHfwfXFULbLQ8Vd3sFc2KRu0cDSdSWT9Jrj+iutjiiFRZiDkJ+qcXweHMbzQlRAUn3iSOcnGRPYSIKrSM7lfPSp1mHbPb4k1WBoUZwWAVZHGkKPYz3gIoy/RFFdJqopnz0wCvG6fqKjlRrHQNVKFQV6YUTrRyuqLx9yPXAShuQyw76HA/tzAgAgGCvTrRSEWDM/3U7J/PgLuy5yqbVajq+5ZFYl6ubGSlnt5yGX1V9r/fL24XXhsNGJreHPLiek7nMb7sBlmfTPkwqR5HSM66QqVzwtVmFbgWxeu9p+LsQYqddQ9jVHOT43T69O7TCZfGhh/JeZYaByhjibIWTKGeTKHTcWrCTPU/7GGw0Egt73ebGW7Wuf0G6x/bK4jOgvSUDWBwd2zVOCrjm/aSMJZE9BiKaaJwhSeUKklszY2g+oJPg+mqrRHB945Lm2AiXQzu
+X-Microsoft-Antispam-Message-Info: 8Ktf2wo/XNdve47O/IbrN0AmnIqvfZP/2+khbCYSEu3jDtXxfBj44WZ3D+I0NNy49yNngavFseSbrQ6VxHzGbVs61IbYjMejqlhhEvJKlTqbz7GNxA1CNhR2WRztR0CZZJXRLxnLaewvjlBMNVgpWd42dh7g1R5sBl0xsZ9bOzXasusIUncHv5SHircsY4pKyZABi/zhX0zpmsM44kKd12y9KXsnD8KR37CoRtum95JXgaukg7YLfHdigbSxHu+rDdZUcfFIJdj3vf5WENctHjQGKty1QsAewjneqI3GEGhovD+3D6rZFbp6KXLGh3d1NdU77s8yG0IL4FIfdnBUdrgswGZ0bXafXoYJw/Z9PkH8jjONwym7KMDtOx8bbU4fhAnvYsfkA6xukfsEUOyTIkqtah5mnD8a3R2MtCDyei9495feQRdaApwlbF0fq6hihulGinehASFXQlgbf+6aHqqtM4JRfW6codkUany6mQQrL90KDHw/XHHZVVdTxm2n18izmvSQXdmPUrjFZcPoOVu+QDpEdQpxqwC20ZcThaK+wUG9nCVn7EnaP50i0yDUkM5SZ+gFEyY/1p4RmCgPTUY2YVYelsU5rVQeQfOBHcBLKfQACUmgcCUlK/d3LMZ2
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR01MB6824.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(39850400004)(136003)(396003)(346002)(1800799009)(186009)(451199024)(83380400001)(2906002)(478600001)(66946007)(66556008)(66476007)(6666004)(6506007)(6486002)(52116002)(316002)(107886003)(2616005)(5660300002)(26005)(1076003)(6512007)(4326008)(8936002)(8676002)(41300700001)(86362001)(38100700002)(38350700002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NlxIoS+wOPoPLHIt/APzMGQ5zoL69/7YvKf+wIMWqlkoghLOGhQxK3KpGZLm?=
- =?us-ascii?Q?HPQ1jlZjlc0GoEL5HkOvdStc/ovq+iqEGXMIaKpzrH5h0QZxiP6uNLT4f4go?=
- =?us-ascii?Q?XNkkzFX9d9aiNSYrRlOizY6VkwO1CZwd300CZsAvbGLMT98QhXouKLn2Ots4?=
- =?us-ascii?Q?07CM22pSgUr/qB09/LdrfC7Hf+6oEOe8zMS1jCMZD/MHygrEMPTcXK2wcwrK?=
- =?us-ascii?Q?xiBVS/XnfL/ZLG3l7SorG9MG/q9XzyBJcy973X6O4zAuwVDKfbc3ZJaRuhgG?=
- =?us-ascii?Q?yf+5erTT+gfibpmU2LmxyLlIUuC/LZwGwpro1cpf+vpchTIecMXhOaDnZsIN?=
- =?us-ascii?Q?iBrmcClNngtBVZgvpjtotB64FjE8cMbbXkkwE3aYGGrn3KJq9gynyDqpD8KN?=
- =?us-ascii?Q?SqsTftEj2ccqE4chgQ/TSCSx16nsJb10/rFSlek6bhSqo/7f4JfqYIzSpKe4?=
- =?us-ascii?Q?HyhmrZr0/8eYn/RuCPJfqY/gyqXVUJIr/8OURLT0vkTp6XXiBSrxFKqxoGxN?=
- =?us-ascii?Q?+Ce8PIaVdzjg0+ZYL5HJbS6hq4KKWQ+hwww/07zIEiC05Y8uQdUrdpw5WPeN?=
- =?us-ascii?Q?YjxXtIwUElAodQmi7o3R/4syT0fA0iEJabuftm5vttiK0sHXVdmT/0KxAXh5?=
- =?us-ascii?Q?RKH2nDfVOBXGM1yq0xpxOitqrOcwFsYWIqCKBB+uGqkHcD6CQCJmzblwhncw?=
- =?us-ascii?Q?adF2bGRyfIlsz8lyzd2+zks+pwYr0KErIXvq4XtTkFVnoaTR1weHWj9YY4dC?=
- =?us-ascii?Q?BaUKHz1z3Rm1Dg588uQSzFEtBGW0DRcCtLweQBuzVyl0Sz5tgfyudK0+Roe8?=
- =?us-ascii?Q?sLn4zGo9nmix4eZLPKGOcuAT+HWcnMHNE8KXrQnLgWVfxQ1zClwDf+E833YN?=
- =?us-ascii?Q?Q+MBheUKyXL6UBRR7BPGwx75XNamPBZlqpyZ7DJzpwem4shXDE9AF7S8V+Wb?=
- =?us-ascii?Q?PR+KEu3eOyv8+D3zl9sI9acv1OhZ3ndRPeyYzitnImvv9AUiVQwgKhIk+VHs?=
- =?us-ascii?Q?DYlvDYpMIc3IXeYKgu2b2NvB60frXp9AwgGLB61cN4dPk9ABM4nBhx2tPSZ5?=
- =?us-ascii?Q?S6tZyLRnPuivJxipISyUXT/sS0waL9VE9Htzt51a2Sqbv2m+OkISCAAuf7t0?=
- =?us-ascii?Q?Ro8W0uDU/tkHaaCr5zn4Yy9qllEES+aS2j8G8xoCsU7Lq+aSdc+HQZIYfPJJ?=
- =?us-ascii?Q?+Sjdj45QC9qYzaAce5PVBnqZPshH10SB8/7IHwOQELU6HoS+yRy8B/+p+Qz3?=
- =?us-ascii?Q?hkKTd4dkOeZpMNKBGGMJiOacYbqrySiOhd5X5WTyaIkMEWrcrsD4rg/Eth+F?=
- =?us-ascii?Q?FHp6cDO7wFzov/ZhzIoEsOclHysDbD6e99WVOvHvidEuztlmnMXYL0EOF07u?=
- =?us-ascii?Q?Y0Iz3FJY7xjNdR/QdUzMFz1+1ZEq59WBTv3GWBmV3e8WAC/Z2nE6S/zgJWSp?=
- =?us-ascii?Q?+typj2hKbHq1UVesNJ8ZELwYYGbJ0/G/ferYQxdQ2ebGnAmgbJIJZcXYZ1id?=
- =?us-ascii?Q?Mkc6EyWw1McwimTF7nSOfGaStLqHlWN0xcLrYr2ATg5jbXvunF8sn46otKXr?=
- =?us-ascii?Q?32SGvryiJPJ8XT/LMojH/hKZzB98/hPU9Oy81p/EmeEPGQbGFcLIQAPvaj6o?=
- =?us-ascii?Q?IEEeSzCOOm3yFOn4ZsnOBVc=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6HBOUurHAEaSd+TmBTfPaCyDF2NFRRXC4dYu8pMwjeImNdAN7Mr6r4jizFL3?=
+ =?us-ascii?Q?OOJgKM7Nky/poVzUwt2oBPAES4BDCFaNYk9GWPvHR27E5PcLB+QJOlQ233pI?=
+ =?us-ascii?Q?xlBQ6W0oxUGgjY4s8ddZLov/GswXDYQ4rZJ3zh+Zbqgb1p1p6ZXlFMrJ1mBM?=
+ =?us-ascii?Q?ySxUJAsc1oY+Dt/hSPQNe6zM4tY/a7lh1MKPZNawzEWpCNOM0H8FbgJAN82I?=
+ =?us-ascii?Q?Gg1bRN5u5lB8LHld+7aI7QDJvTvWprptLEhbjntF3ueBySH0B41Z+W+WMMT9?=
+ =?us-ascii?Q?yK8mR+xaDangAbk64MDu9GHvkyx8YlXlLNED5QDO9dS2YML7s7bGYxc+MLgp?=
+ =?us-ascii?Q?bDCXfdUz9RTTXSV3w5Ud7yEytK4SNVYOR3Y5DC1qKlo875uD/7eVsxOo0Nve?=
+ =?us-ascii?Q?Y+I10CNr0DDnDWRu8tQ68ewl4vQRj4VTe195E2soxx+TJ5j0RmGwm5frjYeM?=
+ =?us-ascii?Q?YhJQfF1dZUjKH5F8BKxiX4JH44es4DuHUdQEEPxgyM9ct5iMUGqoSWfsLIQH?=
+ =?us-ascii?Q?Xcf98oHmelDXx0feeBLZPF56IGvlSge1JbPW3wV1kmLsmONFvRCpHhfxxDaP?=
+ =?us-ascii?Q?E8cLTKaMhbU8Q3ymCKJIVdzFpaiP0STzjZic/THwmjcqiU+vNwBgO3p/w60D?=
+ =?us-ascii?Q?oBzinwlNrUThtbspFWvTTx6CLfzp5mmkA4rwnlNCilaWud4vnSvTzcv5UzWR?=
+ =?us-ascii?Q?S9Re4/oUC/X175bbiWdYJcpIAK8SpzJtMfPnB9j9vJas4IiN2IIVGkXLx6md?=
+ =?us-ascii?Q?d5fDAoXP2Wf+FFxz/bEcHd1nfCVk9UfoxhNVRtzbpPxLnNddQ+X4XChZrLec?=
+ =?us-ascii?Q?y5XTOMQgOQae7P6q1sj1ZLQuk+gqWKgyZyWLKSnJA3ifrhv1KrQsJHFsq1Ba?=
+ =?us-ascii?Q?hHl+IcUl2/JZBukcpm17V/ETtl+Hw7d6w8Rfv4B02rJc9HU5Vhl1zYaaRkRY?=
+ =?us-ascii?Q?OcaeeENvex/yt/kmftXLcY+yUjqpHYg87LVDd6yno8ZA1hetyLlUSocjX6l5?=
+ =?us-ascii?Q?ZUyA4LBEdCbukVnnW5xbXqYWoOQYVo1V5IxUQxM+zKj+hqfbg6H6++7BTMj+?=
+ =?us-ascii?Q?T08DQlHP4xoi06CXtlq/1Zn0yyt2XrLtTzhe7M8HWs3uQdPV9H5UDXpj5jAT?=
+ =?us-ascii?Q?WG1EC5MCcWGHgqtUSbLq01I1QzO1VG07seXCOpjlM/6ye114+naiRyfaASWt?=
+ =?us-ascii?Q?cn32cQqdn/ksRcFLhIFFctV2biuB8u6QDScVTqFFRvpe1gVSgy6XXdN+yozc?=
+ =?us-ascii?Q?iFtF+0XqKY7Xv/eDZr8qdkyMFcQf+jiMiMpA9p1iUIKq96YzUkKSVdoxrEEX?=
+ =?us-ascii?Q?aM8kQgpDGGDnAZrx+Baw6deJbdx2WxDZhczIUXqfAajLJ3guRRHZzqHNmYDO?=
+ =?us-ascii?Q?Olzv2A2YNWSp+6nkfUcs24v0cUyJpq0KMPLBZD625Gcm7QW+onFeXYyIE3N8?=
+ =?us-ascii?Q?3Lm4eTY+rwspQyvq/cPEu5vxeJwM0bDR24RnQBerChcJlZpFEdRW0pUiHlWr?=
+ =?us-ascii?Q?Ta3xW8QyLUSjvScbnAsLissCJAOFk124xAqbeseBrZzfBBFZ0rlZX3Vy6Ez+?=
+ =?us-ascii?Q?f1kbeFHZQMiyPIlgXDvkiBdBu6dtTLA7Babt5XzCZQVNvKVDTMGb9tvkJT/u?=
+ =?us-ascii?Q?t+xo/3Gf23aUm9uBe0cudPI=3D?=
 X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fa03734f-ecd0-4406-1664-08db9ee7b139
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ca9ed8a-fa8c-4ba0-cc25-08db9ee7b1d8
 X-MS-Exchange-CrossTenant-AuthSource: DM8PR01MB6824.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2023 06:03:35.2759
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2023 06:03:36.3086
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Lr6/jPNTFua6VZrL+CLRg/LCvsib0UTRHPEWOd1N2fqsPoXIrxJpc5sAl8ZQr3ZKxWyXjqSxTfCrOvffB3Sp3jptgmzenAqPSrzkriYx6XkHyq0Q+0gWo3NpD7+Nyky9
+X-MS-Exchange-CrossTenant-UserPrincipalName: zPaLAaoNP19Z5J5R3Kk8uyDOvEMTuZMaJtUR5vo8herX72zbMh64tUJM+HFp6WY8lFLkmi4dRJxq8trRJy3dpf7UwLKPtwsLBv9CrLQv5kQWRs8tL/jgKVWUJX83Mr17
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR01MB6592
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
@@ -116,47 +116,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move helper function has_cntpoff() to header file as an inline
-function to make it available to other functions as well.
+As per FEAT_ECV, when HCR_EL2.{E2H, TGE} == {1, 1}, Enhanced Counter
+Virtualization functionality is disabled and CNTPOFF_EL2 value is treated
+as zero. On VHE host, E2H and TGE are set, hence it is required
+to adjust CVAL by incrementing it by CNTPOFF_EL2 after guest
+exit to avoid false physical timer interrupts and also
+decrement/restore CVAL before the guest entry.
 
 Signed-off-by: Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
 ---
- arch/arm64/include/asm/virt.h | 5 +++++
- arch/arm64/kvm/arch_timer.c   | 5 -----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ arch/arm64/kvm/arch_timer.c     | 32 ++++++++++++++++++++++++++++++++
+ arch/arm64/kvm/hyp/vhe/switch.c | 13 +++++++++++++
+ include/kvm/arm_arch_timer.h    |  1 +
+ 3 files changed, 46 insertions(+)
 
-diff --git a/arch/arm64/include/asm/virt.h b/arch/arm64/include/asm/virt.h
-index 4eb601e7de50..f22cc733efb1 100644
---- a/arch/arm64/include/asm/virt.h
-+++ b/arch/arm64/include/asm/virt.h
-@@ -132,6 +132,11 @@ static __always_inline bool has_vhe(void)
- 		return cpus_have_final_cap(ARM64_HAS_VIRT_HOST_EXTN);
- }
- 
-+static __always_inline bool has_cntpoff(void)
-+{
-+	return (has_vhe() && cpus_have_final_cap(ARM64_HAS_ECV_CNTPOFF));
-+}
-+
- static __always_inline bool is_protected_kvm_enabled(void)
- {
- 	if (is_vhe_hyp_code())
 diff --git a/arch/arm64/kvm/arch_timer.c b/arch/arm64/kvm/arch_timer.c
-index 75bddab3224f..98b0e8ac02ae 100644
+index 98b0e8ac02ae..be609b12827d 100644
 --- a/arch/arm64/kvm/arch_timer.c
 +++ b/arch/arm64/kvm/arch_timer.c
-@@ -55,11 +55,6 @@ static struct irq_ops arch_timer_irq_ops = {
- 	.get_input_level = kvm_arch_timer_get_input_level,
- };
+@@ -955,6 +955,38 @@ void kvm_timer_vcpu_put(struct kvm_vcpu *vcpu)
+ 		kvm_timer_blocking(vcpu);
+ }
  
--static bool has_cntpoff(void)
--{
--	return (has_vhe() && cpus_have_final_cap(ARM64_HAS_ECV_CNTPOFF));
--}
--
- static int nr_timers(struct kvm_vcpu *vcpu)
++static void ptimer_cval_adjust(struct arch_timer_context *ctx, bool inc)
++{
++	struct arch_timer_cpu *timer = vcpu_timer(ctx->vcpu);
++	unsigned long flags;
++	u64 cval, offset;
++
++	if (!timer->enabled || !ctx->loaded)
++		return;
++
++	local_irq_save(flags);
++	offset = timer_get_offset(ctx);
++	if (offset) {
++		cval = read_sysreg_el0(SYS_CNTP_CVAL);
++		if (inc)
++			cval += offset;
++		else
++			cval -= offset;
++		write_sysreg_el0(cval, SYS_CNTP_CVAL);
++		isb();
++	}
++	local_irq_restore(flags);
++}
++
++void kvm_ptimer_cval_adjust(struct kvm_vcpu *vcpu, bool inc)
++{
++	struct timer_map map;
++
++	get_timer_map(vcpu, &map);
++	if (map.direct_ptimer)
++		ptimer_cval_adjust(map.direct_ptimer, inc);
++}
++
+ void kvm_timer_sync_nested(struct kvm_vcpu *vcpu)
  {
- 	if (!vcpu_has_nv(vcpu))
+ 	/*
+diff --git a/arch/arm64/kvm/hyp/vhe/switch.c b/arch/arm64/kvm/hyp/vhe/switch.c
+index 561cb53e19ce..0cdcefc1351d 100644
+--- a/arch/arm64/kvm/hyp/vhe/switch.c
++++ b/arch/arm64/kvm/hyp/vhe/switch.c
+@@ -100,6 +100,10 @@ static void __activate_traps(struct kvm_vcpu *vcpu)
+ 		hcr |= vhcr_el2;
+ 	}
+ 
++	/* Decrement/Restore CVAL by CNTPOFF. */
++	if (has_cntpoff())
++		kvm_ptimer_cval_adjust(vcpu, false);
++
+ 	___activate_traps(vcpu, hcr);
+ 
+ 	val = read_sysreg(cpacr_el1);
+@@ -141,6 +145,15 @@ static void __deactivate_traps(struct kvm_vcpu *vcpu)
+ 
+ 	___deactivate_traps(vcpu);
+ 
++	/*
++	 * For VHE Host, HCR_EL2.{E2H, TGE} is {1, 1}, hence FEAT_ECV
++	 * is disabled and CNTPOFF_EL2 value is treated as zero.
++	 * Need to increment CVAL for non-zero CNTPOFF to avoid
++	 * false PTIMER interrupt.
++	 */
++	if (has_cntpoff())
++		kvm_ptimer_cval_adjust(vcpu, true);
++
+ 	write_sysreg(HCR_HOST_VHE_FLAGS, hcr_el2);
+ 
+ 	/*
+diff --git a/include/kvm/arm_arch_timer.h b/include/kvm/arm_arch_timer.h
+index ea77a569a907..3ce6f02a0d9b 100644
+--- a/include/kvm/arm_arch_timer.h
++++ b/include/kvm/arm_arch_timer.h
+@@ -117,6 +117,7 @@ void kvm_timer_vcpu_load(struct kvm_vcpu *vcpu);
+ void kvm_timer_vcpu_put(struct kvm_vcpu *vcpu);
+ 
+ void kvm_timer_init_vhe(void);
++void kvm_ptimer_cval_adjust(struct kvm_vcpu *vcpu, bool inc);
+ 
+ #define vcpu_timer(v)	(&(v)->arch.timer_cpu)
+ #define vcpu_get_timer(v,t)	(&vcpu_timer(v)->timers[(t)])
 -- 
 2.41.0
 
