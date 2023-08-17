@@ -2,131 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A507801A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 211E07801A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356067AbjHQXXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 19:23:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49970 "EHLO
+        id S1356077AbjHQX0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 19:26:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356128AbjHQXXq (ORCPT
+        with ESMTP id S1356081AbjHQX00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 19:23:46 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74843592;
-        Thu, 17 Aug 2023 16:23:43 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C832F741;
-        Fri, 18 Aug 2023 01:22:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1692314548;
-        bh=2ci2ODvSHHVFwJqInqV3ww3u6hO/6wvKge8jSVGOA+Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T/QM6YH/N4ane/W98rZZRn7Te+dVAzjl141913f3K6sbda0WVnsML218mz4xlUXAW
-         fpWruzdWnXAlHyTN8C9X++NHZylnUkY7Qbz38SwOCSsqksXKJI4A8OuKboH6WNZ8gl
-         6ybGQMYZ1c4ivPvmJR2w053hblBGDXklG9uWKTjE=
-Date:   Fri, 18 Aug 2023 02:23:48 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/1] docs: submitting-patches: Add Sponsored-by tag
- to give credits to who sponsored the patch
-Message-ID: <20230817232348.GC1175@pendragon.ideasonboard.com>
-References: <20230817220957.41582-1-giulio.benetti@benettiengineering.com>
- <20230817220957.41582-2-giulio.benetti@benettiengineering.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230817220957.41582-2-giulio.benetti@benettiengineering.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 17 Aug 2023 19:26:26 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDAB3590
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:26:25 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-267f1559391so455570a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:26:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692314785; x=1692919585;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=yalX/XIHIaMid2o1lq7hag8GKj3wb93xa0OhQ8Bm3ho=;
+        b=zZOSkgpABzdNG0V+HV288bo3Q67bpepgOoRMWlkdW+bhmc7tl/7yggicXfa6kYhIEz
+         YsphqNRwcmU6lhNn5za1lLQecaTLBTXMcItmJvemeBE/BoA4EeSfpwSxmN+TwhgpGA6p
+         IauYy2k1Q9s6gNjQXnjrgSrvrZF34IWSmgwKOse+xcN9UvA1zIvbY/CD07yi0Gr3nvoM
+         vde9wyuxhuXKFMPowdgzcjkGZObMIw1gK1CnAkIgTtWvXJFZZHWgYnuIet+gAjU/2pIw
+         mNNbVUE7aPgtQiYVbOoQyZrWeNci7lg/dBEgztZXnZahvep8qzNuusR5vjeClDy/cM3Q
+         oGrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692314785; x=1692919585;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yalX/XIHIaMid2o1lq7hag8GKj3wb93xa0OhQ8Bm3ho=;
+        b=Ue6hYRiQ2LLdHt2oGyNgzx+5CVniU5wYkXfCwN8u1ASQCUgK8wMSk1HZC/QAX7vN+O
+         ez7Evh7Wx8f32548oalntqbjjlJ3uK17Tx04kgO4R2tOGAkI1ROZVLRKWD/0WmZyoo1P
+         Z6VuIIpnv0vHw2cwnIvwbmJBY0vTvIouL3csJV86bJwNcorYkw+M8U8LpEBVWU2CRpBQ
+         4/aV5EbU/5DwxT5Lk3+S7yili/hmXVQ/EYOquwBYVcsFLJ0lCK7RMtxVl9DsIJ6wArwK
+         45JErIymMUrX8Oeab1Qbj3b1V3IEfQFyqqvVnt3o8oI+jeadYqO1DKXQyTzno7lkGqiX
+         tl9g==
+X-Gm-Message-State: AOJu0YxR5hSlhN27ozOwHOqorpSKdDIaGp0I3eslbw2JVLPSGiWNUBWd
+        Tg4Xomjv89ajpG2sOVdSyh6Oo3/pwkI=
+X-Google-Smtp-Source: AGHT+IFgSlHzhcj82jJJGf4iVh9nyABAvEAjUBXk7BD8q341I2wi09zijh6Zm1NNYsdwNwhfICjtjzDEbC4=
+X-Received: from avagin.kir.corp.google.com ([2620:0:1008:10:72c4:8d3f:684e:ad10])
+ (user=avagin job=sendgmr) by 2002:a17:90a:d303:b0:26d:14f2:b4e1 with SMTP id
+ p3-20020a17090ad30300b0026d14f2b4e1mr207587pju.8.1692314785129; Thu, 17 Aug
+ 2023 16:26:25 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 16:26:18 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
+Message-ID: <20230817232618.3022269-1-avagin@google.com>
+Subject: [PATCH] seccomp: fix the kernel-doc comment for the notification structure
+From:   Andrei Vagin <avagin@google.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Tycho Andersen <tycho@tycho.ws>,
+        Andrei Vagin <avagin@google.com>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Giulio,
+Remove an empty line and resort parameters in the comment.
 
-On Fri, Aug 18, 2023 at 12:09:57AM +0200, Giulio Benetti wrote:
-> Sometimes it happens that a Company or a Physical Person sponsors the
-> creation and/or the upstreaming process of a patch, but at the moment
-> there is no way to give credits to it. There are some commit that include
-> a sort of tag "Sponsored by" without the dash to avoid
-> scripts/checkpatch.pl to complain but a real standard has not been defined.
-> With this patch let's try to define a method to give credits consistently
-> including an acknowledge from the sponsor. The goal is to improve
-> contributions from companies or physical persons that this way should gain
-> visibility in Linux kernel and so they should be more prone to let the
-> work done for them for to be upstreamed.
+Fixes: 48a1084a8b74 ("seccomp: add the synchronous mode for seccomp_unotify")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308171742.AncabIG1-lkp@intel.com/
+Signed-off-by: Andrei Vagin <avagin@google.com>
+---
+ kernel/seccomp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Just adding one data point here, without judging on the merits of this
-proposal. I've been requested previously by customers to increase their
-visibility in the kernel development statistics, and the way we found to
-do so was to sign-off patches with
-
-Laurent Pinchart <laurent.pinchart+customer@ideasonboard.com>
-
-(where "customer" is to be replaced with the customer name).
-
-> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
-> ---
->  Documentation/process/submitting-patches.rst | 38 ++++++++++++++++++++
->  1 file changed, 38 insertions(+)
-> 
-> diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
-> index efac910e2659..870e6b5def3f 100644
-> --- a/Documentation/process/submitting-patches.rst
-> +++ b/Documentation/process/submitting-patches.rst
-> @@ -600,6 +600,44 @@ process nor the requirement to Cc: stable@vger.kernel.org on all stable
->  patch candidates. For more information, please read
->  Documentation/process/stable-kernel-rules.rst.
->  
-> +Using Sponsored-by:
-> +-------------------
-> +
-> +A Sponsored-by tag gives credit to who sponsored the creation and/or the
-> +upstreaming process of the patch. Sponsored-by can contain a company name or
-> +a physical person name. If a company sponsored the patch this is the form::
-> +
-> +	Company Name <mail@companyname.com>
-> +
-> +where the Company Name must be a valid Business Name at the time of sending the
-> +patch until the confirmation of the Sponsored-by tag, while the e-mail can be
-> +either a generic e-mail the company can be reached out or an e-mail of a person
-> +who has the rights inside it to confirm the Sponsored-by tag.
-> +
-> +If a physical person sponsored the patch the form must be same used in
-> +Signed-off-by tag::
-> +
-> +	Physical Person <physical.person@mail.com>
-> +
-> +In both cases, to prevent fake credits, either the company or the person should
-> +send an Acked-by tag placed right under Sponsored-by tag using the same form
-> +described above. So for example if the patch contains::
-> +
-> +	<changelog>
-> +
-> +	Sponsored-by: Company Name <mail@companyname.com>
-> +	Signed-off-by: Developer Name <developer.name@developername.com>
-> +
-> +The result including the answer from the sponsor must be::
-> +
-> +	<changelog>
-> +
-> +	Sponsored-by: Company Name <mail@companyname.com>
-> +	Acked-by: Company Name <mail@companyname.com>
-> +	Signed-off-by: Developer Name <developer.name@developername.com>
-> +
-> +This way the sponsor agrees to the usage of this tag using its name.
-> +
->  .. _the_canonical_patch_format:
->  
->  The canonical patch format
-
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index d3fdc0086168..732fca979e8b 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -141,11 +141,10 @@ struct seccomp_kaddfd {
+  * @request: A semaphore that users of this notification can wait on for
+  *           changes. Actual reads and writes are still controlled with
+  *           filter->notify_lock.
++ * @flags: A set of SECCOMP_USER_NOTIF_FD_* flags.
+  * @next_id: The id of the next request.
+  * @notifications: A list of struct seccomp_knotif elements.
+- * @flags: A set of SECCOMP_USER_NOTIF_FD_* flags.
+  */
+-
+ struct notification {
+ 	atomic_t requests;
+ 	u32 flags;
 -- 
-Regards,
+2.42.0.rc1.204.g551eb34607-goog
 
-Laurent Pinchart
