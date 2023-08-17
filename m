@@ -2,260 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB25277FAF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39EDD77FAF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241198AbjHQPhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 11:37:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46552 "EHLO
+        id S1353234AbjHQPhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 11:37:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353050AbjHQPh3 (ORCPT
+        with ESMTP id S1353129AbjHQPh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 17 Aug 2023 11:37:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0102F2D6D
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:37:27 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ACB530C5;
+        Thu, 17 Aug 2023 08:37:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 84A3266396
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 15:37:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8759AC433C9;
-        Thu, 17 Aug 2023 15:37:26 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F400E6471D;
+        Thu, 17 Aug 2023 15:37:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3D9BC433C7;
+        Thu, 17 Aug 2023 15:37:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692286646;
-        bh=FsTOQy1J00h09RqORDICXkOwRWchRTxx4z6I0fSFUFo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=uE51BkgLq5R2nrgeqCvtJgTcvmmzvUBASge7HSt89nmd8mvPSRvSNydYnNd0wU6N8
-         j0eJZWNEuNC3BkoAxS0Ev0GulJxwdnD0xdzh4vhnFdLo/W1r6cCM9v16BuBPJlNqF9
-         LShOhR9Fxrec+DNc+0vJvpC58c4JTFXZAtbORgnO1EZepqyufpdZPlRsq1maBGZgtn
-         VeIuI6q8wxWHW0D0kDqcLBdcPlUwiaCYgGyQtzLwHUV0blwsZdT1Lc1WFc1VW/iU0z
-         B+eQOjQBleKRevzOWOmTfvscWIskHar38lVn0vBHH7n/1srto/MImsyR1KdjmKYnyD
-         f7UmniOxDsKig==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 986DD404DF; Thu, 17 Aug 2023 12:37:23 -0300 (-03)
-Date:   Thu, 17 Aug 2023 12:37:23 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>, Namhyung Kim <namhyung@kernel.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Athira Jajeev <atrajeev@linux.vnet.ibm.com>,
-        bpf@vger.kernel.org, Brendan Gregg <brendan.d.gregg@gmail.com>,
-        Carsten Haitzler <carsten.haitzler@arm.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        He Kuang <hekuang@huawei.com>, Ingo Molnar <mingo@redhat.com>,
-        James Clark <james.clark@arm.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>, llvm@lists.linux.dev,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Rob Herring <robh@kernel.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Tom Rix <trix@redhat.com>, Wang Nan <wangnan0@huawei.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Yonghong Song <yhs@fb.com>, YueHaibing <yuehaibing@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/1] perf trace: Use the augmented_raw_syscall BPF skel only
- for tracing syscalls
-Message-ID: <ZN4+s2Wl+zYmXTDj@kernel.org>
+        s=k20201202; t=1692286647;
+        bh=PPdaDsmbvOoUgBA9blhD/gAGWLwMHvPr4MIBG/oHTnU=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=PK65OHBcR96E/S7r7/GbV5sJE8f40prJcTn4zD5UCeK/MxrcGpdkrquNdOZAVtZVD
+         PQkkdfrORXaaTFXN9AnCOJKXj5kffm+U4xEThi7qMeY2NHsu+X3Bie1e9F/OW9tXUz
+         kJxeUGyINARAlkwPm7TtGYFCIocQUIpMrTq8UgQBdVbkw0yfRSnhkYnmG4yFotmora
+         Ha3IkJimfiri0xHQWfRlm+GD1w9xF5fgmMZx+ufKjCIuF60BLXWILH+vrdWdhZ7lHB
+         78QYeRhhf4hr61DXhjx9iF7CUa9DSqdF0HYYlIqZYuV0mSewUUplW9qiky6gQ1f5sW
+         0T12GKOooTNIA==
+Received: (nullmailer pid 1107201 invoked by uid 1000);
+        Thu, 17 Aug 2023 15:37:24 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+From:   Rob Herring <robh@kernel.org>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        linux-arm-kernel@lists.infradead.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Jose Abreu <joabreu@synopsys.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>
+In-Reply-To: <20230816152926.4093-7-jszhang@kernel.org>
+References: <20230816152926.4093-1-jszhang@kernel.org>
+ <20230816152926.4093-7-jszhang@kernel.org>
+Message-Id: <169228664449.1107185.1318874790899719478.robh@kernel.org>
+Subject: Re: [PATCH net-next v4 6/9] dt-bindings: net: snps,dwmac: add
+ safety irq support
+Date:   Thu, 17 Aug 2023 10:37:24 -0500
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible to use 'perf trace' with tracepoints and in that case we
-can't initialize/use the augmented_raw_syscalls BPF skel.
 
-For instance, this usecase:
+On Wed, 16 Aug 2023 23:29:23 +0800, Jisheng Zhang wrote:
+> The snps dwmac IP support safety features, and those Safety Feature
+> Correctible Error and Uncorrectible Error irqs may be separate irqs.
+> 
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/net/snps,dwmac.yaml | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
 
-  # perf trace -e sched:*exec --max-events=5
-         ? (         ): NetworkManager/1183  ... [continued]: poll())                                             = 1
-     0.043 ( 0.007 ms): NetworkManager/1183 epoll_wait(epfd: 17<anon_inode:[eventpoll]>, events: 0x55555f90e920, maxevents: 6) = 0
-     0.060 ( 0.007 ms): NetworkManager/1183 write(fd: 3<anon_inode:[eventfd]>, buf: 0x7ffc5a27cd30, count: 8)     = 8
-     0.073 ( 0.005 ms): NetworkManager/1183 epoll_wait(epfd: 24<anon_inode:[eventpoll]>, events: 0x7ffc5a27cd20, maxevents: 2) = 1
-     0.082 ( 0.010 ms): NetworkManager/1183 recvmmsg(fd: 26<socket:[30298]>, mmsg: 0x7ffc5a27caa0, vlen: 8)       = 1
-  #
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Where we want to trace just some sched tracepoints ending in 'exec' ends
-up tracing all syscalls.
+yamllint warnings/errors:
 
-Fix it by checking existing trace->trace_syscalls boolean to see if we
-need the augmenter.
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.example.dtb: ethernet@16030000: interrupt-names: ['macirq', 'eth_wake_irq', 'eth_lpi'] is too long
+	from schema $id: http://devicetree.org/schemas/net/starfive,jh7110-dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.example.dtb: ethernet@16030000: Unevaluated properties are not allowed ('mdio', 'phy-handle', 'phy-mode', 'rx-fifo-depth', 'snps,axi-config', 'snps,en-tx-lpi-clockgating', 'snps,fixed-burst', 'snps,force_thresh_dma_mode', 'snps,multicast-filter-bins', 'snps,no-pbl-x8', 'snps,perfect-filter-entries', 'snps,rxpbl', 'snps,tso', 'snps,txpbl', 'stmmac-axi-config', 'tx-fifo-depth' were unexpected)
+	from schema $id: http://devicetree.org/schemas/net/starfive,jh7110-dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/starfive,jh7110-dwmac.example.dtb: ethernet@16030000: interrupt-names: ['macirq', 'eth_wake_irq', 'eth_lpi'] is too long
+	from schema $id: http://devicetree.org/schemas/net/snps,dwmac.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/net/snps,dwmac.example.dtb: ethernet@e0800000: interrupt-names: ['macirq', 'eth_wake_irq', 'eth_lpi'] is too long
+	from schema $id: http://devicetree.org/schemas/net/snps,dwmac.yaml#
 
-A followup patch will move those sections of code used only with the
-augmenter to separate functions, to get it cleaner and remove the goto,
-done just for reviewing purposes.
+doc reference errors (make refcheckdocs):
 
-With this patch in place the previous behaviour is restored: no syscalls
-when we have other events and no syscall names:
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230816152926.4093-7-jszhang@kernel.org
 
-  [root@quaco ~]# perf probe do_filp_open "filename=pathname->name:string"
-  Added new event:
-    probe:do_filp_open   (on do_filp_open with filename=pathname->name:string)
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
 
-  You can now use it in all perf tools, such as:
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-	  perf record -e probe:do_filp_open -aR sleep 1
+pip3 install dtschema --upgrade
 
-  [root@quaco ~]# perf trace --max-events=10 -e probe:do_filp_open sleep 1
-     0.000 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/etc/ld.so.cache")
-     0.056 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/lib64/libc.so.6")
-     0.481 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/lib/locale/locale-archive")
-     0.501 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/share/locale/locale.alias")
-     0.572 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/lib/locale/en_US.UTF-8/LC_IDENTIFICATION")
-     0.581 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/lib/locale/en_US.utf8/LC_IDENTIFICATION")
-     0.616 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/lib64/gconv/gconv-modules.cache")
-     0.656 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/lib/locale/en_US.UTF-8/LC_MEASUREMENT")
-     0.664 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/lib/locale/en_US.utf8/LC_MEASUREMENT")
-     0.696 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/lib/locale/en_US.UTF-8/LC_TELEPHONE")
-  [root@quaco ~]#
-
-As well as mixing syscalls with tracepoints, getting the syscall
-tracepoints used augmented using the BPF skel:
-
-  [root@quaco ~]# perf trace --max-events=10 -e open*,probe:do_filp_open sleep 1
-     0.000 (         ): sleep/455124 openat(dfd: CWD, filename: "/etc/ld.so.cache", flags: RDONLY|CLOEXEC) ...
-     0.005 (         ): sleep/455124 probe:do_filp_open(__probe_ip: -1186560412, filename: "/etc/ld.so.cache")
-     0.000 ( 0.011 ms): sleep/455124  ... [continued]: openat())                                           = 3
-     0.031 (         ): sleep/455124 openat(dfd: CWD, filename: "/lib64/libc.so.6", flags: RDONLY|CLOEXEC) ...
-     0.033 (         ): sleep/455124 probe:do_filp_open(__probe_ip: -1186560412, filename: "/lib64/libc.so.6")
-     0.031 ( 0.006 ms): sleep/455124  ... [continued]: openat())                                           = 3
-     0.258 (         ): sleep/455124 openat(dfd: CWD, filename: "/usr/lib/locale/locale-archive", flags: RDONLY|CLOEXEC) ...
-     0.261 (         ): sleep/455124 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/lib/locale/locale-archive")
-     0.258 ( 0.006 ms): sleep/455124  ... [continued]: openat())                                           = -1 ENOENT (No such file or directory)
-     0.272 (         ): sleep/455124 openat(dfd: CWD, filename: "/usr/share/locale/locale.alias", flags: RDONLY|CLOEXEC) ...
-     0.273  (        ): sleep/455124 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/share/locale/locale.alias")
-
-A final note: the probe:do_filp_open uses a kprobe (probably optimized
-as its in the start of a function) that uses the kprobe_tracer mechanism
-in the kernel to collect the pathname->name string and stash it into the
-tracepoint created by 'perf probe' for that:
-
-  [root@quaco ~]# cat /sys/kernel/debug/tracing/kprobe_events
-  p:probe/do_filp_open _text+4621920 filename=+0(+0(%si)):string
-  [root@quaco ~]#
-
-While the syscalls:sys_enter_openat tracepoint gets its string from a
-BPF program attached to raw_syscalls:sys_enter that tail calls into
-another BPF program that knows the types for the openat syscall args and
-thus can bpf_probe_read it right after the normal
-sys_enter/sys_enter_openat tracepoint payload that comes prefixed with
-whatever perf_event_open asked for (CPU, timestamp, etc):
-
-  [root@quaco ~]# bpftool prog | grep -E "sys_enter |sys_enter_opena" -A3
-  3176: tracepoint  name sys_enter  tag 0bc3fc9d11754ba1  gpl
-	loaded_at 2023-08-17T12:32:20-0300  uid 0
-	xlated 272B  jited 257B  memlock 4096B  map_ids 2462,2466,2463
-	btf_id 2976
-  --
-  3180: tracepoint  name sys_enter_opena  tag 19dd077f00ec2f58  gpl
-	  loaded_at 2023-08-17T12:32:20-0300  uid 0
-	  xlated 328B  jited 206B  memlock 4096B  map_ids 2466,2465
-	  btf_id 2976
-  [root@quaco ~]#
-
-Fixes: 42963c8bedeb864b ("perf trace: Migrate BPF augmentation to use a skeleton")
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Athira Jajeev <atrajeev@linux.vnet.ibm.com>
-Cc: bpf@vger.kernel.org
-Cc: Brendan Gregg <brendan.d.gregg@gmail.com>
-Cc: Carsten Haitzler <carsten.haitzler@arm.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Fangrui Song <maskray@google.com>
-Cc: He Kuang <hekuang@huawei.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: James Clark <james.clark@arm.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: llvm@lists.linux.dev
-Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ravi Bangoria <ravi.bangoria@amd.com>
-Cc: Rob Herring <robh@kernel.org>
-Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Tom Rix <trix@redhat.com>
-Cc: Wang Nan <wangnan0@huawei.com>
-Cc: Wang ShaoBo <bobo.shaobowang@huawei.com>
-Cc: Yang Jihong <yangjihong1@huawei.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: YueHaibing <yuehaibing@huawei.com>
-Link: https://lore.kernel.org/lkml/
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/builtin-trace.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-index 0ebfa95895e0bf4d..3964cf44cdbcb3e8 100644
---- a/tools/perf/builtin-trace.c
-+++ b/tools/perf/builtin-trace.c
-@@ -3895,7 +3895,7 @@ static int trace__run(struct trace *trace, int argc, const char **argv)
- 	if (err < 0)
- 		goto out_error_open;
- #ifdef HAVE_BPF_SKEL
--	{
-+	if (trace->syscalls.events.bpf_output) {
- 		struct perf_cpu cpu;
- 
- 		/*
-@@ -3916,7 +3916,7 @@ static int trace__run(struct trace *trace, int argc, const char **argv)
- 		goto out_error_mem;
- 
- #ifdef HAVE_BPF_SKEL
--	if (trace->skel->progs.sys_enter)
-+	if (trace->skel && trace->skel->progs.sys_enter)
- 		trace__init_syscalls_bpf_prog_array_maps(trace);
- #endif
- 
-@@ -4850,6 +4850,9 @@ int cmd_trace(int argc, const char **argv)
- 	}
- 
- #ifdef HAVE_BPF_SKEL
-+	if (!trace.trace_syscalls)
-+		goto skip_augmentation;
-+
- 	trace.skel = augmented_raw_syscalls_bpf__open();
- 	if (!trace.skel) {
- 		pr_debug("Failed to open augmented syscalls BPF skeleton");
-@@ -4884,6 +4887,7 @@ int cmd_trace(int argc, const char **argv)
- 	}
- 	trace.syscalls.events.bpf_output = evlist__last(trace.evlist);
- 	assert(!strcmp(evsel__name(trace.syscalls.events.bpf_output), "__augmented_syscalls__"));
-+skip_augmentation:
- #endif
- 	err = -1;
- 
--- 
-2.41.0
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
