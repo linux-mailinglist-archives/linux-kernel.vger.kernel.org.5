@@ -2,66 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48EAA77FB21
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9132977FB27
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353312AbjHQPr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 11:47:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33212 "EHLO
+        id S1353326AbjHQPtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 11:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234656AbjHQPrY (ORCPT
+        with ESMTP id S1353324AbjHQPtX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 11:47:24 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD24A30D1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:47:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692287243; x=1723823243;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=MCSLwMZ4WasZRVsOE5qv9ujXSf/pPYVAtXBsbhfemIQ=;
-  b=KbMn/XGKQJuNpjbkzxdYiR5yt4QptFKQmYg0VZ4bs7ygXxzOaSOnjEBj
-   z06FbLoa9CbREqcHY+k2KP3t8uraLtyXMOGHerHPH4ure0Oheq0YsFSIB
-   el+xEQOvRoiG2bsUcA8DB5yCfrj7js5p164zzkr3xnrdJQWuKoK40pd6h
-   CA5SNO0ClxnfyU2b+DsJbhZvpSjre76AJrXUN36611qBxPK8sSWzlWy+c
-   VNRE5i2SIN8+vdYtKwtG734rq9E4iwnlGrfS+jHY0Sb1V4+AlGTmKzPFr
-   NxnF/ywx+4CJ56FYzLhzogQXuJy/DnV4lY2x65O37b3DxtIp6r5EG8TK1
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="353157702"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="353157702"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 08:47:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="728180615"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="728180615"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP; 17 Aug 2023 08:47:20 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qWfDS-000YEt-30;
-        Thu, 17 Aug 2023 18:47:18 +0300
-Date:   Thu, 17 Aug 2023 18:47:18 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v3 1/8] bitmap: align __reg_op() wrappers with modern
- coding style
-Message-ID: <ZN5BBovuzGmlfufh@smile.fi.intel.com>
-References: <20230815233628.45016-1-yury.norov@gmail.com>
- <20230815233628.45016-2-yury.norov@gmail.com>
- <ZN3q5bWbnKM9+gwg@smile.fi.intel.com>
- <ZN4tIS/aYYPUr6qv@yury-ThinkPad>
+        Thu, 17 Aug 2023 11:49:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600B730D4
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:48:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692287317;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YkNjMltfBCPur9SkBC24c2W5OLAmVkJHJQKlj/IHZtg=;
+        b=hDABF8ZhZ0cyk4D+j1oxSI3KmdSLLOPCj601hLdXkx2OFY9CJrjpY8fC0AUnDyXDmuuh4b
+        6wCNkgYV0fUO2vOo3Lm+lqHlBmFckXmFWvNhfgGJE6tzP1hHOWZIEq6thiBajh7DsuQeyz
+        FdSEjnoDkRcZlFkVVMZKGKhnmhmLAIQ=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-652-CWvoqjh-MMSR8JC9WejCVg-1; Thu, 17 Aug 2023 11:48:31 -0400
+X-MC-Unique: CWvoqjh-MMSR8JC9WejCVg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8F4351C0726E;
+        Thu, 17 Aug 2023 15:48:30 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.39])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 91F872026D68;
+        Thu, 17 Aug 2023 15:48:28 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 17 Aug 2023 17:47:46 +0200 (CEST)
+Date:   Thu, 17 Aug 2023 17:47:43 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     David Laight <David.Laight@ACULAB.COM>,
+        Petr Skocik <pskocik@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marco Elver <elver@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH] __kill_pgrp_info: simplify the calculation of return value
+Message-ID: <20230817154743.GA18674@redhat.com>
+References: <87pm3t2rvl.fsf@email.froward.int.ebiederm.org>
+ <87jzu12pjh.fsf_-_@email.froward.int.ebiederm.org>
+ <20230814140652.GA30596@redhat.com>
+ <20230814154351.GA4203@redhat.com>
+ <3b14ae8091e3403bbc4ef1bee6dcf4f6@AcuMS.aculab.com>
+ <20230815151149.GA29072@redhat.com>
+ <87fs4ig23p.fsf@email.froward.int.ebiederm.org>
+ <20230816210634.GA10130@redhat.com>
+ <87r0o2cs8w.fsf@email.froward.int.ebiederm.org>
+ <871qg28esu.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZN4tIS/aYYPUr6qv@yury-ThinkPad>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <871qg28esu.fsf@email.froward.int.ebiederm.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,42 +77,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 07:22:25AM -0700, Yury Norov wrote:
-> On Thu, Aug 17, 2023 at 12:39:49PM +0300, Andy Shevchenko wrote:
-> > On Tue, Aug 15, 2023 at 04:36:21PM -0700, Yury Norov wrote:
-> > > Fix comments so that scripts/kernel-doc doesn't warn, and fix for-loop
-> > > style in bitmap_find_free_region().
-> > 
-> > Suggested-by?
-> 
-> Can you send a full tag?
+On 08/16, Eric W. Biederman wrote:
+>
+> > We should be consistent and ensure  __kill_pgrp_info uses
+> > the same code pattern, otherwise it will be difficult to
+> > see they use the same logic.
 
-I thought it's easy to get... Nevertheless it's here.
+Hmm, agreed.
 
-Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Then I think we should change __kill_pgrp_info() first, then "copy"
+this pattern into kill_something_info() in a separate patch.
 
-> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > I think for both patterns the reader of the code is going to have to
+> > stop and think about what is going on to understand the logic.
 
-Btw, there are things needs to be fixed/improved as well:
-1) bitmap_pos_to_ord(): reference to @nbits instead of @bits;
-2) bitmap_parse(): wrong/confusing reference to a list, while
-   should be better example for under 32-bit input and over it with spaces
-   and/or commas;
-3) style of the descriptions of the parameters:
-     *   @param :
-   vs.
-     * @param:  /// preferable
-4) bitmap_cut(): make nbits a reference as @nbits in some cases;
-5) empty line after the function summary (should be dropped),
-   e.g. in bitmap_parse_user();
-6) true and false can be referred )in bitmap_print_to_buf(), for example)
-   as constants %true. %false (up to you).
+Yes, although to me the current code looks less clear but this is subjective.
 
-Maybe something else... That said, the documentation should be revisited
-carefully.
+But I agree this needs a comment. How about the patch below?
 
+
+From 753d4edd1f2f21f9f9181b9ff7394ed098d58ff6 Mon Sep 17 00:00:00 2001
+From: Oleg Nesterov <oleg@redhat.com>
+Date: Thu, 17 Aug 2023 17:38:55 +0200
+Subject: [PATCH] __kill_pgrp_info: simplify the calculation of return value
+
+No need to calculate/check the "success" variable, we can kill it and update
+retval in the main loop unless it is zero.
+
+Suggested-by: David Laight <David.Laight@ACULAB.COM>
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+---
+ kernel/signal.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 128e9bb3d1a2..c0acdfd4c81b 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -1460,16 +1460,21 @@ int group_send_sig_info(int sig, struct kernel_siginfo *info,
+ int __kill_pgrp_info(int sig, struct kernel_siginfo *info, struct pid *pgrp)
+ {
+ 	struct task_struct *p = NULL;
+-	int retval, success;
++	int ret = -ESRCH;
+ 
+-	success = 0;
+-	retval = -ESRCH;
+ 	do_each_pid_task(pgrp, PIDTYPE_PGID, p) {
+ 		int err = group_send_sig_info(sig, info, p, PIDTYPE_PGID);
+-		success |= !err;
+-		retval = err;
++		/*
++		 * If group_send_sig_info() succeeds at least once ret
++		 * becomes 0 and after that the code below has no effect.
++		 * Otherwise we return the last err or -ESRCH if this
++		 * process group is empty.
++		 */
++		if (ret)
++			ret = err;
+ 	} while_each_pid_task(pgrp, PIDTYPE_PGID, p);
+-	return success ? 0 : retval;
++
++	return ret;
+ }
+ 
+ int kill_pid_info(int sig, struct kernel_siginfo *info, struct pid *pid)
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1.362.g51ebf55
 
 
