@@ -2,85 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C147801C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99AC77801CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356137AbjHQXki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 19:40:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35370 "EHLO
+        id S1356168AbjHQXnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 19:43:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356142AbjHQXk2 (ORCPT
+        with ESMTP id S1349007AbjHQXn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 19:40:28 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A7B30E9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:40:26 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bf1935f6c2so2570365ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:40:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692315626; x=1692920426;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1VCakgqASg3h9183qTuhRoaN+EGRR2UwJM9N77vDLR8=;
-        b=JImyrb2e/StN5NZPwiXTxfSJ8H055CDGNgN8XmqgLAwHdgHkLjLl8nifuytazbaktR
-         KVHi6Mjmxj4tA1TCxWnCf+IZFMrYPeX7quUzVyy4S0WUMnz967Gnwbu61lexaYJ4BJnm
-         JJQfrx1t/if1DjKRFaShzkrdejZxfqgN7prIk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692315626; x=1692920426;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1VCakgqASg3h9183qTuhRoaN+EGRR2UwJM9N77vDLR8=;
-        b=PG0PwZwp5esopRcY3H3+6PMcDGxdFwMWKRiW/Ze5znZv0HFRhDVuOhwB0+t0S3jdn0
-         EdSHKRFafF96ek83p1sYaMumky0LSskEjudILN6Uq/LMRo6zBWJufBiuIp6/MFJimXwF
-         76+Ur6KgRgn0+5YB9IiElpbbiUuzD/sZWB78cVTJTsfBnz8PVfPQFe9PIePnNnr68XoH
-         gXv7SrTA6o3prpvmCqY6iPbSmvyzYTtzXvosO4/fjhLtoVIpolSr83gUghlMe/Wx05mx
-         yAqxcuOJfjYorTv4wi9XCAVAEvqF5LB8+JCL8Y7VHSBeBxT+YTgbI6f6Fg/fseetEYzH
-         /BvQ==
-X-Gm-Message-State: AOJu0YxWST5U7XWkAuKlxQxnwn7/0tu4/xiURx6Kglo3/agddqDhC1uh
-        c+DEcW8q2zZrGgFW8HW5FGUhs1rBWVSDQGOSotY=
-X-Google-Smtp-Source: AGHT+IFPQt+NcgencYztvbHc+KfKgXvjSMi+thjcbfvjb/04TPsE7lu5R6RUGJ6v3UpZfG1jcgsgYQ==
-X-Received: by 2002:a17:902:e807:b0:1ba:fe6a:3845 with SMTP id u7-20020a170902e80700b001bafe6a3845mr966877plg.11.1692315625977;
-        Thu, 17 Aug 2023 16:40:25 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 19-20020a170902c11300b001afd821c057sm336599pli.58.2023.08.17.16.40.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 16:40:25 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 16:40:24 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Yuxiao Zhang <yuxiaozhang@google.com>
-Cc:     Tony Luck <tony.luck@intel.com>,
-        "'Guilherme G . Piccoli'" <gpiccoli@igalia.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wak@google.com
-Subject: Re: [PATCH] pstore: ramoops: support pmsg size larger than kmalloc
- limitation
-Message-ID: <202308171639.B97420B5@keescook>
-References: <20230630205358.3601280-1-yuxiaozhang@google.com>
- <20230718202347.3320812-1-yuxiaozhang@google.com>
+        Thu, 17 Aug 2023 19:43:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 802782D64;
+        Thu, 17 Aug 2023 16:43:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692315805; x=1723851805;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=3CR3oyO/mGcZM3mHjBnqHofn1DAFmkHUrhAS10kr7wU=;
+  b=hM4hcXlSFjWVJF5ShjBVy4fuHzblWkDvBBNNsGNE7Y7d+dFdUmp/cxaW
+   dAqEjqc+KW9g9kQKb7XyefTMES1OXqnwnZ7vB5QGtkUuYf7TeIsR4K8Ct
+   fQD5hURMFRN4lYipW+1xib4mTQMx5sq4aq72H2mv9aNpTo6rEBKvYvFAS
+   +JxkzGUI3v+QrzYHaUiU/jiyrRbxhuRNVtkpmH6pLhtcqgwr34Cj18R1W
+   w6Wgl+Rh8s0DAUEmrwYIjYpdbX34P9SWtIA28kl5Bb3ENy7cpar2UnLfC
+   yoIy6ooBdktn5sewe45pefLLzzfArwFZHaTuRPYakjWoE2nC8XzDHboLT
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="352551927"
+X-IronPort-AV: E=Sophos;i="6.01,181,1684825200"; 
+   d="scan'208";a="352551927"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 16:43:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="849051751"
+X-IronPort-AV: E=Sophos;i="6.01,181,1684825200"; 
+   d="scan'208";a="849051751"
+Received: from allen-box.sh.intel.com ([10.239.159.127])
+  by fmsmga002.fm.intel.com with ESMTP; 17 Aug 2023 16:43:20 -0700
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>
+Cc:     Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH v3 00/11] iommu: Prepare to deliver page faults to user space
+Date:   Fri, 18 Aug 2023 07:40:36 +0800
+Message-Id: <20230817234047.195194-1-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718202347.3320812-1-yuxiaozhang@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 01:23:47PM -0700, Yuxiao Zhang wrote:
-> Friendly ping, any update on this?
+When a user-managed page table is attached to an IOMMU, it is necessary
+to deliver IO page faults to user space so that they can be handled
+appropriately. One use case for this is nested translation, which is
+currently being discussed in the mailing list.
 
-Hi! I finally got a chance to look this over. I added a few more
-kvzalloc() uses to generalize this for all records (not just pmsg), and
-it's testing well. Here's the resulting commit:
+I have posted a RFC series [1] that describes the implementation of
+delivering page faults to user space through IOMMUFD. This series has
+received several comments on the IOMMU refactoring, which I am trying to
+address in this series.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=for-next/pstore&id=104fd0b5e948157f8e8ac88a20b46ba8641d4e95
+The major refactoring includes:
+
+- [PATCH 01 ~ 04] Move include/uapi/linux/iommu.h to
+  include/linux/iommu.h. Remove the unrecoverable fault data definition.
+- [PATCH 05 ~ 06] Remove iommu_[un]register_device_fault_handler().
+- [PATCH 07 ~ 11] Separate SVA and IOPF. Make IOPF a generic page fault
+  handling framework. 
+
+This is also available at github [2]. I would appreciate your feedback
+on this series.
+
+[1] https://lore.kernel.org/linux-iommu/20230530053724.232765-1-baolu.lu@linux.intel.com/
+[2] https://github.com/LuBaolu/intel-iommu/commits/preparatory-io-pgfault-delivery-v3
+
+Change log:
+v3:
+ - Convert the fault data structures from uAPI to kAPI.
+ - Merge iopf_device_param into iommu_fault_param.
+ - Add debugging on domain lifetime for iopf.
+ - Remove patch "iommu: Change the return value of dev_iommu_get()".
+ - Remove patch "iommu: Add helper to set iopf handler for domain".
+ - Misc code refactoring and refining.
+
+v2: https://lore.kernel.org/linux-iommu/20230727054837.147050-1-baolu.lu@linux.intel.com/
+ - Remove unrecoverable fault data definition as suggested by Kevin.
+ - Drop the per-device fault cookie code considering that doesn't make
+   much sense for SVA.
+ - Make the IOMMU page fault handling framework generic. So that it can
+   avaible for use cases other than SVA.
+
+v1: https://lore.kernel.org/linux-iommu/20230711010642.19707-1-baolu.lu@linux.intel.com/
+
+Lu Baolu (11):
+  iommu: Move iommu fault data to linux/iommu.h
+  iommu/arm-smmu-v3: Remove unrecoverable faults reporting
+  iommu: Remove unrecoverable fault data
+  iommu: Cleanup iopf data structure definitions
+  iommu: Merge iopf_device_param into iommu_fault_param
+  iommu: Remove iommu_[un]register_device_fault_handler()
+  iommu: Prepare for separating SVA and IOPF
+  iommu: Move iopf_handler() to iommu-sva.c
+  iommu: Make iommu_queue_iopf() more generic
+  iommu: Add debugging on domain lifetime for iopf
+  iommu: Separate SVA and IOPF in Makefile and Kconfig
+
+ include/linux/iommu.h                         | 202 ++++++++++++++---
+ drivers/iommu/iommu-sva.h                     |  71 ------
+ include/uapi/linux/iommu.h                    | 161 --------------
+ .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  14 +-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   |  47 ++--
+ drivers/iommu/intel/iommu.c                   |  25 +--
+ drivers/iommu/intel/svm.c                     |   1 -
+ drivers/iommu/io-pgfault.c                    | 208 ++++++++----------
+ drivers/iommu/iommu-sva.c                     |  49 ++++-
+ drivers/iommu/iommu.c                         | 132 +++--------
+ MAINTAINERS                                   |   1 -
+ drivers/iommu/Kconfig                         |   4 +
+ drivers/iommu/Makefile                        |   3 +-
+ drivers/iommu/intel/Kconfig                   |   1 +
+ 14 files changed, 362 insertions(+), 557 deletions(-)
+ delete mode 100644 drivers/iommu/iommu-sva.h
+ delete mode 100644 include/uapi/linux/iommu.h
 
 -- 
-Kees Cook
+2.34.1
+
