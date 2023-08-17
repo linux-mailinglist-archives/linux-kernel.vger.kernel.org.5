@@ -2,127 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9558E77F327
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E2977F329
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349510AbjHQJYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 05:24:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56344 "EHLO
+        id S1349521AbjHQJYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 05:24:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349551AbjHQJYE (ORCPT
+        with ESMTP id S1349512AbjHQJYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 05:24:04 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 224231FD0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 02:24:03 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bdfb11ea2aso18859325ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 02:24:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692264242; x=1692869042;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KPbt6Jr4uE4XqkroaxTN40QvL9ZRwcamAUU0Alom8Ec=;
-        b=rI6iWAqTfcbFXuRszbw0kH7S7Efm8TDPPaTRvQfqQAODkeiPGEer1xsAgnG42yVQr9
-         L3URCg142nt5JV7OT34bh5MdV49Y/N9+vDCDkRWeow95/CTCqjeWhbS+mjW1SKxpI+D9
-         J9WzjfnihA0HQ3OQ22c1eO5ymIPPiWyFE5N0svVLR+mDVK7ijU0cJsuqAty+bKyRlhSv
-         iDYIQEtErdogHHIlKmTtsWRXCgeDabvOQyFBJjASvlFsk/Z9c3v+5wNsoGVLF9E3UmxC
-         iHBnf1Bbvrssr9ej6ikHkdY6q0moHRV3UoyFuEbAsd0tnfbURsGaT6Ui11pgMfahVMUN
-         f6vA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692264242; x=1692869042;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KPbt6Jr4uE4XqkroaxTN40QvL9ZRwcamAUU0Alom8Ec=;
-        b=d/KEmYOEFRczaf+gPcFtlZDZNW1H9Ian+OUWZfNMfo30bEqTlrFSo1gObKv2fxL8H5
-         qthhM7oLUHDqJCOf0c9oZCBa5QDVfmp8jrSznPyYytpZrKXYQ/7CGwPBsHhetr4VlO4Q
-         aS3y4SJwEU8Jrgu08j43XYR7WYx3Ydl0zBpgphx+oc1O8gjT12s6CSdiHvSeIQ6pXphz
-         1+MoCwytSIFmpxickNAZYbu9/rKxZQQ23K/eMfsERK26sUmAB7j1hc0OPEWQtBkLSRhg
-         gihhzPtmrjRpht0N1bf22x1oF4iNi5kIL4xv59MIkWcHg7afseBIsESPgGR8RM2crjwU
-         2EDQ==
-X-Gm-Message-State: AOJu0Yx6nWAEH2xRQOeyRzbtfKR4gVxbVyXL1B/CQf+ejb4zxKXoy7Z+
-        p/j/6DGkcSSmTzo4CZqH8xQ6FQ==
-X-Google-Smtp-Source: AGHT+IFk70YzOl9gPu9ed6IJstA4fhK4tebZKjgbqrU2bEbbFU9mBw3Ch4/wFSeVGfyDH7rTfUpgxw==
-X-Received: by 2002:a17:902:bd89:b0:1b8:95a1:847c with SMTP id q9-20020a170902bd8900b001b895a1847cmr3827038pls.40.1692264242560;
-        Thu, 17 Aug 2023 02:24:02 -0700 (PDT)
-Received: from leoy-huanghe.lan (211-75-219-204.hinet-ip.hinet.net. [211.75.219.204])
-        by smtp.gmail.com with ESMTPSA id y22-20020a1709027c9600b001b8a85489a3sm14600942pll.262.2023.08.17.02.23.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 02:24:02 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 17:23:53 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Guo Ren <guoren@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Ming Wang <wangming01@loongson.cn>,
-        Eric Lin <eric.lin@sifive.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Ivan Babrou <ivan@cloudflare.com>,
-        Fangrui Song <maskray@google.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 0/6] perf parse-regs: Refactor architecture functions
-Message-ID: <20230817092353.GB176609@leoy-huanghe.lan>
-References: <20230606014559.21783-1-leo.yan@linaro.org>
- <CAP-5=fV1m440mKc0R=m5C4N2NtoiixchtnpX2eR3PA_5hXbqEQ@mail.gmail.com>
- <ZNvCxM/ULdUfzHtR@kernel.org>
- <ZNvHx+KxIL6JzEl/@kernel.org>
- <ZNvJdsVmmAWLmfH6@kernel.org>
- <ZNvKjeFkXY8ezf9e@kernel.org>
- <20230816020715.GA135657@leoy-huanghe.lan>
- <ZNy3D6DV3Q9YjxKd@kernel.org>
- <ZNy3jg7xxBp4161E@kernel.org>
+        Thu, 17 Aug 2023 05:24:25 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3A54C271B
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 02:24:23 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D102DD75;
+        Thu, 17 Aug 2023 02:25:03 -0700 (PDT)
+Received: from [10.57.3.248] (unknown [10.57.3.248])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6354B3F64C;
+        Thu, 17 Aug 2023 02:24:21 -0700 (PDT)
+Message-ID: <3f681660-a0f0-20cb-b79b-7b2e2f6a1b5c@arm.com>
+Date:   Thu, 17 Aug 2023 10:24:19 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZNy3jg7xxBp4161E@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH 2/2] coresight: trbe: Allocate platform data per device
+Content-Language: en-US
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        hejunhao3@huawei.com
+Cc:     coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, jonathan.cameron@huawei.com,
+        leo.yan@linaro.org, mike.leach@linaro.org, linuxarm@huawei.com,
+        yangyicong@huawei.com, prime.zeng@hisilicon.com
+References: <20230814093813.19152-1-hejunhao3@huawei.com>
+ <20230816141008.535450-1-suzuki.poulose@arm.com>
+ <20230816141008.535450-2-suzuki.poulose@arm.com>
+ <9cd9f83c-7778-2d87-a175-a4cb7ceb8723@arm.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <9cd9f83c-7778-2d87-a175-a4cb7ceb8723@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 08:48:30AM -0300, Arnaldo Carvalho de Melo wrote:
 
-[...]
 
-> > And move that to perf-tools-next, we can go on from there.
-> > 
-> > The above is because we don't define CONFIG_PERF_REGS for these
-> > architectures and thus that variable ends up not being used, so I'm
-> > fixing up like below, in the cset where you made DWARF_MINIMAL_REGS
-> > receive the arch parameter.
+On 17/08/2023 07:37, Anshuman Khandual wrote:
+> Hi Suzuki,
 > 
-> I added this to the cset commit message:
+> Seems like this patch is going to conflict with the below proposed change
 > 
-> Committer notes:
+> https://lore.kernel.org/all/20230817055405.249630-4-anshuman.khandual@arm.com/
 > 
-> Make DWARF_MINIMAL_REGS() an inline function, so that we can use the
-> __maybe_unused attribute for the 'arch' parameter, as this will avoid a
-> build failure when that variable is unused in the callers. That happens
-> when building on unsupported architectures, the ones without
-> HAVE_PERF_REGS_SUPPORT defined.
+> Please let me know how should we resolve this conflict.
 
-Looks good to me, thanks for fixing.
+We could merge them both, with the fixes: one first, just to acknowledge
+that there was a problem. But I suppose your one will have to be rebased
+on top.
 
-Leo
+> 
+> On 8/16/23 19:40, Suzuki K Poulose wrote:
+>> Coresight TRBE driver shares a single platform data (which is empty btw).
+>> However, with the commit 4e8fe7e5c3a5
+>> ("coresight: Store pointers to connections rather than an array of them")
+>> the coresight core would free up the pdata, resulting in multiple attempts
+>> to free the same pdata for TRBE instances. Fix this by allocating a pdata per
+>> coresight_device.
+>>
+>> Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
+> 
+> The above mentioned commit i.e 4e8fe7e5c3a5 seems to be a more recent one which
+> has triggered this problem. But would the problem be still there without that ?
+> Else 'Fixes:' tag would need changing.
+> 
+
+Yes I think the fixes tag should point to 4e8fe7e5c3a5.
+
+>> Link: https://lore.kernel.org/r/20230814093813.19152-3-hejunhao3@huawei.com
+>> Reported-by: Junhao He <hejunhao3@huawei.com>
+>> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
+>>  drivers/hwtracing/coresight/coresight-trbe.c | 11 ++++-------
+>>  1 file changed, 4 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+>> index 025f70adee47..d3d34a833f01 100644
+>> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+>> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+>> @@ -1255,10 +1255,13 @@ static void arm_trbe_register_coresight_cpu(struct trbe_drvdata *drvdata, int cp
+>>  	if (!desc.name)
+>>  		goto cpu_clear;
+>>  
+>> +	desc.pdata = coresight_get_platform_data(dev);
+>> +	if (IS_ERR(desc.pdata))
+>> +		goto cpu_clear;
+>> +
+>>  	desc.type = CORESIGHT_DEV_TYPE_SINK;
+>>  	desc.subtype.sink_subtype = CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM;
+>>  	desc.ops = &arm_trbe_cs_ops;
+>> -	desc.pdata = dev_get_platdata(dev);
+>>  	desc.groups = arm_trbe_groups;
+>>  	desc.dev = dev;
+>>  	trbe_csdev = coresight_register(&desc);
+>> @@ -1482,7 +1485,6 @@ static void arm_trbe_remove_irq(struct trbe_drvdata *drvdata)
+>>  
+>>  static int arm_trbe_device_probe(struct platform_device *pdev)
+>>  {
+>> -	struct coresight_platform_data *pdata;
+>>  	struct trbe_drvdata *drvdata;
+>>  	struct device *dev = &pdev->dev;
+>>  	int ret;
+>> @@ -1497,12 +1499,7 @@ static int arm_trbe_device_probe(struct platform_device *pdev)
+>>  	if (!drvdata)
+>>  		return -ENOMEM;
+>>  
+>> -	pdata = coresight_get_platform_data(dev);
+>> -	if (IS_ERR(pdata))
+>> -		return PTR_ERR(pdata);
+>> -
+>>  	dev_set_drvdata(dev, drvdata);
+>> -	dev->platform_data = pdata;
+>>  	drvdata->pdev = pdev;
+>>  	ret = arm_trbe_probe_irq(pdev, drvdata);
+>>  	if (ret)
