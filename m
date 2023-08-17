@@ -2,71 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE5C77FE16
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5919F77FE21
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354546AbjHQSrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 14:47:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52186 "EHLO
+        id S1354564AbjHQSue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 14:50:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354537AbjHQSrN (ORCPT
+        with ESMTP id S1354555AbjHQSuK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 14:47:13 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA21230DF
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:47:11 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-40a47e8e38dso47951cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:47:11 -0700 (PDT)
+        Thu, 17 Aug 2023 14:50:10 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631A22722
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:50:08 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fe4b45a336so1798365e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:50:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692298031; x=1692902831;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qp0NthnNgNW9pfSHThKLiT0vLETnlkt+ybLcHDOCqv4=;
-        b=SkYHGMX7/zEdfpvdwe4xmc9VuoQk/4zI8atVm2UPl4vfiQR3+Q1ZTmmigkJ1hys9R2
-         72ylJcXolSwPy1jiNkipeMyj69Cvy4vaocaejOflWSnDdcXnL7qy4RfRbzgxgrSVeYeI
-         rzLLb+kAq1NXIyGcSdBgAfL1DycqepB8mj5GinLRziguoRexSfGEFB1HOcFfmo8yioO7
-         DbfJCZQ4N/HLAqghZP9t/2R0Wv3Tj7k+vfjp6CtwsBR/B7bhfYsmQCtpyNRjCWao2Cky
-         HOo9EnuJ45NfxkrL1nA7aJhK0HI+MSiAcq7N3vXiwJTD5eyOrkjS3XoACvdrjcfpwHCP
-         wwSA==
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692298207; x=1692903007;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uK/+jhMPygx69GUsGCd267yIiLDwmXOdy8VGUVU/xyY=;
+        b=WTpjoCJLH6AkctOgqnqTRCyp59TZvHW87DMz1ctJRXruu4unit8yMHozRUBTzR7eLz
+         1pQrDouCCKVakbtHiP+fGkMnFlvlsyigRIDmW4nv9ueoR4+mM0WZXCfr0vDcD1fisPov
+         Rsui6+ixG0yjW3pi14GRPnHSYxBZ/47jznc8Kxc/BZWcdg31Mo1a8/DR2o4Tthy0zN6f
+         v9VR+rNWneP4w82aw6dwqsJX+4N/nNiucVdGgg5h3uqAChb5GAy9DFblYX1DXvbPPeZL
+         GW5r42mO/doSY+zYAoDPEmHrLjPvYX37NDgwLqcjU428cKPfyJ5RStqDG9Gh2lV2k8m4
+         rmJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692298031; x=1692902831;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qp0NthnNgNW9pfSHThKLiT0vLETnlkt+ybLcHDOCqv4=;
-        b=MAD/lDrHlOGxSkL2G8QoqODqUWyqlbzreIvb0fTdljTMFSmTmHP10TQm9mDmmaFjco
-         GTjCBADqzFLELGWAbgk9DNGPoAb49H4rdeA2jnbCZJ6EWXCTjmx0YRCIOerUPjoezDpK
-         8EZxPEBrUif+ukxDhMvVVDGwGOqx477gclSkpoPA5NdVuMJSWOeXWSrEQMuA/BsPusaa
-         qWRlqznO2CvprxCfd/lPHZm0/IT2TwGWUipHZunO1v4q5FPw1DG9zL76+I8GG0QQJp8s
-         0Rqr280Y6WksfQW4TrzyqyEiZQAqK7xNNnaY1R5I+qBlVm3DgoQzcLcxV335a7adfQIT
-         wP+A==
-X-Gm-Message-State: AOJu0YzL15L5lXhfAVlXv++OEnr1C8sjJ+DGHxcZnPg5wpEjSuBfl+nQ
-        a4a5pxlhX34b/84j5k99vS86qr3XNWCv0J1aTVogC+FefR4brzyUvkWxlg==
-X-Google-Smtp-Source: AGHT+IFZ/uSZcg1BajBQOyeT8Pl3+X+FIqBWzWKGMibNfodAjD1s9ooWUoNoiPf30jzQjLSDDLXyyP0B37QQAlHaoF0=
-X-Received: by 2002:ac8:5844:0:b0:403:a43d:bd7d with SMTP id
- h4-20020ac85844000000b00403a43dbd7dmr62062qth.4.1692298030746; Thu, 17 Aug
- 2023 11:47:10 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692298207; x=1692903007;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uK/+jhMPygx69GUsGCd267yIiLDwmXOdy8VGUVU/xyY=;
+        b=UITZUFpeVQuOZvq2zE77ttkzoODOH3MVPeX8X2QwyOh1wV4gBq9tdyR+soAwSmfE2G
+         PefbccvicGUJoe1QithzRv4tM8tNUwpMRf60MNF/FjCRBoMdjrHveYn45sA1djdWR2yD
+         kRhhTxlD4w4KjbMEb+utTvj1WaVuI1PwJFUu9pUNVdwFOM8DK2lXypCiosje7aopK0NL
+         ee4njhci6Wv9V8mF3CQa4qvWCbDS9LYlqtlbk7Vri5Su6/CEilMrBlnrKx9e+cZAF7jy
+         DYS5RF03LFiec5mx1brngiqY5m1W5KWq41tQH+5KvImmcP3vTvrIgmJ0PkuK1SvyE+mC
+         7xzQ==
+X-Gm-Message-State: AOJu0YwP8j02/7haLS8Dm0PF2WH6Dd+TTasco5QEXVm4T43CF4mDaEv5
+        kNnSatW7iG99gjFQVG7zU7z2tQ==
+X-Google-Smtp-Source: AGHT+IECBFoEbHtE4j3df39bssJNZTUqcv+NZuqrf5y1Ng3Qo+/SpMFs8cNWWm7zEeGTF43SBGOyeQ==
+X-Received: by 2002:a7b:c84b:0:b0:3fa:98c3:7dbd with SMTP id c11-20020a7bc84b000000b003fa98c37dbdmr439394wml.41.1692298206688;
+        Thu, 17 Aug 2023 11:50:06 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:2f99:c690:b4da:e3d2])
+        by smtp.gmail.com with ESMTPSA id a23-20020a05600c225700b003fe1cdbc33dsm3963020wmm.9.2023.08.17.11.50.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 11:50:06 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH v2 0/6] gpio: cdev: bail out of poll() if the device goes down
+Date:   Thu, 17 Aug 2023 20:49:52 +0200
+Message-Id: <20230817184958.25349-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <ZN5lrdeEdSMCn7hk@kernel.org>
-In-Reply-To: <ZN5lrdeEdSMCn7hk@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 17 Aug 2023 11:46:59 -0700
-Message-ID: <CAP-5=fX8ipwPj_M6r3K=rZnYyVnW6VUYWARJhamFbphzLFxx+A@mail.gmail.com>
-Subject: Re: [PATCH 1/1] perf trace: Use heuristic when deciding if a syscall
- tracepoint "const char *" field is really a string
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,158 +70,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 11:23=E2=80=AFAM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> 'perf trace' tries to find BPF progs associated with a syscall that have
-> a signature that is similar to syscalls without one to try and reuse,
-> so, for instance, the 'open' signature can be reused with many other
-> syscalls that have as its first arg a string.
->
-> It uses the tracefs events format file for finding a signature that can
-> be reused, but then comes the "write" syscall with its second argument
-> as a "const char *":
->
->   # cat /sys/kernel/debug/tracing/events/syscalls/sys_enter_write/format
->   name: sys_enter_write
->   ID: 746
->   format:
->         field:unsigned short common_type;       offset:0;       size:2; s=
-igned:0;
->         field:unsigned char common_flags;       offset:2;       size:1; s=
-igned:0;
->         field:unsigned char common_preempt_count;       offset:3;       s=
-ize:1; signed:0;
->         field:int common_pid;   offset:4;       size:4; signed:1;
->
->         field:int __syscall_nr; offset:8;       size:4; signed:1;
->         field:unsigned int fd;  offset:16;      size:8; signed:0;
->         field:const char * buf; offset:24;      size:8; signed:0;
->         field:size_t count;     offset:32;      size:8; signed:0;
->
->   print fmt: "fd: 0x%08lx, buf: 0x%08lx, count: 0x%08lx", ((unsigned long=
-)(REC->fd)), ((unsigned long)(REC->buf)), ((unsigned long)(REC->count))
->   #
->
-> Which isn't a string (the man page for glibc has buf as "void *"), so we
-> have to use the name of the argument as an heuristic, to consider a
-> string just args that are "const char *" and that have in its name  the
-> "path", "file", etc substrings.
->
-> With that now it reuses:
->
->   [root@quaco ~]# perf trace -v --max-events=3D1 |& grep Reus
->   Reusing "open" BPF sys_enter augmenter for "stat"
->   Reusing "open" BPF sys_enter augmenter for "lstat"
->   Reusing "open" BPF sys_enter augmenter for "access"
->   Reusing "connect" BPF sys_enter augmenter for "accept"
->   Reusing "sendto" BPF sys_enter augmenter for "recvfrom"
->   Reusing "connect" BPF sys_enter augmenter for "bind"
->   Reusing "connect" BPF sys_enter augmenter for "getsockname"
->   Reusing "connect" BPF sys_enter augmenter for "getpeername"
->   Reusing "open" BPF sys_enter augmenter for "execve"
->   Reusing "open" BPF sys_enter augmenter for "truncate"
->   Reusing "open" BPF sys_enter augmenter for "chdir"
->   Reusing "open" BPF sys_enter augmenter for "mkdir"
->   Reusing "open" BPF sys_enter augmenter for "rmdir"
->   Reusing "open" BPF sys_enter augmenter for "creat"
->   Reusing "open" BPF sys_enter augmenter for "link"
->   Reusing "open" BPF sys_enter augmenter for "unlink"
->   Reusing "open" BPF sys_enter augmenter for "symlink"
->   Reusing "open" BPF sys_enter augmenter for "readlink"
->   Reusing "open" BPF sys_enter augmenter for "chmod"
->   Reusing "open" BPF sys_enter augmenter for "chown"
->   Reusing "open" BPF sys_enter augmenter for "lchown"
->   Reusing "open" BPF sys_enter augmenter for "mknod"
->   Reusing "open" BPF sys_enter augmenter for "statfs"
->   Reusing "open" BPF sys_enter augmenter for "pivot_root"
->   Reusing "open" BPF sys_enter augmenter for "chroot"
->   Reusing "open" BPF sys_enter augmenter for "acct"
->   Reusing "open" BPF sys_enter augmenter for "swapon"
->   Reusing "open" BPF sys_enter augmenter for "swapoff"
->   Reusing "open" BPF sys_enter augmenter for "delete_module"
->   Reusing "open" BPF sys_enter augmenter for "setxattr"
->   Reusing "open" BPF sys_enter augmenter for "lsetxattr"
->   Reusing "openat" BPF sys_enter augmenter for "fsetxattr"
->   Reusing "open" BPF sys_enter augmenter for "getxattr"
->   Reusing "open" BPF sys_enter augmenter for "lgetxattr"
->   Reusing "openat" BPF sys_enter augmenter for "fgetxattr"
->   Reusing "open" BPF sys_enter augmenter for "listxattr"
->   Reusing "open" BPF sys_enter augmenter for "llistxattr"
->   Reusing "open" BPF sys_enter augmenter for "removexattr"
->   Reusing "open" BPF sys_enter augmenter for "lremovexattr"
->   Reusing "fsetxattr" BPF sys_enter augmenter for "fremovexattr"
->   Reusing "open" BPF sys_enter augmenter for "mq_open"
->   Reusing "open" BPF sys_enter augmenter for "mq_unlink"
->   Reusing "fsetxattr" BPF sys_enter augmenter for "add_key"
->   Reusing "fremovexattr" BPF sys_enter augmenter for "request_key"
->   Reusing "fremovexattr" BPF sys_enter augmenter for "inotify_add_watch"
->   Reusing "fremovexattr" BPF sys_enter augmenter for "mkdirat"
->   Reusing "fremovexattr" BPF sys_enter augmenter for "mknodat"
->   Reusing "fremovexattr" BPF sys_enter augmenter for "fchownat"
->   Reusing "fremovexattr" BPF sys_enter augmenter for "futimesat"
->   Reusing "fremovexattr" BPF sys_enter augmenter for "newfstatat"
->   Reusing "fremovexattr" BPF sys_enter augmenter for "unlinkat"
->   Reusing "fremovexattr" BPF sys_enter augmenter for "linkat"
->   Reusing "open" BPF sys_enter augmenter for "symlinkat"
->   Reusing "fremovexattr" BPF sys_enter augmenter for "readlinkat"
->   Reusing "fremovexattr" BPF sys_enter augmenter for "fchmodat"
->   Reusing "fremovexattr" BPF sys_enter augmenter for "faccessat"
->   Reusing "fremovexattr" BPF sys_enter augmenter for "utimensat"
->   Reusing "connect" BPF sys_enter augmenter for "accept4"
->   Reusing "fremovexattr" BPF sys_enter augmenter for "name_to_handle_at"
->   Reusing "fremovexattr" BPF sys_enter augmenter for "renameat2"
->   Reusing "open" BPF sys_enter augmenter for "memfd_create"
->   Reusing "fremovexattr" BPF sys_enter augmenter for "execveat"
->   Reusing "fremovexattr" BPF sys_enter augmenter for "statx"
->   [root@quaco ~]#
->
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Alan Maguire <alan.maguire@oracle.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Link: https://lore.kernel.org/lkml/
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+Wake up all three wake queues (the one associated with the character
+device file, the one for V1 line events and the V2 line request one)
+when the underlying GPIO device is unregistered. This way we won't get
+stuck in poll() after the chip is gone as user-space will be forced to
+go back into a new system call and will see that gdev->chip is NULL.
 
-Thanks,
-Ian
+v1 -> v2:
+- not much is left from v1, this time we don't repurpose the existing
+  gpio_device notifier but add a new one so that cdev structures don't
+  get unwanted events
 
-> ---
->  tools/perf/builtin-trace.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->
-> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-> index 3964cf44cdbcb3e8..e541d0e2777ab935 100644
-> --- a/tools/perf/builtin-trace.c
-> +++ b/tools/perf/builtin-trace.c
-> @@ -3398,6 +3398,19 @@ static struct bpf_program *trace__find_usable_bpf_=
-prog_entry(struct trace *trace
->                         if (strcmp(field->type, candidate_field->type))
->                                 goto next_candidate;
->
-> +                       /*
-> +                        * This is limited in the BPF program but sys_wri=
-te
-> +                        * uses "const char *" for its "buf" arg so we ne=
-ed to
-> +                        * use some heuristic that is kinda future proof.=
-..
-> +                        */
-> +                       if (strcmp(field->type, "const char *") =3D=3D 0 =
-&&
-> +                           !(strstr(field->name, "name") ||
-> +                             strstr(field->name, "path") ||
-> +                             strstr(field->name, "file") ||
-> +                             strstr(field->name, "root") ||
-> +                             strstr(field->name, "description")))
-> +                               goto next_candidate;
-> +
->                         is_candidate =3D true;
->                 }
->
-> --
-> 2.41.0
->
+Bartosz Golaszewski (6):
+  gpiolib: rename the gpio_device notifier
+  gpio: cdev: open-code to_gpio_chardev_data()
+  gpiolib: add a second blocking notifier to struct gpio_device
+  gpio: cdev: wake up chardev poll() on device unbind
+  gpio: cdev: wake up linereq poll() on device unbind
+  gpio: cdev: wake up lineevent poll() on device unbind
+
+ drivers/gpio/gpiolib-cdev.c | 101 ++++++++++++++++++++++++++++++------
+ drivers/gpio/gpiolib.c      |   7 +--
+ drivers/gpio/gpiolib.h      |   9 ++--
+ 3 files changed, 94 insertions(+), 23 deletions(-)
+
+-- 
+2.39.2
+
