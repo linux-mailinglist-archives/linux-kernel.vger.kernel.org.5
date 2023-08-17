@@ -2,226 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5AB377F49E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 13:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4802C77F4E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 13:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350090AbjHQK7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 06:59:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47936 "EHLO
+        id S1350195AbjHQLSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 07:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350128AbjHQK7g (ORCPT
+        with ESMTP id S1350183AbjHQLSY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 06:59:36 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1D98A2D71;
-        Thu, 17 Aug 2023 03:59:34 -0700 (PDT)
-Received: from pwmachine.localnet (85-170-34-233.rev.numericable.fr [85.170.34.233])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A5CC8211F7AC;
-        Thu, 17 Aug 2023 03:59:32 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A5CC8211F7AC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1692269973;
-        bh=XYAu3PU0hi09EaHGm5pCzY46YMbfZd395y09qNxIEvY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HN28jNKE3EtpWKwxq79YlaKJFwZb5oytxI4UqTL4SC3P6xqERzh1MQgWUGc8GKxHs
-         ZdRfTr91iSaJj73Skw6dfS2DWt1S8dwaHS7HYmhr0TpcvVHFjU6oMz2Dx41/6O2Mac
-         H34LKf08GokPuOHi/C53XN+zDePKTExnh6UXkhEk=
-From:   Francis Laniel <flaniel@linux.microsoft.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/1] tracing/kprobe: Add multi-probe support for 'perf_kprobe' PMU
-Date:   Thu, 17 Aug 2023 12:59:30 +0200
-Message-ID: <4852847.31r3eYUQgx@pwmachine>
-In-Reply-To: <20230816144213.0f24cc62@gandalf.local.home>
-References: <20230816163517.112518-1-flaniel@linux.microsoft.com> <20230816163517.112518-2-flaniel@linux.microsoft.com> <20230816144213.0f24cc62@gandalf.local.home>
+        Thu, 17 Aug 2023 07:18:24 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61AC126A8;
+        Thu, 17 Aug 2023 04:18:23 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37HB8qdV025582;
+        Thu, 17 Aug 2023 11:18:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Md/XQDzAqSdh/Lj36ZfSGdjTb6Al/dUfr5Li9y6J08o=;
+ b=cCVtDMrxb581CQ9IBs6z8njleAOOofu5ZMvRC1nhNCMk/uy7LO3c60LUlLEc/ZqI+mY0
+ EWMzRtthJ8FDU4M08YyKw0t4FX0kccyGsTgjdwByX4mQWO6blJ/bRIVqo1pzVF9vieVJ
+ nuWF2s381/CgFHmtmsOQUqBSRYk2eIvhwqwJljtOCZGZ5sww7pbZT5fTFF8kkCnWK1iR
+ gAWn0pONNJt3wfJ1S3CG0AekkxRu4drDeMz/mGPdx99yn1rTMJq1zYMobfrJlZZhdMJ/
+ g2zDD3HujuhC5vNnVS10CzMGI+WIjhWnxTWGiJBvEpl9XKQgD+RGCw/C1sAQIV82q0Li Gg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3shja3g9v7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 11:18:21 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37HBF5QL017058;
+        Thu, 17 Aug 2023 11:18:21 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3shja3g9uh-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 11:18:21 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37HAZcMS013500;
+        Thu, 17 Aug 2023 10:59:59 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sepmk51gc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 10:59:59 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37HAxtKw60752292
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Aug 2023 10:59:55 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B0D3320043;
+        Thu, 17 Aug 2023 10:59:55 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5491C20040;
+        Thu, 17 Aug 2023 10:59:55 +0000 (GMT)
+Received: from [9.152.224.236] (unknown [9.152.224.236])
+        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 17 Aug 2023 10:59:55 +0000 (GMT)
+Message-ID: <5b671c7c-dcc8-9c33-6eb5-58c5921708a1@linux.ibm.com>
+Date:   Thu, 17 Aug 2023 12:59:54 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v4 1/4] KVM: s390: pv: relax WARN_ONCE condition for
+ destroy fast
+To:     Steffen Eiden <seiden@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michael Mueller <mimu@linux.vnet.ibm.com>,
+        Marc Hartmayer <mhartmay@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Viktor Mihajlovski <mihajlov@linux.ibm.com>
+References: <20230815151415.379760-1-seiden@linux.ibm.com>
+ <20230815151415.379760-2-seiden@linux.ibm.com>
+From:   Michael Mueller <mimu@linux.ibm.com>
+In-Reply-To: <20230815151415.379760-2-seiden@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Y29V-gehlZm6ZyKQ6R8ZF9gzcGG7su2d
+X-Proofpoint-GUID: NXaFu11Aai7L-p23LlB8V6mCg36kILPF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-17_03,2023-08-17_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
+ lowpriorityscore=0 mlxscore=0 suspectscore=0 priorityscore=1501
+ bulkscore=0 phishscore=0 mlxlogscore=773 impostorscore=0 clxscore=1015
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308170100
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mercredi 16 ao=FBt 2023, 20:42:13 CEST Steven Rostedt a =E9crit :
-> On Wed, 16 Aug 2023 18:35:17 +0200
->=20
-> Francis Laniel <flaniel@linux.microsoft.com> wrote:
-> > When using sysfs, it is possible to create kprobe for several kernel
-> > functions sharing the same name, but of course with different addresses,
-> > by writing their addresses in kprobe_events file.
->=20
-> So this only happens if you write in the address?
-
-=46rom my understanding yes, but I will double check just in case.
-
-> > When using PMU, if only the symbol name is given, the event will be
-> > created for the first address which matches the symbol, as returned by
-> > kallsyms_lookup_name().
-> > The idea here is to search all kernel functions which match this symbol
-> > and
-> > create a trace_kprobe for each of them.
-> > All these trace_kprobes are linked together by sharing the same
-> > trace_probe.
-> So this makes the PMU version enable all by name, so there's still a
-> disconnect between how sysfs works and how PMU does.
->=20
-> Why can't you just pass in the address like sysfs does?
-
-To get the addresses from /proc/kallsyms, you need to either have CAP_SYSLO=
-G=20
-or even CAP_SYS_ADMIN.
-But to call perf_event_open(), you only need CAP_PERFMON.
-This way, by giving only the name you can trace function with less privileg=
-es=20
-(i.e. without CAP_SYS_ADMIN).
-Please correct me if I am wrong as I am not an expert in knowing the minima=
-l=20
-set of capabilities you need to trace.
-
-> -- Steve
->=20
-> > Signed-off-by: Francis Laniel <flaniel@linux.microsoft.com>
-> > ---
-> >=20
-> >  kernel/trace/trace_kprobe.c | 86 +++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 86 insertions(+)
-> >=20
-> > diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> > index 1b3fa7b854aa..08580f1466c7 100644
-> > --- a/kernel/trace/trace_kprobe.c
-> > +++ b/kernel/trace/trace_kprobe.c
-> > @@ -1682,13 +1682,42 @@ static int unregister_kprobe_event(struct
-> > trace_kprobe *tk)>=20
-> >  }
-> > =20
-> >  #ifdef CONFIG_PERF_EVENTS
-> >=20
-> > +
-> > +struct address_array {
-> > +	unsigned long *addrs;
-> > +	size_t size;
-> > +};
-> > +
-> > +static int add_addr(void *data, unsigned long addr)
-> > +{
-> > +	struct address_array *array =3D data;
-> > +	unsigned long *p;
-> > +
-> > +	array->size++;
-> > +	p =3D krealloc(array->addrs,
-> > +				sizeof(*array->addrs) * array->size,
-> > +				GFP_KERNEL);
-> > +	if (!p) {
-> > +		kfree(array->addrs);
-> > +		return -ENOMEM;
-> > +	}
-> > +
-> > +	array->addrs =3D p;
-> > +	array->addrs[array->size - 1] =3D addr;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >=20
-> >  /* create a trace_kprobe, but don't add it to global lists */
-> >  struct trace_event_call *
-> >  create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
-> > =20
-> >  			  bool is_return)
-> > =20
-> >  {
-> > =20
-> >  	enum probe_print_type ptype;
-> >=20
-> > +	struct address_array array;
-> >=20
-> >  	struct trace_kprobe *tk;
-> >=20
-> > +	unsigned long func_addr;
-> > +	unsigned int i;
-> >=20
-> >  	int ret;
-> >  	char *event;
-> >=20
-> > @@ -1722,7 +1751,64 @@ create_local_trace_kprobe(char *func, void *addr,
-> > unsigned long offs,>=20
-> >  	if (ret < 0)
-> >  =09
-> >  		goto error;
-> >=20
-> > +	array.addrs =3D NULL;
-> > +	array.size =3D 0;
-> > +	ret =3D kallsyms_on_each_match_symbol(add_addr, func, &array);
-> > +	if (ret)
-> > +		goto error_free;
-> > +
-> > +	if (array.size =3D=3D 1)
-> > +		goto end;
-> > +
-> > +	/*
-> > +	 * Below loop allocates a trace_kprobe for each function with the same
-> > +	 * name in kernel source code.
-> > +	 * All this differente trace_kprobes will be linked together through
-> > +	 * append_trace_kprobe().
-> > +	 * NOTE append_trace_kprobe() is called in register_trace_kprobe()=20
-which
-> > +	 * is called when a kprobe is added through sysfs.
-> > +	 */
-> > +	func_addr =3D kallsyms_lookup_name(func);
-> > +	for (i =3D 0; i < array.size; i++) {
-> > +		struct trace_kprobe *tk_same_name;
-> > +		unsigned long address;
-> > +
-> > +		address =3D array.addrs[i];
-> > +		/* Skip the function address as we already registered it. */
-> > +		if (address =3D=3D func_addr)
-> > +			continue;
-> > +
-> > +		/*
-> > +		 * alloc_trace_kprobe() first considers symbol name, so we set
-> > +		 * this to NULL to allocate this kprobe on the given address.
-> > +		 */
-> > +		tk_same_name =3D alloc_trace_kprobe(KPROBE_EVENT_SYSTEM, event,
-> > +						  (void *)address, NULL, offs,
-> > +						  0 /* maxactive */,
-> > +						  0 /* nargs */, is_return);
-> > +
-> > +		if (IS_ERR(tk_same_name)) {
-> > +			ret =3D -ENOMEM;
-> > +			goto error_free;
-> > +		}
-> > +
-> > +		init_trace_event_call(tk_same_name);
-> > +
-> > +		if (traceprobe_set_print_fmt(&tk_same_name->tp, ptype) < 0) {
-> > +			ret =3D -ENOMEM;
-> > +			goto error_free;
-> > +		}
-> > +
-> > +		ret =3D append_trace_kprobe(tk_same_name, tk);
-> > +		if (ret)
-> > +			goto error_free;
-> > +	}
-> > +
-> > +end:
-> > +	kfree(array.addrs);
-> >=20
-> >  	return trace_probe_event_call(&tk->tp);
-> >=20
-> > +error_free:
-> > +	kfree(array.addrs);
-> >=20
-> >  error:
-> >  	free_trace_kprobe(tk);
-> >  	return ERR_PTR(ret);
 
 
+On 15.08.23 17:14, Steffen Eiden wrote:
+> From: Viktor Mihajlovski <mihajlov@linux.ibm.com>
+> 
+> Destroy configuration fast may return with RC 0x104 if there
+> are still bound APQNs in the configuration. The final cleanup
+> will occur with the standard destroy configuration UVC as
+> at this point in time all APQNs have been reset and thus
+> unbound. Therefore, don't warn if RC 0x104 is reported.
+> 
+> Signed-off-by: Viktor Mihajlovski <mihajlov@linux.ibm.com>
+> Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
+> Reviewed-by: Steffen Eiden <seiden@linux.ibm.com>
 
 
+Reviewed-by: Michael Mueller <mimu@linux.ibm.com>
+
+> ---
+>   arch/s390/kvm/pv.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
+> index 8d3f39a8a11e..8570ee324607 100644
+> --- a/arch/s390/kvm/pv.c
+> +++ b/arch/s390/kvm/pv.c
+> @@ -285,7 +285,8 @@ static int kvm_s390_pv_deinit_vm_fast(struct kvm *kvm, u16 *rc, u16 *rrc)
+>   	WRITE_ONCE(kvm->arch.gmap->guest_handle, 0);
+>   	KVM_UV_EVENT(kvm, 3, "PROTVIRT DESTROY VM FAST: rc %x rrc %x",
+>   		     uvcb.header.rc, uvcb.header.rrc);
+> -	WARN_ONCE(cc, "protvirt destroy vm fast failed handle %llx rc %x rrc %x",
+> +	WARN_ONCE(cc && uvcb.header.rc != 0x104,
+> +		  "protvirt destroy vm fast failed handle %llx rc %x rrc %x",
+>   		  kvm_s390_pv_get_handle(kvm), uvcb.header.rc, uvcb.header.rrc);
+>   	/* Intended memory leak on "impossible" error */
+>   	if (!cc)
