@@ -2,72 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B0A77F77E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5F977F781
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351329AbjHQNPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 09:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35190 "EHLO
+        id S1351343AbjHQNQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 09:16:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351377AbjHQNPE (ORCPT
+        with ESMTP id S1351454AbjHQNQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 09:15:04 -0400
-Received: from mail.3ffe.de (0001.3ffe.de [159.69.201.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF3E2D7E
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 06:15:01 -0700 (PDT)
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.3ffe.de (Postfix) with ESMTPSA id 6CF1B3D9;
-        Thu, 17 Aug 2023 15:14:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-        t=1692278099;
+        Thu, 17 Aug 2023 09:16:25 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77A7103;
+        Thu, 17 Aug 2023 06:16:17 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 15:16:12 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1692278175;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=smIG5hi/qQQO7zsEVLHIIK2UNrg451bmx1kSE8izq6Y=;
-        b=vMbCq8i0GOclICjBdWlA/1LUt9oHo/9Ar1S8G9Lfo2W6y1NeYnL56AfRHLYTtxUQkbyyT+
-        jZcRK/odQ98uX4PrIUr/tdGhnT0lsyqAlU2Fffj6rmX7b9Yj8Mdk5q4rgWdldT4dXh8Asf
-        jwyKS2BaMXYhY7xaOqrtm7aAun0IOiqp0BxGDBoDJkmguviUi+dxW6JjlMTuHpLnBC2p1X
-        JkA0YaX7jywsD2K7Rb3BJV8GyHQqCm3xoQG6oT//dtK+pK/bqw085S5nTgG6+AjWqLQhTc
-        sPj+fB0ZbadnI9cxOIBbl5yHCfpqy8FaAmDTlUsiInXmSwAbU2188XRZERzTfw==
+        bh=4XsU42DM/msA/Cd5i5m/J+bQMyWNBvE8v4MIojmkpuw=;
+        b=d48XWJt3B4sHnmLZskkGirccMizqbqs99ML19Gt8vNuTpvwHHgK0qDv8LwO+x2Rk8WVvuA
+        wpA3kTiVE19SLdbi9N2k0/fdYIYQrJpPRHan9iYlN9l309crHPX5uLKdhSWTkjSa7Z0/4j
+        C6OeSmhZpqpOrHvctYP2vxrNiBLXo/HfRMQUDFqfO9T2xdcf8IiwByxdj9LqgBJpQes30a
+        jlTzAnaExixQbMicm3uh9yD3IiTk2LKWlS1Ut1ZUh8s5DzjIqUTuXXYirRZ02chiaAtSqU
+        cmKDPasN0v210JPCILgMsoexKi/6q3w32wNJi8TnHIiTBecvom31dQBIImlnWA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1692278175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4XsU42DM/msA/Cd5i5m/J+bQMyWNBvE8v4MIojmkpuw=;
+        b=H/3Lwjw4RY5zrazKziA3e4yQKbhpvO4c2rFkNu5MZFvj73HNeWUACNTBWGFl2wVOhjTjQ4
+        6JCHm6ybYD8RhHCQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wander Lairson Costa <wander@redhat.com>,
+        Yan Zhai <yan@cloudflare.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>
+Subject: Re: [RFC PATCH net-next 0/2] net: Use SMP threads for backlog NAPI.
+Message-ID: <20230817131612.M_wwTr7m@linutronix.de>
+References: <20230814093528.117342-1-bigeasy@linutronix.de>
+ <20230814112421.5a2fa4f6@kernel.org>
 MIME-Version: 1.0
-Date:   Thu, 17 Aug 2023 15:14:59 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     SSunk <ssunkkan@gmail.com>
-Cc:     tudor.ambarus@linaro.org, pratyush@kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        SSunk <ssunkkan@gmail.com>
-Subject: Re: [PATCH] Add support for more XMC series
-In-Reply-To: <20230817124655.13023-1-ssunkkan@gmail.com>
-References: <20230817124655.13023-1-ssunkkan@gmail.com>
-Message-ID: <8bbfdeecc4085e4f7c916c26c98de147@walle.cc>
-X-Sender: michael@walle.cc
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230814112421.5a2fa4f6@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-> Add XMC XM25QH128C/XM25QH256C/XM25QU256C/XM25QH512C/XM25QU512C
-> and set the parse_sfdp flag.
+On 2023-08-14 11:24:21 [-0700], Jakub Kicinski wrote:
+> On Mon, 14 Aug 2023 11:35:26 +0200 Sebastian Andrzej Siewior wrote:
+> > The RPS code and "deferred skb free" both send IPI/ function call
+> > to a remote CPU in which a softirq is raised. This leads to a warning on
+> > PREEMPT_RT because raising softiqrs from function call led to undesired
+> > behaviour in the past. I had duct tape in RT for the "deferred skb free"
+> > and Wander Lairson Costa reported the RPS case.
 > 
-> Signed-off-by: Kankan Sun <ssunkkan@gmail.com>
+> Could you find a less invasive solution?
+> backlog is used by veth == most containerized environments.
+> This change has a very high risk of regression for a lot of people.
 
-NAK. You're just posting the same patch over and over again.
+Looking at the cloudflare ppl here in the thread, I doubt they use
+backlog but have proper NAPI so they might not need this.
 
-Please respond the the former questions and please read
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+There is no threaded NAPI for backlog and RPS. This was suggested as the
+mitigation for the highload/ DoS case. Can this become a problem or
+- backlog is used only by old drivers so they can move to proper NAPI if
+  it becomes a problem.
+- RPS spreads the load across multiple CPUs so it unlikely to become a
+  problem.
 
--michael
+Making this either optional in general or mandatory for threaded
+interrupts or PREEMPT_RT will probably not make the maintenance of this
+code any simpler.
+
+I've been looking at veth. In the xdp case it has its own NAPI instance.
+In the non-xdp it uses backlog. This should be called from
+ndo_start_xmit and user's write() so BH is off and interrupts are
+enabled at this point and it should be kind of rate-limited. Couldn't we
+bypass backlog in this case and deliver the packet directly to the
+stack?
+
+Sebastian
