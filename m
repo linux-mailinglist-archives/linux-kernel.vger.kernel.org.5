@@ -2,405 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F04E77FA54
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF7D77FA59
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352801AbjHQPHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 11:07:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42242 "EHLO
+        id S1352842AbjHQPIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 11:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352767AbjHQPHR (ORCPT
+        with ESMTP id S1352897AbjHQPII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 11:07:17 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2077.outbound.protection.outlook.com [40.107.20.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B69271B;
-        Thu, 17 Aug 2023 08:07:14 -0700 (PDT)
+        Thu, 17 Aug 2023 11:08:08 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2083.outbound.protection.outlook.com [40.107.92.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31DF3A9F;
+        Thu, 17 Aug 2023 08:07:55 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MaGoJXYTQD6tybbqE6MbVNzMzrUzKIcZWyxBhjGSdyjiXWU4HvS2+ap5SMXINwzvAMRel/KZCaFChk5kuCAYeUp04AhCTnDYt6fWlXwzKBdAWdKfJx/Xj94+EMf+gsLr2XZczKDFmhDi1CAK1YnUwtaQERi8TYZLq2OeYx//pDxOtF0VVYdm8yOwTOthhNLbjN+JmhCWTd4l3qGcT8zzJJSkMfqDdigwe+5RHvYAxGq3OzMpozWVvqb9vO2nLwTYds/50VxRiNDsLW7qtCJGb7H53M+cHmsB0neT6ud5bPsHrl39ZnILkdOgknuK3rHxSdadgW/hQVuAHZ4sLw0CJg==
+ b=GIwlU97tPsgvSrUfii5mLcbmoOACYx8qb5paorEq4gl2cvB9DBY9OeDCXSCTmX+lk9SAyFWJVq0/3FSDAG7qGwlCCxf+s7McS/Zg24Ft8Isp+OCBM65ke5h0IZa5Hb9iDa4OGO08ArFDndJLTp28mfApFZ59v5Oj0G2/nvxqE4sVcTxcuUxUGnPqJYHhr0ahYBux41/yeRslthnRrKi2n0BUKk+4JO/T07Ab9YO+OvM4OzxMv13m/h05l6+U4YN8ZUu3q3o9SPXVKZ4ESwHvn6i3VMRG1qGmn9lwQMvyvKTpJYormqdnEB1FHmTgpb8pyb+j/Kvmu5eR5ilbO8qKdA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kz7DE+CfGJK0uI/GEZlJGBUyHE9LCjNSCDZNz2fWotc=;
- b=cQh4HzLlQTABfLSVtgmUaBxjUqL25WlrwvmUylujvSFVrV8Q7/ASIKiQYnbMoAMG2bwacOpPUKsn8WEwDf23FbVKSLmbGKngYVuDdRBIUZRRptBHwapUUvl0iFDcKQ4eV40GTmvu0pbvxPVGePRTqPNtCjNp3zxKwwtvEsYdkFdJfmIKBOvyBP7XSUoFmnJ+vXpYlZ5GHN4Bgqq0vShP7xUAlAcHAplcffMD+Fzg87OT4R43RSc6QSzSAc5/ByufVvldpR7chRVWqrC0Z7w4u6js7N0WvcKpGC93+qaE1zOlfrqqoaHI99PGfU5D2g2HptwrV++ghPelH4fC+iNtzg==
+ bh=BClb288ILHxERKSS7vASuDST/LbD4MHF6c4Nj7XwzGg=;
+ b=GFSvTTC4gpnMENxie64Ssomo9LX1QdNrdwvP8sGLDRyZDfpSmD/fh6nTauJy1yN6Jz0E8MNcKAlxaH+E1gCk6Sm4gmp+EaHlFx143VTD+GjTwcWZHTT4vpCGeu069ZEk5w5SL9fxZeuzacEja1MWYh1iRmcEKNz95RETIP9OdD6n0X0xFsS315Imo3fLx48mq2aoiyAZUJJwL09UcnMocB+QLWu86A6YhSgL++NoO6EIV1WRM7dUHZttiVKPuO5c4pvO7PmkbEzvJOryHQEldjscuK8Dqr/j6O8AG2v5xvVqtfYhX5/6pnCL4jkdNZA5BMmUbIBYDUcv34Pu0CGK8Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kz7DE+CfGJK0uI/GEZlJGBUyHE9LCjNSCDZNz2fWotc=;
- b=Kg7HnvemSoyK+0daEWfdj2z5H2oUCxHlPVK1qBl8R1WTWTvz9Y98XxB24GKHQvITs87yA9TFjTOL2jOCs2ncQzJ7pxr69ywKCOiXG/bxd5vRxsOFjPdB/wtmQBbeYksud33ZzOYKiSOjn7rvRlPahJE0MExoSsypP3kqEeXKNQM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
- by PAXPR04MB9469.eurprd04.prod.outlook.com (2603:10a6:102:2b4::12) with
+ bh=BClb288ILHxERKSS7vASuDST/LbD4MHF6c4Nj7XwzGg=;
+ b=QfHrS04oyqDa1Rp8eKDUllSIml6ned2vAQbXLttauMS1yQ49D6y1kBVe/0NRudBf1bDcLx9Jga7cMMRrmLG32uIXfOk8zfc/xQsQk03RAS/X0wRG2jVkVfZyRgsUGpRQRvf22FsLhkkRdSLVh34Yi/oxXKvrKDVPCnVyoXEkFESbp6elHFDGoTH1P7xHjA0MzOCF+5CRYaLie3gkl9VX3XBch1R0annSGStka3OheaXn0Gh0mYuKnXDdQtIJgLKxHgDHC8Ec0Le4qflFBHTWYf6H/Ku9Ny/mc7FaY5ftYmoVTKRWCxMOI0F1ySy16iOfeeWY5VbMf8Ch52Fjbghmvg==
+Received: from CH2PR12MB3895.namprd12.prod.outlook.com (2603:10b6:610:2a::13)
+ by MW4PR12MB6999.namprd12.prod.outlook.com (2603:10b6:303:20a::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.29; Thu, 17 Aug
- 2023 15:07:07 +0000
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::d4ed:20a0:8c0a:d9cf]) by AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::d4ed:20a0:8c0a:d9cf%7]) with mapi id 15.20.6678.031; Thu, 17 Aug 2023
- 15:07:07 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
-Cc:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Camelia Groza <camelia.groza@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor@kernel.org>,
-        Sean Anderson <sean.anderson@seco.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>
-Subject: [RFC PATCH net-next 8/8] dt-bindings: net: fsl,backplane-anlt: new binding document
-Date:   Thu, 17 Aug 2023 18:06:44 +0300
-Message-Id: <20230817150644.3605105-9-vladimir.oltean@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230817150644.3605105-1-vladimir.oltean@nxp.com>
-References: <20230817150644.3605105-1-vladimir.oltean@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: AM0PR02CA0137.eurprd02.prod.outlook.com
- (2603:10a6:20b:28c::34) To AM0PR04MB6452.eurprd04.prod.outlook.com
- (2603:10a6:208:16d::21)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Thu, 17 Aug
+ 2023 15:07:54 +0000
+Received: from CH2PR12MB3895.namprd12.prod.outlook.com
+ ([fe80::ae25:4f33:8a19:32c9]) by CH2PR12MB3895.namprd12.prod.outlook.com
+ ([fe80::ae25:4f33:8a19:32c9%4]) with mapi id 15.20.6678.029; Thu, 17 Aug 2023
+ 15:07:53 +0000
+From:   Asmaa Mnebhi <asmaa@nvidia.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "brgl@bgdev.pl" <brgl@bgdev.pl>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 2/2] gpio: mlxbf3: Support add_pin_ranges()
+Thread-Topic: [PATCH v2 2/2] gpio: mlxbf3: Support add_pin_ranges()
+Thread-Index: AQHZ0Fiforf54onJHkGX7vWgR5BAI6/tEceAgAACvyCAARKIAIAAcQcg
+Date:   Thu, 17 Aug 2023 15:07:53 +0000
+Message-ID: <CH2PR12MB38950929588D6AF386C4C22FD71AA@CH2PR12MB3895.namprd12.prod.outlook.com>
+References: <20230816154442.8417-1-asmaa@nvidia.com>
+ <20230816154442.8417-3-asmaa@nvidia.com>
+ <CAHp75Vdp9TYTod6UBLxG_YrT_vD4azfyrM9dTrau8CPJuH_vrQ@mail.gmail.com>
+ <CH2PR12MB38953114436B7B0768A1C321D715A@CH2PR12MB3895.namprd12.prod.outlook.com>
+ <CAHp75VcEe-2+=2qXCFHp+cxN=nWcsc=oCVYUeinM_cMsPES+mQ@mail.gmail.com>
+In-Reply-To: <CAHp75VcEe-2+=2qXCFHp+cxN=nWcsc=oCVYUeinM_cMsPES+mQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CH2PR12MB3895:EE_|MW4PR12MB6999:EE_
+x-ms-office365-filtering-correlation-id: 4050810b-fee3-4d57-8c7b-08db9f33bb3d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: sITAemQuyAcDYG9sThZfeakdqo0tghlebStoZ7/ehvdVxG9D2gvP8xSc4wGK+XLub3XYUhRbziw1ukqtzCmdHkMXIuepAirakt2hLlqVOxpPeuPukz3EILc26hXyie0FxOOKEB2gJudjlX/ZobeWD8qlZR7czTznxHtiNIBRo5GsosFGW2ouvlhghfTy4igwpvZteGg5IMrT7R49ROsQNVQhiR2deN2PrBVQF8cZHZWKT4twH09NqSVePFaixzLJMpFWTvJCRUAD6e9lt7VUI5BiMNp77oHnsl2fuz1ACPDDdqi+eQh0CK1nMaQSLxXeCyi/aTVQT28Yy610SOCnyrN61/XeOjazHEcRdvELyE5Yw8U0lJN+6BRbbQwneA9VlgSXbcwXcycbSgAZen8VUQDSx8GFCNkj+CpzI1tRBXABOgwOYfXb2MTcEC8vTS6SWisIVOn4n+Rm6kkhqCnDCab4R7kC4G8Nl3Gd2nadBO0yy8j/68KG4T5NPh5rBXYosj1IM+Nf9hRF9IAJpYf5+gUjMSorQ2EJjAFaT8LIG8PfKbm+daEd1nvgdELtSnMMj4uQxu30ZZYNKypO8lEETtUwmWQVnZMCvJTJz2YL6xSfUZ+OnZvoq3pFqhDS2KE1
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR12MB3895.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(136003)(346002)(39860400002)(396003)(186009)(451199024)(1800799009)(33656002)(86362001)(83380400001)(55016003)(8936002)(5660300002)(8676002)(4326008)(4744005)(2906002)(52536014)(41300700001)(26005)(7696005)(6506007)(71200400001)(9686003)(76116006)(122000001)(478600001)(54906003)(316002)(6916009)(64756008)(66476007)(38100700002)(38070700005)(66556008)(66946007)(66446008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bmplSTZsbGJkejgvS2FIejdrcTRxS3BnUWREeElFS0haVU5HcTRWbWVtbGVV?=
+ =?utf-8?B?U3JQZ1ZVRmdMWkRpVjA5VWhkVWlRaFVaSUJ2L2ZudXdCSy9yUHd0ZmVjYnFv?=
+ =?utf-8?B?KzBTMm40WnNCVW92elZiOGtjVHdZY0Ivc2lENUJSZWRrSW9uVkxXZlVnWUhD?=
+ =?utf-8?B?aDlQMnNSSnhtYU5PN01HVTY4bnI0OGlyY1hVdDJhMmR1UGxzY0ZHSTBOSTJw?=
+ =?utf-8?B?c1ZlZkxKUmx2UGlSOGp5T0dsUEhhaVdWcHFOdXorR3lXdUVOd0VGMDl5MU8w?=
+ =?utf-8?B?a2JwWHVaazcrUkJROWFQTWtDMHZzV25HK3hYVnVHK0ExM3FicFljNGtkb3Ur?=
+ =?utf-8?B?b2JYNGRkZDUvdy9HQWd6Z1JvdnhVaFc1YWVXWjhIcWhGbXJ2eGw2bWR3RlRZ?=
+ =?utf-8?B?QVl3dmQ5bU9iamJqZTBEeEU5aUZsdkYxTDFzN1RCclZUSXJyc0tzMkxEWDV1?=
+ =?utf-8?B?czRrdW4xeGxpOWRGcGxkUmkrNXJBMUtuazlqSW05OERQeGxZTFBCSElia1FI?=
+ =?utf-8?B?ekI3RC9pS1JtYzlpYzR1cHlwSFRqcDN6L1NZTitndWcwWHRyOURJS2pMNUpS?=
+ =?utf-8?B?MFBoaStTTVlJdGZOdTZwMTB0dFFDYVIwTWxKek00K1VvTzZkb0VSZzhWdUkz?=
+ =?utf-8?B?dTJHOG51NCtGRTJFRmZ0MVF1UGZOL0lEQnRKU0FTd3pSczhMZTAwV0hlZm04?=
+ =?utf-8?B?b25DV3VOM2Irb3RxeVJPWmhDTkxMSUxJRWdtaGZUUllBUHRBelpDd044Mldz?=
+ =?utf-8?B?cW40SkxKOWxlR3E1aHk0MUVxdkdwZVBvZVpaNDF2TXRtY2tUbjQ4bGJBMzZI?=
+ =?utf-8?B?elQ3YXovWHZXSVhJU2ttNWNtaHlhUVhEaDRaeVIxT1JlTzlqNTVwZjRFTEpt?=
+ =?utf-8?B?ZDBzdWpjVEljOE9LUzlCT0VYdUpLVVlweGR2Rm53bTdZWnlzN0hVV082cjBC?=
+ =?utf-8?B?RXNsbUhFVWFDZlpMWExCYnRWUzZ0M0tHVVJ2QmlGN1FBaXNmVnFnWWpMVXpN?=
+ =?utf-8?B?eXZFeUlFQlM5NzIyMkswNm5TaW1HSm1tek96eCtBV1FCbEJYVm0yaUkzelVn?=
+ =?utf-8?B?blhkTUhkVm01K1N1QWprY2lEK2MrNVc1dVRpL2xvaG8xeklPTkhSS2gxRDdE?=
+ =?utf-8?B?aEhvYmVVWExzSlhwcGxZRWQ1bHpyOS9TQ3REV0ZJSlJaSTVYTHVkR0J2Rm5u?=
+ =?utf-8?B?cythZ2xrWXNkeHd2YUpNK0xOQnpVeTIxMUhuK3lielI2TFNQZUJJVEpOVFht?=
+ =?utf-8?B?UUJJY0ZBTVRzQ0VSVzJOTFZIV0RneC9FSGd6cGJDOXFLZWF3UnFFb0p1VStp?=
+ =?utf-8?B?ZEpaL0xrdVp1RXRaNytuTldKK0RPU2FHOEJXa20wMWdiZ0UzUWtyZEFTcVlz?=
+ =?utf-8?B?VW9SZVZkZU51YU93TERDNDBTWUFPdEpqb1d5Z09qdHQ4d0lXTkRwRVJiSnZN?=
+ =?utf-8?B?RWFsWlgvTC9CM2MxVFdoTG92NTdOc1EzRWU2WS9yTDQ5UG80U0hKbWhqWllW?=
+ =?utf-8?B?Unp0TlV0QWlIN2ErYU1MTk5JWERmL2gzS0JJcDRBMkxNTysrT2p6NGswdHZp?=
+ =?utf-8?B?VXpzQ0xZT1B3R1JMdWxOc1YwMjJqRUxWSE1Kc1FUSHY3elB0S0pRTFJrNkFP?=
+ =?utf-8?B?MzNGRDFTMTRzbFpGWDlxaHZsekxqZ1I3QzhhTTBNT2U2RjEvRHZ5NXhwYkVW?=
+ =?utf-8?B?dGdQU0NTWkdON3pldDEvZFdTZ3RSQUd6eis4WEhKV2R0TjBEYlJqTGtoK3dB?=
+ =?utf-8?B?TGxXaE5FZlNpVjlCcXd5RGF2RklDUHNEVE5JTjNIT3N3MHVsMEFkY0J3YTNQ?=
+ =?utf-8?B?WmZvUTkyeGlDZ1VtaXozRWRXakMwYkI4QklVV1l5MlJvbnd6ZU1vT2RsenZ6?=
+ =?utf-8?B?blcydXZZZTdSRWhFdm5pQ1RQREg5L0VXZEI4b1ZSTWxvKzNjS2l0YzJ3M2VZ?=
+ =?utf-8?B?UklWdUdSUXlwbTFmOG9zR3hHVlYyeHh0UjV1dmV0ODJGbXVSL3A3dVhidkF4?=
+ =?utf-8?B?b2pBdTBTK3V3VUNyNjBySlRUa1JDUUdRczFJdjg4d0lnVHVuckplYnJFNmxm?=
+ =?utf-8?B?SitMUTE5TDFZc2lCMDFkaEp6VjFNOGhjUkxCbzBBandaZFU2OFV6R3lWdDVT?=
+ =?utf-8?Q?BAYY=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|PAXPR04MB9469:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4e9385b3-32cf-4344-8018-08db9f339f78
-X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: y0WqkugZQgo17mt47ZKAFzDPLiN/GiRH8VZS8WvG8Yu0wK6//eDPYrUuOD4SdASGBiLcFbBW7L6Ej2MXbACJ1LnvRuXGchQRwJUz/n+d73CcW7/5EUqSIh1R+5pxFRLbex0e4CWXcID6Ucftl4hLUxMKW6JJL2v7XdjUbu8kK9gorGYpFzBx+LDxr+QdyiGqpAxAiIR1l1yjLUhu02o/0Xp1zUexSNl+AE8JIkFx/4hvYRNsC6WahK5VQPbBMKefm2JfA1bIn+Fn1q3SSSb3vRURWKwhwz58GmkksJjJQ10j9OZd8kq2cffT5iDfs9iTLCDabbdaS1PSDYED1LLzxfPPITpJMct807OuZ4Whm3MjWJbNFWUAuFM6Lp8ZTBHIjxIJUls2QByvMcHkqSVRFuU8s8Kxo2xLiZF5j6KdlVunqtJY2PHUvkQrNSS/tXAxhZZVJ+u1Q87HUWx3diBYUkrP/9OHNXuMGBheAdlwJomkLZfhuTEWFpWad72tcXQ0lltRl+i2DpZLP2B/FzTXuAy/p1Mk7sZtpSoBoB1z2OGmvIZMDbn1ZNpP9Yz7IQL4N14UrkkrX60RZNPYfwZgj0A+q05Ct24C6vKxMBO2KduV4UW3ioRH60PfZ8I7D0CHM/AR+vYuoDyd1VkpvGeyhQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(346002)(39860400002)(396003)(186009)(451199024)(1800799009)(2906002)(83380400001)(26005)(86362001)(7416002)(478600001)(6506007)(36756003)(6666004)(2616005)(1076003)(6486002)(6512007)(52116002)(966005)(44832011)(5660300002)(41300700001)(316002)(54906003)(66946007)(66476007)(66556008)(4326008)(8676002)(8936002)(38350700002)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QdHEXJTnmVVGsgY9jRQ5zQgWpJ5pBTyGYzGGE4QxAFiWY5qwHGg48RRuBlX5?=
- =?us-ascii?Q?QtBX9tdF17KbhZYGPgKh91622KsJZZcaWA5qGxqUvef8bLogUiQCvLvVz2fr?=
- =?us-ascii?Q?rM5wjEhfEMm8YvTuKw1u5jXXjrnlJXAtFvPj30NtxFuTARMg3MynpcdwJE0T?=
- =?us-ascii?Q?nvF+12ExWN3OwO7Ee8trjyMd36VuRdgE10qog070Jmzpr9l2jvTwDyFagotF?=
- =?us-ascii?Q?7o3LSwpYEK0q5OMWYwVANMzbuFG5Rgh7IhM8/xJYR/zRLmwVRWcoe3i2uMu3?=
- =?us-ascii?Q?dyispP674TiTgEi+SEz9x8fcmUhV5VIqhgUuvdufFr85QpUCtn/bxLFJ3pYc?=
- =?us-ascii?Q?LrbJFm+Yt31BrRHbfWtjEDb4IriD2zLtm1JQblF4uB208fw6J38zeOvitgW8?=
- =?us-ascii?Q?U630ApoKg5vhErBZJNBoaLBs5l868iXjsjtuVMuC80gwXBuD/9gyg/bfKIN3?=
- =?us-ascii?Q?yEf4adODNFrXNI09pBxPeYGVg/kKqMikn09JAykpMeDEYuwET+itsSEjO9sc?=
- =?us-ascii?Q?YH3dG6RD2Zmg0l1m2mZpqJVdQDlxgaPX+W4t6mQLIib17fo/NnUYFRbucmsR?=
- =?us-ascii?Q?F71xiq+sug9cLRYaRjze2SfQYFJ9FuBOjZDKA55JM+BgHvzDSEhodzm1QerG?=
- =?us-ascii?Q?hx5uJbjr1Sl0kth9VjFKvpse0rbXK9lKQKalR92R+Dj66P+1q9+szkRA6m6o?=
- =?us-ascii?Q?cpeBP9T6ODaFoD44SoFYs6ARZCEvma69dHZNs5QRCQrD17iahwZDG12v9dUS?=
- =?us-ascii?Q?9jZPPKqtJAt+nXkupY07SXxZ3BkOovUXhl3jECMTG7CZ2R83ayQbEZ7+ehML?=
- =?us-ascii?Q?fczTQENxl+x7A/g331h+O9Mv1xbOWsewYi5jcHZg7kQCyWa71k4A0F/l/sIU?=
- =?us-ascii?Q?cO1Nre7gCGtLgeSqaeTVPyEIrjkMkfuwSQGIrwPUdPWif8c4BRM7Qr83yfP3?=
- =?us-ascii?Q?QD0MSpn9Ctv20aRb82naM51MI6Y2EWrkX+AE4Bo1S9NfS+XYAvRwt5WIZoRm?=
- =?us-ascii?Q?LvF4C5BmZKhaRGAcSSN0WxtrnPDXHswECKL0Boonwh+2VuGsVdbUxKIypm9+?=
- =?us-ascii?Q?P5MQpzqyv/OltJ6ILaCZ8YMceciWF8IrBECYFxlCPoXyqD3iEC0D39a9kyxm?=
- =?us-ascii?Q?hUEg3VJLak71sf3a5WaUHEFz1HL2bRdGHCTo5GOqpvnbBV/qNikxtTTRgx2r?=
- =?us-ascii?Q?MWc8z/hJJFWxffrpI6iwt+GtHhWo1uPPgXVoT0m22aanjvgN+pWvskIVGoOs?=
- =?us-ascii?Q?fnvc+/GPra0lH9g9bJ+39zN0vFOzf2IO5lBYtiKqxRGXH0QEETXy4DUcF1NP?=
- =?us-ascii?Q?4/1jzxte42uaJnGZtUyC2Rmz3QaHu8Zt4afYjuc2gFr46CguqPnWYMno0VQP?=
- =?us-ascii?Q?hKUsZ+058Yysj3wriv7moQXALfe7uRJ2jHLbWUe2Y9Se3LkkaHS3+Bw4UGrq?=
- =?us-ascii?Q?Qy30FufKfpZv3rdw24c0PKZ1xy7mGzpIep7el1ohdhJnNV1BXGqoyFqcqxP5?=
- =?us-ascii?Q?1apMlkO6LMCwHixR61X8htvQ/s9fD6mxFaX/S5Jv7S8zjIOozip2e7xfBOz1?=
- =?us-ascii?Q?LszX8VIZNsC2DH+urICpwKt0mFp7Rv+Hl2Z66uv5gYeyT1Oyql9M1Rpn0z0F?=
- =?us-ascii?Q?Hw=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4e9385b3-32cf-4344-8018-08db9f339f78
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
+X-OriginatorOrg: Nvidia.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2023 15:07:07.2372
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB3895.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4050810b-fee3-4d57-8c7b-08db9f33bb3d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Aug 2023 15:07:53.6355
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0BVg3tuKK4SsAQHJr+1Z/X7aSUXpOXxWHD5tXHf649rnbjebKlnuSObea/brV3x9l8+oKESgnY04zhu9EBBbFA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9469
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1FmRjvFxAW0kzS0shyGY8KR7I+3ddxD18Gk0wzk97pmIcqsnN+fZKnAiH6MA9n4qMr+AfDQ2ZrcvryRfozyvCw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6999
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Illustrate how the backplane AN/LT blocks can be instantiated on the
-LX2160A SoC with SerDes protocol 19.
-
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
----
- .../devicetree/bindings/net/ethernet-phy.yaml |   8 +
- .../bindings/net/fsl,backplane-anlt.yaml      | 238 ++++++++++++++++++
- 2 files changed, 246 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/fsl,backplane-anlt.yaml
-
-diff --git a/Documentation/devicetree/bindings/net/ethernet-phy.yaml b/Documentation/devicetree/bindings/net/ethernet-phy.yaml
-index c1241c8a3b77..96fa672e4786 100644
---- a/Documentation/devicetree/bindings/net/ethernet-phy.yaml
-+++ b/Documentation/devicetree/bindings/net/ethernet-phy.yaml
-@@ -49,6 +49,14 @@ properties:
-       - items:
-           - pattern: "^ethernet-phy-id[a-f0-9]{4}\\.[a-f0-9]{4}$"
-           - const: ethernet-phy-ieee802.3-c45
-+      - items:
-+          - const: fsl,lx2160a-backplane-anlt
-+          - const: ethernet-phy-ieee802.3-c45
-+        description:
-+          Some C45 PHYs have no PHY ID in the standard location, and there is
-+          also no PHY ID allocated for them to fake. They are identified by the
-+          primary compatible string, plus the secondary one to distinguish them
-+          from a raw MDIO device.
- 
-   reg:
-     minimum: 0
-diff --git a/Documentation/devicetree/bindings/net/fsl,backplane-anlt.yaml b/Documentation/devicetree/bindings/net/fsl,backplane-anlt.yaml
-new file mode 100644
-index 000000000000..7282e93b1dd4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/fsl,backplane-anlt.yaml
-@@ -0,0 +1,238 @@
-+# SPDX-License-Identifier: GPL-2.0+
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/fsl,backplane-anlt.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale Backplane Ethernet PHY
-+
-+maintainers:
-+  - Vladimir Oltean <vladimir.oltean@nxp.com>
-+
-+description: |
-+  Some QorIQ and Layerscape SoCs have an additional block on each SerDes
-+  networking lane, based on an IP core from MoreThanIP, which performs IEEE
-+  802.3 clause 73 base page exchanges (for auto-negotiation) and clause 72
-+  training frame exchanges (for link training).
-+
-+  By default, this AN/LT block comes up with auto-negotiation disabled, and
-+  in that case it allows itself to be quickly bypassed from the data path and
-+  for the PCS link to come up without its involvement.
-+
-+  Software can optionally make use of it, to turn the PCS, AN/LT block and lane
-+  (PMA/PMD) into a full copper backplane internal PHY.
-+
-+  As a warning, the binding for the multi-lane link modes (40GBase-KR4) is not
-+  currently backed up by a driver implementation.
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          - items:
-+              - const: fsl,lx2160a-backplane-anlt
-+              - const: ethernet-phy-ieee802.3-c45
-+    then:
-+      $ref: ethernet-phy.yaml#
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - const: fsl,lx2160a-backplane-anlt
-+          - const: ethernet-phy-ieee802.3-c45
-+      - const: fsl,lx2160a-secondary-anlt
-+
-+  reg:
-+    minimum: 0
-+    maximum: 31
-+    description: |
-+      The address of the AN/LT block within the internal MDIO bus of the MAC it
-+      is attached to.
-+
-+      In the 1000Base-KX and 10GBase-KR link modes, the AN/LT block responds at
-+      the same MDIO address as the PCS (determined by the SGMIInCR1[MDEV_PORT]
-+      or SXGMIInCR1[MDEV_PORT] registers of the SerDes block, by default 0).
-+      The PCS and AN/LT block respond to different MMDs, though.
-+
-+      In the 25GBase-KR and higher link modes, the AN/LT block responds at a
-+      different MDIO address than the PCS, determined by the
-+      ANLTnCR1[MDEV_PORT] register of the SerDes block. By default this is 4
-+      for lanes A and E, 5 for lanes B and F, 6 for lanes C and G, 7 for lanes
-+      D and H.
-+
-+      The PCS responds in all cases at the address determined by the MDEV_PORT
-+      field of the SGMIInCR1, SXGMIIaCR1, E25GaCR1, E40GaCR1, E50GaCR1 or
-+      E100GaCR1 registers of the SerDes block.
-+
-+  phys:
-+    maxItems: 1
-+    description:
-+      phandle for the generic PHY (SerDes lane) that acts as PMA/PMD layer
-+
-+  pcs-handle:
-+    maxItems: 1
-+    description:
-+      phandle for the technology-dependent PCS block corresponding to the
-+      initial (RCW-based) configuration of the port. Must be omitted for the
-+      link modes where the PCS and AN/LT block respond at the same MDIO
-+      address. Must be specified otherwise.
-+
-+  secondary-anlt-handle:
-+    maxItems: 1
-+    description:
-+      In case this is the primary (first) lane of a multi-lane link mode, this
-+      property holds an array of phandles for the other AN/LT blocks, that are
-+      involved in link training but not in auto-negotiation. These have the
-+      "fsl,lx2160a-secondary-anlt" compatible string.
-+
-+required:
-+  - compatible
-+  - reg
-+  - phys
-+
-+unevaluatedProperties: false
-+
-+examples:
-+
-+  # LX2160A lanes A, B, C, D with SerDes 1 protocol 19: dpmac2 uses 40GBase-KR4
-+  - |
-+    dpmac2 {
-+        phy-handle = <&mac2_backplane_anlt>;
-+        phy-connection-type = "internal";
-+    };
-+
-+    pcs_mdio2 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        status = "okay";
-+
-+        pcs2: ethernet-phy@0 {
-+            reg = <0>;
-+        };
-+
-+        mac2_backplane_anlt: ethernet-phy@7 {
-+            compatible = "fsl,lx2160a-backplane-anlt",
-+                          "ethernet-phy-ieee802.3-c45";
-+            reg = <7>; /* according to ANLTDCR1[MDEV_PORT] */
-+            phys = <&serdes_1 3>; /* lane D */
-+            max-speed = <40000>;
-+            pcs-handle = <&pcs2>;
-+            secondary-anlt-handle = <&mac2_lane2_anlt>, <&mac2_lane3_anlt>,
-+                                    <&mac2_lane4_anlt>;
-+        };
-+
-+        mac2_lane2_anlt: ethernet-backplane-anlt@6 {
-+            compatible = "fsl,lx2160a-secondary-anlt";
-+            reg = <6>; /* according to ANLTCCR1[MDEV_PORT] */
-+            phys = <&serdes_1 2>; /* lane C */
-+        };
-+
-+        mac2_lane3_anlt: ethernet-backplane-anlt@5 {
-+            compatible = "fsl,lx2160a-secondary-anlt";
-+            reg = <5>; /* according to ANLTBCR1[MDEV_PORT] */
-+            phys = <&serdes_1 1>; /* lane B */
-+        };
-+
-+        mac2_lane4_anlt: ethernet-backplane-anlt@4 {
-+            compatible = "fsl,lx2160a-secondary-anlt";
-+            reg = <4>; /* according to ANLTACR1[MDEV_PORT] */
-+            phys = <&serdes_1 0>; /* lane A */
-+        };
-+    };
-+
-+  # LX2160A lane E with SerDes 1 protocol 19: dpmac6 uses 25GBase-KR
-+  - |
-+    dpmac6 {
-+        phy-handle = <&mac6_backplane_anlt>;
-+        phy-connection-type = "internal";
-+    };
-+
-+    pcs_mdio6 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        status = "okay";
-+
-+        pcs6: ethernet-phy@0 {
-+            reg = <0>;
-+        };
-+
-+        mac6_backplane_anlt: ethernet-phy@4 {
-+            compatible = "fsl,lx2160a-backplane-anlt",
-+                          "ethernet-phy-ieee802.3-c45";
-+            reg = <4>; /* according to ANLTFCR1[MDEV_PORT] */
-+            phys = <&serdes_1 4>; /* lane E */
-+            max-speed = <25000>;
-+            pcs-handle = <&pcs6>;
-+        };
-+    };
-+
-+  # LX2160A lane F with SerDes 1 protocol 19: dpmac5 uses 25GBase-KR
-+  - |
-+    dpmac5 {
-+        phy-handle = <&mac5_backplane_anlt>;
-+        phy-connection-type = "internal";
-+    };
-+
-+    pcs_mdio5 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        status = "okay";
-+
-+        pcs5: ethernet-phy@0 {
-+            reg = <0>;
-+        };
-+
-+        mac5_backplane_anlt: ethernet-phy@5 {
-+            compatible = "fsl,lx2160a-backplane-anlt",
-+                         "ethernet-phy-ieee802.3-c45";
-+            reg = <5>; /* according to ANLTFCR1[MDEV_PORT] */
-+            phys = <&serdes_1 5>; /* lane F */
-+            max-speed = <25000>;
-+            pcs-handle = <&pcs5>;
-+        };
-+    };
-+
-+  # LX2160A lane G with SerDes 1 protocol 19: dpmac4 uses 10GBase-KR
-+  - |
-+    dpmac4 {
-+        phy-handle = <&mac4_backplane_anlt>;
-+        phy-connection-type = "internal";
-+    };
-+
-+    pcs_mdio4 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        status = "okay";
-+
-+        mac4_backplane_anlt: ethernet-phy@0 {
-+            compatible = "fsl,lx2160a-backplane-anlt",
-+                         "ethernet-phy-ieee802.3-c45";
-+            reg = <0>; /* merged with PCS SXGMIIGCR1[MDEV_PORT] */
-+            phys = <&serdes_1 7>; /* lane G */
-+            max-speed = <10000>;
-+            /* no pcs-handle to &pcs4 */
-+        };
-+    };
-+
-+  # LX2160A lane H with SerDes 1 protocol 19: dpmac3 uses 10GBase-KR
-+  - |
-+    dpmac3 {
-+        phy-handle = <&mac3_backplane_anlt>;
-+        phy-connection-type = "internal";
-+    };
-+
-+    pcs_mdio3 {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+        status = "okay";
-+
-+        mac3_backplane_anlt: ethernet-phy@0 {
-+            compatible = "fsl,lx2160a-backplane-anlt",
-+                         "ethernet-phy-ieee802.3-c45";
-+            reg = <0>; /* merged with PCS SXGMIIHCR1[MDEV_PORT] */
-+            phys = <&serdes_1 7>; /* lane H */
-+            max-speed = <10000>;
-+            /* no pcs-handle to &pcs3 */
-+        };
-+    };
--- 
-2.34.1
-
+DQo+ID4gSSB3b3VsZCBsaWtlIHRvIGdldCB0aGUgZ3BpbyBibG9jayBpZCB3aGljaCBjYW4gb25s
+eSBiZSAwIG9yIDEgb24gQmx1ZUZpZWxkLTMNCj4gKG9ubHkgMiBncGlvIGJsb2Nrcywgb25lIHdp
+dGggMzIgZ3BpbyBwaW5zIGFuZCBvbmUgd2l0aCAyNCBncGlvIHBpbnMpLg0KPiA+IFRoZSBhYm92
+ZSBsb2dpYyB3YXMgYW4gImVhc3kiIHdheSBmb3IgbWUgdG8gZ2V0IHRoZSBncGlvIGJsb2NrIGlk
+LiBUaGVuIHRoZQ0KPiBwaW5fYmFzZSBmb3IgZWFjaCBncGlvIGJsb2NrIGlzOg0KPiA+IHBpbl9i
+YXNlID0gaWQgKiBNTFhCRjNfR1BJT19NQVhfUElOU19QRVJfQkxPQ0sNCj4gDQo+IEl0J3MgZnJh
+Z2lsZS4gVXNlIGEgZGlyZWN0IGNhc2Ugc3dpdGNoIGZvciB0aGF0LCB3aGljaCB3aWxsIGJlIG1v
+cmUgZXhwbGljaXQgYW5kDQo+IHJvYnVzdCAoaG93ZXZlciBzdGlsbCBjYW4gZmFpbCBmb3IgYW55
+IG5ldyBjaGlwIHJldmlzaW9uL3ZlcnNpb24gd2hlcmUgaXQgbWlnaHQNCj4gYmUgYSBkaWZmZXJl
+bnQgR1BJTyBsYXlvdXQpLg0KPiANClRoYW5rcyBBbmR5ISBXaWxsIGRvLiBIb3BlZnVsbHkgaXQg
+aXMgdG9vIGxhdGUgdG8gY2hhbmdlIHRoZSBCRjMgaGFyZHdhcmUgYXQgdGhpcyBwb2ludCBzbyB3
+ZSBzaG91bGQgYmUgZ29vZCA7ICkgLg0K
