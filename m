@@ -2,184 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A6D77F85B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C95977F844
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351646AbjHQOH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 10:07:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39800 "EHLO
+        id S1351657AbjHQOEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 10:04:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351718AbjHQOHB (ORCPT
+        with ESMTP id S1351656AbjHQODm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 10:07:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C9330DE
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692281195; x=1723817195;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=QmxbfmZHEaiWO0885bLhzh6FB1Dfm3q5zX9G9kyCjC4=;
-  b=L3k4oVNQKuLAP+IlOiIjd/amQ1y8XZa0GxDINxiFX3k89aZH1J1x5EAy
-   hJFkJ9S9VuCzO+khEgEkHnziTioDSxZ7s4jY1nllhDOq4drnkdoHJT9ye
-   H71z80r3UVRGn3ROJ0B3SjOywSzs8qNBVEyg/ZUFUw7oEMnL9OV1qShmI
-   tWuPcAKd9bB3VjDelKlla8ESMh8Z3IjO0Zudmpza6NemLOPy89yGxTj5V
-   oQUU+ByMWuaKkMk1MvaYrs8UYamgvkd93hTg5stlGKwaElTwZA7lMt8tA
-   /uNNj0BOtCD6jP7KrwPvo3TTgvXWztLtOtVFusdiu/zle/eJUBVvzCcF/
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="403799819"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="403799819"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 07:05:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="878243817"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 17 Aug 2023 07:05:14 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWdbl-0001CB-0C;
-        Thu, 17 Aug 2023 14:04:30 +0000
-Date:   Thu, 17 Aug 2023 22:00:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>
-Subject: kernel/fork.c:1962: warning: bad line:
-Message-ID: <202308172133.Hs40Ti6o-lkp@intel.com>
+        Thu, 17 Aug 2023 10:03:42 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0EC2D64
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:03:29 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so123509791fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:03:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692281008; x=1692885808;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iDdSkDnAa4EA45wBy/GLSEV+l5NgSMIiiSHWvRZ2KOA=;
+        b=No0KlvABaYxw/rZPqIHVWHsDziq6x7bSxyP7ou/8aZa900Caq8T1gj8P21xYN37GBH
+         pIPtj52oMnu6T0jp4Y26t7RZneMdSofgiuyuIvAwmC9YQ8F/Bs74inq2yUFtzGvdBqwn
+         XP2b7g8/ABAfVAgudf/Ls9JV0oEPeIHXlloU/r9QWlatTA958VOQzYkq65N2hM3wGrw4
+         TmYlmgT77Ez/jjZFBDNXpGB/UdPR8cB9wlCFVofRSl0fnRhN5wpkf16PzMoKmHJEMoHr
+         O7DOG1nP9nf6nB8AqU9kS0eXYpqgDl31Z5xQdnZdXtyctlNUjA6TPOi4ukHr4/I/ANO3
+         yjpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692281008; x=1692885808;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iDdSkDnAa4EA45wBy/GLSEV+l5NgSMIiiSHWvRZ2KOA=;
+        b=Dh7e+71ZajHiVE5AOAHFKpq03X9sXRrwkiBrhU1EmqvMhgajW99IPceWuM42QGxHdT
+         +lmmg/OnYsjcy++kB6uKCU6nuiP/BRc9XAoGuKamPjcuyIQAbNxEqCM2iHsYIi+ND2XR
+         WFPtKJ+d9Qk2Ucl+YR8Fcw9la+SNReNVRz9B058vqcRITToo6u7j1mfb2/Z6BJgFGB9u
+         n7vn8wVSalNPdxHDK9uveHph+jk46c+E2PiKkplsY1Iw+hu10ZWgp9ZKtmL6V3bGNd4D
+         hD/FNQyK9bX1n8wIgSvLNunKQ0FfPYQ449N1jJqS1Xy+UBLngI3ZfD3UbDoZ3WVOYnHm
+         IUTQ==
+X-Gm-Message-State: AOJu0YwoCQL5WydNQyjXWjtX+z3VWPunBrIHFJiZ/ZBuSNKUBxVvy5Or
+        TvNBb8hL2sd23YGhuEe3xIhGERDy/ejErVYhJ24=
+X-Google-Smtp-Source: AGHT+IG7UCqtLK72meyZRcjb0NwX5VMnpVVHQ/PTZFMBfc6PLe2Wyn/oxfUWSQoy5ABuPKOFhNLqRg==
+X-Received: by 2002:a2e:874a:0:b0:2b6:c61c:745b with SMTP id q10-20020a2e874a000000b002b6c61c745bmr4379877ljj.3.1692281008117;
+        Thu, 17 Aug 2023 07:03:28 -0700 (PDT)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id g3-20020a2eb0c3000000b002b9c3e18095sm4064645ljl.14.2023.08.17.07.03.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 07:03:27 -0700 (PDT)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH v2 0/5] ASoC: Convert remaining Realtek codecs to GPIO
+ descriptors
+Date:   Thu, 17 Aug 2023 16:03:16 +0200
+Message-Id: <20230817-descriptors-asoc-rt-v2-0-02fa2ca3e5b0@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKQo3mQC/32NSw6CQBBEr0J6bZv5oCOuvIdhQYYGOjEM6SZEQ
+ +bujhzA5atUvdpBSZgU7tUOQhsrp7mAO1UQp24eCbkvDM44b242YE8ahZc1iWKnKaKs2EQTXOP
+ r3ocrlOUiNPD7sD7bwhNr6X+Ok83+0v++zaLB2tfDZbAhRKLHi+dO0jnJCG3O+QsQUAiFtwAAA
+ A==
+To:     Oder Chiou <oder_chiou@realtek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
-commit: 6ae930d9dbf2d093157be33428538c91966d8a9f pid: add pidfd_prepare()
-date:   5 months ago
-config: nios2-defconfig (https://download.01.org/0day-ci/archive/20230817/202308172133.Hs40Ti6o-lkp@intel.com/config)
-compiler: nios2-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230817/202308172133.Hs40Ti6o-lkp@intel.com/reproduce)
+After dropping unused headers a few Realtek devices
+actually using the GPIO descriptors remain.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308172133.Hs40Ti6o-lkp@intel.com/
+Converting them to use optional GPIO descriptors is
+pretty straight-forward.
 
-All warnings (new ones prefixed by >>):
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Changes in v2:
+- Rebased on asoc-6.6
+- Link to v1: https://lore.kernel.org/r/20230817-descriptors-asoc-rt-v1-0-434f5f177cee@linaro.org
 
-   kernel/fork.c:1261: warning: Function parameter or member 'mm' not described in 'set_mm_exe_file'
-   kernel/fork.c:1261: warning: Function parameter or member 'new_exe_file' not described in 'set_mm_exe_file'
-   kernel/fork.c:1298: warning: Function parameter or member 'mm' not described in 'replace_mm_exe_file'
-   kernel/fork.c:1298: warning: Function parameter or member 'new_exe_file' not described in 'replace_mm_exe_file'
-   kernel/fork.c:1350: warning: Function parameter or member 'mm' not described in 'get_mm_exe_file'
-   kernel/fork.c:1369: warning: Function parameter or member 'task' not described in 'get_task_exe_file'
-   kernel/fork.c:1393: warning: Function parameter or member 'task' not described in 'get_task_mm'
->> kernel/fork.c:1962: warning: bad line: 
->> kernel/fork.c:1983: warning: Function parameter or member 'ret' not described in '__pidfd_prepare'
->> kernel/fork.c:1983: warning: Excess function parameter 'pidfd' description in '__pidfd_prepare'
->> kernel/fork.c:2032: warning: Function parameter or member 'ret' not described in 'pidfd_prepare'
->> kernel/fork.c:2032: warning: Excess function parameter 'pidfd' description in 'pidfd_prepare'
-   kernel/fork.c:3048: warning: expecting prototype for clone3(). Prototype was for sys_clone3() instead
+---
+Linus Walleij (5):
+      ASoC: rt5640: Convert to just use GPIO descriptors
+      ASoC: rt5665: Convert to use GPIO descriptors
+      ASoC: rt5668: Convert to use GPIO descriptors
+      ASoC: rt5682: Convert to use GPIO descriptors
+      ASoC: rt5682s: Convert to use GPIO descriptors
 
+ include/sound/rt5665.h        |  2 --
+ include/sound/rt5668.h        |  3 ---
+ include/sound/rt5682.h        |  3 ---
+ include/sound/rt5682s.h       |  3 ---
+ sound/soc/codecs/rt5640.c     | 55 ++++++++++++-------------------------------
+ sound/soc/codecs/rt5640.h     |  2 +-
+ sound/soc/codecs/rt5665.c     | 17 +++++++------
+ sound/soc/codecs/rt5668.c     | 17 +++++++------
+ sound/soc/codecs/rt5682-i2c.c | 11 ++++-----
+ sound/soc/codecs/rt5682-sdw.c |  5 ++++
+ sound/soc/codecs/rt5682.c     | 20 ++++++++++++----
+ sound/soc/codecs/rt5682.h     |  3 +++
+ sound/soc/codecs/rt5682s.c    | 16 ++++++-------
+ sound/soc/codecs/rt5682s.h    |  2 ++
+ 14 files changed, 68 insertions(+), 91 deletions(-)
+---
+base-commit: 17b9f4387ebabb19b871bbe2d06562e48e4e7130
+change-id: 20230817-descriptors-asoc-rt-9c072934d376
 
-vim +1962 kernel/fork.c
-
-  1953	
-  1954	/**
-  1955	 * __pidfd_prepare - allocate a new pidfd_file and reserve a pidfd
-  1956	 * @pid:   the struct pid for which to create a pidfd
-  1957	 * @flags: flags of the new @pidfd
-  1958	 * @pidfd: the pidfd to return
-  1959	 *
-  1960	 * Allocate a new file that stashes @pid and reserve a new pidfd number in the
-  1961	 * caller's file descriptor table. The pidfd is reserved but not installed yet.
-> 1962	
-  1963	 * The helper doesn't perform checks on @pid which makes it useful for pidfds
-  1964	 * created via CLONE_PIDFD where @pid has no task attached when the pidfd and
-  1965	 * pidfd file are prepared.
-  1966	 *
-  1967	 * If this function returns successfully the caller is responsible to either
-  1968	 * call fd_install() passing the returned pidfd and pidfd file as arguments in
-  1969	 * order to install the pidfd into its file descriptor table or they must use
-  1970	 * put_unused_fd() and fput() on the returned pidfd and pidfd file
-  1971	 * respectively.
-  1972	 *
-  1973	 * This function is useful when a pidfd must already be reserved but there
-  1974	 * might still be points of failure afterwards and the caller wants to ensure
-  1975	 * that no pidfd is leaked into its file descriptor table.
-  1976	 *
-  1977	 * Return: On success, a reserved pidfd is returned from the function and a new
-  1978	 *         pidfd file is returned in the last argument to the function. On
-  1979	 *         error, a negative error code is returned from the function and the
-  1980	 *         last argument remains unchanged.
-  1981	 */
-  1982	static int __pidfd_prepare(struct pid *pid, unsigned int flags, struct file **ret)
-> 1983	{
-  1984		int pidfd;
-  1985		struct file *pidfd_file;
-  1986	
-  1987		if (flags & ~(O_NONBLOCK | O_RDWR | O_CLOEXEC))
-  1988			return -EINVAL;
-  1989	
-  1990		pidfd = get_unused_fd_flags(O_RDWR | O_CLOEXEC);
-  1991		if (pidfd < 0)
-  1992			return pidfd;
-  1993	
-  1994		pidfd_file = anon_inode_getfile("[pidfd]", &pidfd_fops, pid,
-  1995						flags | O_RDWR | O_CLOEXEC);
-  1996		if (IS_ERR(pidfd_file)) {
-  1997			put_unused_fd(pidfd);
-  1998			return PTR_ERR(pidfd_file);
-  1999		}
-  2000		get_pid(pid); /* held by pidfd_file now */
-  2001		*ret = pidfd_file;
-  2002		return pidfd;
-  2003	}
-  2004	
-  2005	/**
-  2006	 * pidfd_prepare - allocate a new pidfd_file and reserve a pidfd
-  2007	 * @pid:   the struct pid for which to create a pidfd
-  2008	 * @flags: flags of the new @pidfd
-  2009	 * @pidfd: the pidfd to return
-  2010	 *
-  2011	 * Allocate a new file that stashes @pid and reserve a new pidfd number in the
-  2012	 * caller's file descriptor table. The pidfd is reserved but not installed yet.
-  2013	 *
-  2014	 * The helper verifies that @pid is used as a thread group leader.
-  2015	 *
-  2016	 * If this function returns successfully the caller is responsible to either
-  2017	 * call fd_install() passing the returned pidfd and pidfd file as arguments in
-  2018	 * order to install the pidfd into its file descriptor table or they must use
-  2019	 * put_unused_fd() and fput() on the returned pidfd and pidfd file
-  2020	 * respectively.
-  2021	 *
-  2022	 * This function is useful when a pidfd must already be reserved but there
-  2023	 * might still be points of failure afterwards and the caller wants to ensure
-  2024	 * that no pidfd is leaked into its file descriptor table.
-  2025	 *
-  2026	 * Return: On success, a reserved pidfd is returned from the function and a new
-  2027	 *         pidfd file is returned in the last argument to the function. On
-  2028	 *         error, a negative error code is returned from the function and the
-  2029	 *         last argument remains unchanged.
-  2030	 */
-  2031	int pidfd_prepare(struct pid *pid, unsigned int flags, struct file **ret)
-> 2032	{
-  2033		if (!pid || !pid_has_task(pid, PIDTYPE_TGID))
-  2034			return -EINVAL;
-  2035	
-  2036		return __pidfd_prepare(pid, flags, ret);
-  2037	}
-  2038	
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Linus Walleij <linus.walleij@linaro.org>
+
