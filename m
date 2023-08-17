@@ -2,64 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF99D77F37B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E7577F382
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349676AbjHQJeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 05:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57262 "EHLO
+        id S1349722AbjHQJfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 05:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349709AbjHQJdj (ORCPT
+        with ESMTP id S1349781AbjHQJem (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 05:33:39 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DE410E9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 02:33:38 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37H9X7lX034365;
-        Thu, 17 Aug 2023 04:33:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1692264787;
-        bh=d2bi7xNYpv55A4isbPGmzxy/NzcyeROLai+rcJ2ZKQU=;
-        h=From:To:CC:Subject:Date;
-        b=gsir96fWlC7tKz09rwUFsctiJKcq+OXRF6eckgPOlyIn4sxwHt1ptHGwWEczLvmGR
-         8ajcu98YP/s5LI637inxJ0RAvWZCOA56u1vnS5C3DvUCpLLI+NqILDgI9TsnvhAN96
-         KHgc2pYmT3kVvyj/xi6YkrSXj6oXUhstiOrJ7at4=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37H9X71I047196
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Aug 2023 04:33:07 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 17
- Aug 2023 04:33:07 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 17 Aug 2023 04:33:07 -0500
-Received: from LT5CG31242FY.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37H9X0gY101760;
-        Thu, 17 Aug 2023 04:33:01 -0500
-From:   Shenghao Ding <shenghao-ding@ti.com>
-To:     <broonie@kernel.org>, <robh+dt@kernel.org>, <lgirdwood@gmail.com>,
-        <perex@perex.cz>, <pierre-louis.bossart@linux.intel.com>
-CC:     <kevin-lu@ti.com>, <13916275206@139.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <liam.r.girdwood@intel.com>, <mengdong.lin@intel.com>,
-        <baojun.xu@ti.com>, <thomas.gfeller@q-drop.com>, <peeyush@ti.com>,
-        <navada@ti.com>, <tiwai@suse.de>, <gentuser@gmail.com>,
-        Shenghao Ding <shenghao-ding@ti.com>
-Subject: [PATCH v1] ASoC: tas2781: fixed register access error when switching to other chips
-Date:   Thu, 17 Aug 2023 17:32:56 +0800
-Message-ID: <20230817093257.951-1-shenghao-ding@ti.com>
-X-Mailer: git-send-email 2.33.0.windows.2
+        Thu, 17 Aug 2023 05:34:42 -0400
+Received: from smtp-relay-canonical-1.canonical.com (smtp-relay-canonical-1.canonical.com [185.125.188.121])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD19435A8;
+        Thu, 17 Aug 2023 02:34:09 -0700 (PDT)
+Received: from localhost.localdomain (unknown [10.101.196.174])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 245853FE17;
+        Thu, 17 Aug 2023 09:34:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1692264848;
+        bh=Ksqpp/XvRCKKjK7S7YJcjvhjgnscGVeofJ7gCfAd86Q=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
+        b=rt8GZZyCn3AngVpK1jkE0NLRSd0BNDiyMLXEd1kibZa5tnMB0Z9EwbbJuXNHYpcnI
+         Pkkm3h3Qnv4GRs2rt+5cBig1cKUdyAloJ7SiUfgnV6jq3B3fGI7zEbW7MOxs4Ou+i2
+         2pVap5Tx+Y0AfFeyxhplQugu0d30xcd17Lrrs5DwYW4WD7ZdlwE7ObKh3zLKGFUdVJ
+         XuH/f6FpxlG3To1H4aOLVcvP3H8BgSLTdye0bP1N52AFhovan65QFgEKxfxCIbpVP7
+         9l2S7D6lQxkuFIFgo9nnXkvaDz0Ft530CJWNONdvzLUjBFDbELP8zQpUtMa+JGUi+I
+         FDPKXlVVmIZow==
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     mathias.nyman@intel.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] xhci: Disable connect, disconnect and over-current wakeup on system suspend
+Date:   Thu, 17 Aug 2023 17:33:05 +0800
+Message-Id: <20230817093305.212821-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,49 +52,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fixed register access error when switching to other tas2781 -- refresh the page
-inside regmap on the switched tas2781
+HP ProOne 440 G10 AIO sometimes cannot suspend as xHCI wakes up the
+system:
+[  445.814574] hub 2-0:1.0: hub_suspend
+[  445.814652] usb usb2: bus suspend, wakeup 0
+[  445.824629] xhci_hcd 0000:00:14.0: Port change event, 1-11, id 11, portsc: 0x202a0
+[  445.824639] xhci_hcd 0000:00:14.0: resume root hub
+[  445.824651] xhci_hcd 0000:00:14.0: handle_port_status: starting usb1 port polling.
+[  445.844039] xhci_hcd 0000:00:14.0: PM: pci_pm_suspend(): hcd_pci_suspend+0x0/0x20 returns -16
+[  445.844058] xhci_hcd 0000:00:14.0: PM: dpm_run_callback(): pci_pm_suspend+0x0/0x1c0 returns -16
+[  445.844072] xhci_hcd 0000:00:14.0: PM: failed to suspend async: error -16
+[  446.276101] PM: Some devices failed to suspend, or early wake event detected
 
-Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
+The system is designed to let display and touchpanel share the same
+power source, so when the display becomes off, the USB touchpanel also
+lost its power and disconnect itself from USB bus. That doesn't play
+well when most Desktop Environment lock and turnoff the display right
+before entering system suspend.
 
+So for system-wide suspend, also disable connect, disconnect and
+over-current wakeup to prevent spurious wakeup.
+
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 ---
-Changes in v1:
- - fixed register access error when switching to other tas2781
----
- sound/soc/codecs/tas2781-comlib.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ drivers/usb/host/xhci.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tas2781-comlib.c b/sound/soc/codecs/tas2781-comlib.c
-index a88c6c28a394..ffb26e4a7e2f 100644
---- a/sound/soc/codecs/tas2781-comlib.c
-+++ b/sound/soc/codecs/tas2781-comlib.c
-@@ -57,16 +57,17 @@ static int tasdevice_change_chn_book(struct tasdevice_priv *tas_priv,
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index fae994f679d4..dc499100efa6 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -16,6 +16,7 @@
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/slab.h>
++#include <linux/suspend.h>
+ #include <linux/dmi.h>
+ #include <linux/dma-mapping.h>
  
- 		if (client->addr != tasdev->dev_addr) {
- 			client->addr = tasdev->dev_addr;
--			if (tasdev->cur_book == book) {
--				ret = regmap_write(map,
--					TASDEVICE_PAGE_SELECT, 0);
--				if (ret < 0) {
--					dev_err(tas_priv->dev, "%s, E=%d\n",
--						__func__, ret);
--					goto out;
--				}
-+			/* All tas2781s share the same regmap, clear the page
-+			 * inside regmap once switching to another tas2781.
-+			 * Register 0 at any pages and any books inside tas2781
-+			 * is the same one for page-switching.
-+			 */
-+			ret = regmap_write(map, TASDEVICE_PAGE_SELECT, 0);
-+			if (ret < 0) {
-+				dev_err(tas_priv->dev, "%s, E=%d\n",
-+					__func__, ret);
-+				goto out;
- 			}
--			goto out;
- 		}
+@@ -789,7 +790,7 @@ static void xhci_disable_hub_port_wake(struct xhci_hcd *xhci,
+ 		t2 = t1;
  
- 		if (tasdev->cur_book != book) {
+ 		/* clear wake bits if do_wake is not set */
+-		if (!do_wakeup)
++		if (!do_wakeup || pm_suspend_target_state != PM_SUSPEND_ON)
+ 			t2 &= ~PORT_WAKE_BITS;
+ 
+ 		/* Don't touch csc bit if connected or connect change is set */
 -- 
 2.34.1
 
