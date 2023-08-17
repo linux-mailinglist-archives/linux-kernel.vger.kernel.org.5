@@ -2,116 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D32C477F68E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05CA677F695
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350880AbjHQMlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 08:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57942 "EHLO
+        id S1350904AbjHQMm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 08:42:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350950AbjHQMlN (ORCPT
+        with ESMTP id S1350841AbjHQMm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 08:41:13 -0400
-Received: from pegase1.c-s.fr (unknown [90.115.179.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 146BD2D57
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:41:11 -0700 (PDT)
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4RRPkZ5mf0zB0Dj;
-        Thu, 17 Aug 2023 14:41:10 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id BrqFF1onq0FT; Thu, 17 Aug 2023 14:41:10 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4RRPkZ545czB0Dh;
-        Thu, 17 Aug 2023 14:41:10 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AAB078B76C;
-        Thu, 17 Aug 2023 14:41:10 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Eq6yuMxd45fu; Thu, 17 Aug 2023 14:41:10 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.19.54.59])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6D9318B763;
-        Thu, 17 Aug 2023 14:41:10 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37HCf5ex341833
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 17 Aug 2023 14:41:06 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37HCewk9341785;
-        Thu, 17 Aug 2023 14:40:58 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] powerpc/4xx: Remove WatchdogHandler() to fix no previous prototype error
-Date:   Thu, 17 Aug 2023 14:40:49 +0200
-Message-ID: <38fe1078eb403eef74dc8f29387636fd7ecdf43c.1692276041.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.41.0
+        Thu, 17 Aug 2023 08:42:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF3562D57;
+        Thu, 17 Aug 2023 05:42:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692276149; x=1723812149;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=rnvQB8vVYEWmrqyik5H2iI+pxyd4YqSM4HtPDho3t3M=;
+  b=HBBJSyVZ2C8OmKI16GxEoneJRJiLVxLDrBe7cBPIIkd4DZlRSA16a3By
+   3C3TqabwtZOgBNBWhR5wjZB2CWHZnDDvrIBLEUiP+FbT/fHYwbCIaW8mm
+   GTXCMxWF5rknIZ3zKndI8Qrzok9540eGvws6V541ogLGUfZC77fPXDlOH
+   XCI+3y+7ohqZR6f/WJCrYzqqQp2kyNuq9JZ7MLP3dwJJbShxcubrdthZh
+   ZlmdXIc9fNADwcHw/ADXorKf7GEjwNWAAgwaDp8IoluZTsOfto3pf1Vmz
+   CTqnhbGXIZFESktPVQpf0dMYqGgB7/aFeYtwmFiJOFxQr73M5FdoeOVU2
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="436702380"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="436702380"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 05:42:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="764063865"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="764063865"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga008.jf.intel.com with ESMTP; 17 Aug 2023 05:42:23 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qWcKS-00Bpg4-3D;
+        Thu, 17 Aug 2023 15:42:21 +0300
+Date:   Thu, 17 Aug 2023 15:42:20 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Marcus Folkesson <marcus.folkesson@gmail.com>
+Cc:     Kent Gustavsson <kent@minoris.se>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Cosmin Tanislav <demonsingur@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Ramona Bolboaca <ramona.bolboaca@analog.com>,
+        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        William Breathitt Gray <william.gray@linaro.org>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v6 1/6] dt-bindings: iio: adc: mcp3911: add support for
+ the whole MCP39xx family
+Message-ID: <ZN4VrLPKhQIVLxfP@smile.fi.intel.com>
+References: <20230817120518.153728-1-marcus.folkesson@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692276048; l=1640; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=5kK2Dl0k8Xw2FyK341U1RAupnW9TvgkTjcKiODL2xsI=; b=by8p5DxFQyHNeEjouMXOq7FuvXamAsmx5k0MG2yPYGtIgBauSwMPvAc9B+lzGHw0/DGy79EST oFbDiJcZew4A9E2rb6DnJiKLbMSzHBV4AMWKcHQh2zw7wKK/cN7hma7
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_FAIL,SPF_HELO_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230817120518.153728-1-marcus.folkesson@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Building ppc40x_defconfig throws the following error:
+On Thu, Aug 17, 2023 at 02:05:13PM +0200, Marcus Folkesson wrote:
+> Microchip does have many similar chips, add those to the compatible
+> string as the driver support is extended.
 
-  CC      arch/powerpc/kernel/traps.o
-arch/powerpc/kernel/traps.c:2232:29: warning: no previous prototype for 'WatchdogHandler' [-Wmissing-prototypes]
- 2232 | void __attribute__ ((weak)) WatchdogHandler(struct pt_regs *regs)
-      |                             ^~~~~~~~~~~~~~~
+With properly formed cover letter (and using --base) a maintainer may safe
+their time by utilizing some features of `b4`. I.e. the
 
-This function was imported by commit 14cf11af6cf6 ("powerpc: Merge
-enough to start building in arch/powerpc.") as a weak function but
-never defined and/or called outside traps.c
+	b4 -slt -M ...
 
-As it has only one caller fold it inside its caller and remove it.
+will treat the series as a PR with summary in cover letter taking into merge
+commit. This is really cool feature and from now on I will require people to
+submit the series with mandatory cover-letter and --base in use.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Arnd Bergmann <arnd@arndb.de>
----
- arch/powerpc/kernel/traps.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+BUT. I'm not the maintainer here, so up to Jonathan to decide.
 
-diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-index f5ce282dc4b8..eeff136b83d9 100644
---- a/arch/powerpc/kernel/traps.c
-+++ b/arch/powerpc/kernel/traps.c
-@@ -2225,21 +2225,10 @@ void __noreturn unrecoverable_exception(struct pt_regs *regs)
- }
- 
- #if defined(CONFIG_BOOKE_WDT) || defined(CONFIG_40x)
--/*
-- * Default handler for a Watchdog exception,
-- * spins until a reboot occurs
-- */
--void __attribute__ ((weak)) WatchdogHandler(struct pt_regs *regs)
--{
--	/* Generic WatchdogHandler, implement your own */
--	mtspr(SPRN_TCR, mfspr(SPRN_TCR)&(~TCR_WIE));
--	return;
--}
--
- DEFINE_INTERRUPT_HANDLER_NMI(WatchdogException)
- {
- 	printk (KERN_EMERG "PowerPC Book-E Watchdog Exception\n");
--	WatchdogHandler(regs);
-+	mtspr(SPRN_TCR, mfspr(SPRN_TCR) & ~TCR_WIE);
- 	return 0;
- }
- #endif
 -- 
-2.41.0
+With Best Regards,
+Andy Shevchenko
+
 
