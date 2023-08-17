@@ -2,110 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CED077FD33
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:48:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C454B77FD36
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354083AbjHQRr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 13:47:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38626 "EHLO
+        id S1354094AbjHQRtk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 17 Aug 2023 13:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354103AbjHQRrI (ORCPT
+        with ESMTP id S1354118AbjHQRtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 13:47:08 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AAF430F5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:47:07 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-563f8e8a53dso67272a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:47:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692294426; x=1692899226;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TJUEN3/MzB2Leff/dyiCqwmONnMWLUZ1CWSo2+nWXtI=;
-        b=sfQibF0xOiKOYawtTfuu+kZdEG97V60HlcJNSZQDL1LcqOjTBae5UEmGIBcIdfzOw0
-         0IQyP9VOV6Xj1r7oZyukZ85JM/ELoL+zjpla7FoUQUYaoTG/9xJp1TFf0IGpOYyJCr1X
-         remZvGHZ7JWTTRxiVbz+OjKRFlW0+jER1+ATKD4A8NbIgEWc+NAJEye99wDBtWLmOVDH
-         pfFF9vxB1frwdZRc7YCbP31eDyolle/hs543IyffdieuoZyCCZcgUaq30Bx2qsi/E8DA
-         N/L/24xiQBj71SqTMyilTB12hTqHtQYTX/86tQvHXeHmFpUTe5IjhIumOi7Dt2vm392H
-         wyiw==
+        Thu, 17 Aug 2023 13:49:21 -0400
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48999FD;
+        Thu, 17 Aug 2023 10:49:20 -0700 (PDT)
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-56d67c5e87cso16958eaf.0;
+        Thu, 17 Aug 2023 10:49:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692294426; x=1692899226;
+        d=1e100.net; s=20221208; t=1692294559; x=1692899359;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TJUEN3/MzB2Leff/dyiCqwmONnMWLUZ1CWSo2+nWXtI=;
-        b=HorIleU/1nxUD9tP+5B3M7dooFMtmRySEZ8+X/qe1OO/WVxxRkK4h63A4SgoeIMjbb
-         Rj4odWw1S/lZRPmLBOhxJb9k0sA/5iHVosvip9r6C7bri+S0oK+xIH5jia8iZ5ovQKH2
-         V5tcw0GXOQAd1aajcBFmh+K6aY+e1viOHSOKMfoTdaOCaHfifB9tuMXwvAQrjBnuopAc
-         0Pn0WyIt2roNOO0RssHsKpX/NWYCKfWmf4d/63fWtdWsBEbdpVp/McqmIHijoc7WZYlP
-         7oaMdZ8YuGNlUDSYrYb6iPeuWsuVDiKvw0q5fepc3rnh1g6xxFhyj9IrXXm87b77f0wl
-         KI/Q==
-X-Gm-Message-State: AOJu0Yx1Cil2+fI2BEGBEdAzxDcm8S9hjeEMRuzYtYcSdMiQAgT8UEwq
-        WiNei8GJ3MGceClvxXzIM1woDDgDGxJkG4Q+EP4=
-X-Google-Smtp-Source: AGHT+IHhoEkfZu+PvEzuaZxH9Qimc/cllC1ac7hKrtni4oIMC9XA4BdYVJPG66Or18T75ZkFpZzx36QmSyvKv3fzxhs=
-X-Received: by 2002:a17:90a:8c18:b0:26c:f769:829 with SMTP id
- a24-20020a17090a8c1800b0026cf7690829mr93202pjo.28.1692294426422; Thu, 17 Aug
- 2023 10:47:06 -0700 (PDT)
+        bh=O3kJKBjM8HeUH9yQyk9NqrnEPzqgaX/ykR5hFJ5dGi8=;
+        b=eYaudM3LeYeTw6tWb8Q/36A3har7HQ9RReySYEZ4DninScxJucsxBJ8xwzZPqJHTMj
+         LULpKkvVQLlAM12sEj0PCmdSjGgZNA2GpBDEt+f2mo4Vd9XIAgPgmo/SCmJv1/Cf0Qce
+         01WhEjq5mA6dyo48b1Si7jjnmD8CcXy+pF9RA6IGhDdhrpGz6IINjlowU9zE3V+McSTG
+         BymyemvviHIH0Tg8m8Q7CGvE0U5gpOkmRhfjsthJBXfwio8pxOvLE8SIlYVf4W4Z+b1t
+         LsNIBdAhM3gymFWa8i9N90/tDCFF4VhBpA3czMKRpHP6Gq8IWxc96D7zj9tyDJW9OzyC
+         9GxA==
+X-Gm-Message-State: AOJu0Yw92kAZoCJ6OyN7hzY523ARN0UPOfEGoTQ4BAEFt74gO+XEX2Pz
+        mmVBSj2sl1v0qy6J2o+2TAa6xdpHCVbEMo79f0A=
+X-Google-Smtp-Source: AGHT+IHQAj18DF5FMKJCfqRgpf97T7Vbzi6PVutl3QcQI8lJuQ6AEmA6vxmsO8gwukYaA8PvCYSRlWNSVlkkXyYCgKI=
+X-Received: by 2002:a4a:d581:0:b0:56e:487f:8caa with SMTP id
+ z1-20020a4ad581000000b0056e487f8caamr455288oos.1.1692294558381; Thu, 17 Aug
+ 2023 10:49:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230812210053.2325091-1-zokeefe@google.com> <PUZP153MB06358FF02518EF3B279F5DD4BE16A@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
- <CAAa6QmSrwe2m4MjS9mGO+DeGNGSv=B2uZ72EAxnZk2jsDh39rQ@mail.gmail.com>
- <ZNp7JDaPhT3Se4de@casper.infradead.org> <CAAa6QmSN4NhaDL0DQsRd-F8HTnCCjq1ULRNk88LAA9gVbDXE4g@mail.gmail.com>
- <ZNrh6w9ICu4rMrhV@casper.infradead.org> <PUZP153MB063529C4869A7A666C275B23BE15A@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
- <CAAa6QmRrnRHEEQMMYe20GLXj7g+LVVHVRAKUdSLy=jUW=khb2A@mail.gmail.com>
-In-Reply-To: <CAAa6QmRrnRHEEQMMYe20GLXj7g+LVVHVRAKUdSLy=jUW=khb2A@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 17 Aug 2023 10:46:54 -0700
-Message-ID: <CAHbLzko_xLiqkNgjA7DhVFBSW6qJdAwgfk557YKV+ZpwS2x16w@mail.gmail.com>
-Subject: Re: [EXTERNAL] [PATCH] mm/thp: fix "mm: thp: kill __transhuge_page_enabled()"
-To:     "Zach O'Keefe" <zokeefe@google.com>
-Cc:     Saurabh Singh Sengar <ssengar@microsoft.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20230807154834.888328-1-quic_poza@quicinc.com>
+In-Reply-To: <20230807154834.888328-1-quic_poza@quicinc.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 17 Aug 2023 19:49:07 +0200
+Message-ID: <CAJZ5v0h_m_kzJfatUeDxwhECHJQH0H7S37aqBQannDFj2ptKEw@mail.gmail.com>
+Subject: Re: [PATCH v2] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast timer
+To:     Oza Pawandeep <quic_poza@quicinc.com>
+Cc:     sudeep.holla@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        rafael@kernel.org, lenb@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, jiles@qti.qualcomm.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 2:48=E2=80=AFPM Zach O'Keefe <zokeefe@google.com> w=
-rote:
+On Mon, Aug 7, 2023 at 5:48 PM Oza Pawandeep <quic_poza@quicinc.com> wrote:
 >
-> > We have a out of tree driver that maps huge pages through a file handle=
- and
-> > relies on -> huge_fault. It used to work in 5.19 kernels but 6.1 change=
-d this
-> > behaviour.
-> >
-> > I don=E2=80=99t think reverting the earlier behaviour of fault_path for=
- huge pages should
-> > impact kernel negatively.
-> >
-> > Do you think we can restore this earlier behaviour of kernel to allow p=
-age fault
-> > for huge pages via ->huge_fault.
+> Arm® Functional Fixed Hardware Specification defines LPI states, which provide
+> an architectural context loss flags field that can be used to describe the
+> context that might be lost when an LPI state is entered.
 >
-> That seems reasonable to me. I think using the existence of a
-> ->huge_fault() handler as a predicate to return "true" makes sense to
-> me. The "normal" flow for file-backed memory along fault path still
-> needs to return "false", so that we correctly fallback to ->fault()
-> handler. Unless there are objections, I can do that in a v2.
+> - Core context Lost
+>         - General purpose registers.
+>         - Floating point and SIMD registers.
+>         - System registers, include the System register based
+>         - generic timer for the core.
+>         - Debug register in the core power domain.
+>         - PMU registers in the core power domain.
+>         - Trace register in the core power domain.
+> - Trace context loss
+> - GICR
+> - GICD
+>
+> Qualcomm's custom CPUs preserves the architectural state,
+> including keeping the power domain for local timers active.
+> when core is power gated, the local timers are sufficient to
+> wake the core up without needing broadcast timer.
+>
+> The patch fixes the evaluation of cpuidle arch_flags, and moves only to
+> broadcast timer if core context lost is defined in ACPI LPI.
+>
+> Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
+>
+> diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+> index bd68e1b7f29f..5493b044864f 100644
+> --- a/arch/arm64/include/asm/acpi.h
+> +++ b/arch/arm64/include/asm/acpi.h
+> @@ -9,6 +9,7 @@
+>  #ifndef _ASM_ACPI_H
+>  #define _ASM_ACPI_H
+>
+> +#include <linux/cpuidle.h>
+>  #include <linux/efi.h>
+>  #include <linux/memblock.h>
+>  #include <linux/psci.h>
+> @@ -42,6 +43,27 @@
+>  #define ACPI_MADT_GICC_SPE  (offsetof(struct acpi_madt_generic_interrupt, \
+>         spe_interrupt) + sizeof(u16))
+>
+> +/*
+> + * Arm® Functional Fixed Hardware Specification Version 1.2.
+> + * Table 2: Arm Architecture context loss flags
+> + */
+> +#define CPUIDLE_CORE_CTXT              BIT(0) /* Core context Lost */
+> +
+> +#ifndef arch_update_idle_state_flags
+> +static __always_inline void arch_update_idle_state_flags(u32 arch_flags,
+> +                                                       unsigned int *sflags)
+> +{
+> +  if (arch_flags & CPUIDLE_CORE_CTXT) {
+> +       *sflags |= CPUIDLE_FLAG_TIMER_STOP;
+> +  }
+> +}
+> +#define arch_update_idle_state_flags arch_update_idle_state_flags
+> +#endif
+> +
+> +#define CPUIDLE_TRACE_CTXT             BIT(1) /* Trace context loss */
+> +#define CPUIDLE_GICR_CTXT              BIT(2) /* GICR */
+> +#define CPUIDLE_GICD_CTXT              BIT(3) /* GICD */
+> +
+>  /* Basic configuration for ACPI */
+>  #ifdef CONFIG_ACPI
+>  pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
+> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+> index 9718d07cc2a2..420baec3465c 100644
+> --- a/drivers/acpi/processor_idle.c
+> +++ b/drivers/acpi/processor_idle.c
+> @@ -1221,8 +1221,7 @@ static int acpi_processor_setup_lpi_states(struct acpi_processor *pr)
+>                 strscpy(state->desc, lpi->desc, CPUIDLE_DESC_LEN);
+>                 state->exit_latency = lpi->wake_latency;
+>                 state->target_residency = lpi->min_residency;
+> -               if (lpi->arch_flags)
+> -                       state->flags |= CPUIDLE_FLAG_TIMER_STOP;
+> +               arch_update_idle_state_flags(lpi->arch_flags, &state->flags);
+>                 if (i != 0 && lpi->entry_method == ACPI_CSTATE_FFH)
+>                         state->flags |= CPUIDLE_FLAG_RCU_IDLE;
+>                 state->enter = acpi_idle_lpi_enter;
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index d584f94409e1..60f17c99465b 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -1471,6 +1471,15 @@ static inline int lpit_read_residency_count_address(u64 *address)
+>  }
+>  #endif
+>
+> +#ifndef arch_update_idle_state_flags
+> +static __always_inline void arch_update_idle_state_flags(u32 arch_flags,
+> +                                                       unsigned int *sflags)
+> +{
+> +
+> +}
+> +#define arch_update_idle_state_flags arch_update_idle_state_flags
+> +#endif
+> +
+>  #ifdef CONFIG_ACPI_PPTT
+>  int acpi_pptt_cpu_is_thread(unsigned int cpu);
+>  int find_acpi_cpu_topology(unsigned int cpu, int level);
+> --
 
-Sorry for chiming in late. I'm just back from vacation and trying to catch =
-up...
+If I'm to apply this, an ACK from the ARM people is requisite.
 
-IIUC the out-of-tree driver tries to allocate huge page and install
-PMD mapping via huge_fault() handler, but the cleanup of
-hugepage_vma_check() prevents this due to the check to
-VM_NO_KHUGEPAGED?
-
-So you would like to check whether a huge_fault() handler existed
-instead of vma_is_dax()?
+Thanks!
