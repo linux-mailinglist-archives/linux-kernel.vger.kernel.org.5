@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A3177F1D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A42BD77F1DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348779AbjHQIJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 04:09:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40408 "EHLO
+        id S1348806AbjHQIJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 04:09:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348752AbjHQIJG (ORCPT
+        with ESMTP id S1348754AbjHQIJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 04:09:06 -0400
+        Thu, 17 Aug 2023 04:09:07 -0400
 Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 20819210E
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:09:04 -0700 (PDT)
-X-AuditID: a67dfc5b-d85ff70000001748-d5-64ddd598af46
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C8D0BE48
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:09:06 -0700 (PDT)
+X-AuditID: a67dfc5b-d85ff70000001748-d9-64ddd5987e6f
 From:   Byungchul Park <byungchul@sk.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     kernel_team@skhynix.com, akpm@linux-foundation.org,
@@ -23,35 +23,35 @@ Cc:     kernel_team@skhynix.com, akpm@linux-foundation.org,
         mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
         david@redhat.com, peterz@infradead.org, luto@kernel.org,
         dave.hansen@linux.intel.com
-Subject: [RFC v2 5/6] mm, migrc: Add a sysctl knob to enable/disable MIGRC mechanism
-Date:   Thu, 17 Aug 2023 17:05:58 +0900
-Message-Id: <20230817080559.43200-6-byungchul@sk.com>
+Subject: [RFC v2 6/6] mm, migrc: Implement internal allocator to minimize impact onto vm
+Date:   Thu, 17 Aug 2023 17:05:59 +0900
+Message-Id: <20230817080559.43200-7-byungchul@sk.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230817080559.43200-1-byungchul@sk.com>
 References: <20230817080559.43200-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrFLMWRmVeSWpSXmKPExsXC9ZZnke6Mq3dTDNrmGVnMWb+GzeLFhnZG
-        i6/rfzFbPP3Ux2JxedccNot7a/6zWpzftZbVYsfSfUwW13c9ZLQ43nuAyeL3D6DsnClWFidn
-        TWZx4PVYsKnUY/MKLY/Fe14yeWxa1cnmsenTJHaPEzN+s3jsfGjpMe9koMf7fVfZPLb+svP4
-        vEnO4938t2wBPFFcNimpOZllqUX6dglcGXf/GRccEKrYMmEvcwPje74uRk4OCQETieN35zHB
-        2Ldm7mMDsdkE1CVu3PjJDGKLCJhJHGz9w97FyMXBLLCMSeLugXOsIAlhgRCJnw9awGwWAVWJ
-        J93XwWxeAVOJ35sbmCGGykus3nAAyObg4AQatPmvKkhYCKjkw951rCAzJQTOsElcnvKQHaJe
-        UuLgihssExh5FzAyrGIUyswry03MzDHRy6jMy6zQS87P3cQIDOFltX+idzB+uhB8iFGAg1GJ
-        h9dh150UIdbEsuLK3EOMEhzMSiK8Pby3UoR4UxIrq1KL8uOLSnNSiw8xSnOwKInzGn0rTxES
-        SE8sSc1OTS1ILYLJMnFwSjUwztn16LDMdu7/Ycu1d3hUcljkZDFn+jWF3jJcNevB5GdSv2oK
-        lp1qjIpo+SffzJmQuj62+u5O+VfBfV2qc7bsitTfENnsPnV/Z27Lb4eLL9bcWno1XnXVoVCz
-        Ey5G25t6Kw+vmae4W1Dk8+qLqwwT+S+k7VPhT03aHLniSjfTky0PvgYYGGhkK7EUZyQaajEX
-        FScCADd7b45dAgAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrILMWRmVeSWpSXmKPExsXC5WfdrDvj6t0UgyN7NCzmrF/DZvFiQzuj
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrFLMWRmVeSWpSXmKPExsXC9ZZnoe6Mq3dTDA59MrOYs34Nm8WLDe2M
+        Fl/X/2K2ePqpj8Xi8q45bBb31vxntTi/ay2rxY6l+5gsru96yGhxvPcAk8XvH0DZOVOsLE7O
+        msziwOuxYFOpx+YVWh6L97xk8ti0qpPNY9OnSeweJ2b8ZvHY+dDSY97JQI/3+66yeWz9Zefx
+        eZOcx7v5b9kCeKK4bFJSczLLUov07RK4MrYflSq4zlXxd9Uc5gbG3xxdjJwcEgImEnvfHWeD
+        sVd/ec8OYrMJqEvcuPGTGcQWETCTONj6ByjOxcEssIxJ4u6Bc6wgCWGBCImmxyvAGlgEVCX2
+        b1/LBGLzCphKnL7fCDVUXmL1hgNAgzg4OIEGbf6rChIWAir5sHcdK8hMCYEzbBLXb06EqpeU
+        OLjiBssERt4FjAyrGIUy88pyEzNzTPQyKvMyK/SS83M3MQJDeFntn+gdjJ8uBB9iFOBgVOLh
+        ddh1J0WINbGsuDL3EKMEB7OSCG8P760UId6UxMqq1KL8+KLSnNTiQ4zSHCxK4rxG38pThATS
+        E0tSs1NTC1KLYLJMHJxSDYzupm8kOrLjuMpUnr29FH1W+Pk1NmG3N8vzCpWfpnxq6N4s+Xbz
+        65VWOhr1H58scXny6I0y05eL91YcXDKz5BzrHo7VzYcEqq84PEg7UvaAzUa/PXy21McvurcM
+        0u37FRNVN5xjuVDq8FzdiO/rSYP+C0kme5/M7I6Yc9Cj7FqXzcWAsquLIqKUWIozEg21mIuK
+        EwHEHSNIXQIAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrILMWRmVeSWpSXmKPExsXC5WfdrDvj6t0Ug62/dSzmrF/DZvFiQzuj
         xdf1v5gtnn7qY7E4PPckq8XlXXPYLO6t+c9qcX7XWlaLHUv3MVlc3/WQ0eJ47wEmi98/gLJz
         plhZnJw1mcWBz2PBplKPzSu0PBbvecnksWlVJ5vHpk+T2D1OzPjN4rHzoaXHvJOBHu/3XWXz
-        WPziA5PH1l92Hp83yXm8m/+WLYA3issmJTUnsyy1SN8ugSvj7j/jggNCFVsm7GVuYHzP18XI
-        ySEhYCJxa+Y+NhCbTUBd4saNn8wgtoiAmcTB1j/sXYxcHMwCy5gk7h44xwqSEBYIkfj5oAXM
-        ZhFQlXjSfR3M5hUwlfi9uYEZYqi8xOoNB4BsDg5OoEGb/6qChIWASj7sXcc6gZFrASPDKkaR
-        zLyy3MTMHFO94uyMyrzMCr3k/NxNjMCAXFb7Z+IOxi+X3Q8xCnAwKvHwOuy6kyLEmlhWXJl7
-        iFGCg1lJhLeH91aKEG9KYmVValF+fFFpTmrxIUZpDhYlcV6v8NQEIYH0xJLU7NTUgtQimCwT
-        B6dUA2P3ZhuRjPWfy9UDL9z26D014an2cSOOpjOvI+OntWtMrQ+p2SNpWPVj2QsVLiutoiXX
-        qjN3Ws1XdrSZJ3J4XdK6yXb2ZReTAuYZTZC5uetgx6lJb+9tT352WbFr53kbN+6wxQrll3s3
-        a7MJVh1adddld+L01eIGKb61jSeeFpRGPJjxOOjbRSYlluKMREMt5qLiRAD0GJvFRAIAAA==
+        WPziA5PH1l92Hp83yXm8m/+WLYA3issmJTUnsyy1SN8ugStj+1GpgutcFX9XzWFuYPzN0cXI
+        ySEhYCKx+st7dhCbTUBd4saNn8wgtoiAmcTB1j9AcS4OZoFlTBJ3D5xjBUkIC0RIND1eAdbA
+        IqAqsX/7WiYQm1fAVOL0/UY2iKHyEqs3HAAaxMHBCTRo819VkLAQUMmHvetYJzByLWBkWMUo
+        kplXlpuYmWOqV5ydUZmXWaGXnJ+7iREYkMtq/0zcwfjlsvshRgEORiUeXoddd1KEWBPLiitz
+        DzFKcDArifD28N5KEeJNSaysSi3Kjy8qzUktPsQozcGiJM7rFZ6aICSQnliSmp2aWpBaBJNl
+        4uCUamAsajd6ekX0lL9J4j9+H/FX/ZcnJKy/1HbN4d/ZqQ/UJy1MUEuccv7a5ylv7yyK2Tmd
+        nZk1y4bnwPePp5/OnvjT7xdXNZeLzYxHSqdWxdj6sTpqRTvs7jSyXbTnqbvq4plH77+PPdU+
+        3eigzrK5wZytF9vPnpJ4zu9ysdN4S55o6m5eyw8THhzMU2Ipzkg01GIuKk4EAC4YsvFEAgAA
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -62,86 +62,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a sysctl knob, '/proc/sys/vm/migrc_enable' to switch on/off migrc.
+(Not sure if this patch works meaningfully. Ignore if not.)
 
 Signed-off-by: Byungchul Park <byungchul@sk.com>
 ---
- mm/migrate.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 46 insertions(+), 2 deletions(-)
+ mm/migrate.c | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
 diff --git a/mm/migrate.c b/mm/migrate.c
-index badef3d89c6c..c57536a0b2a6 100644
+index c57536a0b2a6..6b5113d5a1e2 100644
 --- a/mm/migrate.c
 +++ b/mm/migrate.c
-@@ -59,6 +59,48 @@
- #include "internal.h"
+@@ -122,14 +122,33 @@ enum {
+ 	MIGRC_DST_PENDING,
+ };
  
- #ifdef CONFIG_MIGRC
-+static int sysctl_migrc_enable = 1;
-+#ifdef CONFIG_SYSCTL
-+static int sysctl_migrc_enable_handler(struct ctl_table *table, int write,
-+		void *buffer, size_t *lenp, loff_t *ppos)
-+{
-+	struct ctl_table t;
-+	int err;
-+	int enabled = sysctl_migrc_enable;
++#define MAX_MIGRC_REQ_NR	4096
++static struct migrc_req migrc_req_pool_static[MAX_MIGRC_REQ_NR];
++static atomic_t migrc_req_pool_idx = ATOMIC_INIT(-1);
++static LLIST_HEAD(migrc_req_pool_llist);
++static DEFINE_SPINLOCK(migrc_req_pool_lock);
 +
-+	if (write && !capable(CAP_SYS_ADMIN))
-+		return -EPERM;
+ static struct migrc_req *alloc_migrc_req(void)
+ {
+-	return kmalloc(sizeof(struct migrc_req), GFP_KERNEL);
++	int idx = atomic_read(&migrc_req_pool_idx);
++	struct llist_node *n;
 +
-+	t = *table;
-+	t.data = &enabled;
-+	err = proc_dointvec_minmax(&t, write, buffer, lenp, ppos);
-+	if (err < 0)
-+		return err;
-+	if (write)
-+		sysctl_migrc_enable = enabled;
-+	return err;
-+}
++	if (idx < MAX_MIGRC_REQ_NR - 1) {
++		idx = atomic_inc_return(&migrc_req_pool_idx);
++		if (idx < MAX_MIGRC_REQ_NR)
++			return migrc_req_pool_static + idx;
++	}
 +
-+static struct ctl_table migrc_sysctls[] = {
-+	{
-+		.procname	= "migrc_enable",
-+		.data		= NULL, /* filled in by handler */
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= sysctl_migrc_enable_handler,
-+		.extra1         = SYSCTL_ZERO,
-+		.extra2         = SYSCTL_ONE,
-+	},
-+	{}
-+};
++	spin_lock(&migrc_req_pool_lock);
++	n = llist_del_first(&migrc_req_pool_llist);
++	spin_unlock(&migrc_req_pool_lock);
 +
-+static int __init migrc_sysctl_init(void)
-+{
-+	register_sysctl_init("vm", migrc_sysctls);
-+	return 0;
-+}
-+late_initcall(migrc_sysctl_init);
-+#endif
- 
- /*
-  * TODO: Yeah, it's a non-sense magic number. This simple value manages
-@@ -288,6 +330,7 @@ int migrc_pending_nr_in_zone(struct zone *z)
- 
++	return n ? llist_entry(n, struct migrc_req, llnode) : NULL;
  }
- #else
-+static const int sysctl_migrc_enable;
- static inline bool migrc_src_pending(struct folio *f) { return false; }
- static inline bool migrc_dst_pending(struct folio *f) { return false; }
- static inline bool migrc_is_full(int nid) { return true; }
-@@ -1878,8 +1921,9 @@ static int migrate_pages_batch(struct list_head *from, new_page_t get_new_page,
- 	VM_WARN_ON_ONCE(mode != MIGRATE_ASYNC &&
- 			!list_empty(from) && !list_is_singular(from));
  
--	migrc_cond1 = (reason == MR_DEMOTION && current_is_kswapd()) ||
--		      (reason == MR_NUMA_MISPLACED);
-+	migrc_cond1 = sysctl_migrc_enable &&
-+		      ((reason == MR_DEMOTION && current_is_kswapd()) ||
-+		      (reason == MR_NUMA_MISPLACED));
+ void free_migrc_req(struct migrc_req *req)
+ {
+-	kfree(req);
++	llist_add(&req->llnode, &migrc_req_pool_llist);
+ }
  
- 	if (migrc_cond1)
- 		migrc_req_start();
+ static bool migrc_is_full(int nid)
 -- 
 2.17.1
 
