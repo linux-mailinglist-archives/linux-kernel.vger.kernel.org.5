@@ -2,276 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CAA77FF05
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 22:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 641C177FF07
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 22:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354874AbjHQU1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 16:27:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34790 "EHLO
+        id S1354878AbjHQU3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 16:29:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354876AbjHQU12 (ORCPT
+        with ESMTP id S237299AbjHQU3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 16:27:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08AA4359C;
-        Thu, 17 Aug 2023 13:27:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8C34861FE9;
-        Thu, 17 Aug 2023 20:27:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24D46C433C7;
-        Thu, 17 Aug 2023 20:27:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692304046;
-        bh=N4h/9erYEL2Ffzymz/cqNbvkGlt3eZnqrWxrHYkGXe0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=V/yD1h9UVs+NgvwbDl9HTmfJNXJ6mEYoHl38aNkAl0Wmd1P5l4eHBPwJcnmS+O2O8
-         C6d/2foh0R60c+a1DyqSNvWmHJaocrtdsFQTzgklsQWoQMjicRqDklBwBhM0Vae0zz
-         J52YsohD5EWek9U52xN159Q0BOOj6GHz+4IOgGvzqxVuHyTH5Vb5eQcMfHidfoNL48
-         bE77SXR1pPDEusyZ/YFm10VUA39MH0YMBTgdzp38HYLcUqPQcyX1ia1YGKQ8GtDBO8
-         js9ppJExaiqkDX8lOkwmogzgCp0IfoWRr3tfB9IrE+n8+UdOm97t/yLhpxOt7eOfFR
-         Ah0CQPGo0M/6g==
-Received: (nullmailer pid 2180435 invoked by uid 1000);
-        Thu, 17 Aug 2023 20:27:22 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Loic Poulain <loic.poulain@linaro.org>,
-        Robert Foss <rfoss@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        linux-arm-msm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Subject: [PATCH v2] media: dt-bindings: Convert Omnivision OV7251 to DT schema
-Date:   Thu, 17 Aug 2023 15:27:13 -0500
-Message-Id: <20230817202713.2180195-1-robh@kernel.org>
-X-Mailer: git-send-email 2.40.1
+        Thu, 17 Aug 2023 16:29:18 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB082E52
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 13:29:17 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68866e64bceso129546b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 13:29:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692304157; x=1692908957;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UBC0kyACp6cZakr+/LVmBs8MHr/PelOvdSb/J30Xonc=;
+        b=D3BLvgRIzTueG23XC0/di+/pbRKmgOg9JH+UkYD5kCvW0hFBHl7MTDaUBOFP1+Hmim
+         Em2szVmnvj7xaNBUHKCmEdkGhdqhcaKTRDwaZlPA9FycY+p9OoI87eKnsS5usZ1T5r8c
+         rw6/n9HNCHlpT+2i2UO2k9c/G/pwFCqGcjN9Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692304157; x=1692908957;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UBC0kyACp6cZakr+/LVmBs8MHr/PelOvdSb/J30Xonc=;
+        b=bWBwP/pio0235OXqDRqBAQz/6zgF3ZDOXom/w+2fbUjAdViZRnDPdDkmCYtR3F7JQn
+         7xYRuFUMHEiFEO6tAwQCSHRZH5BHzxYwc7DhdbOY7s+my3Cyzaw7WnLzJj+Rqz6cgdYL
+         4+TElBxR/To9fNVa06lIFf9KEEB+wcVQGfT6JRHhRLNx/tA/GrXAxrjiMlnlPjcTWx5K
+         Foy7iCQ0gCisGdB+Rc9Inup5g4E0YZmLsq2UDV/KGU0XoxR4jJh8RNsy6gIfPR5BnbfH
+         6lk6BsKCsGq/PTwyPBQETHJv6y44LMM8ce0DW/bLAP4EAgoOjirT6g24scm+sKLxni56
+         WXSQ==
+X-Gm-Message-State: AOJu0YyQOlR7sgKBFj+1A0oby7B+MNpErGxlx7DYT2zEIivkVd64k6VV
+        oYfuoK9XFyOHWf/U3T4ZhY9+cg==
+X-Google-Smtp-Source: AGHT+IE7lenirKPXRZ81vsUg+uiz21E6QGGGQWt45oeRx5Z2P4xIkRjz8TrSA5QwtdIXR+cRojXk/Q==
+X-Received: by 2002:a05:6a00:24c6:b0:687:7b0a:fae4 with SMTP id d6-20020a056a0024c600b006877b0afae4mr860075pfv.0.1692304157183;
+        Thu, 17 Aug 2023 13:29:17 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id f8-20020a633808000000b0055c02b8688asm104792pga.20.2023.08.17.13.29.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 13:29:16 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Georgi Djakov <djakov@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>, linux-pm@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+Subject: [PATCH] interconnect: icc-clk: Annotate struct icc_clk_provider with __counted_by
+Date:   Thu, 17 Aug 2023 13:29:15 -0700
+Message-Id: <20230817202914.never.661-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1168; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=V/JCGKhhIUvYMZwINl/W0cWShIAE6EyAXc3VChYyI48=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBk3oMbZWS6f4Gn2UrbPx823jib67w4/eDfzQkNc
+ 8O/6ildBgOJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZN6DGwAKCRCJcvTf3G3A
+ Jmt3EACiQyI5QLyRqha/vGjQqFJOXqtFjcN9mt/F/ayeNCxUvPbrt8FYFRLgRht8uX0saNCudAk
+ ke+mW9O8NefD1xoVSvt1W08jN/v+63aZ0yIQUnp/CLb3BV6SO33EWj22w77Hx7i7GgxyDIiVLnH
+ f9KLTAfoQnloXyk5vfFecdmKewwa2wAXVirnkGqVvw5GexvknXAdVAdgw+znrGu+Sc481EbV+hF
+ 2OoqpBQ33YctAqJUVTeg4HfoJLyEWBHH918kk1Q12U2oYUcf5aFd0wmJZsLjUefjBV5SvAZFZiZ
+ Cw2/ymHRWHOmJ0YMxp91JuL2x16H+ozABgmMlG88q72KfSg9UH0VSYn1mSPNQ2YhShAnA25/Sxc
+ M61r3jF+BiE9QChOPFriiV050W8RsVNMpX3RBqR19jThspygD4bd3xUqXfxJ8mOHl4AP5ykeURf
+ Fxa/RuWNGUXfy/6hD/v41uXp9+1IKom3zooPuGdoDeEhJ54CvvHrnyWH1pke6NndkibWPDK97MY
+ zo/0iDbdKXMFSdebJDWjWiCwe2Eabu8dkEb0ASCTA+bZaQzGB7jCt9de4wq8tCHEU1xRyxf4Ga/
+ /L9fMyRP9Karpe1y0LXyjLHU728TNd7iLQYn7g2EeFNwNz9Y5pzQW8taQ1Re1R0Vj33476iGUwh
+ 2d9k7+i FKtaJuTQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the OmniVision OV7251 Image Sensor binding to DT schema format.
+Prepare for the coming implementation by GCC and Clang of the __counted_by
+attribute. Flexible array members annotated with __counted_by can have
+their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+functions).
 
-vddd-supply was listed as required, but the example and actual user
-don't have it. Also, the data brief says it has an internal regulator,
-so perhaps it is truly optional.
+As found with Coccinelle[1], add __counted_by for struct icc_clk_provider.
 
-Add missing common "link-frequencies" which is used and required by the
-Linux driver.
+[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-Signed-off-by: Rob Herring <robh@kernel.org>
+Cc: Georgi Djakov <djakov@kernel.org>
+Cc: linux-pm@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
-v2:
- - Add link-frequencies which the driver requires
----
- .../devicetree/bindings/i2c/qcom,i2c-cci.yaml |   1 +
- .../devicetree/bindings/media/i2c/ov7251.txt  |  52 ---------
- .../bindings/media/i2c/ovti,ov7251.yaml       | 109 ++++++++++++++++++
- 3 files changed, 110 insertions(+), 52 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/media/i2c/ov7251.txt
- create mode 100644 Documentation/devicetree/bindings/media/i2c/ovti,ov7251.yaml
+ drivers/interconnect/icc-clk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/i2c/qcom,i2c-cci.yaml b/Documentation/devicetree/bindings/i2c/qcom,i2c-cci.yaml
-index ec79b7270437..042d4dc636ee 100644
---- a/Documentation/devicetree/bindings/i2c/qcom,i2c-cci.yaml
-+++ b/Documentation/devicetree/bindings/i2c/qcom,i2c-cci.yaml
-@@ -269,6 +269,7 @@ examples:
-                 port {
-                     ov7251_ep: endpoint {
-                         data-lanes = <0 1>;
-+                        link-frequencies = /bits/ 64 <240000000 319200000>;
-                         remote-endpoint = <&csiphy3_ep>;
-                     };
-                 };
-diff --git a/Documentation/devicetree/bindings/media/i2c/ov7251.txt b/Documentation/devicetree/bindings/media/i2c/ov7251.txt
-deleted file mode 100644
-index 8281151f7493..000000000000
---- a/Documentation/devicetree/bindings/media/i2c/ov7251.txt
-+++ /dev/null
-@@ -1,52 +0,0 @@
--* Omnivision 1/7.5-Inch B&W VGA CMOS Digital Image Sensor
--
--The Omnivision OV7251 is a 1/7.5-Inch CMOS active pixel digital image sensor
--with an active array size of 640H x 480V. It is programmable through a serial
--I2C interface.
--
--Required Properties:
--- compatible: Value should be "ovti,ov7251".
--- clocks: Reference to the xclk clock.
--- clock-names: Should be "xclk".
--- clock-frequency: Frequency of the xclk clock.
--- enable-gpios: Chip enable GPIO. Polarity is GPIO_ACTIVE_HIGH. This corresponds
--  to the hardware pin XSHUTDOWN which is physically active low.
--- vdddo-supply: Chip digital IO regulator.
--- vdda-supply: Chip analog regulator.
--- vddd-supply: Chip digital core regulator.
--
--The device node shall contain one 'port' child node with a single 'endpoint'
--subnode for its digital output video port, in accordance with the video
--interface bindings defined in
--Documentation/devicetree/bindings/media/video-interfaces.txt.
--
--Example:
--
--	&i2c1 {
--		...
--
--		ov7251: camera-sensor@60 {
--			compatible = "ovti,ov7251";
--			reg = <0x60>;
--
--			enable-gpios = <&gpio1 6 GPIO_ACTIVE_HIGH>;
--			pinctrl-names = "default";
--			pinctrl-0 = <&camera_bw_default>;
--
--			clocks = <&clks 200>;
--			clock-names = "xclk";
--			clock-frequency = <24000000>;
--
--			vdddo-supply = <&camera_dovdd_1v8>;
--			vdda-supply = <&camera_avdd_2v8>;
--			vddd-supply = <&camera_dvdd_1v2>;
--
--			port {
--				ov7251_ep: endpoint {
--					clock-lanes = <1>;
--					data-lanes = <0>;
--					remote-endpoint = <&csi0_ep>;
--				};
--			};
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/media/i2c/ovti,ov7251.yaml b/Documentation/devicetree/bindings/media/i2c/ovti,ov7251.yaml
-new file mode 100644
-index 000000000000..2e5187acbbb8
---- /dev/null
-+++ b/Documentation/devicetree/bindings/media/i2c/ovti,ov7251.yaml
-@@ -0,0 +1,109 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/media/i2c/ovti,ov7251.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: OmniVision OV7251 Image Sensor
-+
-+description:
-+  The Omnivision OV7251 is a 1/7.5-Inch CMOS active pixel digital image sensor
-+  with an active array size of 640H x 480V. It is programmable through a serial
-+  I2C interface.
-+
-+maintainers:
-+  - Todor Tomov <todor.too@gmail.com>
-+
-+properties:
-+  compatible:
-+    const: ovti,ov7251
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    description: XCLK Input Clock
-+
-+  clock-names:
-+    const: xclk
-+
-+  clock-frequency:
-+    description: Frequency of the xclk clock in Hz.
-+
-+  vdda-supply:
-+    description: Analog voltage supply, 2.8 volts
-+
-+  vddd-supply:
-+    description: Digital core voltage supply, 1.2 volts
-+
-+  vdddo-supply:
-+    description: Digital I/O voltage supply, 1.8 volts
-+
-+  enable-gpios:
-+    maxItems: 1
-+    description:
-+      Reference to the GPIO connected to the XSHUTDOWN pin, if any. Polarity
-+      is GPIO_ACTIVE_HIGH.
-+
-+  port:
-+    description: Digital Output Port
-+    $ref: /schemas/graph.yaml#/$defs/port-base
-+    additionalProperties: false
-+
-+    properties:
-+      endpoint:
-+        $ref: /schemas/media/video-interfaces.yaml#
-+        unevaluatedProperties: false
-+
-+        properties:
-+          clock-lanes:
-+            maximum: 1
-+
-+          data-lanes:
-+            maxItems: 1
-+
-+          link-frequencies: true
-+
-+        required:
-+          - data-lanes
-+          - link-frequencies
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - vdddo-supply
-+  - vdda-supply
-+  - port
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        camera@3c {
-+            compatible = "ovti,ov7251";
-+            reg = <0x3c>;
-+            clocks = <&clks 1>;
-+            clock-frequency = <24000000>;
-+            vdddo-supply = <&ov7251_vdddo_1v8>;
-+            vdda-supply = <&ov7251_vdda_2v8>;
-+            vddd-supply = <&ov7251_vddd_1v5>;
-+            enable-gpios = <&gpio1 19 GPIO_ACTIVE_HIGH>;
-+
-+            port {
-+                ov7251_ep: endpoint {
-+                    remote-endpoint = <&csi0_ep>;
-+                    clock-lanes = <1>;
-+                    data-lanes = <0>;
-+                    link-frequencies = /bits/ 64 <240000000 319200000>;
-+                };
-+            };
-+        };
-+    };
-+...
+diff --git a/drivers/interconnect/icc-clk.c b/drivers/interconnect/icc-clk.c
+index 4d43ebff4257..d787f2ea36d9 100644
+--- a/drivers/interconnect/icc-clk.c
++++ b/drivers/interconnect/icc-clk.c
+@@ -16,7 +16,7 @@ struct icc_clk_node {
+ struct icc_clk_provider {
+ 	struct icc_provider provider;
+ 	int num_clocks;
+-	struct icc_clk_node clocks[];
++	struct icc_clk_node clocks[] __counted_by(num_clocks);
+ };
+ 
+ #define to_icc_clk_provider(_provider) \
 -- 
-2.40.1
+2.34.1
 
