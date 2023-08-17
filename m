@@ -2,191 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A02A77F62E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE10877F630
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350732AbjHQMOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 08:14:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58488 "EHLO
+        id S1350725AbjHQMP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 08:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350777AbjHQMOS (ORCPT
+        with ESMTP id S1350784AbjHQMPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 08:14:18 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF70C2112
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:14:16 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id a1e0cc1a2514c-79dbd1fb749so548412241.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:14:16 -0700 (PDT)
+        Thu, 17 Aug 2023 08:15:43 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BEB626AD
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:15:35 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58cf42a3313so17642767b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:15:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692274456; x=1692879256;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qp2jFPd5H/9xqBM8BS9hQEvHXOE5m+c15k9g0RAPmQs=;
-        b=109doTdOPGel7wMM6UfGY1JZDmid+V04laFQMn/GFnVUCoUblIfUQOfzouhVGqhbxf
-         hvq54yg4t87eKAAqpsRc4QBoGqOdZAK7uZ1ycGAH0zSWoN3giEYZeCIGYM8EkngSWJ7Z
-         cgNc4IOs4pbmYKtorA4A7wXgsuBjXcrq1GoIRUhoLymXUndtg/7Iqgfq0dKDQn8bhrFj
-         l18TaFm/DDVtHC6buL3k0c/H7xCT9kpsAW77aHhYtALrShXagkNAq/EZsyoLjVPioPes
-         pXqv1f7hORA3mLxbCL5CQOnu5CgzbqElz62y31rDiXokmz+xYwDlu1RvO3At9t8gY4rO
-         eagg==
+        d=google.com; s=20221208; t=1692274534; x=1692879334;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=fumC1u/vFnTZamX/AoMbevXmYqNleX6J0hBBPzcrTcg=;
+        b=J2ddzwNe+YM37+i6Mkr1j+ujsDSlCXtFvwrsMKyIUF06CrdcwLIQatdZ6N6HLkqyIz
+         HEQJw7EIEM458BEvi/u6Yc/Z/g7KoZMmjovITJ43Vk3yE2ZuHjP7x20CbcfriY+wX3+T
+         pKa7naYOBuzOmgdJZ+0bVms3iCopdOK1TY2HcfLZY6ezfg9msNQ+LwQ3cnM4PXK7Hmaj
+         1WR0Ih+ZMr2J4YKSckIlx5aTFv53IA4cFJhaJD1f0GO2KR/3ioPyvVZBsi6EL+ZGJ7Pp
+         Qyq+JnI/2ZxJivhxuyUAJtZmX2N8nuo4Qo3rSGWPpNYOq5Iwr1ydGXxHBvH7zYlja26o
+         qk9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692274456; x=1692879256;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qp2jFPd5H/9xqBM8BS9hQEvHXOE5m+c15k9g0RAPmQs=;
-        b=Fujo8CE4TaUkEwTUqIHvXKYIUL8u8SlMhrJveMjrx+oEZknAP2vKirhqMovEImrW1t
-         OlJ7jyckQN4GJboKixXKGvcYySVTGc5p6MrQLUAvsnXjtRMngJm6VlsRvm2WC8NJTeMJ
-         bgDwQ8gJuyLdS9S8PIpBrPF5o+gWmG8iNYFr3wiahvn4k8jWGl63Fe6xJZr0DV+rqh+z
-         C8GdxLrosU6rVXFUSUGTfFo54ajKhNPg8p4eekGTlUrJ9M1h+wyYxPCNptA2iSNNb4TY
-         bNtXxvnJ6UNvH2q07Tm+tC63zjykiY5D/XGrWS1iB28TeiMNidOyENmIGCOEd6LO63+k
-         pDTw==
-X-Gm-Message-State: AOJu0YxQgU0h3EAYRlj8GLznJc/QHLqj3Op3VnJzUOCeqs8NZp9XAM5R
-        WZDrKkammerDG5eBtWBwADvKIRR9zUs/XFFG9DGefg==
-X-Google-Smtp-Source: AGHT+IEM0kid+C1ABw0K4dQ5YTSG/4EfeBg6JureDmfYnzZJz/RpG5c4KTKXZLIN2joDPAl31cKupwmKfDz+BI+39gI=
-X-Received: by 2002:a05:6102:511e:b0:44b:f485:2727 with SMTP id
- bm30-20020a056102511e00b0044bf4852727mr2330114vsb.4.1692274455861; Thu, 17
- Aug 2023 05:14:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230815185650.152968-1-brgl@bgdev.pl> <ZN3wauUBENDd7aRU@smile.fi.intel.com>
-In-Reply-To: <ZN3wauUBENDd7aRU@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Thu, 17 Aug 2023 14:14:04 +0200
-Message-ID: <CAMRc=MdUWXZVnjkPqH2BZvDY0v-OOysQ=NMjwQEi1rt+16NEQQ@mail.gmail.com>
-Subject: Re: [PATCH v5] gpio: consumer: new virtual driver
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+        d=1e100.net; s=20221208; t=1692274534; x=1692879334;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fumC1u/vFnTZamX/AoMbevXmYqNleX6J0hBBPzcrTcg=;
+        b=KasBvGYiaXeCWbyznES2/nmi3RPFD3HJ41UOYpxzH2KVV5iZCVTRhYCNHEsBZzFmn8
+         Z48/SsMaQiHUOSX4K8ZjmLt0LBPhdeA2/yDjUmdnDgInQwl8fmxMBwu5CMRgAMkMzOGi
+         ynXu/hs+fKEKQBMIk4R4eBcAiFxpIJ5Ee9r/PTtwWxIbIDOb70o39A4rf5mS7E4uxq51
+         RKMX2mtKMXeCDwN3gCdaqBu7fB98YPSNGCFTYWgsCypV/mpLLWiAPKu0LJtEtR2cOcg7
+         aPW26LPtvjZrUXOtx/dovLmB1/3qO7G/4fsOPopp5RVaA+rARb+qYKOQmKX3P4MYNXIe
+         HY1g==
+X-Gm-Message-State: AOJu0YyNgX8RE+lGFTmK70i4/SnjELrnMSmSqyVLyQAfEUpilDO6qtjQ
+        4oENZLeIp0nU9rdtFlfuoB2JycT5hoo+tA==
+X-Google-Smtp-Source: AGHT+IFooHGYI9RZ6+SPXWTyqkDkXHybwlUQeGM5PHOMbZ/wv23qY4rUBjA1E5OOCBLV9MFkoF5gdHwI3YfOGw==
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a81:b70b:0:b0:56c:e0c5:de88 with SMTP id
+ v11-20020a81b70b000000b0056ce0c5de88mr60182ywh.1.1692274534365; Thu, 17 Aug
+ 2023 05:15:34 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 12:15:13 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
+Message-ID: <20230817121513.1382800-1-jackmanb@google.com>
+Subject: [PATCH RESEND] x86/entry: Don't write to CR3 when restoring to kernel CR3
+From:   Brendan Jackman <jackmanb@google.com>
+To:     luto@kernel.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, laijs@linux.alibaba.com,
+        yosryahmed@google.com, reijiw@google.com, oweisse@google.com,
+        Brendan Jackman <jackmanb@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 12:03=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Tue, Aug 15, 2023 at 08:56:50PM +0200, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > The GPIO subsystem has a serious problem with undefined behavior and
-> > use-after-free bugs on hot-unplug of GPIO chips. This can be considered=
- a
-> > corner-case by some as most GPIO controllers are enabled early in the
-> > boot process and live until the system goes down but most GPIO drivers
-> > do allow unbind over sysfs, many are loadable modules that can be (forc=
-e)
-> > unloaded and there are also GPIO devices that can be dynamically detach=
-ed,
-> > for instance CP2112 which is a USB GPIO expender.
-> >
-> > Bugs can be triggered both from user-space as well as by in-kernel user=
-s.
-> > We have the means of testing it from user-space via the character devic=
-e
-> > but the issues manifest themselves differently in the kernel.
-> >
-> > This is a proposition of adding a new virtual driver - a configurable
-> > GPIO consumer that can be configured over configfs (similarly to
-> > gpio-sim).
-> >
-> > The configfs interface allows users to create dynamic GPIO lookup table=
-s
-> > that are registered with the GPIO subsystem. Every config group
-> > represents a consumer device. Every sub-group represents a single GPIO
-> > lookup. The device can work in three modes: just keeping the line
-> > active, toggling it every second or requesting its interrupt and
-> > reporting edges. Every lookup allows to specify the key, offset and
-> > flags as per the lookup struct defined in linux/gpio/machine.h.
-> >
-> > The module together with gpio-sim allows to easily trigger kernel
-> > hot-unplug errors. A simple use-case is to create a simulated chip,
-> > setup the consumer to lookup one of its lines in 'monitor' mode, unbind
-> > the simulator, unbind the consumer and observe the fireworks in dmesg.
-> >
-> > This driver is aimed as a helper in tackling the hot-unplug problem in
-> > GPIO as well as basis for future regression testing once the fixes are
-> > upstream.
->
-> ...
->
-> > +     struct gpio_consumer_device *dev =3D lookup->parent;
-> > +
-> > +     guard(mutex)(&dev->lock);
-> > +
-> > +     return sprintf(page, "%s\n", lookup->key);
->
-> ...
->
-> > +static ssize_t
-> > +gpio_consumer_lookup_config_offset_show(struct config_item *item, char=
- *page)
-> > +{
-> > +     struct gpio_consumer_lookup *lookup =3D to_gpio_consumer_lookup(i=
-tem);
-> > +     struct gpio_consumer_device *dev =3D lookup->parent;
-> > +     unsigned int offset;
-> > +
-> > +     scoped_guard(mutex, &dev->lock)
-> > +             offset =3D lookup->offset;
-> > +
-> > +     return sprintf(page, "%d\n", offset);
->
-> Consistently it can be simplified same way
->
->         guard(mutex)(&dev->lock);
->
->         return sprintf(page, "%d\n", lookup->offset);
->
-> BUT. Thinking about this more. With guard() we put sprintf() inside the l=
-ock,
-> which is suboptimal from runtime point of view. So, I think now that all =
-these
-> should actually use scoped_guard() rather than guard().
->
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Precisely why I used a scoped guard here. Same elsewhere.
+Skip resuming KERNEL pages since it is already KERNEL CR3
 
-> > +}
->
-> ...
->
-> > +     guard(mutex)(&dev->lock);
-> > +
-> > +     return lookup->flags;
->
-> ...
->
-> > +static ssize_t
-> > +gpio_consumer_lookup_config_transitory_show(struct config_item *item,
-> > +                                         char *page)
-> > +{
->
-> > +     enum gpio_lookup_flags flags;
-> > +
-> > +     flags =3D gpio_consumer_lookup_get_flags(item);
->
-> This is perfectly one line < 80 characters.
->
-> > +     return sprintf(page, "%s\n", flags & GPIO_TRANSITORY ? "1" : "0")=
-;
-> > +}
->
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
+---
 
-There's nothing wrong with setting the variable on another line though.
+While staring at paranoid_exit I was confused about why we had this CR3
+write, avoiding it seems like a free optimisation. The original commit
+21e94459110252 ("x86/mm: Optimize RESTORE_CR3") says "Most NMI/paranoid
+exceptions will not in fact change pagetables" but I didn't't understand
+what the "most" was referring to. I then discovered this patch on the
+mailing list, Andy said[1] that it looks correct so maybe now is the
+time to merge it?
 
-Bart
+Note there's another patch in [1] as well, the benefit of that one is
+not obvious to me though.
 
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+We've tested an equivalent patch in our internal kernel.
+
+[1] https://lore.kernel.org/lkml/20200526043507.51977-3-laijs@linux.alibaba.com/
+-- >8 --
+ arch/x86/entry/calling.h | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
+
+diff --git a/arch/x86/entry/calling.h b/arch/x86/entry/calling.h
+index f6907627172b..b2458685d56e 100644
+--- a/arch/x86/entry/calling.h
++++ b/arch/x86/entry/calling.h
+@@ -236,14 +236,13 @@ For 32-bit we have the following conventions - kernel is built with
+ .macro RESTORE_CR3 scratch_reg:req save_reg:req
+ 	ALTERNATIVE "jmp .Lend_\@", "", X86_FEATURE_PTI
+ 
+-	ALTERNATIVE "jmp .Lwrcr3_\@", "", X86_FEATURE_PCID
+-
+ 	/*
+-	 * KERNEL pages can always resume with NOFLUSH as we do
+-	 * explicit flushes.
++	 * Skip resuming KERNEL pages since it is already KERNEL CR3.
+ 	 */
+ 	bt	$PTI_USER_PGTABLE_BIT, \save_reg
+-	jnc	.Lnoflush_\@
++	jnc	.Lend_\@
++
++	ALTERNATIVE "jmp .Lwrcr3_\@", "", X86_FEATURE_PCID
+ 
+ 	/*
+ 	 * Check if there's a pending flush for the user ASID we're
+@@ -261,10 +260,6 @@ For 32-bit we have the following conventions - kernel is built with
+ 	SET_NOFLUSH_BIT \save_reg
+ 
+ .Lwrcr3_\@:
+-	/*
+-	 * The CR3 write could be avoided when not changing its value,
+-	 * but would require a CR3 read *and* a scratch register.
+-	 */
+ 	movq	\save_reg, %cr3
+ .Lend_\@:
+ .endm
+-- 
+2.41.0.694.ge786442a9b-goog
+
