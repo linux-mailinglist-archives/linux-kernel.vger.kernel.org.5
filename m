@@ -2,77 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCA377FEAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 21:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E76177FEAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 21:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354726AbjHQTog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 15:44:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56872 "EHLO
+        id S1354736AbjHQTpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 15:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354751AbjHQToQ (ORCPT
+        with ESMTP id S1354728AbjHQToh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 15:44:16 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25245359D;
-        Thu, 17 Aug 2023 12:44:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=1ixeOe9GGtjbMNgtFir4oRPvY9H4IGw3hGrf3Yr2iv0=; b=UfL4DouLW2DM6tWq8gDQk4jGLZ
-        nU99k69t3veYApdn8lwpgxMMIvQef1sLF6kTxXhMPnFA/1RtLjtC5HgdaAgGlEGFpN+WXmDCNMBtg
-        qS+XgInJdafgVUEJMUTU8iMMJy2OMkX8ULZlZZNzgF1xZbZ1DNPlLIJf4dpMrRXTNeqk=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qWiuZ-004QKa-2n; Thu, 17 Aug 2023 21:44:03 +0200
-Date:   Thu, 17 Aug 2023 21:44:03 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     "Hawkins, Nick" <nick.hawkins@hpe.com>
-Cc:     "christophe.jaillet@wanadoo.fr" <christophe.jaillet@wanadoo.fr>,
-        "simon.horman@corigine.com" <simon.horman@corigine.com>,
-        "Verdun, Jean-Marie" <verdun@hpe.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 4/5] net: hpe: Add GXP UMAC Driver
-Message-ID: <e8b7a123-f542-4a22-b463-122970922535@lunn.ch>
-References: <20230816215220.114118-1-nick.hawkins@hpe.com>
- <20230816215220.114118-5-nick.hawkins@hpe.com>
- <01e96219-4f0c-4259-9398-bc2e6bc1794f@lunn.ch>
- <DM4PR84MB1927C6684845A9AEBD9F934F881AA@DM4PR84MB1927.NAMPRD84.PROD.OUTLOOK.COM>
+        Thu, 17 Aug 2023 15:44:37 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B7F359B
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 12:44:36 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bc7b25c699so1458315ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 12:44:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692301476; x=1692906276;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yOdpLYxoLdDmx+TSr95GHH7gDMjqei8L96nVIKirCWI=;
+        b=On9xusN8g7izznKyvse5ccEsSYnblSeWqRtkpxOK5gsVqQ5zms7D2DhmB5e51qjXqb
+         njjxN2GoUtGK//o3YuF4w9bZtAdG4CAaDmuvnwkvDLlVGqy1pID+HJSSidHDADrCEan9
+         woMrLYxmESn8f1AugKZGdsnAc+1pCOvmry1h4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692301476; x=1692906276;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yOdpLYxoLdDmx+TSr95GHH7gDMjqei8L96nVIKirCWI=;
+        b=bxAQ1fssL+7JScvHMHUPges3vQoMEQxB/qRGjjDHcCMAvPTP77bciHtUYlwdw+8ngb
+         Ic7TAnMojB8UJb22TlfDI5gEmYjosnYJYz17c0rjX30CO1YkREWnkF2Fl6WHdFcbkMa4
+         Lzm1myzrD7Dm4eo2lLSQtWm1Z1o+oaknPchRNgBPR3Fn3hnS9Mey8vELOKDfjt+yWl4M
+         rG93NMaG+vOeBNFn8YcpkWfkyKUag8z2sguRaGkBtT0cXv1EkXnSVkec8SDtzFnk2LsK
+         FteQX1+Si9xHulSrjCSZ3pqUJeTiorBmTkdL4Op5pYbf19Q/VXMDAql48BTANpDN+rSP
+         3w7A==
+X-Gm-Message-State: AOJu0YxXCanQNh8CTVoh0RxgvaQPoy33PdZINPbIbz2AupIZD9JHAuKK
+        +fajKdsY/Mp2BqCZ3psviOLHYw==
+X-Google-Smtp-Source: AGHT+IFYUfkZU/56LzRQHmcIWw+gdtjTYdMJMLO2aNeokD82YcM28GMv6GtlRXUt8yv7fxFy/I5rCA==
+X-Received: by 2002:a17:903:1248:b0:1bb:d59d:8c57 with SMTP id u8-20020a170903124800b001bbd59d8c57mr405217plh.18.1692301475920;
+        Thu, 17 Aug 2023 12:44:35 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id o4-20020a1709026b0400b001b06c106844sm136078plk.151.2023.08.17.12.44.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 12:44:35 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 12:44:35 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v3][next] cgroup: Avoid -Wstringop-overflow warnings
+Message-ID: <202308171244.4FCA8DB40@keescook>
+References: <ZN5WkbPelHUSTXOA@work>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM4PR84MB1927C6684845A9AEBD9F934F881AA@DM4PR84MB1927.NAMPRD84.PROD.OUTLOOK.COM>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZN5WkbPelHUSTXOA@work>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > +	if (length > 1514) {
-> > > +		netdev_err(ndev, "send data %d bytes > 1514, clamp it to 1514\n",
-> > > +			   skb->len);
+On Thu, Aug 17, 2023 at 11:19:13AM -0600, Gustavo A. R. Silva wrote:
+> Change the notation from pointer-to-array to pointer-to-pointer.
+> With this, we avoid the compiler complaining about trying
+> to access a region of size zero as an argument during function
+> calls.
 > 
-> > Than should be rate limited.
+> This is a workaround to prevent the compiler complaining about
+> accessing an array of size zero when evaluating the arguments
+> of a couple of function calls. See below:
 > 
-> How is this done? Is there a particular function to call that
-> will handle it in the backend?
+> kernel/cgroup/cgroup.c: In function 'find_css_set':
+> kernel/cgroup/cgroup.c:1206:16: warning: 'find_existing_css_set' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+>  1206 |         cset = find_existing_css_set(old_cset, cgrp, template);
+>       |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> kernel/cgroup/cgroup.c:1206:16: note: referencing argument 3 of type 'struct cgroup_subsys_state *[0]'
+> kernel/cgroup/cgroup.c:1071:24: note: in a call to function 'find_existing_css_set'
+>  1071 | static struct css_set *find_existing_css_set(struct css_set *old_cset,
+>       |                        ^~~~~~~~~~~~~~~~~~~~~
+> 
+> With the change to pointer-to-pointer, the functions are not prevented
+> from being executed, and they will do what they have to do when
+> CGROUP_SUBSYS_COUNT == 0.
+> 
+> Address the following -Wstringop-overflow warnings seen when
+> built with ARM architecture and aspeed_g4_defconfig configuration
+> (notice that under this configuration CGROUP_SUBSYS_COUNT == 0):
+> 
+> kernel/cgroup/cgroup.c:1208:16: warning: 'find_existing_css_set' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+> kernel/cgroup/cgroup.c:1258:15: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+> kernel/cgroup/cgroup.c:6089:18: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+> kernel/cgroup/cgroup.c:6153:18: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+> 
+> This results in no differences in binary output.
+> 
+> Link: https://github.com/KSPP/linux/issues/316
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Sorry, i was ambiguous. I meant the netdev_err() should be rate
-limited, otherwise some user space application could DOS your system
-by sending big packets at line rate flooding your logs.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-   Andrew
+-- 
+Kees Cook
