@@ -2,227 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7734977FA33
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D176277FA36
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352693AbjHQPEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 11:04:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53692 "EHLO
+        id S1352703AbjHQPFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 11:05:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352761AbjHQPE2 (ORCPT
+        with ESMTP id S1352724AbjHQPEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 11:04:28 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2085.outbound.protection.outlook.com [40.107.243.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F102713
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:04:16 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j/ew+atC5yPJzu3eiv/9VprmXU1LGg0Hw7nJSn8TKAO4ZU8P/iKabRBgT5J/7aPhuz/ywkYrVBovs/aKgi7qsZ7tX1g+rZrBI+BtN55zxD67c9YPEKS9K3z3vYV6uF2lDiLnLVF5IOA3aBbEAdh6v3528gftk3diNwJiZzSdab7PqPAVrNZsYxYnR3J5HHew7+zlF6N2qcLY5RbRQZFmbXPDUqSqc/j87xzoPKGZPn9Wsxeq7Nqdu80RGqlnqu9cD/dVnx3hXWpM0yebw2ddWBsavypFG4TbFS1ZTqgrPO25WqTO58C6pkxatIsBqnyuBVvA8Gmm0vX418zrSk2ldQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+sdXfFhqwbEsnPKe+XhlYXx0isGNScnj8qVlMIZFIRo=;
- b=gy+9Vkkw2Xv6i80qlR3ndRrdzOIZVgLxZPqlh5GKHjh/+QvtnbWF8g/YLfAlAg6JI8ow1ntF/XY0D6AkRyOIVVYmIrC5o5Tgw4Lvb82cL3vmhU2MNzXzal1QA1Ulium6YgWy4NO6X/vhycKN+B606w35qp01Pp5kYCg0sSdv0m5yJNnhs3cJjkmzoLye0EVyx9jkiUaqTE9IFF1w7cLotnsGlypPac//8pttZlEVhMNsbhD5EnKZU6PGYvUS2kki/i+w8CrhAGLtu7t/voZ9MDEHp7VU6/4c9ltImewVuZxAQvL+kxVCyfUOOnkjg3tBxuwHGlrnHgS1rU7FFsrd5g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+sdXfFhqwbEsnPKe+XhlYXx0isGNScnj8qVlMIZFIRo=;
- b=e/4DbOFJgDr0vpkTiuNl1hzUtwLsJyxqcmR2cMYDOnB4cY7z8AtcZHMzrWxfZDGwxzWREHzyLa2CgH6xM9J4E6UXlvzmXJlO5Wx6VjLpOPAjLZ8mMLqsxpHY2x0DWercJDP70RTr1h4f58VCCcCYwsBiuyjxpH/RdBYOu0Jxx4g=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW4PR12MB5667.namprd12.prod.outlook.com (2603:10b6:303:18a::10)
- by SJ0PR12MB5440.namprd12.prod.outlook.com (2603:10b6:a03:3ac::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Thu, 17 Aug
- 2023 15:04:13 +0000
-Received: from MW4PR12MB5667.namprd12.prod.outlook.com
- ([fe80::dc06:ffb3:46ec:6b86]) by MW4PR12MB5667.namprd12.prod.outlook.com
- ([fe80::dc06:ffb3:46ec:6b86%3]) with mapi id 15.20.6678.029; Thu, 17 Aug 2023
- 15:04:13 +0000
-Message-ID: <eaef1599-4da3-ac10-a03e-4f2d8304c60d@amd.com>
-Date:   Thu, 17 Aug 2023 17:04:04 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH v4 2/4] drm/amdgpu: Rework coredump to use memory
- dynamically
-Content-Language: en-US
-To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>
-Cc:     pierre-eric.pelloux-prayer@amd.com, amd-gfx@lists.freedesktop.org,
-        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
-        =?UTF-8?Q?Timur_Krist=c3=b3f?= <timur.kristof@gmail.com>,
-        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
-        kernel-dev@igalia.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20230815195100.294458-1-andrealmeid@igalia.com>
- <20230815195100.294458-3-andrealmeid@igalia.com>
- <07ef59db-da17-15cf-789a-7f5d01b2c9c9@amd.com>
- <a6e90991-91bb-4da9-ab67-d0ec28a29680@igalia.com>
-From:   Shashank Sharma <shashank.sharma@amd.com>
-In-Reply-To: <a6e90991-91bb-4da9-ab67-d0ec28a29680@igalia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BE1P281CA0254.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:b10:8b::7) To MW4PR12MB5667.namprd12.prod.outlook.com
- (2603:10b6:303:18a::10)
+        Thu, 17 Aug 2023 11:04:42 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732B5271B;
+        Thu, 17 Aug 2023 08:04:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692284676; x=1723820676;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ojerZXhAzLWQx9WjZ/l42PtQhGJkDMLqPRYuQies1SQ=;
+  b=fdPE5Z6ezuqv40WWb/Y1+orUmFa7dlIxCVptS6b8ji8t2+lNRnsEB9Uy
+   B8b5NnKqiO3Ga0zZ8FNmv9QhrBC0YWSzEvQMpePqg1+m9blEGKaQ6JFUy
+   OThkVrtPKxOLw5VC0IdY0P815SUF1M9JWF9p6ZDSpU5NqfbZH6gUGJpiQ
+   s6OnCTaqNW9tUfodfVVme6xBi0Rg0UZZGyomYIQcvhz60rvF3IJhM1TbN
+   5JaLLdyH9X5zTIY8KsgfoYFVMafUmrOr0JX+ynsjB5pmqF/228J6gAX6K
+   NaKNg5jQB0jhS7IUSRjcQHqztJLevyL9z6TL9AvJi5mm+rUZ7a3etFj/N
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="353146687"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="353146687"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 08:04:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="737757738"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="737757738"
+Received: from kaeanliu-mobl.amr.corp.intel.com (HELO himmelriiki) ([10.252.52.225])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 08:04:30 -0700
+Date:   Thu, 17 Aug 2023 18:04:21 +0300
+From:   Mikko Ylinen <mikko.ylinen@linux.intel.com>
+To:     Haitao Huang <haitao.huang@linux.intel.com>
+Cc:     jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        cgroups@vger.kernel.org, kai.huang@intel.com,
+        reinette.chatre@intel.com, zhiquan1.li@intel.com,
+        kristen@linux.intel.com, seanjc@google.com, zhanb@microsoft.com,
+        anakrish@microsoft.com
+Subject: Re: [PATCH v3 00/28]  Add Cgroup support for SGX EPC memory
+Message-ID: <ZN429coVzNVtNVqC@himmelriiki>
+References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR12MB5667:EE_|SJ0PR12MB5440:EE_
-X-MS-Office365-Filtering-Correlation-Id: 767aee26-6b94-4b17-a703-08db9f3337f7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sHbFsrOhPgPTHNFnMP3CjnggcD1T0PObIpWyPZaYhfDLs5pZiwkpib/Vua4d2JvRYTZ8BBJe1kNnljdc3LMYDf2yyRJ6rrgnaVmMqWzccuLwz59Q4/Re9Xkvswb+IPQpBm9qrus0Xg1q2WOjnNfYUMwzTEDO1qNuVRJuML6sM2nmp/aey2IHZEdq2Eq5Q7k6rMPr0mFlkHypd2sWg6Es65iAZXO95LcRkbf3PhqiwmnURVOcNxVn70nQkBjzk/Eax8jmeCZb+pMLdJx5nHnWOYf+g5tWZohkx5YQBnMaHRAuWQLiR4TWsFrxY2YALRT/U3kseyBvAOiN5hSKD3dAAGlMcOsNIQDNM/ei4SbpPwYlJk1yxt39/qrl2N5iDfYJZ6sz7pKCaFZwiRvJaSI6v8OPxoT9IUpoVhk+iZ710V+/jGsCVnAtpoBBIrWeYyF1qBn4XX0peB+j8DY0O6HQ+9engQoQ4r2UO/SkyV64mLY8usRQ5LYB6KLgSUoU0OZSG8m6nYfvnB0Nqjl+QuXkZuIAHwBrPd5VhU34nLLDRZjtWXptpINSJwJEgP3NYAILYAeLqqzy2xE2feXXXJEO+kfAWDnPoe5jDBtAjxj24bh9mX/DvD8e/sizclOLIrHlGYqm1MvKFoMet1VMr/zfZg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB5667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(366004)(136003)(396003)(39860400002)(451199024)(1800799009)(186009)(31686004)(36756003)(86362001)(31696002)(38100700002)(5660300002)(44832011)(2616005)(66946007)(66556008)(66476007)(478600001)(6506007)(316002)(6666004)(54906003)(6486002)(6916009)(53546011)(8936002)(4326008)(41300700001)(6512007)(26005)(8676002)(2906002)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eXAwMHVML296N1FCc29JaXh1REkyZVk3ZnlsT0hIR3ljQ2ltZXBqRjR2U05h?=
- =?utf-8?B?MXQ4YzVjanFrU0R0N1J2SklKMTNaYklGWW1YV2ZES0M4TFpiR0NPQm4rN01a?=
- =?utf-8?B?NU5URVI0b2NNOFkydXNzMndZOUxtSzFKcWR6a2VoRU5XODNYcmRwOTRsd1dm?=
- =?utf-8?B?WGd1VTIzc29uNVZ6VDN0dVkrREREQjRMcVJNRFRCWnVKUUQ4VmdFSzVUREJP?=
- =?utf-8?B?RUkvazFNeVIvSUpseFE3ZE9tdXZ4NnFGTzFSOGVFaFZFMFNNSTBOTnJHWFlj?=
- =?utf-8?B?RVhQd1ZKaGNOMU1iTUZteDg2SjVUWENGQm9vKzdDQ3MvQ3NhUDZ0SXk1eVBm?=
- =?utf-8?B?M1U1MXoyY3N2Zk9XVy8rZE5pRjdGajF6ZHRBbjVQWTJNUVo3NG1HNjBqZzMz?=
- =?utf-8?B?dzFaSmc1MDhCU1ROOWpCVm1QV3VxM2hOZTF0SGlUNVEwSm9WKzB3UHBOQitQ?=
- =?utf-8?B?RHZPOFdYcWhPT0NIc2M0YW5NSnpWVlRmaVNFejVZaXoyVTg2NTRnVXUvdmlu?=
- =?utf-8?B?OXJKRkcvNVdQTDVoOWZDMzJLaWZIanpzOWVSQlZKa1pZT09ReGpIY2FaSHZN?=
- =?utf-8?B?WHdWN2pxM3RWU2I0TmtXeU5BZEFueTk4TSszcjNoV1U1bzVya2ovSEMwOGRo?=
- =?utf-8?B?NThnNkltdlRSeUxhckl3ZzVHUXpEU296VlJadGF0NHF5US9OV1QrL29YR3ZF?=
- =?utf-8?B?bUpHTWgrMnVuaHNpdTJ0LzVSc2FMNHNHMEVoSmhuRUxNMmoxbkdnTU1CM3hE?=
- =?utf-8?B?YkczSzVJSE8vSW5PZHhDWVpva3JBRUhvWGlvcXZ0TW9vWUYwMk1mcVBhMzhK?=
- =?utf-8?B?cnBBL1lkMU8xeTlWeVdqbXJ4bGxQaCtJcmJ4SnFnM0tFTUZEeHM1dkNrclVz?=
- =?utf-8?B?VWhPa1hFZzJVVDhlNlRsYng1QmpkSHV0S24zckZKc2N5SUxWakFzaFVodEtG?=
- =?utf-8?B?aWlSS1cweW8zMzQxMHhxMEt4ZUVvNWdqdGNmSC81RUUvcVNFci8zbmx1NnBR?=
- =?utf-8?B?eWk3Q3N3S3NRTGZlSEhQdzlFN011RVI4cWtRbEIyS3F6ZkJkSTRFRGdaa0E5?=
- =?utf-8?B?OUhSY01wTUdVZkE4MTJWRzROZk00b3h3SSttTkxML3BIc2VHQ1Evbi9pQmdK?=
- =?utf-8?B?NjJNNlZ6QmxVTDBkYzVoRjFMQ1gwSFJQeTVPSzBIQmNZRXJPZzRwQXhDUkg0?=
- =?utf-8?B?a0RhM3U1MkFGS2lka2dVY2s1QTlrSXE5OUpQRThUY2gxTUFKaXZueVFOQmVU?=
- =?utf-8?B?SlJSQ2o3cnNJaFRxbytzcXJKcjZOcFMwdlhUOVhjRkxVOThoY0ZxQ0wzeWt4?=
- =?utf-8?B?R2NuTXBrNXdqOSsvOTRkWlMzSXhoRzBTN25DSHZLN3dhN2IvN3FEL25FLzhh?=
- =?utf-8?B?VGRFOENNK25tZUN4Z0ZXMnkydEFqVWRtSkNkWnhMUjRJSmFPNy9pbVZVVkRu?=
- =?utf-8?B?RzhmbjFBU1VlTkc2V2lyaUt3RU11WnRLTFl3QkpnUVk4T1FTeE9ta01XejZQ?=
- =?utf-8?B?bTJXajB2MjBnTjhGMndqWmtCZEVBc25OOHBCRGN1TkhlcWZldFBxdjcxNE1Y?=
- =?utf-8?B?QUxFTHVBaW4yVHpVSXBSbFBrcG1ZVnVybTI0ZHJ0QTJGUXBuVmdGNjBLUmxP?=
- =?utf-8?B?RmJMUHd0ejVtSTJ2dWgxMmVKSmZLcmkwcjNJcnhYNkpwZ0JyR2xVVkNUM3Bn?=
- =?utf-8?B?QVc0WTNqVk5MaC9lMXYrVW91Qk53azdHV1ViaDdPMGk2VDFsTjNpbzlkblNQ?=
- =?utf-8?B?M2RqOGtCY2U4MFlvbEVzc2E4Y09xUG1nSGlJNUhZa29LOEFTTnlKbWxSWVNS?=
- =?utf-8?B?a2VZb29weHpIT0tTbzNvT05ONGQwMXMvR3RPNkc3cTU4N294VEdJUHlKSHBF?=
- =?utf-8?B?R0ZVUitBM05xMTZlSFg5eG50Z21mZmwvRWhTTWM0TWtLOUJqWEVEeTVXVFlB?=
- =?utf-8?B?eW1jdVhqY1ZjL1lSU2Q0bk9Pc0hUdXhBSlVnWXhjZTNLdnZSZm1JOFVWVEQ3?=
- =?utf-8?B?L21qbnlBWUpPTW40ZEFtc3NDMGhDck9ES2VQMlRuZmtmNFpZR2UvQ3U2czlw?=
- =?utf-8?B?WnBRVG9BbUxxOEk0K0N6MnpqL08vL2g0ZmxPci96aWNVZ3ZaNHlrTGg4Uzh5?=
- =?utf-8?Q?nhZAu7fzjg9qQhC7bftVQhm8X?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 767aee26-6b94-4b17-a703-08db9f3337f7
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB5667.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2023 15:04:13.7953
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7QugKkbGNcbjAVfnHjcmVrQsEngNgWs4DH1syxrINiVXL2J2b38e0WGI+7OP+mtytRzet/36IqQY7nkG2Bx2Sg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5440
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230712230202.47929-1-haitao.huang@linux.intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jul 12, 2023 at 04:01:34PM -0700, Haitao Huang wrote:
+> SGX EPC memory allocations are separate from normal RAM allocations, and is
+> managed solely by the SGX subsystem. The existing cgroup memory controller
+> cannot be used to limit or account for SGX EPC memory, which is a desirable
+> feature in some environments, e.g., support for pod level control in a
+> Kubernates cluster on a VM or baremetal host [1,2] in those environments.
+> 
+> This patchset implements the support for sgx_epc memory within the misc
+> cgroup controller. The user can use the misc cgroup controller to set and
+> enforce a max limit on total EPC usage per cgroup. The implementation
+> reports current usage and events of reaching the limit per cgroup as well
+> as the total system capacity.
+> 
+> This work was originally authored by Sean Christopherson a few years ago,
+> and previously modified by Kristen C. Accardi to work with more recent
+> kernels, and to utilize the misc cgroup controller rather than a custom
+> controller. Now I updated the patches based on review comments on the V2
+> series[3], simplified a few aspects of the implementation/design and fixed
+> some stability issues found from testing, while keeping the same user space
+> facing interfaces.
+> 
+> The patchset adds support for multiple LRUs to track both reclaimable EPC
+> pages (i.e. pages the reclaimer knows about), as well as unreclaimable EPC
+> pages (i.e.  pages which the reclaimer isn't aware of, such as VA pages).
+> These pages are assigned to an LRU, as well as an enclave, so that an
+> enclave's full EPC usage can be tracked, and limited to a max value. During
+> OOM events, an enclave can be have its memory zapped, and all the EPC pages
+> not tracked by the reclaimer can be freed.
+> 
+> I appreciate your comments and feedback.
 
-On 17/08/2023 15:45, André Almeida wrote:
-> Hi Shashank,
->
-> Em 17/08/2023 03:41, Shashank Sharma escreveu:
->> Hello Andre,
->>
->> On 15/08/2023 21:50, André Almeida wrote:
->>> Instead of storing coredump information inside amdgpu_device struct,
->>> move if to a proper separated struct and allocate it dynamically. This
->>> will make it easier to further expand the logged information.
->>>
->>> Signed-off-by: André Almeida <andrealmeid@igalia.com>
->>> ---
->>> v4: change kmalloc to kzalloc
->>> ---
->>>   drivers/gpu/drm/amd/amdgpu/amdgpu.h        | 14 +++--
->>>   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 63 
->>> ++++++++++++++--------
->>>   2 files changed, 49 insertions(+), 28 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h 
->>> b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
->>> index 9c6a332261ab..0d560b713948 100644
->>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
->>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
->>> @@ -1088,11 +1088,6 @@ struct amdgpu_device {
->>>       uint32_t                        *reset_dump_reg_list;
->>>       uint32_t            *reset_dump_reg_value;
->>>       int                             num_regs;
->>> -#ifdef CONFIG_DEV_COREDUMP
->>> -    struct amdgpu_task_info         reset_task_info;
->>> -    bool                            reset_vram_lost;
->>> -    struct timespec64               reset_time;
->>> -#endif
->>>       bool                            scpm_enabled;
->>>       uint32_t                        scpm_status;
->>> @@ -1105,6 +1100,15 @@ struct amdgpu_device {
->>>       uint32_t            aid_mask;
->>>   };
->>> +#ifdef CONFIG_DEV_COREDUMP
->>> +struct amdgpu_coredump_info {
->>> +    struct amdgpu_device        *adev;
->>> +    struct amdgpu_task_info         reset_task_info;
->>> +    struct timespec64               reset_time;
->>> +    bool                            reset_vram_lost;
->>> +};
->>
->> The patch looks good to me in general, but I would recommend slightly 
->> different arrangement and segregation of GPU reset information.
->>
->> Please consider a higher level structure adev->gpu_reset_info, and 
->> move everything related to reset dump info into that, including this 
->> new coredump_info structure, something like this:
->>
->> struct amdgpu_reset_info {
->>
->>      uint32_t *reset_dump_reg_list;
->>
->>      uint32_t *reset_dump_reg_value;
->>
->>      int num_regs;
->>
->
-> Right, I can encapsulate there reset_dump members,
->
->> #ifdef CONFIG_DEV_COREDUMP
->>
->>     struct amdgpu_coredump_info *coredump_info;/* keep this dynamic 
->> allocation */
->
-> but we don't need a pointer for amdgpu_coredump_info inside 
-> amdgpu_device or inside of amdgpu_device->gpu_reset_info, right?
+I've been stressing this patch set in my Kubernetes cluster with a few
+simultaneous replicas with two Gramine containers (one with EDMM and another
+one without) in each and per container misc.max limits set.
 
-I think it would be better if we keep all of the GPU reset related data 
-in the same structure, so adev->gpu_reset_info->coredump_info sounds 
-about right to me.
+I've not observed any issues and everything seems to be as expected: per
+container EPC usage is capped to misc.max and its memory.limit triggers OOM
+for the reclaimed EPC.
 
-- Shashank
+Tested-by: Mikko Ylinen <mikko.ylinen@linux.intel.com>
 
->
->>
->> #endif
->>
->> }
->>
->>
->> This will make sure that all the relevant information is at the same 
->> place.
->>
->> - Shashank
->>
->        amdgpu_inc_vram_lost(tmp_adev);
+> 
+> Summary of changes from v2: (more details in commit logs)
+> 
+> * Added EPC states to replace flags in sgx_epc_page struct. (Jarkko)
+> * Unrolled wrappers for cond_resched, list (Dave)
+> * Separate patches for adding reclaimable and unreclaimable lists. (Dave)
+> * Other improvments on patch flow, commit messages, styles. (Dave, Jarkko)
+> * Simplified the cgroup tree walking with plain
+>   css_for_each_descendant_pre.
+> * Fixed race conditions and crashes.
+> * OOM killer to wait for the victim enclave pages being reclaimed.
+> * Unblock the user by handling misc_max_write callback asynchronously.
+> * Rebased onto 6.4 and no longer base this series on the MCA patchset.
+> * Fix an overflow in misc_try_charge.
+> * Fix a NULL pointer in SGX PF handler.
+> * Updated and included the SGX selftest patches previously reviewed. Those
+>   patches fix issues triggered in high EPC pressure required for cgroup
+>   testing.
+> * Added test scripts to help setup and test SGX EPC cgroups.
+> 
+> [1]https://lore.kernel.org/all/DM6PR21MB11772A6ED915825854B419D6C4989@DM6PR21MB1177.namprd21.prod.outlook.com/
+> [2]https://lore.kernel.org/all/ZD7Iutppjj+muH4p@himmelriiki/
+> [3]https://lore.kernel.org/all/20221202183655.3767674-1-kristen@linux.intel.com/
+> [4]Documentation/arch/x86/sgx.rst, Section "Virtual EPC"
+> 
+> Haitao Huang (6):
+>   x86/sgx: Store struct sgx_encl when allocating new VA pages
+>   x86/sgx: Introduce EPC page states
+>   x86/sgx: fix a NULL pointer
+>   cgroup/misc: Fix an overflow
+>   selftests/sgx: Retry the ioctl()'s returned with EAGAIN
+>   selftests/sgx: Add scripts for epc cgroup testing
+> 
+> Jarkko Sakkinen (3):
+>   selftests/sgx: Move ENCL_HEAP_SIZE_DEFAULT to main.c
+>   selftests/sgx: Use encl->encl_size in sigstruct.c
+>   selftests/sgx: Include the dynamic heap size to the ELRANGE
+>     calculation
+> 
+> Kristen Carlson Accardi (9):
+>   x86/sgx: Add 'struct sgx_epc_lru_lists' to encapsulate lru list(s)
+>   x86/sgx: Use sgx_epc_lru_lists for existing active page list
+>   x86/sgx: Store reclaimable epc pages in sgx_epc_lru_lists
+>   x86/sgx: store unreclaimable EPC pages in sgx_epc_lru_lists
+>   x86/sgx: Use a list to track to-be-reclaimed pages
+>   cgroup/misc: Add per resource callbacks for CSS events
+>   cgroup/misc: Add SGX EPC resource type and export APIs for SGX driver
+>   x86/sgx: Limit process EPC usage with misc cgroup controller
+>   Docs/x86/sgx: Add description for cgroup support
+> 
+> Sean Christopherson (9):
+>   x86/sgx: Add EPC page flags to identify owner type
+>   x86/sgx: Introduce RECLAIM_IN_PROGRESS state
+>   x86/sgx: Allow reclaiming up to 32 pages, but scan 16 by default
+>   x85/sgx: Return the number of EPC pages that were successfully
+>     reclaimed
+>   x86/sgx: Add option to ignore age of page during EPC reclaim
+>   x86/sgx: Prepare for multiple LRUs
+>   x86/sgx: Expose sgx_reclaim_pages() for use by EPC cgroup
+>   x86/sgx: Add helper to grab pages from an arbitrary EPC LRU
+>   x86/sgx: Add EPC OOM path to forcefully reclaim EPC
+> 
+> Vijay Dhanraj (1):
+>   selftests/sgx: Add SGX selftest augment_via_eaccept_long
+> 
+>  Documentation/arch/x86/sgx.rst                |  77 ++++
+>  arch/x86/Kconfig                              |  13 +
+>  arch/x86/kernel/cpu/sgx/Makefile              |   1 +
+>  arch/x86/kernel/cpu/sgx/driver.c              |  27 +-
+>  arch/x86/kernel/cpu/sgx/encl.c                |  95 +++-
+>  arch/x86/kernel/cpu/sgx/encl.h                |   4 +-
+>  arch/x86/kernel/cpu/sgx/epc_cgroup.c          | 406 ++++++++++++++++++
+>  arch/x86/kernel/cpu/sgx/epc_cgroup.h          |  60 +++
+>  arch/x86/kernel/cpu/sgx/ioctl.c               |  25 +-
+>  arch/x86/kernel/cpu/sgx/main.c                | 406 ++++++++++++++----
+>  arch/x86/kernel/cpu/sgx/sgx.h                 | 113 ++++-
+>  include/linux/misc_cgroup.h                   |  34 ++
+>  kernel/cgroup/misc.c                          |  63 ++-
+>  tools/testing/selftests/sgx/load.c            |   8 +-
+>  tools/testing/selftests/sgx/main.c            | 177 +++++++-
+>  tools/testing/selftests/sgx/main.h            |   6 +-
+>  .../selftests/sgx/run_tests_in_misc_cg.sh     |  68 +++
+>  tools/testing/selftests/sgx/setup_epc_cg.sh   |  29 ++
+>  tools/testing/selftests/sgx/sigstruct.c       |   8 +-
+>  .../selftests/sgx/watch_misc_for_tests.sh     |  13 +
+>  20 files changed, 1446 insertions(+), 187 deletions(-)
+>  create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.c
+>  create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.h
+>  create mode 100755 tools/testing/selftests/sgx/run_tests_in_misc_cg.sh
+>  create mode 100755 tools/testing/selftests/sgx/setup_epc_cg.sh
+>  create mode 100755 tools/testing/selftests/sgx/watch_misc_for_tests.sh
+> 
+> -- 
+> 2.25.1
+> 
+
+-- Regards, Mikko
