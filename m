@@ -2,68 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 255EB77F288
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E1377F294
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349152AbjHQI4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 04:56:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46806 "EHLO
+        id S1349161AbjHQI55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 04:57:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349151AbjHQI43 (ORCPT
+        with ESMTP id S1349155AbjHQI51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 04:56:29 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F4D2724
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:56:27 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bdc8081147so4854515ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:56:27 -0700 (PDT)
+        Thu, 17 Aug 2023 04:57:27 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478F52724
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:57:25 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bd9b4f8e0eso47634615ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:57:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692262587; x=1692867387;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ptze6wxZV514oS0u92VIY9O4Y7H/mluSZc2DMC6gWxY=;
-        b=FkGU/hYU22VtQfcjslmCB7Eku6oqlepKKvYflypvWxwE5eJurcUMGULy6KJ4NsCqPY
-         TdWSGeDmWVbZftbl7rc9eU5nta2jIa/Xf1nukzVpcLk6macZBlbFHlvrNWMKc35mE+bc
-         y+IBiXwDawJN0XHqZQ7rlIjM69uHAMtoREtvYzvQfiBiCDxuIk4WF57HJOLMQx6gUZ2V
-         9IeVSD8jE9VfEBD/2J9VKZeC26my7sQM8+OisNt4LFVPHEQLZYeA0g75586NUbLaTDsH
-         45lP7QpKCAfYeUhfzLhl8uuXyXCbcBG8nHQ7PIE042Stn8nhF5xSkm/aI8LL3aB/35LN
-         zT9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692262587; x=1692867387;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1692262645; x=1692867445;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ptze6wxZV514oS0u92VIY9O4Y7H/mluSZc2DMC6gWxY=;
-        b=HznuqZ6cGRNSgn0DCEj1IdfnmSNxFF4Mtc/u5z9U6fBHbr4f2pGMRevka0p/CzabMD
-         W+sl7NQ5M8GGxV/FJApLmHH2yGvttoPa9ODoEXoUGJN+PCqwLlSzhcwE00rQqZDwaDmE
-         yV5lQdZndohwSXxKNAy6HRIovdtmyjk1WbE9e4mW/HpF2FT7HjZTQ8xUFY5x/TAXSYq0
-         77kwXzQs+K7g2pcuRjqtDwq16vCJadwVCfOJe6HWABIDtgXfgWh10XiHXpZVvd+WUzNQ
-         ZFlReHZLphhF5+HJC/sJI9hWf+Jrg7YrGqX9h8rY/IrrwHr9MZlVaY8aOODlKKuUGrp0
-         yfYw==
-X-Gm-Message-State: AOJu0YzrGtamUdtJ13GcU/U5zcvaxo9mK1NpvGjKu7423IinMfxgkw9I
-        1nDl6tMMzz+sZPcNUaRFecrYJg==
-X-Google-Smtp-Source: AGHT+IFYnONOUzUUhleUOayXtQmkupns0vXfS1SaXmi+vUdyLJtjr255SOUv8MF7357tYQr9D1ZTmA==
-X-Received: by 2002:a17:902:d48e:b0:1b8:a67f:1c15 with SMTP id c14-20020a170902d48e00b001b8a67f1c15mr2681591plg.25.1692262587137;
-        Thu, 17 Aug 2023 01:56:27 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id jd2-20020a170903260200b001bdcafcf8d3sm10164168plb.69.2023.08.17.01.56.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 01:56:26 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 14:26:24 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Liao Chang <liaochang1@huawei.com>
-Cc:     rafael@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] cpufreq: cppc: Set fie_disabled to FIE_DISABLED if
- fails to create kworker_fie
-Message-ID: <20230817085624.dfevjozfpmmxcldn@vireshk-i7>
-References: <20230817074756.883380-1-liaochang1@huawei.com>
+        bh=pZ4avl/mz05CnmDkZ4XRfrhEisWAciUAJmphvwfEM2A=;
+        b=Vv30KtUNN9X3DCyhblLuDc+5QN4WH17sIufZ4s2NysSZxDPAObOK+RQyUycSz2de/P
+         +5sbf5cr3N9siROdEc+KFYHwsvRTeWt/wpORXfGzN3xt6SAxiaiMDS1az3ZVhLt3Ccii
+         eHYiAasnpVcYWg5gJFYzO1+AjlDV8bzyQ2Vu4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692262645; x=1692867445;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pZ4avl/mz05CnmDkZ4XRfrhEisWAciUAJmphvwfEM2A=;
+        b=Lp7jgurU8JFaIBhRSqV0w2YpQOcEz2j/c7To7zcbaDkhXC+8fwVTr0fg1Uu95mPrrv
+         tQD75nQ+Up6lctLUqfAxRt4NYZ0r1uSH55A+NMOkGEf4vWIXXCnFMZbPmpdo1wrqsx55
+         6Oj5pEAR4tZbWZMORidfjVhyR/8g2sCBjw/S1KHTX6eJa0E9TbtZVJlL8GcKlIh/MtIy
+         Oxpn3jvVcoq48EG5tdSLeRHF4lvsCxtueySG9awwibNl9P2UOSfrKmY4LUUjl3sWegKj
+         h3CheTefclcp6+AeoDN+z5sb2Lo7VgC7/vPHTOrx4uUR0Io/jNagnkMg2o4i8QJb2a9Z
+         bcGQ==
+X-Gm-Message-State: AOJu0YxF7pFVReivkmLj0ONCMlxTkWjxeK8ZvjHXTh9BxvubpZsU0iNJ
+        Tf2Ca/Bs/nrEb2uG0Q4ZIPhSx0KzhBuu/f0nl51C0g==
+X-Google-Smtp-Source: AGHT+IH6xIW34cUhfbm6uS4lGucin/ng4/m/ryyfJico4mCTUTYGDYajeDn/M+ly4sI6E4iuomTaVqg6vaPiGhO2ztA=
+X-Received: by 2002:a17:90a:d34a:b0:269:3498:3bad with SMTP id
+ i10-20020a17090ad34a00b0026934983badmr3496202pjx.14.1692262644742; Thu, 17
+ Aug 2023 01:57:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817074756.883380-1-liaochang1@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+References: <169181859570.505132.10136520092011157898.stgit@devnote2>
+In-Reply-To: <169181859570.505132.10136520092011157898.stgit@devnote2>
+From:   Florent Revest <revest@chromium.org>
+Date:   Thu, 17 Aug 2023 10:57:13 +0200
+Message-ID: <CABRcYmJLbb0_fs2beiNA2QE468JkxB9nHnmQcQW4dt63pPBoFA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/8] bpf: fprobe: rethook: Use ftrace_regs instead of pt_regs
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,29 +78,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-08-23, 07:47, Liao Chang wrote:
-> The function cppc_freq_invariance_init() may failed to create
-> kworker_fie, make it more robust by setting fie_disabled to FIE_DISBALED
-> to prevent an invalid pointer dereference in kthread_destroy_worker(),
-> which called from cppc_freq_invariance_exit().
+On Sat, Aug 12, 2023 at 7:36=E2=80=AFAM Masami Hiramatsu (Google)
+<mhiramat@kernel.org> wrote:
+>
+> Hi,
+>
+> Here is the 3rd version of RFC series to use ftrace_regs instead of pt_re=
+gs.
+> The previous version is here;
+>
+> https://lore.kernel.org/all/169139090386.324433.6412259486776991296.stgit=
+@devnote2/
+>
+> This also includes the generic part and minimum modifications of arch
+> dependent code. (e.g. not including rethook for arm64.)
 
-Btw, this version information present below should be added ... (see later)
+I think that one aspect that's missing from the discussion (and maybe
+the series) so far is plans to actually save partial registers in the
+existing rethook trampolines.
 
-> v3:
-> Simplify cleanup code when invariance initialization fails.
-> 
-> v2:
-> Set fie_disabled to FIE_DISABLED when invariance initialization fails.
-> 
-> Link: https://lore.kernel.org/all/20230816034630.a4hvsj373q6aslk3@vireshk-i7/
-> 
-> Signed-off-by: Liao Chang <liaochang1@huawei.com>
-> ---
-
-... here after the "---" line, this way this not-so-useful information will not
-be committed while applying the patch.
-
->  drivers/cpufreq/cppc_cpufreq.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
--- 
-viresh
+For now the series makes everything called by the rethook trampolines
+handle the possibility of having a sparse ftrace_regs but the rethook
+trampolines still save full ftrace_regs. I think that to rip the full
+benefits of this series, we should have the rethook trampolines save
+the equivalent ftrace_regs as the light "args" version of the ftrace
+trampoline.
