@@ -2,56 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB2877FCBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6B477FCC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353909AbjHQRKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 13:10:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49574 "EHLO
+        id S1353293AbjHQRNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 13:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353942AbjHQRK1 (ORCPT
+        with ESMTP id S1353954AbjHQRNW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 13:10:27 -0400
-Received: from mail.3ffe.de (0001.3ffe.de [159.69.201.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3802136
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:10:22 -0700 (PDT)
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.3ffe.de (Postfix) with ESMTPSA id 4D083F0;
-        Thu, 17 Aug 2023 19:10:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-        t=1692292221;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KISS4diuBJN4zlTQxR2ELa6FNfvHMKCOwBLTJya1pFo=;
-        b=UwodL+VoMTcvPG1OjUbP0vnbM61jpmT80T5K9/U/5wn25KAkfg/ZSRI5tO6Mz1tXCNoy7O
-        4dg6eGvLPzp3YS1kiTtybUyBmLaRjX3KO1f30YekE6NR4Jt9MvUDIgBeAIG+aqLlDDmXkw
-        Wr//lTUUSxg9ITRRrA3w7CPBPS8igOizRXqTAT92ryAe4vqlY2YZHKmsz9yX7HV6+3+zde
-        sSPTGCbhiSpnojkOV3Bx1bcWX7g54CvvEZckyy6pdXhFU9snch2N25yyHuh8ebXPMKmdh+
-        BURcB2+FHh8OZ3GE8Ymg/zeqRfXuOeH/+jHHpenLmK8dQBpKjJaKdpDveTknmQ==
+        Thu, 17 Aug 2023 13:13:22 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E38052136;
+        Thu, 17 Aug 2023 10:13:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692292386; x=1723828386;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lW4Gs99clp24g1be/o8KoTm4TvBfDD4QsWs4eUiesuQ=;
+  b=cpX/xCLdOdQYzn7WyniXwheY5C4Mz9RzqKnWTWP7ygZTSqmspzAPkgQs
+   FgELfSvzkzUul54uYfGUzfcGAgEOocKJc+wM0SPJJVHZJwBdcoyVf9DdA
+   pGXkFfTZlC7132dKI402zgXXiO7eWv9FC10yyWz9ZC1LbNdFfzLpmR7Sd
+   xFH6JaJt7TsP4rjKdio3WIk8Nm7JNJSbRTDlgXuNtkTXMN6CnXC5DbYpV
+   wfrgAvDoANw1ds+j2i5gdJH9Xk/lURj5nDSMBNHWhtyVOjN+sNlcTjoK5
+   fLjrsRarfvIggthC5GwGrey/9gyPsMyc1XnymV/qkeFLA42uFYJcEN01v
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="370342240"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="370342240"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 10:12:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="848945531"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="848945531"
+Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 17 Aug 2023 10:12:32 -0700
+Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qWgXw-0001L9-05;
+        Thu, 17 Aug 2023 17:12:32 +0000
+Date:   Fri, 18 Aug 2023 01:11:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     johannes@gnu-linux.rocks, jikos@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, benjamin.tissoires@redhat.com,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        andi.shyti@kernel.org, christophe.jaillet@wanadoo.fr,
+        ak@it-klinger.de, Johannes Roith <johannes@gnu-linux.rocks>
+Subject: Re: [PATCH v4] hid-mcp2200: added driver for GPIOs of MCP2200
+Message-ID: <202308180056.nB1KSUap-lkp@intel.com>
+References: <20230817091505.213318-1-johannes@gnu-linux.rocks>
 MIME-Version: 1.0
-Date:   Thu, 17 Aug 2023 19:10:21 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     SSunk <ssunkkan@gmail.com>
-Cc:     miquel.raynal@bootlin.com, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, pratyush@kernel.org, richard@nod.at,
-        ssunkkan@gmail.com, tudor.ambarus@linaro.org, vigneshr@ti.com
-Subject: Re: [PATCH] Add support for more XMC series
-In-Reply-To: <20230817170335.3711-1-ssunkkan@gmail.com>
-References: <20230817152050.6679eae3@xps-13>
- <20230817170335.3711-1-ssunkkan@gmail.com>
-Message-ID: <abd705350b650717dbbc187815d384e7@walle.cc>
-X-Sender: michael@walle.cc
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230817091505.213318-1-johannes@gnu-linux.rocks>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -60,18 +69,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
->> XMC parts seem to have SFDP tables and they should work out of the box
->> without any patches with the generic spi nor driver [1]. Therefore,
->> you don't need any entry at all.
-> 
-> I think it is related to the PARSE_SFDP flag.
-> The XMC flash part supports SFDP, so i don’t needto add
-> NO_SFDP_FLAGS() macro.
+kernel test robot noticed the following build warnings:
 
-Correct. If the flash is working with PARSE_SFDP, it has SFDP and
-all the information of the flash_info table is pulled from the SFDP
-tables, except for the part name. Therefore, you don't need any entry
-at all. The flash should just work out of the box. Are you using the
-latest kernel?
+[auto build test WARNING on hid/for-next]
+[also build test WARNING on linus/master v6.5-rc6 next-20230817]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
--michael
+url:    https://github.com/intel-lab-lkp/linux/commits/johannes-gnu-linux-rocks/hid-mcp2200-added-driver-for-GPIOs-of-MCP2200/20230817-172246
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-next
+patch link:    https://lore.kernel.org/r/20230817091505.213318-1-johannes%40gnu-linux.rocks
+patch subject: [PATCH v4] hid-mcp2200: added driver for GPIOs of MCP2200
+config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230818/202308180056.nB1KSUap-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230818/202308180056.nB1KSUap-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308180056.nB1KSUap-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/hid/hid-mcp2200.c: In function 'mcp2200_remove':
+>> drivers/hid/hid-mcp2200.c:395:25: warning: variable 'mcp' set but not used [-Wunused-but-set-variable]
+     395 |         struct mcp2200 *mcp;
+         |                         ^~~
+
+
+vim +/mcp +395 drivers/hid/hid-mcp2200.c
+
+   392	
+   393	static void mcp2200_remove(struct hid_device *hdev)
+   394	{
+ > 395		struct mcp2200 *mcp;
+   396	
+   397		mcp = hid_get_drvdata(hdev);
+   398	}
+   399	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
