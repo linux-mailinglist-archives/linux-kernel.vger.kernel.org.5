@@ -2,98 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DFF577FCE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3493677FCE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353937AbjHQRTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 13:19:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53752 "EHLO
+        id S1353942AbjHQRUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 13:20:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242937AbjHQRTd (ORCPT
+        with ESMTP id S1354023AbjHQRUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 13:19:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53815358E
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:19:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DE45B66EA5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:19:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B800C433C7;
-        Thu, 17 Aug 2023 17:19:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692292762;
-        bh=iHIfK/mk9Pz261VmV7TPqv4tXFXcg5nMmuiazYWbCBw=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=GC8cIiXAKmlBhvVE+7A2h95aT3jTrFYY9OtCYVzfJAh/vVzRiGloDobPjfNznvzGz
-         lW2Lz+Mpb/xo6CVEfRG0ug1XjJk+X+cr7oLZi4/68oweQXyENRc8cC8TRWDfrI4sct
-         7YUvgEk+m4hRmqPLvV231h7GE6twilAhwDuMIvoUYsSCvzcyrNiUYKRGQ4Sqa4U+D6
-         T3BrpK2TbzGYA0TykvjOY68APfBPgBOw1MYnvYkIoucU/43WfH2w6RGFlPmDpQ2zDT
-         JHXP3PL1wNqRAW7t/Q2PhhLJLOYAGljsF+m70p/RO1qexobTaz3uwyv32JAKuEWVYq
-         kxLR81oLB+Bhg==
-From:   Lee Jones <lee@kernel.org>
-To:     Lee Jones <lee@kernel.org>, Chanwoo Choi <cw00.choi@samsung.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        patches@opensource.cirrus.com,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Andi Shyti <andi.shyti@kernel.org>
-In-Reply-To: <20230810095849.123321-1-krzysztof.kozlowski@linaro.org>
-References: <20230810095849.123321-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH 1/9] mfd: stmpe: Fix Wvoid-pointer-to-enum-cast warning
-Message-Id: <169229275920.1072243.16297304606056880279.b4-ty@kernel.org>
-Date:   Thu, 17 Aug 2023 18:19:19 +0100
+        Thu, 17 Aug 2023 13:20:23 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB7510C8
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:20:20 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bf1876ef69so42365ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:20:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1692292820; x=1692897620;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MEEMLBU7KyGRl1jyNCYxrTksFBbZzFyIftfWwVnH+fI=;
+        b=PxIUkR6QCMelRphwb7nNTBBi5xX67tY9gBxIJQneBYD/lufdGIcKBXtI0wXLmhh6yK
+         IXKYehGZRpVB06BRWgNaJIme2xyrwWLBp8fwJuXiNGYjgAn2iHxtCvTrrTfFyWf6LoHg
+         cNGAJONtBhpceK1CP9h5IuHNaITDgJwoDPGF8hteE3T1gES4G64Z1GvqI2734PqBvGt9
+         ycTCi8iTcAvOjfj04kWI6NI7+e6IzqZHU7ZAmvi1vt5e8wul5LM9nvWZDT/wnXM4a0/2
+         880w8DBgAwaBq0ukUfdyvtlD3oFooVcxMmIUemt+6E+Kz23Sm4Yai9k+3i1k7NrF036w
+         OP8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692292820; x=1692897620;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MEEMLBU7KyGRl1jyNCYxrTksFBbZzFyIftfWwVnH+fI=;
+        b=jUKjkB1UyaJmUIbZtsgcjhnYP65X3orM2qwFvMY4rvSqjPL/GQf0LkVA7sTqx0Pl/1
+         /IP5dcSNetGus2ILs8uH4vyEPavmyMpTxMU8RNfIcZTYoV185tLgakpD7monplC1MNaV
+         8yCuhlLgLlYoav/V7LsrqlTn95q1e+YuyjkMwvBODmSnxcw5QeCHWrh45bTHyFXarLbu
+         1Y2WD0lajdnvTeBJSa0tGp/dHPzyR/cEhK6/nhbpHouPH/mLdcLAjl08BkjJ96G8HypT
+         dZpUf/9c4a5OaXtVh8rplFn1+TbChuNG3PoTgRvsXvDG3KcZmh5jRMXffrK3+s+wXH3f
+         FNXA==
+X-Gm-Message-State: AOJu0YzGtLdNGlo4JPljgaddMymSq2J/YaXDtzhU/LUYmVns1JY/Vyjw
+        tDGnO1/V0opkQRGtAnQdevnNnA==
+X-Google-Smtp-Source: AGHT+IHoZ5NKn64ndpHfUzrusz+K6F4l2vMaKDWesViwP5pjrPID8odhdTPKfLUHX0peIYDLzKhc3w==
+X-Received: by 2002:a17:903:248:b0:1b8:9215:9163 with SMTP id j8-20020a170903024800b001b892159163mr6305223plh.6.1692292820095;
+        Thu, 17 Aug 2023 10:20:20 -0700 (PDT)
+Received: from [192.168.1.136] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id q10-20020a170902daca00b001bc2831e1a9sm24212plx.90.2023.08.17.10.20.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Aug 2023 10:20:19 -0700 (PDT)
+Message-ID: <8c262b00-9856-49fa-b425-da863efdff7d@kernel.dk>
+Date:   Thu, 17 Aug 2023 11:20:17 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] blk-mq: release scheduler resource when request
+ complete
+Content-Language: en-US
+To:     Chengming Zhou <chengming.zhou@linux.dev>,
+        Bart Van Assche <bvanassche@acm.org>, hch@lst.de
+Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
+        Chuck Lever <chuck.lever@oracle.com>,
+        linux-block@vger.kernel.org, cel@kernel.org,
+        linux-kernel@vger.kernel.org,
+        kernel test robot <oliver.sang@intel.com>
+References: <202308172100.8ce4b853-oliver.sang@intel.com>
+ <af61c72c-b3ec-ce7a-4f41-bce9a9844baf@acm.org>
+ <317715dc-f6e4-1847-5b78-b2d8184b446a@linux.dev>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <317715dc-f6e4-1847-5b78-b2d8184b446a@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 11:58:41 +0200, Krzysztof Kozlowski wrote:
-> 'partnum' is an enum, thus cast of pointer on 64-bit compile test with W=1
-> causes:
+On 8/17/23 9:29 AM, Chengming Zhou wrote:
+> On 2023/8/17 22:50, Bart Van Assche wrote:
+>> On 8/17/23 07:41, kernel test robot wrote:
+>>> [  222.622837][ T2216] statistics for priority 1: i 276 m 0 d 276 c 278
+>>> [ 222.629307][ T2216] WARNING: CPU: 0 PID: 2216 at block/mq-deadline.c:680 dd_exit_sched (block/mq-deadline.c:680 (discriminator 3))
+>>
+>> The above information shows that dd_inserted_request() has been called
+>> 276 times and also that dd_finish_request() has been called 278 times.
 > 
-> stmpe-i2c.c:90:13: error: cast to smaller integer type 'enum stmpe_partnum' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
+> Thanks much for your help.
+> 
+> This patch indeed introduced a regression, postflush requests will be completed
+> twice, so here dd_finish_request() is more than dd_inserted_request().
+> 
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index a8c63bef8ff1..7cd47ffc04ce 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -686,8 +686,10 @@ static void blk_mq_finish_request(struct request *rq)
+>  {
+>         struct request_queue *q = rq->q;
+> 
+> -       if (rq->rq_flags & RQF_USE_SCHED)
+> +       if (rq->rq_flags & RQF_USE_SCHED) {
+>                 q->elevator->type->ops.finish_request(rq);
+> +               rq->rq_flags &= ~RQF_USE_SCHED;
+> +       }
+>  }
 > 
 > 
+> Clear RQF_USE_SCHED flag here should fix this problem, which should be ok
+> since finish_request() is the last callback, this flag isn't needed anymore.
+> 
+> Jens, should I send this diff as another patch or resend updated v3?
 
-Applied, thanks!
+I don't think this is the right solution, it makes all kinds of
+assumptions on what that flag is and when it's safe to clear it. It's a
+very fragile fix, I think we need to do better than that.
 
-[1/9] mfd: stmpe: Fix Wvoid-pointer-to-enum-cast warning
-      commit: ee1a91ee7729b56535bce753c5a8146ec58aa0c6
-[2/9] mfd: max14577: Fix Wvoid-pointer-to-enum-cast warning
-      commit: e3569bd687ebbb35339aa8699311c28770d3a3b6
-[3/9] mfd: max77541: Fix Wvoid-pointer-to-enum-cast warning
-      commit: d964ac59516ca77c0761d73681d7975e33ddfeae
-[4/9] mfd: hi6421-pmic: Fix Wvoid-pointer-to-enum-cast warning
-      commit: bbf26b17476c8528a3dc903f5550e89bdca7aa72
-[5/9] mfd: lp87565: Fix Wvoid-pointer-to-enum-cast warning
-      commit: d3cf4d705563d26e02e8997cc2cf297542abdadf
-[6/9] mfd: tc3589: Fix Wvoid-pointer-to-enum-cast warning
-      commit: 499e6c7904a5d1860651ec2437a9873e2b9aa1f0
-[7/9] mfd: wm8994: Fix Wvoid-pointer-to-enum-cast warning
-      commit: b53cd2fb2769dd8c082adaaa8f1746265a9ca732
-[8/9] mfd: wm31x: Fix Wvoid-pointer-to-enum-cast warning
-      commit: a79c1c76d726c5af9cf925ee0a5b934bd17c1496
-[9/9] mfd: mxs-lradc: Fix Wvoid-pointer-to-enum-cast warning
-      commit: 243cd47f753d57e1d6d11449056a437052560b84
-
---
-Lee Jones [李琼斯]
+-- 
+Jens Axboe
 
