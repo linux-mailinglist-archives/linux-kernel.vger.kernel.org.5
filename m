@@ -2,75 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C3E7800E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 00:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECF37800E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 00:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355677AbjHQWM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 18:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36556 "EHLO
+        id S1355686AbjHQWMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 18:12:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355741AbjHQWMU (ORCPT
+        with ESMTP id S1355745AbjHQWLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 18:12:20 -0400
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C677135A4;
-        Thu, 17 Aug 2023 15:12:01 -0700 (PDT)
-Received: by mail-vs1-xe30.google.com with SMTP id ada2fe7eead31-44bf5a8598bso85434137.3;
-        Thu, 17 Aug 2023 15:12:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692310321; x=1692915121;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wKzW1qsagZiZ5SXKF1K93AuCKmfVAku4MiXPKUa1AjA=;
-        b=YJ4CAftZ6cebuEFArgjUXd6zZAE9Bmc0GbTAAGrG9MDrNZsiz7VP47CJ69a7DJgEQw
-         qRTHywmYKZKMiXiSzVPxSONBS3th3eRksa0KiTnzEmja+EAFizfUQOWbAcQeAVcVpotD
-         Dl4DxS/nPm2CLH1UZBXhilYTpuaZg2JVn4udB0qiAc4ZpGrE4+K7lzk0nwb9JSjO35my
-         QxJ2sRkawWF91Ls0s95E/5Ch2uNARiiGVvYmqoe2j4gTb1/IzCkv3PAXfbeNxBBlzcSK
-         bDB9gu4hgvK+R53zT0G93dWu3fkKJnWaG1PeqB+DY7F9FxP0LAHxQNcKMQO7uvSjavkk
-         ip3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692310321; x=1692915121;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wKzW1qsagZiZ5SXKF1K93AuCKmfVAku4MiXPKUa1AjA=;
-        b=GGgHfCk2+9H8ZQVxF1sLkyjUHExFy9rPRDv0AOIeureFyFcLFyOdwA5m7gcrAee8uP
-         RcJoucWA7K2Vp/oQb08/vitEPoMHU8He16tj4d6b03+eY8mOznCDtSAVy3vfsDU1BWw5
-         IyJyTXYqS0Ico/akUM1XWA2V4RJgoX1NZQ+fUtBCAk/gDoWoscaRIHhaBOI//EHxpBB5
-         f7ZRHALoYRpCRs6AS/DnTxBlTTkHjKol5Kd64tEJPz+canvahavN+z40sXXQ5vWibS/d
-         zib4+MVg5HkPACBlt6TqUQYc0sjC3Dktv5zNpAnKSsBzDFyvnROERJl1YifyNhZPCQSA
-         Mqbw==
-X-Gm-Message-State: AOJu0YzYtKEgXXrghdbpWbf1yPOA9sqDG0BL70W9kJ7AVXuZ89KzsCko
-        4iGnUtFleBHNtYyIE3toi188vLsAGWBJMjNUnSc=
-X-Google-Smtp-Source: AGHT+IHcirvC7P0ygxXyBj7Mkj7tszYFqc+LRkF5wAjhDS0F9kxYDwjIKRPlVOikYWoGUpYMMVFAVRJ5sDlOKd/y7jo=
-X-Received: by 2002:a05:6102:411:b0:443:a4d2:86b9 with SMTP id
- d17-20020a056102041100b00443a4d286b9mr1031239vsq.0.1692310320840; Thu, 17 Aug
- 2023 15:12:00 -0700 (PDT)
+        Thu, 17 Aug 2023 18:11:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296CC3AB0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 15:11:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B863B667A0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 22:11:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4B6FC433C7;
+        Thu, 17 Aug 2023 22:11:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692310290;
+        bh=xYkc9kOTCIcKeJ+8XW4auGZeMtraRnqcSt+nuDUw4HQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bv6RTULYWvWSGgSFuVY4zIo7zIpF1+qyvDrZJqpu/LzsqRjKFxyI8znvYl/bc8C+l
+         oDMSL3NCHjH0CnnPOXHH/ZBWSGiZK4vYNydZHqw5tNf09yhMrhW2kbeSTC2ntxQFMQ
+         Lu5WKmYRM0TOV+0fpHxvMBBMW/p3+atl/tspXyjh+KBaHC8MSix56Jrt1PwuMVeEcF
+         rnG6WKnGbyOXty9mSPaQ1yQKF/whG8FFnP7eKtY9esww3yX2PgnZLIAGMHSX1PXqLD
+         Y1lWj8QFItqExZ5zZ6oXqBdqd9EdnpMB0R072Cm9BcpmJG4ZRutESMwa0VEgBbsAXc
+         8ra6pjwMgifHg==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pabeni@redhat.com
+Subject: [GIT PULL] Networking for v6.5-rc7
+Date:   Thu, 17 Aug 2023 15:11:29 -0700
+Message-ID: <20230817221129.1014945-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230817151941.18692-1-feliu@nvidia.com> <CAF=yD-KN=-2fhc2nxxzr-bJ5kwQVFken_iTo4sBbuAkjmbn3fQ@mail.gmail.com>
- <b2edfbbf-1018-745e-2ce4-946ffe27e5e5@nvidia.com>
-In-Reply-To: <b2edfbbf-1018-745e-2ce4-946ffe27e5e5@nvidia.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 17 Aug 2023 18:11:23 -0400
-Message-ID: <CAF=yD-LBHYk=+ty1zTNnN_cU4NoJe0=VZwHy2zVkQiPVx_9gqw@mail.gmail.com>
-Subject: Re: [PATCH net-next v2] virtio_net: Introduce skb_vnet_common_hdr to
- avoid typecasting
-To:     Feng Liu <feliu@nvidia.com>
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Simon Horman <horms@kernel.org>,
-        Bodong Wang <bodong@nvidia.com>, Jiri Pirko <jiri@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,213 +54,242 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 5:52=E2=80=AFPM Feng Liu <feliu@nvidia.com> wrote:
->
->
->
-> On 2023-08-17 p.m.2:26, Willem de Bruijn wrote:
-> > External email: Use caution opening links or attachments
-> >
-> >
-> > On Thu, Aug 17, 2023 at 11:20=E2=80=AFAM Feng Liu <feliu@nvidia.com> wr=
-ote:
-> >>
-> >> The virtio_net driver currently deals with different versions and type=
-s
-> >> of virtio net headers, such as virtio_net_hdr_mrg_rxbuf,
-> >> virtio_net_hdr_v1_hash, etc. Due to these variations, the code relies
-> >> on multiple type casts to convert memory between different structures,
-> >> potentially leading to bugs when there are changes in these structures=
-.
-> >>
-> >> Introduces the "struct skb_vnet_common_hdr" as a unifying header
-> >> structure using a union. With this approach, various virtio net header
-> >> structures can be converted by accessing different members of this
-> >> structure, thus eliminating the need for type casting and reducing the
-> >> risk of potential bugs.
-> >>
-> >> For example following code:
-> >> static struct sk_buff *page_to_skb(struct virtnet_info *vi,
-> >>                  struct receive_queue *rq,
-> >>                  struct page *page, unsigned int offset,
-> >>                  unsigned int len, unsigned int truesize,
-> >>                  unsigned int headroom)
-> >> {
-> >> [...]
-> >>          struct virtio_net_hdr_mrg_rxbuf *hdr;
-> >> [...]
-> >>          hdr_len =3D vi->hdr_len;
-> >> [...]
-> >> ok:
-> >>          hdr =3D skb_vnet_hdr(skb);
-> >>          memcpy(hdr, hdr_p, hdr_len);
-> >> [...]
-> >> }
-> >>
-> >> When VIRTIO_NET_F_HASH_REPORT feature is enabled, hdr_len =3D 20
-> >> But the sizeof(*hdr) is 12,
-> >> memcpy(hdr, hdr_p, hdr_len); will copy 20 bytes to the hdr,
-> >> which make a potential risk of bug. And this risk can be avoided by
-> >> introducing struct virtio_net_hdr_mrg_rxbuf.
-> >
-> > You mean virtio_net_common_hdr?
-> >
-> It is a typo, will correct it.
->
-> > I'm not sure I follow the reasoning. Because then hdr_len might be
-> > sizeof(virtio_net_hdr_mrg_rxbuf), but sizeof(virtio_net_common_hdr) is
-> > larger. So the same issue remains?
-> >
-> static int virtnet_probe(struct virtio_device *vdev)
-> {
-> [...]
->         if (vi->has_rss_hash_report) {
->                 vi->hdr_len =3D sizeof(struct virtio_net_hdr_v1_hash); /*=
- hdr_len will
-> be 20 bytes */
->         }
->         else if (virtio_has_feature(vdev, VIRTIO_NET_F_MRG_RXBUF) ||
->                  virtio_has_feature(vdev, VIRTIO_F_VERSION_1))
->                 vi->hdr_len =3D sizeof(struct virtio_net_hdr_mrg_rxbuf);
->         else
->                 vi->hdr_len =3D sizeof(struct virtio_net_hdr);
-> [...]
-> }
->
-> When VIRTIO_NET_F_HASH_REPORT is enabled, hdr_len =3D 20 (as above); and
-> the size of virtio_net_hdr_mrg_rxbuf is 12, so virtio_net_hdr_mrg_rxbuf
-> is wrong, should use struct virtio_net_common_hdr here.
+Hi Linus!
 
-I understand in this specific instance. I'm just saying that using sizeof c=
-an
-be wrong both in the new and old case.
+The diffstat is a little massaged here, it's generated from the merge
+of x86/bugs, I merged x86/bugs on top of our previous merge point, and
+you already have those, so I _think_ this is exactly the diffstat
+you'll see when pulling..
 
-This does not fix a real bug, as memcpy just uses hdr_len, which is correct=
-.
+The following changes since commit 9ebbb29db9cae23e29881b9a268767d4baa53cdb:
 
-> > Indeed, everywhere this patches replaces the one with the other, you
-> > have to verify that nothing was using sizeof(*hdr). Which would not be
-> > visible from the truncated patch contents itself.
-> >
-> Have checked. Nothing is using sizeof(*hdr).
+  Merge branch 'x86/bugs' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip (2023-08-10 18:18:25 -0700)
 
-Thanks.
->
-> >>
-> >> Change log
-> >> v1->v2
-> >> feedback from Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-> >> feedback from Simon Horman <horms@kernel.org>
-> >> 1. change to use net-next tree.
-> >> 2. move skb_vnet_common_hdr inside kernel file instead of the UAPI hea=
-der.
-> >>
-> >> Signed-off-by: Feng Liu <feliu@nvidia.com>
-> >> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
-> >> ---
-> >>   drivers/net/virtio_net.c | 36 +++++++++++++++++++++++-------------
-> >>   1 file changed, 23 insertions(+), 13 deletions(-)
-> >>
-> >> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> >> index 1270c8d23463..03cf744de512 100644
-> >> --- a/drivers/net/virtio_net.c
-> >> +++ b/drivers/net/virtio_net.c
-> >> @@ -303,6 +303,13 @@ struct padded_vnet_hdr {
-> >>          char padding[12];
-> >>   };
-> >>
-> >> +struct virtio_net_common_hdr {
-> >> +       union {
-> >> +               struct virtio_net_hdr_mrg_rxbuf mrg_hdr;
-> >> +               struct virtio_net_hdr_v1_hash hash_v1_hdr;
-> >> +       };
-> >> +};
-> >
-> > Perhaps even add in struct virtio_net_hdr. As that is the original of
-> > the three structs, and all the initial fields overlap.
-> >
->
-> But I didn't use virtio_net_hdr in this patch, is it redundant to put it
-> here=EF=BC=9F what do you think?
+are available in the Git repository at:
 
-That's true. But if we're going to add a helper to bind together alll the
-virtio variants, then I think it should be there?
+  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-6.5-rc7
 
-No strong opinion. Leave out if you prefer and no one else speaks up.
+for you to fetch changes up to 820a38d8f2cb3a749ffb7bbde206acec9a387411:
 
-> >> @@ -1577,7 +1585,8 @@ static void receive_buf(struct virtnet_info *vi,=
- struct receive_queue *rq,
-> >>   {
-> >>          struct net_device *dev =3D vi->dev;
-> >>          struct sk_buff *skb;
-> >> -       struct virtio_net_hdr_mrg_rxbuf *hdr;
-> >> +       struct virtio_net_common_hdr *common_hdr;
-> >> +       struct virtio_net_hdr_mrg_rxbuf *mrg_hdr;
-> >
-> > No more need for this second struct now that we have the union. That's
-> > its whole purpose?
->
-> Yes, struct virtio_net_hdr_mrg_rxbuf *mrg_hdr is not needed. Writing
-> mrg_hdr here is just to make the code look more concise, such as
-> mrg_hdr->hdr.flags, if mrg_hdr is not used, it should be written as
-> common_hdr->mrg_hdr.hdr.flags, I think it looks too long. what you think?
+  Merge branch '40GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue (2023-08-17 14:35:34 -0700)
 
-If we're going to continue to assign to different structs, then I'm honestl=
-y
-not sure how much this patch buys us.
+----------------------------------------------------------------
+Including fixes from ipsec and netfilter.
 
-Adding virtio_net_hdr to the union also shortens the code btw. Then it
-can be common_hdr->hdr.flags
+No known outstanding regressions.
 
-Also, just a shorter variable name than common_hdr. Fine to call it hdr.
+Fixes to fixes:
 
->
-> >>
-> >>          if (unlikely(len < vi->hdr_len + ETH_HLEN)) {
-> >>                  pr_debug("%s: short packet %i\n", dev->name, len);
-> >> @@ -1597,18 +1606,19 @@ static void receive_buf(struct virtnet_info *v=
-i, struct receive_queue *rq,
-> >>          if (unlikely(!skb))
-> >>                  return;
-> >>
-> >> -       hdr =3D skb_vnet_hdr(skb);
-> >> +       common_hdr =3D skb_vnet_common_hdr(skb);
-> >>          if (dev->features & NETIF_F_RXHASH && vi->has_rss_hash_report=
-)
-> >> -               virtio_skb_set_hash((const struct virtio_net_hdr_v1_ha=
-sh *)hdr, skb);
-> >> +               virtio_skb_set_hash(&common_hdr->hash_v1_hdr, skb);
-> >>
-> >> -       if (hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VALID)
-> >> +       mrg_hdr =3D &common_hdr->mrg_hdr;
-> >> +       if (mrg_hdr->hdr.flags & VIRTIO_NET_HDR_F_DATA_VALID)
-> >>                  skb->ip_summed =3D CHECKSUM_UNNECESSARY;
-> >>
-> >> -       if (virtio_net_hdr_to_skb(skb, &hdr->hdr,
-> >> +       if (virtio_net_hdr_to_skb(skb, &mrg_hdr->hdr,
-> >>                                    virtio_is_little_endian(vi->vdev)))=
- {
-> >>                  net_warn_ratelimited("%s: bad gso: type: %u, size: %u=
-\n",
-> >> -                                    dev->name, hdr->hdr.gso_type,
-> >> -                                    hdr->hdr.gso_size);
-> >> +                                    dev->name, mrg_hdr->hdr.gso_type,
-> >> +                                    mrg_hdr->hdr.gso_size);
-> >>                  goto frame_err;
-> >>          }
-> >>
-> >> @@ -2105,7 +2115,7 @@ static int xmit_skb(struct send_queue *sq, struc=
-t sk_buff *skb)
-> >>          if (can_push)
-> >>                  hdr =3D (struct virtio_net_hdr_mrg_rxbuf *)(skb->data=
- - hdr_len);
-> >>          else
-> >> -               hdr =3D skb_vnet_hdr(skb);
-> >> +               hdr =3D &skb_vnet_common_hdr(skb)->mrg_hdr;
-> >>
-> >>          if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
-> >>                                      virtio_is_little_endian(vi->vdev)=
-, false,
-> >> --
-> >> 2.37.1 (Apple Git-137.1)
-> >>
+ - virtio-net: set queues after driver_ok, avoid a potential race
+   added by recent fix
+
+ - Revert "vlan: Fix VLAN 0 memory leak", it may lead to a warning
+   when VLAN 0 is registered explicitly
+
+ - nf_tables:
+   - fix false-positive lockdep splat in recent fixes
+   - don't fail inserts if duplicate has expired (fix test failures)
+   - fix races between garbage collection and netns dismantle
+
+Current release - new code bugs:
+
+ - mlx5: Fix mlx5_cmd_update_root_ft() error flow
+
+Previous releases - regressions:
+
+ - phy: fix IRQ-based wake-on-lan over hibernate / power off
+
+Previous releases - always broken:
+
+ - sock: fix misuse of sk_under_memory_pressure() preventing system
+   from exiting global TCP memory pressure if a single cgroup is under
+   pressure
+
+ - fix the RTO timer retransmitting skb every 1ms if linear option
+   is enabled
+
+ - af_key: fix sadb_x_filter validation, amment netlink policy
+
+ - ipsec: fix slab-use-after-free in decode_session6()
+
+ - macb: in ZynqMP resume always configure PS GTR for non-wakeup source
+
+Misc:
+
+ - netfilter: set default timeout to 3 secs for sctp shutdown send and
+   recv state (from 300ms), align with protocol timers
+
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+
+----------------------------------------------------------------
+Abel Wu (1):
+      sock: Fix misuse of sk_under_memory_pressure()
+
+Alfred Lee (1):
+      net: dsa: mv88e6xxx: Wait for EEPROM done before HW reset
+
+Andrii Staikov (1):
+      i40e: fix misleading debug logs
+
+Artem Chernyshev (1):
+      broadcom: b44: Use b44_writephy() return value
+
+David S. Miller (2):
+      Merge tag 'ipsec-2023-08-15' of git://git.kernel.org/pub/scm/linux/kernel/git/klassert/ipsec
+      Merge tag 'nf-23-08-16' of https://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf
+
+Dragos Tatulea (1):
+      net/mlx5e: XDP, Fix fifo overrun on XDP_REDIRECT
+
+Edward Cree (2):
+      sfc: don't unregister flow_indr if it was never registered
+      sfc: don't fail probe if MAE/TC setup fails
+
+Eric Dumazet (1):
+      net: do not allow gso_size to be set to GSO_BY_FRAGS
+
+Florian Westphal (4):
+      netfilter: nf_tables: fix false-positive lockdep splat
+      netfilter: nf_tables: fix kdoc warnings after gc rework
+      netfilter: nf_tables: deactivate catchall elements in next generation
+      netfilter: nf_tables: don't fail inserts if duplicate has expired
+
+Herbert Xu (1):
+      xfrm: Silence warnings triggerable by bad packets
+
+Jakub Kicinski (4):
+      Merge branch 'octeon_ep-fixes-for-error-and-remove-paths'
+      net: openvswitch: reject negative ifindex
+      Merge tag 'mlx5-fixes-2023-08-16' of git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux
+      Merge branch '40GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue
+
+Jason Wang (1):
+      virtio-net: set queues after driver_ok
+
+Jason Xing (1):
+      net: fix the RTO timer retransmitting skb every 1ms if linear option is enabled
+
+Justin Chen (1):
+      net: phy: broadcom: stub c45 read/write for 54810
+
+Leon Romanovsky (2):
+      xfrm: delete offloaded policy
+      xfrm: don't skip free of empty state in acquire policy
+
+Liang Chen (1):
+      net: veth: Page pool creation error handling for existing pools only
+
+Lin Ma (5):
+      net: xfrm: Fix xfrm_address_filter OOB read
+      net: af_key: fix sadb_x_filter validation
+      net: xfrm: Amend XFRMA_SEC_CTX nla_policy structure
+      xfrm: add NULL check in xfrm_update_ae_params
+      xfrm: add forgotten nla_policy for XFRMA_MTIMER_THRESH
+
+Manish Chopra (1):
+      qede: fix firmware halt over suspend and resume
+
+Marcin Szycik (1):
+      ice: Block switchdev mode when ADQ is active and vice versa
+
+Michal Schmidt (4):
+      octeon_ep: fix timeout value for waiting on mbox response
+      octeon_ep: cancel tx_timeout_task later in remove sequence
+      octeon_ep: cancel ctrl_mbox_task after intr_poll_task
+      octeon_ep: cancel queued works in probe error path
+
+Pablo Neira Ayuso (3):
+      netfilter: nf_tables: fix GC transaction races with netns and netlink event exit path
+      netfilter: nf_tables: GC transaction race with netns dismantle
+      netfilter: nft_dynset: disallow object maps
+
+Petr Machata (1):
+      selftests: mirror_gre_changes: Tighten up the TTL test match
+
+Piotr Gardocki (1):
+      iavf: fix FDIR rule fields masks validation
+
+Prasad Pandit (1):
+      ipv6: fix indentation of a config attribute
+
+Radhey Shyam Pandey (1):
+      net: macb: In ZynqMP resume always configure PS GTR for non-wakeup source
+
+Russell King (Oracle) (1):
+      net: phy: fix IRQ-based wake-on-lan over hibernate / power off
+
+Shay Drory (1):
+      net/mlx5: Fix mlx5_cmd_update_root_ft() error flow
+
+Simon Horman (1):
+      mailmap: add entries for Simon Horman
+
+Sishuai Gong (1):
+      ipvs: fix racy memcpy in proc_do_sync_threshold
+
+Vlad Buslov (1):
+      Revert "vlan: Fix VLAN 0 memory leak"
+
+Xiang Yang (1):
+      net: pcs: Add missing put_device call in miic_create
+
+Xin Long (1):
+      netfilter: set default timeout to 3 secs for sctp shutdown send and recv state
+
+Zhengchao Shao (3):
+      xfrm: fix slab-use-after-free in decode_session6
+      ip6_vti: fix slab-use-after-free in decode_session6
+      ip_vti: fix potential slab-use-after-free in decode_session6
+
+Ziyang Xuan (1):
+      team: Fix incorrect deletion of ETH_P_8021AD protocol vid from slaves
+
+ .mailmap                                           |  2 +
+ Documentation/networking/nf_conntrack-sysctl.rst   |  4 +-
+ drivers/net/dsa/mv88e6xxx/chip.c                   |  8 +++
+ drivers/net/ethernet/broadcom/b44.c                |  8 +--
+ drivers/net/ethernet/cadence/macb_main.c           |  9 ++-
+ drivers/net/ethernet/intel/i40e/i40e_nvm.c         | 16 ++---
+ drivers/net/ethernet/intel/iavf/iavf_ethtool.c     | 10 +++
+ drivers/net/ethernet/intel/iavf/iavf_fdir.c        | 77 ++++++++++++++++++++--
+ drivers/net/ethernet/intel/iavf/iavf_fdir.h        |  2 +
+ drivers/net/ethernet/intel/ice/ice_eswitch.c       |  6 ++
+ drivers/net/ethernet/intel/ice/ice_main.c          |  5 ++
+ .../ethernet/marvell/octeon_ep/octep_ctrl_net.c    |  2 +-
+ .../net/ethernet/marvell/octeon_ep/octep_main.c    |  9 +--
+ drivers/net/ethernet/mellanox/mlx5/core/en/xdp.h   |  2 +
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |  8 ++-
+ drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c   | 10 ++-
+ drivers/net/ethernet/qlogic/qede/qede_main.c       | 10 +++
+ drivers/net/ethernet/sfc/ef100_nic.c               |  2 +-
+ drivers/net/ethernet/sfc/tc.c                      |  2 +-
+ drivers/net/pcs/pcs-rzn1-miic.c                    | 10 ++-
+ drivers/net/phy/broadcom.c                         | 13 ++++
+ drivers/net/phy/phy_device.c                       | 13 +---
+ drivers/net/team/team.c                            |  4 +-
+ drivers/net/veth.c                                 |  3 +-
+ drivers/net/virtio_net.c                           |  4 +-
+ include/linux/virtio_net.h                         |  4 ++
+ include/net/netfilter/nf_tables.h                  |  1 +
+ include/net/sock.h                                 |  6 ++
+ include/net/xfrm.h                                 |  1 +
+ net/8021q/vlan.c                                   |  3 +-
+ net/core/sock.c                                    |  2 +-
+ net/ipv4/ip_vti.c                                  |  4 +-
+ net/ipv4/tcp_timer.c                               |  4 +-
+ net/ipv6/Kconfig                                   |  2 +-
+ net/ipv6/ip6_vti.c                                 |  4 +-
+ net/key/af_key.c                                   |  4 +-
+ net/netfilter/ipvs/ip_vs_ctl.c                     |  4 ++
+ net/netfilter/nf_conntrack_proto_sctp.c            |  6 +-
+ net/netfilter/nf_tables_api.c                      | 44 +++++++++++--
+ net/netfilter/nft_dynset.c                         |  3 +
+ net/netfilter/nft_set_pipapo.c                     | 38 +++++------
+ net/openvswitch/datapath.c                         |  8 +--
+ net/xfrm/xfrm_compat.c                             |  2 +-
+ net/xfrm/xfrm_input.c                              | 22 +++----
+ net/xfrm/xfrm_interface_core.c                     |  4 +-
+ net/xfrm/xfrm_state.c                              |  8 +--
+ net/xfrm/xfrm_user.c                               | 15 ++++-
+ .../selftests/net/forwarding/mirror_gre_changes.sh |  3 +-
+ 48 files changed, 313 insertions(+), 118 deletions(-)
