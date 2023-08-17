@@ -2,156 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F150277F8F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6A777F8DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351930AbjHQOaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 10:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52348 "EHLO
+        id S1351873AbjHQO0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 10:26:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351939AbjHQO3t (ORCPT
+        with ESMTP id S1351871AbjHQO0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 10:29:49 -0400
-Received: from wp534.webpack.hosteurope.de (wp534.webpack.hosteurope.de [80.237.130.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C642701;
-        Thu, 17 Aug 2023 07:29:47 -0700 (PDT)
-Received: from [2001:a61:623e:e40:c80a:ff:fe00:409d] (helo=cs-wrt.lan.local); authenticated
-        by wp534.webpack.hosteurope.de running ExIM with esmtpa
-        id 1qWe0L-0004jV-Hg; Thu, 17 Aug 2023 16:29:41 +0200
-From:   =?UTF-8?q?Carsten=20Spie=C3=9F?= <mail@carsten-spiess.de>
-To:     =?UTF-8?q?Carsten=20Spie=C3=9F?= <mail@carsten-spiess.de>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>
-Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: [PATCH v4 2/2] dt-bindings: hwmon: add renesas,isl28022
-Date:   Thu, 17 Aug 2023 16:29:21 +0200
-Message-Id: <3f98be38377cc556619c6876f6dcec2d54102271.1692033412.git.mail@carsten-spiess.de>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1692033412.git.mail@carsten-spiess.de>
-References: <cover.1692033412.git.mail@carsten-spiess.de>
+        Thu, 17 Aug 2023 10:26:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B433E2701
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:25:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692282352;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YU1kedm3s1a6B75XQIpxvCnkzuYPmtz40YLYh/uOwp8=;
+        b=F7UVjKTPH5vwRiTxxVv5IhQY4q/1Tcod7ap72RJGc5Ruirf6xwk0XzAFULKAD78goyileP
+        U0n9HtfsZ6/bYJ3IIQV7eXfZh6qvhpyjvAzsnIgxowTUsdbabREMVk8QsFyLnWr8ARC3jB
+        dJTYoqCdMZZyoQnngqg8fNZcx2Y3y/8=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-480-mm_4aXBWMsOBdnAGOrWyqg-1; Thu, 17 Aug 2023 10:25:50 -0400
+X-MC-Unique: mm_4aXBWMsOBdnAGOrWyqg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8A1B029AA3B0;
+        Thu, 17 Aug 2023 14:25:46 +0000 (UTC)
+Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3EBEC1121314;
+        Thu, 17 Aug 2023 14:25:46 +0000 (UTC)
+From:   Jeff Moyer <jmoyer@redhat.com>
+To:     Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+Cc:     <dan.j.williams@intel.com>, <vishal.l.verma@intel.com>,
+        <dave.jiang@intel.com>, <ira.weiny@intel.com>,
+        <nvdimm@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <yusongping@huawei.com>, <artem.kuzin@huawei.com>
+Subject: Re: [PATCH] drivers: nvdimm: fix dereference after free
+References: <20230817114103.754977-1-konstantin.meskhidze@huawei.com>
+X-PGP-KeyID: 1F78E1B4
+X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
+Date:   Thu, 17 Aug 2023 10:31:33 -0400
+In-Reply-To: <20230817114103.754977-1-konstantin.meskhidze@huawei.com>
+        (Konstantin Meskhidze's message of "Thu, 17 Aug 2023 19:41:03 +0800")
+Message-ID: <x49jzttu4e2.fsf@segfault.boston.devel.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;mail@carsten-spiess.de;1692282587;43d5b731;
-X-HE-SMSGID: 1qWe0L-0004jV-Hg
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dt-bindings for Renesas ISL28022 power monitor.
+Konstantin Meskhidze <konstantin.meskhidze@huawei.com> writes:
 
-Signed-off-by: Carsten Spieß <mail@carsten-spiess.de>
----
-v4:
-- compatible enum replaced by const
-- unneeded literal style removed
-v3:
-- changelog added
-v2/v3:
-- schema errors fixed
-- properties reworked
-- shunt-resistor minimum and default value added
----
- .../bindings/hwmon/renesas,isl28022.yaml      | 64 +++++++++++++++++++
- MAINTAINERS                                   |  1 +
- 2 files changed, 65 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/hwmon/renesas,isl28022.yaml
+> 'nd_pmu->pmu.attr_groups' is dereferenced in function
+> 'nvdimm_pmu_free_hotplug_memory' call after it has been freed. Because in
+> function 'nvdimm_pmu_free_hotplug_memory' memory pointed by the fields of
+> 'nd_pmu->pmu.attr_groups' is deallocated it is necessary to call 'kfree'
+> after 'nvdimm_pmu_free_hotplug_memory'.
+>
+> Co-developed-by: Ivanov Mikhail <ivanov.mikhail1@huawei-partners.com>
+> Signed-off-by: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+> ---
+>  drivers/nvdimm/nd_perf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/nvdimm/nd_perf.c b/drivers/nvdimm/nd_perf.c
+> index 14881c4e0..2b6dc80d8 100644
+> --- a/drivers/nvdimm/nd_perf.c
+> +++ b/drivers/nvdimm/nd_perf.c
+> @@ -307,10 +307,10 @@ int register_nvdimm_pmu(struct nvdimm_pmu *nd_pmu, struct platform_device *pdev)
+>  	}
+>  
+>  	rc = perf_pmu_register(&nd_pmu->pmu, nd_pmu->pmu.name, -1);
+>  	if (rc) {
+> -		kfree(nd_pmu->pmu.attr_groups);
+>  		nvdimm_pmu_free_hotplug_memory(nd_pmu);
+> +		kfree(nd_pmu->pmu.attr_groups);
+>  		return rc;
+>  	}
+>  
+>  	pr_info("%s NVDIMM performance monitor support registered\n",
 
-diff --git a/Documentation/devicetree/bindings/hwmon/renesas,isl28022.yaml b/Documentation/devicetree/bindings/hwmon/renesas,isl28022.yaml
-new file mode 100644
-index 000000000000..dd82a80e4115
---- /dev/null
-+++ b/Documentation/devicetree/bindings/hwmon/renesas,isl28022.yaml
-@@ -0,0 +1,64 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/hwmon/renesas,isl28022.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Renesas ISL28022 power monitor
-+
-+maintainers:
-+  - Carsten Spieß <mail@carsten-spiess.de>
-+
-+description: |
-+  The ISL28022 is a power monitor with I2C interface. The device monitors
-+  voltage, current via shunt resistor and calculated power.
-+
-+  Datasheets:
-+    https://www.renesas.com/us/en/www/doc/datasheet/isl28022.pdf
-+
-+properties:
-+  compatible:
-+    const: renesas,isl28022
-+
-+  reg:
-+    maxItems: 1
-+
-+  shunt-resistor-micro-ohms:
-+    description:
-+      Shunt resistor value in micro-Ohm
-+    minimum: 800
-+    default: 10000
-+
-+  renesas,shunt-range-microvolt:
-+    description:
-+      Maximal shunt voltage range of +/- 40 mV, 80 mV, 160 mV or 320 mV
-+    default: 320000
-+    enum: [40000, 80000, 160000, 320000]
-+
-+  renesas,average-samples:
-+    description:
-+      Number of samples to be used to report voltage, current and power values.
-+    default: 1
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [1, 2, 4, 8, 16, 32, 64, 128]
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        power-monitor@40 {
-+            compatible = "renesas,isl28022";
-+            reg = <0x40>;
-+            shunt-resistor-micro-ohms = <8000>;
-+            renesas,shunt-range-microvolt = <40000>;
-+            renesas,average-samples = <128>;
-+        };
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b02e3b991676..23b8e8183ece 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11069,6 +11069,7 @@ ISL28022 HARDWARE MONITORING DRIVER
- M:	Carsten Spieß <mail@carsten-spiess.de>
- L:	linux-hwmon@vger.kernel.org
- S:	Maintained
-+F:	Documentation/devicetree/bindings/hwmon/renesas,isl28022.yaml
- F:	Documentation/hwmon/isl28022.rst
- F:	drivers/hwmon/isl28022.c
- 
--- 
-2.34.1
+Reviewed-by: Jeff Moyer <jmoyer@redhat.com>
 
