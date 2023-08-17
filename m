@@ -2,90 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9D977FCDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7950977FCDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353919AbjHQRTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 13:19:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51890 "EHLO
+        id S1353914AbjHQRSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 13:18:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353922AbjHQRSi (ORCPT
+        with ESMTP id S1353939AbjHQRSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 13:18:38 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D39F2;
-        Thu, 17 Aug 2023 10:18:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=yuukEpdHT3w26tjBLZ94ch3+AyossAxkNwlLBMkIeJU=; b=MsECgaX/Dpte+TElnCzmX2K32E
-        UEbDie3QMs0Y2M8dnwHC9Za45UwbdWjfrEcF9+XDwPycs21SEYbGwciPXDQmscqvlDFDdvLGAAzZk
-        apmZNpwIeLab/wWCibS4x4Aae3wsWv7N3/3Dx9HbsZcbQxfYEF7IA0IxYDjpFLMEt/Ji32SFb4Voe
-        LxEZkFHfZY02ikd91s47/inXZg8f6A/MEPFVmRxkS598aIE6aoEfV/JO/NlkvpE7ph/1kOFhju7Il
-        wOzTRQikAHqWaShscTPNOjy6sTlMaDzyIoAXpyrKGd6jj2G4yY6+Bd+SGGGACF7oT2JkGIsJ2FPVp
-        YFyeR1lQ==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qWgdo-006s89-19;
-        Thu, 17 Aug 2023 17:18:36 +0000
-Message-ID: <34aadd62-5b02-753f-0865-f8a07906631c@infradead.org>
-Date:   Thu, 17 Aug 2023 10:18:35 -0700
+        Thu, 17 Aug 2023 13:18:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA6330D1;
+        Thu, 17 Aug 2023 10:18:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5AE1D6586F;
+        Thu, 17 Aug 2023 17:18:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05F88C433C8;
+        Thu, 17 Aug 2023 17:18:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692292692;
+        bh=PUtRgHl3t9y/PCdYajGwcmizA+UGYBohYR7AEs0pjoo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qrg+XKqtRmV4/lmX29QP+7xjp0iql30uzjiD/+IZf66y5T9KcdewLTYZLNPMLLHyM
+         zZuOu2SBecnTFBGa+i5d8VK1GcTirNqkjHGiCHxy0AtS5/VasEbdKajh/kCrAhRnB0
+         ENAHlyX5uztjNp2p+SMQATfNTA0AjNScQgDEWtxMjBJs0Nfn9AgMsEYjz6kE4bNIOq
+         cTF8302WgmW7xV7ayZzahJqkK2AT4OyN83DHtmaVZKbBwHcMOuAe5RmpNWN6yLRzw3
+         HOiC+2xAbd3s9kXKmpB+C/kqsS3s5VE9PLJWxVPFgyuO30dXs6ROSxF9HEwlIKjFta
+         iH27n6fLi5eIg==
+Date:   Thu, 17 Aug 2023 11:19:13 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v3][next] cgroup: Avoid -Wstringop-overflow warnings
+Message-ID: <ZN5WkbPelHUSTXOA@work>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v1 1/1] docs: kernel-parameters: Refer to the correct
- bitmap function
-Content-Language: en-US
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>
-References: <20230817140432.507889-1-andriy.shevchenko@linux.intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230817140432.507889-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Change the notation from pointer-to-array to pointer-to-pointer.
+With this, we avoid the compiler complaining about trying
+to access a region of size zero as an argument during function
+calls.
 
+This is a workaround to prevent the compiler complaining about
+accessing an array of size zero when evaluating the arguments
+of a couple of function calls. See below:
 
-On 8/17/23 07:04, Andy Shevchenko wrote:
-> The parser of the CPU lists is bitmap_parselist() that supports
-> special notations with the plain numbers. bitmap_parse() never
-> supported those and will fail in case one will try it.
-> 
-> Fixes: b18def121f07 ("bitmap_parse: Support 'all' semantics")
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+kernel/cgroup/cgroup.c: In function 'find_css_set':
+kernel/cgroup/cgroup.c:1206:16: warning: 'find_existing_css_set' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+ 1206 |         cset = find_existing_css_set(old_cset, cgrp, template);
+      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+kernel/cgroup/cgroup.c:1206:16: note: referencing argument 3 of type 'struct cgroup_subsys_state *[0]'
+kernel/cgroup/cgroup.c:1071:24: note: in a call to function 'find_existing_css_set'
+ 1071 | static struct css_set *find_existing_css_set(struct css_set *old_cset,
+      |                        ^~~~~~~~~~~~~~~~~~~~~
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+With the change to pointer-to-pointer, the functions are not prevented
+from being executed, and they will do what they have to do when
+CGROUP_SUBSYS_COUNT == 0.
 
-Thanks.
+Address the following -Wstringop-overflow warnings seen when
+built with ARM architecture and aspeed_g4_defconfig configuration
+(notice that under this configuration CGROUP_SUBSYS_COUNT == 0):
 
-> ---
->  Documentation/admin-guide/kernel-parameters.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.rst b/Documentation/admin-guide/kernel-parameters.rst
-> index 073f73880edf..102937bc8443 100644
-> --- a/Documentation/admin-guide/kernel-parameters.rst
-> +++ b/Documentation/admin-guide/kernel-parameters.rst
-> @@ -80,7 +80,7 @@ The special case-tolerant group name "all" has a meaning of selecting all CPUs,
->  so that "nohz_full=all" is the equivalent of "nohz_full=0-N".
->  
->  The semantics of "N" and "all" is supported on a level of bitmaps and holds for
-> -all users of bitmap_parse().
-> +all users of bitmap_parselist().
->  
->  This document may not be entirely up to date and comprehensive. The command
->  "modinfo -p ${modulename}" shows a current list of all parameters of a loadable
+kernel/cgroup/cgroup.c:1208:16: warning: 'find_existing_css_set' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+kernel/cgroup/cgroup.c:1258:15: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+kernel/cgroup/cgroup.c:6089:18: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
+kernel/cgroup/cgroup.c:6153:18: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
 
+This results in no differences in binary output.
+
+Link: https://github.com/KSPP/linux/issues/316
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v3:
+ - Update changelog text to point out that this is a workaround.
+
+Changes in v2:
+ - Use pointer-to-pointer instead of pointer-to-array.
+ - Update changelog text.
+ - Link: https://lore.kernel.org/linux-hardening/ZN02iLcZYgxHFrEN@work/
+
+v1:
+ - Link: https://lore.kernel.org/linux-hardening/ZIpm3pcs3iCP9UaR@work/
+
+ kernel/cgroup/cgroup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index ccbbba06da5b..68e2d9812e3f 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -929,7 +929,7 @@ static void css_set_move_task(struct task_struct *task,
+ #define CSS_SET_HASH_BITS	7
+ static DEFINE_HASHTABLE(css_set_table, CSS_SET_HASH_BITS);
+ 
+-static unsigned long css_set_hash(struct cgroup_subsys_state *css[])
++static unsigned long css_set_hash(struct cgroup_subsys_state **css)
+ {
+ 	unsigned long key = 0UL;
+ 	struct cgroup_subsys *ss;
+@@ -1070,7 +1070,7 @@ static bool compare_css_sets(struct css_set *cset,
+  */
+ static struct css_set *find_existing_css_set(struct css_set *old_cset,
+ 					struct cgroup *cgrp,
+-					struct cgroup_subsys_state *template[])
++					struct cgroup_subsys_state **template)
+ {
+ 	struct cgroup_root *root = cgrp->root;
+ 	struct cgroup_subsys *ss;
 -- 
-~Randy
+2.34.1
+
